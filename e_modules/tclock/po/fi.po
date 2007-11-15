@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2006-04-04\n"
+"POT-Creation-Date: 2007-11-14 22:40+0100\n"
 "PO-Revision-Date: 2006-04-04\n"
 "Last-Translator: Jyri Hämäläinen <wildfinn@gmail.com>\n"
 "Language-Team: Jyri Hämäläinen <wildfinn@gmail.com>\n"
@@ -15,26 +15,50 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_config.c:31
+#: e_mod_config.c:42
 msgid "Tclock Configuration"
 msgstr "Tclock"
 
-#: e_mod_config.c:66
-msgid "Resolution"
-msgstr "Tarkkuus"
+#: e_mod_config.c:86
+msgid "Top"
+msgstr ""
 
-#: e_mod_config.c:68
-msgid "1 Minute"
-msgstr "1 Minuutti"
+#: e_mod_config.c:88
+msgid "Show Top Line"
+msgstr ""
 
-#: e_mod_config.c:70
-msgid "1 Second"
-msgstr "1 Sekunti"
+#: e_mod_config.c:96 e_mod_config.c:110
+msgid "Consult strftime(3) for format syntax"
+msgstr ""
 
-#: e_mod_main.c:89
-msgid "Simple Digital Clock"
-msgstr "Yksinkertainen digitaalikello"
+#: e_mod_config.c:100
+msgid "Bottom"
+msgstr ""
 
-#: e_mod_main.c:90
-msgid "Displays a digital clock on the desktop"
-msgstr "Näyttää digitaalikellon työpöydällä"
+#: e_mod_config.c:102
+msgid "Show Bottom Line"
+msgstr ""
+
+#: e_mod_main.c:128
+msgid "TClock"
+msgstr ""
+
+#: e_mod_main.c:173
+#, fuzzy
+msgid "Configuration"
+msgstr "Tclock"
+
+#~ msgid "Resolution"
+#~ msgstr "Tarkkuus"
+
+#~ msgid "1 Minute"
+#~ msgstr "1 Minuutti"
+
+#~ msgid "1 Second"
+#~ msgstr "1 Sekunti"
+
+#~ msgid "Simple Digital Clock"
+#~ msgstr "Yksinkertainen digitaalikello"
+
+#~ msgid "Displays a digital clock on the desktop"
+#~ msgstr "Näyttää digitaalikellon työpöydällä"

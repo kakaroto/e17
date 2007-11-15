@@ -4,11 +4,9 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
-"Report-Msgid-Bugs-To: olivierweb@ifrance.com\n"
 "Project-Id-Version: eo\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-29 10:20+0200\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2007-11-14 22:36+0100\n"
 "PO-Revision-Date: 2006-08-30 23:33+0200\n"
 "Last-Translator: \n"
 "Language-Team:  <fr@li.org>\n"
@@ -17,37 +15,48 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.2\n"
 
-#: e_mod_config.c:40
+#: e_mod_config.c:42
 msgid "Rain Module"
 msgstr "Pluva Modulo"
 
-#: e_mod_config.c:98
+#: e_mod_config.c:100
+msgid "General Settings"
+msgstr ""
+
+#: e_mod_config.c:101
 msgid "Show Clouds"
 msgstr "Vidigi Nubojn"
 
-#: e_mod_config.c:102
+#: e_mod_config.c:105
 msgid "Rain Density"
 msgstr "Pluva Dendeco"
 
-#: e_mod_config.c:104
+#: e_mod_config.c:107
 msgid "Sprinkle"
 msgstr "ĵetkovri"
 
-#: e_mod_config.c:106
+#: e_mod_config.c:109
 msgid "Drizzle"
 msgstr "Pluveti"
 
-#: e_mod_config.c:108
+#: e_mod_config.c:111
 msgid "Downpour"
 msgstr ""
 
-#: e_mod_main.c:67
-msgid "Enlightenment Rain Module"
-msgstr "\"Enlightenment-a Pluvo\" Modulo"
+#: e_mod_main.c:33
+msgid "Appearance"
+msgstr ""
 
-#: e_mod_main.c:69
-msgid ""
-"This is a simple module to display some rain on the desktop.<br>It can "
-"display clouds too, if you like clouds."
-msgstr "Tiu estas simpla modulo por vidigi pluvon super labortablo.<br>Gxi povas vidigi nubojn ankaux, se vi sxatas nubojn."
+#: e_mod_main.c:35
+msgid "Rain"
+msgstr ""
 
+#~ msgid "Enlightenment Rain Module"
+#~ msgstr "\"Enlightenment-a Pluvo\" Modulo"
+
+#~ msgid ""
+#~ "This is a simple module to display some rain on the desktop.<br>It can "
+#~ "display clouds too, if you like clouds."
+#~ msgstr ""
+#~ "Tiu estas simpla modulo por vidigi pluvon super labortablo.<br>Gxi povas "
+#~ "vidigi nubojn ankaux, se vi sxatas nubojn."

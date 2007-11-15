@@ -4,11 +4,9 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
-"Report-Msgid-Bugs-To: olivierweb@ifrance.com\n"
 "Project-Id-Version: eo\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-29 10:20+0200\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2007-11-14 22:38+0100\n"
 "PO-Revision-Date: 2006-08-30 23:07+0200\n"
 "Last-Translator: \n"
 "Language-Team:  <fr@li.org>\n"
@@ -17,31 +15,44 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.2\n"
 
-#: e_mod_config.c:39
+#: e_mod_config.c:42
 msgid "Snow Configuration"
 msgstr "Konfiguraĵo de Neĝo"
 
-#: e_mod_config.c:96
+#: e_mod_config.c:99
+msgid "General Settings"
+msgstr ""
+
+#: e_mod_config.c:100
 msgid "Show Trees"
 msgstr "Vidigi Arbojn"
 
-#: e_mod_config.c:100
+#: e_mod_config.c:104
 msgid "Snow Density"
 msgstr "Neĝa Denseco"
 
-#: e_mod_config.c:102
+#: e_mod_config.c:106
 msgid "Sparse"
 msgstr ""
 
-#: e_mod_config.c:106
+#: e_mod_config.c:108
+msgid "Medium"
+msgstr ""
+
+#: e_mod_config.c:110
 msgid "Dense"
 msgstr "Densa"
 
-#: e_mod_main.c:72
-msgid "Enlightenment Snow Module"
-msgstr "\"Enlightenment-a Neĝo\" Modulo"
+#: e_mod_main.c:33
+msgid "Appearance"
+msgstr ""
 
-#: e_mod_main.c:72
-msgid "This is a snow module that may replace xsnow."
-msgstr "Tiu estas neĝa modulo kiu eblas anstataŭigi \"xsnow\""
+#: e_mod_main.c:35
+msgid "Snow"
+msgstr ""
 
+#~ msgid "Enlightenment Snow Module"
+#~ msgstr "\"Enlightenment-a Neĝo\" Modulo"
+
+#~ msgid "This is a snow module that may replace xsnow."
+#~ msgstr "Tiu estas neĝa modulo kiu eblas anstataŭigi \"xsnow\""

@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Wlan\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-11-03 13:45+0100\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2007-11-14 22:43+0100\n"
 "PO-Revision-Date: 2006-09-09 12:35+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
@@ -37,6 +37,11 @@ msgstr "Mostra testo come percentuale"
 #: e_mod_config.c:128
 msgid "Check Interval:"
 msgstr "Frequenza di aggiornamento:"
+
+#: e_mod_config.c:131
+#, c-format
+msgid "%1.0f seconds"
+msgstr ""
 
 #: e_mod_config.c:138
 msgid "Device Settings"

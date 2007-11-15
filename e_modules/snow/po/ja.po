@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-02-05 23:07+0900\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2007-11-14 22:38+0100\n"
 "PO-Revision-Date: 2006-03-03 10:35+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,30 +16,44 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_config.c:47
+#: e_mod_config.c:42
 msgid "Snow Configuration"
 msgstr "snow モジュールの設定"
 
-#: e_mod_config.c:104
+#: e_mod_config.c:99
+msgid "General Settings"
+msgstr ""
+
+#: e_mod_config.c:100
 msgid "Show Trees"
 msgstr "木を表示する"
 
-#: e_mod_config.c:108
+#: e_mod_config.c:104
 msgid "Snow Density"
 msgstr "雪の密度"
 
-#: e_mod_config.c:110
+#: e_mod_config.c:106
 msgid "Sparse"
 msgstr "まばらに"
 
-#: e_mod_config.c:114
+#: e_mod_config.c:108
+msgid "Medium"
+msgstr ""
+
+#: e_mod_config.c:110
 msgid "Dense"
 msgstr "もうもうと"
 
-#: e_mod_main.c:86
-msgid "Enlightenment Snow Module"
-msgstr "Enlightenment snow モジュール"
+#: e_mod_main.c:33
+msgid "Appearance"
+msgstr ""
 
-#: e_mod_main.c:87
-msgid "This is a snow module that may replace xsnow."
-msgstr "これは xsnow の代わりに使える snow モジュールです."
+#: e_mod_main.c:35
+msgid "Snow"
+msgstr ""
+
+#~ msgid "Enlightenment Snow Module"
+#~ msgstr "Enlightenment snow モジュール"
+
+#~ msgid "This is a snow module that may replace xsnow."
+#~ msgstr "これは xsnow の代わりに使える snow モジュールです."

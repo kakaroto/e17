@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Uptime\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-11-03 13:45+0100\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2007-11-14 22:41+0100\n"
 "PO-Revision-Date: 2006-07-08 14:14+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
@@ -26,6 +26,11 @@ msgstr "Impostazioni di Uptime"
 msgid "Update Interval:"
 msgstr "Frequenza di aggiornamento:"
 
+#: e_mod_config.c:110 e_mod_config.c:117
+#, c-format
+msgid "%1.0f seconds"
+msgstr ""
+
 #: e_mod_config.c:114
 msgid "Check Interval:"
 msgstr "Frequenza di aggiornamento:"
@@ -38,17 +43,17 @@ msgstr "Uptime"
 msgid "Configuration"
 msgstr "Configurazione"
 
-#: e_mod_main.c:565
+#: e_mod_main.c:568
 #, c-format
 msgid "up: %d days, %d:%02d:%02ld"
 msgstr "tempo di servizio: %d giorni, %d:%02d:%02ld"
 
-#: e_mod_main.c:572
+#: e_mod_main.c:575
 #, c-format
 msgid "la: %.2f %.2f %.2f"
 msgstr "carico medio: %.2f %.2f %.2f"
 
-#: e_mod_main.c:577
+#: e_mod_main.c:580
 #, c-format
 msgid "users: %d"
 msgstr "utenti: %d"

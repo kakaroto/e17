@@ -8,34 +8,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Taskbar module for E17 N/A\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2006-10-17 09:01+0200\n"
+"POT-Creation-Date: 2007-11-14 22:39+0100\n"
 "PO-Revision-Date: 2006-11-06 08:35+0100\n"
 "Last-Translator: Anders Trobäck <enlightenment@troback.com>\n"
 "Language-Team: Swedish\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit"
-
-#: e_mod_main.c:213
-msgid "Taskbar"
-msgstr "Taskbar"
-
-#: e_mod_main.c:298 e_mod_main.c:851
-msgid "Configuration"
-msgstr "Konfiguration"
-
-#: e_mod_main.c:1404
-msgid "Enlightenment Taskbar Module"
-msgstr "Enlightenment Taskbar modul"
-
-#: e_mod_main.c:1405
-msgid ""
-"This is the Taskbar Iconified Application module for Enlightenment.<br>It "
-"will hold all applications and display current desktop <br>or all running "
-"apps."
-msgstr ""
-"Detta är Taskbar Iconified Application modulen för Enlightenment.<br>Den "
-"kommer att innehålla alla program och visa aktuellt skrivbord<br> eller alla program som är igång."
+"Content-Transfer-Encoding: 8bit\n"
 
 #: e_mod_config.c:32
 msgid "Taskbar Configuration"
@@ -57,3 +36,22 @@ msgstr "Visa beskrivning"
 msgid "Show windows from all desktops"
 msgstr "Visa fönster från alla skrivbord"
 
+#: e_mod_main.c:214
+msgid "Taskbar"
+msgstr "Taskbar"
+
+#: e_mod_main.c:308 e_mod_main.c:838
+msgid "Configuration"
+msgstr "Konfiguration"
+
+#~ msgid "Enlightenment Taskbar Module"
+#~ msgstr "Enlightenment Taskbar modul"
+
+#~ msgid ""
+#~ "This is the Taskbar Iconified Application module for Enlightenment.<br>It "
+#~ "will hold all applications and display current desktop <br>or all running "
+#~ "apps."
+#~ msgstr ""
+#~ "Detta är Taskbar Iconified Application modulen för Enlightenment.<br>Den "
+#~ "kommer att innehålla alla program och visa aktuellt skrivbord<br> eller "
+#~ "alla program som är igång."

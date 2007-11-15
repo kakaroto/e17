@@ -5,93 +5,137 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: screenshot VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-02-07 00:56+0100\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2007-11-14 22:37+0100\n"
 "PO-Revision-Date: 2006-02-07 01:27+0100\n"
 "Last-Translator: Chidambar 'ilLogict' Zinnoury <illogict@online.fr>\n"
-"Language-Team: Enlightenment i18n French <enlightenment-intl@lists.sourceforge.net>\n"
+"Language-Team: Enlightenment i18n French <enlightenment-intl@lists."
+"sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_config.c:75
+#: e_mod_config.c:74
 msgid "Screenshot Configuration"
 msgstr "Configuration de la capture d'écran"
 
-#: e_mod_config.c:163 e_mod_config.c:283
-msgid "Use Import"
-msgstr "Utiliser «import»"
+#: e_mod_config.c:144 e_mod_config.c:245
+#, fuzzy
+msgid "General Settings"
+msgstr "Paramètres de fichier :"
 
-#: e_mod_config.c:165 e_mod_config.c:285
-msgid "Use Scrot"
-msgstr "Utiliser «scrot»"
-
-#: e_mod_config.c:172 e_mod_config.c:292
+#: e_mod_config.c:146 e_mod_config.c:246
 msgid "Delay Time:"
 msgstr "Délai :"
 
-#: e_mod_config.c:182 e_mod_config.c:302
+#: e_mod_config.c:149 e_mod_config.c:249
+#, c-format
+msgid "%1.0f seconds"
+msgstr ""
+
+#: e_mod_config.c:157 e_mod_config.c:257
+msgid "Use Import"
+msgstr "Utiliser «import»"
+
+#: e_mod_config.c:159 e_mod_config.c:259
+msgid "Use Scrot"
+msgstr "Utiliser «scrot»"
+
+#: e_mod_config.c:169 e_mod_config.c:278
 msgid "File Settings"
 msgstr "Paramètres de fichier :"
 
-#: e_mod_config.c:185 e_mod_config.c:305
+#: e_mod_config.c:171 e_mod_config.c:280
+msgid "Always Prompt For Filename"
+msgstr ""
+
+#: e_mod_config.c:175 e_mod_config.c:284
 msgid "Save Directory:"
 msgstr "Répertoire de sauvegarde :"
 
-#: e_mod_config.c:191 e_mod_config.c:311
-msgid "Filename (minus extension):"
-msgstr "Nom de fichier (sans extension) :"
+#: e_mod_config.c:179 e_mod_config.c:288
+msgid "Filename:"
+msgstr ""
 
-#: e_mod_config.c:199 e_mod_config.c:319
-#, c-format
-msgid "Example: screenshot%d = screenshot1, screenshot2, etc..."
-msgstr "Exemple : capture%d = capture1, capture2, etc…"
+#: e_mod_config.c:269
+#, fuzzy
+msgid "Image Viewer Settings"
+msgstr "Paramètres de fichier :"
 
-#: e_mod_config.c:326
-msgid "Import Options"
+#: e_mod_config.c:271
+msgid "Launch Image Viewer After Screenshot"
+msgstr ""
+
+#: e_mod_config.c:298
+#, fuzzy
+msgid "Import Settings"
 msgstr "Options d'«import»"
 
-#: e_mod_config.c:327 e_mod_config.c:348
+#: e_mod_config.c:300 e_mod_config.c:329
 msgid "Include Image Border"
 msgstr "Inclure la bordure de l'image"
 
-#: e_mod_config.c:330
+#: e_mod_config.c:304
 msgid "Use Image Dithering"
 msgstr "Utiliser le lissage d'image"
 
-#: e_mod_config.c:333
+#: e_mod_config.c:308
 msgid "Include Window Manager Frame"
 msgstr "Inclure la bordure du gestionnaire de fenêtres"
 
-#: e_mod_config.c:336
+#: e_mod_config.c:312
 msgid "Choose Window To Grab"
 msgstr "Choisir la fenêtre à capturer"
 
-#: e_mod_config.c:339
+#: e_mod_config.c:316
 msgid "Silent"
 msgstr "Silencieux"
 
-#: e_mod_config.c:342
+#: e_mod_config.c:320
 msgid "Trim Edges"
 msgstr "Supprimer les bords"
 
-#: e_mod_config.c:347
-msgid "Scrot Options"
+#: e_mod_config.c:327
+#, fuzzy
+msgid "Scrot Settings"
 msgstr "Options de «scrot»"
 
-#: e_mod_config.c:351
+#: e_mod_config.c:333
 msgid "Generate Thumbnail"
 msgstr "Générer une miniature"
 
-#: e_mod_main.c:108 e_mod_main.c:527
+#: e_mod_main.c:132
+msgid "Screenshot"
+msgstr ""
+
+#: e_mod_main.c:176
+#, fuzzy
+msgid "Configuration"
+msgstr "Configuration de la capture d'écran"
+
+#: e_mod_main.c:659 e_mod_main.c:690 e_mod_main.c:710
 msgid "Enlightenment Screenshot Module"
 msgstr "Module capture d'écran d'Enlightenment"
 
-#: e_mod_main.c:109
-msgid "This module is used to take screenshots"
-msgstr "Ce module est utilisé pour prendre des captures d'écran."
-
-#: e_mod_main.c:528
-msgid "Please Choose A Program To Use For Taking Screenshots."
+#: e_mod_main.c:661
+#, fuzzy
+msgid "Please install either ImageMagick or Scrot for taking screenshots."
 msgstr "Merci de sélectionner un programme pour les captures d'écran."
 
+#: e_mod_main.c:692
+msgid "Enter a new filename to use for this screenshot"
+msgstr ""
+
+#: e_mod_main.c:711
+msgid ""
+"You did not specify a path.<br>This shot will be saved in your home folder."
+msgstr ""
+
+#~ msgid "Filename (minus extension):"
+#~ msgstr "Nom de fichier (sans extension) :"
+
+#~ msgid "Example: screenshot%d = screenshot1, screenshot2, etc..."
+#~ msgstr "Exemple : capture%d = capture1, capture2, etc…"
+
+#~ msgid "This module is used to take screenshots"
+#~ msgstr "Ce module est utilisé pour prendre des captures d'écran."

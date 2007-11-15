@@ -4,11 +4,9 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
-"Report-Msgid-Bugs-To: olivierweb@ifrance.com\n"
 "Project-Id-Version: eo\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-29 10:20+0200\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2007-11-14 22:42+0100\n"
 "PO-Revision-Date: 2006-08-30 22:58+0200\n"
 "Last-Translator: \n"
 "Language-Team:  <fr@li.org>\n"
@@ -66,19 +64,16 @@ msgstr "Akhavi vian Kodo de ICAO en :"
 msgid "http://www.weather.gov/tg/siteloc.shtml"
 msgstr ""
 
-#: e_mod_main.c:171
+#: e_mod_main.c:177
 msgid "Weather"
 msgstr "Vetero"
 
-#: e_mod_main.c:207
+#: e_mod_main.c:222
 msgid "Configuration"
 msgstr "Konfiguraĵo"
 
-#: e_mod_main.c:396
-msgid "Enlightenment Weather Module"
-msgstr "\"Enlightenment-a Vetero\" Modulo"
+#~ msgid "Enlightenment Weather Module"
+#~ msgstr "\"Enlightenment-a Vetero\" Modulo"
 
-#: e_mod_main.c:397
-msgid "A weather forecast module for Enlightenment"
-msgstr "Modulo de Enlightenment por aŭguri veteron"
-
+#~ msgid "A weather forecast module for Enlightenment"
+#~ msgstr "Modulo de Enlightenment por aŭguri veteron"

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eo\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-07 21:43+0100\n"
+"POT-Creation-Date: 2007-11-14 22:26+0100\n"
 "PO-Revision-Date: 2006-08-30 23:37+0200\n"
 "Last-Translator: \n"
 "Language-Team:  <fr@li.org>\n"
@@ -15,7 +15,51 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.2\n"
 
-#: src/module/e_mod_keybindings.c:6
+#: src/module/e_mod_config.c:104
+msgid "Language Module Settings"
+msgstr "Agordoj de Lingva Modulo"
+
+#: src/module/e_mod_config.c:174 src/module/e_mod_config.c:249
+msgid "Available Languages"
+msgstr "Haveblaj Lingvoj"
+
+#: src/module/e_mod_config.c:182 src/module/e_mod_config.c:257
+msgid "Selected Languages"
+msgstr "Elektitaj Lingvoj"
+
+#: src/module/e_mod_config.c:198 src/module/e_mod_config.c:273
+msgid "Up"
+msgstr "Supren"
+
+#: src/module/e_mod_config.c:203 src/module/e_mod_config.c:278
+msgid "Down"
+msgstr "Malsupren"
+
+#: src/module/e_mod_config.c:211 src/module/e_mod_config.c:304
+msgid "Language Switch Policy"
+msgstr ""
+
+#: src/module/e_mod_config.c:214 src/module/e_mod_config.c:307
+msgid "Global"
+msgstr "Malloka"
+
+#: src/module/e_mod_config.c:217 src/module/e_mod_config.c:310
+msgid "Window"
+msgstr "Fenestro"
+
+#: src/module/e_mod_config.c:220 src/module/e_mod_config.c:313
+msgid "Application"
+msgstr "Aplikaĵo"
+
+#: src/module/e_mod_config.c:287
+msgid "Keyboard Model"
+msgstr "Klavarmodelo"
+
+#: src/module/e_mod_config.c:295
+msgid "Layout Variant"
+msgstr ""
+
+#: src/module/e_mod_keybindings.c:6 src/module/e_mod_main.c:113
 msgid "Language"
 msgstr "Lingvo"
 
@@ -27,33 +71,16 @@ msgstr ""
 msgid "Switch To Previous Language"
 msgstr ""
 
-#~ msgid "Language Module Settings"
-#~ msgstr "Agordoj de Lingva Modulo"
-
-#~ msgid "Available Languages"
-#~ msgstr "Haveblaj Lingvoj"
-
-#~ msgid "Selected Languages"
-#~ msgstr "Elektitaj Lingvoj"
-
-#~ msgid "Up"
-#~ msgstr "Supren"
-
-#~ msgid "Down"
-#~ msgstr "Malsupren"
-
-#~ msgid "Global"
-#~ msgstr "Malloka"
-
-#~ msgid "Window"
-#~ msgstr "Fenestro"
-
-#~ msgid "Application"
-#~ msgstr "Aplikaĵo"
-
-#~ msgid "Keyboard Model"
-#~ msgstr "Klavarmodelo"
-
+#: src/module/e_mod_main.c:399
 #, fuzzy
-#~ msgid "Configuration"
-#~ msgstr "Agordo"
+msgid "Configuration"
+msgstr "Agordo"
+
+#: src/module/e_mod_main.c:404
+msgid "Configure Key Bindings"
+msgstr ""
+
+#: src/module/e_mod_main.c:421
+#, fuzzy
+msgid "Module Configuration"
+msgstr "Agordo"

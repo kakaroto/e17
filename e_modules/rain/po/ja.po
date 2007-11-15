@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-04-30 18:54+0900\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2007-11-14 22:36+0100\n"
 "PO-Revision-Date: 2006-03-03 07:11+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,36 +16,48 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_config.c:38
+#: e_mod_config.c:42
 msgid "Rain Module"
 msgstr "雨モジュール"
 
-#: e_mod_config.c:95
+#: e_mod_config.c:100
+msgid "General Settings"
+msgstr ""
+
+#: e_mod_config.c:101
 msgid "Show Clouds"
 msgstr "雲を表示する"
 
-#: e_mod_config.c:99
+#: e_mod_config.c:105
 msgid "Rain Density"
 msgstr "雨の強さ"
 
-#: e_mod_config.c:101
+#: e_mod_config.c:107
 msgid "Sprinkle"
 msgstr "霧雨"
 
-#: e_mod_config.c:103
+#: e_mod_config.c:109
 msgid "Drizzle"
 msgstr "小雨"
 
-#: e_mod_config.c:105
+#: e_mod_config.c:111
 msgid "Downpour"
 msgstr "大雨"
 
-#: e_mod_main.c:81
-msgid "Enlightenment Rain Module"
-msgstr "Enlightenment rain モジュール"
+#: e_mod_main.c:33
+msgid "Appearance"
+msgstr ""
 
-#: e_mod_main.c:83
-msgid ""
-"This is a simple module to display some rain on the desktop.<br>It can "
-"display clouds too, if you like clouds."
-msgstr "デスクトップにちょっと雨を降らせる簡単なモジュールです.<br>なんなら雨雲も出せますよ."
+#: e_mod_main.c:35
+msgid "Rain"
+msgstr ""
+
+#~ msgid "Enlightenment Rain Module"
+#~ msgstr "Enlightenment rain モジュール"
+
+#~ msgid ""
+#~ "This is a simple module to display some rain on the desktop.<br>It can "
+#~ "display clouds too, if you like clouds."
+#~ msgstr ""
+#~ "デスクトップにちょっと雨を降らせる簡単なモジュールです.<br>なんなら雨雲も"
+#~ "出せますよ."

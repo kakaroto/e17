@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mixer module for E17 N/A\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-07 23:21+0100\n"
+"POT-Creation-Date: 2007-11-14 22:29+0100\n"
 "PO-Revision-Date: 2006-11-06 09:05+0100\n"
 "Last-Translator: Anders Trobäck <enlightenment@troback.com>\n"
 "Language-Team: Swedish\n"
@@ -16,7 +16,46 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_keybindings.c:9
+#: e_mod_config.c:52
+#, fuzzy
+msgid "Mixer Configuration"
+msgstr "Mixer konfiguration"
+
+#: e_mod_config.c:103
+msgid "Mixer Application"
+msgstr "Mixer program"
+
+#: e_mod_config.c:104
+msgid "Launch Mixer App"
+msgstr "Starta mixer program"
+
+#: e_mod_config.c:119
+msgid "Available Cards"
+msgstr "Tillgängliga kort"
+
+#: e_mod_config.c:139
+msgid "Available Mixers"
+msgstr "Tillgängliga mixers"
+
+#: e_mod_config.c:154
+#, fuzzy
+msgid "Mixer Popup"
+msgstr "Mixer"
+
+#: e_mod_config.c:155
+msgid "Show Popup"
+msgstr ""
+
+#: e_mod_config.c:157
+msgid "Popup Speed"
+msgstr ""
+
+#: e_mod_config.c:159
+#, c-format
+msgid "%1.1f seconds"
+msgstr ""
+
+#: e_mod_keybindings.c:9 e_mod_main.c:173
 msgid "Mixer"
 msgstr "Mixer"
 
@@ -37,23 +76,13 @@ msgstr ""
 msgid "Configuration"
 msgstr "Mixer konfiguration"
 
-#~ msgid "Mixer Application"
-#~ msgstr "Mixer program"
+#: e_mod_main.c:713 e_mod_main.c:1144
+msgid "Volume"
+msgstr "Volym"
 
-#~ msgid "Launch Mixer App"
-#~ msgstr "Starta mixer program"
-
-#~ msgid "Available Cards"
-#~ msgstr "Tillgängliga kort"
-
-#~ msgid "Available Mixers"
-#~ msgstr "Tillgängliga mixers"
+#: e_mod_main.c:735
+msgid "Mute"
+msgstr "Tyst"
 
 #~ msgid "Mixer module lets you change volume."
 #~ msgstr "Mixermodulen låter dig ändra volymen."
-
-#~ msgid "Volume"
-#~ msgstr "Volym"
-
-#~ msgid "Mute"
-#~ msgstr "Tyst"

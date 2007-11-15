@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Photo\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-07 22:07+0100\n"
+"POT-Creation-Date: 2007-11-14 22:35+0100\n"
 "PO-Revision-Date: 2007-05-27 12:05+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
 "Language-Team: none\n"
@@ -14,37 +14,37 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/module/e_mod_main.c:46 src/module/e_mod_main.c:53
-#: src/module/e_mod_main.c:60 src/module/e_mod_main.c:67
-#: src/module/e_mod_main.c:74 src/module/e_mod_main.c:81
+#: src/module/e_mod_main.c:52 src/module/e_mod_main.c:59
+#: src/module/e_mod_main.c:66 src/module/e_mod_main.c:73
+#: src/module/e_mod_main.c:80 src/module/e_mod_main.c:87
 msgid "Photo Module"
 msgstr "Modulo Photo"
 
-#: src/module/e_mod_main.c:46
+#: src/module/e_mod_main.c:52
 msgid "E Canvas init failed !"
 msgstr "Fallita inizializzazione canvas!"
 
-#: src/module/e_mod_main.c:53
+#: src/module/e_mod_main.c:59
 msgid "Theme init failed !"
 msgstr "Fallita inizializzazione tema!"
 
-#: src/module/e_mod_main.c:60
+#: src/module/e_mod_main.c:66
 msgid "Config init failed"
 msgstr "Fallita inizializzazione configurazione!"
 
-#: src/module/e_mod_main.c:67
+#: src/module/e_mod_main.c:73
 msgid "Picture subsystem init failed"
 msgstr "Fallita inizializzazione sottosistema immagini!"
 
-#: src/module/e_mod_main.c:74
+#: src/module/e_mod_main.c:80
 msgid "Popup warn subsystem init failed"
 msgstr "Fallita inizializzazione sottosistema popup d'avvertimento!"
 
-#: src/module/e_mod_main.c:81
+#: src/module/e_mod_main.c:87
 msgid "Popup info subsystem init failed"
 msgstr "Fallita inizializzazione sottosistema popup d'informazione!"
 
-#: src/module/e_mod_main.c:174
+#: src/module/e_mod_main.c:180
 msgid "Photo"
 msgstr "Photo"
 

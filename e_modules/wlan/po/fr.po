@@ -1,7 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: wlan\n"
-"POT-Creation-Date: \n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2007-11-14 22:43+0100\n"
 "PO-Revision-Date: 2007-06-04 17:10+0100\n"
 "Last-Translator: Antoine Giniès <aginies.cooker@gmail.com>\n"
 "Language-Team: none <aginies.cooker@gmail.com>\n"
@@ -36,23 +37,25 @@ msgstr "Afficher le texte en pourcentage"
 msgid "Check Interval:"
 msgstr "Délai d'actualisation:"
 
+#: e_mod_config.c:131
+#, c-format
+msgid "%1.0f seconds"
+msgstr ""
+
 #: e_mod_config.c:138
 msgid "Device Settings"
 msgstr "Interface"
 
-#: e_mod_main.c:108
+#: e_mod_main.c:107
 msgid "Wlan"
 msgstr "Réseau sans fil"
 
-#: e_mod_main.c:157
+#: e_mod_main.c:165
 msgid "Configuration"
 msgstr "Configuration"
 
-#: e_mod_main.c:366
-msgid "Enlightenment Wlan Monitor Module"
-msgstr "Module de surveillance Réseau Sans fil"
+#~ msgid "Enlightenment Wlan Monitor Module"
+#~ msgstr "Module de surveillance Réseau Sans fil"
 
-#: e_mod_main.c:367
-msgid "This module is used to monitor wireless devices."
-msgstr "Ce module sert a surveiller le réseau sans fil."
-
+#~ msgid "This module is used to monitor wireless devices."
+#~ msgstr "Ce module sert a surveiller le réseau sans fil."

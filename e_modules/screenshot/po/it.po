@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Screenshot\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2007-11-03 13:45+0100\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2007-11-14 22:37+0100\n"
 "PO-Revision-Date: 2006-06-24 14:13+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
@@ -107,16 +107,20 @@ msgstr "Screenshot"
 msgid "Configuration"
 msgstr "Configurazione"
 
-#: e_mod_main.c:656 e_mod_main.c:707
+#: e_mod_main.c:659 e_mod_main.c:690 e_mod_main.c:710
 msgid "Enlightenment Screenshot Module"
 msgstr "Modulo Screenshot di Enlightenment"
 
-#: e_mod_main.c:658
+#: e_mod_main.c:661
 msgid "Please install either ImageMagick or Scrot for taking screenshots."
 msgstr ""
 "Si prega di installare ImageMagick o Scrot per la cattura delle immagini."
 
-#: e_mod_main.c:708
+#: e_mod_main.c:692
+msgid "Enter a new filename to use for this screenshot"
+msgstr ""
+
+#: e_mod_main.c:711
 msgid ""
 "You did not specify a path.<br>This shot will be saved in your home folder."
 msgstr ""

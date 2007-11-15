@@ -4,11 +4,9 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
-"Report-Msgid-Bugs-To: olivierweb@ifrance.com\n"
 "Project-Id-Version: eo\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-29 10:20+0200\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2007-11-14 22:39+0100\n"
 "PO-Revision-Date: 2006-08-30 23:04+0200\n"
 "Last-Translator: \n"
 "Language-Team:  <fr@li.org>\n"
@@ -30,28 +28,28 @@ msgid "Highlight Window on Mouse Over"
 msgstr "Heligi Fenestron dum Movado de Muso"
 
 #: e_mod_config.c:80
-msgid "Show Labels"
+#, fuzzy
+msgid "Show Sliding Labels"
 msgstr "Montri Etikedojn"
 
 #: e_mod_config.c:85
 msgid "Show windows from all desktops"
 msgstr "Montri fenestrojn de ĉiuj labortabloj"
 
-#: e_mod_main.c:206
+#: e_mod_main.c:214
 msgid "Taskbar"
 msgstr "Taskolistelo"
 
-#: e_mod_main.c:277 e_mod_main.c:772
+#: e_mod_main.c:308 e_mod_main.c:838
 msgid "Configuration"
 msgstr "Konfiguraĵo"
 
-#: e_mod_main.c:1319
-msgid "Enlightenment Taskbar Module"
-msgstr "\"Enlightenment-a TaskListelo\" Modulo"
+#~ msgid "Enlightenment Taskbar Module"
+#~ msgstr "\"Enlightenment-a TaskListelo\" Modulo"
 
-#: e_mod_main.c:1320
-msgid ""
-"This is the Taskbar Iconified Application module for Enlightenment.<br>It "
-"will hold minimized applications"
-msgstr "Tiu estas la modulo de Tasklistelo de Bildsimboligitaj Aplikajxoj por Enlightenment.<br>Gxi enhavas malgrandigitajn aplikajxojn"
-
+#~ msgid ""
+#~ "This is the Taskbar Iconified Application module for Enlightenment.<br>It "
+#~ "will hold minimized applications"
+#~ msgstr ""
+#~ "Tiu estas la modulo de Tasklistelo de Bildsimboligitaj Aplikajxoj por "
+#~ "Enlightenment.<br>Gxi enhavas malgrandigitajn aplikajxojn"

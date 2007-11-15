@@ -1,7 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Net\n"
-"POT-Creation-Date: \n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2007-11-14 22:31+0100\n"
 "PO-Revision-Date: 2007-06-04 15:41+0100\n"
 "Last-Translator: Antoine Giniès <aginies.cooker@gmail.com>\n"
 "Language-Team: \n"
@@ -15,6 +16,11 @@ msgstr ""
 #: src/e_mod_configure.c:43
 msgid "Net Module Configuration"
 msgstr "Configuration du module Réseau"
+
+#: src/e_mod_configure.c:113
+#, fuzzy
+msgid "General Settings"
+msgstr "Choix de l'interface"
 
 #: src/e_mod_configure.c:114
 msgid "Show Text"
@@ -45,27 +51,25 @@ msgid "Low (B)"
 msgstr "Basse (B)"
 
 #: src/e_mod_configure.c:136
+#, fuzzy
 msgid "Device Settings"
 msgstr "Choix de l'interface"
 
-#: src/e_mod_gadcon.c:92
+#: src/e_mod_gadcon.c:91
 msgid "Net"
 msgstr "Réseau"
 
-#: src/e_mod_main.c:100
-msgid "Network Monitor Module"
-msgstr "Module de surveillance réseau"
-
-#: src/e_mod_main.c:101
-msgid "Module to monitor network traffic"
-msgstr "Module permettant la surveillance de l'activité réseau"
-
-#: src/e_mod_net.c:178
+#: src/e_mod_net.c:168
 msgid "Configuration"
 msgstr "Configuration"
 
-#: src/e_mod_net.c:224
+#: src/e_mod_net.c:204
 #, c-format
 msgid "Device - %s"
 msgstr "Interface - %s"
 
+#~ msgid "Network Monitor Module"
+#~ msgstr "Module de surveillance réseau"
+
+#~ msgid "Module to monitor network traffic"
+#~ msgstr "Module permettant la surveillance de l'activité réseau"

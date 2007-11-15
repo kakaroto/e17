@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2006-04-04\n"
+"POT-Creation-Date: 2007-11-14 22:36+0100\n"
 "PO-Revision-Date: 2006-04-04\n"
 "Last-Translator: Jyri Hämäläinen <wildfinn@gmail.com>\n"
 "Language-Team: Jyri Hämäläinen <wildfinn@gmail.com>\n"
@@ -14,38 +14,48 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_config.c:40
+#: e_mod_config.c:42
 msgid "Rain Module"
 msgstr "Sademoduuli"
 
-#: e_mod_config.c:97
+#: e_mod_config.c:100
+msgid "General Settings"
+msgstr ""
+
+#: e_mod_config.c:101
 msgid "Show Clouds"
 msgstr "Näytä pilvet"
 
-#: e_mod_config.c:101
+#: e_mod_config.c:105
 msgid "Rain Density"
 msgstr "Sateen tiheys"
 
-#: e_mod_config.c:103
+#: e_mod_config.c:107
 msgid "Sprinkle"
 msgstr "Tihku"
 
-#: e_mod_config.c:105
+#: e_mod_config.c:109
 msgid "Drizzle"
 msgstr "Normaali"
 
-#: e_mod_config.c:107
+#: e_mod_config.c:111
 msgid "Downpour"
 msgstr "Kaatosade"
 
-#: e_mod_main.c:81
-msgid "Enlightenment Rain Module"
-msgstr "Enlightenment sademoduuli"
-
-#: e_mod_main.c:83
-msgid ""
-"This is a simple module to display some rain on the desktop.<br>It can "
-"display clouds too, if you like clouds."
+#: e_mod_main.c:33
+msgid "Appearance"
 msgstr ""
-"Tämä on yksinkertainen moduuli joka näyttää sadetta työpöydällä.<br>"
-"Se voi myös näyttää pilviä, jos pidät pilvistä."
+
+#: e_mod_main.c:35
+msgid "Rain"
+msgstr ""
+
+#~ msgid "Enlightenment Rain Module"
+#~ msgstr "Enlightenment sademoduuli"
+
+#~ msgid ""
+#~ "This is a simple module to display some rain on the desktop.<br>It can "
+#~ "display clouds too, if you like clouds."
+#~ msgstr ""
+#~ "Tämä on yksinkertainen moduuli joka näyttää sadetta työpöydällä.<br>Se "
+#~ "voi myös näyttää pilviä, jos pidät pilvistä."

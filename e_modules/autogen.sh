@@ -7,6 +7,7 @@ for d in * ; do
 	test -x "${d}/autogen.sh" || continue
 	echo "AUTOGEN:  $d"
 	(cd $d && ./autogen.sh "$@") || exit 1
+	(cd $d && make distcheck)
 done
 
 cp -p configure.in configure

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2006-04-04\n"
+"POT-Creation-Date: 2007-11-14 22:43+0100\n"
 "PO-Revision-Date: 2006-04-04\n"
 "Last-Translator: Jyri Hämäläinen <wildfinn@gmail.com>\n"
 "Language-Team: Jyri Hämäläinen <wildfinn@gmail.com>\n"
@@ -14,34 +14,56 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_config.c:39
+#: e_mod_config.c:44
 msgid "Wlan Configuration"
 msgstr "Langattoman verkon asetukset"
 
-#: e_mod_config.c:114
+#: e_mod_config.c:117
 msgid "General Settings"
 msgstr "Yleiset asetukset"
 
-#: e_mod_config.c:115
-msgid "Show Text"
+#: e_mod_config.c:119
+#, fuzzy
+msgid "Always Show Text"
 msgstr "Näytä teksti"
 
-#: e_mod_config.c:117
-msgid "Show Graph"
-msgstr "Näytä kuvaaja"
-
 #: e_mod_config.c:121
-msgid "Device Settings"
-msgstr "Laiteasetukset"
+#, fuzzy
+msgid "Show Text On Mouse Over"
+msgstr "Näytä teksti"
 
-#: e_mod_config.c:133
+#: e_mod_config.c:124
+#, fuzzy
+msgid "Show Text As Percent"
+msgstr "Näytä teksti"
+
+#: e_mod_config.c:128
 msgid "Check Interval:"
 msgstr "tarkistusväli"
 
-#: e_mod_main.c:95
-msgid "Enlightenment Wlan Monitor Module"
-msgstr "Enlightenment Langaton verkko -moduuli"
+#: e_mod_config.c:131
+#, c-format
+msgid "%1.0f seconds"
+msgstr ""
 
-#: e_mod_main.c:96
-msgid "This module is used to monitor a wlan device."
-msgstr "Tämä moduuli tarkkailee langatonta verkkolaitetta"
+#: e_mod_config.c:138
+msgid "Device Settings"
+msgstr "Laiteasetukset"
+
+#: e_mod_main.c:107
+msgid "Wlan"
+msgstr ""
+
+#: e_mod_main.c:165
+#, fuzzy
+msgid "Configuration"
+msgstr "Langattoman verkon asetukset"
+
+#~ msgid "Show Graph"
+#~ msgstr "Näytä kuvaaja"
+
+#~ msgid "Enlightenment Wlan Monitor Module"
+#~ msgstr "Enlightenment Langaton verkko -moduuli"
+
+#~ msgid "This module is used to monitor a wlan device."
+#~ msgstr "Tämä moduuli tarkkailee langatonta verkkolaitetta"

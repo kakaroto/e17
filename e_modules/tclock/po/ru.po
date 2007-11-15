@@ -7,65 +7,68 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: tclock 0.1\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-05-20 19:36+0300\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2007-11-14 22:40+0100\n"
 "PO-Revision-Date: 2006-05-21 03:51+0300\n"
 "Last-Translator: Danny Moshnakov <admin@moshnakov.org>\n"
 "Language-Team: Russian <ru@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=koi8-r\n"
-"Content-Transfer-Encoding: 8bit"
+"Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_config.c:36
+#: e_mod_config.c:42
 msgid "Tclock Configuration"
 msgstr "Конфигурация Tclock"
 
-#: e_mod_config.c:79
-msgid "Resolution"
-msgstr "Резолюция"
-
-#: e_mod_config.c:81
-msgid "1 Minute"
-msgstr "1 Минута"
-
-#: e_mod_config.c:83
-msgid "1 Second"
-msgstr "1 Секунда"
-
-#: e_mod_config.c:87
-msgid "Date"
-msgstr "Дата"
+#: e_mod_config.c:86
+msgid "Top"
+msgstr ""
 
 #: e_mod_config.c:88
-msgid "Show Date"
-msgstr "Показывать Дату"
+#, fuzzy
+msgid "Show Top Line"
+msgstr "Показывать Время"
 
-#: e_mod_config.c:97 e_mod_config.c:111
+#: e_mod_config.c:96 e_mod_config.c:110
 msgid "Consult strftime(3) for format syntax"
 msgstr "Смотрите strftime(3) для синтакса формата"
 
-#: e_mod_config.c:101
-msgid "Time"
-msgstr "Время"
+#: e_mod_config.c:100
+msgid "Bottom"
+msgstr ""
 
 #: e_mod_config.c:102
-msgid "Show Time"
-msgstr "Показывать Время"
+msgid "Show Bottom Line"
+msgstr ""
 
-#: e_mod_main.c:107
+#: e_mod_main.c:128
 msgid "TClock"
 msgstr "TClock"
 
-#: e_mod_main.c:142
+#: e_mod_main.c:173
 msgid "Configuration"
 msgstr "Конфигурация"
 
-#: e_mod_main.c:403
-msgid "Simple Digital Clock"
-msgstr "Простые Дигитальные Часы"
+#~ msgid "Resolution"
+#~ msgstr "Резолюция"
 
-#: e_mod_main.c:404
-msgid "Displays a digital clock on the desktop"
-msgstr "Отображает дигитальные часы на рабочем столе"
+#~ msgid "1 Minute"
+#~ msgstr "1 Минута"
 
+#~ msgid "1 Second"
+#~ msgstr "1 Секунда"
 
+#~ msgid "Date"
+#~ msgstr "Дата"
+
+#~ msgid "Show Date"
+#~ msgstr "Показывать Дату"
+
+#~ msgid "Time"
+#~ msgstr "Время"
+
+#~ msgid "Simple Digital Clock"
+#~ msgstr "Простые Дигитальные Часы"
+
+#~ msgid "Displays a digital clock on the desktop"
+#~ msgstr "Отображает дигитальные часы на рабочем столе"

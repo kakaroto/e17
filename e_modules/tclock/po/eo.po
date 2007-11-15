@@ -4,11 +4,9 @@
 #
 msgid ""
 msgstr ""
-"Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
-"Report-Msgid-Bugs-To: olivierweb@ifrance.com\n"
 "Project-Id-Version: eo\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-08-29 10:20+0200\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2007-11-14 22:40+0100\n"
 "PO-Revision-Date: 2006-08-30 23:00+0200\n"
 "Last-Translator: \n"
 "Language-Team:  <fr@li.org>\n"
@@ -17,55 +15,59 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.2\n"
 
-#: e_mod_config.c:41
+#: e_mod_config.c:42
 msgid "Tclock Configuration"
 msgstr "Konfiguraĵo de \"TClock\""
 
+#: e_mod_config.c:86
+msgid "Top"
+msgstr ""
+
 #: e_mod_config.c:88
-msgid "Resolution"
-msgstr "Distingivo"
+#, fuzzy
+msgid "Show Top Line"
+msgstr "Vidigi Tempon"
 
-#: e_mod_config.c:90
-msgid "1 Minute"
-msgstr "1 Minuto"
-
-#: e_mod_config.c:92
-msgid "1 Second"
-msgstr "1 Sekundo"
-
-#: e_mod_config.c:96
-msgid "Date"
-msgstr "Dato"
-
-#: e_mod_config.c:98
-msgid "Show Date"
-msgstr "Vidigi Daton"
-
-#: e_mod_config.c:108 e_mod_config.c:124
+#: e_mod_config.c:96 e_mod_config.c:110
 msgid "Consult strftime(3) for format syntax"
 msgstr ""
 
-#: e_mod_config.c:112
-msgid "Time"
-msgstr "Tempo"
+#: e_mod_config.c:100
+msgid "Bottom"
+msgstr ""
 
-#: e_mod_config.c:114
-msgid "Show Time"
-msgstr "Vidigi Tempon"
+#: e_mod_config.c:102
+msgid "Show Bottom Line"
+msgstr ""
 
-#: e_mod_main.c:123
+#: e_mod_main.c:128
 msgid "TClock"
 msgstr ""
 
-#: e_mod_main.c:159
+#: e_mod_main.c:173
 msgid "Configuration"
 msgstr "Konfiguraĵo"
 
-#: e_mod_main.c:424
-msgid "Simple Digital Clock"
-msgstr "Simpla Cxifera Horlogxo"
+#~ msgid "Resolution"
+#~ msgstr "Distingivo"
 
-#: e_mod_main.c:425
-msgid "Displays a digital clock on the desktop"
-msgstr "Vidigi cxiferan horlogxon en la labortablo"
+#~ msgid "1 Minute"
+#~ msgstr "1 Minuto"
 
+#~ msgid "1 Second"
+#~ msgstr "1 Sekundo"
+
+#~ msgid "Date"
+#~ msgstr "Dato"
+
+#~ msgid "Show Date"
+#~ msgstr "Vidigi Daton"
+
+#~ msgid "Time"
+#~ msgstr "Tempo"
+
+#~ msgid "Simple Digital Clock"
+#~ msgstr "Simpla Cxifera Horlogxo"
+
+#~ msgid "Displays a digital clock on the desktop"
+#~ msgstr "Vidigi cxiferan horlogxon en la labortablo"

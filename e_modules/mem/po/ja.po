@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Mem\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-07 22:18+0100\n"
+"POT-Creation-Date: 2007-11-14 22:28+0100\n"
 "PO-Revision-Date: 2006-05-28 22:31+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,37 +16,50 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: e_mod_config.c:43
+msgid "Mem Configuration"
+msgstr "mem の設定"
+
+#: e_mod_config.c:92
+msgid "General Settings"
+msgstr "一般の設定"
+
+#: e_mod_config.c:94
+msgid "Always Show Text"
+msgstr "常に表示する"
+
+#: e_mod_config.c:96
+msgid "Show Text On Mouse Over"
+msgstr "マウスが乗れば表示する"
+
+#: e_mod_config.c:99
+msgid "Show Text As Percent"
+msgstr "百分率で表示する"
+
+#: e_mod_config.c:104
+msgid "Ignore Buffers"
+msgstr "バッファは無視する"
+
+#: e_mod_config.c:108
+msgid "Ignore Cached"
+msgstr "キャッシュは無視する"
+
+#: e_mod_config.c:112
+msgid "Check Interval:"
+msgstr "監視間隔"
+
 #: e_mod_config.c:115
 #, c-format
 msgid "%1.0f seconds"
 msgstr ""
 
-#~ msgid "Mem Configuration"
-#~ msgstr "mem の設定"
+#: e_mod_main.c:105
+msgid "Mem"
+msgstr ""
 
-#~ msgid "General Settings"
-#~ msgstr "一般の設定"
-
-#~ msgid "Always Show Text"
-#~ msgstr "常に表示する"
-
-#~ msgid "Show Text On Mouse Over"
-#~ msgstr "マウスが乗れば表示する"
-
-#~ msgid "Show Text As Percent"
-#~ msgstr "百分率で表示する"
-
-#~ msgid "Ignore Buffers"
-#~ msgstr "バッファは無視する"
-
-#~ msgid "Ignore Cached"
-#~ msgstr "キャッシュは無視する"
-
-#~ msgid "Check Interval:"
-#~ msgstr "監視間隔"
-
-#~ msgid "Configuration"
-#~ msgstr "設定"
+#: e_mod_main.c:163
+msgid "Configuration"
+msgstr "設定"
 
 #~ msgid "Enlightenment Mem Monitor Module"
 #~ msgstr "Enlightenment メモリ監視モジュール"

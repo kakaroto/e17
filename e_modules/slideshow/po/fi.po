@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2006-04-04\n"
+"POT-Creation-Date: 2007-11-14 22:37+0100\n"
 "PO-Revision-Date: 2006-04-04\n"
 "Last-Translator: Jyri Hämäläinen <wildfinn@gmail.com>\n"
 "Language-Team: Jyri Hämäläinen <wildfinn@gmail.com>\n"
@@ -14,39 +14,68 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_config.c:39
+#: e_mod_config.c:37
 msgid "Slideshow Configuration"
 msgstr "Kuvaesityksen asetukset"
 
-#: e_mod_config.c:83
+#: e_mod_config.c:90
 msgid "Cycle Time"
 msgstr "Kiertoaika"
 
-#: e_mod_config.c:84
+#: e_mod_config.c:92
 msgid "Disable Timer"
 msgstr "Sulje ajastin"
 
-#: e_mod_config.c:86
+#: e_mod_config.c:95
 #, c-format
 msgid "%3.0f seconds"
 msgstr "%3.0f sekuntia"
 
-#: e_mod_config.c:92
-msgid "Theme"
-msgstr "Teema"
+#: e_mod_config.c:100
+msgid "Directory"
+msgstr ""
 
-#: e_mod_config.c:94
+#: e_mod_config.c:102
 msgid "Sub-directory to use for backgrounds"
 msgstr "Taustakuvien alakansio"
 
-#: e_mod_config.c:96
-msgid "Leave blank for none"
-msgstr "Jätä tyhjäksi jos ei mikään"
+#: e_mod_config.c:109
+msgid "Extra"
+msgstr ""
 
-#: e_mod_main.c:148
-msgid "Enlightenment Slide Show Module"
-msgstr "Enlightenment kuvaesitysmoduuli"
+#: e_mod_config.c:110
+msgid "Randomize order"
+msgstr ""
 
-#: e_mod_main.c:149
-msgid "This module is VERY simple and is used to cycle desktop backgrounds"
-msgstr "Tämä ERITTÄIN yksinkertainen moduuli kierrättää taustakuvia"
+#: e_mod_config.c:113
+msgid "Set wallpaper on all desktops"
+msgstr ""
+
+#: e_mod_config.c:115
+msgid "Set wallpaper on current desktop"
+msgstr ""
+
+#: e_mod_config.c:119
+msgid "Set wallpaper on current monitor (Xinerama support)"
+msgstr ""
+
+#: e_mod_main.c:140
+msgid "Slideshow"
+msgstr ""
+
+#: e_mod_main.c:184
+#, fuzzy
+msgid "Configuration"
+msgstr "Kuvaesityksen asetukset"
+
+#~ msgid "Theme"
+#~ msgstr "Teema"
+
+#~ msgid "Leave blank for none"
+#~ msgstr "Jätä tyhjäksi jos ei mikään"
+
+#~ msgid "Enlightenment Slide Show Module"
+#~ msgstr "Enlightenment kuvaesitysmoduuli"
+
+#~ msgid "This module is VERY simple and is used to cycle desktop backgrounds"
+#~ msgstr "Tämä ERITTÄIN yksinkertainen moduuli kierrättää taustakuvia"

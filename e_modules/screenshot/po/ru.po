@@ -7,97 +7,132 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Screenshot E17 module 0.01\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-05-21 02:57+0300\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2007-11-14 22:37+0100\n"
 "PO-Revision-Date: 2006-05-21 03:21+0300\n"
 "Last-Translator: Danny Moshnakov <admin@moshnakov.org>\n"
 "Language-Team: English <en@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit"
+"Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_config.c:57
+#: e_mod_config.c:74
 msgid "Screenshot Configuration"
 msgstr "Настройки Снимка Экрана"
 
-#: e_mod_config.c:123 e_mod_config.c:219
-msgid "Use Import"
-msgstr "Использовать Import"
+#: e_mod_config.c:144 e_mod_config.c:245
+#, fuzzy
+msgid "General Settings"
+msgstr "Настройки Файла"
 
-#: e_mod_config.c:125 e_mod_config.c:221
-msgid "Use Scrot"
-msgstr "Использовать Scrot"
-
-#: e_mod_config.c:133 e_mod_config.c:229
+#: e_mod_config.c:146 e_mod_config.c:246
 msgid "Delay Time:"
 msgstr "Задержка:"
 
-#: e_mod_config.c:140 e_mod_config.c:236
+#: e_mod_config.c:149 e_mod_config.c:249
+#, c-format
+msgid "%1.0f seconds"
+msgstr ""
+
+#: e_mod_config.c:157 e_mod_config.c:257
+msgid "Use Import"
+msgstr "Использовать Import"
+
+#: e_mod_config.c:159 e_mod_config.c:259
+msgid "Use Scrot"
+msgstr "Использовать Scrot"
+
+#: e_mod_config.c:169 e_mod_config.c:278
 msgid "File Settings"
 msgstr "Настройки Файла"
 
-#: e_mod_config.c:142 e_mod_config.c:238
+#: e_mod_config.c:171 e_mod_config.c:280
+msgid "Always Prompt For Filename"
+msgstr ""
+
+#: e_mod_config.c:175 e_mod_config.c:284
 msgid "Save Directory:"
 msgstr "Сохранять в Папке:"
 
-#: e_mod_config.c:146 e_mod_config.c:242
-msgid "Filename (minus extension):"
-msgstr "Имя Файла (без расширения):"
+#: e_mod_config.c:179 e_mod_config.c:288
+msgid "Filename:"
+msgstr ""
 
-#: e_mod_config.c:251
-msgid "Import Options"
+#: e_mod_config.c:269
+#, fuzzy
+msgid "Image Viewer Settings"
+msgstr "Настройки Файла"
+
+#: e_mod_config.c:271
+msgid "Launch Image Viewer After Screenshot"
+msgstr ""
+
+#: e_mod_config.c:298
+#, fuzzy
+msgid "Import Settings"
 msgstr "Опции Import"
 
-#: e_mod_config.c:252 e_mod_config.c:269
+#: e_mod_config.c:300 e_mod_config.c:329
 msgid "Include Image Border"
 msgstr "Включая Границу Изображения"
 
-#: e_mod_config.c:254
+#: e_mod_config.c:304
 msgid "Use Image Dithering"
 msgstr "Использовать Сглаживание Изображения"
 
-#: e_mod_config.c:256
+#: e_mod_config.c:308
 msgid "Include Window Manager Frame"
 msgstr "Включая Рамку Оконного Менеджера"
 
-#: e_mod_config.c:258
+#: e_mod_config.c:312
 msgid "Choose Window To Grab"
 msgstr "Выбрать Окно Для Снимка"
 
-#: e_mod_config.c:260
+#: e_mod_config.c:316
 msgid "Silent"
 msgstr "Тихий Снимок"
 
-#: e_mod_config.c:262
+#: e_mod_config.c:320
 msgid "Trim Edges"
 msgstr "Обрезать Края"
 
-#: e_mod_config.c:268
-msgid "Scrot Options"
+#: e_mod_config.c:327
+#, fuzzy
+msgid "Scrot Settings"
 msgstr "Опции Scrot"
 
-#: e_mod_config.c:271
+#: e_mod_config.c:333
 msgid "Generate Thumbnail"
 msgstr "Генерировать Субкартинку"
 
-#: e_mod_main.c:130
+#: e_mod_main.c:132
 msgid "Screenshot"
 msgstr "Снимок Экрана"
 
-#: e_mod_main.c:165
+#: e_mod_main.c:176
 msgid "Configuration"
 msgstr "Конфигурация"
 
-#: e_mod_main.c:408 e_mod_main.c:460
+#: e_mod_main.c:659 e_mod_main.c:690 e_mod_main.c:710
 msgid "Enlightenment Screenshot Module"
 msgstr "Модуль Снимка Экрана для  Enlightenment"
 
-#: e_mod_main.c:409
-msgid "This module is used to take screenshots"
-msgstr "Этот модуль используетса для взятия снимков экрана"
-
-#: e_mod_main.c:461
-msgid "Please Choose A Program To Use For Taking Screenshots."
+#: e_mod_main.c:661
+#, fuzzy
+msgid "Please install either ImageMagick or Scrot for taking screenshots."
 msgstr "Пожалуйста Выберите Программу Для Использования в Снимке Экрана."
 
+#: e_mod_main.c:692
+msgid "Enter a new filename to use for this screenshot"
+msgstr ""
 
+#: e_mod_main.c:711
+msgid ""
+"You did not specify a path.<br>This shot will be saved in your home folder."
+msgstr ""
+
+#~ msgid "Filename (minus extension):"
+#~ msgstr "Имя Файла (без расширения):"
+
+#~ msgid "This module is used to take screenshots"
+#~ msgstr "Этот модуль используетса для взятия снимков экрана"
