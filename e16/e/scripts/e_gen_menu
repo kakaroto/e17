@@ -86,8 +86,8 @@ $DoIconv = `which iconv`;
 	"m:GNOME:menus_GNOME/index.menu",
 	"m:KDE:menus_KDE/index.menu",
 	"m:Other:menus_Other/index.menu",
-	"m:Enlightenment Epplets:epplets.menu",
-	"c:Restart Enlightenment:exit restart",
+	"m:Epplets:epplets.menu",
+	"c:Restart:exit restart",
 	"c:Log Out:exit logout"
 );
 

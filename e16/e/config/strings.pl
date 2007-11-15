@@ -1,7 +1,7 @@
 #!/usr/bin/perl
 
 # Script to extract localizable strings from config files
-# $ perl strings.pl actionclasses.cfg bindings.cfg menus.cfg >strings.c
+# $ perl strings.pl *.cfg *.menu >strings.c
 
 sub x() {
 
@@ -72,8 +72,8 @@ sub x() {
   "User Menus",
   "User Application List",
   "Other",
-  "Enlightenment Epplets",
-  "Restart Enlightenment",
+  "Epplets",
+  "Restart",
   "Log Out"
 );
 

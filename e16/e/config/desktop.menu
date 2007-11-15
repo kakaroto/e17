@@ -1,7 +1,7 @@
 "Desktop Operations" "ROOT"
-"Backgrounds"           NULL menu BACKGROUNDS_MENU
-"Cleanup Desktop"       NULL "desk arrange"
-"Goto Next Desktop"     NULL "desk next"
-"Goto Previous Desktop" NULL "desk prev"
-"Create New Iconbox"    NULL "ibox new"
-"Create Systray"        NULL "ibox new _ST_"
+"Backgrounds"		NULL menu BACKGROUNDS_MENU
+"Cleanup Desktop"	NULL "desk arrange"
+"Goto Next Desktop"	NULL "desk next"
+"Goto Previous Desktop"	NULL "desk prev"
+"Create New Iconbox"	NULL "ibox new"
+"Create Systray"	NULL "ibox new _ST_"
