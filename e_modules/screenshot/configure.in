@@ -70,14 +70,14 @@ AC_PATH_PROG(SCROT, scrot, "", $PATH)
 if test -z "$SCROT"; then
     AC_MSG_WARN([Scrot not found])
 else
-       AC_DEFINE_UNQUOTED(HAVE_SCROT, 1, "You Have Scrot")
-       AC_DEFINE_UNQUOTED(SCROT_PATH, "$SCROT", "You Have Scrot")
+    AC_DEFINE_UNQUOTED(HAVE_SCROT, 1, "You Have Scrot")
+    AC_DEFINE_UNQUOTED(SCROT_PATH, "$SCROT", "You Have Scrot")
 fi
 
 if test -z "$IMPORT"; then
-	if test -z "$SCROT"; then
-       		AC_MSG_ERROR("You do not have import or scrot installed.")	
-	fi
+   if test -z "$SCROT"; then
+      AC_MSG_ERROR("You do not have import or scrot installed.")
+   fi
 fi
 
 AC_OUTPUT([
