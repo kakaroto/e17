@@ -31,7 +31,7 @@ main (int argc, char *argv[])
     return -1;
   }
 
-  etk_init (&argc, &argv);
+  etk_init (argc, argv);
 
   /* We open the pdf file */
   pdf = etk_pdf_new ();
