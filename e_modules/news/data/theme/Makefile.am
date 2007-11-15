@@ -39,7 +39,7 @@ images/popup_warn_logo_error.png \
 images/popup_warn_logo_info.png
 
 e-module-news.edj: Makefile $(EXTRA_DIST)
-	$(edje_cc) $(EDJE_FLAGS) \
+	$(EDJE_CC) $(EDJE_FLAGS) \
 	$(top_srcdir)/data/theme/module.edc \
 	$(top_builddir)/data/theme/e-module-news.edj
 

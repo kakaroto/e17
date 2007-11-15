@@ -2,7 +2,6 @@ MAINTAINERCLEANFILES = Makefile.in
 
 SUBDIRS = images po
 
-EDJE_CC = @edje_cc@
 EDJE_FLAGS = -v \
 -id $(top_srcdir)/images \
 -fd $(top_srcdir)/fonts
@@ -30,6 +29,7 @@ pkgdir                 = $(datadir)/$(MODULE_ARCH)
 pkg_LTLIBRARIES        = module.la
 module_la_SOURCES      = e_mod_main.c \
 			 e_mod_main.h \
+			 e_mod_config.h \
 			 e_mod_config.c
 			
 module_la_LIBADD       = @e_libs@

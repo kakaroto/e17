@@ -1,7 +1,6 @@
 MAINTAINERCLEANFILES = Makefile.in
 MODULE = emu
 
-EDJE_CC = @edje_cc@
 EDJE_FLAGS = \
 -v \
 -id $(top_srcdir)/data/images \

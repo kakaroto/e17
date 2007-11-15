@@ -38,15 +38,7 @@ AM_GNU_GETTEXT([external])
 AM_GNU_GETTEXT_VERSION(0.14)
 
 # Checks for libraries.
-edje_cc="$(pkg-config --variable=prefix edje)/bin/edje_cc"
-AC_ARG_WITH(edje-cc,
-  AS_HELP_STRING([--with-edje-cc=PATH], [specify a specific path to edje_cc]),
-  [
-    edje_cc=$withval;
-    echo "  Enlightenment edje_cc explicitly set to "$edje_cc;
-  ]
-)
-AC_SUBST(edje_cc)
+AC_PATH_PROG(EDJE_CC, "edje_cc", "", $PATH)
 
 AC_ARG_WITH(enlightenment-config,
   AS_HELP_STRING([--with-enlightenment-config=E_CONFIG], [use enlightenment-config specified]),

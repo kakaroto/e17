@@ -2,7 +2,6 @@ MAINTAINERCLEANFILES = Makefile.in
 
 SUBDIRS = images po
 
-EDJE_CC = @edje_cc@
 EDJE_FLAGS = -v \
 -id $(top_srcdir)/images \
 -fd $(top_srcdir)/fonts
