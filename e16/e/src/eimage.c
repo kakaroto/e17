@@ -71,8 +71,10 @@ _EImageFlagsSet(int flags)
       imlib_context_set_anti_alias(1);
    if (flags & EIMAGE_BLEND)
       imlib_context_set_blend(1);
+#ifdef HAVE_IMLIB_CONTEXT_SET_MASK_ALPHA_THRESHOLD
    if (flags & EIMAGE_HIGH_MASK_THR)
       imlib_context_set_mask_alpha_threshold(128);
+#endif
 }
 
 static void
@@ -80,7 +82,9 @@ _EImageFlagsReset(void)
 {
    imlib_context_set_anti_alias(0);
    imlib_context_set_blend(0);
+#ifdef HAVE_IMLIB_CONTEXT_SET_MASK_ALPHA_THRESHOLD
    imlib_context_set_mask_alpha_threshold(Conf.testing.mask_alpha_threshold);
+#endif
 }
 
 EImage             *
