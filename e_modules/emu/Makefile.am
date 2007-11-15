@@ -2,6 +2,7 @@
 
 SUBDIRS = src data po
 
+bindir = $(datadir)/bin
 bin_SCRIPTS = emu_client
 
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \

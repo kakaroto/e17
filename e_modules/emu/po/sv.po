@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Emu module for E17 N/A\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-07 22:03+0100\n"
+"POT-Creation-Date: 2007-11-14 22:23+0100\n"
 "PO-Revision-Date: 2006-07-06 23:55+0200\n"
 "Last-Translator: Anders Trobäck <enlightenment@troback.com>\n"
 "Language-Team: Swedish\n"
@@ -16,84 +16,117 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/modules/emu/e_mod_main.c:282
+#: src/modules/emu/border_props.c:52
+msgid "Window properties"
+msgstr "Fönsteregenskaper"
+
+#: src/modules/emu/border_props.c:221 src/modules/emu/border_props.c:276
+msgid "Window identification"
+msgstr "Fönsteridentitet"
+
+#: src/modules/emu/border_props.c:222 src/modules/emu/border_props.c:289
+msgid "Title (%T)"
+msgstr "Titel (%T)"
+
+#: src/modules/emu/border_props.c:228 src/modules/emu/border_props.c:307
+msgid "Properties"
+msgstr "Egenskaper"
+
+#: src/modules/emu/border_props.c:229 src/modules/emu/border_props.c:308
+#, c-format
+msgid "Position (%p)"
+msgstr "Position (%p)"
+
+#: src/modules/emu/border_props.c:233 src/modules/emu/border_props.c:312
+#, c-format
+msgid "Size (%s)"
+msgstr "Storlek (%s)"
+
+#: src/modules/emu/border_props.c:237 src/modules/emu/border_props.c:320
+msgid "Border style (%b)"
+msgstr "Ramstil (%b)"
+
+#: src/modules/emu/border_props.c:241
+#, c-format
+msgid "Stickiness (%p)"
+msgstr "Klibbig (%p)"
+
+#: src/modules/emu/border_props.c:245 src/modules/emu/border_props.c:328
+#, c-format
+msgid "Virtual desktop (%d)"
+msgstr "Virtuellt skrivbord (%d)"
+
+#: src/modules/emu/border_props.c:249 src/modules/emu/border_props.c:332
+msgid "Shaded state (%r)"
+msgstr "Skymt läge (%r)"
+
+#: src/modules/emu/border_props.c:253 src/modules/emu/border_props.c:344
+#, c-format
+msgid "Fullscreen (%f)"
+msgstr "Helskärm (%f)"
+
+#: src/modules/emu/border_props.c:257 src/modules/emu/border_props.c:348
+#, c-format
+msgid "Iconified (%i)"
+msgstr "Minimerat (%i)"
+
+#: src/modules/emu/border_props.c:277
+msgid "Window ID (%I)"
+msgstr "Fönster ID (%I)"
+
+#: src/modules/emu/border_props.c:281
+msgid "Window name (%N)"
+msgstr "Fönsternamn (%N)"
+
+#: src/modules/emu/border_props.c:285
+#, c-format
+msgid "Window class (%C)"
+msgstr "Fönsterklass (%C)"
+
+#: src/modules/emu/border_props.c:293
+msgid "Window role (%R)"
+msgstr "Fönsterroll (%R)"
+
+#: src/modules/emu/border_props.c:297
+#, c-format
+msgid "Window type (%S)"
+msgstr "Fönstertyp (%S)"
+
+#: src/modules/emu/border_props.c:301
+msgid "Transient (%H)"
+msgstr "Transient (%H)"
+
+#: src/modules/emu/border_props.c:316
+msgid "Layer (%l)"
+msgstr "Lager (%l)"
+
+#: src/modules/emu/border_props.c:324
+msgid "Stickiness (%y)"
+msgstr "Klibbigt (%y)"
+
+#: src/modules/emu/border_props.c:336
+msgid "Screen zone (%z)"
+msgstr "Skärmområde (%z)"
+
+#: src/modules/emu/border_props.c:340
+msgid "Window list skip (%w)"
+msgstr "Ignorera fönsterlist (%w)"
+
+#: src/modules/emu/e_mod_config.c:40
+msgid "Emu Configuration"
+msgstr "Emu konfiguration"
+
+#: src/modules/emu/e_mod_main.c:209
+msgid "Enlightenment Emu Module - error"
+msgstr "Enlightenment Emu modul - fel"
+
+#: src/modules/emu/e_mod_main.c:209
+msgid "There is no emu."
+msgstr "Det finns ingen emu."
+
+#: src/modules/emu/e_mod_main.c:283
 msgid "Emu"
 msgstr ""
-
-#~ msgid "Window properties"
-#~ msgstr "Fönsteregenskaper"
-
-#~ msgid "Window identification"
-#~ msgstr "Fönsteridentitet"
-
-#~ msgid "Title (%T)"
-#~ msgstr "Titel (%T)"
-
-#~ msgid "Properties"
-#~ msgstr "Egenskaper"
-
-#~ msgid "Position (%p)"
-#~ msgstr "Position (%p)"
-
-#~ msgid "Size (%s)"
-#~ msgstr "Storlek (%s)"
-
-#~ msgid "Border style (%b)"
-#~ msgstr "Ramstil (%b)"
-
-#~ msgid "Stickiness (%p)"
-#~ msgstr "Klibbig (%p)"
-
-#~ msgid "Virtual desktop (%d)"
-#~ msgstr "Virtuellt skrivbord (%d)"
-
-#~ msgid "Shaded state (%r)"
-#~ msgstr "Skymt läge (%r)"
-
-#~ msgid "Fullscreen (%f)"
-#~ msgstr "Helskärm (%f)"
-
-#~ msgid "Iconified (%i)"
-#~ msgstr "Minimerat (%i)"
-
-#~ msgid "Window ID (%I)"
-#~ msgstr "Fönster ID (%I)"
-
-#~ msgid "Window name (%N)"
-#~ msgstr "Fönsternamn (%N)"
-
-#~ msgid "Window class (%C)"
-#~ msgstr "Fönsterklass (%C)"
-
-#~ msgid "Window role (%R)"
-#~ msgstr "Fönsterroll (%R)"
-
-#~ msgid "Window type (%S)"
-#~ msgstr "Fönstertyp (%S)"
-
-#~ msgid "Transient (%H)"
-#~ msgstr "Transient (%H)"
-
-#~ msgid "Layer (%l)"
-#~ msgstr "Lager (%l)"
-
-#~ msgid "Stickiness (%y)"
-#~ msgstr "Klibbigt (%y)"
-
-#~ msgid "Screen zone (%z)"
-#~ msgstr "Skärmområde (%z)"
-
-#~ msgid "Window list skip (%w)"
-#~ msgstr "Ignorera fönsterlist (%w)"
-
-#~ msgid "Emu Configuration"
-#~ msgstr "Emu konfiguration"
-
-#~ msgid "Enlightenment Emu Module - error"
-#~ msgstr "Enlightenment Emu modul - fel"
-
-#~ msgid "There is no emu."
-#~ msgstr "Det finns ingen emu."
 
 #~ msgid "Enlightenment Emu Module - gadcon version "
 #~ msgstr "Enlightenment Emu modul - gadcon version "

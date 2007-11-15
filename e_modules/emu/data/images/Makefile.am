@@ -1,7 +1,7 @@
 MAINTAINERCLEANFILES = Makefile.in
 
 # data files for the module
-filesdir = $(libdir)/enlightenment/modules/emu
+filesdir = $(datadir)
 
 files_DATA = \
 e17_titlebar.png \

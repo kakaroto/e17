@@ -8,7 +8,7 @@ EDJE_FLAGS = \
 -fd $(top_srcdir)/data/fonts
 
 # data files for the module
-filesdir = $(libdir)/enlightenment/modules/$(MODULE)
+filesdir = $(datadir)
 files_DATA = e-module-emu.edj module.desktop
 
 EXTRA_DIST = $(files_DATA) \
@@ -23,7 +23,7 @@ INCLUDES               = -I. \
                          -I$(top_srcdir)/src/lib \
                          -I$(top_srcdir)/src/modules \
                          @e_cflags@
-pkgdir                 = $(libdir)/enlightenment/modules/$(MODULE)/$(MODULE_ARCH)
+pkgdir                 = $(datadir)/$(MODULE_ARCH)
 pkg_LTLIBRARIES        = module.la
 module_la_SOURCES      = e_mod_main.c \
                          e_mod_main.h \

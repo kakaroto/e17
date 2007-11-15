@@ -183,10 +183,11 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    if (emu_face)
      {
         Evas_Object *o;
+        char buf[4096];
 
         o = edje_object_add(gc->evas);
         if ((!e_theme_edje_object_set(o, "base/theme/modules/emu", "modules/emu/main")) /*&& (_emu_module_edje)*/)
-           edje_object_file_set(o, (char *)_emu_module_edje, "modules/emu/main");
+           edje_object_file_set(o, _emu_module_edje, "modules/emu/main");
         edje_object_signal_emit(o, "passive", "");
 
         gcc = e_gadcon_client_new(gc, name, id, style, o);
@@ -196,7 +197,8 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
         emu_face->menus = NULL;
 
         emu_face->name = evas_stringshare_add("Emu tester");
-        emu_face->command = evas_stringshare_add("emu_client");
+        snprintf(buf, sizeof(buf), "%s/bin/emu_client", e_module_dir_get(emu_module));
+        emu_face->command = evas_stringshare_add(buf);
         if (emu_face->command)
           {
              emu_face->del = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, _emu_cb_exe_del, emu_face);
