@@ -3,6 +3,7 @@
 #include <Epsilon.h>
 #include <Epsilon_Plugin.h>
 #include <Epdf.h>
+#include <stdlib.h>
 
 Imlib_Image
 epsilon_thumb_imlib_standardize ()
