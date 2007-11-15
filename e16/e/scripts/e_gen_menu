@@ -439,13 +439,7 @@ sub ReadDir {
 
 # Close all windows named "Message" (we assume they are E dialogs)
 sub CloseMessageWindows {
-	open(WL, "eesh -ewait wl |");
-	while (<WL>) {
-		if (/\s*(\w+) : Message\s/) {
-			system("eesh -e \"wop $1 close\"");
-		}
-	}
-	close(WL);
+	system("eesh -e 'wop Message* close' >/dev/null");
 }
 
 
