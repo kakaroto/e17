@@ -17,7 +17,7 @@ main (int argc, char *argv[])
 {
   Ecore_Evas *ee;
   Evas *evas;
-  Evas_Object *o;
+  Evas_Object *o, *bg;
   char *filename;
   int page_number;
 
@@ -52,6 +52,12 @@ main (int argc, char *argv[])
   
   evas = ecore_evas_get(ee);
 
+  bg = evas_object_rectangle_add(evas);
+  evas_object_color_set(bg, 0, 0, 0, 255);
+  evas_object_resize(bg, 600, 850);
+  evas_object_show(bg);
+  ecore_evas_data_set(ee, "bg", bg);
+
   o = esmart_pdf_add (evas);
   if (!esmart_pdf_init (o)) {
     ecore_evas_shutdown ();
@@ -79,10 +85,12 @@ app_resize(Ecore_Evas *ee)
 {
    Evas_Coord w, h;
    Evas *evas;
+   Evas_Object *bg;
    
    evas = ecore_evas_get(ee);
    evas_output_viewport_get(evas, NULL, NULL, &w, &h);
-/*    bg_resize(w, h); */
+   bg = ecore_evas_data_get(ee, "bg");
+   evas_object_resize(bg, w, h);
 }
 
 static int
