@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-14 22:23+0100\n"
+"POT-Creation-Date: 2007-11-15 20:12+0100\n"
 "PO-Revision-Date: 2006-04-04\n"
 "Last-Translator: Jyri Hämäläinen <wildfinn@gmail.com>\n"
 "Language-Team: Jyri Hämäläinen <wildfinn@gmail.com>\n"
@@ -115,15 +115,15 @@ msgstr "Ikkunalistan sivuutus (%w)"
 msgid "Emu Configuration"
 msgstr "Emun asetukset"
 
-#: src/modules/emu/e_mod_main.c:209
+#: src/modules/emu/e_mod_main.c:211
 msgid "Enlightenment Emu Module - error"
 msgstr "Enlightenment Emu moduuli - virhe"
 
-#: src/modules/emu/e_mod_main.c:209
+#: src/modules/emu/e_mod_main.c:211
 msgid "There is no emu."
 msgstr "Emua ei ole."
 
-#: src/modules/emu/e_mod_main.c:283
+#: src/modules/emu/e_mod_main.c:285
 msgid "Emu"
 msgstr ""
 

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Emu\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-14 22:23+0100\n"
+"POT-Creation-Date: 2007-11-15 20:12+0100\n"
 "PO-Revision-Date: 2006-06-10 13:52+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
@@ -114,14 +114,14 @@ msgstr "Fuori lista finestre (%w)"
 msgid "Emu Configuration"
 msgstr "Configurazione di Emu"
 
-#: src/modules/emu/e_mod_main.c:209
+#: src/modules/emu/e_mod_main.c:211
 msgid "Enlightenment Emu Module - error"
 msgstr "Modulo Emu di Enlightenment - errore"
 
-#: src/modules/emu/e_mod_main.c:209
+#: src/modules/emu/e_mod_main.c:211
 msgid "There is no emu."
 msgstr "Non ci sono emu"
 
-#: src/modules/emu/e_mod_main.c:283
+#: src/modules/emu/e_mod_main.c:285
 msgid "Emu"
 msgstr ""

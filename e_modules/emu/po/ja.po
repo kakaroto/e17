@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Emu\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-14 22:23+0100\n"
+"POT-Creation-Date: 2007-11-15 20:12+0100\n"
 "PO-Revision-Date: 2006-05-08 16:42+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -116,15 +116,15 @@ msgstr "ウィンドウリストスキップ (%w)"
 msgid "Emu Configuration"
 msgstr "Emu の設定"
 
-#: src/modules/emu/e_mod_main.c:209
+#: src/modules/emu/e_mod_main.c:211
 msgid "Enlightenment Emu Module - error"
 msgstr "Enlightenment Emu モジュール - エラー"
 
-#: src/modules/emu/e_mod_main.c:209
+#: src/modules/emu/e_mod_main.c:211
 msgid "There is no emu."
 msgstr "emu がありません"
 
-#: src/modules/emu/e_mod_main.c:283
+#: src/modules/emu/e_mod_main.c:285
 msgid "Emu"
 msgstr ""
 
