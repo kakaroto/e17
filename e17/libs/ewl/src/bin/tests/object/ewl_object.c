@@ -23,6 +23,7 @@ static int minimum_size_test_set_get(char *buf, int len);
 static int maximum_size_test_set_get(char *buf, int len);
 static int minimum_size_test_set_request(char *buf, int len);
 static int maximum_size_test_set_request(char *buf, int len);
+static int padding_test_set_get(char *buf, int len);
 static int fill_policy_test_set_get(char *buf, int len);
 static int alignment_test_set_get(char *buf, int len);
 
@@ -33,6 +34,7 @@ static Ewl_Unit_Test object_unit_tests[] = {
 		{"maximum size set/get", maximum_size_test_set_get, NULL, -1, 0},
 		{"minimum size set/request", minimum_size_test_set_request, NULL, -1, 0},
 		{"maximum size set/request", maximum_size_test_set_request, NULL, -1, 0},
+		{"padding set/get", padding_test_set_get, NULL, -1, 0},
 		{"fill policy set/get", fill_policy_test_set_get, NULL, -1, 0},
 		{"alignment set/get", alignment_test_set_get, NULL, -1, 0},
 		{NULL, NULL, NULL, -1, 0}
@@ -330,6 +332,36 @@ maximum_size_test_set_request(char *buf, int len)
 	}
 	else
 		snprintf(buf, len, "same sizes wrong %dx%d", width, height);
+
+	ewl_widget_destroy(w);
+
+	return ret;
+}
+
+/*
+ * Test that setting the padding on an object returns the same results on get.
+ */
+static int
+padding_test_set_get(char *buf, int len)
+{
+	Ewl_Widget *w;
+	int l, r, t, b;
+	int ret = 0;
+
+	w = calloc(1, sizeof(Ewl_Widget));
+	ewl_widget_init(w);
+
+	ewl_object_padding_get(EWL_OBJECT(w), &l, &r, &t, &b);
+	if (l || r || t || b)
+		snprintf(buf, len, "initial padding not 0");
+	else {
+		ewl_object_padding_set(EWL_OBJECT(w), 1, 2, 3, 4);
+		ewl_object_padding_get(EWL_OBJECT(w), &l, &r, &t, &b);
+		if (l == 1 && r == 2 && t == 3 && b == 4)
+			ret = 1;
+		else
+			snprintf(buf, len, "incorrect returned padding");
+	}
 
 	ewl_widget_destroy(w);
 
