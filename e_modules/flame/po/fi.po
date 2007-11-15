@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-07 19:14+0100\n"
+"POT-Creation-Date: 2007-11-14 22:24+0100\n"
 "PO-Revision-Date: 2006-04-04\n"
 "Last-Translator: Jyri Hämäläinen <wildfinn@gmail.com>\n"
 "Language-Team: Jyri Hämäläinen <wildfinn@gmail.com>\n"
@@ -14,31 +14,68 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_main.c:60
+#: e_mod_main.c:61
 msgid "Appearance"
 msgstr ""
 
-#: e_mod_main.c:62
+#: e_mod_main.c:63
 #, fuzzy
 msgid "Flame"
 msgstr "Liekin väri"
+
+#: e_mod_config.c:47
+msgid "Flame Configuration"
+msgstr "Liekin asetukset"
+
+#: e_mod_config.c:94 e_mod_config.c:177
+#, fuzzy
+msgid "Flame Color"
+msgstr "Liekin väri"
+
+#: e_mod_config.c:96
+msgid "Gold"
+msgstr "Kulta"
+
+#: e_mod_config.c:98
+msgid "Fire"
+msgstr "Tuli"
+
+#: e_mod_config.c:100
+msgid "Plasma"
+msgstr ""
+
+#: e_mod_config.c:102
+msgid "Matrix"
+msgstr ""
+
+#: e_mod_config.c:104
+msgid "Ice"
+msgstr "Jää"
+
+#: e_mod_config.c:106
+msgid "White"
+msgstr ""
+
+#: e_mod_config.c:108
+msgid "Custom"
+msgstr ""
+
+#: e_mod_config.c:179
+msgid "Red Amount"
+msgstr ""
 
 #: e_mod_config.c:182 e_mod_config.c:189 e_mod_config.c:196
 #, c-format
 msgid "%1.0f"
 msgstr ""
 
-#~ msgid "Flame Configuration"
-#~ msgstr "Liekin asetukset"
+#: e_mod_config.c:186
+msgid "Blue Amount"
+msgstr ""
 
-#~ msgid "Gold"
-#~ msgstr "Kulta"
-
-#~ msgid "Fire"
-#~ msgstr "Tuli"
-
-#~ msgid "Ice"
-#~ msgstr "Jää"
+#: e_mod_config.c:193
+msgid "Green Amount"
+msgstr ""
 
 #~ msgid "Enlightenment Flame Module"
 #~ msgstr "Enlightenment liekkimoduuli"
