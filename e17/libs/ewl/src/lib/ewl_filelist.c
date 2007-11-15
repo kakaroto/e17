@@ -159,7 +159,6 @@ ewl_filelist_view_setup(Ewl_Filelist *fl)
 			ewl_filelist_model_data_expandable_get);
 		view = ewl_tree2_view_scrolled_get();
 	}
-
 	else if (fl->view_flag == EWL_FILELIST_VIEW_LIST)
 	{
 		ewl_tree2_column_count_set(EWL_TREE2(fl->controller), 6);
@@ -171,7 +170,6 @@ ewl_filelist_view_setup(Ewl_Filelist *fl)
 					EWL_TREE_SELECTION_TYPE_ROW);
 		view = ewl_tree2_view_scrolled_get();
 	}
-
 	/* Until column view is written just default and throw a warning */
 	else if (fl->view_flag == EWL_FILELIST_VIEW_COLUMN)
 	{
@@ -185,7 +183,6 @@ ewl_filelist_view_setup(Ewl_Filelist *fl)
 		view = ewl_tree2_view_freebox_get();
 		DWARNING("Column view not implemented");
 	}
-
 	/* Make icon view default */
 	else
 	{
@@ -224,7 +221,6 @@ ewl_filelist_view_set(Ewl_Filelist *fl, Ewl_Filelist_View view)
 		DRETURN(DLEVEL_STABLE);
 
 	fl->view_flag = view;
-
 	ewl_filelist_view_setup(fl);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -243,9 +239,6 @@ ewl_filelist_view_get(Ewl_Filelist *fl)
 	DRETURN_PTR(fl->view_flag, DLEVEL_STABLE);
 }
 
-
-
-
 /**
  * @param fl: The filelist to set the directory into
  * @param dir: The directory to set
@@ -263,8 +256,8 @@ ewl_filelist_directory_set(Ewl_Filelist *fl, const char *dir)
 	DCHECK_PARAM_PTR(fl);
 	DCHECK_TYPE(fl, EWL_FILELIST_TYPE);
 
-	if (dir == NULL) fl->directory = NULL;
-
+	if (dir == NULL) 
+		fl->directory = NULL;
 	else if ((!fl->directory) || (strcmp(dir, fl->directory)))
 	{
 		fl->directory = strdup(dir);
@@ -355,12 +348,12 @@ ewl_filelist_multiselect_set(Ewl_Filelist *fl, unsigned int ms)
 	DCHECK_PARAM_PTR(fl);
 	DCHECK_TYPE(fl, EWL_FILELIST_TYPE);
 
-	if (fl->multiselect == ms)
+	if (fl->multiselect == !!ms)
 		DRETURN(DLEVEL_STABLE);
 
 	fl->multiselect = !!ms;
 		
-	if (ms == TRUE)
+	if (fl->multiselect)
 	{
 		ewl_mvc_selection_mode_set
 			(EWL_MVC(fl->controller),
@@ -411,7 +404,7 @@ ewl_filelist_show_dot_files_set(Ewl_Filelist *fl, unsigned int dot)
 	DCHECK_PARAM_PTR(fl);
 	DCHECK_TYPE(fl, EWL_FILELIST_TYPE);
 
-	if (fl->skip_hidden == dot)
+	if (fl->skip_hidden == !!dot)
 		DRETURN(DLEVEL_STABLE);
 
 	fl->skip_hidden = !!dot;
@@ -519,7 +512,7 @@ ewl_filelist_selected_file_get(Ewl_Filelist *fl)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET(fl, NULL);
-	DCHECK_TYPE_RET(fl, EWL_FILELIST_TYPE, 0);
+	DCHECK_TYPE_RET(fl, EWL_FILELIST_TYPE, NULL);
 
 	if (!ewl_mvc_selected_count_get(EWL_MVC(fl->controller)))
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
