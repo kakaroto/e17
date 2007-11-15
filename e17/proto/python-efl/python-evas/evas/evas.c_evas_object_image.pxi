@@ -1,5 +1,16 @@
 # This file is included verbatim by c_evas.pyx
 
+## for rotate support
+cdef extern from "evas_object_image_rotate.h":
+    ctypedef enum Rotation:
+            ROTATE_NONE
+            ROTATE_90
+            ROTATE_180
+            ROTATE_270
+
+    void evas_object_image_rotate(Evas_Object *image, Rotation rotation)
+
+
 cdef int _data_size_get(Evas_Object *obj):
     cdef int stride, h, bpp, cspace, have_alpha
     stride = evas_object_image_stride_get(obj)
@@ -436,6 +447,9 @@ cdef public class Image(Object) [object PyEvasImage, type PyEvasImage_Type]:
 
         def __set__(self, int value):
             self.colorspace_set(value)
+
+    def rotate(self, int rotation):
+        evas_object_image_rotate(self.obj, <Rotation>rotation)
 
     def reload(self):
         "Force reload of image data."
