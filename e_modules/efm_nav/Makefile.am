@@ -13,10 +13,20 @@ files_DATA = \
 	   module.desktop \
 	   e-module-efm_nav.edj
 
+EXTRA_DIST = $(files_DATA) \
+	     images/home.png \
+	     images/btn.png \
+	     images/btn_down.png \
+	     images/btn_disabled.png \
+	     images/back.png \
+	     images/forward.png \
+	     images/up.png \
+	     fonts/Vera.ttf
+
 %.edj:  %.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $< $@
 
 clean-local:
 	    rm -rf e-module-efm_nav.edj module.desktop *~
 uninstall:
-	  rm -rf $(datadir)
+	  rm -rf $(DESTDIR)$(datadir)

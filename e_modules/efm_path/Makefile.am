@@ -13,10 +13,14 @@ files_DATA = \
 	   module.desktop \
 	   e-module-efm_path.edj
 
+EXTRA_DIST = $(files_DATA) \
+	     images/entry.png \
+	     fonts/Vera.ttf
+
 %.edj:  %.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $< $@
 
 clean-local:
 	    rm -rf e-module-efm_path.edj module.desktop *~
 uninstall:
-	  rm -rf $(datadir)
+	  rm -rf $(DESTDIR)$(datadir)
