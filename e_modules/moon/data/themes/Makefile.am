@@ -1,16 +1,13 @@
 MAINTAINERCLEANFILES = Makefile.in
 SUBDIRS = images 
 
-moduledir = @MODULEDIR@
-
-EDJE_CC = @edje_cc@
 EDJE_FLAGS = \
 -v \
 -id $(top_srcdir)/data/themes/images
 
 
 # data files for the module
-filesdir = $(moduledir)/$(PACKAGE)
+filesdir = $(datadir)
 files_DATA = \
 module.desktop \
 e-module-moon.edj \
