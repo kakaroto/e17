@@ -16,18 +16,17 @@ ewl_io_manager_text_plugin.la \
 ewl_io_manager_text_c_plugin.la \
 ewl_io_manager_image_plugin.la
 
-ewl_io_manager_text_plugin_la_SOURCES   = ewl_io_manager_text_plugin.c
-ewl_io_manager_text_plugin_la_LIBADD    = $(top_builddir)/src/lib/libewl.la
-ewl_io_manager_text_plugin_la_LDFLAGS	= -module -avoid-version
+ewl_io_manager_text_plugin_la_SOURCES      = ewl_io_manager_text_plugin.c
+ewl_io_manager_text_plugin_la_LIBADD       = $(top_builddir)/src/lib/libewl.la @ECORE_LIBS@
+ewl_io_manager_text_plugin_la_LDFLAGS      = -module @create_shared_lib@ -avoid-version
 ewl_io_manager_text_plugin_la_DEPENDENCIES =
 
-ewl_io_manager_text_c_plugin_la_SOURCES   = ewl_io_manager_text_c_plugin.c
-ewl_io_manager_text_c_plugin_la_LIBADD    = $(top_builddir)/src/lib/libewl.la
-ewl_io_manager_text_c_plugin_la_LDFLAGS	= -module -avoid-version
+ewl_io_manager_text_c_plugin_la_SOURCES      = ewl_io_manager_text_c_plugin.c
+ewl_io_manager_text_c_plugin_la_LIBADD       = $(top_builddir)/src/lib/libewl.la @ECORE_LIBS@
+ewl_io_manager_text_c_plugin_la_LDFLAGS      = -module @create_shared_lib@ -avoid-version
 ewl_io_manager_text_c_plugin_la_DEPENDENCIES =
 
-ewl_io_manager_image_plugin_la_SOURCES   = ewl_io_manager_image_plugin.c
-ewl_io_manager_image_plugin_la_LIBADD    = $(top_builddir)/src/lib/libewl.la
-ewl_io_manager_image_plugin_la_LDFLAGS	= -module -avoid-version
+ewl_io_manager_image_plugin_la_SOURCES      = ewl_io_manager_image_plugin.c
+ewl_io_manager_image_plugin_la_LIBADD       = $(top_builddir)/src/lib/libewl.la @ECORE_LIBS@ @EVAS_LIBS@
+ewl_io_manager_image_plugin_la_LDFLAGS      = -module @create_shared_lib@ -avoid-version
 ewl_io_manager_image_plugin_la_DEPENDENCIES =
-
