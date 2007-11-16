@@ -5,9 +5,11 @@ SUBDIRS = images
 EDCS = ewl_embed_test.edc
 EDJS = $(EDCS:%.edc=%.edj)
 
-EXTRA_DIST = $(EDCS) 
+EXTRA_DIST = $(EDCS)
 
 CLEANFILES = $(EDJS)
+
+if EWL_TESTS_BUILD
 
 themedir = $(pkgdatadir)/themes/
 theme_DATA = $(EDJS)
@@ -18,3 +20,4 @@ SUFFIXES = .edc .edj
 .edc.edj:
 	edje_cc -v -id $(top_srcdir)/data/themes/$(notdir $(<:%.edc=%))/images $(top_srcdir)/data/themes/$(notdir $(<:%.edc=%))/$< $(top_builddir)/data/themes/$(notdir $(<:%.edc=%))/$(notdir $@)
 
+endif

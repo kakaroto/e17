@@ -2,9 +2,13 @@ MAINTAINERCLEANFILES 		= 	Makefile.in
 
 SUBDIRS				=	tests
 
-AM_CPPFLAGS			=	-I$(top_srcdir)/src/lib -I$(top_builddir)/src/lib -DPACKAGE_DATA_DIR=\"$(datadir)\" -DPACKAGE_LIB_DIR=\"$(libdir)\" @EMOTION_CFLAGS@ @EPSILON_CFLAGS@ @EDJE_CFLAGS@ @ECORE_CFLAGS@ @EVAS_CFLAGS@
-
+if EWL_TESTS_BUILD
 EWLTESTPROGRAMS                 =	ewl_test ewl_embed_test ewl_simple_test
+else
+EWLTESTPROGRAMS                 =
+endif
+
+AM_CPPFLAGS			=	-I$(top_srcdir)/src/lib -I$(top_builddir)/src/lib -DPACKAGE_DATA_DIR=\"$(datadir)\" -DPACKAGE_LIB_DIR=\"$(libdir)\" @EMOTION_CFLAGS@ @EPSILON_CFLAGS@ @EDJE_CFLAGS@ @ECORE_CFLAGS@ @EVAS_CFLAGS@
 
 bin_PROGRAMS			=	$(EWLTESTPROGRAMS)
 

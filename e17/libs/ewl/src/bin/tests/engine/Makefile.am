@@ -1,31 +1,29 @@
-AUTOMAKE_OPTIONS 	= 	1.4 foreign
-MAINTAINERCLEANFILES 	= 	Makefile.in
 
-INCLUDES		=	-I$(top_srcdir)/src/lib \
-				-I$(top_builddir)/src/lib \
-				-I$(top_srcdir)/src/bin \
-				-I$(top_builddir)/src/bin \
-				@EDJE_CFLAGS@ \
-				@ECORE_CFLAGS@ \
-				@EVAS_CFLAGS@ \
-				@EMOTION_CFLAGS@
+MAINTAINERCLEANFILES = Makefile.in
 
-pkgdir                  = $(libdir)/ewl/tests
+AM_CPPFLAGS = \
+-I$(top_srcdir)/src/lib \
+-I$(top_builddir)/src/lib \
+-I$(top_srcdir)/src/bin \
+-I$(top_builddir)/src/bin \
+@EDJE_CFLAGS@ \
+@ECORE_CFLAGS@ \
+@EVAS_CFLAGS@ \
+@EMOTION_CFLAGS@
 
-pkg_LTLIBRARIES		= ewl_engine.la
+if EWL_TESTS_BUILD
 
-ewl_engine_la_SOURCES   = ewl_engine.c
-ewl_engine_la_LIBADD    = $(top_builddir)/src/lib/libewl.la
-ewl_engine_la_LDFLAGS	= -module -avoid-version \
-			  -L$(top_builddir)/src/lib \
-			  -L$(top_builddir)/src/lib/.libs
-ewl_engine_la_DEPENDENCIES = 
+pkgdir = $(libdir)/ewl/tests
 
+pkg_LTLIBRARIES = ewl_engine.la
+
+ewl_engine_la_SOURCES = ewl_engine.c
+ewl_engine_la_LIBADD = $(top_builddir)/src/lib/libewl.la @EVAS_LIBS@
+ewl_engine_la_LDFLAGS = -module @create_shared_lib@ -avoid-version
 
 FILES = $(ewl_engine_la_SOURCES)
 
-EXTRA_DIST = $(FILES)
+exampledir = $(pkgdatadir)/examples/
+example_DATA = $(FILES)
 
-exampledir 			=	$(pkgdatadir)/examples/
-example_DATA 			=	$(FILES)
-
+endif

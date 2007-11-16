@@ -1,30 +1,29 @@
-AUTOMAKE_OPTIONS 	= 	1.4 foreign
-MAINTAINERCLEANFILES 	= 	Makefile.in
 
-INCLUDES		=	-I$(top_srcdir)/src/lib \
-				-I$(top_builddir)/src/lib \
-				-I$(top_srcdir)/src/bin \
-				-I$(top_builddir)/src/bin \
-				@EDJE_CFLAGS@ \
-				@ECORE_CFLAGS@ \
-				@EVAS_CFLAGS@ \
-				@EMOTION_CFLAGS@
+MAINTAINERCLEANFILES = Makefile.in
 
-pkgdir                  = $(libdir)/ewl/tests
+AM_CPPFLAGS = \
+-I$(top_srcdir)/src/lib \
+-I$(top_builddir)/src/lib \
+-I$(top_srcdir)/src/bin \
+-I$(top_builddir)/src/bin \
+@EDJE_CFLAGS@ \
+@ECORE_CFLAGS@ \
+@EVAS_CFLAGS@ \
+@EMOTION_CFLAGS@
 
-pkg_LTLIBRARIES		= ewl_button.la
+if EWL_TESTS_BUILD
 
-ewl_button_la_SOURCES   = ewl_button.c
-ewl_button_la_LIBADD    = $(top_builddir)/src/lib/libewl.la
-ewl_button_la_LDFLAGS	= -module -avoid-version \
-			  -L$(top_builddir)/src/lib \
-			  -L$(top_builddir)/src/lib/.libs
-ewl_button_la_DEPENDENCIES = 
+pkgdir = $(libdir)/ewl/tests
 
-FILES = $(ewl_button_la_SOURCES) 
+pkg_LTLIBRARIES = ewl_button.la
 
-EXTRA_DIST = $(FILES)
+ewl_button_la_SOURCES = ewl_button.c
+ewl_button_la_LIBADD = $(top_builddir)/src/lib/libewl.la
+ewl_button_la_LDFLAGS = -module @create_shared_lib@ -avoid-version
 
-exampledir 			=	$(pkgdatadir)/examples/
-example_DATA 			=	$(FILES)
+FILES = $(ewl_button_la_SOURCES)
 
+exampledir = $(pkgdatadir)/examples/
+example_DATA = $(FILES)
+
+endif
