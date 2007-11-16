@@ -12,7 +12,7 @@
 /ewl/cache/evas/font = 2097152
 /ewl/cache/evas/image = 8388608
 
-/ewl/engine/name = evas_software_x11
+/ewl/engine/name = @ewl_evas_engine_default@
 
 /ewl/theme/name = e17
 /ewl/theme/icon/theme = Tango

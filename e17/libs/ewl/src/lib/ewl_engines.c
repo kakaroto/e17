@@ -6,6 +6,12 @@
 
 #define EWL_ENGINE_DIR "engines"
 
+#ifdef _WIN32
+# define EWL_ENGINE_EXT ".dll"
+#else
+# define EWL_ENGINE_EXT ".so"
+#endif /* _WIN32 */
+
 enum Ewl_Engine_Hook_Type
 {
 	EWL_ENGINE_HOOK_TYPE_WINDOW,
@@ -96,7 +102,7 @@ ewl_engine_names_get(void)
 		{
 			char *lastext;
 			lastext = strrchr(file, '.');
-			if (!strncmp(lastext, ".so", 3) && ext == lastext) {
+			if (!strncmp(lastext, EWL_ENGINE_EXT, strlen(EWL_ENGINE_EXT)) && ext == lastext) {
 				*ext = '\0';
 				ecore_list_append(names, strdup(file));
 			}

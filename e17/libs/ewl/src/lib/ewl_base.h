@@ -9,6 +9,13 @@
 #include <Ecore.h>
 #include <Ecore_Data.h>
 
+/* typedef to allow inclusion of ewl_filelist.h */
+/* and ewl_filelist_model.h on Windows */
+#ifdef _WIN32
+typedef unsigned long uid_t;
+typedef unsigned long gid_t;
+#endif /* _WIN32 */
+
 #include <ewl_enums.h>
 #include <ewl_object.h>
 #include <ewl_widget.h>

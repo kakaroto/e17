@@ -5,9 +5,16 @@
 #include "ewl_debug.h"
 
 #include <Evas.h>
-#include <ctype.h>
-#include <fcntl.h>
+#if HAVE_FCNTL_H
+# include <fcntl.h>
+#endif /* HAVE_FCNTL_H */
 #include <libgen.h>
+
+#ifdef _WIN32
+# include <io.h>
+# include <share.h>
+# include <sys/locking.h>
+#endif /* _WIN32 */
 
 Ewl_Config *ewl_config = NULL;
 Ewl_Config_Cache ewl_config_cache;
@@ -21,6 +28,9 @@ Ewl_Config_Cache ewl_config_cache;
 
 extern Ecore_List *ewl_embed_list;
 
+static int ewl_config_file_read_lock(int fd, long size);
+static int ewl_config_file_write_lock(int fd, long size);
+static int ewl_config_file_unlock(int fd, long size);
 static int ewl_config_load(Ewl_Config *cfg);
 static int ewl_config_file_load(Ewl_Config *cfg, unsigned int is_system,
 							const char *file);
@@ -447,11 +457,68 @@ ewl_config_system_save(Ewl_Config *cfg)
 }
 
 static int
+ewl_config_file_read_lock(int fd, long size)
+{
+#if defined(F_SETLKW)
+	struct flock fl;
+
+	fl.l_type = F_RDLCK;
+	fl.l_whence = SEEK_SET;
+	fl.l_start = 0;
+	fl.l_len = 0;
+
+	return (fcntl(fd, F_SETLKW, &fl) == 0);
+#else
+# if HAVE__LOCKING
+	return (_locking(fd, _LK_LOCK, size) == 0);
+# endif /* HAVE__LOCKING */
+#endif /* !defined(F_SETLKW) */
+}
+
+static int
+ewl_config_file_write_lock(int fd, long size)
+{
+#if defined(F_SETLKW)
+	struct flock fl;
+
+	fl.l_type = F_WRLCK;
+	fl.l_whence = SEEK_SET;
+	fl.l_start = 0;
+	fl.l_len = 0;
+
+	return (fcntl(fd, F_SETLKW, &fl) == 0);
+#else
+# if HAVE__LOCKING
+	return (_locking(fd, _LK_LOCK, size) == 0);
+# endif /* HAVE__LOCKING */
+#endif /* !defined(F_SETLKW) */
+}
+
+static int
+ewl_config_file_unlock(int fd, long size)
+{
+#if defined(F_SETLKW)
+	struct flock fl;
+
+	fl.l_type = F_UNLCK;
+	fl.l_whence = SEEK_SET;
+	fl.l_start = 0;
+	fl.l_len = 0;
+
+	return (fcntl(fd, F_SETLK, &fl) == 0);
+#else
+# if HAVE__LOCKING
+	return (_locking(fd, _LK_UNLCK, size) == 0);
+# endif /* HAVE__LOCKING */
+#endif /* !defined(F_SETLKW) */
+}
+
+static int
 ewl_config_save(Ewl_Config *cfg, Ecore_Hash *hash, const char *file)
 {
 	Ecore_List *keys;
 	char *key, data[512], *path;
-	struct flock fl;
+	long size;
 	int fd;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -472,20 +539,25 @@ ewl_config_save(Ewl_Config *cfg, Ecore_Hash *hash, const char *file)
 	if (!hash)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
+#ifndef _WIN32
 	fd = open(file, O_CREAT | O_WRONLY | O_TRUNC,
 			S_IRWXU | S_IRGRP | S_IROTH);
+#else
+# ifdef __MINGW32__
+	fd = _sopen(file, O_CREAT | O_WRONLY | O_TRUNC, _SH_DENYRD, S_IRWXU);
+# else
+	_sopen_s(&fd, file, O_CREAT | O_WRONLY | O_TRUNC, _SH_DENYRD, S_IRWXU);
+# endif /* __MINGW32 */
+#endif /* _WIN32 */
 	if (fd == -1)
 	{
 		DWARNING("Unable to open cfg file %s.", file);
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
 
-	fl.l_type = F_WRLCK;
-	fl.l_whence = SEEK_SET;
-	fl.l_start = 0;
-	fl.l_len = 0;
+	size = ecore_file_size(file);
 
-	if (fcntl(fd, F_SETLKW, &fl) == -1)
+	if (!ewl_config_file_write_lock(fd, size))
 	{
 		DWARNING("Unable to lock %s for write.", file);
 		close(fd);
@@ -506,8 +578,7 @@ ewl_config_save(Ewl_Config *cfg, Ecore_Hash *hash, const char *file)
 	}
 
 	/* release the lock */
-	fl.l_type = F_UNLCK;
-	fcntl(fd, F_SETLK, &fl);
+	ewl_config_file_unlock(fd, size);
 	close(fd);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -780,9 +851,8 @@ ewl_config_file_load(Ewl_Config *cfg, unsigned int is_system, const char *file)
 {
 	Ecore_Hash *hash;
 	int fd;
+	long size;
 	char *data;
-	struct flock fl;
-	struct stat buf;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET(cfg, FALSE);
@@ -792,19 +862,24 @@ ewl_config_file_load(Ewl_Config *cfg, unsigned int is_system, const char *file)
 	if (!ecore_file_exists(file))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
+#ifndef _WIN32
 	fd = open(file, O_RDONLY, S_IRUSR);
+#else
+# ifdef __MINGW32__
+	fd = _sopen(file, O_RDONLY, _SH_DENYWR, S_IRUSR);
+# else
+	_sopen_s(&fd, file, O_RDONLY, _SH_DENYWR, S_IRUSR);
+# endif /* __MINGW32 */
+#endif /* _WIN32 */
 	if (fd == -1)
 	{
 		DWARNING("Unable to open cfg file %s.", file);
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 	}
 
-	fl.l_type = F_RDLCK;
-	fl.l_whence = SEEK_SET;
-	fl.l_start = 0;
-	fl.l_len = 0;
+	size = ecore_file_size(file);
 
-	if (fcntl(fd, F_SETLKW, &fl) == -1)
+	if (!ewl_config_file_read_lock(fd, size))
 	{
 		DWARNING("Unable to lock %s for read.", file);
 
@@ -817,14 +892,12 @@ ewl_config_file_load(Ewl_Config *cfg, unsigned int is_system, const char *file)
 	 * XXX we may want to do this in chunks as the config could be
 	 * large ...
 	 */
-	stat(file, &buf);
-	data = malloc(sizeof(char) * (buf.st_size + 1));
-	read(fd, data, buf.st_size);
-	data[buf.st_size] = '\0';
+	data = malloc(sizeof(char) * (size + 1));
+	read(fd, data, size);
+	data[size] = '\0';
 
 	/* release the lock as the file is in memory */
-	fl.l_type = F_UNLCK;
-	fcntl(fd, F_SETLK, &fl);
+	ewl_config_file_unlock(fd, size);
 	close(fd);
 
 	/* create the hash to store the values */

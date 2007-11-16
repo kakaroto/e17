@@ -236,7 +236,11 @@ ewl_theme_image_get(Ewl_Widget *w, char *k)
 	/*
 	 * Convert a relative path to an absolute path
 	 */
+#ifndef _WIN32
 	if (*data != '/') {
+#else
+	if (*(data + 1) != ':') {
+#endif /* _WIN32 */
 		char path[PATH_MAX];
 
 		snprintf(path, PATH_MAX, "%s/%s", ewl_theme_path, data);

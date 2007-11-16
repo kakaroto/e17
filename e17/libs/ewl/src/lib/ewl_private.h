@@ -5,6 +5,10 @@
 #include <Ecore_Str.h>
 #include <Ecore_File.h>
 
+#ifdef HAVE_CONFIG_H
+#include "ewl-config.h"
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -17,16 +21,28 @@
 #include <assert.h>
 #include <time.h>
 #include <fnmatch.h>
-#include <pwd.h>
-#include <grp.h>
-#include <langinfo.h>
-
-#ifdef HAVE_CONFIG_H
-#include "ewl-config.h"
-#endif
+#if HAVE_PWD_H
+# include <pwd.h>
+#endif /* HAVE_PWD_H */
+#if HAVE_GRP_H
+# include <grp.h>
+#endif /* HAVE_GRP_H */
 
 #ifdef HAVE_ALLOCA_H
-#include <alloca.h>
+# include <alloca.h>
+#elif defined __GNUC__
+# define alloca __builtin_alloca
+#elif defined _AIX
+# define alloca __alloca
+#elif defined _MSC_VER
+# include <malloc.h>
+# define alloca _alloca
+#else
+# include <stddef.h>
+# ifdef  __cplusplus
+extern "C"
+# endif
+void *alloca (size_t);
 #endif
 
 #ifndef PATH_MAX

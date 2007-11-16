@@ -17,8 +17,8 @@ evas_la_SOURCES = \
 Ewl_Engine_Evas.h \
 ewl_engine_evas.c
 
-evas_la_LIBADD = $(top_builddir)/src/lib/libewl.la
-evas_la_LDFLAGS = -module -version-info @INTERFACE_VERSION@
+evas_la_LIBADD = $(top_builddir)/src/lib/libewl.la @EDJE_LIBS@ @ECORE_LIBS@ @EVAS_LIBS@
+evas_la_LDFLAGS = -module @create_shared_lib@ -version-info @INTERFACE_VERSION@
 evas_la_DEPENDENCIES =
 
 endif

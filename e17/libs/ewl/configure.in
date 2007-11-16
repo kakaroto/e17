@@ -23,6 +23,49 @@ AC_PROG_LIBTOOL
 
 AC_FUNC_ALLOCA
 
+AC_CHECK_HEADERS([pwd.h grp.h langinfo.h fcntl.h])
+
+have_locking="no"
+AC_COMPILE_IFELSE(
+  [AC_LANG_PROGRAM(
+     [[
+#include <stdlib.h>
+#if HAVE_FCNTL_H
+# include <fcntl.h>
+#endif
+     ]],
+     [[
+fcntl (1, F_SETLKW, NULL);
+     ]]
+   )
+  ],
+  [AC_DEFINE(HAVE_FCNTL, 1, [Define to 1 if fcntl() is available])
+   have_locking="yes"]
+)
+
+if test "x${have_locking}" = "xno"; then
+  AC_COMPILE_IFELSE(
+    [AC_LANG_PROGRAM(
+       [[
+#if HAVE_FCNTL_H
+# include <fcntl.h>
+#endif
+#include <sys/locking.h>
+       ]],
+       [[
+_locking (1, _LK_LOCK, 10);
+       ]]
+     )
+    ],
+    [AC_DEFINE(HAVE__LOCKING, 1, [Define to 1 if _locking() is available])
+     have_locking="yes"]
+  )
+fi
+
+if test "x${have_locking}" = "xno"; then
+  AC_MSG_ERROR([Error: no fcntl() nor _locking() is available.])
+fi
+
 dnl Use -Wall if we have gcc.
 changequote(,)dnl
 if test "x$GCC" = "xyes"; then
@@ -32,6 +75,19 @@ if test "x$GCC" = "xyes"; then
   esac
 fi
 changequote([,])dnl
+
+create_shared_lib=""
+case "$host_os" in
+     mingw|mingw32)
+        create_shared_lib="-no-undefined"
+        ewl_evas_engine_default="evas_gl_glew"
+        ;;
+     *)
+        ewl_evas_engine_default="evas_software_x11"
+        ;;
+esac
+AC_SUBST(create_shared_lib)
+AC_SUBST(ewl_evas_engine_default)
 
 have_evas="no"
 PKG_CHECK_MODULES(EVAS, [evas >= 0.9.9], [have_evas="yes"])
@@ -48,6 +104,8 @@ PKG_CHECK_MODULES(ECORE, [
 ])
 
 PKG_CHECK_MODULES(EDJE, [edje >= 0.5.0])
+
+requirements="evas ecore edje efreet"
 
 dnl Xlib engines
 
@@ -97,7 +155,16 @@ dnl Buffer engine
 
 EWL_CHECK_ENGINE([software_buffer], [buffer], [0.9.9], ["yes"])
 
-requirements="evas ecore edje efreet"
+dnl Win32 engines
+
+PKG_CHECK_MODULES(ECORE_WIN32,
+  [ecore-win32 >= 0.9.9],
+  [have_ecore_win32="yes"],
+  [have_ecore_win32="no"])
+
+EWL_CHECK_ENGINE([opengl_glew], [opengl Glew], [0.9.9], [$have_ecore_win32])
+
+AM_CONDITIONAL(EWL_ENABLE_WIN32, test "x$have_ecore_win32" = "xyes" -a "x$have_opengl_glew" = "xyes" )
 
 PKG_CHECK_MODULES(EMOTION, [emotion >= 0.0.1],
   [
@@ -130,6 +197,17 @@ if test "x$enable_debug" = xyes ; then
 else
     AC_DEFINE(EWL_ENABLE_DEBUG, 0, [Enable debug support])
 fi
+
+AC_ARG_ENABLE(tests,
+	[AC_HELP_STRING([--disable-tests],[disable the build of tests])])
+
+if test "x$enableval" = "xyes" ; then
+    enable_tests="yes"
+else
+    enable_tests="no"
+fi
+
+AM_CONDITIONAL(EWL_TESTS_BUILD, test "xenable_tests$" = "xyes")
 
 ###
 # Define these at the bottom as they are not release versions, but API
@@ -226,8 +304,11 @@ src/engines/evas_xrender_x11/Makefile
 src/engines/evas_gl_x11/Makefile
 src/engines/evas_fb/Makefile
 src/engines/evas_buffer/Makefile
+src/engines/win32/Makefile
+src/engines/evas_gl_glew/Makefile
 data/Makefile
 data/config/Makefile
+data/config/ewl.cfg
 data/images/Makefile
 data/themes/Makefile
 data/themes/e17/Makefile
@@ -255,6 +336,7 @@ echo "  Software XCB.............................: $have_software_xcb"
 echo "  Framebuffer..............................: $have_framebuffer"
 echo "  SDL......................................: $have_software_sdl"
 echo "  Buffer...................................: $have_software_buffer"
+echo "  OpenGL Glew..............................: $have_opengl_glew"
 echo
 echo "Optional Components:"
 echo
@@ -262,6 +344,8 @@ echo "  Emotion Support..........................: $have_emotion"
 echo "  Epsilon Support..........................: $have_epsilon"
 echo
 echo "Debug Support..............................: $enable_debug"
+echo
+echo "Build tests................................: $enable_tests"
 echo
 echo "Now type 'make' ('gmake' on some systems) to compile $PACKAGE."
 echo

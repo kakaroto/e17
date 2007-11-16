@@ -186,7 +186,6 @@ ee_canvas_setup(Ewl_Window *win, int debug __UNUSED__)
         sdlinfo->info.noframe = 0;
         sdlinfo->info.alpha = 1;
 	evas_engine_info_set(evas, (Evas_Engine_Info *)sdlinfo);
-	ewl_object_geometry_request(EWL_OBJECT(win), 0, 0, 240, 320);
 
 	o = EWL_OBJECT(win);
 	evas_engine_info_set(evas, info);

@@ -3,10 +3,84 @@
 #include "ewl_entry.h"
 #include "ewl_text_trigger.h"
 #include <Ecore_Txt.h>
-#include <langinfo.h>
 #include "ewl_macros.h"
 #include "ewl_private.h"
+#if HAVE_LANGINFO_H
+# include <langinfo.h>
+#endif /* HAVE_LANGINFO_H */
 #include "ewl_debug.h"
+
+#ifdef _WIN32
+# include <locale.h>
+
+typedef int nl_item;
+# define __NL_ITEM( CATEGORY, INDEX )  ((CATEGORY << 16) | INDEX)
+
+# define __NL_ITEM_CATEGORY( ITEM )    (ITEM >> 16)
+# define __NL_ITEM_INDEX( ITEM )       (ITEM & 0xffff)
+
+/*
+ * Enumerate the item classification indices...
+ *
+ */
+enum {
+  /*
+   * LC_CTYPE category...
+   * Character set classification items.
+   *
+   */
+  _NL_CTYPE_CODESET = __NL_ITEM( LC_CTYPE, 0 ),
+
+  /*
+   * Dummy entry, to terminate the list.
+   *
+   */
+  _NL_ITEM_CLASSIFICATION_END
+};
+
+/*
+ * Define the public aliases for the enumerated classification indices...
+ *
+ */
+# define CODESET       _NL_CTYPE_CODESET
+
+static char *replace( char *prev, char *value )
+{
+  if( value == NULL )
+    return prev;
+
+  if( prev )
+    free( prev );
+  return strdup( value );
+}
+
+char *nl_langinfo( nl_item index )
+{
+  // static char result[128];
+  static char *result = NULL;
+  static char *nothing = "";
+
+  switch( index )
+  {
+    case CODESET:
+      {
+        char *p;
+        result = replace( result, setlocale( LC_CTYPE, NULL ));
+        if( (p = strrchr( result, '.' )) == NULL )
+	  return nothing;
+
+	if( (++p - result) > 2 )
+	  strcpy( result, "cp" );
+	else
+	  *result = '\0';
+	strcat( result, p );
+        return result;
+      }
+  }
+  return nothing;
+}
+
+#endif /* _WIN32 */
 
 /**
  * @return Returns a new Ewl_Widget on success or NULL on failure
@@ -836,4 +910,3 @@ ewl_entry_cursor_position_get(Ewl_Entry_Cursor *c)
 	DRETURN_INT(ewl_text_cursor_position_get(EWL_TEXT(c->parent)),
 							DLEVEL_STABLE);
 }
-

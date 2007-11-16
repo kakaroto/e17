@@ -196,4 +196,4 @@ installed_headersdir = $(prefix)/include/ewl
 installed_headers_DATA = $(EWLHEADERS)
 
 libewl_la_LIBADD = @EMOTION_LIBS@ @EPSILON_LIBS@ @EFREET_LIBS@ @EDJE_LIBS@ @ECORE_LIBS@ @EVAS_LIBS@ -lm
-libewl_la_LDFLAGS = -version-info @INTERFACE_VERSION@
+libewl_la_LDFLAGS = @create_shared_lib@ -version-info @INTERFACE_VERSION@
