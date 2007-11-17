@@ -31,9 +31,7 @@
 #include <sys/time.h>
 #endif
 
-/* preliminary OpenGL Checking */
 #ifdef HAVE_GLX
-#include <GL/glut.h>
 #include <GL/glx.h>
 #endif
 
