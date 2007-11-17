@@ -44,8 +44,10 @@ EppletConfigTest_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
 EppletConfigTest_epplet_LDFLAGS = -rpath $(libdir)
 
 E_OpenGL_Demo_epplet_SOURCES = E-OpenGL-Demo.c
-E_OpenGL_Demo_epplet_DEPENDENCIES = $(top_builddir)/api/libepplet.la
+E_OpenGL_Demo_epplet_DEPENDENCIES = \
+	$(top_builddir)/api/libepplet.la $(top_builddir)/api/libepplet_glx.la
 E_OpenGL_Demo_epplet_LDFLAGS = -rpath $(libdir)
+E_OpenGL_Demo_epplet_LDADD = $(top_builddir)/api/libepplet_glx.la $(LDADD)
 ####################################################
 
 E_Exec_epplet_SOURCES = E-Exec.c
