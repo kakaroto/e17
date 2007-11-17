@@ -548,6 +548,7 @@ e_dbus_connection_ref(E_DBus_Connection *conn)
 EAPI void
 e_dbus_connection_unref(E_DBus_Connection *conn)
 {
+  if (!conn) return;
   if (--(conn->refcount) == 0) e_dbus_connection_close(conn);
 }
 
