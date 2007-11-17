@@ -566,6 +566,7 @@ ewl_filepicker_cb_list_value_changed(Ewl_Widget *w, void *ev, void *data)
 	Ewl_Filepicker *fp;
 	Ewl_Filelist *fl;
 	Ewl_Event_Action_Response *e;
+	char *file;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(w);
@@ -575,35 +576,32 @@ ewl_filepicker_cb_list_value_changed(Ewl_Widget *w, void *ev, void *data)
 	fp = data;
 	e = ev;
 
+	/* clear the text and get the selected file */
+	ewl_text_clear(EWL_TEXT(fp->file_entry));
+	file = ewl_filelist_selected_file_get(fl);
+
 	if (e->response == EWL_FILELIST_EVENT_DIR_CHANGE)
 	{
 		char *dir;
 
 		dir = strdup(ewl_filelist_directory_get(fl));
 		ewl_filepicker_path_populate(fp, dir);
-		ewl_text_clear(EWL_TEXT(fp->file_entry));
 		FREE(dir);
 	}
 	else if ((e->response == EWL_FILELIST_EVENT_SELECTION_CHANGE) &&
 					(!fl->multiselect))
-	{
-		ewl_text_clear(EWL_TEXT(fp->file_entry));
-		ewl_text_text_set(EWL_TEXT(fp->file_entry),
-				ewl_filelist_selected_file_get(fl));
-	}
+		ewl_text_text_set(EWL_TEXT(fp->file_entry), file);
 
 	else if (e->response == EWL_FILELIST_EVENT_MULTI_TRUE)
-	{
-		ewl_text_clear(EWL_TEXT(fp->file_entry));
 		ewl_widget_disable(EWL_WIDGET(fp->file_entry));
-	}
 
 	else if (e->response == EWL_FILELIST_EVENT_MULTI_FALSE)
 	{
 		ewl_widget_enable(EWL_WIDGET(fp->file_entry));
-		ewl_text_text_set(EWL_TEXT(fp->file_entry),
-				ewl_filelist_selected_file_get(fl));
+		ewl_text_text_set(EWL_TEXT(fp->file_entry), file);
 	}
+
+	FREE(file);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

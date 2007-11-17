@@ -5,6 +5,7 @@
 #include "ewl_filedialog.h"
 #include "ewl_label.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 static int create_test(Ewl_Container *box);
 static void dialog_cb_single_clicked(Ewl_Widget *w, void *ev, void *data);
@@ -117,15 +118,12 @@ fd_cb_value_changed(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 	}
 
 	fd = EWL_FILEDIALOG(w);
-	if (ewl_filedialog_multiselect_get(fd))
-	{
-		Ecore_List *l;
-		l = ewl_filedialog_selected_files_get(fd);
-		ecore_list_for_each(l, fd_append, list);
-	}
-	else
-		fd_append(ewl_filedialog_selected_file_get(fd), list);
+	Ecore_List *l;
+	l = ewl_filedialog_selected_files_get(fd);
+	ecore_list_free_cb_set(l, ECORE_FREE_CB(free));
+	ecore_list_for_each(l, fd_append, list);
 
+	ecore_list_destroy(l);
 	ewl_widget_destroy(w);
 }
 

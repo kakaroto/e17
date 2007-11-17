@@ -4,6 +4,7 @@
 #include "ewl_filepicker.h"
 
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
 /**
@@ -130,7 +131,10 @@ ewl_filepicker_cb_value_changed(Ewl_Widget *w, void *ev,
 			if (!file)
 				printf("No file selected.\n");
 			else
+			{
 				printf("%s\n", file);
+				free(file);
+			}
 			break;
 		}
 		default:
