@@ -3,6 +3,8 @@
 #define EWL_FILEPICKER_H
 
 #include "ewl_box.h"
+#include "ewl_view.h"
+#include "ewl_model.h"
 
 /**
  * @addtogroup Ewl_Filepicker Ewl_Filepicker: Allows selecting files from a list
@@ -56,6 +58,13 @@ struct Ewl_Filepicker
 
 	Ecore_List *path;		/**< The path components */
 	Ecore_List *filters;		/**< The type filters */
+
+	struct
+	{
+		Ewl_Model *model;
+		Ewl_View *view;
+		Ewl_Widget *combo;
+	} mvc_filters, mvc_path;
 
 	unsigned char show_favorites:1;	/**< Show the favorite box */
 };

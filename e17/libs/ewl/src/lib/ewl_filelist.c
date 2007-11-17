@@ -258,8 +258,10 @@ ewl_filelist_directory_set(Ewl_Filelist *fl, const char *dir)
 
 	if (dir == NULL) 
 		fl->directory = NULL;
-	else if ((!fl->directory) || (strcmp(dir, fl->directory)))
+	else if (((!fl->directory) || (strcmp(dir, fl->directory)))
+			&& (ecore_file_can_read(dir)))
 	{
+		IF_FREE(fl->directory);
 		fl->directory = strdup(dir);
 
 		data = ewl_mvc_data_get(EWL_MVC(fl->controller));
