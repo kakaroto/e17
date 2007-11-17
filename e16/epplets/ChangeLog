@@ -1,3 +1,41 @@
+2007-11-17 16:25  kwo
+
+* epplets.spec.in:
+
+Avoid including debug stuff in binary rpm.
+
+2007-11-17 16:22  kwo
+
+* configure.in, api/epplet.h.in:
+
+GLU is not used.
+
+2007-11-17 16:16  kwo
+
+* configure.in, api/Makefile.am, api/epplet.c, api/epplet_glx.c,
+epplets/Makefile.am:
+
+Move glx stuff to separate library.
+
+2007-11-11 17:56  kwo
+
+* api/epplet.c:
+
+Fix instance counting bug (incorrect use of fcntl return code).
+
+2007-11-11 17:51  kwo
+
+* .cvsignore, configure.in, api/Makefile.am, api/epplet.c,
+epplets/Makefile.am:
+
+New AC_INIT, autofoo cleanups. Bump version.
+
+2007-05-03 22:01  kwo
+
+* ChangeLog, configure.in:
+
+epplets-0.10.
+
 2007-05-03 21:46  kwo
 
 * epplets.spec:
