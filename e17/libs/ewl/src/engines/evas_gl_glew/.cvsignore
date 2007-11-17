@@ -1,0 +1,7 @@
+.deps
+.libs
+ewl_engine_evas_gl_glew.loT
+Makefile
+Makefile.in
+*.la
+*.lo

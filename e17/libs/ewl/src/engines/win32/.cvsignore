@@ -1,0 +1,8 @@
+.deps
+.libs
+win32.la
+ewl_engine_win32.lo
+Makefile
+Makefile.in
+*.la
+*.lo
