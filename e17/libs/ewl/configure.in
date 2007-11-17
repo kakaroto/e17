@@ -207,7 +207,7 @@ else
     enable_tests="no"
 fi
 
-AM_CONDITIONAL(EWL_TESTS_BUILD, test "xenable_tests$" = "xyes")
+AM_CONDITIONAL(EWL_TESTS_BUILD, test "x$enable_tests" = "xyes")
 
 ###
 # Define these at the bottom as they are not release versions, but API
