@@ -2,4 +2,4 @@ debian/tmp/usr/lib/enlightenment/modules/language/*.edj
 debian/tmp/usr/lib/enlightenment/modules/language/*.desktop
 debian/tmp/usr/lib/enlightenment/modules/language/images/*.png
 debian/tmp/usr/lib/enlightenment/modules/language/*/*.so
-debian/tmp/usr/share/locale/*/LC_MESSAGES/language.*
+debian/tmp/usr/lib/enlightenment/modules/language/locale/*

@@ -19,6 +19,13 @@ Provides: emodule-bling
 Description: An E17 module providing a Composite Manager
  An E17 module which acts as a Composite Manager.
 
+Package: emodule0-calendar
+Architecture: any
+Depends: ${shlibs:Depends}, enlightenment
+Provides: emodule-calendar
+Description: E17 calendar module
+ An E17 module which displays a calendar on the desktop.
+ 
 Package: emodule0-cpu
 Architecture: any
 Depends: ${shlibs:Depends}, enlightenment
@@ -36,6 +43,22 @@ Description: E17 module which minimizes all windows
  An E17 module which minimizes all windows in order to show the
  desktop.
  
+Package: emodule0-efm-nav
+Architecture: any
+Depends: ${shlibs:Depends}, libc6 (>= 2.5), enlightenment
+Provides: emodule-efm-nav
+Description: E17 file manager navigation module
+ An E17 module which allows the user to navigate through the file manager
+ history.
+
+Package: emodule0-efm-path
+Architecture: any
+Depends: ${shlibs:Depends}, libc6 (>= 2.5), enlightenment
+Provides: emodule-efm-path
+Description: E17 file manager path module
+ An E17 module which allows for displaying and editing the path in the
+ file manager.
+
 Package: emodule0-emu
 Architecture: any
 Depends: ${shlibs:Depends}, enlightenment
@@ -119,6 +142,13 @@ Depends: ${shlibs:Depends}, enlightenment
 Provides: emodule-news
 Description: The E17 new modules
  An E17 module to display feeds like Rss or Atom on the desktop.
+
+Package: emodule0-penguins
+Architecture: any
+Depends: ${shlibs:Depends}, enlightenment
+Provides: emodule-penguins
+Description: The E17 penguins module
+ An E17 module to display penguins on the desktop.
  
 Package: emodule0-photo
 Architecture: any
@@ -228,15 +258,18 @@ Description: An E17 WLAN monitor module
 
 Package: emodules0-all
 Architecture: any
-Depends: enlightenment, emodule0-alarm, emodule0-bling, emodule0-cpu, emodule0-deskshow, emodule0-emu, emodule0-flame, emodule0-forecasts, emodule0-language, emodule0-mail, emodule0-mem, emodule0-mixer, emodule0-moon, emodule0-net, emodule0-news, emodule0-photo, emodule0-rain, emodule0-screenshot, emodule0-slideshow, emodule0-snow, emodule0-taskbar, emodule0-tclock, emodule0-uptime, emodule0-weather, emodule0-winselector, emodule0-wlan
+Depends: enlightenment, emodule0-alarm, emodule0-bling, emodule0-calendar, emodule0-cpu, emodule0-deskshow, emodule0-efm-nav, emodule0-efm-path, emodule0-emu, emodule0-flame, emodule0-forecasts, emodule0-language, emodule0-mail, emodule0-mem, emodule0-mixer, emodule0-moon, emodule0-net, emodule0-news, emodule0-penguins, emodule0-photo, emodule0-rain, emodule0-screenshot, emodule0-slideshow, emodule0-snow, emodule0-taskbar, emodule0-tclock, emodule0-uptime, emodule0-weather, emodule0-winselector, emodule0-wlan
 Conflicts: emodules-extra, evolume
 Provides: emodules-all, e17-modules
 Description: A dummy package for installing all modules for E17
  This package will install the following modules:
  Alarm       : Enlightenment Alarm Module
  Bling       : EFLized Composite Manager for E17.
+ Calendar    : Calendar module for the desktop.
  Cpu         : Monitor module for the CPU load.
  Deskshow    : A module that minimizes all windows to show the desktop.
+ EFM-nav     : A file manager history browser.
+ EFM-path    : A module for the file manager which displays the path.
  Emu         : A module front end that runs arbitrary back ends
                written in any language.
  Flame       : Displays flames at the bottom of the screen.
@@ -248,6 +281,7 @@ Description: A dummy package for installing all modules for E17
  Moon        : Moon Clock module for Enlightenment.
  Net         : Network activity monitoring module.
  News        : Displays Rss or Atom feeds on the desktop.
+ Penguins    : Displays penguins on the desktop.
  Photo       : Display, view or set pictures as backgrounds.
  Rain        : Displays rain on the desktop.
  Screenshot  : This module is used to take screenshots. It
