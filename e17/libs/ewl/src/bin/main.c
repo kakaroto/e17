@@ -429,7 +429,7 @@ run_unit_test_boxed(Ewl_Test *t)
 
 	c = ewl_widget_name_find("unit_test_box");
 
-	n = ewl_widget_name_find("notebook");
+	n = ewl_widget_name_find("test_notebook");
 	ewl_notebook_visible_page_set(EWL_NOTEBOOK(n), c);
 }
 
@@ -456,7 +456,7 @@ run_test_boxed(Ewl_Test *t)
 
 	t->func(EWL_CONTAINER(c));
 
-	n = ewl_widget_name_find("notebook");
+	n = ewl_widget_name_find("test_notebook");
 	ewl_notebook_visible_page_set(EWL_NOTEBOOK(n), c);
 
 }
@@ -563,7 +563,7 @@ create_main_test_window(Ewl_Container *box)
 
 	note = ewl_notebook_new();
 	ewl_container_child_append(box, note);
-	ewl_widget_name_set(note, "notebook");
+	ewl_widget_name_set(note, "test_notebook");
 	ewl_notebook_tabbar_alignment_set(EWL_NOTEBOOK(note),
 					EWL_FLAG_ALIGN_CENTER);
 	ewl_widget_show(note);
