@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Mixer\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2007-11-14 22:29+0100\n"
-"PO-Revision-Date: 2007-01-21 11:01+0100\n"
+"PO-Revision-Date: 2007-11-18 19:19+0100\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -15,7 +15,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: e_mod_config.c:52
-#, fuzzy
 msgid "Mixer Configuration"
 msgstr "Configurazione di Mixer"
 
@@ -58,20 +57,19 @@ msgstr "Mixer"
 
 #: e_mod_keybindings.c:10
 msgid "Decrease the volume"
-msgstr ""
+msgstr "Abbassa il volume"
 
 #: e_mod_keybindings.c:11
 msgid "Increase the volume"
-msgstr ""
+msgstr "Aumenta il volume"
 
 #: e_mod_keybindings.c:12
 msgid "Mute the mixer"
-msgstr ""
+msgstr "Rendi muto"
 
 #: e_mod_main.c:261
-#, fuzzy
 msgid "Configuration"
-msgstr "Configurazione di Mixer"
+msgstr "Configurazione"
 
 #: e_mod_main.c:713 e_mod_main.c:1144
 msgid "Volume"

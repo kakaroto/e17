@@ -1,10 +1,12 @@
 [Desktop Entry]
 Type=Link
 Name=EFM Navigation
+Name[it]=Navigazione EFM
 Exec=enlightenment
 StartupNotify=false
 Icon=e-module-efm_nav
 Comment=<hilight>Efm Navigation Module</hilight><br>A module that allows a user to <br> navigate the filemanager module.
+Comment[it]=<hilight>Modulo navigazione EFM</hilight><br>Un modulo che permette di<br>navigare il modulo del<br>file manager.
 X-Enlightenment-WaitExit=false
 X-Enlightenment-IconClass=efm_nav,gadget
 X-Enlightenment-ModuleType=fileman

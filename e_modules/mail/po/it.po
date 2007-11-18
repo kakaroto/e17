@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Mail\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2007-11-14 22:27+0100\n"
-"PO-Revision-Date: 2006-08-26 21:07+0200\n"
+"PO-Revision-Date: 2007-11-18 19:16+0100\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -19,9 +19,8 @@ msgid "Mailbox Configuration"
 msgstr "Configurazione casella di posta"
 
 #: e_mod_config_box.c:147 e_mod_config.c:96
-#, fuzzy
 msgid "General Settings"
-msgstr "Impostazioni porta"
+msgstr "Impostazioni generali"
 
 #: e_mod_config_box.c:149
 msgid "Start Program When New Mail Arrives"
@@ -56,7 +55,6 @@ msgid "Monitor Mbox file permanently"
 msgstr "Monitorizza file Mbox permanentemente"
 
 #: e_mod_config_box.c:197
-#, fuzzy
 msgid "Port Settings"
 msgstr "Impostazioni porta"
 
@@ -135,11 +133,11 @@ msgstr "Caselle di posta"
 
 #: e_mod_config.c:124
 msgid "Add"
-msgstr ""
+msgstr "Aggiungi"
 
 #: e_mod_config.c:128
 msgid "Delete"
-msgstr ""
+msgstr "Elimina"
 
 #: e_mod_config.c:134
 msgid "Configure..."

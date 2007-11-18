@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Slideshow\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2007-11-14 22:37+0100\n"
-"PO-Revision-Date: 2006-07-29 12:23+0200\n"
+"PO-Revision-Date: 2007-11-18 19:34+0100\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -49,15 +49,15 @@ msgstr "Ordina in modo casuale"
 
 #: e_mod_config.c:113
 msgid "Set wallpaper on all desktops"
-msgstr ""
+msgstr "Imposta sfondo su tutti i desktop"
 
 #: e_mod_config.c:115
 msgid "Set wallpaper on current desktop"
-msgstr ""
+msgstr "Imposta sfondo sul desktop attuale"
 
 #: e_mod_config.c:119
 msgid "Set wallpaper on current monitor (Xinerama support)"
-msgstr ""
+msgstr "Imposta sfondo sul monitor attuale (supporto Xinerama)"
 
 #: e_mod_main.c:140
 msgid "Slideshow"

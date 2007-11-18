@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Cpu\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2007-11-14 22:16+0100\n"
-"PO-Revision-Date: 2006-03-04 19:36+0100\n"
+"PO-Revision-Date: 2007-11-18 18:52+0100\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -16,49 +16,28 @@ msgstr ""
 
 #: e_mod_main.c:131
 msgid "Cpu"
-msgstr ""
+msgstr "Cpu"
 
 #: e_mod_main.c:366
 msgid "Fast (0.5 sec)"
-msgstr ""
+msgstr "Veloce (0.5 sec)"
 
 #: e_mod_main.c:373
 msgid "Medium (1 sec)"
-msgstr ""
+msgstr "Media (1 sec)"
 
 #: e_mod_main.c:380
 msgid "Normal (2 sec)"
-msgstr ""
+msgstr "Normale (2 sec)"
 
 #: e_mod_main.c:387
 msgid "Slow (5 sec)"
-msgstr ""
+msgstr "Lenta (5 sec)"
 
 #: e_mod_main.c:394
 msgid "Very Slow (30 sec)"
-msgstr ""
+msgstr "Molto lenta (30 sec)"
 
 #: e_mod_main.c:405
 msgid "Time Between Updates"
-msgstr ""
-
-#~ msgid "Cpu Configuration"
-#~ msgstr "Configurazione modulo Cpu"
-
-#~ msgid "Cpu Settings"
-#~ msgstr "Impostazioni di Cpu"
-
-#~ msgid "Show Text"
-#~ msgstr "Mostra testo"
-
-#~ msgid "Show Graph"
-#~ msgstr "Mostra grafico"
-
-#~ msgid "Check Interval:"
-#~ msgstr "Frequenza di aggiornamento:"
-
-#~ msgid "Enlightenment Cpu Monitor Module"
-#~ msgstr "Modulo Cpu di Enlightenment"
-
-#~ msgid "This module is used to monitor a cpu."
-#~ msgstr "Questo modulo viene usato per monitorare la cpu."
+msgstr "Frequenza di aggiornamento"

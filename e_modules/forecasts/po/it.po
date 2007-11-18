@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Weather\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2007-11-14 22:25+0100\n"
-"PO-Revision-Date: 2007-03-04 16:34+0100\n"
+"PO-Revision-Date: 2007-11-18 19:13+0100\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -33,7 +33,7 @@ msgstr "%2.0f minuti"
 
 #: e_mod_config.c:95
 msgid "Show Description"
-msgstr ""
+msgstr "Mostra descrizione"
 
 #: e_mod_config.c:99
 msgid "Unit Settings"

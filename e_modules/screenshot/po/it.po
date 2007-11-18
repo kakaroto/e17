@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Screenshot\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2007-11-14 22:37+0100\n"
-"PO-Revision-Date: 2006-06-24 14:13+0200\n"
+"PO-Revision-Date: 2007-11-18 19:33+0100\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -118,7 +118,7 @@ msgstr ""
 
 #: e_mod_main.c:692
 msgid "Enter a new filename to use for this screenshot"
-msgstr ""
+msgstr "Inserire un nuovo file da usare per questo screenshot"
 
 #: e_mod_main.c:711
 msgid ""

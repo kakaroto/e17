@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Moon\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2007-11-14 22:30+0100\n"
-"PO-Revision-Date: 2006-05-16 19:29+0200\n"
+"PO-Revision-Date: 2007-11-18 19:21+0100\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -15,7 +15,6 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: src/e_mod_config.c:101
-#, fuzzy
 msgid "Moon Configuration"
 msgstr "Configurazione modulo Moon"
 
@@ -56,9 +55,8 @@ msgid "Moon"
 msgstr "Luna"
 
 #: src/e_mod_main.c:247
-#, fuzzy
 msgid "Configuration"
-msgstr "Configurazione modulo Moon"
+msgstr "Configurazione"
 
 #: src/e_mod_main.c:491
 msgid "New Moon"

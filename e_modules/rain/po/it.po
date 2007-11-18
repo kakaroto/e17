@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Rain\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2007-11-14 22:36+0100\n"
-"PO-Revision-Date: 2006-02-07 13:52+0100\n"
+"PO-Revision-Date: 2007-11-18 19:31+0100\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -20,7 +20,7 @@ msgstr "Modulo Rain"
 
 #: e_mod_config.c:100
 msgid "General Settings"
-msgstr ""
+msgstr "Impostazioni generali"
 
 #: e_mod_config.c:101
 msgid "Show Clouds"
@@ -44,8 +44,8 @@ msgstr "Nubifragio"
 
 #: e_mod_main.c:33
 msgid "Appearance"
-msgstr ""
+msgstr "Aspetto"
 
 #: e_mod_main.c:35
 msgid "Rain"
-msgstr ""
+msgstr "Rain"

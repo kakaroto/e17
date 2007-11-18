@@ -7,3 +7,4 @@ X-Enlightenment-WaitExit=false
 X-Enlightenment-IconClass=bling,gadget
 Icon=e-module-bling.edj
 Comment=<hilight>Bling Module</hilight><br>An xcompmgr derived, EFLized<br>composite manager for E17.
+Comment[it]=<hilight>Modulo Bling</hilight><br>Un composite manager per E17<br>derivato da xcompmgr e<br>adattato alle EFL.

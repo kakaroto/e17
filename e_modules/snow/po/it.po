@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Snow\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2007-11-14 22:38+0100\n"
-"PO-Revision-Date: 2006-02-07 13:55+0100\n"
+"PO-Revision-Date: 2007-11-18 19:36+0100\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -20,7 +20,7 @@ msgstr "Configurazione modulo Snow"
 
 #: e_mod_config.c:99
 msgid "General Settings"
-msgstr ""
+msgstr "Impostazioni generali"
 
 #: e_mod_config.c:100
 msgid "Show Trees"
@@ -36,7 +36,7 @@ msgstr "Leggera"
 
 #: e_mod_config.c:108
 msgid "Medium"
-msgstr ""
+msgstr "Media"
 
 #: e_mod_config.c:110
 msgid "Dense"
@@ -44,8 +44,8 @@ msgstr "Intensa"
 
 #: e_mod_main.c:33
 msgid "Appearance"
-msgstr ""
+msgstr "Aspetto"
 
 #: e_mod_main.c:35
 msgid "Snow"
-msgstr ""
+msgstr "Snow"

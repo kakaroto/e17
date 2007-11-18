@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Penguins\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2007-11-14 19:07+0100\n"
-"PO-Revision-Date: 2007-11-08 03:50+0200\n"
+"PO-Revision-Date: 2007-11-18 19:27+0100\n"
 "Last-Translator: DaveMDS <dave@gurumeditation.it>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -16,7 +16,7 @@ msgstr ""
 
 #: e_mod_config.c:42
 msgid "Population Settings"
-msgstr ""
+msgstr "Impostazione popolazione"
 
 #: e_mod_config.c:92
 msgid "Number of penguins:"
@@ -46,8 +46,8 @@ msgstr "Seleziona il tipo di popolazione:"
 
 #: e_mod_main.c:60
 msgid "Appearance"
-msgstr ""
+msgstr "Aspetto"
 
 #: e_mod_main.c:61
 msgid "Penguins"
-msgstr ""
+msgstr "Pinguini"

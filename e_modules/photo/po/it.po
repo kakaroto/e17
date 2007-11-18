@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: Photo\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2007-11-14 22:35+0100\n"
-"PO-Revision-Date: 2007-05-27 12:05+0200\n"
+"PO-Revision-Date: 2007-11-18 19:30+0100\n"
 "Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -86,15 +86,15 @@ msgstr "Directory immagini"
 
 #: src/module/photo_config_dialog.c:235
 msgid "Add"
-msgstr ""
+msgstr "Aggiungi"
 
 #: src/module/photo_config_dialog.c:237
 msgid "Delete"
-msgstr ""
+msgstr "Elimina"
 
 #: src/module/photo_config_dialog.c:239
 msgid "Configure"
-msgstr ""
+msgstr "Configura"
 
 #: src/module/photo_config_dialog.c:242
 msgid "Reload picture directories"
@@ -107,7 +107,7 @@ msgstr "Ferma caricamento"
 #: src/module/photo_config_dialog.c:252
 #: src/module/photo_config_dialog_item.c:127
 msgid "Appearance"
-msgstr ""
+msgstr "Aspetto"
 
 #: src/module/photo_config_dialog.c:254
 #: src/module/photo_config_dialog_item.c:136
@@ -146,7 +146,7 @@ msgstr "Centrale"
 #: src/module/photo_config_dialog.c:279
 #: src/module/photo_config_dialog_item.c:142
 msgid "No"
-msgstr ""
+msgstr "No"
 
 #: src/module/photo_config_dialog.c:318
 msgid "Popups"
@@ -281,7 +281,7 @@ msgstr "%1.0f"
 
 #: src/module/photo_config_dialog_item.c:140
 msgid "Yes"
-msgstr ""
+msgstr "Sì"
 
 #: src/module/photo_config_dialog_item.c:144
 #: src/module/photo_config_dialog_item.c:206
@@ -409,22 +409,3 @@ msgstr ""
 "sono<br>mai state caricate prima in Photo per esse verrà<br>creata una "
 "miniatura.<br><br>Durante la creazione dei popup non si potrà "
 "vedere<br>nessuna immagine in Photo.<br>Spero di poter risolvere questo :)"
-
-#~ msgid "Enlightenment Photo Module - version "
-#~ msgstr "Modulo Photo di Enlightenment - versione "
-
-#~ msgid ""
-#~ "Module to display pictures on your desktop<br><br>ooookiwi@free."
-#~ "fr<br>http://oooo.zapto.org"
-#~ msgstr ""
-#~ "Modulo per visualizzare immagini sul desktop<br><br>ooookiwi@free."
-#~ "fr<br>http://oooo.zapto.org"
-
-#~ msgid ""
-#~ "<hilight>The directory %s is being loaded at the moment !</"
-#~ "hilight><br>Please wait until the loading is finished to modify its "
-#~ "settings"
-#~ msgstr ""
-#~ "<hilight>E' in corso il caricamento della directory %s!</"
-#~ "hilight><br>Attendere il caricamento per poterne<br>modificare le "
-#~ "impostazioni"

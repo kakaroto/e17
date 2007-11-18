@@ -1,10 +1,12 @@
 [Desktop Entry]
 Type=Link
 Name=EFM Path
+Name[it]=Percorso EFM
 Exec=enlightenment
 StartupNotify=false
 Icon=e-module-efm_path
 Comment=<hilight>Efm Path Module</hilight><br>A module that allows a user to type<br> a location into the filemanager.
+Comment[it]=<hilight>Modulo percorso EFM</hilight><br>Un modulo che permetti di<br>inserire un percorso nel modulo<br>del file manager.
 X-Enlightenment-WaitExit=false
 X-Enlightenment-IconClass=efm_path,gadget
 X-Enlightenment-ModuleType=fileman
