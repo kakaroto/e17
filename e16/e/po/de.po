@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-12 20:18+0100\n"
+"POT-Creation-Date: 2007-11-17 20:42+0100\n"
 "PO-Revision-Date: 2000-03-29 21:12+0200\n"
 "Last-Translator: Matthias Warkus <mawa@iname.com>\n"
 "Language-Team: Enlightenment l10n <e-develop@enlightenment.org>\n"
@@ -483,7 +483,7 @@ msgstr "Fokus-Einstellungen"
 # src/settings.c:3407 src/settings.c:3752 src/settings.c:4050
 # src/settings.c:4188
 #: src/container.c:1226 src/dialog.c:886 src/pager.c:998 config/strings.c:30
-#: config/strings.c:131
+#: config/strings.c:132
 msgid "Close"
 msgstr "Schließen"
 
@@ -677,84 +677,84 @@ msgstr ""
 "ganz nach unten zu bringen.\n"
 
 # src/settings.c:830 src/settings.c:889
-#: src/desktops.c:2293 src/desktops.c:2332
+#: src/desktops.c:2295 src/desktops.c:2334
 #, c-format
 msgid "%i Desktops"
 msgstr "%i Desktops"
 
 # src/settings.c:832 src/settings.c:891
-#: src/desktops.c:2295 src/desktops.c:2334
+#: src/desktops.c:2297 src/desktops.c:2336
 #, c-format
 msgid "%i Desktop"
 msgstr "%i Desktop"
 
 # src/settings.c:882
-#: src/desktops.c:2327
+#: src/desktops.c:2329
 msgid "Number of virtual desktops:\n"
 msgstr "Anzahl virtueller Desktops:\n"
 
 # src/settings.c:1750
-#: src/desktops.c:2356
+#: src/desktops.c:2358
 msgid "Slide desktops around when changing"
 msgstr "Desktops gleiten beim Wechseln herum"
 
 # src/settings.c:1922
-#: src/desktops.c:2362
+#: src/desktops.c:2364
 #, fuzzy
 msgid "Desktop Slide speed:\n"
 msgstr "Desktop-Gleitgeschwindigkeit (langsam)\n"
 
 # src/settings.c:1120
-#: src/desktops.c:2376
+#: src/desktops.c:2378
 #, fuzzy
 msgid "Wrap desktops around"
 msgstr "Virtuelle Desktops zyklisch durchlaufen"
 
 # src/settings.c:1858
-#: src/desktops.c:2384
+#: src/desktops.c:2386
 msgid "Display desktop dragbar"
 msgstr "Desktop-Ziehbalken anzeigen"
 
 # src/settings.c:1867
-#: src/desktops.c:2390
+#: src/desktops.c:2392
 msgid "Drag bar position:"
 msgstr "Position des Ziehbalkens:"
 
 # src/settings.c:1878
-#: src/desktops.c:2394
+#: src/desktops.c:2396
 msgid "Top"
 msgstr "Oben"
 
 # src/settings.c:1885
-#: src/desktops.c:2400
+#: src/desktops.c:2402
 msgid "Bottom"
 msgstr "Unten"
 
 # src/settings.c:218 src/settings.c:250 src/settings.c:282
 # src/settings.c:1896
-#: src/desktops.c:2406 src/pager.c:1907 src/pager.c:1932 src/pager.c:1957
+#: src/desktops.c:2408 src/pager.c:1907 src/pager.c:1932 src/pager.c:1957
 msgid "Left"
 msgstr "Links"
 
 # src/settings.c:234 src/settings.c:266 src/settings.c:298
 # src/settings.c:1903
-#: src/desktops.c:2412 src/pager.c:1919 src/pager.c:1944 src/pager.c:1969
+#: src/desktops.c:2414 src/pager.c:1919 src/pager.c:1944 src/pager.c:1969
 msgid "Right"
 msgstr "Rechts"
 
 # src/snaps.c:453
-#: src/desktops.c:2420 src/menus-misc.c:713
+#: src/desktops.c:2422 src/menus-misc.c:713
 #, fuzzy
 msgid "Desks"
 msgstr "Desktop"
 
 # src/settings.c:856
-#: src/desktops.c:2421
+#: src/desktops.c:2423
 msgid "Multiple Desktop Settings"
 msgstr "Mehrfach-Desktop-Einstellungen"
 
 # src/main.c:89
-#: src/desktops.c:2424
+#: src/desktops.c:2426
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -763,7 +763,7 @@ msgstr ""
 "Einstellungsdialog\n"
 
 # src/settings.c:1007 src/settings.c:1072
-#: src/desktops.c:2503 src/desktops.c:2538
+#: src/desktops.c:2504 src/desktops.c:2539
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -773,7 +773,7 @@ msgstr ""
 "Bildschirme groß"
 
 # src/settings.c:1010 src/settings.c:1075
-#: src/desktops.c:2506 src/desktops.c:2541
+#: src/desktops.c:2507 src/desktops.c:2542
 msgid ""
 "1\n"
 "Screen in size"
@@ -782,47 +782,47 @@ msgstr ""
 "Bildschirm groß"
 
 # src/settings.c:1066
-#: src/desktops.c:2534
+#: src/desktops.c:2535
 msgid "Virtual Desktop size:\n"
 msgstr "Virtuelle Desktopgröße:\n"
 
 # src/settings.c:1120
-#: src/desktops.c:2575
+#: src/desktops.c:2576
 msgid "Wrap virtual desktops around"
 msgstr "Virtuelle Desktops zyklisch durchlaufen"
 
-#: src/desktops.c:2582
+#: src/desktops.c:2583
 msgid "Edge Flip Mode:"
 msgstr ""
 
-#: src/desktops.c:2585
+#: src/desktops.c:2586
 msgid "Off"
 msgstr ""
 
-#: src/desktops.c:2590
+#: src/desktops.c:2591
 msgid "On"
 msgstr ""
 
-#: src/desktops.c:2595
+#: src/desktops.c:2596
 msgid "Only when moving window"
 msgstr ""
 
 # src/settings.c:1134
-#: src/desktops.c:2601
+#: src/desktops.c:2602
 msgid "Resistance at edge of screen:\n"
 msgstr "Widerstand der Bildschirmkante:\n"
 
-#: src/desktops.c:2613
+#: src/desktops.c:2614
 msgid "Areas"
 msgstr ""
 
 # src/settings.c:1040
-#: src/desktops.c:2614
+#: src/desktops.c:2615
 msgid "Virtual Desktop Settings"
 msgstr "Einstellungen zu virtuellen Desktops"
 
 # src/settings.c:1040
-#: src/desktops.c:2617
+#: src/desktops.c:2618
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -1209,7 +1209,7 @@ msgid "Swap Window Locations"
 msgstr "Fensterpositionen vertauschen"
 
 # src/menus.c:2044
-#: src/groups.c:1018 src/menus-misc.c:773 config/strings.c:146
+#: src/groups.c:1018 src/menus-misc.c:773 config/strings.c:147
 #, fuzzy
 msgid "Groups"
 msgstr "Gruppe %i"
@@ -1495,7 +1495,7 @@ msgid "Magnifier"
 msgstr ""
 
 # src/theme.c:354
-#: src/menus-misc.c:584 config/strings.c:90
+#: src/menus-misc.c:584 config/strings.c:91
 #, fuzzy
 msgid "Themes"
 msgstr "Unbrauchbares Thema"
@@ -1651,17 +1651,17 @@ msgstr ""
 "Einstellungsdialog\n"
 
 # src/pager.c:1268
-#: src/pager.c:991 config/strings.c:49 config/strings.c:130
+#: src/pager.c:991 config/strings.c:49 config/strings.c:131
 msgid "Window Options"
 msgstr "Fensteroptionen"
 
 # src/pager.c:1274
-#: src/pager.c:994 config/strings.c:51 config/strings.c:133
+#: src/pager.c:994 config/strings.c:51 config/strings.c:134
 msgid "Iconify"
 msgstr "Minimieren"
 
 # src/pager.c:1280
-#: src/pager.c:1002 config/strings.c:132
+#: src/pager.c:1002 config/strings.c:133
 msgid "Annihilate"
 msgstr "Zerstören"
 
@@ -2146,7 +2146,7 @@ msgid "Use saveunders to reduce window exposures"
 msgstr "SaveUnders benutzen, um Fensterexposures zu reduzieren"
 
 # src/settings.c:393
-#: src/settings.c:553 config/strings.c:144 config/strings.c:160
+#: src/settings.c:553 config/strings.c:145 config/strings.c:161
 #, fuzzy
 msgid "Miscellaneous"
 msgstr "Verschiedene Einstellungen"
@@ -2316,12 +2316,12 @@ msgid "Border style"
 msgstr "Rahmenstil"
 
 # src/snaps.c:445
-#: src/snaps.c:849 config/strings.c:180
+#: src/snaps.c:849 config/strings.c:181
 msgid "Size"
 msgstr "Größe"
 
 # src/snaps.c:453
-#: src/snaps.c:854 config/strings.c:88
+#: src/snaps.c:854 config/strings.c:89
 msgid "Desktop"
 msgstr "Desktop"
 
@@ -2345,7 +2345,7 @@ msgstr "Stapelschicht"
 msgid "Window List Skip"
 msgstr "In Fensterliste überspringen"
 
-#: src/snaps.c:880 config/strings.c:143 config/strings.c:169
+#: src/snaps.c:880 config/strings.c:144 config/strings.c:170
 msgid "Opacity"
 msgstr ""
 
@@ -2771,7 +2771,7 @@ msgid "This button does nothing interesting."
 msgstr ""
 
 # src/snaps.c:461
-#: config/strings.c:47 config/strings.c:136
+#: config/strings.c:47 config/strings.c:137
 #, fuzzy
 msgid "Shade/Unshade"
 msgstr "Rolladenposition"
@@ -2790,7 +2790,7 @@ msgstr "Unten"
 msgid "Show more buttons."
 msgstr ""
 
-#: config/strings.c:56 config/strings.c:134
+#: config/strings.c:56 config/strings.c:135
 msgid "Raise"
 msgstr ""
 
@@ -2802,7 +2802,7 @@ msgstr ""
 "Klicken Sie hier, um diesen Desktop\n"
 "ganz nach oben zu bringen.\n"
 
-#: config/strings.c:58 config/strings.c:135
+#: config/strings.c:58 config/strings.c:136
 msgid "Lower"
 msgstr ""
 
@@ -2811,7 +2811,7 @@ msgid "Lower this window."
 msgstr ""
 
 # src/pager.c:1283
-#: config/strings.c:60 config/strings.c:137
+#: config/strings.c:60 config/strings.c:138
 #, fuzzy
 msgid "Stick/Unstick"
 msgstr "Ankleben / Ablösen"
@@ -2906,185 +2906,189 @@ msgstr "Zu diesem Desktop gehen"
 msgid "Create Systray"
 msgstr ""
 
+#: config/strings.c:85
+msgid "Show Magnifier"
+msgstr ""
+
 # src/main.c:92 src/memory.c:197 src/memory.c:278 src/memory.c:298
 # src/memory.c:379 src/memory.c:396 src/setup.c:295 src/setup.c:329
 # src/setup.c:341 src/setup.c:403
-#: config/strings.c:86
+#: config/strings.c:87
 #, fuzzy
 msgid "Enlightenment"
 msgstr "Enlightenment verlassen"
 
 # src/snaps.c:437
-#: config/strings.c:87 config/strings.c:194
+#: config/strings.c:88 config/strings.c:195
 #, fuzzy
 msgid "User Menus"
 msgstr "Rahmenstil"
 
 # src/settings.c:393
-#: config/strings.c:89 config/strings.c:109
+#: config/strings.c:90 config/strings.c:110
 #, fuzzy
 msgid "Settings"
 msgstr "Fokus-Einstellungen"
 
-#: config/strings.c:91 config/strings.c:98
+#: config/strings.c:92 config/strings.c:99
 msgid "Maintenance"
 msgstr ""
 
-#: config/strings.c:92
+#: config/strings.c:93
 msgid "Help"
 msgstr ""
 
 # src/actions.c:3282
-#: config/strings.c:93
+#: config/strings.c:94
 #, fuzzy
 msgid "About Enlightenment"
 msgstr "Über Enlightenment %s"
 
-#: config/strings.c:94
+#: config/strings.c:95
 msgid "About this theme"
 msgstr ""
 
 # src/alert.c:182
-#: config/strings.c:95 config/strings.c:198
+#: config/strings.c:96 config/strings.c:199
 msgid "Restart"
 msgstr "Neu starten"
 
 # src/session.c:1184
-#: config/strings.c:96 config/strings.c:199
+#: config/strings.c:97 config/strings.c:200
 #, fuzzy
 msgid "Log Out"
 msgstr "  Ja, abmelden  "
 
-#: config/strings.c:99
+#: config/strings.c:100
 msgid "Purge config file cache"
 msgstr ""
 
 # src/settings.c:3123
-#: config/strings.c:100
+#: config/strings.c:101
 #, fuzzy
 msgid "Purge pager background cache"
 msgstr "Hintergrundbild verwenden"
 
-#: config/strings.c:101
+#: config/strings.c:102
 msgid "Purge background selector cache"
 msgstr ""
 
-#: config/strings.c:102
+#: config/strings.c:103
 msgid "Purge all caches"
 msgstr ""
 
-#: config/strings.c:103
+#: config/strings.c:104
 msgid "Query config file cache usage"
 msgstr ""
 
-#: config/strings.c:104
+#: config/strings.c:105
 msgid "Query pager background cache usage"
 msgstr ""
 
-#: config/strings.c:105
+#: config/strings.c:106
 msgid "Query background selector cache usage"
 msgstr ""
 
-#: config/strings.c:106
+#: config/strings.c:107
 msgid "Query all cache usage"
 msgstr ""
 
-#: config/strings.c:107
+#: config/strings.c:108
 msgid "Regenerate Menus"
 msgstr ""
 
 # src/config.c:3743
-#: config/strings.c:110
+#: config/strings.c:111
 #, fuzzy
 msgid "Enlightenment Settings ..."
 msgstr "Enlightenment startet..."
 
 # src/settings.c:393
-#: config/strings.c:111
+#: config/strings.c:112
 #, fuzzy
 msgid "Focus Settings ..."
 msgstr "Fokus-Einstellungen"
 
 # src/settings.c:619
-#: config/strings.c:112
+#: config/strings.c:113
 #, fuzzy
 msgid "Move & Resize Settings ..."
 msgstr "Einstellungen zu Verschieben und Größenänderung"
 
 # src/settings.c:1199
-#: config/strings.c:113
+#: config/strings.c:114
 #, fuzzy
 msgid "Window Placement Settings ..."
 msgstr "Fensterplatzierungs-Einstellungen"
 
 # src/settings.c:856
-#: config/strings.c:114
+#: config/strings.c:115
 #, fuzzy
 msgid "Multiple Desktop Settings ..."
 msgstr "Mehrfach-Desktop-Einstellungen"
 
 # src/settings.c:1040
-#: config/strings.c:115
+#: config/strings.c:116
 #, fuzzy
 msgid "Virtual Desktop Settings ..."
 msgstr "Einstellungen zu virtuellen Desktops"
 
 # src/pager.c:1301
-#: config/strings.c:116
+#: config/strings.c:117
 #, fuzzy
 msgid "Pager Settings ..."
 msgstr "Pager-Einstellungen..."
 
 # src/settings.c:393
-#: config/strings.c:117
+#: config/strings.c:118
 #, fuzzy
 msgid "Menu Settings ..."
 msgstr "Verschiedene Einstellungen"
 
 # src/settings.c:1304
-#: config/strings.c:118
+#: config/strings.c:119
 #, fuzzy
 msgid "Autoraise Settings ..."
 msgstr "Einstellungen zum automatischen Anheben"
 
 # src/settings.c:1403
-#: config/strings.c:119
+#: config/strings.c:120
 #, fuzzy
 msgid "Tooltip Settings ..."
 msgstr "Minihilfen-Einstellungen"
 
 # src/settings.c:1566
-#: config/strings.c:120
+#: config/strings.c:121
 #, fuzzy
 msgid "Audio Settings ..."
 msgstr "Audio-Einstellungen"
 
 # src/pager.c:1301
-#: config/strings.c:121
+#: config/strings.c:122
 #, fuzzy
 msgid "Group Settings ..."
 msgstr "Pager-Einstellungen..."
 
 # src/pager.c:1301
-#: config/strings.c:122
+#: config/strings.c:123
 #, fuzzy
 msgid "Remember Settings ..."
 msgstr "Gespeicherte Einstellungen..."
 
 # src/settings.c:1710
-#: config/strings.c:123
+#: config/strings.c:124
 #, fuzzy
 msgid "Special FX Settings ..."
 msgstr "Special-FX-Einstellungen"
 
 # src/settings.c:3044
-#: config/strings.c:124
+#: config/strings.c:125
 #, fuzzy
 msgid "Desktop Background Settings ..."
 msgstr "Hintergrundeinstellungen"
 
 # src/main.c:89
-#: config/strings.c:125
+#: config/strings.c:126
 #, fuzzy
 msgid "Theme Transparency Settings ..."
 msgstr ""
@@ -3092,241 +3096,241 @@ msgstr ""
 "Einstellungsdialog\n"
 
 # src/settings.c:1403
-#: config/strings.c:126
+#: config/strings.c:127
 #, fuzzy
 msgid "Composite Settings ..."
 msgstr "Minihilfen-Einstellungen"
 
 # src/settings.c:1566
-#: config/strings.c:127
+#: config/strings.c:128
 #, fuzzy
 msgid "Session Settings ..."
 msgstr "Audio-Einstellungen"
 
 # src/settings.c:393
-#: config/strings.c:128
+#: config/strings.c:129
 #, fuzzy
 msgid "Miscellaneous Settings ..."
 msgstr "Verschiedene Einstellungen"
 
 # src/pager.c:1301
-#: config/strings.c:138
+#: config/strings.c:139
 #, fuzzy
 msgid "Remember..."
 msgstr "Gespeicherte Einstellungen..."
 
 # src/snaps.c:485
-#: config/strings.c:139
+#: config/strings.c:140
 #, fuzzy
 msgid "Window Size"
 msgstr "In Fensterliste überspringen"
 
 # src/settings.c:393
-#: config/strings.c:140
+#: config/strings.c:141
 #, fuzzy
 msgid "Set Stacking"
 msgstr "Fokus-Einstellungen"
 
 # src/snaps.c:437
-#: config/strings.c:141
+#: config/strings.c:142
 #, fuzzy
 msgid "Set Border Style"
 msgstr "Rahmenstil"
 
 # src/groups.c:603 src/groups.c:612 src/groups.c:620 src/settings.c:3872
-#: config/strings.c:142
+#: config/strings.c:143
 #, fuzzy
 msgid "Window Groups"
 msgstr "Fenstergruppen-Fehler"
 
 # src/snaps.c:536
-#: config/strings.c:147
+#: config/strings.c:148
 #, fuzzy
 msgid "Configure this window's group(s)"
 msgstr "An Gruppe(n) dieses Fensters erinnern"
 
-#: config/strings.c:148
+#: config/strings.c:149
 msgid "Start a new group"
 msgstr ""
 
-#: config/strings.c:149
+#: config/strings.c:150
 msgid "Add this window to the current group"
 msgstr ""
 
 # src/actions.c:3858
-#: config/strings.c:150
+#: config/strings.c:151
 #, fuzzy
 msgid "Select group to add this window to"
 msgstr "   Wählen Sie die Gruppe, aus der Sie das Fenster entfernen wollen.  "
 
 # src/snaps.c:536
-#: config/strings.c:151
+#: config/strings.c:152
 #, fuzzy
 msgid "Remove this window from a group"
 msgstr "An Gruppe(n) dieses Fensters erinnern"
 
 # src/actions.c:3474
-#: config/strings.c:152
+#: config/strings.c:153
 #, fuzzy
 msgid "Destroy a group this window belongs to"
 msgstr "  Wählen Sie die Gruppe aus, zu der das Fenster gehören wird:  \n"
 
 # src/settings.c:4018 src/settings.c:4160
-#: config/strings.c:154
+#: config/strings.c:155
 #, fuzzy
 msgid "Stacking"
 msgstr "Ankleben"
 
-#: config/strings.c:155
+#: config/strings.c:156
 msgid "Below"
 msgstr ""
 
-#: config/strings.c:156
+#: config/strings.c:157
 msgid "Normal"
 msgstr ""
 
-#: config/strings.c:157
+#: config/strings.c:158
 msgid "Above"
 msgstr ""
 
 # src/settings.c:1878
-#: config/strings.c:158
+#: config/strings.c:159
 #, fuzzy
 msgid "On Top"
 msgstr "Oben"
 
-#: config/strings.c:161
+#: config/strings.c:162
 msgid "Toggle Skip Window Lists"
 msgstr ""
 
-#: config/strings.c:162
+#: config/strings.c:163
 msgid "Toggle Fixed Position"
 msgstr ""
 
-#: config/strings.c:163
+#: config/strings.c:164
 msgid "Toggle Fixed Size"
 msgstr ""
 
 # src/snaps.c:494
-#: config/strings.c:164
+#: config/strings.c:165
 #, fuzzy
 msgid "Toggle Never Focus"
 msgstr "Nie Fokus geben"
 
-#: config/strings.c:165
+#: config/strings.c:166
 msgid "Toggle Click to Focus"
 msgstr ""
 
 # src/snaps.c:494
-#: config/strings.c:166
+#: config/strings.c:167
 #, fuzzy
 msgid "Toggle Never Use Area"
 msgstr "Nie Fokus geben"
 
 # src/settings.c:1885
-#: config/strings.c:167
+#: config/strings.c:168
 #, fuzzy
 msgid "Toggle Button Grabs"
 msgstr "Unten"
 
-#: config/strings.c:170
+#: config/strings.c:171
 msgid "20%"
 msgstr ""
 
-#: config/strings.c:171
+#: config/strings.c:172
 msgid "40%"
 msgstr ""
 
-#: config/strings.c:172
+#: config/strings.c:173
 msgid "60%"
 msgstr ""
 
-#: config/strings.c:173
+#: config/strings.c:174
 msgid "80%"
 msgstr ""
 
-#: config/strings.c:174
+#: config/strings.c:175
 msgid "100%"
 msgstr ""
 
-#: config/strings.c:175
+#: config/strings.c:176
 msgid "Focused opacity 100%"
 msgstr ""
 
 # src/settings.c:433
-#: config/strings.c:176
+#: config/strings.c:177
 #, fuzzy
 msgid "Focused opacity follows unfocused"
 msgstr "Fokus folgt Mausklicks"
 
 # src/settings.c:1127
-#: config/strings.c:177
+#: config/strings.c:178
 #, fuzzy
 msgid "Toggle Fading"
 msgstr "Magische Kanten verwenden"
 
-#: config/strings.c:178
+#: config/strings.c:179
 msgid "Toggle Shadows"
 msgstr ""
 
-#: config/strings.c:181
+#: config/strings.c:182
 msgid "Max Size Toggle"
 msgstr ""
 
-#: config/strings.c:182
+#: config/strings.c:183
 msgid "Available Max Size Toggle"
 msgstr ""
 
-#: config/strings.c:183
+#: config/strings.c:184
 msgid "Absolute Max Size Toggle"
 msgstr ""
 
-#: config/strings.c:184
+#: config/strings.c:185
 msgid "Span Xinerama Screens"
 msgstr ""
 
-#: config/strings.c:185
+#: config/strings.c:186
 msgid "Max Height Toggle"
 msgstr ""
 
-#: config/strings.c:186
+#: config/strings.c:187
 msgid "Available Max Height Toggle"
 msgstr ""
 
-#: config/strings.c:187
+#: config/strings.c:188
 msgid "Absolute Max Height Toggle"
 msgstr ""
 
-#: config/strings.c:188
+#: config/strings.c:189
 msgid "Max Width Toggle"
 msgstr ""
 
-#: config/strings.c:189
+#: config/strings.c:190
 msgid "Available Max Width Toggle"
 msgstr ""
 
-#: config/strings.c:190
+#: config/strings.c:191
 msgid "Absolute Max Width Toggle"
 msgstr ""
 
-#: config/strings.c:191
+#: config/strings.c:192
 msgid "Fullscreen/Normal"
 msgstr ""
 
-#: config/strings.c:192
+#: config/strings.c:193
 msgid "Zoom/Unzoom"
 msgstr ""
 
-#: config/strings.c:195
+#: config/strings.c:196
 #, fuzzy
 msgid "User Application List"
 msgstr "Gespeicherte Anwendungsattribute"
 
-#: config/strings.c:196
+#: config/strings.c:197
 msgid "Other"
 msgstr ""
 
-#: config/strings.c:197
+#: config/strings.c:198
 msgid "Epplets"
 msgstr ""
 

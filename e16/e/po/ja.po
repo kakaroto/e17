@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-12 20:18+0100\n"
+"POT-Creation-Date: 2007-11-17 20:42+0100\n"
 "PO-Revision-Date: 2007-09-22 23:01+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -413,7 +413,7 @@ msgid "Settings..."
 msgstr "設定"
 
 #: src/container.c:1226 src/dialog.c:886 src/pager.c:998 config/strings.c:30
-#: config/strings.c:131
+#: config/strings.c:132
 msgid "Close"
 msgstr "閉じる"
 
@@ -579,68 +579,68 @@ msgstr ""
 "ここをクリックするとこのデスクトップが\n"
 "下に移ります。\n"
 
-#: src/desktops.c:2293 src/desktops.c:2332
+#: src/desktops.c:2295 src/desktops.c:2334
 #, c-format
 msgid "%i Desktops"
 msgstr "デスクトップ %i 枚"
 
-#: src/desktops.c:2295 src/desktops.c:2334
+#: src/desktops.c:2297 src/desktops.c:2336
 #, c-format
 msgid "%i Desktop"
 msgstr "デスクトップ %i 枚"
 
-#: src/desktops.c:2327
+#: src/desktops.c:2329
 msgid "Number of virtual desktops:\n"
 msgstr "仮想デスクトップの枚数:\n"
 
-#: src/desktops.c:2356
+#: src/desktops.c:2358
 msgid "Slide desktops around when changing"
 msgstr "デスクトップ間を移動する時にスライドする"
 
 #
-#: src/desktops.c:2362
+#: src/desktops.c:2364
 msgid "Desktop Slide speed:\n"
 msgstr "デスクトップのスライド速度\n"
 
 #
-#: src/desktops.c:2376
+#: src/desktops.c:2378
 msgid "Wrap desktops around"
 msgstr "仮想デスクトップの上下左右をつなげる"
 
-#: src/desktops.c:2384
+#: src/desktops.c:2386
 msgid "Display desktop dragbar"
 msgstr "デスクトップにドラッグバーを表示する"
 
-#: src/desktops.c:2390
+#: src/desktops.c:2392
 msgid "Drag bar position:"
 msgstr "ドラッグバーの位置"
 
-#: src/desktops.c:2394
+#: src/desktops.c:2396
 msgid "Top"
 msgstr "上"
 
-#: src/desktops.c:2400
+#: src/desktops.c:2402
 msgid "Bottom"
 msgstr "下"
 
-#: src/desktops.c:2406 src/pager.c:1907 src/pager.c:1932 src/pager.c:1957
+#: src/desktops.c:2408 src/pager.c:1907 src/pager.c:1932 src/pager.c:1957
 msgid "Left"
 msgstr "左"
 
-#: src/desktops.c:2412 src/pager.c:1919 src/pager.c:1944 src/pager.c:1969
+#: src/desktops.c:2414 src/pager.c:1919 src/pager.c:1944 src/pager.c:1969
 msgid "Right"
 msgstr "右"
 
 #
-#: src/desktops.c:2420 src/menus-misc.c:713
+#: src/desktops.c:2422 src/menus-misc.c:713
 msgid "Desks"
 msgstr "マルチデスクトップ"
 
-#: src/desktops.c:2421
+#: src/desktops.c:2423
 msgid "Multiple Desktop Settings"
 msgstr "マルチデスクトップの設定"
 
-#: src/desktops.c:2424
+#: src/desktops.c:2426
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -648,7 +648,7 @@ msgstr ""
 "Enlightenment マルチデスクトップ\n"
 "設定ダイアログ\n"
 
-#: src/desktops.c:2503 src/desktops.c:2538
+#: src/desktops.c:2504 src/desktops.c:2539
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -657,7 +657,7 @@ msgstr ""
 "%i x %i\n"
 "の大きさの仮想デスクトップ"
 
-#: src/desktops.c:2506 src/desktops.c:2541
+#: src/desktops.c:2507 src/desktops.c:2542
 msgid ""
 "1\n"
 "Screen in size"
@@ -665,43 +665,43 @@ msgstr ""
 "1\n"
 "の大きさの仮想デスクトップ"
 
-#: src/desktops.c:2534
+#: src/desktops.c:2535
 msgid "Virtual Desktop size:\n"
 msgstr "仮想デスクトップの大きさ\n"
 
-#: src/desktops.c:2575
+#: src/desktops.c:2576
 msgid "Wrap virtual desktops around"
 msgstr "仮想デスクトップの上下左右をつなげる"
 
-#: src/desktops.c:2582
+#: src/desktops.c:2583
 msgid "Edge Flip Mode:"
 msgstr "マウスカーソルによるデスクトップの切り替え"
 
-#: src/desktops.c:2585
+#: src/desktops.c:2586
 msgid "Off"
 msgstr "無効"
 
-#: src/desktops.c:2590
+#: src/desktops.c:2591
 msgid "On"
 msgstr "有効"
 
-#: src/desktops.c:2595
+#: src/desktops.c:2596
 msgid "Only when moving window"
 msgstr "ウィンドウ移動時のみ切り替える"
 
-#: src/desktops.c:2601
+#: src/desktops.c:2602
 msgid "Resistance at edge of screen:\n"
 msgstr "画面の端に達した時の移動抵抗値\n"
 
-#: src/desktops.c:2613
+#: src/desktops.c:2614
 msgid "Areas"
 msgstr "デスクトップサイズ"
 
-#: src/desktops.c:2614
+#: src/desktops.c:2615
 msgid "Virtual Desktop Settings"
 msgstr "仮想デスクトップ設定"
 
-#: src/desktops.c:2617
+#: src/desktops.c:2618
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -1028,7 +1028,7 @@ msgid "Swap Window Locations"
 msgstr "ウィンドウ位置を交換する"
 
 #
-#: src/groups.c:1018 src/menus-misc.c:773 config/strings.c:146
+#: src/groups.c:1018 src/menus-misc.c:773 config/strings.c:147
 msgid "Groups"
 msgstr "グループ"
 
@@ -1287,7 +1287,7 @@ msgid "Magnifier"
 msgstr "拡大中"
 
 #
-#: src/menus-misc.c:584 config/strings.c:90
+#: src/menus-misc.c:584 config/strings.c:91
 msgid "Themes"
 msgstr "テーマ"
 
@@ -1418,15 +1418,15 @@ msgstr ""
 "Enlightenment 透明化対象\n"
 "設定ダイアログ\n"
 
-#: src/pager.c:991 config/strings.c:49 config/strings.c:130
+#: src/pager.c:991 config/strings.c:49 config/strings.c:131
 msgid "Window Options"
 msgstr "ウィンドウオプション"
 
-#: src/pager.c:994 config/strings.c:51 config/strings.c:133
+#: src/pager.c:994 config/strings.c:51 config/strings.c:134
 msgid "Iconify"
 msgstr "アイコン化"
 
-#: src/pager.c:1002 config/strings.c:132
+#: src/pager.c:1002 config/strings.c:133
 msgid "Annihilate"
 msgstr "強制終了"
 
@@ -1844,7 +1844,7 @@ msgstr "ログイン後、上下にスライドする初期画面を出す"
 msgid "Use saveunders to reduce window exposures"
 msgstr "セーブアンダー機能を使いウィンドウ再描画時の処理を減らす"
 
-#: src/settings.c:553 config/strings.c:144 config/strings.c:160
+#: src/settings.c:553 config/strings.c:145 config/strings.c:161
 msgid "Miscellaneous"
 msgstr "その他"
 
@@ -1992,11 +1992,11 @@ msgstr "位置"
 msgid "Border style"
 msgstr "ボーダースタイル"
 
-#: src/snaps.c:849 config/strings.c:180
+#: src/snaps.c:849 config/strings.c:181
 msgid "Size"
 msgstr "サイズ"
 
-#: src/snaps.c:854 config/strings.c:88
+#: src/snaps.c:854 config/strings.c:89
 msgid "Desktop"
 msgstr "デスクトップ"
 
@@ -2016,7 +2016,7 @@ msgstr "ウィンドウの上下関係"
 msgid "Window List Skip"
 msgstr "ウィンドウリストのスキップ"
 
-#: src/snaps.c:880 config/strings.c:143 config/strings.c:169
+#: src/snaps.c:880 config/strings.c:144 config/strings.c:170
 msgid "Opacity"
 msgstr "不透明度"
 
@@ -2401,7 +2401,7 @@ msgid "This button does nothing interesting."
 msgstr "このボタンは何もしません"
 
 #
-#: config/strings.c:47 config/strings.c:136
+#: config/strings.c:47 config/strings.c:137
 msgid "Shade/Unshade"
 msgstr "シェード／アンシェード"
 
@@ -2418,7 +2418,7 @@ msgstr "さらにボタンを"
 msgid "Show more buttons."
 msgstr "さらにボタンを表示する"
 
-#: config/strings.c:56 config/strings.c:134
+#: config/strings.c:56 config/strings.c:135
 msgid "Raise"
 msgstr "上へ出す"
 
@@ -2427,7 +2427,7 @@ msgstr "上へ出す"
 msgid "Raise this window to the top."
 msgstr "このウィンドウを上へ出す"
 
-#: config/strings.c:58 config/strings.c:135
+#: config/strings.c:58 config/strings.c:136
 msgid "Lower"
 msgstr "下に移す"
 
@@ -2436,7 +2436,7 @@ msgid "Lower this window."
 msgstr "このウィンドウを下に移す"
 
 #
-#: config/strings.c:60 config/strings.c:137
+#: config/strings.c:60 config/strings.c:138
 msgid "Stick/Unstick"
 msgstr "常時表示／解除"
 
@@ -2516,371 +2516,376 @@ msgstr "前のデスクトップに移動"
 msgid "Create Systray"
 msgstr "システムトレイを作成する"
 
+#: config/strings.c:85
+#, fuzzy
+msgid "Show Magnifier"
+msgstr "拡大中"
+
 #
-#: config/strings.c:86
+#: config/strings.c:87
 msgid "Enlightenment"
 msgstr "Enlightenment"
 
-#: config/strings.c:87 config/strings.c:194
+#: config/strings.c:88 config/strings.c:195
 msgid "User Menus"
 msgstr "ユーザーメニュー"
 
 #
-#: config/strings.c:89 config/strings.c:109
+#: config/strings.c:90 config/strings.c:110
 msgid "Settings"
 msgstr "設定"
 
-#: config/strings.c:91 config/strings.c:98
+#: config/strings.c:92 config/strings.c:99
 msgid "Maintenance"
 msgstr "メンテナンス"
 
-#: config/strings.c:92
+#: config/strings.c:93
 msgid "Help"
 msgstr "ヘルプ"
 
 #
-#: config/strings.c:93
+#: config/strings.c:94
 msgid "About Enlightenment"
 msgstr "Enlightenment について"
 
-#: config/strings.c:94
+#: config/strings.c:95
 msgid "About this theme"
 msgstr "このテーマについて"
 
-#: config/strings.c:95 config/strings.c:198
+#: config/strings.c:96 config/strings.c:199
 msgid "Restart"
 msgstr "再起動"
 
 #
-#: config/strings.c:96 config/strings.c:199
+#: config/strings.c:97 config/strings.c:200
 msgid "Log Out"
 msgstr "ログアウト"
 
-#: config/strings.c:99
+#: config/strings.c:100
 msgid "Purge config file cache"
 msgstr "設定ファイルキャッシュを消去する"
 
 #
-#: config/strings.c:100
+#: config/strings.c:101
 msgid "Purge pager background cache"
 msgstr "ページャーの背景キャッシュを消去する"
 
-#: config/strings.c:101
+#: config/strings.c:102
 msgid "Purge background selector cache"
 msgstr "背景の選択キャッシュを消去する"
 
-#: config/strings.c:102
+#: config/strings.c:103
 msgid "Purge all caches"
 msgstr "すべてのキャッシュを消去する"
 
-#: config/strings.c:103
+#: config/strings.c:104
 msgid "Query config file cache usage"
 msgstr "設定ファイルキャッシュの使用状況を調べる"
 
-#: config/strings.c:104
+#: config/strings.c:105
 msgid "Query pager background cache usage"
 msgstr "ページャの背景キャッシュの使用状況を調べる"
 
-#: config/strings.c:105
+#: config/strings.c:106
 msgid "Query background selector cache usage"
 msgstr "背景選択キャッシュの使用状況を調べる"
 
-#: config/strings.c:106
+#: config/strings.c:107
 msgid "Query all cache usage"
 msgstr "すべてのキャッシュの使用状況を調べる"
 
-#: config/strings.c:107
+#: config/strings.c:108
 msgid "Regenerate Menus"
 msgstr "メニューを再作成する"
 
-#: config/strings.c:110
+#: config/strings.c:111
 msgid "Enlightenment Settings ..."
 msgstr "Enlightenment の設定..."
 
 #
-#: config/strings.c:111
+#: config/strings.c:112
 msgid "Focus Settings ..."
 msgstr "フォーカスの設定 ..."
 
 #
-#: config/strings.c:112
+#: config/strings.c:113
 msgid "Move & Resize Settings ..."
 msgstr "移動とサイズ変更方式の設定 ..."
 
 #
-#: config/strings.c:113
+#: config/strings.c:114
 msgid "Window Placement Settings ..."
 msgstr "ウィンドウ配置の設定 ..."
 
 #
-#: config/strings.c:114
+#: config/strings.c:115
 msgid "Multiple Desktop Settings ..."
 msgstr "マルチデスクトップの設定 ..."
 
 #
-#: config/strings.c:115
+#: config/strings.c:116
 msgid "Virtual Desktop Settings ..."
 msgstr "仮想デスクトップの設定 ..."
 
 #
-#: config/strings.c:116
+#: config/strings.c:117
 msgid "Pager Settings ..."
 msgstr "ページャの設定 ..."
 
 #
-#: config/strings.c:117
+#: config/strings.c:118
 msgid "Menu Settings ..."
 msgstr "メニューの設定 ..."
 
 #
-#: config/strings.c:118
+#: config/strings.c:119
 msgid "Autoraise Settings ..."
 msgstr "オートレイズの設定 ..."
 
 #
-#: config/strings.c:119
+#: config/strings.c:120
 msgid "Tooltip Settings ..."
 msgstr "ツールチップの設定 ..."
 
 #
-#: config/strings.c:120
+#: config/strings.c:121
 msgid "Audio Settings ..."
 msgstr "オーディオの設定 ..."
 
 #
-#: config/strings.c:121
+#: config/strings.c:122
 msgid "Group Settings ..."
 msgstr "グループの設定 ..."
 
 #
-#: config/strings.c:122
+#: config/strings.c:123
 msgid "Remember Settings ..."
 msgstr "記憶の設定 ..."
 
 #
-#: config/strings.c:123
+#: config/strings.c:124
 msgid "Special FX Settings ..."
 msgstr "特殊効果の設定 ..."
 
 #
-#: config/strings.c:124
+#: config/strings.c:125
 msgid "Desktop Background Settings ..."
 msgstr "デスクトップ背景の設定 ..."
 
 #
-#: config/strings.c:125
+#: config/strings.c:126
 msgid "Theme Transparency Settings ..."
 msgstr "テーマ透明化の設定 ..."
 
 #
-#: config/strings.c:126
+#: config/strings.c:127
 msgid "Composite Settings ..."
 msgstr "コンポジットの設定 ..."
 
 #
-#: config/strings.c:127
+#: config/strings.c:128
 msgid "Session Settings ..."
 msgstr "セッションの設定 ..."
 
 #
-#: config/strings.c:128
+#: config/strings.c:129
 msgid "Miscellaneous Settings ..."
 msgstr "その他の設定 ..."
 
 #
-#: config/strings.c:138
+#: config/strings.c:139
 msgid "Remember..."
 msgstr "記憶する..."
 
 #
-#: config/strings.c:139
+#: config/strings.c:140
 msgid "Window Size"
 msgstr "ウィンドウサイズ"
 
 #
-#: config/strings.c:140
+#: config/strings.c:141
 msgid "Set Stacking"
 msgstr "積み重ね順"
 
-#: config/strings.c:141
+#: config/strings.c:142
 msgid "Set Border Style"
 msgstr "ボーダースタイルの設定"
 
-#: config/strings.c:142
+#: config/strings.c:143
 msgid "Window Groups"
 msgstr "ウィンドウグループ"
 
 #
-#: config/strings.c:147
+#: config/strings.c:148
 msgid "Configure this window's group(s)"
 msgstr "このウィンドウのグループを設定する"
 
-#: config/strings.c:148
+#: config/strings.c:149
 msgid "Start a new group"
 msgstr "新しいグループを開始する"
 
-#: config/strings.c:149
+#: config/strings.c:150
 msgid "Add this window to the current group"
 msgstr "このウィンドウを現在のグループに追加する"
 
 #
-#: config/strings.c:150
+#: config/strings.c:151
 msgid "Select group to add this window to"
 msgstr " このウィンドウを追加するグループを選択する"
 
 #
-#: config/strings.c:151
+#: config/strings.c:152
 msgid "Remove this window from a group"
 msgstr "このウィンドウをグループから削除する"
 
 #
-#: config/strings.c:152
+#: config/strings.c:153
 msgid "Destroy a group this window belongs to"
 msgstr " このウィンドウが属するグループを破棄する"
 
-#: config/strings.c:154
+#: config/strings.c:155
 msgid "Stacking"
 msgstr "積み重ね順"
 
-#: config/strings.c:155
+#: config/strings.c:156
 msgid "Below"
 msgstr "下に"
 
-#: config/strings.c:156
+#: config/strings.c:157
 msgid "Normal"
 msgstr "普通"
 
-#: config/strings.c:157
+#: config/strings.c:158
 msgid "Above"
 msgstr "上に"
 
-#: config/strings.c:158
+#: config/strings.c:159
 msgid "On Top"
 msgstr "常に上に"
 
-#: config/strings.c:161
+#: config/strings.c:162
 msgid "Toggle Skip Window Lists"
 msgstr "ウィンドウリストのスキップ／解除"
 
-#: config/strings.c:162
+#: config/strings.c:163
 msgid "Toggle Fixed Position"
 msgstr "位置固定／解除"
 
-#: config/strings.c:163
+#: config/strings.c:164
 msgid "Toggle Fixed Size"
 msgstr "サイズ固定／解除"
 
 #
-#: config/strings.c:164
+#: config/strings.c:165
 msgid "Toggle Never Focus"
 msgstr "フォーカスを受けない／受ける"
 
-#: config/strings.c:165
+#: config/strings.c:166
 msgid "Toggle Click to Focus"
 msgstr "クリックでフォーカス／解除"
 
-#: config/strings.c:166
+#: config/strings.c:167
 msgid "Toggle Never Use Area"
 msgstr "エリアを使わない／使う"
 
 #
-#: config/strings.c:167
+#: config/strings.c:168
 msgid "Toggle Button Grabs"
 msgstr "ボタンのグラブ／解除"
 
-#: config/strings.c:170
+#: config/strings.c:171
 msgid "20%"
 msgstr ""
 
-#: config/strings.c:171
+#: config/strings.c:172
 msgid "40%"
 msgstr ""
 
-#: config/strings.c:172
+#: config/strings.c:173
 msgid "60%"
 msgstr ""
 
-#: config/strings.c:173
+#: config/strings.c:174
 msgid "80%"
 msgstr ""
 
-#: config/strings.c:174
+#: config/strings.c:175
 msgid "100%"
 msgstr ""
 
-#: config/strings.c:175
+#: config/strings.c:176
 msgid "Focused opacity 100%"
 msgstr "フォーカスがあれば100％不透明にする"
 
-#: config/strings.c:176
+#: config/strings.c:177
 msgid "Focused opacity follows unfocused"
 msgstr "常にフォーカスが無いときの不透明度を適用する"
 
-#: config/strings.c:177
+#: config/strings.c:178
 msgid "Toggle Fading"
 msgstr "フェーディングを切り替える"
 
-#: config/strings.c:178
+#: config/strings.c:179
 msgid "Toggle Shadows"
 msgstr "シャドー切替え"
 
-#: config/strings.c:181
+#: config/strings.c:182
 msgid "Max Size Toggle"
 msgstr "最大サイズ切替え"
 
-#: config/strings.c:182
+#: config/strings.c:183
 msgid "Available Max Size Toggle"
 msgstr "利用可能な最大サイズで切替え"
 
-#: config/strings.c:183
+#: config/strings.c:184
 msgid "Absolute Max Size Toggle"
 msgstr "絶対最大サイズで切替え"
 
-#: config/strings.c:184
+#: config/strings.c:185
 msgid "Span Xinerama Screens"
 msgstr "Xineramaスクリーン拡張"
 
-#: config/strings.c:185
+#: config/strings.c:186
 msgid "Max Height Toggle"
 msgstr "最大高切替え"
 
-#: config/strings.c:186
+#: config/strings.c:187
 msgid "Available Max Height Toggle"
 msgstr "利用可能な最大高で切替え"
 
-#: config/strings.c:187
+#: config/strings.c:188
 msgid "Absolute Max Height Toggle"
 msgstr "絶対最大高で切替え"
 
-#: config/strings.c:188
+#: config/strings.c:189
 msgid "Max Width Toggle"
 msgstr "最大幅切替え"
 
-#: config/strings.c:189
+#: config/strings.c:190
 msgid "Available Max Width Toggle"
 msgstr "利用可能な最大幅で切替え"
 
-#: config/strings.c:190
+#: config/strings.c:191
 msgid "Absolute Max Width Toggle"
 msgstr "絶対最大幅で切替え"
 
-#: config/strings.c:191
+#: config/strings.c:192
 msgid "Fullscreen/Normal"
 msgstr "全画面／通常"
 
-#: config/strings.c:192
+#: config/strings.c:193
 msgid "Zoom/Unzoom"
 msgstr "拡大／縮小"
 
-#: config/strings.c:195
+#: config/strings.c:196
 msgid "User Application List"
 msgstr "ユーザーアプリケーション"
 
-#: config/strings.c:196
+#: config/strings.c:197
 msgid "Other"
 msgstr "その他"
 
-#: config/strings.c:197
+#: config/strings.c:198
 #, fuzzy
 msgid "Epplets"
 msgstr "さざなみ"
