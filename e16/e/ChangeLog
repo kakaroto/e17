@@ -4536,3 +4536,29 @@ Sat Oct  6 09:16:40 CEST 2007
 (Kim)
 
 --- 0.16.8.10 ---
+
+-------------------------------------------------------------------------------
+
+Sun Nov 18 11:21:30 CET 2007
+(Kim)
+
+--- 0.16.8.11 0.01 ---
+Fix reuse of freed pixmaps when using pseudo-transparency.
+edox: Various enhancements and cleanups:
+ Enable using arrow keys for navigation.
+ Enable reloading file ('r').
+Hide tooltips in various situations (showing focus list, window map, move, etc.).
+Find some more menu icons.
+Move to new AC_INIT style.
+Fix memory leak when xinerama is enabled (normally hit only once).
+Re-init xinerama info when screen size changes.
+Fix translucent moves of non-shaped windows (noted by Thanatermesis).
+Autofoo cleanups, move to bindir, pkgdatadir and friends.
+Menu whitespace cleanups, rename some items:
+ Enlightenment Epplets -> Epplets.
+ Restart Enlightenment -> Restart.
+Fix build when imlib_context_set_mask_alpha_threshold() is not available
+ (bugzilla 275).
+Fix edge flip after screen size change.
+Add magnifier to desktop menu.
+
