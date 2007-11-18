@@ -17,6 +17,7 @@
 #define DIFFER_WIDTH 30
 #define DIFFER_HEIGHT 20
 
+static int position_test_set_get(char *buf, int len);
 static int preferred_inner_size_test_set_get(char *buf, int len);
 static int preferred_size_test_set_get(char *buf, int len);
 static int minimum_size_test_set_get(char *buf, int len);
@@ -32,6 +33,7 @@ static int fill_policy_test_set_get(char *buf, int len);
 static int alignment_test_set_get(char *buf, int len);
 
 static Ewl_Unit_Test object_unit_tests[] = {
+		{"position set/get", position_test_set_get, NULL, -1, 0},
 		{"preferred inner size set/get", preferred_inner_size_test_set_get, NULL, -1, 0},
 		{"preferred size set/get", preferred_size_test_set_get, NULL, -1, 0},
 		{"minimum size set/get", minimum_size_test_set_get, NULL, -1, 0},
@@ -56,6 +58,34 @@ test_info(Ewl_Test *test)
 	test->filename = __FILE__;
 	test->type = EWL_TEST_TYPE_MISC;
 	test->unit_tests = object_unit_tests;
+}
+
+/*
+ * Set the position and verify that it gets the same position back.
+ */
+static int
+position_test_set_get(char *buf, int len)
+{
+	Ewl_Widget *w;
+	int x, y;
+	int ret = 0;
+
+	w = calloc(1, sizeof(Ewl_Widget));
+	ewl_widget_init(w);
+
+	ewl_object_position_request(EWL_OBJECT(w), 11, 23);
+
+	x = ewl_object_current_x_get(EWL_OBJECT(w));
+	y = ewl_object_current_y_get(EWL_OBJECT(w));
+
+	if (x == 11 && y == 23)
+		ret = 1;
+	else
+		snprintf(buf, len, "incorrect positions returned");
+
+	ewl_widget_destroy(w);
+
+	return ret;
 }
 
 /*
