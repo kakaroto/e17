@@ -27,6 +27,7 @@
 #define IMAGE_SIZE 16
 
 int ETK_ENTRY_TEXT_CHANGED_SIGNAL;
+int ETK_ENTRY_TEXT_ACTIVATED_SIGNAL;
 
 enum Etk_Entry_Propery_Id
 {
@@ -82,7 +83,9 @@ Etk_Type *etk_entry_type_get(void)
    {
       const Etk_Signal_Description signals[] = {
          ETK_SIGNAL_DESC_NO_HANDLER(ETK_ENTRY_TEXT_CHANGED_SIGNAL,
-            "text-changed", etk_marshaller_VOID),
+                                    "text-changed", etk_marshaller_VOID),
+         ETK_SIGNAL_DESC_NO_HANDLER(ETK_ENTRY_TEXT_ACTIVATED_SIGNAL,
+                                    "text-activated", etk_marshaller_VOID),
          ETK_SIGNAL_DESCRIPTION_SENTINEL
       };
 
@@ -716,6 +719,12 @@ static Etk_Bool _etk_entry_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *e
          changed = etk_editable_delete(editable, start_pos, end_pos);
       else
          changed = etk_editable_delete(editable, cursor_pos, cursor_pos + 1);
+   }
+   /* Emit text-activated signal */
+   else if (strcmp(event->keyname, "Return") == 0 ||
+            strcmp(event->keyname, "KP_Enter") == 0)
+   {
+      etk_signal_emit(ETK_ENTRY_TEXT_ACTIVATED_SIGNAL, ETK_OBJECT(entry));
    }
    /* Ctrl + A,C,X,V */
    else if (event->modifiers & ETK_MODIFIER_CTRL)

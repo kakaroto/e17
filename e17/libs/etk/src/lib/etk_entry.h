@@ -33,6 +33,7 @@ typedef enum
 } Etk_Entry_Image_Position;
 
 extern int ETK_ENTRY_TEXT_CHANGED_SIGNAL;
+extern int ETK_ENTRY_TEXT_ACTIVATED_SIGNAL;
 
 /**
  * @brief @widget A widget that allows the user to edit a single-line text
