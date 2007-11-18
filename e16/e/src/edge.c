@@ -29,8 +29,6 @@
 #include "timers.h"
 #include "xwin.h"
 
-/* FIXME: Screen resizing not handled. */
-
 static EObj        *w1 = NULL, *w2 = NULL, *w3 = NULL, *w4 = NULL;
 
 static void
@@ -168,6 +166,49 @@ EdgeCheckMotion(int x, int y)
    EdgeEvent(dir);
 }
 
+static void
+EdgeWindowShow(int which, int on)
+{
+   EObj               *eo;
+   int                 x, y, w, h;
+
+   x = y = 0;
+   w = h = 1;
+
+   switch (which)
+     {
+     default:
+     case 1:			/* Left */
+	eo = w1;
+	h = VRoot.h;
+	break;
+     case 2:			/* Right */
+	eo = w2;
+	x = VRoot.w - 1;
+	h = VRoot.h;
+	break;
+     case 3:			/* Top */
+	eo = w3;
+	w = VRoot.w;
+	break;
+     case 4:			/* Bottom */
+	eo = w4;
+	y = VRoot.h - 1;
+	w = VRoot.w;
+	break;
+     }
+
+   if (on)
+     {
+	EobjMoveResize(eo, x, y, w, h);
+	EobjMap(eo, 0);
+     }
+   else
+     {
+	EobjUnmap(eo);
+     }
+}
+
 void
 EdgeWindowsShow(void)
 {
@@ -199,22 +240,10 @@ EdgeWindowsShow(void)
    DeskCurrentGetArea(&cx, &cy);
    DesksGetAreaSize(&ax, &ay);
 
-   if (cx == 0 && !Conf.desks.areas_wraparound)
-      EobjUnmap(w1);
-   else
-      EobjMap(w1, 0);
-   if (cx == (ax - 1) && !Conf.desks.areas_wraparound)
-      EobjUnmap(w2);
-   else
-      EobjMap(w2, 0);
-   if (cy == 0 && !Conf.desks.areas_wraparound)
-      EobjUnmap(w3);
-   else
-      EobjMap(w3, 0);
-   if (cy == (ay - 1) && !Conf.desks.areas_wraparound)
-      EobjUnmap(w4);
-   else
-      EobjMap(w4, 0);
+   EdgeWindowShow(1, cx != 0 || Conf.desks.areas_wraparound);
+   EdgeWindowShow(2, cx != (ax - 1) || Conf.desks.areas_wraparound);
+   EdgeWindowShow(3, cy != 0 || Conf.desks.areas_wraparound);
+   EdgeWindowShow(4, cy != (ay - 1) || Conf.desks.areas_wraparound);
 }
 
 void

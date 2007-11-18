@@ -833,6 +833,8 @@ DesksResize(int w, int h)
    for (i = 0; i < Conf.desks.num; i++)
       DeskResize(i, w, h);
 
+   EdgeWindowsShow();
+
    ModulesSignal(ESIGNAL_DESK_RESIZE, NULL);
 }
 
@@ -2444,7 +2446,6 @@ CB_ConfigureAreas(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 	if (tmp_edge_resist < 1)
 	   tmp_edge_resist = 1;
 	Conf.desks.edge_flip_resistance = tmp_edge_resist;
-	EdgeWindowsShow();
      }
    autosave();
 }
