@@ -82,6 +82,7 @@ _("Goto Next Desktop"),
 _("Goto Previous Desktop"),
 _("Create New Iconbox"),
 _("Create Systray"),
+_("Show Magnifier"),
 /* enlightenment.menu */
 _("Enlightenment"),
 _("User Menus"),

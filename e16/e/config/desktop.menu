@@ -5,3 +5,4 @@
 "Goto Previous Desktop"	NULL "desk prev"
 "Create New Iconbox"	NULL "ibox new"
 "Create Systray"	NULL "ibox new _ST_"
+"Show Magnifier"	NULL mag
