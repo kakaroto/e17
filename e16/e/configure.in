@@ -321,9 +321,6 @@ config/pix/Makefile
 themes/Makefile
 scripts/Makefile
 misc/Makefile
-misc/e16.desktop
-misc/e16-gnome.desktop
-misc/e16-kde.desktop
 po/Makefile.in
 e16.spec
 ])

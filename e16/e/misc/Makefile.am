@@ -18,3 +18,14 @@ xsession_DATA = $(DESKTOPS)
 #xclients_SCRIPTS = $(XCLIENTS)
 
 EXTRA_DIST = $(DESKTOPS_IN) $(SCRIPTS) $(ICONS)
+
+e16.desktop: $(top_srcdir)/misc/e16.desktop.in Makefile
+e16-gnome.desktop: $(top_srcdir)/misc/e16-gnome.desktop.in Makefile
+e16-kde.desktop: $(top_srcdir)/misc/e16-kde.desktop.in Makefile
+
+$(DESKTOPS):
+	sed -e "s=@pkgdatadir@=${pkgdatadir}=" $(top_srcdir)/misc/$@.in >$@
+
+uninstall-local:
+	rm -f $(DESKTOPS)
+

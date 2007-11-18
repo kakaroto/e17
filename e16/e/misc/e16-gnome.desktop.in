@@ -4,4 +4,4 @@ Type=XSession
 Name=E-GNOME
 Comment=This session starts GNOME using enlightenment (e16) as window manager
 Exec=e16-gnome
-Icon=@ENLIGHTENMENT_ROOT@/misc/e16.png
+Icon=@pkgdatadir@/misc/e16.png
