@@ -25,6 +25,9 @@ static int minimum_size_test_set_request(char *buf, int len);
 static int maximum_size_test_set_request(char *buf, int len);
 static int padding_test_set_get(char *buf, int len);
 static int insets_test_set_get(char *buf, int len);
+static int padding_test_set_size_get(char *buf, int len);
+static int insets_test_set_size_get(char *buf, int len);
+static int insets_padding_test_set_size_get(char *buf, int len);
 static int fill_policy_test_set_get(char *buf, int len);
 static int alignment_test_set_get(char *buf, int len);
 
@@ -37,6 +40,9 @@ static Ewl_Unit_Test object_unit_tests[] = {
 		{"maximum size set/request", maximum_size_test_set_request, NULL, -1, 0},
 		{"padding set/get", padding_test_set_get, NULL, -1, 0},
 		{"insets set/get", insets_test_set_get, NULL, -1, 0},
+		{"padding set/size get", padding_test_set_size_get, NULL, -1, 0},
+		{"insets set/size get", insets_test_set_size_get, NULL, -1, 0},
+		{"insets padding set/size get", insets_padding_test_set_size_get, NULL, -1, 0},
 		{"fill policy set/get", fill_policy_test_set_get, NULL, -1, 0},
 		{"alignment set/get", alignment_test_set_get, NULL, -1, 0},
 		{NULL, NULL, NULL, -1, 0}
@@ -394,6 +400,93 @@ insets_test_set_get(char *buf, int len)
 		else
 			snprintf(buf, len, "incorrect returned insets");
 	}
+
+	ewl_widget_destroy(w);
+
+	return ret;
+}
+
+/*
+ * Test that setting the padding on an object returns the expected results after
+ * a size request.
+ */
+static int
+padding_test_set_size_get(char *buf, int len)
+{
+	Ewl_Widget *w;
+	int width = 0, height = 0;
+	int ret = 0;
+
+	w = calloc(1, sizeof(Ewl_Widget));
+	ewl_widget_init(w);
+
+	ewl_object_padding_set(EWL_OBJECT(w), 1, 2, 3, 4);
+
+	ewl_object_current_size_get(EWL_OBJECT(w), &width, &height);
+	if (width == (3 + EWL_OBJECT_MIN_SIZE) &&
+			height == (7 + EWL_OBJECT_MIN_SIZE))
+		ret = 1;
+	else
+		snprintf(buf, len, "incorrect returned size %dx%d", width,
+				height);
+
+	ewl_widget_destroy(w);
+
+	return ret;
+}
+
+/*
+ * Test that setting the insets on an object returns the expected results after
+ * a size request.
+ */
+static int
+insets_test_set_size_get(char *buf, int len)
+{
+	Ewl_Widget *w;
+	int width = 0, height = 0;
+	int ret = 0;
+
+	w = calloc(1, sizeof(Ewl_Widget));
+	ewl_widget_init(w);
+
+	ewl_object_insets_set(EWL_OBJECT(w), 1, 2, 3, 4);
+
+	ewl_object_current_size_get(EWL_OBJECT(w), &width, &height);
+	if (width == 4 && height == 8)
+		ret = 1;
+	else
+		snprintf(buf, len, "incorrect returned size %dx%d", width,
+				height);
+
+	ewl_widget_destroy(w);
+
+	return ret;
+}
+
+/*
+ * Test that setting the insets and padding on an object returns the expected
+ * results after a size request.
+ */
+static int
+insets_padding_test_set_size_get(char *buf, int len)
+{
+	Ewl_Widget *w;
+	int width = 0, height = 0;
+	int ret = 0;
+
+	w = calloc(1, sizeof(Ewl_Widget));
+	ewl_widget_init(w);
+
+	ewl_object_padding_set(EWL_OBJECT(w), 1, 2, 3, 4);
+	ewl_object_insets_set(EWL_OBJECT(w), 4, 3, 2, 1);
+
+	ewl_object_current_size_get(EWL_OBJECT(w), &width, &height);
+	if (width == (10 + EWL_OBJECT_MIN_SIZE) &&
+			height == (10 + EWL_OBJECT_MIN_SIZE))
+		ret = 1;
+	else
+		snprintf(buf, len, "incorrect returned size %dx%d", width,
+				height);
 
 	ewl_widget_destroy(w);
 
