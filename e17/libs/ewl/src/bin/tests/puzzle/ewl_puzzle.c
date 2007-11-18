@@ -95,9 +95,10 @@ create_test(Ewl_Container *box)
 	w = ewl_text_new();
 	ewl_object_insets_set(EWL_OBJECT(w), 10, 10, 10, 10);
 	ewl_text_wrap_set(EWL_TEXT(w), TRUE);
+	ewl_object_w_request(EWL_OBJECT(w), 400);
 	ewl_text_text_append(EWL_TEXT(w),
-			"The rules are really simple. Just try\n"
-			"to have the same image on your left\n"
+			"The rules are really simple. Just try "
+			"to have the same image on your left "
 			"like you have on your right hand.");
 	ewl_container_child_append(EWL_CONTAINER(hbox), w);
 	ewl_widget_show(w);
