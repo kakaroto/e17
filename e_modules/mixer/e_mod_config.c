@@ -83,6 +83,7 @@ static void
 _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
    if (!mixer_config) return;
+   if (cfdata->app) free(cfdata->app);
    mixer_config->config_dialog = NULL;
    E_FREE(cfdata);
 }
@@ -113,8 +114,8 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 	if (mixer->mix_sys->get_cards)
 	  mixer->mix_sys->cards = mixer->mix_sys->get_cards();
      }
-   
-   if ((mixer->mix_sys->cards) && (evas_list_count(mixer->mix_sys->cards) > 1))
+
+   if (mixer->mix_sys->cards)
      {
 	of = e_widget_framelist_add(evas, D_("Available Cards"), 0);
 	cg = e_widget_radio_group_new(&cfdata->card_id);
@@ -127,8 +128,8 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 	  }
 	e_widget_list_object_append(o, of, 1, 1, 0.5);	
      }
-     
-   if ((mixer->mix_sys->get_card) && (ci->card_id != 0))
+
+   if (mixer->mix_sys->get_card)
      {
 	card = mixer->mix_sys->get_card(ci->card_id);
 	if ((mixer->mix_sys->get_channels) && (card)) 

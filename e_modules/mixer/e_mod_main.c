@@ -385,8 +385,8 @@ _mixer_config_item_get(void *data, const char *id)
 		  return ci;
 	       }
 	  }
-	     
-	card = mixer->mix_sys->cards->data;
+
+	card = evas_list_nth(mixer->mix_sys->cards, 0);
 	if (!card) 
 	  {
 	     ci->card_id = 0;
@@ -405,8 +405,8 @@ _mixer_config_item_get(void *data, const char *id)
 		    card->channels = mixer->mix_sys->get_channels(card);
 	       }
 	     if (card->channels) 
-	       {	     
-		  chan = card->channels->data;
+	       {
+		  chan = evas_list_nth(card->channels, 0);
 		  ci->channel_id = chan->id;
 	       }
 	     else 

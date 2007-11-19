@@ -105,15 +105,16 @@ alsa_get_card(int id)
    snd_mixer_t         *handle;
    snd_ctl_t           *control;
    snd_ctl_card_info_t *hw_info;
-   int                  err, i;
+   int                  err, i, cid;
    char                 buf[1024];
-
-    snd_ctl_card_info_alloca(&hw_info);
+   const char          *name;
 
    for (i = 0; i < 32; i++) 
      {
 	Mixer_Card *card;
-	
+
+	snd_ctl_card_info_alloca(&hw_info);
+
 	snprintf(buf, sizeof(buf), "hw:%d", i);
 	if ((err = snd_ctl_open(&control, buf, 0)) < 0) break;
 	if ((err = snd_ctl_card_info(control, hw_info)) < 0) 
@@ -125,33 +126,16 @@ alsa_get_card(int id)
 	  }
 	
 	snd_ctl_close(control);
-	if ((err = snd_mixer_open(&handle, 0)) < 0) 
-	  {
-	     printf("Cannot open mixer: %s\n", snd_strerror(err));
-	     continue;
-	  }
-	if ((err = snd_mixer_attach(handle, buf)) < 0)  
-	  {
-	     printf("Cannot attach mixer: %s\n", snd_strerror(err));
-	     snd_mixer_close(handle);
-	     continue;
-	  }
-	if ((err = snd_mixer_detach(handle, buf)) < 0) 
-	  {
-	     printf("Cannot detach mixer: %s\n", snd_strerror(err));
-	     snd_mixer_close(handle);
-	     continue;
-	  }
-	snd_mixer_close(handle);
+
+	name = snd_ctl_card_info_get_name(hw_info);
+	cid = _alsa_get_card_id(name);
+	if (cid != id) continue;
 
 	card = E_NEW(Mixer_Card, 1);
 	if (!card) continue;
 	card->name = evas_stringshare_add(buf);
-	card->real = evas_stringshare_add(snd_ctl_card_info_get_name(hw_info));
-	card->id = _alsa_get_card_id(card->real);
-	
-	if (!_alsa_get_card_id(card->real) == id) continue;
-
+	card->real = evas_stringshare_add(name);
+	card->id = cid;
 	card->channels = alsa_card_get_channels(card);
 	return card;
      }
