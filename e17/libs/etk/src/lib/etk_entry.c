@@ -8,6 +8,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include <Ecore.h>
+#include <Ecore_Evas.h>
+
 #include "etk_editable.h"
 #include "etk_event.h"
 #include "etk_image.h"
@@ -63,6 +66,9 @@ static Etk_Bool _etk_entry_disabled_cb(Etk_Object *object, void *data);
 static Etk_Bool _etk_entry_selection_received_cb(Etk_Object *object, void *event, void *data);
 static void _etk_entry_selection_copy(Etk_Entry *entry, Etk_Selection_Type selection, Etk_Bool cut);
 
+static int _etk_entry_imf_retrieve_surrounding_cb(void *data, Ecore_IMF_Context *ctx, char **text, int *cursor_pos);
+static int _etk_entry_imf_event_commit_cb(void *data, int type, void *event);
+static int _etk_entry_imf_event_delete_surrounding_cb(void *data, int type, void *event);
 
 /**************************
  *
@@ -320,6 +326,10 @@ void etk_entry_password_mode_set(Etk_Entry *entry, Etk_Bool password_mode)
    if (entry->editable_object)
       etk_editable_password_mode_set(entry->editable_object, password_mode);
    entry->password_mode = password_mode;
+   if (entry->imf_context)
+      ecore_imf_context_input_mode_set(entry->imf_context,
+            password_mode ? ECORE_IMF_INPUT_MODE_FULL & ECORE_IMF_INPUT_MODE_INVISIBLE :
+                            ECORE_IMF_INPUT_MODE_FULL);
    etk_object_notify(ETK_OBJECT(entry), "password-mode");
 }
 
@@ -360,6 +370,7 @@ static void _etk_entry_constructor(Etk_Entry *entry)
    entry->pointer_set = ETK_FALSE;
    entry->primary_image_highlight = ETK_FALSE;
    entry->secondary_image_highlight = ETK_FALSE;
+   entry->imf_context = NULL;
    entry->text = NULL;
 
    entry->internal_entry = etk_widget_new(ETK_WIDGET_TYPE, "repeat-mouse-events", ETK_TRUE,
@@ -552,6 +563,23 @@ static Etk_Bool _etk_entry_internal_realized_cb(Etk_Object *object, void *data)
    if (!(entry = ETK_ENTRY(etk_object_data_get(object, "_Etk_Entry::Entry"))))
       return ETK_TRUE;
 
+   entry->imf_context = ecore_imf_context_add(ecore_imf_context_default_id_get());
+   if (entry->imf_context)
+   {
+      ecore_imf_context_client_window_set(entry->imf_context,
+            ecore_evas_window_get(ecore_evas_ecore_evas_get(evas)));
+      ecore_imf_context_retrieve_surrounding_callback_set(entry->imf_context,
+            _etk_entry_imf_retrieve_surrounding_cb, entry);
+      ecore_event_handler_add(ECORE_IMF_EVENT_COMMIT,
+            _etk_entry_imf_event_commit_cb, entry);
+      ecore_event_handler_add(ECORE_IMF_EVENT_DELETE_SURROUNDIND,
+            _etk_entry_imf_event_delete_surrounding_cb, entry);
+
+      ecore_imf_context_input_mode_set(entry->imf_context,
+            entry->password_mode ? ECORE_IMF_INPUT_MODE_INVISIBLE :
+                                   ECORE_IMF_INPUT_MODE_FULL);
+   }
+
    entry->editable_object = etk_editable_add(evas);
    evas_object_show(entry->editable_object);
    etk_widget_member_object_add(internal_entry, entry->editable_object);
@@ -566,6 +594,7 @@ static Etk_Bool _etk_entry_internal_realized_cb(Etk_Object *object, void *data)
       etk_editable_cursor_hide(entry->editable_object);
       etk_editable_selection_hide(entry->editable_object);
    }
+
    if (etk_widget_disabled_get(ETK_WIDGET(entry)))
       etk_editable_disabled_set(entry->editable_object, ETK_TRUE);
 
@@ -598,6 +627,13 @@ static Etk_Bool _etk_entry_internal_realized_cb(Etk_Object *object, void *data)
    if (etk_widget_theme_data_get(internal_entry, "icon_interspace", "%d", &entry->image_interspace) != 1)
       entry->image_interspace = 5;
 
+   if (entry->imf_context &&
+       etk_widget_is_focused(ETK_WIDGET(entry)))
+   {
+      ecore_imf_context_reset(entry->imf_context);
+      ecore_imf_context_focus_in(entry->imf_context);
+   }
+
    return ETK_TRUE;
 }
 
@@ -609,6 +645,12 @@ static Etk_Bool _etk_entry_internal_unrealized_cb(Etk_Object *object, void *data
 
    if (!(entry = ETK_ENTRY(etk_object_data_get(object, "_Etk_Entry::Entry"))))
       return ETK_TRUE;
+
+   if (entry->imf_context)
+   {
+      ecore_imf_context_del(entry->imf_context);
+      entry->imf_context = NULL;
+   }
 
    free(entry->text);
    if ((text = etk_editable_text_get(entry->editable_object)))
@@ -751,11 +793,17 @@ static Etk_Bool _etk_entry_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *e
    else
       stop_signal = ETK_FALSE;
 
-
    if (changed)
       etk_signal_emit(ETK_ENTRY_TEXT_CHANGED_SIGNAL, ETK_OBJECT(entry));
    if (selection_changed)
       _etk_entry_selection_copy(entry, ETK_SELECTION_PRIMARY, ETK_FALSE);
+
+   if (entry->imf_context)
+   {
+      ecore_imf_context_reset(entry->imf_context);
+      ecore_imf_context_cursor_position_set(entry->imf_context,
+            etk_editable_cursor_pos_get(editable));
+   }
 
    return (!stop_signal);
 }
@@ -766,6 +814,10 @@ static void _etk_entry_editable_mouse_in_cb(void *data, Evas *evas, Evas_Object 
    Etk_Entry *entry;
 
    if (!(entry = ETK_ENTRY(data)))
+      return;
+
+   if (entry->imf_context &&
+       ecore_imf_context_filter_event(entry->imf_context, EVAS_CALLBACK_MOUSE_IN, event_info))
       return;
 
    if (!entry->pointer_set)
@@ -781,6 +833,10 @@ static void _etk_entry_editable_mouse_out_cb(void *data, Evas *evas, Evas_Object
    Etk_Entry *entry;
 
    if (!(entry = ETK_ENTRY(data)))
+      return;
+
+   if (entry->imf_context &&
+       ecore_imf_context_filter_event(entry->imf_context, EVAS_CALLBACK_MOUSE_OUT, event_info))
       return;
 
    if (entry->pointer_set)
@@ -799,6 +855,10 @@ static void _etk_entry_editable_mouse_down_cb(void *data, Evas *evas, Evas_Objec
    int pos;
 
    if (!(entry = ETK_ENTRY(data)))
+      return;
+
+   if (entry->imf_context &&
+       ecore_imf_context_filter_event(entry->imf_context, EVAS_CALLBACK_MOUSE_DOWN, event_info))
       return;
 
    etk_event_mouse_down_wrap(ETK_WIDGET(entry), event_info, &event);
@@ -824,6 +884,13 @@ static void _etk_entry_editable_mouse_down_cb(void *data, Evas *evas, Evas_Objec
 
       etk_selection_text_request(ETK_SELECTION_PRIMARY, ETK_WIDGET(entry));
    }
+
+   if (entry->imf_context)
+   {
+      ecore_imf_context_reset(entry->imf_context);
+      ecore_imf_context_cursor_position_set(entry->imf_context,
+            etk_editable_cursor_pos_get(entry->editable_object));
+   }
 }
 
 /* Called when the entry is released by the mouse */
@@ -833,6 +900,10 @@ static void _etk_entry_editable_mouse_up_cb(void *data, Evas *evas, Evas_Object 
    Etk_Event_Mouse_Up event;
 
    if (!(entry = ETK_ENTRY(data)))
+      return;
+
+   if (entry->imf_context &&
+       ecore_imf_context_filter_event(entry->imf_context, EVAS_CALLBACK_MOUSE_UP, event_info))
       return;
 
    etk_event_mouse_up_wrap(ETK_WIDGET(entry), event_info, &event);
@@ -854,13 +925,24 @@ static void _etk_entry_editable_mouse_move_cb(void *data, Evas *evas, Evas_Objec
    if (!(entry = ETK_ENTRY(data)))
       return;
 
+   if (entry->imf_context &&
+       ecore_imf_context_filter_event(entry->imf_context, EVAS_CALLBACK_MOUSE_MOVE, event_info))
+      return;
+
    if (entry->selection_dragging)
    {
       etk_event_mouse_move_wrap(ETK_WIDGET(entry), event_info, &event);
       evas_object_geometry_get(entry->editable_object, &ox, &oy, NULL, NULL);
       pos = etk_editable_pos_get_from_coords(entry->editable_object, event.cur.canvas.x - ox, event.cur.canvas.y - oy);
       if (pos >= 0)
+      {
          etk_editable_cursor_pos_set(entry->editable_object, pos);
+         if (entry->imf_context)
+         {
+            ecore_imf_context_reset(entry->imf_context);
+            ecore_imf_context_cursor_position_set(entry->imf_context, pos);
+         }
+      }
    }
 }
 
@@ -872,7 +954,6 @@ static Etk_Bool _etk_entry_image_mouse_in_cb(Etk_Widget *widget, Etk_Event_Mouse
 
    if (!(entry = ETK_ENTRY(data)) || !(image = ETK_IMAGE(widget)))
       return ETK_TRUE;
-
    etk_widget_color_set(ETK_WIDGET(image),
          entry->highlight_color.r, entry->highlight_color.g,
          entry->highlight_color.b, entry->highlight_color.a);
@@ -945,6 +1026,12 @@ static Etk_Bool _etk_entry_focused_cb(Etk_Object *object, void *data)
    etk_editable_cursor_show(entry->editable_object);
    etk_editable_selection_show(entry->editable_object);
    etk_widget_theme_signal_emit(entry->internal_entry, "etk,state,focused", ETK_FALSE);
+   if (entry->imf_context)
+   {
+      ecore_imf_context_reset(entry->imf_context);
+      ecore_imf_context_focus_in(entry->imf_context);
+   }
+
    return ETK_TRUE;
 }
 
@@ -957,10 +1044,22 @@ static Etk_Bool _etk_entry_unfocused_cb(Etk_Object *object, void *data)
       return ETK_TRUE;
 
    etk_editable_cursor_move_to_end(entry->editable_object);
+   if (entry->imf_context)
+   {
+      ecore_imf_context_reset(entry->imf_context);
+      ecore_imf_context_cursor_position_set(entry->imf_context,
+            etk_editable_cursor_pos_get(entry->editable_object));
+   }
    etk_editable_selection_move_to_end(entry->editable_object);
    etk_editable_cursor_hide(entry->editable_object);
    etk_editable_selection_hide(entry->editable_object);
    etk_widget_theme_signal_emit(entry->internal_entry, "etk,state,unfocused", ETK_FALSE);
+   if (entry->imf_context)
+   {
+      ecore_imf_context_reset(entry->imf_context);
+      ecore_imf_context_focus_out(entry->imf_context);
+   }
+
    return ETK_TRUE;
 }
 
@@ -1066,6 +1165,71 @@ static void _etk_entry_selection_copy(Etk_Entry *entry, Etk_Selection_Type selec
             etk_signal_emit(ETK_ENTRY_TEXT_CHANGED_SIGNAL, ETK_OBJECT(entry));
       }
    }
+}
+
+static int _etk_entry_imf_retrieve_surrounding_cb(void *data, Ecore_IMF_Context *ctx, char **text, int *cursor_pos)
+{
+   Etk_Entry *entry;
+   Evas_Object *editable;
+   const char *str;
+
+   if (!(entry = ETK_ENTRY(data)))
+      return 0;
+
+   if (text)
+   {
+      str = etk_entry_text_get(entry);
+      *text = str ? strdup(str) : strdup("");
+   }
+
+   if (cursor_pos)
+   {
+      editable = entry->editable_object;
+      *cursor_pos = etk_editable_cursor_pos_get(editable);
+   }
+
+   return 1;
+}
+
+static int _etk_entry_imf_event_commit_cb(void *data, int type, void *event)
+{
+   Etk_Entry *entry;
+   Ecore_IMF_Event_Commit *ev = event;
+
+   if (!(entry = ETK_ENTRY(data)))
+      return 1;
+
+   if (entry->imf_context != ev->ctx)
+      return 1;
+
+   etk_entry_text_set(entry, ev->str);
+   return 0;
+}
+
+static int _etk_entry_imf_event_delete_surrounding_cb(void *data, int type, void *event)
+{
+   Etk_Entry *entry;
+   Ecore_IMF_Event_Delete_Surrounding *ev = event;
+   int cursor_pos;
+
+   if (!(entry = ETK_ENTRY(data)))
+      return 1;
+
+   if (entry->imf_context != ev->ctx)
+      return 1;
+
+   if (entry->editable_object)
+   {
+      Evas_Object *editable;
+
+      editable = entry->editable_object;
+      cursor_pos = etk_editable_cursor_pos_get(editable);
+      etk_editable_delete(editable,
+            cursor_pos + ev->offset,
+            cursor_pos + ev->offset + ev->n_chars);
+   }
+
+   return 0;
 }
 
 /** @} */

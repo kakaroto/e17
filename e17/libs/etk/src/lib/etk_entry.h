@@ -2,6 +2,7 @@
 #ifndef _ETK_ENTRY_H_
 #define _ETK_ENTRY_H_
 
+#include <Ecore_IMF.h>
 #include <Evas.h>
 
 #include "etk_types.h"
@@ -49,6 +50,8 @@ struct Etk_Entry
    Evas_Object *editable_object;
    Etk_Image *primary_image;
    Etk_Image *secondary_image;
+
+   Ecore_IMF_Context *imf_context;
 
    char *text;
 

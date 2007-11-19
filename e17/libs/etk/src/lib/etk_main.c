@@ -11,6 +11,7 @@
 #include <string.h>
 
 #include <Ecore.h>
+#include <Ecore_IMF.h>
 #include <Ecore_Job.h>
 #include <Edje.h>
 
@@ -105,6 +106,10 @@ int etk_init_full(int argc, char **argv, const char *custom_opts)
          ETK_WARNING("Ecore initialization failed!");
          return 0;
       }
+      if (!ecore_imf_init())
+      {
+         ETK_WARNING("Ecore_IMF initialization failed!");
+      }
       if (!ecore_job_init())
       {
          ETK_WARNING("Ecore_Job initialization failed!");
@@ -183,6 +188,7 @@ int etk_shutdown(void)
       /* Shutdown the EFL*/
       edje_shutdown();
       ecore_job_shutdown();
+      ecore_imf_shutdown();
       ecore_shutdown();
       evas_shutdown();
    }
