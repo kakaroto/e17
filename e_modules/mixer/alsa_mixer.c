@@ -28,11 +28,7 @@ alsa_get_cards()
 	Mixer_Card *card;
 	
 	snprintf(buf, sizeof(buf), "hw:%d", i);
-	if ((err = snd_ctl_open(&control, buf, 0)) < 0) 
-	  {
-//	     printf("Cannot control: %s: %s\n", buf, snd_strerror(err));
-	     break;
-	  }
+	if ((err = snd_ctl_open(&control, buf, 0)) < 0) break;
 	if ((err = snd_ctl_card_info(control, hw_info)) < 0) 
 	  {
 	     printf("Cannot get hardware info: %s: %s\n", buf, 
@@ -44,18 +40,18 @@ alsa_get_cards()
 	snd_ctl_close(control);
 	if ((err = snd_mixer_open(&handle, 0)) < 0) 
 	  {
-	     printf("Cannot open mixer\n");
+	     printf("Cannot open mixer: %s\n", snd_strerror(err));
 	     continue;
 	  }
 	if ((err = snd_mixer_attach(handle, buf)) < 0)  
 	  {
-	     printf("Cannot attach mixer\n");
+	     printf("Cannot attach mixer: %s\n", snd_strerror(err));
 	     snd_mixer_close(handle);
 	     continue;
 	  }
 	if ((err = snd_mixer_detach(handle, buf)) < 0) 
 	  {
-	     printf("Cannot detach mixer\n");
+	     printf("Cannot detach mixer: %s\n", snd_strerror(err));
 	     snd_mixer_close(handle);
 	     continue;
 	  }
@@ -119,11 +115,7 @@ alsa_get_card(int id)
 	Mixer_Card *card;
 	
 	snprintf(buf, sizeof(buf), "hw:%d", i);
-	if ((err = snd_ctl_open(&control, buf, 0)) < 0) 
-	  {
-//	     printf("Cannot control: %s: %s\n", buf, snd_strerror(err));
-	     break;
-	  }
+	if ((err = snd_ctl_open(&control, buf, 0)) < 0) break;
 	if ((err = snd_ctl_card_info(control, hw_info)) < 0) 
 	  {
 	     printf("Cannot get hardware info: %s: %s\n", buf, 
@@ -135,18 +127,18 @@ alsa_get_card(int id)
 	snd_ctl_close(control);
 	if ((err = snd_mixer_open(&handle, 0)) < 0) 
 	  {
-	     printf("Cannot open mixer\n");
+	     printf("Cannot open mixer: %s\n", snd_strerror(err));
 	     continue;
 	  }
 	if ((err = snd_mixer_attach(handle, buf)) < 0)  
 	  {
-	     printf("Cannot attach mixer\n");
+	     printf("Cannot attach mixer: %s\n", snd_strerror(err));
 	     snd_mixer_close(handle);
 	     continue;
 	  }
 	if ((err = snd_mixer_detach(handle, buf)) < 0) 
 	  {
-	     printf("Cannot detach mixer\n");
+	     printf("Cannot detach mixer: %s\n", snd_strerror(err));
 	     snd_mixer_close(handle);
 	     continue;
 	  }
@@ -163,8 +155,6 @@ alsa_get_card(int id)
 	card->channels = alsa_card_get_channels(card);
 	return card;
      }
-   //snd_ctl_close(control);
-//   snd_mixer_close(handle);
    return NULL;
 }
 
@@ -191,13 +181,14 @@ alsa_card_get_channels(void *data)
    
    if ((err = snd_ctl_open(&control, card->name, 0)) < 0) 
      {
-	printf("\n\nCannot Open Card: %s %s\n\n", card->name, snd_strerror(err));
+	printf("Cannot Open Card: %s %s\n", card->name, snd_strerror(err));
 	return NULL;
      }
    
    if ((err = snd_ctl_card_info(control, hw_info)) < 0) 
-     {   
-	printf("\n\nCannot get hardware info: %s %s\n\n", card->name, snd_strerror(err));
+     {
+	printf("Cannot get hardware info: %s %s\n", card->name, 
+	       snd_strerror(err));
 	snd_ctl_close(control);
 	return NULL;
      }
@@ -206,27 +197,27 @@ alsa_card_get_channels(void *data)
    
    if ((err = snd_mixer_open(&handle, 0)) < 0) 
      {
-	printf("\n\nCannot Open Mixer: %s\n\n", snd_strerror(err));
+	printf("Cannot Open Mixer: %s\n", snd_strerror(err));
 	return NULL;
      }
 
    if ((err = snd_mixer_attach(handle, card->name)) < 0) 
      {
-	printf("\n\nCannot Attach Mixer: %s\n\n", snd_strerror(err));
+	printf("Cannot Attach Mixer: %s\n", snd_strerror(err));
 	snd_mixer_close(handle);
 	return NULL;
      }
 
    if ((err = snd_mixer_selem_register(handle, NULL, NULL)) < 0) 
      {
-	printf("\n\nCannot Register Mixer: %s\n\n", snd_strerror(err));
+	printf("Cannot Register Mixer: %s\n", snd_strerror(err));
 	snd_mixer_close(handle);
 	return NULL;
      }
 
    if ((err = snd_mixer_load(handle)) < 0) 
      {
-	printf("\n\nCannot Load Mixer: %s\n\n", snd_strerror(err));
+	printf("Cannot Load Mixer: %s\n", snd_strerror(err));
 	snd_mixer_close(handle);
 	return NULL;
      }
@@ -242,10 +233,8 @@ alsa_card_get_channels(void *data)
 	     const char *name;
 	     
 	     name = snd_mixer_selem_id_get_name(sid);
-	     if ((!strcmp(name, "Master")) || 
-		 (!strcmp(name, "PCM")) || 
-		 (!strcmp(name, "DAC")) || 
-		 !(strcmp(name, "Wave"))) 
+	     if ((!strcmp(name, "Master")) || (!strcmp(name, "PCM")) || 
+		 (!strcmp(name, "DAC")) || (!strcmp(name, "Wave"))) 
 	       {
 		  ac = E_NEW(Mixer_Channel, 1);
 		  if (!ac) continue;
@@ -297,21 +286,21 @@ alsa_get_volume(int card_id, int channel_id)
 
    if ((err = snd_mixer_attach(handle, (char *)card->name)) < 0) 
      {
-	printf("\n\nCannot Attach Mixer: %s\n\n", snd_strerror(err));
+	printf("Cannot Attach Mixer: %s\n", snd_strerror(err));
 	snd_mixer_close(handle);
         goto error;
      }
 
    if ((err = snd_mixer_selem_register(handle, NULL, NULL)) < 0) 
      {
-	printf("\n\nCannot Register Mixer: %s\n\n", snd_strerror(err));
+	printf("Cannot Register Mixer: %s\n", snd_strerror(err));
 	snd_mixer_close(handle);
         goto error;
      }
 
    if ((err = snd_mixer_load(handle)) < 0) 
      {
-	printf("\n\nCannot Load Mixer: %s\n\n", snd_strerror(err));
+	printf("Cannot Load Mixer: %s\n", snd_strerror(err));
 	snd_mixer_close(handle);
         goto error;
      }
@@ -374,21 +363,21 @@ alsa_set_volume(int card_id, int channel_id, double vol)
 
    if ((err = snd_mixer_attach(handle, (char *)card->name)) < 0) 
      {
-	printf("\n\nCannot Attach Mixer: %s\n\n", snd_strerror(err));
+	printf("Cannot Attach Mixer: %s\n", snd_strerror(err));
 	snd_mixer_close(handle);
         goto error;
      }
 
    if ((err = snd_mixer_selem_register(handle, NULL, NULL)) < 0) 
      {
-	printf("\n\nCannot Register Mixer: %s\n\n", snd_strerror(err));
+	printf("Cannot Register Mixer: %s\n", snd_strerror(err));
 	snd_mixer_close(handle);
         goto error;
      }
 
    if ((err = snd_mixer_load(handle)) < 0) 
      {
-	printf("\n\nCannot Load Mixer: %s\n\n", snd_strerror(err));
+	printf("Cannot Load Mixer: %s\n", snd_strerror(err));
 	snd_mixer_close(handle);
         goto error;
      }
@@ -426,10 +415,8 @@ alsa_set_volume(int card_id, int channel_id, double vol)
 			 v = (((range * (v)) + (range /2)) / (100 + min));
 		       
 		       v -= min;
-		       if (v <= 0)
-			 v = 1;
-		       if (vol < 0)
-			 v = -v;
+		       if (v <= 0) v = 1;
+		       if (vol < 0) v = -v;
 		    }
 		  
 		  snd_mixer_selem_set_playback_volume(elem, 0, v);
@@ -471,21 +458,21 @@ alsa_get_mute(int card_id, int channel_id)
 
    if ((err = snd_mixer_attach(handle, (char *)card->name)) < 0) 
      {
-	printf("\n\nCannot Attach Mixer: %s\n\n", snd_strerror(err));
+	printf("Cannot Attach Mixer: %s\n", snd_strerror(err));
 	snd_mixer_close(handle);
         goto error;
      }
 
    if ((err = snd_mixer_selem_register(handle, NULL, NULL)) < 0) 
      {
-	printf("\n\nCannot Register Mixer: %s\n\n", snd_strerror(err));
+	printf("Cannot Register Mixer: %s\n", snd_strerror(err));
 	snd_mixer_close(handle);
         goto error;
      }
 
    if ((err = snd_mixer_load(handle)) < 0) 
      {
-	printf("\n\nCannot Load Mixer: %s\n\n", snd_strerror(err));
+	printf("Cannot Load Mixer: %s\n", snd_strerror(err));
 	snd_mixer_close(handle);
         goto error;
      }
@@ -548,21 +535,21 @@ alsa_set_mute(int card_id, int channel_id, int mute)
 
    if ((err = snd_mixer_attach(handle, (char *)card->name)) < 0) 
      {
-	printf("\n\nCannot Attach Mixer: %s\n\n", snd_strerror(err));
+	printf("Cannot Attach Mixer: %s\n", snd_strerror(err));
 	snd_mixer_close(handle);
         goto error;
      }
 
    if ((err = snd_mixer_selem_register(handle, NULL, NULL)) < 0) 
      {
-	printf("\n\nCannot Register Mixer: %s\n\n", snd_strerror(err));
+	printf("Cannot Register Mixer: %s\n", snd_strerror(err));
 	snd_mixer_close(handle);
         goto error;
      }
 
    if ((err = snd_mixer_load(handle)) < 0) 
      {
-	printf("\n\nCannot Load Mixer: %s\n\n", snd_strerror(err));
+	printf("Cannot Load Mixer: %s\n", snd_strerror(err));
 	snd_mixer_close(handle);
         goto error;
      }
