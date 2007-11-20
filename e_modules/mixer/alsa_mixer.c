@@ -507,7 +507,7 @@ alsa_set_mute(int card_id, int channel_id, int mute)
    snd_mixer_selem_id_t *sid;
    int                   id, err, vol;
    const char           *name;
-   static Ecore_Hash    *vols;
+   static Ecore_Hash    *vols = NULL;
 
    card = alsa_get_card(card_id);
    if (!card) return 0;
@@ -555,22 +555,22 @@ alsa_set_mute(int card_id, int channel_id, int mute)
 	       {
                   /*Create hash to store combos.  Could possibly be changed to a single int,
                     but this should allow to easily support multiple mixers later.*/
-                  if(!vols) 
+                  if (!vols) 
 	            {
-                        vols = ecore_hash_new(ecore_direct_hash,ecore_direct_compare);
-                        ecore_hash_free_key_cb_set(vols, NULL);
-                        ecore_hash_free_value_cb_set(vols, NULL);
+                       vols = ecore_hash_new(ecore_direct_hash,ecore_direct_compare);
+                       ecore_hash_free_key_cb_set(vols, NULL);
+                       ecore_hash_free_value_cb_set(vols, NULL);
 	            }
                   
 		  snd_mixer_close(handle);
 		  if (mute)
 	            {                    
-		        ecore_hash_set(vols, (int*)(card_id<<16)+channel_id, (int*)alsa_get_volume(card_id,channel_id));
-		        alsa_set_volume(card_id, channel_id, (0.0 * 100));
+		       ecore_hash_set(vols, (int*)(card_id<<16)+channel_id, (int*)alsa_get_volume(card_id,channel_id));
+		       alsa_set_volume(card_id, channel_id, (0.0 * 100));
 	            }
 		  else
 	            {                                            
-		        if(vol = (unsigned int)(ecore_hash_get(vols, (int*)(card_id<<16)+channel_id))) 
+		        if (vol = (unsigned int)(ecore_hash_get(vols, (int*)(card_id<<16)+channel_id))) 
 			  {
 		             alsa_set_volume(card_id, channel_id, vol);
 		             ecore_hash_remove(vols, (int*)(card_id<<16)+channel_id);
