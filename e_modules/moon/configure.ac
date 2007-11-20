@@ -56,8 +56,11 @@ e_modules=`$E_CONFIG --module-dir`
 AC_SUBST(e_cflags)
 AC_SUBST(e_libs)
 
-dnl TODO: Fix better install for homedir
 datadir="${e_modules}/${PACKAGE}"    
+AC_ARG_ENABLE(homedir-install,
+  AS_HELP_STRING([--enable-homedir-install], [Install module in homedir]),
+  [ datadir="${HOME}/.e/e/modules/${PACKAGE}" ]
+)
 
 AC_CONFIG_FILES([Makefile
                  e_modules-moon.spec
