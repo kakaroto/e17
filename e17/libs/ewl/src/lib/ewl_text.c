@@ -3315,7 +3315,7 @@ ewl_text_cb_hide(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 	DCHECK_TYPE(w, EWL_TEXT_TYPE);
 
 	t = EWL_TEXT(w);
-	evas_object_hide(t->textblock);
+	if (t->textblock) evas_object_hide(t->textblock);
 	ewl_text_triggers_hide(t);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

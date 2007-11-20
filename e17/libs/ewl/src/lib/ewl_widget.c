@@ -2465,8 +2465,8 @@ ewl_widget_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
 	 * Show the theme and clip box if widget is visible
 	 */
 	if (VISIBLE(w)) {
-		evas_object_show(w->fx_clip_box);
-		evas_object_show(w->theme_object);
+		if (w->fx_clip_box) evas_object_show(w->fx_clip_box);
+		if (w->theme_object) evas_object_show(w->theme_object);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
