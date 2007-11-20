@@ -357,7 +357,7 @@ ewl_combo_cb_selected_change(Ewl_MVC *mvc)
 		FREE(idx);
 	}
 
-	else if (view->header_fetch)
+	else if (view && view->header_fetch)
 		item = view->header_fetch(ewl_mvc_data_get(mvc), 0);
 
 	if (item)
