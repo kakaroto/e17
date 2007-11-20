@@ -15,7 +15,6 @@ Evas_List *
 alsa_get_cards() 
 {
    Evas_List           *cards = NULL;
-   snd_mixer_t         *handle;
    snd_ctl_t           *control;
    snd_ctl_card_info_t *hw_info;
    int                  err, i;
@@ -38,30 +37,11 @@ alsa_get_cards()
 	  }
 	
 	snd_ctl_close(control);
-	if ((err = snd_mixer_open(&handle, 0)) < 0) 
-	  {
-	     printf("Cannot open mixer: %s\n", snd_strerror(err));
-	     continue;
-	  }
-	if ((err = snd_mixer_attach(handle, buf)) < 0)  
-	  {
-	     printf("Cannot attach mixer: %s\n", snd_strerror(err));
-	     snd_mixer_close(handle);
-	     continue;
-	  }
-	if ((err = snd_mixer_detach(handle, buf)) < 0) 
-	  {
-	     printf("Cannot detach mixer: %s\n", snd_strerror(err));
-	     snd_mixer_close(handle);
-	     continue;
-	  }
-
 	card = E_NEW(Mixer_Card, 1);
 	if (!card) continue;
 	card->name = evas_stringshare_add(buf);
 	card->real = evas_stringshare_add(snd_ctl_card_info_get_name(hw_info));
 	card->id = _alsa_get_card_id(card->real);
-	snd_mixer_close(handle);
 	cards = evas_list_append(cards, card);
      }
    return cards;
@@ -554,29 +534,29 @@ alsa_set_mute(int card_id, int channel_id, int mute)
 	     else 
 	       {
                   /*Create hash to store combos.  Could possibly be changed to a single int,
-                    but this should allow to easily support multiple mixers later.*/
+		   but this should allow to easily support multiple mixers later.*/
                   if (!vols) 
 	            {
-                       vols = ecore_hash_new(ecore_direct_hash,ecore_direct_compare);
+                       vols = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
                        ecore_hash_free_key_cb_set(vols, NULL);
                        ecore_hash_free_value_cb_set(vols, NULL);
 	            }
                   
 		  snd_mixer_close(handle);
 		  if (mute)
-	            {                    
-		       ecore_hash_set(vols, (int*)(card_id<<16)+channel_id, (int*)alsa_get_volume(card_id,channel_id));
+	            {
+		       ecore_hash_set(vols, (int*)(card_id<<16) + channel_id, (int*)alsa_get_volume(card_id,channel_id));
 		       alsa_set_volume(card_id, channel_id, (0.0 * 100));
 	            }
 		  else
-	            {                                            
-		        if (vol = (unsigned int)(ecore_hash_get(vols, (int*)(card_id<<16)+channel_id))) 
-			  {
-		             alsa_set_volume(card_id, channel_id, vol);
-		             ecore_hash_remove(vols, (int*)(card_id<<16)+channel_id);
-			  }
-                        else
-			   alsa_set_volume(card_id, channel_id, (0.5 * 100));
+	            {
+		       if (vol = (unsigned int)(ecore_hash_get(vols, (int*)(card_id<<16) + channel_id))) 
+			 {
+			    alsa_set_volume(card_id, channel_id, vol);
+			    ecore_hash_remove(vols, (int*)(card_id<<16) + channel_id);
+			 }
+		       else
+			 alsa_set_volume(card_id, channel_id, (0.5 * 100));
 	            }
                   E_FREE(card);
 		  return 1;
