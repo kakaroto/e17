@@ -67,7 +67,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 				  _cb_mouse_down, inst);
    evas_object_show(inst->o_base);
 
-   inst->o_loc = e_widget_label_add(gc->evas, _("Location:"));
+   inst->o_loc = e_widget_label_add(gc->evas, D_("Location:"));
    edje_object_part_swallow(inst->o_base, "e.swallow.location", inst->o_loc);
    evas_object_show(inst->o_loc);
 
@@ -143,7 +143,7 @@ _gc_orient(E_Gadcon_Client *gcc)
 static char *
 _gc_label(void) 
 {
-   return "EFM Path";
+   return D_("EFM Path");
 }
 
 static Evas_Object *
