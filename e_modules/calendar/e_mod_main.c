@@ -34,6 +34,7 @@ static int _update_calendar_sheet(void *data);
 static void _calendar_popup_content_create(Instance *inst);
 static void _calendar_popup_resize(Evas_Object *obj, int *w, int *h);
 static void _calendar_popup_destroy(Instance *inst);
+static void _cb_action(E_Object *obj, const char *params);
 static void _cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
@@ -47,6 +48,7 @@ static int days_in_month[2][12] =
 
 static E_Config_DD *conf_edd = NULL;
 static E_Config_DD *conf_item_edd = NULL;
+static E_Action *act = NULL;
 
 Config *calendar_conf = NULL;
 
@@ -191,7 +193,8 @@ _update_calendar_sheet(void *data)
    strftime (buf, sizeof(buf), "%a", local_time);
    edje_object_part_text_set (calendar->o_icon, "weekday", buf);
 
-   if (inst->popup)
+   if ((inst->popup) &&
+       (inst->popup->win->visible))
      {
 	_calendar_popup_content_create(inst);
 	e_gadcon_popup_show(inst->popup);
@@ -296,6 +299,31 @@ _calendar_popup_destroy(Instance *inst)
 }
 
 static void
+_cb_action(E_Object *obj, const char *params)
+{
+   Evas_List *l;
+
+   for (l = calendar_conf->instances; l; l = l->next) 
+     {
+	Instance *inst;
+
+	inst = l->data;
+	if (!inst) continue;
+	if (!inst->popup) continue;
+	if (inst->popup->win->visible)
+	  {
+	     e_gadcon_popup_toggle_pinned(inst->popup);
+	     e_gadcon_popup_hide(inst->popup);
+	  }
+	else
+	  {
+	     e_gadcon_popup_toggle_pinned(inst->popup);
+	     e_gadcon_popup_show(inst->popup);
+	  }
+     }
+}
+
+static void
 _cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Instance *inst;
@@ -391,6 +419,14 @@ e_modapi_init(E_Module *m)
    
    calendar_conf->module = m;
    e_gadcon_provider_register(&_gc_class);
+   /* add module supplied action */
+   act = e_action_add("calendar");
+   if (act)
+     {
+	act->func.go = _cb_action;
+	e_action_predef_name_set(_("Calendar"), _("Monthview Popup (Show/Hide)"), "calendar",
+				 "<none>", NULL, 0);
+     }
    return m;
 }
 
@@ -399,6 +435,13 @@ e_modapi_shutdown(E_Module *m)
 {
    calendar_conf->module = NULL;
    e_gadcon_provider_unregister(&_gc_class);
+   /* remove module-supplied action */
+   if (act)
+     {
+	e_action_predef_name_del(_("Calendar"), _("Monthview Popup (Show/Hide)"));
+	e_action_del("calendar");
+	act = NULL;
+     }
 
    while (calendar_conf->items) 
      {
