@@ -152,7 +152,7 @@ po/Makefile.in
 echo
 echo "Configuration:"
 echo
-echo "  Install path:                           ${prefix}"
+echo "  Install path:                           ${datadir}"
 echo
 echo "  Audio Subsystems"
 echo "  ----------------"
