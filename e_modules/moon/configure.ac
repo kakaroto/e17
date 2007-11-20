@@ -40,16 +40,7 @@ AM_GNU_GETTEXT_VERSION(0.14)
 # Checks for libraries.
 AC_PATH_PROG(EDJE_CC, "edje_cc", "", $PATH)
 
-AC_ARG_WITH(enlightenment-config,
-  AS_HELP_STRING([--with-enlightenment-config=E_CONFIG], [use enlightenment-config specified]),
-  [
-    E_CONFIG=$withval;
-    echo "using "$E_CONFIG" for enlightenment-config";
-  ], [
-    PROG="enlightenment-config";
-    AC_PATH_PROG(E_CONFIG, $PROG, "", $PATH)
-  ]
-)
+AC_PATH_PROG(E_CONFIG, "enlightenment-config", "", $PATH)
 e_cflags=`$E_CONFIG --cflags`
 e_libs=`$E_CONFIG --libs`
 e_modules=`$E_CONFIG --module-dir`
