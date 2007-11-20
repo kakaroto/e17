@@ -424,7 +424,7 @@ e_modapi_init(E_Module *m)
    if (act)
      {
 	act->func.go = _cb_action;
-	e_action_predef_name_set(_("Calendar"), _("Monthview Popup (Show/Hide)"), "calendar",
+	e_action_predef_name_set(D_("Calendar"), D_("Monthview Popup (Show/Hide)"), "calendar",
 				 "<none>", NULL, 0);
      }
    return m;
@@ -438,7 +438,7 @@ e_modapi_shutdown(E_Module *m)
    /* remove module-supplied action */
    if (act)
      {
-	e_action_predef_name_del(_("Calendar"), _("Monthview Popup (Show/Hide)"));
+	e_action_predef_name_del(D_("Calendar"), D_("Monthview Popup (Show/Hide)"));
 	e_action_del("calendar");
 	act = NULL;
      }
