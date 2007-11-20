@@ -545,15 +545,15 @@ alsa_set_mute(int card_id, int channel_id, int mute)
 		  snd_mixer_close(handle);
 		  if (mute)
 	            {
-		       ecore_hash_set(vols, (int*)(card_id<<16) + channel_id, (int*)alsa_get_volume(card_id,channel_id));
+		       ecore_hash_set(vols, (int*)(card_id << 16) + channel_id, (int*)alsa_get_volume(card_id, channel_id));
 		       alsa_set_volume(card_id, channel_id, (0.0 * 100));
 	            }
 		  else
 	            {
-		       if (vol = (unsigned int)(ecore_hash_get(vols, (int*)(card_id<<16) + channel_id))) 
+		       if (vol = (unsigned int)(ecore_hash_get(vols, (int*)(card_id << 16) + channel_id))) 
 			 {
 			    alsa_set_volume(card_id, channel_id, vol);
-			    ecore_hash_remove(vols, (int*)(card_id<<16) + channel_id);
+			    ecore_hash_remove(vols, (int*)(card_id << 16) + channel_id);
 			 }
 		       else
 			 alsa_set_volume(card_id, channel_id, (0.5 * 100));
