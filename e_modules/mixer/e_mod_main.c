@@ -190,10 +190,21 @@ _gc_icon(Evas *evas)
 static const char *
 _gc_id_new(void)
 {
+   int  num = 0;
+   char buf[128];
    Config_Item *ci;
 
-   ci = _mixer_config_item_get(NULL, NULL);
-   return ci->id;
+   /* Create id */
+   if (mixer_config->items)
+     {
+	const char *p;
+
+	ci = evas_list_last(mixer_config->items)->data;
+	p = strrchr(ci->id, '.');
+	if (p) num = atoi(p + 1) + 1;
+     }
+   snprintf(buf, sizeof(buf), "%s.%d", _gc_class.name, num);
+   return strdup(buf);
 }
 
 void
@@ -331,33 +342,13 @@ _mixer_config_item_get(void *data, const char *id)
    Mixer_Channel *chan;
    Evas_List     *l;
    Config_Item   *ci;
-   char buf[128];
 
    mixer = data;
-
-   if (!id)
+   for (l = mixer_config->items; l; l = l->next)
      {
-	int  num = 0;
-
-	/* Create id */
-	if (mixer_config->items)
-	  {
-	     const char *p;
-	     ci = evas_list_last(mixer_config->items)->data;
-	     p = strrchr(ci->id, '.');
-	     if (p) num = atoi(p + 1) + 1;
-	  }
-	snprintf(buf, sizeof(buf), "%s.%d", _gc_class.name, num);
-	id = buf;
-     }
-   else
-     {
-	for (l = mixer_config->items; l; l = l->next)
-	  {
-	     ci = l->data;
-	     if (!ci->id) continue;
-	     if (!strcmp(ci->id, id)) return ci;
-	  }
+	ci = l->data;
+	if (!ci->id) continue;
+	if (!strcmp(ci->id, id)) return ci;
      }
 
    ci = E_NEW(Config_Item, 1);
