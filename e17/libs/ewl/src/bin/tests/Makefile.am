@@ -5,6 +5,7 @@ SUBDIRS				= \
 	box \
 	button \
 	calendar \
+	callback \
 	colordialog \
 	colorpicker \
 	combo \
