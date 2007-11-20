@@ -70,8 +70,7 @@ position_test_set_get(char *buf, int len)
 	int x, y;
 	int ret = 0;
 
-	w = calloc(1, sizeof(Ewl_Widget));
-	ewl_widget_init(w);
+	w = ewl_widget_new();
 
 	ewl_object_position_request(EWL_OBJECT(w), 11, 23);
 
@@ -99,8 +98,7 @@ preferred_inner_size_test_set_get(char *buf, int len)
 	int width = 0, height = 0;
 	int ret = 0;
 
-	w = calloc(1, sizeof(Ewl_Widget));
-	ewl_widget_init(w);
+	w = ewl_widget_new();
 
 	ewl_object_preferred_inner_size_get(EWL_OBJECT(w), &width, &height);
 	if (width == 0 && height == 0) {
@@ -143,8 +141,7 @@ preferred_size_test_set_get(char *buf, int len)
 	int width = 0, height = 0;
 	int ret = 0;
 
-	w = calloc(1, sizeof(Ewl_Widget));
-	ewl_widget_init(w);
+	w = ewl_widget_new();
 
 	ewl_object_preferred_size_get(EWL_OBJECT(w), &width, &height);
 	if (width == EWL_OBJECT_MIN_SIZE && height == EWL_OBJECT_MIN_SIZE) {
@@ -187,8 +184,7 @@ minimum_size_test_set_get(char *buf, int len)
 	int width = 0, height = 0;
 	int ret = 0;
 
-	w = calloc(1, sizeof(Ewl_Widget));
-	ewl_widget_init(w);
+	w = ewl_widget_new();
 
 	ewl_object_minimum_size_get(EWL_OBJECT(w), &width, &height);
 	if (width == EWL_OBJECT_MIN_SIZE && height == EWL_OBJECT_MIN_SIZE) {
@@ -229,8 +225,7 @@ maximum_size_test_set_get(char *buf, int len)
 	int width = 0, height = 0;
 	int ret = 0;
 
-	w = calloc(1, sizeof(Ewl_Widget));
-	ewl_widget_init(w);
+	w = ewl_widget_new();
 
 	ewl_object_maximum_size_get(EWL_OBJECT(w), &width, &height);
 	if (width == EWL_OBJECT_MAX_SIZE && height == EWL_OBJECT_MAX_SIZE) {
@@ -271,8 +266,7 @@ minimum_size_test_set_request(char *buf, int len)
 	int width = 0, height = 0;
 	int ret = 0;
 
-	w = calloc(1, sizeof(Ewl_Widget));
-	ewl_widget_init(w);
+	w = ewl_widget_new();
 
 	/*
 	 * Test the base case of the requested size equal to the minimum.
@@ -329,8 +323,7 @@ maximum_size_test_set_request(char *buf, int len)
 	int width = 0, height = 0;
 	int ret = 0;
 
-	w = calloc(1, sizeof(Ewl_Widget));
-	ewl_widget_init(w);
+	w = ewl_widget_new();
 
 	/*
 	 * Test the base case of the requested size equal to the maximum.
@@ -386,8 +379,7 @@ padding_test_set_get(char *buf, int len)
 	int l, r, t, b;
 	int ret = 0;
 
-	w = calloc(1, sizeof(Ewl_Widget));
-	ewl_widget_init(w);
+	w = ewl_widget_new();
 
 	ewl_object_padding_get(EWL_OBJECT(w), &l, &r, &t, &b);
 	if (l || r || t || b)
@@ -416,8 +408,7 @@ insets_test_set_get(char *buf, int len)
 	int l, r, t, b;
 	int ret = 0;
 
-	w = calloc(1, sizeof(Ewl_Widget));
-	ewl_widget_init(w);
+	w = ewl_widget_new();
 
 	ewl_object_insets_get(EWL_OBJECT(w), &l, &r, &t, &b);
 	if (l || r || t || b)
@@ -447,8 +438,7 @@ padding_test_set_size_get(char *buf, int len)
 	int width = 0, height = 0;
 	int ret = 0;
 
-	w = calloc(1, sizeof(Ewl_Widget));
-	ewl_widget_init(w);
+	w = ewl_widget_new();
 
 	ewl_object_padding_set(EWL_OBJECT(w), 1, 2, 3, 4);
 
@@ -476,8 +466,7 @@ insets_test_set_size_get(char *buf, int len)
 	int width = 0, height = 0;
 	int ret = 0;
 
-	w = calloc(1, sizeof(Ewl_Widget));
-	ewl_widget_init(w);
+	w = ewl_widget_new();
 
 	ewl_object_insets_set(EWL_OBJECT(w), 1, 2, 3, 4);
 
@@ -504,8 +493,7 @@ insets_padding_test_set_size_get(char *buf, int len)
 	int width = 0, height = 0;
 	int ret = 0;
 
-	w = calloc(1, sizeof(Ewl_Widget));
-	ewl_widget_init(w);
+	w = ewl_widget_new();
 
 	ewl_object_padding_set(EWL_OBJECT(w), 1, 2, 3, 4);
 	ewl_object_insets_set(EWL_OBJECT(w), 4, 3, 2, 1);
@@ -534,8 +522,7 @@ fill_policy_test_set_get(char *buf, int len)
 	unsigned int fill;
 	int ret = 0;
 
-	w = calloc(1, sizeof(Ewl_Widget));
-	ewl_widget_init(w);
+	w = ewl_widget_new();
 
 	/*
 	 * Since fill all should simply be a mask of all other values, this
@@ -572,8 +559,7 @@ alignment_test_set_get(char *buf, int len)
 	unsigned int align;
 	int ret = 0;
 
-	w = calloc(1, sizeof(Ewl_Widget));
-	ewl_widget_init(w);
+	w = ewl_widget_new();
 
 	ewl_object_alignment_set(EWL_OBJECT(w), EWL_FLAG_ALIGN_LEFT |
 			EWL_FLAG_ALIGN_RIGHT | EWL_FLAG_ALIGN_TOP |
