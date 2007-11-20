@@ -6,6 +6,7 @@ config.guess
 config.h
 config.h.in
 config.log
+config.rpath
 config.status
 config.sub
 configure
@@ -15,7 +16,9 @@ e_modules-efm_nav.spec.in
 *.tar.gz
 install-sh
 libtool
-ltmain.sh
+m4
 missing
+mkinstalldirs
 module.desktop
+ltmain.sh
 stamp-h1

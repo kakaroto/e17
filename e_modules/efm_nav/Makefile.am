@@ -2,7 +2,7 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess config.h.in \
 		       config.sub configure depcomp install-sh ltmain.sh \
 		       missing module.desktop
 
-SUBDIRS = src
+SUBDIRS = src po
 
 EDJE_FLAGS = -v \
 	   -id $(top_srcdir)/images \
