@@ -13,6 +13,7 @@ static int prepend_test_id(char *buf, int len);
 static int insert_after_test_id(char *buf, int len);
 static int shared_test_id(char *buf, int len);
 static int unique_test_id(char *buf, int len);
+static int del_test_call(char *buf, int len);
 static int clear_test_call(char *buf, int len);
 static int append_test_call(char *buf, int len);
 static int prepend_test_call(char *buf, int len);
@@ -26,6 +27,7 @@ static Ewl_Unit_Test callback_unit_tests[] = {
 		{"insert after/get id", insert_after_test_id, NULL, -1, 0},
 		{"shared id", shared_test_id, NULL, -1, 0},
 		{"unique id", unique_test_id, NULL, -1, 0},
+		{"del/call", del_test_call, NULL, -1, 0},
 		{"clear/call", clear_test_call, NULL, -1, 0},
 		{"append/call", append_test_call, NULL, -1, 0},
 		{"prepend/call", prepend_test_call, NULL, -1, 0},
@@ -181,7 +183,7 @@ unique_test_id(char *buf, int len)
  * called.
  */
 static int
-clear_test_call(char *buf, int len)
+del_test_call(char *buf, int len)
 {
 	Ewl_Widget *w;
 	int ret = 0;
@@ -189,6 +191,31 @@ clear_test_call(char *buf, int len)
 	w = ewl_widget_new();
 	ewl_callback_prepend(w, EWL_CALLBACK_CONFIGURE, base_callback, NULL);
 	ewl_callback_del_type(w, EWL_CALLBACK_CONFIGURE);
+	ewl_callback_call(w, EWL_CALLBACK_CONFIGURE);
+
+	if ((long)ewl_widget_data_get(w, w) != 1)
+		ret = 1;
+	else
+		snprintf(buf, len, "clear failed to remove callback");
+
+	ewl_widget_destroy(w);
+
+	return ret;
+}
+
+/*
+ * Prepend a callback and verify that clearing the chain prevents it from being
+ * called.
+ */
+static int
+clear_test_call(char *buf, int len)
+{
+	Ewl_Widget *w;
+	int ret = 0;
+
+	w = ewl_widget_new();
+	ewl_callback_prepend(w, EWL_CALLBACK_CONFIGURE, base_callback, NULL);
+	ewl_callback_clear(w);
 	ewl_callback_call(w, EWL_CALLBACK_CONFIGURE);
 
 	if ((long)ewl_widget_data_get(w, w) != 1)
