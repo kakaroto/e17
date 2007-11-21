@@ -19,11 +19,15 @@ static int append_test_call(char *buf, int len);
 static int prepend_test_call(char *buf, int len);
 static int append_in_chain_test_call(char *buf, int len);
 static int prepend_in_chain_test_call(char *buf, int len);
+static int insert_after_in_chain_test_call(char *buf, int len);
+static int insert_before_in_chain_test_call(char *buf, int len);
 
 static void base_callback(Ewl_Widget *w, void *event, void *data);
 static void differing_callback(Ewl_Widget *w, void *event, void *data);
 static void append_callback(Ewl_Widget *w, void *event, void *data);
 static void prepend_callback(Ewl_Widget *w, void *event, void *data);
+static void insert_after_callback(Ewl_Widget *w, void *event, void *data);
+static void insert_before_callback(Ewl_Widget *w, void *event, void *data);
 
 static Ewl_Unit_Test callback_unit_tests[] = {
 		{"append/get id", append_test_id, NULL, -1, 0},
@@ -37,6 +41,8 @@ static Ewl_Unit_Test callback_unit_tests[] = {
 		{"prepend/call", prepend_test_call, NULL, -1, 0},
 		{"append during call", append_in_chain_test_call, NULL, -1, 0},
 		{"prepend during call", prepend_in_chain_test_call, NULL, -1, 0},
+		{"insert after during call", insert_after_in_chain_test_call, NULL, -1, 0},
+		{"insert before during call", insert_before_in_chain_test_call, NULL, -1, 0},
 		{NULL, NULL, NULL, -1, 0}
 	};
 
@@ -332,6 +338,62 @@ prepend_in_chain_test_call(char *buf, int len)
 	return ret;
 }
 
+/*
+ * Insert a callback after the current one, while in the callback chain and
+ * verify that calling the chain triggers the callback.
+ */
+static int
+insert_after_in_chain_test_call(char *buf, int len)
+{
+	Ewl_Widget *w;
+	int ret = 0;
+
+	w = ewl_widget_new();
+	ewl_callback_del_type(w, EWL_CALLBACK_CONFIGURE);
+	ewl_callback_prepend(w, EWL_CALLBACK_CONFIGURE, insert_after_callback,
+			NULL);
+	ewl_callback_prepend(w, EWL_CALLBACK_CONFIGURE, differing_callback,
+			NULL);
+	ewl_callback_call(w, EWL_CALLBACK_CONFIGURE);
+
+	if ((long)ewl_widget_data_get(w, w) == 1)
+		ret = 1;
+	else
+		snprintf(buf, len, "callback function not called");
+
+	ewl_widget_destroy(w);
+
+	return ret;
+}
+
+/*
+ * Insert a callback before the current one, while in the callback chain and
+ * verify that calling the chain does not trigger the callback.
+ */
+static int
+insert_before_in_chain_test_call(char *buf, int len)
+{
+	Ewl_Widget *w;
+	int ret = 0;
+
+	w = ewl_widget_new();
+	ewl_callback_del_type(w, EWL_CALLBACK_CONFIGURE);
+	ewl_callback_prepend(w, EWL_CALLBACK_CONFIGURE, insert_before_callback,
+			NULL);
+	ewl_callback_prepend(w, EWL_CALLBACK_CONFIGURE, differing_callback,
+			NULL);
+	ewl_callback_call(w, EWL_CALLBACK_CONFIGURE);
+
+	if ((long)ewl_widget_data_get(w, w) != 1)
+		ret = 1;
+	else
+		snprintf(buf, len, "callback function called");
+
+	ewl_widget_destroy(w);
+
+	return ret;
+}
+
 static void
 base_callback(Ewl_Widget *w, void *event, void *data)
 {
@@ -361,6 +423,26 @@ static void
 prepend_callback(Ewl_Widget *w, void *event, void *data)
 {
 	ewl_callback_prepend(w, EWL_CALLBACK_CONFIGURE, base_callback, NULL);
+
+	event = data = NULL;
+	return;
+}
+
+static void
+insert_after_callback(Ewl_Widget *w, void *event, void *data)
+{
+	ewl_callback_insert_after(w, EWL_CALLBACK_CONFIGURE, base_callback,
+			NULL, insert_after_callback, NULL);
+
+	event = data = NULL;
+	return;
+}
+
+static void
+insert_before_callback(Ewl_Widget *w, void *event, void *data)
+{
+	ewl_callback_insert_after(w, EWL_CALLBACK_CONFIGURE, base_callback,
+			NULL, differing_callback, NULL);
 
 	event = data = NULL;
 	return;
