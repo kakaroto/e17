@@ -566,8 +566,7 @@ static Etk_Bool _etk_entry_internal_realized_cb(Etk_Object *object, void *data)
    entry->imf_context = ecore_imf_context_add(ecore_imf_context_default_id_get());
    if (entry->imf_context)
    {
-      ecore_imf_context_client_window_set(entry->imf_context,
-            ecore_evas_window_get(ecore_evas_ecore_evas_get(evas)));
+      ecore_imf_context_client_window_set(entry->imf_context, evas);
       ecore_imf_context_retrieve_surrounding_callback_set(entry->imf_context,
             _etk_entry_imf_retrieve_surrounding_cb, entry);
       ecore_event_handler_add(ECORE_IMF_EVENT_COMMIT,
