@@ -196,7 +196,7 @@ del_test_call(char *buf, int len)
 	if ((long)ewl_widget_data_get(w, w) != 1)
 		ret = 1;
 	else
-		snprintf(buf, len, "clear failed to remove callback");
+		snprintf(buf, len, "del_type failed to remove callback");
 
 	ewl_widget_destroy(w);
 
