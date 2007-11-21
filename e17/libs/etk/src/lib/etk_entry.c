@@ -10,6 +10,7 @@
 
 #include <Ecore.h>
 #include <Ecore_Evas.h>
+#include <Ecore_IMF_Evas.h>
 
 #include "etk_editable.h"
 #include "etk_event.h"
@@ -557,16 +558,31 @@ static Etk_Bool _etk_entry_internal_realized_cb(Etk_Object *object, void *data)
    Etk_Entry *entry;
    Etk_Widget *internal_entry;
    Evas *evas;
+   const char *ctx_id;
+   const Ecore_IMF_Context_Info *ctx_info;
 
    if (!(internal_entry = ETK_WIDGET(object)) || !(evas = etk_widget_toplevel_evas_get(internal_entry)))
       return ETK_TRUE;
    if (!(entry = ETK_ENTRY(etk_object_data_get(object, "_Etk_Entry::Entry"))))
       return ETK_TRUE;
 
-   entry->imf_context = ecore_imf_context_add(ecore_imf_context_default_id_get());
+   ctx_id = ecore_imf_context_default_id_get();
+   ctx_info = ecore_imf_context_info_by_id_get(ctx_id);
+   if (!ctx_info->canvas_type ||
+       strcmp(ctx_info->canvas_type, "evas") == 0)
+       entry->imf_context = ecore_imf_context_add(ctx_id);
+   else
+   {
+       ctx_id = ecore_imf_context_default_id_by_canvas_type_get("evas");
+       if (ctx_id)
+           entry->imf_context = ecore_imf_context_add(ctx_id);
+   }
+
    if (entry->imf_context)
    {
-      ecore_imf_context_client_window_set(entry->imf_context, evas);
+      ecore_imf_context_client_window_set(entry->imf_context,
+            ecore_evas_window_get(ecore_evas_ecore_evas_get(evas)));
+      ecore_imf_context_client_canvas_set(entry->imf_context, evas);
       ecore_imf_context_retrieve_surrounding_callback_set(entry->imf_context,
             _etk_entry_imf_retrieve_surrounding_cb, entry);
       ecore_event_handler_add(ECORE_IMF_EVENT_COMMIT,
@@ -815,9 +831,16 @@ static void _etk_entry_editable_mouse_in_cb(void *data, Evas *evas, Evas_Object 
    if (!(entry = ETK_ENTRY(data)))
       return;
 
-   if (entry->imf_context &&
-       ecore_imf_context_filter_event(entry->imf_context, EVAS_CALLBACK_MOUSE_IN, event_info))
-      return;
+   if (entry->imf_context)
+   {
+      Ecore_IMF_Event_Mouse_In ev;
+
+      ecore_imf_evas_event_mouse_in_wrap(event_info, &ev);
+      if (ecore_imf_context_filter_event(entry->imf_context,
+                                         ECORE_IMF_EVENT_MOUSE_IN,
+                                         (Ecore_IMF_Event *) &ev))
+         return;
+   }
 
    if (!entry->pointer_set)
    {
@@ -834,9 +857,16 @@ static void _etk_entry_editable_mouse_out_cb(void *data, Evas *evas, Evas_Object
    if (!(entry = ETK_ENTRY(data)))
       return;
 
-   if (entry->imf_context &&
-       ecore_imf_context_filter_event(entry->imf_context, EVAS_CALLBACK_MOUSE_OUT, event_info))
-      return;
+   if (entry->imf_context)
+   {
+      Ecore_IMF_Event_Mouse_Out ev;
+
+      ecore_imf_evas_event_mouse_out_wrap(event_info, &ev);
+      if (ecore_imf_context_filter_event(entry->imf_context,
+                                         ECORE_IMF_EVENT_MOUSE_OUT,
+                                         (Ecore_IMF_Event *) &ev))
+         return;
+   }
 
    if (entry->pointer_set)
    {
@@ -856,9 +886,16 @@ static void _etk_entry_editable_mouse_down_cb(void *data, Evas *evas, Evas_Objec
    if (!(entry = ETK_ENTRY(data)))
       return;
 
-   if (entry->imf_context &&
-       ecore_imf_context_filter_event(entry->imf_context, EVAS_CALLBACK_MOUSE_DOWN, event_info))
-      return;
+   if (entry->imf_context)
+   {
+      Ecore_IMF_Event_Mouse_Down ev;
+
+      ecore_imf_evas_event_mouse_down_wrap(event_info, &ev);
+      if (ecore_imf_context_filter_event(entry->imf_context,
+                                         ECORE_IMF_EVENT_MOUSE_DOWN,
+                                         (Ecore_IMF_Event *) &ev))
+         return;
+   }
 
    etk_event_mouse_down_wrap(ETK_WIDGET(entry), event_info, &event);
    evas_object_geometry_get(entry->editable_object, &ox, &oy, NULL, NULL);
@@ -901,9 +938,16 @@ static void _etk_entry_editable_mouse_up_cb(void *data, Evas *evas, Evas_Object 
    if (!(entry = ETK_ENTRY(data)))
       return;
 
-   if (entry->imf_context &&
-       ecore_imf_context_filter_event(entry->imf_context, EVAS_CALLBACK_MOUSE_UP, event_info))
-      return;
+   if (entry->imf_context)
+   {
+      Ecore_IMF_Event_Mouse_Up ev;
+
+      ecore_imf_evas_event_mouse_up_wrap(event_info, &ev);
+      if (ecore_imf_context_filter_event(entry->imf_context,
+                                         ECORE_IMF_EVENT_MOUSE_UP,
+                                         (Ecore_IMF_Event *) &ev))
+         return;
+   }
 
    etk_event_mouse_up_wrap(ETK_WIDGET(entry), event_info, &event);
    if (event.button == 1)
@@ -924,9 +968,16 @@ static void _etk_entry_editable_mouse_move_cb(void *data, Evas *evas, Evas_Objec
    if (!(entry = ETK_ENTRY(data)))
       return;
 
-   if (entry->imf_context &&
-       ecore_imf_context_filter_event(entry->imf_context, EVAS_CALLBACK_MOUSE_MOVE, event_info))
-      return;
+   if (entry->imf_context)
+   {
+      Ecore_IMF_Event_Mouse_Move ev;
+
+      ecore_imf_evas_event_mouse_move_wrap(event_info, &ev);
+      if (ecore_imf_context_filter_event(entry->imf_context,
+                                         ECORE_IMF_EVENT_MOUSE_MOVE,
+                                         (Ecore_IMF_Event *) &ev))
+         return;
+   }
 
    if (entry->selection_dragging)
    {

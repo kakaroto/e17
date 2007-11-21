@@ -92,10 +92,10 @@ case "$host_os" in
     ;;
 esac
 
-requirements="evas ecore ecore-file ecore-evas ecore-imf edje"
+requirements="evas ecore ecore-file ecore-evas ecore-imf ecore-imf-evas edje"
 
 PKG_CHECK_MODULES(EVAS, [evas >= 0.9.9])
-PKG_CHECK_MODULES(ECORE, [ecore >= 0.9.9 ecore-file >= 0.9.9 ecore-evas >= 0.9.9 ecore-imf >= 0.9.9])
+PKG_CHECK_MODULES(ECORE, [ecore >= 0.9.9 ecore-file >= 0.9.9 ecore-evas >= 0.9.9 ecore-imf >= 0.9.9 ecore-imf-evas >= 0.9.9])
 PKG_CHECK_MODULES(EDJE, [edje >= 0.5.0])
 
 #####################################################################
