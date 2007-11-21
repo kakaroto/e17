@@ -27,7 +27,10 @@ init_snow_test(E_Phys_World *world)
     v0.x = 0;
     v0.y = sqrt(2 * g.y * pos.y) * world->dt;
 
-    p = e_phys_particle_add(world, rand_range(3, 5), pos.x, pos.y, v0.x, v0.y);
+    p = e_phys_particle_add(world);
+    e_phys_particle_mass_set(p, rand_range(3, 5));
+    e_phys_particle_move(p, &pos);
+    e_phys_particle_velocity_set(p, &v0);
     e_phys_particle_size_set(p, p->m, p->m);
   }
 

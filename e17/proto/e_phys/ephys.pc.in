@@ -8,4 +8,4 @@ Description: EFL physics engine
 Version: @VERSION@
 Libs: -L${libdir} -lephys
 Libs.private: @EPHYS_LIBS@
-Cflags: -I${includedir}
+Cflags: -I${includedir}/e_phys

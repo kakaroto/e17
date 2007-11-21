@@ -105,14 +105,14 @@ init_rope(E_Phys_World *world)
   for (i = 0; i < num_p; i++)
   {
     E_Phys_Particle *p;
+    E_Phys_Point pos;
 
-    float x0, y0;
+    pos.x = rand_range(50, INIT_W - 50);
+    pos.y = rand_range(50, INIT_W - 50);
 
-    x0 = rand_range(50, INIT_W - 50);
-    y0 = rand_range(50, INIT_W - 50);
-    p = e_phys_particle_add(world, 1, x0, y0, 0, 0);
-
-    e_phys_particle_size_set(p, 4, 4);
+    p = e_phys_particle_add(world);
+    e_phys_particle_place(p, &pos);
+    e_phys_particle_size_set(p, 4.0, 4.0);
 
     if (prev_p)
       e_phys_constraint_stick_add(prev_p, p, 5);
@@ -158,13 +158,14 @@ init_mesh(E_Phys_World *world)
     {
       E_Phys_Particle *p;
 
-      float x0, y0;
+      E_Phys_Point pos0;
 
 
-      x0 = 50 + mesh_size * (float)i / num_p;
-      y0 = 50 + mesh_size * (float)j / num_p;
-      p = e_phys_particle_add(world, 1, x0, y0, 0, 0);
+      pos0.x = 50 + mesh_size * (float)i / num_p;
+      pos0.y = 50 + mesh_size * (float)j / num_p;
 
+      p = e_phys_particle_add(world);
+      e_phys_particle_place(p, &pos0);
       e_phys_particle_size_set(p, 4, 4);
 
       if (i > 0)
@@ -199,17 +200,19 @@ init_gravity_test(E_Phys_World *world)
   E_Phys_Particle *p;
   int i, n = 25;
   float w, h;
-  float x, y;
+  E_Phys_Point pos;
 
   w = (float)world->w / n;
   h = (float)world->h / n;
 
   for (i = 0; i < n*n; i++)
   {
-    x = w * (i % n);
-    y = h * (i / n);
+    pos.x = w * (i % n);
+    pos.y = h * (i / n);
 
-    p = e_phys_particle_add(world, 5, x, y, 0, 0);
+    p = e_phys_particle_add(world);
+    e_phys_particle_mass_set(p, 5.0);
+    e_phys_particle_place(p, &pos);
   }
 
   world->constraint_iter = 1;
@@ -222,18 +225,26 @@ init_collision_test(E_Phys_World *world)
 {
   E_Phys_Particle *p;
   E_Phys_Particle *center;
+  E_Phys_Point pos;
 
   int i;
   int num_p = 300;
 
   world->friction = .01;
   world->constraint_iter = 1000;
-  center = e_phys_particle_add(world, 1000, 300, 300, 0, 0);
+  center = e_phys_particle_add(world);
+  e_phys_particle_mass_set(center, 1000.0);
+  pos.x = pos.y = 300;
+  e_phys_particle_place(center, &pos);
   e_phys_particle_size_set(center, 5, 5);
 
   for (i = 0; i < num_p; i++)
   {
-    p = e_phys_particle_add(world, 1, rand_range(100,500), rand_range(100, 500), 0, 0);
+    pos.x = rand_range(100, 500);
+    pos.y = rand_range(100, 500);
+
+    p = e_phys_particle_add(world);
+    e_phys_particle_place(p, &pos);
     e_phys_particle_size_set(p, 5, 5);
 
     e_phys_force_modified_spring_add(world, p, center, 1000, 200);
@@ -252,7 +263,12 @@ init_boundary_test(E_Phys_World *world)
 
   for (i = 0; i < num; i++)
   {
-    p = e_phys_particle_add(world, 1, rand_range(50, 550), rand_range(50, 550), rand_range(0, 20), rand_range(0, 20));
+    E_Phys_Point pos = {rand_range(50, 550), rand_range(50, 550)};
+    E_Phys_Vector vel = {rand_range(0, 20), rand_range(0, 20)};
+
+    p = e_phys_particle_add(world);
+    e_phys_particle_move(p, &pos);
+    e_phys_particle_velocity_set(p, &vel);
     e_phys_particle_size_set(p, 20, 20);
   }
 
@@ -385,9 +401,10 @@ setup(App *app, int argc, char **argv)
 
   srand(ecore_time_get());
 
-  world = e_phys_world_add(INIT_W, INIT_H);
+  world = e_phys_world_add();
+  e_phys_world_size_set(world, INIT_W, INIT_H);
   app->world = world;
-  world->dt = 1.0 / 60.0;
+  world->dt = 1.0 / 30.0;
 
   struct { 
     char *name;

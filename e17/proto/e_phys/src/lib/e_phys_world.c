@@ -1,4 +1,5 @@
 #include "E_Phys.h"
+#include <values.h>
 
 static void e_phys_world_accumulate_forces(E_Phys_World *world);
 static void e_phys_world_verlet_integrate(E_Phys_World *world);
@@ -12,13 +13,13 @@ static int e_phys_world_timer(void *data);
  * @brief Create a new world
  */
 E_Phys_World *
-e_phys_world_add(int w, int h)
+e_phys_world_add(void)
 {
   E_Phys_World *world;
   world = calloc(1, sizeof(E_Phys_World));
   world->constraint_iter = 10;
-  world->w = w;
-  world->h = h;
+  world->w = MAXFLOAT;
+  world->h = MAXFLOAT;
   world->dt = 1.0 / 60.0;
   return world;
 }
@@ -57,6 +58,7 @@ static int
 e_phys_world_timer(void *data)
 {
   E_Phys_World *world;
+  double t;
   int i;
 
   world = data;
@@ -126,7 +128,6 @@ e_phys_world_nearest_particle(E_Phys_World *world, int x, int y)
   E_Phys_Particle *nearest = NULL;
   float distance = 0.0;
 
-
   for (l = world->particles; l; l = l->next)
   {
     E_Phys_Particle *p;
@@ -156,11 +157,12 @@ e_phys_world_nearest_particle(E_Phys_World *world, int x, int y)
  * @brief set the new size of the given world.
  */
 void
-e_phys_world_size_set(E_Phys_World *world, int w, int h)
+e_phys_world_size_set(E_Phys_World *world, float w, float h)
 {
   world->w = w;
   world->h = h;
 }
+
 static void
 e_phys_world_accumulate_forces(E_Phys_World *world)
 {
@@ -198,7 +200,6 @@ e_phys_world_verlet_integrate(E_Phys_World *world)
     tmp.x = p->cur.x;
     tmp.y = p->cur.y;
 
-    //printf("force: (%0.2f, %0.2f)\n", p->force.x, p->force.y);
     p->cur.x = (2 - world->friction) * p->cur.x - (1 - world->friction) * p->prev.x + p->force.x * world->dt * world->dt / p->m;
     p->cur.y = (2 - world->friction) * p->cur.y - (1 - world->friction) *p->prev.y + p->force.y * world->dt * world->dt / p->m;
 
