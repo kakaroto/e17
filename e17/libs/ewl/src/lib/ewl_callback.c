@@ -218,7 +218,7 @@ ewl_callback_insert(Ewl_Widget *w, unsigned int t,
 		w->callbacks[place].list[pos] = cb;
 	}
 
-	if (pos < EWL_CALLBACK_POS(w, t))
+	if (pos <= EWL_CALLBACK_POS(w, t))
 		EWL_CALLBACK_POS(w, t)++;
 
 	DRETURN_INT(cb->id, DLEVEL_STABLE);

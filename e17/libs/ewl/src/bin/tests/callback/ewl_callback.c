@@ -17,9 +17,13 @@ static int del_test_call(char *buf, int len);
 static int clear_test_call(char *buf, int len);
 static int append_test_call(char *buf, int len);
 static int prepend_test_call(char *buf, int len);
+static int append_in_chain_test_call(char *buf, int len);
+static int prepend_in_chain_test_call(char *buf, int len);
 
 static void base_callback(Ewl_Widget *w, void *event, void *data);
 static void differing_callback(Ewl_Widget *w, void *event, void *data);
+static void append_callback(Ewl_Widget *w, void *event, void *data);
+static void prepend_callback(Ewl_Widget *w, void *event, void *data);
 
 static Ewl_Unit_Test callback_unit_tests[] = {
 		{"append/get id", append_test_id, NULL, -1, 0},
@@ -31,6 +35,8 @@ static Ewl_Unit_Test callback_unit_tests[] = {
 		{"clear/call", clear_test_call, NULL, -1, 0},
 		{"append/call", append_test_call, NULL, -1, 0},
 		{"prepend/call", prepend_test_call, NULL, -1, 0},
+		{"append during call", append_in_chain_test_call, NULL, -1, 0},
+		{"prepend during call", prepend_in_chain_test_call, NULL, -1, 0},
 		{NULL, NULL, NULL, -1, 0}
 	};
 
@@ -276,6 +282,56 @@ prepend_test_call(char *buf, int len)
 	return ret;
 }
 
+/*
+ * Append a callback while in the callback chain and verify that calling the
+ * chain triggers the callback.
+ */
+static int
+append_in_chain_test_call(char *buf, int len)
+{
+	Ewl_Widget *w;
+	int ret = 0;
+
+	w = ewl_widget_new();
+	ewl_callback_del_type(w, EWL_CALLBACK_CONFIGURE);
+	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, append_callback, NULL);
+	ewl_callback_call(w, EWL_CALLBACK_CONFIGURE);
+
+	if ((long)ewl_widget_data_get(w, w) == 1)
+		ret = 1;
+	else
+		snprintf(buf, len, "callback function not called");
+
+	ewl_widget_destroy(w);
+
+	return ret;
+}
+
+/*
+ * Prepend a callback while in the callback chain and verify that calling the
+ * chain does not trigger the callback.
+ */
+static int
+prepend_in_chain_test_call(char *buf, int len)
+{
+	Ewl_Widget *w;
+	int ret = 0;
+
+	w = ewl_widget_new();
+	ewl_callback_del_type(w, EWL_CALLBACK_CONFIGURE);
+	ewl_callback_prepend(w, EWL_CALLBACK_CONFIGURE, prepend_callback, NULL);
+	ewl_callback_call(w, EWL_CALLBACK_CONFIGURE);
+
+	if ((long)ewl_widget_data_get(w, w) != 1)
+		ret = 1;
+	else
+		snprintf(buf, len, "callback function called");
+
+	ewl_widget_destroy(w);
+
+	return ret;
+}
+
 static void
 base_callback(Ewl_Widget *w, void *event, void *data)
 {
@@ -288,6 +344,24 @@ static void
 differing_callback(Ewl_Widget *w, void *event, void *data)
 {
 	ewl_widget_data_set(w, w, (void *)(long)2);
+	event = data = NULL;
+	return;
+}
+
+static void
+append_callback(Ewl_Widget *w, void *event, void *data)
+{
+	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, base_callback, NULL);
+
+	event = data = NULL;
+	return;
+}
+
+static void
+prepend_callback(Ewl_Widget *w, void *event, void *data)
+{
+	ewl_callback_prepend(w, EWL_CALLBACK_CONFIGURE, base_callback, NULL);
+
 	event = data = NULL;
 	return;
 }
