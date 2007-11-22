@@ -855,6 +855,9 @@ _cb_custom_end (void *data, Evas_Object *o, const char *emi, const char *src)
 {
    Penguin* tux = data;
    //printf("PENGUINS: Custom action end.\n");
+   if (!tux->custom)
+      return;
+   
    if (tux->r_count > 0)
    {
       if (tux->reverse)
