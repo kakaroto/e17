@@ -383,13 +383,13 @@ _theme_load(Population *pop)
    
    // load standard actions
    _load_action(pop, pop->conf->theme, "Walker", ID_WALKER);
-   
    _load_action(pop, pop->conf->theme, "Faller", ID_FALLER);
    _load_action(pop, pop->conf->theme, "Climber", ID_CLIMBER);
    _load_action(pop, pop->conf->theme, "Floater", ID_FLOATER);
    _load_action(pop, pop->conf->theme, "Bomber", ID_BOMBER);
    _load_action(pop, pop->conf->theme, "Splatter", ID_SPLATTER);
    _load_action(pop, pop->conf->theme, "Flyer", ID_FLYER);
+   _load_action(pop, pop->conf->theme, "Angel", ID_ANGEL);
    
    // load custom actions
    i = 2;
@@ -474,7 +474,7 @@ _reborn(Penguin *tux)
    //printf("PENGUINS: Reborn :)\n");
    tux->reverse = random() % (2);
    tux->x = random() % (tux->pop->width);
-   tux->y = 0;
+   tux->y = -100;
    tux->custom = 0;
    evas_object_move(tux->obj, (int)tux->x, (int)tux->y);
    _start_falling_at(tux, tux->x);
@@ -503,7 +503,9 @@ _cb_animator(void *data)
          if (!_is_inside_any_win(pop,
                (int)tux->x+(tux->action->w/2),
                (int)tux->y+tux->action->h+1,
-               _RET_NONE_VALUE))
+               _RET_NONE_VALUE)
+            && (int)tux->y+tux->action->h+1 < pop->height
+            )
          {
             edje_object_signal_callback_del(tux->obj,"custom_done","edje", _cb_custom_end);
             _start_falling_at(tux, (int)tux->x+(tux->action->w/2));
@@ -603,7 +605,7 @@ _cb_animator(void *data)
          }
 
       }
-       // ******  FLYER  ********
+      // ******  FLYER  ********
       else if (tux->action->id == ID_FLYER)
       {
          tux->y -= ((double)tux->action->speed / 100);
@@ -612,6 +614,14 @@ _cb_animator(void *data)
             tux->reverse = !tux->reverse;
             _start_falling_at(tux, (int)tux->x);
          }
+      }
+      // ******  ANGEL  ********
+      else if (tux->action->id == ID_ANGEL)
+      {
+         tux->y -= ((double)tux->action->speed / 100);
+         tux->x += (random() % 3) - 1;
+         if (tux->y < -100)
+            _reborn(tux);
       }
       // ******  CLIMBER  ********
       else if (tux->action->id == ID_CLIMBER)
@@ -701,11 +711,9 @@ _is_inside_any_win(Population *pop, int x, int y, int ret_value)
                default:
                   return 1;
             }
-            
          }
       }
    }   
-
    return 0;
 }
 
@@ -714,6 +722,7 @@ _start_walking_at(Penguin *tux, int at_y)
 {
    //printf("PENGUINS: Start walking...at %d\n", at_y);
    tux->action = evas_hash_find(tux->pop->actions, "Walker");
+   tux->custom = 0;
    
    tux->y = at_y - tux->action->h;
    evas_object_resize(tux->obj, tux->action->w, tux->action->h);
@@ -780,6 +789,7 @@ _start_falling_at(Penguin *tux, int at_x)
       }
    }
    tux->faller_h = (int)tux->y;
+   tux->custom = 0;
 }
 
 static void 
@@ -795,10 +805,32 @@ _start_flying_at(Penguin *tux, int at_y)
 }
 
 static void 
+_start_angel_at(Penguin *tux, int at_y)
+{
+   tux->x = tux->x + (tux->action->w /2);
+   tux->action = evas_hash_find(tux->pop->actions, "Angel");
+   if (!tux->action)
+   {
+      _reborn(tux);
+      return;
+   }
+   
+   tux->x = tux->x - (tux->action->w /2);
+   tux->y = at_y - 10;
+   
+   tux->custom = 0;
+   edje_object_signal_emit(tux->obj, "start_angel", "epenguins");
+   evas_object_move(tux->obj,(int)tux->x,(int)tux->y);
+   evas_object_resize(tux->obj, tux->action->w, tux->action->h);
+   
+}
+
+static void 
 _cb_splatter_end (void *data, Evas_Object *o, const char *emi, const char *src)
 {
-   _reborn((Penguin*)data);
+   Penguin *tux = data;
    edje_object_signal_callback_del(o,"splatting_done","edje", _cb_splatter_end);
+   _start_angel_at(tux, tux->y+tux->action->h+10);
 }
 
 static void 
@@ -825,13 +857,20 @@ _start_splatting_at(Penguin *tux, int at_y)
 static void 
 _cb_bomber_end(void *data, Evas_Object *o, const char *emi, const char *src)
 {
+   Penguin *tux = data;
    edje_object_signal_callback_del(o,"bombing_done","edje", _cb_bomber_end);
-   _reborn((Penguin*)data);
+   _start_angel_at(tux, tux->y);
 }
 static void 
 _start_bombing_at(Penguin *tux, int at_y)
 {
    //printf("PENGUINS: Start bombing at %d...\n", at_y);
+   if (tux->action && (
+         (tux->action->id == ID_ANGEL) ||
+         (tux->action->id == ID_BOMBER) ||
+         (tux->action->id == ID_SPLATTER))
+      )
+      return;
    
    if (tux->reverse)
       edje_object_signal_emit(tux->obj, "start_bombing_left", "epenguins");

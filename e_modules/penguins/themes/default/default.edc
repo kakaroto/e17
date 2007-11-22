@@ -124,6 +124,11 @@ images
    image: "reader9.png" FRAME;
    image: "reader10.png" FRAME;
    image: "reader11.png" FRAME;
+   
+   image: "angel0.png" FRAME;
+   image: "angel1.png" FRAME;
+   image: "angel2.png" FRAME;
+   image: "angel3.png" FRAME;
 }
 data
 {
@@ -148,6 +153,7 @@ data
    item: "Bomber" "32 32 0";
    item: "Splatter" "30 30 0";
    item: "Flyer" "30 30 200";
+   item: "Angel" "44 30 100"; //This is an optional action
    
    /**************************************************************
     * Custom actions definitions. 
@@ -489,6 +495,16 @@ collections
                   tween: "flyer5.png";
                   tween: "flyer6.png";
                   tween: "flyer7.png";
+					}
+				}
+            description
+				{
+					state: "angel" 0.0;
+					image {
+                  normal: "angel0.png";
+                  tween: "angel1.png";
+                  tween: "angel2.png";
+                  tween: "angel3.png";
 					}
 				}
             description
@@ -855,6 +871,27 @@ collections
          {
             name: "splatting_done";
             action: SIGNAL_EMIT "splatting_done" "edje";
+         }
+      /****************************
+       * Angel (optional)
+       ****************************/
+      program
+			{
+				name: "start_angel";
+				signal: "start_angel";
+				source: "epenguins";
+				action: STATE_SET "angel" 0.0;
+				transition: LINEAR 0;
+				target: "penguins";
+            after: "angel";
+         }
+      program
+			{
+				name: "angel";
+				action: STATE_SET "angel" 0.0;
+				transition: LINEAR 0.5;
+				target: "penguins";
+				after: "angel";
          }
       /*****************************************
        * Customs programs

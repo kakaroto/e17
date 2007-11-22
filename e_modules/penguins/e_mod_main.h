@@ -16,6 +16,7 @@
 #define ID_SPLATTER 5
 #define ID_FLYER 6
 #define ID_BOMBER 7
+#define ID_ANGEL 8
 
 typedef struct _Config Config;
 typedef struct _Population Population;
