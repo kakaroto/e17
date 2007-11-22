@@ -71,19 +71,22 @@ images
    image: "bomber13.png" FRAME;
    image: "bomber14.png" FRAME;
    image: "bomber15.png" FRAME;
+   image: "bomber_explo.png" FRAME;
    
-   image: "splatter0.png" FRAME;
-   image: "splatter1.png" FRAME;
-   image: "splatter2.png" FRAME;
-   image: "splatter3.png" FRAME;
-   image: "splatter4.png" FRAME;
-   image: "splatter5.png" FRAME;
-   image: "splatter6.png" FRAME;
-   image: "splatter7.png" FRAME;
-   image: "splatter8.png" FRAME;
-   image: "splatter9.png" FRAME;
-   image: "splatter10.png" FRAME;
-   image: "splatter11.png" FRAME;
+   image: "splat2.png" FRAME;
+   image: "splat3.png" FRAME;
+   image: "splat4.png" FRAME;
+   image: "splat5.png" FRAME;
+   image: "splat6.png" FRAME;
+   image: "splat7.png" FRAME;
+   image: "splat8.png" FRAME;
+   image: "splat9.png" FRAME;
+   image: "splat10.png" FRAME;
+   image: "splat11.png" FRAME;
+   image: "splat12.png" FRAME;
+   image: "splat13.png" FRAME;
+   image: "splat14.png" FRAME;
+   image: "splat15.png" FRAME;
    
    image: "flyer0.png" FRAME;
    image: "flyer1.png" FRAME;
@@ -371,6 +374,7 @@ collections
 						tween: "bomber10.png";
 						tween: "bomber11.png";
 						tween: "bomber12.png";
+						tween: "bomber_explo.png";
 						tween: "bomber13.png";
 						tween: "bomber14.png";
 					}
@@ -393,6 +397,7 @@ collections
 						tween: "bomber10.png";
 						tween: "bomber11.png";
 						tween: "bomber12.png";
+                  tween: "bomber_explo.png";
 						tween: "bomber13.png";
 						tween: "bomber14.png";
 					}
@@ -401,36 +406,60 @@ collections
 				{
                state: "splatter" 0.0;
 					image { 
-                  normal: "splatter11.png";
-                  tween: "splatter0.png";
-                  tween: "splatter1.png";
-                  tween: "splatter2.png";
-                  tween: "splatter3.png";
-                  tween: "splatter4.png";
-                  tween: "splatter5.png";
-                  tween: "splatter6.png";
-                  tween: "splatter7.png";
-                  tween: "splatter8.png";
-                  tween: "splatter9.png";
-                  tween: "splatter10.png";
+                  normal:"splat15.png";
+                  tween: "splat2.png";
+                  tween: "splat3.png";
+                  tween: "splat4.png";
+                  tween: "splat5.png";
+                  tween: "splat6.png";
+                  tween: "splat7.png";
+                  tween: "splat8.png";
+                  tween: "splat9.png";
+                  tween: "splat10.png";
+                  tween: "splat11.png";
+                  tween: "splat12.png";
+                  tween: "splat12.png";
+                  tween: "splat12.png";
+                  tween: "splat12.png";
+                  tween: "splat12.png";
+                  tween: "splat12.png";
+                  tween: "splat12.png";
+                  tween: "splat12.png";
+                  tween: "splat12.png";
+                  tween: "splat12.png";
+                  tween: "splat12.png";
+                  tween: "splat13.png";
+                  tween: "splat14.png";
 					}
 				}
             description
 				{
 					state: "splatter" 1.0;
 					image {
-                  normal: "splatter11.png";
-                  tween: "splatter0.png";
-                  tween: "splatter1.png";
-                  tween: "splatter2.png";
-                  tween: "splatter3.png";
-                  tween: "splatter4.png";
-                  tween: "splatter5.png";
-                  tween: "splatter6.png";
-                  tween: "splatter7.png";
-                  tween: "splatter8.png";
-                  tween: "splatter9.png";
-                  tween: "splatter10.png";
+                  normal:"splat15.png";
+                  tween: "splat2.png";
+                  tween: "splat3.png";
+                  tween: "splat4.png";
+                  tween: "splat5.png";
+                  tween: "splat6.png";
+                  tween: "splat7.png";
+                  tween: "splat8.png";
+                  tween: "splat9.png";
+                  tween: "splat10.png";
+                  tween: "splat11.png";
+                  tween: "splat12.png";
+                  tween: "splat12.png";
+                  tween: "splat12.png";
+                  tween: "splat12.png";
+                  tween: "splat12.png";
+                  tween: "splat12.png";
+                  tween: "splat12.png";
+                  tween: "splat12.png";
+                  tween: "splat12.png";
+                  tween: "splat12.png";
+                  tween: "splat12.png";
+                  tween: "splat13.png";
+                  tween: "splat14.png";
 					}
 				}
             description
@@ -806,7 +835,7 @@ collections
 				signal: "start_splatting_right";
 				source: "epenguins";
 				action: STATE_SET "splatter" 0.0;
-				transition: LINEAR 1;
+				transition: LINEAR 1.25;
 				target: "penguins";
             after: "stop_all";
             after: "splatting_done";
@@ -817,7 +846,7 @@ collections
 				signal: "start_splatting_left";
 				source: "epenguins";
 				action: STATE_SET "splatter" 1.0;
-				transition: LINEAR 1;
+				transition: LINEAR 1.25;
 				target: "penguins";
             after: "stop_all";
             after: "splatting_done";
