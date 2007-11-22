@@ -58,7 +58,6 @@ static int
 e_phys_world_timer(void *data)
 {
   E_Phys_World *world;
-  double t;
   int i;
 
   world = data;
