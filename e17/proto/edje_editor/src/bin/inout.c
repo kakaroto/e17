@@ -21,6 +21,7 @@ void
 etk_textview_append(Etk_Widget *tv, char *str)
 {
    Etk_Textblock_Iter *iter;
+   if (!tv) return;
    iter = etk_text_view_cursor_get (ETK_TEXT_VIEW(tv));
    etk_textblock_insert_markup(ETK_TEXT_VIEW(tv)->textblock, iter, 
                               str, strlen(str));
@@ -183,7 +184,7 @@ SaveEDJ(char *file_name)
    //Execute edje_cc through a pipe
    Ecore_Exe* exe;
    ecore_event_handler_add(ECORE_EXE_EVENT_DATA, exe_data, Save_TextView);
-   ecore_event_handler_add(ECORE_EXE_EVENT_DEL, exe_exit, NULL);
+   ecore_event_handler_add(ECORE_EXE_EVENT_DEL, exe_exit, Save_TextView);
    exe = ecore_exe_pipe_run(cmd,
       ECORE_EXE_PIPE_READ | ECORE_EXE_PIPE_READ_LINE_BUFFERED,(void*)SAVE_WIN); 
    
