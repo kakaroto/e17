@@ -4,6 +4,16 @@
 
 #include "evas_object_image_rotate.h"
 
+static inline int
+_calc_stride(int w)
+{
+   int pad;
+
+   pad = w % 4;
+   if (!pad)  return w;
+   else return w + 4 - pad;
+}
+
 static void
 _data8_image_rotate_90(char *dst, const char *src,
                        int dst_stride, int src_stride,
@@ -276,7 +286,7 @@ _rgb565_image_rotate(Rotation rotation,
 
     switch(rotation) {
         case ROTATE_90:
-            dst_stride = h;
+            dst_stride = _calc_stride(h);
             _data16_image_rotate_90(dst, src,
                                     dst_stride, src_stride,
                                     out_x, out_y, w, h);
@@ -286,7 +296,7 @@ _rgb565_image_rotate(Rotation rotation,
                                        out_x, out_y, w, h);
             break;
         case ROTATE_180:
-            dst_stride = src_stride;
+            dst_stride = _calc_stride(src_stride);
             _data16_image_rotate_180(dst, src,
                                      dst_stride, src_stride,
                                      out_x, out_y, w, h);
@@ -296,7 +306,7 @@ _rgb565_image_rotate(Rotation rotation,
                                         out_x, out_y, w, h);
             break;
         case ROTATE_270:
-            dst_stride = h;
+            dst_stride = _calc_stride(h);
             _data16_image_rotate_270(dst, src,
                                      dst_stride, src_stride,
                                      out_x, out_y, w, h);
