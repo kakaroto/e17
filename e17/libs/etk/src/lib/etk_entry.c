@@ -567,16 +567,21 @@ static Etk_Bool _etk_entry_internal_realized_cb(Etk_Object *object, void *data)
       return ETK_TRUE;
 
    ctx_id = ecore_imf_context_default_id_get();
-   ctx_info = ecore_imf_context_info_by_id_get(ctx_id);
-   if (!ctx_info->canvas_type ||
-       strcmp(ctx_info->canvas_type, "evas") == 0)
-       entry->imf_context = ecore_imf_context_add(ctx_id);
-   else
+   if (ctx_id)
    {
-       ctx_id = ecore_imf_context_default_id_by_canvas_type_get("evas");
-       if (ctx_id)
-           entry->imf_context = ecore_imf_context_add(ctx_id);
+      ctx_info = ecore_imf_context_info_by_id_get(ctx_id);
+      if (!ctx_info->canvas_type ||
+          strcmp(ctx_info->canvas_type, "evas") == 0)
+         entry->imf_context = ecore_imf_context_add(ctx_id);
+      else
+      {
+         ctx_id = ecore_imf_context_default_id_by_canvas_type_get("evas");
+         if (ctx_id)
+            entry->imf_context = ecore_imf_context_add(ctx_id);
+      }
    }
+   else
+      entry->imf_context = NULL;
 
    if (entry->imf_context)
    {
