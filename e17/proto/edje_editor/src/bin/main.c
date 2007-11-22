@@ -341,7 +341,7 @@ main(int argc, char **argv)
       return 0;
    }
    //Init ETK
-   if (!etk_init(&argc, &argv))
+   if (!etk_init(argc, argv))
    {
       printf("Could not init etk!\n");
       return 1;

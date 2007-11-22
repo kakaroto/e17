@@ -111,7 +111,7 @@ create_save_window()
    etk_widget_show_all(Save_Win); 
 }
 
-char*
+int
 backup_file(char *file_name)
 {
    char bkname[4096];
@@ -121,9 +121,9 @@ backup_file(char *file_name)
    snprintf(bkname,4095,"%s.bkp",file_name);
    
    if (ecore_file_cp(file_name,bkname))
-      return &bkname;
+      return TRUE;
    else
-      return NULL;
+      return FALSE;
 }
 
 int
