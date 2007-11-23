@@ -29,7 +29,7 @@ static Etk_Bool _gui_fm_cancel_clicked_cb(Etk_Button *btn, Gui *gui);
 static Etk_Bool _gui_main_window_deleted_cb(Etk_Window *obj, Gui *gui);
 static Etk_Bool _gui_tree_checkbox_toggled_cb(Etk_Object *obj, Etk_Tree_Row *row,
       void *data);
-static Etk_Bool _gui_send_clicked_cb(Etk_Object *obj, void *data);
+static Etk_Bool _gui_emit_signal_cb(Etk_Object *obj, void *data);
 static int gui_visibility_col_sort_cb(Etk_Tree_Col *col, Etk_Tree_Row *row1, Etk_Tree_Row *row2, void *data);
 
 void main_window_show(const char *file)
@@ -178,6 +178,9 @@ void main_window_show(const char *file)
    signal_entry = etk_entry_new();
    etk_box_append(ETK_BOX(hbox), signal_entry, ETK_BOX_START, ETK_BOX_NONE, 0);
    gui->signal_entry = signal_entry;
+   etk_signal_connect_by_code(ETK_ENTRY_TEXT_ACTIVATED_SIGNAL,
+			      ETK_OBJECT(signal_entry),
+			      ETK_CALLBACK(_gui_emit_signal_cb), gui);
 
    source_label = etk_label_new("Source: ");
    etk_box_append(ETK_BOX(hbox), source_label, ETK_BOX_START, ETK_BOX_NONE, 0);
@@ -186,13 +189,16 @@ void main_window_show(const char *file)
    source_entry = etk_entry_new();
    etk_box_append(ETK_BOX(hbox), source_entry, ETK_BOX_START, ETK_BOX_NONE, 0);
    gui->source_entry = source_entry;
+   etk_signal_connect_by_code(ETK_ENTRY_TEXT_ACTIVATED_SIGNAL,
+			      ETK_OBJECT(source_entry),
+			      ETK_CALLBACK(_gui_emit_signal_cb), gui);
 
    send_button = etk_button_new_with_label("Send");
    etk_button_alignment_set(ETK_BUTTON(send_button), 1.0, 0.5);
    etk_box_append(ETK_BOX(hbox), send_button, ETK_BOX_END, ETK_BOX_NONE, 0);
    etk_signal_connect_by_code(ETK_BUTTON_CLICKED_SIGNAL,
 			      ETK_OBJECT(send_button),
-			      ETK_CALLBACK(_gui_send_clicked_cb), gui);
+			      ETK_CALLBACK(_gui_emit_signal_cb), gui);
 
    bg_setup(ETK_CANVAS(gui->canvas));
    etk_widget_show_all(gui->win);
@@ -583,7 +589,7 @@ static Etk_Bool _gui_tree_checkbox_toggled_cb(Etk_Object *obj,
    return ETK_TRUE;
 }
 
-static Etk_Bool _gui_send_clicked_cb(Etk_Object *obj, void *data)
+static Etk_Bool _gui_emit_signal_cb(Etk_Object *obj, void *data)
 {
   Gui * gui;
   Evas_List *l;
