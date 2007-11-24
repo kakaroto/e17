@@ -24,7 +24,7 @@ error:
 EAPI void
 e_nm_free(E_NM_Context *ctx)
 {
-  e_dbus_connection_unref(ctx->conn);
+  e_dbus_connection_close(ctx->conn);
   free(ctx);
 }
 

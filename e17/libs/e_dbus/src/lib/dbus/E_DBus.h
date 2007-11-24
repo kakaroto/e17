@@ -69,7 +69,6 @@ extern "C" {
    EAPI E_DBus_Connection *e_dbus_bus_get(DBusBusType type);
 
    EAPI void e_dbus_connection_ref(E_DBus_Connection *conn);
-   EAPI void e_dbus_connection_unref(E_DBus_Connection *conn);
 
    EAPI E_DBus_Connection *e_dbus_connection_setup(DBusConnection *conn);
    EAPI void e_dbus_connection_close(E_DBus_Connection *conn);

@@ -236,7 +236,7 @@ e_dbus_object_free(E_DBus_Object *obj)
 
   DEBUG(5, "e_dbus_object_free (%s)\n", obj->path);
   dbus_connection_unregister_object_path(obj->conn->conn, obj->path);
-  e_dbus_connection_unref(obj->conn);
+  e_dbus_connection_close(obj->conn);
 
   if (obj->path) free(obj->path);
   ecore_list_destroy(obj->interfaces);

@@ -95,7 +95,7 @@ EAPI void
 e_notification_daemon_free(E_Notification_Daemon *daemon)
 {
   if (daemon->obj) e_dbus_object_free(daemon->obj);
-  if (daemon->conn) e_dbus_connection_unref(daemon->conn);
+  if (daemon->conn) e_dbus_connection_close(daemon->conn);
   if (daemon->name) free(daemon->name);
   if (daemon->vendor) free(daemon->vendor);
   if (daemon->iface) e_dbus_interface_unref(daemon->iface);

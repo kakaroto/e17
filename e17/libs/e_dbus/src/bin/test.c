@@ -93,7 +93,7 @@ main (int argc, char ** argv)
   if (conn)
   {
     if (_setup(conn)) ecore_main_loop_begin();
-    e_dbus_connection_unref(conn);
+    e_dbus_connection_close(conn);
   }
 
   e_dbus_shutdown();

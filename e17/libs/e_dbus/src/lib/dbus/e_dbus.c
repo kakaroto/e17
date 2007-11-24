@@ -517,6 +517,8 @@ e_dbus_connection_close(E_DBus_Connection *conn)
 {
   DEBUG(5, "e_dbus_connection_close\n");
 
+  if (--(conn->refcount) != 0) return;
+
   dbus_connection_free_data_slot(&connection_slot);
   dbus_connection_remove_filter(conn->conn, e_dbus_filter, NULL);
   dbus_connection_set_watch_functions (conn->conn,
@@ -543,13 +545,6 @@ EAPI void
 e_dbus_connection_ref(E_DBus_Connection *conn)
 {
   conn->refcount++;
-}
-
-EAPI void
-e_dbus_connection_unref(E_DBus_Connection *conn)
-{
-  if (!conn) return;
-  if (--(conn->refcount) == 0) e_dbus_connection_close(conn);
 }
 
 DBusConnection *

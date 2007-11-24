@@ -23,7 +23,7 @@ EAPI int
 e_notification_shutdown(void)
 {
   if (--init_count) return init_count;
-  e_dbus_connection_unref(client_conn);
+  e_dbus_connection_close(client_conn);
   client_conn = NULL;
   e_dbus_shutdown();
   return 0;
