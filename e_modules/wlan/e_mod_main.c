@@ -36,7 +36,6 @@ static void _wlan_cb_mouse_in (void *data, Evas * e, Evas_Object * obj,
 static void _wlan_cb_mouse_out (void *data, Evas * e, Evas_Object * obj,
 			       void *event_info);
 static void _wlan_menu_cb_configure (void *data, E_Menu * m, E_Menu_Item * mi);
-static void _wlan_menu_cb_post (void *data, E_Menu * m);
 static Config_Item *_wlan_config_item_get (const char *id);
 static Wlan *_wlan_new (Evas * evas);
 static void _wlan_free (Wlan * wlan);
@@ -151,15 +150,13 @@ _wlan_cb_mouse_down (void *data, Evas * e, Evas_Object * obj, void *event_info)
 
   inst = data;
   ev = event_info;
-  if ((ev->button == 3) && (!wlan_config->menu))
+  if ((ev->button == 3) && (!inst->gcc->menu))
     {
       E_Menu *mn;
       E_Menu_Item *mi;
       int x, y, w, h;
 
       mn = e_menu_new ();
-      e_menu_post_deactivate_callback_set (mn, _wlan_menu_cb_post, inst);
-      wlan_config->menu = mn;
 
       mi = e_menu_item_new (mn);
       e_menu_item_label_set (mi, D_ ("Configuration"));
@@ -179,15 +176,6 @@ _wlan_cb_mouse_down (void *data, Evas * e, Evas_Object * obj, void *event_info)
       evas_event_feed_mouse_up (inst->gcc->gadcon->evas, ev->button,
 				EVAS_BUTTON_NONE, ev->timestamp, NULL);
     }
-}
-
-static void
-_wlan_menu_cb_post (void *data, E_Menu * m)
-{
-  if (!wlan_config->menu)
-    return;
-  e_object_del (E_OBJECT (wlan_config->menu));
-  wlan_config->menu = NULL;
 }
 
 static void
@@ -332,12 +320,6 @@ e_modapi_shutdown (E_Module * m)
 
   if (wlan_config->config_dialog)
     e_object_del (E_OBJECT (wlan_config->config_dialog));
-  if (wlan_config->menu)
-    {
-      e_menu_post_deactivate_callback_set (wlan_config->menu, NULL, NULL);
-      e_object_del (E_OBJECT (wlan_config->menu));
-      wlan_config->menu = NULL;
-    }
   while (wlan_config->items)
     {
       Config_Item *ci;
