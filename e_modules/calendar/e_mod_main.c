@@ -38,7 +38,6 @@ static void _cb_action(E_Object *obj, const char *params);
 static void _cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
-static void _menu_cb_post(void *data, E_Menu *m);
 
 static int days_in_month[2][12] =
 {
@@ -55,7 +54,8 @@ Config *calendar_conf = NULL;
 static const E_Gadcon_Client_Class _gc_class = 
 {
    GADCON_CLIENT_CLASS_VERSION, "calendar", 
-     {_gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon, _gc_id_new, NULL}
+     {_gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon, _gc_id_new, NULL},
+   E_GADCON_CLIENT_STYLE_PLAIN
 };
 
 static E_Gadcon_Client *
@@ -353,15 +353,12 @@ _cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
      {
 	e_gadcon_popup_toggle_pinned(inst->popup);
      }
-   if ((ev->button == 3) && (!calendar_conf->menu))
+   if ((ev->button == 3) && (!inst->gcc->menu))
      {
 	E_Menu *mn;
 	int cx, cy, cw, ch;
 
 	mn = e_menu_new();
-	calendar_conf->menu = mn;
-
-	e_menu_post_deactivate_callback_set(mn, _menu_cb_post, inst);
 
 	e_gadcon_client_util_menu_items_append(inst->gcc, mn, 0);
 	e_gadcon_canvas_zone_geometry_get(inst->gcc->gadcon, &cx, &cy, &cw, &ch);
@@ -372,14 +369,6 @@ _cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
         evas_event_feed_mouse_up(inst->gcc->gadcon->evas, ev->button,
 				 EVAS_BUTTON_NONE, ev->timestamp, NULL);
      }	
-}
-
-static void
-_menu_cb_post(void *data, E_Menu *m)
-{
-   if (!calendar_conf->menu) return;
-   e_object_del(E_OBJECT(calendar_conf->menu));
-   calendar_conf->menu = NULL;
 }
 
 EAPI E_Module_Api e_modapi = 
