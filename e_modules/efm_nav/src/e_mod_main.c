@@ -7,7 +7,6 @@ struct _Instance
    E_Gadcon_Client *gcc;
    Evas_Object *o_base, *o_list;
    Evas_Object *o_back, *o_up, *o_forward;
-   E_Menu *menu;
    E_Toolbar *tbar;
 
    Ecore_List *history;
@@ -24,7 +23,6 @@ static Evas_Object     *_gc_icon          (Evas *evas);
 static const char      *_gc_id_new        (void);
 static void             _cb_mouse_down    (void *data, Evas *e, 
 					   Evas_Object *obj, void *event_info);
-static void             _cb_menu_post     (void *data, E_Menu *mn);
 static void             _cb_back_click    (void *data, Evas_Object *obj, 
 					   const char *emission, 
 					   const char *source);
@@ -232,27 +230,14 @@ _cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 
    inst = data;
    ev = event_info;
-   if ((ev->button != 3) || (inst->menu)) return;
+   if ((ev->button != 3) || (inst->gcc->menu)) return;
    zone = e_util_zone_current_get(e_manager_current_get());
    mn = e_menu_new();
-   e_menu_post_deactivate_callback_set(mn, _cb_menu_post, inst);
-   inst->menu = mn;
    e_gadcon_client_util_menu_items_append(inst->gcc, mn, 0);
    ecore_x_pointer_xy_get(zone->container->win, &x, &y);
-   e_menu_activate_mouse(inst->menu, zone, x, y, 1, 1, 
+   e_menu_activate_mouse(mn, zone, x, y, 1, 1, 
 			 E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
    e_util_evas_fake_mouse_up_later(e, ev->button);
-}
-
-static void 
-_cb_menu_post(void *data, E_Menu *mn) 
-{
-   Instance *inst;
-
-   inst = data;
-   if (!inst->menu) return;
-   e_object_del(E_OBJECT(inst->menu));
-   inst->menu = NULL;
 }
 
 static void 
