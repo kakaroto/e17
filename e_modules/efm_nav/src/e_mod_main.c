@@ -125,7 +125,6 @@ static void
 _gc_shutdown(E_Gadcon_Client *gcc) 
 {
    Instance *inst = NULL;
-   const char *hist;
 
    inst = gcc->data;
    if (!inst) return;
