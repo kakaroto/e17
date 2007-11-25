@@ -1,621 +1,596 @@
+#define FRAME(NAME, W, H, IMAGE_NAME, IW, IH, PLACE_AFTER) \
+   part { \
+      name: NAME"_frame"; \
+      type: IMAGE; \
+      description { \
+         state: "default" 0.0; \
+         rel1 {relative: 1.0 1.0; offset: 0 0; to_y: PLACE_AFTER;} \
+         rel2 {relative: 1.0 1.0; offset: W 0; to_y: PLACE_AFTER;} \
+         image {normal: "frame_bg.png"; border: 2 2 2 2;} \
+      } \
+      description { \
+         state: "big" 0.0; \
+         rel1 {relative: 1.0 1.0; offset: -W 0; to_y: PLACE_AFTER;} \
+         rel2 {relative: 1.0 1.0; offset: 0 H; to_y: PLACE_AFTER;} \
+         image {normal: "frame_bg.png"; border: 2 2 2 2;} \
+      } \
+      description { \
+         state: "small" 0.0; \
+         rel1 {relative: 1.0 1.0; offset: 0 0; to_y: PLACE_AFTER;} \
+         rel2 {relative: 1.0 1.0; offset: W 5+IH; to_y: PLACE_AFTER;} \
+         image {normal: "frame_bg.png"; border: 2 2 2 2;} \
+      } \
+   } \
+   part { \
+      name: NAME"_frame_swallow"; \
+      type: SWALLOW; \
+      mouse_events: 1; \
+      description { \
+         state: "default" 0.0; \
+         color: 0 0 0 0; \
+         rel1 {relative: 0.0 0.0; offset: 5 5; to: NAME"_frame";} \
+         rel2 {relative: 1.0 1.0; offset: -5 -5; to: NAME"_frame";} \
+      } \
+   } \
+   part { \
+      name: NAME"_frame_label_bg"; \
+      type: IMAGE; \
+      mouse_events: 1; \
+      description { \
+         state: "default" 0.0; \
+         rel1 {relative: 0.0 0.0; offset: -20 1; to: NAME"_frame";} \
+         rel2 {relative: 0.0 1.0; offset: -1 -2; to: NAME"_frame";} \
+         image {normal: "frame_bg_label.png"; border: 1 1 1 1;} \
+      } \
+   } \
+   part { \
+      name: NAME"_frame_label_clip"; \
+      type: RECT; \
+      mouse_events: 0; \
+      description { \
+         state: "default" 0.0; \
+         rel1 {relative: 0.0 0.0; offset: 0 0; to: NAME"_frame_label_bg";} \
+         rel2 {relative: 1.0 1.0; offset: 0 0; to: NAME"_frame_label_bg";} \
+      } \
+   } \
+   part { \
+      name: NAME"_frame_label_text"; \
+      type: IMAGE; \
+      mouse_events: 0; \
+      clip_to: NAME"_frame_label_clip"; \
+      description { \
+         state: "default" 0.0; \
+         rel1 {relative: 1.0 1.0; offset: -3-IW -IH; to: NAME"_frame_label_bg";} \
+         rel2 {relative: 1.0 1.0; offset: -3 0; to: NAME"_frame_label_bg";} \
+         image {normal: IMAGE_NAME;} \
+      } \
+   }
+
+#define FRAME_PROG(NAME) \
+   program{ \
+      name: NAME"_right_click"; \
+      signal: "mouse,down,1"; \
+      source: NAME"_frame_label_bg"; \
+      action: STATE_SET "big" 0.0; \
+      transition: SINUSOIDAL 0.5; \
+      target: NAME"_frame"; \
+   } \
+   program{ \
+      name: NAME"_left_click"; \
+      signal: "mouse,down,3"; \
+      source: NAME"_frame_label_bg"; \
+      action: STATE_SET "small" 0.0; \
+      transition: SINUSOIDAL 0.5; \
+      target: NAME"_frame"; \
+   } \
+   program{ \
+      name: NAME"_frame_hide"; \
+      signal: NAME"_frame_hide"; \
+      source: "edje_editor"; \
+      action: STATE_SET "default" 0.0; \
+      transition: SINUSOIDAL 0.5; \
+      target: NAME"_frame"; \
+   } \
+   program{ \
+      name: NAME"_frame_show"; \
+      signal: NAME"_frame_show"; \
+      source: "edje_editor"; \
+      action: STATE_SET "big" 0.0; \
+      transition: SINUSOIDAL 0.5; \
+      target: NAME"_frame"; \
+   }
+
 images {
-   /* this first images will be loaded by number and not by name.
-    * so don't move them.
-    */
-   image, "bg.png" LOSSY 95;
-   image, "shadow.png" LOSSY 95;
-   /* end of static images*/
-
-   image, "image.png" LOSSY 95;
-   image, "rect.png" LOSSY 95;
-   image, "text.png" LOSSY 95;
-   image, "desc.png" LOSSY 95;
-   image, "e17.png" LOSSY 95;
-   image, "none.png" LOSSY 95;
-   image, "focus.png" LOSSY 95;
-   image, "arrow_u.png" LOSSY 95;
-   image, "arrow_d.png" LOSSY 95;
-   image, "arrow_l.png" LOSSY 95;
-   image, "arrow_r.png" LOSSY 95;
-   image, "fakewin.png" LOSSY 95;
-   image, "parent1X.png" LOSSY 95;
-   image, "parent1Y.png" LOSSY 95;
-   image, "parent2X.png" LOSSY 95;
-   image, "parent2Y.png" LOSSY 95;
-   image, "rel1.png" LOSSY 95;
-   image, "rel2.png" LOSSY 95;
-   image, "e17.png" LOSSY 95;
-   image, "miniarrow.png" LOSSY 95;
-
+   image: "backdrop.png" LOSSY 95;
+   image: "bg1.png" LOSSY 95;
+   image: "bg1_i.png" LOSSY 95;
+   image: "bg2.png" LOSSY 95;
+   image: "bg2_i.png" LOSSY 95;
+   image: "bg3.png" LOSSY 95;
+   image: "bg4.png" LOSSY 95;
+   image: "logo.png" LOSSY 95;
+   image: "frame.png" LOSSY 95;
+   image: "frame_bg.png" LOSSY 95;
+   image: "frame_bg_label.png" LOSSY 95;
+   image: "lbl_group.png" LOSSY 95;
+   image: "lbl_part.png" LOSSY 95;
+   image: "lbl_desc.png" LOSSY 95;
+   image: "lbl_rect.png" LOSSY 95;
+   image: "lbl_text.png" LOSSY 95;
+   image: "lbl_image.png" LOSSY 95;
+   image: "lbl_pos.png" LOSSY 95;
+   image: "lbl_prog.png" LOSSY 95;
+   image: "lbl_script.png" LOSSY 95;
+   image: "image.png" LOSSY 95;
+   image: "rect.png" LOSSY 95;
+   image: "text.png" LOSSY 95;
+   image: "desc.png" LOSSY 95;
+   image: "e17.png" LOSSY 95;
+   image: "none.png" LOSSY 95;
+   image: "focus.png" LOSSY 95;
+   image: "arrow_u.png" LOSSY 95;
+   image: "arrow_d.png" LOSSY 95;
+   image: "arrow_l.png" LOSSY 95;
+   image: "arrow_r.png" LOSSY 95;
+   image: "fakewin.png" LOSSY 95;
+   image: "rel1.png" LOSSY 95;
+   image: "rel2.png" LOSSY 95;
+   image: "e17.png" LOSSY 95;
+   image: "miniarrow.png" LOSSY 95;
 }
+
 collections {
    group{
-      name, "IMAGE.PNG";
-      min, 15 16;
-      max, 15 16;
+      name: "IMAGE.PNG";
+      min: 15 16;
+      max: 15 16;
       parts{
          part{
-            name, "StaticImage";
-            type, IMAGE;
-            mouse_events, 0;
+            name: "StaticImage";
+            type: IMAGE;
+            mouse_events: 0;
             description{
-               state, "default" 0.0;
-               rel1 {relative, 0.0 0.0; offset, 0 0;}
-               rel2 {relative, 0.0 0.0; offset, 15 16;}
-               image {
-                  normal, "image.png";
-               }
+               state: "default" 0.0;
+               rel1 {relative: 0.0 0.0; offset: 0 0;}
+               rel2 {relative: 0.0 0.0; offset: 15 16;}
+               image {normal: "image.png";}
             }
          }
       }
    }
    group{
-      name, "RECT.PNG";
-      min, 19 14;
-      max, 19 14;
+      name: "RECT.PNG";
+      min: 19 14;
+      max: 19 14;
       parts{
          part{
-            name, "StaticImage";
-            type, IMAGE;
-            mouse_events, 0;
+            name: "StaticImage";
+            type: IMAGE;
+            mouse_events: 0;
             description{
-               state, "default" 0.0;
-               rel1 {relative, 0.0 0.0; offset, 0 0;}
-               rel2 {relative, 0.0 0.0; offset, 19 14;}
-               image {
-                  normal, "rect.png";
-               }
+               state: "default" 0.0;
+               rel1 {relative: 0.0 0.0; offset: 0 0;}
+               rel2 {relative: 0.0 0.0; offset: 19 14;}
+               image {normal: "rect.png";}
             }
          }
       }
    }
    group{
-      name, "TEXT.PNG";
-      min, 20 15;
-      max, 20 15;
+      name: "TEXT.PNG";
+      min: 20 15;
+      max: 20 15;
       parts{
          part{
-            name, "StaticImage";
-            type, IMAGE;
-            mouse_events, 0;
+            name: "StaticImage";
+            type: IMAGE;
+            mouse_events: 0;
             description{
-               state, "default" 0.0;
-               rel1 {relative, 0.0 0.0; offset, 0 0;}
-               rel2 {relative, 0.0 0.0; offset, 20 15;}
-               image {
-                  normal, "text.png";
-               }
+               state: "default" 0.0;
+               rel1 {relative: 0.0 0.0; offset: 0 0;}
+               rel2 {relative: 0.0 0.0; offset: 20 15;}
+               image {normal: "text.png";}
             }
          }
       }
    }
    group{
-      name, "NONE.PNG";
-      min, 19 14;
-      max, 19 14;
+      name: "NONE.PNG";
+      min: 19 14;
+      max: 19 14;
       parts{
          part{
-            name, "StaticImage";
-            type, IMAGE;
-            mouse_events, 0;
+            name: "StaticImage";
+            type: IMAGE;
+            mouse_events: 0;
             description{
-               state, "default" 0.0;
-               rel1 {relative, 0.0 0.0; offset, 0 0;}
-               rel2 {relative, 0.0 0.0; offset, 19 14;}
-               image {
-                  normal, "none.png";
-               }
+               state: "default" 0.0;
+               rel1 {relative: 0.0 0.0; offset: 0 0;}
+               rel2 {relative: 0.0 0.0; offset: 19 14;}
+               image {normal: "none.png";}
             }
          }
       }
    }
    group{
-      name, "DESC.PNG";
-      min, 15 15;
-      max, 15 15;
+      name: "DESC.PNG";
+      min: 15 15;
+      max: 15 15;
       parts{
          part{
-            name, "StaticImage";
-            type, IMAGE;
-            mouse_events, 0;
+            name: "StaticImage";
+            type: IMAGE;
+            mouse_events: 0;
             description{
-               state, "default" 0.0;
-               rel1 {relative, 0.0 0.0; offset, 0 0;}
-               rel2 {relative, 0.0 0.0; offset, 15 15;}
-               image {
-                  normal, "desc.png";
-               }
+               state: "default" 0.0;
+               rel1 {relative: 0.0 0.0; offset: 0 0;}
+               rel2 {relative: 0.0 0.0; offset: 15 15;}
+               image {normal: "desc.png";}
             }
          }
       }
    }
    group{
-      name, "PROG.PNG";
-      min, 15 15;
-      max, 15 15;
+      name: "PROG.PNG";
+      min: 15 15;
+      max: 15 15;
       parts{
          part{
-            name, "StaticImage";
-            type, IMAGE;
-            mouse_events, 0;
+            name: "StaticImage";
+            type: IMAGE;
+            mouse_events: 0;
             description{
-               state, "default" 0.0;
-               rel1 {relative, 0.0 0.0; offset, 0 0;}
-               rel2 {relative, 0.0 0.0; offset, 15 15;}
-               image {
-                  normal, "e17.png";
-               }
+               state: "default" 0.0;
+               rel1 {relative: 0.0 0.0; offset: 0 0;}
+               rel2 {relative: 0.0 0.0; offset: 15 15;}
+               image {normal: "e17.png";}
             }
          }
       }
    }
    group{
-      name, "FocusH";
-      min, 200 30;
-      max, 300 30;
+      name: "BG1_I.PNG";
+      min: 15 15;
+      max: 15 15;
+      parts{
+         part{
+            name: "StaticImage";
+            type: IMAGE;
+            mouse_events: 0;
+            description{
+               state: "default" 0.0;
+               rel1 {relative: 0.0 0.0; offset: 0 0;}
+               rel2 {relative: 0.0 0.0; offset: 15 15;}
+               image {normal: "bg1_i.png";}
+            }
+         }
+      }
+   }
+   group{
+      name: "BG2_I.PNG";
+      min: 15 15;
+      max: 15 15;
+      parts{
+         part{
+            name: "StaticImage";
+            type: IMAGE;
+            mouse_events: 0;
+            description{
+               state: "default" 0.0;
+               rel1 {relative: 0.0 0.0; offset: 0 0;}
+               rel2 {relative: 0.0 0.0; offset: 15 15;}
+               image {normal: "bg2_i.png";}
+            }
+         }
+      }
+   }
+   /************************************************************/
+   /*  MainUI
+   /************************************************************/
+   group{
+      name: "MainUI";
+      min: 600 200;
+      parts {
+         /* background  */
+         part {
+            name: "background";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               rel1 {relative: 0.0 0.0; offset: 0 0;}
+               rel2 {relative: 1.0 1.0; offset: 0 0;}
+               image {normal: "bg1.png";}
+               fill { size {relative: 0.0 0.0; offset: 240 240;} }
+            }
+            description {
+               state: "default" 0.1;
+               rel1 {relative: 0.0 0.0; offset: 0 0;}
+               rel2 {relative: 1.0 1.0; offset: 0 0;}
+               image {normal: "bg2.png";}
+               fill { size {relative: 0.0 0.0; offset: 80 80;} }
+            }
+            description {
+               state: "default" 0.2;
+               rel1 {relative: 0.0 0.0; offset: 0 0;}
+               rel2 {relative: 1.0 1.0; offset: 0 0;}
+               image {normal: "bg3.png";}
+               fill { size {relative: 0.0 0.0; offset: 16 16;} }
+            }
+            description {
+               state: "default" 0.3;
+               rel1 {relative: 0.0 0.0; offset: 0 0;}
+               rel2 {relative: 1.0 1.0; offset: 0 0;}
+               image {normal: "bg4.png";}
+               fill { size {relative: 0.0 0.0; offset: 16 16;} }
+            }
+         }
+         /* top  */
+         part {
+            name: "top";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               rel1 {relative: 0.0 0.0; offset: 0 0;}
+               rel2 {relative: 1.0 0.0; offset: 0 170;}
+               image {normal: "backdrop.png";}
+            }
+         }
+         /* Frames hidden starter */
+         part {
+            name: "frames_starter";
+            type: RECT;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 255 0 0 0;
+               rel1 {relative: 1.0 0.0; offset: -50 50;}
+               rel2 {relative: 1.0 0.0; offset: 0 51;}
+            }
+         }
+         //EXAMPLE: FRAME (name, w, h, img_name, place_after)
+         FRAME("group", 230, 70, "lbl_group.png", 14, 50, "frames_starter")
+         FRAME("part", 230, 80, "lbl_part.png", 14, 35,"group_frame")
+         FRAME("description", 260, 85, "lbl_desc.png", 14, 42, "part_frame")
+         FRAME("rect", 120, 77, "lbl_rect.png", 14, 72, "description_frame")
+         FRAME("text", 250, 160, "lbl_text.png", 14, 36, "rect_frame")
+         FRAME("image", 250, 230, "lbl_image.png", 14, 46, "text_frame")
+         FRAME("position", 250, 130, "lbl_pos.png", 14, 60, "image_frame")
+         FRAME("program", 250, 250, "lbl_prog.png", 14, 60, "position_frame")
+         FRAME("script", 250, 250, "lbl_script.png", 14, 45, "program_frame")
+      }
+      programs {
+         FRAME_PROG("group");
+         FRAME_PROG("part");
+         FRAME_PROG("description");
+         FRAME_PROG("rect");
+         FRAME_PROG("text");
+         FRAME_PROG("image");
+         FRAME_PROG("position");
+         FRAME_PROG("program");
+         FRAME_PROG("script");
+         program{
+            name: "set_bg1";
+            signal: "set_bg1";
+            source: "edje_editor";
+            action: STATE_SET "default" 0.0;
+            target: "background";
+         }
+         program{
+            name: "set_bg2";
+            signal: "set_bg2";
+            source: "edje_editor";
+            action: STATE_SET "default" 0.1;
+            target: "background";
+         }
+         program{
+            name: "set_bg3";
+            signal: "set_bg3";
+            source: "edje_editor";
+            action: STATE_SET "default" 0.2;
+            target: "background";
+         }
+         program{
+            name: "set_bg4";
+            signal: "set_bg4";
+            source: "edje_editor";
+            action: STATE_SET "default" 0.3;
+            target: "background";
+         }
+      }
+   }
+   /************************************************************/
+   /*  Logo                                                    */
+   /************************************************************/
+   group{
+      name: "Logo";
+      parts {
+         part {
+            name: "logo";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               rel1 {relative: 0.0 0.0; offset: 0 0;}
+               rel2 {relative: 0.0 0.0; offset: 120 66;}
+               image {normal: "logo.png";}
+            }
+         }
+         part {
+            name: "logo_shadow";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 75 75 75 75;
+               rel1 {relative: 0.0 0.0; offset: 5 5;}
+               rel2 {relative: 0.0 0.0; offset: 125 71;}
+               image {normal: "logo.png";}
+            }
+         }
+      }
+   }
+   /************************************************************/
+   /*  Focus handlers
+   /************************************************************/
+   group{
+      name: "FocusH";
+      min: 200 30;
+      max: 300 30;
       parts {
       /* main Rect  */
-      part {
-         name, "rect";
-         type, IMAGE;
-         mouse_events, 0;
-         description {
-            state, "default" 0.0;
-            rel1 {relative, 0.0 0.0; offset, 0 0;}
-            rel2 {relative, 1.0 1.0; offset, 0 0;}
-            image {
-         normal, "focus.png";
-         border, 15 15 15 15;
+         part {
+            name: "rect";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               rel1 {relative: 0.0 0.0; offset: 0 0;}
+               rel2 {relative: 1.0 1.0; offset: 0 0;}
+               image {normal: "focus.png"; border: 15 15 15 15;}
             }
          }
       }
-
-#if 0
-   /* Up Arrow  */
-   part{
-      name, "arrow_u";
-      type, IMAGE;
-      description {
-         state, "default" 0.0;
-         rel1 {relative, 0.5 0.0; offset, -15 -15; to, "rect";}
-         rel2 {relative, 0.5 0.0; offset, +15 0;to, "rect";}
-         image {normal, "arrow_u.png"; }
-      }
-      description {
-         state, "over" 0.0;
-         rel1 {relative, 0.5 0.0; offset, -20 -20; to, "rect";}
-         rel2 {relative, 0.5 0.0; offset, +20 0;to, "rect";}
-         image {normal, "arrow_u.png"; }
-      }
-      dragable {
-         x: 0 1 1;
-         y: 1 1 1;
-      }
-   }
-   /* Down Arrow */
-   part{
-      name, "arrow_d";
-      type, IMAGE;
-      description {
-         state, "default" 0.0;
-         rel1 {relative, 0.5 1.0; offset, -15 0; to, "rect";}
-         rel2 {relative, 0.5 1.0; offset, +15 +15;to, "rect";}
-         image {normal, "arrow_d.png"; }
-      }
-      description {
-         state, "over" 0.0;
-         rel1 {relative, 0.5 1.0; offset, -20 0; to, "rect";}
-         rel2 {relative, 0.5 1.0; offset, +20 +20;to, "rect";}
-         image {normal, "arrow_d.png"; }
-      }
-      dragable {
-         x: 0 1 1;
-         y: 1 1 1;
-      }
-   }
-   /* Left Arrow */
-   part{
-      name, "arrow_l";
-      type, IMAGE;
-      description {
-         state, "default" 0.0;
-         rel1 {relative, 0.0 0.5; offset, -15 -15; to, "rect";}
-         rel2 {relative, 0.0 0.5; offset, 0 +15;to, "rect";}
-         image {normal, "arrow_l.png"; }
-      }
-      description {
-         state, "over" 0.0;
-         rel1 {relative, 0.0 0.5; offset, -20 -20; to, "rect";}
-         rel2 {relative, 0.0 0.5; offset, 0 +20;to, "rect";}
-         image {normal, "arrow_l.png"; }
-      }
-      dragable {
-         x: 1 1 1;
-         y: 0 1 1;
-      }
-   }
-   /* Right Arrow */
-   part{
-      name, "arrow_r";
-      type, IMAGE;
-      description {
-         state, "default" 0.0;
-         rel1 {relative, 1.0 0.5; offset, 0 -15; to, "rect";}
-         rel2 {relative, 1.0 0.5; offset, +15 +15;to, "rect";}
-         image {normal, "arrow_r.png"; }
-      }
-      description {
-         state, "over" 0.0;
-         rel1 {relative, 1.0 0.5; offset, 0 -20; to, "rect";}
-         rel2 {relative, 1.0 0.5; offset, +20 +20;to, "rect";}
-         image {normal, "arrow_r.png"; }
-      }
-      dragable {
-         x: 1 1 1;
-         y: 0 1 1;
-      }
-   }
-#endif
-   }
-   programs {
-
-#if 0
-      /* Up Arrow Prog */
-      program{
-         name, "Up_Over1";
-         signal, "mouse,in";
-         source, "arrow_u";
-         action, STATE_SET "over" 0.0;
-         transition, SINUSOIDAL 0.2;
-         target, "arrow_u";
-         after, "Up_Over2";
-      }
-      program{
-         name, "Up_Over2";
-         source, "arrow_u";
-         action, STATE_SET "default" 0.0;
-         transition, LINEAR 0.2;
-         target, "arrow_u";
-         after, "Up_Over1";
-      }
-      program{
-         name, "UpOverStop";
-         signal, "mouse,out";
-         source, "arrow_u";
-         action, STATE_SET "default" 0.0;
-         transition, LINEAR 0.0;
-         target, "arrow_u";
-      }
-      program{
-         name, "DragUp";
-         signal, "drag";
-         source, "arrow_u";
-         action, SIGNAL_EMIT "DRAG" "arrow_u";
-      }
-      /* Down Arrow Prog */
-      program{
-         name, "Down_Over1";
-         signal, "mouse,in";
-         source, "arrow_d";
-         action, STATE_SET "over" 0.0;
-         transition, SINUSOIDAL 0.2;
-         target, "arrow_d";
-         after, "Down_Over2";
-      }
-      program{
-         name, "Down_Over2";
-         source, "arrow_d";
-         action, STATE_SET "default" 0.0;
-         transition, LINEAR 0.2;
-         target, "arrow_d";
-         after, "Down_Over1";
-      }
-      program{
-         name, "DownOverStop";
-         signal, "mouse,out";
-         source, "arrow_d";
-         action, STATE_SET "default" 0.0;
-         transition, LINEAR 0.0;
-         target, "arrow_d";
-      }
-      program{
-         name, "DragDown";
-         signal, "drag";
-         source, "arrow_d";
-         action, SIGNAL_EMIT "DRAG" "arrow_d";
-      }
-      /* Left Arrow Prog */
-      program{
-         name, "Left_Over1";
-         signal, "mouse,in";
-         source, "arrow_l";
-         action, STATE_SET "over" 0.0;
-         transition, SINUSOIDAL 0.2;
-         target, "arrow_l";
-         after, "Left_Over2";
-      }
-      program{
-         name, "Left_Over2";
-         source, "arrow_l";
-         action, STATE_SET "default" 0.0;
-         transition, LINEAR 0.2;
-         target, "arrow_l";
-         after, "Left_Over1";
-      }
-      program{
-         name, "LeftOverStop";
-         signal, "mouse,out";
-         source, "arrow_l";
-         action, STATE_SET "default" 0.0;
-         transition, LINEAR 0.0;
-         target, "arrow_l";
-      }
-      program{
-         name, "DragLeft";
-         signal, "drag";
-         source, "arrow_l";
-         action, SIGNAL_EMIT "DRAG" "arrow_l";
-      }
-      /* Right Arrow Prog */
-      program{
-         name, "Right_Over1";
-         signal, "mouse,in";
-         source, "arrow_r";
-         action, STATE_SET "over" 0.0;
-         transition, SINUSOIDAL 0.2;
-         target, "arrow_r";
-         after, "Right_Over2";
-      }
-      program{
-         name, "Right_Over2";
-         source, "arrow_r";
-         action, STATE_SET "default" 0.0;
-         transition, LINEAR 0.2;
-         target, "arrow_r";
-         after, "Right_Over1";
-      }
-      program{
-         name, "RightOverStop";
-         signal, "mouse,out";
-         source, "arrow_r";
-         action, STATE_SET "default" 0.0;
-         transition, LINEAR 0.0;
-         target, "arrow_r";
-      }
-      program{
-         name, "DragRight";
-         signal, "drag";
-         source, "arrow_r";
-         action, SIGNAL_EMIT "DRAG" "arrow_r";
-      }
-#endif
-      }
    }
    group{
-      name, "Rel1H";
+      name: "Rel1H";
       parts{
          part{
-            name, "rel1";
-            type, IMAGE;
-            //dragable {x, 1 1 1; y, 1 1 1;}
+            name: "rel1";
+            type: IMAGE;
+            //dragable {x: 1 1 1; y: 1 1 1;}
             description {
-               state, "default" 0.0;
-               visible, 1;
-               rel1 {relative, 0.0 0.0; offset, 0 0;}
-               rel2 {relative, 0.0 0.0; offset, 5 5;}
-               image {
-            normal, "rel1.png";
-               }
+               state: "default" 0.0;
+               visible: 1;
+               rel1 {relative: 0.0 0.0; offset: 0 0;}
+               rel2 {relative: 0.0 0.0; offset: 5 5;}
+               image {normal: "rel1.png";}
             }
          }
       }
       programs{
          // Rel1 Prog
          program{
-            name, "Rel1_Show";
-            signal, "REL1_SHOW";
-            source, "cprog";
-            action, STATE_SET "visible" 0.0;
-            target, "rel1";
+            name: "Rel1_Show";
+            signal: "REL1_SHOW";
+            source: "edje_editor";
+            action: STATE_SET "visible" 0.0;
+            target: "rel1";
          }
          program{
-            name, "Rel1_Hide";
-            signal, "REL1_HIDE";
-            source, "cprog";
-            action, STATE_SET "default" 0.0;
-            target, "rel1";
+            name: "Rel1_Hide";
+            signal: "REL1_HIDE";
+            source: "edje_editor";
+            action: STATE_SET "default" 0.0;
+            target: "rel1";
          }
          program{
-            name, "StartDrag";
-            signal, "mouse,down,1";
-            source, "rel1";
-            action, SIGNAL_EMIT "START_DRAG" "rel1";
+            name: "StartDrag";
+            signal: "mouse,down,1";
+            source: "rel1";
+            action: SIGNAL_EMIT "START_DRAG" "rel1";
          }
          program{
-            name, "EndDrag";
-            signal, "mouse,up,1";
-            source, "rel1";
-            action, SIGNAL_EMIT "END_DRAG" "rel1";
+            name: "EndDrag";
+            signal: "mouse,up,1";
+            source: "rel1";
+            action: SIGNAL_EMIT "END_DRAG" "rel1";
          }
          program{
-            name, "Drag";
-            signal, "mouse,move";
-            source, "rel1";
-            action, SIGNAL_EMIT "DRAG" "rel1";
+            name: "Drag";
+            signal: "mouse,move";
+            source: "rel1";
+            action: SIGNAL_EMIT "DRAG" "rel1";
          }
       }
    }
    group{
-      name, "Rel2H";
+      name: "Rel2H";
       parts{
          part{
-            name, "rel2";
-            type, IMAGE;
+            name: "rel2";
+            type: IMAGE;
             description {
-               state, "default" 0.0;
-               visible, 1;
-               rel1 {relative, 0.0 0.0; offset, 0 0;}
-               rel2 {relative, 0.0 0.0; offset, 5 5;}
-               image {
-            normal, "rel2.png";
-               }
+               state: "default" 0.0;
+               visible: 1;
+               rel1 {relative: 0.0 0.0; offset: 0 0;}
+               rel2 {relative: 0.0 0.0; offset: 5 5;}
+               image {normal: "rel2.png";}
             }
          }
       }
       programs{
          // Rel2 Prog
          program{
-            name, "StartDrag";
-            signal, "mouse,down,1";
-            source, "rel2";
-            action, SIGNAL_EMIT "START_DRAG" "rel2";
+            name: "StartDrag";
+            signal: "mouse,down,1";
+            source: "rel2";
+            action: SIGNAL_EMIT "START_DRAG" "rel2";
          }
          program{
-            name, "EndDrag";
-            signal, "mouse,up,1";
-            source, "rel2";
-            action, SIGNAL_EMIT "END_DRAG" "rel2";
+            name: "EndDrag";
+            signal: "mouse,up,1";
+            source: "rel2";
+            action: SIGNAL_EMIT "END_DRAG" "rel2";
          }
          program{
-            name, "Drag";
-            signal, "mouse,move";
-            source, "rel2";
-            action, SIGNAL_EMIT "DRAG" "rel2";
+            name: "Drag";
+            signal: "mouse,move";
+            source: "rel2";
+            action: SIGNAL_EMIT "DRAG" "rel2";
          }
       }
    }
-   /************************************************************/
-   /*  ParentH                                                 */
-   /************************************************************/
-   group{
-      name, "Rel1X_ParentH";
-      parts{
-         part{
-            name, "rel1X_parent";
-            type, IMAGE;
-            mouse_events, 0;
-            description {
-               state, "default" 0.0;
-               rel1 {relative, 0.0 0.0; offset: 0 0;}
-               rel2 {relative, 1.0 1.0; offset: 0 0;}
-               image {
-            normal, "parent1X.png";
-            border, 0 0 0 0;
-               }
-            }
-         }
-      }
-   }
-   group{
-      name, "Rel1Y_ParentH";
-      parts{
-         part{
-            name, "rel1Y_parent";
-            type, IMAGE;
-            mouse_events, 0;
-            description {
-               state, "default" 0.0;
-               rel1 {relative, 0.0 0.0; offset: 0 0;}
-               rel2 {relative, 1.0 1.0; offset: 0 0;}
-               image {
-            normal, "parent1Y.png";
-            border, 0 0 0 0;
-               }
-            }
-         }
-      }
-   }
-   group{
-      name, "Rel2X_ParentH";
-      parts{
-      part{
-         name, "rel2X_parent";
-         type, IMAGE;
-         mouse_events, 0;
-         description {
-            state, "default" 0.0;
-            rel1 {relative, 0.0 0.0; offset: 0 0;}
-            rel2 {relative, 1.0 1.0; offset: 0 0;}
-            image {
-         normal, "parent2X.png";
-         border, 0 0 0 0;
-            }
-         }
-      }
-      }
-   }
-   group{
-      name, "Rel2Y_ParentH";
-      parts{
-         part{
-            name, "rel2Y_parent";
-            type, IMAGE;
-            mouse_events, 0;
-            description {
-               state, "default" 0.0;
-               rel1 {relative, 0.0 0.0; offset: 0 0;}
-               rel2 {relative, 1.0 1.0; offset: 0 0;}
-               image {
-            normal, "parent2Y.png";
-            border, 0 0 0 0;
-               }
-            }
-         }
-      }
-   }
-
    /************************************************************/
    /*  FakeWin                                                 */
    /************************************************************/
    group{
-      name, "FakeWin";
+      name: "FakeWin";
       parts {
          /* Border  */
          part {
-            name, "border";
-            type, IMAGE;
-            mouse_events, 0;
+            name: "border";
+            type: IMAGE;
+            mouse_events: 0;
             description {
-               state, "default" 0.0;
-               rel1 {relative, 0.0 0.0; offset: -10 -20;}
-               rel2 {relative, 1.0 1.0; offset: 10 10;}
-               image {
-            normal, "fakewin.png";
-            border, 20 20 22 10;
-               }
+               state: "default" 0.0;
+               rel1 {relative: 0.0 0.0; offset: -10 -20;}
+               rel2 {relative: 1.0 1.0; offset: 10 10;}
+               image {normal: "fakewin.png"; border: 20 20 22 10;}
             }
          }
          /* Title */
          part{
-            name, "title";
-            type, TEXT;
-            mouse_events, 0;
-            effect, SOFT_SHADOW;
+            name: "title";
+            type: TEXT;
+            mouse_events: 0;
+            effect: SOFT_SHADOW;
             description {
-               state, "default" 0.0;
-               color, 0 0 0 200;
-               color3, 0 0 0 20;
-               rel1 {relative, 0.0 0.0; offset: 20 -13;}
-               rel2 {relative, 1.0 1.0; offset: 0 0;}
+               state: "default" 0.0;
+               color: 0 0 0 200;
+               color3: 0 0 0 20;
+               rel1 {relative: 0.0 0.0; offset: 15 -15;}
+               rel2 {relative: 1.0 1.0; offset: 0 0;}
                text {
-                  text, "Titolo Finestra";
-                  font, "Vera";
-                  size, 9;
-                  fit, 0 0;
-                  align, 0.0 0.0;
+                  text: "Titolo Finestra";
+                  font: "Vera";
+                  size: 9;
+                  fit: 0 0;
+                  align: 0.0 0.0;
                }
             }
          }
          /* Resize MiniArrow Area*/
          part{
-            name, "miniarrow";
-            type, RECT;
-            mouse_events, 1;
+            name: "miniarrow";
+            type: RECT;
+            mouse_events: 1;
             description{
-               state, "default" 0.0;
-               color, 0 0 0 0;
-               rel1 {relative, 0 0; offset: 0 0;}
-               rel2 {relative, 0 0; offset: 7 7;}
+               state: "default" 0.0;
+               color: 0 0 0 0;
+               rel1 {relative: 0 0; offset: 0 0;}
+               rel2 {relative: 0 0; offset: 7 7;}
             }
             dragable {
                //confine: "miniarrow";
@@ -628,16 +603,16 @@ collections {
       programs {
          /* Resize MiniArrow Area*/
          program{
-            name, "StartDrag";
-            signal, "drag";
-            source, "miniarrow";
-            action, SIGNAL_EMIT "DRAG" "miniarrow";
+            name: "StartDrag";
+            signal: "drag";
+            source: "miniarrow";
+            action: SIGNAL_EMIT "DRAG" "miniarrow";
          }
          program{
-            name, "EndDrag";
-            signal, "mouse,up,1";
-            source, "miniarrow";
-            action, SIGNAL_EMIT "END_DRAG" "miniarrow";
+            name: "EndDrag";
+            signal: "mouse,up,1";
+            source: "miniarrow";
+            action: SIGNAL_EMIT "END_DRAG" "miniarrow";
          }
       }
    }

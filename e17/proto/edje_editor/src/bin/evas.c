@@ -12,23 +12,21 @@ void
 on_Drag(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    //printf("ON DRAG\n");
-   Evas_Coord x,y;
    Evas_Coord parentx,parenty,parentw,parenth;
-   Evas_Coord focusx,focusy,focusw,focush;
+   Evas_Coord x,y;
    int mouse_x, mouse_y;
 
    // MoveBox
    if ((int)data == DRAG_MOVEBOX)
    {
-      evas_pointer_output_xy_get(etk_widget_toplevel_evas_get(ETK_canvas),&x, &y);
-      //evas_object_move(rel1_handler,mouse_x-2,mouse_y-2);
+      evas_pointer_output_xy_get(ecore_evas_get(UI_ecore_MainWin),&x, &y);
       ev_move_fake(x-30,y+8);//TODO
    }
 
    // Resize fake win
    if ((int)data == DRAG_MINIARROW)
    {
-      edje_object_part_geometry_get (EV_fakewin,"miniarrow", &x, &y, NULL, NULL);
+      edje_object_part_geometry_get(EV_fakewin,"miniarrow", &x, &y, NULL, NULL);
       if (x < 0) x = 0;
       if (y < 0) y = 0;
       ev_resize_fake((int)x,(int)y);
@@ -36,58 +34,36 @@ on_Drag(void *data, Evas *e, Evas_Object *obj, void *event_info)
    // Move Rel1 Point
    if ((int)data == DRAG_REL1)
    {
-      evas_pointer_output_xy_get(etk_widget_toplevel_evas_get(ETK_canvas),
-            &mouse_x, &mouse_y);
-      evas_object_move(rel1_handler,mouse_x-2,mouse_y-2);
-
-      //Get the position of the rel1 point
-      //edje_object_part_geometry_get (rel1_handler,"rel1", &x, &y, NULL, NULL);
-      evas_object_geometry_get (rel1_handler, &x, &y, NULL, NULL);
-
-      //Get the position of the focus handler
-      evas_object_geometry_get (focus_handler, &focusx, &focusy, &focusw, &focush);
-
-      //Get the position of the top parent handler
-      evas_object_geometry_get (rel1X_parent_handler, &parentx, &parenty, &parentw, &parenth);
-
-      //Calc the position of the rel1 point from the main interface
-      //x+=focusx;
-      //y+=focusy;
+      evas_pointer_output_xy_get(ecore_evas_get(UI_ecore_MainWin),
+                                 &mouse_x, &mouse_y);
 
       //Calc the rel1_relative_x value
-      Cur.eps->rel1.relative.x = (float)(x - parentx)/(float)parentw;
-
-
-      //Get the position of the left parent handler
-      evas_object_geometry_get (rel1Y_parent_handler, &parentx, &parenty, &parentw, &parenth);
+      evas_object_geometry_get(rel1X_parent_handler, &parentx,
+                                &parenty, &parentw, &parenth);
+      Cur.eps->rel1.relative.x = (float)(mouse_x - parentx)/(float)parentw;
 
       //Calc the rel1_relative_y value
-      Cur.eps->rel1.relative.y = (float)(y - parenty)/(float)parenth;
+      evas_object_geometry_get(rel1Y_parent_handler, &parentx,
+                                &parenty, &parentw, &parenth);
+      Cur.eps->rel1.relative.y = (float)(mouse_y - parenty)/(float)parenth;
 
       UpdatePositionFrame();
    }
    // Move Rel2 Point
    if ((int)data == DRAG_REL2)
    {
-      evas_pointer_output_xy_get(etk_widget_toplevel_evas_get(ETK_canvas), &mouse_x, &mouse_y);
-      evas_object_move(rel2_handler,mouse_x-2,mouse_y-2);
+      evas_pointer_output_xy_get(ecore_evas_get(UI_ecore_MainWin), 
+                                 &mouse_x, &mouse_y);
 
-      //Get the position of the rel2 point
-      evas_object_geometry_get (rel2_handler, &x, &y, NULL, NULL);
-
-      //Get the position of the focus handler
-      evas_object_geometry_get (focus_handler, &focusx, &focusy, &focusw, &focush);
-
-      //Get the position of the bottom parent handler
-      evas_object_geometry_get (rel2X_parent_handler, &parentx, &parenty, &parentw, &parenth);
       //Calc the rel2_relative_x value
-      Cur.eps->rel2.relative.x = (float)(x - parentx)/(float)parentw;
+      evas_object_geometry_get(rel2X_parent_handler,
+                                &parentx, &parenty, &parentw, &parenth);
+      Cur.eps->rel2.relative.x = (float)(mouse_x - parentx)/(float)parentw;
 
-
-      //Get the position of the right parent handler
-      evas_object_geometry_get (rel2Y_parent_handler, &parentx, &parenty, &parentw, &parenth);
       //Calc the rel2_relative_y value
-      Cur.eps->rel2.relative.y = (float)(y - parenty)/(float)parenth;
+      evas_object_geometry_get(rel2Y_parent_handler, &parentx,
+                                &parenty, &parentw, &parenth);
+      Cur.eps->rel2.relative.y = (float)(mouse_y - parenty)/(float)parenth;
 
       UpdatePositionFrame();
    }
@@ -95,31 +71,37 @@ on_Drag(void *data, Evas *e, Evas_Object *obj, void *event_info)
 
    //printf("Drag %s - ",source);
    //printf("Position %i, %i\n", x, y);
-   //Evas_Coord mouse_x, mouse_y;
-   //evas_pointer_canvas_xy_get(etk_widget_toplevel_evas_get(ETK_canvas), &mouse_x, &mouse_y);
-   //printf("Mouse is at canvas position %f, %f\n", mouse_x, mouse_y);
 }
 
 void
-on_StartDrag(void *data, Evas_Object *o, const char *emission, const char *source)
+on_StartDrag(void *data, Evas_Object *o, const char *em, const char *src)
 {
    //printf("Start Drag\n");
 
    if ((int)data == DRAG_REL1) 
-      edje_object_signal_callback_add(rel1_handler,"DRAG","rel1",on_Drag,(void*)DRAG_REL1);
+      edje_object_signal_callback_add(rel1_handler,"DRAG","rel1",
+                                      on_Drag,(void*)DRAG_REL1);
    if ((int)data == DRAG_REL2) 
-      edje_object_signal_callback_add(rel2_handler,"DRAG","rel2",on_Drag,(void*)DRAG_REL2);
-  if ((int)data == DRAG_MOVEBOX) 
-       evas_object_event_callback_add(EV_movebox, EVAS_CALLBACK_MOUSE_MOVE, on_Drag, (void*)DRAG_MOVEBOX);
+      edje_object_signal_callback_add(rel2_handler,"DRAG","rel2",
+                                      on_Drag,(void*)DRAG_REL2);
+   /* THIS COMMENT DISABLE THE FAKEWIN MOVE ABILITY (don't like it) 
+   if ((int)data == DRAG_MOVEBOX)
+       evas_object_event_callback_add(EV_movebox, EVAS_CALLBACK_MOUSE_MOVE,
+                                        on_Drag, (void*)DRAG_MOVEBOX);
+   */
+   
 }
 
 void
 on_EndDrag(void *data, Evas_Object *o, const char *emission, const char *source)
 {
    //printf("End Drag\n");
-   if ((int)data == DRAG_REL1) edje_object_signal_callback_del(rel1_handler,"DRAG","rel1",on_Drag);
-   if ((int)data == DRAG_REL2) edje_object_signal_callback_del(rel2_handler,"DRAG","rel2",on_Drag);
-   if ((int)data == DRAG_MOVEBOX) evas_object_event_callback_del(EV_movebox, EVAS_CALLBACK_MOUSE_MOVE, on_Drag);
+   if ((int)data == DRAG_REL1)
+        edje_object_signal_callback_del(rel1_handler,"DRAG","rel1",on_Drag);
+   if ((int)data == DRAG_REL2)
+        edje_object_signal_callback_del(rel2_handler,"DRAG","rel2",on_Drag);
+   if ((int)data == DRAG_MOVEBOX)
+        evas_object_event_callback_del(EV_movebox, EVAS_CALLBACK_MOUSE_MOVE, on_Drag);
    if ((int)data == DRAG_MINIARROW)
    {
       int fw,fh;  //Fakewin geometry
@@ -132,56 +114,59 @@ void
 prepare_canvas(void)
 {
    //Create Focus Handler
-   focus_handler = edje_object_add(etk_widget_toplevel_evas_get(ETK_canvas));
+   focus_handler = edje_object_add(ecore_evas_get(UI_ecore_MainWin));
    edje_object_file_set(focus_handler, EdjeFile, "FocusH");
-   etk_canvas_object_add (ETK_CANVAS(ETK_canvas), focus_handler);
 
    //Create Rel1 handler
-   rel1_handler = edje_object_add(etk_widget_toplevel_evas_get(ETK_canvas));
+   rel1_handler = edje_object_add(ecore_evas_get(UI_ecore_MainWin));
    edje_object_file_set(rel1_handler, EdjeFile, "Rel1H");
-   edje_object_signal_callback_add(rel1_handler,"START_DRAG","rel1",on_StartDrag,(void*)DRAG_REL1);
-   edje_object_signal_callback_add(rel1_handler,"END_DRAG","rel1",on_EndDrag,(void*)DRAG_REL1);
+   edje_object_signal_callback_add(rel1_handler,"START_DRAG","rel1",
+                                   on_StartDrag,(void*)DRAG_REL1);
+   edje_object_signal_callback_add(rel1_handler,"END_DRAG","rel1",
+                                   on_EndDrag,(void*)DRAG_REL1);
 
    //Create Rel2 handler
-   rel2_handler = edje_object_add(etk_widget_toplevel_evas_get(ETK_canvas));
+   rel2_handler = edje_object_add(ecore_evas_get(UI_ecore_MainWin));
    edje_object_file_set(rel2_handler,EdjeFile, "Rel2H");
-   edje_object_signal_callback_add(rel2_handler,"START_DRAG","rel2",on_StartDrag,(void*)DRAG_REL2);
-   edje_object_signal_callback_add(rel2_handler,"END_DRAG","rel2",on_EndDrag,(void*)DRAG_REL2);
+   edje_object_signal_callback_add(rel2_handler,"START_DRAG","rel2",
+                                   on_StartDrag,(void*)DRAG_REL2);
+   edje_object_signal_callback_add(rel2_handler,"END_DRAG","rel2",
+                                   on_EndDrag,(void*)DRAG_REL2);
 
    //Create Parent Handlers
-   rel1X_parent_handler = edje_object_add(etk_widget_toplevel_evas_get(ETK_canvas));
-   edje_object_file_set(rel1X_parent_handler, EdjeFile, "Rel1X_ParentH");
+   rel1X_parent_handler = evas_object_line_add(ecore_evas_get(UI_ecore_MainWin));
+   evas_object_color_set(rel1X_parent_handler, 255, 0, 0, 200);
+   
+   rel1Y_parent_handler = evas_object_line_add(ecore_evas_get(UI_ecore_MainWin));
+   evas_object_color_set(rel1Y_parent_handler, 255, 0, 0, 200);
+    
+   rel2X_parent_handler = evas_object_line_add(ecore_evas_get(UI_ecore_MainWin));
+   evas_object_color_set(rel2X_parent_handler, 0, 0, 255, 200);
 
-   rel1Y_parent_handler = edje_object_add(etk_widget_toplevel_evas_get(ETK_canvas));
-   edje_object_file_set(rel1Y_parent_handler, EdjeFile, "Rel1Y_ParentH");
-
-   rel2X_parent_handler = edje_object_add(etk_widget_toplevel_evas_get(ETK_canvas));
-   edje_object_file_set(rel2X_parent_handler, EdjeFile, "Rel2X_ParentH");
-
-   rel2Y_parent_handler = edje_object_add(etk_widget_toplevel_evas_get(ETK_canvas));
-   edje_object_file_set(rel2Y_parent_handler, EdjeFile, "Rel2Y_ParentH");
+   rel2Y_parent_handler = evas_object_line_add(ecore_evas_get(UI_ecore_MainWin));
+   evas_object_color_set(rel2Y_parent_handler, 0, 0, 255, 200);
 
    //Create engrave canvas
-   engrave_canvas = engrave_canvas_new (etk_widget_toplevel_evas_get(ETK_canvas));
-   etk_canvas_object_add (ETK_CANVAS(ETK_canvas), engrave_canvas);
+   engrave_canvas = engrave_canvas_new(ecore_evas_get(UI_ecore_MainWin));
 
    // Create Fake win
-   EV_fakewin = edje_object_add(etk_widget_toplevel_evas_get(ETK_canvas));
+   EV_fakewin = edje_object_add(ecore_evas_get(UI_ecore_MainWin));
    edje_object_file_set(EV_fakewin, EdjeFile, "FakeWin");
-   etk_canvas_object_add(ETK_CANVAS(ETK_canvas),EV_fakewin);
-   edje_object_signal_callback_add(EV_fakewin,"DRAG","miniarrow",on_Drag,(void*)DRAG_MINIARROW);
-   edje_object_signal_callback_add(EV_fakewin,"END_DRAG","miniarrow",on_EndDrag,(void*)DRAG_MINIARROW);
+   edje_object_signal_callback_add(EV_fakewin,"DRAG","miniarrow",
+                                   on_Drag, (void*)DRAG_MINIARROW);
+   edje_object_signal_callback_add(EV_fakewin,"END_DRAG","miniarrow",
+                                   on_EndDrag, (void*)DRAG_MINIARROW);
 
    // Create MoveBox
-   EV_movebox = evas_object_rectangle_add(etk_widget_toplevel_evas_get(ETK_canvas));
-   etk_canvas_object_add (ETK_CANVAS(ETK_canvas), EV_movebox);
+   EV_movebox = evas_object_rectangle_add(ecore_evas_get(UI_ecore_MainWin));
    evas_object_color_set(EV_movebox, 0, 0, 0, 0);
-   evas_object_event_callback_add(EV_movebox, EVAS_CALLBACK_MOUSE_DOWN, on_StartDrag, (void*)DRAG_MOVEBOX);
-   evas_object_event_callback_add(EV_movebox, EVAS_CALLBACK_MOUSE_UP, on_EndDrag, (void*)DRAG_MOVEBOX);
+   evas_object_event_callback_add(EV_movebox, EVAS_CALLBACK_MOUSE_DOWN,
+                                  on_StartDrag, (void*)DRAG_MOVEBOX);
+   evas_object_event_callback_add(EV_movebox, EVAS_CALLBACK_MOUSE_UP,
+                                  on_EndDrag, (void*)DRAG_MOVEBOX);
 
    //Place Fakewin 
-   ev_move_fake(20,27);
-
+   ev_move_fake(280,75);
 }
 
 void
@@ -200,16 +185,16 @@ ev_draw_focus(void)
    if (Cur.ep && Cur.ep->current_state)
    {
       int x, y;
-      etk_canvas_object_geometry_get(ETK_CANVAS(ETK_canvas),EV_fakewin,&x,&y,NULL,NULL);
+      evas_object_geometry_get(EV_fakewin,&x,&y,NULL,NULL);
 
-      etk_canvas_object_move(ETK_CANVAS(ETK_canvas),focus_handler,
+      evas_object_move(focus_handler,
             Cur.ep->pos.x + x - Cur.ep->current_state->rel1.offset.x - 2,
             Cur.ep->pos.y + y - Cur.ep->current_state->rel1.offset.y - 2);
 
       evas_object_resize(focus_handler,
             Cur.ep->pos.w + Cur.ep->current_state->rel1.offset.x - Cur.ep->current_state->rel2.offset.x + 2,
             Cur.ep->pos.h + Cur.ep->current_state->rel1.offset.y - Cur.ep->current_state->rel2.offset.y + 2);
-      evas_object_raise (focus_handler);
+      ///evas_object_raise (focus_handler);
       evas_object_show(focus_handler);
    }else
    {
@@ -235,8 +220,8 @@ ev_draw_focus(void)
       evas_object_raise(rel1_handler);
 
       evas_object_move (rel2_handler,
-            fx + Cur.ep->pos.x + Cur.ep->pos.w - Cur.eps->rel2.offset.x - 2,
-            fy + Cur.ep->pos.y + Cur.ep->pos.h - Cur.eps->rel2.offset.y - 2);
+            fx + Cur.ep->pos.x + Cur.ep->pos.w - Cur.eps->rel2.offset.x - 4,
+            fy + Cur.ep->pos.y + Cur.ep->pos.h - Cur.eps->rel2.offset.y - 4);
       evas_object_show(rel2_handler);
       evas_object_raise(rel2_handler);
 
@@ -255,9 +240,10 @@ ev_draw_focus(void)
       }else{//Get FakeWin Geom
          evas_object_geometry_get (EV_fakewin, &ParentX, &ParentY, &ParentW, &ParentH);
       }
-      evas_object_move (rel1X_parent_handler, ParentX,ParentY);
-      evas_object_resize(rel1X_parent_handler,ParentW,2);
-
+      //evas_object_move (rel1X_parent_handler, ParentX,ParentY);
+      //evas_object_resize(rel1X_parent_handler,ParentW,2);
+      evas_object_line_xy_set (rel1X_parent_handler, ParentX, ParentY, ParentX+ParentW, ParentY);
+      
       //draw Rel1Y_ParentH (left line)
       if (engrave_part_state_rel1_to_y_get(Cur.eps)){
          relto_part = engrave_group_part_by_name_find(Cur.eg,
@@ -272,8 +258,7 @@ ev_draw_focus(void)
       }else{//Get FakeWin Geom
          evas_object_geometry_get (EV_fakewin, &ParentX, &ParentY, &ParentW, &ParentH);
       }
-      evas_object_move (rel1Y_parent_handler, ParentX,ParentY);
-      evas_object_resize(rel1Y_parent_handler,2,ParentH);
+      evas_object_line_xy_set (rel1Y_parent_handler, ParentX, ParentY, ParentX, ParentY+ParentH);
 
       //draw Rel2X_ParentH (bottom line)
       if (engrave_part_state_rel2_to_x_get(Cur.eps)){
@@ -289,8 +274,10 @@ ev_draw_focus(void)
       }else{//Get FakeWin Geom
          evas_object_geometry_get (EV_fakewin, &ParentX, &ParentY, &ParentW, &ParentH);
       }
-      evas_object_move (rel2X_parent_handler, ParentX,ParentY+ParentH-1);
-      evas_object_resize(rel2X_parent_handler,ParentW,2);
+      //evas_object_move (rel2X_parent_handler, ParentX,ParentY+ParentH-1);
+      //evas_object_resize(rel2X_parent_handler,ParentW,2);
+      evas_object_line_xy_set (rel2X_parent_handler, ParentX, ParentY+ParentH, ParentX+ParentW, ParentY+ParentH);
+
 
       //draw Rel2Y_ParentH (right line)
       if (engrave_part_state_rel2_to_y_get(Cur.eps)){
@@ -306,22 +293,27 @@ ev_draw_focus(void)
       }else{//Get FakeWin Geom
          evas_object_geometry_get (EV_fakewin, &ParentX, &ParentY, &ParentW, &ParentH);
       }
-      evas_object_move (rel2Y_parent_handler, ParentX+ParentW-1,ParentY);
-      evas_object_resize(rel2Y_parent_handler,2,ParentH);
+      //evas_object_move (rel2Y_parent_handler, ParentX+ParentW-1,ParentY);
+      //evas_object_resize(rel2Y_parent_handler,2,ParentH);
+      evas_object_line_xy_set (rel2Y_parent_handler, ParentX+ParentW, ParentY, ParentX+ParentW, ParentY+ParentH);
 
-      evas_object_raise (rel1X_parent_handler);
+      evas_object_raise(rel1X_parent_handler);
       evas_object_show(rel1X_parent_handler);
-      evas_object_raise (rel1Y_parent_handler);
+      evas_object_raise(rel1Y_parent_handler);
       evas_object_show(rel1Y_parent_handler);
-      evas_object_raise (rel2X_parent_handler);
+      evas_object_raise(rel2X_parent_handler);
       evas_object_show(rel2X_parent_handler);
-      evas_object_raise (rel2Y_parent_handler);
+      evas_object_raise(rel2Y_parent_handler);
       evas_object_show(rel2Y_parent_handler);
-      evas_object_raise (focus_handler);
+      evas_object_raise(focus_handler);
+      evas_object_raise(rel1_handler);
+      evas_object_raise(rel2_handler);
+      
+      
 
    }else{
-      edje_object_signal_emit(rel1_handler,"REL1_HIDE","cprog");
-      edje_object_signal_emit(focus_handler,"REL2_HIDE","cprog");
+      edje_object_signal_emit(rel1_handler,"REL1_HIDE","edje_editor");
+      edje_object_signal_emit(focus_handler,"REL2_HIDE","edje_editor");
       evas_object_hide(rel1X_parent_handler);
       evas_object_hide(rel1Y_parent_handler);
       evas_object_hide(rel2X_parent_handler);
@@ -364,6 +356,7 @@ ev_move_fake(int x, int y)
    evas_object_move(EV_fakewin, x, y);
    evas_object_move(EV_movebox, x, y-14);
 }
+
 void
 ev_redraw(void)
 {
@@ -374,22 +367,26 @@ ev_redraw(void)
    if (Cur.eg)
    {
       //Get the geometry of ETK_canvas
-      evas_object_geometry_get(EV_canvas_bg,&x,&y,&w,&h);
+      //evas_object_geometry_get(EV_canvas_bg,&x,&y,&w,&h);
 
       //Get the geometry of fakewin
       evas_object_geometry_get(EV_fakewin,&x,&y,&w,&h);
 
       //place engrave canvas
       evas_object_move(engrave_canvas, x, y);
-      evas_object_resize(engrave_canvas, w+1, h);  
-      engrave_canvas_current_group_set(engrave_canvas, Cur.eg); //This make engrave_canvas redraw
+      evas_object_resize(engrave_canvas, w+1, h);
+      //This make engrave_canvas redraw (BAD!!)
+      engrave_canvas_current_group_set(engrave_canvas, Cur.eg);
 
       evas_object_show(engrave_canvas);
       evas_object_show(EV_fakewin);
       evas_object_show(EV_movebox);
-      evas_object_raise(EV_fakewin);
-      evas_object_raise(EV_movebox);
-      evas_object_raise(focus_handler);
+     // evas_object_raise(EV_fakewin);
+     // evas_object_raise(EV_movebox);
+     // evas_object_raise(focus_handler);
+        //evas_object_raise(UI_GroupFrameEmbed);
+        //   evas_object_raise(UI_RectFrame);
+       //evas_object_raise(UI_RectFrameEmbed);
       ev_draw_focus();
 
    }else

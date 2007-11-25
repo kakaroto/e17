@@ -40,6 +40,7 @@ enum various
    TOOLBAR_OPEN,
    TOOLBAR_ADD,
    TOOLBAR_REMOVE,
+   TOOLBAR_OPTIONS,
    TOOLBAR_DEBUG,
    TOOLBAR_SAVE,
    TOOLBAR_SAVE_EDC,
@@ -47,6 +48,10 @@ enum various
    TOOLBAR_PLAY,
    TOOLBAR_MOVE_UP,
    TOOLBAR_MOVE_DOWN,
+   TOOLBAR_OPTION_BG1,
+   TOOLBAR_OPTION_BG2,
+   TOOLBAR_OPTION_BG3,
+   TOOLBAR_OPTION_BG4,
    TOOLBAR_IMAGE_FILE_ADD,
    TOOLBAR_FONT_FILE_ADD,
    COLOR_OBJECT_RECT,
@@ -110,9 +115,7 @@ int            FileChooserOperation;   //The current file chooser operation (FIL
 char           *EdjeFile;              //The filename of the edje_editor.edj file (witch contain all the graphics used by the program)
 
 Evas_Object    *engrave_canvas;        //The engrave canvas
-Etk_Widget     *ETK_canvas;	         //Designer canvas
-Evas_Object    *EV_canvas_bg;          //
-Evas_Object    *EV_canvas_shadow;      //
+
 Evas_Object	   *EV_fakewin;	         //The simple window implementation
 Evas_Object    *EV_movebox;            //  FIXME
 Evas_Object    *focus_handler;         //The yellow box around the selected part

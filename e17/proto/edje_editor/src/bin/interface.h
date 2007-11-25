@@ -1,7 +1,8 @@
 #include "main.h"
 
-
-Etk_Widget *UI_MainWin;
+Ecore_Evas *UI_ecore_MainWin;
+//Etk_Widget *UI_MainWin;
+Etk_Widget *UI_Toolbar;
 Etk_Widget *UI_PartsTree;
 Etk_Widget *UI_GroupComboBox;
 Etk_Widget *UI_ColorPickerWin;
@@ -14,12 +15,6 @@ Evas_Object *ShadowColorObject;
 Evas_Object *OutlineColorObject;
 Etk_Widget *UI_ColorWin;
 Etk_Widget *UI_ColorPicker;
-Etk_Widget *UI_DescriptionFrame;
-Etk_Widget *UI_PositionFrame;
-Etk_Widget *UI_RectFrame;
-Etk_Widget *UI_ImageFrame;
-Etk_Widget *UI_TextFrame;
-Etk_Widget *UI_ProgramFrame;
 Etk_Widget *UI_TextEntry;
 Etk_Widget *UI_FontComboBox;
 Etk_Widget *UI_ImageTweenList;
@@ -32,8 +27,6 @@ Etk_Widget *UI_MoveDownTweenButton;
 Etk_Widget *UI_MoveUpTweenButton;
 Etk_Widget *UI_FontSizeSpinner;
 Etk_Widget *UI_EffectComboBox;
-Etk_Widget *UI_PartFrame;
-Etk_Widget *UI_GroupFrame;
 Etk_Widget *UI_PartNameEntry;
 Etk_Widget *UI_PartTypeComboBox;
 Etk_Widget *UI_ImageAlphaSlider;
@@ -47,6 +40,7 @@ Etk_Widget *UI_Rel2YSpinner;
 Etk_Widget *UI_Rel2YOffsetSpinner;
 Etk_Widget *UI_AddMenu;
 Etk_Widget *UI_RemoveMenu;
+Etk_Widget *UI_OptionsMenu;
 Etk_Widget *UI_Rel1ToXComboBox;
 Etk_Widget *UI_Rel1ToYComboBox;
 Etk_Widget *UI_Rel2ToXComboBox;
@@ -77,7 +71,6 @@ Etk_Widget *UI_StateMaxWSpinner;
 Etk_Widget *UI_StateMaxHSpinner;
 Etk_Widget *UI_ProgramEntry;
 Etk_Widget *UI_SignalEntry;
-Etk_Widget *UI_ScriptFrame;
 Etk_Widget *UI_ScriptBox;
 Etk_Widget *UI_ScriptSaveButton;
 Etk_Widget *UI_ActionComboBox;
@@ -100,7 +93,25 @@ Etk_Widget *UI_DelayRangeSpinner;
 Etk_Widget *UI_CurrentGroupSizeLabel;
 Etk_Widget *UI_PartEventsCheck;
 
+Etk_Widget *UI_PartsTreeEmbed;
+Etk_Widget *UI_GroupEmbed;
+Etk_Widget *UI_PartEmbed;
+Etk_Widget *UI_DescriptionEmbed;
+Etk_Widget *UI_RectEmbed;
+Etk_Widget *UI_TextEmbed;
+Etk_Widget *UI_PositionEmbed;
+Etk_Widget *UI_ProgramEmbed;
+Etk_Widget *UI_ScriptEmbed;
+Etk_Widget *UI_ImageEmbed;
+Etk_Widget *UI_ToolbarEmbed;
+
+//Evas_Object *UI_PartEdje;
+
+Evas_Object *edje_ui;
+
 void     create_main_window      (void);
+void     ecore_resize_callback   (Ecore_Evas *ecore_evas);
+void     _embed_position_set     (void *position_data, int *x, int *y);
 void     PopulateTree            (void);
 void     AddGroupToTree          (Engrave_Group* group);
 void     AddPartToTree           (Engrave_Part* part);

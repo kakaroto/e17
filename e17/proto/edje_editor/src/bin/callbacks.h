@@ -1,6 +1,8 @@
 
+
 /* Called when the window is destroyed */
 Etk_Bool etk_main_quit_cb(void *data);
+void ecore_delete_cb(Ecore_Evas *ee);
 
 //void on_GroupComboBox_changed        (Etk_Combobox *combobox, void *data);
 Etk_Bool on_GroupSpinner_value_changed     (Etk_Range *range, double value,

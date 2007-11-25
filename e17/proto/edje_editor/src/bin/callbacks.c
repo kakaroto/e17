@@ -1,6 +1,7 @@
 #include <string.h>
 #include <Edje.h>
 #include <Etk.h>
+#include <Ecore_Evas.h>
 #include "callbacks.h"
 #include "interface.h"
 #include "main.h"
@@ -15,27 +16,10 @@ extern void PROTO_engrave_part_state_image_tween_remove_all(Engrave_Part_State *
 int current_color_object;
 
 /* Called when the window is destroyed */
-Etk_Bool
-etk_main_quit_cb(void *data)
+void
+ecore_delete_cb(Ecore_Evas *ee)
 {
    etk_main_quit();
-   return ETK_TRUE;
-}
-
-/* Called when the canvas change size */
-Etk_Bool
-on_canvas_geometry_changed(Etk_Object *canvas, const char *property_name, void *data)
-{
-   int cx, cy, cw, ch;
-   //printf("Geometry Changed Signal on Canvas\n");
-   //resize canvas bg
-   etk_widget_geometry_get(ETK_canvas, &cx, &cy, &cw, &ch);
-   evas_object_resize(EV_canvas_bg,cw,ch);
-   evas_object_resize(EV_canvas_shadow,cw,ch);
-   evas_object_image_fill_set( EV_canvas_shadow,	0,0,cw,ch);
-   ev_redraw();
-
-   return ETK_TRUE;
 }
 
 /* All the buttons Callback */
@@ -50,37 +34,29 @@ on_AllButton_click(Etk_Button *button, void *data)
    switch ((int)data)
    {
       case TOOLBAR_NEW:
-         printf("Clicked signal on Toolbar Button 'New' EMITTED\n");
          system("edje_editor &");
          break;
       case TOOLBAR_OPEN:
-         printf("Clicked signal on Toolbar Button 'Open' EMITTED\n");
          //ShowAlert("Not yet implemented");
          ShowFilechooser(FILECHOOSER_OPEN);
          break;
       case TOOLBAR_SAVE:
-         printf("Clicked signal on Toolbar Button 'Save' EMITTED\n");
          if (Cur.open_file_name)
             SaveEDJ(Cur.open_file_name);
          else
             ShowFilechooser(FILECHOOSER_SAVE_EDJ);
          break;
       case TOOLBAR_SAVE_EDC:
-         printf("Clicked signal on Toolbar Button 'Save edc' EMITTED\n");
          ShowFilechooser(FILECHOOSER_SAVE_EDC);
          break;
       case TOOLBAR_SAVE_EDJ:
-         printf("Clicked signal on Toolbar Button 'Save edj' EMITTED\n");
          ShowFilechooser(FILECHOOSER_SAVE_EDJ);
          break;
       case TOOLBAR_ADD:
-         printf("Clicked signal on Toolbar Button 'Add' EMITTED\n");
          etk_menu_popup(ETK_MENU(UI_AddMenu));
          //etk_menu_popup_at_xy (ETK_MENU(AddMenu), 10, 10);
          break;
       case TOOLBAR_REMOVE:
-         printf("Clicked signal on Toolbar Button 'Remove' EMITTED\n");
-         //ShowAlert("Not yet implemented");
          etk_menu_popup(ETK_MENU(UI_RemoveMenu));
          //etk_menu_popup_at_xy (ETK_MENU(AddMenu), 10, 10);
          break;
@@ -107,6 +83,26 @@ on_AllButton_click(Etk_Button *button, void *data)
       case TOOLBAR_MOVE_DOWN:
          printf("Clicked signal on Toolbar Button 'MoveDown' EMITTED\n");
          ShowAlert("Not yet implemented");
+         break;
+      case TOOLBAR_OPTIONS:
+         etk_menu_popup(ETK_MENU(UI_OptionsMenu));
+         //etk_menu_popup_at_xy (ETK_MENU(AddMenu), 10, 10);
+         break;
+      case TOOLBAR_OPTION_BG1:
+         printf("SET_BG1\n");
+         edje_object_signal_emit(edje_ui,"set_bg1","edje_editor");
+         break;
+       case TOOLBAR_OPTION_BG2:
+         printf("SET_BG2\n");
+         edje_object_signal_emit(edje_ui,"set_bg2","edje_editor");
+         break;
+      case TOOLBAR_OPTION_BG3:
+         printf("SET_BG3\n");
+         edje_object_signal_emit(edje_ui,"set_bg3","edje_editor");
+         break;
+      case TOOLBAR_OPTION_BG4:
+         printf("SET_BG4\n");
+         edje_object_signal_emit(edje_ui,"set_bg4","edje_editor");
          break;
       case TOOLBAR_PLAY:
          printf("Clicked signal on Toolbar Button 'Play' EMITTED\n");
@@ -177,6 +173,8 @@ on_AllButton_click(Etk_Button *button, void *data)
             }
             etk_object_destroy(ETK_OBJECT(text));
          break;
+      default:
+         break;
    }
 
    return ETK_TRUE;
@@ -204,15 +202,18 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
          Cur.eg = etk_tree_row_data_get (row);
          Cur.ep = NULL;
          Cur.eps = NULL;
-         etk_widget_hide(UI_DescriptionFrame);
-         etk_widget_hide(UI_PositionFrame);
-         etk_widget_hide(UI_RectFrame);
-         etk_widget_hide(UI_ImageFrame);
-         etk_widget_hide(UI_TextFrame);
-         etk_widget_hide(UI_PartFrame);
-         etk_widget_hide(UI_ProgramFrame);
-         etk_widget_show(UI_GroupFrame);
-         etk_widget_show(UI_ScriptFrame);
+         //Hide
+         edje_object_signal_emit(edje_ui,"description_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"position_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"rect_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"image_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"text_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"part_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"program_frame_hide","edje_editor");
+         //Show
+         edje_object_signal_emit(edje_ui,"group_frame_show","edje_editor");
+         edje_object_signal_emit(edje_ui,"script_frame_show","edje_editor");
+         
          UpdateScriptFrame();
          break;
       case ROW_PART:
@@ -220,15 +221,17 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
          Cur.ep = etk_tree_row_data_get (row);
          Cur.eg = Cur.ep->parent;
          Cur.eps = NULL;
-         etk_widget_hide(UI_DescriptionFrame);
-         etk_widget_hide(UI_PositionFrame);
-         etk_widget_hide(UI_RectFrame);
-         etk_widget_hide(UI_ImageFrame);
-         etk_widget_hide(UI_TextFrame);
-         etk_widget_hide(UI_GroupFrame);
-         etk_widget_hide(UI_ProgramFrame);
-         etk_widget_show(UI_PartFrame);
-         etk_widget_hide(UI_ScriptFrame);
+         
+         edje_object_signal_emit(edje_ui,"description_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"position_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"rect_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"image_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"text_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"group_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"program_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"part_frame_show","edje_editor");
+         edje_object_signal_emit(edje_ui,"script_frame_hide","edje_editor");
+         
          UpdatePartFrame();
          break;
       case ROW_DESC: 
@@ -245,51 +248,55 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
          if (Cur.ep->type == ENGRAVE_PART_TYPE_TEXT)
          {
             UpdateTextFrame();
-            etk_widget_show(UI_TextFrame);
+            edje_object_signal_emit(edje_ui,"text_frame_show","edje_editor");
          }else
          {
-            etk_widget_hide(UI_TextFrame);
+            edje_object_signal_emit(edje_ui,"text_frame_hide","edje_editor");
          }
 
          if (Cur.ep->type == ENGRAVE_PART_TYPE_IMAGE)
          {
             UpdateImageFrame();
-            etk_widget_show(UI_ImageFrame);
+            edje_object_signal_emit(edje_ui,"image_frame_show","edje_editor");
          }else
          {
-            etk_widget_hide(UI_ImageFrame);
+            edje_object_signal_emit(edje_ui,"image_frame_hide","edje_editor");
          }
 
          if (Cur.ep->type == ENGRAVE_PART_TYPE_RECT)
          {
             UpdateRectFrame();
-            etk_widget_show(UI_RectFrame);
+            edje_object_signal_emit(edje_ui,"rect_frame_show","edje_editor");
          }else
          {
-            etk_widget_hide(UI_RectFrame);
+            edje_object_signal_emit(edje_ui,"rect_frame_hide","edje_editor");
          }
 
-         etk_widget_hide(UI_PartFrame);
-         etk_widget_hide(UI_GroupFrame);
-         etk_widget_hide(UI_ProgramFrame);
-         etk_widget_hide(UI_ScriptFrame);
-         etk_widget_show(UI_DescriptionFrame);
-         etk_widget_show(UI_PositionFrame);
+         edje_object_signal_emit(edje_ui,"part_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"group_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"program_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"script_frame_hide","edje_editor");
+         
+         edje_object_signal_emit(edje_ui,"description_frame_show","edje_editor");
+         edje_object_signal_emit(edje_ui,"position_frame_show","edje_editor");
          break;
       case ROW_PROG:
          Cur.epr = etk_tree_row_data_get (row);
          Cur.eg = Cur.epr->parent;
          Cur.ep = NULL;
          Cur.eps = NULL;
-         etk_widget_hide(UI_DescriptionFrame);
-         etk_widget_hide(UI_PositionFrame);
-         etk_widget_hide(UI_RectFrame);
-         etk_widget_hide(UI_ImageFrame);
-         etk_widget_hide(UI_TextFrame);
-         etk_widget_hide(UI_GroupFrame);
-         etk_widget_hide(UI_PartFrame);
-         etk_widget_show(UI_ProgramFrame);
-         etk_widget_show(UI_ScriptFrame);
+       
+         edje_object_signal_emit(edje_ui,"description_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"position_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"rect_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"image_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"text_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"group_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"part_frame_hide","edje_editor");
+         
+         edje_object_signal_emit(edje_ui,"program_frame_show","edje_editor");
+         edje_object_signal_emit(edje_ui,"script_frame_show","edje_editor");
+         
          UpdateScriptFrame();
          UpdateProgFrame();
          PopulateSourceComboBox();
@@ -311,7 +318,6 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
       engrave_canvas_current_group_set (engrave_canvas, Cur.eg);
    }
    ev_redraw();
-
    return ETK_TRUE;
 }
 

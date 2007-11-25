@@ -304,7 +304,6 @@ int
 main(int argc, char **argv)
 {
    //Init Globals
-   ETK_canvas = NULL;
    Cur.eg = NULL;
    Cur.ep = NULL;
    Cur.eps = NULL;
@@ -363,9 +362,6 @@ main(int argc, char **argv)
    //Create the etk window with all his widget
    create_main_window();
 
-   //Create the evas objects needed by the canvas (fakewin, handlers)
-   prepare_canvas();
-
    //Open a file
    if (argc > 1)
    {
@@ -386,7 +382,7 @@ main(int argc, char **argv)
          if (argc == 4)
             Cur.ef = engrave_load_edc(file, argv[2], argv[3]);
       }
-      etk_window_title_set(ETK_WINDOW(UI_MainWin),file);
+      ecore_evas_title_set(UI_ecore_MainWin, file);
    }
 
    if (!Cur.ef)
