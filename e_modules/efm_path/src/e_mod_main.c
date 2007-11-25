@@ -6,7 +6,6 @@ struct _Instance
 {
    E_Gadcon_Client *gcc;
    Evas_Object *o_entry, *o_base, *o_loc, *o_event;
-   E_Menu *menu;
    E_Toolbar *tbar;
    char *path;
 };
@@ -35,7 +34,6 @@ static void             _cb_key_down      (void *data, Evas_Object *obj,
 					   void *event_info);
 static void             _cb_mouse_down    (void *data, Evas *e, 
 					   Evas_Object *obj, void *event_info);
-static void             _cb_menu_post     (void *data, E_Menu *m);
 
 static Evas_List *instances = NULL;
 static E_Module *path_mod = NULL;
@@ -115,12 +113,6 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    inst = gcc->data;
    if (!inst) return;
    instances = evas_list_remove(instances, inst);
-   if (inst->menu) 
-     {
-	e_menu_post_deactivate_callback_set(inst->menu, NULL, NULL);
-	e_object_del(E_OBJECT(inst->menu));
-	inst->menu = NULL;
-     }
 
    evas_object_event_callback_del(inst->o_event, EVAS_CALLBACK_MOUSE_DOWN, _cb_mouse_down);
    evas_object_event_callback_del(inst->o_base, EVAS_CALLBACK_MOUSE_DOWN, _cb_mouse_down);
@@ -331,28 +323,12 @@ _cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 
    inst = data;
    ev = event_info;
-   if ((ev->button != 3) || (inst->menu)) return;
+   if ((ev->button != 3) || (inst->gcc->menu)) return;
    zone = e_util_zone_current_get(e_manager_current_get());
-
    mn = e_menu_new();
-   e_menu_post_deactivate_callback_set(mn, _cb_menu_post, inst);
-   inst->menu = mn;
    e_gadcon_client_util_menu_items_append(inst->gcc, mn, 0);
    ecore_x_pointer_xy_get(zone->container->win, &x, &y);
-   e_menu_activate_mouse(inst->menu, zone, x, y, 1, 1, 
+   e_menu_activate_mouse(mn, zone, x, y, 1, 1, 
 			 E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
-   evas_event_feed_mouse_up(inst->gcc->gadcon->evas, ev->button, 
-			    EVAS_BUTTON_NONE, ev->timestamp, NULL);
-//   e_util_evas_fake_mouse_up_later(e, ev->button);
-}
-
-static void 
-_cb_menu_post(void *data, E_Menu *m) 
-{
-   Instance *inst;
-   
-   inst = data;
-   if (!inst->menu) return;
-   e_object_del(E_OBJECT(inst->menu));
-   inst->menu = NULL;
+   e_util_evas_fake_mouse_up_later(e, ev->button);
 }
