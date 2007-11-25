@@ -2283,7 +2283,8 @@ create_main_window(void)
    create_toolbar(ETK_TOOLBAR_HORIZ);
    UI_ToolbarEmbed = etk_embed_new(win_evas);
    etk_container_add(ETK_CONTAINER(UI_ToolbarEmbed), UI_Toolbar);
-   etk_embed_position_method_set(ETK_EMBED(UI_ToolbarEmbed), _embed_position_set, UI_ecore_MainWin);
+   etk_embed_position_method_set(ETK_EMBED(UI_ToolbarEmbed),
+                                 _embed_position_set, UI_ecore_MainWin);
    etk_widget_show_all(UI_ToolbarEmbed);
    evas_object_move(etk_embed_object_get(ETK_EMBED(UI_ToolbarEmbed)), 130, 0);
    evas_object_resize(etk_embed_object_get(ETK_EMBED(UI_ToolbarEmbed)), 300, 50);
@@ -2292,7 +2293,8 @@ create_main_window(void)
    create_tree();
    UI_PartsTreeEmbed = etk_embed_new(win_evas);
    etk_container_add(ETK_CONTAINER(UI_PartsTreeEmbed), UI_PartsTree);
-   etk_embed_position_method_set(ETK_EMBED(UI_PartsTreeEmbed), _embed_position_set, UI_ecore_MainWin);
+   etk_embed_position_method_set(ETK_EMBED(UI_PartsTreeEmbed),
+                                 _embed_position_set, UI_ecore_MainWin);
    etk_widget_show_all(UI_PartsTreeEmbed);
    
    //Logo
@@ -2303,7 +2305,8 @@ create_main_window(void)
    //GroupEmbed
    UI_GroupEmbed = etk_embed_new(win_evas);
    etk_container_add(ETK_CONTAINER(UI_GroupEmbed), create_group_frame());
-   etk_embed_position_method_set(ETK_EMBED(UI_GroupEmbed), _embed_position_set, UI_ecore_MainWin);
+   etk_embed_position_method_set(ETK_EMBED(UI_GroupEmbed),
+                                 _embed_position_set, UI_ecore_MainWin);
    etk_widget_show_all(UI_GroupEmbed);
    edje_object_part_swallow(edje_ui,"group_frame_swallow",
                             etk_embed_object_get(ETK_EMBED(UI_GroupEmbed)));
@@ -2311,7 +2314,8 @@ create_main_window(void)
    //PartEmbed
    UI_PartEmbed = etk_embed_new(win_evas);
    etk_container_add(ETK_CONTAINER(UI_PartEmbed), create_part_frame());
-   etk_embed_position_method_set(ETK_EMBED(UI_PartEmbed), _embed_position_set, UI_ecore_MainWin);
+   etk_embed_position_method_set(ETK_EMBED(UI_PartEmbed),
+                                 _embed_position_set, UI_ecore_MainWin);
    etk_widget_show_all(UI_PartEmbed);
    edje_object_part_swallow(edje_ui,"part_frame_swallow",
                             etk_embed_object_get(ETK_EMBED(UI_PartEmbed)));
@@ -2319,7 +2323,8 @@ create_main_window(void)
    //DescriptionEmbed
    UI_DescriptionEmbed = etk_embed_new(win_evas);
    etk_container_add(ETK_CONTAINER(UI_DescriptionEmbed), create_description_frame());
-   etk_embed_position_method_set(ETK_EMBED(UI_DescriptionEmbed), _embed_position_set, UI_ecore_MainWin);
+   etk_embed_position_method_set(ETK_EMBED(UI_DescriptionEmbed),
+                                 _embed_position_set, UI_ecore_MainWin);
    etk_widget_show_all(UI_DescriptionEmbed);
    edje_object_part_swallow(edje_ui,"description_frame_swallow",
                             etk_embed_object_get(ETK_EMBED(UI_DescriptionEmbed)));
@@ -2327,7 +2332,8 @@ create_main_window(void)
    //RectEmbed
    UI_RectEmbed = etk_embed_new(win_evas);
    etk_container_add(ETK_CONTAINER(UI_RectEmbed), create_rectangle_frame());
-   etk_embed_position_method_set(ETK_EMBED(UI_RectEmbed), _embed_position_set, UI_ecore_MainWin);
+   etk_embed_position_method_set(ETK_EMBED(UI_RectEmbed),
+                                 _embed_position_set, UI_ecore_MainWin);
    etk_widget_show_all(UI_RectEmbed);
    edje_object_part_swallow(edje_ui,"rect_frame_swallow",
                             etk_embed_object_get(ETK_EMBED(UI_RectEmbed)));
@@ -2335,7 +2341,8 @@ create_main_window(void)
    //TextEmbed
    UI_TextEmbed = etk_embed_new(win_evas);
    etk_container_add(ETK_CONTAINER(UI_TextEmbed), create_text_frame());
-   etk_embed_position_method_set(ETK_EMBED(UI_TextEmbed), _embed_position_set, UI_ecore_MainWin);
+   etk_embed_position_method_set(ETK_EMBED(UI_TextEmbed),
+                                 _embed_position_set, UI_ecore_MainWin);
    etk_widget_show_all(UI_TextEmbed);
    edje_object_part_swallow(edje_ui,"text_frame_swallow",
                             etk_embed_object_get(ETK_EMBED(UI_TextEmbed)));
@@ -2343,7 +2350,8 @@ create_main_window(void)
    //ImageEmbed
    UI_ImageEmbed = etk_embed_new(win_evas);
    etk_container_add(ETK_CONTAINER(UI_ImageEmbed), create_image_frame());
-   etk_embed_position_method_set(ETK_EMBED(UI_ImageEmbed), _embed_position_set, UI_ecore_MainWin);
+   etk_embed_position_method_set(ETK_EMBED(UI_ImageEmbed),
+                                 _embed_position_set, UI_ecore_MainWin);
    etk_widget_show_all(UI_ImageEmbed);
    edje_object_part_swallow(edje_ui,"image_frame_swallow",
                             etk_embed_object_get(ETK_EMBED(UI_ImageEmbed)));
@@ -2351,7 +2359,8 @@ create_main_window(void)
    //PositionEmbed
    UI_PositionEmbed = etk_embed_new(win_evas);
    etk_container_add(ETK_CONTAINER(UI_PositionEmbed), create_position_frame());
-   etk_embed_position_method_set(ETK_EMBED(UI_PositionEmbed), _embed_position_set, UI_ecore_MainWin);
+   etk_embed_position_method_set(ETK_EMBED(UI_PositionEmbed),
+                                 _embed_position_set, UI_ecore_MainWin);
    etk_widget_show_all(UI_PositionEmbed);
    edje_object_part_swallow(edje_ui,"position_frame_swallow",
                             etk_embed_object_get(ETK_EMBED(UI_PositionEmbed)));
@@ -2359,7 +2368,8 @@ create_main_window(void)
    //ProgramEmbed
    UI_ProgramEmbed = etk_embed_new(win_evas);
    etk_container_add(ETK_CONTAINER(UI_ProgramEmbed), create_program_frame());
-   etk_embed_position_method_set(ETK_EMBED(UI_ProgramEmbed), _embed_position_set, UI_ecore_MainWin);
+   etk_embed_position_method_set(ETK_EMBED(UI_ProgramEmbed),
+                                 _embed_position_set, UI_ecore_MainWin);
    etk_widget_show_all(UI_ProgramEmbed);
    edje_object_part_swallow(edje_ui,"program_frame_swallow",
                             etk_embed_object_get(ETK_EMBED(UI_ProgramEmbed)));
@@ -2367,7 +2377,8 @@ create_main_window(void)
    //ScriptEmbed
    UI_ScriptEmbed = etk_embed_new(win_evas);
    etk_container_add(ETK_CONTAINER(UI_ScriptEmbed), create_script_frame());
-   etk_embed_position_method_set(ETK_EMBED(UI_ScriptEmbed), _embed_position_set, UI_ecore_MainWin);
+   etk_embed_position_method_set(ETK_EMBED(UI_ScriptEmbed),
+                                 _embed_position_set, UI_ecore_MainWin);
    etk_widget_show_all(UI_ScriptEmbed);
    edje_object_part_swallow(edje_ui,"script_frame_swallow",
                             etk_embed_object_get(ETK_EMBED(UI_ScriptEmbed)));
@@ -2376,15 +2387,18 @@ create_main_window(void)
    UI_FileChooserDialog = create_filechooser_dialog();
 
    //Alert Dialog
-   UI_AlertDialog = etk_message_dialog_new (ETK_MESSAGE_DIALOG_INFO, ETK_MESSAGE_DIALOG_OK, "Hallo world!");
+   UI_AlertDialog = etk_message_dialog_new (ETK_MESSAGE_DIALOG_INFO,
+                                       ETK_MESSAGE_DIALOG_OK, "Hallo world!");
    etk_widget_size_request_set(UI_AlertDialog, 240, 100);
-   etk_signal_connect("delete-event", ETK_OBJECT(UI_AlertDialog), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
-   etk_signal_connect("response", ETK_OBJECT(UI_AlertDialog), ETK_CALLBACK(on_AlertDialog_response), NULL);
-
-   //Create ColorPicker Window
-   UI_ColorWin = etk_window_new();
+   etk_signal_connect("delete-event", ETK_OBJECT(UI_AlertDialog),
+                      ETK_CALLBACK(etk_window_hide_on_delete), NULL);
+   etk_signal_connect("response", ETK_OBJECT(UI_AlertDialog),
+                      ETK_CALLBACK(on_AlertDialog_response), NULL);
 
    //ColorPicker
+   UI_ColorWin = etk_window_new();
+   etk_signal_connect("delete-event", ETK_OBJECT(UI_ColorWin),
+                      ETK_CALLBACK(etk_window_hide_on_delete), NULL);
    UI_ColorPicker = etk_colorpicker_new();
    etk_colorpicker_use_alpha_set (ETK_COLORPICKER(UI_ColorPicker), TRUE);
    etk_container_add(ETK_CONTAINER(UI_ColorWin), UI_ColorPicker);
