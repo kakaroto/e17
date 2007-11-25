@@ -22,7 +22,6 @@ static const char      *_gc_id_new   (void);
 /* Module Protos */
 static void         _tclock_cb_mouse_down     (void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void         _tclock_menu_cb_configure (void *data, E_Menu *m, E_Menu_Item *mi);
-static void         _tclock_menu_cb_post      (void *data, E_Menu *m);
 static int          _tclock_cb_check          (void *data);
 static Config_Item *_tclock_config_item_get   (const char *id);
 
@@ -106,9 +105,7 @@ _gc_shutdown (E_Gadcon_Client * gcc)
 	ecore_timer_del (check_timer);
 	check_timer = NULL;
      }
-   
-  free (inst);
-  inst = NULL;
+   E_FREE(inst);
 }
 
 static void
@@ -159,15 +156,13 @@ _tclock_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
 
   inst = data;
   ev = event_info;
-  if ((ev->button == 3) && (!tclock_config->menu))
+  if ((ev->button == 3) && (!inst->gcc->menu))
     {
       E_Menu *mn;
       E_Menu_Item *mi;
       int x, y, w, h;
 
       mn = e_menu_new ();
-      e_menu_post_deactivate_callback_set (mn, _tclock_menu_cb_post, inst);
-      tclock_config->menu = mn;
 
       mi = e_menu_item_new (mn);
       e_menu_item_label_set (mi, D_ ("Configuration"));
@@ -183,19 +178,10 @@ _tclock_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
 			     e_util_zone_current_get (e_manager_current_get
 						      ()), x + ev->output.x,
 			     y + ev->output.y, 1, 1,
-			     E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
+			     E_MENU_POP_DIRECTION_AUTO, ev->timestamp);
       evas_event_feed_mouse_up (inst->gcc->gadcon->evas, ev->button,
 				EVAS_BUTTON_NONE, ev->timestamp, NULL);
     }
-}
-
-static void
-_tclock_menu_cb_post (void *data, E_Menu * m)
-{
-  if (!tclock_config->menu)
-    return;
-  e_object_del (E_OBJECT (tclock_config->menu));
-  tclock_config->menu = NULL;
 }
 
 static void
@@ -387,12 +373,6 @@ e_modapi_shutdown (E_Module * m)
 
   if (tclock_config->config_dialog)
     e_object_del (E_OBJECT (tclock_config->config_dialog));
-  if (tclock_config->menu)
-    {
-      e_menu_post_deactivate_callback_set (tclock_config->menu, NULL, NULL);
-      e_object_del (E_OBJECT (tclock_config->menu));
-      tclock_config->menu = NULL;
-    }
 
   while (tclock_config->items)
     {
@@ -407,12 +387,10 @@ e_modapi_shutdown (E_Module * m)
 	evas_stringshare_del (ci->time_format);
       if (ci->date_format)
 	evas_stringshare_del (ci->date_format);
-      free (ci);
-      ci = NULL;
+       E_FREE(ci);
     }
 
-  free (tclock_config);
-  tclock_config = NULL;
+   E_FREE(tclock_config);
   E_CONFIG_DD_FREE (conf_item_edd);
   E_CONFIG_DD_FREE (conf_edd);
   return 1;
@@ -424,4 +402,3 @@ e_modapi_save (E_Module * m)
   e_config_domain_save ("module.tclock", conf_edd, tclock_config);
   return 1;
 }
-
