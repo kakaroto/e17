@@ -970,12 +970,13 @@ create_filechooser_dialog(void)
    UI_FileChooserDialog = etk_dialog_new();
    etk_object_properties_set (ETK_OBJECT(UI_FileChooserDialog), "action-area-homogeneous",ETK_FALSE,NULL);
    etk_signal_connect("delete-event", ETK_OBJECT(UI_FileChooserDialog), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
-   etk_signal_connect("response", ETK_OBJECT(UI_FileChooserDialog), ETK_CALLBACK(on_FileChooser_response), NULL);
+   etk_signal_connect("response", ETK_OBJECT(UI_FileChooserDialog), ETK_CALLBACK(on_FileChooserDialog_response), NULL);
 
    //Filechooser
    UI_FileChooser = etk_filechooser_widget_new();
    etk_dialog_pack_in_main_area(ETK_DIALOG(UI_FileChooserDialog), UI_FileChooser,
       ETK_BOX_START, ETK_BOX_EXPAND_FILL,0);
+   etk_signal_connect("selected", ETK_OBJECT(UI_FileChooser), ETK_CALLBACK(on_FileChooser_selected), NULL);
 
    etk_dialog_button_add_from_stock(ETK_DIALOG(UI_FileChooserDialog),
       ETK_STOCK_DIALOG_CANCEL, ETK_RESPONSE_CANCEL );

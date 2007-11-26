@@ -1373,7 +1373,7 @@ on_RemoveMenu_item_activated(Etk_Object *object, void *data)
 
 /* Dialogs Callbacks */
 Etk_Bool
-on_FileChooser_response(Etk_Dialog *dialog, int response_id, void *data)
+on_FileChooserDialog_response(Etk_Dialog *dialog, int response_id, void *data)
 {
    char cmd[4096];
    int ret = 0;
@@ -1473,6 +1473,13 @@ on_FileChooser_response(Etk_Dialog *dialog, int response_id, void *data)
    return ETK_TRUE;
 }
 
+Etk_Bool
+on_FileChooser_selected(Etk_Filechooser_Widget *filechooser)
+{
+   printf("*** FILECHOOSER SELECTD ON *** \n");
+   on_FileChooserDialog_response(ETK_DIALOG(UI_FileChooserDialog), ETK_RESPONSE_OK, NULL);
+   return ETK_TRUE;
+}
 Etk_Bool
 on_AlertDialog_response(Etk_Dialog *dialog, int response_id, void *data)
 {
