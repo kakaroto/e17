@@ -1,4 +1,5 @@
 #include "engrave_private.h"
+#include <locale.h>
 #include <Engrave.h>
 
 static Engrave_File *engrave_file = 0;
@@ -9,14 +10,22 @@ Engrave_File *
 engrave_parse(const char *file, const char *imdir, const char *fontdir)
 {
   int ret;
+  char locale[128];
   engrave_file = engrave_file_new();
   engrave_file_image_dir_set(engrave_file, imdir);
   engrave_file_font_dir_set(engrave_file, fontdir);
 
+  /* set locale posix compliant*/
+  strncpy(locale, setlocale(LC_NUMERIC, NULL), sizeof(locale));
+  setlocale(LC_NUMERIC, "C");
+   
   yyin = fopen(file, "r");
   ret = yyparse();
   fclose(yyin);
 
+  /* reset locale to system default*/
+  setlocale(LC_NUMERIC, locale);
+   
   if (ret == 0)
      return (engrave_file);
   

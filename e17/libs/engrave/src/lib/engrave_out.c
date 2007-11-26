@@ -1,6 +1,7 @@
 #include <errno.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <locale.h>
 #include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
@@ -191,6 +192,7 @@ EAPI int
 engrave_edc_output(Engrave_File *engrave_file, const char *path)
 {
   FILE *out = NULL;
+  char locale[128];
   
   if (!engrave_file) return 0;
 
@@ -200,6 +202,10 @@ engrave_edc_output(Engrave_File *engrave_file, const char *path)
     printf("can't open %s for writing\n", path);
     return 0;
   }
+
+  /* set locale posix compliant*/
+  strncpy(locale, setlocale(LC_NUMERIC, NULL), sizeof(locale));
+  setlocale(LC_NUMERIC, "C");
 
   /* fonts */
   engrave_out_start(out, "fonts");
@@ -237,6 +243,10 @@ engrave_edc_output(Engrave_File *engrave_file, const char *path)
   engrave_out_end(out);
 
   fclose(out);
+  
+  /* reset locale to system default*/
+  setlocale(LC_NUMERIC, locale);
+  
   return 1;
 }
 
