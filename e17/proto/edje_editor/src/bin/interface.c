@@ -1095,7 +1095,7 @@ create_toolbar(Etk_Toolbar_Orientation o)
                      ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_SAVE_EDJ);
 
    //SaveEDCButton
-   button = etk_tool_button_new_from_stock(ETK_STOCK_DOCUMENT_SAVE);
+   button = etk_tool_button_new_from_stock(ETK_STOCK_DOCUMENT_SAVE_AS);
    etk_object_properties_set(ETK_OBJECT(button),"label","Export edc",NULL);
    etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), button, ETK_BOX_START);
    etk_signal_connect("clicked", ETK_OBJECT(button),

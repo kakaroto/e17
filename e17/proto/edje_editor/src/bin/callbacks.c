@@ -4,6 +4,7 @@
 #include <Ecore_Evas.h>
 #include "callbacks.h"
 #include "interface.h"
+#include "inout.h"
 #include "main.h"
 #include "evas.h"
 
@@ -47,9 +48,7 @@ on_AllButton_click(Etk_Button *button, void *data)
             ShowFilechooser(FILECHOOSER_SAVE_EDJ);
          break;
       case TOOLBAR_SAVE_EDC:
-         ShowAlert("Not yet implemented");
-         //ShowFilechooser(FILECHOOSER_SAVE_EDC);
-         //SaveEDC("/home/dave/test/auto.edc");
+         ShowFilechooser(FILECHOOSER_SAVE_EDC);
          break;
       case TOOLBAR_SAVE_EDJ:
          ShowFilechooser(FILECHOOSER_SAVE_EDJ);
@@ -1399,11 +1398,14 @@ on_FileChooser_response(Etk_Dialog *dialog, int response_id, void *data)
                etk_filechooser_widget_selected_file_get (ETK_FILECHOOSER_WIDGET(UI_FileChooser)));
             SaveEDJ(cmd);
          break;
-/*         case FILECHOOSER_SAVE_EDC:
+         case FILECHOOSER_SAVE_EDC:
             printf("SAVE EDC\n");
-            engrave_edc_output(Cur.ef,
-            (char*)etk_entry_text_get(ETK_ENTRY(UI_FilechooserFileNameEntry)));
-         break;*/
+            snprintf(cmd,4096,"%s/%s",
+               etk_filechooser_widget_current_folder_get (ETK_FILECHOOSER_WIDGET(UI_FileChooser)),
+               etk_filechooser_widget_selected_file_get (ETK_FILECHOOSER_WIDGET(UI_FileChooser)));
+            if (!SaveEDC(cmd))
+              ShowAlert("Error saving file.");
+         break;
          case FILECHOOSER_IMAGE:
             if (Cur.eps){
                //If the new image is not in the edc dir
