@@ -107,17 +107,15 @@ on_AllButton_click(Etk_Button *button, void *data)
          break;
       case TOOLBAR_PLAY:
          printf("Clicked signal on Toolbar Button 'Play' EMITTED\n");
-         if (Cur.open_file_name) 
+         if (!Cur.eg)
+            ShowAlert("You must select a group to test.");
+         else if (!Cur.open_file_name) 
+            ShowAlert("You need to save the file before testing it.");
+         else
          {
             snprintf(cmd,1024,"edje_editor -t \"%s\" \"%s\" &",Cur.open_file_name,Cur.eg->name);
             printf("TESTING EDJE. cmd: %s\n",cmd);
             system(cmd);
-            //if (!system("type edje_viewer"))
-            //   system(cmd);
-            //else
-            //   ShowAlert("<b>Could not find 'edje_viewer'.</b><br>Check that the executable is in your path.");
-         }else{
-            ShowAlert("You need to save the file before testing it.");
          }
          break;
       case TOOLBAR_DEBUG:
