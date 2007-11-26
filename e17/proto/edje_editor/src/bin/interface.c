@@ -1065,7 +1065,7 @@ create_toolbar(Etk_Toolbar_Orientation o)
    //ToolBar
    UI_Toolbar = etk_toolbar_new ();
    etk_toolbar_orientation_set (ETK_TOOLBAR(UI_Toolbar), o);
-   etk_object_properties_set(ETK_OBJECT(UI_Toolbar),"theme-group","etk/iconbox/label");
+   //etk_object_properties_set(ETK_OBJECT(UI_Toolbar),"theme-group","etk/iconbox/label");
    //etk_theme_edje_object_set(Evas_Object *object, const char *file, const char *group, const char *parent_group)
    
    //NewButton
@@ -1094,13 +1094,13 @@ create_toolbar(Etk_Toolbar_Orientation o)
    etk_signal_connect("clicked", ETK_OBJECT(button),
                      ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_SAVE_EDJ);
 
-/*    //SaveEDCButton
+   //SaveEDCButton
    button = etk_tool_button_new_from_stock(ETK_STOCK_DOCUMENT_SAVE);
    etk_object_properties_set(ETK_OBJECT(button),"label","Export edc",NULL);
-   etk_toolbar_append(ETK_TOOLBAR(ToolBar), button, ETK_BOX_START);
+   etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), button, ETK_BOX_START);
    etk_signal_connect("clicked", ETK_OBJECT(button),
                      ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_SAVE_EDC);
- */   
+    
 
    sep = etk_vseparator_new();
    etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), sep, ETK_BOX_START);
@@ -1217,6 +1217,7 @@ create_toolbar(Etk_Toolbar_Orientation o)
 
    //OptionsButton
    button = etk_tool_button_new_from_stock(ETK_STOCK_PREFERENCES_SYSTEM);
+   etk_object_properties_set(ETK_OBJECT(button),"label","Options",NULL);
    etk_signal_connect("clicked", ETK_OBJECT(button),
                      ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_OPTIONS);
    etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), button, ETK_BOX_START);
@@ -2287,7 +2288,7 @@ create_main_window(void)
                                  _embed_position_set, UI_ecore_MainWin);
    etk_widget_show_all(UI_ToolbarEmbed);
    evas_object_move(etk_embed_object_get(ETK_EMBED(UI_ToolbarEmbed)), 130, 0);
-   evas_object_resize(etk_embed_object_get(ETK_EMBED(UI_ToolbarEmbed)), 300, 50);
+   evas_object_resize(etk_embed_object_get(ETK_EMBED(UI_ToolbarEmbed)), 0, 50);
     
    //Tree
    create_tree();

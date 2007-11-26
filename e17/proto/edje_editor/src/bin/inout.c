@@ -14,6 +14,8 @@ Etk_Widget *Load_Win;
 Etk_Widget *Save_ProgBar;
 Etk_Widget *Save_TextView;
 Ecore_Timer *progress_bar_timer;
+  
+Ecore_Event_Handler *eeh1, *eeh2, *eeh3;
 
 void
 etk_textview_append(Etk_Widget *tv, char *str)
@@ -129,14 +131,47 @@ backup_file(char *file_name)
       return FALSE;
 }
 
+char*
+SaveEDC(char *file_name)
+{
+   char tmpn[1024];
+   int fd = 0;
+   char *file;
+
+   if (!file_name)
+   {
+      //Create tmp file
+      strcpy(tmpn, "/tmp/edje_editor_tmp.edc-XXXXXX");
+      fd = mkstemp(tmpn);
+      if (fd < 0)
+      {
+         printf("Can't create temp file: %s\nError: %s\n",
+                tmpn,strerror(errno));
+         return NULL;
+      }
+      file = tmpn;
+   }
+   else
+      file = file_name;
+   
+   printf("SaveEDC file: %s\n",file);
+   
+   engrave_edc_output(Cur.ef, file);
+   
+   //TODO check engrave output on error
+   if (!ecore_file_exists(file))
+      return NULL;
+   
+   return file;
+}
+
 int
 SaveEDJ(char *file_name)
 {
-   char tmpn[1024];
+   char *tmpn;
    char ipart[1024], fpart[1024];
    char buf[4096];
    char cmd[2048];
-   int fd = 0;
    const char *imgdir, *fontdir;
 
    create_save_window();
@@ -148,24 +183,19 @@ SaveEDJ(char *file_name)
    //backup existing file
    backup_file(file_name);
 
-   //Create tmp file
-   strcpy(tmpn, "/tmp/edje_editor_tmp.edc-XXXXXX");
-   fd = mkstemp(tmpn);
-   if (fd < 0)
+   //Create temp edc file
+   tmpn = SaveEDC(NULL);   //TODO remove the temp file
+   if (!tmpn)
    {
-      snprintf(buf,4096,"<font color=#FF0000><b>Can't create temp file:</b> %s\n<b>Error:</b> %s</font>\n",
-               tmpn,strerror(errno));
+      snprintf(buf,4096,"<font color=#FF0000><b>Can't create edc tmp file:</b> %s\n</font>\n", tmpn);
       etk_textview_append(Save_TextView,buf);
       stop_bar(Save_ProgBar,"Error");
       return 0;
    }
-   close(fd);
-   snprintf(buf,4096,"<b>Create temp file:</b> %s\n",tmpn);
+   
+   snprintf(buf,4096,"<b>Created edc tmp file:</b> %s\n",tmpn);
    etk_textview_append(Save_TextView,buf);
-
-   //TODO check engrave success
-   engrave_edc_output(Cur.ef, tmpn);
-
+   
    //Get image and font directory
    imgdir = engrave_file_image_dir_get(Cur.ef);
    fontdir = engrave_file_font_dir_get(Cur.ef);
@@ -186,11 +216,10 @@ SaveEDJ(char *file_name)
    etk_textview_append(Save_TextView, buf);
 
    //Execute edje_cc through a pipe
-   Ecore_Exe* exe;
-   ecore_event_handler_add(ECORE_EXE_EVENT_DATA, pipe_data, Save_TextView);
-   ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, pipe_data, Save_TextView);
-   ecore_event_handler_add(ECORE_EXE_EVENT_DEL, save_pipe_exit, Save_TextView);
-   exe = ecore_exe_pipe_run(cmd,
+   eeh1 = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, pipe_data, Save_TextView);
+   eeh2 = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, pipe_data, Save_TextView);
+   eeh3 = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, save_pipe_exit, Save_TextView);
+   ecore_exe_pipe_run(cmd,
       ECORE_EXE_PIPE_READ | ECORE_EXE_PIPE_READ_LINE_BUFFERED |
       ECORE_EXE_PIPE_ERROR | ECORE_EXE_PIPE_ERROR_LINE_BUFFERED,
       (void*)SAVE_WIN); 
@@ -272,11 +301,10 @@ int Decompile(void *data)//data is the name of the file to open
    snprintf(buf,4096,"<b>Executing: </b>%s\n",cmd);
    etk_textview_append(Load_TextView, buf);
 
-   Ecore_Exe* exe;
-   ecore_event_handler_add(ECORE_EXE_EVENT_DATA, pipe_data, Load_TextView);
-   ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, pipe_data, Load_TextView);
-   ecore_event_handler_add(ECORE_EXE_EVENT_DEL, load_pipe_exit, NULL);
-   exe = ecore_exe_pipe_run(cmd,
+   eeh1 = ecore_event_handler_add(ECORE_EXE_EVENT_DATA, pipe_data, Load_TextView);
+   eeh2 = ecore_event_handler_add(ECORE_EXE_EVENT_ERROR, pipe_data, Load_TextView);
+   eeh3 = ecore_event_handler_add(ECORE_EXE_EVENT_DEL, load_pipe_exit, NULL);
+   ecore_exe_pipe_run(cmd,
       ECORE_EXE_PIPE_READ | ECORE_EXE_PIPE_READ_LINE_BUFFERED |
       ECORE_EXE_PIPE_ERROR | ECORE_EXE_PIPE_ERROR_LINE_BUFFERED,
       (void*)LOAD_WIN);
@@ -332,6 +360,11 @@ save_pipe_exit(void *data, int ev_type, void *ev)//Data is LOAD_WIN or SAVE_WIN
    }
 
    etk_textview_append(Save_TextView,buf);
+   
+   ecore_event_handler_del(eeh1);
+   ecore_event_handler_del(eeh2);
+   ecore_event_handler_del(eeh3);
+
    return 0;
 }
 
@@ -340,7 +373,7 @@ load_pipe_exit(void *data, int ev_type, void *ev)//Data is LOAD_WIN or SAVE_WIN
 {
    char buf[4096];
    Ecore_Exe_Event_Del *e = (Ecore_Exe_Event_Del *)ev;
-
+    
    if (e->exit_code)
    {
       snprintf(buf,sizeof(buf),"<font color=#FF0000><b>Error in edje_decc, exit code: </b> %d</font>\n",
@@ -381,7 +414,9 @@ load_pipe_exit(void *data, int ev_type, void *ev)//Data is LOAD_WIN or SAVE_WIN
          stop_bar(Load_ProgBar, "Done !!");
       }
    }
-   
+   ecore_event_handler_del(eeh1);
+   ecore_event_handler_del(eeh2);
+   ecore_event_handler_del(eeh3);
    return 0;
 }
 

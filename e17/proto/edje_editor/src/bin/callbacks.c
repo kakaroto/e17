@@ -47,7 +47,9 @@ on_AllButton_click(Etk_Button *button, void *data)
             ShowFilechooser(FILECHOOSER_SAVE_EDJ);
          break;
       case TOOLBAR_SAVE_EDC:
-         ShowFilechooser(FILECHOOSER_SAVE_EDC);
+         ShowAlert("Not yet implemented");
+         //ShowFilechooser(FILECHOOSER_SAVE_EDC);
+         //SaveEDC("/home/dave/test/auto.edc");
          break;
       case TOOLBAR_SAVE_EDJ:
          ShowFilechooser(FILECHOOSER_SAVE_EDJ);
@@ -1174,15 +1176,6 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
 
    printf("Item Activated Signal on AddMenu EMITTED\n");
 
- /*  if (!Cur.eg && ((int)data != NEW_DESC) && ((int)data != NEW_GROUP))
-   {
-      group = engrave_group_new();
-      engrave_group_name_set (group, "New group");
-      engrave_file_group_add (Cur.ef, group);
-
-      AddGroupToTree(group);
-      Cur.eg = group;
-   }*/
    switch ((int)data)
    {
       case NEW_RECT:
@@ -1248,7 +1241,10 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
             engrave_part_state_rel2_relative_set(new_state, 0.9, 0.9);
             engrave_part_state_text_size_set(new_state,16);
             engrave_part_state_text_text_set(new_state,"something to say...");
+            
             engrave_part_state_add(part,new_state);
+            engrave_part_effect_set(part,ENGRAVE_TEXT_EFFECT_GLOW);
+            
             AddStateToTree(new_state);
 
             Cur.ep = part;
