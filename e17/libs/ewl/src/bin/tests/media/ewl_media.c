@@ -196,14 +196,9 @@ open_file_cb(Ewl_Widget *w, void *event, void *data __UNUSED__)
 	{
 		int len;
 		char *file = NULL;
-		char buf[PATH_MAX];
 
 		file = ewl_filedialog_selected_file_get(EWL_FILEDIALOG(w));
-		snprintf(buf, PATH_MAX, "%s/%s",
-				ewl_filedialog_directory_get(EWL_FILEDIALOG(w)),
-				file);
-
-		ewl_media_media_set(EWL_MEDIA(video), buf);
+		ewl_media_media_set(EWL_MEDIA(video), file);
 		if (file) free(file);
 
 		len = ewl_media_length_get(EWL_MEDIA(video));
