@@ -23,6 +23,7 @@ static int insert_after_in_chain_test_call(char *buf, int len);
 static int insert_before_in_chain_test_call(char *buf, int len);
 static int delete_after_in_chain_test_call(char *buf, int len);
 static int delete_before_in_chain_test_call(char *buf, int len);
+static int delete_nothing_in_chain_test_call(char *buf, int len);
 
 /*
  * Callbacks for manipulating the tests.
@@ -51,6 +52,7 @@ static Ewl_Unit_Test callback_unit_tests[] = {
 		{"insert before during call", insert_before_in_chain_test_call, NULL, -1, 0},
 		{"delete after during call", delete_after_in_chain_test_call, NULL, -1, 0},
 		{"delete before during call", delete_before_in_chain_test_call, NULL, -1, 0},
+		{"delete nothing during call", delete_nothing_in_chain_test_call, NULL, -1, 0},
 		{NULL, NULL, NULL, -1, 0}
 	};
 
@@ -433,7 +435,7 @@ delete_before_in_chain_test_call(char *buf, int len)
 }
 
 /*
- * Delete a callback afer the current one, while in the callback chain and
+ * Delete a callback after the current one, while in the callback chain and
  * verify that calling the chain does not call the removed callback.
  */
 static int
@@ -456,6 +458,34 @@ delete_after_in_chain_test_call(char *buf, int len)
 		ret = 1;
 	else
 		snprintf(buf, len, "callback function called");
+
+	ewl_widget_destroy(w);
+
+	return ret;
+}
+
+/*
+ * Delete a non-existent callback, while in the callback chain and
+ * verify that calling the chain does not modify anything
+ */
+static int
+delete_nothing_in_chain_test_call(char *buf, int len)
+{
+	Ewl_Widget *w;
+	int ret = 0;
+
+	w = ewl_widget_new();
+	ewl_callback_del_type(w, EWL_CALLBACK_CONFIGURE);
+	ewl_callback_prepend(w, EWL_CALLBACK_CONFIGURE, delete_callback,
+			NULL);
+	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, differing_callback,
+			NULL);
+	ewl_callback_call(w, EWL_CALLBACK_CONFIGURE);
+
+	if ((long)ewl_widget_data_get(w, w) == 2)
+		ret = 1;
+	else
+		snprintf(buf, len, "callback function not called");
 
 	ewl_widget_destroy(w);
 
