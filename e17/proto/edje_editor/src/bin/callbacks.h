@@ -18,6 +18,7 @@ Etk_Bool on_AddMenu_item_activated         (Etk_Object *object, void *data);
 Etk_Bool on_RemoveMenu_item_activated      (Etk_Object *object, void *data);
 Etk_Bool on_RelToComboBox_changed          (Etk_Combobox *combobox, void *data);
 Etk_Bool on_TextEntry_text_changed         (Etk_Object *object, void *data);
+Etk_Bool on_FontAlignSpinner_value_changed (Etk_Range *range, double value, void *data);
 Etk_Bool on_FileChooser_response           (Etk_Dialog *dialog, int response_id,void *data);
 Etk_Bool on_FileChooser_selected           (Etk_Filechooser_Widget *filechooser);
 Etk_Bool on_FileChooserDialog_response     (Etk_Dialog *dialog, int response_id, void *data);

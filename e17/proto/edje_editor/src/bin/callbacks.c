@@ -810,6 +810,26 @@ on_TextEntry_text_changed(Etk_Object *object, void *data)
    return ETK_TRUE;
 }
 
+Etk_Bool
+on_FontAlignSpinner_value_changed(Etk_Range *range, double value, void *data)
+{
+   printf("Value Changed Signal on AlignSpinner (h or v, text or part) EMITTED (value: %.2f)\n",etk_range_value_get(range));
+    
+   if (data == TEXT_ALIGNH_SPINNER)
+      engrave_part_state_text_align_set(Cur.eps, etk_range_value_get(range), -1);
+   
+   if (data == TEXT_ALIGNV_SPINNER)
+      engrave_part_state_text_align_set(Cur.eps, -1, etk_range_value_get(range));
+   
+   if (data == STATE_ALIGNH_SPINNER)
+      engrave_part_state_align_set(Cur.eps, etk_range_value_get(range), -1);
+   
+   if (data == STATE_ALIGNV_SPINNER)
+      engrave_part_state_align_set(Cur.eps, -1, etk_range_value_get(range));
+    
+   return ETK_TRUE;
+}
+
 /* Programs Callbacks */
 Etk_Bool
 on_ActionComboBox_changed(Etk_Combobox *combobox, void *data)

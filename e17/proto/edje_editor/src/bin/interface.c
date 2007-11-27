@@ -412,6 +412,7 @@ UpdateDescriptionFrame(void)
       double aspect_min;
       double aspect_max;
       int minw,minh,maxw,maxh;
+      double h, v;
 
       //printf("Update Description Frame: %s\n",Cur.eps->name);
 
@@ -448,6 +449,10 @@ UpdateDescriptionFrame(void)
       etk_range_value_set(ETK_RANGE(UI_StateMinHSpinner), minh);
       etk_range_value_set(ETK_RANGE(UI_StateMaxWSpinner), maxw);
       etk_range_value_set(ETK_RANGE(UI_StateMaxHSpinner), maxh);
+      
+      engrave_part_state_align_get(Cur.eps, &h, &v);
+      etk_range_value_set (ETK_RANGE(UI_StateAlignHSpinner), h);
+      etk_range_value_set (ETK_RANGE(UI_StateAlignVSpinner), v);
 
       //ReEnable Signal Propagation
       etk_signal_unblock("text-changed",ETK_OBJECT(UI_StateEntry),on_StateEntry_text_changed, NULL);
@@ -566,6 +571,7 @@ UpdateTextFrame(void)
 {
    int eff_num = 0;
    int i;
+   double h, v;
    //int alpha;
    int r, g, b;
    Etk_Combobox_Item *item = NULL;
@@ -601,6 +607,11 @@ UpdateTextFrame(void)
       //Set the font size spinner
       etk_range_value_set (ETK_RANGE(UI_FontSizeSpinner), 
          (float)engrave_part_state_text_size_get(Cur.eps));
+      
+      //Set the font align spinners
+      engrave_part_state_text_align_get(Cur.eps, &h, &v);
+      etk_range_value_set (ETK_RANGE(UI_FontAlignHSpinner), h);
+      etk_range_value_set (ETK_RANGE(UI_FontAlignVSpinner), v);
 
       //Set Effect ComboBox
       switch (Cur.ep->effect)
@@ -1515,6 +1526,28 @@ create_description_frame(void)
    etk_widget_size_request_set(UI_StateMaxHSpinner, 45, 20);
    etk_box_append(ETK_BOX(hbox),UI_StateMaxHSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
 
+   //hbox
+   hbox = etk_hbox_new(ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(vbox), hbox, ETK_BOX_START, ETK_BOX_NONE, 0);
+   
+   //UI_StateAlignHSpinner
+   label = etk_label_new("Align");
+   etk_box_append(ETK_BOX(hbox),label, ETK_BOX_START, ETK_BOX_NONE, 0);
+    
+   UI_StateAlignHSpinner =  etk_spinner_new (0, 1, 0, 0.01, 0.1);
+   etk_spinner_digits_set (ETK_SPINNER(UI_StateAlignHSpinner), 2);
+   etk_widget_size_request_set(UI_StateAlignHSpinner, 45, 20);
+   etk_box_append(ETK_BOX(hbox),UI_StateAlignHSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
+   
+   //UI_StateAlignVSpinner
+   label = etk_label_new("V Align");
+   etk_box_append(ETK_BOX(hbox),label, ETK_BOX_START, ETK_BOX_NONE, 0);
+   
+   UI_StateAlignVSpinner =  etk_spinner_new (0, 1, 0, 0.01, 0.1);
+   etk_spinner_digits_set (ETK_SPINNER(UI_StateAlignVSpinner), 2);
+   etk_widget_size_request_set(UI_StateAlignVSpinner, 45, 20);
+   etk_box_append(ETK_BOX(hbox),UI_StateAlignVSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
+    
    etk_signal_connect("text-changed", ETK_OBJECT(UI_StateEntry),
                       ETK_CALLBACK(on_StateEntry_text_changed), NULL);
    etk_signal_connect("value-changed", ETK_OBJECT(UI_StateIndexSpinner),
@@ -1533,7 +1566,10 @@ create_description_frame(void)
                       ETK_CALLBACK(on_StateMinMaxSpinner_value_changed), NULL);
    etk_signal_connect("value-changed", ETK_OBJECT(UI_StateMaxHSpinner),
                       ETK_CALLBACK(on_StateMinMaxSpinner_value_changed), NULL);
-   
+   etk_signal_connect("value-changed", ETK_OBJECT(UI_StateAlignVSpinner),
+                      ETK_CALLBACK(on_FontAlignSpinner_value_changed), (void*)STATE_ALIGNV_SPINNER);
+   etk_signal_connect("value-changed", ETK_OBJECT(UI_StateAlignHSpinner),
+                      ETK_CALLBACK(on_FontAlignSpinner_value_changed), (void*)STATE_ALIGNH_SPINNER);
    return vbox;
 }
 
@@ -1697,7 +1733,7 @@ create_text_frame(void)
    vbox = etk_vbox_new(ETK_FALSE, 5);
 
    //table
-   table = etk_table_new (5, 3, ETK_TABLE_NOT_HOMOGENEOUS);
+   table = etk_table_new (5, 4, ETK_TABLE_NOT_HOMOGENEOUS);
    etk_box_append(ETK_BOX(vbox), table, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
    label = etk_label_new("Text");
@@ -1737,10 +1773,28 @@ create_text_frame(void)
    etk_widget_size_request_set(UI_FontSizeSpinner, 45, 20);
    etk_table_attach_default (ETK_TABLE(table),UI_FontSizeSpinner, 4, 4, 1,1);
 
-   label = etk_label_new("Effect");
+   //FontAlignHSpinner
+   label = etk_label_new("Align");
    etk_table_attach_default (ETK_TABLE(table),label, 0, 0, 2,2);
-
+    
+   UI_FontAlignHSpinner =  etk_spinner_new (0, 1, 0, 0.01, 0.1);
+   etk_spinner_digits_set (ETK_SPINNER(UI_FontAlignHSpinner), 2);
+   etk_widget_size_request_set(UI_FontAlignHSpinner, 45, 20);
+   etk_table_attach_default (ETK_TABLE(table),UI_FontAlignHSpinner, 1, 1, 2,2);
+   
+   //FontAlignVSpinner
+   label = etk_label_new("V Align");
+   etk_table_attach_default (ETK_TABLE(table),label, 2, 2, 2,2);
+   
+   UI_FontAlignVSpinner =  etk_spinner_new (0, 1, 0, 0.01, 0.1);
+   etk_spinner_digits_set (ETK_SPINNER(UI_FontAlignVSpinner), 2);
+   etk_widget_size_request_set(UI_FontAlignVSpinner, 45, 20);
+   etk_table_attach_default (ETK_TABLE(table),UI_FontAlignVSpinner, 3, 4, 2,2);
+   
    //PartEffectComboBox
+   label = etk_label_new("Effect");
+   etk_table_attach_default (ETK_TABLE(table),label, 0, 0, 3,3);
+   
    UI_EffectComboBox = etk_combobox_new();
    etk_combobox_column_add(ETK_COMBOBOX(UI_EffectComboBox), 
       ETK_COMBOBOX_IMAGE, 24, ETK_COMBOBOX_NONE, 0.0);
@@ -1778,7 +1832,7 @@ create_text_frame(void)
       etk_image_new_from_edje (EdjeFile,"NONE.PNG"), "Glow");
    etk_combobox_item_data_set (ComboItem, (void*)ENGRAVE_TEXT_EFFECT_GLOW);
    
-   etk_table_attach_default (ETK_TABLE(table),UI_EffectComboBox, 1, 4, 2,2);
+   etk_table_attach_default (ETK_TABLE(table),UI_EffectComboBox, 1, 4, 3,3);
 
    //hbox
    hbox = etk_hbox_new(ETK_FALSE, 10);
@@ -1802,7 +1856,11 @@ create_text_frame(void)
                       ETK_CALLBACK(on_FontSizeSpinner_value_changed), NULL);
    etk_signal_connect("text-changed", ETK_OBJECT(UI_TextEntry),
                       ETK_CALLBACK(on_TextEntry_text_changed), NULL);
-
+   etk_signal_connect("value-changed", ETK_OBJECT(UI_FontAlignVSpinner),
+                      ETK_CALLBACK(on_FontAlignSpinner_value_changed), (void*)TEXT_ALIGNV_SPINNER);
+   etk_signal_connect("value-changed", ETK_OBJECT(UI_FontAlignHSpinner),
+                      ETK_CALLBACK(on_FontAlignSpinner_value_changed), (void*)TEXT_ALIGNH_SPINNER);
+    
    return vbox;
 }
 
