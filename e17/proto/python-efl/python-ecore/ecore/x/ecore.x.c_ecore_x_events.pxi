@@ -1,12 +1,19 @@
 # This file is included verbatim by c_ecore_x.pyx
 
+cdef object _charp_to_str(char *p):
+    if p != NULL:
+        return p
+    else:
+        return None
+
+
 cdef class EventKeyDown(ecore.c_ecore.Event):
     cdef int _set_obj(self, void *o) except 0:
         cdef Ecore_X_Event_Key_Down *obj
         obj = <Ecore_X_Event_Key_Down*>o
-        self.keyname = obj.keyname
-        self.keysymbol = obj.keysymbol
-        self.key_compose = obj.key_compose
+        self.keyname = _charp_to_str(obj.keyname)
+        self.keysymbol = _charp_to_str(obj.keysymbol)
+        self.key_compose = _charp_to_str(obj.key_compose)
         self.modifiers = obj.modifiers
         self.win = Window_from_xid(obj.win)
         self.event_win = Window_from_xid(obj.event_win)
@@ -18,9 +25,9 @@ cdef class EventKeyUp(ecore.c_ecore.Event):
     cdef int _set_obj(self, void *o) except 0:
         cdef Ecore_X_Event_Key_Up *obj
         obj = <Ecore_X_Event_Key_Up*>o
-        self.keyname = obj.keyname
-        self.keysymbol = obj.keysymbol
-        self.key_compose = obj.key_compose
+        self.keyname = _charp_to_str(obj.keyname)
+        self.keysymbol = _charp_to_str(obj.keysymbol)
+        self.key_compose = _charp_to_str(obj.key_compose)
         self.modifiers = obj.modifiers
         self.win = Window_from_xid(obj.win)
         self.event_win = Window_from_xid(obj.event_win)
