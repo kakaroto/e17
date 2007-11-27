@@ -234,6 +234,7 @@ engrave_canvas_part_redraw(Engrave_Part *ep, void *data)
       evas_object_show(ep_object);
    else
       evas_object_hide(ep_object);
+   evas_object_raise(ep_object);
 }
 
 static void
