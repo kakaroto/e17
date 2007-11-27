@@ -1,7 +1,9 @@
 #include "Epsilon.h"
 #define X_DISPLAY_MISSING 1
 #include "Epsilon_Plugin.h"
-#include "../config.h"
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
 #ifdef HAVE_PNG_H
 #include <png.h>
 #endif
@@ -63,7 +65,7 @@ static int _epsilon_png_write (const char *file, DATA32 * ptr,
 			       int mtime, char *uri);
 #endif
 
-EAPI Epsilon *
+Epsilon *
 epsilon_new (const char *file)
 {
   Epsilon *result = NULL;
@@ -71,8 +73,7 @@ epsilon_new (const char *file)
     {
       if (file[0] == '/')
 	{
-	  result = malloc (sizeof (Epsilon));
-	  memset (result, 0, sizeof (Epsilon));
+	  result = calloc (1, sizeof (Epsilon));
 	  result->src = strdup (file);
 	  result->tw = THUMB_SIZE_LARGE;
 	  result->th = THUMB_SIZE_LARGE;
@@ -86,7 +87,7 @@ epsilon_new (const char *file)
   return (result);
 }
 
-EAPI void
+void
 epsilon_free (Epsilon * e)
 {
   if (e)
@@ -104,7 +105,7 @@ epsilon_free (Epsilon * e)
 }
 
 
-Epsilon_Plugin*
+static Epsilon_Plugin*
 epsilon_plugin_load(char* path)
 {
 	Epsilon_Plugin* plugin = NULL;
@@ -126,7 +127,7 @@ epsilon_plugin_load(char* path)
 }
 
 static int epsilon_init_count = 0;
-EAPI int
+int
 epsilon_init (void)
 {
   char buf[PATH_MAX];
@@ -189,7 +190,7 @@ epsilon_init (void)
   return ++epsilon_init_count;
 }
 
-EAPI void
+void
 epsilon_key_set (Epsilon * e, const char *key)
 {
   if (e)
@@ -203,7 +204,7 @@ epsilon_key_set (Epsilon * e, const char *key)
     }
 }
 
-EAPI void
+void
 epsilon_resolution_set (Epsilon * e, int w, int h)
 {
   if (e && w > 0 && h > 0)
@@ -213,7 +214,7 @@ epsilon_resolution_set (Epsilon * e, int w, int h)
     }
 }
 
-EAPI const char *
+const char *
 epsilon_file_get (Epsilon * e)
 {
   char *result = NULL;
@@ -222,7 +223,7 @@ epsilon_file_get (Epsilon * e)
   return (result);
 }
 
-EAPI const char *
+const char *
 epsilon_thumb_file_get (Epsilon * e)
 {
   time_t mtime;
@@ -286,7 +287,7 @@ epsilon_info_new (void)
   return (result);
 }
 
-EAPI void
+void
 epsilon_info_free (Epsilon_Info * info)
 {
   if (info)
@@ -301,7 +302,7 @@ epsilon_info_free (Epsilon_Info * info)
     }
 }
 
-EAPI Epsilon_Info *
+Epsilon_Info *
 epsilon_info_get (Epsilon * e)
 {
   FILE *fp = NULL;
@@ -402,7 +403,7 @@ epsilon_info_get (Epsilon * e)
   return (p);
 }
 
-EAPI int
+int
 epsilon_info_exif_get (Epsilon_Info * info)
 {
   if (info)
@@ -479,7 +480,7 @@ _epsilon_exists_ext(Epsilon *e, const char *ext, char *path, int path_size, time
    return _epsilon_exists_ext_int(THUMB_SIZE_FAIL, e->hash, ext, path, path_size, mtime);
 }
 
-EAPI int
+int
 epsilon_exists (Epsilon * e)
 {
   int ok = 0;
@@ -545,7 +546,7 @@ epsilon_exists (Epsilon * e)
   return (EPSILON_FAIL);
 }
 
-EAPI int
+int
 epsilon_generate (Epsilon * e)
 {
   int iw, ih;
@@ -733,7 +734,7 @@ epsilon_generate (Epsilon * e)
   return (EPSILON_FAIL);
 }
 
-EAPI void
+void
 epsilon_thumb_size(Epsilon *e, Epsilon_Thumb_Size size)
 {
    if (!e) return;
