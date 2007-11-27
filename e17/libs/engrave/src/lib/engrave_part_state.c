@@ -137,8 +137,8 @@ engrave_part_state_visible_set(Engrave_Part_State *eps, int visible)
 /**
  * engrave_part_state_align_set - Set the alignment of the state.
  * @param eps: The Engrave_Part_State to set the value too.
- * @param x: The x alignment value to set
- * @param y: The y alignment value to set
+ * @param x: The x alignment value to set (set x < 0 to leave untouched).
+ * @param y: The y alignment value to set (set y < 0 to leave untouched).
  *
  * @return Returns no value 
  */
@@ -146,8 +146,8 @@ EAPI void
 engrave_part_state_align_set(Engrave_Part_State *eps, double x, double y)
 {
   if (!eps) return;
-  eps->align.x = x;
-  eps->align.y = y;
+  if (x >= 0) eps->align.x = x;
+  if (y >= 0) eps->align.y = y;
 }
 
 /**
