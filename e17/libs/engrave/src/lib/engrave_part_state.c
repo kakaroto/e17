@@ -840,8 +840,8 @@ engrave_part_state_text_max_set(Engrave_Part_State *eps, int x, int y)
 /**
  * engrave_part_state_text_align_set - Set the text alignment of the state.
  * @param eps: The Engrave_Part_State to set the value too.
- * @param x: The x alignment setting.
- * @param y: the y alignment setting.
+ * @param x: The x alignment setting (set x < 0 to leave untouched).
+ * @param y: the y alignment setting (set y < 0 to leave untouched).
  *
  * @return Returns no value 
  */
@@ -849,8 +849,8 @@ EAPI void
 engrave_part_state_text_align_set(Engrave_Part_State *eps, double x, double y)
 {
   if (!eps) return;
-  eps->text.align.x = x;
-  eps->text.align.y = y;
+  if (x >= 0) eps->text.align.x = x;
+  if (y >= 0) eps->text.align.y = y;
 }
 
 /**
