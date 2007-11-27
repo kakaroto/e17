@@ -13,6 +13,8 @@ extern void PROTO_engrave_group_part_remove(Engrave_Group *eg, Engrave_Part *ep)
 extern void PROTO_engrave_file_group_remove(Engrave_File *ef, Engrave_Group *eg);
 extern void PROTO_engrave_part_state_image_tween_remove_nth(Engrave_Part_State *eps,int tween_num);
 extern void PROTO_engrave_part_state_image_tween_remove_all(Engrave_Part_State *eps);
+extern int PROTO_engrave_part_raise(Engrave_Part *ep);
+extern int PROTO_engrave_part_lower(Engrave_Part *ep);
 
 int current_color_object;
 
@@ -61,29 +63,71 @@ on_AllButton_click(Etk_Button *button, void *data)
          etk_menu_popup(ETK_MENU(UI_RemoveMenu));
          //etk_menu_popup_at_xy (ETK_MENU(AddMenu), 10, 10);
          break;
-      case TOOLBAR_MOVE_UP:
-         printf("Clicked signal on Toolbar Button 'MoveUp' EMITTED\n");
-         /* if (selected_desc){
-            printf("MoveUP DESC: %s\n",selected_desc->state->str);
-         }
-         else if (selected_part){
-            if ((current = g_list_find(selected_part->group->parts,selected_part))){
-               if ((prev = g_list_previous(current))){
-                  printf("MoveUP PART: %s\n",selected_part->name->str);
-                  //current->data = prev->data;
-                  //prev->data = selected_part;
-                  //Update the tree
-               }
+      case TOOLBAR_MOVE_UP: //Lower
+         if (Cur.ep){
+            Evas_List *l;
+            Engrave_Part_State *eps;
+            printf("Lower %s\n",Cur.ep->name);
+            
+            PROTO_engrave_part_lower(Cur.ep);
+            
+            l = evas_list_find_list(Cur.eg->parts, Cur.ep);
+            if (!l) return ETK_TRUE;
+            
+            //delete part row with all childrens
+            etk_tree_row_delete(ecore_hash_get(hash,Cur.ep));
+            ecore_hash_remove(hash,Cur.ep);
+            
+            //re-add the row in correct place
+            if (l->prev)
+               AddPartToTree(Cur.ep, TRUE, l->prev->data); 
+            else
+               AddPartToTree(Cur.ep, TRUE, NULL);
+            
+            //re-add all childrens
+            l = Cur.ep->states;
+            while (l)
+            {
+               AddStateToTree(l->data);
+               l = l->next;
             }
+            etk_tree_row_select (ecore_hash_get(hash,Cur.ep));
          }
-         else{
-            ShowAlert("No part to move selected");
-         } */
-         ShowAlert("Not yet implemented");
+         else
+            ShowAlert("You must choose a part to lower");
          break;
-      case TOOLBAR_MOVE_DOWN:
-         printf("Clicked signal on Toolbar Button 'MoveDown' EMITTED\n");
-         ShowAlert("Not yet implemented");
+      case TOOLBAR_MOVE_DOWN: //Raise
+         if (Cur.ep){
+            Evas_List *l;
+            Engrave_Part_State *eps;
+            printf("Raise %s\n",Cur.ep->name);
+            
+            PROTO_engrave_part_raise(Cur.ep);
+            
+            l = evas_list_find_list(Cur.eg->parts, Cur.ep);
+            if (!l) return ETK_TRUE;
+            
+            //delete part row with all childrens
+            etk_tree_row_delete(ecore_hash_get(hash,Cur.ep));
+            ecore_hash_remove(hash,Cur.ep);
+             
+            //re-add the row in correct place
+            if (l->prev)
+               AddPartToTree(Cur.ep, TRUE, l->prev->data); 
+            else
+               AddPartToTree(Cur.ep, TRUE, NULL);
+            
+            //re-add all childrens
+            l = Cur.ep->states;
+            while (l)
+            {
+               AddStateToTree(l->data);
+               l = l->next;
+            }
+            etk_tree_row_select (ecore_hash_get(hash,Cur.ep));
+         }
+         else
+            ShowAlert("You must choose a part to raise");
          break;
       case TOOLBAR_OPTIONS:
          etk_menu_popup(ETK_MENU(UI_OptionsMenu));
@@ -1180,7 +1224,7 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
             part = engrave_part_new(ENGRAVE_PART_TYPE_RECT);
             engrave_part_name_set (part, "new rectangle");
             engrave_group_part_add(Cur.eg, part);
-            AddPartToTree(part);
+            AddPartToTree(part, 0, NULL);
 
             new_state = engrave_part_state_new();
             engrave_part_state_name_set(new_state, "default", 0.0);
@@ -1205,7 +1249,7 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
             part = engrave_part_new(ENGRAVE_PART_TYPE_IMAGE);
             engrave_part_name_set (part, "new image");
             engrave_group_part_add(Cur.eg, part);
-            AddPartToTree(part);
+            AddPartToTree(part, 0, NULL);
 
             new_state = engrave_part_state_new();
             engrave_part_state_name_set(new_state, "default", 0.0);
@@ -1230,7 +1274,7 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
             part = engrave_part_new(ENGRAVE_PART_TYPE_TEXT);
             engrave_part_name_set (part, "new text");
             engrave_group_part_add(Cur.eg, part);
-            AddPartToTree(part);
+            AddPartToTree(part, 0, NULL);
 
             new_state = engrave_part_state_new();
             engrave_part_state_name_set(new_state, "default", 0.0);

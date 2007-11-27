@@ -37,7 +37,7 @@ AddGroupToTree(Engrave_Group* group)
 }
 
 void
-AddPartToTree(Engrave_Part* part)
+AddPartToTree(Engrave_Part* part, int place_after, Engrave_Part* after)
 {
    Etk_Tree_Col *col1,*col2,*col3;
    Etk_Tree_Row *row=NULL;
@@ -62,12 +62,20 @@ AddPartToTree(Engrave_Part* part)
          strcpy(buf,"NONE.PNG");
       break;
    }
-
-   row = etk_tree_row_append(ETK_TREE(UI_PartsTree),
-               ecore_hash_get(hash,part->parent),
-               col1, EdjeFile,buf, part->name,
-               col3,ROW_PART,
-               NULL);
+   
+   if (place_after)
+      row = etk_tree_row_insert(ETK_TREE(UI_PartsTree),
+                                ecore_hash_get(hash,part->parent),
+                                ecore_hash_get(hash,after),
+                                col1, EdjeFile,buf, part->name,
+                                col3,ROW_PART,
+                                NULL);
+   else
+      row = etk_tree_row_append(ETK_TREE(UI_PartsTree),
+                                ecore_hash_get(hash,part->parent),
+                                col1, EdjeFile,buf, part->name,
+                                col3,ROW_PART,
+                                NULL);
 
    ecore_hash_set(hash, part, row);
    etk_tree_row_data_set(row, part);
@@ -140,7 +148,7 @@ PopulateTree(void)
       for (pp = group->parts; pp ;pp = pp->next)
       {
          part = pp->data;
-         AddPartToTree(part);
+         AddPartToTree(part, 0, NULL);
          for (sp = part->states; sp; sp = sp->next)
          {
             state = sp->data;
@@ -1203,12 +1211,14 @@ create_toolbar(Etk_Toolbar_Orientation o)
 
    //MoveUp Button
    button = etk_tool_button_new_from_stock( ETK_STOCK_GO_UP);
+   etk_object_properties_set(ETK_OBJECT(button),"label","Lower",NULL);
    etk_signal_connect("clicked", ETK_OBJECT(button),
                      ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_MOVE_UP);
    etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), button, ETK_BOX_START);
 
    //MoveDown Button
    button = etk_tool_button_new_from_stock( ETK_STOCK_GO_DOWN);
+   etk_object_properties_set(ETK_OBJECT(button),"label","Raise",NULL);
    etk_signal_connect("clicked", ETK_OBJECT(button),
                   ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_MOVE_DOWN);
    etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), button, ETK_BOX_START);

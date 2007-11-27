@@ -172,7 +172,51 @@ PROTO_engrave_file_group_remove(Engrave_File *ef, Engrave_Group *eg)
    ef->groups = evas_list_remove(ef->groups, eg);
    engrave_group_parent_set(eg, NULL);
 }
-
+void
+PROTO_engrave_part_raise(Engrave_Part *ep)
+{
+   Engrave_Group *eg;
+   Engrave_Part *next;
+   Evas_List *l;
+    
+   if (!ep) return;
+   
+   eg = ep->parent;
+   if (!eg) return;
+   
+   printf("RAISE part: '%s' in group: '%s'\n",ep->name, eg->name);
+   
+   l = evas_list_find_list(eg->parts, ep);
+   if (!l || !l->next) return;
+   
+   next = l->next->data;
+   eg->parts = evas_list_remove (eg->parts, ep);
+   eg->parts = evas_list_append_relative (eg->parts, ep, next);
+}
+int
+PROTO_engrave_part_lower(Engrave_Part *ep)
+{
+   Engrave_Group *eg;
+   Engrave_Part *prev;
+   Evas_List *l;
+    
+   if (!ep) return FALSE;
+   
+   eg = ep->parent;
+   if (!eg) return FALSE;
+   
+   printf("LOWER part: '%s' in group: '%s'\n",ep->name, eg->name);
+   
+   l = evas_list_find_list(eg->parts, ep);
+   if (!l || !l->prev) return FALSE;
+   
+   prev = l->prev->data;
+   eg->parts = evas_list_remove (eg->parts, ep);
+   eg->parts = evas_list_prepend_relative (eg->parts, ep, prev);
+    
+   //evas_object_lower(ep->object);
+   return TRUE;
+}
 void
 DebugInfo(int full)
 {

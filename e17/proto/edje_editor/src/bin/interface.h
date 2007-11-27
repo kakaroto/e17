@@ -114,7 +114,7 @@ void     ecore_resize_callback   (Ecore_Evas *ecore_evas);
 void     _embed_position_set     (void *position_data, int *x, int *y);
 void     PopulateTree            (void);
 void     AddGroupToTree          (Engrave_Group* group);
-void     AddPartToTree           (Engrave_Part* part);
+void     AddPartToTree           (Engrave_Part* part, int place_after, Engrave_Part* after);
 void     AddStateToTree          (Engrave_Part_State* state);
 void     AddProgramToTree        (Engrave_Program* prog);
 void     PopulateRelComboBoxes	(void);
