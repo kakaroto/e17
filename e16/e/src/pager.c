@@ -40,7 +40,7 @@
 #include "tooltips.h"
 #include "xwin.h"
 
-#define DEBUG_PAGER 1
+#define DEBUG_PAGER 0
 #if DEBUG_PAGER
 #define Dprintf(fmt...) if(EDebug(EDBUG_TYPE_PAGER))Eprintf(fmt)
 #else
