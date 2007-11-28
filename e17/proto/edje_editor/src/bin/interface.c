@@ -18,9 +18,88 @@ ShowAlert(char* text)
 }
 
 /* functions to update interface*/
+
+#if TEST_DIRECT_EDJE
+
+void
+AddPartToTree2(char *part_name)//, char *group_name)//, int place_after, Engrave_Part* after)
+{
+   Etk_Tree_Col *col1,*col2,*col3;
+   Etk_Tree_Row *row=NULL;
+   char buf[20];
+
+   //printf("Add Part to tree: %s\n",par->name);
+   col1 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 0);
+   col2 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 1);
+   col3 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 2);
+
+   switch (edje_edit_part_type_get(edje_o ,part_name)){
+      case EDJE_PART_TYPE_IMAGE:
+         strcpy(buf,"IMAGE.PNG");
+      break;
+      case EDJE_PART_TYPE_TEXT:
+         strcpy(buf,"TEXT.PNG");
+      break;
+      case EDJE_PART_TYPE_RECTANGLE:
+         strcpy(buf,"RECT.PNG");
+      break;
+      default:
+         strcpy(buf,"NONE.PNG");
+      break;
+   }
+   
+ /*  if (place_after)
+      row = etk_tree_row_insert(ETK_TREE(UI_PartsTree),
+                                ecore_hash_get(hash,part->parent),
+                                ecore_hash_get(hash,after),
+                                col1, EdjeFile,buf, part->name,
+                                col3,ROW_PART,
+                                NULL);
+   else*/
+      row = etk_tree_row_append(ETK_TREE(UI_PartsTree),
+                                //ecore_hash_get(hash,part->parent),
+                                NULL,
+                                col1, EdjeFile,buf, part_name,
+                                col3, ROW_PART,
+                                NULL);
+
+   Parts_Hash = evas_hash_add(Parts_Hash, part_name, row);
+   etk_tree_row_data_set(row, part_name);
+}
+void
+AddStateToTree2(char *part_name, char *state_name)
+{
+   Etk_Tree_Col *col1,*col2,*col3, *col4;
+   Etk_Tree_Row *row;
+   
+   char buf[4096];
+   const char *stock_key;
+   col1 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 0);
+   col2 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 1);
+   col3 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 2);
+   col4 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 3);
+
+   //snprintf(buf,4096,"%s %.2f",state->name,state->value);
+   snprintf(buf,4096,"%s",state_name);
+   stock_key = etk_stock_key_get(ETK_STOCK_TEXT_X_GENERIC, ETK_STOCK_SMALL);
+   row = etk_tree_row_append(ETK_TREE(UI_PartsTree),
+            evas_hash_find(Parts_Hash,part_name),
+            col1, EdjeFile, "DESC.PNG", buf,
+            col2, TRUE,
+            col3, ROW_DESC,
+            col4, part_name, NULL);
+
+   etk_tree_row_data_set (row, state_name);
+   //ecore_hash_set(hash, state, row);
+
+
+
+}
+#endif
+
 void
 AddGroupToTree(Engrave_Group* group)
-{
+{    
    Etk_Tree_Col *col1,*col2,*col3;
    Etk_Tree_Row *row=NULL;
 
@@ -130,7 +209,49 @@ AddProgramToTree(Engrave_Program* prog)
    ecore_hash_set(hash, prog, row);
    etk_tree_row_data_set(row, prog);
 }
-
+#if TEST_DIRECT_EDJE
+void 
+PopulateTree2(void)
+{
+   Evas_List *parts;
+   Evas_List *states;
+   
+   etk_tree_clear(ETK_TREE(UI_PartsTree));
+        
+   parts = edje_edit_parts_list_get(edje_o);
+   while(parts)
+   {
+      //printf("  P: %s\n", (char*)parts->data);
+      AddPartToTree2((char*)parts->data);
+      states = edje_edit_part_states_get(edje_o, (char*)parts->data);
+      while(states)
+      {
+         //printf("    s: %s\n", (char*)states->data);
+         AddStateToTree2((char*)parts->data, (char*)states->data);
+         states = states->next;
+      }
+       
+      parts = parts->next;
+   }
+   etk_tree_row_select(etk_tree_first_row_get (ETK_TREE(UI_PartsTree)));
+}
+void 
+PopulateGroupsComboBox()
+{
+   Evas_List *groups;
+   Etk_Combobox_Item *ComboItem;
+   
+   groups = edje_file_collection_list(Cur.edj_file_name->string);
+   while(groups)
+   {
+      ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_GroupsComboBox), (char*)groups->data);
+      groups = groups->next;
+   }
+   edje_file_collection_list_free  (groups);
+   etk_combobox_active_item_set(ETK_COMBOBOX(UI_GroupsComboBox),
+               etk_combobox_last_item_get (ETK_COMBOBOX(UI_GroupsComboBox)));
+}
+#else
 void
 PopulateTree(void)
 {
@@ -163,7 +284,7 @@ PopulateTree(void)
       }
    }
 }
-
+#endif
 void 
 PopulateFontsComboBox(void)
 {
@@ -650,7 +771,6 @@ void
 UpdatePositionFrame(void)
 {
    //printf("Update Position: %s (offset: %d)\n",Cur.eps->name,Cur.eps->rel1.offset.x);
-
    //Stop signal propagation
    etk_signal_block("value-changed", ETK_OBJECT(UI_Rel1XSpinner), ETK_CALLBACK(on_RelSpinner_value_changed), (void*)REL1X_SPINNER);
    etk_signal_block("value-changed", ETK_OBJECT(UI_Rel1YSpinner), ETK_CALLBACK(on_RelSpinner_value_changed), (void*)REL1Y_SPINNER);
@@ -661,6 +781,20 @@ UpdatePositionFrame(void)
    etk_signal_block("value-changed", ETK_OBJECT(UI_Rel2XOffsetSpinner), ETK_CALLBACK(on_RelOffsetSpinner_value_changed), (void*)REL2X_SPINNER);
    etk_signal_block("value-changed", ETK_OBJECT(UI_Rel2YOffsetSpinner), ETK_CALLBACK(on_RelOffsetSpinner_value_changed), (void*)REL2Y_SPINNER);
 
+#if TEST_DIRECT_EDJE
+   
+   if (!etk_string_length_get(Cur.state)) return;
+   if (!etk_string_length_get(Cur.part)) return;
+   
+   etk_range_value_set(ETK_RANGE(UI_Rel1XSpinner),
+      edje_edit_state_rel1_relative_x_get(edje_o, Cur.part->string,Cur.state->string));
+   etk_range_value_set(ETK_RANGE(UI_Rel1YSpinner),
+      edje_edit_state_rel1_relative_y_get(edje_o, Cur.part->string,Cur.state->string));
+   etk_range_value_set(ETK_RANGE(UI_Rel2XSpinner),
+      edje_edit_state_rel2_relative_x_get(edje_o, Cur.part->string,Cur.state->string));
+   etk_range_value_set(ETK_RANGE(UI_Rel2YSpinner),
+      edje_edit_state_rel2_relative_y_get(edje_o, Cur.part->string,Cur.state->string));
+#else
    //Set relative position spinners
    etk_range_value_set (ETK_RANGE(UI_Rel1XSpinner), Cur.eps->rel1.relative.x);
    etk_range_value_set (ETK_RANGE(UI_Rel1XOffsetSpinner), Cur.eps->rel1.offset.x);
@@ -670,7 +804,7 @@ UpdatePositionFrame(void)
    etk_range_value_set (ETK_RANGE(UI_Rel2XOffsetSpinner), Cur.eps->rel2.offset.x);
    etk_range_value_set (ETK_RANGE(UI_Rel2YSpinner), Cur.eps->rel2.relative.y);
    etk_range_value_set (ETK_RANGE(UI_Rel2YOffsetSpinner), Cur.eps->rel2.offset.y);
-
+#endif
    //Reenable signal propagation
    etk_signal_unblock("value-changed", ETK_OBJECT(UI_Rel1XSpinner), ETK_CALLBACK(on_RelSpinner_value_changed), (void*)REL1X_SPINNER);
    etk_signal_unblock("value-changed", ETK_OBJECT(UI_Rel1YSpinner), ETK_CALLBACK(on_RelSpinner_value_changed), (void*)REL1Y_SPINNER);
@@ -1296,6 +1430,20 @@ create_toolbar(Etk_Toolbar_Orientation o)
    etk_object_properties_set(ETK_OBJECT(button),"label","Test group",NULL);
    etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), button, ETK_BOX_START);
 
+#if TEST_DIRECT_EDJE
+   //UI_GroupsComboBox
+   UI_GroupsComboBox = etk_combobox_new();
+   etk_combobox_column_add(ETK_COMBOBOX(UI_GroupsComboBox), ETK_COMBOBOX_LABEL, 30, ETK_COMBOBOX_NONE, 0.0);
+   etk_combobox_build(ETK_COMBOBOX(UI_GroupsComboBox));
+   etk_widget_size_request_set(UI_GroupsComboBox,200, 10);
+   etk_widget_padding_set (UI_GroupsComboBox, 0, 0, 7, 7);
+   etk_combobox_items_height_set (ETK_COMBOBOX(UI_GroupsComboBox), 16);
+   etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), UI_GroupsComboBox, ETK_BOX_START);
+    
+   etk_signal_connect("active-item-changed", ETK_OBJECT(UI_GroupsComboBox),
+                      ETK_CALLBACK(on_GroupsComboBox_changed), NULL);
+#endif    
+    
    return UI_Toolbar;
 }
 
@@ -1390,18 +1538,27 @@ create_tree(void)
    etk_tree_mode_set (ETK_TREE(UI_PartsTree), ETK_TREE_MODE_TREE);
    etk_tree_headers_visible_set (ETK_TREE(UI_PartsTree), ETK_FALSE);
    etk_widget_size_request_set(UI_PartsTree, 260, 300);
+   //Main column
    col = etk_tree_col_new(ETK_TREE(UI_PartsTree), "File contents",100,0);
    etk_tree_col_model_add(col,etk_tree_model_image_new());
    etk_tree_col_model_add(col,etk_tree_model_text_new());
    etk_tree_col_resizable_set (col, ETK_FALSE);
    etk_tree_col_expand_set (col,ETK_TRUE);
+   //Visibility column
    col = etk_tree_col_new(ETK_TREE(UI_PartsTree), "vis", 10,0);
    etk_tree_col_visible_set (col, ETK_FALSE);
    etk_tree_col_model_add(col,etk_tree_model_checkbox_new());
    etk_tree_col_resizable_set (col, ETK_FALSE);
    etk_tree_col_expand_set (col,ETK_FALSE);
+   //RowType column
    col = etk_tree_col_new(ETK_TREE(UI_PartsTree), "type",10, 0);
    etk_tree_col_model_add(col,etk_tree_model_int_new());
+   etk_tree_col_visible_set (col, ETK_FALSE);
+   etk_tree_col_resizable_set (col, ETK_FALSE);
+   etk_tree_col_expand_set (col,ETK_FALSE);
+   //Parent part row
+   col = etk_tree_col_new(ETK_TREE(UI_PartsTree), "parent",100, 0);
+   etk_tree_col_model_add(col,etk_tree_model_text_new());
    etk_tree_col_visible_set (col, ETK_FALSE);
    etk_tree_col_resizable_set (col, ETK_FALSE);
    etk_tree_col_expand_set (col,ETK_FALSE);
@@ -2324,20 +2481,20 @@ create_script_frame(void)
 void
 create_main_window(void)
 {
-   static Evas *win_evas = NULL;
-   
+
+    
    //Create the man ecore_evas window
    UI_ecore_MainWin = ecore_evas_software_x11_new(NULL, 0, 0, 0, 32, 32);
    ecore_evas_title_set(UI_ecore_MainWin, "Edje Editor");
    ecore_evas_callback_resize_set(UI_ecore_MainWin, ecore_resize_callback);
    ecore_evas_callback_delete_request_set(UI_ecore_MainWin, ecore_delete_cb);
-   ecore_evas_resize(UI_ecore_MainWin, 800, 500);
+   ecore_evas_resize(UI_ecore_MainWin, 950, 500);
    ecore_evas_size_min_set (UI_ecore_MainWin, 600, 350);
    ecore_evas_show(UI_ecore_MainWin);
-   win_evas = ecore_evas_get(UI_ecore_MainWin);
+   UI_evas = ecore_evas_get(UI_ecore_MainWin);
    
    //Load main edje interface
-   edje_ui = edje_object_add(win_evas);
+   edje_ui = edje_object_add(UI_evas);
    edje_object_file_set(edje_ui, EdjeFile, "MainUI");
    evas_object_move(edje_ui, 0, 0);
    evas_object_show(edje_ui);
@@ -2351,7 +2508,7 @@ create_main_window(void)
 
    //Toolbar
    create_toolbar(ETK_TOOLBAR_HORIZ);
-   UI_ToolbarEmbed = etk_embed_new(win_evas);
+   UI_ToolbarEmbed = etk_embed_new(UI_evas);
    etk_container_add(ETK_CONTAINER(UI_ToolbarEmbed), UI_Toolbar);
    etk_embed_position_method_set(ETK_EMBED(UI_ToolbarEmbed),
                                  _embed_position_set, UI_ecore_MainWin);
@@ -2361,19 +2518,19 @@ create_main_window(void)
     
    //Tree
    create_tree();
-   UI_PartsTreeEmbed = etk_embed_new(win_evas);
+   UI_PartsTreeEmbed = etk_embed_new(UI_evas);
    etk_container_add(ETK_CONTAINER(UI_PartsTreeEmbed), UI_PartsTree);
    etk_embed_position_method_set(ETK_EMBED(UI_PartsTreeEmbed),
                                  _embed_position_set, UI_ecore_MainWin);
    etk_widget_show_all(UI_PartsTreeEmbed);
    
    //Logo
-   logo = edje_object_add(win_evas);
+   logo = edje_object_add(UI_evas);
    edje_object_file_set(logo, EdjeFile, "Logo");
    evas_object_show(logo);
    
    //GroupEmbed
-   UI_GroupEmbed = etk_embed_new(win_evas);
+   UI_GroupEmbed = etk_embed_new(UI_evas);
    etk_container_add(ETK_CONTAINER(UI_GroupEmbed), create_group_frame());
    etk_embed_position_method_set(ETK_EMBED(UI_GroupEmbed),
                                  _embed_position_set, UI_ecore_MainWin);
@@ -2382,7 +2539,7 @@ create_main_window(void)
                             etk_embed_object_get(ETK_EMBED(UI_GroupEmbed)));
     
    //PartEmbed
-   UI_PartEmbed = etk_embed_new(win_evas);
+   UI_PartEmbed = etk_embed_new(UI_evas);
    etk_container_add(ETK_CONTAINER(UI_PartEmbed), create_part_frame());
    etk_embed_position_method_set(ETK_EMBED(UI_PartEmbed),
                                  _embed_position_set, UI_ecore_MainWin);
@@ -2391,7 +2548,7 @@ create_main_window(void)
                             etk_embed_object_get(ETK_EMBED(UI_PartEmbed)));
 
    //DescriptionEmbed
-   UI_DescriptionEmbed = etk_embed_new(win_evas);
+   UI_DescriptionEmbed = etk_embed_new(UI_evas);
    etk_container_add(ETK_CONTAINER(UI_DescriptionEmbed), create_description_frame());
    etk_embed_position_method_set(ETK_EMBED(UI_DescriptionEmbed),
                                  _embed_position_set, UI_ecore_MainWin);
@@ -2400,7 +2557,7 @@ create_main_window(void)
                             etk_embed_object_get(ETK_EMBED(UI_DescriptionEmbed)));
 
    //RectEmbed
-   UI_RectEmbed = etk_embed_new(win_evas);
+   UI_RectEmbed = etk_embed_new(UI_evas);
    etk_container_add(ETK_CONTAINER(UI_RectEmbed), create_rectangle_frame());
    etk_embed_position_method_set(ETK_EMBED(UI_RectEmbed),
                                  _embed_position_set, UI_ecore_MainWin);
@@ -2409,7 +2566,7 @@ create_main_window(void)
                             etk_embed_object_get(ETK_EMBED(UI_RectEmbed)));
 
    //TextEmbed
-   UI_TextEmbed = etk_embed_new(win_evas);
+   UI_TextEmbed = etk_embed_new(UI_evas);
    etk_container_add(ETK_CONTAINER(UI_TextEmbed), create_text_frame());
    etk_embed_position_method_set(ETK_EMBED(UI_TextEmbed),
                                  _embed_position_set, UI_ecore_MainWin);
@@ -2418,7 +2575,7 @@ create_main_window(void)
                             etk_embed_object_get(ETK_EMBED(UI_TextEmbed)));
 
    //ImageEmbed
-   UI_ImageEmbed = etk_embed_new(win_evas);
+   UI_ImageEmbed = etk_embed_new(UI_evas);
    etk_container_add(ETK_CONTAINER(UI_ImageEmbed), create_image_frame());
    etk_embed_position_method_set(ETK_EMBED(UI_ImageEmbed),
                                  _embed_position_set, UI_ecore_MainWin);
@@ -2427,7 +2584,7 @@ create_main_window(void)
                             etk_embed_object_get(ETK_EMBED(UI_ImageEmbed)));
 
    //PositionEmbed
-   UI_PositionEmbed = etk_embed_new(win_evas);
+   UI_PositionEmbed = etk_embed_new(UI_evas);
    etk_container_add(ETK_CONTAINER(UI_PositionEmbed), create_position_frame());
    etk_embed_position_method_set(ETK_EMBED(UI_PositionEmbed),
                                  _embed_position_set, UI_ecore_MainWin);
@@ -2436,7 +2593,7 @@ create_main_window(void)
                             etk_embed_object_get(ETK_EMBED(UI_PositionEmbed)));
 
    //ProgramEmbed
-   UI_ProgramEmbed = etk_embed_new(win_evas);
+   UI_ProgramEmbed = etk_embed_new(UI_evas);
    etk_container_add(ETK_CONTAINER(UI_ProgramEmbed), create_program_frame());
    etk_embed_position_method_set(ETK_EMBED(UI_ProgramEmbed),
                                  _embed_position_set, UI_ecore_MainWin);
@@ -2445,7 +2602,7 @@ create_main_window(void)
                             etk_embed_object_get(ETK_EMBED(UI_ProgramEmbed)));
 
    //ScriptEmbed
-   UI_ScriptEmbed = etk_embed_new(win_evas);
+   UI_ScriptEmbed = etk_embed_new(UI_evas);
    etk_container_add(ETK_CONTAINER(UI_ScriptEmbed), create_script_frame());
    etk_embed_position_method_set(ETK_EMBED(UI_ScriptEmbed),
                                  _embed_position_set, UI_ecore_MainWin);

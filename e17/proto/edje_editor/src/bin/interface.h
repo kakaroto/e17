@@ -1,5 +1,6 @@
 #include "main.h"
 
+Evas *UI_evas;
 Ecore_Evas *UI_ecore_MainWin;
 //Etk_Widget *UI_MainWin;
 Etk_Widget *UI_Toolbar;
@@ -112,6 +113,15 @@ Etk_Widget *UI_ToolbarEmbed;
 //Evas_Object *UI_PartEdje;
 
 Evas_Object *edje_ui;
+
+#if TEST_DIRECT_EDJE
+
+Etk_Widget *UI_GroupsComboBox;
+
+void     AddGroupToTree2          (char *name);
+void     AddPartToTree2(char *part_name);
+void     AddStateToTree2(char *part_name, char *state_name);
+#endif
 
 void     create_main_window      (void);
 void     ecore_resize_callback   (Ecore_Evas *ecore_evas);

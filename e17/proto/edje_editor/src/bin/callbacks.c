@@ -229,6 +229,7 @@ Etk_Bool
 on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
 {
    int row_type=0;
+   char *part;
    Engrave_Group* old_group = Cur.eg;
 
    printf("Row Selected Signal on one of the Tree EMITTED \n");
@@ -260,6 +261,21 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
          UpdateScriptFrame();
          break;
       case ROW_PART:
+#if TEST_DIRECT_EDJE
+         Cur.part = etk_string_set(Cur.part, etk_tree_row_data_get (row));
+         Cur.state = etk_string_clear(Cur.state);
+         Cur.state_n = 0;
+         
+         edje_object_signal_emit(edje_ui,"description_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"position_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"rect_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"image_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"text_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"group_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"program_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"part_frame_show","edje_editor");
+         edje_object_signal_emit(edje_ui,"script_frame_hide","edje_editor");
+#else
          Cur.epr = NULL;
          Cur.ep = etk_tree_row_data_get (row);
          Cur.eg = Cur.ep->parent;
@@ -276,8 +292,27 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
          edje_object_signal_emit(edje_ui,"script_frame_hide","edje_editor");
          
          UpdatePartFrame();
+#endif
          break;
-      case ROW_DESC: 
+      case ROW_DESC:
+#if TEST_DIRECT_EDJE
+         Cur.state = etk_string_set(Cur.state,etk_tree_row_data_get (row));
+         //get the parent part of the row from the hidden col
+         etk_tree_row_fields_get(row,
+            etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 3),&part,
+            NULL);
+         Cur.part = etk_string_set(Cur.part, part);
+       
+         UpdatePositionFrame();
+       
+         edje_object_signal_emit(edje_ui,"part_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"group_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"program_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"script_frame_hide","edje_editor");
+         
+         edje_object_signal_emit(edje_ui,"description_frame_show","edje_editor");
+         edje_object_signal_emit(edje_ui,"position_frame_show","edje_editor");
+#else
          Cur.epr = NULL;
          Cur.eps = etk_tree_row_data_get (row);
          Cur.ep = Cur.eps->parent;
@@ -322,6 +357,7 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
          
          edje_object_signal_emit(edje_ui,"description_frame_show","edje_editor");
          edje_object_signal_emit(edje_ui,"position_frame_show","edje_editor");
+#endif
          break;
       case ROW_PROG:
          Cur.epr = etk_tree_row_data_get (row);
@@ -701,7 +737,36 @@ Etk_Bool
 on_RelSpinner_value_changed(Etk_Range *range, double value, void *data)
 {
    printf("Value Changed Signal on RelSpinner EMITTED (value: %f)\n",etk_range_value_get(range));
-
+#if TEST_DIRECT_EDJE
+   if (etk_string_length_get(Cur.state) && etk_string_length_get(Cur.part))
+   {
+      switch ((int)data)
+      {
+         case REL1X_SPINNER:
+            edje_edit_state_rel1_relative_x_set(edje_o, 
+                                    Cur.part->string, Cur.state->string,
+                                    etk_range_value_get(range));
+            break;
+         case REL1Y_SPINNER:
+            edje_edit_state_rel1_relative_y_set(edje_o, 
+                                    Cur.part->string, Cur.state->string,
+                                    etk_range_value_get(range));
+           
+            break;
+         case REL2X_SPINNER:
+            edje_edit_state_rel2_relative_x_set(edje_o, 
+                                    Cur.part->string, Cur.state->string,
+                                    etk_range_value_get(range));
+            break;
+         case REL2Y_SPINNER:
+            edje_edit_state_rel2_relative_y_set(edje_o, 
+                                    Cur.part->string, Cur.state->string,
+                                    etk_range_value_get(range));
+            break;
+      }
+      ev_redraw();
+   }
+#else
    if (Cur.eps)
    {
       switch ((int)data)
@@ -722,7 +787,7 @@ on_RelSpinner_value_changed(Etk_Range *range, double value, void *data)
       ev_redraw();
       //ev_draw_focus();
    }
-
+#endif
    return ETK_TRUE;
 }
 
@@ -1054,6 +1119,19 @@ on_Param1Spinner_value_changed(Etk_Range *range, double value, void *data)
    return ETK_TRUE;
 }
 
+#if TEST_DIRECT_EDJE
+Etk_Bool
+on_GroupsComboBox_changed(Etk_Combobox *combobox, void *data)
+{
+   Etk_Combobox_Item *item;
+   char *gr;
+   
+   item = etk_combobox_active_item_get(combobox);
+   gr = etk_combobox_item_field_get(item,0);
+   printf("Group combo changed: %s\n",gr);
+   ChangeGroup(gr);
+}
+#endif
 Etk_Bool
 on_TransitionComboBox_changed(Etk_Combobox *combobox, void *data)
 {

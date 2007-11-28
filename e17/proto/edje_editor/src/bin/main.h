@@ -12,6 +12,8 @@
 #define FAKEWIN_BORDER_RIGHT 4
 #define FAKEWIN_BORDER_BOTTOM 4
 
+#define TEST_DIRECT_EDJE 0
+
 #undef FREE
 #define FREE(val) \
 { \
@@ -24,8 +26,6 @@
   if (val) FREE(val) \
   val = NULL; \
 }
-
-
 
 
 //All the enum used are declared here
@@ -112,6 +112,12 @@ struct Current_State
    char *open_file_name;      //Full path to the open edje file
    char *source_dir;          //Full path to sources
    char *main_source_file;    //Full path to the main edc file
+#if TEST_DIRECT_EDJE
+   Etk_String *part;
+   Etk_String *state;
+   Etk_String *edj_file_name;
+   double *state_n;
+#endif
 }Cur;
 
 /* GLOBALS */
@@ -133,5 +139,23 @@ Ecore_Hash     *hash;                  //Associate the engrave objects with the 
 
 /* FUNCTION PROTOTYPES*/
 void           DebugInfo   (int full);
+
+#if TEST_DIRECT_EDJE
+
+//This define is copied from edje_private.h
+#define EDJE_PART_TYPE_NONE      0
+#define EDJE_PART_TYPE_RECTANGLE 1
+#define EDJE_PART_TYPE_TEXT      2
+#define EDJE_PART_TYPE_IMAGE     3
+#define EDJE_PART_TYPE_SWALLOW   4
+#define EDJE_PART_TYPE_TEXTBLOCK 5
+#define EDJE_PART_TYPE_GRADIENT  6
+#define EDJE_PART_TYPE_GROUP     7
+#define EDJE_PART_TYPE_LAST      8
+
+Evas_Object *edje_o;
+Evas_Hash   *Parts_Hash;
+void ChangeGroup(const char *group);
+#endif
 
 #endif // INCLUSION_GUARD

@@ -301,18 +301,18 @@ TestEdjeGroup(char *File,char *Group)
    
    /* Background */
    EdjeTest_bg = evas_object_image_add(evas);
-   evas_object_image_file_set(EdjeTest_bg, EdjeFile, "images/0");		//TODO Find a method to load by name and not by number
-   evas_object_image_fill_set(EdjeTest_bg,0,0,128,128);
+   evas_object_image_file_set(EdjeTest_bg, EdjeFile, "images/1");		//TODO Find a method to load by name and not by number
+   evas_object_image_fill_set(EdjeTest_bg,0,0,240,240);
    evas_object_move(EdjeTest_bg, 0, 0);
-	evas_object_resize(EdjeTest_bg, 300, 300);
+   evas_object_resize(EdjeTest_bg, 300, 300);
    evas_object_show(EdjeTest_bg);
 
-   /* Edje Goroup */
+   /* Edje Group */
    EdjeTest_edje = edje_object_add(evas);
-	edje_object_file_set(EdjeTest_edje,File, Group);
-	evas_object_move(EdjeTest_edje, 0, 0);
-	evas_object_resize(EdjeTest_edje, 300, 300);
-	evas_object_show(EdjeTest_edje);
+   edje_object_file_set(EdjeTest_edje,File, Group);
+   evas_object_move(EdjeTest_edje, 0, 0);
+   evas_object_resize(EdjeTest_edje, 300, 300);
+   evas_object_show(EdjeTest_edje);
    
    /* Window Size */
    int minw,minh,maxw,maxh;
@@ -343,6 +343,20 @@ PrintUsage(void)
    printf(" To open an EDC file you must pass the IMAGE_DIR and FONT_DIR\n");
    printf(" parameters. If not given the EDC directory is assumed.\n\n");
 }
+#if TEST_DIRECT_EDJE
+void
+ChangeGroup(const char *group)
+{
+   edje_object_file_set(edje_o, Cur.edj_file_name->string, group);
+
+   Parts_Hash = NULL;         //TODO FREE
+   
+   Cur.part = etk_string_clear(Cur.part);
+   Cur.state = etk_string_clear(Cur.state);
+   
+   PopulateTree2();
+}
+#endif
 /* main */
 int
 main(int argc, char **argv)
@@ -405,7 +419,55 @@ main(int argc, char **argv)
 
    //Create the etk window with all his widget
    create_main_window();
+#if TEST_DIRECT_EDJE
+   printf("*********************************\n");
+   printf("Testing edje direct access!!...\n");
+   printf("*********************************\n");
+   char *file;
+    
+   
+   
+   if (argc > 1)
+   {
+      file = ecore_file_realpath(argv[1]);
+      if (!ecore_file_exists(file))
+      {
+         printf("File not exists: '%s'\nExiting...\n",argv[1]);
+         return 1;
+      }
+      if (!ecore_str_has_suffix(file, ".edj"))  //TODO: better check
+      {
+         printf("File is not an edje file: '%s'\nExiting...\n",argv[1]);
+         return 1;
+      }
+   }
+   else
+   {
+      printf("You must specify an edje file to open.\nExiting...\n");
+      return 1;
+   }
 
+   Cur.edj_file_name = etk_string_new(file);
+   ecore_evas_title_set(UI_ecore_MainWin, Cur.edj_file_name->string);
+
+   Cur.part = etk_string_new("");
+   Cur.state = etk_string_new("");
+   Parts_Hash = NULL;
+   Cur.part = etk_string_new("");
+   Cur.state = etk_string_new("");   
+  
+   //Create the main edje object to edit
+   edje_o = edje_object_add(UI_evas);
+  
+    
+    
+   PopulateGroupsComboBox();
+   PopulateTree2();
+   
+   evas_object_show(edje_o);
+   
+   
+#else
    //Open a file
    if (argc > 1)
    {
@@ -439,7 +501,7 @@ main(int argc, char **argv)
    PopulateImagesComboBox();
    PopulateFontsComboBox();
 
-
+#endif
    //DebugInfo(FALSE);
 
    //Start main loop

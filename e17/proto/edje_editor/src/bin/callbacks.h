@@ -52,3 +52,7 @@ Etk_Bool on_Param1Spinner_value_changed    (Etk_Range *range, double value, void
 Etk_Bool on_TransitionComboBox_changed     (Etk_Combobox *combobox, void *data);
 Etk_Bool on_DurationSpinner_value_changed  (Etk_Range *range, double value, void *data);
 Etk_Bool on_AfterEntry_text_changed        (Etk_Object *object, void *data);
+
+#if TEST_DIRECT_EDJE
+Etk_Bool on_GroupsComboBox_changed(Etk_Combobox *combobox, void *data);
+#endif
