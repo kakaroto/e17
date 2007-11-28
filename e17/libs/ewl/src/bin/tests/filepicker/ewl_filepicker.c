@@ -77,8 +77,8 @@ static int directory_test_set_get(char *buf, int len);
 static int directory_test_path_split(char *buf, int len);
 
 static Ewl_Unit_Test filepicker_unit_tests[] = {
-		{"directory set/get", directory_test_set_get, NULL, -1, 0},
-		{"directory path split", directory_test_path_split, NULL, -1, 0},
+		{"directory set/get", directory_test_set_get, NULL, -1, 1},
+		{"directory path split", directory_test_path_split, NULL, -1, 1},
 		{NULL, NULL, NULL, -1, 0}
 	};
 
@@ -153,12 +153,12 @@ directory_test_set_get(char *buf, int len)
 
 	fp = ewl_filepicker_new();
 	ewl_filepicker_directory_set(EWL_FILEPICKER(fp),
-					"/foo/bar/baz/test");
+					"/tmp");
 	t = ewl_filepicker_directory_get(EWL_FILEPICKER(fp));
 
-	if (strcmp(t, "/foo/bar/baz/test"))
+	if (strcmp(t, "/tmp"))
 		snprintf(buf, len, "directory_get did not match "
-						"directory_set");
+						"directory_set %s", t);
 	else
 		ret = 1;
 
