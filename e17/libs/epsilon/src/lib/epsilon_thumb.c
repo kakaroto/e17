@@ -1,3 +1,7 @@
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include <Ecore.h>
 #include <Ecore_Data.h>
 #include <Ecore_Ipc.h>
@@ -9,7 +13,7 @@
 
 #define EPSILON_SOCK "epsilon"
 
-EAPI int EPSILON_EVENT_DONE;
+EAPI int EPSILON_EVENT_DONE = -1;
 
 static int debug = 0;
 

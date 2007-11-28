@@ -1,9 +1,9 @@
-#include "Epsilon.h"
-#define X_DISPLAY_MISSING 1
-#include "Epsilon_Plugin.h"
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
+#include "Epsilon.h"
+#define X_DISPLAY_MISSING 1
+#include "Epsilon_Plugin.h"
 #ifdef HAVE_PNG_H
 #include <png.h>
 #endif
@@ -537,8 +537,8 @@ epsilon_exists (Epsilon * e)
        char path[PATH_MAX];
        time_t filemtime;
        if (_epsilon_exists_ext(e, "png", path, sizeof(path), &filemtime)) {
-	 if (filemtime >= srcmtime)
-	   return (EPSILON_OK);
+	  if (filemtime >= srcmtime)
+	    return (EPSILON_OK);
 	  /* XXX compare with time from e->src png tag? */
        }
     }
