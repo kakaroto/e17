@@ -160,7 +160,7 @@ if test "x$enable_glx" = "xyes"; then
       AC_DEFINE(HAVE_GLX_glXBindTexImageEXT, 1, [glXBindTexImageEXT is available]))
   AC_SUBST(GLX_LIBS)
 fi
-AM_CONDITIONAL(HAVE_GLX, test "x$enable_glx" = "xyes")
+AM_CONDITIONAL(ENABLE_GLX, test "x$enable_glx" = "xyes")
 
 AC_CHECK_LIB(Xext, XShapeQueryExtension,
   E_X_LIBS="-lXext $E_X_LIBS",
@@ -246,7 +246,7 @@ if test "x$enable_composite" = "xyes"; then
     AC_MSG_WARN([Composite support was requested but required component was not found])
   fi
 fi
-AM_CONDITIONAL(HAVE_COMPOSITE, test "x$enable_composite" = "xyes")
+AM_CONDITIONAL(ENABLE_COMPOSITE, test "x$enable_composite" = "xyes")
 
 AC_CHECK_LIB(Fridge,mass_quantities_of_bass_ale)
 AC_CHECK_LIB(Fridge,mass_quantities_of_any_ale,, [

@@ -7,10 +7,10 @@ bin_PROGRAMS = e16
 if ENABLE_GNOME
 SRCS_GNOME = gnome.c
 endif
-if HAVE_GLX
+if ENABLE_GLX
 SRCS_GLX = eglx.c eglx.h glwin.c
 endif
-if HAVE_COMPOSITE
+if ENABLE_COMPOSITE
 SRCS_ECOMPMGR = ecompmgr.c ecompmgr.h magwin.c
 endif
 if USE_ESNPRINTF
