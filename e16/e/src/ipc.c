@@ -24,7 +24,6 @@
 #include "E.h"
 #include "aclass.h"
 #include "borders.h"		/* FIXME - Should not be here */
-#include "comms.h"
 #include "desktops.h"
 #include "emodule.h"
 #include "eobj.h"
@@ -43,30 +42,34 @@
 #define SS(s) ((s) ? (s) : NoText)
 static const char   NoText[] = "-NONE-";
 
-static size_t       ipc_bufsiz;
-static char        *ipc_bufptr;
+static char        *ipc_bufptr = NULL;
+static size_t       ipc_bufsiz = 0;
+static char         ipc_active = 0;
 
 static void
 IpcPrintInit(void)
 {
-   ipc_bufsiz = 0;
    ipc_bufptr = NULL;
+   ipc_bufsiz = 0;
+   ipc_active = 1;
 }
 
 static void
-IpcPrintFlush(Client * c)
+IpcPrintDone(void)
 {
-   if (ipc_bufptr == NULL)
-      return;
-
-   ipc_bufptr[ipc_bufsiz] = '\0';
-
-   if (c)
-      CommsSend(c, ipc_bufptr);
-
    Efree(ipc_bufptr);
-   ipc_bufsiz = 0;
    ipc_bufptr = NULL;
+   ipc_bufsiz = 0;
+   ipc_active = 0;
+}
+
+static const char  *
+IpcPrintGetBuffer(void)
+{
+   if (!ipc_bufptr)
+      return NULL;
+   ipc_bufptr[ipc_bufsiz] = '\0';
+   return ipc_bufptr;
 }
 
 void
@@ -75,6 +78,9 @@ IpcPrintf(const char *fmt, ...)
    char                tmp[FILEPATH_LEN_MAX];
    int                 len;
    va_list             args;
+
+   if (!ipc_active)
+      return;
 
    va_start(args, fmt);
    len = Evsnprintf(tmp, sizeof(tmp), fmt, args);
@@ -1632,8 +1638,8 @@ IPC_GetList(int *pnum)
  * you shouldn't have to touch this function
  * - Mandrake
  */
-int
-HandleIPC(const char *params, Client * c)
+static int
+IpcExec(const char *params)
 {
    int                 i, num, ok;
    char                cmd[128];
@@ -1641,9 +1647,7 @@ HandleIPC(const char *params, Client * c)
    const IpcItem     **lst, *ipc;
 
    if (EDebug(EDBUG_TYPE_IPC))
-      Eprintf("HandleIPC: %s\n", params);
-
-   IpcPrintInit();
+      Eprintf("IpcExec: %s\n", params);
 
    cmd[0] = 0;
    num = 0;
@@ -1669,8 +1673,18 @@ HandleIPC(const char *params, Client * c)
    if (!ok && params)
       ok = IPC_Compat(params);
 
-   IpcPrintFlush(c);
-   CommsFlush(c);
+   return ok;
+}
+
+int
+IpcExecReply(const char *params, IpcReplyFunc * reply, void *data)
+{
+   int                 ok;
+
+   IpcPrintInit();
+   ok = IpcExec(params);
+   reply(data, IpcPrintGetBuffer());
+   IpcPrintDone();
 
    return ok;
 }
@@ -1678,13 +1692,13 @@ HandleIPC(const char *params, Client * c)
 int
 EFunc(EWin * ewin, const char *params)
 {
-   int                 err;
+   int                 ok;
 
    SetContextEwin(ewin);
-   err = HandleIPC(params, NULL);
+   ok = IpcExec(params);
    SetContextEwin(NULL);
 
-   return err;
+   return ok;
 }
 
 static void

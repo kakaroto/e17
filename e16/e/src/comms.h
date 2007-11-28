@@ -28,12 +28,8 @@ typedef struct _client Client;
 
 void                CommsInit(void);
 void                CommsSend(Client * c, const char *s);
-void                CommsFlush(Client * c);
 void                CommsSendToMasterWM(const char *s);
 void                CommsBroadcast(const char *s);
 void                CommsBroadcastToSlaveWMs(const char *s);
-
-/* ipc.c */
-int                 HandleIPC(const char *params, Client * c);
 
 #endif /* _COMMS_H_ */

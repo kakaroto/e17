@@ -23,6 +23,7 @@
  */
 #include "E.h"
 #include "comms.h"
+#include "ipc.h"
 #include "e16-ecore_hints.h"
 #include "e16-ecore_list.h"
 #include "xwin.h"
@@ -35,7 +36,6 @@ struct _client
    char               *clientname;
    char               *version;
    char               *info;
-   char                replied;
 };
 
 static Ecore_List  *client_list = NULL;
@@ -202,11 +202,20 @@ ClientCommsGet(Client ** c, XClientMessageEvent * ev)
 }
 
 static void
+ClientIpcReply(void *data, const char *str)
+{
+   Client             *c = (Client *) data;
+
+   if (!str)
+      str = "";
+   CommsSend(c, str);
+}
+
+static void
 ClientHandleComms(XClientMessageEvent * ev)
 {
    Client             *c;
    char               *s;
-   const char         *s1, *s2;
 
    s = ClientCommsGet(&c, ev);
    if (!s)
@@ -222,8 +231,10 @@ ClientHandleComms(XClientMessageEvent * ev)
 	   goto done;
      }
 
-   if (!HandleIPC(s, c))
+   if (!IpcExecReply(s, ClientIpcReply, c))
      {
+	const char         *s1, *s2;
+
 	s1 = (c->clientname) ? c->clientname : "UNKNOWN";
 	s2 = (c->version) ? c->version : "UNKNOWN";
 	DialogOK(_("E IPC Error"),
@@ -330,17 +341,7 @@ CommsSend(Client * c, const char *s)
    if (!c)
       return;
 
-   c->replied = 1;
    CommsDoSend(c->xwin, s);
-}
-
-void
-CommsFlush(Client * c)
-{
-   if (!c || c->replied)
-      return;
-
-   CommsDoSend(c->xwin, "");
 }
 
 /*

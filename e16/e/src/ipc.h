@@ -42,6 +42,9 @@ typedef struct
    const IpcItem      *lst;
 } IpcItemList;
 
+typedef void        (IpcReplyFunc) (void *data, const char *str);
+int                 IpcExecReply(const char *params, IpcReplyFunc * reply,
+				 void *data);
 void __PRINTF__     IpcPrintf(const char *fmt, ...);
 
 int                 EFunc(EWin * ewin, const char *params);
