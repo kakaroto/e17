@@ -11,6 +11,7 @@ int         im_cache = 4096 * 1024;
 int         fn_cache = 512 * 1024;
 int         engine = SOFT_X;
 int         scr_w, scr_h;
+int         quiet;
 
 static char *theme = NULL;
 
@@ -67,7 +68,8 @@ _args(void)
    int h = 480;
    double fps = 60.0;
    int fullscreen = 0;
-   
+   quiet = 0;
+
    ecore_app_args_get(&argc, &argv);
    for (i = 1; i < argc; i++)
      {
@@ -121,6 +123,10 @@ _args(void)
 		  exit(-1);
 	       }
 	  }
+        else if ((!strcmp(argv[i], "-quiet")))
+          {
+             quiet = 1;
+          }
 	else if ((!strcmp(argv[i], "-h")))
 	  {
 	     printf("%s [OPTIONS]\n"
@@ -137,6 +143,7 @@ _args(void)
 		    "-ic Kb     Set image cache in Kb\n"
 		    "-fc Kb     Set font cache in Kb\n"
 		    "-fps fps   Set attempted framerate in frames per second\n"
+                    "-quiet     Run Exquisite in quiet mode, text is suppressed\n"
 		    "-h         Display this help\n",
 		    argv[0]);
 	     exit(0);

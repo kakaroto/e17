@@ -65,14 +65,22 @@ static void
 _help(void)
 {
    printf("Usage:\n"
-	  "  -h         This help\n"
-	  "  QUIT       Tell splash to exit immediately\n"
-	  "  PROGRESS N Indicate boot progress is at N percent\n"
-	  "  MSG X      Display string message X\n"
-	  "  TITLE X    Diplsay title string X\n"
-	  "  END        Shut down splash gracefully and exit when done\n"
-	  "  TICK       Send hearbeat tick to splash\n"
-	  "  PULSATE    Set exquisite into pulsate mode\n");
+	  "  -h            This help\n"
+	  "  QUIT          Tell splash to exit immediately\n"
+	  "  PROGRESS N    Indicate boot progress is at N percent\n"
+	  "  MSG X         Display string message X\n"
+	  "  TITLE X       Diplsay title string X\n"
+	  "  END           Shut down splash gracefully and exit when done\n"
+	  "  TICK          Send hearbeat tick to splash\n"
+	  "  PULSATE       Set exquisite into pulsate mode\n"
+          "  TEXT X        Add a line of text to the text box\n"
+          "  TEXT-URGENT X Add a line of text even in quiet mode\n"
+          "  STATUS  X     Set a general status for the last line of text\n"
+          "  SUCCESS X     Set a success status for the last line of text\n"
+          "  FAILURE X     Set a failure status for the last line of text\n"
+          "  CLEAR         Clear all text and hide text box\n"
+          "  TIMEOUT N     Exquisite will timeout in N seconds if no commands recv'd\n"
+   );
 }
 
 static int
@@ -145,6 +153,41 @@ _ipc_cb_server_add(void *data, int type, void *event)
    else if (!strcmp(buf, "PULSATE"))
      {
 	ecore_ipc_server_send(e->server, PULSATE, 0, 0, 0, 0, NULL, 0);
+	ecore_main_loop_quit();
+     }
+   else if (!strcmp(buf, "TEXT"))
+     {
+	ecore_ipc_server_send(e->server, TEXT, 0, 0, 0, 0, q, strlen(q) + 1);
+	ecore_main_loop_quit();
+     }
+   else if (!strcmp(buf, "TEXT-URGENT"))
+     {
+	ecore_ipc_server_send(e->server, TEXT_URGENT, 0, 0, 0, 0, q, strlen(q) + 1);
+	ecore_main_loop_quit();
+     }
+   else if (!strcmp(buf, "STATUS"))
+     {
+	ecore_ipc_server_send(e->server, STATUS, 0, 0, 0, 0, q, strlen(q) + 1);
+	ecore_main_loop_quit();
+     }
+   else if (!strcmp(buf, "SUCCESS"))
+     {
+	ecore_ipc_server_send(e->server, SUCCESS, 0, 0, 0, 0, q, strlen(q) + 1);
+	ecore_main_loop_quit();
+     }
+   else if (!strcmp(buf, "FAILURE"))
+     {
+	ecore_ipc_server_send(e->server, FAILURE, 0, 0, 0, 0, q, strlen(q) + 1);
+	ecore_main_loop_quit();
+     }   
+   else if (!strcmp(buf, "CLEAR"))
+     {
+	ecore_ipc_server_send(e->server, CLEAR, 0, 0, 0, 0, NULL, 0);
+	ecore_main_loop_quit();
+     }
+   else if (!strcmp(buf, "TIMEOUT"))
+     {
+	ecore_ipc_server_send(e->server, TIMEOUT, 0, atoi(q), 0, 0, NULL, 0);
 	ecore_main_loop_quit();
      }
    else

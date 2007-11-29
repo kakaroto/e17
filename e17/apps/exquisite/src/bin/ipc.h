@@ -6,5 +6,12 @@ typedef enum _Ipc_Major
      MESSAGE,
      PROGRESS,
      TICK,
-     PULSATE
+     PULSATE,
+     TEXT,
+     TEXT_URGENT,
+     STATUS,
+     SUCCESS,
+     FAILURE,
+     CLEAR,
+     TIMEOUT
 } Ipc_Major;

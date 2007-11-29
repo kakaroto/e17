@@ -12,23 +12,46 @@ $MAIN -t ../data/themes/default.edj -x 640 -y 480 &
 # run 'exquisite -h' for more options
 echo "I: waiting..."
 sleep 1
-$WRITE "TICK"
-sleep 1
-$WRITE "TICK"
-$WRITE "MSG Hello World"
-sleep 1
-$WRITE "MSG Starting up..."
+$WRITE "TIMEOUT 5"
+$WRITE "TITLE Welcome to Exquisite"
 sleep 1
 $WRITE "TICK"
 sleep 1
 $WRITE "TICK"
+sleep 1
+$WRITE "MSG Starting Up"
+$WRITE "PULSATE"
+sleep 4
+$WRITE "MSG Services Starting"
 $WRITE "PROGRESS 5"
 sleep 1
-$WRITE "PROGRESS 10"
-sleep 1
-$WRITE "MSG Services starting..."
-$WRITE "PROGRESS 20"
+$WRITE "TEXT Random Number Generator"
 sleep 2
+$WRITE "SUCCESS OK"
+$WRITE "PROGRESS 10"
+$WRITE "TEXT Perpetual Motion Machine"
+sleep 1
+$WRITE "FAILURE FAIL"
+$WRITE "PROGRESS 15"
+$WRITE "TEXT Populating the World"
+sleep 2
+$WRITE "SUCCESS OK"
+$WRITE "PROGRESS 20"
+$WRITE "TEXT Curing Cancer"
+sleep 3
+$WRITE "FAILURE FAIL"
+$WRITE "PROGRESS 25"
+sleep 1
+$WRITE "MSG Running Text Tests"
+$WRITE "TEXT This is an"
+$WRITE "TEXT example of"
+$WRITE "TEXT text that"
+$WRITE "TEXT doesn't have"
+$WRITE "TEXT any status."
+$WRITE "TEXT And some more"
+$WRITE "TEXT to show how"
+$WRITE "TEXT the text can"
+$WRITE "TEXT overflow."
 $WRITE "MSG Checking applications..."
 $WRITE "PROGRESS 40"
 sleep 1
@@ -42,9 +65,6 @@ $WRITE "PROGRESS 48"
 sleep 1
 $WRITE "PROGRESS 50"
 sleep 1
-$WRITE "MSG Unknown setup..."
-$WRITE "PULSATE"
-sleep 5
 $WRITE "MSG Configuration..."
 $WRITE "PROGRESS 60"
 sleep 1
@@ -60,6 +80,7 @@ sleep 1
 $WRITE "MSG Done."
 $WRITE "PROGRESS 100"
 sleep 1
+$WRITE "CLEAR"
 $WRITE "TICK"
 sleep 1
 $WRITE "TICK"
@@ -68,10 +89,10 @@ $WRITE "TICK"
 sleep 1
 $WRITE "TICK"
 sleep 1
-echo "I: quitting..."
+echo "I: quitting in 5 seconds..."
 # use this to quit now - otherwise quit may take some time - animated maybe
 #$WRITE QUIT
-$WRITE END
+#$WRITE END
 echo "I: done"
 
 exit 0

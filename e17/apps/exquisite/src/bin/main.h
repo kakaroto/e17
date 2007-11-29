@@ -23,6 +23,8 @@ extern Ecore_Evas *ee;
 extern Evas       *evas;
 extern Evas_Coord  scr_w;
 extern Evas_Coord  scr_h;
+extern int         quiet;
+extern int         quitting;
 
 void theme_init(const char *theme);
 void theme_shutdown(void);
@@ -32,6 +34,10 @@ void theme_title_set(const char *txt);
 void theme_message_set(const char *txt);
 void theme_progress_set(double val);
 void theme_tick(void);
+void theme_pulsate(void);
+void theme_text_add(const char *txt);
+void theme_status_set(const char *txt, int type);
+void theme_text_clear();
 
 void ipc_init(void);
 void ipc_shutdown(void);

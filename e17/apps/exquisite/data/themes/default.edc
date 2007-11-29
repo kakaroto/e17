@@ -1,6 +1,8 @@
 fonts {
    font: "Vera.ttf" "Edje-Vera";
    font: "VeraBd.ttf" "Edje-Vera-Bold";
+   font: "VeraMono.ttf" "Edje-Vera-Mono";
+   font: "VeraMoBd.ttf" "Edje-Vera-Mono-Bold";
 }
 
 images {
@@ -14,9 +16,65 @@ images {
    image: "ball.png" COMP;
 }
 
+styles {
+  style {
+    name: "verbose"; 
+    base: "font=Edje-Vera-Mono-Bold font_size=8 align=0.0 valign=0.5 color=#fff style=soft_outline outline_color=#aaa wrap=none";
+
+    tag:  "/p"        "+ \n";
+    tag:  "br"        "+ \n";
+  }
+  
+  style {
+    name: "status";
+    base: "font=Edje-Vera-Mono-Bold font_size=8 color=#fff align=1.0 valign=0.5 style=soft_outline outline_color=#aaa";
+    
+    tag:  "1"   "+ outline_color=#0c0";
+    tag:  "/1"  "- \n";
+    tag:  "0"      "+ outline_color=#c00";
+    tag:  "/0"  "- \n";
+    tag:  "br"        "+ \n";
+  }
+}
+
 collections {
    group {
       name: "exquisite/theme";
+      
+      script {       
+         public shift_text() {
+           new x;
+           new y;
+           new x2;
+           
+           custom_state(PART:"textarea", "default", 0.0);
+           custom_state(PART:"statusarea", "default", 0.0);
+           
+           get_state_val(PART:"statusarea", STATE_REL1_OFFSET, x2, y);
+           get_state_val(PART:"textarea", STATE_REL1_OFFSET, x, y);
+           
+           y = y - 8;
+           
+           set_state_val(PART:"textarea", STATE_REL1_OFFSET, x, y);
+           set_state_val(PART:"statusarea", STATE_REL1_OFFSET, x2, y);
+           
+           set_state(PART:"textarea", "custom", 0.0);
+           set_state(PART:"statusarea", "custom", 0.0);
+         }
+         
+         public reset_text() {
+           new x;
+           new x2;
+           new y;
+           
+           get_state_val(PART:"textarea", STATE_REL1_OFFSET, x, y);
+           get_state_val(PART:"textarea", STATE_REL1_OFFSET, x2, y);
+           
+           set_state_val(PART:"textarea", STATE_REL1_OFFSET, x, 0);
+           set_state_val(PART:"textarea", STATE_REL1_OFFSET, x2, 0);
+         }
+      }
+      
       parts {
 	 
 	 part {
@@ -34,7 +92,7 @@ collections {
 	       }
 	    }
 	 }
-
+         
 	 part {
 	    name: "ball";
 	    description {
@@ -72,6 +130,7 @@ collections {
 		  offset: -1 10;
 	       }
 	       min: 80 24;
+               
 	       image {
 		  normal: "inset.png";
 		  border: 14 14 14 14;
@@ -181,20 +240,20 @@ collections {
 	    mouse_events:  0;
 	    description {
 	       state: "default" 0.0;
-	       align: 0.5 0.5;
+	       align: 0.5 0.35;
 	       rel1 {
 		  relative: 0.5 0.5;
-		  offset: 0 140;
+		  offset: 0 35;
 	       }
 	       rel2 {
 		  relative: 0.5 0.5;
-		  offset: 1 140;
+		  offset: 1 35;
 	       }
 	       color: 255 255 255 0;
 	       color3: 0 0 0 0;
 	       text {
 		  font: "Edje-Vera-Bold";
-		  size: 16;
+		  size: 14;
 		  min: 1 1;
 		  align: 0.5 0.5;
 	       }
@@ -215,22 +274,22 @@ collections {
 	    mouse_events:  0;
 	    description {
 	       state: "default" 0.0;
-	       align: 0.5 0.5;
+	       align: 0.5 0.50;
 	       rel1 {
 		  relative: 0.5 0.5;
-		  offset: 0 -139;
+		  offset: 0 -169;
 	       }
 	       rel2 {
 		  relative: 0.5 0.5;
-		  offset: 1 -139;
+		  offset: 1 -169;
 	       }
 	       color: 255 255 255 0;
 	       color3: 0 0 0 0;
 	       text {
 		  font: "Edje-Vera-Bold";
-		  size: 24;
+		  size: 22;
 		  min: 1 1;
-		  align: 0.5 0.5;
+		  align: 0.5 0.50;
 	       }
 	    }
 	    description {
@@ -248,11 +307,11 @@ collections {
 	       state: "default" 0.0;
 	       rel1 {
 		  to: "logo";
-		  offset: -20 -20;
+		  offset: -15 -15;
 	       }
 	       rel2 {
 		  to: "logo";
-		  offset: 19 19;
+		  offset: 14 14;
 	       }
 	       image {
 		  normal: "logo-shadow-1.png";
@@ -264,11 +323,11 @@ collections {
 	       inherit: "default" 0.0;
 	       rel1 {
 		  to: "logo";
-		  offset: -20 -17;
+		  offset: -15 -12;
 	       }
 	       rel2 {
 		  to: "logo";
-		  offset: 19 22;
+		  offset: 14 17;
 	       }
 	       color: 255 255 255 48;
 	    }
@@ -277,11 +336,11 @@ collections {
 	       inherit: "default" 0.0;
 	       rel1 {
 		  to: "logo";
-		  offset: -20 -14;
+		  offset: -15 -9;
 	       }
 	       rel2 {
 		  to: "logo";
-		  offset: 19 25;
+		  offset: 14 20;
 	       }
 	       color: 255 255 255 0;
 	    }
@@ -290,11 +349,11 @@ collections {
 	       inherit: "default" 0.0;
 	       rel1 {
 		  to: "logo";
-		  offset: -20 -11;
+		  offset: -15 -6;
 	       }
 	       rel2 {
 		  to: "logo";
-		  offset: 19 28;
+		  offset: 14 23;
 	       }
 	       color: 255 255 255 0;
 	    }
@@ -306,11 +365,11 @@ collections {
 	       state: "default" 0.0;
 	       rel1 {
 		  to: "logo";
-		  offset: -20 -20;
+		  offset: -15 -15;
 	       }
 	       rel2 {
 		  to: "logo";
-		  offset: 19 19;
+		  offset: 14 14;
 	       }
 	       image {
 		  normal: "logo-shadow-2.png";
@@ -322,11 +381,11 @@ collections {
 	       inherit: "default" 0.0;
 	       rel1 {
 		  to: "logo";
-		  offset: -20 -17;
+		  offset: -15 -12;
 	       }
 	       rel2 {
 		  to: "logo";
-		  offset: 19 22;
+		  offset: 14 17;
 	       }
 	       color: 255 255 255 0;
 	    }
@@ -335,11 +394,11 @@ collections {
 	       inherit: "default" 0.0;
 	       rel1 {
 		  to: "logo";
-		  offset: -20 -14;
+		  offset: -15 -9;
 	       }
 	       rel2 {
 		  to: "logo";
-		  offset: 19 25;
+		  offset: 14 20;
 	       }
 	       color: 255 255 255 40;
 	    }
@@ -348,11 +407,11 @@ collections {
 	       inherit: "default" 0.0;
 	       rel1 {
 		  to: "logo";
-		  offset: -20 -11;
+		  offset: -15 -6;
 	       }
 	       rel2 {
 		  to: "logo";
-		  offset: 19 28;
+		  offset: 14 23;
 	       }
 	       color: 255 255 255 0;
 	    }
@@ -364,11 +423,11 @@ collections {
 	       state: "default" 0.0;
 	       rel1 {
 		  to: "logo";
-		  offset: -20 -20;
+		  offset: -15 -15;
 	       }
 	       rel2 {
 		  to: "logo";
-		  offset: 19 19;
+		  offset: 14 14;
 	       }
 	       image {
 		  normal: "logo-shadow-3.png";
@@ -380,11 +439,11 @@ collections {
 	       inherit: "default" 0.0;
 	       rel1 {
 		  to: "logo";
-		  offset: -20 -17;
+		  offset: -15 -12;
 	       }
 	       rel2 {
 		  to: "logo";
-		  offset: 19 22;
+		  offset: 14 17;
 	       }
 	       color: 255 255 255 0;
 	    }
@@ -393,11 +452,11 @@ collections {
 	       inherit: "default" 0.0;
 	       rel1 {
 		  to: "logo";
-		  offset: -20 -14;
+		  offset: -15 -9;
 	       }
 	       rel2 {
 		  to: "logo";
-		  offset: 19 25;
+		  offset: 14 20;
 	       }
 	       color: 255 255 255 0;
 	    }
@@ -406,11 +465,11 @@ collections {
 	       inherit: "default" 0.0;
 	       rel1 {
 		  to: "logo";
-		  offset: -20 -11;
+		  offset: -15 -6;
 	       }
 	       rel2 {
 		  to: "logo";
-		  offset: 19 28;
+		  offset: 14 23;
 	       }
 	       color: 255 255 255 32;
 	    }
@@ -423,18 +482,18 @@ collections {
 	       state: "default" 0.0;
 	       aspect: 0.741666667 0.741666667;
 	       aspect_preference: VERTICAL;
-	       max: 178 240;
+	       max: 133.5 180;
 	       image {
 		  normal: "white-logo.png";
 	       }
 	       color: 255 255 255 0;
 	       rel1 {
-		  relative: 0.5 0.5;
-		  offset: -99 -99;
+		  relative: 0.5 0.50;
+		  offset: -64.75 -139;
 	       }
 	       rel2 {
-		  relative: 0.5 0.5;
-		  offset: 100 100;
+		  relative: 0.5 0.50;
+		  offset: 65.75 0;
 	       }
 	    }
 	    description {
@@ -442,12 +501,12 @@ collections {
 	       inherit: "default" 0.0;
 	       color: 255 255 255 255;
 	       rel1 {
-		  relative: 0.5 0.5;
-		  offset: -104 -104;
+		  relative: 0.5 0.50;
+		  offset: -69.75 -144;
 	       }
 	       rel2 {
-		  relative: 0.5 0.5;
-		  offset: 105 105;
+		  relative: 0.5 0.50;
+		  offset: 70.75 5;
 	       }
 	    }
 	    description {
@@ -455,12 +514,12 @@ collections {
 	       inherit: "default" 0.0;
 	       color: 255 255 255 255;
 	       rel1 {
-		  relative: 0.5 0.5;
-		  offset: -109 -109;
+		  relative: 0.5 0.50;
+		  offset: -74.75 -149;
 	       }
 	       rel2 {
-		  relative: 0.5 0.5;
-		  offset: 110 110;
+		  relative: 0.5 0.50;
+		  offset: 75.75 10;
 	       }
 	    }
 	    description {
@@ -468,12 +527,12 @@ collections {
 	       inherit: "default" 0.0;
 	       color: 255 255 255 255;
 	       rel1 {
-		  relative: 0.5 0.5;
-		  offset: -114 -114;
+		  relative: 0.5 0.50;
+		  offset: -79.75 -154;
 	       }
 	       rel2 {
-		  relative: 0.5 0.5;
-		  offset: 115 115;
+		  relative: 0.5 0.50;
+		  offset: 80.75 15;
 	       }
 	    }
 	    description {
@@ -481,12 +540,12 @@ collections {
 	       inherit: "default" 0.0;
 	       color: 255 255 255 255;
 	       rel1 {
-		  relative: 0.5 0.5;
-		  offset: -119 -119;
+		  relative: 0.5 0.50;
+		  offset: -84.75 -159;
 	       }
 	       rel2 {
-		  relative: 0.5 0.5;
-		  offset: 120 120;
+		  relative: 0.5 0.50;
+		  offset: 85.75 20;
 	       }
 	    }
 	 }
@@ -504,6 +563,117 @@ collections {
 	       color: 0 0 0 255;
 	    }
 	 }
+         
+         part {
+            name: "textarea_clip";
+            mouse_events: 0;
+            type: RECT;
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 0;
+               rel1 {
+		  to_y: "bar_bg";
+		  relative: 0.2 1.0;
+		  offset: 0 5;
+	       }
+	       rel2 {
+		  to_y: "bar_bg";
+		  relative: 0.8 1.0;
+		  offset: -1 110;
+	       }
+            }
+            description {
+               state: "visible" 0.0;
+               inherit: "default" 0.0;
+               color: 255 255 255 255;
+            }
+         }
+
+	 part {
+	    name: "textarea_bg";
+            clip_to: "textarea_clip";
+	    description {
+	       state: "default" 0.0;
+	       align: 0.5 0.0;
+	       rel1 {
+		  to_y: "bar_bg";
+		  relative: 0.2 1.0;
+		  offset: 0 5;
+	       }
+	       rel2 {
+		  to_y: "bar_bg";
+		  relative: 0.8 1.0;
+		  offset: -1 110;
+	       }
+	       image {
+		  normal: "inset.png";
+		  border: 14 14 14 14;
+	       }
+	    }
+	 }
+         
+         part { 
+            name: "text_clip";
+            type: "RECT";
+            clip_to: "textarea_clip";
+            description {
+               state: "default" 0.0;
+               rel1 {
+                  to: "textarea_clip";
+                  offset: 0 5;
+               }
+               rel2 {
+                  to: "textarea_clip";
+                  offset: 0 0;
+               }
+            }
+         }
+
+         part {
+           name: "textarea";
+           clip_to: "text_clip";
+           type: TEXTBLOCK;
+           description {
+             state: "default" 0.0;
+             align: 0.5 0.0;
+             text {
+               style: "verbose";
+             }
+             rel1 {
+                to: "textarea_bg";
+                relative: 0.0 0.85;
+                offset: 5 5;
+             }
+             rel2 {
+                to: "textarea_bg";
+                relative: 0.85 1.0;
+                offset: -5 -5;
+             }
+           }
+         }
+         
+         part {
+           name: "statusarea";
+           clip_to: "text_clip";
+           type: TEXTBLOCK;
+           description {
+             state: "default" 0.0;
+             align: 0.5 0.0;
+             text {
+               style: "status";
+             }
+             rel1 {
+                to: "textarea_bg";
+                relative: 0.85 0.85;
+                offset: 5 5;
+             }
+             rel2 {
+                to: "textarea_bg";
+                relative: 1.0 1.0;
+                offset: -5 -5;
+             }
+           }
+         }
       }
       
       programs {
@@ -647,6 +817,41 @@ collections {
 	    target: "bar";
 	    after: "pulsate_stop";
 	 }
+
+	 program {
+	    name: "text_enable";
+	    signal: "exquisite";
+	    source: "text_enable";
+	    action: STATE_SET "visible" 0.0;
+	    target: "textarea_clip";
+            transition: SINUSOIDAL 0.2;
+	 }
+
+	 program {
+	    name: "text_set";
+	    signal: "exquisite";
+	    source: "text_set";
+            script {
+               shift_text();
+            }  
+	 }
+
+         program {
+	    name: "text_clear";
+	    signal: "exquisite";
+	    source: "text_clear";
+	    action: STATE_SET "default" 0.0;
+	    target: "textarea_clip";
+            transition: LINEAR 0.25;
+            after: "text_clear2";
+         }
+         
+         program {
+            name: "text_clear2";
+            script {
+               reset_text();
+            }
+         }
       }
    }
 }
