@@ -36,7 +36,7 @@ create_test(Ewl_Container *box)
 	Ewl_Widget *button_check;
 
 	border = ewl_border_new();
-	ewl_border_label_set(EWL_BORDER(border), "box title");
+	ewl_border_label_set(EWL_BORDER(border), "Box Title");
 	ewl_container_child_append(EWL_CONTAINER(box), border);
 	ewl_widget_show(border);
 

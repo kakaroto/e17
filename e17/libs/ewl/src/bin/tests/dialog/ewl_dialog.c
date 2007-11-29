@@ -77,7 +77,7 @@ create_test(Ewl_Container *box)
 	ewl_widget_show(o);
 
 	o = ewl_button_new();
-	ewl_button_label_set(EWL_BUTTON(o), "Lanuch Dialog");
+	ewl_button_label_set(EWL_BUTTON(o), "Launch Dialog");
 	ewl_callback_append(o, EWL_CALLBACK_CLICKED, run_dialog, chain);
 	ewl_container_child_append(box, o);
 	ewl_widget_show(o);

@@ -53,7 +53,7 @@ create_test(Ewl_Container *box)
 	 */
 	for (i = 0; i < 20; i++) {
 		w = ewl_button_new();
-		ewl_button_label_set(EWL_BUTTON(w), "hide");
+		ewl_button_label_set(EWL_BUTTON(w), "Hide");
 		ewl_container_child_append(EWL_CONTAINER(c), w);
 		ewl_widget_layer_priority_set(w, i - 10);
 		ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
@@ -69,7 +69,7 @@ create_test(Ewl_Container *box)
 	 */
 	for (i = 0; i < 20; i++) {
 		w = ewl_button_new();
-		ewl_button_label_set(EWL_BUTTON(w), "show");
+		ewl_button_label_set(EWL_BUTTON(w), "Show");
 		ewl_container_child_append(EWL_CONTAINER(c), w);
 		ewl_widget_layer_priority_set(w, 10 - i);
 		ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
@@ -84,7 +84,7 @@ create_test(Ewl_Container *box)
 	 *  the dynamicly layered button
 	 */
 	w = ewl_button_new();
-	ewl_button_label_set(EWL_BUTTON(w), "up/down");
+	ewl_button_label_set(EWL_BUTTON(w), "Up/Down");
 	ewl_container_child_append(EWL_CONTAINER(c), w);
 	ewl_widget_layer_priority_set(w, 3);
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
@@ -97,7 +97,7 @@ create_test(Ewl_Container *box)
 	 * the disabled button
 	 */
 	w = ewl_button_new();
-	ewl_button_label_set(EWL_BUTTON(w), "disabled");
+	ewl_button_label_set(EWL_BUTTON(w), "Disabled");
 	ewl_widget_layer_priority_set(w, 2);
 	ewl_container_child_append(EWL_CONTAINER(c), w);
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);

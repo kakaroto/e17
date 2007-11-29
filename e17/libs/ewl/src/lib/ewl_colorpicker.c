@@ -110,12 +110,12 @@ ewl_colorpicker_init(Ewl_Colorpicker *cp)
 		Ewl_Color_Mode mode;
 		int max;
 	} modes[] = {
-		{"h", EWL_COLOR_MODE_HSV_HUE, 360},
-		{"s", EWL_COLOR_MODE_HSV_SATURATION, 100},
-		{"v", EWL_COLOR_MODE_HSV_VALUE, 100},
-		{"r", EWL_COLOR_MODE_RGB_RED, 255},
-		{"g", EWL_COLOR_MODE_RGB_GREEN, 255},
-		{"b", EWL_COLOR_MODE_RGB_BLUE, 255},
+		{"H", EWL_COLOR_MODE_HSV_HUE, 360},
+		{"S", EWL_COLOR_MODE_HSV_SATURATION, 100},
+		{"V", EWL_COLOR_MODE_HSV_VALUE, 100},
+		{"R", EWL_COLOR_MODE_RGB_RED, 255},
+		{"G", EWL_COLOR_MODE_RGB_GREEN, 255},
+		{"B", EWL_COLOR_MODE_RGB_BLUE, 255},
 		{NULL, EWL_COLOR_MODE_RGB_RED, 0}
 	};
 	const char *types[] = { "application/x-color", NULL };

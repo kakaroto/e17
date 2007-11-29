@@ -63,13 +63,13 @@ create_test(Ewl_Container *box)
 
 	/* fill the hbox with content */
 	w = ewl_button_new();
-	ewl_button_label_set(EWL_BUTTON(w), "append");
+	ewl_button_label_set(EWL_BUTTON(w), "Append");
 	ewl_container_child_append(EWL_CONTAINER(hbox), w);
 	ewl_callback_append(w, EWL_CALLBACK_CLICKED, child_append_cb, grid);
 	ewl_widget_show(w);
 
 	w = ewl_button_new();
-	ewl_button_label_set(EWL_BUTTON(w), "prepend");
+	ewl_button_label_set(EWL_BUTTON(w), "Prepend");
 	ewl_container_child_prepend(EWL_CONTAINER(hbox), w);
 	ewl_callback_append(w, EWL_CALLBACK_CLICKED, child_prepend_cb, grid);
 	ewl_widget_show(w);
@@ -85,7 +85,7 @@ create_test(Ewl_Container *box)
 	ewl_widget_show(w);
 
 	w = ewl_button_new();
-	ewl_button_label_set(EWL_BUTTON(w), "This row is 50px heigh");
+	ewl_button_label_set(EWL_BUTTON(w), "This row is 50px height");
 	ewl_container_child_append(EWL_CONTAINER(grid), w);
 	ewl_grid_child_position_set(EWL_GRID(grid), w, 1, 2, 3, 3);
 	ewl_callback_append(w, EWL_CALLBACK_CLICKED, button_clicked_cb, NULL);
@@ -93,7 +93,7 @@ create_test(Ewl_Container *box)
 
 	w = ewl_entry_new();
 	ewl_text_text_set(EWL_TEXT(w), "This row use the\n"
-					"preferred heigth");
+					"preferred height");
 	ewl_container_child_append(EWL_CONTAINER(grid), w);
 	ewl_grid_child_position_set(EWL_GRID(grid), w, 3, 4, 2, 2);
 	ewl_widget_show(w);
@@ -107,7 +107,7 @@ child_append_cb(Ewl_Widget *w __UNUSED__, void *e __UNUSED__, void *d)
 	Ewl_Widget *button;
 
 	button = ewl_button_new();
-	ewl_button_label_set(EWL_BUTTON(button), "append");
+	ewl_button_label_set(EWL_BUTTON(button), "Append");
 	ewl_container_child_append(EWL_CONTAINER(d), button);
 	ewl_callback_append(button, EWL_CALLBACK_CLICKED, button_clicked_cb,
 					NULL);
@@ -120,7 +120,7 @@ child_prepend_cb(Ewl_Widget *w __UNUSED__, void *e __UNUSED__, void *d)
 	Ewl_Widget *button;
 
 	button = ewl_button_new();
-	ewl_button_label_set(EWL_BUTTON(button), "prepend");
+	ewl_button_label_set(EWL_BUTTON(button), "Prepend");
 	ewl_container_child_prepend(EWL_CONTAINER(d), button);
 	ewl_callback_append(button, EWL_CALLBACK_CLICKED, button_clicked_cb,
 					NULL);

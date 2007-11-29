@@ -23,7 +23,7 @@ static int
 create_test(Ewl_Container *box)
 {
 	Ewl_Widget *table, *button[10];
-	char *headers[] = { "one", "two", "three", "four" };
+	char *headers[] = { "One", "Two", "Three", "Four" };
 
 	table = ewl_table_new(4, 5, headers);
 	ewl_container_child_append(box, table);

@@ -32,7 +32,7 @@ create_test(Ewl_Container *box)
 	ewl_widget_show(vbox);
 
 	o = ewl_button_new();
-	ewl_button_label_set(EWL_BUTTON(o), "launch modal window");
+	ewl_button_label_set(EWL_BUTTON(o), "Launch modal window");
 	ewl_container_child_append(EWL_CONTAINER(vbox), o);
 	ewl_callback_append(o, EWL_CALLBACK_CLICKED, ewl_widget_cb_click, NULL);
 	ewl_widget_show(o);
@@ -59,7 +59,7 @@ ewl_widget_cb_click(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 	ewl_widget_show(vbox);
 
 	o = ewl_button_new();
-	ewl_button_label_set(EWL_BUTTON(o), "go modal");
+	ewl_button_label_set(EWL_BUTTON(o), "Go modal");
 	ewl_callback_append(o, EWL_CALLBACK_CLICKED,
 					ewl_widget_cb_go_modal, emb);
 	ewl_container_child_append(EWL_CONTAINER(vbox), o);

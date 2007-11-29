@@ -3,7 +3,7 @@
 #define EWL_GRID_H
 
 /**
- * @addtogroup Ewl_Grid Ewl_Grid The ewl grid widget
+ * @addtogroup Ewl_Grid: Ewl_Grid The ewl grid widget
  * @brief The Ewl Grid widget
  *
  * @remarks Inherits from Ewl_Container.

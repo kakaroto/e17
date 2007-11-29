@@ -110,15 +110,15 @@ notebook_change_align(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	char *pos;
 
 	pos = data;
-	if (!strcmp(pos, "top"))
+	if (!strcmp(pos, "Top"))
 		align = EWL_FLAG_ALIGN_TOP;
-	else if (!strcmp(pos, "bottom"))
+	else if (!strcmp(pos, "Bottom"))
 		align = EWL_FLAG_ALIGN_BOTTOM;
-	else if (!strcmp(pos, "left"))
+	else if (!strcmp(pos, "Left"))
 		align = EWL_FLAG_ALIGN_LEFT;
-	else if (!strcmp(pos, "right"))
+	else if (!strcmp(pos, "Right"))
 		align = EWL_FLAG_ALIGN_RIGHT;
-	else if (!strcmp(pos, "center"))
+	else if (!strcmp(pos, "Center"))
 		align = EWL_FLAG_ALIGN_CENTER;
 
 	n = ewl_widget_name_find("notebook");
@@ -134,13 +134,13 @@ notebook_change_position(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	char *pos;
 
 	pos = data;
-	if (!strcmp(pos, "top"))
+	if (!strcmp(pos, "Top"))
 		align = EWL_POSITION_TOP;
-	else if (!strcmp(pos, "bottom"))
+	else if (!strcmp(pos, "Bottom"))
 		align = EWL_POSITION_BOTTOM;
-	else if (!strcmp(pos, "left"))
+	else if (!strcmp(pos, "Left"))
 		align = EWL_POSITION_LEFT;
-	else if (!strcmp(pos, "right"))
+	else if (!strcmp(pos, "Right"))
 		align = EWL_POSITION_RIGHT;
 
 	n = ewl_widget_name_find("notebook");
@@ -210,8 +210,8 @@ create_main_page(void)
 {
 	Ewl_Widget *box2, *o, *o2 = NULL, *body, *border;
 	unsigned int i;
-	char *alignment[] = {"top", "left", "center", "right", "bottom"};
-	char *position[] = {"top", "left", "right", "bottom"};
+	char *alignment[] = {"Top", "Left", "Center", "Right", "Bottom"};
+	char *position[] = {"Top", "Left", "Right", "Bottom"};
 
 	/* box to hold everything */
 	body = ewl_vbox_new();
@@ -247,7 +247,7 @@ create_main_page(void)
 		if (o2) ewl_radiobutton_chain_set(EWL_RADIOBUTTON(o),
 							EWL_RADIOBUTTON(o2));
 
-		if (!strcmp(alignment[i], "center"))
+		if (!strcmp(alignment[i], "Center"))
 			ewl_checkbutton_checked_set(EWL_CHECKBUTTON(o), TRUE);
 
 		ewl_widget_show(o);
@@ -274,7 +274,7 @@ create_main_page(void)
 		if (o2) ewl_radiobutton_chain_set(EWL_RADIOBUTTON(o),
 							EWL_RADIOBUTTON(o2));
 
-		if (!strcmp(alignment[i], "top"))
+		if (!strcmp(alignment[i], "Top"))
 			ewl_checkbutton_checked_set(EWL_CHECKBUTTON(o), TRUE);
 
 		ewl_widget_show(o);
@@ -293,7 +293,7 @@ create_main_page(void)
 	ewl_widget_show(o);
 
 	o = ewl_checkbutton_new();
-	ewl_button_label_set(EWL_BUTTON(o), "homogeneous tabbar");
+	ewl_button_label_set(EWL_BUTTON(o), "Homogeneous tabbar");
 	ewl_container_child_append(EWL_CONTAINER(body), o);
 	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
 	ewl_callback_append(o, EWL_CALLBACK_CLICKED,

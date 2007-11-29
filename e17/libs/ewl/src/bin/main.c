@@ -410,7 +410,7 @@ statusbar_text_set(const char *text)
 	char info[1024];
 
 	stat = ewl_widget_name_find("statusbar");
-	snprintf(info, sizeof(info), "%s Information/Tests\n", text);
+	snprintf(info, sizeof(info), "%s Information/Tests", text);
 	ewl_statusbar_push(EWL_STATUSBAR(stat), info);
 }
 

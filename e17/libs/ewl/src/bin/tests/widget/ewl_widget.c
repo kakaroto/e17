@@ -203,14 +203,14 @@ create_test(Ewl_Container *box)
 	ewl_widget_show(b2);
 
 	o = ewl_button_new();
-	ewl_button_label_set(EWL_BUTTON(o), "first button");
+	ewl_button_label_set(EWL_BUTTON(o), "First button");
 	ewl_widget_name_set(o, "first_widget");
 	ewl_container_child_append(EWL_CONTAINER(b2), o);
 	ewl_callback_append(o, EWL_CALLBACK_CLICKED, ewl_widget_cb_first_click, NULL);
 	ewl_widget_show(o);
 
 	o = ewl_button_new();
-	ewl_button_label_set(EWL_BUTTON(o), "second button");
+	ewl_button_label_set(EWL_BUTTON(o), "Second button");
 	ewl_widget_name_set(o, "second_widget");
 	ewl_container_child_append(EWL_CONTAINER(b2), o);
 	ewl_callback_append(o, EWL_CALLBACK_CLICKED, ewl_widget_cb_second_click, NULL);
@@ -266,14 +266,14 @@ static void
 ewl_widget_cb_first_click(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 							void *data __UNUSED__)
 {
-	printf("first clicked\n");
+	printf("First clicked\n");
 }
 
 static void
 ewl_widget_cb_second_click(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 							void *data __UNUSED__)
 {
-	printf("second clicked\n");
+	printf("Second clicked\n");
 }
 
 static void

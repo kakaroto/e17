@@ -61,7 +61,7 @@ create_test(Ewl_Container *box)
 	o = ewl_entry_new();
 	ewl_text_text_set(EWL_TEXT(o), "The image below is copied from an\n"
 		       "evas buffer engine, and reacts because of events\n"
-		       "fed to it from the image widget");
+		       "fed to it from the image widget.");
 	ewl_entry_editable_set(EWL_ENTRY(o), FALSE);
 	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_HFILL);
 	ewl_container_child_append(EWL_CONTAINER(box), o);
