@@ -149,6 +149,8 @@ struct Ewl_Engine
 						suppled by the engine */
 };
 
+extern Ecore_Path_Group *ewl_engines_path;
+
 int 		 ewl_engines_init(void);
 void 		 ewl_engines_shutdown(void);
 
