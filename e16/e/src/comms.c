@@ -36,6 +36,7 @@ struct _client
    char               *clientname;
    char               *version;
    char               *info;
+   char                replied;
 };
 
 static Ecore_List  *client_list = NULL;
@@ -207,8 +208,15 @@ ClientIpcReply(void *data, const char *str)
    Client             *c = (Client *) data;
 
    if (!str)
-      str = "";
+     {
+	/* Don't send empty replies (ack's) if we ever have replied to this
+	 * client. Without this hack communication with e.g. epplets fails. */
+	if (c->replied)
+	   return;
+	str = "";
+     }
    CommsSend(c, str);
+   c->replied = 1;
 }
 
 static void
