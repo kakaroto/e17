@@ -213,7 +213,8 @@ ewl_callback_insert(Ewl_Widget *w, unsigned int t,
 		{
 			memmove(w->callbacks[place].list + (pos + 1),
 				w->callbacks[place].list + pos,
-				(w->callbacks[place].len - 1) * sizeof(void *));
+				(w->callbacks[place].len - pos - 1)
+					* sizeof(void *));
 		}
 		w->callbacks[place].list[pos] = cb;
 	}
