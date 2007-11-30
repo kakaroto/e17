@@ -298,7 +298,7 @@ appearance_test_set_get(char *buf, int len)
 
 	ewl_widget_appearance_set(w, "my_appearance");
 	if (strcmp("my_appearance", ewl_widget_appearance_get(w)))
-		snprintf(buf, len, "appearance_get dosen't match appearance_set");
+		snprintf(buf, len, "appearance_get doesn't match appearance_set");
 	else
 		ret = 1;
 
@@ -317,7 +317,7 @@ inheritance_test_set_get(char *buf, int len)
 
 	ewl_widget_inherit(w, my_class);
 	if (!ewl_widget_type_is(w, my_class))
-		snprintf(buf, len, "inheritance dosen't contain correct type");
+		snprintf(buf, len, "inheritance doesn't contain correct type");
 	else
 		ret = 1;
 
