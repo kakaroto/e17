@@ -930,21 +930,30 @@ ewl_tree2_cb_selected_change(Ewl_MVC *mvc)
 }
 
 static Ewl_Widget *
-ewl_tree2_widget_at(Ewl_MVC *mvc, void *data __UNUSED__, unsigned int row,
+ewl_tree2_widget_at(Ewl_MVC *mvc, void *data, unsigned int row,
 			unsigned int column)
 {
 	Ewl_Widget *r, *w;
 	Ewl_Tree2 *tree;
+	Ewl_Container *c;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET(mvc, NULL);
 	DCHECK_TYPE_RET(mvc, EWL_TREE2_TYPE, NULL);
 
 	tree = EWL_TREE2(mvc);
-	r = ewl_container_child_get(EWL_CONTAINER(tree->rows), row);
+	
+	if (data != ewl_mvc_data_get(mvc))
+	{
+		DWARNING("This function doesn't handle tree branches yet");
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
+	}
+	else
+		c = EWL_CONTAINER(tree->rows);
 
+	r = ewl_container_child_get(c, row);
 	if (tree->type == EWL_TREE_SELECTION_TYPE_ROW)
-		w = r;
+		w = EWL_WIDGET(c);
 	else
 		w = ewl_container_child_get(EWL_CONTAINER(r), column);
 
