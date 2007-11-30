@@ -58,6 +58,7 @@ create_test(Ewl_Container *box)
 	ewl_widget_show(box2);
 
 	vbox = ewl_vbox_new();
+	ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_VFILL);
 	ewl_container_child_append(EWL_CONTAINER(box2), vbox);
 	ewl_widget_show(vbox);
 
