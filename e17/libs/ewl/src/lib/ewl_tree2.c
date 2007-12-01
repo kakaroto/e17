@@ -29,7 +29,7 @@ static void ewl_tree2_cb_selected_change(Ewl_MVC *mvc);
 static Ewl_Widget *ewl_tree2_widget_at(Ewl_MVC *mvc, void *data,
 					unsigned int row, unsigned int column);
 
-static void ewl_tree2_create_expansions_hash(Ewl_Tree2 *tree);
+static void ewl_tree2_expansions_hash_create(Ewl_Tree2 *tree);
 
 /**
  * @return Returns NULL on failure, a new tree widget on success.
@@ -384,7 +384,7 @@ ewl_tree2_row_expand(Ewl_Tree2 *tree, void *data, unsigned int row)
 
 	if (!tree->expansions)
 	{
-		ewl_tree2_create_expansions_hash(tree);
+		ewl_tree2_expansions_hash_create(tree);
 		exp = ecore_list_new();
 		created = 1;
 	}
@@ -961,7 +961,7 @@ ewl_tree2_widget_at(Ewl_MVC *mvc, void *data, unsigned int row,
 }
 
 static void
-ewl_tree2_create_expansions_hash(Ewl_Tree2 *tree)
+ewl_tree2_expansions_hash_create(Ewl_Tree2 *tree)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(tree);
