@@ -1218,7 +1218,10 @@ ewl_mvc_highlight(Ewl_MVC *mvc, Ewl_Container *c,
 
 			idx = EWL_SELECTION_IDX(sel);
 			w = widget(mvc, sel->data, idx->row, idx->column);
-			ewl_mvc_highlight_do(mvc, c, sel, w);
+			/* w can be NULL, for example when the selected
+			 * row or widget is hidden or collapsed */
+			if (w)
+				ewl_mvc_highlight_do(mvc, c, sel, w);
 		}
 		else
 		{
