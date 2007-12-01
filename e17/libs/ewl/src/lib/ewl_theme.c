@@ -550,7 +550,7 @@ ewl_theme_path_find(const char *name)
 	 * available.
 	 */
 	if (home) {
-		snprintf(theme_tmp_path, PATH_MAX, "%s/.e/ewl/themes/%s.edj",
+		snprintf(theme_tmp_path, PATH_MAX, "%s/.ewl/themes/%s.edj",
 			home, name);
 		if (((stat(theme_tmp_path, &st)) == 0) && S_ISREG(st.st_mode))
 			theme_found_path = strdup(theme_tmp_path);
