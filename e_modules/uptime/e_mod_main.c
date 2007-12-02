@@ -64,6 +64,7 @@ static const char  *_gc_id_new (void);
 static void _ut_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
 			       void *event_info);
 static void _ut_menu_cb_configure (void *data, E_Menu * m, E_Menu_Item * mi);
+static void _ut_menu_cb_post (void *data, E_Menu * m);
 static Config_Item *_ut_config_item_get (const char *id);
 static Uptime *_ut_new (Evas * evas);
 static void _ut_free (Uptime * ut);
@@ -190,16 +191,21 @@ _ut_cb_mouse_down (void *data, Evas * e, Evas_Object * obj, void *event_info)
   Instance *inst;
   Evas_Event_Mouse_Down *ev;
 
+  if (ut_config->menu != NULL)
+    return;
+
   inst = data;
   ev = event_info;
 
-  if ((ev->button == 3) && (!inst->gcc->menu))
+  if (ev->button == 3)
     {
       E_Menu *mn;
       E_Menu_Item *mi;
       int x, y, w, h;
 
       mn = e_menu_new ();
+      e_menu_post_deactivate_callback_set (mn, _ut_menu_cb_post, inst);
+      ut_config->menu = mn;
 
       mi = e_menu_item_new (mn);
       e_menu_item_label_set (mi, D_ ("Configuration"));
@@ -219,6 +225,15 @@ _ut_cb_mouse_down (void *data, Evas * e, Evas_Object * obj, void *event_info)
       evas_event_feed_mouse_up (inst->gcc->gadcon->evas, ev->button,
 				EVAS_BUTTON_NONE, ev->timestamp, NULL);
     }
+}
+
+static void
+_ut_menu_cb_post (void *data, E_Menu * m)
+{
+  if (ut_config->menu == NULL)
+    return;
+  e_object_del (E_OBJECT (ut_config->menu));
+  ut_config->menu = NULL;
 }
 
 static void
@@ -352,6 +367,12 @@ e_modapi_shutdown (E_Module * m)
   if (ut_config->config_dialog != NULL)
     e_object_del (E_OBJECT (ut_config->config_dialog));
 
+  if (ut_config->menu)
+    {
+      e_menu_post_deactivate_callback_set (ut_config->menu, NULL, NULL);
+      e_object_del (E_OBJECT (ut_config->menu));
+      ut_config->menu = NULL;
+    }
   while (ut_config->items)
     {
       Config_Item *ci;

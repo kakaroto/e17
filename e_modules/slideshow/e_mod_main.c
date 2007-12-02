@@ -37,6 +37,7 @@ static const char      *_gc_id_new   (void);
 
 static void         _slide_cb_mouse_down     (void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void         _slide_menu_cb_configure (void *data, E_Menu *m, E_Menu_Item *mi);
+static void         _slide_menu_cb_post      (void *data, E_Menu *m);
 static Config_Item *_slide_config_item_get   (const char *id);
 static Slideshow   *_slide_new               (Evas *evas);
 static void         _slide_free              (Slideshow *ss);
@@ -169,13 +170,15 @@ _slide_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 
    inst = data;
    ev = event_info;
-   if ((ev->button == 3) && (!inst->gcc->menu))
+   if ((ev->button == 3) && (!slide_config->menu))
      {
 	E_Menu *mn;
 	E_Menu_Item *mi;
 	int x, y, w, h;
 
 	mn = e_menu_new();
+	e_menu_post_deactivate_callback_set(mn, _slide_menu_cb_post, inst);
+	slide_config->menu = mn;
 
 	mi = e_menu_item_new(mn);
 	e_menu_item_label_set(mi, D_("Configuration"));
@@ -205,6 +208,15 @@ _slide_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
      }
    else if (ev->button == 1)
      _slide_cb_check(inst);
+}
+
+static void
+_slide_menu_cb_post(void *data, E_Menu *m)
+{
+   if (!slide_config->menu)
+     return;
+   e_object_del(E_OBJECT(slide_config->menu));
+   slide_config->menu = NULL;
 }
 
 static void
@@ -345,6 +357,12 @@ e_modapi_shutdown(E_Module *m)
 
    if (slide_config->config_dialog)
      e_object_del(E_OBJECT(slide_config->config_dialog));
+   if (slide_config->menu)
+     {
+	e_menu_post_deactivate_callback_set(slide_config->menu, NULL, NULL);
+	e_object_del(E_OBJECT(slide_config->menu));
+	slide_config->menu = NULL;
+     }
    while (slide_config->items)
      {
 	Config_Item *ci;

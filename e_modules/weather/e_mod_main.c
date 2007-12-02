@@ -64,6 +64,7 @@ static void _weather_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
 				    void *event_info);
 static void _weather_menu_cb_configure (void *data, E_Menu * m,
 					E_Menu_Item * mi);
+static void _weather_menu_cb_post (void *data, E_Menu * m);
 static int _weather_cb_check (void *data);
 static Config_Item *_weather_config_item_get (const char *id);
 static Weather *_weather_new (Evas * evas);
@@ -207,13 +208,15 @@ _weather_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
 
   inst = data;
   ev = event_info;
-  if ((ev->button == 3) && (!inst->gcc->menu))
+  if ((ev->button == 3) && (!weather_config->menu))
     {
       E_Menu *mn;
       E_Menu_Item *mi;
       int x, y, w, h;
 
       mn = e_menu_new ();
+      e_menu_post_deactivate_callback_set (mn, _weather_menu_cb_post, inst);
+      weather_config->menu = mn;
 
       mi = e_menu_item_new (mn);
       e_menu_item_label_set (mi, D_ ("Configuration"));
@@ -233,6 +236,15 @@ _weather_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
       evas_event_feed_mouse_up (inst->gcc->gadcon->evas, ev->button,
 				EVAS_BUTTON_NONE, ev->timestamp, NULL);
     }
+}
+
+static void
+_weather_menu_cb_post (void *data, E_Menu * m)
+{
+  if (!weather_config->menu)
+    return;
+  e_object_del (E_OBJECT (weather_config->menu));
+  weather_config->menu = NULL;
 }
 
 static void
@@ -356,6 +368,12 @@ e_modapi_shutdown (E_Module * m)
 
   if (weather_config->config_dialog)
     e_object_del (E_OBJECT (weather_config->config_dialog));
+  if (weather_config->menu)
+    {
+      e_menu_post_deactivate_callback_set (weather_config->menu, NULL, NULL);
+      e_object_del (E_OBJECT (weather_config->menu));
+      weather_config->menu = NULL;
+    }
 
   while (weather_config->items)
     {

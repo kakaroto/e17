@@ -14,6 +14,7 @@
 #endif
 
 static void _bytes_to_string(bytes_t bytes, char *string, int size);
+static void _cb_post(void *data, E_Menu *m);
 static void _cb_configure(void *data, E_Menu *m, E_Menu_Item *mi);
 
 #ifdef __FreeBSD__
@@ -151,15 +152,17 @@ _cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
 	     if (x) ecore_exe_free(x);
 	  }
      }
-   else if ((ev->button == 1) && (!inst->gcc->menu))
+   else if ((ev->button == 1) && (!cfg->menu))
      e_gadcon_popup_toggle_pinned(inst->popup);
-   else if ((ev->button == 3) && (!inst->gcc->menu)) 
+   else if ((ev->button == 3) && (!cfg->menu)) 
      {
 	E_Menu *mn;
 	E_Menu_Item *mi;
 	int x, y;
 	
 	mn = e_menu_new();
+	e_menu_post_deactivate_callback_set(mn, _cb_post, inst);
+	cfg->menu = mn;
 	
 	mi = e_menu_item_new(mn);
 	e_menu_item_label_set(mi, D_("Configuration"));
@@ -234,6 +237,15 @@ _bytes_to_string(bytes_t bytes, char *string, int size)
      snprintf(string, size, "%lu KB", (bytes / 1024));
    else
      snprintf(string, size, "%lu B", bytes);
+}
+
+static void 
+_cb_post(void *data, E_Menu *m) 
+{
+   if (!cfg->menu) return;
+   e_menu_post_deactivate_callback_set(cfg->menu, NULL, NULL);
+   e_object_del(E_OBJECT(cfg->menu));
+   cfg->menu = NULL;
 }
 
 static void 

@@ -52,6 +52,12 @@ e_modapi_shutdown(E_Module *m)
    _gc_unregister();
    
    if (cfg->cfd) e_object_del(E_OBJECT(cfg->cfd));
+   if (cfg->menu) 
+     {
+	e_menu_post_deactivate_callback_set(cfg->menu, NULL, NULL);
+	e_object_del(E_OBJECT(cfg->menu));
+	cfg->menu = NULL;
+     }
    
    while (cfg->items) 
      {

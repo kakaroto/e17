@@ -221,7 +221,7 @@ _mail_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
 
   if (!inst)
     return;
-  if ((ev->button == 3) && (!inst->gcc->menu))
+  if ((ev->button == 3) && (!mail_config->menu))
     {
       E_Menu *mn, *sn;
       E_Menu_Item *mi;
@@ -229,6 +229,8 @@ _mail_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
       char buf[1024];
 
       mn = e_menu_new ();
+      e_menu_post_deactivate_callback_set (mn, _mail_menu_cb_post, inst);
+      mail_config->menu = mn;
 
       if ((inst->ci->boxes) && (evas_list_count (inst->ci->boxes) > 0))
 	{
@@ -274,7 +276,7 @@ _mail_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
 			     e_util_zone_current_get (e_manager_current_get
 						      ()), x + ev->output.x,
 			     y + ev->output.y, 1, 1,
-			     E_MENU_POP_DIRECTION_AUTO, ev->timestamp);
+			     E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
       evas_event_feed_mouse_up (inst->gcc->gadcon->evas, ev->button,
 				EVAS_BUTTON_NONE, ev->timestamp, NULL);
     }
@@ -340,6 +342,15 @@ _mail_cb_mouse_out (void *data, Evas * e, Evas_Object * obj, void *event_info)
        e_object_del (E_OBJECT (inst->popup));
        inst->popup = NULL;
     }
+}
+
+static void
+_mail_menu_cb_post (void *data, E_Menu * m)
+{
+  if (!mail_config->menu)
+    return;
+  e_object_del (E_OBJECT (mail_config->menu));
+  mail_config->menu = NULL;
 }
 
 static void
@@ -484,6 +495,12 @@ e_modapi_shutdown (E_Module * m)
 
   if (mail_config->config_dialog)
     e_object_del (E_OBJECT (mail_config->config_dialog));
+  if (mail_config->menu)
+    {
+      e_menu_post_deactivate_callback_set (mail_config->menu, NULL, NULL);
+      e_object_del (E_OBJECT (mail_config->menu));
+      mail_config->menu = NULL;
+    }
   while (mail_config->items)
     {
       Config_Item *ci;

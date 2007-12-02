@@ -45,6 +45,7 @@ static const char *_gc_id_new (void);
 static void _ss_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
 			       void *event_info);
 static void _ss_menu_cb_configure (void *data, E_Menu * m, E_Menu_Item * mi);
+static void _ss_menu_cb_post (void *data, E_Menu * m);
 static Config_Item *_ss_config_item_get (const char *id);
 static Screenshot *_ss_new (Evas * evas);
 static void _ss_free (Screenshot * ss);
@@ -161,13 +162,15 @@ _ss_cb_mouse_down (void *data, Evas * e, Evas_Object * obj, void *event_info)
 
   inst = data;
   ev = event_info;
-  if ((ev->button == 3) && (!inst->gcc->menu))
+  if ((ev->button == 3) && (!ss_config->menu))
     {
       E_Menu *mn;
       E_Menu_Item *mi;
       int x, y, w, h;
 
       mn = e_menu_new ();
+      e_menu_post_deactivate_callback_set (mn, _ss_menu_cb_post, inst);
+      ss_config->menu = mn;
 
       mi = e_menu_item_new (mn);
       e_menu_item_label_set (mi, D_ ("Configuration"));
@@ -183,12 +186,21 @@ _ss_cb_mouse_down (void *data, Evas * e, Evas_Object * obj, void *event_info)
 			     e_util_zone_current_get (e_manager_current_get
 						      ()), x + ev->output.x,
 			     y + ev->output.y, 1, 1,
-			     E_MENU_POP_DIRECTION_AUTO, ev->timestamp);
+			     E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
       evas_event_feed_mouse_up (inst->gcc->gadcon->evas, ev->button,
 				EVAS_BUTTON_NONE, ev->timestamp, NULL);
     }
   else if ((ev->button == 1) && (inst))
     _ss_handle_mouse_down (inst);
+}
+
+static void
+_ss_menu_cb_post (void *data, E_Menu * m)
+{
+  if (!ss_config->menu)
+    return;
+  e_object_del (E_OBJECT (ss_config->menu));
+  ss_config->menu = NULL;
 }
 
 static void
@@ -380,6 +392,12 @@ e_modapi_shutdown (E_Module * m)
 
   if (ss_config->config_dialog)
     e_object_del (E_OBJECT (ss_config->config_dialog));
+  if (ss_config->menu)
+    {
+      e_menu_post_deactivate_callback_set (ss_config->menu, NULL, NULL);
+      e_object_del (E_OBJECT (ss_config->menu));
+      ss_config->menu = NULL;
+    }
 
   while (ss_config->items)
     {
@@ -396,9 +414,11 @@ e_modapi_shutdown (E_Module * m)
 	evas_stringshare_del (ci->app);
       ss_config->items =
 	evas_list_remove_list (ss_config->items, ss_config->items);
-       E_FREE(ci);
+      free (ci);
+      ci = NULL;
     }
-   E_FREE(ss_config);
+  free (ss_config);
+  ss_config = NULL;
   E_CONFIG_DD_FREE (conf_item_edd);
   E_CONFIG_DD_FREE (conf_edd);
   return 1;

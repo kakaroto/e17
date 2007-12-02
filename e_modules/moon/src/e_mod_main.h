@@ -25,6 +25,7 @@ struct _Config
    Evas_List *faces;
 
    E_Config_Dialog *config_dialog;
+   E_Menu          *menu;
 };
 
 EAPI extern E_Module_Api e_modapi;

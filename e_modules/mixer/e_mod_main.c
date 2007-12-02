@@ -33,6 +33,7 @@ static void         _mixer_simple_mute_toggle   (Mixer *mixer, Config_Item *ci);
 static void         _mixer_mute_toggle          (Mixer *mixer, Config_Item *ci, int channel_id);
 
 static Config_Item *_mixer_config_item_get   (void *data, const char *id);
+static void         _mixer_menu_cb_post      (void *data, E_Menu *m);
 static void         _mixer_menu_cb_configure (void *data, E_Menu *m, E_Menu_Item *mi);
 static void         _mixer_cb_mouse_down     (void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void         _mixer_cb_mouse_wheel    (void *data, Evas *e, Evas_Object *obj, void *event_info);
@@ -254,7 +255,7 @@ _mixer_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
    if (!inst) return;
 
    ev = event_info;
-   if ((ev->button == 3) && (!inst->gcc->menu))
+   if ((ev->button == 3) && (!mixer_config->menu))
      {
 	E_Menu      *mn;
 	E_Menu_Item *mi;
@@ -264,6 +265,8 @@ _mixer_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 	zone = e_util_zone_current_get(e_manager_current_get());
 	
 	mn = e_menu_new();
+	e_menu_post_deactivate_callback_set(mn, _mixer_menu_cb_post, inst);
+	mixer_config->menu = mn;
 
 	mi = e_menu_item_new(mn);
 	e_menu_item_label_set(mi, D_("Configuration"));
@@ -311,6 +314,14 @@ _mixer_cb_mouse_wheel(void *data, Evas *e, Evas_Object *obj, void *event_info)
    vol = mixer->mix_sys->get_volume(mixer->inst->ci->card_id, mixer->inst->ci->channel_id);
    val = ((double)vol + dir * step);
    _mixer_simple_volume_change(mixer, mixer->inst->ci, val);
+}
+
+static void
+_mixer_menu_cb_post(void *data, E_Menu *m)
+{
+   if (!mixer_config->menu) return;
+   e_object_del(E_OBJECT(mixer_config->menu));
+   mixer_config->menu = NULL;
 }
 
 static void
@@ -544,6 +555,13 @@ e_modapi_shutdown(E_Module *m)
 
    if (mixer_config->config_dialog)
      e_object_del(E_OBJECT(mixer_config->config_dialog));
+
+   if (mixer_config->menu)
+     {
+	e_menu_post_deactivate_callback_set(mixer_config->menu, NULL, NULL);
+	e_object_del(E_OBJECT(mixer_config->menu));
+	mixer_config->menu = NULL;
+     }
 
    while (mixer_config->items)
      {
