@@ -155,6 +155,26 @@ PROTO_engrave_group_part_remove(Engrave_Group *eg, Engrave_Part *ep)
   eg->parts = evas_list_remove(eg->parts,ep);
   engrave_part_parent_set(ep, NULL);
 }
+
+/**
+ * engrave_group_program_remove - remove the given program from the group 
+ * @param eg: The Engrave_Group to remove the program too.
+ * @param ep: The Engrave_Program to remove.
+ * 
+ * @return Returns no value.
+ */
+/*EAPI*/ void 
+PROTO_engrave_group_program_remove(Engrave_Group *eg, Engrave_Program *epr) {
+  Engrave_Group * group;
+  Evas_List * list;
+
+  if (!eg || !epr) return;
+
+  eg->programs = evas_list_remove(eg->programs, epr);
+  engrave_program_parent_set(epr, NULL);
+
+}
+
 /**
  * engrave_file_group_remove - remove the group from the given file
  * @param ef: The Engrave_File to remove the group too.
@@ -217,6 +237,33 @@ PROTO_engrave_part_lower(Engrave_Part *ep)
    //evas_object_lower(ep->object);
    return TRUE;
 }
+#if TEST_DIRECT_EDJE
+void
+DebugInfo(int full)
+{
+   Engrave_Group *gro;
+   Engrave_Part *par;
+   Engrave_Part_State *sta;
+   Evas_List *gp,*pp,*sp;
+
+   printf("\n\n ********************* D E B U G ***************************\n");
+   printf(" ** open file name: %s\n",Cur.edj_file_name->string);
+   printf(" ** edje_editor.edj: %s\n",EdjeFile);
+   if (etk_string_length_get(Cur.part))
+      printf(" ** Cur part: %s\n",Cur.part->string);
+   else
+      printf(" ** Cur group: (NULL)\n");
+   if (etk_string_length_get(Cur.state))
+      printf(" ** Cur state: %s\n",Cur.state->string);
+   else
+      printf(" ** Cur state: (NULL)\n");
+   /*if (Cur.epr)
+      printf(" ** Cur program: %s\n",Cur.epr->name);
+   else
+      printf(" ** Cur program: (NULL)\n");*/
+   printf(" *********************** E N D *****************************\n\n");
+}
+#else
 void
 DebugInfo(int full)
 {
@@ -282,6 +329,7 @@ DebugInfo(int full)
 
    printf(" *********************** E N D *****************************\n\n");
 }
+#endif
 void
 TestEdjeGroup(char *File,char *Group)
 {
@@ -424,8 +472,14 @@ main(int argc, char **argv)
    printf("Testing edje direct access!!...\n");
    printf("*********************************\n");
    char *file;
-    
+   double val = 1.2;
+   printf("TEST:\n");
    
+   setlocale(LC_NUMERIC,"C");
+   sscanf("3.2","%lf", &val);
+   printf("%f\n", val);
+   
+
    
    if (argc > 1)
    {
@@ -451,10 +505,8 @@ main(int argc, char **argv)
    ecore_evas_title_set(UI_ecore_MainWin, Cur.edj_file_name->string);
 
    Cur.part = etk_string_new("");
-   Cur.state = etk_string_new("");
+   Cur.state = NULL;
    Parts_Hash = NULL;
-   Cur.part = etk_string_new("");
-   Cur.state = etk_string_new("");   
   
    //Create the main edje object to edit
    edje_o = edje_object_add(UI_evas);

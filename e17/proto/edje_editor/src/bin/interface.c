@@ -71,29 +71,24 @@ AddStateToTree2(char *part_name, char *state_name)
 {
    Etk_Tree_Col *col1,*col2,*col3, *col4;
    Etk_Tree_Row *row;
-   
-   char buf[4096];
+
    const char *stock_key;
    col1 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 0);
    col2 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 1);
    col3 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 2);
    col4 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 3);
 
-   //snprintf(buf,4096,"%s %.2f",state->name,state->value);
-   snprintf(buf,4096,"%s",state_name);
+
    stock_key = etk_stock_key_get(ETK_STOCK_TEXT_X_GENERIC, ETK_STOCK_SMALL);
    row = etk_tree_row_append(ETK_TREE(UI_PartsTree),
             evas_hash_find(Parts_Hash,part_name),
-            col1, EdjeFile, "DESC.PNG", buf,
+            col1, EdjeFile, "DESC.PNG", state_name,
             col2, TRUE,
             col3, ROW_DESC,
             col4, part_name, NULL);
 
    etk_tree_row_data_set (row, state_name);
    //ecore_hash_set(hash, state, row);
-
-
-
 }
 #endif
 
@@ -221,12 +216,11 @@ PopulateTree2(void)
    parts = edje_edit_parts_list_get(edje_o);
    while(parts)
    {
-      //printf("  P: %s\n", (char*)parts->data);
+      printf("  P: %s\n", (char*)parts->data);
       AddPartToTree2((char*)parts->data);
-      states = edje_edit_part_states_get(edje_o, (char*)parts->data);
+      states = edje_edit_part_states_list_get(edje_o, (char*)parts->data);
       while(states)
       {
-         //printf("    s: %s\n", (char*)states->data);
          AddStateToTree2((char*)parts->data, (char*)states->data);
          states = states->next;
       }
@@ -782,10 +776,10 @@ UpdatePositionFrame(void)
    etk_signal_block("value-changed", ETK_OBJECT(UI_Rel2YOffsetSpinner), ETK_CALLBACK(on_RelOffsetSpinner_value_changed), (void*)REL2Y_SPINNER);
 
 #if TEST_DIRECT_EDJE
-   
    if (!etk_string_length_get(Cur.state)) return;
    if (!etk_string_length_get(Cur.part)) return;
    
+   //Set relative position spinners
    etk_range_value_set(ETK_RANGE(UI_Rel1XSpinner),
       edje_edit_state_rel1_relative_x_get(edje_o, Cur.part->string,Cur.state->string));
    etk_range_value_set(ETK_RANGE(UI_Rel1YSpinner),
@@ -794,6 +788,15 @@ UpdatePositionFrame(void)
       edje_edit_state_rel2_relative_x_get(edje_o, Cur.part->string,Cur.state->string));
    etk_range_value_set(ETK_RANGE(UI_Rel2YSpinner),
       edje_edit_state_rel2_relative_y_get(edje_o, Cur.part->string,Cur.state->string));
+   
+   etk_range_value_set (ETK_RANGE(UI_Rel1XOffsetSpinner),
+         edje_edit_state_rel1_offset_x_get(edje_o, Cur.part->string,Cur.state->string));
+   etk_range_value_set (ETK_RANGE(UI_Rel1YOffsetSpinner),
+         edje_edit_state_rel1_offset_y_get(edje_o, Cur.part->string,Cur.state->string));
+   etk_range_value_set (ETK_RANGE(UI_Rel2XOffsetSpinner),
+         edje_edit_state_rel2_offset_x_get(edje_o, Cur.part->string,Cur.state->string));
+   etk_range_value_set (ETK_RANGE(UI_Rel2YOffsetSpinner),
+         edje_edit_state_rel2_offset_y_get(edje_o, Cur.part->string,Cur.state->string));
 #else
    //Set relative position spinners
    etk_range_value_set (ETK_RANGE(UI_Rel1XSpinner), Cur.eps->rel1.relative.x);
@@ -1351,6 +1354,15 @@ create_toolbar(Etk_Toolbar_Orientation o)
                ETK_CALLBACK(on_RemoveMenu_item_activated), (void*)REMOVE_GROUP);
    etk_menu_shell_append(ETK_MENU_SHELL(UI_RemoveMenu), ETK_MENU_ITEM(menu_item));
 
+      
+   //program 
+   menu_item = etk_menu_item_image_new_with_label("Selected Program");
+   image = etk_image_new_from_edje(EdjeFile,"PROG.PNG");
+   etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
+   etk_signal_connect("activated", ETK_OBJECT(menu_item),
+               ETK_CALLBACK(on_RemoveMenu_item_activated), (void*)REMOVE_PROG);
+   etk_menu_shell_append(ETK_MENU_SHELL(UI_RemoveMenu), ETK_MENU_ITEM(menu_item));
+    
    sep = etk_vseparator_new();
    etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), sep, ETK_BOX_START);
 

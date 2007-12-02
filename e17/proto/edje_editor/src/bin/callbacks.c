@@ -15,6 +15,7 @@ extern void PROTO_engrave_part_state_image_tween_remove_nth(Engrave_Part_State *
 extern void PROTO_engrave_part_state_image_tween_remove_all(Engrave_Part_State *eps);
 extern int PROTO_engrave_part_raise(Engrave_Part *ep);
 extern int PROTO_engrave_part_lower(Engrave_Part *ep);
+extern void PROTO_engrave_group_program_remove(Engrave_Group *eg, Engrave_Program *epr);
 
 int current_color_object;
 
@@ -263,8 +264,7 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
       case ROW_PART:
 #if TEST_DIRECT_EDJE
          Cur.part = etk_string_set(Cur.part, etk_tree_row_data_get (row));
-         Cur.state = etk_string_clear(Cur.state);
-         Cur.state_n = 0;
+         Cur.state = NULL;
          
          edje_object_signal_emit(edje_ui,"description_frame_hide","edje_editor");
          edje_object_signal_emit(edje_ui,"position_frame_hide","edje_editor");
@@ -296,15 +296,17 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
          break;
       case ROW_DESC:
 #if TEST_DIRECT_EDJE
-         Cur.state = etk_string_set(Cur.state,etk_tree_row_data_get (row));
+         Cur.state = etk_string_set(Cur.state, etk_tree_row_data_get (row));
          //get the parent part of the row from the hidden col
          etk_tree_row_fields_get(row,
             etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 3),&part,
             NULL);
          Cur.part = etk_string_set(Cur.part, part);
        
-         UpdatePositionFrame();
+         edje_edit_part_selected_state_set(edje_o, Cur.part->string, Cur.state->string);  
        
+         UpdatePositionFrame();
+      
          edje_object_signal_emit(edje_ui,"part_frame_hide","edje_editor");
          edje_object_signal_emit(edje_ui,"group_frame_hide","edje_editor");
          edje_object_signal_emit(edje_ui,"program_frame_hide","edje_editor");
@@ -795,7 +797,36 @@ Etk_Bool
 on_RelOffsetSpinner_value_changed(Etk_Range *range, double value, void *data)
 {
    printf("Value Changed Signal on Offset Spinner EMITTED\n");
-
+#if TEST_DIRECT_EDJE
+   if (etk_string_length_get(Cur.state) && etk_string_length_get(Cur.part))
+   {
+      switch ((int)data)
+      {
+         case REL1X_SPINNER:
+            edje_edit_state_rel1_offset_x_set(edje_o, 
+                                    Cur.part->string, Cur.state->string,
+                                    etk_range_value_get(range));
+            break;
+         case REL1Y_SPINNER:
+            edje_edit_state_rel1_offset_y_set(edje_o, 
+                                    Cur.part->string, Cur.state->string,
+                                    etk_range_value_get(range));
+            break;
+         case REL2X_SPINNER:
+            edje_edit_state_rel2_offset_x_set(edje_o, 
+                                    Cur.part->string, Cur.state->string,
+                                    etk_range_value_get(range));
+            break;
+         case REL2Y_SPINNER:
+            edje_edit_state_rel2_offset_y_set(edje_o, 
+                                    Cur.part->string, Cur.state->string,
+                                    etk_range_value_get(range));
+            break;
+      }
+      ev_redraw();
+      //ev_draw_focus();
+   }
+#else
    if (Cur.eps)
    {
       switch ((int)data)
@@ -816,7 +847,7 @@ on_RelOffsetSpinner_value_changed(Etk_Range *range, double value, void *data)
       ev_redraw();
       //ev_draw_focus();
    }
-
+#endif
    return ETK_TRUE;
 }
 
@@ -1507,6 +1538,25 @@ on_RemoveMenu_item_activated(Etk_Object *object, void *data)
                if (row) etk_tree_row_select(row);
          }else{
             ShowAlert("No group selected");
+         }
+      break;
+      case REMOVE_PROG:
+         if (Cur.epr)
+         {
+            row = NULL;
+            row = etk_tree_row_next_get(ecore_hash_get(hash,Cur.epr));
+            if (!row) row = etk_tree_row_prev_get(ecore_hash_get(hash,Cur.epr));
+            etk_tree_row_delete(ecore_hash_get(hash,Cur.epr));
+            ecore_hash_remove (hash, Cur.epr);
+            PROTO_engrave_group_program_remove(Cur.eg, Cur.epr);
+            engrave_program_free(Cur.epr);
+
+            Cur.epr = NULL;
+
+            ev_redraw();
+            if (row) etk_tree_row_select(row);
+         }else{
+            ShowAlert("No program selected");
          }
       break;
    }

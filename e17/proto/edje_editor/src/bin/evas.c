@@ -194,10 +194,15 @@ ev_draw_focus(void)
 
    //printf("DRAW FOCUS\n");
 
-   if (Cur.ep && !Cur.ep->current_state)
-      Cur.ep->current_state = Cur.ep->states->data;
-
 #if TEST_DIRECT_EDJE
+   int o1x, o1y, o2x, o2y;
+   char *state;
+   
+   state = edje_edit_part_selected_state_get(edje_o, Cur.part->string);
+   o1x = edje_edit_state_rel1_offset_x_get(edje_o, Cur.part->string, state);
+   o1y = edje_edit_state_rel1_offset_y_get(edje_o, Cur.part->string, state);
+   o2x = edje_edit_state_rel2_offset_x_get(edje_o, Cur.part->string, state);
+   o2y = edje_edit_state_rel2_offset_y_get(edje_o, Cur.part->string, state);
    // If a part is selected draw the Focus Handler (only the yellow box)
    if (etk_string_length_get(Cur.part))//&& Cur.ep->current_state)
    {
@@ -206,14 +211,18 @@ ev_draw_focus(void)
        
       evas_object_geometry_get(EV_fakewin,&wx,&wy,NULL,NULL);
       
-      edje_edit_part_real_coord_get(edje_o, Cur.part->string, &px, &py, &pw, &ph);
+      edje_object_part_geometry_get(edje_o, Cur.part->string, &px, &py, &pw, &ph);
+      
+     
+      printf("CURRENT STATE: %s   -   %d\n",state,o1x);
+       
       evas_object_move(focus_handler,
-            px + wx - 2, //- Cur.ep->current_state->rel1.offset.x - 2,
-            py + wy - 2);// - Cur.ep->current_state->rel1.offset.y - 2);
+            px + wx - o1x - 2, //- Cur.ep->current_state->rel1.offset.x - 2,
+            py + wy - o1y - 2);// - Cur.ep->current_state->rel1.offset.y - 2);
 
       evas_object_resize(focus_handler,
-            pw + 2, // + Cur.ep->current_state->rel1.offset.x - Cur.ep->current_state->rel2.offset.x + 2,
-            ph + 2);// + Cur.ep->current_state->rel1.offset.y - Cur.ep->current_state->rel2.offset.y + 2);
+            pw + o1x - o2x + 2, // + Cur.ep->current_state->rel1.offset.x - Cur.ep->current_state->rel2.offset.x + 2,
+            ph + o1y - o2y + 2);// + Cur.ep->current_state->rel1.offset.y - Cur.ep->current_state->rel2.offset.y + 2);
       evas_object_raise (focus_handler);
       evas_object_show(focus_handler);
    }else
@@ -222,30 +231,29 @@ ev_draw_focus(void)
    }
    // if a part description is selected draw also the parent handlers (the red and blue lines)
    //if(Cur.eps && EV_fakewin && 0)
-   if (etk_string_length_get(Cur.state))
+   if (etk_string_length_get(Cur.state) && etk_string_length_get(Cur.part))
    {
       int px,py,pw,ph;
       printf("Draw parent Handlers\n");
 
       //Get the geometry of fakewin
       evas_object_geometry_get(EV_fakewin,&fx,&fy,&fw,&fh);
-      edje_edit_part_real_coord_get(edje_o, Cur.part->string, &px, &py, &pw, &ph);
+      edje_object_part_geometry_get(edje_o, Cur.part->string, &px, &py, &pw, &ph);
       printf("FW geom: %d %d %d %d\n",fx,fy,fw,fh);
       printf("PA geom: %d %d %d %d\n",px,py,pw,ph);
        
       //Draw rel1 & rel2 point
       evas_object_move (rel1_handler,
-            fx + px - 2,
-            fy + py - 2);
+            fx + px - o1x - 2,
+            fy + py - o1y - 2);
       evas_object_show(rel1_handler);
       evas_object_raise(rel1_handler);
 
       evas_object_move (rel2_handler,
-            fx + px + pw - 4,
-            fy + py + ph - 4);
+            fx + px + pw - o2x - 4,
+            fy + py + ph - o2y - 4);
       evas_object_show(rel2_handler);
       evas_object_raise(rel2_handler);
-
 
       ParentX = fx;
       ParentY = fy;
@@ -345,6 +353,9 @@ ev_draw_focus(void)
       evas_object_hide(rel2_handler);
    }
 #else
+   if (Cur.ep && !Cur.ep->current_state)
+      Cur.ep->current_state = Cur.ep->states->data;
+   
    // If a part is selected draw the Focus Handler (only the yellow box)
    if (Cur.ep && Cur.ep->current_state)
    {

@@ -2,6 +2,7 @@
 #define INCLUSION_GUARD
 
 #include <Engrave.h>
+#include <Edje.h>
 #include <Ecore_Data.h>
 #include <Ecore_File.h>
 #include <Ecore_Evas.h>
@@ -67,6 +68,7 @@ enum various
    REMOVE_DESCRIPTION,
    REMOVE_PART,
    REMOVE_GROUP,
+   REMOVE_PROG,
    REL1X_SPINNER,
    REL1Y_SPINNER,
    REL2X_SPINNER,
@@ -115,8 +117,9 @@ struct Current_State
 #if TEST_DIRECT_EDJE
    Etk_String *part;
    Etk_String *state;
+   
    Etk_String *edj_file_name;
-   double *state_n;
+
 #endif
 }Cur;
 
