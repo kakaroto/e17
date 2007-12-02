@@ -24,6 +24,12 @@ static int insert_before_in_chain_test_call(char *buf, int len);
 static int delete_after_in_chain_test_call(char *buf, int len);
 static int delete_before_in_chain_test_call(char *buf, int len);
 static int delete_nothing_in_chain_test_call(char *buf, int len);
+static int custom_callback_test_add(char *buf, int len);
+static int custom_callback_test_unique(char *buf, int len);
+static int custom_callback_test_append(char *buf, int len);
+static int custom_callback_test_prepend(char *buf, int len);
+static int custom_callback_test_insert_after(char *buf, int len);
+static int custom_callback_test_del(char *buf, int len);
 
 /*
  * Callbacks for manipulating the tests.
@@ -53,8 +59,17 @@ static Ewl_Unit_Test callback_unit_tests[] = {
 		{"delete after during call", delete_after_in_chain_test_call, NULL, -1, 0},
 		{"delete before during call", delete_before_in_chain_test_call, NULL, -1, 0},
 		{"delete nothing during call", delete_nothing_in_chain_test_call, NULL, -1, 0},
+		{"create custom callback", custom_callback_test_add, NULL, -1, 0},
+		{"unique custom callback", custom_callback_test_unique, NULL, -1, 0},
+		{"append custom callback", custom_callback_test_append, NULL, -1, 0},
+		{"prepend custom callback", custom_callback_test_prepend, NULL, -1, 0},
+		{"insert after custom callback", custom_callback_test_insert_after, NULL, -1, 0},
+/*		{"delete custom callback", custom_callback_test_del, NULL, -1, 0}, */
 		{NULL, NULL, NULL, -1, 0}
 	};
+
+static unsigned int CALLBACK_CUSTOM_TYPE = 0;
+static int CALLBACK_CUSTOM_TYPE2 = 0;
 
 void
 test_info(Ewl_Test *test)
@@ -486,6 +501,135 @@ delete_nothing_in_chain_test_call(char *buf, int len)
 		ret = 1;
 	else
 		snprintf(buf, len, "callback function not called");
+
+	ewl_widget_destroy(w);
+
+	return ret;
+}
+
+/*
+ * Verify creating a custom callback type.
+ */
+static int
+custom_callback_test_add(char *buf, int len)
+{
+	int ret = 0;
+
+	CALLBACK_CUSTOM_TYPE = ewl_callback_type_add();
+	if (CALLBACK_CUSTOM_TYPE > EWL_CALLBACK_MAX)
+		ret = 1;
+	else
+		snprintf(buf, len, "callback type registration failed");
+
+	return ret;
+}
+
+/*
+ * Verify creating a custom callback type gets unique value.
+ */
+static int
+custom_callback_test_unique(char *buf, int len)
+{
+	int ret = 0;
+
+	CALLBACK_CUSTOM_TYPE2 = ewl_callback_type_add();
+	if (CALLBACK_CUSTOM_TYPE != CALLBACK_CUSTOM_TYPE2)
+		ret = 1;
+	else
+		snprintf(buf, len, "callback type not unique");
+
+	return ret;
+}
+
+/*
+ * Test appending and calling a callback of a custom type.
+ */
+static int
+custom_callback_test_append(char *buf, int len)
+{
+	Ewl_Widget *w;
+	int ret = 0;
+
+	w = ewl_widget_new();
+	ewl_callback_append(w, CALLBACK_CUSTOM_TYPE, base_callback, NULL);
+	ewl_callback_call(w, CALLBACK_CUSTOM_TYPE);
+
+	if ((long)ewl_widget_data_get(w, w) == 1)
+		ret = 1;
+	else
+		snprintf(buf, len, "callback function not called");
+
+	ewl_widget_destroy(w);
+
+	return ret;
+}
+
+/*
+ * Test prepending and calling a callback of a custom type.
+ */
+static int
+custom_callback_test_prepend(char *buf, int len)
+{
+	Ewl_Widget *w;
+	int ret = 0;
+
+	w = ewl_widget_new();
+	ewl_callback_prepend(w, CALLBACK_CUSTOM_TYPE, base_callback, NULL);
+	ewl_callback_call(w, CALLBACK_CUSTOM_TYPE);
+
+	if ((long)ewl_widget_data_get(w, w) == 1)
+		ret = 1;
+	else
+		snprintf(buf, len, "callback function not called");
+
+	ewl_widget_destroy(w);
+
+	return ret;
+}
+
+/*
+ * Test inserting and calling a callback of a custom type.
+ */
+static int
+custom_callback_test_insert_after(char *buf, int len)
+{
+	Ewl_Widget *w;
+	int ret = 0;
+
+	w = ewl_widget_new();
+	ewl_callback_prepend(w, CALLBACK_CUSTOM_TYPE, base_callback, NULL);
+	ewl_callback_insert_after(w, CALLBACK_CUSTOM_TYPE, differing_callback,
+			NULL, base_callback, NULL);
+	ewl_callback_call(w, CALLBACK_CUSTOM_TYPE);
+
+	if ((long)ewl_widget_data_get(w, w) == 2)
+		ret = 1;
+	else
+		snprintf(buf, len, "callback function not called");
+
+	ewl_widget_destroy(w);
+
+	return ret;
+}
+
+/*
+ * Test deleting and calling a callback of a custom type.
+ */
+static int
+custom_callback_test_del(char *buf, int len)
+{
+	Ewl_Widget *w;
+	int ret = 0;
+
+	w = ewl_widget_new();
+	ewl_callback_prepend(w, CALLBACK_CUSTOM_TYPE, base_callback, NULL);
+	ewl_callback_del(w, CALLBACK_CUSTOM_TYPE, base_callback);
+	ewl_callback_call(w, CALLBACK_CUSTOM_TYPE);
+
+	if ((long)ewl_widget_data_get(w, w) == 0)
+		ret = 1;
+	else
+		snprintf(buf, len, "callback function called");
 
 	ewl_widget_destroy(w);
 
