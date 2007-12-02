@@ -13,7 +13,7 @@
  */
 
 typedef void (*Enesim_Rasterizer_Vertex_Add)(void *r, float x, float y);
-typedef void (*Enesim_Rasterizer_Generate)(void *r, Enesim_Scanline *sl);
+typedef void (*Enesim_Rasterizer_Generate)(void *r, int sl);
 typedef void (*Enesim_Rasterizer_Delete)(void *r);
 typedef struct _Enesim_Rasterizer_Func
 {
@@ -29,12 +29,17 @@ typedef struct _Enesim_Rasterizer_Func
 
 struct _Enesim_Rasterizer
 {
-	Enesim_Rectangle 	boundaries;
-	Enesim_Rasterizer_Func 	*funcs;
-	void 			*data;
+	int                      types;
+	Enesim_Rectangle         boundaries;
+	Enesim_Scanline_Callback scanline_callback;
+	Enesim_Rasterizer_Func   *funcs;
+	void                     *data;
+	void                     *user_data;
 };
 
-Enesim_Rasterizer * enesim_rasterizer_new(void *data, Enesim_Rasterizer_Func *func,
-		Enesim_Rectangle boundaries);
+Enesim_Rasterizer * enesim_rasterizer_new(void *data, Enesim_Rasterizer_Func
+	*func, Enesim_Rectangle boundaries, int types);
+Enesim_Rasterizer * enesim_rasterizer_kiia8_new(Enesim_Rectangle boundaries);
+Enesim_Rasterizer * enesim_rasterizer_kiia16_new(Enesim_Rectangle boundaries);
 
 #endif

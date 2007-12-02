@@ -7,6 +7,7 @@
 #include "enesim_private.h"
 #include "rasterizer.h"
 #include "scanline.h"
+//#include "alias.h" // This header should be fixed
 
 /* Code based on the algorithm "Concave Polygon Scan Conversion" by 
  * Paul Heckbert from "Graphics Gems". 
@@ -129,8 +130,9 @@ static void _vertex_add(Cpsc *r, float x, float y)
 	r->num_vertices++;
 }
 
-static void _generate(Cpsc *r, Enesim_Scanline *sl)
+static void _generate(Cpsc *r, int sl)
 {
+	Enesim_Scanline_Alias alias;
 	Cpsc_Vertex 	*vertices;
 	Cpsc_Edge 	*aet;
 	int 		*sindex;
@@ -209,8 +211,11 @@ static void _generate(Cpsc *r, Enesim_Scanline *sl)
 			if (xl <= xr)
 			{
 				/* append a new scanline from xl to xr at y */
-				//printf("span from [%d] %d to %d, %d\n", y, xl, xr, j);
-				sl->funcs->add(sl->data, y, xl, xr, 255);
+				alias.y = y;
+				alias.x = xl;
+				alias.w = xr - xl + 1;
+				r->r->scanline_callback(&alias, r->r->user_data);
+				//sl->funcs->add(sl->data, y, xl, xr, 255);
 			}
 			aet[j].x += aet[j].dx;
 			aet[j + 1].x += aet[j + 1].dx;
@@ -246,7 +251,7 @@ EAPI Enesim_Rasterizer * enesim_rasterizer_cpsc_new(Enesim_Rectangle boundaries)
 	c = calloc(1, sizeof(Cpsc));
 	c->a = edata_array_new(c, EDATA_ARRAY_ALLOC(_a_alloc),
 		EDATA_ARRAY_FREE(_a_free));
-	r = enesim_rasterizer_new(c, &cpsc_func, boundaries);
+	r = enesim_rasterizer_new(c, &cpsc_func, boundaries, ENESIM_SCANLINE_ALIAS);
 	c->r = r;
 	return r;
 }

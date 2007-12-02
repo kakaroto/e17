@@ -24,10 +24,12 @@ typedef union _Enesim_Surface_Data
 } Enesim_Surface_Data;
 
 typedef void (*Span_Color_Func) (Enesim_Surface_Data *data, int off, DATA32 c, int w);
+typedef void (*Span_Color_Mask_Func) (Enesim_Surface_Data *data, int off, DATA32 c, int w, DATA8 *m);
 
 typedef struct _Surface_Func
 {
 	Span_Color_Func	sp_color;
+	Span_Color_Mask_Func sp_color_mask;
 } Surface_Rop_Func;
 
 typedef void (*Surface_Conv_Func) (Enesim_Surface_Data *sdata, Enesim_Surface_Data *ddata, int w, int h);

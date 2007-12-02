@@ -7,6 +7,10 @@
  * @defgroup Scanline_Internal_Group Scanline
  * @ingroup Enesim_Internal_Group
  * @{
+ * @todo
+ * - Remove this interface
+ * - Export all scanline implementations on Enesim.h so users can create
+ *   their own scanlines outside enesim and call a renderer on them
  */
 
 typedef void *(*Enesim_Scanline_Create)(void);

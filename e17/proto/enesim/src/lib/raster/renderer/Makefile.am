@@ -11,8 +11,8 @@ noinst_LTLIBRARIES = libenesim_renderer.la
 
 libenesim_renderer_la_SOURCES = \
 renderer.c \
-fill_color.c \
-fill_surface.c
+fill_color.c
+# fill_surface.c
 
 libenesim_renderer_la_LIBADD = 
 

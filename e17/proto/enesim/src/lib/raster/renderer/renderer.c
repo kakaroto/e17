@@ -29,10 +29,10 @@ EAPI void enesim_renderer_delete(Enesim_Renderer *r)
 	free(r);
 }
 
-EAPI void enesim_renderer_draw(Enesim_Renderer *r, Enesim_Scanline *sl, Enesim_Surface *dst)
+EAPI void enesim_renderer_draw(Enesim_Renderer *r, int type, void *sl, Enesim_Surface *dst)
 {
 	assert(r);
 	assert(sl);
 	assert(dst);
-	r->funcs->draw(r, sl, dst);
+	r->funcs->draw(r, type, sl, dst);
 }

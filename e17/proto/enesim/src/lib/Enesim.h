@@ -77,6 +77,38 @@ static inline void enesim_rectangle_from_coords(Enesim_Rectangle *r, int x, int 
  * @{
  */
 
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
+typedef struct _Enesim_Scanline_Alias
+{
+	int y;
+	int x;
+	int w;
+} Enesim_Scanline_Alias;
+
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
+typedef struct _Enesim_Scanline_Mask
+{
+	int y;
+	int x;
+	int w;
+	DATA8 *coverages;
+} Enesim_Scanline_Mask;
+
+enum {
+	ENESIM_SCANLINE_ALIAS  	    = (1 << 0),
+	ENESIM_SCANLINE_ANTIALIAS   = (1 << 1),
+	ENESIM_SCANLINE_MASK        = (1 << 2),
+	ENESIM_SCANLINES
+};
+
+typedef void (*Enesim_Scanline_Callback)(void *sl, void *data);
+
 typedef struct _Enesim_Scanline Enesim_Scanline; /**< Scanline Handler */
 EAPI Enesim_Scanline 	*enesim_scanline_alias_new(void);
 EAPI void 		enesim_scanline_delete(Enesim_Scanline *sl);
@@ -87,10 +119,27 @@ EAPI void 		enesim_scanline_delete(Enesim_Scanline *sl);
  * @defgroup Enesim_Rasterizer_Group Rasterizer
  * @{
  */
+
+enum
+{
+	ENESIM_OK = 1,
+	ENESIM_ERROR_SCANLINE_NOT_SUPPORTED,
+};
+
+typedef enum
+{
+	ENESIM_RASTERIZER_FILL_RULE_EVENODD,
+	ENESIM_RASTERIZER_FILL_RULE_NONEZERO,
+	ENESIM_RASTERIZER_FILL_RULES
+} Enesim_Rasterizer_Fill_Rule;
+
 typedef struct _Enesim_Rasterizer Enesim_Rasterizer; /**< Rasterizer Handler */
+
 EAPI void enesim_rasterizer_vertex_add(Enesim_Rasterizer *r, float x, float y);
-EAPI void enesim_rasterizer_generate(Enesim_Rasterizer *r, Enesim_Scanline *sl);
+EAPI int enesim_rasterizer_generate(Enesim_Rasterizer *r, int sl, Enesim_Scanline_Callback cb, void *data);
 EAPI void enesim_rasterizer_delete(Enesim_Rasterizer *r);
+EAPI void enesim_rasterizer_fill_rule_set(Enesim_Rasterizer *r, Enesim_Rasterizer_Fill_Rule rule);
+
 EAPI Enesim_Rasterizer * enesim_rasterizer_cpsc_new(Enesim_Rectangle boundaries);
 
 typedef enum
@@ -149,7 +198,7 @@ typedef enum
 } Enesim_Renderer_Rop;
 EAPI void enesim_renderer_rop_set(Enesim_Renderer *r, int rop);
 EAPI void enesim_renderer_delete(Enesim_Renderer *r);
-EAPI void enesim_renderer_draw(Enesim_Renderer *r, Enesim_Scanline *sl, Enesim_Surface *dst);
+EAPI void enesim_renderer_draw(Enesim_Renderer *r, int type, void *sl, Enesim_Surface *dst);
 /**
  * @defgroup Enesim_Renderer_Fill_Color_Group Fill Color
  * @{
@@ -237,5 +286,6 @@ EAPI int enesim_reader_vertex_get(Enesim_Component_Reader *r, float *x, float *y
 /** @} */ //End of Enesim_Component_Reader_Group
 /** @} */ //End of Enesim_Vector_Group
 /** @} */ //End of Enesim_Group
+
 
 #endif

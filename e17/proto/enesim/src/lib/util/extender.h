@@ -13,12 +13,20 @@ static inline enesim_extender_reset(Enesim_Extender *e)
 	e->max = INT_MIN;
 }
 
-static inline enesim_extender_add(Enesim_Extender *e, int min, int max)
+static inline enesim_extender_add(Enesim_Extender *e, int start, int end)
 {
-	if (min < e->min)
-		e->min = min;
-	if (max > e->max)
-		e->max = max;
+	if (start < e->min)
+		e->min = start;
+	if (end > e->max)
+		e->max = end;
+}
+
+static inline enesim_extender_add_sort(Enesim_Extender *e, int start, int end)
+{
+	if (start <= end)
+		enesim_extender_add(e, start, end);
+	else
+		enesim_extender_add(e, end, start);
 }
 
 #endif

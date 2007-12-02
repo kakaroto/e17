@@ -41,6 +41,7 @@ Surface_Backend argb8888_backend = {
 		.rops = {
 				[ENESIM_RENDERER_BLEND] = {
 						argb8888_c_color,
+						argb8888_c_color_mask,
 					},
 		},
 		.premul = argb8888_premul,

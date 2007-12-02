@@ -21,7 +21,7 @@ typedef struct _Fill_Surface
 #define DRECT f->darea
 #define SRECT f->sarea
 
-static inline void _draw_alias_sl(Fill_Surface *f, Scanline_Alias_Sl *sl, Enesim_Surface *dst)
+static inline void _draw_alias_sl(Fill_Surface *f, Enesim_Scanline_Alias *sl, Enesim_Surface *dst)
 {
 	int offset;
 	int w = DRECT.w;

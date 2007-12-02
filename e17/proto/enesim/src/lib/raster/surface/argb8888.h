@@ -13,6 +13,13 @@ static inline DATA32 mul_256(DATA32 a, DATA32 c)
 	(((((c) & 0x00ff00ff) * (a)) >> 8) & 0x00ff00ff) );
 }
 
+static inline DATA32 mul_sym(DATA32 a, DATA32 x)
+{
+ 	return ( (((((x) >> 8) & 0x00ff00ff) * (a) + 0xff00ff) & 0xff00ff00) +
+	(((((x) & 0x00ff00ff) * (a) + 0xff00ff) >> 8) & 0x00ff00ff) );
+}
+
 void argb8888_c_color(Enesim_Surface_Data *data, int off, DATA32 c, int len);
+void argb8888_c_color_mask(Enesim_Surface_Data *data, int off, DATA32 c, int len, DATA8 *mask);
 
 #endif

@@ -28,6 +28,15 @@ Span_Color_Func enesim_surface_span_color_get(Enesim_Surface *s, int rop)
 #endif
 	return _backends[s->format]->rops[ENESIM_RENDERER_BLEND].sp_color;
 }
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
+Span_Color_Mask_Func enesim_surface_span_color_mask_get(Enesim_Surface *s,
+		int rop)
+{
+	return _backends[s->format]->rops[ENESIM_RENDERER_BLEND].sp_color_mask;
+}
 /*============================================================================*
  *                                   API                                      * 
  *============================================================================*/

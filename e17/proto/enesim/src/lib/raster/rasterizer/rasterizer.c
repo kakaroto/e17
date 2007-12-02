@@ -12,8 +12,8 @@
  * To be documented
  * FIXME: To be fixed
  */
-Enesim_Rasterizer * enesim_rasterizer_new(void *data, Enesim_Rasterizer_Func *funcs,
-		Enesim_Rectangle boundaries)
+Enesim_Rasterizer * enesim_rasterizer_new(void *data, Enesim_Rasterizer_Func
+		*funcs, Enesim_Rectangle boundaries, int types)
 {
 	Enesim_Rasterizer *r;
 
@@ -21,6 +21,7 @@ Enesim_Rasterizer * enesim_rasterizer_new(void *data, Enesim_Rasterizer_Func *fu
 	r->funcs = funcs;
 	r->data = data;
 	r->boundaries = boundaries;
+	r->types = types;
 	return r;
 }
 /*============================================================================*
@@ -43,13 +44,22 @@ EAPI void enesim_rasterizer_vertex_add(Enesim_Rasterizer *r, float x, float y)
  * To be documented
  * FIXME: To be fixed
  */
-EAPI void enesim_rasterizer_generate(Enesim_Rasterizer *r, Enesim_Scanline *s)
+EAPI int enesim_rasterizer_generate(Enesim_Rasterizer *r, int sl, Enesim_Scanline_Callback cb, void *data)
 {
 	assert(r);
 	assert(r->funcs);
 	assert(r->funcs->generate);
-	
-	r->funcs->generate(r->data, s);
+	assert(cb);
+
+	if (!(r->types & sl))
+	{
+		ENESIM_WARNING("Scanline not supported");
+		return -ENESIM_ERROR_SCANLINE_NOT_SUPPORTED;
+	}
+	r->user_data = data;
+	r->scanline_callback = cb;
+	r->funcs->generate(r->data, sl);
+	return ENESIM_OK;
 }
 
 /**
