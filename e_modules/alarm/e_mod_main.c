@@ -1,9 +1,9 @@
 /*
  * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
  */
-#include <e.h>
+#include "e.h"
 #include "e_mod_main.h"
-#include "config.h"
+#include <config.h>
 
 #define ALARM_ADD_FAIL(errcode) if (al) alarm_alarm_del(al); if (error) *error = errcode; return NULL;
 
@@ -47,6 +47,7 @@ static void   _alarm_dialog_snooze_delete(E_Dialog *dia, Alarm *al);
 static double _epoch_find_date(char *date, int hour, int minute);
 static double _epoch_find_next(int day_monday, int day_tuesday, int day_wenesday, int day_thursday, int day_friday, int day_saturday, int day_sunday, int hour, int minute);
 static void   _button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void   _menu_cb_deactivate_post(void *data, E_Menu *m);
 static void   _menu_cb_alarm_snooze(void *data, E_Menu *m, E_Menu_Item *mi);
 static void   _menu_cb_alarm_add(void *data, E_Menu *m, E_Menu_Item *mi);
 static void   _menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi);
@@ -803,7 +804,7 @@ _button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
    
    inst = data;
    ev = event_info;
-   if ((ev->button == 3) && (!inst->gcc->menu))
+   if ((ev->button == 3) && (!alarm_config->menu))
      {
 	E_Menu *mn;
 	E_Menu_Item *mi;
@@ -811,6 +812,8 @@ _button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
         int nb_snoozed = 0;
 	
 	mn = e_menu_new();
+	e_menu_post_deactivate_callback_set(mn, _menu_cb_deactivate_post, inst);
+	alarm_config->menu = mn;
 	
         /* snooze menu */
         if (alarm_config->alarms_state == ALARM_STATE_RINGING)
@@ -875,6 +878,14 @@ _button_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 	evas_event_feed_mouse_up(inst->gcc->gadcon->evas, ev->button,
 				 EVAS_BUTTON_NONE, ev->timestamp, NULL);
      }
+}
+
+static void
+_menu_cb_deactivate_post(void *data, E_Menu *m)
+{
+   if (!alarm_config->menu) return;
+   e_object_del(E_OBJECT(alarm_config->menu));
+   alarm_config->menu = NULL;
 }
 
 static void
@@ -1140,6 +1151,11 @@ e_modapi_shutdown(E_Module *m)
      e_object_del(E_OBJECT(alarm_config->config_dialog));
    if (alarm_config->config_dialog_alarm_new) 
      e_object_del(E_OBJECT(alarm_config->config_dialog_alarm_new));
+   if (alarm_config->menu)
+     {
+	e_menu_post_deactivate_callback_set(alarm_config->menu , NULL, NULL);
+	e_object_del(E_OBJECT(alarm_config->menu));
+     }
 
    E_FREE(alarm_config);
    E_CONFIG_DD_FREE(_alarms_edd);
