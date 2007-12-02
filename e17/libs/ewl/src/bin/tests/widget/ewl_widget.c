@@ -287,6 +287,9 @@ ewl_widget_cb_toggle_fullscreen(Ewl_Widget *w, void *ev __UNUSED__,
 		!ewl_window_fullscreen_get(EWL_WINDOW(win)));
 }
 
+/*
+ * Verify that appearance get returns the same value set.
+ */
 static int
 appearance_test_set_get(char *buf, int len)
 {
@@ -305,12 +308,17 @@ appearance_test_set_get(char *buf, int len)
 	return ret;
 }
 
+/*
+ * Verify that a widget inherits from a type after the inheritance has been set
+ * and does not verify an inheritance that has not been set.
+ */
 static int
 inheritance_test_set_get(char *buf, int len)
 {
 	Ewl_Widget *w;
 	int ret = 0;
 	const char *my_class = "myclass";
+	const char *unknown_class = "unknownclass";
 
 	w = calloc(1, sizeof(Ewl_Widget));
 	ewl_widget_init(w);
@@ -318,12 +326,21 @@ inheritance_test_set_get(char *buf, int len)
 	ewl_widget_inherit(w, my_class);
 	if (!ewl_widget_type_is(w, my_class))
 		snprintf(buf, len, "inheritance doesn't contain correct type");
-	else
-		ret = 1;
+	else {
+		if (ewl_widget_type_is(w, unknown_class))
+			snprintf(buf, len,
+					"inheritance contains incorrect type");
+		else
+			ret = 1;
+	}
 
 	return ret;
 }
 
+/*
+ * Verify that the internal flag on a widget is set properly after changing
+ * between states.
+ */
 static int
 internal_test_set_get(char *buf, int len)
 {
@@ -351,6 +368,10 @@ internal_test_set_get(char *buf, int len)
 	return ret;
 }
 
+/*
+ * Verify that the clipped flag on a widget is set properly after changing
+ * between states.
+ */
 static int
 clipped_test_set_get(char *buf, int len)
 {
@@ -378,6 +399,10 @@ clipped_test_set_get(char *buf, int len)
 	return ret;
 }
 
+/*
+ * Verify that the data returned on a widget matches the data that was set on
+ * it.
+ */
 static int
 data_test_set_get(char *buf, int len)
 {
@@ -404,6 +429,9 @@ data_test_set_get(char *buf, int len)
 	return ret;
 }
 
+/*
+ * Verify that data removed from a widget is no longer present.
+ */
 static int
 data_test_set_remove(char *buf, int len)
 {
@@ -432,6 +460,9 @@ data_test_set_remove(char *buf, int len)
 	return ret;
 }
 
+/*
+ * Test creation of an instance of a base widget.
+ */
 static int
 widget_new(char *buf, int len)
 {
@@ -450,6 +481,10 @@ widget_new(char *buf, int len)
 	return ret;
 }
 
+/*
+ * Test initialization of a widget and the default visibility state of the
+ * widget.
+ */
 static int
 init(char *buf, int len)
 {
@@ -471,6 +506,9 @@ init(char *buf, int len)
 	return ret;
 }
 
+/*
+ * Verify the visibility states of a widget after show.
+ */
 static int
 show(char *buf, int len)
 {
@@ -493,6 +531,9 @@ show(char *buf, int len)
 	return ret;
 }
 
+/*
+ * Verify the visibility states of a widget after realize.
+ */
 static int
 realize(char *buf, int len)
 {
@@ -514,6 +555,9 @@ realize(char *buf, int len)
 	return ret;
 }
 
+/*
+ * Verify the visibility states of a widget after realize and unrealize.
+ */
 static int
 realize_unrealize(char *buf, int len)
 {
@@ -539,6 +583,9 @@ realize_unrealize(char *buf, int len)
 	return ret;
 }
 
+/*
+ * Verify the visibility states of a widget after reparent.
+ */
 static int
 parent_set(char *buf, int len)
 {
@@ -566,6 +613,9 @@ parent_set(char *buf, int len)
 	return ret;
 }
 
+/*
+ * Verify the visibility states of a widget after show and reparent.
+ */
 static int
 parent_set_show(char *buf, int len)
 {
@@ -598,6 +648,10 @@ parent_set_show(char *buf, int len)
 	return ret;
 }
 
+/*
+ * Verify the visibility states of a widget after reparent of an unrealized
+ * widget.
+ */
 static int
 reparent_unrealized(char *buf, int len)
 {
