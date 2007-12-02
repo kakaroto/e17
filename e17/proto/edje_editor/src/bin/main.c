@@ -505,7 +505,7 @@ main(int argc, char **argv)
    ecore_evas_title_set(UI_ecore_MainWin, Cur.edj_file_name->string);
 
    Cur.part = etk_string_new("");
-   Cur.state = NULL;
+   Cur.state = etk_string_new("");
    Parts_Hash = NULL;
   
    //Create the main edje object to edit
