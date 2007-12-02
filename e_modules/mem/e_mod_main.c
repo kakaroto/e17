@@ -137,8 +137,7 @@ _gc_shutdown (E_Gadcon_Client * gcc)
     ecore_timer_del (inst->check_timer);
   mem_config->instances = evas_list_remove (mem_config->instances, inst);
   _mem_free (inst->mem);
-  free (inst);
-  inst = NULL;
+  E_FREE (inst);
 }
 
 static void
@@ -173,7 +172,7 @@ _mem_cb_mouse_down (void *data, Evas * e, Evas_Object * obj, void *event_info)
 			     e_util_zone_current_get (e_manager_current_get
 						      ()), x + ev->output.x,
 			     y + ev->output.y, 1, 1,
-			     E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
+			     E_MENU_POP_DIRECTION_AUTO, ev->timestamp);
       evas_event_feed_mouse_up (inst->gcc->gadcon->evas, ev->button,
 				EVAS_BUTTON_NONE, ev->timestamp, NULL);
     }
@@ -350,11 +349,9 @@ e_modapi_shutdown (E_Module * m)
 	evas_list_remove_list (mem_config->items, mem_config->items);
       if (ci->id)
 	evas_stringshare_del (ci->id);
-      free (ci);
-      ci = NULL;
+      E_FREE (ci);
     }
-  free (mem_config);
-  mem_config = NULL;
+  E_FREE (mem_config);
   E_CONFIG_DD_FREE (conf_item_edd);
   E_CONFIG_DD_FREE (conf_edd);
   return 1;
@@ -390,8 +387,7 @@ static void
 _mem_free (Mem * m)
 {
   evas_object_del (m->mem_obj);
-  free (m);
-  m = NULL;
+  E_FREE (m);
 }
 
 static void
