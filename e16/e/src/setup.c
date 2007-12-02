@@ -159,7 +159,15 @@ SetupX(const char *dstr)
       StructureNotifyMask | SubstructureNotifyMask | SubstructureRedirectMask;
    ESelectInput(VRoot.win, mask);
    ESync();
-
+   if (!Mode.wm.xselect)
+     {
+	AlertX(_("Another Window Manager is already running"),
+	       _("OK"), NULL, NULL,
+	       _("Another Window Manager is already running.\n" "\n"
+		 "You will have to quit your current Window Manager first before\n"
+		 "you can successfully run Enlightenment.\n"));
+	EExit(1);
+     }
    Mode.wm.xselect = 0;
 
    /* warn, if necessary about X version problems */

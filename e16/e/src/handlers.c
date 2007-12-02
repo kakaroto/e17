@@ -185,20 +185,6 @@ HandleXError(Display * d __UNUSED__, XErrorEvent * ev)
 {
    char                buf[64];
 
-   if ((ev->request_code == X_ChangeWindowAttributes)
-       && (ev->error_code == BadAccess))
-     {
-	if (Mode.wm.xselect)
-	  {
-	     AlertX(_("Another Window Manager is already running"),
-		    _("OK"), NULL, NULL,
-		    _("Another Window Manager is already running.\n" "\n"
-		      "You will have to quit your current Window Manager first before\n"
-		      "you can successfully run Enlightenment.\n"));
-	     EExit(1);
-	  }
-     }
-
    if (EDebug(1))
      {
 	XGetErrorText(disp, ev->error_code, buf, 63);
@@ -206,6 +192,11 @@ HandleXError(Display * d __UNUSED__, XErrorEvent * ev)
 		ev->resourceid, ev->error_code,
 		ev->request_code, ev->minor_code, buf);
      }
+
+   if (Mode.wm.xselect &&
+       (ev->request_code == X_ChangeWindowAttributes) &&
+       (ev->error_code == BadAccess))
+      Mode.wm.xselect = 0;
 }
 
 void
