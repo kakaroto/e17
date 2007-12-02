@@ -38,11 +38,8 @@
 #define ESESSION_STOP   2
 
 void                SessionInit(void);
-void                SessionSave(int shutdown);
 void                SessionExit(int mode, const char *params);
 void                SessionHelper(int when);
-void                ProcessICEMSGS(void);
-int                 GetSMfd(void);
 void                SetSMID(const char *smid);
 void                SettingsSession(void);
 

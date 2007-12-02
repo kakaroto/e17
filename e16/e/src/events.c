@@ -25,7 +25,6 @@
 #include "aclass.h"
 #include "emodule.h"
 #include "events.h"
-#include "session.h"
 #include "timers.h"
 #include "tooltips.h"
 #include "xwin.h"
@@ -52,6 +51,10 @@
 #if ENABLE_DEBUG_EVENTS
 static const char  *EventName(unsigned int type);
 #endif
+
+/*
+ * Server extension handling
+ */
 
 typedef struct
 {
@@ -199,6 +202,41 @@ ExtQuery(const EServerExt * ext)
       ext->init(available);
 }
 
+/*
+ * File descriptor handling
+ */
+
+struct _EventFdDesc
+{
+   const char         *name;
+   int                 fd;
+   void                (*handler) (void);
+};
+
+static int          nfds = 0;
+static EventFdDesc *pfds = NULL;
+
+EventFdDesc        *
+EventFdRegister(int fd, EventFdHandler * handler)
+{
+   nfds++;
+   pfds = EREALLOC(EventFdDesc, pfds, nfds);
+   pfds[nfds - 1].fd = fd;
+   pfds[nfds - 1].handler = handler;
+
+   return pfds + (nfds - 1);
+}
+
+void
+EventFdUnregister(EventFdDesc * efd)
+{
+   efd->fd = -1;
+}
+
+/*
+ * Event handling
+ */
+
 #define DOUBLE_CLICK_TIME 250	/* Milliseconds */
 
 void
@@ -219,6 +257,8 @@ EventsInit(void)
 	ExtData[XEXT_COMPOSITE].minor >= 2))
       Mode.server.extensions |= 1 << XEXT_CM_ALL;
 #endif
+
+   EventFdRegister(ConnectionNumber(disp), NULL);
 }
 
 static void
@@ -647,8 +687,7 @@ EventsMain(void)
    struct timeval      tval;
    double              time1, time2, dt;
    int                 count, pfetch;
-   int                 fdsize;
-   int                 xfd, smfd;
+   int                 fdsize, fd, i;
 
    time1 = GetTime();
 
@@ -691,12 +730,17 @@ EventsMain(void)
 	   continue;
 
 	FD_ZERO(&fdset);
-	xfd = ConnectionNumber(disp);
-	FD_SET(xfd, &fdset);
-	smfd = GetSMfd();
-	if (smfd >= 0)
-	   FD_SET(smfd, &fdset);
-	fdsize = MAX(xfd, smfd) + 1;
+	fdsize = -1;
+	for (i = 0; i < nfds; i++)
+	  {
+	     fd = pfds[i].fd;
+	     if (fd < 0)
+		continue;
+	     if (fdsize < fd)
+		fdsize = fd;
+	     FD_SET(fd, &fdset);
+	  }
+	fdsize++;
 
 	if (time2 > 0.)
 	  {
@@ -711,9 +755,8 @@ EventsMain(void)
 
 	if (EDebug(EDBUG_TYPE_EVENTS))
 	   Eprintf
-	      ("EventsMain - count=%d xfd=%d:%d smfd=%d:%d dt=%lf time2=%lf\n",
-	       count, xfd, FD_ISSET(xfd, &fdset), smfd,
-	       (smfd >= 0) ? FD_ISSET(smfd, &fdset) : 0, dt, time2);
+	      ("EventsMain - count=%d xfd=%d:%d dt=%lf time2=%lf\n",
+	       count, pfds[0].fd, FD_ISSET(pfds[0].fd, &fdset), dt, time2);
 
 	if (count == 0)
 	  {
@@ -722,11 +765,16 @@ EventsMain(void)
 	  }
 	else if (count > 0)
 	  {
-	     if ((smfd >= 0) && (FD_ISSET(smfd, &fdset)))
+	     /* Excluding X fd */
+	     for (i = 1; i < nfds; i++)
 	       {
-		  if (EDebug(EDBUG_TYPE_EVENTS))
-		     Eprintf("EventsMain - ICE\n");
-		  ProcessICEMSGS();
+		  fd = pfds[i].fd;
+		  if ((fd >= 0) && (FD_ISSET(fd, &fdset)))
+		    {
+		       if (EDebug(EDBUG_TYPE_EVENTS))
+			  Eprintf("Event fd %d\n", i);
+		       pfds[i].handler();
+		    }
 	       }
 	  }
      }

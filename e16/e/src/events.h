@@ -39,4 +39,9 @@ void                EventsInit(void);
 void                EventsMain(void);
 void                EventShow(const XEvent * ev);
 
+typedef struct _EventFdDesc EventFdDesc;
+typedef void        (EventFdHandler) (void);
+EventFdDesc        *EventFdRegister(int fd, EventFdHandler * handler);
+void                EventFdUnregister(EventFdDesc * efd);
+
 #endif /* _EVENTS_H_ */

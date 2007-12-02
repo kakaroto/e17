@@ -25,6 +25,7 @@
 #include "dialog.h"
 #include "e16-ecore_hints.h"
 #include "emodule.h"
+#include "events.h"
 #include "ewins.h"
 #include "hints.h"
 #include "session.h"
@@ -54,8 +55,6 @@ static Window       new_init_win_ext = None;
 #endif
 #endif
 
-static int          sm_fd = -1;
-
 /* True if we are saving state for a doExit("restart") */
 static int          restarting = False;
 
@@ -70,6 +69,8 @@ static int          restarting = False;
 
 static char        *sm_client_id = NULL;
 static SmcConn      sm_conn = NULL;
+
+static EventFdDesc *sm_efd = NULL;
 
 static void
 set_save_props(SmcConn smc_conn, int master_flag)
@@ -321,23 +322,48 @@ ice_io_error_handler(IceConn connection __UNUSED__)
     * exit(1) instead of closing the losing connection. */
 }
 
-#endif /* USE_SM */
-
-void
-SessionInit(void)
+static void
+ice_exit(void)
 {
-#if USE_SM
+   SmcCloseConnection(sm_conn, 0, NULL);
+   sm_conn = NULL;
+   EventFdUnregister(sm_efd);
+}
+
+static void
+ice_msgs_process(void)
+{
+   IceProcessMessagesStatus status;
+
+   status = IceProcessMessages(ice_conn, NULL, NULL);
+   if (status == IceProcessMessagesIOError)
+     {
+	/* Less of the hope.... E survives */
+	DialogAlert(_("ERROR!\n" "\n"
+		      "Lost the Session Manager that was there?\n"
+		      "Here here session manager... come here... want a bone?\n"
+		      "Oh come now! Stop sulking! Bugger. Oh well. "
+		      "Will continue without\n" "a session manager.\n" "\n"
+		      "I'll survive somehow.\n" "\n" "\n" "... I hope.\n"));
+	ice_exit();
+     }
+}
+
+static void
+ice_init(void)
+{
    static SmPointer    context;
    SmcCallbacks        callbacks;
-#endif
+   char                error_string_ret[4096];
+   char               *client_id;
+   char                style[2];
+   SmPropValue         styleVal;
+   SmProp              styleProp;
+   SmProp             *props[1];
+   int                 sm_fd;
 
-   if (Mode.wm.window)
+   if (!getenv("SESSION_MANAGER"))
       return;
-
-#if USE_SM
-#if 0				/* Unused */
-   atom_sm_client_id = XInternAtom(disp, "SM_CLIENT_ID", False);
-#endif
 
    IceSetIOErrorHandler(ice_io_error_handler);
 
@@ -349,53 +375,63 @@ SessionInit(void)
    callbacks.save_yourself.client_data = callbacks.die.client_data =
       callbacks.save_complete.client_data =
       callbacks.shutdown_cancelled.client_data = (SmPointer) NULL;
-   if (getenv("SESSION_MANAGER"))
-     {
-	char                error_string_ret[4096] = "";
-	char               *client_id = NULL;
 
-	if (sm_client_id)
-	   client_id = Estrdup(sm_client_id);
-	sm_conn =
-	   SmcOpenConnection(NULL, &context, SmProtoMajor, SmProtoMinor,
-			     SmcSaveYourselfProcMask | SmcDieProcMask |
-			     SmcSaveCompleteProcMask |
-			     SmcShutdownCancelledProcMask, &callbacks,
-			     client_id, &sm_client_id, 4096, error_string_ret);
-	if (client_id)
-	   Efree(client_id);
+   client_id = Estrdup(sm_client_id);
 
-	if (error_string_ret[0])
-	   Eprintf("While connecting to session manager: %s.",
-		   error_string_ret);
-     }
-   if (sm_conn)
-     {
-	char                style[2];
-	SmPropValue         styleVal;
-	SmProp              styleProp;
-	SmProp             *props[1];
+   error_string_ret[0] = '\0';
 
-	style[0] = SmRestartIfRunning;
-	style[1] = 0;
+   sm_conn =
+      SmcOpenConnection(NULL, &context, SmProtoMajor, SmProtoMinor,
+			SmcSaveYourselfProcMask | SmcDieProcMask |
+			SmcSaveCompleteProcMask |
+			SmcShutdownCancelledProcMask, &callbacks,
+			client_id, &sm_client_id, 4096, error_string_ret);
+   if (client_id)
+      Efree(client_id);
 
-	styleVal.length = 1;
-	styleVal.value = style;
+   if (error_string_ret[0])
+      Eprintf("While connecting to session manager: %s.", error_string_ret);
 
-	styleProp.name = (char *)SmRestartStyleHint;
-	styleProp.type = (char *)SmCARD8;
-	styleProp.num_vals = 1;
-	styleProp.vals = &styleVal;
+   if (!sm_conn)
+      return;
 
-	props[0] = &styleProp;
+   style[0] = SmRestartIfRunning;
+   style[1] = 0;
 
-	ice_conn = SmcGetIceConnection(sm_conn);
-	sm_fd = IceConnectionNumber(ice_conn);
-	/* Just in case we are a copy of E created by a doExit("restart") */
-	SmcSetProperties(sm_conn, 1, props);
-	fcntl(sm_fd, F_SETFD, fcntl(sm_fd, F_GETFD, 0) | FD_CLOEXEC);
-     }
+   styleVal.length = 1;
+   styleVal.value = style;
+
+   styleProp.name = (char *)SmRestartStyleHint;
+   styleProp.type = (char *)SmCARD8;
+   styleProp.num_vals = 1;
+   styleProp.vals = &styleVal;
+
+   props[0] = &styleProp;
+
+   ice_conn = SmcGetIceConnection(sm_conn);
+   sm_fd = IceConnectionNumber(ice_conn);
+   /* Just in case we are a copy of E created by a doExit("restart") */
+   SmcSetProperties(sm_conn, 1, props);
+   fcntl(sm_fd, F_SETFD, fcntl(sm_fd, F_GETFD, 0) | FD_CLOEXEC);
+
+   sm_efd = EventFdRegister(sm_fd, ice_msgs_process);
+}
+
 #endif /* USE_SM */
+
+void
+SessionInit(void)
+{
+   if (Mode.wm.window)
+      return;
+
+#if 0				/* Unused */
+   atom_sm_client_id = XInternAtom(disp, "SM_CLIENT_ID", False);
+#endif
+
+#if USE_SM
+   ice_init();
+#endif
 
    if (!Conf.session.script)
       Conf.session.script = Estrdup("$EROOT/scripts/session.sh");
@@ -403,37 +439,6 @@ SessionInit(void)
       Conf.session.cmd_reboot = Estrdup("reboot");
    if (!Conf.session.cmd_halt)
       Conf.session.cmd_halt = Estrdup("poweroff");
-}
-
-void
-ProcessICEMSGS(void)
-{
-#if USE_SM
-   IceProcessMessagesStatus status;
-
-   if (sm_fd < 0)
-      return;
-   status = IceProcessMessages(ice_conn, NULL, NULL);
-   if (status == IceProcessMessagesIOError)
-     {
-	/* Less of the hope.... E survives */
-	DialogAlert(_("ERROR!\n" "\n"
-		      "Lost the Session Manager that was there?\n"
-		      "Here here session manager... come here... want a bone?\n"
-		      "Oh come now! Stop sulking! Bugger. Oh well. "
-		      "Will continue without\n" "a session manager.\n" "\n"
-		      "I'll survive somehow.\n" "\n" "\n" "... I hope.\n"));
-	SmcCloseConnection(sm_conn, 0, NULL);
-	sm_conn = NULL;
-	sm_fd = -1;
-     }
-#endif /* USE_SM */
-}
-
-int
-GetSMfd(void)
-{
-   return sm_fd;
 }
 
 void
@@ -465,21 +470,17 @@ SetSMID(const char *smid)
 #endif /* USE_SM */
 }
 
-void
+static void
 SessionSave(int shutdown)
 {
    if (EDebug(EDBUG_TYPE_SESSION))
       Eprintf("SessionSave(%d)\n", shutdown);
 
-   /* dont' need anymore */
-   /* autosave(); */
+   Real_SaveSnapInfo(0, NULL);
+
 #if USE_SM
    if (shutdown && sm_conn)
-     {
-	SmcCloseConnection(sm_conn, 0, NULL);
-	sm_conn = NULL;
-	sm_fd = -1;
-     }
+      ice_exit();
 #endif /* USE_SM */
 }
 
@@ -504,9 +505,7 @@ doSMExit(int mode, const char *params)
 
    restarting = True;
 
-   if (!params)
-      SessionSave(1);
-   Real_SaveSnapInfo(0, NULL);
+   SessionSave(1);
 
    if (mode != EEXIT_THEME && mode != EEXIT_RESTART)
       SessionHelper(ESESSION_STOP);
