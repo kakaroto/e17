@@ -107,8 +107,7 @@ _gc_shutdown (E_Gadcon_Client * gcc)
 	check_timer = NULL;
      }
    
-  free (inst);
-  inst = NULL;
+  E_FREE (inst);
 }
 
 static void
@@ -183,7 +182,7 @@ _tclock_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
 			     e_util_zone_current_get (e_manager_current_get
 						      ()), x + ev->output.x,
 			     y + ev->output.y, 1, 1,
-			     E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
+			     E_MENU_POP_DIRECTION_AUTO, ev->timestamp);
       evas_event_feed_mouse_up (inst->gcc->gadcon->evas, ev->button,
 				EVAS_BUTTON_NONE, ev->timestamp, NULL);
     }
@@ -407,12 +406,10 @@ e_modapi_shutdown (E_Module * m)
 	evas_stringshare_del (ci->time_format);
       if (ci->date_format)
 	evas_stringshare_del (ci->date_format);
-      free (ci);
-      ci = NULL;
+      E_FREE (ci);
     }
 
-  free (tclock_config);
-  tclock_config = NULL;
+  E_FREE (tclock_config);
   E_CONFIG_DD_FREE (conf_item_edd);
   E_CONFIG_DD_FREE (conf_edd);
   return 1;
