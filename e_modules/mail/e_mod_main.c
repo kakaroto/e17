@@ -276,7 +276,7 @@ _mail_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
 			     e_util_zone_current_get (e_manager_current_get
 						      ()), x + ev->output.x,
 			     y + ev->output.y, 1, 1,
-			     E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
+			     E_MENU_POP_DIRECTION_AUTO, ev->timestamp);
       evas_event_feed_mouse_up (inst->gcc->gadcon->evas, ev->button,
 				EVAS_BUTTON_NONE, ev->timestamp, NULL);
     }
