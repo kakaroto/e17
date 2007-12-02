@@ -346,7 +346,7 @@ ec_theme_page_setup(Ewl_Notebook *n)
 	closedir(rep);
 
 	home_dir = getenv("HOME");
-	snprintf(path, PATH_MAX, "%s/%s", home_dir, ".e/ewl/themes");
+	snprintf(path, PATH_MAX, "%s/%s", home_dir, ".ewl/themes");
 	rep = opendir(path);
 	if (rep)
 	{
