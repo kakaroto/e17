@@ -78,6 +78,7 @@ static void statusbar_label_update(Ewl_Widget *w, void *ev, void *data);
 static int ewl_test_cb_unit_test_timer(void *data);
 static void ewl_test_cb_delete_window(Ewl_Widget *w, void *ev, void *data);
 static void ewl_test_cb_exit(Ewl_Widget *w, void *ev, void *data);
+static void ewl_cb_mvc_free(Ewl_Widget *w, void *ev, void *data);
 static void cb_run_unit_tests(Ewl_Widget *w, void *ev, void *data);
 
 static void ewl_test_cb_help(Ewl_Widget *w, void *ev, void *data);
@@ -610,6 +611,8 @@ create_main_test_window(Ewl_Container *box)
 	ewl_mvc_data_set(EWL_MVC(tree), categories);
 	ewl_callback_append(tree, EWL_CALLBACK_VALUE_CHANGED,
 				ewl_test_cb_test_selected, NULL);
+	ewl_callback_append(tree, EWL_CALLBACK_DESTROY, ewl_cb_mvc_free,
+							NULL);
 	ewl_widget_show(tree);
 
 
@@ -656,7 +659,7 @@ create_main_test_window(Ewl_Container *box)
 	ewl_model_data_header_fetch_set(model, cb_unit_test_header_data_fetch);
 	ewl_model_data_count_set(model, cb_unit_test_count);
 
-	view = ewl_view_clone(ewl_label_view_get());
+	view = ewl_label_view_get();
 	ewl_view_header_fetch_set(view, cb_unit_test_header_fetch);
 
 	o2 = ewl_tree2_new();
@@ -665,6 +668,8 @@ create_main_test_window(Ewl_Container *box)
 	ewl_mvc_model_set(EWL_MVC(o2), model);
 	ewl_mvc_view_set(EWL_MVC(o2), view);
 	ewl_widget_name_set(o2, "unit_test_tree");
+	ewl_callback_append(o2, EWL_CALLBACK_DESTROY, ewl_cb_mvc_free,
+							NULL);
 	ewl_widget_show(o2);
 
 	o2 = ewl_hbox_new();
@@ -1338,4 +1343,16 @@ cb_unit_test_count(void *data)
 		;
 
 	return i;
+}
+
+static void
+ewl_cb_mvc_free(Ewl_Widget *w, void *ev, void *data)
+{
+	Ewl_Model *model;
+	Ewl_View *view;
+
+	model = ewl_mvc_model_get(EWL_MVC(w));
+	free(model);
+	view = ewl_mvc_view_get(EWL_MVC(w));
+	free(view);
 }
