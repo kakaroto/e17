@@ -105,49 +105,56 @@ ewl_callback_unregister(Ewl_Callback *cb)
 static void
 ewl_callback_rm(Ewl_Widget *w, unsigned int t, unsigned int pos)
 {
+	unsigned int place;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(w);
 	/* don't type check here as this will get called after most of a
 	 * widget is already destroyed */
 
-	/* deal with the direct case first */
-	if (w->callbacks[t].mask & EWL_CALLBACK_TYPE_DIRECT)
-	{
-		ewl_callback_unregister((Ewl_Callback *)w->callbacks[t].list);
+	if (t > EWL_CALLBACK_MAX)
+		place = EWL_CALLBACK_MAX;
+	else
+		place = t;
 
-		w->callbacks[t].len = 0;
-		w->callbacks[t].list = NULL;
-		EWL_CALLBACK_SET_NODIRECT(w, t);
+	/* deal with the direct case first */
+	if (w->callbacks[place].mask & EWL_CALLBACK_TYPE_DIRECT)
+	{
+		ewl_callback_unregister((Ewl_Callback *)w->callbacks[place].list);
+
+		w->callbacks[place].len = 0;
+		w->callbacks[place].list = NULL;
+		EWL_CALLBACK_SET_NODIRECT(w, place);
 
 		DRETURN(DLEVEL_STABLE);
 	}
-	ewl_callback_unregister(w->callbacks[t].list[pos]);
+	ewl_callback_unregister(w->callbacks[place].list[pos]);
 
 	/* if this will empty the list (we've already handled direct) */
-	if ((EWL_CALLBACK_LEN(w, t) - 1) == 0)
+	if ((EWL_CALLBACK_LEN(w, place) - 1) == 0)
 	{
-		w->callbacks[t].len = 0;
-		w->callbacks[t].list[0] = NULL;
-		FREE(w->callbacks[t].list);
+		w->callbacks[place].len = 0;
+		w->callbacks[place].list[0] = NULL;
+		FREE(w->callbacks[place].list);
 
 		DRETURN(DLEVEL_STABLE);
 	}
 
 	/* not the last position */
-	if ((int)pos != (EWL_CALLBACK_LEN(w, t) - 1))
+	if ((int)pos != (EWL_CALLBACK_LEN(w, place) - 1))
 	{
-		memmove(w->callbacks[t].list + pos,
-			w->callbacks[t].list + (pos + 1),
-			(w->callbacks[t].len - pos - 1) * sizeof(void *));
+		memmove(w->callbacks[place].list + pos,
+			w->callbacks[place].list + (pos + 1),
+			(w->callbacks[place].len - pos - 1) * sizeof(void *));
 	}
 
-	w->callbacks[t].len  -= 1;
-	w->callbacks[t].list[EWL_CALLBACK_LEN(w, t)] = NULL;
-	w->callbacks[t].list = realloc(w->callbacks[t].list,
-					w->callbacks[t].len * sizeof(void *));
+	w->callbacks[place].len  -= 1;
+	w->callbacks[place].list[EWL_CALLBACK_LEN(w, place)] = NULL;
+	w->callbacks[place].list = realloc(w->callbacks[place].list,
+					w->callbacks[place].len * sizeof(void *));
 
-	if (pos < EWL_CALLBACK_POS(w, t))
-		EWL_CALLBACK_POS(w, t)--;
+	if (pos < EWL_CALLBACK_POS(w, place))
+		EWL_CALLBACK_POS(w, place)--;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
