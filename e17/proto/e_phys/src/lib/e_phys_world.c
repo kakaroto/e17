@@ -1,5 +1,5 @@
 #include "E_Phys.h"
-#include <values.h>
+#include <float.h>
 
 static void e_phys_world_accumulate_forces(E_Phys_World *world);
 static void e_phys_world_verlet_integrate(E_Phys_World *world);
@@ -18,8 +18,8 @@ e_phys_world_add(void)
   E_Phys_World *world;
   world = calloc(1, sizeof(E_Phys_World));
   world->constraint_iter = 10;
-  world->w = MAXFLOAT;
-  world->h = MAXFLOAT;
+  world->w = FLT_MAX;
+  world->h = FLT_MAX;
   world->dt = 1.0 / 60.0;
   return world;
 }
