@@ -542,22 +542,13 @@ create_main_test_window(Ewl_Container *box)
 	Ewl_View *view;
 
 	Ewl_Menu_Info file_menu[] = {
-		{"Exit", 
-			ewl_icon_theme_icon_path_get(EWL_ICON_APPLICATION_EXIT,
-							EWL_ICON_SIZE_SMALL), 
-			ewl_test_cb_exit},
+		{"Exit", NULL, ewl_test_cb_exit},
 		{NULL, NULL, NULL}
 	};
 
 	Ewl_Menu_Info help_menu[] = {
-		{"About Ewl_Test ...",
-			ewl_icon_theme_icon_path_get(EWL_ICON_HELP_ABOUT,
-							EWL_ICON_SIZE_SMALL),
-			ewl_test_cb_about},
-		{"Ewl Test Help ...", 
-			ewl_icon_theme_icon_path_get(EWL_ICON_HELP_FAQ,
-							EWL_ICON_SIZE_SMALL),
-			ewl_test_cb_help},
+		{"About Ewl_Test ...", NULL, ewl_test_cb_about},
+		{"Ewl Test Help ...", NULL, ewl_test_cb_help},
 		{NULL, NULL, NULL}
 	};
 
@@ -566,6 +557,13 @@ create_main_test_window(Ewl_Container *box)
 		{"Help", help_menu},
 		{NULL, NULL}
 	};
+
+	file_menu[0].img = ewl_icon_theme_icon_path_get(EWL_ICON_APPLICATION_EXIT,
+							EWL_ICON_SIZE_SMALL);
+	help_menu[0].img = ewl_icon_theme_icon_path_get(EWL_ICON_HELP_ABOUT,
+							EWL_ICON_SIZE_SMALL);
+	help_menu[1].img = ewl_icon_theme_icon_path_get(EWL_ICON_HELP_FAQ,
+							EWL_ICON_SIZE_SMALL);
 
 	menubar = ewl_hmenubar_new();
 	ewl_container_child_append(EWL_CONTAINER(box), menubar);
