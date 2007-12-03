@@ -8,6 +8,7 @@ struct _Config
 {
    E_Module *mod;
    E_Config_Dialog *cfd;
+   E_Menu *menu;
    Evas_List *instances;
    Evas_List *items;
 };
