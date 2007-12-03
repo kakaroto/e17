@@ -115,6 +115,7 @@ struct Current_State
    char *source_dir;          //Full path to sources
    char *main_source_file;    //Full path to the main edc file
 #if TEST_DIRECT_EDJE
+   Etk_String *group;
    Etk_String *part;
    Etk_String *state;
    

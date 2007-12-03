@@ -347,7 +347,7 @@ PopulateRelComboBoxes(void)
    Etk_Combobox_Item *ComboItem;
    Engrave_Part*	part = NULL;
    char buf[20];
-
+   printf("Populate 4 Rel Comboboxs\n");
    //Stop signal propagation
    etk_signal_disconnect("active-item-changed", ETK_OBJECT(UI_Rel1ToXComboBox), ETK_CALLBACK(on_RelToComboBox_changed), (void *)REL1X_SPINNER);
    etk_signal_disconnect("active-item-changed", ETK_OBJECT(UI_Rel1ToYComboBox), ETK_CALLBACK(on_RelToComboBox_changed), (void *)REL1Y_SPINNER);
@@ -359,7 +359,68 @@ PopulateRelComboBoxes(void)
    etk_combobox_clear(ETK_COMBOBOX(UI_Rel1ToYComboBox));
    etk_combobox_clear(ETK_COMBOBOX(UI_Rel2ToXComboBox));
    etk_combobox_clear(ETK_COMBOBOX(UI_Rel2ToYComboBox));
-
+#if TEST_DIRECT_EDJE
+   if (etk_string_length_get(Cur.group))
+   {
+      // Add first element 'Interface' to all the 4 combobox
+      ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_Rel1ToXComboBox),
+                     etk_image_new_from_edje(EdjeFile,"NONE.PNG"), "Interface");
+      etk_combobox_item_data_set (ComboItem, NULL);
+      
+      ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_Rel1ToYComboBox),
+                     etk_image_new_from_edje(EdjeFile,"NONE.PNG"), "Interface");
+      etk_combobox_item_data_set (ComboItem, NULL);
+      
+      ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_Rel2ToXComboBox),
+                     etk_image_new_from_edje(EdjeFile,"NONE.PNG"), "Interface");
+      etk_combobox_item_data_set (ComboItem, NULL);
+      
+      ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_Rel2ToYComboBox),
+                     etk_image_new_from_edje(EdjeFile,"NONE.PNG"), "Interface");
+      etk_combobox_item_data_set (ComboItem, NULL);
+      // Add all the part to all the 4 combobox
+      Evas_List *parts;
+      int type;
+      
+      parts = edje_edit_parts_list_get(edje_o);
+      while (parts)
+      {
+         printf("-- %s\n", (char *)parts->data);
+         type = edje_edit_part_type_get(edje_o,(char *)parts->data);
+         
+         if (type == EDJE_PART_TYPE_RECTANGLE)
+            snprintf(buf, 19,"RECT.PNG");
+         else if (type == EDJE_PART_TYPE_TEXT)
+            snprintf(buf, 19,"TEXT.PNG");
+         else if (type == EDJE_PART_TYPE_IMAGE)
+            snprintf(buf, 19,"IMAGE.PNG");
+         else snprintf(buf, 19,"NONE.PNG");
+         
+         ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_Rel1ToXComboBox),
+                           etk_image_new_from_edje (EdjeFile,buf),
+                           (char *)parts->data);
+         etk_combobox_item_data_set (ComboItem, parts->data);
+         
+         ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_Rel1ToYComboBox),
+                           etk_image_new_from_edje (EdjeFile,buf),
+                           (char *)parts->data);
+         etk_combobox_item_data_set (ComboItem, parts->data);
+         
+         ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_Rel2ToXComboBox),
+                           etk_image_new_from_edje (EdjeFile,buf),
+                           (char *)parts->data);
+         etk_combobox_item_data_set (ComboItem, parts->data);
+         
+         ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_Rel2ToYComboBox),
+                           etk_image_new_from_edje (EdjeFile,buf),
+                           (char *)parts->data);
+         etk_combobox_item_data_set (ComboItem, parts->data);
+         
+         parts = parts->next;
+      }
+      //TODO: Free parts
+   }
+#else
    if (Cur.eg)
    {
       ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_Rel1ToXComboBox), etk_image_new_from_edje (EdjeFile,"NONE.PNG"),"Interface");
@@ -390,6 +451,7 @@ PopulateRelComboBoxes(void)
          etk_combobox_item_data_set (ComboItem, part);
       }
    }
+#endif
    //Reenable signal propagation
    etk_signal_connect("active-item-changed", ETK_OBJECT(UI_Rel1ToXComboBox), ETK_CALLBACK(on_RelToComboBox_changed), (void *)REL1X_SPINNER);
    etk_signal_connect("active-item-changed", ETK_OBJECT(UI_Rel1ToYComboBox), ETK_CALLBACK(on_RelToComboBox_changed), (void *)REL1Y_SPINNER);
@@ -825,7 +887,9 @@ UpdateComboPositionFrame(void)
    int i=0;
    Etk_Combobox_Item *item = NULL;
    Engrave_Part *part = NULL;
-
+   
+   printf("SETTING COMBOS\n");
+   
    //Stop signal propagation
    etk_signal_block("active-item-changed", ETK_OBJECT(UI_Rel1ToXComboBox),
          ETK_CALLBACK(on_RelToComboBox_changed), (void*)REL1X_SPINNER);
@@ -835,8 +899,92 @@ UpdateComboPositionFrame(void)
          ETK_CALLBACK(on_RelToComboBox_changed), (void*)REL2X_SPINNER);
    etk_signal_block("active-item-changed", ETK_OBJECT(UI_Rel2ToYComboBox),
          ETK_CALLBACK(on_RelToComboBox_changed), (void*)REL2Y_SPINNER);
-
-   printf("SETTING COMBOS %s\n", Cur.eps->rel1.to_x);
+#if TEST_DIRECT_EDJE
+   if (!etk_string_length_get(Cur.part)) return;
+   if (!etk_string_length_get(Cur.state)) return;
+   char *rel;
+   char *p;
+   //If rel1_to_x is know set the combobox
+   if (rel = edje_edit_state_rel1_to_x_get(edje_o, Cur.part->string, Cur.state->string))
+   {
+      printf("REL: %s\n",rel);
+      i=0;
+      while ((item = etk_combobox_nth_item_get(ETK_COMBOBOX(UI_Rel1ToXComboBox),i)))
+      {
+         //Loop for all the item in the Combobox
+         if ((p = etk_combobox_item_data_get(item)))
+         {
+            //Get the data for the item (should be the name of the part)
+            if ((int)p != REL_COMBO_INTERFACE)
+               if (strcmp(p,rel) == 0)
+                  //If we found the item set active
+                  etk_combobox_active_item_set (ETK_COMBOBOX(UI_Rel1ToXComboBox),item);
+         }
+         i++;
+      }
+   }else{etk_combobox_active_item_set (ETK_COMBOBOX(UI_Rel1ToXComboBox), 
+            etk_combobox_nth_item_get(ETK_COMBOBOX(UI_Rel1ToXComboBox),0));}
+   
+   //If rel1_to_y is know set the combobox
+   if (rel = edje_edit_state_rel1_to_y_get(edje_o, Cur.part->string, Cur.state->string))
+   {
+      i=0;
+      while ((item = etk_combobox_nth_item_get(ETK_COMBOBOX(UI_Rel1ToYComboBox),i)))
+      {
+         //Loop for all the item in the Combobox
+         if ((p = etk_combobox_item_data_get(item)))
+         {
+            //Get the data for the item (should be the name of the part)
+            if ((int)p != REL_COMBO_INTERFACE)
+               if (strcmp(p,rel) == 0)
+                  //If we found the item set active
+                  etk_combobox_active_item_set (ETK_COMBOBOX(UI_Rel1ToYComboBox),item);
+         }
+         i++;
+      }
+   }else{etk_combobox_active_item_set (ETK_COMBOBOX(UI_Rel1ToYComboBox), 
+            etk_combobox_nth_item_get(ETK_COMBOBOX(UI_Rel1ToYComboBox),0));}
+   
+   //If rel2_to_x is know set the combobox
+   if (rel = edje_edit_state_rel2_to_x_get(edje_o, Cur.part->string, Cur.state->string))
+   {
+      i=0;
+      while ((item = etk_combobox_nth_item_get(ETK_COMBOBOX(UI_Rel2ToXComboBox),i)))
+      {
+         //Loop for all the item in the Combobox
+         if ((p = etk_combobox_item_data_get(item)))
+         {
+            //Get the data for the item (should be the name of the part)
+            if ((int)p != REL_COMBO_INTERFACE)
+               if (strcmp(p,rel) == 0)
+                  //If we found the item set active
+                  etk_combobox_active_item_set (ETK_COMBOBOX(UI_Rel2ToXComboBox),item);
+         }
+         i++;
+      }
+   }else{etk_combobox_active_item_set (ETK_COMBOBOX(UI_Rel2ToXComboBox), 
+            etk_combobox_nth_item_get(ETK_COMBOBOX(UI_Rel2ToXComboBox),0));}
+   
+   //If rel2_to_y is know set the combobox
+   if (rel = edje_edit_state_rel2_to_y_get(edje_o, Cur.part->string, Cur.state->string))
+   {
+      i=0;
+      while ((item = etk_combobox_nth_item_get(ETK_COMBOBOX(UI_Rel2ToYComboBox),i)))
+      {
+         //Loop for all the item in the Combobox
+         if ((p = etk_combobox_item_data_get(item)))
+         {
+            //Get the data for the item (should be the name of the part)
+            if ((int)p != REL_COMBO_INTERFACE)
+               if (strcmp(p,rel) == 0)
+                  //If we found the item set active
+                  etk_combobox_active_item_set (ETK_COMBOBOX(UI_Rel2ToYComboBox),item);
+         }
+         i++;
+      }
+   }else{etk_combobox_active_item_set (ETK_COMBOBOX(UI_Rel2ToYComboBox), 
+            etk_combobox_nth_item_get(ETK_COMBOBOX(UI_Rel2ToYComboBox),0));}
+#else
    //If rel1_to_x is know set the combobox
    if (Cur.eps->rel1.to_x)
    {
@@ -916,7 +1064,7 @@ UpdateComboPositionFrame(void)
       }
    }else{etk_combobox_active_item_set (ETK_COMBOBOX(UI_Rel2ToYComboBox), 
          etk_combobox_nth_item_get(ETK_COMBOBOX(UI_Rel2ToYComboBox),0));}
-
+#endif
    //Reenable signal propagation
    etk_signal_unblock("active-item-changed", ETK_OBJECT(UI_Rel1ToXComboBox),
          ETK_CALLBACK(on_RelToComboBox_changed), (void*)REL1X_SPINNER);
@@ -1434,13 +1582,6 @@ create_toolbar(Etk_Toolbar_Orientation o)
     
    sep = etk_vseparator_new();
    etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), sep, ETK_BOX_START);
-   
-   //Test Button
-   button = etk_tool_button_new_from_stock( ETK_STOCK_MEDIA_PLAYBACK_START);
-   etk_signal_connect("clicked", ETK_OBJECT(button),
-                        ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_PLAY);
-   etk_object_properties_set(ETK_OBJECT(button),"label","Test group",NULL);
-   etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), button, ETK_BOX_START);
 
 #if TEST_DIRECT_EDJE
    //UI_GroupsComboBox
@@ -1454,7 +1595,14 @@ create_toolbar(Etk_Toolbar_Orientation o)
     
    etk_signal_connect("active-item-changed", ETK_OBJECT(UI_GroupsComboBox),
                       ETK_CALLBACK(on_GroupsComboBox_changed), NULL);
-#endif    
+#else
+   //Test Button
+   button = etk_tool_button_new_from_stock( ETK_STOCK_MEDIA_PLAYBACK_START);
+   etk_signal_connect("clicked", ETK_OBJECT(button),
+                        ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_PLAY);
+   etk_object_properties_set(ETK_OBJECT(button),"label","Test group",NULL);
+   etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), button, ETK_BOX_START);
+#endif
     
    return UI_Toolbar;
 }

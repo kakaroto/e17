@@ -44,6 +44,29 @@ on_AllButton_click(Etk_Button *button, void *data)
          //ShowAlert("Not yet implemented");
          ShowFilechooser(FILECHOOSER_OPEN);
          break;
+#if TEST_DIRECT_EDJE
+      case TOOLBAR_SAVE:
+         ShowAlert("Not yet reimplemented ;)");
+         break;
+      case TOOLBAR_SAVE_EDC:
+         ShowAlert("Not yet reimplemented ;)");
+         break;
+      case TOOLBAR_SAVE_EDJ:
+         ShowAlert("Not yet reimplemented ;)");
+         break;
+      case TOOLBAR_ADD:
+         ShowAlert("Not yet reimplemented ;)");
+         break;
+      case TOOLBAR_REMOVE:
+         ShowAlert("Not yet reimplemented ;)");
+         break;
+      case TOOLBAR_MOVE_UP: //Lower
+         ShowAlert("Not yet reimplemented ;)");
+         break;
+      case TOOLBAR_MOVE_DOWN: //Raise
+         ShowAlert("Not yet reimplemented ;)");
+         break;
+#else
       case TOOLBAR_SAVE:
          if (Cur.open_file_name)
             SaveEDJ(Cur.open_file_name);
@@ -130,6 +153,7 @@ on_AllButton_click(Etk_Button *button, void *data)
          else
             ShowAlert("You must choose a part to raise");
          break;
+#endif
       case TOOLBAR_OPTIONS:
          etk_menu_popup(ETK_MENU(UI_OptionsMenu));
          //etk_menu_popup_at_xy (ETK_MENU(AddMenu), 10, 10);
@@ -306,6 +330,7 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
          edje_edit_part_selected_state_set(edje_o, Cur.part->string, Cur.state->string);  
        
          UpdatePositionFrame();
+         UpdateComboPositionFrame();
       
          edje_object_signal_emit(edje_ui,"part_frame_hide","edje_editor");
          edje_object_signal_emit(edje_ui,"group_frame_hide","edje_editor");
@@ -690,6 +715,35 @@ on_BorderSpinner_value_changed(Etk_Range *range, double value, void *data)
 Etk_Bool
 on_RelToComboBox_changed(Etk_Combobox *combobox, void *data)
 {
+#if TEST_DIRECT_EDJE
+   char *part;
+   part = etk_combobox_item_data_get (etk_combobox_active_item_get (combobox));
+   
+   if (part && (strcmp(part,Cur.part->string) == 0))
+   {
+      ShowAlert("A state can't rel to itself.");
+      return ETK_TRUE;
+   }
+   switch ((int)data)
+   {
+      case REL1X_SPINNER:
+         edje_edit_state_rel1_to_x_set(edje_o, Cur.part->string, Cur.state->string, part);
+         break;
+      case REL1Y_SPINNER:
+         edje_edit_state_rel1_to_y_set(edje_o, Cur.part->string, Cur.state->string, part);
+         break;
+      case REL2X_SPINNER:
+         edje_edit_state_rel2_to_x_set(edje_o, Cur.part->string, Cur.state->string, part);
+         break;
+      case REL2Y_SPINNER:
+        edje_edit_state_rel2_to_y_set(edje_o, Cur.part->string, Cur.state->string, part);
+         break;
+   }
+
+   edje_edit_part_selected_state_set(edje_o, Cur.part->string, Cur.state->string);  //this make edje redraw (need to update in lib)
+   ev_redraw();
+   return ETK_TRUE;
+#else
    printf("RelTocomboBox changed signal EMITTED \n");
    Engrave_Part* part = NULL;
 
@@ -733,6 +787,7 @@ on_RelToComboBox_changed(Etk_Combobox *combobox, void *data)
 
    ev_redraw();
    return ETK_TRUE;
+#endif
 }
 
 Etk_Bool

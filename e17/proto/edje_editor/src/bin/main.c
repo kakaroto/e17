@@ -249,10 +249,14 @@ DebugInfo(int full)
    printf("\n\n ********************* D E B U G ***************************\n");
    printf(" ** open file name: %s\n",Cur.edj_file_name->string);
    printf(" ** edje_editor.edj: %s\n",EdjeFile);
+   if (etk_string_length_get(Cur.group))
+      printf(" ** Cur group: %s\n",Cur.group->string);
+   else
+      printf(" ** Cur group: (NULL)\n");
    if (etk_string_length_get(Cur.part))
       printf(" ** Cur part: %s\n",Cur.part->string);
    else
-      printf(" ** Cur group: (NULL)\n");
+      printf(" ** Cur part: (NULL)\n");
    if (etk_string_length_get(Cur.state))
       printf(" ** Cur state: %s\n",Cur.state->string);
    else
@@ -399,10 +403,13 @@ ChangeGroup(const char *group)
 
    Parts_Hash = NULL;         //TODO FREE
    
+   Cur.group = etk_string_set(Cur.group, group);
    Cur.part = etk_string_clear(Cur.part);
    Cur.state = etk_string_clear(Cur.state);
    
+   
    PopulateTree2();
+   PopulateRelComboBoxes();
 }
 #endif
 /* main */
@@ -503,7 +510,8 @@ main(int argc, char **argv)
 
    Cur.edj_file_name = etk_string_new(file);
    ecore_evas_title_set(UI_ecore_MainWin, Cur.edj_file_name->string);
-
+   
+   Cur.group = etk_string_new("");
    Cur.part = etk_string_new("");
    Cur.state = etk_string_new("");
    Parts_Hash = NULL;
