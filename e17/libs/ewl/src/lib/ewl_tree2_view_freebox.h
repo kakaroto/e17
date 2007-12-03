@@ -5,7 +5,7 @@
 #include "ewl_tree2_view.h"
 
 /**
- * @addtogroup Ewl_Tree2_View_Freebox: Ewl_Tree2_View_Freebox The freebox tree view
+ * @addtogroup Ewl_Tree2_View_Freebox Ewl_Tree2_View_Freebox: The freebox tree view
  * @brief A freebox view for the tree
  * @remarks Inherits from Ewl_Tree2_View
  *

@@ -2,7 +2,7 @@
 #define EWL_FILELIST_MODEL_H
 
 /**
- * @addtogroup Ewl_Filelist_Model: Ewl_Filelist_Model The model for the filelist
+ * @addtogroup Ewl_Filelist_Model Ewl_Filelist_Model: The model for the filelist
  * @brief A model for the filelist
  *
  * @{

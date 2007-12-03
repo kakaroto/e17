@@ -11,6 +11,7 @@
 #include "ewl_statusbar.h"
 #include "ewl_text.h"
 #include "ewl_tree2.h"
+#include "ewl_icon_theme.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -530,6 +531,7 @@ ewl_test_compare(Ewl_Test *test1, Ewl_Test *test2)
 	return strcasecmp(test1->name, test2->name);
 }
 
+#define ET_ICON(icon) ewl_icon_theme_icon_path_get(EWL_ICON_ ## icon, EWL_ICON_SIZE_SMALL)
 static int
 create_main_test_window(Ewl_Container *box)
 {
@@ -541,13 +543,13 @@ create_main_test_window(Ewl_Container *box)
 	Ewl_View *view;
 
 	Ewl_Menu_Info file_menu[] = {
-		{"Exit",NULL,  ewl_test_cb_exit},
+		{"Exit",ET_ICON(APPLICATION_EXIT),  ewl_test_cb_exit},
 		{NULL, NULL, NULL}
 	};
 
 	Ewl_Menu_Info help_menu[] = {
-		{"About Ewl_Test ...", NULL, ewl_test_cb_about},
-		{"Ewl Test Help ...", NULL, ewl_test_cb_help},
+		{"About Ewl_Test ...", ET_ICON(HELP_ABOUT), ewl_test_cb_about},
+		{"Ewl Test Help ...", ET_ICON(HELP_FAQ), ewl_test_cb_help},
 		{NULL, NULL, NULL}
 	};
 
