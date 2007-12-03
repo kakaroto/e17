@@ -531,7 +531,6 @@ ewl_test_compare(Ewl_Test *test1, Ewl_Test *test2)
 	return strcasecmp(test1->name, test2->name);
 }
 
-#define ET_ICON(icon) ewl_icon_theme_icon_path_get(EWL_ICON_ ## icon, EWL_ICON_SIZE_SMALL)
 static int
 create_main_test_window(Ewl_Container *box)
 {
@@ -543,13 +542,22 @@ create_main_test_window(Ewl_Container *box)
 	Ewl_View *view;
 
 	Ewl_Menu_Info file_menu[] = {
-		{"Exit",ET_ICON(APPLICATION_EXIT),  ewl_test_cb_exit},
+		{"Exit", 
+			ewl_icon_theme_icon_path_get(EWL_ICON_APPLICATION_EXIT,
+							EWL_ICON_SIZE_SMALL), 
+			ewl_test_cb_exit},
 		{NULL, NULL, NULL}
 	};
 
 	Ewl_Menu_Info help_menu[] = {
-		{"About Ewl_Test ...", ET_ICON(HELP_ABOUT), ewl_test_cb_about},
-		{"Ewl Test Help ...", ET_ICON(HELP_FAQ), ewl_test_cb_help},
+		{"About Ewl_Test ...",
+			ewl_icon_theme_icon_path_get(EWL_ICON_HELP_ABOUT,
+							EWL_ICON_SIZE_SMALL),
+			ewl_test_cb_about},
+		{"Ewl Test Help ...", 
+			ewl_icon_theme_icon_path_get(EWL_ICON_HELP_FAQ,
+							EWL_ICON_SIZE_SMALL),
+			ewl_test_cb_help},
 		{NULL, NULL, NULL}
 	};
 
@@ -730,7 +738,7 @@ create_main_test_window(Ewl_Container *box)
 }
 
 static void
-statusbar_label_update(Ewl_Widget *w, void *ev, void *data)
+statusbar_label_update(Ewl_Widget *w __UNUSED__, void *ev, void *data)
 {
 	Ewl_Event_Mouse *event;
 	char buf[265];
@@ -1348,13 +1356,14 @@ cb_unit_test_count(void *data)
 }
 
 static void
-ewl_cb_mvc_free(Ewl_Widget *w, void *ev, void *data)
+ewl_cb_mvc_free(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 {
 	Ewl_Model *model;
 	Ewl_View *view;
 
 	model = ewl_mvc_model_get(EWL_MVC(w));
 	free(model);
+
 	view = ewl_mvc_view_get(EWL_MVC(w));
 	free(view);
 }
