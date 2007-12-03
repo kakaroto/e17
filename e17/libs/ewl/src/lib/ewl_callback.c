@@ -543,8 +543,27 @@ ewl_callback_del_type(Ewl_Widget *w, unsigned int t)
 	if (!EWL_CALLBACK_LEN(w, t))
 		DRETURN(DLEVEL_STABLE);
 
-	while (EWL_CALLBACK_LEN(w, t))
-		ewl_callback_rm(w, t, EWL_CALLBACK_LEN(w, t) - 1);
+	if (t > EWL_CALLBACK_MAX) {
+		unsigned int i = 0;
+
+		/*
+		 * Handle custom types by verifying that the event id matches
+		 * the specified callback type.
+		 */
+		while (i < EWL_CALLBACK_LEN(w, t)) {
+			Ewl_Callback_Custom *cb;
+
+			cb = (Ewl_Callback_Custom *)ewl_callback_get(w, t, i);
+			if (cb && (cb->event_id == t))
+				ewl_callback_rm(w, t, i);
+			else
+				i++;
+		}
+	}
+	else {
+		while (EWL_CALLBACK_LEN(w, t))
+			ewl_callback_rm(w, t, EWL_CALLBACK_LEN(w, t) - 1);
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
