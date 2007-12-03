@@ -621,8 +621,17 @@ ewl_callback_clear(Ewl_Widget *w)
 	DCHECK_PARAM_PTR(w);
 	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
+	/*
+	 * First clear out all standard callback types.
+	 */
 	for (i = 0; i < EWL_CALLBACK_MAX; i++)
 		ewl_callback_del_type(w, i);
+
+	/*
+	 * Finally clear out all custom callbacks.
+	 */
+	while (EWL_CALLBACK_LEN(w, i))
+		ewl_callback_rm(w, i, EWL_CALLBACK_LEN(w, i) - 1);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
