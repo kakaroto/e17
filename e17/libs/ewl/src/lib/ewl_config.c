@@ -473,6 +473,7 @@ ewl_config_file_read_lock(int fd, long size)
 	return (_locking(fd, _LK_LOCK, size) == 0);
 # endif /* HAVE__LOCKING */
 #endif /* !defined(F_SETLKW) */
+	size = size;
 }
 
 static int
@@ -492,6 +493,7 @@ ewl_config_file_write_lock(int fd, long size)
 	return (_locking(fd, _LK_LOCK, size) == 0);
 # endif /* HAVE__LOCKING */
 #endif /* !defined(F_SETLKW) */
+	size = size;
 }
 
 static int
@@ -511,6 +513,7 @@ ewl_config_file_unlock(int fd, long size)
 	return (_locking(fd, _LK_UNLCK, size) == 0);
 # endif /* HAVE__LOCKING */
 #endif /* !defined(F_SETLKW) */
+	size = size;
 }
 
 static int

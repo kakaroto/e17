@@ -1032,7 +1032,7 @@ widget_colour_test_set_get(char *buf, int len)
  * really fail if it crashes or throws warnings. Nothing to check.
  */
 static int
-widget_colour_test_get_null(char *buf, int len)
+widget_colour_test_get_null(char *buf __UNUSED__, int len __UNUSED__)
 {
 	Ewl_Widget *w;
 

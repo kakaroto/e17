@@ -942,7 +942,7 @@ ewl_filelist_selected_files_get(Ewl_Filelist *fl)
 		else if (sel->type == EWL_SELECTION_TYPE_RANGE)
 		{
 			Ewl_Selection_Range *r;
-			int i;
+			unsigned int i;
 
 			r = EWL_SELECTION_RANGE(sel);
 			for (i = r->start.row; i <= r->end.row; i++)
