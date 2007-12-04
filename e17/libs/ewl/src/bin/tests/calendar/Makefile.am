@@ -15,13 +15,13 @@ if EWL_TESTS_BUILD
 
 pkgdir = $(libdir)/ewl/tests
 
-pkg_LTLIBRARIES = ewl_calendar.la
+pkg_LTLIBRARIES = ewl_calendar_test.la
 
-ewl_calendar_la_SOURCES = ewl_calendar.c
-ewl_calendar_la_LIBADD = $(top_builddir)/src/lib/libewl.la
-ewl_calendar_la_LDFLAGS	= -module @create_shared_lib@ -avoid-version
+ewl_calendar_test_la_SOURCES = ewl_calendar_test.c
+ewl_calendar_test_la_LIBADD = $(top_builddir)/src/lib/libewl.la
+ewl_calendar_test_la_LDFLAGS	= -module @create_shared_lib@ -avoid-version
 
-FILES = $(ewl_calendar_la_SOURCES)
+FILES = $(ewl_calendar_test_la_SOURCES)
 
 exampledir = $(pkgdatadir)/examples/
 example_DATA = $(FILES)

@@ -6,6 +6,7 @@ AM_CPPFLAGS = \
 -I$(top_builddir)/src/lib \
 -I$(top_srcdir)/src/bin \
 -I$(top_builddir)/src/bin \
+-DPACKAGE_LIB_DIR=\"$(libdir)\" \
 @EDJE_CFLAGS@ \
 @ECORE_CFLAGS@ \
 @EVAS_CFLAGS@ \
@@ -15,13 +16,13 @@ if EWL_TESTS_BUILD
 
 pkgdir = $(libdir)/ewl/tests
 
-pkg_LTLIBRARIES = ewl_engine.la
+pkg_LTLIBRARIES = ewl_engine_test.la
 
-ewl_engine_la_SOURCES = ewl_engine.c
-ewl_engine_la_LIBADD = $(top_builddir)/src/lib/libewl.la @EVAS_LIBS@
-ewl_engine_la_LDFLAGS = -module @create_shared_lib@ -avoid-version
+ewl_engine_test_la_SOURCES = ewl_engine_test.c
+ewl_engine_test_la_LIBADD = $(top_builddir)/src/lib/libewl.la @EVAS_LIBS@
+ewl_engine_test_la_LDFLAGS = -module @create_shared_lib@ -avoid-version
 
-FILES = $(ewl_engine_la_SOURCES)
+FILES = $(ewl_engine_test_la_SOURCES)
 
 exampledir = $(pkgdatadir)/examples/
 example_DATA = $(FILES)

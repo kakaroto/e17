@@ -15,13 +15,13 @@ if EWL_TESTS_BUILD
 
 pkgdir = $(libdir)/ewl/tests
 
-pkg_LTLIBRARIES = ewl_floater.la
+pkg_LTLIBRARIES = ewl_floater_test.la
 
-ewl_floater_la_SOURCES = ewl_floater.c
-ewl_floater_la_LIBADD = $(top_builddir)/src/lib/libewl.la
-ewl_floater_la_LDFLAGS = -module @create_shared_lib@ -avoid-version
+ewl_floater_test_la_SOURCES = ewl_floater_test.c
+ewl_floater_test_la_LIBADD = $(top_builddir)/src/lib/libewl.la
+ewl_floater_test_la_LDFLAGS = -module @create_shared_lib@ -avoid-version
 
-FILES = $(ewl_floater_la_SOURCES)
+FILES = $(ewl_floater_test_la_SOURCES)
 
 exampledir = $(pkgdatadir)/examples/
 example_DATA = $(FILES)

@@ -15,13 +15,13 @@ if EWL_TESTS_BUILD
 
 pkgdir = $(libdir)/ewl/tests
 
-pkg_LTLIBRARIES = ewl_spinner.la
+pkg_LTLIBRARIES = ewl_spinner_test.la
 
-ewl_spinner_la_SOURCES = ewl_spinner.c
-ewl_spinner_la_LIBADD = $(top_builddir)/src/lib/libewl.la
-ewl_spinner_la_LDFLAGS = -module @create_shared_lib@ -avoid-version
+ewl_spinner_test_la_SOURCES = ewl_spinner_test.c
+ewl_spinner_test_la_LIBADD = $(top_builddir)/src/lib/libewl.la
+ewl_spinner_test_la_LDFLAGS = -module @create_shared_lib@ -avoid-version
 
-FILES = $(ewl_spinner_la_SOURCES)
+FILES = $(ewl_spinner_test_la_SOURCES)
 
 exampledir = $(pkgdatadir)/examples/
 example_DATA = $(FILES)

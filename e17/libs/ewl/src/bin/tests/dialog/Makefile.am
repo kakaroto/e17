@@ -15,13 +15,13 @@ if EWL_TESTS_BUILD
 
 pkgdir = $(libdir)/ewl/tests
 
-pkg_LTLIBRARIES = ewl_dialog.la
+pkg_LTLIBRARIES = ewl_dialog_test.la
 
-ewl_dialog_la_SOURCES = ewl_dialog.c
-ewl_dialog_la_LIBADD = $(top_builddir)/src/lib/libewl.la
-ewl_dialog_la_LDFLAGS = -module @create_shared_lib@ -avoid-version
+ewl_dialog_test_la_SOURCES = ewl_dialog_test.c
+ewl_dialog_test_la_LIBADD = $(top_builddir)/src/lib/libewl.la
+ewl_dialog_test_la_LDFLAGS = -module @create_shared_lib@ -avoid-version
 
-FILES = $(ewl_dialog_la_SOURCES)
+FILES = $(ewl_dialog_test_la_SOURCES)
 
 exampledir = $(pkgdatadir)/examples/
 example_DATA = $(FILES)

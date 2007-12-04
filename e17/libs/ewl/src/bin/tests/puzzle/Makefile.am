@@ -16,13 +16,13 @@ if EWL_TESTS_BUILD
 
 pkgdir = $(libdir)/ewl/tests
 
-pkg_LTLIBRARIES = ewl_puzzle.la
+pkg_LTLIBRARIES = ewl_puzzle_test.la
 
-ewl_puzzle_la_SOURCES = ewl_puzzle.c
-ewl_puzzle_la_LIBADD = $(top_builddir)/src/lib/libewl.la
-ewl_puzzle_la_LDFLAGS = -module @create_shared_lib@ -avoid-version
+ewl_puzzle_test_la_SOURCES = ewl_puzzle_test.c
+ewl_puzzle_test_la_LIBADD = $(top_builddir)/src/lib/libewl.la
+ewl_puzzle_test_la_LDFLAGS = -module @create_shared_lib@ -avoid-version
 
-FILES = $(ewl_puzzle_la_SOURCES) 
+FILES = $(ewl_puzzle_test_la_SOURCES) 
 
 exampledir = $(pkgdatadir)/examples/
 example_DATA = $(FILES)

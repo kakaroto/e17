@@ -15,13 +15,13 @@ if EWL_TESTS_BUILD
 
 pkgdir = $(libdir)/ewl/tests
 
-pkg_LTLIBRARIES = ewl_modal.la
+pkg_LTLIBRARIES = ewl_modal_test.la
 
-ewl_modal_la_SOURCES = ewl_modal.c
-ewl_modal_la_LIBADD = $(top_builddir)/src/lib/libewl.la
-ewl_modal_la_LDFLAGS = -module @create_shared_lib@ -avoid-version 
+ewl_modal_test_la_SOURCES = ewl_modal_test.c
+ewl_modal_test_la_LIBADD = $(top_builddir)/src/lib/libewl.la
+ewl_modal_test_la_LDFLAGS = -module @create_shared_lib@ -avoid-version 
 
-FILES = $(ewl_modal_la_SOURCES)
+FILES = $(ewl_modal_test_la_SOURCES)
 
 exampledir = $(pkgdatadir)/examples/
 example_DATA = $(FILES)

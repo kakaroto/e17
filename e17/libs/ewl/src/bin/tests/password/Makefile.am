@@ -15,13 +15,13 @@ if EWL_TESTS_BUILD
 
 pkgdir = $(libdir)/ewl/tests
 
-pkg_LTLIBRARIES = ewl_password.la
+pkg_LTLIBRARIES = ewl_password_test.la
 
-ewl_password_la_SOURCES = ewl_password.c
-ewl_password_la_LIBADD = $(top_builddir)/src/lib/libewl.la
-ewl_password_la_LDFLAGS = -module @create_shared_lib@ -avoid-version
+ewl_password_test_la_SOURCES = ewl_password_test.c
+ewl_password_test_la_LIBADD = $(top_builddir)/src/lib/libewl.la
+ewl_password_test_la_LDFLAGS = -module @create_shared_lib@ -avoid-version
 
-FILES = $(ewl_password_la_SOURCES)
+FILES = $(ewl_password_test_la_SOURCES)
 
 exampledir = $(pkgdatadir)/examples/
 example_DATA = $(FILES)

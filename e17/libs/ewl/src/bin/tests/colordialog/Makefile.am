@@ -15,13 +15,13 @@ if EWL_TESTS_BUILD
 
 pkgdir = $(libdir)/ewl/tests
 
-pkg_LTLIBRARIES = ewl_colordialog.la
+pkg_LTLIBRARIES = ewl_colordialog_test.la
 
-ewl_colordialog_la_SOURCES = ewl_colordialog.c
-ewl_colordialog_la_LIBADD = $(top_builddir)/src/lib/libewl.la
-ewl_colordialog_la_LDFLAGS = -module @create_shared_lib@ -avoid-version
+ewl_colordialog_test_la_SOURCES = ewl_colordialog_test.c
+ewl_colordialog_test_la_LIBADD = $(top_builddir)/src/lib/libewl.la
+ewl_colordialog_test_la_LDFLAGS = -module @create_shared_lib@ -avoid-version
 
-FILES = $(ewl_colordialog_la_SOURCES)
+FILES = $(ewl_colordialog_test_la_SOURCES)
 
 exampledir = $(pkgdatadir)/examples/
 example_DATA = $(FILES)

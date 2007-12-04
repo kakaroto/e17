@@ -15,13 +15,13 @@ if EWL_TESTS_BUILD
 
 pkgdir = $(libdir)/ewl/tests
 
-pkg_LTLIBRARIES = ewl_filepicker.la
+pkg_LTLIBRARIES = ewl_filepicker_test.la
 
-ewl_filepicker_la_SOURCES = ewl_filepicker.c
-ewl_filepicker_la_LIBADD = $(top_builddir)/src/lib/libewl.la @ECORE_LIBS@
-ewl_filepicker_la_LDFLAGS = -module @create_shared_lib@ -avoid-version
+ewl_filepicker_test_la_SOURCES = ewl_filepicker_test.c
+ewl_filepicker_test_la_LIBADD = $(top_builddir)/src/lib/libewl.la @ECORE_LIBS@
+ewl_filepicker_test_la_LDFLAGS = -module @create_shared_lib@ -avoid-version
 
-FILES = $(ewl_filepicker_la_SOURCES)
+FILES = $(ewl_filepicker_test_la_SOURCES)
 
 exampledir = $(pkgdatadir)/examples/
 example_DATA = $(FILES)

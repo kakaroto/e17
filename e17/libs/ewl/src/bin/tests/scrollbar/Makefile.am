@@ -15,13 +15,13 @@ if EWL_TESTS_BUILD
 
 pkgdir = $(libdir)/ewl/tests
 
-pkg_LTLIBRARIES = ewl_scrollbar.la
+pkg_LTLIBRARIES = ewl_scrollbar_test.la
 
-ewl_scrollbar_la_SOURCES = ewl_scrollbar.c
-ewl_scrollbar_la_LIBADD = $(top_builddir)/src/lib/libewl.la
-ewl_scrollbar_la_LDFLAGS = -module @create_shared_lib@ -avoid-version
+ewl_scrollbar_test_la_SOURCES = ewl_scrollbar_test.c
+ewl_scrollbar_test_la_LIBADD = $(top_builddir)/src/lib/libewl.la
+ewl_scrollbar_test_la_LDFLAGS = -module @create_shared_lib@ -avoid-version
 
-FILES = $(ewl_scrollbar_la_SOURCES)
+FILES = $(ewl_scrollbar_test_la_SOURCES)
 
 exampledir = $(pkgdatadir)/examples/
 example_DATA = $(FILES)
