@@ -359,7 +359,7 @@ text_invalid_utf8_set_get(char *buf, int len)
 	char text[] = "This a valid UTF-8 string, although it contains "
 			"at the moment only 7-bit ascii code.\n"
 			" This will be changed later!";
-	const char * returned_text;
+	const char *returned_text;
 	unsigned char *utext;
 
 	utext = (unsigned char *)text;
@@ -370,19 +370,18 @@ text_invalid_utf8_set_get(char *buf, int len)
 	/* insert some invalid bytes */
 	utext[2] = 254;
 	utext[4] = 0xA4;
+
 	/* insert the euro sign without the 3rd byte */
 	utext[10] = 0xE2;
 	utext[11] = 0x82;
-	/*
-	 * set a valid UTF-8 string
-	 */
+
+	/* set a valid UTF-8 string */
 	ewl_text_text_set(EWL_TEXT(t), text);
 	returned_text = ewl_text_text_get(EWL_TEXT(t));
 
-	if (!returned_text) {
-		snprintf(buf, len, "ewl_text_text_get() returned a "
-				"NULL-pointer");
-	}
+	if (!returned_text)
+		snprintf(buf, len, "ewl_text_text_get() returned a NULL pointer");
+
 	else if (!strcmp(text, returned_text)
 		|| returned_text[2] < 0
 		|| returned_text[4] < 0
