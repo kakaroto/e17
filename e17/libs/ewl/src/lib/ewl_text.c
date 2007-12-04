@@ -612,7 +612,7 @@ ewl_text_text_insert_private(Ewl_Text *t, const char *txt,
 	/* count the number of chars in the text */
 	tmp = (char *)txt;
 	max_chars = (t->length.max_chars) ? t->length.max_chars : UINT_MAX;
-	while (*tmp && (clen + t->length.chars) < max_chars)
+	while ((*tmp) && ((clen + t->length.chars) < max_chars))
 	{
 		if (ewl_text_char_utf8_is(tmp))
 			tmp = ewl_text_text_next_char(tmp, NULL);
