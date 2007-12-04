@@ -34,9 +34,15 @@ td.tl {
 }
 
 div.content {
-   margin: 0 auto 0 auto;
-   width: 80%;
-   text-align: justify;
+   margin                 : 0 auto 0 auto;
+   width                  : 80%;
+   text-align             : justify;
+}
+
+div.footer {
+   display                : block;
+   width                  : 100%;
+   clear                  : both;
 }
 
 div.main {
@@ -394,7 +400,6 @@ a.b:hover {
 //   display                : block;
 }
 
-
 /** NEWS STYLE */
 
 .post {
@@ -431,5 +436,52 @@ a.b:hover {
 
 .news-latest-body {
   margin-top: 5px;
+}
+
+/** SECTION PLUG STYLE */
+
+.section-plug {
+    width                 : 13em;
+    float                 : right;
+    clear                 : right;
+    margin                : 0px 0px 2em 2em;
+    margin-bottom         : 2em;
+    background-color      : #ededf0;
+    padding               : 1em;
+    background-image      : url('i/section-plug-header.png');
+    background-repeat     : no-repeat;
+}
+
+.section-plug h3 {
+    margin                : 0px;
+    padding               : 0px;
+    width                 : 100%;
+    text-align            : center;
+}
+
+.section-plug a {
+    margin                : 0px;
+    padding               : 0px;
+    text-decoration       : none;
+}
+
+.section-plug p {
+    margin                : 1em 0px;
+    padding               : 0px;
+    text-align            : left;
+}
+
+.section-plug ul {
+    margin                : 0px;
+    padding               : 0px;
+    list-style-type       : none;
+}
+
+.section-plug li {
+    margin                : 0px 0px 1em 0px;
+    padding               : 0px;
+    font-size             : 0.8em;
+    font-weight           : bold;
+    text-align            : left;
 }
 

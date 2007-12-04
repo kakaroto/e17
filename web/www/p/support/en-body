@@ -1,5 +1,31 @@
 <h1>Support</h1>
 
+<div class="section-plug">
+<h3><a href="http://docs.enlightenment.org/">Docs</a></h3>
+<p>Stable development manuals and API References.</p>
+<ul>
+<li><a href="http://homepages.pathfinder.gr/kazanaki/contrib/">Introduction to
+the EFL</a></li>
+<li><a href="http://docs.enlightenment.org/books/cookbook/eflcookbook.html">The
+ EFL Cookbook</a></li>
+</ul>
+</div>
+
+<div class="section-plug">
+<h3><a href="http://wiki.enlightenment.org/index.php/Main_Page">Wiki</a></h3>
+<p>Versatile tutorials and guides for both users and developers.</p>
+<ul>
+<li><a href="http://wiki.enlightenment.org/index.php/Enlightenment">
+Enlightenment</a></li>
+<li><a href="http://wiki.enlightenment.org/index.php/E17_User_Guide">DR17 User
+Guide</a></li>
+<li><a href="http://wiki.enlightenment.org/index.php/Enlightenment_Foundation_Libraries">
+EFL Overview</a></li>
+<li><a href="http://wiki.enlightenment.org/index.php/Install_EFL_from_CVS_guide">
+Installing the EFL</a></li>
+</ul>
+</div>
+
 <p>There is a great community of helpful developers and users surrounding
 the Enlightenment project. The following is a list of ways to get in contact
 with this community.</p>

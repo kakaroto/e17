@@ -48,8 +48,10 @@
 <?php include "p/$page/$lang-body" ?>
 </div>
 </div>
+<div class="footer">
 <hr/>
 <p class="tiny">Copyright &copy; Enlightenment.org</p>
+</div>
 </body>
 </html>
 	
