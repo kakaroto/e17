@@ -1265,7 +1265,7 @@ EwinEventConfigureRequest(EWin * ewin, XEvent * ev)
 		y = ev->xconfigurerequest.y - EoGetY(EoGetDesk(ewin));
 #endif
 	  }
-	if (!EwinInhGetApp(ewin, move))
+	if (!EwinInhGetApp(ewin, size))
 	  {
 	     if (ev->xconfigurerequest.value_mask & CWWidth)
 		w = ev->xconfigurerequest.width;
