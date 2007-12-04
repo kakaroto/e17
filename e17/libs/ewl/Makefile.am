@@ -10,7 +10,7 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
 
 bin_SCRIPTS = 
 
-EXTRA_DIST = README AUTHORS COPYING ewl.m4 ewl.spec ewl.pc.in \
+EXTRA_DIST = README AUTHORS COPYING ewl.spec ewl.pc.in \
 	     debian/rules \
 	     debian/control \
 	     debian/changelog \
@@ -27,9 +27,6 @@ EXTRA_DIST = README AUTHORS COPYING ewl.m4 ewl.spec ewl.pc.in \
 	     debian/libewl0-engines-all.install \
 	     debian/libewl0-engine-x11.install \
 	     debian/libewl0.install
-
-m4datadir = $(datadir)/aclocal
-m4data_DATA = ewl.m4
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = ewl.pc
