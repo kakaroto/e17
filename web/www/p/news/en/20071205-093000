@@ -1,0 +1,55 @@
+Ewl 0.5.2 Released
+dan 'dj2' sinclair
+dj2@everburning.com
+
+<p>
+We made a release of Ewl last night. This is our yearly release (we really
+have to get these out quicker). Given its been a year there is a pretty big
+list of changes. The diff file was almost the same length as the code base
+itself. Below is the summary of changes.
+</p>
+
+<!-- cut -->
+
+<ul>
+<li>Obligatory yearly release</li>
+<li>Rewrite of autotools scripts</li>
+<li>Reorganization of default theme structure</li>
+<li>Fixed general build of embed test support files</li>
+<li>Updated doxygen theme</li>
+<li>Restructuring of test application</li>
+<li>Extensive addition of unit tests</li>
+<li>Addition of XCB, SDL, and Windows engines</li>
+<li>Refactoring header files for faster build times</li>
+<li>Simplification of debugging macros to reduce code duplication</li>
+<li>Improved box layout algorithm</li>
+<li>A variety of bug fixes and  typo corrections</li>
+<li>Rewritten combo container based on MVC framework</li>
+<li>Expanded support for config value handling</li>
+<li>Revamped dialog layout and API</li>
+<li>Custom DND cursor support</li>
+<li>Generalizing of canvas terminology</li>
+<li>Abstracting engine support</li>
+<li>MVC based filelist container</li>
+<li>Expanded default view support</li>
+<li>Convert icon and mime type handling to Efreet</li>
+<li>Improved menu event handling</li>
+<li>Reduced number of required callbacks and expanded custom callbacks</li>
+<li>External main loop support</li>
+<li>Improved general MVC API and implementation</li>
+<li>Better layout algorithm for paned widget</li>
+<li>Popup sets better window management hints and follows parent</li>
+<li>API changes for radio button selection querying</li>
+<li>Range extended to handle unknown end values</li>
+<li>Improved doxygen image handling</li>
+<li>UTF8 fixes for the ewl_text widget</li>
+<li>Abstraction and cleanup of tree2 internals</li>
+<li>General widget handling performance improvements</li>
+<li>Removal of deprecated DND code</li>
+<li>Widget layer and stacking fixes</li>
+<li>Support for additional general window management hints</li>
+</ul>
+
+<p>Give it a try. If you find any bugs they can be logged to <a
+href="http://bugs.enlightenment.org">Bugzilla</a>.</p>
+
