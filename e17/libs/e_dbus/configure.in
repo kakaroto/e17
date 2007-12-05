@@ -30,13 +30,17 @@ PKG_CHECK_MODULES([EDBUS], [
   ecore >= 0.9.9
 ])
 
-PKG_CHECK_MODULES([HAL_TEST_GUI], [
-  ewl
-  efreet
-],
-# temporarily disable until update to newer tree2 api
-[AC_DEFINE([EWL_GUI], 0, [An ewl gui for e_dbus_hal])],
-[AC_DEFINE([EWL_GUI], 0, [An ewl gui for e_dbus_hal])]
+AC_ARG_ENABLE(build-test-gui,
+  AS_HELP_STRING([--build-test-gui], [Build with gui for testing]),
+  [ PKG_CHECK_MODULES([HAL_TEST_GUI], [
+    ewl
+    efreet
+    ],
+    # temporarily disable until update to newer tree2 api
+    [AC_DEFINE([EWL_GUI], 0, [An ewl gui for e_dbus_hal])],
+    [AC_DEFINE([EWL_GUI], 0, [An ewl gui for e_dbus_hal])]
+    )
+ ]
 )
 
 AC_OUTPUT([
