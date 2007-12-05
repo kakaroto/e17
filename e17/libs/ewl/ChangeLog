@@ -1,3 +1,42 @@
+Tue Dec 4 11:03:00 2007 Nathan Ingersoll <ningerso@gmail.com>
+	* Version 0.5.2:
+	  - Obligatory yearly release
+	  - Rewrite of autotools scripts
+	  - Reorganization of default theme structure
+	  - Fixed general build of embed test support files
+	  - Updated doxygen theme
+	  - Restructuring of test application
+	  - Extensive addition of unit tests
+	  - Addition of XCB, SDL, and Windows engines
+	  - Refactoring header files for faster build times
+	  - Simplification of debugging macros to reduce code duplication
+	  - Improved box layout algorithm
+	  - A variety of bug fixes and  typo corrections
+	  - Rewritten combo container based on MVC framework
+	  - Expanded support for config value handling
+	  - Revamped dialog layout and API
+	  - Custom DND cursor support
+	  - Generalizing of canvas terminology
+	  - Abstracting engine support
+	  - MVC based filelist container
+	  - Expanded default view support
+	  - Convert icon and mime type handling to efreet
+	  - Improved menu event handling
+	  - Reduced number of required callbacks and expanded custom callbacks
+	  - External main loop support
+	  - Improved general MVC API and implementation
+	  - Better layout algorithm for paned widget
+	  - Popup sets better window management hints and follows parent
+	  - API changes for radio button selection querying
+	  - Range extended to handle unknown end values
+	  - Improved doxygen image handling
+	  - UTF8 fixes for the ewl_text widget
+	  - Abstraction and cleanup of tree2 internals
+	  - General widget handling performance improvements
+	  - Removal of deprecated DND code
+	  - Widget layer and stacking fixes
+	  - Support for additional general window management hints
+
 Fri Dec 15 00:40:00 2006 Nathan Ingersoll <ningerso@gmail.com>
 	* Version 0.5.1:
 	  - Addition of popup abstraction
