@@ -11,6 +11,7 @@ struct _Config
    E_Module        *module;
    E_Config_Dialog *config_dialog;
    E_Menu          *menu;
+   Ecore_Timer     *timer;
    Evas_List       *instances;
    Evas_List       *items;
 };
