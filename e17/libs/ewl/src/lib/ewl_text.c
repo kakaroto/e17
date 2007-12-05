@@ -15,21 +15,15 @@ static Ewl_Text_Context *ewl_text_default_context = NULL;
 /* how much do we extend the text by when we need more space? */
 #define EWL_TEXT_EXTEND_VAL  4096
 
-static const char ewl_text_trailing_bytes[256] =
+static const char ewl_text_trailing_bytes[32] =
 {
-	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-	1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-	2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2, 2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,
-	3,3,3,3,3,3,3,3,3,3,3,3,3,3,3,3, 4,4,4,4,4,4,4,4,5,5,5,5,6,6,6,6
+	1,1,1,1, 1,1,1,1, 1,1,1,1, 1,1,1,1, 
+	1,1,1,1, 1,1,1,1, 2,2,2,2, 3,3,4,6
 };
 
 /* returns length of the next utf-8 sequence */
 #define EWL_TEXT_CHAR_BYTE_LEN(s) \
-	(ewl_text_trailing_bytes[(unsigned int)(unsigned char)((s)[0])])
+	(ewl_text_trailing_bytes[((unsigned char)((s)[0])) >> 3])
 
 static void ewl_text_current_fmt_set(Ewl_Text *t, unsigned int context_mask,
 						Ewl_Text_Context *change);
