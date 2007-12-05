@@ -7,7 +7,7 @@
  * Defines the Ewl_Embed class to provide EWL with the ability to work with a
  * canvas.
  *
- * @remarks Inherits from Ewl_Overlay.
+ * @remarks Inherits from Ewl_Cell.
  * @if HAVE_IMAGES
  * @image html Ewl_Embed_inheritance.png
  * @endif
@@ -56,12 +56,12 @@ typedef void *Ewl_Embed_Window;
 #define EWL_EMBED_WINDOW(window) ((Ewl_Embed_Window *)window)
 
 /**
- * @brief Inherits from Ewl_Overlay that acts as a top level widget
+ * @brief Inherits from Ewl_Cell that acts as a top level widget
  * for interacting with the canvas.
  */
 struct Ewl_Embed
 {
-	Ewl_Cell cell;		 /**< Inherits from the Ewl_Overlay class */
+	Ewl_Cell cell;		 /**< Inherits from the Ewl_Cell class */
 
 	const char *engine_name; /**< Name of current engine used */
 	void *engine; 		/**< The display engine */
