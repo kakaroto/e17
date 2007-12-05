@@ -26,7 +26,7 @@ typedef unsigned long gid_t;
 #include <ewl_misc.h>
 #include <ewl_config.h>
 #include <ewl_theme.h>
-#include <ewl_overlay.h>
+#include <ewl_cell.h>
 #include <ewl_embed.h>
 #include <ewl_window.h>
 #include <ewl_engines.h>

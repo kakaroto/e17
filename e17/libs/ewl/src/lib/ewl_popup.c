@@ -565,7 +565,7 @@ ewl_popup_cb_child_show(Ewl_Container *c, Ewl_Widget *w)
 	DCHECK_PARAM_PTR(c);
 	DCHECK_TYPE(c, EWL_CONTAINER_TYPE);
 
-	ewl_overlay_cb_child_show(c, w);
+	ewl_cell_cb_child_show(c, w);
 	ewl_popup_position_check(EWL_POPUP(c));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -587,7 +587,7 @@ ewl_popup_cb_child_resize(Ewl_Container *c, Ewl_Widget *w,
 	DCHECK_PARAM_PTR(c);
 	DCHECK_TYPE(c, EWL_POPUP_TYPE);
 
-	ewl_overlay_cb_child_resize(c, w, size, o);
+	ewl_cell_cb_child_resize(c, w, size, o);
 	ewl_popup_position_check(EWL_POPUP(c));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

@@ -1,5 +1,6 @@
 /* vim: set sw=8 ts=8 sts=8 noexpandtab: */
 #include "ewl_base.h"
+#include "ewl_overlay.h"
 #include "ewl_scrollpane.h"
 #include "ewl_box.h"
 #include "ewl_scrollbar.h"

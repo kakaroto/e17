@@ -88,7 +88,7 @@ ewl_embed_init(Ewl_Embed *w)
 	/*
 	 * Initialize the fields of the inherited container class
 	 */
-	if (!ewl_overlay_init(EWL_OVERLAY(w)))
+	if (!ewl_cell_init(EWL_CELL(w)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	ewl_widget_appearance_set(EWL_WIDGET(w), EWL_EMBED_TYPE);
@@ -111,8 +111,6 @@ ewl_embed_init(Ewl_Embed *w)
 			     ewl_embed_cb_configure, NULL);
 	ewl_callback_prepend(EWL_WIDGET(w), EWL_CALLBACK_FOCUS_OUT,
 			     ewl_embed_cb_focus_out, NULL);
-	ewl_callback_del(EWL_WIDGET(w), EWL_CALLBACK_CONFIGURE,
-			     ewl_overlay_cb_configure);
 
 	ecore_list_append(ewl_embed_list, w);
 
@@ -1918,7 +1916,6 @@ ewl_embed_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
 	Ewl_Embed *emb;
-	Ewl_Object *child;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(w);
@@ -1930,25 +1927,6 @@ ewl_embed_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 				 (Evas_Coord)(CURRENT_Y(w)));
 		evas_object_resize(emb->ev_clip, (Evas_Coord)(CURRENT_W(w)),
 				   (Evas_Coord)(CURRENT_H(w)));
-	}
-
-	/*
-	 * Configure each of the child widgets.
-	 */
-	ecore_dlist_first_goto(EWL_CONTAINER(w)->children);
-	while ((child = ecore_dlist_next(EWL_CONTAINER(w)->children))) {
-		int size;
-
-		size = ewl_object_preferred_w_get(EWL_OBJECT(child));
-		if (size > PREFERRED_W(w))
-			ewl_object_preferred_inner_w_set(EWL_OBJECT(w), size);
-
-		size = ewl_object_preferred_h_get(EWL_OBJECT(child));
-		if (size > PREFERRED_H(w))
-			ewl_object_preferred_inner_h_set(EWL_OBJECT(w), size);
-
-		ewl_object_place(child, CURRENT_X(w), CURRENT_Y(w),
-					CURRENT_W(w), CURRENT_H(w));
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

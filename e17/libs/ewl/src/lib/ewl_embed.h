@@ -61,7 +61,7 @@ typedef void *Ewl_Embed_Window;
  */
 struct Ewl_Embed
 {
-	Ewl_Overlay overlay; 	/**< Inherits from the Ewl_Overlay class */
+	Ewl_Cell cell;		 /**< Inherits from the Ewl_Overlay class */
 
 	const char *engine_name; /**< Name of current engine used */
 	void *engine; 		/**< The display engine */
