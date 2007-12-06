@@ -149,7 +149,7 @@ PKG_CHECK_EXISTS(evas-software-sdl,
     AC_DEFINE(HAVE_EVAS_SOFTWARE_SDL, 1, [Evas Software SDL Engine Support])
     have_software_sdl="yes"
   ],
-  [ have_direct3d="no" ]
+  [ have_software_sdl="no" ]
 )
 AM_CONDITIONAL(BUILD_SOFTWARE_SDL, test "x$have_software_sdl" = "xyes")
 
