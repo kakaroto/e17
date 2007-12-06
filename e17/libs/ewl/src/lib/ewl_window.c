@@ -917,26 +917,6 @@ ewl_window_override_get(Ewl_Window *win)
 }
 
 /**
- * @param win: The window to set the selection on
- * @param txt: The text to set into the selection
- * @return Returns no value.
- *
- ' @brief This will set the given @a txt as the selection text on the window
- * or clear the text if @a txt is NULL
- */
-void
-ewl_window_selection_text_set(Ewl_Window *win, const char *txt)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(win);
-	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
-
-	ewl_engine_window_selection_text_set(win, txt);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
  * @internal
  * @param w: The widget to work with
  * @param ev_data: UNUSED

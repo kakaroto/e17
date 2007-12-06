@@ -81,7 +81,7 @@ static int ee_keyboard_grab(Ewl_Window *win);
 static void ee_keyboard_ungrab(Ewl_Window *win);
 static int ee_pointer_grab(Ewl_Window *win);
 static void ee_pointer_ungrab(Ewl_Window *win);
-static void ee_window_selection_text_set(Ewl_Window *win, const char *txt);
+static void ee_window_selection_text_set(Ewl_Embed *emb, const char *txt);
 static void ee_window_geometry_set(Ewl_Window *win, int *width, int *height);
 static void ee_dnd_aware_set(Ewl_Embed *embed);
 static void ee_desktop_size_get(Ewl_Embed *embed, int *w, int *h);
@@ -840,18 +840,18 @@ ee_pointer_ungrab(Ewl_Window *win)
 }
 
 static void
-ee_window_selection_text_set(Ewl_Window *win, const char *txt)
+ee_window_selection_text_set(Ewl_Embed *emb, const char *txt)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(win);
+	DCHECK_PARAM_PTR(emb);
 	DCHECK_PARAM_PTR(txt);
-	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
+	DCHECK_TYPE(emb, EWL_EMBED_TYPE);
 
 	ecore_x_selection_primary_prefetch();
 	ecore_x_selection_primary_fetch();
 	if (txt)
 		ecore_x_selection_primary_set(
-				(Ecore_X_Window)win->window,
+				(Ecore_X_Window)emb->canvas_window,
 				(unsigned char *)txt, strlen(txt) + 1);
 	else
 		ecore_x_selection_primary_clear();

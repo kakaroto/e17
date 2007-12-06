@@ -2033,6 +2033,26 @@ ewl_embed_dnd_aware_remove(Ewl_Embed *embed)
 }
 
 /**
+ * @param win: The window to set the selection on
+ * @param txt: The text to set into the selection
+ * @return Returns no value.
+ *
+ ' @brief This will set the given @a txt as the selection text on the window
+ * or clear the text if @a txt is NULL
+ */
+void
+ewl_embed_selection_text_set(Ewl_Embed *emb, const char *txt)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(emb);
+	DCHECK_TYPE(emb, EWL_EMBED_TYPE);
+
+	ewl_engine_embed_selection_text_set(emb, txt);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
  * @param emb: The embed to work with
  * @return Returns no value
  * @brief This will destroy the object cache associated with the embed object

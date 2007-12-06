@@ -750,29 +750,29 @@ ewl_engine_pointer_ungrab(Ewl_Window *win)
 }
 
 /**
- * @param win: the window to work with
+ * @param emb: the embed to work with
  * @param txt: The text to set as the selection
  * @return Returns no value
- * @brief Sets the window selection text
+ * @brief Sets the embed selection text
  */
 void
-ewl_engine_window_selection_text_set(Ewl_Window *win, const char *txt)
+ewl_engine_embed_selection_text_set(Ewl_Embed *emb, const char *txt)
 {
-	Ewl_Engine_Cb_Window_Selection_Text_Set window_selection_text_set;
+	Ewl_Engine_Cb_Window_Selection_Text_Set embed_selection_text_set;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(win);
+	DCHECK_PARAM_PTR(emb);
 	DCHECK_PARAM_PTR(txt);
-	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
+	DCHECK_TYPE(emb, EWL_EMBED_TYPE);
 
-	if (!REALIZED(win))
+	if (!REALIZED(emb))
 		DRETURN(DLEVEL_STABLE);
 
-	window_selection_text_set = ewl_engine_hook_get(EWL_EMBED(win),
+	embed_selection_text_set = ewl_engine_hook_get(EWL_EMBED(emb),
 					EWL_ENGINE_HOOK_TYPE_WINDOW,
 					EWL_ENGINE_WINDOW_SELECTION_TEXT_SET);
-	if (window_selection_text_set)
-		window_selection_text_set(win, txt);
+	if (embed_selection_text_set)
+		embed_selection_text_set(emb, txt);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

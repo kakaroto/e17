@@ -191,10 +191,10 @@ void		 ewl_engine_keyboard_ungrab(Ewl_Window *win);
 int 		 ewl_engine_pointer_grab(Ewl_Window *win);
 void 		 ewl_engine_pointer_ungrab(Ewl_Window *win);
 
-void		 ewl_engine_window_selection_text_set(Ewl_Window *win,
-							const char *txt);
 void		 ewl_engine_window_geometry_get(Ewl_Window *win, int root,
 						int *width, int *height);
+void		 ewl_engine_embed_selection_text_set(Ewl_Embed *emb,
+							const char *txt);
 void		 ewl_engine_embed_dnd_aware_set(Ewl_Embed *embed);
 void 		 ewl_engine_embed_dnd_drag_types_set(Ewl_Embed *embed,
 							char **types,
@@ -260,7 +260,7 @@ typedef void  (*Ewl_Engine_Cb_Keyboard_Ungrab)(Ewl_Window *win); /**< Set the ke
 							ungrab */
 typedef int  (*Ewl_Engine_Cb_Pointer_Grab)(Ewl_Window *win);	/**< Set the pointer grab */
 typedef void  (*Ewl_Engine_Cb_Pointer_Ungrab)(Ewl_Window *win); /**< Set the pointer ungrab */
-typedef void (*Ewl_Engine_Cb_Window_Selection_Text_Set)(Ewl_Window *win,
+typedef void (*Ewl_Engine_Cb_Window_Selection_Text_Set)(Ewl_Embed *emb,
 							const char *txt); /**< Set the
 									   selection text */
 typedef void (*Ewl_Engine_Cb_Window_Geometry_Get)(Ewl_Window *win,

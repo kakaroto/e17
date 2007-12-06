@@ -3530,12 +3530,9 @@ ewl_text_selection_select_to(Ewl_Text_Trigger *s, unsigned int char_idx)
 	if (txt)
 	{
 		Ewl_Embed *emb;
-		Ewl_Window *win;
 
 		emb = ewl_embed_widget_find(EWL_WIDGET(s->text_parent));
-		win = ewl_window_window_find(emb->canvas_window);
-
-		ewl_window_selection_text_set(win, txt);
+		ewl_embed_selection_text_set(emb, txt);
 		FREE(txt);
 	}
 
