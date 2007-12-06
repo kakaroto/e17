@@ -9,4 +9,5 @@ done
 rm -rf ./doc/html ./doc/latex ./doc/man
 doxygen
 cp doc/img/*.png doc/html/
+cp doc/img/*.gif doc/html/
 exit 0
