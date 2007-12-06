@@ -1,7 +1,7 @@
 /* vim: set sw=8 ts=8 sts=8 noexpandtab: */
 #include "ewl_base.h"
 #include "ewl_statusbar.h"
-#include "ewl_text.h"
+#include "ewl_label.h"
 #include "ewl_macros.h"
 #include "ewl_private.h"
 #include "ewl_debug.h"
@@ -282,8 +282,8 @@ ewl_statusbar_push(Ewl_Statusbar *sb, char *txt)
 		// ewl_container_child_remove(EWL_CONTAINER(sb->status), sb->current);
 	}
 
-	sb->current = ewl_text_new();
-	ewl_text_text_set(EWL_TEXT(sb->current), txt);
+	sb->current = ewl_label_new();
+	ewl_label_text_set(EWL_LABEL(sb->current), txt);
 	ewl_container_child_append(EWL_CONTAINER(sb->status), sb->current);
 	ewl_widget_show(sb->current);
 
@@ -295,7 +295,7 @@ ewl_statusbar_push(Ewl_Statusbar *sb, char *txt)
 /**
  * @param sb: the status bar to remove the status mesasge from
  * @return Returns no value
- * @brief Removes the most recient status message and displays the one
+ * @brief Removes the most recent status message and displays the one
  * before it.
  */
 void
