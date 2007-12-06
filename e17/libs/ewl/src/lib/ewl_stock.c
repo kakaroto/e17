@@ -12,9 +12,9 @@
  */
 struct
 {
-	char *label;
-	char *image_key;
-	char *tooltip;
+	const char * const label;
+	const char * const image_key;
+	const char * const tooltip;
 } ewl_stock_items[] = {
 		{"Apply", EWL_ICON_DIALOG_APPLY, "Apply"},
 		{/*Arrow*/"Down", EWL_ICON_GO_DOWN, "Down"},
