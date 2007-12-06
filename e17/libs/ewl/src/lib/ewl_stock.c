@@ -64,7 +64,7 @@ ewl_stock_init(Ewl_Stock *s)
  * @brief Sets the given stock functions onto the stock widget
  */
 void
-ewl_stock_functions_set(Ewl_Stock *s, Ewl_Stock_Funcs *funcs)
+ewl_stock_functions_set(Ewl_Stock *s, const Ewl_Stock_Funcs * const funcs)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(s);

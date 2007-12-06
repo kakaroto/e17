@@ -10,7 +10,7 @@
 #include "ewl_private.h"
 #include "ewl_debug.h"
 
-static Ewl_Stock_Funcs stock_funcs = {
+static const Ewl_Stock_Funcs const stock_funcs = {
 	EWL_STOCK_LABEL_SET(ewl_icon_label_set),
 	EWL_STOCK_IMAGE_SET(ewl_icon_image_set),
 	NULL

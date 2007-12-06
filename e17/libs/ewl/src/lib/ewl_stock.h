@@ -88,7 +88,7 @@ struct Ewl_Stock
 {
 	Ewl_Box box; 			/**< Inherit from the box for adding widgets */
 	Ewl_Stock_Type stock_type;	/**< The stock type of the stock */
-	Ewl_Stock_Funcs *stock_funcs;	/**< The stock functions */
+	const Ewl_Stock_Funcs *stock_funcs;	/**< The stock functions */
 };
 
 /**
@@ -105,7 +105,7 @@ struct Ewl_Stock_Funcs
 
 int		 ewl_stock_init(Ewl_Stock *s);
 
-void 		 ewl_stock_functions_set(Ewl_Stock *s, Ewl_Stock_Funcs *funcs);
+void 		 ewl_stock_functions_set(Ewl_Stock *s, const Ewl_Stock_Funcs * const funcs);
 
 void		 ewl_stock_type_set(Ewl_Stock *s, Ewl_Stock_Type stock);
 Ewl_Stock_Type	 ewl_stock_type_get(Ewl_Stock *s);

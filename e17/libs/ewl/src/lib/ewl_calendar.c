@@ -24,11 +24,11 @@ static void ewl_calendar_next_month_cb(Ewl_Widget *w, void *ev_data,
 static void ewl_calendar_add_day_labels(Ewl_Calendar *ib);
 
 
-static char *months[] = {"January", "February", "March", "April", "May",
-			"June", "July", "August", "September", "October",
-			"November", "December"};
+static const char * const months[] = {"January", "February", "March", "April",
+			"May", "June", "July", "August", "September",
+			"October", "November", "December"};
 
-static int mdays[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+static const int mdays[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
 /**
  * @return Returns NULL on failure, a new Ewl_Calendar on success

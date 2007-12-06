@@ -25,7 +25,7 @@ static void ewl_callback_rm(Ewl_Widget *w, unsigned int t,
 static int ewl_callback_insert(Ewl_Widget *w, unsigned int t,
 				Ewl_Callback *cb, unsigned int pos);
 
-static int callback_type_count = EWL_CALLBACK_MAX + 1;;
+static int callback_type_count;
 static int callback_id = 0;
 static Ecore_Hash *cb_registration = NULL;
 
@@ -59,6 +59,7 @@ ewl_callbacks_init(void)
 
 	cb_registration = ecore_hash_new(ewl_callback_hash,
 				       ewl_callback_compare);
+	callback_type_count = EWL_CALLBACK_MAX + 1;
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
