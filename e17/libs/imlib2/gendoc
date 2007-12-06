@@ -10,7 +10,7 @@ done
 #done
 rm -rf ./doc/html ./doc/latex ./doc/man
 doxygen
-cp doc/img/*.png doc/html/
+cp doc/img/* doc/html/
 rm -f imlib2_docs.tar imlib2_docs.tar.gz
 tar -cvf imlib2_docs.tar doc/html doc/man doc/latex
 gzip -9 imlib2_docs.tar
