@@ -312,7 +312,8 @@ ewl_calendar_leap_year_detect(unsigned int year)
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	assert(year > 1581);
+	/* FIXME: Properly handle leap year's prior to 1581. */
+	if (year <= 1581) year = 1581;
 	leap = (((year % 4 == 0) && (year % 100)) || (year % 400 == 0));
 
 	DRETURN_INT(leap, DLEVEL_STABLE);
