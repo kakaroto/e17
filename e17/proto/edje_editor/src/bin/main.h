@@ -13,7 +13,7 @@
 #define FAKEWIN_BORDER_RIGHT  4
 #define FAKEWIN_BORDER_BOTTOM 4
 
-#define TEST_DIRECT_EDJE   1
+#define TEST_DIRECT_EDJE   0
 
 #define DEBUG_TREE         1
 #if DEBUG_TREE
