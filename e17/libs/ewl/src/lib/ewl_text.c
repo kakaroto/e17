@@ -3338,7 +3338,7 @@ ewl_text_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 	 * because they will be cleared, because they are children of the
 	 * text widget itself */
 	IF_FREE_LIST(t->triggers);
-	t->selection = t->selection = NULL;
+	t->selection = NULL;
 
 	ewl_text_fmt_destroy(t->formatting.nodes);
 	t->formatting.nodes = NULL;
