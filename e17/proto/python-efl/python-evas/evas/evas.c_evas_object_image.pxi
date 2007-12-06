@@ -1,5 +1,20 @@
 # This file is included verbatim by c_evas.pyx
 
+
+## for mask support
+cdef extern from "evas_object_image_mask.h":
+    int evas_object_image_mask_fill(Evas_Object *src, Evas_Object *mask, 
+        Evas_Object *surface, int x_mask, int y_mask, int x_surface, int y_surface)
+
+def image_mask_fill(source, mask, surface, int x_mask, int y_mask, 
+    int x_surface, int y_surface):
+        cdef Image isource = <Image> source
+        cdef Image imask = <Image> mask
+        cdef Image isurface = <Image> surface
+        evas_object_image_mask_fill(isource.obj, imask.obj, isurface.obj, 
+           x_mask, y_mask, x_surface, y_surface)
+
+
 ## for rotate support
 cdef extern from "evas_object_image_rotate.h":
     ctypedef enum Rotation:

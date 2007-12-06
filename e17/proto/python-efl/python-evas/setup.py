@@ -29,6 +29,7 @@ def pkgconfig(*packages, **kw):
 evasmodule = Extension('evas.c_evas',
                        sources=['evas/evas.c_evas.pyx',
                                 'evas/evas_object_image_rotate.c',
+                                'evas/evas_object_image_mask.c'
                                 ],
                        depends=['evas/evas.c_evas_canvas.pxi',
                                 'evas/evas.c_evas_object.pxi',
