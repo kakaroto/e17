@@ -1,6 +1,7 @@
 #include "config.h"
 #include <Etk.h>
 #include <Edje.h>
+#include <Edje_Edit.h>
 #include "main.h"
 #include "interface.h"
 #include "evas.h"
@@ -181,7 +182,7 @@ prepare_canvas(void)
                                   on_EndDrag, (void*)DRAG_MOVEBOX);
 
    //Place Fakewin 
-   ev_move_fake(280,75);
+   ev_move_fake(TREE_WIDTH+15,75);
    ev_resize_fake(200,200);
 }
 
@@ -203,6 +204,8 @@ ev_draw_focus(void)
    o1y = edje_edit_state_rel1_offset_y_get(edje_o, Cur.part->string, state);
    o2x = edje_edit_state_rel2_offset_x_get(edje_o, Cur.part->string, state);
    o2y = edje_edit_state_rel2_offset_y_get(edje_o, Cur.part->string, state);
+   edje_edit_string_free(state);
+   
    // If a part is selected draw the Focus Handler (only the yellow box)
    if (etk_string_length_get(Cur.part))//&& Cur.ep->current_state)
    {
@@ -262,9 +265,9 @@ ev_draw_focus(void)
          ParentY = fy + ry;
          ParentW = rw;
          ParentH = rh;
+         edje_edit_string_free(rel);
       }else//Get FakeWin Geom
          evas_object_geometry_get (EV_fakewin, &ParentX, &ParentY, &ParentW, &ParentH);
-       
       evas_object_line_xy_set (rel1X_parent_handler, ParentX, ParentY, ParentX+ParentW, ParentY);
       
       //draw Rel1Y_ParentH (left line)
@@ -275,9 +278,9 @@ ev_draw_focus(void)
          ParentY = fy + ry;
          ParentW = rw;
          ParentH = rh;
+         edje_edit_string_free(rel);
       }else//Get FakeWin Geom
          evas_object_geometry_get (EV_fakewin, &ParentX, &ParentY, &ParentW, &ParentH);
-      
       evas_object_line_xy_set (rel1Y_parent_handler, ParentX, ParentY, ParentX, ParentY+ParentH);
 
       //draw Rel2X_ParentH (bottom line)
@@ -288,11 +291,10 @@ ev_draw_focus(void)
          ParentY = fy + ry;
          ParentW = rw;
          ParentH = rh;
+         edje_edit_string_free(rel);
       }else//Get FakeWin Geom
          evas_object_geometry_get (EV_fakewin, &ParentX, &ParentY, &ParentW, &ParentH);
-      
       evas_object_line_xy_set (rel2X_parent_handler, ParentX, ParentY+ParentH, ParentX+ParentW, ParentY+ParentH);
-
 
       //draw Rel2Y_ParentH (right line)
       if((rel = edje_edit_state_rel2_to_y_get(edje_o, Cur.part->string, Cur.state->string))){
@@ -301,6 +303,7 @@ ev_draw_focus(void)
          ParentY = fy + ry;
          ParentW = rw;
          ParentH = rh;
+         edje_edit_string_free(rel);
       }else//Get FakeWin Geom
          evas_object_geometry_get (EV_fakewin, &ParentX, &ParentY, &ParentW, &ParentH);
       

@@ -1,11 +1,13 @@
 #include <dirent.h>
 #include <string.h>
 #include <Edje.h>
+#include <Edje_Edit.h>
 #include <Etk.h>
 #include "main.h"
 #include "callbacks.h"
 #include "interface.h"
 #include "evas.h"
+
 
 static Evas_Object *logo;
 
@@ -21,90 +23,65 @@ ShowAlert(char* text)
 
 #if TEST_DIRECT_EDJE
 
+
 void
 AddPartToTree2(char *part_name)//, char *group_name)//, int place_after, Engrave_Part* after)
 {
-   Etk_Tree_Col *col1,*col2,*col3;
    Etk_Tree_Row *row=NULL;
    char buf[20];
 
    //printf("Add Part to tree: %s\n",par->name);
-   col1 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 0);
-   col2 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 1);
-   col3 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 2);
 
    switch (edje_edit_part_type_get(edje_o ,part_name)){
-      case EDJE_PART_TYPE_IMAGE:
-         strcpy(buf,"IMAGE.PNG");
-      break;
-      case EDJE_PART_TYPE_TEXT:
-         strcpy(buf,"TEXT.PNG");
-      break;
-      case EDJE_PART_TYPE_RECTANGLE:
-         strcpy(buf,"RECT.PNG");
-      break;
-      default:
-         strcpy(buf,"NONE.PNG");
-      break;
+      case EDJE_PART_TYPE_IMAGE:     strcpy(buf,"IMAGE.PNG"); break;
+      case EDJE_PART_TYPE_TEXT:      strcpy(buf,"TEXT.PNG");  break;
+      case EDJE_PART_TYPE_RECTANGLE: strcpy(buf,"RECT.PNG");  break;
+      default:                       strcpy(buf,"NONE.PNG");  break;
    }
    
  /*  if (place_after)
       row = etk_tree_row_insert(ETK_TREE(UI_PartsTree),
                                 ecore_hash_get(hash,part->parent),
                                 ecore_hash_get(hash,after),
-                                col1, EdjeFile,buf, part->name,
-                                col3,ROW_PART,
+                                COL_NAME, EdjeFile,buf, part->name,
+                                COL_TYPE,ROW_PART,
                                 NULL);
    else*/
       row = etk_tree_row_append(ETK_TREE(UI_PartsTree),
-                                //ecore_hash_get(hash,part->parent),
                                 NULL,
-                                col1, EdjeFile,buf, part_name,
-                                col3, ROW_PART,
+                                COL_NAME, EdjeFile,buf, part_name,
+                                COL_TYPE, ROW_PART,
                                 NULL);
 
    Parts_Hash = evas_hash_add(Parts_Hash, part_name, row);
-   etk_tree_row_data_set(row, part_name);
+   //etk_tree_row_data_set(row, part_name);
 }
+
 void
 AddStateToTree2(char *part_name, char *state_name)
 {
-   Etk_Tree_Col *col1,*col2,*col3, *col4;
    Etk_Tree_Row *row;
 
    const char *stock_key;
-   col1 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 0);
-   col2 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 1);
-   col3 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 2);
-   col4 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 3);
-
 
    stock_key = etk_stock_key_get(ETK_STOCK_TEXT_X_GENERIC, ETK_STOCK_SMALL);
    row = etk_tree_row_append(ETK_TREE(UI_PartsTree),
             evas_hash_find(Parts_Hash,part_name),
-            col1, EdjeFile, "DESC.PNG", state_name,
-            col2, TRUE,
-            col3, ROW_DESC,
-            col4, part_name, NULL);
-
-   etk_tree_row_data_set (row, state_name);
-   //ecore_hash_set(hash, state, row);
+            COL_NAME, EdjeFile, "DESC.PNG", state_name,
+            COL_VIS, TRUE,
+            COL_TYPE, ROW_DESC,
+            COL_PARENT, part_name, NULL);
 }
 #endif
 
 void
 AddGroupToTree(Engrave_Group* group)
-{    
-   Etk_Tree_Col *col1,*col2,*col3;
+{
    Etk_Tree_Row *row=NULL;
 
-   col1 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 0);
-   col2 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 1);
-   col3 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 2);
-
    row = etk_tree_row_append(ETK_TREE(UI_PartsTree), NULL,
-            col1, EdjeFile,"NONE.PNG", group->name,
-            col3,ROW_GROUP,  NULL);
+            COL_NAME, EdjeFile,"NONE.PNG", group->name,
+            COL_TYPE,ROW_GROUP,  NULL);
 
    ecore_hash_set (hash, group, row);
    etk_tree_row_data_set(row,group);
@@ -113,42 +90,31 @@ AddGroupToTree(Engrave_Group* group)
 void
 AddPartToTree(Engrave_Part* part, int place_after, Engrave_Part* after)
 {
-   Etk_Tree_Col *col1,*col2,*col3;
    Etk_Tree_Row *row=NULL;
    char buf[20];
 
    //printf("Add Part to tree: %s\n",par->name);
-   col1 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 0);
-   col2 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 1);
-   col3 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 2);
+
 
    switch (part->type){
-      case ENGRAVE_PART_TYPE_IMAGE:
-         strcpy(buf,"IMAGE.PNG");
-      break;
-      case ENGRAVE_PART_TYPE_TEXT:
-         strcpy(buf,"TEXT.PNG");
-      break;
-      case ENGRAVE_PART_TYPE_RECT:
-         strcpy(buf,"RECT.PNG");
-      break;
-      default:
-         strcpy(buf,"NONE.PNG");
-      break;
+      case ENGRAVE_PART_TYPE_IMAGE: strcpy(buf,"IMAGE.PNG"); break;
+      case ENGRAVE_PART_TYPE_TEXT:  strcpy(buf,"TEXT.PNG");  break;
+      case ENGRAVE_PART_TYPE_RECT:  strcpy(buf,"RECT.PNG");  break;
+      default:                      strcpy(buf,"NONE.PNG");  break;
    }
    
    if (place_after)
       row = etk_tree_row_insert(ETK_TREE(UI_PartsTree),
                                 ecore_hash_get(hash,part->parent),
                                 ecore_hash_get(hash,after),
-                                col1, EdjeFile,buf, part->name,
-                                col3,ROW_PART,
+                                COL_NAME, EdjeFile,buf, part->name,
+                                COL_TYPE,ROW_PART,
                                 NULL);
    else
       row = etk_tree_row_append(ETK_TREE(UI_PartsTree),
                                 ecore_hash_get(hash,part->parent),
-                                col1, EdjeFile,buf, part->name,
-                                col3,ROW_PART,
+                                COL_NAME, EdjeFile,buf, part->name,
+                                COL_TYPE,ROW_PART,
                                 NULL);
 
    ecore_hash_set(hash, part, row);
@@ -158,22 +124,18 @@ AddPartToTree(Engrave_Part* part, int place_after, Engrave_Part* after)
 void
 AddStateToTree(Engrave_Part_State* state)
 {
-   Etk_Tree_Col *col1,*col2,*col3;
    Etk_Tree_Row *row;
    Etk_String *str = etk_string_new("");
    char buf[4096];
    const char *stock_key;
-   col1 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 0);
-   col2 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 1);
-   col3 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 2);
-
+   
    snprintf(buf,4096,"%s %.2f",state->name,state->value);
    stock_key = etk_stock_key_get(ETK_STOCK_TEXT_X_GENERIC, ETK_STOCK_SMALL);
    row = etk_tree_row_append(ETK_TREE(UI_PartsTree),
             ecore_hash_get(hash,state->parent),
-            col1,EdjeFile,"DESC.PNG",buf,
-            col2,TRUE,
-            col3,ROW_DESC, NULL);
+            COL_NAME,EdjeFile,"DESC.PNG",buf,
+            COL_VIS,TRUE,
+            COL_TYPE,ROW_DESC, NULL);
 
    etk_tree_row_data_set (row, state);
    ecore_hash_set(hash, state, row);
@@ -186,19 +148,15 @@ AddStateToTree(Engrave_Part_State* state)
 void
 AddProgramToTree(Engrave_Program* prog)
 {
-   Etk_Tree_Col *col1,*col2,*col3;
    Etk_Tree_Row *row=NULL;
 
    //printf("Add Program to tree: %s\n",prog->name);
-   col1 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 0);
-   col2 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 1);
-   col3 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 2);
    
    //TODO: place the prog after all the parts
    row = etk_tree_row_append(ETK_TREE(UI_PartsTree),
                ecore_hash_get(hash,prog->parent),
-               col1, EdjeFile,"PROG.PNG", prog->name,
-               col3,ROW_PROG,
+               COL_NAME, EdjeFile,"PROG.PNG", prog->name,
+               COL_TYPE,ROW_PROG,
                NULL);
 
    ecore_hash_set(hash, prog, row);
@@ -208,25 +166,26 @@ AddProgramToTree(Engrave_Program* prog)
 void 
 PopulateTree2(void)
 {
-   Evas_List *parts;
-   Evas_List *states;
+   Evas_List *parts, *pp;
+   Evas_List *states, *sp;
    
    etk_tree_clear(ETK_TREE(UI_PartsTree));
         
-   parts = edje_edit_parts_list_get(edje_o);
-   while(parts)
+   parts = pp = edje_edit_parts_list_get(edje_o);
+   while(pp)
    {
-      printf("  P: %s\n", (char*)parts->data);
-      AddPartToTree2((char*)parts->data);
-      states = edje_edit_part_states_list_get(edje_o, (char*)parts->data);
-      while(states)
+      printf("  P: %s\n", (char*)pp->data);
+      AddPartToTree2((char*)pp->data);
+      states = sp = edje_edit_part_states_list_get(edje_o, (char*)pp->data);
+      while(sp)
       {
-         AddStateToTree2((char*)parts->data, (char*)states->data);
-         states = states->next;
+         AddStateToTree2((char*)pp->data, (char*)sp->data);
+         sp = sp->next;
       }
-       
-      parts = parts->next;
+      edje_edit_string_list_free(states);
+      pp = pp->next;
    }
+   edje_edit_string_list_free(parts);
    etk_tree_row_select(etk_tree_first_row_get (ETK_TREE(UI_PartsTree)));
 }
 void 
@@ -363,30 +322,27 @@ PopulateRelComboBoxes(void)
    if (etk_string_length_get(Cur.group))
    {
       // Add first element 'Interface' to all the 4 combobox
-      ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_Rel1ToXComboBox),
-                     etk_image_new_from_edje(EdjeFile,"NONE.PNG"), "Interface");
-      etk_combobox_item_data_set (ComboItem, NULL);
-      
-      ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_Rel1ToYComboBox),
-                     etk_image_new_from_edje(EdjeFile,"NONE.PNG"), "Interface");
-      etk_combobox_item_data_set (ComboItem, NULL);
-      
-      ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_Rel2ToXComboBox),
-                     etk_image_new_from_edje(EdjeFile,"NONE.PNG"), "Interface");
-      etk_combobox_item_data_set (ComboItem, NULL);
-      
-      ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_Rel2ToYComboBox),
-                     etk_image_new_from_edje(EdjeFile,"NONE.PNG"), "Interface");
-      etk_combobox_item_data_set (ComboItem, NULL);
+      etk_combobox_item_append(ETK_COMBOBOX(UI_Rel1ToXComboBox),
+                               etk_image_new_from_edje(EdjeFile,"NONE.PNG"),
+                               "Interface");
+      etk_combobox_item_append(ETK_COMBOBOX(UI_Rel1ToYComboBox),
+                               etk_image_new_from_edje(EdjeFile,"NONE.PNG"),
+                               "Interface");
+      etk_combobox_item_append(ETK_COMBOBOX(UI_Rel2ToXComboBox),
+                               etk_image_new_from_edje(EdjeFile,"NONE.PNG"),
+                               "Interface");
+      etk_combobox_item_append(ETK_COMBOBOX(UI_Rel2ToYComboBox),
+                               etk_image_new_from_edje(EdjeFile,"NONE.PNG"),
+                               "Interface");
       // Add all the part to all the 4 combobox
       Evas_List *parts;
       int type;
       
-      parts = edje_edit_parts_list_get(edje_o);
-      while (parts)
+      parts = l = edje_edit_parts_list_get(edje_o);
+      while (l)
       {
-         printf("-- %s\n", (char *)parts->data);
-         type = edje_edit_part_type_get(edje_o,(char *)parts->data);
+         printf("-- %s\n", (char *)l->data);
+         type = edje_edit_part_type_get(edje_o,(char *)l->data);
          
          if (type == EDJE_PART_TYPE_RECTANGLE)
             snprintf(buf, 19,"RECT.PNG");
@@ -396,29 +352,22 @@ PopulateRelComboBoxes(void)
             snprintf(buf, 19,"IMAGE.PNG");
          else snprintf(buf, 19,"NONE.PNG");
          
-         ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_Rel1ToXComboBox),
-                           etk_image_new_from_edje (EdjeFile,buf),
-                           (char *)parts->data);
-         etk_combobox_item_data_set (ComboItem, parts->data);
+         etk_combobox_item_append(ETK_COMBOBOX(UI_Rel1ToXComboBox),
+                                  etk_image_new_from_edje (EdjeFile,buf),
+                                  (char *)l->data);
+         etk_combobox_item_append(ETK_COMBOBOX(UI_Rel1ToYComboBox),
+                                  etk_image_new_from_edje (EdjeFile,buf),
+                                  (char *)l->data);
+         etk_combobox_item_append(ETK_COMBOBOX(UI_Rel2ToXComboBox),
+                                  etk_image_new_from_edje (EdjeFile,buf),
+                                  (char *)l->data);
+         etk_combobox_item_append(ETK_COMBOBOX(UI_Rel2ToYComboBox),
+                                  etk_image_new_from_edje (EdjeFile,buf),
+                                  (char *)l->data);
          
-         ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_Rel1ToYComboBox),
-                           etk_image_new_from_edje (EdjeFile,buf),
-                           (char *)parts->data);
-         etk_combobox_item_data_set (ComboItem, parts->data);
-         
-         ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_Rel2ToXComboBox),
-                           etk_image_new_from_edje (EdjeFile,buf),
-                           (char *)parts->data);
-         etk_combobox_item_data_set (ComboItem, parts->data);
-         
-         ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_Rel2ToYComboBox),
-                           etk_image_new_from_edje (EdjeFile,buf),
-                           (char *)parts->data);
-         etk_combobox_item_data_set (ComboItem, parts->data);
-         
-         parts = parts->next;
+         l = l->next;
       }
-      //TODO: Free parts
+      edje_edit_string_list_free(parts);
    }
 #else
    if (Cur.eg)
@@ -904,86 +853,79 @@ UpdateComboPositionFrame(void)
    if (!etk_string_length_get(Cur.state)) return;
    char *rel;
    char *p;
+   
    //If rel1_to_x is know set the combobox
-   if (rel = edje_edit_state_rel1_to_x_get(edje_o, Cur.part->string, Cur.state->string))
+   if ((rel = edje_edit_state_rel1_to_x_get(edje_o, Cur.part->string, Cur.state->string)))
    {
-      printf("REL: %s\n",rel);
+      //Loop for all the item in the Combobox
       i=0;
       while ((item = etk_combobox_nth_item_get(ETK_COMBOBOX(UI_Rel1ToXComboBox),i)))
       {
-         //Loop for all the item in the Combobox
-         if ((p = etk_combobox_item_data_get(item)))
-         {
-            //Get the data for the item (should be the name of the part)
-            if ((int)p != REL_COMBO_INTERFACE)
-               if (strcmp(p,rel) == 0)
-                  //If we found the item set active
-                  etk_combobox_active_item_set (ETK_COMBOBOX(UI_Rel1ToXComboBox),item);
-         }
+         p = etk_combobox_item_field_get(item, 1);
+         if (strcmp(p,rel) == 0)
+            etk_combobox_active_item_set (ETK_COMBOBOX(UI_Rel1ToXComboBox),item);
          i++;
       }
-   }else{etk_combobox_active_item_set (ETK_COMBOBOX(UI_Rel1ToXComboBox), 
-            etk_combobox_nth_item_get(ETK_COMBOBOX(UI_Rel1ToXComboBox),0));}
+      edje_edit_string_free(rel);
+   }
+   else
+      etk_combobox_active_item_set (ETK_COMBOBOX(UI_Rel1ToXComboBox), 
+            etk_combobox_nth_item_get(ETK_COMBOBOX(UI_Rel1ToXComboBox),0));
    
    //If rel1_to_y is know set the combobox
-   if (rel = edje_edit_state_rel1_to_y_get(edje_o, Cur.part->string, Cur.state->string))
+   if ((rel = edje_edit_state_rel1_to_y_get(edje_o, Cur.part->string, Cur.state->string)))
    {
+      //Loop for all the item in the Combobox
       i=0;
       while ((item = etk_combobox_nth_item_get(ETK_COMBOBOX(UI_Rel1ToYComboBox),i)))
       {
-         //Loop for all the item in the Combobox
-         if ((p = etk_combobox_item_data_get(item)))
-         {
-            //Get the data for the item (should be the name of the part)
-            if ((int)p != REL_COMBO_INTERFACE)
-               if (strcmp(p,rel) == 0)
-                  //If we found the item set active
-                  etk_combobox_active_item_set (ETK_COMBOBOX(UI_Rel1ToYComboBox),item);
-         }
+         p = etk_combobox_item_field_get(item, 1);
+         if (strcmp(p,rel) == 0)
+            etk_combobox_active_item_set (ETK_COMBOBOX(UI_Rel1ToYComboBox),item);
          i++;
       }
-   }else{etk_combobox_active_item_set (ETK_COMBOBOX(UI_Rel1ToYComboBox), 
-            etk_combobox_nth_item_get(ETK_COMBOBOX(UI_Rel1ToYComboBox),0));}
+      edje_edit_string_free(rel);
+   }
+   else
+      etk_combobox_active_item_set (ETK_COMBOBOX(UI_Rel1ToYComboBox), 
+            etk_combobox_nth_item_get(ETK_COMBOBOX(UI_Rel1ToYComboBox),0));
    
    //If rel2_to_x is know set the combobox
-   if (rel = edje_edit_state_rel2_to_x_get(edje_o, Cur.part->string, Cur.state->string))
+   if ((rel = edje_edit_state_rel2_to_x_get(edje_o, Cur.part->string, Cur.state->string)))
    {
+      //Loop for all the item in the Combobox
       i=0;
       while ((item = etk_combobox_nth_item_get(ETK_COMBOBOX(UI_Rel2ToXComboBox),i)))
       {
-         //Loop for all the item in the Combobox
-         if ((p = etk_combobox_item_data_get(item)))
-         {
-            //Get the data for the item (should be the name of the part)
-            if ((int)p != REL_COMBO_INTERFACE)
-               if (strcmp(p,rel) == 0)
-                  //If we found the item set active
-                  etk_combobox_active_item_set (ETK_COMBOBOX(UI_Rel2ToXComboBox),item);
-         }
+         p = etk_combobox_item_field_get(item, 1);
+         if (strcmp(p,rel) == 0)
+            etk_combobox_active_item_set (ETK_COMBOBOX(UI_Rel2ToXComboBox),item);
          i++;
       }
-   }else{etk_combobox_active_item_set (ETK_COMBOBOX(UI_Rel2ToXComboBox), 
-            etk_combobox_nth_item_get(ETK_COMBOBOX(UI_Rel2ToXComboBox),0));}
+      edje_edit_string_free(rel);
+   }
+   else
+      etk_combobox_active_item_set (ETK_COMBOBOX(UI_Rel2ToXComboBox), 
+            etk_combobox_nth_item_get(ETK_COMBOBOX(UI_Rel2ToXComboBox),0));
    
    //If rel2_to_y is know set the combobox
-   if (rel = edje_edit_state_rel2_to_y_get(edje_o, Cur.part->string, Cur.state->string))
+   if ((rel = edje_edit_state_rel2_to_y_get(edje_o, Cur.part->string, Cur.state->string)))
    {
+      //Loop for all the item in the Combobox
       i=0;
       while ((item = etk_combobox_nth_item_get(ETK_COMBOBOX(UI_Rel2ToYComboBox),i)))
       {
-         //Loop for all the item in the Combobox
-         if ((p = etk_combobox_item_data_get(item)))
-         {
-            //Get the data for the item (should be the name of the part)
-            if ((int)p != REL_COMBO_INTERFACE)
-               if (strcmp(p,rel) == 0)
-                  //If we found the item set active
-                  etk_combobox_active_item_set (ETK_COMBOBOX(UI_Rel2ToYComboBox),item);
-         }
+         p = etk_combobox_item_field_get(item, 1);
+         if (strcmp(p,rel) == 0)
+            etk_combobox_active_item_set (ETK_COMBOBOX(UI_Rel2ToYComboBox),item);
          i++;
       }
-   }else{etk_combobox_active_item_set (ETK_COMBOBOX(UI_Rel2ToYComboBox), 
-            etk_combobox_nth_item_get(ETK_COMBOBOX(UI_Rel2ToYComboBox),0));}
+      edje_edit_string_free(rel);
+   }
+   else
+      etk_combobox_active_item_set (ETK_COMBOBOX(UI_Rel2ToYComboBox), 
+            etk_combobox_nth_item_get(ETK_COMBOBOX(UI_Rel2ToYComboBox),0));
+   
 #else
    //If rel1_to_x is know set the combobox
    if (Cur.eps->rel1.to_x)
@@ -1691,7 +1633,7 @@ Etk_Widget*
 create_tree(void)
 {
    Etk_Tree_Col *col;
-
+   
    //UI_PartsTree
    UI_PartsTree = etk_tree_new();
    etk_widget_padding_set(UI_PartsTree,2,2,2,2);
@@ -1706,20 +1648,20 @@ create_tree(void)
    etk_tree_col_expand_set (col,ETK_TRUE);
    //Visibility column
    col = etk_tree_col_new(ETK_TREE(UI_PartsTree), "vis", 10,0);
-   etk_tree_col_visible_set (col, ETK_FALSE);
+   etk_tree_col_visible_set (col, DEBUG_TREE);
    etk_tree_col_model_add(col,etk_tree_model_checkbox_new());
    etk_tree_col_resizable_set (col, ETK_FALSE);
    etk_tree_col_expand_set (col,ETK_FALSE);
    //RowType column
    col = etk_tree_col_new(ETK_TREE(UI_PartsTree), "type",10, 0);
    etk_tree_col_model_add(col,etk_tree_model_int_new());
-   etk_tree_col_visible_set (col, ETK_FALSE);
+   etk_tree_col_visible_set (col, DEBUG_TREE);
    etk_tree_col_resizable_set (col, ETK_FALSE);
    etk_tree_col_expand_set (col,ETK_FALSE);
    //Parent part row
    col = etk_tree_col_new(ETK_TREE(UI_PartsTree), "parent",100, 0);
    etk_tree_col_model_add(col,etk_tree_model_text_new());
-   etk_tree_col_visible_set (col, ETK_FALSE);
+   etk_tree_col_visible_set (col, DEBUG_TREE);
    etk_tree_col_resizable_set (col, ETK_FALSE);
    etk_tree_col_expand_set (col,ETK_FALSE);
    etk_tree_build(ETK_TREE(UI_PartsTree));
@@ -2819,7 +2761,7 @@ ecore_resize_callback(Ecore_Evas *ecore_evas)
    //Resize tree
    embed_object = etk_embed_object_get(ETK_EMBED(UI_PartsTreeEmbed));
    evas_object_move(embed_object, 0, 55);
-   evas_object_resize(embed_object, 265, win_h - 55);
+   evas_object_resize(embed_object, TREE_WIDTH, win_h - 55);
 }
 
 void _embed_position_set(void *position_data, int *x, int *y)

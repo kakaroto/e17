@@ -1,5 +1,15 @@
 #include "main.h"
 
+#define TREE_COL_NAME 0
+#define TREE_COL_VIS 1
+#define TREE_COL_TYPE 2
+#define TREE_COL_PARENT 3
+
+#define COL_NAME   etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), TREE_COL_NAME)
+#define COL_VIS    etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), TREE_COL_VIS)
+#define COL_TYPE   etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), TREE_COL_TYPE)
+#define COL_PARENT etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), TREE_COL_PARENT)
+
 Evas *UI_evas;
 Ecore_Evas *UI_ecore_MainWin;
 //Etk_Widget *UI_MainWin;

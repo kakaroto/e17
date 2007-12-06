@@ -8,12 +8,19 @@
 #include <Ecore_Evas.h>
 
 /* DEFINES */
-#define FAKEWIN_BORDER_TOP 16
-#define FAKEWIN_BORDER_LEFT 7
-#define FAKEWIN_BORDER_RIGHT 4
+#define FAKEWIN_BORDER_TOP    16
+#define FAKEWIN_BORDER_LEFT   7
+#define FAKEWIN_BORDER_RIGHT  4
 #define FAKEWIN_BORDER_BOTTOM 4
 
-#define TEST_DIRECT_EDJE 0
+#define TEST_DIRECT_EDJE   1
+
+#define DEBUG_TREE         1
+#if DEBUG_TREE
+   #define TREE_WIDTH         365
+#else
+   #define TREE_WIDTH         265
+#endif
 
 #undef FREE
 #define FREE(val) \
@@ -159,6 +166,8 @@ void           DebugInfo   (int full);
 
 Evas_Object *edje_o;
 Evas_Hash   *Parts_Hash;
+
+
 void ChangeGroup(const char *group);
 #endif
 

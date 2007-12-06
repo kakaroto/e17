@@ -1,6 +1,7 @@
 #include "config.h"
 #include <string.h>
 #include <Edje.h>
+#include <Edje_Edit.h>
 #include <Etk.h>
 #include <Engrave.h>
 #include <Ecore_Str.h>
@@ -165,7 +166,6 @@ PROTO_engrave_group_part_remove(Engrave_Group *eg, Engrave_Part *ep)
  */
 /*EAPI*/ void 
 PROTO_engrave_group_program_remove(Engrave_Group *eg, Engrave_Program *epr) {
-  Engrave_Group * group;
   Evas_List * list;
 
   if (!eg || !epr) return;

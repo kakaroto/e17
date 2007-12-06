@@ -1,5 +1,6 @@
 #include <string.h>
 #include <Edje.h>
+#include <Edje_Edit.h>
 #include <Etk.h>
 #include <Ecore_Evas.h>
 #include "callbacks.h"
@@ -248,20 +249,79 @@ on_AllButton_click(Etk_Button *button, void *data)
    return ETK_TRUE;
 }
 
-
 /* Tree callbacks */
+#if TEST_DIRECT_EDJE
+Etk_Bool
+on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
+{
+   int row_type=0;
+   char *name;
+   char *parent_name;
+   Engrave_Group* old_group = Cur.eg;
+
+   printf("Row Selected Signal on one of the Tree EMITTED \n");
+
+   //get the info from the tree cols of the selected row
+   etk_tree_row_fields_get(row,
+      COL_TYPE, &row_type,
+      COL_NAME,NULL, NULL, &name,
+      COL_PARENT, &parent_name,
+      NULL);
+
+   switch (row_type)
+   {
+      case ROW_PART:
+         Cur.part = etk_string_set(Cur.part, name);
+         Cur.state = etk_string_clear(Cur.state);
+         
+         edje_object_signal_emit(edje_ui,"description_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"position_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"rect_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"image_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"text_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"group_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"program_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"part_frame_show","edje_editor");
+         edje_object_signal_emit(edje_ui,"script_frame_hide","edje_editor");
+         break;
+
+      case ROW_DESC:
+         Cur.state = etk_string_set(Cur.state, name);
+         Cur.part = etk_string_set(Cur.part, parent_name);
+       
+         edje_edit_part_selected_state_set(edje_o, Cur.part->string, Cur.state->string);  
+       
+         UpdatePositionFrame();
+         UpdateComboPositionFrame();
+      
+         edje_object_signal_emit(edje_ui,"part_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"group_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"program_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"script_frame_hide","edje_editor");
+         
+         edje_object_signal_emit(edje_ui,"description_frame_show","edje_editor");
+         edje_object_signal_emit(edje_ui,"position_frame_show","edje_editor");
+         break;
+   }
+
+   ev_redraw();
+   return ETK_TRUE;
+}
+
+#else
 Etk_Bool
 on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
 {
    int row_type=0;
    char *part;
+   char *p;
    Engrave_Group* old_group = Cur.eg;
 
    printf("Row Selected Signal on one of the Tree EMITTED \n");
 
    //get the type of the row (group,part,desc or prog) from the hidden col
    etk_tree_row_fields_get(row,
-      etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 2),&row_type,
+      COL_TYPE, &row_type,
       NULL);
 
    switch (row_type)
@@ -286,20 +346,6 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
          UpdateScriptFrame();
          break;
       case ROW_PART:
-#if TEST_DIRECT_EDJE
-         Cur.part = etk_string_set(Cur.part, etk_tree_row_data_get (row));
-         Cur.state = NULL;
-         
-         edje_object_signal_emit(edje_ui,"description_frame_hide","edje_editor");
-         edje_object_signal_emit(edje_ui,"position_frame_hide","edje_editor");
-         edje_object_signal_emit(edje_ui,"rect_frame_hide","edje_editor");
-         edje_object_signal_emit(edje_ui,"image_frame_hide","edje_editor");
-         edje_object_signal_emit(edje_ui,"text_frame_hide","edje_editor");
-         edje_object_signal_emit(edje_ui,"group_frame_hide","edje_editor");
-         edje_object_signal_emit(edje_ui,"program_frame_hide","edje_editor");
-         edje_object_signal_emit(edje_ui,"part_frame_show","edje_editor");
-         edje_object_signal_emit(edje_ui,"script_frame_hide","edje_editor");
-#else
          Cur.epr = NULL;
          Cur.ep = etk_tree_row_data_get (row);
          Cur.eg = Cur.ep->parent;
@@ -316,30 +362,9 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
          edje_object_signal_emit(edje_ui,"script_frame_hide","edje_editor");
          
          UpdatePartFrame();
-#endif
+
          break;
       case ROW_DESC:
-#if TEST_DIRECT_EDJE
-         Cur.state = etk_string_set(Cur.state, etk_tree_row_data_get (row));
-         //get the parent part of the row from the hidden col
-         etk_tree_row_fields_get(row,
-            etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 3),&part,
-            NULL);
-         Cur.part = etk_string_set(Cur.part, part);
-       
-         edje_edit_part_selected_state_set(edje_o, Cur.part->string, Cur.state->string);  
-       
-         UpdatePositionFrame();
-         UpdateComboPositionFrame();
-      
-         edje_object_signal_emit(edje_ui,"part_frame_hide","edje_editor");
-         edje_object_signal_emit(edje_ui,"group_frame_hide","edje_editor");
-         edje_object_signal_emit(edje_ui,"program_frame_hide","edje_editor");
-         edje_object_signal_emit(edje_ui,"script_frame_hide","edje_editor");
-         
-         edje_object_signal_emit(edje_ui,"description_frame_show","edje_editor");
-         edje_object_signal_emit(edje_ui,"position_frame_show","edje_editor");
-#else
          Cur.epr = NULL;
          Cur.eps = etk_tree_row_data_get (row);
          Cur.ep = Cur.eps->parent;
@@ -384,7 +409,7 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
          
          edje_object_signal_emit(edje_ui,"description_frame_show","edje_editor");
          edje_object_signal_emit(edje_ui,"position_frame_show","edje_editor");
-#endif
+
          break;
       case ROW_PROG:
          Cur.epr = etk_tree_row_data_get (row);
@@ -426,7 +451,7 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
    ev_redraw();
    return ETK_TRUE;
 }
-
+#endif
 /* Group frame callbacks */
 Etk_Bool
 on_GroupNameEntry_text_changed(Etk_Object *object, void *data)
@@ -716,27 +741,31 @@ Etk_Bool
 on_RelToComboBox_changed(Etk_Combobox *combobox, void *data)
 {
 #if TEST_DIRECT_EDJE
-   char *part;
-   part = etk_combobox_item_data_get (etk_combobox_active_item_get (combobox));
+   char *parent;
+   parent = etk_combobox_item_field_get(etk_combobox_active_item_get (combobox), 1);
    
-   if (part && (strcmp(part,Cur.part->string) == 0))
+   if (strcmp(parent,"Interface") == 0)
+        parent = NULL;
+    
+   if (parent && (strcmp(parent,Cur.part->string) == 0))
    {
       ShowAlert("A state can't rel to itself.");
       return ETK_TRUE;
    }
+   
    switch ((int)data)
    {
       case REL1X_SPINNER:
-         edje_edit_state_rel1_to_x_set(edje_o, Cur.part->string, Cur.state->string, part);
+         edje_edit_state_rel1_to_x_set(edje_o, Cur.part->string, Cur.state->string, parent);
          break;
       case REL1Y_SPINNER:
-         edje_edit_state_rel1_to_y_set(edje_o, Cur.part->string, Cur.state->string, part);
+         edje_edit_state_rel1_to_y_set(edje_o, Cur.part->string, Cur.state->string, parent);
          break;
       case REL2X_SPINNER:
-         edje_edit_state_rel2_to_x_set(edje_o, Cur.part->string, Cur.state->string, part);
+         edje_edit_state_rel2_to_x_set(edje_o, Cur.part->string, Cur.state->string, parent);
          break;
       case REL2Y_SPINNER:
-        edje_edit_state_rel2_to_y_set(edje_o, Cur.part->string, Cur.state->string, part);
+        edje_edit_state_rel2_to_y_set(edje_o, Cur.part->string, Cur.state->string, parent);
          break;
    }
 
