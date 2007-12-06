@@ -1,7 +1,9 @@
 #include "config.h"
 #include <string.h>
 #include <Edje.h>
-#include <Edje_Edit.h>
+#if TEST_DIRECT_EDJE
+   #include <Edje_Edit.h>
+#endif
 #include <Etk.h>
 #include <Engrave.h>
 #include <Ecore_Str.h>

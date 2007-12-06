@@ -1,7 +1,9 @@
 #include "config.h"
 #include <Etk.h>
 #include <Edje.h>
-#include <Edje_Edit.h>
+#if TEST_DIRECT_EDJE
+   #include <Edje_Edit.h>
+#endif
 #include "main.h"
 #include "interface.h"
 #include "evas.h"

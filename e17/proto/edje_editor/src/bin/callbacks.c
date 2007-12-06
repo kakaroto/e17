@@ -1,6 +1,8 @@
 #include <string.h>
 #include <Edje.h>
-#include <Edje_Edit.h>
+#if TEST_DIRECT_EDJE
+   #include <Edje_Edit.h>
+#endif
 #include <Etk.h>
 #include <Ecore_Evas.h>
 #include "callbacks.h"
