@@ -1,3 +1,8 @@
+2007-12-17  Vincent Torri  <doursse at users dot sf dot net>
+
+	* src/lib/ewl_pdf.c:
+	Fix ewl macros calls
+
 2007-10-09  Vincent Torri  <doursse at users dot sf dot net>
 
 	* configure.in:

@@ -53,7 +53,7 @@ ewl_pdf_init(Ewl_Pdf *pdf)
 	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("pdf", pdf, FALSE);
+	DCHECK_PARAM_PTR_RET(pdf, FALSE);
 
 	w = EWL_WIDGET(pdf);
 
@@ -108,8 +108,8 @@ int
 ewl_pdf_page_get(Ewl_Pdf *pdf)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("pdf", pdf, 0);
-	DCHECK_TYPE_RET("pdf", pdf, EWL_PDF_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(pdf, 0);
+	DCHECK_TYPE_RET(pdf, EWL_PDF_TYPE, 0);
 
 	DRETURN_INT(pdf->page, DLEVEL_STABLE);
 }
@@ -130,8 +130,8 @@ ewl_pdf_file_set(Ewl_Pdf *pdf, const char *filename)
 	Ewl_Embed *emb;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("pdf", pdf);
-	DCHECK_TYPE("pdf", pdf, EWL_PDF_TYPE);
+	DCHECK_PARAM_PTR(pdf);
+	DCHECK_TYPE(pdf, EWL_PDF_TYPE);
 
 	w = EWL_WIDGET(pdf);
 	emb = ewl_embed_widget_find(w);
@@ -184,8 +184,8 @@ ewl_pdf_file_set(Ewl_Pdf *pdf, const char *filename)
 void ewl_pdf_page_set(Ewl_Pdf *pdf, int page)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("pdf", pdf);
-	DCHECK_TYPE("pdf", pdf, EWL_PDF_TYPE);
+	DCHECK_PARAM_PTR(pdf);
+	DCHECK_TYPE(pdf, EWL_PDF_TYPE);
 
 	if (!pdf->pdf_document ||
 	    (page < 1) ||
@@ -207,8 +207,8 @@ void ewl_pdf_page_set(Ewl_Pdf *pdf, int page)
 Epdf_Document *ewl_pdf_pdf_document_get (Ewl_Pdf *pdf)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("pdf", pdf, NULL);
-	DCHECK_TYPE_RET("pdf", pdf, EWL_PDF_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(pdf, NULL);
+	DCHECK_TYPE_RET(pdf, EWL_PDF_TYPE, NULL);
 
 	DRETURN_PTR(pdf->pdf_document, DLEVEL_STABLE);
 }
@@ -221,8 +221,8 @@ Epdf_Document *ewl_pdf_pdf_document_get (Ewl_Pdf *pdf)
 Epdf_Page *ewl_pdf_pdf_page_get (Ewl_Pdf *pdf)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("pdf", pdf, NULL);
-	DCHECK_TYPE_RET("pdf", pdf, EWL_PDF_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(pdf, NULL);
+	DCHECK_TYPE_RET(pdf, EWL_PDF_TYPE, NULL);
 
 	DRETURN_PTR(pdf->pdf_page, DLEVEL_STABLE);
 }
@@ -235,8 +235,8 @@ Epdf_Page *ewl_pdf_pdf_page_get (Ewl_Pdf *pdf)
 Ecore_List *ewl_pdf_pdf_index_get (Ewl_Pdf *pdf)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("pdf", pdf, NULL);
-	DCHECK_TYPE_RET("pdf", pdf, EWL_PDF_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(pdf, NULL);
+	DCHECK_TYPE_RET(pdf, EWL_PDF_TYPE, NULL);
 
 	DRETURN_PTR(pdf->pdf_index, DLEVEL_STABLE);
 }
@@ -251,8 +251,8 @@ Ecore_List *ewl_pdf_pdf_index_get (Ewl_Pdf *pdf)
 void ewl_pdf_pdf_size_get (Ewl_Pdf *pdf, int *width, int *height)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("pdf", pdf);
-	DCHECK_TYPE("pdf", pdf, EWL_PDF_TYPE);
+	DCHECK_PARAM_PTR(pdf);
+	DCHECK_TYPE(pdf, EWL_PDF_TYPE);
 
 	if (!pdf) {
 		if (width) *width = 0;
@@ -270,8 +270,8 @@ void
 ewl_pdf_search_text_set (Ewl_Pdf *pdf, const char *text)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("pdf", pdf);
-	DCHECK_TYPE("pdf", pdf, EWL_PDF_TYPE);
+	DCHECK_PARAM_PTR(pdf);
+	DCHECK_TYPE(pdf, EWL_PDF_TYPE);
 
 	if ((!text) ||
             (pdf->search.text &&
@@ -289,8 +289,8 @@ void
 ewl_pdf_search_first_page_set (Ewl_Pdf *pdf, int page)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("pdf", pdf);
-	DCHECK_TYPE("pdf", pdf, EWL_PDF_TYPE);
+	DCHECK_PARAM_PTR(pdf);
+	DCHECK_TYPE(pdf, EWL_PDF_TYPE);
 
         if (page != pdf->search.page)
                 pdf->search.page = page;
@@ -302,8 +302,8 @@ void
 ewl_pdf_search_is_case_sensitive (Ewl_Pdf *pdf, int is_case_sensitive)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("pdf", pdf);
-	DCHECK_TYPE("pdf", pdf, EWL_PDF_TYPE);
+	DCHECK_PARAM_PTR(pdf);
+	DCHECK_TYPE(pdf, EWL_PDF_TYPE);
 
 	if (is_case_sensitive != pdf->search.is_case_sensitive)
                 pdf->search.is_case_sensitive = is_case_sensitive;
@@ -315,8 +315,8 @@ int
 ewl_pdf_search_next (Ewl_Pdf *pdf)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("pdf", pdf, FALSE);
-	DCHECK_TYPE_RET("pdf", pdf, EWL_PDF_TYPE, FALSE);
+	DCHECK_PARAM_PTR_RET(pdf, FALSE);
+	DCHECK_TYPE_RET(pdf, EWL_PDF_TYPE, FALSE);
 
 	if (!pdf->search.text)
                 DRETURN_INT(FALSE, DLEVEL_STABLE);
@@ -391,8 +391,8 @@ void
 ewl_pdf_orientation_set (Ewl_Pdf *pdf, Epdf_Page_Orientation o)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("pdf", pdf);
-	DCHECK_TYPE("pdf", pdf, EWL_PDF_TYPE);
+	DCHECK_PARAM_PTR(pdf);
+	DCHECK_TYPE(pdf, EWL_PDF_TYPE);
 
 	if (!pdf || !pdf->pdf_page || (pdf->orientation == o))
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -407,8 +407,8 @@ Epdf_Page_Orientation
 ewl_pdf_orientation_get (Ewl_Pdf *pdf)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("pdf", pdf, EPDF_PAGE_ORIENTATION_PORTRAIT);
-	DCHECK_TYPE_RET("pdf", pdf, EWL_PDF_TYPE, EPDF_PAGE_ORIENTATION_PORTRAIT);
+	DCHECK_PARAM_PTR_RET(pdf, EPDF_PAGE_ORIENTATION_PORTRAIT);
+	DCHECK_TYPE_RET(pdf, EWL_PDF_TYPE, EPDF_PAGE_ORIENTATION_PORTRAIT);
 
 	if (!pdf || !pdf->pdf_page)
 		DRETURN_INT(EPDF_PAGE_ORIENTATION_PORTRAIT, DLEVEL_STABLE);
@@ -420,8 +420,8 @@ void
 ewl_pdf_scale_set (Ewl_Pdf *pdf, double hscale, double vscale)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("pdf", pdf);
-	DCHECK_TYPE("pdf", pdf, EWL_PDF_TYPE);
+	DCHECK_PARAM_PTR(pdf);
+	DCHECK_TYPE(pdf, EWL_PDF_TYPE);
 
 	if (!pdf)
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -437,8 +437,8 @@ void
 ewl_pdf_scale_get (Ewl_Pdf *pdf, double *hscale, double *vscale)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("pdf", pdf);
-	DCHECK_TYPE("pdf", pdf, EWL_PDF_TYPE);
+	DCHECK_PARAM_PTR(pdf);
+	DCHECK_TYPE(pdf, EWL_PDF_TYPE);
 
 	if (!pdf) {
 		if (hscale) *hscale = 1.0;
@@ -458,8 +458,8 @@ ewl_pdf_page_next (Ewl_Pdf *pdf)
 	int page;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("pdf", pdf);
-	DCHECK_TYPE("pdf", pdf, EWL_PDF_TYPE);
+	DCHECK_PARAM_PTR(pdf);
+	DCHECK_TYPE(pdf, EWL_PDF_TYPE);
 
 	if (!pdf)
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -478,8 +478,8 @@ ewl_pdf_page_previous (Ewl_Pdf *pdf)
 	int page;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("pdf", pdf);
-	DCHECK_TYPE("pdf", pdf, EWL_PDF_TYPE);
+	DCHECK_PARAM_PTR(pdf);
+	DCHECK_TYPE(pdf, EWL_PDF_TYPE);
 
 	if (!pdf)
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -496,8 +496,8 @@ void
 ewl_pdf_page_page_length_set (Ewl_Pdf *pdf, int page_length)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("pdf", pdf);
-	DCHECK_TYPE("pdf", pdf, EWL_PDF_TYPE);
+	DCHECK_PARAM_PTR(pdf);
+	DCHECK_TYPE(pdf, EWL_PDF_TYPE);
 
 	if (!pdf || (page_length <= 0) || (pdf->page_length == page_length))
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -511,8 +511,8 @@ int
 ewl_pdf_page_page_length_get (Ewl_Pdf *pdf)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("pdf", pdf, 0);
-	DCHECK_TYPE_RET("pdf", pdf, EWL_PDF_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(pdf, 0);
+	DCHECK_TYPE_RET(pdf, EWL_PDF_TYPE, 0);
 
 	if (!pdf)
 		DRETURN_INT(0, DLEVEL_STABLE);
@@ -526,8 +526,8 @@ ewl_pdf_page_page_next (Ewl_Pdf *pdf)
 	int page;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("pdf", pdf);
-	DCHECK_TYPE("pdf", pdf, EWL_PDF_TYPE);
+	DCHECK_PARAM_PTR(pdf);
+	DCHECK_TYPE(pdf, EWL_PDF_TYPE);
 
 	if (!pdf)
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -546,8 +546,8 @@ ewl_pdf_page_page_previous (Ewl_Pdf *pdf)
 	int page;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("pdf", pdf);
-	DCHECK_TYPE("pdf", pdf, EWL_PDF_TYPE);
+	DCHECK_PARAM_PTR(pdf);
+	DCHECK_TYPE(pdf, EWL_PDF_TYPE);
 
 	if (!pdf)
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -568,8 +568,8 @@ ewl_pdf_reveal_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_Embed *emb;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	pdf = EWL_PDF(w);
 	emb = ewl_embed_widget_find(w);
@@ -624,8 +624,8 @@ ewl_pdf_obscure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_Embed *emb;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	emb = ewl_embed_widget_find(w);
 
@@ -648,8 +648,8 @@ ewl_pdf_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	int dx = 0, dy = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	pdf = EWL_PDF(w);
 	if (!pdf->image)
@@ -683,8 +683,8 @@ ewl_pdf_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_Pdf *pdf;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, "widget");
 
 	pdf = EWL_PDF(w);
 
