@@ -75,6 +75,8 @@ struct Ewl_Colorpicker
 		Ewl_Widget *alpha;	/**< The alpha value */
 	} spinners;			/**< The spinners to hold the different values */
 
+	Ewl_Widget *alpha_box;		/**< Box holding alpha information */
+
 	Ewl_Color_Set previous;		/**< The previous color */
 	Ewl_Color_Mode mode;		/**< The current mode */
 
@@ -96,10 +98,12 @@ void		 ewl_colorpicker_current_rgb_set(Ewl_Colorpicker *cp, unsigned int r,
 void		 ewl_colorpicker_current_rgb_get(Ewl_Colorpicker *cp, unsigned int *r,
 							unsigned int *g, unsigned int *b);
 
-void		 ewl_colorpicker_previous_rgb_set(Ewl_Colorpicker *cp, unsigned int r,
-							unsigned int g, unsigned int b);
-void		 ewl_colorpicker_previous_rgb_get(Ewl_Colorpicker *cp, unsigned int *r,
-							unsigned int *g, unsigned int *b);
+void		 ewl_colorpicker_previous_rgba_set(Ewl_Colorpicker *cp, unsigned int r,
+							unsigned int g, unsigned int b,
+							unsigned int a);
+void		 ewl_colorpicker_previous_rgba_get(Ewl_Colorpicker *cp, unsigned int *r,
+							unsigned int *g, unsigned int *b,
+							unsigned int *a);
 
 void		 ewl_colorpicker_color_mode_set(Ewl_Colorpicker *cp, Ewl_Color_Mode type);
 Ewl_Color_Mode	 ewl_colorpicker_color_mode_get(Ewl_Colorpicker *cp);
@@ -111,6 +115,7 @@ void ewl_colorpicker_cb_square_change(Ewl_Widget *w, void *ev, void *data);
 void ewl_colorpicker_cb_vertical_change(Ewl_Widget *w, void *ev, void *data);
 
 void ewl_colorpicker_cb_spinner_change(Ewl_Widget *w, void *ev, void *data);
+void ewl_colorpicker_cb_alpha_change(Ewl_Widget *w, void *ev, void *data);
 void ewl_colorpicker_cb_radio_change(Ewl_Widget *w, void *ev, void *data);
 
 void ewl_colorpicker_cb_previous_clicked(Ewl_Widget *w, void *ev, void *data);

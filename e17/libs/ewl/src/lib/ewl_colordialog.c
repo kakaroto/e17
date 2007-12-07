@@ -88,6 +88,9 @@ ewl_colordialog_init(Ewl_Colordialog *cd)
 					ewl_colordialog_cb_button_click, cd);
 	ewl_widget_show(o);
 
+	/* enable alpha channel by default */
+	ewl_colordialog_has_alpha_set(cd, TRUE);
+
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
@@ -213,19 +216,21 @@ ewl_colordialog_current_rgb_get(Ewl_Colordialog *cd, unsigned int *r,
  * @param r: The red value to set
  * @param g: The green value to set
  * @param b: The blue value to set
+ * @param a: The alpha value to set
  * @return Returns no value.
- * @brief This sets the given rgb values as the color to display in the
+ * @brief This sets the given rgba values as the color to display in the
  * previous color box of the color dialog.
  */
 void
-ewl_colordialog_previous_rgb_set(Ewl_Colordialog *cd, unsigned int r,
-				unsigned int g, unsigned int b)
+ewl_colordialog_previous_rgba_set(Ewl_Colordialog *cd, unsigned int r,
+				unsigned int g, unsigned int b,
+				unsigned int a)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(cd);
 	DCHECK_TYPE(cd, EWL_COLORDIALOG_TYPE);
 
-	ewl_colorpicker_previous_rgb_set(EWL_COLORPICKER(cd->picker), r, g, b);
+	ewl_colorpicker_previous_rgba_set(EWL_COLORPICKER(cd->picker), r, g, b, a);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -235,19 +240,21 @@ ewl_colordialog_previous_rgb_set(Ewl_Colordialog *cd, unsigned int r,
  * @param r: Where to store the red value
  * @param g: Where to store the green value
  * @param b: Where to store the blue value
+ * @param a: Where to store the alpha value
  * @return Returns no value.
  * @brief This will retrieve the value current set into the previous color box of
- * the color dialog rgb values from the color dialog
+ * the color dialog rgba values from the color dialog
  */
 void
-ewl_colordialog_previous_rgb_get(Ewl_Colordialog *cd, unsigned int *r,
-				unsigned int *g, unsigned int *b)
+ewl_colordialog_previous_rgba_get(Ewl_Colordialog *cd, unsigned int *r,
+				unsigned int *g, unsigned int *b, 
+				unsigned int *a)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(cd);
 	DCHECK_TYPE(cd, EWL_COLORDIALOG_TYPE);
 
-	ewl_colorpicker_previous_rgb_get(EWL_COLORPICKER(cd->picker), r, g, b);
+	ewl_colorpicker_previous_rgba_get(EWL_COLORPICKER(cd->picker), r, g, b, a);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

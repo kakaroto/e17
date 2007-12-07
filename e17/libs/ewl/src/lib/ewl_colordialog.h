@@ -61,10 +61,12 @@ void 		 ewl_colordialog_current_rgb_set(Ewl_Colordialog *cp, unsigned int r,
 void 		 ewl_colordialog_current_rgb_get(Ewl_Colordialog *cp, unsigned int *r,
 							unsigned int *g, unsigned int *b);
 
-void 		 ewl_colordialog_previous_rgb_set(Ewl_Colordialog *cp, unsigned int r,
-							unsigned int g, unsigned int b);
-void 		 ewl_colordialog_previous_rgb_get(Ewl_Colordialog *cp, unsigned int *r,
-							unsigned int *g, unsigned int *b);
+void 		 ewl_colordialog_previous_rgba_set(Ewl_Colordialog *cp, unsigned int r,
+							unsigned int g, unsigned int b,
+							unsigned int a);
+void 		 ewl_colordialog_previous_rgba_get(Ewl_Colordialog *cp, unsigned int *r,
+							unsigned int *g, unsigned int *b,
+							unsigned int *a);
 
 void 		 ewl_colordialog_color_mode_set(Ewl_Colordialog *cp, Ewl_Color_Mode type);
 Ewl_Color_Mode 	 ewl_colordialog_color_mode_get(Ewl_Colordialog *cp);

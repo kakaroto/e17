@@ -302,14 +302,27 @@ ewl_colorpicker_init(Ewl_Colorpicker *cp)
 		ewl_widget_show(o);
 	}
 
+	o = ewl_hbox_new();
+	ewl_container_child_append(EWL_CONTAINER(vbox), o);
+	cp->alpha_box = o;
+
+	o = ewl_label_new();
+	ewl_label_text_set(EWL_LABEL(o), "A");
+	ewl_container_child_append(EWL_CONTAINER(cp->alpha_box), o);
+	ewl_widget_show(o);
+
 	/* alpha spinner */
 	o = ewl_spinner_new();
 	ewl_widget_internal_set(o, TRUE);
-	ewl_container_child_append(EWL_CONTAINER(vbox), o);
+	ewl_container_child_append(EWL_CONTAINER(cp->alpha_box), o);
 	ewl_range_minimum_value_set(EWL_RANGE(o), 0);
 	ewl_range_maximum_value_set(EWL_RANGE(o), 255);
-	ewl_range_value_set(EWL_RANGE(o), 0);
+	ewl_range_value_set(EWL_RANGE(o), 255);
+	ewl_range_step_set(EWL_RANGE(o), 1);
 	ewl_spinner_digits_set(EWL_SPINNER(o), 0);
+	ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,
+				ewl_colorpicker_cb_alpha_change, cp);
+	ewl_widget_show(o);
 	cp->spinners.alpha = o;
 
 	ewl_colorpicker_color_mode_set(cp, EWL_COLOR_MODE_HSV_HUE);
@@ -330,7 +343,13 @@ ewl_colorpicker_has_alpha_set(Ewl_Colorpicker *cp, unsigned int alpha)
 	DCHECK_PARAM_PTR(cp);
 	DCHECK_TYPE(cp, EWL_COLORPICKER_TYPE);
 
-	cp->has_alpha = alpha;
+	if (cp->has_alpha == !!alpha)
+		DRETURN(DLEVEL_STABLE);
+
+	cp->has_alpha = !!alpha;
+
+	if (cp->has_alpha) ewl_widget_show(cp->alpha_box);
+	else ewl_widget_hide(cp->alpha_box);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -409,7 +428,8 @@ ewl_colorpicker_current_rgb_set(Ewl_Colorpicker *cp, unsigned int r,
 	if (g > 255) g = 255;
 	if (b > 255) b = 255;
 
-	ewl_widget_color_set(cp->preview.current, r, g, b, 255);
+	ewl_widget_color_set(cp->preview.current, r, g, b, 
+				ewl_range_value_get(EWL_RANGE(cp->spinners.alpha)));
 	ewl_spectrum_rgb_set(EWL_SPECTRUM(cp->picker.square), r, g, b);
 	ewl_spectrum_rgb_set(EWL_SPECTRUM(cp->picker.vertical), r, g, b);
 
@@ -445,12 +465,14 @@ ewl_colorpicker_current_rgb_get(Ewl_Colorpicker *cp, unsigned int *r,
  * @param r: The red value to set
  * @param g: The green value to set
  * @param b: The blue value to set
+ * @param a: The alpha value to set
  * @return Returns no value.
- * @brief Set the previous RBG values into the color picker
+ * @brief Set the previous RBGA values into the color picker
  */
 void
-ewl_colorpicker_previous_rgb_set(Ewl_Colorpicker *cp, unsigned int r,
-				unsigned int g, unsigned int b)
+ewl_colorpicker_previous_rgba_set(Ewl_Colorpicker *cp, unsigned int r,
+				unsigned int g, unsigned int b, 
+				unsigned int a)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(cp);
@@ -459,8 +481,9 @@ ewl_colorpicker_previous_rgb_set(Ewl_Colorpicker *cp, unsigned int r,
 	cp->previous.r = r;
 	cp->previous.g = g;
 	cp->previous.b = b;
+	cp->previous.a = a;
 
-	ewl_widget_color_set(cp->preview.previous, r, g, b, 255);
+	ewl_widget_color_set(cp->preview.previous, r, g, b, a);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -470,12 +493,14 @@ ewl_colorpicker_previous_rgb_set(Ewl_Colorpicker *cp, unsigned int r,
  * @param r: Where to store the red value
  * @param g: Where to store the green value
  * @param b: Where to store the blue value
+ * @param a: Where to store the alpha value
  * @return Returns no value.
- * @brief Retrieve the previous RGB values from the color picker
+ * @brief Retrieve the previous RGBA values from the color picker
  */
 void
-ewl_colorpicker_previous_rgb_get(Ewl_Colorpicker *cp, unsigned int *r,
-				unsigned int *g, unsigned int *b)
+ewl_colorpicker_previous_rgba_get(Ewl_Colorpicker *cp, unsigned int *r,
+				unsigned int *g, unsigned int *b, 
+				unsigned int *a)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(cp);
@@ -484,6 +509,7 @@ ewl_colorpicker_previous_rgb_get(Ewl_Colorpicker *cp, unsigned int *r,
 	if (r) *r = cp->previous.r;
 	if (g) *g = cp->previous.g;
 	if (b) *b = cp->previous.b;
+	if (a) *a = cp->previous.a;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -708,6 +734,37 @@ ewl_colorpicker_cb_spinner_change(Ewl_Widget *w, void *ev __UNUSED__, void *data
  * @internal
  * @param w: The widget to work with
  * @param ev: UNUSED
+ * @param data: The colorpicker
+ * @return Returns no value
+ * @brief The callback for a spinner change
+ */
+void
+ewl_colorpicker_cb_alpha_change(Ewl_Widget *w, void *ev __UNUSED__, void *data)
+{
+	Ewl_Colorpicker *cp;
+	unsigned int r, g, b, a;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_PARAM_PTR(data);
+	DCHECK_TYPE(w, EWL_SPINNER_TYPE);
+	DCHECK_TYPE(data, EWL_COLORPICKER_TYPE);
+
+	cp = data;
+	r = ewl_range_value_get(cp->spinners.rgb.r);
+	g = ewl_range_value_get(cp->spinners.rgb.g);
+	b = ewl_range_value_get(cp->spinners.rgb.b);
+	a = ewl_range_value_get(EWL_RANGE(w));
+
+	ewl_widget_color_set(cp->preview.current, r, g, b, a);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev: UNUSED
  * @param data: The colorpicker widget
  * @return Returns no value
  * @brief Callback for a radio button change
@@ -830,7 +887,8 @@ ewl_colorpicker_display_update(Ewl_Colorpicker *cp, unsigned int r, unsigned int
 	ewl_range_value_set(EWL_RANGE(cp->spinners.hsv.s), s * 100);
 	ewl_range_value_set(EWL_RANGE(cp->spinners.hsv.v), v * 100);
 
-	ewl_widget_color_set(cp->preview.current, r, g, b, 255);
+	ewl_widget_color_set(cp->preview.current, r, g, b,
+				ewl_range_value_get((cp->spinners.alpha)));
 	ewl_callback_call(EWL_WIDGET(cp), EWL_CALLBACK_VALUE_CHANGED);
 
 	cp->updating = FALSE;

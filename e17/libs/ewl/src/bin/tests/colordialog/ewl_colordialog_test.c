@@ -74,8 +74,7 @@ colordialog_cb_launch(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	ewl_widget_color_get(o, &r, &g, &b, &a);
 
 	o = ewl_colordialog_new();
-	ewl_colordialog_previous_rgb_set(EWL_COLORDIALOG(o), r, g, b);
-	ewl_colordialog_alpha_set(EWL_COLORDIALOG(o), a);
+	ewl_colordialog_previous_rgba_set(EWL_COLORDIALOG(o), r, g, b, a);
 	ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,
 				colordialog_cb_value_changed, NULL);
 	ewl_widget_show(o);
