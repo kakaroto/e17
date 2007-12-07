@@ -1,3 +1,15 @@
+2007-12-17  Vincent Torri  <doursse at users dot sf dot net>
+
+	* src/lib/Edvi.h:
+	* src/lib/edvi_page.c:
+	* src/lib/edvi_device.c:
+	* src/lib/Makefile.am:
+	rename edvi.* to edvi_main.* so that case insensitive
+	file systems can compile edvi.
+
+	* src/lib/ewl_dvi.c:
+	Fix ewl macros calls
+
 2007-09-29  Vincent Torri  <doursse at users dot sf dot net>
 
 	* src/lib/etk_dvi.c: (etk_dvi_type_get)
