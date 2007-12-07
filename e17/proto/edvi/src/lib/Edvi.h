@@ -7,7 +7,7 @@
 #include "edvi_property.h"
 #include "edvi_document.h"
 #include "edvi_page.h"
-#include "edvi.h"
+#include "edvi_main.h"
 
 
 #endif /* __EDVI_H__ */

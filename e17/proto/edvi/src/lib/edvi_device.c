@@ -3,7 +3,7 @@
 #include "edvi_enum.h"
 #include "edvi_forward.h"
 #include "edvi_private.h"
-#include "edvi.h"
+#include "edvi_main.h"
 
 
 static Edvi_Framebuffer *_edvi_device_fb = NULL;

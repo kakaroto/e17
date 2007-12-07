@@ -1,5 +1,5 @@
-#ifndef __EDVI_CORE_H__
-#define __EDVI_CORE_H__
+#ifndef __EDVI_MAIN_H__
+#define __EDVI_MAIN_H__
 
 
 int edvi_init (int dpi, char *kpathsea_mode, int aa,
@@ -22,4 +22,4 @@ unsigned int *edvi_color_map_get ();
 const char *edvi_version_get ();
 
 
-#endif /* __EDVI_CORE_H__ */
+#endif /* __EDVI_MAIN_H__ */

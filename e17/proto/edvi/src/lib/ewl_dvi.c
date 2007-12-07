@@ -55,7 +55,7 @@ ewl_dvi_init(Ewl_Dvi *dvi)
 	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("dvi", dvi, FALSE);
+	DCHECK_PARAM_PTR_RET(dvi, FALSE);
 
 	w = EWL_WIDGET(dvi);
 
@@ -103,8 +103,8 @@ int
 ewl_dvi_page_get(Ewl_Dvi *dvi)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("dvi", dvi, 0);
-	DCHECK_TYPE_RET("dvi", dvi, EWL_DVI_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(dvi, 0);
+	DCHECK_TYPE_RET(dvi, EWL_DVI_TYPE, 0);
 
 	DRETURN_INT(dvi->page, DLEVEL_STABLE);
 }
@@ -125,8 +125,8 @@ ewl_dvi_file_set(Ewl_Dvi *dvi, const char *filename)
 	Ewl_Embed *emb;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("dvi", dvi);
-	DCHECK_TYPE("dvi", dvi, EWL_DVI_TYPE);
+	DCHECK_PARAM_PTR(dvi);
+	DCHECK_TYPE(dvi, EWL_DVI_TYPE);
 
 	w = EWL_WIDGET(dvi);
 	emb = ewl_embed_widget_find(w);
@@ -169,8 +169,8 @@ ewl_dvi_file_set(Ewl_Dvi *dvi, const char *filename)
 void ewl_dvi_page_set(Ewl_Dvi *dvi, int page)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("dvi", dvi);
-	DCHECK_TYPE("dvi", dvi, EWL_DVI_TYPE);
+	DCHECK_PARAM_PTR(dvi);
+	DCHECK_TYPE(dvi, EWL_DVI_TYPE);
 
 	if (!dvi->dvi_document ||
 	    (page >= edvi_document_page_count_get (dvi->dvi_document)) ||
@@ -191,8 +191,8 @@ void ewl_dvi_page_set(Ewl_Dvi *dvi, int page)
 Edvi_Document *ewl_dvi_dvi_document_get (Ewl_Dvi *dvi)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("dvi", dvi, NULL);
-	DCHECK_TYPE_RET("dvi", dvi, EWL_DVI_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(dvi, NULL);
+	DCHECK_TYPE_RET(dvi, EWL_DVI_TYPE, NULL);
 
 	DRETURN_PTR(dvi->dvi_document, DLEVEL_STABLE);
 }
@@ -205,8 +205,8 @@ Edvi_Document *ewl_dvi_dvi_document_get (Ewl_Dvi *dvi)
 Edvi_Page *ewl_dvi_dvi_page_get (Ewl_Dvi *dvi)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("dvi", dvi, NULL);
-	DCHECK_TYPE_RET("dvi", dvi, EWL_DVI_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(dvi, NULL);
+	DCHECK_TYPE_RET(dvi, EWL_DVI_TYPE, NULL);
 
 	DRETURN_PTR(dvi->dvi_page, DLEVEL_STABLE);
 }
@@ -221,8 +221,8 @@ Edvi_Page *ewl_dvi_dvi_page_get (Ewl_Dvi *dvi)
 void ewl_dvi_dvi_size_get (Ewl_Dvi *dvi, int *width, int *height)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("dvi", dvi);
-	DCHECK_TYPE("dvi", dvi, EWL_DVI_TYPE);
+	DCHECK_PARAM_PTR(dvi);
+	DCHECK_TYPE(dvi, EWL_DVI_TYPE);
 
 	if (!dvi) {
 		if (width) *width = 0;
@@ -240,8 +240,8 @@ void
 ewl_dvi_orientation_set (Ewl_Dvi *dvi, Edvi_Page_Orientation o)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("dvi", dvi);
-	DCHECK_TYPE("dvi", dvi, EWL_DVI_TYPE);
+	DCHECK_PARAM_PTR(dvi);
+	DCHECK_TYPE(dvi, EWL_DVI_TYPE);
 
 	if (!dvi || !dvi->dvi_page || (dvi->orientation == o))
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -256,8 +256,8 @@ Edvi_Page_Orientation
 ewl_dvi_orientation_get (Ewl_Dvi *dvi)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("dvi", dvi, EDVI_PAGE_ORIENTATION_PORTRAIT);
-	DCHECK_TYPE_RET("dvi", dvi, EWL_DVI_TYPE, EDVI_PAGE_ORIENTATION_PORTRAIT);
+	DCHECK_PARAM_PTR_RET(dvi, EDVI_PAGE_ORIENTATION_PORTRAIT);
+	DCHECK_TYPE_RET(dvi, EWL_DVI_TYPE, EDVI_PAGE_ORIENTATION_PORTRAIT);
 
 	if (!dvi || !dvi->dvi_page)
 		DRETURN_INT(EDVI_PAGE_ORIENTATION_PORTRAIT, DLEVEL_STABLE);
@@ -269,8 +269,8 @@ void
 ewl_dvi_scale_set (Ewl_Dvi *dvi, double hscale, double vscale)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("dvi", dvi);
-	DCHECK_TYPE("dvi", dvi, EWL_DVI_TYPE);
+	DCHECK_PARAM_PTR(dvi);
+	DCHECK_TYPE(dvi, EWL_DVI_TYPE);
 
 	if (!dvi)
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -286,8 +286,8 @@ void
 ewl_dvi_scale_get (Ewl_Dvi *dvi, double *hscale, double *vscale)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("dvi", dvi);
-	DCHECK_TYPE("dvi", dvi, EWL_DVI_TYPE);
+	DCHECK_PARAM_PTR(dvi);
+	DCHECK_TYPE(dvi, EWL_DVI_TYPE);
 
 	if (!dvi) {
 		if (hscale) *hscale = 1.0;
@@ -307,8 +307,8 @@ ewl_dvi_page_next (Ewl_Dvi *dvi)
 	int page;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("dvi", dvi);
-	DCHECK_TYPE("dvi", dvi, EWL_DVI_TYPE);
+	DCHECK_PARAM_PTR(dvi);
+	DCHECK_TYPE(dvi, EWL_DVI_TYPE);
 
 	if (!dvi)
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -327,8 +327,8 @@ ewl_dvi_page_previous (Ewl_Dvi *dvi)
 	int page;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("dvi", dvi);
-	DCHECK_TYPE("dvi", dvi, EWL_DVI_TYPE);
+	DCHECK_PARAM_PTR(dvi);
+	DCHECK_TYPE(dvi, EWL_DVI_TYPE);
 
 	if (!dvi)
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -345,8 +345,8 @@ void
 ewl_dvi_page_page_length_set (Ewl_Dvi *dvi, int page_length)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("dvi", dvi);
-	DCHECK_TYPE("dvi", dvi, EWL_DVI_TYPE);
+	DCHECK_PARAM_PTR(dvi);
+	DCHECK_TYPE(dvi, EWL_DVI_TYPE);
 
 	if (!dvi || (page_length <= 0) || (dvi->page_length == page_length))
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -360,8 +360,8 @@ int
 ewl_dvi_page_page_length_get (Ewl_Dvi *dvi)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET("dvi", dvi, 0);
-	DCHECK_TYPE_RET("dvi", dvi, EWL_DVI_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(dvi, 0);
+	DCHECK_TYPE_RET(dvi, EWL_DVI_TYPE, 0);
 
 	if (!dvi)
 		DRETURN_INT(0, DLEVEL_STABLE);
@@ -375,8 +375,8 @@ ewl_dvi_page_page_next (Ewl_Dvi *dvi)
 	int page;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("dvi", dvi);
-	DCHECK_TYPE("dvi", dvi, EWL_DVI_TYPE);
+	DCHECK_PARAM_PTR(dvi);
+	DCHECK_TYPE(dvi, EWL_DVI_TYPE);
 
 	if (!dvi)
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -395,8 +395,8 @@ ewl_dvi_page_page_previous (Ewl_Dvi *dvi)
 	int page;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("dvi", dvi);
-	DCHECK_TYPE("dvi", dvi, EWL_DVI_TYPE);
+	DCHECK_PARAM_PTR(dvi);
+	DCHECK_TYPE(dvi, EWL_DVI_TYPE);
 
 	if (!dvi)
 		DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -417,8 +417,8 @@ ewl_dvi_reveal_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_Embed *emb;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	dvi = EWL_DVI(w);
 	emb = ewl_embed_widget_find(w);
@@ -487,8 +487,8 @@ ewl_dvi_obscure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_Embed *emb;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	emb = ewl_embed_widget_find(w);
 
@@ -511,8 +511,8 @@ ewl_dvi_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	int dx = 0, dy = 0;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	dvi = EWL_DVI(w);
 	if (!dvi->image)
@@ -546,8 +546,8 @@ ewl_dvi_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	Ewl_Dvi *dvi;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR("w", w);
-	DCHECK_TYPE("w", w, "widget");
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, "widget");
 
 	dvi = EWL_DVI(w);
 

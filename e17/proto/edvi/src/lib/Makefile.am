@@ -19,7 +19,7 @@ lib_LTLIBRARIES = libedvi.la
 
 EDVIHEADERS = \
 Edvi.h \
-edvi.h \
+edvi_main.h \
 edvi_device.h \
 edvi_document.h \
 edvi_enum.h \
@@ -32,7 +32,7 @@ $(EDVI_EWL_HEADER) \
 $(EDVI_ETK_HEADER)
 
 libedvi_la_SOURCES = \
-edvi.c \
+edvi_main.c \
 edvi_device.c \
 edvi_document.c \
 edvi_framebuffer.c \
