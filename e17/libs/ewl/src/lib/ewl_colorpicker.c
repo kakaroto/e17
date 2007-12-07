@@ -751,9 +751,9 @@ ewl_colorpicker_cb_alpha_change(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 	DCHECK_TYPE(data, EWL_COLORPICKER_TYPE);
 
 	cp = data;
-	r = ewl_range_value_get(cp->spinners.rgb.r);
-	g = ewl_range_value_get(cp->spinners.rgb.g);
-	b = ewl_range_value_get(cp->spinners.rgb.b);
+	r = ewl_range_value_get(EWL_RANGE(cp->spinners.rgb.r));
+	g = ewl_range_value_get(EWL_RANGE(cp->spinners.rgb.g));
+	b = ewl_range_value_get(EWL_RANGE(cp->spinners.rgb.b));
 	a = ewl_range_value_get(EWL_RANGE(w));
 
 	ewl_widget_color_set(cp->preview.current, r, g, b, a);
@@ -888,7 +888,7 @@ ewl_colorpicker_display_update(Ewl_Colorpicker *cp, unsigned int r, unsigned int
 	ewl_range_value_set(EWL_RANGE(cp->spinners.hsv.v), v * 100);
 
 	ewl_widget_color_set(cp->preview.current, r, g, b,
-				ewl_range_value_get((cp->spinners.alpha)));
+				ewl_range_value_get(EWL_RANGE(cp->spinners.alpha)));
 	ewl_callback_call(EWL_WIDGET(cp), EWL_CALLBACK_VALUE_CHANGED);
 
 	cp->updating = FALSE;
