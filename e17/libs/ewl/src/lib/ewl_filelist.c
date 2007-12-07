@@ -112,8 +112,7 @@ ewl_filelist_setup(Ewl_Filelist *fl)
 	ewl_mvc_model_set(EWL_MVC(fl->controller), fl->model);
 	ewl_container_child_append(EWL_CONTAINER(fl), fl->controller);
 	ewl_callback_append(EWL_WIDGET(fl->controller),
-			EWL_CALLBACK_CLICKED, ewl_filelist_cb_clicked,
-			fl);
+			EWL_CALLBACK_CLICKED, ewl_filelist_cb_clicked, fl);
 	ewl_widget_show(fl->controller);
 
 	if (fl->multiselect)
@@ -236,6 +235,7 @@ ewl_filelist_view_get(Ewl_Filelist *fl)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET(fl, NULL);
+
 	DRETURN_PTR(fl->view_flag, DLEVEL_STABLE);
 }
 
@@ -249,28 +249,29 @@ ewl_filelist_view_get(Ewl_Filelist *fl)
 void
 ewl_filelist_directory_set(Ewl_Filelist *fl, const char *dir)
 {
-	Ewl_Filelist_Directory *data;
-	Ewl_Event_Action_Response ev_data;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(fl);
 	DCHECK_TYPE(fl, EWL_FILELIST_TYPE);
 
-	if (dir == NULL) 
+	if (dir == NULL)
+	{
+		IF_FREE(fl->directory);
 		fl->directory = NULL;
+	}
 	else if (((!fl->directory) || (strcmp(dir, fl->directory)))
 			&& (ecore_file_can_read(dir)))
 	{
+		Ewl_Filelist_Directory *data;
+		Ewl_Event_Action_Response ev_data;
+
 		IF_FREE(fl->directory);
 		fl->directory = strdup(dir);
 
 		data = ewl_mvc_data_get(EWL_MVC(fl->controller));
-		if (data)
-			ewl_filelist_model_data_unref(data);
+		if (data) ewl_filelist_model_data_unref(data);
 		
-		data = ewl_filelist_model_directory_new
-					(fl->directory,
-					 fl->skip_hidden, TRUE);
+		data = ewl_filelist_model_directory_new(fl->directory,
+						 fl->skip_hidden, TRUE);
 		ewl_mvc_data_set(EWL_MVC(fl->controller), data);
 		ewl_mvc_dirty_set(EWL_MVC(fl->controller), TRUE);
 
@@ -311,7 +312,6 @@ ewl_filelist_filter_set(Ewl_Filelist *fl, const char *filter)
 	DCHECK_TYPE(fl, EWL_FILELIST_TYPE);
 
 	IF_FREE(fl->filter);
-
 	fl->filter = (filter ? strdup(filter) : NULL);
 	
 	/* Model does not do filtering yet */
@@ -357,16 +357,14 @@ ewl_filelist_multiselect_set(Ewl_Filelist *fl, unsigned int ms)
 		
 	if (fl->multiselect)
 	{
-		ewl_mvc_selection_mode_set
-			(EWL_MVC(fl->controller),
-			 EWL_SELECTION_MODE_MULTI);
+		ewl_mvc_selection_mode_set(EWL_MVC(fl->controller),
+					 EWL_SELECTION_MODE_MULTI);
 		ev_data.response = EWL_FILELIST_EVENT_MULTI_TRUE;
 	}
 	else
 	{
-		ewl_mvc_selection_mode_set
-			(EWL_MVC(fl->controller),
-			 EWL_SELECTION_MODE_SINGLE);
+		ewl_mvc_selection_mode_set(EWL_MVC(fl->controller),
+					 EWL_SELECTION_MODE_SINGLE);
 		ev_data.response = EWL_FILELIST_EVENT_MULTI_FALSE;
 	}
 
@@ -411,8 +409,7 @@ ewl_filelist_show_dot_files_set(Ewl_Filelist *fl, unsigned int dot)
 
 	fl->skip_hidden = !!dot;
 	data = ewl_mvc_data_get(EWL_MVC(fl->controller));
-	if (data)
-		ewl_filelist_model_data_unref(data);
+	if (data) ewl_filelist_model_data_unref(data);
 						
 	data = ewl_filelist_model_directory_new(fl->directory,
 					 fl->skip_hidden, TRUE);
@@ -464,7 +461,6 @@ ewl_filelist_selected_file_set(Ewl_Filelist *fl, const char *file)
 
 	filename = ewl_filelist_expand_path(fl, file);
 	data = ewl_mvc_data_get(EWL_MVC(fl->controller));
-
 	if (ecore_file_is_dir(filename))
 	{
 		temp = data->dirs;
@@ -474,7 +470,6 @@ ewl_filelist_selected_file_set(Ewl_Filelist *fl, const char *file)
 		temp = data->files;
 
 	ecore_list_first_goto(temp);
-
 	while ((file_temp = ecore_list_next(temp)))
 	{
 		if (!strcoll(file_temp->name, file))
@@ -486,15 +481,15 @@ ewl_filelist_selected_file_set(Ewl_Filelist *fl, const char *file)
 
 	if ((index >= 0) && (dir == 0))
 		ewl_mvc_selected_set(EWL_MVC(fl->controller), NULL,
-					NULL, (index+data->num_dirs-1),
-				       	0);
+					NULL, (index + data->num_dirs - 1), 0);
 	
 	else if ((index >= 0) && (dir == 1))
 		ewl_mvc_selected_set(EWL_MVC(fl->controller), NULL,
-					NULL, (index-1), 0);
+					NULL, (index - 1), 0);
 
 	FREE(filename);
 	ewl_filelist_selected_files_change_notify(fl);
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -528,7 +523,6 @@ ewl_filelist_selected_file_get(Ewl_Filelist *fl)
 		i = (idx->row - data->num_dirs);
 		file = ecore_list_index_goto(data->files, i);
 	}
-
 	FREE(idx);
 
 	if (!strcmp(file->name, ".."))
@@ -538,8 +532,7 @@ ewl_filelist_selected_file_get(Ewl_Filelist *fl)
 		snprintf(path, PATH_MAX, "%s%s", data->name, file->name);
 
 	else
-		snprintf(path, PATH_MAX, "%s/%s", data->name,
-							file->name);
+		snprintf(path, PATH_MAX, "%s/%s", data->name, file->name);
 
 	DRETURN_PTR(strdup(path), DLEVEL_STABLE);
 }
@@ -648,8 +641,7 @@ ewl_filelist_username_get(uid_t st_uid)
 	/* we are on Windows, so we get the user name from */
 	/* the environment variable HOME or USERPROFILE */
 	homedir = getenv("HOME");
-	if (!homedir)
-		homedir = getenv("USERPROFILE");
+	if (!homedir) homedir = getenv("USERPROFILE");
 	if (homedir)
 	{
 		char *p;
@@ -869,18 +861,15 @@ ewl_filelist_selected_files_set(Ewl_Filelist *fl, Ecore_List *files)
 		/* Search the list and return the index if found */
 		while ((file = ecore_list_next(temp)))
 		{
-			if (!strcmp(file->name, ecore_file_file_get
-							(path)))
+			if (!strcmp(file->name, ecore_file_file_get(path)))
 			{
-				index = (index + 
-					ecore_list_index(temp) - 1);
-				sel = ewl_mvc_selection_index_new
-					(fl->model, NULL, index, 0);
+				index = (index + ecore_list_index(temp) - 1);
+				sel = ewl_mvc_selection_index_new(fl->model, 
+							NULL, index, 0);
 				ecore_list_append(selected, sel);
 				break;
 			}
 		}
-
 		ecore_list_first_goto(temp);
 	}		
 
@@ -915,7 +904,6 @@ ewl_filelist_selected_files_get(Ewl_Filelist *fl)
 	data = ewl_mvc_data_get(EWL_MVC(fl->controller));
 	selected = ewl_mvc_selected_list_get(EWL_MVC(fl->controller));
 	ecore_list_first_goto(selected);
-
 	while ((sel = ecore_list_next(selected)))
 	{
 		/* If using Index instead of range */
@@ -926,15 +914,12 @@ ewl_filelist_selected_files_get(Ewl_Filelist *fl)
 			idx = EWL_SELECTION_IDX(sel);
 			/* Get the file data */
 			if (idx->row < data->num_dirs)
-				file = ecore_list_index_goto
-					(data->dirs, idx->row);
+				file = ecore_list_index_goto(data->dirs, idx->row);
 			else
-				file = ecore_list_index_goto
-					(data->files,
-					 (idx->row - data->num_dirs));
+				file = ecore_list_index_goto(data->files,
+						 (idx->row - data->num_dirs));
 
-			snprintf(path, PATH_MAX, "%s/%s", data->name,
-							file->name);
+			snprintf(path, PATH_MAX, "%s/%s", data->name, file->name);
 			ecore_list_append(ret, strdup(path));
 		}
 
@@ -949,16 +934,13 @@ ewl_filelist_selected_files_get(Ewl_Filelist *fl)
 			{
 				/* Get the file data */
 				if (i < data->num_dirs)
-					file = ecore_list_index_goto
-						(data->dirs, i);
+					file = ecore_list_index_goto(data->dirs, i);
 				else
-					file = ecore_list_index_goto
-						(data->files,
+					file = ecore_list_index_goto(data->files,
 						 (i - data->num_dirs));
 
 				snprintf(path, PATH_MAX, "%s/%s",
-							data->name,
-							file->name);
+						data->name, file->name);
 				ecore_list_append(ret, strdup(path));
 			}
 		}
