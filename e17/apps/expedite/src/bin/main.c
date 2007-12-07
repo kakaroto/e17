@@ -1209,6 +1209,7 @@ _engine_args(int argc, char **argv)
 		"No engine selected.\n"
 		"\n"
 		"Options:\n"
+		"  -a (autorun all tests)\n"
 		"  -e ENGINE\n"
 		"  -p PROFILE\n"
 		"\n"
