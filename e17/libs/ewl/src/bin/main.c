@@ -137,12 +137,15 @@ main(int argc, char **argv)
 					"\t-all\tRun tests for all widgets\n"
 					"\t-help\tDisplay this help text\n"
 					"\t-list\tPrint available tests\n"
+					"\t-profile\tTime test results\n"
 					"\t-p\tHide passed test information\n"
 					"\t-d\tEnable all debugging output\n"
 					"\t-unit\tRun unit tests\n",
 					argv[0]);
 			exit(0);
 		}
+		else if (!strncmp(argv[i], "-profile", 8))
+			profile_tests = 1;
 		else if (!strncmp(argv[i], "-p", 2))
 			hide_passed = 1;
 		else if (!strncmp(argv[i], "-d", 2))
@@ -154,8 +157,6 @@ main(int argc, char **argv)
 			unit_test = 1;
 			setenv("EWL_ENGINE_NAME", "evas_buffer", 1);
 		}
-		else if (!strncmp(argv[i], "-profile", 8))
-			profile_tests = 1;
 	}
 
 	/* initialize the ewl library */
