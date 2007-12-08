@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.17.1\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-17 20:42+0100\n"
+"POT-Creation-Date: 2007-12-08 20:39+0100\n"
 "PO-Revision-Date: 2004-08-29 01:02:30+0900\n"
 "Last-Translator: Michael Kim <lavnrose@e.sarang.net>\n"
 "Language-Team: Korean <translation-team-ko@lists.sourceforge.net>\n"
@@ -178,7 +178,7 @@ msgstr "무시"
 msgid "Restart Enlightenment"
 msgstr "인라이튼먼트 재시작"
 
-#: src/alert.c:572 src/setup.c:169
+#: src/alert.c:572 src/setup.c:177
 msgid "Quit Enlightenment"
 msgstr "인라이튼먼트 종료"
 
@@ -312,11 +312,11 @@ msgstr ""
 "인라이튼먼트 데스크탑\n"
 "배경 설정 대화상자\n"
 
-#: src/comms.c:229
+#: src/comms.c:248
 msgid "E IPC Error"
 msgstr "E IPC 오류"
 
-#: src/comms.c:230
+#: src/comms.c:249
 #, c-format
 msgid ""
 "Received Unknown Client Message.\n"
@@ -716,8 +716,8 @@ msgstr ""
 "인라이튼먼트 가상 데스크탑\n"
 "설정 대화상자\n"
 
-#: src/dialog.c:874 src/dialog.c:2106 src/dialog.c:2137 src/events.c:84
-#: src/handlers.c:194 src/sound.c:191
+#: src/dialog.c:874 src/dialog.c:2106 src/dialog.c:2137 src/events.c:87
+#: src/setup.c:165 src/sound.c:191
 msgid "OK"
 msgstr "확인"
 
@@ -737,11 +737,11 @@ msgid ""
 "extensions are loaded."
 msgstr ""
 
-#: src/events.c:84
+#: src/events.c:87
 msgid "X server setup error"
 msgstr "X 서버 설정 오류"
 
-#: src/events.c:85
+#: src/events.c:88
 msgid ""
 "FATAL ERROR:\n"
 "\n"
@@ -1144,18 +1144,6 @@ msgstr ""
 "동작중인 하드웨어에서 버스오류가 생기는 것은\n"
 "일반적인 일은 아닙니다.\n"
 
-#: src/handlers.c:193
-msgid "Another Window Manager is already running"
-msgstr "다른 창 관리자기 이미 수행중입니다"
-
-#: src/handlers.c:195
-msgid ""
-"Another Window Manager is already running.\n"
-"\n"
-"You will have to quit your current Window Manager first before\n"
-"you can successfully run Enlightenment.\n"
-msgstr ""
-
 #: src/hints.c:570
 #, fuzzy
 msgid "Selection Error!"
@@ -1174,11 +1162,11 @@ msgstr "아이콘상자 옵션"
 msgid "Iconbox Settings"
 msgstr "아이콘상자 설정"
 
-#: src/ipc.c:186 src/ipc.c:1412
+#: src/ipc.c:192 src/ipc.c:1418
 msgid "Message"
 msgstr "메시지"
 
-#: src/ipc.c:942
+#: src/ipc.c:948
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -1187,16 +1175,16 @@ msgstr ""
 "인라이튼먼트 버전 : %s\n"
 "현재의 코드       : %s\n"
 
-#: src/ipc.c:1413
+#: src/ipc.c:1419
 msgid "Enlightenment was built without composite support"
 msgstr ""
 
-#: src/ipc.c:1739
+#: src/ipc.c:1753
 #, fuzzy
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "인라이튼먼트 IPC 명령 도움말"
 
-#: src/ipc.c:1743
+#: src/ipc.c:1757
 #, fuzzy
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
@@ -1207,35 +1195,35 @@ msgstr ""
 "각각의 설명을 보시려면 \"help <명령>\"을 사용하십시오\n"
 "\n"
 
-#: src/ipc.c:1745 src/ipc.c:1765 src/ipc.c:1777
+#: src/ipc.c:1759 src/ipc.c:1779 src/ipc.c:1791
 #, fuzzy
 msgid "Commands currently available:\n"
 msgstr ""
 "\n"
 "현재 사용가능한 명령:\n"
 
-#: src/ipc.c:1763
+#: src/ipc.c:1777
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 
-#: src/ipc.c:1764
+#: src/ipc.c:1778
 #, fuzzy
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "각각의 설명을 보시려면 \"help <명령>\"을 사용하십시오\n"
 
-#: src/ipc.c:1766 src/ipc.c:1778
+#: src/ipc.c:1780 src/ipc.c:1792
 #, fuzzy
 msgid "         <command>     : <description>\n"
 msgstr "      <명령> : <설명>\n"
 
-#: src/main.c:580
+#: src/main.c:585
 #, c-format
 msgid ""
 "%s must be a directory in which you have\n"
 "read, write, and execute permission.\n"
 msgstr ""
 
-#: src/main.c:690
+#: src/main.c:695
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1264,7 +1252,7 @@ msgstr ""
 "손으로 프로그램을 지웠든 지 아니면 인라이튼먼트 인스톨이\n"
 "잘못된 것입니다.\n"
 
-#: src/main.c:704
+#: src/main.c:709
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1545,7 +1533,7 @@ msgstr ""
 "인라이튼먼트 데스크탑과 영역\n"
 "페이저 설정 대화상자\n"
 
-#: src/session.c:420
+#: src/session.c:342
 msgid ""
 "ERROR!\n"
 "\n"
@@ -1571,11 +1559,11 @@ msgstr ""
 "\n"
 "... 그러길 바랍니다.\n"
 
-#: src/session.c:641
+#: src/session.c:642
 msgid "Are you sure?"
 msgstr "확실한가요?"
 
-#: src/session.c:643
+#: src/session.c:644
 msgid ""
 "\n"
 "\n"
@@ -1589,48 +1577,48 @@ msgstr ""
 "\n"
 "\n"
 
-#: src/session.c:653
+#: src/session.c:654
 #, fuzzy
 msgid "  Yes, Shut Down  "
 msgstr "  예, 로그아웃  "
 
-#: src/session.c:655
+#: src/session.c:656
 #, fuzzy
 msgid "  Yes, Reboot  "
 msgstr "  예, 로그아웃  "
 
-#: src/session.c:658
+#: src/session.c:659
 msgid "  Yes, Log Out  "
 msgstr "  예, 로그아웃  "
 
-#: src/session.c:660
+#: src/session.c:661
 msgid "  No  "
 msgstr "  아니오  "
 
-#: src/session.c:788
+#: src/session.c:792
 msgid "Enable Session Script"
 msgstr ""
 
-#: src/session.c:793
+#: src/session.c:797
 #, fuzzy
 msgid "Enable Logout Dialog"
 msgstr "대화상자 머리 사용"
 
-#: src/session.c:798
+#: src/session.c:802
 msgid "Enable Reboot/Halt on Logout"
 msgstr ""
 
-#: src/session.c:804
+#: src/session.c:808
 #, fuzzy
 msgid "Session"
 msgstr "기타 설정"
 
-#: src/session.c:805
+#: src/session.c:809
 #, fuzzy
 msgid "Session Settings"
 msgstr "기타 설정"
 
-#: src/session.c:808
+#: src/session.c:812
 #, fuzzy
 msgid ""
 "Enlightenment Session\n"
@@ -1941,15 +1929,27 @@ msgstr ""
 "시스템 관리자 혹은 X 서버 제작사에 연락하거나 X, xdm과\n"
 "startx 등의 도움말을 미리 읽어보시기 바랍니다.\n"
 
-#: src/setup.c:168
+#: src/setup.c:164
+msgid "Another Window Manager is already running"
+msgstr "다른 창 관리자기 이미 수행중입니다"
+
+#: src/setup.c:166
+msgid ""
+"Another Window Manager is already running.\n"
+"\n"
+"You will have to quit your current Window Manager first before\n"
+"you can successfully run Enlightenment.\n"
+msgstr ""
+
+#: src/setup.c:176
 msgid "X server version error"
 msgstr "X 서버 버전 오류"
 
-#: src/setup.c:168
+#: src/setup.c:176
 msgid "Ignore this error"
 msgstr "이 오류 무시"
 
-#: src/setup.c:170
+#: src/setup.c:178
 #, c-format
 msgid ""
 "WARNING:\n"

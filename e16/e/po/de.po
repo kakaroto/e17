@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-17 20:42+0100\n"
+"POT-Creation-Date: 2007-12-08 20:39+0100\n"
 "PO-Revision-Date: 2000-03-29 21:12+0200\n"
 "Last-Translator: Matthias Warkus <mawa@iname.com>\n"
 "Language-Team: Enlightenment l10n <e-develop@enlightenment.org>\n"
@@ -180,7 +180,7 @@ msgstr "Enlightenment neu starten"
 # src/main.c:92 src/memory.c:197 src/memory.c:278 src/memory.c:298
 # src/memory.c:379 src/memory.c:396 src/setup.c:295 src/setup.c:329
 # src/setup.c:341 src/setup.c:403
-#: src/alert.c:572 src/setup.c:169
+#: src/alert.c:572 src/setup.c:177
 msgid "Quit Enlightenment"
 msgstr "Enlightenment verlassen"
 
@@ -344,12 +344,12 @@ msgstr ""
 "Einstellungsdialog\n"
 
 # src/comms.c:2214
-#: src/comms.c:229
+#: src/comms.c:248
 msgid "E IPC Error"
 msgstr "E-IPC-Fehler"
 
 # src/comms.c:2211
-#: src/comms.c:230
+#: src/comms.c:249
 #, c-format
 msgid ""
 "Received Unknown Client Message.\n"
@@ -836,8 +836,8 @@ msgstr ""
 # src/settings.c:1460 src/settings.c:1522 src/settings.c:1610
 # src/settings.c:2012 src/settings.c:3405 src/settings.c:3750
 # src/settings.c:4048 src/settings.c:4186 src/snaps.c:547 src/sound.c:262
-#: src/dialog.c:874 src/dialog.c:2106 src/dialog.c:2137 src/events.c:84
-#: src/handlers.c:194 src/sound.c:191
+#: src/dialog.c:874 src/dialog.c:2106 src/dialog.c:2137 src/events.c:87
+#: src/setup.c:165 src/sound.c:191
 msgid "OK"
 msgstr "OK"
 
@@ -864,12 +864,12 @@ msgid ""
 msgstr ""
 
 # src/setup.c:294 src/setup.c:340
-#: src/events.c:84
+#: src/events.c:87
 msgid "X server setup error"
 msgstr "Einstellungsfehler im X-Server"
 
 # src/setup.c:296
-#: src/events.c:85
+#: src/events.c:88
 msgid ""
 "FATAL ERROR:\n"
 "\n"
@@ -1338,19 +1338,6 @@ msgstr ""
 "Installation überprüfen. Busfehler auf funktionierender Hardware\n"
 "sind extrem selten.\n"
 
-# src/handlers.c:217
-#: src/handlers.c:193
-msgid "Another Window Manager is already running"
-msgstr "Ein anderer Fenstermanager läuft bereits"
-
-#: src/handlers.c:195
-msgid ""
-"Another Window Manager is already running.\n"
-"\n"
-"You will have to quit your current Window Manager first before\n"
-"you can successfully run Enlightenment.\n"
-msgstr ""
-
 #: src/hints.c:570
 #, fuzzy
 msgid "Selection Error!"
@@ -1371,12 +1358,12 @@ msgstr "Iconbox-Optionen"
 msgid "Iconbox Settings"
 msgstr "Iconbox-Einstellungen"
 
-#: src/ipc.c:186 src/ipc.c:1412
+#: src/ipc.c:192 src/ipc.c:1418
 msgid "Message"
 msgstr "Mitteilung"
 
 # src/ipc.c:4890
-#: src/ipc.c:942
+#: src/ipc.c:948
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -1385,18 +1372,18 @@ msgstr ""
 "Enlightenment-Version: %s\n"
 "Code aktuell bis     : %s\n"
 
-#: src/ipc.c:1413
+#: src/ipc.c:1419
 msgid "Enlightenment was built without composite support"
 msgstr ""
 
 # src/ipc.c:4737
-#: src/ipc.c:1739
+#: src/ipc.c:1753
 #, fuzzy
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Hilfe zu Enlightenment-IPC-Befehlen"
 
 # src/ipc.c:4743
-#: src/ipc.c:1743
+#: src/ipc.c:1757
 #, fuzzy
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
@@ -1408,30 +1395,30 @@ msgstr ""
 "\n"
 
 # src/ipc.c:4741 src/ipc.c:4780
-#: src/ipc.c:1745 src/ipc.c:1765 src/ipc.c:1777
+#: src/ipc.c:1759 src/ipc.c:1779 src/ipc.c:1791
 #, fuzzy
 msgid "Commands currently available:\n"
 msgstr ""
 "\n"
 "Momentan verfügbare Befehle:\n"
 
-#: src/ipc.c:1763
+#: src/ipc.c:1777
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 
 # src/ipc.c:4781
-#: src/ipc.c:1764
+#: src/ipc.c:1778
 #, fuzzy
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "\"help <befehl>\" gibt eine nähere Beschreibung\n"
 
 # src/ipc.c:4783
-#: src/ipc.c:1766 src/ipc.c:1778
+#: src/ipc.c:1780 src/ipc.c:1792
 #, fuzzy
 msgid "         <command>     : <description>\n"
 msgstr "<befehl> : <beschreibung>\n"
 
-#: src/main.c:580
+#: src/main.c:585
 #, c-format
 msgid ""
 "%s must be a directory in which you have\n"
@@ -1439,7 +1426,7 @@ msgid ""
 msgstr ""
 
 # src/misc.c:61
-#: src/main.c:690
+#: src/main.c:695
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1469,7 +1456,7 @@ msgstr ""
 "beim Installieren von Enlightenment.\n"
 
 # src/misc.c:77
-#: src/main.c:704
+#: src/main.c:709
 #, fuzzy, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1800,7 +1787,7 @@ msgid ""
 msgstr ""
 
 # src/session.c:1039
-#: src/session.c:420
+#: src/session.c:342
 msgid ""
 "ERROR!\n"
 "\n"
@@ -1826,12 +1813,12 @@ msgstr ""
 "\n"
 
 # src/handlers.c:235 src/session.c:1178
-#: src/session.c:641
+#: src/session.c:642
 msgid "Are you sure?"
 msgstr "Sind Sie sicher?"
 
 # src/session.c:1180
-#: src/session.c:643
+#: src/session.c:644
 msgid ""
 "\n"
 "\n"
@@ -1846,54 +1833,54 @@ msgstr ""
 "\n"
 
 # src/session.c:1184
-#: src/session.c:653
+#: src/session.c:654
 #, fuzzy
 msgid "  Yes, Shut Down  "
 msgstr "  Ja, abmelden  "
 
 # src/session.c:1184
-#: src/session.c:655
+#: src/session.c:656
 #, fuzzy
 msgid "  Yes, Reboot  "
 msgstr "  Ja, abmelden  "
 
 # src/session.c:1184
-#: src/session.c:658
+#: src/session.c:659
 msgid "  Yes, Log Out  "
 msgstr "  Ja, abmelden  "
 
 # src/session.c:1185
-#: src/session.c:660
+#: src/session.c:661
 msgid "  No  "
 msgstr "  Nein  "
 
-#: src/session.c:788
+#: src/session.c:792
 msgid "Enable Session Script"
 msgstr ""
 
-#: src/session.c:793
+#: src/session.c:797
 #, fuzzy
 msgid "Enable Logout Dialog"
 msgstr "Titel in Dialogfenstern aktivieren"
 
-#: src/session.c:798
+#: src/session.c:802
 msgid "Enable Reboot/Halt on Logout"
 msgstr ""
 
 # src/settings.c:393
-#: src/session.c:804
+#: src/session.c:808
 #, fuzzy
 msgid "Session"
 msgstr "Verschiedene Einstellungen"
 
 # src/settings.c:393
-#: src/session.c:805
+#: src/session.c:809
 #, fuzzy
 msgid "Session Settings"
 msgstr "Verschiedene Einstellungen"
 
 # src/main.c:89
-#: src/session.c:808
+#: src/session.c:812
 #, fuzzy
 msgid ""
 "Enlightenment Session\n"
@@ -2251,18 +2238,31 @@ msgstr ""
 "X-Server-Lieferanten, oder lesen Sie die Handbuchseiten für X, xdm\n"
 "oder startx, bevor Sie weitermachen.\n"
 
+# src/handlers.c:217
+#: src/setup.c:164
+msgid "Another Window Manager is already running"
+msgstr "Ein anderer Fenstermanager läuft bereits"
+
+#: src/setup.c:166
+msgid ""
+"Another Window Manager is already running.\n"
+"\n"
+"You will have to quit your current Window Manager first before\n"
+"you can successfully run Enlightenment.\n"
+msgstr ""
+
 # src/setup.c:402
-#: src/setup.c:168
+#: src/setup.c:176
 msgid "X server version error"
 msgstr "X-Server-Versionsfehler"
 
 # src/setup.c:403
-#: src/setup.c:168
+#: src/setup.c:176
 msgid "Ignore this error"
 msgstr "Ignorieren Sie diesen Fehler"
 
 # src/setup.c:404
-#: src/setup.c:170
+#: src/setup.c:178
 #, c-format
 msgid ""
 "WARNING:\n"

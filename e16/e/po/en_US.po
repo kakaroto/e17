@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-17 20:42+0100\n"
+"POT-Creation-Date: 2007-12-08 20:39+0100\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Peter Kjellerstedt <pkj@axis.com>\n"
 "Language-Team: American English <en@li.org>\n"
@@ -131,7 +131,7 @@ msgstr ""
 msgid "Restart Enlightenment"
 msgstr ""
 
-#: src/alert.c:572 src/setup.c:169
+#: src/alert.c:572 src/setup.c:177
 msgid "Quit Enlightenment"
 msgstr ""
 
@@ -253,11 +253,11 @@ msgid ""
 "Background Settings Dialog\n"
 msgstr ""
 
-#: src/comms.c:229
+#: src/comms.c:248
 msgid "E IPC Error"
 msgstr ""
 
-#: src/comms.c:230
+#: src/comms.c:249
 #, c-format
 msgid ""
 "Received Unknown Client Message.\n"
@@ -605,8 +605,8 @@ msgid ""
 "Settings Dialog\n"
 msgstr ""
 
-#: src/dialog.c:874 src/dialog.c:2106 src/dialog.c:2137 src/events.c:84
-#: src/handlers.c:194 src/sound.c:191
+#: src/dialog.c:874 src/dialog.c:2106 src/dialog.c:2137 src/events.c:87
+#: src/setup.c:165 src/sound.c:191
 msgid "OK"
 msgstr ""
 
@@ -626,11 +626,11 @@ msgid ""
 "extensions are loaded."
 msgstr ""
 
-#: src/events.c:84
+#: src/events.c:87
 msgid "X server setup error"
 msgstr ""
 
-#: src/events.c:85
+#: src/events.c:88
 msgid ""
 "FATAL ERROR:\n"
 "\n"
@@ -956,18 +956,6 @@ msgid ""
 "hardware.\n"
 msgstr ""
 
-#: src/handlers.c:193
-msgid "Another Window Manager is already running"
-msgstr ""
-
-#: src/handlers.c:195
-msgid ""
-"Another Window Manager is already running.\n"
-"\n"
-"You will have to quit your current Window Manager first before\n"
-"you can successfully run Enlightenment.\n"
-msgstr ""
-
 #: src/hints.c:570
 msgid "Selection Error!"
 msgstr ""
@@ -985,56 +973,56 @@ msgstr ""
 msgid "Iconbox Settings"
 msgstr ""
 
-#: src/ipc.c:186 src/ipc.c:1412
+#: src/ipc.c:192 src/ipc.c:1418
 msgid "Message"
 msgstr ""
 
-#: src/ipc.c:942
+#: src/ipc.c:948
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
 "code is current to    : %s\n"
 msgstr ""
 
-#: src/ipc.c:1413
+#: src/ipc.c:1419
 msgid "Enlightenment was built without composite support"
 msgstr ""
 
-#: src/ipc.c:1739
+#: src/ipc.c:1753
 msgid "Enlightenment IPC Commands Help\n"
 msgstr ""
 
-#: src/ipc.c:1743
+#: src/ipc.c:1757
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
 "Use \"help <command>\" for an individual description\n"
 "\n"
 msgstr ""
 
-#: src/ipc.c:1745 src/ipc.c:1765 src/ipc.c:1777
+#: src/ipc.c:1759 src/ipc.c:1779 src/ipc.c:1791
 msgid "Commands currently available:\n"
 msgstr ""
 
-#: src/ipc.c:1763
+#: src/ipc.c:1777
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 
-#: src/ipc.c:1764
+#: src/ipc.c:1778
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr ""
 
-#: src/ipc.c:1766 src/ipc.c:1778
+#: src/ipc.c:1780 src/ipc.c:1792
 msgid "         <command>     : <description>\n"
 msgstr ""
 
-#: src/main.c:580
+#: src/main.c:585
 #, c-format
 msgid ""
 "%s must be a directory in which you have\n"
 "read, write, and execute permission.\n"
 msgstr ""
 
-#: src/main.c:690
+#: src/main.c:695
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1063,7 +1051,7 @@ msgstr ""
 "packages, someone manually deleting that program or perhaps\n"
 "an error in installing Enlightenment.\n"
 
-#: src/main.c:704
+#: src/main.c:709
 #, fuzzy, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1329,7 +1317,7 @@ msgid ""
 "Pager Settings Dialog\n"
 msgstr ""
 
-#: src/session.c:420
+#: src/session.c:342
 msgid ""
 "ERROR!\n"
 "\n"
@@ -1344,11 +1332,11 @@ msgid ""
 "... I hope.\n"
 msgstr ""
 
-#: src/session.c:641
+#: src/session.c:642
 msgid "Are you sure?"
 msgstr ""
 
-#: src/session.c:643
+#: src/session.c:644
 msgid ""
 "\n"
 "\n"
@@ -1357,43 +1345,43 @@ msgid ""
 "\n"
 msgstr ""
 
-#: src/session.c:653
+#: src/session.c:654
 msgid "  Yes, Shut Down  "
 msgstr ""
 
-#: src/session.c:655
+#: src/session.c:656
 msgid "  Yes, Reboot  "
 msgstr ""
 
-#: src/session.c:658
+#: src/session.c:659
 msgid "  Yes, Log Out  "
 msgstr ""
 
-#: src/session.c:660
+#: src/session.c:661
 msgid "  No  "
 msgstr ""
 
-#: src/session.c:788
+#: src/session.c:792
 msgid "Enable Session Script"
 msgstr ""
 
-#: src/session.c:793
+#: src/session.c:797
 msgid "Enable Logout Dialog"
 msgstr ""
 
-#: src/session.c:798
+#: src/session.c:802
 msgid "Enable Reboot/Halt on Logout"
 msgstr ""
 
-#: src/session.c:804
+#: src/session.c:808
 msgid "Session"
 msgstr ""
 
-#: src/session.c:805
+#: src/session.c:809
 msgid "Session Settings"
 msgstr ""
 
-#: src/session.c:808
+#: src/session.c:812
 msgid ""
 "Enlightenment Session\n"
 "Settings Dialog\n"
@@ -1677,15 +1665,27 @@ msgstr ""
 "administrator, or Xserver vendor, or read the X, xdm and\n"
 "startx manual pages before proceeding.\n"
 
-#: src/setup.c:168
+#: src/setup.c:164
+msgid "Another Window Manager is already running"
+msgstr ""
+
+#: src/setup.c:166
+msgid ""
+"Another Window Manager is already running.\n"
+"\n"
+"You will have to quit your current Window Manager first before\n"
+"you can successfully run Enlightenment.\n"
+msgstr ""
+
+#: src/setup.c:176
 msgid "X server version error"
 msgstr ""
 
-#: src/setup.c:168
+#: src/setup.c:176
 msgid "Ignore this error"
 msgstr ""
 
-#: src/setup.c:170
+#: src/setup.c:178
 #, c-format
 msgid ""
 "WARNING:\n"

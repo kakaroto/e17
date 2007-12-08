@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.7\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-17 20:42+0100\n"
+"POT-Creation-Date: 2007-12-08 20:39+0100\n"
 "PO-Revision-Date: 2004-09-14 20:43-0300\n"
 "Last-Translator: Viktor Kojouharov\n"
 "Language-Team: Bulgarian\n"
@@ -175,7 +175,7 @@ msgstr "Игнорирайте това"
 msgid "Restart Enlightenment"
 msgstr "Рестартирайте Enlightenment"
 
-#: src/alert.c:572 src/setup.c:169
+#: src/alert.c:572 src/setup.c:177
 msgid "Quit Enlightenment"
 msgstr "Излезте от Enlightenment"
 
@@ -309,11 +309,11 @@ msgstr ""
 "Е: Фон\n"
 "Диалог за настройки\n"
 
-#: src/comms.c:229
+#: src/comms.c:248
 msgid "E IPC Error"
 msgstr "Грешка на Е IPC"
 
-#: src/comms.c:230
+#: src/comms.c:249
 #, c-format
 msgid ""
 "Received Unknown Client Message.\n"
@@ -712,8 +712,8 @@ msgid ""
 "Settings Dialog\n"
 msgstr "Е: Виртуални полетаДиалог за настройки\n"
 
-#: src/dialog.c:874 src/dialog.c:2106 src/dialog.c:2137 src/events.c:84
-#: src/handlers.c:194 src/sound.c:191
+#: src/dialog.c:874 src/dialog.c:2106 src/dialog.c:2137 src/events.c:87
+#: src/setup.c:165 src/sound.c:191
 msgid "OK"
 msgstr "Да"
 
@@ -733,11 +733,11 @@ msgid ""
 "extensions are loaded."
 msgstr ""
 
-#: src/events.c:84
+#: src/events.c:87
 msgid "X server setup error"
 msgstr "Грешка в настройките на X-сървъра"
 
-#: src/events.c:85
+#: src/events.c:88
 msgid ""
 "FATAL ERROR:\n"
 "\n"
@@ -1148,21 +1148,6 @@ msgstr ""
 "Прекалено странно е Е да причини Bus грешка на работещо\n"
 "оборудване.\n"
 
-#: src/handlers.c:193
-msgid "Another Window Manager is already running"
-msgstr "Друг Администратор на Прозорци вече работи"
-
-#: src/handlers.c:195
-msgid ""
-"Another Window Manager is already running.\n"
-"\n"
-"You will have to quit your current Window Manager first before\n"
-"you can successfully run Enlightenment.\n"
-msgstr ""
-"Друг Администратор на Прозорци вече работи.\n"
-"\n"
-"Трябва да го затворите за да стартирате успешно Е.\n"
-
 #: src/hints.c:570
 #, fuzzy
 msgid "Selection Error!"
@@ -1181,11 +1166,11 @@ msgstr "Опции за Iconbox"
 msgid "Iconbox Settings"
 msgstr "Настройки за Iconbox"
 
-#: src/ipc.c:186 src/ipc.c:1412
+#: src/ipc.c:192 src/ipc.c:1418
 msgid "Message"
 msgstr "Съобщение"
 
-#: src/ipc.c:942
+#: src/ipc.c:948
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -1194,15 +1179,15 @@ msgstr ""
 "Версия на Enlightenment : %s\n"
 "Кода е текущ на         : %s\n"
 
-#: src/ipc.c:1413
+#: src/ipc.c:1419
 msgid "Enlightenment was built without composite support"
 msgstr ""
 
-#: src/ipc.c:1739
+#: src/ipc.c:1753
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Помощ за командите на Enlightenment IPC\n"
 
-#: src/ipc.c:1743
+#: src/ipc.c:1757
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
 "Use \"help <command>\" for an individual description\n"
@@ -1212,30 +1197,30 @@ msgstr ""
 "\"help <команда>\": описание за дадена команда\n"
 "\n"
 
-#: src/ipc.c:1745 src/ipc.c:1765 src/ipc.c:1777
+#: src/ipc.c:1759 src/ipc.c:1779 src/ipc.c:1791
 msgid "Commands currently available:\n"
 msgstr "Достъпни команди:\n"
 
-#: src/ipc.c:1763
+#: src/ipc.c:1777
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr "\"help full\": пълно описания за всяка команда\n"
 
-#: src/ipc.c:1764
+#: src/ipc.c:1778
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "\"help <команда>\": описание за дадена команда\n"
 
-#: src/ipc.c:1766 src/ipc.c:1778
+#: src/ipc.c:1780 src/ipc.c:1792
 msgid "         <command>     : <description>\n"
 msgstr "<команда> : <описание>\n"
 
-#: src/main.c:580
+#: src/main.c:585
 #, c-format
 msgid ""
 "%s must be a directory in which you have\n"
 "read, write, and execute permission.\n"
 msgstr ""
 
-#: src/main.c:690
+#: src/main.c:695
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1264,7 +1249,7 @@ msgstr ""
 "създадени пакети, някой ръчно е изтрил програмата или е имало\n"
 "грешка при инсталирането на Enlightenment.\n"
 
-#: src/main.c:704
+#: src/main.c:709
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1540,7 +1525,7 @@ msgstr ""
 "Е: Поле и място\n"
 "Диалог за настройки на Pager-а\n"
 
-#: src/session.c:420
+#: src/session.c:342
 msgid ""
 "ERROR!\n"
 "\n"
@@ -1565,11 +1550,11 @@ msgstr ""
 "\n"
 "... Надявам се.\n"
 
-#: src/session.c:641
+#: src/session.c:642
 msgid "Are you sure?"
 msgstr "Сигурни ли сте?"
 
-#: src/session.c:643
+#: src/session.c:644
 msgid ""
 "\n"
 "\n"
@@ -1583,45 +1568,45 @@ msgstr ""
 "\n"
 "\n"
 
-#: src/session.c:653
+#: src/session.c:654
 msgid "  Yes, Shut Down  "
 msgstr "  Да, изключи компютъра  "
 
-#: src/session.c:655
+#: src/session.c:656
 msgid "  Yes, Reboot  "
 msgstr "  Да, рестартирай компютъра "
 
-#: src/session.c:658
+#: src/session.c:659
 msgid "  Yes, Log Out  "
 msgstr "  Да, излез  "
 
-#: src/session.c:660
+#: src/session.c:661
 msgid "  No  "
 msgstr "  Не  "
 
-#: src/session.c:788
+#: src/session.c:792
 msgid "Enable Session Script"
 msgstr ""
 
-#: src/session.c:793
+#: src/session.c:797
 msgid "Enable Logout Dialog"
 msgstr "Разрешавай Изходен Диалог"
 
-#: src/session.c:798
+#: src/session.c:802
 msgid "Enable Reboot/Halt on Logout"
 msgstr "Разрешавай Рестартиране/Изключване при Изход"
 
-#: src/session.c:804
+#: src/session.c:808
 #, fuzzy
 msgid "Session"
 msgstr "Други настройки"
 
-#: src/session.c:805
+#: src/session.c:809
 #, fuzzy
 msgid "Session Settings"
 msgstr "Други настройки"
 
-#: src/session.c:808
+#: src/session.c:812
 #, fuzzy
 msgid ""
 "Enlightenment Session\n"
@@ -1929,15 +1914,30 @@ msgstr ""
 "с вашият системен администратор, или прочетете ръководствата на Х, xdm\n"
 "и startx преди да продължитежите.\n"
 
-#: src/setup.c:168
+#: src/setup.c:164
+msgid "Another Window Manager is already running"
+msgstr "Друг Администратор на Прозорци вече работи"
+
+#: src/setup.c:166
+msgid ""
+"Another Window Manager is already running.\n"
+"\n"
+"You will have to quit your current Window Manager first before\n"
+"you can successfully run Enlightenment.\n"
+msgstr ""
+"Друг Администратор на Прозорци вече работи.\n"
+"\n"
+"Трябва да го затворите за да стартирате успешно Е.\n"
+
+#: src/setup.c:176
 msgid "X server version error"
 msgstr "Грешка версия на X-сървъра"
 
-#: src/setup.c:168
+#: src/setup.c:176
 msgid "Ignore this error"
 msgstr "Игнорирай тази грешка"
 
-#: src/setup.c:170
+#: src/setup.c:178
 #, c-format
 msgid ""
 "WARNING:\n"
