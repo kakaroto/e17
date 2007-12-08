@@ -10,7 +10,7 @@ struct _Config
 {
    E_Module        *module;
    E_Config_Dialog *config_dialog;
-   E_Menu          *menu;
+   E_Menu          *menu, *menu_firstweekday;
    Ecore_Timer     *timer;
    Evas_List       *instances;
    Evas_List       *items;
@@ -19,6 +19,7 @@ struct _Config
 struct _Config_Item 
 {
    const char *id;
+   int firstweekday;
 };
 
 EAPI extern E_Module_Api e_modapi;

@@ -13,6 +13,7 @@ struct _Instance
 {
    E_Gadcon_Client *gcc;
    Calendar        *calendar;
+   Config_Item     *ci;
 
    E_Gadcon_Popup  *popup;
 };
@@ -29,6 +30,7 @@ static void _gc_orient(E_Gadcon_Client *gcc);
 static char *_gc_label(void);
 static Evas_Object *_gc_icon(Evas *evas);
 static const char *_gc_id_new(void);
+static Config_Item *_config_item_get(const char *id);
 static int _update_date(void *data);
 static int _update_calendar_sheet(Instance *inst);
 static void _calendar_popup_content_create(Instance *inst);
@@ -39,6 +41,8 @@ static void _cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info
 static void _cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _menu_cb_post(void *data, E_Menu *m);
+static void _calendar_firstweekday_su(void *data, E_Menu *m, E_Menu_Item *mi);
+static void _calendar_firstweekday_mo(void *data, E_Menu *m, E_Menu_Item *mi);
 
 static int days_in_month[2][12] =
 {
@@ -68,6 +72,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    char             buf[4096];
 
    inst = E_NEW(Instance, 1);   
+   inst->ci = _config_item_get(id);
 
    calendar = E_NEW(Calendar, 1);
    calendar->inst = inst;
@@ -163,6 +168,47 @@ _gc_id_new(void)
    return id;
 }
 
+static Config_Item *
+_config_item_get(const char *id) 
+{
+   Evas_List   *l;
+   Config_Item *ci;
+   char buf[128];
+
+   if (!id)
+     {
+	int  num = 0;
+
+	/* Create id */
+	if (calendar_conf->items)
+	  {
+	     const char *p;
+	     ci = evas_list_last(calendar_conf->items)->data;
+	     p = strrchr(ci->id, '.');
+	     if (p) num = atoi(p + 1) + 1;
+	  }
+	snprintf(buf, sizeof(buf), "%s.%d", _gc_class.name, num);
+	id = buf;
+     }
+   else
+     {
+	for (l = calendar_conf->items; l; l = l->next) 
+	  {
+	     ci = l->data;
+	     if (!ci->id) continue;
+	     if (!strcmp(ci->id, id))
+	       return ci;
+	  }
+     }
+
+   ci = E_NEW(Config_Item, 1);
+   ci->id = evas_stringshare_add(id);
+   ci->firstweekday = 0;
+
+   calendar_conf->items = evas_list_append(calendar_conf->items, ci);
+   return ci;
+}
+
 static int
 _update_date(void *data)
 {
@@ -249,7 +295,8 @@ _calendar_popup_content_create(Instance *inst)
    start_time = current_time - ((today-1) * 86400);
    local_time2 = localtime (&start_time);
    strftime (buf, sizeof(buf), "%w", local_time2);
-   startwd = atoi (buf);
+   startwd = atoi (buf) - inst->ci->firstweekday;
+   if (startwd < 0) startwd = 6;
 
    evas = inst->popup->win->evas;
    o = e_widget_list_add(evas, 0, 0);
@@ -257,9 +304,10 @@ _calendar_popup_content_create(Instance *inst)
    of = e_widget_frametable_add(evas, buf, 0);
 
    /* column titles */
+   day = inst->ci->firstweekday;
    for (col = 0; col <= 6; col++)
      {
-	switch (col)
+	switch (day)
 	  {
 	     case 0: ob = e_widget_label_add(evas, "Su"); break;
 	     case 1: ob = e_widget_label_add(evas, "Mo"); break;
@@ -268,8 +316,9 @@ _calendar_popup_content_create(Instance *inst)
 	     case 4: ob = e_widget_label_add(evas, "Th"); break;
 	     case 5: ob = e_widget_label_add(evas, "Fr"); break;
 	     case 6: ob = e_widget_label_add(evas, "Sa"); break;
-	  }    
+	  } 
 	e_widget_frametable_object_append(of, ob, col, 0, 1, 1, 1, 0, 0, 0);
+	if (day++ >= 6) day = 0;
      }
 
    /* output days */
@@ -373,12 +422,34 @@ _cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
    if ((ev->button == 3) && (!calendar_conf->menu))
      {
 	E_Menu *mn;
+	E_Menu_Item *mi;
 	int cx, cy, cw, ch;
+
+	mn = e_menu_new();
+	calendar_conf->menu_firstweekday = mn;
+	
+	mi = e_menu_item_new(mn);
+	e_menu_item_label_set(mi, D_("Sunday"));
+	e_menu_item_radio_set(mi, 1);
+	e_menu_item_radio_group_set(mi, 1);
+	if (!inst->ci->firstweekday) e_menu_item_toggle_set(mi, 1);
+	e_menu_item_callback_set(mi, _calendar_firstweekday_su, inst);
+
+	mi = e_menu_item_new(mn);
+	e_menu_item_label_set(mi, D_("Monday"));
+	e_menu_item_radio_set(mi, 1);
+	e_menu_item_radio_group_set(mi, 1);
+	if (inst->ci->firstweekday == 1) e_menu_item_toggle_set(mi, 1);
+	e_menu_item_callback_set(mi, _calendar_firstweekday_mo, inst);
 
 	mn = e_menu_new();
 	calendar_conf->menu = mn;
 
 	e_menu_post_deactivate_callback_set(mn, _menu_cb_post, inst);
+
+	mi = e_menu_item_new(mn);
+	e_menu_item_label_set(mi, D_("First Day of Week"));
+	e_menu_item_submenu_set(mi, calendar_conf->menu_firstweekday);
 
 	e_gadcon_client_util_menu_items_append(inst->gcc, mn, 0);
 	e_gadcon_canvas_zone_geometry_get(inst->gcc->gadcon, &cx, &cy, &cw, &ch);
@@ -397,6 +468,35 @@ _menu_cb_post(void *data, E_Menu *m)
    if (!calendar_conf->menu) return;
    e_object_del(E_OBJECT(calendar_conf->menu));
    calendar_conf->menu = NULL;
+   if (calendar_conf->menu_firstweekday)
+     e_object_del(E_OBJECT(calendar_conf->menu_firstweekday));
+   calendar_conf->menu_firstweekday = NULL;
+}
+
+static void
+_calendar_firstweekday_su(void *data, E_Menu *m, E_Menu_Item *mi)
+{
+   Instance *inst;
+ 
+   inst = data;
+
+   inst->ci->firstweekday = 0;
+   e_config_save_queue();
+
+   _update_calendar_sheet(inst);
+}
+
+static void
+_calendar_firstweekday_mo(void *data, E_Menu *m, E_Menu_Item *mi)
+{
+   Instance *inst;
+ 
+   inst = data;
+
+   inst->ci->firstweekday = 1;
+   e_config_save_queue();
+
+   _update_calendar_sheet(inst);
 }
 
 EAPI E_Module_Api e_modapi = 
@@ -415,6 +515,7 @@ e_modapi_init(E_Module *m)
    #undef D
    #define D conf_item_edd
    E_CONFIG_VAL(D, T, id, STR);
+   E_CONFIG_VAL(D, T, firstweekday, INT);
    
    #undef T
    #define T Config
@@ -430,6 +531,7 @@ e_modapi_init(E_Module *m)
 	calendar_conf = E_NEW(Config, 1);
 	ci = E_NEW(Config_Item, 1);
 	ci->id = evas_stringshare_add("0");
+	ci->firstweekday = 0;
 	
 	calendar_conf->items = evas_list_append(calendar_conf->items, ci);
      }
