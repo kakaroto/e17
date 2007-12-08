@@ -26,6 +26,7 @@
 #include "cursors.h"
 #include "desktops.h"
 #include "dialog.h"
+#include "edbus.h"
 #include "eimage.h"
 #include "emodule.h"
 #include "events.h"
@@ -252,6 +253,10 @@ main(int argc, char **argv)
    CommsInit();
    SessionInit();
    LoadSnapInfo();
+
+#if USE_DBUS
+   DbusInit();
+#endif
 
    ModulesSignal(ESIGNAL_INIT, NULL);
 

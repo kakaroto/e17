@@ -248,6 +248,14 @@ if test "x$enable_composite" = "xyes"; then
 fi
 AM_CONDITIONAL(ENABLE_COMPOSITE, test "x$enable_composite" = "xyes")
 
+AC_ARG_ENABLE(dbus,
+  [  --enable-dbus           compile with D-Bus support @<:@default=no@:>@],,
+  enable_dbus=no)
+if test "x$enable_dbus" = "xyes"; then
+  PKG_CHECK_MODULES(DBUS, dbus-1, AC_DEFINE(USE_DBUS, 1, [dbus support]), enable_dbus=no)
+fi
+AM_CONDITIONAL(ENABLE_DBUS, test "x$enable_dbus" = "xyes")
+
 AC_CHECK_LIB(Fridge,mass_quantities_of_bass_ale)
 AC_CHECK_LIB(Fridge,mass_quantities_of_any_ale,, [
   echo "Warning: No ales were found in your refrigerator."
@@ -358,6 +366,7 @@ echo "Experimental options - DO NOT USE unless you know what you are doing"
 echo "  Compile with ecore/ecore_x ... $enable_ecore"
 echo "  GLX .......................... $enable_glx"
 echo "  ScreenSaver .................. $enable_xscrnsaver"
+echo "  D-Bus ........................ $enable_dbus"
 echo
 echo "Installation path .............. $prefix"
 echo

@@ -17,7 +17,7 @@ xsession_DATA = $(DESKTOPS)
 #xclientsdir = $(sysconfdir)/X11/xinit/Xclients.d
 #xclients_SCRIPTS = $(XCLIENTS)
 
-EXTRA_DIST = $(DESKTOPS_IN) $(SCRIPTS) $(ICONS)
+EXTRA_DIST = $(DESKTOPS_IN) $(SCRIPTS) $(ICONS) e16-dbus-cmd
 
 e16.desktop: $(top_srcdir)/misc/e16.desktop.in Makefile
 e16-gnome.desktop: $(top_srcdir)/misc/e16-gnome.desktop.in Makefile

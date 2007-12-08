@@ -13,6 +13,9 @@ endif
 if ENABLE_COMPOSITE
 SRCS_ECOMPMGR = ecompmgr.c ecompmgr.h magwin.c
 endif
+if ENABLE_DBUS
+SRCS_DBUS = edbus.c edbus.h
+endif
 if USE_ESNPRINTF
 SRCS_SNPRINTF = snprintf.c
 endif
@@ -108,6 +111,7 @@ e16_SOURCES = \
 	$(SRCS_GNOME) 		\
 	$(SRCS_GLX) 		\
 	$(SRCS_ECOMPMGR)	\
+	$(SRCS_DBUS)		\
 	$(SRCS_SNPRINTF)
 
 e16_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir) \
@@ -115,6 +119,7 @@ e16_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir) \
 	$(MODULE_CFLAGS) \
 	$(IMLIB2_CFLAGS) \
 	$(X_CFLAGS) \
+	$(DBUS_CFLAGS) \
 	-D LOCALEDIR=\"$(localedir)\" \
 	-D ENLIGHTENMENT_BIN=\"$(bindir)\" \
 	-D ENLIGHTENMENT_LIB=\"$(pkglibdir)\" \
@@ -132,6 +137,7 @@ LDADD = \
 	$(XINERAMA_LIBS)	\
 	$(X_EXTRA_LIBS)		\
 	$(E_X_LIBS)		\
+	$(DBUS_LIBS)		\
 	-lX11 -lm
 
 if BUILD_MODULES

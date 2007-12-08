@@ -48,6 +48,7 @@
 #define EDBUG_TYPE_PAGER        146
 #define EDBUG_TYPE_SELECTION    147
 #define EDBUG_TYPE_FONTS        148
+#define EDBUG_TYPE_DBUS         149
 
 #define EDBUG_TYPE_COMPMGR      161
 #define EDBUG_TYPE_COMPMGR2     162
