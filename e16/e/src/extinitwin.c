@@ -112,7 +112,7 @@ ExtInitWinMain(void)
 	      i = 1;
 
 	   Esnprintf(s, sizeof(s), "pix/wait%i.png", i);
-	   if (EDebug(EDBUG_TYPE_SESSION))
+	   if (EDebug(EDBUG_TYPE_SESSION) > 1)
 	      Eprintf("ExtInitWinCreate - child %s\n", s);
 
 	   im = ThemeImageLoad(s);

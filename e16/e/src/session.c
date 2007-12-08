@@ -542,7 +542,7 @@ doSMExit(int mode, const char *params)
      case EEXIT_RESTART:
 	SoundPlay("SOUND_WAIT");
 #ifdef USE_EXT_INIT_WIN
-	if (disp)
+	if (disp && !Mode.wm.window)
 	   new_init_win_ext = ExtInitWinCreate();
 #endif
 	EDisplayClose();
@@ -554,6 +554,8 @@ doSMExit(int mode, const char *params)
 	else if (!Mode.wm.master)
 	   l +=
 	      Esnprintf(s + l, sizeof(s) - l, " -m %d", Mode.wm.master_screen);
+	if (Mode.wm.window)
+	   l += Esnprintf(s + l, sizeof(s) - l, " -w %dx%d", VRoot.w, VRoot.h);
 #if USE_SM
 	if (sm_client_id)
 	   l += Esnprintf(s + l, sizeof(s) - l, " -S %s", sm_client_id);
@@ -674,6 +676,9 @@ SessionExit(int mode, const char *param)
    if (EDebug(EDBUG_TYPE_SESSION))
       Eprintf("SessionExit: mode=%d(%d) prm=%s\n", mode, Mode.wm.exit_mode,
 	      param);
+
+   if (Mode.wm.exiting)
+      return;
 
    if (Mode.wm.startup || Mode.wm.in_signal_handler)
       goto done;
