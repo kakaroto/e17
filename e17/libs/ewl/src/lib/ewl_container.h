@@ -150,6 +150,8 @@ void 		 ewl_container_destroy(Ewl_Container *c);
 void 		 ewl_container_reset(Ewl_Container *c);
 void 		 ewl_container_callback_notify(Ewl_Container *c,
 						unsigned int t);
+void 		 ewl_container_callback_nonotify(Ewl_Container *c,
+						unsigned int t);
 void 		 ewl_container_callback_intercept(Ewl_Container *c,
 						unsigned int t);
 void 		 ewl_container_callback_nointercept(Ewl_Container *c,

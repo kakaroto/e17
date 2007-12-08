@@ -100,6 +100,12 @@ ewl_embed_init(Ewl_Embed *w)
 
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
 	ewl_object_toplevel_set(EWL_OBJECT(w), EWL_FLAG_PROPERTY_TOPLEVEL);
+	
+	/* remove the notify flags set by the cell */
+	ewl_container_callback_nonotify(EWL_CONTAINER(w),
+							EWL_CALLBACK_FOCUS_IN);
+	ewl_container_callback_nonotify(EWL_CONTAINER(w),
+							EWL_CALLBACK_FOCUS_OUT);
 
 	ewl_callback_append(EWL_WIDGET(w), EWL_CALLBACK_REALIZE,
 			     ewl_embed_cb_realize, NULL);

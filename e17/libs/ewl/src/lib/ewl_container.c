@@ -980,6 +980,26 @@ ewl_container_callback_notify(Ewl_Container *c, unsigned int t)
 }
 
 /**
+ * @param c: the container to not notify the callback
+ * @param t: the type of callback to not notify
+ * @return Returns no value.
+ * @brief receive a callback of a child
+ *
+ * Removes the notification flag set with ewl_container_callback_notify()
+ */
+void
+ewl_container_callback_nonotify(Ewl_Container *c, unsigned int t)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(c);
+	DCHECK_TYPE(c, EWL_CONTAINER_TYPE);
+
+	EWL_CALLBACK_FLAG_NONOTIFY(EWL_WIDGET(c), t);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
  * @param c: the container to change preferred size
  * @param o: the orientation/direction to prefer the largest widget
  * @return Returns no value.

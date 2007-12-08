@@ -123,6 +123,13 @@ struct Ewl_Callback_Custom
 		w->callbacks[EWL_CALLBACK_INDEX(t)].mask |= EWL_CALLBACK_NOTIFY_NOTIFY
 
 /**
+ * @def EWL_CALLBACK_FLAG_NONOTIFY(w, t)
+ * Remove the callback notify flag from a widget for a certain event type.
+ */
+#define EWL_CALLBACK_FLAG_NONOTIFY(w, t) \
+		w->callbacks[EWL_CALLBACK_INDEX(t)].mask &= ~EWL_CALLBACK_NOTIFY_NOTIFY
+
+/**
  * @def EWL_CALLBACK_SET_DIRECT(w, t)
  * Sets the callback direct flag for a centain event type
  */
