@@ -10,4 +10,7 @@
 #define __UNUSED__
 #endif
 
+#define LOG_FAILURE(buffer, len, format, args...) \
+	snprintf(buf, len, "%s:%d " format, __FILE__, __LINE__, ## args)
+
 #endif /* EWL_TEST_PRIVATE_H */
