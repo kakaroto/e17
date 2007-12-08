@@ -153,7 +153,7 @@ void           DebugInfo   (int full);
 
 #if TEST_DIRECT_EDJE
 
-//This define is copied from edje_private.h
+//This define is copied from edje_private.h (find a way to export it)
 #define EDJE_PART_TYPE_NONE      0
 #define EDJE_PART_TYPE_RECTANGLE 1
 #define EDJE_PART_TYPE_TEXT      2
@@ -163,6 +163,19 @@ void           DebugInfo   (int full);
 #define EDJE_PART_TYPE_GRADIENT  6
 #define EDJE_PART_TYPE_GROUP     7
 #define EDJE_PART_TYPE_LAST      8
+
+#define EDJE_TEXT_EFFECT_NONE                0
+#define EDJE_TEXT_EFFECT_PLAIN               1
+#define EDJE_TEXT_EFFECT_OUTLINE             2
+#define EDJE_TEXT_EFFECT_SOFT_OUTLINE        3
+#define EDJE_TEXT_EFFECT_SHADOW              4
+#define EDJE_TEXT_EFFECT_SOFT_SHADOW         5
+#define EDJE_TEXT_EFFECT_OUTLINE_SHADOW      6
+#define EDJE_TEXT_EFFECT_OUTLINE_SOFT_SHADOW 7
+#define EDJE_TEXT_EFFECT_FAR_SHADOW          8
+#define EDJE_TEXT_EFFECT_FAR_SOFT_SHADOW     9
+#define EDJE_TEXT_EFFECT_GLOW               10
+#define EDJE_TEXT_EFFECT_LAST               11
 
 Evas_Object *edje_o;
 Evas_Hash   *Parts_Hash;

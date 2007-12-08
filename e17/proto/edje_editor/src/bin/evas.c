@@ -1,12 +1,13 @@
 #include "config.h"
 #include <Etk.h>
 #include <Edje.h>
-#if TEST_DIRECT_EDJE
-   #include <Edje_Edit.h>
-#endif
 #include "main.h"
 #include "interface.h"
 #include "evas.h"
+
+#if TEST_DIRECT_EDJE
+   #include <Edje_Edit.h>
+#endif
 
 #define MAIN_LEFT 20
 #define MAIN_TOP 27
@@ -535,8 +536,8 @@ ev_redraw(void)
 
       evas_object_show(EV_fakewin);
       evas_object_show(EV_movebox);
-     // evas_object_raise(EV_fakewin);
-     // evas_object_raise(EV_movebox);
+      evas_object_raise(EV_fakewin);
+      evas_object_raise(EV_movebox);
      // evas_object_raise(focus_handler);
       
       ev_draw_focus();

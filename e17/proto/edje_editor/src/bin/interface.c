@@ -1,15 +1,15 @@
 #include <dirent.h>
 #include <string.h>
 #include <Edje.h>
-#if TEST_DIRECT_EDJE
-   #include <Edje_Edit.h>
-#endif
 #include <Etk.h>
 #include "main.h"
 #include "callbacks.h"
 #include "interface.h"
 #include "evas.h"
 
+#if TEST_DIRECT_EDJE
+   #include <Edje_Edit.h>
+#endif
 
 static Evas_Object *logo;
 
@@ -253,7 +253,18 @@ PopulateFontsComboBox(void)
    printf("Populate Fonts Combo\n");
 
    etk_combobox_clear(ETK_COMBOBOX(UI_FontComboBox));
-
+#if TEST_DIRECT_EDJE
+   Evas_List *fonts;
+   fonts = l = edje_edit_fonts_list_get(edje_o);
+   while (l)
+   {
+      ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_FontComboBox),
+                     etk_image_new_from_stock(ETK_STOCK_PREFERENCES_DESKTOP_FONT,ETK_STOCK_SMALL), 
+                     l->data);
+      l = l->next;
+   }
+   edje_edit_string_list_free(fonts);
+#else
    for (l = Cur.ef->fonts; l ; l = l->next)
    {
       ef = l->data;
@@ -262,7 +273,7 @@ PopulateFontsComboBox(void)
                      engrave_font_name_get (ef));
       etk_combobox_item_data_set (ComboItem, ef);
    }
-
+#endif
    //Renable  signal propagation
    etk_signal_connect("active-item-changed", ETK_OBJECT(UI_FontComboBox), ETK_CALLBACK(on_FontComboBox_changed), NULL);
 
@@ -272,7 +283,7 @@ void
 PopulateImagesComboBox(void)
 {
    Engrave_Image *image;
-   Evas_List *l;
+   Evas_List *images, *l;
    Etk_Combobox_Item *ComboItem;
    char buf[4096];
 
@@ -284,6 +295,20 @@ PopulateImagesComboBox(void)
 
    etk_combobox_clear(ETK_COMBOBOX(UI_ImageComboBox));
    
+   
+#if TEST_DIRECT_EDJE
+   
+   images = l = edje_edit_images_list_get(edje_o);
+   while (l)
+   {
+      snprintf(buf,4095,"images/%d",edje_edit_image_id_get(edje_o, (char*)l->data));
+      ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_ImageComboBox),
+                     etk_image_new_from_file (Cur.edj_file_name->string, buf),
+                     (char*)l->data);
+      l = l->next;
+   }
+   edje_edit_string_list_free(images);
+#else
    ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_ImageComboBox),
                      NULL, "<b>Choose an image</b>");
    etk_combobox_item_data_set (ComboItem, NULL);
@@ -296,7 +321,7 @@ PopulateImagesComboBox(void)
                      etk_image_new_from_file (buf, NULL), image->name);
       etk_combobox_item_data_set (ComboItem, image);
    }
-
+#endif
    //Renable  signal propagation
    etk_signal_connect("active-item-changed", ETK_OBJECT(UI_ImageComboBox), ETK_CALLBACK(on_ImageComboBox_changed), NULL);
 }
@@ -443,6 +468,34 @@ PopulateSourceComboBox(void)
                      ETK_CALLBACK(on_SourceEntry_item_changed), NULL);
 }
 
+#if TEST_DIRECT_EDJE
+void
+PupulateTweenList(void)
+{
+   Evas_List *tweens, *l;
+   Etk_Tree_Col *col;
+   col = etk_tree_nth_col_get (ETK_TREE(UI_ImageTweenList), 0);
+   
+   etk_tree_clear(ETK_TREE(UI_ImageTweenList));
+   
+   if (!etk_string_length_get(Cur.state)) return;
+   if (!etk_string_length_get(Cur.part)) return;
+   
+   
+    
+   tweens = l = edje_edit_state_tweens_list_get(edje_o, Cur.part->string, Cur.state->string);
+   while (l)
+   {
+      printf("RET: %s (id: %d)\n", l->data, edje_edit_image_id_get(edje_o, l->data));
+      //snprintf(buf, sizeof(buf), "images/%d", edje_edit_image_id_get(edje_o, l->data)); TODO: find a way to append image directly from the edje file.
+      etk_tree_row_append(ETK_TREE(UI_ImageTweenList), NULL,
+                          col, NULL, NULL, l->data,
+                          NULL);
+      l = l->next;
+   }
+   edje_edit_string_list_free(tweens);
+}
+#else
 void
 PupulateTweenList(void)
 {
@@ -476,7 +529,7 @@ PupulateTweenList(void)
    etk_widget_disabled_set(UI_MoveUpTweenButton,TRUE);
    etk_widget_disabled_set(UI_MoveDownTweenButton,TRUE);
 }
-
+#endif
 void
 UpdateGroupFrame(void)
 {
@@ -599,7 +652,23 @@ void
 UpdateRectFrame(void)
 {
    Etk_Color color;
+#if TEST_DIRECT_EDJE
+   if (etk_string_length_get(Cur.state))
+   {
+      edje_edit_state_color_get(edje_o, Cur.part->string, Cur.state->string,
+                                &color.r, &color.g, &color.b, &color.a);
 
+      etk_signal_block("color-changed", ETK_OBJECT(UI_ColorPicker), ETK_CALLBACK(on_ColorDialog_change), NULL);
+
+      //Set ColorPicker
+      etk_colorpicker_current_color_set (ETK_COLORPICKER(UI_ColorPicker), color);
+      //Set Color rect
+      evas_color_argb_premul(color.a,&color.r,&color.g,&color.b);
+      evas_object_color_set(RectColorObject,color.r,color.g,color.b,color.a);
+
+      etk_signal_unblock("color-changed", ETK_OBJECT(UI_ColorPicker), ETK_CALLBACK(on_ColorDialog_change), NULL);
+   }
+#else
    if (Cur.eps){
       printf("Update Rect Frame: %s (%d %d %d %d)\n",Cur.eps->name,Cur.eps->color.r,Cur.eps->color.g,Cur.eps->color.b,Cur.eps->color.a);
 
@@ -618,6 +687,7 @@ UpdateRectFrame(void)
 
       etk_signal_unblock("color-changed", ETK_OBJECT(UI_ColorPicker), ETK_CALLBACK(on_ColorDialog_change), NULL);
    }
+#endif
 }
 
 void
@@ -626,6 +696,7 @@ UpdateImageFrame(void)
    Engrave_Image *image;
    int i;
    Etk_Combobox_Item *item = NULL;
+   char *im, *pi;
     
    //Stop signal propagation
    etk_signal_block("value-changed",ETK_OBJECT(UI_BorderLeftSpinner),ETK_CALLBACK(on_BorderSpinner_value_changed), (void*)BORDER_LEFT);
@@ -634,7 +705,50 @@ UpdateImageFrame(void)
    etk_signal_block("value-changed",ETK_OBJECT(UI_BorderBottomSpinner),ETK_CALLBACK(on_BorderSpinner_value_changed), (void*)BORDER_BOTTOM);
    etk_signal_block("value-changed",ETK_OBJECT(UI_ImageAlphaSlider),ETK_CALLBACK(on_ImageAlphaSlider_value_changed), NULL);
    etk_signal_block("active-item-changed", ETK_OBJECT(UI_ImageComboBox), ETK_CALLBACK(on_ImageComboBox_changed), NULL);
+#if TEST_DIRECT_EDJE
+   
+   if (!etk_string_length_get(Cur.state)) return;
+   if (!etk_string_length_get(Cur.part)) return;
+   
+   
+   PupulateTweenList();
 
+   //Set the images combobox for normal image
+   pi = edje_edit_state_image_get(edje_o, Cur.part->string, Cur.state->string);
+   if (pi)
+   {
+      //Loop for all the item in the Combobox
+      item = etk_combobox_first_item_get(ETK_COMBOBOX(UI_ImageComboBox));
+      while (item)
+      {
+         im = etk_combobox_item_field_get(item,1);
+         if (strcmp(im,pi) == 0)
+         {
+            //Found the item set active
+            etk_combobox_active_item_set (ETK_COMBOBOX(UI_ImageComboBox),item);
+            break;
+         }
+         item = etk_combobox_item_next_get(item);
+      }
+   }
+   else
+      etk_combobox_active_item_set(ETK_COMBOBOX(UI_ImageComboBox),
+            etk_combobox_first_item_get(ETK_COMBOBOX(UI_ImageComboBox)));
+   edje_edit_string_free(pi);
+
+   //Set alpha and borders
+   int alpha, t, l, r, b;
+   edje_edit_state_color_get(edje_o, Cur.part->string, Cur.state->string,
+                             NULL, NULL, NULL, &alpha);
+   edje_edit_state_image_border_get(edje_o, Cur.part->string, Cur.state->string,
+                                    &l, &r, &t, &b);
+   etk_range_value_set (ETK_RANGE(UI_ImageAlphaSlider), alpha);
+   etk_range_value_set (ETK_RANGE(UI_BorderLeftSpinner), l);
+   etk_range_value_set (ETK_RANGE(UI_BorderRightSpinner), r);
+   etk_range_value_set (ETK_RANGE(UI_BorderTopSpinner), t);
+   etk_range_value_set (ETK_RANGE(UI_BorderBottomSpinner), b);
+   
+#else
    PupulateTweenList();
 
    if (Cur.eps->image.tween)
@@ -683,7 +797,7 @@ UpdateImageFrame(void)
    etk_range_value_set (ETK_RANGE(UI_BorderRightSpinner), Cur.eps->image.border.r);
    etk_range_value_set (ETK_RANGE(UI_BorderBottomSpinner), Cur.eps->image.border.b);
    etk_range_value_set (ETK_RANGE(UI_ImageAlphaSlider), Cur.eps->color.a);
-
+#endif
    //ReEnable Signal Propagation
    etk_signal_unblock("value-changed", ETK_OBJECT(UI_BorderLeftSpinner), on_BorderSpinner_value_changed, (void*)BORDER_LEFT);
    etk_signal_unblock("value-changed", ETK_OBJECT(UI_BorderRightSpinner), on_BorderSpinner_value_changed, (void*)BORDER_RIGHT);
@@ -693,7 +807,111 @@ UpdateImageFrame(void)
    etk_signal_unblock("active-item-changed", ETK_OBJECT(UI_ImageComboBox), ETK_CALLBACK(on_ImageComboBox_changed), NULL);
 
 }
+#if TEST_DIRECT_EDJE
+void
+UpdateTextFrame(void)
+{
+   int eff_num = 0;
+   int i;
+   double h, v;
+   //int alpha;
+   int r, g, b;
+   Etk_Combobox_Item *item = NULL;
+   char *combo_data;
+   char *t;
+   char *font;
 
+   if (!etk_string_length_get(Cur.state)) return;
+   if (!etk_string_length_get(Cur.part)) return;
+   
+   printf("Update Text Frame: %s\n",Cur.state->string);
+
+   //Stop signal propagation
+   etk_signal_block("text-changed",ETK_OBJECT(UI_TextEntry),on_TextEntry_text_changed, NULL);
+   etk_signal_block("active-item-changed", ETK_OBJECT(UI_FontComboBox), ETK_CALLBACK(on_FontComboBox_changed), NULL);
+   etk_signal_block("value-changed", ETK_OBJECT(UI_FontAlignHSpinner), ETK_CALLBACK(on_FontAlignSpinner_value_changed), NULL);
+   etk_signal_block("value-changed", ETK_OBJECT(UI_FontAlignVSpinner), ETK_CALLBACK(on_FontAlignSpinner_value_changed), NULL);
+   
+ 
+   //Set Text Text in Cur.eps
+   t = edje_edit_state_text_get(edje_o,Cur.part->string,Cur.state->string);
+   printf("TEXT: %s\n",t);
+   etk_entry_text_set(ETK_ENTRY(UI_TextEntry), t);
+   edje_edit_string_free(t);
+
+   //Set the font size spinner
+   etk_range_value_set (ETK_RANGE(UI_FontSizeSpinner), 
+      (float)edje_edit_state_text_size_get(edje_o, Cur.part->string, Cur.state->string));
+   
+   //Set the font align spinners
+   etk_range_value_set (ETK_RANGE(UI_FontAlignHSpinner),
+                        edje_edit_state_text_align_x_get(edje_o,
+                                                         Cur.part->string,
+                                                         Cur.state->string));
+   etk_range_value_set (ETK_RANGE(UI_FontAlignVSpinner),
+                        edje_edit_state_text_align_y_get(edje_o,
+                                                         Cur.part->string,
+                                                         Cur.state->string));
+   
+   //Set the font combobox
+   font = edje_edit_state_font_get(edje_o, Cur.part->string, Cur.state->string);
+   if (font)
+   {
+      //Loop for all the item in the Combobox
+      item = etk_combobox_first_item_get(ETK_COMBOBOX(UI_FontComboBox));
+      while (item)
+      {
+         combo_data = etk_combobox_item_field_get(item, 1);
+         printf("COMBODATA: %s\n",combo_data);
+         if (combo_data && (strcmp(combo_data, font) == 0))
+         {
+            //If we found the item set active and break
+            etk_combobox_active_item_set (ETK_COMBOBOX(UI_FontComboBox),item);
+            break;
+         }
+         item = etk_combobox_item_next_get(item);
+      }
+   }
+   else
+      etk_combobox_active_item_set(ETK_COMBOBOX(UI_FontComboBox),
+                  etk_combobox_first_item_get(ETK_COMBOBOX(UI_FontComboBox)));//TODO change all combobox like this one
+   
+   edje_edit_string_free(font);
+
+   //Set Effect ComboBox
+   switch (edje_edit_part_effect_get(edje_o, Cur.part->string))
+   {
+      case ENGRAVE_TEXT_EFFECT_NONE: eff_num = 0; break;
+      case ENGRAVE_TEXT_EFFECT_PLAIN: eff_num = 0; break;
+      case ENGRAVE_TEXT_EFFECT_OUTLINE: eff_num = 1; break;
+      case ENGRAVE_TEXT_EFFECT_SOFT_OUTLINE: eff_num = 2; break;
+      case ENGRAVE_TEXT_EFFECT_SHADOW: eff_num = 3; break;
+      case ENGRAVE_TEXT_EFFECT_SOFT_SHADOW: eff_num = 4; break;
+      case ENGRAVE_TEXT_EFFECT_OUTLINE_SHADOW: eff_num = 5; break;
+      case ENGRAVE_TEXT_EFFECT_OUTLINE_SOFT_SHADOW: eff_num = 6; break;
+      case ENGRAVE_TEXT_EFFECT_FAR_SHADOW: eff_num = 7; break;
+      case ENGRAVE_TEXT_EFFECT_FAR_SOFT_SHADOW: eff_num = 8; break;
+      case ENGRAVE_TEXT_EFFECT_GLOW: eff_num = 9; break;
+      default: break; // remove warning
+   }
+   etk_combobox_active_item_set (ETK_COMBOBOX(UI_EffectComboBox),
+      etk_combobox_nth_item_get (ETK_COMBOBOX(UI_EffectComboBox), eff_num));
+
+   //Set Text color Rects
+   edje_edit_state_color_get(edje_o, Cur.part->string, Cur.state->string,&r,&g,&b,NULL);
+   evas_object_color_set(TextColorObject, r, g, b, 255);
+   edje_edit_state_color2_get(edje_o, Cur.part->string, Cur.state->string,&r,&g,&b,NULL);
+   evas_object_color_set(ShadowColorObject, r, g, b, 255);
+   edje_edit_state_color3_get(edje_o, Cur.part->string, Cur.state->string,&r,&g,&b,NULL);
+   evas_object_color_set(OutlineColorObject, r, g, b, 255);
+
+   //Renable  signal propagation
+   etk_signal_unblock("text-changed", ETK_OBJECT(UI_TextEntry), ETK_CALLBACK(on_TextEntry_text_changed), NULL);
+   etk_signal_unblock("active-item-changed", ETK_OBJECT(UI_FontComboBox), ETK_CALLBACK(on_FontComboBox_changed), NULL);
+   etk_signal_unblock("value-changed", ETK_OBJECT(UI_FontAlignHSpinner), ETK_CALLBACK(on_FontAlignSpinner_value_changed), NULL);
+   etk_signal_unblock("value-changed", ETK_OBJECT(UI_FontAlignVSpinner), ETK_CALLBACK(on_FontAlignSpinner_value_changed), NULL);
+}
+#else
 void
 UpdateTextFrame(void)
 {
@@ -773,6 +991,7 @@ UpdateTextFrame(void)
       etk_signal_unblock("active-item-changed", ETK_OBJECT(UI_FontComboBox), ETK_CALLBACK(on_FontComboBox_changed), NULL);
    }
 }
+#endif
 
 void
 UpdatePositionFrame(void)
@@ -791,8 +1010,7 @@ UpdatePositionFrame(void)
 #if TEST_DIRECT_EDJE
    if (!etk_string_length_get(Cur.state)) return;
    if (!etk_string_length_get(Cur.part)) return;
-   
-   //Set relative position spinners
+    //Set relative position spinners
    etk_range_value_set(ETK_RANGE(UI_Rel1XSpinner),
       edje_edit_state_rel1_relative_x_get(edje_o, Cur.part->string,Cur.state->string));
    etk_range_value_set(ETK_RANGE(UI_Rel1YSpinner),
@@ -1849,14 +2067,15 @@ create_image_frame(void)
 
    //table
    table = etk_table_new (5, 8, ETK_TABLE_NOT_HOMOGENEOUS);
-
+#if TEST_DIRECT_EDJE
+#else
    //ImageTweenRadio
    UI_ImageNormalRadio = etk_radio_button_new_with_label("Normal",NULL);
    UI_ImageTweenRadio = etk_radio_button_new_with_label_from_widget("Tween", 
                         ETK_RADIO_BUTTON(UI_ImageNormalRadio));
    etk_table_attach_default (ETK_TABLE(table),UI_ImageNormalRadio, 1, 2, 0, 0);
    etk_table_attach_default (ETK_TABLE(table),UI_ImageTweenRadio, 3, 4, 0, 0);
-
+#endif
    //imageComboBox
    UI_ImageComboBox = etk_combobox_new();
    etk_combobox_column_add(ETK_COMBOBOX(UI_ImageComboBox),
@@ -2013,7 +2232,7 @@ create_text_frame(void)
    //FontComboBox
    UI_FontComboBox = etk_combobox_new();
    etk_combobox_column_add(ETK_COMBOBOX(UI_FontComboBox),
-                           ETK_COMBOBOX_IMAGE, 24, ETK_COMBOBOX_NONE, 0.0);
+                           ETK_COMBOBOX_IMAGE, 20, ETK_COMBOBOX_NONE, 0.0);
    etk_combobox_column_add(ETK_COMBOBOX(UI_FontComboBox),
                            ETK_COMBOBOX_LABEL, 75, ETK_COMBOBOX_NONE, 0.0);
    etk_combobox_build(ETK_COMBOBOX(UI_FontComboBox));
@@ -2062,6 +2281,7 @@ create_text_frame(void)
    etk_combobox_column_add(ETK_COMBOBOX(UI_EffectComboBox),
       ETK_COMBOBOX_LABEL, 75, ETK_COMBOBOX_NONE, 0.0);
    etk_combobox_build(ETK_COMBOBOX(UI_EffectComboBox));
+   
    ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_EffectComboBox),
       etk_image_new_from_edje (EdjeFile,"NONE.PNG"), "Plain");
    etk_combobox_item_data_set (ComboItem, (void*)ENGRAVE_TEXT_EFFECT_PLAIN);

@@ -402,7 +402,7 @@ void
 ChangeGroup(const char *group)
 {
    edje_object_file_set(edje_o, Cur.edj_file_name->string, group);
-
+    
    Parts_Hash = NULL;         //TODO FREE
    
    Cur.group = etk_string_set(Cur.group, group);
@@ -525,6 +525,8 @@ main(int argc, char **argv)
     
    PopulateGroupsComboBox();
    PopulateTree2();
+   PopulateFontsComboBox();
+   PopulateImagesComboBox();
    
    evas_object_show(edje_o);
    

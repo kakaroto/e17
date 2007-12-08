@@ -1,8 +1,5 @@
 #include <string.h>
 #include <Edje.h>
-#if TEST_DIRECT_EDJE
-   #include <Edje_Edit.h>
-#endif
 #include <Etk.h>
 #include <Ecore_Evas.h>
 #include "callbacks.h"
@@ -10,6 +7,10 @@
 #include "inout.h"
 #include "main.h"
 #include "evas.h"
+
+#if TEST_DIRECT_EDJE
+   #include <Edje_Edit.h>
+#endif
 
 extern void PROTO_engrave_part_state_remove(Engrave_Part *ep, Engrave_Part_State *eps);
 extern void PROTO_engrave_group_part_remove(Engrave_Group *eg, Engrave_Part *ep);
@@ -67,6 +68,15 @@ on_AllButton_click(Etk_Button *button, void *data)
          ShowAlert("Not yet reimplemented ;)");
          break;
       case TOOLBAR_MOVE_DOWN: //Raise
+         ShowAlert("Not yet reimplemented ;)");
+         break;
+      case TOOLBAR_IMAGE_FILE_ADD:
+         ShowAlert("Not yet reimplemented ;)");
+         break;
+      case TOOLBAR_FONT_FILE_ADD:
+         ShowAlert("Not yet reimplemented ;)");
+         break;
+      case IMAGE_TWEEN_DELETE:
          ShowAlert("Not yet reimplemented ;)");
          break;
 #else
@@ -156,6 +166,37 @@ on_AllButton_click(Etk_Button *button, void *data)
          else
             ShowAlert("You must choose a part to raise");
          break;
+      case IMAGE_TWEEN_RADIO:
+            UpdateImageFrame();
+            etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(UI_ImageTweenRadio), TRUE);
+            etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(UI_ImageNormalRadio), FALSE);
+            etk_widget_show(UI_ImageTweenList);
+            etk_widget_show(UI_MoveUpTweenButton);
+            etk_widget_show(UI_MoveDownTweenButton);
+            etk_widget_show(UI_DeleteTweenButton);
+            etk_combobox_active_item_set (ETK_COMBOBOX(UI_ImageComboBox),
+               etk_combobox_nth_item_get(ETK_COMBOBOX(UI_ImageComboBox),0));
+         break;
+      case IMAGE_NORMAL_RADIO:
+            PROTO_engrave_part_state_image_tween_remove_all(Cur.eps);
+            UpdateImageFrame();
+         break;
+      case TOOLBAR_IMAGE_FILE_ADD:
+         if (engrave_file_image_dir_get(Cur.ef)) ShowFilechooser(FILECHOOSER_IMAGE);
+         else ShowAlert("You have to save the file once for insert image.");
+         break;
+      case TOOLBAR_FONT_FILE_ADD:
+         if (engrave_file_font_dir_get(Cur.ef)) ShowFilechooser(FILECHOOSER_FONT);
+         else ShowAlert("You have to save the file once for insert font.");
+         break;
+      case IMAGE_TWEEN_DELETE:
+            sel_row = etk_tree_selected_row_get(ETK_TREE(UI_ImageTweenList));
+            if ((row_num = (int)etk_tree_row_data_get (sel_row)))
+            {
+               PROTO_engrave_part_state_image_tween_remove_nth(Cur.eps,row_num-1);
+               UpdateImageFrame();
+            }
+         break;
 #endif
       case TOOLBAR_OPTIONS:
          etk_menu_popup(ETK_MENU(UI_OptionsMenu));
@@ -193,42 +234,11 @@ on_AllButton_click(Etk_Button *button, void *data)
       case TOOLBAR_DEBUG:
          DebugInfo(FALSE);
          break;
-      case TOOLBAR_IMAGE_FILE_ADD:
-         if (engrave_file_image_dir_get(Cur.ef)) ShowFilechooser(FILECHOOSER_IMAGE);
-         else ShowAlert("You have to save the file once for insert image.");
-         break;
-      case TOOLBAR_FONT_FILE_ADD:
-         if (engrave_file_font_dir_get(Cur.ef)) ShowFilechooser(FILECHOOSER_FONT);
-         else ShowAlert("You have to save the file once for insert font.");
-         break;
       case IMAGE_TWEEN_UP:
             ShowAlert("Up not yet implemented.");
          break;
       case IMAGE_TWEEN_DOWN:
             ShowAlert("Down not yet implemented.");
-         break;
-      case IMAGE_TWEEN_DELETE:
-            sel_row = etk_tree_selected_row_get(ETK_TREE(UI_ImageTweenList));
-            if ((row_num = (int)etk_tree_row_data_get (sel_row)))
-            {
-               PROTO_engrave_part_state_image_tween_remove_nth(Cur.eps,row_num-1);
-               UpdateImageFrame();
-            }
-         break;
-      case IMAGE_TWEEN_RADIO:
-            UpdateImageFrame();
-            etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(UI_ImageTweenRadio), TRUE);
-            etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(UI_ImageNormalRadio), FALSE);
-            etk_widget_show(UI_ImageTweenList);
-            etk_widget_show(UI_MoveUpTweenButton);
-            etk_widget_show(UI_MoveDownTweenButton);
-            etk_widget_show(UI_DeleteTweenButton);
-            etk_combobox_active_item_set (ETK_COMBOBOX(UI_ImageComboBox),
-               etk_combobox_nth_item_get(ETK_COMBOBOX(UI_ImageComboBox),0));
-         break;
-      case IMAGE_NORMAL_RADIO:
-            PROTO_engrave_part_state_image_tween_remove_all(Cur.eps);
-            UpdateImageFrame();
          break;
       case SAVE_SCRIPT:
             text = etk_textblock_text_get(ETK_TEXT_VIEW(UI_ScriptBox)->textblock,ETK_TRUE);
@@ -259,6 +269,7 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
    int row_type=0;
    char *name;
    char *parent_name;
+   int part_type = 0;
    Engrave_Group* old_group = Cur.eg;
 
    printf("Row Selected Signal on one of the Tree EMITTED \n");
@@ -295,7 +306,28 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
        
          UpdatePositionFrame();
          UpdateComboPositionFrame();
-      
+         switch(edje_edit_part_type_get(edje_o, Cur.part->string))
+         {
+            case EDJE_PART_TYPE_RECTANGLE:
+               UpdateRectFrame();
+               edje_object_signal_emit(edje_ui,"rect_frame_show","edje_editor");
+               edje_object_signal_emit(edje_ui,"image_frame_hide","edje_editor");
+               edje_object_signal_emit(edje_ui,"text_frame_hide","edje_editor");
+               break;
+            case EDJE_PART_TYPE_IMAGE:
+               UpdateImageFrame();
+               edje_object_signal_emit(edje_ui,"image_frame_show","edje_editor");
+               edje_object_signal_emit(edje_ui,"rect_frame_hide","edje_editor");
+               edje_object_signal_emit(edje_ui,"text_frame_hide","edje_editor");
+               break;
+            case EDJE_PART_TYPE_TEXT:
+               UpdateTextFrame();
+               edje_object_signal_emit(edje_ui,"text_frame_show","edje_editor");
+               edje_object_signal_emit(edje_ui,"image_frame_hide","edje_editor");
+               edje_object_signal_emit(edje_ui,"rect_frame_hide","edje_editor");
+               break;
+         }
+         
          edje_object_signal_emit(edje_ui,"part_frame_hide","edje_editor");
          edje_object_signal_emit(edje_ui,"group_frame_hide","edje_editor");
          edje_object_signal_emit(edje_ui,"program_frame_hide","edje_editor");
@@ -672,7 +704,14 @@ on_ImageComboBox_changed(Etk_Combobox *combobox, void *data)
    Engrave_Image *image;
    printf("Changed signal on Image Combo EMITTED\n");
    
+#if TEST_DIRECT_EDJE
+   char *im;
+   if (!etk_string_length_get(Cur.state)) return ETK_TRUE;
+   if (!etk_string_length_get(Cur.part)) return ETK_TRUE;
    
+   im = etk_combobox_item_field_get(etk_combobox_active_item_get (combobox), 1);
+   edje_edit_state_image_set(edje_o, Cur.part->string, Cur.state->string, im);
+#else
    if ((image = etk_combobox_item_data_get(etk_combobox_active_item_get (combobox)))){
       //Set an existing image
       if (Cur.eps){
@@ -686,6 +725,7 @@ on_ImageComboBox_changed(Etk_Combobox *combobox, void *data)
          ev_redraw();
       }
    }
+#endif
 
    return ETK_TRUE;
 }
@@ -693,6 +733,8 @@ on_ImageComboBox_changed(Etk_Combobox *combobox, void *data)
 Etk_Bool
 on_ImageTweenList_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
 {
+#if TEST_DIRECT_EDJE
+#else
    printf("Row selected signal on ImageTweenList EMITTED\n");
    if (row != etk_tree_first_row_get (ETK_TREE(UI_ImageTweenList)))
    {
@@ -704,7 +746,7 @@ on_ImageTweenList_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data
       etk_widget_disabled_set(UI_MoveUpTweenButton,TRUE);
       etk_widget_disabled_set(UI_MoveDownTweenButton,TRUE);
    }
-
+#endif
    return ETK_TRUE;
 }
 
@@ -712,10 +754,18 @@ Etk_Bool
 on_ImageAlphaSlider_value_changed(Etk_Object *object, double va, void *data)
 {
    printf("ImageSlieder value_changed signale EMIT: %.2f\n",va);
+#if TEST_DIRECT_EDJE
+   if (!etk_string_length_get(Cur.state)) return ETK_TRUE;
+   if (!etk_string_length_get(Cur.part)) return ETK_TRUE;
+   edje_edit_state_color_set(edje_o, Cur.part->string, Cur.state->string,
+                             -1, -1, -1, (int)va);
+   ev_redraw();
+#else
    if (Cur.eps){
       engrave_part_state_color_set(Cur.eps, (int)va, (int)va, (int)va, (int)va);
       ev_redraw();
    }
+#endif
 
    return ETK_TRUE;
 }
@@ -724,6 +774,18 @@ Etk_Bool
 on_BorderSpinner_value_changed(Etk_Range *range, double value, void *data)
 {
    printf("Value Changed signal on BorderSpinner EMITTED (value: %f)\n",etk_range_value_get(range));
+   
+#if TEST_DIRECT_EDJE
+   if (!etk_string_length_get(Cur.state)) return ETK_TRUE;
+   if (!etk_string_length_get(Cur.part)) return ETK_TRUE;
+   edje_edit_state_image_border_set(edje_o, Cur.part->string, Cur.state->string,
+      (int)etk_range_value_get(ETK_RANGE(UI_BorderLeftSpinner)),
+      (int)etk_range_value_get(ETK_RANGE(UI_BorderRightSpinner)),
+      (int)etk_range_value_get(ETK_RANGE(UI_BorderTopSpinner)),
+      (int)etk_range_value_get(ETK_RANGE(UI_BorderBottomSpinner)));
+
+   ev_redraw();
+#else
    if (Cur.eps){
       engrave_part_state_image_border_set(Cur.eps,
          (int)etk_range_value_get(ETK_RANGE(UI_BorderLeftSpinner)),
@@ -735,6 +797,7 @@ on_BorderSpinner_value_changed(Etk_Range *range, double value, void *data)
 
       ev_redraw();
    }
+#endif
    return ETK_TRUE;
 }
 
@@ -942,6 +1005,16 @@ Etk_Bool
 on_FontComboBox_changed(Etk_Combobox *combobox, void *data)
 {
    printf("Changed Signal on FontComboBox EMITTED \n");
+#if TEST_DIRECT_EDJE
+   char *font;
+   if (!etk_string_length_get(Cur.part)) return ETK_TRUE;
+   if (!etk_string_length_get(Cur.state)) return ETK_TRUE;
+   
+   font = etk_combobox_item_field_get(etk_combobox_active_item_get(combobox), 1);
+   
+   edje_edit_state_font_set(edje_o, Cur.part->string, Cur.state->string, font);
+   
+#else
    Engrave_Font *ef;
    if ((ef = etk_combobox_item_data_get(etk_combobox_active_item_get(combobox)))){
       //Set an existing font
@@ -952,13 +1025,21 @@ on_FontComboBox_changed(Etk_Combobox *combobox, void *data)
          ev_redraw();
       }
    }
-
+#endif
    return ETK_TRUE;
 }
 
 Etk_Bool
 on_EffectComboBox_changed(Etk_Combobox *combobox, void *data)
 {
+#if TEST_DIRECT_EDJE
+   if (!etk_string_length_get(Cur.part)) return ETK_TRUE;
+   
+   edje_edit_part_effect_set(edje_o, Cur.part->string,
+         etk_combobox_item_data_get(etk_combobox_active_item_get(combobox)));
+   
+   ev_redraw();
+#else
    Engrave_Text_Effect effect;
 
    printf("Changed Signal on EffectComboBox EMITTED\n");
@@ -970,7 +1051,7 @@ on_EffectComboBox_changed(Etk_Combobox *combobox, void *data)
          ev_redraw();
       }
    }
-
+#endif
    return ETK_TRUE;
 }
 
@@ -978,7 +1059,12 @@ Etk_Bool
 on_FontSizeSpinner_value_changed(Etk_Range *range, double value, void *data)
 {
    printf("Value Changed Signal on FontSizeSpinner EMITTED (value: %d)\n",(int)etk_range_value_get(range));
+#if TEST_DIRECT_EDJE
+   edje_edit_state_text_size_set(edje_o, Cur.part->string, Cur.state->string,
+                                 (int)etk_range_value_get(range));
+#else
    engrave_part_state_text_size_set(Cur.eps,(int)etk_range_value_get(range));
+#endif
    ev_redraw();
    return ETK_TRUE;
 }
@@ -987,7 +1073,12 @@ Etk_Bool
 on_TextEntry_text_changed(Etk_Object *object, void *data)
 {
    printf("Text Changed Signal on TextEntry EMITTED (value %s)\n",etk_entry_text_get(ETK_ENTRY(object)));
+#if TEST_DIRECT_EDJE
+   edje_edit_state_text_set(edje_o, Cur.part->string, Cur.state->string,
+                            etk_entry_text_get(ETK_ENTRY(object)));
+#else
    engrave_part_state_text_text_set(Cur.eps,etk_entry_text_get(ETK_ENTRY(object)));
+#endif
    ev_redraw();
    return ETK_TRUE;
 }
@@ -996,19 +1087,27 @@ Etk_Bool
 on_FontAlignSpinner_value_changed(Etk_Range *range, double value, void *data)
 {
    printf("Value Changed Signal on AlignSpinner (h or v, text or part) EMITTED (value: %.2f)\n",etk_range_value_get(range));
-    
+
+#if TEST_DIRECT_EDJE
+   if (!etk_string_length_get(Cur.part)) return ETK_TRUE;
+   if (!etk_string_length_get(Cur.state)) return ETK_TRUE;
+   
+   if (data == TEXT_ALIGNH_SPINNER)
+      edje_edit_state_text_align_x_set(edje_o, Cur.part->string, Cur.state->string,
+                                       (double)etk_range_value_get(range));
+   if (data == TEXT_ALIGNV_SPINNER)
+      edje_edit_state_text_align_y_set(edje_o, Cur.part->string, Cur.state->string,
+                                       (double)etk_range_value_get(range));
+#else
    if (data == TEXT_ALIGNH_SPINNER)
       engrave_part_state_text_align_set(Cur.eps, etk_range_value_get(range), -1);
-   
    if (data == TEXT_ALIGNV_SPINNER)
       engrave_part_state_text_align_set(Cur.eps, -1, etk_range_value_get(range));
-   
    if (data == STATE_ALIGNH_SPINNER)
       engrave_part_state_align_set(Cur.eps, etk_range_value_get(range), -1);
-   
    if (data == STATE_ALIGNV_SPINNER)
       engrave_part_state_align_set(Cur.eps, -1, etk_range_value_get(range));
-    
+#endif
    return ETK_TRUE;
 }
 
@@ -1353,22 +1452,38 @@ on_ColorCanvas_click(void *data, Evas *e, Evas_Object *obj, void *event_info)
    {
       case COLOR_OBJECT_RECT:
          etk_window_title_set(ETK_WINDOW(UI_ColorWin), "Rectangle color");
+#if TEST_DIRECT_EDJE
+         edje_edit_state_color_get(edje_o, Cur.part->string, Cur.state->string, &c.r,&c.g,&c.b,&c.a);
+#else
          engrave_part_state_color_get(Cur.eps,&c.r,&c.g,&c.b,&c.a);
+#endif
          etk_colorpicker_current_color_set(ETK_COLORPICKER(UI_ColorPicker), c);
          break;
       case COLOR_OBJECT_TEXT:
          etk_window_title_set(ETK_WINDOW(UI_ColorWin), "Text color");
+#if TEST_DIRECT_EDJE
+         edje_edit_state_color_get(edje_o, Cur.part->string, Cur.state->string, &c.r,&c.g,&c.b,&c.a);
+#else
          engrave_part_state_color_get(Cur.eps,&c.r,&c.g,&c.b,&c.a);
+#endif
          etk_colorpicker_current_color_set(ETK_COLORPICKER(UI_ColorPicker), c);
          break;
       case COLOR_OBJECT_SHADOW:
          etk_window_title_set(ETK_WINDOW(UI_ColorWin), "Shadow color");
+#if TEST_DIRECT_EDJE
+         edje_edit_state_color3_get(edje_o, Cur.part->string, Cur.state->string, &c.r,&c.g,&c.b,&c.a);
+#else
          engrave_part_state_color2_get(Cur.eps,&c.r,&c.g,&c.b,&c.a);
+#endif
          etk_colorpicker_current_color_set(ETK_COLORPICKER(UI_ColorPicker), c);
          break;
       case COLOR_OBJECT_OUTLINE:
          etk_window_title_set(ETK_WINDOW(UI_ColorWin), "Outline color");
+#if TEST_DIRECT_EDJE
+         edje_edit_state_color2_get(edje_o, Cur.part->string, Cur.state->string, &c.r,&c.g,&c.b,&c.a);
+#else
          engrave_part_state_color3_get(Cur.eps,&c.r,&c.g,&c.b,&c.a);
+#endif
          etk_colorpicker_current_color_set(ETK_COLORPICKER(UI_ColorPicker), c);
          break;
    }
@@ -1401,19 +1516,39 @@ on_ColorDialog_change(Etk_Object *object, void *data)
    switch (current_color_object){
     case COLOR_OBJECT_RECT:
       evas_object_color_set(RectColorObject,premuled.r,premuled.g,premuled.b,premuled.a);
+#if TEST_DIRECT_EDJE
+      edje_edit_state_color_set(edje_o, Cur.part->string, Cur.state->string,
+                                premuled.r,premuled.g,premuled.b,premuled.a);
+#else
       engrave_part_state_color_set(Cur.eps,color.r,color.g,color.b,color.a);
+#endif
       break;
     case COLOR_OBJECT_TEXT:
       evas_object_color_set(TextColorObject,premuled.r,premuled.g,premuled.b,premuled.a);
+#if TEST_DIRECT_EDJE
+      edje_edit_state_color_set(edje_o, Cur.part->string, Cur.state->string,
+                                premuled.r,premuled.g,premuled.b,premuled.a);
+#else
       engrave_part_state_color_set(Cur.eps,color.r,color.g,color.b,color.a);
+#endif
       break;
     case COLOR_OBJECT_SHADOW:
       evas_object_color_set(ShadowColorObject,premuled.r,premuled.g,premuled.b,premuled.a);
+#if TEST_DIRECT_EDJE
+      edje_edit_state_color3_set(edje_o, Cur.part->string, Cur.state->string,
+                                premuled.r,premuled.g,premuled.b,premuled.a);
+#else
       engrave_part_state_color2_set(Cur.eps,color.r,color.g,color.b,color.a);
+#endif
       break;
     case COLOR_OBJECT_OUTLINE:
       evas_object_color_set(OutlineColorObject,premuled.r,premuled.g,premuled.b,premuled.a);
+#if TEST_DIRECT_EDJE
+      edje_edit_state_color2_set(edje_o, Cur.part->string, Cur.state->string,
+                                premuled.r,premuled.g,premuled.b,premuled.a);
+#else
       engrave_part_state_color3_set(Cur.eps,color.r,color.g,color.b,color.a);
+#endif
       break;
    }
 
