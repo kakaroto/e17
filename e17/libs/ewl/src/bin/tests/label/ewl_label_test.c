@@ -77,7 +77,7 @@ label_null_test_get(char *buf, int len)
 	label = ewl_label_new();
 
 	if (ewl_label_text_get(EWL_LABEL(label)))
-		snprintf(buf, len, "text_get not NULL");
+		LOG_FAILURE(buf, len, "text_get not NULL");
 	else
 		ret = 1;
 
@@ -100,7 +100,7 @@ label_null_test_set_get(char *buf, int len)
 
 	val = ewl_label_text_get(EWL_LABEL(label));
 	if (val)
-		snprintf(buf, len, "text_set_get %s instead of NULL", val);
+		LOG_FAILURE(buf, len, "text_set_get %s instead of NULL", val);
 	else
 		ret = 1;
 
@@ -122,7 +122,7 @@ label_test_set_get(char *buf, int len)
 
 	val = ewl_label_text_get(EWL_LABEL(label));
 	if (strcmp(val, "some text"))
-		snprintf(buf, len, "%s is not 'some text'", val);
+		LOG_FAILURE(buf, len, "%s is not 'some text'", val);
 	else
 		ret = 1;
 

@@ -374,7 +374,7 @@ path_test_set_get(char *buf, int len)
 	t = ewl_image_file_path_get(EWL_IMAGE(o));
 
 	if (strcmp(t, "/invalid/path"))
-		snprintf(buf, len, "path_get did not match path_set.");
+		LOG_FAILURE(buf, len, "path_get did not match path_set.");
 	else
 		ret = 1;
 
@@ -393,7 +393,7 @@ scale_test_set_get(char *buf, int len)
 	ewl_image_scale_get(EWL_IMAGE(o), &sw, &sh);
 
 	if (sw != 2.0 || sh != 2.0)
-		snprintf(buf, len, "scale_get did not match scale_set.");
+		LOG_FAILURE(buf, len, "scale_get did not match scale_set.");
 	else
 		ret = 1;
 
@@ -412,7 +412,7 @@ size_test_set_get(char *buf, int len)
 	ewl_image_size_get(EWL_IMAGE(o), &sw, &sh);
 
 	if (sw != 2 || sh != 2)
-		snprintf(buf, len, "size_get did not match size_set.");
+		LOG_FAILURE(buf, len, "size_get did not match size_set.");
 	else
 		ret = 1;
 
@@ -431,7 +431,7 @@ constrain_test_set_get(char *buf, int len)
 	sw = ewl_image_constrain_get(EWL_IMAGE(o));
 
 	if (sw != 2)
-		snprintf(buf, len, "scale_get did not match scale_set.");
+		LOG_FAILURE(buf, len, "scale_get did not match scale_set.");
 	else
 		ret = 1;
 

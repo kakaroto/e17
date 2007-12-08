@@ -157,7 +157,7 @@ directory_test_set_get(char *buf, int len)
 	t = ewl_filepicker_directory_get(EWL_FILEPICKER(fp));
 
 	if (strcmp(t, "/tmp"))
-		snprintf(buf, len, "directory_get did not match "
+		LOG_FAILURE(buf, len, "directory_get did not match "
 						"directory_set %s", t);
 	else
 		ret = 1;
@@ -182,7 +182,7 @@ directory_test_path_split(char *buf, int len)
 	{
 		if (strcmp(rez[i], t))
 		{
-			snprintf(buf, len, "path list not setup correctly. "
+			LOG_FAILURE(buf, len, "path list not setup correctly. "
 					"[%s didn't match %s]", t, rez[i]);
 			ret = 0;
 			break;

@@ -240,7 +240,7 @@ engine_test_set_get(char *buf, int len)
 	engine_name = ewl_embed_engine_name_get(EWL_EMBED(window));
 
 	if (strcmp(engine_name, "ewl_engine"))
-		snprintf(buf, len, "engine name doesn't match");
+		LOG_FAILURE(buf, len, "engine name doesn't match");
 	else
 		ret = 1;
 

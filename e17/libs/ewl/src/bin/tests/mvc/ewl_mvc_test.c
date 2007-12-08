@@ -141,13 +141,13 @@ selected_set(char *buf, int len)
 
 	if (idx->sel.type != EWL_SELECTION_TYPE_INDEX)
 	{
-		snprintf(buf, len, "Incorrect selection type");
+		LOG_FAILURE(buf, len, "Incorrect selection type");
 		return FALSE;
 	}
 
 	if ((idx->row != 1) || (idx->column != 2))
 	{
-		snprintf(buf, len, "Incorrect row/column setting: "
+		LOG_FAILURE(buf, len, "Incorrect row/column setting: "
 				"(%d %d) vs (1, 2)", idx->row, idx->column);
 		return FALSE;
 	}
@@ -173,13 +173,13 @@ selected_get(char *buf, int len)
 
 	if (idx->sel.type != EWL_SELECTION_TYPE_INDEX)
 	{
-		snprintf(buf, len, "Incorrect selection type");
+		LOG_FAILURE(buf, len, "Incorrect selection type");
 		return FALSE;
 	}
 
 	if ((idx->row != 1) || (idx->column != 2))
 	{
-		snprintf(buf, len, "Incorrect row/column setting "
+		LOG_FAILURE(buf, len, "Incorrect row/column setting "
 			"(%d %d) instead of (1, 2)", idx->row, idx->column);
 		return FALSE;
 	}
@@ -202,13 +202,13 @@ selected_range_single_add(char *buf, int len)
 
 	if (idx->sel.type != EWL_SELECTION_TYPE_INDEX)
 	{
-		snprintf(buf, len, "Incorrect selection type");
+		LOG_FAILURE(buf, len, "Incorrect selection type");
 		return FALSE;
 	}
 
 	if ((idx->row != 1) || (idx->column != 2))
 	{
-		snprintf(buf, len, "Incorrect start row/column setting");
+		LOG_FAILURE(buf, len, "Incorrect start row/column setting");
 		return FALSE;
 	}
 
@@ -231,25 +231,25 @@ selected_range_multi_add(char *buf, int len)
 
 	if (!idx)
 	{
-		snprintf(buf, len, "Returned idx is NULL");
+		LOG_FAILURE(buf, len, "Returned idx is NULL");
 		return FALSE;
 	}
 
 	if (idx->sel.type != EWL_SELECTION_TYPE_RANGE)
 	{
-		snprintf(buf, len, "Incorrect selection type");
+		LOG_FAILURE(buf, len, "Incorrect selection type");
 		return FALSE;
 	}
 
 	if ((idx->start.row != 1) || (idx->start.column != 2))
 	{
-		snprintf(buf, len, "Incorrect start row/column setting");
+		LOG_FAILURE(buf, len, "Incorrect start row/column setting");
 		return FALSE;
 	}
 
 	if ((idx->end.row != 6) || (idx->end.column != 8))
 	{
-		snprintf(buf, len, "Incorrect end row/column setting");
+		LOG_FAILURE(buf, len, "Incorrect end row/column setting");
 		return FALSE;
 	}
 
@@ -276,7 +276,7 @@ selected_count_get(char *buf, int len)
 	count = ewl_mvc_selected_count_get(m);
 	if (count != expected)
 	{
-		snprintf(buf, len, "Incorrect count (%d instead of %d)",
+		LOG_FAILURE(buf, len, "Incorrect count (%d instead of %d)",
 							count, expected);
 		return FALSE;
 	}
@@ -297,7 +297,7 @@ selected_is_index(char *buf, int len)
 
 	if (!ewl_mvc_selected_is(m, ewl_mvc_data_get(m), 6, 8))
 	{
-		snprintf(buf, len, "Not selected");
+		LOG_FAILURE(buf, len, "Not selected");
 		return FALSE;
 	}
 
@@ -317,7 +317,7 @@ selected_is_not_index(char *buf, int len)
 
 	if (ewl_mvc_selected_is(m, ewl_mvc_data_get(m), 7, 7))
 	{
-		snprintf(buf, len, "Item selected");
+		LOG_FAILURE(buf, len, "Item selected");
 		return FALSE;
 	}
 
@@ -338,7 +338,7 @@ selected_is_range(char *buf, int len)
 
 	if (!ewl_mvc_selected_is(m, ewl_mvc_data_get(m), 4, 5))
 	{
-		snprintf(buf, len, "Not selected");
+		LOG_FAILURE(buf, len, "Not selected");
 		return FALSE;
 	}
 
@@ -359,7 +359,7 @@ selected_is_not_range(char *buf, int len)
 
 	if (ewl_mvc_selected_is(m, ewl_mvc_data_get(m), 1, 1))
 	{
-		snprintf(buf, len, "Item selected selected");
+		LOG_FAILURE(buf, len, "Item selected selected");
 		return FALSE;
 	}
 
@@ -385,7 +385,7 @@ selected_clear(char *buf, int len)
 
 	if (ewl_mvc_selected_count_get(m) != 0)
 	{
-		snprintf(buf, len, "Selected list not empty.");
+		LOG_FAILURE(buf, len, "Selected list not empty.");
 		return FALSE;
 	}
 
@@ -411,7 +411,7 @@ selected_rm_idx(char *buf, int len)
 	ewl_mvc_selected_rm(m, ewl_mvc_data_get(m), 9, 1);
 	if (ewl_mvc_selected_is(m, ewl_mvc_data_get(m), 9, 1))
 	{
-		snprintf(buf, len, "Index still selected");
+		LOG_FAILURE(buf, len, "Index still selected");
 		return FALSE;
 	}
 
@@ -437,7 +437,7 @@ selected_rm_unselected_idx(char *buf, int len)
 	ewl_mvc_selected_rm(m, ewl_mvc_data_get(m), 10, 2);
 	if (ewl_mvc_selected_is(m, ewl_mvc_data_get(m), 10, 2))
 	{
-		snprintf(buf, len, "Index still selected");
+		LOG_FAILURE(buf, len, "Index still selected");
 		return FALSE;
 	}
 
@@ -473,14 +473,14 @@ selected_rm_2x1_bottom(char *buf, int len)
 	ewl_mvc_selected_rm(m, ewl_mvc_data_get(m), 2, 1);
 	if (ewl_mvc_selected_is(m, ewl_mvc_data_get(m), 2, 1))
 	{
-		snprintf(buf, len, "Index still selected");
+		LOG_FAILURE(buf, len, "Index still selected");
 		return FALSE;
 	}
 
 	count = ewl_mvc_selected_count_get(m);
 	if (count != 1)
 	{
-		snprintf(buf, len, "Selected items is %d instead of 1", count);
+		LOG_FAILURE(buf, len, "Selected items is %d instead of 1", count);
 		return FALSE;
 	}
 
@@ -516,14 +516,14 @@ selected_rm_2x1_top(char *buf, int len)
 	ewl_mvc_selected_rm(m, ewl_mvc_data_get(m), 1, 1);
 	if (ewl_mvc_selected_is(m, ewl_mvc_data_get(m), 1, 1))
 	{
-		snprintf(buf, len, "Index still selected");
+		LOG_FAILURE(buf, len, "Index still selected");
 		return FALSE;
 	}
 
 	count = ewl_mvc_selected_count_get(m);
 	if (count != 1)
 	{
-		snprintf(buf, len, "Selected items is %d instead of 1", count);
+		LOG_FAILURE(buf, len, "Selected items is %d instead of 1", count);
 		return FALSE;
 	}
 
@@ -556,13 +556,13 @@ selected_rm_1x2_left(char *buf, int len)
 	ewl_mvc_selected_rm(m, ewl_mvc_data_get(m), 1, 1);
 	if (ewl_mvc_selected_is(m, ewl_mvc_data_get(m), 1, 1))
 	{
-		snprintf(buf, len, "Index still selected");
+		LOG_FAILURE(buf, len, "Index still selected");
 		return FALSE;
 	}
 
 	if (ewl_mvc_selected_count_get(m) != 1)
 	{
-		snprintf(buf, len, "Incorrect number of selected items");
+		LOG_FAILURE(buf, len, "Incorrect number of selected items");
 		return FALSE;
 	}
 
@@ -595,13 +595,13 @@ selected_rm_1x2_right(char *buf, int len)
 	ewl_mvc_selected_rm(m, ewl_mvc_data_get(m), 1, 2);
 	if (ewl_mvc_selected_is(m, ewl_mvc_data_get(m), 1, 2))
 	{
-		snprintf(buf, len, "Index still selected");
+		LOG_FAILURE(buf, len, "Index still selected");
 		return FALSE;
 	}
 
 	if (ewl_mvc_selected_count_get(m) != 1)
 	{
-		snprintf(buf, len, "Incorrect number of selected items");
+		LOG_FAILURE(buf, len, "Incorrect number of selected items");
 		return FALSE;
 	}
 
@@ -635,13 +635,13 @@ selected_rm_from_range_top_left_point(char *buf, int len)
 	ewl_mvc_selected_rm(m, ewl_mvc_data_get(m), 1, 2);
 	if (ewl_mvc_selected_is(m, ewl_mvc_data_get(m), 1, 2))
 	{
-		snprintf(buf, len, "Index still selected");
+		LOG_FAILURE(buf, len, "Index still selected");
 		return FALSE;
 	}
 
 	if (ewl_mvc_selected_count_get(m) != 41)
 	{
-		snprintf(buf, len, "Incorrect number of selected items: %d",
+		LOG_FAILURE(buf, len, "Incorrect number of selected items: %d",
 					ewl_mvc_selected_count_get(m));
 		return FALSE;
 	}
@@ -679,13 +679,13 @@ selected_rm_from_range_bottom_right_point(char *buf, int len)
 	ewl_mvc_selected_rm(m, ewl_mvc_data_get(m), 6, 8);
 	if (ewl_mvc_selected_is(m, ewl_mvc_data_get(m), 6, 8))
 	{
-		snprintf(buf, len, "Index still selected");
+		LOG_FAILURE(buf, len, "Index still selected");
 		return FALSE;
 	}
 
 	if (ewl_mvc_selected_count_get(m) != 41)
 	{
-		snprintf(buf, len, "Incorrect number of selected items: %d",
+		LOG_FAILURE(buf, len, "Incorrect number of selected items: %d",
 					ewl_mvc_selected_count_get(m));
 		return FALSE;
 	}
@@ -724,13 +724,13 @@ selected_rm_from_range_middle_point(char *buf, int len)
 	ewl_mvc_selected_rm(m, ewl_mvc_data_get(m), 4, 5);
 	if (ewl_mvc_selected_is(m, ewl_mvc_data_get(m), 4, 5))
 	{
-		snprintf(buf, len, "Index still selected");
+		LOG_FAILURE(buf, len, "Index still selected");
 		return FALSE;
 	}
 
 	if (ewl_mvc_selected_count_get(m) != 41)
 	{
-		snprintf(buf, len, "Incorrect number of selected items: %d",
+		LOG_FAILURE(buf, len, "Incorrect number of selected items: %d",
 					ewl_mvc_selected_count_get(m));
 		return FALSE;
 	}
@@ -777,13 +777,13 @@ selected_rm_from_range_left_edge_point(char *buf, int len)
 	ewl_mvc_selected_rm(m, ewl_mvc_data_get(m), 4, 2);
 	if (ewl_mvc_selected_is(m, ewl_mvc_data_get(m), 4, 2))
 	{
-		snprintf(buf, len, "Index still selected");
+		LOG_FAILURE(buf, len, "Index still selected");
 		return FALSE;
 	}
 
 	if (ewl_mvc_selected_count_get(m) != 41)
 	{
-		snprintf(buf, len, "Incorrect number of selected items: %d",
+		LOG_FAILURE(buf, len, "Incorrect number of selected items: %d",
 					ewl_mvc_selected_count_get(m));
 		return FALSE;
 	}
@@ -826,13 +826,13 @@ selected_rm_from_range_right_edge_point(char *buf, int len)
 	ewl_mvc_selected_rm(m, ewl_mvc_data_get(m), 3, 8);
 	if (ewl_mvc_selected_is(m, ewl_mvc_data_get(m), 3, 8))
 	{
-		snprintf(buf, len, "Index still selected");
+		LOG_FAILURE(buf, len, "Index still selected");
 		return FALSE;
 	}
 
 	if (ewl_mvc_selected_count_get(m) != 41)
 	{
-		snprintf(buf, len, "Incorrect number of selected items: %d",
+		LOG_FAILURE(buf, len, "Incorrect number of selected items: %d",
 					ewl_mvc_selected_count_get(m));
 		return FALSE;
 	}
@@ -875,13 +875,13 @@ selected_rm_from_range_top_edge_point(char *buf, int len)
 	ewl_mvc_selected_rm(m, ewl_mvc_data_get(m), 1, 5);
 	if (ewl_mvc_selected_is(m, ewl_mvc_data_get(m), 1, 5))
 	{
-		snprintf(buf, len, "Index still selected");
+		LOG_FAILURE(buf, len, "Index still selected");
 		return FALSE;
 	}
 
 	if (ewl_mvc_selected_count_get(m) != 41)
 	{
-		snprintf(buf, len, "Incorrect number of selected items: %d",
+		LOG_FAILURE(buf, len, "Incorrect number of selected items: %d",
 					ewl_mvc_selected_count_get(m));
 		return FALSE;
 	}
@@ -924,13 +924,13 @@ selected_rm_from_range_bottom_edge_point(char *buf, int len)
 	ewl_mvc_selected_rm(m, ewl_mvc_data_get(m), 6, 3);
 	if (ewl_mvc_selected_is(m, ewl_mvc_data_get(m), 6, 3))
 	{
-		snprintf(buf, len, "Index still selected");
+		LOG_FAILURE(buf, len, "Index still selected");
 		return FALSE;
 	}
 
 	if (ewl_mvc_selected_count_get(m) != 41)
 	{
-		snprintf(buf, len, "Incorrect number of selected items: %d",
+		LOG_FAILURE(buf, len, "Incorrect number of selected items: %d",
 					ewl_mvc_selected_count_get(m));
 		return FALSE;
 	}
@@ -1014,7 +1014,7 @@ insert_range_top_intersection(char *buf, int len)
 	count = ecore_list_count(m->selected);
 	if (count != 1)
 	{
-		snprintf(buf, len, "%d items in list instead of 1", count);
+		LOG_FAILURE(buf, len, "%d items in list instead of 1", count);
 		return FALSE;
 	}
 
@@ -1050,7 +1050,7 @@ insert_range_bottom_intersection(char *buf, int len)
 	count = ecore_list_count(m->selected);
 	if (count != 1)
 	{
-		snprintf(buf, len, "%d items in list instead of 1", count);
+		LOG_FAILURE(buf, len, "%d items in list instead of 1", count);
 		return FALSE;
 	}
 
@@ -1084,7 +1084,7 @@ insert_range_left_intersection(char *buf, int len)
 	count = ecore_list_count(m->selected);
 	if (count != 1)
 	{
-		snprintf(buf, len, "%d items in list instead of 1", count);
+		LOG_FAILURE(buf, len, "%d items in list instead of 1", count);
 		return FALSE;
 	}
 
@@ -1118,7 +1118,7 @@ insert_range_right_intersection(char *buf, int len)
 	count = ecore_list_count(m->selected);
 	if (count != 1)
 	{
-		snprintf(buf, len, "%d items in list instead of 1", count);
+		LOG_FAILURE(buf, len, "%d items in list instead of 1", count);
 		return FALSE;
 	}
 
@@ -1155,7 +1155,7 @@ insert_range_top_left_intersection(char *buf, int len)
 	count = ecore_list_count(m->selected);
 	if (count != 3)
 	{
-		snprintf(buf, len, "%d items in list instead of 3", count);
+		LOG_FAILURE(buf, len, "%d items in list instead of 3", count);
 		return FALSE;
 	}
 
@@ -1200,7 +1200,7 @@ insert_range_top_right_intersection(char *buf, int len)
 	count = ecore_list_count(m->selected);
 	if (count != 3)
 	{
-		snprintf(buf, len, "%d items in list instead of 3", count);
+		LOG_FAILURE(buf, len, "%d items in list instead of 3", count);
 		return FALSE;
 	}
 
@@ -1245,7 +1245,7 @@ insert_range_bottom_left_intersection(char *buf, int len)
 	count = ecore_list_count(m->selected);
 	if (count != 3)
 	{
-		snprintf(buf, len, "%d items in list instead of 3", count);
+		LOG_FAILURE(buf, len, "%d items in list instead of 3", count);
 		return FALSE;
 	}
 
@@ -1290,7 +1290,7 @@ insert_range_bottom_right_intersection(char *buf, int len)
 	count = ecore_list_count(m->selected);
 	if (count != 3)
 	{
-		snprintf(buf, len, "%d items in list instead of 3", count);
+		LOG_FAILURE(buf, len, "%d items in list instead of 3", count);
 		return FALSE;
 	}
 
@@ -1337,7 +1337,7 @@ insert_range_overlap_horizontal(char *buf, int len)
 	count = ecore_list_count(m->selected);
 	if (count != 3)
 	{
-		snprintf(buf, len, "%d items in list instead of 3", count);
+		LOG_FAILURE(buf, len, "%d items in list instead of 3", count);
 		return FALSE;
 	}
 
@@ -1384,7 +1384,7 @@ insert_range_overlap_vertical(char *buf, int len)
 	count = ecore_list_count(m->selected);
 	if (count != 3)
 	{
-		snprintf(buf, len, "%d items in list instead of 3", count);
+		LOG_FAILURE(buf, len, "%d items in list instead of 3", count);
 		return FALSE;
 	}
 
@@ -1429,7 +1429,7 @@ insert_range_overlap_new_covers_old(char *buf, int len)
 	count = ecore_list_count(m->selected);
 	if (count != 1)
 	{
-		snprintf(buf, len, "%d items in list instead of 1", count);
+		LOG_FAILURE(buf, len, "%d items in list instead of 1", count);
 		return FALSE;
 	}
 
@@ -1466,7 +1466,7 @@ insert_range_overlap_old_covers_new(char *buf, int len)
 	count = ecore_list_count(m->selected);
 	if (count != 1)
 	{
-		snprintf(buf, len, "%d items in list instead of 1", count);
+		LOG_FAILURE(buf, len, "%d items in list instead of 1", count);
 		return FALSE;
 	}
 
@@ -1485,14 +1485,14 @@ ewl_mvc_is_index(char *buf, int len, Ewl_Selection *sel,
 
 	if (sel->type != EWL_SELECTION_TYPE_INDEX)
 	{
-		snprintf(buf, len, "Incorrect selection type");
+		LOG_FAILURE(buf, len, "Incorrect selection type");
 		return FALSE;
 	}
 
 	idx = EWL_SELECTION_IDX(sel);
 	if (((int)idx->row != row) || ((int)idx->column != column))
 	{
-		snprintf(buf, len, "Incorrect indices in index "
+		LOG_FAILURE(buf, len, "Incorrect indices in index "
 					"([%d %d] vs [%d %d])",
 					idx->row, idx->column,
 					row, column);
@@ -1511,14 +1511,14 @@ ewl_mvc_is_range(char *buf, int len, Ewl_Selection *sel,
 
 	if (sel->type != EWL_SELECTION_TYPE_RANGE)
 	{
-		snprintf(buf, len, "Incorrect selection type");
+		LOG_FAILURE(buf, len, "Incorrect selection type");
 		return FALSE;
 	}
 
 	rng = EWL_SELECTION_RANGE(sel);
 	if (((int)rng->start.row != srow) || ((int)rng->start.column != scolumn))
 	{
-		snprintf(buf, len, "Start row/column incorrect "
+		LOG_FAILURE(buf, len, "Start row/column incorrect "
 					"([%d %d] vs [%d %d])",
 					rng->start.row, rng->start.column,
 					srow, scolumn);
@@ -1527,7 +1527,7 @@ ewl_mvc_is_range(char *buf, int len, Ewl_Selection *sel,
 
 	if (((int)rng->end.row != erow) || ((int)rng->end.column != ecolumn))
 	{
-		snprintf(buf, len, "End row/column incorrect "
+		LOG_FAILURE(buf, len, "End row/column incorrect "
 					"([%d %d] vs [%d %d])",
 					rng->end.row, rng->end.column,
 					erow, ecolumn);

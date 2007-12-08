@@ -91,7 +91,7 @@ tf_new(char *buf, int len)
 	fmt = ewl_text_fmt_new(EWL_TEXT(t));
 	if (!fmt)
 	{
-		snprintf(buf, len, "_new returned NULL.");
+		LOG_FAILURE(buf, len, "_new returned NULL.");
 		return 0;
 	}
 	ewl_widget_destroy(t);
@@ -107,7 +107,7 @@ tf_new_null_text(char *buf, int len)
 	fmt = ewl_text_fmt_new(NULL);
 	if (fmt)
 	{
-		snprintf(buf, len, "_new returned fmt when Ewl_Text was NULL.");
+		LOG_FAILURE(buf, len, "_new returned fmt when Ewl_Text was NULL.");
 		ewl_text_fmt_destroy(fmt);
 		return 0;
 	}
@@ -131,19 +131,19 @@ tf_clear(char *buf, int len)
 	ewl_text_fmt_clear(fmt);
 	if (ecore_dlist_count(fmt->nodes) != 0)
 	{
-		snprintf(buf, len, "_clear left items in -> nodes.");
+		LOG_FAILURE(buf, len, "_clear left items in -> nodes.");
 		return 0;
 	}
 	if ((fmt->current_node.char_idx != 0)
 			|| (fmt->current_node.byte_idx != 0))
 	{
-		snprintf(buf, len, "_clear didn't reset current_node values.");
+		LOG_FAILURE(buf, len, "_clear didn't reset current_node values.");
 		return 0;
 	}
 	if ((fmt->length.char_len != 0)
 			|| (fmt->length.byte_len != 0))
 	{
-		snprintf(buf, len, "_clear didn't reset length values.");
+		LOG_FAILURE(buf, len, "_clear didn't reset length values.");
 		return 0;
 	}
 
@@ -164,7 +164,7 @@ tf_count_empty(char *buf, int len)
 
 	if (ewl_text_fmt_node_count_get(fmt) != 0)
 	{
-		snprintf(buf, len, "_count returned non-zero on blank list.");
+		LOG_FAILURE(buf, len, "_count returned non-zero on blank list.");
 		return 0;
 	}
 	return 1;

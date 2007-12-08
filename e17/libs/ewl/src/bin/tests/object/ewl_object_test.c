@@ -80,7 +80,7 @@ position_test_set_get(char *buf, int len)
 	if (x == 11 && y == 23)
 		ret = 1;
 	else
-		snprintf(buf, len, "incorrect positions returned");
+		LOG_FAILURE(buf, len, "incorrect positions returned");
 
 	ewl_widget_destroy(w);
 
@@ -116,13 +116,13 @@ preferred_inner_size_test_set_get(char *buf, int len)
 			if (width == DIFFER_WIDTH && height == DIFFER_HEIGHT)
 				ret = 1;
 			else
-				snprintf(buf, len, "preferred inner sizes match");
+				LOG_FAILURE(buf, len, "preferred inner sizes match");
 		}
 		else
-			snprintf(buf, len, "preferred inner sizes differ");
+			LOG_FAILURE(buf, len, "preferred inner sizes differ");
 	}
 	else
-		snprintf(buf, len, "default preferred inner size %dx%d",
+		LOG_FAILURE(buf, len, "default preferred inner size %dx%d",
 			width, height);
 
 	ewl_widget_destroy(w);
@@ -159,13 +159,13 @@ preferred_size_test_set_get(char *buf, int len)
 			if (width == DIFFER_WIDTH && height == DIFFER_HEIGHT)
 				ret = 1;
 			else
-				snprintf(buf, len, "preferred sizes match");
+				LOG_FAILURE(buf, len, "preferred sizes match");
 		}
 		else
-			snprintf(buf, len, "preferred sizes differ");
+			LOG_FAILURE(buf, len, "preferred sizes differ");
 	}
 	else
-		snprintf(buf, len, "default preferred size %dx%d",
+		LOG_FAILURE(buf, len, "default preferred size %dx%d",
 			width, height);
 
 	ewl_widget_destroy(w);
@@ -200,13 +200,13 @@ minimum_size_test_set_get(char *buf, int len)
 			if (width == DIFFER_WIDTH && height == DIFFER_HEIGHT)
 				ret = 1;
 			else
-				snprintf(buf, len, "minimum sizes match");
+				LOG_FAILURE(buf, len, "minimum sizes match");
 		}
 		else
-			snprintf(buf, len, "minimum sizes differ");
+			LOG_FAILURE(buf, len, "minimum sizes differ");
 	}
 	else
-		snprintf(buf, len, "default minimum size %dx%d",
+		LOG_FAILURE(buf, len, "default minimum size %dx%d",
 			width, height);
 
 	ewl_widget_destroy(w);
@@ -241,13 +241,13 @@ maximum_size_test_set_get(char *buf, int len)
 			if (width == DIFFER_WIDTH && height == DIFFER_HEIGHT)
 				ret = 1;
 			else
-				snprintf(buf, len, "maximum sizes match");
+				LOG_FAILURE(buf, len, "maximum sizes match");
 		}
 		else
-			snprintf(buf, len, "maximum sizes differ");
+			LOG_FAILURE(buf, len, "maximum sizes differ");
 	}
 	else
-		snprintf(buf, len, "default maximum size %dx%d",
+		LOG_FAILURE(buf, len, "default maximum size %dx%d",
 			width, height);
 
 	ewl_widget_destroy(w);
@@ -297,15 +297,15 @@ minimum_size_test_set_request(char *buf, int len)
 			if (width == DIFFER_WIDTH && height == DIFFER_HEIGHT)
 				ret = 1;
 			else
-				snprintf(buf, len, "min size ignored %dx%d",
+				LOG_FAILURE(buf, len, "min size ignored %dx%d",
 						width, height);
 		}
 		else
-			snprintf(buf, len, "differing sizes wrong %dx%d",
+			LOG_FAILURE(buf, len, "differing sizes wrong %dx%d",
 					width, height);
 	}
 	else
-		snprintf(buf, len, "same sizes wrong %dx%d", width, height);
+		LOG_FAILURE(buf, len, "same sizes wrong %dx%d", width, height);
 
 	ewl_widget_destroy(w);
 
@@ -354,15 +354,15 @@ maximum_size_test_set_request(char *buf, int len)
 			if (width == DIFFER_WIDTH && height == DIFFER_HEIGHT)
 				ret = 1;
 			else
-				snprintf(buf, len, "max size ignored %dx%d",
+				LOG_FAILURE(buf, len, "max size ignored %dx%d",
 						width, height);
 		}
 		else
-			snprintf(buf, len, "differing sizes wrong %dx%d",
+			LOG_FAILURE(buf, len, "differing sizes wrong %dx%d",
 					width, height);
 	}
 	else
-		snprintf(buf, len, "same sizes wrong %dx%d", width, height);
+		LOG_FAILURE(buf, len, "same sizes wrong %dx%d", width, height);
 
 	ewl_widget_destroy(w);
 
@@ -383,14 +383,14 @@ padding_test_set_get(char *buf, int len)
 
 	ewl_object_padding_get(EWL_OBJECT(w), &l, &r, &t, &b);
 	if (l || r || t || b)
-		snprintf(buf, len, "initial padding not 0");
+		LOG_FAILURE(buf, len, "initial padding not 0");
 	else {
 		ewl_object_padding_set(EWL_OBJECT(w), 1, 2, 3, 4);
 		ewl_object_padding_get(EWL_OBJECT(w), &l, &r, &t, &b);
 		if (l == 1 && r == 2 && t == 3 && b == 4)
 			ret = 1;
 		else
-			snprintf(buf, len, "incorrect returned padding");
+			LOG_FAILURE(buf, len, "incorrect returned padding");
 	}
 
 	ewl_widget_destroy(w);
@@ -412,14 +412,14 @@ insets_test_set_get(char *buf, int len)
 
 	ewl_object_insets_get(EWL_OBJECT(w), &l, &r, &t, &b);
 	if (l || r || t || b)
-		snprintf(buf, len, "initial insets not 0");
+		LOG_FAILURE(buf, len, "initial insets not 0");
 	else {
 		ewl_object_insets_set(EWL_OBJECT(w), 1, 2, 3, 4);
 		ewl_object_insets_get(EWL_OBJECT(w), &l, &r, &t, &b);
 		if (l == 1 && r == 2 && t == 3 && b == 4)
 			ret = 1;
 		else
-			snprintf(buf, len, "incorrect returned insets");
+			LOG_FAILURE(buf, len, "incorrect returned insets");
 	}
 
 	ewl_widget_destroy(w);
@@ -447,7 +447,7 @@ padding_test_set_size_get(char *buf, int len)
 			height == (7 + EWL_OBJECT_MIN_SIZE))
 		ret = 1;
 	else
-		snprintf(buf, len, "incorrect returned size %dx%d", width,
+		LOG_FAILURE(buf, len, "incorrect returned size %dx%d", width,
 				height);
 
 	ewl_widget_destroy(w);
@@ -474,7 +474,7 @@ insets_test_set_size_get(char *buf, int len)
 	if (width == 4 && height == 8)
 		ret = 1;
 	else
-		snprintf(buf, len, "incorrect returned size %dx%d", width,
+		LOG_FAILURE(buf, len, "incorrect returned size %dx%d", width,
 				height);
 
 	ewl_widget_destroy(w);
@@ -503,7 +503,7 @@ insets_padding_test_set_size_get(char *buf, int len)
 			height == (10 + EWL_OBJECT_MIN_SIZE))
 		ret = 1;
 	else
-		snprintf(buf, len, "incorrect returned size %dx%d", width,
+		LOG_FAILURE(buf, len, "incorrect returned size %dx%d", width,
 				height);
 
 	ewl_widget_destroy(w);
@@ -538,10 +538,10 @@ fill_policy_test_set_get(char *buf, int len)
 		if (!fill)
 			ret = 1;
 		else
-			snprintf(buf, len, "fill none incorrect");
+			LOG_FAILURE(buf, len, "fill none incorrect");
 	}
 	else
-		snprintf(buf, len, "fill all missing flags");
+		LOG_FAILURE(buf, len, "fill all missing flags");
 
 	ewl_widget_destroy(w);
 
@@ -573,10 +573,10 @@ alignment_test_set_get(char *buf, int len)
 		if (!align)
 			ret = 1;
 		else
-			snprintf(buf, len, "align none incorrect");
+			LOG_FAILURE(buf, len, "align none incorrect");
 	}
 	else
-		snprintf(buf, len, "alignment missing flags");
+		LOG_FAILURE(buf, len, "alignment missing flags");
 
 	ewl_widget_destroy(w);
 

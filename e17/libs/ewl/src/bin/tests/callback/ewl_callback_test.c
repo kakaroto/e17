@@ -108,7 +108,7 @@ append_test_id(char *buf, int len)
 	if (id)
 		ret = 1;
 	else
-		snprintf(buf, len, "invalid callback id returned");
+		LOG_FAILURE(buf, len, "invalid callback id returned");
 
 	ewl_widget_destroy(w);
 
@@ -132,7 +132,7 @@ prepend_test_id(char *buf, int len)
 	if (id)
 		ret = 1;
 	else
-		snprintf(buf, len, "invalid callback id returned");
+		LOG_FAILURE(buf, len, "invalid callback id returned");
 
 	ewl_widget_destroy(w);
 
@@ -158,7 +158,7 @@ insert_after_test_id(char *buf, int len)
 	if (id)
 		ret = 1;
 	else
-		snprintf(buf, len, "invalid callback id returned");
+		LOG_FAILURE(buf, len, "invalid callback id returned");
 
 	ewl_widget_destroy(w);
 
@@ -184,7 +184,7 @@ shared_test_id(char *buf, int len)
 	if (id == id2)
 		ret = 1;
 	else
-		snprintf(buf, len, "callback id's don't match");
+		LOG_FAILURE(buf, len, "callback id's don't match");
 
 	ewl_widget_destroy(w);
 
@@ -214,11 +214,11 @@ unique_test_id(char *buf, int len)
 		if (id != id2)
 			ret = 1;
 		else
-			snprintf(buf, len, "callback with different functions"
+			LOG_FAILURE(buf, len, "callback with different functions"
 				       " id's match");
 	}
 	else
-		snprintf(buf, len, "callback with different data id's match");
+		LOG_FAILURE(buf, len, "callback with different data id's match");
 
 	ewl_widget_destroy(w);
 
@@ -242,7 +242,7 @@ del_test_call(char *buf, int len)
 	if ((long)ewl_widget_data_get(w, w) != 1)
 		ret = 1;
 	else
-		snprintf(buf, len, "del failed to remove callback");
+		LOG_FAILURE(buf, len, "del failed to remove callback");
 
 	ewl_widget_destroy(w);
 
@@ -267,7 +267,7 @@ del_type_test_call(char *buf, int len)
 	if ((long)ewl_widget_data_get(w, w) != 1)
 		ret = 1;
 	else
-		snprintf(buf, len, "del_type failed to remove callback");
+		LOG_FAILURE(buf, len, "del_type failed to remove callback");
 
 	ewl_widget_destroy(w);
 
@@ -292,7 +292,7 @@ clear_test_call(char *buf, int len)
 	if ((long)ewl_widget_data_get(w, w) != 1)
 		ret = 1;
 	else
-		snprintf(buf, len, "clear failed to remove callback");
+		LOG_FAILURE(buf, len, "clear failed to remove callback");
 
 	ewl_widget_destroy(w);
 
@@ -316,7 +316,7 @@ append_test_call(char *buf, int len)
 	if ((long)ewl_widget_data_get(w, w) == 1)
 		ret = 1;
 	else
-		snprintf(buf, len, "callback function not called");
+		LOG_FAILURE(buf, len, "callback function not called");
 
 	ewl_widget_destroy(w);
 
@@ -340,7 +340,7 @@ prepend_test_call(char *buf, int len)
 	if ((long)ewl_widget_data_get(w, w) == 1)
 		ret = 1;
 	else
-		snprintf(buf, len, "callback function not called");
+		LOG_FAILURE(buf, len, "callback function not called");
 
 	ewl_widget_destroy(w);
 
@@ -365,7 +365,7 @@ append_in_chain_test_call(char *buf, int len)
 	if ((long)ewl_widget_data_get(w, w) == 1)
 		ret = 1;
 	else
-		snprintf(buf, len, "callback function not called");
+		LOG_FAILURE(buf, len, "callback function not called");
 
 	ewl_widget_destroy(w);
 
@@ -390,7 +390,7 @@ prepend_in_chain_test_call(char *buf, int len)
 	if ((long)ewl_widget_data_get(w, w) != 1)
 		ret = 1;
 	else
-		snprintf(buf, len, "callback function called");
+		LOG_FAILURE(buf, len, "callback function called");
 
 	ewl_widget_destroy(w);
 
@@ -418,7 +418,7 @@ insert_after_in_chain_test_call(char *buf, int len)
 	if ((long)ewl_widget_data_get(w, w) == 1)
 		ret = 1;
 	else
-		snprintf(buf, len, "callback function not called");
+		LOG_FAILURE(buf, len, "callback function not called");
 
 	ewl_widget_destroy(w);
 
@@ -446,7 +446,7 @@ insert_before_in_chain_test_call(char *buf, int len)
 	if ((long)ewl_widget_data_get(w, w) == 2)
 		ret = 1;
 	else
-		snprintf(buf, len, "callback function called");
+		LOG_FAILURE(buf, len, "callback function called");
 
 	ewl_widget_destroy(w);
 
@@ -476,7 +476,7 @@ delete_before_in_chain_test_call(char *buf, int len)
 	if ((long)ewl_widget_data_get(w, w) == 2)
 		ret = 1;
 	else
-		snprintf(buf, len, "callback function not called");
+		LOG_FAILURE(buf, len, "callback function not called");
 
 	ewl_widget_destroy(w);
 
@@ -506,7 +506,7 @@ delete_after_in_chain_test_call(char *buf, int len)
 	if ((long)ewl_widget_data_get(w, w) == 2)
 		ret = 1;
 	else
-		snprintf(buf, len, "callback function called");
+		LOG_FAILURE(buf, len, "callback function called");
 
 	ewl_widget_destroy(w);
 
@@ -534,7 +534,7 @@ delete_nothing_in_chain_test_call(char *buf, int len)
 	if ((long)ewl_widget_data_get(w, w) == 2)
 		ret = 1;
 	else
-		snprintf(buf, len, "callback function not called");
+		LOG_FAILURE(buf, len, "callback function not called");
 
 	ewl_widget_destroy(w);
 
@@ -553,7 +553,7 @@ custom_callback_test_add(char *buf, int len)
 	if (CALLBACK_CUSTOM_TYPE > EWL_CALLBACK_MAX)
 		ret = 1;
 	else
-		snprintf(buf, len, "callback type registration failed");
+		LOG_FAILURE(buf, len, "callback type registration failed");
 
 	return ret;
 }
@@ -570,7 +570,7 @@ custom_callback_test_unique(char *buf, int len)
 	if (CALLBACK_CUSTOM_TYPE != CALLBACK_CUSTOM_TYPE2)
 		ret = 1;
 	else
-		snprintf(buf, len, "callback type not unique");
+		LOG_FAILURE(buf, len, "callback type not unique");
 
 	return ret;
 }
@@ -591,7 +591,7 @@ custom_callback_test_append(char *buf, int len)
 	if ((long)ewl_widget_data_get(w, w) == 1)
 		ret = 1;
 	else
-		snprintf(buf, len, "callback function not called");
+		LOG_FAILURE(buf, len, "callback function not called");
 
 	ewl_widget_destroy(w);
 
@@ -614,7 +614,7 @@ custom_callback_test_prepend(char *buf, int len)
 	if ((long)ewl_widget_data_get(w, w) == 1)
 		ret = 1;
 	else
-		snprintf(buf, len, "callback function not called");
+		LOG_FAILURE(buf, len, "callback function not called");
 
 	ewl_widget_destroy(w);
 
@@ -639,7 +639,7 @@ custom_callback_test_insert_after(char *buf, int len)
 	if ((long)ewl_widget_data_get(w, w) == 2)
 		ret = 1;
 	else
-		snprintf(buf, len, "callback function not called");
+		LOG_FAILURE(buf, len, "callback function not called");
 
 	ewl_widget_destroy(w);
 
@@ -663,7 +663,7 @@ custom_callback_test_del_single(char *buf, int len)
 	if ((long)ewl_widget_data_get(w, w) == 0)
 		ret = 1;
 	else
-		snprintf(buf, len, "callback function called");
+		LOG_FAILURE(buf, len, "callback function called");
 
 	ewl_widget_destroy(w);
 
@@ -695,10 +695,10 @@ custom_callback_test_del_multiple(char *buf, int len)
 		if ((long)ewl_widget_data_get(w, w) == 1)
 			ret = 1;
 		else
-			snprintf(buf, len, "first callback function called");
+			LOG_FAILURE(buf, len, "first callback function called");
 	}
 	else
-		snprintf(buf, len, "second callback function called");
+		LOG_FAILURE(buf, len, "second callback function called");
 
 	ewl_widget_destroy(w);
 
@@ -722,7 +722,7 @@ custom_callback_test_del_type_single(char *buf, int len)
 	if ((long)ewl_widget_data_get(w, w) == 0)
 		ret = 1;
 	else
-		snprintf(buf, len, "callback function called");
+		LOG_FAILURE(buf, len, "callback function called");
 
 	ewl_widget_destroy(w);
 
@@ -750,10 +750,10 @@ custom_callback_test_del_type_multiple(char *buf, int len)
 		if ((long)ewl_widget_data_get(w, w) == 2)
 			ret = 1;
 		else
-			snprintf(buf, len, "callback function called");
+			LOG_FAILURE(buf, len, "callback function called");
 	}
 	else
-		snprintf(buf, len, "callback function not called");
+		LOG_FAILURE(buf, len, "callback function not called");
 
 	ewl_widget_destroy(w);
 
@@ -777,7 +777,7 @@ custom_callback_test_clear(char *buf, int len)
 	if ((long)ewl_widget_data_get(w, w) == 0)
 		ret = 1;
 	else
-		snprintf(buf, len, "callback function called");
+		LOG_FAILURE(buf, len, "callback function called");
 
 	ewl_widget_destroy(w);
 

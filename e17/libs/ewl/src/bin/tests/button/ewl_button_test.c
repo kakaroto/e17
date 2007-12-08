@@ -215,7 +215,7 @@ label_test_set_get(char *buf, int len)
 
 	ewl_button_label_set(EWL_BUTTON(button), "my_label");
 	if (strcmp("my_label", ewl_button_label_get(EWL_BUTTON(button))))
-		snprintf(buf, len, "label_get dosen't match label_set");
+		LOG_FAILURE(buf, len, "label_get dosen't match label_set");
 	else
 		ret = 1;
 
@@ -233,7 +233,7 @@ image_null_test_get(char *buf, int len)
 	button = ewl_button_new();
 
 	if (ewl_button_image_get(EWL_BUTTON(button)))
-		snprintf(buf, len, "image_get not NULL");
+		LOG_FAILURE(buf, len, "image_get not NULL");
 	else
 		ret = 1;
 
@@ -254,7 +254,7 @@ image_null_test_set_get(char *buf, int len)
 	ewl_button_image_set(EWL_BUTTON(button), NULL, NULL);
 	val = ewl_button_image_get(EWL_BUTTON(button));
 	if (val)
-		snprintf(buf, len, "image_get %s when set to NULL", val);
+		LOG_FAILURE(buf, len, "image_get %s when set to NULL", val);
 	else
 		ret = 1;
 
@@ -273,7 +273,7 @@ image_nonexist_relative_test_set_get(char *buf, int len)
 
 	ewl_button_image_set(EWL_BUTTON(button), "my_image", NULL);
 	if (strcmp("my_image", ewl_button_image_get(EWL_BUTTON(button))))
-		snprintf(buf, len, "image_get dosen't match image_set");
+		LOG_FAILURE(buf, len, "image_get dosen't match image_set");
 	else
 		ret = 1;
 
@@ -293,7 +293,7 @@ image_size_null_height_test_set_get(char *buf, int len)
 
 	ewl_button_image_size_get(EWL_BUTTON(button), &w, NULL);
 	if (w != 0)
-		snprintf(buf, len, "image_size_get width not 0");
+		LOG_FAILURE(buf, len, "image_size_get width not 0");
 	else
 		ret = 1;
 
@@ -313,7 +313,7 @@ image_size_null_width_test_set_get(char *buf, int len)
 
 	ewl_button_image_size_get(EWL_BUTTON(button), NULL, &h);
 	if (h != 0)
-		snprintf(buf, len, "image_size_get height not 0");
+		LOG_FAILURE(buf, len, "image_size_get height not 0");
 	else
 		ret = 1;
 
@@ -334,7 +334,7 @@ image_size_match_test_set_get(char *buf, int len)
 	ewl_button_image_size_set(EWL_BUTTON(button), 32, 32);
 	ewl_button_image_size_get(EWL_BUTTON(button), &w, &h);
 	if (w != 32 || h != 32)
-		snprintf(buf, len, "image_size_get width and height don't match");
+		LOG_FAILURE(buf, len, "image_size_get width and height don't match");
 	else
 		ret = 1;
 
@@ -354,7 +354,7 @@ image_size_differ_test_set_get(char *buf, int len)
 	ewl_button_image_size_set(EWL_BUTTON(button), 30, 24);
 	ewl_button_image_size_get(EWL_BUTTON(button), &w, &h);
 	if (w != 30 || h != 24)
-		snprintf(buf, len, "image_size_get width and height don't differ");
+		LOG_FAILURE(buf, len, "image_size_get width and height don't differ");
 	else
 		ret = 1;
 
@@ -374,7 +374,7 @@ image_size_max_int_test_set_get(char *buf, int len)
 	ewl_button_image_size_set(EWL_BUTTON(button), INT_MAX, INT_MAX);
 	ewl_button_image_size_get(EWL_BUTTON(button), &w, &h);
 	if (w != INT_MAX|| h != INT_MAX)
-		snprintf(buf, len, "image_size_get width and height not INT_MAX");
+		LOG_FAILURE(buf, len, "image_size_get width and height not INT_MAX");
 	else
 		ret = 1;
 
