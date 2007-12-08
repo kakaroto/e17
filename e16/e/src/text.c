@@ -754,9 +754,8 @@ TextStateLoadFont(TextState * ts)
 		goto fallback;
 	  }
 #endif
-	ts->ops = fhp->ops;
-	ts->ops->Load(ts, name);
-	goto done;
+	if (fhp->ops->Load(ts, name) == 0)
+	   goto done;
      }
  fallback:
 #if FONT_TYPE_XFS
