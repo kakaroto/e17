@@ -217,7 +217,11 @@ ewl_widget_realize(Ewl_Widget *w)
 	if (w->parent && !REALIZED(w->parent))
 		ewl_widget_realize(w->parent);
 
-	else if (w->parent || ewl_object_toplevel_get(EWL_OBJECT(w))) {
+	/*
+	 * The parent should be realized at this point, and we can handle
+	 * realizing ourselves.
+	 */
+	if (w->parent || ewl_object_toplevel_get(EWL_OBJECT(w))) {
 		ewl_object_queued_add(EWL_OBJECT(w), EWL_FLAG_QUEUED_PROCESS_REVEAL);
 		ewl_callback_call(w, EWL_CALLBACK_REALIZE);
 		ewl_object_queued_remove(EWL_OBJECT(w),
@@ -227,8 +231,6 @@ ewl_widget_realize(Ewl_Widget *w)
 					EWL_FLAG_VISIBLE_REALIZED);
 		ewl_widget_obscure(w);
 	}
-
-	ewl_widget_show(w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -284,7 +286,13 @@ ewl_widget_reveal(Ewl_Widget *w)
 	DCHECK_PARAM_PTR(w);
 	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	if (REVEALED(w))
+	/*
+	 * Already revealed widgets can be skipped, as can unrealized widgets,
+	 * unless the are already queued for reveal, ie. in the realize process.
+	 */
+	if (REVEALED(w) || (!REALIZED(w) && !ewl_object_queued_has(
+					EWL_OBJECT(w),
+					EWL_FLAG_QUEUED_SCHEDULED_REVEAL)))
 		DRETURN(DLEVEL_STABLE);
 
 	ewl_object_visible_add(EWL_OBJECT(w), EWL_FLAG_VISIBLE_REVEALED);

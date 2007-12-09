@@ -301,7 +301,7 @@ appearance_test_set_get(char *buf, int len)
 
 	ewl_widget_appearance_set(w, "my_appearance");
 	if (strcmp("my_appearance", ewl_widget_appearance_get(w)))
-		snprintf(buf, len, "appearance_get doesn't match appearance_set");
+		LOG_FAILURE(buf, len, "appearance_get doesn't match appearance_set");
 	else
 		ret = 1;
 
@@ -325,10 +325,10 @@ inheritance_test_set_get(char *buf, int len)
 
 	ewl_widget_inherit(w, my_class);
 	if (!ewl_widget_type_is(w, my_class))
-		snprintf(buf, len, "inheritance doesn't contain correct type");
+		LOG_FAILURE(buf, len, "inheritance doesn't contain correct type");
 	else {
 		if (ewl_widget_type_is(w, unknown_class))
-			snprintf(buf, len,
+			LOG_FAILURE(buf, len,
 					"inheritance contains incorrect type");
 		else
 			ret = 1;
@@ -355,15 +355,15 @@ internal_test_set_get(char *buf, int len)
 		if (ewl_widget_internal_is(w)) {
 			ewl_widget_internal_set(w, FALSE);
 			if (ewl_widget_internal_is(w))
-				snprintf(buf, len, "internal flag not FALSE");
+				LOG_FAILURE(buf, len, "internal flag not FALSE");
 			else
 				ret = 1;
 		}
 		else
-			snprintf(buf, len, "internal flag not TRUE");
+			LOG_FAILURE(buf, len, "internal flag not TRUE");
 	}
 	else
-		snprintf(buf, len, "internal set after widget_init");
+		LOG_FAILURE(buf, len, "internal set after widget_init");
 
 	return ret;
 }
@@ -386,15 +386,15 @@ clipped_test_set_get(char *buf, int len)
 		if (!ewl_widget_clipped_is(w)) {
 			ewl_widget_clipped_set(w, TRUE);
 			if (!ewl_widget_clipped_is(w))
-				snprintf(buf, len, "clipped flag not TRUE");
+				LOG_FAILURE(buf, len, "clipped flag not TRUE");
 			else
 				ret = 1;
 		}
 		else
-			snprintf(buf, len, "clipped flag not FALSE");
+			LOG_FAILURE(buf, len, "clipped flag not FALSE");
 	}
 	else
-		snprintf(buf, len, "clipped not set after widget_init");
+		LOG_FAILURE(buf, len, "clipped not set after widget_init");
 
 	return ret;
 }
@@ -420,9 +420,9 @@ data_test_set_get(char *buf, int len)
 	found = ewl_widget_data_get(w, key);
 
 	if (!found)
-		snprintf(buf, len, "could not find set data");
+		LOG_FAILURE(buf, len, "could not find set data");
 	else if (found != value)
-		snprintf(buf, len, "found value does not match set data");
+		LOG_FAILURE(buf, len, "found value does not match set data");
 	else
 		ret = 1;
 
@@ -449,11 +449,11 @@ data_test_set_remove(char *buf, int len)
 	found = ewl_widget_data_del(w, key);
 
 	if (!found)
-		snprintf(buf, len, "could not find set data");
+		LOG_FAILURE(buf, len, "could not find set data");
 	else if (found != value)
-		snprintf(buf, len, "removed value does not match set data");
+		LOG_FAILURE(buf, len, "removed value does not match set data");
 	else if (ewl_widget_data_get(w, key))
-		snprintf(buf, len, "data value present after remove");
+		LOG_FAILURE(buf, len, "data value present after remove");
 	else
 		ret = 1;
 
@@ -471,7 +471,7 @@ widget_new(char *buf, int len)
 
 	w = ewl_widget_new();
 	if (!w)
-		snprintf(buf, len, "Failed to create widget");
+		LOG_FAILURE(buf, len, "Failed to create widget");
 	else
 	{
 		ewl_widget_destroy(w);
@@ -493,11 +493,11 @@ init(char *buf, int len)
 
 	w = ewl_widget_new();
 	if (VISIBLE(w))
-		snprintf(buf, len, "Widget VISIBLE after _init");
+		LOG_FAILURE(buf, len, "Widget VISIBLE after _init");
 	else if (REALIZED(w))
-		snprintf(buf, len, "Widget REALIZED after _init");
+		LOG_FAILURE(buf, len, "Widget REALIZED after _init");
 	else if (REVEALED(w))
-		snprintf(buf, len, "Widget REVEALED after _init");
+		LOG_FAILURE(buf, len, "Widget REVEALED after _init");
 	else
 		ret = 1;
 
@@ -519,11 +519,11 @@ show(char *buf, int len)
 	ewl_widget_show(w);
 
 	if (!VISIBLE(w))
-		snprintf(buf, len, "Widget !VISIBLE after show");
+		LOG_FAILURE(buf, len, "Widget !VISIBLE after show");
 	else if (REALIZED(w))
-		snprintf(buf, len, "Widget REALIZED after show");
+		LOG_FAILURE(buf, len, "Widget REALIZED after show");
 	else if (REVEALED(w))
-		snprintf(buf, len, "Widget REVEALED after show");
+		LOG_FAILURE(buf, len, "Widget REVEALED after show");
 	else
 		ret = 1;
 
@@ -543,14 +543,40 @@ realize(char *buf, int len)
 	w = ewl_widget_new();
 	ewl_widget_realize(w);
 	if (VISIBLE(w))
-		snprintf(buf, len, "Widget VISIBLE after realize");
-	else if (!REALIZED(w))
-		snprintf(buf, len, "Widget !REALIZED after realize");
+		LOG_FAILURE(buf, len, "Widget VISIBLE after realize");
+	else if (REALIZED(w))
+		LOG_FAILURE(buf, len, "Widget REALIZED without window");
 	else if (REVEALED(w))
-		snprintf(buf, len, "Widget REVEALED after realize");
+		LOG_FAILURE(buf, len, "Widget REVEALED after realize");
 	else
-		ret = 1;
+	{
+		Ewl_Widget *win;
 
+		/*
+		 * Create a window and add the child to allow the realize to
+		 * succeed. This will be using the buffer engine.
+		 */
+		win = ewl_window_new();
+		ewl_embed_engine_name_set(EWL_EMBED(win), "evas_buffer");
+
+		ewl_container_child_append(EWL_CONTAINER(win), w);
+		ewl_widget_realize(w);
+
+		if (VISIBLE(win))
+			LOG_FAILURE(buf, len, "Window VISIBLE after realize");
+		else if (!REALIZED(win))
+			LOG_FAILURE(buf, len, "Window !REALIZED after realize");
+		else if (!REALIZED(w))
+			LOG_FAILURE(buf, len, "Widget !REALIZED after realize");
+		else if (REVEALED(w))
+			LOG_FAILURE(buf, len, "Widget REVEALED after realize");
+		else if (REVEALED(win))
+			LOG_FAILURE(buf, len, "Window REVEALED after realize");
+		else
+			ret = 1;
+
+		ewl_widget_destroy(win);
+	}
 	ewl_widget_destroy(w);
 	return ret;
 }
@@ -571,11 +597,11 @@ realize_unrealize(char *buf, int len)
 	if (VISIBLE(w))
 		/* This is the currently expected behavior, but we're discussing
 		 * if this is really the behavior we want */
-		snprintf(buf, len, "Widget VISIBLE after realize/unrealize");
+		LOG_FAILURE(buf, len, "Widget VISIBLE after realize/unrealize");
 	else if (REALIZED(w))
-		snprintf(buf, len, "Widget REALIZED after realize/unrealize");
+		LOG_FAILURE(buf, len, "Widget REALIZED after realize/unrealize");
 	else if (REVEALED(w))
-		snprintf(buf, len, "Widget REVEALED after realize/unrealize");
+		LOG_FAILURE(buf, len, "Widget REVEALED after realize/unrealize");
 	else 
 		ret = 1;
 
@@ -598,13 +624,13 @@ parent_set(char *buf, int len)
 	w = ewl_widget_new();
 	ewl_widget_parent_set(w, b);
 	if (!w->parent)
-		snprintf(buf, len, "Widget parent NULL after parent set");
+		LOG_FAILURE(buf, len, "Widget parent NULL after parent set");
 	else if (VISIBLE(w))
-		snprintf(buf, len, "Widget VISIBLE after parent set");
+		LOG_FAILURE(buf, len, "Widget VISIBLE after parent set");
 	else if (REALIZED(w))
-		snprintf(buf, len, "Widget REALIZED after parent set");
+		LOG_FAILURE(buf, len, "Widget REALIZED after parent set");
 	else if (REVEALED(w))
-		snprintf(buf, len, "Widget REVEALED after parent set");
+		LOG_FAILURE(buf, len, "Widget REVEALED after parent set");
 	else
 		ret = 1;
 
@@ -630,16 +656,16 @@ parent_set_show(char *buf, int len)
 	ewl_widget_parent_set(w, b);
 
 	if (!w->parent)
-		snprintf(buf, len, "Parent NULL after parent_set");
+		LOG_FAILURE(buf, len, "Parent NULL after parent_set");
 	else if (!VISIBLE(w))
-		snprintf(buf, len, "Widget !VISIBLE after parent_set");
+		LOG_FAILURE(buf, len, "Widget !VISIBLE after parent_set");
 	else if (REALIZED(w))
 		/* The widget has not been realized yet as that happens in the
 		 * idle loop, so this should test that it is still not realized
 		 * after changing parents. */
-		snprintf(buf, len, "Widget REALIZED after parent_set");
+		LOG_FAILURE(buf, len, "Widget REALIZED after parent_set");
 	else if (REVEALED(w))
-		snprintf(buf, len, "Widget REVEALED after parent_set");
+		LOG_FAILURE(buf, len, "Widget REVEALED after parent_set");
 	else
 		ret = 1;
 
@@ -669,15 +695,15 @@ reparent_unrealized(char *buf, int len)
 	ewl_widget_parent_set(w, b2);
 
 	if (!w->parent)
-		snprintf(buf, len, "Widget parent NULL after reparent");
+		LOG_FAILURE(buf, len, "Widget parent NULL after reparent");
 	else if (w->parent != b2)
-		snprintf(buf, len, "Widget parent != b2 after reparent");
+		LOG_FAILURE(buf, len, "Widget parent != b2 after reparent");
 	else if (VISIBLE(w))
-		snprintf(buf, len, "Widget VISIBLE after reparent");
+		LOG_FAILURE(buf, len, "Widget VISIBLE after reparent");
 	else if (REALIZED(w))
-		snprintf(buf, len, "Widget REALIZED after reparent");
+		LOG_FAILURE(buf, len, "Widget REALIZED after reparent");
 	else if (REVEALED(w))
-		snprintf(buf, len, "Widget REVEALED after reparent");
+		LOG_FAILURE(buf, len, "Widget REVEALED after reparent");
 	else 
 		ret = 1;
 
@@ -705,17 +731,15 @@ reparent_realized(char *buf, int len)
 	ewl_widget_parent_set(w, b2);
 
 	if (!w->parent)
-		snprintf(buf, len, "Widget parent NULL after reparent");
+		LOG_FAILURE(buf, len, "Widget parent NULL after reparent");
 	else if (w->parent != b2)
-		snprintf(buf, len, "Widget parent != b2 after reparent");
+		LOG_FAILURE(buf, len, "Widget parent != b2 after reparent");
 	else if (!VISIBLE(w))
-		snprintf(buf, len, "Widget !VISIBLE after reparent");
-	else if (!REALIZED(w))
-		/* FIXME: This can't possibly be REALIZED, since there is no
-		 * top level parent. */
-		snprintf(buf, len, "Widget !REALIZED after reparent");
+		LOG_FAILURE(buf, len, "Widget !VISIBLE after reparent");
+	else if (REALIZED(w))
+		LOG_FAILURE(buf, len, "Widget REALIZED after reparent");
 	else if (REVEALED(w))
-		snprintf(buf, len, "Widget REVEALED after reparent");
+		LOG_FAILURE(buf, len, "Widget REVEALED after reparent");
 	else 
 		ret = 1;
 
@@ -737,13 +761,46 @@ realize_reveal(char *buf, int len)
 	ewl_widget_reveal(w);
 
 	if (VISIBLE(w))
-		snprintf(buf, len, "Widget VISIBLE after realize/reveal");
-	else if (!REALIZED(w))
-		snprintf(buf, len, "Widget !REALIZED after realize/reveal");
-	else if (!REVEALED(w))
-		snprintf(buf, len, "Widget !REVEALED after realize/reveal");
+		LOG_FAILURE(buf, len, "Widget VISIBLE after realize/reveal");
+	else if (REALIZED(w))
+		LOG_FAILURE(buf, len, "Widget REALIZED after realize/reveal");
+	else if (REVEALED(w))
+		LOG_FAILURE(buf, len, "Widget REVEALED after realize/reveal");
 	else 
-		ret = 1;
+	{
+		Ewl_Widget *win;
+
+		/*
+		 * Create a window and add the child to allow the realize to
+		 * succeed. This will be using the buffer engine.
+		 */
+		win = ewl_window_new();
+		ewl_embed_engine_name_set(EWL_EMBED(win), "evas_buffer");
+
+		ewl_container_child_append(EWL_CONTAINER(win), w);
+		ewl_widget_realize(w);
+		ewl_widget_reveal(w);
+
+		if (VISIBLE(win))
+			LOG_FAILURE(buf, len,
+					"Window VISIBLE after realize/reveal");
+		else if (!REALIZED(win))
+			LOG_FAILURE(buf, len,
+					"Window !REALIZED after realize/reveal");
+		else if (!REALIZED(w))
+			LOG_FAILURE(buf, len,
+					"Widget !REALIZED after realize/reveal");
+		else if (!REVEALED(w))
+			LOG_FAILURE(buf, len,
+					"Widget !REVEALED after realize/reveal");
+		else if (REVEALED(win))
+			LOG_FAILURE(buf, len,
+					"Window REVEALED after realize/reveal");
+		else
+			ret = 1;
+
+		ewl_widget_destroy(win);
+	}
 
 	ewl_widget_destroy(w);
 	return ret;
@@ -753,23 +810,45 @@ static int
 realize_reveal_obscure(char *buf, int len)
 {
 	Ewl_Widget *w;
+	Ewl_Widget *win;
 	int ret = 0;
 
 	w = ewl_widget_new();
+
+	/*
+	 * Create a window and add the child to allow the realize to
+	 * succeed. This will be using the buffer engine.
+	 */
+	win = ewl_window_new();
+	ewl_embed_engine_name_set(EWL_EMBED(win), "evas_buffer");
+
+	ewl_container_child_append(EWL_CONTAINER(win), w);
 	ewl_widget_realize(w);
 	ewl_widget_reveal(w);
+	ewl_widget_obscure(w);
 
-	if (VISIBLE(w))
-		/* Realize presently triggers a show, so this is presently the
-		 * correct behavior but it is up for discussion right now. */
-		snprintf(buf, len, "Widget VISIBLE after realize/reveal/obscure");
+	if (VISIBLE(win))
+		LOG_FAILURE(buf, len,
+				"Window VISIBLE after realize/reveal/obscure");
+	else if (!REALIZED(win))
+		LOG_FAILURE(buf, len,
+				"Window !REALIZED after realize/reveal/obscure");
 	else if (!REALIZED(w))
-		snprintf(buf, len, "Widget !REALIZED after realize/reveal/obscure");
+		LOG_FAILURE(buf, len,
+				"Widget !REALIZED after realize/reveal/obscure");
 	else if (REVEALED(w))
-		snprintf(buf, len, "Widget REVEALED after realize/reveal/obscure");
-	else 
+		LOG_FAILURE(buf, len,
+				"Widget REVEALED after realize/reveal/obscure");
+	else if (REVEALED(win))
+		LOG_FAILURE(buf, len,
+				"Window REVEALED after realize/reveal/obscure");
+	else if (REVEALED(win))
+		LOG_FAILURE(buf, len,
+				"Window REVEALED after realize/reveal/obscure");
+	else
 		ret = 1;
 
+	ewl_widget_destroy(win);
 	ewl_widget_destroy(w);
 	return ret;
 }
@@ -778,24 +857,37 @@ static int
 realize_reveal_unrealize(char *buf, int len)
 {
 	Ewl_Widget *w;
+	Ewl_Widget *win;
 	int ret = 0;
 
 	w = ewl_widget_new();
+
+	/*
+	 * Create a window and add the child to allow the realize to
+	 * succeed. This will be using the buffer engine.
+	 */
+	win = ewl_window_new();
+	ewl_embed_engine_name_set(EWL_EMBED(win), "evas_buffer");
+
+	ewl_container_child_append(EWL_CONTAINER(win), w);
 	ewl_widget_realize(w);
 	ewl_widget_reveal(w);
 	ewl_widget_unrealize(w);
 
 	if (VISIBLE(w))
-		/* This is another case where the realize has caused the show.
-		 * Since that occurs, being VISIBLE is correct. */
-		snprintf(buf, len, "Widget VISIBLE after realize/reveal/unrealize");
+		LOG_FAILURE(buf, len, "Widget VISIBLE after realize/reveal/unrealize");
 	else if (REALIZED(w))
-		snprintf(buf, len, "Widget REALIZED after realize/reveal/unrealize");
+		LOG_FAILURE(buf, len, "Widget REALIZED after realize/reveal/unrealize");
+	else if (!REALIZED(win))
+		LOG_FAILURE(buf, len, "Window !REALIZED after realize/reveal/unrealize");
 	else if (REVEALED(w))
-		snprintf(buf, len, "Widget REVEALED after realize/reveal/unrealize");
+		LOG_FAILURE(buf, len, "Widget REVEALED after realize/reveal/unrealize");
+	else if (REVEALED(win))
+		LOG_FAILURE(buf, len, "Window REVEALED after realize/reveal/unrealize");
 	else 
 		ret = 1;
 
+	ewl_widget_destroy(win);
 	ewl_widget_destroy(w);
 	return ret;
 }
@@ -811,7 +903,7 @@ widget_is_test(char *buf, int len)
 
 	w = ewl_widget_new();
 	if (!EWL_WIDGET_IS(w))
-		snprintf(buf, len, "Widget is not Widget type");
+		LOG_FAILURE(buf, len, "Widget is not Widget type");
 	else
 		ret = 1;
 	
@@ -833,7 +925,7 @@ name_test_set_get(char *buf, int len)
 	ewl_widget_name_set(w, "test widget");
 	name = ewl_widget_name_get(w);
 	if (strcmp("test widget", name))
-		snprintf(buf, len, "Returned name '%s' not 'test widget'", name);
+		LOG_FAILURE(buf, len, "Returned name '%s' not 'test widget'", name);
 	else
 		ret = 1;
 	
@@ -854,7 +946,7 @@ name_test_nul_set_get(char *buf, int len)
 	ewl_widget_name_set(w, "test name");
 	ewl_widget_name_set(w, NULL);
 	if (NULL != ewl_widget_name_get(w))
-		snprintf(buf, len, "Widget name not NULL");
+		LOG_FAILURE(buf, len, "Widget name not NULL");
 	else
 		ret = 1;
 
@@ -875,7 +967,7 @@ name_find_test(char *buf, int len)
 	ewl_widget_name_set(w1, "test widget");
 	w2 = ewl_widget_name_find("test widget");
 	if (w1 != w2)
-		snprintf(buf, len, "widget found not equal to widget set");
+		LOG_FAILURE(buf, len, "widget found not equal to widget set");
 	else
 		ret = 1;
 
@@ -894,7 +986,7 @@ name_find_missing_test(char *buf, int len)
 
 	w = ewl_widget_name_find("Missing widget name");
 	if (w != NULL)
-		snprintf(buf, len, "Found widget when we shouldn't have");
+		LOG_FAILURE(buf, len, "Found widget when we shouldn't have");
 	else
 		ret = 1;
 
@@ -912,7 +1004,7 @@ name_find_null_test(char *buf, int len)
 
 	w = ewl_widget_name_find(NULL);
 	if (w != NULL)
-		snprintf(buf, len, "Found widget when searching for NULL");
+		LOG_FAILURE(buf, len, "Found widget when searching for NULL");
 	else
 		ret = 1;
 	return ret;
@@ -930,7 +1022,7 @@ widget_type_is_test(char *buf, int len)
 	w = ewl_widget_new();
 	ewl_widget_inherit(w, "my type");
 	if (!ewl_widget_type_is(w, "my type"))
-		snprintf(buf, len, "Failed to match 'my type' on widget");
+		LOG_FAILURE(buf, len, "Failed to match 'my type' on widget");
 	else
 		ret = 1;
 
@@ -949,7 +1041,7 @@ widget_type_is_non_type_test(char *buf, int len)
 
 	w = ewl_widget_new();
 	if (ewl_widget_type_is(w, "my missing type"))
-		snprintf(buf, len, "Matchined 'my missing type' on widget without type set");
+		LOG_FAILURE(buf, len, "Matchined 'my missing type' on widget without type set");
 	else
 		ret = 1;
 
@@ -971,7 +1063,7 @@ widget_enable_test(char *buf, int len)
 	ewl_widget_enable(w);
 
 	if (DISABLED(w))
-		snprintf(buf, len, "Widget DISABLED after calling enable");
+		LOG_FAILURE(buf, len, "Widget DISABLED after calling enable");
 	else
 		ret = 1;
 
@@ -991,7 +1083,7 @@ widget_disable_test(char *buf, int len)
 	w = ewl_widget_new();
 	ewl_widget_disable(w);
 	if (!DISABLED(w))
-		snprintf(buf, len, "Widget not disabled aftering calling disable");
+		LOG_FAILURE(buf, len, "Widget not disabled aftering calling disable");
 	else
 		ret = 1;
 
@@ -1013,13 +1105,13 @@ widget_colour_test_set_get(char *buf, int len)
 	ewl_widget_color_set(w, 248, 148, 48, 255);
 	ewl_widget_color_get(w, &r, &g, &b, &a);
 	if (r != 248)
-		snprintf(buf, len, "Red colour not retrieved correctly");
+		LOG_FAILURE(buf, len, "Red colour not retrieved correctly");
 	else if (g != 148)
-		snprintf(buf, len, "Green colour not retrived correctly");
+		LOG_FAILURE(buf, len, "Green colour not retrived correctly");
 	else if (b != 48)
-		snprintf(buf, len, "Blue colour not retrived correctly");
+		LOG_FAILURE(buf, len, "Blue colour not retrived correctly");
 	else if (a != 255)
-		snprintf(buf, len, "Alpha colour not retrieved correctly");
+		LOG_FAILURE(buf, len, "Alpha colour not retrieved correctly");
 	else
 		ret = 1;
 
