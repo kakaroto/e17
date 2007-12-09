@@ -3,6 +3,7 @@
 #define EWL_TREE2_H
 
 #include "ewl_mvc.h"
+#include "ewl_row.h"
 
 /**
  * @addtogroup Ewl_Tree2 Ewl_Tree2: A Widget for List or Tree Layout
@@ -192,8 +193,8 @@ struct Ewl_Tree2_Node
 	Ewl_MVC mvc;
 
 	Ewl_Widget *tree;		/**< The parent tree */
-	Ewl_Widget *row;		/**< The row this node is for */
 	Ewl_Widget *handle;		/**< the expansion handle */
+	Ewl_Row *row;			/**< The row this node is for */
 
 	struct
 	{
@@ -210,14 +211,19 @@ struct Ewl_Tree2_Node
 Ewl_Widget	*ewl_tree2_node_new(void);
 int		 ewl_tree2_node_init(Ewl_Tree2_Node *node);
 
-void		 ewl_tree2_node_expandable_set(Ewl_Tree2_Node *node, void *data);
+void		 ewl_tree2_node_expandable_set(Ewl_Tree2_Node *node, 
+						unsigned int expandable);
 unsigned int	 ewl_tree2_node_expandable_get(Ewl_Tree2_Node *node);
 
 void		 ewl_tree2_node_expand(Ewl_Tree2_Node *node);
 void		 ewl_tree2_node_collapse(Ewl_Tree2_Node *node);
 
 unsigned int	 ewl_tree2_node_expanded_is(Ewl_Tree2_Node *node);
+void		 ewl_tree2_node_row_set(Ewl_Tree2_Node *node, Ewl_Row *row);
 
+/*
+ * Internally used callbacks, override at your own risk.
+ */
 void ewl_tree2_cb_node_configure(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_tree2_cb_node_data_unref(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_tree2_cb_node_realize(Ewl_Widget *w, void *ev, void *data);

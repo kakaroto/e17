@@ -53,6 +53,7 @@ ewl_expansion_init(Ewl_Expansion *cb)
 	ewl_widget_inherit(w, EWL_EXPANSION_TYPE);
 
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
+	ewl_object_alignment_set(EWL_OBJECT(w), EWL_FLAG_ALIGN_TOP);
 	ewl_object_preferred_inner_size_set(EWL_OBJECT(w), 20, 20);
 
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_OUT,

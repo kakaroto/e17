@@ -1235,6 +1235,8 @@ ewl_mvc_highlight(Ewl_MVC *mvc, Ewl_Container *c,
 						k <= idx->end.column; k++)
 				{
 					w = widget(mvc, sel->data, i, k);
+					if (!w) continue;
+					
 					ewl_mvc_highlight_do(mvc, c, sel, w);
 				}
 			}

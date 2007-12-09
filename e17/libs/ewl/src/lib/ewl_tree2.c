@@ -7,16 +7,24 @@
 #include "ewl_expansion.h"
 #include "ewl_label.h"
 #include "ewl_paned.h"
-#include "ewl_row.h"
 #include "ewl_tree2_view_scrolled.h"
 #include "ewl_private.h"
 #include "ewl_macros.h"
 #include "ewl_debug.h"
 
+#define EWL_TREE2_EXPANSIONS_LIST(el) ((Ewl_Tree2_Expansions_List *)(el))
+
+typedef struct
+{
+	Ewl_Container *c;
+	unsigned int *expanded;
+	unsigned int size;
+} Ewl_Tree2_Expansions_List;
+
 static void ewl_tree2_build_tree(Ewl_Tree2 *tree);
 static void ewl_tree2_build_tree_rows(Ewl_Tree2 *tree,
 			Ewl_Model *model, Ewl_View *view, void *data,
-			int colour, Ewl_Widget *parent,
+			int colour, Ewl_Container *parent,
 			int hidden);
 static void ewl_tree2_cb_header_changed(Ewl_Widget *w, void *ev,
 							void *data);
@@ -30,6 +38,9 @@ static Ewl_Widget *ewl_tree2_widget_at(Ewl_MVC *mvc, void *data,
 					unsigned int row, unsigned int column);
 
 static void ewl_tree2_expansions_hash_create(Ewl_Tree2 *tree);
+
+static Ewl_Tree2_Expansions_List *ewl_tree2_expansions_list_new(void);
+static void ewl_tree2_expansions_list_destroy(Ewl_Tree2_Expansions_List *el);
 
 /**
  * @return Returns NULL on failure, a new tree widget on success.
@@ -371,8 +382,8 @@ ewl_tree2_content_widget_get(Ewl_Tree2 *tree)
 void
 ewl_tree2_row_expand(Ewl_Tree2 *tree, void *data, unsigned int row)
 {
-	Ecore_List *exp;
-	int i, created = 0;
+	Ewl_Tree2_Expansions_List *exp;
+	Ewl_Widget *node;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(tree);
@@ -383,27 +394,22 @@ ewl_tree2_row_expand(Ewl_Tree2 *tree, void *data, unsigned int row)
 	if (ewl_tree2_row_expanded_is(tree, data, row)) DRETURN(DLEVEL_STABLE);
 
 	if (!tree->expansions)
-	{
 		ewl_tree2_expansions_hash_create(tree);
-		exp = ecore_list_new();
-		created = 1;
-	}
-	else
+
+	exp = ecore_hash_get(tree->expansions, data);
+	if (!exp)
 	{
-		exp = ecore_hash_get(tree->expansions, data);
-		if (!exp) exp = ecore_list_new();
+		DWARNING("We did not find a expansion list. This should not"
+				" happen, ever.");
+		DRETURN(DLEVEL_STABLE);
 	}
 
-	ecore_list_first_goto(exp);
-	while ((i = (int)ecore_list_next(exp)))
-	{
-		if (i > (int)row) break;
-	}
+	exp->expanded = realloc(exp->expanded,
+			(++exp->size) * sizeof(unsigned int));
+	exp->expanded[exp->size - 1] = row;
 
-	ecore_list_insert(exp, (void *)row);
-
-	if (created)
-		ecore_hash_set(tree->expansions, data, exp);
+	node = ewl_container_child_get(exp->c, row);
+	ewl_tree2_node_expand(EWL_TREE2_NODE(node));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -419,13 +425,16 @@ ewl_tree2_row_expand(Ewl_Tree2 *tree, void *data, unsigned int row)
 void
 ewl_tree2_row_collapse(Ewl_Tree2 *tree, void *data, unsigned int row)
 {
-	Ecore_List *exp;
+	Ewl_Tree2_Expansions_List *exp;
+	Ewl_Widget *node;
+	unsigned int i;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(tree);
 	DCHECK_PARAM_PTR(data);
 	DCHECK_TYPE(tree, EWL_TREE2_TYPE);
 
+	
 	/* if this tree has no expansions we're done */
 	if (!tree->expansions) DRETURN(DLEVEL_STABLE);
 
@@ -437,15 +446,18 @@ ewl_tree2_row_collapse(Ewl_Tree2 *tree, void *data, unsigned int row)
 	/* nothing to do if the row isn't expanded */
 	if (!ewl_tree2_row_expanded_is(tree, data, row)) DRETURN(DLEVEL_STABLE);
 
-	/* we found the item so we can remove it */
-	ecore_list_remove(exp);
+	/* we found the item so we can remove it */ 
+	for (i = 0; exp->expanded[i] != row; i++)
+		;
 
-	/* no expansions left we can remove this data from the hash */
-	if (ecore_list_empty_is(exp))
-	{
-		ecore_hash_remove(tree->expansions, data);
-		IF_FREE_LIST(exp);
-	}
+	memmove(exp->expanded + i, exp->expanded + i + 1, 
+			sizeof(unsigned int) * (exp->size - i - 1));
+	exp->size--;
+	exp->expanded = realloc(exp->expanded, 
+				sizeof(unsigned int) * exp->size);
+
+	node = ewl_container_child_get(exp->c, row);
+	ewl_tree2_node_collapse(EWL_TREE2_NODE(node));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -460,8 +472,8 @@ ewl_tree2_row_collapse(Ewl_Tree2 *tree, void *data, unsigned int row)
 unsigned int
 ewl_tree2_row_expanded_is(Ewl_Tree2 *tree, void *data, unsigned int row)
 {
-	Ecore_List *exp;
-	int i, expanded = FALSE;
+	Ewl_Tree2_Expansions_List *exp;
+	unsigned int i;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET(tree, FALSE);
@@ -477,18 +489,10 @@ ewl_tree2_row_expanded_is(Ewl_Tree2 *tree, void *data, unsigned int row)
 	if (!exp) DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	/* search for this row in the expansions */
-	ecore_list_first_goto(exp);
-	while ((i = (int)ecore_list_current(exp)))
-	{
-		if (i == (int)row)
-		{
-			expanded = TRUE;
-			break;
-		}
-		ecore_list_next(exp);
-	}
+	for (i = 0; i < exp->size && exp->expanded[i] != row; i++)
+		;
 
-	DRETURN_INT(expanded, DLEVEL_STABLE);
+	DRETURN_INT(exp->expanded && exp->expanded[i] == row, DLEVEL_STABLE);
 }
 
 /**
@@ -717,14 +721,14 @@ ewl_tree2_build_tree(Ewl_Tree2 *tree)
 	ewl_container_reset(EWL_CONTAINER(tree->rows));
 	ewl_tree2_build_tree_rows(tree, model,
 				ewl_mvc_view_get(EWL_MVC(tree)), mvc_data,
-				0, tree->rows, FALSE);
+				0, EWL_CONTAINER(tree->rows), FALSE);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 static void
 ewl_tree2_build_tree_rows(Ewl_Tree2 *tree, Ewl_Model *model, Ewl_View *view,
-				void *data, int colour, Ewl_Widget *parent,
+				void *data, int colour, Ewl_Container *parent,
 				int hidden)
 {
 	unsigned int i = 0, row_count = 0;
@@ -733,9 +737,10 @@ ewl_tree2_build_tree_rows(Ewl_Tree2 *tree, Ewl_Model *model, Ewl_View *view,
 	DCHECK_PARAM_PTR(tree);
 	DCHECK_TYPE(tree, EWL_TREE2_TYPE);
 	DCHECK_PARAM_PTR(parent);
+	DCHECK_TYPE(parent, EWL_CONTAINER_TYPE);
 
 	row_count = model->count(data);
-	if (!row_count) DRETURN(DLEVEL_STABLE);
+	if (row_count == 0) DRETURN(DLEVEL_STABLE);
 
 	while (TRUE)
 	{
@@ -748,14 +753,16 @@ ewl_tree2_build_tree_rows(Ewl_Tree2 *tree, Ewl_Model *model, Ewl_View *view,
 		ewl_mvc_data_set(EWL_MVC(node), data);
 		ewl_mvc_view_set(EWL_MVC(node), view);
 
-		ewl_container_child_append(EWL_CONTAINER(parent), node);
+		ewl_container_child_append(parent, node);
 		if (!hidden) ewl_widget_show(node);
 
 		row = ewl_row_new();
 		ewl_row_header_set(EWL_ROW(row), EWL_CONTAINER(tree->header));
+		ewl_tree2_node_row_set(EWL_TREE2_NODE(node), EWL_ROW(row));
 		ewl_container_child_append(EWL_CONTAINER(node), row);
 		ewl_callback_append(row, EWL_CALLBACK_CLICKED,
 					ewl_tree2_cb_row_clicked, node);
+		ewl_widget_show(row);
 
 		if (!model->highlight || model->highlight(data, i))
 		{
@@ -764,9 +771,6 @@ ewl_tree2_build_tree_rows(Ewl_Tree2 *tree, Ewl_Model *model, Ewl_View *view,
 			ewl_callback_append(row, EWL_CALLBACK_MOUSE_OUT,
 					ewl_tree2_cb_row_unhighlight, NULL);
 		}
-
-		EWL_TREE2_NODE(node)->row = row;
-		ewl_widget_show(row);
 
 		if (tree->row_color_alternate)
 		{
@@ -781,7 +785,7 @@ ewl_tree2_build_tree_rows(Ewl_Tree2 *tree, Ewl_Model *model, Ewl_View *view,
 		colour = (colour + 1) % 2;
 
 		/* do the current branch */
-		for (column = 0; column < tree->columns; column ++)
+		for (column = 0; column < tree->columns; column++)
 			ewl_tree2_column_build(EWL_ROW(row), model, view,
 						data, i, column, node);
 
@@ -798,7 +802,7 @@ ewl_tree2_build_tree_rows(Ewl_Tree2 *tree, Ewl_Model *model, Ewl_View *view,
 				DRETURN(DLEVEL_STABLE);
 			}
 
-			ewl_tree2_node_expandable_set(EWL_TREE2_NODE(node), data);
+			ewl_tree2_node_expandable_set(EWL_TREE2_NODE(node), TRUE);
 
 			if (model->expansion.data &&
 					ewl_tree2_row_expanded_is(tree, data, i))
@@ -808,7 +812,7 @@ ewl_tree2_build_tree_rows(Ewl_Tree2 *tree, Ewl_Model *model, Ewl_View *view,
 			}
 		}
 		else
-			ewl_tree2_node_expandable_set(EWL_TREE2_NODE(node), NULL);
+			ewl_tree2_node_expandable_set(EWL_TREE2_NODE(node), FALSE);
 
 		i++;
 
@@ -934,28 +938,41 @@ ewl_tree2_widget_at(Ewl_MVC *mvc, void *data, unsigned int row,
 			unsigned int column)
 {
 	Ewl_Widget *r, *w;
-	Ewl_Tree2 *tree;
 	Ewl_Container *c;
+	Ewl_Tree2 *tree;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET(mvc, NULL);
+	DCHECK_PARAM_PTR_RET(data, NULL);
 	DCHECK_TYPE_RET(mvc, EWL_TREE2_TYPE, NULL);
 
 	tree = EWL_TREE2(mvc);
-	
-	if (data != ewl_mvc_data_get(mvc))
-	{
-		DWARNING("This function doesn't handle tree branches yet");
-		DRETURN_PTR(NULL, DLEVEL_STABLE);
-	}
-	else
-		c = EWL_CONTAINER(tree->rows);
 
+	/* get the container that holds the wished row */
+	if (ewl_mvc_data_get(mvc) == data)
+		c = EWL_CONTAINER(tree->rows);
+	else
+	{
+		Ewl_Tree2_Expansions_List *exp;
+
+		exp = ecore_hash_get(tree->expansions, data);
+		if (!exp)
+			DRETURN_PTR(NULL, DLEVEL_STABLE);
+	
+		c = exp->c;
+	}
+
+	/* find the row in the container */
 	r = ewl_container_child_get(c, row);
 	if (tree->type == EWL_TREE_SELECTION_TYPE_ROW)
-		w = EWL_WIDGET(c);
-	else
+		w = EWL_WIDGET(r);
+	else 
+	{
+		/* infact our row is a node so we have to get the row
+		 * to search for the right container */
+		r = EWL_WIDGET(EWL_TREE2_NODE(r)->row);
 		w = ewl_container_child_get(EWL_CONTAINER(r), column);
+	}
 
 	DRETURN_PTR(w, DLEVEL_STABLE);
 }
@@ -963,6 +980,8 @@ ewl_tree2_widget_at(Ewl_MVC *mvc, void *data, unsigned int row,
 static void
 ewl_tree2_expansions_hash_create(Ewl_Tree2 *tree)
 {
+	Ewl_Tree2_Expansions_List *exp;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(tree);
 	DCHECK_TYPE(tree, EWL_TREE2_TYPE);
@@ -972,7 +991,37 @@ ewl_tree2_expansions_hash_create(Ewl_Tree2 *tree)
 
 	tree->expansions = ecore_hash_new(NULL, NULL);
 	ecore_hash_free_value_cb_set(tree->expansions,
-			ECORE_FREE_CB(ecore_list_destroy));
+			ECORE_FREE_CB(ewl_tree2_expansions_list_destroy));
+
+	exp = ewl_tree2_expansions_list_new();
+	exp->c = EWL_CONTAINER(tree->rows);
+	ecore_hash_set(tree->expansions, ewl_mvc_data_get(EWL_MVC(tree)), exp);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static Ewl_Tree2_Expansions_List *
+ewl_tree2_expansions_list_new(void)
+{
+	Ewl_Tree2_Expansions_List *el;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	el = NEW(Ewl_Tree2_Expansions_List, 1);
+	if (!el)
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
+
+	DRETURN_PTR(el, DLEVEL_STABLE);
+}
+
+static void
+ewl_tree2_expansions_list_destroy(Ewl_Tree2_Expansions_List *el)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(el);
+
+	IF_FREE(el->expanded);
+	FREE(el);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1031,6 +1080,8 @@ ewl_tree2_node_init(Ewl_Tree2_Node *node)
 	ewl_object_fill_policy_set(EWL_OBJECT(node),
 				EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK);
 
+	ewl_callback_del(EWL_WIDGET(node), EWL_CALLBACK_CONFIGURE, 
+							ewl_box_cb_configure);
 	ewl_callback_append(EWL_WIDGET(node), EWL_CALLBACK_CONFIGURE,
 					ewl_tree2_cb_node_configure, NULL);
 
@@ -1041,7 +1092,7 @@ ewl_tree2_node_init(Ewl_Tree2_Node *node)
 }
 
 void
-ewl_tree2_node_expandable_set(Ewl_Tree2_Node *node, void *data)
+ewl_tree2_node_expandable_set(Ewl_Tree2_Node *node, unsigned int expandable)
 {
 	Ewl_Model *model;
 
@@ -1054,34 +1105,31 @@ ewl_tree2_node_expandable_set(Ewl_Tree2_Node *node, void *data)
 	if (!node->handle && model->expansion.is)
 	{
 		node->handle = ewl_expansion_new();
-		ewl_object_fill_policy_set(EWL_OBJECT(node->handle),
-						EWL_FLAG_FILL_NONE);
-		ewl_object_alignment_set(EWL_OBJECT(node->handle),
-						EWL_FLAG_ALIGN_TOP);
 		ewl_container_child_prepend(EWL_CONTAINER(node), node->handle);
+		ewl_widget_internal_set(EWL_WIDGET(node->handle), TRUE);
 		ewl_widget_show(node->handle);
 	}
 
-	if (node->handle)
+	if (!node->handle)
+		DRETURN(DLEVEL_STABLE);
+
+	if (expandable)
 	{
-		if (data)
-		{
-			ewl_callback_append(node->handle, EWL_CALLBACK_VALUE_CHANGED,
-							ewl_tree2_cb_node_toggle, node);
-			ewl_callback_append(EWL_WIDGET(node), EWL_CALLBACK_DESTROY,
-						ewl_tree2_cb_node_data_unref, NULL);
-			ewl_widget_enable(node->handle);
-			ewl_expansion_expandable_set(EWL_EXPANSION(node->handle), TRUE);
-		}
-		else
-		{
-			ewl_callback_del(node->handle, EWL_CALLBACK_VALUE_CHANGED,
-							ewl_tree2_cb_node_toggle);
-			ewl_callback_del(EWL_WIDGET(node), EWL_CALLBACK_DESTROY,
-							ewl_tree2_cb_node_data_unref);
-			ewl_widget_disable(node->handle);
-			ewl_expansion_expandable_set(EWL_EXPANSION(node->handle), FALSE);
-		}
+		ewl_callback_append(node->handle, EWL_CALLBACK_VALUE_CHANGED,
+						ewl_tree2_cb_node_toggle, node);
+		ewl_callback_append(EWL_WIDGET(node), EWL_CALLBACK_DESTROY,
+					ewl_tree2_cb_node_data_unref, NULL);
+		ewl_widget_enable(node->handle);
+		ewl_expansion_expandable_set(EWL_EXPANSION(node->handle), TRUE);
+	}
+	else
+	{
+		ewl_callback_del(node->handle, EWL_CALLBACK_VALUE_CHANGED,
+						ewl_tree2_cb_node_toggle);
+		ewl_callback_del(EWL_WIDGET(node), EWL_CALLBACK_DESTROY,
+						ewl_tree2_cb_node_data_unref);
+		ewl_widget_disable(node->handle);
+		ewl_expansion_expandable_set(EWL_EXPANSION(node->handle), FALSE);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1092,8 +1140,10 @@ ewl_tree2_node_expandable_get(Ewl_Tree2_Node *node)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET(node, FALSE);
+	DCHECK_TYPE_RET(node, EWL_TREE2_NODE_TYPE, FALSE);
 
-	DRETURN_INT((ewl_mvc_data_get(EWL_MVC(node)) ? TRUE : FALSE), DLEVEL_STABLE);
+	DRETURN_INT((node->handle) && 
+			ewl_expansion_is_expandable(EWL_EXPANSION(node->handle)), DLEVEL_STABLE);
 }
 
 void
@@ -1123,7 +1173,7 @@ ewl_tree2_node_expand(Ewl_Tree2_Node *node)
 	ecore_dlist_first_goto(EWL_CONTAINER(node)->children);
 	while ((child = ecore_dlist_next(EWL_CONTAINER(node)->children)))
 	{
-		if ((child != node->handle) && (child != node->row))
+		if ((child != node->handle) && (child != EWL_WIDGET(node->row)))
 			ecore_list_append(tmp, child);
 	}
 
@@ -1140,8 +1190,18 @@ ewl_tree2_node_expand(Ewl_Tree2_Node *node)
 		Ewl_Model *tmp_model;
 
 		if (!node->expansion.data)
+		{
+			Ewl_Tree2_Expansions_List *exp;
+
 			node->expansion.data = 
 				model->expansion.data(data, node->row_num);
+
+			/* Put the node into the expansions hash */
+			exp = ewl_tree2_expansions_list_new();
+			exp->c = EWL_CONTAINER(node);
+			ecore_hash_set(EWL_TREE2(node->tree)->expansions, 
+					node->expansion.data, exp);
+		}
 
 		if (!node->expansion.model && model->expansion.model)
 			node->expansion.model = 
@@ -1160,12 +1220,9 @@ ewl_tree2_node_expand(Ewl_Tree2_Node *node)
 
 		ewl_tree2_build_tree_rows(EWL_TREE2(node->tree), tmp_model,
 						tmp_view, node->expansion.data,
-					       	0, EWL_WIDGET(node), FALSE);
-
+					       	0, EWL_CONTAINER(node), FALSE);
 		node->built_children = TRUE;
 	}
-
-	ewl_tree2_row_expand(EWL_TREE2(node->tree), data, node->row_num);
 
 	node->expanded = EWL_TREE_NODE_EXPANDED;
 	ewl_check_checked_set(EWL_CHECK(node->handle), TRUE);
@@ -1198,7 +1255,7 @@ ewl_tree2_node_collapse(Ewl_Tree2_Node *node)
 	ecore_dlist_first_goto(EWL_CONTAINER(node)->children);
 	while ((child = ecore_dlist_next(EWL_CONTAINER(node)->children)))
 	{
-		if ((child != node->handle) && (child != node->row))
+		if ((child != node->handle) && (child != EWL_WIDGET(node->row)))
 			ecore_list_append(tmp, child);
 	}
 
@@ -1206,9 +1263,6 @@ ewl_tree2_node_collapse(Ewl_Tree2_Node *node)
 		ewl_widget_hide(child);
 
 	IF_FREE_LIST(tmp);
-
-	ewl_tree2_row_collapse(EWL_TREE2(node->tree),
-			ewl_mvc_data_get(EWL_MVC(node)), node->row_num);
 
 	node->expanded = EWL_TREE_NODE_COLLAPSED;
 	ewl_check_checked_set(EWL_CHECK(node->handle), FALSE);
@@ -1222,8 +1276,22 @@ ewl_tree2_node_expanded_is(Ewl_Tree2_Node *node)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET(node, FALSE);
 
-	DRETURN_INT(((node->expanded == EWL_TREE_NODE_EXPANDED) ? TRUE : FALSE),
-								DLEVEL_STABLE);
+	DRETURN_INT((node->expanded == EWL_TREE_NODE_EXPANDED),	DLEVEL_STABLE);
+}
+
+void
+ewl_tree2_node_row_set(Ewl_Tree2_Node *node, Ewl_Row *row)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(node);
+	DCHECK_PARAM_PTR(row);
+	DCHECK_TYPE(node, EWL_TREE2_NODE_TYPE);
+	DCHECK_TYPE(row, EWL_ROW_TYPE);
+
+	node->row = row;
+	ewl_widget_internal_set(EWL_WIDGET(row), TRUE);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 void
@@ -1307,17 +1375,25 @@ void
 ewl_tree2_cb_node_toggle(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 							void *data)
 {
+	Ewl_Tree2_Node *node;
+	void *parent_data;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(data);
 	DCHECK_TYPE(data, EWL_TREE2_NODE_TYPE);
 
-	if (ewl_tree2_node_expandable_get(EWL_TREE2_NODE(data)))
-	{
-		if (ewl_tree2_node_expanded_is(EWL_TREE2_NODE(data)))
-			ewl_tree2_node_collapse(EWL_TREE2_NODE(data));
-		else
-			ewl_tree2_node_expand(EWL_TREE2_NODE(data));
-	}
+	node = EWL_TREE2_NODE(data);
+	parent_data = ewl_mvc_data_get(EWL_MVC(node));
+
+	if (!ewl_tree2_node_expandable_get(node))
+		DRETURN(DLEVEL_STABLE);
+
+	if (ewl_tree2_node_expanded_is(node))
+		ewl_tree2_row_collapse(EWL_TREE2(node->tree), parent_data,
+				node->row_num);
+	else
+		ewl_tree2_row_expand(EWL_TREE2(node->tree), parent_data,
+				node->row_num);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
