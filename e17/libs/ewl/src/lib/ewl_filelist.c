@@ -12,6 +12,14 @@
 #include "ewl_macros.h"
 #include "ewl_private.h"
 #include "ewl_debug.h"
+#include <sys/types.h>
+#if HAVE_PWD_H
+# include <pwd.h>
+#endif /* HAVE_PWD_H */
+#if HAVE_GRP_H
+# include <grp.h>
+#endif /* HAVE_GRP_H */
+#include <time.h>
 
 static void ewl_filelist_setup(Ewl_Filelist *fl);
 static void ewl_filelist_view_setup(Ewl_Filelist *fl);

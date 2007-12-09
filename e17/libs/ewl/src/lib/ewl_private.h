@@ -9,24 +9,9 @@
 #include "ewl-config.h"
 #endif
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include <limits.h>
 #include <ctype.h>
-#include <sys/types.h>
 #include <sys/stat.h>
-#include <unistd.h>
-#include <math.h>
-#include <assert.h>
-#include <time.h>
-#include <fnmatch.h>
-#if HAVE_PWD_H
-# include <pwd.h>
-#endif /* HAVE_PWD_H */
-#if HAVE_GRP_H
-# include <grp.h>
-#endif /* HAVE_GRP_H */
 
 #ifdef HAVE_ALLOCA_H
 # include <alloca.h>

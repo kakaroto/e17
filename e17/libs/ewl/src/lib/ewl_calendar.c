@@ -1,4 +1,5 @@
 /* vim: set sw=8 ts=8 sts=8 noexpandtab: */
+#include <time.h>
 #include "ewl_base.h"
 #include "ewl_calendar.h"
 #include "ewl_icon.h"

@@ -5,6 +5,7 @@
 #include "ewl_debug.h"
 
 #include <Evas.h>
+#include <unistd.h>
 #if HAVE_FCNTL_H
 # include <fcntl.h>
 #endif /* HAVE_FCNTL_H */
