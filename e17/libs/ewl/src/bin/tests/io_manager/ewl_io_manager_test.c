@@ -52,9 +52,9 @@ cb_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	Ewl_Widget *fd;
 
 	fd = ewl_filedialog_new();
-	ewl_filedialog_filter_add(EWL_FILEDIALOG(fd), "txt", "*.txt");
-	ewl_filedialog_filter_add(EWL_FILEDIALOG(fd), "png", "*.png");
-	ewl_filedialog_filter_add(EWL_FILEDIALOG(fd), "jpg", "*.jpg");
+	ewl_filedialog_filter_add(EWL_FILEDIALOG(fd), "txt", "*.txt", NULL);
+	ewl_filedialog_filter_add(EWL_FILEDIALOG(fd), "png", "*.png", NULL);
+	ewl_filedialog_filter_add(EWL_FILEDIALOG(fd), "jpg", "*.jpg", NULL);
 	ewl_callback_append(fd, EWL_CALLBACK_DELETE_WINDOW, cb_fd_delete, NULL);
 	ewl_callback_append(fd, EWL_CALLBACK_VALUE_CHANGED, cb_open, NULL);
 	ewl_widget_show(fd);

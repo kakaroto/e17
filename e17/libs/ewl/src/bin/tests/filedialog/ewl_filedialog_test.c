@@ -69,8 +69,8 @@ dialog_cb_single_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	Ewl_Widget *fd;
 
 	fd = ewl_filedialog_new();
-	ewl_filedialog_filter_add(EWL_FILEDIALOG(fd), "C Files", "*.c");
-	ewl_filedialog_filter_add(EWL_FILEDIALOG(fd), "D Files", "*.d");
+	ewl_filedialog_filter_add(EWL_FILEDIALOG(fd), "C Files", "*.c", NULL);
+	ewl_filedialog_filter_add(EWL_FILEDIALOG(fd), "D Files", "*.d", NULL);
 	ewl_callback_append(fd, EWL_CALLBACK_DELETE_WINDOW,
 					fd_cb_delete, NULL);
 	ewl_callback_append(fd, EWL_CALLBACK_VALUE_CHANGED,

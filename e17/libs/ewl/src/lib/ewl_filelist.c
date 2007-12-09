@@ -77,8 +77,8 @@ ewl_filelist_init(Ewl_Filelist *fl)
 	fl->multiselect = FALSE;
 	fl->skip_hidden = TRUE;
 
-	ewl_filelist_filter_set(fl, NULL);
-	ewl_filelist_directory_set(fl, NULL);
+	fl->directory = NULL;
+	fl->filter = NULL;
 	ewl_filelist_setup(fl);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -279,7 +279,7 @@ ewl_filelist_directory_set(Ewl_Filelist *fl, const char *dir)
 		if (data) ewl_filelist_model_data_unref(data);
 		
 		data = ewl_filelist_model_directory_new(fl->directory,
-						 fl->skip_hidden, TRUE);
+						 fl->skip_hidden, TRUE, fl->filter);
 		ewl_mvc_data_set(EWL_MVC(fl->controller), data);
 		ewl_mvc_dirty_set(EWL_MVC(fl->controller), TRUE);
 
@@ -313,17 +313,25 @@ ewl_filelist_directory_get(Ewl_Filelist *fl)
  * @brief Sets the given filter into the filelist
  */
 void
-ewl_filelist_filter_set(Ewl_Filelist *fl, const char *filter)
+ewl_filelist_filter_set(Ewl_Filelist *fl, Ewl_Filelist_Filter *filter)
 {
+	Ewl_Filelist_Directory *dir;
+	int ret = 0;
+	
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(fl);
+	DCHECK_PARAM_PTR(filter);
 	DCHECK_TYPE(fl, EWL_FILELIST_TYPE);
 
-	IF_FREE(fl->filter);
-	fl->filter = (filter ? strdup(filter) : NULL);
+	fl->filter = NULL;
+	fl->filter = filter;
+	dir = ewl_mvc_data_get(EWL_MVC(fl->controller));
 	
-	/* Model does not do filtering yet */
-	DWARNING("Filtering not yet implemented");
+	/* Set the filelist and test if there is any change in data */
+	if (dir)
+		ret = ewl_filelist_model_filter_set(dir, filter);
+	if (ret)
+		ewl_mvc_dirty_set(EWL_MVC(fl->controller), TRUE);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -333,7 +341,7 @@ ewl_filelist_filter_set(Ewl_Filelist *fl, const char *filter)
  * @return Returns the current filter
  * @brief Retrieves the current filter set on the filelist
  */
-const char *
+Ewl_Filelist_Filter *
 ewl_filelist_filter_get(Ewl_Filelist *fl)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -406,7 +414,8 @@ ewl_filelist_multiselect_get(Ewl_Filelist *fl)
 void
 ewl_filelist_show_dot_files_set(Ewl_Filelist *fl, unsigned int dot)
 {
-	Ewl_Filelist_Directory *data;
+	Ewl_Filelist_Directory *dir;
+	int ret = 0;
 	
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(fl);
@@ -416,13 +425,13 @@ ewl_filelist_show_dot_files_set(Ewl_Filelist *fl, unsigned int dot)
 		DRETURN(DLEVEL_STABLE);
 
 	fl->skip_hidden = !!dot;
-	data = ewl_mvc_data_get(EWL_MVC(fl->controller));
-	if (data) ewl_filelist_model_data_unref(data);
-						
-	data = ewl_filelist_model_directory_new(fl->directory,
-					 fl->skip_hidden, TRUE);
-	ewl_mvc_data_set(EWL_MVC(fl->controller), data);
-	ewl_mvc_dirty_set(EWL_MVC(fl->controller), TRUE);
+	dir = ewl_mvc_data_get(EWL_MVC(fl->controller));
+
+	/* check if data and then call the model function */
+	if (dir)
+		ret = ewl_filelist_model_show_dot_files_set(dir, dot);
+	if (ret)
+		ewl_mvc_dirty_set(EWL_MVC(fl->controller), TRUE);
 	
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1150,12 +1159,12 @@ ewl_filelist_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(w);
 	DCHECK_TYPE(w, EWL_FILELIST_TYPE);
-
+	
 	fl = EWL_FILELIST(w);
 	IF_FREE(fl->directory);
-	IF_FREE(fl->filter);
 	IF_FREE(fl->view);
 	IF_FREE(fl->model);
+	fl->filter = NULL;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

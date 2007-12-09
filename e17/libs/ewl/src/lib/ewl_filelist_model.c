@@ -5,6 +5,7 @@
 #include "ewl_debug.h"
 #include "ewl_model.h"
 #include "ewl_filelist.h"
+#include "ewl_io_manager.h"
 #include <dirent.h>
 
 static int ewl_filelist_model_data_name_sort(Ewl_Filelist_File *file1,
@@ -12,21 +13,28 @@ static int ewl_filelist_model_data_name_sort(Ewl_Filelist_File *file1,
 static int ewl_filelist_model_data_size_sort(Ewl_Filelist_File *file1,
 				Ewl_Filelist_File *file2);
 static void free_file(Ewl_Filelist_File *file);
+void ewl_filelist_model_filter(Ewl_Filelist_Directory *dir);
+static unsigned int ewl_filelist_model_filter_main
+				(Ewl_Filelist_Directory *dir,
+				Ewl_Filelist_File *file);
 
 /**
  * @param path: The path to the directory to read
- * @param skip_hidden: TRUE skips hidden files, FALSE does not
+ * @param skip_hidden: TRUE shows hidden files, FALSE does not
  * @param show_dot_dot: TRUE shows .. for navigating upwards, FALSE does not
+ * @param filter: The Ewl_Filelist_Filter to use
  * @return Returns an Ewl_Filelist_Directory structure
  * @brief Retrieves all files in a directory
  */
 Ewl_Filelist_Directory *
-ewl_filelist_model_directory_new(const char *path, 
+ewl_filelist_model_directory_new(const char *path,
 					unsigned char skip_hidden,
-					unsigned int show_dot_dot)
+					unsigned int show_dot_dot,
+					Ewl_Filelist_Filter *filter)
 {
 	Ewl_Filelist_Directory *dir;
 	Ewl_Filelist_File *file;
+	
 	struct stat st;
 	char filename[PATH_MAX], *file_temp;
 	int nf = 0, nd = 0;
@@ -48,13 +56,6 @@ ewl_filelist_model_directory_new(const char *path,
 
 	while ((file_temp = ecore_list_first_remove(all_files)))
 	{
-		/* Handle hidden files */
-		if ((skip_hidden) && (file_temp[0] == '.'))
-		{
-			FREE(file_temp);
-			continue;
-		}
-
 		/* allocate the memory for the file structure */
 		file = NEW(Ewl_Filelist_File, 1);
 
@@ -100,12 +101,18 @@ ewl_filelist_model_directory_new(const char *path,
 	/* create the new directory structure */
 	dir = NEW(Ewl_Filelist_Directory, 1);
 
-	dir->files = files;
-	dir->dirs = dirs;
+	dir->rfiles = files;
+	dir->rdirs = dirs;
+	dir->files = ecore_list_new();
+	dir->dirs = ecore_list_new();
 	dir->name = ecore_string_instance(path);
 	dir->skip_hidden = !!skip_hidden;
+	dir->filter = filter;
 	dir->num_dirs = nd;
 	dir->num_files = nf;
+	
+	/* Filter the directory */
+	ewl_filelist_model_filter(dir);
 
 	IF_FREE_LIST(all_files);
 	DRETURN_PTR(dir, DLEVEL_STABLE);
@@ -339,8 +346,8 @@ ewl_filelist_model_data_expansion_data_fetch(void *data,
 	file = ecore_list_index_goto(fld->dirs, parent);
 	snprintf(path, PATH_MAX, "%s/%s", fld->name, file->name);
 	subdir = ewl_filelist_model_directory_new
-					(path, fld->skip_hidden, 
-					 FALSE);
+					(path, fld->skip_hidden,
+					FALSE, fld->filter);
 
 	DRETURN_PTR(subdir, DLEVEL_STABLE);
 }
@@ -360,6 +367,8 @@ ewl_filelist_model_data_unref(void *data)
 	ecore_string_release(dir->name);
 	ecore_list_destroy(dir->files);
 	ecore_list_destroy(dir->dirs);
+	ecore_list_destroy(dir->rfiles);
+	ecore_list_destroy(dir->rdirs);
 	FREE(dir);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -377,5 +386,201 @@ static void free_file(Ewl_Filelist_File *file)
 	FREE(file);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param data: The model to work with
+ * @param hidden: TRUE shows hidden files, FALSE does not
+ * @return Returns TRUE if a change in data, FALSE if not
+ * @brief This function sets whether the filelist should contain hidden files
+ */
+unsigned int
+ewl_filelist_model_show_dot_files_set(Ewl_Filelist_Directory *dir,
+							unsigned int skip_hidden)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET(dir, FALSE);
+	
+	/* If nothing has changed, leave */
+	if (skip_hidden == !!dir->skip_hidden)
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+
+	/* Else set value in */
+	dir->skip_hidden = !!skip_hidden;
+
+	/* Refilter the files */
+	ewl_filelist_model_filter(dir);
+
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
+}
+
+/**
+ * @param data: The model to work with
+ * @return Returns if the model shows dot files
+ * @brief Returns if the model shows dot files
+ */
+unsigned int
+ewl_filelist_model_show_dot_files_get(Ewl_Filelist_Directory *dir)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET(dir, FALSE);
+	DRETURN_INT((unsigned int)dir->skip_hidden, DLEVEL_STABLE);
+}
+
+/**
+ * @param dir: The directory to filter
+ * @return Does not return a value
+ * @brief Filters a directory
+ */
+void
+ewl_filelist_model_filter(Ewl_Filelist_Directory *dir)
+{
+	Ewl_Filelist_File *file;
+	int ret = 0;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(dir);
+
+	/* Set up temporary filelist */
+	ecore_list_clear(dir->files);
+	ecore_list_clear(dir->dirs);
+
+
+	/* Hidden files first */
+	if (dir->skip_hidden)
+	{
+
+		/* Run through files and filter hidden first, then others */
+		ecore_list_first_goto(dir->rfiles);
+		while ((file = ecore_list_next(dir->rfiles)))
+		{
+			ret = ewl_filelist_model_filter_main(dir, file);
+			if ((file->name[0] != '.') && (ret))
+			       ecore_list_append(dir->files, file);
+
+		}
+
+		/* Now directories */
+		ecore_list_first_goto(dir->rdirs);
+		while ((file = ecore_list_next(dir->rdirs)))
+		{
+			if ((file->name[0] != '.') || 
+					(!strcmp(file->name, "..")))
+				ecore_list_append(dir->dirs, file);
+		}
+	}
+
+	/* If showing hidden */
+	else
+	{
+		/* Still loop through to check if pass filter */
+		ecore_list_first_goto(dir->rfiles);
+		while ((file = ecore_list_next(dir->rfiles)))
+		{
+			ret = ewl_filelist_model_filter_main(dir, file);
+			if (ret)
+				ecore_list_append(dir->files, file);
+		}
+
+		ecore_list_first_goto(dir->rdirs);
+		while ((file = ecore_list_next(dir->rdirs)))
+			ecore_list_append(dir->dirs, file);
+	}
+
+
+	/* Set numbers into directory data */
+	dir->num_dirs = ecore_list_count(dir->dirs);
+	dir->num_files = ecore_list_count(dir->files);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param dir: The directory to set a filter upon
+ * @param filter: The Ewl_Filelist_Filter to use
+ * @returns: Returns TRUE on data change, FALSE if not
+ * @brief Sets a filter onto a directory
+ */
+unsigned int
+ewl_filelist_model_filter_set(Ewl_Filelist_Directory *dir,
+					Ewl_Filelist_Filter *filter)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET(dir, FALSE);
+	DCHECK_PARAM_PTR_RET(filter, FALSE);
+
+	/* If nothing has changed, leave */
+	if ((dir->filter) && (!memcmp(dir->filter, filter,
+						sizeof(dir->filter))))
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+
+	/* Set the filter and call the function */
+	dir->filter = filter;
+	ewl_filelist_model_filter(dir);
+
+	DRETURN_INT(TRUE, DLEVEL_STABLE);
+}
+
+/**
+ * @param dir: The directory to get the filter for
+ * @returns: Returns the Ewl_Filelist_Filter used
+ * @brief Gets the filter used on a directory
+ */
+Ewl_Filelist_Filter *
+ewl_filelist_model_filter_get(Ewl_Filelist_Directory *dir)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET(dir, NULL);
+	DRETURN_PTR(dir->filter, DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * @param dir: The directory to get the filter from
+ * @param file: The file to test
+ * @returns: Returns TRUE if passes the filter, FALSE otherwise
+ * @brief Tests a file against a filter
+ */
+static unsigned int
+ewl_filelist_model_filter_main(Ewl_Filelist_Directory *dir,
+					Ewl_Filelist_File *file)
+{
+	Ewl_Filelist_Filter *filter = dir->filter;
+	const char *mime_check;
+	char *mime_given;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET(dir, FALSE);
+	DCHECK_PARAM_PTR_RET(file, FALSE);
+
+	if (!filter)
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+
+	/* First check mime types */
+	if (filter->mime_list)
+	{
+		mime_check = ewl_io_manager_uri_mime_type_get(file->name);
+		ecore_list_first_goto(filter->mime_list);
+		while ((mime_given = ecore_list_next(filter->mime_list)))
+		{
+			if (!strcmp(mime_given, mime_check))
+				DRETURN_INT(TRUE, DLEVEL_STABLE);
+		}
+	}
+
+	/* Next check extension */
+	else if (filter->extension)
+	{
+		if (!fnmatch(filter->extension, file->name, 0))
+			DRETURN_INT(TRUE, DLEVEL_STABLE);
+	}
+
+	/* If no filter at all is in effect */
+	else if ((!filter->extension) && (!filter->mime_list))
+	{
+		DRETURN_INT(TRUE, DLEVEL_STABLE);
+	}
+
+	DRETURN_INT(FALSE, DLEVEL_STABLE);
 }
 

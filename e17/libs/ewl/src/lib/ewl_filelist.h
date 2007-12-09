@@ -20,6 +20,30 @@
  *
  * @{
  */
+ 
+ /**
+ *  * @def EWL_FILELIST_FILTER_TYPE
+ *   * The type name
+ *    **/
+#define EWL_FILELIST_FILTER_TYPE "filelist_filter"
+
+typedef struct Ewl_Filelist_Filter Ewl_Filelist_Filter;
+
+/**
+ *  * @def EWL_FILELIST_FILTER(ff)
+ *   * Typecasts a pointer to an Ewl_Filelist_Filter
+ *    **/
+#define EWL_FILELIST_FILTER(ff), ((Ewl_Filelist_Filter *)ff)
+
+/**
+ *  * @brief The data structure for Ewl_Filelist_Filter
+ *   **/
+struct Ewl_Filelist_Filter
+{
+		char *name;
+		char *extension;
+		Ecore_List *mime_list;
+};
 
 /**
  * @def EWL_FILELIST_TYPE
@@ -56,7 +80,7 @@ struct Ewl_Filelist
 	Ewl_Model *model;	/**< The model for the mvc */
 
 	char *directory;	/**< The directory to display */
-	char *filter;		/**< The file filter to employ */
+	Ewl_Filelist_Filter *filter;		/**< The file filter to employ */
 
 	unsigned char multiselect:1;	/**< Allow multiple file selctions */
 	unsigned char skip_hidden:1;	/**< Show . files */
@@ -69,6 +93,65 @@ struct Ewl_Filelist
 	} scroll_flags;		/**< Flags to modify a containing scrollpane */
 };
 
+/**
+ * @def EWL_FILELIST_FILE_TYPE
+ * The type name
+ */
+#define EWL_FILELIST_FILE_TYPE "filelist_file"
+
+typedef struct Ewl_Filelist_File Ewl_Filelist_File;
+
+/**
+ * @def EWL_FILELIST_FILE(fl)
+ * Typecasts a pointer to an Ewl_Filelist_File pointer
+ */
+#define EWL_FILELIST_FILE(fl) ((Ewl_Filelist_File *)fl)
+
+/**
+ * @brief The data structure for Ewl_Filelist_File
+ */
+struct Ewl_Filelist_File
+{
+	const char *name;
+	off_t size;
+	mode_t mode;
+	uid_t username;
+	gid_t groupname;
+	time_t modtime;
+	unsigned char readable:1;
+	unsigned char writeable:1;
+	unsigned char is_dir:1;
+};
+
+/**
+ *  * @def EWL_FILELIST_DIRECTORY_TYPE
+ *   * The type name
+ *    */
+#define EWL_FILELIST_DIRECTORY_TYPE "filelist_directory"
+
+typedef struct Ewl_Filelist_Directory Ewl_Filelist_Directory;
+
+/**
+ *  * @def EWL_FILELIST_DIRECTORY(fl)
+ *   * Typecasts a pointer to an Ewl_Filelist_Directory pointer
+ *    */
+#define EWL_FILELIST_DIRECTORY(fl) ((Ewl_Filelist_Directory *)fl)
+
+/**
+ *  * @brief The data structure for Ewl_Filelist_Directory
+ *   */
+struct Ewl_Filelist_Directory
+{
+	const char *name;
+	Ecore_List *rfiles;
+	Ecore_List *rdirs;
+	Ecore_List *files;
+	Ecore_List *dirs;
+	Ewl_Filelist_Filter *filter;
+	unsigned char skip_hidden:1;
+	unsigned int num_dirs;
+	unsigned int num_files;
+};
 
 Ewl_Widget	*ewl_filelist_new(void);
 
@@ -79,8 +162,8 @@ void		 ewl_filelist_directory_set(Ewl_Filelist *fl,
 const char	*ewl_filelist_directory_get(Ewl_Filelist *fl);
 
 void		 ewl_filelist_filter_set(Ewl_Filelist *fl,
-							const char *filter);
-const char	*ewl_filelist_filter_get(Ewl_Filelist *fl);
+							Ewl_Filelist_Filter *filter);
+Ewl_Filelist_Filter	*ewl_filelist_filter_get(Ewl_Filelist *fl);
 
 void		 ewl_filelist_view_set(Ewl_Filelist *fl,
 						Ewl_Filelist_View view);
@@ -126,21 +209,6 @@ Ewl_Scrollpane_Flags ewl_filelist_hscroll_flag_get(Ewl_Filelist *fl);
 const char	*ewl_filelist_stock_icon_get(const char *path);
 
 char 		*ewl_filelist_expand_path(Ewl_Filelist *fl, const char *dir);
-void 		 ewl_filelist_directory_read(Ewl_Filelist *fl,
-					const char *dir,
-					unsigned int skip_dot_dot,
-					void (*func)(Ewl_Filelist *fl,
-						const char *dir,
-						char *file, void *data),
-					void *data);
-void 		 ewl_filelist_handle_click(Ewl_Filelist *fl, Ewl_Widget *w,
-						Ewl_Event_Mouse_Up *ev,
-						const char *select_state,
-						const char *unselect_state);
-void 		 ewl_filelist_container_shift_handle(Ewl_Filelist *fl,
-					Ewl_Container *c, Ewl_Widget *clicked,
-					const char *select_signal,
-					const char *unselect_signal);
 
 /*
  * Internally used functions, override at your own risk

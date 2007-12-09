@@ -89,7 +89,8 @@ Ecore_List	*ewl_filedialog_selected_files_get(Ewl_Filedialog *fd);
 
 void		 ewl_filedialog_filter_add(Ewl_Filedialog *fd,
 						const char *name,
-						const char *filter);
+						const char *filter,
+						Ecore_List *mime_types);
 
 /*
  * Internally used callbacks, override at your own risk.

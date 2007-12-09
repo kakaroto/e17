@@ -1,5 +1,6 @@
 #ifndef EWL_FILELIST_MODEL_H
 #define EWL_FILELIST_MODEL_H
+#include "ewl_filelist.h"
 
 /**
  * @addtogroup Ewl_Filelist_Model Ewl_Filelist_Model: The model for the filelist
@@ -8,66 +9,10 @@
  * @{
  */
 
-/**
- * @def EWL_FILELIST_FILE_TYPE
- * The type name
- */
-#define EWL_FILELIST_FILE_TYPE "filelist_file"
-
-typedef struct Ewl_Filelist_File Ewl_Filelist_File;
-
-/**
- * @def EWL_FILELIST_FILE(fl)
- * Typecasts a pointer to an Ewl_Filelist_File pointer
- */
-#define EWL_FILELIST_FILE(fl) ((Ewl_Filelist_File *)fl)
-
-/**
- * @brief The data structure for Ewl_Filelist_File
- */
-struct Ewl_Filelist_File
-{
-	const char *name;
-	off_t size;
-	mode_t mode;
-	uid_t username;
-	gid_t groupname;
-	time_t modtime;
-	unsigned char readable:1;
-	unsigned char writeable:1;
-	unsigned char is_dir:1;
-};
-
-/**
- *  * @def EWL_FILELIST_DIRECTORY_TYPE
- *   * The type name
- *    */
-#define EWL_FILELIST_DIRECTORY_TYPE "filelist_directory"
-
-typedef struct Ewl_Filelist_Directory Ewl_Filelist_Directory;
-
-/**
- *  * @def EWL_FILELIST_DIRECTORY(fl)
- *   * Typecasts a pointer to an Ewl_Filelist_Directory pointer
- *    */
-#define EWL_FILELIST_DIRECTORY(fl) ((Ewl_Filelist_Directory *)fl)
-
-/**
- *  * @brief The data structure for Ewl_Filelist_Directory
- *   */
-struct Ewl_Filelist_Directory
-{
-	const char *name;
-	Ecore_List *files;
-	Ecore_List *dirs;
-	unsigned char skip_hidden:1;
-	unsigned int num_dirs;
-	unsigned int num_files;
-};
-
 Ewl_Filelist_Directory	*ewl_filelist_model_directory_new(const char *path,
-	       					unsigned char skip_hidden,
-						unsigned int show_dot_dot);
+						unsigned char skip_hidden,
+						unsigned int show_dot_dot,
+						Ewl_Filelist_Filter *filter);
 unsigned int ewl_filelist_model_data_count(void *data);
 void *ewl_filelist_model_data_fetch(void *data, unsigned int row,
 						unsigned int column);
@@ -80,6 +25,15 @@ void *ewl_filelist_model_data_expansion_data_fetch(void *data,
 unsigned int ewl_filelist_model_data_unref(void *data);
 int ewl_filelist_model_column_sortable(void *data, 
 						unsigned int column);
+
+unsigned int ewl_filelist_model_show_dot_files_set(Ewl_Filelist_Directory *dir,
+						unsigned int skip_hidden);
+unsigned int ewl_filelist_model_show_dot_files_get(Ewl_Filelist_Directory *dir);
+
+unsigned int ewl_filelist_model_filter_set(Ewl_Filelist_Directory *dir,
+					Ewl_Filelist_Filter *filter);
+Ewl_Filelist_Filter *ewl_filelist_model_filter_get
+					(Ewl_Filelist_Directory *dir);
 
 /**
  * @}

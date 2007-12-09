@@ -5,6 +5,7 @@
 #include "ewl_box.h"
 #include "ewl_view.h"
 #include "ewl_model.h"
+#include "ewl_filelist.h"
 
 /**
  * @addtogroup Ewl_Filepicker Ewl_Filepicker: Allows selecting files from a list
@@ -77,8 +78,8 @@ void		 ewl_filepicker_directory_set(Ewl_Filepicker *fp,
 const char	*ewl_filepicker_directory_get(Ewl_Filepicker *fp);
 
 void		 ewl_filepicker_filter_set(Ewl_Filepicker *fp,
-							const char *filter);
-const char	*ewl_filepicker_filter_get(Ewl_Filepicker *fp);
+							Ewl_Filelist_Filter *filter);
+Ewl_Filelist_Filter	*ewl_filepicker_filter_get(Ewl_Filepicker *fp);
 
 void		 ewl_filepicker_multiselect_set(Ewl_Filepicker *fp,
 							unsigned int ms);
@@ -106,7 +107,8 @@ Ewl_Filelist_View *ewl_filepicker_list_view_get(Ewl_Filepicker *fp);
 
 void 		 ewl_filepicker_filter_add(Ewl_Filepicker *fp,
 						const char *name,
-						const char *filter);
+						const char *extension,
+						Ecore_List *mime_types);
 /**
  * @}
  */
