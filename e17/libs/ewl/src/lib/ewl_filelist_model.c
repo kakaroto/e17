@@ -6,7 +6,6 @@
 #include "ewl_model.h"
 #include "ewl_filelist.h"
 #include "ewl_io_manager.h"
-#include <fnmatch.h>
 #include <dirent.h>
 #include <fnmatch.h>
 

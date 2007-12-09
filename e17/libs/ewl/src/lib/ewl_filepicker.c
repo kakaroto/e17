@@ -752,7 +752,7 @@ static void
 ewl_filepicker_cb_filter_change(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 {
 	Ewl_Filepicker *fp;
-	const char *name;
+	char *name;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(w);
@@ -767,6 +767,7 @@ ewl_filepicker_cb_filter_change(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 	
 	ewl_filepicker_filter_add(fp, name, name, NULL);
 	ewl_filepicker_cb_type_change(fp->mvc_filters.combo, NULL, fp);
+	FREE(name);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
