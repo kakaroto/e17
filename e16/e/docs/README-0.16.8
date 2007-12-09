@@ -638,6 +638,16 @@ This possibility (Xft support) is available as of version 0.16.8.5.
 This possibility (Pango support) is available as of version 0.16.8.9.
 Pango support must be explicitly enabled at build time with --enable-pango.
 
+When using a 0.16.8 core theme, font rendering using xft or pango can be
+activated with (restart after change is required):
+$ eesh set theme.use_alt_font_cfg 1
+$ eesh set theme.font_cfg fonts.cfg.xft
+or
+$ eesh set theme.font_cfg fonts.cfg.pango
+
+To select the theme font settings use:
+$ eesh set theme.use_alt_font_cfg 0
+
 
 Using e16 with GNOME
 --------------------
