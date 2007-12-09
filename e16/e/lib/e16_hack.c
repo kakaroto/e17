@@ -31,6 +31,7 @@
 #include <X11/X.h>
 
 #include "config.h"
+#include "util.h"
 
 /* dlopened xlib so we can find the symbols in the real xlib to call them */
 static void        *lib_xlib = NULL;
@@ -65,7 +66,7 @@ typedef             Window(CWF) (Display * _display, Window _parent, int _x,
 				 XSetWindowAttributes * _attributes);
 
 /* XCreateWindow intercept hack */
-Window
+__EXPORT__          Window
 XCreateWindow(Display * display, Window parent, int x, int y,
 	      unsigned int width, unsigned int height,
 	      unsigned int border_width,
@@ -95,7 +96,7 @@ typedef             Window(CSWF) (Display * _display, Window _parent, int _x,
 				  unsigned long _background);
 
 /* XCreateSimpleWindow intercept hack */
-Window
+__EXPORT__          Window
 XCreateSimpleWindow(Display * display, Window parent, int x, int y,
 		    unsigned int width, unsigned int height,
 		    unsigned int border_width,
@@ -120,7 +121,7 @@ typedef int         (RWF) (Display * _display, Window _window, Window _parent,
 			   int x, int y);
 
 /* XReparentWindow intercept hack */
-int
+__EXPORT__ int
 XReparentWindow(Display * display, Window window, Window parent, int x, int y)
 {
    static RWF         *func = NULL;
