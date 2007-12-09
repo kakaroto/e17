@@ -434,7 +434,7 @@ ewl_tree2_row_collapse(Ewl_Tree2 *tree, void *data, unsigned int row)
 	DCHECK_PARAM_PTR(data);
 	DCHECK_TYPE(tree, EWL_TREE2_TYPE);
 
-	
+
 	/* if this tree has no expansions we're done */
 	if (!tree->expansions) DRETURN(DLEVEL_STABLE);
 
@@ -446,14 +446,14 @@ ewl_tree2_row_collapse(Ewl_Tree2 *tree, void *data, unsigned int row)
 	/* nothing to do if the row isn't expanded */
 	if (!ewl_tree2_row_expanded_is(tree, data, row)) DRETURN(DLEVEL_STABLE);
 
-	/* we found the item so we can remove it */ 
+	/* we found the item so we can remove it */
 	for (i = 0; exp->expanded[i] != row; i++)
 		;
 
-	memmove(exp->expanded + i, exp->expanded + i + 1, 
+	memmove(exp->expanded + i, exp->expanded + i + 1,
 			sizeof(unsigned int) * (exp->size - i - 1));
 	exp->size--;
-	exp->expanded = realloc(exp->expanded, 
+	exp->expanded = realloc(exp->expanded,
 				sizeof(unsigned int) * exp->size);
 
 	node = ewl_container_child_get(exp->c, row);
@@ -775,10 +775,10 @@ ewl_tree2_build_tree_rows(Ewl_Tree2 *tree, Ewl_Model *model, Ewl_View *view,
 		if (tree->row_color_alternate)
 		{
 			if (colour)
-				ewl_widget_state_set(row, "odd", 
+				ewl_widget_state_set(row, "odd",
 							EWL_STATE_PERSISTENT);
 			else
-				ewl_widget_state_set(row, "even", 
+				ewl_widget_state_set(row, "even",
 							EWL_STATE_PERSISTENT);
 		}
 
@@ -958,7 +958,7 @@ ewl_tree2_widget_at(Ewl_MVC *mvc, void *data, unsigned int row,
 		exp = ecore_hash_get(tree->expansions, data);
 		if (!exp)
 			DRETURN_PTR(NULL, DLEVEL_STABLE);
-	
+
 		c = exp->c;
 	}
 
@@ -966,7 +966,7 @@ ewl_tree2_widget_at(Ewl_MVC *mvc, void *data, unsigned int row,
 	r = ewl_container_child_get(c, row);
 	if (tree->type == EWL_TREE_SELECTION_TYPE_ROW)
 		w = EWL_WIDGET(r);
-	else 
+	else
 	{
 		/* infact our row is a node so we have to get the row
 		 * to search for the right container */
@@ -1071,16 +1071,16 @@ ewl_tree2_node_init(Ewl_Tree2_Node *node)
 				ewl_tree2_cb_node_child_add);
 	ewl_container_remove_notify_set(EWL_CONTAINER(node),
 				ewl_tree2_cb_node_child_del);
-	
+
 	/* we don't want the mvc to unref our data since the data is owned
 	 * by the tree or the parent node */
-	ewl_callback_del(EWL_WIDGET(node), EWL_CALLBACK_DESTROY, 
+	ewl_callback_del(EWL_WIDGET(node), EWL_CALLBACK_DESTROY,
 						ewl_mvc_cb_data_unref);
 
 	ewl_object_fill_policy_set(EWL_OBJECT(node),
 				EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK);
 
-	ewl_callback_del(EWL_WIDGET(node), EWL_CALLBACK_CONFIGURE, 
+	ewl_callback_del(EWL_WIDGET(node), EWL_CALLBACK_CONFIGURE,
 							ewl_box_cb_configure);
 	ewl_callback_append(EWL_WIDGET(node), EWL_CALLBACK_CONFIGURE,
 					ewl_tree2_cb_node_configure, NULL);
@@ -1142,7 +1142,7 @@ ewl_tree2_node_expandable_get(Ewl_Tree2_Node *node)
 	DCHECK_PARAM_PTR_RET(node, FALSE);
 	DCHECK_TYPE_RET(node, EWL_TREE2_NODE_TYPE, FALSE);
 
-	DRETURN_INT((node->handle) && 
+	DRETURN_INT((node->handle) &&
 			ewl_expansion_is_expandable(EWL_EXPANSION(node->handle)), DLEVEL_STABLE);
 }
 
@@ -1193,18 +1193,18 @@ ewl_tree2_node_expand(Ewl_Tree2_Node *node)
 		{
 			Ewl_Tree2_Expansions_List *exp;
 
-			node->expansion.data = 
+			node->expansion.data =
 				model->expansion.data(data, node->row_num);
 
 			/* Put the node into the expansions hash */
 			exp = ewl_tree2_expansions_list_new();
 			exp->c = EWL_CONTAINER(node);
-			ecore_hash_set(EWL_TREE2(node->tree)->expansions, 
+			ecore_hash_set(EWL_TREE2(node->tree)->expansions,
 					node->expansion.data, exp);
 		}
 
 		if (!node->expansion.model && model->expansion.model)
-			node->expansion.model = 
+			node->expansion.model =
 				model->expansion.model(data, node->row_num);
 
 		/* We only save the model reference here to unref it on destroy.
@@ -1220,7 +1220,7 @@ ewl_tree2_node_expand(Ewl_Tree2_Node *node)
 
 		ewl_tree2_build_tree_rows(EWL_TREE2(node->tree), tmp_model,
 						tmp_view, node->expansion.data,
-					       	0, EWL_CONTAINER(node), FALSE);
+						0, EWL_CONTAINER(node), FALSE);
 		node->built_children = TRUE;
 	}
 
@@ -1511,5 +1511,3 @@ ewl_tree2_cb_node_child_del(Ewl_Container *c, Ewl_Widget *w, int idx __UNUSED__)
 
 	ewl_tree2_cb_node_child_add(c, w);
 }
-
-
