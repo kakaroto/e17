@@ -411,7 +411,6 @@ ewl_filedialog_filter_add(Ewl_Filedialog *fd, const char *name,
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(fd);
 	DCHECK_PARAM_PTR(name);
-	DCHECK_PARAM_PTR(filter);
 	DCHECK_TYPE(fd, EWL_FILEDIALOG_TYPE);
 
 	ewl_filepicker_filter_add(EWL_FILEPICKER(fd->fp), name, filter, mime_types);

@@ -13,7 +13,7 @@ Ewl_Widget *ewl_filelist_view_widget_fetch(void *data,
 			unsigned int row __UNUSED__, unsigned int column)
 {
 	Ewl_Widget *ret;
-	const char *img, *stock, *filename;
+	const char *img = NULL, *stock, *filename;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET(data, NULL);
@@ -28,10 +28,16 @@ Ewl_Widget *ewl_filelist_view_widget_fetch(void *data,
 	/* Get and set data into icon */
 	if (column == 0)
 	{
-		stock = ewl_filelist_stock_icon_get(data);
-		img = ewl_icon_theme_icon_path_get(stock, 0);
+		if (!strcmp(data, ".."))
+			img = ewl_icon_theme_icon_path_get
+						(EWL_ICON_GO_UP, 0);
+		else
+		{
+			stock = ewl_filelist_stock_icon_get(data);
+			img = ewl_icon_theme_icon_path_get(stock, 0);
+		}
 		if (img) ewl_icon_image_set(EWL_ICON(ret), 
-						img, stock);
+						img, NULL);
 
 		filename = ecore_file_file_get(data);
 		ewl_icon_label_set(EWL_ICON(ret), filename);

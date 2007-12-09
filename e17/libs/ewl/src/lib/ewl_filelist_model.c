@@ -7,6 +7,7 @@
 #include "ewl_filelist.h"
 #include "ewl_io_manager.h"
 #include <dirent.h>
+#include <fnmatch.h>
 
 static int ewl_filelist_model_data_name_sort(Ewl_Filelist_File *file1,
 				Ewl_Filelist_File *file2);
@@ -563,7 +564,8 @@ ewl_filelist_model_filter_main(Ewl_Filelist_Directory *dir,
 		ecore_list_first_goto(filter->mime_list);
 		while ((mime_given = ecore_list_next(filter->mime_list)))
 		{
-			if (!strcmp(mime_given, mime_check))
+			if ((mime_check) && (!strcmp(mime_given,
+							mime_check)))
 				DRETURN_INT(TRUE, DLEVEL_STABLE);
 		}
 	}

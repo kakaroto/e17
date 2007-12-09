@@ -8,6 +8,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <Ecore_Data.h>
+#include <string.h>
 
 static int create_test(Ewl_Container *box);
 
@@ -50,11 +52,16 @@ cb_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 					void *data __UNUSED__)
 {
 	Ewl_Widget *fd;
+	Ecore_List *filters;
+
+	filters = ecore_list_new();
+	ecore_list_append(filters, strdup("image/jpeg"));
+	ecore_list_append(filters, strdup("image/png"));
+	ecore_list_append(filters, strdup("image/gif"));
 
 	fd = ewl_filedialog_new();
 	ewl_filedialog_filter_add(EWL_FILEDIALOG(fd), "txt", "*.txt", NULL);
-	ewl_filedialog_filter_add(EWL_FILEDIALOG(fd), "png", "*.png", NULL);
-	ewl_filedialog_filter_add(EWL_FILEDIALOG(fd), "jpg", "*.jpg", NULL);
+	ewl_filedialog_filter_add(EWL_FILEDIALOG(fd), "Images", NULL, filters);
 	ewl_callback_append(fd, EWL_CALLBACK_DELETE_WINDOW, cb_fd_delete, NULL);
 	ewl_callback_append(fd, EWL_CALLBACK_VALUE_CHANGED, cb_open, NULL);
 	ewl_widget_show(fd);
