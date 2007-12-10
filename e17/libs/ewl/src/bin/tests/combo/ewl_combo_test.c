@@ -91,6 +91,7 @@ static void *combo_test_data_fetch(void *data, unsigned int row,
 						unsigned int col);
 static unsigned int combo_test_data_count_get(void *data);
 static void combo_cb_add(Ewl_Widget *w, void *ev, void *data);
+static void combo_cb_clear(Ewl_Widget *w, void *ev, void *data);
 static void combo_cb_entry_changed(Ewl_Widget *w, void *ev, void *data);
 
 static Ewl_Widget *combo_test_editable_cb_header_fetch(void *data,
@@ -196,6 +197,13 @@ create_test(Ewl_Container *box)
 	ewl_button_label_set(EWL_BUTTON(o), "Add items");
 	ewl_container_child_append(EWL_CONTAINER(hbox), o);
 	ewl_callback_append(o, EWL_CALLBACK_CLICKED, combo_cb_add, NULL);
+	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_NONE);
+	ewl_widget_show(o);
+
+	o = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(o), "Clear items");
+	ewl_container_child_append(EWL_CONTAINER(hbox), o);
+	ewl_callback_append(o, EWL_CALLBACK_CLICKED, combo_cb_clear, NULL);
 	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_NONE);
 	ewl_widget_show(o);
 
@@ -309,6 +317,26 @@ combo_cb_add(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
 	d->data[s] = strdup(PACKAGE_DATA_DIR "/images/Package.png");
 	d->data[s + 1] = strdup(PACKAGE_DATA_DIR "/images/Open.png");
+
+	ewl_mvc_dirty_set(EWL_MVC(c), 1);
+
+	c = ewl_widget_name_find("combo_image");
+	ewl_mvc_dirty_set(EWL_MVC(c), 1);
+}
+
+static void
+combo_cb_clear(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
+							void *data __UNUSED__)
+{
+	Ewl_Widget *c;
+	Combo_Test_Data *d;
+
+	c = ewl_widget_name_find("combo_label");
+	d = ewl_mvc_data_get(EWL_MVC(c));
+
+	d->count = 0;
+	free(d->data);
+	d->data = NULL;
 
 	ewl_mvc_dirty_set(EWL_MVC(c), 1);
 
