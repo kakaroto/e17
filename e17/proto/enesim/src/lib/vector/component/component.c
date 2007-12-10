@@ -1,10 +1,8 @@
 #include <stdlib.h>
 
-#include "Enesim.h"
+#include "Enesim.h""
 #include "enesim_private.h"
-#include "container.h"
-#include "component.h"
-#include "reader.h"
+#include "enesim_vector.h"
 
 /*============================================================================*
  *                                  Local                                     * 
@@ -28,13 +26,13 @@ static void _alloc_cb(void *data)
  * To be documented
  * FIXME: To be fixed
  */
-Enesim_Component * enesim_component_new(void)
+Enesim_Component * enesim_component_new(int num_vertices)
 {
 	Enesim_Component *c;
 
 	c = calloc(1, sizeof(Enesim_Component));
 	c->readers = edata_list_new();
-	c->path = enesim_container_new(c, 0);
+	c->path = enesim_container_new(c, num_vertices);
 	/* ABSTRACT THIS */
 	c->path->alloc_cb = _alloc_cb;
 	return c;

@@ -1,4 +1,4 @@
-SUBDIRS = raster vector
+SUBDIRS = raster util vector
 
 MAINTAINERCLEANFILES = \
 Makefile.in
@@ -13,11 +13,13 @@ libenesim_la_SOURCES =
 
 libenesim_la_LIBADD = \
 raster/libenesim_raster.la \
+util/libenesim_util.la \
 vector/libenesim_vector.la \
 @EDATA_LIBS@
 
 libenesim_la_DEPENDENCIES = \
 raster/libenesim_raster.la \
+util/libenesim_util.la \
 vector/libenesim_vector.la 
 
 libenesim_la_LDFLAGS      = -version-info 1:0:0

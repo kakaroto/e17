@@ -38,7 +38,7 @@ enum
 	ENESIM_COMPONENT_TYPES
 };
 
-Enesim_Component * enesim_component_new(void);
+Enesim_Component * enesim_component_new(int num);
 void enesim_component_notify(Enesim_Component *c);
 int enesim_component_generate(Enesim_Component *c, int *num);
 

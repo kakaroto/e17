@@ -7,8 +7,6 @@
 #include "Enesim.h"
 #include "enesim_private.h"
 #include "rasterizer.h"
-#include "scanline.h"
-#include "extender.h"
 
 /*============================================================================*
  *                                   API                                      * 

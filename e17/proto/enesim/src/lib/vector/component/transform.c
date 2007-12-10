@@ -84,7 +84,7 @@ EAPI Enesim_Component * enesim_transform_new(void)
 {
 	Enesim_Component *c;
 
-	c = enesim_component_new();
+	c = enesim_component_new(0);
 	enesim_transform_init(c);
 	return c;
 }

@@ -112,7 +112,7 @@ EAPI Enesim_Component * enesim_source_csv_new(void)
 {
 	Enesim_Component *c;
 
-	c = enesim_component_new();
+	c = enesim_component_new(0);
 	enesim_source_csv_init(c);
 	return c;
 }

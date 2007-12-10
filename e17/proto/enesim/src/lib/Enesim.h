@@ -107,7 +107,7 @@ enum {
 	ENESIM_SCANLINES
 };
 
-typedef void (*Enesim_Scanline_Callback)(void *sl, void *data);
+typedef void (*Enesim_Scanline_Callback)(void *sl, int type, void *data);
 
 typedef struct _Enesim_Scanline Enesim_Scanline; /**< Scanline Handler */
 EAPI Enesim_Scanline 	*enesim_scanline_alias_new(void);
@@ -136,7 +136,7 @@ typedef enum
 typedef struct _Enesim_Rasterizer Enesim_Rasterizer; /**< Rasterizer Handler */
 
 EAPI void enesim_rasterizer_vertex_add(Enesim_Rasterizer *r, float x, float y);
-EAPI int enesim_rasterizer_generate(Enesim_Rasterizer *r, int sl, Enesim_Scanline_Callback cb, void *data);
+EAPI int enesim_rasterizer_generate(Enesim_Rasterizer *r, Enesim_Scanline_Callback cb, void *data);
 EAPI void enesim_rasterizer_delete(Enesim_Rasterizer *r);
 EAPI void enesim_rasterizer_fill_rule_set(Enesim_Rasterizer *r, Enesim_Rasterizer_Fill_Rule rule);
 
@@ -239,6 +239,8 @@ enum
 {
 	ENESIM_CMD_MOVE_TO,
 	ENESIM_CMD_LINE_TO,
+	ENESIM_CMD_CURVE3,
+	ENESIM_CMD_CURVE4,
 	ENESIM_CMD_END,
 	ENESIM_CMDS
 };
@@ -266,7 +268,7 @@ EAPI int enesim_source_csv_file_set(Enesim_Component *c, const char *path);
  * @defgroup Enesim_Component_Path_Group Path Source Component
  * @{
  */
-EAPI Enesim_Component * enesim_path_new(void);
+EAPI Enesim_Component * enesim_path_new(int num_vertices);
 EAPI void enesim_path_move_to(Enesim_Component *p, int x, int y);
 EAPI void enesim_path_line_to(Enesim_Component *p, int x, int y);
 EAPI void enesim_path_curve3(Enesim_Component *p, float x1, float y1, float x2,

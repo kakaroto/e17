@@ -8,7 +8,7 @@
 #include "enesim_private.h"
 #include "rasterizer.h"
 #include "scanline.h"
-#include "extender.h"
+#include "extender_int.h"
 
 #define KIIA_SUBPIXEL_SHIFT 3
 #define KIIA_SUBPIXEL_DATA unsigned char

@@ -44,21 +44,17 @@ EAPI void enesim_rasterizer_vertex_add(Enesim_Rasterizer *r, float x, float y)
  * To be documented
  * FIXME: To be fixed
  */
-EAPI int enesim_rasterizer_generate(Enesim_Rasterizer *r, int sl, Enesim_Scanline_Callback cb, void *data)
+EAPI int enesim_rasterizer_generate(Enesim_Rasterizer *r,
+		Enesim_Scanline_Callback cb, void *data)
 {
 	assert(r);
 	assert(r->funcs);
 	assert(r->funcs->generate);
 	assert(cb);
 
-	if (!(r->types & sl))
-	{
-		ENESIM_WARNING("Scanline not supported");
-		return -ENESIM_ERROR_SCANLINE_NOT_SUPPORTED;
-	}
 	r->user_data = data;
 	r->scanline_callback = cb;
-	r->funcs->generate(r->data, sl);
+	r->funcs->generate(r->data);
 	return ENESIM_OK;
 }
 

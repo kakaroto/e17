@@ -55,6 +55,8 @@ struct _Enesim_Surface
 };
 
 Span_Color_Func enesim_surface_span_color_get(Enesim_Surface *s, int rop);
+Span_Color_Mask_Func enesim_surface_span_color_mask_get(Enesim_Surface *s, int rop);
+
 void enesim_surface_premul(Enesim_Surface *s);
 
 #endif

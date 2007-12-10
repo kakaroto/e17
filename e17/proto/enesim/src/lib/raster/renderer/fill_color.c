@@ -4,8 +4,6 @@
 #include "enesim_private.h"
 #include "renderer.h"
 #include "surface.h"
-#include "scanline.h"
-#include "alias.h"
 
 /*============================================================================*
  *                                  Local                                     * 
@@ -18,32 +16,17 @@ typedef struct _Fill_Color
 static void _draw_alias(Enesim_Renderer *r, Enesim_Scanline_Alias *sl, Enesim_Surface *dst)
 {
 	Fill_Color *f;
-#if 0
-	Scanline_Alias_Sl *s;
-#endif
 	Span_Color_Func cfnc;
 	int nsl;
 	int offset;
 	int i;
 
 	f = r->data;
-#if 0
-	nsl = sl->num_sls;
-	s = sl->sls;
-#endif
+
 	cfnc = enesim_surface_span_color_get(dst, r->rop);
 	offset = (dst->w * sl->y) + sl->x;
 	//printf("%d %d %d\n", s->y, s->x, s->w);
 	cfnc(&dst->data, offset, f->color, sl->w);
-#if 0
-	for (i = 0; i < nsl; i++)
-	{
-		offset = (dst->w * s->y) + s->x;
-		//printf("%d %d %d\n", s->y, s->x, s->w);
-		cfnc(&dst->data, offset, f->color, s->w);
-		s++;
-	}
-#endif
 }
 
 static void _draw_mask(Enesim_Renderer *r, Enesim_Scanline_Mask *sl, Enesim_Surface *dst)

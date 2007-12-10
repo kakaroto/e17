@@ -18,15 +18,15 @@ struct _Enesim_Point
  */
 struct _Enesim_Container
 {
-	Edata_Array	*a;
-	Enesim_Point 	*points;
-	char 		*cmds;
-	Enesim_Point 	*point_curr;
-	char 		*cmd_curr;
-	int 		num_vertices;
+	Edata_Array	 *a;
+	Enesim_Point *points;
+	char         *cmds;
+	Enesim_Point *point_curr;
+	char         *cmd_curr;
+	int          num_vertices;
 
-	void 		*data;
-	void		(*alloc_cb)(void *data);
+	void         *data;
+	void        (*alloc_cb)(void *data);
 };
 
 Enesim_Container * 	enesim_container_new(void *data, int vertices_ref);

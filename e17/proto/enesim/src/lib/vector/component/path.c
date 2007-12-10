@@ -9,7 +9,6 @@ static const char _name[] = "path";
 typedef struct _Path
 {
 	Enesim_Component *c;
-
 } Path;
 
 /*============================================================================*
@@ -19,6 +18,7 @@ typedef struct _Path
 static void enesim_path_generate(void *data, int *num)
 {
 	Path *d = data;
+	
 }
 
 static void enesim_path_free(void *data)
@@ -48,11 +48,11 @@ static void enesim_path_init(Enesim_Component *c)
  * To be documented
  * FIXME: To be fixed
  */
-EAPI Enesim_Component * enesim_path_new(void)
+EAPI Enesim_Component * enesim_path_new(int num_vertices)
 {
 	Enesim_Component *c;
 
-	c = enesim_component_new();
+	c = enesim_component_new(num_vertices);
 	enesim_path_init(c);
 	return c;
 }
@@ -78,7 +78,7 @@ EAPI void enesim_path_line_to(Enesim_Component *p, int x, int y)
  */
 EAPI void enesim_path_close(Enesim_Component *p)
 {
-
+	enesim_container_vertex_add(p->path, 0, 0, ENESIM_CMD_END);
 }
 /**
  * To be documented
@@ -87,7 +87,9 @@ EAPI void enesim_path_close(Enesim_Component *p)
 EAPI void enesim_path_curve3(Enesim_Component *p, float x1, float y1, float x2,
 	float y2, float x3, float y3)
 {
-
+	enesim_container_vertex_add(p->path, x1, y1, ENESIM_CMD_CURVE3);
+	enesim_container_vertex_add(p->path, x2, y2, ENESIM_CMD_CURVE3);
+	enesim_container_vertex_add(p->path, x3, y3, ENESIM_CMD_CURVE3);
 }
 /**
  * To be documented
@@ -96,5 +98,8 @@ EAPI void enesim_path_curve3(Enesim_Component *p, float x1, float y1, float x2,
 EAPI void enesim_path_curve4(Enesim_Component *p, float x1, float y1, float x2,
 	float y2, float x3, float y3, float x4, float y4)
 {
-
+	enesim_container_vertex_add(p->path, x1, y1, ENESIM_CMD_CURVE4);
+	enesim_container_vertex_add(p->path, x2, y2, ENESIM_CMD_CURVE4);
+	enesim_container_vertex_add(p->path, x3, y3, ENESIM_CMD_CURVE4);
+	enesim_container_vertex_add(p->path, x4, y4, ENESIM_CMD_CURVE4);
 }

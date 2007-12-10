@@ -7,6 +7,8 @@
  *
  * TODO:
  * - Support NonZero Rule
+ * - Support for multiple _generates_ without new/delete
+ * - Support the clipping?
  */
 
 /* TODO Move the fixed point thing to a common place */
@@ -59,7 +61,7 @@ typedef struct _Kiia
 	Kiia_Vertex vertex_last;
 	int vertex_pos;
 
-	Enesim_Extender extender;
+	Enesim_Extender_Int extender;
 	
 	KIIA_SUBPIXEL_DATA *mask;
 	DATA8 *coverages;
@@ -106,8 +108,8 @@ static void _table_insert(Kiia *k, Kiia_Edge *e)
 	k->table[line_first] = e;
 	
 	/* accumulate the maxy and miny */
-	enesim_extender_add(&k->extender, line_first, line_last);
-	printf("edge added yfirst = %d, ylast = %d, x = %d, slope = %d slope_fix = %d\n", e->yfirst, e->ylast, e->x, e->slope, e->slope_fix);
+	enesim_extender_int_add(&k->extender, line_first, line_last);
+	//printf("edge added yfirst = %d, ylast = %d, x = %d, slope = %d slope_fix = %d\n", e->yfirst, e->ylast, e->x, e->slope, e->slope_fix);
 }
 
 static void _edge_add(Kiia *k, Kiia_Vertex *v)
@@ -205,7 +207,7 @@ static inline FIXED_POINT _dda(Kiia *k, FIXED_POINT xs, int ys, int ye, FIXED_PO
 	return x;
 }
 
-static void _rasterize_edge(Kiia *k, Kiia_Edge **aet, Enesim_Extender *length,
+static void _rasterize_edge(Kiia *k, Kiia_Edge **aet, Enesim_Extender_Int *length,
 		int curr_line)
 {
 	Kiia_Edge *curr_edge = *aet, *prev_edge = NULL;
@@ -223,7 +225,7 @@ static void _rasterize_edge(Kiia *k, Kiia_Edge **aet, Enesim_Extender *length,
 			x = _dda(k, curr_edge->x, 0, ye, curr_edge->slope, 1);
 			xe = FIXED_TO_INT(x - curr_edge->slope);
 		
-			enesim_extender_add_sort(length, FIXED_TO_INT(curr_edge->x), xe);
+			enesim_extender_int_unsorted_add(length, FIXED_TO_INT(curr_edge->x), xe);
 			/* remove the edge from the AET */
 			curr_edge = curr_edge->gnext;
 			if (prev_edge)
@@ -238,7 +240,7 @@ static void _rasterize_edge(Kiia *k, Kiia_Edge **aet, Enesim_Extender *length,
 
 			x = _dda(k, curr_edge->x, 0, KIIA_SUBPIXEL_COUNT - 1, curr_edge->slope, 1);
 			xe = FIXED_TO_INT(x - curr_edge->slope);
-			enesim_extender_add_sort(length, FIXED_TO_INT(curr_edge->x), xe);
+			enesim_extender_int_unsorted_add(length, FIXED_TO_INT(curr_edge->x), xe);
 			/* update the edge */
 			if ((curr_line & SLOPE_FIX_SCANLINE_MASK) == 0)
 				curr_edge->x = x + curr_edge->slope_fix;
@@ -268,7 +270,7 @@ static void _rasterize_edge(Kiia *k, Kiia_Edge **aet, Enesim_Extender *length,
 				ys = curr_edge->yfirst & (KIIA_SUBPIXEL_COUNT - 1);
 				x = _dda(k, curr_edge->x, ys, ye, curr_edge->slope, 1 << ys);
 				xe = FIXED_TO_INT(x - curr_edge->slope);
-				enesim_extender_add_sort(length, FIXED_TO_INT(curr_edge->x), xe);
+				enesim_extender_int_unsorted_add(length, FIXED_TO_INT(curr_edge->x), xe);
 				/* ignore this edge */
 			}
 			else
@@ -279,7 +281,7 @@ static void _rasterize_edge(Kiia *k, Kiia_Edge **aet, Enesim_Extender *length,
 				ys = curr_edge->yfirst & (KIIA_SUBPIXEL_COUNT - 1);
 				x = _dda(k, curr_edge->x, ys, KIIA_SUBPIXEL_COUNT - 1, curr_edge->slope, 1 << ys);
 				xe = FIXED_TO_INT(x - curr_edge->slope);
-				enesim_extender_add_sort(length, FIXED_TO_INT(curr_edge->x), xe);
+				enesim_extender_int_unsorted_add(length, FIXED_TO_INT(curr_edge->x), xe);
 				curr_edge->x = x;
 				/* add the edge to the AET */
 				if (prev_edge)
@@ -298,27 +300,31 @@ static void _rasterize_edge(Kiia *k, Kiia_Edge **aet, Enesim_Extender *length,
 	}
 }
 
-static void _generate(Kiia *k, int sl)
+#define DIRECT
+
+static void _generate(Kiia *k)
 {
 	int y;
 	int ymin = k->extender.min;
 	int ymax = k->extender.max;
-	Enesim_Extender length; /* to keep track of min and max x */
+	Enesim_Extender_Int length; /* to keep track of min and max x */
 	Kiia_Edge *edge = NULL;
-	Enesim_Scanline_Alias alias;
 
 	//printf("ymin %d ymax %d\n", ymin, ymax);
 	for (y = 0; y <= ymax; y++)
 	{
 		int xmin;
 		int xmax;
+#ifdef DIRECT
+		int x;
+#endif
 		KIIA_SUBPIXEL_DATA *mp;
 		KIIA_SUBPIXEL_DATA *end;
 		KIIA_SUBPIXEL_DATA mask;
 
 		DATA8 *cov;
 
-		enesim_extender_reset(&length);
+		enesim_extender_int_reset(&length);
 		_rasterize_edge(k, &edge, &length, y);
 		xmin = length.min;
 		xmax = length.max + 1;
@@ -330,11 +336,15 @@ static void _generate(Kiia *k, int sl)
 		mp = &k->mask[xmin];
 		end = &k->mask[xmax + 1];
 		*end = KIIA_FULL_COVERAGE;
+#ifdef DIRECT
+		x = xmin;
+#else
 		cov = k->coverages + xmin;
 		k->sl.y = y;
 		k->sl.x = xmin;
 		k->sl.w = xmax - xmin + 1;
 		k->sl.coverages = cov;
+#endif		
 		mask = *mp;
 		*mp++ = 0;
 		while (mp <= end)
@@ -344,40 +354,76 @@ static void _generate(Kiia *k, int sl)
 				do
 				{
 					mask = *mp++;
+#ifndef DIRECT
 					*cov = 0;
 					cov++;
+#endif
+#ifdef DIRECT
+					x++;
+#endif
 				} while (mask == 0);
 				mp[-1] = 0;
 			}
 			else if (mask == KIIA_FULL_COVERAGE)
 			{
+				KIIA_SUBPIXEL_DATA tmp;
+#ifdef DIRECT
 				/* FIXME here instead of sending a mask scanline
 				 * send an alias */
-				KIIA_SUBPIXEL_DATA tmp;
+				Enesim_Scanline_Alias sl;
+				
+				sl.y = y;
+				sl.x = x;
+#endif
 				do
 				{
 					tmp = *mp++;
+#ifndef DIRECT
 					*cov = 255;
 					cov++;
+#endif
+#ifdef DIRECT
+					x++;
+#endif
 				} while (tmp == 0);
 				mp[-1] = 0;
 				mask ^= tmp;
+#ifdef DIRECT
+				sl.w = x - sl.x;
+				k->r->scanline_callback(&sl, ENESIM_SCANLINE_ALIAS, k->r->user_data);
+#endif
 			}
 			else
 			{
+#ifdef DIRECT
 				/* FIXME here send a mask scanline directly */
+				Enesim_Scanline_Mask sl;
+				
+				sl.y = y;
+				sl.x = x;
+				cov = k->coverages + x;
+#endif
 				do
 				{
-					// TODO fix this!
 					/* coverages from 0 to subpixel_count */
 					*cov = KIIA_SUBPIXEL_COVERAGE(mask) << KIIA_COVERAGE_SHIFT;
 					cov++;
 					mask ^= *mp;
 					*mp++ = 0;
+#ifdef DIRECT
+					x++;
+#endif
 				} while (!((mask == 0) || (mask == KIIA_FULL_COVERAGE)));
+#ifdef DIRECT
+				sl.w = x - sl.x + 1;
+				sl.coverages = k->coverages + sl.x;
+				k->r->scanline_callback(&sl, ENESIM_SCANLINE_MASK, k->r->user_data);
+#endif
 			}
 		}
-		k->r->scanline_callback(&k->sl, k->r->user_data);
+#ifndef DIRECT
+		k->r->scanline_callback(&k->sl, ENESIM_SCANLINE_MASK, k->r->user_data);
+#endif
 	}
 }
 

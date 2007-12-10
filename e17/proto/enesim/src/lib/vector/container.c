@@ -1,6 +1,7 @@
 #include <stdlib.h>
 
 #include "Enesim.h"
+#include "Edata.h"
 #include "enesim_private.h"
 #include "container.h"
 
@@ -32,14 +33,14 @@ static void _a_free(Enesim_Container *p)
  * To be documented
  * FIXME: To be fixed
  */
-Enesim_Container * enesim_container_new(void *data, int vertices_ref)
+Enesim_Container * enesim_container_new(void *data, int num_vertices)
 {
 	Enesim_Container *p;
 
 	p = calloc(1, sizeof(Enesim_Container));
 	p->data = data;
 	p->a = edata_array_new(p, EDATA_ARRAY_ALLOC(_a_alloc),
-		EDATA_ARRAY_FREE(_a_free));
+		EDATA_ARRAY_FREE(_a_free), num_vertices);
 	return p;
 }
 /**

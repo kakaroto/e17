@@ -10,17 +10,18 @@
  * - add a function/struct element to set up the odd/even/zero fill rule
  * - im not sure about using a rectangle for the boundaries, maybe only
  * width and height?
+ * - support passing edges directly instead of vertices (useful for
+ *   subpaths)
  */
 
 typedef void (*Enesim_Rasterizer_Vertex_Add)(void *r, float x, float y);
-typedef void (*Enesim_Rasterizer_Generate)(void *r, int sl);
+typedef void (*Enesim_Rasterizer_Generate)(void *r);
 typedef void (*Enesim_Rasterizer_Delete)(void *r);
 typedef struct _Enesim_Rasterizer_Func
 {
 	Enesim_Rasterizer_Vertex_Add vertex_add;
 	Enesim_Rasterizer_Generate generate;
 	Enesim_Rasterizer_Delete delete;
-	/* TODO free */
 } Enesim_Rasterizer_Func;
 
 #define ENESIM_RASTERIZER_VERTEX_ADD(func) ((Enesim_Rasterizer_Vertex_Add)func)
