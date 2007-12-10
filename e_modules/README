@@ -42,6 +42,8 @@ mixer - A module to control volume for some mixers.  (Will be replaced by someth
 
 moon - A module to display moon phase information.
 
+mpdule - A module to display what's playing in MPD.
+
 net - A module to monitor traffic on a network device.
 
 news - A module to display rss feeds.
