@@ -165,7 +165,6 @@ static Ewl_Widget *
 widgets_build(void)
 {
 	Ewl_Widget *misc, *item, *vbox, *notebook;
-	char *str, *str_col[2];
 	int i;
 	struct {
 		char *name;
@@ -309,7 +308,6 @@ XXX Port this to use the model/view system
 		ewl_container_child_append(EWL_CONTAINER(misc), item);
 		ewl_widget_show(item);
 	}
-#endif
 
 	/* List/tree */
 	vbox = ewl_vbox_new();
@@ -359,6 +357,7 @@ XXX Port this to use the model/view system
 	str_col[0] = "sub row";
 	str_col[1] = "label";
 	item = ewl_tree_text_row_add(EWL_TREE(misc), EWL_ROW(item), str_col);
+#endif
 
 	/* Misc */
 	vbox = ewl_vbox_new();
