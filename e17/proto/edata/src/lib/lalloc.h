@@ -12,7 +12,7 @@ typedef void (*Edata_Array_Free) (void *user_data);
 
 typedef struct _Edata_Array Edata_Array;
 EAPI void edata_array_free(Edata_Array *a);
-EAPI Edata_Array *edata_array_new(void *data, Edata_Array_Alloc alloc_cb, Edata_Array_Free free_cb);
+EAPI Edata_Array *edata_array_new(void *data, Edata_Array_Alloc alloc_cb, Edata_Array_Free free_cb, int num_init);
 EAPI void edata_array_element_new(Edata_Array *a);
 
 /** @} */

@@ -15,7 +15,7 @@ struct _Edata_Array
  * To be documented
  * FIXME: To be fixed
  */
-EAPI Edata_Array * edata_array_new(void *data, Edata_Array_Alloc alloc_cb, Edata_Array_Free free_cb)
+EAPI Edata_Array * edata_array_new(void *data, Edata_Array_Alloc alloc_cb, Edata_Array_Free free_cb, int num_init)
 {
 	Edata_Array *a;
 
@@ -23,6 +23,11 @@ EAPI Edata_Array * edata_array_new(void *data, Edata_Array_Alloc alloc_cb, Edata
 	a->data = data;
 	a->alloc_cb = alloc_cb;
 	a->free_cb = free_cb;
+	if (num_init > 0)
+	{
+		a->num_allocated = num_init;
+		a->alloc_cb(a->data, a->num_allocated);
+	}
 	return a;
 }
 
