@@ -38,4 +38,4 @@ mpdule.edj:  mpdule.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $< $@
 
 clean-local:
-	 rm -rf mixer.edj *~
+	 rm -rf mpdule.edj *~
