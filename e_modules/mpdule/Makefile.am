@@ -2,7 +2,6 @@ MAINTAINERCLEANFILES = Makefile.in
 
 SUBDIRS = 
 
-EDJE_CC = @edje_cc@
 EDJE_FLAGS = -v \
 -id $(top_srcdir) \
 -fd $(top_srcdir)
@@ -23,19 +22,20 @@ CONFIG_CLEAN_FILES = e_modules-mpdule.spec mpdule.edj
 INCLUDES               = -I. \
 			 -I$(top_srcdir) \
 			 -I$(includedir) \
-			 @e_cflags@
+			 @e_cflags@ @MPD_CFLAGS@
+
 pkgdir                 = $(datadir)/$(MODULE_ARCH)
 
 pkg_LTLIBRARIES        = module.la
 module_la_SOURCES      = e_mod_main.c \
 		         e_mod_main.h \
 			 e_mod_config.c
-module_la_LIBADD       = @e_libs@
+module_la_LIBADD       = @e_libs@ @MPD_LIBS@
 module_la_LDFLAGS      = -module -avoid-version
 module_la_DEPENDENCIES = $(top_builddir)/config.h $(top_builddir)/mpdule.edj
 
-%.edj:  %.edc
+mpdule.edj:  mpdule.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $< $@
 
 clean-local:
-	 rm -rf *.edj *~
+	 rm -rf mixer.edj *~
