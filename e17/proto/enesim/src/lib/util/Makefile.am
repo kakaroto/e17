@@ -4,7 +4,9 @@ Makefile.in
 ENESIM_UTILHEADERS = \
 curve.h \
 extender_int.h \
-extender_float.h
+extender_float.h \
+fixed_16p16.h \
+fixed_24p8.h
 
 installed_headersdir = $(prefix)/include/enesim
 installed_headers_DATA = $(ENESIM_UTILHEADERS)

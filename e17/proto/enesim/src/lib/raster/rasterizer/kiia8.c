@@ -29,13 +29,13 @@
  * [][]##[][][][][] 2
  */
 #define KIIA_SUBPIXEL_OFFSETS { \
-	FLOAT_TO_FIXED((5.0f/8.0f)),\
-	FLOAT_TO_FIXED((0.0f/8.0f)),\
-	FLOAT_TO_FIXED((3.0f/8.0f)),\
-	FLOAT_TO_FIXED((6.0f/8.0f)),\
-	FLOAT_TO_FIXED((1.0f/8.0f)),\
-	FLOAT_TO_FIXED((4.0f/8.0f)),\
-	FLOAT_TO_FIXED((7.0f/8.0f)) \
+	(5.0f/8.0f),\
+	(0.0f/8.0f),\
+	(3.0f/8.0f),\
+	(6.0f/8.0f),\
+	(1.0f/8.0f),\
+	(4.0f/8.0f),\
+	(7.0f/8.0f) \
 }
 
 #include "kiia.h"

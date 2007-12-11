@@ -39,22 +39,22 @@
 
 
 #define KIIA_SUBPIXEL_OFFSETS { \
-	FLOAT_TO_FIXED((1.0f/16.0f)),\
-	FLOAT_TO_FIXED((8.0f/16.0f)),\
-	FLOAT_TO_FIXED((4.0f/16.0f)),\
-	FLOAT_TO_FIXED((15.0f/16.0f)),\
-	FLOAT_TO_FIXED((11.0f/16.0f)),\
-	FLOAT_TO_FIXED((2.0f/16.0f)),\
-	FLOAT_TO_FIXED((6.0f/16.0f)),\
-	FLOAT_TO_FIXED((14.0f/16.0f)),\
-	FLOAT_TO_FIXED((10.0f/16.0f)),\
-	FLOAT_TO_FIXED((3.0f/16.0f)),\
-	FLOAT_TO_FIXED((7.0f/16.0f)),\
-	FLOAT_TO_FIXED((12.0f/16.0f)),\
-	FLOAT_TO_FIXED((0.0f/16.0f)),\
-	FLOAT_TO_FIXED((9.0f/16.0f)),\
-	FLOAT_TO_FIXED((5.0f/16.0f)),\
-	FLOAT_TO_FIXED((13.0f/16.0f))\
+	(1.0f/16.0f),\
+	(8.0f/16.0f),\
+	(4.0f/16.0f),\
+	(15.0f/16.0f),\
+	(11.0f/16.0f),\
+	(2.0f/16.0f),\
+	(6.0f/16.0f),\
+	(14.0f/16.0f),\
+	(10.0f/16.0f),\
+	(3.0f/16.0f),\
+	(7.0f/16.0f),\
+	(12.0f/16.0f),\
+	(0.0f/16.0f),\
+	(9.0f/16.0f),\
+	(5.0f/16.0f),\
+	(13.0f/16.0f)\
 }
 
 #include "kiia.h"

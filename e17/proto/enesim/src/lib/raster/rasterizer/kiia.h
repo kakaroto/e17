@@ -1,6 +1,8 @@
 #ifndef _KIIA_H
 #define _KIIA_H
 
+#include "fixed_16p16.h"
+
 /*
  * Kiia Kallio Scanline edge-flag algorithm, check it out at:
  * http://mlab.uiah.fi/~kkallio/antialiasing/
@@ -11,16 +13,7 @@
  * - Support the clipping?
  */
 
-/* TODO Move the fixed point thing to a common place */
-#define FIXED_POINT int
-#define FIXED_POINT_SHIFT 16
-#define INT_TO_FIXED(a) ((a) << FIXED_POINT_SHIFT)
-#define FLOAT_TO_FIXED(a) (int)((a)*((float)(1 << FIXED_POINT_SHIFT)))
-
-#define FIXED_TO_INT(a) ((a) >> FIXED_POINT_SHIFT) 
-#define FIXED_TO_FLOAT(a) ((float)(a)/((float)(1 << FIXED_POINT_SHIFT)))
-#define RATIONAL_TO_FIXED(a) FLOAT_TO_FIXED(a)
-#define FIXED_TO_RATIONAL(a) FIXED_TO_FLOAT(a)
+//#define FLOAT_TO_FIXED(a) enesim_16p16_float_from(a)
 
 #define SLOPE_FIX_SHIFT 8
 #define SLOPE_FIX_STEP (1 << SLOPE_FIX_SHIFT)
@@ -39,9 +32,11 @@ struct _Kiia_Edge
 {
 	int yfirst;
 	int ylast;
-	FIXED_POINT x;
-	FIXED_POINT slope;
-	FIXED_POINT slope_fix;
+	
+	enesim_16p16_t x;
+	enesim_16p16_t slope;
+	enesim_16p16_t slope_fix;
+	
 	int direction;
 	Kiia_Edge *next; /* the next in the line */
 	Kiia_Edge *gnext; /* the next while generating the AET */
@@ -68,8 +63,8 @@ typedef struct _Kiia
 	Enesim_Scanline_Mask sl; /* FIXME is it needed ??? */
 } Kiia;
 
-
-static const FIXED_POINT _offsets[KIIA_SUBPIXEL_COUNT] = KIIA_SUBPIXEL_OFFSETS;
+static float _float_offsets[KIIA_SUBPIXEL_COUNT] = KIIA_SUBPIXEL_OFFSETS;
+static enesim_16p16_t _offsets[KIIA_SUBPIXEL_COUNT];
 
 /*============================================================================*
  *                                  Local                                     * 
@@ -151,16 +146,16 @@ static void _edge_add(Kiia *k, Kiia_Vertex *v)
 	/* create the new edge */
 	e = calloc(1, sizeof(Kiia_Edge));
 	slope = (xend - xstart) / (yend - ystart);
-	e->slope = RATIONAL_TO_FIXED(slope);
+	e->slope = enesim_16p16_float_from(slope);
 	if (last_line - first_line >= SLOPE_FIX_STEP)
 	{
-		e->slope_fix = RATIONAL_TO_FIXED(slope * SLOPE_FIX_STEP) - (e->slope << SLOPE_FIX_SHIFT);
+		e->slope_fix = enesim_16p16_float_from(slope * SLOPE_FIX_STEP) - (e->slope << SLOPE_FIX_SHIFT);
 	}
 	else
 	{
 		e->slope_fix = 0;
 	}
-	e->x = RATIONAL_TO_FIXED(xstart + (((float)first_line - ystart) * slope));
+	e->x = enesim_16p16_float_from(xstart + (((float)first_line - ystart) * slope));
 	e->direction = direction;
 	e->yfirst = first_line;
 	e->ylast = last_line;
@@ -188,16 +183,16 @@ static void _vertex_add(Kiia *k, float x, float y)
 	k->vertex_last = v;
 }
 
-static inline FIXED_POINT _dda(Kiia *k, FIXED_POINT xs, int ys, int ye, FIXED_POINT slope, KIIA_SUBPIXEL_DATA mask)
+static inline enesim_16p16_t _dda(Kiia *k, enesim_16p16_t xs, int ys, int ye, enesim_16p16_t slope, KIIA_SUBPIXEL_DATA mask)
 {
-	FIXED_POINT x;
+	enesim_16p16_t x;
 	int y;
 
 	x = xs;
 
 	for (y = ys; y <= ye; y++)
 	{
-		int xp =  FIXED_TO_INT((x + _offsets[y]));
+		int xp =  enesim_16p16_int_to((x + _offsets[y]));
 		
 		k->mask[xp] ^= mask;
 		mask <<= 1;
@@ -219,13 +214,13 @@ static void _rasterize_edge(Kiia *k, Kiia_Edge **aet, Enesim_Extender_Int *lengt
 		{
 			int ye;
 			int xe;
-			FIXED_POINT x;
+			enesim_16p16_t x;
 
 			ye = curr_edge->ylast & (KIIA_SUBPIXEL_COUNT - 1);
 			x = _dda(k, curr_edge->x, 0, ye, curr_edge->slope, 1);
-			xe = FIXED_TO_INT(x - curr_edge->slope);
+			xe = enesim_16p16_int_to(x - curr_edge->slope);
 		
-			enesim_extender_int_unsorted_add(length, FIXED_TO_INT(curr_edge->x), xe);
+			enesim_extender_int_unsorted_add(length, enesim_16p16_int_to(curr_edge->x), xe);
 			/* remove the edge from the AET */
 			curr_edge = curr_edge->gnext;
 			if (prev_edge)
@@ -236,11 +231,11 @@ static void _rasterize_edge(Kiia *k, Kiia_Edge **aet, Enesim_Extender_Int *lengt
 		else
 		{
 			int xe;
-			FIXED_POINT x;
+			enesim_16p16_t x;
 
 			x = _dda(k, curr_edge->x, 0, KIIA_SUBPIXEL_COUNT - 1, curr_edge->slope, 1);
-			xe = FIXED_TO_INT(x - curr_edge->slope);
-			enesim_extender_int_unsorted_add(length, FIXED_TO_INT(curr_edge->x), xe);
+			xe = enesim_16p16_int_to(x - curr_edge->slope);
+			enesim_extender_int_unsorted_add(length, enesim_16p16_int_to(curr_edge->x), xe);
 			/* update the edge */
 			if ((curr_line & SLOPE_FIX_SCANLINE_MASK) == 0)
 				curr_edge->x = x + curr_edge->slope_fix;
@@ -265,23 +260,23 @@ static void _rasterize_edge(Kiia *k, Kiia_Edge **aet, Enesim_Extender_Int *lengt
 				int ye;
 				int ys;
 				int xe;
-				FIXED_POINT x;
+				enesim_16p16_t x;
 				ye = curr_edge->ylast & (KIIA_SUBPIXEL_COUNT - 1);
 				ys = curr_edge->yfirst & (KIIA_SUBPIXEL_COUNT - 1);
 				x = _dda(k, curr_edge->x, ys, ye, curr_edge->slope, 1 << ys);
-				xe = FIXED_TO_INT(x - curr_edge->slope);
-				enesim_extender_int_unsorted_add(length, FIXED_TO_INT(curr_edge->x), xe);
+				xe = enesim_16p16_int_to(x - curr_edge->slope);
+				enesim_extender_int_unsorted_add(length, enesim_16p16_int_to(curr_edge->x), xe);
 				/* ignore this edge */
 			}
 			else
 			{
 				int ys;
 				int xe;
-				FIXED_POINT x;
+				enesim_16p16_t x;
 				ys = curr_edge->yfirst & (KIIA_SUBPIXEL_COUNT - 1);
 				x = _dda(k, curr_edge->x, ys, KIIA_SUBPIXEL_COUNT - 1, curr_edge->slope, 1 << ys);
-				xe = FIXED_TO_INT(x - curr_edge->slope);
-				enesim_extender_int_unsorted_add(length, FIXED_TO_INT(curr_edge->x), xe);
+				xe = enesim_16p16_int_to(x - curr_edge->slope);
+				enesim_extender_int_unsorted_add(length, enesim_16p16_int_to(curr_edge->x), xe);
 				curr_edge->x = x;
 				/* add the edge to the AET */
 				if (prev_edge)
@@ -454,6 +449,7 @@ static inline Enesim_Rasterizer * _new(Enesim_Rasterizer_Func *func, Enesim_Rect
 {
 	Kiia *k;
 	Enesim_Rasterizer *r;
+	int i;
 		
 	k = calloc(1, sizeof(Kiia)); 
 	r = enesim_rasterizer_new(k, func, boundaries, ENESIM_SCANLINE_MASK);
@@ -462,6 +458,11 @@ static inline Enesim_Rasterizer * _new(Enesim_Rasterizer_Func *func, Enesim_Rect
 	/* TODO explain the 3 */
 	k->mask = calloc(boundaries.w + 3, sizeof(KIIA_SUBPIXEL_DATA));
 	k->coverages = calloc(boundaries.w + 3, sizeof(DATA8));
+	/* convert the offsets to fixed point */
+	for (i = 0; i < KIIA_SUBPIXEL_COUNT; i++)
+	{
+		_offsets[i] = enesim_16p16_float_from(_float_offsets[i]);	
+	}
 	
 	return r;
 }
