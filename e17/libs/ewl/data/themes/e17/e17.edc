@@ -167,6 +167,7 @@ data
 	item: "/entry/font_size" 12;
 
 	item: "/freebox/auto/padding" 5;
+	item: "/filepicker/hbox/hbox/tree/vbox/scrollpane/overlay/vbox/freebox/auto/padding" 0;
 
 	item: "/combo/popup/height" 130;
 
