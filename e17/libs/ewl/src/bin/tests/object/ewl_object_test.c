@@ -415,8 +415,16 @@ padding_test_set_get(char *buf, int len)
 	else {
 		ewl_object_padding_set(EWL_OBJECT(w), 1, 2, 3, 4);
 		ewl_object_padding_get(EWL_OBJECT(w), &l, &r, &t, &b);
-		if (l == 1 && r == 2 && t == 3 && b == 4)
-			ret = 1;
+		if (l == 1 && r == 2 && t == 3 && b == 4) {
+			l = ewl_object_padding_left_get(EWL_OBJECT(w));
+			r = ewl_object_padding_right_get(EWL_OBJECT(w));
+			t = ewl_object_padding_top_get(EWL_OBJECT(w));
+			b = ewl_object_padding_bottom_get(EWL_OBJECT(w));
+			if (l == 1 && r == 2 && t == 3 && b == 4)
+				ret = 1;
+			else
+				LOG_FAILURE(buf, len, "incorrect individual");
+		}
 		else
 			LOG_FAILURE(buf, len, "incorrect returned padding");
 	}
@@ -444,8 +452,16 @@ insets_test_set_get(char *buf, int len)
 	else {
 		ewl_object_insets_set(EWL_OBJECT(w), 1, 2, 3, 4);
 		ewl_object_insets_get(EWL_OBJECT(w), &l, &r, &t, &b);
-		if (l == 1 && r == 2 && t == 3 && b == 4)
-			ret = 1;
+		if (l == 1 && r == 2 && t == 3 && b == 4) {
+			l = ewl_object_insets_left_get(EWL_OBJECT(w));
+			r = ewl_object_insets_right_get(EWL_OBJECT(w));
+			t = ewl_object_insets_top_get(EWL_OBJECT(w));
+			b = ewl_object_insets_bottom_get(EWL_OBJECT(w));
+			if (l == 1 && r == 2 && t == 3 && b == 4)
+				ret = 1;
+			else
+				LOG_FAILURE(buf, len, "incorrect individual");
+		}
 		else
 			LOG_FAILURE(buf, len, "incorrect returned insets");
 	}
