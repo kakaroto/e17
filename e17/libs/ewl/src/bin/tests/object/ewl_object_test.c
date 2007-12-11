@@ -17,6 +17,11 @@
 #define DIFFER_WIDTH 30
 #define DIFFER_HEIGHT 20
 
+static int place_test_center_get(char *buf, int len);
+static int place_test_top_get(char *buf, int len);
+static int place_test_bottom_get(char *buf, int len);
+static int place_test_left_get(char *buf, int len);
+static int place_test_right_get(char *buf, int len);
 static int position_test_set_get(char *buf, int len);
 static int position_size_test_set_get(char *buf, int len);
 static int preferred_inner_size_test_set_get(char *buf, int len);
@@ -34,6 +39,11 @@ static int fill_policy_test_set_get(char *buf, int len);
 static int alignment_test_set_get(char *buf, int len);
 
 static Ewl_Unit_Test object_unit_tests[] = {
+		{"place center/get", place_test_center_get, NULL, -1, 0},
+		{"place top/get", place_test_top_get, NULL, -1, 0},
+		{"place bottom/get", place_test_bottom_get, NULL, -1, 0},
+		{"place left/get", place_test_left_get, NULL, -1, 0},
+		{"place right/get", place_test_right_get, NULL, -1, 0},
 		{"position set/get", position_test_set_get, NULL, -1, 0},
 		{"position size set/get", position_size_test_set_get, NULL, -1, 0},
 		{"preferred inner size set/get", preferred_inner_size_test_set_get, NULL, -1, 0},
@@ -60,6 +70,156 @@ test_info(Ewl_Test *test)
 	test->filename = __FILE__;
 	test->type = EWL_TEST_TYPE_MISC;
 	test->unit_tests = object_unit_tests;
+}
+
+/*
+ * Center align an object and check it's positioning and size.
+ */
+static int
+place_test_center_get(char *buf, int len)
+{
+	Ewl_Widget *w;
+	int x, y, width, height;
+	int ret = 0;
+
+	w = ewl_widget_new();
+
+	ewl_object_preferred_inner_size_set(EWL_OBJECT(w), 10, 20);
+	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
+
+	ewl_object_alignment_set(EWL_OBJECT(w), EWL_FLAG_ALIGN_CENTER);
+	ewl_object_place(EWL_OBJECT(w), 0, 0, 20, 40);
+
+	ewl_object_current_geometry_get(EWL_OBJECT(w), &x, &y, &width, &height);
+
+	if (x == 5 && y == 10 && width == 10 && height == 20)
+			ret = 1;
+	else
+		LOG_FAILURE(buf, len, "incorrect center align placement");
+
+	ewl_widget_destroy(w);
+
+	return ret;
+}
+
+/*
+ * Top align an object and check it's positioning and size.
+ */
+static int
+place_test_top_get(char *buf, int len)
+{
+	Ewl_Widget *w;
+	int x, y, width, height;
+	int ret = 0;
+
+	w = ewl_widget_new();
+
+	ewl_object_preferred_inner_size_set(EWL_OBJECT(w), 10, 20);
+	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
+
+	ewl_object_alignment_set(EWL_OBJECT(w), EWL_FLAG_ALIGN_TOP);
+	ewl_object_place(EWL_OBJECT(w), 0, 0, 20, 40);
+
+	ewl_object_current_geometry_get(EWL_OBJECT(w), &x, &y, &width, &height);
+
+	if (x == 5 && y == 0 && width == 10 && height == 20)
+			ret = 1;
+	else
+		LOG_FAILURE(buf, len, "incorrect top align placement");
+
+	ewl_widget_destroy(w);
+
+	return ret;
+}
+
+/*
+ * Bottom align an object and check it's positioning and size.
+ */
+static int
+place_test_bottom_get(char *buf, int len)
+{
+	Ewl_Widget *w;
+	int x, y, width, height;
+	int ret = 0;
+
+	w = ewl_widget_new();
+
+	ewl_object_preferred_inner_size_set(EWL_OBJECT(w), 10, 20);
+	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
+
+	ewl_object_alignment_set(EWL_OBJECT(w), EWL_FLAG_ALIGN_BOTTOM);
+	ewl_object_place(EWL_OBJECT(w), 0, 0, 20, 40);
+
+	ewl_object_current_geometry_get(EWL_OBJECT(w), &x, &y, &width, &height);
+
+	if (x == 5 && y == 20 && width == 10 && height == 20)
+			ret = 1;
+	else
+		LOG_FAILURE(buf, len, "incorrect bottom align placement");
+
+	ewl_widget_destroy(w);
+
+	return ret;
+}
+
+/*
+ * Left align an object and check it's positioning and size.
+ */
+static int
+place_test_left_get(char *buf, int len)
+{
+	Ewl_Widget *w;
+	int x, y, width, height;
+	int ret = 0;
+
+	w = ewl_widget_new();
+
+	ewl_object_preferred_inner_size_set(EWL_OBJECT(w), 10, 20);
+	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
+
+	ewl_object_alignment_set(EWL_OBJECT(w), EWL_FLAG_ALIGN_LEFT);
+	ewl_object_place(EWL_OBJECT(w), 0, 0, 20, 40);
+
+	ewl_object_current_geometry_get(EWL_OBJECT(w), &x, &y, &width, &height);
+
+	if (x == 0 && y == 10 && width == 10 && height == 20)
+			ret = 1;
+	else
+		LOG_FAILURE(buf, len, "incorrect left align placement");
+
+	ewl_widget_destroy(w);
+
+	return ret;
+}
+
+/*
+ * Right align an object and check it's positioning and size.
+ */
+static int
+place_test_right_get(char *buf, int len)
+{
+	Ewl_Widget *w;
+	int x, y, width, height;
+	int ret = 0;
+
+	w = ewl_widget_new();
+
+	ewl_object_preferred_inner_size_set(EWL_OBJECT(w), 10, 20);
+	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
+
+	ewl_object_alignment_set(EWL_OBJECT(w), EWL_FLAG_ALIGN_RIGHT);
+	ewl_object_place(EWL_OBJECT(w), 0, 0, 20, 40);
+
+	ewl_object_current_geometry_get(EWL_OBJECT(w), &x, &y, &width, &height);
+
+	if (x == 10 && y == 10 && width == 10 && height == 20)
+			ret = 1;
+	else
+		LOG_FAILURE(buf, len, "incorrect right align placement");
+
+	ewl_widget_destroy(w);
+
+	return ret;
 }
 
 /*
