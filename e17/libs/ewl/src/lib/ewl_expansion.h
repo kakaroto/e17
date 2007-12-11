@@ -3,8 +3,8 @@
 #define EWL_EXPANSION_H
 
 /**
- * @addtogroup Ewl_Expansion Ewl_Expansion: The Expansion node for Tree2
- * Defines a widget for tree2's expansion node
+ * @addtogroup Ewl_Expansion Ewl_Expansion: The Expansion node for Tree
+ * Defines a widget for tree's expansion node
  *
  * @remarks Inherits from Ewl_Check.
  * @if HAVE_IMAGES

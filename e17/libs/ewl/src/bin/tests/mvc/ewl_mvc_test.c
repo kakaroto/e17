@@ -2,7 +2,7 @@
 #include "Ewl_Test.h"
 #include "ewl_test_private.h"
 #include "ewl_mvc.h"
-#include "ewl_tree2.h"
+#include "ewl_tree.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -133,7 +133,7 @@ selected_set(char *buf, int len)
 	Ewl_MVC *m;
 	Ewl_Selection_Idx *idx;
 
-	t = ewl_tree2_new();
+	t = ewl_tree_new();
 	m = EWL_MVC(t);
 
 	ewl_mvc_selected_set(m, NULL, ewl_mvc_data_get(m), 1, 2);
@@ -162,7 +162,7 @@ selected_get(char *buf, int len)
 	Ewl_MVC *m;
 	Ewl_Selection_Idx *idx;
 
-	t = ewl_tree2_new();
+	t = ewl_tree_new();
 	m = EWL_MVC(t);
 
 	ewl_mvc_selected_set(m, NULL, ewl_mvc_data_get(m), 6, 8);
@@ -194,7 +194,7 @@ selected_range_single_add(char *buf, int len)
 	Ewl_MVC *m;
 	Ewl_Selection_Idx *idx;
 
-	t = ewl_tree2_new();
+	t = ewl_tree_new();
 	m = EWL_MVC(t);
 
 	ewl_mvc_selected_range_add(m, NULL, ewl_mvc_data_get(m), 6, 8, 1, 2);
@@ -222,7 +222,7 @@ selected_range_multi_add(char *buf, int len)
 	Ewl_MVC *m;
 	Ewl_Selection_Range *idx;
 
-	t = ewl_tree2_new();
+	t = ewl_tree_new();
 	m = EWL_MVC(t);
 
 	ewl_mvc_selection_mode_set(m, EWL_SELECTION_MODE_MULTI);
@@ -263,7 +263,7 @@ selected_count_get(char *buf, int len)
 	Ewl_MVC *m;
 	int count, expected = 44;
 
-	t = ewl_tree2_new();
+	t = ewl_tree_new();
 	m = EWL_MVC(t);
 
 	ewl_mvc_selection_mode_set(m, EWL_SELECTION_MODE_MULTI);
@@ -290,7 +290,7 @@ selected_is_index(char *buf, int len)
 	Ewl_Widget *t;
 	Ewl_MVC *m;
 
-	t = ewl_tree2_new();
+	t = ewl_tree_new();
 	m = EWL_MVC(t);
 
 	ewl_mvc_selected_set(m, NULL, ewl_mvc_data_get(m), 6, 8);
@@ -310,7 +310,7 @@ selected_is_not_index(char *buf, int len)
 	Ewl_Widget *t;
 	Ewl_MVC *m;
 
-	t = ewl_tree2_new();
+	t = ewl_tree_new();
 	m = EWL_MVC(t);
 
 	ewl_mvc_selected_set(m, NULL, ewl_mvc_data_get(m), 6, 8);
@@ -330,7 +330,7 @@ selected_is_range(char *buf, int len)
 	Ewl_Widget *t;
 	Ewl_MVC *m;
 
-	t = ewl_tree2_new();
+	t = ewl_tree_new();
 	m = EWL_MVC(t);
 
 	ewl_mvc_selection_mode_set(m, EWL_SELECTION_MODE_MULTI);
@@ -351,7 +351,7 @@ selected_is_not_range(char *buf, int len)
 	Ewl_Widget *t;
 	Ewl_MVC *m;
 
-	t = ewl_tree2_new();
+	t = ewl_tree_new();
 	m = EWL_MVC(t);
 
 	ewl_mvc_selection_mode_set(m, EWL_SELECTION_MODE_MULTI);
@@ -372,7 +372,7 @@ selected_clear(char *buf, int len)
 	Ewl_Widget *t;
 	Ewl_MVC *m;
 
-	t = ewl_tree2_new();
+	t = ewl_tree_new();
 	m = EWL_MVC(t);
 
 	ewl_mvc_selection_mode_set(m, EWL_SELECTION_MODE_MULTI);
@@ -398,7 +398,7 @@ selected_rm_idx(char *buf, int len)
 	Ewl_Widget *t;
 	Ewl_MVC *m;
 
-	t = ewl_tree2_new();
+	t = ewl_tree_new();
 	m = EWL_MVC(t);
 
 	ewl_mvc_selection_mode_set(m, EWL_SELECTION_MODE_MULTI);
@@ -424,7 +424,7 @@ selected_rm_unselected_idx(char *buf, int len)
 	Ewl_Widget *t;
 	Ewl_MVC *m;
 
-	t = ewl_tree2_new();
+	t = ewl_tree_new();
 	m = EWL_MVC(t);
 
 	ewl_mvc_selection_mode_set(m, EWL_SELECTION_MODE_MULTI);
@@ -464,7 +464,7 @@ selected_rm_2x1_bottom(char *buf, int len)
 	Ewl_Selection *sel;
 	int count;
 
-	t = ewl_tree2_new();
+	t = ewl_tree_new();
 	m = EWL_MVC(t);
 
 	ewl_mvc_selection_mode_set(m, EWL_SELECTION_MODE_MULTI);
@@ -507,7 +507,7 @@ selected_rm_2x1_top(char *buf, int len)
 	Ewl_Selection *sel;
 	int count;
 
-	t = ewl_tree2_new();
+	t = ewl_tree_new();
 	m = EWL_MVC(t);
 
 	ewl_mvc_selection_mode_set(m, EWL_SELECTION_MODE_MULTI);
@@ -547,7 +547,7 @@ selected_rm_1x2_left(char *buf, int len)
 	Ewl_MVC *m;
 	Ewl_Selection *sel;
 
-	t = ewl_tree2_new();
+	t = ewl_tree_new();
 	m = EWL_MVC(t);
 
 	ewl_mvc_selection_mode_set(m, EWL_SELECTION_MODE_MULTI);
@@ -586,7 +586,7 @@ selected_rm_1x2_right(char *buf, int len)
 	Ewl_MVC *m;
 	Ewl_Selection *sel;
 
-	t = ewl_tree2_new();
+	t = ewl_tree_new();
 	m = EWL_MVC(t);
 
 	ewl_mvc_selection_mode_set(m, EWL_SELECTION_MODE_MULTI);
@@ -626,7 +626,7 @@ selected_rm_from_range_top_left_point(char *buf, int len)
 	Ewl_MVC *m;
 	Ewl_Selection *sel;
 
-	t = ewl_tree2_new();
+	t = ewl_tree_new();
 	m = EWL_MVC(t);
 
 	ewl_mvc_selection_mode_set(m, EWL_SELECTION_MODE_MULTI);
@@ -670,7 +670,7 @@ selected_rm_from_range_bottom_right_point(char *buf, int len)
 	Ewl_MVC *m;
 	Ewl_Selection *sel;
 
-	t = ewl_tree2_new();
+	t = ewl_tree_new();
 	m = EWL_MVC(t);
 
 	ewl_mvc_selection_mode_set(m, EWL_SELECTION_MODE_MULTI);
@@ -715,7 +715,7 @@ selected_rm_from_range_middle_point(char *buf, int len)
 	Ewl_MVC *m;
 	Ewl_Selection *sel;
 
-	t = ewl_tree2_new();
+	t = ewl_tree_new();
 	m = EWL_MVC(t);
 
 	ewl_mvc_selection_mode_set(m, EWL_SELECTION_MODE_MULTI);
@@ -768,7 +768,7 @@ selected_rm_from_range_left_edge_point(char *buf, int len)
 	Ewl_MVC *m;
 	Ewl_Selection *sel;
 
-	t = ewl_tree2_new();
+	t = ewl_tree_new();
 	m = EWL_MVC(t);
 
 	ewl_mvc_selection_mode_set(m, EWL_SELECTION_MODE_MULTI);
@@ -817,7 +817,7 @@ selected_rm_from_range_right_edge_point(char *buf, int len)
 	Ewl_MVC *m;
 	Ewl_Selection *sel;
 
-	t = ewl_tree2_new();
+	t = ewl_tree_new();
 	m = EWL_MVC(t);
 
 	ewl_mvc_selection_mode_set(m, EWL_SELECTION_MODE_MULTI);
@@ -866,7 +866,7 @@ selected_rm_from_range_top_edge_point(char *buf, int len)
 	Ewl_MVC *m;
 	Ewl_Selection *sel;
 
-	t = ewl_tree2_new();
+	t = ewl_tree_new();
 	m = EWL_MVC(t);
 
 	ewl_mvc_selection_mode_set(m, EWL_SELECTION_MODE_MULTI);
@@ -915,7 +915,7 @@ selected_rm_from_range_bottom_edge_point(char *buf, int len)
 	Ewl_MVC *m;
 	Ewl_Selection *sel;
 
-	t = ewl_tree2_new();
+	t = ewl_tree_new();
 	m = EWL_MVC(t);
 
 	ewl_mvc_selection_mode_set(m, EWL_SELECTION_MODE_MULTI);
@@ -971,7 +971,7 @@ insert_range_no_intersection(char *buf, int len)
 	Ewl_MVC *m;
 	Ewl_Selection *sel;
 
-	t = ewl_tree2_new();
+	t = ewl_tree_new();
 	m = EWL_MVC(t);
 
 	ewl_mvc_selection_mode_set(m, EWL_SELECTION_MODE_MULTI);
@@ -1004,7 +1004,7 @@ insert_range_top_intersection(char *buf, int len)
 	Ewl_Selection *sel;
 	int count;
 
-	t = ewl_tree2_new();
+	t = ewl_tree_new();
 	m = EWL_MVC(t);
 
 	ewl_mvc_selection_mode_set(m, EWL_SELECTION_MODE_MULTI);
@@ -1040,7 +1040,7 @@ insert_range_bottom_intersection(char *buf, int len)
 	Ewl_Selection *sel;
 	int count;
 
-	t = ewl_tree2_new();
+	t = ewl_tree_new();
 	m = EWL_MVC(t);
 
 	ewl_mvc_selection_mode_set(m, EWL_SELECTION_MODE_MULTI);
@@ -1074,7 +1074,7 @@ insert_range_left_intersection(char *buf, int len)
 	Ewl_Selection *sel;
 	int count;
 
-	t = ewl_tree2_new();
+	t = ewl_tree_new();
 	m = EWL_MVC(t);
 
 	ewl_mvc_selection_mode_set(m, EWL_SELECTION_MODE_MULTI);
@@ -1108,7 +1108,7 @@ insert_range_right_intersection(char *buf, int len)
 	Ewl_Selection *sel;
 	int count;
 
-	t = ewl_tree2_new();
+	t = ewl_tree_new();
 	m = EWL_MVC(t);
 
 	ewl_mvc_selection_mode_set(m, EWL_SELECTION_MODE_MULTI);
@@ -1145,7 +1145,7 @@ insert_range_top_left_intersection(char *buf, int len)
 	Ewl_Selection *sel;
 	int count;
 
-	t = ewl_tree2_new();
+	t = ewl_tree_new();
 	m = EWL_MVC(t);
 
 	ewl_mvc_selection_mode_set(m, EWL_SELECTION_MODE_MULTI);
@@ -1190,7 +1190,7 @@ insert_range_top_right_intersection(char *buf, int len)
 	Ewl_Selection *sel;
 	int count;
 
-	t = ewl_tree2_new();
+	t = ewl_tree_new();
 	m = EWL_MVC(t);
 
 	ewl_mvc_selection_mode_set(m, EWL_SELECTION_MODE_MULTI);
@@ -1235,7 +1235,7 @@ insert_range_bottom_left_intersection(char *buf, int len)
 	Ewl_Selection *sel;
 	int count;
 
-	t = ewl_tree2_new();
+	t = ewl_tree_new();
 	m = EWL_MVC(t);
 
 	ewl_mvc_selection_mode_set(m, EWL_SELECTION_MODE_MULTI);
@@ -1280,7 +1280,7 @@ insert_range_bottom_right_intersection(char *buf, int len)
 	Ewl_Selection *sel;
 	int count;
 
-	t = ewl_tree2_new();
+	t = ewl_tree_new();
 	m = EWL_MVC(t);
 
 	ewl_mvc_selection_mode_set(m, EWL_SELECTION_MODE_MULTI);
@@ -1327,7 +1327,7 @@ insert_range_overlap_horizontal(char *buf, int len)
 	Ewl_Selection *sel;
 	int count;
 
-	t = ewl_tree2_new();
+	t = ewl_tree_new();
 	m = EWL_MVC(t);
 
 	ewl_mvc_selection_mode_set(m, EWL_SELECTION_MODE_MULTI);
@@ -1374,7 +1374,7 @@ insert_range_overlap_vertical(char *buf, int len)
 	Ewl_Selection *sel;
 	int count;
 
-	t = ewl_tree2_new();
+	t = ewl_tree_new();
 	m = EWL_MVC(t);
 
 	ewl_mvc_selection_mode_set(m, EWL_SELECTION_MODE_MULTI);
@@ -1419,7 +1419,7 @@ insert_range_overlap_new_covers_old(char *buf, int len)
 	Ewl_Selection *sel;
 	int count;
 
-	t = ewl_tree2_new();
+	t = ewl_tree_new();
 	m = EWL_MVC(t);
 
 	ewl_mvc_selection_mode_set(m, EWL_SELECTION_MODE_MULTI);
@@ -1456,7 +1456,7 @@ insert_range_overlap_old_covers_new(char *buf, int len)
 	Ewl_Selection *sel;
 	int count;
 
-	t = ewl_tree2_new();
+	t = ewl_tree_new();
 	m = EWL_MVC(t);
 
 	ewl_mvc_selection_mode_set(m, EWL_SELECTION_MODE_MULTI);

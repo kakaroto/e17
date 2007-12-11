@@ -10,7 +10,7 @@
 #include "ewl_scrollpane.h"
 #include "ewl_statusbar.h"
 #include "ewl_text.h"
-#include "ewl_tree2.h"
+#include "ewl_tree.h"
 #include "ewl_icon_theme.h"
 
 #include <stdio.h>
@@ -609,11 +609,11 @@ create_main_test_window(Ewl_Container *box)
 	ewl_model_expansion_model_fetch_set(model,
 				ewl_test_cb_category_expansion_model_fetch);
 
-	tree = ewl_tree2_new();
+	tree = ewl_tree_new();
 	ewl_container_child_append(EWL_CONTAINER(note), tree);
 	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(note), tree, "Tests");
-	ewl_tree2_headers_visible_set(EWL_TREE2(tree), FALSE);
-	ewl_tree2_column_count_set(EWL_TREE2(tree), 1);
+	ewl_tree_headers_visible_set(EWL_TREE(tree), FALSE);
+	ewl_tree_column_count_set(EWL_TREE(tree), 1);
 	ewl_mvc_selection_mode_set(EWL_MVC(tree), EWL_SELECTION_MODE_SINGLE);
 	ewl_mvc_model_set(EWL_MVC(tree), model);
 	ewl_mvc_view_set(EWL_MVC(tree), ewl_label_view_get());
@@ -671,8 +671,8 @@ create_main_test_window(Ewl_Container *box)
 	view = ewl_label_view_get();
 	ewl_view_header_fetch_set(view, cb_unit_test_header_fetch);
 
-	o2 = ewl_tree2_new();
-	ewl_tree2_column_count_set(EWL_TREE2(o2), 3);
+	o2 = ewl_tree_new();
+	ewl_tree_column_count_set(EWL_TREE(o2), 3);
 	ewl_container_child_append(EWL_CONTAINER(o), o2);
 	ewl_mvc_model_set(EWL_MVC(o2), model);
 	ewl_mvc_view_set(EWL_MVC(o2), view);

@@ -56,6 +56,5 @@ SUBDIRS				= \
 	toolbar \
 	tooltip \
 	tree \
-	tree2 \
 	widget
 

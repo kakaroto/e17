@@ -4,26 +4,50 @@
 #include "ewl_button.h"
 #include "ewl_cell.h"
 #include "ewl_check.h"
-#include "ewl_entry.h"
+#include "ewl_expansion.h"
 #include "ewl_label.h"
 #include "ewl_paned.h"
-#include "ewl_scrollpane.h"
-#include "ewl_macros.h"
+#include "ewl_tree_view_scrolled.h"
 #include "ewl_private.h"
+#include "ewl_macros.h"
 #include "ewl_debug.h"
 
-static int ewl_tree_row_pos = 0;
+#define EWL_TREE_EXPANSIONS_LIST(el) ((Ewl_Tree_Expansions_List *)(el))
+
+typedef struct
+{
+	Ewl_Container *c;
+	unsigned int *expanded;
+	unsigned int size;
+} Ewl_Tree_Expansions_List;
+
+static void ewl_tree_build_tree(Ewl_Tree *tree);
+static void ewl_tree_build_tree_rows(Ewl_Tree *tree,
+			Ewl_Model *model, Ewl_View *view, void *data,
+			int colour, Ewl_Container *parent,
+			int hidden);
+static void ewl_tree_cb_header_changed(Ewl_Widget *w, void *ev,
+							void *data);
+
+static void ewl_tree_cb_row_clicked(Ewl_Widget *w, void *ev, void *data);
+static void ewl_tree_cb_row_highlight(Ewl_Widget *w, void *ev, void *data);
+static void ewl_tree_cb_row_unhighlight(Ewl_Widget *w, void *ev, void *data);
+static void ewl_tree_cb_cell_clicked(Ewl_Widget *w, void *ev, void *data);
+static void ewl_tree_cb_selected_change(Ewl_MVC *mvc);
+static Ewl_Widget *ewl_tree_widget_at(Ewl_MVC *mvc, void *data,
+					unsigned int row, unsigned int column);
+
+static void ewl_tree_expansions_hash_create(Ewl_Tree *tree);
+
+static Ewl_Tree_Expansions_List *ewl_tree_expansions_list_new(void);
+static void ewl_tree_expansions_list_destroy(Ewl_Tree_Expansions_List *el);
 
 /**
- * @param columns: the number of columns to display
  * @return Returns NULL on failure, a new tree widget on success.
  * @brief Allocate and initialize a new tree widget
- *
- * The paramater @a columns can be modified at a later time to display
- * a different number of columns.
  */
 Ewl_Widget *
-ewl_tree_new(unsigned short columns)
+ewl_tree_new(void)
 {
 	Ewl_Widget *w;
 
@@ -33,7 +57,8 @@ ewl_tree_new(unsigned short columns)
 	if (!w)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	if (!ewl_tree_init(EWL_TREE(w), columns)) {
+	if (!ewl_tree_init(EWL_TREE(w)))
+	{
 		ewl_widget_destroy(w);
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 	}
@@ -43,81 +68,50 @@ ewl_tree_new(unsigned short columns)
 
 /**
  * @param tree: the tree widget to be initialized
- * @param columns: the number of columns in the tree
  * @return Returns TRUE on success, FALSE on failure.
  * @brief Initialize the contents of a tree widget
  *
- * The contents of the tree widget
- * @a tree are initialized to their defaults, and the number of columns to
- * display is set to @a columns.
+ * The contents of the tree widget @a tree are initialized to their defaults.
  */
 int
-ewl_tree_init(Ewl_Tree *tree, unsigned short columns)
+ewl_tree_init(Ewl_Tree *tree)
 {
-	unsigned int i;
-	Ewl_Widget *header;
-	Ewl_Widget *button;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET(tree, FALSE);
 
-	if (!ewl_container_init(EWL_CONTAINER(tree)))
+	if (!ewl_mvc_init(EWL_MVC(tree)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	ewl_widget_appearance_set(EWL_WIDGET(tree), EWL_TREE_TYPE);
 	ewl_widget_inherit(EWL_WIDGET(tree), EWL_TREE_TYPE);
 
-	ewl_container_show_notify_set(EWL_CONTAINER(tree),
-				      (Ewl_Child_Show)ewl_tree_cb_child_resize);
-	ewl_container_hide_notify_set(EWL_CONTAINER(tree),
-				      (Ewl_Child_Hide)ewl_tree_cb_child_resize);
-	ewl_container_resize_notify_set(EWL_CONTAINER(tree),
-				    (Ewl_Child_Resize)ewl_tree_cb_child_resize);
-	ewl_object_fill_policy_set(EWL_OBJECT(tree), EWL_FLAG_FILL_SHRINK |
-				   EWL_FLAG_FILL_FILL);
-	tree->selected = ecore_list_new();
+	ewl_mvc_selected_change_cb_set(EWL_MVC(tree),
+					ewl_tree_cb_selected_change);
+
+	ewl_object_fill_policy_set(EWL_OBJECT(tree), EWL_FLAG_FILL_ALL);
+
+	tree->type = EWL_TREE_SELECTION_TYPE_CELL;
+
+	tree->header = ewl_hpaned_new();
+	ewl_container_child_append(EWL_CONTAINER(tree), tree->header);
+	ewl_widget_appearance_set(EWL_WIDGET(tree->header), "tree_header");
+	ewl_object_fill_policy_set(EWL_OBJECT(tree->header),
+							EWL_FLAG_FILL_HFILL);
+	ewl_callback_append(tree->header, EWL_CALLBACK_VALUE_CHANGED,
+					ewl_tree_cb_header_changed, tree);
+	ewl_widget_show(tree->header);
+
+	/* set the default row view */
+	ewl_tree_content_view_set(tree, ewl_tree_view_scrolled_get());
+
+	ewl_tree_headers_visible_set(tree, TRUE);
+	ewl_tree_fixed_rows_set(tree, FALSE);
+	ewl_tree_alternate_row_colors_set(tree, TRUE);
 
 	ewl_callback_append(EWL_WIDGET(tree), EWL_CALLBACK_CONFIGURE,
-			    ewl_tree_cb_configure, NULL);
-
+					ewl_tree_cb_configure, NULL);
 	ewl_callback_prepend(EWL_WIDGET(tree), EWL_CALLBACK_DESTROY,
-			    ewl_tree_cb_destroy, NULL);
-
-	tree->ncols = columns;
-
-	header = ewl_paned_new();
-	for (i = 0; i < tree->ncols; i++) {
-		button = ewl_button_new();
-		ewl_box_orientation_set(EWL_BOX(button),
-				EWL_ORIENTATION_VERTICAL);
-		ewl_object_fill_policy_set(EWL_OBJECT(button),
-				EWL_FLAG_FILL_HSHRINK |
-				EWL_FLAG_FILL_HFILL);
-		ewl_container_child_append(EWL_CONTAINER(header), button);
-
-    		ewl_widget_show(button);
-	}
-
-	ewl_container_child_append(EWL_CONTAINER(tree), header);
-	ewl_callback_append(header, EWL_CALLBACK_VALUE_CHANGED,
-					ewl_tree_cb_header_change, tree);
-	ewl_widget_appearance_set(EWL_WIDGET(header), "tree_header");
-	ewl_widget_show(header);
-	tree->header = header;
-
-	tree->scrollarea = ewl_scrollpane_new();
-	ewl_container_child_append(EWL_CONTAINER(tree), tree->scrollarea);
-	ewl_callback_append(tree->scrollarea, EWL_CALLBACK_VALUE_CHANGED,
-			    ewl_tree_cb_hscroll, tree);
-	ewl_widget_show(tree->scrollarea);
-
-	ewl_container_redirect_set(EWL_CONTAINER(tree),
-				   EWL_CONTAINER(tree->scrollarea));
-
-	ewl_callback_append(EWL_WIDGET(tree->header), EWL_CALLBACK_CONFIGURE,
-				ewl_tree_cb_header_configure, tree->scrollarea);
-	ewl_tree_headers_visible_set(tree, 1);
-	ewl_tree_expandable_rows_set(tree, 1);
+					ewl_tree_cb_destroy, NULL);
 
 	ewl_widget_focusable_set(EWL_WIDGET(tree), FALSE);
 
@@ -125,903 +119,1040 @@ ewl_tree_init(Ewl_Tree *tree, unsigned short columns)
 }
 
 /**
- * @param tree: the tree to change column headers
- * @param headers: the array of widget pointers containing the new headers
- * @return Returns no value.
- * @brief Change the widgets in a trees column headers
- *
- * Stores the widgets in @a headers to header row of @a tree.
+ * @param tree: The tree to toggle the header visibility
+ * @param visible: The visiblity to set the tree to (TRUE == on, FALSE == off)
+ * @return Returns no value
+ * @brief Toggle if the header is visible in the tree
  */
 void
-ewl_tree_headers_set(Ewl_Tree *tree, char **headers)
+ewl_tree_headers_visible_set(Ewl_Tree *tree, unsigned char visible)
 {
-	unsigned short i;
-	Ewl_Widget *button;
-	Ewl_Widget *header;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(tree);
 	DCHECK_TYPE(tree, EWL_TREE_TYPE);
 
-	if (!EWL_CONTAINER(tree)->children)
+	if (tree->headers_visible == !!visible)
 		DRETURN(DLEVEL_STABLE);
 
-	header = tree->header;
-
-	ewl_container_child_iterate_begin(EWL_CONTAINER(header));
-	for (i = 0; i < tree->ncols; i++) {
-		button = ewl_container_child_next(EWL_CONTAINER(header));
-		if (!button)
-			break;
-
-		ewl_button_label_set(EWL_BUTTON(button), headers[i]);
-
-		if (!tree->headers_visible && VISIBLE(button))
-			ewl_widget_hide(button);
-		else if (tree->headers_visible && HIDDEN(button))
-			ewl_widget_show(button);
-	}
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param tree: The tree to set the header visiblity
- * @param visible: The visiblity to set
- * @return Returns no value.
- * @brief Sets the visiblity of the headers in the tree
- */
-void
-ewl_tree_headers_visible_set(Ewl_Tree *tree, unsigned int visible)
-{
-	Ewl_Widget *button;
-	Ewl_Widget *row;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(tree);
-	DCHECK_TYPE(tree, EWL_TREE_TYPE);
-
 	tree->headers_visible = !!visible;
-	row = tree->header;
 
-	ewl_container_child_iterate_begin(EWL_CONTAINER(row));
-	while ((button = ewl_container_child_next(EWL_CONTAINER(row)))) {
-		if ((visible) && (HIDDEN(button)))
-			ewl_widget_show(button);
-		else if ((!visible) && (VISIBLE(button)))
-			ewl_widget_hide(button);
+	if (!tree->headers_visible)
+		ewl_widget_hide(tree->header);
+	else
+		ewl_widget_show(tree->header);
 
-	}
+	ewl_mvc_dirty_set(EWL_MVC(tree), TRUE);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
- * @param tree: The tree the get the header visiblity
- * @return Returns the header visibliity of the tree
- * @brief Gets the header visibility of the tree
+ * @param tree: The tree to get the header visiblity from
+ * @return Returns the current header visiblity of the tree
+ * @brief Retrieve if the header is visible in the tree
  */
 unsigned int
 ewl_tree_headers_visible_get(Ewl_Tree *tree)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(tree, 0);
-	DCHECK_TYPE_RET(tree, EWL_TREE_TYPE, 0);
+	DCHECK_PARAM_PTR_RET(tree, FALSE);
+	DCHECK_TYPE_RET(tree, EWL_TREE_TYPE, FALSE);
 
 	DRETURN_INT(tree->headers_visible, DLEVEL_STABLE);
 }
 
 /**
- * @param tree: The tree to set the row expandability
- * @param expand: The expandability to set
- * @return Returns no value.
- * @brief Sets the expandability of the rows in the tree
+ * @param tree: The tree to toggle the alternating row colour
+ * @param alternate: The boolean for alternating the row colour (TRUE == yes, FALSE == no)
+ * @return Returns no value
+ * @brief Toggle if the rows alternate in colour
  */
 void
-ewl_tree_expandable_rows_set(Ewl_Tree *tree, unsigned int expand)
+ewl_tree_alternate_row_colors_set(Ewl_Tree *tree, unsigned char alternate)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(tree);
 	DCHECK_TYPE(tree, EWL_TREE_TYPE);
 
-	tree->expands_visible = !!expand;
+	if (tree->row_color_alternate == !!alternate)
+		DRETURN(DLEVEL_STABLE);
+
+	tree->row_color_alternate = !!alternate;
+	ewl_mvc_dirty_set(EWL_MVC(tree), TRUE);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
- * @param tree: The tree the get the header visiblity
- * @return Returns the header visibliity of the tree
- * @brief Gets the header visibility of the tree
+ * @param tree: The tree to work with
+ * @return Returns if the row colours are currently being alternated
+ * @brief Retrieve if the row colours are being alternated
  */
 unsigned int
-ewl_tree_expandable_rows_get(Ewl_Tree *tree)
+ewl_tree_alternate_row_colors_get(Ewl_Tree *tree)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET(tree, FALSE);
+	DCHECK_TYPE_RET(tree, EWL_TREE_TYPE, FALSE);
+
+	DRETURN_INT(tree->row_color_alternate, DLEVEL_STABLE);
+}
+
+/**
+ * @param tree: The tree to work with
+ * @param count: The number of columns in the tree
+ * @return Returns no value
+ * @brief Sets the number of columns in the tree
+ */
+void
+ewl_tree_column_count_set(Ewl_Tree *tree, unsigned int count)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(tree);
+	DCHECK_TYPE(tree, EWL_TREE_TYPE);
+
+	tree->columns = count;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param tree: The tree to work with
+ * @return Returns the number of columns in the tree
+ * @brief Retrives the number of columns in the tree
+ */
+unsigned int
+ewl_tree_column_count_get(Ewl_Tree *tree)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET(tree, 0);
 	DCHECK_TYPE_RET(tree, EWL_TREE_TYPE, 0);
 
-	DRETURN_INT(tree->expands_visible, DLEVEL_STABLE);
+	DRETURN_INT(tree->columns, DLEVEL_STABLE);
 }
 
 /**
- * @param tree: the tree to hold the widgets
- * @param prow: the parent row of the new row for the added widgets
- * @param children: a NULL terminated array of widgets to add to the tree
- * @return Returns a pointer to a new row on success, NULL on failure.
- * @brief Add a group of widgets to a row in the tree
- *
- * Adds a row to a specified @a tree with a parent row of @a prow and built
- * from the widgets in the array @a children. The created row is nested below
- * @a prow, and if @a prow is NULL the row is appended to the end of the list
- * at the top level. The array @a children must be equal in size to the number
- * of columns in @a tree. It is valid for the entries in @a children to be
- * NULL, this creates an empty cell.
+ * @param tree: the tree to work with
+ * @param view: The view to set to generate the content area
+ * @return Returns no value
+ * @brief Sets the view to use to generate the content area
+ */
+void
+ewl_tree_content_view_set(Ewl_Tree *tree, Ewl_View *view)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(tree);
+	DCHECK_PARAM_PTR(view);
+	DCHECK_TYPE(tree, EWL_TREE_TYPE);
+
+	if (tree->content_view == view)
+		DRETURN(DLEVEL_STABLE);
+
+	tree->content_view = view;
+
+	/* destroy the old view, create a new one and redisplay the tree */
+	if (tree->rows) ewl_widget_destroy(tree->rows);
+
+	tree->rows = view->fetch(NULL, 0, 0);
+	ewl_tree_view_tree_set(EWL_TREE_VIEW(tree->rows), tree);
+	ewl_container_child_append(EWL_CONTAINER(tree), tree->rows);
+	ewl_widget_show(tree->rows);
+
+	ewl_mvc_dirty_set(EWL_MVC(tree), TRUE);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param tree: The tree to work with
+ * @return Returns the view used to generate the content area
+ * @brief Retrives the view used to generate the tree content area
+ */
+Ewl_View *
+ewl_tree_content_view_get(Ewl_Tree *tree)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET(tree, NULL);
+	DCHECK_TYPE_RET(tree, EWL_TREE_TYPE, NULL);
+
+	DRETURN_PTR(tree->content_view, DLEVEL_STABLE);
+}
+
+/**
+ * @param tree: The tree to get the mode from
+ * @return Returns the current Ewl_Tree_Selection_Type of the tree
+ * @brief Get the selection type from the tree
+ */
+Ewl_Tree_Selection_Type
+ewl_tree_selection_type_get(Ewl_Tree *tree)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET(tree, EWL_TREE_SELECTION_TYPE_CELL);
+	DCHECK_TYPE_RET(tree, EWL_TREE_TYPE,
+					EWL_TREE_SELECTION_TYPE_CELL);
+
+	DRETURN_INT(tree->type, DLEVEL_STABLE);
+}
+
+/**
+ * @param tree: The Ewl_Tree to set the mode into
+ * @param type: The Ewl_Tree_Selection_Mode to set into the tree
+ * @return Returns no value.
+ * @brief Set the mode of the tree
+ */
+void
+ewl_tree_selection_type_set(Ewl_Tree *tree, Ewl_Tree_Selection_Type type)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(tree);
+	DCHECK_TYPE(tree, EWL_TREE_TYPE);
+
+	if (tree->type == type)
+		DRETURN(DLEVEL_STABLE);
+
+	tree->type = type;
+
+	/* if we switched types then the current set of selections isn't
+	 * valid anymore so we clear them out */
+	ewl_mvc_selected_clear(EWL_MVC(tree));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param tree: The tree to set the fixed row flag into
+ * @param fixed: The fixed row flag to set into the tree
+ * @return Returns no value.
+ * @brief Set the fixed row size of the tree
+ */
+void
+ewl_tree_fixed_rows_set(Ewl_Tree *tree, unsigned int fixed)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(tree);
+	DCHECK_TYPE(tree, EWL_TREE_TYPE);
+
+	if (tree->fixed == !!fixed)
+		DRETURN(DLEVEL_STABLE);
+
+	tree->fixed = !!fixed;
+	ewl_mvc_dirty_set(EWL_MVC(tree), TRUE);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param tree: The tree to get the fixed row flag from
+ * @return Returns the current fixed row flag of the tree
+ * @brief Retrieve the fixed row size of the tree
+ */
+unsigned int
+ewl_tree_fixed_rows_get(Ewl_Tree *tree)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET(tree, FALSE);
+	DCHECK_TYPE_RET(tree, EWL_TREE_TYPE, FALSE);
+
+	DRETURN_INT(tree->fixed, DLEVEL_STABLE);
+}
+
+/**
+ * @param tree: The tree to work with
+ * @return Returns the widget that contains the tree rows
+ * @brief Retrieves the widget containing the tree rows
  */
 Ewl_Widget *
-ewl_tree_row_add(Ewl_Tree *tree, Ewl_Row *prow, Ewl_Widget **children)
+ewl_tree_content_widget_get(Ewl_Tree *tree)
 {
-	unsigned int i;
-	Ewl_Widget *w;
-	Ewl_Widget *row;
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET(tree, NULL);
+	DCHECK_TYPE_RET(tree, EWL_TREE_TYPE, NULL);
+
+	DRETURN_PTR(tree->rows, DLEVEL_STABLE);
+}
+
+/**
+ * @param tree: The tree to set the expansion into
+ * @param data: The data that contains the expansion
+ * @param row: The row to expand
+ * @return Returns no value
+ * @brief When the tree displays the data in @a data it will expand the give
+ * @a row. This @a data is the parent of the expansion row.
+ */
+void
+ewl_tree_row_expand(Ewl_Tree *tree, void *data, unsigned int row)
+{
+	Ewl_Tree_Expansions_List *exp;
 	Ewl_Widget *node;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(tree, NULL);
-	DCHECK_TYPE_RET(tree, EWL_TREE_TYPE, NULL);
+	DCHECK_PARAM_PTR(tree);
+	DCHECK_PARAM_PTR(data);
+	DCHECK_TYPE(tree, EWL_TREE_TYPE);
 
-	w = EWL_WIDGET(prow);
+	/* nothing to do if already expanded */
+	if (ewl_tree_row_expanded_is(tree, data, row)) DRETURN(DLEVEL_STABLE);
 
-	if (prow && w->parent && (EWL_TREE_NODE(w->parent)->tree != tree))
-		DRETURN_PTR(NULL, DLEVEL_STABLE);
+	if (!tree->expansions)
+		ewl_tree_expansions_hash_create(tree);
 
-	/*
-	 * Every row in the tree is a node, this allows easily adding rows
-	 * nested below others.
-	 */
-	node = ewl_tree_node_new();
-	if (!node)
-		DRETURN_PTR(NULL, DLEVEL_STABLE);
-
-	ewl_tree_node_expandable_set(EWL_TREE_NODE(node), tree->expands_visible);
-
-	row = ewl_row_new();
-	if (!row) {
-		ewl_widget_destroy(node);
-		DRETURN_PTR(NULL, DLEVEL_STABLE);
+	exp = ecore_hash_get(tree->expansions, data);
+	if (!exp)
+	{
+		DWARNING("We did not find a expansion list. This should not"
+				" happen, ever.");
+		DRETURN(DLEVEL_STABLE);
 	}
 
-	ewl_row_header_set(EWL_ROW(row), EWL_CONTAINER(tree->header));
+	exp->expanded = realloc(exp->expanded,
+			(++exp->size) * sizeof(unsigned int));
+	exp->expanded[exp->size - 1] = row;
 
-	ewl_widget_show(row);
+	node = ewl_container_child_get(exp->c, row);
+	ewl_tree_node_expand(EWL_TREE_NODE(node));
 
-	EWL_TREE_NODE(node)->tree = tree;
-	EWL_TREE_NODE(node)->row = row;
-	ewl_container_child_append(EWL_CONTAINER(node), row);
-	ewl_callback_append(row, EWL_CALLBACK_MOUSE_DOWN,
-			    ewl_tree_cb_row_select, NULL);
-	ewl_callback_append(row, EWL_CALLBACK_HIDE,
-			    ewl_tree_cb_row_hide, NULL);
-
-	/*
-	 * Pretty basic here, build up the rows and add the widgets to them.
-	 */
-	for (i = 0; i < tree->ncols && children; i++) {
-		Ewl_Widget *cell;
-
-		cell = ewl_cell_new();
-		if (!cell) {
-			ewl_widget_destroy(node);
-			row = NULL;
-			break;
-		}
-
-		ewl_container_child_append(EWL_CONTAINER(row), cell);
-		ewl_widget_show(cell);
-
-		if (children[i]) {
-			ewl_container_child_append(EWL_CONTAINER(cell),
-						   children[i]);
-		}
-	}
-
-	/*
-	 * Place the new row in the tree.
-	 */
-	if (prow && w->parent) {
-		if (EWL_TREE_NODE(w->parent)->expanded == EWL_TREE_NODE_EXPANDED)
-			ewl_widget_show(node);
-		ewl_container_child_append(EWL_CONTAINER(w->parent), node);
-	}
-	else {
-		ewl_container_child_append(EWL_CONTAINER(tree), node);
-		ewl_widget_show(node);
-	}
-
-	DRETURN_PTR(row, DLEVEL_STABLE);
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
- * @param tree: the tree to hold the new text row
- * @param prow: the parent row of the new text row
- * @param text: the array of strings that hold the text to be added
- * @brief Add a row of text to a tree
- *
- * @return Returns a pointer to a new row on success, NULL on failure.
+ * @param tree: The tree to collapse the row of
+ * @param data: The data that contains the collapsed row
+ * @param row: The row to collapse
+ * @return Returns no value
+ * @brief Sets the given @a row to collapsed for the given @a data in @a
+ * tree
  */
-Ewl_Widget *
-ewl_tree_text_row_add(Ewl_Tree *tree, Ewl_Row *prow, char **text)
+void
+ewl_tree_row_collapse(Ewl_Tree *tree, void *data, unsigned int row)
 {
+	Ewl_Tree_Expansions_List *exp;
+	Ewl_Widget *node;
 	unsigned int i;
-	Ewl_Widget **texts;
-	Ewl_Widget *row;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(tree, NULL);
-	DCHECK_TYPE_RET(tree, EWL_TREE_TYPE, NULL);
+	DCHECK_PARAM_PTR(tree);
+	DCHECK_PARAM_PTR(data);
+	DCHECK_TYPE(tree, EWL_TREE_TYPE);
 
-	texts = NEW(Ewl_Widget *, tree->ncols);
-	if (!texts)
-		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	for (i = 0; i < tree->ncols; i++) {
-		texts[i] = ewl_label_new();
-		ewl_object_fill_policy_set(EWL_OBJECT(texts[i]),
-				EWL_FLAG_FILL_NONE);
-		ewl_object_alignment_set(EWL_OBJECT(texts[i]),
-					 EWL_FLAG_ALIGN_LEFT);
-		ewl_widget_show(texts[i]);
+	/* if this tree has no expansions we're done */
+	if (!tree->expansions) DRETURN(DLEVEL_STABLE);
 
-		if (text) {
-			ewl_label_text_set(EWL_LABEL(texts[i]), text[i]);
-		}
-		else {
-			ewl_label_text_set(EWL_LABEL(texts[i]), NULL);
-		}
-	}
+	exp = ecore_hash_get(tree->expansions, data);
 
-	row = ewl_tree_row_add(tree, prow, texts);
+	/* if no expansion points for this data we're done */
+	if (!exp) DRETURN(DLEVEL_STABLE);
 
-	FREE(texts);
+	/* nothing to do if the row isn't expanded */
+	if (!ewl_tree_row_expanded_is(tree, data, row)) DRETURN(DLEVEL_STABLE);
 
-	DRETURN_PTR(row, DLEVEL_STABLE);
+	/* we found the item so we can remove it */
+	for (i = 0; exp->expanded[i] != row; i++)
+		;
+
+	memmove(exp->expanded + i, exp->expanded + i + 1,
+			sizeof(unsigned int) * (exp->size - i - 1));
+	exp->size--;
+	exp->expanded = realloc(exp->expanded,
+				sizeof(unsigned int) * exp->size);
+
+	node = ewl_container_child_get(exp->c, row);
+	ewl_tree_node_collapse(EWL_TREE_NODE(node));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
- * @param tree: the tree to hold the new entry row
- * @param prow: the parent row of the new entry row
- * @param text: the array of strings that hold the entry text to be added
- * @brief Add a row of text entries to a tree
- *
- * @return Returns a pointer to a new row on success, NULL on failure.
+ * @param tree: The tree to work with
+ * @param data: The set of data to work with
+ * @param row: The row to check
+ * @return Returns TRUE if the given row is expanded, FALSE otherwise
+ * @brief Checks if @a row is expanded in @a data of @a tree
  */
-Ewl_Widget *
-ewl_tree_entry_row_add(Ewl_Tree *tree, Ewl_Row *prow, char **text)
+unsigned int
+ewl_tree_row_expanded_is(Ewl_Tree *tree, void *data, unsigned int row)
 {
+	Ewl_Tree_Expansions_List *exp;
 	unsigned int i;
-	Ewl_Widget **entries;
-	Ewl_Widget *row;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(tree, NULL);
-	DCHECK_TYPE_RET(tree, EWL_TREE_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(tree, FALSE);
+	DCHECK_PARAM_PTR_RET(data, FALSE);
+	DCHECK_TYPE_RET(tree, EWL_TREE_TYPE, FALSE);
 
-	entries = NEW(Ewl_Widget *, tree->ncols);
-	if (!entries)
-		DRETURN_PTR(NULL, DLEVEL_STABLE);
+	/* no expansions in the tree */
+	if (!tree->expansions) DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	for (i = 0; i < tree->ncols; i++) {
-		if (text) {
-			entries[i] = ewl_entry_new();
-			ewl_text_text_set(EWL_TEXT(entries[i]), text[i]);
-		}
-		else
-			entries[i] = ewl_entry_new();
-			ewl_text_text_set(EWL_TEXT(entries[i]), NULL);
-		ewl_widget_show(entries[i]);
-	}
+	exp = ecore_hash_get(tree->expansions, data);
 
-	row = ewl_tree_row_add(tree, prow, entries);
+	/* no expansions in this data we're done */
+	if (!exp) DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	FREE(entries);
+	/* search for this row in the expansions */
+	for (i = 0; i < exp->size && exp->expanded[i] != row; i++)
+		;
 
-	DRETURN_PTR(row, DLEVEL_STABLE);
+	DRETURN_INT(exp->expanded && exp->expanded[i] == row, DLEVEL_STABLE);
 }
 
 /**
- * @param tree: the tree to remove a row from
- * @param row: the row to be removed from the tree
- * @return Returns no value.
- * @brief Remove a specified row from the tree
- *
- * Removes @a row from @a tree if it is present in @a tree. The
- * widgets in the row will not be destroyed, so they can be accessed at a
- * later time.
+ * @internal
+ * @param w: The widget to work with
+ * @param ev: UNUSED
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief The destroy callback
  */
 void
-ewl_tree_row_remove(Ewl_Tree *tree, Ewl_Row *row)
+ewl_tree_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 {
-	Ewl_Widget *w;
-	Ewl_Container *c;
-	Ewl_Tree_Node *node;
+	Ewl_Tree *t;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(tree);
-	DCHECK_PARAM_PTR(row);
-	DCHECK_TYPE(tree, EWL_TREE_TYPE);
-	DCHECK_TYPE(row, EWL_ROW_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_TREE_TYPE);
 
-	node = EWL_TREE_NODE(EWL_WIDGET(row)->parent);
-	c = EWL_CONTAINER(row);
-
-	if (c->children) {
-		while ((w = ecore_dlist_first_goto(c->children)))
-			ewl_container_child_remove(c, w);
-	}
-
-	ewl_widget_destroy(EWL_WIDGET(node));
+	t = EWL_TREE(w);
+	IF_FREE_HASH(t->expansions);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
- * @param tree: the tree to destroy a row from
- * @param row: the row to be destroyed from the tree
- * @return Returns no value.
- * @brief Destroy a specified row from the tree
- *
- * Removes @a row from @a tree if it is present in @a tree. The
- * widgets in the row will be destroyed, so they should not be accessed at a
- * later time.
+ * @internal
+ * @param w: The widget to work with
+ * @param ev: UNUSED
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief The configure callback
  */
 void
-ewl_tree_row_destroy(Ewl_Tree *tree, Ewl_Row *row)
+ewl_tree_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
+					void *data __UNUSED__)
 {
-	Ewl_Tree_Node *node;
+	Ewl_Tree *tree;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(tree);
-	DCHECK_PARAM_PTR(row);
-	DCHECK_TYPE(tree, EWL_TREE_TYPE);
-	DCHECK_TYPE(row, EWL_ROW_TYPE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_TREE_TYPE);
 
-	node = EWL_TREE_NODE(EWL_WIDGET(row)->parent);
-	ewl_widget_destroy(EWL_WIDGET(node));
+	tree = EWL_TREE(w);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param tree: the tree to change the number of columns
- * @param columns: the new number of columns to be displayed
- * @return Returns no value.
- * @brief Change the number of columns displayed in a tree
- *
- * The number of columns displayed in @a tree is changed to
- * @a columns. When rows are added, pre-existing rows have empty contents in the
- * additional columns which are appended. When rows are removed, previously
- * existing rows destroy column contents that are removed from the end. If you
- * need finer grain control over where columns are added or removed, see
- * ewl_tree_add_column and ewl_tree_del_column.
- */
-void
-ewl_tree_columns_set(Ewl_Tree *tree, unsigned short columns)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(tree);
-	DCHECK_PARAM_PTR(columns);
-	DCHECK_TYPE(tree, EWL_TREE_TYPE);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param row: the row to change the expanded state
- * @param expanded: the new expanded state for the row
- * @return Returns no value.
- * @brief Set the expand state of a specific row
- *
- * Changes the expanded state of @a row to @a expanded, which
- * should be TRUE or FALSE.
- */
-void
-ewl_tree_row_expand_set(Ewl_Row *row, Ewl_Tree_Node_Flags expanded)
-{
-	Ewl_Tree_Node *node;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(row);
-	DCHECK_TYPE(row, EWL_ROW_TYPE);
-
-	node = EWL_TREE_NODE(EWL_WIDGET(row)->parent);
-	if (node && node->expanded != expanded) {
-		if (!expanded || expanded == EWL_TREE_NODE_COLLAPSED) {
-			if (!expanded && node->handle)
-				ewl_widget_hide(node->handle);
-			ewl_tree_node_collapse(EWL_TREE_NODE(node));
-		}
-		else
-			ewl_tree_node_expand(EWL_TREE_NODE(node));
-
-		node->expanded = expanded;
-	}
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param tree: the tree to set the selection mode
- * @param mode: the new selection mode for the tree
- * @brief Change the selection mode for a specified tree.
- * @return Returns no value.
- */
-void
-ewl_tree_mode_set(Ewl_Tree *tree, Ewl_Selection_Mode mode)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(tree);
-	DCHECK_TYPE(tree, EWL_TREE_TYPE);
-
-	if (tree->mode == mode)
+	/* if the tree isn't dirty we're done */
+	if (!ewl_mvc_dirty_get(EWL_MVC(tree)))
 		DRETURN(DLEVEL_STABLE);
 
-	tree->mode = mode;
-
-	if (mode == EWL_SELECTION_MODE_NONE)
-		ewl_tree_selected_clear(tree);
+	ewl_tree_build_tree(tree);
+	ewl_tree_cb_selected_change(EWL_MVC(tree));
+	ewl_mvc_dirty_set(EWL_MVC(tree), FALSE);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
- * @param tree: the tree to get the selection mode
- * @brief Retrieve the current selection mode of a tree.
- * @return Returns the current selection mode of the tree.
- */
-Ewl_Selection_Mode
-ewl_tree_mode_get(Ewl_Tree *tree)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(tree, EWL_SELECTION_MODE_NONE);
-	DCHECK_TYPE_RET(tree, EWL_TREE_TYPE, EWL_SELECTION_MODE_NONE);
-
-	DRETURN_INT(tree->mode, DLEVEL_STABLE);
-}
-
-/**
- * @param tree: the tree to retrieve selected rows
- * @brief Retrieves a list of selected rows from a tree.
- * @return Returns a list of selected rows on success, NULL on failure.
- */
-Ecore_List *
-ewl_tree_selected_get(Ewl_Tree *tree)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(tree, NULL);
-	DCHECK_TYPE_RET(tree, EWL_TREE_TYPE, NULL);
-
-	DRETURN_PTR(tree->selected, DLEVEL_STABLE);
-}
-
-/**
- * @param tree: the tree to clear the current selection
- * @brief Clear the current selection from a tree.
- * @return Returns no value.
+ * @internal
+ * @param w: The header that was clicked
+ * @param ev: UNUSED
+ * @param data: The column related to this header
+ * @return Returns no value
+ * @brief Sorts the tree by the given column
  */
 void
-ewl_tree_selected_clear(Ewl_Tree *tree)
+ewl_tree_cb_column_sort(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 {
-	Ewl_Widget *w;
+	Ewl_Tree *tree;
+	Ewl_Model *model;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+
+	/* XXX This is kind of a nasty way to get the tree ... */
+	tree = EWL_TREE(w->parent->parent);
+	model = ewl_mvc_model_get(EWL_MVC(tree));
+
+	/* sanity check */
+	if (!model || !model->sort)
+	{
+		DWARNING("In ewl_tree_cb_column_sort without a sort cb.");
+		DRETURN(DLEVEL_STABLE);
+	}
+
+	/* update our sort information and call the sort function, skipping
+	 * over SORT_NONE */
+	tree->sort.column = (unsigned int)data;
+	tree->sort.direction = ((tree->sort.direction + 1) % EWL_SORT_DIRECTION_MAX);
+	if (!tree->sort.direction) tree->sort.direction ++;
+
+	model->sort(ewl_mvc_data_get(EWL_MVC(tree)), tree->sort.column,
+					tree->sort.direction);
+	ewl_mvc_dirty_set(EWL_MVC(tree), TRUE);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_tree_header_build(Ewl_Tree *tree,  Ewl_Model *model, Ewl_View *view,
+					void *mvc_data, unsigned int column)
+{
+	Ewl_Widget *h, *c;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(tree);
+	DCHECK_PARAM_PTR(model);
+	DCHECK_PARAM_PTR(view);
+	DCHECK_TYPE(tree, EWL_TREE_TYPE);
+
+	if (!tree->headers_visible) DRETURN(DLEVEL_STABLE);
+
+	if (!view->header_fetch)
+	{
+		DWARNING("Missing header_fetch callback.");
+		DRETURN(DLEVEL_STABLE);
+	}
+
+	h = ewl_hbox_new();
+	ewl_container_child_append(EWL_CONTAINER(tree->header), h);
+	ewl_widget_appearance_set(h, "header");
+	ewl_widget_show(h);
+
+	if (model->header)
+		c = view->header_fetch(model->header(mvc_data, column),
+					column);
+	else
+		c = view->header_fetch(NULL, column);
+
+	/* XXX is this really a good idea to override the user's flags ? */
+	ewl_object_fill_policy_set(EWL_OBJECT(c),
+			EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_HFILL);
+	ewl_container_child_append(EWL_CONTAINER(h), c);
+	ewl_widget_show(c);
+
+	/* display the sort arrow if needed */
+	if (model->sortable && model->sortable(mvc_data, column))
+	{
+		char *state_str;
+
+		ewl_callback_append(h, EWL_CALLBACK_CLICKED,
+					ewl_tree_cb_column_sort,
+					(unsigned int *)column);
+
+		c = ewl_button_new();
+		ewl_container_child_append(EWL_CONTAINER(h), c);
+
+		if ((column == tree->sort.column)
+				&& (tree->sort.direction == EWL_SORT_DIRECTION_ASCENDING))
+			state_str = "ascending";
+		else if ((column == tree->sort.column)
+				&& (tree->sort.direction == EWL_SORT_DIRECTION_DESCENDING))
+			state_str = "descending";
+		else
+			state_str = "default";
+
+		ewl_widget_state_set(c, state_str, EWL_STATE_PERSISTENT);
+		ewl_widget_internal_set(c, TRUE);
+		ewl_object_fill_policy_set(EWL_OBJECT(c), EWL_FLAG_FILL_SHRINK);
+		ewl_object_alignment_set(EWL_OBJECT(c), EWL_FLAG_ALIGN_RIGHT);
+		ewl_widget_show(c);
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_tree_column_build(Ewl_Row *row, Ewl_Model *model, Ewl_View *view,
+				void *mvc_data, unsigned int r,
+				unsigned int c, Ewl_Widget *node)
+{
+	Ewl_Widget *cell;
+	Ewl_Widget *child;
+	void *val;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(row);
+	DCHECK_PARAM_PTR(model);
+	DCHECK_PARAM_PTR(view);
+	DCHECK_TYPE(row, EWL_ROW_TYPE);
+
+	cell = ewl_cell_new();
+	ewl_object_fill_policy_set(EWL_OBJECT(cell), EWL_FLAG_FILL_ALL);
+	ewl_container_child_append(EWL_CONTAINER(row), cell);
+	ewl_callback_append(cell, EWL_CALLBACK_CLICKED,
+				ewl_tree_cb_cell_clicked, node);
+	ewl_widget_show(cell);
+
+	val = model->fetch(mvc_data, r, c);
+	if (!val)
+	{
+		child = ewl_label_new();
+		ewl_label_text_set(EWL_LABEL(child), " ");
+	}
+	else
+		child = view->fetch(val, r, c);
+
+	ewl_container_child_append(EWL_CONTAINER(cell), child);
+	ewl_widget_show(child);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_tree_build_tree(Ewl_Tree *tree)
+{
+	unsigned int i;
+	void *mvc_data;
+	Ewl_Model *model;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(tree);
 	DCHECK_TYPE(tree, EWL_TREE_TYPE);
 
-	while ((w = ecore_list_first_remove(tree->selected)))
-		ewl_widget_state_set(w, "tree-deselect", EWL_STATE_PERSISTENT);
+	mvc_data = ewl_mvc_data_get(EWL_MVC(tree));
+	model = ewl_mvc_model_get(EWL_MVC(tree));
+	if (!model) DRETURN(DLEVEL_STABLE);
+
+	/* setup the headers */
+	ewl_container_reset(EWL_CONTAINER(tree->header));
+	for (i = 0; i < tree->columns; i++)
+		ewl_tree_header_build(tree, model,
+				ewl_mvc_view_get(EWL_MVC(tree)),
+				mvc_data, i);
+
+	ewl_container_reset(EWL_CONTAINER(tree->rows));
+	ewl_tree_build_tree_rows(tree, model,
+				ewl_mvc_view_get(EWL_MVC(tree)), mvc_data,
+				0, EWL_CONTAINER(tree->rows), FALSE);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/**
- * @param tree: The tree to find the row in
- * @param row: The row number to find
- * @return Returns the given row, or NULL if not found
- */
-Ewl_Widget *
-ewl_tree_row_find(Ewl_Tree *tree, int row)
+static void
+ewl_tree_build_tree_rows(Ewl_Tree *tree, Ewl_Model *model, Ewl_View *view,
+				void *data, int colour, Ewl_Container *parent,
+				int hidden)
 {
-	Ewl_Widget *child;
+	unsigned int i = 0, row_count = 0;
+	unsigned int column;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(tree, NULL);
-	DCHECK_TYPE_RET(tree, EWL_TREE_TYPE, NULL);
+	DCHECK_PARAM_PTR(tree);
+	DCHECK_TYPE(tree, EWL_TREE_TYPE);
+	DCHECK_PARAM_PTR(parent);
+	DCHECK_TYPE(parent, EWL_CONTAINER_TYPE);
 
-	child = ewl_container_child_get(EWL_CONTAINER(tree), row);
-	if (child) {
-		DRETURN_PTR(EWL_TREE_NODE(child)->row, DLEVEL_STABLE);
-	} else {
-		DRETURN_PTR(NULL, DLEVEL_STABLE);
+	row_count = model->count(data);
+	if (row_count == 0) DRETURN(DLEVEL_STABLE);
+
+	while (TRUE)
+	{
+		Ewl_Widget *row, *node;
+
+		node = ewl_tree_node_new();
+		EWL_TREE_NODE(node)->tree = EWL_WIDGET(tree);
+		EWL_TREE_NODE(node)->row_num = i;
+		ewl_mvc_model_set(EWL_MVC(node), model);
+		ewl_mvc_data_set(EWL_MVC(node), data);
+		ewl_mvc_view_set(EWL_MVC(node), view);
+
+		ewl_container_child_append(parent, node);
+		if (!hidden) ewl_widget_show(node);
+
+		row = ewl_row_new();
+		ewl_row_header_set(EWL_ROW(row), EWL_CONTAINER(tree->header));
+		ewl_tree_node_row_set(EWL_TREE_NODE(node), EWL_ROW(row));
+		ewl_container_child_append(EWL_CONTAINER(node), row);
+		ewl_callback_append(row, EWL_CALLBACK_CLICKED,
+					ewl_tree_cb_row_clicked, node);
+		ewl_widget_show(row);
+
+		if (!model->highlight || model->highlight(data, i))
+		{
+			ewl_callback_append(row, EWL_CALLBACK_MOUSE_IN,
+					ewl_tree_cb_row_highlight, NULL);
+			ewl_callback_append(row, EWL_CALLBACK_MOUSE_OUT,
+					ewl_tree_cb_row_unhighlight, NULL);
+		}
+
+		if (tree->row_color_alternate)
+		{
+			if (colour)
+				ewl_widget_state_set(row, "odd",
+							EWL_STATE_PERSISTENT);
+			else
+				ewl_widget_state_set(row, "even",
+							EWL_STATE_PERSISTENT);
+		}
+
+		colour = (colour + 1) % 2;
+
+		/* do the current branch */
+		for (column = 0; column < tree->columns; column++)
+			ewl_tree_column_build(EWL_ROW(row), model, view,
+						data, i, column, node);
+
+		/* check if this is an expansion point */
+		if (model->expansion.is && model->expansion.is(data, i))
+		{
+			int hidden = TRUE;
+
+			if (!model->expansion.data)
+			{
+				DWARNING("In ewl_tree_build_tree_rows, "
+					"model expandable but without "
+					"expansion_data_fetch cb.");
+				DRETURN(DLEVEL_STABLE);
+			}
+
+			ewl_tree_node_expandable_set(EWL_TREE_NODE(node), TRUE);
+
+			if (model->expansion.data &&
+					ewl_tree_row_expanded_is(tree, data, i))
+			{
+				ewl_tree_node_expand(EWL_TREE_NODE(node));
+				hidden = FALSE;
+			}
+		}
+		else
+			ewl_tree_node_expandable_set(EWL_TREE_NODE(node), FALSE);
+
+		i++;
+
+		/*
+		 * Finished the rows at this level? Jump back up a level.
+		 */
+		if (i >= row_count) break;
 	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/**
- * @param row: the row to retrieve a column from
- * @param i: the column to retreive from the row
- * @brief Retreives the actual widget added via row_add instead of the cell
- * @return Returns the widget in the column of the row sent
- *
- * The behavior of this function is undefined if columns are not accounted for
- * in the children of the row (if NULLs were passed in from row_add).
- */
-Ewl_Widget *
-ewl_tree_row_column_get(Ewl_Row *row, int i)
+static void
+ewl_tree_cb_header_changed(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
+								void *data)
 {
-	Ewl_Widget *w, *cell;
-	Ecore_List *children;
+	Ewl_Tree *tree;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(row, NULL);
-	DCHECK_TYPE_RET(row, EWL_ROW_TYPE, NULL);
+	DCHECK_PARAM_PTR(data);
+	DCHECK_TYPE(data, EWL_TREE_TYPE);
 
-	children = EWL_CONTAINER(row)->children;
+	tree = data;
+	ewl_widget_configure(EWL_WIDGET(tree->rows));
 
-	w = NULL;
-	cell = ecore_dlist_index_goto(children, i);
-	if( cell )
-		w = ecore_dlist_first_goto(EWL_CONTAINER(cell)->children);
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_tree_cb_row_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
+				void *data)
+{
+	Ewl_Tree *tree;
+	Ewl_Tree_Node *node;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(data);
+	DCHECK_TYPE(data, EWL_TREE_NODE_TYPE);
+
+	node = data;
+	tree = EWL_TREE(node->tree);
+	if (tree->type != EWL_TREE_SELECTION_TYPE_ROW)
+		DRETURN(DLEVEL_STABLE);
+
+	ewl_mvc_handle_click(EWL_MVC(tree), ewl_mvc_model_get(EWL_MVC(node)),
+				ewl_mvc_data_get(EWL_MVC(node)),
+				node->row_num, 0);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_tree_cb_row_highlight(Ewl_Widget *w, void *ev __UNUSED__,
+						void *data __UNUSED__)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_ROW_TYPE);
+
+	ewl_widget_state_set(w, "highlight,on", EWL_STATE_TRANSIENT);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_tree_cb_row_unhighlight(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_ROW_TYPE);
+
+	ewl_widget_state_set(w, "highlight,off", EWL_STATE_TRANSIENT);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_tree_cb_cell_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
+{
+	Ewl_Row *row;
+	Ewl_Tree *tree;
+	Ewl_Tree_Node *node;
+	int column;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_PARAM_PTR(data);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE(data, EWL_TREE_NODE_TYPE);
+
+	row = EWL_ROW(w->parent);
+	node = EWL_TREE_NODE(data);
+	tree = EWL_TREE(node->tree);
+	if (tree->type != EWL_TREE_SELECTION_TYPE_CELL)
+		DRETURN(DLEVEL_STABLE);
+
+	column = ewl_container_child_index_get(EWL_CONTAINER(row), w);
+	if (column < 0) DRETURN(DLEVEL_STABLE);
+
+	ewl_mvc_handle_click(EWL_MVC(node->tree),
+			ewl_mvc_model_get(EWL_MVC(node)),
+			ewl_mvc_data_get(EWL_MVC(node)),
+			node->row_num, column);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_tree_cb_selected_change(Ewl_MVC *mvc)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(mvc);
+	DCHECK_TYPE(mvc, EWL_MVC_TYPE);
+
+	ewl_mvc_highlight(mvc, EWL_CONTAINER(EWL_TREE(mvc)->rows),
+						ewl_tree_widget_at);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static Ewl_Widget *
+ewl_tree_widget_at(Ewl_MVC *mvc, void *data, unsigned int row,
+			unsigned int column)
+{
+	Ewl_Widget *r, *w;
+	Ewl_Container *c;
+	Ewl_Tree *tree;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET(mvc, NULL);
+	DCHECK_PARAM_PTR_RET(data, NULL);
+	DCHECK_TYPE_RET(mvc, EWL_TREE_TYPE, NULL);
+
+	tree = EWL_TREE(mvc);
+
+	/* get the container that holds the wished row */
+	if (ewl_mvc_data_get(mvc) == data)
+		c = EWL_CONTAINER(tree->rows);
+	else
+	{
+		Ewl_Tree_Expansions_List *exp;
+
+		exp = ecore_hash_get(tree->expansions, data);
+		if (!exp)
+			DRETURN_PTR(NULL, DLEVEL_STABLE);
+
+		c = exp->c;
+	}
+
+	/* find the row in the container */
+	r = ewl_container_child_get(c, row);
+	if (tree->type == EWL_TREE_SELECTION_TYPE_ROW)
+		w = EWL_WIDGET(r);
+	else
+	{
+		/* infact our row is a node so we have to get the row
+		 * to search for the right container */
+		r = EWL_WIDGET(EWL_TREE_NODE(r)->row);
+		w = ewl_container_child_get(EWL_CONTAINER(r), column);
+	}
 
 	DRETURN_PTR(w, DLEVEL_STABLE);
 }
 
 static void
-ewl_tree_row_signal(Ewl_Tree *tree __UNUSED__, Ewl_Widget *row)
+ewl_tree_expansions_hash_create(Ewl_Tree *tree)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(row);
-	DCHECK_TYPE(row, EWL_WIDGET_TYPE);
+	Ewl_Tree_Expansions_List *exp;
 
-	if (ewl_tree_row_pos & 1) {
-		ewl_widget_state_set(row, "odd", EWL_STATE_PERSISTENT);
-	}
-	else {
-		ewl_widget_state_set(row, "even", EWL_STATE_PERSISTENT);
-	}
-	ewl_tree_row_pos++;
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(tree);
+	DCHECK_TYPE(tree, EWL_TREE_TYPE);
+
+	if (tree->expansions)
+		DRETURN(DLEVEL_STABLE);
+
+	tree->expansions = ecore_hash_new(NULL, NULL);
+	ecore_hash_free_value_cb_set(tree->expansions,
+			ECORE_FREE_CB(ewl_tree_expansions_list_destroy));
+
+	exp = ewl_tree_expansions_list_new();
+	exp->c = EWL_CONTAINER(tree->rows);
+	ecore_hash_set(tree->expansions, ewl_mvc_data_get(EWL_MVC(tree)), exp);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static Ewl_Tree_Expansions_List *
+ewl_tree_expansions_list_new(void)
+{
+	Ewl_Tree_Expansions_List *el;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	el = NEW(Ewl_Tree_Expansions_List, 1);
+	if (!el)
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
+
+	DRETURN_PTR(el, DLEVEL_STABLE);
 }
 
 static void
-ewl_tree_node_row_walk_signal(Ewl_Tree *tree, Ewl_Tree_Node *node)
+ewl_tree_expansions_list_destroy(Ewl_Tree_Expansions_List *el)
 {
-	Ewl_Widget *child;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(el);
 
-	ewl_container_child_iterate_begin(EWL_CONTAINER(node));
-	while ((child = ewl_container_child_next(EWL_CONTAINER(node)))) {
-		if (EWL_TREE_NODE_IS(child)) {
-			if (VISIBLE(child)) {
-				ewl_tree_node_row_walk_signal(tree, EWL_TREE_NODE(child));
-			}
-		}
-		else if (EWL_ROW_IS(child)) {
-			ewl_tree_row_signal(tree, child);
-		}
-	}
+	IF_FREE(el->expanded);
+	FREE(el);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-static void
-ewl_tree_row_walk_signal(Ewl_Tree *tree)
-{
-	Ewl_Widget *child;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	ewl_tree_row_pos = 0;
-	ewl_container_child_iterate_begin(EWL_CONTAINER(tree));
-	while ((child = ewl_container_child_next(EWL_CONTAINER(tree)))) {
-		if (EWL_TREE_NODE_IS(child)) {
-			ewl_tree_node_row_walk_signal(tree, EWL_TREE_NODE(child));
-		}
-		else if (EWL_ROW_IS(child)) {
-			ewl_tree_row_signal(tree, child);
-		}
-	}
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @internal
- * @param w: The widget to work with
- * @param ev_data: UNUSED
- * @param user_data: UNUSED
- * @return Returns no value
- * @brief The configure callback
- */
-void
-ewl_tree_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
-					void *user_data __UNUSED__)
-{
-	int x, width, height;
-	double scroll;
-	Ewl_Tree *tree;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_TREE_TYPE);
-
-	tree = EWL_TREE(w);
-	scroll = ewl_scrollpane_hscrollbar_value_get(EWL_SCROLLPANE(tree->scrollarea));
-	width = ewl_object_preferred_w_get(EWL_OBJECT(tree->header));
-	x = CURRENT_X(tree);
-	if (scroll > 0 && width > CURRENT_W(tree))
-		x -= (int)((double)scroll * (double)(width - CURRENT_W(tree)));
-
-	ewl_object_geometry_request(EWL_OBJECT(tree->header), x, CURRENT_Y(tree),
-				    CURRENT_W(tree), 1);
-	height = ewl_object_current_h_get(EWL_OBJECT(tree->header));
-	ewl_object_geometry_request(EWL_OBJECT(tree->scrollarea),
-				    CURRENT_X(tree), CURRENT_Y(tree) + height,
-				    CURRENT_W(tree), CURRENT_H(tree) - height);
-
-	ewl_tree_row_walk_signal(tree);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @internal
- * @param w: The widget to work with
- * @param ev_data: UNUSED
- * @param user_data: UNUSED
- * @return Returns no value
- * @brief The header configure callback
- */
-void
-ewl_tree_cb_header_configure(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
-					void *user_data)
-{
-	Ewl_Widget *scrollarea;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(user_data);
-	DCHECK_TYPE(user_data, EWL_WIDGET_TYPE);
-
-	scrollarea = user_data;
-	ewl_widget_configure(scrollarea);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @internal
- * @param w: The widget to work with
- * @param ev_data: UNUSED
- * @param user_data: UNUSED
- * @return Returns no value
- * @brief The destroy callback
- */
-void
-ewl_tree_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
-					void *user_data __UNUSED__)
-{
-	Ewl_Tree *tree;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_TREE_TYPE);
-
-	tree = EWL_TREE(w);
-	IF_FREE_LIST(tree->selected);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @internal
- * @param c: The container to work with
- * @return Returns no value
- * @brief The child resize callback
- */
-void
-ewl_tree_cb_child_resize(Ewl_Container *c)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(c);
-	DCHECK_TYPE(c, EWL_CONTAINER_TYPE);
-
-	ewl_container_largest_prefer(c, EWL_ORIENTATION_HORIZONTAL);
-	ewl_container_sum_prefer(c, EWL_ORIENTATION_VERTICAL);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @return Returns a newly allocated node on success, NULL on failure.
- * @brief Allocate and initialize a new node
+/*
+ * Ewl_Tree_Node Stuff
  */
 Ewl_Widget *
-ewl_tree_node_new()
+ewl_tree_node_new(void)
 {
-	Ewl_Widget *node;
+	Ewl_Widget *w;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	node = NEW(Ewl_Tree_Node, 1);
-	if (!node)
+	w = NEW(Ewl_Tree_Node, 1);
+	if (!w)
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	if (!ewl_tree_node_init(EWL_TREE_NODE(node))) {
-		ewl_widget_destroy(node);
-		DRETURN_PTR(NULL, DLEVEL_STABLE);
+	if (!ewl_tree_node_init(EWL_TREE_NODE(w)))
+	{
+		ewl_widget_destroy(w);
+		w = NULL;
 	}
 
-	DRETURN_PTR(node, DLEVEL_STABLE);
+	DRETURN_PTR(w, DLEVEL_STABLE);
 }
 
-/**
- * @param node: the node object to initialize
- * @return Returns TRUE on success, FALSE on failure.
- * @brief Initialize the node fields of an inheriting object
- *
- * The fields of the @a node object are initialized to their defaults.
- */
 int
 ewl_tree_node_init(Ewl_Tree_Node *node)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET(node, FALSE);
 
-	if (!ewl_container_init(EWL_CONTAINER(node)))
+	if (!ewl_mvc_init(EWL_MVC(node)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	ewl_widget_appearance_set(EWL_WIDGET(node), EWL_TREE_NODE_TYPE);
 	ewl_widget_inherit(EWL_WIDGET(node), EWL_TREE_NODE_TYPE);
 
 	ewl_container_show_notify_set(EWL_CONTAINER(node),
-				  ewl_tree_cb_node_child_show);
+				ewl_tree_cb_node_child_show);
 	ewl_container_hide_notify_set(EWL_CONTAINER(node),
-				  ewl_tree_cb_node_child_hide);
+				ewl_tree_cb_node_child_hide);
 	ewl_container_resize_notify_set(EWL_CONTAINER(node),
-				    ewl_tree_cb_node_resize);
+				ewl_tree_cb_node_resize);
 	ewl_container_add_notify_set(EWL_CONTAINER(node),
-				    ewl_tree_cb_node_child_add);
+				ewl_tree_cb_node_child_add);
 	ewl_container_remove_notify_set(EWL_CONTAINER(node),
-				    ewl_tree_cb_node_child_del);
+				ewl_tree_cb_node_child_del);
 
-	ewl_object_fill_policy_set(EWL_OBJECT(node), EWL_FLAG_FILL_HFILL |
-							EWL_FLAG_FILL_HSHRINK);
+	/* we don't want the mvc to unref our data since the data is owned
+	 * by the tree or the parent node */
+	ewl_callback_del(EWL_WIDGET(node), EWL_CALLBACK_DESTROY,
+						ewl_mvc_cb_data_unref);
 
+	ewl_object_fill_policy_set(EWL_OBJECT(node),
+				EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK);
+
+	ewl_callback_del(EWL_WIDGET(node), EWL_CALLBACK_CONFIGURE,
+							ewl_box_cb_configure);
 	ewl_callback_append(EWL_WIDGET(node), EWL_CALLBACK_CONFIGURE,
-			ewl_tree_cb_node_configure, NULL);
-	ewl_callback_prepend(EWL_WIDGET(node), EWL_CALLBACK_DESTROY,
-			    ewl_tree_cb_node_destroy, NULL);
+					ewl_tree_cb_node_configure, NULL);
 
 	node->expanded = EWL_TREE_NODE_COLLAPSED;
-
 	ewl_widget_focusable_set(EWL_WIDGET(node), FALSE);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
-/**
- * @param node: The node to work with
- * @param expand: The expand setting for the node
- * @return Returns no value
- * @brief Sets the expand value into the node
- */
 void
-ewl_tree_node_expandable_set(Ewl_Tree_Node *node, int expand)
+ewl_tree_node_expandable_set(Ewl_Tree_Node *node, unsigned int expandable)
 {
+	Ewl_Model *model;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(node);
-	DCHECK_TYPE(node, EWL_TREE_NODE_TYPE);
 
-	/*
-	 * The handle for expanding and collapsing the branch point at this
-	 * node.
-	 */
-	if (expand && !node->handle) {
-		node->handle = ewl_check_new();
-		ewl_object_fill_policy_set(EWL_OBJECT(node->handle),
-					   EWL_FLAG_FILL_NONE);
-		ewl_object_alignment_set(EWL_OBJECT(node->handle),
-				EWL_FLAG_ALIGN_TOP);
+	model = ewl_mvc_model_get(EWL_MVC(node));
+	/* we only create the handle if it doesn't exist and the model has
+	 * a function to query for expandability */
+	if (!node->handle && model->expansion.is)
+	{
+		node->handle = ewl_expansion_new();
 		ewl_container_child_prepend(EWL_CONTAINER(node), node->handle);
-		ewl_callback_append(node->handle, EWL_CALLBACK_VALUE_CHANGED,
-				    ewl_tree_cb_node_toggle, node);
+		ewl_widget_internal_set(EWL_WIDGET(node->handle), TRUE);
 		ewl_widget_show(node->handle);
 	}
-	else if (node->handle) {
-		ewl_widget_destroy(node->handle);
-		node->handle = NULL;
+
+	if (!node->handle)
+		DRETURN(DLEVEL_STABLE);
+
+	if (expandable)
+	{
+		ewl_callback_append(node->handle, EWL_CALLBACK_VALUE_CHANGED,
+						ewl_tree_cb_node_toggle, node);
+		ewl_callback_append(EWL_WIDGET(node), EWL_CALLBACK_DESTROY,
+					ewl_tree_cb_node_data_unref, NULL);
+		ewl_widget_enable(node->handle);
+		ewl_expansion_expandable_set(EWL_EXPANSION(node->handle), TRUE);
 	}
+	else
+	{
+		ewl_callback_del(node->handle, EWL_CALLBACK_VALUE_CHANGED,
+						ewl_tree_cb_node_toggle);
+		ewl_callback_del(EWL_WIDGET(node), EWL_CALLBACK_DESTROY,
+						ewl_tree_cb_node_data_unref);
+		ewl_widget_disable(node->handle);
+		ewl_expansion_expandable_set(EWL_EXPANSION(node->handle), FALSE);
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/**
- * @param node: The node to work with
- * @return Returns the expand setting of the node
- * @brief Retrieves the expand setting from the node
- */
-int
+unsigned int
 ewl_tree_node_expandable_get(Ewl_Tree_Node *node)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET(node, FALSE);
 	DCHECK_TYPE_RET(node, EWL_TREE_NODE_TYPE, FALSE);
 
-	if (node->handle)
-		DRETURN_INT(TRUE, DLEVEL_STABLE);
-
-	DRETURN_INT(FALSE, DLEVEL_STABLE);
+	DRETURN_INT((node->handle) &&
+			ewl_expansion_is_expandable(EWL_EXPANSION(node->handle)), DLEVEL_STABLE);
 }
 
-/**
- * @param node: the node in the tree to collapse
- * @return Returns no value. Hides the rows below @a node.
- * @brief Collapse a node in the tree
- */
-void
-ewl_tree_node_collapse(Ewl_Tree_Node *node)
-{
-	Ewl_Widget *w;
-	Ecore_List *tmp;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(node);
-	DCHECK_TYPE(node, EWL_TREE_NODE_TYPE);
-
-	if (node->expanded == EWL_TREE_NODE_COLLAPSED)
-		DRETURN(DLEVEL_STABLE);
-
-	if (!EWL_CONTAINER(node)->children)
-		DRETURN(DLEVEL_STABLE);
-
-	/*
-	 * Queue the parent tree for configure, this handles the issue of
-	 * redrawing the alternating colors on expand and doing it early
-	 * avoids duplicate or long list walks for queueing child widgets.
-	 */
-	if (node->tree)
-		ewl_widget_configure(EWL_WIDGET(node->tree));
-
-	tmp = ecore_list_new();
-
-	ecore_dlist_first_goto(EWL_CONTAINER(node)->children);
-	while ((w = ecore_dlist_next(EWL_CONTAINER(node)->children))) {
-		if (w != node->row && w != node->handle)
-			ecore_list_append(tmp, w);
-	}
-
-	while ((w = ecore_list_first_remove(tmp))) {
-		ewl_widget_hide(w);
-	}
-
-	IF_FREE_LIST(tmp);
-
-	node->expanded = EWL_TREE_NODE_COLLAPSED;
-
-	ewl_widget_state_set(EWL_WIDGET(node), "collapsed",
-				EWL_STATE_PERSISTENT);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param node: the node in the tree to expand
- * @return Returns no value. Hides the rows below @a node.
- * @brief Expand a node in the tree
- */
 void
 ewl_tree_node_expand(Ewl_Tree_Node *node)
 {
-	Ewl_Widget *w;
+	Ewl_Widget *child;
 	Ecore_List *tmp;
+	Ewl_Model *model;
+	void *data;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(node);
@@ -1030,9 +1161,86 @@ ewl_tree_node_expand(Ewl_Tree_Node *node)
 	if (node->expanded == EWL_TREE_NODE_EXPANDED)
 		DRETURN(DLEVEL_STABLE);
 
-	node->expanded = EWL_TREE_NODE_EXPANDED;
+	/*
+	 * Queue the parent tree for configure, this handles the issue of
+	 * redrawing the alternating colors on expand and doing it early
+	 * avoids duplicate or long list walks for queueing child widgets.
+	 */
+	ewl_widget_configure(node->tree);
 
-	if (!EWL_CONTAINER(node)->children)
+	/* This is needed as in the child_show cb we will case a list walk.
+	 * We need this till the lists get iterators */
+	tmp = ecore_list_new();
+
+	ecore_dlist_first_goto(EWL_CONTAINER(node)->children);
+	while ((child = ecore_dlist_next(EWL_CONTAINER(node)->children)))
+	{
+		if ((child != node->handle) && (child != EWL_WIDGET(node->row)))
+			ecore_list_append(tmp, child);
+	}
+
+	while ((child = ecore_list_first_remove(tmp)))
+		ewl_widget_show(child);
+
+	IF_FREE_LIST(tmp);
+
+	model = ewl_mvc_model_get(EWL_MVC(node));
+	data = ewl_mvc_data_get(EWL_MVC(node));
+	if (model->expansion.data && !node->built_children)
+	{
+		Ewl_View *view, *tmp_view = NULL;
+		Ewl_Model *tmp_model;
+
+		if (!node->expansion.data)
+		{
+			Ewl_Tree_Expansions_List *exp;
+
+			node->expansion.data =
+				model->expansion.data(data, node->row_num);
+
+			/* Put the node into the expansions hash */
+			exp = ewl_tree_expansions_list_new();
+			exp->c = EWL_CONTAINER(node);
+			ecore_hash_set(EWL_TREE(node->tree)->expansions,
+					node->expansion.data, exp);
+		}
+
+		if (!node->expansion.model && model->expansion.model)
+			node->expansion.model =
+				model->expansion.model(data, node->row_num);
+
+		/* We only save the model reference here to unref it on destroy.
+		 * We don't need to save the parent model to unref */
+		if (!node->expansion.model) tmp_model = model;
+		else tmp_model = node->expansion.model;
+
+		view = ewl_mvc_view_get(EWL_MVC(node));
+		if (view->expansion)
+			tmp_view = view->expansion(data, node->row_num);
+
+		if (!tmp_view) tmp_view = view;
+
+		ewl_tree_build_tree_rows(EWL_TREE(node->tree), tmp_model,
+						tmp_view, node->expansion.data,
+						0, EWL_CONTAINER(node), FALSE);
+		node->built_children = TRUE;
+	}
+
+	node->expanded = EWL_TREE_NODE_EXPANDED;
+	ewl_check_checked_set(EWL_CHECK(node->handle), TRUE);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_tree_node_collapse(Ewl_Tree_Node *node)
+{
+	Ewl_Widget *child;
+	Ecore_List *tmp;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	if (node->expanded == EWL_TREE_NODE_COLLAPSED)
 		DRETURN(DLEVEL_STABLE);
 
 	/*
@@ -1040,40 +1248,57 @@ ewl_tree_node_expand(Ewl_Tree_Node *node)
 	 * redrawing the alternating colors on expand and doing it early
 	 * avoids duplicate or long list walks for queueing child widgets.
 	 */
-	if (node->tree)
-		ewl_widget_configure(EWL_WIDGET(node->tree));
+	ewl_widget_configure(node->tree);
 
+	/* This is needed becase in our child_hide callback we will cause a
+	 * list iteration. Until we get iterators we need this */
 	tmp = ecore_list_new();
 
 	ecore_dlist_first_goto(EWL_CONTAINER(node)->children);
-	while ((w = ecore_dlist_next(EWL_CONTAINER(node)->children))) {
-		if (w != node->row && w != node->handle)
-			ecore_list_append(tmp, w);
+	while ((child = ecore_dlist_next(EWL_CONTAINER(node)->children)))
+	{
+		if ((child != node->handle) && (child != EWL_WIDGET(node->row)))
+			ecore_list_append(tmp, child);
 	}
 
-	while ((w = ecore_list_first_remove(tmp))) {
-		ewl_widget_show(w);
-	}
+	while ((child = ecore_list_first_remove(tmp)))
+		ewl_widget_hide(child);
 
 	IF_FREE_LIST(tmp);
 
-	ewl_widget_state_set(EWL_WIDGET(node), "expanded",
-				EWL_STATE_PERSISTENT);
+	node->expanded = EWL_TREE_NODE_COLLAPSED;
+	ewl_check_checked_set(EWL_CHECK(node->handle), FALSE);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/**
- * @internal
- * @param w: The widget to work with
- * @param ev_data: UNUSED
- * @param user_data: UNUSED
- * @return Returns no value
- * @brief The tree node configure callback
- */
+unsigned int
+ewl_tree_node_expanded_is(Ewl_Tree_Node *node)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET(node, FALSE);
+
+	DRETURN_INT((node->expanded == EWL_TREE_NODE_EXPANDED),	DLEVEL_STABLE);
+}
+
+void
+ewl_tree_node_row_set(Ewl_Tree_Node *node, Ewl_Row *row)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(node);
+	DCHECK_PARAM_PTR(row);
+	DCHECK_TYPE(node, EWL_TREE_NODE_TYPE);
+	DCHECK_TYPE(row, EWL_ROW_TYPE);
+
+	node->row = row;
+	ewl_widget_internal_set(EWL_WIDGET(row), TRUE);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
 void
 ewl_tree_cb_node_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
-					void *user_data __UNUSED__)
+						void *user_data __UNUSED__)
 {
 	Ewl_Tree_Node *node;
 	Ewl_Container *c;
@@ -1085,19 +1310,17 @@ ewl_tree_cb_node_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DCHECK_TYPE(w, EWL_TREE_NODE_TYPE);
 
 	node = EWL_TREE_NODE(w);
-	if (!node->tree)
-		DRETURN(DLEVEL_STABLE);
+	if (!node->tree) DRETURN(DLEVEL_STABLE);
 
 	c = EWL_CONTAINER(w);
-
-	if (!c->children)
-		DRETURN(DLEVEL_STABLE);
+	if (!c->children) DRETURN(DLEVEL_STABLE);
 
 	ecore_dlist_first_goto(c->children);
 	x = CURRENT_X(w);
 	y = CURRENT_Y(w);
 
-	if (node->handle) {
+	if (node->handle)
+	{
 		ewl_object_geometry_request(EWL_OBJECT(node->handle),
 				CURRENT_X(w), CURRENT_Y(w), CURRENT_W(w),
 				CURRENT_H(w));
@@ -1108,8 +1331,10 @@ ewl_tree_cb_node_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 	/*
 	 * All subsequent children are lower nodes and rows.
 	 */
-	while ((child = ecore_dlist_next(c->children))) {
-		if (VISIBLE(child) && EWL_WIDGET(child) != node->handle) {
+	while ((child = ecore_dlist_next(c->children)))
+	{
+		if (VISIBLE(child) && EWL_WIDGET(child) != node->handle)
+		{
 			ewl_object_geometry_request(child, x, y, CURRENT_W(w) - hw,
 						    ewl_object_preferred_h_get(child));
 			y += ewl_object_current_h_get(child);
@@ -1119,126 +1344,62 @@ ewl_tree_cb_node_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/**
- * @internal
- * @param w: The widget to work with
- * @param ev_data: UNUSED
- * @param user_data: UNUSED
- * @return Returns no value
- * @brief The tree node destroy callback
- */
 void
-ewl_tree_cb_node_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
-					 void *user_data __UNUSED__)
+ewl_tree_cb_node_data_unref(Ewl_Widget *w, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
 {
-	Ewl_Tree *tree;
 	Ewl_Tree_Node *node;
+	Ewl_Model *model;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(w);
 	DCHECK_TYPE(w, EWL_TREE_NODE_TYPE);
 
 	node = EWL_TREE_NODE(w);
-	if (!node->tree)
+
+	if (!node->expansion.data)
 		DRETURN(DLEVEL_STABLE);
 
-	tree = EWL_TREE(node->tree);
-	if (ecore_list_goto(tree->selected, node->row)) {
-		ecore_list_remove(tree->selected);
-	}
+	if (node->expansion.model)
+		model = node->expansion.model;
+	else
+		model = ewl_mvc_model_get(EWL_MVC(w));
+
+	if (model->unref)
+		model->unref(node->expansion.data);
+
+	node->expansion.data = NULL;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/**
- * @internal
- * @param w: UNUSED
- * @param ev_data: UNUSED
- * @param user_data: The Ewl_Tree_Node
- * @return Returns no value
- * @brief The tree node toggle callback
- */
 void
 ewl_tree_cb_node_toggle(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
-							void *user_data)
+							void *data)
 {
 	Ewl_Tree_Node *node;
+	void *parent_data;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(user_data);
-	DCHECK_TYPE(user_data, EWL_TREE_NODE_TYPE);
+	DCHECK_PARAM_PTR(data);
+	DCHECK_TYPE(data, EWL_TREE_NODE_TYPE);
 
-	node = EWL_TREE_NODE(user_data);
+	node = EWL_TREE_NODE(data);
+	parent_data = ewl_mvc_data_get(EWL_MVC(node));
 
-	if (node->expanded == EWL_TREE_NODE_NOEXPAND)
+	if (!ewl_tree_node_expandable_get(node))
 		DRETURN(DLEVEL_STABLE);
 
-	if (node->expanded == EWL_TREE_NODE_EXPANDED)
-		ewl_tree_node_collapse(node);
+	if (ewl_tree_node_expanded_is(node))
+		ewl_tree_row_collapse(EWL_TREE(node->tree), parent_data,
+				node->row_num);
 	else
-		ewl_tree_node_expand(node);
+		ewl_tree_row_expand(EWL_TREE(node->tree), parent_data,
+				node->row_num);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/**
- * @internal
- * @param c: The container to work with
- * @param w: UNUSED
- * @return Returns no value
- * @brief The child add callback
- */
-void
-ewl_tree_cb_node_child_add(Ewl_Container *c, Ewl_Widget *w __UNUSED__)
-{
-	Ewl_Tree_Node *node;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(c);
-	DCHECK_TYPE(c, EWL_TREE_NODE_TYPE);
-
-	node = EWL_TREE_NODE(c);
-	if (w != node->handle && !node->row)
-		node->row = node->handle;
-
-	if (ecore_dlist_count(c->children) > 2 ) {
-		if (node->handle && HIDDEN(node->handle))
-			ewl_widget_show(node->handle);
-	}
-	else if (node->handle && VISIBLE(node->handle)) {
-		ewl_widget_hide(node->handle);
-	}
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @internal
- * @param c: The container to work with
- * @param w: The widget to work with
- * @param idx: UNUSED
- * @return Returns no value
- * @brief The child del callback
- */
-void
-ewl_tree_cb_node_child_del(Ewl_Container *c, Ewl_Widget *w, int idx __UNUSED__)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(c);
-	DCHECK_TYPE(c, EWL_CONTAINER_TYPE);
-
-	ewl_tree_cb_node_child_add(c, w);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @internal
- * @param c: The container to work with
- * @param w: UNUSED
- * @return Returns no value
- * @brief The tree node child show callback
- */
 void
 ewl_tree_cb_node_child_show(Ewl_Container *c, Ewl_Widget *w __UNUSED__)
 {
@@ -1249,7 +1410,6 @@ ewl_tree_cb_node_child_show(Ewl_Container *c, Ewl_Widget *w __UNUSED__)
 	DCHECK_TYPE(c, EWL_TREE_NODE_TYPE);
 
 	node = EWL_TREE_NODE(c);
-
 	if (node->handle && node->expanded) {
 		ewl_container_sum_prefer(c, EWL_ORIENTATION_VERTICAL);
 		if (REALIZED(node->handle) && VISIBLE(node->handle))
@@ -1257,10 +1417,9 @@ ewl_tree_cb_node_child_show(Ewl_Container *c, Ewl_Widget *w __UNUSED__)
 					PREFERRED_H(c) -
 					ewl_object_preferred_h_get(EWL_OBJECT(node->handle)));
 	}
-	else {
+	else
 		ewl_object_preferred_inner_h_set(EWL_OBJECT(c),
 					   ewl_object_preferred_h_get(EWL_OBJECT(node->row)));
-	}
 
 	ewl_container_largest_prefer(c, EWL_ORIENTATION_HORIZONTAL);
 	if (node->handle && REALIZED(node->handle) && VISIBLE(node->handle))
@@ -1270,18 +1429,11 @@ ewl_tree_cb_node_child_show(Ewl_Container *c, Ewl_Widget *w __UNUSED__)
 	if (!node->expanded && node->handle)
 		ewl_widget_hide(node->handle);
 
-	ewl_widget_configure(EWL_WIDGET(c)->parent);
+	ewl_widget_configure(node->tree);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/**
- * @internal
- * @param c: The container to work with
- * @param w: The widget to work with
- * @return Returns no value
- * @brief The tree node child hide callback
- */
 void
 ewl_tree_cb_node_child_hide(Ewl_Container *c, Ewl_Widget *w)
 {
@@ -1295,17 +1447,17 @@ ewl_tree_cb_node_child_hide(Ewl_Container *c, Ewl_Widget *w)
 	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	node = EWL_TREE_NODE(c);
-
 	if (w == node->handle)
 		DRETURN(DLEVEL_STABLE);
 
-	if (ecore_dlist_count(c->children) < 3) {
+	if (ecore_dlist_count(c->children) < 3)
+	{
 		if (node->handle && VISIBLE(node->handle))
 			ewl_widget_hide(node->handle);
 	}
 
-	ewl_object_preferred_inner_h_set(EWL_OBJECT(c), PREFERRED_H(c) -
-				   ewl_object_preferred_h_get(EWL_OBJECT(w)));
+	ewl_object_preferred_inner_h_set(EWL_OBJECT(c),
+		PREFERRED_H(c) - ewl_object_preferred_h_get(EWL_OBJECT(w)));
 
 	width = ewl_object_preferred_w_get(EWL_OBJECT(w));
 	if (PREFERRED_W(c) >= width)
@@ -1314,18 +1466,9 @@ ewl_tree_cb_node_child_hide(Ewl_Container *c, Ewl_Widget *w)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/**
- * @internal
- * @param c: The container to work with
- * @param w: The widget to work with
- * @param size: UNUSED
- * @param o: UNUSED
- * @return Returns no value
- * @brief The tree node resize callback
- */
 void
-ewl_tree_cb_node_resize(Ewl_Container *c, Ewl_Widget *w,
-		int size __UNUSED__, Ewl_Orientation o __UNUSED__)
+ewl_tree_cb_node_resize(Ewl_Container *c, Ewl_Widget *w, int size __UNUSED__,
+						     Ewl_Orientation o __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(c);
@@ -1338,119 +1481,35 @@ ewl_tree_cb_node_resize(Ewl_Container *c, Ewl_Widget *w,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/**
- * @internal
- * @param w: The widget to work with
- * @param ev_data: The Ewl_Event_Mouse_Down data
- * @param user_data: UNUSED
- * @return Returns no value
- * @brief The tree row select callback
- */
 void
-ewl_tree_cb_row_select(Ewl_Widget *w, void *ev_data,
-					void *user_data __UNUSED__)
+ewl_tree_cb_node_child_add(Ewl_Container *c, Ewl_Widget *w __UNUSED__)
 {
-	Ewl_Tree *tree;
-	Ewl_Tree_Node *node;
-	Ewl_Event_Mouse *ev;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
-	DCHECK_TYPE(w->parent, EWL_TREE_NODE_TYPE);
-
-	ev = ev_data;
-	node = EWL_TREE_NODE(w->parent);
-	tree = node->tree;
-
-	if (tree->mode == EWL_SELECTION_MODE_SINGLE ||
-	    !(ev->modifiers & EWL_KEY_MODIFIER_SHIFT))
-		ewl_tree_selected_clear(tree);
-
-	if (tree->mode != EWL_SELECTION_MODE_NONE) {
-		if (ecore_list_goto(tree->selected, w) == NULL)
-			ecore_list_append(tree->selected, w);
-		ewl_widget_state_set(w, "tree-selected", EWL_STATE_PERSISTENT);
-	}
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @internal
- * @param w: The widget to work with
- * @param ev_data: UNUSED
- * @param user_data: UNUSED
- * @return Returns no value
- * @brief The tree node hide callback
- */
-void
-ewl_tree_cb_row_hide(Ewl_Widget *w, void *ev_data __UNUSED__,
-					void *user_data __UNUSED__)
-{
-	Ewl_Tree *tree;
 	Ewl_Tree_Node *node;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
-	DCHECK_TYPE(w->parent, EWL_TREE_NODE_TYPE);
+	DCHECK_PARAM_PTR(c);
+	DCHECK_TYPE(c, EWL_TREE_NODE_TYPE);
 
-	node = EWL_TREE_NODE(w->parent);
-	tree = node->tree;
+	node = EWL_TREE_NODE(c);
 
-	if (ecore_list_goto(tree->selected, w)) {
-		ecore_list_remove(tree->selected);
-		ewl_widget_state_set(w, "tree-deselected",
-					EWL_STATE_PERSISTENT);
+	if (ecore_list_count(c->children) > 2)
+	{
+		/* XXX what do we do if !node->handle? */
+		if (node->handle && HIDDEN(node->handle))
+			ewl_widget_show(node->handle);
 	}
+	else if (node->handle && VISIBLE(node->handle))
+		ewl_widget_hide(node->handle);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-/**
- * @internal
- * @param w: UNUSED
- * @param ev_data: UNUSED
- * @param user_data: The user data
- * @return Returns no value
- * @brief The tree hscroll callback
- */
 void
-ewl_tree_cb_hscroll(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
-					void *user_data)
+ewl_tree_cb_node_child_del(Ewl_Container *c, Ewl_Widget *w, int idx __UNUSED__)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(user_data);
-	DCHECK_TYPE(user_data, EWL_WIDGET_TYPE);
+	DCHECK_PARAM_PTR(c);
+	DCHECK_TYPE(c, EWL_CONTAINER_TYPE);
 
-	ewl_widget_configure(EWL_WIDGET(user_data));
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	ewl_tree_cb_node_child_add(c, w);
 }
-
-/**
- * @internal
- * @param w: UNUSED
- * @param ev: UNUSED
- * @param data: The tree
- * @return Returns no value
- * @brief Callback for when the header grabbers are moved
- */
-void
-ewl_tree_cb_header_change(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
-								void *data)
-{
-	Ewl_Tree *tree;
-
-	DCHECK_PARAM_PTR(data);
-	DCHECK_TYPE(data, EWL_TREE_TYPE);
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-
-	tree = data;
-	ewl_widget_configure(tree->scrollarea);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-

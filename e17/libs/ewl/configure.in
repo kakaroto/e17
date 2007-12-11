@@ -289,7 +289,6 @@ src/bin/tests/theme/Makefile
 src/bin/tests/toolbar/Makefile
 src/bin/tests/tooltip/Makefile
 src/bin/tests/tree/Makefile
-src/bin/tests/tree2/Makefile
 src/bin/tests/widget/Makefile
 src/lib/Makefile
 src/engines/Makefile

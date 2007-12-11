@@ -3,9 +3,9 @@
 #include "ewl_filelist.h"
 #include "ewl_filelist_model.h"
 #include "ewl_filelist_view.h"
-#include "ewl_tree2.h"
-#include "ewl_tree2_view_freebox.h"
-#include "ewl_tree2_view_scrolled.h"
+#include "ewl_tree.h"
+#include "ewl_tree_view_freebox.h"
+#include "ewl_tree_view_scrolled.h"
 #include "ewl_mvc.h"
 #include "ewl_icon_theme.h"
 #include "ewl_io_manager.h"
@@ -115,7 +115,7 @@ ewl_filelist_setup(Ewl_Filelist *fl)
 			ewl_filelist_model_data_unref);
 
 	/* For now just create a tree and set different views */
-	fl->controller = ewl_tree2_new();
+	fl->controller = ewl_tree_new();
 	ewl_mvc_view_set(EWL_MVC(fl->controller), fl->view);
 	ewl_mvc_model_set(EWL_MVC(fl->controller), fl->model);
 	ewl_container_child_append(EWL_CONTAINER(fl), fl->controller);
@@ -153,59 +153,59 @@ ewl_filelist_view_setup(Ewl_Filelist *fl)
 
 	if (fl->view_flag == EWL_FILELIST_VIEW_TREE)
 	{
-		ewl_tree2_column_count_set(EWL_TREE2(fl->controller), 2);
-		ewl_tree2_headers_visible_set(EWL_TREE2(fl->controller),
+		ewl_tree_column_count_set(EWL_TREE(fl->controller), 2);
+		ewl_tree_headers_visible_set(EWL_TREE(fl->controller),
 								TRUE);
-		ewl_tree2_alternate_row_colors_set
-				(EWL_TREE2(fl->controller), TRUE);
-		ewl_tree2_selection_type_set(EWL_TREE2(fl->controller),
+		ewl_tree_alternate_row_colors_set
+				(EWL_TREE(fl->controller), TRUE);
+		ewl_tree_selection_type_set(EWL_TREE(fl->controller),
 					EWL_TREE_SELECTION_TYPE_CELL);
 		ewl_model_expansion_data_fetch_set(fl->model,
 			ewl_filelist_model_data_expansion_data_fetch);
 		ewl_model_data_expandable_set(fl->model,
 			ewl_filelist_model_data_expandable_get);
-		view = ewl_tree2_view_scrolled_get();
+		view = ewl_tree_view_scrolled_get();
 	}
 	else if (fl->view_flag == EWL_FILELIST_VIEW_LIST)
 	{
-		ewl_tree2_column_count_set(EWL_TREE2(fl->controller), 6);
-		ewl_tree2_headers_visible_set(EWL_TREE2(fl->controller),
+		ewl_tree_column_count_set(EWL_TREE(fl->controller), 6);
+		ewl_tree_headers_visible_set(EWL_TREE(fl->controller),
 								TRUE);
-		ewl_tree2_alternate_row_colors_set
-				(EWL_TREE2(fl->controller), TRUE);
-		ewl_tree2_selection_type_set(EWL_TREE2(fl->controller),
+		ewl_tree_alternate_row_colors_set
+				(EWL_TREE(fl->controller), TRUE);
+		ewl_tree_selection_type_set(EWL_TREE(fl->controller),
 					EWL_TREE_SELECTION_TYPE_ROW);
-		view = ewl_tree2_view_scrolled_get();
+		view = ewl_tree_view_scrolled_get();
 	}
 	/* Until column view is written just default and throw a warning */
 	else if (fl->view_flag == EWL_FILELIST_VIEW_COLUMN)
 	{
-		ewl_tree2_column_count_set(EWL_TREE2(fl->controller), 1);
-		ewl_tree2_headers_visible_set(EWL_TREE2(fl->controller),
+		ewl_tree_column_count_set(EWL_TREE(fl->controller), 1);
+		ewl_tree_headers_visible_set(EWL_TREE(fl->controller),
 								FALSE);
-		ewl_tree2_alternate_row_colors_set
-				(EWL_TREE2(fl->controller), FALSE);
-		ewl_tree2_selection_type_set(EWL_TREE2(fl->controller),
+		ewl_tree_alternate_row_colors_set
+				(EWL_TREE(fl->controller), FALSE);
+		ewl_tree_selection_type_set(EWL_TREE(fl->controller),
 					EWL_TREE_SELECTION_TYPE_ROW);
-		view = ewl_tree2_view_freebox_get();
+		view = ewl_tree_view_freebox_get();
 		DWARNING("Column view not implemented");
 	}
 	/* Make icon view default */
 	else
 	{
-		ewl_tree2_column_count_set(EWL_TREE2(fl->controller), 1);
-		ewl_tree2_headers_visible_set(EWL_TREE2(fl->controller),
+		ewl_tree_column_count_set(EWL_TREE(fl->controller), 1);
+		ewl_tree_headers_visible_set(EWL_TREE(fl->controller),
 								FALSE);
-		ewl_tree2_alternate_row_colors_set
-				(EWL_TREE2(fl->controller), FALSE);
-		ewl_tree2_selection_type_set(EWL_TREE2(fl->controller),
+		ewl_tree_alternate_row_colors_set
+				(EWL_TREE(fl->controller), FALSE);
+		ewl_tree_selection_type_set(EWL_TREE(fl->controller),
 					EWL_TREE_SELECTION_TYPE_ROW);
-		view = ewl_tree2_view_freebox_get();
+		view = ewl_tree_view_freebox_get();
 		fl->view_flag = EWL_FILELIST_VIEW_ICON;
 	}
 	
 	/* Set the view and redraw the tree */
-	ewl_tree2_content_view_set(EWL_TREE2(fl->controller), view);
+	ewl_tree_content_view_set(EWL_TREE(fl->controller), view);
 	ewl_mvc_dirty_set(EWL_MVC(fl->controller), TRUE);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

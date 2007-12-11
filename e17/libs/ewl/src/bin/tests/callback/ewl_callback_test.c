@@ -352,7 +352,7 @@ del_type_test_call(char *buf, int len)
  * Clear a callback chain and verify deleting a non-existent function succeeds.
  */
 static int
-del_empty_test_call(char *buf, int len)
+del_empty_test_call(char *buf __UNUSED__, int len __UNUSED__)
 {
 	Ewl_Widget *w;
 	int ret = 0;
