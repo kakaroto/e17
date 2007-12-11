@@ -268,13 +268,13 @@ static Ewl_Widget * _win_highscore_page_new(const char * game)
     /*
      * the highscore
      */
-    tree = ewl_tree2_new();
+    tree = ewl_tree_new();
     ewl_container_child_append(EWL_CONTAINER(page), tree);
-    ewl_object_fill_policy_set(EWL_OBJECT(tree), EWL_FLAG_FILL_ALL
-		    				& ~EWL_FLAG_FILL_VSHRINK);
+    ewl_object_fill_policy_set(EWL_OBJECT(tree), EWL_FLAG_FILL_FILL);
+    ewl_mvc_selection_mode_set(EWL_MVC(tree), EWL_SELECTION_MODE_NONE);
     ewl_mvc_data_set(EWL_MVC(tree), eli_highscore_get(game));
-    ewl_tree2_content_view_set(EWL_TREE2(tree), ewl_tree2_view_plain_get());
-    ewl_tree2_column_count_set(EWL_TREE2(tree), 3);
+    ewl_tree_content_view_set(EWL_TREE(tree), ewl_tree_view_plain_get());
+    ewl_tree_column_count_set(EWL_TREE(tree), 3);
     ewl_widget_show(tree);
 
     /* the model for first column */
