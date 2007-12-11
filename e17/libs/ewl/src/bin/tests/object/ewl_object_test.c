@@ -18,6 +18,7 @@
 #define DIFFER_HEIGHT 20
 
 static int position_test_set_get(char *buf, int len);
+static int position_size_test_set_get(char *buf, int len);
 static int preferred_inner_size_test_set_get(char *buf, int len);
 static int preferred_size_test_set_get(char *buf, int len);
 static int minimum_size_test_set_get(char *buf, int len);
@@ -34,6 +35,7 @@ static int alignment_test_set_get(char *buf, int len);
 
 static Ewl_Unit_Test object_unit_tests[] = {
 		{"position set/get", position_test_set_get, NULL, -1, 0},
+		{"position size set/get", position_size_test_set_get, NULL, -1, 0},
 		{"preferred inner size set/get", preferred_inner_size_test_set_get, NULL, -1, 0},
 		{"preferred size set/get", preferred_size_test_set_get, NULL, -1, 0},
 		{"minimum size set/get", minimum_size_test_set_get, NULL, -1, 0},
@@ -81,6 +83,32 @@ position_test_set_get(char *buf, int len)
 		ret = 1;
 	else
 		LOG_FAILURE(buf, len, "incorrect positions returned");
+
+	ewl_widget_destroy(w);
+
+	return ret;
+}
+
+/*
+ * Set the position and size and verify that it gets the same info back.
+ */
+static int
+position_size_test_set_get(char *buf, int len)
+{
+	Ewl_Widget *w;
+	int x, y, width, height;
+	int ret = 0;
+
+	w = ewl_widget_new();
+
+	ewl_object_geometry_request(EWL_OBJECT(w), 11, 23, 58, 13);
+
+	ewl_object_current_geometry_get(EWL_OBJECT(w), &x, &y, &width, &height);
+
+	if (x == 11 && y == 23 && width == 58 && height == 13)
+		ret = 1;
+	else
+		LOG_FAILURE(buf, len, "incorrect position or size returned");
 
 	ewl_widget_destroy(w);
 
