@@ -1,19 +1,24 @@
 # translation of eo.po to
+# translation of eo.po to Esperanto
 # This file is put in the public domain.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Olivier M <olivierweb@nospam.ifrance.com>, 2006-2007
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: eo\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-14 22:26+0100\n"
-"PO-Revision-Date: 2006-08-30 23:37+0200\n"
+"POT-Creation-Date: 2007-12-10 17:14+0100\n"
+"PO-Revision-Date: 2007-12-10 23:08+0100\n"
 "Last-Translator: \n"
-"Language-Team:  <fr@li.org>\n"
+"Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.2\n"
+"X-Generator: KBabel 1.11.4\n"
+"X-Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
+"X-Poedit-Language: Esperanto\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SearchPath-0: /usr/portage/distfiles/cvs-src/e17/apps/ephoto/src\n"
 
 #: src/module/e_mod_config.c:104
 msgid "Language Module Settings"
@@ -65,22 +70,21 @@ msgstr "Lingvo"
 
 #: src/module/e_mod_keybindings.c:7
 msgid "Switch To Next Language"
-msgstr ""
+msgstr "Ŝalti al Sekva Lingvo"
 
 #: src/module/e_mod_keybindings.c:8
 msgid "Switch To Previous Language"
-msgstr ""
+msgstr "Ŝalti al Antaŭa Lingvo"
 
 #: src/module/e_mod_main.c:399
-#, fuzzy
 msgid "Configuration"
 msgstr "Agordo"
 
 #: src/module/e_mod_main.c:404
 msgid "Configure Key Bindings"
-msgstr ""
+msgstr "Agordi Klavkombinojn"
 
 #: src/module/e_mod_main.c:421
-#, fuzzy
 msgid "Module Configuration"
-msgstr "Agordo"
+msgstr "Modula Agordo"
+
