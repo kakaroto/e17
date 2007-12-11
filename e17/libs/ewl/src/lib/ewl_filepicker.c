@@ -115,14 +115,9 @@ ewl_filepicker_init(Ewl_Filepicker *fp)
 				EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_VFILL);
 	ewl_filepicker_favorites_populate(fp);
 	ewl_filepicker_show_favorites_set(fp, FALSE);
-
-	fp->file_list_box = ewl_scrollpane_new();
-	ewl_container_child_append(EWL_CONTAINER(o), fp->file_list_box);
-	ewl_widget_show(fp->file_list_box);
 	
 	fp->file_list = ewl_filelist_new();
-	ewl_container_child_append(EWL_CONTAINER(fp->file_list_box),
-							fp->file_list);
+	ewl_container_child_append(EWL_CONTAINER(o), fp->file_list);
 	ewl_callback_append(EWL_WIDGET(fp->file_list),
 				EWL_CALLBACK_VALUE_CHANGED,
 				ewl_filepicker_cb_list_value_changed,

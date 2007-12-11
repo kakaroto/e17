@@ -349,7 +349,7 @@ ewl_freebox_layout_auto(Ewl_Freebox *fb)
 	DCHECK_TYPE(fb, EWL_FREEBOX_TYPE);
 
 	pad = ewl_theme_data_int_get(EWL_WIDGET(fb),
-					"/freebox/auto/padding");
+					"auto/padding");
 
 	if (fb->orientation == EWL_ORIENTATION_HORIZONTAL)
 	{

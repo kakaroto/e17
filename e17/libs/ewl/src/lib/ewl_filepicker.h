@@ -50,7 +50,6 @@ struct Ewl_Filepicker
 	Ewl_Box box;			/**< Inherit from Ewl_Box */
 
 	Ewl_Widget *file_list;		/**< The file list widet */
-	Ewl_Widget *file_list_box;	/**< Box to hold the file list widget */
 
 	Ewl_Widget *type_combo;		/**< File type combo */
 	Ewl_Widget *file_entry;		/**< Filename entry box */
