@@ -30,6 +30,7 @@ ewl_io_manager_init(void)
 		/* XXX this is a dumb way to do this.... */
 		ewl_io_manager_ext_icon_map = ecore_hash_new(ecore_str_hash,
 						ewl_io_manager_strcasecompare);
+		/* Images */
 		ecore_hash_set(ewl_io_manager_ext_icon_map, ".png",
 						EWL_ICON_IMAGE_X_GENERIC);
 		ecore_hash_set(ewl_io_manager_ext_icon_map, ".jpg",
@@ -37,6 +38,7 @@ ewl_io_manager_init(void)
 		ecore_hash_set(ewl_io_manager_ext_icon_map, ".gif",
 						EWL_ICON_IMAGE_X_GENERIC);
 
+		/* Videos */
 		ecore_hash_set(ewl_io_manager_ext_icon_map, ".wmv",
 						EWL_ICON_VIDEO_X_GENERIC);
 		ecore_hash_set(ewl_io_manager_ext_icon_map, ".mpg",
@@ -49,15 +51,28 @@ ewl_io_manager_init(void)
 						EWL_ICON_VIDEO_X_GENERIC);
 		ecore_hash_set(ewl_io_manager_ext_icon_map, ".asf",
 						EWL_ICON_VIDEO_X_GENERIC);
+		ecore_hash_set(ewl_io_manager_ext_icon_map, ".mp4",
+						EWL_ICON_VIDEO_X_GENERIC);
+		ecore_hash_set(ewl_io_manager_ext_icon_map, ".mkv",
+						EWL_ICON_VIDEO_X_GENERIC);
+		ecore_hash_set(ewl_io_manager_ext_icon_map, ".ogm",
+						EWL_ICON_VIDEO_X_GENERIC);
 
+		/* Audio */
 		ecore_hash_set(ewl_io_manager_ext_icon_map, ".mp3",
 						EWL_ICON_AUDIO_X_GENERIC);
+		ecore_hash_set(ewl_io_manager_ext_icon_map, ".mka",
+						EWL_ICON_AUDIO_X_GENERIC);
+		ecore_hash_set(ewl_io_manager_ext_icon_map, ".ogg",
+						EWL_ICON_AUDIO_X_GENERIC);
 
+		/* HTML */
 		ecore_hash_set(ewl_io_manager_ext_icon_map, ".html",
 						EWL_ICON_TEXT_HTML);
 		ecore_hash_set(ewl_io_manager_ext_icon_map, ".htm",
 						EWL_ICON_TEXT_HTML);
 
+		/* Scirpts */
 		ecore_hash_set(ewl_io_manager_ext_icon_map, ".pl",
 						EWL_ICON_TEXT_X_SCRIPT);
 		ecore_hash_set(ewl_io_manager_ext_icon_map, ".sh",
