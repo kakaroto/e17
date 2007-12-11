@@ -14,10 +14,15 @@ static int insert_after_test_id(char *buf, int len);
 static int shared_test_id(char *buf, int len);
 static int unique_test_id(char *buf, int len);
 static int del_test_call(char *buf, int len);
+static int del_id_test_call(char *buf, int len);
 static int del_type_test_call(char *buf, int len);
+static int del_data_test_call(char *buf, int len);
+static int del_empty_test_call(char *buf, int len);
 static int clear_test_call(char *buf, int len);
 static int append_test_call(char *buf, int len);
 static int prepend_test_call(char *buf, int len);
+static int notify_test_call(char *buf, int len);
+static int intercept_test_call(char *buf, int len);
 static int append_in_chain_test_call(char *buf, int len);
 static int prepend_in_chain_test_call(char *buf, int len);
 static int insert_after_in_chain_test_call(char *buf, int len);
@@ -54,10 +59,15 @@ static Ewl_Unit_Test callback_unit_tests[] = {
 		{"shared id", shared_test_id, NULL, -1, 0},
 		{"unique id", unique_test_id, NULL, -1, 0},
 		{"del/call", del_test_call, NULL, -1, 0},
+		{"del_id/call", del_id_test_call, NULL, -1, 0},
+		{"del_data/call", del_data_test_call, NULL, -1, 0},
 		{"del_type/call", del_type_test_call, NULL, -1, 0},
+		{"del from empty", del_empty_test_call, NULL, -1, 0},
 		{"clear/call", clear_test_call, NULL, -1, 0},
 		{"append/call", append_test_call, NULL, -1, 0},
 		{"prepend/call", prepend_test_call, NULL, -1, 0},
+		{"parent notify", notify_test_call, NULL, -1, 0},
+		{"parent intercept", intercept_test_call, NULL, -1, 0},
 		{"append during call", append_in_chain_test_call, NULL, -1, 0},
 		{"prepend during call", prepend_in_chain_test_call, NULL, -1, 0},
 		{"insert after during call", insert_after_in_chain_test_call, NULL, -1, 0},
@@ -250,6 +260,70 @@ del_test_call(char *buf, int len)
 }
 
 /*
+ * Prepend a callback and verify that removing it prevents it from being called.
+ */
+static int
+del_id_test_call(char *buf, int len)
+{
+	Ewl_Widget *w;
+	int id;
+	int ret = 0;
+
+	w = ewl_widget_new();
+	id = ewl_callback_prepend(w, EWL_CALLBACK_CONFIGURE, base_callback,
+			NULL);
+	ewl_callback_del_cb_id(w, EWL_CALLBACK_CONFIGURE, id);
+	ewl_callback_call(w, EWL_CALLBACK_CONFIGURE);
+
+	if ((long)ewl_widget_data_get(w, w) != 1)
+		ret = 1;
+	else
+		LOG_FAILURE(buf, len, "del failed to remove callback");
+
+	ewl_widget_destroy(w);
+
+	return ret;
+}
+
+/*
+ * Prepend a callback and verify that removing it prevents it from being called.
+ */
+static int
+del_data_test_call(char *buf, int len)
+{
+	Ewl_Widget *w;
+	int ret = 0;
+
+	w = ewl_widget_new();
+	ewl_callback_prepend(w, EWL_CALLBACK_CONFIGURE, base_callback, w);
+	ewl_callback_del_with_data(w, EWL_CALLBACK_CONFIGURE, base_callback, w);
+	ewl_callback_call(w, EWL_CALLBACK_CONFIGURE);
+
+	if ((long)ewl_widget_data_get(w, w) != 1) {
+
+		/*
+		 * Check that the data actually matches.
+		 */
+		ewl_callback_prepend(w, EWL_CALLBACK_CONFIGURE, base_callback,
+				w);
+		ewl_callback_del_with_data(w, EWL_CALLBACK_CONFIGURE,
+				base_callback, NULL);
+		ewl_callback_call(w, EWL_CALLBACK_CONFIGURE);
+
+		if ((long)ewl_widget_data_get(w, w) == 1)
+			ret = 1;
+		else
+			LOG_FAILURE(buf, len, "del_data removed callback");
+	}
+	else
+		LOG_FAILURE(buf, len, "del_data failed to remove callback");
+
+	ewl_widget_destroy(w);
+
+	return ret;
+}
+
+/*
  * Prepend a callback and verify that clearing the chain prevents it from being
  * called.
  */
@@ -268,6 +342,30 @@ del_type_test_call(char *buf, int len)
 		ret = 1;
 	else
 		LOG_FAILURE(buf, len, "del_type failed to remove callback");
+
+	ewl_widget_destroy(w);
+
+	return ret;
+}
+
+/*
+ * Clear a callback chain and verify deleting a non-existent function succeeds.
+ */
+static int
+del_empty_test_call(char *buf, int len)
+{
+	Ewl_Widget *w;
+	int ret = 0;
+
+	w = ewl_widget_new();
+	ewl_callback_del_type(w, EWL_CALLBACK_CONFIGURE);
+	ewl_callback_del(w, EWL_CALLBACK_CONFIGURE, base_callback);
+	ewl_callback_call(w, EWL_CALLBACK_CONFIGURE);
+
+	/*
+	 * If we reach here, no segv occurred and we passed.
+	 */
+	ret = 1;
 
 	ewl_widget_destroy(w);
 
@@ -343,6 +441,99 @@ prepend_test_call(char *buf, int len)
 		LOG_FAILURE(buf, len, "callback function not called");
 
 	ewl_widget_destroy(w);
+
+	return ret;
+}
+
+/*
+ * Add a callback, set notify on parent, and call to check if parent notified.
+ */
+static int
+notify_test_call(char *buf, int len)
+{
+	Ewl_Widget *parent;
+	Ewl_Widget *w;
+	int ret = 0;
+
+	parent = ewl_cell_new();
+	ewl_callback_del_type(parent, EWL_CALLBACK_CONFIGURE);
+	ewl_container_callback_notify(EWL_CONTAINER(parent),
+			EWL_CALLBACK_CONFIGURE);
+
+	w = ewl_widget_new();
+	ewl_container_child_append(EWL_CONTAINER(parent), w);
+
+	/*
+	 * Add parent callback
+	 */
+	ewl_callback_prepend(parent, EWL_CALLBACK_CONFIGURE, base_callback,
+			NULL);
+
+	/*
+	 * Add child callbacks.
+	 */
+	ewl_callback_del_type(w, EWL_CALLBACK_CONFIGURE);
+	ewl_callback_prepend(w, EWL_CALLBACK_CONFIGURE, differing_callback,
+			NULL);
+	ewl_callback_call(w, EWL_CALLBACK_CONFIGURE);
+
+	if ((long)ewl_widget_data_get(parent, parent) == 1)
+		if ((long)ewl_widget_data_get(w, w) == 2)
+			ret = 1;
+		else
+			LOG_FAILURE(buf, len, "callback function not called");
+	else
+		LOG_FAILURE(buf, len, "notify function not called");
+
+	ewl_widget_destroy(w);
+	ewl_widget_destroy(parent);
+
+	return ret;
+}
+
+/*
+ * Add a callback, set intercept on parent, and call to check if intercepted.
+ */
+static int
+intercept_test_call(char *buf, int len)
+{
+	Ewl_Widget *parent;
+	Ewl_Widget *w;
+	int ret = 0;
+
+	parent = ewl_cell_new();
+	ewl_callback_del_type(parent, EWL_CALLBACK_CONFIGURE);
+	ewl_container_callback_intercept(EWL_CONTAINER(parent),
+			EWL_CALLBACK_CONFIGURE);
+
+	w = ewl_widget_new();
+	ewl_container_child_append(EWL_CONTAINER(parent), w);
+
+	/*
+	 * Add parent callback
+	 */
+	ewl_callback_prepend(parent, EWL_CALLBACK_CONFIGURE, base_callback,
+			NULL);
+
+	/*
+	 * Add child callbacks.
+	 */
+	ewl_callback_del_type(w, EWL_CALLBACK_CONFIGURE);
+	ewl_callback_prepend(w, EWL_CALLBACK_CONFIGURE, differing_callback,
+			NULL);
+	ewl_callback_call(w, EWL_CALLBACK_CONFIGURE);
+
+	if ((long)ewl_widget_data_get(parent, parent) == 1) {
+		if ((long)ewl_widget_data_get(w, w) == 2)
+			LOG_FAILURE(buf, len, "callback function called");
+		else
+			ret = 1;
+	}
+	else
+		LOG_FAILURE(buf, len, "intercept function not called");
+
+	ewl_widget_destroy(w);
+	ewl_widget_destroy(parent);
 
 	return ret;
 }

@@ -165,6 +165,8 @@ void 		ewl_callback_call_with_event_data(Ewl_Widget * widget,
 						  unsigned int type,
 						  void *event_data);
 void 		ewl_callback_del_type(Ewl_Widget * w, unsigned int t);
+void 		ewl_callback_del_cb_id(Ewl_Widget * w, unsigned int t,
+				       int cb_id);
 void 		ewl_callback_del(Ewl_Widget * w, unsigned int t,
 				 Ewl_Callback_Function f);
 void 		ewl_callback_del_with_data(Ewl_Widget * w, unsigned int t,
