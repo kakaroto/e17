@@ -21,6 +21,49 @@ define([AC_LIBTOOL_LANG_CXX_CONFIG], [:])dnl
 define([AC_LIBTOOL_LANG_F77_CONFIG], [:])dnl
 AC_PROG_LIBTOOL
 
+dnl Define these at the bottom as they are not release versions, but API
+dnl revisions numbers.
+INTERFACE_CURRENT="1"
+INTERFACE_REVISION="0"
+INTERFACE_AGE="0"
+INTERFACE_VERSION=${INTERFACE_CURRENT}:${INTERFACE_REVISION}:${INTERFACE_AGE}
+
+AC_SUBST(INTERFACE_VERSION)
+
+AC_DEFINE_UNQUOTED(INTERFACE_CURRENT, "$INTERFACE_CURRENT", [Interface current version number])
+AC_DEFINE_UNQUOTED(INTERFACE_REVISION, "$INTERFACE_REVISION", [Interface revision number])
+AC_DEFINE_UNQUOTED(INTERFACE_AGE, "$INTERFACE_AGE", [Interface age number])
+
+AC_ARG_ENABLE(gcov,
+  AC_HELP_STRING([--enable-gcov],
+  [compile with coverage profiling instrumentation]),
+  [enable_gcov=$enableval],
+  [enable_gcov="no"]
+)
+AC_MSG_CHECKING([whether to use profiling instrumentation])
+AC_MSG_RESULT($enable_gcov)
+
+if test "x$enable_gcov" = "xyes" ; then
+  AC_CHECK_PROG(have_lcov,
+    [lcov],
+    [yes],
+    [no]
+  )
+  if test "x$have_lcov" = "xyes" ; then
+    GCOV_CFLAGS="-fprofile-arcs -ftest-coverage"
+    GCOV_LIBS="-lgcov"
+dnl remove any optimisation flag
+    CFLAGS="-O0"
+  else
+    AC_MSG_WARN([lcov is not found, disable profiling instrumentation])
+    enable_gcov="no"
+  fi
+fi
+AC_SUBST(GCOV_CFLAGS)
+AC_SUBST(GCOV_LIBS)
+
+AM_CONDITIONAL(EWL_ENABLE_GCOV, test "x$enable_gcov" = "xyes")
+
 AC_FUNC_ALLOCA
 
 AC_CHECK_HEADERS([pwd.h grp.h langinfo.h fcntl.h])
@@ -209,20 +252,6 @@ fi
 
 AM_CONDITIONAL(EWL_TESTS_BUILD, test "x$enable_tests" = "xyes")
 
-###
-# Define these at the bottom as they are not release versions, but API
-# revisions numbers.
-INTERFACE_CURRENT="1"
-INTERFACE_REVISION="0"
-INTERFACE_AGE="0"
-INTERFACE_VERSION=${INTERFACE_CURRENT}:${INTERFACE_REVISION}:${INTERFACE_AGE}
-
-AC_SUBST(INTERFACE_VERSION)
-
-AC_DEFINE_UNQUOTED(INTERFACE_CURRENT, "$INTERFACE_CURRENT", [Interface current version number])
-AC_DEFINE_UNQUOTED(INTERFACE_REVISION, "$INTERFACE_REVISION", [Interface revision number])
-AC_DEFINE_UNQUOTED(INTERFACE_AGE, "$INTERFACE_AGE", [Interface age number])
-
 AC_SUBST(ewl_media_include)
 
 AC_SUBST(requirements)
@@ -344,6 +373,8 @@ echo "  Emotion Support..........................: $have_emotion"
 echo "  Epsilon Support..........................: $have_epsilon"
 echo
 echo "Debug Support..............................: $enable_debug"
+echo
+echo "Coverage Support...........................: $enable_gcov"
 echo
 echo "Build tests................................: $enable_tests"
 echo

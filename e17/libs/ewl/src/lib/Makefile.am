@@ -8,6 +8,7 @@ AM_CPPFLAGS = \
 -DPACKAGE_DATA_DIR=\"$(datadir)\" \
 -DPACKAGE_LIB_DIR=\"$(libdir)\" \
 -DPACKAGE_SYSCONF_DIR=\"$(sysconfdir)\" \
+$(GCOV_CFLAGS) \
 @EDJE_CFLAGS@ @ECORE_CFLAGS@ @EVAS_CFLAGS@ @EMOTION_CFLAGS@ @EPSILON_CFLAGS@ @EFREET_CFLAGS@
 
 lib_LTLIBRARIES = libewl.la
@@ -99,7 +100,7 @@ EWLHEADERS = \
 	ewl_toolbar.h \
 	ewl_view.h \
 	ewl_widget.h \
-	ewl_window.h 
+	ewl_window.h
 
 EWLSOURCES= \
 	ewl_attach.c \
@@ -193,5 +194,8 @@ libewl_la_SOURCES = \
 installed_headersdir = $(prefix)/include/ewl
 installed_headers_DATA = $(EWLHEADERS)
 
-libewl_la_LIBADD = @EMOTION_LIBS@ @EPSILON_LIBS@ @EFREET_LIBS@ @EDJE_LIBS@ @ECORE_LIBS@ @EVAS_LIBS@ -lm
+libewl_la_LIBADD = $(GCOV_LIBS) @EMOTION_LIBS@ @EPSILON_LIBS@ @EFREET_LIBS@ @EDJE_LIBS@ @ECORE_LIBS@ @EVAS_LIBS@ -lm
 libewl_la_LDFLAGS = @create_shared_lib@ -version-info @INTERFACE_VERSION@
+
+clean-local:
+	@rm *.gcno
