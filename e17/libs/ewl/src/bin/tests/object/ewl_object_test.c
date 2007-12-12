@@ -2,7 +2,7 @@
 #include <limits.h>
 #include "Ewl_Test.h"
 #include "ewl_test_private.h"
-#include "ewl_button.h"
+#include "ewl_widget.h"
 
 #include <stdio.h>
 #include <string.h>
