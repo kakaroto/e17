@@ -2,6 +2,7 @@
 #ifndef _ETK_ENTRY_H_
 #define _ETK_ENTRY_H_
 
+#include <Ecore.h>
 #include <Ecore_IMF.h>
 #include <Evas.h>
 
@@ -57,6 +58,9 @@ struct Etk_Entry
 
    Etk_Color highlight_color;
    int image_interspace;
+
+   Ecore_Event_Handler *imf_ee_handler_commit;
+   Ecore_Event_Handler *imf_ee_handler_delete;
 
    Etk_Bool password_mode:1;
    Etk_Bool selection_dragging:1;

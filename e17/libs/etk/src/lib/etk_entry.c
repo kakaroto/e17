@@ -372,6 +372,8 @@ static void _etk_entry_constructor(Etk_Entry *entry)
    entry->primary_image_highlight = ETK_FALSE;
    entry->secondary_image_highlight = ETK_FALSE;
    entry->imf_context = NULL;
+   entry->imf_ee_handler_commit = NULL;
+   entry->imf_ee_handler_delete = NULL;
    entry->text = NULL;
 
    entry->internal_entry = etk_widget_new(ETK_WIDGET_TYPE, "repeat-mouse-events", ETK_TRUE,
@@ -590,10 +592,11 @@ static Etk_Bool _etk_entry_internal_realized_cb(Etk_Object *object, void *data)
       ecore_imf_context_client_canvas_set(entry->imf_context, evas);
       ecore_imf_context_retrieve_surrounding_callback_set(entry->imf_context,
             _etk_entry_imf_retrieve_surrounding_cb, entry);
-      ecore_event_handler_add(ECORE_IMF_EVENT_COMMIT,
-            _etk_entry_imf_event_commit_cb, entry);
-      ecore_event_handler_add(ECORE_IMF_EVENT_DELETE_SURROUNDIND,
-            _etk_entry_imf_event_delete_surrounding_cb, entry);
+      entry->imf_ee_handler_commit = ecore_event_handler_add(
+         ECORE_IMF_EVENT_COMMIT, _etk_entry_imf_event_commit_cb, entry);
+      entry->imf_ee_handler_delete = ecore_event_handler_add(
+         ECORE_IMF_EVENT_DELETE_SURROUNDIND,  /* XXX: typo in original lib? */
+         _etk_entry_imf_event_delete_surrounding_cb, entry);
 
       ecore_imf_context_input_mode_set(entry->imf_context,
             entry->password_mode ? ECORE_IMF_INPUT_MODE_INVISIBLE :
@@ -668,6 +671,18 @@ static Etk_Bool _etk_entry_internal_unrealized_cb(Etk_Object *object, void *data
 
    if (entry->imf_context)
    {
+      if (entry->imf_ee_handler_commit)
+      {
+         ecore_event_handler_del(entry->imf_ee_handler_commit);
+         entry->imf_ee_handler_commit = NULL;
+      }
+
+      if (entry->imf_ee_handler_delete)
+      {
+         ecore_event_handler_del(entry->imf_ee_handler_delete);
+         entry->imf_ee_handler_delete = NULL;
+      }
+
       ecore_imf_context_del(entry->imf_context);
       entry->imf_context = NULL;
    }
