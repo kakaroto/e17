@@ -48,6 +48,8 @@ net - A module to monitor traffic on a network device.
 
 news - A module to display rss feeds.
 
+penguins - A module to display fancy penguins on your desktop.
+
 photo - A module to display pictures on the desktop.
 
 rain - A module to display rain on the desktop.
