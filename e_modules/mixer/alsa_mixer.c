@@ -197,17 +197,11 @@ alsa_card_get_channels(void *data)
 	     const char *name;
 	     
 	     name = snd_mixer_selem_id_get_name(sid);
-	     if ((!strcmp(name, "Master")) || (!strcmp(name, "PCM")) || 
-		 (!strcmp(name, "DAC")) || (!strcmp(name, "Wave"))) 
-	       {
-		  ac = E_NEW(Mixer_Channel, 1);
-		  if (!ac) continue;
-	     
-		  ac->name = evas_stringshare_add(name);
-		  ac->id = _alsa_get_mixer_id(ac->name);
-	     
-		  channels = evas_list_append(channels, ac);
-	       }
+	     ac = E_NEW(Mixer_Channel, 1);
+	     if (!ac) continue;
+	     ac->name = evas_stringshare_add(name);
+	     ac->id = _alsa_get_mixer_id(ac->name);
+	     channels = evas_list_append(channels, ac);
 	  }
      }
    snd_mixer_close(handle);   

@@ -96,6 +96,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    Config_Item   *ci;
    E_Radio_Group *cg, *mg;
    Mixer_Card    *card;
+   int i = 0;
 
    ci = cfd->data;
 
@@ -137,16 +138,22 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 	     card->channels = mixer->mix_sys->get_channels(card);
 	     if (card->channels) 
 	       {
-		  of = e_widget_framelist_add(evas, D_("Available Mixers"), 0);
+		  of = e_widget_frametable_add(evas, D_("Available Mixers"), 0);
 		  mg = e_widget_radio_group_new(&cfdata->channel_id);
-		  for (chans = card->channels; chans; chans = chans->next) 
+		  for (i = 0, chans = card->channels; chans; chans = chans->next, i++) 
 		    {
 		       Mixer_Channel *chan;
 		  
 		       chan = chans->data;
 		       if (!chan) continue;
-		       ob = e_widget_radio_add(evas, (char *)chan->name, chan->id, mg);
-		       e_widget_framelist_object_append(of, ob);
+		       ob = e_widget_radio_add(evas, (char *)chan->name, 
+					       chan->id, mg);
+		       if (!(i % 2))
+			 e_widget_frametable_object_append(of, ob, 0, i, 1, 1, 
+							   1, 0, 1, 0);
+		       else
+			 e_widget_frametable_object_append(of, ob, 1, (i - 1), 1, 1, 
+							   1, 0, 1, 0);
 		    }
 		  e_widget_list_object_append(o, of, 1, 1, 0.5);
 	       }
