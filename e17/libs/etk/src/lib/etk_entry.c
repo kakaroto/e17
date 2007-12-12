@@ -595,7 +595,7 @@ static Etk_Bool _etk_entry_internal_realized_cb(Etk_Object *object, void *data)
       entry->imf_ee_handler_commit = ecore_event_handler_add(
          ECORE_IMF_EVENT_COMMIT, _etk_entry_imf_event_commit_cb, entry);
       entry->imf_ee_handler_delete = ecore_event_handler_add(
-         ECORE_IMF_EVENT_DELETE_SURROUNDIND,  /* XXX: typo in original lib? */
+         ECORE_IMF_EVENT_DELETE_SURROUNDING,
          _etk_entry_imf_event_delete_surrounding_cb, entry);
 
       ecore_imf_context_input_mode_set(entry->imf_context,
