@@ -19,7 +19,7 @@ pkgdir = $(libdir)/ewl/tests
 pkg_LTLIBRARIES = ewl_engine_test.la
 
 ewl_engine_test_la_SOURCES = ewl_engine_test.c
-ewl_engine_test_la_LIBADD = $(top_builddir)/src/lib/libewl.la @EVAS_LIBS@
+ewl_engine_test_la_LIBADD = $(top_builddir)/src/lib/libewl.la @ECORE_LIBS@ @EVAS_LIBS@
 ewl_engine_test_la_LDFLAGS = -module @create_shared_lib@ -avoid-version
 
 FILES = $(ewl_engine_test_la_SOURCES)
