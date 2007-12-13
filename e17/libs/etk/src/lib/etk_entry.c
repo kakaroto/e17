@@ -1265,6 +1265,11 @@ static int _etk_entry_imf_event_commit_cb(void *data, int type, void *event)
 {
    Etk_Entry *entry;
    Ecore_IMF_Event_Commit *ev = event;
+   Evas_Object *editable;
+   int cursor_pos, selection_pos;
+   int start_pos, end_pos;
+   Etk_Bool selecting;
+   Etk_Bool changed = ETK_FALSE;
 
    if (!(entry = ETK_ENTRY(data)))
       return 1;
@@ -1272,7 +1277,20 @@ static int _etk_entry_imf_event_commit_cb(void *data, int type, void *event)
    if (entry->imf_context != ev->ctx)
       return 1;
 
-   etk_entry_text_set(entry, ev->str);
+   editable = entry->editable_object;
+   cursor_pos = etk_editable_cursor_pos_get(editable);
+   selection_pos = etk_editable_selection_pos_get(editable);
+   start_pos = ETK_MIN(cursor_pos, selection_pos);
+   end_pos = ETK_MAX(cursor_pos, selection_pos);
+   selecting = (start_pos != end_pos);
+
+   if (selecting)
+      changed |= etk_editable_delete(editable, start_pos, end_pos);
+   changed |= etk_editable_insert(editable, start_pos, ev->str);
+
+   if (changed)
+      etk_signal_emit(ETK_ENTRY_TEXT_CHANGED_SIGNAL, ETK_OBJECT(entry));
+
    return 0;
 }
 
