@@ -726,7 +726,7 @@ main(int argc, char *argv[])
    ecore_app_args_set(argc, (const char **) argv);
 
    /* Set locale to user's environment */
-   if (!(setlocale(LC_ALL, "")))
+   if (!(setlocale(LC_ALL, NULL)))
       fprintf(stderr,
               "Locale set failed!\n"
               "Please make sure you have your locale files installed for \"%s\"\n",
