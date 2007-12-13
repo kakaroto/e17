@@ -271,6 +271,7 @@ src/bin/tests/callback/Makefile
 src/bin/tests/colordialog/Makefile
 src/bin/tests/colorpicker/Makefile
 src/bin/tests/combo/Makefile
+src/bin/tests/config/Makefile
 src/bin/tests/container/Makefile
 src/bin/tests/datepicker/Makefile
 src/bin/tests/dialog/Makefile

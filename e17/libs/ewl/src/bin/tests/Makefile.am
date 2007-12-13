@@ -9,6 +9,7 @@ SUBDIRS				= \
 	colordialog \
 	colorpicker \
 	combo \
+	config \
 	container \
 	datepicker \
 	dialog \
