@@ -125,6 +125,13 @@ Description: Moon Clock module for Enlightenment
  Moon is an E17 module which displays information about the current
  phase of the moon.
  
+Package: emodule0-mpdule
+Architecture: any
+Depends: ${shlibs:Depends}, enlightenment
+Provides: emodule-mpdule
+Description: MPD module for Enlightenment
+ An E17 module to show the MPD status in the shelf.
+ 
 Package: emodule0-net
 Architecture: any
 Depends: ${shlibs:Depends}, enlightenment
@@ -258,7 +265,7 @@ Description: An E17 WLAN monitor module
 
 Package: emodules0-all
 Architecture: any
-Depends: enlightenment, emodule0-alarm, emodule0-bling, emodule0-calendar, emodule0-cpu, emodule0-deskshow, emodule0-efm-nav, emodule0-efm-path, emodule0-emu, emodule0-flame, emodule0-forecasts, emodule0-language, emodule0-mail, emodule0-mem, emodule0-mixer, emodule0-moon, emodule0-net, emodule0-news, emodule0-penguins, emodule0-photo, emodule0-rain, emodule0-screenshot, emodule0-slideshow, emodule0-snow, emodule0-taskbar, emodule0-tclock, emodule0-uptime, emodule0-weather, emodule0-winselector, emodule0-wlan
+Depends: enlightenment, emodule0-alarm, emodule0-bling, emodule0-calendar, emodule0-cpu, emodule0-deskshow, emodule0-efm-nav, emodule0-efm-path, emodule0-emu, emodule0-flame, emodule0-forecasts, emodule0-language, emodule0-mail, emodule0-mem, emodule0-mixer, emodule0-moon, emodule0-mpdule, emodule0-net, emodule0-news, emodule0-penguins, emodule0-photo, emodule0-rain, emodule0-screenshot, emodule0-slideshow, emodule0-snow, emodule0-taskbar, emodule0-tclock, emodule0-uptime, emodule0-weather, emodule0-winselector, emodule0-wlan
 Conflicts: emodules-extra, evolume
 Provides: emodules-all, e17-modules
 Description: A dummy package for installing all modules for E17
@@ -279,6 +286,7 @@ Description: A dummy package for installing all modules for E17
  Mem         : Monitors memory usage.
  Mixer       : Sound mixer module.
  Moon        : Moon Clock module for Enlightenment.
+ Mpdule      : MPD status module.
  Net         : Network activity monitoring module.
  News        : Displays Rss or Atom feeds on the desktop.
  Penguins    : Displays penguins on the desktop.
