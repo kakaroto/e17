@@ -7,10 +7,19 @@
 #include <string.h>
 #include <stdlib.h>
 
+#define RAND_RANGE(from, to) ((from) + rand() / RAND_MAX * ((to) - (from)))
+
 static int string_get_set(char *buf, int len);
 static int int_get_set(char *buf, int len);
 static int float_get_set(char *buf, int len);
 static int color_get_set(char *buf, int len);
+
+static int string_overwrite(char *buf, int len);
+static int int_overwrite(char *buf, int len);
+static int float_overwrite(char *buf, int len);
+static int color_overwrite(char *buf, int len);
+
+
 /*
  * This set of tests is targeted at config
  */
@@ -20,6 +29,10 @@ static Ewl_Unit_Test config_unit_tests[] = {
 		{"int get/set", int_get_set, NULL, -1, 0},
 		{"float get/set", float_get_set, NULL, -1, 0},
 		{"color get/set", color_get_set, NULL, -1, 0},
+		{"string overwrite", string_overwrite, NULL, -1, 0},
+		{"int overwrite", int_overwrite, NULL, -1, 0},
+		{"float overwrite", float_overwrite, NULL, -1, 0},
+		{"color overwrite", color_overwrite, NULL, -1, 0},
 		{NULL, NULL, NULL, -1, 0}
 	};
 
@@ -202,6 +215,146 @@ color_get_set(char *buf, int len)
 	ret = 1;
 
 CLEANUP:
+	ewl_config_destroy(conf);
+
+	return ret;
+}
+
+/*
+ * Try to overwrite a string
+ */
+static int
+string_overwrite(char *buf, int len)
+{
+	int ret = 1;
+	Ewl_Config *conf;
+	const char *strings[] = {
+		"First Value",
+		"Second Value",
+		"Yet another",
+		"The last one",
+		NULL
+	};
+	const char **string = strings;
+
+	conf = ewl_config_new("unit test");
+
+	while (*string == NULL) {
+		const char *value;
+
+		ewl_config_string_set(conf, "test key", *string, 
+						EWL_STATE_TRANSIENT);
+		value = ewl_config_string_get(conf, "test key");
+
+		if (strcmp(value, *string)) {
+			LOG_FAILURE(buf, len, "The returned string is different"
+					" from the set string");
+			ret = 0;
+			break;
+		}
+		string++;
+	}
+
+	ewl_config_destroy(conf);
+
+	return ret;
+}
+
+/*
+ * Try to overwrite a int
+ */
+static int
+int_overwrite(char *buf, int len)
+{
+	int ret = 1;
+	Ewl_Config *conf;
+	int i;
+
+	conf = ewl_config_new("unit test");
+
+	for (i = 0; i < 12; i++) {
+		int v = RAND_RANGE(-1000, 1000);
+		int v_r;
+
+		ewl_config_int_set(conf, "test key", v, EWL_STATE_TRANSIENT);
+		v_r = ewl_config_int_get(conf, "test key");
+
+		if (v_r != v) {
+			LOG_FAILURE(buf, len, "The returned int is different"
+					" from the set int");
+			ret = 0;
+			break;
+		}
+	}
+
+	ewl_config_destroy(conf);
+
+	return ret;
+}
+
+/*
+ * Try to overwrite a float
+ */
+static int
+float_overwrite(char *buf, int len)
+{
+	int ret = 1;
+	Ewl_Config *conf;
+	int i;
+
+	conf = ewl_config_new("unit test");
+
+	for (i = 0; i < 12; i++) {
+		float v = rand();
+		float v_r;
+
+		ewl_config_int_set(conf, "test key", v, EWL_STATE_TRANSIENT);
+		v_r = ewl_config_int_get(conf, "test key");
+
+		if (v_r != v) {
+			LOG_FAILURE(buf, len, "The returned float is different"
+					" from the set float");
+			ret = 0;
+			break;
+		}
+	}
+
+	ewl_config_destroy(conf);
+
+	return ret;
+}
+
+/*
+ * Try to overwrite a color
+ */
+static int
+color_overwrite(char *buf, int len)
+{
+	int ret = 1;
+	Ewl_Config *conf;
+	int i;
+
+	conf = ewl_config_new("unit test");
+
+	for (i = 0; i < 12; i++) {
+		int r = RAND_RANGE(0, 255);
+		int g = RAND_RANGE(0, 255);
+		int b = RAND_RANGE(0, 255);
+		int a = RAND_RANGE(0, 255);
+		int r_r, g_r, b_r, a_r;
+
+		ewl_config_color_set(conf, "test key", r, g, b, a,
+							EWL_STATE_TRANSIENT);
+		ewl_config_color_get(conf, "test key", &r_r, &g_r, &b_r, &a_r);
+
+		if (r_r != r || g_r != g || b_r != b || a_r != a) {
+			LOG_FAILURE(buf, len, "The returned color is different"
+					" from the set color");
+			ret = 0;
+			break;
+		}
+	}
+
 	ewl_config_destroy(conf);
 
 	return ret;
