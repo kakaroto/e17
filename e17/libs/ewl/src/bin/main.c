@@ -20,7 +20,6 @@
 #include <fcntl.h>
 #include <ctype.h>
 #include <unistd.h>
-#include <time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <Ecore.h>
@@ -123,7 +122,7 @@ main(int argc, char **argv)
 	double start_time = 0, end_time = 0;
 
 	/* init the randomizer */
-	srand(time(NULL));
+	srand(1);
 
 	/* check for any flags before ewl_init to avoid opening the display */
 	for (i = 0; i < argc; i++)
