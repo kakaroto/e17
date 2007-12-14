@@ -95,7 +95,9 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 	    e_module_dir_get(mixer_config->module));
 
    mixer->base = edje_object_add(gc->evas);
-   edje_object_file_set(mixer->base, buf, "e/modules/mixer/main");
+   if (!e_theme_edje_object_set(mixer->base, "base/theme/modules/mixer", 
+				"e/modules/mixer/main"))
+     edje_object_file_set(mixer->base, buf, "e/modules/mixer/main");
    evas_object_show(mixer->base);
    edje_object_signal_emit(mixer->base, "low", "");
 
