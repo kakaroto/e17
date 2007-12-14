@@ -198,4 +198,4 @@ libewl_la_LIBADD = $(GCOV_LIBS) @EMOTION_LIBS@ @EPSILON_LIBS@ @EFREET_LIBS@ @EDJ
 libewl_la_LDFLAGS = @create_shared_lib@ -version-info @INTERFACE_VERSION@
 
 clean-local:
-	@rm *.gcno
+	@rm -f *.gcno
