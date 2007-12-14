@@ -428,10 +428,8 @@ _mixer_system_init(void *data)
    sys->get_channels = alsa_card_get_channels;
    sys->get_channel = alsa_card_get_channel;
    sys->free_cards = alsa_free_cards;
-   
    sys->get_volume = alsa_get_volume;
    sys->set_volume = alsa_set_volume;
-   
    sys->get_mute = alsa_get_mute;
    sys->set_mute = alsa_set_mute;
 #elif defined(HAVE_OSS)
@@ -440,10 +438,8 @@ _mixer_system_init(void *data)
    sys->get_channels = oss_card_get_channels; 
    sys->get_channel = oss_card_get_channel;
    sys->free_cards = oss_free_cards;
-   
    sys->get_volume = oss_get_volume;
    sys->set_volume = oss_set_volume;
-   
    sys->get_mute = oss_get_mute;
    sys->set_mute = oss_set_mute;   
 #endif
@@ -501,21 +497,18 @@ e_modapi_init(E_Module *m)
    E_CONFIG_VAL(D, T, decrease_vol_key.action, STR);
    E_CONFIG_VAL(D, T, decrease_vol_key.params, STR);
    E_CONFIG_VAL(D, T, decrease_vol_key.any_mod, UCHAR);
-
    E_CONFIG_VAL(D, T, increase_vol_key.context, INT);
    E_CONFIG_VAL(D, T, increase_vol_key.modifiers, INT);
    E_CONFIG_VAL(D, T, increase_vol_key.key, STR);
    E_CONFIG_VAL(D, T, increase_vol_key.action, STR);
    E_CONFIG_VAL(D, T, increase_vol_key.params, STR);
    E_CONFIG_VAL(D, T, increase_vol_key.any_mod, UCHAR);
-
    E_CONFIG_VAL(D, T, mute_key.context, INT);
    E_CONFIG_VAL(D, T, mute_key.modifiers, INT);
    E_CONFIG_VAL(D, T, mute_key.key, STR);
    E_CONFIG_VAL(D, T, mute_key.action, STR);
    E_CONFIG_VAL(D, T, mute_key.params, STR);
    E_CONFIG_VAL(D, T, mute_key.any_mod, UCHAR);
-
    E_CONFIG_LIST(D, T, items, conf_item_edd);
 
    mixer_config = e_config_domain_load("module.mixer", conf_edd);
@@ -612,8 +605,8 @@ _mixer_volume_change(Mixer *mixer, Config_Item *ci, int channel_id, double val)
 
    m = mixer->mix_sys->get_mute(ci->card_id, channel_id);
    if (m) return;
-      
-   if ((ci->card_id != 0) && (channel_id != 0)) 
+
+   if (channel_id != 0) 
      {
 	int ret;
 	
@@ -661,18 +654,20 @@ _mixer_mute_toggle(Mixer *mixer, Config_Item *ci, int channel_id)
    if (m) 
      {
 	edje_object_signal_emit(mixer->base, "muted", "");
-	if (win) {
+	if (win) 
+	  {
 	     edje_object_signal_emit(e_slider_edje_object_get(win->slider), 
-		   "e,state,disabled", "e");
-	}
+				     "e,state,disabled", "e");
+	  }
      }
    else 
      {
 	edje_object_signal_emit(mixer->base, "medium", "");
-	if (win) {
+	if (win) 
+	  {
 	     edje_object_signal_emit(e_slider_edje_object_get(win->slider), 
-		   "e,state,enabled", "e");	
-	}
+				     "e,state,enabled", "e");
+	  }
      }
 }
 
@@ -1048,7 +1043,7 @@ _mixer_window_simple_mouse_up_cb(void *data, int type, void *event)
    inside = E_INSIDE(xev->x, xev->y, win->window->x, win->window->y,
                      win->window->w, win->window->h);
    
-   if ((xev->button == 1)/* && (!win->first_mouse_up)*/ && !inside)
+   if ((xev->button == 1) && !inside)
      _mixer_window_simple_pop_down(win->mixer->inst);
    
    if ((xev->button == 1) && win->first_mouse_up)
@@ -1067,9 +1062,8 @@ _mixer_window_simple_mouse_wheel_cb(void *data, int type, void *event)
    if (!(win = data) || (win->slide_timer)) return 1;
    
    evas_event_feed_mouse_wheel(win->window->evas,
-                              xev->direction, xev->z,
-                              xev->time, NULL);
-   
+			       xev->direction, xev->z, xev->time, NULL);
+
    return 1;
 }
 
@@ -1119,7 +1113,7 @@ _mixer_window_gauge_pop_up(Instance *inst)
    Mixer_Win_Gauge *win;
    char buf[4096];
 
-   if (!inst || !inst->mixer || !inst->gcc) return;
+   if ((!inst) || (!inst->mixer) || (!inst->gcc)) return;
    if (!(con = e_container_current_get(e_manager_current_get()))) return;
    if (!(inst->ci->show_popup)) return;
 
@@ -1150,16 +1144,15 @@ _mixer_window_gauge_pop_up(Instance *inst)
 	e_popup_resize(win->window, 300, 90);
      }
    else
-     {
-	win = inst->mixer->gauge_win;
-     }
+     win = inst->mixer->gauge_win;
 
    e_popup_move(win->window, (con->w/2.0)-150, (con->h/2.0)-45);
    e_popup_show(win->window);
    
    if (win->timer) ecore_timer_del(win->timer);
 
-   win->timer = ecore_timer_add(inst->ci->popup_speed, _mixer_window_gauge_visible_cb, win);
+   win->timer = ecore_timer_add(inst->ci->popup_speed, 
+				_mixer_window_gauge_visible_cb, win);
 }
 
 static void
@@ -1168,8 +1161,8 @@ _mixer_window_gauge_send_vol(Mixer_Win_Gauge *win, Mixer *mixer, Config_Item *ci
    Edje_Message_Int *msg;
    int vol;
 
-   if (!ci || !(ci->show_popup) || !win) return;
-   if (!mixer || !mixer->mix_sys || !mixer->mix_sys->get_volume) return;
+   if ((!ci) || (!ci->show_popup) || (!win)) return;
+   if ((!mixer) || (!mixer->mix_sys) || (!mixer->mix_sys->get_volume)) return;
    msg = malloc(sizeof(Edje_Message_Int));
    vol = (int)mixer->mix_sys->get_volume(ci->card_id, ci->channel_id);
    msg->val = vol;
@@ -1194,8 +1187,8 @@ _mixer_volume_increase(Mixer *mixer, Config_Item *ci)
 
    m = mixer->mix_sys->get_mute(ci->card_id, ci->channel_id);
    if (m) return;
-      
-   if ((ci->card_id != 0) && (ci->channel_id != 0)) 
+
+   if (ci->channel_id != 0) 
      {
 	vol = mixer->mix_sys->get_volume(ci->card_id, ci->channel_id);
 	mixer->mix_sys->set_volume(ci->card_id, ci->channel_id, vol+VOL_STEP);
@@ -1217,12 +1210,11 @@ _mixer_volume_decrease(Mixer *mixer, Config_Item *ci)
 
    m = mixer->mix_sys->get_mute(ci->card_id, ci->channel_id);
    if (m) return;
-      
-   if ((ci->card_id != 0) && (ci->channel_id != 0)) 
+
+   if (ci->channel_id != 0) 
      {
 	vol = mixer->mix_sys->get_volume(ci->card_id, ci->channel_id);
 	vol = vol-VOL_STEP < 0 ? 0 : vol-VOL_STEP;
 	mixer->mix_sys->set_volume(ci->card_id, ci->channel_id, vol);
      }
 }
-

@@ -11,6 +11,9 @@ static int   _alsa_get_card_id      (const char *name);
 static int   _alsa_get_mixer_id     (const char *name); 
 static void *_alsa_card_get_channel (void *data, int channel_id);
 
+static Ecore_Hash *vols = NULL;
+static int muted = 0;
+
 Evas_List *
 alsa_get_cards() 
 {
@@ -230,8 +233,16 @@ alsa_get_volume(int card_id, int channel_id)
    snd_mixer_t      *handle;
    snd_mixer_elem_t *elem;
    snd_mixer_selem_id_t *sid;
-   int               err, range, ret = 0;
+   int               err, range, ret = 0, mute;
    long              min, max, vol;
+
+   if (muted) 
+     {
+	int v;
+
+	if (v = (unsigned int)(ecore_hash_get(vols, (int*)(card_id << 16) + channel_id))) 
+	  return v;
+     }
    
    card = alsa_get_card(card_id);
    if (!card) return 0;
@@ -292,10 +303,14 @@ alsa_get_volume(int card_id, int channel_id)
      }
    
    snd_mixer_close(handle);
+   if (card->name) evas_stringshare_del(card->name);
+   if (card->real) evas_stringshare_del(card->real);
    E_FREE(card);
    return ret;
 
 error:
+   if (card->name) evas_stringshare_del(card->name);
+   if (card->real) evas_stringshare_del(card->real);
    E_FREE(card);
    return 0;
 }
@@ -362,7 +377,6 @@ alsa_set_volume(int card_id, int channel_id, double vol)
 		       snd_mixer_close(handle);
                        goto error;
 		    }
-		  snd_mixer_selem_get_playback_volume_range(elem, &min, &max);
 		  
 		  v = (vol < 0) ? -vol: vol;
 		  if (v > 0) 
@@ -380,96 +394,29 @@ alsa_set_volume(int card_id, int channel_id, double vol)
 		  snd_mixer_selem_set_playback_volume(elem, 0, v);
 		  if (!snd_mixer_selem_is_playback_mono(elem))
 		    snd_mixer_selem_set_playback_volume(elem, 1, v);
-		  
+
 		  break;
 	       }	     
 	  }
      }
-   
+
    snd_mixer_close(handle);
+   if (card->name) evas_stringshare_del(card->name);
+   if (card->real) evas_stringshare_del(card->real);
    E_FREE(card);
    return 1;
 
 error:
-    E_FREE(card);
-    return 0;
+   if (card->name) evas_stringshare_del(card->name);
+   if (card->real) evas_stringshare_del(card->real);
+   E_FREE(card);
+   return 0;
 }
 
 int 
 alsa_get_mute(int card_id, int channel_id) 
 {
-   Mixer_Card           *card;
-   snd_mixer_t          *handle;
-   snd_mixer_elem_t     *elem;
-   snd_mixer_selem_id_t *sid;
-   int                   err, id, mute = 0;
-   const char           *name;
-   
-   card = alsa_get_card(card_id);
-   if (!card) return 0;
-
-   if ((err = snd_mixer_open(&handle, 0)) < 0) 
-     {
-	printf("Cannot open mixer: %s\n", snd_strerror(err));
-        goto error;
-     }
-
-   if ((err = snd_mixer_attach(handle, (char *)card->name)) < 0) 
-     {
-	printf("Cannot Attach Mixer: %s\n", snd_strerror(err));
-	snd_mixer_close(handle);
-        goto error;
-     }
-
-   if ((err = snd_mixer_selem_register(handle, NULL, NULL)) < 0) 
-     {
-	printf("Cannot Register Mixer: %s\n", snd_strerror(err));
-	snd_mixer_close(handle);
-        goto error;
-     }
-
-   if ((err = snd_mixer_load(handle)) < 0) 
-     {
-	printf("Cannot Load Mixer: %s\n", snd_strerror(err));
-	snd_mixer_close(handle);
-        goto error;
-     }
-
-   for (elem = snd_mixer_first_elem(handle); elem; elem = snd_mixer_elem_next(elem)) 
-     {
-	snd_mixer_selem_id_alloca(&sid);
-	snd_mixer_selem_get_id(elem, sid);
-	if (!snd_mixer_selem_is_active(elem)) continue;
-
-	name = snd_mixer_selem_id_get_name(sid);	
-	id = _alsa_get_mixer_id(name);
-	if (id == channel_id)
-	  {
-	     if (snd_mixer_selem_has_playback_switch(elem)) 
-	       {
-		  snd_mixer_selem_get_playback_switch(elem, id, &mute);
-		  break;
-	       }
-	     else
-	       {
-		  snd_mixer_close(handle);
-		  mute = alsa_get_volume(card_id, channel_id);
-                  E_FREE(card);
-		  if (mute <= 0) 
-		    return 1;
-		  else
-		    return 0;
-	       }
-	  }
-     }
-   
-   snd_mixer_close(handle);
-   E_FREE(card);
-   return (mute == 1 ? 0: 1);
-
-error:
-   E_FREE(card);
-   return 0;
+   return muted;
 }
 
 int 
@@ -481,7 +428,6 @@ alsa_set_mute(int card_id, int channel_id, int mute)
    snd_mixer_selem_id_t *sid;
    int                   id, err, vol;
    const char           *name;
-   static Ecore_Hash    *vols = NULL;
 
    card = alsa_get_card(card_id);
    if (!card) return 0;
@@ -536,11 +482,11 @@ alsa_set_mute(int card_id, int channel_id, int mute)
                        ecore_hash_free_value_cb_set(vols, NULL);
 	            }
                   
-		  snd_mixer_close(handle);
 		  if (mute)
 	            {
 		       ecore_hash_set(vols, (int*)(card_id << 16) + channel_id, (int*)alsa_get_volume(card_id, channel_id));
 		       alsa_set_volume(card_id, channel_id, (0.0 * 100));
+		       muted = 1;
 	            }
 		  else
 	            {
@@ -551,19 +497,27 @@ alsa_set_mute(int card_id, int channel_id, int mute)
 			 }
 		       else
 			 alsa_set_volume(card_id, channel_id, (0.5 * 100));
+		       muted = 0;
 	            }
+		  if (card->name) evas_stringshare_del(card->name);
+		  if (card->real) evas_stringshare_del(card->real);
                   E_FREE(card);
+		  snd_mixer_close(handle);
 		  return 1;
 	       }
 	     break;
 	  }	     
      }
-   
+
    snd_mixer_close(handle);
+   if (card->name) evas_stringshare_del(card->name);
+   if (card->real) evas_stringshare_del(card->real);
    E_FREE(card);
    return 1;
 
 error:
+   if (card->name) evas_stringshare_del(card->name);
+   if (card->real) evas_stringshare_del(card->real);
    E_FREE(card);
    return 0;
 }
