@@ -373,20 +373,29 @@ minimum_size_test_set_get(char *buf, int len)
 	int ret = 0;
 
 	w = ewl_widget_new();
+	ewl_object_size_request(EWL_OBJECT(w), MATCH_SIZE - 1,
+			MATCH_SIZE - 1);
 
 	ewl_object_minimum_size_get(EWL_OBJECT(w), &width, &height);
 	if (width == EWL_OBJECT_MIN_SIZE && height == EWL_OBJECT_MIN_SIZE) {
-		ewl_object_minimum_size_set(EWL_OBJECT(w), MATCH_SIZE,
-							MATCH_SIZE);
+		ewl_object_minimum_size_set(EWL_OBJECT(w), DIFFER_WIDTH,
+							DIFFER_HEIGHT);
 		ewl_object_minimum_size_get(EWL_OBJECT(w), &width, &height);
-		if (width == MATCH_SIZE && height == MATCH_SIZE) {
+		if (width == DIFFER_WIDTH && height == DIFFER_HEIGHT) {
 			ewl_object_minimum_size_set(EWL_OBJECT(w),
-					DIFFER_WIDTH,
-					DIFFER_HEIGHT);
+					MATCH_SIZE,
+					MATCH_SIZE);
 			ewl_object_minimum_size_get(EWL_OBJECT(w), &width,
 					&height);
-			if (width == DIFFER_WIDTH && height == DIFFER_HEIGHT)
-				ret = 1;
+			if (width == MATCH_SIZE && height == MATCH_SIZE) {
+				ewl_object_current_size_get(EWL_OBJECT(w),
+						&width, &height);
+				if (width == MATCH_SIZE && height == MATCH_SIZE)
+					ret = 1;
+				else
+					LOG_FAILURE(buf, len,
+							"current size wrong");
+			}
 			else
 				LOG_FAILURE(buf, len, "minimum sizes match");
 		}
@@ -414,6 +423,8 @@ maximum_size_test_set_get(char *buf, int len)
 	int ret = 0;
 
 	w = ewl_widget_new();
+	ewl_object_size_request(EWL_OBJECT(w), DIFFER_WIDTH + 1,
+			DIFFER_HEIGHT + 1);
 
 	ewl_object_maximum_size_get(EWL_OBJECT(w), &width, &height);
 	if (width == EWL_OBJECT_MAX_SIZE && height == EWL_OBJECT_MAX_SIZE) {
@@ -426,8 +437,16 @@ maximum_size_test_set_get(char *buf, int len)
 					DIFFER_HEIGHT);
 			ewl_object_maximum_size_get(EWL_OBJECT(w), &width,
 					&height);
-			if (width == DIFFER_WIDTH && height == DIFFER_HEIGHT)
-				ret = 1;
+			if (width == DIFFER_WIDTH && height == DIFFER_HEIGHT) {
+				ewl_object_current_size_get(EWL_OBJECT(w),
+						&width, &height);
+				if (width == DIFFER_WIDTH &&
+						height == DIFFER_HEIGHT)
+					ret = 1;
+				else
+					LOG_FAILURE(buf, len,
+							"current size wrong");
+			}
 			else
 				LOG_FAILURE(buf, len, "maximum sizes match");
 		}
