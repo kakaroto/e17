@@ -20,6 +20,7 @@
 #include <fcntl.h>
 #include <ctype.h>
 #include <unistd.h>
+#include <time.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <Ecore.h>
@@ -121,6 +122,9 @@ main(int argc, char **argv)
 	int unit_test = 0, ran_test = 0, all_tests = 0, profile_tests = 0;
 	double start_time = 0, end_time = 0;
 
+	/* init the randomizer */
+	srand(time(NULL));
+
 	/* check for any flags before ewl_init to avoid opening the display */
 	for (i = 0; i < argc; i++)
 	{
@@ -218,7 +222,7 @@ main(int argc, char **argv)
 
 	if (!unit_test)
 		ewl_main();
-	else if (ran_test)
+	else
 		ewl_shutdown();
 	
 	if (unit_test && !ran_test)
