@@ -7,6 +7,7 @@ WRITE="../src/bin/exquisite-write"
 # start up gui - some examples here for different resolutions and the fb
 #$MAIN -t ../data/themes/default.edj -x 480 -y 640 &
 $MAIN -t ../data/themes/default.edj -x 640 -y 480 &
+#$MAIN -t ../data/themes/default.edj -x 240 -y 320 &
 #$MAIN -t ../data/themes/default.edj -x 1280 -y 1024 &
 #$MAIN -fb -fs
 # run 'exquisite -h' for more options

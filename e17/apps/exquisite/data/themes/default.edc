@@ -106,7 +106,7 @@ collections {
 	       max: 0 0;
 	    }
 	    description {
-				 state: "visible" 0.0;
+	       state: "visible" 0.0;
 	       inherit: "default" 0.0;
 	       min: 48 48;
 	       max: 48 48;
