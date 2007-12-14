@@ -45,10 +45,10 @@ static Ewl_Widget *add_dtree(Ewl_Widget *c)
         ewl_view_widget_fetch_set(view, directory_view_new);
         ewl_view_header_fetch_set(view, directory_header_fetch);
 
-        tree = ewl_tree2_new();
-        ewl_tree2_headers_visible_set(EWL_TREE2(tree), 0);
-        ewl_tree2_fixed_rows_set(EWL_TREE2(tree), 1);
-        ewl_tree2_column_count_set(EWL_TREE2(tree), 1);
+        tree = ewl_tree_new();
+        ewl_tree_headers_visible_set(EWL_TREE(tree), 0);
+        ewl_tree_fixed_rows_set(EWL_TREE(tree), 1);
+        ewl_tree_column_count_set(EWL_TREE(tree), 1);
         ewl_mvc_model_set(EWL_MVC(tree), model);
         ewl_mvc_view_set(EWL_MVC(tree), view);
 	ewl_mvc_selection_mode_set(EWL_MVC(tree), EWL_SELECTION_MODE_NONE);
