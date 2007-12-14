@@ -218,7 +218,10 @@ main(int argc, char **argv)
 
 	if (!unit_test)
 		ewl_main();
-	else if (unit_test && !ran_test)
+	else if (ran_test)
+		ewl_shutdown();
+	
+	if (unit_test && !ran_test)
 		fprintf(stderr, "Must supply either -all parameter or test "
 				"name when running unit tests.\n");
 
