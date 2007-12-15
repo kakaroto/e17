@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
 "POT-Creation-Date: 2007-12-15 11:17+0100\n"
-"PO-Revision-Date: 2007-09-22 23:01+0900\n"
+"PO-Revision-Date: 2007-12-15 22:57+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -2517,9 +2517,8 @@ msgid "Create Systray"
 msgstr "システムトレイを作成する"
 
 #: config/strings.c:85
-#, fuzzy
 msgid "Show Magnifier"
-msgstr "拡大中"
+msgstr "ズームインする"
 
 #
 #: config/strings.c:87
@@ -2886,9 +2885,8 @@ msgid "Other"
 msgstr "その他"
 
 #: config/strings.c:198
-#, fuzzy
 msgid "Epplets"
-msgstr "さざなみ"
+msgstr ""
 
 #
 #~ msgid "Enlightenment Epplets"
