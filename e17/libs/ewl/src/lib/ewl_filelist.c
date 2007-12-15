@@ -267,7 +267,8 @@ ewl_filelist_directory_set(Ewl_Filelist *fl, const char *dir)
 		fl->directory = NULL;
 	}
 	else if (((!fl->directory) || (strcmp(dir, fl->directory)))
-			&& (ecore_file_can_read(dir)))
+					&& (ecore_file_is_dir(dir))
+					&& (ecore_file_can_read(dir)))
 	{
 		Ewl_Filelist_Directory *data;
 		Ewl_Event_Action_Response ev_data;
