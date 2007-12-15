@@ -39,6 +39,7 @@ static int image_size_match_test_set_get(char *buf, int len);
 static int image_size_differ_test_set_get(char *buf, int len);
 static int image_size_max_int_test_set_get(char *buf, int len);
 static int image_alignment_test_set_get(char *buf, int len);
+static int image_fill_policy_test_set_get(char *buf, int len);
 
 static Ewl_Unit_Test button_unit_tests[] = {
 		{"label set/get", label_test_set_get, NULL, -1, 0},
@@ -51,6 +52,7 @@ static Ewl_Unit_Test button_unit_tests[] = {
 		{"image size differ set/get", image_size_differ_test_set_get, NULL, -1, 0},
 		{"image size max int set/get", image_size_max_int_test_set_get, NULL, -1, 0},
 		{"image alignment set/get", image_alignment_test_set_get, NULL, -1, 0},
+		{"image fill policy set/get", image_fill_policy_test_set_get, NULL, -1, 0},
 		{NULL, NULL, NULL, -1, 0}
 	};
 
@@ -407,6 +409,34 @@ image_alignment_test_set_get(char *buf, int len)
 	}
 	else
 		LOG_FAILURE(buf, len, "image alignment not right");
+
+	ewl_widget_destroy(button);
+
+	return ret;
+}
+
+static int
+image_fill_policy_test_set_get(char *buf, int len)
+{
+	Ewl_Widget *button;
+	int align;
+	int ret = 0;
+
+	button = ewl_button_new();
+	ewl_button_fill_policy_set(EWL_BUTTON(button), EWL_FLAG_FILL_NONE);
+	align = ewl_button_fill_policy_get(EWL_BUTTON(button));
+
+	if (align == EWL_FLAG_FILL_NONE) {
+		ewl_button_fill_policy_set(EWL_BUTTON(button),
+				EWL_FLAG_FILL_FILL);
+		align = ewl_button_fill_policy_get(EWL_BUTTON(button));
+		if (align == EWL_FLAG_FILL_FILL)
+			ret = 1;
+		else
+			LOG_FAILURE(buf, len, "image fill policy not fill");
+	}
+	else
+		LOG_FAILURE(buf, len, "image fill policy not none");
 
 	ewl_widget_destroy(button);
 
