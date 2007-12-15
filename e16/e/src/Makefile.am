@@ -120,7 +120,7 @@ e16_CPPFLAGS = -I$(top_builddir) -I$(top_srcdir) \
 	$(IMLIB2_CFLAGS) \
 	$(X_CFLAGS) \
 	$(DBUS_CFLAGS) \
-	-D LOCALEDIR=\"$(localedir)\" \
+	-D LOCALEDIR=\"$(datadir)/locale\" \
 	-D ENLIGHTENMENT_BIN=\"$(bindir)\" \
 	-D ENLIGHTENMENT_LIB=\"$(pkglibdir)\" \
 	-D ENLIGHTENMENT_ROOT=\"$(pkgdatadir)\"
