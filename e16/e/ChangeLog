@@ -4562,3 +4562,21 @@ Fix build when imlib_context_set_mask_alpha_threshold() is not available
 Fix edge flip after screen size change.
 Add magnifier to desktop menu.
 
+
+-------------------------------------------------------------------------------
+
+Sat Dec 15 13:47:45 CET 2007
+(Kim)
+
+--- 0.16.8.11 0.02 ---
+Disable pager debug.
+Shuffle comms/ipc stuff around a bit.
+Don't exit while in X error handler.
+Add registration of file descriptors to be handled in main event loop.
+Fix application resize locking.
+Don't restrict firefox resizing (fixes issue with open dialog).
+Fix trouble with nested exits. Debug stuff tweaks.
+Fix crash if font loading fails.
+Play with dbus - implement command interface.
+Add some info about xft/pango font selection in core themes.
+Define mask bitmaps in source to avoid depending on x11 bitmap package.
