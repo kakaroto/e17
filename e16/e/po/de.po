@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-12-08 20:39+0100\n"
+"POT-Creation-Date: 2007-12-15 11:17+0100\n"
 "PO-Revision-Date: 2000-03-29 21:12+0200\n"
 "Last-Translator: Matthias Warkus <mawa@iname.com>\n"
 "Language-Team: Enlightenment l10n <e-develop@enlightenment.org>\n"
@@ -344,12 +344,12 @@ msgstr ""
 "Einstellungsdialog\n"
 
 # src/comms.c:2214
-#: src/comms.c:248
+#: src/comms.c:250
 msgid "E IPC Error"
 msgstr "E-IPC-Fehler"
 
 # src/comms.c:2211
-#: src/comms.c:249
+#: src/comms.c:251
 #, c-format
 msgid ""
 "Received Unknown Client Message.\n"

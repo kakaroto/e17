@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-12-08 20:39+0100\n"
+"POT-Creation-Date: 2007-12-15 11:17+0100\n"
 "PO-Revision-Date: 2000-03-07 12:08+0100\n"
 "Last-Translator: Terje Røsten <terjeros@phys.ntnu.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
@@ -298,11 +298,11 @@ msgstr ""
 "Dialog for innstilling av\n"
 "bakgrunn i Enlightenment\n"
 
-#: src/comms.c:248
+#: src/comms.c:250
 msgid "E IPC Error"
 msgstr "Feil ved E IPC"
 
-#: src/comms.c:249
+#: src/comms.c:251
 #, c-format
 msgid ""
 "Received Unknown Client Message.\n"

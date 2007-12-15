@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.17.1\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-12-08 20:39+0100\n"
+"POT-Creation-Date: 2007-12-15 11:17+0100\n"
 "PO-Revision-Date: 2004-08-29 01:02:30+0900\n"
 "Last-Translator: Michael Kim <lavnrose@e.sarang.net>\n"
 "Language-Team: Korean <translation-team-ko@lists.sourceforge.net>\n"
@@ -312,11 +312,11 @@ msgstr ""
 "인라이튼먼트 데스크탑\n"
 "배경 설정 대화상자\n"
 
-#: src/comms.c:248
+#: src/comms.c:250
 msgid "E IPC Error"
 msgstr "E IPC 오류"
 
-#: src/comms.c:249
+#: src/comms.c:251
 #, c-format
 msgid ""
 "Received Unknown Client Message.\n"

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-12-08 20:39+0100\n"
+"POT-Creation-Date: 2007-12-15 11:17+0100\n"
 "PO-Revision-Date: 2000-03-07 16:35+0100\n"
 "Last-Translator: Daniel Vieira Pereira <gunsmithcat@ip.pt>\n"
 "Language-Team: Portuguese <pt@li.org>\n"
@@ -297,11 +297,11 @@ msgid ""
 "Background Settings Dialog\n"
 msgstr ""
 
-#: src/comms.c:248
+#: src/comms.c:250
 msgid "E IPC Error"
 msgstr "Erro no IPC do E"
 
-#: src/comms.c:249
+#: src/comms.c:251
 #, c-format
 msgid ""
 "Received Unknown Client Message.\n"
