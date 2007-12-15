@@ -96,12 +96,14 @@ static int path_test_set_get(char *buf, int len);
 static int scale_test_set_get(char *buf, int len);
 static int size_test_set_get(char *buf, int len);
 static int constrain_test_set_get(char *buf, int len);
+static int proportional_test_set_get(char *buf, int len);
 
 static Ewl_Unit_Test image_unit_tests[] = {
 		{"image path set/get", path_test_set_get, NULL, -1, 0},
 		{"image scale set/get", scale_test_set_get, NULL, -1, 0},
 		{"image size set/get", size_test_set_get, NULL, -1, 0},
 		{"image constrain set/get", constrain_test_set_get, NULL, -1, 0},
+		{"image proportional set/get", proportional_test_set_get, NULL, -1, 0},
 		{NULL, NULL, NULL, -1, 0}
 	};
 
@@ -432,6 +434,25 @@ constrain_test_set_get(char *buf, int len)
 
 	if (sw != 2)
 		LOG_FAILURE(buf, len, "scale_get did not match scale_set.");
+	else
+		ret = 1;
+
+	return ret;
+}
+
+static int
+proportional_test_set_get(char *buf, int len)
+{
+	Ewl_Widget *o;
+	unsigned int p;
+	int ret = 0;
+
+	o = ewl_image_new();
+	ewl_image_proportional_set(EWL_IMAGE(o), TRUE);
+	p = ewl_image_proportional_get(EWL_IMAGE(o));
+
+	if (p != TRUE)
+		LOG_FAILURE(buf, len, "proportional_get did not match set.");
 	else
 		ret = 1;
 
