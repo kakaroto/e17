@@ -28,7 +28,7 @@
 #include "e16-ecore_list.h"
 #include "xwin.h"
 
-struct _client
+typedef struct
 {
    char               *name;
    Window              xwin;
@@ -37,7 +37,9 @@ struct _client
    char               *version;
    char               *info;
    char                replied;
-};
+} Client;
+
+static void         CommsSend(Client * c, const char *s);
 
 static Ecore_List  *client_list = NULL;
 
@@ -343,7 +345,7 @@ CommsDoSend(Window win, const char *s)
      }
 }
 
-void
+static void
 CommsSend(Client * c, const char *s)
 {
    if (!c)
@@ -352,6 +354,7 @@ CommsSend(Client * c, const char *s)
    CommsDoSend(c->xwin, s);
 }
 
+#if 0				/* Unused */
 /*
  * When we are running in multi-head, connect to the master wm process
  * and send the message
@@ -365,7 +368,6 @@ CommsSendToMasterWM(const char *s)
    CommsDoSend(RootWindow(disp, Mode.wm.master_screen), s);
 }
 
-#if 0				/* Unused */
 /*
  * When we are running in multi-head, connect to the slave wm processes
  * and broadcast the message

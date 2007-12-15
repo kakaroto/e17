@@ -141,7 +141,8 @@ void                EWindowSync(Win win);
 void                EWindowSetGeometry(Win win, int x, int y, int w, int h,
 				       int bw);
 void                EWindowSetMapped(Win win, int mapped);
-void                ESelectInputChange(Win win, long set, long clear);
+void                ESelectInputChange(Win win, unsigned long set,
+				       unsigned long clear);
 
 void                EMoveWindow(Win win, int x, int y);
 void                EResizeWindow(Win win, int w, int h);

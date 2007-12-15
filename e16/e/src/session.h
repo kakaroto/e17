@@ -41,6 +41,5 @@ void                SessionInit(void);
 void                SessionExit(int mode, const char *params);
 void                SessionHelper(int when);
 void                SetSMID(const char *smid);
-void                SettingsSession(void);
 
 #endif /* _SESSION_H_ */

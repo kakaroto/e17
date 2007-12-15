@@ -1119,7 +1119,7 @@ EQueryPointer(Win win, int *px, int *py, Window * pchild, unsigned int *pmask)
 }
 
 void
-ESelectInputChange(Win win, long set, long clear)
+ESelectInputChange(Win win, unsigned long set, unsigned long clear)
 {
    XWindowAttributes   xwa;
 

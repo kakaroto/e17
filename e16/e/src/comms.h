@@ -24,12 +24,6 @@
 #ifndef _COMMS_H_
 #define _COMMS_H_
 
-typedef struct _client Client;
-
 void                CommsInit(void);
-void                CommsSend(Client * c, const char *s);
-void                CommsSendToMasterWM(const char *s);
-void                CommsBroadcast(const char *s);
-void                CommsBroadcastToSlaveWMs(const char *s);
 
 #endif /* _COMMS_H_ */
