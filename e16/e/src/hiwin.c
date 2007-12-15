@@ -108,21 +108,9 @@ HiwinRenderImageInit(Hiwin * phi)
 static void
 HiwinRenderImageDrawX(Hiwin * phi, Drawable draw __UNUSED__)
 {
-#if 0
-   EImageRenderOnDrawable(phi->im, EoGetWin(phi), draw, 0,
-			  0, 0, EoGetW(phi), EoGetH(phi));
-#else
-   Pixmap              pmap, mask;
-
-   EImageRenderPixmaps(phi->im, EoGetWin(phi), EIMAGE_ANTI_ALIAS, &pmap, &mask,
-		       EoGetW(phi), EoGetH(phi));
-   ESetWindowBackgroundPixmap(EoGetWin(phi), pmap);
-   if (mask)
-      EShapeCombineMask(EoGetWin(phi), ShapeBounding, 0, 0, mask, ShapeSet);
-   EImagePixmapsFree(pmap, mask);
-   EClearWindow(EoGetWin(phi));
+   EImageApplyToWin(phi->im, EoGetWin(phi), EIMAGE_ANTI_ALIAS,
+		    EoGetW(phi), EoGetH(phi));
    EoShapeUpdate(phi, 0);
-#endif
 }
 
 static void

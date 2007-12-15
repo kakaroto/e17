@@ -1061,7 +1061,6 @@ ContainerDraw(Container * ct)
    int                 ib_x0, ib_y0, ib_w0, ib_h0;
    EImage             *im;
    int                 ww, hh;
-   Pixmap              pmap, mask;
 
    if (!ct->ic_box)
       ContainerLayoutImageWin(ct);
@@ -1160,13 +1159,8 @@ ContainerDraw(Container * ct)
    if (im)
      {
 	EMapWindow(ct->icon_win);
-	EImageRenderPixmaps(im, ct->icon_win, EIMAGE_HIGH_MASK_THR,
-			    &pmap, &mask, 0, 0);
-	ESetWindowBackgroundPixmap(ct->icon_win, pmap);
-	EShapeCombineMask(ct->icon_win, ShapeBounding, 0, 0, mask, ShapeSet);
-	EImagePixmapsFree(pmap, mask);
+	EImageApplyToWin(im, ct->icon_win, EIMAGE_HIGH_MASK_THR, 0, 0);
 	EImageFree(im);
-	EClearWindow(ct->icon_win);
 
 	if (ct->type == IB_TYPE_SYSTRAY && ct->nobg && !ct->draw_icon_base)
 	   EShapePropagate(ct->icon_win);

@@ -460,6 +460,19 @@ EImagePixmapsFree(Pixmap pmap, Pixmap mask __UNUSED__)
 }
 
 void
+EImageApplyToWin(EImage * im, Win win, int flags, int w, int h)
+{
+   Pixmap              pmap, mask;
+
+   EImageRenderPixmaps(im, win, flags, &pmap, &mask, w, h);
+   ESetWindowBackgroundPixmap(win, pmap);
+   if ((mask != None) || (mask == None && WinIsShaped(win)))
+      EShapeCombineMask(win, ShapeBounding, 0, 0, mask, ShapeSet);
+   EImagePixmapsFree(pmap, mask);
+   EClearWindow(win);
+}
+
+void
 ScaleRect(Win wsrc, Drawable src, Win wdst, Pixmap dst, Pixmap * pdst,
 	  int sx, int sy, int sw, int sh,
 	  int dx, int dy, int dw, int dh, int scale)

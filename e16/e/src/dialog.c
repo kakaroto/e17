@@ -1167,16 +1167,10 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	im = ThemeImageLoad(di->item.image.image);
 	if (im)
 	  {
-	     Pixmap              pmap = 0, mask = 0;
-
 	     EImageGetSize(im, &iw, &ih);
 	     di->win = ECreateWindow(d->win, 0, 0, iw, ih, 0);
 	     EMapWindow(di->win);
-	     EImageRenderPixmaps(im, di->win, 0, &pmap, &mask, 0, 0);
-	     ESetWindowBackgroundPixmap(di->win, pmap);
-	     EShapeCombineMask(di->win, ShapeBounding, 0, 0, mask, ShapeSet);
-	     EClearWindow(di->win);
-	     EImagePixmapsFree(pmap, mask);
+	     EImageApplyToWin(im, di->win, 0, 0, 0);
 	     EImageFree(im);
 	  }
 	di->w = iw;

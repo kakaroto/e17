@@ -92,6 +92,9 @@ void                EImageRenderPixmaps(EImage * im, Win win, int flags,
 					int w, int h);
 void                EImagePixmapsFree(Pixmap pmap, Pixmap mask);
 
+void                EImageApplyToWin(EImage * im, Win win, int flags,
+				     int w, int h);
+
 EImageColorModifier *EImageColorModifierCreate(void);
 void                EImageColorModifierSetTables(EImageColorModifier * icm,
 						 unsigned char *r,
