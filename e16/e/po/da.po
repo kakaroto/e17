@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
 "POT-Creation-Date: 2007-12-15 11:17+0100\n"
-"PO-Revision-Date: 2007-04-19 20:56+0100\n"
+"PO-Revision-Date: 2007-12-15 16:37+0100\n"
 "Last-Translator: Kim Woelders <kim@woelders.dk>\n"
 "Language-Team: Dansk/Danish <sslug-locale@sslug.dk>\n"
 "MIME-Version: 1.0\n"
@@ -1172,16 +1172,15 @@ msgstr ""
 
 #: src/magwin.c:438
 msgid "Magnifier"
-msgstr ""
+msgstr "Forstørrelsesglas"
 
 #: src/menus-misc.c:584 config/strings.c:91
 msgid "Themes"
 msgstr "Tema"
 
 #: src/menus-misc.c:610
-#, fuzzy
 msgid "Border"
-msgstr "Rammer:"
+msgstr "Ramme"
 
 #: src/menus-misc.c:673
 msgid "Window List"
@@ -1524,7 +1523,7 @@ msgstr "Gennemsigtig"
 
 #: src/settings.c:138
 msgid "Avoid server grab"
-msgstr ""
+msgstr "Undgå at låse X-serveren"
 
 #: src/settings.c:148
 msgid "Move/Resize Geometry Info Postion:"
@@ -1544,20 +1543,19 @@ msgstr "Vis ikke"
 
 #: src/settings.c:176
 msgid "Default Resize Policy:"
-msgstr ""
+msgstr "Standardindstilling for størrelsesændring:"
 
 #: src/settings.c:180
 msgid "Conservative"
-msgstr ""
+msgstr "Konservativ"
 
 #: src/settings.c:186
 msgid "Available"
-msgstr ""
+msgstr "Normal"
 
 #: src/settings.c:192
-#, fuzzy
 msgid "Absolute"
-msgstr "Over"
+msgstr "Maksimal"
 
 #: src/settings.c:202
 msgid "Update window while moving"
@@ -2315,7 +2313,7 @@ msgstr "Opret 'systray'"
 
 #: config/strings.c:85
 msgid "Show Magnifier"
-msgstr ""
+msgstr "Vis forstørrelsesglas"
 
 #: config/strings.c:87
 msgid "Enlightenment"
@@ -2346,9 +2344,8 @@ msgid "About this theme"
 msgstr "Om dette tema"
 
 #: config/strings.c:96 config/strings.c:199
-#, fuzzy
 msgid "Restart"
-msgstr "Start"
+msgstr "Genstart"
 
 #: config/strings.c:97 config/strings.c:200
 msgid "Log Out"
@@ -2511,9 +2508,8 @@ msgid "Destroy a group this window belongs to"
 msgstr "Nedlæg en gruppe som dette vindue tilhører"
 
 #: config/strings.c:155
-#, fuzzy
 msgid "Stacking"
-msgstr "Klæber"
+msgstr "Stabling"
 
 #: config/strings.c:156
 msgid "Below"
@@ -2652,9 +2648,8 @@ msgid "Other"
 msgstr "Andet"
 
 #: config/strings.c:198
-#, fuzzy
 msgid "Epplets"
-msgstr "Krusninger"
+msgstr "Epplets"
 
 #~ msgid "Enlightenment Epplets"
 #~ msgstr "Enlightenment Epplets"
