@@ -220,7 +220,14 @@ static void _default_scroll_start(Container *cont, double velocity)
 
   length = esmart_container_elements_length_get(cont->obj);
   size = cont->direction ? cont->h : cont->w;
-
+   
+  /* Stop other scrolling in process*/
+  if (cont->scroll.timer)
+  {
+    ecore_timer_del(cont->scroll.timer);  
+    cont->scroll.timer = NULL;
+  }
+   
   /* don't scroll unless the elements exceed the size of the container */
   if (length <= size)
     return;
