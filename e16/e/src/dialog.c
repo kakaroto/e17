@@ -1176,7 +1176,7 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	     ESetWindowBackgroundPixmap(di->win, pmap);
 	     EShapeCombineMask(di->win, ShapeBounding, 0, 0, mask, ShapeSet);
 	     EClearWindow(di->win);
-	     EImagePixmapFree(pmap);
+	     EImagePixmapsFree(pmap, mask);
 	     EImageFree(im);
 	  }
 	di->w = iw;

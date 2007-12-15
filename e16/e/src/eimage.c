@@ -454,7 +454,7 @@ EImageRenderPixmaps(EImage * im, Win win, int flags,
 }
 
 void
-EImagePixmapFree(Pixmap pmap)
+EImagePixmapsFree(Pixmap pmap, Pixmap mask __UNUSED__)
 {
    imlib_free_pixmap_and_mask(pmap);
 }

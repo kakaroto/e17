@@ -1164,7 +1164,7 @@ ContainerDraw(Container * ct)
 			    &pmap, &mask, 0, 0);
 	ESetWindowBackgroundPixmap(ct->icon_win, pmap);
 	EShapeCombineMask(ct->icon_win, ShapeBounding, 0, 0, mask, ShapeSet);
-	EImagePixmapFree(pmap);
+	EImagePixmapsFree(pmap, mask);
 	EImageFree(im);
 	EClearWindow(ct->icon_win);
 

@@ -173,7 +173,7 @@ BackgroundPixmapFree(Background * bg)
 {
    if (bg->pmap)
      {
-	EImagePixmapFree(bg->pmap);
+	EImagePixmapsFree(bg->pmap, None);
 	bg->pmap = None;
      }
 }
@@ -761,7 +761,7 @@ BackgroundApplyWin(Background * bg, Win win)
    if (pmap != None)
      {
 	ESetWindowBackgroundPixmap(win, pmap);
-	EImagePixmapFree(pmap);
+	EImagePixmapsFree(pmap, None);
      }
    else
      {

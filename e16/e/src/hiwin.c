@@ -119,7 +119,7 @@ HiwinRenderImageDrawX(Hiwin * phi, Drawable draw __UNUSED__)
    ESetWindowBackgroundPixmap(EoGetWin(phi), pmap);
    if (mask)
       EShapeCombineMask(EoGetWin(phi), ShapeBounding, 0, 0, mask, ShapeSet);
-   EImagePixmapFree(pmap);
+   EImagePixmapsFree(pmap, mask);
    EClearWindow(EoGetWin(phi));
    EoShapeUpdate(phi, 0);
 #endif

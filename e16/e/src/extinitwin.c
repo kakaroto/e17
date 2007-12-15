@@ -123,7 +123,7 @@ ExtInitWinMain(void)
 		XShapeCombineMask(disp, w2, ShapeBounding, 0, 0, mask,
 				  ShapeSet);
 		XSetWindowBackgroundPixmap(disp, w2, pmap);
-		EImagePixmapFree(pmap);
+		EImagePixmapsFree(pmap, mask);
 		XClearWindow(disp, w2);
 		XQueryPointer(disp, win, &ww, &ww, &dd, &dd, &x, &y, &mm);
 		XMoveResizeWindow(disp, w2, x - w / 2, y - h / 2, w, h);

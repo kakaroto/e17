@@ -90,7 +90,7 @@ void                EImageRenderOnDrawable(EImage * im, Win win, Drawable draw,
 void                EImageRenderPixmaps(EImage * im, Win win, int flags,
 					Pixmap * pmap, Pixmap * mask,
 					int w, int h);
-void                EImagePixmapFree(Pixmap pmap);
+void                EImagePixmapsFree(Pixmap pmap, Pixmap mask);
 
 EImageColorModifier *EImageColorModifierCreate(void);
 void                EImageColorModifierSetTables(EImageColorModifier * icm,

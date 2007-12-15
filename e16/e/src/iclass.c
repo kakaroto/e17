@@ -1008,7 +1008,7 @@ ImagestateMakePmapMask(ImageState * is, Win win, PmapMask * pmm,
 		  /* Replace the mask with the correct one */
 		  pmm->mask = EXCreatePixmapCopy(mask, w, h, 1);
 
-		  EImagePixmapFree(pmap);
+		  EImagePixmapsFree(pmap, mask);
 	       }
 	  }
 	EImageDecache(ii);
@@ -1472,7 +1472,7 @@ ImageclassIpc(const char *params)
 	Pixmap              pmap;
 
 	pmap = (Pixmap) strtol(p, NULL, 0);
-	EImagePixmapFree(pmap);
+	EImagePixmapsFree(pmap, None);
 	return;
      }
 
