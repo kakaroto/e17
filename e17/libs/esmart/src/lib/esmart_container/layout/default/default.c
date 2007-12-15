@@ -271,11 +271,16 @@ _container_scroll_timer(void *data)
   max_scroll = size - cont->length - pad;
 
   if (cont->scroll.offset < max_scroll)
+  {
     cont->scroll.offset = max_scroll;
-  
+    _default_scroll_stop(cont);
+  } 
   else if (cont->scroll.offset > 0)
+  {
     cont->scroll.offset = 0;
-
+    _default_scroll_stop(cont);
+  }
+    
   _default_layout(cont);
   return 1;
 }
