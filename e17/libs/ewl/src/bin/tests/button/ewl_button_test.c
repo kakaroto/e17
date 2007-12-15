@@ -38,6 +38,7 @@ static int image_size_null_width_test_set_get(char *buf, int len);
 static int image_size_match_test_set_get(char *buf, int len);
 static int image_size_differ_test_set_get(char *buf, int len);
 static int image_size_max_int_test_set_get(char *buf, int len);
+static int image_alignment_test_set_get(char *buf, int len);
 
 static Ewl_Unit_Test button_unit_tests[] = {
 		{"label set/get", label_test_set_get, NULL, -1, 0},
@@ -49,6 +50,7 @@ static Ewl_Unit_Test button_unit_tests[] = {
 		{"image size match set/get", image_size_match_test_set_get, NULL, -1, 0},
 		{"image size differ set/get", image_size_differ_test_set_get, NULL, -1, 0},
 		{"image size max int set/get", image_size_max_int_test_set_get, NULL, -1, 0},
+		{"image alignment set/get", image_alignment_test_set_get, NULL, -1, 0},
 		{NULL, NULL, NULL, -1, 0}
 	};
 
@@ -377,6 +379,34 @@ image_size_max_int_test_set_get(char *buf, int len)
 		LOG_FAILURE(buf, len, "image_size_get width and height not INT_MAX");
 	else
 		ret = 1;
+
+	ewl_widget_destroy(button);
+
+	return ret;
+}
+
+static int
+image_alignment_test_set_get(char *buf, int len)
+{
+	Ewl_Widget *button;
+	int align;
+	int ret = 0;
+
+	button = ewl_button_new();
+	ewl_button_alignment_set(EWL_BUTTON(button), EWL_FLAG_ALIGN_RIGHT);
+	align = ewl_button_alignment_get(EWL_BUTTON(button));
+
+	if (align == EWL_FLAG_ALIGN_RIGHT) {
+		ewl_button_alignment_set(EWL_BUTTON(button),
+				EWL_FLAG_ALIGN_TOP);
+		align = ewl_button_alignment_get(EWL_BUTTON(button));
+		if (align == EWL_FLAG_ALIGN_TOP)
+			ret = 1;
+		else
+			LOG_FAILURE(buf, len, "image alignment not top");
+	}
+	else
+		LOG_FAILURE(buf, len, "image alignment not right");
 
 	ewl_widget_destroy(button);
 
