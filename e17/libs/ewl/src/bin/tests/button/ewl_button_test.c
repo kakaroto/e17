@@ -218,10 +218,15 @@ label_test_set_get(char *buf, int len)
 	button = ewl_button_new();
 
 	ewl_button_label_set(EWL_BUTTON(button), "my_label");
-	if (strcmp("my_label", ewl_button_label_get(EWL_BUTTON(button))))
-		LOG_FAILURE(buf, len, "label_get dosen't match label_set");
+	if (!strcmp("my_label", ewl_button_label_get(EWL_BUTTON(button)))) {
+		ewl_button_label_set(EWL_BUTTON(button), NULL);
+		if (ewl_button_label_get(EWL_BUTTON(button)))
+			LOG_FAILURE(buf, len, "label_get not NULL");
+		else
+			ret = 1;
+	}
 	else
-		ret = 1;
+		LOG_FAILURE(buf, len, "label_get doesn't match label_set");
 
 	ewl_widget_destroy(button);
 
