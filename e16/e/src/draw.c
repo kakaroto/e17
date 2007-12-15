@@ -28,8 +28,21 @@
 #include "piximg.h"
 #include "xwin.h"
 
+#if 0
 #include <X11/bitmaps/gray>
 #include <X11/bitmaps/gray3>
+#else
+/* Include contents of X11/bitmaps/gray+gray3.
+ * (avoid build failure if x11 bitmap package isn't installed) */
+
+#define gray_width 2
+#define gray_height 2
+static const char   gray_bits[] = { 0x01, 0x02 };
+
+#define gray3_width 4
+#define gray3_height 4
+static const char   gray3_bits[] = { 0x01, 0x00, 0x04, 0x00 };
+#endif
 
 typedef struct
 {
