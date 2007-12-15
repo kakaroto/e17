@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bosnian\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-12-15 11:17+0100\n"
+"POT-Creation-Date: 2007-12-15 18:11+0100\n"
 "PO-Revision-Date: 2004-08-26 00:52+0200\n"
 "Last-Translator: Kemal Šanjta <gomez@lugzdk.ba>\n"
 "Language-Team: Bosnian <lokal@linux.org.ba>\n"
@@ -419,119 +419,119 @@ msgstr ""
 msgid "Enlightenment Starting..."
 msgstr "Enlightenment se pokre�e..."
 
-#: src/container.c:1222
+#: src/container.c:1216
 #, fuzzy
 msgid "Settings..."
 msgstr "Osobine usmjeravanja"
 
-#: src/container.c:1226 src/dialog.c:886 src/pager.c:998 config/strings.c:30
+#: src/container.c:1220 src/dialog.c:886 src/pager.c:998 config/strings.c:30
 #: config/strings.c:132
 msgid "Close"
 msgstr "Zatvori"
 
-#: src/container.c:1231 config/strings.c:83
+#: src/container.c:1225 config/strings.c:83
 msgid "Create New Iconbox"
 msgstr "Napravi novi Iconbox"
 
-#: src/container.c:1527 src/container.c:1601
+#: src/container.c:1521 src/container.c:1595
 #, fuzzy, c-format
 msgid "Icon size: %2d"
 msgstr "Veliīina ikone"
 
-#: src/container.c:1565
+#: src/container.c:1559
 msgid "Transparent background"
 msgstr "Providna pozadina"
 
-#: src/container.c:1569
+#: src/container.c:1563
 #, fuzzy
 msgid "Hide inner border"
 msgstr "Pokaŵi/Sakrij ovu grupu"
 
-#: src/container.c:1573
+#: src/container.c:1567
 msgid "Draw base image behind Icons"
 msgstr "Nacrtaj osnovnu sliku ispod ikona"
 
-#: src/container.c:1577
+#: src/container.c:1571
 msgid "Hide scrollbar when not needed"
 msgstr "Sakrij traku za listanje kada nije potrebna"
 
-#: src/container.c:1581
+#: src/container.c:1575
 msgid "Automatically resize to fit Icons"
 msgstr "Automatski promjeni veliīini radi podeŷavanja ikona"
 
-#: src/container.c:1588
+#: src/container.c:1582
 msgid "Alignment of anchoring when automatically resizing:"
 msgstr "Poravnanje uīvrŷ�ivanja prilikom automatske promjene veliīine:"
 
-#: src/container.c:1619
+#: src/container.c:1613
 msgid "Orientation:"
 msgstr "Orjentacija:"
 
-#: src/container.c:1624
+#: src/container.c:1618
 msgid "Scrollbar side:"
 msgstr "Veliīine trake za listanje:"
 
-#: src/container.c:1629
+#: src/container.c:1623
 msgid "Scrollbar arrows:"
 msgstr "Strelice trake za listanje:"
 
-#: src/container.c:1632
+#: src/container.c:1626
 msgid "Horizontal"
 msgstr "Horizontalno"
 
-#: src/container.c:1637
+#: src/container.c:1631
 msgid "Left / Top"
 msgstr "Lijevo / Vrh"
 
-#: src/container.c:1642
+#: src/container.c:1636
 msgid "Start"
 msgstr "Poīetak"
 
-#: src/container.c:1647
+#: src/container.c:1641
 msgid "Vertical"
 msgstr "Vertikalno"
 
-#: src/container.c:1653
+#: src/container.c:1647
 msgid "Right / Bottom"
 msgstr "Desno / Dno"
 
-#: src/container.c:1659
+#: src/container.c:1653
 msgid "Both ends"
 msgstr "Oba kraja"
 
-#: src/container.c:1667
+#: src/container.c:1661
 msgid "End"
 msgstr "Kraj"
 
-#: src/container.c:1675 src/focus.c:845
+#: src/container.c:1669 src/focus.c:845
 msgid "None"
 msgstr "Niŷta"
 
-#: src/container.c:1685
+#: src/container.c:1679
 msgid "Show icon names"
 msgstr "Poka�i imena ikona"
 
-#: src/container.c:1689
+#: src/container.c:1683
 msgid "Animate when iconifying to this Iconbox"
 msgstr "Pokreni prilikom ikonificiranja ovog Iconbox-a"
 
-#: src/container.c:1699
+#: src/container.c:1693
 msgid "Icon image display policy (if one operation fails, try the next):"
 msgstr "Pravila prikaza slike ikone (ako jedna ne uspije, probajte sljede�u):"
 
-#: src/container.c:1704
+#: src/container.c:1698
 msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
 msgstr "Slikaj prozore, koristi ikonu apliacije, koristi Enlightenment ikonu"
 
-#: src/container.c:1711
+#: src/container.c:1705
 msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
 msgstr "Koristi ikonu aplikacije, koristi Enlightenment ikonu, Slikaj prozor"
 
-#: src/container.c:1716
+#: src/container.c:1710
 msgid "Use Enlightenment Icon, Snapshot Window"
 msgstr "Koristi Enlightenment ikonu, Slikaj prozor"
 
-#: src/container.c:1729
+#: src/container.c:1723
 msgid ""
 "Enlightenment Iconbox\n"
 "Settings Dialog\n"
@@ -718,7 +718,7 @@ msgstr ""
 "Enlightenment Virtual Desktop\n"
 "Dijalog osobina\n"
 
-#: src/dialog.c:874 src/dialog.c:2106 src/dialog.c:2137 src/events.c:87
+#: src/dialog.c:874 src/dialog.c:2100 src/dialog.c:2131 src/events.c:87
 #: src/setup.c:165 src/sound.c:191
 msgid "OK"
 msgstr "Uredu"
@@ -727,7 +727,7 @@ msgstr "Uredu"
 msgid "Apply"
 msgstr "Izvrŷi"
 
-#: src/dialog.c:2137
+#: src/dialog.c:2131
 msgid "Attention !!!"
 msgstr "Paŵnja !!!"
 

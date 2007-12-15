@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-12-15 11:17+0100\n"
-"PO-Revision-Date: 2007-12-15 16:37+0100\n"
+"POT-Creation-Date: 2007-12-15 18:11+0100\n"
+"PO-Revision-Date: 2007-04-19 20:56+0100\n"
 "Last-Translator: Kim Woelders <kim@woelders.dk>\n"
 "Language-Team: Dansk/Danish <sslug-locale@sslug.dk>\n"
 "MIME-Version: 1.0\n"
@@ -394,117 +394,117 @@ msgstr ""
 msgid "Enlightenment Starting..."
 msgstr "Enlightenment starter..."
 
-#: src/container.c:1222
+#: src/container.c:1216
 msgid "Settings..."
 msgstr "Indstillinger..."
 
-#: src/container.c:1226 src/dialog.c:886 src/pager.c:998 config/strings.c:30
+#: src/container.c:1220 src/dialog.c:886 src/pager.c:998 config/strings.c:30
 #: config/strings.c:132
 msgid "Close"
 msgstr "Luk"
 
-#: src/container.c:1231 config/strings.c:83
+#: src/container.c:1225 config/strings.c:83
 msgid "Create New Iconbox"
 msgstr "Opret ny ikonboks"
 
-#: src/container.c:1527 src/container.c:1601
+#: src/container.c:1521 src/container.c:1595
 #, c-format
 msgid "Icon size: %2d"
 msgstr "Ikonstørrelse: %2d"
 
-#: src/container.c:1565
+#: src/container.c:1559
 msgid "Transparent background"
 msgstr "Gennemsigtig baggrund"
 
-#: src/container.c:1569
+#: src/container.c:1563
 msgid "Hide inner border"
 msgstr "Skjul indre ramme"
 
-#: src/container.c:1573
+#: src/container.c:1567
 msgid "Draw base image behind Icons"
 msgstr "Placer ikoner på sokkel"
 
-#: src/container.c:1577
+#: src/container.c:1571
 msgid "Hide scrollbar when not needed"
 msgstr "Skjul overflødig rullebjælke"
 
-#: src/container.c:1581
+#: src/container.c:1575
 msgid "Automatically resize to fit Icons"
 msgstr "Variér størrelsen efter ikonerne"
 
-#: src/container.c:1588
+#: src/container.c:1582
 msgid "Alignment of anchoring when automatically resizing:"
 msgstr "Forankring ved automatisk størrelsestilpasning:"
 
-#: src/container.c:1619
+#: src/container.c:1613
 msgid "Orientation:"
 msgstr "Orientation:"
 
-#: src/container.c:1624
+#: src/container.c:1618
 msgid "Scrollbar side:"
 msgstr "Rullebjælkeside:"
 
-#: src/container.c:1629
+#: src/container.c:1623
 msgid "Scrollbar arrows:"
 msgstr "Rullebjælkepile:"
 
-#: src/container.c:1632
+#: src/container.c:1626
 msgid "Horizontal"
 msgstr "Vandret"
 
-#: src/container.c:1637
+#: src/container.c:1631
 msgid "Left / Top"
 msgstr "Venstre / Top"
 
-#: src/container.c:1642
+#: src/container.c:1636
 msgid "Start"
 msgstr "Start"
 
-#: src/container.c:1647
+#: src/container.c:1641
 msgid "Vertical"
 msgstr "Lodret"
 
-#: src/container.c:1653
+#: src/container.c:1647
 msgid "Right / Bottom"
 msgstr "Højre / Bund"
 
-#: src/container.c:1659
+#: src/container.c:1653
 msgid "Both ends"
 msgstr "Begge ender"
 
-#: src/container.c:1667
+#: src/container.c:1661
 msgid "End"
 msgstr "Ende"
 
-#: src/container.c:1675 src/focus.c:845
+#: src/container.c:1669 src/focus.c:845
 msgid "None"
 msgstr "Ingen"
 
-#: src/container.c:1685
+#: src/container.c:1679
 msgid "Show icon names"
 msgstr "Vis ikonnavne"
 
-#: src/container.c:1689
+#: src/container.c:1683
 msgid "Animate when iconifying to this Iconbox"
 msgstr "Animering ved minimering til denne ikonboks"
 
-#: src/container.c:1699
+#: src/container.c:1693
 msgid "Icon image display policy (if one operation fails, try the next):"
 msgstr "Præferencer for ikoner:"
 
-#: src/container.c:1704
+#: src/container.c:1698
 msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
 msgstr "Skærmdumpsvindue, brug applikationsikon, brug Enlightenment ikon"
 
-#: src/container.c:1711
+#: src/container.c:1705
 msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
 msgstr "Brug applikationsikon, brug Enlightenment ikon, skærmdumpsvindue"
 
-#: src/container.c:1716
+#: src/container.c:1710
 msgid "Use Enlightenment Icon, Snapshot Window"
 msgstr "Brug Enlightenment ikon, skærmdumpsvindue"
 
-#: src/container.c:1729
+#: src/container.c:1723
 msgid ""
 "Enlightenment Iconbox\n"
 "Settings Dialog\n"
@@ -684,7 +684,7 @@ msgstr ""
 "Indstillinger for\n"
 "virtuelle skriveborde\n"
 
-#: src/dialog.c:874 src/dialog.c:2106 src/dialog.c:2137 src/events.c:87
+#: src/dialog.c:874 src/dialog.c:2100 src/dialog.c:2131 src/events.c:87
 #: src/setup.c:165 src/sound.c:191
 msgid "OK"
 msgstr "Ok"
@@ -693,7 +693,7 @@ msgstr "Ok"
 msgid "Apply"
 msgstr "Anvend"
 
-#: src/dialog.c:2137
+#: src/dialog.c:2131
 msgid "Attention !!!"
 msgstr "Vigtigt !!!"
 
@@ -1172,15 +1172,16 @@ msgstr ""
 
 #: src/magwin.c:438
 msgid "Magnifier"
-msgstr "Forstørrelsesglas"
+msgstr ""
 
 #: src/menus-misc.c:584 config/strings.c:91
 msgid "Themes"
 msgstr "Tema"
 
 #: src/menus-misc.c:610
+#, fuzzy
 msgid "Border"
-msgstr "Ramme"
+msgstr "Rammer:"
 
 #: src/menus-misc.c:673
 msgid "Window List"
@@ -1523,7 +1524,7 @@ msgstr "Gennemsigtig"
 
 #: src/settings.c:138
 msgid "Avoid server grab"
-msgstr "Undgå at låse X-serveren"
+msgstr ""
 
 #: src/settings.c:148
 msgid "Move/Resize Geometry Info Postion:"
@@ -1543,19 +1544,20 @@ msgstr "Vis ikke"
 
 #: src/settings.c:176
 msgid "Default Resize Policy:"
-msgstr "Standardindstilling for størrelsesændring:"
+msgstr ""
 
 #: src/settings.c:180
 msgid "Conservative"
-msgstr "Konservativ"
+msgstr ""
 
 #: src/settings.c:186
 msgid "Available"
-msgstr "Normal"
+msgstr ""
 
 #: src/settings.c:192
+#, fuzzy
 msgid "Absolute"
-msgstr "Maksimal"
+msgstr "Over"
 
 #: src/settings.c:202
 msgid "Update window while moving"
@@ -2313,7 +2315,7 @@ msgstr "Opret 'systray'"
 
 #: config/strings.c:85
 msgid "Show Magnifier"
-msgstr "Vis forstørrelsesglas"
+msgstr ""
 
 #: config/strings.c:87
 msgid "Enlightenment"
@@ -2344,8 +2346,9 @@ msgid "About this theme"
 msgstr "Om dette tema"
 
 #: config/strings.c:96 config/strings.c:199
+#, fuzzy
 msgid "Restart"
-msgstr "Genstart"
+msgstr "Start"
 
 #: config/strings.c:97 config/strings.c:200
 msgid "Log Out"
@@ -2508,8 +2511,9 @@ msgid "Destroy a group this window belongs to"
 msgstr "Nedlæg en gruppe som dette vindue tilhører"
 
 #: config/strings.c:155
+#, fuzzy
 msgid "Stacking"
-msgstr "Stabling"
+msgstr "Klæber"
 
 #: config/strings.c:156
 msgid "Below"
@@ -2648,8 +2652,9 @@ msgid "Other"
 msgstr "Andet"
 
 #: config/strings.c:198
+#, fuzzy
 msgid "Epplets"
-msgstr "Epplets"
+msgstr "Krusninger"
 
 #~ msgid "Enlightenment Epplets"
 #~ msgstr "Enlightenment Epplets"
