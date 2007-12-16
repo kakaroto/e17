@@ -67,8 +67,13 @@ dialog_cb_single_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 						void *data __UNUSED__)
 {
 	Ewl_Widget *fd;
+	Ecore_List *list;
+
+	list = ecore_list_new();
+	ecore_list_append(list, "text/directory");
 
 	fd = ewl_filedialog_new();
+	ewl_filedialog_filter_add(EWL_FILEDIALOG(fd), "Directories", NULL, list);
 	ewl_filedialog_filter_add(EWL_FILEDIALOG(fd), "C Files", "*.c", NULL);
 	ewl_filedialog_filter_add(EWL_FILEDIALOG(fd), "D Files", "*.d", NULL);
 	ewl_callback_append(fd, EWL_CALLBACK_DELETE_WINDOW,

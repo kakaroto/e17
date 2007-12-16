@@ -3,6 +3,7 @@
 #define EWL_CHECKBUTTON_H
 
 #include "ewl_button.h"
+#include "ewl_view.h"
 
 /**
  * @addtogroup Ewl_Checkbutton Ewl_Checkbutton: An Ewl_Checkbutton with Label
@@ -64,6 +65,7 @@ int 		 ewl_checkbutton_is_checked(Ewl_Checkbutton *cb);
 
 void 		 ewl_checkbutton_label_position_set(Ewl_Checkbutton *cb,
 							   Ewl_Position p);
+Ewl_View	*ewl_checkbutton_view_get(void);
 
 /*
  * Internally used callbacks, override at your own risk
