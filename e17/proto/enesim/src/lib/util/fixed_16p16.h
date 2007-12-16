@@ -82,11 +82,10 @@ static inline enesim_16p16_t enesim_16p16_mul(enesim_16p16_t a, enesim_16p16_t b
 
 static inline enesim_16p16_t enesim_16p16_div(enesim_16p16_t a, enesim_16p16_t b)
 {
-	long int r = (((long int) a) << 32);
 #ifdef ENESIM_OVERFLOW
 #else
 #endif
-	return (enesim_16p16_t)((r / b) >> 16);
+	return a;
 }
 
 #endif

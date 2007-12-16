@@ -122,7 +122,7 @@ static void _vertex_add(Cpsc *r, float x, float y)
 {
 	int n = r->num_vertices;
 
-	edata_array_element_new(r->a);
+	edata_array_element_add(r->a);
 	r->vertices[n].x = x;
 	r->vertices[n].y = y;
 	r->vertices[n].i = n;

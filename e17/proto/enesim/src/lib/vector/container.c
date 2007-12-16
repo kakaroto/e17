@@ -60,7 +60,7 @@ void * enesim_container_delete(Enesim_Container *p)
  */
 void enesim_container_vertex_add(Enesim_Container *p, float x, float y, char cmd)
 {
-	edata_array_element_new(p->a);
+	edata_array_element_add(p->a);
 	p->point_curr->x = x;
 	p->point_curr->y = y;
 	*p->cmd_curr = cmd;
