@@ -35,7 +35,7 @@ EAPI Edata_Array * edata_array_new(void *data, Edata_Array_Alloc alloc_cb, Edata
  * To be documented
  * FIXME: To be fixed
  */
-EAPI void edata_array_element_new(Edata_Array *a)
+EAPI void edata_array_element_add(Edata_Array *a)
 {
 	if (a->num_elements == a->num_allocated)
 	{
@@ -44,6 +44,27 @@ EAPI void edata_array_element_new(Edata_Array *a)
 		a->alloc_cb(a->data, a->num_allocated);
 	}
 	a->num_elements++;
+}
+
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
+EAPI void edata_array_elements_add(Edata_Array *a, int num)
+{
+	int tmp;
+	
+	tmp = a->num_elements + num;
+	if (tmp > a->num_allocated)
+	{
+		while (tmp > a->num_allocated)
+		{
+			a->num_allocated = (1 << a->acc);
+			a->acc++;
+		}
+		a->alloc_cb(a->data, a->num_allocated);
+	}
+	a->num_elements += num;
 }
 
 /**
