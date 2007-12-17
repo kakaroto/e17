@@ -10,7 +10,7 @@
  */
 
 Ewl_Filelist_Directory	*ewl_filelist_model_directory_new(const char *path,
-						unsigned char skip_hidden,
+						unsigned char show_dot,
 						unsigned int show_dot_dot,
 						Ewl_Filelist_Filter *filter);
 unsigned int ewl_filelist_model_data_count(void *data);
@@ -27,7 +27,7 @@ int ewl_filelist_model_column_sortable(void *data,
 						unsigned int column);
 
 unsigned int ewl_filelist_model_show_dot_files_set(Ewl_Filelist_Directory *dir,
-						unsigned int skip_hidden);
+						unsigned int show_dot);
 unsigned int ewl_filelist_model_show_dot_files_get(Ewl_Filelist_Directory *dir);
 
 unsigned int ewl_filelist_model_filter_set(Ewl_Filelist_Directory *dir,

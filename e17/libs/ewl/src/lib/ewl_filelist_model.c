@@ -29,7 +29,7 @@ static unsigned int ewl_filelist_model_filter_main
  */
 Ewl_Filelist_Directory *
 ewl_filelist_model_directory_new(const char *path,
-					unsigned char skip_hidden,
+					unsigned char show_dot,
 					unsigned int show_dot_dot,
 					Ewl_Filelist_Filter *filter)
 {
@@ -107,7 +107,7 @@ ewl_filelist_model_directory_new(const char *path,
 	dir->files = ecore_list_new();
 	dir->dirs = ecore_list_new();
 	dir->name = ecore_string_instance(path);
-	dir->skip_hidden = !!skip_hidden;
+	dir->show_dot = !!show_dot;
 	dir->filter = filter;
 	dir->num_dirs = nd;
 	dir->num_files = nf;
@@ -347,7 +347,7 @@ ewl_filelist_model_data_expansion_data_fetch(void *data,
 	file = ecore_list_index_goto(fld->dirs, parent);
 	snprintf(path, PATH_MAX, "%s/%s", fld->name, file->name);
 	subdir = ewl_filelist_model_directory_new
-					(path, fld->skip_hidden,
+					(path, fld->show_dot,
 					FALSE, fld->filter);
 
 	DRETURN_PTR(subdir, DLEVEL_STABLE);
@@ -397,17 +397,17 @@ static void free_file(Ewl_Filelist_File *file)
  */
 unsigned int
 ewl_filelist_model_show_dot_files_set(Ewl_Filelist_Directory *dir,
-							unsigned int skip_hidden)
+							unsigned int show_dot)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET(dir, FALSE);
 	
 	/* If nothing has changed, leave */
-	if (skip_hidden == !!dir->skip_hidden)
+	if (show_dot == !!dir->show_dot)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	/* Else set value in */
-	dir->skip_hidden = !!skip_hidden;
+	dir->show_dot = !!show_dot;
 
 	/* Refilter the files */
 	ewl_filelist_model_filter(dir);
@@ -425,7 +425,7 @@ ewl_filelist_model_show_dot_files_get(Ewl_Filelist_Directory *dir)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET(dir, FALSE);
-	DRETURN_INT((unsigned int)dir->skip_hidden, DLEVEL_STABLE);
+	DRETURN_INT((unsigned int)dir->show_dot, DLEVEL_STABLE);
 }
 
 /**
@@ -448,7 +448,7 @@ ewl_filelist_model_filter(Ewl_Filelist_Directory *dir)
 
 
 	/* Hidden files first */
-	if (dir->skip_hidden)
+	if (!dir->show_dot)
 	{
 
 		/* Run through files and filter hidden first, then others */
@@ -554,8 +554,9 @@ ewl_filelist_model_filter_main(Ewl_Filelist_Directory *dir,
 	DCHECK_PARAM_PTR_RET(dir, FALSE);
 	DCHECK_PARAM_PTR_RET(file, FALSE);
 
+	/* If there's no filter return all files */
 	if (!filter)
-		DRETURN_INT(FALSE, DLEVEL_STABLE);
+		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
 	/* First check mime types */
 	if (filter->mime_list)

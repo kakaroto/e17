@@ -83,7 +83,7 @@ struct Ewl_Filelist
 	Ewl_Filelist_Filter *filter;		/**< The file filter to employ */
 
 	unsigned char multiselect:1;	/**< Allow multiple file selctions */
-	unsigned char skip_hidden:1;	/**< Show . files */
+	unsigned char show_dot:1;	/**< Show . files */
 
 	Ewl_Filelist_View view_flag;	/**< The view to use for controller */
 
@@ -148,7 +148,7 @@ struct Ewl_Filelist_Directory
 	Ecore_List *files;
 	Ecore_List *dirs;
 	Ewl_Filelist_Filter *filter;
-	unsigned char skip_hidden:1;
+	unsigned char show_dot:1;
 	unsigned int num_dirs;
 	unsigned int num_files;
 };

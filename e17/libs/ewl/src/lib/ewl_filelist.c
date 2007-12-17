@@ -75,7 +75,7 @@ ewl_filelist_init(Ewl_Filelist *fl)
 
 	fl->view_flag = EWL_FILELIST_VIEW_ICON;
 	fl->multiselect = FALSE;
-	fl->skip_hidden = TRUE;
+	fl->show_dot = FALSE;
 
 	fl->directory = NULL;
 	fl->filter = NULL;
@@ -280,7 +280,7 @@ ewl_filelist_directory_set(Ewl_Filelist *fl, const char *dir)
 		if (data) ewl_filelist_model_data_unref(data);
 		
 		data = ewl_filelist_model_directory_new(fl->directory,
-						 fl->skip_hidden, TRUE, fl->filter);
+						 fl->show_dot, TRUE, fl->filter);
 		ewl_mvc_data_set(EWL_MVC(fl->controller), data);
 		ewl_mvc_dirty_set(EWL_MVC(fl->controller), TRUE);
 
@@ -422,10 +422,10 @@ ewl_filelist_show_dot_files_set(Ewl_Filelist *fl, unsigned int dot)
 	DCHECK_PARAM_PTR(fl);
 	DCHECK_TYPE(fl, EWL_FILELIST_TYPE);
 
-	if (fl->skip_hidden == !!dot)
+	if (fl->show_dot == !!dot)
 		DRETURN(DLEVEL_STABLE);
 
-	fl->skip_hidden = !!dot;
+	fl->show_dot = !!dot;
 	dir = ewl_mvc_data_get(EWL_MVC(fl->controller));
 
 	/* check if data and then call the model function */
@@ -449,7 +449,7 @@ ewl_filelist_show_dot_files_get(Ewl_Filelist *fl)
 	DCHECK_PARAM_PTR_RET(fl, FALSE);
 	DCHECK_TYPE_RET(fl, EWL_FILELIST_TYPE, FALSE);
 
-	DRETURN_INT((unsigned int)fl->skip_hidden, DLEVEL_STABLE);
+	DRETURN_INT((unsigned int)fl->show_dot, DLEVEL_STABLE);
 }
 
 /**
