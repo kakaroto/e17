@@ -19,9 +19,14 @@
  * @section init_layout Initial Layout
  *
  * If you need to set the initial sizes of the items in the grabber then you
- * will need to set their preferred size. If, after the paned is already
- * displayed, you need to change the size it will use the current size of
- * the pane.
+ * can use the following lines:
+ *
+ * @code
+ * ewl_container_child_append(EWL_CONTAINER(paned), child);
+ * ewl_paned_initial_size_set(EWL_PANED(paned), child, 100);
+ * @endcode
+ *
+ * This will set the initial size of the child to 100 px.
  */
 
 static int create_test(Ewl_Container *box);
@@ -30,14 +35,29 @@ static void ewl_paned_test_cb_clicked_destroy(Ewl_Widget *w, void *ev,
 static void ewl_paned_test_cb_clicked(Ewl_Widget *w, void *ev, void *data);
 static void ewl_paned_test_cb_add(Ewl_Widget *w, void *ev, void *data);
 
+/* unit tests */
+static int initial_size_get(char *buf, int len);
+static int initial_size_unset_get(char *buf, int len);
+static int initial_size_after_remove_get(char *buf, int len);
+static int initial_size_many_get(char *buf, int len);
+
+static Ewl_Unit_Test paned_unit_tests[] = {
+		{"get initial size", initial_size_get, NULL, -1, 0},
+		{"get unset initial size", initial_size_unset_get, NULL, -1, 0},
+		{"get initial size after remove", initial_size_after_remove_get, NULL, -1, 0},
+		{"get initial size for many widgets", initial_size_many_get, NULL, -1, 0},
+		{NULL, NULL, NULL, -1, 0}
+	};
+
 void
 test_info(Ewl_Test *test)
 {
 	test->name = "Paned";
-	test->tip = "Defines the Ewl_Paned to hold two resizable panes.";
+	test->tip = "Defines the Ewl_Paned to hold resizable panes.";
 	test->filename = __FILE__;
 	test->func = create_test;
 	test->type = EWL_TEST_TYPE_CONTAINER;
+	test->unit_tests = paned_unit_tests;
 }
 
 static int
@@ -173,5 +193,115 @@ ewl_paned_test_cb_add(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	ewl_callback_append(o, EWL_CALLBACK_CLICKED,
 			ewl_paned_test_cb_clicked_destroy, "New Button");
 	ewl_widget_show(o);
+}
+
+static int 
+initial_size_get(char *buf, int len)
+{
+	Ewl_Widget *paned;
+	Ewl_Widget *child;
+	int ret = 1;
+	int val;
+
+	paned = ewl_paned_new();
+	child = ewl_cell_new();
+
+	ewl_container_child_append(EWL_CONTAINER(paned), child);
+	ewl_paned_initial_size_set(EWL_PANED(paned), child, 240);
+	val = ewl_paned_initial_size_get(EWL_PANED(paned), child);
+
+	if (val != 240) {
+		LOG_FAILURE(buf, len, "get value is different from the set one");
+		ret = 0;
+	}
+
+	ewl_widget_destroy(paned);
+
+	return ret;
+}
+
+static int 
+initial_size_unset_get(char *buf, int len)
+{
+	Ewl_Widget *paned;
+	Ewl_Widget *child;
+	int ret = 1;
+	int val;
+
+	paned = ewl_paned_new();
+	child = ewl_cell_new();
+
+	ewl_container_child_append(EWL_CONTAINER(paned), child);
+	val = ewl_paned_initial_size_get(EWL_PANED(paned), child);
+
+	if (val != 0) {
+		LOG_FAILURE(buf, len, "get value is not 0");
+		ret = 0;
+	}
+
+	ewl_widget_destroy(paned);
+
+	return ret;
+}
+
+static int 
+initial_size_after_remove_get(char *buf, int len)
+{
+	Ewl_Widget *paned;
+	Ewl_Widget *child;
+	int ret = 1;
+	int val;
+
+	/* use a hpaned here to cover this up */
+	paned = ewl_hpaned_new();
+	child = ewl_cell_new();
+
+	ewl_container_child_append(EWL_CONTAINER(paned), child);
+	ewl_paned_initial_size_set(EWL_PANED(paned), child, 240);
+	ewl_container_child_remove(EWL_CONTAINER(paned), child);
+	val = ewl_paned_initial_size_get(EWL_PANED(paned), child);
+
+	if (val != 0) {
+		LOG_FAILURE(buf, len, "get value is not zero");
+		ret = 0;
+	}
+
+	ewl_widget_destroy(child);
+	ewl_widget_destroy(paned);
+
+	return ret;
+}
+
+static int 
+initial_size_many_get(char *buf, int len)
+{
+	Ewl_Widget *paned;
+	Ewl_Widget *w[4];
+	int ret = 1, i;
+
+	/* use a vpaned here to cover this up */
+	paned = ewl_vpaned_new();
+
+	/* build the children and set the initial size for them */
+	for (i = 0; i < 4; i++) {
+		w[i] = ewl_cell_new();
+		ewl_container_child_append(EWL_CONTAINER(paned), w[i]);
+		ewl_paned_initial_size_set(EWL_PANED(paned), w[i], 240 + i);
+	}
+
+	/* now check the set values */
+	for (i = 0; i < 4; i++) {
+		int val = ewl_paned_initial_size_get(EWL_PANED(paned), w[i]);
+
+		if (val != 240 + i) {
+			LOG_FAILURE(buf, len, "get value is not zero");
+			ret = 0;
+			break;
+		}
+	}
+
+	ewl_widget_destroy(paned);
+
+	return ret;
 }
 
