@@ -23,6 +23,8 @@ extern "C" {
 /** Checks if the object is an Etk_Filechooser_Widget */
 #define ETK_IS_FILECHOOSER_WIDGET(obj)    (ETK_OBJECT_CHECK_TYPE((obj), ETK_FILECHOOSER_WIDGET_TYPE))
 
+extern int ETK_FILECHOOSER_SELECTED_SIGNAL;
+   
 /**
  * @struct Etk_Filechooser_Widget
  * @brief An Etk_Filechooser_Widget is a widget used to select one or more files
@@ -45,6 +47,8 @@ struct Etk_Filechooser_Widget
    Etk_Widget *files_tree;
    Etk_Tree_Col *files_name_col;
    Etk_Tree_Col *files_date_col;
+   
+   Etk_Bool (*selected_handler)(Etk_Filechooser_Widget *filechooser);
 
    char *current_folder;
 

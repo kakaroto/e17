@@ -46,6 +46,8 @@
 
 #define ETK_FILECHOOSER_FAVS_FILE ".gtk-bookmarks"
 
+int ETK_FILECHOOSER_SELECTED_SIGNAL;
+
 enum _Etk_Filechooser_Widget_Property_Id
 {
    ETK_FILECHOOSER_WIDGET_PATH_PROPERTY,
@@ -116,10 +118,16 @@ Etk_Type *etk_filechooser_widget_type_get(void)
 
    if (!filechooser_widget_type)
    {
+      const Etk_Signal_Description signals[] = {
+         ETK_SIGNAL_DESC_HANDLER(ETK_FILECHOOSER_SELECTED_SIGNAL,
+            "selected", Etk_Filechooser_Widget, selected_handler, etk_marshaller_VOID),
+         ETK_SIGNAL_DESCRIPTION_SENTINEL
+      };
+      
       filechooser_widget_type = etk_type_new("Etk_Filechooser_Widget",
          ETK_WIDGET_TYPE, sizeof(Etk_Filechooser_Widget),
          ETK_CONSTRUCTOR(_etk_filechooser_widget_constructor),
-         ETK_DESTRUCTOR(_etk_filechooser_widget_destructor), NULL);
+         ETK_DESTRUCTOR(_etk_filechooser_widget_destructor), signals);
 
       etk_type_property_add(filechooser_widget_type, "path", ETK_FILECHOOSER_WIDGET_PATH_PROPERTY, ETK_PROPERTY_STRING, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_string(NULL));
       etk_type_property_add(filechooser_widget_type, "select-multiple", ETK_FILECHOOSER_WIDGET_SELECT_MULTIPLE_PROPERTY, ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
@@ -500,6 +508,8 @@ static void _etk_filechooser_widget_constructor(Etk_Filechooser_Widget *fcw)
    etk_signal_connect_by_code(ETK_TREE_ROW_ACTIVATED_SIGNAL, ETK_OBJECT(fcw->files_tree), ETK_CALLBACK(_etk_filechooser_widget_file_activated_cb), fcw);
    etk_signal_connect_by_code(ETK_TREE_ROW_SELECTED_SIGNAL, ETK_OBJECT(fcw->files_tree), ETK_CALLBACK(_etk_filechooser_widget_file_selected_cb), fcw);
 
+   fcw->selected_handler = NULL;
+
    _etk_filechooser_widget_places_tree_fill(ETK_FILECHOOSER_WIDGET(fcw));
    _etk_filechooser_widget_favs_tree_fill(ETK_FILECHOOSER_WIDGET(fcw));
 
@@ -634,8 +644,8 @@ static Etk_Bool _etk_filechooser_widget_file_activated_cb(Etk_Object *object, Et
    {
       if (ecore_file_is_dir(file_path))
          etk_filechooser_widget_current_folder_set(filechooser_widget, file_path);
-      else /* TODO */
-         ;
+      else
+         etk_signal_emit(ETK_FILECHOOSER_SELECTED_SIGNAL, ETK_OBJECT(filechooser_widget));
    }
 
    return ETK_TRUE;
