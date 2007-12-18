@@ -899,7 +899,7 @@ ewl_paned_size_info_del(Ewl_Paned *p, Ewl_Widget *w)
 	if (!info)
 		DRETURN(DLEVEL_STABLE);
 	
-	memmove(info, info + 1, (p->info_size - (info - p->info) + 1) 
+	memmove(info, info + 1, (p->info_size - (info - p->info) - 1) 
 				* sizeof(Ewl_Paned_Size_Info));
 	p->info = realloc(p->info, --p->info_size);
 
