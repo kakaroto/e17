@@ -98,6 +98,14 @@
       action: STATE_SET "big" 0.0; \
       transition: SINUSOIDAL 0.5; \
       target: NAME"_frame"; \
+   } \
+   program{ \
+      name: NAME"_frame_show_small"; \
+      signal: NAME"_frame_show_small"; \
+      source: "edje_editor"; \
+      action: STATE_SET "small" 0.0; \
+      transition: SINUSOIDAL 0.5; \
+      target: NAME"_frame"; \
    }
 
 images {

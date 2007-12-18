@@ -263,10 +263,10 @@ DebugInfo(int full)
       printf(" ** Cur state: %s\n",Cur.state->string);
    else
       printf(" ** Cur state: (NULL)\n");
-   /*if (Cur.epr)
-      printf(" ** Cur program: %s\n",Cur.epr->name);
+   if (etk_string_length_get(Cur.prog))
+      printf(" ** Cur program: %s\n",Cur.prog->string);
    else
-      printf(" ** Cur program: (NULL)\n");*/
+      printf(" ** Cur program: (NULL)\n");
    printf(" *********************** E N D *****************************\n\n");
 }
 #else
@@ -399,10 +399,13 @@ PrintUsage(void)
 }
 #if TEST_DIRECT_EDJE
 void
-ChangeGroup(const char *group)
+ChangeGroup(char *group)
 {
+   if (!group) return;
+   printf("Selected group: %s\n", group);
+   evas_object_hide(edje_o);
    edje_object_file_set(edje_o, Cur.edj_file_name->string, group);
-    
+   evas_object_show(edje_o);
    Parts_Hash = NULL;         //TODO FREE
    
    Cur.group = etk_string_set(Cur.group, group);
@@ -414,6 +417,13 @@ ChangeGroup(const char *group)
    PopulateRelComboBoxes();
 }
 #endif
+
+static void signal_cb(void *data, Evas_Object *o, const char *sig, const char *src)
+{
+   printf("CALLBACK for \"%s\" \"%s\"\n", sig, src);
+}
+
+
 /* main */
 int
 main(int argc, char **argv)
@@ -516,19 +526,28 @@ main(int argc, char **argv)
    Cur.group = etk_string_new("");
    Cur.part = etk_string_new("");
    Cur.state = etk_string_new("");
+   Cur.prog = etk_string_new("");
    Parts_Hash = NULL;
   
    //Create the main edje object to edit
    edje_o = edje_object_add(UI_evas);
-  
+   edje_object_signal_callback_add(edje_o, "*", "*", signal_cb, NULL);
+   edje_object_file_set(edje_o, Cur.edj_file_name->string, "icon");
+   evas_object_resize(edje_o, 100, 100);
+   evas_object_move(edje_o, 100, 100);
+   evas_object_show(edje_o);
+   
+  /* Evas_Object *o2;
+   o2 = edje_object_add(UI_evas); 
+   edje_object_file_set(o2,"/home/dave/test/globe2.edj","icon");
+   evas_object_show(o2);
+   evas_object_resize(o2, 100, 100);
+  */
     
     
    PopulateGroupsComboBox();
-   PopulateTree2();
    PopulateFontsComboBox();
    PopulateImagesComboBox();
-   
-   evas_object_show(edje_o);
    
    
 #else

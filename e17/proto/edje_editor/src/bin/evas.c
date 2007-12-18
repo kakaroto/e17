@@ -520,7 +520,7 @@ ev_redraw(void)
 
    //printf("DRAW ALL\n");
    //printf("PART: %s\n", Cur.part->string);
-   if (Cur.part)
+   if (etk_string_length_get(Cur.part))
    {
       //Get the geometry of ETK_canvas
       //evas_object_geometry_get(EV_canvas_bg,&x,&y,&w,&h);

@@ -165,11 +165,28 @@ AddProgramToTree(Engrave_Program* prog)
    etk_tree_row_data_set(row, prog);
 }
 #if TEST_DIRECT_EDJE
+void
+AddProgramToTree2(const char* prog)
+{
+   Etk_Tree_Row *row=NULL;
+
+   //printf("Add Program to tree: %s\n",prog->name);
+   
+   //TODO: place the prog after all the parts
+   row = etk_tree_row_append(ETK_TREE(UI_PartsTree),
+               NULL,
+               COL_NAME, EdjeFile,"PROG.PNG", prog,
+               COL_TYPE,ROW_PROG,
+               NULL);
+
+   //ecore_hash_set(hash, prog, row);
+}
 void 
 PopulateTree2(void)
 {
    Evas_List *parts, *pp;
    Evas_List *states, *sp;
+   Evas_List *progs;
    
    etk_tree_clear(ETK_TREE(UI_PartsTree));
         
@@ -188,6 +205,15 @@ PopulateTree2(void)
       pp = pp->next;
    }
    edje_edit_string_list_free(parts);
+   
+   progs = pp = edje_edit_programs_list_get(edje_o);
+   while(pp)
+   {
+      AddProgramToTree2((char*)pp->data);
+      pp = pp->next;
+   }
+   edje_edit_string_list_free(progs);
+   
    etk_tree_row_select(etk_tree_first_row_get (ETK_TREE(UI_PartsTree)));
 }
 void 
@@ -368,7 +394,7 @@ PopulateRelComboBoxes(void)
       parts = l = edje_edit_parts_list_get(edje_o);
       while (l)
       {
-         printf("-- %s\n", (char *)l->data);
+         //printf("-- %s\n", (char *)l->data);
          type = edje_edit_part_type_get(edje_o,(char *)l->data);
          
          if (type == EDJE_PART_TYPE_RECTANGLE)
@@ -486,7 +512,7 @@ PupulateTweenList(void)
    tweens = l = edje_edit_state_tweens_list_get(edje_o, Cur.part->string, Cur.state->string);
    while (l)
    {
-      printf("RET: %s (id: %d)\n", l->data, edje_edit_image_id_get(edje_o, l->data));
+      //printf("RET: %s (id: %d)\n", l->data, edje_edit_image_id_get(edje_o, l->data));
       //snprintf(buf, sizeof(buf), "images/%d", edje_edit_image_id_get(edje_o, l->data)); TODO: find a way to append image directly from the edje file.
       etk_tree_row_append(ETK_TREE(UI_ImageTweenList), NULL,
                           col, NULL, NULL, l->data,
@@ -1242,11 +1268,6 @@ UpdateComboPositionFrame(void)
 void
 UpdateProgFrame(void)
 {
-   if (!Cur.epr)
-      return;
-   
-   printf("Update Program: %s\n",Cur.epr->name);
-
    //Stop signal propagation
    etk_signal_block("text-changed", ETK_OBJECT(UI_ProgramEntry),
          ETK_CALLBACK(on_ProgramEntry_text_changed), NULL);
@@ -1274,7 +1295,90 @@ UpdateProgFrame(void)
    etk_signal_block("text-changed", ETK_OBJECT(UI_Param2Entry),
          ETK_CALLBACK(on_Param2Entry_text_changed), NULL);
 
-         
+#if TEST_DIRECT_EDJE
+   char *s;
+   
+   if (!etk_string_length_get(Cur.prog)) return;  //TODO place before signal_blocks
+   //Update Program
+   etk_entry_text_set(ETK_ENTRY(UI_ProgramEntry),Cur.prog->string);
+
+   //Update Source
+   s = edje_edit_program_source_get(edje_o, Cur.prog->string);
+   etk_entry_text_set(ETK_ENTRY(etk_combobox_entry_entry_get(ETK_COMBOBOX_ENTRY(UI_SourceEntry))),s);
+   edje_edit_string_free(s);
+   printf("-----------\n");
+   //Update Signal
+   s = edje_edit_program_signal_get(edje_o, Cur.prog->string);
+   etk_entry_text_set(ETK_ENTRY(UI_SignalEntry),s);
+   edje_edit_string_free(s);
+    
+    
+   //Update Delay
+   etk_range_value_set(ETK_RANGE(UI_DelayFromSpinner),
+                       edje_edit_program_in_from_get(edje_o, Cur.prog->string));
+   etk_range_value_set(ETK_RANGE(UI_DelayRangeSpinner),
+                       edje_edit_program_in_range_get(edje_o, Cur.prog->string));
+
+   //Update Action
+  /* if (Cur.epr->action == ENGRAVE_ACTION_SIGNAL_EMIT)
+         etk_combobox_active_item_set (ETK_COMBOBOX(UI_ActionComboBox),
+            etk_combobox_nth_item_get(ETK_COMBOBOX(UI_ActionComboBox),2));
+   if (Cur.epr->action == ENGRAVE_ACTION_STATE_SET)
+         etk_combobox_active_item_set (ETK_COMBOBOX(UI_ActionComboBox),
+            etk_combobox_nth_item_get(ETK_COMBOBOX(UI_ActionComboBox),0));
+   if (Cur.epr->action == ENGRAVE_ACTION_STOP)
+      etk_combobox_active_item_set (ETK_COMBOBOX(UI_ActionComboBox),
+         etk_combobox_nth_item_get(ETK_COMBOBOX(UI_ActionComboBox),1));
+
+   //Update Target(s)
+   Evas_List *tl;  //target list
+   Etk_String *str=etk_string_new("");
+   for (tl = Cur.epr->targets; tl; tl = tl->next)
+   {
+      str = etk_string_append(str,tl->data);
+      str = etk_string_append(str,", ");
+   }
+   if (str->length > 2)
+      etk_string_truncate (str, str->length - 2);
+   etk_entry_text_set(ETK_ENTRY(UI_TargetEntry),str->string);
+
+   //Update Param1/2
+   etk_entry_text_set(ETK_ENTRY(UI_Param1Entry),Cur.epr->state);
+   etk_entry_text_set(ETK_ENTRY(UI_Param2Entry),Cur.epr->state2);
+   etk_range_value_set (ETK_RANGE(UI_Param1Spinner), Cur.epr->value);
+
+   //Update Transition
+    if (Cur.epr->transition== ENGRAVE_TRANSITION_LINEAR)
+         etk_combobox_active_item_set (ETK_COMBOBOX(UI_TransiComboBox),
+            etk_combobox_nth_item_get(ETK_COMBOBOX(UI_TransiComboBox),0));
+   if (Cur.epr->transition == ENGRAVE_TRANSITION_SINUSOIDAL)
+         etk_combobox_active_item_set (ETK_COMBOBOX(UI_TransiComboBox),
+            etk_combobox_nth_item_get(ETK_COMBOBOX(UI_TransiComboBox),1));
+   if (Cur.epr->transition == ENGRAVE_TRANSITION_ACCELERATE)
+      etk_combobox_active_item_set (ETK_COMBOBOX(UI_TransiComboBox),
+         etk_combobox_nth_item_get(ETK_COMBOBOX(UI_TransiComboBox),2));
+   if (Cur.epr->transition == ENGRAVE_TRANSITION_DECELERATE)
+      etk_combobox_active_item_set (ETK_COMBOBOX(UI_TransiComboBox),
+         etk_combobox_nth_item_get(ETK_COMBOBOX(UI_TransiComboBox),3));
+   etk_range_value_set (ETK_RANGE(UI_DurationSpinner), Cur.epr->duration);
+
+   //Update Afters(s)
+   etk_string_truncate(str,0);
+   for (tl = Cur.epr->afters; tl; tl = tl->next)
+   {
+      str = etk_string_append(str,tl->data);
+      str = etk_string_append(str,", ");
+   }
+   if (str->length > 2)
+      etk_string_truncate (str, str->length - 2);
+   etk_entry_text_set(ETK_ENTRY(UI_AfterEntry),str->string);
+   etk_object_destroy(ETK_OBJECT(str));*/
+#else
+    
+   if (!Cur.epr) return;
+   
+   //printf("Update Program: %s\n",Cur.epr->name);
+
    //Update Program
    etk_entry_text_set(ETK_ENTRY(UI_ProgramEntry),Cur.epr->name);
 
@@ -1343,7 +1447,7 @@ UpdateProgFrame(void)
       etk_string_truncate (str, str->length - 2);
    etk_entry_text_set(ETK_ENTRY(UI_AfterEntry),str->string);
    etk_object_destroy(ETK_OBJECT(str));
-
+#endif
    //Reenable signal propagation
    etk_signal_unblock("text-changed", ETK_OBJECT(UI_ProgramEntry),
          ETK_CALLBACK(on_ProgramEntry_text_changed), NULL);

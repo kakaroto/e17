@@ -56,7 +56,7 @@ on_AllButton_click(Etk_Button *button, void *data)
          ShowAlert("Not yet reimplemented ;)");
          break;
       case TOOLBAR_SAVE_EDJ:
-         ShowAlert("Not yet reimplemented ;)");
+         ShowFilechooser(FILECHOOSER_SAVE_EDJ);
          break;
       case TOOLBAR_ADD:
          ShowAlert("Not yet reimplemented ;)");
@@ -332,9 +332,29 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
          edje_object_signal_emit(edje_ui,"group_frame_hide","edje_editor");
          edje_object_signal_emit(edje_ui,"program_frame_hide","edje_editor");
          edje_object_signal_emit(edje_ui,"script_frame_hide","edje_editor");
-         
          edje_object_signal_emit(edje_ui,"description_frame_show","edje_editor");
          edje_object_signal_emit(edje_ui,"position_frame_show","edje_editor");
+         break;
+      
+      case ROW_PROG:
+         Cur.prog = etk_string_set(Cur.prog, name);
+         Cur.part = etk_string_clear(Cur.part);
+         Cur.state = etk_string_clear(Cur.state);
+       
+         edje_object_signal_emit(edje_ui,"description_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"position_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"rect_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"image_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"text_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"group_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"part_frame_hide","edje_editor");
+         
+         edje_object_signal_emit(edje_ui,"program_frame_show","edje_editor");
+         edje_object_signal_emit(edje_ui,"script_frame_show_small","edje_editor");
+      
+        // UpdateScriptFrame();
+         UpdateProgFrame();
+        // PopulateSourceComboBox();
          break;
    }
 
@@ -1807,7 +1827,11 @@ on_FileChooserDialog_response(Etk_Dialog *dialog, int response_id, void *data)
             snprintf(cmd,4096,"%s/%s",
                etk_filechooser_widget_current_folder_get (ETK_FILECHOOSER_WIDGET(UI_FileChooser)),
                etk_filechooser_widget_selected_file_get (ETK_FILECHOOSER_WIDGET(UI_FileChooser)));
+#if TEST_DIRECT_EDJE
+            edje_edit_save(edje_o,cmd);
+#else
             SaveEDJ(cmd);
+#endif
          break;
          case FILECHOOSER_SAVE_EDC:
             printf("SAVE EDC\n");

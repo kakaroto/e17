@@ -15,7 +15,7 @@
 
 #define TEST_DIRECT_EDJE   0
 
-#define DEBUG_TREE         1
+#define DEBUG_TREE         0
 #if DEBUG_TREE
    #define TREE_WIDTH         365
 #else
@@ -125,6 +125,7 @@ struct Current_State
    Etk_String *group;
    Etk_String *part;
    Etk_String *state;
+   Etk_String *prog;
    
    Etk_String *edj_file_name;
 
@@ -181,7 +182,7 @@ Evas_Object *edje_o;
 Evas_Hash   *Parts_Hash;
 
 
-void ChangeGroup(const char *group);
+void ChangeGroup(char *group);
 #endif
 
 #endif // INCLUSION_GUARD
