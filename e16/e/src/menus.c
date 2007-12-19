@@ -2106,7 +2106,10 @@ MenusIpc(const char *params)
 	if (*p == '\0')
 	   p = NULL;
 	if (p && !strcmp(prm, "named"))
-	   Esnprintf(prm, sizeof(prm), "%s", p);
+	  {
+	     Esnprintf(prm, sizeof(prm), "%s", p);
+	     p = NULL;
+	  }
 	SoundPlay("SOUND_MENU_SHOW");
 	MenusShowNamed(prm, p);
      }
