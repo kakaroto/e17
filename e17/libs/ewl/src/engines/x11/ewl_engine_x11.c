@@ -515,12 +515,15 @@ ee_window_hide(Ewl_Window *win)
 static void
 ee_window_title_set(Ewl_Window *win)
 {
+	const char *title;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(win);
 	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
-	ecore_x_icccm_title_set((Ecore_X_Window)win->window, win->title);
-	ecore_x_netwm_name_set((Ecore_X_Window)win->window, win->title);
+	title = win->title ? win->title : "";
+	ecore_x_icccm_title_set((Ecore_X_Window)win->window, title);
+	ecore_x_netwm_name_set((Ecore_X_Window)win->window, title);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
