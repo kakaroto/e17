@@ -53,9 +53,11 @@ ewl_window_init(Ewl_Window *w)
 	ewl_widget_appearance_set(EWL_WIDGET(w), EWL_WINDOW_TYPE);
 	ewl_widget_inherit(EWL_WIDGET(w), EWL_WINDOW_TYPE);
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_FILL);
+	/*
 	w->title = strdup("EWL");
 	w->name = strdup("EWL");
 	w->classname  = strdup("EWL");
+	*/
 
 	ewl_callback_prepend(EWL_WIDGET(w), EWL_CALLBACK_REALIZE,
 			     ewl_window_cb_realize, NULL);
@@ -120,7 +122,7 @@ ewl_window_title_set(Ewl_Window *win, const char *title)
 	DCHECK_PARAM_PTR(win);
 	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
-	if ((!title) || (strcmp(win->title, title))) {
+	if ((!title) || (!win->title) || (strcmp(win->title, title))) {
 		IF_FREE(win->title);
 		win->title = (title ? strdup(title) : strdup(""));
 	}
@@ -135,16 +137,17 @@ ewl_window_title_set(Ewl_Window *win, const char *title)
  * @return Returns a pointer to a new copy of the title, NULL on failure.
  * @brief Retrieve the title of the specified window
  *
- * The returned title should be freed.
+ * The returned title should not be freed, and should be copied immediately if
+ * needed for extended use.
  */
-char *
+const char *
 ewl_window_title_get(Ewl_Window *win)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET(win, NULL);
 	DCHECK_TYPE_RET(win, EWL_WINDOW_TYPE, NULL);
 
-	DRETURN_PTR(strdup(win->title), DLEVEL_STABLE);
+	DRETURN_PTR(win->title, DLEVEL_STABLE);
 }
 
 /**
@@ -163,7 +166,7 @@ ewl_window_name_set(Ewl_Window *win, const char *name)
 	DCHECK_PARAM_PTR(win);
 	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
-	if ((!name) || (strcmp(win->name, name))) {
+	if ((!name) || (!win->name) || (strcmp(win->name, name))) {
 		IF_FREE(win->name);
 		win->name = (name ? strdup(name) : strdup(""));
 	}
@@ -178,16 +181,17 @@ ewl_window_name_set(Ewl_Window *win, const char *name)
  * @return Returns a pointer to a new copy of the name, NULL on failure.
  * @brief Retrieve the name of the specified window
  *
- * The returned name should be freed.
+ * The returned name should not be freed, and should be copied immediately if
+ * needed for extended use.
  */
-char *
+const char *
 ewl_window_name_get(Ewl_Window *win)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET(win, NULL);
 	DCHECK_TYPE_RET(win, EWL_WINDOW_TYPE, NULL);
 
-	DRETURN_PTR(strdup(win->name), DLEVEL_STABLE);
+	DRETURN_PTR(win->name, DLEVEL_STABLE);
 }
 
 /**
@@ -223,16 +227,17 @@ ewl_window_class_set(Ewl_Window *win, const char *classname)
  * @return Returns a pointer to a new copy of the class, NULL on failure.
  * @brief Retrieve the class of the specified window
  *
- * The returned class should be freed.
+ * The returned class should not be freed, and should be copied immediately if
+ * needed for extended use.
  */
-char *
+const char *
 ewl_window_class_get(Ewl_Window *win)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET(win, NULL);
 	DCHECK_TYPE_RET(win, EWL_WINDOW_TYPE, NULL);
 
-	DRETURN_PTR(strdup(win->classname), DLEVEL_STABLE);
+	DRETURN_PTR(win->classname, DLEVEL_STABLE);
 }
 
 /**
