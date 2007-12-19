@@ -53,11 +53,6 @@ ewl_window_init(Ewl_Window *w)
 	ewl_widget_appearance_set(EWL_WIDGET(w), EWL_WINDOW_TYPE);
 	ewl_widget_inherit(EWL_WIDGET(w), EWL_WINDOW_TYPE);
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_FILL);
-	/*
-	w->title = strdup("EWL");
-	w->name = strdup("EWL");
-	w->classname  = strdup("EWL");
-	*/
 
 	ewl_callback_prepend(EWL_WIDGET(w), EWL_CALLBACK_REALIZE,
 			     ewl_window_cb_realize, NULL);
@@ -124,7 +119,7 @@ ewl_window_title_set(Ewl_Window *win, const char *title)
 
 	if ((!title) || (!win->title) || (strcmp(win->title, title))) {
 		IF_FREE(win->title);
-		win->title = (title ? strdup(title) : strdup(""));
+		win->title = ((title && *title) ? strdup(title) : NULL);
 	}
 
 	ewl_engine_window_title_set(win);
@@ -168,7 +163,7 @@ ewl_window_name_set(Ewl_Window *win, const char *name)
 
 	if ((!name) || (!win->name) || (strcmp(win->name, name))) {
 		IF_FREE(win->name);
-		win->name = (name ? strdup(name) : strdup(""));
+		win->name = ((name && *name) ? strdup(name) : NULL);
 	}
 
 	ewl_engine_window_name_class_set(win);
@@ -214,7 +209,8 @@ ewl_window_class_set(Ewl_Window *win, const char *classname)
 			|| (strcmp(win->classname, classname)))
 	{
 		IF_FREE(win->classname);
-		win->classname = (classname ? strdup(classname) : strdup(""));
+		win->classname = ((classname && *classname) ?
+				strdup(classname) : NULL);
 	}
 
 	ewl_engine_window_name_class_set(win);

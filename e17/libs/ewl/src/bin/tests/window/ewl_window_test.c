@@ -46,16 +46,22 @@ title_set_get(char *buf, int len)
 	win = ewl_window_new();
 	title = ewl_window_title_get(EWL_WINDOW(win));
 
-	if (title && *title)
-		snprintf(buf, len, "default title set to %s", title);
+	if (title)
+		snprintf(buf, len, "default title set to '%s'", title);
 	else {
 		ewl_window_title_set(EWL_WINDOW(win), "A title");
 		title = ewl_window_title_get(EWL_WINDOW(win));
 
 		if (strcmp(title, "A title"))
 			snprintf(buf, len, "incorrect title set");
-		else
-			ret = 1;
+		else {
+			ewl_window_title_set(EWL_WINDOW(win), "");
+			title = ewl_window_title_get(EWL_WINDOW(win));
+			if (title)
+				snprintf(buf, len, "non-empty title set");
+			else
+				ret = 1;
+		}
 	}
 
 	ewl_widget_destroy(win);
@@ -76,16 +82,22 @@ name_set_get(char *buf, int len)
 	win = ewl_window_new();
 	name = ewl_window_name_get(EWL_WINDOW(win));
 
-	if (name && *name)
-		snprintf(buf, len, "default name set to %s", name);
+	if (name)
+		snprintf(buf, len, "default name set to '%s'", name);
 	else {
 		ewl_window_name_set(EWL_WINDOW(win), "A name");
 		name = ewl_window_name_get(EWL_WINDOW(win));
 
 		if (strcmp(name, "A name"))
 			snprintf(buf, len, "incorrect name set");
-		else
-			ret = 1;
+		else {
+			ewl_window_name_set(EWL_WINDOW(win), "");
+			name = ewl_window_name_get(EWL_WINDOW(win));
+			if (name)
+				snprintf(buf, len, "non-empty name set");
+			else
+				ret = 1;
+		}
 	}
 
 	ewl_widget_destroy(win);
@@ -106,16 +118,22 @@ class_set_get(char *buf, int len)
 	win = ewl_window_new();
 	class = ewl_window_class_get(EWL_WINDOW(win));
 
-	if (class && *class)
-		snprintf(buf, len, "default class set to %s", class);
+	if (class)
+		snprintf(buf, len, "default class set to '%s'", class);
 	else {
 		ewl_window_class_set(EWL_WINDOW(win), "A class");
 		class = ewl_window_class_get(EWL_WINDOW(win));
 
 		if (strcmp(class, "A class"))
 			snprintf(buf, len, "incorrect class set");
-		else
-			ret = 1;
+		else {
+			ewl_window_class_set(EWL_WINDOW(win), "");
+			class = ewl_window_class_get(EWL_WINDOW(win));
+			if (class)
+				snprintf(buf, len, "non-empty class set");
+			else
+				ret = 1;
+		}
 	}
 
 	ewl_widget_destroy(win);
