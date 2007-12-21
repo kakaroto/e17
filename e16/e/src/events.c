@@ -268,13 +268,13 @@ ModeGetXY(Window rwin, int rx, int ry)
 
    if (Mode.wm.window)
      {
-	XTranslateCoordinates(disp, rwin, VRoot.xwin,
-			      rx, ry, &Mode.events.x, &Mode.events.y, &child);
+	XTranslateCoordinates(disp, rwin, VRoot.xwin, rx, ry,
+			      &Mode.events.cx, &Mode.events.cy, &child);
      }
    else
      {
-	Mode.events.x = rx;
-	Mode.events.y = ry;
+	Mode.events.cx = rx;
+	Mode.events.cy = ry;
      }
 }
 
@@ -321,9 +321,11 @@ HandleEvent(XEvent * ev)
 
      case MotionNotify:
 	Mode.events.time = ev->xmotion.time;
-	Mode.events.px = Mode.events.x;
-	Mode.events.py = Mode.events.y;
+	Mode.events.px = Mode.events.mx;
+	Mode.events.py = Mode.events.my;
 	ModeGetXY(ev->xmotion.root, ev->xmotion.x_root, ev->xmotion.y_root);
+	Mode.events.mx = Mode.events.cx;
+	Mode.events.my = Mode.events.cy;
 	Mode.events.on_screen = ev->xmotion.same_screen;
 	break;
 
@@ -890,7 +892,9 @@ EventShow(const XEvent * ev)
 		ev->xbutton.subwindow, ev->xbutton.state, ev->xbutton.button);
 	break;
      case MotionNotify:
-	Eprintf("%s sub=%#lx\n", buf, ev->xcrossing.subwindow);
+	Eprintf("%s sub=%#lx x,y=%d,%d rx,ry=%d,%d\n", buf,
+		ev->xmotion.subwindow, ev->xmotion.x, ev->xmotion.y,
+		ev->xmotion.x_root, ev->xmotion.y_root);
 	break;
      case EnterNotify:
      case LeaveNotify:

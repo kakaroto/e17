@@ -95,8 +95,8 @@ ActionMoveStart(EWin * ewin, char constrained, int nogroup)
    Mode.mode = MODE_MOVE_PENDING;
    Mode.constrained = constrained;
 
-   Mode_mr.win_x = Mode.events.x - (EoGetX(ewin) + EoGetX(EoGetDesk(ewin)));
-   Mode_mr.win_y = Mode.events.y - (EoGetY(ewin) + EoGetY(EoGetDesk(ewin)));
+   Mode_mr.win_x = Mode.events.cx - (EoGetX(ewin) + EoGetX(EoGetDesk(ewin)));
+   Mode_mr.win_y = Mode.events.cy - (EoGetY(ewin) + EoGetY(EoGetDesk(ewin)));
 
    EwinRaise(ewin);
    gwins = ListWinGroupMembersForEwin(ewin, GROUP_ACTION_MOVE, nogroup
@@ -159,7 +159,7 @@ ActionMoveEnd(EWin * ewin)
      }
    Mode.mode = MODE_NONE;
 
-   d2 = DesktopAt(Mode.events.x, Mode.events.y);
+   d2 = DesktopAt(Mode.events.mx, Mode.events.my);
 
    for (i = 0; i < num; i++)
      {
@@ -253,8 +253,10 @@ ActionMoveResume(void)
    if (Mode_mr.grab_server)
       EGrabServer();
 
-   dx = Mode.events.x - Mode_mr.win_x - EoGetX(EoGetDesk(ewin)) - ewin->shape_x;
-   dy = Mode.events.y - Mode_mr.win_y - EoGetY(EoGetDesk(ewin)) - ewin->shape_y;
+   dx =
+      Mode.events.mx - Mode_mr.win_x - EoGetX(EoGetDesk(ewin)) - ewin->shape_x;
+   dy =
+      Mode.events.my - Mode_mr.win_y - EoGetY(EoGetDesk(ewin)) - ewin->shape_y;
 
    /* Redraw any windows that were in "move mode" */
    lst = ListWinGroupMembersForEwin(ewin, GROUP_ACTION_MOVE,
@@ -316,8 +318,8 @@ ActionResizeStart(EWin * ewin, int hv)
      default:
      case MODE_RESIZE:
 	Mode.mode = hv;
-	x = Mode.events.x - EoGetX(ewin);
-	y = Mode.events.y - EoGetY(ewin);
+	x = Mode.events.cx - EoGetX(ewin);
+	y = Mode.events.cy - EoGetY(ewin);
 	w = EoGetW(ewin) >> 1;
 	h = EoGetH(ewin) >> 1;
 	ww = EoGetW(ewin) / 6;
@@ -376,7 +378,7 @@ ActionResizeStart(EWin * ewin, int hv)
 
      case MODE_RESIZE_H:
 	Mode.mode = hv;
-	x = Mode.events.x - EoGetX(ewin);
+	x = Mode.events.cx - EoGetX(ewin);
 	w = EoGetW(ewin) >> 1;
 	if (x < w)
 	   Mode_mr.resize_detail = RD(1, 0);
@@ -387,7 +389,7 @@ ActionResizeStart(EWin * ewin, int hv)
 
      case MODE_RESIZE_V:
 	Mode.mode = hv;
-	y = Mode.events.y - EoGetY(ewin);
+	y = Mode.events.cy - EoGetY(ewin);
 	h = EoGetH(ewin) >> 1;
 	if (y < h)
 	   Mode_mr.resize_detail = RD(0, 1);
@@ -397,8 +399,8 @@ ActionResizeStart(EWin * ewin, int hv)
 	break;
      }
 
-   Mode_mr.start_x = Mode.events.x;
-   Mode_mr.start_y = Mode.events.y;
+   Mode_mr.start_x = Mode.events.cx;
+   Mode_mr.start_y = Mode.events.cy;
    Mode_mr.win_x = EoGetX(ewin);
    Mode_mr.win_y = EoGetY(ewin);
    Mode_mr.win_w = ewin->client.w;
@@ -475,7 +477,7 @@ ActionMoveHandleMotion(void)
    if (!ewin)
       return;
 
-   EdgeCheckMotion(Mode.events.x, Mode.events.y);
+   EdgeCheckMotion(Mode.events.mx, Mode.events.my);
 
    gwins = ListWinGroupMembersForEwin(ewin, GROUP_ACTION_MOVE,
 				      Mode_mr.nogroup || Mode.move.swap, &num);
@@ -502,8 +504,8 @@ ActionMoveHandleMotion(void)
 	Mode.mode = MODE_MOVE;
      }
 
-   dx = Mode.events.x - Mode.events.px;
-   dy = Mode.events.y - Mode.events.py;
+   dx = Mode.events.mx - Mode.events.px;
+   dy = Mode.events.my - Mode.events.py;
 
    jumpx = 0;
    jumpy = 0;
@@ -649,18 +651,17 @@ ActionMoveHandleMotion(void)
 		  /* check for sufficient overlap and avoid flickering */
 		  if (((ewin1->shape_x >= ewin2->shape_x &&
 			ewin1->shape_x <= ewin2->shape_x +
-			EoGetW(ewin2) / 2 && Mode.events.x <= Mode.events.px) ||
+			EoGetW(ewin2) / 2 && Mode.events.mx <=
+			Mode.events.px) ||
 		       (ewin1->shape_x <= ewin2->shape_x &&
 			ewin1->shape_x + EoGetW(ewin1) / 2 >=
-			ewin2->shape_x &&
-			Mode.events.x >= Mode.events.px)) &&
-		      ((ewin1->shape_y >= ewin2->shape_y
-			&& ewin1->shape_y <=
-			ewin2->shape_y + EoGetH(ewin2) / 2
-			&& Mode.events.y <= Mode.events.py)
-		       || (EoGetY(ewin1) <= EoGetY(ewin2)
-			   && ewin1->shape_y + EoGetH(ewin1) / 2 >=
-			   ewin2->shape_y && Mode.events.y >= Mode.events.py)))
+			ewin2->shape_x && Mode.events.mx >= Mode.events.px)) &&
+		      ((ewin1->shape_y >= ewin2->shape_y &&
+			ewin1->shape_y <= ewin2->shape_y + EoGetH(ewin2) / 2 &&
+			Mode.events.my <= Mode.events.py) ||
+		       (EoGetY(ewin1) <= EoGetY(ewin2) &&
+			ewin1->shape_y + EoGetH(ewin1) / 2 >=
+			ewin2->shape_y && Mode.events.my >= Mode.events.py)))
 		    {
 		       int                 tmp_swapcoord_x;
 		       int                 tmp_swapcoord_y;
@@ -701,12 +702,12 @@ ActionResizeHandleMotion(void)
      default:
 	break;
      case 1:			/* Left */
-	w = Mode_mr.win_w - (Mode.events.x - Mode_mr.start_x);
+	w = Mode_mr.win_w - (Mode.events.mx - Mode_mr.start_x);
 	ICCCM_SizeMatch(ewin, w, h, &w, &h);
 	x = Mode_mr.win_x + (Mode_mr.win_w - w);
 	break;
      case 2:			/* Right */
-	w = Mode_mr.win_w + (Mode.events.x - Mode_mr.start_x);
+	w = Mode_mr.win_w + (Mode.events.mx - Mode_mr.start_x);
 	ICCCM_SizeMatch(ewin, w, h, &w, &h);
 	break;
      }
@@ -716,12 +717,12 @@ ActionResizeHandleMotion(void)
      default:
 	break;
      case 1:			/* Top */
-	h = Mode_mr.win_h - (Mode.events.y - Mode_mr.start_y);
+	h = Mode_mr.win_h - (Mode.events.my - Mode_mr.start_y);
 	ICCCM_SizeMatch(ewin, w, h, &w, &h);
 	y = Mode_mr.win_y + (Mode_mr.win_h - h);
 	break;
      case 2:			/* Bottom */
-	h = Mode_mr.win_h + (Mode.events.y - Mode_mr.start_y);
+	h = Mode_mr.win_h + (Mode.events.my - Mode_mr.start_y);
 	ICCCM_SizeMatch(ewin, w, h, &w, &h);
 	break;
      }

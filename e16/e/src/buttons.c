@@ -421,8 +421,8 @@ ButtonDragStart(Button * b)
    GrabPointerSet(EoGetWin(b), ECSR_GRAB, 0);
    Mode.mode = MODE_BUTTONDRAG;
    Mode_buttons.move_pending = 1;
-   Mode_buttons.start_x = Mode.events.x;
-   Mode_buttons.start_y = Mode.events.y;
+   Mode_buttons.start_x = Mode.events.cx;
+   Mode_buttons.start_y = Mode.events.cy;
 }
 
 static void
@@ -434,7 +434,7 @@ ButtonDragEnd(Button * b)
 
    if (!Mode_buttons.move_pending)
      {
-	dsk = DesktopAt(Mode.events.x, Mode.events.y);
+	dsk = DesktopAt(Mode.events.mx, Mode.events.my);
 	ButtonMoveToDesktop(b, dsk);
 	dsk = EoGetDesk(b);
 	ButtonMoveRelative(b, -EoGetX(dsk), -EoGetY(dsk));
@@ -558,15 +558,15 @@ ButtonEventMotion(Button * b, XEvent * ev __UNUSED__)
    if (Mode.mode != MODE_BUTTONDRAG)
       return;
 
-   dx = Mode.events.x - Mode.events.px;
-   dy = Mode.events.y - Mode.events.py;
+   dx = Mode.events.mx - Mode.events.px;
+   dy = Mode.events.my - Mode.events.py;
 
    if (Mode_buttons.move_pending)
      {
 	int                 x, y;
 
-	x = Mode.events.x - Mode_buttons.start_x;
-	y = Mode.events.y - Mode_buttons.start_y;
+	x = Mode.events.mx - Mode_buttons.start_x;
+	y = Mode.events.my - Mode_buttons.start_y;
 	if (x < 0)
 	   x = -x;
 	if (y < 0)

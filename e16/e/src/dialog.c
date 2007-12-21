@@ -2183,8 +2183,8 @@ DItemEventMotion(Win win __UNUSED__, DItem * di, XEvent * ev)
 	   break;
 	if (ev->xmotion.window == WinGetXwin(di->item.slider.knob_win))
 	  {
-	     dx = Mode.events.x - Mode.events.px;
-	     dy = Mode.events.y - Mode.events.py;
+	     dx = Mode.events.mx - Mode.events.px;
+	     dy = Mode.events.my - Mode.events.py;
 	     if (di->item.slider.horizontal)
 	       {
 		  di->item.slider.wanted_val += dx;

@@ -90,14 +90,14 @@ EdgeTimeout(int val, void *data __UNUSED__)
       dx = 0;
    if (ah == 1)
       dy = 0;
-   Mode.events.px = Mode.events.x;
-   Mode.events.py = Mode.events.y;
-   Mode.events.x += dx;
-   Mode.events.y += dy;
-   EXWarpPointer(VRoot.xwin, Mode.events.x, Mode.events.y);
+   Mode.events.px = Mode.events.mx;
+   Mode.events.py = Mode.events.my;
+   Mode.events.mx += dx;
+   Mode.events.my += dy;
+   EXWarpPointer(VRoot.xwin, Mode.events.mx, Mode.events.my);
    DeskCurrentMoveAreaBy(dax, day);
-   Mode.events.px = Mode.events.x;
-   Mode.events.py = Mode.events.y;
+   Mode.events.px = Mode.events.mx;
+   Mode.events.py = Mode.events.my;
 }
 
 static void

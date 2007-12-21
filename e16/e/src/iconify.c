@@ -574,7 +574,7 @@ IconboxEvent(Container * ct, XEvent * ev)
 
 	name = EwinGetIconName(ewin);
 	if (name)
-	   TooltipShow(tt, name, NULL, Mode.events.x, Mode.events.y);
+	   TooltipShow(tt, name, NULL, Mode.events.cx, Mode.events.cy);
 	break;
 
      case LeaveNotify:

@@ -318,8 +318,8 @@ MagwinEvent(Win win __UNUSED__, XEvent * ev, void *prm)
      case MotionNotify:
 	if (mw->grabbing)
 	  {
-	     mw->cx = Mode.events.x;
-	     mw->cy = Mode.events.y;
+	     mw->cx = Mode.events.mx;
+	     mw->cy = Mode.events.my;
 	     mw->update = 1;
 	  }
 	else

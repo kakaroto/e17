@@ -1360,10 +1360,10 @@ IPC_InsertKeys(const char *params, Client * c __UNUSED__)
      {
 	int                 j;
 
-	ev.x = Mode.events.x;
-	ev.y = Mode.events.y;
-	ev.x_root = Mode.events.x;
-	ev.y_root = Mode.events.y;
+	ev.x = Mode.events.cx;
+	ev.y = Mode.events.cy;
+	ev.x_root = Mode.events.cx;
+	ev.y_root = Mode.events.cy;
 	for (j = 0; j < (int)(sizeof(ks) / sizeof(struct _keyset)); j++)
 	  {
 	     if (strncmp(ks[j].ch, &(s[i]), strlen(ks[j].ch)))

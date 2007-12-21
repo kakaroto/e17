@@ -1747,8 +1747,8 @@ DeskDragStart(int desk)
 
    dsk = _DeskGet(desk);
 
-   desks.drag_x0 = Mode.events.x - EoGetX(dsk);
-   desks.drag_y0 = Mode.events.y - EoGetY(dsk);
+   desks.drag_x0 = Mode.events.cx - EoGetX(dsk);
+   desks.drag_y0 = Mode.events.cy - EoGetY(dsk);
 
    Mode.mode = MODE_DESKDRAG;
 }
@@ -1764,8 +1764,8 @@ DeskDragMotion(Desk * dsk)
 {
    int                 x, y;
 
-   x = Mode.events.x - desks.drag_x0;
-   y = Mode.events.y - desks.drag_y0;
+   x = Mode.events.mx - desks.drag_x0;
+   y = Mode.events.my - desks.drag_y0;
 
    switch (Conf.desks.dragdir)
      {
@@ -1967,7 +1967,7 @@ DeskHandleEvents(Win win __UNUSED__, XEvent * ev, void *prm)
 
      case MotionNotify:
 	/* Motion over desk buttons doesn't go here - We probably don't care much. */
-	DesksSetCurrent(DesktopAt(Mode.events.x, Mode.events.y));
+	DesksSetCurrent(DesktopAt(Mode.events.mx, Mode.events.my));
 	TooltipsSetPending(1, DeskGetAclass, dsk);
 	break;
 

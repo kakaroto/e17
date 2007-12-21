@@ -1094,8 +1094,8 @@ PagerShowTt(EWin * ewin)
    if (tt)
      {
 	if (ewin)
-	   TooltipShow(tt, EwinGetIconName(ewin), NULL, Mode.events.x,
-		       Mode.events.y);
+	   TooltipShow(tt, EwinGetIconName(ewin), NULL, Mode.events.cx,
+		       Mode.events.cy);
 	else
 	   TooltipHide(tt);
      }
@@ -1377,8 +1377,8 @@ PagerEwinMove(Pager * p __UNUSED__, Pager * pd, EWin * ewin)
    Hiwin              *phi = hiwin;
 
    /* Delta in pager coords */
-   dx = Mode.events.x - Mode.events.px;
-   dy = Mode.events.y - Mode.events.py;
+   dx = Mode.events.mx - Mode.events.px;
+   dy = Mode.events.my - Mode.events.py;
 
    if (dx == 0 && dy == 0)
       return;
@@ -1485,8 +1485,8 @@ PagerHiwinHandleMouseUp(Pager * p, int px, int py, int button)
    if (!ewin)
       goto done;
 
-   in_vroot = (Mode.events.x >= 0 && Mode.events.x < VRoot.w &&
-	       Mode.events.y >= 0 && Mode.events.y < VRoot.h);
+   in_vroot = (Mode.events.cx >= 0 && Mode.events.cx < VRoot.w &&
+	       Mode.events.cy >= 0 && Mode.events.cy < VRoot.h);
 
    if (button == Conf_pagers.win_button)
      {
@@ -1528,8 +1528,8 @@ PagerHiwinHandleMouseUp(Pager * p, int px, int py, int button)
 	  {
 	     /* Pointer is not in pager or iconbox */
 	     /* Move window(s) to pointer location */
-	     x = Mode.events.x - EoGetW(ewin) / 2;
-	     y = Mode.events.y - EoGetH(ewin) / 2;
+	     x = Mode.events.cx - EoGetW(ewin) / 2;
+	     y = Mode.events.cy - EoGetH(ewin) / 2;
 	     EwinGroupMove(ewin, DesksGetCurrent(), x, y);
 	  }
      }

@@ -1342,26 +1342,27 @@ MenusHandleMotion(void)
 	int                 my_width, my_height, x_org, y_org, head_num = 0;
 
 	head_num =
-	   ScreenGetGeometry(Mode.events.x, Mode.events.y, &x_org, &y_org,
+	   ScreenGetGeometry(Mode.events.mx, Mode.events.my, &x_org, &y_org,
 			     &my_width, &my_height);
 
-	if (Mode.events.x > ((x_org + my_width) - (menu_scroll_dist + 1)))
+	if (Mode.events.mx > ((x_org + my_width) - (menu_scroll_dist + 1)))
 	  {
-	     xdist = -(menu_scroll_dist + (Mode.events.x - (x_org + my_width)));
+	     xdist =
+		-(menu_scroll_dist + (Mode.events.mx - (x_org + my_width)));
 	  }
-	else if (Mode.events.x < (menu_scroll_dist + x_org))
+	else if (Mode.events.mx < (menu_scroll_dist + x_org))
 	  {
-	     xdist = x_org + menu_scroll_dist - (Mode.events.x);
+	     xdist = x_org + menu_scroll_dist - (Mode.events.mx);
 	  }
 
-	if (Mode.events.y > (VRoot.h - (menu_scroll_dist + 1)))
+	if (Mode.events.my > (VRoot.h - (menu_scroll_dist + 1)))
 	  {
 	     ydist =
-		-(menu_scroll_dist + (Mode.events.y - (y_org + my_height)));
+		-(menu_scroll_dist + (Mode.events.my - (y_org + my_height)));
 	  }
-	else if (Mode.events.y < (menu_scroll_dist + y_org))
+	else if (Mode.events.my < (menu_scroll_dist + y_org))
 	  {
-	     ydist = y_org + menu_scroll_dist - (Mode.events.y);
+	     ydist = y_org + menu_scroll_dist - (Mode.events.my);
 	  }
 
 	/* That's a hack to avoid unwanted events:

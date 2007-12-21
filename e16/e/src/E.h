@@ -458,8 +458,9 @@ typedef struct
    struct
    {
       Time                time;
-      int                 x, y;
-      int                 px, py;
+      int                 cx, cy;	/* Any detected pointer movement */
+      int                 mx, my;	/* Motion event */
+      int                 px, py;	/* Previous motion event */
       Time                last_btime;
       Window              last_bpress;
       Window              last_bpress2;

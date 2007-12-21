@@ -508,7 +508,7 @@ GetEwinPointerInClient(void)
    int                 i, num;
    Desk               *dsk;
 
-   dsk = DesktopAt(Mode.events.x, Mode.events.y);
+   dsk = DesktopAt(Mode.events.cx, Mode.events.cy);
    EQueryPointer(EoGetWin(dsk), &px, &py, NULL, NULL);
 
    lst = EwinListGetForDesk(&num, dsk);
@@ -862,8 +862,8 @@ AddToFamily(EWin * ewin, Window xwin)
 	     DeskGoto(dsk);
 
 	     EQueryPointer(NULL, &rx, &ry, NULL, NULL);
-	     Mode.events.x = rx;
-	     Mode.events.y = ry;
+	     Mode.events.cx = rx;
+	     Mode.events.cy = ry;
 
 	     /* try to center the window on the mouse pointer */
 	     newWinX = rx;
@@ -923,11 +923,11 @@ AddToFamily(EWin * ewin, Window xwin)
 	DeskGoto(dsk);
 
 	EQueryPointer(NULL, &rx, &ry, NULL, NULL);
-	Mode.events.x = rx;
-	Mode.events.y = ry;
+	Mode.events.cx = rx;
+	Mode.events.cy = ry;
 	ewin->state.placed = 1;
-	x = Mode.events.x + 1;
-	y = Mode.events.y + 1;
+	x = Mode.events.cx + 1;
+	y = Mode.events.cy + 1;
 	EwinMoveToDesktopAt(ewin, dsk, x, y);
 	EwinMove(ewin, x, y);
 	EwinShow(ewin);
