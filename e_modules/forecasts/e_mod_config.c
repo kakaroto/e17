@@ -8,6 +8,7 @@ struct _E_Config_Dialog_Data
   int degrees;
   char *code; 
   int show_text;
+  int popup_on_hover;
 };
 
 static void *_create_data(E_Config_Dialog * cfd);
@@ -50,6 +51,7 @@ _fill_data(Config_Item * ci, E_Config_Dialog_Data * cfdata)
   if (ci->code)
     cfdata->code = strdup(ci->code);
   cfdata->show_text = ci->show_text;
+  cfdata->popup_on_hover = ci->popup_on_hover;
 }
 
 static void *
@@ -93,6 +95,8 @@ _basic_create_widgets(E_Config_Dialog * cfd, Evas * evas,
 			 &(cfdata->poll_time), NULL, 40);
   e_widget_framelist_object_append(of, ob);
   ob = e_widget_check_add(evas, D_("Show Description"), &(cfdata->show_text));
+  e_widget_framelist_object_append(of, ob);
+  ob = e_widget_check_add(evas, _("Popup on mouse over"), &(cfdata->popup_on_hover));
   e_widget_framelist_object_append(of, ob);
   e_widget_list_object_append(o, of, 1, 1, 0.5);
 
@@ -142,6 +146,7 @@ _basic_apply_data(E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
   *t = toupper(*t);
   ci->code = evas_stringshare_add(t);
   ci->show_text = cfdata->show_text;
+  ci->popup_on_hover = cfdata->popup_on_hover;
 
   e_config_save_queue();
   _forecasts_config_updated(ci);

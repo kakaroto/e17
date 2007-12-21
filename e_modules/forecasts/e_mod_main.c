@@ -362,7 +362,8 @@ _forecasts_config_item_get(const char *id)
    ci->host = evas_stringshare_add("xml.weather.yahoo.com");
    ci->code = evas_stringshare_add("BUXX0005");
    ci->show_text = 1;
-
+   ci->popup_on_hover = 1;
+   
    forecasts_config->items = evas_list_append(forecasts_config->items, ci);
    return ci;
 }
@@ -393,6 +394,7 @@ e_modapi_init(E_Module * m)
    E_CONFIG_VAL(D, T, host, STR);
    E_CONFIG_VAL(D, T, code, STR);
    E_CONFIG_VAL(D, T, show_text, INT);
+   E_CONFIG_VAL(D, T, popup_on_hover, INT);
 
    conf_edd = E_CONFIG_DD_NEW("Forecasts_Config", Config);
 #undef T
@@ -415,6 +417,7 @@ e_modapi_init(E_Module * m)
 	ci->code = evas_stringshare_add("BUXX0005");
 	ci->id = evas_stringshare_add("0");
 	ci->show_text = 1;
+	ci->popup_on_hover = 1;
 
 	forecasts_config->items = evas_list_append(forecasts_config->items, ci);
      }
@@ -646,7 +649,7 @@ _forecasts_parse(void *data)
    char city[256];
    char region[256];
    char location[512];
-   int  visibility;
+   float visibility;
    int  i;
 
    inst = data;
@@ -694,7 +697,7 @@ _forecasts_parse(void *data)
    sscanf(needle, "\"%3[^\"]\"", inst->units.speed);
 
    /* Current conditions */
-   needle = strstr(inst->buffer, "<yweather:condition text=");
+   needle = strstr(inst->buffer, "<yweather:condition  text=");
    if (!needle) goto error;
    needle = strstr(needle, "\"");
    sscanf(needle, "\"%255[^\"]\"", inst->condition.desc);
@@ -734,8 +737,8 @@ _forecasts_parse(void *data)
    needle = strstr(needle, "visibility=\"");
    if (!needle) goto error;
    needle = strstr(needle, "\"");
-   sscanf(needle, "\"%d\"", &visibility);
-   inst->details.atmosphere.visibility = (float) visibility / 100;
+   sscanf(needle, "\"%f\"", &visibility);
+   inst->details.atmosphere.visibility = visibility;
    needle = strstr(needle, "pressure=\"");
    if (!needle) goto error;
    needle = strstr(needle, "\"");
@@ -1068,13 +1071,19 @@ _forecasts_popup_destroy(Instance *inst)
    e_object_del(E_OBJECT(inst->popup));
 }
 
-static void 
+static void
 _cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Instance *inst;
    Evas_Event_Mouse_Down *ev;
 
-   inst = data;
+   if (!(inst = data)) return;
+   if (!inst->ci->popup_on_hover)
+     {
+        e_gadcon_popup_show(inst->popup);
+	return;
+     }
+
    ev = event_info;
    if (ev->button == 1)
      {
@@ -1086,17 +1095,21 @@ static void
 _cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Instance *inst;
- 
+
    if (!(inst = data)) return;
+   if (!inst->ci->popup_on_hover) return;
+
    e_gadcon_popup_show(inst->popup);
 }
 
-static void 
+static void
 _cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Instance *inst;
-   
+
    if (!(inst = data)) return;
+
+   if (inst->popup->pinned) return;
    e_gadcon_popup_hide(inst->popup);
 }
 

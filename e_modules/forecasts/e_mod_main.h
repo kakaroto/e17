@@ -27,6 +27,7 @@ struct _Config_Item
    int degrees;
    const char *host, *code;
    int show_text;
+   int popup_on_hover;
 };
 
 EAPI extern E_Module_Api e_modapi;
