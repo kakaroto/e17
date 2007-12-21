@@ -152,7 +152,8 @@ news_viewer_refresh(News_Viewer *nv)
         nv->vfeeds.selected = NULL;
         nv->varticles.selected = NULL;
         e_widget_button_icon_set(nv->vfeeds.button_feed, NULL);
-        e_widget_ilist_clear(nv->varticles.ilist);
+	if (nv->varticles.ilist)
+		e_widget_ilist_clear(nv->varticles.ilist);
         _vcontent_text_set(nv, "");
      }
 
