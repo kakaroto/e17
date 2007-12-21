@@ -1108,6 +1108,7 @@ _cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info)
    Instance *inst;
 
    if (!(inst = data)) return;
+   if (!(inst->popup)) return;
 
    if (inst->popup->pinned) return;
    e_gadcon_popup_hide(inst->popup);
