@@ -296,8 +296,8 @@ backgrounds.timeout = 240
 
 # [bool] Enable composite manager
 compmgr.enable = 0
-# [int] Composite manager mode (always 2 atm)
-compmgr.mode = 2
+# [int] Composite manager mode (always 1 atm)
+compmgr.mode = 1
 # [int] Dropshadow mode (0: off, 1: sharp, 2: blurry, 3: echo)
 compmgr.shadows.mode = 0
 # [int] Dropshadow offset
@@ -453,6 +453,10 @@ misc.movres.mode_move = 0
 misc.movres.mode_resize = 2
 # [int] Geometry indicator mode (0: off, 1: window center, 2: screen corner)
 misc.movres.mode_info = 1
+# [int] Default maximize mode (0: Absolute, 1: Available, 2: Conservative)
+misc.movres.mode_maximize_default = 1
+# [int] Move/resize color (RGB) when using non-server-grabbing technincal/box modes.
+misc.movres.color = 0xff0000
 # [bool] Avoid server grab
 # Use non-server-grabbing line drawing technique in technical and box modes.
 misc.movres.avoid_server_grab = 1
@@ -523,6 +527,7 @@ misc.testing.argb_internal_objects = 0
 misc.testing.argb_internal_clients = 0
 misc.testing.argb_clients = 0
 misc.testing.argb_clients_inherit_attr = 0
+misc.testing.enable_startup_id = 1
 misc.testing.image_cache_size = -1
 misc.testing.mask_alpha_threshold = 8
 
@@ -710,12 +715,7 @@ collisions with the new enlightenment DR17.
 1) home configuration directory is now ~/.e16, not ~/.enlightenment.
 2) menu files have been moved to a subdirectory called menus
    you will need to move customized menus and subdirectories to
-   ~/.e16/menus. Note: because of this menu files will have to have
-   menus/ prepended to it in order to be located. Ex:
-   file.menu file...
-   "User Menus"
-   "User Application list" NULL menu "menus/user_apps.menu"
-   whereas the old menu version did not have menus/. 
+   ~/.e16/menus.
 3) you will need to move ~/.enlightenment/backgrounds files to ~/.e16
    and any themes as well.
 4) $prefix/share/enlightenment has been changed to $prefix/share/e16
