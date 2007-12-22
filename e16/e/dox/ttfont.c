@@ -78,9 +78,18 @@ Efont_free(Efont * f)
 Efont              *
 Efont_load(const char *file, int size)
 {
+   static char         fp_set = 0;
    char                s[4096];
    Efont              *f;
    Imlib_Font          ff;
+
+   if (!fp_set)
+     {
+	imlib_add_path_to_font_path(docdir);
+	sprintf(s, "%s/../ttfonts", docdir);
+	imlib_add_path_to_font_path(s);
+	fp_set = 1;
+     }
 
    Esnprintf(s, sizeof(s), "%s/%d", file, size);
    ff = imlib_load_font(s);
