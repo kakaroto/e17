@@ -119,11 +119,11 @@ TextStateLoadFont(TextState * ts)
 
 	ts->xfontset = XCreateFontSet(disp, ts->fontname, &missing_list,
 				      &missing_cnt, &def_str);
+	if (!ts->xfontset)
+	   ts->xfontset = XCreateFontSet(disp, "fixed", &missing_list,
+					 &missing_cnt, &def_str);
 	if (missing_cnt)
-	  {
-	     XFreeStringList(missing_list);
-	     return;
-	  }
+	   XFreeStringList(missing_list);
 	if (!ts->xfontset)
 	   return;
 	font_cnt = XFontsOfFontSet(ts->xfontset, &fs, &fn);
