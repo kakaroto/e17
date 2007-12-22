@@ -28,9 +28,9 @@ static const char      *_gc_id_new   (void);
 
 /* Module Protos */
 static void         _mixer_simple_volume_change (Mixer *mixer, Config_Item *ci, double val);
-static void         _mixer_volume_change        (Mixer *mixer, Config_Item *ci, int channel_id, double val);
+static void         _mixer_volume_change        (Mixer *mixer, Config_Item *ci, double val);
 static void         _mixer_simple_mute_toggle   (Mixer *mixer, Config_Item *ci);
-static void         _mixer_mute_toggle          (Mixer *mixer, Config_Item *ci, int channel_id);
+static void         _mixer_mute_toggle          (Mixer *mixer, Config_Item *ci);
 
 static Config_Item *_mixer_config_item_get   (void *data, const char *id);
 static void         _mixer_menu_cb_post      (void *data, E_Menu *m);
@@ -77,14 +77,14 @@ static const E_Gadcon_Client_Class _gc_class =
 static E_Gadcon_Client *
 _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 {
-   Instance        *inst;
-   Mixer           *mixer;
+   Instance *inst;
+   Mixer *mixer;
    E_Gadcon_Client *gcc;
-   char             buf[4096];
-   
+   char buf[4096];
+
    inst = E_NEW(Instance, 1);
    if (!inst) return NULL;
-   
+
    mixer = E_NEW(Mixer, 1);
    if (!mixer) return NULL;
    mixer->inst = inst;
@@ -106,20 +106,20 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    /* Defer this until after the mixer system has been setup */
    inst->ci = _mixer_config_item_get(mixer, id);
 
-   if ((mixer->mix_sys->get_volume) && (inst->ci->card_id != 0) && (inst->ci->channel_id != 0))
+   if ((mixer->mix_sys->get_volume) && (inst->ci->channel_id != 0))
      {
 	int ret;
 	
 	ret = mixer->mix_sys->get_volume(inst->ci->card_id, inst->ci->channel_id);
 	if (ret < 33)
 	  edje_object_signal_emit(mixer->base, "low", "");
-	else if ((ret >= 34) && (ret < 66))
+	else if ((ret >= 33) && (ret < 66))
 	  edje_object_signal_emit(mixer->base, "medium", "");
-	else if (ret > 66)
+	else if (ret >= 66)
 	  edje_object_signal_emit(mixer->base, "high", ""); 
      }
 
-   if ((mixer->mix_sys->get_mute) && (inst->ci->card_id != 0) && (inst->ci->channel_id != 0))
+   if ((mixer->mix_sys->get_mute) && (inst->ci->channel_id != 0))
      {
         int m;
 
@@ -148,8 +148,8 @@ static void
 _gc_shutdown(E_Gadcon_Client *gcc)
 {
    Instance *inst;
-   Mixer    *mixer;
-   
+   Mixer *mixer;
+
    inst = gcc->data;
    if (!inst) return;
    mixer = inst->mixer;
@@ -158,7 +158,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    if (mixer->mix_sys) _mixer_system_shutdown(mixer->mix_sys);
    if (mixer->base) evas_object_del(mixer->base);
    if (mixer->gauge_win) _mixer_window_gauge_free(mixer->gauge_win);
-   
+
    mixer_config->instances = evas_list_remove(mixer_config->instances, inst);
    E_FREE(mixer);
    E_FREE(inst);
@@ -194,7 +194,7 @@ _gc_icon(Evas *evas)
 static const char *
 _gc_id_new(void)
 {
-   int  num = 0;
+   int num = 0;
    char buf[128];
    Config_Item *ci;
 
@@ -218,7 +218,7 @@ mixer_vol_increase(Instance *inst)
 
    _mixer_window_gauge_pop_up(inst);
 
-   if (!inst || !inst->mixer) return;
+   if ((!inst) || (!inst->mixer)) return;
 
    win = inst->mixer->gauge_win;
    _mixer_volume_increase(inst->mixer, inst->ci);
@@ -229,7 +229,7 @@ mixer_vol_increase(Instance *inst)
 void
 mixer_vol_decrease(Instance *inst)
 {
-   Mixer_Win_Gauge  *win;
+   Mixer_Win_Gauge *win;
 
    _mixer_window_gauge_pop_up(inst);
 
@@ -245,7 +245,6 @@ void
 mixer_mute_toggle(Instance *inst)
 {
    if ((!inst) || (!inst->mixer)) return;
-
    _mixer_simple_mute_toggle(inst->mixer, inst->ci);
 }
 
@@ -265,7 +264,7 @@ _mixer_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
    if ((ev->button == 3) && (!mixer_config->menu))
      {
 	zone = e_util_zone_current_get(e_manager_current_get());
-	
+
 	mn = e_menu_new();
 	e_menu_post_deactivate_callback_set(mn, _mixer_menu_cb_post, inst);
 	mixer_config->menu = mn;
@@ -301,8 +300,7 @@ _mixer_cb_mouse_wheel(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Evas_Event_Mouse_Wheel *ev;
    Mixer *mixer;
-   int vol;
-   int dir = 0;
+   int vol, dir = 0;
    int step = 4;
    double val;
 
@@ -415,13 +413,13 @@ _mixer_system_init(void *data)
 {
    Mixer *mixer;
    Mixer_System *sys;
-   
+
    if (!(mixer = data)) return;
 
    sys = E_NEW(Mixer_System, 1);
    if (!sys) return;
    mixer->mix_sys = sys;
-   
+
 #if defined(HAVE_ALSA)
    sys->get_cards = alsa_get_cards;
    sys->get_card = alsa_get_card;
@@ -527,7 +525,7 @@ e_modapi_init(E_Module *m)
      }
    mixer_register_module_actions();
    mixer_register_module_keybindings();
-   
+
    mixer_config->module = m;
 
    e_gadcon_provider_register(&_gc_class);
@@ -584,13 +582,12 @@ _mixer_simple_volume_change(Mixer *mixer, Config_Item *ci, double val)
 {
    if (!mixer) return;
    if (!ci) return;
-
-   _mixer_volume_change(mixer, ci, ci->channel_id, val);
+   _mixer_volume_change(mixer, ci, val);
 }
 
 /* Changes the volume of the given channel*/
 static void 
-_mixer_volume_change(Mixer *mixer, Config_Item *ci, int channel_id, double val)
+_mixer_volume_change(Mixer *mixer, Config_Item *ci, double val)
 {
    int m, ret;
 
@@ -599,11 +596,20 @@ _mixer_volume_change(Mixer *mixer, Config_Item *ci, int channel_id, double val)
    if (!mixer->mix_sys->set_volume) return;
    if (!ci) return;
 
-   if (channel_id != 0) 
+   if (ci->channel_id != 0) 
      {
-	ret = mixer->mix_sys->set_volume(ci->card_id, channel_id, val);
+	ret = mixer->mix_sys->set_volume(ci->card_id, ci->channel_id, val);
 	if (ret)
 	  {
+	     m = mixer->mix_sys->get_mute(ci->card_id, ci->channel_id);
+	     if (m) 
+	       {
+		  edje_object_signal_emit(mixer->base, "muted", "");
+		  return;
+	       }
+	     else 
+	       edje_object_signal_emit(mixer->base, "unmuted", "");
+
 	     if (val < 33)
 	       edje_object_signal_emit(mixer->base, "low", "");
 	     else if ((val >= 33) && (val < 66))
@@ -620,13 +626,12 @@ _mixer_simple_mute_toggle(Mixer *mixer, Config_Item *ci)
 {
    if (!mixer) return;
    if (!ci) return;
-
-   _mixer_mute_toggle(mixer, ci, ci->channel_id);
+   _mixer_mute_toggle(mixer, ci);
 }
 
 /* Mute the given channel */
 static void         
-_mixer_mute_toggle(Mixer *mixer, Config_Item *ci, int channel_id)
+_mixer_mute_toggle(Mixer *mixer, Config_Item *ci)
 {
    int m;
    Mixer_Win_Simple *win;
@@ -639,7 +644,7 @@ _mixer_mute_toggle(Mixer *mixer, Config_Item *ci, int channel_id)
    if (!mixer->mix_sys->get_volume) return;
 
    win = mixer->simple_win;
-   m = mixer->mix_sys->get_mute(ci->card_id, channel_id);
+   m = mixer->mix_sys->get_mute(ci->card_id, ci->channel_id);
    m = m ? 0 : 1;
    mixer->mix_sys->set_mute(ci->card_id, ci->channel_id, m);
    if (m) 
@@ -657,19 +662,19 @@ _mixer_window_simple_pop_up(Instance *inst)
    Evas_Coord ox, oy, ow, oh;
    Evas_Coord mw, mh;
    int cx, cy, cw, ch;
-   
+
    if ((!inst) || (!inst->mixer)) return;
    if (!(con = e_container_current_get(e_manager_current_get()))) return;
-   
+
    evas_object_geometry_get(inst->mixer->base, &ox, &oy, &ow, &oh); 
-   
+
    if (!(win = inst->mixer->simple_win))
      {
         win = E_NEW(Mixer_Win_Simple, 1);
         inst->mixer->simple_win = win;
         win->mixer = inst->mixer;
         win->window = e_popup_new(e_zone_current_get(con), 0, 0, 0, 0);
-	
+
         win->bg_obj = edje_object_add(win->window->evas);
         e_theme_edje_object_set(win->bg_obj, "base/theme/menus",
 				"e/widgets/menu/default/background");
@@ -677,11 +682,11 @@ _mixer_window_simple_pop_up(Instance *inst)
 	edje_object_signal_emit(win->bg_obj, "e,action,show,title", "e");
         edje_object_message_signal_process(win->bg_obj);
         evas_object_show(win->bg_obj);
-        
+
         win->vbox = e_box_add(win->window->evas);
         e_box_freeze(win->vbox);
         e_box_orientation_set(win->vbox, 0);
-        
+
         win->slider = e_slider_add(win->window->evas);
         e_slider_value_range_set(win->slider, 0.0, 100.0);
         e_slider_orientation_set(win->slider, 0);
@@ -694,7 +699,7 @@ _mixer_window_simple_pop_up(Instance *inst)
                                mw, mh, 9999, 9999);
         evas_object_smart_callback_add(win->slider, "changed",
                                        _mixer_window_simple_changed_cb, win);
-        
+
         win->check = e_widget_check_add(win->window->evas, D_("Mute"), &win->mute);
         evas_object_show(win->check);
         e_widget_min_size_get(win->check, &mw, &mh);
@@ -702,13 +707,12 @@ _mixer_window_simple_pop_up(Instance *inst)
         e_box_pack_options_set(win->check, 0, 0, 0, 0, 0.5, 0.5, mw, mh, mw, mh);
         evas_object_smart_callback_add(win->check, "changed",
                                        _mixer_window_simple_mute_cb, win);
-	
+
         e_box_min_size_get(win->vbox, &mw, &mh);
         if (mw < ow)  mw = ow;
         if (mh < 150) mh = 150;
         edje_extern_object_min_size_set(win->vbox, mw, mh);
         edje_object_part_swallow(win->bg_obj, "e.swallow.content", win->vbox);
-	
         edje_object_size_min_calc(win->bg_obj, &win->w, &win->h);
         evas_object_move(win->bg_obj, 0, 0);
         evas_object_resize(win->bg_obj, win->w, win->h);
@@ -718,29 +722,33 @@ _mixer_window_simple_pop_up(Instance *inst)
      {
         Ecore_X_Window root, parent;
         int root_x, root_y, root_w, root_h;
-        
+
         root = win->window->evas_win;
         while ((parent = ecore_x_window_parent_get(root)) != 0)
 	  root = parent;
-        
+
         ecore_x_window_geometry_get(root, &root_x, &root_y, &root_w, &root_h);
         win->input_window = ecore_x_window_input_new(root, root_x, root_y, root_w, root_h);
         ecore_x_window_show(win->input_window);
         /* TODO: Fixme... */
         //ecore_x_pointer_confine_grab(win->input_window);
         ecore_x_keyboard_grab(win->input_window);
-        
-        win->mouse_move_handler = ecore_event_handler_add(ECORE_X_EVENT_MOUSE_MOVE,
-                                                        _mixer_window_simple_mouse_move_cb, win);
-        win->mouse_down_handler = ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_DOWN,
-                                                        _mixer_window_simple_mouse_down_cb, win);
-        win->mouse_up_handler = ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_UP,
-                                                        _mixer_window_simple_mouse_up_cb, win);
-        win->mouse_wheel_handler = ecore_event_handler_add(ECORE_X_EVENT_MOUSE_WHEEL,
-                                                        _mixer_window_simple_mouse_wheel_cb, win);
-        
+
+        win->mouse_move_handler = 
+	  ecore_event_handler_add(ECORE_X_EVENT_MOUSE_MOVE,
+				  _mixer_window_simple_mouse_move_cb, win);
+        win->mouse_down_handler = 
+	  ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_DOWN,
+				  _mixer_window_simple_mouse_down_cb, win);
+        win->mouse_up_handler = 
+	  ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_UP,
+				  _mixer_window_simple_mouse_up_cb, win);
+        win->mouse_wheel_handler = 
+	  ecore_event_handler_add(ECORE_X_EVENT_MOUSE_WHEEL,
+				  _mixer_window_simple_mouse_wheel_cb, win);
+
         win->first_mouse_up = 1;
-        
+
         evas_event_feed_mouse_move(win->window->evas,
                                    -100000, -100000, ecore_time_get(), NULL);
         evas_event_feed_mouse_in(win->window->evas,
@@ -750,14 +758,12 @@ _mixer_window_simple_pop_up(Instance *inst)
    if (inst->mixer->mix_sys->get_volume) 
      {
         int vol;
-//        double v;
 
 	if (inst->ci->channel_id != 0) 
 	  {
 	     edje_object_signal_emit(e_slider_edje_object_get(win->slider), 
 				     "e,state,enabled", "e");
 	     vol = inst->mixer->mix_sys->get_volume(inst->ci->card_id, inst->ci->channel_id);
-//	     v = (1.0 - ((double)vol / 100));
 	     e_slider_value_set(win->slider, vol);
 	     if (vol < 33)
 	       edje_object_signal_emit(inst->mixer->base, "low", "");
@@ -781,12 +787,12 @@ _mixer_window_simple_pop_up(Instance *inst)
    e_gadcon_canvas_zone_geometry_get(inst->gcc->gadcon, &cx, &cy, &cw, &ch);
    win->x = cx + ox;
    win->y = cy + oy;
-   
+
    if ((win->y - con->y) < (con->h / 2))
      win->to_top = 0;
    else
      win->to_top = 1;
-   
+
    switch (inst->gcc->gadcon->orient)
      {
       case E_GADCON_ORIENT_LEFT:
@@ -816,10 +822,10 @@ _mixer_window_simple_pop_up(Instance *inst)
 	if (!win->to_top) win->y += (cy + ch);
 	break;
      }
-   
+
    e_popup_move_resize(win->window, win->x, win->y, win->w, 0);
    e_popup_show(win->window);
-   
+
    win->start_time = ecore_time_get();
    if (win->slide_timer) ecore_timer_del(win->slide_timer);
    win->slide_timer = ecore_timer_add(SLIDE_FRAMERATE,
@@ -832,9 +838,9 @@ static void
 _mixer_window_simple_pop_down(Instance *inst)
 {
    Mixer_Win_Simple *win;
-   
+
    if (!(win = inst->mixer->simple_win) || (!win->popped_up)) return;
-   
+
    if (win->input_window != 0)
      {
         /* TODO: Fixme... */
@@ -848,7 +854,7 @@ _mixer_window_simple_pop_down(Instance *inst)
         win->input_window = 0;
         win->mouse_up_handler = NULL;
      }
-   
+
    win->start_time = ecore_time_get();
    if (win->slide_timer) ecore_timer_del(win->slide_timer);
    win->slide_timer = ecore_timer_add(SLIDE_FRAMERATE,
@@ -863,15 +869,15 @@ _mixer_window_simple_timer_up_cb(void *data)
    Mixer_Win_Simple *win;
    double progress;
    int prev_h, h;
-   
+
    if (!(win = data)) return 1;
-   
+
    progress = (ecore_time_get() - win->start_time) / SLIDE_LENGTH;
    progress = E_CLAMP(progress, 0.0, 1.0);
    progress = 1.0 - (1.0 - progress) * (1.0 - progress);
    h = progress * win->h;
    prev_h = win->window->h;
-   
+
    if (win->to_top)
      {
         e_popup_move_resize(win->window, win->x, win->y - h, win->w, h);
@@ -882,7 +888,7 @@ _mixer_window_simple_timer_up_cb(void *data)
         e_popup_resize(win->window, win->w, h);
         evas_object_move(win->bg_obj, 0, h - win->h);
      }
-   
+
    if (h >= win->h)
      {
         win->slide_timer = NULL;
@@ -899,14 +905,14 @@ _mixer_window_simple_timer_down_cb(void *data)
    Mixer_Win_Simple *win;
    double progress;
    int prev_h, h;
-   
+
    if (!(win = data)) return 1;
-   
+
    progress = (ecore_time_get() - win->start_time) / SLIDE_LENGTH;
    progress = E_CLAMP(progress, 0.0, 1.0);
    h = (1.0 - progress) * (1.0 - progress) * win->h;
    prev_h = win->window->h;
-   
+
    if (win->to_top)
      {
         e_popup_move_resize(win->window, win->x, win->y - h, win->w, h);
@@ -917,7 +923,7 @@ _mixer_window_simple_timer_down_cb(void *data)
         e_popup_resize(win->window, win->w, h);
         evas_object_move(win->bg_obj, 0, h - win->h);
      }
-   
+
    if (h <= 0)
      {
         e_object_del(E_OBJECT(win->window));
@@ -938,7 +944,6 @@ _mixer_window_simple_changed_cb(void *data, Evas_Object *obj, void *event_info)
    double val;
 
    if (!(win = data)) return;
-
    if (!(mixer = win->mixer)) return;
    if (!mixer->mix_sys) return;
    if (!mixer->mix_sys->set_volume) return;
@@ -955,7 +960,6 @@ _mixer_window_simple_mute_cb(void *data, Evas_Object *obj, void *event_info)
    Mixer *mixer;
 
    if (!(win = data)) return;
-
    mixer = win->mixer;
    _mixer_simple_mute_toggle(mixer, mixer->inst->ci);
 }
@@ -966,9 +970,9 @@ _mixer_window_simple_mouse_move_cb(void *data, int type, void *event)
 {
    Mixer_Win_Simple *win;
    Ecore_X_Event_Mouse_Move *xev = event;
-   
+
    if (!(win = data) || (win->slide_timer)) return 1;
-   
+
    evas_event_feed_mouse_move(win->window->evas,
                               xev->x - win->window->x, xev->y - win->window->y,
                               xev->time, NULL);
@@ -981,9 +985,9 @@ _mixer_window_simple_mouse_down_cb(void *data, int type, void *event)
 {
    Mixer_Win_Simple *win;
    Ecore_X_Event_Mouse_Button_Down *xev = event;
-   
+
    if (!(win = data) || (win->slide_timer)) return 1;
-   
+
    evas_event_feed_mouse_down(win->window->evas,
                               xev->button, EVAS_BUTTON_NONE,
                               xev->time, NULL);
@@ -997,20 +1001,20 @@ _mixer_window_simple_mouse_up_cb(void *data, int type, void *event)
    Mixer_Win_Simple *win;
    Ecore_X_Event_Mouse_Button_Up *xev = event;
    int inside;
-   
+
    if (!(win = data) || (win->slide_timer)) return 1;
-      
+
    evas_event_feed_mouse_up(win->window->evas,
                             xev->button, EVAS_BUTTON_NONE,
                             xev->time, NULL);
-   
+
    inside = E_INSIDE(xev->x, xev->y, win->window->x, win->window->y,
                      win->window->w, win->window->h);
    
-   if ((xev->button == 1) && !inside)
+   if ((xev->button == 1) && (!inside))
      _mixer_window_simple_pop_down(win->mixer->inst);
-   
-   if ((xev->button == 1) && win->first_mouse_up)
+
+   if ((xev->button == 1) && (win->first_mouse_up))
      win->first_mouse_up = 0;
    
    return 1;
@@ -1022,9 +1026,9 @@ _mixer_window_simple_mouse_wheel_cb(void *data, int type, void *event)
 {
    Mixer_Win_Simple *win;
    Ecore_X_Event_Mouse_Wheel *xev = event;
-   
+
    if (!(win = data) || (win->slide_timer)) return 1;
-   
+
    evas_event_feed_mouse_wheel(win->window->evas,
 			       xev->direction, xev->z, xev->time, NULL);
    return 1;
@@ -1039,11 +1043,8 @@ _mixer_window_gauge_free(Mixer_Win_Gauge *win)
    evas_object_del(win->bg_obj);
    evas_object_del(win->pulsar);
    win->mixer->gauge_win = NULL;
-   if (win->timer) 
-     {
-	ecore_timer_del(win->timer);
-	win->timer = NULL;
-     }
+   if (win->timer) ecore_timer_del(win->timer);
+   win->timer = NULL;
    E_FREE(win);
 }
 
@@ -1108,9 +1109,8 @@ _mixer_window_gauge_pop_up(Instance *inst)
 
    e_popup_move(win->window, (con->w/2.0)-150, (con->h/2.0)-45);
    e_popup_show(win->window);
-   
-   if (win->timer) ecore_timer_del(win->timer);
 
+   if (win->timer) ecore_timer_del(win->timer);
    win->timer = ecore_timer_add(inst->ci->popup_speed, 
 				_mixer_window_gauge_visible_cb, win);
 }
@@ -1126,7 +1126,6 @@ _mixer_window_gauge_send_vol(Mixer_Win_Gauge *win, Mixer *mixer, Config_Item *ci
    msg = malloc(sizeof(Edje_Message_Int));
    vol = (int)mixer->mix_sys->get_volume(ci->card_id, ci->channel_id);
    msg->val = vol;
-
    edje_object_message_send(win->pulsar, EDJE_MESSAGE_INT, 0, msg);
    free(msg);
 }
@@ -1137,7 +1136,7 @@ _mixer_volume_increase(Mixer *mixer, Config_Item *ci)
 {
    int m;
    double vol;
-   
+
    if (!mixer) return;
    if (!mixer->mix_sys) return;
    if (!mixer->mix_sys->get_volume) return;
@@ -1157,7 +1156,7 @@ _mixer_volume_decrease(Mixer *mixer, Config_Item *ci)
 {
    int m;
    double vol;
-   
+
    if (!mixer) return;
    if (!mixer->mix_sys) return;
    if (!mixer->mix_sys->set_volume) return;
@@ -1166,7 +1165,7 @@ _mixer_volume_decrease(Mixer *mixer, Config_Item *ci)
    if (ci->channel_id != 0) 
      {
 	vol = mixer->mix_sys->get_volume(ci->card_id, ci->channel_id);
-	vol = vol-VOL_STEP < 0 ? 0 : vol-VOL_STEP;
+	vol = vol - VOL_STEP < 0 ? 0 : vol - VOL_STEP;
 	mixer->mix_sys->set_volume(ci->card_id, ci->channel_id, vol);
      }
 }
