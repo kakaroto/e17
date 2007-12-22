@@ -57,7 +57,11 @@ TextGetLines(const char *text, int *count)
 void
 TextStateLoadFont(TextState * ts)
 {
+#if USE_XFONT
    if ((ts->efont) || (ts->xfont) || (ts->xfontset))
+#else
+   if ((ts->efont) || (ts->xfontset))
+#endif
       return;
 
    if (!ts->fontname)
@@ -89,46 +93,48 @@ TextStateLoadFont(TextState * ts)
 	  }
 	if (s2)
 	   free(s2);
+	if (ts->efont)
+	   return;
      }
 
-   if (!ts->efont)
+#if USE_XFONT
+   if ((!ts->xfont) && (strchr(ts->fontname, ',') == NULL))
      {
-	if ((!ts->xfont) && (strchr(ts->fontname, ',') == NULL))
+	ts->xfont = XLoadQueryFont(disp, ts->fontname);
+	if (ts->xfont)
 	  {
-	     ts->xfont = XLoadQueryFont(disp, ts->fontname);
-	     if (ts->xfont)
-	       {
-		  ts->xfontset_ascent = ts->xfont->ascent;
-		  ts->height = ts->xfont->ascent + ts->xfont->descent;
-	       }
-	  }
-	else if (!ts->xfontset)
-	  {
-	     int                 i, missing_cnt, font_cnt;
-	     int                 descent;
-	     char              **missing_list, *def_str, **fn;
-	     XFontStruct       **fs;
-
-	     ts->xfontset = XCreateFontSet(disp, ts->fontname, &missing_list,
-					   &missing_cnt, &def_str);
-	     if (missing_cnt)
-	       {
-		  XFreeStringList(missing_list);
-		  return;
-	       }
-	     if (!ts->xfontset)
-		return;
-	     font_cnt = XFontsOfFontSet(ts->xfontset, &fs, &fn);
-	     ts->xfontset_ascent = 0;
-	     for (i = 0; i < font_cnt; i++)
-		ts->xfontset_ascent = MAX(fs[i]->ascent, ts->xfontset_ascent);
-	     descent = 0;
-	     for (i = 0; i < font_cnt; i++)
-		descent = MAX(fs[i]->descent, descent);
-	     ts->height = ts->xfontset_ascent + descent;
+	     ts->xfontset_ascent = ts->xfont->ascent;
+	     ts->height = ts->xfont->ascent + ts->xfont->descent;
+	     return;
 	  }
      }
-   return;
+#endif
+
+   if (!ts->xfontset)
+     {
+	int                 i, missing_cnt, font_cnt;
+	int                 descent;
+	char              **missing_list, *def_str, **fn;
+	XFontStruct       **fs;
+
+	ts->xfontset = XCreateFontSet(disp, ts->fontname, &missing_list,
+				      &missing_cnt, &def_str);
+	if (missing_cnt)
+	  {
+	     XFreeStringList(missing_list);
+	     return;
+	  }
+	if (!ts->xfontset)
+	   return;
+	font_cnt = XFontsOfFontSet(ts->xfontset, &fs, &fn);
+	ts->xfontset_ascent = 0;
+	for (i = 0; i < font_cnt; i++)
+	   ts->xfontset_ascent = MAX(fs[i]->ascent, ts->xfontset_ascent);
+	descent = 0;
+	for (i = 0; i < font_cnt; i++)
+	   descent = MAX(fs[i]->descent, descent);
+	ts->height = ts->xfontset_ascent + descent;
+     }
 }
 
 void
@@ -175,6 +181,7 @@ TextSize(TextState * ts, const char *text, int *width, int *height, int fsize)
 		*width = ret2.width;
 	  }
      }
+#if USE_XFONT
    else if ((ts->xfont) && (ts->xfont->min_byte1 == 0) &&
 	    (ts->xfont->max_byte1 == 0))
      {
@@ -201,6 +208,7 @@ TextSize(TextState * ts, const char *text, int *width, int *height, int fsize)
 		*width = wid;
 	  }
      }
+#endif /* USE_XFONT */
    freestrlist(lines, num_lines);
    return;
    fsize = 0;
@@ -306,6 +314,7 @@ TextDraw(TextState * ts, Window win, char *text,
 	     yy += ret2.height;
 	  }
      }
+#if USE_XFONT
    else if ((ts->xfont) && (ts->xfont->min_byte1 == 0) &&
 	    (ts->xfont->max_byte1 == 0))
      {
@@ -383,6 +392,7 @@ TextDraw(TextState * ts, Window win, char *text,
 	     yy += ts->xfont->ascent + ts->xfont->descent;
 	  }
      }
+#endif /* USE_XFONT */
    freestrlist(lines, num_lines);
    return;
    h = fsize = 0;

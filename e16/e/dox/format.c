@@ -569,15 +569,7 @@ RenderPage(Window win, int page_num, int w, int h)
    Imlib_Image         im;
    int                 wastext = 0;
 
-   ts.fontname = NULL;
-   ESetColor(&ts.fg_col, 0, 0, 0);
-   ESetColor(&ts.bg_col, 0, 0, 0);
-   ts.effect = 0;
-   ts.efont = NULL;
-   ts.xfont = NULL;
-   ts.xfontset = 0;
-   ts.xfontset_ascent = 0;
-   ts.height = 0;
+   memset(&ts, 0, sizeof(ts));
    pg = &(page[page_num]);
    x = pg->padding;
    y = pg->padding;
@@ -649,9 +641,11 @@ RenderPage(Window win, int page_num, int w, int h)
 	     if (ts.efont)
 		Efont_free(ts.efont);
 	     ts.efont = NULL;
+#if USE_XFONT
 	     if (ts.xfont)
 		XFreeFont(disp, ts.xfont);
 	     ts.xfont = NULL;
+#endif
 	     if (ts.xfontset)
 		XFreeFontSet(disp, ts.xfontset);
 	     ts.xfontset = NULL;
@@ -1040,8 +1034,10 @@ RenderPage(Window win, int page_num, int w, int h)
 
    if (ts.efont)
       Efont_free(ts.efont);
+#if USE_XFONT
    if (ts.xfont)
       XFreeFont(disp, ts.xfont);
+#endif
    if (ts.xfontset)
       XFreeFontSet(disp, ts.xfontset);
 

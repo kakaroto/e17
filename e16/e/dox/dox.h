@@ -56,8 +56,6 @@
 #define EAllocColor(pxc) \
 	XAllocColor(disp, VRoot.cmap, pxc)
 
-#define FILEPATH_LEN_MAX 4096
-
 #ifndef MAX
 #define MAX(a,b)  ((a)>(b)?(a):(b))
 #endif
@@ -65,6 +63,8 @@
 #if defined(HAVE_WCTYPE_H) && defined(HAVE_WCHAR_T) && !defined(__FreeBSD__)
 #define USE_WORD_MB
 #endif
+
+#define USE_XFONT 0
 
 typedef struct _efont Efont;
 
@@ -85,7 +85,9 @@ typedef struct _textstate
    XColor              bg_col;
    int                 effect;
    Efont              *efont;
+#if USE_XFONT
    XFontStruct        *xfont;
+#endif
    XFontSet            xfontset;
    int                 xfontset_ascent;
    int                 height;
