@@ -97,7 +97,6 @@ news_viewer_all_refresh(int force, int recreate)
      }
 }
 
-
 int
 news_viewer_create(News_Item *ni)
 {
@@ -153,7 +152,7 @@ news_viewer_refresh(News_Viewer *nv)
         nv->varticles.selected = NULL;
         e_widget_button_icon_set(nv->vfeeds.button_feed, NULL);
 	if (nv->varticles.ilist)
-		e_widget_ilist_clear(nv->varticles.ilist);
+	  e_widget_ilist_clear(nv->varticles.ilist);
         _vcontent_text_set(nv, "");
      }
 
@@ -187,8 +186,8 @@ news_viewer_refresh(News_Viewer *nv)
         }
       if (_feed->doc && _feed->doc->unread_count)
         snprintf(buf, sizeof(buf), "[UNREAD] %s", _feed->name);
-        else
-          snprintf(buf, sizeof(buf), "%s", _feed->name);
+      else
+	snprintf(buf, sizeof(buf), "%s", _feed->name);
       e_widget_ilist_append(ilist, ic, buf, _dialog_cb_feed_selected, _feed, NULL);
       if (nv->vfeeds.selected == _feed)
         toselect_pos = pos;
@@ -201,19 +200,17 @@ news_viewer_refresh(News_Viewer *nv)
 
    /* select a feed */
    if (toselect_pos != -1)
-   {
      e_widget_ilist_selected_set(ilist, toselect_pos);
-   }
 
    /* ilist size */
    if (pos == -1)
      e_widget_min_size_set(ilist, 100, 70);
    else
-   {
-      int wmw;
-      e_widget_min_size_get(ilist, &wmw, NULL);
-      e_widget_min_size_set(ilist, wmw, 110);
-   }
+     {
+	int wmw;
+	e_widget_min_size_get(ilist, &wmw, NULL);
+	e_widget_min_size_set(ilist, wmw, 110);
+     }
    
    if (nv->vfeeds.list_own)
      {
@@ -636,9 +633,7 @@ _dialog_cb_key_down(void *data, Evas *e, Evas_Object *obj, void *event)
    ev = event;
    nv = data;
    if (!strcmp(ev->keyname, "Escape"))
-     {
-        news_viewer_destroy(nv);
-     }
+     news_viewer_destroy(nv);
 }
 
 static void
@@ -832,11 +827,11 @@ _vcontent_feed_infos_set(News_Viewer *nv)
      {
         switch(f->doc->parse.error)
           {
-          case NEWS_PARSE_ERROR_NO:
-          case NEWS_PARSE_ERROR_NOT_IMPLEMENTED:
+	   case NEWS_PARSE_ERROR_NO:
+	   case NEWS_PARSE_ERROR_NOT_IMPLEMENTED:
              break;
-          case NEWS_PARSE_ERROR_BROKEN_FEED:
-          case NEWS_PARSE_ERROR_TYPE_UNKNOWN:
+	   case NEWS_PARSE_ERROR_BROKEN_FEED:
+	   case NEWS_PARSE_ERROR_TYPE_UNKNOWN:
              snprintf(buf_error, sizeof(buf_error),
                       "<br><color=#ff0000>An error happend during the parse of this feed !<br>"
                       "You can report error at ooookiwi@gmail.com to get it fixed</><br><br>");
@@ -849,11 +844,11 @@ _vcontent_feed_infos_set(News_Viewer *nv)
 
              switch (f->doc->parse.type)
                {
-               case NEWS_FEED_TYPE_RSS:
+		case NEWS_FEED_TYPE_RSS:
                   type = "RSS"; break;
-               case NEWS_FEED_TYPE_ATOM:
+		case NEWS_FEED_TYPE_ATOM:
                   type = "ATOM <color=#ff0000>(not supported for now)</>"; break;
-               default:
+		default:
                   type = "UNKNOWN";
                }
              snprintf(buf_mtime, sizeof(buf_mtime),
