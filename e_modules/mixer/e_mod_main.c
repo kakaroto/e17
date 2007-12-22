@@ -181,7 +181,7 @@ static Evas_Object *
 _gc_icon(Evas *evas)
 {
    Evas_Object *o;
-   char         buf[4096];
+   char buf[4096];
 
    snprintf(buf, sizeof(buf), "%s/e-module-mixer.edj",
 	     e_module_dir_get(mixer_config->module));
@@ -233,7 +233,7 @@ mixer_vol_decrease(Instance *inst)
 
    _mixer_window_gauge_pop_up(inst);
 
-   if (!inst || !inst->mixer) return;
+   if ((!inst) || (!inst->mixer)) return;
 
    win = inst->mixer->gauge_win;
    _mixer_volume_decrease(inst->mixer, inst->ci);
@@ -244,7 +244,7 @@ mixer_vol_decrease(Instance *inst)
 void
 mixer_mute_toggle(Instance *inst)
 {
-   if (!inst || !inst->mixer) return;
+   if ((!inst) || (!inst->mixer)) return;
 
    _mixer_simple_mute_toggle(inst->mixer, inst->ci);
 }
@@ -252,20 +252,18 @@ mixer_mute_toggle(Instance *inst)
 static void
 _mixer_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
-   Instance              *inst;
+   Instance *inst;
    Evas_Event_Mouse_Down *ev;
+   E_Menu *mn;
+   E_Menu_Item *mi;
+   E_Zone *zone;
+   int x, y, w, h;
 
-   inst = data;
-   if (!inst) return;
+   if (!(inst = data)) return;
 
    ev = event_info;
    if ((ev->button == 3) && (!mixer_config->menu))
      {
-	E_Menu      *mn;
-	E_Menu_Item *mi;
-	E_Zone      *zone;
-	int          x, y, w, h;
-
 	zone = e_util_zone_current_get(e_manager_current_get());
 	
 	mn = e_menu_new();
@@ -331,21 +329,20 @@ _mixer_menu_cb_post(void *data, E_Menu *m)
 static void
 _mixer_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi) 
 {
-   Instance    *inst;
+   Instance *inst;
 
-   inst = data;
-   if (!inst) return;
+   if (!(inst = data)) return;
    _config_mixer_module(inst->mixer, inst->ci);
 }
 
 static Config_Item *
 _mixer_config_item_get(void *data, const char *id)
 {
-   Mixer         *mixer;
-   Mixer_Card    *card;
+   Mixer *mixer;
+   Mixer_Card *card;
    Mixer_Channel *chan;
-   Evas_List     *l;
-   Config_Item   *ci;
+   Evas_List *l = NULL;
+   Config_Item *ci;
 
    mixer = data;
    for (l = mixer_config->items; l; l = l->next)
@@ -416,11 +413,10 @@ _mixer_config_item_get(void *data, const char *id)
 static void 
 _mixer_system_init(void *data) 
 {
-   Mixer        *mixer;
+   Mixer *mixer;
    Mixer_System *sys;
    
-   mixer = data;
-   if (!mixer) return;
+   if (!(mixer = data)) return;
 
    sys = E_NEW(Mixer_System, 1);
    if (!sys) return;
@@ -453,12 +449,9 @@ static void
 _mixer_system_shutdown(void *data) 
 {
    Mixer_System *sys;
-   
-   sys = data;
-   if (!sys) return;
 
+   if (!(sys = data)) return;
    if (sys->free_cards) sys->free_cards(sys->cards);
-
    E_FREE(sys);
 }
 
@@ -599,8 +592,8 @@ _mixer_simple_volume_change(Mixer *mixer, Config_Item *ci, double val)
 static void 
 _mixer_volume_change(Mixer *mixer, Config_Item *ci, int channel_id, double val)
 {
-   int m;
-   
+   int m, ret;
+
    if (!mixer) return;
    if (!mixer->mix_sys) return;
    if (!mixer->mix_sys->set_volume) return;
@@ -608,8 +601,6 @@ _mixer_volume_change(Mixer *mixer, Config_Item *ci, int channel_id, double val)
 
    if (channel_id != 0) 
      {
-	int ret;
-	
 	ret = mixer->mix_sys->set_volume(ci->card_id, channel_id, val);
 	if (ret)
 	  {
@@ -652,13 +643,9 @@ _mixer_mute_toggle(Mixer *mixer, Config_Item *ci, int channel_id)
    m = m ? 0 : 1;
    mixer->mix_sys->set_mute(ci->card_id, ci->channel_id, m);
    if (m) 
-     {
-	edje_object_signal_emit(mixer->base, "muted", "");
-     }
+     edje_object_signal_emit(mixer->base, "muted", "");
    else 
-     {
-	edje_object_signal_emit(mixer->base, "unmuted", "");
-     }
+     edje_object_signal_emit(mixer->base, "unmuted", "");
 }
 
 /* Makes the simple window containing the slider pop up */
@@ -671,7 +658,7 @@ _mixer_window_simple_pop_up(Instance *inst)
    Evas_Coord mw, mh;
    int cx, cy, cw, ch;
    
-   if (!inst || !inst->mixer) return;
+   if ((!inst) || (!inst->mixer)) return;
    if (!(con = e_container_current_get(e_manager_current_get()))) return;
    
    evas_object_geometry_get(inst->mixer->base, &ox, &oy, &ow, &oh); 
@@ -786,7 +773,7 @@ _mixer_window_simple_pop_up(Instance *inst)
 		  m = inst->mixer->mix_sys->get_mute(inst->ci->card_id, inst->ci->channel_id);
 		  e_widget_check_checked_set(win->check, m);
 		  if (m) 
-		       edje_object_signal_emit(inst->mixer->base, "muted", ""); 
+		    edje_object_signal_emit(inst->mixer->base, "muted", ""); 
 	       }
 	  }
      }
@@ -846,7 +833,7 @@ _mixer_window_simple_pop_down(Instance *inst)
 {
    Mixer_Win_Simple *win;
    
-   if (!(win = inst->mixer->simple_win) || !win->popped_up) return;
+   if (!(win = inst->mixer->simple_win) || (!win->popped_up)) return;
    
    if (win->input_window != 0)
      {
@@ -936,7 +923,6 @@ _mixer_window_simple_timer_down_cb(void *data)
         e_object_del(E_OBJECT(win->window));
         win->mixer->simple_win = NULL;
         E_FREE(win);
-        
         return 0;
      }
    else
@@ -948,13 +934,12 @@ static void
 _mixer_window_simple_changed_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Mixer_Win_Simple *win;
-   Mixer            *mixer;
-   double            val;
- 
+   Mixer *mixer;
+   double val;
+
    if (!(win = data)) return;
-   
-   mixer = win->mixer;
-   if (!mixer) return;
+
+   if (!(mixer = win->mixer)) return;
    if (!mixer->mix_sys) return;
    if (!mixer->mix_sys->set_volume) return;
    
@@ -967,12 +952,11 @@ static void
 _mixer_window_simple_mute_cb(void *data, Evas_Object *obj, void *event_info)
 {
    Mixer_Win_Simple *win;
-   Mixer            *mixer;
-   
-   if (!(win = data)) return;
-   
-   mixer = win->mixer;
+   Mixer *mixer;
 
+   if (!(win = data)) return;
+
+   mixer = win->mixer;
    _mixer_simple_mute_toggle(mixer, mixer->inst->ci);
 }
 
@@ -988,7 +972,6 @@ _mixer_window_simple_mouse_move_cb(void *data, int type, void *event)
    evas_event_feed_mouse_move(win->window->evas,
                               xev->x - win->window->x, xev->y - win->window->y,
                               xev->time, NULL);
-   
    return 1;
 }
 
@@ -1004,7 +987,6 @@ _mixer_window_simple_mouse_down_cb(void *data, int type, void *event)
    evas_event_feed_mouse_down(win->window->evas,
                               xev->button, EVAS_BUTTON_NONE,
                               xev->time, NULL);
-   
    return 1;
 }
 
@@ -1045,7 +1027,6 @@ _mixer_window_simple_mouse_wheel_cb(void *data, int type, void *event)
    
    evas_event_feed_mouse_wheel(win->window->evas,
 			       xev->direction, xev->z, xev->time, NULL);
-
    return 1;
 }
 
@@ -1073,11 +1054,8 @@ _mixer_window_gauge_visible_cb(void *data)
 
    win = data;
    _mixer_window_gauge_pop_down(win);
-   if (win->timer) 
-     {
-	ecore_timer_del(win->timer);
-	win->timer = NULL;
-     }
+   if (win->timer) ecore_timer_del(win->timer);
+   win->timer = NULL;
    return 0;
 }
 
