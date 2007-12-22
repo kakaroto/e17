@@ -175,8 +175,10 @@ ewl_context_menu_container_set(Ewl_Context_Menu *cm, Ewl_Container *c)
 
 	/* if there is not a container specified we will create a vbox as
 	 * default */
-	if (!c)
+	if (!c) {
 		c = EWL_CONTAINER(ewl_vbox_new());
+		ewl_object_fill_policy_set(EWL_OBJECT(c), EWL_FLAG_FILL_HFILL);
+	}
 
 	/* remove the old container */
 	if (cm->container) {
