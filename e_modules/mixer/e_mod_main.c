@@ -654,20 +654,10 @@ _mixer_mute_toggle(Mixer *mixer, Config_Item *ci, int channel_id)
    if (m) 
      {
 	edje_object_signal_emit(mixer->base, "muted", "");
-	if (win) 
-	  {
-	     edje_object_signal_emit(e_slider_edje_object_get(win->slider), 
-				     "e,state,disabled", "e");
-	  }
      }
    else 
      {
 	edje_object_signal_emit(mixer->base, "unmuted", "");
-	if (win) 
-	  {
-	     edje_object_signal_emit(e_slider_edje_object_get(win->slider), 
-				     "e,state,enabled", "e");
-	  }
      }
 }
 
@@ -788,6 +778,16 @@ _mixer_window_simple_pop_up(Instance *inst)
 	       edje_object_signal_emit(inst->mixer->base, "medium", "");
 	     else if (vol > 66)
 	       edje_object_signal_emit(inst->mixer->base, "high", "");
+	     
+	     if (inst->mixer->mix_sys->get_mute) 
+	       {
+		  int m;
+
+		  m = inst->mixer->mix_sys->get_mute(inst->ci->card_id, inst->ci->channel_id);
+		  e_widget_check_checked_set(win->check, m);
+		  if (m) 
+		       edje_object_signal_emit(inst->mixer->base, "muted", ""); 
+	       }
 	  }
      }
    
