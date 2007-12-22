@@ -606,9 +606,9 @@ _mixer_volume_change(Mixer *mixer, Config_Item *ci, int channel_id, double val)
 	  {
 	     if (val < 33)
 	       edje_object_signal_emit(mixer->base, "low", "");
-	     else if ((val >= 34) && (val < 66))
+	     else if ((val >= 33) && (val < 66))
 	       edje_object_signal_emit(mixer->base, "medium", "");
-	     else if (val > 66)
+	     else if (val >= 66)
 	       edje_object_signal_emit(mixer->base, "high", ""); 
 	  }
      }
@@ -683,10 +683,10 @@ _mixer_window_simple_pop_up(Instance *inst)
         e_box_orientation_set(win->vbox, 0);
         
         win->slider = e_slider_add(win->window->evas);
-        e_slider_value_range_set(win->slider, 0.0, 1.0);
+        e_slider_value_range_set(win->slider, 0.0, 100.0);
         e_slider_orientation_set(win->slider, 0);
         /* TODO: Fix this in e_slider... */
-        //e_slider_direction_set(win->slider, 1);
+//        e_slider_direction_set(win->slider, 1);
         evas_object_show(win->slider);
         e_slider_min_size_get(win->slider, &mw, &mh);
         e_box_pack_start(win->vbox, win->slider);
@@ -750,22 +750,22 @@ _mixer_window_simple_pop_up(Instance *inst)
    if (inst->mixer->mix_sys->get_volume) 
      {
         int vol;
-        double v;
-        
-	if ((inst->ci->card_id != 0) && (inst->ci->channel_id != 0)) 
+//        double v;
+
+	if (inst->ci->channel_id != 0) 
 	  {
 	     edje_object_signal_emit(e_slider_edje_object_get(win->slider), 
 				     "e,state,enabled", "e");
 	     vol = inst->mixer->mix_sys->get_volume(inst->ci->card_id, inst->ci->channel_id);
-	     v = (1.0 - ((double)vol / 100));
-	     e_slider_value_set(win->slider, v);
+//	     v = (1.0 - ((double)vol / 100));
+	     e_slider_value_set(win->slider, vol);
 	     if (vol < 33)
 	       edje_object_signal_emit(inst->mixer->base, "low", "");
-	     else if ((vol >= 34) && (vol < 66))
+	     else if ((vol >= 33) && (vol < 66))
 	       edje_object_signal_emit(inst->mixer->base, "medium", "");
-	     else if (vol > 66)
+	     else if (vol >= 66)
 	       edje_object_signal_emit(inst->mixer->base, "high", "");
-	     
+
 	     if (inst->mixer->mix_sys->get_mute) 
 	       {
 		  int m;
@@ -942,8 +942,8 @@ _mixer_window_simple_changed_cb(void *data, Evas_Object *obj, void *event_info)
    if (!(mixer = win->mixer)) return;
    if (!mixer->mix_sys) return;
    if (!mixer->mix_sys->set_volume) return;
-   
-   val = ((1.0 - (e_slider_value_get(obj))) * 100);
+
+   val = e_slider_value_get(obj);
    _mixer_simple_volume_change(mixer, mixer->inst->ci, val);
 }
 

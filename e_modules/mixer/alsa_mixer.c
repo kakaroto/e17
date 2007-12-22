@@ -340,11 +340,9 @@ alsa_set_volume(int card_id, int channel_id, double vol)
 	snd_mixer_selem_get_id(elem, sid);
 	if (!snd_mixer_selem_is_active(elem)) continue;
 
-	if (muted && !snd_mixer_selem_has_playback_switch(elem))
-	  {
-	     v = (vol < 0) ? -vol: vol;
-	     ecore_hash_set(vols, (int*)(card_id << 16) + channel_id, (int*)v);
-	  }
+	if ((muted) && (!snd_mixer_selem_has_playback_switch(elem)))
+	  ecore_hash_set(vols, (int*)(card_id << 16) + channel_id, (int*)alsa_get_volume(card_id, channel_id));
+
 	if (snd_mixer_selem_has_playback_volume(elem)) 
 	  {
 	     const char *name;
@@ -465,7 +463,6 @@ alsa_set_mute(int card_id, int channel_id, int mute)
                        ecore_hash_free_key_cb_set(vols, NULL);
                        ecore_hash_free_value_cb_set(vols, NULL);
 	            }
-                  
 		  if (mute)
 	            {
 		       muted = 1;
