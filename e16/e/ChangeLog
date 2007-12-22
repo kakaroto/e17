@@ -4580,3 +4580,24 @@ Fix crash if font loading fails.
 Play with dbus - implement command interface.
 Add some info about xft/pango font selection in core themes.
 Define mask bitmaps in source to avoid depending on x11 bitmap package.
+
+-------------------------------------------------------------------------------
+
+Sat Dec 22 22:30:28 CET 2007
+(Kim)
+
+--- 0.16.8.11 0.03 ---
+Japanese translation update (Yasufumi Haga).
+Danish translation update.
+EImagePixmapFree->EImagePixmapsFree, add mask argument.
+Fix backward compatibility "named" menu hack (fixes border right click in many
+ themes).
+.desktop files: E -> E16.
+docs: Config settings update, remove obsolete note.
+Add missing quotes in enlightenment.menu (fixes restart/logout).
+Fix incorrect tracking of pointer motion when dragging window (noted by Jon Foster).
+edox: Deactivate use of XFontStruct (use XFontSet).
+edox: Fall back to "fixed" font.
+edox: Add ../ttfonts to TT font path.
+Remove vixar font from winter theme (in ABOUT, use vera).
+
