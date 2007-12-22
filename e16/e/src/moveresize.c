@@ -95,8 +95,11 @@ ActionMoveStart(EWin * ewin, char constrained, int nogroup)
    Mode.mode = MODE_MOVE_PENDING;
    Mode.constrained = constrained;
 
-   Mode_mr.win_x = Mode.events.cx - (EoGetX(ewin) + EoGetX(EoGetDesk(ewin)));
-   Mode_mr.win_y = Mode.events.cy - (EoGetY(ewin) + EoGetY(EoGetDesk(ewin)));
+   Mode_mr.start_x = Mode.events.cx;
+   Mode_mr.start_y = Mode.events.cy;
+
+   Mode_mr.win_x = Mode_mr.start_x - (EoGetX(ewin) + EoGetX(EoGetDesk(ewin)));
+   Mode_mr.win_y = Mode_mr.start_y - (EoGetY(ewin) + EoGetY(EoGetDesk(ewin)));
 
    EwinRaise(ewin);
    gwins = ListWinGroupMembersForEwin(ewin, GROUP_ACTION_MOVE, nogroup
@@ -502,10 +505,14 @@ ActionMoveHandleMotion(void)
 			   i);
 	  }
 	Mode.mode = MODE_MOVE;
+	dx = Mode.events.mx - Mode_mr.start_x;
+	dy = Mode.events.my - Mode_mr.start_y;
      }
-
-   dx = Mode.events.mx - Mode.events.px;
-   dy = Mode.events.my - Mode.events.py;
+   else
+     {
+	dx = Mode.events.mx - Mode.events.px;
+	dy = Mode.events.my - Mode.events.py;
+     }
 
    jumpx = 0;
    jumpy = 0;
@@ -650,18 +657,17 @@ ActionMoveHandleMotion(void)
 
 		  /* check for sufficient overlap and avoid flickering */
 		  if (((ewin1->shape_x >= ewin2->shape_x &&
-			ewin1->shape_x <= ewin2->shape_x +
-			EoGetW(ewin2) / 2 && Mode.events.mx <=
-			Mode.events.px) ||
+			ewin1->shape_x <= ewin2->shape_x + EoGetW(ewin2) / 2 &&
+			dx <= 0) ||
 		       (ewin1->shape_x <= ewin2->shape_x &&
-			ewin1->shape_x + EoGetW(ewin1) / 2 >=
-			ewin2->shape_x && Mode.events.mx >= Mode.events.px)) &&
+			ewin1->shape_x + EoGetW(ewin1) / 2 >= ewin2->shape_x &&
+			dx >= 0)) &&
 		      ((ewin1->shape_y >= ewin2->shape_y &&
 			ewin1->shape_y <= ewin2->shape_y + EoGetH(ewin2) / 2 &&
-			Mode.events.my <= Mode.events.py) ||
+			dy <= 0) ||
 		       (EoGetY(ewin1) <= EoGetY(ewin2) &&
-			ewin1->shape_y + EoGetH(ewin1) / 2 >=
-			ewin2->shape_y && Mode.events.my >= Mode.events.py)))
+			ewin1->shape_y + EoGetH(ewin1) / 2 >= ewin2->shape_y &&
+			dy >= 0)))
 		    {
 		       int                 tmp_swapcoord_x;
 		       int                 tmp_swapcoord_y;
