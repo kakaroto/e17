@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16-0.16.8.9-0.02-fr\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-12-15 18:11+0100\n"
+"POT-Creation-Date: 2007-12-22 02:13+0100\n"
 "PO-Revision-Date: 2007-06-14 18:36+0200\n"
 "Last-Translator: Tristan D. <trinine@free.fr>\n"
 "Language-Team: French <http://www.linuxmao.org>\n"
@@ -1300,27 +1300,27 @@ msgstr "Icônifier ce groupe"
 msgid "Group %i"
 msgstr "Groupe %i"
 
-#: src/menus.c:2041
+#: src/menus.c:2042
 msgid "Animated display of menus"
 msgstr "Animer l'affichage des menus"
 
-#: src/menus.c:2046
+#: src/menus.c:2047
 msgid "Always pop up menus on screen"
 msgstr "Toujours afficher les menus sur l'écran"
 
-#: src/menus.c:2051
+#: src/menus.c:2052
 msgid "Warp pointer after moving menus"
 msgstr "Distorsion du curseur après déplacement des menus"
 
-#: src/menus.c:2057
+#: src/menus.c:2058
 msgid "Menus"
 msgstr "Menus"
 
-#: src/menus.c:2058
+#: src/menus.c:2059
 msgid "Menu Settings"
 msgstr "Paramètres des Menus"
 
-#: src/menus.c:2061
+#: src/menus.c:2062
 msgid ""
 "Enlightenment Menu\n"
 "Settings Dialog\n"

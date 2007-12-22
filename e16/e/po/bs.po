@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bosnian\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-12-15 18:11+0100\n"
+"POT-Creation-Date: 2007-12-22 02:13+0100\n"
 "PO-Revision-Date: 2004-08-26 00:52+0200\n"
 "Last-Translator: Kemal Šanjta <gomez@lugzdk.ba>\n"
 "Language-Team: Bosnian <lokal@linux.org.ba>\n"
@@ -1319,29 +1319,29 @@ msgstr "Ikonificiraj ovu grupu"
 msgid "Group %i"
 msgstr "Grupa %i"
 
-#: src/menus.c:2041
+#: src/menus.c:2042
 msgid "Animated display of menus"
 msgstr "Animirani prikazi menija"
 
-#: src/menus.c:2046
+#: src/menus.c:2047
 msgid "Always pop up menus on screen"
 msgstr "Uvijek pop up meniji na ekranu"
 
-#: src/menus.c:2051
+#: src/menus.c:2052
 msgid "Warp pointer after moving menus"
 msgstr "Uvi pokaziva� nakon premjeŷtanja izbornika"
 
-#: src/menus.c:2057
+#: src/menus.c:2058
 #, fuzzy
 msgid "Menus"
 msgstr "Izbornici:"
 
-#: src/menus.c:2058
+#: src/menus.c:2059
 #, fuzzy
 msgid "Menu Settings"
 msgstr "Razne osobine"
 
-#: src/menus.c:2061
+#: src/menus.c:2062
 #, fuzzy
 msgid ""
 "Enlightenment Menu\n"

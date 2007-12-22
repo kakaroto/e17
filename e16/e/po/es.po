@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-12-15 18:11+0100\n"
+"POT-Creation-Date: 2007-12-22 02:13+0100\n"
 "PO-Revision-Date: 2005-06-14 23:39+0100\n"
 "Last-Translator: jacinto calvo sintes <netman2@seriousman.org>\n"
 "Language-Team: \n"
@@ -1319,29 +1319,29 @@ msgstr "Iconizar este grupo"
 msgid "Group %i"
 msgstr "Grupo %i"
 
-#: src/menus.c:2041
+#: src/menus.c:2042
 msgid "Animated display of menus"
 msgstr "Mostrar animación de menús"
 
-#: src/menus.c:2046
+#: src/menus.c:2047
 msgid "Always pop up menus on screen"
 msgstr "Siempre hacer aparecer menús en la pantalla"
 
-#: src/menus.c:2051
+#: src/menus.c:2052
 msgid "Warp pointer after moving menus"
 msgstr "Torcer el puntero tras mover los Menus"
 
-#: src/menus.c:2057
+#: src/menus.c:2058
 #, fuzzy
 msgid "Menus"
 msgstr "Menus:"
 
-#: src/menus.c:2058
+#: src/menus.c:2059
 #, fuzzy
 msgid "Menu Settings"
 msgstr "Miscelanea Configuraciones"
 
-#: src/menus.c:2061
+#: src/menus.c:2062
 #, fuzzy
 msgid ""
 "Enlightenment Menu\n"
