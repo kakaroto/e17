@@ -361,6 +361,11 @@ alsa_set_volume(int card_id, int channel_id, double vol)
 	snd_mixer_selem_get_id(elem, sid);
 	if (!snd_mixer_selem_is_active(elem)) continue;
 
+	if (muted && !snd_mixer_selem_has_playback_switch(elem))
+	  {
+	     v = (vol < 0) ? -vol: vol;
+	     ecore_hash_set(vols, (int*)(card_id << 16) + channel_id, (int*)v);
+	  }
 	if (snd_mixer_selem_has_playback_volume(elem)) 
 	  {
 	     const char *name;
@@ -487,12 +492,13 @@ alsa_set_mute(int card_id, int channel_id, int mute)
                   
 		  if (mute)
 	            {
+		       muted = 1;
 		       ecore_hash_set(vols, (int*)(card_id << 16) + channel_id, (int*)alsa_get_volume(card_id, channel_id));
 		       alsa_set_volume(card_id, channel_id, (0.0 * 100));
-		       muted = 1;
 	            }
 		  else
 	            {
+		       muted = 0;
 		       if (vol = (unsigned int)(ecore_hash_get(vols, (int*)(card_id << 16) + channel_id))) 
 			 {
 			    alsa_set_volume(card_id, channel_id, vol);
@@ -500,7 +506,6 @@ alsa_set_mute(int card_id, int channel_id, int mute)
 			 }
 		       else
 			 alsa_set_volume(card_id, channel_id, (0.5 * 100));
-		       muted = 0;
 	            }
 		  if (card->name) evas_stringshare_del(card->name);
 		  if (card->real) evas_stringshare_del(card->real);
