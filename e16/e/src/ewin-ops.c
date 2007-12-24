@@ -309,6 +309,10 @@ doEwinMoveResize(EWin * ewin, Desk * dsk, int x, int y, int w, int h, int flags)
 	  {
 	     ICCCM_SizeMatch(ewin, w, h, &w, &h);
 	  }
+	if (w <= 0)
+	   w = 1;
+	if (h <= 0)
+	   h = 1;
 
 	if ((w != ewin->client.w) || (h != ewin->client.h))
 	   resize = 2;
