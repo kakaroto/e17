@@ -224,6 +224,12 @@ alsa_get_volume(int card_id, int channel_id)
    if (muted) 
      {
 	int v;
+	if (!vols) 
+	  {
+	     vols = ecore_hash_new(ecore_direct_hash, ecore_direct_compare);
+	     ecore_hash_free_key_cb_set(vols, NULL);
+	     ecore_hash_free_value_cb_set(vols, NULL);
+	  }
 
 	if (v = (unsigned int)(ecore_hash_get(vols, (int*)(card_id << 16) + channel_id))) 
 	  return v;

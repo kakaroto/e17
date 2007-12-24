@@ -52,6 +52,7 @@ static int  _mixer_window_simple_mouse_down_cb  (void *data, int type, void *eve
 static int  _mixer_window_simple_mouse_up_cb    (void *data, int type, void *event);
 static int  _mixer_window_simple_mouse_wheel_cb (void *data, int type, void *event);
 
+static void _mixer_base_send_vol(Mixer *mixer, Config_Item *ci);
 static void _mixer_window_gauge_send_vol   (Mixer_Win_Gauge *win, Mixer *mixer, Config_Item *ci);
 static void _mixer_window_gauge_free       (Mixer_Win_Gauge *win);
 static int  _mixer_window_gauge_visible_cb (void *data);
@@ -105,7 +106,6 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 
    /* Defer this until after the mixer system has been setup */
    inst->ci = _mixer_config_item_get(mixer, id);
-
    if ((mixer->mix_sys->get_volume) && (inst->ci->channel_id != 0))
      {
 	int ret;
@@ -129,7 +129,9 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 	else
 	  edje_object_signal_emit(mixer->base, "unmuted", "");
      }
-   
+
+   _mixer_base_send_vol(mixer, inst->ci);
+
    gcc = e_gadcon_client_new(gc, name, id, style, mixer->base);
    gcc->data = inst;
    inst->gcc = gcc;
@@ -223,6 +225,7 @@ mixer_vol_increase(Instance *inst)
    win = inst->mixer->gauge_win;
    _mixer_volume_increase(inst->mixer, inst->ci);
    _mixer_window_gauge_send_vol(win, inst->mixer, inst->ci);
+   _mixer_base_send_vol(inst->mixer, inst->ci);
    if (win) edje_object_signal_emit(win->pulsar, "vol,increase", "e");
 }
 
@@ -238,6 +241,7 @@ mixer_vol_decrease(Instance *inst)
    win = inst->mixer->gauge_win;
    _mixer_volume_decrease(inst->mixer, inst->ci);
    _mixer_window_gauge_send_vol(win, inst->mixer, inst->ci);
+   _mixer_base_send_vol(inst->mixer, inst->ci);
    if (win) edje_object_signal_emit(win->pulsar, "vol,decrease", "e");
 }
 
@@ -605,7 +609,6 @@ _mixer_volume_change(Mixer *mixer, Config_Item *ci, double val)
 	     if (m) 
 	       {
 		  edje_object_signal_emit(mixer->base, "muted", "");
-		  return;
 	       }
 	     else 
 	       edje_object_signal_emit(mixer->base, "unmuted", "");
@@ -616,7 +619,9 @@ _mixer_volume_change(Mixer *mixer, Config_Item *ci, double val)
 	       edje_object_signal_emit(mixer->base, "medium", "");
 	     else if (val >= 66)
 	       edje_object_signal_emit(mixer->base, "high", ""); 
+
 	  }
+	_mixer_base_send_vol(mixer, ci);
      }
 }
 
@@ -651,6 +656,7 @@ _mixer_mute_toggle(Mixer *mixer, Config_Item *ci)
      edje_object_signal_emit(mixer->base, "muted", "");
    else 
      edje_object_signal_emit(mixer->base, "unmuted", "");
+   _mixer_base_send_vol(mixer, ci);
 }
 
 /* Makes the simple window containing the slider pop up */
@@ -781,6 +787,7 @@ _mixer_window_simple_pop_up(Instance *inst)
 		  if (m) 
 		    edje_object_signal_emit(inst->mixer->base, "muted", ""); 
 	       }
+	        _mixer_base_send_vol(inst->mixer, inst->ci);
 	  }
      }
    
@@ -1128,6 +1135,22 @@ _mixer_window_gauge_send_vol(Mixer_Win_Gauge *win, Mixer *mixer, Config_Item *ci
    msg->val = vol;
    edje_object_message_send(win->pulsar, EDJE_MESSAGE_INT, 0, msg);
    free(msg);
+}
+
+static void
+_mixer_base_send_vol(Mixer *mixer, Config_Item *ci)
+{
+   Edje_Message_Int *msg;
+   int vol;
+
+   if (!ci) return;
+   if ((!mixer) || (!mixer->mix_sys) || (!mixer->mix_sys->get_volume)) return;
+   msg = malloc(sizeof(Edje_Message_Int));
+   vol = (int)mixer->mix_sys->get_volume(ci->card_id, ci->channel_id);
+   msg->val = vol;
+   edje_object_message_send(mixer->base, EDJE_MESSAGE_INT, 0, msg);
+   free(msg);
+   edje_object_signal_emit(mixer->base, "volume,change", "");
 }
 
 /* Increase the volume by VOL_STEP */
