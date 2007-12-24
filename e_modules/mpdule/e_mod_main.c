@@ -32,6 +32,11 @@ static void _mpdule_menu_cb_configure (void *data, E_Menu * m,
 				       E_Menu_Item * mi);
 static void _mpdule_menu_cb_post (void *data, E_Menu * m);
 static int _mpdule_cb_check (void *data);
+static void _mpdule_cb_play(void *data, Evas_Object *obj, const char *emission, const char *source);
+static void _mpdule_cb_stop(void *data, Evas_Object *obj, const char *emission, const char *source);
+static void _mpdule_cb_pause(void *data, Evas_Object *obj, const char *emission, const char *source);
+static void _mpdule_cb_next(void *data, Evas_Object *obj, const char *emission, const char *source);
+static void _mpdule_cb_previous(void *data, Evas_Object *obj, const char *emission, const char *source);
 static Config_Item *_mpdule_config_item_get (const char *id);
 
 static E_Config_DD *conf_edd = NULL;
@@ -113,6 +118,16 @@ _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
 				   _mpdule_cb_mouse_in, inst);
   evas_object_event_callback_add(inst->mpdule, EVAS_CALLBACK_MOUSE_OUT,
 				   _mpdule_cb_mouse_out, inst);
+  edje_object_signal_callback_add(o, "mpdule,play", "", _mpdule_cb_play, inst);
+  edje_object_signal_callback_add(o, "mpdule,stop", "", _mpdule_cb_stop, inst);
+  edje_object_signal_callback_add(o, "mpdule,pause", "", _mpdule_cb_pause, inst);
+  edje_object_signal_callback_add(o, "mpdule,next", "", _mpdule_cb_next, inst);
+  edje_object_signal_callback_add(o, "mpdule,previous", "", _mpdule_cb_previous, inst);
+  edje_object_signal_callback_add(o_popup, "mpdule,play", "", _mpdule_cb_play, inst);
+  edje_object_signal_callback_add(o_popup, "mpdule,stop", "", _mpdule_cb_stop, inst);
+  edje_object_signal_callback_add(o_popup, "mpdule,pause", "", _mpdule_cb_pause, inst);
+  edje_object_signal_callback_add(o_popup, "mpdule,next", "", _mpdule_cb_next, inst);
+  edje_object_signal_callback_add(o_popup, "mpdule,previous", "", _mpdule_cb_previous, inst);
   _mpdule_connect(inst);
   _mpdule_update_song(inst);
   inst->update_timer = ecore_timer_add((double)inst->ci->poll_time,
@@ -223,7 +238,6 @@ _mpdule_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
       evas_event_feed_mouse_up (inst->gcc->gadcon->evas, ev->button,
 				EVAS_BUTTON_NONE, ev->timestamp, NULL);
     } else if (ev->button == 1) {
-    	   printf("POPUP3");
     	e_gadcon_popup_toggle_pinned(inst->popup);
     }
 }
@@ -235,7 +249,6 @@ _mpdule_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
    Instance *inst;
    E_Gadcon_Popup *popup;
  
-   printf("POPUP1");
    if (!(inst = data)) return;
    popup = inst->popup;
    e_gadcon_popup_show(inst->popup);
@@ -247,7 +260,6 @@ _mpdule_cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info)
    Instance *inst;
    E_Gadcon_Popup *popup;
 
-   printf("POPUP2");
    if (!(inst = data)) return;
    popup = inst->popup;
    e_gadcon_popup_hide(inst->popup);
@@ -266,7 +278,7 @@ static void
 _mpdule_menu_cb_configure (void *data, E_Menu * m, E_Menu_Item * mi)
 {
   Instance *inst;
-	
+
   inst = data;
   _config_mpdule_module (inst->ci);
 }
@@ -299,6 +311,60 @@ _mpdule_config_updated (Config_Item *ci)
     }
 }
 
+static void 
+_mpdule_cb_play(void *data, Evas_Object *obj, const char *emission, const char *source)
+{
+  Instance *inst;
+  mpd_Connection *mpd;
+
+  inst = data;
+  mpd = inst->mpd;
+  mpd_sendPlayCommand(mpd, -1);
+}
+
+static void 
+_mpdule_cb_previous(void *data, Evas_Object *obj, const char *emission, const char *source)
+{
+  Instance *inst;
+  mpd_Connection *mpd;
+
+  inst = data;
+  mpd = inst->mpd;
+  mpd_sendPrevCommand(mpd);
+}
+
+static void 
+_mpdule_cb_next(void *data, Evas_Object *obj, const char *emission, const char *source)
+{
+  Instance *inst;
+  mpd_Connection *mpd;
+
+  inst = data;
+  mpd = inst->mpd;
+  mpd_sendNextCommand(mpd);
+}
+
+static void 
+_mpdule_cb_stop(void *data, Evas_Object *obj, const char *emission, const char *source)
+{
+  Instance *inst;
+  mpd_Connection *mpd;
+
+  inst = data;
+  mpd = inst->mpd;
+  mpd_sendStopCommand(mpd);
+}
+
+static void 
+_mpdule_cb_pause(void *data, Evas_Object *obj, const char *emission, const char *source)
+{
+  Instance *inst;
+  mpd_Connection *mpd;
+
+  inst = data;
+  mpd = inst->mpd;
+  mpd_sendPauseCommand(mpd, 1);
+}
 
 static Config_Item *
 _mpdule_config_item_get (const char *id)
@@ -645,9 +711,7 @@ _mpdule_popup_resize(Evas_Object *obj, int *w, int *h)
    int x, y;
    if (!(*w)) *w = 0;
    if (!(*h)) *h = 0;
-   printf("SIZES: %dx%d", w, h);
    edje_object_size_min_calc (obj, &x, &y);
-   printf("SIZES2: %dx%d", x, y);
    *w = x;
    *h = y;
 }

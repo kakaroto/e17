@@ -7,6 +7,11 @@ spectra {
 color_classes {
 }
 images {
+	image: "next.png" COMP;
+	image: "pause.png" COMP;
+	image: "play.png" COMP;
+	image: "prev.png" COMP;
+	image: "stop.png" COMP;
 }
 data {
 }
@@ -209,6 +214,12 @@ collections {
 			}
 		}
 		programs {
+			program {
+				name: "show";
+				signal: "show";
+				source: "";
+				action: SIGNAL_EMIT "mpdule,play" "";
+			}
 		}
 	}
 	group {
@@ -221,7 +232,7 @@ collections {
 				description {
 					state: "default" 0.00;
 					visible: 1;
-					min: 200 65;
+					min: 200 105;
 					rel1 {
 						relative: 0.00 0.00;
 						offset: 5 5;
@@ -547,8 +558,153 @@ collections {
 					}
 				}
 			}
+			part {
+				name: "mpdule.previous";
+				type: IMAGE;
+				description {
+					state: "default" 0.0;
+					visible: 1;
+					rel1 {
+						relative: 0.0 1.0;
+						offset: 0 0;
+						to_x: "base";
+						to_y: "mpdule.genre_label";
+					}
+					rel2 {
+						relative: 0.0 1.0;
+						offset: 32 32;
+						to_x: "base";
+						to_y: "mpdule.genre_label";
+					}
+					image {
+						normal: "prev.png";
+					}
+				}
+			}
+			part {
+				name: "mpdule.play";
+				type: IMAGE;
+				description {
+					state: "default" 0.0;
+					visible: 1;
+					rel1 {
+						relative: 1.0 1.0;
+						offset: 0 0;
+						to_x: "mpdule.previous";
+						to_y: "mpdule.genre_label";
+					}
+					rel2 {
+						relative: 1.0 1.0;
+						offset: 32 32;
+						to_x: "mpdule.previous";
+						to_y: "mpdule.genre_label";
+					}
+					image {
+						normal: "play.png";
+					}
+				}
+			}
+			part {
+				name: "mpdule.pause";
+				type: IMAGE;
+				description {
+					state: "default" 0.0;
+					visible: 1;
+					rel1 {
+						relative: 1.0 1.0;
+						offset: 0 0;
+						to_x: "mpdule.play";
+						to_y: "mpdule.genre_label";
+					}
+					rel2 {
+						relative: 1.0 1.0;
+						offset: 32 32;
+						to_x: "mpdule.play";
+						to_y: "mpdule.genre_label";
+					}
+					image {
+						normal: "pause.png";
+					}
+				}
+			}
+			part {
+				name: "mpdule.stop";
+				type: IMAGE;
+				description {
+					state: "default" 0.0;
+					visible: 1;
+					rel1 {
+						relative: 1.0 1.0;
+						offset: 0 0;
+						to_x: "mpdule.pause";
+						to_y: "mpdule.genre_label";
+					}
+					rel2 {
+						relative: 1.0 1.0;
+						offset: 32 32;
+						to_x: "mpdule.pause";
+						to_y: "mpdule.genre_label";
+					}
+					image {
+						normal: "stop.png";
+					}
+				}
+			}
+			part {
+				name: "mpdule.next";
+				type: IMAGE;
+				description {
+					state: "default" 0.0;
+					visible: 1;
+					rel1 {
+						relative: 1.0 1.0;
+						offset: 0 0;
+						to_x: "mpdule.stop";
+						to_y: "mpdule.genre_label";
+					}
+					rel2 {
+						relative: 1.0 1.0;
+						offset: 32 32;
+						to_x: "mpdule.stop";
+						to_y: "mpdule.genre_label";
+					}
+					image {
+						normal: "next.png";
+					}
+				}
+			}
 		}
 		programs {
+			program {
+				name: "mouse_play";
+				signal: "mouse,clicked,1";
+				source: "mpdule.play";
+				action: SIGNAL_EMIT "mpdule,play" "";
+			}
+			program {
+				name: "mouse_pause";
+				signal: "mouse,clicked,1";
+				source: "mpdule.pause";
+				action: SIGNAL_EMIT "mpdule,pause" "";
+			}
+			program {
+				name: "mouse_stop";
+				signal: "mouse,clicked,1";
+				source: "mpdule.stop";
+				action: SIGNAL_EMIT "mpdule,stop" "";
+			}
+			program {
+				name: "mouse_previous";
+				signal: "mouse,clicked,1";
+				source: "mpdule.previous";
+				action: SIGNAL_EMIT "mpdule,previous" "";
+			}
+			program {
+				name: "mouse_next";
+				signal: "mouse,clicked,1";
+				source: "mpdule.next";
+				action: SIGNAL_EMIT "mpdule,next" "";
+			}
 		}
 	}
 }
