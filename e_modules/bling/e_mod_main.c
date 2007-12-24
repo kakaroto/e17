@@ -46,6 +46,9 @@ e_modapi_shutdown(E_Module *m)
 {
    Bling *b;
 
+   e_configure_registry_item_del("appearance/bling");
+   e_configure_registry_category_del("appearance");
+   
    b = m->data;
    if (b)
      {
@@ -156,6 +159,7 @@ _bling_init(E_Module *m)
    E_CONFIG_VAL(D, T, fx_fade_out_step, DOUBLE);
 
    b->config = e_config_domain_load("module.bling", b->conf_edd);
+
    if (!b->config)
    {
       b->config = E_NEW(Config, 1);

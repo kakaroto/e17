@@ -51,7 +51,7 @@ e_int_config_bling_module(E_Container *con, const char *params __UNUSED__)
    v->advanced.create_widgets = _advanced_create_widgets;
 
    snprintf(buf, sizeof(buf), "%s/module.edj", e_module_dir_get(b->module));
-   cfd = e_config_dialog_new(con, "BlingConfiguration",
+   cfd = e_config_dialog_new(con, "Bling Configuration",
                              "Bling", "_e_modules_bling_config_dialog", buf, 0, v, b);
 
    b->config_dialog = cfd;
@@ -125,6 +125,7 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    b->config->fx_fade_enable = cfdata->fade_enable;
    b->config->fx_fade_opacity_enable = cfdata->fade_opacity;
 
+   e_config_save_queue();
    /* Reload composite manager! */
    return 1;
 }
@@ -209,7 +210,9 @@ _advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    b->config->fx_fade_opacity_enable = cfdata->fade_opacity;
    b->config->fx_fade_in_step = cfdata->fade_in_step/100.0;
    b->config->fx_fade_out_step = cfdata->fade_out_step/100.0;
-
+   
+   e_config_save_queue();
+   
    /* reload comp manager! */
    return 1;
 }
