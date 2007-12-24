@@ -44,4 +44,6 @@ typedef void        (EventFdHandler) (void);
 EventFdDesc        *EventFdRegister(int fd, EventFdHandler * handler);
 void                EventFdUnregister(EventFdDesc * efd);
 
+int                 EventsGetXY(int *px, int *py);
+
 #endif /* _EVENTS_H_ */

@@ -25,6 +25,7 @@
 #include "cursors.h"
 #include "desktops.h"
 #include "emodule.h"
+#include "events.h"
 #include "ewins.h"
 #include "focus.h"
 #include "grabs.h"
@@ -80,13 +81,15 @@ int
 ActionMoveStart(EWin * ewin, char constrained, int nogroup)
 {
    EWin              **gwins;
-   int                 i, num;
+   int                 i, num, cx, cy;
 
    if (!ewin || ewin->state.inhibit_move)
       return 0;
 
    Mode_mr.ewin = ewin;
    Mode_mr.nogroup = nogroup;
+
+   EventsGetXY(&cx, &cy);
 
    SoundPlay("SOUND_MOVE_START");
 
@@ -95,8 +98,8 @@ ActionMoveStart(EWin * ewin, char constrained, int nogroup)
    Mode.mode = MODE_MOVE_PENDING;
    Mode.constrained = constrained;
 
-   Mode_mr.start_x = Mode.events.cx;
-   Mode_mr.start_y = Mode.events.cy;
+   Mode_mr.start_x = cx;
+   Mode_mr.start_y = cy;
 
    Mode_mr.win_x = Mode_mr.start_x - (EoGetX(ewin) + EoGetX(EoGetDesk(ewin)));
    Mode_mr.win_y = Mode_mr.start_y - (EoGetY(ewin) + EoGetY(EoGetDesk(ewin)));
@@ -289,13 +292,15 @@ ActionMoveResume(void)
 int
 ActionResizeStart(EWin * ewin, int hv)
 {
-   int                 x, y, w, h, ww, hh;
+   int                 x, y, w, h, ww, hh, cx, cy;
    unsigned int        csr;
 
    if (!ewin || ewin->state.inhibit_resize)
       return 0;
 
    Mode_mr.ewin = ewin;
+
+   EventsGetXY(&cx, &cy);
 
    SoundPlay("SOUND_RESIZE_START");
 
@@ -321,8 +326,8 @@ ActionResizeStart(EWin * ewin, int hv)
      default:
      case MODE_RESIZE:
 	Mode.mode = hv;
-	x = Mode.events.cx - EoGetX(ewin);
-	y = Mode.events.cy - EoGetY(ewin);
+	x = cx - EoGetX(ewin);
+	y = cy - EoGetY(ewin);
 	w = EoGetW(ewin) >> 1;
 	h = EoGetH(ewin) >> 1;
 	ww = EoGetW(ewin) / 6;
@@ -381,7 +386,7 @@ ActionResizeStart(EWin * ewin, int hv)
 
      case MODE_RESIZE_H:
 	Mode.mode = hv;
-	x = Mode.events.cx - EoGetX(ewin);
+	x = cx - EoGetX(ewin);
 	w = EoGetW(ewin) >> 1;
 	if (x < w)
 	   Mode_mr.resize_detail = RD(1, 0);
@@ -392,7 +397,7 @@ ActionResizeStart(EWin * ewin, int hv)
 
      case MODE_RESIZE_V:
 	Mode.mode = hv;
-	y = Mode.events.cy - EoGetY(ewin);
+	y = cy - EoGetY(ewin);
 	h = EoGetH(ewin) >> 1;
 	if (y < h)
 	   Mode_mr.resize_detail = RD(0, 1);
@@ -402,8 +407,8 @@ ActionResizeStart(EWin * ewin, int hv)
 	break;
      }
 
-   Mode_mr.start_x = Mode.events.cx;
-   Mode_mr.start_y = Mode.events.cy;
+   Mode_mr.start_x = cx;
+   Mode_mr.start_y = cy;
    Mode_mr.win_x = EoGetX(ewin);
    Mode_mr.win_y = EoGetY(ewin);
    Mode_mr.win_w = ewin->client.w;

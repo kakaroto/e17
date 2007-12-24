@@ -853,35 +853,28 @@ AddToFamily(EWin * ewin, Window xwin)
 	/* Place the window below the mouse pointer */
 	if (Conf.place.manual_mouse_pointer)
 	  {
-	     int                 rx, ry;
-	     int                 newWinX = 0, newWinY = 0;
+	     int                 cx, cy;
 
 	     /* if the loser has manual placement on and the app asks to be on */
 	     /*  a desktop, then send E to that desktop so the user can place */
 	     /* the window there */
 	     DeskGoto(dsk);
 
-	     EQueryPointer(NULL, &rx, &ry, NULL, NULL);
-	     Mode.events.cx = rx;
-	     Mode.events.cy = ry;
+	     EventsGetXY(&cx, &cy);
 
 	     /* try to center the window on the mouse pointer */
-	     newWinX = rx;
-	     newWinY = ry;
-	     if (EoGetW(ewin))
-		newWinX -= EoGetW(ewin) / 2;
-	     if (EoGetH(ewin))
-		newWinY -= EoGetH(ewin) / 2;
+	     cx -= EoGetW(ewin) / 2;
+	     cy -= EoGetH(ewin) / 2;
 
 	     /* keep it all on this screen if possible */
-	     newWinX = MIN(newWinX, VRoot.w - EoGetW(ewin));
-	     newWinY = MIN(newWinY, VRoot.h - EoGetH(ewin));
-	     newWinX = MAX(newWinX, 0);
-	     newWinY = MAX(newWinY, 0);
+	     cx = MIN(cx, VRoot.w - EoGetW(ewin));
+	     cy = MIN(cy, VRoot.h - EoGetH(ewin));
+	     cx = MAX(cx, 0);
+	     cy = MAX(cy, 0);
 
 	     /* this works for me... */
-	     x = newWinX;
-	     y = newWinY;
+	     x = cx;
+	     y = cy;
 	  }
 	else if (ewin->ewmh.type.b.dialog)
 	  {

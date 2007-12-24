@@ -261,6 +261,18 @@ EventsInit(void)
    EventFdRegister(ConnectionNumber(disp), NULL);
 }
 
+int
+EventsGetXY(int *px, int *py)
+{
+   int                 ss;
+
+   ss = EQueryPointer(NULL, px, py, NULL, NULL);
+   Mode.events.cx = *px;
+   Mode.events.cy = *py;
+
+   return ss;
+}
+
 static void
 ModeGetXY(Window rwin, int rx, int ry)
 {
