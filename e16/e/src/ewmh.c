@@ -1020,15 +1020,20 @@ EWMH_ProcessClientClientMessage(EWin * ewin, XClientMessageEvent * ev)
 	switch (ev->data.l[2])
 	  {
 	  case _NET_WM_MOVERESIZE_SIZE_TOPLEFT:
-	  case _NET_WM_MOVERESIZE_SIZE_TOP:
 	  case _NET_WM_MOVERESIZE_SIZE_TOPRIGHT:
-	  case _NET_WM_MOVERESIZE_SIZE_RIGHT:
 	  case _NET_WM_MOVERESIZE_SIZE_BOTTOMRIGHT:
-	  case _NET_WM_MOVERESIZE_SIZE_BOTTOM:
 	  case _NET_WM_MOVERESIZE_SIZE_BOTTOMLEFT:
-	  case _NET_WM_MOVERESIZE_SIZE_LEFT:
 	     ActionResizeStart(ewin, MODE_RESIZE);
 	     break;
+	  case _NET_WM_MOVERESIZE_SIZE_RIGHT:
+	  case _NET_WM_MOVERESIZE_SIZE_LEFT:
+	     ActionResizeStart(ewin, MODE_RESIZE_H);
+	     break;
+	  case _NET_WM_MOVERESIZE_SIZE_TOP:
+	  case _NET_WM_MOVERESIZE_SIZE_BOTTOM:
+	     ActionResizeStart(ewin, MODE_RESIZE_V);
+	     break;
+
 	  case _NET_WM_MOVERESIZE_MOVE:
 	     ActionMoveStart(ewin, 0, 0);
 	     break;
