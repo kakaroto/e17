@@ -398,7 +398,69 @@ error:
 int 
 alsa_get_mute(int card_id, int channel_id) 
 {
+   Mixer_Card *card;
+   snd_mixer_t *handle;
+   snd_mixer_elem_t *elem;
+   snd_mixer_selem_id_t *sid;
+   int id, err, vol;
+   const char *name;
+
+   card = alsa_get_card(card_id);
+   if (!card) return 0;
+
+   if ((err = snd_mixer_open(&handle, 0)) < 0) 
+     {
+	printf("Cannot open mixer: %s\n", snd_strerror(err));
+        goto error;
+     }
+   if ((err = snd_mixer_attach(handle, (char *)card->name)) < 0) 
+     {
+	printf("Cannot Attach Mixer: %s\n", snd_strerror(err));
+	snd_mixer_close(handle);
+        goto error;
+     }
+   if ((err = snd_mixer_selem_register(handle, NULL, NULL)) < 0) 
+     {
+	printf("Cannot Register Mixer: %s\n", snd_strerror(err));
+	snd_mixer_close(handle);
+        goto error;
+     }
+   if ((err = snd_mixer_load(handle)) < 0) 
+     {
+	printf("Cannot Load Mixer: %s\n", snd_strerror(err));
+	snd_mixer_close(handle);
+        goto error;
+     }
+
+   for (elem = snd_mixer_first_elem(handle); elem; elem = snd_mixer_elem_next(elem)) 
+     {
+	snd_mixer_selem_id_alloca(&sid);
+	snd_mixer_selem_get_id(elem, sid);
+	if (!snd_mixer_selem_is_active(elem)) continue;
+
+	name = snd_mixer_selem_id_get_name(sid);
+	id = _alsa_get_mixer_id(name);
+	if (id == channel_id)
+	  {
+	     if (snd_mixer_selem_has_playback_switch(elem)) 
+	       { 
+		  snd_mixer_selem_get_playback_switch(elem, id, &muted);
+		  muted = muted ? 0 : 1;
+	       }
+	  }	     
+     }
+
+   snd_mixer_close(handle);
+   if (card->name) evas_stringshare_del(card->name);
+   if (card->real) evas_stringshare_del(card->real);
+   E_FREE(card);
    return muted;
+
+error:
+   if (card->name) evas_stringshare_del(card->name);
+   if (card->real) evas_stringshare_del(card->real);
+   E_FREE(card);
+   return 0;
 }
 
 int 
