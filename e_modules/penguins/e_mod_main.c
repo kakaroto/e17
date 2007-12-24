@@ -62,6 +62,7 @@ e_modapi_init(E_Module *m)
 
    penguins_mod = m;
 
+   e_module_delayed_set(m, 1);
    
    return pop;
 }
