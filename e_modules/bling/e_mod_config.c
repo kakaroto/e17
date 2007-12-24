@@ -27,15 +27,22 @@ static int _advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfda
 static void _fill_data(Bling *b, E_Config_Dialog_Data *cfdata);
 
 
-void
-_config_bling_module(E_Container *con, Bling *b)
+//void
+//_config_bling_module(E_Container *con, Bling *b)
+
+EAPI E_Config_Dialog *
+e_int_config_bling_module(E_Container *con, const char *params __UNUSED__)
 {
    E_Config_Dialog *cfd;
    E_Config_Dialog_View *v;
+   Bling *b;
    char buf[4096];
 
+   b = bling_mod->data;
+   if (e_config_dialog_find("E", "_e_modules_bling_config_dialog")) return NULL;
    v = E_NEW(E_Config_Dialog_View, 1);
 
+   
    v->create_cfdata = _create_data;
    v->free_cfdata = _free_data;
    v->basic.apply_cfdata = _basic_apply_data;
@@ -44,9 +51,11 @@ _config_bling_module(E_Container *con, Bling *b)
    v->advanced.create_widgets = _advanced_create_widgets;
 
    snprintf(buf, sizeof(buf), "%s/module.edj", e_module_dir_get(b->module));
-   cfd = e_config_dialog_new(con, "BlingConfiguration", "Bling", "_e_modules_bling_config_dialog", buf, 0, v, b);
+   cfd = e_config_dialog_new(con, "BlingConfiguration",
+                             "Bling", "_e_modules_bling_config_dialog", buf, 0, v, b);
 
    b->config_dialog = cfd;
+   return cfd;
 }
 
 static void *

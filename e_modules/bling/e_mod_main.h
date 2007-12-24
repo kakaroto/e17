@@ -44,6 +44,8 @@ struct _Bling
    E_Config_Dialog *config_dialog;
 };
 
+extern E_Module *bling_mod;
+
 EAPI extern E_Module_Api e_modapi;
 
 EAPI void *e_modapi_init(E_Module *m);

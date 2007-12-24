@@ -16,16 +16,23 @@ EAPI E_Module_Api e_modapi = {
    E_MODULE_API_VERSION,
    "Composite"
 };
+EAPI E_Module *bling_mod = NULL;
 
 EAPI void *
 e_modapi_init(E_Module *m)
 {
    Bling *b = NULL;
+   char buf[4096];
 
    b = _bling_init(m);
    if (!b) return NULL;
 
+   snprintf(buf, sizeof(buf), "%s/e-module-bling.edj", e_module_dir_get(m));
+   e_configure_registry_category_add("appearance", 10, "Appearance", NULL, "enlightenment/appearance");
+   e_configure_registry_item_add("appearance/bling", 150, "Bling", NULL, buf, e_int_config_bling_module);
+
    b->module = m;
+   bling_mod = m;
 
    return b;
 }
