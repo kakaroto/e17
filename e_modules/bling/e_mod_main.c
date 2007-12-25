@@ -8,8 +8,8 @@ static Bling * _bling_init(E_Module *m);
 static void _bling_shutdown(Bling *b);
 #if 0
 static void _bling_config_menu_new(Bling *b);
-#endif
 static void _bling_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi);
+#endif
 
 /* public module routines. all modules must have these */
 EAPI E_Module_Api e_modapi = {
@@ -97,7 +97,6 @@ _bling_config_menu_new(Bling *b)
    e_menu_item_callback_set(mi, _bling_menu_cb_configure, b);
    b->config_menu = menu;
 }
-#endif
 
 static void
 _bling_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi)
@@ -111,6 +110,7 @@ _bling_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi)
    con = e_container_current_get(e_manager_current_get());
    _config_bling_module(con, b);
 }
+#endif
 
 int
 bling_composite_restart(void *data)
