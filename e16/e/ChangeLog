@@ -4601,3 +4601,14 @@ edox: Fall back to "fixed" font.
 edox: Add ../ttfonts to TT font path.
 Remove vixar font from winter theme (in ABOUT, use vera).
 
+
+-------------------------------------------------------------------------------
+
+Wed Dec 26 00:56:00 CET 2007
+(Kim)
+
+--- 0.16.8.11 0.04 ---
+Fix more breakage around window movement.
+Prevent attempts to resize to less than 1x1.
+Handle h/v resize requests (_NET_WM_MOVERESIZE_SIZE_...) properly.
+
