@@ -112,8 +112,8 @@ _bling_menu_cb_configure(void *data, E_Menu *m, E_Menu_Item *mi)
    _config_bling_module(con, b);
 }
 
-static int
-_bling_composite_restart(void *data)
+int
+bling_composite_restart(void *data)
 {
    Bling *b = data;
 
@@ -221,7 +221,7 @@ _bling_init(E_Module *m)
    _bling_config_menu_new(b);
 #endif
    if (getenv("RESTART"))
-      ecore_idle_enterer_add(_bling_composite_restart, b);
+      ecore_idle_enterer_add(bling_composite_restart, b);
    else if (!composite_init(b))
    {
       E_CONFIG_DD_FREE(b->conf_edd); 

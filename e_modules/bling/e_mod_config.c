@@ -126,7 +126,8 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    b->config->fx_fade_opacity_enable = cfdata->fade_opacity;
 
    e_config_save_queue();
-   /* Reload composite manager! */
+   bling_composite_restart(b);
+   
    return 1;
 }
 
@@ -152,7 +153,7 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
 
    ob = e_widget_label_add(evas, "Shadow Opacity");
    e_widget_table_object_append(ot, ob, 0, i, 1, 1, 0, 0, 0, 0);
-   ob = e_widget_slider_add(evas, 1, 0, "%1.00f\%", 0, 1, 0.05, 0, &(cfdata->shadow_opacity), NULL, 150);
+   ob = e_widget_slider_add(evas, 1, 0, "%1.2f\%", 0, 1, 0.05, 0, &(cfdata->shadow_opacity), NULL, 150);
    e_widget_table_object_append(ot, ob, 1, i, 1, 1, 0, 0, 1, 0);
    i++;
 
@@ -212,8 +213,8 @@ _advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    b->config->fx_fade_out_step = cfdata->fade_out_step/100.0;
    
    e_config_save_queue();
+   bling_composite_restart(b);
    
-   /* reload comp manager! */
    return 1;
 }
 

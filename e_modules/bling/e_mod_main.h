@@ -55,5 +55,5 @@ EAPI int e_modapi_save(E_Module *m);
 /* Composite functions */
 int composite_init(Bling *b);
 void composite_shutdown(void);
-
+int bling_composite_restart(void *data);
 #endif /* E_MOD_MAIN_H */

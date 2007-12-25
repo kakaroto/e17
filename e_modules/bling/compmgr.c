@@ -954,7 +954,7 @@ composite_paint_all(Ecore_X_Region region)
       if (w->windowType == ECORE_X_WINDOW_TYPE_DESKTOP)
          continue;
 
-      if (w->shadowSize > 0)
+      if (w->shadowSize > 0 && config->shadow_enable)
       {
          switch (compMode)
          {
