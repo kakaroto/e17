@@ -1,6 +1,5 @@
 BUGS
 ==============================================
-* Config doesn't save.
 * E17 crash dialog doesn't show (need to unredirect windows
   in the event of a SEGV).
 * Focus in/out fades may not always work especially if window is
