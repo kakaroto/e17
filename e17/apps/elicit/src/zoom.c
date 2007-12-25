@@ -158,23 +158,26 @@ elicit_zoom_data_set(Evas_Object *o, void *data, int w, int h)
   z->has_data = 1;
 }
 
+static const Evas_Smart_Class _smart_class = {
+	"elicit_zoom",
+	EVAS_SMART_CLASS_VERSION,
+	_smart_add,
+	_smart_del,
+	_smart_move,
+	_smart_resize,
+	_smart_show,
+	_smart_hide,
+	NULL,
+	_smart_clip_set,
+	_smart_clip_unset,
+	NULL
+};
 
 static void
 _smart_init(void)
 {
    if (_smart) return;
-   _smart = evas_smart_new("elicit_zoom",
-			     _smart_add,
-			     _smart_del, 
-			     NULL, NULL, NULL, NULL, NULL,
-			     _smart_move,
-			     _smart_resize,
-			     _smart_show,
-			     _smart_hide,
-           _smart_color_set,
-           _smart_clip_set,
-           _smart_clip_unset,
-			     NULL);
+   _smart = evas_smart_class_new(&_smart_class);
 }
 
 static void

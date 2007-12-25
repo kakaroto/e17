@@ -147,22 +147,26 @@ elicit_spectrum_color_set(Evas_Object *o, int r, int g, int b, int h, float s, f
   }
 }
 
+static const Evas_Smart_Class _smart_class = {
+	"elicit_spectrum",
+	EVAS_SMART_CLASS_VERSION,
+	_smart_add,
+	_smart_del,
+	_smart_move,
+	_smart_resize,
+	_smart_show,
+	_smart_hide,
+	NULL,
+	_smart_clip_set,
+	_smart_clip_unset,
+	NULL
+};
+
 static void
 _smart_init(void)
 {
    if (_smart) return;
-   _smart = evas_smart_new("elicit_zoom",
-			     _smart_add,
-			     _smart_del, 
-			     NULL, NULL, NULL, NULL, NULL,
-			     _smart_move,
-			     _smart_resize,
-			     _smart_show,
-			     _smart_hide,
-           NULL, // color_set
-           _smart_clip_set,
-           _smart_clip_unset,
-			     NULL);
+	 _smart = evas_smart_class_new(&_smart_class);
 }
 
 static void
