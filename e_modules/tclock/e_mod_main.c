@@ -212,7 +212,8 @@ _tclock_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
    if (!(inst = data)) return;
    if (!inst->ci->show_tip) return;
    if (inst->tip) return;
-   snprintf(buf, sizeof(buf), "%s/tclock.edj", tclock_config->module->dir);
+   snprintf(buf, sizeof(buf), "%s/tclock.edj", 
+	    e_module_dir_get(tclock_config->module));
 
    zone = e_util_zone_current_get(e_manager_current_get());
    inst->tip = e_popup_new(zone, 0, 0, 0, 0);
