@@ -5,8 +5,10 @@ struct _E_Config_Dialog_Data
 {
   int show_date;
   int show_time;
+  int show_tip;
   char *time_format;
   char *date_format;
+  char *tip_format;
 };
 
 /* Protos */
@@ -49,10 +51,13 @@ _fill_data (Config_Item * ci, E_Config_Dialog_Data * cfdata)
 {
   cfdata->show_time = ci->show_time;
   cfdata->show_date = ci->show_date;
+  cfdata->show_tip = ci->show_tip;
   if (ci->time_format)
     cfdata->time_format = strdup (ci->time_format);
   if (ci->date_format)
     cfdata->date_format = strdup (ci->date_format);
+  if (ci->tip_format)
+    cfdata->tip_format = strdup(ci->tip_format);
 }
 
 static void *
@@ -82,7 +87,7 @@ _basic_create_widgets (E_Config_Dialog * cfd, Evas * evas, E_Config_Dialog_Data 
    Evas_Object *time_entry, *time_check, *date_entry, *date_check;
 
   o = e_widget_list_add (evas, 0, 0);
-
+   
   of = e_widget_frametable_add (evas, D_ ("Top"), 1);
   time_check =
     e_widget_check_add (evas, D_ ("Show Top Line"), &(cfdata->show_time));
@@ -111,6 +116,16 @@ _basic_create_widgets (E_Config_Dialog * cfd, Evas * evas, E_Config_Dialog_Data 
   e_widget_frametable_object_append (of, ob, 0, 2, 1, 1, 1, 0, 1, 0);
   e_widget_list_object_append (o, of, 1, 1, 0.5);
 
+  of = e_widget_frametable_add (evas, D_ ("Tool Tip"), 1);
+  ob = e_widget_check_add (evas, D_ ("Show Tooltip"), &(cfdata->show_tip));
+  e_widget_frametable_object_append (of, ob, 0, 0, 1, 1, 1, 0, 1, 0);
+  ob = e_widget_entry_add (evas, &cfdata->tip_format, NULL, NULL, NULL);
+  e_widget_min_size_set (ob, 150, 1);
+  e_widget_frametable_object_append (of, ob, 0, 1, 1, 1, 1, 0, 1, 0);
+  ob =
+    e_widget_label_add (evas, D_ ("Consult strftime(3) for format syntax"));
+  e_widget_frametable_object_append (of, ob, 0, 2, 1, 1, 1, 0, 1, 0);
+  e_widget_list_object_append (o, of, 1, 1, 0.5);
 
   return o;
 }
@@ -123,12 +138,16 @@ _basic_apply_data (E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
   ci = cfd->data;
   ci->show_date = cfdata->show_date;
   ci->show_time = cfdata->show_time;
+  ci->show_tip = cfdata->show_tip;
   if (ci->time_format)
     evas_stringshare_del (ci->time_format);
   ci->time_format = evas_stringshare_add (cfdata->time_format);
   if (ci->date_format)
     evas_stringshare_del (ci->date_format);
   ci->date_format = evas_stringshare_add (cfdata->date_format);
+  if (ci->tip_format)
+    evas_stringshare_del (ci->tip_format);
+  ci->tip_format = evas_stringshare_add (cfdata->tip_format);
 
   e_config_save_queue ();
 

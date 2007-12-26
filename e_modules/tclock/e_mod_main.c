@@ -21,6 +21,8 @@ static const char      *_gc_id_new   (void);
 
 /* Module Protos */
 static void         _tclock_cb_mouse_down     (void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void         _tclock_cb_mouse_in       (void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void         _tclock_cb_mouse_out      (void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void         _tclock_menu_cb_configure (void *data, E_Menu *m, E_Menu_Item *mi);
 static void         _tclock_menu_cb_post      (void *data, E_Menu *m);
 static int          _tclock_cb_check          (void *data);
@@ -43,8 +45,9 @@ typedef struct _Instance Instance;
 struct _Instance
 {
   E_Gadcon_Client *gcc;
-  Evas_Object *tclock;
+  Evas_Object *tclock, *o_tip;
   Config_Item *ci;
+  E_Popup *tip;
 };
 
 static E_Gadcon_Client *
@@ -76,6 +79,10 @@ _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
 
   evas_object_event_callback_add (o, EVAS_CALLBACK_MOUSE_DOWN,
 				  _tclock_cb_mouse_down, inst);
+  evas_object_event_callback_add (o, EVAS_CALLBACK_MOUSE_IN,
+				  _tclock_cb_mouse_in, inst);
+  evas_object_event_callback_add (o, EVAS_CALLBACK_MOUSE_OUT,
+				  _tclock_cb_mouse_out, inst);
 
   tclock_config->instances =
     evas_list_append (tclock_config->instances, inst);
@@ -95,11 +102,15 @@ _gc_shutdown (E_Gadcon_Client * gcc)
      
   evas_object_event_callback_del (inst->tclock, EVAS_CALLBACK_MOUSE_DOWN,
 				  _tclock_cb_mouse_down);
+  evas_object_event_callback_del (inst->tclock, EVAS_CALLBACK_MOUSE_IN,
+				  _tclock_cb_mouse_in);
+  evas_object_event_callback_del (inst->tclock, EVAS_CALLBACK_MOUSE_OUT,
+				  _tclock_cb_mouse_out);
 
   evas_object_del (inst->tclock);
 
    tclock_config->instances =
-    evas_list_remove (tclock_config->instances, inst);
+     evas_list_remove (tclock_config->instances, inst);
 
    if (evas_list_count (tclock_config->instances) <= 0) 
      {	
@@ -188,6 +199,58 @@ _tclock_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
     }
 }
 
+static void 
+_tclock_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info) 
+{
+   Instance *inst = NULL;
+   E_Zone *zone = NULL;
+   char buf[4096];
+   int x, y, w, h;
+   time_t current_time;
+   struct tm *local_time;
+
+   if (!(inst = data)) return;
+   if (!inst->ci->show_tip) return;
+   if (inst->tip) return;
+   snprintf(buf, sizeof(buf), "%s/tclock.edj", tclock_config->module->dir);
+
+   zone = e_util_zone_current_get(e_manager_current_get());
+   inst->tip = e_popup_new(zone, 0, 0, 0, 0);
+   e_popup_layer_set(inst->tip, 255);
+
+   inst->o_tip = edje_object_add(inst->tip->evas);
+   edje_object_file_set(inst->o_tip, buf, "modules/tclock/tip");
+   evas_object_show(inst->o_tip);
+
+   current_time = time (NULL);
+   local_time = localtime (&current_time);
+   memset (buf, 0, sizeof (buf));
+   strftime (buf, 1024, inst->ci->tip_format, local_time);
+   edje_object_part_text_set (inst->o_tip, "e.text.tip", buf);
+
+   evas_object_move(inst->o_tip, 0, 0);
+   edje_object_size_min_calc(inst->o_tip, &w, &h);
+   evas_object_resize(inst->o_tip, w, h);
+
+   e_popup_edje_bg_object_set(inst->tip, inst->o_tip);
+   ecore_x_pointer_xy_get(zone->container->win, &x, &y);
+   e_popup_move_resize(inst->tip, x, y, w, h);
+   e_popup_show(inst->tip);
+}
+
+static void 
+_tclock_cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info) 
+{
+   Instance *inst = NULL;
+
+   if (!(inst = data)) return;
+   if (!inst->tip) return;
+   evas_object_del(inst->o_tip);
+   e_object_del(E_OBJECT(inst->tip));
+   inst->tip = NULL;
+   inst->o_tip = NULL;
+}
+
 static void
 _tclock_menu_cb_post (void *data, E_Menu * m)
 {
@@ -261,18 +324,25 @@ _tclock_cb_check (void *data)
 	else
 	  edje_object_signal_emit (inst->tclock, "date_visible", "");
 	edje_object_message_signal_process (inst->tclock);
-	
+
 	memset (buf, 0, sizeof (buf));
 	
 	if (inst->ci->time_format)
 	  {
 	    strftime (buf, 1024, inst->ci->time_format, local_time);
 	    edje_object_part_text_set (inst->tclock, "tclock_time", buf);
+	     if (inst->tip) 
+	       edje_object_part_text_set(inst->o_tip, "e.text.tip", buf);
 	  }
 	if (inst->ci->date_format)
 	  {
 	    strftime (buf, 1024, inst->ci->date_format, local_time);
 	    edje_object_part_text_set (inst->tclock, "tclock_date", buf);
+	  }
+	if ((inst->ci->tip_format) && (inst->o_tip))
+	  {
+	    strftime (buf, 1024, inst->ci->tip_format, local_time);
+	    edje_object_part_text_set (inst->o_tip, "e.text.tip", buf);
 	  }
      }
    
@@ -317,8 +387,10 @@ _tclock_config_item_get (const char *id)
    ci->id = evas_stringshare_add (id);
    ci->show_date = 1;
    ci->show_time = 1;
+   ci->show_tip = 1;
    ci->time_format = evas_stringshare_add ("%T");
    ci->date_format = evas_stringshare_add ("%d/%m/%y");
+   ci->tip_format = evas_stringshare_add("%A, %B %d, %Y");
 
    tclock_config->items = evas_list_append (tclock_config->items, ci);
    return ci;
@@ -346,8 +418,10 @@ e_modapi_init (E_Module * m)
   E_CONFIG_VAL (D, T, id, STR);
   E_CONFIG_VAL (D, T, show_date, INT);
   E_CONFIG_VAL (D, T, show_time, INT);
+  E_CONFIG_VAL (D, T, show_tip, INT);
   E_CONFIG_VAL (D, T, date_format, STR);
   E_CONFIG_VAL (D, T, time_format, STR);
+  E_CONFIG_VAL (D, T, tip_format, STR);
 
   conf_edd = E_CONFIG_DD_NEW ("TClock_Config", Config);
 #undef T
@@ -367,8 +441,10 @@ e_modapi_init (E_Module * m)
       ci->id = evas_stringshare_add ("0");
       ci->show_date = 1;
       ci->show_time = 1;
+      ci->show_tip = 1;
       ci->time_format = evas_stringshare_add ("%T");
       ci->date_format = evas_stringshare_add ("%d/%m/%y");
+      ci->tip_format = evas_stringshare_add("%d");
 
       tclock_config->items = evas_list_append (tclock_config->items, ci);
     }
@@ -406,6 +482,8 @@ e_modapi_shutdown (E_Module * m)
 	evas_stringshare_del (ci->time_format);
       if (ci->date_format)
 	evas_stringshare_del (ci->date_format);
+       if (ci->tip_format)
+	 evas_stringshare_del(ci->tip_format);
       E_FREE (ci);
     }
 
@@ -421,4 +499,3 @@ e_modapi_save (E_Module * m)
   e_config_domain_save ("module.tclock", conf_edd, tclock_config);
   return 1;
 }
-

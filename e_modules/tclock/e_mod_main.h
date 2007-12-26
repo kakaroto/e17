@@ -25,8 +25,10 @@ struct _Config_Item
    double poll_time;
    int show_time;
    int show_date;
+   int show_tip;
    const char *time_format;
    const char *date_format;
+   const char *tip_format;
 };
 
 EAPI extern E_Module_Api e_modapi;
