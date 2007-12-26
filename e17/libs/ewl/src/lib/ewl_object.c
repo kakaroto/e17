@@ -770,42 +770,6 @@ ewl_object_minimum_h_get(Ewl_Object *o)
 }
 
 /**
- * @param o: the object to get the minimum width
- * @return Returns the minimum width of the object @a o.
- * @brief Get the minimum width of an object
- */
-int
-ewl_object_minimum_inner_w_get(Ewl_Object *o)
-{
-	int val;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(o, 0);
-
-	val = MINIMUM_W(o);
-
-	DRETURN_INT(val, DLEVEL_STABLE);
-}
-
-/**
- * @param o: the object to get the minimum height
- * @return Returns the minimum height of the object.
- * @brief Get the minimum height of an object
- */
-int
-ewl_object_minimum_inner_h_get(Ewl_Object *o)
-{
-	int val;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(o, 0);
-
-	val = MINIMUM_H(o);
-
-	DRETURN_INT(val, DLEVEL_STABLE);
-}
-
-/**
  * @param o: the object to retrieve the minimum dimensions
  * @param w: a pointer to an integer to store the minimum width
  * @param h: a pointer to an integer to store the minimum height
@@ -966,42 +930,6 @@ ewl_object_maximum_h_get(Ewl_Object *o)
 
 	if ((val + PADDING_VERTICAL(o) + INSET_VERTICAL(o)) > val)
 		val += PADDING_VERTICAL(o) + INSET_VERTICAL(o);
-
-	DRETURN_INT(val, DLEVEL_STABLE);
-}
-
-/**
- * @param o: the object to get the maximum width
- * @return Returns the maximum width of the object.
- * @brief Get the maximum width of an object
- */
-int
-ewl_object_maximum_inner_w_get(Ewl_Object *o)
-{
-	int val;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(o, 0);
-
-	val = MAXIMUM_W(o);
-
-	DRETURN_INT(val, DLEVEL_STABLE);
-}
-
-/**
- * @param o: the object to get the maximum height
- * @return Returns the maximum height of the object.
- * @brief Get the maximum height of an object
- */
-int
-ewl_object_maximum_inner_h_get(Ewl_Object *o)
-{
-	int val;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(o, 0);
-
-	val = MAXIMUM_H(o);
 
 	DRETURN_INT(val, DLEVEL_STABLE);
 }

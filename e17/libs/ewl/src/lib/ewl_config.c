@@ -608,6 +608,31 @@ ewl_config_file_name_clean(Ewl_Config *cfg)
 }
 
 static char *
+ewl_config_file_name_build_get(Ewl_Config *cfg)
+{
+	char cfg_filename[PATH_MAX], *fname;
+	int is_ewl = FALSE;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET(cfg, NULL);
+
+	if (!getenv("srcdir"))
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
+
+	if (!strcmp(cfg->app_name, "ewl"))
+		is_ewl = TRUE;
+
+	fname = ewl_config_file_name_clean(cfg);
+	snprintf(cfg_filename, sizeof(cfg_filename),
+			"%s/../../data/config/%s%s.cfg", getenv("srcdir"),
+			(is_ewl ? "" : "apps/"), fname);
+
+	FREE(fname);
+
+	DRETURN_PTR(strdup(cfg_filename), DLEVEL_STABLE);
+}
+
+static char *
 ewl_config_file_name_system_get(Ewl_Config *cfg)
 {
 	char cfg_filename[PATH_MAX], *fname;
@@ -662,7 +687,12 @@ ewl_config_load(Ewl_Config *cfg)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET(cfg, FALSE);
 
-	fname = ewl_config_file_name_system_get(cfg);
+	/*
+	 * Attempt to load a build relative config file first. This allows for
+	 * testing without installing.
+	 */
+	fname = ewl_config_file_name_build_get(cfg);
+	if (!fname) fname = ewl_config_file_name_system_get(cfg);
 	sys_ret = ewl_config_file_load(cfg, TRUE, fname);
 	FREE(fname);
 
