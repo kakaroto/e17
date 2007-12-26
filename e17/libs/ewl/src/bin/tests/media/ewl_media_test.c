@@ -246,14 +246,14 @@ create_media_window(Ewl_Media_Module_Type type)
 	ewl_window_class_set(EWL_WINDOW(win), "EWL_Media_test");
 	ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, del_cb, NULL);
 	ewl_callback_append(win, EWL_CALLBACK_KEY_UP, key_up_cb, NULL);
-	ewl_object_size_request(EWL_OBJECT(win), 320, 280);
-	ewl_object_fill_policy_set(EWL_OBJECT(win), EWL_FLAG_FILL_ALL);
+	ewl_object_h_request(EWL_OBJECT(win), 280);
+	ewl_object_fill_policy_set(EWL_OBJECT(win), EWL_FLAG_FILL_FILL);
 	ewl_widget_show(win);
 
 	/* box to contain everything */
 	b = ewl_vbox_new();
 	ewl_container_child_append(EWL_CONTAINER(win), b);
-	ewl_object_fill_policy_set(EWL_OBJECT(b), EWL_FLAG_FILL_ALL);
+	ewl_object_fill_policy_set(EWL_OBJECT(b), EWL_FLAG_FILL_FILL);
 	ewl_widget_show(b);
 
 	/* create the time widget now so we can pass it to the video as data */

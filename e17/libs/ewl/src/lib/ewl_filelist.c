@@ -937,7 +937,17 @@ ewl_filelist_selected_files_get(Ewl_Filelist *fl)
 				file = ecore_list_index_goto(data->files,
 						 (idx->row - data->num_dirs));
 
-			snprintf(path, PATH_MAX, "%s/%s", data->name, file->name);
+			if (!strcmp(file->name, ".."))
+				snprintf(path, PATH_MAX, "%s", data->name);
+
+			else if (!strcmp(data->name, "/"))
+				snprintf(path, PATH_MAX, "%s%s",
+						data->name, file->name);
+
+			else
+				snprintf(path, PATH_MAX, "%s/%s",
+						data->name, file->name);
+			
 			ecore_list_append(ret, strdup(path));
 		}
 
@@ -957,8 +967,17 @@ ewl_filelist_selected_files_get(Ewl_Filelist *fl)
 					file = ecore_list_index_goto(data->files,
 						 (i - data->num_dirs));
 
-				snprintf(path, PATH_MAX, "%s/%s",
+				if (!strcmp(file->name, ".."))
+					snprintf(path, PATH_MAX, "%s", data->name);
+
+				else if (!strcmp(data->name, "/"))
+					snprintf(path, PATH_MAX, "%s%s",
 						data->name, file->name);
+
+				else
+					snprintf(path, PATH_MAX, "%s/%s",
+						data->name, file->name);
+				
 				ecore_list_append(ret, strdup(path));
 			}
 		}
