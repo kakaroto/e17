@@ -145,6 +145,9 @@ static int realize_reveal(char *buf, int len);
 static int realize_reveal_obscure(char *buf, int len);
 static int realize_reveal_unrealize(char *buf, int len);
 
+static int focusable_test_set_get(char *buf, int len);
+static int focus_test_send_get(char *buf, int len);
+
 static Ewl_Unit_Test widget_unit_tests[] = {
 		{"EWL_WIDGET_IS", widget_is_test, NULL, -1, 0},
 		{"Widget name set/get", name_test_set_get, NULL, -1, 0},
@@ -177,6 +180,8 @@ static Ewl_Unit_Test widget_unit_tests[] = {
 		{"widget realize then reveal state", realize_reveal, NULL, -1, 0},
 		{"widget realize reveal obscure state", realize_reveal_obscure, NULL, -1, 0},
 		{"widget realize reveal unrealize state", realize_reveal_unrealize, NULL, -1, 0},
+		{"widget focusable set/get", focusable_test_set_get, NULL, -1, 0},
+		{"widget focus send/get", focus_test_send_get, NULL, -1, 0},
 		{NULL, NULL, NULL, -1, 0}
 	};
 
@@ -1163,3 +1168,65 @@ widget_colour_test_get_null(char *buf __UNUSED__, int len __UNUSED__)
 	return 1;
 }
 
+/*
+ * Call focusable_set and verify that the widget is now flagged to accept focus
+ * events.
+ */
+static int
+focusable_test_set_get(char *buf, int len)
+{
+	Ewl_Widget *w;
+	unsigned int focusable;
+	int ret = 0;
+
+	w = ewl_widget_new();
+	focusable = ewl_widget_focusable_get(w);
+	if (focusable) {
+		ewl_widget_focusable_set(w, FALSE);
+		focusable = ewl_widget_focusable_get(w);
+		if (!focusable) {
+			ewl_widget_focusable_set(w, TRUE);
+			focusable = ewl_widget_focusable_get(w);
+			if (focusable)
+				ret = 1;
+			else
+				LOG_FAILURE(buf, len, "focusable set to FALSE");
+		}
+		else
+			LOG_FAILURE(buf, len, "focusable set to TRUE");
+	}
+	else
+		LOG_FAILURE(buf, len, "default focusable set to FALSE");
+
+	return ret;
+}
+
+/*
+ * Send focus to a specific widget and verify the widget has the current focus.
+ */
+static int
+focus_test_send_get(char *buf, int len)
+{
+	Ewl_Widget *w;
+	int ret = 0;
+
+	w = ewl_widget_new();
+	ewl_widget_focus_send(w);
+
+	if (ewl_widget_focused_get() == w)
+		LOG_FAILURE(buf, len, "focused with no embed");
+	else {
+		Ewl_Widget *embed;
+
+		embed = ewl_embed_new();
+		ewl_container_child_append(EWL_CONTAINER(embed), w);
+		ewl_widget_focus_send(w);
+
+		if (ewl_widget_focused_get() == w)
+			ret = 1;
+		else
+			LOG_FAILURE(buf, len, "widget not focused");
+	}
+
+	return ret;
+}
