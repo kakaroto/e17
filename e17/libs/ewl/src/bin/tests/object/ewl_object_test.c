@@ -17,6 +17,7 @@
 #define DIFFER_WIDTH 30
 #define DIFFER_HEIGHT 20
 
+static int default_property_test(char *buf, int len);
 static int place_test_center_get(char *buf, int len);
 static int place_test_top_get(char *buf, int len);
 static int place_test_bottom_get(char *buf, int len);
@@ -39,6 +40,7 @@ static int fill_policy_test_set_get(char *buf, int len);
 static int alignment_test_set_get(char *buf, int len);
 
 static Ewl_Unit_Test object_unit_tests[] = {
+		{"default properties", default_property_test, NULL, -1, 0},
 		{"place center/get", place_test_center_get, NULL, -1, 0},
 		{"place top/get", place_test_top_get, NULL, -1, 0},
 		{"place bottom/get", place_test_bottom_get, NULL, -1, 0},
@@ -70,6 +72,96 @@ test_info(Ewl_Test *test)
 	test->filename = __FILE__;
 	test->type = EWL_TEST_TYPE_MISC;
 	test->unit_tests = object_unit_tests;
+}
+
+/*
+ * Verify all default values for the object match the expected values.
+ */
+static int
+default_property_test(char *buf, int len)
+{
+	Ewl_Widget *w;
+	int l, r, t, b;
+	int ret = 0;
+
+	w = ewl_widget_new();
+
+	if (ewl_object_current_x_get(EWL_OBJECT(w))) {
+		LOG_FAILURE(buf, len, "x coordinate incorrect");
+		goto DONE;
+	}
+
+	if (ewl_object_current_y_get(EWL_OBJECT(w))) {
+		LOG_FAILURE(buf, len, "y coordinate incorrect");
+		goto DONE;
+	}
+
+	if (ewl_object_current_w_get(EWL_OBJECT(w)) != EWL_OBJECT_MIN_SIZE) {
+		LOG_FAILURE(buf, len, "current width incorrect");
+		goto DONE;
+	}
+
+	if (ewl_object_current_h_get(EWL_OBJECT(w)) != EWL_OBJECT_MIN_SIZE) {
+		LOG_FAILURE(buf, len, "current height incorrect");
+		goto DONE;
+	}
+
+	if (ewl_object_minimum_w_get(EWL_OBJECT(w)) != EWL_OBJECT_MIN_SIZE) {
+		LOG_FAILURE(buf, len, "minimum width incorrect");
+		goto DONE;
+	}
+
+	if (ewl_object_minimum_h_get(EWL_OBJECT(w)) != EWL_OBJECT_MIN_SIZE) {
+		LOG_FAILURE(buf, len, "minimum height incorrect");
+		goto DONE;
+	}
+
+	if (ewl_object_maximum_w_get(EWL_OBJECT(w)) != EWL_OBJECT_MAX_SIZE) {
+		LOG_FAILURE(buf, len, "maximum width incorrect");
+		goto DONE;
+	}
+
+	if (ewl_object_maximum_h_get(EWL_OBJECT(w)) != EWL_OBJECT_MAX_SIZE) {
+		LOG_FAILURE(buf, len, "maximum height incorrect");
+		goto DONE;
+	}
+
+	if (ewl_object_preferred_inner_w_get(EWL_OBJECT(w))) {
+		LOG_FAILURE(buf, len, "preferred inner width incorrect");
+		goto DONE;
+	}
+
+	if (ewl_object_preferred_inner_h_get(EWL_OBJECT(w))) {
+		LOG_FAILURE(buf, len, "preferred inner height incorrect");
+		goto DONE;
+	}
+
+	if (ewl_object_preferred_w_get(EWL_OBJECT(w)) != EWL_OBJECT_MIN_SIZE) {
+		LOG_FAILURE(buf, len, "preferred width incorrect");
+		goto DONE;
+	}
+
+	if (ewl_object_preferred_h_get(EWL_OBJECT(w)) != EWL_OBJECT_MIN_SIZE) {
+		LOG_FAILURE(buf, len, "preferred height incorrect");
+		goto DONE;
+	}
+
+	ewl_object_insets_get(EWL_OBJECT(w), &l, &r, &t, &b);
+	if (l || r || t || b) {
+		LOG_FAILURE(buf, len, "insets incorrect");
+		goto DONE;
+	}
+
+	ewl_object_padding_get(EWL_OBJECT(w), &l, &r, &t, &b);
+	if (l || r || t || b) {
+		LOG_FAILURE(buf, len, "padding incorrect");
+		goto DONE;
+	}
+
+	ret = 1;
+DONE:
+	ewl_widget_destroy(w);
+	return ret;
 }
 
 /*
