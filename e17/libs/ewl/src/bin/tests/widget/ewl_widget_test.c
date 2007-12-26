@@ -653,6 +653,8 @@ parent_set(char *buf, int len)
 	ewl_widget_parent_set(w, b);
 	if (!w->parent)
 		LOG_FAILURE(buf, len, "Widget parent NULL after parent set");
+	else if (ewl_widget_parent_get(w) != b)
+		LOG_FAILURE(buf, len, "Widget parent wrong after parent set");
 	else if (VISIBLE(w))
 		LOG_FAILURE(buf, len, "Widget VISIBLE after parent set");
 	else if (REALIZED(w))
