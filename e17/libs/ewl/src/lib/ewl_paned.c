@@ -223,6 +223,7 @@ ewl_paned_initial_size_set(Ewl_Paned *p, Ewl_Widget *child, int size)
 
 	info = ewl_paned_size_info_add(p, child);
 	info->initial_size = size;
+	info->initial_size_has = TRUE;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -244,10 +245,54 @@ ewl_paned_initial_size_get(Ewl_Paned *p, Ewl_Widget *child)
 	DCHECK_TYPE_RET(p, EWL_PANED_TYPE, 0);
 
 	info = ewl_paned_size_info_get(p, child);
-	if (!info)
+	if (!info || !info->initial_size_has)
 		DRETURN_INT(0, DLEVEL_STABLE);
 
 	DRETURN_INT(info->initial_size, DLEVEL_STABLE);
+}
+
+/**
+ * @param p: The paned to work with
+ * @param child: The child widget to set the fixed size flag
+ * @param fixed: the fixed size flag
+ * @return Returns no value.
+ * @brief Set the given widget to resize only by the grabber
+ */
+void
+ewl_paned_fixed_size_set(Ewl_Paned *p, Ewl_Widget *child, unsigned int fixed)
+{
+	Ewl_Paned_Size_Info *info;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(p);
+	DCHECK_TYPE(p, EWL_PANED_TYPE);
+
+	info = ewl_paned_size_info_add(p, child);
+	info->fixed = !!fixed;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param p: The paned to work with
+ * @param child: The child widget to get the fixed size flag
+ * @return Returns if the pane is set to keep its size while resizing
+ * @brief Retrieves if the pane is set to keep its size while resizing
+ */
+unsigned int
+ewl_paned_fixed_size_get(Ewl_Paned *p, Ewl_Widget *child)
+{
+	Ewl_Paned_Size_Info *info;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET(p, 0);
+	DCHECK_TYPE_RET(p, EWL_PANED_TYPE, 0);
+
+	info = ewl_paned_size_info_get(p, child);
+	if (!info)
+		DRETURN_INT(FALSE, DLEVEL_STABLE);
+
+	DRETURN_INT(info->fixed, DLEVEL_STABLE);
 }
 
 /**
@@ -353,19 +398,19 @@ ewl_paned_cb_child_show(Ewl_Container *c, Ewl_Widget *w)
 
 	if (EWL_ORIENTATION_HORIZONTAL == EWL_PANED(c)->orientation)
 	{
-		if (!info)
-			cw += ww;
-		else
+		if (info && info->initial_size_has)
 			cw += info->initial_size;
+		else
+			cw += ww;
 
 		if (wh > ch) ch = wh;
 	}
 	else
 	{
-		if (!info)
-			ch += wh;
-		else
+		if (info && info->initial_size_has)
 			ch += info->initial_size;
+		else
+			ch += wh;
 
 		if (ww > cw) cw = ww;
 	}
@@ -401,17 +446,17 @@ ewl_paned_cb_child_hide(Ewl_Container *c, Ewl_Widget *w)
 
 	if (EWL_ORIENTATION_HORIZONTAL == EWL_PANED(c)->orientation)
 	{
-		if (!info)
-			cw -= ww;
-		else
+		if (info && info->initial_size_has)
 			cw -= info->initial_size;
+		else
+			cw -= ww;
 	}
 	else
 	{
-		if (!info)
-			ch -= wh;
-		else
+		if (info && info->initial_size_has)
 			ch -= info->initial_size;
+		else
+			ch -= wh;
 	}
 
 	ewl_object_preferred_inner_size_set(EWL_OBJECT(c), cw, ch);
@@ -591,16 +636,16 @@ ewl_paned_pane_info_setup(Ewl_Paned *p, Ewl_Paned_Pane_Info *panes,
 		panes->info = ewl_paned_size_info_get(p, child);
 		panes->pane = child;
 		
-		if (!panes->info)
+		if (panes->info && panes->info->initial_size_has)
+		{
+			panes->size = panes->info->initial_size;
+			panes->fixed = TRUE;
+		}
+		else
 		{
 			panes->size = layout->minimum_size(EWL_OBJECT(child));
 			(*resizable)++;
 			panes->fixed = FALSE;
-		}
-		else
-		{
-			panes->size = panes->info->initial_size;
-			panes->fixed = TRUE;
 		}
 
 		available += panes->size;
@@ -643,10 +688,17 @@ ewl_paned_pane_info_collect(Ewl_Paned *p, Ewl_Paned_Pane_Info *panes,
 		{
 			panes[i].pane = child;
 			panes[i].info = ewl_paned_size_info_get(p, child);
+			if (panes[i].info && panes[i].info->fixed)
+				panes[i].fixed = TRUE;
+			else
+			{
+				panes[i].fixed = FALSE;
+				(*resizable)++;
+			}
+			
 			continue;
 		}
 
-		panes[i].fixed = FALSE;
 		pos = layout->current_position(EWL_OBJECT(child));
 		panes[i].size = pos - prev_pos;
 		available += panes[i].size;
@@ -655,11 +707,8 @@ ewl_paned_pane_info_collect(Ewl_Paned *p, Ewl_Paned_Pane_Info *panes,
 	}
 	/* only the last position is not set because we have no grabber
 	 * at the end */
-	panes[i].fixed = FALSE;
 	panes[i].size = p->last_size - (prev_pos - p->last_pos);
 	available += panes[i].size;
-
-	*resizable = i + 1;
 	
 	DRETURN_INT(available, DLEVEL_STABLE);
 }

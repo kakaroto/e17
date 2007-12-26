@@ -37,6 +37,8 @@ struct Ewl_Paned_Size_Info
 {
 	Ewl_Widget *child;
 	int initial_size;
+	unsigned char initial_size_has:1;
+	unsigned char fixed:1;
 };
 
 /**
@@ -89,6 +91,10 @@ Ewl_Orientation	 ewl_paned_orientation_get(Ewl_Paned *p);
 void		 ewl_paned_initial_size_set(Ewl_Paned *p, Ewl_Widget *child,
 						int size);
 int		 ewl_paned_initial_size_get(Ewl_Paned *p, Ewl_Widget *child);
+
+void		 ewl_paned_fixed_size_set(Ewl_Paned *p, Ewl_Widget *child,
+						unsigned int fixed);
+unsigned int	 ewl_paned_fixed_size_get(Ewl_Paned *p, Ewl_Widget *child);
 
 /*
  * Internal functions. Override at your risk.
