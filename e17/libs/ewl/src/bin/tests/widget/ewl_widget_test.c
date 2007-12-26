@@ -125,6 +125,7 @@ static int widget_colour_test_set_get(char *buf, int len);
 static int widget_colour_test_get_null(char *buf, int len);
 
 static int appearance_test_set_get(char *buf, int len);
+static int appearance_path_test_set_get(char *buf, int len);
 static int inheritance_test_set_get(char *buf, int len);
 static int internal_test_set_get(char *buf, int len);
 static int clipped_test_set_get(char *buf, int len);
@@ -158,6 +159,7 @@ static Ewl_Unit_Test widget_unit_tests[] = {
 		{"Widget colour set/get", widget_colour_test_set_get, NULL, -1, 0},
 		{"Widget colour get NULL", widget_colour_test_get_null, NULL, -1, 0},
 		{"widget appearance set/get", appearance_test_set_get, NULL, -1, 0},
+		{"widget appearance path set/get", appearance_path_test_set_get, NULL, -1, 0},
 		{"widget inheritance set/get", inheritance_test_set_get, NULL, -1, 0},
 		{"widget internal set/get", internal_test_set_get, NULL, -1, 0},
 		{"widget clipped set/get", clipped_test_set_get, NULL, -1, 0},
@@ -302,6 +304,32 @@ appearance_test_set_get(char *buf, int len)
 	ewl_widget_appearance_set(w, "my_appearance");
 	if (strcmp("my_appearance", ewl_widget_appearance_get(w)))
 		LOG_FAILURE(buf, len, "appearance_get doesn't match appearance_set");
+	else
+		ret = 1;
+
+	return ret;
+}
+
+/*
+ * Verify that appearance path get returns the correct full path.
+ */
+static int
+appearance_path_test_set_get(char *buf, int len)
+{
+	Ewl_Widget *box;
+	Ewl_Widget *w;
+	int ret = 0;
+
+	box = ewl_vbox_new();
+
+	w = calloc(1, sizeof(Ewl_Widget));
+	ewl_widget_init(w);
+
+	ewl_container_child_append(EWL_CONTAINER(box), w);
+
+	ewl_widget_appearance_set(w, "my_appearance");
+	if (strcmp("/vbox/my_appearance", ewl_widget_appearance_path_get(w)))
+		LOG_FAILURE(buf, len, "appearance_path_get doesn't match");
 	else
 		ret = 1;
 
