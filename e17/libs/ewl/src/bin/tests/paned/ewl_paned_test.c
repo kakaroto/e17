@@ -40,12 +40,16 @@ static int initial_size_get(char *buf, int len);
 static int initial_size_unset_get(char *buf, int len);
 static int initial_size_after_remove_get(char *buf, int len);
 static int initial_size_many_get(char *buf, int len);
+static int fixed_size_get(char *buf, int len);
+static int fixed_size_unset_get(char *buf, int len);
 
 static Ewl_Unit_Test paned_unit_tests[] = {
 		{"get initial size", initial_size_get, NULL, -1, 0},
 		{"get unset initial size", initial_size_unset_get, NULL, -1, 0},
 		{"get initial size after remove", initial_size_after_remove_get, NULL, -1, 0},
 		{"get initial size for many widgets", initial_size_many_get, NULL, -1, 0},
+		{"get the fixed size flag", fixed_size_get, NULL, -1, 0},
+		{"get the unset fixed size flag", fixed_size_unset_get, NULL, -1, 0},
 		{NULL, NULL, NULL, -1, 0}
 	};
 
@@ -298,6 +302,55 @@ initial_size_many_get(char *buf, int len)
 			ret = 0;
 			break;
 		}
+	}
+
+	ewl_widget_destroy(paned);
+
+	return ret;
+}
+
+static int 
+fixed_size_get(char *buf, int len)
+{
+	Ewl_Widget *paned;
+	Ewl_Widget *child;
+	int ret = 1;
+	unsigned int val;
+
+	paned = ewl_paned_new();
+	child = ewl_cell_new();
+
+	ewl_container_child_append(EWL_CONTAINER(paned), child);
+	ewl_paned_fixed_size_set(EWL_PANED(paned), child, TRUE);
+	val = ewl_paned_fixed_size_get(EWL_PANED(paned), child);
+
+	if (!val) {
+		LOG_FAILURE(buf, len, "get value is different from the set one");
+		ret = 0;
+	}
+
+	ewl_widget_destroy(paned);
+
+	return ret;
+}
+
+static int 
+fixed_size_unset_get(char *buf, int len)
+{
+	Ewl_Widget *paned;
+	Ewl_Widget *child;
+	int ret = 1;
+	unsigned int val;
+
+	paned = ewl_paned_new();
+	child = ewl_cell_new();
+
+	ewl_container_child_append(EWL_CONTAINER(paned), child);
+	val = ewl_paned_fixed_size_get(EWL_PANED(paned), child);
+
+	if (val) {
+		LOG_FAILURE(buf, len, "get value is not FALSE");
+		ret = 0;
 	}
 
 	ewl_widget_destroy(paned);
