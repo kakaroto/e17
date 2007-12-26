@@ -219,7 +219,9 @@ _tclock_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
    e_popup_layer_set(inst->tip, 255);
 
    inst->o_tip = edje_object_add(inst->tip->evas);
-   edje_object_file_set(inst->o_tip, buf, "modules/tclock/tip");
+   if (!e_theme_edje_object_set
+       (inst->o_tip, "base/theme/modules/tclock", "modules/tclock/tip"))
+     edje_object_file_set(inst->o_tip, buf, "modules/tclock/tip");
    evas_object_show(inst->o_tip);
 
    current_time = time (NULL);
