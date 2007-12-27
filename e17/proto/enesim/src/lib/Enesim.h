@@ -22,6 +22,8 @@
 # endif
 #endif
 
+#include "rectangle.h"
+
 /**
  * @mainpage Enesim
  * @section intro Introduction
@@ -52,25 +54,7 @@ enum
 typedef unsigned int 		DATA32;
 typedef unsigned short int 	DATA16;
 typedef unsigned char 		DATA8;
-typedef struct _Enesim_Rectangle
-{
-	int 	x;
-	int 	y;
-	int 	w;
-	int 	h;
-} Enesim_Rectangle;
 
-/**
- * To be documented
- * FIXME: To be fixed
- */
-static inline void enesim_rectangle_from_coords(Enesim_Rectangle *r, int x, int y, int w, int h)
-{
-	r->x = x;
-	r->y = y;
-	r->w = w;
-	r->h = h;
-}
 
 /**
  * @defgroup Enesim_Scanline_Group Scanline
@@ -182,8 +166,8 @@ EAPI Enesim_Surface_Format enesim_surface_format_get(Enesim_Surface *s);
 EAPI int enesim_surface_flag_get(Enesim_Surface *s);
 EAPI void enesim_surface_flag_set(Enesim_Surface *s, Enesim_Surface_Flag flags);
 EAPI void enesim_surface_data_set(Enesim_Surface *s, Enesim_Surface_Format f, ...);
-//EAPI void enesim_surface_resize(Enesim_Surface *s, Enesim_Rectangle *srect, Enesim_Surface *d, Enesim_Rectangle *drect, int mode);
-
+EAPI void enesim_surface_delete(Enesim_Surface *s);
+EAPI void enesim_surface_draw(Enesim_Surface *s, Enesim_Rectangle *srect, Enesim_Surface *d, Enesim_Rectangle *drect, int mode, int smooth);
 /** @} */ //End of Enesim_Surface_Group
 
 /**

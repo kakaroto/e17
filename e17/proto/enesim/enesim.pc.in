@@ -8,4 +8,4 @@ Description: Enesim
 Requires: 
 Version: @VERSION@
 Libs: -L${libdir} -lenesim
-Cflags: -I${includedir}
+Cflags: -I${includedir} -I${includedir}/enesim

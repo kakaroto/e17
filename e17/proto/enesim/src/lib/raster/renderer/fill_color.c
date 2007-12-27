@@ -23,7 +23,7 @@ static void _draw_alias(Enesim_Renderer *r, Enesim_Scanline_Alias *sl, Enesim_Su
 
 	f = r->data;
 
-	cfnc = enesim_surface_span_color_get(dst, r->rop);
+	cfnc = enesim_surface_span_color_func_get(dst, r->rop);
 	offset = (dst->w * sl->y) + sl->x;
 	//printf("%d %d %d\n", s->y, s->x, s->w);
 	cfnc(&dst->data, offset, f->color, sl->w);
@@ -39,7 +39,7 @@ static void _draw_mask(Enesim_Renderer *r, Enesim_Scanline_Mask *sl, Enesim_Surf
 
 	f = r->data;
 		
-	cfnc = enesim_surface_span_color_mask_get(dst, r->rop);
+	cfnc = enesim_surface_span_color_mask_func_get(dst, r->rop);
 	offset = (dst->w * sl->y) + sl->x;
 	cfnc(&dst->data, offset, f->color, sl->w, sl->coverages);
 }

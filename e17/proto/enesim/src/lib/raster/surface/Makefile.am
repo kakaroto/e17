@@ -1,10 +1,11 @@
-SUBDIRS = rop
+SUBDIRS = argb8888
 
 MAINTAINERCLEANFILES = \
 Makefile.in
 
 INCLUDES = -I. \
 -I$(top_srcdir)/src/lib \
+-I$(top_srcdir)/src/lib/util \
 @EDATA_CFLAGS@
 
 noinst_LTLIBRARIES = libenesim_surface.la
@@ -15,8 +16,8 @@ argb8888.c \
 rgb565.c
 
 libenesim_surface_la_LIBADD = \
-rop/libenesim_surface_rop.la
+argb8888/libenesim_surface_argb8888.la
 
 libenesim_surface_la_DEPENDENCIES = \
-rop/libenesim_surface_rop.la
+argb8888/libenesim_surface_argb8888.la
 

@@ -1,9 +1,14 @@
 #include "Enesim.h"
 #include "enesim_private.h"
 #include "surface.h"
+#include "fixed_16p16.h"
 
 #include <stdlib.h>
 #include <stdarg.h>
+#include <stdio.h>
+
+// for now
+#include "argb8888.h"
 /*============================================================================*
  *                                  Local                                     * 
  *============================================================================*/
@@ -11,6 +16,38 @@ static Surface_Backend *_backends[ENESIM_SURFACE_FORMATS] = {
 		&argb8888_backend,
 		&rgb565_backend,
 };
+
+static Enesim_Surface_Transformation_Type _transformation_get(float *t)
+{
+	if ((t[MATRIX_ZX] != 0) || (t[MATRIX_ZY] != 0) || (t[MATRIX_ZZ] != 1))
+	            return ENESIM_SURFACE_TRANSFORMATION_PROJECTIVE;
+	else
+	{
+		if ((t[MATRIX_XX] == 1) && (t[MATRIX_XY] == 0) && (t[MATRIX_XZ] == 0) &&
+				(t[MATRIX_YX] == 0) && (t[MATRIX_YY] == 1) && (t[MATRIX_YZ] == 0))
+			return ENESIM_SURFACE_TRANSFORMATION_IDENTITY;
+		else
+			return ENESIM_SURFACE_TRANSFORMATION_AFFINE;
+	}
+}
+
+/* convert the transformation values to fixed point */
+static void _transformation_to_fixed(float *t, enesim_16p16_t *td)
+{
+	td[0] = enesim_16p16_float_from(t[0]);
+	td[1] = enesim_16p16_float_from(t[1]);
+	td[2] = enesim_16p16_float_from(t[2]);
+	td[3] = enesim_16p16_float_from(t[3]);
+	td[4] = enesim_16p16_float_from(t[4]);
+	td[5] = enesim_16p16_float_from(t[5]);
+	td[6] = enesim_16p16_float_from(t[6]);
+	td[7] = enesim_16p16_float_from(t[7]);
+	td[8] = enesim_16p16_float_from(t[8]);
+}
+#if 0
+
+
+#endif
 /*============================================================================*
  *                                 Global                                     * 
  *============================================================================*/
@@ -18,7 +55,7 @@ static Surface_Backend *_backends[ENESIM_SURFACE_FORMATS] = {
  * To be documented
  * FIXME: To be fixed
  */
-Span_Color_Func enesim_surface_span_color_get(Enesim_Surface *s, int rop)
+Span_Color_Func enesim_surface_span_color_func_get(Enesim_Surface *s, int rop)
 {
 #if 0
 	if ((rop == ENESIM_RENDERER_BLEND) && (s->flags & ENESIM_SURFACE_DIRTY))
@@ -32,10 +69,20 @@ Span_Color_Func enesim_surface_span_color_get(Enesim_Surface *s, int rop)
  * To be documented
  * FIXME: To be fixed
  */
-Span_Color_Mask_Func enesim_surface_span_color_mask_get(Enesim_Surface *s,
+Span_Color_Mask_Func enesim_surface_span_color_mask_func_get(Enesim_Surface *s,
 		int rop)
 {
 	return _backends[s->format]->rops[ENESIM_RENDERER_BLEND].sp_color_mask;
+}
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
+Span_Pixel_Func enesim_surface_pixel_func_get(Enesim_Surface *s, Enesim_Surface *src,
+		int rop)
+{
+	assert(s->format == src->format);
+	return _backends[s->format]->rops[ENESIM_RENDERER_BLEND].sp_pixel;
 }
 /*============================================================================*
  *                                   API                                      * 
@@ -73,6 +120,11 @@ enesim_surface_new(Enesim_Surface_Format f, int w, int h, Enesim_Surface_Flag fl
 	va_end(va);
 	if (!(s->flags & ENESIM_SURFACE_PREMUL))
 		_backends[s->format]->premul(&s->data, s->w * s->h);
+	/* setup the identity matrix */
+	s->transformation.matrix[MATRIX_XX] = 1;
+	s->transformation.matrix[MATRIX_YY] = 1;
+	s->transformation.matrix[MATRIX_ZZ] = 1;
+	s->transformation.type = ENESIM_SURFACE_TRANSFORMATION_IDENTITY;
 	return s;
 }
 /**
@@ -191,10 +243,89 @@ enesim_surface_data_set(Enesim_Surface *s, Enesim_Surface_Format f, ...)
  * To be documented
  * FIXME: To be fixed
  */
-EAPI void 
-enesim_surface_resize(Enesim_Surface *s, Enesim_Rectangle *srect, Enesim_Surface *d, Enesim_Rectangle *drect, int mode)
+EAPI void
+enesim_surface_transformation_set(Enesim_Surface *s, float *t)
 {
-
+	int i;
+	
+	assert(s);
+	assert(t);
+	
+	for (i = 0; i < MATRIX_SIZE; i++)
+	{
+		s->transformation.matrix[i] = t[i];
+		printf("%f\n", t[i]);
+	}
+}
+/**
+ * To be documented
+ * FIXME: To be fixed
+ */
+EAPI void
+enesim_surface_draw(Enesim_Surface *s, Enesim_Rectangle *sr, Enesim_Surface *d, Enesim_Rectangle *dr, int mode, int smooth)
+{
+	Enesim_Rectangle csr, cdr;
+	enesim_16p16_t ft[MATRIX_SIZE];
+		
+	assert(s);
+	assert(d);
+	
+	/* setup the destination clipping */
+	cdr.x = 0;
+	cdr.y = 0;
+	cdr.w = d->w;
+	cdr.h = d->h;
+	if (sr)
+	{
+		enesim_rectangle_rectangle_intersection_get(&cdr, dr);
+		if (enesim_rectangle_is_empty(&cdr))
+			return;
+	}
+	/* setup the source clipping */
+	csr.x = 0;
+	csr.y = 0;
+	csr.w = s->w;
+	csr.h = s->h;
+	if (dr)
+	{
+		enesim_rectangle_rectangle_intersection_get(&csr, sr);
+		if (enesim_rectangle_is_empty(&csr))
+			return;
+	}
+	/* if we need to do some calcs with the matrix, transform it */
+	// if (!(s->transformation.type & ENESIM_SURFACE_TRANSFORMATION_IDENTITY))
+	_transformation_to_fixed(s->transformation.matrix, ft);
+	/* check if we are going to scale */
+	/* scaling */
+	if ((cdr.w != csr.w) && (cdr.h != csr.h))
+	{
+		/* smooth scaling */
+		if ((cdr.w > csr.w) && (cdr.h <= csr.h))
+		{
+			/* x upscaling, y downscaling */
+		}
+		else if ((cdr.w <= csr.w) && (cdr.h > csr.h))
+		{
+			/* x downscaling, y upscaling */
+		}
+		else if ((cdr.w > csr.w) && (cdr.h > csr.h))
+		{
+			/* x upscaling, y upscaling */
+		}
+	}
+	/* not scaling */
+	else
+	{
+		/* when using the multiplied variant check that the mul color is different
+		 * than 255,255,255,255, if not use the version without mul
+		 */
+		//_backends[s->format].draw[s->transformation.type][ENESIM_SURFACE_NO_SCALE];
+		/* check transformation type */
+		//argb8888_transformed_blend(s, &csr, d, &cdr, ft);
+		//argb8888_identity_op(s, d);
+		//argb8888_c_draw_fill_affine_no_no(s, &csr, d, &cdr, ft);
+		argb8888_c_draw_blend_mul_affine_no_no(s, &csr, d, &cdr, ft, 0xcccccccc);
+	}
 }
 /**
  * To be documented
@@ -238,4 +369,11 @@ enesim_surface_convert(Enesim_Surface *s, Enesim_Surface *d)
 	/* TODO call the correct convert function based on the src
 	 * and dst format, the src and dst flags, etc
 	 */
+}
+
+EAPI void 
+enesim_surface_delete(Enesim_Surface *s)
+{
+	assert(s);
+	free(s);
 }

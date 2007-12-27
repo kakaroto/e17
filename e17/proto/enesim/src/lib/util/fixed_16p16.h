@@ -1,5 +1,5 @@
 #ifndef _FIXED_16P16_H
-#define _FIDED_16P16_H
+#define _FIXED_16P16_H
 
 /* 16.16 precision = +- 32767.65535 */
 #define enesim_16p16_maxi 	32767
@@ -13,79 +13,34 @@
 
 typedef int enesim_16p16_t;
 
-static inline enesim_16p16_t enesim_16p16_int_from(int v)
-{
-#ifdef ENESIM_OVERFLOW
-	if (v > enesim_16p16_maxi)
-		return enesim_16p16_max;
-	if (v < enesim_16p16_mini)
-		return enesim_16p16_min;
-#endif
-	return v << 16;
-}
+#undef FIXED_INT_MAX
+#undef FIXED_INT_MIN
+#undef FIXED_FLOAT_MAX
+#undef FIXED_FLOAT_MIN
+#undef FIXED_FLOAT_BITS
+#undef FIXED_TYPE
+#undef FIXED_DIV
+#undef FIXED_ITERS
 
-static inline enesim_16p16_t enesim_16p16_int_to(int v)
-{
-#ifdef ENESIM_OVERFLOW
-#endif
-	return v >> 16;
-}
+#define FIXED_INT_MAX enesim_16p16_maxi
+#define FIXED_INT_MIN enesim_16p16_mini
+#define FIXED_FLOAT_MAX enesim_16p16_maxf
+#define FIXED_FLOAT_MIN enesim_16p16_minf
+#define FIXED_FLOAT_BITS 16
+#define FIXED_TYPE enesim_16p16_t
+#define FIXED_DIV 65536.0
+#define FIXED_ITERS (15 + (FIXED_FLOAT_BITS >> 1))
 
-static inline enesim_16p16_t enesim_16p16_float_from(float v)
-{
-	enesim_16p16_t r;
-	
-#ifdef ENESIM_OVERFLOW
-	if (v > enesim_16p16_maxf)
-		return enesim_16p16_max;
-	if (v < enesim_16p16_minf)
-		return enesim_16p16_min;
-#endif
-	r = (enesim_16p16_t)(v * 65536.0 + (v < 0 ? -0.5 : 0.5));
-	return r;
-}
+#define FIXED_INT_FROM enesim_16p16_int_from
+#define FIXED_INT_TO enesim_16p16_int_to
+#define FIXED_FLOAT_FROM enesim_16p16_float_from
+#define FIXED_FLOAT_TO enesim_16p16_float_to
+#define FIXED_ADD enesim_16p16_add
+#define FIXED_SUB enesim_16p16_sub
+#define FIXED_MUL enesim_16p16_mul
+#define FIXED_SQRT enesim_16p16_sqrt
+#define FIXED_FRACC_GET enesim_16p16_fracc_get
 
-static inline float enesim_16p16_float_to(enesim_16p16_t v)
-{
-	float r;
-	
-	r = v / 65536.0;
-	return r;
-}
-
-static inline enesim_16p16_t enesim_16p16_add(enesim_16p16_t a, enesim_16p16_t b)
-{
-	enesim_16p16_t r = a + b;
-#ifdef ENESIM_OVERFLOW
-#else
-#endif
-	return r;
-}
-
-static inline enesim_16p16_t enesim_16p16_sub(enesim_16p16_t a, enesim_16p16_t b)
-{
-	enesim_16p16_t r = a - b;
-#ifdef ENESIM_OVERFLOW
-#else
-#endif
-	return r;
-}
-
-static inline enesim_16p16_t enesim_16p16_mul(enesim_16p16_t a, enesim_16p16_t b)
-{
-	long int r = a * b;
-#ifdef ENESIM_OVERFLOW
-#else
-#endif
-	return r >> 16;
-}
-
-static inline enesim_16p16_t enesim_16p16_div(enesim_16p16_t a, enesim_16p16_t b)
-{
-#ifdef ENESIM_OVERFLOW
-#else
-#endif
-	return a;
-}
+#include "fixed_math.h"
 
 #endif

@@ -56,16 +56,12 @@ if test "x${libdir}" = 'x${exec_prefix}/lib'; then
   fi
 fi
 
-dnl Set PACKAGE_DATA_DIR in config.h.
-if test "x${datadir}" = 'x${prefix}/share'; then
-  if test "x${prefix}" = "xNONE"; then
-    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${ac_default_prefix}/share/${PACKAGE}", [Shared Data Directory])
-  else
-    AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/share/${PACKAGE}", [Shared Data Directory])
-  fi
+if test "x${prefix}" = "xNONE"; then
+  AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${ac_default_prefix}/share/${PACKAGE}", [Shared Data Directory])
 else
-  AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${datadir}/${PACKAGE}", [Shared Data Directory])
+  AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/share/${PACKAGE}", [Shared Data Directory])
 fi
+
 
 dnl Set PACKAGE_BIN_DIR in config.h.
 if test "x${bindir}" = 'xNONE'; then
@@ -103,6 +99,7 @@ case "$host_os" in
 esac
 
 PKG_CHECK_MODULES(EDATA, [edata >= 0.0.1])
+PKG_CHECK_MODULES(PNG, [libpng >= 0.22])
 
 ## Make the debug preprocessor configurable
 
@@ -114,15 +111,19 @@ src/lib/Makefile
 src/lib/raster/Makefile
 src/lib/raster/rasterizer/Makefile
 src/lib/raster/renderer/Makefile
-src/lib/raster/scanline/Makefile
 src/lib/raster/surface/Makefile
-src/lib/raster/surface/rop/Makefile
-src/lib/raster/surface/rop/blend/Makefile
+src/lib/raster/surface/argb8888/Makefile
 src/lib/util/Makefile
 src/lib/vector/Makefile
 src/lib/vector/component/Makefile
+examples/Makefile
+data/Makefile
 ],[
 ])
+#deprecated
+#src/lib/raster/scanline/Makefile
+#src/lib/raster/surface/rop/Makefile
+#src/lib/raster/surface/rop/blend/Makefile
 
 
 #####################################################################
