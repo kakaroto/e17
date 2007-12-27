@@ -158,6 +158,16 @@ default_property_test(char *buf, int len)
 		goto DONE;
 	}
 
+	if (ewl_object_fill_policy_get(EWL_OBJECT(w)) != EWL_FLAG_FILL_NORMAL) {
+		LOG_FAILURE(buf, len, "fill policy incorrect");
+		goto DONE;
+	}
+
+	if (ewl_object_alignment_get(EWL_OBJECT(w)) != EWL_FLAG_ALIGN_CENTER) {
+		LOG_FAILURE(buf, len, "alignment incorrect");
+		goto DONE;
+	}
+
 	ret = 1;
 DONE:
 	ewl_widget_destroy(w);
