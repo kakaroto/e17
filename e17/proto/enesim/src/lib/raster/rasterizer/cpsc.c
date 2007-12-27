@@ -6,7 +6,6 @@
 #include "Enesim.h"
 #include "enesim_private.h"
 #include "rasterizer.h"
-#include "scanline.h"
 
 /* Code based on the algorithm "Concave Polygon Scan Conversion" by 
  * Paul Heckbert from "Graphics Gems". 

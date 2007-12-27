@@ -7,7 +7,6 @@
 #include "Enesim.h"
 #include "enesim_private.h"
 #include "rasterizer.h"
-#include "scanline.h"
 #include "extender_int.h"
 
 #define KIIA_SUBPIXEL_SHIFT 4
