@@ -241,6 +241,11 @@ PROTO_engrave_part_lower(Engrave_Part *ep)
    return TRUE;
 }
 #if TEST_DIRECT_EDJE
+Evas_Bool
+_DebugInfo_helper(Evas_Hash *hash, const char *key, void *data, void *fdata)
+{
+   printf("Key: '%s' [%d]\n", key, data);
+}
 void
 DebugInfo(int full)
 {
@@ -269,6 +274,8 @@ DebugInfo(int full)
       printf(" ** Cur program: %s\n",Cur.prog->string);
    else
       printf(" ** Cur program: (NULL)\n");
+   printf(" *********************** Parts_Hash *****************************\n");
+   evas_hash_foreach(Parts_Hash, _DebugInfo_helper, NULL);
    printf(" *********************** E N D *****************************\n\n");
 }
 #else

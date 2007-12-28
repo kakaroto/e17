@@ -626,6 +626,9 @@ on_PartNameEntry_text_changed(Etk_Object *object, void *data)
       while (child = etk_tree_row_next_get(child))
          etk_tree_row_fields_set(child, TRUE, COL_PARENT, text, NULL);
        
+      /* Update Parts_Hash */
+      Parts_Hash = evas_hash_del(Parts_Hash, Cur.part->string, NULL);
+      Parts_Hash = evas_hash_add(Parts_Hash, text, row);
        
       /* change the name in edje */
       edje_edit_part_name_set(edje_o, Cur.part->string, text);
