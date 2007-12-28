@@ -16,6 +16,8 @@ static void ewl_theme_font_path_init(void);
 static char *ewl_theme_path_find(const char *name);
 static void ewl_theme_data_free(void *data);
 
+#define DEFAULT_THEME "e17"
+
 /**
  * @internal
  * @return Returns TRUE on success, FALSE on failure.
@@ -28,13 +30,19 @@ static void ewl_theme_data_free(void *data);
 int
 ewl_theme_init(void)
 {
+	const char *theme;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if (!ewl_theme_theme_set(ewl_config_string_get(ewl_config,
-						EWL_CONFIG_THEME_NAME)))
+	theme = ewl_config_string_get(ewl_config, EWL_CONFIG_THEME_NAME);
+	if (!ewl_theme_theme_set(theme))
 	{
-		DWARNING("No usable theme found, exiting.");
-		DRETURN_INT(FALSE, DLEVEL_STABLE);
+		if ((!strcmp(theme, DEFAULT_THEME)) || 
+				(!ewl_theme_theme_set(DEFAULT_THEME)))
+		{
+			DWARNING("No usable theme found, exiting.");
+			DRETURN_INT(FALSE, DLEVEL_STABLE);
+		}
 	}
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
