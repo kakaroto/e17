@@ -24,8 +24,6 @@ ShowAlert(char* text)
 /* functions to update interface*/
 
 #if TEST_DIRECT_EDJE
-
-
 void
 AddPartToTree2(char *part_name)//, char *group_name)//, int place_after, Engrave_Part* after)
 {
@@ -219,18 +217,24 @@ PopulateTree2(void)
 void 
 PopulateGroupsComboBox()
 {
-   Evas_List *groups;
-   Etk_Combobox_Item *ComboItem;
+   Evas_List *groups, *l;
    
-   groups = edje_file_collection_list(Cur.edj_file_name->string);
-   while(groups)
-   {
-      ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_GroupsComboBox), (char*)groups->data);
-      groups = groups->next;
-   }
-   edje_file_collection_list_free  (groups);
+   //Stop signal propagation
+   //  etk_signal_disconnect("item-activated", ETK_OBJECT(UI_GroupsComboBox),
+   //                        ETK_CALLBACK(on_GroupsComboBox_activated), NULL);
+   etk_combobox_clear(ETK_COMBOBOX(UI_GroupsComboBox));
+   
+   groups = edje_file_collection_list(Cur.edj_temp_name->string);
+   for(l = groups; l; l = l->next)
+      etk_combobox_item_append(ETK_COMBOBOX(UI_GroupsComboBox), (char*)l->data);
+   edje_file_collection_list_free(groups);
+    
+   //Renable  signal propagation
+   //  etk_signal_connect("item-activated", ETK_OBJECT(UI_GroupsComboBox),
+   //                    ETK_CALLBACK(on_GroupsComboBox_activated), NULL);
+    
    etk_combobox_active_item_set(ETK_COMBOBOX(UI_GroupsComboBox),
-               etk_combobox_last_item_get (ETK_COMBOBOX(UI_GroupsComboBox)));
+      etk_combobox_first_item_get (ETK_COMBOBOX(UI_GroupsComboBox)));
 }
 #else
 void
@@ -329,7 +333,7 @@ PopulateImagesComboBox(void)
    {
       snprintf(buf,4095,"images/%d",edje_edit_image_id_get(edje_o, (char*)l->data));
       ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_ImageComboBox),
-                     etk_image_new_from_file (Cur.edj_file_name->string, buf),
+                     etk_image_new_from_file (Cur.edj_temp_name->string, buf),
                      (char*)l->data);
       l = l->next;
    }
@@ -587,26 +591,42 @@ UpdateGroupFrame(void)
 void
 UpdatePartFrame(void)
 {
-   if (Cur.ep){
-      //printf("Update Part Frame: %s\n",Cur.ep->name);
-
-      //Stop signal propagation
+   //Stop signal propagation
       etk_signal_block("text-changed",ETK_OBJECT(UI_PartNameEntry),
                         on_PartNameEntry_text_changed, NULL);
       etk_signal_block("toggled",ETK_OBJECT(UI_PartEventsCheck),
                         on_PartEventsCheck_toggled, NULL);
+      etk_signal_block("toggled",ETK_OBJECT(UI_PartEventsRepeatCheck),
+                        on_PartEventsRepeatCheck_toggled, NULL);
+
+#if TEST_DIRECT_EDJE
+   if (etk_string_length_get(Cur.part))
+   {
+      etk_entry_text_set(ETK_ENTRY(UI_PartNameEntry), Cur.part->string);
+      etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(UI_PartEventsCheck),
+                     edje_edit_part_mouse_events_get(edje_o, Cur.part->string));
+      etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(UI_PartEventsRepeatCheck),
+                     edje_edit_part_repeat_events_get(edje_o, Cur.part->string));
+   } 
+#else
+   if (Cur.ep){
+      //printf("Update Part Frame: %s\n",Cur.ep->name);
 
       //Update Part
       etk_entry_text_set(ETK_ENTRY(UI_PartNameEntry),Cur.ep->name);
       etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(UI_PartEventsCheck),
-                                    Cur.ep->mouse_events);	 
-
-      //ReEnable Signal Propagation
-      etk_signal_unblock("text-changed",ETK_OBJECT(UI_PartNameEntry),
-                           on_PartNameEntry_text_changed, NULL);
-      etk_signal_unblock("toggled",ETK_OBJECT(UI_PartEventsCheck),
-                           on_PartEventsCheck_toggled, NULL);
+                                    Cur.ep->mouse_events);
    }
+#endif
+    
+   //ReEnable Signal Propagation
+   etk_signal_unblock("text-changed",ETK_OBJECT(UI_PartNameEntry),
+                        on_PartNameEntry_text_changed, NULL);
+   etk_signal_unblock("toggled",ETK_OBJECT(UI_PartEventsCheck),
+                        on_PartEventsCheck_toggled, NULL);
+   etk_signal_unblock("toggled",ETK_OBJECT(UI_PartEventsRepeatCheck),
+                        on_PartEventsRepeatCheck_toggled, NULL);
+
 }
 
 void
@@ -1479,6 +1499,14 @@ UpdateProgFrame(void)
 void
 UpdateScriptFrame(void)
 {
+#if TEST_DIRECT_EDJE
+   if (etk_string_length_get(Cur.group))
+   {
+      edje_edit_script_get(edje_o);
+      //printf("Update group script: %s\n",edje_edit_script_get(edje_o));
+      
+   }
+#else
    //Update ScriptBox
    if (Cur.epr){
       printf("Update prog script: %s\n",Cur.epr->script);
@@ -1493,6 +1521,7 @@ UpdateScriptFrame(void)
       return;
    }
    etk_textblock_clear(ETK_TEXT_VIEW(UI_ScriptBox)->textblock);
+#endif
 }
 
 void
@@ -1859,8 +1888,10 @@ create_toolbar(Etk_Toolbar_Orientation o)
    etk_combobox_items_height_set (ETK_COMBOBOX(UI_GroupsComboBox), 16);
    etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), UI_GroupsComboBox, ETK_BOX_START);
     
-   etk_signal_connect("active-item-changed", ETK_OBJECT(UI_GroupsComboBox),
-                      ETK_CALLBACK(on_GroupsComboBox_changed), NULL);
+   //etk_signal_connect("active-item-changed", ETK_OBJECT(UI_GroupsComboBox),
+   //                   ETK_CALLBACK(on_GroupsComboBox_changed), NULL);
+   etk_signal_connect("item-activated", ETK_OBJECT(UI_GroupsComboBox),
+                      ETK_CALLBACK(on_GroupsComboBox_activated), NULL);
 #else
    //Test Button
    button = etk_tool_button_new_from_stock( ETK_STOCK_MEDIA_PLAYBACK_START);
@@ -2663,6 +2694,8 @@ create_part_frame(void)
    Etk_Widget *table;
    Etk_Widget *label;
    Etk_Widget *combo;
+   Etk_Widget *frame;
+   Etk_Widget *hbox;
 
    //table
    table = etk_table_new (2, 3, ETK_TABLE_NOT_HOMOGENEOUS);
@@ -2672,14 +2705,10 @@ create_part_frame(void)
    etk_table_attach (ETK_TABLE(table), label, 0, 0, 0, 0,ETK_TABLE_NONE,0,0);
    UI_PartNameEntry = etk_entry_new();
    etk_table_attach_default (ETK_TABLE(table),UI_PartNameEntry, 1, 1, 0, 0);
-
-   //PartEventsCheck
-   UI_PartEventsCheck = etk_check_button_new_with_label ("<b>Accept mouse events</b>");
-   etk_table_attach_default (ETK_TABLE(table),UI_PartEventsCheck, 0, 1, 1, 1);
-
+   
    //PartClipToComboBox
    label = etk_label_new("<b>Clip_to</b>");
-   etk_table_attach (ETK_TABLE(table), label, 0, 0, 2, 2,ETK_TABLE_NONE,0,0);
+   etk_table_attach (ETK_TABLE(table), label, 0, 0, 1, 1,ETK_TABLE_NONE,0,0);
 
    combo = etk_combobox_new();
    etk_combobox_column_add(ETK_COMBOBOX(combo),
@@ -2689,13 +2718,34 @@ create_part_frame(void)
    etk_combobox_build(ETK_COMBOBOX(combo));
    etk_combobox_item_append(ETK_COMBOBOX(combo), 
          etk_image_new_from_edje (EdjeFile,"NONE.PNG"), "Not yet implemented");
-
-   etk_table_attach_default (ETK_TABLE(table), combo, 1, 1, 2, 2);
-
+   etk_table_attach_default (ETK_TABLE(table), combo, 1, 1, 1, 1);
+   
+   //events frame
+   frame = etk_frame_new("Mouse events");
+   etk_table_attach(ETK_TABLE(table), frame, 0, 1, 2, 2, 
+                     ETK_TABLE_EXPAND_FILL, 0, 0);
+   //events hbox
+   hbox = etk_hbox_new(ETK_FALSE, 0);
+   etk_widget_padding_set(hbox, 10, 0, 0, 0);
+   etk_container_add(ETK_CONTAINER(frame), hbox); 
+   
+   //PartEventsCheck
+   UI_PartEventsCheck = etk_check_button_new_with_label ("Accept</b>");
+   etk_box_append(ETK_BOX(hbox), UI_PartEventsCheck,
+                  ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+   
+   //PartEventRepeatCheck
+   UI_PartEventsRepeatCheck = etk_check_button_new_with_label ("Repeat</b>");
+   etk_box_append(ETK_BOX(hbox), UI_PartEventsRepeatCheck,
+                  ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+   
+   
    etk_signal_connect("text-changed", ETK_OBJECT(UI_PartNameEntry),
                       ETK_CALLBACK(on_PartNameEntry_text_changed), NULL);
    etk_signal_connect("toggled", ETK_OBJECT(UI_PartEventsCheck),
                       ETK_CALLBACK(on_PartEventsCheck_toggled), NULL);
+   etk_signal_connect("toggled", ETK_OBJECT(UI_PartEventsRepeatCheck),
+                      ETK_CALLBACK(on_PartEventsRepeatCheck_toggled), NULL);
 
    return table;
 }
@@ -3060,6 +3110,13 @@ create_main_window(void)
    etk_signal_connect("color-changed", ETK_OBJECT(UI_ColorPicker),
                         ETK_CALLBACK(on_ColorDialog_change), NULL);
 
+#if TEST_DIRECT_EDJE
+   //Create the main edje object to edit
+   edje_o = edje_object_add(UI_evas);
+#if ECHO_EDJE_SIGNAL
+   edje_object_signal_callback_add(edje_o, "*", "*", signal_cb, NULL);
+#endif
+#endif
    /*edje_object_signal_emit(edje_ui,"group_frame_show","edje_editor");
    edje_object_signal_emit(edje_ui,"part_frame_show","edje_editor");
    edje_object_signal_emit(edje_ui,"description_frame_show","edje_editor");

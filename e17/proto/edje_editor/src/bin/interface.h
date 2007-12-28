@@ -107,6 +107,7 @@ Etk_Widget *UI_DelayFromSpinner;
 Etk_Widget *UI_DelayRangeSpinner;
 Etk_Widget *UI_CurrentGroupSizeLabel;
 Etk_Widget *UI_PartEventsCheck;
+Etk_Widget *UI_PartEventsRepeatCheck;
 
 Etk_Widget *UI_PartsTreeEmbed;
 Etk_Widget *UI_GroupEmbed;

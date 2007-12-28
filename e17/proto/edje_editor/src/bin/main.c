@@ -1,5 +1,6 @@
 #include "config.h"
 #include <string.h>
+#include <errno.h>
 #include <Edje.h>
 #if TEST_DIRECT_EDJE
    #include <Edje_Edit.h>
@@ -250,6 +251,7 @@ DebugInfo(int full)
 
    printf("\n\n ********************* D E B U G ***************************\n");
    printf(" ** open file name: %s\n",Cur.edj_file_name->string);
+   printf(" ** temp file name: %s\n",Cur.edj_temp_name->string);
    printf(" ** edje_editor.edj: %s\n",EdjeFile);
    if (etk_string_length_get(Cur.group))
       printf(" ** Cur group: %s\n",Cur.group->string);
@@ -402,9 +404,12 @@ void
 ChangeGroup(char *group)
 {
    if (!group) return;
-   printf("Selected group: %s\n", group);
+
+   if (Cur.group->string && !strcmp(group, Cur.group->string)) return;
+   printf("Change group: %s\n", group);
+   edje_edit_save(edje_o);
    evas_object_hide(edje_o);
-   edje_object_file_set(edje_o, Cur.edj_file_name->string, group);
+   edje_object_file_set(edje_o, Cur.edj_temp_name->string, group);
    evas_object_show(edje_o);
    Parts_Hash = NULL;         //TODO FREE
    
@@ -416,12 +421,85 @@ ChangeGroup(char *group)
    PopulateTree2();
    PopulateRelComboBoxes();
 }
-#endif
 
-static void signal_cb(void *data, Evas_Object *o, const char *sig, const char *src)
+int
+LoadEDJ2(char *file)
 {
-   printf("CALLBACK for \"%s\" \"%s\"\n", sig, src);
+   char *realp = NULL;
+   char *old_temp;
+   if (!file) return 0;
+   
+   printf("** Load EDJ: '%s'\n",file);
+    
+   realp = ecore_file_realpath(file);
+   if (!ecore_file_exists(realp))
+   {
+      ShowAlert("<b>ERROR:</b><br>File not exists.");
+      return 0;
+   }
+   if (!ecore_file_can_read(realp))
+   {
+      ShowAlert("<b>ERROR</b>:<br>Can't read file.");
+      return 0;
+   }
+   if (!ecore_str_has_suffix(realp, ".edj"))  //TODO: better check
+   {
+      ShowAlert("<b>ERROR</b>:<br>File is not an edje file.");
+      return 0;
+   }
+   
+   
+   //Create temp file
+   if (etk_string_length_get(Cur.edj_temp_name) > 0)
+      old_temp = strdup(Cur.edj_temp_name->string);
+   else
+      old_temp = NULL;
+   
+   char tmpn[1024];
+   int fd = 0;
+   strcpy(tmpn, "/tmp/edje_editor_tmp.edj-XXXXXX");
+   fd = mkstemp(tmpn);
+   if (fd < 0)
+   {
+      printf("Can't create temp file '%s'\nError: %s\n", tmpn, strerror(errno));
+      return 0;
+   }
+   Cur.edj_temp_name = etk_string_set(Cur.edj_temp_name, tmpn);
+
+    
+   if (!ecore_file_cp(realp, Cur.edj_temp_name->string))
+   {
+      ShowAlert("<b>ERROR</b>:<br>Can't copy to temp file.");
+      return 0;
+   }
+        
+   
+   Cur.edj_file_name = etk_string_set(Cur.edj_file_name, realp);
+   
+   ecore_evas_title_set(UI_ecore_MainWin, Cur.edj_file_name->string);
+   
+   Cur.group  = etk_string_clear(Cur.group);
+   Cur.part   = etk_string_clear(Cur.part);
+   Cur.state  = etk_string_clear(Cur.state);
+   Cur.prog   = etk_string_clear(Cur.prog);
+   Parts_Hash = NULL;
+    
+   PopulateGroupsComboBox();
+   PopulateFontsComboBox();
+   PopulateImagesComboBox();
+   
+    
+    
+   //Delete old temp file
+   if (old_temp && !ecore_file_unlink(old_temp))
+   {
+      ShowAlert("<b>ERROR</b>:<br>Can't remove temp file.");
+      return 0;
+   }
+   if (old_temp) free(old_temp);
+   return 1;
 }
+#endif
 
 
 /* main */
@@ -484,13 +562,14 @@ main(int argc, char **argv)
       return 1;
    }
 
-   //Create the etk window with all his widget
+   //Create the etk window and all the widgets
    create_main_window();
+
 #if TEST_DIRECT_EDJE
    printf("*********************************\n");
    printf("Testing edje direct access!!...\n");
    printf("*********************************\n");
-   char *file;
+
    double val = 1.2;
    printf("TEST:\n");
    
@@ -498,57 +577,32 @@ main(int argc, char **argv)
    sscanf("3.2","%lf", &val);
    printf("%f\n", val);
    
-
-   
-   if (argc > 1)
-   {
-      file = ecore_file_realpath(argv[1]);
-      if (!ecore_file_exists(file))
-      {
-         printf("File not exists: '%s'\nExiting...\n",argv[1]);
-         return 1;
-      }
-      if (!ecore_str_has_suffix(file, ".edj"))  //TODO: better check
-      {
-         printf("File is not an edje file: '%s'\nExiting...\n",argv[1]);
-         return 1;
-      }
-   }
-   else
-   {
-      printf("You must specify an edje file to open.\nExiting...\n");
-      return 1;
-   }
-
-   Cur.edj_file_name = etk_string_new(file);
-   ecore_evas_title_set(UI_ecore_MainWin, Cur.edj_file_name->string);
-   
+   Cur.edj_file_name = etk_string_new("");
+   Cur.edj_temp_name = etk_string_new("");
    Cur.group = etk_string_new("");
    Cur.part = etk_string_new("");
    Cur.state = etk_string_new("");
    Cur.prog = etk_string_new("");
-   Parts_Hash = NULL;
-  
-   //Create the main edje object to edit
-   edje_o = edje_object_add(UI_evas);
-   edje_object_signal_callback_add(edje_o, "*", "*", signal_cb, NULL);
-   edje_object_file_set(edje_o, Cur.edj_file_name->string, "icon");
-   evas_object_resize(edje_o, 100, 100);
-   evas_object_move(edje_o, 100, 100);
-   evas_object_show(edje_o);
    
-  /* Evas_Object *o2;
-   o2 = edje_object_add(UI_evas); 
-   edje_object_file_set(o2,"/home/dave/test/globe2.edj","icon");
-   evas_object_show(o2);
-   evas_object_resize(o2, 100, 100);
-  */
     
+   //~ //Create temp file
+   //~ char tmpn[1024];
+   //~ int fd = 0;
+   //~ strcpy(tmpn, "/tmp/edje_editor_tmp.edj-XXXXXX");
+   //~ fd = mkstemp(tmpn);
+   //~ if (fd < 0)
+   //~ {
+      //~ printf("Can't create temp file '%s'\nError: %s\n", tmpn, strerror(errno));
+      //~ return 1;
+   //~ }
+   //~ Cur.edj_temp_name = etk_string_set(Cur.edj_temp_name, tmpn);
     
-   PopulateGroupsComboBox();
-   PopulateFontsComboBox();
-   PopulateImagesComboBox();
-   
+   //Open a file from command line
+   if (argc == 2)
+   {
+      printf("Opening edje file: '%s'\n",argv[1]);
+      LoadEDJ2(argv[1]);
+   }
    
 #else
    //Open a file
@@ -589,9 +643,13 @@ main(int argc, char **argv)
 
    //Start main loop
    etk_main();
+   
+#if TEST_DIRECT_EDJE
+   //Remove temp file
+   ecore_file_unlink(Cur.edj_temp_name->string); //TODO move this line down (when don't use etk_string anymore)
+#endif
 
    etk_shutdown();
-
-
+   
    return 0;
 }

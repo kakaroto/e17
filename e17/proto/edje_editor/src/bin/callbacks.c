@@ -30,6 +30,13 @@ ecore_delete_cb(Ecore_Evas *ee)
    etk_main_quit();
 }
 
+/* Catch all the signal from the editing edje object */
+void
+signal_cb(void *data, Evas_Object *o, const char *sig, const char *src)
+{
+   printf("CALLBACK for \"%s\" \"%s\"\n", sig, src);
+}
+
 /* All the buttons Callback */
 Etk_Bool
 on_AllButton_click(Etk_Button *button, void *data)
@@ -50,7 +57,11 @@ on_AllButton_click(Etk_Button *button, void *data)
          break;
 #if TEST_DIRECT_EDJE
       case TOOLBAR_SAVE:
-         ShowAlert("Not yet reimplemented ;)");
+         edje_edit_save(edje_o);
+         if (!ecore_file_cp(Cur.edj_temp_name->string, Cur.edj_file_name->string))
+         {
+            ShowAlert("<b>ERROR:<\b><br>Can't write file");
+         }
          break;
       case TOOLBAR_SAVE_EDC:
          ShowAlert("Not yet reimplemented ;)");
@@ -71,7 +82,7 @@ on_AllButton_click(Etk_Button *button, void *data)
          ShowAlert("Not yet reimplemented ;)");
          break;
       case TOOLBAR_IMAGE_FILE_ADD:
-         ShowAlert("Not yet reimplemented ;)");
+         ShowFilechooser(FILECHOOSER_IMAGE);
          break;
       case TOOLBAR_FONT_FILE_ADD:
          ShowAlert("Not yet reimplemented ;)");
@@ -296,6 +307,8 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
          edje_object_signal_emit(edje_ui,"program_frame_hide","edje_editor");
          edje_object_signal_emit(edje_ui,"part_frame_show","edje_editor");
          edje_object_signal_emit(edje_ui,"script_frame_hide","edje_editor");
+         
+         UpdatePartFrame();
          break;
 
       case ROW_DESC:
@@ -352,7 +365,7 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
          edje_object_signal_emit(edje_ui,"program_frame_show","edje_editor");
          edje_object_signal_emit(edje_ui,"script_frame_show_small","edje_editor");
       
-        // UpdateScriptFrame();
+         UpdateScriptFrame();
          UpdateProgFrame();
         // PopulateSourceComboBox();
          break;
@@ -571,9 +584,59 @@ Etk_Bool
 on_PartNameEntry_text_changed(Etk_Object *object, void *data)
 {
    Etk_Tree_Col *col1=NULL;
-
+   Etk_Tree_Row *row;
+   char *text;
    //printf("Text Changed Signal on PartNameEntry EMITTED (text: %s)\n",etk_entry_text_get(ETK_ENTRY(object)));
-
+#if TEST_DIRECT_EDJE
+   if (etk_string_length_get(Cur.part->string))
+   {
+      //Update PartTree
+      row = etk_tree_selected_row_get(ETK_TREE(UI_PartsTree));
+      text = etk_entry_text_get(ETK_ENTRY(object));
+      
+      printf("** TYPE: %d\n", edje_edit_part_type_get(edje_o, Cur.part->string));
+      switch (edje_edit_part_type_get(edje_o, Cur.part->string))
+      {
+         case EDJE_PART_TYPE_IMAGE:
+            etk_tree_row_fields_set(row,TRUE,
+                                    COL_NAME, EdjeFile, "IMAGE.PNG", text,
+                                    NULL); 
+            break;
+         case EDJE_PART_TYPE_RECTANGLE:
+            etk_tree_row_fields_set(row,TRUE,
+                                    COL_NAME, EdjeFile, "RECT.PNG", text,
+                                    NULL); 
+            break;
+         case EDJE_PART_TYPE_TEXT:
+            etk_tree_row_fields_set(row,TRUE,
+                                    COL_NAME, EdjeFile, "TEXT.PNG", text,
+                                    NULL); 
+            break;
+         default:
+            etk_tree_row_fields_set(row,TRUE,
+                                    COL_NAME, EdjeFile, "NONE.PNG", text,
+                                    NULL);
+            break;
+      }
+      
+      /* Update hidden colon on every child */
+      Etk_Tree_Row *child;
+      child = etk_tree_row_first_child_get(row);
+      etk_tree_row_fields_set(child, TRUE, COL_PARENT, text, NULL);
+      while (child = etk_tree_row_next_get(child))
+         etk_tree_row_fields_set(child, TRUE, COL_PARENT, text, NULL);
+       
+       
+      /* change the name in edje */
+      edje_edit_part_name_set(edje_o, Cur.part->string, text);
+      
+      /* Set new Current name */
+      Cur.part = etk_string_set(Cur.part, text);
+      
+      /* Recreate rel combobox */
+      PopulateRelComboBoxes();  //TODO do a focus-out callback for this (don't need to do on every key!!)
+   }
+#else
    if (Cur.ep)
    {
       engrave_part_name_set(Cur.ep,etk_entry_text_get(ETK_ENTRY(object)));
@@ -605,6 +668,7 @@ on_PartNameEntry_text_changed(Etk_Object *object, void *data)
                break;
       }
    }
+#endif
    return ETK_TRUE;
 }
 
@@ -612,11 +676,33 @@ Etk_Bool
 on_PartEventsCheck_toggled(Etk_Object *object, void *data)
 {
    printf("Toggled Signal on EventsCheck EMITTED\n");
+#if TEST_DIRECT_EDJE
+   if (etk_string_length_get(Cur.part))
+   {
+      edje_edit_part_mouse_events_set(edje_o, Cur.part->string,
+                     etk_toggle_button_active_get(ETK_TOGGLE_BUTTON(object)));
+   }
+#else
    if (Cur.ep)
    {
       engrave_part_mouse_events_set(Cur.ep,
                      etk_toggle_button_active_get(ETK_TOGGLE_BUTTON(object)));
    }
+#endif
+   return ETK_TRUE;
+}
+
+Etk_Bool
+on_PartEventsRepeatCheck_toggled(Etk_Object *object, void *data)
+{
+   printf("Toggled Signal on EventsRepeatCheck EMITTED\n");
+#if TEST_DIRECT_EDJE
+   if (etk_string_length_get(Cur.part))
+   {
+      edje_edit_part_repeat_events_set(edje_o, Cur.part->string,
+                     etk_toggle_button_active_get(ETK_TOGGLE_BUTTON(object)));
+   }
+#endif
    return ETK_TRUE;
 }
 
@@ -1357,14 +1443,11 @@ on_Param1Spinner_value_changed(Etk_Range *range, double value, void *data)
 
 #if TEST_DIRECT_EDJE
 Etk_Bool
-on_GroupsComboBox_changed(Etk_Combobox *combobox, void *data)
+on_GroupsComboBox_activated(Etk_Combobox *combobox, Etk_Combobox_Item *item, void *data)
 {
-   Etk_Combobox_Item *item;
    char *gr;
-   
-   item = etk_combobox_active_item_get(combobox);
    gr = etk_combobox_item_field_get(item,0);
-   printf("Group combo changed: %s\n",gr);
+   printf("Group combo activated: %s\n",gr);
    ChangeGroup(gr);
 }
 #endif
@@ -1817,10 +1900,17 @@ on_FileChooserDialog_response(Etk_Dialog *dialog, int response_id, void *data)
 
       switch(FileChooserOperation){
          case FILECHOOSER_OPEN:
+#if TEST_DIRECT_EDJE
+            snprintf(cmd,4096,"%s/%s",
+            etk_filechooser_widget_current_folder_get(ETK_FILECHOOSER_WIDGET(UI_FileChooser)),
+            etk_filechooser_widget_selected_file_get(ETK_FILECHOOSER_WIDGET(UI_FileChooser)));
+            LoadEDJ2(cmd);
+#else
             snprintf(cmd,4096,"edje_editor \"%s/%s\" &",
                etk_filechooser_widget_current_folder_get (ETK_FILECHOOSER_WIDGET(UI_FileChooser)),
                etk_filechooser_widget_selected_file_get (ETK_FILECHOOSER_WIDGET(UI_FileChooser)));
             system(cmd);
+#endif
          break;
          case FILECHOOSER_SAVE_EDJ:
             printf("SAVE EDJ\n");
@@ -1828,7 +1918,11 @@ on_FileChooserDialog_response(Etk_Dialog *dialog, int response_id, void *data)
                etk_filechooser_widget_current_folder_get (ETK_FILECHOOSER_WIDGET(UI_FileChooser)),
                etk_filechooser_widget_selected_file_get (ETK_FILECHOOSER_WIDGET(UI_FileChooser)));
 #if TEST_DIRECT_EDJE
-            edje_edit_save(edje_o,cmd);
+            edje_edit_save(edje_o);
+            if(!ecore_file_cp(Cur.edj_temp_name->string, cmd))
+            {
+               ShowAlert("<b>ERROR:<\b><br>Can't write file");
+            }
 #else
             SaveEDJ(cmd);
 #endif
@@ -1842,6 +1936,13 @@ on_FileChooserDialog_response(Etk_Dialog *dialog, int response_id, void *data)
               ShowAlert("Error saving file.");
          break;
          case FILECHOOSER_IMAGE:
+#if TEST_DIRECT_EDJE
+            snprintf(cmd, 4096, "%s/%s", 
+               etk_filechooser_widget_current_folder_get (ETK_FILECHOOSER_WIDGET(UI_FileChooser)),
+               etk_filechooser_widget_selected_file_get (ETK_FILECHOOSER_WIDGET(UI_FileChooser)));
+            edje_edit_image_add(edje_o, cmd);
+            PopulateImagesComboBox();
+#else
             if (Cur.eps){
                //If the new image is not in the edc dir
                if (strcmp(etk_filechooser_widget_current_folder_get(ETK_FILECHOOSER_WIDGET(UI_FileChooser)),engrave_file_image_dir_get(Cur.ef))){
@@ -1870,6 +1971,7 @@ on_FileChooserDialog_response(Etk_Dialog *dialog, int response_id, void *data)
                UpdateImageFrame();
                ev_redraw();
             }
+#endif
          break;
          case FILECHOOSER_FONT:
             if (Cur.eps){
@@ -1917,6 +2019,7 @@ on_FileChooser_selected(Etk_Filechooser_Widget *filechooser)
    on_FileChooserDialog_response(ETK_DIALOG(UI_FileChooserDialog), ETK_RESPONSE_OK, NULL);
    return ETK_TRUE;
 }
+
 Etk_Bool
 on_AlertDialog_response(Etk_Dialog *dialog, int response_id, void *data)
 {

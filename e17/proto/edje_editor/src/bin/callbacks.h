@@ -8,10 +8,11 @@ void ecore_delete_cb(Ecore_Evas *ee);
 Etk_Bool on_GroupSpinner_value_changed     (Etk_Range *range, double value, void *data);
 Etk_Bool on_canvas_geometry_changed        (Etk_Object *canvas, const char *property_name, void *data);
 Etk_Bool on_PartsTree_row_selected         (Etk_Object *object, Etk_Tree_Row *row, void *data);
-void on_ColorCanvas_click                  (void *data, Evas *e, Evas_Object *obj, void *event_info);
+void     on_ColorCanvas_click              (void *data, Evas *e, Evas_Object *obj, void *event_info);
 Etk_Bool on_ColorDialog_change             (Etk_Object *object, void *data);
 Etk_Bool on_PartNameEntry_text_changed     (Etk_Object *object, void *data);
 Etk_Bool on_PartEventsCheck_toggled        (Etk_Object *object, void *data);
+Etk_Bool on_PartEventsRepeatCheck_toggled  (Etk_Object *object, void *data);
 Etk_Bool on_StateEntry_text_changed        (Etk_Object *object, void *data);
 Etk_Bool on_AllButton_click                (Etk_Button *button, void *data);
 Etk_Bool on_AddMenu_item_activated         (Etk_Object *object, void *data);
@@ -54,5 +55,6 @@ Etk_Bool on_DurationSpinner_value_changed  (Etk_Range *range, double value, void
 Etk_Bool on_AfterEntry_text_changed        (Etk_Object *object, void *data);
 
 #if TEST_DIRECT_EDJE
-Etk_Bool on_GroupsComboBox_changed(Etk_Combobox *combobox, void *data);
+Etk_Bool on_GroupsComboBox_activated(Etk_Combobox *combobox, Etk_Combobox_Item *item, void *data);
+void signal_cb(void *data, Evas_Object *o, const char *sig, const char *src);
 #endif

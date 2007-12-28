@@ -14,8 +14,9 @@
 #define FAKEWIN_BORDER_BOTTOM 4
 
 #define TEST_DIRECT_EDJE   0
-
+#define ECHO_EDJE_SIGNAL   0
 #define DEBUG_TREE         0
+
 #if DEBUG_TREE
    #define TREE_WIDTH         365
 #else
@@ -128,7 +129,8 @@ struct Current_State
    Etk_String *prog;
    
    Etk_String *edj_file_name;
-
+   Etk_String *edj_temp_name;
+    
 #endif
 }Cur;
 
