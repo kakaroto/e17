@@ -1,42 +1,28 @@
-SUBDIRS = po
+MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess config.h.in \
+		       config.sub configure depcomp install-sh ltmain.sh \
+		       missing module.desktop
 
-MAINTAINERCLEANFILES = Makefile.in mkinstalldirs
+SUBDIRS = src
 
 EDJE_FLAGS = -v \
--id $(top_srcdir) \
--fd $(top_srcdir)
+	   -id $(top_srcdir)/images \
+	   -fd $(top_srcdir)/fonts
 
 # data files for the module
 filesdir =  $(datadir)
 
 files_DATA = module.desktop \
-	     e-module-screenshot.edj \
-	     screenshot.edj
+	     e-module-screenshot.edj
 
 EXTRA_DIST = $(files_DATA) \
-	     module_icon.png \
-	     e_modules-screenshot.spec \
-	     screenshot.edc \
-	     VeraBd.ttf
-
-# the module .so file
-INCLUDES = -I. \
-			  -I$(top_srcdir) \
-			  -I$(includedir) \
-			   @e_cflags@
-
-pkgdir                 =  $(datadir)/$(MODULE_ARCH)
-pkg_LTLIBRARIES        = module.la
-module_la_SOURCES      = e_mod_main.c \
-		         e_mod_main.h \
-			 e_mod_config.c
-			 
-module_la_LIBADD       = @e_libs@
-module_la_LDFLAGS      = -module -avoid-version
-module_la_DEPENDENCIES = $(top_builddir)/config.h $(top_builddir)/screenshot.edj
+	     images/module_icon.png \
+	     fonts/VeraBd.ttf
 
 %.edj:  %.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $< $@
 
 clean-local:
-	 rm -rf screenshot.edj *~
+	 rm -rf e-module-screenshot.edj module.desktop *~
+uninstall:
+	 rm -rf $(DESTDIR)$(datadir)
+	 
