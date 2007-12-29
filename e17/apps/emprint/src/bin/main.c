@@ -199,7 +199,7 @@ main(int argc, char **argv)
 static void 
 _em_print_help(void) 
 {
-   printf("Usage: egrab [OPTIONS]... FILE\n"
+   printf("Usage: emprint [OPTIONS]... FILE\n"
 	  "Where FILE is the target for the screenshot.\n"
 	  "If no FILE is specified, a date-stamped file will be saved in "
 	  "the current directory.\n"
@@ -222,7 +222,7 @@ _em_print_help(void)
 static void 
 _em_print_version(void) 
 {
-   printf("egrab version "VERSION"\n");
+   printf("emprint version "VERSION"\n");
 }
 
 static void 
