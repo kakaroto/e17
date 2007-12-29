@@ -207,7 +207,9 @@ _em_print_help(void)
 	  "\t--beep\t\t\tBeep before taking screenshot\n"
 	  "\t--delay NUM\t\tWait NUM seconds before taking screenshot\n"
 	  "\t--prompt\t\tPrompt for FILE\n"
-	  "\t--app APP\t\tLaunch APP after taking screenshot\n"
+	  "\t--app APP\t\tLaunch APP after taking screenshot.  A '%%s'\n"
+	  "\t\t\t\tincluded in the app command line will be\n"
+	  "\t\t\t\treplaced with the filename.\n"
 	  "\t--thumb THUMB\t\tGenerate a thumbnail as THUMB\n"
 	  "\t--thumb-geom NUM\tGeometry to use for thumbnail\n"
 	  "\t\t\t\tNUM can be a percentage of the original size OR\n"
@@ -808,8 +810,19 @@ _em_do_app(void)
    Ecore_Exe *exe;
    char buf[4096];
 
-   /* assemble exe string including app & filename */
-   snprintf(buf, sizeof(buf), "%s %s", opts->app, opts->filename);
+   /*
+    * If there is a %s in our "app", lets replace it with the filename
+    * This will allow a user to specify an app similar to:
+    *
+    *   /usr/local/bin/myapp arg1 %s arg2 arg3
+    *
+    * and have %s replaced with the filename emprint is using.
+    */
+   if (strstr(opts->app, "%s"))
+     snprintf(buf, sizeof(buf), opts->app, opts->filename);
+   else
+     /* otherwise, assemble exe string including app & filename */
+     snprintf(buf, sizeof(buf), "%s %s", opts->app, opts->filename);
 
    /* run the app */
    exe = ecore_exe_run(buf, NULL);
