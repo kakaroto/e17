@@ -459,12 +459,12 @@ _em_do_region(void)
    mouse_down_hdl = ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_DOWN,
 					    _em_cb_mouse_down, NULL);
 
-   /* create the rubber band */
-   _em_band_show();
-
    /* set the mouse pointer */
    if (cursor = ecore_x_cursor_shape_get(ECORE_X_CURSOR_CROSS))
      ecore_x_window_cursor_set(input_window, cursor);
+
+   /* create the rubber band */
+   _em_band_show();
 }
 
 static void 
