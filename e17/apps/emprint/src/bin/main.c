@@ -257,59 +257,71 @@ _em_get_filename(void)
      strftime(buf, sizeof(buf), "%Y-%m-%d-%H%M%S.png", loctime);
    else 
      {
-	/* filename was given, check for '%' signs to 
-	 * format based on strftime */
-	if (strstr(opts->filename, "%")) 
-	  strftime(buf, sizeof(buf), opts->filename, loctime);
+	if (ecore_file_is_dir(opts->filename)) 
+	  {
+	     strftime(buf, sizeof(buf), "%Y-%m-%d-%H%M%S.png", loctime);
+	     /* set the new filename */
+	     snprintf(buf, sizeof(buf), "%s/%s", opts->filename, strdup(buf));
+	     if (opts->filename) evas_stringshare_del(opts->filename);
+	     opts->filename = evas_stringshare_add(buf);
+	     return;
+	  }
 	else 
 	  {
-	     /* no '%' signs, check for files existing in the directory */
-	     if (ecore_file_exists(opts->filename)) 
+	     /* filename was given, check for '%' signs to 
+	      * format based on strftime */
+	     if (strstr(opts->filename, "%")) 
+	       strftime(buf, sizeof(buf), opts->filename, loctime);
+	     else 
 	       {
-		  /* get the directory */
-		  dir = ecore_file_dir_get(opts->filename);
-
-		  /* get the filename */
-		  f = ecore_file_file_get(opts->filename);
-
-		  /* if these two match, then no dir was passed in,
-		   * use current dir */
-		  if (!strcmp(dir, f)) dir = getenv("PWD");
-
-		  /* strip the extension for searches */
-		  ext = ecore_file_strip_ext(opts->filename);
-
-		  /* list files in this directory & count them */
-		  fl = ecore_file_ls(dir);
-		  ecore_list_first_goto(fl);
-		  while ((file = ecore_list_next(fl)) != NULL) 
+		  /* no '%' signs, check for files existing in the directory */
+		  if (ecore_file_exists(opts->filename)) 
 		    {
-		       /* skip "thumb" files in the count */
-		       if (strstr(file, "thumb")) continue;
-		       if (strstr(file, ext)) c++;
-		    }
+		       /* get the directory */
+		       dir = ecore_file_dir_get(opts->filename);
 
-		  /* destroy the file list */
-		  if (fl) ecore_list_destroy(fl);
+		       /* get the filename */
+		       f = ecore_file_file_get(opts->filename);
 
-		  /* assemble new filename based on count */
-		  if (c > 0) 
-		    {
-		       c++;
+		       /* if these two match, then no dir was passed in,
+			* use current dir */
+		       if (!strcmp(dir, f)) dir = getenv("PWD");
 
-		       /* strip the extension from filename */
-		       file = ecore_file_strip_ext(opts->filename);
+		       /* strip the extension for searches */
+		       ext = ecore_file_strip_ext(opts->filename);
 
-		       /* get the actual extension */
-		       ext = strrchr(opts->filename, '.');
-		       if (!ext) ext = strdup(".png");
+		       /* list files in this directory & count them */
+		       fl = ecore_file_ls(dir);
+		       ecore_list_first_goto(fl);
+		       while ((file = ecore_list_next(fl)) != NULL) 
+			 {
+			    /* skip "thumb" files in the count */
+			    if (strstr(file, "thumb")) continue;
+			    if (strstr(file, ext)) c++;
+			 }
 
-		       /* assemble new filename */
-		       snprintf(buf, sizeof(buf), "%s%i%s", file, c, ext);
+		       /* destroy the file list */
+		       if (fl) ecore_list_destroy(fl);
+
+		       /* assemble new filename based on count */
+		       if (c > 0) 
+			 {
+			    c++;
+
+			    /* strip the extension from filename */
+			    file = ecore_file_strip_ext(opts->filename);
+
+			    /* get the actual extension */
+			    ext = strrchr(opts->filename, '.');
+			    if (!ext) ext = strdup(".png");
+
+			    /* assemble new filename */
+			    snprintf(buf, sizeof(buf), "%s%i%s", file, c, ext);
+			 }
+		       else return;
 		    }
 		  else return;
 	       }
-	     else return;
 	  }
      }
    /* set the new filename */
