@@ -206,6 +206,7 @@ _tclock_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
    E_Zone *zone = NULL;
    char buf[4096];
    int x, y, w, h;
+   int gx, gy, gw, gh;
    time_t current_time;
    struct tm *local_time;
 
@@ -236,7 +237,46 @@ _tclock_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
    evas_object_resize(inst->o_tip, w, h);
 
    e_popup_edje_bg_object_set(inst->tip, inst->o_tip);
+
    ecore_x_pointer_xy_get(zone->container->win, &x, &y);
+   e_gadcon_client_geometry_get(inst->gcc, &gx, &gy, &gw, &gh);
+   switch (inst->gcc->gadcon->orient) 
+     {
+      case E_GADCON_ORIENT_CORNER_RT:
+      case E_GADCON_ORIENT_CORNER_RB:
+      case E_GADCON_ORIENT_RIGHT:
+	x = gx - w;
+	y = gy;
+	if ((y + h) >= zone->h)
+	  y = gy + gh - h;
+	break;
+      case E_GADCON_ORIENT_LEFT:
+      case E_GADCON_ORIENT_CORNER_LT:
+      case E_GADCON_ORIENT_CORNER_LB:
+	x = gx + gw;
+	y = gy;
+	if ((y + h) >= zone->h)
+	  y = gy + gh - h;
+	break;
+      case E_GADCON_ORIENT_TOP:
+      case E_GADCON_ORIENT_CORNER_TL:
+      case E_GADCON_ORIENT_CORNER_TR:
+	y = gy + gh;
+	x = gx;
+	if ((x + w) >= zone->w)
+	  x = gx + gw - w;
+	break;
+      case E_GADCON_ORIENT_BOTTOM:
+      case E_GADCON_ORIENT_CORNER_BL:
+      case E_GADCON_ORIENT_CORNER_BR:
+	y = gy - h;
+	x = gx;
+	if ((x + w) >= zone->w)
+	  x = gx + gw - w;
+	break;
+      default:
+	break;
+     }
    e_popup_move_resize(inst->tip, x, y, w, h);
    e_popup_show(inst->tip);
 }
