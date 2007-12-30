@@ -473,7 +473,7 @@ EImageApplyToWin(EImage * im, Win win, int flags, int w, int h)
 }
 
 void
-ScaleRect(Win wsrc, Drawable src, Win wdst, Pixmap dst, Pixmap * pdst,
+ScaleRect(Win wsrc, Drawable src, Win wdst, Pixmap dst,
 	  int sx, int sy, int sw, int sh,
 	  int dx, int dy, int dw, int dh, int scale)
 {
@@ -483,15 +483,7 @@ ScaleRect(Win wsrc, Drawable src, Win wdst, Pixmap dst, Pixmap * pdst,
 
    im = EImageGrabDrawableScaled(wsrc, src, None, sx, sy, sw, sh,
 				 scale * dw, scale * dh, 0, 0);
-   if (pdst)
-     {
-	EImageRenderPixmaps(im, wdst, EIMAGE_ANTI_ALIAS, pdst, None, dw, dh);
-     }
-   else
-     {
-	EImageRenderOnDrawable(im, wdst, dst, EIMAGE_ANTI_ALIAS,
-			       dx, dy, dw, dh);
-     }
+   EImageRenderOnDrawable(im, wdst, dst, EIMAGE_ANTI_ALIAS, dx, dy, dw, dh);
    imlib_free_image();
 }
 

@@ -105,7 +105,7 @@ ImageState         *ImageclassGetImageState(ImageClass * ic, int state,
 ImageClass         *ImageclassCreateSimple(const char *name, const char *image);
 EImage             *ImageclassGetImage(ImageClass * ic, int active, int sticky,
 				       int state);
-Pixmap              ImageclassApplySimple(ImageClass * ic, Win win,
+void                ImageclassApplySimple(ImageClass * ic, Win win,
 					  Drawable draw, int state, int x,
 					  int y, int w, int h);
 void                ImageclassApply(ImageClass * ic, Win win,

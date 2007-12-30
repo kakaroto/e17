@@ -102,8 +102,7 @@ void                EImageColorModifierSetTables(EImageColorModifier * icm,
 						 unsigned char *b,
 						 unsigned char *a);
 
-void                ScaleRect(Win wsrc, Drawable src,
-			      Win wdst, Pixmap dst, Pixmap * pdst,
+void                ScaleRect(Win wsrc, Drawable src, Win wdst, Pixmap dst,
 			      int sx, int sy, int sw, int sh,
 			      int dx, int dy, int dw, int dh, int scale);
 

@@ -806,29 +806,18 @@ ImageclassGetImage(ImageClass * ic, int active, int sticky, int state)
    return im;
 }
 
-Pixmap
+void
 ImageclassApplySimple(ImageClass * ic, Win win, Drawable draw, int state,
 		      int x, int y, int w, int h)
 {
-   Pixmap              pmap;
    EImage             *im;
 
    im = ImageclassGetImage(ic, 0, 0, state);
    if (!im)
-      return None;
-
-   pmap = None;
-   if (draw == None)
-     {
-	pmap = ECreatePixmap(win, w, h, 0);
-	draw = pmap;
-	x = y = 0;
-     }
+      return;
 
    EImageRenderOnDrawable(im, win, draw, 0, x, y, w, h);
    EImageFree(im);
-
-   return pmap;
 }
 
 #ifdef ENABLE_TRANSPARENCY

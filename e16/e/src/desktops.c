@@ -2479,20 +2479,12 @@ CB_AreaDisplayRedraw(Dialog * d __UNUSED__, int val, void *data)
 	ImageClass         *ic;
 
 	ic = ImageclassFind("SETTINGS_AREA_AREA", 0);
-	if (ic)
-	   ImageclassApply(ic, win, 0, 0, STATE_NORMAL, ST_SOLID);
+	ImageclassApply(ic, win, 0, 0, STATE_NORMAL, ST_SOLID);
+
 	awin = ECreateWindow(win, 0, 0, 18, 14, 0);
 	ic = ImageclassFind("SETTINGS_AREADESK_AREA", 0);
-	if (ic)
-	  {
-	     Pixmap              pmap;
+	ImageclassApply(ic, awin, 0, 0, STATE_NORMAL, ST_SOLID);
 
-	     pmap = ImageclassApplySimple(ic, awin, None, STATE_NORMAL,
-					  0, 0, 18, 14);
-	     ESetWindowBackgroundPixmap(awin, pmap);
-	     EFreePixmap(pmap);
-	  }
-	EClearWindow(awin);
 	called = 1;
      }
    EMoveResizeWindow(awin, ((w / 2) - (9 * tmp_area_x)),

@@ -248,7 +248,7 @@ PagerScanTimeout(int val __UNUSED__, void *data)
    y = ((phase & 0xfffffff8) + offsets[phase % 8]) % hh;
    y2 = (y * VRoot.h) / hh;
 
-   ScaleRect(VRoot.win, VRoot.xwin, p->win, WinGetPmap(p->win), NULL, 0, y2,
+   ScaleRect(VRoot.win, VRoot.xwin, p->win, WinGetPmap(p->win), 0, y2,
 	     VRoot.w, VRoot.h / hh, xx, yy + y, ww, 1, Conf_pagers.hiq);
    EClearArea(p->win, xx, yy + y, ww, 1, False);
    y2 = p->h;
@@ -256,7 +256,7 @@ PagerScanTimeout(int val __UNUSED__, void *data)
    y = ((phase & 0xfffffff8) + offsets[phase % 8]) % ww;
    y2 = (y * VRoot.w) / ww;
 
-   ScaleRect(VRoot.win, VRoot.xwin, p->win, WinGetPmap(p->win), NULL, y2, 0,
+   ScaleRect(VRoot.win, VRoot.xwin, p->win, WinGetPmap(p->win), y2, 0,
 	     VRoot.w / ww, VRoot.h, xx + y, yy, 1, hh, Conf_pagers.hiq);
    EClearArea(p->win, xx + y, yy, 1, hh, False);
    y2 = p->w;
@@ -327,6 +327,8 @@ PagerEwinUpdateMini(Pager * p, EWin * ewin)
 
    ewin->mini_w = w;
    ewin->mini_h = h;
+   ewin->mini_pmm.type = 0;
+   ewin->mini_pmm.pmap = ECreatePixmap(p->win, w, h, 0);
 
    draw = None;
    if (pager_mode != PAGER_MODE_SIMPLE)
@@ -342,21 +344,13 @@ PagerEwinUpdateMini(Pager * p, EWin * ewin)
 	ImageClass         *ic;
 
 	ic = ImageclassFind("PAGER_WIN", 0);
-	if (ic)
-	  {
-	     ewin->mini_pmm.type = 0;
-	     ewin->mini_pmm.mask = None;
-	     ewin->mini_pmm.pmap =
-		ImageclassApplySimple(ic, p->win, None, STATE_NORMAL,
-				      0, 0, w, h);
-	  }
+	ImageclassApplySimple(ic, p->win, ewin->mini_pmm.pmap,
+			      STATE_NORMAL, 0, 0, w, h);
 	Dprintf("Use Iclass, pmap=%#lx\n", ewin->mini_pmm.pmap);
      }
    else
      {
-	ewin->mini_pmm.type = 1;
-	ewin->mini_pmm.mask = None;
-	ScaleRect(EoGetWin(ewin), draw, p->win, None, &ewin->mini_pmm.pmap,
+	ScaleRect(EoGetWin(ewin), draw, p->win, ewin->mini_pmm.pmap,
 		  0, 0, EoGetW(ewin), EoGetH(ewin), 0, 0, w, h,
 		  Conf_pagers.hiq);
 	Dprintf("Grab scaled, pmap=%#lx\n", ewin->mini_pmm.pmap);
@@ -487,7 +481,7 @@ doPagerUpdate(Pager * p)
  do_screen_update:
    Dprintf("doPagerUpdate %d: Snap screen\n", p->dsk->num);
    /* Update pager area by snapshotting entire screen */
-   ScaleRect(VRoot.win, VRoot.xwin, p->win, pmap, NULL, 0, 0,
+   ScaleRect(VRoot.win, VRoot.xwin, p->win, pmap, 0, 0,
 	     VRoot.w, VRoot.h, cx * p->dw, cy * p->dh, p->dw, p->dh,
 	     Conf_pagers.hiq);
 
@@ -617,7 +611,7 @@ PagerUpdateBg(Pager * p)
 
    if (pager_mode != PAGER_MODE_SIMPLE && p->dsk->bg.pmap)
      {
-	ScaleRect(VRoot.win, p->dsk->bg.pmap, p->win, pmap, NULL, 0, 0,
+	ScaleRect(VRoot.win, p->dsk->bg.pmap, p->win, pmap, 0, 0,
 		  VRoot.w, VRoot.h, 0, 0, p->dw, p->dh, Conf_pagers.hiq);
 	return;
      }
