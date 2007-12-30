@@ -2,5 +2,5 @@
 Type=Link
 Name=MPDule
 Icon=e-module-mpdule
-Comment=<hilight>Mpdule Gadget</hilight><br>View what's playing in MPD.
-Comment[it]=<hilight>Modulo Mpdule</hilight><br>Un'interfaccia per il demone MPD.
+Comment=<hilight>Mpdule Gadget</hilight><br><br>View what's playing in MPD.
+Comment[it]=<hilight>Modulo Mpdule</hilight><br><br>Un'interfaccia per il demone MPD.

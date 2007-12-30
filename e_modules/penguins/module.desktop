@@ -3,5 +3,5 @@ Type=Link
 Name=Penguins
 Icon=e-module-penguins
 X-Enlightenment-ModuleType=appearance
-Comment=<hilight>Penguins Module</hilight><br>Module to display fancy penguins<br>walking around your desktop 
-Comment[it]=<hilight>Modulo Penguins</hilight><br>Modulo per visualizzare pinguini<br>carini che passeggiano attorno<br>al vostro desktop.
+Comment=<hilight>Penguins Module</hilight><br><br>Module to display fancy penguins walking around your desktop 
+Comment[it]=<hilight>Modulo Penguins</hilight><br><br>Modulo per visualizzare pinguini carini che passeggiano attorno al vostro desktop.

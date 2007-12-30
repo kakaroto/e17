@@ -2,5 +2,5 @@
 Type=Link
 Name=Mem
 Icon=e-module-mem
-Comment=<hilight>Mem Gadget</hilight><br>Used to monitor memory utilization.
-Comment[it]=<hilight>Modulo Mem</hilight><br>Usato per il monitoraggio del<br>utilizzo della memoria.
+Comment=<hilight>Mem Gadget</hilight><br><br>Used to monitor memory utilization.
+Comment[it]=<hilight>Modulo Mem</hilight><br><br>Usato per il monitoraggio del utilizzo della memoria.

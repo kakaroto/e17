@@ -3,5 +3,5 @@ Type=Link
 Name=Rain
 Icon=e-module-rain
 X-Enlightenment-ModuleType=appearance
-Comment=<hilight>Rain Module</hilight><br>Module to display rain on the<br>desktop.
-Comment[it]=<hilight>Modulo Rain</hilight><br>Modulo per visualizzare la pioggia<br>sul desktop.
+Comment=<hilight>Rain Module</hilight><br><br>Module to display rain on the desktop.
+Comment[it]=<hilight>Modulo Rain</hilight><br><br>Modulo per visualizzare la pioggia sul desktop.

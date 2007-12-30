@@ -2,5 +2,5 @@
 Type=Link
 Name=Wlan
 Icon=e-module-wlan
-Comment=<hilight>WLan Gadget</hilight><br>Gadget to monitor a wlan device.
-Comment[it]=<hilight>Modulo WLan</hilight><br>Modulo per il monitoraggio di un<br>dispositivo di rete wireless.
+Comment=<hilight>WLan Gadget</hilight><br><br>Gadget to monitor a wlan device.
+Comment[it]=<hilight>Modulo WLan</hilight><br><br>Modulo per il monitoraggio di un dispositivo di rete wireless.

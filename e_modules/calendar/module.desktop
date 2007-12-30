@@ -2,5 +2,5 @@
 Type=Link
 Name=Calendar
 Icon=e-module-calendar
-Comment=<hilight>Calendar Gadget</hilight><br>Calendar sheet showing<br>the current day.
-Comment[it]=<hilight>Modulo Calendar</hilight><br>Un foglio di calendario<br>che mostra la data attuale.
+Comment=<hilight>Calendar Gadget</hilight><br><br>Calendar sheet showing the current day.
+Comment[it]=<hilight>Modulo Calendar</hilight><br><br>Un foglio di calendario che mostra la data attuale.

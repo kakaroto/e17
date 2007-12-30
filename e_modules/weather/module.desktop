@@ -2,5 +2,5 @@
 Type=Link
 Name=Weather
 Icon=e-module-weather
-Comment=<hilight>Weather Gadget</hilight><br>A weather gadget.
-Comment[it]=<hilight>Modulo Weather</hilight><br>Un modulo per le condizioni meteo.
+Comment=<hilight>Weather Gadget</hilight><br><br>A weather gadget.
+Comment[it]=<hilight>Modulo Weather</hilight><br><br>Un modulo per le condizioni meteo.

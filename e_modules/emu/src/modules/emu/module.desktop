@@ -5,5 +5,5 @@ GenericName=gadget
 Comment=Experimental generic scriptable module for E17
 X-Enlightenment-IconClass=emu,gadget
 Icon=e-module-emu
-Comment=<hilight>Emu Module</hilight><br>Generic scriptable module.<br><hilight>Experimental!</hilight>
-Comment[it]=<hilight>Modulo Emu</hilight><br>Modulo scriptabile generico.<br><hilight>Sperimentale!</hilight>
+Comment=<hilight>Emu Module</hilight><br><br>Generic scriptable module.<br><hilight>Experimental!</hilight>
+Comment[it]=<hilight>Modulo Emu</hilight><br><br>Modulo scriptabile generico.<br><hilight>Sperimentale!</hilight>

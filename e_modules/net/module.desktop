@@ -2,5 +2,5 @@
 Type=Link
 Name=Net
 Icon=e-module-net
-Comment=<hilight>Net Gadget</hilight><br>Network interface monitor.
-Comment[it]=<hilight>Modulo Net</hilight><br>Monitor delle interfacce di rete.
+Comment=<hilight>Net Gadget</hilight><br><br>Network interface monitor.
+Comment[it]=<hilight>Modulo Net</hilight><br><br>Monitor delle interfacce di rete.

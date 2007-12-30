@@ -2,5 +2,5 @@
 Type=Link
 Name=TClock
 Icon=e-module-tclock
-Comment=<hilight>TClock Gadget</hilight><br>A digital clock gadget.
-Comment[it]=<hilight>Modulo TClock</hilight><br>Un modulo per un orologio digitale.
+Comment=<hilight>TClock Gadget</hilight><br><br>A digital clock gadget.
+Comment[it]=<hilight>Modulo TClock</hilight><br><br>Un modulo per un orologio digitale.

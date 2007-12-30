@@ -6,5 +6,5 @@ StartupNotify=false
 X-Enlightenment-WaitExit=false
 X-Enlightenment-IconClass=language,gadget
 Icon=e-module-language
-Comment=<hilight>Language Gadget</hilight><br>Gadget to control active keyboard,<br>keyboard layout, and layout variant.
-Comment[it]=<hilight>Modulo Language</hilight><br>Modulo per controllare la tastiera<br>attiva, il layout di tastiera e le<br>varianti del layout.
+Comment=<hilight>Language Gadget</hilight><br><br>Gadget to control active keyboard, keyboard layout, and layout variant.
+Comment[it]=<hilight>Modulo Language</hilight><br><br>Modulo per controllare la tastiera attiva, il layout di tastiera e le varianti del layout.

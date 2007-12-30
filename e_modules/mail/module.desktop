@@ -2,5 +2,5 @@
 Type=Link
 Name=Mail
 Icon=e-module-mail
-Comment=<hilight>Mail Gadget</hilight><br>Mail notification gadget. Checks<br>POP3, IMAP, maildir, and mbox<br>mailboxes.
-Comment[it]=<hilight>Modulo Mail</hilight><br>Modulo per notificare l'arrivo di<br>posta. Controlla caselle POP3,<br>IMAP, maildir e mbox.
+Comment=<hilight>Mail Gadget</hilight><br><br>Mail notification gadget. Checks POP3, IMAP, maildir, and mbox mailboxes.
+Comment[it]=<hilight>Modulo Mail</hilight><br><br>Modulo per notificare l'arrivo di posta. Controlla caselle POP3, IMAP, maildir e mbox.

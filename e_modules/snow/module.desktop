@@ -3,5 +3,5 @@ Type=Link
 Name=Snow
 Icon=e-module-snow
 X-Enlightenment-ModuleType=appearance
-Comment=<hilight>Snow Module</hilight><br>Module to display snow on the<br>desktop.
-Comment[it]=<hilight>Modulo Snow</hilight><br>Modulo per visualizzare la neve<br>sul desktop.
+Comment=<hilight>Snow Module</hilight><br><br>Module to display snow on the desktop.
+Comment[it]=<hilight>Modulo Snow</hilight><br><br>Modulo per visualizzare la neve sul desktop.

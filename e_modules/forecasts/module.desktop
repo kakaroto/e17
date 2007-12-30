@@ -2,5 +2,5 @@
 Type=Link
 Name=Forecasts
 Icon=e-module-forecasts
-Comment=<hilight>Forecasts Gadget</hilight><br>The forecasts gadget will display<br>the current weather conditions<br>plus a few days forecast.
-Comment[it]=<hilight>Modulo Forecasts</hilight><br>Il modulo forecasts mostrerà le<br>attuali condizioni del tempo e le<br>previsioni per qualche giorno.
+Comment=<hilight>Forecasts Gadget</hilight><br><br>The forecasts gadget will display the current weather conditions plus a few days forecast.
+Comment[it]=<hilight>Modulo Forecasts</hilight><br><br>Il modulo forecasts mostrerà le attuali condizioni del tempo e le previsioni per qualche giorno.
