@@ -299,6 +299,8 @@ _cfg_new(void)
    cfg->use_bell = 1;
    cfg->use_thumb = 0;
    cfg->location = evas_stringshare_add(e_user_homedir_get());
+   cfg->filename = NULL;
+   cfg->app = NULL;
    IFMODCFGEND;
 
    cfg->version = MOD_CONFIG_FILE_VERSION;
