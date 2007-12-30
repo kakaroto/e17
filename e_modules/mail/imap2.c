@@ -222,6 +222,11 @@ _mail_imap_server_del (void *data, int type, void *event)
    ic->server = NULL;
 
    _mail_set_text (ic->data);
+
+   if ((ic->config->num_new > 0) 
+       && (ic->config->use_exec) && (ic->config->exec))
+     _mail_start_exe (ic->config);
+
    return 0;
 }
 
