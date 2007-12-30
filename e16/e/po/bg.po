@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.7\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-12-22 02:13+0100\n"
+"POT-Creation-Date: 2007-12-30 22:42+0100\n"
 "PO-Revision-Date: 2004-09-14 20:43-0300\n"
 "Last-Translator: Viktor Kojouharov\n"
 "Language-Team: Bulgarian\n"
@@ -56,7 +56,7 @@ msgstr ""
 "Mandrake - mandrake@mandrake.net\n"
 "Kim Woelders - kim@woelders.dk\n"
 
-#: src/aclass.c:205 src/backgrounds.c:242 src/borders.c:649 src/buttons.c:184
+#: src/aclass.c:205 src/backgrounds.c:242 src/borders.c:650 src/buttons.c:184
 #: src/cmclass.c:84 src/cursors.c:122 src/iclass.c:357 src/tclass.c:97
 #: src/tooltips.c:134
 #, c-format
@@ -419,7 +419,7 @@ msgstr "Enlightenment стартира..."
 msgid "Settings..."
 msgstr "Настройки за фокуса"
 
-#: src/container.c:1220 src/dialog.c:886 src/pager.c:998 config/strings.c:30
+#: src/container.c:1220 src/dialog.c:886 src/pager.c:992 config/strings.c:30
 #: config/strings.c:132
 msgid "Close"
 msgstr "Затвори"
@@ -535,7 +535,7 @@ msgstr ""
 "E: Iconbox\n"
 "Диалог за настройки\n"
 
-#: src/desktops.c:122
+#: src/desktops.c:126
 msgid ""
 "Hold down the mouse button and drag\n"
 "the mouse to be able to drag the desktop\n"
@@ -553,7 +553,7 @@ msgstr ""
 "Щтракнете със средния бутон за списък с всички\n"
 "работещи в момента приложения.\n"
 
-#: src/desktops.c:133
+#: src/desktops.c:137
 msgid ""
 "This is the Root desktop.\n"
 "You cannot drag the root desktop around.\n"
@@ -569,7 +569,7 @@ msgstr ""
 "Щтракнете със средния бутон за списък с всички\n"
 "работещи в момента приложения.\n"
 
-#: src/desktops.c:152
+#: src/desktops.c:156
 msgid ""
 "Click here to raise this desktop\n"
 "to the top.\n"
@@ -577,7 +577,7 @@ msgstr ""
 "Щтракнете тук за да вдигнете това\n"
 "поле най-горе.\n"
 
-#: src/desktops.c:165
+#: src/desktops.c:169
 msgid ""
 "Click here to lower this desktop\n"
 "to the bottom.\n"
@@ -585,67 +585,67 @@ msgstr ""
 "Щтракнете тук за да свалите това\n"
 "поле най-долу.\n"
 
-#: src/desktops.c:2295 src/desktops.c:2334
+#: src/desktops.c:2301 src/desktops.c:2340
 #, c-format
 msgid "%i Desktops"
 msgstr "%i работни полета"
 
-#: src/desktops.c:2297 src/desktops.c:2336
+#: src/desktops.c:2303 src/desktops.c:2342
 #, c-format
 msgid "%i Desktop"
 msgstr "%i поле"
 
-#: src/desktops.c:2329
+#: src/desktops.c:2335
 msgid "Number of virtual desktops:\n"
 msgstr "Брой на виртуални работни полета:\n"
 
-#: src/desktops.c:2358
+#: src/desktops.c:2364
 msgid "Slide desktops around when changing"
 msgstr "Плъзгай полетата когато ги сменяте"
 
-#: src/desktops.c:2364
+#: src/desktops.c:2370
 #, fuzzy
 msgid "Desktop Slide speed:\n"
 msgstr "Бързина на плъзгане на полето: (бавно)\n"
 
-#: src/desktops.c:2378
+#: src/desktops.c:2384
 msgid "Wrap desktops around"
 msgstr "Застъпете полетата"
 
-#: src/desktops.c:2386
+#: src/desktops.c:2392
 msgid "Display desktop dragbar"
 msgstr "Показвай Dragbar-ът"
 
-#: src/desktops.c:2392
+#: src/desktops.c:2398
 msgid "Drag bar position:"
 msgstr "Позиция на Dragbar-ът"
 
-#: src/desktops.c:2396
+#: src/desktops.c:2402
 msgid "Top"
 msgstr "Отгоре"
 
-#: src/desktops.c:2402
+#: src/desktops.c:2408
 msgid "Bottom"
 msgstr "Отдолу"
 
-#: src/desktops.c:2408 src/pager.c:1907 src/pager.c:1932 src/pager.c:1957
+#: src/desktops.c:2414 src/pager.c:1901 src/pager.c:1926 src/pager.c:1951
 msgid "Left"
 msgstr "Левият"
 
-#: src/desktops.c:2414 src/pager.c:1919 src/pager.c:1944 src/pager.c:1969
+#: src/desktops.c:2420 src/pager.c:1913 src/pager.c:1938 src/pager.c:1963
 msgid "Right"
 msgstr "Десният"
 
-#: src/desktops.c:2422 src/menus-misc.c:713
+#: src/desktops.c:2428 src/menus-misc.c:713
 #, fuzzy
 msgid "Desks"
 msgstr "Поле"
 
-#: src/desktops.c:2423
+#: src/desktops.c:2429
 msgid "Multiple Desktop Settings"
 msgstr "Настройки за много работни полета"
 
-#: src/desktops.c:2426
+#: src/desktops.c:2432
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -653,7 +653,7 @@ msgstr ""
 "Е: Много работни полета\n"
 "Диалог за настройки\n"
 
-#: src/desktops.c:2504 src/desktops.c:2539
+#: src/desktops.c:2502 src/desktops.c:2537
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -662,7 +662,7 @@ msgstr ""
 "%i x %i\n"
 "Екрани с размер"
 
-#: src/desktops.c:2507 src/desktops.c:2542
+#: src/desktops.c:2505 src/desktops.c:2540
 msgid ""
 "1\n"
 "Screen in size"
@@ -670,43 +670,43 @@ msgstr ""
 "1\n"
 "Екран с размер"
 
-#: src/desktops.c:2535
+#: src/desktops.c:2533
 msgid "Virtual Desktop size:\n"
 msgstr "Размер на виртуалното поле:\n"
 
-#: src/desktops.c:2576
+#: src/desktops.c:2574
 msgid "Wrap virtual desktops around"
 msgstr "Застъпвай виртуалните полета"
 
-#: src/desktops.c:2583
+#: src/desktops.c:2581
 msgid "Edge Flip Mode:"
 msgstr ""
 
-#: src/desktops.c:2586
+#: src/desktops.c:2584
 msgid "Off"
 msgstr ""
 
-#: src/desktops.c:2591
+#: src/desktops.c:2589
 msgid "On"
 msgstr ""
 
-#: src/desktops.c:2596
+#: src/desktops.c:2594
 msgid "Only when moving window"
 msgstr ""
 
-#: src/desktops.c:2602
+#: src/desktops.c:2600
 msgid "Resistance at edge of screen:\n"
 msgstr "\"Съпротивление\" на ръбовете на екрана:\n"
 
-#: src/desktops.c:2614
+#: src/desktops.c:2612
 msgid "Areas"
 msgstr ""
 
-#: src/desktops.c:2615
+#: src/desktops.c:2613
 msgid "Virtual Desktop Settings"
 msgstr "Настройки на виртуални полета"
 
-#: src/desktops.c:2618
+#: src/desktops.c:2616
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -1062,7 +1062,7 @@ msgstr "   Изберете групата, от която да махнете прозореца.  "
 msgid "Select the group to break:"
 msgstr "  Изберете групата, която да разтрогнете  "
 
-#: src/handlers.c:66
+#: src/handlers.c:64
 #, c-format
 msgid ""
 "Enlightenment performed an Illegal Instruction.\n"
@@ -1082,7 +1082,7 @@ msgstr ""
 "за вашата система, или прекомпилирайте Е и по възможност\n"
 "всички поддържащи библиотеки които сте взели във двоичен формат.\n"
 
-#: src/handlers.c:80
+#: src/handlers.c:74
 msgid ""
 "Enlightenment caused a Floating Point Exception.\n"
 "\n"
@@ -1108,7 +1108,7 @@ msgstr ""
 "кога е умрял и да изпратите полезна информация с информация за  "
 "проследяването.\n"
 
-#: src/handlers.c:99
+#: src/handlers.c:86
 msgid ""
 "Enlightenment caused Segment Violation (Segfault)\n"
 "\n"
@@ -1134,7 +1134,7 @@ msgstr ""
 "кога е умрял и да изпратите полезна информация с информация за  "
 "проследяването.\n"
 
-#: src/handlers.c:115
+#: src/handlers.c:98
 msgid ""
 "Enlightenment caused Bus Error.\n"
 "\n"
@@ -1399,125 +1399,125 @@ msgstr ""
 "Е: Избирателна прозрачност\n"
 "Диалог за настройки\n"
 
-#: src/pager.c:991 config/strings.c:49 config/strings.c:131
+#: src/pager.c:985 config/strings.c:49 config/strings.c:131
 msgid "Window Options"
 msgstr "Опции за прозореца"
 
-#: src/pager.c:994 config/strings.c:51 config/strings.c:134
+#: src/pager.c:988 config/strings.c:51 config/strings.c:134
 msgid "Iconify"
 msgstr "Скрий"
 
-#: src/pager.c:1002 config/strings.c:133
+#: src/pager.c:996 config/strings.c:133
 msgid "Annihilate"
 msgstr "Унижтожи"
 
-#: src/pager.c:1006
+#: src/pager.c:1000
 msgid "Stick / Unstick"
 msgstr "Залепи / Отлепи"
 
-#: src/pager.c:1015
+#: src/pager.c:1009
 msgid "Desktop Options"
 msgstr "Опции за олето"
 
-#: src/pager.c:1017
+#: src/pager.c:1011
 msgid "Pager Settings..."
 msgstr "Настройки за Pager-а..."
 
-#: src/pager.c:1022
+#: src/pager.c:1016
 msgid "Snapshotting Off"
 msgstr "Изключване на снимки на екрана"
 
-#: src/pager.c:1026
+#: src/pager.c:1020
 msgid "High Quality Off"
 msgstr "Ниско качество"
 
-#: src/pager.c:1028
+#: src/pager.c:1022
 msgid "High Quality On"
 msgstr "Високо качество"
 
-#: src/pager.c:1033
+#: src/pager.c:1027
 msgid "Snapshotting On"
 msgstr "Включване на снимки на екрана"
 
-#: src/pager.c:1037
+#: src/pager.c:1031
 msgid "Zoom Off"
 msgstr ""
 
-#: src/pager.c:1039
+#: src/pager.c:1033
 msgid "Zoom On"
 msgstr ""
 
-#: src/pager.c:1796 src/pager.c:1887
+#: src/pager.c:1790 src/pager.c:1881
 msgid "Pager scanning speed:"
 msgstr "Скорост на сканиране на Pager-a:"
 
-#: src/pager.c:1797 src/pager.c:1888
+#: src/pager.c:1791 src/pager.c:1882
 msgid "lines per second"
 msgstr "линии в секунда"
 
-#: src/pager.c:1826
+#: src/pager.c:1820
 msgid "Enable pager display"
 msgstr "Включи Pager-а"
 
-#: src/pager.c:1836
+#: src/pager.c:1830
 msgid "Pager Mode:"
 msgstr ""
 
-#: src/pager.c:1840
+#: src/pager.c:1834
 #, fuzzy
 msgid "Simple"
 msgstr "Вълнение"
 
-#: src/pager.c:1846
+#: src/pager.c:1840
 msgid "Make miniature snapshots of the screen"
 msgstr "Прави малки изображения на екрана"
 
-#: src/pager.c:1853
+#: src/pager.c:1847
 msgid "Live Update"
 msgstr ""
 
-#: src/pager.c:1864
+#: src/pager.c:1858
 msgid "Smooth high quality snapshots in snapshot mode"
 msgstr "Плавни висококачествени снимки в снимков режим"
 
-#: src/pager.c:1869
+#: src/pager.c:1863
 msgid "Zoom in on pager windows when mouse is over them"
 msgstr "Увеличавай прозорците в Pager-а когато мишката преминава над тях"
 
-#: src/pager.c:1875
+#: src/pager.c:1869
 msgid "Pop up window title when mouse is over the window"
 msgstr "Показвай заглавието на прозореца, когато мишката мине над него"
 
-#: src/pager.c:1880
+#: src/pager.c:1874
 msgid "Continuously scan screen to update pager"
 msgstr "Непрекъснато сканирайте екрана за промени"
 
-#: src/pager.c:1903
+#: src/pager.c:1897
 msgid "Mouse button to select and drag windows:"
 msgstr "Кой бутон на мишката избира и влече прозорци:"
 
-#: src/pager.c:1913 src/pager.c:1938 src/pager.c:1963
+#: src/pager.c:1907 src/pager.c:1932 src/pager.c:1957
 msgid "Middle"
 msgstr "Средният"
 
-#: src/pager.c:1928
+#: src/pager.c:1922
 msgid "Mouse button to select desktops:"
 msgstr "Кой бутон на мишката избира работни полетеа:"
 
-#: src/pager.c:1953
+#: src/pager.c:1947
 msgid "Mouse button to display pager menu:"
 msgstr "Кой бутон на мишката да показва менюто на Pager-a:"
 
-#: src/pager.c:1977
+#: src/pager.c:1971
 #, fuzzy
 msgid "Pagers"
 msgstr "Настройки на Pager-а"
 
-#: src/pager.c:1978
+#: src/pager.c:1972
 msgid "Pager Settings"
 msgstr "Настройки на Pager-а"
 
-#: src/pager.c:1981
+#: src/pager.c:1975
 msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog\n"

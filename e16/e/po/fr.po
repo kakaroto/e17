@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16-0.16.8.9-0.02-fr\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-12-22 02:13+0100\n"
+"POT-Creation-Date: 2007-12-30 22:42+0100\n"
 "PO-Revision-Date: 2007-06-14 18:36+0200\n"
 "Last-Translator: Tristan D. <trinine@free.fr>\n"
 "Language-Team: French <http://www.linuxmao.org>\n"
@@ -61,7 +61,7 @@ msgstr ""
 "Mandrake - mandrake@mandrake.net\n"
 "Kim Woelders - kim@woelders.dk\n"
 
-#: src/aclass.c:205 src/backgrounds.c:242 src/borders.c:649 src/buttons.c:184
+#: src/aclass.c:205 src/backgrounds.c:242 src/borders.c:650 src/buttons.c:184
 #: src/cmclass.c:84 src/cursors.c:122 src/iclass.c:357 src/tclass.c:97
 #: src/tooltips.c:134
 #, c-format
@@ -428,7 +428,7 @@ msgstr "Démarrage d'Enlightenment..."
 msgid "Settings..."
 msgstr "Paramètres..."
 
-#: src/container.c:1220 src/dialog.c:886 src/pager.c:998 config/strings.c:30
+#: src/container.c:1220 src/dialog.c:886 src/pager.c:992 config/strings.c:30
 #: config/strings.c:132
 msgid "Close"
 msgstr "Fermer"
@@ -544,7 +544,7 @@ msgstr ""
 "Dialogue de paramétrage de la\n"
 "Boîte à icônes\n"
 
-#: src/desktops.c:122
+#: src/desktops.c:126
 msgid ""
 "Hold down the mouse button and drag\n"
 "the mouse to be able to drag the desktop\n"
@@ -561,7 +561,7 @@ msgstr ""
 "Cliquez avec le bouton du milieu pour obtenir la liste\n"
 "de toutes les applications actuellement lancées.\n"
 
-#: src/desktops.c:133
+#: src/desktops.c:137
 msgid ""
 "This is the Root desktop.\n"
 "You cannot drag the root desktop around.\n"
@@ -577,77 +577,77 @@ msgstr ""
 "Cliquez avec le bouton du milieu pour obtenir la liste\n"
 "de toutes les applications actuellement lancées.\n"
 
-#: src/desktops.c:152
+#: src/desktops.c:156
 msgid ""
 "Click here to raise this desktop\n"
 "to the top.\n"
 msgstr "Cliquez ici pour élever ce bureau.\n"
 
-#: src/desktops.c:165
+#: src/desktops.c:169
 msgid ""
 "Click here to lower this desktop\n"
 "to the bottom.\n"
 msgstr "Cliquez ici pour abaisser ce bureau.\n"
 
-#: src/desktops.c:2295 src/desktops.c:2334
+#: src/desktops.c:2301 src/desktops.c:2340
 #, c-format
 msgid "%i Desktops"
 msgstr "%i Bureaux"
 
-#: src/desktops.c:2297 src/desktops.c:2336
+#: src/desktops.c:2303 src/desktops.c:2342
 #, c-format
 msgid "%i Desktop"
 msgstr "%i Bureau"
 
-#: src/desktops.c:2329
+#: src/desktops.c:2335
 msgid "Number of virtual desktops:\n"
 msgstr "Nombre de bureaux :\n"
 
-#: src/desktops.c:2358
+#: src/desktops.c:2364
 msgid "Slide desktops around when changing"
 msgstr "Faire glisser les bureaux lors des déplacements"
 
-#: src/desktops.c:2364
+#: src/desktops.c:2370
 msgid "Desktop Slide speed:\n"
 msgstr "Vitesse de glissement des bureaux:\n"
 
-#: src/desktops.c:2378
+#: src/desktops.c:2384
 msgid "Wrap desktops around"
 msgstr "Placer les bureaux en boucle"
 
-#: src/desktops.c:2386
+#: src/desktops.c:2392
 msgid "Display desktop dragbar"
 msgstr "Afficher la barre de bureau"
 
-#: src/desktops.c:2392
+#: src/desktops.c:2398
 msgid "Drag bar position:"
 msgstr "Position de la barre de bureau:"
 
-#: src/desktops.c:2396
+#: src/desktops.c:2402
 msgid "Top"
 msgstr "Haut"
 
-#: src/desktops.c:2402
+#: src/desktops.c:2408
 msgid "Bottom"
 msgstr "Bas"
 
-#: src/desktops.c:2408 src/pager.c:1907 src/pager.c:1932 src/pager.c:1957
+#: src/desktops.c:2414 src/pager.c:1901 src/pager.c:1926 src/pager.c:1951
 msgid "Left"
 msgstr "Gauche"
 
-#: src/desktops.c:2414 src/pager.c:1919 src/pager.c:1944 src/pager.c:1969
+#: src/desktops.c:2420 src/pager.c:1913 src/pager.c:1938 src/pager.c:1963
 msgid "Right"
 msgstr "Droit"
 
-#: src/desktops.c:2422 src/menus-misc.c:713
+#: src/desktops.c:2428 src/menus-misc.c:713
 msgid "Desks"
 msgstr "Bureaux multiples"
 
-#: src/desktops.c:2423
+#: src/desktops.c:2429
 msgid "Multiple Desktop Settings"
 msgstr "Paramètres des Bureaux multiples"
 
-#: src/desktops.c:2426
+#: src/desktops.c:2432
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -655,7 +655,7 @@ msgstr ""
 "Dialogue de paramétrage des\n"
 "Bureaux multiples\n"
 
-#: src/desktops.c:2504 src/desktops.c:2539
+#: src/desktops.c:2502 src/desktops.c:2537
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -664,7 +664,7 @@ msgstr ""
 "%i x %i\n"
 "Écrans"
 
-#: src/desktops.c:2507 src/desktops.c:2542
+#: src/desktops.c:2505 src/desktops.c:2540
 msgid ""
 "1\n"
 "Screen in size"
@@ -672,43 +672,43 @@ msgstr ""
 "1\n"
 "Écran"
 
-#: src/desktops.c:2535
+#: src/desktops.c:2533
 msgid "Virtual Desktop size:\n"
 msgstr "Nombre de bureaux virtuels:\n"
 
-#: src/desktops.c:2576
+#: src/desktops.c:2574
 msgid "Wrap virtual desktops around"
 msgstr "Placer les bureaux virtuels en boucle"
 
-#: src/desktops.c:2583
+#: src/desktops.c:2581
 msgid "Edge Flip Mode:"
 msgstr "Bords sensitifs et mode de glissement:"
 
-#: src/desktops.c:2586
+#: src/desktops.c:2584
 msgid "Off"
 msgstr "Glissement désactivé"
 
-#: src/desktops.c:2591
+#: src/desktops.c:2589
 msgid "On"
 msgstr "Glissement activé"
 
-#: src/desktops.c:2596
+#: src/desktops.c:2594
 msgid "Only when moving window"
 msgstr "Seulement lors des déplacements de fenêtre"
 
-#: src/desktops.c:2602
+#: src/desktops.c:2600
 msgid "Resistance at edge of screen:\n"
 msgstr "Sensibilité des bords:\n"
 
-#: src/desktops.c:2614
+#: src/desktops.c:2612
 msgid "Areas"
 msgstr "Bureaux virtuels"
 
-#: src/desktops.c:2615
+#: src/desktops.c:2613
 msgid "Virtual Desktop Settings"
 msgstr "Paramètres des Bureaux virtuels"
 
-#: src/desktops.c:2618
+#: src/desktops.c:2616
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -1059,7 +1059,7 @@ msgstr "Choisissez le groupe duquel la fenêtre sera retirée:"
 msgid "Select the group to break:"
 msgstr "Choisissez le groupe à supprimer:  "
 
-#: src/handlers.c:66
+#: src/handlers.c:64
 #, c-format
 msgid ""
 "Enlightenment performed an Illegal Instruction.\n"
@@ -1079,7 +1079,7 @@ msgstr ""
 "Veuillez obtenir le paquet correct ou bien recompiler\n"
 "Enlightenment, et éventuellement les bibliothèques qu'il utilise.\n"
 
-#: src/handlers.c:80
+#: src/handlers.c:74
 msgid ""
 "Enlightenment caused a Floating Point Exception.\n"
 "\n"
@@ -1102,7 +1102,7 @@ msgstr ""
 "partir de gdb afin de fournir une pile d'appel ainsi que le contenu\n"
 "des variables dans un rapport de bogue.\n"
 
-#: src/handlers.c:99
+#: src/handlers.c:86
 msgid ""
 "Enlightenment caused Segment Violation (Segfault)\n"
 "\n"
@@ -1125,7 +1125,7 @@ msgstr ""
 "partir de gdb afin de fournir une pile d'appel ainsi que le contenu\n"
 "des variables dans un rapport de bogue.\n"
 
-#: src/handlers.c:115
+#: src/handlers.c:98
 msgid ""
 "Enlightenment caused Bus Error.\n"
 "\n"
@@ -1385,123 +1385,123 @@ msgstr ""
 "Dialogue de paramétrage de\n"
 "Transparence\n"
 
-#: src/pager.c:991 config/strings.c:49 config/strings.c:131
+#: src/pager.c:985 config/strings.c:49 config/strings.c:131
 msgid "Window Options"
 msgstr "Options de Fenêtre"
 
-#: src/pager.c:994 config/strings.c:51 config/strings.c:134
+#: src/pager.c:988 config/strings.c:51 config/strings.c:134
 msgid "Iconify"
 msgstr "Icônifier"
 
-#: src/pager.c:1002 config/strings.c:133
+#: src/pager.c:996 config/strings.c:133
 msgid "Annihilate"
 msgstr "Tuer"
 
-#: src/pager.c:1006
+#: src/pager.c:1000
 msgid "Stick / Unstick"
 msgstr "Coller / Décoller"
 
-#: src/pager.c:1015
+#: src/pager.c:1009
 msgid "Desktop Options"
 msgstr "Options de Bureau"
 
-#: src/pager.c:1017
+#: src/pager.c:1011
 msgid "Pager Settings..."
 msgstr "Paramètres du Pager..."
 
-#: src/pager.c:1022
+#: src/pager.c:1016
 msgid "Snapshotting Off"
 msgstr "Désactiver Capture d'écran"
 
-#: src/pager.c:1026
+#: src/pager.c:1020
 msgid "High Quality Off"
 msgstr "Désactiver Haute Qualité"
 
-#: src/pager.c:1028
+#: src/pager.c:1022
 msgid "High Quality On"
 msgstr "Activer Haute Qualité"
 
-#: src/pager.c:1033
+#: src/pager.c:1027
 msgid "Snapshotting On"
 msgstr "Activer Capture d'écran"
 
-#: src/pager.c:1037
+#: src/pager.c:1031
 msgid "Zoom Off"
 msgstr "Désactiver le Zoom"
 
-#: src/pager.c:1039
+#: src/pager.c:1033
 msgid "Zoom On"
 msgstr "Activer le Zoom"
 
-#: src/pager.c:1796 src/pager.c:1887
+#: src/pager.c:1790 src/pager.c:1881
 msgid "Pager scanning speed:"
 msgstr "Vitesse de balayage du pager:"
 
-#: src/pager.c:1797 src/pager.c:1888
+#: src/pager.c:1791 src/pager.c:1882
 msgid "lines per second"
 msgstr "lignes par seconde"
 
-#: src/pager.c:1826
+#: src/pager.c:1820
 msgid "Enable pager display"
 msgstr "Activer l'affichage du Pager"
 
-#: src/pager.c:1836
+#: src/pager.c:1830
 msgid "Pager Mode:"
 msgstr "Mode du Pager:"
 
-#: src/pager.c:1840
+#: src/pager.c:1834
 msgid "Simple"
 msgstr "Simple"
 
-#: src/pager.c:1846
+#: src/pager.c:1840
 msgid "Make miniature snapshots of the screen"
 msgstr "Faire des mini-captures d'écran"
 
-#: src/pager.c:1853
+#: src/pager.c:1847
 msgid "Live Update"
 msgstr "Mise à jour en temps réel"
 
-#: src/pager.c:1864
+#: src/pager.c:1858
 msgid "Smooth high quality snapshots in snapshot mode"
 msgstr "Faire des captures de haute qualité"
 
-#: src/pager.c:1869
+#: src/pager.c:1863
 msgid "Zoom in on pager windows when mouse is over them"
 msgstr "Zoomer sur les fenêtres lorsque la souris passe dessus"
 
-#: src/pager.c:1875
+#: src/pager.c:1869
 msgid "Pop up window title when mouse is over the window"
 msgstr "Afficher le titre de la fenêtre lorsque la souris passe dessus"
 
-#: src/pager.c:1880
+#: src/pager.c:1874
 msgid "Continuously scan screen to update pager"
 msgstr "Balayer continuellement l'écran pour mettre le Pager à jour"
 
-#: src/pager.c:1903
+#: src/pager.c:1897
 msgid "Mouse button to select and drag windows:"
 msgstr "Bouton de la souris pour sélectionner et déplacer les fenêtres:"
 
-#: src/pager.c:1913 src/pager.c:1938 src/pager.c:1963
+#: src/pager.c:1907 src/pager.c:1932 src/pager.c:1957
 msgid "Middle"
 msgstr "Milieu"
 
-#: src/pager.c:1928
+#: src/pager.c:1922
 msgid "Mouse button to select desktops:"
 msgstr "Bouton de la souris pour sélectionner les bureaux:"
 
-#: src/pager.c:1953
+#: src/pager.c:1947
 msgid "Mouse button to display pager menu:"
 msgstr "Bouton de la souris pour afficher le menu du pager:"
 
-#: src/pager.c:1977
+#: src/pager.c:1971
 msgid "Pagers"
 msgstr "Pager"
 
-#: src/pager.c:1978
+#: src/pager.c:1972
 msgid "Pager Settings"
 msgstr "Paramètres du Pager"
 
-#: src/pager.c:1981
+#: src/pager.c:1975
 msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog\n"

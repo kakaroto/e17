@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-12-22 02:13+0100\n"
+"POT-Creation-Date: 2007-12-30 22:42+0100\n"
 "PO-Revision-Date: 2007-04-19 20:56+0100\n"
 "Last-Translator: Kim Woelders <kim@woelders.dk>\n"
 "Language-Team: Dansk/Danish <sslug-locale@sslug.dk>\n"
@@ -50,7 +50,7 @@ msgstr ""
 "Mandrake - mandrake@mandrake.net\n"
 "Kim Woelders - kim@woelders.dk\n"
 
-#: src/aclass.c:205 src/backgrounds.c:242 src/borders.c:649 src/buttons.c:184
+#: src/aclass.c:205 src/backgrounds.c:242 src/borders.c:650 src/buttons.c:184
 #: src/cmclass.c:84 src/cursors.c:122 src/iclass.c:357 src/tclass.c:97
 #: src/tooltips.c:134
 #, c-format
@@ -398,7 +398,7 @@ msgstr "Enlightenment starter..."
 msgid "Settings..."
 msgstr "Indstillinger..."
 
-#: src/container.c:1220 src/dialog.c:886 src/pager.c:998 config/strings.c:30
+#: src/container.c:1220 src/dialog.c:886 src/pager.c:992 config/strings.c:30
 #: config/strings.c:132
 msgid "Close"
 msgstr "Luk"
@@ -510,7 +510,7 @@ msgid ""
 "Settings Dialog\n"
 msgstr "Indstillinger for ikonbox\n"
 
-#: src/desktops.c:122
+#: src/desktops.c:126
 msgid ""
 "Hold down the mouse button and drag\n"
 "the mouse to be able to drag the desktop\n"
@@ -526,7 +526,7 @@ msgstr ""
 "og deres vinduer.\n"
 "Midterklik for at få en liste over alle vinduer.\n"
 
-#: src/desktops.c:133
+#: src/desktops.c:137
 msgid ""
 "This is the Root desktop.\n"
 "You cannot drag the root desktop around.\n"
@@ -541,7 +541,7 @@ msgstr ""
 "og deres vinduer.\n"
 "Midterklik for at få en liste over alle vinduer.\n"
 
-#: src/desktops.c:152
+#: src/desktops.c:156
 msgid ""
 "Click here to raise this desktop\n"
 "to the top.\n"
@@ -549,7 +549,7 @@ msgstr ""
 "Klik her for at bringe dette\n"
 "skrivebord i front.\n"
 
-#: src/desktops.c:165
+#: src/desktops.c:169
 msgid ""
 "Click here to lower this desktop\n"
 "to the bottom.\n"
@@ -557,65 +557,65 @@ msgstr ""
 "Klik her for at placere dette\n"
 "skrivebord i baggrunden.\n"
 
-#: src/desktops.c:2295 src/desktops.c:2334
+#: src/desktops.c:2301 src/desktops.c:2340
 #, c-format
 msgid "%i Desktops"
 msgstr "%i skriveborde"
 
-#: src/desktops.c:2297 src/desktops.c:2336
+#: src/desktops.c:2303 src/desktops.c:2342
 #, c-format
 msgid "%i Desktop"
 msgstr "%i skrivebord"
 
-#: src/desktops.c:2329
+#: src/desktops.c:2335
 msgid "Number of virtual desktops:\n"
 msgstr "Antal virtuelle skriveborde:\n"
 
-#: src/desktops.c:2358
+#: src/desktops.c:2364
 msgid "Slide desktops around when changing"
 msgstr "Glidende skrivebordsskift"
 
-#: src/desktops.c:2364
+#: src/desktops.c:2370
 msgid "Desktop Slide speed:\n"
 msgstr "Skrivebordsglidehastighed:\n"
 
-#: src/desktops.c:2378
+#: src/desktops.c:2384
 msgid "Wrap desktops around"
 msgstr "Skriveborde wrapper rundt"
 
-#: src/desktops.c:2386
+#: src/desktops.c:2392
 msgid "Display desktop dragbar"
 msgstr "Vis skrivebordstræklinie"
 
-#: src/desktops.c:2392
+#: src/desktops.c:2398
 msgid "Drag bar position:"
 msgstr "Træklinieplacering:"
 
-#: src/desktops.c:2396
+#: src/desktops.c:2402
 msgid "Top"
 msgstr "Top"
 
-#: src/desktops.c:2402
+#: src/desktops.c:2408
 msgid "Bottom"
 msgstr "Bund"
 
-#: src/desktops.c:2408 src/pager.c:1907 src/pager.c:1932 src/pager.c:1957
+#: src/desktops.c:2414 src/pager.c:1901 src/pager.c:1926 src/pager.c:1951
 msgid "Left"
 msgstr "Venstre"
 
-#: src/desktops.c:2414 src/pager.c:1919 src/pager.c:1944 src/pager.c:1969
+#: src/desktops.c:2420 src/pager.c:1913 src/pager.c:1938 src/pager.c:1963
 msgid "Right"
 msgstr "Højre"
 
-#: src/desktops.c:2422 src/menus-misc.c:713
+#: src/desktops.c:2428 src/menus-misc.c:713
 msgid "Desks"
 msgstr "Skriveborde"
 
-#: src/desktops.c:2423
+#: src/desktops.c:2429
 msgid "Multiple Desktop Settings"
 msgstr "Indstillinger for multiple skriveborde"
 
-#: src/desktops.c:2426
+#: src/desktops.c:2432
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -623,7 +623,7 @@ msgstr ""
 "Indstillinger for\n"
 "multiple skriveborde\n"
 
-#: src/desktops.c:2504 src/desktops.c:2539
+#: src/desktops.c:2502 src/desktops.c:2537
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -632,7 +632,7 @@ msgstr ""
 "%i x %i\n"
 "skærme i størrelse"
 
-#: src/desktops.c:2507 src/desktops.c:2542
+#: src/desktops.c:2505 src/desktops.c:2540
 msgid ""
 "1\n"
 "Screen in size"
@@ -640,43 +640,43 @@ msgstr ""
 "1\n"
 "skærm i størrelse"
 
-#: src/desktops.c:2535
+#: src/desktops.c:2533
 msgid "Virtual Desktop size:\n"
 msgstr "Virtuel skrivebordsstørrelse:\n"
 
-#: src/desktops.c:2576
+#: src/desktops.c:2574
 msgid "Wrap virtual desktops around"
 msgstr "Virtuelle skriveborde wrapper rundt"
 
-#: src/desktops.c:2583
+#: src/desktops.c:2581
 msgid "Edge Flip Mode:"
 msgstr "Kantflipmodus"
 
-#: src/desktops.c:2586
+#: src/desktops.c:2584
 msgid "Off"
 msgstr "Deaktiveret"
 
-#: src/desktops.c:2591
+#: src/desktops.c:2589
 msgid "On"
 msgstr "Aktiveret"
 
-#: src/desktops.c:2596
+#: src/desktops.c:2594
 msgid "Only when moving window"
 msgstr "Kun når et vindue flyttes"
 
-#: src/desktops.c:2602
+#: src/desktops.c:2600
 msgid "Resistance at edge of screen:\n"
 msgstr "Modstand ved kanten af skærmen:\n"
 
-#: src/desktops.c:2614
+#: src/desktops.c:2612
 msgid "Areas"
 msgstr "Virtuelle skriveborde"
 
-#: src/desktops.c:2615
+#: src/desktops.c:2613
 msgid "Virtual Desktop Settings"
 msgstr "Indstillinger for virtuelle skriveborde"
 
-#: src/desktops.c:2618
+#: src/desktops.c:2616
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -1017,7 +1017,7 @@ msgstr "Vælg gruppen som vinduet skal fjernes fra:"
 msgid "Select the group to break:"
 msgstr "Vælg gruppen som skal brydes:"
 
-#: src/handlers.c:66
+#: src/handlers.c:64
 #, c-format
 msgid ""
 "Enlightenment performed an Illegal Instruction.\n"
@@ -1030,7 +1030,7 @@ msgid ""
 "that you got in binary format to run Enlightenment.\n"
 msgstr ""
 
-#: src/handlers.c:80
+#: src/handlers.c:74
 msgid ""
 "Enlightenment caused a Floating Point Exception.\n"
 "\n"
@@ -1044,7 +1044,7 @@ msgid ""
 "dumps etc.\n"
 msgstr ""
 
-#: src/handlers.c:99
+#: src/handlers.c:86
 msgid ""
 "Enlightenment caused Segment Violation (Segfault)\n"
 "\n"
@@ -1058,7 +1058,7 @@ msgid ""
 "dumps etc.\n"
 msgstr ""
 
-#: src/handlers.c:115
+#: src/handlers.c:98
 msgid ""
 "Enlightenment caused Bus Error.\n"
 "\n"
@@ -1294,123 +1294,123 @@ msgstr ""
 "Indstillinger for\n"
 "temagennemsigtighed\n"
 
-#: src/pager.c:991 config/strings.c:49 config/strings.c:131
+#: src/pager.c:985 config/strings.c:49 config/strings.c:131
 msgid "Window Options"
 msgstr "Vinduesindstillinger"
 
-#: src/pager.c:994 config/strings.c:51 config/strings.c:134
+#: src/pager.c:988 config/strings.c:51 config/strings.c:134
 msgid "Iconify"
 msgstr "Ikonificér"
 
-#: src/pager.c:1002 config/strings.c:133
+#: src/pager.c:996 config/strings.c:133
 msgid "Annihilate"
 msgstr "Dræb"
 
-#: src/pager.c:1006
+#: src/pager.c:1000
 msgid "Stick / Unstick"
 msgstr "Klæb / klæb ikke"
 
-#: src/pager.c:1015
+#: src/pager.c:1009
 msgid "Desktop Options"
 msgstr "Skrivebordsindstillinger"
 
-#: src/pager.c:1017
+#: src/pager.c:1011
 msgid "Pager Settings..."
 msgstr "Skærmoversigtsindstillinger..."
 
-#: src/pager.c:1022
+#: src/pager.c:1016
 msgid "Snapshotting Off"
 msgstr "Billedtagning fra"
 
-#: src/pager.c:1026
+#: src/pager.c:1020
 msgid "High Quality Off"
 msgstr "Høj kvalitet fra"
 
-#: src/pager.c:1028
+#: src/pager.c:1022
 msgid "High Quality On"
 msgstr "Høj kvalitet på"
 
-#: src/pager.c:1033
+#: src/pager.c:1027
 msgid "Snapshotting On"
 msgstr "Billedtagning på"
 
-#: src/pager.c:1037
+#: src/pager.c:1031
 msgid "Zoom Off"
 msgstr "Aktivér zoom"
 
-#: src/pager.c:1039
+#: src/pager.c:1033
 msgid "Zoom On"
 msgstr "Deaktiver zoom"
 
-#: src/pager.c:1796 src/pager.c:1887
+#: src/pager.c:1790 src/pager.c:1881
 msgid "Pager scanning speed:"
 msgstr "Skærmoversigts-skanningshastighed:"
 
-#: src/pager.c:1797 src/pager.c:1888
+#: src/pager.c:1791 src/pager.c:1882
 msgid "lines per second"
 msgstr "linier pr sekund"
 
-#: src/pager.c:1826
+#: src/pager.c:1820
 msgid "Enable pager display"
 msgstr "Brug Skærmoversigt"
 
-#: src/pager.c:1836
+#: src/pager.c:1830
 msgid "Pager Mode:"
 msgstr "Skærmoversigtsmodus"
 
-#: src/pager.c:1840
+#: src/pager.c:1834
 msgid "Simple"
 msgstr "Simpel"
 
-#: src/pager.c:1846
+#: src/pager.c:1840
 msgid "Make miniature snapshots of the screen"
 msgstr "Lav miniaturebilleder af skærmen"
 
-#: src/pager.c:1853
+#: src/pager.c:1847
 msgid "Live Update"
 msgstr "Opdater ved ændringer"
 
-#: src/pager.c:1864
+#: src/pager.c:1858
 msgid "Smooth high quality snapshots in snapshot mode"
 msgstr "Høj kvalitet af baggrunde i 'snapshot' modus"
 
-#: src/pager.c:1869
+#: src/pager.c:1863
 msgid "Zoom in on pager windows when mouse is over them"
 msgstr "Zoom ind på skærmoversigtsvinduer når musen er over"
 
-#: src/pager.c:1875
+#: src/pager.c:1869
 msgid "Pop up window title when mouse is over the window"
 msgstr "Vis vinduets navn når markøren er over vinduet"
 
-#: src/pager.c:1880
+#: src/pager.c:1874
 msgid "Continuously scan screen to update pager"
 msgstr "Skan skærmen kontinuerligt for at opdatere oversigt"
 
-#: src/pager.c:1903
+#: src/pager.c:1897
 msgid "Mouse button to select and drag windows:"
 msgstr "Museknap til at vælge og trække vinduer:"
 
-#: src/pager.c:1913 src/pager.c:1938 src/pager.c:1963
+#: src/pager.c:1907 src/pager.c:1932 src/pager.c:1957
 msgid "Middle"
 msgstr "Midt"
 
-#: src/pager.c:1928
+#: src/pager.c:1922
 msgid "Mouse button to select desktops:"
 msgstr "Museknap til at vælge skriveborde:"
 
-#: src/pager.c:1953
+#: src/pager.c:1947
 msgid "Mouse button to display pager menu:"
 msgstr "Museknap til at vise oversigtsmenu:"
 
-#: src/pager.c:1977
+#: src/pager.c:1971
 msgid "Pagers"
 msgstr "Skærmoversigter"
 
-#: src/pager.c:1978
+#: src/pager.c:1972
 msgid "Pager Settings"
 msgstr "Indstillinger for skærmoversigter"
 
-#: src/pager.c:1981
+#: src/pager.c:1975
 msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog\n"
