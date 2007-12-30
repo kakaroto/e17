@@ -1196,56 +1196,59 @@ BorderConfigLoad(FILE * fs)
 	i1 = ConfigParseline1(s, s2, NULL, NULL);
 	i2 = atoi(s2);
 
-	if (i2 == CONFIG_OPEN)
+	switch (i1)
 	  {
+	  case CONFIG_CLOSE:
+	     goto done;
+	  case CONFIG_CLASSNAME:
+	  case BORDER_NAME:
+	     if (BorderFind(s2))
+	       {
+		  SkipTillEnd(fs);
+		  goto done;
+	       }
+	     b = BorderCreate(s2);
+	     continue;
+	  }
+
+	if (!b)
+	   break;
+
+	switch (i1)
+	  {
+	  default:
+	     break;
+	  case BORDER_INIT:
+	     if (i2 != CONFIG_OPEN)
+		break;
 	     err = BorderPartLoad(fs, i1, b);
 	     if (err)
 		break;
-	  }
-	else
-	  {
-	     switch (i1)
-	       {
-	       case CONFIG_CLOSE:
-		  goto done;
-	       case BORDER_INIT:
-		  break;
-	       case CONFIG_CLASSNAME:
-	       case BORDER_NAME:
-		  if (BorderFind(s2))
-		    {
-		       SkipTillEnd(fs);
-		       goto done;
-		    }
-		  b = BorderCreate(s2);
-		  break;
-	       case BORDER_GROUP_NAME:
-		  b->group_border_name = Estrdup(s2);
-		  break;
-	       case BORDER_LEFT:
-		  b->border.left = i2;
-		  break;
-	       case BORDER_RIGHT:
-		  b->border.right = i2;
-		  break;
-	       case BORDER_TOP:
-		  b->border.top = i2;
-		  break;
-	       case BORDER_BOTTOM:
-		  b->border.bottom = i2;
-		  break;
-	       case SHADEDIR:
-		  b->shadedir = i2;
-		  break;
-	       case BORDER_CHANGES_SHAPE:
-		  b->changes_shape = i2;
-		  break;
-	       case CONFIG_ACTIONCLASS:
-		  b->aclass = ActionclassFind(s2);
-		  break;
-	       default:
-		  break;
-	       }
+	     break;
+	  case BORDER_GROUP_NAME:
+	     b->group_border_name = Estrdup(s2);
+	     break;
+	  case BORDER_LEFT:
+	     b->border.left = i2;
+	     break;
+	  case BORDER_RIGHT:
+	     b->border.right = i2;
+	     break;
+	  case BORDER_TOP:
+	     b->border.top = i2;
+	     break;
+	  case BORDER_BOTTOM:
+	     b->border.bottom = i2;
+	     break;
+	  case SHADEDIR:
+	     b->shadedir = i2;
+	     break;
+	  case BORDER_CHANGES_SHAPE:
+	     b->changes_shape = i2;
+	     break;
+	  case CONFIG_ACTIONCLASS:
+	     b->aclass = ActionclassFind(s2);
+	     break;
 	  }
      }
    err = -1;
