@@ -33,6 +33,7 @@ SignalHandler(int sig)
 {
    static int          loop_count = 0;
    int                 status;
+   const char         *txt;
 
    Mode.wm.in_signal_handler = 1;
 
@@ -60,62 +61,57 @@ SignalHandler(int sig)
 	break;
 
      case SIGILL:
-	if (disp)
-	   EUngrabServer();
-	DialogAlert(_
-		    ("Enlightenment performed an Illegal Instruction.\n" "\n"
-		     "This most likely is due to you having installed an run a\n"
-		     "binary of Enlightenment that was compiled for a make or model\n"
-		     "of CPU not 100%% identical or compatible with yours. Please\n"
-		     "either obtain the correct package for your system, or\n"
-		     "re-compile Enlightenment and possibly any support libraries\n"
-		     "that you got in binary format to run Enlightenment.\n"));
-	SessionExit(EEXIT_ERROR, NULL);
-	break;
+	txt = _("Enlightenment performed an Illegal Instruction.\n" "\n"
+		"This most likely is due to you having installed an run a\n"
+		"binary of Enlightenment that was compiled for a make or model\n"
+		"of CPU not 100%% identical or compatible with yours. Please\n"
+		"either obtain the correct package for your system, or\n"
+		"re-compile Enlightenment and possibly any support libraries\n"
+		"that you got in binary format to run Enlightenment.\n");
+	goto do_alert;
 
      case SIGFPE:
-	if (disp)
-	   EUngrabServer();
-	DialogAlert(_
-		    ("Enlightenment caused a Floating Point Exception.\n" "\n"
-		     "This means that Enlightenment or support library routines it calls\n"
-		     "have performed an illegal mathematical operation (most likely\n"
-		     "dividing a number by zero). This is most likely a bug. It is\n"
-		     "recommended to restart now. If you wish to help fix this please\n"
-		     "compile Enlightenment with debugging symbols in and run\n"
-		     "Enlightenment under gdb so you can backtrace for where it died and\n"
-		     "send in a useful bug report with backtrace information and variable\n"
-		     "dumps etc.\n"));
-	SessionExit(EEXIT_ERROR, NULL);
-	break;
+	txt = _("Enlightenment caused a Floating Point Exception.\n" "\n"
+		"This means that Enlightenment or support library routines it calls\n"
+		"have performed an illegal mathematical operation (most likely\n"
+		"dividing a number by zero). This is most likely a bug. It is\n"
+		"recommended to restart now. If you wish to help fix this please\n"
+		"compile Enlightenment with debugging symbols in and run\n"
+		"Enlightenment under gdb so you can backtrace for where it died and\n"
+		"send in a useful bug report with backtrace information and variable\n"
+		"dumps etc.\n");
+	goto do_alert;
 
      case SIGSEGV:
+	txt = _("Enlightenment caused Segment Violation (Segfault)\n" "\n"
+		"This means that Enlightenment or support library routines it calls\n"
+		"have accessed areas of your system's memory that they are not\n"
+		"allowed access to. This is most likely a bug. It is recommended to\n"
+		"restart now. If you wish to help fix this please compile\n"
+		"Enlightenment with debugging symbols in and run Enlightenment\n"
+		"under gdb so you can backtrace for where it died and send in a\n"
+		"useful bug report with backtrace information and variable\n"
+		"dumps etc.\n");
+	goto do_alert;
+
+     case SIGBUS:
+	txt = _("Enlightenment caused Bus Error.\n" "\n"
+		"It is suggested you check your hardware and OS installation.\n"
+		"It is highly unusual to cause Bus Errors on operational\n"
+		"hardware.\n");
+	goto do_alert;
+
+      do_alert:
 	if (loop_count > 0)
 	   abort();
 	loop_count++;
-	if (disp)
-	   EUngrabServer();
-	DialogAlert(_
-		    ("Enlightenment caused Segment Violation (Segfault)\n" "\n"
-		     "This means that Enlightenment or support library routines it calls\n"
-		     "have accessed areas of your system's memory that they are not\n"
-		     "allowed access to. This is most likely a bug. It is recommended to\n"
-		     "restart now. If you wish to help fix this please compile\n"
-		     "Enlightenment with debugging symbols in and run Enlightenment\n"
-		     "under gdb so you can backtrace for where it died and send in a\n"
-		     "useful bug report with backtrace information and variable\n"
-		     "dumps etc.\n"));
+#if 0				/* Avoid X-ops? */
+	disp = NULL;
+#endif
+	Mode.wm.exit_now = 1;
+	DialogAlert(txt);
+	SessionExit(EEXIT_ERROR, NULL);
 	abort();
-	break;
-
-     case SIGBUS:
-	if (disp)
-	   EUngrabServer();
-	DialogAlert(_
-		    ("Enlightenment caused Bus Error.\n" "\n"
-		     "It is suggested you check your hardware and OS installation.\n"
-		     "It is highly unusual to cause Bus Errors on operational\n"
-		     "hardware.\n"));
 	break;
 
      case SIGCHLD:

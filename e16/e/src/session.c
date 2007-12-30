@@ -680,7 +680,7 @@ SessionExit(int mode, const char *param)
    if (Mode.wm.exiting)
       return;
 
-   if (Mode.wm.startup || Mode.wm.in_signal_handler)
+   if (Mode.wm.startup || Mode.wm.exit_now)
       goto done;
 
    switch (mode)

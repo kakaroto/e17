@@ -533,6 +533,7 @@ typedef struct
       char                xselect;
       char                exiting;
       char                in_signal_handler;
+      char                exit_now;
       char                save_ok;
       char                coredump;
       int                 exit_mode;
