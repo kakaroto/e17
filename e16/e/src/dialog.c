@@ -440,7 +440,7 @@ DialogDrawButton(Dialog * d __UNUSED__, DButton * db)
    else
      {
 	ITApply(db->win, db->iclass, NULL, state, 0, 0,
-		ST_WIDGET, db->tclass, NULL, db->text);
+		ST_WIDGET, db->tclass, NULL, db->text, 0);
      }
 }
 #endif
@@ -1660,7 +1660,7 @@ DialogDrawItem(Dialog * d, DItem * di)
 	else if (!(di->hilited) && (di->clicked))
 	   state = STATE_CLICKED;
 	ITApply(di->win, di->iclass, NULL, state, 0, 0,
-		ST_WIDGET, di->tclass, NULL, di->text);
+		ST_WIDGET, di->tclass, NULL, di->text, 0);
 	break;
 
      case DITEM_AREA:

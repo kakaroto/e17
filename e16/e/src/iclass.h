@@ -121,6 +121,7 @@ EImage             *ImageclassGetImageBlended(ImageClass * ic, Win win,
 					      int image_type);
 void                ITApply(Win win, ImageClass * ic, ImageState * is,
 			    int state, int active, int sticky, int image_type,
-			    TextClass * tc, TextState * ts, const char *text);
+			    TextClass * tc, TextState * ts, const char *text,
+			    int flags);
 
 #endif /* _ICLASS_H */

@@ -112,7 +112,7 @@ BorderWinpartITclassApply(EWin * ewin, int i, int force)
 
    ITApply(ewb->win, ewin->border->part[i].iclass, is,
 	   ewb->state, ewin->state.active, EoIsSticky(ewin),
-	   ST_BORDER, ewin->border->part[i].tclass, ts, txt);
+	   ST_BORDER, ewin->border->part[i].tclass, ts, txt, 1);
 }
 
 static int

@@ -828,12 +828,12 @@ TextstateTextFit(TextState * ts, char **ptext, int *pw, int textwidth_limit)
 void
 TextstateTextDraw(TextState * ts, Win win, Drawable draw, const char *text,
 		  int x, int y, int w, int h, const EImageBorder * pad,
-		  int fsize __UNUSED__, int justification)
+		  int fsize __UNUSED__, int justh, int justv)
 {
    const char         *str;
    char              **lines;
    int                 i, num_lines;
-   int                 textwidth_limit, offset_x, offset_y;
+   int                 textwidth_limit, textheight_limit, offset_x, offset_y;
    int                 xx, yy, ww, hh, ascent;
    Pixmap              drawable;
 
@@ -865,6 +865,7 @@ TextstateTextDraw(TextState * ts, Win win, Drawable draw, const char *text,
 	     h -= pad->top + pad->bottom;
 	  }
 	textwidth_limit = w;
+	textheight_limit = h;
      }
    else
      {
@@ -876,11 +877,12 @@ TextstateTextDraw(TextState * ts, Win win, Drawable draw, const char *text,
 	     w -= pad->top + pad->bottom;
 	  }
 	textwidth_limit = h;
+	textheight_limit = w;
      }
 
 #if 0
-   Eprintf("TextstateTextDraw %d,%d %dx%d(%d): %s\n", x, y, w, h,
-	   textwidth_limit, text);
+   Eprintf("TextstateTextDraw %d,%d %dx%d(%dx%d): %s\n", x, y, w, h,
+	   textwidth_limit, textheight_limit, text);
 #endif
 
    xx = x;
@@ -900,9 +902,11 @@ TextstateTextDraw(TextState * ts, Win win, Drawable draw, const char *text,
 	     if (ww > textwidth_limit)
 		ts->ops->TextFit(ts, &lines[i], &ww, textwidth_limit);
 
+	     if (justv)
+		yy += (textheight_limit - hh) / 2;
 	     if (i == 0)
 		yy += ascent;
-	     xx = x + (((textwidth_limit - ww) * justification) >> 10);
+	     xx = x + (((textwidth_limit - ww) * justh) >> 10);
 
 	     im = TextImageGet(win, draw, xx - 1, yy - 1 - ascent,
 			       ww + 2, hh + 2, ts);
@@ -931,9 +935,11 @@ TextstateTextDraw(TextState * ts, Win win, Drawable draw, const char *text,
 	     if (ww > textwidth_limit)
 		ts->ops->TextFit(ts, &lines[i], &ww, textwidth_limit);
 
+	     if (justv)
+		yy += (textheight_limit - hh) / 2;
 	     if (i == 0)
 		yy += ascent;
-	     xx = x + (((textwidth_limit - ww) * justification) >> 10);
+	     xx = x + (((textwidth_limit - ww) * justh) >> 10);
 
 	     if (ts->style.orientation != FONT_TO_RIGHT)
 		drawable = ECreatePixmap(win, ww + 2, hh + 2, 0);
@@ -976,7 +982,7 @@ TextstateTextDraw(TextState * ts, Win win, Drawable draw, const char *text,
 void
 TextDraw(TextClass * tclass, Win win, Drawable draw, int active, int sticky,
 	 int state, const char *text, int x, int y, int w, int h, int fsize,
-	 int justification)
+	 int justh)
 {
    TextState          *ts;
 
@@ -987,6 +993,5 @@ TextDraw(TextClass * tclass, Win win, Drawable draw, int active, int sticky,
    if (!ts)
       return;
 
-   TextstateTextDraw(ts, win, draw, text, x, y, w, h, NULL, fsize,
-		     justification);
+   TextstateTextDraw(ts, win, draw, text, x, y, w, h, NULL, fsize, justh, 0);
 }

@@ -112,7 +112,7 @@ __EXPORT__ void     TextstateTextFit(TextState * ts, char **ptext, int *pw,
 void                TextstateTextDraw(TextState * ts, Win win, Drawable draw,
 				      const char *text, int x, int y, int w,
 				      int h, const EImageBorder * pad,
-				      int fsize, int justification);
+				      int fsize, int justh, int justv);
 void                TextSize(TextClass * tclass, int active, int sticky,
 			     int state, const char *text, int *width,
 			     int *height, int fsize);

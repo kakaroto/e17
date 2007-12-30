@@ -1165,7 +1165,7 @@ ImagestateDrawBevel(ImageState * is, Drawable win, GC gc, int w, int h)
 void
 ITApply(Win win, ImageClass * ic, ImageState * is,
 	int state, int active, int sticky, int image_type,
-	TextClass * tc, TextState * ts, const char *text)
+	TextClass * tc, TextState * ts, const char *text, int flags)
 {
    int                 w, h;
 
@@ -1212,7 +1212,7 @@ ITApply(Win win, ImageClass * ic, ImageState * is,
 
 		  TextstateTextDraw(ts, win, pmap, text, 0, 0, w, h,
 				    &(ic->padding), 0,
-				    TextclassGetJustification(tc));
+				    TextclassGetJustification(tc), flags);
 	       }
 
 	     /* Set window pixmap */
@@ -1261,7 +1261,8 @@ void
 ImageclassApply(ImageClass * ic, Win win, int active, int sticky, int state,
 		int image_type)
 {
-   ITApply(win, ic, NULL, state, active, sticky, image_type, NULL, NULL, NULL);
+   ITApply(win, ic, NULL, state, active, sticky, image_type, NULL, NULL, NULL,
+	   0);
 }
 
 void
