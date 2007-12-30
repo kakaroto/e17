@@ -200,13 +200,14 @@ BorderWinpartCalc(EWin * ewin, int i, int ww, int hh)
       BorderWinpartCalc(ewin, topleft, ww, hh);
    if (bottomright >= 0)
       BorderWinpartCalc(ewin, bottomright, ww, hh);
+
    x = y = 0;
    if (topleft == -1)
      {
-	x = ((ewin->border->part[i].geom.topleft.x.percent *
-	      ww) >> 10) + ewin->border->part[i].geom.topleft.x.absolute;
-	y = ((ewin->border->part[i].geom.topleft.y.percent *
-	      hh) >> 10) + ewin->border->part[i].geom.topleft.y.absolute;
+	x = ((ewin->border->part[i].geom.topleft.x.percent * ww) >> 10) +
+	   ewin->border->part[i].geom.topleft.x.absolute;
+	y = ((ewin->border->part[i].geom.topleft.y.percent * hh) >> 10) +
+	   ewin->border->part[i].geom.topleft.y.absolute;
      }
    else if (topleft >= 0)
      {
@@ -219,14 +220,13 @@ BorderWinpartCalc(EWin * ewin, int i, int ww, int hh)
 	   ewin->border->part[i].geom.topleft.y.absolute +
 	   ewin->bits[topleft].y;
      }
+
    ox = oy = 0;
    if (bottomright == -1)
      {
-	ox = ((ewin->border->
-	       part[i].geom.bottomright.x.percent * ww) >> 10) +
+	ox = ((ewin->border->part[i].geom.bottomright.x.percent * ww) >> 10) +
 	   ewin->border->part[i].geom.bottomright.x.absolute;
-	oy = ((ewin->border->
-	       part[i].geom.bottomright.y.percent * hh) >> 10) +
+	oy = ((ewin->border->part[i].geom.bottomright.y.percent * hh) >> 10) +
 	   ewin->border->part[i].geom.bottomright.y.absolute;
      }
    else if (bottomright >= 0)
@@ -240,6 +240,7 @@ BorderWinpartCalc(EWin * ewin, int i, int ww, int hh)
 	   ewin->border->part[i].geom.bottomright.y.absolute +
 	   ewin->bits[bottomright].y;
      }
+
    /*
     * calculate height before width, because we may need it in order to
     * determine the font size. But we might do it the other way around for
