@@ -69,6 +69,7 @@
 #include "xwin.h"
 
 #define ENABLE_COLOR_MODIFIERS 0	/* Not functional */
+#define ENABLE_DESKRAY         0	/* Not functional */
 
 #define ENABLE_TRANSPARENCY 1
 #define ENABLE_THEME_TRANSPARENCY 1

@@ -79,6 +79,10 @@ DeskControlsCreate(Desk * dsk)
 {
    char                s[512];
    const char         *ic1, *ic2, *ic3;
+
+#if ENABLE_DESKRAY
+   const char         *ic4;
+#endif
    char                ac1[64], ac2[64], ac3[64];
    Button             *b;
    ActionClass        *ac;
@@ -171,7 +175,7 @@ DeskControlsCreate(Desk * dsk)
 	ic1 = "DESKTOP_DRAGBUTTON_VERT";
 	ic2 = "DESKTOP_RAISEBUTTON_VERT";
 	ic3 = "DESKTOP_LOWERBUTTON_VERT";
-#if 0
+#if ENABLE_DESKRAY
 	ic4 = "DESKTOP_DESKRAY_VERT";
 #endif
      }
@@ -180,7 +184,7 @@ DeskControlsCreate(Desk * dsk)
 	ic1 = "DESKTOP_DRAGBUTTON_HORIZ";
 	ic2 = "DESKTOP_RAISEBUTTON_HORIZ";
 	ic3 = "DESKTOP_LOWERBUTTON_HORIZ";
-#if 0
+#if ENABLE_DESKRAY
 	ic4 = "DESKTOP_DESKRAY_HORIZ";
 #endif
      }
@@ -289,7 +293,7 @@ DeskControlsCreate(Desk * dsk)
 	ButtonSetCallback(b, DeskButtonCallback, EoObj(dsk));
      }
 
-#if 0				/* What is this anyway? */
+#if ENABLE_DESKRAY
    if (dsk->num > 0)
      {
 	if (Conf.desks.dragdir == 0)
@@ -2081,7 +2085,9 @@ doDragbarLengthSet(EWin * edummy, const char *params)
      }
    return 0;
 }
+#endif
 
+#if ENABLE_DESKRAY
 static int
 doDeskray(EWin * edummy, const char *params)
 {
@@ -2113,7 +2119,7 @@ doDeskray(EWin * edummy, const char *params)
      }
    return 0;
 }
-#endif
+#endif /* ENABLE_DESKRAY */
 
 static void
 DesksInit(void)

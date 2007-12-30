@@ -949,8 +949,10 @@ _ButtonHideShow(void *data, void *prm)
 	match = matchregexp(bmd->regex, EoGetName(b));
 	if ((match && !bmd->match) || (!match && bmd->match))
 	   return;
-	if (!strcmp(EoGetName(b), "_DESKTOP_DESKRAY_DRAG_CONTROL"))	/* FIXME - ??? */
+#if ENABLE_DESKRAY
+	if (!strcmp(EoGetName(b), "_DESKTOP_DESKRAY_DRAG_CONTROL"))
 	   return;
+#endif
      }
 
    ButtonToggle(b);
