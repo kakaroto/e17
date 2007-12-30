@@ -240,7 +240,7 @@ vector<playingCard*> * cardGame::getHints()
         
         while (it != it_end) {
             for (size_t to = 0; to < stacks.size(); to++) {
-                if (from != to && moveable(*it, to)) {
+                if (from != to && moveableCard(*it) && moveable(*it, to)) {
                     hints->push_back(*it);
                     break;
                 }
