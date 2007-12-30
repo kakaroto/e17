@@ -9,7 +9,6 @@ typedef struct _Config_Item Config_Item;
 struct _Config 
 {
    E_Module        *module;
-   E_Config_Dialog *config_dialog;
    E_Menu          *menu, *menu_firstweekday;
    Ecore_Timer     *timer;
    Evas_List       *instances;
