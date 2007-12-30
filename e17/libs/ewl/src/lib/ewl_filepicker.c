@@ -718,6 +718,7 @@ ewl_filepicker_path_populate(Ewl_Filepicker *fp, char *path)
 		ecore_list_prepend(fp->path, strdup(path));
 
 	ewl_mvc_dirty_set(EWL_MVC(fp->mvc_path.combo), TRUE);
+	ewl_mvc_selected_set(EWL_MVC(fp->mvc_path.combo), NULL, fp->path, 0, 0);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -736,9 +737,16 @@ ewl_filepicker_cb_path_change(Ewl_Widget *w, void *ev __UNUSED__,
 
 	fp = data;
 	idx = ewl_mvc_selected_get(EWL_MVC(w));
-	ecore_list_index_goto(fp->path, idx->row);
 
+	if (idx->row == 0)
+	{
+		free(idx);
+		DRETURN(DLEVEL_STABLE);
+	}
+
+	ecore_list_index_goto(fp->path, idx->row);
 	ewl_filepicker_directory_set(fp, ecore_list_current(fp->path));
+	free(idx);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
