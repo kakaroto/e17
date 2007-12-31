@@ -14,6 +14,7 @@
 
 static Ecore_Event_Handler *ewl_image_epsilon_handler = NULL;
 static int ewl_image_thumbnail_cb_complete(void *data, int type, void *event);
+static void ewl_image_thumbnail_cb_value_changed(Ewl_Widget *w, void *ev, void *data);
 #endif
 
 
@@ -637,12 +638,37 @@ ewl_image_thumbnail_get(Ewl_Image *i)
 			ewl_image_thumbnail_request(EWL_IMAGE_THUMBNAIL(thumb),
 					(char *)ewl_image_file_path_get(i));
 			EWL_IMAGE_THUMBNAIL(thumb)->orig = EWL_WIDGET(i);
+			ewl_callback_append(EWL_WIDGET(i),
+					EWL_CALLBACK_VALUE_CHANGED,
+					ewl_image_thumbnail_cb_value_changed,
+					thumb);
 		}
 	}
 #endif
 
 	DRETURN_PTR(thumb, DLEVEL_STABLE);
 }
+
+#ifdef BUILD_EPSILON_SUPPORT
+static void
+ewl_image_thumbnail_cb_value_changed(Ewl_Widget *w, void *ev, void *data)
+{
+	Ewl_Widget *thumb;
+	Ewl_Widget *image;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_PARAM_PTR(data);
+
+	thumb = data;
+	image = w;
+
+	ewl_image_thumbnail_request(EWL_IMAGE_THUMBNAIL(thumb),
+			(char *)ewl_image_file_path_get(EWL_IMAGE(image)));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+#endif
 
 /**
  * @return Returns a new Ewl_Image_Thumbnail widget
