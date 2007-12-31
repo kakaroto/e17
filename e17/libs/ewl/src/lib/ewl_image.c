@@ -664,7 +664,7 @@ ewl_image_thumbnail_cb_value_changed(Ewl_Widget *w, void *ev, void *data)
 	image = w;
 
 	ewl_image_thumbnail_request(EWL_IMAGE_THUMBNAIL(thumb),
-			(char *)ewl_image_file_path_get(EWL_IMAGE(image)));
+			ewl_image_file_path_get(EWL_IMAGE(image)));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
