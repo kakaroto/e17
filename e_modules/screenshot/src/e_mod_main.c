@@ -582,5 +582,86 @@ _cb_do_shot(void)
 static void 
 _cb_take_shot(E_Object *obj, const char *params) 
 {
-   _cb_do_shot();
+   Ecore_Exe *exe;
+   char *tmp;
+   char buf[4096];
+
+   tmp = strdup("");
+   if (cfg->delay > 0) 
+     {
+	snprintf(buf, sizeof(buf), "--delay %i ", (int)cfg->delay);
+	tmp = realloc(tmp, strlen(tmp) + strlen(buf) + 1);
+	strcat(tmp, buf);
+     }
+
+   if (cfg->use_bell) 
+     {
+	snprintf(buf, sizeof(buf), "--beep ");
+	tmp = realloc(tmp, strlen(tmp) + strlen(buf) + 1);
+	strcat(tmp, buf);
+     }
+
+   if (cfg->quality > 0) 
+     {
+	snprintf(buf, sizeof(buf), "--quality %d ", cfg->quality);
+	tmp = realloc(tmp, strlen(tmp) + strlen(buf) + 1);
+	strcat(tmp, buf);
+     }
+
+   switch (cfg->mode) 
+     {
+      case 0:
+	break;
+      case 1:
+	snprintf(buf, sizeof(buf), "--window ");
+	tmp = realloc(tmp, strlen(tmp) + strlen(buf) + 1);
+	strcat(tmp, buf);
+	break;
+      case 2:
+	snprintf(buf, sizeof(buf), "--region ");
+	tmp = realloc(tmp, strlen(tmp) + strlen(buf) + 1);
+	strcat(tmp, buf);
+	break;
+     }
+
+   if ((cfg->use_app) && (cfg->app)) 
+     {
+	snprintf(buf, sizeof(buf), "--app %s ", cfg->app);
+	tmp = realloc(tmp, strlen(tmp) + strlen(buf) + 1);
+	strcat(tmp, buf);
+     }
+
+   if ((cfg->use_thumb) && (cfg->thumb_size > 0)) 
+     {
+	snprintf(buf, sizeof(buf), "--thumb-geom %d ", cfg->thumb_size);
+	tmp = realloc(tmp, strlen(tmp) + strlen(buf) + 1);
+	strcat(tmp, buf);
+     }
+
+   if ((cfg->prompt) && (cfg->filename))
+     {
+	snprintf(buf, sizeof(buf), "%s", cfg->filename);
+	tmp = realloc(tmp, strlen(tmp) + strlen(buf) + 1);
+	strcat(tmp, buf);
+     }
+   else 
+     {
+	if ((cfg->location) && (cfg->filename)) 
+	  {
+	     snprintf(buf, sizeof(buf), "%s/%s", cfg->location, 
+		      cfg->filename);
+	     tmp = realloc(tmp, strlen(tmp) + strlen(buf) + 1);
+	     strcat(tmp, buf);	     
+	  }
+	else if (cfg->location) 
+	  {
+	     snprintf(buf, sizeof(buf), "%s", cfg->location);
+	     tmp = realloc(tmp, strlen(tmp) + strlen(buf) + 1);
+	     strcat(tmp, buf);
+	  }
+     }
+
+   snprintf(buf, sizeof(buf), "emprint %s", tmp);
+   exe = ecore_exe_run(buf, NULL);
+   if (exe) ecore_exe_free(exe);
 }
