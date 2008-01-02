@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # to avoid needing an installl- lets run this from the src dir
-MAIN="../src/bin/exquisite"
+MAIN="../src/bin/exquisite -verbose"
 WRITE="../src/bin/exquisite-write"
 
 # start up gui - some examples here for different resolutions and the fb

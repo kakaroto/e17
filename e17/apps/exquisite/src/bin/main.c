@@ -68,7 +68,7 @@ _args(void)
    int h = 480;
    double fps = 60.0;
    int fullscreen = 0;
-   quiet = 0;
+   quiet = 1;
 
    ecore_app_args_get(&argc, &argv);
    for (i = 1; i < argc; i++)
@@ -123,9 +123,9 @@ _args(void)
 		  exit(-1);
 	       }
 	  }
-        else if ((!strcmp(argv[i], "-quiet")))
+        else if ((!strcmp(argv[i], "-verbose")))
           {
-             quiet = 1;
+             quiet = 0;
           }
 	else if ((!strcmp(argv[i], "-h")))
 	  {
@@ -143,7 +143,7 @@ _args(void)
 		    "-ic Kb     Set image cache in Kb\n"
 		    "-fc Kb     Set font cache in Kb\n"
 		    "-fps fps   Set attempted framerate in frames per second\n"
-                    "-quiet     Run Exquisite in quiet mode, text is suppressed\n"
+		    "-verbose   Run Exquisite in verbose mode\n"
 		    "-h         Display this help\n",
 		    argv[0]);
 	     exit(0);
