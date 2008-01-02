@@ -231,7 +231,10 @@ _MenuEwinMoveResize(EWin * ewin, int resize __UNUSED__)
       m->redraw = 1;
 
    if ((!m->style->use_item_bg && m->pmm.pmap == 0) || m->redraw)
-      MenuRedraw(m);
+     {
+	MenuRedraw(m);
+	EwinUpdateShapeInfo(ewin);
+     }
 }
 
 static void
