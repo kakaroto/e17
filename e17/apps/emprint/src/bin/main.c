@@ -1,3 +1,7 @@
+/*
+ * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -23,8 +27,10 @@
 # endif
 #endif
 #include "emprint.h"
+#include <getopt.h>
 
 /* Function Prototypes */
+static void _em_parse_cmdln(Options *o, int argc, char *argv[]);
 static void _em_print_help(void);
 static void _em_print_version(void);
 static void _em_free_options(void);
@@ -61,95 +67,16 @@ static int gx = -1, gy = -1;
 int 
 main(int argc, char **argv) 
 {
-   int i, qual, delay;
-   int tw, th, ts;
-   char *app, *file;
-
    /* allocate a structure to hold our options */
    opts = calloc(1, sizeof(Options));
-
-   /* parse the options provided by user */
-   for (i = 1; i < argc; i++) 
+   if (opts  == NULL)
      {
-	if (!strcmp(argv[i], "--beep")) 
-	  opts->beep = 1;
-	else if ((!strcmp(argv[i], "--delay")) && (i < (argc - 1)))
-	  {
-	     i++;
-	     if (sscanf(argv[i], "%i", &delay) == 1) 
-	       opts->delay = delay;
-	  }
-	else if ((!strcmp(argv[i], "--app")) && (i < (argc - 1)))
-	  {
-	     i++;
-	     if (sscanf(argv[i], "%s", &app) == 1) 
-	       opts->app = evas_stringshare_add(argv[i]);
-	  }
-	else if ((!strcmp(argv[i], "--thumb")) && (i < (argc - 1)))
-	  {
-	     i++;
-	     if (sscanf(argv[i], "%s", &file) == 1) 
-	       {
-		  opts->use_thumb = 1;
-		  opts->thumb.filename = evas_stringshare_add(argv[i]);
-	       }
-	  }
-	else if ((!strcmp(argv[i], "--thumb-geom")) && (i < (argc - 1)))
-	  {
-	     i++;
-	     if (sscanf(argv[i], "%ix%i", &tw, &th) == 2) 
-	       {
-		  opts->use_thumb = 1;
-		  opts->thumb.width = tw;
-		  opts->thumb.height = th;
-	       }
-	     else if (sscanf(argv[i], "%i", &ts) == 1) 
-	       {
-		  if (ts < 1) ts = 1;
-		  else if (ts > 100) ts = 100;
-		  opts->use_thumb = 1;
-		  opts->thumb.size = ts;
-	       }
-	  }
-	else if ((!strcmp(argv[i], "--quality")) && (i < (argc - 1)))
-	  {
-	     i++;
-	     if (sscanf(argv[i], "%i", &qual) == 1) 
-	       opts->quality = qual;
-	  }
-	else if (!strcmp(argv[i], "--region")) 
-	  opts->region = 1;
-	else if (!strcmp(argv[i], "--window")) 
-	  opts->window = 1;
-	else if ((!strcmp(argv[i], "--help")) || (!strcmp(argv[i], "-h")))
-	  {
-	     _em_print_help();
-	     _em_free_options();
-	     exit(0);
-	  }
-	else if (!strcmp(argv[i], "--version")) 
-	  {
-	     _em_print_version();
-	     _em_free_options();
-	     exit(0);
-	  }
-	else if (i < argc) 
-	  {
-	     while (i < argc) 
-	       {
-		  if (!opts->filename) 
-		    opts->filename = evas_stringshare_add(argv[i]);
-		  else
-		    {
-		       printf("Unknown Option: %s\n", argv[i]);
-		       _em_print_help();
-		       _em_free_options();
-		       exit(0);
-		    }
-		  i++;
-	       }
-	  }
+	fprintf(stderr,"calloc() failed.");
+	exit( EXIT_FAILURE );
      }
+
+   /* parse our command line */
+   _em_parse_cmdln(opts, argc, argv);
 
    /* initialize ecore */
    if (!ecore_init()) return -1;
@@ -193,16 +120,89 @@ main(int argc, char **argv)
    /* shutdown ecore */
    ecore_shutdown();
 
-   return 0;
+   return EXIT_SUCCESS;
+}
+
+static void
+_em_parse_cmdln(Options *o, int argc, char *argv[])
+{
+   int tw, th, ts;
+   struct option longopts[] = {
+     {"beep",		no_argument,		&(o->beep),	 1 },
+     {"delay",		required_argument,	0,		'd'},
+     {"app",		required_argument,	0,		'a'},
+     {"thumb",		required_argument,	0,		't'},
+     {"thumb-geom",	required_argument,	0,		'g'},
+     {"quality",	required_argument,	0,		'q'},
+     {"region",		no_argument,		&(o->region),	 1 },
+     {"window",		no_argument,		&(o->window),	 1 },
+     {"help",		no_argument,		0,		'h'},
+     {"version",	no_argument,		0,		'v'},
+     {NULL,		0,			NULL,		 0 }
+   };
+   char c;
+
+   /* parse the options provided by user */
+   while ( (c = getopt_long_only(argc, argv, "d:a:t:g:q:hv", longopts, NULL)) != -1)
+     {
+	switch (c) {
+	   case 0: /* Flags were set.... do nothing. */
+	      break;
+	   case 'd':
+	      o->delay = atoi(optarg);
+	      break;
+	   case 'a':
+	      o->app = evas_stringshare_add(optarg);
+	      break;
+	   case 't':
+	      o->use_thumb = 1;
+	      o->thumb.filename = evas_stringshare_add(optarg);
+	      break;
+	   case 'g':
+	      o->use_thumb = 1;
+	      if (strstr(optarg, "x"))
+		{
+		   sscanf(optarg, "%ix%i", &tw, &th);
+		   o->thumb.width = tw;
+		   o->thumb.height = th;
+		}
+	      else
+		{
+		   ts = atoi(optarg);
+		   if (ts < 1) ts = 1;
+		   else if (ts > 100) ts = 100;
+		   o->thumb.size = ts;
+		}
+	      break;
+	   case 'q':
+	      o->quality = atoi(optarg);
+	      break;
+	   case 'v': /* Print version and bail */
+	      _em_print_version();
+	      break;
+	   case '?': /* ErrMsg is printed, then Fallthrough */
+	   case 'h': /* Fallthrough */
+	   default:
+	      _em_print_help();
+	}
+     }
+
+   /* The filename, if it exists, is expected to be the last command line arg */
+   if (optind < argc)
+     o->filename = evas_stringshare_add(argv[optind]);
 }
 
 static void 
 _em_print_help(void) 
 {
-   printf("Usage: emprint [OPTIONS]... FILE\n"
-	  "Where FILE is the target for the screenshot.\n"
-	  "If no FILE is specified, a date-stamped file will be saved in "
-	  "the current directory.\n"
+   printf("Usage: emprint [OPTIONS]... FILE \n"
+	  " Unless otherwise noted, all options may be used in\n"
+	  " their shorthand form (e.g. --thumb == -t) using the first\n"
+	  " letter in the option name.\n"
+	  "\tFILE\t\t\tWhere FILE is the target for\n"
+	  "\t\t\t\tthe screenshot. If no FILE is specified,\n"
+	  "\t\t\t\ta date-stamped file will be saved in the\n"
+	  "\t\t\t\tcurrent directory.\n"
 	  "\t--help\t\t\tDisplay this help\n"
 	  "\t--beep\t\t\tBeep before taking screenshot\n"
 	  "\t--delay NUM\t\tWait NUM seconds before taking screenshot\n"
@@ -213,17 +213,25 @@ _em_print_help(void)
 	  "\t--thumb-geom NUM\tGeometry to use for thumbnail\n"
 	  "\t\t\t\tNUM can be a percentage of the original size OR\n"
 	  "\t\t\t\tthe actual geometry to use for the thumbnail,\n"
-	  "\t\t\t\tie: 100x100\n"
+	  "\t\t\t\te.g. 100x100.\n"
+	  "\t\t\t\t(Shorthand: -g)\n"
 	  "\t--quality NUM\t\tImage quality of screenshot\n"
 	  "\t--region\t\tSelect a specific screen region\n"
 	  "\t--window\t\tSelect a specifc window to grab\n"
+	  "\t--version\t\tPrint the version.\n"
 	  );
+
+   _em_free_options();
+   exit( EXIT_FAILURE );
 }
 
 static void 
 _em_print_version(void) 
 {
    printf("emprint version "VERSION"\n");
+
+   _em_free_options();
+   exit( EXIT_SUCCESS );
 }
 
 static void 
@@ -487,8 +495,8 @@ _em_do_thumb(void *data)
    /* calculate thumbnail size */
    if ((opts->thumb.width > 0) && (opts->thumb.height > 0)) 
      {
-	tw = w * opts->thumb.width / 100;
-	th = h * opts->thumb.height / 100;
+	tw = opts->thumb.width;
+	th = opts->thumb.height;
      }
    else if (opts->thumb.size > 0) 
      {
