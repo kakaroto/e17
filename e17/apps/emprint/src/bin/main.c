@@ -15,7 +15,7 @@
 #include <Ecore_X.h>
 #include <Ecore_X_Cursor.h>
 #include <Edje.h>
-#include "config.h"
+#include <getopt.h>
 #if TIME_WITH_SYS_TIME
 # include <sys/time.h>
 # include <time.h>
@@ -26,8 +26,8 @@
 #  include <time.h>
 # endif
 #endif
+#include "config.h"
 #include "emprint.h"
-#include <getopt.h>
 
 /* Function Prototypes */
 static void _em_parse_cmdln(Options *o, int argc, char *argv[]);
@@ -71,24 +71,46 @@ main(int argc, char **argv)
    opts = calloc(1, sizeof(Options));
    if (opts  == NULL)
      {
-	fprintf(stderr,"calloc() failed.");
-	exit( EXIT_FAILURE );
+	printf("calloc() failed.");
+	exit(EXIT_FAILURE);
      }
 
    /* parse our command line */
    _em_parse_cmdln(opts, argc, argv);
 
    /* initialize ecore */
-   if (!ecore_init()) return -1;
+   if (!ecore_init()) 
+     {
+	_em_free_options();
+	exit(EXIT_FAILURE);
+     }
 
    /* initialize ecore_evas */
-   if (!ecore_evas_init()) return -1;
+   if (!ecore_evas_init()) 
+     {
+	_em_free_options();
+	ecore_shutdown();
+	exit(EXIT_FAILURE);
+     }
 
    /* initialize ecore_x */
-   if (!ecore_x_init(NULL)) return -1;
+   if (!ecore_x_init(NULL)) 
+     {
+	_em_free_options();
+	ecore_evas_shutdown();
+	ecore_shutdown();
+	exit(EXIT_FAILURE);
+     }
 
    /* initialize edje */
-   if (!edje_init()) return -1;
+   if (!edje_init()) 
+     {
+	_em_free_options();
+	ecore_x_shutdown();
+	ecore_evas_shutdown();
+	ecore_shutdown();
+	exit(EXIT_FAILURE);
+     }
 
    /* set app arguments */
    ecore_app_args_set(argc, (const char **)argv);
@@ -127,63 +149,65 @@ static void
 _em_parse_cmdln(Options *o, int argc, char *argv[])
 {
    int tw, th, ts;
-   struct option longopts[] = {
-     {"beep",		no_argument,		&(o->beep),	 1 },
-     {"delay",		required_argument,	0,		'd'},
-     {"app",		required_argument,	0,		'a'},
-     {"thumb",		required_argument,	0,		't'},
-     {"thumb-geom",	required_argument,	0,		'g'},
-     {"quality",	required_argument,	0,		'q'},
-     {"region",		no_argument,		&(o->region),	 1 },
-     {"window",		no_argument,		&(o->window),	 1 },
-     {"help",		no_argument,		0,		'h'},
-     {"version",	no_argument,		0,		'v'},
-     {NULL,		0,			NULL,		 0 }
-   };
    char c;
+   struct option longopts[]  = 
+     {
+	  {"beep", no_argument, &(o->beep), 1},
+	  {"delay", required_argument, 0, 'd'},
+	  {"app", required_argument, 0, 'a'},
+	  {"thumb", required_argument, 0, 't'},
+	  {"thumb-geom", required_argument, 0, 'g'},
+	  {"quality", required_argument, 0, 'q'},
+	  {"region", no_argument, &(o->region), 1},
+	  {"window", no_argument, &(o->window), 1},
+	  {"help", no_argument, 0, 'h'},
+	  {"version", no_argument, 0, 'v'},
+	  {NULL, 0, NULL, 0}
+     };
 
    /* parse the options provided by user */
-   while ( (c = getopt_long_only(argc, argv, "d:a:t:g:q:hv", longopts, NULL)) != -1)
+   while ((c = getopt_long_only(argc, argv, "d:a:t:g:q:hv", longopts, NULL)) != -1)
      {
 	switch (c) {
-	   case 0: /* Flags were set.... do nothing. */
-	      break;
-	   case 'd':
-	      o->delay = atoi(optarg);
-	      break;
-	   case 'a':
-	      o->app = evas_stringshare_add(optarg);
-	      break;
-	   case 't':
-	      o->use_thumb = 1;
-	      o->thumb.filename = evas_stringshare_add(optarg);
-	      break;
-	   case 'g':
-	      o->use_thumb = 1;
-	      if (strstr(optarg, "x"))
-		{
-		   sscanf(optarg, "%ix%i", &tw, &th);
-		   o->thumb.width = tw;
-		   o->thumb.height = th;
-		}
-	      else
-		{
-		   ts = atoi(optarg);
-		   if (ts < 1) ts = 1;
-		   else if (ts > 100) ts = 100;
-		   o->thumb.size = ts;
-		}
-	      break;
-	   case 'q':
-	      o->quality = atoi(optarg);
-	      break;
-	   case 'v': /* Print version and bail */
-	      _em_print_version();
-	      break;
-	   case '?': /* ErrMsg is printed, then Fallthrough */
-	   case 'h': /* Fallthrough */
-	   default:
-	      _em_print_help();
+	 case 0: /* Flags were set.... do nothing. */
+	   break;
+	 case 'd':
+	   o->delay = atoi(optarg);
+	   break;
+	 case 'a':
+	   o->app = evas_stringshare_add(optarg);
+	   break;
+	 case 't':
+	   o->use_thumb = 1;
+	   o->thumb.filename = evas_stringshare_add(optarg);
+	   break;
+	 case 'g':
+	   o->use_thumb = 1;
+	   if (strstr(optarg, "x"))
+	     {
+		sscanf(optarg, "%ix%i", &tw, &th);
+		o->thumb.width = tw;
+		o->thumb.height = th;
+	     }
+	   else
+	     {
+		ts = atoi(optarg);
+		if (ts < 1) ts = 1;
+		else if (ts > 100) ts = 100;
+		o->thumb.size = ts;
+	     }
+	   break;
+	 case 'q':
+	   o->quality = atoi(optarg);
+	   break;
+	 case 'v': /* Print version and bail */
+	   _em_print_version();
+	   break;
+	 case '?': /* ErrMsg is printed, then Fallthrough */
+	 case 'h': /* Fallthrough */
+	 default:
+	   _em_print_help();
+	   break;
 	}
      }
 
@@ -222,16 +246,15 @@ _em_print_help(void)
 	  );
 
    _em_free_options();
-   exit( EXIT_FAILURE );
+   exit(EXIT_FAILURE);
 }
 
 static void 
 _em_print_version(void) 
 {
    printf("emprint version "VERSION"\n");
-
    _em_free_options();
-   exit( EXIT_SUCCESS );
+   exit(EXIT_SUCCESS);
 }
 
 static void 
@@ -525,7 +548,7 @@ _em_do_thumb(void *data)
 	     /* no thumbname filename supplied, create one */
 	     ext = ecore_file_strip_ext(opts->filename);
 	     snprintf(buf, sizeof(buf), "%s-thumb", ext);
-	     
+
 	     /* check for extension */
 	     ext = strrchr(opts->filename, '.');
 	     if (ext) 
@@ -664,7 +687,7 @@ _em_cb_mouse_up(void *data, int type, void *event)
 	if (ecore_x_window_parent_get(win) == root) break;
 	win = ecore_x_window_parent_get(win);
      }
-   
+
    /* get this window's dimensions */
    ecore_x_window_geometry_get(win, &x, &y, &w, &h);
 
