@@ -1,14 +1,14 @@
-<?php
-
-    $mirrors = array("http://www0.get-e.org/donate",
-                    "http://www4.get-e.org/donate");
-					
-	$return = $mirrors[rand(0,count($mirrors)-1)];
-?>
-
+# Old mirror code....<?php
+#
+#    $mirrors = array("http://www0.get-e.org/donate",
+#                    "http://www4.get-e.org/donate");
+#					
+#	$return = $mirrors[rand(0,count($mirrors)-1)];
+#?>
+#############################################################
 <html>
 <head>
-	<title>W W W . E N L I G H T E N M E N T . O R G</title>
+	<title>W W W . E N L I G H T E N M E N T . O R G DONATE</title>
 	<meta name="description" content="" />
 	<meta name="keywords" content="" />
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
