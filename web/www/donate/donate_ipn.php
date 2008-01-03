@@ -65,8 +65,8 @@ if ( ! $fp ) {
 					{
 						$result = mysql_query(
 							"INSERT into donations ".
-							"(ip, txn_id, name, donation,user_email) VALUES ".
-							"(\"$ip\", \"$trans_id\", \"$first_name $last_name\", \"$payment_gross\", '$payer_email')"
+							"(ip, txn_id, name, donation,user_email,date) VALUES ".
+							"(\"$ip\", \"$trans_id\", \"$first_name $last_name\", \"$payment_gross\", '$payer_email', NOW())"
 						);							
 					}
 					else
