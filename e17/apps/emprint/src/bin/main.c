@@ -206,7 +206,6 @@ _em_print_help(void)
 	  "\t--help\t\t\tDisplay this help\n"
 	  "\t--beep\t\t\tBeep before taking screenshot\n"
 	  "\t--delay NUM\t\tWait NUM seconds before taking screenshot\n"
-	  "\t--prompt\t\tPrompt for FILE\n"
 	  "\t--app APP\t\tLaunch APP after taking screenshot.  A '%%s'\n"
 	  "\t\t\t\tincluded in the app command line will be\n"
 	  "\t\t\t\treplaced with the filename.\n"
