@@ -13,4 +13,6 @@ ltmain.sh
 depcomp
 install-sh
 missing
-
+INSTALL
+config.h
+config.h.in
