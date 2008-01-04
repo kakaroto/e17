@@ -50,7 +50,7 @@ e_int_config_screenshot_module(E_Container *con, const char *params __UNUSED__)
    snprintf(buf, sizeof(buf), "%s/e-module-screenshot.edj", ss_mod->dir);
    cfd = e_config_dialog_new(con, "Screenshot Configuration", "Screenshot", 
 			     "_screenshot_cfg_dlg", buf, 0, v, NULL);
-   cfg->cfd = cfd;
+   ss_cfg->cfd = cfd;
 }
 
 /* private functions */
@@ -67,7 +67,7 @@ _create_data(E_Config_Dialog *cfd)
 static void 
 _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata) 
 {
-   cfg->cfd = NULL;
+   ss_cfg->cfd = NULL;
    E_FREE(cfdata->location);
    E_FREE(cfdata->filename);
    E_FREE(cfdata->app);
@@ -77,17 +77,17 @@ _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 static void 
 _fill_data(E_Config_Dialog_Data *cfdata)
 {
-   cfdata->delay = cfg->delay;
-   cfdata->prompt = cfg->prompt;
-   cfdata->use_app = cfg->use_app;
-   cfdata->use_bell = cfg->use_bell;
-   cfdata->quality = cfg->quality;
-   cfdata->use_thumb = cfg->use_thumb;
-   cfdata->thumb_size = cfg->thumb_size;
-   cfdata->mode = cfg->mode;
-   if (cfg->location) cfdata->location = strdup(cfg->location);
-   if (cfg->filename) cfdata->filename = strdup(cfg->filename);
-   if (cfg->app) cfdata->app = strdup(cfg->app);
+   cfdata->delay = ss_cfg->delay;
+   cfdata->prompt = ss_cfg->prompt;
+   cfdata->use_app = ss_cfg->use_app;
+   cfdata->use_bell = ss_cfg->use_bell;
+   cfdata->quality = ss_cfg->quality;
+   cfdata->use_thumb = ss_cfg->use_thumb;
+   cfdata->thumb_size = ss_cfg->thumb_size;
+   cfdata->mode = ss_cfg->mode;
+   if (ss_cfg->location) cfdata->location = strdup(ss_cfg->location);
+   if (ss_cfg->filename) cfdata->filename = strdup(ss_cfg->filename);
+   if (ss_cfg->app) cfdata->app = strdup(ss_cfg->app);
 }
 
 static Evas_Object *
@@ -150,20 +150,20 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 static int 
 _basic_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata) 
 {
-   cfg->use_bell = cfdata->use_bell;
-   cfg->delay = cfdata->delay;
-   cfg->prompt = cfdata->prompt;
-   cfg->mode = cfdata->mode;
-   if (cfg->location) evas_stringshare_del(cfg->location);
+   ss_cfg->use_bell = cfdata->use_bell;
+   ss_cfg->delay = cfdata->delay;
+   ss_cfg->prompt = cfdata->prompt;
+   ss_cfg->mode = cfdata->mode;
+   if (ss_cfg->location) evas_stringshare_del(ss_cfg->location);
    if (cfdata->location) 
-     cfg->location = evas_stringshare_add(cfdata->location);
+     ss_cfg->location = evas_stringshare_add(cfdata->location);
    else
-     cfg->location = evas_stringshare_add(e_user_homedir_get());
-   if (cfg->filename) evas_stringshare_del(cfg->filename);
+     ss_cfg->location = evas_stringshare_add(e_user_homedir_get());
+   if (ss_cfg->filename) evas_stringshare_del(ss_cfg->filename);
    if (cfdata->filename)
-     cfg->filename = evas_stringshare_add(cfdata->filename);
-   cfg->use_app = cfdata->use_app;
-   cfg->use_thumb = cfdata->use_thumb;
+     ss_cfg->filename = evas_stringshare_add(cfdata->filename);
+   ss_cfg->use_app = cfdata->use_app;
+   ss_cfg->use_thumb = cfdata->use_thumb;
 
    e_config_save_queue();
    return 1;
@@ -245,25 +245,25 @@ _adv_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 static int 
 _adv_apply(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata) 
 {
-   cfg->delay = cfdata->delay;
-   cfg->prompt = cfdata->prompt;
-   cfg->use_app = cfdata->use_app;
-   cfg->use_bell = cfdata->use_bell;
-   cfg->quality = cfdata->quality;
-   cfg->use_thumb = cfdata->use_thumb;
-   cfg->thumb_size = cfdata->thumb_size;
-   cfg->mode = cfdata->mode;
-   if (cfg->location) evas_stringshare_del(cfg->location);
+   ss_cfg->delay = cfdata->delay;
+   ss_cfg->prompt = cfdata->prompt;
+   ss_cfg->use_app = cfdata->use_app;
+   ss_cfg->use_bell = cfdata->use_bell;
+   ss_cfg->quality = cfdata->quality;
+   ss_cfg->use_thumb = cfdata->use_thumb;
+   ss_cfg->thumb_size = cfdata->thumb_size;
+   ss_cfg->mode = cfdata->mode;
+   if (ss_cfg->location) evas_stringshare_del(ss_cfg->location);
    if (cfdata->location) 
-     cfg->location = evas_stringshare_add(cfdata->location);
+     ss_cfg->location = evas_stringshare_add(cfdata->location);
    else
-     cfg->location = evas_stringshare_add(e_user_homedir_get());
-   if (cfg->filename) evas_stringshare_del(cfg->filename);
+     ss_cfg->location = evas_stringshare_add(e_user_homedir_get());
+   if (ss_cfg->filename) evas_stringshare_del(ss_cfg->filename);
    if (cfdata->filename)
-     cfg->filename = evas_stringshare_add(cfdata->filename);
-   if (cfg->app) evas_stringshare_del(cfg->app);
+     ss_cfg->filename = evas_stringshare_add(cfdata->filename);
+   if (ss_cfg->app) evas_stringshare_del(ss_cfg->app);
    if (cfdata->app)
-     cfg->app = evas_stringshare_add(cfdata->app);
+     ss_cfg->app = evas_stringshare_add(cfdata->app);
    e_config_save_queue();
    return 1;
 }

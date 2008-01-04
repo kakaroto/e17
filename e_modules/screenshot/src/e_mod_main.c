@@ -51,7 +51,7 @@ static Evas_List *instances = NULL;
 static E_Config_DD *conf_edd = NULL;
 static E_Action *act = NULL;
 E_Module *ss_mod = NULL;
-Config *cfg = NULL;
+Config *ss_cfg = NULL;
 
 static const E_Gadcon_Client_Class _gc_class = 
 {
@@ -91,10 +91,10 @@ e_modapi_init(E_Module *m)
    E_CONFIG_VAL(D, T, filename, STR);
    E_CONFIG_VAL(D, T, app, STR);
 
-   cfg = e_config_domain_load("module.screenshot", conf_edd);
-   if (cfg) 
+   ss_cfg = e_config_domain_load("module.screenshot", conf_edd);
+   if (ss_cfg) 
      {
-	if ((cfg->version >> 16) < MOD_CONFIG_FILE_EPOCH) 
+	if ((ss_cfg->version >> 16) < MOD_CONFIG_FILE_EPOCH) 
 	  {
 	     /* Config Too Old */
 	     _cfg_free();
@@ -112,7 +112,7 @@ e_modapi_init(E_Module *m)
 			       "You can re-configure things now to your<br>"
 			       "liking. Sorry for the inconvenience.<br>"));
 	  }
-	else if (cfg->version > MOD_CONFIG_FILE_VERSION) 
+	else if (ss_cfg->version > MOD_CONFIG_FILE_VERSION) 
 	  {
 	     /* Config Too New */
 	     _cfg_free();
@@ -130,7 +130,7 @@ e_modapi_init(E_Module *m)
 	  }
      }
 
-   if (!cfg) _cfg_new();
+   if (!ss_cfg) _cfg_new();
 
    /* register actions for keybindings */
    act = e_action_add("screenshot");
@@ -149,7 +149,7 @@ e_modapi_init(E_Module *m)
 EAPI int 
 e_modapi_shutdown(E_Module *m) 
 {
-   if (cfg->cfd) e_object_del(E_OBJECT(cfg->cfd));
+   if (ss_cfg->cfd) e_object_del(E_OBJECT(ss_cfg->cfd));
 
    if (act) 
      {
@@ -171,7 +171,7 @@ e_modapi_shutdown(E_Module *m)
 EAPI int 
 e_modapi_save(E_Module *m) 
 {
-   e_config_domain_save("module.screenshot", conf_edd, cfg);
+   e_config_domain_save("module.screenshot", conf_edd, ss_cfg);
    return 1;
 }
 
@@ -266,10 +266,10 @@ _gc_id_new(void)
 static void 
 _cfg_free(void) 
 {
-   if (cfg->location) evas_stringshare_del(cfg->location);
-   if (cfg->filename) evas_stringshare_del(cfg->filename);
-   if (cfg->app) evas_stringshare_del(cfg->app);
-   E_FREE(cfg);
+   if (ss_cfg->location) evas_stringshare_del(ss_cfg->location);
+   if (ss_cfg->filename) evas_stringshare_del(ss_cfg->filename);
+   if (ss_cfg->app) evas_stringshare_del(ss_cfg->app);
+   E_FREE(ss_cfg);
 }
 
 static int 
@@ -282,33 +282,33 @@ _cfg_timer(void *data)
 static void 
 _cfg_new(void) 
 {
-   cfg = E_NEW(Config, 1);
-   cfg->version = (MOD_CONFIG_FILE_EPOCH << 16);
+   ss_cfg = E_NEW(Config, 1);
+   ss_cfg->version = (MOD_CONFIG_FILE_EPOCH << 16);
 
 #define IFMODCFG(v) \
-   if ((cfg->version & 0xffff) < v) {
+   if ((ss_cfg->version & 0xffff) < v) {
 #define IFMODCFGEND }
 
    IFMODCFG(0x008d);
-   cfg->mode = 0;
-   cfg->quality = 75;
-   cfg->thumb_size = 50;
-   cfg->delay = 60.0;
-   cfg->prompt = 0;
-   cfg->use_app = 0;
-   cfg->use_bell = 1;
-   cfg->use_thumb = 0;
-   cfg->location = evas_stringshare_add(e_user_homedir_get());
-   cfg->filename = NULL;
-   cfg->app = NULL;
+   ss_cfg->mode = 0;
+   ss_cfg->quality = 75;
+   ss_cfg->thumb_size = 50;
+   ss_cfg->delay = 60.0;
+   ss_cfg->prompt = 0;
+   ss_cfg->use_app = 0;
+   ss_cfg->use_bell = 1;
+   ss_cfg->use_thumb = 0;
+   ss_cfg->location = evas_stringshare_add(e_user_homedir_get());
+   ss_cfg->filename = NULL;
+   ss_cfg->app = NULL;
    IFMODCFGEND;
 
-   cfg->version = MOD_CONFIG_FILE_VERSION;
+   ss_cfg->version = MOD_CONFIG_FILE_VERSION;
 
-   E_CONFIG_LIMIT(cfg->mode, 0, 2);
-   E_CONFIG_LIMIT(cfg->quality, 1, 100);
-   E_CONFIG_LIMIT(cfg->delay, 0.0, 60.0);
-   E_CONFIG_LIMIT(cfg->thumb_size, 10, 100);
+   E_CONFIG_LIMIT(ss_cfg->mode, 0, 2);
+   E_CONFIG_LIMIT(ss_cfg->quality, 1, 100);
+   E_CONFIG_LIMIT(ss_cfg->delay, 0.0, 60.0);
+   E_CONFIG_LIMIT(ss_cfg->thumb_size, 10, 100);
    e_config_save_queue();
 }
 
@@ -335,21 +335,21 @@ _cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event_info)
 	e_menu_item_label_set(mi, "Whole Screen");
 	e_menu_item_radio_group_set(mi, 1);
 	e_menu_item_radio_set(mi, 1);
-	if (cfg->mode == 0) e_menu_item_toggle_set(mi, 1);
+	if (ss_cfg->mode == 0) e_menu_item_toggle_set(mi, 1);
 	e_menu_item_callback_set(mi, _cb_normal, inst);
 
 	mi = e_menu_item_new(mn);
 	e_menu_item_label_set(mi, "Select Window");
 	e_menu_item_radio_group_set(mi, 1);
 	e_menu_item_radio_set(mi, 1);
-	if (cfg->mode == 1) e_menu_item_toggle_set(mi, 1);
+	if (ss_cfg->mode == 1) e_menu_item_toggle_set(mi, 1);
 	e_menu_item_callback_set(mi, _cb_window, inst);
 
 	mi = e_menu_item_new(mn);
 	e_menu_item_label_set(mi, "Select Region");
 	e_menu_item_radio_group_set(mi, 1);
 	e_menu_item_radio_set(mi, 1);
-	if (cfg->mode == 2) e_menu_item_toggle_set(mi, 1);
+	if (ss_cfg->mode == 2) e_menu_item_toggle_set(mi, 1);
 	e_menu_item_callback_set(mi, _cb_region, inst);
 
 	mn = e_menu_new();
@@ -405,7 +405,7 @@ _cb_normal(void *data, E_Menu *menu, E_Menu_Item *mi)
    Instance *inst = NULL;
 
    if (!(inst = data)) return;
-   cfg->mode = 0;
+   ss_cfg->mode = 0;
    e_config_save_queue();
 }
 
@@ -415,7 +415,7 @@ _cb_window(void *data, E_Menu *menu, E_Menu_Item *mi)
    Instance *inst = NULL;
 
    if (!(inst = data)) return;
-   cfg->mode = 1;
+   ss_cfg->mode = 1;
    e_config_save_queue();
 }
 
@@ -425,7 +425,7 @@ _cb_region(void *data, E_Menu *menu, E_Menu_Item *mi)
    Instance *inst = NULL;
 
    if (!(inst = data)) return;
-   cfg->mode = 2;
+   ss_cfg->mode = 2;
    e_config_save_queue();
 }
 
@@ -435,7 +435,7 @@ _cb_start_shot(void *data, Evas_Object *obj, const char *emission, const char *s
    Instance *inst = NULL;
 
    if (!(inst = data)) return;
-   if (cfg->prompt)
+   if (ss_cfg->prompt)
      {
 	e_entry_dialog_show("Screenshot Module", "enlightenment/e", 
 			    "Enter a new filename for this screenshot",
@@ -471,14 +471,14 @@ _cb_dialog_ok(char *text, void *data)
    t = ecore_file_dir_get(text);
    if (!strcmp(t, text)) 
      {
-	snprintf(buf, sizeof(buf), "%s/%s", cfg->location, 
+	snprintf(buf, sizeof(buf), "%s/%s", ss_cfg->location, 
 		 ecore_file_file_get(text));
      }
    else
      snprintf(buf, sizeof(buf), "%s", text);
 
-   if (cfg->filename) evas_stringshare_del(cfg->filename);
-   cfg->filename = evas_stringshare_add(buf);
+   if (ss_cfg->filename) evas_stringshare_del(ss_cfg->filename);
+   ss_cfg->filename = evas_stringshare_add(buf);
 
    _cb_send_msg(inst);
 }
@@ -490,10 +490,10 @@ _cb_send_msg(void *data)
    Edje_Message_Int_Set *msg = NULL;
 
    if (!(inst = data)) return;
-   if (cfg->delay <= 0.0) return;
+   if (ss_cfg->delay <= 0.0) return;
    msg = malloc(sizeof(Edje_Message_Int_Set) + 1 * sizeof(int));
    msg->count = 1;
-   msg->val[0] = cfg->delay;
+   msg->val[0] = ss_cfg->delay;
    edje_object_message_send(inst->o_base, EDJE_MESSAGE_INT_SET, 1, msg);
    free(msg);
    msg = NULL;
@@ -507,21 +507,21 @@ _cb_do_shot(void)
    char buf[4096];
 
    tmp = strdup("");
-   if (cfg->use_bell) 
+   if (ss_cfg->use_bell) 
      {
 	snprintf(buf, sizeof(buf), "--beep ");
 	tmp = realloc(tmp, strlen(tmp) + strlen(buf) + 1);
 	strcat(tmp, buf);
      }
 
-   if (cfg->quality > 0) 
+   if (ss_cfg->quality > 0) 
      {
-	snprintf(buf, sizeof(buf), "--quality %d ", cfg->quality);
+	snprintf(buf, sizeof(buf), "--quality %d ", ss_cfg->quality);
 	tmp = realloc(tmp, strlen(tmp) + strlen(buf) + 1);
 	strcat(tmp, buf);
      }
 
-   switch (cfg->mode) 
+   switch (ss_cfg->mode) 
      {
       case 0:
 	break;
@@ -537,38 +537,38 @@ _cb_do_shot(void)
 	break;
      }
 
-   if ((cfg->use_app) && (cfg->app)) 
+   if ((ss_cfg->use_app) && (ss_cfg->app)) 
      {
-	snprintf(buf, sizeof(buf), "--app %s ", cfg->app);
+	snprintf(buf, sizeof(buf), "--app %s ", ss_cfg->app);
 	tmp = realloc(tmp, strlen(tmp) + strlen(buf) + 1);
 	strcat(tmp, buf);
      }
 
-   if ((cfg->use_thumb) && (cfg->thumb_size > 0)) 
+   if ((ss_cfg->use_thumb) && (ss_cfg->thumb_size > 0)) 
      {
-	snprintf(buf, sizeof(buf), "--thumb-geom %d ", cfg->thumb_size);
+	snprintf(buf, sizeof(buf), "--thumb-geom %d ", ss_cfg->thumb_size);
 	tmp = realloc(tmp, strlen(tmp) + strlen(buf) + 1);
 	strcat(tmp, buf);
      }
 
-   if ((cfg->prompt) && (cfg->filename))
+   if ((ss_cfg->prompt) && (ss_cfg->filename))
      {
-	snprintf(buf, sizeof(buf), "%s", cfg->filename);
+	snprintf(buf, sizeof(buf), "%s", ss_cfg->filename);
 	tmp = realloc(tmp, strlen(tmp) + strlen(buf) + 1);
 	strcat(tmp, buf);
      }
    else 
      {
-	if ((cfg->location) && (cfg->filename)) 
+	if ((ss_cfg->location) && (ss_cfg->filename)) 
 	  {
-	     snprintf(buf, sizeof(buf), "%s/%s", cfg->location, 
-		      cfg->filename);
+	     snprintf(buf, sizeof(buf), "%s/%s", ss_cfg->location, 
+		      ss_cfg->filename);
 	     tmp = realloc(tmp, strlen(tmp) + strlen(buf) + 1);
 	     strcat(tmp, buf);	     
 	  }
-	else if (cfg->location) 
+	else if (ss_cfg->location) 
 	  {
-	     snprintf(buf, sizeof(buf), "%s", cfg->location);
+	     snprintf(buf, sizeof(buf), "%s", ss_cfg->location);
 	     tmp = realloc(tmp, strlen(tmp) + strlen(buf) + 1);
 	     strcat(tmp, buf);
 	  }
@@ -587,28 +587,28 @@ _cb_take_shot(E_Object *obj, const char *params)
    char buf[4096];
 
    tmp = strdup("");
-   if (cfg->delay > 0) 
+   if (ss_cfg->delay > 0) 
      {
-	snprintf(buf, sizeof(buf), "--delay %i ", (int)cfg->delay);
+	snprintf(buf, sizeof(buf), "--delay %i ", (int)ss_cfg->delay);
 	tmp = realloc(tmp, strlen(tmp) + strlen(buf) + 1);
 	strcat(tmp, buf);
      }
 
-   if (cfg->use_bell) 
+   if (ss_cfg->use_bell) 
      {
 	snprintf(buf, sizeof(buf), "--beep ");
 	tmp = realloc(tmp, strlen(tmp) + strlen(buf) + 1);
 	strcat(tmp, buf);
      }
 
-   if (cfg->quality > 0) 
+   if (ss_cfg->quality > 0) 
      {
-	snprintf(buf, sizeof(buf), "--quality %d ", cfg->quality);
+	snprintf(buf, sizeof(buf), "--quality %d ", ss_cfg->quality);
 	tmp = realloc(tmp, strlen(tmp) + strlen(buf) + 1);
 	strcat(tmp, buf);
      }
 
-   switch (cfg->mode) 
+   switch (ss_cfg->mode) 
      {
       case 0:
 	break;
@@ -624,38 +624,38 @@ _cb_take_shot(E_Object *obj, const char *params)
 	break;
      }
 
-   if ((cfg->use_app) && (cfg->app)) 
+   if ((ss_cfg->use_app) && (ss_cfg->app)) 
      {
-	snprintf(buf, sizeof(buf), "--app %s ", cfg->app);
+	snprintf(buf, sizeof(buf), "--app %s ", ss_cfg->app);
 	tmp = realloc(tmp, strlen(tmp) + strlen(buf) + 1);
 	strcat(tmp, buf);
      }
 
-   if ((cfg->use_thumb) && (cfg->thumb_size > 0)) 
+   if ((ss_cfg->use_thumb) && (ss_cfg->thumb_size > 0)) 
      {
-	snprintf(buf, sizeof(buf), "--thumb-geom %d ", cfg->thumb_size);
+	snprintf(buf, sizeof(buf), "--thumb-geom %d ", ss_cfg->thumb_size);
 	tmp = realloc(tmp, strlen(tmp) + strlen(buf) + 1);
 	strcat(tmp, buf);
      }
 
-   if ((cfg->prompt) && (cfg->filename))
+   if ((ss_cfg->prompt) && (ss_cfg->filename))
      {
-	snprintf(buf, sizeof(buf), "%s", cfg->filename);
+	snprintf(buf, sizeof(buf), "%s", ss_cfg->filename);
 	tmp = realloc(tmp, strlen(tmp) + strlen(buf) + 1);
 	strcat(tmp, buf);
      }
    else 
      {
-	if ((cfg->location) && (cfg->filename)) 
+	if ((ss_cfg->location) && (ss_cfg->filename)) 
 	  {
-	     snprintf(buf, sizeof(buf), "%s/%s", cfg->location, 
-		      cfg->filename);
+	     snprintf(buf, sizeof(buf), "%s/%s", ss_cfg->location, 
+		      ss_cfg->filename);
 	     tmp = realloc(tmp, strlen(tmp) + strlen(buf) + 1);
 	     strcat(tmp, buf);	     
 	  }
-	else if (cfg->location) 
+	else if (ss_cfg->location) 
 	  {
-	     snprintf(buf, sizeof(buf), "%s", cfg->location);
+	     snprintf(buf, sizeof(buf), "%s", ss_cfg->location);
 	     tmp = realloc(tmp, strlen(tmp) + strlen(buf) + 1);
 	     strcat(tmp, buf);
 	  }

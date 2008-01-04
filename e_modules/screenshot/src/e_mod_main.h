@@ -35,7 +35,7 @@ EAPI int   e_modapi_save     (E_Module *m);
 
 EAPI E_Config_Dialog *e_int_config_screenshot_module(E_Container *con, const char *params __UNUSED__);
 
-extern Config *cfg;
+extern Config *ss_cfg;
 extern E_Module *ss_mod;
 
 #endif
