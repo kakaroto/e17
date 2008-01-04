@@ -152,9 +152,9 @@ _cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
 	     if (x) ecore_exe_free(x);
 	  }
      }
-   else if ((ev->button == 1) && (!cfg->menu))
+   else if ((ev->button == 1) && (!net_cfg->menu))
      e_gadcon_popup_toggle_pinned(inst->popup);
-   else if ((ev->button == 3) && (!cfg->menu)) 
+   else if ((ev->button == 3) && (!net_cfg->menu)) 
      {
 	E_Menu *mn;
 	E_Menu_Item *mi;
@@ -162,7 +162,7 @@ _cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
 	
 	mn = e_menu_new();
 	e_menu_post_deactivate_callback_set(mn, _cb_post, inst);
-	cfg->menu = mn;
+	net_cfg->menu = mn;
 	
 	mi = e_menu_item_new(mn);
 	e_menu_item_label_set(mi, D_("Configuration"));
@@ -195,7 +195,7 @@ _cb_mouse_in(void *data, Evas_Object *obj, const char *emission, const char *sou
    if (!inst->ci->show_popup) return;
    
    inst->popup = e_gadcon_popup_new(inst->gcc, NULL);
-   snprintf(buf, sizeof(buf), "%s/net.edj", e_module_dir_get(cfg->mod));
+   snprintf(buf, sizeof(buf), "%s/net.edj", e_module_dir_get(net_cfg->mod));
    
    bg = edje_object_add(inst->popup->win->evas);
    if (!e_theme_edje_object_set(bg, "base/theme/modules", 
@@ -242,10 +242,10 @@ _bytes_to_string(bytes_t bytes, char *string, int size)
 static void 
 _cb_post(void *data, E_Menu *m) 
 {
-   if (!cfg->menu) return;
-   e_menu_post_deactivate_callback_set(cfg->menu, NULL, NULL);
-   e_object_del(E_OBJECT(cfg->menu));
-   cfg->menu = NULL;
+   if (!net_cfg->menu) return;
+   e_menu_post_deactivate_callback_set(net_cfg->menu, NULL, NULL);
+   e_object_del(E_OBJECT(net_cfg->menu));
+   net_cfg->menu = NULL;
 }
 
 static void 

@@ -38,11 +38,12 @@ _configure_net_module(void *data)
    v->basic.apply_cfdata = _apply_data;
    v->basic.create_widgets = _basic_create;
    
-   snprintf(buf, sizeof(buf), "%s/e-module-net.edj", e_module_dir_get(cfg->mod));
+   snprintf(buf, sizeof(buf), "%s/e-module-net.edj", 
+            e_module_dir_get(net_cfg->mod));
    con = e_container_current_get(e_manager_current_get());
    cfd = e_config_dialog_new(con, D_("Net Module Configuration"), "Net", 
 			     "_netmod_config_dialog", buf, 0, v, ci);
-   cfg->cfd = cfd;
+   net_cfg->cfd = cfd;
 }
 
 static void *
@@ -64,8 +65,8 @@ _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    E_FREE(cfdata->device);
    E_FREE(cfdata->app);
    E_FREE(cfdata);
-   if (!cfg) return;
-   cfg->cfd = NULL;
+   if (!net_cfg) return;
+   net_cfg->cfd = NULL;
 }
 
 static void 

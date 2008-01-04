@@ -25,7 +25,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    E_Gadcon_Client *gcc;
    char buf[PATH_MAX];
 
-   snprintf(buf, sizeof(buf), "%s/net.edj", e_module_dir_get(cfg->mod));
+   snprintf(buf, sizeof(buf), "%s/net.edj", e_module_dir_get(net_cfg->mod));
 
    inst = E_NEW(Instance, 1);
    inst->ci = _config_item_get(id);
@@ -52,8 +52,8 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 
    evas_object_event_callback_add(inst->o_net, EVAS_CALLBACK_MOUSE_DOWN, 
 				  _cb_mouse_down, inst);
-   
-   cfg->instances = evas_list_append(cfg->instances, inst);
+
+   net_cfg->instances = evas_list_append(net_cfg->instances, inst);
    return gcc;
 }
 
@@ -63,7 +63,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    Instance *inst;
    
    inst = gcc->data;
-   cfg->instances = evas_list_remove(cfg->instances, inst);
+   net_cfg->instances = evas_list_remove(net_cfg->instances, inst);
    if (inst->timer) ecore_timer_del(inst->timer);
    if (inst->o_net) 
      {
@@ -96,8 +96,9 @@ _gc_icon(Evas *evas)
 {
    Evas_Object *o;
    char buf[PATH_MAX];
-   
-   snprintf(buf, sizeof(buf), "%s/e-module-net.edj", e_module_dir_get(cfg->mod));
+
+   snprintf(buf, sizeof(buf), "%s/e-module-net.edj", 
+            e_module_dir_get(net_cfg->mod));
    o = edje_object_add(evas);
    edje_object_file_set(o, buf, "icon");
    return o;

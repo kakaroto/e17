@@ -16,10 +16,10 @@ _config_item_get(const char *id)
 	int  num = 0;
 
 	/* Create id */
-	if (cfg->items)
+	if (net_cfg->items)
 	  {
 	     const char *p;
-	     ci = evas_list_last(cfg->items)->data;
+	     ci = evas_list_last(net_cfg->items)->data;
 	     p = strrchr(ci->id, '.');
 	     if (p) num = atoi(p + 1) + 1;
 	  }
@@ -28,7 +28,7 @@ _config_item_get(const char *id)
      }
    else
      {
-	for (l = cfg->items; l; l = l->next) 
+	for (l = net_cfg->items; l; l = l->next) 
 	  {
 	     ci = l->data;
 	     if (!ci->id) continue;
@@ -42,7 +42,7 @@ _config_item_get(const char *id)
    ci->limit = 0;
    ci->show_text = 1;
    ci->show_popup = 0;
-   cfg->items = evas_list_append(cfg->items, ci);
+   net_cfg->items = evas_list_append(net_cfg->items, ci);
    return ci;
 }
 
@@ -102,8 +102,8 @@ _config_updated(Config_Item *ci)
 {
    Evas_List *l;
    
-   if (!cfg) return;
-   for (l = cfg->instances; l; l = l->next) 
+   if (!net_cfg) return;
+   for (l = net_cfg->instances; l; l = l->next) 
      {
 	Instance *inst;
 	

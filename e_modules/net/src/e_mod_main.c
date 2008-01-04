@@ -5,7 +5,7 @@
 
 static E_Config_DD *conf_edd = NULL;
 static E_Config_DD *item_edd = NULL;
-Config *cfg = NULL;
+Config *net_cfg = NULL;
 
 EAPI E_Module_Api e_modapi = 
 {
@@ -32,15 +32,15 @@ e_modapi_init(E_Module *m)
    conf_edd = E_CONFIG_DD_NEW("Config", Config);
    E_CONFIG_LIST(conf_edd, Config, items, item_edd);
 
-   cfg = e_config_domain_load("module.net", conf_edd);
-   if (!cfg) 
+   net_cfg = e_config_domain_load("module.net", conf_edd);
+   if (!net_cfg) 
      {
 	Config_Item *ci;
-	
-	cfg = E_NEW(Config, 1);
+
+	net_cfg = E_NEW(Config, 1);
 	ci = _config_item_get("0");
      }
-   cfg->mod = m;
+   net_cfg->mod = m;
    _gc_register();
    return m;
 }
@@ -48,30 +48,30 @@ e_modapi_init(E_Module *m)
 EAPI int
 e_modapi_shutdown(E_Module *m) 
 {
-   cfg->mod = NULL;
    _gc_unregister();
+   net_cfg->mod = NULL;
    
-   if (cfg->cfd) e_object_del(E_OBJECT(cfg->cfd));
-   if (cfg->menu) 
+   if (net_cfg->cfd) e_object_del(E_OBJECT(net_cfg->cfd));
+   if (net_cfg->menu) 
      {
-	e_menu_post_deactivate_callback_set(cfg->menu, NULL, NULL);
-	e_object_del(E_OBJECT(cfg->menu));
-	cfg->menu = NULL;
+	e_menu_post_deactivate_callback_set(net_cfg->menu, NULL, NULL);
+	e_object_del(E_OBJECT(net_cfg->menu));
+	net_cfg->menu = NULL;
      }
    
-   while (cfg->items) 
+   while (net_cfg->items) 
      {
 	Config_Item *ci;
-	
-	ci = cfg->items->data;
+
+	ci = net_cfg->items->data;
 	if (ci->id) evas_stringshare_del(ci->id);
 	if (ci->device) evas_stringshare_del(ci->device);
 	if (ci->app) evas_stringshare_del(ci->app);
-	cfg->items = evas_list_remove_list(cfg->items, cfg->items);
+	net_cfg->items = evas_list_remove_list(net_cfg->items, net_cfg->items);
 	E_FREE(ci);
      }
    
-   E_FREE(cfg);
+   E_FREE(net_cfg);
    E_CONFIG_DD_FREE(item_edd);
    E_CONFIG_DD_FREE(conf_edd);
    return 1;
@@ -80,6 +80,6 @@ e_modapi_shutdown(E_Module *m)
 EAPI int
 e_modapi_save(E_Module *m) 
 {
-   e_config_domain_save("module.net", conf_edd, cfg);
+   e_config_domain_save("module.net", conf_edd, net_cfg);
    return 1;
 }

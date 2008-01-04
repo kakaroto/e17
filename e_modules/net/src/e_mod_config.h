@@ -26,6 +26,6 @@ EAPI Config_Item *_config_item_get(const char *id);
 EAPI Ecore_List *_config_devices_get(void);
 EAPI void _config_updated(Config_Item *ci);
 
-extern Config *cfg;
+extern Config *net_cfg;
 
 #endif
