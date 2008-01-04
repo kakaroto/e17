@@ -902,7 +902,7 @@ TextstateTextDraw(TextState * ts, Win win, Drawable draw, const char *text,
 	     if (ww > textwidth_limit)
 		ts->ops->TextFit(ts, &lines[i], &ww, textwidth_limit);
 
-	     if (justv)
+	     if (justv && num_lines == 1 && textheight_limit > 0)
 		yy += (textheight_limit - hh) / 2;
 	     if (i == 0)
 		yy += ascent;
@@ -935,7 +935,7 @@ TextstateTextDraw(TextState * ts, Win win, Drawable draw, const char *text,
 	     if (ww > textwidth_limit)
 		ts->ops->TextFit(ts, &lines[i], &ww, textwidth_limit);
 
-	     if (justv)
+	     if (justv && num_lines == 1 && textheight_limit > 0)
 		yy += (textheight_limit - hh) / 2;
 	     if (i == 0)
 		yy += ascent;
