@@ -6,7 +6,7 @@
 #include "imap2.h"
 
 #if 0
-#define D(args...) printf(##args)
+#define D(args...) printf(args)
 #else
 #define D(args...)
 #endif
@@ -32,6 +32,10 @@ static char *find_rn (char *data, unsigned int size);
 
 static Evas_List *iclients = NULL;
 
+static Ecore_Event_Handler *add_handler = NULL;
+static Ecore_Event_Handler *del_handler = NULL;
+static Ecore_Event_Handler *data_handler = NULL;
+
 void
 _mail_imap_check_mail (void *data)
 {
@@ -44,29 +48,19 @@ _mail_imap_check_mail (void *data)
 
 	ic = l->data;
 	ic->data = data;
-	D ("Checking (%s:%s): %p\n", ic->config->host, ic->config->new_path, ic->server);
+	D ("Checking (%s@%d:%s): %p\n", ic->config->host, ic->config->port, ic->config->new_path, ic->server);
 	if (!ic->server)
 	  {
-	     if (!ic->add_handler)
-	       ic->add_handler =
-		  ecore_event_handler_add (ECORE_CON_EVENT_SERVER_ADD,
-					   _mail_imap_server_add, NULL);
-	     if (!ic->del_handler)
-	       ic->del_handler =
-		  ecore_event_handler_add (ECORE_CON_EVENT_SERVER_DEL,
-					   _mail_imap_server_del, NULL);
-	     if (!ic->data_handler)
-	       ic->data_handler =
-		  ecore_event_handler_add (ECORE_CON_EVENT_SERVER_DATA,
-					   _mail_imap_server_data, NULL);
-
 	     if (ic->config->local)
 	       type = ECORE_CON_LOCAL_SYSTEM;
 	     else
 	       type = ECORE_CON_REMOTE_SYSTEM;
 
 	     if (ecore_con_ssl_available_get () && (ic->config->ssl))
-	       type |= ECORE_CON_USE_SSL;
+	       {
+		  type |= ECORE_CON_USE_SSL;
+		  D ("Use SSL for %s:%s\n", ic->config->host, ic->config->new_path);
+	       }
 	     ic->state = IMAP_STATE_DISCONNECTED;
 	     ic->server =
 		ecore_con_server_connect (type, ic->config->host,
@@ -95,6 +89,16 @@ _mail_imap_add_mailbox (void *data)
      return;
    /* Client get will create the client if it does not exist */
    _mail_imap_client_get (cb);
+
+   if (!add_handler)
+     add_handler = ecore_event_handler_add (ECORE_CON_EVENT_SERVER_ADD,
+					    _mail_imap_server_add, NULL);
+   if (!del_handler)
+     del_handler = ecore_event_handler_add (ECORE_CON_EVENT_SERVER_DEL,
+					    _mail_imap_server_del, NULL);
+   if (!data_handler)
+     data_handler = ecore_event_handler_add (ECORE_CON_EVENT_SERVER_DATA,
+					     _mail_imap_server_data, NULL);
 }
 
 void
@@ -109,13 +113,19 @@ _mail_imap_del_mailbox (void *data)
    ic = _mail_imap_client_get (cb);
    if (!ic)
      return;
-   if (ic->add_handler)
-     ecore_event_handler_del (ic->add_handler);
-   if (ic->del_handler)
-     ecore_event_handler_del (ic->del_handler);
-   if (ic->data_handler)
-     ecore_event_handler_del (ic->data_handler);
    iclients = evas_list_remove (iclients, ic);
+   if (!iclients)
+     {
+	if (add_handler)
+	  ecore_event_handler_del (add_handler);
+	add_handler = NULL;
+	if (del_handler)
+	  ecore_event_handler_del (del_handler);
+	del_handler = NULL;
+	if (data_handler)
+	  ecore_event_handler_del (data_handler);
+	data_handler = NULL;
+     }
    _mail_imap_client_logout (ic);
    E_FREE (ic);
 }
@@ -128,17 +138,21 @@ _mail_imap_shutdown ()
 	ImapClient *ic;
 
 	ic = iclients->data;
-	if (ic->add_handler)
-	  ecore_event_handler_del (ic->add_handler);
-	if (ic->del_handler)
-	  ecore_event_handler_del (ic->del_handler);
-	if (ic->data_handler)
-	  ecore_event_handler_del (ic->data_handler);
 	iclients = evas_list_remove_list (iclients, iclients);
 	_mail_imap_client_logout (ic);
 	E_FREE (ic->prev.data);
 	E_FREE (ic);
      }
+
+   if (add_handler)
+     ecore_event_handler_del (add_handler);
+   add_handler = NULL;
+   if (del_handler)
+     ecore_event_handler_del (del_handler);
+   del_handler = NULL;
+   if (data_handler)
+     ecore_event_handler_del (data_handler);
+   data_handler = NULL;
 }
 
 /* PRIVATES */
@@ -196,6 +210,7 @@ _mail_imap_server_add (void *data, int type, void *event)
    if (!ic)
      return 1;
 
+   D ("Connect to %s:%s\n", ic->config->host, ic->config->new_path);
    ic->state = IMAP_STATE_CONNECTED;
    ic->cmd = 1;
    return 0;
@@ -211,6 +226,7 @@ _mail_imap_server_del (void *data, int type, void *event)
    if (!ic)
      return 1;
 
+   D ("Disconnect from %s:%s\n", ic->config->host, ic->config->new_path);
    if (ic->state != IMAP_STATE_DISCONNECTED)
      {
 	printf ("The connection was unexpectedly shut down, consider reducing the check time.\n");

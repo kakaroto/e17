@@ -31,10 +31,6 @@ struct _ImapClient
    int               idle;
    unsigned char     idling : 1;
  
-   Ecore_Event_Handler *add_handler;
-   Ecore_Event_Handler *del_handler;
-   Ecore_Event_Handler *data_handler;
-
    void *data;
 
    struct {
