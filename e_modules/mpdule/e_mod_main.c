@@ -238,7 +238,7 @@ _mpdule_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
       evas_event_feed_mouse_up (inst->gcc->gadcon->evas, ev->button,
 				EVAS_BUTTON_NONE, ev->timestamp, NULL);
     } else if (ev->button == 1) {
-    	e_gadcon_popup_toggle_pinned(inst->popup);
+    	//e_gadcon_popup_toggle_pinned(inst->popup);
     }
 }
 
