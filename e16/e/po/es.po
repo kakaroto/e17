@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-01-05 11:19+0100\n"
+"POT-Creation-Date: 2008-01-05 11:41+0100\n"
 "PO-Revision-Date: 2005-06-14 23:39+0100\n"
 "Last-Translator: jacinto calvo sintes <netman2@seriousman.org>\n"
 "Language-Team: \n"
@@ -56,7 +56,7 @@ msgstr ""
 "\n"
 
 #: src/aclass.c:205 src/backgrounds.c:242 src/borders.c:650 src/buttons.c:184
-#: src/cmclass.c:84 src/cursors.c:122 src/iclass.c:358 src/tclass.c:97
+#: src/cmclass.c:84 src/cursors.c:122 src/iclass.c:358 src/tclass.c:103
 #: src/tooltips.c:134
 #, c-format
 msgid "%u references remain\n"
