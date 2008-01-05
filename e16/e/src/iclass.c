@@ -207,7 +207,7 @@ ImagestateColorsSetGray(ImageState * is,
 }
 
 static ImageState  *
-ImagestateCreate(void)
+ImagestateCreate(const char *file)
 {
    ImageState         *is;
 
@@ -218,6 +218,7 @@ ImagestateCreate(void)
    is->pixmapfillstyle = FILL_STRETCH;
    ImagestateColorsSetGray(is, 255, 200, 160, 120, 64);
    is->bevelstyle = BEVEL_NONE;
+   is->im_file = Estrdup(file);
 
    return is;
 }
@@ -618,84 +619,52 @@ ImageclassConfigLoad(FILE * fs)
 	  case CONFIG_DESKTOP:
 	     /* don't ask... --mandrake */
 	  case ICLASS_NORMAL:
-	     ic->norm.normal = ImagestateCreate();
-	     ic->norm.normal->im_file = Estrdup(s2);
-	     ICToRead = ic->norm.normal;
+	     ic->norm.normal = ICToRead = ImagestateCreate(s2);
 	     break;
 	  case ICLASS_CLICKED:
-	     ic->norm.clicked = ImagestateCreate();
-	     ic->norm.clicked->im_file = Estrdup(s2);
-	     ICToRead = ic->norm.clicked;
+	     ic->norm.clicked = ICToRead = ImagestateCreate(s2);
 	     break;
 	  case ICLASS_HILITED:
-	     ic->norm.hilited = ImagestateCreate();
-	     ic->norm.hilited->im_file = Estrdup(s2);
-	     ICToRead = ic->norm.hilited;
+	     ic->norm.hilited = ICToRead = ImagestateCreate(s2);
 	     break;
 	  case ICLASS_DISABLED:
-	     ic->norm.disabled = ImagestateCreate();
-	     ic->norm.disabled->im_file = Estrdup(s2);
-	     ICToRead = ic->norm.disabled;
+	     ic->norm.disabled = ICToRead = ImagestateCreate(s2);
 	     break;
 	  case ICLASS_STICKY_NORMAL:
-	     ic->sticky.normal = ImagestateCreate();
-	     ic->sticky.normal->im_file = Estrdup(s2);
-	     ICToRead = ic->sticky.normal;
+	     ic->sticky.normal = ICToRead = ImagestateCreate(s2);
 	     break;
 	  case ICLASS_STICKY_CLICKED:
-	     ic->sticky.clicked = ImagestateCreate();
-	     ic->sticky.clicked->im_file = Estrdup(s2);
-	     ICToRead = ic->sticky.clicked;
+	     ic->sticky.clicked = ICToRead = ImagestateCreate(s2);
 	     break;
 	  case ICLASS_STICKY_HILITED:
-	     ic->sticky.hilited = ImagestateCreate();
-	     ic->sticky.hilited->im_file = Estrdup(s2);
-	     ICToRead = ic->sticky.hilited;
+	     ic->sticky.hilited = ICToRead = ImagestateCreate(s2);
 	     break;
 	  case ICLASS_STICKY_DISABLED:
-	     ic->sticky.disabled = ImagestateCreate();
-	     ic->sticky.disabled->im_file = Estrdup(s2);
-	     ICToRead = ic->sticky.disabled;
+	     ic->sticky.disabled = ICToRead = ImagestateCreate(s2);
 	     break;
 	  case ICLASS_ACTIVE_NORMAL:
-	     ic->active.normal = ImagestateCreate();
-	     ic->active.normal->im_file = Estrdup(s2);
-	     ICToRead = ic->active.normal;
+	     ic->active.normal = ICToRead = ImagestateCreate(s2);
 	     break;
 	  case ICLASS_ACTIVE_CLICKED:
-	     ic->active.clicked = ImagestateCreate();
-	     ic->active.clicked->im_file = Estrdup(s2);
-	     ICToRead = ic->active.clicked;
+	     ic->active.clicked = ICToRead = ImagestateCreate(s2);
 	     break;
 	  case ICLASS_ACTIVE_HILITED:
-	     ic->active.hilited = ImagestateCreate();
-	     ic->active.hilited->im_file = Estrdup(s2);
-	     ICToRead = ic->active.hilited;
+	     ic->active.hilited = ICToRead = ImagestateCreate(s2);
 	     break;
 	  case ICLASS_ACTIVE_DISABLED:
-	     ic->active.disabled = ImagestateCreate();
-	     ic->active.disabled->im_file = Estrdup(s2);
-	     ICToRead = ic->active.disabled;
+	     ic->active.disabled = ICToRead = ImagestateCreate(s2);
 	     break;
 	  case ICLASS_STICKY_ACTIVE_NORMAL:
-	     ic->sticky_active.normal = ImagestateCreate();
-	     ic->sticky_active.normal->im_file = Estrdup(s2);
-	     ICToRead = ic->sticky_active.normal;
+	     ic->sticky_active.normal = ICToRead = ImagestateCreate(s2);
 	     break;
 	  case ICLASS_STICKY_ACTIVE_CLICKED:
-	     ic->sticky_active.clicked = ImagestateCreate();
-	     ic->sticky_active.clicked->im_file = Estrdup(s2);
-	     ICToRead = ic->sticky_active.clicked;
+	     ic->sticky_active.clicked = ICToRead = ImagestateCreate(s2);
 	     break;
 	  case ICLASS_STICKY_ACTIVE_HILITED:
-	     ic->sticky_active.hilited = ImagestateCreate();
-	     ic->sticky_active.hilited->im_file = Estrdup(s2);
-	     ICToRead = ic->sticky_active.hilited;
+	     ic->sticky_active.hilited = ICToRead = ImagestateCreate(s2);
 	     break;
 	  case ICLASS_STICKY_ACTIVE_DISABLED:
-	     ic->sticky_active.disabled = ImagestateCreate();
-	     ic->sticky_active.disabled->im_file = Estrdup(s2);
-	     ICToRead = ic->sticky_active.disabled;
+	     ic->sticky_active.disabled = ICToRead = ImagestateCreate(s2);
 	     break;
 	  default:
 	     ConfigParseError("ImageClass", s);
@@ -714,8 +683,7 @@ ImageclassCreateSimple(const char *name, const char *image)
    ImageClass         *ic;
 
    ic = ImageclassCreate(name);
-   ic->norm.normal = ImagestateCreate();
-   ic->norm.normal->im_file = Estrdup(image);
+   ic->norm.normal = ImagestateCreate(image);
    ic->norm.normal->unloadable = 1;
    ImageclassPopulate(ic);
 
@@ -1361,29 +1329,29 @@ ImageclassSetupFallback(void)
    /* create a fallback imageclass in case no imageclass can be found */
    ic = ImageclassCreate("__FALLBACK_ICLASS");
 
-   ic->norm.normal = ImagestateCreate();
+   ic->norm.normal = ImagestateCreate(NULL);
    ImagestateColorsSetGray(ic->norm.normal, 255, 255, 160, 0, 0);
    ic->norm.normal->bevelstyle = BEVEL_AMIGA;
 
-   ic->norm.hilited = ImagestateCreate();
+   ic->norm.hilited = ImagestateCreate(NULL);
    ImagestateColorsSetGray(ic->norm.hilited, 255, 255, 192, 0, 0);
    ic->norm.hilited->bevelstyle = BEVEL_AMIGA;
 
-   ic->norm.clicked = ImagestateCreate();
+   ic->norm.clicked = ImagestateCreate(NULL);
    ImagestateColorsSetGray(ic->norm.clicked, 0, 0, 192, 255, 255);
    ic->norm.clicked->bevelstyle = BEVEL_AMIGA;
 
-   ic->active.normal = ImagestateCreate();
+   ic->active.normal = ImagestateCreate(NULL);
    ImagestateColorsSetGray(ic->active.normal, 255, 255, 0, 0, 0);
    SET_COLOR(&(ic->active.normal->bg), 180, 140, 160);
    ic->active.normal->bevelstyle = BEVEL_AMIGA;
 
-   ic->active.hilited = ImagestateCreate();
+   ic->active.hilited = ImagestateCreate(NULL);
    ImagestateColorsSetGray(ic->active.hilited, 255, 255, 0, 0, 0);
    SET_COLOR(&(ic->active.hilited->bg), 230, 190, 210);
    ic->active.hilited->bevelstyle = BEVEL_AMIGA;
 
-   ic->active.clicked = ImagestateCreate();
+   ic->active.clicked = ImagestateCreate(NULL);
    ImagestateColorsSetGray(ic->active.clicked, 0, 0, 0, 255, 255);
    SET_COLOR(&(ic->active.clicked->bg), 230, 190, 210);
    ic->active.clicked->bevelstyle = BEVEL_AMIGA;
@@ -1398,7 +1366,7 @@ ImageclassSetupFallback(void)
    /* Create all black image class for filler borders */
    ic = ImageclassCreate("__BLACK");
 
-   ic->norm.normal = ImagestateCreate();
+   ic->norm.normal = ImagestateCreate(NULL);
    ImagestateColorsSetGray(ic->norm.normal, 0, 0, 0, 0, 0);
 
    ImageclassPopulate(ic);
