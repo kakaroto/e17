@@ -4612,3 +4612,18 @@ Fix more breakage around window movement.
 Prevent attempts to resize to less than 1x1.
 Handle h/v resize requests (_NET_WM_MOVERESIZE_SIZE_...) properly.
 
+
+-------------------------------------------------------------------------------
+
+Sat Jan  5 11:46:05 CET 2008
+(Kim)
+
+--- 0.16.8.11 0.05 ---
+Center title vertically within border.
+Fix more trouble during exit.
+Fix potential segv with broken themes (invalid border cfg).
+Simplify ImageclassApplySimple and ScaleRect.
+Mark deskray stuff as such.
+Remove black line at bottom of iconbox background image.
+Fix shaped menu shape.
+Simplify image/text class loading code.
