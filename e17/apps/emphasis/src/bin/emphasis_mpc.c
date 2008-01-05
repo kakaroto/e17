@@ -350,9 +350,15 @@ mpc_mlib_track_get(char *artist, char *album)
 
   if ((album != NULL) || (artist != NULL))
     {
-      data =
-        mpd_database_find_adv(mo, 1, MPD_TAG_ITEM_ARTIST, artist,
-                              MPD_TAG_ITEM_ALBUM, album, -1);
+#ifdef LIBMPD_0_13
+      mpd_database_search_start(mo, TRUE); // XXX do a fuzzy research?
+      mpd_database_search_add_constraint(mo, MPD_TAG_ITEM_ARTIST, artist);
+      mpd_database_search_add_constraint(mo, MPD_TAG_ITEM_ALBUM, album);
+      data = mpd_database_search_commit(mo);
+#else
+      data = mpd_database_find_adv(mo, 1, MPD_TAG_ITEM_ARTIST, artist,
+                                   MPD_TAG_ITEM_ALBUM, album, -1     );
+#endif
     }
   else
     {
