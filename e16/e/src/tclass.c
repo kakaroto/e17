@@ -46,7 +46,7 @@ TextstateFontLookup(const char *name)
 }
 
 static TextState   *
-TextstateCreate(void)
+TextstateCreate(const char *font)
 {
    TextState          *ts;
 
@@ -56,6 +56,12 @@ TextstateCreate(void)
 
    ts->style.mode = MODE_WRAP_CHAR;
    ts->style.orientation = FONT_TO_RIGHT;
+
+   if (font)
+     {
+	ts->fontname = TextstateFontLookup(font);
+	ts->style.mode = MODE_VERBATIM;
+     }
 
    return ts;
 }
@@ -274,147 +280,67 @@ TextclassConfigLoad(FILE * fs)
 	  case CONFIG_DESKTOP:
 	  case ICLASS_NORMAL:
 	     if (tc)
-		tc->norm.normal = ts = TextstateCreate();
-	     if (ts)
-	       {
-		  ts->fontname = TextstateFontLookup(s2);
-		  ts->style.mode = MODE_VERBATIM;
-	       }
+		tc->norm.normal = ts = TextstateCreate(s2);
 	     break;
 	  case ICLASS_CLICKED:
 	     if (tc)
-		tc->norm.clicked = ts = TextstateCreate();
-	     if (ts)
-	       {
-		  ts->fontname = TextstateFontLookup(s2);
-		  ts->style.mode = MODE_VERBATIM;
-	       }
+		tc->norm.clicked = ts = TextstateCreate(s2);
 	     break;
 	  case ICLASS_HILITED:
 	     if (tc)
-		tc->norm.hilited = ts = TextstateCreate();
-	     if (ts)
-	       {
-		  ts->fontname = TextstateFontLookup(s2);
-		  ts->style.mode = MODE_VERBATIM;
-	       }
+		tc->norm.hilited = ts = TextstateCreate(s2);
 	     break;
 	  case ICLASS_DISABLED:
 	     if (tc)
-		tc->norm.disabled = ts = TextstateCreate();
-	     if (ts)
-	       {
-		  ts->fontname = TextstateFontLookup(s2);
-		  ts->style.mode = MODE_VERBATIM;
-	       }
+		tc->norm.disabled = ts = TextstateCreate(s2);
 	     break;
 	  case ICLASS_STICKY_NORMAL:
 	     if (tc)
-		tc->sticky.normal = ts = TextstateCreate();
-	     if (ts)
-	       {
-		  ts->fontname = TextstateFontLookup(s2);
-		  ts->style.mode = MODE_VERBATIM;
-	       }
+		tc->sticky.normal = ts = TextstateCreate(s2);
 	     break;
 	  case ICLASS_STICKY_CLICKED:
 	     if (tc)
-		tc->sticky.clicked = ts = TextstateCreate();
-	     if (ts)
-	       {
-		  ts->fontname = TextstateFontLookup(s2);
-		  ts->style.mode = MODE_VERBATIM;
-	       }
+		tc->sticky.clicked = ts = TextstateCreate(s2);
 	     break;
 	  case ICLASS_STICKY_HILITED:
 	     if (tc)
-		tc->sticky.hilited = ts = TextstateCreate();
-	     if (ts)
-	       {
-		  ts->fontname = TextstateFontLookup(s2);
-		  ts->style.mode = MODE_VERBATIM;
-	       }
+		tc->sticky.hilited = ts = TextstateCreate(s2);
 	     break;
 	  case ICLASS_STICKY_DISABLED:
 	     if (tc)
-		tc->sticky.disabled = ts = TextstateCreate();
-	     if (ts)
-	       {
-		  ts->fontname = TextstateFontLookup(s2);
-		  ts->style.mode = MODE_VERBATIM;
-	       }
+		tc->sticky.disabled = ts = TextstateCreate(s2);
 	     break;
 	  case ICLASS_ACTIVE_NORMAL:
 	     if (tc)
-		tc->active.normal = ts = TextstateCreate();
-	     if (ts)
-	       {
-		  ts->fontname = TextstateFontLookup(s2);
-		  ts->style.mode = MODE_VERBATIM;
-	       }
+		tc->active.normal = ts = TextstateCreate(s2);
 	     break;
 	  case ICLASS_ACTIVE_CLICKED:
 	     if (tc)
-		tc->active.clicked = ts = TextstateCreate();
-	     if (ts)
-	       {
-		  ts->fontname = TextstateFontLookup(s2);
-		  ts->style.mode = MODE_VERBATIM;
-	       }
+		tc->active.clicked = ts = TextstateCreate(s2);
 	     break;
 	  case ICLASS_ACTIVE_HILITED:
 	     if (tc)
-		tc->active.hilited = ts = TextstateCreate();
-	     if (ts)
-	       {
-		  ts->fontname = TextstateFontLookup(s2);
-		  ts->style.mode = MODE_VERBATIM;
-	       }
+		tc->active.hilited = ts = TextstateCreate(s2);
 	     break;
 	  case ICLASS_ACTIVE_DISABLED:
 	     if (tc)
-		tc->active.disabled = ts = TextstateCreate();
-	     if (ts)
-	       {
-		  ts->fontname = TextstateFontLookup(s2);
-		  ts->style.mode = MODE_VERBATIM;
-	       }
+		tc->active.disabled = ts = TextstateCreate(s2);
 	     break;
 	  case ICLASS_STICKY_ACTIVE_NORMAL:
 	     if (tc)
-		tc->sticky_active.normal = ts = TextstateCreate();
-	     if (ts)
-	       {
-		  ts->fontname = TextstateFontLookup(s2);
-		  ts->style.mode = MODE_VERBATIM;
-	       }
+		tc->sticky_active.normal = ts = TextstateCreate(s2);
 	     break;
 	  case ICLASS_STICKY_ACTIVE_CLICKED:
 	     if (tc)
-		tc->sticky_active.clicked = ts = TextstateCreate();
-	     if (ts)
-	       {
-		  ts->fontname = TextstateFontLookup(s2);
-		  ts->style.mode = MODE_VERBATIM;
-	       }
+		tc->sticky_active.clicked = ts = TextstateCreate(s2);
 	     break;
 	  case ICLASS_STICKY_ACTIVE_HILITED:
 	     if (tc)
-		tc->sticky_active.hilited = ts = TextstateCreate();
-	     if (ts)
-	       {
-		  ts->fontname = TextstateFontLookup(s2);
-		  ts->style.mode = MODE_VERBATIM;
-	       }
+		tc->sticky_active.hilited = ts = TextstateCreate(s2);
 	     break;
 	  case ICLASS_STICKY_ACTIVE_DISABLED:
 	     if (tc)
-		tc->sticky_active.disabled = ts = TextstateCreate();
-	     if (ts)
-	       {
-		  ts->fontname = TextstateFontLookup(s2);
-		  ts->style.mode = MODE_VERBATIM;
-	       }
+		tc->sticky_active.disabled = ts = TextstateCreate(s2);
 	     break;
 	  case TEXT_MODE:
 	     if (ts)
@@ -465,9 +391,8 @@ TextclassSighan(int sig, void *prm __UNUSED__)
      case ESIGNAL_INIT:
 	/* create a fallback textclass in case no textclass is found */
 	tc = TextclassCreate("__FALLBACK_TCLASS");
-	tc->norm.normal = TextstateCreate();
-	tc->norm.normal->fontname =
-	   Estrdup("-*-helvetica-medium-r-*-*-12-*-*-*-*-*-*-*");
+	tc->norm.normal =
+	   TextstateCreate("-*-helvetica-medium-r-*-*-12-*-*-*-*-*-*-*");
 	SET_COLOR(&(tc->norm.normal->fg_col), 0, 0, 0);
 	TextclassPopulate(tc);
 	break;
