@@ -731,8 +731,11 @@ ewl_paned_pane_info_layout(Ewl_Paned *p, Ewl_Paned_Pane_Info *panes,
 		int give;
 		int i;
 
-		/* if we have no panes we don't need to calc their place */
-		if (cur_res < 1)
+		/* if we have no panes we don't need to calc their place,
+		 * or, if cur_res is as low as it will get avoid endless
+		 * loop
+		 */
+		if ((cur_res < 1) || (cur_res == (resizable - pane_num)))
 			DRETURN(DLEVEL_STABLE);
 
 		/* give can also be negative, so see it as a can take or give */
