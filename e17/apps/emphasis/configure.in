@@ -80,6 +80,10 @@ if `pkg-config --atleast-version=0.12.4 libmpd`
 then
 	libmpd_v_cflags="-DLIBMPD_0_12_4"
 fi
+if `pkg-config --atleast-version=0.13 libmpd`
+then
+	libmpd_v_cflags="${libmpd_v_cflags} -DLIBMPD_0_13"
+fi
 AC_SUBST(libmpd_v_cflags)
 
 AC_OUTPUT([
