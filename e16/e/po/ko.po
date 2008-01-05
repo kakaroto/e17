@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.17.1\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-12-30 22:42+0100\n"
+"POT-Creation-Date: 2008-01-05 11:19+0100\n"
 "PO-Revision-Date: 2004-08-29 01:02:30+0900\n"
 "Last-Translator: Michael Kim <lavnrose@e.sarang.net>\n"
 "Language-Team: Korean <translation-team-ko@lists.sourceforge.net>\n"
@@ -59,7 +59,7 @@ msgstr ""
 "Kim Woelders - kim@woelders.dk\n"
 
 #: src/aclass.c:205 src/backgrounds.c:242 src/borders.c:650 src/buttons.c:184
-#: src/cmclass.c:84 src/cursors.c:122 src/iclass.c:357 src/tclass.c:97
+#: src/cmclass.c:84 src/cursors.c:122 src/iclass.c:358 src/tclass.c:97
 #: src/tooltips.c:134
 #, c-format
 msgid "%u references remain\n"
@@ -1315,29 +1315,29 @@ msgstr "이 그룹 아이콘화"
 msgid "Group %i"
 msgstr "그룹 %i"
 
-#: src/menus.c:2042
+#: src/menus.c:2045
 msgid "Animated display of menus"
 msgstr "메뉴 표시 에니메이트"
 
-#: src/menus.c:2047
+#: src/menus.c:2050
 msgid "Always pop up menus on screen"
 msgstr "항상 화면에 메뉴를 팝업"
 
-#: src/menus.c:2052
+#: src/menus.c:2055
 msgid "Warp pointer after moving menus"
 msgstr "메뉴를 움직인 후에 포인터 뒤집기"
 
-#: src/menus.c:2058
+#: src/menus.c:2061
 #, fuzzy
 msgid "Menus"
 msgstr "메뉴:"
 
-#: src/menus.c:2059
+#: src/menus.c:2062
 #, fuzzy
 msgid "Menu Settings"
 msgstr "기타 설정"
 
-#: src/menus.c:2062
+#: src/menus.c:2065
 #, fuzzy
 msgid ""
 "Enlightenment Menu\n"

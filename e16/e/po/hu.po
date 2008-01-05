@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-12-30 22:42+0100\n"
+"POT-Creation-Date: 2008-01-05 11:19+0100\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: György Horák <dyuri@horak.hu>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
@@ -58,7 +58,7 @@ msgstr ""
 "Kim Woelders - kim@woelders.dk\n"
 
 #: src/aclass.c:205 src/backgrounds.c:242 src/borders.c:650 src/buttons.c:184
-#: src/cmclass.c:84 src/cursors.c:122 src/iclass.c:357 src/tclass.c:97
+#: src/cmclass.c:84 src/cursors.c:122 src/iclass.c:358 src/tclass.c:97
 #: src/tooltips.c:134
 #, c-format
 msgid "%u references remain\n"
@@ -1261,29 +1261,29 @@ msgstr "Csoport kicsinyítése"
 msgid "Group %i"
 msgstr "%i. csoport"
 
-#: src/menus.c:2042
+#: src/menus.c:2045
 msgid "Animated display of menus"
 msgstr "Menük animálása"
 
-#: src/menus.c:2047
+#: src/menus.c:2050
 msgid "Always pop up menus on screen"
 msgstr "A menük mindig a képben jelennek meg"
 
-#: src/menus.c:2052
+#: src/menus.c:2055
 msgid "Warp pointer after moving menus"
 msgstr "Menük mozgásával együtt az egérmutató is mozog"
 
-#: src/menus.c:2058
+#: src/menus.c:2061
 #, fuzzy
 msgid "Menus"
 msgstr "Menük:"
 
-#: src/menus.c:2059
+#: src/menus.c:2062
 #, fuzzy
 msgid "Menu Settings"
 msgstr "Vegyes beállítások"
 
-#: src/menus.c:2062
+#: src/menus.c:2065
 #, fuzzy
 msgid ""
 "Enlightenment Menu\n"
