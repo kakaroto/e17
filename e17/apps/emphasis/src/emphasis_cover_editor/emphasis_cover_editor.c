@@ -179,11 +179,11 @@ change_cover_path(char *cover_path)
   cover_changed = evas_list_append(cover_changed, ce);
 }
 
-void
+Etk_Bool
 on_dialog_destroy(Etk_Object *object, void *data)
 {
   etk_widget_hide_all(ETK_WIDGET(object));
-  etk_signal_stop();
+  return ETK_FALSE;
 }
 
 void
@@ -237,7 +237,7 @@ int main(int argc, char **argv)
 {
   eet_init();
   enhance_init();
-  etk_init(&argc, &argv);
+  etk_init(argc, argv);
    
   en = enhance_new();      
 
