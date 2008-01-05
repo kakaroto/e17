@@ -147,7 +147,7 @@ create_test(Ewl_Container *box)
 	pbox = ewl_hbox_new();
 	ewl_container_child_append(EWL_CONTAINER(pane1), pbox);
 	ewl_object_fill_policy_set(EWL_OBJECT(pbox),
-				EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
+				EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_NONE);
 	ewl_widget_show(pbox);
 
 	o = ewl_button_new();
