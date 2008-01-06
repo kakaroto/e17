@@ -683,6 +683,9 @@ ImageclassCreateSimple(const char *name, const char *image)
    ImageClass         *ic;
 
    ic = ImageclassCreate(name);
+   if (!ic)
+      return NULL;
+
    ic->norm.normal = ImagestateCreate(image);
    ic->norm.normal->unloadable = 1;
    ImageclassPopulate(ic);

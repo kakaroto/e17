@@ -680,11 +680,18 @@ MenuRepack(Menu * m)
 void
 MenuAddItem(Menu * m, MenuItem * item)
 {
+   MenuItem          **items;
+
    if (!item)
       return;
+
+   items = EREALLOC(MenuItem *, m->items, m->num + 1);
+   if (!items)
+      return;
+
+   items[m->num] = item;
+   m->items = items;
    m->num++;
-   m->items = EREALLOC(MenuItem *, m->items, m->num);
-   m->items[m->num - 1] = item;
 }
 
 static void

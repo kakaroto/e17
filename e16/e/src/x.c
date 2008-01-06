@@ -1402,7 +1402,7 @@ EShapePropagate(Win win)
    unsigned int        num_rects;
    int                 k, rn;
    int                 x, y, w, h;
-   XRectangle         *rects, *rl;
+   XRectangle         *rects, *rectsn, *rl;
 
    if (!win || win->w <= 0 || win->h <= 0)
       return 0;
@@ -1440,7 +1440,11 @@ EShapePropagate(Win win)
 	if (rn > 0)
 	  {
 	     rl = xch->rects;
-	     rects = EREALLOC(XRectangle, rects, num_rects + rn);
+	     rectsn = EREALLOC(XRectangle, rects, num_rects + rn);
+	     if (!rectsn)
+		goto bail_out;
+	     rects = rectsn;
+
 	     /* go through all clip rects in thsi window's shape */
 	     for (k = 0; k < rn; k++)
 	       {
@@ -1461,7 +1465,10 @@ EShapePropagate(Win win)
 	else if (rn == 0)
 	  {
 	     /* Unshaped */
-	     rects = EREALLOC(XRectangle, rects, num_rects + 1);
+	     rectsn = EREALLOC(XRectangle, rects, num_rects + 1);
+	     if (!rectsn)
+		goto bail_out;
+	     rects = rectsn;
 
 	     rects[num_rects].x = x;
 	     rects[num_rects].y = y;
@@ -1490,6 +1497,12 @@ EShapePropagate(Win win)
      }
 
    return win->num_rect;
+
+ bail_out:
+   if (rects)
+      Efree(rects);
+   EShapeCombineMask(win, ShapeBounding, 0, 0, None, ShapeSet);
+   return 0;
 }
 
 void
