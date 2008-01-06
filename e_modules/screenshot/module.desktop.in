@@ -3,3 +3,4 @@ Type=Link
 Name=Screenshot
 Icon=e-module-screenshot
 Comment=<hilight>Screenshot Gadget</hilight><br><br>Gadget to take screenshots utilizing emprint.
+Comment[it]=<hilight>Modulo Screenshot</hilight><br><br>Modulo per la cattura di istantanee dello schermo utilizzando emprint.
