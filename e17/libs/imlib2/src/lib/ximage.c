@@ -34,6 +34,22 @@ TmpXError(Display * d, XErrorEvent * ev)
    ev = NULL;
 }
 
+/* "safe" realloc allowing handling of out-of-memory situations */
+static void        *
+_safe_realloc(void *ptr, size_t size, int *err)
+{
+   void               *ptr_new;
+
+   ptr_new = realloc(ptr, size);
+   if (!ptr_new)
+     {
+        *err = 1;
+        return ptr;
+     }
+
+   return ptr_new;
+}
+
 void
 __imlib_SetMaxXImageCount(Display * d, int num)
 {
@@ -158,7 +174,7 @@ __imlib_ProduceXImage(Display * d, Visual * v, int depth, int w, int h,
                       char *shared)
 {
    XImage             *xim;
-   int                 i;
+   int                 i, err;
 
    /* if we havent check the shm extension before - see if its there */
    if (x_does_shm < 0)
@@ -196,22 +212,20 @@ __imlib_ProduceXImage(Display * d, Visual * v, int depth, int w, int h,
              return list_xim[i];
           }
      }
+
    /* can't find a usable XImage on the cache - create one */
    /* add the new XImage to the XImage cache */
    list_num++;
-   if (list_num == 1)
+   err = 0;
+   list_xim = _safe_realloc(list_xim, sizeof(XImage *) * list_num, &err);
+   list_si = _safe_realloc(list_si, sizeof(XShmSegmentInfo *) * list_num, &err);
+   list_used = _safe_realloc(list_used, sizeof(char) * list_num, &err);
+   list_d = _safe_realloc(list_d, sizeof(Display *) * list_num, &err);
+   if (err)
      {
-        list_xim = malloc(sizeof(XImage *) * list_num);
-        list_si = malloc(sizeof(XShmSegmentInfo *) * list_num);
-        list_used = malloc(sizeof(char) * list_num);
-        list_d = malloc(sizeof(Display *) * list_num);
-     }
-   else
-     {
-        list_xim = realloc(list_xim, sizeof(XImage *) * list_num);
-        list_si = realloc(list_si, sizeof(XShmSegmentInfo *) * list_num);
-        list_used = realloc(list_used, sizeof(char) * list_num);
-        list_d = realloc(list_d, sizeof(Display *) * list_num);
+        /* failed to allocate memory */
+        list_num--;
+        return NULL;
      }
    list_si[list_num - 1] = malloc(sizeof(XShmSegmentInfo));
 
@@ -309,7 +323,16 @@ __imlib_ProduceXImage(Display * d, Visual * v, int depth, int w, int h,
         /* create a normal ximage */
         xim = XCreateImage(d, v, depth, ZPixmap, 0, NULL, w, h, 32, 0);
         /* allocate data for it */
-        xim->data = malloc(xim->bytes_per_line * xim->height);
+        if (xim)
+           xim->data = malloc(xim->bytes_per_line * xim->height);
+        if (!xim || !xim->data)
+          {
+             /* failed to create XImage or allocate data memory */
+             if (xim)
+                XDestroyImage(xim);
+             list_num--;
+             return NULL;
+          }
         /* add xim to our list */
         list_xim[list_num - 1] = xim;
         /* incriment our memory count */
