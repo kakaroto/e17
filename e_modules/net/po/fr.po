@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Net\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-14 22:31+0100\n"
+"POT-Creation-Date: 2008-01-06 17:47+0100\n"
 "PO-Revision-Date: 2007-06-04 15:41+0100\n"
 "Last-Translator: Antoine Giniès <aginies.cooker@gmail.com>\n"
 "Language-Team: \n"
@@ -13,44 +13,44 @@ msgstr ""
 "X-Poedit-Country: FRANCE\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
-#: src/e_mod_configure.c:43
+#: src/e_mod_configure.c:44
 msgid "Net Module Configuration"
 msgstr "Configuration du module Réseau"
 
-#: src/e_mod_configure.c:113
+#: src/e_mod_configure.c:114
 #, fuzzy
 msgid "General Settings"
 msgstr "Choix de l'interface"
 
-#: src/e_mod_configure.c:114
+#: src/e_mod_configure.c:115
 msgid "Show Text"
 msgstr "Montrer le texte"
 
-#: src/e_mod_configure.c:116
+#: src/e_mod_configure.c:117
 msgid "Show Popup On Mouse-Over"
 msgstr "Montrer un Popup (souris au dessus)"
 
-#: src/e_mod_configure.c:118
+#: src/e_mod_configure.c:119
 msgid "Launch Application On Double-Click"
 msgstr "Lancer une application avec un double-clic"
 
-#: src/e_mod_configure.c:124
+#: src/e_mod_configure.c:125
 msgid "Activity Notification Level"
 msgstr "Fréquence du rapport d'activité"
 
-#: src/e_mod_configure.c:126
+#: src/e_mod_configure.c:127
 msgid "High (MB)"
 msgstr "Haute (MB)"
 
-#: src/e_mod_configure.c:128
+#: src/e_mod_configure.c:129
 msgid "Middle (KB)"
 msgstr "Moyenne (KB)"
 
-#: src/e_mod_configure.c:130
+#: src/e_mod_configure.c:131
 msgid "Low (B)"
 msgstr "Basse (B)"
 
-#: src/e_mod_configure.c:136
+#: src/e_mod_configure.c:137
 #, fuzzy
 msgid "Device Settings"
 msgstr "Choix de l'interface"
