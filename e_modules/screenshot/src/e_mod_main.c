@@ -47,6 +47,14 @@ static void             _cb_send_msg    (void *data);
 static void             _cb_do_shot     (void);
 static void             _cb_take_shot   (E_Object *obj, const char *params);
 
+typedef struct _Instance Instance;
+struct _Instance 
+{
+   E_Gadcon_Client *gcc;
+   Evas_Object *o_base;
+   E_Menu *menu, *menu_mode;
+};
+
 static Evas_List *instances = NULL;
 static E_Config_DD *conf_edd = NULL;
 static E_Action *act = NULL;

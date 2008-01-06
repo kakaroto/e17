@@ -7,7 +7,6 @@
    ((MOD_CONFIG_FILE_EPOCH << 16) | MOD_CONFIG_FILE_GENERATION)
 
 typedef struct _Config Config;
-typedef struct _Instance Instance;
 
 struct _Config 
 {
@@ -18,13 +17,6 @@ struct _Config
    unsigned char use_thumb;
    const char *location, *filename, *app;
    E_Config_Dialog *cfd;
-};
-
-struct _Instance 
-{
-   E_Gadcon_Client *gcc;
-   Evas_Object *o_base;
-   E_Menu *menu, *menu_mode;
 };
 
 EAPI extern E_Module_Api e_modapi;
