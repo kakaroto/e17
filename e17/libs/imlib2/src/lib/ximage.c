@@ -228,6 +228,12 @@ __imlib_ProduceXImage(Display * d, Visual * v, int depth, int w, int h,
         return NULL;
      }
    list_si[list_num - 1] = malloc(sizeof(XShmSegmentInfo));
+   if (!list_si[list_num - 1])
+     {
+        /* failed to allocate memory */
+        list_num--;
+        return NULL;
+     }
 
    /* work on making a shared image */
    xim = NULL;
