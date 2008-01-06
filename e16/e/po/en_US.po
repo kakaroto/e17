@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-01-05 11:41+0100\n"
+"POT-Creation-Date: 2008-01-06 15:09+0100\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Peter Kjellerstedt <pkj@axis.com>\n"
 "Language-Team: American English <en@li.org>\n"
@@ -1114,27 +1114,27 @@ msgstr ""
 msgid "Group %i"
 msgstr ""
 
-#: src/menus.c:2045
+#: src/menus.c:2055
 msgid "Animated display of menus"
 msgstr ""
 
-#: src/menus.c:2050
+#: src/menus.c:2060
 msgid "Always pop up menus on screen"
 msgstr ""
 
-#: src/menus.c:2055
+#: src/menus.c:2065
 msgid "Warp pointer after moving menus"
 msgstr ""
 
-#: src/menus.c:2061
+#: src/menus.c:2071
 msgid "Menus"
 msgstr ""
 
-#: src/menus.c:2062
+#: src/menus.c:2072
 msgid "Menu Settings"
 msgstr ""
 
-#: src/menus.c:2065
+#: src/menus.c:2075
 msgid ""
 "Enlightenment Menu\n"
 "Settings Dialog\n"

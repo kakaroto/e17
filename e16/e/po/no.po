@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-01-05 11:41+0100\n"
+"POT-Creation-Date: 2008-01-06 15:09+0100\n"
 "PO-Revision-Date: 2000-03-07 12:08+0100\n"
 "Last-Translator: Terje Røsten <terjeros@phys.ntnu.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
@@ -1299,29 +1299,29 @@ msgstr "Ikonifiser denne gruppa"
 msgid "Group %i"
 msgstr "Gruppe %i"
 
-#: src/menus.c:2045
+#: src/menus.c:2055
 msgid "Animated display of menus"
 msgstr "La menyer være animerte"
 
-#: src/menus.c:2050
+#: src/menus.c:2060
 msgid "Always pop up menus on screen"
 msgstr "La menyer alltid opptre innenfor skjermen"
 
-#: src/menus.c:2055
+#: src/menus.c:2065
 msgid "Warp pointer after moving menus"
 msgstr "Send muspeker tilbake etter flytting av meny"
 
-#: src/menus.c:2061
+#: src/menus.c:2071
 #, fuzzy
 msgid "Menus"
 msgstr "Rammestil"
 
-#: src/menus.c:2062
+#: src/menus.c:2072
 #, fuzzy
 msgid "Menu Settings"
 msgstr "Forskjellige innstillinger"
 
-#: src/menus.c:2065
+#: src/menus.c:2075
 #, fuzzy
 msgid ""
 "Enlightenment Menu\n"
