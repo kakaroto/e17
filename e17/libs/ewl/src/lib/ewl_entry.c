@@ -10,6 +10,10 @@
 #endif /* HAVE_LANGINFO_H */
 #include "ewl_debug.h"
 
+static Ewl_Widget *ewl_entry_view_cb_widget_fetch(void *data, unsigned int row,
+							unsigned int col);
+static Ewl_Widget *ewl_entry_view_cb_header_fetch(void *data, unsigned int col);
+
 #ifdef _WIN32
 # include <locale.h>
 
@@ -910,3 +914,49 @@ ewl_entry_cursor_position_get(Ewl_Entry_Cursor *c)
 	DRETURN_INT(ewl_text_cursor_position_get(EWL_TEXT(c->parent)),
 							DLEVEL_STABLE);
 }
+
+/**
+ * @return Returns a view that can be used to display Ewl_Entry widgets
+ * @brief Creates and returns a view to be used by Ewl_Entry widgets
+ */
+Ewl_View *
+ewl_entry_view_get(void)
+{
+	Ewl_View *view;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	view = ewl_view_new();
+	ewl_view_widget_fetch_set(view, ewl_entry_view_cb_widget_fetch);
+	ewl_view_header_fetch_set(view, ewl_entry_view_cb_header_fetch);
+
+	DRETURN_PTR(view, DLEVEL_STABLE);
+}
+
+static Ewl_Widget *
+ewl_entry_view_cb_widget_fetch(void *data, unsigned int row __UNUSED__,
+				unsigned int col __UNUSED__)
+{
+	Ewl_Widget *entry;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	entry = ewl_entry_new();
+	ewl_text_text_set(EWL_TEXT(entry), data);
+
+	DRETURN_PTR(entry, DLEVEL_STABLE);
+}
+
+static Ewl_Widget *
+ewl_entry_view_cb_header_fetch(void *data, unsigned int col __UNUSED__)
+{
+	Ewl_Widget *entry;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	entry = ewl_entry_new();
+	ewl_text_text_set(EWL_TEXT(entry), data);
+
+	DRETURN_PTR(entry, DLEVEL_STABLE);
+}
+

@@ -24,6 +24,9 @@ static void ewl_filepicker_cb_path_change(Ewl_Widget *w, void *ev,
 							void *data);
 static void ewl_filepicker_cb_filter_change(Ewl_Widget *w, void *ev,
 							void *data);
+static void ewl_filepicker_cb_path_entry_change(Ewl_Widget *w, void *ev,
+							void *data);
+
 static void ewl_filepicker_cb_type_change(Ewl_Widget *w, void *ev,
 							void *data);
 
@@ -31,6 +34,13 @@ static void *ewl_filepicker_cb_type_fetch(void *data, unsigned int row,
 						unsigned int col);
 static unsigned int ewl_filepicker_cb_type_count(void *data);
 static Ewl_Widget *ewl_filepicker_cb_type_header(void *data, unsigned int col);
+
+static void *ewl_filepicker_cb_path_fetch(void *data, unsigned int row,
+						unsigned int col);
+static unsigned int ewl_filepicker_cb_path_count(void *data);
+
+static Ewl_Widget *ewl_filepicker_cb_path_header(void *data, 
+							unsigned int col);
 
 static void ewl_filepicker_filter_free_cb(Ewl_Filelist_Filter *filter);
 
@@ -83,21 +93,28 @@ ewl_filepicker_init(Ewl_Filepicker *fp)
 
 	ewl_object_preferred_inner_size_set(EWL_OBJECT(fp), 400, 300);
 
-	fp->mvc_path.model = ewl_model_ecore_list_get();
+	fp->mvc_path.model = ewl_model_new();
+	ewl_model_data_fetch_set(fp->mvc_path.model,
+				ewl_filepicker_cb_path_fetch);
+	ewl_model_data_count_set(fp->mvc_path.model,
+				ewl_filepicker_cb_path_count);
 
 	fp->mvc_path.view = ewl_label_view_get();
+	ewl_view_header_fetch_set(fp->mvc_path.view,
+					ewl_filepicker_cb_path_header);
 
 	fp->path = ecore_list_new();
 	ecore_list_free_cb_set(fp->path, ECORE_FREE_CB(free));
 
 	fp->mvc_path.combo = ewl_combo_new();
+	ewl_combo_editable_set(EWL_COMBO(fp->mvc_path.combo), TRUE);
 	ewl_container_child_append(EWL_CONTAINER(fp),
 					fp->mvc_path.combo);
 	ewl_mvc_model_set(EWL_MVC(fp->mvc_path.combo),
 						fp->mvc_path.model);
 	ewl_mvc_view_set(EWL_MVC(fp->mvc_path.combo),
 						fp->mvc_path.view);
-	ewl_mvc_data_set(EWL_MVC(fp->mvc_path.combo), fp->path);
+	ewl_mvc_data_set(EWL_MVC(fp->mvc_path.combo), fp);
 	ewl_callback_append(fp->mvc_path.combo,
 				EWL_CALLBACK_VALUE_CHANGED,
 				ewl_filepicker_cb_path_change, fp);
@@ -313,8 +330,12 @@ ewl_filepicker_directory_set(Ewl_Filepicker *fp, const char *dir)
 	else
 		tmp = strdup(dir);
 
-	ewl_filepicker_path_populate(fp, tmp);
-	ewl_filelist_directory_set(EWL_FILELIST(fp->file_list), tmp);
+	if ((ecore_file_is_dir(tmp)) && (ecore_file_can_read(tmp)))
+	{
+		ewl_filepicker_path_populate(fp, tmp);
+		ewl_filelist_directory_set(EWL_FILELIST(fp->file_list), tmp);
+	}
+
 	FREE(tmp);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -644,8 +665,7 @@ ewl_filepicker_cb_type_fetch(void *data, unsigned int row,
 	DCHECK_PARAM_PTR_RET(data, NULL);
 
 	fp = data;
-	ecore_list_index_goto(fp->filters, row);
-	filter = ecore_list_current(fp->filters);
+	filter = ecore_list_index_goto(fp->filters, row);
 
 	DRETURN_PTR(filter->name, DLEVEL_STABLE);
 }
@@ -682,9 +702,56 @@ ewl_filepicker_cb_type_header(void *data, unsigned int col)
 		ewl_text_text_set(EWL_TEXT(w), filter->name);
 	ewl_callback_append(w, EWL_CALLBACK_VALUE_CHANGED,
 				ewl_filepicker_cb_filter_change, fp);
-	ewl_widget_show(w);
 
 	DRETURN_PTR(w, DLEVEL_STABLE);
+}
+
+static void *
+ewl_filepicker_cb_path_fetch(void *data, unsigned int row,
+						unsigned int col __UNUSED__)
+{
+	Ewl_Filepicker *fp;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET(data, NULL);
+
+	fp = data;
+
+	DRETURN_PTR(ecore_list_index_goto(fp->path, row), DLEVEL_STABLE);
+}
+
+static unsigned int
+ewl_filepicker_cb_path_count(void *data)
+{
+	Ewl_Filepicker *fp;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET(data, FALSE);
+
+	fp = data;
+
+	DRETURN_INT(ecore_list_count(fp->path), DLEVEL_STABLE);
+}
+
+static Ewl_Widget *
+ewl_filepicker_cb_path_header(void *data, unsigned int col __UNUSED__)
+{
+	Ewl_Filepicker *fp;
+	Ewl_Widget *entry;
+	char *path;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET(data, NULL);
+
+	fp = data;
+	path = ecore_list_index_goto(fp->path, col);
+
+	entry = ewl_entry_new();
+	ewl_text_text_set(EWL_TEXT(entry), path);
+	ewl_callback_append(entry, EWL_CALLBACK_VALUE_CHANGED,
+				ewl_filepicker_cb_path_entry_change, fp);
+
+	DRETURN_PTR(entry, DLEVEL_STABLE);
 }
 
 static void
@@ -771,6 +838,30 @@ ewl_filepicker_cb_filter_change(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 	ewl_filepicker_filter_add(fp, name, name, NULL);
 	ewl_filepicker_cb_type_change(fp->mvc_filters.combo, NULL, fp);
 	FREE(name);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_filepicker_cb_path_entry_change(Ewl_Widget *w, void *ev __UNUSED__,
+							void *data)
+{
+	Ewl_Filepicker *fp;
+	char *path;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_PARAM_PTR(data);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+
+	fp = data;
+	path = ewl_text_text_get(EWL_TEXT(w));
+
+	if (!path)
+		DRETURN(DLEVEL_STABLE);
+
+	ewl_filepicker_directory_set(fp, path);
+	FREE(path);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
