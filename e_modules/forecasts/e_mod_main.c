@@ -150,11 +150,12 @@ _gc_init(E_Gadcon * gc, const char *name, const char *id, const char *style)
    w = _forecasts_new(gc->evas);
    w->inst = inst;
    inst->forecasts = w;
-
+   
    o = w->forecasts_obj;
    gcc = e_gadcon_client_new(gc, name, id, style, o);
    gcc->data = inst;
    inst->gcc = gcc;
+   inst->popup = NULL;
    inst->forecasts_obj = o;
    evas_object_event_callback_add(inst->forecasts_obj, EVAS_CALLBACK_MOUSE_DOWN,
 				   _cb_mouse_down, inst);
@@ -885,7 +886,9 @@ _forecasts_display_set(Instance * inst, int ok)
    edje_object_part_text_set(inst->forecasts->forecasts_obj, "e.text.temp", buf);
    edje_object_part_text_set(inst->forecasts->forecasts_obj, "e.text.description",
 	 inst->condition.desc);
-   _forecasts_popup_content_create(inst);
+
+   if (inst->popup) _forecasts_popup_destroy(inst);
+   inst->popup = NULL;
 }
 
 void
@@ -910,7 +913,9 @@ _forecasts_config_updated(Config_Item *ci)
 	if (inst->area) evas_stringshare_del(inst->area);
 	inst->area = evas_stringshare_add(inst->ci->code);
 	_forecasts_converter(inst);
-	_forecasts_popup_content_create(inst);
+
+        if (inst->popup) _forecasts_popup_destroy(inst);
+        inst->popup = NULL;
 
 	snprintf(buf, sizeof(buf), "%d°%c", inst->condition.temp, inst->units.temp);
 	edje_object_part_text_set(inst->forecasts->forecasts_obj, "e.text.temp", buf);
@@ -941,7 +946,6 @@ _forecasts_popup_content_create(Instance *inst)
    int row = 0, i;
    int w, h;
 
-   if (inst->popup) _forecasts_popup_destroy(inst);
    inst->popup = e_gadcon_popup_new(inst->gcc, _forecasts_popup_resize);
 
    evas = inst->popup->win->evas;
@@ -1078,8 +1082,10 @@ _cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
    Evas_Event_Mouse_Down *ev;
 
    if (!(inst = data)) return;
+
    if (!inst->ci->popup_on_hover)
      {
+       if (!inst->popup) _forecasts_popup_content_create(inst);
         e_gadcon_popup_show(inst->popup);
 	return;
      }
@@ -1099,6 +1105,7 @@ _cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
    if (!(inst = data)) return;
    if (!inst->ci->popup_on_hover) return;
 
+   if (!inst->popup) _forecasts_popup_content_create(inst);
    e_gadcon_popup_show(inst->popup);
 }
 
