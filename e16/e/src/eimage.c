@@ -160,6 +160,9 @@ _EImageCheckAlpha(void)
       return 0;
 
    pb = (unsigned char *)imlib_image_get_data_for_reading_only();
+   if (!pb)
+      return 0;
+
    pe = pb + 4 * imlib_image_get_width() * imlib_image_get_height();
    pb += *((char *)(&oink));
    for (; pb < pe; pb += 4)
