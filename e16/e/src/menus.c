@@ -696,6 +696,9 @@ MenuRealize(Menu * m)
    EImageBorder       *pad, *pad_item, *pad_sub;
    char                has_i, has_s;
 
+   if (m->num <= 0)
+      return;
+
    if (!m->style)
      {
 	MenuSetStyle(m, NULL);
