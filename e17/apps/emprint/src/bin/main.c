@@ -168,47 +168,48 @@ _em_parse_cmdln(Options *o, int argc, char *argv[])
    /* parse the options provided by user */
    while ((c = getopt_long_only(argc, argv, "d:a:t:g:q:hv", longopts, NULL)) != -1)
      {
-	switch (c) {
-	 case 0: /* Flags were set.... do nothing. */
-	   break;
-	 case 'd':
-	   o->delay = atoi(optarg);
-	   break;
-	 case 'a':
-	   o->app = evas_stringshare_add(optarg);
-	   break;
-	 case 't':
-	   o->use_thumb = 1;
-	   o->thumb.filename = evas_stringshare_add(optarg);
-	   break;
-	 case 'g':
-	   o->use_thumb = 1;
-	   if (strstr(optarg, "x"))
-	     {
-		sscanf(optarg, "%ix%i", &tw, &th);
-		o->thumb.width = tw;
-		o->thumb.height = th;
-	     }
-	   else
-	     {
-		ts = atoi(optarg);
-		if (ts < 1) ts = 1;
-		else if (ts > 100) ts = 100;
-		o->thumb.size = ts;
-	     }
-	   break;
-	 case 'q':
-	   o->quality = atoi(optarg);
-	   break;
-	 case 'v': /* Print version and bail */
-	   _em_print_version();
-	   break;
-	 case '?': /* ErrMsg is printed, then Fallthrough */
-	 case 'h': /* Fallthrough */
-	 default:
-	   _em_print_help();
-	   break;
-	}
+	switch (c) 
+          {
+           case 0: /* Flags were set.... do nothing. */
+             break;
+           case 'd':
+             o->delay = atoi(optarg);
+             break;
+           case 'a':
+             o->app = evas_stringshare_add(optarg);
+             break;
+           case 't':
+             o->use_thumb = 1;
+             o->thumb.filename = evas_stringshare_add(optarg);
+             break;
+           case 'g':
+             o->use_thumb = 1;
+             if (strstr(optarg, "x"))
+               {
+                  sscanf(optarg, "%ix%i", &tw, &th);
+                  o->thumb.width = tw;
+                  o->thumb.height = th;
+               }
+             else
+               {
+                  ts = atoi(optarg);
+                  if (ts < 1) ts = 1;
+                  else if (ts > 100) ts = 100;
+                  o->thumb.size = ts;
+               }
+             break;
+           case 'q':
+             o->quality = atoi(optarg);
+             break;
+           case 'v': /* Print version and bail */
+             _em_print_version();
+             break;
+           case '?': /* ErrMsg is printed, then Fallthrough */
+           case 'h': /* Fallthrough */
+           default:
+             _em_print_help();
+             break;
+          }
      }
 
    /* The filename, if it exists, is expected to be the last command line arg */
