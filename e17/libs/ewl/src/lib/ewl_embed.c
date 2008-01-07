@@ -560,6 +560,7 @@ ewl_embed_mouse_down_feed(Ewl_Embed *embed, int b, int clicks, int x, int y,
 	while (temp && temp->parent && ewl_widget_internal_is(temp))
 		temp = temp->parent;
 
+	/* Show widgets as focused */
 	ewl_embed_focused_widget_set(embed, temp);
 
 	/*
@@ -597,30 +598,6 @@ ewl_embed_mouse_down_feed(Ewl_Embed *embed, int b, int clicks, int x, int y,
 					EWL_CALLBACK_CLICKED, &ev);
 		}
 		temp = temp->parent;
-	}
-
-	/*
-	 * Determine whether this widget has already been selected, if not,
-	 * deselect the previously selected widget and notify it of the
-	 * change. Then select the new widget and notify it of the selection.
-	 */
-	if (widget != deselect) {
-		/*
-		 * Make sure these widgets haven't been scheduled for
-		 * deletion before we send their callbacks.
-		 */
-		if (deselect && !DESTROYED(deselect) &&
-				!ewl_widget_parent_of(deselect, widget)) {
-			ewl_object_state_remove(EWL_OBJECT(deselect),
-						EWL_FLAG_STATE_FOCUSED);
-			ewl_callback_call(deselect, EWL_CALLBACK_FOCUS_OUT);
-		}
-
-		if (widget && !DISABLED(widget) && !DESTROYED(widget)) {
-			ewl_object_state_add(EWL_OBJECT(widget),
-					EWL_FLAG_STATE_FOCUSED);
-			ewl_callback_call(widget, EWL_CALLBACK_FOCUS_IN);
-		}
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1536,13 +1513,29 @@ ewl_embed_focused_widget_set(Ewl_Embed *embed, Ewl_Widget *w)
 	DCHECK_TYPE(embed, EWL_EMBED_TYPE);
 	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	if (embed->last.focused && (embed->last.focused != w))
+	/*
+	 * Determine whether this widget has already been selected, if not,
+	 * deselect the previously selected widget and notify it of the
+	 * change. Then select the new widget and notify it of the selection.
+	 */
+	if (embed->last.focused && (embed->last.focused != w) &&
+				!DESTROYED(embed->last.focused) &&
+				!ewl_widget_parent_of(embed->last.focused, w))
+	{
+		ewl_object_state_remove(EWL_OBJECT(embed->last.focused),
+					EWL_FLAG_STATE_FOCUSED);
 		ewl_callback_call(embed->last.focused, EWL_CALLBACK_FOCUS_OUT);
+	}
 
 	embed->last.focused = w;
 
-	if (embed->last.focused)
+	if (embed->last.focused && !DISABLED(embed->last.focused) &&
+				!DESTROYED(embed->last.focused))
+	{
+		ewl_object_state_add(EWL_OBJECT(embed->last.focused),
+					EWL_FLAG_STATE_FOCUSED);
 		ewl_callback_call(embed->last.focused, EWL_CALLBACK_FOCUS_IN);
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
