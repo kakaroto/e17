@@ -560,6 +560,9 @@ ewl_embed_mouse_down_feed(Ewl_Embed *embed, int b, int clicks, int x, int y,
 	while (temp && temp->parent && ewl_widget_internal_is(temp))
 		temp = temp->parent;
 
+	/* Set last focused to new widget */
+	embed->last.focused = temp;
+
 	/*
 	 * Make sure we set this _BEFORE_ doing the callbacks below because
 	 * the CLICK or DOWN callback may trigger the widget itself to be
