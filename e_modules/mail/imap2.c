@@ -58,8 +58,17 @@ _mail_imap_check_mail (void *data)
 
 	     if (ecore_con_ssl_available_get () && (ic->config->ssl))
 	       {
-		  type |= ECORE_CON_USE_SSL;
 		  D ("Use SSL for %s:%s\n", ic->config->host, ic->config->new_path);
+		  switch (ic->config->ssl)
+		    {
+		     case 3:
+			type |= ECORE_CON_USE_SSL3;
+			break;
+		     case 2:
+		     default:
+			type |= ECORE_CON_USE_SSL;
+			break;
+		    }
 	       }
 	     ic->state = IMAP_STATE_DISCONNECTED;
 	     ic->server =
@@ -114,6 +123,9 @@ _mail_imap_del_mailbox (void *data)
    if (!ic)
      return;
    iclients = evas_list_remove (iclients, ic);
+   _mail_imap_client_logout (ic);
+   E_FREE (ic);
+
    if (!iclients)
      {
 	if (add_handler)
@@ -126,8 +138,6 @@ _mail_imap_del_mailbox (void *data)
 	  ecore_event_handler_del (data_handler);
 	data_handler = NULL;
      }
-   _mail_imap_client_logout (ic);
-   E_FREE (ic);
 }
 
 void
@@ -329,6 +339,7 @@ _mail_imap_server_data (void *data, int type, void *event)
 	     /* parse data */
 	     if (!_mail_imap_server_data_parse (ic, p))
 	       {
+		  printf ("Imap Failure: Couldn't parse data\n");
 		  _mail_imap_client_logout (ic);
 		  return 0;
 	       }

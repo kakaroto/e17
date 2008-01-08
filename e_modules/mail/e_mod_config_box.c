@@ -1,3 +1,6 @@
+/*
+ * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
+ */
 #include <e.h>
 #include "e_mod_main.h"
 #include "mbox.h"
@@ -10,6 +13,7 @@ struct _E_Config_Dialog_Data
   char *port;
   int monitor;
   int ssl;
+  int ssl_version;
   int local;
   char *host;
   char *user;
@@ -27,6 +31,8 @@ struct _E_Config_Dialog_Data
   Evas_Object *cur_path_label;
   Evas_Object *cur_path_entry;
   Evas_Object *monitor_check;
+  Evas_Object *sslv2;
+  Evas_Object *sslv3;
 };
 
 static void *_create_data (E_Config_Dialog * cfd);
@@ -75,6 +81,7 @@ _fill_data (Config_Box * cb, E_Config_Dialog_Data * cfdata)
       cfdata->type = 0;
       cfdata->monitor = 1;
       cfdata->ssl = 0;
+      cfdata->ssl_version = 2;
       cfdata->use_exec = 0;
       cfdata->local = 0;
       snprintf (buf, sizeof (buf), "110");
@@ -87,7 +94,17 @@ _fill_data (Config_Box * cb, E_Config_Dialog_Data * cfdata)
 
   cfdata->type = cb->type;
   cfdata->monitor = cb->monitor;
-  cfdata->ssl = cb->ssl;
+  if (cb->ssl)
+    {
+      cfdata->ssl = 1;
+      cfdata->ssl_version = cb->ssl;
+    }
+  else
+    {
+      cfdata->ssl = 0;
+      cfdata->ssl_version = 2;
+    }
+  E_CONFIG_LIMIT(cfdata->ssl_version, 2, 3);
   cfdata->use_exec = cb->use_exec;
   cfdata->local = cb->local;
    
@@ -202,16 +219,24 @@ _basic_create_widgets (E_Config_Dialog * cfd, Evas * evas,
   e_widget_on_change_hook_set (ob, _type_cb_change, cfdata);
   e_widget_frametable_object_append (of, ob, 1, 0, 1, 1, 0, 0, 1, 0);
 
+  rg = e_widget_radio_group_new (&(cfdata->ssl_version));
+  cfdata->sslv2 = e_widget_radio_add (evas, D_("v2"), 2, rg);
+  if (!cfdata->ssl) e_widget_disabled_set(cfdata->sslv2, 1);
+  e_widget_frametable_object_append (of, cfdata->sslv2, 2, 0, 1, 1, 0, 0, 1, 0);
+  cfdata->sslv3 = e_widget_radio_add (evas, D_("v3"), 3, rg);
+  if (!cfdata->ssl) e_widget_disabled_set(cfdata->sslv3, 1);
+  e_widget_frametable_object_append (of, cfdata->sslv3, 3, 0, 1, 1, 0, 0, 1, 0);
+
   ob = e_widget_label_add (evas, D_("Port:"));
   e_widget_frametable_object_append (of, ob, 0, 1, 1, 1, 0, 0, 1, 0);
   ob = e_widget_entry_add (evas, &cfdata->port, NULL, NULL, NULL);
   cfdata->port_entry = ob;
-  e_widget_frametable_object_append (of, ob, 1, 1, 1, 1, 0, 0, 1, 0);
+  e_widget_frametable_object_append (of, ob, 1, 1, 3, 1, 0, 0, 1, 0);
 
   ob = e_widget_label_add (evas, D_("Local:"));
   e_widget_frametable_object_append (of, ob, 0, 2, 1, 1, 0, 0, 1, 0);
   ob = e_widget_check_add (evas, "", &(cfdata->local));
-  e_widget_frametable_object_append (of, ob, 1, 2, 1, 1, 0, 0, 1, 0);   
+  e_widget_frametable_object_append (of, ob, 1, 2, 3, 1, 0, 0, 1, 0);   
    e_widget_list_object_append (o, of, 1, 1, 0.5);
    
   of = e_widget_frametable_add (evas, D_("Mailbox Settings"), 1);
@@ -295,7 +320,10 @@ _basic_apply_data (E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
   cb->type = cfdata->type;
   cb->port = atoi (cfdata->port);
   cb->monitor = cfdata->monitor;
-  cb->ssl = cfdata->ssl;
+  if (cfdata->ssl)
+    cb->ssl = cfdata->ssl_version;
+  else
+    cb->ssl = 0;
   cb->local = cfdata->local;
    
   cb->use_exec = cfdata->use_exec;
@@ -433,6 +461,17 @@ _type_cb_change (void *data, Evas_Object * obj)
     {
       e_widget_check_checked_set (cfdata->monitor_check, 0);
       e_widget_disabled_set (cfdata->monitor_check, 1);
+    }
+
+  if (cfdata->ssl)
+    {
+      e_widget_disabled_set (cfdata->sslv2, 0);
+      e_widget_disabled_set (cfdata->sslv3, 0);
+    }
+  else
+    {
+      e_widget_disabled_set (cfdata->sslv2, 1);
+      e_widget_disabled_set (cfdata->sslv3, 1);
     }
 }
 
