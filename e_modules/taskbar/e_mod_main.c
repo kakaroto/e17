@@ -1219,6 +1219,37 @@ _taskbar_cb_event_desk_show(void *data, int type, void *event)
    return 1;
 }
 
+static int
+_taskbar_cb_event_border_urgent_change (void *data, int type, void *event)
+{
+   E_Event_Border_Urgent_Change *ev;
+   E_Border *bd;
+   Taskbar_Icon *ic;
+   Evas_List *l;
+
+   ev = event;
+   bd = ev->border;
+   if (!bd)
+     return 1;
+
+   for (l = taskbar_config->instances; l; l = l->next)
+     {
+	Instance *inst;
+
+	inst = l->data;
+	ic = _taskbar_icon_find (inst->taskbar, bd);
+	if (ic)
+	  {
+	     _taskbar_icon_signal_emit (ic, "urgent", "");
+	     if (bd->client.icccm.urgent)
+	       _taskbar_icon_signal_emit (ic, "urgent", "");
+	     else
+	       _taskbar_icon_signal_emit (ic, "not_urgent", "");
+	  }
+     }
+   return 1;
+}
+
 static Config_Item *
 _taskbar_config_item_get(const char *id)
 {
@@ -1344,6 +1375,9 @@ e_modapi_init(E_Module *m)
    taskbar_config->handlers = evas_list_append
       (taskbar_config->handlers, ecore_event_handler_add
        (E_EVENT_DESK_SHOW, _taskbar_cb_event_desk_show, NULL));
+   taskbar_config->handlers = evas_list_append
+      (taskbar_config->handlers, ecore_event_handler_add
+       (E_EVENT_BORDER_URGENT_CHANGE, _taskbar_cb_event_border_urgent_change, NULL));
 
    e_gadcon_provider_register(&_gadcon_class);
    return m;
