@@ -481,7 +481,10 @@ ewl_callback_call_with_event_data(Ewl_Widget *w, unsigned int t,
 	parent = w->parent;
 	while (parent) {
 		if (EWL_CALLBACK_FLAGS(parent, t) & EWL_CALLBACK_NOTIFY_NOTIFY)
+		{
 			top = parent;
+			break;
+		}
 		parent = parent->parent;
 	}
 

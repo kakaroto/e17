@@ -50,6 +50,8 @@ ewl_filelist_model_directory_new(const char *path,
 	ecore_list_free_cb_set(dirs, ECORE_FREE_CB(free_file));
 
 	all_files = ecore_file_ls(path);
+	if (!all_files)
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
 	/* Add in the ".." entry for now */
 	if ((show_dot_dot) && (strcmp(path, "/")))
