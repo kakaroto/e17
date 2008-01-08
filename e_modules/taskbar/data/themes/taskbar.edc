@@ -10,6 +10,7 @@ images {
    image: "e17_pager_desk.png" COMP;
    image: "e17_button_sm.png" COMP;
    image: "e17_button_sm2.png" COMP;
+   image: "e17_button_sm2_urgent.png" COMP;
    image: "e17_button_sm_disabled.png" COMP;
    image: "e17_titlebar_glint1.png" COMP;
    image: "e17_titlebar_glint2.png" COMP;
@@ -118,6 +119,26 @@ collections {
             }
             description {
                state:    "focused" 0.0;
+               inherit:  "default" 0.0;
+               color: 255 255 255 255;
+            }
+         }
+
+         part {
+            name:          "button_image_urgent";
+            type:          IMAGE;
+            mouse_events:  0;
+            description {
+               state:    "default" 0.0;
+               min:      56 16;
+               image {
+                  normal: "e17_button_sm2_urgent.png";
+                  border: 8 8 8 8;
+               }
+               color: 255 255 255 0;
+            }
+            description {
+               state:    "active" 0.0;
                inherit:  "default" 0.0;
                color: 255 255 255 255;
             }
@@ -302,6 +323,42 @@ collections {
             action:  STATE_SET "focused" 0.0;
             transition: LINEAR 0.0;
             target:  "button_image";
+         }
+         program {
+            name:    "urgent";
+            signal:  "urgent";
+            source:  "";
+	    after: "go_urgent";
+         }
+	 program {
+            name:    "go_urgent";
+            action:  STATE_SET "active" 0.0;
+            transition: LINEAR 0.5;
+            target:  "button_image_urgent";
+	    after: "go_urgent2";
+	 }
+	 program {
+            name:    "go_urgent2";
+            action:  STATE_SET "default" 0.0;
+            transition: LINEAR 0.5;
+            target:  "button_image_urgent";
+	    after: "go_urgent";
+	 }
+         program {
+            name:    "not_urgent";
+            signal:  "not_urgent";
+            source:  "";
+            action:  ACTION_STOP;
+            target:  "go_urgent";
+            target:  "go_urgent2";
+            target:  "go_not_urgent";
+	    after: "go_not_urgent";
+         }
+         program {
+            name:    "go_not_urgent";
+            action:  STATE_SET "default" 0.0;
+            transition: LINEAR 0.5;
+            target:  "button_image_urgent";
          }
 
          program {
