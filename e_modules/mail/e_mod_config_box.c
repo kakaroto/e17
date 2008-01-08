@@ -10,7 +10,7 @@ struct _E_Config_Dialog_Data
   char *port;
   int monitor;
   int ssl;
-   int local;
+  int local;
   char *host;
   char *user;
   char *pass;
@@ -76,7 +76,7 @@ _fill_data (Config_Box * cb, E_Config_Dialog_Data * cfdata)
       cfdata->monitor = 1;
       cfdata->ssl = 0;
       cfdata->use_exec = 0;
-       cfdata->local = 0;
+      cfdata->local = 0;
       snprintf (buf, sizeof (buf), "110");
       cfdata->port = strdup (buf);
       return;
@@ -89,7 +89,7 @@ _fill_data (Config_Box * cb, E_Config_Dialog_Data * cfdata)
   cfdata->monitor = cb->monitor;
   cfdata->ssl = cb->ssl;
   cfdata->use_exec = cb->use_exec;
-   cfdata->local = cb->local;
+  cfdata->local = cb->local;
    
   snprintf (buf, sizeof (buf), "%d", cb->port);
   cfdata->port = strdup (buf);
