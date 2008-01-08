@@ -19,7 +19,8 @@ static E_Gadcon_Client_Class _gadcon_class = {
    GADCON_CLIENT_CLASS_VERSION,
    "taskbar",
    {
-    _gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon, _gc_id_new, NULL},
+      _gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon, _gc_id_new, NULL
+   },
    E_GADCON_CLIENT_STYLE_PLAIN
 };
  /**/
@@ -49,8 +50,8 @@ struct _Taskbar
    Evas_List *icons;            // List of icons
    Evas_List *borders;          // List of borders
    E_Zone *zone;                // Current Zone
-   int xpos;		        // Position of the current
-   int ypos;	                // icon in the table
+   int xpos;                    // Position of the current
+   int ypos;                    // icon in the table
    int xmax;                    // Total number of 
    int ymax;                    // cells available
    int bwidth;                  // Width of taskbar
@@ -85,7 +86,7 @@ static void _taskbar_resize_handle(Taskbar *b);
 static Taskbar_Icon *_taskbar_icon_find(Taskbar *b, E_Border *bd);
 static Taskbar_Icon *_taskbar_icon_at_coord(Taskbar *b, Evas_Coord x, Evas_Coord y);
 static Taskbar_Icon *_taskbar_icon_new(Taskbar *b, E_Border *bd);
-static int  _taskbar_icon_check_add(Taskbar *b, E_Border *bd);
+static int _taskbar_icon_check_add(Taskbar *b, E_Border *bd);
 static void _taskbar_icon_add(Taskbar *b, E_Border *bd);
 static void _taskbar_icon_remove(Taskbar *b, E_Border *bd);
 static void _taskbar_icon_free(Taskbar_Icon *ic);
@@ -130,8 +131,10 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    int cx, cy, cw, ch;
 
    inst = E_NEW(Instance, 1);
+
    inst->ci = _taskbar_config_item_get(id);
-   if (!inst->ci->id) inst->ci->id = evas_stringshare_add(id);
+   if (!inst->ci->id)
+      inst->ci->id = evas_stringshare_add(id);
 
    b = _taskbar_new(gc->evas, gc->zone);
 
@@ -175,7 +178,7 @@ _gc_orient(E_Gadcon_Client *gcc)
    int w;
 
    inst = (Instance *)gcc->data;
-   
+
    switch (gcc->gadcon->orient)
      {
      case E_GADCON_ORIENT_FLOAT:
@@ -187,8 +190,8 @@ _gc_orient(E_Gadcon_Client *gcc)
      case E_GADCON_ORIENT_CORNER_BL:
      case E_GADCON_ORIENT_CORNER_BR:
         _taskbar_orient_set(inst->taskbar, 1);
-	w =evas_list_count(inst->taskbar->borders);
-	e_gadcon_client_aspect_set(gcc, inst->taskbar->gccw, inst->taskbar->gcch);
+        w = evas_list_count(inst->taskbar->borders);
+        e_gadcon_client_aspect_set(gcc, inst->taskbar->gccw, inst->taskbar->gcch);
         break;
      case E_GADCON_ORIENT_VERT:
      case E_GADCON_ORIENT_LEFT:
@@ -234,10 +237,11 @@ _gc_id_new(void)
    ci = _taskbar_config_item_get(NULL);
    return ci->id;
 }
- /**/
+
+/**/
 /***************************************************************************/
 /***************************************************************************/
- /**/ 
+/**/
 
 static Taskbar *
 _taskbar_new(Evas *evas, E_Zone *zone)
@@ -250,16 +254,16 @@ _taskbar_new(Evas *evas, E_Zone *zone)
    b->o_gccbox = edje_object_add(evas);
    snprintf(buf, sizeof(buf), "%s/taskbar.edj", e_module_dir_get(taskbar_config->module));
    if (!e_theme_edje_object_set(b->o_gccbox, "base/theme/modules/taskbar", "modules/taskbar/box"))
-     edje_object_file_set(b->o_gccbox, buf, "modules/taskbar/box");
+      edje_object_file_set(b->o_gccbox, buf, "modules/taskbar/box");
 
    expand = edje_object_data_get(b->o_gccbox, "expand");
 
-   if (expand==NULL)
-     e_error_message_show(expand);
+   if (expand == NULL)
+      e_error_message_show(expand);
 
    if (expand)
      {
-	b->expand = strcmp(expand, "0");
+        b->expand = strcmp(expand, "0");
      }
    b->o_box = e_table_add(evas);
    b->xpos = 0;
@@ -297,27 +301,25 @@ _taskbar_cb_empty_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_
    if (!taskbar_config->menu)
      {
         E_Menu *mn;
-	E_Menu_Item *mi;
+        E_Menu_Item *mi;
         int cx, cy, cw, ch;
 
         mn = e_menu_new();
         e_menu_post_deactivate_callback_set(mn, _taskbar_cb_menu_post, NULL);
         taskbar_config->menu = mn;
 
-	mi = e_menu_item_new(mn);
-	e_menu_item_label_set(mi, D_("Configuration"));
-	e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
-	e_menu_item_callback_set(mi, _taskbar_cb_menu_configure, b);
+        mi = e_menu_item_new(mn);
+        e_menu_item_label_set(mi, D_("Configuration"));
+        e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
+        e_menu_item_callback_set(mi, _taskbar_cb_menu_configure, b);
 
         e_gadcon_client_util_menu_items_append(b->inst->gcc, mn, 0);
 
         e_gadcon_canvas_zone_geometry_get(b->inst->gcc->gadcon, &cx, &cy, &cw, &ch);
         e_menu_activate_mouse(mn,
                               e_util_zone_current_get(e_manager_current_get()),
-                              cx + ev->output.x, cy + ev->output.y, 1, 1, 
-			      E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
-        evas_event_feed_mouse_up(b->inst->gcc->gadcon->evas, ev->button, 
-	                         EVAS_BUTTON_NONE, ev->timestamp, NULL);
+                              cx + ev->output.x, cy + ev->output.y, 1, 1, E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
+        evas_event_feed_mouse_up(b->inst->gcc->gadcon->evas, ev->button, EVAS_BUTTON_NONE, ev->timestamp, NULL);
      }
 }
 
@@ -330,11 +332,11 @@ _taskbar_empty_handle(Taskbar *b)
           {
              b->o_empty = evas_object_rectangle_add(evas_object_evas_get(b->o_box));
              evas_object_event_callback_add(b->o_empty, EVAS_CALLBACK_MOUSE_DOWN, _taskbar_cb_empty_mouse_down, b);
-             e_table_pack_options_set(b->o_empty, 1, 1,   /* fill */
-                                    1, 1,                 /* expand */
-                                    0.0, 0.0,             /* align */
-                                    0, 0,                 /* min */
-                                    -1, -1                /* max */
+             e_table_pack_options_set(b->o_empty, 1, 1, /* fill */
+                                      1, 1,     /* expand */
+                                      0.0, 0.0, /* align */
+                                      0, 0,     /* min */
+                                      -1, -1    /* max */
                 );
           }
      }
@@ -359,48 +361,45 @@ _taskbar_fill(Taskbar *b)
            continue;
         if (bd->client.netwm.state.skip_taskbar)
            continue;
-        if ((((bd->desk == e_desk_current_get(b->zone))||(bd->sticky)) && (bd->zone == b->zone)) ||
-	    (b->inst->ci->show_all))
+        if ((((bd->desk == e_desk_current_get(b->zone)) || (bd->sticky)) && (bd->zone == b->zone)) || (b->inst->ci->show_all))
           {
-	     b->borders = evas_list_append(b->borders, bd);
+             b->borders = evas_list_append(b->borders, bd);
              ic = _taskbar_icon_new(b, bd);
              b->icons = evas_list_append(b->icons, ic);
              e_table_pack(b->o_box, ic->o_holder, b->xpos, b->ypos, 1, 1);
 #if 0
-     	     e_table_pack_options_set(ic->o_holder, 0, 0,                     /* fill */
-						    0, 0,                     /* expand */
-		     				    0.0, 0.0,                 /* align */
-		     				    b->bwidth, b->bheight,    /* min */
-		     				    b->bwidth, b->bheight     /* max */
-		   );
+             e_table_pack_options_set(ic->o_holder, 0, 0,       /* fill */
+                                      0, 0,     /* expand */
+                                      0.0, 0.0, /* align */
+                                      b->bwidth, b->bheight,    /* min */
+                                      b->bwidth, b->bheight     /* max */
+                );
 #else
-     	     e_table_pack_options_set(ic->o_holder, 1, 1,                     /* fill */
-						    1, 1,                     /* expand */
-		     				    0.0, 0.0,                 /* align */
-				      //b->bwmin, b->bhmin,    /* min */
-				      0,0,
-				      //b->bwidth, b->bheight     /* max */
-				      -1, -1
-
-		   );
+             e_table_pack_options_set(ic->o_holder, 1, 1,       /* fill */
+                                      1, 1,     /* expand */
+                                      0.0, 0.0, /* align */
+                                      //b->bwmin, b->bhmin,    /* min */
+                                      0, 0,
+                                      //b->bwidth, b->bheight     /* max */
+                                      -1, -1);
 #endif
 
              if (bd->iconic)
                 _taskbar_icon_signal_emit(ic, "instant_iconify", "");
              if (bd->focused)
-	       {
-   		  _taskbar_icon_signal_emit(ic, "instant_focused", "");
-		  edje_object_part_text_set(ic->taskbar->o_gccbox, "focus_label", ic->label);
-	       }
-	     b->xpos++;
+               {
+                  _taskbar_icon_signal_emit(ic, "instant_focused", "");
+                  edje_object_part_text_set(ic->taskbar->o_gccbox, "focus_label", ic->label);
+               }
+             b->xpos++;
 #if 0
-	     // vert layout and stacking needs work
-	     if (b->xpos >= b->xmax)
-	       {
-		  b->xpos = 0;
-		  b->ypos ++;
-		  //if (b->ypos >= b->ymax)
-	       }
+             // vert layout and stacking needs work
+             if (b->xpos >= b->xmax)
+               {
+                  b->xpos = 0;
+                  b->ypos++;
+                  //if (b->ypos >= b->ymax)
+               }
 #endif
           }
      }
@@ -417,56 +416,55 @@ _taskbar_repack(Taskbar *b)
    Taskbar_Icon *ic;
 
    e_table_freeze(b->o_box);
-   
+
    while (b->icons)
      {
-	_taskbar_icon_free(b->icons->data);
-	b->icons = evas_list_remove_list(b->icons, b->icons);
+        _taskbar_icon_free(b->icons->data);
+        b->icons = evas_list_remove_list(b->icons, b->icons);
      }
    b->xpos = 0;
    b->ypos = 0;
 
-   for(borders = b->borders; borders; borders = evas_list_next(borders))
+   for (borders = b->borders; borders; borders = evas_list_next(borders))
      {
-	bd = borders->data;
-	ic = _taskbar_icon_new(b, bd);
-	b->icons = evas_list_append(b->icons, ic);
-	e_table_pack(b->o_box, ic->o_holder, b->xpos, b->ypos, 1, 1);
+        bd = borders->data;
+        ic = _taskbar_icon_new(b, bd);
+        b->icons = evas_list_append(b->icons, ic);
+        e_table_pack(b->o_box, ic->o_holder, b->xpos, b->ypos, 1, 1);
 
 #if 0
-	e_table_pack_options_set(ic->o_holder, 0, 0,                     /* fill */
-					       0, 0,                     /* expand */
-					       0.0, 0.0,                 /* align */
-					       b->bwidth, b->bheight,    /* min */
-					       b->bwidth, b->bheight     /* max */
-	      );
+        e_table_pack_options_set(ic->o_holder, 0, 0,    /* fill */
+                                 0, 0,  /* expand */
+                                 0.0, 0.0,      /* align */
+                                 b->bwidth, b->bheight, /* min */
+                                 b->bwidth, b->bheight  /* max */
+           );
 #else
-	e_table_pack_options_set(ic->o_holder, 1, 1,                     /* fill */
-					       1, 1,                     /* expand */
-					       0.0, 0.0,                 /* align */
-				 //b->bwmin, b->bhmin,    /* min */
-				 0,0,
-				 //b->bwidth, b->bheight     /* max */
-				 -1,-1
-	      );
+        e_table_pack_options_set(ic->o_holder, 1, 1,    /* fill */
+                                 1, 1,  /* expand */
+                                 0.0, 0.0,      /* align */
+                                 //b->bwmin, b->bhmin,    /* min */
+                                 0, 0,
+                                 //b->bwidth, b->bheight     /* max */
+                                 -1, -1);
 #endif
-	
-	if (bd->iconic)
-	  _taskbar_icon_signal_emit(ic, "instant_iconify", "");
-	if (bd->focused)
-	  {
-   	     _taskbar_icon_signal_emit(ic, "instant_focused", "");
-	     edje_object_part_text_set(ic->taskbar->o_gccbox, "focus_label", ic->label);
-	  }
-	b->xpos++;
+
+        if (bd->iconic)
+           _taskbar_icon_signal_emit(ic, "instant_iconify", "");
+        if (bd->focused)
+          {
+             _taskbar_icon_signal_emit(ic, "instant_focused", "");
+             edje_object_part_text_set(ic->taskbar->o_gccbox, "focus_label", ic->label);
+          }
+        b->xpos++;
 #if 0
-	// vert layout...
-	if (b->xpos >= b->xmax)
-	  {
-	     b->xpos = 0;
-	     b->ypos ++;
-	     //if (b->ypos >= b->ymax)
-	  }
+        // vert layout...
+        if (b->xpos >= b->xmax)
+          {
+             b->xpos = 0;
+             b->ypos++;
+             //if (b->ypos >= b->ymax)
+          }
 #endif
      }
 
@@ -487,7 +485,7 @@ _taskbar_empty(Taskbar *b)
      }
    while (b->borders)
      {
-	b->borders = evas_list_remove_list(b->borders, b->borders);
+        b->borders = evas_list_remove_list(b->borders, b->borders);
      }
    b->xpos = 0;
    b->ypos = 0;
@@ -510,45 +508,44 @@ _taskbar_resize_handle(Taskbar *b)
 
    evas_object_geometry_get(b->inst->gcc->o_frame, NULL, NULL, &w, &h);
    if (!b->icons)
-     return;
+      return;
    ic = b->icons->data;
    wnum = evas_list_count(b->borders);
    edje_object_size_min_calc(ic->o_holder, &wmin, &hmin);
 
-
    if (wmin < 1)
-     wmin = 1;
+      wmin = 1;
 
    // TODO xmax - presently unused
    /* TODO orient */
    if (wnum > 0)
-     bwmin = w/wnum < wmin ? wmin : w/wnum;
+      bwmin = w / wnum < wmin ? wmin : w / wnum;
    else
-     bwmin = 0;
+      bwmin = 0;
    bhmin = hmin;
    if (b->expand)
      {
-     	b->bwidth = w;
-     	b->bheight = h;
-     	b->bwmin = bwmin;
-     	b->bhmin = bhmin;
+        b->bwidth = w;
+        b->bheight = h;
+        b->bwmin = bwmin;
+        b->bhmin = bhmin;
      }
    else
      {
-	b->bwidth = wmin * wnum;
-	b->bheight = h;
-	b->bwmin = wmin;
-	b->bhmin = hmin;
+        b->bwidth = wmin * wnum;
+        b->bheight = h;
+        b->bwmin = wmin;
+        b->bhmin = hmin;
      }
-   if (b->inst->gcc->resizable) 
+   if (b->inst->gcc->resizable)
      {
-	b->gccw = bwmin * wnum;
-	b->gcch = bhmin;
+        b->gccw = bwmin * wnum;
+        b->gcch = bhmin;
      }
    else
      {
-	b->gccw = wmin * wnum;
-	b->gcch = bhmin;
+        b->gccw = wmin * wnum;
+        b->gcch = bhmin;
      }
 
    _taskbar_repack(b);
@@ -626,17 +623,17 @@ static int
 _taskbar_icon_check_add(Taskbar *b, E_Border *bd)
 {
    if (bd->user_skip_winlist)
-     return 1;
+      return 1;
    if (bd->client.netwm.state.skip_taskbar)
-     return 1;
+      return 1;
    if (_taskbar_icon_find(b, bd))
-     return 1;
+      return 1;
    if (!(b->inst->ci->show_all))
      {
-	if (bd->zone != b->zone)
-	  return 1;
-	if ((bd->desk != e_desk_current_get(bd->zone))&&!bd->sticky)
-	  return 1;
+        if (bd->zone != b->zone)
+           return 1;
+        if ((bd->desk != e_desk_current_get(bd->zone)) && !bd->sticky)
+           return 1;
      }
 
    _taskbar_icon_add(b, bd);
@@ -647,14 +644,14 @@ static void
 _taskbar_icon_add(Taskbar *b, E_Border *bd)
 {
 
-  b->borders = evas_list_append(b->borders, bd);
+   b->borders = evas_list_append(b->borders, bd);
 
-  _taskbar_empty(b);
-  _taskbar_fill(b);
-  /*
-   _taskbar_empty_handle(b);
-   _taskbar_resize_handle(b);
-  */
+   _taskbar_empty(b);
+   _taskbar_fill(b);
+   /*
+    * _taskbar_empty_handle(b);
+    * _taskbar_resize_handle(b);
+    */
 
    _gc_orient(b->inst->gcc);
 }
@@ -740,7 +737,7 @@ _taskbar_cb_menu_configure(void *data, E_Menu *m, E_Menu_Item *mi)
 {
    Taskbar *b;
 
-   b = (Taskbar *)data;
+   b = (Taskbar *) data;
    _config_taskbar_module(b->inst->ci);
 }
 
@@ -749,24 +746,28 @@ _taskbar_config_updated(Config_Item *ci)
 {
    Evas_List *l;
    Evas_List *m;
-   if (!taskbar_config) return;
+
+   if (!taskbar_config)
+      return;
    for (l = taskbar_config->instances; l; l = l->next)
      {
-	Instance *inst;
-	inst = l->data;
-	if (inst->ci != ci) continue;
-	for (m = inst->taskbar->icons; m; m = m->next)
-	  {
-	     if (!inst->ci->show_label)
-	       edje_object_signal_emit(m->data, "label_hidden", "");
-	     else
-	       edje_object_signal_emit(m->data, "label_visible", "");
+        Instance *inst;
 
-	  }
+        inst = l->data;
+        if (inst->ci != ci)
+           continue;
+        for (m = inst->taskbar->icons; m; m = m->next)
+          {
+             if (!inst->ci->show_label)
+                edje_object_signal_emit(m->data, "label_hidden", "");
+             else
+                edje_object_signal_emit(m->data, "label_visible", "");
 
-	_taskbar_empty(inst->taskbar);
-	_taskbar_fill(inst->taskbar);
-	_gc_orient(inst->gcc);
+          }
+
+        _taskbar_empty(inst->taskbar);
+        _taskbar_fill(inst->taskbar);
+        _gc_orient(inst->gcc);
      }
 
 }
@@ -785,9 +786,9 @@ _taskbar_cb_icon_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_inf
 {
    Taskbar_Icon *ic;
 
-   ic = (Taskbar_Icon *)data;
+   ic = (Taskbar_Icon *) data;
    if (ic->taskbar->inst->ci->highlight)
-     _taskbar_icon_signal_emit(ic, "hilight", "");
+      _taskbar_icon_signal_emit(ic, "hilight", "");
    _taskbar_icon_signal_emit(ic, "active", "");
    edje_object_part_text_set(ic->taskbar->o_gccbox, "active_label", ic->label);
    if (ic->taskbar->inst->ci->show_label)
@@ -799,9 +800,9 @@ _taskbar_cb_icon_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_in
 {
    Taskbar_Icon *ic;
 
-   ic = (Taskbar_Icon *)data;
+   ic = (Taskbar_Icon *) data;
    if (ic->taskbar->inst->ci->highlight)
-     _taskbar_icon_signal_emit(ic, "unhilight", "");
+      _taskbar_icon_signal_emit(ic, "unhilight", "");
    _taskbar_icon_signal_emit(ic, "passive", "");
    edje_object_part_text_set(ic->taskbar->o_gccbox, "active_label", "");
    if (ic->taskbar->inst->ci->show_label)
@@ -815,7 +816,7 @@ _taskbar_cb_icon_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_i
    Evas_Event_Mouse_Down *ev;
    Taskbar_Icon *ic;
 
-   ic = (Taskbar_Icon *)data;
+   ic = (Taskbar_Icon *) data;
    ev = event_info;
 
    if ((ev->button == 3) && (!taskbar_config->menu))
@@ -828,16 +829,16 @@ _taskbar_cb_icon_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_i
           {
 
              E_Menu *mn;
-	     E_Menu_Item *mi;
+             E_Menu_Item *mi;
 
              mn = e_menu_new();
              e_menu_post_deactivate_callback_set(mn, _taskbar_cb_menu_post, NULL);
              taskbar_config->menu = mn;
 
-	     mi = e_menu_item_new(mn);
-	     e_menu_item_label_set(mi, D_("Configuration"));
-	     e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
-	     e_menu_item_callback_set(mi, _taskbar_cb_menu_configure, ic->taskbar);
+             mi = e_menu_item_new(mn);
+             e_menu_item_label_set(mi, D_("Configuration"));
+             e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
+             e_menu_item_callback_set(mi, _taskbar_cb_menu_configure, ic->taskbar);
 
              /* FIXME: other icon options go here too */
 
@@ -869,8 +870,8 @@ _taskbar_cb_icon_mouse_up(void *data, Evas *e, Evas_Object *obj, void *event_inf
    ic = data;
    if (ev->button == 1)
      {
-	if (!ic->border->sticky && ic->taskbar->inst->ci->show_all)
-	  e_desk_show(ic->border->desk);
+        if (!ic->border->sticky && ic->taskbar->inst->ci->show_all)
+           e_desk_show(ic->border->desk);
         if (evas_key_modifier_is_set(ev->modifiers, "Alt"))
           {
              if (ic->border->iconic)
@@ -919,8 +920,8 @@ _taskbar_cb_icon_mouse_up(void *data, Evas *e, Evas_Object *obj, void *event_inf
      }
    else if (ev->button == 2)
      {
-	if (!ic->border->sticky && ic->taskbar->inst->ci->show_all)
-	  e_desk_show(ic->border->desk);
+        if (!ic->border->sticky && ic->taskbar->inst->ci->show_all)
+           e_desk_show(ic->border->desk);
         e_border_raise(ic->border);
         e_border_focus_set(ic->border, 1, 1);
         if (ic->border->maximized)
@@ -962,15 +963,15 @@ _taskbar_cb_event_border_add(void *data, int type, void *event)
 
    ev = event;
    if (ev->border->client.netwm.state.skip_taskbar)
-     return 1;
+      return 1;
    if (ev->border->user_skip_winlist)
-     return 1;
+      return 1;
    for (l = taskbar_config->instances; l; l = l->next)
      {
-	Instance *inst;
+        Instance *inst;
 
-	inst = l->data;
-	_taskbar_icon_check_add(inst->taskbar, ev->border);
+        inst = l->data;
+        _taskbar_icon_check_add(inst->taskbar, ev->border);
      }
    return 1;
 }
@@ -984,10 +985,10 @@ _taskbar_cb_event_border_remove(void *data, int type, void *event)
    ev = event;
    for (l = taskbar_config->instances; l; l = l->next)
      {
-	Instance *inst;
+        Instance *inst;
 
-	inst = l->data;
-	_taskbar_icon_remove(inst->taskbar, ev->border);
+        inst = l->data;
+        _taskbar_icon_remove(inst->taskbar, ev->border);
      }
    return 1;
 }
@@ -1003,13 +1004,13 @@ _taskbar_cb_event_border_iconify(void *data, int type, void *event)
    /* do some sort of anim when iconifying */
    for (l = taskbar_config->instances; l; l = l->next)
      {
-	Instance *inst;
+        Instance *inst;
 
-	inst = l->data;
-     	ic = _taskbar_icon_find(inst->taskbar, ev->border);
-     	if (!ic)
-    	  continue;
-     	_taskbar_icon_signal_emit(ic, "iconify", "");
+        inst = l->data;
+        ic = _taskbar_icon_find(inst->taskbar, ev->border);
+        if (!ic)
+           continue;
+        _taskbar_icon_signal_emit(ic, "iconify", "");
      }
    return 1;
 }
@@ -1025,13 +1026,13 @@ _taskbar_cb_event_border_uniconify(void *data, int type, void *event)
    /* do some sort of anim when uniconifying */
    for (l = taskbar_config->instances; l; l = l->next)
      {
-	Instance *inst;
+        Instance *inst;
 
-	inst = l->data;
-     	ic = _taskbar_icon_find(inst->taskbar, ev->border);
-     	if (!ic)
-    	  continue;
-     	_taskbar_icon_signal_emit(ic, "uniconify", "");
+        inst = l->data;
+        ic = _taskbar_icon_find(inst->taskbar, ev->border);
+        if (!ic)
+           continue;
+        _taskbar_icon_signal_emit(ic, "uniconify", "");
      }
    return 1;
 }
@@ -1047,14 +1048,14 @@ _taskbar_cb_event_border_icon_change(void *data, int type, void *event)
    /* update icon */
    for (l = taskbar_config->instances; l; l = l->next)
      {
-	Instance *inst;
+        Instance *inst;
 
-	inst = l->data;
-	ic = _taskbar_icon_find(inst->taskbar, ev->border);
-     	if (!ic)
-	  continue;
-     	_taskbar_icon_empty(ic);
-     	_taskbar_icon_fill(ic);
+        inst = l->data;
+        ic = _taskbar_icon_find(inst->taskbar, ev->border);
+        if (!ic)
+           continue;
+        _taskbar_icon_empty(ic);
+        _taskbar_icon_fill(ic);
      }
    return 1;
 }
@@ -1072,13 +1073,13 @@ _taskbar_cb_event_border_zone_set(void *data, int type, void *event)
         Instance *inst;
 
         inst = l->data;
-        if ((inst->taskbar->zone == ev->border->zone)||inst->ci->show_all)
+        if ((inst->taskbar->zone == ev->border->zone) || inst->ci->show_all)
           {
-	     _taskbar_icon_check_add(inst->taskbar, ev->border);
+             _taskbar_icon_check_add(inst->taskbar, ev->border);
           }
         else
           {
-	     _taskbar_icon_remove(inst->taskbar, ev->border);
+             _taskbar_icon_remove(inst->taskbar, ev->border);
           }
      }
    return 1;
@@ -1094,17 +1095,17 @@ _taskbar_cb_event_border_desk_set(void *data, int type, void *event)
 
    for (l = taskbar_config->instances; l; l = l->next)
      {
-	Instance *inst;
+        Instance *inst;
 
-	inst = l->data;
-     	if ((ev->border->desk == e_desk_current_get(ev->border->zone)) || (ev->border->sticky) || (inst->ci->show_all))
-     	  {
-     	     _taskbar_icon_check_add(inst->taskbar, ev->border);
-     	  }
-     	else
-     	  {
-     	     _taskbar_icon_remove(inst->taskbar, ev->border);
-     	  }
+        inst = l->data;
+        if ((ev->border->desk == e_desk_current_get(ev->border->zone)) || (ev->border->sticky) || (inst->ci->show_all))
+          {
+             _taskbar_icon_check_add(inst->taskbar, ev->border);
+          }
+        else
+          {
+             _taskbar_icon_remove(inst->taskbar, ev->border);
+          }
      }
    return 0;
 }
@@ -1128,16 +1129,14 @@ _taskbar_cb_window_focus_in(void *data, int type, void *event)
 
         inst = l->data;
         ic = _taskbar_icon_find(inst->taskbar, bd);
-        if (ic) 
-	  {
-  	     _taskbar_icon_signal_emit(ic, "focused", "");
-     	     edje_object_part_text_set(ic->taskbar->o_gccbox, 
-		   "focus_label", ic->label);
-	  }
+        if (ic)
+          {
+             _taskbar_icon_signal_emit(ic, "focused", "");
+             edje_object_part_text_set(ic->taskbar->o_gccbox, "focus_label", ic->label);
+          }
      }
    return 1;
 }
-
 
 static int
 _taskbar_cb_window_focus_out(void *data, int type, void *event)
@@ -1158,11 +1157,11 @@ _taskbar_cb_window_focus_out(void *data, int type, void *event)
 
         inst = l->data;
         ic = _taskbar_icon_find(inst->taskbar, bd);
-        if (ic) {
-           _taskbar_icon_signal_emit(ic, "unfocused", "");
-	   edje_object_part_text_set(ic->taskbar->o_gccbox, 
-		   "focus_label", "");
-	}
+        if (ic)
+          {
+             _taskbar_icon_signal_emit(ic, "unfocused", "");
+             edje_object_part_text_set(ic->taskbar->o_gccbox, "focus_label", "");
+          }
      }
    return 1;
 }
@@ -1174,11 +1173,11 @@ _taskbar_cb_event_border_property(void *data, int type, void *event)
    E_Border *bd;
    Taskbar_Icon *ic;
    Evas_List *l;
-   
+
    ev = event;
    bd = ev->border;
    if (!bd)
-     return 1;
+      return 1;
 
    for (l = taskbar_config->instances; l; l = l->next)
      {
@@ -1186,13 +1185,14 @@ _taskbar_cb_event_border_property(void *data, int type, void *event)
 
         inst = l->data;
         ic = _taskbar_icon_find(inst->taskbar, bd);
-        if (ic) {
-	     ic->label = e_border_name_get(bd);
-	     edje_object_part_text_set(ic->o_holder, "label", ic->label);
-	     edje_object_part_text_set(ic->o_holder2, "label", ic->label);
-	     _gc_orient(inst->gcc);
+        if (ic)
+          {
+             ic->label = e_border_name_get(bd);
+             edje_object_part_text_set(ic->o_holder, "label", ic->label);
+             edje_object_part_text_set(ic->o_holder2, "label", ic->label);
+             _gc_orient(inst->gcc);
 
-	}
+          }
      }
    return 1;
 }
@@ -1206,21 +1206,21 @@ _taskbar_cb_event_desk_show(void *data, int type, void *event)
    ev = event;
    for (l = taskbar_config->instances; l; l = l->next)
      {
-	Instance *inst;
+        Instance *inst;
 
-	inst = l->data;
-	if ((inst->taskbar->zone == ev->desk->zone) && !(inst->ci->show_all))
-	  {
-     	     _taskbar_empty(inst->taskbar);
-     	     _taskbar_fill(inst->taskbar);
-     	     _gc_orient(inst->gcc);
-	  }
+        inst = l->data;
+        if ((inst->taskbar->zone == ev->desk->zone) && !(inst->ci->show_all))
+          {
+             _taskbar_empty(inst->taskbar);
+             _taskbar_fill(inst->taskbar);
+             _gc_orient(inst->gcc);
+          }
      }
    return 1;
 }
 
 static int
-_taskbar_cb_event_border_urgent_change (void *data, int type, void *event)
+_taskbar_cb_event_border_urgent_change(void *data, int type, void *event)
 {
    E_Event_Border_Urgent_Change *ev;
    E_Border *bd;
@@ -1230,22 +1230,22 @@ _taskbar_cb_event_border_urgent_change (void *data, int type, void *event)
    ev = event;
    bd = ev->border;
    if (!bd)
-     return 1;
+      return 1;
 
    for (l = taskbar_config->instances; l; l = l->next)
      {
-	Instance *inst;
+        Instance *inst;
 
-	inst = l->data;
-	ic = _taskbar_icon_find (inst->taskbar, bd);
-	if (ic)
-	  {
-	     _taskbar_icon_signal_emit (ic, "urgent", "");
-	     if (bd->client.icccm.urgent)
-	       _taskbar_icon_signal_emit (ic, "urgent", "");
-	     else
-	       _taskbar_icon_signal_emit (ic, "not_urgent", "");
-	  }
+        inst = l->data;
+        ic = _taskbar_icon_find(inst->taskbar, bd);
+        if (ic)
+          {
+             _taskbar_icon_signal_emit(ic, "urgent", "");
+             if (bd->client.icccm.urgent)
+                _taskbar_icon_signal_emit(ic, "urgent", "");
+             else
+                _taskbar_icon_signal_emit(ic, "not_urgent", "");
+          }
      }
    return 1;
 }
@@ -1259,39 +1259,42 @@ _taskbar_config_item_get(const char *id)
 
    if (!id)
      {
-	int  num = 0;
+        int num = 0;
 
-	/* Create id */
-	if (taskbar_config->items)
-	  {
-	     const char *p;
-	     ci = evas_list_last(taskbar_config->items)->data;
-	     p = strrchr(ci->id, '.');
-	     if (p) num = atoi(p + 1) + 1;
-	  }
-	snprintf(buf, sizeof(buf), "%s.%d", _gadcon_class.name, num);
-	id = buf;
+        /* Create id */
+        if (taskbar_config->items)
+          {
+             const char *p;
+
+             ci = evas_list_last(taskbar_config->items)->data;
+             p = strrchr(ci->id, '.');
+             if (p)
+                num = atoi(p + 1) + 1;
+          }
+        snprintf(buf, sizeof(buf), "%s.%d", _gadcon_class.name, num);
+        id = buf;
      }
    else
      {
-	for (l = taskbar_config->items; l; l = l->next)
-	  {
-	     ci = l->data;
-	     if (!ci->id) continue;
-	     if (!strcmp(ci->id, id)) return ci;
-	  }
+        for (l = taskbar_config->items; l; l = l->next)
+          {
+             ci = l->data;
+             if (!ci->id)
+                continue;
+             if (!strcmp(ci->id, id))
+                return ci;
+          }
      }
 
    ci = E_NEW(Config_Item, 1);
    ci->id = evas_stringshare_add(id);
    ci->highlight = 1;
    ci->show_label = 1;
-   ci->show_all   = 0;
+   ci->show_all = 0;
 
    taskbar_config->items = evas_list_append(taskbar_config->items, ci);
    return ci;
 }
-
 
 /***************************************************************************/
  /**/
@@ -1311,70 +1314,63 @@ e_modapi_init(E_Module *m)
    bind_textdomain_codeset(PACKAGE, "UTF-8");
 
    conf_item_edd = E_CONFIG_DD_NEW("Taskbar_Config_Item", Config_Item);
+
 #undef T
 #undef D
 #define T Config_Item
 #define D conf_item_edd
-  E_CONFIG_VAL(D, T, id, STR);
-  E_CONFIG_VAL(D, T, highlight, INT);
-  E_CONFIG_VAL(D, T, show_label, INT);
-  E_CONFIG_VAL(D, T, show_all, INT);
+   E_CONFIG_VAL(D, T, id, STR);
+   E_CONFIG_VAL(D, T, highlight, INT);
+   E_CONFIG_VAL(D, T, show_label, INT);
+   E_CONFIG_VAL(D, T, show_all, INT);
 
-  conf_edd = E_CONFIG_DD_NEW("Taskbar_Config", Config);
+   conf_edd = E_CONFIG_DD_NEW("Taskbar_Config", Config);
+
 #undef T
 #undef D
 #define T Config
 #define D conf_edd
-  E_CONFIG_LIST(D, T, items, conf_item_edd);
-  
-   taskbar_config = e_config_domain_load("module.taskbar", conf_edd);
-   if (!taskbar_config) {
-	Config_Item *ci;
-	taskbar_config = E_NEW(Config, 1);
-	ci = E_NEW(Config_Item, 1);
-	ci->id = evas_stringshare_add("0");
-	ci->highlight = 1;
-	ci->show_label = 1;
-	ci->show_all   = 0;
+   E_CONFIG_LIST(D, T, items, conf_item_edd);
 
-	taskbar_config->items = evas_list_append(taskbar_config->items, ci);
-   }
-   
+   taskbar_config = e_config_domain_load("module.taskbar", conf_edd);
+   if (!taskbar_config)
+     {
+        Config_Item *ci;
+        taskbar_config = E_NEW(Config, 1);
+        ci = E_NEW(Config_Item, 1);
+
+        ci->id = evas_stringshare_add("0");
+        ci->highlight = 1;
+        ci->show_label = 1;
+        ci->show_all = 0;
+
+        taskbar_config->items = evas_list_append(taskbar_config->items, ci);
+     }
+
    taskbar_config->module = m;
 
    taskbar_config->handlers = evas_list_append
-      (taskbar_config->handlers, ecore_event_handler_add
-       (E_EVENT_BORDER_ADD, _taskbar_cb_event_border_add, NULL));
+      (taskbar_config->handlers, ecore_event_handler_add(E_EVENT_BORDER_ADD, _taskbar_cb_event_border_add, NULL));
    taskbar_config->handlers = evas_list_append
-      (taskbar_config->handlers, ecore_event_handler_add
-       (E_EVENT_BORDER_REMOVE, _taskbar_cb_event_border_remove, NULL));
+      (taskbar_config->handlers, ecore_event_handler_add(E_EVENT_BORDER_REMOVE, _taskbar_cb_event_border_remove, NULL));
    taskbar_config->handlers = evas_list_append
-      (taskbar_config->handlers, ecore_event_handler_add
-       (E_EVENT_BORDER_ICONIFY, _taskbar_cb_event_border_iconify, NULL));
+      (taskbar_config->handlers, ecore_event_handler_add(E_EVENT_BORDER_ICONIFY, _taskbar_cb_event_border_iconify, NULL));
    taskbar_config->handlers = evas_list_append
-      (taskbar_config->handlers, ecore_event_handler_add
-       (E_EVENT_BORDER_UNICONIFY, _taskbar_cb_event_border_uniconify, NULL));
+      (taskbar_config->handlers, ecore_event_handler_add(E_EVENT_BORDER_UNICONIFY, _taskbar_cb_event_border_uniconify, NULL));
    taskbar_config->handlers = evas_list_append
-      (taskbar_config->handlers, ecore_event_handler_add
-       (E_EVENT_BORDER_ICON_CHANGE, _taskbar_cb_event_border_icon_change, NULL));
+      (taskbar_config->handlers, ecore_event_handler_add(E_EVENT_BORDER_ICON_CHANGE, _taskbar_cb_event_border_icon_change, NULL));
    taskbar_config->handlers = evas_list_append
-      (taskbar_config->handlers, ecore_event_handler_add
-       (E_EVENT_BORDER_DESK_SET, _taskbar_cb_event_border_desk_set, NULL));
+      (taskbar_config->handlers, ecore_event_handler_add(E_EVENT_BORDER_DESK_SET, _taskbar_cb_event_border_desk_set, NULL));
    taskbar_config->handlers = evas_list_append
-      (taskbar_config->handlers, ecore_event_handler_add
-       (E_EVENT_BORDER_ZONE_SET, _taskbar_cb_event_border_zone_set, NULL));
+      (taskbar_config->handlers, ecore_event_handler_add(E_EVENT_BORDER_ZONE_SET, _taskbar_cb_event_border_zone_set, NULL));
    taskbar_config->handlers = evas_list_append
-      (taskbar_config->handlers, ecore_event_handler_add
-       (E_EVENT_BORDER_FOCUS_IN, _taskbar_cb_window_focus_in, NULL));
+      (taskbar_config->handlers, ecore_event_handler_add(E_EVENT_BORDER_FOCUS_IN, _taskbar_cb_window_focus_in, NULL));
    taskbar_config->handlers = evas_list_append
-      (taskbar_config->handlers, ecore_event_handler_add
-       (E_EVENT_BORDER_FOCUS_OUT, _taskbar_cb_window_focus_out, NULL));
+      (taskbar_config->handlers, ecore_event_handler_add(E_EVENT_BORDER_FOCUS_OUT, _taskbar_cb_window_focus_out, NULL));
    taskbar_config->handlers = evas_list_append
-      (taskbar_config->handlers, ecore_event_handler_add
-       (E_EVENT_BORDER_PROPERTY, _taskbar_cb_event_border_property, NULL));
+      (taskbar_config->handlers, ecore_event_handler_add(E_EVENT_BORDER_PROPERTY, _taskbar_cb_event_border_property, NULL));
    taskbar_config->handlers = evas_list_append
-      (taskbar_config->handlers, ecore_event_handler_add
-       (E_EVENT_DESK_SHOW, _taskbar_cb_event_desk_show, NULL));
+      (taskbar_config->handlers, ecore_event_handler_add(E_EVENT_DESK_SHOW, _taskbar_cb_event_desk_show, NULL));
    taskbar_config->handlers = evas_list_append
       (taskbar_config->handlers, ecore_event_handler_add
        (E_EVENT_BORDER_URGENT_CHANGE, _taskbar_cb_event_border_urgent_change, NULL));
@@ -1389,7 +1385,7 @@ e_modapi_shutdown(E_Module *m)
    e_gadcon_provider_unregister(&_gadcon_class);
 
    while (taskbar_config->config_dialog)
-     e_object_del(E_OBJECT(taskbar_config->config_dialog));
+      e_object_del(E_OBJECT(taskbar_config->config_dialog));
 
    while (taskbar_config->handlers)
      {

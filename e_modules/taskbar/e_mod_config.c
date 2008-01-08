@@ -30,7 +30,8 @@ _config_taskbar_module(Config_Item *ci)
 
    con = e_container_current_get(e_manager_current_get());
    cfd = e_config_dialog_new(con, D_("Taskbar Configuration"), "TaskBar", "_e_modules_taskbar_config_dialog", NULL, 0, v, ci);
-   if (taskbar_config->config_dialog) e_object_del(E_OBJECT(taskbar_config->config_dialog));
+   if (taskbar_config->config_dialog)
+      e_object_del(E_OBJECT(taskbar_config->config_dialog));
    taskbar_config->config_dialog = cfd;
 }
 
@@ -75,12 +76,12 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    ob = e_widget_check_add(evas, D_("Highlight Window on Mouse Over"), &(cfdata->highlight));
    //if (cfdata->highlight)
    ////  e_widget_check_checked_set(ob, 1);
-   e_widget_framelist_object_append(of, ob); 
+   e_widget_framelist_object_append(of, ob);
 
    ob = e_widget_check_add(evas, D_("Show Sliding Labels"), &(cfdata->show_label));
    //if (cfdata->show_label)
    //  e_widget_check_checked_set(ob, 1);
-   e_widget_framelist_object_append(of, ob);  
+   e_widget_framelist_object_append(of, ob);
 
    ob = e_widget_check_add(evas, D_("Show windows from all desktops"), &(cfdata->show_all));
    //if (cfdata->show_all)
@@ -107,4 +108,3 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    _taskbar_config_updated(ci);
    return 1;
 }
-
