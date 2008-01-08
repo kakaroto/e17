@@ -75,16 +75,8 @@ fi
 
 # now check for the actual version of libmpd -- it seems stupid enough
 # not to publish its version number via the headers or the lib itself.
-libmpd_v_cflags=""
-if `pkg-config --atleast-version=0.12.4 libmpd`
-then
-	libmpd_v_cflags="-DLIBMPD_0_12_4"
-fi
-if `pkg-config --atleast-version=0.13 libmpd`
-then
-	libmpd_v_cflags="${libmpd_v_cflags} -DLIBMPD_0_13"
-fi
-AC_SUBST(libmpd_v_cflags)
+PKG_CHECK_EXISTS(libmpd >= 0.12.4, AC_DEFINE(LIBMPD_0_12_4, 1, [ Have libmpd >= 0.12.4 ]), [])
+PKG_CHECK_EXISTS(libmpd >= 0.13, AC_DEFINE(LIBMPD_0_13, 1, [ Have libmpd >= 0.13 ]), [])
 
 AC_OUTPUT([
 Makefile
