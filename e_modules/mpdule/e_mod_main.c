@@ -21,22 +21,29 @@ static void _gc_shutdown (E_Gadcon_Client * gcc);
 static void _gc_orient (E_Gadcon_Client * gcc);
 static char *_gc_label (void);
 static Evas_Object *_gc_icon (Evas * evas);
-static const char *_gc_id_new(void);
+static const char *_gc_id_new (void);
 
 /* Module Protos */
 static void _mpdule_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
 				   void *event_info);
-static void _mpdule_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info);
-static void _mpdule_cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info);
+static void _mpdule_cb_mouse_in (void *data, Evas * e, Evas_Object * obj,
+				 void *event_info);
+static void _mpdule_cb_mouse_out (void *data, Evas * e, Evas_Object * obj,
+				  void *event_info);
 static void _mpdule_menu_cb_configure (void *data, E_Menu * m,
 				       E_Menu_Item * mi);
 static void _mpdule_menu_cb_post (void *data, E_Menu * m);
 static int _mpdule_cb_check (void *data);
-static void _mpdule_cb_play(void *data, Evas_Object *obj, const char *emission, const char *source);
-static void _mpdule_cb_stop(void *data, Evas_Object *obj, const char *emission, const char *source);
-static void _mpdule_cb_pause(void *data, Evas_Object *obj, const char *emission, const char *source);
-static void _mpdule_cb_next(void *data, Evas_Object *obj, const char *emission, const char *source);
-static void _mpdule_cb_previous(void *data, Evas_Object *obj, const char *emission, const char *source);
+static void _mpdule_cb_play (void *data, Evas_Object * obj,
+			     const char *emission, const char *source);
+static void _mpdule_cb_stop (void *data, Evas_Object * obj,
+			     const char *emission, const char *source);
+static void _mpdule_cb_pause (void *data, Evas_Object * obj,
+			      const char *emission, const char *source);
+static void _mpdule_cb_next (void *data, Evas_Object * obj,
+			     const char *emission, const char *source);
+static void _mpdule_cb_previous (void *data, Evas_Object * obj,
+				 const char *emission, const char *source);
 static Config_Item *_mpdule_config_item_get (const char *id);
 
 static E_Config_DD *conf_edd = NULL;
@@ -47,7 +54,8 @@ Config *mpdule_config = NULL;
 /* Define the class and gadcon functions this module provides */
 static const E_Gadcon_Client_Class _gc_class = {
   GADCON_CLIENT_CLASS_VERSION,
-  "mpdule", {_gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon, _gc_id_new, NULL},
+  "mpdule", {_gc_init, _gc_shutdown, _gc_orient, _gc_label, _gc_icon,
+	     _gc_id_new, NULL},
   E_GADCON_CLIENT_STYLE_PLAIN
 };
 
@@ -68,8 +76,8 @@ static void _mpdule_connect (Instance * inst);
 static void _mpdule_disconnect (Instance * inst);
 static void _mpdule_update_song (Instance * inst);
 static void _mpdule_update_song_cb (void *data);
-static void _mpdule_popup_destroy(Instance *inst);
-static void _mpdule_popup_resize(Evas_Object *obj, int *w, int *h);
+static void _mpdule_popup_destroy (Instance * inst);
+static void _mpdule_popup_resize (Evas_Object * obj, int *w, int *h);
 
 static E_Gadcon_Client *
 _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
@@ -82,7 +90,7 @@ _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
   int w, h;
 
   inst = E_NEW (Instance, 1);
-	
+
   inst->ci = _mpdule_config_item_get (id);
   if (!inst->ci->id)
     inst->ci->id = evas_stringshare_add (id);
@@ -100,7 +108,7 @@ _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
   inst->gcc = gcc;
   inst->mpdule = o;
 
-  inst->popup = e_gadcon_popup_new(inst->gcc, _mpdule_popup_resize);
+  inst->popup = e_gadcon_popup_new (inst->gcc, _mpdule_popup_resize);
 
   evas = inst->popup->win->evas;
   o_popup = edje_object_add (evas);
@@ -108,30 +116,40 @@ _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
       (o_popup, "base/theme/modules/mpdule", "modules/mpdule/popup"))
     edje_object_file_set (o_popup, buf, "modules/mpdule/popup");
   evas_object_show (o_popup);
-  e_gadcon_popup_content_set(inst->popup, o_popup);
+  e_gadcon_popup_content_set (inst->popup, o_popup);
   edje_object_size_min_calc (o_popup, &w, &h);
   inst->o_popup = o_popup;
 
   evas_object_event_callback_add (o, EVAS_CALLBACK_MOUSE_DOWN,
 				  _mpdule_cb_mouse_down, inst);
-  evas_object_event_callback_add(inst->mpdule, EVAS_CALLBACK_MOUSE_IN,
-				   _mpdule_cb_mouse_in, inst);
-  evas_object_event_callback_add(inst->mpdule, EVAS_CALLBACK_MOUSE_OUT,
-				   _mpdule_cb_mouse_out, inst);
-  edje_object_signal_callback_add(o, "mpdule,play", "", _mpdule_cb_play, inst);
-  edje_object_signal_callback_add(o, "mpdule,stop", "", _mpdule_cb_stop, inst);
-  edje_object_signal_callback_add(o, "mpdule,pause", "", _mpdule_cb_pause, inst);
-  edje_object_signal_callback_add(o, "mpdule,next", "", _mpdule_cb_next, inst);
-  edje_object_signal_callback_add(o, "mpdule,previous", "", _mpdule_cb_previous, inst);
-  edje_object_signal_callback_add(o_popup, "mpdule,play", "", _mpdule_cb_play, inst);
-  edje_object_signal_callback_add(o_popup, "mpdule,stop", "", _mpdule_cb_stop, inst);
-  edje_object_signal_callback_add(o_popup, "mpdule,pause", "", _mpdule_cb_pause, inst);
-  edje_object_signal_callback_add(o_popup, "mpdule,next", "", _mpdule_cb_next, inst);
-  edje_object_signal_callback_add(o_popup, "mpdule,previous", "", _mpdule_cb_previous, inst);
-  _mpdule_connect(inst);
-  _mpdule_update_song(inst);
-  inst->update_timer = ecore_timer_add((double)inst->ci->poll_time,
-		  _mpdule_update_song_cb, inst);
+  evas_object_event_callback_add (inst->mpdule, EVAS_CALLBACK_MOUSE_IN,
+				  _mpdule_cb_mouse_in, inst);
+  evas_object_event_callback_add (inst->mpdule, EVAS_CALLBACK_MOUSE_OUT,
+				  _mpdule_cb_mouse_out, inst);
+  edje_object_signal_callback_add (o, "mpdule,play", "", _mpdule_cb_play,
+				   inst);
+  edje_object_signal_callback_add (o, "mpdule,stop", "", _mpdule_cb_stop,
+				   inst);
+  edje_object_signal_callback_add (o, "mpdule,pause", "", _mpdule_cb_pause,
+				   inst);
+  edje_object_signal_callback_add (o, "mpdule,next", "", _mpdule_cb_next,
+				   inst);
+  edje_object_signal_callback_add (o, "mpdule,previous", "",
+				   _mpdule_cb_previous, inst);
+  edje_object_signal_callback_add (o_popup, "mpdule,play", "",
+				   _mpdule_cb_play, inst);
+  edje_object_signal_callback_add (o_popup, "mpdule,stop", "",
+				   _mpdule_cb_stop, inst);
+  edje_object_signal_callback_add (o_popup, "mpdule,pause", "",
+				   _mpdule_cb_pause, inst);
+  edje_object_signal_callback_add (o_popup, "mpdule,next", "",
+				   _mpdule_cb_next, inst);
+  edje_object_signal_callback_add (o_popup, "mpdule,previous", "",
+				   _mpdule_cb_previous, inst);
+  _mpdule_connect (inst);
+  _mpdule_update_song (inst);
+  inst->update_timer = ecore_timer_add ((double) inst->ci->poll_time,
+					_mpdule_update_song_cb, inst);
 
   mpdule_config->instances =
     evas_list_append (mpdule_config->instances, inst);
@@ -145,18 +163,18 @@ _gc_shutdown (E_Gadcon_Client * gcc)
 
   inst = gcc->data;
   if (inst->update_timer)
-  ecore_timer_del(inst->update_timer);
-  _mpdule_disconnect(inst);
+    ecore_timer_del (inst->update_timer);
+  _mpdule_disconnect (inst);
   mpdule_config->instances =
     evas_list_remove (mpdule_config->instances, inst);
 
   evas_object_event_callback_del (inst->mpdule, EVAS_CALLBACK_MOUSE_DOWN,
 				  _mpdule_cb_mouse_down);
-  evas_object_event_callback_del(inst->mpdule, EVAS_CALLBACK_MOUSE_IN,
-				   _mpdule_cb_mouse_in);
-  evas_object_event_callback_del(inst->mpdule, EVAS_CALLBACK_MOUSE_OUT,
-				   _mpdule_cb_mouse_out);
-  _mpdule_popup_destroy(inst);
+  evas_object_event_callback_del (inst->mpdule, EVAS_CALLBACK_MOUSE_IN,
+				  _mpdule_cb_mouse_in);
+  evas_object_event_callback_del (inst->mpdule, EVAS_CALLBACK_MOUSE_OUT,
+				  _mpdule_cb_mouse_out);
+  _mpdule_popup_destroy (inst);
   evas_object_del (inst->mpdule);
   free (inst);
   inst = NULL;
@@ -193,12 +211,12 @@ _gc_icon (Evas * evas)
 }
 
 static const char *
-_gc_id_new(void)
+_gc_id_new (void)
 {
-   Config_Item *ci;
+  Config_Item *ci;
 
-   ci = _mpdule_config_item_get(NULL);
-   return ci->id;
+  ci = _mpdule_config_item_get (NULL);
+  return ci->id;
 }
 
 static void
@@ -237,32 +255,38 @@ _mpdule_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
 			     E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
       evas_event_feed_mouse_up (inst->gcc->gadcon->evas, ev->button,
 				EVAS_BUTTON_NONE, ev->timestamp, NULL);
-    } else if (ev->button == 1) {
-    	//e_gadcon_popup_toggle_pinned(inst->popup);
+    }
+  else if (ev->button == 1)
+    {
+      //e_gadcon_popup_toggle_pinned(inst->popup);
     }
 }
 
 
-static void 
-_mpdule_cb_mouse_in(void *data, Evas *e, Evas_Object *obj, void *event_info)
+static void
+_mpdule_cb_mouse_in (void *data, Evas * e, Evas_Object * obj,
+		     void *event_info)
 {
-   Instance *inst;
-   E_Gadcon_Popup *popup;
- 
-   if (!(inst = data)) return;
-   popup = inst->popup;
-   e_gadcon_popup_show(inst->popup);
+  Instance *inst;
+  E_Gadcon_Popup *popup;
+
+  if (!(inst = data))
+    return;
+  popup = inst->popup;
+  e_gadcon_popup_show (inst->popup);
 }
 
-static void 
-_mpdule_cb_mouse_out(void *data, Evas *e, Evas_Object *obj, void *event_info)
+static void
+_mpdule_cb_mouse_out (void *data, Evas * e, Evas_Object * obj,
+		      void *event_info)
 {
-   Instance *inst;
-   E_Gadcon_Popup *popup;
+  Instance *inst;
+  E_Gadcon_Popup *popup;
 
-   if (!(inst = data)) return;
-   popup = inst->popup;
-   e_gadcon_popup_hide(inst->popup);
+  if (!(inst = data))
+    return;
+  popup = inst->popup;
+  e_gadcon_popup_hide (inst->popup);
 }
 
 static void
@@ -284,7 +308,7 @@ _mpdule_menu_cb_configure (void *data, E_Menu * m, E_Menu_Item * mi)
 }
 
 void
-_mpdule_config_updated (Config_Item *ci)
+_mpdule_config_updated (Config_Item * ci)
 {
   Evas_List *l;
 
@@ -297,73 +321,77 @@ _mpdule_config_updated (Config_Item *ci)
       inst = l->data;
       if (!inst->ci != ci)
 	continue;
-      _mpdule_disconnect(inst);
-      _mpdule_connect(inst);
-      _mpdule_update_song(inst);
+      _mpdule_disconnect (inst);
+      _mpdule_connect (inst);
+      _mpdule_update_song (inst);
       if (inst->update_timer)
-        ecore_timer_interval_set (inst->update_timer,
-				      (double) ci->poll_time);
+	ecore_timer_interval_set (inst->update_timer, (double) ci->poll_time);
       else
-        inst->update_timer =
-          ecore_timer_add ((double) ci->poll_time, _mpdule_update_song_cb,
-			       inst);
+	inst->update_timer =
+	  ecore_timer_add ((double) ci->poll_time, _mpdule_update_song_cb,
+			   inst);
       break;
     }
 }
 
-static void 
-_mpdule_cb_play(void *data, Evas_Object *obj, const char *emission, const char *source)
+static void
+_mpdule_cb_play (void *data, Evas_Object * obj, const char *emission,
+		 const char *source)
 {
   Instance *inst;
   mpd_Connection *mpd;
 
   inst = data;
   mpd = inst->mpd;
-  mpd_sendPlayCommand(mpd, -1);
+  mpd_sendPlayCommand (mpd, -1);
 }
 
-static void 
-_mpdule_cb_previous(void *data, Evas_Object *obj, const char *emission, const char *source)
+static void
+_mpdule_cb_previous (void *data, Evas_Object * obj, const char *emission,
+		     const char *source)
 {
   Instance *inst;
   mpd_Connection *mpd;
 
   inst = data;
   mpd = inst->mpd;
-  mpd_sendPrevCommand(mpd);
+  mpd_sendPrevCommand (mpd);
 }
 
-static void 
-_mpdule_cb_next(void *data, Evas_Object *obj, const char *emission, const char *source)
+static void
+_mpdule_cb_next (void *data, Evas_Object * obj, const char *emission,
+		 const char *source)
 {
   Instance *inst;
   mpd_Connection *mpd;
 
   inst = data;
   mpd = inst->mpd;
-  mpd_sendNextCommand(mpd);
+  mpd_sendNextCommand (mpd);
 }
 
-static void 
-_mpdule_cb_stop(void *data, Evas_Object *obj, const char *emission, const char *source)
+static void
+_mpdule_cb_stop (void *data, Evas_Object * obj, const char *emission,
+		 const char *source)
 {
   Instance *inst;
   mpd_Connection *mpd;
 
   inst = data;
   mpd = inst->mpd;
-  mpd_sendStopCommand(mpd);
+  mpd_sendStopCommand (mpd);
 }
 
-static void 
-_mpdule_cb_pause(void *data, Evas_Object *obj, const char *emission, const char *source)
+static void
+_mpdule_cb_pause (void *data, Evas_Object * obj, const char *emission,
+		  const char *source)
 {
   Instance *inst;
   mpd_Connection *mpd;
 
   inst = data;
   mpd = inst->mpd;
-  mpd_sendPauseCommand(mpd, 1);
+  mpd_sendPauseCommand (mpd, 1);
 }
 
 static Config_Item *
@@ -371,35 +399,36 @@ _mpdule_config_item_get (const char *id)
 {
   Evas_List *l;
   Config_Item *ci;
-   char buf[128];
+  char buf[128];
 
 
-   if (!id)
-     {
-	int  num = 0;
+  if (!id)
+    {
+      int num = 0;
 
-	/* Create id */
-	if (mpdule_config->items)
-	  {
-	     const char *p;
-	     ci = evas_list_last(mpdule_config->items)->data;
-	     p = strrchr(ci->id, '.');
-	     if (p) num = atoi(p + 1) + 1;
-	  }
-	snprintf(buf, sizeof(buf), "%s.%d", _gc_class.name, num);
-	id = buf;
-     }
-   else
-     {
-         for (l = mpdule_config->items; l; l = l->next)
-          {
-            ci = l->data;
-            if (!ci->id)
-	      continue;
-            if (!strcmp (ci->id, id))
-	      return ci;
-          }
-      }
+      /* Create id */
+      if (mpdule_config->items)
+	{
+	  const char *p;
+	  ci = evas_list_last (mpdule_config->items)->data;
+	  p = strrchr (ci->id, '.');
+	  if (p)
+	    num = atoi (p + 1) + 1;
+	}
+      snprintf (buf, sizeof (buf), "%s.%d", _gc_class.name, num);
+      id = buf;
+    }
+  else
+    {
+      for (l = mpdule_config->items; l; l = l->next)
+	{
+	  ci = l->data;
+	  if (!ci->id)
+	    continue;
+	  if (!strcmp (ci->id, id))
+	    return ci;
+	}
+    }
 
   ci = E_NEW (Config_Item, 1);
   ci->id = evas_stringshare_add (id);
@@ -417,196 +446,241 @@ EAPI E_Module_Api e_modapi = {
 };
 
 static void
-_mpdule_connect(Instance *inst)
+_mpdule_connect (Instance * inst)
 {
-	mpd_Connection *mpd;
-        Config_Item *ci;
+  mpd_Connection *mpd;
+  Config_Item *ci;
 
-	ci = inst->ci;
-	mpd = mpd_newConnection(ci->hostname, ci->port, 3.0);
-	inst->mpd = mpd;
+  ci = inst->ci;
+  mpd = mpd_newConnection (ci->hostname, ci->port, 3.0);
+  inst->mpd = mpd;
 }
 
 static void
-_mpdule_disconnect(Instance *inst)
+_mpdule_disconnect (Instance * inst)
 {
-	mpd_Connection *mpd;
-	
-	if (inst->mpd) {
-		mpd = inst->mpd;
-		mpd_closeConnection(mpd);
-		inst->mpd = NULL;
-	}
+  mpd_Connection *mpd;
+
+  if (inst->mpd)
+    {
+      mpd = inst->mpd;
+      mpd_closeConnection (mpd);
+      inst->mpd = NULL;
+    }
 }
 
 static void
-_mpdule_update_song_cb(void *data)
+_mpdule_update_song_cb (void *data)
 {
-	Instance *inst;
-	
-	inst = data;
-	_mpdule_update_song(inst);
-	return 0;
+  Instance *inst;
+
+  inst = data;
+  _mpdule_update_song (inst);
+  return 0;
 }
 
 static void
-_mpdule_update_song(Instance *inst)
+_mpdule_update_song (Instance * inst)
 {
-	mpd_Connection *mpd;
-	Evas_Object *mpdule;
-	Evas_Object *o_popup;
-	   
-	if (!inst->mpd)
-		return;
-	mpd = inst->mpd;
-	mpdule = inst->mpdule;
-	o_popup = inst->o_popup;	
-	mpd_sendStatusCommand(mpd);
-	if (mpd->error == 0)
+  mpd_Connection *mpd;
+  Evas_Object *mpdule;
+  Evas_Object *o_popup;
+
+  if (!inst->mpd)
+    return;
+  mpd = inst->mpd;
+  mpdule = inst->mpdule;
+  o_popup = inst->o_popup;
+  mpd_sendStatusCommand (mpd);
+  if (mpd->error == 0)
+    {
+      mpd_Status *status = mpd_getStatus (mpd);
+
+      if (status)
 	{
-		mpd_Status *status = mpd_getStatus(mpd);
-		
-		if (status)
+	  if (status->state == MPD_STATUS_STATE_UNKNOWN)
+	    {
+	      edje_object_part_text_set (mpdule, "mpdule.status",
+					 D_ ("Unknown"));
+	      edje_object_part_text_set (o_popup, "mpdule.status",
+					 D_ ("Unknown"));
+	    }
+	  else if (status->state == MPD_STATUS_STATE_STOP)
+	    {
+	      edje_object_part_text_set (mpdule, "mpdule.status",
+					 D_ ("Stopped"));
+	      edje_object_part_text_set (o_popup, "mpdule.status",
+					 D_ ("Stopped"));
+	    }
+	  else if (status->state == MPD_STATUS_STATE_PLAY)
+	    {
+	      edje_object_part_text_set (mpdule, "mpdule.status",
+					 D_ ("Playing"));
+	      edje_object_part_text_set (o_popup, "mpdule.status",
+					 D_ ("Playing"));
+	    }
+	  else if (status->state == MPD_STATUS_STATE_PAUSE)
+	    {
+	      edje_object_part_text_set (mpdule, "mpdule.status",
+					 D_ ("Paused"));
+	      edje_object_part_text_set (o_popup, "mpdule.status",
+					 D_ ("Paused"));
+	    }
+
+	  if (status->state > MPD_STATUS_STATE_STOP)
+	    {
+	      mpd_sendCurrentSongCommand (mpd);
+	      mpd_InfoEntity *entity = NULL;
+
+	      while ((entity = mpd_getNextInfoEntity (mpd)))
 		{
-			if (status->state == MPD_STATUS_STATE_UNKNOWN)
-			{
-				edje_object_part_text_set (mpdule, "mpdule.status", D_ ("Unknown"));
-				edje_object_part_text_set (o_popup, "mpdule.status", D_ ("Unknown"));
-			}
-			else if (status->state == MPD_STATUS_STATE_STOP)
-			{
-				edje_object_part_text_set (mpdule, "mpdule.status", D_ ("Stopped"));
-				edje_object_part_text_set (o_popup, "mpdule.status", D_ ("Stopped"));
-			}
-			else if (status->state == MPD_STATUS_STATE_PLAY)
-			{
-				edje_object_part_text_set (mpdule, "mpdule.status", D_ ("Playing"));
-				edje_object_part_text_set (o_popup, "mpdule.status", D_ ("Playing"));
-			}
-			else if (status->state == MPD_STATUS_STATE_PAUSE)
-			{
-				edje_object_part_text_set (mpdule, "mpdule.status", D_ ("Paused"));
-				edje_object_part_text_set (o_popup, "mpdule.status", D_ ("Paused"));
-			}
+		  if (entity->type == MPD_INFO_ENTITY_TYPE_SONG &&
+		      entity->info.song->id == status->songid)
+		    {
+		      mpd_Song *song = entity->info.song;
 
-			if (status->state > MPD_STATUS_STATE_STOP)
+		      if (song->artist)
 			{
-				mpd_sendCurrentSongCommand(mpd);
-				mpd_InfoEntity *entity = NULL;
-				
-				while ( (entity = mpd_getNextInfoEntity(mpd)) )
-				{
-					if ( entity->type == MPD_INFO_ENTITY_TYPE_SONG &&
-							entity->info.song->id == status->songid )
-					{
-						mpd_Song *song = entity->info.song;
-						
-						if (song->artist)
-						{
-							edje_object_part_text_set (mpdule, "mpdule.artist", song->artist);
-							edje_object_part_text_set (o_popup, "mpdule.artist", song->artist);
-						}
-						else
-						{
-							edje_object_part_text_set (mpdule, "mpdule.artist", "");
-							edje_object_part_text_set (o_popup, "mpdule.artist", "");
-						}
-						if (song->title)
-						{
-							edje_object_part_text_set (mpdule, "mpdule.title", song->title);
-							edje_object_part_text_set (o_popup, "mpdule.title", song->title);
-						}
-						else
-						{
-							edje_object_part_text_set (mpdule, "mpdule.title", "");
-							edje_object_part_text_set (o_popup, "mpdule.title", "");
-						}
-						if (song->album)
-						{
-							edje_object_part_text_set (mpdule, "mpdule.album", song->album);
-							edje_object_part_text_set (o_popup, "mpdule.album", song->album);
-						}
-						else
-						{
-							edje_object_part_text_set (mpdule, "mpdule.album", "");
-							edje_object_part_text_set (o_popup, "mpdule.album", "");
-						}
-						if (song->track)
-						{
-							edje_object_part_text_set (mpdule, "mpdule.track", song->track);
-							edje_object_part_text_set (o_popup, "mpdule.track", song->track);
-						}
-						else
-						{
-							edje_object_part_text_set (mpdule, "mpdule.track", "");
-							edje_object_part_text_set (o_popup, "mpdule.track", "");
-						}
-						if (song->date)
-						{
-							edje_object_part_text_set (mpdule, "mpdule.date", song->date);
-							edje_object_part_text_set (o_popup, "mpdule.date", song->date);
-						}
-						else
-						{
-							edje_object_part_text_set (mpdule, "mpdule.date", "");
-							edje_object_part_text_set (o_popup, "mpdule.date", "");
-						}
-						if (song->genre)
-						{
-							edje_object_part_text_set (mpdule, "mpdule.genre", song->genre);
-							edje_object_part_text_set (o_popup, "mpdule.genre", song->genre);
-						}
-						else
-						{
-							edje_object_part_text_set (mpdule, "mpdule.genre", "");
-							edje_object_part_text_set (o_popup, "mpdule.genre", "");
-						}
-						if (song->composer)
-						{
-							edje_object_part_text_set (mpdule, "mpdule.composer", song->composer);
-							edje_object_part_text_set (o_popup, "mpdule.composer", song->composer);
-						}
-						else
-						{
-							edje_object_part_text_set (mpdule, "mpdule.composer", "");
-							edje_object_part_text_set (o_popup, "mpdule.composer", "");
-						}
-						if (song->time)
-						{
-							//char * songtime;
-							//sprintf(songtime, "%i", song->time);
-							//edje_object_part_text_set (mpdule, "mpdule.time", songtime);
-							//edje_object_part_text_set (o_popup, "mpdule.time", songtime);
-						}
-						else
-						{
-							edje_object_part_text_set (mpdule, "mpdule.time", "");
-							edje_object_part_text_set (o_popup, "mpdule.time", "");
-						}
-						if (song->file)
-						{
-							edje_object_part_text_set (mpdule, "mpdule.file", song->file);
-							edje_object_part_text_set (o_popup, "mpdule.file", song->file);
-						}
-						else
-						{
-							edje_object_part_text_set (mpdule, "mpdule.file", "");
-							edje_object_part_text_set (o_popup, "mpdule.file", "");
-						}
-					}
-					
-					mpd_freeInfoEntity(entity);
-				}
+			  edje_object_part_text_set (mpdule, "mpdule.artist",
+						     song->artist);
+			  edje_object_part_text_set (o_popup, "mpdule.artist",
+						     song->artist);
 			}
-	
-			mpd_freeStatus(status);
+		      else
+			{
+			  edje_object_part_text_set (mpdule, "mpdule.artist",
+						     "");
+			  edje_object_part_text_set (o_popup, "mpdule.artist",
+						     "");
+			}
+		      if (song->title)
+			{
+			  edje_object_part_text_set (mpdule, "mpdule.title",
+						     song->title);
+			  edje_object_part_text_set (o_popup, "mpdule.title",
+						     song->title);
+			}
+		      else
+			{
+			  edje_object_part_text_set (mpdule, "mpdule.title",
+						     "");
+			  edje_object_part_text_set (o_popup, "mpdule.title",
+						     "");
+			}
+		      if (song->album)
+			{
+			  edje_object_part_text_set (mpdule, "mpdule.album",
+						     song->album);
+			  edje_object_part_text_set (o_popup, "mpdule.album",
+						     song->album);
+			}
+		      else
+			{
+			  edje_object_part_text_set (mpdule, "mpdule.album",
+						     "");
+			  edje_object_part_text_set (o_popup, "mpdule.album",
+						     "");
+			}
+		      if (song->track)
+			{
+			  edje_object_part_text_set (mpdule, "mpdule.track",
+						     song->track);
+			  edje_object_part_text_set (o_popup, "mpdule.track",
+						     song->track);
+			}
+		      else
+			{
+			  edje_object_part_text_set (mpdule, "mpdule.track",
+						     "");
+			  edje_object_part_text_set (o_popup, "mpdule.track",
+						     "");
+			}
+		      if (song->date)
+			{
+			  edje_object_part_text_set (mpdule, "mpdule.date",
+						     song->date);
+			  edje_object_part_text_set (o_popup, "mpdule.date",
+						     song->date);
+			}
+		      else
+			{
+			  edje_object_part_text_set (mpdule, "mpdule.date",
+						     "");
+			  edje_object_part_text_set (o_popup, "mpdule.date",
+						     "");
+			}
+		      if (song->genre)
+			{
+			  edje_object_part_text_set (mpdule, "mpdule.genre",
+						     song->genre);
+			  edje_object_part_text_set (o_popup, "mpdule.genre",
+						     song->genre);
+			}
+		      else
+			{
+			  edje_object_part_text_set (mpdule, "mpdule.genre",
+						     "");
+			  edje_object_part_text_set (o_popup, "mpdule.genre",
+						     "");
+			}
+		      if (song->composer)
+			{
+			  edje_object_part_text_set (mpdule,
+						     "mpdule.composer",
+						     song->composer);
+			  edje_object_part_text_set (o_popup,
+						     "mpdule.composer",
+						     song->composer);
+			}
+		      else
+			{
+			  edje_object_part_text_set (mpdule,
+						     "mpdule.composer", "");
+			  edje_object_part_text_set (o_popup,
+						     "mpdule.composer", "");
+			}
+		      if (song->time)
+			{
+			  //char * songtime;
+			  //sprintf(songtime, "%i", song->time);
+			  //edje_object_part_text_set (mpdule, "mpdule.time", songtime);
+			  //edje_object_part_text_set (o_popup, "mpdule.time", songtime);
+			}
+		      else
+			{
+			  edje_object_part_text_set (mpdule, "mpdule.time",
+						     "");
+			  edje_object_part_text_set (o_popup, "mpdule.time",
+						     "");
+			}
+		      if (song->file)
+			{
+			  edje_object_part_text_set (mpdule, "mpdule.file",
+						     song->file);
+			  edje_object_part_text_set (o_popup, "mpdule.file",
+						     song->file);
+			}
+		      else
+			{
+			  edje_object_part_text_set (mpdule, "mpdule.file",
+						     "");
+			  edje_object_part_text_set (o_popup, "mpdule.file",
+						     "");
+			}
+		    }
+
+		  mpd_freeInfoEntity (entity);
 		}
+	    }
+
+	  mpd_freeStatus (status);
 	}
-	else
-	{
-		_mpdule_disconnect(inst);
-		_mpdule_connect(inst);
-	}
+    }
+  else
+    {
+      _mpdule_disconnect (inst);
+      _mpdule_connect (inst);
+    }
 }
 
 EAPI void *
@@ -699,19 +773,22 @@ e_modapi_save (E_Module * m)
 }
 
 static void
-_mpdule_popup_destroy(Instance *inst)
+_mpdule_popup_destroy (Instance * inst)
 {
-   if (!inst->popup) return;
-   e_object_del(E_OBJECT(inst->popup));
+  if (!inst->popup)
+    return;
+  e_object_del (E_OBJECT (inst->popup));
 }
 
 static void
-_mpdule_popup_resize(Evas_Object *obj, int *w, int *h)
+_mpdule_popup_resize (Evas_Object * obj, int *w, int *h)
 {
-   int x, y;
-   if (!(*w)) *w = 0;
-   if (!(*h)) *h = 0;
-   edje_object_size_min_calc (obj, &x, &y);
-   *w = x;
-   *h = y;
+  int x, y;
+  if (!(*w))
+    *w = 0;
+  if (!(*h))
+    *h = 0;
+  edje_object_size_min_calc (obj, &x, &y);
+  *w = x;
+  *h = y;
 }
