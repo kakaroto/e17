@@ -34,7 +34,7 @@ e_int_config_screenshot_module(E_Container *con, const char *params __UNUSED__)
    E_Config_Dialog_View *v = NULL;
    char buf[4096];
 
-   if (e_config_dialog_find("Screenshot", "_screenshot_cfg_dlg")) return;
+   if (e_config_dialog_find("Screenshot", "_screenshot_cfg_dlg")) return NULL;
 
    v = E_NEW(E_Config_Dialog_View, 1);
    if (!v) return NULL;
