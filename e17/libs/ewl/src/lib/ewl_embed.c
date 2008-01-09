@@ -548,11 +548,11 @@ ewl_embed_mouse_down_feed(Ewl_Embed *embed, int b, int clicks, int x, int y,
 	if (!widget) widget = EWL_WIDGET(embed);
 
 	/*
-	 * Save the last selected widget for further reference, do this prior
+	 * Save the last focused widget for further reference, do this prior
 	 * to triggering the callback to avoid funkiness if the callback
 	 * causes the widget to be destroyed.
 	 */
-	deselect = embed->last.clicked;
+	deselect = embed->last.focused;
 
 	/* we want the focused and last clicked to be the parent widget, not
 	 * the internal children */
