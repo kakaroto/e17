@@ -1,0 +1,5 @@
+[Desktop Entry]
+Type=Link
+Name=Echo
+Icon=e-module-echo
+Comment=<hilight>Echo Gadget</hilight><br><br>A module to provide a mixer for changing volume.
