@@ -14,3 +14,13 @@ ltmain.sh
 m4
 missing
 mkinstalldirs
+.deps
+.libs
+Makefile
+config.h
+config.status
+*.lo
+e_modules-mpdule.spec
+module.la
+mpdule.edj
+stamp-h1
