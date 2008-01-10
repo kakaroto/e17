@@ -1157,7 +1157,6 @@ _mixer_base_send_vol(Mixer *mixer, Config_Item *ci)
 static void
 _mixer_volume_increase(Mixer *mixer, Config_Item *ci)
 {
-   int m;
    double vol;
 
    if (!mixer) return;
@@ -1177,7 +1176,6 @@ _mixer_volume_increase(Mixer *mixer, Config_Item *ci)
 static void
 _mixer_volume_decrease(Mixer *mixer, Config_Item *ci)
 {
-   int m;
    double vol;
 
    if (!mixer) return;
