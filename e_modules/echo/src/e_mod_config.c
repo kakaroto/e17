@@ -32,7 +32,7 @@ e_int_config_echo_module(E_Container *con, const char *params __UNUSED__)
    v->basic.apply_cfdata = _basic_apply;
 
    snprintf(buf, sizeof(buf), "%s/e-module-echo.edj", echo_mod->dir);
-   cfd = e_config_dialog_new(con, "Echo Configuration", "Echo", 
+   cfd = e_config_dialog_new(con, D_("Echo Configuration"), "Echo", 
                              "_echo_cfg_dlg", buf, 0, v, NULL);
    echo_cfg->cfd = cfd;
    return cfd;
@@ -74,12 +74,12 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
    int i = 0;
 
    o = e_widget_list_add(evas, 0, 0);
-   of = e_widget_framelist_add(evas, _("General Settings"), 0);
-   ow = e_widget_check_add(evas, _("Lock Sliders"), &(cfdata->lock));
+   of = e_widget_framelist_add(evas, D_("General Settings"), 0);
+   ow = e_widget_check_add(evas, D_("Lock Sliders"), &(cfdata->lock));
    e_widget_framelist_object_append(of, ow);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
-   of = e_widget_framelist_add(evas, _("Sound Cards"), 0);
+   of = e_widget_framelist_add(evas, D_("Sound Cards"), 0);
    rg = e_widget_radio_group_new(&(cfdata->card));
    for (i = 0, l = echo_sys->get_cards(); l; l = l->next, i++) 
      {
@@ -91,7 +91,7 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
      }
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
-   of = e_widget_frametable_add(evas, _("Channels"), 0);
+   of = e_widget_frametable_add(evas, D_("Channels"), 0);
    rg = e_widget_radio_group_new(&(cfdata->channel));
    for (i = 0, l = echo_sys->get_channels(); l; l = l->next, i++) 
      {

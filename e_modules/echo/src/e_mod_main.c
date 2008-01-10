@@ -147,7 +147,7 @@ _gc_orient(E_Gadcon_Client *gcc)
 static char *
 _gc_label(void) 
 {
-   return "Echo";
+   return D_("Echo");
 }
 
 static Evas_Object *
@@ -196,33 +196,33 @@ e_modapi_init(E_Module *m)
           {
              _echo_cfg_free();
 	     ecore_timer_add(1.0, _echo_cfg_timer,
-			     "Echo Module Configuration data needed "
-                             "upgrading. Your old configuration<br> has been"
-                             " wiped and a new set of defaults initialized. "
-                             "This<br>will happen regularly during "
-                             "development, so don't report a<br>bug. "
-                             "This simply means the Echo module needs "
-                             "new configuration<br>data by default for "
-                             "usable functionality that your old<br>"
-                             "configuration simply lacks. This new set of "
-                             "defaults will fix<br>that by adding it in. "
-                             "You can re-configure things now to your<br>"
-                             "liking. Sorry for the inconvenience.<br>");
+			     D_("Echo Module Configuration data needed "
+                                "upgrading. Your old configuration<br> has been"
+                                " wiped and a new set of defaults initialized. "
+                                "This<br>will happen regularly during "
+                                "development, so don't report a<br>bug. "
+                                "This simply means the Echo module needs "
+                                "new configuration<br>data by default for "
+                                "usable functionality that your old<br>"
+                                "configuration simply lacks. This new set of "
+                                "defaults will fix<br>that by adding it in. "
+                                "You can re-configure things now to your<br>"
+                                "liking. Sorry for the inconvenience.<br>"));
           }
         else if (echo_cfg->version > MOD_CFG_FILE_VERSION) 
           {
              _echo_cfg_free();
 	     ecore_timer_add(1.0, _echo_cfg_timer, 
-			     "Your Echo Module configuration is NEWER "
-                             "than the Echo Module version. This is "
-                             "very<br>strange. This should not happen unless"
-                             " you downgraded<br>the Echo Module or "
-                             "copied the configuration from a place where"
-                             "<br>a newer version of the Echo Module "
-                             "was running. This is bad and<br>as a "
-                             "precaution your configuration has been now "
-                             "restored to<br>defaults. Sorry for the "
-                             "inconvenience.<br>");
+			     D_("Your Echo Module configuration is NEWER "
+                                "than the Echo Module version. This is "
+                                "very<br>strange. This should not happen unless"
+                                " you downgraded<br>the Echo Module or "
+                                "copied the configuration from a place where"
+                                "<br>a newer version of the Echo Module "
+                                "was running. This is bad and<br>as a "
+                                "precaution your configuration has been now "
+                                "restored to<br>defaults. Sorry for the "
+                                "inconvenience.<br>"));
           }
      }
    if (!echo_cfg) _echo_cfg_new();
@@ -309,7 +309,7 @@ _echo_cfg_new(void)
 static int 
 _echo_cfg_timer(void *data) 
 {
-   e_util_dialog_show("Echo Configuration Updated", data);
+   e_util_dialog_show(D_("Echo Configuration Updated"), data);
    return 0;
 }
 
@@ -334,7 +334,7 @@ _echo_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
         inst->menu = mn;
 
         mi = e_menu_item_new(mn);
-        e_menu_item_label_set(mi, "Configuration");
+        e_menu_item_label_set(mi, D_("Configuration"));
         e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
         e_menu_item_callback_set(mi, _echo_cb_menu_cfg, inst);
 
@@ -431,7 +431,7 @@ _echo_cb_popup_new(void *data)
 
    if ((echo_sys->can_mute) && (echo_sys->can_mute(echo_cfg->channel.name))) 
      {
-        ow = e_widget_check_add(evas, "Mute", &(inst->mute));
+        ow = e_widget_check_add(evas, D_("Mute"), &(inst->mute));
         evas_object_show(ow);
         e_widget_frametable_object_append(of, ow, 0, 6, 2, 1, 1, 1, 1, 0);
         evas_object_smart_callback_add(ow, "changed", 
