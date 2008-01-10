@@ -48,5 +48,6 @@ Makefile
 src/Makefile
 po/Makefile.in
 module.desktop
+e_modules-efm_path.spec
 ], [
 ])
