@@ -107,34 +107,34 @@ e_modapi_init(E_Module *m)
 	     /* Config Too Old */
 	     _cfg_free();
 	     ecore_timer_add(1.0, _cfg_timer,
-			     _("Screenshot Module Configuration data needed "
-			       "upgrading. Your old configuration<br> has been"
-			       " wiped and a new set of defaults initialized. "
-			       "This<br>will happen regularly during "
-			       "development, so don't report a<br>bug. "
-			       "This simply means Screenshot module needs "
-			       "new configuration<br>data by default for "
-			       "usable functionality that your old<br>"
-			       "configuration simply lacks. This new set of "
-			       "defaults will fix<br>that by adding it in. "
-			       "You can re-configure things now to your<br>"
-			       "liking. Sorry for the inconvenience.<br>"));
+			     D_("Screenshot Module Configuration data needed "
+			        "upgrading. Your old configuration<br> has been"
+			        " wiped and a new set of defaults initialized. "
+			        "This<br>will happen regularly during "
+			        "development, so don't report a<br>bug. "
+			        "This simply means Screenshot module needs "
+			        "new configuration<br>data by default for "
+			        "usable functionality that your old<br>"
+			        "configuration simply lacks. This new set of "
+			        "defaults will fix<br>that by adding it in. "
+			        "You can re-configure things now to your<br>"
+			        "liking. Sorry for the inconvenience.<br>"));
 	  }
 	else if (ss_cfg->version > MOD_CONFIG_FILE_VERSION) 
 	  {
 	     /* Config Too New */
 	     _cfg_free();
 	     ecore_timer_add(1.0, _cfg_timer, 
-			     _("Your Screenshot Module configuration is NEWER "
-			       "than the Screenshot Module version. This is "
-			       "very<br>strange. This should not happen unless"
-			       " you downgraded<br>the Screenshot Module or "
-			       "copied the configuration from a place where"
-			       "<br>a newer version of the Screenshot Module "
-			       "was running. This is bad and<br>as a "
-			       "precaution your configuration has been now "
-			       "restored to<br>defaults. Sorry for the "
-			       "inconvenience.<br>"));
+			     D_("Your Screenshot Module configuration is NEWER "
+			        "than the Screenshot Module version. This is "
+			        "very<br>strange. This should not happen unless"
+			        " you downgraded<br>the Screenshot Module or "
+			        "copied the configuration from a place where"
+			        "<br>a newer version of the Screenshot Module "
+			        "was running. This is bad and<br>as a "
+			        "precaution your configuration has been now "
+			        "restored to<br>defaults. Sorry for the "
+			        "inconvenience.<br>"));
 	  }
      }
 
@@ -457,8 +457,6 @@ static void
 _cb_exec_shot(void *data, Evas_Object *obj, const char *emission, const char *source) 
 {
    Instance *inst = NULL;
-   Ecore_Exe *exe;
-   char buf[4096];
 
    if (!(inst = data)) return;
 
