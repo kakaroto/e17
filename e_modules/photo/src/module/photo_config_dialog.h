@@ -33,21 +33,21 @@ e_widget_frametable_object_append(of, ob, col, line+8, 1, 1, 1, 1, 1, 1);
 #define CONFIG_DIALOG_ACTION_CHOICE_LABELS(of, col, line, first)          \
 ob = e_widget_label_add(evas, first);                                     \
 e_widget_frametable_object_append(of, ob, col, line, 1, 1, 1, 1, 1, 1);   \
-ob = e_widget_label_add(evas, _("Show label"));                           \
+ob = e_widget_label_add(evas, D_("Show label"));                           \
 e_widget_frametable_object_append(of, ob, col, line+1, 1, 1, 1, 1, 1, 1); \
-ob = e_widget_label_add(evas, _("Show informations"));                    \
+ob = e_widget_label_add(evas, D_("Show informations"));                    \
 e_widget_frametable_object_append(of, ob, col, line+2, 1, 1, 1, 1, 1, 1); \
-ob = e_widget_label_add(evas, _("Previous picture"));                     \
+ob = e_widget_label_add(evas, D_("Previous picture"));                     \
 e_widget_frametable_object_append(of, ob, col, line+3, 1, 1, 1, 1, 1, 1); \
-ob = e_widget_label_add(evas, _("Next picture"));                         \
+ob = e_widget_label_add(evas, D_("Next picture"));                         \
 e_widget_frametable_object_append(of, ob, col, line+4, 1, 1, 1, 1, 1, 1); \
-ob = e_widget_label_add(evas, _("Pause"));                                \
+ob = e_widget_label_add(evas, D_("Pause"));                                \
 e_widget_frametable_object_append(of, ob, col, line+5, 1, 1, 1, 1, 1, 1); \
-ob = e_widget_label_add(evas, _("Set as background"));                    \
+ob = e_widget_label_add(evas, D_("Set as background"));                    \
 e_widget_frametable_object_append(of, ob, col, line+6, 1, 1, 1, 1, 1, 1); \
-ob = e_widget_label_add(evas, _("Open viewer"));                          \
+ob = e_widget_label_add(evas, D_("Open viewer"));                          \
 e_widget_frametable_object_append(of, ob, col, line+7, 1, 1, 1, 1, 1, 1); \
-ob = e_widget_label_add(evas, _("Show menu"));                            \
+ob = e_widget_label_add(evas, D_("Show menu"));                            \
 e_widget_frametable_object_append(of, ob, col, line+8, 1, 1, 1, 1, 1, 1);
 
 
