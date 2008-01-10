@@ -12,7 +12,7 @@ config.sub
 configure
 depcomp
 e-module-efm_nav.edj
-e_modules-efm_nav.spec.in
+e_modules-efm_nav.spec
 *.tar.gz
 install-sh
 libtool

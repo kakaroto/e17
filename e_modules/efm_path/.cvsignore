@@ -12,7 +12,7 @@ config.sub
 configure
 depcomp
 e-module-efm_path.edj
-e_modules-efm_path.spec.in
+e_modules-efm_path.spec
 *.tar.gz
 install-sh
 libtool
