@@ -21,7 +21,6 @@ mixer-volume-low.png \
 mixer-volume-muted.png \
 pulsar.png \
 vol.png \
-e_modules-mixer.spec.in \
 e_modules-mixer.spec
 
 # data files for the module
