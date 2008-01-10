@@ -33,7 +33,6 @@ static void _mpdule_cb_mouse_out (void *data, Evas * e, Evas_Object * obj,
 static void _mpdule_menu_cb_configure (void *data, E_Menu * m,
 				       E_Menu_Item * mi);
 static void _mpdule_menu_cb_post (void *data, E_Menu * m);
-static int _mpdule_cb_check (void *data);
 static void _mpdule_cb_play (void *data, Evas_Object * obj,
 			     const char *emission, const char *source);
 static void _mpdule_cb_stop (void *data, Evas_Object * obj,
@@ -75,7 +74,7 @@ struct _Instance
 static void _mpdule_connect (Instance * inst);
 static void _mpdule_disconnect (Instance * inst);
 static void _mpdule_update_song (Instance * inst);
-static void _mpdule_update_song_cb (void *data);
+static int  _mpdule_update_song_cb (void *data);
 static void _mpdule_popup_destroy (Instance * inst);
 static void _mpdule_popup_resize (Evas_Object * obj, int *w, int *h);
 
@@ -148,7 +147,7 @@ _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
 				   _mpdule_cb_previous, inst);
   _mpdule_connect (inst);
   _mpdule_update_song (inst);
-  inst->update_timer = ecore_timer_add ((double) inst->ci->poll_time,
+  inst->update_timer = ecore_timer_add (inst->ci->poll_time,
 					_mpdule_update_song_cb, inst);
 
   mpdule_config->instances =
@@ -319,16 +318,16 @@ _mpdule_config_updated (Config_Item * ci)
       Instance *inst;
 
       inst = l->data;
-      if (!inst->ci != ci)
+      if (inst->ci != ci)
 	continue;
       _mpdule_disconnect (inst);
       _mpdule_connect (inst);
       _mpdule_update_song (inst);
       if (inst->update_timer)
-	ecore_timer_interval_set (inst->update_timer, (double) ci->poll_time);
+	ecore_timer_interval_set (inst->update_timer, ci->poll_time);
       else
 	inst->update_timer =
-	  ecore_timer_add ((double) ci->poll_time, _mpdule_update_song_cb,
+	  ecore_timer_add (ci->poll_time, _mpdule_update_song_cb,
 			   inst);
       break;
     }
@@ -469,7 +468,7 @@ _mpdule_disconnect (Instance * inst)
     }
 }
 
-static void
+static int
 _mpdule_update_song_cb (void *data)
 {
   Instance *inst;

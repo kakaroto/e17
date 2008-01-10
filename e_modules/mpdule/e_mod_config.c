@@ -15,8 +15,6 @@ static Evas_Object *_basic_create_widgets (E_Config_Dialog * cfd, Evas * evas,
 					   E_Config_Dialog_Data * cfdata);
 static int _basic_apply_data (E_Config_Dialog * cfd,
 			      E_Config_Dialog_Data * cfdata);
-static void onTimeCheckChange (void *data, Evas_Object * obj);
-static void onDateCheckChange (void *data, Evas_Object * obj);
 
 void
 _config_mpdule_module (Config_Item * ci)
@@ -80,9 +78,8 @@ static Evas_Object *
 _basic_create_widgets (E_Config_Dialog * cfd, Evas * evas,
 		       E_Config_Dialog_Data * cfdata)
 {
-  Evas_Object *o, *of, *ob, *time_entry, *time_check, *hostname_entry,
+  Evas_Object *o, *of, *ob, *hostname_entry,
     *port_entry;
-  E_Radio_Group *rg;
 
   o = e_widget_list_add (evas, 0, 0);
 
@@ -124,20 +121,4 @@ _basic_apply_data (E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
   e_config_save_queue ();
   _mpdule_config_updated (ci);
   return 1;
-}
-
-static void
-onTimeCheckChange (void *data, Evas_Object * obj)
-{
-  int checked = e_widget_check_checked_get (obj);
-
-  e_widget_disabled_set (data, !checked);
-}
-
-static void
-onDateCheckChange (void *data, Evas_Object * obj)
-{
-  int checked = e_widget_check_checked_get (obj);
-
-  e_widget_disabled_set (data, !checked);
 }
