@@ -553,6 +553,14 @@ ewl_embed_mouse_down_feed(Ewl_Embed *embed, int b, int clicks, int x, int y,
 	 * causes the widget to be destroyed.
 	 */
 	deselect = embed->last.focused;
+	temp = embed->last.clicked;
+
+	/* There is container_callback_notify, but nothing for reverse situation
+	 * so if the last clicked is a child of the last focused then we use the
+	 * lower widget
+	 */
+	if (deselect && temp && ewl_widget_parent_of(deselect, temp))
+		deselect = embed->last.clicked;
 
 	/* we want the focused and last clicked to be the parent widget, not
 	 * the internal children */
@@ -1538,7 +1546,17 @@ ewl_embed_focused_widget_set(Ewl_Embed *embed, Ewl_Widget *w)
 	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	if (embed->last.focused && (embed->last.focused != w))
+	{
+		/* We might set an internal widget focused during
+		 * mouse_down_feed, so we need to check if the last clicked is
+		 * a child.  If so, it needs to get the unfocus callback
+		 * instead of parent
+		 */
+		if (ewl_widget_parent_of(embed->last.focused, embed->last.clicked))
+				embed->last.focused = embed->last.clicked;
+
 		ewl_callback_call(embed->last.focused, EWL_CALLBACK_FOCUS_OUT);
+	}
 
 	embed->last.focused = w;
 
