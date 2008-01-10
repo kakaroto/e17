@@ -15,6 +15,7 @@ files_DATA = module.desktop \
 	     e-module-echo.edj
 
 EXTRA_DIST = $(files_DATA) \
+	     e_modules-echo.spec \
 	     images/module_icon.png \
              images/base.png \
              images/left_high.png \
