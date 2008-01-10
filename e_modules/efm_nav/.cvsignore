@@ -22,3 +22,4 @@ mkinstalldirs
 module.desktop
 ltmain.sh
 stamp-h1
+INSTALL
