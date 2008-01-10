@@ -96,7 +96,7 @@ _basic_create_widgets(E_Config_Dialog * cfd, Evas * evas,
   e_widget_framelist_object_append(of, ob);
   ob = e_widget_check_add(evas, D_("Show Description"), &(cfdata->show_text));
   e_widget_framelist_object_append(of, ob);
-  ob = e_widget_check_add(evas, _("Popup on mouse over"), &(cfdata->popup_on_hover));
+  ob = e_widget_check_add(evas, D_("Popup on mouse over"), &(cfdata->popup_on_hover));
   e_widget_framelist_object_append(of, ob);
   e_widget_list_object_append(o, of, 1, 1, 0.5);
 
