@@ -32,7 +32,7 @@ static Evas_Object *_gc_icon(Evas *evas);
 static const char *_gc_id_new(void);
 static Config_Item *_config_item_get(const char *id);
 static int _update_date(void *data);
-static int _update_calendar_sheet(Instance *inst);
+static void _update_calendar_sheet(Instance *inst);
 static void _calendar_popup_content_create(Instance *inst);
 static void _calendar_popup_resize(Evas_Object *obj, int *w, int *h);
 static void _calendar_popup_destroy(Instance *inst);
@@ -238,7 +238,7 @@ _update_date(void *data)
    return 1;
 }
 
-static int
+static void
 _update_calendar_sheet(Instance *inst)
 {
    Calendar *calendar;
@@ -246,9 +246,9 @@ _update_calendar_sheet(Instance *inst)
    time_t current_time;
    struct tm *local_time;
 
-   if (!inst) return 1;
+   if (!inst) return;
    calendar = inst->calendar;
-   if (!calendar) return 1;
+   if (!calendar) return;
 
    current_time = time (NULL);
    local_time = localtime (&current_time);
