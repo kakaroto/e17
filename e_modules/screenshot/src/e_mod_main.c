@@ -118,7 +118,7 @@ e_modapi_init(E_Module *m)
 			     "configuration simply lacks. This new set of "
 			     "defaults will fix<br>that by adding it in. "
 			     "You can re-configure things now to your<br>"
-			     "liking. Sorry for the inconvenience.<br>"));
+			     "liking. Sorry for the inconvenience.<br>");
 	  }
 	else if (ss_cfg->version > MOD_CONFIG_FILE_VERSION) 
 	  {
@@ -134,7 +134,7 @@ e_modapi_init(E_Module *m)
 			     "was running. This is bad and<br>as a "
 			     "precaution your configuration has been now "
 			     "restored to<br>defaults. Sorry for the "
-			     "inconvenience.<br>"));
+			     "inconvenience.<br>");
 	  }
      }
 
