@@ -166,33 +166,33 @@ e_modapi_init(E_Module *m)
           {
              _echo_cfg_free();
 	     ecore_timer_add(1.0, _echo_cfg_timer,
-			     _("Echo Module Configuration data needed "
-			       "upgrading. Your old configuration<br> has been"
-			       " wiped and a new set of defaults initialized. "
-			       "This<br>will happen regularly during "
-			       "development, so don't report a<br>bug. "
-			       "This simply means the Echo module needs "
-			       "new configuration<br>data by default for "
-			       "usable functionality that your old<br>"
-			       "configuration simply lacks. This new set of "
-			       "defaults will fix<br>that by adding it in. "
-			       "You can re-configure things now to your<br>"
-			       "liking. Sorry for the inconvenience.<br>"));
+			     "Echo Module Configuration data needed "
+                             "upgrading. Your old configuration<br> has been"
+                             " wiped and a new set of defaults initialized. "
+                             "This<br>will happen regularly during "
+                             "development, so don't report a<br>bug. "
+                             "This simply means the Echo module needs "
+                             "new configuration<br>data by default for "
+                             "usable functionality that your old<br>"
+                             "configuration simply lacks. This new set of "
+                             "defaults will fix<br>that by adding it in. "
+                             "You can re-configure things now to your<br>"
+                             "liking. Sorry for the inconvenience.<br>");
           }
         else if (echo_cfg->version > MOD_CFG_FILE_VERSION) 
           {
              _echo_cfg_free();
 	     ecore_timer_add(1.0, _echo_cfg_timer, 
-			     _("Your Echo Module configuration is NEWER "
-			       "than the Echo Module version. This is "
-			       "very<br>strange. This should not happen unless"
-			       " you downgraded<br>the Echo Module or "
-			       "copied the configuration from a place where"
-			       "<br>a newer version of the Echo Module "
-			       "was running. This is bad and<br>as a "
-			       "precaution your configuration has been now "
-			       "restored to<br>defaults. Sorry for the "
-			       "inconvenience.<br>"));
+			     "Your Echo Module configuration is NEWER "
+                             "than the Echo Module version. This is "
+                             "very<br>strange. This should not happen unless"
+                             " you downgraded<br>the Echo Module or "
+                             "copied the configuration from a place where"
+                             "<br>a newer version of the Echo Module "
+                             "was running. This is bad and<br>as a "
+                             "precaution your configuration has been now "
+                             "restored to<br>defaults. Sorry for the "
+                             "inconvenience.<br>");
           }
      }
    if (!echo_cfg) _echo_cfg_new();
@@ -428,7 +428,6 @@ _echo_cb_popup_resize(Evas_Object *obj, int *w, int *h)
    int mw, mh;
 
    e_widget_min_size_get(obj, &mw, &mh);
-//   e_table_min_size_get(obj, &mw, &mh);
    if (mh < 150) mh = 150;
    if (mw < 60) mw = 60;
    if (*w) *w = (mw + 8);
@@ -450,7 +449,8 @@ _echo_cb_volume_left_change(void *data, Evas_Object *obj, void *event)
         e_slider_value_set(inst->o_rslider, val);
      }
    if (echo_sys->set_volume)
-     echo_sys->set_volume(echo_cfg->channel.name, inst->left_vol, inst->right_vol);
+     echo_sys->set_volume(echo_cfg->channel.name, 
+                          inst->left_vol, inst->right_vol);
 
    _echo_cb_update_inst(inst);
 }
@@ -470,7 +470,8 @@ _echo_cb_volume_right_change(void *data, Evas_Object *obj, void *event)
         e_slider_value_set(inst->o_lslider, val);
      }
    if (echo_sys->set_volume)
-     echo_sys->set_volume(echo_cfg->channel.name, inst->left_vol, inst->right_vol);
+     echo_sys->set_volume(echo_cfg->channel.name, 
+                          inst->left_vol, inst->right_vol);
 
    _echo_cb_update_inst(inst);
 }
