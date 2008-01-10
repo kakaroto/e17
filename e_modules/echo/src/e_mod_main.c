@@ -24,6 +24,11 @@ static void _echo_cb_volume_left_change(void *data, Evas_Object *obj, void *even
 static void _echo_cb_volume_right_change(void *data, Evas_Object *obj, void *event);
 static void _echo_cb_mute_change(void *data, Evas_Object *obj, void *event);
 static void _echo_cb_update_inst(void *data);
+static void _echo_cb_signal_volume_left_up(void *data, Evas_Object *obj, const char *emission, const char *source);
+static void _echo_cb_signal_volume_left_down(void *data, Evas_Object *obj, const char *emission, const char *source);
+static void _echo_cb_signal_volume_right_up(void *data, Evas_Object *obj, const char *emission, const char *source);
+static void _echo_cb_signal_volume_right_down(void *data, Evas_Object *obj, const char *emission, const char *source);
+static void _echo_cb_signal_volume_mute_toggle(void *data, Evas_Object *obj, const char *emission, const char *source);
 
 typedef struct _Instance Instance;
 struct _Instance 
@@ -70,6 +75,16 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 
    evas_object_event_callback_add(inst->o_base, EVAS_CALLBACK_MOUSE_DOWN, 
                                   _echo_cb_mouse_down, inst);
+   edje_object_signal_callback_add(inst->o_base, "e,action,volume,left,up", "", 
+                                   _echo_cb_signal_volume_left_up, inst);
+   edje_object_signal_callback_add(inst->o_base, "e,action,volume,left,down", "", 
+                                   _echo_cb_signal_volume_left_down, inst);
+   edje_object_signal_callback_add(inst->o_base, "e,action,volume,right,up", "", 
+                                   _echo_cb_signal_volume_right_up, inst);
+   edje_object_signal_callback_add(inst->o_base, "e,action,volume,right,down", "", 
+                                   _echo_cb_signal_volume_right_down, inst);
+   edje_object_signal_callback_add(inst->o_base, "e,action,volume,mute,toggle", "", 
+                                   _echo_cb_signal_volume_mute_toggle, inst);
 
    inst->left_vol = inst->right_vol = -1;
    if (echo_sys->get_volume)
@@ -102,6 +117,21 @@ _gc_shutdown(E_Gadcon_Client *gcc)
      {
         evas_object_event_callback_del(inst->o_base, EVAS_CALLBACK_MOUSE_DOWN, 
                                        _echo_cb_mouse_down);
+     	edje_object_signal_callback_del(inst->o_base, 
+                                        "e,action,volume,left,up", "", 
+                                        _echo_cb_signal_volume_left_up);
+	edje_object_signal_callback_del(inst->o_base, 
+                                        "e,action,volume,left,down", "", 
+                                        _echo_cb_signal_volume_left_down);
+     	edje_object_signal_callback_del(inst->o_base, 
+                                        "e,action,volume,right,up", "", 
+                                        _echo_cb_signal_volume_right_up);
+      	edje_object_signal_callback_del(inst->o_base, 
+                                        "e,action,volume,right,down", "", 
+                                        _echo_cb_signal_volume_right_down);
+     	edje_object_signal_callback_del(inst->o_base, 
+                                        "e,action,volume,mute,toggle", "", 
+                                        _echo_cb_signal_volume_mute_toggle);
         evas_object_del(inst->o_base);
      }
    E_FREE(inst);
@@ -493,8 +523,12 @@ static void
 _echo_cb_update_inst(void *data) 
 {
    Instance *inst = NULL;
+   Edje_Message_Int *left_vol_msg, *right_vol_msg;
 
    if (!(inst = data)) return;
+
+   left_vol_msg = malloc(sizeof(Edje_Message_Int));
+   right_vol_msg = malloc(sizeof(Edje_Message_Int));
 
    if (inst->right_vol == -1) 
      {
@@ -506,6 +540,9 @@ _echo_cb_update_inst(void *data)
           edje_object_signal_emit(inst->o_base, "e,action,volume,medium", "");
         else if (inst->left_vol >= 66)
           edje_object_signal_emit(inst->o_base, "e,action,volume,high", "");
+
+	left_vol_msg->val = inst->left_vol;
+	right_vol_msg->val = inst->left_vol;
      }
    else 
      {
@@ -526,6 +563,9 @@ _echo_cb_update_inst(void *data)
           edje_object_signal_emit(inst->o_base, "e,action,volume,right,medium", "");
         else if (inst->right_vol >= 66)
           edje_object_signal_emit(inst->o_base, "e,action,volume,right,high", "");
+
+	left_vol_msg->val = inst->left_vol;
+	right_vol_msg->val = inst->right_vol;
      }
    
    if ((echo_sys->can_mute) && (echo_sys->can_mute(echo_cfg->channel.name))) 
@@ -537,4 +577,97 @@ _echo_cb_update_inst(void *data)
      }
    else
      edje_object_signal_emit(inst->o_base, "e,action,volume,unmute", "");
+
+   edje_object_message_send(inst->o_base, EDJE_MESSAGE_INT, 0, left_vol_msg);
+   edje_object_message_send(inst->o_base, EDJE_MESSAGE_INT, 1, right_vol_msg);
+   edje_object_signal_emit(inst->o_base, "e,action,volume,change", "");
+}
+
+static void
+_echo_cb_signal_volume_left_up(void *data, Evas_Object *obj, const char *emission, const char *source)
+{
+   Instance *inst;
+
+   if (!(inst = data)) return;
+
+   inst->left_vol = inst->right_vol = -1;
+   if (echo_sys->get_volume)
+     echo_sys->get_volume(echo_cfg->channel.name, 
+		          &(inst->left_vol), &(inst->right_vol));
+   if (echo_sys->set_volume)
+     echo_sys->set_volume(echo_cfg->channel.name, inst->left_vol + 5, inst->right_vol);
+
+   _echo_cb_update_inst(inst);
+}
+
+static void
+_echo_cb_signal_volume_left_down(void *data, Evas_Object *obj, const char *emission, const char *source)
+{
+   Instance *inst;
+
+   if (!(inst = data)) return;
+
+   inst->left_vol = inst->right_vol = -1;
+   if (echo_sys->get_volume)
+     echo_sys->get_volume(echo_cfg->channel.name, 
+		          &(inst->left_vol), &(inst->right_vol));
+   if (echo_sys->set_volume)
+     echo_sys->set_volume(echo_cfg->channel.name, inst->left_vol - 5, inst->right_vol);
+
+   _echo_cb_update_inst(inst);
+}
+
+static void
+_echo_cb_signal_volume_right_up(void *data, Evas_Object *obj, const char *emission, const char *source)
+{
+   Instance *inst;
+
+   if (!(inst = data)) return;
+
+   inst->left_vol = inst->right_vol = -1;
+   if (echo_sys->get_volume)
+     echo_sys->get_volume(echo_cfg->channel.name, 
+		          &(inst->left_vol), &(inst->right_vol));
+   if (echo_sys->set_volume)
+     echo_sys->set_volume(echo_cfg->channel.name, inst->left_vol, 
+                          inst->right_vol + 5);
+
+   _echo_cb_update_inst(inst);
+}
+
+static void
+_echo_cb_signal_volume_right_down(void *data, Evas_Object *obj, const char *emission, const char *source)
+{
+   Instance *inst;
+
+   if (!(inst = data)) return;
+
+   inst->left_vol = inst->right_vol = -1;
+   if (echo_sys->get_volume)
+     echo_sys->get_volume(echo_cfg->channel.name, 
+		          &(inst->left_vol), &(inst->right_vol));
+   if (echo_sys->set_volume)
+     echo_sys->set_volume(echo_cfg->channel.name, inst->left_vol, 
+                          inst->right_vol - 5);
+
+   _echo_cb_update_inst(inst);
+}
+
+static void
+_echo_cb_signal_volume_mute_toggle(void *data, Evas_Object *obj, const char *emission, const char *source)
+{
+   Instance *inst;
+
+   if (!(inst = data)) return;
+
+   inst->left_vol = inst->right_vol = -1;
+   if ((echo_sys->can_mute) && (echo_sys->can_mute(echo_cfg->channel.name)))
+     {
+        if (echo_sys->get_mute)
+	  echo_sys->get_mute(echo_cfg->channel.name, &(inst->mute));
+	if (echo_sys->set_mute)
+	  echo_sys->set_mute(echo_cfg->channel.name, !(inst->mute));
+     }
+
+   _echo_cb_update_inst(inst);
 }
