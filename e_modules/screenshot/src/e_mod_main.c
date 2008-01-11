@@ -75,9 +75,9 @@ EAPI void *
 e_modapi_init(E_Module *m) 
 {
    /* register config dialog for panel */
-   e_configure_registry_category_add("screenshot", 110, "Screenshot", 
-				     NULL, "enlightenment/appearance");
-   e_configure_registry_item_add("screenshot/screenshot", 10, "Screenshot", 
+   e_configure_registry_category_add("extensions", 90, "Screenshot", 
+				     NULL, "enlightenment/extensions");
+   e_configure_registry_item_add("extensions/screenshot", 20, "Screenshot", 
 				 NULL, "enlightenment/appearance", 
 				 e_int_config_screenshot_module);
 
@@ -166,7 +166,7 @@ e_modapi_shutdown(E_Module *m)
 	act = NULL;
      }
 
-   e_configure_registry_item_del("screenshot/screenshot");
+   e_configure_registry_item_del("extensions/screenshot");
    e_configure_registry_category_del("screenshot");
 
    e_gadcon_provider_unregister(&_gc_class);
