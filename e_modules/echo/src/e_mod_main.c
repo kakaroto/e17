@@ -225,7 +225,7 @@ e_modapi_init(E_Module *m)
           {
              _echo_cfg_free();
 	     ecore_timer_add(1.0, _echo_cfg_timer, 
-			     D_("Your Echo Module configuration is NEWER "
+			     D_("Your Echo Module Configuration is NEWER "
                                 "than the Echo Module version. This is "
                                 "very<br>strange. This should not happen unless"
                                 " you downgraded<br>the Echo Module or "
@@ -245,21 +245,21 @@ e_modapi_init(E_Module *m)
    if (incr_act) 
      {
         incr_act->func.go = _echo_cb_volume_increase;
-        e_action_predef_name_set("Echo", "Increase Volume", "volume_increase",
-                                 NULL, NULL, 0);
+        e_action_predef_name_set(D_("Echo"), D_("Increase Volume"), 
+                                 "volume_increase", NULL, NULL, 0);
      }
    decr_act = e_action_add("volume_decrease");
    if (decr_act) 
      {
         decr_act->func.go = _echo_cb_volume_decrease;
-        e_action_predef_name_set("Echo", "Decrease Volume", "volume_decrease",
-                                 NULL, NULL, 0);
+        e_action_predef_name_set(D_("Echo"), D_("Decrease Volume"), 
+                                 "volume_decrease", NULL, NULL, 0);
      }
    mute_act = e_action_add("volume_mute");
    if (mute_act) 
      {
         mute_act->func.go = _echo_cb_volume_mute;
-        e_action_predef_name_set("Echo", "Mute Volume", "volume_mute", 
+        e_action_predef_name_set(D_("Echo"), D_("Mute Volume"), "volume_mute", 
                                  NULL, NULL, 0);
      }
 
@@ -275,19 +275,19 @@ e_modapi_shutdown(E_Module *m)
 
    if (incr_act) 
      {
-        e_action_predef_name_del("Echo", "Increase Volume");
+        e_action_predef_name_del(D_("Echo"), D_("Increase Volume"));
         e_action_del("volume_increase");
         incr_act = NULL;
      }
    if (decr_act) 
      {
-        e_action_predef_name_del("Echo", "Decrease Volume");
+        e_action_predef_name_del(D_("Echo"), D_("Decrease Volume"));
         e_action_del("volume_decrease");
         decr_act = NULL;
      }
    if (mute_act) 
      {
-        e_action_predef_name_del("Echo", "Mute Volume");
+        e_action_predef_name_del(D_("Echo"), D_("Mute Volume"));
         e_action_del("volume_mute");
         mute_act = NULL;
      }
