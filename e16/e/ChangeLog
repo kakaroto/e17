@@ -4627,3 +4627,13 @@ Mark deskray stuff as such.
 Remove black line at bottom of iconbox background image.
 Fix shaped menu shape.
 Simplify image/text class loading code.
+
+-------------------------------------------------------------------------------
+
+Fri Jan 11 22:42:42 CET 2008
+(Kim)
+
+--- 0.16.8.11 ---
+Avoid X-errors with borderless empty menus.
+Fix potential segv (eimage.c).
+Add sanity checks (oom cases).
