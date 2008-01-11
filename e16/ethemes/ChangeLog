@@ -1,0 +1,8 @@
+--- 0.16.8.0.1 ---
+Enable building combined theme package.
+
+--- 0.16.8.0.2 ---
+ShinyMetal - Correct pager textclass.
+New style AC_INIT, autofoo cleanups.
+ShinyMetal - Make border and menu fonts separately configurable.
+Add ChangeLog
