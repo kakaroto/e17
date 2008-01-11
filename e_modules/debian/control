@@ -145,7 +145,7 @@ Description: An E17 network interface monitor module
  
 Package: emodule0-news
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment
+Depends: ${shlibs:Depends}, enlightenment, xdg-utils
 Provides: emodule-news
 Description: The E17 new modules
  An E17 module to display feeds like Rss or Atom on the desktop.
