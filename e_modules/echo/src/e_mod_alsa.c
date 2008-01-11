@@ -310,9 +310,9 @@ e_mod_alsa_set_mute(const char *channel, int mute)
         if (!snd_mixer_selem_has_playback_volume(elem)) continue;
         if (strcmp(channel, snd_mixer_selem_id_get_name(sid))) continue;
         if (snd_mixer_selem_has_playback_switch(elem)) 
-          ret = snd_mixer_selem_set_playback_switch_all(elem, mute);
+          ret = snd_mixer_selem_set_playback_switch_all(elem, !mute);
         else if (snd_mixer_selem_has_playback_switch_joined(elem))
-          ret = snd_mixer_selem_set_playback_switch_all(elem, mute);
+          ret = snd_mixer_selem_set_playback_switch_all(elem, !mute);
         break;
      }
 

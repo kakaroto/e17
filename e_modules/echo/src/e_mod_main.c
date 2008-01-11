@@ -29,6 +29,9 @@ static void _echo_cb_signal_volume_left_down(void *data, Evas_Object *obj, const
 static void _echo_cb_signal_volume_right_up(void *data, Evas_Object *obj, const char *emission, const char *source);
 static void _echo_cb_signal_volume_right_down(void *data, Evas_Object *obj, const char *emission, const char *source);
 static void _echo_cb_signal_volume_mute_toggle(void *data, Evas_Object *obj, const char *emission, const char *source);
+static void _echo_cb_volume_increase(E_Object *obj, const char *params);
+static void _echo_cb_volume_decrease(E_Object *obj, const char *params);
+static void _echo_cb_volume_mute(E_Object *obj, const char *params);
 
 typedef struct _Instance Instance;
 struct _Instance 
@@ -45,6 +48,9 @@ struct _Instance
 /* local variables */
 static Evas_List *instances = NULL;
 static E_Config_DD *conf_edd = NULL;
+static E_Action *incr_act = NULL;
+static E_Action *decr_act = NULL;
+static E_Action *mute_act = NULL;
 E_Module *echo_mod = NULL;
 Config *echo_cfg = NULL;
 
@@ -178,6 +184,12 @@ EAPI E_Module_Api e_modapi = {E_MODULE_API_VERSION, "Echo"};
 EAPI void *
 e_modapi_init(E_Module *m) 
 {
+   /* register config panel entry */
+   e_configure_registry_category_add("extensions", 90, D_("Extensions"), NULL, 
+                                     "enlightenment/extensions");
+   e_configure_registry_item_add("extensions/echo", 30, D_("Echo"), NULL, 
+                                 "enlightenment/e", e_int_config_echo_module);
+
    conf_edd = E_CONFIG_DD_NEW("Config", Config);
    #undef T
    #undef D
@@ -229,6 +241,28 @@ e_modapi_init(E_Module *m)
 
    if (!e_mod_system_init(echo_cfg->card.id)) return NULL;
 
+   incr_act = e_action_add("volume_increase");
+   if (incr_act) 
+     {
+        incr_act->func.go = _echo_cb_volume_increase;
+        e_action_predef_name_set("Echo", "Increase Volume", "volume_increase",
+                                 NULL, NULL, 0);
+     }
+   decr_act = e_action_add("volume_decrease");
+   if (decr_act) 
+     {
+        decr_act->func.go = _echo_cb_volume_decrease;
+        e_action_predef_name_set("Echo", "Decrease Volume", "volume_decrease",
+                                 NULL, NULL, 0);
+     }
+   mute_act = e_action_add("volume_mute");
+   if (mute_act) 
+     {
+        mute_act->func.go = _echo_cb_volume_mute;
+        e_action_predef_name_set("Echo", "Mute Volume", "volume_mute", 
+                                 NULL, NULL, 0);
+     }
+
    echo_mod = m;
    e_gadcon_provider_register(&_gc_class);
    return m;
@@ -237,6 +271,30 @@ e_modapi_init(E_Module *m)
 EAPI int 
 e_modapi_shutdown(E_Module *m) 
 {
+   if (echo_cfg->cfd) e_object_del(E_OBJECT(echo_cfg->cfd));
+
+   if (incr_act) 
+     {
+        e_action_predef_name_del("Echo", "Increase Volume");
+        e_action_del("volume_increase");
+        incr_act = NULL;
+     }
+   if (decr_act) 
+     {
+        e_action_predef_name_del("Echo", "Decrease Volume");
+        e_action_del("volume_decrease");
+        decr_act = NULL;
+     }
+   if (mute_act) 
+     {
+        e_action_predef_name_del("Echo", "Mute Volume");
+        e_action_del("volume_mute");
+        mute_act = NULL;
+     }
+
+   e_configure_registry_item_del("extensions/echo");
+   e_configure_registry_category_del("extensions");
+
    e_mod_system_shutdown();
    e_gadcon_provider_unregister(&_gc_class);
    echo_mod = NULL;
@@ -515,7 +573,8 @@ _echo_cb_mute_change(void *data, Evas_Object *obj, void *event)
    if (!(inst = data)) return;
    mute = e_widget_check_checked_get(obj);
    if (echo_sys->set_mute)
-     echo_sys->set_mute(echo_cfg->channel.name, !mute);
+     echo_sys->set_mute(echo_cfg->channel.name, mute);
+
    _echo_cb_update_inst(inst);
 }
 
@@ -526,9 +585,11 @@ _echo_cb_update_inst(void *data)
    Edje_Message_Int *left_vol_msg, *right_vol_msg;
 
    if (!(inst = data)) return;
-
    left_vol_msg = malloc(sizeof(Edje_Message_Int));
    right_vol_msg = malloc(sizeof(Edje_Message_Int));
+
+   left_vol_msg->val = inst->left_vol;
+   right_vol_msg->val = inst->left_vol;
 
    if (inst->right_vol == -1) 
      {
@@ -540,9 +601,6 @@ _echo_cb_update_inst(void *data)
           edje_object_signal_emit(inst->o_base, "e,action,volume,medium", "");
         else if (inst->left_vol >= 66)
           edje_object_signal_emit(inst->o_base, "e,action,volume,high", "");
-
-	left_vol_msg->val = inst->left_vol;
-	right_vol_msg->val = inst->left_vol;
      }
    else 
      {
@@ -564,12 +622,13 @@ _echo_cb_update_inst(void *data)
         else if (inst->right_vol >= 66)
           edje_object_signal_emit(inst->o_base, "e,action,volume,right,high", "");
 
-	left_vol_msg->val = inst->left_vol;
 	right_vol_msg->val = inst->right_vol;
      }
    
    if ((echo_sys->can_mute) && (echo_sys->can_mute(echo_cfg->channel.name))) 
      {
+        if (echo_sys->get_mute)
+	  echo_sys->get_mute(echo_cfg->channel.name, &(inst->mute));
         if (inst->mute)
           edje_object_signal_emit(inst->o_base, "e,action,volume,mute", "");
         else
@@ -589,13 +648,13 @@ _echo_cb_signal_volume_left_up(void *data, Evas_Object *obj, const char *emissio
    Instance *inst;
 
    if (!(inst = data)) return;
-
    inst->left_vol = inst->right_vol = -1;
    if (echo_sys->get_volume)
      echo_sys->get_volume(echo_cfg->channel.name, 
 		          &(inst->left_vol), &(inst->right_vol));
    if (echo_sys->set_volume)
-     echo_sys->set_volume(echo_cfg->channel.name, inst->left_vol + 5, inst->right_vol);
+     echo_sys->set_volume(echo_cfg->channel.name, inst->left_vol + 5, 
+                          inst->right_vol);
 
    _echo_cb_update_inst(inst);
 }
@@ -606,13 +665,13 @@ _echo_cb_signal_volume_left_down(void *data, Evas_Object *obj, const char *emiss
    Instance *inst;
 
    if (!(inst = data)) return;
-
    inst->left_vol = inst->right_vol = -1;
    if (echo_sys->get_volume)
      echo_sys->get_volume(echo_cfg->channel.name, 
 		          &(inst->left_vol), &(inst->right_vol));
    if (echo_sys->set_volume)
-     echo_sys->set_volume(echo_cfg->channel.name, inst->left_vol - 5, inst->right_vol);
+     echo_sys->set_volume(echo_cfg->channel.name, inst->left_vol - 5, 
+                          inst->right_vol);
 
    _echo_cb_update_inst(inst);
 }
@@ -623,7 +682,6 @@ _echo_cb_signal_volume_right_up(void *data, Evas_Object *obj, const char *emissi
    Instance *inst;
 
    if (!(inst = data)) return;
-
    inst->left_vol = inst->right_vol = -1;
    if (echo_sys->get_volume)
      echo_sys->get_volume(echo_cfg->channel.name, 
@@ -641,7 +699,6 @@ _echo_cb_signal_volume_right_down(void *data, Evas_Object *obj, const char *emis
    Instance *inst;
 
    if (!(inst = data)) return;
-
    inst->left_vol = inst->right_vol = -1;
    if (echo_sys->get_volume)
      echo_sys->get_volume(echo_cfg->channel.name, 
@@ -659,12 +716,69 @@ _echo_cb_signal_volume_mute_toggle(void *data, Evas_Object *obj, const char *emi
    Instance *inst;
 
    if (!(inst = data)) return;
-
-   inst->left_vol = inst->right_vol = -1;
    if ((echo_sys->can_mute) && (echo_sys->can_mute(echo_cfg->channel.name)))
      {
-        if (echo_sys->get_mute)
-	  echo_sys->get_mute(echo_cfg->channel.name, &(inst->mute));
+	if (echo_sys->set_mute)
+	  echo_sys->set_mute(echo_cfg->channel.name, !(inst->mute));
+     }
+
+   _echo_cb_update_inst(inst);
+}
+
+static void 
+_echo_cb_volume_increase(E_Object *obj, const char *params) 
+{
+   Instance *inst = NULL;
+
+   if (!(inst = evas_list_data(instances))) return;
+   inst->left_vol = inst->right_vol = -1;
+   if (echo_sys->get_volume)
+     echo_sys->get_volume(echo_cfg->channel.name, 
+		          &(inst->left_vol), &(inst->right_vol));
+   if (echo_sys->set_volume) 
+     {
+        if (inst->right_vol != -1)
+          echo_sys->set_volume(echo_cfg->channel.name, inst->left_vol + 1, 
+                               inst->right_vol + 1);
+        else
+          echo_sys->set_volume(echo_cfg->channel.name, inst->left_vol + 1, 
+                               inst->right_vol);
+     }
+
+   _echo_cb_update_inst(inst);
+}
+
+static void 
+_echo_cb_volume_decrease(E_Object *obj, const char *params) 
+{
+   Instance *inst = NULL;
+
+   if (!(inst = evas_list_data(instances))) return;
+   inst->left_vol = inst->right_vol = -1;
+   if (echo_sys->get_volume)
+     echo_sys->get_volume(echo_cfg->channel.name, 
+		          &(inst->left_vol), &(inst->right_vol));
+   if (echo_sys->set_volume) 
+     {
+        if (inst->right_vol != -1)
+          echo_sys->set_volume(echo_cfg->channel.name, inst->left_vol - 1, 
+                               inst->right_vol - 1);
+        else
+          echo_sys->set_volume(echo_cfg->channel.name, inst->left_vol - 1, 
+                               inst->right_vol);
+     }
+
+   _echo_cb_update_inst(inst);
+}
+
+static void 
+_echo_cb_volume_mute(E_Object *obj, const char *params) 
+{
+   Instance *inst = NULL;
+
+   if (!(inst = evas_list_data(instances))) return;
+   if ((echo_sys->can_mute) && (echo_sys->can_mute(echo_cfg->channel.name)))
+     {
 	if (echo_sys->set_mute)
 	  echo_sys->set_mute(echo_cfg->channel.name, !(inst->mute));
      }
