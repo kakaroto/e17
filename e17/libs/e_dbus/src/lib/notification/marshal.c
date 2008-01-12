@@ -229,7 +229,7 @@ e_notify_unmarshal_close_notification(DBusMessage *msg, DBusError *err)
   dbus_uint32_t id;
   if (!dbus_message_has_signature(msg, "u")) return 0;
   dbus_message_get_args(msg, err, DBUS_TYPE_UINT32, &id, DBUS_TYPE_INVALID);
-  if (dbus_error_is_set(err))
+  if (err && dbus_error_is_set(err))
     return 0;
 
   return id;
@@ -465,6 +465,8 @@ e_notify_unmarshal_notify_hints(E_Notification *n, DBusMessageIter *iter)
       dbus_message_iter_get_basic(&dict, &key);
       dbus_message_iter_next(&dict);
       dbus_message_iter_recurse(&dict, &variant);
+      if (dbus_message_iter_get_arg_type(&variant) != DBUS_TYPE_INVALID) 
+        continue;
       switch(dbus_message_iter_get_element_type(&variant))
       {
         case DBUS_TYPE_STRING:
