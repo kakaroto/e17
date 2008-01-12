@@ -55,6 +55,7 @@ src/lib/notification/Makefile
 src/bin/Makefile
 edbus.pc
 ehal.pc
+enotify.pc
 ])
 
 
