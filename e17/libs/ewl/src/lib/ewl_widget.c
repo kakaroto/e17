@@ -259,13 +259,6 @@ ewl_widget_unrealize(Ewl_Widget *w)
 
 	ewl_widget_obscure(w);
 
-	/*
-	 * Notify parent of hidden state.
-	 */
-	pc = EWL_CONTAINER(w->parent);
-	if (pc && VISIBLE(w))
-		ewl_container_child_hide_call(pc, w);
-
 	ewl_callback_call(w, EWL_CALLBACK_UNREALIZE);
 	ewl_object_visible_remove(EWL_OBJECT(w), EWL_FLAG_VISIBLE_REALIZED);
 

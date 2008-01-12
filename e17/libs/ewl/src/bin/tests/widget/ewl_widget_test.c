@@ -144,6 +144,7 @@ static int reparent_realized(char *buf, int len);
 static int realize_reveal(char *buf, int len);
 static int realize_reveal_obscure(char *buf, int len);
 static int realize_reveal_unrealize(char *buf, int len);
+static int show_realize_unrealize(char *buf, int len);
 
 static int focusable_test_set_get(char *buf, int len);
 static int focus_test_send_get(char *buf, int len);
@@ -180,6 +181,7 @@ static Ewl_Unit_Test widget_unit_tests[] = {
 		{"widget realize then reveal state", realize_reveal, NULL, -1, 0},
 		{"widget realize reveal obscure state", realize_reveal_obscure, NULL, -1, 0},
 		{"widget realize reveal unrealize state", realize_reveal_unrealize, NULL, -1, 0},
+		{"widget show realize unrealize state", show_realize_unrealize, NULL, -1, 0},
 		{"widget focusable set/get", focusable_test_set_get, NULL, -1, 0},
 		{"widget focus send/get", focus_test_send_get, NULL, -1, 0},
 		{NULL, NULL, NULL, -1, 0}
@@ -919,6 +921,45 @@ realize_reveal_unrealize(char *buf, int len)
 		LOG_FAILURE(buf, len, "Widget REVEALED after realize/reveal/unrealize");
 	else if (REVEALED(win))
 		LOG_FAILURE(buf, len, "Window REVEALED after realize/reveal/unrealize");
+	else 
+		ret = 1;
+
+	ewl_widget_destroy(win);
+	ewl_widget_destroy(w);
+	return ret;
+}
+
+static int
+show_realize_unrealize(char *buf, int len)
+{
+	Ewl_Widget *w;
+	Ewl_Widget *win;
+	int ret = 0;
+
+	w = ewl_widget_new();
+
+	/*
+	 * Create a window and add the child to allow the realize to
+	 * succeed. This will be using the buffer engine.
+	 */
+	win = ewl_window_new();
+	ewl_embed_engine_name_set(EWL_EMBED(win), "evas_buffer");
+
+	ewl_container_child_append(EWL_CONTAINER(win), w);
+	ewl_widget_show(w);
+	ewl_widget_realize(w);
+	ewl_widget_unrealize(w);
+
+	if (!VISIBLE(w))
+		LOG_FAILURE(buf, len, "Widget not VISIBLE after show/realize/unrealize");
+	else if (REALIZED(w))
+		LOG_FAILURE(buf, len, "Widget REALIZED after show/realize/unrealize");
+	else if (!REALIZED(win))
+		LOG_FAILURE(buf, len, "Window !REALIZED after show/realize/unrealize");
+	else if (REVEALED(w))
+		LOG_FAILURE(buf, len, "Widget REVEALED after show/realize/unrealize");
+	else if (REVEALED(win))
+		LOG_FAILURE(buf, len, "Window REVEALED after show/realize/unrealize");
 	else 
 		ret = 1;
 
