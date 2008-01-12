@@ -467,7 +467,7 @@ e_notify_unmarshal_notify_hints(E_Notification *n, DBusMessageIter *iter)
       dbus_message_iter_recurse(&dict, &variant);
       if (dbus_message_iter_get_arg_type(&variant) != DBUS_TYPE_INVALID) 
         continue;
-      switch(dbus_message_iter_get_element_type(&variant))
+      switch (dbus_message_iter_get_element_type(&variant))
       {
         case DBUS_TYPE_STRING:
           dbus_message_iter_get_basic(&variant, &s_val);
