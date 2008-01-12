@@ -34,7 +34,7 @@ test_info(Ewl_Test *test)
 	test->tip = "The check class is a basic check\n"
 		"for an undecorated checkbutton.";
 	test->filename = __FILE__;
-	test->type = EWL_TEST_TYPE_MISC;
+	test->type = EWL_TEST_TYPE_UNIT;
 	test->unit_tests = check_unit_tests;
 }
 
