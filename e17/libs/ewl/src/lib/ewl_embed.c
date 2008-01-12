@@ -738,11 +738,17 @@ ewl_embed_mouse_move_feed(Ewl_Embed *embed, int x, int y, unsigned int mods)
 	 */
 	while (check && (widget != EWL_WIDGET(check))
 			&& !ewl_widget_parent_of(EWL_WIDGET(check), widget)) {
-		ewl_embed_mouse_cursor_set(EWL_WIDGET(check));
 
 		ewl_object_state_remove(check, EWL_FLAG_STATE_MOUSE_IN);
 		ewl_callback_call(EWL_WIDGET(check), EWL_CALLBACK_MOUSE_OUT);
 		check = EWL_OBJECT(EWL_WIDGET(check)->parent);
+
+		/* We set the cursor to the parent of the now moused_out widget
+		 * because if we only run this loop once then a custom cursor will
+		 * be shown on mouse_out
+		 */
+		if (check)
+			ewl_embed_mouse_cursor_set(EWL_WIDGET(check));
 	}
 
 	/*
