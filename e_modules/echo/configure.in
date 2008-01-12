@@ -82,7 +82,6 @@ AC_SUBST(SOUND_LDFLAGS)
 AC_OUTPUT([
 Makefile
 src/Makefile
-po/Makefile.in
 module.desktop
 e_modules-echo.spec
 ], [
