@@ -245,8 +245,6 @@ ewl_widget_realize(Ewl_Widget *w)
 void
 ewl_widget_unrealize(Ewl_Widget *w)
 {
-	Ewl_Container *pc;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(w);
 	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
