@@ -145,7 +145,14 @@ _args(void)
 		    "-fps fps   Set attempted framerate in frames per second\n"
 		    "-verbose   Run Exquisite in verbose mode\n"
 		    "-h         Display this help\n",
-		    argv[0]);
+		    "\n"
+		    "Notes:\n"
+		    "\n"
+		    "You can also set the EXQUISITE_IPC environment variable\n"
+		    "to give a fill path to any file to be used as the base\n"
+		    "filename of the IPC socket to be used between exquisite\n"
+		    "and exquisitie-write for communication.\n"
+		    , argv[0]);
 	     exit(0);
 	  }
      }

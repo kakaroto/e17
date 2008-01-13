@@ -83,7 +83,14 @@ _help(void)
           "  FAILURE X     Set a failure status for the last line of text\n"
           "  CLEAR         Clear all text and hide text box\n"
           "  TIMEOUT N     Exquisite will timeout in N seconds if no commands recv'd\n"
-   );
+	  "\n"
+	  "Notes:\n"
+	  "\n"
+	  "You can also set the EXQUISITE_IPC environment variable\n"
+	  "to give a fill path to any file to be used as the base\n"
+	  "filename of the IPC socket to be used between exquisite\n"
+	  "and exquisitie-write for communication.\n"
+	  );
 }
 
 static int
