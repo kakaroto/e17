@@ -27,7 +27,10 @@ void
 ipc_init(void)
 {
    ecore_ipc_init();
-   _ipc_server = ecore_ipc_server_connect(ECORE_IPC_LOCAL_SYSTEM, "exquisite", 0, NULL);
+   if (getenv("EXQUISITE_IPC"))
+     _ipc_server = ecore_ipc_server_connect(ECORE_IPC_LOCAL_SYSTEM, (getenv("EXQUISITE_IPC")), 0, NULL);
+   else
+     _ipc_server = ecore_ipc_server_connect(ECORE_IPC_LOCAL_SYSTEM, "exquisite", 0, NULL);
    if (!_ipc_server)
      {
 	_help();

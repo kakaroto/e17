@@ -16,7 +16,10 @@ void
 ipc_init(void)
 {
    ecore_ipc_init();
-   _ipc_server = ecore_ipc_server_add(ECORE_IPC_LOCAL_SYSTEM, "exquisite", 0, NULL);
+   if (getenv("EXQUISITE_IPC"))
+     _ipc_server = ecore_ipc_server_add(ECORE_IPC_LOCAL_SYSTEM, getenv("EXQUISITE_IPC"), 0, NULL);
+   else
+     _ipc_server = ecore_ipc_server_add(ECORE_IPC_LOCAL_SYSTEM, "exquisite", 0, NULL);
    ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_ADD, _ipc_cb_client_add, NULL);
    ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_DEL, _ipc_cb_client_del, NULL);
    ecore_event_handler_add(ECORE_IPC_EVENT_CLIENT_DATA, _ipc_cb_client_data, NULL);
