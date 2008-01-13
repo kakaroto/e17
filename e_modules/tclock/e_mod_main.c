@@ -10,6 +10,9 @@
 #  include <time.h>
 # endif
 #endif
+#if HAVE_LOCALE_H
+#  include <locale.h>
+#endif
 
 /* Func Proto Requirements for Gadcon */
 static E_Gadcon_Client *_gc_init     (E_Gadcon *gc, const char *name, const char *id, const char *style);
@@ -449,6 +452,9 @@ e_modapi_init (E_Module * m)
 {
   char buf[4096];
 
+#if HAVE_LOCALE_H
+  setlocale(LC_ALL, "");
+#endif
   snprintf (buf, sizeof (buf), "%s/locale", e_module_dir_get (m));
   bindtextdomain (PACKAGE, buf);
   bind_textdomain_codeset (PACKAGE, "UTF-8");
