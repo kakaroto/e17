@@ -43,7 +43,7 @@ e_mod_alsa_get_cards(void)
    snd_ctl_card_info_alloca(&hw_info);
    for (i = 0; i < 32; i++)
      {
-	char *name = NULL;
+	const char *name = NULL;
 	
 	snprintf(buf, sizeof(buf), "hw:%d", i);
 	if ((err = snd_ctl_open(&control, buf, 0)) < 0) break;
@@ -57,10 +57,7 @@ e_mod_alsa_get_cards(void)
 	snd_ctl_close(control);
 	name = snd_ctl_card_info_get_name(hw_info);
 	if (name)
-	  {
-	     cards = evas_list_append(cards, evas_stringshare_add(name));
-             free(name);
-	  }
+          cards = evas_list_append(cards, evas_stringshare_add(name));
      }
 
    return cards;
