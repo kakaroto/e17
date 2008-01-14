@@ -1,0 +1,41 @@
+#define COMP LOSSY 100
+
+images{	
+}
+
+fonts{
+ font:"Vera.ttf" "Vera";
+ font:"VeraBd.ttf" "VeraBold";
+}
+
+collections
+{
+#include "enna_background.edc"
+	
+   /* Modules */
+#include "enna_module_music.edc"
+#include "enna_module_video.edc"
+#include "enna_module_photo.edc"
+#include "enna_module_playlist.edc"
+#include "enna_mainmenu.edc"
+
+   /* Effects */
+#include "enna_blooper.edc"
+#include "enna_switcher.edc"
+#include "enna_dream.edc"
+
+   /* Widgets */
+#include "enna_icons.edc"
+#include "enna_list.edc"
+#include "enna_filemanager.edc"
+#include "enna_cdda.edc"
+#include "enna_miniplayer.edc"
+#include "enna_menuitem.edc"
+
+   /* Fullscreen objects */
+#include "enna_music_player.edc"
+#include "enna_slideshow.edc"
+#include "enna_video_player.edc"
+#include "enna_mediaplayer.edc"
+#include "enna_popup.edc"
+}

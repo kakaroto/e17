@@ -1,0 +1,48 @@
+TODO
+----
+
+* Browse Samba & FTP 
+* Remove Entry in mainmenu when volumes are unmouted
+* use ecore_config(seem to be deprecated) or eet for configuration file
+
+[Music]
+* DB support (sqlite3) => must be improve
+* Improve covers donwload from Amazon : request have not right encodings
+* Last FM plugin
+* Add infos with similar artists when playing in fullscreen mode
+* Add web radio support (pls/m3u ...)
+* Ipod Support
+* Player in Fullscreen mode has been remove, this mode have to be add again
+
+
+[Video]
+* Video DB, get video cover, director ....
+* miniplayer for video : video in mainemnu when minimize
+* Playlist for videos
+* DVD menus
+* Video Swallow part has been removed recently, has to be add again
+
+[Playlist]
+* Add/remove medias to main_playlist
+* Open/Save/Remove playlist
+* Play Playlist [done]
+* Burn/Copy playlist
+* Transcode playlist (video ->iPOD) (ogg->mp3)
+* Smart Playlists (most recents, most played ...)
+
+[Photo]
+* Improve slideshow
+* rotate photos
+* EXIF infos
+* Playlists : burn/copy ....
+* Import photos
+* Collections support through directory
+
+[Configuration]
+* Create .ennarc if not existing (OK)
+
+
+[Module/Plugins]
+ * TBD
+
+
