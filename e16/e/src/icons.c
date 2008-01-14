@@ -131,13 +131,13 @@ static EImage      *
 IB_GetAppIcon(EWin * ewin, int size)
 {
    /* Get the applications icon pixmap/mask */
-   int                 x, y;
-   unsigned int        w, h, depth, bw;
-   Window              rt;
+   int                 w, h;
    EImage             *im;
 
    if (ewin->ewmh.wm_icon)
      {
+	int                 x;
+
 	x = NetwmIconFindBestSize(ewin->ewmh.wm_icon, ewin->ewmh.wm_icon_len,
 				  size);
 	if (x >= 0)
@@ -155,7 +155,7 @@ IB_GetAppIcon(EWin * ewin, int size)
 
    w = 0;
    h = 0;
-   XGetGeometry(disp, ewin->icccm.icon_pmap, &rt, &x, &y, &w, &h, &bw, &depth);
+   EXGetGeometry(ewin->icccm.icon_pmap, NULL, NULL, NULL, &w, &h, NULL, NULL);
 
    if (w < 1 || h < 1)
       return NULL;
