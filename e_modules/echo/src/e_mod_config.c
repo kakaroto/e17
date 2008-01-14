@@ -69,7 +69,7 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 {
    Evas_Object *o = NULL, *of = NULL;
    Evas_Object *ow = NULL;
-   Evas_List *l = NULL;
+   Evas_List *l = NULL, *list;
    E_Radio_Group *rg;
    int i = 0;
 
@@ -81,14 +81,18 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 
    of = e_widget_framelist_add(evas, D_("Sound Cards"), 0);
    rg = e_widget_radio_group_new(&(cfdata->card));
-   for (i = 0, l = echo_sys->get_cards(); l; l = l->next, i++) 
+   list = echo_sys->get_cards();
+   for (i = 0, l = list; l; l = l->next, i++) 
      {
         char *name = NULL;
 
-        if (!(name = l->data)) continue;
+	name = l->data;
+        if (!name) continue;
         ow = e_widget_radio_add(evas, name, i, rg);
         e_widget_framelist_object_append(of, ow);
+	evas_stringshare_del(name);
      }
+   if (list) evas_list_free(list);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
    of = e_widget_frametable_add(evas, D_("Channels"), 0);

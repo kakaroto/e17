@@ -35,6 +35,36 @@ EAPI Evas_List *
 e_mod_alsa_get_cards(void) 
 {
    Evas_List *cards = NULL;
+#if 1
+   int i, err;
+   char buf[256];
+   snd_ctl_t *control;
+   snd_ctl_card_info_t *hw_info;
+   
+   snd_ctl_card_info_alloca(&hw_info);
+   for (i = 0; i < 32; i++)
+     {
+	char *name;
+	
+	snprintf(buf, sizeof(buf), "hw:%d", i);
+	if ((err = snd_ctl_open(&control, buf, 0)) < 0) break;
+	if ((err = snd_ctl_card_info(control, hw_info)) < 0)
+	  {
+	     printf("Cannot get hardware info: %s: %s\n", buf,
+		    snd_strerror(err));
+	     snd_ctl_close(control);
+	     continue;
+	  }
+	snd_ctl_close(control);
+	name = snd_ctl_card_info_get_name(hw_info);
+	if (name)
+	  {
+	     cards = evas_list_append(cards, evas_stringshare_add(name));
+	  }
+     }
+   
+#else
+   /* doesnt seem to work for 2 cards for me? */
    int i = -1, err = -1;
 
    err = snd_card_next(&i);
@@ -48,6 +78,7 @@ e_mod_alsa_get_cards(void)
         i++;
         err = snd_card_next(&i);
      }
+#endif   
    return cards;
 }
 

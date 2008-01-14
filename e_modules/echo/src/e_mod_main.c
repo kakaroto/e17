@@ -350,11 +350,17 @@ _echo_cfg_new(void)
    echo_cfg->card.id = 0;
    echo_cfg->channel.id = 0;
    echo_cfg->channel.name = NULL;
-   if (e_mod_system_init(0))
+   if (e_mod_system_init(echo_cfg->card.id))
      {
+	char *name = NULL;
+	
         if (echo_sys->get_channel_name)
-          echo_cfg->channel.name = 
-          evas_stringshare_add(echo_sys->get_channel_name(0));
+	  name = echo_sys->get_channel_name(echo_cfg->card.id);
+	if (name)
+	  {
+	     echo_cfg->channel.name = evas_stringshare_add(name);
+	     free(name);
+	  }
         e_mod_system_shutdown();
      }
    IFMODCFGEND;
