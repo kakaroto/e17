@@ -34,17 +34,16 @@ e_mod_alsa_shutdown(void)
 EAPI Evas_List *
 e_mod_alsa_get_cards(void) 
 {
-   Evas_List *cards = NULL;
-#if 1
    int i, err;
    char buf[256];
    snd_ctl_t *control;
    snd_ctl_card_info_t *hw_info;
+   Evas_List *cards = NULL;
    
    snd_ctl_card_info_alloca(&hw_info);
    for (i = 0; i < 32; i++)
      {
-	char *name;
+	char *name = NULL;
 	
 	snprintf(buf, sizeof(buf), "hw:%d", i);
 	if ((err = snd_ctl_open(&control, buf, 0)) < 0) break;
@@ -60,25 +59,10 @@ e_mod_alsa_get_cards(void)
 	if (name)
 	  {
 	     cards = evas_list_append(cards, evas_stringshare_add(name));
+             free(name);
 	  }
      }
-   
-#else
-   /* doesnt seem to work for 2 cards for me? */
-   int i = -1, err = -1;
 
-   err = snd_card_next(&i);
-   while ((i >= 0) && (err >= 0)) 
-     {
-        char *name = NULL;
-
-        err = snd_card_get_name(i, &name);
-        if (err < 0) break;
-        cards = evas_list_append(cards, name);
-        i++;
-        err = snd_card_next(&i);
-     }
-#endif   
    return cards;
 }
 
