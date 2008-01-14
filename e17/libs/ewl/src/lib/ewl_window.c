@@ -574,6 +574,7 @@ ewl_window_transient_for(Ewl_Window *win, Ewl_Window *forwin)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(win);
 	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
+	DCHECK_TYPE(forwin, EWL_WINDOW_TYPE);
 
 	win->transient.ewl = forwin;
 	win->flags &= ~EWL_WINDOW_TRANSIENT_FOREIGN;
@@ -638,6 +639,7 @@ ewl_window_leader_set(Ewl_Window *win, Ewl_Window *leader)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(win);
 	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
+	DCHECK_TYPE(leader, EWL_WINDOW_TYPE);
 
 	win->leader.ewl = leader;
 	win->flags &= ~EWL_WINDOW_LEADER_FOREIGN;
