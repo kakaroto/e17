@@ -8,10 +8,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16-0.16.8.9-0.02-fr\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-01-06 15:09+0100\n"
-"PO-Revision-Date: 2007-06-14 18:36+0200\n"
+"POT-Creation-Date: 2008-01-11 22:26+0100\n"
+"PO-Revision-Date: 2008-01-13 17:28+0100\n"
 "Last-Translator: Tristan D. <trinine@free.fr>\n"
-"Language-Team: French <http://www.linuxmao.org>\n"
+"Language-Team: French\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -20,7 +20,7 @@ msgstr ""
 #: src/about.c:33
 #, c-format
 msgid "About Enlightenment %s"
-msgstr "A propos d'Enlightenment %s"
+msgstr "À propos d'Enlightenment %s"
 
 #: src/about.c:43
 #, c-format
@@ -349,7 +349,7 @@ msgid "CONFIG: missing required data in \"%s\"\n"
 msgstr "CONFIG: Absence de donnée requise dans \"%s\"\n"
 
 #: src/config.c:213
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Warning: unable to determine what to do with\n"
 "the following text in the middle of current %s definition:\n"
@@ -357,7 +357,7 @@ msgid ""
 "Will ignore and continue...\n"
 msgstr ""
 "Attention: Impossible de déterminer l'utilité du texte\n"
-"suivant au sein de la définition de Text courante:\n"
+"suivant au sein de la définition courante %s :\n"
 "%s\n"
 "Ignoré, on continue...\n"
 
@@ -484,7 +484,7 @@ msgstr "Horizontale"
 
 #: src/container.c:1631
 msgid "Left / Top"
-msgstr "Gauche / Haut"
+msgstr "Gauche/Haut"
 
 #: src/container.c:1636
 msgid "Start"
@@ -496,7 +496,7 @@ msgstr "Verticale"
 
 #: src/container.c:1647
 msgid "Right / Bottom"
-msgstr "Droit / Bas"
+msgstr "Droit/Bas"
 
 #: src/container.c:1653
 msgid "Both ends"
@@ -1399,7 +1399,7 @@ msgstr "Tuer"
 
 #: src/pager.c:1000
 msgid "Stick / Unstick"
-msgstr "Coller / Décoller"
+msgstr "Coller/Décoller"
 
 #: src/pager.c:1009
 msgid "Desktop Options"
@@ -1631,7 +1631,7 @@ msgstr "Translucide"
 
 #: src/settings.c:138
 msgid "Avoid server grab"
-msgstr ""
+msgstr "Éviter la capture du serveur"
 
 #: src/settings.c:148
 msgid "Move/Resize Geometry Info Postion:"
@@ -1651,20 +1651,19 @@ msgstr "Ne pas afficher"
 
 #: src/settings.c:176
 msgid "Default Resize Policy:"
-msgstr ""
+msgstr "Règle de redimensionnement par défaut :"
 
 #: src/settings.c:180
 msgid "Conservative"
-msgstr ""
+msgstr "Conservatrice"
 
 #: src/settings.c:186
 msgid "Available"
-msgstr ""
+msgstr "Disponible"
 
 #: src/settings.c:192
-#, fuzzy
 msgid "Absolute"
-msgstr "Dessus"
+msgstr "Absolue"
 
 #: src/settings.c:202
 msgid "Update window while moving"
@@ -2118,27 +2117,27 @@ msgstr ""
 
 #: src/systray.c:332 src/systray.c:437 src/systray.c:445
 msgid "Systray Error!"
-msgstr "Erreur du Systray !"
+msgstr "Erreur de la Zone de notification !"
 
 #: src/systray.c:332
 msgid "Systray went elsewhere?!?"
-msgstr "Le Systray est parti ailleurs ?!?"
+msgstr "La Zone de notification est partie ailleurs ?!?"
 
 #: src/systray.c:437
 msgid "Only one systray is allowed"
-msgstr "Vous ne pouvez utiliser qu'un seul Systray"
+msgstr "Vous ne pouvez utiliser qu'une seule Zone de notification"
 
 #: src/systray.c:445
 msgid "Could not activate systray"
-msgstr "Impossible d'activer le Systray"
+msgstr "Impossible d'activer la Zone de notification"
 
 #: src/systray.c:455
 msgid "Systray Options"
-msgstr "Options du Systray"
+msgstr "Options de la Zone de notification"
 
 #: src/systray.c:456
 msgid "Systray Settings"
-msgstr "Paramètres du Systray"
+msgstr "Paramètres de la Zone de notification"
 
 #: src/theme.c:67
 #, c-format
@@ -2314,7 +2313,7 @@ msgstr "Hauteur maximum"
 
 #: config/strings.c:34 config/strings.c:40
 msgid "Toggle between maximum screen height and normal height."
-msgstr "Basculer la hauteur d'écran maximum / normale."
+msgstr "Basculer la hauteur d'écran maximum/normale."
 
 #: config/strings.c:35
 msgid "Maximize Width"
@@ -2322,7 +2321,7 @@ msgstr "Largeur maximum"
 
 #: config/strings.c:36 config/strings.c:39
 msgid "Toggle between maximum screen width and normal width."
-msgstr "Basculer la largeur d'écran maximum / normale."
+msgstr "Basculer la largeur d'écran maximum/normale."
 
 #: config/strings.c:37
 msgid "Maximize"
@@ -2330,7 +2329,7 @@ msgstr "Maximiser"
 
 #: config/strings.c:38
 msgid "Toggle between maximum screen size and normal size."
-msgstr "Basculer la taille d'écran maximum / normale."
+msgstr "Basculer la taille d'écran maximum/normale."
 
 #: config/strings.c:41 config/strings.c:43
 msgid "Send To Another Desktop"
@@ -2386,7 +2385,7 @@ msgstr "Descendre cette fenêtre d'un niveau."
 
 #: config/strings.c:60 config/strings.c:138
 msgid "Stick/Unstick"
-msgstr "Coller / Décoller"
+msgstr "Coller/Décoller"
 
 #: config/strings.c:61
 msgid "Toggle the Omnipresent (visible on all Desktops) state of this window."
@@ -2456,12 +2455,11 @@ msgstr "Aller vers le Bureau précédent"
 
 #: config/strings.c:84
 msgid "Create Systray"
-msgstr "Créer un Systray"
+msgstr "Créer une Zone de notification"
 
 #: config/strings.c:85
-#, fuzzy
 msgid "Show Magnifier"
-msgstr "Loupe"
+msgstr "Afficher Loupe"
 
 #: config/strings.c:87
 msgid "Enlightenment"
@@ -2485,16 +2483,15 @@ msgstr "Aide"
 
 #: config/strings.c:94
 msgid "About Enlightenment"
-msgstr "A propos d'Enlightenment"
+msgstr "À propos d'Enlightenment"
 
 #: config/strings.c:95
 msgid "About this theme"
-msgstr "A propos de ce thème"
+msgstr "À propos de ce thème"
 
 #: config/strings.c:96 config/strings.c:199
-#, fuzzy
 msgid "Restart"
-msgstr "Début"
+msgstr "Redémarrer E16"
 
 #: config/strings.c:97 config/strings.c:200
 msgid "Log Out"
@@ -2782,11 +2779,11 @@ msgstr "Basculer en largeur maximum absolue"
 
 #: config/strings.c:192
 msgid "Fullscreen/Normal"
-msgstr "Plein écran / Normal"
+msgstr "Plein écran/Normal"
 
 #: config/strings.c:193
 msgid "Zoom/Unzoom"
-msgstr "Zoom Avant / Arrière"
+msgstr "Zoom Avant/Arrière"
 
 #: config/strings.c:196
 msgid "User Application List"
@@ -2797,95 +2794,6 @@ msgid "Other"
 msgstr "Autres"
 
 #: config/strings.c:198
-#, fuzzy
 msgid "Epplets"
-msgstr "Ondes"
+msgstr "Epplets"
 
-#~ msgid "Enlightenment Epplets"
-#~ msgstr "Epplets d'Enlightenment"
-
-#~ msgid ""
-#~ "Warning: unable to determine what to do with\n"
-#~ "the following text in the middle of current ActionClass definition:\n"
-#~ "%s\n"
-#~ "Will ignore and continue...\n"
-#~ msgstr ""
-#~ "Attention: Impossible de déterminer l'utilité du texte\n"
-#~ "suivant au sein de la définition ActionClass courante:\n"
-#~ "%s\n"
-#~ "Ignoré, on continue...\n"
-
-#~ msgid ""
-#~ "Warning: unable to determine what to do with\n"
-#~ "the following text in the middle of current  ColorModifier definition:\n"
-#~ "%s\n"
-#~ "Will ignore and continue...\n"
-#~ msgstr ""
-#~ "Attention: Impossible de déterminer l'utilité du texte\n"
-#~ "suivant au sein de la définition ColorModifier courante:\n"
-#~ "%s\n"
-#~ "Ignoré, on continue...\n"
-
-#~ msgid "Recover system config?"
-#~ msgstr "Récupérer la configuration système ?"
-
-#~ msgid "Yes, Attempt recovery"
-#~ msgstr "Oui, tenter de récupérer"
-
-#~ msgid "Restart and try again"
-#~ msgstr "Redémarrer et réessayer"
-
-#~ msgid "Quit and give up"
-#~ msgstr "Quitter et abandonner"
-
-#~ msgid ""
-#~ "Enlightenment has encountered parsing errors in your autosaved\n"
-#~ "configuration.\n"
-#~ "\n"
-#~ "This may be due to filing system errors, Minor bugs or unforeseen\n"
-#~ "system shutdowns.\n"
-#~ "\n"
-#~ "Do you wish Enlightenment to recover its original system\n"
-#~ "configuration and try again?\n"
-#~ msgstr ""
-#~ "Enlightenment a rencontré des erreurs en parcourant les fichiers\n"
-#~ "de configuration auto-sauvegardés.\n"
-#~ "\n"
-#~ "Cela peut être dû à une erreur de système de fichier ou un\n"
-#~ "redémarrage intempestif du système (crash).\n"
-#~ "\n"
-#~ "Souhaitez vous qu'Enlightenment récupère sa configuration\n"
-#~ "initiale et réessaie ?\n"
-
-#~ msgid ""
-#~ "Warning: unable to determine what to do with\n"
-#~ "the following text in the middle of current ImageClass definition:\n"
-#~ "%s\n"
-#~ "Will ignore and continue...\n"
-#~ msgstr ""
-#~ "Attention: Impossible de déterminer l'utilité du texte\n"
-#~ "suivant au sein de la définition d'ImageClass courante:\n"
-#~ "%s\n"
-#~ "Ignoré, on continue...\n"
-
-#~ msgid ""
-#~ "Warning: unable to determine what to do with\n"
-#~ "the following text in the middle of current ToolTip definition:\n"
-#~ "%s\n"
-#~ "Will ignore and continue...\n"
-#~ msgstr ""
-#~ "Attention: Impossible de déterminer l'utilité du texte\n"
-#~ "suivant au sein de la définition de ToolTip courante:\n"
-#~ "%s\n"
-#~ "Ignoré, on continue...\n"
-
-#~ msgid ""
-#~ "Warning: unable to determine what to do with\n"
-#~ "the following text in the middle of current WindowMatch definition:\n"
-#~ "%s\n"
-#~ "Will ignore and continue...\n"
-#~ msgstr ""
-#~ "Attention: Impossible de déterminer l'utilité du texte\n"
-#~ "suivant au sein de la définition de WindowMatch courante:\n"
-#~ "%s\n"
-#~ "Ignoré, on continue...\n"
