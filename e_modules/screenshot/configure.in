@@ -34,7 +34,7 @@ AC_PATH_PROG(EDJE_CC, "edje_cc", "", $PATH)
 
 AC_PATH_PROG(EMPRINT, "emprint", "", $PATH)
 if test "$EMPRINT" = ""; then
-AC_MSG_ERROR(emprint not found)
+  AC_MSG_ERROR(emprint not found)
 fi
 
 AC_PATH_PROG(E_CONFIG, "enlightenment-config", "", $PATH)
