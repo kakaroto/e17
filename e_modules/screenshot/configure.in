@@ -31,7 +31,12 @@ AC_SUBST(MODULE_ARCH)
 AC_DEFINE_UNQUOTED(MODULE_ARCH, "$MODULE_ARCH", "Module architecture")
 
 AC_PATH_PROG(EDJE_CC, "edje_cc", "", $PATH)
+
+have_emprint="yes"
 AC_PATH_PROG(EMPRINT, "emprint", "", $PATH)
+if test "$EMPRINT" = ""; then
+AC_MSG_ERROR(emprint not found)
+fi
 
 AC_PATH_PROG(E_CONFIG, "enlightenment-config", "", $PATH)
 e_cflags=`$E_CONFIG --cflags`
