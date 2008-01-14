@@ -105,6 +105,8 @@ void                EImageColorModifierSetTables(EImageColorModifier * icm,
 void                ScaleRect(Win wsrc, Drawable src, Win wdst, Pixmap dst,
 			      int sx, int sy, int sw, int sh,
 			      int dx, int dy, int dw, int dh, int scale);
+void                ScaleTile(Win wsrc, Drawable src, Win wdst, Pixmap dst,
+			      int dx, int dy, int dw, int dh, int scale);
 
 void                EDrawableDumpImage(Drawable draw, const char *txt);
 

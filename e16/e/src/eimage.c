@@ -491,6 +491,42 @@ ScaleRect(Win wsrc, Drawable src, Win wdst, Pixmap dst,
 }
 
 void
+ScaleTile(Win wsrc, Drawable src, Win wdst, Pixmap dst,
+	  int dx, int dy, int dw, int dh, int scale)
+{
+   Imlib_Image         im, tim;
+   int                 sw, sh, stw, sth, tw, th;
+
+   sw = WinGetW(wsrc);
+   sh = WinGetH(wsrc);
+   EXGetGeometry(src, NULL, NULL, NULL, &stw, &sth, NULL, NULL);
+   if (stw >= sw && sth >= sh)
+     {
+	ScaleRect(wsrc, src, wdst, dst, 0, 0, sw, sh, dx, dy, dw, dh, scale);
+	return;
+     }
+
+   /* Source Drawawble is smaller than source window - do scaled tiling */
+
+   scale = (scale) ? 2 : 1;
+
+   tw = (int)((double)(stw * scale * dw) / sw + .5);
+   th = (int)((double)(sth * scale * dh) / sh + .5);
+#if 0
+   Eprintf("ScaleTile: Tile %#lx %dx%d -> %dx%d T %dx%d -> %dx%d\n", src,
+	   stw, sth, tw, th, scale * dw, scale * dh, dw, dh);
+#endif
+   tim =
+      EImageGrabDrawableScaled(wsrc, src, None, 0, 0, stw, sth, tw, th, 0, 0);
+   im = EImageCreate(scale * dw, scale * dh);
+   EImageTile(im, tim, 0, tw, th, 0, 0, scale * dw, scale * dh, 0, 0);
+   EImageFree(tim);
+
+   EImageRenderOnDrawable(im, wdst, dst, EIMAGE_ANTI_ALIAS, dx, dy, dw, dh);
+   imlib_free_image();
+}
+
+void
 EDrawableDumpImage(Drawable draw, const char *txt)
 {
    static int          seqn = 0;

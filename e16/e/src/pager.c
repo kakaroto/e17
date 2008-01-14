@@ -611,8 +611,8 @@ PagerUpdateBg(Pager * p)
 
    if (pager_mode != PAGER_MODE_SIMPLE && p->dsk->bg.pmap)
      {
-	ScaleRect(VRoot.win, p->dsk->bg.pmap, p->win, pmap, 0, 0,
-		  VRoot.w, VRoot.h, 0, 0, p->dw, p->dh, Conf_pagers.hiq);
+	ScaleTile(VRoot.win, p->dsk->bg.pmap, p->win, pmap,
+		  0, 0, p->dw, p->dh, Conf_pagers.hiq);
 	return;
      }
 
