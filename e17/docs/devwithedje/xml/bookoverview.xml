@@ -1,0 +1,163 @@
+<chapter>
+    <title>Book Overview</title>
+
+<para>In the following paragraphs I will present a brief explanation of the
+      contents of each chapter and section. Section titles are emphasised while
+      Chapter titles are strongly emphasised.</para>
+      
+<!-- New Chapter -->
+
+<formalpara>
+    <title>I. Structure of a graphical application</title>
+    Looking at the code of some of the many open source applications avialable,
+    we can find common components in their structure. This chapter introduces
+    the concept of a Event loop and how does it deal with the interaction
+    between the functionality and the interface.
+</formalpara>
+
+<para>
+    <emphasis>I.I. Decomposing the frontend.</emphasis>
+    There are different approaches to the creation of Graphical User
+    Interfaces, some provide more flexibilty while others development speed. In
+    any case, the end product will make available the same mechanisms to the
+    rest of the application.
+</para>
+
+<!-- New Chapter -->
+
+<formalpara>
+    <title>II. Introduction to Edje</title>
+    Edje is a compromise between flexibilty and development time. Comparing it
+    to a plain canvas or a fully featured toolkit can show us how it fits in a
+    comfortable middle ground with advantages for designers and developers
+    alike.
+</formalpara>
+
+<para>
+    <emphasis>II.I. The foundations.</emphasis>
+    Edje allows low level control of the interface without forcing the
+    developer through a low level API. The interface objects are implemented as
+    Evas objects, but through a compeletely new language friendly to designers
+    and independent from the application code.
+</para>
+
+<para>
+    <emphasis>II.II.Convenient functions.</emphasis>
+    To load an Edje interface the application needs to setup an Evas canvas
+    first. This would look as a burden for the developer, dealing with issues
+    specific to the underlying system. Thankfully Evas is supported by an
+    additional library that resolve most of these issues, Ecore.
+</para>
+
+<!-- New Chapter -->
+
+<formalpara>
+    <title>III. The foundations in practice</title>
+    This is a practical example of the simplest approach to setting up an Evas
+    canvas for display.
+</formalpara>
+
+<para>
+    <emphasis>III.I Working with the canvas</emphasis>
+    Another example dealing with the inclusion of an Edje object.
+</para>
+
+<para>
+    <emphasis>III.II Interacting with the objects</emphasis>
+    A practical guide through both Edje and plain Ecore's event system. 
+</para>
+
+<!-- New Chapter -->
+
+<formalpara>
+    <title>IV. Introduction to widgets</title>
+    A simple description of what a widget is and what it is useful for along with
+    the limitations presented by common toolkits.
+</formalpara>
+
+<para>
+    <emphasis>IV.I. The common widget design</emphasis>
+    A generic vision of the way the different toolkits design the structure of
+    widgets with the corresponding diagram.
+</para>
+
+<para>
+    <emphasis>IV.II. Widget design with Edje</emphasis>
+    An explanation about where does Edje fits in the structure mentioned before,
+    and the shortcuts it provides.
+</para>
+
+<!-- New Chapter -->
+
+<formalpara>
+    <title>V. Implementing a widget with Edje</title>
+    A brief resume of the previous chapter and the introduction of names specific
+    to Evas, Ecore_Evas and Edje.
+</formalpara>
+
+<para>
+    <emphasis>V.I. The backend</emphasis>
+    (temporary section name) it will include the C implementation of widgets in a
+    way similar to EWL.
+</para>
+
+<para>
+    <emphasis>V.II. The frontend</emphasis>
+    (Another temporary section name) it will include the EDC Implementation of the
+    widget in a way it fits the method used by the EWL developers.
+</para>
+
+<para>
+    <emphasis>V.III. The Inclusion</emphasis>
+    (Another temporary section name) it will include the method to insert the
+    custom widget in the application.
+</para>
+
+<para>
+    <emphasis>V.IV. Saving time with EWL widgets</emphasis>
+    Introduction to EWL widgets, a brief list of what is available and the method
+    to include the widgets in the application.
+</para>
+
+<para>
+    <emphasis>V.V. Interaction</emphasis>
+    The final example showing how to interact with the combination of EWL, custom
+    and non-widget elements in our application.
+</para>
+
+    <section>
+        <title>Useful resources</title>
+
+        <para>Before we begin I would list a collection of books and articles that
+            I found critical while understanding about the Enlightenment
+            Foundation Libraries.
+            
+            <itemizedlist>
+                <listitem>
+                    <ulink url="http://docs.enlightenment.org/api/edje/htm">
+                        <citetitle>The Edje API Reference</citetitle> by
+                        Carsten Haitzler.</ulink>
+                </listitem>
+                <listitem>
+                    <ulink url="http://docs.enlightenment.org/books/edjebook/edjebook.pdf">
+                        <citetitle>Building Interfaces with Edje: The Edje
+                            Developers Guide</citetitle> by Ben Rockwood.</ulink>
+                </listitem>
+                <listitem>
+                    <ulink url="http://docs.enlightenment.org/books/cookbook/eflcookbook.html">
+                        <citetitle>The EFL Cookbook</citetitle> by several
+                        authors.</ulink>
+                </listitem>
+                <listitem>
+                    <ulink url="http://homepages.pathfinder.gr/kazanaki/contrib/">
+                        <citetitle>Introduction to the Enlightenment foundation
+                            libraries</citetitle> by Kostis Kapelonis.</ulink>
+                </listitem>
+                <listitem>
+                    <ulink url="http://rephorm.com/pages/tutorials/evas/toc">
+                        <citetitle>Evas Tutorials</citetitle> by rephorm</ulink>
+                </listitem>
+          </itemizedlist></para>
+  </section>
+
+</chapter>

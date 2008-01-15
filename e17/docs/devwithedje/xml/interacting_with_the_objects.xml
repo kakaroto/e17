@@ -1,0 +1,89 @@
+<section>
+    <title>Interacting with the objects</title>
+
+    <para>To understand how to interact with Edje or any other Evas object we
+          need to review the basics of how the main loop manager handles
+          events. Ecore maintains a list of pointers to functions to be called
+          when a signal from a given type is recieved. These functions
+          are known as signal "handlers".</para>
+
+    <para>By default, Ecore awareness is limited to system singals like HUP or
+          KILL. Additional libraries or modules like Ecore_Evas register new
+          signal types for the event loop to be aware of. In the specific case
+          of Evas the new signal types deal with the interaction between the
+          user and the Evas objects displayed in the canvas.</para>
+
+    <para>The developer can manipulate the list of handlers as well as creating
+          new signal types. The latter among other subjects like timers and
+          pollers exceed the scope of this book and are properly documented by
+          the API reference and the EFL Cookbook.</para>
+          
+    <para>We will begin by setting up a simple signal handler that will be
+          called any time the application is closed:
+          <programlisting role="C">
+    Ecore_Event_Handler* close = NULL;
+    ...
+    int
+    good_bye(void *data, int type, void *event)
+    {
+        //This removes the handler for no practical reason but showoff the API
+        if (ecore_event_handler_del(close)) printf("Handler deleted\n");
+              
+        printf("Good bye! \n");
+        ecore_main_loop_quit();
+        ecore_evas_shutdown();
+        ecore_shutdown();
+    }
+    ...
+    int main() {
+    ...
+        close = ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT,good_bye,"data");
+        ...
+        ecore_main_loop_begin();
+        ...
+          </programlisting>
+
+          This example moves the library shutdown procedure from the main
+          function to the "good_bye" function. Then before the main loop is
+          initiated we add the handler for this signal type. The last parameter
+          its a pointer to any kind of data you want to pass to the handler
+          function, in this case is just a string containing "data".</para>
+
+    <para>Interaction with the interface is pretty much the same, the handler
+          function for signals comming from Edje interfaces is defined by the
+          Edje library. Our own handler function is called by the real handler
+          after it filters the signal's properties name and source:
+          <programlisting role="C">
+    ...
+    void
+    colorize(void *data, Evas_Object *o, const char *emission, const char *source)
+    {
+        Evas_Coord x,y;
+        evas_pointer_canvas_xy_get(evas,&amp;x,&amp;y);
+        if(x > 255) x = 255;
+        if(y > 255) y = 255;
+        edje_color_class_set("main color", 190, x, y, 255, 255, 255, 255, 255, 255, 255, 255, 255);
+    }
+    ...
+    int main() {
+        ...
+        edje_object_signal_callback_add(edje, "mouse,move", "*", colorize, "data");
+        ...
+        ecore_main_loop_begin();
+        ...
+          </programlisting>
+
+          There are quite a few things going on in this example, "colorize"
+          calls functions from both the Evas API <code>evas_pointer_canvas_xy_get</code>
+          and the Edje API <code>edje_color_class_set</code>. The first call
+          gets the coordinates of the mouse pointer position. The second call
+          uses those values to alter the color class "main color". </para>
+
+    <para>Inside of main we use a wrapper function to include our handler, this
+          wrapper will call our handler when the signal "mouse,move" is emitted
+          by any object in the interface, hence the wilcard. If you use the
+          EDC theme included in the assembled example the result will be a
+          small rectangle in the middle of the canvas that changes of color as
+          we move our mouse.</para>
+
+</section>

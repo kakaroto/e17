@@ -1,0 +1,33 @@
+<bookinfo>
+    <title>Application development with Edje</title>
+    <subtitle>From the very basics</subtitle>
+
+    <author>
+        <firstname>Andres</firstname>
+        <surname>Blanc</surname>
+        <affiliation>
+            <orgname>The Enlightenment Project</orgname>
+            <address> <email>andresblanc@gmail.com</email> </address>
+        </affiliation>
+    </author>
+
+    <revhistory>
+        <revision>
+        <revnumber>v0.1</revnumber>
+        <date>December 13th 2007</date>
+        <authorinitials>ab</authorinitials>
+        <revremark>Initial document</revremark>
+        </revision>
+    </revhistory>
+
+    <abstract><para>
+        An introduction to GUI based application development. Starts from
+        the most basic concepts and introduces the EFL libraries that deal
+        with each of them. It covers Edje, Ecore, Evas and EWL.
+    </para>
+    <para>
+        This book is intended to cover all the concepts needed by a novice
+        programmer to create a full blown GUI application.
+    </para></abstract>
+
+</bookinfo>

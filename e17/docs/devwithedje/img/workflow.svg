@@ -1,0 +1,297 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="640"
+   height="480"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.45.1"
+   version="1.0"
+   sodipodi:docbase="/home/andres/desarollo/e.org/fuentes/docs/devwithedje/img"
+   sodipodi:docname="workflow.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   inkscape:export-filename="/home/andres/desarollo/e.org/fuentes/docs/devwithedje/img/workflow.png"
+   inkscape:export-xdpi="300"
+   inkscape:export-ydpi="300">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#f9f9f9"
+     bordercolor="#000000"
+     borderopacity="1"
+     inkscape:pageopacity="1"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1"
+     inkscape:cx="321.38161"
+     inkscape:cy="242"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     width="640px"
+     height="480px"
+     borderlayer="true"
+     inkscape:showpageshadow="false"
+     showgrid="true"
+     gridcolor="#3f3fff"
+     gridopacity="0.05882353"
+     objecttolerance="0.4"
+     inkscape:object-points="false"
+     inkscape:grid-points="true"
+     gridtolerance="10000"
+     inkscape:guide-bbox="false"
+     showguides="false"
+     inkscape:object-paths="false"
+     inkscape:window-width="811"
+     inkscape:window-height="738"
+     inkscape:window-x="339"
+     inkscape:window-y="100"
+     gridempspacing="0" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Capa 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <path
+       style="fill:#d7eef4;fill-opacity:1;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1"
+       d="M 10,130 L 20,130 L 40,110 L 60,130 L 380,130 L 380,170 L 10,170 L 10,130 z "
+       id="rect2267"
+       sodipodi:nodetypes="cccccccc" />
+    <path
+       style="fill:#eed7f4;fill-opacity:1;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1"
+       d="M 230,70 L 380,70 L 360,90 L 380,110 L 380,120 L 230,120 L 210,100 L 230,80 L 230,70 z "
+       id="rect2259"
+       sodipodi:nodetypes="ccccccccc" />
+    <path
+       style="fill:#e3f4d7;fill-opacity:1;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1"
+       d="M 10,10 L 380,10 L 380,60 L 60,60 L 40,40 L 20,60 L 10,60 L 10,10 z "
+       id="rect2165"
+       sodipodi:nodetypes="cccccccc" />
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:bold;writing-mode:lr-tb;fill:#447821;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:DejaVu Sans"
+       x="120"
+       y="40"
+       id="text2167"><tspan
+         sodipodi:role="line"
+         id="tspan2169"
+         x="120"
+         y="40">Application Interface</tspan></text>
+    <rect
+       style="opacity:1;fill:#d7eef4;fill-opacity:1;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect2171"
+       width="370"
+       height="60"
+       x="10"
+       y="410" />
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:bold;writing-mode:lr-tb;fill:#216778;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:DejaVu Sans"
+       x="148.71484"
+       y="447.08789"
+       id="text2173"><tspan
+         sodipodi:role="line"
+         id="tspan2175"
+         x="148.71484"
+         y="447.08789">Developer</tspan></text>
+    <rect
+       style="opacity:1;fill:#eed7f4;fill-opacity:1;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect2177"
+       width="240"
+       height="50"
+       x="390"
+       y="10" />
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:bold;writing-mode:lr-tb;fill:#441650;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:DejaVu Sans"
+       x="469.37109"
+       y="40.636719"
+       id="text2179"><tspan
+         sodipodi:role="line"
+         id="tspan2181"
+         x="469.37109"
+         y="40.636719">Designer</tspan></text>
+    <rect
+       style="opacity:1;fill:#d7eef4;fill-opacity:1;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect2189"
+       width="370"
+       height="220"
+       x="10"
+       y="180" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;writing-mode:lr-tb;fill:#164450;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:DejaVu Sans"
+       x="19.337891"
+       y="200"
+       id="text2191"><tspan
+         sodipodi:role="line"
+         id="tspan2193"
+         x="19.337891"
+         y="200">#include &lt;Edje.h&gt;</tspan><tspan
+         sodipodi:role="line"
+         x="19.337891"
+         y="215"
+         id="tspan2195">...</tspan><tspan
+         sodipodi:role="line"
+         x="19.337891"
+         y="230"
+         id="tspan2197">object = edje_object_add(canvas);</tspan><tspan
+         sodipodi:role="line"
+         x="19.337891"
+         y="245"
+         id="tspan2199">edje_object_file_set(object, &quot;theme.edj&quot;, &quot;button&quot;);</tspan><tspan
+         sodipodi:role="line"
+         x="19.337891"
+         y="260"
+         id="tspan2201">...</tspan><tspan
+         sodipodi:role="line"
+         x="19.337891"
+         y="275"
+         id="tspan2203">edje_object_part_text_set (object,&quot;label&quot;, &quot;Hello World&quot;);</tspan><tspan
+         sodipodi:role="line"
+         x="19.337891"
+         y="290"
+         id="tspan2205">..</tspan></text>
+    <rect
+       style="opacity:1;fill:#eed7f4;fill-opacity:1;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect2207"
+       width="240"
+       height="340"
+       x="390"
+       y="130" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:normal;writing-mode:lr-tb;fill:#672178;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:DejaVu Sans"
+       x="400"
+       y="150"
+       id="text2209"><tspan
+         sodipodi:role="line"
+         id="tspan2211"
+         x="400"
+         y="150">collections {</tspan><tspan
+         sodipodi:role="line"
+         x="400"
+         y="165"
+         id="tspan2213">    ...</tspan><tspan
+         sodipodi:role="line"
+         x="400"
+         y="180"
+         id="tspan2215">    group {</tspan><tspan
+         sodipodi:role="line"
+         x="400"
+         y="195"
+         id="tspan2217">       name: &quot;button&quot;;</tspan><tspan
+         sodipodi:role="line"
+         x="400"
+         y="210"
+         id="tspan2219">        ...</tspan><tspan
+         sodipodi:role="line"
+         x="400"
+         y="225"
+         id="tspan2221">        part {</tspan><tspan
+         sodipodi:role="line"
+         x="400"
+         y="240"
+         id="tspan2223">             type: IMAGE;</tspan><tspan
+         sodipodi:role="line"
+         x="400"
+         y="255"
+         id="tspan2225">             ...</tspan><tspan
+         sodipodi:role="line"
+         x="400"
+         y="270"
+         id="tspan2227">       }</tspan><tspan
+         sodipodi:role="line"
+         x="400"
+         y="285"
+         id="tspan2229">       ...</tspan><tspan
+         sodipodi:role="line"
+         x="400"
+         y="300"
+         id="tspan2231">    }</tspan><tspan
+         sodipodi:role="line"
+         x="400"
+         y="315"
+         id="tspan2233">    ...</tspan><tspan
+         sodipodi:role="line"
+         x="400"
+         y="330"
+         id="tspan2235">}</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:bold;writing-mode:lr-tb;fill:#216778;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:DejaVu Sans"
+       x="108.71484"
+       y="156.97852"
+       id="text2237"><tspan
+         sodipodi:role="line"
+         id="tspan2239"
+         x="108.71484"
+         y="156.97852">Edje programming API</tspan></text>
+    <path
+       style="fill:#eed7f4;fill-opacity:1;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1"
+       d="M 390,69 L 630,69 L 630,119 L 390,119 L 390,109 L 370,89 L 390,69 z "
+       id="rect2245"
+       sodipodi:nodetypes="ccccccc" />
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:bold;writing-mode:lr-tb;fill:#672178;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:DejaVu Sans"
+       x="440"
+       y="100"
+       id="text2241"><tspan
+         sodipodi:role="line"
+         id="tspan2243"
+         x="440"
+         y="100">Edje data collection</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:bold;writing-mode:lr-tb;fill:#672178;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:DejaVu Sans"
+       x="240"
+       y="100"
+       id="text2247"><tspan
+         sodipodi:role="line"
+         id="tspan2249"
+         x="240"
+         y="100">EDC compiler</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:bold;writing-mode:lr-tb;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:DejaVu Sans"
+       x="80"
+       y="90"
+       id="text2251"><tspan
+         sodipodi:role="line"
+         id="tspan2253"
+         x="80"
+         y="90">Theme File</tspan></text>
+    <path
+       style="fill:#eed7f4;fill-opacity:1;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1"
+       d="M 10,70 L 20,70 L 40,50 L 60,70 L 220,70 L 220,80 L 200,100 L 220,120 L 220,120 L 61,120 L 41,100 L 20,120 L 10,120 L 10,70 z "
+       id="rect2261"
+       sodipodi:nodetypes="cccccccccccccc" />
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:bold;writing-mode:lr-tb;fill:#672178;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:DejaVu Sans"
+       x="79.931641"
+       y="99.801758"
+       id="text2263"><tspan
+         sodipodi:role="line"
+         id="tspan2265"
+         x="79.931641"
+         y="99.801758">Theme file</tspan></text>
+  </g>
+</svg>

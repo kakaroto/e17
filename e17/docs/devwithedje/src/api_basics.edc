@@ -1,0 +1,40 @@
+color_classes {
+    color_class {
+        name: "main color";
+        color: 190 70 70 255;
+    }
+}
+
+ collections {
+
+    group {
+        name: "testgroup";
+        min: 250 250;
+        max: 500 500;
+
+        parts {
+
+            part {
+                name: "test";
+                type: RECT;
+
+                description {
+                    color: 128 128 128 255;
+                }
+            }
+
+            part {
+                name: "i_just_sit_here";
+                type: RECT;
+
+                description {
+                    color_class: "main color";
+                    rel1.relative: 0.25 0.25;
+                    rel2.relative: 0.75 0.75;
+                }
+            }
+
+        }
+
+    }
+ } 
