@@ -1,0 +1,3 @@
+debian/tmp/usr/lib/enlightenment/modules/echo/*.edj
+debian/tmp/usr/lib/enlightenment/modules/echo/*/*.so
+debian/tmp/usr/lib/enlightenment/modules/echo/*.desktop

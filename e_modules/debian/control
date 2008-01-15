@@ -43,6 +43,14 @@ Description: E17 module which minimizes all windows
  An E17 module which minimizes all windows in order to show the
  desktop.
  
+Package: emodule0-echo
+Architecture: any
+Depends: ${shlibs:Depends}, libc6 (>= 2.5), enlightenment
+Provides: emodule-echo
+Description: E17 sound volume module
+ An E17 module which allows the user to adjust the volume of the sound
+ system.
+
 Package: emodule0-efm-nav
 Architecture: any
 Depends: ${shlibs:Depends}, libc6 (>= 2.5), enlightenment
@@ -256,7 +264,7 @@ Description: An E17 WLAN monitor module
 
 Package: emodules0-all
 Architecture: any
-Depends: enlightenment, emodule0-alarm, emodule0-bling, emodule0-calendar, emodule0-cpu, emodule0-deskshow, emodule0-efm-nav, emodule0-efm-path, emodule0-emu, emodule0-flame, emodule0-forecasts, emodule0-language, emodule0-mail, emodule0-mem, emodule0-mixer, emodule0-moon, emodule0-mpdule, emodule0-net, emodule0-news, emodule0-penguins, emodule0-photo, emodule0-rain, emodule0-screenshot, emodule0-slideshow, emodule0-snow, emodule0-taskbar, emodule0-tclock, emodule0-uptime, emodule0-weather, emodule0-winselector, emodule0-wlan
+Depends: enlightenment, emodule0-alarm, emodule0-bling, emodule0-calendar, emodule0-cpu, emodule0-deskshow, emodule0-echo, emodule0-efm-nav, emodule0-efm-path, emodule0-emu, emodule0-flame, emodule0-forecasts, emodule0-language, emodule0-mail, emodule0-mem, emodule0-mixer, emodule0-moon, emodule0-mpdule, emodule0-net, emodule0-news, emodule0-penguins, emodule0-photo, emodule0-rain, emodule0-screenshot, emodule0-slideshow, emodule0-snow, emodule0-taskbar, emodule0-tclock, emodule0-uptime, emodule0-weather, emodule0-winselector, emodule0-wlan
 Conflicts: emodules-extra, evolume
 Provides: emodules-all, e17-modules
 Description: A dummy package for installing all modules for E17
@@ -266,6 +274,7 @@ Description: A dummy package for installing all modules for E17
  Calendar    : Calendar module for the desktop.
  Cpu         : Monitor module for the CPU load.
  Deskshow    : A module that minimizes all windows to show the desktop.
+ Echo        : Another sound mixer module.
  EFM-nav     : A file manager history browser.
  EFM-path    : A module for the file manager which displays the path.
  Emu         : A module front end that runs arbitrary back ends
