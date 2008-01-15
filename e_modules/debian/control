@@ -2,7 +2,7 @@ Source: emodules
 Section: x11
 Priority: optional
 Maintainer: E17 Debian Team <debian@edevelop.org>
-Build-Depends: debhelper (>= 4.0.0), enlightenment-dev, libexml-dev, libxkbfile-dev, libxslt-dev, libxcomposite-dev, libxdamage-dev, libxrender-dev
+Build-Depends: debhelper (>= 4.0.0), enlightenment-dev, libexml-dev, libxkbfile-dev, libxslt-dev, libxcomposite-dev, libxdamage-dev, libxrender-dev, emprint
 Standards-Version: 3.7.2
 
 Package: emodule0-alarm
@@ -179,19 +179,10 @@ Description: An E17 module displaying rain on the desktop
  
 Package: emodule0-screenshot
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment
+Depends: ${shlibs:Depends}, enlightenment, emprint
 Provides: emodule-screenshot
 Description: An E17 screenshot module
- An E17 module which enables the user to take screenshots. It contains
- the following features:
- - choose between import and scrot
- - specify delay time, save directory and filename
- - choose to include the image border or window manager frame (scrot/import)
- - use image dithering (import)
- - choose window to grab (import)
- - silent/verbose (import)
- - trim edges (import)
- - generate thumbnail (scrot).
+ An E17 module which enables the user to take screenshots.
  
 Package: emodule0-slideshow
 Architecture: any
