@@ -220,6 +220,7 @@ const char	*ewl_icon_theme_icon_path_get(const char *icon, int size);
 #define EWL_ICON_X_OFFICE_SPREADSHEET "x-office-spreadsheet"	/**< x-office/spreadsheet */
 
 #define EWL_ICON_FOLDER "folder"	/**< folder */
+#define EWL_ICON_FOLDER_NEW "folder-new"	/**< new folder */
 #define EWL_ICON_FOLDER_REMOTE "folder-remote"	/**< folder remote */
 #define EWL_ICON_NETWORK_SERVER "network-server"	/**< network server */
 #define EWL_ICON_NETWORK_WORKGROUP "network-workgroup"	/**< network workgroup */

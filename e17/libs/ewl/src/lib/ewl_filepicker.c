@@ -7,10 +7,23 @@
 #include "ewl_entry.h"
 #include "ewl_label.h"
 #include "ewl_model.h"
+#include "ewl_dialog.h"
+#include "ewl_entry.h"
+#include "ewl_window.h"
+#include "ewl_toolbar.h"
+#include "ewl_icon_theme.h"
 #include "ewl_scrollpane.h"
 #include "ewl_macros.h"
 #include "ewl_private.h"
 #include "ewl_debug.h"
+
+typedef struct Ewl_Filepicker_Dialog Ewl_Filepicker_Dialog;
+struct Ewl_Filepicker_Dialog
+{
+	Ewl_Filepicker *fp;
+	Ewl_Widget *d;
+	Ewl_Widget *e;
+};
 
 static void ewl_filepicker_favorites_populate(Ewl_Filepicker *fp);
 static void ewl_filepicker_cb_list_value_changed(Ewl_Widget *w, void *ev,
@@ -29,7 +42,12 @@ static void ewl_filepicker_cb_path_entry_change(Ewl_Widget *w, void *ev,
 
 static void ewl_filepicker_cb_type_change(Ewl_Widget *w, void *ev,
 							void *data);
-
+static void ewl_filepicker_cb_dir_new(Ewl_Widget *w, void *ev,
+							void *data);
+static void ewl_filepicker_cb_dialog_response(Ewl_Widget *w, void *ev,
+							void *data);
+static void ewl_filepicker_cb_dialog_delete(Ewl_Widget *w, void *ev,
+							void *data);
 static void *ewl_filepicker_cb_type_fetch(void *data, unsigned int row,
 						unsigned int col);
 static unsigned int ewl_filepicker_cb_type_count(void *data);
@@ -43,6 +61,7 @@ static Ewl_Widget *ewl_filepicker_cb_path_header(void *data,
 							unsigned int col);
 
 static void ewl_filepicker_filter_free_cb(Ewl_Filelist_Filter *filter);
+
 
 /**
  * @return Returns a new Ewl_Filepicker widget or NULL on failure
@@ -77,6 +96,7 @@ int
 ewl_filepicker_init(Ewl_Filepicker *fp)
 {
 	Ewl_Widget *o, *box;
+	const char *path;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET(fp, FALSE);
@@ -106,9 +126,29 @@ ewl_filepicker_init(Ewl_Filepicker *fp)
 	fp->path = ecore_list_new();
 	ecore_list_free_cb_set(fp->path, ECORE_FREE_CB(free));
 
+	box = ewl_htoolbar_new();
+	ewl_container_child_append(EWL_CONTAINER(fp), box);
+	ewl_object_fill_policy_set(EWL_OBJECT(box),
+			EWL_FLAG_FILL_NONE | EWL_FLAG_FILL_HFILL);
+	ewl_widget_show(box);
+
+	fp->dir_button = ewl_icon_new();
+	ewl_icon_alt_text_set(EWL_ICON(fp->dir_button), "New Directory");
+
+	path = ewl_icon_theme_icon_path_get(EWL_ICON_FOLDER_NEW,
+			EWL_ICON_SIZE_MEDIUM);
+	if (path)
+		ewl_icon_image_set(EWL_ICON(fp->dir_button), path, NULL);
+	ewl_callback_append(fp->dir_button, EWL_CALLBACK_CLICKED,
+			ewl_filepicker_cb_dir_new, fp);
+	ewl_container_child_append(EWL_CONTAINER(box), fp->dir_button);
+	ewl_object_fill_policy_set(EWL_OBJECT(fp->dir_button),
+				EWL_FLAG_FILL_NONE);
+	ewl_widget_show(fp->dir_button);
+
 	fp->mvc_path.combo = ewl_combo_new();
 	ewl_combo_editable_set(EWL_COMBO(fp->mvc_path.combo), TRUE);
-	ewl_container_child_append(EWL_CONTAINER(fp),
+	ewl_container_child_prepend(EWL_CONTAINER(box),
 					fp->mvc_path.combo);
 	ewl_mvc_model_set(EWL_MVC(fp->mvc_path.combo),
 						fp->mvc_path.model);
@@ -593,6 +633,12 @@ ewl_filepicker_cb_list_value_changed(Ewl_Widget *w, void *ev, void *data)
 
 		dir = strdup(ewl_filelist_directory_get(fl));
 		ewl_filepicker_path_populate(fp, dir);
+
+		if (!ecore_file_can_write(dir))
+			ewl_widget_disable(fp->dir_button);
+		else
+			ewl_widget_enable(fp->dir_button);
+
 		FREE(dir);
 	}
 	else if ((e->response == EWL_FILELIST_EVENT_SELECTION_CHANGE) &&
@@ -931,5 +977,133 @@ ewl_filepicker_filter_free_cb(Ewl_Filelist_Filter *filter)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+static void
+ewl_filepicker_cb_dir_new(Ewl_Widget *w, void *ev,
+						void *data)
+{
+	Ewl_Widget *d;
+	Ewl_Embed *win;
+	Ewl_Widget *o;
+	Ewl_Widget *box;
+	const char *path;
+	Ewl_Filepicker_Dialog *resp;
 
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(data);
+
+	resp = NEW(Ewl_Filepicker_Dialog, 1);
+	win = ewl_embed_widget_find(w);
+
+	d = ewl_dialog_new();
+	ewl_window_title_set(EWL_WINDOW(d), "Create New Folder");
+	ewl_window_name_set(EWL_WINDOW(d), "Create New Folder");
+	ewl_window_class_set(EWL_WINDOW(d), "Create New Folder");
+	ewl_window_transient_for_foreign(EWL_WINDOW(d), win->canvas_window);
+	ewl_callback_append(d, EWL_CALLBACK_DELETE_WINDOW,
+				ewl_filepicker_cb_dialog_delete, resp);
+	ewl_object_fill_policy_set(EWL_OBJECT(d), EWL_FLAG_FILL_NONE);
+	ewl_dialog_active_area_set(EWL_DIALOG(d), EWL_POSITION_TOP);
+	ewl_widget_show(d);
+
+	box = ewl_hbox_new();
+	ewl_container_child_append(EWL_CONTAINER(d), box);
+	ewl_object_padding_set(EWL_OBJECT(box), 5, 5, 5, 0);
+	ewl_widget_show(box);
+
+	path = ewl_icon_theme_icon_path_get(EWL_ICON_FOLDER_NEW,
+					32);
+	o = ewl_image_new();
+	if (path) ewl_image_file_path_set(EWL_IMAGE(o), path);
+	ewl_container_child_append(EWL_CONTAINER(box), o);
+	ewl_widget_show(o);
+
+	o = ewl_entry_new();
+	ewl_text_text_set(EWL_TEXT(o), "New Folder");
+	ewl_container_child_append(EWL_CONTAINER(box), o);
+	ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,
+				ewl_filepicker_cb_dialog_response, resp);
+	ewl_widget_show(o);
+
+	ewl_dialog_active_area_set(EWL_DIALOG(d), EWL_POSITION_BOTTOM);
+	resp->fp = EWL_FILEPICKER(data);
+	resp->d = d;
+	resp->e = o;
+
+	o = ewl_button_new();
+	ewl_stock_type_set(EWL_STOCK(o), EWL_STOCK_OK);
+	ewl_callback_append(o, EWL_CALLBACK_CLICKED,
+				ewl_filepicker_cb_dialog_response, resp);
+	ewl_container_child_append(EWL_CONTAINER(d), o);
+	ewl_widget_show(o);
+
+	o = ewl_button_new();
+	ewl_stock_type_set(EWL_STOCK(o), EWL_STOCK_CANCEL);
+	ewl_callback_append(o, EWL_CALLBACK_CLICKED,
+				ewl_filepicker_cb_dialog_response, resp);
+	ewl_container_child_append(EWL_CONTAINER(d), o);
+	ewl_widget_show(o);
+}
+
+static void
+ewl_filepicker_cb_dialog_delete(Ewl_Widget *w, void *ev,
+						void *data)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_PARAM_PTR(data);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+
+	ewl_widget_destroy(w);
+	FREE(data);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_filepicker_cb_dialog_response(Ewl_Widget *w, void *ev,
+						void *data)
+{
+	Ewl_Filepicker_Dialog *resp;
+	const char *path;
+	char *name, res[PATH_MAX];
+	Ewl_Stock_Type response;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_PARAM_PTR(data);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+
+	resp = data;
+
+	/* There is a callback on the entry that calls this */
+	if (ewl_widget_type_is(w, EWL_STOCK_TYPE))
+		response = ewl_stock_type_get(EWL_STOCK(w));
+	else
+		response = EWL_STOCK_OK;
+
+	name = ewl_text_text_get(EWL_TEXT(resp->e));
+	
+	if ((response == EWL_STOCK_CANCEL) || (!name))
+	{
+		ewl_widget_destroy(resp->d);
+		FREE(resp);
+		DRETURN(DLEVEL_STABLE);
+	}
+
+	path = ewl_filelist_directory_get(EWL_FILELIST(resp->fp->file_list));
+
+	if (name[0] == '/')
+		snprintf(res, PATH_MAX, "%s%s", path, name);
+	else
+		snprintf(res, PATH_MAX, "%s/%s", path, name);
+
+	if (ecore_file_mkpath(res))
+		ewl_filepicker_directory_set(EWL_FILEPICKER(resp->fp), res);
+
+	ewl_widget_destroy(resp->d);
+	FREE(name);
+	FREE(resp);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
 

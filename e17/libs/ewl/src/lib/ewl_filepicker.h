@@ -55,6 +55,7 @@ struct Ewl_Filepicker
 	Ewl_Widget *file_entry;		/**< Filename entry box */
 	Ewl_Widget *favorites_box;	/**< Favoirte directory box */
 	Ewl_Widget *path_combo;		/**< Path combo box */
+	Ewl_Widget *dir_button;		/**< Button to create a directory */
 
 	Ecore_List *path;		/**< The path components */
 	Ecore_List *filters;		/**< The type filters */
