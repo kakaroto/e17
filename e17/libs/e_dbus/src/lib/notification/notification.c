@@ -2,6 +2,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <inttypes.h>
 #include <Ecore_Data.h>
 #include "e_notify_private.h"
 
@@ -70,6 +71,7 @@ e_notification_free(E_Notification *n)
   if (n->hints.desktop) free(n->hints.desktop);
   if (n->hints.sound_file) free(n->hints.sound_file);
   if (n->hints.image_data) e_notification_image_free(n->hints.image_data);
+  if (n->hints.icon_data) e_notification_image_free(n->hints.icon_data);
   free(n);
 }
 
@@ -330,6 +332,12 @@ e_notification_hint_image_data_get(E_Notification *n)
 
 
 EAPI E_Notification_Image *
+e_notification_hint_icon_data_get(E_Notification *n)
+{
+  return n->hints.icon_data;
+}
+
+EAPI E_Notification_Image *
 e_notification_image_new()
 {
   E_Notification_Image *img;
@@ -349,44 +357,46 @@ e_notification_image_free(E_Notification_Image *img)
 EAPI Evas_Object *
 e_notification_image_evas_object_add(Evas *evas, E_Notification_Image *img)
 {
-#if 0 
-  unsigned int *imgdata;
-  
-  imgdata = malloc(img.width * img.height * 4);
+  int *imgdata;
+  Evas_Object *o = NULL;
 
-  // evas requires 32 bit RGBA data, with no padding after rows
+  if (!evas || !img) return NULL;
+
+  o = evas_object_image_add(evas);
+  evas_object_resize(o, img->width, img->height);
+  evas_object_image_alpha_set(o, img->has_alpha);
+  evas_object_image_size_set(o, img->width, img->height);
+  evas_object_image_fill_set(o, 0, 0, img->width, img->height);
+  imgdata = evas_object_image_data_get(o, 1);
+
   if (img->bits_per_sample == 8)
-  {
-    if (img->channels == 4)
     {
-      /* RGBA data */
-      if (img->rowstride == 4 * width)
-      {
-        // data is already in format we need
-        memcpy(imgdata, img->data, 4 * img.width * img.height)
-      }
-      else
-      {
-        /* rowstride unneccesarily too long? */
-        int i;
-        for (i = 0; i < img->height; i++)
+      /* Although not specified.
+       * The data are very likely to come from a GdkPixbuf
+       * which align each row on a 4-bytes boundary when using RGB.
+       * And is RGBA otherwise.
+       */
+      int x, y;
+      int32_t *dest;
+      unsigned char *src;
+      for (y = 0; y < img->height; y++)
         {
-        }
-      }
-    } 
-    else if (img->channels == 3)
-    {
-      unsigned int val;
-      unsigned int i, j;
+          src  = img->data + y * img->rowstride;
+          dest = imgdata + y * img->width;
 
-      for ()
-      {
-      }
+          for (x = 0; x < img->width; x++, src += img->channels, dest++)
+            {
+              *dest  = *(src + 2);
+              *dest += *(src + 1) << 8;
+              *dest += *(src + 0) << 16;
+              if (img->has_alpha)
+                *dest += *(src + 3) << 24;
+              else
+                *dest += 0 << 24;
+            }
+        }
     }
-  }
-  else
-  {
-  }
-#endif 
-  return NULL;
+  evas_object_image_data_update_add(o, 0, 0, img->width, img->height);
+  evas_object_image_data_set(o, imgdata);
+  return o;
 }

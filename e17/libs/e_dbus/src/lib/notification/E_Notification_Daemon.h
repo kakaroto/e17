@@ -31,7 +31,7 @@ typedef struct E_Notification_Daemon E_Notification_Daemon;
 
 /* daemon callbacks */
 typedef int (*E_Notification_Daemon_Callback_Notify) (E_Notification_Daemon *daemon, E_Notification *notification);
-typedef void (*E_Notification_Daemon_Callback_Close_Notification) (E_Notification_Daemon *daemon, int notification_id);
+typedef void (*E_Notification_Daemon_Callback_Close_Notification) (E_Notification_Daemon *daemon, unsigned int notification_id);
 
 /* gui */
 typedef struct E_Notification_View E_Notification_View;

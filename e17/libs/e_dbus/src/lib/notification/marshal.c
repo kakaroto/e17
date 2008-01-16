@@ -333,6 +333,8 @@ e_notify_marshal_notify(E_Notification *n)
     e_notify_marshal_dict_string(&sub, "desktop_entry", n->hints.desktop);
   if (n->hints.image_data)
     e_notify_marshal_dict_variant(&sub, "image_data", "(iiibiiay)", E_DBUS_VARIANT_MARSHALLER(e_notify_marshal_hint_image), n->hints.image_data);
+  if (n->hints.icon_data)
+    e_notify_marshal_dict_variant(&sub, "icon_data", "(iiibiiay)", E_DBUS_VARIANT_MARSHALLER(e_notify_marshal_hint_image), n->hints.icon_data);
   if (n->hints.sound_file)
     e_notify_marshal_dict_string(&sub, "sound_file", n->hints.sound_file);
   if (n->hints.suppress_sound) /* we only need to send this if its true */
@@ -450,11 +452,11 @@ e_notify_unmarshal_notify_hints(E_Notification *n, DBusMessageIter *iter)
   int x_set = 0, y_set = 0;
   int x, y;
   dbus_message_iter_recurse(iter, &arr);
-  while (dbus_message_iter_has_next(&arr))
+  do
   {
     DBusMessageIter dict;
     dbus_message_iter_recurse(&arr, &dict);
-    while (dbus_message_iter_has_next(&dict))
+    do
     {
       DBusMessageIter variant;
       const char *s_val;
@@ -465,35 +467,31 @@ e_notify_unmarshal_notify_hints(E_Notification *n, DBusMessageIter *iter)
       dbus_message_iter_get_basic(&dict, &key);
       dbus_message_iter_next(&dict);
       dbus_message_iter_recurse(&dict, &variant);
-      if (dbus_message_iter_get_arg_type(&variant) != DBUS_TYPE_INVALID) 
-        continue;
-      switch (dbus_message_iter_get_element_type(&variant))
-      {
-        case DBUS_TYPE_STRING:
-          dbus_message_iter_get_basic(&variant, &s_val);
-          break;
-        case DBUS_TYPE_BOOLEAN:
-          dbus_message_iter_get_basic(&variant, &b_val);
-          break;
-        case DBUS_TYPE_BYTE:
-          dbus_message_iter_get_basic(&variant, &y_val);
-          break;
-        case DBUS_TYPE_INT32:
-          dbus_message_iter_get_basic(&variant, &i_val);
-          break;
-        default:
-          break;
-      }
+     
       if (!strcmp(key, "urgency"))
-        e_notification_hint_urgency_set(n, y_val);
+        {
+          dbus_message_iter_get_basic(&variant, &y_val);
+          e_notification_hint_urgency_set(n, y_val);
+        }
       else if (!strcmp(key, "category"))
-        e_notification_hint_category_set(n, s_val);
+        {
+          dbus_message_iter_get_basic(&variant, &s_val);
+          e_notification_hint_category_set(n, s_val);
+        }
       else if (!strcmp(key, "desktop-entry"))
-        e_notification_hint_desktop_set(n, s_val);
+        {
+          e_notification_hint_desktop_set(n, s_val);
+        }
       else if (!strcmp(key, "sound-file"))
-        e_notification_hint_sound_file_set(n, s_val);
+        {
+          dbus_message_iter_get_basic(&variant, &s_val);
+          e_notification_hint_sound_file_set(n, s_val);
+        }
       else if (!strcmp(key, "suppress-sound"))
-        e_notification_hint_suppress_sound_set(n, b_val);
+        {
+          dbus_message_iter_get_basic(&variant, &b_val);
+          e_notification_hint_suppress_sound_set(n, b_val);
+        }
       else if (!strcmp(key, "x"))
       {
         x = i_val;
@@ -505,10 +503,19 @@ e_notify_unmarshal_notify_hints(E_Notification *n, DBusMessageIter *iter)
         y_set = 1;
       }
       else if (!strcmp(key, "image_data"))
-        n->hints.image_data = e_notify_unmarshal_hint_image(&variant);
+        {
+          dbus_message_iter_recurse(&dict, &variant);
+          n->hints.image_data = e_notify_unmarshal_hint_image(&variant);
+        }
+      else if (!strcmp(key, "icon_data"))
+        {
+          dbus_message_iter_recurse(&dict, &variant);
+          n->hints.icon_data = e_notify_unmarshal_hint_image(&variant);
+        }
     }
-    dbus_message_iter_next(&arr);
-  }
+    while (dbus_message_iter_next(&dict));
+  } 
+  while (dbus_message_iter_next(&arr));
 
   if (x_set && y_set)
     e_notification_hint_xy_set(n, x, y);
@@ -546,7 +553,7 @@ e_notify_unmarshal_hint_image(DBusMessageIter *iter)
   sig = dbus_message_iter_get_signature(iter);
   sig_matches = strcmp(sig, "(iiibiiay)");
   dbus_free(sig);
-  if (!sig_matches) return NULL;
+  if (sig_matches) return NULL;
 
   img = e_notification_image_new();
   if (!img) return NULL;

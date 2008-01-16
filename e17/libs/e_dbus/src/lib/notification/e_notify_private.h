@@ -50,7 +50,7 @@ struct E_Notification_Image
   char  has_alpha;
   int   bits_per_sample;
   int   channels;
-  int  *data;
+  unsigned char *data;
 };
 
 struct E_Notification
@@ -74,6 +74,7 @@ struct E_Notification
     char suppress_sound;
     int x, y;
     E_Notification_Image *image_data;
+    E_Notification_Image *icon_data;
   } hints;
 
   int hint_flags;

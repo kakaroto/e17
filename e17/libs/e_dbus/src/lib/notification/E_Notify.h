@@ -96,13 +96,13 @@ struct E_Notification_Return_Get_Server_Information
 /* signals */
 struct E_Notification_Event_Notification_Closed
 {
-  int notification_id;
+  unsigned int notification_id;
   E_Notification_Closed_Reason reason;
 };
 
 struct E_Notification_Event_Action_Invoked
 {
-  int notification_id;
+  unsigned int notification_id;
   char *action_id;
 };
 
@@ -174,11 +174,12 @@ extern "C" {
    EAPI char  e_notification_hint_suppress_sound_get(E_Notification *n);
    EAPI int   e_notification_hint_xy_get(E_Notification *n, int *x, int *y);
    EAPI E_Notification_Image *e_notification_hint_image_data_get(E_Notification *n);
+   EAPI E_Notification_Image *e_notification_hint_icon_data_get(E_Notification *n);
 
 /* image hint */
    EAPI E_Notification_Image *e_notification_image_new();
    EAPI void e_notification_image_free(E_Notification_Image *img);
-   EAPI Evas_Object *e_notification_image_object_add(Evas *evas, E_Notification_Image *img);
+   EAPI Evas_Object *e_notification_image_evas_object_add(Evas *evas, E_Notification_Image *img);
 
 #ifdef __cplusplus
 }
