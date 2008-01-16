@@ -395,7 +395,7 @@ _slide_new(Evas *evas)
    ss = E_NEW(Slideshow, 1);
    snprintf(buf, sizeof (buf), "%s/slideshow.edj", e_module_dir_get (slide_config->module));
    ss->img_obj = e_livethumb_add(evas);
-   e_livethumb_vsize_set(ss->img_obj, 16, 16);
+   e_livethumb_vsize_set(ss->img_obj, 120, 120);
    evas_object_show(ss->img_obj);
 
    ss->slide_obj = edje_object_add(evas);
