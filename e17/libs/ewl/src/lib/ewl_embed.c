@@ -700,6 +700,7 @@ void
 ewl_embed_mouse_move_feed(Ewl_Embed *embed, int x, int y, unsigned int mods)
 {
 	Ewl_Object *check;
+	Ewl_Widget *temp;
 	Ewl_Widget *widget = NULL;
 	Ewl_Event_Mouse_Move ev;
 
@@ -732,23 +733,41 @@ ewl_embed_mouse_move_feed(Ewl_Embed *embed, int x, int y, unsigned int mods)
 	else
 		widget = embed->last.mouse_in;
 
+
+	/* Cycle through all parents of the widget to see if any have
+	 * a non-default cursor
+	 */
+	temp = EWL_WIDGET(check);
+	check = NULL;
+	while (temp)
+	{
+		if (ewl_attach_get(temp, EWL_ATTACH_TYPE_MOUSE_ARGB_CURSOR) ||
+				ewl_attach_get(temp, EWL_ATTACH_TYPE_MOUSE_CURSOR))
+		{
+			check = EWL_OBJECT(temp);
+			break;
+		}
+
+		temp = temp->parent;
+	}
+
+	/* Set the cursor to first parent if possible */
+	if (check)
+		ewl_embed_mouse_cursor_set(EWL_WIDGET(check));
+	else if (embed->last.mouse_in && embed->last.mouse_in->parent)
+		ewl_embed_mouse_cursor_set(embed->last.mouse_in->parent);
+
 	/*
 	 * Defocus all widgets up to the level of a shared parent of
 	 * old and newly focused widgets.
 	 */
+	check = EWL_OBJECT(embed->last.mouse_in);
 	while (check && (widget != EWL_WIDGET(check))
 			&& !ewl_widget_parent_of(EWL_WIDGET(check), widget)) {
 
 		ewl_object_state_remove(check, EWL_FLAG_STATE_MOUSE_IN);
 		ewl_callback_call(EWL_WIDGET(check), EWL_CALLBACK_MOUSE_OUT);
 		check = EWL_OBJECT(EWL_WIDGET(check)->parent);
-
-		/* We set the cursor to the parent of the now moused_out widget
-		 * because if we only run this loop once then a custom cursor will
-		 * be shown on mouse_out
-		 */
-		if (check)
-			ewl_embed_mouse_cursor_set(EWL_WIDGET(check));
 	}
 
 	/*
@@ -765,7 +784,13 @@ ewl_embed_mouse_move_feed(Ewl_Embed *embed, int x, int y, unsigned int mods)
 			 */
 			if (!(ewl_object_state_has(check,
 						EWL_FLAG_STATE_MOUSE_IN))) {
-				ewl_embed_mouse_cursor_set(EWL_WIDGET(check));
+
+				/* Only set the cursor different if it is non-default */
+				if (ewl_attach_get(EWL_WIDGET(check),
+							EWL_ATTACH_TYPE_MOUSE_ARGB_CURSOR) ||
+						ewl_attach_get(EWL_WIDGET(check),
+							EWL_ATTACH_TYPE_MOUSE_CURSOR))
+					ewl_embed_mouse_cursor_set(EWL_WIDGET(check));
 
 				ewl_object_state_add(check,
 						EWL_FLAG_STATE_MOUSE_IN);
