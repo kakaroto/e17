@@ -1,0 +1,241 @@
+images {
+   image: "module_icon.png" COMP;
+	image: "e17_menu_bg_border.png" COMP;
+   image: "e17_dialog_watermark.png" COMP;
+}
+
+styles {
+	style {
+		name: "notification_style";
+		base: "font=Edje-Vera font_size=11 align=left color=#3c3c3c wrap=word text_class=module_normal";
+		tag:  "subject"  "+ text_class=module_large font_size=16"; 
+		tag:  "/subject" "- text_class=module_large font_size=16"; 
+		tag:  "body"  "+ text_class=module_normal font_size=13"; 
+		tag:  "/body" "- text_class=module_normal"; 
+		tag:  "br" "\n";
+	}
+}
+
+collections {
+   /* Module icon */
+   group {
+      name: "icon";
+      max: 24 24;
+      parts {
+         part {
+            name: "image";
+            mouse_events: 0;
+            type: IMAGE;
+            description {
+               state: "default" 0.0;
+               image.normal: "module_icon.png";
+            }
+         }
+      }
+   }
+
+   /* Popup Theme */
+   group {
+      name: "modules/notification/main";
+      parts {
+         /* Background */
+			part {
+				name:          "base";
+				mouse_events:  0;
+				type:          RECT;
+				description {
+					state:    "default" 0.0;
+					min:      200 90;
+					rel1 {
+						relative: 0.0  0.0;
+						offset:   1    1;
+					}
+					rel2 {
+						relative: 1.0  1.0;
+						offset:   -2   -2;
+					}
+					color: 221 221 221 255;
+				}
+			}
+			part {
+				name:          "base2";
+				mouse_events:  0;
+				description {
+					state:    "default" 0.0;
+					min:      200 90;
+					max:      200 90;
+					align:    1.0 1.0;
+					fixed:    1 1;
+					rel1 {
+						relative: 1.0  1.0;
+						offset:   -1   -1;
+					}
+					rel2 {
+						relative: 1.0  1.0;
+						offset:   -1   -1;
+					}
+					image {
+						normal: "e17_dialog_watermark.png";
+					}
+				}
+			}
+			part {
+				name:          "base3";
+				mouse_events:  0;
+				description {
+					state:    "default" 0.0;
+					rel1 {
+						relative: 0.0  0.0;
+						offset:   0    0;
+					}
+					rel2 {
+						relative: 1.0  1.0;
+						offset:   -1   -1;
+					}
+					image {
+						normal: "e17_menu_bg_border.png";
+						border: 1 1 1 1;
+						middle: 0;
+					}
+					fill {
+						smooth: 0;
+					}
+				}
+			}
+
+         /* App Icon */
+         part {
+            name: "notification.swallow.app_icon";
+            type: SWALLOW;
+
+            description {
+               state: "default" 0.0;
+               align: 0.0 0.5;
+               fixed: 1 1;
+               aspect: 1 1;
+               aspect_preference: BOTH;
+
+               rel1 {
+                  relative: 0.0 0.0;
+                  offset: 5 -127;
+               }
+
+               rel2 {
+                  relative: 0.0 1.0;
+                  offset: 85 -127;
+               }
+				}
+				description {
+					state: "high" 0.0;
+					inherit: "default" 0.0;
+					rel1.offset: 5  -63;
+					rel2.offset: 85 -63;
+            }
+				description {
+					state: "medium" 0.0;
+					inherit: "default" 0.0;
+               rel1.offset: 5  -23;
+               rel2.offset: 85 -23;
+            }
+				description {
+					state: "low" 0.0;
+					inherit: "default" 0.0;
+					rel1.offset: 5   5;
+					rel2.offset: 85 -5;
+            }
+				description {
+					state: "underground" 0.0;
+					inherit: "default" 0.0;
+					rel1.offset: 5  127;
+					rel2.offset: 85 127;
+            }
+         }
+
+         /* Message text */
+         part {
+            name: "notification.textblock.message";
+            type: TEXTBLOCK;
+            mouse_events: 0;
+
+            description {
+               state: "default" 0.0;
+					align: 0.0 0.5;
+				//	fixed: 1 1;
+
+               rel1 { 
+                  to_x: "notification.swallow.app_icon";
+						relative: 1.0 0.5;
+                  offset: 10 0; 
+               }
+
+               rel2 { 
+                  relative: 1.0 0.5;
+                  offset: -5 0; 
+               }
+
+               text {
+                  style: "notification_style";
+                  min: 1 1;
+               }
+            }
+         }
+      }
+		programs {
+			program {
+				name: "bounce";
+				signal: "notification,new";
+				source: "notification";
+				action: STATE_SET "low" 0.0;
+				transition: ACCELERATE 0.4;
+				target: "notification.swallow.app_icon";
+				after: "bounce_2";
+			}
+			program {
+				name: "bounce_2";
+				action: STATE_SET "high" 0.0;
+				transition: DECELERATE 0.2;
+				target: "notification.swallow.app_icon";
+				after: "bounce_3";
+			}
+			program {
+				name: "bounce_3";
+				action: STATE_SET "low" 0.0;
+				transition: ACCELERATE 0.2;
+				target: "notification.swallow.app_icon";
+				after: "bounce_4";
+			}
+			program {
+				name: "bounce_4";
+				action: STATE_SET "medium" 0.0;
+				transition: DECELERATE 0.1;
+				target: "notification.swallow.app_icon";
+				after: "bounce_5";
+			}
+			program {
+				name: "bounce_5";
+				action: STATE_SET "low" 0.0;
+				transition: LINEAR 0.1;
+				target: "notification.swallow.app_icon";
+			}
+
+			program {
+				name: "fall";
+				signal: "notification,del";
+				source: "notification";
+				action: STATE_SET "underground" 0.0;
+				transition: ACCELERATE 0.4;
+				target: "notification.swallow.app_icon";
+				after: "fall_2";
+			}
+			program {
+				name: "fall_2";
+				action: STATE_SET "default" 0.0;
+				target: "notification.swallow.app_icon";
+				after: "fall_3";
+			}
+			program {
+				name: "fall_3";
+				action: SIGNAL_EMIT "notification,deleted" "theme";
+			}
+   }
+}

@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Link
+Name=Notification
+Icon=e-module-notification
+Comment=<hilight>Notification Daemon</hilight><br>libnotify alternative.<br>Popup if an event occure.
+X-Enlightenment-ModuleType=system

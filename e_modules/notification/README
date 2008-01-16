@@ -1,0 +1,3 @@
+This module provide a notification daemon for E.
+It implement the galago specification :
+http://www.galago-project.org/specs/notification/0.9/index.html
