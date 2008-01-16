@@ -744,10 +744,10 @@ _echo_cb_volume_increase(E_Object *obj, const char *params)
    if (echo_sys->set_volume) 
      {
         if (inst->right_vol != -1)
-          echo_sys->set_volume(echo_cfg->channel.name, inst->left_vol + 1, 
-                               inst->right_vol + 1);
+          echo_sys->set_volume(echo_cfg->channel.name, inst->left_vol + 5, 
+                               inst->right_vol + 5);
         else
-          echo_sys->set_volume(echo_cfg->channel.name, inst->left_vol + 1, 
+          echo_sys->set_volume(echo_cfg->channel.name, inst->left_vol + 5, 
                                inst->right_vol);
      }
 
