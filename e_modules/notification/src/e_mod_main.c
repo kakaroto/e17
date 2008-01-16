@@ -73,6 +73,15 @@ e_modapi_init(E_Module *m)
 EAPI int 
 e_modapi_shutdown(E_Module *m __UNUSED__) 
 {
+   Popup_Data *popup;
+   Evas_List *l, *next;
+
+   for (l = dd->popups; l && (popup = l->data); l = next)
+     {
+       next = l->next;
+       _notification_popdown(popup, E_NOTIFICATION_CLOSED_REQUESTED);
+       dd->popups = evas_list_remove_list(dd->popups, l);
+     }
    e_notification_daemon_free(dd->daemon);
    free(dd);
    notification_mod = NULL;
