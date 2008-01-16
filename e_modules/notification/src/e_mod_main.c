@@ -124,9 +124,12 @@ _notification_cb_notify(E_Notification_Daemon *daemon __UNUSED__, E_Notification
    
    if (popup->timer) ecore_timer_del(popup->timer);
    timeout = e_notification_timeout_get(popup->notif);
-   popup->timer = ecore_timer_add(timeout == -1 ? dd->default_timeout : (float)timeout / 1000, 
-                                  _notification_timer_cb, 
-                                  popup);
+   if (timeout == 0)
+     popup->timer = NULL;
+   else
+     popup->timer = ecore_timer_add(timeout == -1 ? dd->default_timeout : (float)timeout / 1000, 
+                                    _notification_timer_cb, 
+                                    popup);
    
    return new_id;
 }
