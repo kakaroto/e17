@@ -40,9 +40,9 @@
     <para>Between the backend and the frontend is where the Event loop lives,
           its mission is to connect both ends of the application. Not only
           between them but also with their environment. The Event loop mantains
-          a table using a signal type as the index and a pointer to a function
-          as the value. When a signal is received, the Event loop looks through
-          the table and executes the  corresponding function.</para>
+          a list of signals to look out for and functions related to them. When
+          a signal is received, the Event loop looks through the list and
+          executes the corresponding function or functions.</para>
 
     <para>For the application to work, the Event loop needs to be aware of
           events in the interface thus it is  usually provided by the same

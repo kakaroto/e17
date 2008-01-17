@@ -54,7 +54,7 @@ int main() {
     ecore_evas_name_class_set(ecore_evas, "testapp", "Testapp");
     ecore_evas_show(ecore_evas);
 
-    //Get the pointer to the canvas and add tan object
+    //Get the pointer to the canvas and add an object
     evas = ecore_evas_get(ecore_evas);
     edje = edje_object_add(evas);
     edje_object_file_set(edje, "testfile.edj", "testgroup");

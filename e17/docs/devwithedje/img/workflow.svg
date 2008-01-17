@@ -14,7 +14,7 @@
    sodipodi:version="0.32"
    inkscape:version="0.45.1"
    version="1.0"
-   sodipodi:docbase="/home/andres/desarollo/e.org/fuentes/docs/devwithedje/img"
+   sodipodi:docbase="/home/andres/desarollo/e.org/cvs/e17/docs/devwithedje/img"
    sodipodi:docname="workflow.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
    inkscape:export-filename="/home/andres/desarollo/e.org/fuentes/docs/devwithedje/img/workflow.png"
@@ -30,8 +30,8 @@
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
      inkscape:zoom="1"
-     inkscape:cx="321.38161"
-     inkscape:cy="242"
+     inkscape:cx="481.64799"
+     inkscape:cy="135.64157"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      width="640px"
@@ -68,34 +68,9 @@
      inkscape:label="Capa 1"
      inkscape:groupmode="layer"
      id="layer1">
-    <path
-       style="fill:#d7eef4;fill-opacity:1;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1"
-       d="M 10,130 L 20,130 L 40,110 L 60,130 L 380,130 L 380,170 L 10,170 L 10,130 z "
-       id="rect2267"
-       sodipodi:nodetypes="cccccccc" />
-    <path
-       style="fill:#eed7f4;fill-opacity:1;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1"
-       d="M 230,70 L 380,70 L 360,90 L 380,110 L 380,120 L 230,120 L 210,100 L 230,80 L 230,70 z "
-       id="rect2259"
-       sodipodi:nodetypes="ccccccccc" />
-    <path
-       style="fill:#e3f4d7;fill-opacity:1;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1"
-       d="M 10,10 L 380,10 L 380,60 L 60,60 L 40,40 L 20,60 L 10,60 L 10,10 z "
-       id="rect2165"
-       sodipodi:nodetypes="cccccccc" />
-    <text
-       xml:space="preserve"
-       style="font-size:14px;font-style:normal;font-weight:bold;writing-mode:lr-tb;fill:#447821;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:DejaVu Sans"
-       x="120"
-       y="40"
-       id="text2167"><tspan
-         sodipodi:role="line"
-         id="tspan2169"
-         x="120"
-         y="40">Application Interface</tspan></text>
     <rect
        style="opacity:1;fill:#d7eef4;fill-opacity:1;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect2171"
+       id="rect2376"
        width="370"
        height="60"
        x="10"
@@ -105,193 +80,278 @@
        style="font-size:14px;font-style:normal;font-weight:bold;writing-mode:lr-tb;fill:#216778;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:DejaVu Sans"
        x="148.71484"
        y="447.08789"
-       id="text2173"><tspan
+       id="text2378"><tspan
          sodipodi:role="line"
-         id="tspan2175"
+         id="tspan2380"
          x="148.71484"
          y="447.08789">Developer</tspan></text>
     <rect
        style="opacity:1;fill:#eed7f4;fill-opacity:1;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect2177"
+       id="rect2382"
        width="240"
-       height="50"
+       height="60"
        x="390"
-       y="10" />
+       y="410" />
     <text
        xml:space="preserve"
        style="font-size:14px;font-style:normal;font-weight:bold;writing-mode:lr-tb;fill:#441650;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:DejaVu Sans"
-       x="469.37109"
-       y="40.636719"
-       id="text2179"><tspan
+       x="475.37109"
+       y="444.63672"
+       id="text2384"><tspan
          sodipodi:role="line"
-         id="tspan2181"
-         x="469.37109"
-         y="40.636719">Designer</tspan></text>
+         id="tspan2386"
+         x="475.37109"
+         y="444.63672">Designer</tspan></text>
     <rect
        style="opacity:1;fill:#d7eef4;fill-opacity:1;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect2189"
+       id="rect2400"
        width="370"
-       height="220"
+       height="270"
        x="10"
-       y="180" />
+       y="130" />
     <text
        xml:space="preserve"
        style="font-size:12px;font-style:normal;font-weight:normal;writing-mode:lr-tb;fill:#164450;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:DejaVu Sans"
-       x="19.337891"
-       y="200"
-       id="text2191"><tspan
+       x="20"
+       y="160"
+       id="text2402"><tspan
          sodipodi:role="line"
-         id="tspan2193"
-         x="19.337891"
-         y="200">#include &lt;Edje.h&gt;</tspan><tspan
+         id="tspan2404"
+         x="20"
+         y="160">#include &lt;Edje.h&gt;</tspan><tspan
          sodipodi:role="line"
-         x="19.337891"
-         y="215"
-         id="tspan2195">...</tspan><tspan
+         x="20"
+         y="175"
+         id="tspan2406">...</tspan><tspan
          sodipodi:role="line"
-         x="19.337891"
-         y="230"
-         id="tspan2197">object = edje_object_add(canvas);</tspan><tspan
+         x="20"
+         y="190"
+         id="tspan2408">object = edje_object_add(canvas);</tspan><tspan
          sodipodi:role="line"
-         x="19.337891"
-         y="245"
-         id="tspan2199">edje_object_file_set(object, &quot;theme.edj&quot;, &quot;button&quot;);</tspan><tspan
+         x="20"
+         y="205"
+         id="tspan2410">edje_object_file_set(object, &quot;theme.edj&quot;, &quot;button&quot;);</tspan><tspan
          sodipodi:role="line"
-         x="19.337891"
-         y="260"
-         id="tspan2201">...</tspan><tspan
+         x="20"
+         y="220"
+         id="tspan2412">...</tspan><tspan
          sodipodi:role="line"
-         x="19.337891"
-         y="275"
-         id="tspan2203">edje_object_part_text_set (object,&quot;label&quot;, &quot;Hello World&quot;);</tspan><tspan
+         x="20"
+         y="235"
+         id="tspan2414">edje_object_part_text_set (object,&quot;label&quot;, &quot;Hello World&quot;);</tspan><tspan
          sodipodi:role="line"
-         x="19.337891"
-         y="290"
-         id="tspan2205">..</tspan></text>
+         x="20"
+         y="250"
+         id="tspan2416">..</tspan></text>
     <rect
        style="opacity:1;fill:#eed7f4;fill-opacity:1;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-       id="rect2207"
+       id="rect2418"
        width="240"
-       height="340"
+       height="270"
        x="390"
        y="130" />
     <text
        xml:space="preserve"
        style="font-size:12px;font-style:normal;font-weight:normal;writing-mode:lr-tb;fill:#672178;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:DejaVu Sans"
        x="400"
-       y="150"
-       id="text2209"><tspan
+       y="148"
+       id="text2420"><tspan
          sodipodi:role="line"
-         id="tspan2211"
+         id="tspan2422"
          x="400"
-         y="150">collections {</tspan><tspan
-         sodipodi:role="line"
-         x="400"
-         y="165"
-         id="tspan2213">    ...</tspan><tspan
+         y="148">collections {</tspan><tspan
          sodipodi:role="line"
          x="400"
-         y="180"
-         id="tspan2215">    group {</tspan><tspan
+         y="163"
+         id="tspan2424">    ...</tspan><tspan
          sodipodi:role="line"
          x="400"
-         y="195"
-         id="tspan2217">       name: &quot;button&quot;;</tspan><tspan
+         y="178"
+         id="tspan2426">    group {</tspan><tspan
          sodipodi:role="line"
          x="400"
-         y="210"
-         id="tspan2219">        ...</tspan><tspan
+         y="193"
+         id="tspan2428">       name: &quot;button&quot;;</tspan><tspan
          sodipodi:role="line"
          x="400"
-         y="225"
-         id="tspan2221">        part {</tspan><tspan
+         y="208"
+         id="tspan2430">        ...</tspan><tspan
          sodipodi:role="line"
          x="400"
-         y="240"
-         id="tspan2223">             type: IMAGE;</tspan><tspan
+         y="223"
+         id="tspan2432">        part {</tspan><tspan
          sodipodi:role="line"
          x="400"
-         y="255"
-         id="tspan2225">             ...</tspan><tspan
+         y="238"
+         id="tspan2434">             type: IMAGE;</tspan><tspan
          sodipodi:role="line"
          x="400"
-         y="270"
-         id="tspan2227">       }</tspan><tspan
+         y="253"
+         id="tspan2436">             ...</tspan><tspan
          sodipodi:role="line"
          x="400"
-         y="285"
-         id="tspan2229">       ...</tspan><tspan
+         y="268"
+         id="tspan2438">        }</tspan><tspan
          sodipodi:role="line"
          x="400"
-         y="300"
-         id="tspan2231">    }</tspan><tspan
+         y="283"
+         id="tspan2524">        part {</tspan><tspan
          sodipodi:role="line"
          x="400"
-         y="315"
-         id="tspan2233">    ...</tspan><tspan
+         y="298"
+         id="tspan2526">             type: TEXT;</tspan><tspan
          sodipodi:role="line"
          x="400"
-         y="330"
-         id="tspan2235">}</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-size:14px;font-style:normal;font-weight:bold;writing-mode:lr-tb;fill:#216778;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:DejaVu Sans"
-       x="108.71484"
-       y="156.97852"
-       id="text2237"><tspan
+         y="313"
+         id="tspan2530">             ...</tspan><tspan
          sodipodi:role="line"
-         id="tspan2239"
-         x="108.71484"
-         y="156.97852">Edje programming API</tspan></text>
+         x="400"
+         y="328"
+         id="tspan2528">        }</tspan><tspan
+         sodipodi:role="line"
+         x="400"
+         y="343"
+         id="tspan2440">       ...</tspan><tspan
+         sodipodi:role="line"
+         x="400"
+         y="358"
+         id="tspan2442">    }</tspan><tspan
+         sodipodi:role="line"
+         x="400"
+         y="373"
+         id="tspan2444">    ...</tspan><tspan
+         sodipodi:role="line"
+         x="400"
+         y="388"
+         id="tspan2446">}</tspan></text>
     <path
        style="fill:#eed7f4;fill-opacity:1;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1"
-       d="M 390,69 L 630,69 L 630,119 L 390,119 L 390,109 L 370,89 L 390,69 z "
-       id="rect2245"
-       sodipodi:nodetypes="ccccccc" />
+       d="M 390,80 L 630,80 L 630,120 L 390,120 L 390,80 z "
+       id="rect2259"
+       sodipodi:nodetypes="ccccc" />
     <text
        xml:space="preserve"
        style="font-size:14px;font-style:normal;font-weight:bold;writing-mode:lr-tb;fill:#672178;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:DejaVu Sans"
-       x="440"
-       y="100"
-       id="text2241"><tspan
-         sodipodi:role="line"
-         id="tspan2243"
-         x="440"
-         y="100">Edje data collection</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-size:14px;font-style:normal;font-weight:bold;writing-mode:lr-tb;fill:#672178;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:DejaVu Sans"
-       x="240"
-       y="100"
+       x="448.71484"
+       y="105.08789"
        id="text2247"><tspan
          sodipodi:role="line"
          id="tspan2249"
-         x="240"
-         y="100">EDC compiler</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-size:14px;font-style:normal;font-weight:bold;writing-mode:lr-tb;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:DejaVu Sans"
-       x="80"
-       y="90"
-       id="text2251"><tspan
-         sodipodi:role="line"
-         id="tspan2253"
-         x="80"
-         y="90">Theme File</tspan></text>
+         x="448.71484"
+         y="105.08789">EDC compiler</tspan></text>
     <path
        style="fill:#eed7f4;fill-opacity:1;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1"
-       d="M 10,70 L 20,70 L 40,50 L 60,70 L 220,70 L 220,80 L 200,100 L 220,120 L 220,120 L 61,120 L 41,100 L 20,120 L 10,120 L 10,70 z "
-       id="rect2261"
-       sodipodi:nodetypes="cccccccccccccc" />
+       d="M 10,80 L 380,80 L 380,120 L 380,120 L 10,120 L 10,80 z "
+       id="path2463"
+       sodipodi:nodetypes="cccccc" />
     <text
        xml:space="preserve"
        style="font-size:14px;font-style:normal;font-weight:bold;writing-mode:lr-tb;fill:#672178;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:DejaVu Sans"
-       x="79.931641"
-       y="99.801758"
-       id="text2263"><tspan
+       x="150"
+       y="106"
+       id="text2465"><tspan
          sodipodi:role="line"
-         id="tspan2265"
-         x="79.931641"
-         y="99.801758">Theme file</tspan></text>
+         id="tspan2467"
+         x="150"
+         y="106">Theme file</tspan></text>
+    <path
+       style="fill:#e3f4d7;fill-opacity:1;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1"
+       d="M 10,10 L 630,10 L 630,70 L 10,70 L 10,10 z "
+       id="path2475"
+       sodipodi:nodetypes="ccccc" />
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:bold;writing-mode:lr-tb;fill:#447821;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:DejaVu Sans"
+       x="234.7207"
+       y="44.636719"
+       id="text2477"><tspan
+         sodipodi:role="line"
+         id="tspan2479"
+         x="234.7207"
+         y="44.636719">Application Interface</tspan></text>
+    <g
+       id="g2481"
+       transform="matrix(0,1,-1,0,810,-244)">
+      <path
+         sodipodi:nodetypes="ccccc"
+         style="opacity:0.5;fill:#ffffff;fill-rule:evenodd;stroke:none;stroke-width:1.42955887px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="M 350,300 L 390,260 L 390,320 L 390,340 L 350,300 z "
+         id="path2483" />
+      <path
+         sodipodi:nodetypes="ccccc"
+         id="path2485"
+         d="M 360,300 L 385,270 L 385,310 L 385,330 L 360,300 z "
+         style="opacity:1;fill:#ffffff;fill-rule:evenodd;stroke:none;stroke-width:1.42955887px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+    </g>
+    <g
+       id="g2487"
+       transform="matrix(0,1,-1,0,810,30)">
+      <path
+         sodipodi:nodetypes="ccccc"
+         style="opacity:0.5;fill:#ffffff;fill-rule:evenodd;stroke:none;stroke-width:1.42955887px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="M 350,300 L 390,260 L 390,320 L 390,340 L 350,300 z "
+         id="path2489" />
+      <path
+         sodipodi:nodetypes="ccccc"
+         id="path2491"
+         d="M 360,300 L 385,270 L 385,310 L 385,330 L 360,300 z "
+         style="opacity:1;fill:#ffffff;fill-rule:evenodd;stroke:none;stroke-width:1.42955887px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+    </g>
+    <g
+       id="g2493"
+       transform="translate(8,-199)">
+      <path
+         sodipodi:nodetypes="ccccc"
+         style="opacity:0.5;fill:#ffffff;fill-rule:evenodd;stroke:none;stroke-width:1.42955887px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="M 350,300 L 390,260 L 390,320 L 390,340 L 350,300 z "
+         id="path2495" />
+      <path
+         sodipodi:nodetypes="ccccc"
+         id="path2497"
+         d="M 360,300 L 385,270 L 385,310 L 385,330 L 360,300 z "
+         style="opacity:1;fill:#ffffff;fill-rule:evenodd;stroke:none;stroke-width:1.42955887px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+    </g>
+    <g
+       id="g2499"
+       transform="matrix(0,1,-1,0,490,30)">
+      <path
+         sodipodi:nodetypes="ccccc"
+         style="opacity:0.5;fill:#ffffff;fill-rule:evenodd;stroke:none;stroke-width:1.42955887px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="M 350,300 L 390,260 L 390,320 L 390,340 L 350,300 z "
+         id="path2501" />
+      <path
+         sodipodi:nodetypes="ccccc"
+         id="path2503"
+         d="M 360,300 L 385,270 L 385,310 L 385,330 L 360,300 z "
+         style="opacity:1;fill:#ffffff;fill-rule:evenodd;stroke:none;stroke-width:1.42955887px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+    </g>
+    <g
+       id="g2505"
+       transform="matrix(0,1,-1,0,490,-250)">
+      <path
+         sodipodi:nodetypes="ccccc"
+         style="opacity:0.5;fill:#ffffff;fill-rule:evenodd;stroke:none;stroke-width:1.42955887px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="M 350,300 L 390,260 L 390,320 L 390,340 L 350,300 z "
+         id="path2507" />
+      <path
+         sodipodi:nodetypes="ccccc"
+         id="path2509"
+         d="M 360,300 L 385,270 L 385,310 L 385,330 L 360,300 z "
+         style="opacity:1;fill:#ffffff;fill-rule:evenodd;stroke:none;stroke-width:1.42955887px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+    </g>
+    <g
+       id="g2469"
+       transform="matrix(0,1,-1,0,491,-298)">
+      <path
+         sodipodi:nodetypes="ccccc"
+         style="opacity:0.5;fill:#ffffff;fill-rule:evenodd;stroke:none;stroke-width:1.42955887px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="M 350,300 L 390,260 L 390,320 L 390,340 L 350,300 z "
+         id="path2471" />
+      <path
+         sodipodi:nodetypes="ccccc"
+         id="path2473"
+         d="M 360,300 L 385,270 L 385,310 L 385,330 L 360,300 z "
+         style="opacity:1;fill:#ffffff;fill-rule:evenodd;stroke:none;stroke-width:1.42955887px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+    </g>
   </g>
 </svg>
