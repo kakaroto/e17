@@ -1,8 +1,6 @@
 #include <E_Notification_Daemon.h>
 #include <e.h>
-
-#undef __UNUSED__
-#define __UNUSED__ __attribute__((unused))
+#include "e_mod_main.h"
 
 typedef struct _Popup_Data Popup_Data;
 struct _Popup_Data
@@ -34,7 +32,7 @@ static void _notification_theme_cb_deleted(void *data, Evas_Object *obj,
                                            const char *emission, const char *source);
 
 static Popup_Data *_notification_popup_new(E_Notification *n);
-static void        _notification_popup_place(Popup_Data *popup);
+static void        _notification_popup_place(Popup_Data *popup, int num);
 static void        _notification_popup_refresh(Popup_Data *popup);
 static Popup_Data *_notification_popup_find(unsigned int id);
 static void        _notification_popup_del(unsigned int id, 
@@ -44,9 +42,13 @@ static void        _notification_popdown(Popup_Data *popup,
 
 static char *_notification_format_message(E_Notification *n);
 
+static Config *_notification_cfg_new(void);
+static void    _notification_cfg_free(Config *cfg);
 /* Global variables */
 static Daemon_Data *dd;
-static E_Module    *notification_mod = NULL;
+static E_Config_DD *conf_edd = NULL;
+E_Module *notification_mod = NULL;
+Config   *notification_cfg = NULL;
 
 /* Module Api Functions */
 EAPI E_Module_Api e_modapi = {E_MODULE_API_VERSION, "Notification"};
@@ -57,6 +59,69 @@ e_modapi_init(E_Module *m)
    E_Notification_Daemon *d;
 
    dd = calloc(1, sizeof(Daemon_Data));
+
+   /* register config panel entry */
+   e_configure_registry_category_add("extensions", 90, D_("Extensions"), NULL, 
+                                     "enlightenment/extensions");
+   e_configure_registry_item_add("extensions/notification", 30, D_("Notification"), NULL, 
+                                 "enlightenment/e", e_int_config_notification_module);
+
+   conf_edd = E_CONFIG_DD_NEW("Config", Config);
+   #undef T
+   #undef D
+   #define T Config
+   #define D conf_edd
+   E_CONFIG_VAL(D, T, version, INT);
+   E_CONFIG_VAL(D, T, direction, INT);
+   E_CONFIG_VAL(D, T, gap, INT);
+   E_CONFIG_VAL(D, T, placement.x, INT);
+   E_CONFIG_VAL(D, T, placement.y, INT);
+
+   notification_cfg = e_config_domain_load("module.notification", conf_edd);
+   if (notification_cfg)
+     {
+        if (notification_cfg->version == 0)
+          {
+             _notification_cfg_free(notification_cfg);
+             notification_cfg = NULL;
+          }
+        if ((notification_cfg->version >> 16) < MOD_CFG_FILE_EPOCH) 
+          {
+             _notification_cfg_free(notification_cfg);
+             notification_cfg = NULL;
+	     e_util_dialog_show(D_("Notification Configuration Updated"),
+                                D_("Notification Module Configuration data needed "
+                                   "upgrading. Your old configuration<br> has been"
+                                   " wiped and a new set of defaults initialized. "
+                                   "This<br>will happen regularly during "
+                                   "development, so don't report a<br>bug. "
+                                   "This simply means the Notification module needs "
+                                   "new configuration<br>data by default for "
+                                   "usable functionality that your old<br>"
+                                   "configuration simply lacks. This new set of "
+                                   "defaults will fix<br>that by adding it in. "
+                                   "You can re-configure things now to your<br>"
+                                   "liking. Sorry for the inconvenience.<br>"));
+          }
+        else if (notification_cfg->version > MOD_CFG_FILE_VERSION) 
+          {
+             _notification_cfg_free(notification_cfg);
+             notification_cfg = NULL;
+	     e_util_dialog_show(D_("Notification Configuration Updated"),
+                                D_("Your Notification Module Configuration is NEWER "
+                                   "than the Notification Module version. This is "
+                                   "very<br>strange. This should not happen unless"
+                                   " you downgraded<br>the Notification Module or "
+                                   "copied the configuration from a place where"
+                                   "<br>a newer version of the Notification Module "
+                                   "was running. This is bad and<br>as a "
+                                   "precaution your configuration has been now "
+                                   "restored to<br>defaults. Sorry for the "
+                                   "inconvenience.<br>"));
+          }
+     }
+
+   if (!notification_cfg) notification_cfg = _notification_cfg_new();
 
    /* set up the daemon */
    d = e_notification_daemon_add("e_notification_module", "Enlightenment");
@@ -76,6 +141,10 @@ e_modapi_shutdown(E_Module *m __UNUSED__)
    Popup_Data *popup;
    Evas_List *l, *next;
 
+   if (notification_cfg->cfd) e_object_del(E_OBJECT(notification_cfg->cfd));
+   e_configure_registry_item_del("extensions/notification");
+   e_configure_registry_category_del("extensions");
+
    for (l = dd->popups; l && (popup = l->data); l = next)
      {
        next = l->next;
@@ -85,13 +154,15 @@ e_modapi_shutdown(E_Module *m __UNUSED__)
    e_notification_daemon_free(dd->daemon);
    free(dd);
    notification_mod = NULL;
+   _notification_cfg_free(notification_cfg);
+   E_CONFIG_DD_FREE(conf_edd);
    return 1;
 }
 
 EAPI int 
 e_modapi_save(E_Module *m __UNUSED__) 
 {
-   return 1;
+   return e_config_domain_save("module.notification", conf_edd, notification_cfg);
 }
 
 /* Callbacks */
@@ -194,7 +265,7 @@ _notification_popup_new(E_Notification *n)
    ecore_x_icccm_transient_for_set(popup->win->evas_win, con->win);
    ecore_x_icccm_protocol_set(popup->win->evas_win, ECORE_X_WM_PROTOCOL_TAKE_FOCUS, 0);
    ecore_x_netwm_window_type_set(popup->win->evas_win, ECORE_X_WINDOW_TYPE_DOCK);
-   ecore_x_netwm_window_state_set(popup->win->evas_win, state, 5);
+   ecore_x_netwm_window_state_set(popup->win->evas_win, state, 6);
 
    popup->e = e_win_evas_get(popup->win);
 
@@ -213,18 +284,41 @@ _notification_popup_new(E_Notification *n)
    //e_win_avoid_damage_set(popup->win, 1);
 
    _notification_popup_refresh(popup);
-   _notification_popup_place(popup);
+   _notification_popup_place(popup, evas_list_count(dd->popups));
    e_win_show(popup->win);
 
    return popup;
 }
 
 static void
-_notification_popup_place(Popup_Data *popup)
+_notification_popup_place(Popup_Data *popup, int num)
 {
-   int h;
-   evas_object_geometry_get(popup->theme, NULL, NULL, NULL, &h);
-   e_win_move(popup->win, 10, 10 + evas_list_count(dd->popups) * (h + 10));
+   int w, h, dir = 0;
+
+   evas_object_geometry_get(popup->theme, NULL, NULL, &w, &h);
+   switch (notification_cfg->direction)
+     {
+        case DIRECTION_DOWN:
+        case DIRECTION_RIGHT:
+          dir = 1;
+          break;
+        case DIRECTION_UP:
+        case DIRECTION_LEFT:
+          dir = -1;
+          break;
+     }
+
+   if (notification_cfg->direction == DIRECTION_DOWN ||
+       notification_cfg->direction == DIRECTION_UP)
+     e_win_move(popup->win, 
+                notification_cfg->placement.x, 
+                notification_cfg->placement.y 
+                  + dir * num * (h + notification_cfg->gap));
+   else
+     e_win_move(popup->win, 
+                notification_cfg->placement.x 
+                  + dir * num * (w + notification_cfg->gap), 
+                notification_cfg->placement.y);
 }
 
 static void
@@ -304,9 +398,7 @@ _notification_popup_del(unsigned int id, E_Notification_Closed_Reason reason)
          }
        else
          {
-           int h;
-           evas_object_geometry_get(popup->theme, NULL, NULL, NULL, &h);
-           e_win_move(popup->win, 10, 10 + i * (h + 10));
+           _notification_popup_place(popup, i);
            i++;
          }
      }
@@ -372,3 +464,25 @@ _notification_format_message(E_Notification *n)
    return msg;
 }
 
+static Config *
+_notification_cfg_new(void)
+{
+  Config *cfg;
+
+  cfg = E_NEW(Config, 1);
+  cfg->cfd         = NULL;
+  cfg->version     = MOD_CFG_FILE_VERSION;
+  cfg->direction   = DIRECTION_DOWN;
+  cfg->gap         = 10;
+  cfg->placement.x = 10;
+  cfg->placement.y = 10;
+  e_modapi_save(notification_mod);
+
+  return cfg;
+}
+
+static void
+_notification_cfg_free(Config *cfg)
+{
+  E_FREE(cfg);
+}
