@@ -451,7 +451,7 @@ _em_do_window(void)
    ecore_x_window_show(input_window);
 
    /* set the mouse pointer */
-   if (cursor = ecore_x_cursor_shape_get(ECORE_X_CURSOR_CROSS))
+   if ((cursor = ecore_x_cursor_shape_get(ECORE_X_CURSOR_CROSS)))
      ecore_x_window_cursor_set(input_window, cursor);
 
    /* setup handler to recieve click event */
@@ -491,7 +491,7 @@ _em_do_region(void)
 					    _em_cb_mouse_down, NULL);
 
    /* set the mouse pointer */
-   if (cursor = ecore_x_cursor_shape_get(ECORE_X_CURSOR_CROSS))
+   if ((cursor = ecore_x_cursor_shape_get(ECORE_X_CURSOR_CROSS)))
      ecore_x_window_cursor_set(input_window, cursor);
 
    /* create the rubber band */
@@ -654,7 +654,7 @@ _em_cb_mouse_up(void *data, int type, void *event)
    if (opts->region) 
      {
 	_em_grab_region_end();
-	return;
+	return 1;
      }
    ev = event;
 
