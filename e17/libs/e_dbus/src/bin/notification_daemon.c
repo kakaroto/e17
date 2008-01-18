@@ -130,7 +130,7 @@ cb_notify(E_Notification_Daemon *daemon, E_Notification *n)
 }
 
 void
-cb_close_notification(E_Notification_Daemon *daemon, int notification_id)
+cb_close_notification(E_Notification_Daemon *daemon, unsigned int notification_id)
 {
   Daemon_Data *dd;
   E_Notification *n;
