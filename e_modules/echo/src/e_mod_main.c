@@ -447,7 +447,6 @@ _echo_cb_popup_new(void *data)
    Instance *inst = NULL;
    Evas *evas;
    Evas_Object *of = NULL, *ow = NULL, *os = NULL;
-   int mw, mh, i;
 
    if (!(inst = data)) return;
    if (echo_cfg->cfd) return;

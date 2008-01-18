@@ -69,7 +69,6 @@ e_mod_alsa_get_channels(void)
    Evas_List *channels = NULL;
    snd_mixer_elem_t *elem;
    snd_mixer_selem_id_t *sid;
-   int err;
 
    if (!hdl) return NULL;
 
@@ -93,7 +92,7 @@ e_mod_alsa_get_channel_name(int channel)
    snd_mixer_elem_t *elem;
    snd_mixer_selem_id_t *sid;
    char *name = NULL;
-   int err, i = -1;
+   int i = -1;
 
    if (!hdl) return NULL;
 
@@ -118,7 +117,6 @@ e_mod_alsa_get_volume(const char *channel, int *left, int *right)
 {
    snd_mixer_elem_t *elem;
    snd_mixer_selem_id_t *sid;
-   int err;
 
    if (!hdl) return 0;
    if (!channel) return 0;
@@ -177,7 +175,6 @@ e_mod_alsa_set_volume(const char *channel, int left, int right)
 {
    snd_mixer_elem_t *elem;
    snd_mixer_selem_id_t *sid;
-   int err;
 
    if (!hdl) return 0;
    if (!channel) return 0;
@@ -244,7 +241,7 @@ e_mod_alsa_can_mute(const char *channel)
 {
    snd_mixer_elem_t *elem;
    snd_mixer_selem_id_t *sid;
-   int err, ret = 0, m;
+   int ret = 0;
 
    if (!hdl) return 0;
    if (!channel) return 0;
@@ -276,7 +273,7 @@ e_mod_alsa_get_mute(const char *channel, int *mute)
 {
    snd_mixer_elem_t *elem;
    snd_mixer_selem_id_t *sid;
-   int err, ret = 0, m;
+   int ret = 0, m;
 
    if (!hdl) return 0;
    if (!channel) return 0;
@@ -307,7 +304,7 @@ e_mod_alsa_set_mute(const char *channel, int mute)
 {
    snd_mixer_elem_t *elem;
    snd_mixer_selem_id_t *sid;
-   int err, ret = 0;
+   int ret = 0;
 
    if (!hdl) return 0;
    if (!channel) return 0;
