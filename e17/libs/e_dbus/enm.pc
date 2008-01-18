@@ -1,0 +1,11 @@
+prefix=/opt/e17
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: enotify
+Description: Network Manager convenience library
+Requires: ecore edbus
+Version: 0.1.0.003
+Libs: -L${libdir} -lenotify
+Cflags: -I${includedir}
