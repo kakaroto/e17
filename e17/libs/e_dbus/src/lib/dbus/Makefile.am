@@ -20,3 +20,4 @@ libedbus_la_SOURCES = \
 libedbus_la_LIBADD = \
 @EDBUS_LIBS@
 libedbus_la_LDFLAGS      = -version-info @version_info@
+

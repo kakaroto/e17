@@ -25,11 +25,35 @@ SNAP=`echo $PACKAGE_VERSION | awk -F. '{printf("%s", $4);}'`
 version_info=`expr $VMAJ + $VMIN`":$VMIC:$VMIN"
 AC_SUBST(version_info)
 
+dnl Check enabled modules to build
+AC_ARG_ENABLE(ehal,
+				  AC_HELP_STRING([--disable-ehal], 
+									  [Disable ehal build]),
+				  [enable_ehal="no"], 
+				  [enable_ehal="yes"])
+AC_ARG_ENABLE(enm,
+				  AC_HELP_STRING([--disable-enm], 
+									  [Disable enm build]),
+				  [enable_enm="no"], 
+				  [enable_enm="yes"])
+AC_ARG_ENABLE(enotify,
+				  AC_HELP_STRING([--disable-enotify], 
+									  [Disable enotify build]),
+				  [enable_enotify="no"], 
+				  [enable_enotify="yes"])
+
+
 PKG_CHECK_MODULES([EDBUS], [
   dbus-1 >= 0.62
   ecore >= 0.9.9
-  evas >= 0.9.9
 ])
+
+
+dnl evas
+if test "x${enable_enotify}" = "xyes"
+then
+	PKG_CHECK_MODULES(EVAS, [evas >= 0.9.9], [], [enable_enotify="no"])
+fi
 
 AC_ARG_ENABLE(build-test-gui,
   AS_HELP_STRING([--build-test-gui], [Build with gui for testing]),
@@ -43,6 +67,10 @@ AC_ARG_ENABLE(build-test-gui,
     )
  ]
 )
+
+AM_CONDITIONAL([BUILD_EHAL],    [test "x${enable_ehal}"    = "xyes"])
+AM_CONDITIONAL([BUILD_ENM],     [test "x${enable_enm}"     = "xyes"])
+AM_CONDITIONAL([BUILD_ENOTIFY], [test "x${enable_enotify}" = "xyes"])
 
 AC_OUTPUT([
 e_dbus.spec
@@ -69,6 +97,12 @@ echo
 echo "------------------------------------------------------------------------"
 echo "$PACKAGE $VERSION"
 echo "------------------------------------------------------------------------"
+echo
+echo "Modules:"
+echo
+echo "  EHal.................: $enable_ehal"
+echo "  ENM..................: $enable_enm"
+echo "  ENotify..............: $enable_enotify"
 echo
 echo "Configuration Options Summary:"
 echo
