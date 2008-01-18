@@ -1,5 +1,5 @@
 MAINTAINERCLEANFILES = Makefile.in
-filesdir = $(datadir)/electron/data/fonts
+filesdir = $(datadir)/exquisite/data/fonts
 files_DATA = \
 Vera.ttf \
 VeraBI.ttf \
