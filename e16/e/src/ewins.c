@@ -477,6 +477,7 @@ DetermineEwinFloat(EWin * ewin, int dx, int dy)
      }
 }
 
+#if 0				/* Remove? */
 EWin               *
 GetEwinByCurrentPointer(void)
 {
@@ -486,6 +487,7 @@ GetEwinByCurrentPointer(void)
 
    return EwinFindByFrame(child);
 }
+#endif
 
 EWin               *
 GetEwinPointerInClient(void)

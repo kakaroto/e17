@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2007 Kim Woelders
+ * Copyright (C) 2004-2008 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -517,8 +517,10 @@ FocusNewDeskBegin(void)
 void
 FocusNewDesk(void)
 {
+#if 0				/* Remove? */
    /* Set the mouse-over window */
    Mode.mouse_over_ewin = GetEwinByCurrentPointer();
+#endif
 
    FocusToEWin(NULL, FOCUS_DESK_ENTER);
 
@@ -532,8 +534,10 @@ FocusInit(void)
    /* Start focusing windows */
    FocusEnable(1);
 
+#if 0				/* Remove? */
    /* Set the mouse-over window */
    Mode.mouse_over_ewin = GetEwinByCurrentPointer();
+#endif
 
    focus_pending_why = 0;
    focus_pending_ewin = focus_pending_new = NULL;

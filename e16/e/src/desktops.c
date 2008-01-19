@@ -406,6 +406,7 @@ DeskCreate(int desk, int configure)
 	EobjSetLayer(eo, 0);
 	EventCallbackRegister(EobjGetWin(eo), 0, DeskHandleEvents, dsk);
 	dsk->bg.o_bg = eo;
+	ESelectInput(EobjGetWin(eo), EnterWindowMask);
 #endif
 #endif
      }
