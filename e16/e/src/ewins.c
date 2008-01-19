@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2007 Kim Woelders
+ * Copyright (C) 2004-2008 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -78,18 +78,6 @@ EwinGetContainerXwin(const EWin * ewin)
    Win                 win = EwinGetContainerWin(ewin);
 
    return (win) ? WinGetXwin(win) : None;
-}
-
-static void
-EwinEventsConfigure(EWin * ewin, int mode)
-{
-   long                emask;
-
-   emask = (mode) ? ~((long)0) : ~(EnterWindowMask | LeaveWindowMask);
-
-   ESelectInput(EoGetWin(ewin), EWIN_TOP_EVENT_MASK & emask);
-   ESelectInput(EwinGetClientWin(ewin), ewin->client.event_mask & emask);
-   EwinBorderEventsConfigure(ewin, mode);
 }
 
 static EWin        *
@@ -274,6 +262,7 @@ EwinManage(EWin * ewin)
    EChangeWindowAttributes(EoGetWin(ewin), CWEventMask | CWDontPropagate, &att);
 
    ewin->client.event_mask = EWIN_CLIENT_EVENT_MASK;
+   ESelectInput(EwinGetClientWin(ewin), ewin->client.event_mask);
 
    if (EDebug(EDBUG_TYPE_EWINS))
       Eprintf("EwinManage %#lx frame=%#lx cont=%#lx st=%d\n",
@@ -343,8 +332,6 @@ EwinConfigure(EWin * ewin)
    EwinBorderSelect(ewin);	/* Select border before calculating geometry */
    EwinSetGeometry(ewin);	/* Calculate window geometry before border parts */
    EwinBorderSetTo(ewin, NULL);
-
-   EwinEventsConfigure(ewin, 1);
 
    if (!ewin->props.no_button_grabs)
       GrabButtonGrabs(ewin);

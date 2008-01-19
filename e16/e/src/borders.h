@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2007 Kim Woelders
+ * Copyright (C) 2004-2008 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -99,7 +99,6 @@ void                EwinBorderDraw(EWin * ewin, int do_shape, int do_paint);
 void                EwinBorderCalcSizes(EWin * ewin, int propagate);
 void                EwinBorderMinShadeSize(EWin * ewin, int *mw, int *mh);
 void                EwinBorderUpdateInfo(EWin * ewin);
-void                EwinBorderEventsConfigure(EWin * ewin, int mode);
 void                EwinSetBorder(EWin * ewin, const Border * b, int apply);
 void                EwinSetBorderByName(EWin * ewin, const char *name);
 int                 BorderWinpartIndex(EWin * ewin, Win win);

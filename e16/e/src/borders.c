@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2007 Kim Woelders
+ * Copyright (C) 2004-2008 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -525,20 +525,6 @@ EwinBorderSetTo(EWin * ewin, const Border * b)
 	EMapWindow(ewin->bits[i].win);
 	EventCallbackRegister(ewin->bits[i].win, 0,
 			      BorderWinpartHandleEvents, &ewin->bits[i]);
-	/*
-	 * KeyPressMask KeyReleaseMask ButtonPressMask 
-	 * ButtonReleaseMask
-	 * EnterWindowMask LeaveWindowMask PointerMotionMask 
-	 * PointerMotionHintMask Button1MotionMask 
-	 * Button2MotionMask
-	 * Button3MotionMask Button4MotionMask Button5MotionMask
-	 * ButtonMotionMask KeymapStateMask ExposureMask 
-	 * VisibilityChangeMask StructureNotifyMask 
-	 * ResizeRedirectMask 
-	 * SubstructureNotifyMask SubstructureRedirectMask 
-	 * FocusChangeMask PropertyChangeMas ColormapChangeMask 
-	 * OwnerGrabButtonMask
-	 */
 	if (b->part[i].flags & FLAG_TITLE)
 	   ESelectInput(ewin->bits[i].win, EWIN_BORDER_TITLE_EVENT_MASK);
 	else
@@ -849,24 +835,6 @@ BorderWinpartIndex(EWin * ewin, Win win)
      }
 
    return -1;			/* Not found */
-}
-
-void
-EwinBorderEventsConfigure(EWin * ewin, int mode)
-{
-   int                 i;
-   long                emask;
-
-   emask = (mode) ? ~((long)0) : ~(EnterWindowMask | LeaveWindowMask);
-
-   for (i = 0; i < ewin->border->num_winparts; i++)
-     {
-	if (ewin->border->part[i].flags & FLAG_TITLE)
-	   ESelectInput(ewin->bits[i].win,
-			EWIN_BORDER_TITLE_EVENT_MASK & emask);
-	else
-	   ESelectInput(ewin->bits[i].win, EWIN_BORDER_PART_EVENT_MASK & emask);
-     }
 }
 
 /*

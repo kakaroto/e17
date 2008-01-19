@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2007 Kim Woelders
+ * Copyright (C) 2004-2008 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -413,10 +413,6 @@ DeskCreate(int desk, int configure)
      {
 	EoSetFloating(dsk, 1);
 	EoSetLayer(dsk, 0);
-#if 0				/* TBD */
-	dsk->event_mask = EDESK_EVENT_MASK;
-	DeskEventsConfigure(dsk, 1);
-#endif
 	/* Set the _XROOT... atoms so apps will find them even before the bg is set */
 	HintsSetRootInfo(EoGetWin(dsk), None, 0);
      }
