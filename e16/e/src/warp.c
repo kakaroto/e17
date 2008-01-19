@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2007 Kim Woelders
+ * Copyright (C) 2004-2008 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -354,11 +354,7 @@ WarpFocus(int delta)
    if (Conf.focus.raise_on_next)
       EwinRaise(ewin);
    if (Conf.focus.warp_on_next)
-      if (ewin != Mode.mouse_over_ewin && !ewin->state.iconified)
-	{
-	   EXWarpPointer(EoGetXwin(ewin), EoGetW(ewin) / 2, EoGetH(ewin) / 2);
-	   Mode.mouse_over_ewin = ewin;
-	}
+      EwinWarpTo(ewin);
    if (Conf.warplist.warpfocused)
       FocusToEWin(ewin, FOCUS_SET);
 }
@@ -402,11 +398,7 @@ WarpFocusFinish(void)
 
    EwinOpActivate(ewin, OPSRC_USER, Conf.warplist.raise_on_select);
    if (Conf.warplist.warp_on_select)
-      if (ewin != Mode.mouse_over_ewin)
-	{
-	   EXWarpPointer(EoGetXwin(ewin), EoGetW(ewin) / 2, EoGetH(ewin) / 2);
-	   Mode.mouse_over_ewin = ewin;
-	}
+      EwinWarpTo(ewin);
 }
 
 static void

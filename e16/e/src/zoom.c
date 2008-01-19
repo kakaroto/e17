@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2007 Kim Woelders
+ * Copyright (C) 2004-2008 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -218,8 +218,7 @@ Zoom(EWin * ewin)
 	     if (zoom_mask_4)
 		EDestroyWindow(zoom_mask_4);
 	     SwitchRes(0, 0, 0, 0, 0);
-	     EXWarpPointer(EwinGetClientXwin(ewin), ewin->client.w / 2,
-			   ewin->client.h / 2);
+	     EwinWarpTo(ewin);
 	     ESync();
 	     zoom_last_ewin = NULL;
 	  }
@@ -250,8 +249,7 @@ Zoom(EWin * ewin)
 	EwinBorderGetSize(ewin, &bl, &br, &bt, &bb);
 	EwinMove(ewin, -bl + x1, -bt + y1);
 	FocusToEWin(ewin, FOCUS_SET);
-	EXWarpPointer(EwinGetClientXwin(ewin), ewin->client.w / 2,
-		      ewin->client.h / 2);
+	EwinWarpTo(ewin);
 #if 0				/* Doesn't work as intended */
 	XGrabPointer(disp, EwinGetClientXwin(ewin), True,
 		     ButtonPressMask | ButtonReleaseMask |

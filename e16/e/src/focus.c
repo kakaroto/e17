@@ -399,11 +399,8 @@ doFocusToEwin(EWin * ewin, int why)
 
    if (Conf.focus.warp_always)
       do_warp = 1;
-   if (do_warp && ewin != Mode.mouse_over_ewin)
-     {
-	EXWarpPointer(EoGetXwin(ewin), EoGetW(ewin) / 2, EoGetH(ewin) / 2);
-	Mode.mouse_over_ewin = ewin;
-     }
+   if (do_warp)
+      EwinWarpTo(ewin);
 
    RemoveTimerEvent("REVERSE_FOCUS_TIMEOUT");
    switch (why)

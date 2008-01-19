@@ -1806,6 +1806,19 @@ EwinReposition(EWin * ewin)
    EwinMove(ewin, xn, yn);
 }
 
+void
+EwinWarpTo(EWin * ewin)
+{
+   if (ewin == Mode.mouse_over_ewin)
+      return;
+
+   if (ewin->state.iconified)
+      return;
+
+   EXWarpPointer(EoGetXwin(ewin), EoGetW(ewin) / 2, EoGetH(ewin) / 2);
+   Mode.mouse_over_ewin = ewin;
+}
+
 typedef union
 {
    unsigned int        all;
