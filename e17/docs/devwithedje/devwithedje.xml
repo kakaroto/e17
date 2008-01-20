@@ -8,6 +8,7 @@
         <!ENTITY foundations_at_practice SYSTEM "xml/foundations_at_practice.xml">
         <!ENTITY working_with_the_canvas SYSTEM "xml/working_with_the_canvas.xml">
         <!ENTITY interacting_with_the_objects SYSTEM "xml/interacting_with_the_objects.xml">
+        <!ENTITY introduction_to_widgets SYSTEM "xml/introduction_to_widgets.xml">
         ]>
 
 <book>
@@ -16,4 +17,5 @@
 &intro_to_gui;
 &intro_to_edje;
 &foundations_at_practice;
+&introduction_to_widgets;
 </book>

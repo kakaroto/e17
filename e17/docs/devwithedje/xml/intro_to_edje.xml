@@ -167,7 +167,7 @@
 
         <para>The normal process to get a canvas up and running can be
               bothersome. Evas supports multiple rendering engines, like the
-              softare, xrender and opengl flavors of X11 and framebuffer
+              software, xrender and opengl flavors of X11 and framebuffer
               devices. But before any rendering can be done the developer has
               to complete an Evas_Engine_Info structure with the required
               information about the target engine. This forces the developer to
@@ -185,7 +185,7 @@
 
                   <para>It's small and lean, designed to work on embedded
                         systems all the way to large and powerful multi-cpu
-                        workstations. It serialises all system signals,
+                        workstations. It serializes all system signals,
                         events etc. into a single event queue, that is easily
                         processed without needing to worry about concurrency.
                         A properly written, event-driven program using this

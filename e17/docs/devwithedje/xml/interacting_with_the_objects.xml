@@ -4,7 +4,7 @@
     <para>To understand how to interact with Edje or any other Evas object we
           need to review the basics of how the main loop manager handles
           events. Ecore maintains a list of pointers to functions to be called
-          when a signal from a given type is received. These functions
+          when a signal of a given type is received. These functions
           are known as signal "handlers".</para>
 
     <para>By default, Ecore awareness is limited to system singals like HUP or
@@ -26,8 +26,9 @@
     int
     good_bye(void *data, int type, void *event)
     {
-        //This removes the handler for no practical reason but showoff the API
-        if (ecore_event_handler_del(close)) printf("Handler deleted\n");
+        //Removing handler for no reason other than API showoff
+        if (ecore_event_handler_del(close))
+            printf("Handler deleted\n");
               
         printf("Good bye! \n");
         ecore_main_loop_quit();
@@ -37,7 +38,8 @@
     ...
     int main() {
     ...
-        close = ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT,good_bye,"data");
+        close = ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT,
+                                        good_bye,"data");
         ...
         ecore_main_loop_begin();
         ...
@@ -46,7 +48,7 @@
           This example moves the library shutdown procedure from the main
           function to the "good_bye" function. Then before the main loop is
           initiated we add the handler for this signal type. The last parameter
-          its a pointer to any kind of data you want to pass to the handler
+          it's a pointer to any kind of data you want to pass to the handler
           function, in this case is just a string containing "data".</para>
 
     <para>Interaction with the interface works in a similar way. The Edje
@@ -58,18 +60,22 @@
           <programlisting role="C">
     ...
     void
-    colorize(void *data, Evas_Object *o, const char *emission, const char *source)
+    colorize(void *data, Evas_Object *o, const char *emission,
+             const char *source)
     {
         Evas_Coord x,y;
         evas_pointer_canvas_xy_get(evas,&amp;x,&amp;y);
         if(x > 255) x = 255;
-        if(y > 255) y = 255;
-        edje_color_class_set("main color", 190, x, y, 255, 255, 255, 255, 255, 255, 255, 255, 255);
+        if(y > 255) y = 255;             //R,   G,   B,   A,
+        edje_color_class_set("main color", 190, x,   y,   255,
+                                           255, 255, 255, 255,
+                                           255, 255, 255, 255);
     }
     ...
     int main() {
         ...
-        edje_object_signal_callback_add(edje, "mouse,move", "*", colorize, "data");
+        edje_object_signal_callback_add(edje, "mouse,move", "*",
+                                        colorize,"data");
         ...
         ecore_main_loop_begin();
         ...

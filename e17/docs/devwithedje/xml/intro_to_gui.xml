@@ -23,7 +23,7 @@
           is known as the Event loop (or main loop).</para>
 
     <figure>
-          <title>The averange GUI application</title>
+          <title>The average GUI application</title>
           <mediaobject><imageobject>
                   <imagedata fileref="img/graphical_application_components.png" format="png" ScaleFit="1" width="100%"></imagedata>
               </imageobject></mediaobject>

@@ -34,8 +34,10 @@ colorize(void *data, Evas_Object *o, const char *emission, const char *source)
     Evas_Coord x,y;
     evas_pointer_canvas_xy_get(evas,&x,&y);
     if(x > 255) x = 255;
-    if(y > 255) y = 255;
-    edje_color_class_set("main color", 190, x, y, 255, 255, 255, 255, 255, 255, 255, 255, 255);
+    if(y > 255) y = 255;             //R,   G,   B,   A,
+    edje_color_class_set("main color", 190, x,   y,   255,
+                                       255, 255, 255, 255,
+                                       255, 255, 255, 255);
 }
 
 int main() {

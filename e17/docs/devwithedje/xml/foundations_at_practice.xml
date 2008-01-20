@@ -22,14 +22,14 @@
     button.file_set("theme.edj","button")
           </programlisting>
           
-          Altough the difference between the code snippets could be written off
-          as "sintactic sugar" it serves to demonstrate the structure the EFL C
-          API follow. If we dissected the last function call we could split it
-          into three groups. First, the class of the object to manipulate,
-          <code>edje_object</code>, second, the method to call <code>file_set</code>
-          and third the pointer to the object instance <code>(button,</code>
-          along with the parameters <code>"theme.edj","button")</code>. In
-          more generic terms: <code>class_method(instance,parameters)</code>.</para>
+          The differences between the code snippets could be written off as
+          "sintactic sugar" it serves to demonstrate the structure which the
+          EFL C API follows. If we dissected the last function call we could
+          split it into three groups. First, the class of the object to
+          manipulate, <code>edje_object</code>, second, the method to call
+          <code>file_set</code> and third the pointer to the object instance
+          <code>(button,</code> along with the parameters <code>"theme.edj","button")</code>
+          . In more generic terms: <code>class_method(instance,parameters)</code>.</para>
 
     <para>The first source snippet in the following tutorial is, of course, the
           first exception. The following function calls deal with the library

@@ -1,0 +1,678 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="640"
+   height="480"
+   id="svg2"
+   sodipodi:version="0.32"
+   inkscape:version="0.45.1"
+   version="1.0"
+   sodipodi:docbase="/home/andres/desarollo/e.org/fuentes/docs/devwithedje/img"
+   sodipodi:docname="custom_music_player_sources.svg"
+   inkscape:output_extension="org.inkscape.output.svg.inkscape"
+   inkscape:export-filename="/home/andres/desarollo/e.org/fuentes/docs/devwithedje/img/custom_music_player_sources.png"
+   inkscape:export-xdpi="300"
+   inkscape:export-ydpi="300">
+  <defs
+     id="defs4">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient3783">
+      <stop
+         style="stop-color:#22280b;stop-opacity:1;"
+         offset="0"
+         id="stop3785" />
+      <stop
+         style="stop-color:#22280b;stop-opacity:0;"
+         offset="1"
+         id="stop3787" />
+    </linearGradient>
+    <marker
+       inkscape:stockid="Arrow1Mend"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow1Mend"
+       style="overflow:visible;">
+      <path
+         id="path3543"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1.0pt;marker-start:none;"
+         transform="scale(0.4) rotate(180) translate(10,0)" />
+    </marker>
+    <linearGradient
+       id="linearGradient3155">
+      <stop
+         style="stop-color:#ffffff;stop-opacity:0.00784314;"
+         offset="0"
+         id="stop3157" />
+      <stop
+         id="stop3349"
+         offset="0.90384614"
+         style="stop-color:#7f7f7f;stop-opacity:0.50196078;" />
+      <stop
+         id="stop3165"
+         offset="1"
+         style="stop-color:#000000;stop-opacity:1;" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3783"
+       id="linearGradient3791"
+       x1="402"
+       y1="178"
+       x2="402"
+       y2="215"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.7272727,0,0,1,-47.272727,-70)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient3783"
+       id="linearGradient3876"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.7272727,0,0,1,-47.272727,-180)"
+       x1="402"
+       y1="178"
+       x2="402"
+       y2="215" />
+    <filter
+       inkscape:collect="always"
+       x="-0.10049008"
+       width="1.2009802"
+       y="-0.078387707"
+       height="1.1567754"
+       id="filter4975">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="3.2669578"
+         id="feGaussianBlur4977" />
+    </filter>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#f9f9f9"
+     bordercolor="#000000"
+     borderopacity="1"
+     inkscape:pageopacity="1"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1"
+     inkscape:cx="375.63594"
+     inkscape:cy="261.5"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     width="640px"
+     height="480px"
+     borderlayer="true"
+     inkscape:showpageshadow="false"
+     showgrid="true"
+     gridcolor="#3f3fff"
+     gridopacity="0.05882353"
+     objecttolerance="0.4"
+     inkscape:object-points="false"
+     inkscape:grid-points="true"
+     gridtolerance="10000"
+     inkscape:guide-bbox="true"
+     showguides="true"
+     inkscape:object-paths="false"
+     inkscape:window-width="811"
+     inkscape:window-height="773"
+     inkscape:window-x="144"
+     inkscape:window-y="46"
+     gridempspacing="0" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Capa 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <rect
+       style="opacity:1;fill:#e6e6e6;fill-opacity:1;stroke:#b3b3b3;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3351"
+       width="80"
+       height="100"
+       x="20"
+       y="20" />
+    <rect
+       style="opacity:1;fill:#0088aa;fill-opacity:1;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3353"
+       width="70"
+       height="20"
+       x="25"
+       y="43" />
+    <rect
+       style="opacity:0.5;fill:#0088aa;fill-opacity:1;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3519"
+       width="70"
+       height="20"
+       x="24"
+       y="80" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;text-align:start;line-height:150%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:DejaVu Sans"
+       x="30"
+       y="40"
+       id="text2165"
+       sodipodi:linespacing="150%"><tspan
+         sodipodi:role="line"
+         x="30"
+         y="40"
+         id="tspan2175">CD Player</tspan><tspan
+         sodipodi:role="line"
+         x="30"
+         y="58"
+         id="tspan2179">Playlists</tspan><tspan
+         sodipodi:role="line"
+         x="30"
+         y="76"
+         id="tspan2169">Podcasts</tspan><tspan
+         sodipodi:role="line"
+         x="30"
+         y="94"
+         id="tspan2171">Last.fm</tspan><tspan
+         sodipodi:role="line"
+         x="30"
+         y="112"
+         id="tspan2173">Magnatune</tspan></text>
+    <rect
+       style="opacity:1;fill:#ececec;fill-opacity:1;stroke:#b3b3b3;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3355"
+       width="80"
+       height="180"
+       x="20"
+       y="130" />
+    <rect
+       style="opacity:1;fill:#0088aa;fill-opacity:1;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3369"
+       width="70"
+       height="20"
+       x="25"
+       y="153" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;text-align:start;line-height:150%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:DejaVu Sans"
+       x="30"
+       y="150"
+       id="text3357"
+       sodipodi:linespacing="150%"><tspan
+         sodipodi:role="line"
+         id="tspan3359"
+         x="30"
+         y="150">Random ...</tspan><tspan
+         sodipodi:role="line"
+         x="30"
+         y="168"
+         id="tspan3361">Ambient</tspan><tspan
+         sodipodi:role="line"
+         x="30"
+         y="186"
+         id="tspan3363">Old Rock</tspan><tspan
+         sodipodi:role="line"
+         x="30"
+         y="204"
+         id="tspan3365">New Rock</tspan><tspan
+         sodipodi:role="line"
+         x="30"
+         y="222"
+         id="tspan3367">Carl's Fav...</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:bold;writing-mode:lr-tb;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:DejaVu Sans"
+       x="20"
+       y="346"
+       id="text3435"><tspan
+         sodipodi:role="line"
+         x="20"
+         y="346"
+         id="tspan3441">Developer</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:10px;font-style:normal;font-weight:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:DejaVu Sans"
+       x="120"
+       y="20"
+       id="text3521"><tspan
+         sodipodi:role="line"
+         id="tspan3523"
+         x="120"
+         y="20">Selected</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:10px;font-style:normal;font-weight:bold;writing-mode:lr-tb;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:DejaVu Sans"
+       x="119.01855"
+       y="129.8584"
+       id="text3525"><tspan
+         sodipodi:role="line"
+         id="tspan3527"
+         x="119.01855"
+         y="129.8584"
+         style="font-weight:normal">Mouse over</tspan></text>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Mend)"
+       d="M 110,20 L 90,40"
+       id="path3529"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Mend)"
+       d="M 110,120 L 90,100"
+       id="path3729"
+       sodipodi:nodetypes="cc" />
+    <rect
+       style="opacity:1;fill:#dde9af;fill-opacity:1;stroke:#89a02c;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:1,1;stroke-opacity:1;stroke-dashoffset:0"
+       id="rect3731"
+       width="80"
+       height="100"
+       x="200"
+       y="20" />
+    <rect
+       style="opacity:0.5;fill:url(#linearGradient3876);fill-opacity:1;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3874"
+       width="80"
+       height="40"
+       x="200"
+       y="20" />
+    <rect
+       style="opacity:1;fill:#abc837;fill-opacity:1;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3733"
+       width="70"
+       height="20"
+       x="205"
+       y="43" />
+    <rect
+       style="opacity:1;fill:#eef4d7;fill-opacity:1;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;"
+       id="rect3735"
+       width="70"
+       height="20"
+       x="204"
+       y="80" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;text-align:start;line-height:150%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:DejaVu Sans"
+       x="210"
+       y="40"
+       id="text3737"
+       sodipodi:linespacing="150%"><tspan
+         sodipodi:role="line"
+         x="210"
+         y="40"
+         id="tspan3739">CD Player</tspan><tspan
+         sodipodi:role="line"
+         x="210"
+         y="58"
+         id="tspan3741" /><tspan
+         sodipodi:role="line"
+         x="210"
+         y="76"
+         id="tspan3743">Podcasts</tspan><tspan
+         sodipodi:role="line"
+         x="210"
+         y="94"
+         id="tspan3745">Last.fm</tspan><tspan
+         sodipodi:role="line"
+         x="210"
+         y="112"
+         id="tspan3747">Magnatune</tspan></text>
+    <rect
+       style="opacity:1;fill:#dde9af;fill-opacity:1;stroke:#89a02c;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:1,1;stroke-opacity:1;stroke-dashoffset:0"
+       id="rect3749"
+       width="80"
+       height="180"
+       x="200"
+       y="130" />
+    <rect
+       style="opacity:0.5;fill:url(#linearGradient3791);fill-opacity:1;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3781"
+       width="80"
+       height="100"
+       x="200"
+       y="130" />
+    <rect
+       style="opacity:1;fill:#abc837;fill-opacity:1;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3751"
+       width="70"
+       height="20"
+       x="205"
+       y="153" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;text-align:start;line-height:150%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:DejaVu Sans"
+       x="210"
+       y="150"
+       id="text3753"
+       sodipodi:linespacing="150%"><tspan
+         sodipodi:role="line"
+         id="tspan3755"
+         x="210"
+         y="150">Random ...</tspan><tspan
+         sodipodi:role="line"
+         x="210"
+         y="168"
+         id="tspan3757" /><tspan
+         sodipodi:role="line"
+         x="210"
+         y="186"
+         id="tspan3759">Old Rock</tspan><tspan
+         sodipodi:role="line"
+         x="210"
+         y="204"
+         id="tspan3761">New Rock</tspan><tspan
+         sodipodi:role="line"
+         x="210"
+         y="222"
+         id="tspan3763">Carl's Fav...</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:bold;writing-mode:lr-tb;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:DejaVu Sans"
+       x="209.93164"
+       y="345.80176"
+       id="text3765"><tspan
+         sodipodi:role="line"
+         x="209.93164"
+         y="345.80176"
+         id="tspan3767">Artist 1</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:10px;font-style:normal;font-weight:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:DejaVu Sans"
+       x="309.34082"
+       y="29.858398"
+       id="text3769"><tspan
+         sodipodi:role="line"
+         id="tspan3771"
+         x="309.34082"
+         y="29.858398">Selected</tspan></text>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-end:url(#Arrow1Mend);stroke-opacity:1"
+       d="M 170,20 L 200,40"
+       id="path3777"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-end:url(#Arrow1Mend);stroke-opacity:1"
+       d="M 180,120 L 210,100"
+       id="path3779"
+       sodipodi:nodetypes="cc" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:bold;writing-mode:lr-tb;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:DejaVu Sans"
+       x="210"
+       y="57"
+       id="text3793"><tspan
+         sodipodi:role="line"
+         id="tspan3795"
+         x="210"
+         y="57">Playlists</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:bold;writing-mode:lr-tb;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:DejaVu Sans"
+       x="212"
+       y="167"
+       id="text3797"><tspan
+         sodipodi:role="line"
+         id="tspan3799"
+         x="212"
+         y="167">Ambient</tspan></text>
+    <rect
+       style="opacity:1;fill:#aad400;fill-opacity:1;stroke:#8a916f;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3801"
+       width="80.917938"
+       height="28.939423"
+       x="380.5"
+       y="20.560577" />
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:condensed;text-align:start;line-height:150%;writing-mode:lr-tb;text-anchor:start;fill:#f6ffd5;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:DejaVu Sans"
+       x="390"
+       y="20"
+       id="text3807"
+       sodipodi:linespacing="150%"><tspan
+         sodipodi:role="line"
+         x="390"
+         y="20"
+         id="tspan3809" /><tspan
+         sodipodi:role="line"
+         x="390"
+         y="41"
+         id="tspan3811">Playlists</tspan><tspan
+         sodipodi:role="line"
+         x="390"
+         y="62"
+         id="tspan3817" /></text>
+    <rect
+       style="opacity:1;fill:#f6ffd5;fill-opacity:1;stroke:#8a916f;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3819"
+       width="79.498505"
+       height="180.00313"
+       x="380.00308"
+       y="60.998432" />
+    <text
+       xml:space="preserve"
+       style="font-size:14px;font-style:normal;font-weight:bold;writing-mode:lr-tb;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:DejaVu Sans"
+       x="442.31152"
+       y="278.63672"
+       id="text3835"><tspan
+         sodipodi:role="line"
+         x="442.31152"
+         y="278.63672"
+         id="tspan3837">Artist 2</tspan></text>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-end:url(#Arrow1Mend);stroke-opacity:1"
+       d="M 580,140 L 570,120"
+       id="path3847"
+       sodipodi:nodetypes="cc" />
+    <rect
+       style="opacity:1;fill:#aad400;fill-opacity:1;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect4847"
+       width="70"
+       height="20"
+       x="385"
+       y="80" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;text-align:start;line-height:150%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:DejaVu Sans"
+       x="390"
+       y="77"
+       id="text4849"
+       sodipodi:linespacing="150%"><tspan
+         sodipodi:role="line"
+         id="tspan4851"
+         x="390"
+         y="77">Random ...</tspan><tspan
+         sodipodi:role="line"
+         x="390"
+         y="95"
+         id="tspan4853" /><tspan
+         sodipodi:role="line"
+         x="390"
+         y="113"
+         id="tspan4855">Old Rock</tspan><tspan
+         sodipodi:role="line"
+         x="390"
+         y="131"
+         id="tspan4857">New Rock</tspan><tspan
+         sodipodi:role="line"
+         x="390"
+         y="149"
+         id="tspan4859">Carl's Fav...</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:bold;writing-mode:lr-tb;fill:#f6ffd5;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:DejaVu Sans"
+       x="392"
+       y="94"
+       id="text4861"><tspan
+         sodipodi:role="line"
+         id="tspan4863"
+         x="392"
+         y="94">Ambient</tspan></text>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-end:url(#Arrow1Mend);stroke-opacity:1"
+       d="M 360,30 L 380,30"
+       id="path4865"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-end:url(#Arrow1Mend);stroke-opacity:1"
+       d="M 360,30 L 390,80"
+       id="path4867"
+       sodipodi:nodetypes="cc" />
+    <rect
+       style="opacity:1;fill:#f6ffd5;fill-opacity:1;stroke:#8a916f;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect4889"
+       width="79.498505"
+       height="180.00313"
+       x="490"
+       y="60" />
+    <rect
+       style="opacity:1;fill:#aad400;fill-opacity:1;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect4891"
+       width="70"
+       height="20"
+       x="494.99692"
+       y="79.001572" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;text-align:start;line-height:150%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:DejaVu Sans"
+       x="499.99692"
+       y="76.001572"
+       id="text4893"
+       sodipodi:linespacing="150%"><tspan
+         sodipodi:role="line"
+         id="tspan4895"
+         x="499.99692"
+         y="76.001572">Random ...</tspan><tspan
+         sodipodi:role="line"
+         x="499.99692"
+         y="94.001572"
+         id="tspan4897" /><tspan
+         sodipodi:role="line"
+         x="499.99692"
+         y="112.00157"
+         id="tspan4899">Old Rock</tspan><tspan
+         sodipodi:role="line"
+         x="499.99692"
+         y="130.00157"
+         id="tspan4901">New Rock</tspan><tspan
+         sodipodi:role="line"
+         x="499.99692"
+         y="148.00157"
+         id="tspan4903">Carl's Fav...</tspan></text>
+    <rect
+       style="opacity:0.25688076;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1.97539616;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter4975)"
+       id="rect4909"
+       width="78.024605"
+       height="100.0246"
+       x="495.9754"
+       y="23.975403" />
+    <rect
+       style="opacity:1;fill:#f6ffd5;fill-opacity:1;stroke:#668000;stroke-width:1.97539616;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3851"
+       width="78.024605"
+       height="100.0246"
+       x="490.9877"
+       y="18.987698" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-weight:bold;writing-mode:lr-tb;fill:#f6ffd5;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:DejaVu Sans"
+       x="501.99692"
+       y="93.001572"
+       id="text4905"><tspan
+         sodipodi:role="line"
+         id="tspan4907"
+         x="501.99692"
+         y="93.001572">Ambient</tspan></text>
+    <rect
+       style="opacity:1;fill:#aad400;fill-opacity:1;stroke-width:2;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3855"
+       width="70"
+       height="20"
+       x="495"
+       y="78.999992" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:condensed;text-align:start;line-height:150%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:DejaVu Sans"
+       x="501"
+       y="39"
+       id="text3857"
+       sodipodi:linespacing="150%"><tspan
+         sodipodi:role="line"
+         x="501"
+         y="39"
+         id="tspan3859">CD Player</tspan><tspan
+         sodipodi:role="line"
+         x="501"
+         y="57"
+         id="tspan3861">Playlists</tspan><tspan
+         sodipodi:role="line"
+         x="501"
+         y="75"
+         id="tspan3863">Podcasts</tspan><tspan
+         sodipodi:role="line"
+         x="501"
+         y="93"
+         id="tspan3865">Last.fm</tspan><tspan
+         sodipodi:role="line"
+         x="501"
+         y="111"
+         id="tspan3867">Magnatune</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:10px;font-style:normal;font-weight:bold;writing-mode:lr-tb;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:DejaVu Sans"
+       x="579.01855"
+       y="149.8584"
+       id="text3843"><tspan
+         sodipodi:role="line"
+         id="tspan3845"
+         x="579.01855"
+         y="149.8584"
+         style="font-weight:normal">Mouse over</tspan></text>
+    <rect
+       style="opacity:1;fill:#afc6e9;fill-opacity:1;stroke:#87aade;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect2267"
+       width="40"
+       height="0"
+       x="200"
+       y="440" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-end:url(#Arrow1Mend);stroke-opacity:1"
+       d="M 170,20 L 210,150"
+       id="path2271"
+       sodipodi:nodetypes="cc" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-end:url(#Arrow1Mend);stroke-opacity:1"
+       d="M 110,20 L 90,150"
+       id="path2273"
+       sodipodi:nodetypes="cc" />
+    <text
+       xml:space="preserve"
+       style="font-size:10px;font-style:normal;font-weight:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:DejaVu Sans"
+       x="400"
+       y="258"
+       id="text2268"><tspan
+         sodipodi:role="line"
+         id="tspan2270"
+         x="400"
+         y="258">State 1</tspan></text>
+    <text
+       xml:space="preserve"
+       style="font-size:10px;font-style:normal;font-weight:normal;writing-mode:lr-tb;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:DejaVu Sans"
+       x="518"
+       y="259"
+       id="text2272"><tspan
+         sodipodi:role="line"
+         id="tspan2274"
+         x="518"
+         y="259">State 2</tspan></text>
+  </g>
+</svg>

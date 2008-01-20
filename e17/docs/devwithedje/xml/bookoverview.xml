@@ -53,46 +53,67 @@
 
 <formalpara>
     <title>III. The foundations in practice</title>
-    This is a practical example of the simplest approach to setting up an Evas
-    canvas for display.
+    A practical example of setting up an Evas canvas with the simplest
+    approach, Ecore_Evas. 
 </formalpara>
 
 <para>
     <emphasis>III.I Working with the canvas</emphasis>
-    Another example dealing with the inclusion of an Edje object.
+    Including new Edje objects inside the previously setup canvas can be
+    explained with this simple example.
 </para>
 
 <para>
     <emphasis>III.II Interacting with the objects</emphasis>
-    A practical guide through both Edje and plain Ecore's event system. 
+    There are different channels for the application to interact with the
+    interface. For the sake of brevity I will include an example of each one to
+    serve as an introduction for the pratical examples to come in the next
+    chapters.
 </para>
 
 <!-- New Chapter -->
 
 <formalpara>
     <title>IV. Introduction to widgets</title>
-    A simple description of what a widget is and what it is useful for along with
-    the limitations presented by common toolkits.
+    Interfaces need to resolve two problems, presenting information to users
+    and taking orders from them. The past chapters presented enough information
+    to solve the first. In the following chapters we will review the second.
+    The widget iself can be seen as a small application inside our interfaces.
+    As an example let's examine the structure of a common widget, the combox.
 </formalpara>
 
 <para>
     <emphasis>IV.I. The common widget design</emphasis>
-    A generic vision of the way the different toolkits design the structure of
-    widgets with the corresponding diagram.
+    Revisar el diseño de los widget combox en varias librerias, mostrar las
+    pattern usadas y concluir porque MVC es la mejor (si es que lo es).
 </para>
 
 <para>
     <emphasis>IV.II. Widget design with Edje</emphasis>
-    An explanation about where does Edje fits in the structure mentioned before,
-    and the shortcuts it provides.
+    If the Model View Controller pattern is the choice for developing
+    a widget the place Edje ocuppies becomes quite clear. Mostrar el papel
+    que ocupa Edje, Ecore_Evas y Ecore_ en cada parte del diseño del widget.
+</para>
+
+<para>
+    <emphasis>IV.III. The Enlightenment Widget Library</emphasis>
+    Añadir una introduccion a EWL y añadir mi vision sobre como debeira ser
+    usado en conjunto con Edje destacando claramente que es una opinion
+    personal.
+</para>
+
+<para>
+    <emphasis>IV.III. The Enlightenment ToolKit</emphasis>
+    Añadir una introduccion a ETK y añadir mi vision sobre como debeira ser
+    usado en conjunto con Edje destacando claramente que es una opinion
+    personal.
 </para>
 
 <!-- New Chapter -->
 
 <formalpara>
-    <title>V. Implementing a widget with Edje</title>
-    A brief resume of the previous chapter and the introduction of names specific
-    to Evas, Ecore_Evas and Edje.
+    <title>V. Implementacion del widget</title>
+    Presentar estrucutura inicial del codigo paralelizandola con IV.II
 </formalpara>
 
 <para>
