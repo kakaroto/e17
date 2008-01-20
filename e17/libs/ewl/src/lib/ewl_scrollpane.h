@@ -33,6 +33,36 @@
 #define EWL_SCROLLPANE_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), EWL_SCROLLPANE_TYPE))
 
 /**
+ * The scrollpane can be scolled with a drag of the mouse
+ */
+typedef struct Ewl_Scrollpane_Scroll_Info Ewl_Scrollpane_Scroll_Info;
+
+/**
+ * @def EWL_SCROLLPANE_SCROLL_INFO(scroll_info)
+ * Typecasts a pointer to an Ewl_Scrollpane_Scroll_Info pointer.
+ */
+#define EWL_SCROLLPANE_SCROLL_INFO(scroll_info) ((Ewl_Scrollpane_Scroll_Info *) scroll_info)
+
+/**
+ * @brief Enables a scrollpane to be scrolled with kinetic behaviour
+ */
+struct Ewl_Scrollpane_Scroll_Info
+{
+	unsigned char clicked:1;	/**< If the mouse is currently clicked or not */
+	unsigned char active:1;		/**< If the pane is currently moving */
+	int fps;			/**< Number of recalculations per second */
+	int x;				/**< Mouse down location (x) */
+	int y;				/**< Mouse down location (y) */
+	int xc;				/**< Mouse up location (x) */
+	int yc;				/**< Mouse up location (y) */
+	double vel_x;			/**< Current horizontal velocity */
+	double vel_y;			/**< Current vertical */
+	double vmax;			/**< Maximum speed in pixels */
+	double vmin;			/**< Minimum speed in pixels */
+	double dampen;			/**< Frictional variable */
+};
+
+/**
  * The scrollpane provides a way to pan around large collections of images.
  */
 typedef struct Ewl_Scrollpane Ewl_Scrollpane;
@@ -58,10 +88,19 @@ struct Ewl_Scrollpane
 	Ewl_Widget *vscrollbar; /**< Vertical scrollbar */
 	Ewl_Scrollpane_Flags hflag;      /**< Flags for horizontal scrollbar */
 	Ewl_Scrollpane_Flags vflag;      /**< Flags for vertical scrollbar */
+	Ewl_Scrollpane_Scroll_Info *kinfo;	/**< Kinetic scrolling info */
+	Ewl_Kinetic_Scroll type;			/**< If the scrollpane is to use kinetic scrolling */
 };
 
 Ewl_Widget 	*ewl_scrollpane_new(void);
 int 		 ewl_scrollpane_init(Ewl_Scrollpane *s);
+void		 ewl_scrollpane_kinetic_scrolling_set(Ewl_Scrollpane *s,
+						Ewl_Kinetic_Scroll type);
+Ewl_Kinetic_Scroll ewl_scrollpane_kinetic_scrolling_get(Ewl_Scrollpane *s);
+void		 ewl_scrollpane_kinetic_max_velocity_set(Ewl_Scrollpane *s, double v);
+void		 ewl_scrollpane_kinetic_min_velocity_set(Ewl_Scrollpane *s, double v);
+void		 ewl_scrollpane_kinetic_dampen_set(Ewl_Scrollpane *s, double d);
+void		 ewl_scrollpane_kinetic_fps_set(Ewl_Scrollpane *s, int fps); 
 
 void 		 ewl_scrollpane_hscrollbar_flag_set(Ewl_Scrollpane *s,
 						   Ewl_Scrollpane_Flags f);

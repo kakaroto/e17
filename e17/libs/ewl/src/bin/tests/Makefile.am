@@ -29,6 +29,7 @@ SUBDIRS				= \
 	image \
 	image_thumbnail \
 	io_manager \
+	kinetic_scrollpane \
 	label \
 	layer \
 	list \

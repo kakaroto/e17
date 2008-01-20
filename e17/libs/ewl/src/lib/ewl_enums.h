@@ -878,6 +878,21 @@ enum Ewl_Filelist_View
 typedef enum Ewl_Filelist_View Ewl_Filelist_View;
 
 /**
+ * @enum Ewl_Kinetic_Scroll
+ * The type of kinetic scrolling
+ */
+enum Ewl_Kinetic_Scroll
+{
+	EWL_KINETIC_SCROLL_NONE,
+	EWL_KINETIC_SCROLL_NORMAL,
+};
+
+/*
+ * The Ewl_Kinetic_Scroll
+ */
+typedef enum Ewl_Kinetic_Scroll Ewl_Kinetic_Scroll;
+
+/**
  * @}
  */
 

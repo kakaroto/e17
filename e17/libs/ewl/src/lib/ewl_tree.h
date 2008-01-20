@@ -119,6 +119,8 @@ struct Ewl_Tree
 	unsigned char fixed:1;    /**< Rows are fixed height */
 	unsigned char headers_visible:1; /**< Are the headers visible? */
 	unsigned char row_color_alternate:1; /**< Are the rows alternating? */
+
+	Ewl_Kinetic_Scroll scroll_type; /**< Type of kinetic scrolling */
 };
 
 /*
@@ -158,6 +160,14 @@ void		 ewl_tree_row_collapse(Ewl_Tree *tree, void *data,
 
 unsigned int	 ewl_tree_row_expanded_is(Ewl_Tree *tree, void *data,
 						unsigned int row);
+
+void		 ewl_tree_kinetic_scrolling_set(Ewl_Tree *tree,
+						Ewl_Kinetic_Scroll type);
+Ewl_Kinetic_Scroll ewl_tree_kinetic_scrolling_get(Ewl_Tree *tree);
+void		 ewl_tree_kinetic_max_velocity_set(Ewl_Tree *tree, double v);
+void		 ewl_tree_kinetic_min_velocity_set(Ewl_Tree *tree, double v);
+void		 ewl_tree_kinetic_dampen_set(Ewl_Tree *tree, double d);
+void		 ewl_tree_kinetic_fps_set(Ewl_Tree *tree, int fps); 
 
 /*
  * Internal stuff.

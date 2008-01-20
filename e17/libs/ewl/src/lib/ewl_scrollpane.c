@@ -8,6 +8,13 @@
 #include "ewl_private.h"
 #include "ewl_debug.h"
 
+void ewl_scrollpane_cb_mouse_down(Ewl_Widget *w, void *ev, void *data);
+void ewl_scrollpane_cb_mouse_up(Ewl_Widget *w, void *ev, void *data);
+void ewl_scrollpane_cb_mouse_move(Ewl_Widget *w, void *ev, void *data);
+static int ewl_scrollpane_cb_scroll_timer(void *data);
+void ewl_scrollpane_cb_scroll(Ewl_Scrollpane *s, double x, double y,
+							int *tx, int *ty);
+
 /**
  * @return Returns a new scrollpane on success, NULL on failure.
  * @brief Create a new scrollpane
@@ -117,7 +124,80 @@ ewl_scrollpane_init(Ewl_Scrollpane *s)
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_WHEEL,
 				ewl_scrollpane_cb_wheel_scroll, NULL);
 
+	/*
+	 * Setup kinetic scrolling info here
+	 */
+	s->kinfo = NULL;
+	s->type = EWL_KINETIC_SCROLL_NONE;
+
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
+}
+
+/**
+ * @param s: The scrollpane to setup
+ * @param use: To use kinetic scrolling or not
+ * @return Returns no value
+ * @brief Sets up default values and callbacks for kinetic scrolling
+ */
+void
+ewl_scrollpane_kinetic_scrolling_set(Ewl_Scrollpane *s, Ewl_Kinetic_Scroll type)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(s);
+	DCHECK_TYPE(s, EWL_SCROLLPANE_TYPE);
+
+	if ((s->type) && (type == s->type))
+		DRETURN(DLEVEL_STABLE);
+
+	if (type == EWL_KINETIC_SCROLL_NORMAL)
+	{
+		/* If true, then set up */
+		if (!s->kinfo)
+		{
+			s->kinfo = NEW(Ewl_Scrollpane_Scroll_Info, 1);
+			s->kinfo->fps = 15;
+			s->kinfo->vmax = 50.0;
+			s->kinfo->vmin = 0.0;
+			s->kinfo->dampen = 0.95;
+		}
+
+		ewl_callback_append(s->overlay, EWL_CALLBACK_MOUSE_DOWN,
+				ewl_scrollpane_cb_mouse_down, s);
+		ewl_callback_append(s->overlay, EWL_CALLBACK_MOUSE_UP,
+				ewl_scrollpane_cb_mouse_up, s);
+		ewl_callback_append(s->overlay, EWL_CALLBACK_MOUSE_MOVE,
+				ewl_scrollpane_cb_mouse_move, s);
+	}
+
+	/* Only delete the callbacks if they were there originally */
+	else if ((s->type != EWL_KINETIC_SCROLL_NONE) &&
+					(type == EWL_KINETIC_SCROLL_NONE))
+	{
+		ewl_callback_del(s->overlay, EWL_CALLBACK_MOUSE_DOWN,
+			       	ewl_scrollpane_cb_mouse_down);
+		ewl_callback_del(s->overlay, EWL_CALLBACK_MOUSE_UP,
+			       	ewl_scrollpane_cb_mouse_up);
+		ewl_callback_del(s->overlay, EWL_CALLBACK_MOUSE_MOVE,
+			       	ewl_scrollpane_cb_mouse_move);
+	}
+
+	s->type = type;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param s: The scrollpane to use
+ * @return Returns the type of scrolling used
+ * @brief Gets the type of kinetic scrolling used
+ */
+Ewl_Kinetic_Scroll
+ewl_scrollpane_kinetic_scrolling_get(Ewl_Scrollpane *s)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET(s, EWL_KINETIC_SCROLL_NONE);
+	DCHECK_TYPE_RET(s, EWL_SCROLLPANE_TYPE, EWL_KINETIC_SCROLL_NONE);
+
+	DRETURN_INT(s->type, DLEVEL_STABLE);
 }
 
 /**
@@ -624,6 +704,300 @@ ewl_scrollpane_cb_wheel_scroll(Ewl_Widget *cb, void *ev_data,
 	ewl_scrollpane_vscrollbar_value_set(s,
 			ewl_scrollpane_vscrollbar_value_get(s) +
 			ev->z * ewl_scrollpane_vscrollbar_step_get(s));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @ev_data: The Ewl_Event_Mouse_Down data
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief The mouse down setting up kinetic scrolling
+ */
+void
+ewl_scrollpane_cb_mouse_down(Ewl_Widget *w, void *ev, void *data)
+{
+	Ewl_Scrollpane *s;
+	Ewl_Event_Mouse *md;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(ev);
+	DCHECK_PARAM_PTR(data);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+
+	s = EWL_SCROLLPANE(data);
+	md = EWL_EVENT_MOUSE(ev);
+	s->kinfo->vel_x = 0.0;
+	s->kinfo->vel_y = 0.0;
+	s->kinfo->x = md->x;
+	s->kinfo->y = md->y;
+	s->kinfo->clicked = !!TRUE;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @ev_data: The Ewl_Event_Mouse_Move data
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief The mouse move callback for kinetic scrolling
+ */
+void
+ewl_scrollpane_cb_mouse_move(Ewl_Widget *w, void *ev, void *data)
+{
+	Ewl_Scrollpane *s;
+	Ewl_Event_Mouse *mm;
+	int cx, cy;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(ev);
+	DCHECK_PARAM_PTR(data);
+
+	s = EWL_SCROLLPANE(data);
+	mm = EWL_EVENT_MOUSE(ev);
+
+	if (!s->kinfo->clicked)
+		DRETURN(DLEVEL_STABLE);
+
+	if (!s->kinfo->active)
+	{
+		ecore_timer_add(1.0/s->kinfo->fps,
+					ewl_scrollpane_cb_scroll_timer, s);
+		s->kinfo->active = !!TRUE;
+	}
+
+	s->kinfo->xc = mm->x;
+	s->kinfo->yc = mm->y;
+	cx = (s->kinfo->xc - s->kinfo->x);
+	cy = (s->kinfo->yc - s->kinfo->y);
+
+	/* v = (change in position / (width or height of scroll *
+	 *	(range of velocities) + min))
+	 */
+	s->kinfo->vel_x = ((cx / 
+		(double)ewl_object_current_w_get(EWL_OBJECT(w))) *
+		(s->kinfo->vmax - s->kinfo->vmin)) + s->kinfo->vmin;
+
+	s->kinfo->vel_y = ((cy /
+		(double)ewl_object_current_h_get(EWL_OBJECT(w))) *
+		(s->kinfo->vmax - s->kinfo->vmin)) + s->kinfo->vmin;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @ev_data: The Ewl_Event_Mouse_Up data
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief The mouse up callback for kinetic scrolling
+ */
+void
+ewl_scrollpane_cb_mouse_up(Ewl_Widget *w, void *ev, void *data)
+{
+	Ewl_Scrollpane *s;
+	
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(data);
+
+	s = EWL_SCROLLPANE(data);
+	s->kinfo->clicked = !!FALSE;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+
+/**
+ * @internal
+ * @param data: The scrollpane to work with
+ * @return Returns 1 if the timer is to continue, 0 otherwise
+ * @brief Performs some calculations then calls the scroll function
+ */
+static int ewl_scrollpane_cb_scroll_timer(void *data)
+{
+	Ewl_Scrollpane *s;
+	double h, w;
+	int tx = 0, ty = 0;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET(data, FALSE);
+
+	s = EWL_SCROLLPANE(data);
+
+	/* If the mouse is down, accelerate and check velocity */
+	if (!s->kinfo->clicked)
+	{
+		s->kinfo->vel_x *= s->kinfo->dampen;
+		s->kinfo->vel_y *= s->kinfo->dampen;
+
+		h = s->kinfo->vel_y * ((s->kinfo->vel_y < 0) ? -1 : 1);
+		w = s->kinfo->vel_x * ((s->kinfo->vel_x < 0) ? -1 : 1);
+
+		if ((w < 0.5) && (h < 0.5))
+		{
+			s->kinfo->active = !!FALSE;
+			DRETURN_INT(0, DLEVEL_STABLE);
+		}
+	}
+
+	/* Actually scroll the pane */
+	ewl_scrollpane_cb_scroll(s, s->kinfo->vel_x, s->kinfo->vel_y, &tx, &ty);
+
+	/* If at the end of a scrollbar, set x/y to current */
+	if (!tx)
+		s->kinfo->x = s->kinfo->xc;
+	if (!ty)
+		s->kinfo->y = s->kinfo->yc;
+
+	DRETURN_INT(1, DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * @param s: The scrollpane to work with
+ * @param x: The horizontal velocity
+ * @param y: The vertical velocity
+ * @param tx: Pointer to integer tested
+ * @param ty: Pointer to integer tested
+ * @return Returns no value
+ * @brief Scrolls the scrollpane based on the given parameters
+ */
+void
+ewl_scrollpane_cb_scroll(Ewl_Scrollpane *s, double x, double y,
+						int *tx, int *ty)
+{
+	double w, h;
+	Ewl_Scrollbar *ry, *rx;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(s);
+	DCHECK_TYPE(s, EWL_SCROLLPANE_TYPE);
+
+	ry = EWL_SCROLLBAR(s->vscrollbar);
+	rx = EWL_SCROLLBAR(s->hscrollbar);
+
+	if (!((ewl_scrollpane_vscrollbar_value_get(s) == 1.0) &&
+				(y > 0)) &&
+			!((ewl_scrollpane_vscrollbar_value_get(s) == 0.0) &&
+				(y < 0)))
+	{
+		h = ewl_scrollpane_vscrollbar_value_get(s) + (y *
+				ewl_scrollpane_vscrollbar_step_get(s) / 100);
+
+		/* If h is greater than possible setting, set to remainder */
+		if (h > ewl_range_maximum_value_get(EWL_RANGE(ry->seeker)))
+		{
+			h = ewl_range_maximum_value_get(EWL_RANGE(ry->seeker));
+			if (ty) *ty = FALSE;
+		}
+		else if (h < ewl_range_minimum_value_get(EWL_RANGE(ry->seeker)))
+		{
+			h = ewl_range_minimum_value_get(EWL_RANGE(ry->seeker));
+			if (ty) *ty = FALSE;
+		}
+		else
+			if (ty) *ty = TRUE;
+
+		ewl_scrollpane_vscrollbar_value_set(s, h);
+	}
+
+	if (!((ewl_scrollpane_hscrollbar_value_get(s) == 1.0) &&
+				(x > 0)) &&
+			!((ewl_scrollpane_hscrollbar_value_get(s) == 0.0) &&
+				(x < 0)))
+	{
+		w = ewl_scrollpane_hscrollbar_value_get(s) + (x *
+				ewl_scrollpane_hscrollbar_step_get(s) / 100);
+
+		/* And again for the w */
+		if (w > ewl_range_maximum_value_get(EWL_RANGE(rx->seeker)))
+		{
+			w = ewl_range_maximum_value_get(EWL_RANGE(rx->seeker));
+			if (tx) *tx = FALSE;
+		}
+		else if (w < ewl_range_minimum_value_get(EWL_RANGE(rx->seeker)))
+		{
+			w = ewl_range_minimum_value_get(EWL_RANGE(rx->seeker));
+			if (tx) *tx = FALSE;
+		}
+		else
+			if (tx) *tx = TRUE;
+
+		ewl_scrollpane_hscrollbar_value_set(s, w);
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/*
+ * @param s: The scrollpane to work with
+ * @param w: The maximum velocity
+ * @return Returns no value
+ * @brief Sets the maximum velocity for kinetic scrolling
+ */
+void
+ewl_scrollpane_kinetic_max_velocity_set(Ewl_Scrollpane *s, double v)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(s);
+
+	if (v) s->kinfo->vmax = v;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/*
+ * @param s: The scrollpane to work with
+ * @param w: The minimum velocity
+ * @return Returns no value
+ * @brief Sets the minimum velocity for kinetic scrolling
+ */
+void
+ewl_scrollpane_kinetic_min_velocity_set(Ewl_Scrollpane *s, double v)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(s);
+
+	if (v) s->kinfo->vmin = v;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/*
+ * @param s: The scrollpane to work with
+ * @param w: The multiplier to reduce velocity
+ * @return Returns no value
+ * @brief Sets the multiplier to reduce the velocity of kinetic scrolling
+ */
+void
+ewl_scrollpane_kinetic_dampen_set(Ewl_Scrollpane *s, double d)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(s);
+
+	if (d) s->kinfo->dampen = d;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/*
+ * @param s: The scrollpane to work with
+ * @param w: The desired frames per second
+ * @return Returns no value
+ * @brief Sets the number of times per second to recalculate velocity and update the tree
+ */
+void
+ewl_scrollpane_kinetic_fps_set(Ewl_Scrollpane *s, int fps)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(s);
+
+	if (fps) s->kinfo->fps = fps;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
