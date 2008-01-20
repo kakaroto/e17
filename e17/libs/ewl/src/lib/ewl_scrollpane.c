@@ -4,6 +4,7 @@
 #include "ewl_scrollpane.h"
 #include "ewl_box.h"
 #include "ewl_scrollbar.h"
+#include "ewl_range.h"
 #include "ewl_macros.h"
 #include "ewl_private.h"
 #include "ewl_debug.h"

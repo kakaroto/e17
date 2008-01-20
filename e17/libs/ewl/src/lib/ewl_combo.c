@@ -256,6 +256,8 @@ ewl_combo_cb_decrement_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
 	ewl_widget_state_set(combo->button, "expanded",
 					EWL_STATE_PERSISTENT);
+	ewl_widget_state_set(EWL_WIDGET(combo), "expanded",
+					EWL_STATE_PERSISTENT);
 
 	if (!ewl_mvc_dirty_get(EWL_MVC(combo)))
 		DRETURN(DLEVEL_STABLE);
@@ -289,6 +291,8 @@ ewl_combo_cb_popup_hide(Ewl_Widget *w __UNUSED__,
 
 	combo = EWL_COMBO(data);
 	ewl_widget_state_set(combo->button, "collapsed", EWL_STATE_PERSISTENT);
+	ewl_widget_state_set(EWL_WIDGET(combo), "collapsed",
+					EWL_STATE_PERSISTENT);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
