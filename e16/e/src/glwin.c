@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007 Kim Woelders
+ * Copyright (C) 2007-2008 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -64,6 +64,7 @@ typedef struct
 {
    EObj               *eo;
    char                grabbing;
+   EWin               *ewin;
 } GLWindow;
 
 static void         GlwinExit(void);
@@ -345,7 +346,7 @@ SceneDraw2(double t, EWin ** ewins, int num)
 		break;
 	     x = i * w;
 	     y = j * h;
-	     eo = EoObj(ewins[k++]);
+	     eo = EoObj(ewins[k]);
 	     dx = 100.0f * exp(-t);
 	     dx = (fabs(dx) < 1.0) ? 0. : dx * sin(5. * t);
 	     dy = 100.0f * exp(-t);
@@ -374,6 +375,7 @@ SceneDraw2(double t, EWin ** ewins, int num)
 		  glColor4f(1., 1., 1., 1.);
 	       }
 #endif
+	     k++;
 	  }
      }
 }
@@ -381,34 +383,30 @@ SceneDraw2(double t, EWin ** ewins, int num)
 static void
 SceneDraw1(double t, EWin ** ewins, int num)
 {
-   double              t1;
+   double              t1, arg;
    int                 i;
-   GLfloat             w, h, dx, dy, sz, dx1, dy1;
+   GLfloat             w, h, dx, dy, sz;
    EObj               *eo;
 
    w = EobjGetW(GLWin.eo);
    h = EobjGetH(GLWin.eo);
 
-   t1 = (2 * M_PI * sel_ewin) / num * (1. - exp(-(20. * (t - tn))));
+   t1 = 2 * M_PI * (-exp(-(20. * (t - tn))) / num);
 
    DrawBackground(texture[sel_bg], w, h);
 
    for (i = 0; i < num; i++)
      {
-	dx1 = (.5 + .3 * cos(t1 + (i + .5) * 2. * M_PI / num)) * w;
-	dy1 = (.5 - .3 * sin(t1 + (i + .5) * 2. * M_PI / num)) * h;
+	arg = t1 + M_PI / 2. - (i - sel_ewin) * 2. * M_PI / num;
+	dx = (.5 + .3 * cos(arg)) * w;
+	dy = (.5 - .3 * sin(arg)) * h;
 
 	eo = EoObj(ewins[i]);
-	dx = 100.0f * exp(-t);
-	dx = (fabs(dx) < 1.0) ? 0. : dx * sin(5. * t);
-	dy = 100.0f * exp(-t);
-	dy = (fabs(dy) < 1.0) ? 0. : dy * cos(5. * t);
-	sz = (i == sel_ewin) ? .5f : 0.3f;
-#if 0
-	Eprintf("i=%2d dxy1=%8.3f/%8.3f  x,y=%8.3f/%8.3f\n", i,
-		dx1, dy1, dx, dy);
-#endif
-	DrawQube(EobjGetTexture(eo), dx1 + dx, dy1 + dy, 500.0f,
+	if (i == sel_ewin)
+	   sz = 0.5 + .01 * cos(10. * (t - tn));
+	else
+	   sz = 0.3;
+	DrawQube(EobjGetTexture(eo), dx, dy, 500.0,
 		 sz * EobjGetW(eo), sz * EobjGetH(eo), rot_x, rot_y);
      }
 }
@@ -418,16 +416,19 @@ GlwinEwins(int *pnum)
 {
    int                 i, j, num;
    EWin               *const *ewins;
-   EWin              **lst;
+   EWin              **lst, *ewin;
 
    ewins = EwinListGetAll(&num);
    lst = EMALLOC(EWin *, num);
 
    for (i = j = 0; i < num; i++)
      {
-	if (!EoIsShown(ewins[i]))
+	ewin = ewins[i];
+	if (!EoIsShown(ewin))
 	   continue;
-	lst[j++] = ewins[i];
+	if (ewin->props.skip_focuslist || ewin->props.skip_ext_task)
+	   continue;
+	lst[j++] = ewin;
      }
    *pnum = j;
 
@@ -447,6 +448,11 @@ SceneDraw(void)
    t = GetDTime();
 
    ewins = GlwinEwins(&num);
+   if (sel_ewin < 0)
+      sel_ewin = num - 1;
+   else if (sel_ewin >= num)
+      sel_ewin = 0;
+   GLWin.ewin = ewins[sel_ewin];
 
    switch (Conf_glwin.mode)
      {
@@ -552,15 +558,20 @@ GlwinKeyPress(GLWindow * gw, KeySym key)
      case XK_n:
      case XK_Tab:
 	sel_ewin++;
-	if (sel_ewin >= 5)
-	   sel_ewin = 0;
 	tn = GetDTime();
 	break;
      case XK_p:
 	sel_ewin--;
-	if (sel_ewin < 0)
-	   sel_ewin = 4;
 	break;
+
+     case XK_Return:
+	if (!gw->ewin)
+	  {
+	     Eprintf("No win\n");
+	     break;
+	  }
+	EwinOpActivate(gw->ewin, OPSRC_USER, Conf.warplist.raise_on_select);
+	return 1;
      }
 #define TI(no) ((texture[no]) ? (int)texture[no]->texture : -1)
    Dprintf("bg=%d(%d) filter=%d l=%d  z=%.2f  spx/y=%.2f/%.2f\n",
@@ -647,6 +658,7 @@ GlwinCreate(const char *title __UNUSED__, int width, int height)
    EGlWindowConnect(WinGetXwin(win));
 
    GLWin.grabbing = 0;
+   GLWin.ewin = NULL;
 
    EobjMap(GLWin.eo, 1);
 
