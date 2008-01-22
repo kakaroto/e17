@@ -593,43 +593,42 @@ ewl_box_configure_calc(Ewl_Box * b, Ewl_Object **spread, int *fill_size, int *al
 	ecore_dlist_first_goto(EWL_CONTAINER(b)->children);
 	while ((child = ecore_dlist_next(EWL_CONTAINER(b)->children))) {
 		int change;
+		unsigned int policy;
 
+		if (!VISIBLE(child))
+			continue;
 		/*
 		 * Place the child on a list depending on it's matching
 		 * alignment. First check for top/left alignment.
 		 */
-		if (VISIBLE(child)) {
-			unsigned int policy;
+		/*
+		 * Set the initial fill size to the preferred size.
+		 */
+		ewl_box_info->fill_set(child, initial);
 
-			/*
-			 * Set the initial fill size to the preferred size.
-			 */
-			ewl_box_info->fill_set(child, initial);
+		change = ewl_box_info->fill_ask(child);
 
-			change = ewl_box_info->fill_ask(child);
+		/*
+		 * Figure out how much extra space is available for
+		 * filling widgets.
+		 */
+		*fill_size -= change + b->spacing;
 
-			/*
-			 * Figure out how much extra space is available for
-			 * filling widgets.
-			 */
-			*fill_size -= change + b->spacing;
+		/*
+		 * Attempt to give the widget the full size, this will
+		 * fail if the fill policy or bounds don't allow it.
+		 */
+		ewl_box_info->align_set(child, *align_size);
 
-			/*
-			 * Attempt to give the widget the full size, this will
-			 * fail if the fill policy or bounds don't allow it.
-			 */
-			ewl_box_info->align_set(child, *align_size);
-
-			/*
-			 * If it has a fill policy for a direction we're
-			 * concerned with, add it to the fill list.
-			 */
-			policy = ewl_object_fill_policy_get(child);
-			policy &= ewl_box_info->f_policy;
-			if (policy || change == initial) {
-				spread[i] = child;
-				i++;
-			}
+		/*
+		 * If it has a fill policy for a direction we're
+		 * concerned with, add it to the fill list.
+		 */
+		policy = ewl_object_fill_policy_get(child);
+		policy &= ewl_box_info->f_policy;
+		if (policy || change == initial) {
+			spread[i] = child;
+			i++;
 		}
 	}
 
