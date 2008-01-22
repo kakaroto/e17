@@ -111,20 +111,41 @@ gcc -o ecore_config_example ecore_config_example.c `pkg-config --cflags --libs e
 <para>
 To compile the program you can use pkg-config to get all of the required
 linking and library information for Ecore_Config.
+
+If you run this program as is you will receive the values put into ecore_config
+as the defaults as output. Once you know the program is working, you can create
+a simple custom.eet file to read the values.
+</para>
+
+<example>
+    <title>Simple config.db script (build_cfg_db.sh)</title>
+    <programlisting>
+        #!/bin/sh
+        
+        DB=config.eet
+        
+        ecore_config -c $DB -k /int_example              -i 2
+        ecore_config -c $DB -k /this/is/a/string/example -s "this is a string"
+        ecore_config -c $DB -k /float/example            -f 42.10101
+    </programlisting>
+</example>
+
+<para>
+When build_cfg_db.sh is executed it will create a custom.eet file in the
+current directory. This file can then be copied into ~/.e/apps/PROGRAM_NAME/config.eet
+where PROGRAM_NAME is the value passed into ecore_config_init. Once the file is
+copied in place, executing the test program again will show the values given in
+the config file instead of the defaults. You can specify as many, or as few of
+the configuration keys in the config file and Ecore_Config will either show the
+user value or the default value.
 </para>
 
 <para>
-Changing the configuration values and saving those changes is similar to
-loading them. To execute the following example simply insert the source code
-before calling the library shutdown function and recompile.
+Changing the configuration values from the application and  and saving those
+changes is similar to loading them. To execute the following example simply
+insert the source code before calling the library shutdown function and
+recompile.
 </para>
-
-<!--
-
-NOTE: edb_ed does not seem to be able of opening files created with Ecore_Config
-      and vice versa anymore. I replaced that part with a example about saving
-      changes using the API.
--->
 
 <example>
 <title>Saving configuration changes</title>
@@ -133,8 +154,8 @@ ecore_config_string_set("/this/is/a/string/example", "Other string");
     
 if (ecore_config_save() != ECORE_CONFIG_ERR_SUCC) {
     printf("WARNING: could not save config to ~/.e/apps/config.eet\n");
-} else {
-    printf("In the next execution str will be \"Other string\"\n");
+}else{
+    printf("NOTE: in the next execution Str will be \"Other String\"\n")
 }
 </programlisting>
 </example>
