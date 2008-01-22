@@ -11,15 +11,23 @@ Introduction to Ecore_Config
     <email>zero@perplexity.org</email>
     <othername>'dj2'</othername>
   </author>
-  <date>25 April 2004</date>
+  <othercredit>
+      <firstname>Andres</firstname>
+      <surname>Blanc</surname>
+      <email>andresblanc@gmail.com</email>
+      <othername>'dresb'</othername>
+      <contrib>Updated the code sample and explanatory paragraphs to match the
+        changes in Ecore_Config config from the last 4 years.</contrib>
+  </othercredit>
+  <date>20 January 2008</date>
 </sectioninfo>
 
 <title>Recipe: Ecore Config Introduction</title>
 
 <para>
 The Ecore_Config module provides the programmer with a very simple way to setup
-configuration files for their program. This recipe will give an example of how to
-integrate the beginnings of Ecore_Config into your program and use it to get
+configuration files for their program. This recipe will give an example of how
+to integrate the beginnings of Ecore_Config into your program and use it to get
 configuration data.
 </para>
 
@@ -34,7 +42,7 @@ int main(int argc, char ** argv) {
     char *str;
 
     if (ecore_config_init("foo") != ECORE_CONFIG_ERR_SUCC) {
-        printf("Cannot init Ecore_Config");
+        printf("ERROR: Could not init Ecore_Config");
         return 1;
     }
 
@@ -42,7 +50,8 @@ int main(int argc, char ** argv) {
     ecore_config_string_default("/this/is/a/string/example", "String");
     ecore_config_float_default("/float/example", 2.22);
 
-    ecore_config_load();
+    if (ecore_config_load() != ECORE_CONFIG_ERR_SUCC)
+        printf("WARNING: Could not load config from ~/.e/apps/config.eet\n");
 
     i = ecore_config_int_get("/int_example");
     str = ecore_config_string_get("/this/is/a/string/example");
@@ -60,63 +69,83 @@ int main(int argc, char ** argv) {
 </programlisting>
 </example>
 <para>
-As you can see from this example the basic usage of Ecore_Config is simple. The system is initialized with
-a call to <function>ecore_config_init</function>. The program name setting control where 
-Ecore_Config will look for your configuration database. The directory and file name 
-are: ~/.e/apps/PROGRAM_NAME/config.db.
+As you can see from this example the basic usage of Ecore_Config is simple.
+The system is initialized with a call to <function>ecore_config_init</function>.
+This function creates a temporary file in ~/.ecore/PROGRAM_NAME/ to hold the
+changes until they are saved or the library is shutdown.
 </para>
 
 <para>
-For each configuration variable you are getting from Ecore_Config, you can assign a default value in the case
-that the user does not have a config.db file. The defaults are assigned with the ecore_config_*_default where *
-is one of the Ecore_Config types. The first parameter is the key under which this is to be accessed. These keys
-must be unique over your program. The value passed is of the type appropriated for this call.
+For each configuration variable you are getting from Ecore_Config, you can
+assign a default value in the case that the user does not have a configuration
+file. The defaults are assigned with the <function>ecore_config_int_default</function>
+with "int" being replaceable with any other Ecore_Config type. The first
+parameter is the key under which this is to be accessed. These keys must be
+unique over your program. The value passed must correspond with the type used
+in the function call.
 </para>
 
 <para>
-The <function>ecore_config_load</function> call will read the values from the config.db file into Ecore_Config. 
-After which we can
-access the files with the ecore_config_*_get methods (again * is the type of data desired). These routines
-take the key name for this item and return the value associated with that key. Each function returns a type
+Calling <function>ecore_config_load</function> will the read the values from
+the configuration file in the default location, ~/.e/apps/PROGRAM_NAME/config.eet,
+into Ecore_Config. To load from a custom location the function <function>ecore_config_file_load</function>
+is available. After loading the file can access the values with <function>ecore_config_int_get</function>
+(again int being replaceable). These routines take the key name for this item
+and return the value associated with that key. Each function returns a type
 that corresponds to the function call name.
 </para>
 
 <para>
-<function>ecore_config_shutdown</function> is then called to shutdown the Ecore_Config system before the program exits.
+<function>ecore_config_shutdown</function> is then called to shutdown the
+Ecore_Config system before the program exits. At this moment the temporary file
+will be deleted and any unsaved changes will be lost.
 </para>
 
 <example>
 <title>Compilation command</title>
 <programlisting>
-gcc -o ecore_config_example ecore_config_example.c `ecore-config --cflags --libs`
+gcc -o ecore_config_example ecore_config_example.c `pkg-config --cflags --libs ecore-config`
 </programlisting>
 </example>
-<para>
-To compile the program you can use the ecore-config script to get all of the required linking and library information
-for Ecore_Config.
 
-If you run this program as is you will receive the values put into ecore_config as the defaults as output.
-Once you know the program is working, you can create a simple config.db file to read the values.
+<para>
+To compile the program you can use pkg-config to get all of the required
+linking and library information for Ecore_Config.
 </para>
+
+<para>
+Changing the configuration values and saving those changes is similar to
+loading them. To execute the following example simply insert the source code
+before calling the library shutdown function and recompile.
+</para>
+
+<!--
+
+NOTE: edb_ed does not seem to be able of opening files created with Ecore_Config
+      and vice versa anymore. I replaced that part with a example about saving
+      changes using the API.
+-->
 
 <example>
-<title>Simple config.db script (build_cfg_db.sh)</title>
+<title>Saving configuration changes</title>
 <programlisting>
-#!/bin/sh
-
-DB=config.db
-
-edb_ed $DB add /int_example int 2
-edb_ed $DB add /this/is/a/string/example str "this is a string"
-edb_ed $DB add /float/example float 42.10101
+ecore_config_string_set("/this/is/a/string/example", "Other string");
+    
+if (ecore_config_save() != ECORE_CONFIG_ERR_SUCC) {
+    printf("WARNING: could not save config to ~/.e/apps/config.eet\n");
+} else {
+    printf("In the next execution str will be \"Other string\"\n");
+}
 </programlisting>
 </example>
-<para>
-When build_cfg_db.sh is executed it will create a config.db file in the current directory. This file can
-then be copied into ~/.e/apps/PROGRAM_NAME/config.db where PROGRAM_NAME is the value passed into 
-ecore_config_init. Once the file is copied in place, executing the test program again will show the values
-given in the config file instead of the defaults. You can specify as many, or as few of the configuration
-keys in the config file and Ecore_Config will either show the user value or the default value.
-</para>
-</section>
 
+<para>
+In this example the function <function>ecore_config_string_set</function> is
+used to alter the string example from the default value "String" to "Other
+string". Saving the changes is similar to loading them, <function>ecore_config_save</function>
+saves the changes to the default location while <function>ecore_config_file_save</function>
+can be used to save the changes to a custom location. Unless there is a problem
+the next time the example is ran the value for "Str" will be "Other string".
+</para>
+
+</section>
