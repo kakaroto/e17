@@ -285,6 +285,8 @@ enna_module_process_event(Evas_Object * obj, enna_event event)
    if (!sd->modules)
       return;
    si = evas_list_nth(sd->modules, sd->selected);
+   if (!si) return;
+
    switch (si->type)
      {
      case ENNA_MODULE_MUSIC:

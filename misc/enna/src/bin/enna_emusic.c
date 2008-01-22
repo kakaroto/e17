@@ -155,10 +155,8 @@ enna_emusic_load(Evas_Object * obj, char *filename)
 
    enna_emusic_stop(sd->obj);
 
-   //ecore_list_destroy(sd->playlist);
-
    d = ecore_file_dir_get(filename);
-
+   
    files = ecore_file_ls(ecore_file_dir_get(filename));
    file = ecore_list_first_goto(files);
    while ((file = (char *)ecore_list_next(files)) != NULL)
@@ -166,7 +164,6 @@ enna_emusic_load(Evas_Object * obj, char *filename)
 	if (enna_util_has_suffix(file, enna_config_extensions_get("music")))
 	  {
 	     char                tmp[4096];
-
 	     sprintf(tmp, "file://%s/%s", d, (char *)file);
 	     if (!strcmp(file, ecore_file_file_get(filename)))
 		sd->playlist_id = i;
@@ -174,6 +171,7 @@ enna_emusic_load(Evas_Object * obj, char *filename)
 	     ecore_list_append(sd->playlist, strdup(tmp));
 	  }
      }
+   
    ecore_list_index_goto(sd->playlist, sd->playlist_id);
    sd->music_type = ENNA_EMUSIC_TYPE_AUDIO;
    return 1;
@@ -219,15 +217,19 @@ enna_emusic_play(Evas_Object * obj)
 
    enna = evas_data_attach_get(evas_object_evas_get(sd->edje));
    dbg("PLAY\n");
+   
+
    if (sd->state == ENNA_EMUSIC_STATE_STOP)
      {
+	char *filename;
+	
 	sd->state = ENNA_EMUSIC_STATE_PLAYING;
-
-	emotion_object_file_set(sd->emotion,
-				(char *)ecore_list_index_goto(sd->playlist,
-							      sd->playlist_id));
 	edje_object_signal_emit(sd->edje, "enna,state,play", "enna");
 	edje_object_signal_emit(sd->edje, "enna,state,play", "enna");
+	filename = ecore_list_index_goto(sd->playlist, sd->playlist_id);
+	dbg("filename : %s\n", filename);
+	
+	emotion_object_file_set(sd->emotion, filename);
 	emotion_object_play_set(sd->emotion, 1);
 	enna_miniplayer_play(enna->miniplayer);
 	_update_metadata(sd);
@@ -479,7 +481,6 @@ _update_metadata(E_Smart_Data * sd)
 
 	evas_object_resize(sd->cover, w, h);
 	evas_object_image_fill_set(sd->cover, 0, 0, w, h);
-
 	enna_miniplayer_infos_set(enna->miniplayer, metadata->title,
 				  metadata->album, metadata->artist,
 				  metadata->cover);
@@ -717,7 +718,6 @@ _e_smart_add(Evas_Object * obj)
 
    /* Add Play/Next/Prev Clic signal */
    o_play = edje_object_part_object_get(sd->edje, "enna.btn.play");
-   dbg("%p\n", o_play);
    evas_object_event_callback_add(o_play, EVAS_CALLBACK_MOUSE_DOWN,
 				  _play_event_mouse_up, sd);
    o_pause = edje_object_part_object_get(sd->edje, "enna.btn.pause");

@@ -83,6 +83,8 @@ struct _Enna_Db
    int                 fd_ev_write;
    Ecore_Fd_Handler   *fd_ev_handler;
    pthread_t           thread_scan_cover;
+  void              (*func) (Enna_Db * db, char *path);
+  
 #if WITH_IPOD_SUPPORT
    Itdb_iTunesDB      *itdb;
 #endif

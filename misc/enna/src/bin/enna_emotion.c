@@ -167,12 +167,12 @@ enna_emotion_focus_set(Evas_Object * obj, unsigned int focus)
    if (focus)
      {
 	emotion_object_video_mute_set(sd->emotion, 0);
-	edje_object_signal_emit(enna->edje, "enna,state,video,show", "enna");
+	edje_object_signal_emit(enna->edje, "video,show", "enna");
      }
    else
      {
 	emotion_object_video_mute_set(sd->emotion, 1);
-	edje_object_signal_emit(enna->edje, "enna,state,video,hide", "enna");
+	edje_object_signal_emit(enna->edje, "video,hide", "enna");
      }
 
 }
@@ -204,11 +204,11 @@ enna_emotion_load_dvd(Evas_Object * obj, char *filename, Volume * v)
       iw = (ih * ratio) + 0.5;
    edje_object_part_text_set(sd->edje, "enna.text.title", v->label);
    edje_extern_object_min_size_set(sd->emotion, iw, ih);
-   edje_object_part_swallow(enna->edje, "enna.video.swallow", sd->emotion);
+   edje_object_part_swallow(enna->edje, "video.swallow", sd->emotion);
    edje_object_size_min_calc(sd->edje, &w, &h);
    evas_object_resize(sd->edje, w, h);
    edje_extern_object_min_size_set(sd->emotion, 0, 0);
-   edje_object_part_swallow(enna->edje, "enna.video.swallow", sd->emotion);
+   edje_object_part_swallow(enna->edje, "video.swallow", sd->emotion);
 
    return 1;
 }
@@ -251,11 +251,11 @@ enna_emotion_load(Evas_Object * obj, char *filename)
    if (ratio > 0.0)
       iw = (ih * ratio) + 0.5;
    edje_extern_object_min_size_set(sd->emotion, iw, ih);
-   edje_object_part_swallow(enna->edje, "enna.video.swallow", sd->emotion);
+   edje_object_part_swallow(enna->edje, "video.swallow", sd->emotion);
    edje_object_size_min_calc(sd->edje, &w, &h);
    evas_object_resize(sd->edje, w, h);
    edje_extern_object_min_size_set(sd->emotion, 0, 0);
-   edje_object_part_swallow(enna->edje, "enna.video.swallow", sd->emotion);
+   edje_object_part_swallow(enna->edje, "video.swallow", sd->emotion);
 
    return 1;
 }
@@ -275,14 +275,14 @@ enna_emotion_fullscreen_toggle(Evas_Object * obj)
    sd->fullscreen = ~sd->fullscreen;
    if (!sd->fullscreen)
      {
-	edje_object_signal_emit(enna->edje, "enna,state,fullscreen,off",
+	edje_object_signal_emit(enna->edje, "fullscreen,off",
 				"enna");
 	edje_object_signal_emit(sd->edje, "enna,state,infos,show", "enna");
 	enna->fs_obj = 0;
      }
    else
      {
-	edje_object_signal_emit(enna->edje, "enna,state,fullscreen,on", "enna");
+	edje_object_signal_emit(enna->edje, "fullscreen,on", "enna");
 	edje_object_signal_emit(sd->edje, "enna,state,infos,hide", "enna");
 	enna->fs_obj = 1;
      }
@@ -464,9 +464,9 @@ _frame_resize_change_cb(void *data, Evas_Object * obj, void *event_info)
    h = 10240;
 
    edje_extern_object_aspect_set(sd->emotion, EDJE_ASPECT_CONTROL_BOTH, w, h);
-   edje_object_part_swallow(enna->edje, "enna.video.swallow", sd->emotion);
+   edje_object_part_swallow(enna->edje, "video.swallow", sd->emotion);
    edje_object_signal_emit(sd->edje, "enna,scanning,stop", "enna");
-   edje_object_signal_emit(enna->edje, "enna,state,video,show", "enna");
+   edje_object_signal_emit(enna->edje, "video,show", "enna");
 
 }
 

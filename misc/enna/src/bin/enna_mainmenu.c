@@ -70,7 +70,6 @@ struct _E_Smart_Item
    Evas_Object        *edje;
    Evas_Object        *base_obj;
    Evas_Object        *icon_obj;
-   Evas_Object        *miniplayer_obj;
    void                (*func) (void *data, void *data2);
    void                (*func_hilight) (void *data, void *data2);
    void               *data;
@@ -241,20 +240,7 @@ enna_mainmenu_append(Evas_Object * obj, Evas_Object * icon,
    si->sd = sd;
    si->base_obj = edje_object_add(evas_object_evas_get(sd->smart_obj));
 
-   if (miniplayer)
-     {
-	edje_object_file_set(si->base_obj, enna_config_theme_get(),
-			     "widget/menu/item");
-	si->icon_obj = NULL;
-	si->miniplayer_obj = icon;
-	if (si->miniplayer_obj)
-	  {
-	     edje_object_part_swallow(si->base_obj, "enna.swallow.miniplayer",
-				      si->miniplayer_obj);
-	     evas_object_show(si->miniplayer_obj);
-	  }
-     }
-   else
+   if (!miniplayer)
      {
 	edje_object_file_set(si->base_obj, enna_config_theme_get(),
 			     "widget/menu/item");
@@ -262,7 +248,6 @@ enna_mainmenu_append(Evas_Object * obj, Evas_Object * icon,
 	evas_object_show(si->base_obj);
 
 	si->icon_obj = icon;
-	si->miniplayer_obj = NULL;
 	if (si->icon_obj)
 	  {
 	     edje_extern_object_min_size_set(si->icon_obj, sd->icon_w,
@@ -319,20 +304,8 @@ enna_mainmenu_prepend(Evas_Object * obj, Evas_Object * icon,
    si->sd = sd;
    si->base_obj = edje_object_add(evas_object_evas_get(sd->smart_obj));
 
-   if (miniplayer)
-     {
-	edje_object_file_set(si->base_obj, enna_config_theme_get(),
-			     "widget/menu/miniplayer");
-	si->icon_obj = NULL;
-	si->miniplayer_obj = icon;
-	if (si->miniplayer_obj)
-	  {
-	     edje_object_part_swallow(si->base_obj, "enna.swallow.miniplayer",
-				      si->miniplayer_obj);
-	     evas_object_show(si->miniplayer_obj);
-	  }
-     }
-   else
+
+   if (!miniplayer)
      {
 	edje_object_file_set(si->base_obj, enna_config_theme_get(),
 			     "widget/menu/item");
@@ -438,16 +411,8 @@ enna_mainmenu_selected_set(Evas_Object * obj, int n)
 		((double)sd->selected /
 		 ((double)evas_list_count(sd->items) - 1.0));
 	  }
-
-	//evas_object_raise (si->base_obj);
-
-	if (si->miniplayer_obj)
-	  {
-	     edje_object_signal_emit(si->base_obj, "selected", "enna");
-	     edje_object_signal_emit(si->miniplayer_obj, "selected", "enna");
-	  }
-	else
-	   edje_object_signal_emit(si->base_obj, "selected", "enna");
+	
+	edje_object_signal_emit(si->base_obj, "selected", "enna");
 	if (si->func_hilight)
 	   si->func_hilight(si->data, si->data2);
 	if (sd->selector)
@@ -604,7 +569,6 @@ enna_mainmenu_remove_num(Evas_Object * obj, int n)
 	 * evas_object_del(si->icon_obj); */
 	evas_object_del(si->base_obj);
 	evas_object_del(si->icon_obj);
-	//evas_object_del(si->miniplayer_obj);
 	//free(si->func);
 	//free(si->func_hilight);
 	free(si);
@@ -700,7 +664,7 @@ enna_mainmenu_nth_icon_set(Evas_Object * obj, int n, Evas_Object * icon)
    if (!sd->items)
       return;
    si = evas_list_nth(sd->items, n);
-   if (si && !si->miniplayer_obj)
+   if (si)
      {
 	if (si->icon_obj)
 	  {
@@ -708,7 +672,6 @@ enna_mainmenu_nth_icon_set(Evas_Object * obj, int n, Evas_Object * icon)
 	     evas_object_hide(si->icon_obj);
 	     evas_object_del(si->icon_obj);
 	  }
-
 	si->icon_obj = icon;
 	if (si->icon_obj)
 	  {
@@ -741,8 +704,6 @@ enna_mainmenu_clear(Evas_Object * obj)
 	sd->items = evas_list_remove_list(sd->items, sd->items);
 	if (si->icon_obj)
 	   evas_object_del(si->icon_obj);
-	if (si->miniplayer_obj)
-	   evas_object_del(si->miniplayer_obj);
 	evas_object_del(si->base_obj);
 	free(si);
      }
@@ -1064,7 +1025,7 @@ _e_smart_add(Evas_Object * obj)
    sd->icon_h = 24;
 
    sd->selected = -1;
-   sd->active = 0;
+   sd->active = 1;
    sd->box_scroll = NULL;
    sd->scroll_align = 0.0;
    sd->has_focus = 0;
