@@ -264,7 +264,6 @@ _enna_reflection_smart_reconfigure(E_Smart_Data * sd)
    y = sd->y + ((sd->h - h) / 2);
 
    evas_object_image_file_get(sd->obj, &file, NULL);
-   dbg("file : %s\n", file);
 
    evas_object_image_load_size_set(sd->obj, w, w);
    evas_object_image_file_set(sd->obj, file, NULL);
@@ -286,7 +285,6 @@ _enna_reflection_smart_reconfigure(E_Smart_Data * sd)
 
    old_pixels = evas_object_image_data_get(sd->obj, 0);
    evas_object_image_size_get(sd->obj, &w, &h);
-   dbg("old_pixels\n");
 
    if (!old_pixels)
       return;
@@ -295,7 +293,6 @@ _enna_reflection_smart_reconfigure(E_Smart_Data * sd)
       free(sd->pixels);
 
    sd->pixels = malloc(sizeof(int) * w * h);
-   dbg("new pixels %dx%d %d %d\n", w, h, x, y);
 
    /* For each pixels decrease alpha after each line */
    alpha = 100;

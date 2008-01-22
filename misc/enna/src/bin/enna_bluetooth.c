@@ -54,8 +54,6 @@ static pthread_t    thread;
 EAPI void
 enna_bluetooth_init()
 {
-
-   printf("bluetooth init\n");
    gconf_init(0, NULL, NULL);
 
    ecore_timer_add(30.0, enna_bluetooth_scan, NULL);
@@ -88,7 +86,7 @@ _bluetooth_scan_thread(void *data)
    sock = hci_open_dev(dev_id);
    if (dev_id < 0 || sock < 0)
      {
-	printf("Error : Unable to open Socket\n");
+	dbg("Error : Unable to open Socket\n");
 	return NULL;
      }
 
@@ -99,7 +97,7 @@ _bluetooth_scan_thread(void *data)
 
    num_rsp = hci_inquiry(dev_id, length, max_rsp, NULL, &info, flags);
    if (num_rsp < 0)
-      printf("Error : hci_inquiry\n");
+      dbg("Error : hci_inquiry\n");
 
    for (i = 0; i < num_rsp; i++)
      {
@@ -108,13 +106,13 @@ _bluetooth_scan_thread(void *data)
 	if (hci_read_remote_name
 	    (sock, &(info + i)->bdaddr, sizeof(name), name, 0) < 0)
 	   strcpy(name, "[unknown]");
-	printf("%s %s\n", addr, name);
+	dbg("%s %s\n", addr, name);
 	if (!strcmp
 	    (addr,
 	     enna_config_get_conf_value_or_default("bluetooth", "device_addr",
 						   "")))
 	  {
-	     printf("device found : %s %s!!!\n", name, addr);
+	     dbg("device found : %s %s!!!\n", name, addr);
 	     found = TRUE;
 	     break;
 	  }

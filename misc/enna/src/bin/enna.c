@@ -59,6 +59,7 @@ static void         _music_activate_cb(void *data, void *data2);
 static void         _video_activate_cb(void *data, void *data2);
 static void         _photo_activate_cb(void *data, void *data2);
 static void         _playlist_activate_cb(void *data, void *data2);
+static void         _mediaplayer_activate_cb (void *data, void *data2);
 
 /* Functions */
 static int          enna_init(Enna * enna, int run_gl);
@@ -159,6 +160,17 @@ _playlist_activate_cb(void *data, void *data2)
    if (!enna)
       return;
    enna_module_selected_name_set(enna->modules, "Playlist Module");
+}
+
+static void
+  _mediaplayer_activate_cb (void *data, void *data2)
+{
+   Enna *enna;
+   enna = (Enna *) data;
+
+   if (!enna)
+     return;
+   enna_module_selected_name_set (enna->modules, "MediaPlayer Module");
 }
 
 static int
@@ -351,9 +363,11 @@ _create_mainmenu(Enna * enna)
    /* Create miniplayer menu */
    module_mediaplayer = enna_mediaplayer_add(enna->evas);
    enna->mediaplayer = module_mediaplayer;
-   enna_module_append(modules, module_mediaplayer, "MediaPlayer Module",
+   enna_module_append(modules, module_mediaplayer, "MediaPlayer Module", 
 		      ENNA_MODULE_MEDIAPLAYER);
 
+   enna_mainmenu_append (mainmenu, NULL, _("MediaPlayer"), 1,
+			 _mediaplayer_activate_cb, NULL, enna, NULL);
    /* Create menus */
    config_module =
       enna_config_get_conf_value_or_default("tv_module", "used", "1");
@@ -421,7 +435,7 @@ _create_mainmenu(Enna * enna)
 
    /* Select 1st module */
    enna_module_selected_name_set(modules, "Music Module");
-   enna_mainmenu_selected_set(mainmenu, 0);
+   enna_mainmenu_selected_set(mainmenu, 1);
 
    enna->mainmenu = mainmenu;
    enna_mainmenu_has_focus_set(mainmenu, 0);
