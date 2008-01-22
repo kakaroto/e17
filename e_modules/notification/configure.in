@@ -3,7 +3,7 @@ dnl Process this file with autoconf to produce a configure script.
 # get rid of that stupid cache mechanism
 rm -f config.cache
 
-AC_INIT(notification, 0.1.0, heka.lok@prolonged.info)
+AC_INIT(notification, 0.1.0, heka.lok@gmail.com)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR(configure.in)
 AC_CANONICAL_BUILD
@@ -38,7 +38,18 @@ e_modules=`$E_CONFIG --module-dir`
 AC_SUBST(e_cflags)
 AC_SUBST(e_libs)
 
-datadir="${e_modules}/${PACKAGE}"    
+dnl prefix
+if test "x${prefix}" = "xNONE"
+then
+	prefix="${e_modules}"
+fi
+
+dnl datadir
+if test "x${datadir}" = "x\${datarootdir}"
+then
+	datadir="${prefix}/${PACKAGE}"    
+fi
+
 AC_ARG_ENABLE(homedir-install,
   AS_HELP_STRING([--enable-homedir-install], [Install module in homedir]),
   [ datadir="${HOME}/.e/e/modules/${PACKAGE}" ]
@@ -55,4 +66,26 @@ po/Makefile.in
 module.desktop
 ], [
 ])
+
+echo
+echo "--------------------------------------------------------------------------------"
+echo "  $PACKAGE $VERSION"
+echo "--------------------------------------------------------------------------------"
+echo
+echo "Installation Path ...: $prefix"
+echo "Data Path ...........: $datadir"
+echo
+if test -n "$CFLAGS"
+then
+	echo "CFLAGS ..............: $CFLAGS"
+else
+	echo "CFLAGS ..............: None"
+fi
+if test -n "$LDFLAGS"
+then
+	echo "LDFLAGS .............: $LDFLAGS"
+else
+	echo "LDFLAGS .............: None"
+fi
+echo
 
