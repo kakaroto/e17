@@ -33,6 +33,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <math.h>
+#include <ctype.h>
 
 EAPI char          *
 enna_util_user_home_get()
@@ -54,12 +55,19 @@ enna_util_has_suffix(char *str, Evas_List * patterns)
    Evas_List          *l;
    int                 result = 0;
 
+   int i;
+   char *tmp;
+   
    if (!patterns || !str || !str[0])
-      return 0;
+	return 0;
+   
    for (l = patterns; l; l = evas_list_next(l))
      {
-	//dbg("pattern : %s\n", (char*)l->data);
-	result |= ecore_str_has_suffix(str, (char *)l->data);
+	tmp = strdup(str);
+	for (i = 0; i < strlen(str); i++)
+	  tmp[i] = tolower(str[i]);
+	result |= ecore_str_has_suffix(tmp, (char *)l->data);
+	free(tmp);
      }
    return result;
 }
