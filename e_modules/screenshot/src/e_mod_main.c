@@ -580,7 +580,7 @@ _cb_do_shot(void)
 	  }
      }
 
-   if (!ecore_file_can_exec("emprint")) return;
+   if (!ecore_file_app_installed("emprint")) return;
    snprintf(buf, sizeof(buf), "emprint %s", tmp);
    exe = ecore_exe_run(buf, NULL);
    if (exe) ecore_exe_free(exe);
