@@ -175,6 +175,7 @@ _basic_apply_data(E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
    if (!strlen(cfdata->status_cmd)) return 0;
    if (!cfdata->okstate_mode && !strlen(cfdata->okstate_exitcode)) return 0;
    if (cfdata->okstate_mode && !strlen(cfdata->okstate_string)) return 0;
+   if (!cfdata->poll_time_mins && !cfdata->poll_time_hours) return 0;
 
    if (ci->display_name) evas_stringshare_del(ci->display_name);
    ci->display_name = evas_stringshare_add(cfdata->display_name);
