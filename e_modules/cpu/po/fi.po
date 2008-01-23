@@ -1,64 +1,43 @@
-# Enlightenment 0.17 cpu Finnish translation
+# Cpu module (e17), Finnish translation
 # This file is put in the public domain.
-# First author: Jyri Hämäläinen <wildfinn@gmail.com>, 2005.
+# Jani väyrynen <janivayrynen@gmail.com>, 2008.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-14 22:16+0100\n"
-"PO-Revision-Date: 2006-04-04\n"
-"Last-Translator: Jyri Hämäläinen <wildfinn@gmail.com>\n"
-"Language-Team: Jyri Hämäläinen <wildfinn@gmail.com>\n"
+"Project-Id-Version: Cpu module (e17)\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-01-22 18:10+0200\n"
+"PO-Revision-Date: 2008-01-23 01:50+0200\n"
+"Last-Translator: Jani väyrynen <janivayrynen@gmail.com>\n"
+"Language-Team: Finnish <janivayrynen@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: e_mod_main.c:131
 msgid "Cpu"
-msgstr ""
+msgstr "Cpu"
 
 #: e_mod_main.c:366
 msgid "Fast (0.5 sec)"
-msgstr ""
+msgstr "Nopea (0.5 s)"
 
 #: e_mod_main.c:373
 msgid "Medium (1 sec)"
-msgstr ""
+msgstr "Melko nopea (1 s)"
 
 #: e_mod_main.c:380
 msgid "Normal (2 sec)"
-msgstr ""
+msgstr "Normaali (2 s)"
 
 #: e_mod_main.c:387
 msgid "Slow (5 sec)"
-msgstr ""
+msgstr "Hidas (5 s)"
 
 #: e_mod_main.c:394
 msgid "Very Slow (30 sec)"
-msgstr ""
+msgstr "Hyvin hidas (30 s)"
 
 #: e_mod_main.c:405
 msgid "Time Between Updates"
-msgstr ""
-
-#~ msgid "Cpu Configuration"
-#~ msgstr "Prosessorin asetukset"
-
-#~ msgid "Cpu Settings"
-#~ msgstr "Prosessorisetukset"
-
-#~ msgid "Show Text"
-#~ msgstr "Näytä teksti"
-
-#~ msgid "Show Graph"
-#~ msgstr "Näytä kuvaaja"
-
-#~ msgid "Check Interval:"
-#~ msgstr "Tarkistusväli"
-
-#~ msgid "Enlightenment Cpu Monitor Module"
-#~ msgstr "Enlightenment prosessorintarkkailumooduuli"
-
-#~ msgid "This module is used to monitor a cpu."
-#~ msgstr "Tämä moduuli tarkkailee prosessoria."
+msgstr "Päivitysväli"

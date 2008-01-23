@@ -1,50 +1,47 @@
-# Enlightenment wlan module Finnish translation
+# Wlan module (e17), Finnish translation
 # This file is put in the public domain.
-# First author: Jyri Hämäläinen <wildfinn@gmail.com>, 2005.
+# Jani väyrynen <janivayrynen@gmail.com>, 2008.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-14 22:43+0100\n"
-"PO-Revision-Date: 2006-04-04\n"
-"Last-Translator: Jyri Hämäläinen <wildfinn@gmail.com>\n"
-"Language-Team: Jyri Hämäläinen <wildfinn@gmail.com>\n"
+"Project-Id-Version: Wlan module (e17)\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-01-22 23:37+0200\n"
+"PO-Revision-Date: 2008-01-23 01:50+0200\n"
+"Last-Translator: Jani väyrynen <janivayrynen@gmail.com>\n"
+"Language-Team: Finnish <janivayrynen@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
 #: e_mod_config.c:44
 msgid "Wlan Configuration"
-msgstr "Langattoman verkon asetukset"
+msgstr "Wlanin asetukset"
 
 #: e_mod_config.c:117
 msgid "General Settings"
-msgstr "Yleiset asetukset"
+msgstr "Yleisasetukset"
 
 #: e_mod_config.c:119
-#, fuzzy
 msgid "Always Show Text"
-msgstr "Näytä teksti"
+msgstr "Näytä teksti aina"
 
 #: e_mod_config.c:121
-#, fuzzy
 msgid "Show Text On Mouse Over"
-msgstr "Näytä teksti"
+msgstr "Näytä teksti hiiren ollessa kohdalla"
 
 #: e_mod_config.c:124
-#, fuzzy
 msgid "Show Text As Percent"
-msgstr "Näytä teksti"
+msgstr "Näytä teksti prosentteina"
 
 #: e_mod_config.c:128
 msgid "Check Interval:"
-msgstr "tarkistusväli"
+msgstr "Tarkistusväli:"
 
 #: e_mod_config.c:131
 #, c-format
 msgid "%1.0f seconds"
-msgstr ""
+msgstr "%1.0f sekuntia"
 
 #: e_mod_config.c:138
 msgid "Device Settings"
@@ -52,18 +49,8 @@ msgstr "Laiteasetukset"
 
 #: e_mod_main.c:107
 msgid "Wlan"
-msgstr ""
+msgstr "Wlan"
 
 #: e_mod_main.c:165
-#, fuzzy
 msgid "Configuration"
-msgstr "Langattoman verkon asetukset"
-
-#~ msgid "Show Graph"
-#~ msgstr "Näytä kuvaaja"
-
-#~ msgid "Enlightenment Wlan Monitor Module"
-#~ msgstr "Enlightenment Langaton verkko -moduuli"
-
-#~ msgid "This module is used to monitor a wlan device."
-#~ msgstr "Tämä moduuli tarkkailee langatonta verkkolaitetta"
+msgstr "Asetukset"

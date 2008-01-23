@@ -1,0 +1,164 @@
+# Mail module (e17), Finnish translation
+# This file is put in the public domain.
+# Jani väyrynen <janivayrynen@gmail.com>, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Mail module (e17)\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-01-22 19:12+0200\n"
+"PO-Revision-Date: 2008-01-23 01:50+0200\n"
+"Last-Translator: Jani väyrynen <janivayrynen@gmail.com>\n"
+"Language-Team: Finnish <janivayrynen@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: e_mod_config.c:53
+msgid "Mail Configuration"
+msgstr "Postin asetukset"
+
+#: e_mod_config.c:96 e_mod_config_box.c:164
+msgid "General Settings"
+msgstr "Yleisasetukset"
+
+#: e_mod_config.c:98
+msgid "Always Show Labels"
+msgstr "Näytä aina nimikkeet"
+
+#: e_mod_config.c:101
+msgid "Show Mailbox Popup"
+msgstr "Näytä postilaatikon ponnahdus"
+
+#: e_mod_config.c:104
+msgid "Show All Boxes In Popup"
+msgstr "Näytä kaikki laatikot ponnahduksessa"
+
+#: e_mod_config.c:106
+msgid "Check Interval"
+msgstr "Tarkistusväli"
+
+#: e_mod_config.c:109
+#, c-format
+msgid "%2.0f minutes"
+msgstr "%2.0f minuuttia"
+
+#: e_mod_config.c:114
+msgid "Mail Boxes"
+msgstr "Postilaatikot"
+
+#: e_mod_config.c:124
+msgid "Add"
+msgstr "Lisää"
+
+#: e_mod_config.c:128
+msgid "Delete"
+msgstr "Poista"
+
+#: e_mod_config.c:134
+msgid "Configure..."
+msgstr "Muokkaa..."
+
+#: e_mod_config_box.c:71
+msgid "Mailbox Configuration"
+msgstr "Postilaatikon asetukset"
+
+#: e_mod_config_box.c:166
+msgid "Start Program When New Mail Arrives"
+msgstr "Käynnistä ohjelma uuden postin saapuessa"
+
+#: e_mod_config_box.c:171
+msgid "Program:"
+msgstr "Ohjelma:"
+
+#: e_mod_config_box.c:183
+msgid "Mailbox Type"
+msgstr "Postilaatikon tyyppi"
+
+#: e_mod_config_box.c:185
+msgid "Pop3"
+msgstr "Pop3"
+
+#: e_mod_config_box.c:188
+msgid "Imap"
+msgstr "Imap"
+
+#: e_mod_config_box.c:191
+msgid "Maildir"
+msgstr "Maildir"
+
+#: e_mod_config_box.c:194
+msgid "Mbox"
+msgstr "Mbox"
+
+#: e_mod_config_box.c:197
+msgid "Monitor Mbox file permanently"
+msgstr "Seuraa Mbox-tiedostoa pysyvästi"
+
+#: e_mod_config_box.c:214
+msgid "Port Settings"
+msgstr "Porttiasetukset"
+
+#: e_mod_config_box.c:216
+msgid "Use SSL:"
+msgstr "Käytä SSL:ää:"
+
+#: e_mod_config_box.c:223
+msgid "v2"
+msgstr "v2"
+
+#: e_mod_config_box.c:226
+msgid "v3"
+msgstr "v3"
+
+#: e_mod_config_box.c:230
+msgid "Port:"
+msgstr "Portti:"
+
+#: e_mod_config_box.c:236
+msgid "Local:"
+msgstr "Paikallinen:"
+
+#: e_mod_config_box.c:242
+msgid "Mailbox Settings"
+msgstr "Postilaatikon asetukset"
+
+#: e_mod_config_box.c:243
+msgid "Name:"
+msgstr "Nimi:"
+
+#: e_mod_config_box.c:248
+msgid "Mail Host:"
+msgstr "Posti-isäntä:"
+
+#: e_mod_config_box.c:253
+msgid "Username:"
+msgstr "Käyttäjänimi:"
+
+#: e_mod_config_box.c:258
+msgid "Password:"
+msgstr "Salasana:"
+
+#: e_mod_config_box.c:264
+msgid "New Mail Path:"
+msgstr "Uuden postin polku:"
+
+#: e_mod_config_box.c:276
+msgid "Current Mail Path:"
+msgstr "Nykyisen postin polku:"
+
+#: e_mod_config_box.c:434
+msgid "Inbox"
+msgstr "Saapuneet"
+
+#: e_mod_main.c:189
+msgid "Mail"
+msgstr "Posti"
+
+#: e_mod_main.c:242
+msgid "Mailboxes"
+msgstr "Postilaatikot"
+
+#: e_mod_main.c:266
+msgid "Configuration"
+msgstr "Asetukset"

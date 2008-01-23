@@ -1,15 +1,15 @@
-# Enlightenment 0.17 rain Finnish translation
+# Rain module (e17), Finnish translation
 # This file is put in the public domain.
-# First author: Jyri Hämäläinen <wildfinn@gmail.com>, 2005.
+# Jani väyrynen <janivayrynen@gmail.com>, 2008.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-14 22:36+0100\n"
-"PO-Revision-Date: 2006-04-04\n"
-"Last-Translator: Jyri Hämäläinen <wildfinn@gmail.com>\n"
-"Language-Team: Jyri Hämäläinen <wildfinn@gmail.com>\n"
+"Project-Id-Version: Rain module (e17)\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-01-22 23:35+0200\n"
+"PO-Revision-Date: 2008-01-23 01:50+0200\n"
+"Last-Translator: Jani väyrynen <janivayrynen@gmail.com>\n"
+"Language-Team: Finnish <janivayrynen@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -20,7 +20,7 @@ msgstr "Sademoduuli"
 
 #: e_mod_config.c:100
 msgid "General Settings"
-msgstr ""
+msgstr "Yleisasetukset"
 
 #: e_mod_config.c:101
 msgid "Show Clouds"
@@ -32,11 +32,11 @@ msgstr "Sateen tiheys"
 
 #: e_mod_config.c:107
 msgid "Sprinkle"
-msgstr "Tihku"
+msgstr "Tihkusade"
 
 #: e_mod_config.c:109
 msgid "Drizzle"
-msgstr "Normaali"
+msgstr "Normaali sade"
 
 #: e_mod_config.c:111
 msgid "Downpour"
@@ -44,18 +44,8 @@ msgstr "Kaatosade"
 
 #: e_mod_main.c:33
 msgid "Appearance"
-msgstr ""
+msgstr "Ulkonäkö"
 
 #: e_mod_main.c:35
 msgid "Rain"
-msgstr ""
-
-#~ msgid "Enlightenment Rain Module"
-#~ msgstr "Enlightenment sademoduuli"
-
-#~ msgid ""
-#~ "This is a simple module to display some rain on the desktop.<br>It can "
-#~ "display clouds too, if you like clouds."
-#~ msgstr ""
-#~ "Tämä on yksinkertainen moduuli joka näyttää sadetta työpöydällä.<br>Se "
-#~ "voi myös näyttää pilviä, jos pidät pilvistä."
+msgstr "Sade"
