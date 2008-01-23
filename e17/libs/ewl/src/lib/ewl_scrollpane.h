@@ -89,7 +89,7 @@ struct Ewl_Scrollpane
 	Ewl_Scrollpane_Flags hflag;      /**< Flags for horizontal scrollbar */
 	Ewl_Scrollpane_Flags vflag;      /**< Flags for vertical scrollbar */
 	Ewl_Scrollpane_Scroll_Info *kinfo;	/**< Kinetic scrolling info */
-	Ewl_Kinetic_Scroll type;			/**< If the scrollpane is to use kinetic scrolling */
+	Ewl_Kinetic_Scroll type;	/**< If the scrollpane is to use kinetic scrolling */
 };
 
 Ewl_Widget 	*ewl_scrollpane_new(void);
@@ -98,9 +98,13 @@ void		 ewl_scrollpane_kinetic_scrolling_set(Ewl_Scrollpane *s,
 						Ewl_Kinetic_Scroll type);
 Ewl_Kinetic_Scroll ewl_scrollpane_kinetic_scrolling_get(Ewl_Scrollpane *s);
 void		 ewl_scrollpane_kinetic_max_velocity_set(Ewl_Scrollpane *s, double v);
+double		 ewl_scrollpane_kinetic_max_velocity_get(Ewl_Scrollpane *s);
 void		 ewl_scrollpane_kinetic_min_velocity_set(Ewl_Scrollpane *s, double v);
+double		 ewl_scrollpane_kinetic_min_velocity_get(Ewl_Scrollpane *s);
 void		 ewl_scrollpane_kinetic_dampen_set(Ewl_Scrollpane *s, double d);
+double		 ewl_scrollpane_kinetic_dampen_get(Ewl_Scrollpane *s);
 void		 ewl_scrollpane_kinetic_fps_set(Ewl_Scrollpane *s, int fps); 
+int		 ewl_scrollpane_kinetic_fps_get(Ewl_Scrollpane *s);
 
 void 		 ewl_scrollpane_hscrollbar_flag_set(Ewl_Scrollpane *s,
 						   Ewl_Scrollpane_Flags f);

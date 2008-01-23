@@ -165,9 +165,13 @@ void		 ewl_tree_kinetic_scrolling_set(Ewl_Tree *tree,
 						Ewl_Kinetic_Scroll type);
 Ewl_Kinetic_Scroll ewl_tree_kinetic_scrolling_get(Ewl_Tree *tree);
 void		 ewl_tree_kinetic_max_velocity_set(Ewl_Tree *tree, double v);
+double		 ewl_tree_kinetic_max_velocity_get(Ewl_Tree *tree);
 void		 ewl_tree_kinetic_min_velocity_set(Ewl_Tree *tree, double v);
+double		 ewl_tree_kinetic_min_velocity_get(Ewl_Tree *tree);
 void		 ewl_tree_kinetic_dampen_set(Ewl_Tree *tree, double d);
+double		 ewl_tree_kinetic_dampen_get(Ewl_Tree *tree);
 void		 ewl_tree_kinetic_fps_set(Ewl_Tree *tree, int fps); 
+int		 ewl_tree_kinetic_fps_get(Ewl_Tree *tree);
 
 /*
  * Internal stuff.

@@ -1582,6 +1582,28 @@ ewl_tree_kinetic_max_velocity_set(Ewl_Tree *tree, double v)
 
 /**
  * @param tree: The tree to work with
+ * @return Returns the maximum velocity of kinetic scrolling
+ * @brief Gets the maximum velocity for kinetic scrolling
+ */
+double
+ewl_tree_kinetic_max_velocity_get(Ewl_Tree *tree)
+{
+	Ewl_Scrollpane *scroll;
+	double ret = -1.0;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET(tree, -1);
+	DCHECK_TYPE_RET(tree, EWL_TREE_TYPE, -1);
+
+	scroll = ewl_tree_kinetic_scrollpane_get(tree);
+	if (scroll)
+		ret = ewl_scrollpane_kinetic_max_velocity_get(scroll);
+
+	DRETURN_INT(ret, DLEVEL_STABLE);
+}
+
+/**
+ * @param tree: The tree to work with
  * @param v: The minimum velocity
  * @return Returns no value
  * @brief Sets the minimum velocity for kinetic scrolling
@@ -1600,6 +1622,28 @@ ewl_tree_kinetic_min_velocity_set(Ewl_Tree *tree, double v)
 		ewl_scrollpane_kinetic_min_velocity_set(scroll, v);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param tree: The tree to work with
+ * @return Returns the minimum velocity of kinetic scrolling
+ * @brief Gets the minimum velocity for kinetic scrolling
+ */
+double
+ewl_tree_kinetic_min_velocity_get(Ewl_Tree *tree)
+{
+	Ewl_Scrollpane *scroll;
+	double ret = -1.0;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET(tree, -1);
+	DCHECK_TYPE_RET(tree, EWL_TREE_TYPE, -1);
+
+	scroll = ewl_tree_kinetic_scrollpane_get(tree);
+	if (scroll)
+		ret = ewl_scrollpane_kinetic_min_velocity_get(scroll);
+
+	DRETURN_INT(ret, DLEVEL_STABLE);
 }
 
 /**
@@ -1624,12 +1668,33 @@ ewl_tree_kinetic_dampen_set(Ewl_Tree *tree, double d)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param tree: The tree to work with
+ * @return Returns the multiplier used to dampen in kinetic scrolling
+ * @brief Gets the multiplier used to reduce the velocity of kinetic scrolling
+ */
+double
+ewl_tree_kinetic_dampen_get(Ewl_Tree *tree)
+{
+	Ewl_Scrollpane *scroll;
+	double ret = -1.0;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET(tree, -1);
+	DCHECK_TYPE_RET(tree, EWL_TREE_TYPE, -1);
+
+	scroll = ewl_tree_kinetic_scrollpane_get(tree);
+	if (scroll)
+		ret = ewl_scrollpane_kinetic_dampen_get(scroll);
+
+	DRETURN_INT(ret, DLEVEL_STABLE);
+}
 
 /**
  * @param tree: The tree to work with
- * @param d: The multiplier to reduce velocity
+ * @param fps: The number of frames per second 
  * @return Returns no value
- * @brief Sets the multiplier to reduce the velocity of kinetic scrolling
+ * @brief Sets the number of times per second the tree scrolling is updated
  */
 void
 ewl_tree_kinetic_fps_set(Ewl_Tree *tree, int fps)
@@ -1645,6 +1710,28 @@ ewl_tree_kinetic_fps_set(Ewl_Tree *tree, int fps)
 		ewl_scrollpane_kinetic_fps_set(scroll, fps);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param tree: The tree to work with
+ * @return Returns the number of frames per second
+ * @brief Gets the number of times per second the tree scrolling is updated
+ */
+int
+ewl_tree_kinetic_fps_get(Ewl_Tree *tree)
+{
+	Ewl_Scrollpane *scroll;
+	int ret = -1;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET(tree, -1);
+	DCHECK_TYPE_RET(tree, EWL_TREE_TYPE, -1);
+
+	scroll = ewl_tree_kinetic_scrollpane_get(tree);
+	if (scroll)
+		ret = ewl_scrollpane_kinetic_fps_get(scroll);
+
+	DRETURN_INT(ret, DLEVEL_STABLE);
 }
 
 /**
