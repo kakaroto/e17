@@ -245,6 +245,7 @@ _update_calendar_sheet(Instance *inst)
    char buf[4];
    time_t current_time;
    struct tm *local_time;
+   int old_popup_state=0, old_popup_pinned_state=0;
 
    if (!inst) return;
    calendar = inst->calendar;
@@ -258,14 +259,17 @@ _update_calendar_sheet(Instance *inst)
    strftime (buf, sizeof(buf), "%a", local_time);
    edje_object_part_text_set (calendar->o_icon, "weekday", buf);
 
-   if ((inst->popup) &&
-       (inst->popup->win->visible))
+   if (inst->popup)
      {
-	_calendar_popup_content_create(inst);
-	e_gadcon_popup_show(inst->popup);
+	old_popup_state = inst->popup->win->visible;
+	old_popup_pinned_state = inst->popup->pinned;
      }
-   else
-     _calendar_popup_content_create(inst);
+   _calendar_popup_content_create(inst);
+   if (inst->popup && old_popup_state)
+     {
+	e_gadcon_popup_show(inst->popup);
+	if (old_popup_pinned_state) e_gadcon_popup_toggle_pinned(inst->popup);
+     }
 }
 
 static void
