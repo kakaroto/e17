@@ -272,7 +272,7 @@ _execwatch_cmd_exit(void *data, int type, void *event)
    Ecore_Exe_Event_Data_Line *lines;
    Ecore_Exe_Event_Del *ev;
    Instance *inst;
-   int i=0;
+   int i=0, old_popup_state=0, old_popup_pinned_state=0;
 
    ev = event;
    if (!ev) return 1;
@@ -316,9 +316,17 @@ _execwatch_cmd_exit(void *data, int type, void *event)
 	       _execwatch_icon(inst, "cmd_error");
 	  }
 
+	if (inst->popup)
+	  {
+	     old_popup_state = inst->popup->win->visible;
+	     old_popup_pinned_state = inst->popup->pinned;
+	  }
 	_execwatch_popup_content_create(inst);
-	if (inst->popup && inst->popup->win->visible)
-	e_gadcon_popup_show(inst->popup);
+	if (inst->popup && old_popup_state)
+	  {
+	     e_gadcon_popup_show(inst->popup);
+	     if (old_popup_pinned_state) e_gadcon_popup_toggle_pinned(inst->popup);
+	  }
      }
    else if (!strcmp(ecore_exe_tag_get(ev->exe), DBLCLK_EXE_TAG))
      {
