@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2007 Kim Woelders
+ * Copyright (C) 2004-2008 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -48,7 +48,7 @@
 #endif
 
 #define USE_PAGER_BACKGROUND_CACHE 1
-#define IMG_SCALE 2
+#define HIQ ((Conf_pagers.hiq) ? 0x200 : 0x100)
 
 #define PAGER_MODE_SIMPLE 0
 #define PAGER_MODE_SNAP   1
@@ -249,7 +249,7 @@ PagerScanTimeout(int val __UNUSED__, void *data)
    y2 = (y * VRoot.h) / hh;
 
    ScaleRect(VRoot.win, VRoot.xwin, p->win, WinGetPmap(p->win), 0, y2,
-	     VRoot.w, VRoot.h / hh, xx, yy + y, ww, 1, Conf_pagers.hiq);
+	     VRoot.w, VRoot.h / hh, xx, yy + y, ww, 1, HIQ);
    EClearArea(p->win, xx, yy + y, ww, 1, False);
    y2 = p->h;
 #else
@@ -257,7 +257,7 @@ PagerScanTimeout(int val __UNUSED__, void *data)
    y2 = (y * VRoot.w) / ww;
 
    ScaleRect(VRoot.win, VRoot.xwin, p->win, WinGetPmap(p->win), y2, 0,
-	     VRoot.w / ww, VRoot.h, xx + y, yy, 1, hh, Conf_pagers.hiq);
+	     VRoot.w / ww, VRoot.h, xx + y, yy, 1, hh, HIQ);
    EClearArea(p->win, xx + y, yy, 1, hh, False);
    y2 = p->w;
 #endif
@@ -351,8 +351,7 @@ PagerEwinUpdateMini(Pager * p, EWin * ewin)
    else
      {
 	ScaleRect(EoGetWin(ewin), draw, p->win, ewin->mini_pmm.pmap,
-		  0, 0, EoGetW(ewin), EoGetH(ewin), 0, 0, w, h,
-		  Conf_pagers.hiq);
+		  0, 0, EoGetW(ewin), EoGetH(ewin), 0, 0, w, h, HIQ);
 	Dprintf("Grab scaled, pmap=%#lx\n", ewin->mini_pmm.pmap);
      }
 
@@ -482,8 +481,7 @@ doPagerUpdate(Pager * p)
    Dprintf("doPagerUpdate %d: Snap screen\n", p->dsk->num);
    /* Update pager area by snapshotting entire screen */
    ScaleRect(VRoot.win, VRoot.xwin, p->win, pmap, 0, 0,
-	     VRoot.w, VRoot.h, cx * p->dw, cy * p->dh, p->dw, p->dh,
-	     Conf_pagers.hiq);
+	     VRoot.w, VRoot.h, cx * p->dw, cy * p->dh, p->dw, p->dh, HIQ);
 
    EClearWindow(p->win);
 
@@ -612,7 +610,7 @@ PagerUpdateBg(Pager * p)
    if (pager_mode != PAGER_MODE_SIMPLE && p->dsk->bg.pmap)
      {
 	ScaleTile(VRoot.win, p->dsk->bg.pmap, p->win, pmap,
-		  0, 0, p->dw, p->dh, Conf_pagers.hiq);
+		  0, 0, p->dw, p->dh, HIQ);
 	return;
      }
 

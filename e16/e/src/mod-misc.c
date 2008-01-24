@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2007 Kim Woelders
+ * Copyright (C) 2003-2008 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -194,9 +194,10 @@ static const CfgItem MiscCfgItems[] = {
    CFG_ITEM_BOOL(Conf, testing.argb_internal_clients, 0),
    CFG_ITEM_BOOL(Conf, testing.argb_clients, 0),
    CFG_ITEM_BOOL(Conf, testing.argb_clients_inherit_attr, 0),
-   CFG_ITEM_BOOL(Conf, testing.enable_startup_id, 1),
    CFG_FUNC_INT(Conf, testing.image_cache_size, -1, _CfgImageCacheSize),
    CFG_ITEM_INT(Conf, testing.mask_alpha_threshold, 8),
+   CFG_ITEM_BOOL(Conf, testing.enable_startup_id, 1),
+   CFG_ITEM_BOOL(Conf, testing.use_render_for_scaling, 0),
 
    CFG_ITEM_BOOL(Conf, autosave, 1),
    CFG_ITEM_BOOL(Conf, memory_paranoia, 1),

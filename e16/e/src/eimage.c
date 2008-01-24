@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2007 Kim Woelders
+ * Copyright (C) 2004-2008 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -24,6 +24,9 @@
 #include "eimage.h"
 #include "xwin.h"
 #include <Imlib2.h>
+#if HAVE_X11_EXTENSIONS_XRENDER_H
+#include <X11/extensions/Xrender.h>
+#endif
 
 static Window       _default_draw;
 static Visual      *_default_vis;
@@ -478,16 +481,61 @@ EImageApplyToWin(EImage * im, Win win, int flags, int w, int h)
 void
 ScaleRect(Win wsrc, Drawable src, Win wdst, Pixmap dst,
 	  int sx, int sy, int sw, int sh,
-	  int dx, int dy, int dw, int dh, int scale)
+	  int dx, int dy, int dw, int dh, int flags)
 {
-   Imlib_Image         im;
+#if HAVE_X11_EXTENSIONS_XRENDER_H
+   if (Conf.testing.use_render_for_scaling)
+     {
+	XRenderPictFormat  *pictfmt;
+	XRenderPictureAttributes pa;
+	XTransform          tr;
+	Picture             psrc, pdst;
+	double              scale_x, scale_y;
 
-   scale = (scale) ? 2 : 1;
+	scale_x = (double)sw / (double)dw;
+	scale_y = (double)sh / (double)dh;
+	memset(&tr, 0, sizeof(tr));
+	tr.matrix[0][0] = XDoubleToFixed(scale_x);
+	tr.matrix[1][1] = XDoubleToFixed(scale_y);
+	tr.matrix[2][2] = XDoubleToFixed(1.);
 
-   im = EImageGrabDrawableScaled(wsrc, src, None, sx, sy, sw, sh,
-				 scale * dw, scale * dh, 0, 0);
-   EImageRenderOnDrawable(im, wdst, dst, EIMAGE_ANTI_ALIAS, dx, dy, dw, dh);
-   imlib_free_image();
+	pa.subwindow_mode = IncludeInferiors;
+	pictfmt = XRenderFindVisualFormat(disp, wsrc->visual);
+	psrc = XRenderCreatePicture(disp, src, pictfmt, CPSubwindowMode, &pa);
+	pictfmt = XRenderFindVisualFormat(disp, wdst->visual);
+	pdst = XRenderCreatePicture(disp, dst, pictfmt, CPSubwindowMode, &pa);
+
+	XRenderSetPictureFilter(disp, psrc, (flags & EIMAGE_ANTI_ALIAS) ?
+				FilterBest : FilterNearest, NULL, 0);
+	XRenderSetPictureTransform(disp, psrc, &tr);
+	XRenderComposite(disp, PictOpSrc, psrc, None, pdst,
+			 (int)(sx / scale_x + .5), (int)(sy / scale_y + .5),
+			 0, 0, dx, dy, dw, dh);
+	XRenderFreePicture(disp, psrc);
+	XRenderFreePicture(disp, pdst);
+     }
+   else
+#endif
+     {
+	int                 scale;
+	Imlib_Image         im;
+
+	if (flags & (EIMAGE_ISCALE))
+	  {
+	     scale = (flags & EIMAGE_ISCALE) >> 8;
+	     im = EImageGrabDrawableScaled(wsrc, src, None, sx, sy, sw, sh,
+					   scale * dw, scale * dh, 0, 0);
+	     flags |= EIMAGE_ANTI_ALIAS;
+	  }
+	else
+	  {
+	     im = EImageGrabDrawableScaled(wsrc, src, None, sx, sy, sw, sh,
+					   sw, sh, 0, 0);
+	  }
+
+	EImageRenderOnDrawable(im, wdst, dst, flags, dx, dy, dw, dh);
+	imlib_free_image();
+     }
 }
 
 void

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007 Kim Woelders
+ * Copyright (C) 2007-2008 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -47,7 +47,6 @@ typedef struct
 {
    EWin               *ewin;
    const char         *title;
-   EImage             *im;
    int                 cx, cy;	/* Center */
    int                 scale;	/* Zoom level */
    int                 sx, sy;	/* Scene x,y */
@@ -56,6 +55,7 @@ typedef struct
    char                bpress;
    char                filter;
    char                grabbing;
+   char                step;
    unsigned int        damage_count;
    char                update;
 } MagWindow;
@@ -79,6 +79,20 @@ MagwinDrawText(MagWindow * mw, int x, int y, const char *txt)
 	    txt, x, y, cw, ch, 17, 0);
 }
 
+static unsigned int
+MagwinGetPixel(Drawable draw, unsigned int x, unsigned int y)
+{
+   EImage             *im;
+   unsigned int       *pd, pixel;
+
+   im = EImageGrabDrawable(draw, None, x, y, 1, 1, 0);
+   pd = (unsigned int *)EImageGetData(im);
+   pixel = *pd;
+   EImageFree(im);
+
+   return pixel;
+}
+
 static void
 MagwinRedraw(MagWindow * mw, int paint)
 {
@@ -89,7 +103,8 @@ MagwinRedraw(MagWindow * mw, int paint)
    char                buf[128];
    int                 px, py;
    int                 qx, qy;
-   unsigned int       *pd;
+   int                 out;
+   unsigned int        pixel;
 
    ww = mw->ewin->client.w;
    wh = mw->ewin->client.h;
@@ -125,42 +140,38 @@ MagwinRedraw(MagWindow * mw, int paint)
 
    if (paint)
      {
-	if (mw->im)
-	   EImageDecache(mw->im);
+	int                 dw, dh;
 
+	dw = (int)(sw * scale + .5);
+	dh = (int)(sh * scale + .5);
 	draw = (VRoot.pmap != None) ? VRoot.pmap : VRoot.xwin;
-	mw->im = EImageGrabDrawable(draw, None, sx, sy, sw, sh, 0);
-	EImageRenderOnDrawable(mw->im, EwinGetClientWin(mw->ewin),
-			       EwinGetClientXwin(mw->ewin),
-			       (mw->filter) ? EIMAGE_ANTI_ALIAS : 0,
-			       0, 0, (int)(sw * scale + .5),
-			       (int)(sh * scale + .5));
+	ScaleRect(VRoot.win, draw, EwinGetClientWin(mw->ewin),
+		  EwinGetClientXwin(mw->ewin), sx, sy, sw, sh,
+		  0, 0, dw, dh, (mw->filter) ? EIMAGE_ANTI_ALIAS : 0);
      }
+
+   /* Check if pointer is in magnifier window */
+   EQueryPointer(EwinGetClientWin(mw->ewin), &px, &py, NULL, NULL);
+   out = px < 0 || px >= mw->ewin->client.w ||
+      py < 0 || py >= mw->ewin->client.h;
+   /* If inside grab pixel before drawing in window */
+   pixel = (out) ? 0 : MagwinGetPixel(EwinGetClientXwin(mw->ewin), px, py);
 
    /* Show magnified area coordinates */
    Esnprintf(buf, sizeof(buf), "%d,%d %dx%d", sx, sy, sw, sh);
    MagwinDrawText(mw, 10, 10, buf);
 
-   /* Show info about pixel at cursor (if in magnifier) */
-   EQueryPointer(EwinGetClientWin(mw->ewin), &px, &py, NULL, NULL);
-   if (px < 0 || px >= mw->ewin->client.w || py < 0 || py >= mw->ewin->client.h)
+   if (out)
       return;
+
+   /* Show info about pixel at cursor (if in magnifier) */
    qx = (int)(px / scale);
    qy = (int)(py / scale);
    if (qx > VRoot.w - 1)
       qx = VRoot.w - 1;
    if (qy > VRoot.h - 1)
       qy = VRoot.h - 1;
-   if (!mw->im)
-      return;
-   pd = (unsigned int *)EImageGetData(mw->im);
-#if 0
-   Esnprintf(buf, sizeof(buf), "%d,%d: pixel=%#08x (%d,%d)",
-	     sx + qx, sy + qy, pd[qy * sw + qx], px, py);
-#else
-   Esnprintf(buf, sizeof(buf), "%d,%d: pixel=%#08x",
-	     sx + qx, sy + qy, pd[qy * sw + qx]);
-#endif
+   Esnprintf(buf, sizeof(buf), "%d,%d: pixel=%#08x", sx + qx, sy + qy, pixel);
    MagwinDrawText(mw, 10, 20, buf);
 }
 
@@ -247,25 +258,35 @@ MagwinKeyPress(MagWindow * mw, KeySym key)
 	if (mw->scale < -20)
 	   mw->scale = -20;
 	break;
+
      case XK_Left:
-	mw->cx -= 4;
+	mw->cx -= mw->step;
 	if (mw->cx < mw->sw / 2)
 	   mw->cx = mw->sw / 2;
 	break;
      case XK_Right:
-	mw->cx += 4;
+	mw->cx += mw->step;
 	if (mw->cx > VRoot.w - mw->sw / 2)
 	   mw->cx = VRoot.w - mw->sw / 2;
 	break;
      case XK_Up:
-	mw->cy -= 4;
+	mw->cy -= mw->step;
 	if (mw->cy < mw->sh / 2)
 	   mw->cy = mw->sh / 2;
 	break;
      case XK_Down:
-	mw->cy += 4;
+	mw->cy += mw->step;
 	if (mw->cy > VRoot.h - mw->sh / 2)
 	   mw->cy = VRoot.h - mw->sh / 2;
+	break;
+
+     case XK_r:		/* Switch render mode */
+	Conf.testing.use_render_for_scaling =
+	   !Conf.testing.use_render_for_scaling;
+	break;
+
+     case XK_s:		/* x/y move step size */
+	mw->step = (mw->step == 1) ? 4 : 1;
 	break;
      }
 
@@ -412,6 +433,7 @@ MagwinCreate(const char *title, int width, int height)
 
    EQueryPointer(VRoot.win, &mw->cx, &mw->cy, NULL, NULL);
    mw->scale = 1;
+   mw->step = 4;
 
    return mw;
 }
@@ -424,8 +446,6 @@ MagwinDestroy(MagWindow * mw)
 #endif
    EventCallbackUnregister(EwinGetClientWin(mw->ewin), 0, MagwinEvent, mw);
    EDestroyWindow(EwinGetClientWin(mw->ewin));
-   if (mw->im)
-      EImageDecache(mw->im);
    Efree(mw);
 }
 

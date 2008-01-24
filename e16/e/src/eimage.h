@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2007 Kim Woelders
+ * Copyright (C) 2004-2008 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -34,9 +34,10 @@ typedef struct
    int                 left, right, top, bottom;
 } EImageBorder;
 
-#define EIMAGE_BLEND            0x01
-#define EIMAGE_ANTI_ALIAS       0x02
-#define EIMAGE_HIGH_MASK_THR    0x04
+#define EIMAGE_BLEND            0x0001
+#define EIMAGE_ANTI_ALIAS       0x0002
+#define EIMAGE_HIGH_MASK_THR    0x0004
+#define EIMAGE_ISCALE           0x0f00	/* Intermediate scaling */
 
 void                EImageInit(Display * dpy);
 int                 EImageSetCacheSize(int size);
@@ -104,9 +105,9 @@ void                EImageColorModifierSetTables(EImageColorModifier * icm,
 
 void                ScaleRect(Win wsrc, Drawable src, Win wdst, Pixmap dst,
 			      int sx, int sy, int sw, int sh,
-			      int dx, int dy, int dw, int dh, int scale);
+			      int dx, int dy, int dw, int dh, int flags);
 void                ScaleTile(Win wsrc, Drawable src, Win wdst, Pixmap dst,
-			      int dx, int dy, int dw, int dh, int scale);
+			      int dx, int dy, int dw, int dh, int flags);
 
 void                EDrawableDumpImage(Drawable draw, const char *txt);
 
