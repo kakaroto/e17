@@ -133,6 +133,10 @@ ewl_seeker_init(Ewl_Seeker *s)
 			    ewl_seeker_cb_mouse_move, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_KEY_DOWN,
 			    ewl_seeker_cb_key_down, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_FOCUS_IN,
+			    ewl_container_cb_widget_focus_in, NULL);
+	ewl_callback_append(w, EWL_CALLBACK_FOCUS_OUT,
+			    ewl_container_cb_widget_focus_out, NULL);
 
 	/*
 	 * Append a callback for catching mouse movements on the button and

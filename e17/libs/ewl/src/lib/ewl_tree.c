@@ -109,7 +109,6 @@ ewl_tree_init(Ewl_Tree *tree)
 	ewl_tree_headers_visible_set(tree, TRUE);
 	ewl_tree_fixed_rows_set(tree, FALSE);
 	ewl_tree_alternate_row_colors_set(tree, TRUE);
-	tree->scroll_type = EWL_KINETIC_SCROLL_NONE;
 
 	ewl_callback_append(EWL_WIDGET(tree), EWL_CALLBACK_CONFIGURE,
 					ewl_tree_cb_configure, NULL);
@@ -1535,7 +1534,6 @@ ewl_tree_kinetic_scrolling_set(Ewl_Tree *tree, Ewl_Kinetic_Scroll type)
 	if (!type)
 		DRETURN(DLEVEL_STABLE);
 
-	tree->scroll_type = type;
 	scroll = ewl_tree_kinetic_scrollpane_get(tree);
 	if (scroll)
 		ewl_scrollpane_kinetic_scrolling_set(EWL_SCROLLPANE(scroll), type);
@@ -1551,11 +1549,18 @@ ewl_tree_kinetic_scrolling_set(Ewl_Tree *tree, Ewl_Kinetic_Scroll type)
 Ewl_Kinetic_Scroll
 ewl_tree_kinetic_scrolling_get(Ewl_Tree *tree)
 {
+	Ewl_Scrollpane *scroll;
+	Ewl_Kinetic_Scroll type = EWL_KINETIC_SCROLL_NONE;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET(tree, EWL_KINETIC_SCROLL_NONE);
 	DCHECK_TYPE_RET(tree, EWL_TREE_TYPE, EWL_KINETIC_SCROLL_NONE);
 
-	DRETURN_INT(tree->scroll_type, DLEVEL_STABLE);
+	scroll = ewl_tree_kinetic_scrollpane_get(tree);
+	if (scroll)
+		type = ewl_scrollpane_kinetic_scrolling_get(scroll);
+
+	DRETURN_INT(type, DLEVEL_STABLE);
 }
 
 /**

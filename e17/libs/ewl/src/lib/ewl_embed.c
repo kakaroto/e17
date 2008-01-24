@@ -553,14 +553,6 @@ ewl_embed_mouse_down_feed(Ewl_Embed *embed, int b, int clicks, int x, int y,
 	 * causes the widget to be destroyed.
 	 */
 	deselect = embed->last.focused;
-	temp = embed->last.clicked;
-
-	/* There is container_callback_notify, but nothing for reverse situation
-	 * so if the last clicked is a child of the last focused then we use the
-	 * lower widget
-	 */
-	if (deselect && temp && ewl_widget_parent_of(deselect, temp))
-		deselect = embed->last.clicked;
 
 	/* we want the focused and last clicked to be the parent widget, not
 	 * the internal children */
@@ -608,6 +600,9 @@ ewl_embed_mouse_down_feed(Ewl_Embed *embed, int b, int clicks, int x, int y,
 		temp = temp->parent;
 	}
 
+	/* Set to upper widget */
+	widget = embed->last.focused;
+
 	/*
 	 * Determine whether this widget has already been selected, if not,
 	 * deselect the previously selected widget and notify it of the
@@ -622,13 +617,15 @@ ewl_embed_mouse_down_feed(Ewl_Embed *embed, int b, int clicks, int x, int y,
 				!ewl_widget_parent_of(deselect, widget)) {
 			ewl_object_state_remove(EWL_OBJECT(deselect),
 						EWL_FLAG_STATE_FOCUSED);
-			ewl_callback_call(deselect, EWL_CALLBACK_FOCUS_OUT);
+			ewl_callback_call_with_event_data(deselect,
+					EWL_CALLBACK_FOCUS_OUT, widget);
 		}
 
 		if (widget && !DISABLED(widget) && !DESTROYED(widget)) {
 			ewl_object_state_add(EWL_OBJECT(widget),
 					EWL_FLAG_STATE_FOCUSED);
-			ewl_callback_call(widget, EWL_CALLBACK_FOCUS_IN);
+			ewl_callback_call_with_event_data(widget,
+					EWL_CALLBACK_FOCUS_IN, deselect);
 		}
 	}
 
@@ -1577,17 +1574,8 @@ ewl_embed_focused_widget_set(Ewl_Embed *embed, Ewl_Widget *w)
 	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	if (embed->last.focused && (embed->last.focused != w))
-	{
-		/* We might set an internal widget focused during
-		 * mouse_down_feed, so we need to check if the last clicked is
-		 * a child.  If so, it needs to get the unfocus callback
-		 * instead of parent
-		 */
-		if (ewl_widget_parent_of(embed->last.focused, embed->last.clicked))
-				embed->last.focused = embed->last.clicked;
-
-		ewl_callback_call(embed->last.focused, EWL_CALLBACK_FOCUS_OUT);
-	}
+		ewl_callback_call_with_event_data(embed->last.focused,
+				EWL_CALLBACK_FOCUS_OUT, w);
 
 	embed->last.focused = w;
 

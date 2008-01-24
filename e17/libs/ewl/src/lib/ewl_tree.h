@@ -119,8 +119,6 @@ struct Ewl_Tree
 	unsigned char fixed:1;    /**< Rows are fixed height */
 	unsigned char headers_visible:1; /**< Are the headers visible? */
 	unsigned char row_color_alternate:1; /**< Are the rows alternating? */
-
-	Ewl_Kinetic_Scroll scroll_type; /**< Type of kinetic scrolling */
 };
 
 /*

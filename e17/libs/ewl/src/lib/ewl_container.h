@@ -185,6 +185,9 @@ void ewl_container_cb_reparent(Ewl_Widget * w, void *ev_data, void *user_data);
 void ewl_container_cb_unrealize(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_container_cb_enable(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_container_cb_disable(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_container_cb_container_focus_out(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_container_cb_widget_focus_out(Ewl_Widget *w, void *ev_data, void *user_data);
+void ewl_container_cb_widget_focus_in(Ewl_Widget *w, void *ev_data, void *user_data);
 
 /**
  * @}

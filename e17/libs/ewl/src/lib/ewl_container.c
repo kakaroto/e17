@@ -1601,3 +1601,91 @@ ewl_container_cb_unrealize(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: The event data
+ * @param user_data: UNUSED
+ * @return Returns no data
+ * @brief A callback to be used for container widgets such as scrollpane, box
+ */
+void
+ewl_container_cb_container_focus_out(Ewl_Widget *w, void *ev_data, void *user_data)
+{
+	Ewl_Widget *focus_in = NULL;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(w);
+
+	if (ev_data)
+		focus_in = EWL_WIDGET(ev_data);
+
+	/* If its a child or is disabled then don't send a signal */
+	if ((focus_in) && (!ewl_widget_parent_of(w, focus_in)) &&
+				(!DISABLED(w)) && (focus_in != w))
+		ewl_widget_state_set(w, "focus,out", EWL_STATE_TRANSIENT);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param: ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief A callback to be used with end widgets such as buttons, etc
+ */
+void
+ewl_container_cb_widget_focus_out(Ewl_Widget *w, void *ev_data, void *user_data)
+{
+	Ewl_Container *c;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(w);
+
+	if (DISABLED(w))
+		DRETURN(DLEVEL_STABLE);
+
+	c = EWL_CONTAINER(w);
+	while (c->redirect)
+		c = c->redirect;
+
+	ecore_dlist_first_goto(c->children);
+	while ((w = ecore_dlist_next(c->children)))
+		ewl_widget_state_set(w, "focus,out", EWL_STATE_TRANSIENT);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief A callback to be used with end widgets
+ */
+void
+ewl_container_cb_widget_focus_in(Ewl_Widget *w, void *ev_data, void *user_data)
+{
+	Ewl_Container *c;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(w);
+
+	if (DISABLED(w))
+		DRETURN(DLEVEL_STABLE);
+
+	c = EWL_CONTAINER(w);
+	while (c->redirect)
+		c = c->redirect;
+
+	ecore_dlist_first_goto(c->children);
+	while ((w = ecore_dlist_next(c->children)))
+		ewl_widget_state_set(w, "focus,in", EWL_STATE_TRANSIENT);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+

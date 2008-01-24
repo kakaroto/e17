@@ -68,6 +68,12 @@ ewl_scrollpane_init(Ewl_Scrollpane *s)
 	ewl_container_callback_notify(EWL_CONTAINER(s), EWL_CALLBACK_FOCUS_IN);
 	ewl_container_callback_notify(EWL_CONTAINER(s), EWL_CALLBACK_FOCUS_OUT);
 
+	/* Remove the default focus out callback and replace with our own */
+	ewl_callback_del(w, EWL_CALLBACK_FOCUS_OUT, ewl_widget_cb_focus_out);
+	ewl_callback_append(w, EWL_CALLBACK_FOCUS_OUT,
+				ewl_container_cb_container_focus_out, NULL);
+
+
 	s->hflag = EWL_SCROLLPANE_FLAG_AUTO_VISIBLE;
 	s->vflag = EWL_SCROLLPANE_FLAG_AUTO_VISIBLE;
 
