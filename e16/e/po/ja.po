@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-01-06 15:09+0100\n"
-"PO-Revision-Date: 2007-09-22 23:01+0900\n"
+"POT-Creation-Date: 2008-01-24 08:39+0900\n"
+"PO-Revision-Date: 2008-01-24 08:46+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -46,7 +46,7 @@ msgid ""
 "Kim Woelders - kim@woelders.dk\n"
 msgstr ""
 
-#: src/aclass.c:205 src/backgrounds.c:242 src/borders.c:650 src/buttons.c:184
+#: src/aclass.c:205 src/backgrounds.c:242 src/borders.c:636 src/buttons.c:184
 #: src/cmclass.c:84 src/cursors.c:122 src/iclass.c:358 src/tclass.c:103
 #: src/tooltips.c:134
 #, c-format
@@ -490,7 +490,7 @@ msgstr "両端"
 msgid "End"
 msgstr "終了"
 
-#: src/container.c:1669 src/focus.c:845
+#: src/container.c:1669 src/focus.c:846
 msgid "None"
 msgstr "なし"
 
@@ -579,68 +579,68 @@ msgstr ""
 "ここをクリックするとこのデスクトップが\n"
 "下に移ります。\n"
 
-#: src/desktops.c:2301 src/desktops.c:2340
+#: src/desktops.c:2298 src/desktops.c:2337
 #, c-format
 msgid "%i Desktops"
 msgstr "デスクトップ %i 枚"
 
-#: src/desktops.c:2303 src/desktops.c:2342
+#: src/desktops.c:2300 src/desktops.c:2339
 #, c-format
 msgid "%i Desktop"
 msgstr "デスクトップ %i 枚"
 
-#: src/desktops.c:2335
+#: src/desktops.c:2332
 msgid "Number of virtual desktops:\n"
 msgstr "仮想デスクトップの枚数:\n"
 
-#: src/desktops.c:2364
+#: src/desktops.c:2361
 msgid "Slide desktops around when changing"
 msgstr "デスクトップ間を移動する時にスライドする"
 
 #
-#: src/desktops.c:2370
+#: src/desktops.c:2367
 msgid "Desktop Slide speed:\n"
 msgstr "デスクトップのスライド速度\n"
 
 #
-#: src/desktops.c:2384
+#: src/desktops.c:2381
 msgid "Wrap desktops around"
 msgstr "仮想デスクトップの上下左右をつなげる"
 
-#: src/desktops.c:2392
+#: src/desktops.c:2389
 msgid "Display desktop dragbar"
 msgstr "デスクトップにドラッグバーを表示する"
 
-#: src/desktops.c:2398
+#: src/desktops.c:2395
 msgid "Drag bar position:"
 msgstr "ドラッグバーの位置"
 
-#: src/desktops.c:2402
+#: src/desktops.c:2399
 msgid "Top"
 msgstr "上"
 
-#: src/desktops.c:2408
+#: src/desktops.c:2405
 msgid "Bottom"
 msgstr "下"
 
-#: src/desktops.c:2414 src/pager.c:1901 src/pager.c:1926 src/pager.c:1951
+#: src/desktops.c:2411 src/pager.c:1901 src/pager.c:1926 src/pager.c:1951
 msgid "Left"
 msgstr "左"
 
-#: src/desktops.c:2420 src/pager.c:1913 src/pager.c:1938 src/pager.c:1963
+#: src/desktops.c:2417 src/pager.c:1913 src/pager.c:1938 src/pager.c:1963
 msgid "Right"
 msgstr "右"
 
 #
-#: src/desktops.c:2428 src/menus-misc.c:713
+#: src/desktops.c:2425 src/menus-misc.c:713
 msgid "Desks"
 msgstr "マルチデスクトップ"
 
-#: src/desktops.c:2429
+#: src/desktops.c:2426
 msgid "Multiple Desktop Settings"
 msgstr "マルチデスクトップの設定"
 
-#: src/desktops.c:2432
+#: src/desktops.c:2429
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -648,7 +648,7 @@ msgstr ""
 "Enlightenment マルチデスクトップ\n"
 "設定ダイアログ\n"
 
-#: src/desktops.c:2502 src/desktops.c:2537
+#: src/desktops.c:2499 src/desktops.c:2534
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -657,7 +657,7 @@ msgstr ""
 "%i x %i\n"
 "の大きさの仮想デスクトップ"
 
-#: src/desktops.c:2505 src/desktops.c:2540
+#: src/desktops.c:2502 src/desktops.c:2537
 msgid ""
 "1\n"
 "Screen in size"
@@ -665,43 +665,43 @@ msgstr ""
 "1\n"
 "の大きさの仮想デスクトップ"
 
-#: src/desktops.c:2533
+#: src/desktops.c:2530
 msgid "Virtual Desktop size:\n"
 msgstr "仮想デスクトップの大きさ\n"
 
-#: src/desktops.c:2574
+#: src/desktops.c:2571
 msgid "Wrap virtual desktops around"
 msgstr "仮想デスクトップの上下左右をつなげる"
 
-#: src/desktops.c:2581
+#: src/desktops.c:2578
 msgid "Edge Flip Mode:"
 msgstr "マウスカーソルによるデスクトップの切り替え"
 
-#: src/desktops.c:2584
+#: src/desktops.c:2581
 msgid "Off"
 msgstr "無効"
 
-#: src/desktops.c:2589
+#: src/desktops.c:2586
 msgid "On"
 msgstr "有効"
 
-#: src/desktops.c:2594
+#: src/desktops.c:2591
 msgid "Only when moving window"
 msgstr "ウィンドウ移動時のみ切り替える"
 
-#: src/desktops.c:2600
+#: src/desktops.c:2597
 msgid "Resistance at edge of screen:\n"
 msgstr "画面の端に達した時の移動抵抗値\n"
 
-#: src/desktops.c:2612
+#: src/desktops.c:2609
 msgid "Areas"
 msgstr "デスクトップサイズ"
 
-#: src/desktops.c:2613
+#: src/desktops.c:2610
 msgid "Virtual Desktop Settings"
 msgstr "仮想デスクトップ設定"
 
-#: src/desktops.c:2616
+#: src/desktops.c:2613
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -757,105 +757,105 @@ msgstr ""
 "\n"
 "終了します。\n"
 
-#: src/focus.c:717
+#: src/focus.c:718
 msgid "Focus follows pointer"
 msgstr "マウスのあるウィンドウがフォーカスを得る"
 
-#: src/focus.c:723
+#: src/focus.c:724
 msgid "Focus follows pointer sloppily"
 msgstr ""
 "マウスのあるウィンドウがフォーカスを得る(ウィンドウを離れてもフォーカスは保"
 "持)"
 
-#: src/focus.c:729
+#: src/focus.c:730
 msgid "Focus follows mouse clicks"
 msgstr "クリックしたウィンドウがフォーカスを得る"
 
-#: src/focus.c:739
+#: src/focus.c:740
 msgid "Clicking in a window always raises it"
 msgstr "クリックしたウィンドウを常に上へ出す"
 
-#: src/focus.c:747
+#: src/focus.c:748
 msgid "All new windows first get the focus"
 msgstr "新しいウィンドウはすべて出現時にフォーカスを得る"
 
-#: src/focus.c:752
+#: src/focus.c:753
 msgid "Only new dialog windows get the focus"
 msgstr "新しいダイアログウィンドウだけがフォーカスを得る"
 
-#: src/focus.c:759
+#: src/focus.c:760
 msgid "Only new dialogs whose owner is focused get the focus"
 msgstr "フォーカスがある親から生まれたダイアログだけがフォーカスを得る"
 
 #
-#: src/focus.c:764
+#: src/focus.c:765
 msgid "Raise windows while switching focus"
 msgstr "フォーカスの切替中フォーカスを得たウィンドウを上に出す"
 
 #
-#: src/focus.c:770
+#: src/focus.c:771
 msgid "Send mouse pointer to window while switching focus"
 msgstr "フォーカスの切替中フォーカスを得たウィンドウにマウスポインタを移す"
 
 #
-#: src/focus.c:776
+#: src/focus.c:777
 msgid "Always send mouse pointer to window on focus switch"
 msgstr "フォーカスが移ると必ずマウスポインタも移す"
 
-#: src/focus.c:784
+#: src/focus.c:785
 msgid "Display and use focus list"
 msgstr "フォーカスリストを表示し、使用する"
 
-#: src/focus.c:789
+#: src/focus.c:790
 msgid "Include sticky windows in focus list"
 msgstr "常時表示ウィンドウをフォーカスリストに含める"
 
-#: src/focus.c:794
+#: src/focus.c:795
 msgid "Include shaded windows in focus list"
 msgstr "シェードされているウィンドウをフォーカスリストに含める"
 
-#: src/focus.c:799
+#: src/focus.c:800
 msgid "Include iconified windows in focus list"
 msgstr "アイコン化されているウィンドウをフォーカスリストに含める"
 
-#: src/focus.c:804
+#: src/focus.c:805
 msgid "Include windows on other desks in focus list"
 msgstr "他のデスクトップのウィンドウもフォーカスリストに含める"
 
-#: src/focus.c:809
+#: src/focus.c:810
 msgid "Focus windows while switching"
 msgstr "切り替わったらウィンドウにフォーカスを移す"
 
-#: src/focus.c:814
+#: src/focus.c:815
 msgid "Raise windows after focus switch"
 msgstr "フォーカスを切り替えたらウィンドウを上に出す"
 
-#: src/focus.c:819
+#: src/focus.c:820
 msgid "Send mouse pointer to window after focus switch"
 msgstr "フォーカスを切り替えたらウィンドウにマウスポインタを移す"
 
 #
-#: src/focus.c:829
+#: src/focus.c:830
 msgid "Focuslist image display policy (if one operation fails, try the next):"
 msgstr "アイコン画像表示ポリシー (失敗したら次を試す)"
 
-#: src/focus.c:833
+#: src/focus.c:834
 msgid "First E Icon, then App Icon"
 msgstr "まず E アイコン、それからアプリケーションアイコン"
 
-#: src/focus.c:839
+#: src/focus.c:840
 msgid "First App Icon, then E Icon"
 msgstr "まずアプリケーションアイコン、それから E アイコン"
 
-#: src/focus.c:853
+#: src/focus.c:854
 msgid "Focus"
 msgstr "フォーカス"
 
-#: src/focus.c:854
+#: src/focus.c:855
 msgid "Focus Settings"
 msgstr "フォーカスの設定"
 
-#: src/focus.c:857
+#: src/focus.c:858
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog\n"
@@ -2517,9 +2517,8 @@ msgid "Create Systray"
 msgstr "システムトレイを作成する"
 
 #: config/strings.c:85
-#, fuzzy
 msgid "Show Magnifier"
-msgstr "拡大中"
+msgstr "拡大ツールを表示する"
 
 #
 #: config/strings.c:87
@@ -2886,9 +2885,8 @@ msgid "Other"
 msgstr "その他"
 
 #: config/strings.c:198
-#, fuzzy
 msgid "Epplets"
-msgstr "さざなみ"
+msgstr ""
 
 #
 #~ msgid "Enlightenment Epplets"
