@@ -20,6 +20,7 @@ static int _basic_apply_data (E_Config_Dialog * cfd,
 			      E_Config_Dialog_Data * cfdata);
 static void _cb_time_check (void *data, Evas_Object * obj);
 static void _cb_date_check (void *data, Evas_Object * obj);
+static void _cb_tooltip_check (void *data, Evas_Object * obj);
 
 void
 _config_tclock_module (Config_Item * ci)
@@ -84,7 +85,9 @@ static Evas_Object *
 _basic_create_widgets (E_Config_Dialog * cfd, Evas * evas, E_Config_Dialog_Data * cfdata)
 {
    Evas_Object *o, *of, *ob;
-   Evas_Object *time_entry, *time_check, *date_entry, *date_check;
+   Evas_Object *time_entry, *time_check;
+   Evas_Object *date_entry, *date_check;
+   Evas_Object *tooltip_entry, *tooltip_check;
 
   o = e_widget_list_add (evas, 0, 0);
    
@@ -117,11 +120,14 @@ _basic_create_widgets (E_Config_Dialog * cfd, Evas * evas, E_Config_Dialog_Data 
   e_widget_list_object_append (o, of, 1, 1, 0.5);
 
   of = e_widget_frametable_add (evas, D_ ("Tool Tip"), 1);
-  ob = e_widget_check_add (evas, D_ ("Show Tooltip"), &(cfdata->show_tip));
-  e_widget_frametable_object_append (of, ob, 0, 0, 1, 1, 1, 0, 1, 0);
-  ob = e_widget_entry_add (evas, &cfdata->tip_format, NULL, NULL, NULL);
-  e_widget_min_size_set (ob, 150, 1);
-  e_widget_frametable_object_append (of, ob, 0, 1, 1, 1, 1, 0, 1, 0);
+  tooltip_check =
+    e_widget_check_add (evas, D_ ("Show Tooltip"), &(cfdata->show_tip));
+  e_widget_frametable_object_append (of, tooltip_check, 0, 0, 1, 1, 1, 0, 1, 0);
+  tooltip_entry = e_widget_entry_add (evas, &cfdata->tip_format, NULL, NULL, NULL);
+  e_widget_on_change_hook_set (tooltip_check, _cb_tooltip_check, tooltip_entry);
+  e_widget_disabled_set (tooltip_entry, !cfdata->show_tip);
+  e_widget_min_size_set (tooltip_entry, 150, 1);
+  e_widget_frametable_object_append (of, tooltip_entry, 0, 1, 1, 1, 1, 0, 1, 0);
   ob =
     e_widget_label_add (evas, D_ ("Consult strftime(3) for format syntax"));
   e_widget_frametable_object_append (of, ob, 0, 2, 1, 1, 1, 0, 1, 0);
@@ -166,6 +172,15 @@ _cb_time_check (void *data, Evas_Object *obj)
 
 static void
 _cb_date_check (void *data, Evas_Object *obj)
+{
+   int checked;
+   
+   checked = e_widget_check_checked_get (obj);
+   e_widget_disabled_set (data, !checked);
+}
+
+static void
+_cb_tooltip_check (void *data, Evas_Object *obj)
 {
    int checked;
    
