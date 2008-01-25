@@ -160,7 +160,6 @@ ewl_filepicker_init(Ewl_Filepicker *fp)
 				ewl_filepicker_cb_path_change, fp);
 	ewl_object_fill_policy_set(EWL_OBJECT(fp->mvc_path.combo),
 				EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
-	ewl_object_padding_set(EWL_OBJECT(fp->mvc_path.combo), 1, 1, 1, 1);
 	ewl_widget_show(fp->mvc_path.combo);
 
 	o = ewl_hbox_new();
