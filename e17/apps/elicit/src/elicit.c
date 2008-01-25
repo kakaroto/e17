@@ -21,7 +21,6 @@ main (int argc, char **argv)
     printf("ERROR: can't initialize Ecore.\n");
     return 1;
   }
-  ecore_app_args_set(argc, (const char **)argv);
   
   if (!ecore_evas_init())
   {
