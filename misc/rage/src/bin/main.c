@@ -32,6 +32,7 @@ static void main_menu_dvd(void *data);
 static void main_menu_audio(void *data);
 static void main_menu_photo(void *data);
 static void main_menu_scan(void *data);
+static void main_menu_tv(void *data);
 
 int
 main(int argc, char **argv)
@@ -171,9 +172,9 @@ main(int argc, char **argv)
    /* build a default menu */
    main_mode_push(MENU);
    menu_push("menu", "Main", NULL, NULL);
-   menu_item_add("icon/config", "Settings",
-		  "Modify settings and preferences", NULL,
-		  main_menu_config, NULL, NULL, NULL, NULL);
+   menu_item_add("icon/tv", "TV",
+		  "Scan all media again and update", NULL,
+		  main_menu_tv, NULL, NULL, NULL, NULL);
    menu_item_add("icon/video", "Videos",
 		  "Films, Movies and other video footage", NULL,
 		  main_menu_video, NULL, NULL, NULL, NULL);
@@ -189,6 +190,9 @@ main(int argc, char **argv)
    menu_item_add("icon/update", "Scan Media",
 		  "Scan all media again and update", NULL,
 		  main_menu_scan, NULL, NULL, NULL, NULL);
+   menu_item_add("icon/config", "Settings",
+		  "Modify settings and preferences", NULL,
+		  main_menu_config, NULL, NULL, NULL, NULL);
 
    menu_item_enabled_set("Main", "Settings", 1);
    menu_item_enabled_set("Main", "DVD", 1);
@@ -735,4 +739,10 @@ static void
 main_menu_scan(void *data)
 {
    volume_update();
+}
+
+static void
+main_menu_tv(void *data)
+{
+   system("tvtime -m -n PAL -f custom");
 }

@@ -1,7 +1,11 @@
+# get rid of that stupid cache mechanism
 rm -f config.cache
 
-AC_INIT(configure.in)
-AM_INIT_AUTOMAKE(rage, 0.2.0.005)
+AC_INIT(rage, 0.3.0.042, enlightenment-devel@lists.sourceforge.net)
+AC_PREREQ(2.52)
+AC_CONFIG_SRCDIR(configure.in)
+
+AM_INIT_AUTOMAKE(1.6 dist-bzip2)
 AM_CONFIG_HEADER(config.h)
 
 AC_C_BIGENDIAN
