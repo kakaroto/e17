@@ -290,6 +290,8 @@ _cfg_timer(void *data)
 static void 
 _cfg_new(void) 
 {
+   char buf[4096];
+
    ss_cfg = E_NEW(Config, 1);
    ss_cfg->version = (MOD_CONFIG_FILE_EPOCH << 16);
 
@@ -306,7 +308,8 @@ _cfg_new(void)
    ss_cfg->use_app = 0;
    ss_cfg->use_bell = 1;
    ss_cfg->use_thumb = 0;
-   ss_cfg->location = evas_stringshare_add(e_user_homedir_get());
+   snprintf(buf, sizeof(buf), "%s/Desktop", e_user_homedir_get());
+   ss_cfg->location = evas_stringshare_add(buf);
    ss_cfg->filename = NULL;
    ss_cfg->app = NULL;
    IFMODCFGEND;
