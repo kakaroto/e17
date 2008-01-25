@@ -85,6 +85,7 @@ src/bin/Makefile
 edbus.pc
 ehal.pc
 enotify.pc
+enm.pc
 ])
 
 
