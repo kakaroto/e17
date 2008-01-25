@@ -3,4 +3,5 @@ Type=Link
 Name=Notification
 Icon=e-module-notification
 Comment=<hilight>Notification Daemon</hilight><br>libnotify alternative.<br>Popup if an event occure.
+Comment[it]=<hilight>Modulo Notification</hilight><br>Alternativa a libnotify.<br>Mostra un popup al verificarsi di un evento.
 X-Enlightenment-ModuleType=system

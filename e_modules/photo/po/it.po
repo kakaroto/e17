@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Photo\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-24 21:56+0100\n"
-"PO-Revision-Date: 2007-11-25 09:40+0100\n"
+"POT-Creation-Date: 2008-01-23 22:38+0100\n"
+"PO-Revision-Date: 2008-01-23 22:43+0100\n"
 "Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -197,6 +197,38 @@ msgstr "Ricarica directory automaticamente"
 msgid "when add / modify directory list"
 msgstr "quando aggiungi/modifichi elenco directory"
 
+#: src/module/photo_config_dialog.h:36
+msgid "Show label"
+msgstr "Mostra etichetta"
+
+#: src/module/photo_config_dialog.h:38
+msgid "Show informations"
+msgstr "Mostra informazioni"
+
+#: src/module/photo_config_dialog.h:40 src/module/photo_menu.c:44
+msgid "Previous picture"
+msgstr "Immagine precedente"
+
+#: src/module/photo_config_dialog.h:42 src/module/photo_menu.c:40
+msgid "Next picture"
+msgstr "Immagine successiva"
+
+#: src/module/photo_config_dialog.h:44
+msgid "Pause"
+msgstr "Pausa"
+
+#: src/module/photo_config_dialog.h:46 src/module/photo_menu.c:58
+msgid "Set as background"
+msgstr "Imposta come sfondo"
+
+#: src/module/photo_config_dialog.h:48
+msgid "Open viewer"
+msgstr "Apri visualizzatore"
+
+#: src/module/photo_config_dialog.h:50
+msgid "Show menu"
+msgstr "Mostra menù"
+
 #: src/module/photo_config_dialog_dir.c:38
 msgid "Photo Directory Configuration"
 msgstr "Configurazione directory di Photo"
@@ -318,21 +350,9 @@ msgstr "Pausa presentazione"
 msgid "Resume slideshow"
 msgstr "Continua presentazione"
 
-#: src/module/photo_menu.c:40
-msgid "Next picture"
-msgstr "Immagine successiva"
-
-#: src/module/photo_menu.c:44
-msgid "Previous picture"
-msgstr "Immagine precedente"
-
 #: src/module/photo_menu.c:54
 msgid "Picture informations"
 msgstr "Informazioni immagine"
-
-#: src/module/photo_menu.c:58
-msgid "Set as background"
-msgstr "Imposta come sfondo"
 
 #: src/module/photo_menu.c:62
 msgid "Open in"

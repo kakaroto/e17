@@ -3,3 +3,4 @@ Type=Link
 Name=Execwatch
 Icon=e-module-execwatch
 Comment=<hilight>ExecWatch Gadget</hilight><br><br>Shows the last state of a periodic executed cmd. Useful as an update checker or for checking if a remote host is available (through ping).
+Comment[it]=<hilight>Modulo ExecWatch</hilight><br><br>Mostra l'ultimo stato di un comando eseguito periodicamente. Utile per il controlo di aggiornamenti o per il controllo della disponibilità di un host remoto (tramite ping).

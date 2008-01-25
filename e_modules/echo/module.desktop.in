@@ -3,3 +3,4 @@ Type=Link
 Name=Echo
 Icon=e-module-echo
 Comment=<hilight>Echo Gadget</hilight><br><br>A module to provide a mixer for changing volume.
+Comment[it]=<hilight>Modulo Echo</hilight><br><br>Un modulo che fornisce un mixer per il controllo del volume.
