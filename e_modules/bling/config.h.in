@@ -30,6 +30,9 @@
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
 
+/* "Module Locale Directory" */
+#undef LOCALEDIR
+
 /* "Module architecture" */
 #undef MODULE_ARCH
 
@@ -57,5 +60,5 @@
 /* Version number of package */
 #undef VERSION
 
-/* Define to empty if `const' does not conform to ANSI C. */
-#undef const
+/* Define to 1 if the X Window System is missing or not being used. */
+#undef X_DISPLAY_MISSING
