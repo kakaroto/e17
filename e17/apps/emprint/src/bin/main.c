@@ -336,24 +336,36 @@ _em_get_filename(void)
 		       /* destroy the file list */
 		       if (fl) ecore_list_destroy(fl);
 
-		       /* assemble new filename based on count */
+                       /* strip the extension from filename */
+                       file = ecore_file_strip_ext(opts->filename);
+
+                       /* get the actual extension */
+                       ext = strrchr(opts->filename, '.');
+                       if (!ext) ext = strdup(".png");
+
 		       if (c > 0) 
 			 {
 			    c++;
-
-			    /* strip the extension from filename */
-			    file = ecore_file_strip_ext(opts->filename);
-
-			    /* get the actual extension */
-			    ext = strrchr(opts->filename, '.');
-			    if (!ext) ext = strdup(".png");
-
 			    /* assemble new filename */
 			    snprintf(buf, sizeof(buf), "%s%i%s", file, c, ext);
 			 }
-		       else return;
+		       else 
+                         {
+			    /* assemble new filename */
+			    snprintf(buf, sizeof(buf), "%s%s", file, ext);
+                         }
 		    }
-		  else return;
+                  else 
+                    {
+                       /* strip the extension from filename */
+                       file = ecore_file_strip_ext(opts->filename);
+
+                       ext = strrchr(opts->filename, '.');
+                       if (!ext) ext = strdup(".png");
+
+                       /* assemble new filename */
+                       snprintf(buf, sizeof(buf), "%s%s", file, ext);
+                    }
 	       }
 	  }
      }
