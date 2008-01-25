@@ -1,5 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
+ACLOCAL_AMFLAGS = -I m4
+
 SUBDIRS = src data po intl
 
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
@@ -33,4 +35,3 @@ debian/rules
 
 pkgconfigdir = $(libdir)/pkgconfig
 pkgconfig_DATA = etk.pc
-ACLOCAL_AMFLAGS = -I m4

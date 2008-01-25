@@ -1,5 +1,7 @@
 ## Process this file with automake to produce Makefile.in
 
+ACLOCAL_AMFLAGS = -I m4
+
 if HAVE_EMOTION
   etk_extra_video_pc = etk_extra_video.pc
 endif
