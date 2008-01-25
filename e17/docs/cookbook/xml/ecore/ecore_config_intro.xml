@@ -51,7 +51,7 @@ int main(int argc, char ** argv) {
     ecore_config_float_default("/float/example", 2.22);
 
     if (ecore_config_load() != ECORE_CONFIG_ERR_SUCC)
-        printf("WARNING: Could not load config from ~/.e/apps/config.eet\n");
+        printf("WARNING: Could not load config from ~/.e/apps/foo/config.eet\n");
 
     i = ecore_config_int_get("/int_example");
     str = ecore_config_string_get("/this/is/a/string/example");
@@ -153,7 +153,7 @@ recompile.
 ecore_config_string_set("/this/is/a/string/example", "Other string");
     
 if (ecore_config_save() != ECORE_CONFIG_ERR_SUCC) {
-    printf("WARNING: could not save config to ~/.e/apps/config.eet\n");
+    printf("WARNING: could not save config to ~/.e/apps/foo/config.eet\n");
 }else{
     printf("NOTE: in the next execution Str will be \"Other String\"\n")
 }
