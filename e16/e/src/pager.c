@@ -76,6 +76,7 @@ static struct
 {
    int                 zoom;
    Idler              *idler;
+   char                update_pending;
 } Mode_pagers;
 
 typedef struct
@@ -107,14 +108,11 @@ static void         PagerUpdateTimeout(int val, void *data);
 static void         PagerCheckUpdate(Pager * p, void *prm);
 static void         PagerUpdateEwinsFromPager(Pager * p);
 static void         PagerHiwinHide(void);
-static void         PagerEwinGroupSet(void);
 static void         PagerEvent(Win win, XEvent * ev, void *prm);
 static void         PagerHiwinEvent(Win win, XEvent * ev, void *prm);
 static void         doPagerUpdate(Pager * p);
 
 static Ecore_List  *pager_list = NULL;
-
-static char         pager_update_pending = 0;
 
 static Hiwin       *hiwin = NULL;
 
@@ -509,7 +507,7 @@ PagerUpdate(Pager * p, int x1, int y1, int x2, int y2)
       p->y2 = y2;
 
    p->do_update = 1;
-   pager_update_pending = 1;
+   Mode_pagers.update_pending = 1;
 
    if (PagersGetMode() == PAGER_MODE_SIMPLE)
       return;
@@ -830,12 +828,12 @@ PagerCheckUpdate(Pager * p, void *prm __UNUSED__)
 static void
 PagersCheckUpdate(void)
 {
-   if (!pager_update_pending || !Conf_pagers.enable)
+   if (!Mode_pagers.update_pending || !Conf_pagers.enable)
       return;
 
    PagersForeach(NULL, PagerCheckUpdate, NULL);
 
-   pager_update_pending = 0;
+   Mode_pagers.update_pending = 0;
 }
 
 static void
@@ -1232,7 +1230,7 @@ PagersUpdateBackground(Desk * dsk)
 {
    PagersForeach(dsk, _PagerUpdateBackground, NULL);
 
-   pager_update_pending = 1;
+   Mode_pagers.update_pending = 1;
 }
 
 static void
