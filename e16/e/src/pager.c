@@ -77,6 +77,7 @@ static struct
    int                 zoom;
    Idler              *idler;
    char                update_pending;
+   char                timer_pending;
 } Mode_pagers;
 
 typedef struct
@@ -104,13 +105,11 @@ typedef struct
 
 static void         PagerScanCancel(Pager * p);
 static void         PagerScanTimeout(int val, void *data);
-static void         PagerUpdateTimeout(int val, void *data);
 static void         PagerCheckUpdate(Pager * p, void *prm);
 static void         PagerUpdateEwinsFromPager(Pager * p);
 static void         PagerHiwinHide(void);
 static void         PagerEvent(Win win, XEvent * ev, void *prm);
 static void         PagerHiwinEvent(Win win, XEvent * ev, void *prm);
-static void         doPagerUpdate(Pager * p);
 
 static Ecore_List  *pager_list = NULL;
 
@@ -202,7 +201,7 @@ PagerScanTimeout(int val __UNUSED__, void *data)
    static int          offsets[8] = { 0, 4, 2, 6, 1, 5, 3, 7 };
    int                 pager_mode = PagersGetMode();
 
-   if (pager_mode == PAGER_MODE_SIMPLE)
+   if (pager_mode != PAGER_MODE_SNAP)
       return;
 
    p = (Pager *) data;
@@ -211,25 +210,16 @@ PagerScanTimeout(int val __UNUSED__, void *data)
    ewin = p->ewin;
    if (!ewin || !EoIsShown(ewin))
       return;
-   if (pager_mode == PAGER_MODE_SNAP)
-     {
-	if (p->dsk != DesksGetCurrent())
-	   return;
-	if (ewin->state.visibility == VisibilityFullyObscured)
-	   return;
-     }
+   if (p->dsk != DesksGetCurrent())
+      return;
+   if (ewin->state.visibility == VisibilityFullyObscured)
+      return;
 
    if (Conf_pagers.scanspeed > 0)
       PagerScanTrig(p);
 
    if (Mode.mode != MODE_NONE)
       return;
-
-   if (pager_mode == PAGER_MODE_LIVE)
-     {
-	doPagerUpdate(p);
-	return;
-     }
 
    DeskCurrentGetArea(&cx, &cy);
    ww = p->dw;
@@ -508,11 +498,6 @@ PagerUpdate(Pager * p, int x1, int y1, int x2, int y2)
 
    p->do_update = 1;
    Mode_pagers.update_pending = 1;
-
-   if (PagersGetMode() == PAGER_MODE_SIMPLE)
-      return;
-
-   DoIn("pg-upd", .2, PagerUpdateTimeout, 0, NULL);
 }
 
 static void
@@ -826,20 +811,34 @@ PagerCheckUpdate(Pager * p, void *prm __UNUSED__)
 }
 
 static void
+_PagersUpdateTimeout(int val __UNUSED__, void *data __UNUSED__)
+{
+   Mode_pagers.timer_pending = 0;
+}
+
+static void
 PagersCheckUpdate(void)
 {
+   static double       tlast = 0.;
+   double              t;
+
    if (!Mode_pagers.update_pending || !Conf_pagers.enable)
       return;
+
+   t = GetTime();
+   if (t - tlast < .05)
+     {
+	/* The purpose of this timer is to trigger the idler */
+	if (!Mode_pagers.timer_pending)
+	   DoIn("pg-upd", .1, _PagersUpdateTimeout, 0, NULL);
+	Mode_pagers.timer_pending = 1;
+	return;
+     }
+   tlast = t;
 
    PagersForeach(NULL, PagerCheckUpdate, NULL);
 
    Mode_pagers.update_pending = 0;
-}
-
-static void
-PagerUpdateTimeout(int val __UNUSED__, void *data __UNUSED__)
-{
-   PagersCheckUpdate();
 }
 
 static void
@@ -914,18 +913,32 @@ PagerUpdateEwinsFromPager(Pager * p)
 }
 
 static void
-PagersUpdateEwin(EWin * ewin, int gone)
+PagersUpdateEwin(EWin * ewin, int why)
 {
    Desk               *dsk;
 
    if (!Conf_pagers.enable)
       return;
 
-   if (!gone && (!EoIsShown(ewin) || ewin->state.animated))
-      return;
+   switch (why)
+     {
+     case 0:			/* Change */
+	if (!EoIsShown(ewin) || ewin->state.animated)
+	   return;
+	break;
 
-   if (gone && ewin == HiwinGetEwin(hiwin, 0))
-      PagerHiwinHide();
+     case 1:			/* Gone */
+	if (ewin == HiwinGetEwin(hiwin, 0))
+	   PagerHiwinHide();
+	break;
+
+     case 2:			/* Damage */
+	if (ewin->type == EWIN_TYPE_PAGER)
+	   return;
+	if (PagersGetMode() != PAGER_MODE_LIVE)
+	   return;
+	break;
+     }
 
    dsk = (EoIsFloating(ewin)) ? DesksGetCurrent() : EoGetDesk(ewin);
    PagersUpdate(dsk, EwinGetVX(ewin), EwinGetVY(ewin),
@@ -1279,7 +1292,7 @@ PagersSetMode(int mode)
 
    PagersUpdateBackground(NULL);
 
-   if (Conf_pagers.mode != PAGER_MODE_SIMPLE && Conf_pagers.scanspeed > 0)
+   if (Conf_pagers.mode == PAGER_MODE_SNAP && Conf_pagers.scanspeed > 0)
       PagersForeach(DesksGetCurrent(), _PagerSetSnap, NULL);
 
    autosave();
@@ -2033,6 +2046,9 @@ PagersSighan(int sig, void *prm)
 	break;
      case ESIGNAL_EWIN_CHANGE:
 	PagersUpdateEwin((EWin *) prm, 0);
+	break;
+     case ESIGNAL_EWIN_DAMAGE:
+	PagersUpdateEwin((EWin *) prm, 2);
 	break;
      }
 }
