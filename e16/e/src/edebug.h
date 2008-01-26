@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2007 Kim Woelders
+ * Copyright (C) 2006-2008 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -49,6 +49,8 @@
 #define EDBUG_TYPE_SELECTION    147
 #define EDBUG_TYPE_FONTS        148
 #define EDBUG_TYPE_DBUS         149
+#define EDBUG_TYPE_TIMERS       150
+#define EDBUG_TYPE_IDLERS       151
 
 #define EDBUG_TYPE_COMPMGR      161
 #define EDBUG_TYPE_COMPMGR2     162

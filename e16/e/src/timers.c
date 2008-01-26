@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2006-2007 Kim Woelders
+ * Copyright (C) 2006-2008 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -62,7 +62,7 @@ DoIn(const char *name, double in_time, void (*func) (int val, void *data),
    if (in_time < 0.)		/* No negative in-times */
       in_time = 0.;
 
-   if (EDebug(EDBUG_TYPE_EVENTS))
+   if (EDebug(EDBUG_TYPE_TIMERS))
       Eprintf("DoIn %8.3f: %s\n", in_time, name);
 
    qe->name = Estrdup(name);
@@ -112,7 +112,7 @@ TimersRun(double tt)
 	if (qe->at_time > t + 200e-6)	/* Within 200 us is close enough */
 	   break;
 
-	if (EDebug(EDBUG_TYPE_EVENTS))
+	if (EDebug(EDBUG_TYPE_TIMERS))
 	   Eprintf("TimersRun - run %8.3lf: %s\n", qe->at_time - t, qe->name);
 
 	/* remove it */
@@ -130,7 +130,7 @@ TimersRun(double tt)
    if (tt <= 0.)		/* Avoid some redundant debug output */
       return tt;
 
-   if (EDebug(EDBUG_TYPE_EVENTS) > 1)
+   if (EDebug(EDBUG_TYPE_TIMERS) > 1)
      {
 	Qentry             *qp;
 
@@ -140,7 +140,7 @@ TimersRun(double tt)
 
    t = (qe) ? qe->at_time - t : 0.;
 
-   if (EDebug(EDBUG_TYPE_EVENTS))
+   if (EDebug(EDBUG_TYPE_TIMERS))
       Eprintf("TimersRun - next in %8.3lf\n", t);
 
    return t;
@@ -222,7 +222,7 @@ IdlersRun(void)
 {
    Idler              *id;
 
-   if (EDebug(EDBUG_TYPE_EVENTS))
+   if (EDebug(EDBUG_TYPE_IDLERS))
       Eprintf("IdlersRun\n");
 
    ECORE_LIST_FOR_EACH(idler_list, id) id->func(id->data);
