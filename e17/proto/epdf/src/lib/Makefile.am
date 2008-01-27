@@ -11,9 +11,12 @@ EPDF_ETK_WIDGET = etk_pdf.c
 EPDF_ETK_HEADER = etk_pdf.h
 endif
 
-INCLUDES = 			\
--I. -I$(top_srcdir)/src/lib	\
-@EWL_CFLAGS@ @ETK_CFLAGS@ @EPDF_CFLAGS@
+AM_CPPFLAGS = \
+-I. \
+-I$(top_srcdir)/src/lib	\
+@EWL_CFLAGS@ \
+@ETK_CFLAGS@ \
+@EPDF_CFLAGS@
 
 lib_LTLIBRARIES = libepdf.la
 

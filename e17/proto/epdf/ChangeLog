@@ -1,3 +1,19 @@
+2008-01-27  Vincent Torri  <doursse at users dot sf dot net>
+
+	* configure.in:
+	add bzip2 archive
+
+	* src/bin/Makefile.am:
+	* src/lib/Makefile.am:
+	* src/plugins/epsilon/Makefile.am:
+	* src/plugins/ewl/Makefile.am:
+	clean Makefile.am a bit
+
+	* src/bin/epdf_ewl_test.c: (_tree_fill), (tree_data_fetch),
+	(tree_data_count_get), (tree_data_expandable_get),
+	(tree_data_expansion_fetch), (main):
+	rename tree2 to tree
+
 2007-12-17  Vincent Torri  <doursse at users dot sf dot net>
 
 	* src/lib/ewl_pdf.c:

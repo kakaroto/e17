@@ -29,7 +29,7 @@ static void _quit_cb (Ewl_Widget * w, void *ev_data, void *user_data);
 static void _change_page_cb (Ewl_Widget *widget, void *ev_data, void *user_data);
 
 void *
-_tree2_fill (Ewl_Widget *pdf, Ecore_List *items)
+_tree_fill (Ewl_Widget *pdf, Ecore_List *items)
 {
   Tree_Data       *data;
   Epdf_Index_Item *item;
@@ -64,7 +64,7 @@ _tree2_fill (Ewl_Widget *pdf, Ecore_List *items)
     c = epdf_index_item_children_get (item);
     if (c) {
       data->rows[i]->expandable = 1;
-      data->rows[i]->subdata = _tree2_fill (pdf, c);
+      data->rows[i]->subdata = _tree_fill (pdf, c);
     }
 
     i++;
@@ -73,7 +73,7 @@ _tree2_fill (Ewl_Widget *pdf, Ecore_List *items)
   return data;
 }
 
-static void *tree2_data_fetch(void *data, unsigned int row, unsigned int column)
+static void *tree_data_fetch(void *data, unsigned int row, unsigned int column)
 {
   Tree_Data *d;
 
@@ -83,7 +83,7 @@ static void *tree2_data_fetch(void *data, unsigned int row, unsigned int column)
 }
 
 static int
-tree2_data_count_get (void *data)
+tree_data_count_get (void *data)
 {
   Tree_Data *d;
 
@@ -93,7 +93,7 @@ tree2_data_count_get (void *data)
 }
 
 static int
-tree2_data_expandable_get(void *data, unsigned int row)
+tree_data_expandable_get(void *data, unsigned int row)
 {
   Tree_Data *d;
 
@@ -103,7 +103,7 @@ tree2_data_expandable_get(void *data, unsigned int row)
 }
 
 static void *
-tree2_data_expansion_fetch(void *data, unsigned int parent)
+tree_data_expansion_fetch(void *data, unsigned int parent)
 {
   Tree_Data *d;
 
@@ -184,23 +184,23 @@ main (int argc, char *argv[])
     void      *data;
 
     /* tree */
-    tree = ewl_tree2_new ();
+    tree = ewl_tree_new ();
     ewl_widget_name_set (tree, "tree");
 /*     ewl_object_fill_policy_set (EWL_OBJECT (tree), EWL_FLAG_FILL_VFILL); */
-    ewl_tree2_headers_visible_set (EWL_TREE2 (tree), FALSE);
+    ewl_tree_headers_visible_set (EWL_TREE (tree), FALSE);
     ewl_callback_append (tree, EWL_CALLBACK_VALUE_CHANGED,
                          _change_page_cb, pdf);
 
     /* data */
-    data = _tree2_fill (pdf, index);
+    data = _tree_fill (pdf, index);
     epdf_index_delete (index);
 
     /* model */
     model = ewl_model_new ();
-    ewl_model_data_fetch_set (model, tree2_data_fetch);
-    ewl_model_data_count_set (model, tree2_data_count_get);
-    ewl_model_data_expandable_set (model, tree2_data_expandable_get);
-    ewl_model_expansion_data_fetch_set(model, tree2_data_expansion_fetch);
+    ewl_model_data_fetch_set (model, tree_data_fetch);
+    ewl_model_data_count_set (model, tree_data_count_get);
+    ewl_model_data_expandable_set (model, tree_data_expandable_get);
+    ewl_model_expansion_data_fetch_set(model, tree_data_expansion_fetch);
 
     /* MVC */
     ewl_mvc_data_set (EWL_MVC (tree), data);

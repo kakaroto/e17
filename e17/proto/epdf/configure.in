@@ -2,7 +2,7 @@ AC_PREREQ(2.54)
 AC_INIT(epdf, 0.1, enlightenment-devel@lists.sourceforge.net)
 AC_CONFIG_HEADERS(config.h)
 
-AM_INIT_AUTOMAKE(1.6)
+AM_INIT_AUTOMAKE(1.6 dist-bzip2)
 
 AC_LIBTOOL_WIN32_DLL
 define([AC_LIBTOOL_LANG_F77_CONFIG], [:])dnl
