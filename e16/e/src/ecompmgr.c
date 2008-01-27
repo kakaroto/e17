@@ -99,7 +99,6 @@ struct _cmhook
    int                 rcx, rcy, rcw, rch;
    int                 mode;
    unsigned            damaged:1;
-   unsigned            fading:1;
    unsigned            fadeout:1;
    unsigned            has_shadow:1;
    unsigned            have_shape:1;	/* Region validity - shape */
@@ -1311,12 +1310,12 @@ doECompMgrWinFade(void *data)
 
 #if DEBUG_OPACITY
    Eprintf("doECompMgrWinFade %#lx, %d/%d, %#x->%#x\n", EobjGetXwin(eo),
-	   cw->fading, cw->fadeout, cw->opacity, op);
+	   eo->fading, cw->fadeout, cw->opacity, op);
 #endif
-   if (!cw->fading)
+   if (!eo->fading)
       goto done;
 
-   cw->fading = cw->fadeout;
+   eo->fading = cw->fadeout;
 
    step = Conf_compmgr.fading.time / Conf.animation.step;
    if (step == 0)
@@ -1332,7 +1331,7 @@ doECompMgrWinFade(void *data)
 	if (op - cw->opacity > step)
 	  {
 	     op = cw->opacity + step;
-	     cw->fading = 1;
+	     eo->fading = 1;
 	  }
      }
    else
@@ -1340,7 +1339,7 @@ doECompMgrWinFade(void *data)
 	if (cw->opacity - op > step)
 	  {
 	     op = cw->opacity - step;
-	     cw->fading = 1;
+	     eo->fading = 1;
 	  }
      }
 
@@ -1349,7 +1348,7 @@ doECompMgrWinFade(void *data)
 #endif
    ECompMgrWinSetOpacity(eo, op);
 
-   if (cw->fading)
+   if (eo->fading)
       return 1;
 
    if (eo->type == EOBJ_TYPE_EWIN)
@@ -1367,7 +1366,7 @@ ECompMgrWinFade(EObj * eo, unsigned int op_from, unsigned int op_to)
 
    if (op_from == op_to && op_to == eo->opacity)
      {
-	if (cw->fading)
+	if (eo->fading)
 	   ECompMgrWinFadeEnd(eo, 0);
 	return;
      }
@@ -1376,20 +1375,18 @@ ECompMgrWinFade(EObj * eo, unsigned int op_from, unsigned int op_to)
       cw->anim_fade = AnimatorAdd(doECompMgrWinFade, eo);
    cw->opacity_to = op_to;
 
-   cw->fading = 1;
+   eo->fading = 1;
    ECompMgrWinSetOpacity(eo, op_from);
 }
 
 static void
 ECompMgrWinFadeIn(EObj * eo)
 {
-   ECmWinInfo         *cw = eo->cmhook;
-
 #if DEBUG_OPACITY
    Eprintf("ECompMgrWinFadeIn  %#lx %#x -> %#x\n", EobjGetXwin(eo), 0x10000000,
 	   eo->opacity);
 #endif
-   if (cw->fading)
+   if (eo->fading)
       ECompMgrWinFadeEnd(eo, 0);
 
    ECompMgrWinFade(eo, 0x10000000, eo->opacity);
@@ -1425,7 +1422,7 @@ ECompMgrWinFadeEnd(EObj * eo, int done)
 	ECompMgrDamageMergeObject(eo, cw->extents);
 	_ECM_SET_CLIP_CHANGED();
      }
-   cw->fading = 0;
+   eo->fading = 0;
    if (done)
      {
 	AnimatorDel(cw->anim_fade);
@@ -1794,7 +1791,7 @@ ECompMgrWinDel(EObj * eo)
 
    D1printf("ECompMgrWinDel %#lx\n", EobjGetXwin(eo));
 
-   if (cw->fading)
+   if (eo->fading)
       ECompMgrWinFadeEnd(eo, 1);
 
    EventCallbackUnregister(eo->win, 0, ECompMgrHandleWindowEvent, eo);
@@ -1949,7 +1946,7 @@ ECompMgrDetermineOrder(EObj * const *lst, int num, EObj ** first,
 	if (!cw)
 	   continue;
 
-	if ((!eo->shown && !cw->fading) || eo->desk != dsk)
+	if ((!eo->shown && !eo->fading) || eo->desk != dsk)
 	   continue;
 
 	/* Region of shaped window in screen coordinates */
@@ -1961,7 +1958,7 @@ ECompMgrDetermineOrder(EObj * const *lst, int num, EObj ** first,
 	   ECompMgrWinSetExtents(eo);
 
 	D3printf(" - %#lx desk=%d shown=%d fading=%d fadeout=%d\n",
-		 EobjGetXwin(eo), eo->desk->num, eo->shown, cw->fading,
+		 EobjGetXwin(eo), eo->desk->num, eo->shown, eo->fading,
 		 cw->fadeout);
 
 	if (eo->type == EOBJ_TYPE_DESK)

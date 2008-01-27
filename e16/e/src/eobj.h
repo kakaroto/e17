@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2007 Kim Woelders
+ * Copyright (C) 2004-2008 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -34,9 +34,9 @@ struct _eobj
    short               type;	/* Ewin, button, other, ... */
    short               ilayer;	/* Internal stacking layer */
    short               layer;	/* Stacking layer */
-   Desk               *desk;	/* Belongs on desk */
    signed char         stacked;
    signed char         shaped;
+   Desk               *desk;	/* Belongs on desk */
    char                sticky;
    char                floating;
    unsigned            external:1;
@@ -46,6 +46,7 @@ struct _eobj
    unsigned            noredir:1;	/* Do not redirect */
    unsigned            shadow:1;	/* Enable shadows */
    unsigned            fade:1;	/* Enable fading */
+   unsigned            fading:1;	/* Is fading */
    unsigned            ghost:1;	/* Ghost window */
    struct
    {
