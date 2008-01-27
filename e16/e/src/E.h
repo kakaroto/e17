@@ -431,6 +431,7 @@ typedef struct
    char                autosave;
    char                memory_paranoia;
    char                save_under;
+   char                difftime;
 }
 EConf;
 

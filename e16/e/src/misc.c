@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2007 Kim Woelders
+ * Copyright (C) 2004-2008 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -204,8 +204,6 @@ _tvdiff(struct timeval *tvd, const struct timeval *tv1,
    tvd->tv_usec = tus;
 }
 
-#if 1				/* Set to 0 for differential time */
-
 void
 Eprintf(const char *fmt, ...)
 {
@@ -217,39 +215,29 @@ Eprintf(const char *fmt, ...)
 
    gettimeofday(&tv, NULL);
    _tvdiff(&tv, &tv0, &tv);
-   fprintf(stdout, "[%d] %4ld.%06ld: ", getpid(), tv.tv_sec, tv.tv_usec);
+
+   if (Conf.difftime)
+     {
+	static struct timeval tv1 = { 0, 0 };
+	struct timeval      tvd;
+	unsigned long       nreq;
+
+	_tvdiff(&tvd, &tv1, &tv);
+	tv1 = tv;
+
+	nreq = (disp) ? NextRequest(disp) : 0;
+	fprintf(stdout, "[%d] %#8lx %4ld.%06ld [%3ld.%06ld]: ", getpid(),
+		nreq, tv1.tv_sec, tv1.tv_usec, tvd.tv_sec, tvd.tv_usec);
+     }
+   else
+     {
+	fprintf(stdout, "[%d] %4ld.%06ld: ", getpid(), tv.tv_sec, tv.tv_usec);
+     }
+
    va_start(args, fmt);
    vfprintf(stdout, fmt, args);
    va_end(args);
 }
-
-#else
-
-void
-Eprintf(const char *fmt, ...)
-{
-   static struct timeval tv1;
-   va_list             args;
-   struct timeval      tv, tvd;
-   unsigned long       nreq;
-
-   if (tv0.tv_sec == 0)
-      gettimeofday(&tv0, NULL);
-
-   gettimeofday(&tv, NULL);
-   _tvdiff(&tv, &tv0, &tv);
-   _tvdiff(&tvd, &tv1, &tv);
-   tv1 = tv;
-
-   nreq = (disp) ? NextRequest(disp) : 0;
-   fprintf(stdout, "[%d] %#8lx %4ld.%06ld [%3ld.%06ld]: ", getpid(),
-	   nreq, tv1.tv_sec, tv1.tv_usec, tvd.tv_sec, tvd.tv_usec);
-   va_start(args, fmt);
-   vfprintf(stdout, fmt, args);
-   va_end(args);
-}
-
-#endif
 
 #if ENABLE_DEBUG_EVENTS
 /*
