@@ -6,14 +6,22 @@
 #include <Evas.h>
 #include <Ecore.h>
 #include <Ecore_File.h>
-#include <Ecore_Config.h>
 #include <Ecore_Txt.h>
 #include <Ecore_Str.h>
 #include <Edje.h>
 #include <Ecore_Evas.h>
+
 #include <sqlite3.h>
 #include <gettext.h>
 #include <fcntl.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <fnmatch.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <pthread.h>
+
 #if WITH_IPOD_SUPPORT
 #include <gpod/itdb.h>
 #endif
@@ -82,7 +90,7 @@ struct _Enna_Db
    int                 fd_ev_read;
    int                 fd_ev_write;
    Ecore_Fd_Handler   *fd_ev_handler;
-   pthread_t           thread_scan_cover;
+   pthread_t           create_db_thread;
   void              (*func) (Enna_Db * db, char *path);
   
 #if WITH_IPOD_SUPPORT

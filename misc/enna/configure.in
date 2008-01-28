@@ -52,16 +52,6 @@ PKG_CHECK_MODULES([EMOTION], [emotion],
    [ AC_MSG_ERROR(emotion not found.) ]
 )
 
-PKG_CHECK_MODULES([LIBCURL], [libcurl],
-  [ ],
-  [ AC_MSG_ERROR(libcurl not found.) ]
-)
-
-PKG_CHECK_MODULES([TAGLIB], [taglib],
-  [ ],
-  [ AC_MSG_ERROR(taglib not found.) ]
-)
-
 PKG_CHECK_MODULES([LIBXML], [libxml-2.0],
   [ ],
   [ AC_MSG_ERROR(Libxml-2.0 not found.) ]
@@ -85,6 +75,11 @@ PKG_CHECK_MODULES([MUSICBRAINZ], [libmusicbrainz],
 PKG_CHECK_MODULES([SQLITE3], [sqlite3],
   [ ],
   [ AC_MSG_ERROR(sqlite3 not found.) ]
+)
+
+PKG_CHECK_MODULES([LIGHTMEDIASCANNER], [lightmediascanner >= 0.1],
+  [ ],
+  [ AC_MSG_ERROR(lightmediascanner not found.) ]
 )
 
 HAVE_LIRC=no

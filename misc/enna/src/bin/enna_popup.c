@@ -41,7 +41,7 @@
 #include "enna_config.h"
 #include "enna_volume_manager.h"
 #include "enna_cdda.h"
-#include "enna_db.h"
+#include "enna_scanner.h"
 #include "enna_util.h"
 
 #define SMART_NAME "enna_popup"
@@ -129,7 +129,7 @@ action_copy_to_ipod(void *data, void *data2)
 	  {
 	     printf("add ipod song\n");
 
-	     enna_db_add_song_to_ipod_db(sd->enna->ipod_db, sd->filename);
+	     //enna_db_add_song_to_ipod_db(sd->enna->ipod_db, sd->filename);
 	  }
 
      }

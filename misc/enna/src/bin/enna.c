@@ -46,7 +46,7 @@
 #include "enna_lirc.h"
 #include "enna_event.h"
 #include "enna_volume_manager.h"
-#include "enna_db.h"
+#include "enna_scanner.h"
 #include "enna_util.h"
 #if WITH_BLUETOOTH_SUPPORT
 #include "enna_bluetooth.h"
@@ -232,6 +232,7 @@ enna_init(Enna * enna, int run_gl)
    enna->home = enna_util_user_home_get();
 
    ecore_init();
+   ecore_file_init();
    ecore_evas_init();
    edje_init();
 
@@ -244,8 +245,8 @@ enna_init(Enna * enna, int run_gl)
    if (!ecore_file_exists(tmp))
       ecore_file_mkdir(tmp);
 
-   enna->db = enna_db_init(enna);
-
+   enna_scanner_init(enna);
+   
 #if WITH_BLUETOOTH_SUPPORT
    enna_bluetooth_init();
 #endif
@@ -459,7 +460,7 @@ enna_deinit(Enna * enna)
    ecore_evas_shutdown();
    ecore_shutdown();
    evas_shutdown();
-   enna_db_shutdown(enna->db);
+   enna_scanner_shutdown();
    ENNA_FREE(enna);
 }
 

@@ -5,6 +5,9 @@ If you want help improving enna, you can too. Just send me a e-mail. Read the TO
 
 You can configure enna with a simple file located in $HOME/.enna/enna.cfg
 
+you can find LightMediaScanner here : 
+http://lms.garage.maemo.org/
+
 This file looks like this : 
 
 --- begin of file ---
@@ -56,19 +59,17 @@ used=[0/1]
 you can enable or disable one module with this option
 
 [theme] section
-name=[default/touchscreen]
+name=[default]
+
 default = default theme
-touchscreen = theme with more buttons to enable control with touchscreen or mouse
 
 [keyboard] section
 you can change keybindings with this options. The name after = is the ecore event keyname
 
-
-
 ------------------------
 
 Default keyboard mapping : 
-If you don't have specified [keyboard] secition in your .ennarc file, 
+If you don't have specified [keyboard] section in your enna.cfg file, 
 you can find below the default mapping
 
 Name           | Key Name      | Enna Event
@@ -104,7 +105,6 @@ begin
 	button = prev
 	config = FastForward
 end
-
 
 have fun
 

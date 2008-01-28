@@ -46,7 +46,7 @@
 #include "enna_emotion.h"
 #include "enna_miniplayer.h"
 #include "enna_config.h"
-#include "enna_db.h"
+#include "enna_scanner.h"
 #include "enna_event.h"
 #include "enna_module.h"
 #include "enna_mainmenu.h"

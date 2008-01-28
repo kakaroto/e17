@@ -48,7 +48,7 @@
 #include "enna_config.h"
 #include "enna_mediaplayer.h"
 #include "enna_util.h"
-#include "enna_db.h"
+#include "enna_scanner.h"
 
 #define SMART_NAME "enna_cdda"
 #define API_ENTRY E_Smart_Data *sd; sd = evas_object_smart_data_get(obj); if ((!obj) || (!sd) || (evas_object_type_get(obj) && strcmp(evas_object_type_get(obj), SMART_NAME)))
@@ -176,7 +176,7 @@ _append_cdda_tracks(E_Smart_Data * sd, char *device)
    Evas_List          *metadatas, *l;
    char                temp[PATH_MAX];
 
-   metadatas = enna_db_cdda_metadata_get(sd->enna->db, device, NULL, NULL);
+   metadatas = NULL;//enna_db_cdda_metadata_get(sd->enna->db, device, NULL, NULL);
    if (metadatas)
      {
 
@@ -194,7 +194,7 @@ _append_cdda_tracks(E_Smart_Data * sd, char *device)
 	     sprintf(temp, "%d - %s", metadata->track_nb, metadata->title);
 	     enna_list_append_with_icon_name(sd->o_files, "icon_cdda", temp,
 					     _track_selected_cb, NULL, sd, id);
-	     sd->nb_tracks = metadata->nb_tracks;
+	     sd->nb_tracks = 0;
 	  }
 	enna_util_switch_objects(sd->switcher, NULL, sd->o_files);
 	enna_list_selected_set(sd->o_files, 0);

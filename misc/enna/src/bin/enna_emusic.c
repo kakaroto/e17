@@ -44,8 +44,7 @@
 #include "enna_emusic.h"
 #include "enna_miniplayer.h"
 #include "enna_config.h"
-#include "enna_db.h"
-#include "enna_event.h"
+#include "enna_scanner.h"
 #include "enna_util.h"
 
 #define ENNA_EMUSIC_STATE_PLAYING  0
@@ -432,11 +431,11 @@ _update_metadata(E_Smart_Data * sd)
    enna = evas_data_attach_get(evas_object_evas_get(sd->edje));
    dbg("type : %d\n", sd->music_type);
    if (sd->music_type == ENNA_EMUSIC_TYPE_AUDIO)
-      metadata = enna_metadata_get(enna->db, filename);
+     metadata = enna_scanner_audio_metadata_get(filename);
    else if (sd->music_type == ENNA_EMUSIC_TYPE_CDDA)
      {
-	metadatas =
-	   enna_db_cdda_metadata_get(enna->db, "/dev/cdrom", NULL, NULL);
+	/*metadatas =
+	  enna_db_cdda_metadata_get(enna->db, "/dev/cdrom", NULL, NULL);*/
 	for (l = metadatas; l; l = l->next)
 	  {
 	     metadata = l->data;
@@ -451,49 +450,45 @@ _update_metadata(E_Smart_Data * sd)
      }
    if (metadata)
      {
-	char                tmp[4096];
+   	char  tmp[4096];
+	char *cover;
+	
+   	edje_object_part_text_set(sd->edje, "enna.text.album", metadata->album);
+   	edje_object_part_text_set(sd->edje, "enna.text.title", metadata->title);
+   	edje_object_part_text_set(sd->edje, "enna.text.artist",
+   				  metadata->artist);
 
-	edje_object_part_text_set(sd->edje, "enna.text.album", metadata->album);
-	edje_object_part_text_set(sd->edje, "enna.text.title", metadata->title);
-	edje_object_part_text_set(sd->edje, "enna.text.artist",
-				  metadata->artist);
+   	sprintf(tmp, "%d / %02d", sd->playlist_id + 1,
+   		ecore_list_count(sd->playlist));
 
-	sprintf(tmp, "%d / %02d", sd->playlist_id + 1,
-		ecore_list_count(sd->playlist));
+   	edje_object_part_text_set(sd->edje, "enna.text.current", tmp);
 
-	edje_object_part_text_set(sd->edje, "enna.text.current", tmp);
+   	edje_object_signal_emit(sd->edje, "enna,cover,set", "enna");
+   	edje_object_part_swallow(sd->edje, "enna.swallow.cover", sd->cover);
+   	edje_object_part_geometry_get(sd->edje, "enna.swallow.cover", NULL,
+   				      NULL, &w, &h);
+	cover = enna_scanner_cover_get(metadata->album, metadata->artist);
 
-	edje_object_signal_emit(sd->edje, "enna,cover,set", "enna");
-	edje_object_part_swallow(sd->edje, "enna.swallow.cover", sd->cover);
-	edje_object_part_geometry_get(sd->edje, "enna.swallow.cover", NULL,
-				      NULL, &w, &h);
-
-	if (metadata->cover && metadata->cover[0] != '\0')
-	  {
-	     evas_object_image_file_set(sd->cover, metadata->cover, NULL);
-	  }
-	else
-	  {
-	     evas_object_image_file_set(sd->cover,
-					"/home/nico/usr/share/enna/no_cover.png",
-					NULL);
-	  }
-
-	evas_object_resize(sd->cover, w, h);
-	evas_object_image_fill_set(sd->cover, 0, 0, w, h);
-	enna_miniplayer_infos_set(enna->miniplayer, metadata->title,
-				  metadata->album, metadata->artist,
-				  metadata->cover);
+	
+   	if (cover)
+	  evas_object_image_file_set(sd->cover, cover, NULL);
+	
+   	evas_object_resize(sd->cover, w, h);
+   	evas_object_image_fill_set(sd->cover, 0, 0, w, h);
+   	enna_miniplayer_infos_set(enna->miniplayer, metadata->title,
+   				  metadata->album, metadata->artist,
+   				  cover);
+	ENNA_FREE(cover);
      }
    else
      {
-	edje_object_part_text_set(sd->edje, "enna.text.album", "");
-	edje_object_part_text_set(sd->edje, "enna.text.title", "No Metadata");
-	edje_object_part_text_set(sd->edje, "enna.text.artist", "");
-	edje_object_signal_emit(sd->edje, "enna,cover,unset", "enna");
-	enna = evas_data_attach_get(evas_object_evas_get(sd->edje));
-	enna_miniplayer_infos_set(enna->miniplayer, "", "", "No Metadata",
-				  NULL);
+   	edje_object_part_text_set(sd->edje, "enna.text.album", "");
+   	edje_object_part_text_set(sd->edje, "enna.text.title", "No Metadata");
+   	edje_object_part_text_set(sd->edje, "enna.text.artist", "");
+   	edje_object_signal_emit(sd->edje, "enna,cover,unset", "enna");
+   	enna = evas_data_attach_get(evas_object_evas_get(sd->edje));
+   	enna_miniplayer_infos_set(enna->miniplayer, "", "", "No Metadata",
+   				  NULL);
      }
    return 1;
 }

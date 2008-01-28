@@ -14,14 +14,12 @@ AM_CFLAGS =\
 	@MUSICBRAINZ_CFLAGS@ \
 	@EDBUS_CFLAGS@\
 	@DBUS_CFLAGS@ \
-	@LIBXML_CFLAGS@ \
-	@LIBCURL_CFLAGS@ \
 	@EET_CFLAGS@ \
-	@TAGLIB_CFLAGS@ \
 	@SQLITE3_CFLAGS@ \
 	@IPOD_CFLAGS@ \
-   @BLUETOOTH_CFLAGS@
-	
+	@BLUETOOTH_CFLAGS@\
+	@LIGHTMEDIASCANNER_CFLAGS@
+
 bin_PROGRAMS = enna
 
 enna_SOURCES = \
@@ -71,16 +69,16 @@ enna_SOURCES = \
 	enna_lirc.h\
 	enna_slideshow.h\
 	gettext.h \
-	enna_db.c \
-	enna_db.h \
 	enna_fm_db.c\
 	enna_fm_db.h \
-   	enna_bluetooth.c\
-   	enna_bluetooth.h \
+	enna_bluetooth.c\
+	enna_bluetooth.h \
 	enna_popup.c\
 	enna_popup.h\
 	enna_reflection.c\
-	enna_reflection.h
+	enna_reflection.h \
+	enna_scanner.c\
+	enna_scanner.h
 
 enna_LDADD =  	@EVAS_LIBS@ \
 		@ECORE_LIBS@ \
@@ -89,15 +87,13 @@ enna_LDADD =  	@EVAS_LIBS@ \
 		@EMOTION_LIBS@\
 		@DBUS_LIBS@ \
 		@MUSICBRAINZ_LIBS@ \
-		@LIBXML_LIBS@ \
-		@LIBCURL_LIBS@ \
 		@EET_LIBS@ \
-		@TAGLIB_LIBS@ \
+		@LIGHTMEDIASCANNER_LIBS@\
 		-ltag_c\
 		-lehal\
 		@lirc_libs@ \
-      @SQLITE3_LIBS@ \
-      @IPOD_LIBS@ \
-      @BLUETOOTH_LIBS@
+		@SQLITE3_LIBS@ \	
+		@IPOD_LIBS@ \
+      		@BLUETOOTH_LIBS@
 
 

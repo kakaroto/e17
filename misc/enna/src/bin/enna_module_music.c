@@ -49,7 +49,7 @@
 #include "enna_config.h"
 #include "enna_volume_manager.h"
 #include "enna_cdda.h"
-#include "enna_db.h"
+#include "enna_scanner.h"
 #include "enna_util.h"
 #include "enna_popup.h"
 #include "enna_reflection.h"
@@ -135,6 +135,9 @@ enna_module_music_process_event(Evas_Object * obj, enna_event event)
 {
    API_ENTRY           return;
 
+   dbg("event : %d\n", event);
+   
+
    if (sd->state == MUSIC_MODULE_STATE_MAINMENU)
      {
 	enna_list_process_event(sd->menu, event);
@@ -150,9 +153,10 @@ enna_module_music_process_event(Evas_Object * obj, enna_event event)
 	else
 	   enna_list_process_event(sd->menu_music, event);
      }
-   else if (sd->state == MUSIC_MODULE_STATE_BROWSE_DB
-	    || sd->state == MUSIC_MODULE_STATE_BROWSE_FOLDER)
+   else if ( sd->state == MUSIC_MODULE_STATE_BROWSE_FOLDER)
      {
+	dbg("event\n");
+	
 	if ((event == enna_event_1))
 	  {
 	     sd->popup = enna_popup_add(sd->enna->evas);
@@ -170,8 +174,7 @@ enna_module_music_process_event(Evas_Object * obj, enna_event event)
 	 * } */
 	enna_fm_process_event(sd->fm, event);
      }
-   else if (sd->state == MUSIC_MODULE_STATE_BROWSE_FOLDER
-	    || sd->state == MUSIC_MODULE_STATE_BROWSE_DB)
+   else if ( sd->state == MUSIC_MODULE_STATE_BROWSE_DB)
      {
 	enna_fm_db_process_event(sd->fm, event);
      }
@@ -295,51 +298,58 @@ _hilight_file_cb(void *data1, void *data2, char *filename)
 
 	edje_object_signal_emit(sd->edje, "enna,state,infos,hide", "enna");
 	enna = evas_data_attach_get(evas_object_evas_get(sd->edje));
-	metadata = enna_metadata_get(enna->db, filename);
-	edje_object_part_text_set(sd->edje, "text.album", metadata->album);
-	edje_object_part_text_set(sd->edje, "text.title", metadata->title);
-	edje_object_part_text_set(sd->edje, "text.artist", metadata->artist);
-	edje_object_part_text_set(sd->edje, "text.filename",
-				  ecore_file_file_get(filename));
 
-	edje_object_part_text_set(sd->edje, "text.genre", metadata->genre);
-
-	mb = metadata->size / (1024 * 1024);
-	kb = metadata->size / 1024 - (mb * 1024);
-	snprintf(tmp, sizeof(tmp), "%li,%li MB", mb, kb);
-	edje_object_part_text_set(sd->edje, "text.size", tmp);
-	m = metadata->duration / 60;
-	s = metadata->duration - (m * 60);
-	snprintf(tmp2, sizeof(tmp2), "%02li mn %02li sec", m, s);
-	edje_object_part_text_set(sd->edje, "text.duration", tmp2);
-
-	if (metadata->cover)
+	metadata = enna_scanner_audio_metadata_get(filename);
+	if (metadata)
 	  {
-	     edje_object_part_unswallow(sd->edje, sd->cover);
-	     evas_object_hide(sd->cover);
-	     evas_object_del(sd->cover);
-	     sd->cover = enna_reflection_add(evas_object_evas_get(sd->edje));
-	     edje_object_part_swallow(sd->edje, "cover.swallow", sd->cover);
-	     edje_object_part_geometry_get(sd->edje, "cover.swallow", NULL,
-					   NULL, &w, &h);
-	     enna_reflection_file_set(sd->cover, metadata->cover);
-	     evas_object_resize(sd->cover, w, h);
+	     char *cover;
+	     
+	     edje_object_part_text_set(sd->edje, "text.album", metadata->album);
+	     edje_object_part_text_set(sd->edje, "text.title", metadata->title);
+	     edje_object_part_text_set(sd->edje, "text.artist", metadata->artist);
+	     edje_object_part_text_set(sd->edje, "text.filename",
+				       ecore_file_file_get(filename));
+
+	     edje_object_part_text_set(sd->edje, "text.genre", metadata->genre);
+
+	     mb = metadata->size / (1024 * 1024);
+	     kb = metadata->size / 1024 - (mb * 1024);
+	     snprintf(tmp, sizeof(tmp), "%li,%li MB", mb, kb);
+	     edje_object_part_text_set(sd->edje, "text.size", tmp);
+	     //m = metadata->duration / 60;
+	     //s = metadata->duration - (m * 60);
+	     //snprintf(tmp2, sizeof(tmp2), "%02li mn %02li sec", m, s);
+	     //edje_object_part_text_set(sd->edje, "text.duration", tmp2);
+	     cover = (char*)enna_scanner_cover_get(metadata->album, metadata->artist);
+	     if (cover)
+	       {
+		  edje_object_part_unswallow(sd->edje, sd->cover);
+		  evas_object_hide(sd->cover);
+		  evas_object_del(sd->cover);
+		  sd->cover = enna_reflection_add(evas_object_evas_get(sd->edje));
+		  edje_object_part_swallow(sd->edje, "cover.swallow", sd->cover);
+		  edje_object_part_geometry_get(sd->edje, "cover.swallow", NULL,
+						NULL, &w, &h);
+		  enna_reflection_file_set(sd->cover, cover);
+		  evas_object_resize(sd->cover, w, h);
+	       }
+	     else
+	       {
+	          edje_object_part_unswallow(sd->edje, sd->cover);
+	          evas_object_hide(sd->cover);
+	          evas_object_del(sd->cover);
+	          sd->cover = edje_object_add(evas_object_evas_get(sd->obj));
+		  edje_object_file_set(sd->edje, enna_config_theme_get(), "unknown_cover");
+	          
+	          edje_object_part_geometry_get(sd->edje, "enna.cover.swallow", NULL, NULL, &w, &h);
+	          edje_extern_object_min_size_set(sd->cover, w, h);
+		  edje_object_part_swallow(sd->edje, "enna.cover.swallow", sd->cover);
+	          evas_object_resize(sd->cover, w, h);
+	          evas_object_show(sd->cover); 
+	       }
+	     edje_object_signal_emit(sd->edje, "enna,state,infos,show", "enna");
 	  }
-	else
-	  {
-	     edje_object_part_unswallow(sd->edje, sd->cover);
-	     evas_object_hide(sd->cover);
-	     evas_object_del(sd->cover);
-	     /*sd->cover = edje_object_add(evas_object_evas_get(sd->obj));
-	      * edje_object_file_set(sd->edje, enna_config_theme_get(), "unknown_cover");
-	      * 
-	      * edje_object_part_geometry_get(sd->edje, "enna.cover.swallow", NULL, NULL, &w, &h);
-	      * edje_extern_object_min_size_set(sd->cover, w, h);
-	      * edje_object_part_swallow(sd->edje, "enna.cover.swallow", sd->cover);
-	      * evas_object_resize(sd->cover, w, h);
-	      * evas_object_show(sd->cover); */
-	  }
-	edje_object_signal_emit(sd->edje, "enna,state,infos,show", "enna");
+	
      }
 
 }
@@ -400,7 +410,6 @@ _listen_to_webradio_cb(void *data, void *data2)
    edje_object_signal_emit(sd->edje, "enna,state,path,show", "enna");
    enna_fm_exe_file_cb_set(sd->fm, _play_radio_cb, sd, NULL);
    enna_fm_exit_cb_set(sd->fm, _exit_fm_cb, sd, NULL);
-   enna_fm_exit_cb_set(sd->fm, _exit_fm_cb, sd, NULL);
 
 }
 
@@ -436,11 +445,6 @@ _listen_to_ipod_cb(void *data, void *data2)
 
    mount_point = (char *)data2;
    dbg("Ipod Mount Point %s\n", mount_point);
-#if WITH_IPOD_SUPPORT
-   sd->enna->ipod_db = enna_db_ipod_init(sd->enna, mount_point);
-#else
-
-#endif
 
 }
 
@@ -462,15 +466,13 @@ _listen_to_music_by_folder_cb(void *data, void *data2)
      {
 	enna_util_switch_objects(sd->switcher, sd->menu, sd->fm);
 	ecore_timer_add(1.0, _late_clear, sd->menu);
-	sd->state = MUSIC_MODULE_STATE_BROWSE_FOLDER;
      }
    else
      {
-
 	enna_util_switch_objects(sd->switcher, sd->menu_music, sd->fm);
 	ecore_timer_add(1.0, _late_clear, sd->menu_music);
-	sd->state = MUSIC_MODULE_STATE_BROWSE_DB;
      }
+   sd->state = MUSIC_MODULE_STATE_BROWSE_FOLDER;
    enna_fm_filter_set(sd->fm, "music");
    enna_fm_root_set(sd->fm, root_path);
    edje_object_signal_emit(sd->edje, "enna,state,path,hide", "enna");
@@ -500,14 +502,13 @@ _listen_to_music_by_artist_cb(void *data, void *data2)
    enna_util_switch_objects(sd->switcher, sd->menu_music, sd->fm);
    ecore_timer_add(1.0, _late_clear, sd->menu_music);
    sd->state = MUSIC_MODULE_STATE_BROWSE_DB;
-   enna_fm_db_root_set(sd->fm, data2);
    edje_object_signal_emit(sd->edje, "enna,state,path,hide", "enna");
    edje_object_part_text_set(sd->edje, "enna.text.path", "Digital Corner");
    edje_object_signal_emit(sd->edje, "enna,state,path,show", "enna");
    enna_fm_db_exe_file_cb_set(sd->fm, _play_file_cb, sd, NULL);
-   enna_fm_db_hilight_file_cb_set(sd->fm, _hilight_file_cb, sd, NULL);
+   //enna_fm_db_hilight_file_cb_set(sd->fm, _hilight_file_cb, sd, NULL);
    enna_fm_db_exit_cb_set(sd->fm, _exit_fm_cb, sd, NULL);
-   enna_fm_db_change_path_cb_set(sd->fm, _fm_change_path_cb, sd);
+   //enna_fm_db_change_path_cb_set(sd->fm, _fm_change_path_cb, sd);
 
 }
 
@@ -523,7 +524,7 @@ _update_menu_music(E_Smart_Data * sd)
 				   "Browse by Artist",
 				   _listen_to_music_by_artist_cb, NULL, sd,
 				   "artist");
-   enna_list_append_with_icon_name(sd->menu_music, "icon_cdda",
+   /* enna_list_append_with_icon_name(sd->menu_music, "icon_cdda",
 				   "Browse by Album",
 				   _listen_to_music_by_artist_cb, NULL, sd,
 				   "album");
@@ -534,7 +535,7 @@ _update_menu_music(E_Smart_Data * sd)
    enna_list_append_with_icon_name(sd->menu_music, "icon_cdda", "Search Music",
 				   _listen_to_music_by_folder_cb, NULL, sd,
 				   NULL);
-
+   */
    enna_list_selected_set(sd->menu_music, 0);
    enna_util_switch_objects(sd->switcher, sd->menu, sd->menu_music);
    ecore_timer_add(1.0, _late_clear, sd->menu);
@@ -702,7 +703,7 @@ _e_smart_event_mouse_down(void *data, Evas * e, Evas_Object * obj,
 	_update_mainmenu(sd);
 	break;
      case MUSIC_MODULE_STATE_BROWSE_DB:
-	enna_fm_db_parent_go(sd->fm);
+	//enna_fm_db_parent_go(sd->fm);
 	break;
      default:
 	dbg("I'm a got, state unknown\n");

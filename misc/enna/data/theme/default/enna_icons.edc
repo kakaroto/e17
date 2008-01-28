@@ -46,6 +46,8 @@ STOCK_ICON("icon_open.png",  "icon_open", 128)
 STOCK_ICON("icon_play.png",  "icon_play", 128)
 STOCK_ICON("icon_stop.png",  "icon_stop", 128)
 STOCK_ICON("icon_pause.png",  "icon_pause", 128)
+STOCK_ICON("icon_artist.png",  "icon_artist", 128)
+STOCK_ICON("icon_album.png",  "icon_album", 128)
 //STOCK_ICON("icon_unknown.png",  "icon_unknown", 128)
 //STOCK_ICON("unknown_cover.png",  "unknown_cover", 300)
 
