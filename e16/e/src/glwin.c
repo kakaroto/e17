@@ -139,7 +139,7 @@ TexturesLoad(void)
 static void
 SceneResize(unsigned int width, unsigned int height)
 {
-   Dprintf("%s\n", __func__);
+   Dprintf("SceneResize\n");
 
    glViewport(0, 0, width, height);
    glMatrixMode(GL_PROJECTION);
@@ -228,10 +228,6 @@ DrawQube(ETexture * et, GLfloat x, GLfloat y, GLfloat z, GLfloat w, GLfloat h,
    t = 4.0f;
    w2 = round(w / 2.f);
    h2 = round(h / 2.f);
-
-#if 0
-   Eprintf("%s: x,y=%.2f,%.2f wxh=%.2fx%.2f\n", __func__, x, y, w2, h2);
-#endif
 
    glBegin(GL_QUADS);
 #if 1
