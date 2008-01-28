@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-01-24 19:38+0100\n"
+"POT-Creation-Date: 2008-01-28 23:06+0100\n"
 "PO-Revision-Date: 2000-01-14 20:43-0300\n"
 "Last-Translator: Vladimir STEPANOV <stepanov@bird.iki.rssi.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -409,7 +409,7 @@ msgstr "Запуск Enlightenment..."
 msgid "Settings..."
 msgstr "Настройки фокуса"
 
-#: src/container.c:1220 src/dialog.c:886 src/pager.c:990 config/strings.c:30
+#: src/container.c:1220 src/dialog.c:886 src/pager.c:1004 config/strings.c:30
 #: config/strings.c:132
 msgid "Close"
 msgstr "Закрыть"
@@ -620,11 +620,11 @@ msgstr "Верхняя"
 msgid "Bottom"
 msgstr "Нижняя"
 
-#: src/desktops.c:2411 src/pager.c:1899 src/pager.c:1924 src/pager.c:1949
+#: src/desktops.c:2411 src/pager.c:1913 src/pager.c:1938 src/pager.c:1963
 msgid "Left"
 msgstr "Левая"
 
-#: src/desktops.c:2417 src/pager.c:1911 src/pager.c:1936 src/pager.c:1961
+#: src/desktops.c:2417 src/pager.c:1925 src/pager.c:1950 src/pager.c:1975
 msgid "Right"
 msgstr "Правая"
 
@@ -703,7 +703,7 @@ msgid ""
 msgstr ""
 
 #: src/dialog.c:874 src/dialog.c:2100 src/dialog.c:2131 src/events.c:87
-#: src/setup.c:165 src/sound.c:191
+#: src/setup.c:165 src/sound.c:198
 msgid "OK"
 msgstr ""
 
@@ -1145,7 +1145,7 @@ msgstr "Iconbox"
 msgid "Iconbox Settings"
 msgstr "Установки Iconbox"
 
-#: src/ipc.c:192 src/ipc.c:1418
+#: src/ipc.c:192 src/ipc.c:1418 src/ipc.c:1425
 msgid "Message"
 msgstr ""
 
@@ -1158,16 +1158,26 @@ msgstr ""
 "Версия Enlightenment : %s\n"
 "Код текущий на       : %s\n"
 
-#: src/ipc.c:1419
-msgid "Enlightenment was built without composite support"
+#: src/ipc.c:1418 src/ipc.c:1425
+#, c-format
+msgid "e16 was built without %s support"
 msgstr ""
 
-#: src/ipc.c:1753
+#: src/ipc.c:1419
+#, fuzzy
+msgid "composite"
+msgstr "Включить поддержу звука"
+
+#: src/ipc.c:1426
+msgid "sound"
+msgstr ""
+
+#: src/ipc.c:1760
 #, fuzzy
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Справка по командам Enlightenment IPC"
 
-#: src/ipc.c:1757
+#: src/ipc.c:1764
 #, fuzzy
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
@@ -1178,23 +1188,23 @@ msgstr ""
 "\"help <команда>\": описание команды\n"
 "\n"
 
-#: src/ipc.c:1759 src/ipc.c:1779 src/ipc.c:1791
+#: src/ipc.c:1766 src/ipc.c:1786 src/ipc.c:1798
 #, fuzzy
 msgid "Commands currently available:\n"
 msgstr ""
 "\n"
 "доступные команды:\n"
 
-#: src/ipc.c:1777
+#: src/ipc.c:1784
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 
-#: src/ipc.c:1778
+#: src/ipc.c:1785
 #, fuzzy
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "\"help <команда>\": описание команды\n"
 
-#: src/ipc.c:1780 src/ipc.c:1792
+#: src/ipc.c:1787 src/ipc.c:1799
 #, fuzzy
 msgid "         <command>     : <description>\n"
 msgstr "<команда> : <описание>\n"
@@ -1387,125 +1397,125 @@ msgid ""
 "Settings Dialog\n"
 msgstr "Диалог сообщения Enlightenment"
 
-#: src/pager.c:983 config/strings.c:49 config/strings.c:131
+#: src/pager.c:997 config/strings.c:49 config/strings.c:131
 msgid "Window Options"
 msgstr "Окно"
 
-#: src/pager.c:986 config/strings.c:51 config/strings.c:134
+#: src/pager.c:1000 config/strings.c:51 config/strings.c:134
 msgid "Iconify"
 msgstr "Свернуть"
 
-#: src/pager.c:994 config/strings.c:133
+#: src/pager.c:1008 config/strings.c:133
 msgid "Annihilate"
 msgstr "Уничтожить"
 
-#: src/pager.c:998
+#: src/pager.c:1012
 msgid "Stick / Unstick"
 msgstr "Закрепить / Освободить"
 
-#: src/pager.c:1007
+#: src/pager.c:1021
 msgid "Desktop Options"
 msgstr "Рабочий стол"
 
-#: src/pager.c:1009
+#: src/pager.c:1023
 msgid "Pager Settings..."
 msgstr "Установки Pager-а..."
 
-#: src/pager.c:1014
+#: src/pager.c:1028
 msgid "Snapshotting Off"
 msgstr "Выключить отображение экрана"
 
-#: src/pager.c:1018
+#: src/pager.c:1032
 msgid "High Quality Off"
 msgstr "Низкое качество"
 
-#: src/pager.c:1020
+#: src/pager.c:1034
 msgid "High Quality On"
 msgstr "Высокое качество"
 
-#: src/pager.c:1025
+#: src/pager.c:1039
 msgid "Snapshotting On"
 msgstr "Включить отображение экрана"
 
-#: src/pager.c:1029
+#: src/pager.c:1043
 msgid "Zoom Off"
 msgstr ""
 
-#: src/pager.c:1031
+#: src/pager.c:1045
 msgid "Zoom On"
 msgstr ""
 
-#: src/pager.c:1788 src/pager.c:1879
+#: src/pager.c:1802 src/pager.c:1893
 msgid "Pager scanning speed:"
 msgstr "Скорость сканирования:"
 
-#: src/pager.c:1789 src/pager.c:1880
+#: src/pager.c:1803 src/pager.c:1894
 msgid "lines per second"
 msgstr "линий в секунду"
 
-#: src/pager.c:1818
+#: src/pager.c:1832
 msgid "Enable pager display"
 msgstr "Включить Pager"
 
-#: src/pager.c:1828
+#: src/pager.c:1842
 msgid "Pager Mode:"
 msgstr ""
 
-#: src/pager.c:1832
+#: src/pager.c:1846
 #, fuzzy
 msgid "Simple"
 msgstr "Размер"
 
-#: src/pager.c:1838
+#: src/pager.c:1852
 msgid "Make miniature snapshots of the screen"
 msgstr "Отображать экран"
 
-#: src/pager.c:1845
+#: src/pager.c:1859
 msgid "Live Update"
 msgstr ""
 
-#: src/pager.c:1856
+#: src/pager.c:1870
 msgid "Smooth high quality snapshots in snapshot mode"
 msgstr "Высокое качество иконок в режиме отображения экрана"
 
-#: src/pager.c:1861
+#: src/pager.c:1875
 msgid "Zoom in on pager windows when mouse is over them"
 msgstr "Увеличивать иконки окон при прохождении курсора"
 
-#: src/pager.c:1867
+#: src/pager.c:1881
 msgid "Pop up window title when mouse is over the window"
 msgstr "Показывать заголовок окна, когда курсор над иконкой"
 
-#: src/pager.c:1872
+#: src/pager.c:1886
 msgid "Continuously scan screen to update pager"
 msgstr "Непрерывно сканировать экран"
 
-#: src/pager.c:1895
+#: src/pager.c:1909
 msgid "Mouse button to select and drag windows:"
 msgstr "Кнопка для выбора и перемещения окон:"
 
-#: src/pager.c:1905 src/pager.c:1930 src/pager.c:1955
+#: src/pager.c:1919 src/pager.c:1944 src/pager.c:1969
 msgid "Middle"
 msgstr "Средняя"
 
-#: src/pager.c:1920
+#: src/pager.c:1934
 msgid "Mouse button to select desktops:"
 msgstr "Кнопка для выбора рабочих столов:"
 
-#: src/pager.c:1945
+#: src/pager.c:1959
 msgid "Mouse button to display pager menu:"
 msgstr "Кнопка для отображения меню Pager-а:"
 
-#: src/pager.c:1969
+#: src/pager.c:1983
 #, fuzzy
 msgid "Pagers"
 msgstr "Настройки Pager-а"
 
-#: src/pager.c:1970
+#: src/pager.c:1984
 msgid "Pager Settings"
 msgstr "Настройки Pager-а"
 
-#: src/pager.c:1973
+#: src/pager.c:1987
 msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog\n"
@@ -2055,11 +2065,11 @@ msgstr ""
 msgid "Error saving snaps file\n"
 msgstr "Ошибка сохранения сессионного файла\n"
 
-#: src/sound.c:120
+#: src/sound.c:124
 msgid "Error finding sound file"
 msgstr "Ошибка: звуковой файл не найден"
 
-#: src/sound.c:121
+#: src/sound.c:125
 #, c-format
 msgid ""
 "Warning!  Enlightenment was unable to load the\n"
@@ -2074,11 +2084,11 @@ msgstr ""
 "Enlightenment продолжит работу, однако, возможно,\n"
 "Вам следует проверить установки конфигурации.\n"
 
-#: src/sound.c:191
+#: src/sound.c:198
 msgid "Error initialising sound"
 msgstr "Ошибка инициализации звука"
 
-#: src/sound.c:192
+#: src/sound.c:199
 msgid ""
 "Audio was enabled for Enlightenment but there was an error\n"
 "communicating with the audio server (Esound). Audio will\n"
@@ -2088,27 +2098,19 @@ msgstr ""
 "ошибка при установлении соединения с Esound. Поддержка звука\n"
 "будет сейчас отключена.\n"
 
-#: src/sound.c:306
+#: src/sound.c:312
 msgid "Enable sounds"
 msgstr "Включить поддержу звука"
 
-#: src/sound.c:312
-msgid ""
-"Audio not available since EsounD was not\n"
-"present at the time of compilation."
-msgstr ""
-"Звуковые эффекты недоступны, так как во время компиляции\n"
-"не была обнаружена библиотека EsounD."
-
-#: src/sound.c:319
+#: src/sound.c:318
 msgid "Sound"
 msgstr ""
 
-#: src/sound.c:320
+#: src/sound.c:319
 msgid "Audio Settings"
 msgstr "Установки звука"
 
-#: src/sound.c:323
+#: src/sound.c:322
 msgid ""
 "Enlightenment Audio\n"
 "Settings Dialog\n"
@@ -2857,6 +2859,13 @@ msgstr ""
 #: config/strings.c:198
 msgid "Epplets"
 msgstr ""
+
+#~ msgid ""
+#~ "Audio not available since EsounD was not\n"
+#~ "present at the time of compilation."
+#~ msgstr ""
+#~ "Звуковые эффекты недоступны, так как во время компиляции\n"
+#~ "не была обнаружена библиотека EsounD."
 
 #, fuzzy
 #~ msgid "Enlightenment Epplets"
