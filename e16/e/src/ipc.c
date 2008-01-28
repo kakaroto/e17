@@ -1415,8 +1415,15 @@ IPC_Compat(const char *params)
 #if !USE_COMPOSITE
    else if (!strcmp(param1, "cm"))
      {
-	DialogOKstr(_("Message"),
-		    _("Enlightenment was built without composite support"));
+	DialogOK(_("Message"), _("e16 was built without %s support"),
+		 _("composite"));
+     }
+#endif
+#if !HAVE_SOUND
+   else if (!strcmp(param1, "sound"))
+     {
+	DialogOK(_("Message"), _("e16 was built without %s support"),
+		 _("sound"));
      }
 #endif
    else

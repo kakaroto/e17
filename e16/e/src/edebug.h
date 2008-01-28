@@ -51,6 +51,7 @@
 #define EDBUG_TYPE_DBUS         149
 #define EDBUG_TYPE_TIMERS       150
 #define EDBUG_TYPE_IDLERS       151
+#define EDBUG_TYPE_SOUND        152
 
 #define EDBUG_TYPE_COMPMGR      161
 #define EDBUG_TYPE_COMPMGR2     162

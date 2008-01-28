@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2007 Kim Woelders
+ * Copyright (C) 2004-2008 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -36,6 +36,8 @@ typedef struct
    Sample             *sample;
 } SoundClass;
 
+#define SC_NAME(sc) ((sc) ? (sc)->name : "(none)")
+
 static struct
 {
    char                enable;
@@ -47,8 +49,10 @@ static Ecore_List  *sound_list = NULL;
 #if USE_MODULES
 static const SoundOps *ops = NULL;
 #else
+#if defined(HAVE_SOUND_ESD)
 extern const SoundOps SoundOps_esd;
 static const SoundOps *ops = &SoundOps_esd;
+#endif
 #endif
 
 static void
@@ -59,7 +63,7 @@ _SclassSampleDestroy(void *data, void *user_data __UNUSED__)
    if (!sclass || !sclass->sample)
       return;
 
-   if (ops && ops->SampleDestroy)
+   if (ops)
       ops->SampleDestroy(sclass->sample);
    sclass->sample = NULL;
 }
@@ -105,7 +109,7 @@ SclassApply(SoundClass * sclass)
    if (!sclass || !Conf_sound.enable)
       return;
 
-   if (!sclass->sample && ops && ops->SampleLoad)
+   if (!sclass->sample)
      {
 	char               *file;
 
@@ -115,21 +119,20 @@ SclassApply(SoundClass * sclass)
 	     sclass->sample = ops->SampleLoad(file);
 	     Efree(file);
 	  }
-	else
+	if (!sclass->sample)
 	  {
 	     DialogOK(_("Error finding sound file"),
 		      _("Warning!  Enlightenment was unable to load the\n"
 			"following sound file:\n%s\n"
 			"Enlightenment will continue to operate, but you\n"
 			"may wish to check your configuration settings.\n"),
-		      file);
+		      sclass->file);
+	     SclassDestroy(sclass);
+	     return;
 	  }
      }
 
-   if (sclass->sample && ops && ops->SamplePlay)
-      ops->SamplePlay(sclass->sample);
-   else
-      SclassDestroy(sclass);
+   ops->SamplePlay(sclass->sample);
 }
 
 static int
@@ -156,6 +159,10 @@ SoundPlay(const char *name)
       return;
 
    sclass = SclassFind(name);
+
+   if (EDebug(EDBUG_TYPE_SOUND))
+      Eprintf("%s: %s file=%s\n", "SclassApply", name, SC_NAME(sclass));
+
    SclassApply(sclass);
 }
 
@@ -201,7 +208,7 @@ SoundExit(void)
 {
    ecore_list_for_each(sound_list, _SclassSampleDestroy, NULL);
 
-   if (ops && ops->Exit)
+   if (ops)
       ops->Exit();
 
    Conf_sound.enable = 0;
@@ -300,18 +307,10 @@ _DlgFillSound(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
 
    DialogItemTableSetOptions(table, 2, 0, 0, 0);
 
-#ifdef HAVE_LIBESD
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Enable sounds"));
    DialogItemCheckButtonSetPtr(di, &tmp_audio);
-#else
-   di = DialogAddItem(table, DITEM_TEXT);
-   DialogItemSetColSpan(di, 2);
-   DialogItemSetText(di,
-		     _("Audio not available since EsounD was not\n"
-		       "present at the time of compilation."));
-#endif
 }
 
 const DialogDef     DlgSound = {

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2007 Kim Woelders
+ * Copyright (C) 2004-2008 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -25,6 +25,15 @@
 
 #include "config.h"
 
+typedef struct
+{
+   unsigned int        channels;
+   unsigned int        bit_per_sample;
+   unsigned int        rate;
+   void               *data;
+   unsigned int        size;	/* N. bytes in data */
+} SoundSampleData;
+
 typedef struct _sample Sample;
 
 typedef struct
@@ -42,5 +51,7 @@ void                SoundPlay(const char *name);
 #else
 #define             SoundPlay(name) do{}while(0)
 #endif
+
+int                 SoundSampleGetData(const char *file, SoundSampleData * ssd);
 
 #endif /* _SOUND_H_ */

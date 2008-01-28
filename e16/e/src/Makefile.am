@@ -180,7 +180,7 @@ endif
 
 else
 
-MODULE_SRCS = sound_esd.c ttfont.c text_xft.c text_pango.c
+MODULE_SRCS = sound_esd.c sound_load.c ttfont.c text_xft.c text_pango.c
 MODULE_LIBS = $(ESD_LIBS) $(PANGO_LIBS) $(XFT_LIBS)
 MODULE_CFLAGS = $(ESD_CFLAGS) $(PANGO_CFLAGS) $(XFT_CFLAGS)
 
