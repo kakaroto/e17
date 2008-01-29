@@ -9,16 +9,21 @@ import commands
 
 
 def pkgconfig(*packages, **kw):
-    flag_map = {"-I": "include_dirs", "-L": "library_dirs", "-l": "libraries"}
-    pkgs = " ".join(packages)
-    cmdline = "pkg-config --libs --cflags %s" % pkgs
+    flag_map = {'-I': 'include_dirs', '-L': 'library_dirs', '-l': 'libraries',
+                '-D': 'prepro_vars'}
+    pkgs = ' '.join(packages)
+    cmdline = 'pkg-config --libs --cflags %s' % pkgs
 
     status, output = commands.getstatusoutput(cmdline)
     if status != 0:
         raise ValueError("could not find pkg-config module: %s" % pkgs)
 
     for token in output.split():
-        kw.setdefault(flag_map.get(token[:2]), []).append(token[2:])
+        flag  = flag_map.get(token[:2], None)
+        if flag is not None:
+            kw.setdefault(flag, []).append(token[2:])
+        else:
+            print "WARNING: Unknown pkg-config flag: %s" % token
     return kw
 
 
