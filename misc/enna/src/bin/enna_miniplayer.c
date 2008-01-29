@@ -148,9 +148,9 @@ enna_miniplayer_infos_set(Evas_Object * obj, char *title, char *album,
 	edje_object_part_swallow(sd->edje, "enna.swallow.cover", sd->cover);
 	edje_object_part_geometry_get(sd->edje, "enna.swallow.cover", NULL,
 				      NULL, &w, &h);
-	enna_reflection_file_set(sd->cover, cover);
+	enna_image_file_set(sd->cover, cover, NULL);
 	evas_object_resize(sd->cover, w, h);
-	evas_object_show(sd->cover);
+	edje_object_part_swallow(sd->edje, "swallow.cover", sd->cover);
      }
    else
       edje_object_signal_emit(sd->edje, "enna,cover,hide", "enna");
@@ -158,6 +158,19 @@ enna_miniplayer_infos_set(Evas_Object * obj, char *title, char *album,
    edje_object_signal_emit(sd->edje, "enna,miniplayer,update", "enna");
    enna_miniplayer_play(sd->obj);
 }
+
+EAPI void           enna_miniplayer_select(Evas_Object *obj)
+{
+   API_ENTRY           return;
+   edje_object_signal_emit(sd->edje, "miniplayer,select", "enna");
+}
+
+EAPI void           enna_miniplayer_unselect(Evas_Object *obj)
+{
+   API_ENTRY           return;
+   edje_object_signal_emit(sd->edje, "miniplayer,unselect", "enna");
+}
+
 
 static void
 _e_smart_init(void)
@@ -198,11 +211,9 @@ _e_smart_add(Evas_Object * obj)
    sd->h = 0;
    sd->edje = edje_object_add(evas_object_evas_get(obj));
    edje_object_file_set(sd->edje, enna_config_theme_get(), "widget/miniplayer");
-   sd->cover = enna_reflection_add(evas_object_evas_get(obj));
+   sd->cover = enna_image_add(evas_object_evas_get(obj));
    edje_object_part_swallow(sd->edje, "swallow.cover", sd->cover);
 
-   evas_object_show(sd->edje);
-   evas_object_show(sd->cover);
 
    enna_miniplayer_stop(sd->obj);
    evas_object_smart_member_add(sd->edje, obj);

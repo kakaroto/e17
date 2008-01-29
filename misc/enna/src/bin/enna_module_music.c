@@ -135,9 +135,6 @@ enna_module_music_process_event(Evas_Object * obj, enna_event event)
 {
    API_ENTRY           return;
 
-   dbg("event : %d\n", event);
-   
-
    if (sd->state == MUSIC_MODULE_STATE_MAINMENU)
      {
 	enna_list_process_event(sd->menu, event);
@@ -147,16 +144,13 @@ enna_module_music_process_event(Evas_Object * obj, enna_event event)
 	if (event == enna_event_escape)
 	  {
 	     sd->state = MUSIC_MODULE_STATE_MAINMENU;
-	     dbg("MAINMENU\n");
 	     _update_mainmenu(sd);
 	  }
 	else
 	   enna_list_process_event(sd->menu_music, event);
      }
    else if ( sd->state == MUSIC_MODULE_STATE_BROWSE_FOLDER)
-     {
-	dbg("event\n");
-	
+     {	
 	if ((event == enna_event_1))
 	  {
 	     sd->popup = enna_popup_add(sd->enna->evas);
@@ -168,10 +162,6 @@ enna_module_music_process_event(Evas_Object * obj, enna_event event)
 	else if (event == enna_event_escape)
 	   edje_object_signal_emit(sd->edje, "enna,state,infos,hide", "enna");
 
-	/*else  if ((event == enna_event_up || event == enna_event_down))
-	 * {
-	 * edje_object_signal_emit (sd->edje, "enna,state,infos,hide", "enna");
-	 * } */
 	enna_fm_process_event(sd->fm, event);
      }
    else if ( sd->state == MUSIC_MODULE_STATE_BROWSE_DB)
@@ -187,15 +177,12 @@ enna_module_music_process_event(Evas_Object * obj, enna_event event)
 	     evas_object_hide(sd->popup);
 	     evas_object_del(sd->popup);
 	     sd->state = sd->old_state;
-
 	  }
 	else
 	  {
 	     enna_popup_process_event(sd->popup, event);
 	  }
-
      }
-
 }
 
 EAPI void
@@ -332,6 +319,7 @@ _hilight_file_cb(void *data1, void *data2, char *filename)
 						NULL, &w, &h);
 		  enna_reflection_file_set(sd->cover, cover);
 		  evas_object_resize(sd->cover, w, h);
+		  ENNA_FREE(cover);
 	       }
 	     else
 	       {

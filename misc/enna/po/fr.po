@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-09-15 09:46+0200\n"
+"POT-Creation-Date: 2008-01-30 00:00+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,31 +16,31 @@ msgstr ""
 "Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/bin/enna.c:336
+#: src/bin/enna.c:372
 msgid "MediaPlayer"
 msgstr ""
 
-#: src/bin/enna.c:351
+#: src/bin/enna.c:383
 msgid "TV"
 msgstr "Tl"
 
-#: src/bin/enna.c:365
+#: src/bin/enna.c:396
 msgid "Music"
 msgstr "Musique"
 
-#: src/bin/enna.c:379
+#: src/bin/enna.c:409
 msgid "Video"
 msgstr "Vido"
 
-#: src/bin/enna.c:393
+#: src/bin/enna.c:422
 msgid "Photo"
 msgstr "Photo"
 
-#: src/bin/enna.c:407
+#: src/bin/enna.c:435
 msgid "Playlist"
 msgstr ""
 
-#: src/bin/enna_module_music.c:540
+#: src/bin/enna_module_music.c:619
 msgid "Listen to iPod"
 msgstr "Ecouter l'iPod"
 

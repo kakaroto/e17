@@ -23,6 +23,7 @@ EAPI void enna_scanner_init(Enna * enna);
 EAPI void enna_scanner_shutdown();
 
 EAPI int enna_scanner_nb_medias_get(int type);
+EAPI char *enna_scanner_cover_get(const char *album, const char *artist);
 EAPI Enna_Metadata *enna_scanner_audio_metadata_get(const char *filename);
 EAPI int enna_scanner_audio_nb_albums_get();
 EAPI int enna_scanner_audio_nb_artists_get();

@@ -92,7 +92,7 @@ group {
          color: 255 255 255 255;
          visible : 1;
             rel1{relative: 0.0 0.0; to: "menubar.clip";};
-            rel2{relative: 0.3 0.5; to: "menubar.clip";};
+            rel2{relative: 0.3 0.6; to: "menubar.clip";};
          }
 
          description{
@@ -100,7 +100,7 @@ group {
          color: 255 255 255 255;
          visible: 1;
             rel1{relative: 0.0 0.0; to: "menubar.clip";};
-            rel2{relative: 0.3 0.5; to: "menubar.clip";};
+            rel2{relative: 0.3 0.6; to: "menubar.clip";};
          }
       }
    

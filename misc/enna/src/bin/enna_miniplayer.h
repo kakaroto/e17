@@ -10,5 +10,7 @@ EAPI void           enna_miniplayer_infos_set(Evas_Object * obj, char *title,
 EAPI void           enna_miniplayer_play(Evas_Object * obj);
 EAPI void           enna_miniplayer_pause(Evas_Object * obj);
 EAPI void           enna_miniplayer_stop(Evas_Object * obj);
+EAPI void           enna_miniplayer_select(Evas_Object *obj);
+EAPI void           enna_miniplayer_unselect(Evas_Object *obj);
 
 #endif

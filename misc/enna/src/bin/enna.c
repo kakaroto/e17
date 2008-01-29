@@ -171,6 +171,8 @@ static void
    if (!enna)
      return;
    enna_module_selected_name_set (enna->modules, "MediaPlayer Module");
+   enna_miniplayer_select(enna->miniplayer);
+   
 }
 
 static int

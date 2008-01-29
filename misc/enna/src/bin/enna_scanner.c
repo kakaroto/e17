@@ -54,10 +54,10 @@ struct _Enna_Scanner
 {
   unsigned int     commit_interval;
   unsigned int     slave_timeout;
-  char            *db_path;
+  const char      *db_path;
   Ecore_List      *parsers;
-  char            *charset;
-  char            *scan_path;
+  const char      *charset;
+  const char      *scan_path;
   lms_t           *lms;
   sqlite3         *db;
   int             fd_ev_read;
@@ -444,9 +444,9 @@ enna_scanner_init(Enna * enna)
    scanner->slave_timeout = 1000; /* 1sec */
    /* Set db filename */
    sprintf(tmp, "%s/.enna/%s", enna_util_user_home_get(), "enna_music.db");
-   scanner->db_path = strdup(tmp) ;
+   scanner->db_path = evas_stringshare_add(tmp) ;
    /* Set charset to UTF-8 */
-   scanner->charset = strdup("iso-8859-1");
+   scanner->charset = evas_stringshare_add("iso-8859-1");
    /* Set base path */
    scanner->scan_path = enna_config_get_conf_value_or_default("music_module",
 							      "base_path", "/");
@@ -493,15 +493,15 @@ enna_scanner_init(Enna * enna)
 
  error: 
    lms_free(scanner->lms);
-   ENNA_FREE(scanner->db_path);
-   ENNA_FREE(scanner->charset);
+   evas_stringshare_del(scanner->db_path);
+   evas_stringshare_del(scanner->charset);
    ENNA_FREE(scanner);
 }
 
 static void
 _metadata_print(Enna_Metadata * metadata)
 {
-#if 1
+#if 0
    dbg("---------\n");
    dbg("\n\tfile:\t%s\n\ttitle:\t%s\n\tartist:\t%s\n\talbum:\t%s\n\tgenre:\t%s\n"
        "\ttrack\t%d\n\tplay count:\t%d\n",
@@ -522,8 +522,8 @@ enna_scanner_shutdown()
    lms_stop_processing(scanner->lms);
    //pthread_join(scanner->scanner_thread, NULL);   
    lms_free(scanner->lms);
-   ENNA_FREE(scanner->db_path);
-   ENNA_FREE(scanner->charset);
+   evas_stringshare_del(scanner->db_path);
+   evas_stringshare_del(scanner->charset);
    ENNA_FREE(scanner);
 }
 
@@ -560,7 +560,7 @@ EAPI char *enna_scanner_cover_get(const char *album, const char *artist)
 
    sprintf(cover_filename, "%s/.enna/covers/%s - %s.jpg", enna_util_user_home_get(), artist, album);
    if (ecore_file_exists(cover_filename))
-	return strdup(cover_filename);
+     return strdup(cover_filename);
    else
      return NULL;
 }
@@ -598,13 +598,11 @@ EAPI Enna_Metadata *enna_scanner_audio_metadata_get(const char *filename)
                                       "path like ?");
    if (!stmt)
      return NULL;
-   dbg("ok\n");
    
    ret = _db_bind_blob(stmt, 1, filename, strlen(filename));
    if (ret != 0)
      goto done;
 
-   dbg("ok\n");
    r = sqlite3_step(stmt);
    if (r == SQLITE_DONE) {
       fprintf(stderr, "ERROR: could not get file info from table: %s\n",
@@ -612,7 +610,7 @@ EAPI Enna_Metadata *enna_scanner_audio_metadata_get(const char *filename)
       ret = 1;
       goto done;
    }
-   dbg("ok\n");
+ 
    id = sqlite3_column_int(stmt, 0);
    m->uri = (char*)sqlite3_column_blob(stmt, 1);
    m->title = (char*)sqlite3_column_blob(stmt, 2);
@@ -625,7 +623,6 @@ EAPI Enna_Metadata *enna_scanner_audio_metadata_get(const char *filename)
    m->play_count = sqlite3_column_int(stmt, 9);
    _metadata_print(m);
 
-   dbg("ID of filename : %d size : %d\n", id, m->size);
    return m;
    
 
@@ -717,6 +714,7 @@ EAPI Ecore_List *enna_scanner_audio_artists_list_get()
      goto done;
    
    albums = ecore_list_new();
+   ecore_list_free_cb_set(albums, free);
    while ( sqlite3_step ( stmt ) == SQLITE_ROW )
     { 
        char  *album;
@@ -808,7 +806,7 @@ EAPI Ecore_List *enna_scanner_audio_tracks_of_album_list_get(const char *artist,
 
        m->title  = strdup((char*)sqlite3_column_text(stmt,0));
        m->uri  = strdup((char*)sqlite3_column_text(stmt,1));
-       m->track_nb =  (char*)sqlite3_column_int(stmt,2);
+       m->track_nb =  sqlite3_column_int(stmt,2);
        if (m)
 	 ecore_list_append(tracks, m);
        

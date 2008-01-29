@@ -468,8 +468,6 @@ _update_metadata(E_Smart_Data * sd)
    	edje_object_part_geometry_get(sd->edje, "enna.swallow.cover", NULL,
    				      NULL, &w, &h);
 	cover = enna_scanner_cover_get(metadata->album, metadata->artist);
-
-	
    	if (cover)
 	  evas_object_image_file_set(sd->cover, cover, NULL);
 	

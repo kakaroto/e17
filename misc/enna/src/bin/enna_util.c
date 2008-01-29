@@ -38,7 +38,7 @@
 EAPI char          *
 enna_util_user_home_get()
 {
-   static char        *home = NULL;
+   static char *home = NULL;
 
    if (home)
       return home;
@@ -67,7 +67,7 @@ enna_util_has_suffix(char *str, Evas_List * patterns)
 	for (i = 0; i < strlen(str); i++)
 	  tmp[i] = tolower(str[i]);
 	result |= ecore_str_has_suffix(tmp, (char *)l->data);
-	free(tmp);
+	ENNA_FREE(tmp);
      }
    return result;
 }

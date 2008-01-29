@@ -286,14 +286,10 @@ _display_albums_view(E_Smart_Data * sd)
      {
 	
 	enna_list_append_with_icon_name(sd->o_view, "icon_album", item_name,
-			 _select_album_cb, NULL, sd,
-			 item_name);
-	dbg("%s %s\n",sd->album, item_name);
-	
+					_select_album_cb, NULL, sd,
+					item_name);
 	if (sd->album && !strcmp(sd->album, item_name))
 	  {
-	     
-	     dbg("found\n");
 	     to_select = i;
 	     ENNA_FREE(sd->album);
 	  }
