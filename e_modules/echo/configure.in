@@ -72,9 +72,8 @@ fi
 
 if test "$have_alsa" = "yes"; then
     AC_DEFINE(HAVE_ALSA, 1, [Define if the ALSA output plugin should be built])
-else
-    have_alsa=no
 fi
+AM_CONDITIONAL(BUILD_ALSA, test "$have_alsa" = "yes", [ Build alsa support ])
 
 AC_SUBST(SOUND_CFLAGS)
 AC_SUBST(SOUND_LDFLAGS)
