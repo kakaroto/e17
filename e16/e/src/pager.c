@@ -54,6 +54,10 @@
 #define PAGER_MODE_SNAP   1
 #define PAGER_MODE_LIVE   2
 
+#define PAGER_UPD_EWIN_GEOM     0
+#define PAGER_UPD_EWIN_GONE     1
+#define PAGER_UPD_EWIN_DAMAGE   2
+
 #define EwinGetVX(ew) (ew->vx)
 #define EwinGetVY(ew) (ew->vy)
 #define EwinGetVX2(ew) (ew->vx + EoGetW(ew))
@@ -485,7 +489,7 @@ doPagerUpdate(Pager * p)
 }
 
 static void
-PagerUpdate(Pager * p, int x1, int y1, int x2, int y2)
+PagerUpdate(Pager * p, int why, int x1, int y1, int x2, int y2)
 {
    if (!Conf_pagers.enable)
       return;
@@ -500,7 +504,7 @@ PagerUpdate(Pager * p, int x1, int y1, int x2, int y2)
       p->y2 = y2;
 
    p->do_update = 1;
-   Mode_pagers.update_pending = 1;
+   Mode_pagers.update_pending |= 1 << why;
 }
 
 static void
@@ -772,6 +776,7 @@ PagersForeach(Desk * dsk, void (*func) (Pager * p, void *prm), void *prm)
 
 typedef struct
 {
+   int                 why;
    int                 x1, y1, x2, y2;
 } pager_update_data;
 
@@ -780,17 +785,18 @@ _PagerUpdate(Pager * p, void *prm)
 {
    pager_update_data  *pud = (pager_update_data *) prm;
 
-   PagerUpdate(p, pud->x1, pud->y1, pud->x2, pud->y2);
+   PagerUpdate(p, pud->why, pud->x1, pud->y1, pud->x2, pud->y2);
 }
 
 static void
-PagersUpdate(Desk * dsk, int x1, int y1, int x2, int y2)
+PagersUpdate(Desk * dsk, int why, int x1, int y1, int x2, int y2)
 {
    pager_update_data   pud;
 
    if (ecore_list_count(pager_list) <= 0)
       return;
 
+   pud.why = why;
    pud.x1 = x1;
    pud.y1 = y1;
    pud.x2 = x2;
@@ -823,21 +829,25 @@ static void
 PagersCheckUpdate(void)
 {
    static double       tlast = 0.;
-   double              t;
+   double              t, dt;
 
    if (!Mode_pagers.update_pending || !Conf_pagers.enable)
       return;
 
-   t = GetTime();
-   if (t - tlast < .05)
+   if (Mode_pagers.update_pending == (1 << PAGER_UPD_EWIN_DAMAGE))
      {
-	/* The purpose of this timer is to trigger the idler */
-	if (!Mode_pagers.timer_pending)
-	   DoIn("pg-upd", .1, _PagersUpdateTimeout, 0, NULL);
-	Mode_pagers.timer_pending = 1;
-	return;
+	t = GetTime();
+	dt = (Conf_pagers.scanspeed > 0) ? 1. / Conf_pagers.scanspeed : .1;
+	if (t - tlast < dt)
+	  {
+	     /* The purpose of this timer is to trigger the idler */
+	     if (!Mode_pagers.timer_pending)
+		DoIn("pg-upd", dt, _PagersUpdateTimeout, 0, NULL);
+	     Mode_pagers.timer_pending = 1;
+	     return;
+	  }
+	tlast = t;
      }
-   tlast = t;
 
    PagersForeach(NULL, PagerCheckUpdate, NULL);
 
@@ -925,17 +935,17 @@ PagersUpdateEwin(EWin * ewin, int why)
 
    switch (why)
      {
-     case 0:			/* Change */
+     case PAGER_UPD_EWIN_GEOM:
 	if (!EoIsShown(ewin) || ewin->state.animated)
 	   return;
 	break;
 
-     case 1:			/* Gone */
+     case PAGER_UPD_EWIN_GONE:
 	if (ewin == HiwinGetEwin(hiwin, 0))
 	   PagerHiwinHide();
 	break;
 
-     case 2:			/* Damage */
+     case PAGER_UPD_EWIN_DAMAGE:
 	if (ewin->type == EWIN_TYPE_PAGER)
 	   return;
 	if (PagersGetMode() != PAGER_MODE_LIVE)
@@ -944,7 +954,7 @@ PagersUpdateEwin(EWin * ewin, int why)
      }
 
    dsk = (EoIsFloating(ewin)) ? DesksGetCurrent() : EoGetDesk(ewin);
-   PagersUpdate(dsk, EwinGetVX(ewin), EwinGetVY(ewin),
+   PagersUpdate(dsk, why, EwinGetVX(ewin), EwinGetVY(ewin),
 		EwinGetVX2(ewin), EwinGetVY2(ewin));
 }
 
@@ -2018,7 +2028,8 @@ PagersSighan(int sig, void *prm)
 	PagerHiwinHide();
 	break;
      case ESIGNAL_AREA_SWITCH_DONE:
-	PagersUpdate(DesksGetCurrent(), 0, 0, 99999, 99999);
+	PagersUpdate(DesksGetCurrent(), PAGER_UPD_EWIN_GEOM,
+		     0, 0, 99999, 99999);
 	UpdatePagerSel();
 	break;
 
@@ -2045,13 +2056,13 @@ PagersSighan(int sig, void *prm)
 	break;
 
      case ESIGNAL_EWIN_UNMAP:
-	PagersUpdateEwin((EWin *) prm, 1);
+	PagersUpdateEwin((EWin *) prm, PAGER_UPD_EWIN_GONE);
 	break;
      case ESIGNAL_EWIN_CHANGE:
-	PagersUpdateEwin((EWin *) prm, 0);
+	PagersUpdateEwin((EWin *) prm, PAGER_UPD_EWIN_GEOM);
 	break;
      case ESIGNAL_EWIN_DAMAGE:
-	PagersUpdateEwin((EWin *) prm, 2);
+	PagersUpdateEwin((EWin *) prm, PAGER_UPD_EWIN_DAMAGE);
 	break;
      }
 }
