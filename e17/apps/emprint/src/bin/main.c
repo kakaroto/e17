@@ -42,6 +42,7 @@ static void _em_do_window(void);
 static void _em_do_region(void);
 static void _em_do_thumb(void *data);
 static void _em_take_shot(int x, int y, int w, int h);
+static int _em_cb_key_down(void *data, int type, void *event);
 static int _em_cb_mouse_move(void *data, int type, void *event);
 static int _em_cb_mouse_up(void *data, int type, void *event);
 static int _em_cb_mouse_down(void *data, int type, void *event);
@@ -59,6 +60,7 @@ static Ecore_X_Window input_window = 0;
 static Ecore_Event_Handler *mouse_move_hdl = 0;
 static Ecore_Event_Handler *mouse_up_hdl = 0;
 static Ecore_Event_Handler *mouse_down_hdl = 0;
+static Ecore_Event_Handler *key_hdl = 0;
 static Ecore_Timer *timer = NULL;
 static Band *band = NULL;
 static int gx = -1, gy = -1;
@@ -123,9 +125,6 @@ main(int argc, char **argv)
 
    /* begin the ecore main loop which will keep our app running */
    ecore_main_loop_begin();
-
-   /* launch application if user wanted one */
-   if (opts->app) _em_do_app();
 
    /* free our option structure */
    _em_free_options();
@@ -213,8 +212,7 @@ _em_parse_cmdln(Options *o, int argc, char *argv[])
      }
 
    /* The filename, if it exists, is expected to be the last command line arg */
-   if (optind < argc)
-     o->filename = evas_stringshare_add(argv[optind]);
+   if (optind < argc) o->filename = evas_stringshare_add(argv[optind]);
 }
 
 static void 
@@ -462,9 +460,16 @@ _em_do_window(void)
    /* show the input window */
    ecore_x_window_show(input_window);
 
+   /* grab keystrokes */
+   ecore_x_keyboard_grab(input_window);
+
    /* set the mouse pointer */
    if ((cursor = ecore_x_cursor_shape_get(ECORE_X_CURSOR_CROSS)))
      ecore_x_window_cursor_set(input_window, cursor);
+
+   /* setup handler to recieve key event */
+   key_hdl = ecore_event_handler_add(ECORE_X_EVENT_KEY_DOWN, 
+                                     _em_cb_key_down, NULL);
 
    /* setup handler to recieve click event */
    mouse_up_hdl = ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_UP, 
@@ -492,7 +497,16 @@ _em_do_region(void)
 
    /* create a new input window to recieve click event */
    input_window = ecore_x_window_input_new(root, x, y, w, h);
+
+   /* show the input window */
    ecore_x_window_show(input_window);
+
+   /* grab keystrokes */
+   ecore_x_keyboard_grab(input_window);
+
+   /* setup handler to recieve key event */
+   key_hdl = ecore_event_handler_add(ECORE_X_EVENT_KEY_DOWN, 
+                                     _em_cb_key_down, NULL);
 
    /* setup handlers to recieve mouse events */
    mouse_move_hdl = ecore_event_handler_add(ECORE_X_EVENT_MOUSE_MOVE, 
@@ -617,6 +631,41 @@ _em_take_shot(int x, int y, int w, int h)
    /* cleanup imlib */
    imlib_context_set_image(im); 
    imlib_free_image_and_decache();
+
+   /* launch application if user wanted one */
+   if (opts->app) _em_do_app();
+}
+
+static int 
+_em_cb_key_down(void *data, int type, void *event) 
+{
+   Ecore_X_Event_Key_Down *ev;
+
+   ev = event;
+
+   /* check for correct window */
+   if (ev->win != input_window) return 1;
+
+   /* check for correct key */
+   if (!strcmp(ev->keysymbol, "Escape")) 
+     {
+        /* delete the event handlers */
+        ecore_event_handler_del(key_hdl);
+        if (mouse_move_hdl) ecore_event_handler_del(mouse_move_hdl);
+        if (mouse_up_hdl) ecore_event_handler_del(mouse_up_hdl);
+        if (mouse_down_hdl) ecore_event_handler_del(mouse_down_hdl);
+
+        /* release key grab */
+        ecore_x_keyboard_ungrab();
+
+        /* delete the input window */
+        ecore_x_window_del(input_window);
+        input_window = 0;
+
+        ecore_main_loop_quit();
+        return 0;
+     }
+   return 1;
 }
 
 static int 
@@ -680,8 +729,13 @@ _em_cb_mouse_up(void *data, int type, void *event)
    ecore_x_pointer_last_xy_get(&x, &y);
 
    /* delete the event handlers */
-   ecore_event_handler_del(mouse_up_hdl);
-   mouse_up_hdl = 0;
+   if (key_hdl) ecore_event_handler_del(key_hdl);
+   if (mouse_move_hdl) ecore_event_handler_del(mouse_move_hdl);
+   if (mouse_up_hdl) ecore_event_handler_del(mouse_up_hdl);
+   if (mouse_down_hdl) ecore_event_handler_del(mouse_down_hdl);
+
+   /* release key grab */
+   ecore_x_keyboard_ungrab();
 
    /* delete the input window */
    ecore_x_window_del(input_window);
@@ -744,7 +798,8 @@ _em_cb_timer(void *data)
 	  _em_do_window();
 	else
 	  _em_do_screen();
-	return 0;
+
+        return 0;
      }
 
    /* tell the user we are counting down */
@@ -827,6 +882,7 @@ _em_grab_region_end(void)
    int x, y, w, h;
 
    /* delete the event handlers */
+   ecore_event_handler_del(key_hdl);
    ecore_event_handler_del(mouse_move_hdl);
    ecore_event_handler_del(mouse_up_hdl);
    ecore_event_handler_del(mouse_down_hdl);
