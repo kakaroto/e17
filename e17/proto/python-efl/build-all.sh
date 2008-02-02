@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 PREFIX=$1
 [ -z "$PREFIX" ] && PREFIX="$HOME/usr"
