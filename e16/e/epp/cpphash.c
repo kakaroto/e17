@@ -65,7 +65,8 @@ cpp_lookup(const char *name, int len, int hash)
 
    if (len < 0)
      {
-	for (bp = name; IS_IDCHAR(*bp); bp++);
+	for (bp = name; IS_IDCHAR(*bp); bp++)
+	   ;
 	len = bp - name;
      }
    if (hash < 0)

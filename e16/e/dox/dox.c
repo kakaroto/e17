@@ -633,7 +633,8 @@ main(int argc, char **argv)
 	     break;
 
 	  case MotionNotify:
-	     while (XCheckTypedEvent(disp, ev.type, &ev));
+	     while (XCheckTypedEvent(disp, ev.type, &ev))
+		;
 	     {
 		static Link        *pl = NULL;
 		char                found = 0;

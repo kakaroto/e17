@@ -607,7 +607,8 @@ cpp_define(cpp_reader * pfile, unsigned char *str)
 	cpp_error(pfile, "malformed option `-D %s'", str);
 	return;
      }
-   while (is_idchar[*++p]);
+   while (is_idchar[*++p])
+      ;
    if (*p == 0)
      {
 	buf = (unsigned char *)alloca(p - buf + 4);
@@ -670,7 +671,8 @@ make_assertion(cpp_reader * pfile, const char *option, const char *str)
 	cpp_error(pfile, "malformed option `%s %s'", option, str);
 	return;
      }
-   while (is_idchar[*++p]);
+   while (is_idchar[*++p])
+      ;
    while (*p == ' ' || *p == '\t')
       p++;
    if (!(*p == 0 || *p == '('))
@@ -1736,7 +1738,8 @@ check_macro_name(cpp_reader * pfile, unsigned char *symname, const char *usage)
    unsigned char      *p;
    int                 sym_length;
 
-   for (p = symname; is_idchar[*p]; p++);
+   for (p = symname; is_idchar[*p]; p++)
+      ;
    sym_length = p - symname;
    if (sym_length == 0)
      {
