@@ -397,10 +397,7 @@ doPagerUpdate(Pager * p)
 	EWin               *ewin;
 
 	ewin = lst[i];
-
 	if (!EoIsShown(ewin))
-	   continue;
-	if (ewin->o.fading)
 	   continue;
 
 	PagerEwinUpdateMini(p, ewin);
