@@ -6,6 +6,9 @@
 #include "ewl_radiobutton.h"
 #include "ewl_separator.h"
 
+#include <stdio.h>
+#include <string.h>
+
 static Ewl_Widget *button_aleft, *button_acenter;
 static Ewl_Widget *button_aright, *button_atop, *button_abottom;
 static Ewl_Widget *button_pleft, *button_pright, *button_ptop, *button_pbottom;
@@ -14,6 +17,14 @@ static int create_test(Ewl_Container *box);
 static void border_change_alignment(Ewl_Widget *w, void *ev, void *data);
 static void border_change_position(Ewl_Widget *w, void *ev, void *data);
 static void checkbutton_cb(Ewl_Widget *w, void *ev, void *data);
+
+static int border_is_test(char *buf, int len);
+static int label_set_get_test(char *buf, int len);
+
+static Ewl_Unit_Test border_unit_tests[] = {
+		{"Border is", border_is_test, NULL, -1, 0},
+		{"Border label set/get", label_set_get_test, NULL, -1, 0},
+	};
 
 void
 test_info(Ewl_Test *test)
@@ -24,6 +35,7 @@ test_info(Ewl_Test *test)
 	test->filename = __FILE__;
 	test->func = create_test;
 	test->type = EWL_TEST_TYPE_CONTAINER;
+	test->unit_tests = border_unit_tests;
 }
 
 static int
@@ -227,3 +239,43 @@ checkbutton_cb(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 	}
 }
 
+static int border_is_test(char *buf, int len)
+{
+	Ewl_Widget *border;
+	int ret = 0;
+
+	border = ewl_border_new();
+	if (ewl_widget_type_is(border, EWL_BORDER_TYPE))
+		ret = 1;
+	else
+		LOG_FAILURE(buf, len, "border type doesn't match");
+
+	ewl_widget_destroy(border);
+
+	return ret;
+}
+
+static int label_set_get_test(char *buf, int len)
+{
+	Ewl_Widget *border;
+	int ret = 0;
+
+	border = ewl_border_new();
+	if (ewl_border_label_get(EWL_BORDER(border)))
+		LOG_FAILURE(buf, len, "default border label set");
+	else {
+		const char *label;
+
+		ewl_border_label_set(EWL_BORDER(border), "label value");
+
+		label = ewl_border_label_get(EWL_BORDER(border));
+		if (label && !strcmp(label, "label value"))
+			ret = 1;
+		else
+			LOG_FAILURE(buf, len, "border label doesn't match");
+	}
+
+	ewl_widget_destroy(border);
+
+	return ret;
+}
