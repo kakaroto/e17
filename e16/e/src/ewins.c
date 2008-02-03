@@ -1831,29 +1831,53 @@ typedef union
    } f;
 } EWinMiscFlags;
 
+typedef union
+{
+   unsigned int        all;
+   struct
+   {
+      unsigned            nua:1;
+      unsigned            ctf:1;
+      unsigned            nbg:1;
+      unsigned:           29;
+   } f;
+} EWinMiscFlags2;
+
 void
 EwinFlagsEncode(const EWin * ewin, unsigned int *flags)
 {
    EWinMiscFlags       fm;
+   EWinMiscFlags2      fm2;
 
    fm.all = 0;
    fm.f.inh_app = ewin->inh_app.all;
    fm.f.inh_user = ewin->inh_user.all;
    fm.f.inh_wm = ewin->inh_wm.all;
 
+   fm2.all = 0;
+   fm2.f.nua = ewin->props.never_use_area;
+   fm2.f.ctf = ewin->props.focusclick;
+   fm2.f.nbg = ewin->props.no_button_grabs;
+
    flags[0] = fm.all;
-   flags[1] = 0;
+   flags[1] = fm2.all;
 }
 
 void
 EwinFlagsDecode(EWin * ewin, const unsigned int *flags)
 {
    EWinMiscFlags       fm;
+   EWinMiscFlags2      fm2;
 
    fm.all = flags[0];
    ewin->inh_app.all = fm.f.inh_app;
    ewin->inh_user.all = fm.f.inh_user;
    ewin->inh_wm.all = fm.f.inh_wm;
+
+   fm2.all = flags[1];
+   ewin->props.never_use_area = fm2.f.nua;
+   ewin->props.focusclick = fm2.f.ctf;
+   ewin->props.no_button_grabs = fm2.f.nbg;
 }
 
 void

@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2007 Kim Woelders
+ * Copyright (C) 2004-2008 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -721,13 +721,13 @@ IpcWinop(const WinOp * wop, EWin * ewin, const char *prm)
 	on = ewin->props.never_use_area;
 	SetEwinBoolean(wop->name, &on, param1, 1);
 	ewin->props.never_use_area = on;
-	break;
+	goto ewin_update_snap_flags;
 
      case EWIN_OP_FOCUS_CLICK:
 	on = ewin->props.focusclick;
 	SetEwinBoolean(wop->name, &on, param1, 1);
 	ewin->props.focusclick = on;
-	break;
+	goto ewin_update_snap_flags;
 
      case EWIN_OP_NO_BUTTON_GRABS:
 	on = ewin->props.no_button_grabs;
@@ -739,56 +739,49 @@ IpcWinop(const WinOp * wop, EWin * ewin, const char *prm)
 	     else
 		GrabButtonGrabs(ewin);
 	  }
-	break;
+	goto ewin_update_snap_flags;
 
      case EWIN_OP_INH_APP_FOCUS:
 	on = EwinInhGetApp(ewin, focus);
 	SetEwinBoolean(wop->name, &on, param1, 1);
 	EwinInhSetApp(ewin, focus, on);
-	break;
+	goto ewin_update_snap_flags;
 
      case EWIN_OP_INH_APP_MOVE:
 	on = EwinInhGetApp(ewin, move);
 	SetEwinBoolean(wop->name, &on, param1, 1);
 	EwinInhSetApp(ewin, move, on);
-	break;
+	goto ewin_update_snap_flags;
 
      case EWIN_OP_INH_APP_SIZE:
 	on = EwinInhGetApp(ewin, size);
 	SetEwinBoolean(wop->name, &on, param1, 1);
 	EwinInhSetApp(ewin, size, on);
-	break;
+	goto ewin_update_snap_flags;
 
      case EWIN_OP_INH_USER_CLOSE:
 	on = EwinInhGetUser(ewin, close);
 	SetEwinBoolean(wop->name, &on, param1, 1);
 	EwinInhSetUser(ewin, close, on);
-	EwinStateUpdate(ewin);
-	HintsSetWindowState(ewin);
-	break;
+	goto ewin_update_state_hints;
 
      case EWIN_OP_INH_USER_MOVE:
 	on = EwinInhGetUser(ewin, move);
 	SetEwinBoolean(wop->name, &on, param1, 1);
 	EwinInhSetUser(ewin, move, on);
-	EwinStateUpdate(ewin);
-	HintsSetWindowState(ewin);
-	break;
+	goto ewin_update_state_hints;
 
      case EWIN_OP_INH_USER_SIZE:
 	on = EwinInhGetUser(ewin, size);
 	SetEwinBoolean(wop->name, &on, param1, 1);
 	EwinInhSetUser(ewin, size, on);
-	EwinStateUpdate(ewin);
-	HintsSetWindowState(ewin);
-	break;
+	goto ewin_update_state_hints;
 
      case EWIN_OP_INH_WM_FOCUS:
 	on = EwinInhGetWM(ewin, focus);
 	SetEwinBoolean(wop->name, &on, param1, 1);
 	EwinInhSetWM(ewin, focus, on);
-	EwinStateUpdate(ewin);
-	break;
+	goto ewin_update_state;
 
 #if USE_COMPOSITE
      case EWIN_OP_FADE:
@@ -810,6 +803,18 @@ IpcWinop(const WinOp * wop, EWin * ewin, const char *prm)
 	   EoSetNoRedirect(ewin, on);
 	break;
 #endif
+      ewin_update_snap_flags:
+	SnapshotEwinUpdate(ewin, SNAP_USE_FLAGS);
+	break;
+
+      ewin_update_state:
+	EwinStateUpdate(ewin);
+	break;
+
+      ewin_update_state_hints:
+	EwinStateUpdate(ewin);
+	HintsSetWindowState(ewin);
+	break;
      }
 
  done:
