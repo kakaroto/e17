@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2007 Kim Woelders
+ * Copyright (C) 2004-2008 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -473,12 +473,13 @@ DialogRedraw(Dialog * d)
 
    FreePmapMask(&(d->pmm_bg));
    ImageclassApplyCopy(d->iclass, d->win, d->w, d->h, 0, 0, STATE_NORMAL,
-		       &(d->pmm_bg), 0, ST_DIALOG);
+		       &(d->pmm_bg), IC_FLAG_NONE, ST_DIALOG);
    if (d->pmm_bg.pmap == None)
       return;
 
    EGetWindowBackgroundPixmap(d->win);
-   EXCopyArea(d->pmm_bg.pmap, WinGetPmap(d->win), 0, 0, d->w, d->h, 0, 0);
+   EXCopyAreaTiled(d->pmm_bg.pmap, None, WinGetPmap(d->win), 0, 0, d->w, d->h,
+		   0, 0);
 
    d->redraw = 1;
 
@@ -1732,8 +1733,8 @@ DialogDrawItem(Dialog * d, DItem * di)
 	if (!di->text)
 	   break;
 	if (!d->redraw)
-	   EXCopyArea(d->pmm_bg.pmap, WinGetPmap(d->win), di->x, di->y,
-		      di->w, di->h, di->x, di->y);
+	   EXCopyAreaTiled(d->pmm_bg.pmap, None, WinGetPmap(d->win),
+			   di->x, di->y, di->w, di->h, di->x, di->y);
 	TextDraw(di->tclass, d->win, WinGetPmap(d->win), 0, 0, state, di->text,
 		 x, di->y, w, 99999, 17, TextclassGetJustification(di->tclass));
 	break;

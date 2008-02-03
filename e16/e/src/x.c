@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2007 Kim Woelders
+ * Copyright (C) 2004-2008 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -1575,6 +1575,25 @@ EXCopyArea(Drawable src, Drawable dst, int sx, int sy, unsigned int w,
 
    gc = EXCreateGC(src, 0, NULL);
    XCopyArea(disp, src, dst, gc, sx, sy, w, h, dx, dy);
+   EXFreeGC(gc);
+}
+
+void
+EXCopyAreaTiled(Drawable src, Pixmap mask, Drawable dst, int sx, int sy,
+		unsigned int w, unsigned int h, int dx, int dy)
+{
+   GC                  gc;
+   XGCValues           gcv;
+
+   gcv.fill_style = FillTiled;
+   gcv.tile = src;
+   gcv.ts_x_origin = sx;
+   gcv.ts_y_origin = sy;
+   gcv.clip_mask = mask;
+   gc = EXCreateGC(dst, GCFillStyle |
+		   GCTile | GCTileStipXOrigin | GCTileStipYOrigin | GCClipMask,
+		   &gcv);
+   XFillRectangle(disp, dst, gc, dx, dy, w, h);
    EXFreeGC(gc);
 }
 

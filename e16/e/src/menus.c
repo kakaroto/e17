@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2007 Kim Woelders
+ * Copyright (C) 2004-2008 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -912,7 +912,7 @@ MenuRealize(Menu * m)
 static void
 MenuRedraw(Menu * m)
 {
-   int                 i, j, w, h;
+   int                 i, j;
 
    if (m->redraw)
      {
@@ -927,12 +927,13 @@ MenuRedraw(Menu * m)
 
    if (!m->style->use_item_bg)
      {
-	w = m->w;
-	h = m->h;
 	FreePmapMask(&m->pmm);
-	ImageclassApplyCopy(m->style->bg_iclass, m->win, w, h, 0,
-			    0, STATE_NORMAL, &m->pmm, 1, ST_MENU);
-	ESetWindowBackgroundPixmap(m->win, m->pmm.pmap);
+	ImageclassApplyCopy(m->style->bg_iclass, m->win, m->w, m->h, 0,
+			    0, STATE_NORMAL, &m->pmm, IC_FLAG_MAKE_MASK,
+			    ST_MENU);
+	EGetWindowBackgroundPixmap(m->win);
+	EXCopyAreaTiled(m->pmm.pmap, None, WinGetPmap(m->win),
+			0, 0, m->w, m->h, 0, 0);
 	EShapeCombineMask(m->win, ShapeBounding, 0, 0, m->pmm.mask, ShapeSet);
 	EClearWindow(m->win);
 	for (i = 0; i < m->num; i++)
@@ -959,10 +960,11 @@ MenuDrawItem(Menu * m, MenuItem * mi, char shape, int state)
 
    if (!mi_pmm->pmap)
      {
-	GC                  gc;
 	int                 x, y, w, h;
 	int                 item_type;
 	ImageClass         *ic;
+	GC                  gc;
+	PmapMask            pmm;
 
 	EGetGeometry(mi->win, NULL, &x, &y, &w, &h, NULL, NULL);
 
@@ -976,27 +978,25 @@ MenuDrawItem(Menu * m, MenuItem * mi, char shape, int state)
 	if (!m->style->use_item_bg)
 	  {
 	     gc = EXCreateGC(m->pmm.pmap, 0, NULL);
-	     XCopyArea(disp, m->pmm.pmap, mi_pmm->pmap, gc, x, y, w, h, 0, 0);
+	     XCopyArea(disp, WinGetPmap(m->win), mi_pmm->pmap, gc, x, y, w, h,
+		       0, 0);
 	     if ((mi->state != STATE_NORMAL) || (mi->child))
 	       {
-		  PmapMask            pmm;
-
-		  ImageclassApplyCopy(ic, mi->win, w, h, 0, 0,
-				      mi->state, &pmm, 1, item_type);
-		  if (pmm.mask)
-		    {
-		       XSetClipMask(disp, gc, pmm.mask);
-		       XSetClipOrigin(disp, gc, 0, 0);
-		    }
-		  XCopyArea(disp, pmm.pmap, mi_pmm->pmap, gc, 0, 0, w, h, 0, 0);
+		  ImageclassApplyCopy(ic, mi->win, w, h, 0, 0, mi->state, &pmm,
+				      IC_FLAG_MAKE_MASK, item_type);
+		  EXCopyAreaTiled(pmm.pmap, pmm.mask, mi_pmm->pmap,
+				  0, 0, w, h, 0, 0);
 		  FreePmapMask(&pmm);
 	       }
 	     EXFreeGC(gc);
 	  }
 	else
 	  {
-	     ImageclassApplyCopy(ic, mi->win, w, h, 0, 0, mi->state,
-				 mi_pmm, 1, item_type);
+	     ImageclassApplyCopy(ic, mi->win, w, h, 0, 0, mi->state, &pmm,
+				 IC_FLAG_MAKE_MASK, item_type);
+	     EXCopyAreaTiled(pmm.pmap, pmm.mask, mi_pmm->pmap,
+			     0, 0, w, h, 0, 0);
+	     FreePmapMask(&pmm);
 	  }
 
 	if (mi->text)

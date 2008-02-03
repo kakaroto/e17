@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2007 Kim Woelders
+ * Copyright (C) 2004-2008 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -917,7 +917,7 @@ ImageclassGetImageBlended(ImageClass * ic, Win win, int w, int h, int active,
 
 static void
 ImagestateMakePmapMask(ImageState * is, Win win, PmapMask * pmm,
-		       int make_mask, int w, int h, int image_type)
+		       int pmapflags, int w, int h, int image_type)
 {
 #ifdef ENABLE_TRANSPARENCY
    EImage             *ii = NULL;
@@ -957,7 +957,7 @@ ImagestateMakePmapMask(ImageState * is, Win win, PmapMask * pmm,
 	pmm->h = h;
 	EImageRenderOnDrawable(ii, win, pmap, 0, 0, 0, w, h);
 
-	if (make_mask && !(flags & ICLASS_ATTR_NO_CLIP))
+	if ((pmapflags & IC_FLAG_MAKE_MASK) && !(flags & ICLASS_ATTR_NO_CLIP))
 	  {
 	     if (EImageHasAlpha(is->im))
 	       {
@@ -975,7 +975,7 @@ ImagestateMakePmapMask(ImageState * is, Win win, PmapMask * pmm,
      }
    else
 #else
-   make_mask = 0;
+   pmapflags = 0;
    image_type = 0;
 #endif /* ENABLE_TRANSPARENCY */
    if (is->pixmapfillstyle == FILL_STRETCH)
@@ -1156,7 +1156,8 @@ ITApply(Win win, ImageClass * ic, ImageState * is,
      {
 	PmapMask            pmm;
 
-	ImagestateMakePmapMask(is, win, &pmm, 1, w, h, image_type);
+	ImagestateMakePmapMask(is, win, &pmm, IC_FLAG_MAKE_MASK, w, h,
+			       image_type);
 
 	if (pmm.pmap)
 	  {
@@ -1225,13 +1226,36 @@ ImageclassApply(ImageClass * ic, Win win, int active, int sticky, int state,
 	   0);
 }
 
+static void
+PmapMaskTile(PmapMask * pmm, Win win, unsigned int w, unsigned int h)
+{
+   Pixmap              pmap, mask;
+
+   pmap = ECreatePixmap(win, w, h, 0);
+   if (pmap == None)
+      return;
+   EXCopyAreaTiled(pmm->pmap, None, pmap, 0, 0, w, h, 0, 0);
+
+   mask = None;
+   if (pmm->mask != None)
+      mask = ECreatePixmap(win, w, h, 1);
+   if (mask != None)
+      EXCopyAreaTiled(pmm->mask, None, mask, 0, 0, w, h, 0, 0);
+
+   FreePmapMask(pmm);
+   pmm->type = 0;
+   pmm->w = w;
+   pmm->h = h;
+   pmm->pmap = pmap;
+   pmm->mask = mask;
+}
+
 void
 ImageclassApplyCopy(ImageClass * ic, Win win, int w, int h,
 		    int active, int sticky, int state,
-		    PmapMask * pmm, int make_mask, int image_type)
+		    PmapMask * pmm, int pmapflags, int image_type)
 {
    ImageState         *is;
-   GC                  gc;
 
    if (pmm == NULL)
       return;
@@ -1252,44 +1276,14 @@ ImageclassApplyCopy(ImageClass * ic, Win win, int w, int h,
    /* Imlib2 will not render pixmaps with dimensions > 8192 */
    if (is->im && w <= 8192 && h <= 8192)
      {
-	ImagestateMakePmapMask(is, win, pmm, make_mask, w, h, image_type);
+	ImagestateMakePmapMask(is, win, pmm, pmapflags, w, h, image_type);
 
-	if (pmm->pmap)
+	if ((pmapflags & IC_FLAG_FULL_SIZE) && pmm->pmap &&
+	    (pmm->w != w || pmm->h != h))
 	  {
-	     if (pmm->w != w || pmm->h != h)
-	       {
-		  /* Create new full sized pixmaps and fill them with the */
-		  /* pmap and mask tiles                                  */
-		  Pixmap              tp = 0, tm = 0;
-		  XGCValues           gcv;
-
-		  tp = ECreatePixmap(win, w, h, 0);
-		  gcv.fill_style = FillTiled;
-		  gcv.tile = pmm->pmap;
-		  gcv.ts_x_origin = 0;
-		  gcv.ts_y_origin = 0;
-		  gc = EXCreateGC(tp, GCFillStyle | GCTile |
-				  GCTileStipXOrigin | GCTileStipYOrigin, &gcv);
-		  XFillRectangle(disp, tp, gc, 0, 0, w, h);
-		  EXFreeGC(gc);
-		  if (pmm->mask)
-		    {
-		       tm = ECreatePixmap(win, w, h, 1);
-		       gcv.fill_style = FillTiled;
-		       gcv.tile = pmm->mask;
-		       gcv.ts_x_origin = 0;
-		       gcv.ts_y_origin = 0;
-		       gc = EXCreateGC(tm, GCFillStyle | GCTile |
-				       GCTileStipXOrigin | GCTileStipYOrigin,
-				       &gcv);
-		       XFillRectangle(disp, tm, gc, 0, 0, w, h);
-		       EXFreeGC(gc);
-		    }
-		  FreePmapMask(pmm);
-		  pmm->type = 0;
-		  pmm->pmap = tp;
-		  pmm->mask = tm;
-	       }
+	     /* Create new full sized pixmaps and fill them with the */
+	     /* pmap and mask tiles                                  */
+	     PmapMaskTile(pmm, win, w, h);
 	  }
 
 	if ((is->unloadable) || (Conf.memory_paranoia))
@@ -1300,6 +1294,7 @@ ImageclassApplyCopy(ImageClass * ic, Win win, int w, int h,
      }
    else
      {
+	GC                  gc;
 	Pixmap              pmap;
 
 	ImagestateColorsAlloc(is);
@@ -1536,7 +1531,8 @@ ImageclassIpc(const char *params)
 	     return;
 	  }
 
-	ImageclassApplyCopy(ic, win, w, h, 0, 0, st, &pmm, 1, ST_SOLID);
+	ImageclassApplyCopy(ic, win, w, h, 0, 0, st, &pmm,
+			    IC_FLAG_MAKE_MASK | IC_FLAG_FULL_SIZE, ST_SOLID);
 	IpcPrintf("0x%08lx 0x%08lx\n", pmm.pmap, pmm.mask);
 	EDestroyWin(win);
      }

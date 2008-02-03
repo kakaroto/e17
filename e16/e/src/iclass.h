@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2007 Kim Woelders
+ * Copyright (C) 2004-2008 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -63,6 +63,12 @@
 #define ICLASS_ATTR_NO_CLIP     0x04	/* Don't apply clip mask */
 #define ICLASS_ATTR_USE_CM      0x08	/* Use colormodifier */
 
+/* ImageclassApplyCopy flags */
+#define IC_FLAG_NONE            0x00	/* No flags */
+#define IC_FLAG_WRITABLE        0x01	/* Provide writable pixmaps */
+#define IC_FLAG_MAKE_MASK       0x02	/* Make mask */
+#define IC_FLAG_FULL_SIZE       0x04	/* Make full size pixmaps */
+
 /* cmclass.c */
 #if ENABLE_COLOR_MODIFIERS
 void                CreateCurve(ModCurve * c);
@@ -114,7 +120,7 @@ void                ImageclassApply(ImageClass * ic, Win win,
 void                ImageclassApplyCopy(ImageClass * ic, Win win, int w,
 					int h, int active, int sticky,
 					int state, PmapMask * pmm,
-					int make_mask, int image_type);
+					int pmapflags, int image_type);
 EImage             *ImageclassGetImageBlended(ImageClass * ic, Win win,
 					      int w, int h, int active,
 					      int sticky, int state,
