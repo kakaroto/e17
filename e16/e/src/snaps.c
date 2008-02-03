@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2007 Kim Woelders
+ * Copyright (C) 2004-2008 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -57,7 +57,7 @@ struct _snapshot
    int                 layer;
    char                sticky;
    char                shaded;
-   unsigned int        flags;
+   unsigned int        flags[2];
    char               *cmd;
    int                *groups;
    int                 num_groups;
@@ -379,7 +379,7 @@ SnapEwinSkipLists(Snapshot * sn, const EWin * ewin)
 static void
 SnapEwinFlags(Snapshot * sn, const EWin * ewin)
 {
-   sn->flags = EwinFlagsEncode(ewin);
+   EwinFlagsEncode(ewin, sn->flags);
 }
 
 static void
@@ -1156,7 +1156,7 @@ Real_SaveSnapInfo(int dumval __UNUSED__, void *dumdat __UNUSED__)
 	   fprintf(f, "SKIPFOCUS: %i\n", sn->skipfocus);
 	}
       if (sn->use_flags & SNAP_USE_FLAGS)
-	 fprintf(f, "FLAGS: %#x\n", sn->flags);
+	 fprintf(f, "FLAGS: %#x %#x\n", sn->flags[0], sn->flags[1]);
 #if USE_COMPOSITE
       if (sn->use_flags & SNAP_USE_OPACITY)
 	 fprintf(f, "OPACITY: %i %i\n", sn->opacity, sn->focused_opacity);
@@ -1371,7 +1371,8 @@ LoadSnapInfo(void)
 	     else if (!strcmp(buf, "FLAGS"))
 	       {
 		  sn->use_flags |= SNAP_USE_FLAGS;
-		  sn->flags = strtoul(s, NULL, 0);
+		  sn->flags[0] = sn->flags[1] = 0;
+		  sscanf(s, "%i %i", sn->flags, sn->flags + 1);
 	       }
 	     else if (!strcmp(buf, "GROUP"))
 	       {
@@ -1684,7 +1685,7 @@ _SnapShow(void *data, void *prm)
 	 ("         skiptask: %d    skipfocus: %d    skipwinlist: %d\n",
 	  sn->skiptask, sn->skipfocus, sn->skipwinlist);
    if (sn->use_flags & SNAP_USE_FLAGS)
-      IpcPrintf("            flags: %#x\n", sn->flags);
+      IpcPrintf("            flags: %#x %#x\n", sn->flags[0], sn->flags[1]);
    IpcPrintf("\n");
 }
 

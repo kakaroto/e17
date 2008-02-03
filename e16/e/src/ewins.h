@@ -384,8 +384,8 @@ void                EwinRememberPositionGet(EWin * ewin, Desk * dsk,
 					    int *px, int *py);
 void                EwinSetPlacementGravity(EWin * ewin, int x, int y);
 void                EwinReposition(EWin * ewin);
-unsigned int        EwinFlagsEncode(const EWin * ewin);
-void                EwinFlagsDecode(EWin * ewin, unsigned int flags);
+void                EwinFlagsEncode(const EWin * ewin, unsigned int *flags);
+void                EwinFlagsDecode(EWin * ewin, const unsigned int *flags);
 void                EwinUpdateOpacity(EWin * ewin);
 
 void                EwinChange(EWin * ewin, unsigned int flag);

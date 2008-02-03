@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2003-2007 Kim Woelders
+ * Copyright (C) 2003-2008 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -348,6 +348,7 @@ void
 EHintsSetInfo(const EWin * ewin)
 {
    int                 c[ENL_DATA_ITEMS];
+   unsigned int        flags[2];
    EWinInfoFlags       f;
 
    if (EwinIsInternal(ewin))
@@ -359,9 +360,9 @@ EHintsSetInfo(const EWin * ewin)
    f.b.iconified = ewin->state.iconified;
    c[0] = f.all;
 
-   c[1] = EwinFlagsEncode(ewin);
-
-   c[2] = 0;
+   EwinFlagsEncode(ewin, flags);
+   c[1] = flags[0];
+   c[2] = flags[1];
 
    c[3] = ewin->save_max.x;
    c[4] = ewin->save_max.y;
@@ -391,6 +392,7 @@ EHintsGetInfo(EWin * ewin)
    char               *str;
    int                 num;
    int                 c[ENL_DATA_ITEMS + 1];
+   unsigned int        flags[2];
    EWinInfoFlags       f;
 
    if (EwinIsInternal(ewin))
@@ -414,7 +416,9 @@ EHintsGetInfo(EWin * ewin)
    ewin->icccm.start_iconified = f.b.iconified;
    ewin->state.docked = f.b.docked;
 
-   EwinFlagsDecode(ewin, c[1]);
+   flags[0] = c[1];
+   flags[1] = c[2];
+   EwinFlagsDecode(ewin, flags);
 
    if (num == ENL_DATA_ITEMS)
      {

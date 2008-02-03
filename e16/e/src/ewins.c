@@ -1831,8 +1831,8 @@ typedef union
    } f;
 } EWinMiscFlags;
 
-unsigned int
-EwinFlagsEncode(const EWin * ewin)
+void
+EwinFlagsEncode(const EWin * ewin, unsigned int *flags)
 {
    EWinMiscFlags       fm;
 
@@ -1841,15 +1841,16 @@ EwinFlagsEncode(const EWin * ewin)
    fm.f.inh_user = ewin->inh_user.all;
    fm.f.inh_wm = ewin->inh_wm.all;
 
-   return fm.all;
+   flags[0] = fm.all;
+   flags[1] = 0;
 }
 
 void
-EwinFlagsDecode(EWin * ewin, unsigned int flags)
+EwinFlagsDecode(EWin * ewin, const unsigned int *flags)
 {
    EWinMiscFlags       fm;
 
-   fm.all = flags;
+   fm.all = flags[0];
    ewin->inh_app.all = fm.f.inh_app;
    ewin->inh_user.all = fm.f.inh_user;
    ewin->inh_wm.all = fm.f.inh_wm;
