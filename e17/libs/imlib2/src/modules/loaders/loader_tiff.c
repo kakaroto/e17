@@ -44,7 +44,7 @@ put_separate_and_raster(TIFFRGBAImage * img, uint32 * rast,
                         unsigned char *a)
 {
    (*(((TIFFRGBAImage_Extra *) img)->put_separate))
-       (img, rast, x, y, w, h, fromskew, toskew, r, g, b, a);
+      (img, rast, x, y, w, h, fromskew, toskew, r, g, b, a);
    raster((TIFFRGBAImage_Extra *) img, rast, x, y, w, h);
 }
 
@@ -71,7 +71,7 @@ raster(TIFFRGBAImage_Extra * img, uint32 * rast,
    /* libtiff needs better docs! */
 
    if (img->rgba.alpha == EXTRASAMPLE_UNASSALPHA)
-     alpha_premult = 1;
+      alpha_premult = 1;
    for (i = y, rast_offset = 0; i > dy; i--, rast_offset--)
      {
         pixel = rast + (rast_offset * image_width);
@@ -79,19 +79,19 @@ raster(TIFFRGBAImage_Extra * img, uint32 * rast,
 
         for (j = 0; j < w; j++)
           {
-	     int a, r, g, b;
-	     
+             int                 a, r, g, b;
+
              pixel_value = (*(pixel++));
-	     a = TIFFGetA(pixel_value);
-	     r = TIFFGetR(pixel_value);
-	     g = TIFFGetG(pixel_value);
-	     b = TIFFGetB(pixel_value);
-	     if ((a > 0) && (a < 255) && (alpha_premult))
-	       {
-		  r = (r * 255) / a;
-		  g = (g * 255) / a;
-		  b = (b * 255) / a;
-	       }
+             a = TIFFGetA(pixel_value);
+             r = TIFFGetR(pixel_value);
+             g = TIFFGetG(pixel_value);
+             b = TIFFGetB(pixel_value);
+             if ((a > 0) && (a < 255) && (alpha_premult))
+               {
+                  r = (r * 255) / a;
+                  g = (g * 255) / a;
+                  b = (b * 255) / a;
+               }
              (*(buffer_pixel++)) = (a << 24) | (r << 16) | (g << 8) | b;
           }
      }
@@ -175,19 +175,18 @@ load(ImlibImage * im, ImlibProgressFunction progress,
         return 0;
      }
    strcpy(txt, "Cannot begin reading tiff");
-   if (!TIFFRGBAImageBegin((TIFFRGBAImage *) & rgba_image, tif, 0,
-			   txt))
+   if (!TIFFRGBAImageBegin((TIFFRGBAImage *) & rgba_image, tif, 0, txt))
      {
         TIFFClose(tif);
         return 0;
      }
-   
+
    rgba_image.image = im;
    im->w = width = rgba_image.rgba.width;
    im->h = height = rgba_image.rgba.height;
    if ((width < 1) || (height < 1) || (width > 8192) || (height > 8192))
      {
-	TIFFRGBAImageEnd((TIFFRGBAImage *) & rgba_image);
+        TIFFRGBAImageEnd((TIFFRGBAImage *) & rgba_image);
         TIFFClose(tif);
         return 0;
      }
@@ -251,24 +250,25 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                }
           }
 /*	if (rgba_image.rgba.samplesperpixel == 8)*/
-	if (rgba_image.rgba.bitspersample == 8)
-	  {
-	     if (!TIFFRGBAImageGet((TIFFRGBAImage *) & rgba_image,
-				   rast, width, height))
-	       {
-		  _TIFFfree(rast);
-		  free(im->data);
-		  im->data = NULL;
-		  TIFFRGBAImageEnd((TIFFRGBAImage *) & rgba_image);
-		  TIFFClose(tif);
-		  
-		  return 0;
-	       }
-	  }
-	else
-	  {
-	     printf("channel bits == %i\n", (int)rgba_image.rgba.samplesperpixel);
-	  }
+        if (rgba_image.rgba.bitspersample == 8)
+          {
+             if (!TIFFRGBAImageGet((TIFFRGBAImage *) & rgba_image,
+                                   rast, width, height))
+               {
+                  _TIFFfree(rast);
+                  free(im->data);
+                  im->data = NULL;
+                  TIFFRGBAImageEnd((TIFFRGBAImage *) & rgba_image);
+                  TIFFClose(tif);
+
+                  return 0;
+               }
+          }
+        else
+          {
+             printf("channel bits == %i\n",
+                    (int)rgba_image.rgba.samplesperpixel);
+          }
 
         _TIFFfree(rast);
      }
@@ -329,54 +329,54 @@ save(ImlibImage * im, ImlibProgressFunction progress, char progress_granularity)
         compression_type = tag->val;
         switch (compression_type)
           {
-            case COMPRESSION_NONE:
-               break;
-            case COMPRESSION_CCITTRLE:
-               break;
-            case COMPRESSION_CCITTFAX3:
-               break;
-            case COMPRESSION_CCITTFAX4:
-               break;
-            case COMPRESSION_LZW:
-               break;
-            case COMPRESSION_OJPEG:
-               break;
-            case COMPRESSION_JPEG:
-               break;
-            case COMPRESSION_NEXT:
-               break;
-            case COMPRESSION_CCITTRLEW:
-               break;
-            case COMPRESSION_PACKBITS:
-               break;
-            case COMPRESSION_THUNDERSCAN:
-               break;
-            case COMPRESSION_IT8CTPAD:
-               break;
-            case COMPRESSION_IT8LW:
-               break;
-            case COMPRESSION_IT8MP:
-               break;
-            case COMPRESSION_IT8BL:
-               break;
-            case COMPRESSION_PIXARFILM:
-               break;
-            case COMPRESSION_PIXARLOG:
-               break;
-            case COMPRESSION_DEFLATE:
-               break;
-            case COMPRESSION_ADOBE_DEFLATE:
-               break;
-            case COMPRESSION_DCS:
-               break;
-            case COMPRESSION_JBIG:
-               break;
-            case COMPRESSION_SGILOG:
-               break;
-            case COMPRESSION_SGILOG24:
-               break;
-            default:
-               compression_type = COMPRESSION_DEFLATE;
+          case COMPRESSION_NONE:
+             break;
+          case COMPRESSION_CCITTRLE:
+             break;
+          case COMPRESSION_CCITTFAX3:
+             break;
+          case COMPRESSION_CCITTFAX4:
+             break;
+          case COMPRESSION_LZW:
+             break;
+          case COMPRESSION_OJPEG:
+             break;
+          case COMPRESSION_JPEG:
+             break;
+          case COMPRESSION_NEXT:
+             break;
+          case COMPRESSION_CCITTRLEW:
+             break;
+          case COMPRESSION_PACKBITS:
+             break;
+          case COMPRESSION_THUNDERSCAN:
+             break;
+          case COMPRESSION_IT8CTPAD:
+             break;
+          case COMPRESSION_IT8LW:
+             break;
+          case COMPRESSION_IT8MP:
+             break;
+          case COMPRESSION_IT8BL:
+             break;
+          case COMPRESSION_PIXARFILM:
+             break;
+          case COMPRESSION_PIXARLOG:
+             break;
+          case COMPRESSION_DEFLATE:
+             break;
+          case COMPRESSION_ADOBE_DEFLATE:
+             break;
+          case COMPRESSION_DCS:
+             break;
+          case COMPRESSION_JBIG:
+             break;
+          case COMPRESSION_SGILOG:
+             break;
+          case COMPRESSION_SGILOG24:
+             break;
+          default:
+             compression_type = COMPRESSION_DEFLATE;
           }
 
      }
@@ -384,9 +384,9 @@ save(ImlibImage * im, ImlibProgressFunction progress, char progress_granularity)
 
    if (has_alpha)
      {
-	uint16 extras[] = { EXTRASAMPLE_ASSOCALPHA };
+        uint16              extras[] = { EXTRASAMPLE_ASSOCALPHA };
         TIFFSetField(tif, TIFFTAG_SAMPLESPERPIXEL, 4);
-	TIFFSetField(tif, TIFFTAG_EXTRASAMPLES, 1, extras);
+        TIFFSetField(tif, TIFFTAG_EXTRASAMPLES, 1, extras);
      }
    else
      {
