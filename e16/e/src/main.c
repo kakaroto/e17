@@ -583,7 +583,7 @@ EDirCheck(const char *dir)
       return;
 
    Alert(_("%s must be a directory in which you have\n"
-	   "read, write, and execute permission.\n"));
+	   "read, write, and execute permission.\n"), dir);
    EExit(1);
 }
 
