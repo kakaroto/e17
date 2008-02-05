@@ -40,6 +40,7 @@ class Container(evas.ClippedSmartObject):
 
     def add(self, child):
         self.children.append(child)
+        self.member_add(child)
         self.reconfigure(*self.geometry)
 
 
