@@ -4637,3 +4637,33 @@ Fri Jan 11 22:42:42 CET 2008
 Avoid X-errors with borderless empty menus.
 Fix potential segv (eimage.c).
 Add sanity checks (oom cases).
+
+-------------------------------------------------------------------------------
+
+Tue Feb  5 22:16:40 CET 2008
+(Kim)
+
+--- 0.16.8.12 0.01 ---
+Bump version.
+French translation update (Tristan D.).
+Use wrapper function (XGetGeometry->EXGetGeometry).
+Fix showing tiled external pixmap in pager.
+Fix edge flip brokenness (thanks to Phillip Warner).
+Japanese translation update (Yasufumi Haga).
+Optionally use render for scaling.
+Use separate debug flags for timers and idlers.
+Cosmetics (pagers.c).
+Avoid unnecessary use of timers in pagers in live update mode.
+Enable showing differential time in debug output.
+Don't update fading windows in pager.
+New window placement algorithm. Should be better at handling crowded desktops
+ and windows with never_use_area attribute.
+Sound - Split loading and playing.
+Pager update tweaks.
+Fix compiler warnings (gcc 4.3?).
+Avoid some pixel copying in certain situations around ImageclassApplyCopy.
+Do update fading windows in pager (for now, tweaking needed here).
+Prepare for handling additional window flags in snapshots/across restart.
+Add a number of window flags to the remembered flag list.
+Fix missing argument in error message (Chris Craig, bug 378).
+
