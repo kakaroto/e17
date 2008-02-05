@@ -176,7 +176,7 @@ _gc_id_new(void)
 
    snprintf(buf, sizeof(buf), "%s.%d", _gc_class.name, 
             evas_list_count(instances));
-   return strdup(buf);
+   return buf;
 }
 
 /* Module Api Functions */
