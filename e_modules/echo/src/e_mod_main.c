@@ -119,6 +119,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
         e_object_del(E_OBJECT(inst->menu));
         inst->menu = NULL;
      }
+   if (inst->popup) _echo_cb_popup_del(inst);
    if (inst->o_base) 
      {
         evas_object_event_callback_del(inst->o_base, EVAS_CALLBACK_MOUSE_DOWN, 
