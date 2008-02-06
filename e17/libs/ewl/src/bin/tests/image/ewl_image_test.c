@@ -81,7 +81,9 @@ static Ecore_DList    *images;
 
 static Ewl_Widget     *image;
 static Ewl_Widget     *entry_path;
+
 static Ewl_Widget     *fd;
+char                  *last_dir;
 
 static void create_image_fd_window_response (Ewl_Widget *w, void *ev, void *data);
 static void create_image_fd_cb(Ewl_Widget *w, void *ev_data, void *user_data);
@@ -121,6 +123,8 @@ destroy_image_test(Ewl_Widget * w __UNUSED__, void *ev_data __UNUSED__,
 						void *user_data __UNUSED__)
 {
 	ecore_dlist_destroy(images);
+	if (last_dir)
+		free(last_dir);
 }
 
 static void
@@ -311,11 +315,13 @@ create_image_fd_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 		return;
 
 	fd = ewl_filedialog_new();
-	ewl_window_title_set (EWL_WINDOW (fd), "Select an Image...");
-	ewl_window_name_set (EWL_WINDOW (fd), "EWL Image Test");
-	ewl_window_class_set (EWL_WINDOW (fd), "EWL Filedialog");
-	ewl_callback_append (fd, EWL_CALLBACK_VALUE_CHANGED,
+	ewl_window_title_set(EWL_WINDOW(fd), "Select an Image...");
+	ewl_window_name_set(EWL_WINDOW(fd), "EWL Image Test");
+	ewl_window_class_set(EWL_WINDOW(fd), "EWL Filedialog");
+	ewl_callback_append(fd, EWL_CALLBACK_VALUE_CHANGED,
 			    create_image_fd_window_response, user_data);
+	if (last_dir)
+		ewl_filedialog_directory_set(EWL_FILEDIALOG(fd), last_dir);
 	ewl_widget_show(fd);
 }
 
@@ -329,6 +335,7 @@ create_image_fd_window_response(Ewl_Widget *w, void *ev, void *data)
 
 	if (e->response == EWL_STOCK_OK) {
 		char *filename;
+		const char *dir;
 
 		filename = ewl_filedialog_selected_file_get(EWL_FILEDIALOG (w));
 		printf("File open from image test: %s\n", filename);
@@ -337,6 +344,14 @@ create_image_fd_window_response(Ewl_Widget *w, void *ev, void *data)
 			image_load(filename);
 			free (filename);
 		}
+		if (last_dir) {
+			free(last_dir);
+			last_dir = NULL;
+		}
+		
+		dir = ewl_filedialog_directory_get(EWL_FILEDIALOG(fd));
+		if (dir)
+			last_dir = strdup(dir);
 	}
 	else {
 		printf("Test program says bugger off.\n");
