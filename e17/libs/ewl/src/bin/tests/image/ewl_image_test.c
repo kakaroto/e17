@@ -10,9 +10,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <fcntl.h>
-#include <sys/types.h>
-#include <sys/stat.h>
+#include <Ecore_File.h>
 
 /**
  * @addtogroup Ewl_Image
@@ -92,6 +90,7 @@ static void create_image_fd_cb(Ewl_Widget *w, void *ev_data, void *user_data);
 
 static int create_test(Ewl_Container *box);
 
+/* callbacks for the unit tests */
 static int path_test_set_get(char *buf, int len);
 static int scale_test_set_get(char *buf, int len);
 static int size_test_set_get(char *buf, int len);
@@ -123,28 +122,7 @@ static void
 destroy_image_test(Ewl_Widget * w __UNUSED__, void *ev_data __UNUSED__,
 						void *user_data __UNUSED__)
 {
-	char *str;
-
-	ecore_dlist_first_goto(images);
-
-	while ((str = ecore_dlist_last_remove(images)) != NULL)
-		free(str);
-
 	ecore_dlist_destroy(images);
-}
-
-static int
-image_exists(char *i)
-{
-	struct stat st;
-
-	if (!i || !strlen(i))
-		return -1;
-
-	if (((stat(i, &st)) == -1) || !S_ISREG(st.st_mode))
-		return -1;
-
-	return 1;
 }
 
 static void
@@ -168,10 +146,8 @@ image_remove_cb(Ewl_Widget * w __UNUSED__, void *ev_data __UNUSED__,
 {
 	char *img = NULL;
 
-	img = ecore_dlist_remove(images);
-	if (img)
-		free(img);
-
+	ecore_dlist_remove_destroy(images);
+	
 	img = ecore_dlist_current(images);
 
 	if (!img) img = ecore_dlist_last_goto(images);
@@ -181,14 +157,10 @@ image_remove_cb(Ewl_Widget * w __UNUSED__, void *ev_data __UNUSED__,
 }
 
 static void
-image_load()
+image_load(const char *img)
 {
-	char *img = NULL;
-
-	img = ewl_text_text_get(EWL_TEXT(entry_path));
-
-	if (img && image_exists(img)) {
-		ecore_dlist_append(images, img);
+	if (img && ecore_file_exists(img)) {
+		ecore_dlist_append(images, strdup(img));
 		ecore_dlist_last_goto(images);
 		ewl_image_file_set(EWL_IMAGE(image), img, NULL);
 	} else
@@ -211,16 +183,28 @@ image_goto_next_cb(Ewl_Widget * w __UNUSED__, void *ev_data __UNUSED__,
 	ewl_image_file_set(EWL_IMAGE(image), img, NULL);
 }
 
+void
+entry_path_cb_value_changed(Ewl_Widget *w, void *ev_data __UNUSED__, 
+							void *data __UNUSED__)
+{
+	char *img;
+
+	img = ewl_text_text_get(EWL_TEXT(w));
+	image_load(img);
+	free(img);
+}
+
 int
 create_test(Ewl_Container *box)
 {
-	Ewl_Widget     *scrollpane;
-	Ewl_Widget     *button_hbox;
-	Ewl_Widget     *button_prev, *button_remove, *button_next;
-	char	   *image_file = NULL;
+	Ewl_Widget *scrollpane;
+	Ewl_Widget *button_hbox;
+	Ewl_Widget *button;
+	char *image_file = NULL;
 
 	image_box = EWL_WIDGET(box);
 	images = ecore_dlist_new();
+	ecore_dlist_free_cb_set(images, free);
 
 	scrollpane = ewl_scrollpane_new();
 	ewl_callback_append(scrollpane, EWL_CALLBACK_DELETE_WINDOW,
@@ -228,13 +212,13 @@ create_test(Ewl_Container *box)
 	ewl_container_child_append(EWL_CONTAINER(image_box), scrollpane);
 	ewl_widget_show(scrollpane);
 
-	if ((image_exists(PACKAGE_DATA_DIR "/ewl/images/e-logo.png")) != -1)
+	if ((ecore_file_exists(PACKAGE_DATA_DIR "/ewl/images/e-logo.png")))
 		image_file = strdup(PACKAGE_DATA_DIR "/ewl/images/e-logo.png");
-	else if ((image_exists(PACKAGE_SOURCE_DIR "/data/images/e-logo.png")) != -1)
+	else if ((ecore_file_exists(PACKAGE_SOURCE_DIR "/data/images/e-logo.png")))
 		image_file = strdup(PACKAGE_SOURCE_DIR "/data/images/e-logo.png");
-	else if ((image_exists("./data/images/e-logo.png")) != -1)
+	else if ((ecore_file_exists("./data/images/e-logo.png")))
 		image_file = strdup("./data/images/e-logo.png");
-	else if ((image_exists("../data/images/e-logo.png")) != -1)
+	else if ((ecore_file_exists("../data/images/e-logo.png")))
 		image_file = strdup("../data/images/e-logo.png");
 
 	image = ewl_image_new();
@@ -260,17 +244,17 @@ create_test(Ewl_Container *box)
 				   EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK);
 	ewl_object_alignment_set(EWL_OBJECT(entry_path), EWL_FLAG_ALIGN_CENTER);
 	ewl_container_child_append(EWL_CONTAINER(button_hbox), entry_path);
+	ewl_callback_append(entry_path, EWL_CALLBACK_VALUE_CHANGED,
+			entry_path_cb_value_changed, NULL);
 	ewl_widget_show(entry_path);
 
-	button_remove = ewl_button_new();
-	ewl_button_label_set(EWL_BUTTON(button_remove), "Browse...");
-	ewl_callback_append(button_remove, EWL_CALLBACK_CLICKED,
+	button = ewl_button_new();
+	ewl_stock_type_set(EWL_STOCK(button), EWL_STOCK_OPEN);
+	ewl_callback_append(button, EWL_CALLBACK_CLICKED,
 			    create_image_fd_cb, entry_path);
-	ewl_object_fill_policy_set(EWL_OBJECT(button_remove), EWL_FLAG_FILL_NONE);
-	ewl_object_alignment_set(EWL_OBJECT(button_remove),
-				 EWL_FLAG_ALIGN_CENTER);
-	ewl_container_child_append(EWL_CONTAINER(button_hbox), button_remove);
-	ewl_widget_show(button_remove);
+	ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_NONE);
+	ewl_container_child_append(EWL_CONTAINER(button_hbox), button);
+	ewl_widget_show(button);
 
 	button_hbox = ewl_hbox_new();
 	ewl_box_spacing_set(EWL_BOX(button_hbox), 5);
@@ -281,28 +265,29 @@ create_test(Ewl_Container *box)
 	ewl_container_child_append(EWL_CONTAINER(image_box), button_hbox);
 	ewl_widget_show(button_hbox);
 
-	button_prev = ewl_button_new();
-	ewl_button_label_set(EWL_BUTTON(button_prev), "Previous");
-	button_remove = ewl_button_new();
-	ewl_button_label_set(EWL_BUTTON(button_remove), "Remove");
-	button_next = ewl_button_new();
-	ewl_button_label_set(EWL_BUTTON(button_next), "Next");
-
-	ewl_container_child_append(EWL_CONTAINER(button_hbox), button_prev);
-	ewl_container_child_append(EWL_CONTAINER(button_hbox), button_remove);
-	ewl_container_child_append(EWL_CONTAINER(button_hbox), button_next);
-
-	ewl_callback_append(button_prev, EWL_CALLBACK_CLICKED,
+	/* the previous button */
+	button = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(button), "Previous");
+	ewl_container_child_append(EWL_CONTAINER(button_hbox), button);
+	ewl_callback_append(button, EWL_CALLBACK_CLICKED,
 			    image_goto_prev_cb, NULL);
-	ewl_callback_append(button_remove, EWL_CALLBACK_CLICKED,
+	ewl_widget_show(button);
+
+	/* the remove button */
+	button = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(button), "Remove");
+	ewl_container_child_append(EWL_CONTAINER(button_hbox), button);
+	ewl_callback_append(button, EWL_CALLBACK_CLICKED,
 			    image_remove_cb, NULL);
-	ewl_callback_append(button_next, EWL_CALLBACK_CLICKED,
+	ewl_widget_show(button);
+
+	/* the next button */
+	button = ewl_button_new();
+	ewl_button_label_set(EWL_BUTTON(button), "Next");
+	ewl_container_child_append(EWL_CONTAINER(button_hbox), button);
+	ewl_callback_append(button, EWL_CALLBACK_CLICKED,
 			    image_goto_next_cb, NULL);
-
-	ewl_widget_show(button_prev);
-	ewl_widget_show(button_remove);
-	ewl_widget_show(button_next);
-
+	ewl_widget_show(button);
 
 	note_box = ewl_hbox_new();
 	ewl_container_child_append(EWL_CONTAINER(image_box), note_box);
@@ -337,7 +322,7 @@ create_image_fd_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 }
 
 static void
-create_image_fd_window_response (Ewl_Widget *w, void *ev, void *data)
+create_image_fd_window_response(Ewl_Widget *w, void *ev, void *data)
 {
 	Ewl_Event_Action_Response *e;
 	Ewl_Widget *entry = data;
@@ -347,13 +332,12 @@ create_image_fd_window_response (Ewl_Widget *w, void *ev, void *data)
 	if (e->response == EWL_STOCK_OK) {
 		char *filename;
 
-		filename = ewl_filedialog_selected_file_get (EWL_FILEDIALOG (w));
+		filename = ewl_filedialog_selected_file_get(EWL_FILEDIALOG (w));
 		printf("File open from image test: %s\n", filename);
 		if (filename) {
 			ewl_text_text_set(EWL_TEXT(entry), filename);
-			image_load();
+			image_load(filename);
 			free (filename);
-			// free(path); FIXME: Is text widget allocated correctly?
 		}
 	}
 	else {
@@ -364,6 +348,9 @@ create_image_fd_window_response (Ewl_Widget *w, void *ev, void *data)
 	fd = NULL;
 }
 
+/*
+ * The Unit Tests
+ */
 static int
 path_test_set_get(char *buf, int len)
 {
