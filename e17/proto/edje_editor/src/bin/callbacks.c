@@ -37,6 +37,17 @@ signal_cb(void *data, Evas_Object *o, const char *sig, const char *src)
    printf("CALLBACK for \"%s\" \"%s\"\n", sig, src);
 }
 
+/* Group combobox callback */
+#if TEST_DIRECT_EDJE
+Etk_Bool
+on_GroupsComboBox_activated(Etk_Combobox *combobox, Etk_Combobox_Item *item, void *data)
+{
+   char *gr;
+   gr = etk_combobox_item_field_get(item,0);
+   printf("Group combo activated: %s\n",gr);
+   ChangeGroup(gr);
+}
+#endif
 /* All the buttons Callback */
 Etk_Bool
 on_AllButton_click(Etk_Button *button, void *data)
@@ -303,7 +314,7 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
          edje_object_signal_emit(edje_ui,"rect_frame_hide","edje_editor");
          edje_object_signal_emit(edje_ui,"image_frame_hide","edje_editor");
          edje_object_signal_emit(edje_ui,"text_frame_hide","edje_editor");
-         edje_object_signal_emit(edje_ui,"group_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"group_frame_show","edje_editor");
          edje_object_signal_emit(edje_ui,"program_frame_hide","edje_editor");
          edje_object_signal_emit(edje_ui,"part_frame_show","edje_editor");
          edje_object_signal_emit(edje_ui,"script_frame_hide","edje_editor");
@@ -316,9 +327,11 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
          Cur.part = etk_string_set(Cur.part, parent_name);
        
          edje_edit_part_selected_state_set(edje_o, Cur.part->string, Cur.state->string);  
-       
+         
+         UpdateDescriptionFrame();
          UpdatePositionFrame();
          UpdateComboPositionFrame();
+       
          switch(edje_edit_part_type_get(edje_o, Cur.part->string))
          {
             case EDJE_PART_TYPE_RECTANGLE:
@@ -342,7 +355,7 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
          }
          
          edje_object_signal_emit(edje_ui,"part_frame_hide","edje_editor");
-         edje_object_signal_emit(edje_ui,"group_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"group_frame_show","edje_editor");
          edje_object_signal_emit(edje_ui,"program_frame_hide","edje_editor");
          edje_object_signal_emit(edje_ui,"script_frame_hide","edje_editor");
          edje_object_signal_emit(edje_ui,"description_frame_show","edje_editor");
@@ -359,7 +372,7 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
          edje_object_signal_emit(edje_ui,"rect_frame_hide","edje_editor");
          edje_object_signal_emit(edje_ui,"image_frame_hide","edje_editor");
          edje_object_signal_emit(edje_ui,"text_frame_hide","edje_editor");
-         edje_object_signal_emit(edje_ui,"group_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"group_frame_show","edje_editor");
          edje_object_signal_emit(edje_ui,"part_frame_hide","edje_editor");
          
          edje_object_signal_emit(edje_ui,"program_frame_show","edje_editor");
@@ -523,9 +536,25 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
 Etk_Bool
 on_GroupNameEntry_text_changed(Etk_Object *object, void *data)
 {
-   Etk_Tree_Col *col1=NULL;
-
    printf("Text Changed Signal on PartNameEntry EMITTED (text: %s)\n",etk_entry_text_get(ETK_ENTRY(object)));
+#if TEST_DIRECT_EDJE
+   char *name;
+   name = etk_entry_text_get(ETK_ENTRY(object));
+   
+   edje_edit_group_name_set(edje_o, Cur.group->string, name);
+   
+   //Update Group Combobox
+   Etk_Combobox_Item *item;
+   item = etk_combobox_active_item_get(ETK_COMBOBOX(UI_GroupsComboBox));
+   etk_signal_block("item-activated",ETK_OBJECT(UI_GroupsComboBox), on_GroupsComboBox_activated, NULL);
+   etk_combobox_item_fields_set(item, name);
+   etk_signal_unblock("item-activated",ETK_OBJECT(UI_GroupsComboBox), on_GroupsComboBox_activated, NULL);
+    
+   //Update FakeWin title
+   edje_object_part_text_set(EV_fakewin, "title", name);
+   
+#else
+   Etk_Tree_Col *col1=NULL;
    if (Cur.eg && ecore_hash_get(hash,Cur.eg))
    {
       engrave_group_name_set(Cur.eg,etk_entry_text_get(ETK_ENTRY(object)));
@@ -540,6 +569,7 @@ on_GroupNameEntry_text_changed(Etk_Object *object, void *data)
       edje_object_part_text_set (EV_fakewin,
          "title", engrave_group_name_get(Cur.eg));
    }
+#endif
 
    return ETK_TRUE;
 }
@@ -548,6 +578,28 @@ Etk_Bool
 on_GroupSpinner_value_changed(Etk_Range *range, double value, void *data)
 {
    printf("Group Spinners value changed signal EMIT\n");
+#if TEST_DIRECT_EDJE
+   if (!etk_string_length_get(Cur.part)) return ETK_TRUE;
+   switch ((int)data)
+   {
+      case MINW_SPINNER:
+         edje_edit_group_min_w_set(edje_o,
+            (int)etk_range_value_get(ETK_RANGE(UI_GroupMinWSpinner)));
+         break;
+      case MINH_SPINNER:
+         edje_edit_group_min_h_set(edje_o,
+            (int)etk_range_value_get(ETK_RANGE(UI_GroupMinHSpinner)));
+         break;
+      case MAXW_SPINNER:
+         edje_edit_group_max_w_set(edje_o,
+            (int)etk_range_value_get(ETK_RANGE(UI_GroupMaxWSpinner)));
+         break;
+      case MAXH_SPINNER:
+         edje_edit_group_max_h_set(edje_o,
+            (int)etk_range_value_get(ETK_RANGE(UI_GroupMaxHSpinner)));
+         break;
+   }
+#else
    if (Cur.eg)
    {
       switch ((int)data)
@@ -575,7 +627,7 @@ on_GroupSpinner_value_changed(Etk_Range *range, double value, void *data)
             break;
       }
    }
-
+#endif
    return ETK_TRUE;
 }
 
@@ -588,7 +640,7 @@ on_PartNameEntry_text_changed(Etk_Object *object, void *data)
    char *text;
    //printf("Text Changed Signal on PartNameEntry EMITTED (text: %s)\n",etk_entry_text_get(ETK_ENTRY(object)));
 #if TEST_DIRECT_EDJE
-   if (etk_string_length_get(Cur.part->string))
+   if (etk_string_length_get(Cur.part))
    {
       //Update PartTree
       row = etk_tree_selected_row_get(ETK_TREE(UI_PartsTree));
@@ -716,7 +768,41 @@ on_StateEntry_text_changed(Etk_Object *object, void *data)
    char buf[4096];
    const char *nn;   //new name
    printf("Text Changed Signal on StateEntry EMITTED\n");
-
+#if TEST_DIRECT_EDJE
+   if (etk_string_length_get(Cur.state))
+   {
+      if (strcmp("default 0.00", Cur.state->string))
+      {
+         nn = etk_entry_text_get(ETK_ENTRY(object));
+         if (edje_edit_state_name_set(edje_o, Cur.part->string, Cur.state->string, nn))
+         {
+            /* update tree */
+            Etk_Tree_Row *row;
+            row = etk_tree_selected_row_get(ETK_TREE(UI_PartsTree));
+            etk_tree_row_fields_set(row,TRUE,
+                                       COL_NAME, EdjeFile, "DESC.PNG", nn,
+                                       NULL);
+            /* update Cur */
+            Cur.state = etk_string_set(Cur.state, nn);
+             
+         }
+         else
+         {
+            ShowAlert("<b>Wrong name format</b><br>Name must be in the form:<br>\"default 0.00\"");
+         }
+      }
+      else
+      {
+         ShowAlert("You can't rename default 0.0");
+         etk_signal_block("text-changed",ETK_OBJECT(object),
+                          on_StateEntry_text_changed, NULL);
+         etk_entry_text_set(ETK_ENTRY(object), Cur.state->string);
+         etk_signal_unblock("text-changed",ETK_OBJECT(object),
+                            on_StateEntry_text_changed, NULL);
+      }
+   }
+   
+#else
    if (Cur.eps)
    {
       printf("FOLLOW %s %f\n",Cur.eps->name,Cur.eps->value);
@@ -735,13 +821,14 @@ on_StateEntry_text_changed(Etk_Object *object, void *data)
       etk_tree_row_fields_set(ecore_hash_get(hash,Cur.eps),TRUE,
          col1,EdjeFile,"DESC.PNG",buf,NULL);
    }
-
+#endif
    return ETK_TRUE;
 }
 
 Etk_Bool
 on_StateIndexSpinner_value_changed(Etk_Range *range, double value, void *data)
 {
+   //TODO remove this function when switch to edje internal
    char buf[4096];
    Etk_Tree_Col *col1=NULL;
 
@@ -771,21 +858,33 @@ Etk_Bool
 on_AspectSpinner_value_changed(Etk_Range *range, double value, void *data)
 {
    printf("Value Changed Signal on AspectMinSpinner EMITTED\n");
+#if TEST_DIRECT_EDJE
+   edje_edit_state_aspect_min_set(edje_o, Cur.part->string, Cur.state->string,
+                           etk_range_value_get(ETK_RANGE(UI_AspectMinSpinner)));
+   edje_edit_state_aspect_max_set(edje_o, Cur.part->string, Cur.state->string,
+                           etk_range_value_get(ETK_RANGE(UI_AspectMaxSpinner)));
+#else
    engrave_part_state_aspect_set(Cur.eps,
       etk_range_value_get(ETK_RANGE(UI_AspectMinSpinner)),
       etk_range_value_get(ETK_RANGE(UI_AspectMaxSpinner)));
+#endif
    return ETK_TRUE;
 }
 
 Etk_Bool
 on_AspectComboBox_changed(Etk_Combobox *combobox, void *data)
 {
-   Engrave_Aspect_Preference prefer;
    printf("Active Item Changed Signal on AspectComboBox EMITTED\n");
+#if TEST_DIRECT_EDJE
+   unsigned char pref;
+   pref = etk_combobox_item_data_get(etk_combobox_active_item_get (combobox));
+   edje_edit_state_aspect_pref_set(edje_o, Cur.part->string, Cur.state->string, pref);
+#else
+   Engrave_Aspect_Preference prefer;
 
    prefer = (Engrave_Aspect_Preference)etk_combobox_item_data_get(etk_combobox_active_item_get (combobox));
    engrave_part_state_aspect_preference_set(Cur.eps,prefer);
-
+#endif
    return ETK_TRUE;
 }
 
@@ -793,7 +892,16 @@ Etk_Bool
 on_StateMinMaxSpinner_value_changed(Etk_Range *range, double value, void *data)
 {
    printf("Active Item Changed Signal on MinMaxSpinners EMITTED\n");
-
+#if TEST_DIRECT_EDJE
+   edje_edit_state_min_w_set(edje_o, Cur.part->string, Cur.state->string,
+                           etk_range_value_get(ETK_RANGE(UI_StateMinWSpinner)));
+   edje_edit_state_min_h_set(edje_o, Cur.part->string, Cur.state->string,
+                           etk_range_value_get(ETK_RANGE(UI_StateMinHSpinner)));
+   edje_edit_state_max_w_set(edje_o, Cur.part->string, Cur.state->string,
+                           etk_range_value_get(ETK_RANGE(UI_StateMaxWSpinner)));
+   edje_edit_state_max_h_set(edje_o, Cur.part->string, Cur.state->string,
+                           etk_range_value_get(ETK_RANGE(UI_StateMaxHSpinner)));
+#else
    engrave_part_state_min_size_set(Cur.eps,
       etk_range_value_get(ETK_RANGE(UI_StateMinWSpinner)),
       etk_range_value_get(ETK_RANGE(UI_StateMinHSpinner)));
@@ -801,7 +909,7 @@ on_StateMinMaxSpinner_value_changed(Etk_Range *range, double value, void *data)
    engrave_part_state_max_size_set(Cur.eps,
       etk_range_value_get(ETK_RANGE(UI_StateMaxWSpinner)),
       etk_range_value_get(ETK_RANGE(UI_StateMaxHSpinner)));
-
+#endif
    ev_redraw();
    return ETK_TRUE;
 }
@@ -1207,6 +1315,12 @@ on_FontAlignSpinner_value_changed(Etk_Range *range, double value, void *data)
    if (data == TEXT_ALIGNV_SPINNER)
       edje_edit_state_text_align_y_set(edje_o, Cur.part->string, Cur.state->string,
                                        (double)etk_range_value_get(range));
+   if (data == STATE_ALIGNH_SPINNER)
+      edje_edit_state_align_x_set(edje_o, Cur.part->string, Cur.state->string,
+                                  (double)etk_range_value_get(range));
+   if (data == STATE_ALIGNV_SPINNER)
+      edje_edit_state_align_y_set(edje_o, Cur.part->string, Cur.state->string,
+                                  (double)etk_range_value_get(range));
 #else
    if (data == TEXT_ALIGNH_SPINNER)
       engrave_part_state_text_align_set(Cur.eps, etk_range_value_get(range), -1);
@@ -1444,16 +1558,7 @@ on_Param1Spinner_value_changed(Etk_Range *range, double value, void *data)
    return ETK_TRUE;
 }
 
-#if TEST_DIRECT_EDJE
-Etk_Bool
-on_GroupsComboBox_activated(Etk_Combobox *combobox, Etk_Combobox_Item *item, void *data)
-{
-   char *gr;
-   gr = etk_combobox_item_field_get(item,0);
-   printf("Group combo activated: %s\n",gr);
-   ChangeGroup(gr);
-}
-#endif
+
 Etk_Bool
 on_TransitionComboBox_changed(Etk_Combobox *combobox, void *data)
 {

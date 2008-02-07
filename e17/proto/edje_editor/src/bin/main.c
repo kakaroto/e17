@@ -427,6 +427,11 @@ ChangeGroup(char *group)
    
    PopulateTree2();
    PopulateRelComboBoxes();
+   
+   UpdateGroupFrame();
+   
+   //update FakeWin title
+   edje_object_part_text_set(EV_fakewin, "title", group);
 }
 
 int

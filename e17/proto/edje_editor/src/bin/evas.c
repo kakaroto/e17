@@ -482,12 +482,18 @@ ev_draw_focus(void)
 void
 ev_resize_fake(int w, int h)
 {
-   int max_w=0, max_h=0;
-   int min_w=0, min_h=0;
-
+   int max_w = 0;
+   int max_h = 0;
+   int min_w = 0;
+   int min_h = 0;
+#if TEST_DIRECT_EDJE
+   edje_object_size_min_get(edje_o, &min_w, &min_h);
+   edje_object_size_max_get(edje_o, &max_w, &max_h);
+#else
    engrave_group_max_size_get(Cur.eg, &max_w, &max_h);
    engrave_group_min_size_get(Cur.eg, &min_w, &min_h);
-  
+#endif
+   
    if (max_w > 0 && w > max_w) w = max_w;
    if (max_h > 0 && h > max_h) h = max_h;
 
@@ -531,8 +537,6 @@ ev_redraw(void)
       //place engrave canvas
       evas_object_move(edje_o, x, y);
       evas_object_resize(edje_o, w+1, h);
-      //This make engrave_canvas redraw (BAD!!)
-//      engrave_canvas_current_group_set(engrave_canvas, Cur.eg);
 
       evas_object_show(EV_fakewin);
       evas_object_show(EV_movebox);
