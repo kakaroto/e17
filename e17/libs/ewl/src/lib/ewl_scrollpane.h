@@ -35,31 +35,26 @@
 /**
  * The scrollpane can be scolled with a drag of the mouse
  */
-typedef struct Ewl_Scrollpane_Scroll_Info Ewl_Scrollpane_Scroll_Info;
+typedef struct Ewl_Scrollpane_Scroll_Info_Base Ewl_Scrollpane_Scroll_Info_Base;
 
 /**
- * @def EWL_SCROLLPANE_SCROLL_INFO(scroll_info)
- * Typecasts a pointer to an Ewl_Scrollpane_Scroll_Info pointer.
+ * @def EWL_SCROLLPANE_SCROLL_INFO_Base(scroll_info)
+ * Typecasts a pointer to an Ewl_Scrollpane_Scroll_Info_Base pointer.
  */
-#define EWL_SCROLLPANE_SCROLL_INFO(scroll_info) ((Ewl_Scrollpane_Scroll_Info *) scroll_info)
+#define EWL_SCROLLPANE_SCROLL_INFO_BASE(scroll_info) ((Ewl_Scrollpane_Scroll_Info_Base *) scroll_info)
 
 /**
  * @brief Enables a scrollpane to be scrolled with kinetic behaviour
  */
-struct Ewl_Scrollpane_Scroll_Info
+struct Ewl_Scrollpane_Scroll_Info_Base
 {
 	unsigned char clicked:1;	/**< If the mouse is currently clicked or not */
 	unsigned char active:1;		/**< If the pane is currently moving */
 	int fps;			/**< Number of recalculations per second */
-	int x;				/**< Mouse down location (x) */
-	int y;				/**< Mouse down location (y) */
-	int xc;				/**< Mouse up location (x) */
-	int yc;				/**< Mouse up location (y) */
-	double vel_x;			/**< Current horizontal velocity */
-	double vel_y;			/**< Current vertical */
 	double vmax;			/**< Maximum speed in pixels */
 	double vmin;			/**< Minimum speed in pixels */
 	double dampen;			/**< Frictional variable */
+	void *extra;			/**< Additional information */
 };
 
 /**
@@ -88,7 +83,7 @@ struct Ewl_Scrollpane
 	Ewl_Widget *vscrollbar; /**< Vertical scrollbar */
 	Ewl_Scrollpane_Flags hflag;      /**< Flags for horizontal scrollbar */
 	Ewl_Scrollpane_Flags vflag;      /**< Flags for vertical scrollbar */
-	Ewl_Scrollpane_Scroll_Info *kinfo;	/**< Kinetic scrolling info */
+	Ewl_Scrollpane_Scroll_Info_Base *kinfo;	/**< Kinetic scrolling info */
 	Ewl_Kinetic_Scroll type;	/**< If the scrollpane is to use kinetic scrolling */
 };
 
