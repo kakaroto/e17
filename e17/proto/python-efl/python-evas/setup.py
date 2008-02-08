@@ -7,9 +7,16 @@ use_setuptools('0.6c3')
 from setuptools import setup, find_packages, Extension
 from distutils.command.install_headers import install_headers
 from distutils.sysconfig import get_python_inc
-import commands
+import subprocess
+import shlex
 
 from Cython.Distutils import build_ext
+
+def getstatusoutput(cmdline):
+    cmd = shlex.split(cmdline)
+    p = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+    out, err = p.communicate()
+    return p.returncode, out
 
 
 def pkgconfig(*packages, **kw):
@@ -18,7 +25,7 @@ def pkgconfig(*packages, **kw):
     pkgs = ' '.join(packages)
     cmdline = 'pkg-config --libs --cflags %s' % pkgs
 
-    status, output = commands.getstatusoutput(cmdline)
+    status, output = getstatusoutput(cmdline)
     if status != 0:
         raise ValueError("could not find pkg-config module: %s" % pkgs)
 

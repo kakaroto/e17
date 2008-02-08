@@ -5,7 +5,14 @@ from ez_setup import use_setuptools
 use_setuptools("0.6c3")
 
 from setuptools import setup, Extension
-import commands
+import subprocess
+import shlex
+
+def getstatusoutput(cmdline):
+    cmd = shlex.split(cmdline)
+    p = subprocess.Popen(cmd, stdout=subprocess.PIPE)
+    out, err = p.communicate()
+    return p.returncode, out
 
 
 def pkgconfig(*packages, **kw):
@@ -14,7 +21,7 @@ def pkgconfig(*packages, **kw):
     pkgs = ' '.join(packages)
     cmdline = 'pkg-config --libs --cflags %s' % pkgs
 
-    status, output = commands.getstatusoutput(cmdline)
+    status, output = getstatusoutput(cmdline)
     if status != 0:
         raise ValueError("could not find pkg-config module: %s" % pkgs)
 
