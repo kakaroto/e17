@@ -110,6 +110,7 @@
  *
  * @code
  * #include <Ewl.h>
+ * #include <stdio.h>
  *
  * Ewl_Widget *main_win;
  * Ewl_Widget *main_box;
@@ -126,7 +127,7 @@
  *
  * @code
  * void
- * __destroy_main_window(Ewl_Widget *main_win, void *ev_data, void *user_data)
+ * _destroy_main_window(Ewl_Widget *main_win, void *ev_data, void *user_data)
  * {
  * 	ewl_widget_destroy(main_win);
  * 	ewl_main_quit();
@@ -163,7 +164,7 @@
  * 	main_win = ewl_window_new();
  * 	ewl_window_title_set(EWL_WINDOW(main_win), "EWL Simple Image Viewer");
  * 	ewl_callback_append(main_win, EWL_CALLBACK_DELETE_WINDOW,
- *			    __destroy_main_window, NULL);
+ *			    _destroy_main_window, NULL);
  * 	ewl_object_minimum_size_set(EWL_OBJECT(main_win), 100, 100);
  * 	ewl_widget_show(main_win);
  * @endcode
