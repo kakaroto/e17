@@ -17,7 +17,7 @@ enum stackLook{
 
 int random_range(int n);
 inline int minimal(int n1, int n2);
-inline int maximal(int n2, int n2);
+inline int maximal(int n1, int n2);
 
 class cardStack;
 class cardDeck;
