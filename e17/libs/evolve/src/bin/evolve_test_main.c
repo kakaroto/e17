@@ -40,7 +40,7 @@ int main(int argc, char **argv)
    Evolve *evolve;
    
    evolve_init();
-   etk_init(&argc, &argv);
+   etk_init(argc, argv);
    
    evolve = evolve_eet_load(PACKAGE_DATA_DIR"/interfaces/etk_test/etk_test.eet");
    if (!evolve)

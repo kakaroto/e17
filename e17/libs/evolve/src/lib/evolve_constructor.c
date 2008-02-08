@@ -178,7 +178,7 @@ Evolve_Widget *evolve_gui_button_new()
    Evolve_Widget *widget;
    
    widget = evolve_button_new();
-   evolve_widget_property_set(widget, "label", "button", ETK_PROPERTY_STRING);
+   evolve_widget_property_set(widget, "label", "button", EVOLVE_PROPERTY_STRING);
    return widget;
 }
 
@@ -189,7 +189,7 @@ Evolve_Widget *evolve_gui_check_button_new()
    Evolve_Widget *widget;
    
    widget = evolve_check_button_new();
-   evolve_widget_property_set(widget, "label", "check button", ETK_PROPERTY_STRING);
+   evolve_widget_property_set(widget, "label", "check button", EVOLVE_PROPERTY_STRING);
    return widget;
 }
 
@@ -229,7 +229,7 @@ Evolve_Widget *evolve_gui_frame_new()
    Etk_Widget *button;
    
    widget = evolve_frame_new();
-   evolve_widget_property_set(widget, "label", "frame", ETK_PROPERTY_STRING);
+   evolve_widget_property_set(widget, "label", "frame", EVOLVE_PROPERTY_STRING);
    button = etk_button_new();
    etk_widget_size_request_set(button, 64, 64);
    etk_widget_theme_set(button,
@@ -263,7 +263,7 @@ Evolve_Widget *evolve_gui_label_new()
    Evolve_Widget *widget;
    
    widget = evolve_label_new();
-   evolve_widget_property_set(widget, "label", "label", ETK_PROPERTY_STRING);
+   evolve_widget_property_set(widget, "label", "label", EVOLVE_PROPERTY_STRING);
    return widget;   
 }
 
@@ -549,7 +549,7 @@ Evolve_Widget *evolve_gui_window_new()
    evolve->widgets = evas_list_append(evolve->widgets, widget);
    etk_signal_connect("mouse-down", ETK_OBJECT(widget->widget),
 		      ETK_CALLBACK(evolve_gui_mouse_down_select_cb), widget);
-   evolve_widget_property_set(widget, "title", widget->name, ETK_PROPERTY_STRING);
+   evolve_widget_property_set(widget, "title", widget->name, EVOLVE_PROPERTY_STRING);
    return widget;
 }
   

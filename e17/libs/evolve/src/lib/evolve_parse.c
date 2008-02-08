@@ -65,7 +65,7 @@ int evolve_parse_property_number(char *prop, char *value)
    if (!evolve_widget_type_property_exists(last_widget->type, prop))
      return 0;
    
-   evolve_widget_property_set(last_widget, prop, value, ETK_PROPERTY_INT);
+   evolve_widget_property_set(last_widget, prop, value, EVOLVE_PROPERTY_INT);
    return 1;
 }
 
@@ -79,7 +79,7 @@ int evolve_parse_property_string(char *prop, char *value)
    if (!evolve_widget_type_property_exists(last_widget->type, prop))
      return 0;   
 
-   evolve_widget_property_set(last_widget, prop, value, ETK_PROPERTY_STRING);
+   evolve_widget_property_set(last_widget, prop, value, EVOLVE_PROPERTY_STRING);
    return 1;
 }
 

@@ -40,6 +40,105 @@ static Evas_Bool evolve_widget_packing_property_to_str_convert_foreach(Evas_Hash
 static Evas_Bool evolve_widget_code_get_packing_props_foreach(Evas_Hash *hash, const char *key, void *data, void *fdata);
 static Evas_Bool evolve_widget_code_get_props_foreach(Evas_Hash *hash, const char *key, void *data, void *fdata);
 
+/* temp until we support unions in eet */
+
+Evolve_Property_Type evolve_property_type_get(Evolve_Property *property)
+{
+	if (!property || !property->default_value)
+		return EVOLVE_PROPERTY_UNKNOWN;
+
+	return property->default_value->type;
+}
+
+Evolve_Property_Value *evolve_property_value_new()
+{
+	Evolve_Property_Value *value = calloc(1, sizeof(Evolve_Property_Value));
+	value->type = EVOLVE_PROPERTY_UNKNOWN;
+	return value;
+}
+Evolve_Property_Value *evolve_property_value_string(const char *value)
+{
+   Evolve_Property_Value *new_value;
+   new_value = evolve_property_value_new();
+	 new_value->string_value = value ? strdup(value) : NULL;
+	 new_value->type = EVOLVE_PROPERTY_STRING;
+   return new_value;
+}
+Evolve_Property_Value *evolve_property_value_double(double value)
+{
+   Evolve_Property_Value *new_value;
+   new_value = evolve_property_value_new();
+	 new_value->double_value = value;
+	 new_value->type = EVOLVE_PROPERTY_DOUBLE;
+   return new_value;
+}
+Evolve_Property_Value *evolve_property_value_int(int value)
+{
+   Evolve_Property_Value *new_value;
+   new_value = evolve_property_value_new();
+	 new_value->int_value = value;
+	 new_value->type = EVOLVE_PROPERTY_INT;
+   return new_value;
+}
+const char *evolve_property_value_string_get(Evolve_Property_Value *value)
+{
+	if (!value)
+		return NULL;
+	return value->string_value;
+}
+Etk_Bool evolve_property_value_bool_get(Evolve_Property_Value *value)
+{
+	if (!value)
+		return ETK_FALSE;
+	return value->bool_value;
+}
+long int evolve_property_value_long_get(Evolve_Property_Value *value)
+{
+	if (!value)
+		return 0;
+	return value->long_value;
+}
+char evolve_property_value_char_get(Evolve_Property_Value *value)
+{
+	if (!value)
+		return 0;
+	return value->char_value;
+}
+float evolve_property_value_float_get(Evolve_Property_Value *value)
+{
+	if (!value)
+		return 0;
+	return value->float_value;
+}
+short int evolve_property_value_short_get(Evolve_Property_Value *value)
+{
+	if (!value)
+		return 0;
+	return value->short_value;
+}
+int evolve_property_value_int_get(Evolve_Property_Value *value)
+{
+	if (!value)
+		return 0;
+	return value->int_value;
+}
+double evolve_property_value_double_get(Evolve_Property_Value *value)
+{
+	if (!value)
+		return 0;
+	return value->double_value;
+}
+void evolve_property_value_delete(Evolve_Property_Value *value)
+{
+	if (!value)
+		return;
+	if (value->string_value) free(value->string_value);
+	free(value);
+}
+
+
+
+
 /* populate widget packing info hashes (used at init time) */
 void evolve_widget_packing_info_populate()
 {
@@ -223,11 +322,11 @@ Evolve_Ctor evolve_widget_ctor_find(char *type)
 }
 
 /* apply an internal property to the given widget, return 1 on success, 0 otherwise */
-int evolve_widget_internal_property_apply(Evolve_Widget *widget, Etk_Property *prop)
+int evolve_widget_internal_property_apply(Evolve_Widget *widget, Evolve_Property *prop)
 {
    if (!strcmp(prop->name, "show_all"))
      {
-	if (etk_property_value_int_get(prop->default_value) == 1)
+	if (evolve_property_value_int_get(prop->default_value) == 1)
 	  _evolve_widgets_show_all = evas_list_append(_evolve_widgets_show_all, widget);
 	return 1;
      }
@@ -238,7 +337,7 @@ int evolve_widget_internal_property_apply(Evolve_Widget *widget, Etk_Property *p
      {
 	char key[PATH_MAX];
 		
-	snprintf(key, sizeof(key), "/etk/images/%s", etk_property_value_string_get(prop->default_value));
+	snprintf(key, sizeof(key), "/etk/images/%s", evolve_property_value_string_get(prop->default_value));
 	if (!strcmp(widget->type, "image"))
 	  etk_image_set_from_file(ETK_IMAGE(widget->widget), _evolve_ev->eet_filename, key);
 	else if (!strcmp(widget->type, "button"))
@@ -254,15 +353,15 @@ int evolve_widget_internal_property_apply(Evolve_Widget *widget, Etk_Property *p
      {
 	char file[PATH_MAX];
 	
-	if (ecore_file_exists(etk_property_value_string_get(prop->default_value)))
-	  snprintf(file, sizeof(file), "%s", etk_property_value_string_get(prop->default_value));
+	if (ecore_file_exists(evolve_property_value_string_get(prop->default_value)))
+	  snprintf(file, sizeof(file), "%s", evolve_property_value_string_get(prop->default_value));
 	else if (_evolve_ev && _evolve_ev->eet_filename)
 	  {
 	     char *dir;
 	     
 	     if ((dir = ecore_file_dir_get(_evolve_ev->eet_filename)))
 	       {
-		  snprintf(file, sizeof(file), "%s/%s", dir, etk_property_value_string_get(prop->default_value));
+		  snprintf(file, sizeof(file), "%s/%s", dir, evolve_property_value_string_get(prop->default_value));
 		  free(dir);
 		  if (ecore_file_exists(file))
 		    goto prop_set;
@@ -272,7 +371,7 @@ int evolve_widget_internal_property_apply(Evolve_Widget *widget, Etk_Property *p
 	else
 	  {
 last_attemp:
-	     snprintf(file, sizeof(file), "./%s", etk_property_value_string_get(prop->default_value));
+	     snprintf(file, sizeof(file), "./%s", evolve_property_value_string_get(prop->default_value));
 	  }	  
 	
 prop_set:	
@@ -291,10 +390,10 @@ prop_set:
 	  return 1;
 	
 	etk_widget_parent_set(widget->widget, swallow_parent->widget);
-	if (!etk_widget_swallow_widget(swallow_parent->widget, etk_property_value_string_get(prop->default_value), widget->widget))
+	if (!etk_widget_swallow_widget(swallow_parent->widget, evolve_property_value_string_get(prop->default_value), widget->widget))
 	  fprintf(stderr, "EVOLVE WARNING!!\n"
 		  "Could not swallow widget %s into part %s of widget %s: Error code %d\n",
-		  widget->name, etk_property_value_string_get(prop->default_value), swallow_parent->name,
+		  widget->name, evolve_property_value_string_get(prop->default_value), swallow_parent->name,
 		  etk_widget_swallow_error_get());
 	return 1;
      }
@@ -312,7 +411,7 @@ void evolve_widget_properties_apply(Evolve_Widget *widget)
 }
 
 /* apply all the properties on the given widget */
-void evolve_widget_property_apply(Evolve_Widget *widget, Etk_Property *prop)
+void evolve_widget_property_apply(Evolve_Widget *widget, Evolve_Property *prop)
 {
    if (!widget || !widget->props)
      return;
@@ -323,20 +422,20 @@ void evolve_widget_property_apply(Evolve_Widget *widget, Etk_Property *prop)
    if (evolve_widget_internal_property_apply(widget, prop))
      return;
    
-   switch (etk_property_type_get(prop))
+   switch (evolve_property_type_get(prop))
      {
-      case ETK_PROPERTY_INT:
-	etk_object_properties_set(ETK_OBJECT(widget->widget), prop->name, etk_property_value_int_get(prop->default_value), NULL);
+      case EVOLVE_PROPERTY_INT:
+	etk_object_properties_set(ETK_OBJECT(widget->widget), prop->name, evolve_property_value_int_get(prop->default_value), NULL);
 	break;
-      case ETK_PROPERTY_DOUBLE:
-	etk_object_properties_set(ETK_OBJECT(widget->widget), prop->name, etk_property_value_double_get(prop->default_value), NULL);
+      case EVOLVE_PROPERTY_DOUBLE:
+	etk_object_properties_set(ETK_OBJECT(widget->widget), prop->name, evolve_property_value_double_get(prop->default_value), NULL);
 	break;
-      case ETK_PROPERTY_STRING:
-	etk_object_properties_set(ETK_OBJECT(widget->widget), prop->name, etk_property_value_string_get(prop->default_value), NULL);
+      case EVOLVE_PROPERTY_STRING:
+	etk_object_properties_set(ETK_OBJECT(widget->widget), prop->name, evolve_property_value_string_get(prop->default_value), NULL);
 	break;
       default:
 	printf("Unkown property type: %s %s %d\n", widget->name, widget->type,
-	       etk_property_type_get(prop));
+	       evolve_property_type_get(prop));
 	break;
      }         
 }
@@ -883,29 +982,32 @@ leave_for:
 /* set the given property on the given widget */
 void evolve_widget_property_set(Evolve_Widget *widget, char *name, char *value, int type)
 {
-   Etk_Property *prop;
+   Evolve_Property *prop;
    
    if (!widget)
      return;
    
    if (widget->props && (prop = evas_hash_find(widget->props, name)))     
-     etk_property_value_delete(prop->default_value);
+     evolve_property_value_delete(prop->default_value);
    else
      {
-	prop = etk_property_new(name, 1, type, ETK_PROPERTY_READABLE_WRITABLE, NULL);
+	prop = calloc(1, sizeof(Evolve_Property));
+	prop->name = strdup(name);
+	prop->type = type;
+	prop->default_value = NULL;
 	widget->props = evas_hash_add(widget->props, name, prop);
      }
    
    switch(prop->type)
      {
-      case ETK_PROPERTY_INT:
-	prop->default_value = etk_property_value_int(atoi(value));
+      case EVOLVE_PROPERTY_INT:
+	prop->default_value = evolve_property_value_int(atoi(value));
 	break;
-      case ETK_PROPERTY_DOUBLE:
-	prop->default_value = etk_property_value_double(atof(value));
+      case EVOLVE_PROPERTY_DOUBLE:
+	prop->default_value = evolve_property_value_double(atof(value));
 	break;
-      case ETK_PROPERTY_STRING:
-	prop->default_value = etk_property_value_string(value);	
+      case EVOLVE_PROPERTY_STRING:
+	prop->default_value = evolve_property_value_string(value);	
 	break;
       default:
 	prop->default_value = NULL;
@@ -915,7 +1017,7 @@ void evolve_widget_property_set(Evolve_Widget *widget, char *name, char *value, 
 }
 
 /* find a property for the supplied widget, return it, or return NULL if not found */
-Etk_Property *evolve_widget_property_get(Evolve_Widget *widget, char *prop_name)
+Evolve_Property *evolve_widget_property_get(Evolve_Widget *widget, char *prop_name)
 {
    if (!widget || !widget->props)
      return NULL;
@@ -938,7 +1040,7 @@ Etk_Type *evolve_widget_type_to_etk(char *type)
 int evolve_widget_type_property_exists(char *type, char *prop_name)
 {   
    Etk_Type *property_owner;
-   Etk_Property *property;
+   Evolve_Property *property;
    
    if (etk_type_property_find(evolve_widget_type_to_etk(type), prop_name, 
 			      &property_owner, &property)
@@ -986,7 +1088,7 @@ static Evas_Bool evolve_widget_all_internal_props_set_foreach(Evas_Hash *hash, c
 static Evas_Bool evolve_widget_properties_apply_foreach(Evas_Hash *hash, const char *key, void *data, void *fdata)
 {
    Evolve_Widget *widget;
-   Etk_Property *prop;
+   Evolve_Property *prop;
    
    widget = fdata;
    prop = data;

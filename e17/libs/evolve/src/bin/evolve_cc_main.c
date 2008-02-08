@@ -139,6 +139,7 @@ main(int argc, char **argv)
 	fprintf(stderr, "%s: Error parsing file: %s.\n", progname, file_in);
 	exit(-1);
      }
+
    if (!evolve_eet_save(evolve, file_out))
      {
 	fprintf(stderr, "%s: Error writing file: %s.\n", progname, file_out);

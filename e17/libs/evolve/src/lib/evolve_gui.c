@@ -184,9 +184,9 @@ void evolve_gui_general_table_populate(Evolve_Widget *widget)
 
    for (l = list; l; l = l->next)
      {
-	Etk_Property *prop;
-	Etk_Property *eprop;
-	Etk_Property *p;
+	Evolve_Property *prop;
+	Evolve_Property *eprop;
+	Evolve_Property *p;
 	Etk_String *value;
 	Etk_Widget *vwidget;
 	
@@ -205,31 +205,31 @@ void evolve_gui_general_table_populate(Evolve_Widget *widget)
 	
 	switch(prop->type)
 	  {
-	   case ETK_PROPERTY_INT:
-	     value = etk_string_new_printf("%d", etk_property_value_int_get(p->default_value));
-	     vwidget = etk_spinner_new(0, 9999, etk_property_value_int_get(p->default_value), 1, 10);
+	   case EVOLVE_PROPERTY_INT:
+	     value = etk_string_new_printf("%d", evolve_property_value_int_get(p->default_value));
+	     vwidget = etk_spinner_new(0, 9999, evolve_property_value_int_get(p->default_value), 1, 10);
 	     etk_object_data_set_full(ETK_OBJECT(vwidget), "prop", p, NULL);
 	     etk_object_data_set_full(ETK_OBJECT(vwidget), "widget", widget, NULL);
 	     etk_signal_connect("value-changed", ETK_OBJECT(vwidget),
 				ETK_CALLBACK(evolve_gui_property_spinner_value_changed_cb),
 				NULL);
 	     break;
-	   case ETK_PROPERTY_BOOL:
-	     value = etk_string_new_printf("%d", etk_property_value_bool_get(p->default_value));
+	   case EVOLVE_PROPERTY_BOOL:
+	     value = etk_string_new_printf("%d", evolve_property_value_bool_get(p->default_value));
 	     vwidget = etk_combobox_new_default();
 	       {
 		  Etk_Combobox_Item *item;
 		  
 		  item = etk_combobox_item_append(ETK_COMBOBOX(vwidget), "True");
-		  if (etk_property_value_bool_get(p->default_value))
+		  if (evolve_property_value_bool_get(p->default_value))
 		    etk_combobox_active_item_set(ETK_COMBOBOX(vwidget), item);
 		  item = etk_combobox_item_append(ETK_COMBOBOX(vwidget), "False");
-		  if (!etk_property_value_bool_get(p->default_value))
+		  if (!evolve_property_value_bool_get(p->default_value))
 		    etk_combobox_active_item_set(ETK_COMBOBOX(vwidget), item);		  
 	       }
 	     break;
-	   case ETK_PROPERTY_CHAR:
-	     value = etk_string_new_printf("%c", etk_property_value_char_get(p->default_value));
+	   case EVOLVE_PROPERTY_CHAR:
+	     value = etk_string_new_printf("%c", evolve_property_value_char_get(p->default_value));
 	     vwidget = etk_entry_new();
 	     etk_entry_text_set(ETK_ENTRY(vwidget), etk_string_get(value));
 	     etk_object_data_set_full(ETK_OBJECT(vwidget), "prop", p, NULL);
@@ -237,9 +237,9 @@ void evolve_gui_general_table_populate(Evolve_Widget *widget)
 				ETK_CALLBACK(evolve_gui_property_entry_text_changed_cb),
 				widget);
 	     break;		  
-	   case ETK_PROPERTY_FLOAT:
-	     value = etk_string_new_printf("%f", etk_property_value_float_get(p->default_value));
-	     vwidget = etk_spinner_new(0.0, 9999.0, etk_property_value_float_get(p->default_value), 0.1, 1.0);
+	   case EVOLVE_PROPERTY_FLOAT:
+	     value = etk_string_new_printf("%f", evolve_property_value_float_get(p->default_value));
+	     vwidget = etk_spinner_new(0.0, 9999.0, evolve_property_value_float_get(p->default_value), 0.1, 1.0);
 	     etk_spinner_digits_set(ETK_SPINNER(vwidget), 1);
 	     etk_object_data_set_full(ETK_OBJECT(vwidget), "prop", p, NULL);
 	     etk_object_data_set_full(ETK_OBJECT(vwidget), "widget", widget, NULL);
@@ -247,9 +247,9 @@ void evolve_gui_general_table_populate(Evolve_Widget *widget)
 				ETK_CALLBACK(evolve_gui_property_spinner_value_changed_cb),
 				NULL);
 	     break;
-	   case ETK_PROPERTY_DOUBLE:
-	     value = etk_string_new_printf("%g", etk_property_value_double_get(p->default_value));
-	     vwidget = etk_spinner_new(0.0, 9999.0, etk_property_value_double_get(p->default_value), 0.1, 1.0);
+	   case EVOLVE_PROPERTY_DOUBLE:
+	     value = etk_string_new_printf("%g", evolve_property_value_double_get(p->default_value));
+	     vwidget = etk_spinner_new(0.0, 9999.0, evolve_property_value_double_get(p->default_value), 0.1, 1.0);
 	     etk_spinner_digits_set(ETK_SPINNER(vwidget), 1);
 	     etk_object_data_set_full(ETK_OBJECT(vwidget), "prop", p, NULL);
 	     etk_object_data_set_full(ETK_OBJECT(vwidget), "widget", widget, NULL);
@@ -257,32 +257,32 @@ void evolve_gui_general_table_populate(Evolve_Widget *widget)
 				ETK_CALLBACK(evolve_gui_property_spinner_value_changed_cb),
 				NULL);
 	     break;
-	   case ETK_PROPERTY_SHORT:
-	     value = etk_string_new_printf("%d", etk_property_value_short_get(p->default_value));
-	     vwidget = etk_spinner_new(0, 9999, etk_property_value_short_get(p->default_value), 1, 10);
+	   case EVOLVE_PROPERTY_SHORT:
+	     value = etk_string_new_printf("%d", evolve_property_value_short_get(p->default_value));
+	     vwidget = etk_spinner_new(0, 9999, evolve_property_value_short_get(p->default_value), 1, 10);
 	     etk_object_data_set_full(ETK_OBJECT(vwidget), "prop", p, NULL);
 	     etk_object_data_set_full(ETK_OBJECT(vwidget), "widget", widget, NULL);
 	     etk_signal_connect("value-changed", ETK_OBJECT(vwidget),
 				ETK_CALLBACK(evolve_gui_property_spinner_value_changed_cb),
 				NULL);	     
 	     break;
-	   case ETK_PROPERTY_LONG:
-	     value = etk_string_new_printf("%li", etk_property_value_long_get(p->default_value));
-	     vwidget = etk_spinner_new(0, 9999, etk_property_value_long_get(p->default_value), 1, 10);
+	   case EVOLVE_PROPERTY_LONG:
+	     value = etk_string_new_printf("%li", evolve_property_value_long_get(p->default_value));
+	     vwidget = etk_spinner_new(0, 9999, evolve_property_value_long_get(p->default_value), 1, 10);
 	     etk_object_data_set_full(ETK_OBJECT(vwidget), "prop", p, NULL);
 	     etk_object_data_set_full(ETK_OBJECT(vwidget), "widget", widget, NULL);
 	     etk_signal_connect("value-changed", ETK_OBJECT(vwidget),
 				ETK_CALLBACK(evolve_gui_property_spinner_value_changed_cb),
 				NULL);
 	     break;
-	   case ETK_PROPERTY_POINTER:
+	   case EVOLVE_PROPERTY_POINTER:
 	     value = etk_string_new_printf("cant cast PROPERTY_POINTER");
 	     vwidget = etk_entry_new();
 	     etk_entry_text_set(ETK_ENTRY(vwidget), etk_string_get(value));
 	     etk_widget_disabled_set(vwidget, ETK_TRUE);
 	     break;		  
-	   case ETK_PROPERTY_STRING:
-	     value = etk_string_new_printf("%s", etk_property_value_string_get(p->default_value));
+	   case EVOLVE_PROPERTY_STRING:
+	     value = etk_string_new_printf("%s", evolve_property_value_string_get(p->default_value));
 	     vwidget = etk_entry_new();
 	     etk_entry_text_set(ETK_ENTRY(vwidget), etk_string_get(value));
 	     etk_entry_text_set(ETK_ENTRY(vwidget), etk_string_get(value));
@@ -382,7 +382,7 @@ void evolve_gui_prop_dialog_tables_set(Etk_Widget *g_table, Etk_Widget *p_table,
 static void evolve_gui_property_entry_text_changed_cb(Etk_Object *object, void *data)
 {
    Evolve_Widget *widget;
-   Etk_Property *prop;
+   Evolve_Property *prop;
    
    prop = etk_object_data_get(object, "prop");
    widget = data;
@@ -393,7 +393,7 @@ static void evolve_gui_property_entry_text_changed_cb(Etk_Object *object, void *
 static void evolve_gui_property_spinner_value_changed_cb(Etk_Range *range, double value)
 {
    Etk_Spinner *spinner;
-   Etk_Property *prop;
+   Evolve_Property *prop;
    Evolve_Widget *widget;
    char value_str[64];
    

@@ -10,7 +10,7 @@ int main(int argc, char **argv)
    Etk_Widget *c_table;
    Etk_Widget *s_table;   
    
-   etk_init(&argc, &argv);
+   etk_init(argc, argv);
    evolve_init();
    evolve_gui_init();
    
