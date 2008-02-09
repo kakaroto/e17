@@ -475,7 +475,7 @@ _mpdule_update_song_cb (void *data)
 
   inst = data;
   _mpdule_update_song (inst);
-  return 0;
+  return 1;
 }
 
 static void
