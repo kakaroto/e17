@@ -18,6 +18,7 @@ typedef Etk_Widget *(*Evolve_Ctor)(void);
 
 #include "evolve_util.h"
 #include "evolve_parse.h"
+#include "evolve_property.h"
 #include "evolve_widget.h"
 #include "evolve_constructor.h"
 #include "evolve_signal.h"

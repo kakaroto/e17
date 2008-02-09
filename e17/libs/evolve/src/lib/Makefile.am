@@ -22,6 +22,7 @@ EVOLVEHEADERS = \
 	Evolve.h \
 	evolve_constructor.h \
 	evolve_parse.h \
+	evolve_property.h \
 	evolve_private.h \
 	evolve_widget.h \
 	evolve_signal.h \
@@ -35,6 +36,7 @@ EVOLVEFILES = \
 	evolve_lib.c \
 	evolve_constructor.c \
 	evolve_parse.c \
+	evolve_property.c \
 	evolve_widget.c \
 	evolve_signal.c \
 	evolve_gui.c \
