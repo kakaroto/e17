@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.7\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-02-03 18:09+0100\n"
+"POT-Creation-Date: 2008-02-10 10:47+0100\n"
 "PO-Revision-Date: 2004-09-14 20:43-0300\n"
 "Last-Translator: Viktor Kojouharov\n"
 "Language-Team: Bulgarian\n"
@@ -725,7 +725,7 @@ msgstr "Приложи"
 msgid "Attention !!!"
 msgstr "Внимание !!!"
 
-#: src/ecompmgr.c:2609
+#: src/ecompmgr.c:2612
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -1859,38 +1859,50 @@ msgstr "Включи Композитора"
 msgid "Enable Fading"
 msgstr "Разрешавай обръщането през ръбовете"
 
-#: src/settings.c:614
-msgid "Shadows Off"
-msgstr "Без сенки"
-
-#: src/settings.c:620
-msgid "Shadows Sharp"
-msgstr "Остри сенки"
-
-#: src/settings.c:626
-#, fuzzy
-msgid "Shadows Sharp2"
-msgstr "Остри сенки"
-
-#: src/settings.c:632
-msgid "Shadows Blurred"
-msgstr "Меки сенки"
-
-#: src/settings.c:640
+#: src/settings.c:612
 #, fuzzy
 msgid "Fading Speed:"
 msgstr "Бързина на изчезване\n"
 
-#: src/settings.c:651
+#: src/settings.c:625
+msgid "Shadows Off"
+msgstr "Без сенки"
+
+#: src/settings.c:631
+msgid "Shadows Sharp"
+msgstr "Остри сенки"
+
+#: src/settings.c:637
+#, fuzzy
+msgid "Shadows Sharp2"
+msgstr "Остри сенки"
+
+#: src/settings.c:643
+msgid "Shadows Blurred"
+msgstr "Меки сенки"
+
+#: src/settings.c:654
+msgid "Default focused window opacity:"
+msgstr ""
+
+#: src/settings.c:665
+msgid "Default unfocused window opacity:"
+msgstr ""
+
+#: src/settings.c:676
+msgid "Default pop-up window opacity:"
+msgstr ""
+
+#: src/settings.c:687
 #, fuzzy
 msgid "Composite"
 msgstr "Включи Композитора"
 
-#: src/settings.c:652
+#: src/settings.c:688
 msgid "Composite Settings"
 msgstr "Настройки за композитора"
 
-#: src/settings.c:655
+#: src/settings.c:691
 msgid ""
 "Enlightenment Composite\n"
 "Settings Dialog\n"
@@ -1898,7 +1910,7 @@ msgstr ""
 "Е: Композитор\n"
 "Диалог за настройки\n"
 
-#: src/settings.c:744
+#: src/settings.c:780
 #, fuzzy
 msgid "Enlightenment Settings"
 msgstr "Enlightenment стартира..."

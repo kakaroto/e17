@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-02-03 18:09+0100\n"
+"POT-Creation-Date: 2008-02-10 10:47+0100\n"
 "PO-Revision-Date: 2008-01-24 08:46+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -722,7 +722,7 @@ msgstr "適用"
 msgid "Attention !!!"
 msgstr "注意 !!!"
 
-#: src/ecompmgr.c:2609
+#: src/ecompmgr.c:2612
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -1863,35 +1863,47 @@ msgstr "コンポジットを有効にする"
 msgid "Enable Fading"
 msgstr "フェーディングを有効にする"
 
-#: src/settings.c:614
-msgid "Shadows Off"
-msgstr "影を付けない"
-
-#: src/settings.c:620
-msgid "Shadows Sharp"
-msgstr "影を明瞭にする"
-
-#: src/settings.c:626
-msgid "Shadows Sharp2"
-msgstr "影を明瞭にする2"
-
-#: src/settings.c:632
-msgid "Shadows Blurred"
-msgstr "影をぼかす"
-
-#: src/settings.c:640
+#: src/settings.c:612
 msgid "Fading Speed:"
 msgstr "フェーディング速度"
 
-#: src/settings.c:651
+#: src/settings.c:625
+msgid "Shadows Off"
+msgstr "影を付けない"
+
+#: src/settings.c:631
+msgid "Shadows Sharp"
+msgstr "影を明瞭にする"
+
+#: src/settings.c:637
+msgid "Shadows Sharp2"
+msgstr "影を明瞭にする2"
+
+#: src/settings.c:643
+msgid "Shadows Blurred"
+msgstr "影をぼかす"
+
+#: src/settings.c:654
+msgid "Default focused window opacity:"
+msgstr ""
+
+#: src/settings.c:665
+msgid "Default unfocused window opacity:"
+msgstr ""
+
+#: src/settings.c:676
+msgid "Default pop-up window opacity:"
+msgstr ""
+
+#: src/settings.c:687
 msgid "Composite"
 msgstr "コンポジット"
 
-#: src/settings.c:652
+#: src/settings.c:688
 msgid "Composite Settings"
 msgstr "コンポジットの設定"
 
-#: src/settings.c:655
+#: src/settings.c:691
 msgid ""
 "Enlightenment Composite\n"
 "Settings Dialog\n"
@@ -1899,7 +1911,7 @@ msgstr ""
 "Enlightenment コンポジットの\n"
 "設定ダイアログ\n"
 
-#: src/settings.c:744
+#: src/settings.c:780
 msgid "Enlightenment Settings"
 msgstr "Enlightenment の設定"
 

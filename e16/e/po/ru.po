@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-02-03 18:09+0100\n"
+"POT-Creation-Date: 2008-02-10 10:47+0100\n"
 "PO-Revision-Date: 2000-01-14 20:43-0300\n"
 "Last-Translator: Vladimir STEPANOV <stepanov@bird.iki.rssi.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -715,7 +715,7 @@ msgstr "Применить"
 msgid "Attention !!!"
 msgstr "Внимание !!!"
 
-#: src/ecompmgr.c:2609
+#: src/ecompmgr.c:2612
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -1838,44 +1838,56 @@ msgstr "Включить поддержу звука"
 msgid "Enable Fading"
 msgstr "Разрешить переход через край"
 
-#: src/settings.c:614
-msgid "Shadows Off"
-msgstr ""
-
-#: src/settings.c:620
-msgid "Shadows Sharp"
-msgstr ""
-
-#: src/settings.c:626
-msgid "Shadows Sharp2"
-msgstr ""
-
-#: src/settings.c:632
-msgid "Shadows Blurred"
-msgstr ""
-
-#: src/settings.c:640
+#: src/settings.c:612
 msgid "Fading Speed:"
 msgstr ""
 
-#: src/settings.c:651
+#: src/settings.c:625
+msgid "Shadows Off"
+msgstr ""
+
+#: src/settings.c:631
+msgid "Shadows Sharp"
+msgstr ""
+
+#: src/settings.c:637
+msgid "Shadows Sharp2"
+msgstr ""
+
+#: src/settings.c:643
+msgid "Shadows Blurred"
+msgstr ""
+
+#: src/settings.c:654
+msgid "Default focused window opacity:"
+msgstr ""
+
+#: src/settings.c:665
+msgid "Default unfocused window opacity:"
+msgstr ""
+
+#: src/settings.c:676
+msgid "Default pop-up window opacity:"
+msgstr ""
+
+#: src/settings.c:687
 #, fuzzy
 msgid "Composite"
 msgstr "Включить поддержу звука"
 
-#: src/settings.c:652
+#: src/settings.c:688
 #, fuzzy
 msgid "Composite Settings"
 msgstr "Установки подсказок"
 
-#: src/settings.c:655
+#: src/settings.c:691
 #, fuzzy
 msgid ""
 "Enlightenment Composite\n"
 "Settings Dialog\n"
 msgstr "Диалог сообщения Enlightenment"
 
-#: src/settings.c:744
+#: src/settings.c:780
 #, fuzzy
 msgid "Enlightenment Settings"
 msgstr "Запуск Enlightenment..."

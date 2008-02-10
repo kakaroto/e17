@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-02-03 18:09+0100\n"
+"POT-Creation-Date: 2008-02-10 10:47+0100\n"
 "PO-Revision-Date: 2007-04-19 20:56+0100\n"
 "Last-Translator: Kim Woelders <kim@woelders.dk>\n"
 "Language-Team: Dansk/Danish <sslug-locale@sslug.dk>\n"
@@ -697,7 +697,7 @@ msgstr "Anvend"
 msgid "Attention !!!"
 msgstr "Vigtigt !!!"
 
-#: src/ecompmgr.c:2609
+#: src/ecompmgr.c:2612
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -1730,35 +1730,47 @@ msgstr "Aktivér composite"
 msgid "Enable Fading"
 msgstr "Aktivér fading"
 
-#: src/settings.c:614
-msgid "Shadows Off"
-msgstr "Ingen skygger"
-
-#: src/settings.c:620
-msgid "Shadows Sharp"
-msgstr "Skarpe skygger"
-
-#: src/settings.c:626
-msgid "Shadows Sharp2"
-msgstr "Skarpe skygger(2)"
-
-#: src/settings.c:632
-msgid "Shadows Blurred"
-msgstr "Uskarpe skygger"
-
-#: src/settings.c:640
+#: src/settings.c:612
 msgid "Fading Speed:"
 msgstr "Fadinghastighed:"
 
-#: src/settings.c:651
+#: src/settings.c:625
+msgid "Shadows Off"
+msgstr "Ingen skygger"
+
+#: src/settings.c:631
+msgid "Shadows Sharp"
+msgstr "Skarpe skygger"
+
+#: src/settings.c:637
+msgid "Shadows Sharp2"
+msgstr "Skarpe skygger(2)"
+
+#: src/settings.c:643
+msgid "Shadows Blurred"
+msgstr "Uskarpe skygger"
+
+#: src/settings.c:654
+msgid "Default focused window opacity:"
+msgstr ""
+
+#: src/settings.c:665
+msgid "Default unfocused window opacity:"
+msgstr ""
+
+#: src/settings.c:676
+msgid "Default pop-up window opacity:"
+msgstr ""
+
+#: src/settings.c:687
 msgid "Composite"
 msgstr "Composite"
 
-#: src/settings.c:652
+#: src/settings.c:688
 msgid "Composite Settings"
 msgstr "Compositeindstillinger"
 
-#: src/settings.c:655
+#: src/settings.c:691
 msgid ""
 "Enlightenment Composite\n"
 "Settings Dialog\n"
@@ -1766,7 +1778,7 @@ msgstr ""
 "Indstillinger for\n"
 "composite\n"
 
-#: src/settings.c:744
+#: src/settings.c:780
 msgid "Enlightenment Settings"
 msgstr "Enlightenment indstillinger"
 

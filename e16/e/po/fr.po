@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16-0.16.8.9-0.02-fr\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-02-03 18:09+0100\n"
+"POT-Creation-Date: 2008-02-10 10:47+0100\n"
 "PO-Revision-Date: 2008-01-13 17:28+0100\n"
 "Last-Translator: Tristan D. <trinine@free.fr>\n"
 "Language-Team: French\n"
@@ -729,7 +729,7 @@ msgstr "Appliquer"
 msgid "Attention !!!"
 msgstr "Attention !!!"
 
-#: src/ecompmgr.c:2609
+#: src/ecompmgr.c:2612
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -1836,35 +1836,47 @@ msgstr "Activer l'extension Composite"
 msgid "Enable Fading"
 msgstr "Activer le fondu"
 
-#: src/settings.c:614
-msgid "Shadows Off"
-msgstr "Ombres Désactivées"
-
-#: src/settings.c:620
-msgid "Shadows Sharp"
-msgstr "Ombres Nettes"
-
-#: src/settings.c:626
-msgid "Shadows Sharp2"
-msgstr "Ombres Nettes2"
-
-#: src/settings.c:632
-msgid "Shadows Blurred"
-msgstr "Ombres Brouillées"
-
-#: src/settings.c:640
+#: src/settings.c:612
 msgid "Fading Speed:"
 msgstr "Vitesse de fondu:"
 
-#: src/settings.c:651
+#: src/settings.c:625
+msgid "Shadows Off"
+msgstr "Ombres Désactivées"
+
+#: src/settings.c:631
+msgid "Shadows Sharp"
+msgstr "Ombres Nettes"
+
+#: src/settings.c:637
+msgid "Shadows Sharp2"
+msgstr "Ombres Nettes2"
+
+#: src/settings.c:643
+msgid "Shadows Blurred"
+msgstr "Ombres Brouillées"
+
+#: src/settings.c:654
+msgid "Default focused window opacity:"
+msgstr ""
+
+#: src/settings.c:665
+msgid "Default unfocused window opacity:"
+msgstr ""
+
+#: src/settings.c:676
+msgid "Default pop-up window opacity:"
+msgstr ""
+
+#: src/settings.c:687
 msgid "Composite"
 msgstr "Extension Composite"
 
-#: src/settings.c:652
+#: src/settings.c:688
 msgid "Composite Settings"
 msgstr "Paramètres de l'extension Composite"
 
-#: src/settings.c:655
+#: src/settings.c:691
 msgid ""
 "Enlightenment Composite\n"
 "Settings Dialog\n"
@@ -1872,7 +1884,7 @@ msgstr ""
 "Dialogue de paramétrage de\n"
 "l'extension Composite\n"
 
-#: src/settings.c:744
+#: src/settings.c:780
 msgid "Enlightenment Settings"
 msgstr "Paramètres d'Enlightenment..."
 

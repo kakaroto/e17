@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.17.1\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-02-03 18:09+0100\n"
+"POT-Creation-Date: 2008-02-10 10:47+0100\n"
 "PO-Revision-Date: 2004-08-29 01:02:30+0900\n"
 "Last-Translator: Michael Kim <lavnrose@e.sarang.net>\n"
 "Language-Team: Korean <translation-team-ko@lists.sourceforge.net>\n"
@@ -729,7 +729,7 @@ msgstr "적용"
 msgid "Attention !!!"
 msgstr "주목 !!!"
 
-#: src/ecompmgr.c:2609
+#: src/ecompmgr.c:2612
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -1871,37 +1871,49 @@ msgstr "사운드 사용"
 msgid "Enable Fading"
 msgstr "에지 플립 사용"
 
-#: src/settings.c:614
-msgid "Shadows Off"
-msgstr ""
-
-#: src/settings.c:620
-msgid "Shadows Sharp"
-msgstr ""
-
-#: src/settings.c:626
-msgid "Shadows Sharp2"
-msgstr ""
-
-#: src/settings.c:632
-msgid "Shadows Blurred"
-msgstr ""
-
-#: src/settings.c:640
+#: src/settings.c:612
 msgid "Fading Speed:"
 msgstr ""
 
-#: src/settings.c:651
+#: src/settings.c:625
+msgid "Shadows Off"
+msgstr ""
+
+#: src/settings.c:631
+msgid "Shadows Sharp"
+msgstr ""
+
+#: src/settings.c:637
+msgid "Shadows Sharp2"
+msgstr ""
+
+#: src/settings.c:643
+msgid "Shadows Blurred"
+msgstr ""
+
+#: src/settings.c:654
+msgid "Default focused window opacity:"
+msgstr ""
+
+#: src/settings.c:665
+msgid "Default unfocused window opacity:"
+msgstr ""
+
+#: src/settings.c:676
+msgid "Default pop-up window opacity:"
+msgstr ""
+
+#: src/settings.c:687
 #, fuzzy
 msgid "Composite"
 msgstr "사운드 사용"
 
-#: src/settings.c:652
+#: src/settings.c:688
 #, fuzzy
 msgid "Composite Settings"
 msgstr "툴팁 설정"
 
-#: src/settings.c:655
+#: src/settings.c:691
 #, fuzzy
 msgid ""
 "Enlightenment Composite\n"
@@ -1910,7 +1922,7 @@ msgstr ""
 "인라이튼먼트 툴팁\n"
 "설정 대화상자\n"
 
-#: src/settings.c:744
+#: src/settings.c:780
 #, fuzzy
 msgid "Enlightenment Settings"
 msgstr "인라이튼먼트 시작중..."

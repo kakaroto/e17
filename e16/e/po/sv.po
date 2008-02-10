@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-02-03 18:09+0100\n"
+"POT-Creation-Date: 2008-02-10 10:47+0100\n"
 "PO-Revision-Date: 2000-04-10 17:30+0200\n"
 "Last-Translator: Bernt Holmberg <bernt@grub01.physto.se>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -714,7 +714,7 @@ msgstr "Använd"
 msgid "Attention !!!"
 msgstr "Uppmärksamhet!!!"
 
-#: src/ecompmgr.c:2609
+#: src/ecompmgr.c:2612
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -1869,37 +1869,49 @@ msgstr "Möjliggör ljud"
 msgid "Enable Fading"
 msgstr "Möjliggör kant flip"
 
-#: src/settings.c:614
-msgid "Shadows Off"
-msgstr ""
-
-#: src/settings.c:620
-msgid "Shadows Sharp"
-msgstr ""
-
-#: src/settings.c:626
-msgid "Shadows Sharp2"
-msgstr ""
-
-#: src/settings.c:632
-msgid "Shadows Blurred"
-msgstr ""
-
-#: src/settings.c:640
+#: src/settings.c:612
 msgid "Fading Speed:"
 msgstr ""
 
-#: src/settings.c:651
+#: src/settings.c:625
+msgid "Shadows Off"
+msgstr ""
+
+#: src/settings.c:631
+msgid "Shadows Sharp"
+msgstr ""
+
+#: src/settings.c:637
+msgid "Shadows Sharp2"
+msgstr ""
+
+#: src/settings.c:643
+msgid "Shadows Blurred"
+msgstr ""
+
+#: src/settings.c:654
+msgid "Default focused window opacity:"
+msgstr ""
+
+#: src/settings.c:665
+msgid "Default unfocused window opacity:"
+msgstr ""
+
+#: src/settings.c:676
+msgid "Default pop-up window opacity:"
+msgstr ""
+
+#: src/settings.c:687
 #, fuzzy
 msgid "Composite"
 msgstr "Möjliggör ljud"
 
-#: src/settings.c:652
+#: src/settings.c:688
 #, fuzzy
 msgid "Composite Settings"
 msgstr "Verktygstipsinställningar"
 
-#: src/settings.c:655
+#: src/settings.c:691
 #, fuzzy
 msgid ""
 "Enlightenment Composite\n"
@@ -1908,7 +1920,7 @@ msgstr ""
 "Dialog för Enlightenments\n"
 "verktygstipsinställningar\n"
 
-#: src/settings.c:744
+#: src/settings.c:780
 #, fuzzy
 msgid "Enlightenment Settings"
 msgstr "Enlightenment Startar..."

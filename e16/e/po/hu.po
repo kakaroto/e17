@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-02-03 18:09+0100\n"
+"POT-Creation-Date: 2008-02-10 10:47+0100\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: György Horák <dyuri@horak.hu>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
@@ -722,7 +722,7 @@ msgstr "Alkalmaz"
 msgid "Attention !!!"
 msgstr "Figyelem !!!"
 
-#: src/ecompmgr.c:2609
+#: src/ecompmgr.c:2612
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -1811,39 +1811,51 @@ msgstr "Composite engedélyezése"
 msgid "Enable Fading"
 msgstr "Asztal él-érzékenység"
 
-#: src/settings.c:614
-msgid "Shadows Off"
-msgstr "Árnyékok ki"
-
-#: src/settings.c:620
-msgid "Shadows Sharp"
-msgstr "Éles árnyékok"
-
-#: src/settings.c:626
-#, fuzzy
-msgid "Shadows Sharp2"
-msgstr "Éles árnyékok"
-
-#: src/settings.c:632
-msgid "Shadows Blurred"
-msgstr "Elmosott árnyékok"
-
-#: src/settings.c:640
+#: src/settings.c:612
 #, fuzzy
 msgid "Fading Speed:"
 msgstr "Halványodási sebesség\n"
 
-#: src/settings.c:651
+#: src/settings.c:625
+msgid "Shadows Off"
+msgstr "Árnyékok ki"
+
+#: src/settings.c:631
+msgid "Shadows Sharp"
+msgstr "Éles árnyékok"
+
+#: src/settings.c:637
+#, fuzzy
+msgid "Shadows Sharp2"
+msgstr "Éles árnyékok"
+
+#: src/settings.c:643
+msgid "Shadows Blurred"
+msgstr "Elmosott árnyékok"
+
+#: src/settings.c:654
+msgid "Default focused window opacity:"
+msgstr ""
+
+#: src/settings.c:665
+msgid "Default unfocused window opacity:"
+msgstr ""
+
+#: src/settings.c:676
+msgid "Default pop-up window opacity:"
+msgstr ""
+
+#: src/settings.c:687
 #, fuzzy
 msgid "Composite"
 msgstr "Composite engedélyezése"
 
-#: src/settings.c:652
+#: src/settings.c:688
 #, fuzzy
 msgid "Composite Settings"
 msgstr "Composite beállításai"
 
-#: src/settings.c:655
+#: src/settings.c:691
 #, fuzzy
 msgid ""
 "Enlightenment Composite\n"
@@ -1852,7 +1864,7 @@ msgstr ""
 "Enlightenment üzenetablak\n"
 "beállításai\n"
 
-#: src/settings.c:744
+#: src/settings.c:780
 #, fuzzy
 msgid "Enlightenment Settings"
 msgstr "Az Enlightenment indítása..."
