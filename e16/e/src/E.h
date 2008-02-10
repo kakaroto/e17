@@ -337,6 +337,8 @@ typedef struct
       int                 movres;
       int                 menus;
       int                 tooltips;
+      int                 focused;
+      int                 unfocused;
    } opacity;
    struct
    {

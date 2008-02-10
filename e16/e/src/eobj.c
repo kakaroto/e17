@@ -670,3 +670,29 @@ EobjsRepaint(void)
 #endif
    ESync();
 }
+
+#if USE_COMPOSITE
+void
+EobjsOpacityUpdate(int op_or)
+{
+   EObj               *eo, *const *lst;
+   int                 i, num;
+
+   lst = EobjListStackGet(&num);
+   for (i = 0; i < num; i++)
+     {
+	eo = lst[i];
+	switch (eo->type)
+	  {
+	  default:
+	     break;
+	  case EOBJ_TYPE_EWIN:
+	     EwinUpdateOpacity((EWin *) eo);
+	     break;
+	  case EOBJ_TYPE_EXT:
+	     EobjChangeOpacity(eo, OpacityFromPercent(op_or));
+	     break;
+	  }
+     }
+}
+#endif

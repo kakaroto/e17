@@ -606,6 +606,17 @@ _DlgFillComposite(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemSetText(di, _("Enable Fading"));
    DialogItemCheckButtonSetPtr(di, &Cfg_composite.fading);
 
+   di = DialogAddItem(table, DITEM_TEXT);
+   DialogItemSetFill(di, 0, 0);
+   DialogItemSetAlign(di, 0, 512);
+   DialogItemSetText(di, _("Fading Speed:"));
+
+   di = DialogAddItem(table, DITEM_SLIDER);
+   DialogItemSliderSetBounds(di, 0, 100);
+   DialogItemSliderSetUnits(di, 5);
+   DialogItemSliderSetJump(di, 5);
+   DialogItemSliderSetValPtr(di, &Cfg_composite.fade_speed);
+
    di = DialogAddItem(table, DITEM_SEPARATOR);
    DialogItemSetColSpan(di, 2);
 
@@ -634,16 +645,41 @@ _DlgFillComposite(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemRadioButtonGroupSetVal(di, 2);
    DialogItemRadioButtonGroupSetValPtr(radio, &Cfg_composite.shadow);
 
+   di = DialogAddItem(table, DITEM_SEPARATOR);
+   DialogItemSetColSpan(di, 2);
+
    di = DialogAddItem(table, DITEM_TEXT);
    DialogItemSetFill(di, 0, 0);
    DialogItemSetAlign(di, 0, 512);
-   DialogItemSetText(di, _("Fading Speed:"));
+   DialogItemSetText(di, _("Default focused window opacity:"));
 
    di = DialogAddItem(table, DITEM_SLIDER);
    DialogItemSliderSetBounds(di, 0, 100);
    DialogItemSliderSetUnits(di, 5);
    DialogItemSliderSetJump(di, 5);
-   DialogItemSliderSetValPtr(di, &Cfg_composite.fade_speed);
+   DialogItemSliderSetValPtr(di, &Cfg_composite.opacity_focused);
+
+   di = DialogAddItem(table, DITEM_TEXT);
+   DialogItemSetFill(di, 0, 0);
+   DialogItemSetAlign(di, 0, 512);
+   DialogItemSetText(di, _("Default unfocused window opacity:"));
+
+   di = DialogAddItem(table, DITEM_SLIDER);
+   DialogItemSliderSetBounds(di, 0, 100);
+   DialogItemSliderSetUnits(di, 5);
+   DialogItemSliderSetJump(di, 5);
+   DialogItemSliderSetValPtr(di, &Cfg_composite.opacity_unfocused);
+
+   di = DialogAddItem(table, DITEM_TEXT);
+   DialogItemSetFill(di, 0, 0);
+   DialogItemSetAlign(di, 0, 512);
+   DialogItemSetText(di, _("Default pop-up window opacity:"));
+
+   di = DialogAddItem(table, DITEM_SLIDER);
+   DialogItemSliderSetBounds(di, 0, 100);
+   DialogItemSliderSetUnits(di, 5);
+   DialogItemSliderSetJump(di, 5);
+   DialogItemSliderSetValPtr(di, &Cfg_composite.opacity_override);
 }
 
 const DialogDef     DlgComposite = {

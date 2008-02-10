@@ -185,6 +185,8 @@ void                EobjsSlideBy(EObj ** peo, int num, int dx, int dy,
 void                EobjSlideSizeTo(EObj * eo, int fx, int fy, int tx, int ty,
 				    int fw, int fh, int tw, int th, int speed);
 
+void                EobjsOpacityUpdate(int op_or);
+
 /* stacking.c */
 void                EobjListStackAdd(EObj * eo, int ontop);
 void                EobjListStackDel(EObj * eo);

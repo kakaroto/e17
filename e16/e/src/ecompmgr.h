@@ -34,6 +34,9 @@ typedef struct
    int                 shadow;
    char                fading;
    int                 fade_speed;
+   int                 opacity_focused;
+   int                 opacity_unfocused;
+   int                 opacity_override;
 } cfg_composite;
 
 int                 ECompMgrIsActive(void);

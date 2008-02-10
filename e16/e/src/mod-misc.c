@@ -162,6 +162,8 @@ static const CfgItem MiscCfgItems[] = {
    CFG_ITEM_INT(Conf, opacity.menus, 85),
    CFG_ITEM_INT(Conf, opacity.movres, 60),
    CFG_ITEM_INT(Conf, opacity.tooltips, 80),
+   CFG_ITEM_INT(Conf, opacity.focused, 100),
+   CFG_ITEM_INT(Conf, opacity.unfocused, 100),
 
    CFG_ITEM_BOOL(Conf, place.manual, 0),
    CFG_ITEM_BOOL(Conf, place.manual_mouse_pointer, 0),

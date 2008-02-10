@@ -1,4 +1,5 @@
 "Opacity" "EMPTY"
+"Default"		NULL "wop * op 0"
 "20%"			NULL "wop * op 20"
 "40%"			NULL "wop * op 40"
 "60%"			NULL "wop * op 60"

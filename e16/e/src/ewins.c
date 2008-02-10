@@ -339,9 +339,7 @@ EwinConfigure(EWin * ewin)
    if (ewin->state.shaded)
       EwinInstantShade(ewin, 1);
 
-   if (ewin->ewmh.opacity == 0)
-      ewin->ewmh.opacity = 0xffffffff;
-   EoChangeOpacity(ewin, ewin->ewmh.opacity);
+   EwinUpdateOpacity(ewin);
 
    HintsSetWindowState(ewin);
    HintsSetWindowOpacity(ewin);
@@ -1892,6 +1890,12 @@ EwinUpdateOpacity(EWin * ewin)
       opacity = ewin->props.focused_opacity;
    if (opacity == 0)
       opacity = ewin->ewmh.opacity;
+   if (opacity == 0)
+      opacity = ewin->state.active ?
+	 OpacityFromPercent(Conf.opacity.focused) :
+	 OpacityFromPercent(Conf.opacity.unfocused);
+   if (opacity == 0)
+      opacity = 0xffffffff;	/* Fallback */
 
    EoChangeOpacity(ewin, opacity);
 }

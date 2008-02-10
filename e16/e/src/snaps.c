@@ -1506,7 +1506,7 @@ SnapshotEwinApply(EWin * ewin)
 #if USE_COMPOSITE
    if (use_flags & SNAP_USE_OPACITY)
      {
-	sn->opacity = OpacityFix(sn->opacity, 100);
+	sn->opacity = OpacityFix(sn->opacity, 0);
 	sn->focused_opacity = OpacityFix(sn->focused_opacity, 0);
 	ewin->ewmh.opacity = OpacityFromPercent(sn->opacity);
 	ewin->props.focused_opacity = OpacityFromPercent(sn->focused_opacity);

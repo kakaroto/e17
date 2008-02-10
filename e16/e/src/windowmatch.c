@@ -715,7 +715,7 @@ WindowMatchEwinOpsAction(EWin * ewin, int op, const char *args)
 
      case EWIN_OP_OPACITY:
 	a = atoi(args);
-	ewin->ewmh.opacity = OpacityFromPercent(OpacityFix(a, 100));
+	ewin->ewmh.opacity = OpacityFromPercent(OpacityFix(a, 0));
 	break;
 
      case EWIN_OP_FOCUSED_OPACITY:

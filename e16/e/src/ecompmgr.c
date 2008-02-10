@@ -2596,6 +2596,9 @@ ECompMgrConfigGet(cfg_composite * cfg)
    cfg->enable = Conf_compmgr.enable;
    cfg->shadow = Conf_compmgr.shadows.mode;
    cfg->fading = Conf_compmgr.fading.enable;
+   cfg->opacity_focused = Conf.opacity.focused;
+   cfg->opacity_unfocused = Conf.opacity.unfocused;
+   cfg->opacity_override = Conf_compmgr.override_redirect.opacity;
    cfg->fade_speed = 100 - (Conf_compmgr.fading.time / 10);
 }
 
@@ -2637,6 +2640,12 @@ ECompMgrConfigSet(const cfg_composite * cfg)
 
    Conf_compmgr.fading.enable = cfg->fading;
    Conf_compmgr.fading.time = (100 - cfg->fade_speed) * 10;
+
+   Conf.opacity.focused = cfg->opacity_focused;
+   Conf.opacity.unfocused = cfg->opacity_unfocused;
+   Conf_compmgr.override_redirect.opacity = cfg->opacity_override;
+
+   EobjsOpacityUpdate(Conf_compmgr.override_redirect.opacity);
 
    autosave();
 }
