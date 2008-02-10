@@ -134,6 +134,8 @@ struct _ewin
    } state;
    struct
    {
+      /* User config */
+      unsigned int        focused_opacity;
       unsigned            never_use_area:1;
       unsigned            ignorearrange:1;
       unsigned            skip_ext_task:1;
@@ -142,15 +144,18 @@ struct _ewin
       unsigned            skip_winlist:1;
       unsigned            focusclick:1;	/* Click to focus */
       unsigned            no_button_grabs:1;
-      unsigned            no_actions:1;
-      unsigned            no_resize_h:1;
-      unsigned            no_resize_v:1;
+
+      /* Derived from other properties */
+      unsigned            no_border:1;	/* Never apply border (MWM/netwm type) */
+      unsigned            no_resize_h:1;	/* ICCCM */
+      unsigned            no_resize_v:1;	/* ICCCM */
+
+      /* Internal */
+      unsigned            autosave:1;
       unsigned            donthide:1;	/* Don't hide on show desktop */
       unsigned            vroot:1;	/* Virtual root window */
-      unsigned            autosave:1;
-      unsigned            no_border:1;	/* Never apply border */
+      unsigned            no_actions:1;
       unsigned            focus_when_mapped:1;
-      unsigned int        focused_opacity;
    } props;
    EWinInhibit         inh_app;
    EWinInhibit         inh_user;
