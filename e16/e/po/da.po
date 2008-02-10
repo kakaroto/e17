@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
 "POT-Creation-Date: 2008-02-10 10:47+0100\n"
-"PO-Revision-Date: 2007-04-19 20:56+0100\n"
+"PO-Revision-Date: 2008-02-10 19:59+0100\n"
 "Last-Translator: Kim Woelders <kim@woelders.dk>\n"
 "Language-Team: Dansk/Danish <sslug-locale@sslug.dk>\n"
 "MIME-Version: 1.0\n"
@@ -1100,17 +1100,15 @@ msgstr ""
 #: src/ipc.c:1423 src/ipc.c:1430
 #, c-format
 msgid "e16 was built without %s support"
-msgstr ""
+msgstr "e16 er bygget uden understøttelse for %s"
 
 #: src/ipc.c:1424
-#, fuzzy
 msgid "composite"
-msgstr "Composite"
+msgstr "composite"
 
 #: src/ipc.c:1431
-#, fuzzy
 msgid "sound"
-msgstr "Lyd"
+msgstr "lyd"
 
 #: src/ipc.c:1765
 msgid "Enlightenment IPC Commands Help\n"
@@ -1183,16 +1181,15 @@ msgstr ""
 
 #: src/magwin.c:458
 msgid "Magnifier"
-msgstr ""
+msgstr "Forstørrelsesglas"
 
 #: src/menus-misc.c:584 config/strings.c:91
 msgid "Themes"
 msgstr "Tema"
 
 #: src/menus-misc.c:610
-#, fuzzy
 msgid "Border"
-msgstr "Rammer:"
+msgstr "Ramme"
 
 #: src/menus-misc.c:673
 msgid "Window List"
@@ -1535,7 +1532,7 @@ msgstr "Gennemsigtig"
 
 #: src/settings.c:138
 msgid "Avoid server grab"
-msgstr ""
+msgstr "Undgå X-server lås"
 
 #: src/settings.c:148
 msgid "Move/Resize Geometry Info Postion:"
@@ -1555,20 +1552,19 @@ msgstr "Vis ikke"
 
 #: src/settings.c:176
 msgid "Default Resize Policy:"
-msgstr ""
+msgstr "Standard modus for ændring af position/størrelse:"
 
 #: src/settings.c:180
 msgid "Conservative"
-msgstr ""
+msgstr "Konservativ"
 
 #: src/settings.c:186
 msgid "Available"
-msgstr ""
+msgstr "Til rådighed"
 
 #: src/settings.c:192
-#, fuzzy
 msgid "Absolute"
-msgstr "Over"
+msgstr "Absolut"
 
 #: src/settings.c:202
 msgid "Update window while moving"
@@ -1752,15 +1748,15 @@ msgstr "Uskarpe skygger"
 
 #: src/settings.c:654
 msgid "Default focused window opacity:"
-msgstr ""
+msgstr "Standard uigennemsigtighed for aktivt vindue:"
 
 #: src/settings.c:665
 msgid "Default unfocused window opacity:"
-msgstr ""
+msgstr "Standard uigennemsigtighed for inaktivt vindue:"
 
 #: src/settings.c:676
 msgid "Default pop-up window opacity:"
-msgstr ""
+msgstr "Standard uigennemsigtighed for pop-op vinduer:"
 
 #: src/settings.c:687
 msgid "Composite"
@@ -2330,7 +2326,7 @@ msgstr "Opret 'systray'"
 
 #: config/strings.c:85
 msgid "Show Magnifier"
-msgstr ""
+msgstr "Vis Forstørrelsesglas"
 
 #: config/strings.c:87
 msgid "Enlightenment"
@@ -2361,9 +2357,8 @@ msgid "About this theme"
 msgstr "Om dette tema"
 
 #: config/strings.c:96 config/strings.c:199
-#, fuzzy
 msgid "Restart"
-msgstr "Start"
+msgstr "Genstart"
 
 #: config/strings.c:97 config/strings.c:200
 msgid "Log Out"
@@ -2491,7 +2486,7 @@ msgstr "Vinduesstørrelse"
 
 #: config/strings.c:141
 msgid "Set Stacking"
-msgstr "Sæt stakning"
+msgstr "Sæt stakbling"
 
 #: config/strings.c:142
 msgid "Set Border Style"
@@ -2526,9 +2521,8 @@ msgid "Destroy a group this window belongs to"
 msgstr "Nedlæg en gruppe som dette vindue tilhører"
 
 #: config/strings.c:155
-#, fuzzy
 msgid "Stacking"
-msgstr "Klæber"
+msgstr "Stabling"
 
 #: config/strings.c:156
 msgid "Below"
@@ -2667,70 +2661,5 @@ msgid "Other"
 msgstr "Andet"
 
 #: config/strings.c:198
-#, fuzzy
 msgid "Epplets"
-msgstr "Krusninger"
-
-#~ msgid ""
-#~ "Audio not available since EsounD was not\n"
-#~ "present at the time of compilation."
-#~ msgstr ""
-#~ "Lyd er ikke tilgængelig, da EsounD ikke var\n"
-#~ "tilstede under kompilationen."
-
-#~ msgid "Enlightenment Epplets"
-#~ msgstr "Enlightenment Epplets"
-
-#~ msgid "Recover system config?"
-#~ msgstr "Gendan systemkonfig?"
-
-#~ msgid "Yes, Attempt recovery"
-#~ msgstr "Ja, prøv at gendanne"
-
-#~ msgid "Restart and try again"
-#~ msgstr "Genstart og prøv igen"
-
-#~ msgid "Quit and give up"
-#~ msgstr "Afslut og giv op"
-
-#~ msgid ""
-#~ "Enlightenment has encountered parsing errors in your autosaved\n"
-#~ "configuration.\n"
-#~ "\n"
-#~ "This may be due to filing system errors, Minor bugs or unforeseen\n"
-#~ "system shutdowns.\n"
-#~ "\n"
-#~ "Do you wish Enlightenment to recover its original system\n"
-#~ "configuration and try again?\n"
-#~ msgstr ""
-#~ "Enlightenment har fundet fejl i din automatisk gemte konfiguration\n"
-#~ "\n"
-#~ "Ønsker du at fortsætte alligevel?\n"
-
-#~ msgid "Height"
-#~ msgstr "Højde"
-
-#~ msgid "Width"
-#~ msgstr "Bredde"
-
-#~ msgid "Show/Hide this window's group(s)"
-#~ msgstr "Vis/skjul dette vindues gruppe(r)"
-
-#~ msgid "Remember State"
-#~ msgstr "Husk tilstand"
-
-#~ msgid ""
-#~ "\n"
-#~ "  There's no current group at the moment.  \n"
-#~ "  The current group is the last one you created,  \n"
-#~ "  and it exists until you create a new one or break  \n"
-#~ "  the latest one.  \n"
-#~ "\n"
-#~ "  Pick another group that the window will belong to here:  \n"
-#~ "\n"
-#~ msgstr ""
-#~ "\n"
-#~ "Der er ingen aktiv gruppe.\n"
-#~ "Den aktive gruppe er den sidste du har oprettet,\n"
-#~ "og den eksisterer indtil du opretter en anden\n"
-#~ "eller blah\n"
+msgstr "Epplets"
