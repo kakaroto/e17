@@ -231,8 +231,17 @@ ewl_scrollpane_kinetic_scrolling_set(Ewl_Scrollpane *s, Ewl_Kinetic_Scroll type)
 				ewl_scrollpane_cb_mouse_move_embedded);
 	}
 	if (s->kinfo)
+	{
 		IF_FREE(s->kinfo->extra)
-	IF_FREE(s->kinfo);
+	}
+	else
+	{
+		s->kinfo = NEW(Ewl_Scrollpane_Scroll_Info_Base, 1);
+		s->kinfo->fps = 15;
+		s->kinfo->vmax = 50.0;
+		s->kinfo->vmin = 0.0;
+		s->kinfo->dampen = 0.95;
+	}
 
 	if (type == EWL_KINETIC_SCROLL_NORMAL)
 	{
@@ -242,16 +251,7 @@ ewl_scrollpane_kinetic_scrolling_set(Ewl_Scrollpane *s, Ewl_Kinetic_Scroll type)
 				ewl_scrollpane_cb_mouse_up_normal, s);
 		ewl_callback_append(s->overlay, EWL_CALLBACK_MOUSE_MOVE,
 				ewl_scrollpane_cb_mouse_move_normal, s);
-
-		if (!s->kinfo)
-		{
-			s->kinfo = NEW(Ewl_Scrollpane_Scroll_Info_Base, 1);
-			s->kinfo->extra = NEW(Ewl_Scrollpane_Scroll_Info_Normal, 1);
-			s->kinfo->fps = 15;
-			s->kinfo->vmax = 50.0;
-			s->kinfo->vmin = 0.0;
-			s->kinfo->dampen = 0.95;
-		}
+		s->kinfo->extra = NEW(Ewl_Scrollpane_Scroll_Info_Normal, 1);
 	}
 
 	else if (type == EWL_KINETIC_SCROLL_EMBEDDED)
@@ -263,15 +263,7 @@ ewl_scrollpane_kinetic_scrolling_set(Ewl_Scrollpane *s, Ewl_Kinetic_Scroll type)
 		ewl_callback_append(s->overlay, EWL_CALLBACK_MOUSE_MOVE,
 				ewl_scrollpane_cb_mouse_move_embedded, s);
 
-		if (!s->kinfo)
-		{
-			s->kinfo = NEW(Ewl_Scrollpane_Scroll_Info_Base, 1);
-			s->kinfo->extra = NEW(Ewl_Scrollpane_Scroll_Info_Embedded, 1);
-			s->kinfo->fps = 15;
-			s->kinfo->vmax = 50.0;
-			s->kinfo->vmin = 0.0;
-			s->kinfo->dampen = 0.95;
-		}
+		s->kinfo->extra = NEW(Ewl_Scrollpane_Scroll_Info_Embedded, 1);
 	}
 
 	s->type = type;
@@ -1337,7 +1329,7 @@ ewl_scrollpane_kinetic_dampen_get(Ewl_Scrollpane *s)
 	DCHECK_PARAM_PTR_RET(s, -1);
 	DCHECK_TYPE_RET(s, EWL_SCROLLPANE_TYPE, -1);
 
-	DRETURN_INT(s->kinfo->vmin, DLEVEL_STABLE);
+	DRETURN_INT(s->kinfo->dampen, DLEVEL_STABLE);
 }
 
 /**
