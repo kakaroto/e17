@@ -89,6 +89,8 @@ int
 ewl_scrollpane_init(Ewl_Scrollpane *s)
 {
 	Ewl_Widget *w;
+	const char *kst;
+	Ewl_Kinetic_Scroll type;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET(s, FALSE);
@@ -174,7 +176,17 @@ ewl_scrollpane_init(Ewl_Scrollpane *s)
 	 * Setup kinetic scrolling info here
 	 */
 	s->kinfo = NULL;
-	ewl_scrollpane_kinetic_scrolling_set(s, EWL_KINETIC_SCROLL_NONE);
+
+	kst = ewl_theme_data_str_get(w, "/scrollpane/kscroll_type");
+
+	if (kst && !strcmp(kst, "embedded"))
+		type = EWL_KINETIC_SCROLL_EMBEDDED;
+	else if (kst && !strcmp(kst, "normal"))
+		type = EWL_KINETIC_SCROLL_NORMAL;
+	else
+		type = EWL_KINETIC_SCROLL_NONE;
+		
+	ewl_scrollpane_kinetic_scrolling_set(s, type);
 	ewl_callback_append(w, EWL_CALLBACK_DESTROY,
 				ewl_scrollpane_cb_destroy, NULL);
 

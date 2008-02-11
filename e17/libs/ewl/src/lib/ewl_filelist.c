@@ -1191,44 +1191,63 @@ static void
 ewl_filelist_cb_clicked(Ewl_Widget *w, void *ev,
 				void *data __UNUSED__)
 {
-	Ewl_Event_Mouse_Down *event;
+	Ewl_Event_Mouse_Down *md;
 	char *file, *t;
+	int i = 0;
+	Ewl_Widget *c;
 	Ewl_Filelist *fl;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(w);
 	DCHECK_PARAM_PTR(ev);
 
-	event = ev;
+	md = ev;
 	fl = data;
 
 	if (!ewl_mvc_selected_count_get(EWL_MVC(fl->controller)))
 		DRETURN(DLEVEL_STABLE);
 
 	/* Single clicks only */
-	if (event->clicks != 2)
+	if (md->clicks != 2)
+	{
 		ewl_filelist_selected_files_change_notify(fl);
+		DRETURN(DLEVEL_STABLE);
+	}
+
+	/* Ensure that the click is on an icon, need to check for a
+	 * highlight as the first click callback will create
+	 */
+	c = ewl_container_child_at_recursive_get(EWL_CONTAINER(fl),
+				md->base.x, md->base.y);
+	while (c && c->parent)
+	{
+		if (ewl_widget_type_is(c, "highlight"))
+		{
+			i = 1;
+			break;
+		}
+		c = c->parent;
+	}
+
+	if (!i)
+		DRETURN(DLEVEL_STABLE);
 
 	/* Handle double clicks */
-	if (event->clicks == 2)
+	file = ewl_filelist_selected_file_get(fl);
+	/* If .. */
+	if (!strcmp(file, fl->directory))
 	{
-		file = ewl_filelist_selected_file_get(fl);
-
-		/* If .. */
-		if (!strcmp(file, fl->directory))
-		{
-			t = ecore_file_dir_get(fl->directory);
-			ewl_filelist_directory_set(fl, t);
-			FREE(t);
-		}
-		/* Change dir if dir, else call above */
-		else if (ecore_file_is_dir(file))
-			ewl_filelist_directory_set(fl, file);
-		
-		/* Send signal of file selected */
-		else
-			ewl_filelist_selected_files_change_notify(fl);
+		t = ecore_file_dir_get(fl->directory);
+		ewl_filelist_directory_set(fl, t);
+		FREE(t);
 	}
+	/* Change dir if dir, else call above */
+	else if (ecore_file_is_dir(file))
+		ewl_filelist_directory_set(fl, file);
+	
+	/* Send signal of file selected */
+	else
+		ewl_filelist_selected_files_change_notify(fl);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
