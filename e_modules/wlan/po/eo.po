@@ -7,36 +7,33 @@ msgstr ""
 "Project-Id-Version: eo\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2007-11-14 22:43+0100\n"
-"PO-Revision-Date: 2006-08-30 22:54+0200\n"
+"PO-Revision-Date: 2008-02-11 19:42+0100\n"
 "Last-Translator: \n"
-"Language-Team:  <fr@li.org>\n"
+"Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.2\n"
+"X-Generator: KBabel 1.11.4\n"
 
 #: e_mod_config.c:44
 msgid "Wlan Configuration"
-msgstr "Konfigurajxo de Wlan"
+msgstr "Konfiguraĵo de Wlan"
 
 #: e_mod_config.c:117
 msgid "General Settings"
 msgstr "Ĝeneralaj Alĝustigoj"
 
 #: e_mod_config.c:119
-#, fuzzy
 msgid "Always Show Text"
-msgstr "Vidigi Tekston"
+msgstr "Ĉiam Vidigi Tekston"
 
 #: e_mod_config.c:121
-#, fuzzy
 msgid "Show Text On Mouse Over"
-msgstr "Vidigi Tekston"
+msgstr "Vidigi Tekston Dum Muso supras"
 
 #: e_mod_config.c:124
-#, fuzzy
 msgid "Show Text As Percent"
-msgstr "Vidigi Tekston"
+msgstr "Vidigi Tekston Kiel Percento"
 
 #: e_mod_config.c:128
 msgid "Check Interval:"
@@ -45,7 +42,7 @@ msgstr "Kontroli Intervalon"
 #: e_mod_config.c:131
 #, c-format
 msgid "%1.0f seconds"
-msgstr ""
+msgstr "%1.0f sekundoj"
 
 #: e_mod_config.c:138
 msgid "Device Settings"
@@ -53,18 +50,9 @@ msgstr "Aparataj Agordoj"
 
 #: e_mod_main.c:107
 msgid "Wlan"
-msgstr ""
+msgstr "Sendrata reto"
 
 #: e_mod_main.c:165
-#, fuzzy
 msgid "Configuration"
-msgstr "Konfigurajxo de Wlan"
+msgstr "Konfiguraĵo"
 
-#~ msgid "Show Graph"
-#~ msgstr "Vidigi Grafon"
-
-#~ msgid "Enlightenment Wlan Monitor Module"
-#~ msgstr "Modulo de Enlightenment-a Wlan kaŝaŭskulto"
-
-#~ msgid "This module is used to monitor a wlan device."
-#~ msgstr "Tiu modulo uzigxas por kaŝaŭskulti Wlan-aparaton"

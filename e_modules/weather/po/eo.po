@@ -7,13 +7,13 @@ msgstr ""
 "Project-Id-Version: eo\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2007-11-14 22:42+0100\n"
-"PO-Revision-Date: 2006-08-30 22:58+0200\n"
+"PO-Revision-Date: 2008-02-11 19:43+0100\n"
 "Last-Translator: \n"
-"Language-Team:  <fr@li.org>\n"
+"Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.2\n"
+"X-Generator: KBabel 1.11.4\n"
 
 #: e_mod_config.c:40
 msgid "Weather Configuration"
@@ -46,11 +46,11 @@ msgstr "Degraj Agordoj"
 
 #: e_mod_config.c:102
 msgid "Celsius"
-msgstr ""
+msgstr "Celsius"
 
 #: e_mod_config.c:104
 msgid "Farenheit"
-msgstr ""
+msgstr "Farenheit"
 
 #: e_mod_config.c:108 e_mod_config.c:109
 msgid "ICAO Code"
@@ -62,7 +62,7 @@ msgstr "Akhavi vian Kodo de ICAO en :"
 
 #: e_mod_config.c:117
 msgid "http://www.weather.gov/tg/siteloc.shtml"
-msgstr ""
+msgstr "http://www.weather.gov/tg/siteloc.shtml"
 
 #: e_mod_main.c:177
 msgid "Weather"
@@ -72,8 +72,3 @@ msgstr "Vetero"
 msgid "Configuration"
 msgstr "Konfiguraĵo"
 
-#~ msgid "Enlightenment Weather Module"
-#~ msgstr "\"Enlightenment-a Vetero\" Modulo"
-
-#~ msgid "A weather forecast module for Enlightenment"
-#~ msgstr "Modulo de Enlightenment por aŭguri veteron"

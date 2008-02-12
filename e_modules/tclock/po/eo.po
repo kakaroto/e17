@@ -7,13 +7,13 @@ msgstr ""
 "Project-Id-Version: eo\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2007-11-14 22:40+0100\n"
-"PO-Revision-Date: 2006-08-30 23:00+0200\n"
+"PO-Revision-Date: 2008-02-11 19:48+0100\n"
 "Last-Translator: \n"
-"Language-Team:  <fr@li.org>\n"
+"Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.2\n"
+"X-Generator: KBabel 1.11.4\n"
 
 #: e_mod_config.c:42
 msgid "Tclock Configuration"
@@ -21,53 +21,29 @@ msgstr "Konfiguraĵo de \"TClock\""
 
 #: e_mod_config.c:86
 msgid "Top"
-msgstr ""
+msgstr "Supre"
 
 #: e_mod_config.c:88
-#, fuzzy
 msgid "Show Top Line"
-msgstr "Vidigi Tempon"
+msgstr "Vidigi Supran Linion"
 
 #: e_mod_config.c:96 e_mod_config.c:110
 msgid "Consult strftime(3) for format syntax"
-msgstr ""
+msgstr "Konsultu strftime(3) por sintakso aranĝo"
 
 #: e_mod_config.c:100
 msgid "Bottom"
-msgstr ""
+msgstr "Malsupre"
 
 #: e_mod_config.c:102
 msgid "Show Bottom Line"
-msgstr ""
+msgstr "Vidigi Malsupran Linion"
 
 #: e_mod_main.c:128
 msgid "TClock"
-msgstr ""
+msgstr "TClock THorloĝo"
 
 #: e_mod_main.c:173
 msgid "Configuration"
 msgstr "Konfiguraĵo"
 
-#~ msgid "Resolution"
-#~ msgstr "Distingivo"
-
-#~ msgid "1 Minute"
-#~ msgstr "1 Minuto"
-
-#~ msgid "1 Second"
-#~ msgstr "1 Sekundo"
-
-#~ msgid "Date"
-#~ msgstr "Dato"
-
-#~ msgid "Show Date"
-#~ msgstr "Vidigi Daton"
-
-#~ msgid "Time"
-#~ msgstr "Tempo"
-
-#~ msgid "Simple Digital Clock"
-#~ msgstr "Simpla Cxifera Horlogxo"
-
-#~ msgid "Displays a digital clock on the desktop"
-#~ msgstr "Vidigi cxiferan horlogxon en la labortablo"

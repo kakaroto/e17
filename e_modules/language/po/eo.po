@@ -1,5 +1,4 @@
 # translation of eo.po to
-# translation of eo.po to Esperanto
 # This file is put in the public domain.
 # Olivier M <olivierweb@nospam.ifrance.com>, 2006-2007
 #
@@ -8,7 +7,7 @@ msgstr ""
 "Project-Id-Version: eo\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2007-12-10 17:14+0100\n"
-"PO-Revision-Date: 2007-12-10 23:08+0100\n"
+"PO-Revision-Date: 2008-02-11 20:14+0100\n"
 "Last-Translator: \n"
 "Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -42,7 +41,7 @@ msgstr "Malsupren"
 
 #: src/module/e_mod_config.c:211 src/module/e_mod_config.c:304
 msgid "Language Switch Policy"
-msgstr ""
+msgstr "Strategio de Lingva Interŝanĝo"
 
 #: src/module/e_mod_config.c:214 src/module/e_mod_config.c:307
 msgid "Global"
@@ -62,7 +61,7 @@ msgstr "Klavarmodelo"
 
 #: src/module/e_mod_config.c:295
 msgid "Layout Variant"
-msgstr ""
+msgstr "Varianto de Aranĝo"
 
 #: src/module/e_mod_keybindings.c:6 src/module/e_mod_main.c:113
 msgid "Language"

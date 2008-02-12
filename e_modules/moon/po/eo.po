@@ -7,18 +7,17 @@ msgstr ""
 "Project-Id-Version: eo\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2007-11-14 22:30+0100\n"
-"PO-Revision-Date: 2006-08-30 23:34+0200\n"
+"PO-Revision-Date: 2008-02-11 20:11+0100\n"
 "Last-Translator: \n"
-"Language-Team:  <fr@li.org>\n"
+"Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.2\n"
+"X-Generator: KBabel 1.11.4\n"
 
 #: src/e_mod_config.c:101
-#, fuzzy
 msgid "Moon Configuration"
-msgstr "Luna Konfigurajxo"
+msgstr "Luna Konfiguraĵo"
 
 #: src/e_mod_config.c:157
 msgid "Display Settings"
@@ -30,7 +29,7 @@ msgstr "Animitaj Nuboj"
 
 #: src/e_mod_config.c:162
 msgid "Moon Phase Value"
-msgstr ""
+msgstr "Valuo de luna fazo"
 
 #: src/e_mod_config.c:164
 msgid "Show always"
@@ -50,16 +49,15 @@ msgstr "Priskribo"
 
 #: src/e_mod_config.c:175
 msgid "Numerical"
-msgstr ""
+msgstr "Cifereca"
 
 #: src/e_mod_main.c:207
 msgid "Moon"
 msgstr "Luno"
 
 #: src/e_mod_main.c:247
-#, fuzzy
 msgid "Configuration"
-msgstr "Luna Konfigurajxo"
+msgstr "Konfiguraĵo"
 
 #: src/e_mod_main.c:491
 msgid "New Moon"
@@ -67,7 +65,7 @@ msgstr "Novluno"
 
 #: src/e_mod_main.c:493
 msgid "Waxing Crescent"
-msgstr ""
+msgstr "Kreskanta Lunarko"
 
 #: src/e_mod_main.c:495
 msgid "First Quarter"
@@ -75,7 +73,7 @@ msgstr "Kreskanta kvaronluno"
 
 #: src/e_mod_main.c:497
 msgid "Waxing Gibbous"
-msgstr ""
+msgstr "Pleniĝanta Luno"
 
 #: src/e_mod_main.c:499
 msgid "Full Moon"
@@ -83,7 +81,7 @@ msgstr "Plenluno"
 
 #: src/e_mod_main.c:501
 msgid "Waning Gibbous"
-msgstr ""
+msgstr "Malpleniĝanta Luno"
 
 #: src/e_mod_main.c:503
 msgid "Last Quarter"
@@ -91,4 +89,5 @@ msgstr "Malkreskanta kvaronluno"
 
 #: src/e_mod_main.c:505
 msgid "Waning Crescent"
-msgstr ""
+msgstr "Malkreskanta Lunarko"
+

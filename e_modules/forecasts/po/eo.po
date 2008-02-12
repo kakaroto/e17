@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: eo\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2007-12-10 17:14+0100\n"
-"PO-Revision-Date: 2007-12-10 23:05+0100\n"
+"PO-Revision-Date: 2008-02-11 20:16+0100\n"
 "Last-Translator: \n"
 "Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
@@ -21,7 +21,7 @@ msgstr ""
 
 #: e_mod_config.c:41
 msgid "Forecasts Configuration"
-msgstr "Vetera Agordoj"
+msgstr "Konfiguraĵo de Vetero"
 
 #: e_mod_config.c:88
 msgid "Display Settings"
@@ -79,7 +79,7 @@ msgstr "Konfiguraĵo"
 
 #: e_mod_main.c:962
 msgid "Wind Chill"
-msgstr ""
+msgstr "Venta malvarmigo"
 
 #: e_mod_main.c:968
 msgid "Wind Speed"
@@ -111,7 +111,7 @@ msgstr "Konstanta"
 
 #: e_mod_main.c:1001
 msgid "Sunrise / Sunset"
-msgstr ""
+msgstr "Suna leviĝo / malleviĝo"
 
 #: e_mod_main.c:1024
 msgid "High"
