@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-02-10 10:47+0100\n"
+"POT-Creation-Date: 2008-02-11 22:01+0100\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: György Horák <dyuri@horak.hu>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
@@ -580,67 +580,67 @@ msgstr ""
 "Klikkeljen ide, hogy ez az asztal\n"
 "legalulra kerüljön.\n"
 
-#: src/desktops.c:2298 src/desktops.c:2337
+#: src/desktops.c:2295 src/desktops.c:2334
 #, c-format
 msgid "%i Desktops"
 msgstr "%i asztal"
 
-#: src/desktops.c:2300 src/desktops.c:2339
+#: src/desktops.c:2297 src/desktops.c:2336
 #, c-format
 msgid "%i Desktop"
 msgstr "%i asztal"
 
-#: src/desktops.c:2332
+#: src/desktops.c:2329
 msgid "Number of virtual desktops:\n"
 msgstr "Virtuális asztalok száma:\n"
 
-#: src/desktops.c:2361
+#: src/desktops.c:2358
 msgid "Slide desktops around when changing"
 msgstr "Animáció az asztalok váltásánál"
 
-#: src/desktops.c:2367
+#: src/desktops.c:2364
 #, fuzzy
 msgid "Desktop Slide speed:\n"
 msgstr "Asztal animáció sebessége: (lassú)\n"
 
-#: src/desktops.c:2381
+#: src/desktops.c:2378
 msgid "Wrap desktops around"
 msgstr "Asztalok \"körbecsúszása\""
 
-#: src/desktops.c:2389
+#: src/desktops.c:2386
 msgid "Display desktop dragbar"
 msgstr "Dragbar megjelenítése"
 
-#: src/desktops.c:2395
+#: src/desktops.c:2392
 msgid "Drag bar position:"
 msgstr "Dragbar elhelyezkedése:"
 
-#: src/desktops.c:2399
+#: src/desktops.c:2396
 msgid "Top"
 msgstr "Fent"
 
-#: src/desktops.c:2405
+#: src/desktops.c:2402
 msgid "Bottom"
 msgstr "Lent"
 
-#: src/desktops.c:2411 src/pager.c:1920 src/pager.c:1945 src/pager.c:1970
+#: src/desktops.c:2408 src/pager.c:1920 src/pager.c:1945 src/pager.c:1970
 msgid "Left"
 msgstr "Bal"
 
-#: src/desktops.c:2417 src/pager.c:1932 src/pager.c:1957 src/pager.c:1982
+#: src/desktops.c:2414 src/pager.c:1932 src/pager.c:1957 src/pager.c:1982
 msgid "Right"
 msgstr "Jobb"
 
-#: src/desktops.c:2425 src/menus-misc.c:713
+#: src/desktops.c:2422 src/menus-misc.c:713
 #, fuzzy
 msgid "Desks"
 msgstr "Asztal"
 
-#: src/desktops.c:2426
+#: src/desktops.c:2423
 msgid "Multiple Desktop Settings"
 msgstr "Többasztalos üzemmód beállításai"
 
-#: src/desktops.c:2429
+#: src/desktops.c:2426
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -648,7 +648,7 @@ msgstr ""
 "Enlightenment többasztalos üzemmód\n"
 "beállításai\n"
 
-#: src/desktops.c:2499 src/desktops.c:2534
+#: src/desktops.c:2496 src/desktops.c:2531
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -657,7 +657,7 @@ msgstr ""
 "%i x %i\n"
 "képernyõméret"
 
-#: src/desktops.c:2502 src/desktops.c:2537
+#: src/desktops.c:2499 src/desktops.c:2534
 msgid ""
 "1\n"
 "Screen in size"
@@ -665,43 +665,43 @@ msgstr ""
 "1\n"
 "képernyõméret"
 
-#: src/desktops.c:2530
+#: src/desktops.c:2527
 msgid "Virtual Desktop size:\n"
 msgstr "Virtuális asztal mérete:\n"
 
-#: src/desktops.c:2571
+#: src/desktops.c:2568
 msgid "Wrap virtual desktops around"
 msgstr "Virtuális asztalok \"körbecsúszása\""
 
-#: src/desktops.c:2578
+#: src/desktops.c:2575
 msgid "Edge Flip Mode:"
 msgstr ""
 
-#: src/desktops.c:2581
+#: src/desktops.c:2578
 msgid "Off"
 msgstr ""
 
-#: src/desktops.c:2586
+#: src/desktops.c:2583
 msgid "On"
 msgstr ""
 
-#: src/desktops.c:2591
+#: src/desktops.c:2588
 msgid "Only when moving window"
 msgstr ""
 
-#: src/desktops.c:2597
+#: src/desktops.c:2594
 msgid "Resistance at edge of screen:\n"
 msgstr "Érzékenység a kép szélén:\n"
 
-#: src/desktops.c:2609
+#: src/desktops.c:2606
 msgid "Areas"
 msgstr ""
 
-#: src/desktops.c:2610
+#: src/desktops.c:2607
 msgid "Virtual Desktop Settings"
 msgstr "Virtuális asztalok beállításai"
 
-#: src/desktops.c:2613
+#: src/desktops.c:2610
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
