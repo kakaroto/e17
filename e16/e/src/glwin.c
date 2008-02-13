@@ -748,12 +748,6 @@ GlwinIpc(const char *params)
      {
 	GlwinInit();
      }
-#if 0				/* FIXME - Remove? */
-   else if (!strcmp(cmd, "stop"))
-     {
-	GlwinExit();
-     }
-#endif
 }
 
 static const IpcItem GlwinIpcArray[] = {

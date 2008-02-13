@@ -296,19 +296,6 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h,
    if (firstlast == 0)
       EwinShapeSet(ewin);
 
-#if 0				/* FIXME - Remove? */
-   if ((Mode.mode == MODE_RESIZE) || (Mode.mode == MODE_RESIZE_H)
-       || (Mode.mode == MODE_RESIZE_V))
-     {
-	int                 i, j;
-
-	i = (x - ewin->shape_x) / ewin->icccm.w_inc;
-	j = (y - ewin->shape_y) / ewin->icccm.h_inc;
-	x = ewin->shape_x + (i * ewin->icccm.w_inc);
-	y = ewin->shape_y + (j * ewin->icccm.h_inc);
-     }
-#endif
-
    dx = EoGetX(EoGetDesk(ewin));
    dy = EoGetY(EoGetDesk(ewin));
    x1 = ewin->shape_x + dx;

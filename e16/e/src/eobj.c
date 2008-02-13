@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2007 Kim Woelders
+ * Copyright (C) 2004-2008 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -640,10 +640,6 @@ EobjSlideSizeTo(EObj * eo, int fx, int fy, int tx, int ty, int fw, int fh,
 {
    int                 k, x, y, w, h;
 
-#if 0				/* FIXME - Need this? */
-   EGrabServer();
-#endif
-
    ETimedLoopInit(0, 1024, speed);
    for (k = 0; k <= 1024;)
      {
@@ -656,10 +652,6 @@ EobjSlideSizeTo(EObj * eo, int fx, int fy, int tx, int ty, int fw, int fh,
 	k = ETimedLoopNext();
      }
    EobjMoveResize(eo, tx, ty, tw, th);
-
-#if 0				/* FIXME - Need this? */
-   EUngrabServer();
-#endif
 }
 
 void

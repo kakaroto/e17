@@ -465,17 +465,6 @@ MagwinShow(void)
    EwinShow(MagWin->ewin);
 }
 
-#if 0				/* FIXME - Remove? */
-static void
-MagwinHide(void)
-{
-   if (!MagWin)
-      return;
-
-   EwinHide(MagWin->ewin);
-}
-#endif
-
 /*
  * MagWin Module
  */
@@ -500,12 +489,6 @@ MagwinIpc(const char *params)
      {
 	MagwinShow();
      }
-#if 0				/* FIXME - Remove? */
-   else if (!strcmp(cmd, "hide"))
-     {
-	MagwinHide();
-     }
-#endif
 }
 
 static const IpcItem MagwinIpcArray[] = {
