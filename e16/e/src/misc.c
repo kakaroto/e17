@@ -158,7 +158,7 @@ ETimedLoopInit(int k1, int k2, int speed)
    etl_fac = (k2 - k1) * (double)speed / 1000.;
 
    gettimeofday(&etl_tv_start, NULL);
-   ESync();
+   ESync(ESYNC_TLOOP);
 }
 
 int

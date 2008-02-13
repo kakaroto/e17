@@ -279,7 +279,7 @@ main(int argc, char **argv)
 
    /* let's make sure we set this up and go to our desk anyways */
    DeskGoto(DesksGetCurrent());
-   ESync();
+   ESync(ESYNC_MAIN);
 
 #ifdef SIGCONT
    for (i = 0; i < Mode.wm.child_count; i++)

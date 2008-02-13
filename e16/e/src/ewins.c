@@ -1053,7 +1053,7 @@ EwinWithdraw(EWin * ewin, Win to)
      }
    ICCCM_Withdraw(ewin);
 
-   ESync();
+   ESync(0);
    EUngrabServer();
 }
 

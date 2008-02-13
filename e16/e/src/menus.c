@@ -372,7 +372,7 @@ MenuShow(Menu * m, char noshow)
 	Eprintf("Mode_menus.context_ewin set %s\n",
 		EwinGetTitle(Mode_menus.context_ewin));
 #endif
-	ESync();
+	ESync(ESYNC_MENUS);
 	Mode_menus.first = m;
 	MenuShowMasker(m);
 	TooltipsEnable(0);

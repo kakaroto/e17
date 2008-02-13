@@ -219,7 +219,7 @@ Zoom(EWin * ewin)
 		EDestroyWindow(zoom_mask_4);
 	     SwitchRes(0, 0, 0, 0, 0);
 	     EwinWarpTo(ewin);
-	     ESync();
+	     ESync(0);
 	     zoom_last_ewin = NULL;
 	  }
 	return;
@@ -262,7 +262,7 @@ Zoom(EWin * ewin)
 	zoom_mask_2 = ZoomMask(0, 0, mode->hdisplay, y1);
 	zoom_mask_3 = ZoomMask(x1 + ewin->client.w, 0, x2, mode->vdisplay);
 	zoom_mask_4 = ZoomMask(0, y1 + ewin->client.h, mode->hdisplay, y2);
-	ESync();
+	ESync(0);
      }
 }
 

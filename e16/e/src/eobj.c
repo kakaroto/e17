@@ -658,9 +658,11 @@ void
 EobjsRepaint(void)
 {
 #if USE_COMPOSITE
-   ECompMgrRepaint();
+   if (ECompMgrIsActive())
+      ECompMgrRepaint();
+   else
 #endif
-   ESync();
+      ESync(0);
 }
 
 #if USE_COMPOSITE

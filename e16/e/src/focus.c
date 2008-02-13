@@ -628,9 +628,9 @@ FocusHandleClick(EWin * ewin, Win win)
 	      EwinGetContainerXwin(ewin));
    if (win == EwinGetContainerWin(ewin))
      {
-	ESync();
+	ESync(ESYNC_FOCUS);
 	XAllowEvents(disp, ReplayPointer, CurrentTime);
-	ESync();
+	ESync(ESYNC_FOCUS);
      }
 }
 

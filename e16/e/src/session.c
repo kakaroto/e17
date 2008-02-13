@@ -518,7 +518,7 @@ doSMExit(int mode, const char *params)
 	EwinsSetFree();
 	XSelectInput(disp, VRoot.xwin, 0);
 	ExtInitWinKill();
-	ESync();
+	ESync(0);
 
 	/* Forget about cleaning up if no disp */
 	ModulesSignal(ESIGNAL_EXIT, NULL);

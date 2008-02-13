@@ -186,7 +186,7 @@ ActionMoveEnd(EWin * ewin)
 
    Efree(gwins);
 
-   ESync();
+   ESync(ESYNC_MOVRES);
 
  done:
    Mode.mode = MODE_NONE;
@@ -458,7 +458,7 @@ ActionResizeEnd(EWin * ewin)
 			    ewin->shape_w, ewin->shape_h);
      }
 
-   ESync();
+   ESync(ESYNC_MOVRES);
 
  done:
    if (Mode_mr.grab_server)

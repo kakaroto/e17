@@ -73,7 +73,7 @@ ExtInitWinMain(void)
    XSelectInput(disp, win, StructureNotifyMask);
 
    EUngrabServer();
-   ESync();
+   ESync(0);
 
    {
       Window              w2, ww;
@@ -133,7 +133,7 @@ ExtInitWinMain(void)
 	   tv.tv_sec = 0;
 	   tv.tv_usec = 50000;
 	   select(0, NULL, NULL, NULL, &tv);
-	   ESync();
+	   ESync(0);
 	}
    }
 
@@ -156,7 +156,7 @@ ExtInitWinCreate(void)
       Eprintf("ExtInitWinCreate\n");
 
    a = XInternAtom(disp, "ENLIGHTENMENT_RESTART_SCREEN", False);
-   ESync();
+   ESync(0);
 
    if (fork())
      {

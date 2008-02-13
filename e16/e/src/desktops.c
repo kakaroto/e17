@@ -1291,7 +1291,7 @@ DeskRaise(unsigned int desk)
 
    ModulesSignal(ESIGNAL_DESK_SWITCH_DONE, NULL);
 
-   ESync();
+   ESync(ESYNC_DESKS);
 }
 
 static void
@@ -1327,7 +1327,7 @@ DeskLower(unsigned int desk)
    HintsSetCurrentDesktop();
 
    EUngrabServer();
-   ESync();
+   ESync(ESYNC_DESKS);
 }
 
 #if 0				/* Unused */

@@ -1784,8 +1784,10 @@ EFlush(void)
 }
 
 void
-ESync(void)
+ESync(unsigned int mask)
 {
+   if (mask & Conf.testing.no_sync_mask)
+      return;
    XSync(disp, False);
 }
 

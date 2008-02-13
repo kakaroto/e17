@@ -2523,7 +2523,7 @@ ECompMgrStart(void)
 #endif
    _ECM_SET_CLIP_CHANGED();
    EUngrabServer();
-   ESync();
+   ESync(0);
 }
 
 static void
@@ -2587,7 +2587,7 @@ ECompMgrStop(void)
    DesksBackgroundRefresh(NULL, DESK_BG_RECONFIGURE_ALL);
 #endif
    EUngrabServer();
-   ESync();
+   ESync(0);
 }
 
 void

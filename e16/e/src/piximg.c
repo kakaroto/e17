@@ -109,7 +109,7 @@ EDestroyPixImg(PixImg * pi)
 {
    if (!pi)
       return;
-   ESync();
+   ESync(0);
    XShmDetach(disp, pi->shminfo);
    shmdt(pi->shminfo->shmaddr);
    shmctl(pi->shminfo->shmid, IPC_RMID, 0);
@@ -222,7 +222,7 @@ EBlendPixImg(Win win, PixImg * s1, PixImg * s2, PixImg * dst, int x, int y,
    if ((w <= 0) || (h <= 0))
       return;
 
-   ESync();
+   ESync(0);
 
    switch (dst->xim->bits_per_pixel)
      {

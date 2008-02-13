@@ -139,7 +139,7 @@ IB_Animate_A(char iconify, EWin * ewin, EWin * ibox)
 	XDrawLine(disp, root, gc, x3, y3, x4, y4);
 	XDrawLine(disp, root, gc, x4, y4, x1, y1);
 
-	ESync();
+	ESync(ESYNC_ICONIFY);
 	IB_Animate_Sleep(t0, a);
 
 	XDrawLine(disp, root, gc, x1, y1, x2, y2);
@@ -216,7 +216,7 @@ IB_Animate_B(char iconify, EWin * ewin, EWin * ibox)
 	h = (int)(fh + a * (th - fh));
 	XDrawRectangle(disp, root, gc, x, y, w, h);
 
-	ESync();
+	ESync(ESYNC_ICONIFY);
 	IB_Animate_Sleep(t0, a);
 
 	XDrawRectangle(disp, root, gc, x, y, w, h);

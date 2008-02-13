@@ -32,7 +32,17 @@ void                EGrabServer(void);
 void                EUngrabServer(void);
 int                 EServerIsGrabbed(void);
 void                EFlush(void);
-void                ESync(void);
+
+#define ESYNC_MAIN	0x0001
+#define ESYNC_DESKS	0x0002
+#define ESYNC_MENUS	0x0004
+#define ESYNC_MOVRES	0x0008
+#define ESYNC_FOCUS	0x0010
+#define ESYNC_ICONIFY	0x0020
+#define ESYNC_TLOOP	0x0040
+#define ESYNC_SLIDEOUT	0x0080
+#define ESYNC_STARTUP	0x0100
+void                ESync(unsigned int mask);
 
 #if USE_COMPOSITE
 int                 EVisualIsARGB(Visual * vis);

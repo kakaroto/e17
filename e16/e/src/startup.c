@@ -166,6 +166,6 @@ StartupWindowsOpen(void)
       return;
 
    Mode.place.enable_features--;
-   ESync();
+   ESync(ESYNC_STARTUP);
    AnimatorAdd(doStartupWindowsOpen, NULL);
 }

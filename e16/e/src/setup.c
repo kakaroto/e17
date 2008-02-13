@@ -158,7 +158,7 @@ SetupX(const char *dstr)
    mask =
       StructureNotifyMask | SubstructureNotifyMask | SubstructureRedirectMask;
    ESelectInput(VRoot.win, mask);
-   ESync();
+   ESync(0);
    if (!Mode.wm.xselect)
      {
 	AlertX(_("Another Window Manager is already running"),
