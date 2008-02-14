@@ -69,7 +69,6 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    char buf[4096];
 
    cpu_count = _get_cpu_count();
-   printf("Cpus: %d\n", cpu_count);
 
    inst = E_NEW(Instance, 1);   
    inst->ci = _config_item_get(id);
@@ -214,11 +213,15 @@ _set_cpu_load(void *data)
 
    _get_cpu_load();
 
-   if (cpu_count == 1)
-     snprintf(str, sizeof(str), "<br>%d%%", cpu_stats[0]);
+   if (cpu_count == 1) 
+     {
+        snprintf(str, sizeof(str), "<br>%d%%", cpu_stats[0]);
+        edje_object_part_text_set(cpu->o_icon, "load", str);
+        return 1;
+     }
    else
      snprintf(str, sizeof(str), "%d%%", cpu_stats[0]);
-   
+
    i = 1;
    while (i < cpu_count)
      {
@@ -300,15 +303,10 @@ _get_cpu_load(void)
    */
 
    if (cpu_count > 1) 
-     {
-        /* I had to add another %lu (linux 2.6.17) */
-        fscanf(stat, "%s %lu %lu %lu %lu %lu %lu %lu %lu %lu", dummy, &new_u, &new_n, &new_s, &new_i, &new_wa, &new_hi, &new_si, &dummy2, &dummy3);
-     }
+     fscanf(stat, "%s %lu %lu %lu %lu %lu %lu %lu %lu %lu", dummy, &new_u, &new_n, &new_s, &new_i, &new_wa, &new_hi, &new_si, &dummy2, &dummy3);
 
    while (i < cpu_count)
      {
-
-        /* I had to add another %lu (linux 2.6.17) */
 	if (fscanf(stat, "%s %lu %lu %lu %lu %lu %lu %lu %lu %lu", dummy, &new_u, &new_n,
 	     &new_s, &new_i, &new_wa, &new_hi, &new_si, &dummy2, &dummy3) < 5)
 	  {
