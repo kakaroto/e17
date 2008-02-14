@@ -16,9 +16,9 @@ typedef struct _Cpu Cpu;
 struct _Instance 
 {
    E_Gadcon_Client *gcc;
-   Cpu             *cpu;
-   Ecore_Timer     *timer;
-   Config_Item     *ci;
+   Cpu *cpu;
+   Ecore_Timer *timer;
+   Config_Item *ci;
 };
 
 struct _Cpu 
@@ -63,13 +63,14 @@ static const E_Gadcon_Client_Class _gc_class =
 static E_Gadcon_Client *
 _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style) 
 {
-   Cpu             *cpu;
-   Instance        *inst;
+   Cpu *cpu;
+   Instance *inst;
    E_Gadcon_Client *gcc;
-   char             buf[4096];
+   char buf[4096];
 
    cpu_count = _get_cpu_count();
-   
+   printf("Cpus: %d\n", cpu_count);
+
    inst = E_NEW(Instance, 1);   
    inst->ci = _config_item_get(id);
 
@@ -78,13 +79,13 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 
    snprintf(buf, sizeof(buf), "%s/cpu.edj", 
 	    e_module_dir_get(cpu_conf->module));
-   
+
    cpu->o_icon = edje_object_add(gc->evas);
    if (!e_theme_edje_object_set(cpu->o_icon, 
 				"base/theme/modules/cpu", "modules/cpu/main"))
      edje_object_file_set(cpu->o_icon, buf, "modules/cpu/main");
    evas_object_show(cpu->o_icon);
-   
+
    gcc = e_gadcon_client_new(gc, name, id, style, cpu->o_icon);
    gcc->data = inst;
    inst->gcc = gcc;
@@ -103,16 +104,14 @@ static void
 _gc_shutdown(E_Gadcon_Client *gcc) 
 {
    Instance *inst;
-   Cpu      *cpu;
-   
+   Cpu *cpu;
+
    inst = gcc->data;
    cpu = inst->cpu;
 
-   if (inst->timer)
-     ecore_timer_del(inst->timer);
-   if (cpu->o_icon)
-     evas_object_del(cpu->o_icon);
-   
+   if (inst->timer) ecore_timer_del(inst->timer);
+   if (cpu->o_icon) evas_object_del(cpu->o_icon);
+
    cpu_conf->instances = evas_list_remove(cpu_conf->instances, inst);
    E_FREE(cpu);
    E_FREE(inst);
@@ -135,13 +134,13 @@ static Evas_Object *
 _gc_icon(Evas *evas) 
 {
    Evas_Object *o;
-   char         buf[4096];
+   char buf[4096];
 
    if (!cpu_conf->module) return NULL;
-   
+
    snprintf(buf, sizeof(buf), "%s/e-module-cpu.edj", 
 	    e_module_dir_get(cpu_conf->module));
-   
+
    o = edje_object_add(evas);
    edje_object_file_set(o, buf, "icon");
    return o;
@@ -159,18 +158,17 @@ _gc_id_new(void)
 static Config_Item *
 _config_item_get(const char *id) 
 {
-   Evas_List   *l;
+   Evas_List *l = NULL;
    Config_Item *ci;
    char buf[128];
+   int num = 0;
+   const char *p;
 
    if (!id)
      {
-	int  num = 0;
-
 	/* Create id */
 	if (cpu_conf->items)
 	  {
-	     const char *p;
 	     ci = evas_list_last(cpu_conf->items)->data;
 	     p = strrchr(ci->id, '.');
 	     if (p) num = atoi(p + 1) + 1;
@@ -205,17 +203,15 @@ static int
 _set_cpu_load(void *data) 
 {
    Instance *inst;
-   Cpu      *cpu;
-   int       i = 0;
-   char      str[100], str_tmp[100];
+   Cpu *cpu;
+   int i = 0;
+   char str[100], str_tmp[100];
 
    if (cpu_count == -1) return 0;
 
-   inst = data;
-   if (!inst) return 1;
-   cpu = inst->cpu;
-   if (!cpu) return 1;
-   
+   if (!(inst = data)) return 1;
+   if (!(cpu = inst->cpu)) return 1;
+
    _get_cpu_load();
 
    if (cpu_count == 1)
@@ -247,7 +243,7 @@ _get_cpu_count(void)
 
    if (!(f = fopen("/proc/stat", "r"))) return cpu;
 
-   while (fscanf(f, "cp%s %*u %*u %*u %*u %*u %*u %*u %*u\n", (char *) &tmp) == 1)
+   while (fscanf(f, "cp%s %*u %*u %*u %*u %*u %*u %*u %*u %*u\n", (char *) &tmp) == 1)
      cpu++;
 
    fclose(f);
@@ -267,7 +263,7 @@ _get_cpu_load(void)
 #else
    FILE *stat;
    static unsigned long old_u[4], old_n[4], old_s[4], old_i[4], old_wa[4], old_hi[4], old_si[4];
-   unsigned long new_u, new_n, new_s, new_i, new_wa = 0, new_hi = 0, new_si = 0, dummy2, ticks_past;
+   unsigned long new_u, new_n, new_s, new_i, new_wa = 0, new_hi = 0, new_si = 0, dummy2, dummy3, ticks_past;
    int tmp_u = 0, tmp_n = 0, tmp_s = 0;
    char dummy[16];
    int i = 0;
@@ -285,12 +281,13 @@ _get_cpu_load(void)
    new_used = cp_time[CP_USER] + cp_time[CP_NICE] + cp_time[CP_SYS];
    new_tot = new_used + cp_time[CP_IDLE];
 
-   cpu_stats[0] = (100 * (float)(new_used - old_used) / (float)(new_tot - old_tot)) / update_interval;
+   cpu_stats[0] = 
+     (100 * (float)(new_used - old_used) / (float)(new_tot - old_tot)) / update_interval;
 
    old_tot = new_tot;
    old_used = new_used; 
    
-   cpu_stats[0]=(cpu_stats[0]>100?100:cpu_stats[0]);
+   cpu_stats[0] = (cpu_stats[0] > 100 ? 100 : cpu_stats[0]);
 #else
    if (!(stat = fopen("/proc/stat", "r"))) return -1;
 
@@ -301,17 +298,19 @@ _get_cpu_load(void)
 	
 	In this case the first line is read and forgotten
    */
-   if(cpu_count>1){
-      /* I had to add another %lu (linux 2.6.17) */
-      fscanf(stat, "%s %lu %lu %lu %lu %lu %lu %lu %lu", dummy, &new_u, &new_n, &new_s, &new_i, &new_wa, &new_hi, &new_si, &dummy2);
-   }
-   
+
+   if (cpu_count > 1) 
+     {
+        /* I had to add another %lu (linux 2.6.17) */
+        fscanf(stat, "%s %lu %lu %lu %lu %lu %lu %lu %lu %lu", dummy, &new_u, &new_n, &new_s, &new_i, &new_wa, &new_hi, &new_si, &dummy2, &dummy3);
+     }
+
    while (i < cpu_count)
      {
 
         /* I had to add another %lu (linux 2.6.17) */
-	if (fscanf(stat, "%s %lu %lu %lu %lu %lu %lu %lu %lu", dummy, &new_u, &new_n,
-	     &new_s, &new_i, &new_wa, &new_hi, &new_si, &dummy2) < 5)
+	if (fscanf(stat, "%s %lu %lu %lu %lu %lu %lu %lu %lu %lu", dummy, &new_u, &new_n,
+	     &new_s, &new_i, &new_wa, &new_hi, &new_si, &dummy2, &dummy3) < 5)
 	  {
 	     fclose (stat);
 	     return -1;
@@ -336,7 +335,7 @@ _get_cpu_load(void)
 	old_hi[i] = new_hi;
 	old_si[i] = new_si;
 	
-	cpu_stats[i]=(cpu_stats[i]>100?100:cpu_stats[i]);
+	cpu_stats[i] = (cpu_stats[i] > 100 ? 100 : cpu_stats[i]);
 
 	i++;
      }
@@ -434,7 +433,6 @@ _cpu_menu_fast(void *data, E_Menu *m, E_Menu_Item *mi)
    Instance *inst;
  
    inst = data;
-
    inst->ci->interval = 0.5;
    ecore_timer_del(inst->timer);
    inst->timer = ecore_timer_add(inst->ci->interval, _set_cpu_load, inst);
@@ -447,7 +445,6 @@ _cpu_menu_medium(void *data, E_Menu *m, E_Menu_Item *mi)
    Instance *inst;
  
    inst = data;
-
    inst->ci->interval = 1.0;
    ecore_timer_del(inst->timer);
    inst->timer = ecore_timer_add(inst->ci->interval, _set_cpu_load, inst);
@@ -460,7 +457,6 @@ _cpu_menu_normal(void *data, E_Menu *m, E_Menu_Item *mi)
    Instance *inst;
  
    inst = data;
-
    inst->ci->interval = 2.0;
    ecore_timer_del(inst->timer);
    inst->timer = ecore_timer_add(inst->ci->interval, _set_cpu_load, inst);
@@ -473,7 +469,6 @@ _cpu_menu_slow(void *data, E_Menu *m, E_Menu_Item *mi)
    Instance *inst;
 
    inst = data;
-
    inst->ci->interval = 5.0;
    ecore_timer_del(inst->timer);
    inst->timer = ecore_timer_add(inst->ci->interval, _set_cpu_load, inst);
@@ -486,7 +481,6 @@ _cpu_menu_very_slow(void *data, E_Menu *m, E_Menu_Item *mi)
    Instance *inst;
 
    inst = data;
-
    inst->ci->interval = 30.0;
    ecore_timer_del(inst->timer);
    inst->timer = ecore_timer_add(inst->ci->interval, _set_cpu_load, inst);
@@ -560,8 +554,7 @@ e_modapi_shutdown(E_Module *m)
 	Config_Item *ci;
 	
 	ci = cpu_conf->items->data;
-	if (ci->id)
-	  evas_stringshare_del(ci->id);
+	if (ci->id) evas_stringshare_del(ci->id);
 	cpu_conf->items = evas_list_remove_list(cpu_conf->items, cpu_conf->items);
 	E_FREE(ci);
      }
