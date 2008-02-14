@@ -14,7 +14,6 @@ cpu.edj
 EXTRA_DIST = $(files_DATA) \
 cpu.edc \
 VeraMono.ttf \
-VeraBd.ttf \
 cpu.png \
 e_modules-cpu.spec
 
