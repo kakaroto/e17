@@ -16,6 +16,7 @@
 #define USE_GL_ENGINE 0
 #define ECHO_EDJE_SIGNAL 0
 #define DEBUG_TREE 0
+#define DEBUG_BUTTON 0
 
 #if DEBUG_TREE
    #define TREE_WIDTH 365

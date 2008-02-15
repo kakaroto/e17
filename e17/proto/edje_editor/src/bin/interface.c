@@ -1276,14 +1276,14 @@ create_toolbar(Etk_Toolbar_Orientation o)
    etk_signal_connect("activated", ETK_OBJECT(menu_item),
                ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_OPTION_BG4);
    etk_menu_shell_append(ETK_MENU_SHELL(UI_OptionsMenu), ETK_MENU_ITEM(menu_item));
-
+#if DEBUG_BUTTON
    //DebugButton
    button = etk_tool_button_new_from_stock(ETK_STOCK_DOCUMENT_PROPERTIES);
    etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), button, ETK_BOX_START);
    etk_signal_connect("clicked", ETK_OBJECT(button),
                         ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_DEBUG);
    etk_object_properties_set(ETK_OBJECT(button),"label","Debug",NULL);
-    
+#endif
    return UI_Toolbar;
 }
 
