@@ -36,11 +36,11 @@ def pkgconfig(*packages, **kw):
 
 e_dbus_module = Extension("e_dbus",
                           sources=["module.c",],
-                          **pkgconfig('"edbus >= 0.1.0.003"'))
+                          **pkgconfig('"edbus >= 0.1.0.042"'))
 
 
 setup(name="python-e_dbus",
-      version="0.1.0",
+      version="0.1.1",
       license="BSD",
       author="Ulisses Furquim",
       author_email="ulisses.silva@openbossa.org",

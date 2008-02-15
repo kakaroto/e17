@@ -46,7 +46,7 @@ ecoremodule = Extension('ecore.c_ecore',
                                  'ecore/ecore.c_ecore_fd_handler.pxi',
                                  'include/ecore/c_ecore.pxd',
                                  ],
-                        **pkgconfig('"ecore >= 0.9.9.040"'))
+                        **pkgconfig('"ecore >= 0.9.9.042"'))
 
 
 ecoreevasmodule = Extension('ecore.evas.c_ecore_evas',
@@ -119,7 +119,7 @@ class ecore_build_ext(build_ext):
 
 
 setup(name='python-ecore',
-      version='0.2.0',
+      version='0.2.1',
       license='BSD',
       author='Gustavo Sverzut Barbieri',
       author_email='barbieri@gmail.com',
@@ -129,8 +129,8 @@ setup(name='python-ecore',
       keywords='wrapper binding enlightenment abstraction event ecore',
       classifiers=trove_classifiers,
       packages=find_packages(),
-      install_requires=['python-evas>=0.2.0'],
-      setup_requires=['python-evas>=0.2.0'],
+      install_requires=['python-evas>=0.2.1'],
+      setup_requires=['python-evas>=0.2.1'],
       ext_modules=[ecoremodule, ecoreevasmodule, ecorexmodule,
                    ecorexscreensavermodule],
       zip_safe=False,

@@ -41,7 +41,7 @@ emotionmodule = Extension('emotion.c_emotion',
                                    ],
                           depends=['include/emotion/c_emotion.pxd',
                                    ],
-                          **pkgconfig('"emotion >= 0.0.1.007"'))
+                          **pkgconfig('"emotion >= 0.1.0.042"'))
 
 
 trove_classifiers = [
@@ -78,7 +78,7 @@ class emotion_build_ext(build_ext):
 
 
 setup(name='python-emotion',
-      version='0.2.0',
+      version='0.2.1',
       license='BSD',
       author='Gustavo Sverzut Barbieri',
       author_email='barbieri@gmail.com',
@@ -88,8 +88,8 @@ setup(name='python-emotion',
       keywords='wrapper binding enlightenment graphics raster evas canvas multimida playback xine gstreamer',
       classifiers=trove_classifiers,
       packages=find_packages(),
-      install_requires=['python-evas>=0.2.0'],
-      setup_requires=['python-evas>=0.2.0'],
+      install_requires=['python-evas>=0.2.1'],
+      setup_requires=['python-evas>=0.2.1'],
       ext_modules=[emotionmodule],
       zip_safe=False,
       cmdclass={'build_ext': emotion_build_ext,},
