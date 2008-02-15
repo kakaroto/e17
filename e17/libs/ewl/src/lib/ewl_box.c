@@ -270,8 +270,8 @@ ewl_box_orientation_get(Ewl_Box *b)
  * @return Returns no value.
  * @brief Change the homogeneous layout of the box
  *
- * Boxes use homogeneous layout by default, this can be used
- * to change that.
+ * If the box is set to be homogeneous (TRUE) it will give all children the 
+ * same size. By default the box is inhomogeneous.
  */
 void
 ewl_box_homogeneous_set(Ewl_Box *b, unsigned int h)
