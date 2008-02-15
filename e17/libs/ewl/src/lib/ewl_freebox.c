@@ -393,7 +393,7 @@ ewl_freebox_layout_auto(Ewl_Freebox *fb)
 	ecore_dlist_first_goto(c->children);
 	while ((child = ecore_dlist_next(c->children)))
 	{
-		if (!VISIBLE(child)) continue;
+		if (!VISIBLE(child) || UNMANAGED(child)) continue;
 		ewl_object_preferred_size_get(EWL_OBJECT(child),
 						&child_w, &child_h);
 
@@ -418,7 +418,7 @@ ewl_freebox_layout_auto(Ewl_Freebox *fb)
 	ecore_dlist_first_goto(c->children);
 	while ((child = ecore_dlist_next(c->children)))
 	{
-		if (!VISIBLE(child)) continue;
+		if (!VISIBLE(child) || UNMANAGED(child)) continue;
 		ewl_object_preferred_size_get(EWL_OBJECT(child),
 						&child_w, &child_h);
 

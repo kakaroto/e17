@@ -1177,7 +1177,8 @@ ewl_tree_node_expand(Ewl_Tree_Node *node)
 	ecore_dlist_first_goto(EWL_CONTAINER(node)->children);
 	while ((child = ecore_dlist_next(EWL_CONTAINER(node)->children)))
 	{
-		if ((child != node->handle) && (child != EWL_WIDGET(node->row)))
+		if ((child != node->handle) && (child != EWL_WIDGET(node->row))
+				&& !UNMANAGED(child))
 			ecore_list_append(tmp, child);
 	}
 
@@ -1259,7 +1260,8 @@ ewl_tree_node_collapse(Ewl_Tree_Node *node)
 	ecore_dlist_first_goto(EWL_CONTAINER(node)->children);
 	while ((child = ecore_dlist_next(EWL_CONTAINER(node)->children)))
 	{
-		if ((child != node->handle) && (child != EWL_WIDGET(node->row)))
+		if ((child != node->handle) && (child != EWL_WIDGET(node->row))
+				&& !UNMANAGED(child))
 			ecore_list_append(tmp, child);
 	}
 
@@ -1317,7 +1319,6 @@ ewl_tree_cb_node_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 	c = EWL_CONTAINER(w);
 	if (!c->children) DRETURN(DLEVEL_STABLE);
 
-	ecore_dlist_first_goto(c->children);
 	x = CURRENT_X(w);
 	y = CURRENT_Y(w);
 
@@ -1333,9 +1334,11 @@ ewl_tree_cb_node_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 	/*
 	 * All subsequent children are lower nodes and rows.
 	 */
+	ecore_dlist_first_goto(c->children);
 	while ((child = ecore_dlist_next(c->children)))
 	{
-		if (VISIBLE(child) && EWL_WIDGET(child) != node->handle)
+		if (VISIBLE(child) && EWL_WIDGET(child) != node->handle
+				&& !UNMANAGED(child))
 		{
 			ewl_object_geometry_request(child, x, y, CURRENT_W(w) - hw,
 						    ewl_object_preferred_h_get(child));
@@ -1452,7 +1455,7 @@ ewl_tree_cb_node_child_hide(Ewl_Container *c, Ewl_Widget *w)
 	if (w == node->handle)
 		DRETURN(DLEVEL_STABLE);
 
-	if (ecore_dlist_count(c->children) < 3)
+	if (ewl_container_child_count_visible_get(c) < 3)
 	{
 		if (node->handle && VISIBLE(node->handle))
 			ewl_widget_hide(node->handle);

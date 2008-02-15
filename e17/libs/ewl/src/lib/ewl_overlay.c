@@ -94,6 +94,9 @@ ewl_overlay_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 	ecore_dlist_first_goto(EWL_CONTAINER(w)->children);
 	while ((child = ecore_dlist_next(EWL_CONTAINER(w)->children))) {
 		int width, height;
+		/* ignore unmanaged widgets */
+		if (UNMANAGED(child))
+			continue;
 		/*
 		 * Try to give the child the full size of the overlay from it's
 		 * base position. The object will constrict it based on the

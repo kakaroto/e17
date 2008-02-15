@@ -1607,6 +1607,39 @@ ewl_widget_internal_set(Ewl_Widget *w, unsigned int val)
 }
 
 /**
+ * @internal
+ * @param w: the widget to mark as unmanaged
+ * @param val: a boolean to indicate the state of the unmanaged flag
+ * @return Returns no value.
+ * @brief Marks a widget to be ignored by the parent container.
+ *
+ * A widget marked as unmanaged will not be placed by the container. This
+ * is important for widget that manage to place them self like a floater.
+ * Nevertheless the widget will recieve events through the parent and shares
+ * the same layer with its sibling widgets. In most cases you also want to
+ * set it as internal.
+ *
+ * Note: You cannot change the unmanaged state if the widget already has
+ * a parent.
+ */
+void
+ewl_widget_unmanaged_set(Ewl_Widget *w, unsigned int val)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+
+	if (w->parent) {
+		DWARNING("It is not possible to change the unmanage state "
+				"of a widget that has already a parent!\n");
+		DRETURN(DLEVEL_STABLE);
+	}
+	UNMANAGED(w) = !!val;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
  * @param widget: the widget to set the inheritance on
  * @param inherit: the string to append to the inheritance
  * @return Returns no value.
@@ -1737,6 +1770,22 @@ ewl_widget_internal_is(Ewl_Widget *w)
 		DRETURN_INT(TRUE, DLEVEL_STABLE);
 
 	DRETURN_INT(FALSE, DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * @param w: the widget to query the state of the unmanaged flag
+ * @return Returns TRUE if the widget is marked unmanaged, otherwise FALSE.
+ * @brief Checks the widget for the internal flag.
+ */
+unsigned int
+ewl_widget_unmanaged_is(Ewl_Widget *w)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET(w, FALSE);
+	DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, FALSE);
+
+	DRETURN_INT(UNMANAGED(w), DLEVEL_STABLE);
 }
 
 /**

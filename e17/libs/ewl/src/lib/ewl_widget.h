@@ -153,11 +153,14 @@ struct Ewl_Widget
 	const char *appearance;   /**< Key to lookup appearance in theme */
 	const char *inheritance;  /**< Inheritance of path widget */
 	int layer;		/**< the layer relative to the parent */
-	int toplayered;		/**< Indicates if the widget should
-						be on the top of the layer stack */
 
 	Ecore_Hash *theme; 		/**< Overriding theme settings */
 	Ewl_Pair_List theme_text;	/**< Overriding text in theme */
+	
+	unsigned char toplayered:1;	/**< Indicates if the widget should
+					be on the top of the layer stack */
+	unsigned char unmanaged:1;
+
 };
 
 Ewl_Widget 	*ewl_widget_new(void);
@@ -220,6 +223,9 @@ int 		 ewl_widget_layer_priority_get(Ewl_Widget *w);
 void 		 ewl_widget_internal_set(Ewl_Widget *w, unsigned int val);
 unsigned int     ewl_widget_internal_is(Ewl_Widget *w);
 
+void 		 ewl_widget_unmanaged_set(Ewl_Widget *w, unsigned int val);
+unsigned int     ewl_widget_unmanaged_is(Ewl_Widget *w);
+
 void 		 ewl_widget_clipped_set(Ewl_Widget *w, unsigned int val);
 unsigned int     ewl_widget_clipped_is(Ewl_Widget *w);
 
@@ -245,6 +251,9 @@ void 		 ewl_widget_color_get(Ewl_Widget *w, unsigned int *r, unsigned int *g,
 							unsigned int *b, unsigned int *a);
 
 int 		 ewl_widget_parent_of(Ewl_Widget *c, Ewl_Widget *w);
+
+
+#define UNMANAGED(w) (EWL_WIDGET(w)->unmanaged)
 
 /*
  * Internally used callbacks, override at your own risk.

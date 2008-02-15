@@ -7,6 +7,10 @@
 
 static void ewl_highlight_cb_follow_configure(Ewl_Widget *w,
 					void *ev, void *data);
+static void ewl_highlight_cb_follow_reveal(Ewl_Widget *w,
+					void *ev, void *data);
+static void ewl_highlight_cb_follow_obscure(Ewl_Widget *w,
+					void *ev, void *data);
 static void ewl_highlight_cb_follow_destroy(Ewl_Widget *w,
 					void *ev, void *data);
 static void ewl_highlight_cb_destroy(Ewl_Widget *w, void *ev, void *data);
@@ -52,6 +56,7 @@ ewl_highlight_init(Ewl_Highlight *h)
 	ewl_widget_appearance_set(EWL_WIDGET(h), EWL_HIGHLIGHT_TYPE);
 	ewl_widget_inherit(EWL_WIDGET(h), EWL_HIGHLIGHT_TYPE);
 	ewl_widget_internal_set(EWL_WIDGET(h), TRUE);
+	ewl_widget_unmanaged_set(EWL_WIDGET(h), TRUE);
 	ewl_widget_layer_top_set(EWL_WIDGET(h), TRUE);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -77,11 +82,17 @@ ewl_highlight_follow_set(Ewl_Highlight *h, Ewl_Widget *w)
 				ewl_highlight_cb_follow_destroy, h);
 	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
 				ewl_highlight_cb_follow_configure, h);
+	ewl_callback_append(w, EWL_CALLBACK_REVEAL,
+				ewl_highlight_cb_follow_reveal, h);
+	ewl_callback_append(w, EWL_CALLBACK_OBSCURE,
+				ewl_highlight_cb_follow_obscure, h);
 
 	/* prepend this so we can use the floater follow set call to cleanup
 	 * floater stuff */
 	ewl_callback_prepend(EWL_WIDGET(h), EWL_CALLBACK_DESTROY,
 				ewl_highlight_cb_destroy, w);
+
+	ewl_widget_configure(w);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -119,6 +130,32 @@ ewl_highlight_cb_follow_configure(Ewl_Widget *w, void *ev __UNUSED__,
 }
 
 static void
+ewl_highlight_cb_follow_reveal(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
+							void *data)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(data);
+	DCHECK_TYPE(data, EWL_HIGHLIGHT_TYPE);
+
+	ewl_widget_show(EWL_WIDGET(data));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_highlight_cb_follow_obscure(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
+							void *data)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(data);
+	DCHECK_TYPE(data, EWL_HIGHLIGHT_TYPE);
+
+	ewl_widget_hide(EWL_WIDGET(data));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
 ewl_highlight_cb_follow_destroy(Ewl_Widget *w __UNUSED__,
 				void *ev __UNUSED__, void *data)
 {
@@ -146,6 +183,11 @@ ewl_highlight_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 	ewl_floater_follow_set(EWL_FLOATER(w), NULL);
 	ewl_callback_del(EWL_WIDGET(data), EWL_CALLBACK_CONFIGURE,
 					ewl_highlight_cb_follow_configure);
+	ewl_callback_del(EWL_WIDGET(data), EWL_CALLBACK_REVEAL,
+					ewl_highlight_cb_follow_reveal);
+	ewl_callback_del(EWL_WIDGET(data), EWL_CALLBACK_OBSCURE,
+					ewl_highlight_cb_follow_obscure);
+
 	ewl_callback_del(EWL_WIDGET(data), EWL_CALLBACK_DESTROY,
 					ewl_highlight_cb_follow_destroy);
 

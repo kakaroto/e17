@@ -1097,6 +1097,10 @@ ewl_container_child_add_call(Ewl_Container *c, Ewl_Widget *w)
 	DCHECK_TYPE(c, EWL_CONTAINER_TYPE);
 	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
+	/* ignore unmanaged children */
+	if (UNMANAGED(w))
+		DRETURN(DLEVEL_STABLE);
+
 	if (c->child_add)
 		c->child_add(c, w);
 
@@ -1122,6 +1126,10 @@ ewl_container_child_remove_call(Ewl_Container *c, Ewl_Widget *w, int idx)
 	/* do nothing if the container is being destroyed */
 	if (DESTROYED(c))
 		DRETURN(DLEVEL_STABLE);
+	
+	/* ignore unmanaged children */
+	if (UNMANAGED(w))
+		DRETURN(DLEVEL_STABLE);
 
 	if (c->child_remove)
 		c->child_remove(c, w, idx);
@@ -1143,6 +1151,10 @@ ewl_container_child_show_call(Ewl_Container *c, Ewl_Widget *w)
 	DCHECK_PARAM_PTR(w);
 	DCHECK_TYPE(c, EWL_CONTAINER_TYPE);
 	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+
+	/* ignore unmanaged children */
+	if (UNMANAGED(w))
+		DRETURN(DLEVEL_STABLE);
 
 	c->visible_children++;
 	if (c->child_show)
@@ -1173,6 +1185,10 @@ ewl_container_child_hide_call(Ewl_Container *c, Ewl_Widget *w)
 	DCHECK_PARAM_PTR(w);
 	DCHECK_TYPE(c, EWL_CONTAINER_TYPE);
 	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+
+	/* ignore unmanaged children */
+	if (UNMANAGED(w))
+		DRETURN(DLEVEL_STABLE);
 
 	/* do nothing if the container is being destroyed */
 	if (DESTROYED(c))

@@ -239,8 +239,10 @@ ewl_box_orientation_set(Ewl_Box * b, Ewl_Orientation o)
 
 	c = EWL_CONTAINER(b);
 	ecore_dlist_first_goto(c->children);
-	while ((child = ecore_dlist_next(c->children)))
-		ewl_box_cb_child_show(c, child);
+	while ((child = ecore_dlist_next(c->children))) {
+		if (!UNMANAGED(child))
+			ewl_box_cb_child_show(c, child);
+	}
 
 	ewl_widget_configure(EWL_WIDGET(b));
 
@@ -599,7 +601,7 @@ ewl_box_configure_calc(Ewl_Box * b, Ewl_Object **spread, int *fill_size, int *al
 		int change;
 		unsigned int policy;
 
-		if (!VISIBLE(child))
+		if (!VISIBLE(child) || UNMANAGED(child))
 			continue;
 		/*
 		 * Place the child on a list depending on it's matching
@@ -776,19 +778,19 @@ ewl_box_configure_layout(Ewl_Box * b, int *x, int *y, int *fill,
 	ecore_dlist_first_goto(EWL_CONTAINER(b)->children);
 	while ((child = ecore_dlist_next(EWL_CONTAINER(b)->children))) {
 
-		if (VISIBLE(child)) {
+		if (!VISIBLE(child) || UNMANAGED(child))
+			continue;
 
-			/*
-			 * Position this child based on the determined values.
-			 */
-			ewl_box_configure_child(b, child, x, y, align,
-						  align_size);
+		/*
+		 * Position this child based on the determined values.
+		 */
+		ewl_box_configure_child(b, child, x, y, align,
+				align_size);
 
-			/*
-			 * Move to the next position for the child.
-			 */
-			*fill += ewl_box_info->fill_ask(child) + b->spacing;
-		}
+		/*
+		 * Move to the next position for the child.
+		 */
+		*fill += ewl_box_info->fill_ask(child) + b->spacing;
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);

@@ -592,7 +592,7 @@ ewl_paned_grabbers_update(Ewl_Paned *p)
 			if (left) g = child;
 			ewl_widget_hide(child);
 		}
-		else if (VISIBLE(child))
+		else if (VISIBLE(child) && !UNMANAGED(child))
 		{
 			left = 1;
 
@@ -630,7 +630,8 @@ ewl_paned_pane_info_setup(Ewl_Paned *p, Ewl_Paned_Pane_Info *panes,
 	ecore_dlist_first_goto(c->children);
 	while ((child = ecore_dlist_next(c->children)))
 	{
-		if (!VISIBLE(child) || EWL_PANED_GRABBER_IS(child)) 
+		if (!VISIBLE(child) || EWL_PANED_GRABBER_IS(child) 
+				|| UNMANAGED(child)) 
 			continue;
 
 		panes->info = ewl_paned_size_info_get(p, child);
@@ -682,7 +683,7 @@ ewl_paned_pane_info_collect(Ewl_Paned *p, Ewl_Paned_Pane_Info *panes,
 	{
 		int pos;
 
-		if (!VISIBLE(child))
+		if (!VISIBLE(child) || UNMANAGED(child))
 			continue;
 		if (!EWL_PANED_GRABBER_IS(child))
 		{
@@ -828,7 +829,7 @@ ewl_paned_widgets_place(Ewl_Paned *p, Ewl_Paned_Pane_Info *panes,
 	ecore_dlist_first_goto(c->children);
 	while ((child = ecore_dlist_next(c->children)))
 	{
-		if (!VISIBLE(child))
+		if (!VISIBLE(child) || UNMANAGED(child))
 			continue;
 
 		if (EWL_PANED_GRABBER_IS(child))
@@ -1203,7 +1204,7 @@ ewl_paned_grabber_cb_mouse_move(Ewl_Widget *w, void *ev, void *data)
 	ecore_dlist_previous(c->children);
 	while ((child = ecore_dlist_previous(c->children)))
 	{
-		if (!VISIBLE(child)) continue;
+		if (!VISIBLE(child) || UNMANAGED(child)) continue;
 
 		if (EWL_PANED_GRABBER_IS(child))
 		{
@@ -1230,7 +1231,7 @@ ewl_paned_grabber_cb_mouse_move(Ewl_Widget *w, void *ev, void *data)
 	ecore_dlist_next(c->children);
 	while ((child = ecore_list_next(c->children)))
 	{
-		if (!VISIBLE(child)) continue;
+		if (!VISIBLE(child) || UNMANAGED(child)) continue;
 
 		if (EWL_PANED_GRABBER_IS(child)) {
 			stop_grabber = EWL_PANED_GRABBER(child);

@@ -82,7 +82,11 @@ ewl_cell_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	c = EWL_CONTAINER(w);
 
-	child = ecore_dlist_first_goto(c->children);
+	/* we need to skip all unmanaged widgets first */
+	ecore_dlist_first_goto(c->children);
+	while ((child = ecore_dlist_next(c->children)) && UNMANAGED(child))
+		;
+
 	if (child)
 		ewl_object_place(child, CURRENT_X(w), CURRENT_Y(w),
 				CURRENT_W(w), CURRENT_H(w));

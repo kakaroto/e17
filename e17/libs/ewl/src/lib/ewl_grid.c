@@ -476,6 +476,9 @@ ewl_grid_child_position_get(Ewl_Grid *g, Ewl_Widget *w,
 		ecore_dlist_first_goto(EWL_CONTAINER(g)->children);
 		while ((c = ecore_dlist_next(EWL_CONTAINER(g)->children))
 				&& c != w) {
+			if (UNMANAGED(child))
+				continue;
+
 			if (!ewl_widget_data_get(c, g))
 				go_next(g, &col, &row);
 		}
@@ -923,6 +926,9 @@ ewl_grid_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	ecore_dlist_first_goto(EWL_CONTAINER(w)->children);
 	while ((child = ecore_dlist_next(EWL_CONTAINER(w)->children))) {
+		if (UNMANAGED(child))
+			continue;
+
 		c = (Ewl_Grid_Child *)ewl_widget_data_get(child, (void *) g);
 		if (c) {
 			/*
@@ -1015,6 +1021,9 @@ ewl_grid_map_recalc(Ewl_Grid *g)
 
 	ecore_dlist_first_goto(EWL_CONTAINER(g)->children);
 	while ((child = ecore_dlist_next(EWL_CONTAINER(g)->children))) {
+		if (UNMANAGED(child))
+			continue;
+
 		c = (Ewl_Grid_Child *) ewl_widget_data_get(child, (void *)g);
 		if (!c) continue;
 
@@ -1068,6 +1077,9 @@ ewl_grid_child_data_collect(Ewl_Grid *g)
 	while ((child = ecore_dlist_next(EWL_CONTAINER(g)->children))) {
 		int pref_w, pref_h;
 
+		if (UNMANAGED(child))
+			continue;
+
 		c = (Ewl_Grid_Child *) ewl_widget_data_get(child, (void *) g);
 		if (c) continue;
 
@@ -1091,6 +1103,9 @@ ewl_grid_child_data_collect(Ewl_Grid *g)
 	while ((child = ecore_dlist_next(EWL_CONTAINER(g)->children))) {
 		int pref_w = 0, pref_h = 0;
 		int i;
+
+		if (UNMANAGED(child))
+			continue;
 
 		c = (Ewl_Grid_Child *) ewl_widget_data_get(child, (void *) g);
 		if (!c) continue;
