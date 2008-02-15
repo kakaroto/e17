@@ -1,8 +1,10 @@
-
+#ifndef _EDJE_EDITOR_CALLBACKS_H_
+#define _EDJE_EDITOR_CALLBACKS_H_
 
 /* Called when the window is destroyed */
 Etk_Bool etk_main_quit_cb(void *data);
 void ecore_delete_cb(Ecore_Evas *ee);
+void ecore_resize_callback(Ecore_Evas *ecore_evas);
 
 //void on_GroupComboBox_changed        (Etk_Combobox *combobox, void *data);
 Etk_Bool on_GroupSpinner_value_changed     (Etk_Range *range, double value, void *data);
@@ -26,12 +28,12 @@ Etk_Bool on_FileChooserDialog_response     (Etk_Dialog *dialog, int response_id,
 Etk_Bool on_BorderSpinner_value_changed    (Etk_Range *range, double value, void *data);
 Etk_Bool on_RelSpinner_value_changed       (Etk_Range *range, double value, void *data);
 Etk_Bool on_RelOffsetSpinner_value_changed (Etk_Range *range, double value, void *data);
-Etk_Bool on_FontComboBox_changed           (Etk_Combobox *combobox, void *data);
+Etk_Bool on_FontComboBox_item_activated    (Etk_Combobox *combobox, Etk_Combobox_Item *item, void *data);
 Etk_Bool on_FontSizeSpinner_value_changed  (Etk_Range *range, double value, void *data);
 
 Etk_Bool on_ColorCanvas_realize            (Etk_Widget *canvas, void *data);
 Etk_Bool on_ImageAlphaSlider_value_changed (Etk_Object *object, double value, void *data);
-Etk_Bool on_ImageComboBox_changed          (Etk_Combobox *combobox, void *data);
+Etk_Bool on_ImageComboBox_item_activated   (Etk_Combobox *combobox, Etk_Combobox_Item *item, void *data);
 Etk_Bool on_ImageTweenList_row_selected    (Etk_Object *object, Etk_Tree_Row *row, void *data);
 Etk_Bool on_EffectComboBox_changed         (Etk_Combobox *combobox, void *data);
 Etk_Bool on_AlertDialog_response           (Etk_Dialog *dialog, int response_id, void *data);
@@ -54,7 +56,8 @@ Etk_Bool on_TransitionComboBox_changed     (Etk_Combobox *combobox, void *data);
 Etk_Bool on_DurationSpinner_value_changed  (Etk_Range *range, double value, void *data);
 Etk_Bool on_AfterEntry_text_changed        (Etk_Object *object, void *data);
 
-#if TEST_DIRECT_EDJE
+
 Etk_Bool on_GroupsComboBox_activated(Etk_Combobox *combobox, Etk_Combobox_Item *item, void *data);
 void signal_cb(void *data, Evas_Object *o, const char *sig, const char *src);
+
 #endif

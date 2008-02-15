@@ -7,12 +7,14 @@ Introduction
 
 edje_editor is a visual editor for edje file.
 This is a prealpha state, don't expect nothing.
+YOU NEED TO PATCH EDJE WITH THE INCLUDED EDJE_EDIT.PATCH
 
 
 Dependencies
 =======================================
 
  - Evas
+ - Edje
  - Etk
  - Engrave
  - Ecore
@@ -20,6 +22,7 @@ Dependencies
 
 Building and Installing
 =======================================
+apply edje_edit.patch to the edje source
 
 ./autogen
 make
@@ -29,19 +32,14 @@ sudo make install
 Running 
 =======================================
 Usage: 
-   edje_editor [EDC | EDJ] [IMAGE_DIR] [FONT_DIR]
+   edje_editor [EDJ]
 
 Example:
    edje_editor                #Open an empty file
    edje_editor default.edj    #Open the given EDJ
-   edje_editor default.edc    #Open the given EDC
 
 Testing Edje file:
  edje_editor -t file.edj "group_name"
-
-Note on open an EDC:
-   To open an EDC file you must pass the IMAGE_DIR and FONT_DIR
-   parameters. If not given the EDC directory is assumed.
 
 
 Troubleshooting

@@ -1,6 +1,6 @@
 #include "main.h"
 
-void  LoadEDJ        (char *file);
+//void  LoadEDJ        (char *file);
 int   SaveEDJ        (char *file_name);
 char* SaveEDC        (char *file_name);
 int   Decompile      (void *data); //data is the name of the file to open

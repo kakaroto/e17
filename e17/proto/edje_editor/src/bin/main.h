@@ -1,5 +1,5 @@
-#ifndef INCLUSION_GUARD
-#define INCLUSION_GUARD
+#ifndef _EDJE_EDITOR_MAIN_H_
+#define _EDJE_EDITOR_MAIN_H_
 
 #include <Engrave.h>
 #include <Edje.h>
@@ -13,14 +13,14 @@
 #define FAKEWIN_BORDER_RIGHT  4
 #define FAKEWIN_BORDER_BOTTOM 4
 
-#define TEST_DIRECT_EDJE   0
-#define ECHO_EDJE_SIGNAL   0
-#define DEBUG_TREE         0
+#define USE_GL_ENGINE 0
+#define ECHO_EDJE_SIGNAL 0
+#define DEBUG_TREE 0
 
 #if DEBUG_TREE
-   #define TREE_WIDTH         365
+   #define TREE_WIDTH 365
 #else
-   #define TREE_WIDTH         265
+   #define TREE_WIDTH 265
 #endif
 
 #undef FREE
@@ -35,7 +35,6 @@
   if (val) FREE(val) \
   val = NULL; \
 }
-
 
 //All the enum used are declared here
 enum various
@@ -114,7 +113,7 @@ enum various
 
 struct Current_State
 {
-   Engrave_File  *ef;
+  // Engrave_File  *ef;
    Engrave_Group *eg;
    Engrave_Part  *ep;
    Engrave_Program *epr;
@@ -122,7 +121,7 @@ struct Current_State
    char *open_file_name;      //Full path to the open edje file
    char *source_dir;          //Full path to sources
    char *main_source_file;    //Full path to the main edc file
-#if TEST_DIRECT_EDJE
+
    Etk_String *group;
    Etk_String *part;
    Etk_String *state;
@@ -131,7 +130,6 @@ struct Current_State
    Etk_String *edj_file_name;
    Etk_String *edj_temp_name;
     
-#endif
 }Cur;
 
 /* GLOBALS */
@@ -140,7 +138,7 @@ char           *EdjeFile;              //The filename of the edje_editor.edj fil
 
 Evas_Object    *engrave_canvas;        //The engrave canvas
 
-Evas_Object	   *EV_fakewin;	         //The simple window implementation
+Evas_Object	   *EV_fakewin;            //The simple window implementation
 Evas_Object    *EV_movebox;            //  FIXME
 Evas_Object    *focus_handler;         //The yellow box around the selected part
 Evas_Object    *rel1_handler;          //The red point
@@ -152,9 +150,9 @@ Evas_Object    *rel2Y_parent_handler;  //
 Ecore_Hash     *hash;                  //Associate the engrave objects with the tree_rows
 
 /* FUNCTION PROTOTYPES*/
-void           DebugInfo   (int full);
+void DebugInfo(int full);
+int LoadEDJ(char *file);
 
-#if TEST_DIRECT_EDJE
 
 //This define is copied from edje_private.h (find a way to export it)
 #define EDJE_PART_TYPE_NONE      0
@@ -185,6 +183,6 @@ Evas_Hash   *Parts_Hash;
 
 
 void ChangeGroup(char *group);
-#endif
+
 
 #endif // INCLUSION_GUARD

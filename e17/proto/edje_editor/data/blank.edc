@@ -1,0 +1,19 @@
+images {
+}
+
+collections {
+   group{
+      name: "The first group";
+      parts{
+         part{
+            name: "A rectangle";
+            type: RECT;
+            description{
+               state: "default" 0.0;
+               rel1 {relative: 0.1 0.1;}
+               rel2 {relative: 0.9 0.9;}
+            }
+         }
+      }
+   }
+}
