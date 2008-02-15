@@ -558,13 +558,14 @@ ewl_box_cb_configure_homogeneous(Ewl_Widget *w, void *ev_data __UNUSED__,
 	i = 0;
 	ecore_dlist_first_goto(EWL_CONTAINER(w)->children);
 	while ((child = ecore_dlist_next(EWL_CONTAINER(w)->children))) {
-		if (VISIBLE(child)) {
-			i++;
-			if (i == num)
-				*fill_size += remainder;
-			ewl_object_place(child, x, y, width, height);
-			*fill += *fill_size + b->spacing;
-		}
+		if (!VISIBLE(child))
+			continue;
+
+		i++;
+		if (i == num)
+			*fill_size += remainder;
+		ewl_object_place(child, x, y, width, height);
+		*fill += *fill_size + b->spacing;
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
