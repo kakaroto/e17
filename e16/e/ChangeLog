@@ -4667,3 +4667,15 @@ Prepare for handling additional window flags in snapshots/across restart.
 Add a number of window flags to the remembered flag list.
 Fix missing argument in error message (Chris Craig, bug 378).
 
+
+-------------------------------------------------------------------------------
+
+Sat Feb 16 10:26:53 CET 2008
+(Kim)
+
+--- 0.16.8.12 ---
+Add some comments (src/ewins.h).
+Add configuration of default opacities.
+Cleanups.
+Add stuff for checking if various XSync's are really needed.
+
