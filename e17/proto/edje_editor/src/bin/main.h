@@ -137,10 +137,13 @@ struct Current_State
 /* GLOBALS */
 int            FileChooserOperation;   //The current file chooser operation (FILECHOOSER_OPEN,FILECHOOSER_NEW etc)
 char           *EdjeFile;              //The filename of the edje_editor.edj file (witch contain all the graphics used by the program)
+Evas_Object    *edje_o;                //The edje object we are editing
+Evas_Hash      *Parts_Hash;            //Associate part names with Etk_Tree_Row*
+Ecore_Hash     *hash;                  //Associate the engrave objects with the tree_rows
 
 Evas_Object    *engrave_canvas;        //The engrave canvas
 
-Evas_Object	   *EV_fakewin;            //The simple window implementation
+Evas_Object    *EV_fakewin;            //The simple window implementation
 Evas_Object    *EV_movebox;            //  FIXME
 Evas_Object    *focus_handler;         //The yellow box around the selected part
 Evas_Object    *rel1_handler;          //The red point
@@ -149,11 +152,11 @@ Evas_Object    *rel1X_parent_handler;  //The 4 line that show the container for 
 Evas_Object    *rel1Y_parent_handler;  //
 Evas_Object    *rel2X_parent_handler;  //
 Evas_Object    *rel2Y_parent_handler;  //
-Ecore_Hash     *hash;                  //Associate the engrave objects with the tree_rows
 
 /* FUNCTION PROTOTYPES*/
 void DebugInfo(int full);
 int LoadEDJ(char *file);
+void ChangeGroup(char *group);
 
 
 //This define is copied from edje_private.h (find a way to export it)
@@ -180,11 +183,21 @@ int LoadEDJ(char *file);
 #define EDJE_TEXT_EFFECT_GLOW               10
 #define EDJE_TEXT_EFFECT_LAST               11
 
-Evas_Object *edje_o;
-Evas_Hash   *Parts_Hash;
+#define EDJE_ACTION_TYPE_NONE          0
+#define EDJE_ACTION_TYPE_STATE_SET     1
+#define EDJE_ACTION_TYPE_ACTION_STOP   2
+#define EDJE_ACTION_TYPE_SIGNAL_EMIT   3
+#define EDJE_ACTION_TYPE_DRAG_VAL_SET  4
+#define EDJE_ACTION_TYPE_DRAG_VAL_STEP 5
+#define EDJE_ACTION_TYPE_DRAG_VAL_PAGE 6
+#define EDJE_ACTION_TYPE_SCRIPT        7
+#define EDJE_ACTION_TYPE_LAST          8
 
-
-void ChangeGroup(char *group);
-
+#define EDJE_TWEEN_MODE_NONE       0
+#define EDJE_TWEEN_MODE_LINEAR     1
+#define EDJE_TWEEN_MODE_SINUSOIDAL 2
+#define EDJE_TWEEN_MODE_ACCELERATE 3
+#define EDJE_TWEEN_MODE_DECELERATE 4
+#define EDJE_TWEEN_MODE_LAST       5
 
 #endif // INCLUSION_GUARD

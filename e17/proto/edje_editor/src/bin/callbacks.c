@@ -832,71 +832,105 @@ on_FontAlignSpinner_value_changed(Etk_Range *range, double value, void *data)
 Etk_Bool
 on_ActionComboBox_changed(Etk_Combobox *combobox, void *data)
 {
-   Engrave_Action action;
-   char param1[200],param2[200];
-   double value,value2;
+   int action;
+   //char param1[200],param2[200];
+   //double value,value2;
    printf("Changed Signal on ActionComboBox EMITTED\n");
-
-   if (!Cur.epr) return ETK_TRUE;
+   int act;
+   
+   if (!etk_string_length_get(Cur.prog)) return ETK_TRUE;
 
    //Get the current action in the current program
-   engrave_program_action_get(Cur.epr,&action,&param1,&param2,200,200,&value,&value2);
+   //action = edje_edit_program_action_get(edje_o, Cur.prog->string);
 
    //Get the new action from the combo data
-   action = (Engrave_Action)etk_combobox_item_data_get(
+   action = (int)etk_combobox_item_data_get(
                etk_combobox_active_item_get(combobox));
 
    //set the action in the current program
-   engrave_program_action_set(Cur.epr, action,
-         param1,
-         param2,
-         value,
-         value2
-   );
+   //engrave_program_action_set(Cur.epr, action,
+   //      param1,
+   //      param2,
+   //      value,
+   //      value2
+   //);
 
-   if (action == ENGRAVE_ACTION_SIGNAL_EMIT)
+   if (action == EDJE_ACTION_TYPE_SIGNAL_EMIT)
    {
       etk_widget_hide(UI_TargetEntry);
       etk_widget_hide(UI_TargetLabel);
       etk_widget_hide(UI_TransiComboBox);
       etk_widget_hide(UI_TransiLabel);
       etk_widget_hide(UI_DurationSpinner);
-      etk_widget_hide(UI_DurationLabel);
       etk_widget_show(UI_Param1Entry);
       etk_widget_show(UI_Param1Label);
       etk_label_set(ETK_LABEL(UI_Param1Label), "<b>Signal</b>");
+      etk_label_set(ETK_LABEL(UI_Param2Label), "<b>Source</b>");
       etk_widget_hide(UI_Param1Spinner);
       etk_widget_show(UI_Param2Label);
       etk_widget_show(UI_Param2Entry);
    }
-   if (action == ENGRAVE_ACTION_STATE_SET)
+   if (action == EDJE_ACTION_TYPE_STATE_SET)
    {
       etk_widget_show(UI_TargetEntry);
       etk_widget_show(UI_TargetLabel);
       etk_widget_show(UI_TransiComboBox);
       etk_widget_show(UI_TransiLabel);
       etk_widget_show(UI_DurationSpinner);
-      etk_widget_show(UI_DurationLabel);
       etk_widget_show(UI_Param1Entry);
       etk_widget_show(UI_Param1Label);
       etk_label_set(ETK_LABEL(UI_Param1Label), "<b>State</b>");
       etk_widget_show(UI_Param1Spinner);
       etk_widget_hide(UI_Param2Label);
       etk_widget_hide(UI_Param2Entry);
+      etk_widget_hide(UI_Param2Spinner);
    }
-   if (action == ENGRAVE_ACTION_STOP)
+   if (action == EDJE_ACTION_TYPE_ACTION_STOP)
    {
       etk_widget_show(UI_TargetEntry);
       etk_widget_show(UI_TargetLabel);
       etk_widget_hide(UI_TransiComboBox);
       etk_widget_hide(UI_TransiLabel);
       etk_widget_hide(UI_DurationSpinner);
-      etk_widget_hide(UI_DurationLabel);
       etk_widget_hide(UI_Param1Entry);
       etk_widget_hide(UI_Param1Label);
       etk_widget_hide(UI_Param1Spinner);
       etk_widget_hide(UI_Param2Label);
       etk_widget_hide(UI_Param2Entry);
+      etk_widget_hide(UI_Param2Spinner);
+   }
+   if (action == EDJE_ACTION_TYPE_NONE ||
+       action == EDJE_ACTION_TYPE_SCRIPT)
+   {
+      etk_widget_hide(UI_TargetEntry);
+      etk_widget_hide(UI_TargetLabel);
+      etk_widget_hide(UI_TransiComboBox);
+      etk_widget_hide(UI_TransiLabel);
+      etk_widget_hide(UI_DurationSpinner);
+      etk_widget_hide(UI_Param1Entry);
+      etk_widget_hide(UI_Param1Label);
+      etk_widget_hide(UI_Param1Spinner);
+      etk_widget_hide(UI_Param2Label);
+      etk_widget_hide(UI_Param2Entry);
+      etk_widget_hide(UI_Param2Spinner);
+   }
+   if (action == EDJE_ACTION_TYPE_DRAG_VAL_SET ||
+       action == EDJE_ACTION_TYPE_DRAG_VAL_STEP ||
+       action == EDJE_ACTION_TYPE_DRAG_VAL_PAGE)
+   {
+      etk_widget_hide(UI_TargetEntry);
+      etk_widget_hide(UI_TargetLabel);
+      etk_widget_hide(UI_TransiComboBox);
+      etk_widget_hide(UI_TransiLabel);
+      etk_widget_hide(UI_DurationSpinner);
+      etk_label_set(ETK_LABEL(UI_Param1Label), "<b>? ? ? ?</b>");
+      etk_label_set(ETK_LABEL(UI_Param2Label), "<b>? ? ? ?</b>");
+      etk_widget_hide(UI_Param1Entry);
+      etk_widget_show(UI_Param1Label);
+      etk_widget_show(UI_Param1Spinner);
+      etk_widget_show(UI_Param2Label);
+      etk_widget_hide(UI_Param2Entry);
+      etk_widget_show(UI_Param2Spinner);
    }
 
    return ETK_TRUE;

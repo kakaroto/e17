@@ -376,8 +376,7 @@ ev_redraw(void)
    int x, y, w, h;
 
    //printf("DRAW ALL\n");
-   //printf("PART: %s\n", Cur.part->string);
-   if (etk_string_length_get(Cur.part))
+   if (etk_string_length_get(Cur.group))
    {
       //Get the geometry of ETK_canvas
       //evas_object_geometry_get(EV_canvas_bg,&x,&y,&w,&h);
@@ -395,18 +394,23 @@ ev_redraw(void)
       evas_object_raise(EV_movebox);
      // evas_object_raise(focus_handler);
       
-      ev_draw_focus();
-
+      if (etk_string_length_get(Cur.part))
+      {
+         ev_draw_focus();
+         return;
+      }
+      
    }else
    {
       evas_object_hide(engrave_canvas);
       evas_object_hide(EV_fakewin);
       evas_object_hide(EV_movebox);
-      evas_object_hide(rel1X_parent_handler);
-      evas_object_hide(rel1Y_parent_handler);
-      evas_object_hide(rel2X_parent_handler);
-      evas_object_hide(rel2Y_parent_handler);
-      evas_object_hide(rel1_handler);
-      evas_object_hide(rel2_handler);
    }
+   evas_object_hide(rel1X_parent_handler);
+   evas_object_hide(rel1Y_parent_handler);
+   evas_object_hide(rel2X_parent_handler);
+   evas_object_hide(rel2Y_parent_handler);
+   evas_object_hide(rel1_handler);
+   evas_object_hide(rel2_handler);
+   evas_object_hide(focus_handler);
 }

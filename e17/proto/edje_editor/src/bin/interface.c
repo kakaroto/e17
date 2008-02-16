@@ -855,6 +855,11 @@ UpdateComboPositionFrame(void)
 void
 UpdateProgFrame(void)
 {
+   const char *s;
+   Evas_List *l;
+   
+   if (!etk_string_length_get(Cur.prog)) return;
+   
    //Stop signal propagation
    etk_signal_block("text-changed", ETK_OBJECT(UI_ProgramEntry),
          ETK_CALLBACK(on_ProgramEntry_text_changed), NULL);
@@ -882,84 +887,95 @@ UpdateProgFrame(void)
    etk_signal_block("text-changed", ETK_OBJECT(UI_Param2Entry),
          ETK_CALLBACK(on_Param2Entry_text_changed), NULL);
 
-   const char *s;
+
+   etk_widget_disabled_set(UI_AfterEntry, TRUE);
+   etk_widget_disabled_set(UI_ProgramEntry, TRUE);
+   etk_widget_disabled_set(UI_SourceEntry, TRUE);
+   etk_widget_disabled_set(UI_SignalEntry, TRUE);
+   etk_widget_disabled_set(UI_DelayFromSpinner, TRUE);
+   etk_widget_disabled_set(UI_DelayRangeSpinner, TRUE);
+   etk_widget_disabled_set(UI_TargetEntry, TRUE);
+   etk_widget_disabled_set(UI_Param1Entry, TRUE);
+   etk_widget_disabled_set(UI_Param2Entry, TRUE);
+   etk_widget_disabled_set(UI_Param1Spinner, TRUE);
+   etk_widget_disabled_set(UI_Param2Spinner, TRUE);
+   etk_widget_disabled_set(UI_DurationSpinner, TRUE);
    
-   if (!etk_string_length_get(Cur.prog)) return;  //TODO place before signal_blocks
    //Update Program
-   etk_entry_text_set(ETK_ENTRY(UI_ProgramEntry),Cur.prog->string);
+   etk_entry_text_set(ETK_ENTRY(UI_ProgramEntry), Cur.prog->string);
 
    //Update Source
    s = edje_edit_program_source_get(edje_o, Cur.prog->string);
-   etk_entry_text_set(ETK_ENTRY(etk_combobox_entry_entry_get(ETK_COMBOBOX_ENTRY(UI_SourceEntry))),s);
+   etk_entry_text_set(ETK_ENTRY(etk_combobox_entry_entry_get(
+                      ETK_COMBOBOX_ENTRY(UI_SourceEntry))),s);
    edje_edit_string_free(s);
-   printf("-----------\n");
+   
    //Update Signal
    s = edje_edit_program_signal_get(edje_o, Cur.prog->string);
    etk_entry_text_set(ETK_ENTRY(UI_SignalEntry),s);
    edje_edit_string_free(s);
     
-    
    //Update Delay
    etk_range_value_set(ETK_RANGE(UI_DelayFromSpinner),
                        edje_edit_program_in_from_get(edje_o, Cur.prog->string));
    etk_range_value_set(ETK_RANGE(UI_DelayRangeSpinner),
-                       edje_edit_program_in_range_get(edje_o, Cur.prog->string));
+                      edje_edit_program_in_range_get(edje_o, Cur.prog->string));
 
    //Update Action
-  /* if (Cur.epr->action == ENGRAVE_ACTION_SIGNAL_EMIT)
-         etk_combobox_active_item_set(ETK_COMBOBOX(UI_ActionComboBox),
-            etk_combobox_nth_item_get(ETK_COMBOBOX(UI_ActionComboBox),2));
-   if (Cur.epr->action == ENGRAVE_ACTION_STATE_SET)
-         etk_combobox_active_item_set(ETK_COMBOBOX(UI_ActionComboBox),
-            etk_combobox_nth_item_get(ETK_COMBOBOX(UI_ActionComboBox),0));
-   if (Cur.epr->action == ENGRAVE_ACTION_STOP)
-      etk_combobox_active_item_set(ETK_COMBOBOX(UI_ActionComboBox),
-         etk_combobox_nth_item_get(ETK_COMBOBOX(UI_ActionComboBox),1));
+   int action;
+   action = edje_edit_program_action_get(edje_o, Cur.prog->string);
+   etk_combobox_active_item_set(ETK_COMBOBOX(UI_ActionComboBox),
+         etk_combobox_nth_item_get(ETK_COMBOBOX(UI_ActionComboBox),action));
+
 
    //Update Target(s)
-   Evas_List *tl;  //target list
-   Etk_String *str=etk_string_new("");
-   for (tl = Cur.epr->targets; tl; tl = tl->next)
+   Etk_String *str = etk_string_new("");
+   l = edje_edit_program_targets_get(edje_o, Cur.prog->string);
+   for (; l; l = l->next)
    {
-      str = etk_string_append(str,tl->data);
-      str = etk_string_append(str,", ");
+      str = etk_string_append(str, l->data);
+      str = etk_string_append(str, ", ");
    }
    if (str->length > 2)
-      etk_string_truncate(str, str->length - 2);
+      str = etk_string_truncate(str, str->length - 2);
    etk_entry_text_set(ETK_ENTRY(UI_TargetEntry),str->string);
-
-   //Update Param1/2
-   etk_entry_text_set(ETK_ENTRY(UI_Param1Entry),Cur.epr->state);
-   etk_entry_text_set(ETK_ENTRY(UI_Param2Entry),Cur.epr->state2);
-   etk_range_value_set(ETK_RANGE(UI_Param1Spinner), Cur.epr->value);
-
-   //Update Transition
-    if (Cur.epr->transition== ENGRAVE_TRANSITION_LINEAR)
-         etk_combobox_active_item_set(ETK_COMBOBOX(UI_TransiComboBox),
-            etk_combobox_nth_item_get(ETK_COMBOBOX(UI_TransiComboBox),0));
-   if (Cur.epr->transition == ENGRAVE_TRANSITION_SINUSOIDAL)
-         etk_combobox_active_item_set(ETK_COMBOBOX(UI_TransiComboBox),
-            etk_combobox_nth_item_get(ETK_COMBOBOX(UI_TransiComboBox),1));
-   if (Cur.epr->transition == ENGRAVE_TRANSITION_ACCELERATE)
-      etk_combobox_active_item_set(ETK_COMBOBOX(UI_TransiComboBox),
-         etk_combobox_nth_item_get(ETK_COMBOBOX(UI_TransiComboBox),2));
-   if (Cur.epr->transition == ENGRAVE_TRANSITION_DECELERATE)
-      etk_combobox_active_item_set(ETK_COMBOBOX(UI_TransiComboBox),
-         etk_combobox_nth_item_get(ETK_COMBOBOX(UI_TransiComboBox),3));
-   etk_range_value_set(ETK_RANGE(UI_DurationSpinner), Cur.epr->duration);
-
+   
    //Update Afters(s)
-   etk_string_truncate(str,0);
-   for (tl = Cur.epr->afters; tl; tl = tl->next)
+   str = etk_string_clear(str);
+   l = edje_edit_program_afters_get(edje_o, Cur.prog->string);
+   for (; l; l = l->next)
    {
-      str = etk_string_append(str,tl->data);
+      str = etk_string_append(str,l->data);
       str = etk_string_append(str,", ");
    }
    if (str->length > 2)
-      etk_string_truncate (str, str->length - 2);
+      str = etk_string_truncate(str, str->length - 2);
    etk_entry_text_set(ETK_ENTRY(UI_AfterEntry),str->string);
-   etk_object_destroy(ETK_OBJECT(str));*/
+   
 
+   //Update state & state value
+   s = edje_edit_program_state_get(edje_o, Cur.prog->string);
+   etk_entry_text_set(ETK_ENTRY(UI_Param1Entry),s);
+   etk_range_value_set(ETK_RANGE(UI_Param1Spinner),
+                       edje_edit_program_value_get(edje_o, Cur.prog->string));
+   edje_edit_string_free(s);
+   
+   s = edje_edit_program_state2_get(edje_o, Cur.prog->string);
+   etk_entry_text_set(ETK_ENTRY(UI_Param2Entry),s);
+   etk_range_value_set(ETK_RANGE(UI_Param2Spinner),
+                        edje_edit_program_value2_get(edje_o, Cur.prog->string));
+   edje_edit_string_free(s);
+   
+   //Update Transition
+   etk_combobox_active_item_set(ETK_COMBOBOX(UI_TransiComboBox),
+      etk_combobox_nth_item_get(ETK_COMBOBOX(UI_TransiComboBox),
+         edje_edit_program_transition_get(edje_o, Cur.prog->string)-1));
+   
+   //Update Transition Duration
+   etk_range_value_set(ETK_RANGE(UI_DurationSpinner),
+               edje_edit_program_transition_time_get(edje_o, Cur.prog->string));
+   
+   
    //Reenable signal propagation
    etk_signal_unblock("text-changed", ETK_OBJECT(UI_ProgramEntry),
          ETK_CALLBACK(on_ProgramEntry_text_changed), NULL);
@@ -986,6 +1002,8 @@ UpdateProgFrame(void)
          ETK_CALLBACK(on_AfterEntry_text_changed), NULL);
    etk_signal_unblock("text-changed", ETK_OBJECT(UI_Param2Entry),
          ETK_CALLBACK(on_Param2Entry_text_changed), NULL);
+   
+   etk_object_destroy(ETK_OBJECT(str));
 }
 
 void
@@ -2152,7 +2170,7 @@ create_program_frame(void)
    Etk_Widget *label;
    
    //table
-   table = etk_table_new(4, 10, ETK_TABLE_NOT_HOMOGENEOUS);
+   table = etk_table_new(4, 10, ETK_TABLE_HHOMOGENEOUS);
 
    //UI_ProgramEntry
    label = etk_label_new("<b>Name</b>");
@@ -2185,16 +2203,16 @@ create_program_frame(void)
    etk_table_attach(ETK_TABLE(table), label, 0, 0, 3, 3,ETK_TABLE_NONE,0,0);
    UI_DelayFromSpinner = etk_spinner_new(0.0, 999.0, 0.0, 0.1, 1.0);
    etk_tooltips_tip_set(UI_DelayFromSpinner, "The number of seconds to wait before running the program");
-   etk_spinner_digits_set(ETK_SPINNER(UI_DelayFromSpinner), 1);
+   etk_spinner_digits_set(ETK_SPINNER(UI_DelayFromSpinner), 3);
    etk_widget_size_request_set(UI_DelayFromSpinner,45, 20);
    etk_table_attach_default(ETK_TABLE(table),UI_DelayFromSpinner, 1, 1, 3, 3);
 
    //UI_DelayRangeSpinner
-   label = etk_label_new("<b> + random</b>");
+   label = etk_label_new("<b>+random</b>");
    etk_table_attach(ETK_TABLE(table), label, 2, 2, 3, 3,ETK_TABLE_NONE,0,0);
    UI_DelayRangeSpinner = etk_spinner_new(0.0, 999.0, 0.0, 0.1, 1.0);
    etk_tooltips_tip_set(UI_DelayRangeSpinner, "The maximum <b>random</b> seconds which is added to <b>Delay</b>");
-   etk_spinner_digits_set(ETK_SPINNER(UI_DelayRangeSpinner), 1);
+   etk_spinner_digits_set(ETK_SPINNER(UI_DelayRangeSpinner), 3);
    etk_widget_size_request_set(UI_DelayRangeSpinner,45, 20);
    etk_table_attach_default(ETK_TABLE(table),UI_DelayRangeSpinner, 3, 3, 3, 3);
 
@@ -2216,18 +2234,46 @@ create_program_frame(void)
    etk_combobox_column_add(ETK_COMBOBOX(UI_ActionComboBox),
       ETK_COMBOBOX_LABEL, 75, ETK_COMBOBOX_NONE, 0.0);
    etk_combobox_build(ETK_COMBOBOX(UI_ActionComboBox));
+   etk_table_attach_default(ETK_TABLE(table),UI_ActionComboBox, 1, 3, 5, 5);
+   
+   item = etk_combobox_item_append(ETK_COMBOBOX(UI_ActionComboBox),
+                  etk_image_new_from_edje(EdjeFile,"DESC.PNG"), "None");
+   etk_combobox_item_data_set(item, (void*)EDJE_ACTION_TYPE_NONE);
+   
    item = etk_combobox_item_append(ETK_COMBOBOX(UI_ActionComboBox),
                   etk_image_new_from_edje(EdjeFile,"DESC.PNG"), "State Set");
-   etk_combobox_item_data_set(item, ENGRAVE_ACTION_STATE_SET);
+   etk_combobox_item_data_set(item, (void*)EDJE_ACTION_TYPE_STATE_SET);
+   
    item = etk_combobox_item_append(ETK_COMBOBOX(UI_ActionComboBox),
                   etk_image_new_from_edje(EdjeFile,"DESC.PNG"), "Action Stop");
-   etk_combobox_item_data_set(ETK_COMBOBOX_ITEM(item), (void*)ENGRAVE_ACTION_STOP);
+   etk_combobox_item_data_set(ETK_COMBOBOX_ITEM(item),
+                              (void*)EDJE_ACTION_TYPE_ACTION_STOP);
+   
    item = etk_combobox_item_append(ETK_COMBOBOX(UI_ActionComboBox),
                   etk_image_new_from_edje(EdjeFile,"DESC.PNG"), "Signal Emit");
    etk_combobox_item_data_set(ETK_COMBOBOX_ITEM(item),
-                              (void*)ENGRAVE_ACTION_SIGNAL_EMIT);
-   etk_table_attach_default(ETK_TABLE(table),UI_ActionComboBox, 1, 3, 5, 5);
+                              (void*)EDJE_ACTION_TYPE_SIGNAL_EMIT);
+   
+   item = etk_combobox_item_append(ETK_COMBOBOX(UI_ActionComboBox),
+                  etk_image_new_from_edje(EdjeFile,"DESC.PNG"), "Drag val set");
+   etk_combobox_item_data_set(ETK_COMBOBOX_ITEM(item),
+                              (void*)EDJE_ACTION_TYPE_DRAG_VAL_SET);
+   
+   item = etk_combobox_item_append(ETK_COMBOBOX(UI_ActionComboBox),
+                  etk_image_new_from_edje(EdjeFile,"DESC.PNG"), "Drag val step");
+   etk_combobox_item_data_set(ETK_COMBOBOX_ITEM(item),
+                              (void*)EDJE_ACTION_TYPE_DRAG_VAL_STEP);
+   
+   item = etk_combobox_item_append(ETK_COMBOBOX(UI_ActionComboBox),
+                  etk_image_new_from_edje(EdjeFile,"DESC.PNG"), "Drag val page");
+   etk_combobox_item_data_set(ETK_COMBOBOX_ITEM(item),
+                              (void*)EDJE_ACTION_TYPE_DRAG_VAL_PAGE);
 
+   item = etk_combobox_item_append(ETK_COMBOBOX(UI_ActionComboBox),
+                  etk_image_new_from_edje(EdjeFile,"DESC.PNG"), "Embryo script");
+   etk_combobox_item_data_set(ETK_COMBOBOX_ITEM(item),
+                              (void*)EDJE_ACTION_TYPE_SCRIPT);
+   
    //UI_TargetEntry
    UI_TargetLabel = etk_label_new("<b>Target(s)</b>");
    etk_table_attach(ETK_TABLE(table),UI_TargetLabel,0,0,6,6,ETK_TABLE_NONE,0,0);
@@ -2245,7 +2291,7 @@ create_program_frame(void)
    //Param1Spinner
    UI_Param1Spinner = etk_spinner_new(0.0, 1.0, 0.0, 0.1, 1.0);
    etk_tooltips_tip_set(UI_Param1Spinner, "Description to set in the specified targets");
-   etk_spinner_digits_set(ETK_SPINNER(UI_Param1Spinner), 1);
+   etk_spinner_digits_set(ETK_SPINNER(UI_Param1Spinner), 2);
    etk_widget_size_request_set(UI_Param1Spinner,45, 20);
    etk_table_attach_default(ETK_TABLE(table),UI_Param1Spinner, 3, 3, 7, 7);
 
@@ -2259,26 +2305,29 @@ create_program_frame(void)
    etk_combobox_column_add(ETK_COMBOBOX(UI_TransiComboBox),
       ETK_COMBOBOX_LABEL, 75, ETK_COMBOBOX_NONE, 0.0);
    etk_combobox_build(ETK_COMBOBOX(UI_TransiComboBox));
+   etk_table_attach_default(ETK_TABLE(table),UI_TransiComboBox, 1, 2, 8, 8);
+   
    item = etk_combobox_item_append(ETK_COMBOBOX(UI_TransiComboBox),
                   etk_image_new_from_edje(EdjeFile,"DESC.PNG"), "Linear");
-   etk_combobox_item_data_set(item, ENGRAVE_TRANSITION_LINEAR);
+   etk_combobox_item_data_set(item, (void*)EDJE_TWEEN_MODE_LINEAR);
+   
    item = etk_combobox_item_append(ETK_COMBOBOX(UI_TransiComboBox),
                   etk_image_new_from_edje(EdjeFile,"DESC.PNG"), "Sinusoidal");
-   etk_combobox_item_data_set(item, (void*)ENGRAVE_TRANSITION_SINUSOIDAL);
+   etk_combobox_item_data_set(item, (void*)EDJE_TWEEN_MODE_SINUSOIDAL);
+   
    item = etk_combobox_item_append(ETK_COMBOBOX(UI_TransiComboBox),
                   etk_image_new_from_edje(EdjeFile,"DESC.PNG"), "Accelerate");
-   etk_combobox_item_data_set(item, (void*)ENGRAVE_TRANSITION_ACCELERATE);
+   etk_combobox_item_data_set(item, (void*)EDJE_TWEEN_MODE_ACCELERATE);
+   
    item = etk_combobox_item_append(ETK_COMBOBOX(UI_TransiComboBox),
                   etk_image_new_from_edje(EdjeFile,"DESC.PNG"), "Decelerate");
-   etk_combobox_item_data_set(item, (void*)ENGRAVE_TRANSITION_DECELERATE);
-   etk_table_attach_default(ETK_TABLE(table),UI_TransiComboBox, 1, 1, 8, 8);
+   etk_combobox_item_data_set(item, (void*)EDJE_TWEEN_MODE_DECELERATE);
+   
 
    //DurationSpinner
-   UI_DurationLabel = etk_label_new("<b>seconds</b>");
-   etk_table_attach(ETK_TABLE(table), UI_DurationLabel, 2, 2, 8, 8,ETK_TABLE_NONE,0,0);
    UI_DurationSpinner = etk_spinner_new(0.0, 999.0, 0.0, 0.1, 1.0);
    etk_tooltips_tip_set(UI_DurationSpinner, "The duration of the transition. In seconds.");
-   etk_spinner_digits_set(ETK_SPINNER(UI_DurationSpinner), 1);
+   etk_spinner_digits_set(ETK_SPINNER(UI_DurationSpinner), 3);
    etk_widget_size_request_set(UI_DurationSpinner,45, 20);
    etk_table_attach_default(ETK_TABLE(table),UI_DurationSpinner, 3, 3, 8, 8);
 
@@ -2288,6 +2337,13 @@ create_program_frame(void)
    UI_Param2Entry = etk_entry_new();
    etk_tooltips_tip_set(UI_Param2Entry, "!!!!!!");
    etk_table_attach_default(ETK_TABLE(table), UI_Param2Entry, 1, 2, 9, 9);
+   
+   //Param2Spinner
+   UI_Param2Spinner = etk_spinner_new(0.0, 1.0, 0.0, 0.1, 1.0);
+   etk_tooltips_tip_set(UI_Param2Spinner, "Used for drag operation");
+   etk_spinner_digits_set(ETK_SPINNER(UI_Param2Spinner), 2);
+   etk_widget_size_request_set(UI_Param2Spinner,45, 20);
+   etk_table_attach_default(ETK_TABLE(table),UI_Param2Spinner, 3, 3, 9, 9);
 
    etk_signal_connect("active-item-changed", ETK_OBJECT(UI_ActionComboBox),
          ETK_CALLBACK(on_ActionComboBox_changed), NULL);
