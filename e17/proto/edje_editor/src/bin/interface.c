@@ -221,7 +221,6 @@ PopulateImagesComboBox(void)
    Etk_Combobox_Item *ComboItem;
    char buf[4096];
 
-
    //Stop signal propagation
    etk_signal_block("item-activated", ETK_OBJECT(UI_ImageComboBox), ETK_CALLBACK(on_ImageComboBox_item_activated), NULL);
    
@@ -360,12 +359,13 @@ PupulateTweenList(void)
 {
    Evas_List *tweens, *l;
    Etk_Tree_Col *col;
-   col = etk_tree_nth_col_get(ETK_TREE(UI_ImageTweenList), 0);
-   
-   etk_tree_clear(ETK_TREE(UI_ImageTweenList));
    
    if (!etk_string_length_get(Cur.state)) return;
    if (!etk_string_length_get(Cur.part)) return;
+   
+   col = etk_tree_nth_col_get(ETK_TREE(UI_ImageTweenList), 0);
+   
+   etk_tree_clear(ETK_TREE(UI_ImageTweenList));
    
    tweens = l = edje_edit_state_tweens_list_get(edje_o, Cur.part->string, Cur.state->string);
    while (l)
@@ -547,8 +547,10 @@ UpdateImageFrame(void)
    if (!etk_string_length_get(Cur.state)) return;
    if (!etk_string_length_get(Cur.part)) return;
    
-   
    PupulateTweenList();
+   etk_widget_disabled_set(UI_DeleteTweenButton, TRUE);
+   etk_widget_disabled_set(UI_MoveDownTweenButton, TRUE);
+   etk_widget_disabled_set(UI_MoveUpTweenButton, TRUE);
 
    //Set the images combobox for normal image
    pi = edje_edit_state_image_get(edje_o, Cur.part->string, Cur.state->string);
@@ -1598,7 +1600,7 @@ create_image_frame(void)
    Etk_Tree_Col *col1;
 
    //table
-   table = etk_table_new(5, 8, ETK_TABLE_NOT_HOMOGENEOUS);
+   table = etk_table_new(5, 4, ETK_TABLE_NOT_HOMOGENEOUS);
 
    //imageComboBox
    UI_ImageComboBox = etk_combobox_new();
@@ -1607,16 +1609,32 @@ create_image_frame(void)
    etk_combobox_column_add(ETK_COMBOBOX(UI_ImageComboBox),
                            ETK_COMBOBOX_LABEL, 75, ETK_COMBOBOX_NONE, 0.0);
    etk_combobox_build(ETK_COMBOBOX(UI_ImageComboBox));
-   etk_table_attach_default(ETK_TABLE(table),UI_ImageComboBox, 0, 3, 1, 1);
+   etk_table_attach_default(ETK_TABLE(table),UI_ImageComboBox, 0, 3, 0, 0);
 
    //AddImageButton
    UI_ImageAddButton = etk_button_new_from_stock(ETK_STOCK_DOCUMENT_OPEN);
    etk_object_properties_set(ETK_OBJECT(UI_ImageAddButton), "label","",NULL);
-   etk_table_attach_default(ETK_TABLE(table),UI_ImageAddButton, 4, 4, 1, 1);
+   etk_table_attach_default(ETK_TABLE(table),UI_ImageAddButton, 4, 4, 0, 0);
 
    //ImageTweenVBox
-   UI_ImageTweenVBox = etk_vbox_new(ETK_TRUE, 2);
-   etk_table_attach_default(ETK_TABLE(table),UI_ImageTweenVBox, 0, 0, 2, 2);
+   UI_ImageTweenVBox = etk_vbox_new(ETK_TRUE, 0);
+   etk_table_attach_default(ETK_TABLE(table),UI_ImageTweenVBox, 0, 0, 1, 1);
+   
+   //AddTweenButton
+   UI_AddTweenButton = etk_button_new_from_stock(ETK_STOCK_LIST_ADD);
+   etk_button_style_set(ETK_BUTTON(UI_AddTweenButton), ETK_BUTTON_ICON);
+   etk_signal_connect("clicked", ETK_OBJECT(UI_AddTweenButton), 
+      ETK_CALLBACK(on_AllButton_click), (void*)IMAGE_TWEEN_ADD);
+   etk_box_append(ETK_BOX(UI_ImageTweenVBox), UI_AddTweenButton, 
+                     ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+   
+   //DeleteTweenButton
+   UI_DeleteTweenButton = etk_button_new_from_stock(ETK_STOCK_EDIT_DELETE);
+   etk_button_style_set(ETK_BUTTON(UI_DeleteTweenButton), ETK_BUTTON_ICON);
+   etk_signal_connect("clicked", ETK_OBJECT(UI_DeleteTweenButton), 
+      ETK_CALLBACK(on_AllButton_click), (void*)IMAGE_TWEEN_DELETE);
+   etk_box_append(ETK_BOX(UI_ImageTweenVBox), UI_DeleteTweenButton, 
+                     ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
    
    //MoveUpTweenButton
    UI_MoveUpTweenButton = etk_button_new_from_stock(ETK_STOCK_GO_UP);
@@ -1633,15 +1651,7 @@ create_image_frame(void)
       ETK_CALLBACK(on_AllButton_click), (void*)IMAGE_TWEEN_DOWN);
    etk_box_append(ETK_BOX(UI_ImageTweenVBox), UI_MoveDownTweenButton, 
                      ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
-                     
-   //DeleteTweenButton
-   UI_DeleteTweenButton = etk_button_new_from_stock(ETK_STOCK_EDIT_DELETE);
-   etk_button_style_set(ETK_BUTTON(UI_DeleteTweenButton), ETK_BUTTON_ICON);
-   etk_signal_connect("clicked", ETK_OBJECT(UI_DeleteTweenButton), 
-      ETK_CALLBACK(on_AllButton_click), (void*)IMAGE_TWEEN_DELETE);
-   etk_box_append(ETK_BOX(UI_ImageTweenVBox), UI_DeleteTweenButton, 
-                     ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
-                     
+
    //ImageTweenList
    UI_ImageTweenList = etk_tree_new();
    etk_tree_mode_set(ETK_TREE(UI_ImageTweenList), ETK_TREE_MODE_LIST);
@@ -1651,59 +1661,55 @@ create_image_frame(void)
    etk_tree_col_model_add(col1, etk_tree_model_image_new());
    etk_tree_col_model_add(col1, etk_tree_model_text_new());
    etk_tree_build(ETK_TREE(UI_ImageTweenList));
-   etk_table_attach_default(ETK_TABLE(table),UI_ImageTweenList, 1, 4, 2, 2);	
+   etk_table_attach_default(ETK_TABLE(table),UI_ImageTweenList, 1, 4, 1, 1);
 
    label = etk_label_new("Alpha");
-   etk_table_attach_default(ETK_TABLE(table),label, 0, 0, 3, 3);
+   etk_table_attach_default(ETK_TABLE(table),label, 0, 0, 2, 2);
 
    //ImageAlphaSlider
    UI_ImageAlphaSlider = etk_hslider_new(0, 255, 15, 1,20);
-   etk_table_attach_default(ETK_TABLE(table),UI_ImageAlphaSlider, 1, 4, 3, 3);
+   etk_table_attach_default(ETK_TABLE(table),UI_ImageAlphaSlider, 1, 4, 2, 2);
 
    label = etk_label_new("Left");
    etk_object_properties_set(ETK_OBJECT(label), "xalign",0.5,NULL);
-   etk_table_attach_default(ETK_TABLE(table),label, 1, 1, 4, 4);
+   etk_table_attach_default(ETK_TABLE(table),label, 1, 1, 3, 3);
 
    label = etk_label_new("Right");
    etk_object_properties_set(ETK_OBJECT(label), "xalign",0.5,NULL);
-   etk_table_attach_default(ETK_TABLE(table),label, 2, 2, 4, 4);
+   etk_table_attach_default(ETK_TABLE(table),label, 2, 2, 3, 3);
 
    label = etk_label_new("Top");
    etk_object_properties_set(ETK_OBJECT(label), "xalign",0.5,NULL);
-   etk_table_attach_default(ETK_TABLE(table),label, 3, 3, 4, 4);
+   etk_table_attach_default(ETK_TABLE(table),label, 3, 3, 3, 3);
 
    label = etk_label_new("Bottom");
    etk_object_properties_set(ETK_OBJECT(label), "xalign",0.5,NULL);
-   etk_table_attach_default(ETK_TABLE(table),label, 4, 4, 4, 4);
+   etk_table_attach_default(ETK_TABLE(table),label, 4, 4, 3, 3);
 
    label = etk_label_new("Border");
    //etk_object_properties_set(ETK_OBJECT(label), "xalign",0.5,NULL);
-   etk_table_attach_default(ETK_TABLE(table),label, 0, 0, 5, 5);
+   etk_table_attach_default(ETK_TABLE(table),label, 0, 0, 4, 4);
 
    //UI_BorderLeftSpinner
    UI_BorderLeftSpinner = etk_spinner_new(0, 500, 0, 1, 10);
    etk_widget_size_request_set(UI_BorderLeftSpinner,45, 20);
-   etk_table_attach_default(ETK_TABLE(table),UI_BorderLeftSpinner, 1, 1, 5, 5);
+   etk_table_attach_default(ETK_TABLE(table),UI_BorderLeftSpinner, 1, 1, 4, 4);
 
    //UI_BorderRightSpinner
    UI_BorderRightSpinner = etk_spinner_new(0, 500, 0, 1, 10);
    etk_widget_size_request_set(UI_BorderRightSpinner,45, 20);
-   etk_table_attach_default(ETK_TABLE(table),UI_BorderRightSpinner, 2, 2, 5, 5);
+   etk_table_attach_default(ETK_TABLE(table),UI_BorderRightSpinner, 2, 2, 4, 4);
 
    //UI_BorderTopSpinner
    UI_BorderTopSpinner = etk_spinner_new(0, 500, 0, 1, 10);
    etk_widget_size_request_set(UI_BorderTopSpinner,45, 20);
-   etk_table_attach_default(ETK_TABLE(table),UI_BorderTopSpinner, 3, 3, 5, 5);
+   etk_table_attach_default(ETK_TABLE(table),UI_BorderTopSpinner, 3, 3, 4, 4);
 
    //UI_BorderBottomSpinner
    UI_BorderBottomSpinner = etk_spinner_new(0, 500, 0, 1, 10);
    etk_widget_size_request_set(UI_BorderBottomSpinner,45, 20);
-   etk_table_attach_default(ETK_TABLE(table),UI_BorderBottomSpinner, 4, 4, 5, 5);
+   etk_table_attach_default(ETK_TABLE(table),UI_BorderBottomSpinner, 4, 4, 4, 4);
 
-   etk_signal_connect("clicked", ETK_OBJECT(UI_ImageNormalRadio), 
-            ETK_CALLBACK(on_AllButton_click), (void*)IMAGE_NORMAL_RADIO);
-   etk_signal_connect("clicked", ETK_OBJECT(UI_ImageTweenRadio), 
-            ETK_CALLBACK(on_AllButton_click), (void*)IMAGE_TWEEN_RADIO);
    etk_signal_connect("row-selected", ETK_OBJECT(UI_ImageTweenList),
             ETK_CALLBACK(on_ImageTweenList_row_selected), NULL);
    etk_signal_connect("clicked", ETK_OBJECT(UI_ImageAddButton),

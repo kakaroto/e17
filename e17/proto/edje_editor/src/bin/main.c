@@ -58,6 +58,10 @@ DebugInfo(int full)
       printf(" ** Cur program: %s\n",Cur.prog->string);
    else
       printf(" ** Cur program: (NULL)\n");
+   if (etk_string_length_get(Cur.tween))
+      printf(" ** Cur tween: %s\n",Cur.tween->string);
+   else
+      printf(" ** Cur tween: (NULL)\n");
    printf(" *********************** Parts_Hash *****************************\n");
    evas_hash_foreach(Parts_Hash, _DebugInfo_helper, NULL);
    printf(" *********************** E N D *****************************\n\n");
@@ -225,6 +229,7 @@ LoadEDJ(char *file)
    Cur.part   = etk_string_clear(Cur.part);
    Cur.state  = etk_string_clear(Cur.state);
    Cur.prog   = etk_string_clear(Cur.prog);
+   Cur.tween   = etk_string_clear(Cur.tween);
    Parts_Hash = NULL;
     
    PopulateGroupsComboBox();
@@ -324,6 +329,7 @@ main(int argc, char **argv)
    Cur.part = etk_string_new("");
    Cur.state = etk_string_new("");
    Cur.prog = etk_string_new("");
+   Cur.tween = etk_string_new("");
    
     
    //Open a file from command line

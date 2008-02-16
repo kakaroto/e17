@@ -65,11 +65,10 @@ Etk_Widget *UI_AspectMaxSpinner;
 Etk_Widget *UI_AspectComboBox;
 /* image frame objects */
 Etk_Widget *UI_ImageTweenList;
-Etk_Widget *UI_ImageTweenRadio;
-Etk_Widget *UI_ImageNormalRadio;
 Etk_Widget *UI_ImageComboBox;
 Etk_Widget *UI_ImageTweenVBox;
 Etk_Widget *UI_ImageAlphaSlider;
+Etk_Widget *UI_AddTweenButton;
 Etk_Widget *UI_DeleteTweenButton;
 Etk_Widget *UI_MoveDownTweenButton;
 Etk_Widget *UI_MoveUpTweenButton;

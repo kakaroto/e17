@@ -104,9 +104,8 @@ enum various
    REL_COMBO_INTERFACE,
    IMAGE_TWEEN_UP,
    IMAGE_TWEEN_DOWN,
+   IMAGE_TWEEN_ADD,
    IMAGE_TWEEN_DELETE,
-   IMAGE_TWEEN_RADIO,
-   IMAGE_NORMAL_RADIO,
    SAVE_SCRIPT,
    LOAD_WIN,
    SAVE_WIN
@@ -127,6 +126,8 @@ struct Current_State
    Etk_String *part;
    Etk_String *state;
    Etk_String *prog;
+   Etk_String *tween;
+   
    
    Etk_String *edj_file_name;
    Etk_String *edj_temp_name;

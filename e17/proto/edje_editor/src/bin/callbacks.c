@@ -62,6 +62,9 @@ on_AllButton_click(Etk_Button *button, void *data)
 {
    char cmd[1024];
    Etk_String *text;
+   char *tween;
+   Etk_Tree_Row *row, *next;
+   Etk_Combobox_Item *item;
 
    switch ((int)data)
       {
@@ -112,8 +115,42 @@ on_AllButton_click(Etk_Button *button, void *data)
       ShowFilechooser(FILECHOOSER_FONT);
       //ShowAlert("Not yet reimplemented ;)");
       break;
+   case IMAGE_TWEEN_ADD:
+      item = etk_combobox_active_item_get(ETK_COMBOBOX(UI_ImageComboBox));
+      tween = etk_combobox_item_field_get(item, 1);
+      if (!tween)
+      {
+         ShowAlert("You must choose an image to add from the combobox below");
+      }
+      
+      if(edje_edit_state_tween_add(edje_o, Cur.part->string, Cur.state->string, tween))
+      {
+         PupulateTweenList();
+         row = etk_tree_last_row_get(ETK_TREE(UI_ImageTweenList));
+         etk_tree_row_select(row);
+         etk_tree_row_scroll_to(row, ETK_FALSE);
+      }
+      break;
    case IMAGE_TWEEN_DELETE:
-      ShowAlert("Not yet reimplemented ;)");
+      //TODO delete the correct tween (not the first with that name)
+      if (!etk_string_length_get(Cur.tween)) break;
+      printf("REMOVE TWEEN %s\n", Cur.tween->string);
+      edje_edit_state_tween_del(edje_o, Cur.part->string, Cur.state->string,
+                                   Cur.tween->string);
+      row = etk_tree_selected_row_get(ETK_TREE(UI_ImageTweenList));
+      next = etk_tree_row_next_get(row);
+      if (!next) 
+         next = etk_tree_row_prev_get(row);
+      if (next)
+         etk_tree_row_select(next);
+      else
+      {
+         Cur.tween = etk_string_clear(Cur.tween);
+         etk_widget_disabled_set(UI_DeleteTweenButton, TRUE);
+         etk_widget_disabled_set(UI_MoveDownTweenButton, TRUE);
+         etk_widget_disabled_set(UI_MoveUpTweenButton, TRUE);
+      }
+      etk_tree_row_delete(row);
       break;
    case TOOLBAR_OPTIONS:
       etk_menu_popup(ETK_MENU(UI_OptionsMenu));
@@ -152,8 +189,8 @@ on_AllButton_click(Etk_Button *button, void *data)
       //on_RemoveMenu_item_activated(NULL, REMOVE_PART);
       //on_AddMenu_item_activated(NULL, NEW_RECT);
       //PopulateGroupsComboBox();
-      ChangeGroup("New group");
-      //DebugInfo(FALSE);
+      //ChangeGroup("New group");
+      DebugInfo(FALSE);
       break;
    case IMAGE_TWEEN_UP:
          ShowAlert("Up not yet implemented.");
@@ -204,6 +241,7 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
       case ROW_PART:
          Cur.part = etk_string_set(Cur.part, name);
          Cur.state = etk_string_clear(Cur.state);
+         Cur.tween = etk_string_clear(Cur.tween);
          
          edje_object_signal_emit(edje_ui,"description_frame_hide","edje_editor");
          edje_object_signal_emit(edje_ui,"position_frame_hide","edje_editor");
@@ -221,6 +259,7 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
       case ROW_DESC:
          Cur.state = etk_string_set(Cur.state, name);
          Cur.part = etk_string_set(Cur.part, parent_name);
+         Cur.tween = etk_string_clear(Cur.tween);
        
          edje_edit_part_selected_state_set(edje_o, Cur.part->string, Cur.state->string);  
          
@@ -262,6 +301,7 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
          Cur.prog = etk_string_set(Cur.prog, name);
          Cur.part = etk_string_clear(Cur.part);
          Cur.state = etk_string_clear(Cur.state);
+         Cur.tween = etk_string_clear(Cur.tween);
        
          edje_object_signal_emit(edje_ui,"description_frame_hide","edje_editor");
          edje_object_signal_emit(edje_ui,"position_frame_hide","edje_editor");
@@ -549,6 +589,19 @@ on_ImageComboBox_item_activated(Etk_Combobox *combobox, Etk_Combobox_Item *item,
 Etk_Bool
 on_ImageTweenList_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
 {
+   Etk_Tree_Col *col;
+   char *selected = NULL;
+   printf("Row selected signal on ImageTweenList EMITTED\n");
+   
+   col = etk_tree_nth_col_get(ETK_TREE(UI_ImageTweenList), 0);
+   etk_tree_row_fields_get(row, col, NULL, NULL, &selected, NULL);
+   if (!selected) return ETK_TRUE;
+   
+   Cur.tween = etk_string_set(Cur.tween, selected);
+   etk_widget_disabled_set(UI_DeleteTweenButton, FALSE);
+  // etk_widget_disabled_set(UI_MoveDownTweenButton, FALSE);
+  // etk_widget_disabled_set(UI_MoveUpTweenButton, FALSE);
+   
    return ETK_TRUE;
 }
 
@@ -1456,13 +1509,21 @@ on_FileChooserDialog_response(Etk_Dialog *dialog, int response_id, void *data)
                break;
             }
             PopulateImagesComboBox();
+            etk_combobox_active_item_set(ETK_COMBOBOX(UI_ImageComboBox),
+                  etk_combobox_last_item_get(ETK_COMBOBOX(UI_ImageComboBox)));
          break;
          case FILECHOOSER_FONT:
             snprintf(cmd, 4096, "%s/%s", 
                etk_filechooser_widget_current_folder_get(ETK_FILECHOOSER_WIDGET(UI_FileChooser)),
                etk_filechooser_widget_selected_file_get(ETK_FILECHOOSER_WIDGET(UI_FileChooser)));
-            if (edje_edit_font_add(edje_o, cmd))
-               PopulateFontsComboBox();
+            if (!edje_edit_font_add(edje_o, cmd))
+            {
+               ShowAlert("ERROR: Can't import font file.");
+               break;
+            }
+            PopulateFontsComboBox();
+            etk_combobox_active_item_set(ETK_COMBOBOX(UI_FontComboBox),
+                  etk_combobox_last_item_get(ETK_COMBOBOX(UI_FontComboBox)));
          break;
       }
       etk_widget_hide(ETK_WIDGET(dialog));
