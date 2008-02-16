@@ -1634,7 +1634,7 @@ ewl_widget_unmanaged_set(Ewl_Widget *w, unsigned int val)
 				"of a widget that has already a parent!\n");
 		DRETURN(DLEVEL_STABLE);
 	}
-	UNMANAGED(w) = !!val;
+	w->unmanaged = !!val;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

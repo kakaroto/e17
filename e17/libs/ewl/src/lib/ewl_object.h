@@ -347,25 +347,25 @@ void 		ewl_object_flags_remove(Ewl_Object *o, unsigned int flags,
  * @def PADDING_TOP(o)
  * Retrieve the size of the top pad
  */
-#define PADDING_TOP(o) EWL_OBJECT(o)->pad.t
+#define PADDING_TOP(o) ((const Ewl_Object *)(o))->pad.t
 
 /**
  * @def PADDING_BOTTOM(o)
  * Retrieve the size of the bottom pad
  */
-#define PADDING_BOTTOM(o) EWL_OBJECT(o)->pad.b
+#define PADDING_BOTTOM(o) ((const Ewl_Object *)(o))->pad.b
 
 /**
  * @def PADDING_LEFT(o)
  * Retrieve the size of the left pad
  */
-#define PADDING_LEFT(o) EWL_OBJECT(o)->pad.l
+#define PADDING_LEFT(o) ((const Ewl_Object *)(o))->pad.l
 
 /**
  * @def PADDING_RIGHT(o)
  * Retrieve the size of the right pad
  */
-#define PADDING_RIGHT(o) EWL_OBJECT(o)->pad.r
+#define PADDING_RIGHT(o) ((const Ewl_Object *)(o))->pad.r
 
 /**
  * @def PADDING_HORIZONTAL(o)
@@ -383,25 +383,25 @@ void 		ewl_object_flags_remove(Ewl_Object *o, unsigned int flags,
  * @def INSET_LEFT(o)
  * Retrieve the size of the left inset
  */
-#define INSET_LEFT(o) EWL_OBJECT(o)->insets.l
+#define INSET_LEFT(o) ((const Ewl_Object *)(o))->insets.l
 
 /**
  * @def INSET_RIGHT(o)
  * Retrieve the size of the right inset
  */
-#define INSET_RIGHT(o) EWL_OBJECT(o)->insets.r
+#define INSET_RIGHT(o) ((const Ewl_Object *)(o))->insets.r
 
 /**
  * @def INSET_TOP(o)
  * Retrieve the size of the top inset
  */
-#define INSET_TOP(o) EWL_OBJECT(o)->insets.t
+#define INSET_TOP(o) ((const Ewl_Object *)(o))->insets.t
 
 /**
  * @def INSET_BOTTOM(o)
  * Retrieve the size of the bottom inset
  */
-#define INSET_BOTTOM(o) EWL_OBJECT(o)->insets.b
+#define INSET_BOTTOM(o) ((const Ewl_Object *)(o))->insets.b
 
 /**
  * @def INSET_HORIZONTAL(o)
@@ -419,61 +419,61 @@ void 		ewl_object_flags_remove(Ewl_Object *o, unsigned int flags,
  * @def CURRENT_X(o)
  * Retrieve the current x position of the object
  */
-#define CURRENT_X(o) EWL_OBJECT(o)->current.x
+#define CURRENT_X(o) ((const Ewl_Object *)(o))->current.x
 
 /**
  * @def CURRENT_Y(o)
  * Retrieve the current y position of the object
  */
-#define CURRENT_Y(o) EWL_OBJECT(o)->current.y
+#define CURRENT_Y(o) ((const Ewl_Object *)(o))->current.y
 
 /**
  * @def CURRENT_W(o)
  * Retrieve the current width of the object without insets or padding
  */
-#define CURRENT_W(o) EWL_OBJECT(o)->current.w
+#define CURRENT_W(o) ((const Ewl_Object *)(o))->current.w
 
 /**
  * @def CURRENT_H(o)
  * Retrieve the current height of the object without insets or padding
  */
-#define CURRENT_H(o) EWL_OBJECT(o)->current.h
+#define CURRENT_H(o) ((const Ewl_Object *)(o))->current.h
 
 /**
  * @def PREFERRED_W(o)
- * Set the preferred width of the widget
+ * Retrieve the preferred width of the widget
  */
-#define PREFERRED_W(o) EWL_OBJECT(o)->preferred.w
+#define PREFERRED_W(o) ((const Ewl_Object *)(o))->preferred.w
 
 /**
  * @def PREFERRED_H(o)
- * Set the preferred height of the widget
+ * Retrieve the preferred height of the widget
  */
-#define PREFERRED_H(o) EWL_OBJECT(o)->preferred.h
+#define PREFERRED_H(o) ((const Ewl_Object *)(o))->preferred.h
 
 /**
  * @def MAXIMUM_W(o)
- * Set the maximum width of the widget
+ * Retrieve the maximum width of the widget
  */
-#define MAXIMUM_W(o) EWL_OBJECT(o)->maximum.w
+#define MAXIMUM_W(o) ((const Ewl_Object *)(o))->maximum.w
 
 /**
  * @def MAXIMUM_H(o)
- * Set the maximum height of the object
+ * Retrieve the maximum height of the object
  */
-#define MAXIMUM_H(o) EWL_OBJECT(o)->maximum.h
+#define MAXIMUM_H(o) ((const Ewl_Object *)(o))->maximum.h
 
 /**
  * @def MINIMUM_W(o)
- * Set the minimum width of the object
+ * Retrieve the minimum width of the object
  */
-#define MINIMUM_W(o) EWL_OBJECT(o)->minimum.w
+#define MINIMUM_W(o) ((const Ewl_Object *)(o))->minimum.w
 
 /**
  * @def MINIMUM_H(o)
- * Set the minimum height of the object
+ * Retrieve the minimum height of the object
  */
-#define MINIMUM_H(o) EWL_OBJECT(o)->minimum.h
+#define MINIMUM_H(o) ((const Ewl_Object *)(o))->minimum.h
 
 /**
  * @def ewl_object_custom_size_set(o, w, h)

@@ -253,7 +253,7 @@ void 		 ewl_widget_color_get(Ewl_Widget *w, unsigned int *r, unsigned int *g,
 int 		 ewl_widget_parent_of(Ewl_Widget *c, Ewl_Widget *w);
 
 
-#define UNMANAGED(w) (EWL_WIDGET(w)->unmanaged)
+#define UNMANAGED(w) (((const Ewl_Widget *)(w))->unmanaged)
 
 /*
  * Internally used callbacks, override at your own risk.

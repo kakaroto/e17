@@ -226,7 +226,7 @@ ewl_object_preferred_inner_w_set(Ewl_Object *o, int w)
 	 */
 	old_size = PREFERRED_W(o);
 
-	PREFERRED_W(o) = w;
+	o->preferred.w = w;
 
 	if (CURRENT_W(o) < PREFERRED_W(o))
 		fill = EWL_FLAG_FILL_HSHRINK;
@@ -271,7 +271,7 @@ ewl_object_preferred_inner_h_set(Ewl_Object *o, int h)
 	 */
 	old_size = PREFERRED_H(o);
 
-	PREFERRED_H(o) = h;
+	o->preferred.h = h;
 
 	if (CURRENT_H(o) < PREFERRED_H(o))
 		fill = EWL_FLAG_FILL_VSHRINK;
@@ -513,7 +513,7 @@ ewl_object_x_request(Ewl_Object *o, int x)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(o);
 
-	CURRENT_X(o) = x + PADDING_LEFT(o) + INSET_LEFT(o);
+	o->current.x = x + PADDING_LEFT(o) + INSET_LEFT(o);
 	ewl_widget_configure(EWL_WIDGET(o));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -534,7 +534,7 @@ ewl_object_y_request(Ewl_Object *o, int y)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(o);
 
-	CURRENT_Y(o) = y + PADDING_TOP(o) + INSET_TOP(o);
+	o->current.y = y + PADDING_TOP(o) + INSET_TOP(o);
 	ewl_widget_configure(EWL_WIDGET(o));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -574,7 +574,7 @@ ewl_object_w_request(Ewl_Object *o, int w)
 	else if (w > MAXIMUM_W(o))
 		w = MAXIMUM_W(o);
 
-	CURRENT_W(o) = w;
+	o->current.w = w;
 	ewl_widget_configure(EWL_WIDGET(o));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -614,7 +614,7 @@ ewl_object_h_request(Ewl_Object *o, int h)
 	else if (h > MAXIMUM_H(o))
 		h = MAXIMUM_H(o);
 
-	CURRENT_H(o) = h;
+	o->current.h = h;
 	ewl_widget_configure(EWL_WIDGET(o));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -668,10 +668,10 @@ ewl_object_minimum_w_set(Ewl_Object *o, int w)
 		w = EWL_OBJECT_MAX_SIZE;
 
 	old_size = MINIMUM_W(o);
-	new_size = MINIMUM_W(o) = w;
+	new_size = o->minimum.w = w;
 
 	if (MAXIMUM_W(o) < w)
-		MAXIMUM_W(o) = w;
+		o->minimum.w = w;
 
 	if (PREFERRED_W(o) < MINIMUM_W(o))
 		ewl_container_child_resize(EWL_WIDGET(o),
@@ -709,10 +709,10 @@ ewl_object_minimum_h_set(Ewl_Object *o, int h)
 		h = EWL_OBJECT_MAX_SIZE;
 
 	old_size = MINIMUM_H(o);
-	new_size = MINIMUM_H(o) = h;
+	new_size = o->minimum.h = h;
 
 	if (MAXIMUM_H(o) < h)
-		MAXIMUM_H(o) = h;
+		o->minimum.h = h;
 
 	if (PREFERRED_H(o) < MINIMUM_H(o))
 		ewl_container_child_resize(EWL_WIDGET(o),
@@ -836,10 +836,10 @@ ewl_object_maximum_w_set(Ewl_Object *o, int w)
 	if (w > EWL_OBJECT_MAX_SIZE)
 		w = EWL_OBJECT_MAX_SIZE;
 
-	MAXIMUM_W(o) = w;
+	o->maximum.w = w;
 
 	if (MINIMUM_W(o) > w)
-		MINIMUM_W(o) = w;
+		o->maximum.w = w;
 
 	if (PREFERRED_W(o) > MAXIMUM_W(o))
 		ewl_object_preferred_inner_w_set(o, PREFERRED_W(o));
