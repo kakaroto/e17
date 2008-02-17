@@ -283,7 +283,7 @@ ewl_widget_reveal(Ewl_Widget *w)
 	 */
 	if (REVEALED(w) || (!REALIZED(w) && !ewl_object_queued_has(
 					EWL_OBJECT(w),
-					EWL_FLAG_QUEUED_SCHEDULED_REVEAL)))
+					EWL_FLAG_QUEUED_PROCESS_REVEAL)))
 		DRETURN(DLEVEL_STABLE);
 
 	ewl_object_visible_add(EWL_OBJECT(w), EWL_FLAG_VISIBLE_REVEALED);
