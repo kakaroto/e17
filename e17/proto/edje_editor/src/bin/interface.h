@@ -45,7 +45,7 @@ Etk_Widget *UI_PartEventsCheck;
 Etk_Widget *UI_PartEventsRepeatCheck;
 /* state frame objects */
 Etk_Widget *UI_StateEntry;
-Etk_Widget *UI_StateIndexSpinner;
+//Etk_Widget *UI_StateIndexSpinner;
 Etk_Widget *UI_StateMinWSpinner;
 Etk_Widget *UI_StateMinHSpinner;
 Etk_Widget *UI_StateMaxWSpinner;
@@ -147,6 +147,9 @@ void PopulateRelComboBoxes(void);
 void PopulateImagesComboBox(void);
 void PopulateFontsComboBox(void);
 void PopulateSourceComboBox(void);
+void PopulateTweenList(void);
+void PopulateSourceComboEntry(void);
+void PopulateSignalComboEntry(void);
 
 void UpdateGroupFrame(void);
 void UpdatePositionFrame(void);

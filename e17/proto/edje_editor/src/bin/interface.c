@@ -64,7 +64,7 @@ AddPartToTree(const char *part_name)//, char *group_name)//, int place_after, En
 
    //printf("Add Part to tree: %s\n",par->name);
 
-   switch (edje_edit_part_type_get(edje_o ,part_name))
+   switch (edje_edit_part_type_get(edje_o, part_name))
    {
       case EDJE_PART_TYPE_IMAGE:     strcpy(buf,"IMAGE.PNG"); break;
       case EDJE_PART_TYPE_TEXT:      strcpy(buf,"TEXT.PNG");  break;
@@ -321,41 +321,7 @@ PopulateRelComboBoxes(void)
 }
 
 void
-PopulateSourceComboBox(void)
-{
-   Evas_List *l;
-   Engrave_Part *ep;
-
-   //Stop signal propagation
-   etk_signal_block("active-item-changed", ETK_OBJECT(UI_SourceEntry),
-                  ETK_CALLBACK(on_SourceEntry_item_changed), NULL);
-
-   printf("Populate Source Combobox\n");
-
-   etk_combobox_entry_clear(ETK_COMBOBOX_ENTRY(UI_SourceEntry));
-
-   for (l = Cur.eg->parts; l ; l = l->next)
-   {
-      ep = l->data;
-      if (ep->type == ENGRAVE_PART_TYPE_RECT)
-         etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(UI_SourceEntry),
-                     etk_image_new_from_edje(EdjeFile,"RECT.PNG"),ep->name);
-      if (ep->type == ENGRAVE_PART_TYPE_TEXT)
-         etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(UI_SourceEntry),
-                     etk_image_new_from_edje(EdjeFile,"TEXT.PNG"),ep->name);
-      if (ep->type == ENGRAVE_PART_TYPE_IMAGE)
-          etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(UI_SourceEntry),
-                     etk_image_new_from_edje(EdjeFile,"IMAGE.PNG"),ep->name);
-   }
-
-   //Renable  signal propagation
-   etk_signal_unblock("active-item-changed", ETK_OBJECT(UI_SourceEntry),
-                     ETK_CALLBACK(on_SourceEntry_item_changed), NULL);
-}
-
-
-void
-PupulateTweenList(void)
+PopulateTweenList(void)
 {
    Evas_List *tweens, *l;
    Etk_Tree_Col *col;
@@ -379,6 +345,85 @@ PupulateTweenList(void)
    }
    edje_edit_string_list_free(tweens);
 }
+
+void
+PopulateSourceComboEntry(void)
+{
+   Evas_List *l;
+   char buf[20];
+   printf("Populate Program Source ComboEntry\n");
+    
+   //Stop signal propagation
+   etk_signal_block("active-item-changed", ETK_OBJECT(UI_SourceEntry),
+                  ETK_CALLBACK(on_SourceEntry_item_changed), NULL);
+   
+   etk_combobox_entry_clear(ETK_COMBOBOX_ENTRY(UI_SourceEntry));
+   
+   l = edje_edit_parts_list_get(edje_o);
+   while (l)
+   {
+      switch (edje_edit_part_type_get(edje_o, (char*)l->data))
+      {
+         case EDJE_PART_TYPE_IMAGE:     strcpy(buf,"IMAGE.PNG"); break;
+         case EDJE_PART_TYPE_TEXT:      strcpy(buf,"TEXT.PNG");  break;
+         case EDJE_PART_TYPE_RECTANGLE: strcpy(buf,"RECT.PNG");  break;
+         default:                       strcpy(buf,"NONE.PNG");  break;
+      }
+      
+      etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(UI_SourceEntry),
+                  etk_image_new_from_edje(EdjeFile, buf),
+                  (char *)l->data);
+      
+      l = l->next;
+   }
+   edje_edit_string_list_free(l);
+   
+   //Renable  signal propagation
+   etk_signal_unblock("active-item-changed", ETK_OBJECT(UI_SourceEntry),
+                     ETK_CALLBACK(on_SourceEntry_item_changed), NULL);
+}
+
+void
+PopulateSignalComboEntry(void)
+{
+   printf("Populate Program Signal ComboEntry\n");
+   
+   //Stop signal propagation
+   etk_signal_block("active-item-changed", ETK_OBJECT(UI_SignalEntry),
+                  ETK_CALLBACK(on_SignalEntry_item_changed), NULL);
+   
+   etk_combobox_entry_clear(ETK_COMBOBOX_ENTRY(UI_SignalEntry));
+      
+   etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(UI_SignalEntry),
+            etk_image_new_from_edje(EdjeFile, "DESC.PNG"), "program,start");
+   etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(UI_SignalEntry),
+            etk_image_new_from_edje(EdjeFile, "DESC.PNG"), "program,stop");
+   etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(UI_SignalEntry),
+            etk_image_new_from_edje(EdjeFile, "DESC.PNG"), "load");
+   etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(UI_SignalEntry),
+            etk_image_new_from_edje(EdjeFile, "DESC.PNG"), "show");
+   etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(UI_SignalEntry),
+            etk_image_new_from_edje(EdjeFile, "DESC.PNG"), "hide");
+   etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(UI_SignalEntry),
+            etk_image_new_from_edje(EdjeFile, "DESC.PNG"), "resize");
+   etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(UI_SignalEntry),
+            etk_image_new_from_edje(EdjeFile, "DESC.PNG"), "mouse,in");
+   etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(UI_SignalEntry),
+            etk_image_new_from_edje(EdjeFile, "DESC.PNG"), "mouse,out");
+   etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(UI_SignalEntry),
+            etk_image_new_from_edje(EdjeFile, "DESC.PNG"), "mouse,move");
+   etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(UI_SignalEntry),
+            etk_image_new_from_edje(EdjeFile, "DESC.PNG"), "mouse,down,1");
+   etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(UI_SignalEntry),
+            etk_image_new_from_edje(EdjeFile, "DESC.PNG"), "mouse,up,1");
+   etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(UI_SignalEntry),
+            etk_image_new_from_edje(EdjeFile, "DESC.PNG"), "mouse,clicked,1");
+   
+   //Renable  signal propagation
+   etk_signal_unblock("active-item-changed", ETK_OBJECT(UI_SignalEntry),
+                     ETK_CALLBACK(on_SignalEntry_item_changed), NULL);
+}
+
 
 void
 UpdateGroupFrame(void)
@@ -446,7 +491,7 @@ UpdateDescriptionFrame(void)
 {
   //Stop signal propagation
    etk_signal_block("text-changed",ETK_OBJECT(UI_StateEntry),on_StateEntry_text_changed, NULL);
-   etk_signal_block("value-changed", ETK_OBJECT(UI_StateIndexSpinner), ETK_CALLBACK(on_StateIndexSpinner_value_changed), NULL);
+//   etk_signal_block("value-changed", ETK_OBJECT(UI_StateIndexSpinner), ETK_CALLBACK(on_StateIndexSpinner_value_changed), NULL);
    etk_signal_block("value-changed", ETK_OBJECT(UI_AspectMinSpinner), ETK_CALLBACK(on_AspectSpinner_value_changed), NULL);
    etk_signal_block("value-changed", ETK_OBJECT(UI_AspectMaxSpinner), ETK_CALLBACK(on_AspectSpinner_value_changed), NULL);
    etk_signal_block("active-item-changed", ETK_OBJECT(UI_AspectComboBox), ETK_CALLBACK(on_AspectComboBox_changed), NULL);
@@ -493,7 +538,7 @@ UpdateDescriptionFrame(void)
 
    //ReEnable Signal Propagation
    etk_signal_unblock("text-changed",ETK_OBJECT(UI_StateEntry),on_StateEntry_text_changed, NULL);
-   etk_signal_unblock("value-changed", ETK_OBJECT(UI_StateIndexSpinner), ETK_CALLBACK(on_StateIndexSpinner_value_changed), NULL);
+//   etk_signal_unblock("value-changed", ETK_OBJECT(UI_StateIndexSpinner), ETK_CALLBACK(on_StateIndexSpinner_value_changed), NULL);
    etk_signal_unblock("value-changed", ETK_OBJECT(UI_AspectMinSpinner), ETK_CALLBACK(on_AspectSpinner_value_changed), NULL);
    etk_signal_unblock("value-changed", ETK_OBJECT(UI_AspectMaxSpinner), ETK_CALLBACK(on_AspectSpinner_value_changed), NULL);
    etk_signal_unblock("active-item-changed", ETK_OBJECT(UI_AspectComboBox), ETK_CALLBACK(on_AspectComboBox_changed), NULL);
@@ -547,7 +592,7 @@ UpdateImageFrame(void)
    if (!etk_string_length_get(Cur.state)) return;
    if (!etk_string_length_get(Cur.part)) return;
    
-   PupulateTweenList();
+   PopulateTweenList();
    etk_widget_disabled_set(UI_DeleteTweenButton, TRUE);
    etk_widget_disabled_set(UI_MoveDownTweenButton, TRUE);
    etk_widget_disabled_set(UI_MoveUpTweenButton, TRUE);
@@ -866,8 +911,9 @@ UpdateProgFrame(void)
    etk_signal_block("text-changed",
          ETK_OBJECT(etk_combobox_entry_entry_get(ETK_COMBOBOX_ENTRY(UI_SourceEntry))),
          ETK_CALLBACK(on_SourceEntry_text_changed), UI_SourceEntry);
-   etk_signal_block("text-changed", ETK_OBJECT(UI_SignalEntry),
-         ETK_CALLBACK(on_SignalEntry_text_changed), NULL);
+   etk_signal_block("text-changed",
+         ETK_OBJECT(etk_combobox_entry_entry_get(ETK_COMBOBOX_ENTRY(UI_SignalEntry))),
+         ETK_CALLBACK(on_SignalEntry_text_changed), UI_SignalEntry);
    etk_signal_block("value-changed", ETK_OBJECT(UI_DelayFromSpinner),
          ETK_CALLBACK(on_DelaySpinners_value_changed), NULL);
    etk_signal_block("value-changed", ETK_OBJECT(UI_DelayRangeSpinner),
@@ -886,20 +932,8 @@ UpdateProgFrame(void)
          ETK_CALLBACK(on_AfterEntry_text_changed), NULL);
    etk_signal_block("text-changed", ETK_OBJECT(UI_Param2Entry),
          ETK_CALLBACK(on_Param2Entry_text_changed), NULL);
-
-
-   etk_widget_disabled_set(UI_AfterEntry, TRUE);
-   etk_widget_disabled_set(UI_ProgramEntry, TRUE);
-   etk_widget_disabled_set(UI_SourceEntry, TRUE);
-   etk_widget_disabled_set(UI_SignalEntry, TRUE);
-   etk_widget_disabled_set(UI_DelayFromSpinner, TRUE);
-   etk_widget_disabled_set(UI_DelayRangeSpinner, TRUE);
-   etk_widget_disabled_set(UI_TargetEntry, TRUE);
-   etk_widget_disabled_set(UI_Param1Entry, TRUE);
-   etk_widget_disabled_set(UI_Param2Entry, TRUE);
-   etk_widget_disabled_set(UI_Param1Spinner, TRUE);
-   etk_widget_disabled_set(UI_Param2Spinner, TRUE);
-   etk_widget_disabled_set(UI_DurationSpinner, TRUE);
+   etk_signal_block("value-changed", ETK_OBJECT(UI_Param2Spinner),
+         ETK_CALLBACK(on_Param2Spinner_value_changed), NULL);
    
    //Update Program
    etk_entry_text_set(ETK_ENTRY(UI_ProgramEntry), Cur.prog->string);
@@ -912,7 +946,8 @@ UpdateProgFrame(void)
    
    //Update Signal
    s = edje_edit_program_signal_get(edje_o, Cur.prog->string);
-   etk_entry_text_set(ETK_ENTRY(UI_SignalEntry),s);
+   etk_entry_text_set(ETK_ENTRY(etk_combobox_entry_entry_get(
+                      ETK_COMBOBOX_ENTRY(UI_SignalEntry))),s);
    edje_edit_string_free(s);
     
    //Update Delay
@@ -934,10 +969,10 @@ UpdateProgFrame(void)
    for (; l; l = l->next)
    {
       str = etk_string_append(str, l->data);
-      str = etk_string_append(str, ", ");
+      str = etk_string_append(str, "|");
    }
-   if (str->length > 2)
-      str = etk_string_truncate(str, str->length - 2);
+   if (str->length > 1)
+      str = etk_string_truncate(str, str->length - 1);
    etk_entry_text_set(ETK_ENTRY(UI_TargetEntry),str->string);
    
    //Update Afters(s)
@@ -946,10 +981,10 @@ UpdateProgFrame(void)
    for (; l; l = l->next)
    {
       str = etk_string_append(str,l->data);
-      str = etk_string_append(str,", ");
+      str = etk_string_append(str,"|");
    }
-   if (str->length > 2)
-      str = etk_string_truncate(str, str->length - 2);
+   if (str->length > 1)
+      str = etk_string_truncate(str, str->length - 1);
    etk_entry_text_set(ETK_ENTRY(UI_AfterEntry),str->string);
    
 
@@ -982,8 +1017,9 @@ UpdateProgFrame(void)
    etk_signal_unblock("text-changed",
          ETK_OBJECT(etk_combobox_entry_entry_get(ETK_COMBOBOX_ENTRY(UI_SourceEntry))),
          ETK_CALLBACK(on_SourceEntry_text_changed), UI_SourceEntry);
-   etk_signal_unblock("text-changed", ETK_OBJECT(UI_SignalEntry),
-         ETK_CALLBACK(on_SignalEntry_text_changed), NULL);
+   etk_signal_unblock("text-changed",
+         ETK_OBJECT(etk_combobox_entry_entry_get(ETK_COMBOBOX_ENTRY(UI_SignalEntry))),
+         ETK_CALLBACK(on_SignalEntry_text_changed), UI_SignalEntry);
    etk_signal_unblock("value-changed", ETK_OBJECT(UI_DelayFromSpinner),
          ETK_CALLBACK(on_DelaySpinners_value_changed), NULL);
    etk_signal_unblock("value-changed", ETK_OBJECT(UI_DelayRangeSpinner),
@@ -1002,7 +1038,8 @@ UpdateProgFrame(void)
          ETK_CALLBACK(on_AfterEntry_text_changed), NULL);
    etk_signal_unblock("text-changed", ETK_OBJECT(UI_Param2Entry),
          ETK_CALLBACK(on_Param2Entry_text_changed), NULL);
-   
+   etk_signal_unblock("value-changed", ETK_OBJECT(UI_Param2Spinner),
+         ETK_CALLBACK(on_Param2Spinner_value_changed), NULL);
    etk_object_destroy(ETK_OBJECT(str));
 }
 
@@ -1468,10 +1505,10 @@ create_description_frame(void)
    etk_box_append(ETK_BOX(hbox), UI_StateEntry, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
    //UI_StateIndexSpinner
-   UI_StateIndexSpinner = etk_spinner_new(0.0, 1.0, 0.0, 0.1, 1.0);
-   etk_spinner_digits_set(ETK_SPINNER(UI_StateIndexSpinner), 1);
-   etk_widget_size_request_set(UI_StateIndexSpinner,45, 20);
-   etk_box_append(ETK_BOX(hbox),UI_StateIndexSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
+   //~ UI_StateIndexSpinner = etk_spinner_new(0.0, 1.0, 0.0, 0.1, 1.0);
+   //~ etk_spinner_digits_set(ETK_SPINNER(UI_StateIndexSpinner), 1);
+   //~ etk_widget_size_request_set(UI_StateIndexSpinner,45, 20);
+   //~ etk_box_append(ETK_BOX(hbox),UI_StateIndexSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    //hbox
    hbox = etk_hbox_new(ETK_FALSE, 0);
@@ -1581,8 +1618,8 @@ create_description_frame(void)
     
    etk_signal_connect("text-changed", ETK_OBJECT(UI_StateEntry),
                       ETK_CALLBACK(on_StateEntry_text_changed), NULL);
-   etk_signal_connect("value-changed", ETK_OBJECT(UI_StateIndexSpinner),
-                      ETK_CALLBACK(on_StateIndexSpinner_value_changed), NULL);
+//   etk_signal_connect("value-changed", ETK_OBJECT(UI_StateIndexSpinner),
+//                      ETK_CALLBACK(on_StateIndexSpinner_value_changed), NULL);
    etk_signal_connect("value-changed", ETK_OBJECT(UI_AspectMinSpinner),
                       ETK_CALLBACK(on_AspectSpinner_value_changed), NULL);
    etk_signal_connect("value-changed", ETK_OBJECT(UI_AspectMaxSpinner),
@@ -2194,7 +2231,13 @@ create_program_frame(void)
    //UI_SignalEntry
    label = etk_label_new("<b>Signal</b>");
    etk_table_attach(ETK_TABLE(table), label, 0, 0, 2, 2,ETK_TABLE_NONE,0,0);
-   UI_SignalEntry = etk_entry_new();
+   
+   UI_SignalEntry = etk_combobox_entry_new();
+   etk_combobox_entry_column_add(ETK_COMBOBOX_ENTRY(UI_SignalEntry),
+                  ETK_COMBOBOX_ENTRY_IMAGE, 24, ETK_COMBOBOX_ENTRY_NONE, 0.0);
+   etk_combobox_entry_column_add(ETK_COMBOBOX_ENTRY(UI_SignalEntry),
+                  ETK_COMBOBOX_ENTRY_LABEL, 75, ETK_COMBOBOX_ENTRY_EXPAND, 0.0);
+   etk_combobox_entry_build(ETK_COMBOBOX_ENTRY(UI_SignalEntry));
    etk_tooltips_tip_set(UI_SignalEntry, "The name of the <b>signal</b> that will trigger the program.<br>Wildcards can be used to widen the scope, ex: \"mouse,down,*\"<br>Can be a mouse signal ( mouse,in ; mouse,up,1 )<br>Or a user defined signal (emitted by the application)");
    etk_table_attach_default(ETK_TABLE(table),UI_SignalEntry, 1, 3, 2, 2);
 
@@ -2289,7 +2332,7 @@ create_program_frame(void)
    etk_table_attach_default(ETK_TABLE(table), UI_Param1Entry, 1, 2, 7, 7);
 
    //Param1Spinner
-   UI_Param1Spinner = etk_spinner_new(0.0, 1.0, 0.0, 0.1, 1.0);
+   UI_Param1Spinner = etk_spinner_new(-999.0, 999.0, 0.0, 0.1, 1.0);
    etk_tooltips_tip_set(UI_Param1Spinner, "Description to set in the specified targets");
    etk_spinner_digits_set(ETK_SPINNER(UI_Param1Spinner), 2);
    etk_widget_size_request_set(UI_Param1Spinner,45, 20);
@@ -2339,7 +2382,7 @@ create_program_frame(void)
    etk_table_attach_default(ETK_TABLE(table), UI_Param2Entry, 1, 2, 9, 9);
    
    //Param2Spinner
-   UI_Param2Spinner = etk_spinner_new(0.0, 1.0, 0.0, 0.1, 1.0);
+   UI_Param2Spinner = etk_spinner_new(-999.0, 999.0, 0.0, 0.1, 1.0);
    etk_tooltips_tip_set(UI_Param2Spinner, "Used for drag operation");
    etk_spinner_digits_set(ETK_SPINNER(UI_Param2Spinner), 2);
    etk_widget_size_request_set(UI_Param2Spinner,45, 20);
@@ -2349,12 +2392,17 @@ create_program_frame(void)
          ETK_CALLBACK(on_ActionComboBox_changed), NULL);
    etk_signal_connect("text-changed", ETK_OBJECT(UI_ProgramEntry),
          ETK_CALLBACK(on_ProgramEntry_text_changed), NULL);
+   
    etk_signal_connect("text-changed", ETK_OBJECT(etk_combobox_entry_entry_get(ETK_COMBOBOX_ENTRY(UI_SourceEntry))),
          ETK_CALLBACK(on_SourceEntry_text_changed), UI_SourceEntry);
    etk_signal_connect("active-item-changed", ETK_OBJECT(UI_SourceEntry),
          ETK_CALLBACK(on_SourceEntry_item_changed), NULL);
-   etk_signal_connect("text-changed", ETK_OBJECT(UI_SignalEntry),
-         ETK_CALLBACK(on_SignalEntry_text_changed), NULL);
+   
+   etk_signal_connect("text-changed", ETK_OBJECT(etk_combobox_entry_entry_get(ETK_COMBOBOX_ENTRY(UI_SignalEntry))),
+         ETK_CALLBACK(on_SignalEntry_text_changed), UI_SignalEntry);
+   etk_signal_connect("active-item-changed", ETK_OBJECT(UI_SignalEntry),
+         ETK_CALLBACK(on_SignalEntry_item_changed), NULL);
+   
    etk_signal_connect("value-changed", ETK_OBJECT(UI_DelayFromSpinner),
          ETK_CALLBACK(on_DelaySpinners_value_changed),NULL);
    etk_signal_connect("value-changed", ETK_OBJECT(UI_DelayRangeSpinner),
@@ -2373,6 +2421,9 @@ create_program_frame(void)
          ETK_CALLBACK(on_AfterEntry_text_changed), NULL);
    etk_signal_connect("text-changed", ETK_OBJECT(UI_Param2Entry),
          ETK_CALLBACK(on_Param2Entry_text_changed), NULL);
+   etk_signal_connect("value-changed", ETK_OBJECT(UI_Param2Spinner),
+         ETK_CALLBACK(on_Param2Spinner_value_changed), NULL);
+
 
    return table;
 }

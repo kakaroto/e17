@@ -145,12 +145,15 @@ ChangeGroup(char *group)
    Cur.group = etk_string_set(Cur.group, group);
    Cur.part = etk_string_clear(Cur.part);
    Cur.state = etk_string_clear(Cur.state);
+   Cur.tween = etk_string_clear(Cur.tween);
+   Cur.prog = etk_string_clear(Cur.prog);
    
+   UpdateGroupFrame();
    
    PopulateTree();
    PopulateRelComboBoxes();
-   
-   UpdateGroupFrame();
+   PopulateSourceComboEntry();
+   PopulateSignalComboEntry();
    
    //update FakeWin title
    edje_object_part_text_set(EV_fakewin, "title", group);

@@ -125,7 +125,7 @@ on_AllButton_click(Etk_Button *button, void *data)
       
       if(edje_edit_state_tween_add(edje_o, Cur.part->string, Cur.state->string, tween))
       {
-         PupulateTweenList();
+         PopulateTweenList();
          row = etk_tree_last_row_get(ETK_TREE(UI_ImageTweenList));
          etk_tree_row_select(row);
          etk_tree_row_scroll_to(row, ETK_FALSE);
@@ -833,28 +833,16 @@ Etk_Bool
 on_ActionComboBox_changed(Etk_Combobox *combobox, void *data)
 {
    int action;
-   //char param1[200],param2[200];
-   //double value,value2;
    printf("Changed Signal on ActionComboBox EMITTED\n");
-   int act;
    
    if (!etk_string_length_get(Cur.prog)) return ETK_TRUE;
-
-   //Get the current action in the current program
-   //action = edje_edit_program_action_get(edje_o, Cur.prog->string);
 
    //Get the new action from the combo data
    action = (int)etk_combobox_item_data_get(
                etk_combobox_active_item_get(combobox));
 
-   //set the action in the current program
-   //engrave_program_action_set(Cur.epr, action,
-   //      param1,
-   //      param2,
-   //      value,
-   //      value2
-   //);
-
+   edje_edit_program_action_set(edje_o, Cur.prog->string, action);
+   
    if (action == EDJE_ACTION_TYPE_SIGNAL_EMIT)
    {
       etk_widget_hide(UI_TargetEntry);
@@ -939,19 +927,26 @@ on_ActionComboBox_changed(Etk_Combobox *combobox, void *data)
 Etk_Bool
 on_ProgramEntry_text_changed(Etk_Object *object, void *data)
 {
-   Etk_Tree_Col *col1=NULL;
+   const char *name;
 
-   printf("Text Changed Signal on ProgramEntry Emitted\n");
-   engrave_program_name_set(Cur.epr,etk_entry_text_get(ETK_ENTRY(UI_ProgramEntry)));
-   if (Cur.epr && ecore_hash_get(hash,Cur.epr))
+   //printf("Text Changed Signal on ProgramEntry Emitted\n");
+   
+   if (!etk_string_length_get(Cur.prog)) return ETK_TRUE;
+   
+   name = etk_entry_text_get(ETK_ENTRY(UI_ProgramEntry));
+   
+   if (edje_edit_program_name_set(edje_o, Cur.prog->string, name))
    {
-      if ((col1 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 0)))
-         etk_tree_row_fields_set(ecore_hash_get(hash,Cur.epr),TRUE,
-            col1,EdjeFile,"PROG.PNG",engrave_program_name_get(Cur.epr),
-            NULL);
+      /* update tree */
+      Etk_Tree_Row *row;
+      row = etk_tree_selected_row_get(ETK_TREE(UI_PartsTree));
+      etk_tree_row_fields_set(row,TRUE,
+                              COL_NAME, EdjeFile, "PROG.PNG", name,
+                              NULL);
+      /* update Cur */
+      Cur.prog = etk_string_set(Cur.prog, name);
    }
-   //TODO Check for dependencies! only in after?
-
+   
    return ETK_TRUE;
 }
 
@@ -959,9 +954,8 @@ Etk_Bool
 on_SourceEntry_text_changed(Etk_Object *object, void *data)
 {
    printf("Text Changed Signal on SourceEntry Emitted\n");
-   engrave_program_source_set(Cur.epr,
-            etk_entry_text_get(ETK_ENTRY(etk_combobox_entry_entry_get(ETK_COMBOBOX_ENTRY(UI_SourceEntry)))));
-
+   const char *str = etk_entry_text_get(ETK_ENTRY(object));
+   edje_edit_program_source_set(edje_o, Cur.prog->string, str);
    return ETK_TRUE;
 }
 
@@ -978,7 +972,27 @@ on_SourceEntry_item_changed(Etk_Combobox_Entry *combo, void *data)
 
    etk_combobox_entry_item_fields_get(active_item, NULL, &pname, NULL);
 
-   etk_entry_text_set(ETK_ENTRY(etk_combobox_entry_entry_get(ETK_COMBOBOX_ENTRY(UI_SourceEntry))),pname);
+   etk_entry_text_set(ETK_ENTRY(etk_combobox_entry_entry_get(
+                      ETK_COMBOBOX_ENTRY(UI_SourceEntry))),pname);
+
+   return ETK_TRUE;
+}
+
+Etk_Bool
+on_SignalEntry_item_changed(Etk_Combobox_Entry *combo, void *data)
+{
+   Etk_Combobox_Entry_Item *active_item = NULL;
+   char *pname;
+
+   printf("Item Changed Signal on SignalEntry Emitted\n");
+
+   if (!(active_item = etk_combobox_entry_active_item_get(combo)))
+      return ETK_TRUE;
+
+   etk_combobox_entry_item_fields_get(active_item, NULL, &pname, NULL);
+
+   etk_entry_text_set(ETK_ENTRY(etk_combobox_entry_entry_get(
+                      ETK_COMBOBOX_ENTRY(UI_SignalEntry))),pname);
 
    return ETK_TRUE;
 }
@@ -987,7 +1001,8 @@ Etk_Bool
 on_SignalEntry_text_changed(Etk_Object *object, void *data)
 {
    printf("Text Changed Signal on SignalEntry Emitted\n");
-   engrave_program_signal_set(Cur.epr,etk_entry_text_get(ETK_ENTRY(UI_SignalEntry)));
+   const char *str = etk_entry_text_get(ETK_ENTRY(object));
+   edje_edit_program_signal_set(edje_o, Cur.prog->string, str);
    return ETK_TRUE;
 }
 
@@ -995,9 +1010,12 @@ Etk_Bool
 on_DelaySpinners_value_changed(Etk_Range *range, double value, void *data)
 {
    printf("value Changed Signal on DelayFromSpinner Emitted\n");
-   engrave_program_in_set(Cur.epr,
-      etk_range_value_get(ETK_RANGE(UI_DelayFromSpinner)),
-      etk_range_value_get(ETK_RANGE(UI_DelayRangeSpinner)));
+   edje_edit_program_in_from_set(edje_o, Cur.prog->string,
+                           etk_range_value_get(ETK_RANGE(UI_DelayFromSpinner)));
+   
+   edje_edit_program_in_range_set(edje_o, Cur.prog->string,
+                           etk_range_value_get(ETK_RANGE(UI_DelayRangeSpinner)));
+   
    return ETK_TRUE;
 }
 
@@ -1010,15 +1028,15 @@ on_TargetEntry_text_changed(Etk_Object *object, void *data)
    printf("Text Changed Signal on TargetEntry Emitted (text: %s)\n",text);
 
    //Empty current targets list
-   Cur.epr->targets=NULL; //ABSOLUTLY NOT THE RIGHT WAY!!!! TODO FIXME
+   edje_edit_program_targets_clear(edje_o, Cur.prog->string);
 
    //Spit the string in token and add every targets
-   tok = strtok(text,",");
+   tok = strtok(text,"|");
    while (tok != NULL)
    {
       printf("'%s'\n",tok);
-      engrave_program_target_add(Cur.epr,tok);
-      tok = strtok(NULL, ",");
+      edje_edit_program_target_add(edje_o, Cur.prog->string, tok);
+      tok = strtok(NULL, "|");
    }
 
    //TODO Check if all the targets exists in the group, otherwise make the text red
@@ -1030,92 +1048,63 @@ on_TargetEntry_text_changed(Etk_Object *object, void *data)
 Etk_Bool
 on_Param1Entry_text_changed(Etk_Object *object, void *data)
 {
-   Engrave_Action action;
    printf("Text Changed Signal on Param1Entry Emitted\n");
 
-   //get the action from the combo data
-   action = (Engrave_Action)etk_combobox_item_data_get(
-               etk_combobox_active_item_get(ETK_COMBOBOX(UI_ActionComboBox)));
-
-   engrave_program_action_set(Cur.epr,action,
-		etk_entry_text_get(ETK_ENTRY(UI_Param1Entry)),
-		etk_entry_text_get(ETK_ENTRY(UI_Param2Entry)),
-		Cur.epr->value,
-		Cur.epr->value2
-	);
+   edje_edit_program_state_set(edje_o, Cur.prog->string,
+                               etk_entry_text_get(ETK_ENTRY(UI_Param1Entry)));
+   
    return ETK_TRUE;
 }
 
 Etk_Bool
 on_Param2Entry_text_changed(Etk_Object *object, void *data)
 {
-   Engrave_Action action;
    printf("Text Changed Signal on Param2Entry Emitted\n");
 
-   //get the action from the combo data
-   action = (Engrave_Action)etk_combobox_item_data_get(
-               etk_combobox_active_item_get(ETK_COMBOBOX(UI_ActionComboBox)));
-
-   engrave_program_action_set(Cur.epr,action,
-		etk_entry_text_get(ETK_ENTRY(UI_Param1Entry)),
-      etk_entry_text_get(ETK_ENTRY(UI_Param2Entry)),
-		Cur.epr->value,
-		Cur.epr->value2
-   );
-
+   edje_edit_program_state2_set(edje_o, Cur.prog->string,
+                               etk_entry_text_get(ETK_ENTRY(UI_Param2Entry)));
+   
    return ETK_TRUE;
 }
 
 Etk_Bool
 on_Param1Spinner_value_changed(Etk_Range *range, double value, void *data)
 {
-   Engrave_Action action;
    printf("value Changed Signal on Param1Spinner Emitted\n");
-
-   //get the action from the combo data
-   action = (Engrave_Action)etk_combobox_item_data_get(
-               etk_combobox_active_item_get(ETK_COMBOBOX(UI_ActionComboBox)));
-
-   engrave_program_action_set(Cur.epr,action,
-		etk_entry_text_get(ETK_ENTRY(UI_Param1Entry)),
-		etk_entry_text_get(ETK_ENTRY(UI_Param2Entry)),
-		etk_range_value_get(ETK_RANGE(UI_Param1Spinner)),
-		Cur.epr->value2
-	);
-
+   edje_edit_program_value_set(edje_o, Cur.prog->string,
+                              etk_range_value_get(ETK_RANGE(UI_Param1Spinner)));
    return ETK_TRUE;
 }
 
+Etk_Bool
+on_Param2Spinner_value_changed(Etk_Range *range, double value, void *data)
+{
+   printf("value Changed Signal on Param2Spinner Emitted\n");
+   edje_edit_program_value2_set(edje_o, Cur.prog->string,
+                              etk_range_value_get(ETK_RANGE(UI_Param2Spinner)));
+   return ETK_TRUE;
+}
 
 Etk_Bool
 on_TransitionComboBox_changed(Etk_Combobox *combobox, void *data)
 {
-   Engrave_Transition tran;
+   int trans;
    printf("Changed Signal on TransitionComboBox Emitted\n");
 
    //get the transition from the combo data
-   tran = (Engrave_Transition)etk_combobox_item_data_get(
-               etk_combobox_active_item_get(combobox));
-
-   engrave_program_transition_set(Cur.epr,tran,
-      etk_range_value_get(ETK_RANGE(UI_DurationSpinner)));
-
+   trans = (int)etk_combobox_item_data_get(etk_combobox_active_item_get(combobox));
+   edje_edit_program_transition_set(edje_o, Cur.prog->string, trans);
+   
    return ETK_TRUE;
 }
 
 Etk_Bool
 on_DurationSpinner_value_changed(Etk_Range *range, double value, void *data)
 {
-   Engrave_Transition tran;
    printf("value Changed Signal on DurationSpinner Emitted\n");
-
-   //get the transition from the combo data
-   tran = (Engrave_Transition)etk_combobox_item_data_get(
-               etk_combobox_active_item_get(ETK_COMBOBOX(UI_TransiComboBox)));
-
-   engrave_program_transition_set(Cur.epr,tran,
-      etk_range_value_get(ETK_RANGE(UI_DurationSpinner)));
-
+   edje_edit_program_transition_time_set(edje_o, Cur.prog->string,
+                           etk_range_value_get(ETK_RANGE(UI_DurationSpinner)));
+   
    return ETK_TRUE;
 }
 
@@ -1128,15 +1117,16 @@ on_AfterEntry_text_changed(Etk_Object *object, void *data)
    printf("Text Changed Signal on AfterEntry Emitted (text: %s)\n",text);
 
    //Empty current afters list
-   Cur.epr->afters=NULL; //ABSOLUTLY NOT THE RIGHT WAY!!!! TODO FIXME
-
+   edje_edit_program_afters_clear(edje_o, Cur.prog->string);
+      
    //Spit the string in token and add every afters
-   tok = strtok (text,",");
+   tok = strtok (text,"|");
    while (tok != NULL)
    {
       printf ("'%s'\n",tok);
+      edje_edit_program_after_add(edje_o, Cur.prog->string, tok);
       engrave_program_after_add(Cur.epr,tok);
-      tok = strtok (NULL, ",");
+      tok = strtok (NULL, "|");
    }
 
    //TODO Check if all the after exists in the group, otherwise make the text red
