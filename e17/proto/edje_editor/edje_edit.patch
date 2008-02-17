@@ -4,7 +4,7 @@ RCS file: /cvs/e/e17/libs/edje/Doxyfile,v
 retrieving revision 1.4
 diff -u -r1.4 Doxyfile
 --- Doxyfile	6 Dec 2007 23:40:48 -0000	1.4
-+++ Doxyfile	16 Feb 2008 16:53:14 -0000
++++ Doxyfile	17 Feb 2008 21:39:37 -0000
 @@ -1,7 +1,7 @@
  PROJECT_NAME           = Edje
  PROJECT_NUMBER         =
@@ -29,7 +29,7 @@ RCS file: /cvs/e/e17/libs/edje/configure.in,v
 retrieving revision 1.93
 diff -u -r1.93 configure.in
 --- configure.in	25 Jan 2008 03:35:46 -0000	1.93
-+++ configure.in	16 Feb 2008 16:53:14 -0000
++++ configure.in	17 Feb 2008 21:39:37 -0000
 @@ -66,6 +66,7 @@
    evas >= 0.9.9
    ecore-evas >= 0.9.9
@@ -44,7 +44,7 @@ RCS file: /cvs/e/e17/libs/edje/gendoc,v
 retrieving revision 1.6
 diff -u -r1.6 gendoc
 --- gendoc	6 Dec 2007 23:42:38 -0000	1.6
-+++ gendoc	16 Feb 2008 16:53:14 -0000
++++ gendoc	17 Feb 2008 21:39:38 -0000
 @@ -1,7 +1,7 @@
  #!/bin/sh
  cp ./edje.c.in ./edje.c
@@ -68,8 +68,8 @@ Index: src/lib/Edje_Edit.h
 RCS file: src/lib/Edje_Edit.h
 diff -N src/lib/Edje_Edit.h
 --- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ src/lib/Edje_Edit.h	16 Feb 2008 16:53:14 -0000
-@@ -0,0 +1,1090 @@
++++ src/lib/Edje_Edit.h	17 Feb 2008 21:39:38 -0000
+@@ -0,0 +1,1225 @@
 +#ifndef _EDJE_EDIT_H
 +#define _EDJE_EDIT_H
 +
@@ -1032,30 +1032,71 @@ diff -N src/lib/Edje_Edit.h
 +edje_edit_programs_list_get(
 +   Evas_Object *obj       ///< The edje object
 +);
++
++/**Set a new name for the given program */
++EAPI unsigned char        ///@return 1 on success or 0 on errors
++edje_edit_program_name_set(
++   Evas_Object *obj,       ///< The edje object
++   const char *prog,       ///< The program name
++   const char *new_name    ///< The new name to assign
++);
++
 +/**Get source of a given program. Remember to free the returned string using edje_edit_string_free().*/
 +EAPI const char *          ///@return The source value for prog
 +edje_edit_program_source_get(
 +   Evas_Object *obj,       ///< The edje object
 +   const char *prog        ///< The program name
 +);
++/**Set source of the given program. */
++EAPI unsigned char         ///@return 1 on success or 0 on errors
++edje_edit_program_source_set(
++   Evas_Object *obj,       ///< The edje object
++   const char *prog,       ///< The program name
++   const char *source      ///< The new source value
++);
++
 +/**Get signal of a given program. Remember to free the returned string using edje_edit_string_free().*/
 +EAPI const char *          ///@return The signal value for prog
 +edje_edit_program_signal_get(
 +   Evas_Object *obj,       ///< The edje object
 +   const char *prog        ///< The program name
 +);
++/**Set signal of the given program. */
++EAPI unsigned char         ///@return 1 on success or 0 on errors
++edje_edit_program_signal_set(
++   Evas_Object *obj,       ///< The edje object
++   const char *prog,       ///< The program name
++   const char *signal      ///< The new signal value
++);
++
 +/**Get in.from of a given program.*/
 +EAPI double                ///@return The delay 
 +edje_edit_program_in_from_get(
 +   Evas_Object *obj,       ///< The edje object
 +   const char *prog        ///< The program name
 +);
++/**Set in.from of a given program.*/
++EAPI unsigned char         ///@return 1 on success or 0 on errors
++edje_edit_program_in_from_set(
++   Evas_Object *obj,       ///< The edje object
++   const char *prog,       ///< The program name
++   double seconds          ///< Number of seconds to delay the program execution
++);
++
 +/**Get in.range of a given program.*/
 +EAPI double                ///@return The delay random
 +edje_edit_program_in_range_get(
 +   Evas_Object *obj,       ///< The edje object
 +   const char *prog        ///< The program name
 +);
++/**Set in.range of a given program.*/
++EAPI unsigned char         ///@return 1 on success or 0 on errors
++edje_edit_program_in_range_set(
++   Evas_Object *obj,       ///< The edje object
++   const char *prog,       ///< The program name
++   double seconds          ///< Max random number of seconds to delay
++);
++
 +/**Get the action of a given program.
 + * Action can be one of EDJE_ACTION_TYPE_NONE, _STATE_SET, ACTION_STOP, SIGNAL_EMIT, DRAG_VAL_SET, _DRAG_VAL_STEP, _DRAG_VAL_PAGE, _SCRIPT
 + */
@@ -1063,6 +1104,15 @@ diff -N src/lib/Edje_Edit.h
 +edje_edit_program_action_get(
 +   Evas_Object *obj,       ///< The edje object
 +   const char *prog        ///< The program name
++);
++/**Set the action of a given program.
++ * Action can be one of EDJE_ACTION_TYPE_NONE, _STATE_SET, ACTION_STOP, SIGNAL_EMIT, DRAG_VAL_SET, _DRAG_VAL_STEP, _DRAG_VAL_PAGE, _SCRIPT
++ */
++EAPI unsigned char         ///@return 1 on success or 0 on errors
++edje_edit_program_action_set(
++   Evas_Object *obj,       ///< The edje object
++   const char *prog,       ///< The program name
++   int action              ///< The new action type
 +);
 +
 +/**Get the list of the targets for the given program
@@ -1074,13 +1124,43 @@ diff -N src/lib/Edje_Edit.h
 +   Evas_Object *obj,       ///< The edje object
 +   const char *prog        ///< The program name
 +);
-+   
++/**Add a new target name to the list of 'targets' in the given program.
++ * If program action is EDJE_ACTION_TYPE_ACTION_STOP then 'target' must be an existing program name.
++ * If action is EDJE_ACTION_TYPE_STATE_SET then 'target' must be an existing part name.
++ */
++EAPI unsigned char         ///@return 1 on success or 0 on errors
++edje_edit_program_target_add(
++   Evas_Object *obj,       ///< The edje object
++   const char *prog,       ///< The program name
++   const char *target      ///< The name of another program or another part
++);
++/**Clear the 'targets' list of the given program */
++EAPI unsigned char         ///@return 1 on success or 0 on errors
++edje_edit_program_targets_clear(
++   Evas_Object *obj,       ///< The edje object
++   const char *prog        ///< The program name
++);
 +/**Get the list of action that will be run after the give program
 + * Return a list of program name.
 + * Use edje_edit_string_list_free() when you don't need it anymore.
 + */
 +EAPI Evas_List*            ///@return An Evas_List of char*, or NULL on error
 +edje_edit_program_afters_get(
++   Evas_Object *obj,       ///< The edje object
++   const char *prog        ///< The program name
++);
++/**Add a new program name to the list of 'afters' in the given program.
++ * All the programs listed in 'afters' will be executed after program execution.
++ */
++EAPI unsigned char         ///@return 1 on success or 0 on errors
++edje_edit_program_after_add(
++   Evas_Object *obj,       ///< The edje object
++   const char *prog,       ///< The program name
++   const char *after       ///< The name of another program to add to the afters list
++);
++/**Clear the 'afters' list of the given program */
++EAPI unsigned char         ///@return 1 on success or 0 on errors
++edje_edit_program_afters_clear(
 +   Evas_Object *obj,       ///< The edje object
 +   const char *prog        ///< The program name
 +);
@@ -1094,6 +1174,16 @@ diff -N src/lib/Edje_Edit.h
 +   Evas_Object *obj,       ///< The edje object
 +   const char *prog        ///< The program name
 +);
++/**Set the state for the given program
++ * In a STATE_SET action this is the name of state to set.
++ * In a SIGNAL_EMIT action is the name of the signal to emit.
++ */
++EAPI unsigned char         ///@return 1 on success or 0 on errors
++edje_edit_program_state_set(
++   Evas_Object *obj,       ///< The edje object
++   const char *prog,       ///< The program name
++   const char *state       ///< The state to set (not including the state value)
++);
 +
 +/**Get the value of state for the given program.
 + * In a STATE_SET action this is the value of state to set.
@@ -1103,6 +1193,16 @@ diff -N src/lib/Edje_Edit.h
 +edje_edit_program_value_get(
 +   Evas_Object *obj,       ///< The edje object
 +   const char *prog        ///< The program name
++);
++/**Set the value of state for the given program.
++ * In a STATE_SET action this is the value of state to set.
++ * Not used on SIGNAL_EMIT action.
++ */
++EAPI unsigned char         ///@return 1 on success or 0 on errors
++edje_edit_program_value_set(
++   Evas_Object *obj,       ///< The edje object
++   const char *prog,       ///< The program name
++   double value            ///< The value to set
 +);
 +
 +/**Get the state2 for the given program
@@ -1114,6 +1214,16 @@ diff -N src/lib/Edje_Edit.h
 +   Evas_Object *obj,       ///< The edje object
 +   const char *prog        ///< The program name
 +);
++/**Set the state2 for the given program
++ * In a STATE_SET action is not used
++ * In a SIGNAL_EMIT action is the source of the emitted signal.
++ */
++EAPI unsigned char         ///@return 1 on success or 0 on errors
++edje_edit_program_state2_set(
++   Evas_Object *obj,       ///< The edje object
++   const char *prog,       ///< The program name
++   const char *state2      ///< The state2 value to set
++);
 +
 +/**Get the value of state2 for the given program.
 + * I don't know what this is used for. :P
@@ -1122,6 +1232,15 @@ diff -N src/lib/Edje_Edit.h
 +edje_edit_program_value2_get(
 +   Evas_Object *obj,       ///< The edje object
 +   const char *prog        ///< The program name
++);
++/**Set the value2 of state for the given program.
++ * This is used in DRAG_ACTION
++ */
++EAPI unsigned char         ///@return 1 on success or 0 on errors
++edje_edit_program_value2_set(
++   Evas_Object *obj,       ///< The edje object
++   const char *prog,       ///< The program name
++   double value            ///< The value to set
 +);
 +
 +/**Get the type of transition to use when apply animations.
@@ -1132,14 +1251,30 @@ diff -N src/lib/Edje_Edit.h
 +   Evas_Object *obj,       ///< The edje object
 +   const char *prog        ///< The program name
 +);
-+   
++/**Set the type of transition to use when apply animations.
++ * Can be one of: EDJE_TWEEN_MODE_NONE, EDJE_TWEEN_MODE_LINEAR, EDJE_TWEEN_MODE_SINUSOIDAL, EDJE_TWEEN_MODE_ACCELERATE or EDJE_TWEEN_MODE_DECELERATE.
++ */
++EAPI unsigned char         ///@return 1 on success or 0 on errors
++edje_edit_program_transition_set(
++   Evas_Object *obj,       ///< The edje object
++   const char *prog,       ///< The program name
++   int transition          ///< The transition type to set
++);
++      
 +/**Get the duration of the transition in seconds.*/
 +EAPI double                ///@return The duration of the transition
 +edje_edit_program_transition_time_get(
 +   Evas_Object *obj,       ///< The edje object
 +   const char *prog        ///< The program name
 +);
-+
++/**Set the duration of the transition in seconds.*/
++EAPI unsigned char         ///@return 1 on success or 0 on errors
++edje_edit_program_transition_time_set(
++   Evas_Object *obj,       ///< The edje object
++   const char *prog,       ///< The program name
++   double seconds          ///< The duration of the transition (in seconds)
++);
++   
 +//@}
 +/******************************************************************************/
 +/**************************   SCRIPTS API   ***********************************/
@@ -1166,7 +1301,7 @@ RCS file: /cvs/e/e17/libs/edje/src/lib/Makefile.am,v
 retrieving revision 1.39
 diff -u -r1.39 Makefile.am
 --- src/lib/Makefile.am	18 Jan 2008 06:38:46 -0000	1.39
-+++ src/lib/Makefile.am	16 Feb 2008 16:53:14 -0000
++++ src/lib/Makefile.am	17 Feb 2008 21:39:38 -0000
 @@ -14,7 +14,8 @@
  libedje.la
  
@@ -1192,8 +1327,8 @@ Index: src/lib/edje_edit.c
 RCS file: src/lib/edje_edit.c
 diff -N src/lib/edje_edit.c
 --- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ src/lib/edje_edit.c	16 Feb 2008 16:53:14 -0000
-@@ -0,0 +1,2392 @@
++++ src/lib/edje_edit.c	17 Feb 2008 21:39:38 -0000
+@@ -0,0 +1,2663 @@
 +/*
 + * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
 + */
@@ -1510,6 +1645,19 @@ diff -N src/lib/edje_edit.c
 +   return 1;
 +
 +}
++static int
++_edje_part_id_find(Edje *ed, const char *part)
++{
++   int id;
++   for (id = 0; id < ed->table_parts_size; id++)
++   {
++      Edje_Real_Part *rp = ed->table_parts[id];
++      if (!strcmp(rp->part->name, part))
++         return id;
++   }
++   return -1;
++}
++
 +/*****************/
 +/*  GENERAL API  */
 +/*****************/
@@ -2199,6 +2347,28 @@ diff -N src/lib/edje_edit.c
 +   if (sscanf(delim,"%lf", &value) != 1) return 0;
 +   delim[0] = '\0';
 +   
++   /* update programs */
++   /* update the 'state' field in all programs. update only if program has
++      a single target */
++   int i;
++   int part_id = _edje_part_id_find(ed, part);
++   for (i = 0; i < ed->table_programs_size; i++)
++   {
++      Edje_Program *epr = ed->table_programs[i];
++      if (evas_list_count(epr->targets) == 1)
++      {
++         Edje_Program_Target *t = epr->targets->data;
++         if (t->id == part_id && 
++             !strcmp(epr->state, pd->state.name) &&
++             pd->state.value == epr->value)
++         {
++            //TODO free epr->state
++            epr->state = mem_strdup(new_name);
++            epr->value = value;
++         }
++      }
++   }
++   
 +   /* set name */
 +   if (pd->state.name) evas_stringshare_del(pd->state.name);
 +   pd->state.name = (char *)evas_stringshare_add(new_name);
@@ -2207,6 +2377,7 @@ diff -N src/lib/edje_edit.c
 +   
 +   delim[0] = ' ';
 +   printf("## SET OK %s %.2f\n", pd->state.name, pd->state.value);
++   
 +   return 1;
 +}
 +
@@ -3303,28 +3474,6 @@ diff -N src/lib/edje_edit.c
 +/******************/
 +/*  PROGRAMS API  */
 +/******************/
-+
-+EAPI Evas_List *
-+edje_edit_programs_list_get(Evas_Object *obj)
-+{
-+   Evas_List *progs;
-+   int i;
-+   
-+   GET_ED_OR_RETURN(NULL)
-+   
-+   printf("EE: Found %d programs\n", ed->table_programs_size);
-+   
-+   progs = NULL;
-+   for (i = 0; i < ed->table_programs_size; i++)
-+   {
-+      Edje_Program *epr;
-+      epr = ed->table_programs[i];
-+      progs = evas_list_append(progs, evas_stringshare_add(epr->name));
-+   }
-+
-+   return progs;
-+}
-+
 +Edje_Program*
 +_edje_program_get_byname(Evas_Object *obj, const char *prog_name)
 +{
@@ -3342,14 +3491,64 @@ diff -N src/lib/edje_edit.c
 +   return NULL;
 +}
 +
++EAPI Evas_List *
++edje_edit_programs_list_get(Evas_Object *obj)
++{
++   Evas_List *progs;
++   int i;
++   
++   GET_ED_OR_RETURN(NULL)
++   
++   //printf("EE: Found %d programs\n", ed->table_programs_size);
++   
++   progs = NULL;
++   for (i = 0; i < ed->table_programs_size; i++)
++   {
++      Edje_Program *epr;
++      epr = ed->table_programs[i];
++      progs = evas_list_append(progs, evas_stringshare_add(epr->name));
++   }
++
++   return progs;
++}
++
++
++EAPI unsigned char
++edje_edit_program_name_set(Evas_Object *obj, const char *prog, const char* new_name)
++{
++   GET_EPR_OR_RETURN(0)
++   if (!new_name) return 0;
++   
++   printf("SET NAME for program: %s [new name: %s]\n", prog, new_name);
++   
++   if (epr->name) evas_stringshare_del(epr->name);
++   epr->name = evas_stringshare_add(new_name);
++   
++   return 1;
++}
++
 +EAPI const char*
 +edje_edit_program_source_get(Evas_Object *obj, const char *prog)
 +{
 +   GET_EPR_OR_RETURN(NULL)
 +    
 +   if (!epr->source) return NULL;
-+   printf("GET SOURCE for program: %s [%s]\n", prog, epr->source);
++   //printf("GET SOURCE for program: %s [%s]\n", prog, epr->source);
 +   return evas_stringshare_add(epr->source);
++}
++
++EAPI unsigned char
++edje_edit_program_source_set(Evas_Object *obj, const char *prog, const char *source)
++{
++   GET_EPR_OR_RETURN(0)
++   if (!source) return 0;
++   
++   printf("SET SOURCE for program: %s [%s]\n", prog, source);
++   
++   if (epr->source) evas_stringshare_del(epr->source);
++   epr->source = evas_stringshare_add(source);
++   
++   return 1;
 +}
 +
 +EAPI const char*
@@ -3358,8 +3557,22 @@ diff -N src/lib/edje_edit.c
 +   GET_EPR_OR_RETURN(NULL)
 +    
 +   if (!epr->signal) return NULL;
-+   printf("GET SIGNAL for program: %s [%s]\n", prog, epr->signal);
++   //printf("GET SIGNAL for program: %s [%s]\n", prog, epr->signal);
 +   return evas_stringshare_add(epr->signal);
++}
++
++EAPI unsigned char
++edje_edit_program_signal_set(Evas_Object *obj, const char *prog, const char *signal)
++{
++   GET_EPR_OR_RETURN(0)
++   if (!signal) return 0;
++   
++   printf("SET SIGNAL for program: %s [%s]\n", prog, signal);
++   
++   if (epr->signal) evas_stringshare_del(epr->signal);
++   epr->signal = evas_stringshare_add(signal);
++   
++   return 1;
 +}
 +
 +EAPI const char*
@@ -3368,8 +3581,21 @@ diff -N src/lib/edje_edit.c
 +   GET_EPR_OR_RETURN(NULL)
 +   
 +   if (!epr->state) return NULL;
-+   printf("GET STATE for program: %s [%s %.2f]\n", prog, epr->state, epr->value);
++   //printf("GET STATE for program: %s [%s %.2f]\n", prog, epr->state, epr->value);
 +   return evas_stringshare_add(epr->state);
++}
++
++EAPI unsigned char
++edje_edit_program_state_set(Evas_Object *obj, const char *prog, const char *state)
++{
++   GET_EPR_OR_RETURN(0)
++   
++   printf("SET STATE for program: %s\n", prog);
++   
++   if (epr->state) evas_stringshare_del(epr->state);
++   epr->state = evas_stringshare_add(state);
++   
++   return 1;
 +}
 +
 +EAPI const char*
@@ -3378,8 +3604,21 @@ diff -N src/lib/edje_edit.c
 +   GET_EPR_OR_RETURN(NULL)
 +   
 +   if (!epr->state2) return NULL;
-+   printf("GET STATE2 for program: %s [%s %.2f]\n", prog, epr->state2, epr->value2);
++   //printf("GET STATE2 for program: %s [%s %.2f]\n", prog, epr->state2, epr->value2);
 +   return evas_stringshare_add(epr->state2);
++}
++
++EAPI unsigned char
++edje_edit_program_state2_set(Evas_Object *obj, const char *prog, const char *state2)
++{
++   GET_EPR_OR_RETURN(0)
++   
++   printf("SET STATE2 for program: %s\n", prog);
++   
++   if (epr->state2) evas_stringshare_del(epr->state2);
++   epr->state2 = evas_stringshare_add(state2);
++   
++   return 1;
 +}
 +
 +EAPI double
@@ -3387,8 +3626,18 @@ diff -N src/lib/edje_edit.c
 +{
 +   GET_EPR_OR_RETURN(-1)
 +   
-+   printf("GET VALUE for program: %s [%s %.2f]\n", prog, epr->state, epr->value);
++   //printf("GET VALUE for program: %s [%s %.2f]\n", prog, epr->state, epr->value);
 +   return epr->value;
++}
++
++EAPI unsigned char
++edje_edit_program_value_set(Evas_Object *obj, const char *prog, double value)
++{
++   GET_EPR_OR_RETURN(0)
++   
++   //printf("SET VALUE for program: %s [%.2f]\n", prog, value);
++   epr->value = value;
++   return 1;
 +}
 +
 +EAPI double
@@ -3396,48 +3645,104 @@ diff -N src/lib/edje_edit.c
 +{
 +   GET_EPR_OR_RETURN(-1)
 +   
-+   printf("GET VALUE2 for program: %s [%s %.2f]\n", prog, epr->state2, epr->value2);
++   //printf("GET VALUE2 for program: %s [%s %.2f]\n", prog, epr->state2, epr->value2);
 +   return epr->value2;
 +}
 +
++EAPI unsigned char
++edje_edit_program_value2_set(Evas_Object *obj, const char *prog, double value)
++{
++   GET_EPR_OR_RETURN(0)
++   
++   //printf("SET VALUE for program: %s [%.2f]\n", prog, value);
++   epr->value2 = value;
++   return 1;
++}
 +EAPI double
 +edje_edit_program_in_from_get(Evas_Object *obj, const char *prog)
 +{
 +   GET_EPR_OR_RETURN(0)
-+   printf("GET IN.FROM for program: %s [%f]\n", prog, epr->in.from);
++   //printf("GET IN.FROM for program: %s [%f]\n", prog, epr->in.from);
 +   return epr->in.from;
++}
++
++EAPI unsigned char
++edje_edit_program_in_from_set(Evas_Object *obj, const char *prog, double seconds)
++{
++   GET_EPR_OR_RETURN(0)
++   //printf("SET IN.FROM for program: %s [%f]\n", prog, epr->in.from);
++   epr->in.from = seconds;
++   return 1;
 +}
 +
 +EAPI double
 +edje_edit_program_in_range_get(Evas_Object *obj, const char *prog)
 +{
 +   GET_EPR_OR_RETURN(0)
-+   printf("GET IN.RANGE for program: %s [%f]\n", prog, epr->in.range);
++   //printf("GET IN.RANGE for program: %s [%f]\n", prog, epr->in.range);
 +   return epr->in.range;
++}
++
++EAPI unsigned char
++edje_edit_program_in_range_set(Evas_Object *obj, const char *prog, double seconds)
++{
++   GET_EPR_OR_RETURN(0)
++   //printf("SET IN.RANGE for program: %s [%f]\n", prog, epr->in.range);
++   epr->in.range = seconds;
++   return 1;
 +}
 +
 +EAPI int
 +edje_edit_program_transition_get(Evas_Object *obj, const char *prog)
 +{
 +   GET_EPR_OR_RETURN(-1)
-+   printf("GET TRANSITION for program: %s [%d]\n", prog, epr->tween.mode);
++   //printf("GET TRANSITION for program: %s [%d]\n", prog, epr->tween.mode);
 +   return epr->tween.mode;
++}
++
++EAPI unsigned char
++edje_edit_program_transition_set(Evas_Object *obj, const char *prog, int transition)
++{
++   GET_EPR_OR_RETURN(0)
++   //printf("GET TRANSITION for program: %s [%d]\n", prog, epr->tween.mode);
++   epr->tween.mode = transition;
++   return 1;
 +}
 +
 +EAPI double
 +edje_edit_program_transition_time_get(Evas_Object *obj, const char *prog)
 +{
 +   GET_EPR_OR_RETURN(-1)
-+   printf("GET TRANSITION_TIME for program: %s [%.4f]\n", prog, epr->tween.time);
++   //printf("GET TRANSITION_TIME for program: %s [%.4f]\n", prog, epr->tween.time);
 +   return epr->tween.time;
++}
++
++EAPI unsigned char
++edje_edit_program_transition_time_set(Evas_Object *obj, const char *prog, double seconds)
++{
++   GET_EPR_OR_RETURN(0)
++   //printf("GET TRANSITION_TIME for program: %s [%.4f]\n", prog, epr->tween.time);
++   epr->tween.time = seconds;
++   return 1;
 +}
 +
 +EAPI int
 +edje_edit_program_action_get(Evas_Object *obj, const char *prog)
 +{
 +   GET_EPR_OR_RETURN(-1)
-+   printf("GET ACTION for program: %s [%d]\n", prog, epr->action);
++   //printf("GET ACTION for program: %s [%d]\n", prog, epr->action);
 +   return epr->action;
++}
++
++EAPI unsigned char
++edje_edit_program_action_set(Evas_Object *obj, const char *prog, int action)
++{
++   GET_EPR_OR_RETURN(0)
++   //printf("SET ACTION for program: %s [%d]\n", prog, action);
++   if (action >= EDJE_ACTION_TYPE_LAST) return 0;
++   
++   epr->action = action;
++   return 1;
 +}
 +
 +EAPI Evas_List*
@@ -3448,25 +3753,89 @@ diff -N src/lib/edje_edit.c
 +   GET_ED_OR_RETURN(NULL)
 +   GET_EPR_OR_RETURN(NULL)
 +   
-+   printf("GET TARGETS for program: %s [count: %d]\n", prog, evas_list_count(epr->targets));
++   //printf("GET TARGETS for program: %s [count: %d]\n", prog, evas_list_count(epr->targets));
 +   
 +   l = epr->targets;
 +   targets = NULL;
 +   while (l)
 +   {
 +      Edje_Program_Target *t;
-+      Edje_Real_Part *p = NULL;
-+      
 +      t = l->data;
-+      p = ed->table_parts[t->id % ed->table_parts_size];
-+      if (p && p->part && p->part->name)
++      
++      if (epr->action == EDJE_ACTION_TYPE_STATE_SET)
 +      {
-+         printf("   t: %d name: %s\n", t->id, p->part->name);
-+         targets = evas_list_append(targets, evas_stringshare_add(p->part->name));
++         /* the target is a part */
++         Edje_Real_Part *p = NULL;
++         p = ed->table_parts[t->id % ed->table_parts_size];
++         if (p && p->part && p->part->name)
++            targets = evas_list_append(targets,
++                                       evas_stringshare_add(p->part->name));
++      }
++      else if (epr->action == EDJE_ACTION_TYPE_ACTION_STOP)
++      {
++         /* the target is a program */
++         Edje_Program *p;
++         p = ed->table_programs[t->id % ed->table_programs_size];
++         if (p && p->name)
++            targets = evas_list_append(targets,
++                                       evas_stringshare_add(p->name));
 +      }
 +      l = l->next;
 +   }
 +   return targets;
++}
++
++EAPI unsigned char
++edje_edit_program_targets_clear(Evas_Object *obj, const char *prog)
++{
++   GET_EPR_OR_RETURN(0)
++   
++   while (epr->targets)
++   {
++      Edje_Program_Target *prt;
++      
++      prt = epr->targets->data;
++      epr->targets = evas_list_remove_list(epr->targets, epr->targets);
++      free(prt);
++   }
++   
++   return 1;
++}
++
++EAPI unsigned char
++edje_edit_program_target_add(Evas_Object *obj, const char *prog, const char *target)
++{
++   int id;
++   Edje_Program_Target *t;
++   GET_ED_OR_RETURN(0)
++   GET_EPR_OR_RETURN(0)
++   
++   if (epr->action == EDJE_ACTION_TYPE_STATE_SET)
++   {
++      /* the target is a part */
++      Edje_Real_Part *rp;
++      rp = _edje_real_part_get(ed, target);
++      if (!rp) return 0;
++      id = rp->part->id;
++   }
++   else if (epr->action == EDJE_ACTION_TYPE_ACTION_STOP)
++   {
++      /* the target is a program */
++      Edje_Program *tar;
++      tar = _edje_program_get_byname(obj, target);
++      if (!tar) return 0;
++      id = tar->id;
++   }
++   else
++      return 0;
++   
++   t = mem_alloc(SZ(Edje_Program_Target));
++   if (!t) return 0;
++   
++   t->id = id;
++   epr->targets = evas_list_append(epr->targets, t);
++   
++   return 1;
 +}
 +
 +EAPI Evas_List*
@@ -3477,7 +3846,7 @@ diff -N src/lib/edje_edit.c
 +   GET_ED_OR_RETURN(NULL)
 +   GET_EPR_OR_RETURN(NULL)
 +   
-+   printf("GET AFTERS for program: %s [count: %d]\n", prog, evas_list_count(epr->after));
++  // printf("GET AFTERS for program: %s [count: %d]\n", prog, evas_list_count(epr->after));
 +   
 +   l = epr->after;
 +   afters = NULL;
@@ -3497,6 +3866,43 @@ diff -N src/lib/edje_edit.c
 +   }
 +   return afters;
 +}
++
++EAPI unsigned char
++edje_edit_program_afters_clear(Evas_Object *obj, const char *prog)
++{
++   GET_EPR_OR_RETURN(0)
++   
++   while (epr->after)
++   {
++      Edje_Program_After *pa;
++      pa = epr->after->data;
++      epr->after = evas_list_remove_list(epr->after, epr->after);
++      free(pa);
++   }
++   
++   return 1;
++}
++
++EAPI unsigned char
++edje_edit_program_after_add(Evas_Object *obj, const char *prog, const char *after)
++{
++   Edje_Program *af;
++   Edje_Program_After *a;
++   GET_EPR_OR_RETURN(0)
++   
++   af = _edje_program_get_byname(obj, after);
++   if (!af) return 0;
++   
++   a = mem_alloc(SZ(Edje_Program_After));
++   if (!a) return 0;
++   
++   a->id = af->id;
++   
++   epr->after = evas_list_append(epr->after, a);
++   
++   return 1;
++}
++
 +
 +/*************************/
 +/*  EMBRYO SCRIPTS  API  */
@@ -3592,7 +3998,7 @@ RCS file: /cvs/e/e17/libs/edje/src/lib/edje_load.c,v
 retrieving revision 1.111
 diff -u -r1.111 edje_load.c
 --- src/lib/edje_load.c	18 Jan 2008 06:34:04 -0000	1.111
-+++ src/lib/edje_load.c	16 Feb 2008 16:53:14 -0000
++++ src/lib/edje_load.c	17 Feb 2008 21:39:38 -0000
 @@ -5,7 +5,7 @@
  #include "Edje.h"
  #include "edje_private.h"
