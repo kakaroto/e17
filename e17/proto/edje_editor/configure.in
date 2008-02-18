@@ -9,7 +9,7 @@ AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
 AC_CANONICAL_TARGET
 
-AM_INIT_AUTOMAKE(edje_editor, 0.1.4)
+AM_INIT_AUTOMAKE(edje_editor, 0.2.0)
 
 AC_PREREQ(2.52)
 
@@ -86,10 +86,9 @@ packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source Code Directory])
 
 PKG_CHECK_MODULES(ECORE, [ecore >= 0.9.9.039])
-PKG_CHECK_MODULES(EDJE, [edje >= 0.5.0.040])
-PKG_CHECK_MODULES(ENGRAVE, [engrave >= 0.1.0])
-PKG_CHECK_MODULES(EVAS, [evas >= 0.9.9.040])
-PKG_CHECK_MODULES(ETK, [etk >= 0.1.0.005])
+PKG_CHECK_MODULES(EDJE, [edje >= 0.5.0.042])
+PKG_CHECK_MODULES(EVAS, [evas >= 0.9.9.041])
+PKG_CHECK_MODULES(ETK, [etk >= 0.1.0.007])
 
 AC_SUBST(packagesrcdir)
 

@@ -36,12 +36,19 @@ ecore_resize_callback(Ecore_Evas *ecore_evas)
    embed_object = etk_embed_object_get(ETK_EMBED(UI_PartsTreeEmbed));
    evas_object_move(embed_object, 0, 55);
    evas_object_resize(embed_object, TREE_WIDTH, win_h - 55);
+   
+   evas_object_move(Consolle, TREE_WIDTH + 5, win_h - 80);
+   evas_object_resize(Consolle, 400, 75);
 }
 /* Catch all the signal from the editing edje object */
 void
 signal_cb(void *data, Evas_Object *o, const char *sig, const char *src)
 {
-   printf("CALLBACK for \"%s\" \"%s\"\n", sig, src);
+   char buf[1024];
+   consolle_count++;
+   snprintf(buf, sizeof(buf), "[%d]  SIGNAL = '%s'     SOURCE = '%s'",
+            consolle_count, sig, src);
+   ConsolleLog(buf);
 }
 
 /* Group combobox callback */
@@ -60,7 +67,6 @@ on_GroupsComboBox_activated(Etk_Combobox *combobox, Etk_Combobox_Item *item, voi
 Etk_Bool
 on_AllButton_click(Etk_Button *button, void *data)
 {
-   char cmd[1024];
    Etk_String *text;
    char *tween;
    char *name;
@@ -196,34 +202,23 @@ on_AllButton_click(Etk_Button *button, void *data)
       //etk_menu_popup_at_xy (ETK_MENU(AddMenu), 10, 10);
       break;
    case TOOLBAR_OPTION_BG1:
-      printf("SET_BG1\n");
       edje_object_signal_emit(edje_ui,"set_bg1","edje_editor");
       break;
     case TOOLBAR_OPTION_BG2:
-      printf("SET_BG2\n");
       edje_object_signal_emit(edje_ui,"set_bg2","edje_editor");
       break;
    case TOOLBAR_OPTION_BG3:
-      printf("SET_BG3\n");
       edje_object_signal_emit(edje_ui,"set_bg3","edje_editor");
       break;
    case TOOLBAR_OPTION_BG4:
-      printf("SET_BG4\n");
       edje_object_signal_emit(edje_ui,"set_bg4","edje_editor");
       break;
    case TOOLBAR_PLAY:
-      printf("Clicked signal on Toolbar Button 'Play' EMITTED\n");
-      if (!Cur.eg)
-         ShowAlert("You must select a group to test.");
-      else if (!Cur.open_file_name) 
-         ShowAlert("You need to save the file before testing it.");
-      else
-      {
-         snprintf(cmd,1024,"edje_editor -t \"%s\" \"%s\" &",
-                  Cur.open_file_name,Cur.eg->name);
-         printf("TESTING EDJE. cmd: %s\n",cmd);
-         system(cmd);
-      }
+      ShowAlert("Not yet implemented");
+      //   snprintf(cmd,1024,"edje_editor -t \"%s\" \"%s\" &",
+      //            Cur.open_file_name,Cur.eg->name);
+      //   printf("TESTING EDJE. cmd: %s\n",cmd);
+      //   system(cmd);
       break;
    case TOOLBAR_DEBUG:
       DebugInfo(FALSE);
@@ -529,35 +524,6 @@ on_StateEntry_text_changed(Etk_Object *object, void *data)
       }
    }
    
-   return ETK_TRUE;
-}
-
-Etk_Bool
-on_StateIndexSpinner_value_changed(Etk_Range *range, double value, void *data)
-{
-   //TODO remove this function when switch to edje internal
-   char buf[4096];
-   Etk_Tree_Col *col1=NULL;
-
-   printf("Value Changed Signal on StateIndexSpinner EMITTED\n");
-   if (Cur.eps)
-   {
-      snprintf(buf,4096,"%s",engrave_part_state_name_get(Cur.eps,NULL));
-      //RenameDescription(selected_desc,NULL,etk_range_value_get(range));
-      if ((strcmp("default", buf)) || Cur.eps->value)
-      {
-         engrave_part_state_name_set(Cur.eps,buf,etk_range_value_get(range));
-      }else
-      {
-         ShowAlert("You can't rename default 0.0");
-      }
-      //Update PartTree
-      col1 = etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), 0);
-      snprintf(buf,4095,"%s %.2f",Cur.eps->name,Cur.eps->value);
-      etk_tree_row_fields_set(ecore_hash_get(hash,Cur.eps),TRUE,
-         col1,EdjeFile,"DESC.PNG",buf,NULL);
-   }
-
    return ETK_TRUE;
 }
 
@@ -1155,7 +1121,6 @@ on_AfterEntry_text_changed(Etk_Object *object, void *data)
    {
       printf ("'%s'\n",tok);
       edje_edit_program_after_add(edje_o, Cur.prog->string, tok);
-      engrave_program_after_add(Cur.epr,tok);
       tok = strtok (NULL, "|");
    }
 

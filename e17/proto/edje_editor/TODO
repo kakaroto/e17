@@ -1,25 +1,21 @@
 TODO edje_editor (not a complete list...only the first in my mind)
 =======================================
 
-* make better file dialogs
-
-* If save failed the original file is deleted (bad engrave  !)
-
 * Tooltips EVERYWERE  :)
-
-* Up and Down buttons must move the selected part/description up and down
-   (have to wait a way to move the rows in the etk_tree)
 
 * A new object add must be take a progressive (and unique) number (newrect1, newrect2...etc)
 
+* Font and image can't be removed
+
+* Clipping
+
+* Save back the updated edc source to the edje file
+
+* Embryo scripting
+
 * Make the visible checkbox work (should the visibility apply to the EDC also? not only in the editor?)
 
-* Improve programs frame (add more combo entry widget and filter source combo 
-   to only parts that accept mouse events)
-   
 * Duplicate objects (copy/cut/paste??)
-
-* Review and commit some PROTO_engrave functions
 
 * Fix strange alpha premul on text with effect
 

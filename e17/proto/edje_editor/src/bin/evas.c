@@ -151,9 +151,6 @@ prepare_canvas(void)
    rel2Y_parent_handler = evas_object_line_add(ecore_evas_get(UI_ecore_MainWin));
    evas_object_color_set(rel2Y_parent_handler, 0, 0, 255, 200);
 
-   //Create engrave canvas
-   engrave_canvas = engrave_canvas_new(ecore_evas_get(UI_ecore_MainWin));
-
    // Create Fake win
    EV_fakewin = edje_object_add(ecore_evas_get(UI_ecore_MainWin));
    edje_object_file_set(EV_fakewin, EdjeFile, "FakeWin");
@@ -170,6 +167,12 @@ prepare_canvas(void)
    evas_object_event_callback_add(EV_movebox, EVAS_CALLBACK_MOUSE_UP,
                                   on_EndDrag, (void*)DRAG_MOVEBOX);
 
+   // Create Consolle
+   Consolle = edje_object_add(ecore_evas_get(UI_ecore_MainWin));
+   edje_object_file_set(Consolle, EdjeFile, "Consolle");
+   evas_object_show(Consolle);
+   
+   
    //Place Fakewin 
    ev_move_fake(TREE_WIDTH+15,75);
    ev_resize_fake(200,200);
@@ -384,7 +387,7 @@ ev_redraw(void)
       //Get the geometry of fakewin
       evas_object_geometry_get(EV_fakewin,&x,&y,&w,&h);
 
-      //place engrave canvas
+      //place edje editing object
       evas_object_move(edje_o, x, y);
       evas_object_resize(edje_o, w+1, h);
 
@@ -402,7 +405,6 @@ ev_redraw(void)
       
    }else
    {
-      evas_object_hide(engrave_canvas);
       evas_object_hide(EV_fakewin);
       evas_object_hide(EV_movebox);
    }

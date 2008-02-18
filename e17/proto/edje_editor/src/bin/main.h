@@ -1,7 +1,6 @@
 #ifndef _EDJE_EDITOR_MAIN_H_
 #define _EDJE_EDITOR_MAIN_H_
 
-#include <Engrave.h>
 #include <Edje.h>
 #include <Ecore_Data.h>
 #include <Ecore_File.h>
@@ -14,11 +13,9 @@
 #define FAKEWIN_BORDER_BOTTOM 4
 
 #define USE_GL_ENGINE 0
-#define ECHO_EDJE_SIGNAL 0
-#define DEBUG_TREE 0
-#define DEBUG_BUTTON 0
+#define DEBUG_MODE 0
 
-#if DEBUG_TREE
+#if DEBUG_MODE
    #define TREE_WIDTH 365
 #else
    #define TREE_WIDTH 265
@@ -113,21 +110,15 @@ enum various
 
 struct Current_State
 {
-  // Engrave_File  *ef;
-   Engrave_Group *eg;
-   Engrave_Part  *ep;
-   Engrave_Program *epr;
-   Engrave_Part_State *eps;
    char *open_file_name;      //Full path to the open edje file
    char *source_dir;          //Full path to sources
    char *main_source_file;    //Full path to the main edc file
 
-   Etk_String *group;
-   Etk_String *part;
-   Etk_String *state;
-   Etk_String *prog;
-   Etk_String *tween;
-   
+   Etk_String *group;         //The current selected group name
+   Etk_String *part;          //The current selected part name
+   Etk_String *state;         //The current selected state name
+   Etk_String *prog;          //The current selected prog name
+   Etk_String *tween;         //The current selected tween name
    
    Etk_String *edj_file_name;
    Etk_String *edj_temp_name;
@@ -139,9 +130,6 @@ int            FileChooserOperation;   //The current file chooser operation (FIL
 char           *EdjeFile;              //The filename of the edje_editor.edj file (witch contain all the graphics used by the program)
 Evas_Object    *edje_o;                //The edje object we are editing
 Evas_Hash      *Parts_Hash;            //Associate part names with Etk_Tree_Row*
-Ecore_Hash     *hash;                  //Associate the engrave objects with the tree_rows
-
-Evas_Object    *engrave_canvas;        //The engrave canvas
 
 Evas_Object    *EV_fakewin;            //The simple window implementation
 Evas_Object    *EV_movebox;            //  FIXME
@@ -152,6 +140,9 @@ Evas_Object    *rel1X_parent_handler;  //The 4 line that show the container for 
 Evas_Object    *rel1Y_parent_handler;  //
 Evas_Object    *rel2X_parent_handler;  //
 Evas_Object    *rel2Y_parent_handler;  //
+Evas_Object    *Consolle;              //The lower consolle panel
+Evas_List      *stack;                 //Stack for the consolle
+int            consolle_count;        //Counter for the consolle
 
 /* FUNCTION PROTOTYPES*/
 void DebugInfo(int full);
@@ -199,5 +190,10 @@ void ChangeGroup(char *group);
 #define EDJE_TWEEN_MODE_ACCELERATE 3
 #define EDJE_TWEEN_MODE_DECELERATE 4
 #define EDJE_TWEEN_MODE_LAST       5
+
+#define EDJE_ASPECT_PREFER_NONE       0
+#define EDJE_ASPECT_PREFER_VERTICAL   1
+#define EDJE_ASPECT_PREFER_HORIZONTAL 2
+#define EDJE_ASPECT_PREFER_BOTH       3
 
 #endif // INCLUSION_GUARD

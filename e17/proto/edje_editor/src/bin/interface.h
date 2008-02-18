@@ -165,5 +165,7 @@ void UpdateWindowTitle(void);
 
 void ShowFilechooser(int FileChooserType);
 void ShowAlert(char* text);
+void ConsolleLog(char *text);
+void ConsolleClear(void);
 
 #endif

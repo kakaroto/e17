@@ -37,7 +37,6 @@ Etk_Bool on_ImageComboBox_item_activated   (Etk_Combobox *combobox, Etk_Combobox
 Etk_Bool on_ImageTweenList_row_selected    (Etk_Object *object, Etk_Tree_Row *row, void *data);
 Etk_Bool on_EffectComboBox_changed         (Etk_Combobox *combobox, void *data);
 Etk_Bool on_AlertDialog_response           (Etk_Dialog *dialog, int response_id, void *data);
-Etk_Bool on_StateIndexSpinner_value_changed(Etk_Range *range, double value, void *data);
 Etk_Bool on_GroupNameEntry_text_changed    (Etk_Object *object, void *data);
 Etk_Bool on_AspectSpinner_value_changed    (Etk_Range *range, double value, void *data);
 Etk_Bool on_AspectComboBox_changed         (Etk_Combobox *combobox, void *data);

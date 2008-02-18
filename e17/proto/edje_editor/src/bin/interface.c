@@ -8,6 +8,47 @@
 #include "interface.h"
 #include "evas.h"
 
+
+void
+ConsolleClear(void)
+{
+   edje_object_part_text_set(Consolle, "line1", "");
+   edje_object_part_text_set(Consolle, "line2", "");
+   edje_object_part_text_set(Consolle, "line3", "");
+   edje_object_part_text_set(Consolle, "line4", "");
+   edje_object_part_text_set(Consolle, "line5", "");
+   
+   while(stack)
+   {
+      evas_stringshare_del(evas_list_data(stack));
+      stack = evas_list_remove_list(stack, stack);
+   }
+   consolle_count = 0;
+}
+void
+ConsolleLog(char *text)
+{
+   printf("LOG: %s\n", text);
+   
+   stack = evas_list_prepend(stack, evas_stringshare_add(text));
+   
+   while (evas_list_count(stack) > 5)
+   {
+      evas_stringshare_del(evas_list_data(evas_list_last(stack)));
+      stack = evas_list_remove_list(stack, evas_list_last(stack));
+   }
+
+  // if (evas_list_nth(stack, 0))
+      edje_object_part_text_set(Consolle, "line1", evas_list_nth(stack, 0));
+  // if (evas_list_nth(stack, 1))
+      edje_object_part_text_set(Consolle, "line2", evas_list_nth(stack, 1));
+  // if (evas_list_nth(stack, 2))
+      edje_object_part_text_set(Consolle, "line3", evas_list_nth(stack, 2));
+  // if (evas_list_nth(stack, 3))
+      edje_object_part_text_set(Consolle, "line4", evas_list_nth(stack, 3));
+  // if (evas_list_nth(stack, 4))
+      edje_object_part_text_set(Consolle, "line5", evas_list_nth(stack, 4));
+}
 void
 ShowAlert(char* text)
 {
@@ -504,7 +545,6 @@ UpdateDescriptionFrame(void)
 {
   //Stop signal propagation
    etk_signal_block("text-changed",ETK_OBJECT(UI_StateEntry),on_StateEntry_text_changed, NULL);
-//   etk_signal_block("value-changed", ETK_OBJECT(UI_StateIndexSpinner), ETK_CALLBACK(on_StateIndexSpinner_value_changed), NULL);
    etk_signal_block("value-changed", ETK_OBJECT(UI_AspectMinSpinner), ETK_CALLBACK(on_AspectSpinner_value_changed), NULL);
    etk_signal_block("value-changed", ETK_OBJECT(UI_AspectMaxSpinner), ETK_CALLBACK(on_AspectSpinner_value_changed), NULL);
    etk_signal_block("active-item-changed", ETK_OBJECT(UI_AspectComboBox), ETK_CALLBACK(on_AspectComboBox_changed), NULL);
@@ -551,7 +591,6 @@ UpdateDescriptionFrame(void)
 
    //ReEnable Signal Propagation
    etk_signal_unblock("text-changed",ETK_OBJECT(UI_StateEntry),on_StateEntry_text_changed, NULL);
-//   etk_signal_unblock("value-changed", ETK_OBJECT(UI_StateIndexSpinner), ETK_CALLBACK(on_StateIndexSpinner_value_changed), NULL);
    etk_signal_unblock("value-changed", ETK_OBJECT(UI_AspectMinSpinner), ETK_CALLBACK(on_AspectSpinner_value_changed), NULL);
    etk_signal_unblock("value-changed", ETK_OBJECT(UI_AspectMaxSpinner), ETK_CALLBACK(on_AspectSpinner_value_changed), NULL);
    etk_signal_unblock("active-item-changed", ETK_OBJECT(UI_AspectComboBox), ETK_CALLBACK(on_AspectComboBox_changed), NULL);
@@ -724,24 +763,13 @@ UpdateTextFrame(void)
    edje_edit_string_free(font);
 
    //Set Effect ComboBox
-   switch (edje_edit_part_effect_get(edje_o, Cur.part->string))
-   {
-      case ENGRAVE_TEXT_EFFECT_NONE: eff_num = 0; break;
-      case ENGRAVE_TEXT_EFFECT_PLAIN: eff_num = 0; break;
-      case ENGRAVE_TEXT_EFFECT_OUTLINE: eff_num = 1; break;
-      case ENGRAVE_TEXT_EFFECT_SOFT_OUTLINE: eff_num = 2; break;
-      case ENGRAVE_TEXT_EFFECT_SHADOW: eff_num = 3; break;
-      case ENGRAVE_TEXT_EFFECT_SOFT_SHADOW: eff_num = 4; break;
-      case ENGRAVE_TEXT_EFFECT_OUTLINE_SHADOW: eff_num = 5; break;
-      case ENGRAVE_TEXT_EFFECT_OUTLINE_SOFT_SHADOW: eff_num = 6; break;
-      case ENGRAVE_TEXT_EFFECT_FAR_SHADOW: eff_num = 7; break;
-      case ENGRAVE_TEXT_EFFECT_FAR_SOFT_SHADOW: eff_num = 8; break;
-      case ENGRAVE_TEXT_EFFECT_GLOW: eff_num = 9; break;
-      default: break; // remove warning
-   }
+   eff_num = edje_edit_part_effect_get(edje_o, Cur.part->string);
+   eff_num--;
+   if (eff_num < 0) eff_num = 0;
+   
    etk_combobox_active_item_set(ETK_COMBOBOX(UI_EffectComboBox),
       etk_combobox_nth_item_get(ETK_COMBOBOX(UI_EffectComboBox), eff_num));
-
+   
    //Set Text color Rects
    edje_edit_state_color_get(edje_o, Cur.part->string, Cur.state->string,&r,&g,&b,NULL);
    evas_object_color_set(TextColorObject, r, g, b, 255);
@@ -1346,7 +1374,7 @@ create_toolbar(Etk_Toolbar_Orientation o)
    etk_signal_connect("activated", ETK_OBJECT(menu_item),
                ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_OPTION_BG4);
    etk_menu_shell_append(ETK_MENU_SHELL(UI_OptionsMenu), ETK_MENU_ITEM(menu_item));
-#if DEBUG_BUTTON
+#if DEBUG_MODE
    //DebugButton
    button = etk_tool_button_new_from_stock(ETK_STOCK_DOCUMENT_PROPERTIES);
    etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), button, ETK_BOX_START);
@@ -1464,20 +1492,20 @@ create_tree(void)
    etk_tree_col_expand_set(col,ETK_TRUE);
    //Visibility column
    col = etk_tree_col_new(ETK_TREE(UI_PartsTree), "vis", 10,0);
-   etk_tree_col_visible_set(col, DEBUG_TREE);
+   etk_tree_col_visible_set(col, DEBUG_MODE);
    etk_tree_col_model_add(col,etk_tree_model_checkbox_new());
    etk_tree_col_resizable_set(col, ETK_FALSE);
    etk_tree_col_expand_set(col,ETK_FALSE);
    //RowType column
    col = etk_tree_col_new(ETK_TREE(UI_PartsTree), "type",10, 0);
    etk_tree_col_model_add(col,etk_tree_model_int_new());
-   etk_tree_col_visible_set(col, DEBUG_TREE);
+   etk_tree_col_visible_set(col, DEBUG_MODE);
    etk_tree_col_resizable_set(col, ETK_FALSE);
    etk_tree_col_expand_set(col,ETK_FALSE);
    //Parent part row
    col = etk_tree_col_new(ETK_TREE(UI_PartsTree), "parent",100, 0);
    etk_tree_col_model_add(col,etk_tree_model_text_new());
-   etk_tree_col_visible_set(col, DEBUG_TREE);
+   etk_tree_col_visible_set(col, DEBUG_MODE);
    etk_tree_col_resizable_set(col, ETK_FALSE);
    etk_tree_col_expand_set(col,ETK_FALSE);
    etk_tree_build(ETK_TREE(UI_PartsTree));
@@ -1557,17 +1585,17 @@ create_description_frame(void)
    etk_box_append(ETK_BOX(hbox),UI_AspectComboBox, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_AspectComboBox), "None");
-   etk_combobox_item_data_set(ComboItem, (void*)ENGRAVE_ASPECT_PREFERENCE_NONE);
+   etk_combobox_item_data_set(ComboItem, (void*)EDJE_ASPECT_PREFER_NONE);
 
    ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_AspectComboBox), "Vertical");
-   etk_combobox_item_data_set(ComboItem, (void*)ENGRAVE_ASPECT_PREFERENCE_VERTICAL);
+   etk_combobox_item_data_set(ComboItem, (void*)EDJE_ASPECT_PREFER_VERTICAL);
 
    ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_AspectComboBox), "Horizontal");
-   etk_combobox_item_data_set(ComboItem, (void*)ENGRAVE_ASPECT_PREFERENCE_HORIZONTAL);
+   etk_combobox_item_data_set(ComboItem, (void*)EDJE_ASPECT_PREFER_HORIZONTAL);
 
    ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_AspectComboBox), "Both");
-   etk_combobox_item_data_set(ComboItem, (void*)ENGRAVE_ASPECT_PREFERENCE_BOTH);
-
+   etk_combobox_item_data_set(ComboItem, (void*)EDJE_ASPECT_PREFER_BOTH);
+   
    //hbox
    hbox = etk_hbox_new(ETK_FALSE, 0);
    etk_box_append(ETK_BOX(vbox), hbox, ETK_BOX_START, ETK_BOX_NONE, 0);
@@ -1631,8 +1659,6 @@ create_description_frame(void)
     
    etk_signal_connect("text-changed", ETK_OBJECT(UI_StateEntry),
                       ETK_CALLBACK(on_StateEntry_text_changed), NULL);
-//   etk_signal_connect("value-changed", ETK_OBJECT(UI_StateIndexSpinner),
-//                      ETK_CALLBACK(on_StateIndexSpinner_value_changed), NULL);
    etk_signal_connect("value-changed", ETK_OBJECT(UI_AspectMinSpinner),
                       ETK_CALLBACK(on_AspectSpinner_value_changed), NULL);
    etk_signal_connect("value-changed", ETK_OBJECT(UI_AspectMaxSpinner),
@@ -1882,34 +1908,34 @@ create_text_frame(void)
    
    ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_EffectComboBox),
       etk_image_new_from_edje(EdjeFile,"NONE.PNG"), "Plain");
-   etk_combobox_item_data_set(ComboItem, (void*)ENGRAVE_TEXT_EFFECT_PLAIN);
+   etk_combobox_item_data_set(ComboItem, (void*)EDJE_TEXT_EFFECT_PLAIN);
    ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_EffectComboBox),
       etk_image_new_from_edje(EdjeFile,"NONE.PNG"), "Outline");
-   etk_combobox_item_data_set(ComboItem, (void*)ENGRAVE_TEXT_EFFECT_OUTLINE);
+   etk_combobox_item_data_set(ComboItem, (void*)EDJE_TEXT_EFFECT_OUTLINE);
    ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_EffectComboBox),
       etk_image_new_from_edje(EdjeFile,"NONE.PNG"), "Soft Outline");
-   etk_combobox_item_data_set(ComboItem, (void*)ENGRAVE_TEXT_EFFECT_SOFT_OUTLINE);
+   etk_combobox_item_data_set(ComboItem, (void*)EDJE_TEXT_EFFECT_SOFT_OUTLINE);
    ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_EffectComboBox),
       etk_image_new_from_edje(EdjeFile,"NONE.PNG"), "Shadow");
-   etk_combobox_item_data_set(ComboItem, (void*)ENGRAVE_TEXT_EFFECT_SHADOW);
+   etk_combobox_item_data_set(ComboItem, (void*)EDJE_TEXT_EFFECT_SHADOW);
    ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_EffectComboBox),
       etk_image_new_from_edje(EdjeFile,"NONE.PNG"), "Soft Shadow");
-   etk_combobox_item_data_set(ComboItem, (void*)ENGRAVE_TEXT_EFFECT_SOFT_SHADOW);
+   etk_combobox_item_data_set(ComboItem, (void*)EDJE_TEXT_EFFECT_SOFT_SHADOW);
    ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_EffectComboBox),
       etk_image_new_from_edje(EdjeFile,"NONE.PNG"), "Outline Shadow");
-   etk_combobox_item_data_set(ComboItem, (void*)ENGRAVE_TEXT_EFFECT_OUTLINE_SHADOW);
+   etk_combobox_item_data_set(ComboItem, (void*)EDJE_TEXT_EFFECT_OUTLINE_SHADOW);
    ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_EffectComboBox),
       etk_image_new_from_edje(EdjeFile,"NONE.PNG"), "Outline Soft Shadow");
-   etk_combobox_item_data_set(ComboItem, (void*)ENGRAVE_TEXT_EFFECT_OUTLINE_SOFT_SHADOW);
+   etk_combobox_item_data_set(ComboItem, (void*)EDJE_TEXT_EFFECT_OUTLINE_SOFT_SHADOW);
    ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_EffectComboBox),
       etk_image_new_from_edje(EdjeFile,"NONE.PNG"), "Far Shadow");
-   etk_combobox_item_data_set(ComboItem, (void*)ENGRAVE_TEXT_EFFECT_FAR_SHADOW);
+   etk_combobox_item_data_set(ComboItem, (void*)EDJE_TEXT_EFFECT_FAR_SHADOW);
    ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_EffectComboBox),
       etk_image_new_from_edje(EdjeFile,"NONE.PNG"), "Far Soft Shadow");
-   etk_combobox_item_data_set(ComboItem, (void*)ENGRAVE_TEXT_EFFECT_FAR_SOFT_SHADOW);
+   etk_combobox_item_data_set(ComboItem, (void*)EDJE_TEXT_EFFECT_FAR_SOFT_SHADOW);
    ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_EffectComboBox),
       etk_image_new_from_edje(EdjeFile,"NONE.PNG"), "Glow");
-   etk_combobox_item_data_set(ComboItem, (void*)ENGRAVE_TEXT_EFFECT_GLOW);
+   etk_combobox_item_data_set(ComboItem, (void*)EDJE_TEXT_EFFECT_GLOW);
    
    etk_table_attach_default(ETK_TABLE(table),UI_EffectComboBox,1,4,3,3);
 
@@ -2635,9 +2661,8 @@ create_main_window(void)
 
    //Create the main edje object to edit
    edje_o = edje_object_add(UI_evas);
-#if ECHO_EDJE_SIGNAL
    edje_object_signal_callback_add(edje_o, "*", "*", signal_cb, NULL);
-#endif
+
    /*edje_object_signal_emit(edje_ui,"group_frame_show","edje_editor");
    edje_object_signal_emit(edje_ui,"part_frame_show","edje_editor");
    edje_object_signal_emit(edje_ui,"description_frame_show","edje_editor");

@@ -8,7 +8,6 @@ INCLUDES = \
 @ECORE_CFLAGS@ \
 @ETK_CFLAGS@ \
 @EVAS_CFLAGS@ \
-@ENGRAVE_CFLAGS@ \
 @EDJE_CFLAGS@
 
 bin_PROGRAMS = edje_editor
@@ -17,15 +16,13 @@ edje_editor_INCLUDES = \
 callbacks.h \
 evas.h \
 interface.h \
-main.h \
-inout.h
+main.h
 
 edje_editor_SOURCES = \
 callbacks.c \
 evas.c \
 interface.c \
 main.c \
-inout.c \
 $(edje_editor_INCLUDES)
 
-edje_editor_LDADD = @ECORE_LIBS@ @ETK_LIBS@ @EVAS_LIBS@ @ENGRAVE_LIBS@ @EDJE_LIBS@
+edje_editor_LDADD = @ECORE_LIBS@ @ETK_LIBS@ @EVAS_LIBS@ @EDJE_LIBS@

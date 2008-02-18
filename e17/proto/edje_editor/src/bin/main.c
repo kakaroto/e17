@@ -4,7 +4,6 @@
 #include <Edje.h>
 #include <Edje_Edit.h>
 #include <Etk.h>
-#include <Engrave.h>
 #include <Ecore_Str.h>
 
 #include "evas.h"
@@ -138,6 +137,7 @@ ChangeGroup(char *group)
    printf("Change to group: %s\n", group);
    edje_edit_save(edje_o);
    evas_object_hide(edje_o);
+   ConsolleClear();
    edje_object_file_set(edje_o, Cur.edj_temp_name->string, group);
    evas_object_show(edje_o);
    Parts_Hash = NULL;         //TODO FREE
@@ -258,12 +258,10 @@ int
 main(int argc, char **argv)
 {
    //Init Globals
-   Cur.eg = NULL;
-   Cur.ep = NULL;
-   Cur.eps = NULL;
    Cur.open_file_name = NULL;
    Cur.source_dir = NULL;
    Cur.main_source_file = NULL;
+   stack = NULL;
    
    //Setting Globals
    EdjeFile = PACKAGE_DATA_DIR"/edje_editor.edj";
@@ -304,13 +302,6 @@ main(int argc, char **argv)
    {
      printf("ERROR: Cannot init Ecore!\n");
      return 1;
-   }
-
-
-   if (!(hash = ecore_hash_new(ecore_direct_hash,ecore_direct_compare)))
-   {
-      printf("Could not create hash!\n");
-      return 1;
    }
 
    

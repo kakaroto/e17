@@ -6,8 +6,7 @@ Introduction
 =======================================
 
 edje_editor is a visual editor for edje file.
-This is a prealpha state, don't expect nothing.
-YOU NEED TO PATCH EDJE WITH THE INCLUDED EDJE_EDIT.PATCH
+YOU NEED TO PATCH EDJE WITH THE INCLUDED edje_edit.patch FILE
 
 
 Dependencies
@@ -16,7 +15,6 @@ Dependencies
  - Evas
  - Edje
  - Etk
- - Engrave
  - Ecore
 
 
