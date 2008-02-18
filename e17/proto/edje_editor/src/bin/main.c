@@ -292,6 +292,7 @@ main(int argc, char **argv)
       TestEdjeGroup(argv[2],argv[3]);
       return 0;
    }
+   
    //Init ETK
    if (!etk_init(argc, argv))
    {
@@ -302,7 +303,7 @@ main(int argc, char **argv)
    if (!ecore_init())
    {
      printf("ERROR: Cannot init Ecore!\n");
-     return -1;
+     return 1;
    }
 
 
@@ -312,19 +313,6 @@ main(int argc, char **argv)
       return 1;
    }
 
-   //Create the etk window and all the widgets
-   create_main_window();
-
-   printf("*********************************\n");
-   printf("Testing edje direct access!!...\n");
-   printf("*********************************\n");
-
-   
-   setlocale(LC_NUMERIC,"C");
-   //printf("LOCALE TEST:\n");
-   //double val = 1.2;
-   //sscanf("3.2","%lf", &val);
-   //printf("%f\n", val);
    
    Cur.edj_file_name = etk_string_new("");
    Cur.edj_temp_name = etk_string_new("");
@@ -334,7 +322,16 @@ main(int argc, char **argv)
    Cur.prog = etk_string_new("");
    Cur.tween = etk_string_new("");
    
-    
+   
+   setlocale(LC_NUMERIC,"C");
+   //printf("LOCALE TEST:\n");
+   //double val = 1.2;
+   //sscanf("3.2","%lf", &val);
+   //printf("%f\n", val);
+   
+   //Create the etk window and all the widgets
+   create_main_window();
+   
    //Open a file from command line
    if (argc == 2)
    {
@@ -352,10 +349,11 @@ main(int argc, char **argv)
    //Start main loop
    etk_main();
    
-   //Remove temp file
-   ecore_file_unlink(Cur.edj_temp_name->string); //TODO move this line down (when don't use etk_string anymore)
-
+   //Main loop is finished
    etk_shutdown();
    
+   //Remove temp file
+   ecore_file_unlink(Cur.edj_temp_name->string);
+
    return 0;
 }

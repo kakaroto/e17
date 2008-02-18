@@ -242,6 +242,7 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
          Cur.part = etk_string_set(Cur.part, name);
          Cur.state = etk_string_clear(Cur.state);
          Cur.tween = etk_string_clear(Cur.tween);
+         Cur.prog = etk_string_clear(Cur.prog);
          
          edje_object_signal_emit(edje_ui,"description_frame_hide","edje_editor");
          edje_object_signal_emit(edje_ui,"position_frame_hide","edje_editor");
@@ -260,6 +261,7 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
          Cur.state = etk_string_set(Cur.state, name);
          Cur.part = etk_string_set(Cur.part, parent_name);
          Cur.tween = etk_string_clear(Cur.tween);
+         Cur.prog = etk_string_clear(Cur.prog);
        
          edje_edit_part_selected_state_set(edje_o, Cur.part->string, Cur.state->string);  
          
@@ -1373,7 +1375,6 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
          row = AddStateToTree(Cur.part->string, "New state 0.00");
          etk_tree_row_select(row);
          etk_tree_row_unfold(evas_hash_find(Parts_Hash,Cur.part->string));
-      
          break;
       
       case NEW_PROG:
@@ -1382,7 +1383,14 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
             ShowAlert("You must first select a group.");
             break;
          }
-         ShowAlert("not yet implemented.");
+         if (!edje_edit_program_add(edje_o, "New program"))
+         {
+            ShowAlert("ERROR: can't add program");
+            break;
+         }
+         row = AddProgramToTree("New program");
+         etk_tree_row_select(row);
+         etk_tree_row_scroll_to(row, ETK_FALSE);
          break;
       
       case NEW_GROUP:
@@ -1481,7 +1489,23 @@ on_RemoveMenu_item_activated(Etk_Object *object, void *data)
          break;
       
       case REMOVE_PROG:
-          ShowAlert("not yet implemented");
+         if (!etk_string_length_get(Cur.prog))
+         {
+            ShowAlert("You must first select a program");
+         }
+         if (!edje_edit_program_del(edje_o, Cur.prog->string))
+         {
+            ShowAlert("Can't delete program");
+            break;
+         }
+         row = etk_tree_selected_row_get(ETK_TREE(UI_PartsTree));
+         next = etk_tree_row_next_get(row);
+         if (!next) 
+            next = etk_tree_row_prev_get(row);
+         etk_tree_row_delete(row);
+         if (next)
+            etk_tree_row_select(next);
+      
          break;
    }
    return ETK_TRUE;
