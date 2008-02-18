@@ -221,7 +221,8 @@ on_AllButton_click(Etk_Button *button, void *data)
       //   system(cmd);
       break;
    case TOOLBAR_DEBUG:
-      DebugInfo(FALSE);
+      //DebugInfo(FALSE);
+      edje_edit_print_internal_status(edje_o);
       break;
    case IMAGE_TWEEN_UP:
          ShowAlert("Up not yet implemented.");
@@ -458,6 +459,23 @@ on_PartNameEntry_text_changed(Etk_Object *object, void *data)
       /* Recreate rel combobox */
       PopulateRelComboBoxes();  //TODO do a focus-out callback for this (don't need to do on every key!!)
    }
+   return ETK_TRUE;
+}
+
+
+Etk_Bool
+on_CliptoComboBox_item_activated(Etk_Combobox *combobox, Etk_Combobox_Item *item, void *data)
+{
+   char *to;
+   printf("Item Activated Signal on CliptoCombobox EMITTED\n");
+   
+   to = etk_combobox_item_field_get(item, 1);
+   if (strcmp(to, "None"))
+      edje_edit_part_clip_to_set(edje_o, Cur.part->string, to);
+   else
+      edje_edit_part_clip_to_set(edje_o, Cur.part->string, NULL);
+   
+   
    return ETK_TRUE;
 }
 

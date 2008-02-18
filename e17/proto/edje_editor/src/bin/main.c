@@ -1,6 +1,7 @@
 #include "config.h"
 #include <string.h>
 #include <errno.h>
+#include <locale.h>
 #include <Edje.h>
 #include <Edje_Edit.h>
 #include <Etk.h>
@@ -148,12 +149,13 @@ ChangeGroup(char *group)
    Cur.tween = etk_string_clear(Cur.tween);
    Cur.prog = etk_string_clear(Cur.prog);
    
-   UpdateGroupFrame();
-   
    PopulateTree();
    PopulateRelComboBoxes();
    PopulateSourceComboEntry();
    PopulateSignalComboEntry();
+   
+   UpdateGroupFrame();
+   UpdatePartFrame();
    
    //update FakeWin title
    edje_object_part_text_set(EV_fakewin, "title", group);

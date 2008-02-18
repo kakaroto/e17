@@ -43,6 +43,7 @@ Etk_Widget *UI_PartNameEntry;
 Etk_Widget *UI_PartTypeComboBox;
 Etk_Widget *UI_PartEventsCheck;
 Etk_Widget *UI_PartEventsRepeatCheck;
+Etk_Widget *UI_CliptoComboBox;
 /* state frame objects */
 Etk_Widget *UI_StateEntry;
 //Etk_Widget *UI_StateIndexSpinner;
