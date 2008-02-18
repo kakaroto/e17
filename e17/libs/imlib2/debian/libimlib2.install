@@ -1,4 +1,2 @@
 debian/tmp/usr/lib/*.so.*
-debian/tmp/usr/lib/imlib2/loaders/*.so
-debian/tmp/usr/lib/imlib2/filters/*.so
-debian/tmp/usr/lib/imlib2/image/*.so
+debian/tmp/usr/lib/imlib2/*/*.so
