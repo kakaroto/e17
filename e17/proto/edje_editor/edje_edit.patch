@@ -4,7 +4,7 @@ RCS file: /cvs/e/e17/libs/edje/Doxyfile,v
 retrieving revision 1.4
 diff -u -r1.4 Doxyfile
 --- Doxyfile	6 Dec 2007 23:40:48 -0000	1.4
-+++ Doxyfile	18 Feb 2008 00:04:11 -0000
++++ Doxyfile	18 Feb 2008 02:54:41 -0000
 @@ -1,7 +1,7 @@
  PROJECT_NAME           = Edje
  PROJECT_NUMBER         =
@@ -29,7 +29,7 @@ RCS file: /cvs/e/e17/libs/edje/configure.in,v
 retrieving revision 1.93
 diff -u -r1.93 configure.in
 --- configure.in	25 Jan 2008 03:35:46 -0000	1.93
-+++ configure.in	18 Feb 2008 00:04:11 -0000
++++ configure.in	18 Feb 2008 02:54:41 -0000
 @@ -66,6 +66,7 @@
    evas >= 0.9.9
    ecore-evas >= 0.9.9
@@ -44,7 +44,7 @@ RCS file: /cvs/e/e17/libs/edje/gendoc,v
 retrieving revision 1.6
 diff -u -r1.6 gendoc
 --- gendoc	6 Dec 2007 23:42:38 -0000	1.6
-+++ gendoc	18 Feb 2008 00:04:11 -0000
++++ gendoc	18 Feb 2008 02:54:42 -0000
 @@ -1,7 +1,7 @@
  #!/bin/sh
  cp ./edje.c.in ./edje.c
@@ -68,8 +68,8 @@ Index: src/lib/Edje_Edit.h
 RCS file: src/lib/Edje_Edit.h
 diff -N src/lib/Edje_Edit.h
 --- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ src/lib/Edje_Edit.h	18 Feb 2008 00:04:11 -0000
-@@ -0,0 +1,1240 @@
++++ src/lib/Edje_Edit.h	18 Feb 2008 02:54:42 -0000
+@@ -0,0 +1,1250 @@
 +#ifndef _EDJE_EDIT_H
 +#define _EDJE_EDIT_H
 +
@@ -271,12 +271,22 @@ diff -N src/lib/Edje_Edit.h
 + * A group must have at least one part, so it's not possible to 
 + * remove the last remaining part.
 + */
-+EAPI unsigned char         ///@return TRUE on success, FALSE if the part can't be removed
++EAPI unsigned char         ///@return 1 on success, 0 if the part can't be removed
 +edje_edit_part_del(
 +   Evas_Object *obj,       ///< The edje object
 +   const char *part        ///< The name of the part to remove
 +);
-+   
++
++/**Restack the give part to be after the 'after' part.
++ * Set after to NULL to move the object in the first (more deeper) position.
++ */
++EAPI unsigned char         ///@return 1 on success, 0 on failure
++edje_edit_part_restack(
++   Evas_Object *obj,       ///< The edje object
++   const char *part,       ///< The name of the part to move
++   const char *after       ///< The name of the part to place part after
++);
++
 +/**Set a new name for part.
 + * Note that the relative getter function don't exist as it don't make sense ;)
 + */
@@ -1316,7 +1326,7 @@ RCS file: /cvs/e/e17/libs/edje/src/lib/Makefile.am,v
 retrieving revision 1.39
 diff -u -r1.39 Makefile.am
 --- src/lib/Makefile.am	18 Jan 2008 06:38:46 -0000	1.39
-+++ src/lib/Makefile.am	18 Feb 2008 00:04:11 -0000
++++ src/lib/Makefile.am	18 Feb 2008 02:54:42 -0000
 @@ -14,7 +14,8 @@
  libedje.la
  
@@ -1342,8 +1352,8 @@ Index: src/lib/edje_edit.c
 RCS file: src/lib/edje_edit.c
 diff -N src/lib/edje_edit.c
 --- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ src/lib/edje_edit.c	18 Feb 2008 00:04:12 -0000
-@@ -0,0 +1,2828 @@
++++ src/lib/edje_edit.c	18 Feb 2008 02:54:42 -0000
+@@ -0,0 +1,2861 @@
 +/*
 + * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
 + */
@@ -2203,6 +2213,39 @@ diff -N src/lib/edje_edit.c
 +   edje_object_calc_force(obj);
 +   
 +   return TRUE;
++}
++
++
++EAPI unsigned char
++edje_edit_part_restack(Evas_Object *obj, const char* part, const char *after)
++{
++   printf("RESTACK PART: %s [after: %s]\n", part, after);
++   GET_RP_OR_RETURN(0)
++   
++   Edje_Part_Collection *group;
++   group = ed->collection;
++   
++   if (after)
++   {
++      Edje_Real_Part *af;
++      af = _edje_real_part_get(ed, after);
++      if(!af) return 0;
++      
++      group->parts = evas_list_remove(group->parts, rp->part);
++      group->parts = evas_list_append_relative(group->parts, rp->part, af->part);
++   
++      evas_object_stack_above(rp->object, af->object);
++   }
++   else
++   {
++      group->parts = evas_list_remove(group->parts, rp->part);
++      group->parts = evas_list_prepend(group->parts, rp->part);
++      evas_object_lower(rp->object);
++   }
++   
++   edje_object_calc_force(obj);
++   
++   return 1;
 +}
 +
 +EAPI unsigned char
@@ -4178,7 +4221,7 @@ RCS file: /cvs/e/e17/libs/edje/src/lib/edje_load.c,v
 retrieving revision 1.111
 diff -u -r1.111 edje_load.c
 --- src/lib/edje_load.c	18 Jan 2008 06:34:04 -0000	1.111
-+++ src/lib/edje_load.c	18 Feb 2008 00:04:12 -0000
++++ src/lib/edje_load.c	18 Feb 2008 02:54:42 -0000
 @@ -5,7 +5,7 @@
  #include "Edje.h"
  #include "edje_private.h"

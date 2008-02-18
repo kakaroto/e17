@@ -57,8 +57,14 @@ ShowFilechooser(int FileChooserType)
  *
  ***********************************/
 Etk_Tree_Row *
-AddPartToTree(const char *part_name)//, char *group_name)//, int place_after, Engrave_Part* after)
+AddPartToTree(const char *part_name, Etk_Tree_Row *after)
 {
+   /* If after=0 then append to the tree
+      If after=1 then prepend to the tree
+      If after>1 then prepend relative to after
+      
+      I hope no one get a real row pointer = 1  :P
+   */
    Etk_Tree_Row *row = NULL;
    char buf[20];
 
@@ -72,22 +78,37 @@ AddPartToTree(const char *part_name)//, char *group_name)//, int place_after, En
       default:                       strcpy(buf,"NONE.PNG");  break;
    }
    
- /*  if (place_after)
+   if ((int)after > 1)
       row = etk_tree_row_insert(ETK_TREE(UI_PartsTree),
-                                ecore_hash_get(hash,part->parent),
-                                ecore_hash_get(hash,after),
-                                COL_NAME, EdjeFile,buf, part->name,
-                                COL_TYPE,ROW_PART,
+                                NULL,
+                                after,
+                                COL_NAME, EdjeFile, buf, part_name,
+                                COL_TYPE, ROW_PART,
                                 NULL);
-   else*/
-   row = etk_tree_row_append(ETK_TREE(UI_PartsTree),
-                             NULL,
-                             COL_NAME, EdjeFile,buf, part_name,
-                             COL_TYPE, ROW_PART,
-                             NULL);
+   else if ((int)after == 1)
+      row = etk_tree_row_prepend(ETK_TREE(UI_PartsTree),
+                                NULL,
+                                COL_NAME, EdjeFile, buf, part_name,
+                                COL_TYPE, ROW_PART,
+                                NULL);
+   else
+      row = etk_tree_row_append(ETK_TREE(UI_PartsTree),
+                                NULL,
+                                COL_NAME, EdjeFile, buf, part_name,
+                                COL_TYPE, ROW_PART,
+                                NULL);
 
    Parts_Hash = evas_hash_add(Parts_Hash, part_name, row);
-   //etk_tree_row_data_set(row, part_name);
+   
+   /* also add all state to the tree */
+   Evas_List *states, *sp;
+   states = sp = edje_edit_part_states_list_get(edje_o, part_name);
+   while(sp)
+   {
+      AddStateToTree(part_name, (char*)sp->data);
+      sp = sp->next;
+   }
+   edje_edit_string_list_free(states);
    
    return row;
 }
@@ -130,7 +151,6 @@ void
 PopulateTree(void)
 {
    Evas_List *parts, *pp;
-   Evas_List *states, *sp;
    Evas_List *progs;
    
    etk_tree_freeze(ETK_TREE(UI_PartsTree));
@@ -140,14 +160,7 @@ PopulateTree(void)
    while(pp)
    {
       printf("  P: %s\n", (char*)pp->data);
-      AddPartToTree((char*)pp->data);
-      states = sp = edje_edit_part_states_list_get(edje_o, (char*)pp->data);
-      while(sp)
-      {
-         AddStateToTree((char*)pp->data, (char*)sp->data);
-         sp = sp->next;
-      }
-      edje_edit_string_list_free(states);
+      AddPartToTree((char*)pp->data, NULL);
       pp = pp->next;
    }
    edje_edit_string_list_free(parts);

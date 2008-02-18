@@ -137,7 +137,7 @@ Evas_Object *edje_ui;
 
 void create_main_window(void);
 
-Etk_Tree_Row *AddPartToTree(const char *part_name);
+Etk_Tree_Row *AddPartToTree(const char *part_name, Etk_Tree_Row *after);
 Etk_Tree_Row *AddStateToTree(const char *part_name, const char *state_name);
 Etk_Tree_Row *AddProgramToTree(const char* prog);
 

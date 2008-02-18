@@ -63,7 +63,8 @@ on_AllButton_click(Etk_Button *button, void *data)
    char cmd[1024];
    Etk_String *text;
    char *tween;
-   Etk_Tree_Row *row, *next;
+   char *name;
+   Etk_Tree_Row *row, *next, *prev;
    Etk_Combobox_Item *item;
 
    switch ((int)data)
@@ -72,7 +73,6 @@ on_AllButton_click(Etk_Button *button, void *data)
       system("edje_editor &");
       break;
    case TOOLBAR_OPEN:
-      //ShowAlert("Not yet implemented");
       ShowFilechooser(FILECHOOSER_OPEN);
       break;
    case TOOLBAR_SAVE:
@@ -96,24 +96,63 @@ on_AllButton_click(Etk_Button *button, void *data)
       break;
    case TOOLBAR_ADD:
       etk_menu_popup(ETK_MENU(UI_AddMenu));
-      //ShowAlert("Not yet reimplemented ;)");
       break;
    case TOOLBAR_REMOVE:
       etk_menu_popup(ETK_MENU(UI_RemoveMenu));
-      //ShowAlert("Not yet reimplemented ;)");
       break;
+   
    case TOOLBAR_MOVE_UP: //Lower
-      ShowAlert("Not yet reimplemented ;)");
+      if (!etk_string_length_get(Cur.part))
+      {
+         ShowAlert("You must select a part to lower");
+         break;
+      }
+      row = evas_hash_find(Parts_Hash, Cur.part->string);
+      prev = etk_tree_row_prev_get(row);
+      if (!prev) break;
+      prev = etk_tree_row_prev_get(prev);
+      if (prev)
+         etk_tree_row_fields_get(prev, COL_NAME, NULL, NULL, &name, NULL);
+      else
+         name = NULL;
+      if (!edje_edit_part_restack(edje_o, Cur.part->string, name))
+         break;
+      Parts_Hash = evas_hash_del(Parts_Hash, NULL, row);
+      etk_tree_row_delete(row);
+      
+      if (prev)
+         row = AddPartToTree(Cur.part->string, prev);
+      else
+         row = AddPartToTree(Cur.part->string, (void*)1);
+      etk_tree_row_select(row);
       break;
+   
    case TOOLBAR_MOVE_DOWN: //Raise
-      ShowAlert("Not yet reimplemented ;)");
+      if (!etk_string_length_get(Cur.part))
+      {
+         ShowAlert("You must select a part to lower");
+         break;
+      }
+      row = evas_hash_find(Parts_Hash, Cur.part->string);
+      next = etk_tree_row_next_get(row);
+      if (!next)
+         break;
+      
+      etk_tree_row_fields_get(next, COL_NAME, NULL, NULL, &name, NULL);
+      if (!edje_edit_part_restack(edje_o, Cur.part->string, name))
+         break;
+      Parts_Hash = evas_hash_del(Parts_Hash, NULL, row);
+      etk_tree_row_delete(row);
+      row = AddPartToTree(Cur.part->string, next);
+      etk_tree_row_select(row);
+      
       break;
+      
    case TOOLBAR_IMAGE_FILE_ADD:
       ShowFilechooser(FILECHOOSER_IMAGE);
       break;
    case TOOLBAR_FONT_FILE_ADD:
       ShowFilechooser(FILECHOOSER_FONT);
-      //ShowAlert("Not yet reimplemented ;)");
       break;
    case IMAGE_TWEEN_ADD:
       item = etk_combobox_active_item_get(ETK_COMBOBOX(UI_ImageComboBox));
@@ -180,16 +219,13 @@ on_AllButton_click(Etk_Button *button, void *data)
          ShowAlert("You need to save the file before testing it.");
       else
       {
-         snprintf(cmd,1024,"edje_editor -t \"%s\" \"%s\" &",Cur.open_file_name,Cur.eg->name);
+         snprintf(cmd,1024,"edje_editor -t \"%s\" \"%s\" &",
+                  Cur.open_file_name,Cur.eg->name);
          printf("TESTING EDJE. cmd: %s\n",cmd);
          system(cmd);
       }
       break;
    case TOOLBAR_DEBUG:
-      //on_RemoveMenu_item_activated(NULL, REMOVE_PART);
-      //on_AddMenu_item_activated(NULL, NEW_RECT);
-      //PopulateGroupsComboBox();
-      //ChangeGroup("New group");
       DebugInfo(FALSE);
       break;
    case IMAGE_TWEEN_UP:
@@ -199,17 +235,9 @@ on_AllButton_click(Etk_Button *button, void *data)
          ShowAlert("Down not yet implemented.");
       break;
    case SAVE_SCRIPT:
-         text = etk_textblock_text_get(ETK_TEXT_VIEW(UI_ScriptBox)->textblock,ETK_TRUE);
-         if (Cur.epr)
-         {
-            printf("Save script (in prog %s): %s\n",Cur.epr->name,text->string);
-            engrave_program_script_set (Cur.epr, text->string);
-            
-         }else if (Cur.eg)
-         {
-            printf("Save script (in group %s): %s\n",Cur.eg->name,text->string);
-            engrave_group_script_set(Cur.eg, text->string);
-         }
+         text = etk_textblock_text_get(ETK_TEXT_VIEW(UI_ScriptBox)->textblock,
+                                       ETK_TRUE);
+         ShowAlert("Script not yet implemented.");
          etk_object_destroy(ETK_OBJECT(text));
       break;
    default:
@@ -1280,10 +1308,9 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
             break;
          }
          //TODO generate a unique new name
-         AddPartToTree("New rectangle");
-         row = AddStateToTree("New rectangle", "default 0.00");
+         row = AddPartToTree("New rectangle", NULL);
          etk_tree_row_select(row);
-         etk_tree_row_unfold(evas_hash_find(Parts_Hash, "New rectangle"));
+         etk_tree_row_unfold(row);
          PopulateRelComboBoxes();
          break;
       
@@ -1299,8 +1326,7 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
             break;
          }
          //TODO generate a unique new name
-         AddPartToTree("New image");
-         row = AddStateToTree("New image", "default 0.00");
+         row = AddPartToTree("New image", NULL);
          
          char *image;
          item = etk_combobox_first_item_get(ETK_COMBOBOX(UI_ImageComboBox));
@@ -1313,7 +1339,7 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
          }
       
          etk_tree_row_select(row);
-         etk_tree_row_unfold(evas_hash_find(Parts_Hash, "New image"));
+         etk_tree_row_unfold(row);
          PopulateRelComboBoxes();
          break;
       
@@ -1329,8 +1355,7 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
             break;
          }
          //TODO generate a unique new name
-         AddPartToTree("New text");
-         row = AddStateToTree("New text", "default 0.00");
+         row = AddPartToTree("New text", NULL);
          
          char *font;
          item = etk_combobox_first_item_get(ETK_COMBOBOX(UI_FontComboBox));
@@ -1348,7 +1373,7 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
          edje_edit_part_effect_set(edje_o, "New text", EDJE_TEXT_EFFECT_GLOW);
       
          etk_tree_row_select(row);
-         etk_tree_row_unfold(evas_hash_find(Parts_Hash, "New text"));
+         etk_tree_row_unfold(row);
          PopulateRelComboBoxes();
          break;
       
