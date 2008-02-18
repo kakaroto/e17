@@ -9,6 +9,7 @@ static int thumb_width = 0; // < 0 means % of input
 static int thumb_height = 0; // < 0 means % of input
 static int max_dimension = 0; // > 0 means we reduce max(w,h) to max_dimension, with aspect preserved
 static char *thumb_comment = NULL;
+static int thumb_quality = 80;
 static struct option long_options[] =
 {
     {"verbose", no_argument,       0, 'v'},
@@ -16,6 +17,7 @@ static struct option long_options[] =
     {"height",  required_argument, 0, 'h'},
     {"max",     required_argument, 0, 'm'},
     {"comment", required_argument, 0, 'c'},
+    {"quality", required_argument, 0, 'q'},
     {0, 0, 0, 0}
 };
 
@@ -27,7 +29,9 @@ usage(const char *myname)
 	   " -w,  --width=<width>[%%]   set thumbnail width [%% of input]\n"
 	   " -h,  --height=<heigth>[%%] set thumbnail heigth [%% of input]\n"
 	   " -m,  --max=<maximum>       reduce max(w,h) to maximum, with aspect preserved\n"
-	   " -c,  --comment=<comment>   put a comment in thumbnail\n", myname);
+	   " -c,  --comment=<comment>   put a comment in thumbnail\n"
+	   " -q,  --quality=<quality>   set image quality (0-100)\n",
+	   myname);
     exit(0);
 }
 
@@ -40,7 +44,8 @@ main(int argc, char **argv)
    char *input_file = NULL, *output_file = NULL;
    char *p;
 
-   while ((c = getopt_long(argc, argv, "w:h:vc:m:", long_options, &option_index)) != -1) {
+   while ((c = getopt_long(argc, argv, "w:h:vc:m:q:", long_options,
+			   &option_index)) != -1) {
        switch (c) {
        case 0:
 	   usage(argv[0]);
@@ -77,6 +82,10 @@ main(int argc, char **argv)
        case 'c':
 	   thumb_comment = strdup(optarg);
 	   if (verbose_flag) printf("thumb_comment = %s\n", thumb_comment);
+	   break;
+       case 'q':
+	   thumb_quality = strtol(optarg, NULL, 10);
+	   if (verbose_flag) printf("thumb_quality = %d\n", thumb_quality);
 	   break;
        case '?':
 	   usage(argv[0]);
@@ -147,7 +156,7 @@ main(int argc, char **argv)
    
    if (verbose_flag) printf("Thumb size: %dx%d\n", thumb_width, thumb_height);
    epeg_decode_size_set(im, thumb_width, thumb_height);
-   epeg_quality_set               (im, 80);
+   epeg_quality_set               (im, thumb_quality);
    epeg_thumbnail_comments_enable (im, 1);
    epeg_comment_set               (im, thumb_comment);
    epeg_file_output_set           (im, output_file);
