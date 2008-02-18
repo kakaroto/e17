@@ -2,7 +2,7 @@ Source: esmart
 Section: libs
 Priority: optional
 Maintainer: E17 Debian Team <debian@edevelop.org>
-Build-Depends: debhelper (>> 4.0.0), automake1.7 | automaken, libtool, libecore0-dev, libevas0-dev, libepsilon0-dev, libimlib2-dev, libedje0-dev, libepeg0-dev
+Build-Depends: debhelper (>> 4.0.0), automake1.7 | automaken, libtool, pkg-config, libecore0-dev, libevas0-dev, libepsilon0-dev, libimlib2-dev, libedje0-dev, libepeg0-dev
 Standards-Version: 3.6.1.0
 
 Package: libesmart0

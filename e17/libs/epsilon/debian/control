@@ -2,7 +2,7 @@ Source: epsilon
 Section: libs
 Priority: optional
 Maintainer: E17 Debian Team <debian@edevelop.org>
-Build-Depends: cdbs, debhelper (>= 5), zlib1g-dev, libepeg-dev, libevas-dev, libecore-dev, libedje-dev, libimlib2-dev, libpng12-dev
+Build-Depends: cdbs, debhelper (>= 5), pkg-config, zlib1g-dev, libepeg-dev, libevas-dev, libecore-dev, libedje-dev, libimlib2-dev, libpng12-dev
 Standards-Version: 3.7.2
 
 Package: libepsilon0-dev
