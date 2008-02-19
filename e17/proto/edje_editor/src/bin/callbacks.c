@@ -113,16 +113,14 @@ on_AllButton_click(Etk_Button *button, void *data)
          ShowAlert("You must select a part to lower");
          break;
       }
+      if (!edje_edit_part_restack_below(edje_o, Cur.part->string))
+         break;
+      
       row = evas_hash_find(Parts_Hash, Cur.part->string);
       prev = etk_tree_row_prev_get(row);
       if (!prev) break;
       prev = etk_tree_row_prev_get(prev);
-      if (prev)
-         etk_tree_row_fields_get(prev, COL_NAME, NULL, NULL, &name, NULL);
-      else
-         name = NULL;
-      if (!edje_edit_part_restack(edje_o, Cur.part->string, name))
-         break;
+      
       Parts_Hash = evas_hash_del(Parts_Hash, NULL, row);
       etk_tree_row_delete(row);
       
@@ -139,19 +137,17 @@ on_AllButton_click(Etk_Button *button, void *data)
          ShowAlert("You must select a part to lower");
          break;
       }
-      row = evas_hash_find(Parts_Hash, Cur.part->string);
-      next = etk_tree_row_next_get(row);
-      if (!next)
+      if (!edje_edit_part_restack_above(edje_o, Cur.part->string))
          break;
       
-      etk_tree_row_fields_get(next, COL_NAME, NULL, NULL, &name, NULL);
-      if (!edje_edit_part_restack(edje_o, Cur.part->string, name))
-         break;
+      row = evas_hash_find(Parts_Hash, Cur.part->string);
+      next = etk_tree_row_next_get(row);
+      if (!next) break;
+      
       Parts_Hash = evas_hash_del(Parts_Hash, NULL, row);
       etk_tree_row_delete(row);
       row = AddPartToTree(Cur.part->string, next);
       etk_tree_row_select(row);
-      
       break;
       
    case TOOLBAR_IMAGE_FILE_ADD:
