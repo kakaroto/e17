@@ -69,7 +69,6 @@ on_AllButton_click(Etk_Button *button, void *data)
 {
    Etk_String *text;
    char *tween;
-   char *name;
    Etk_Tree_Row *row, *next, *prev;
    Etk_Combobox_Item *item;
 
