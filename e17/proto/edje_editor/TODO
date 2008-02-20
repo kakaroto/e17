@@ -1,25 +1,25 @@
 TODO edje_editor (not a complete list...only the first in my mind)
 =======================================
 
-* Tooltips EVERYWERE  :)
-
-* A new object add must be take a progressive (and unique) number (newrect1, newrect2...etc)
-
+EDJE:
 * Font and image can't be removed
-
-* Clipping
-
 * Save back the updated edc source to the edje file
-
 * Embryo scripting
-
-* Make the visible checkbox work (should the visibility apply to the EDC also? not only in the editor?)
-
-* Duplicate objects (copy/cut/paste??)
-
-* Fix strange alpha premul on text with effect
-
 * Use a value in the edje data field to store the editor version
   If no version information found alert the user
-  
+* Edje gradient
+* Edje draggies
+
+EDITOR:
+* Tooltips EVERYWERE  :)
+* Add keybinding
+* Add a handler to move the 2 points togheter
+* A new object add must be take a progressive (and unique) number (newrect1, newrect2...etc)
+* Make the visible checkbox work (should the visibility apply to the EDC also? not only in the editor?)
+* Duplicate objects (copy/cut/paste??)
+* Fix strange alpha premul on text with effect
 * In the Add/Remove menus disable 'not in context' choice
+* Add CheckBox(radio) in Options Menu
+* Make groups combobox searchable (using a Combo_Entry)
+* gradient
+* draggies

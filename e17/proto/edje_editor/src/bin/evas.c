@@ -9,19 +9,23 @@
 #define MAIN_LEFT 20
 #define MAIN_TOP 27
 
+
+static Evas_Coord dx, dy;
+
 void
 on_Drag(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    //printf("ON DRAG\n");
    Evas_Coord parentx,parenty,parentw,parenth;
    Evas_Coord x,y;
-   int mouse_x, mouse_y;
+   Evas_Coord mouse_x, mouse_y;
 
    // MoveBox
    if ((int)data == DRAG_MOVEBOX)
    {
-      evas_pointer_output_xy_get(ecore_evas_get(UI_ecore_MainWin),&x, &y);
-      ev_move_fake(x-30,y+8);//TODO
+      evas_pointer_output_xy_get(ecore_evas_get(UI_ecore_MainWin),
+                                 &mouse_x, &mouse_y);
+      ev_move_fake(mouse_x - dx, mouse_y + 16 - dy);
    }
 
    // Resize fake win
@@ -92,8 +96,15 @@ on_StartDrag(void *data, Evas_Object *o, const char *em, const char *src)
                                       on_Drag,(void*)DRAG_REL2);
    /* THIS COMMENT DISABLE THE FAKEWIN MOVE ABILITY (don't like it) */
    if ((int)data == DRAG_MOVEBOX)
-       evas_object_event_callback_add(EV_movebox, EVAS_CALLBACK_MOUSE_MOVE,
-                                        on_Drag, (void*)DRAG_MOVEBOX);
+   {
+      Evas_Coord x, y, mx, my;
+      evas_object_event_callback_add(EV_movebox, EVAS_CALLBACK_MOUSE_MOVE,
+                                     on_Drag, (void*)DRAG_MOVEBOX);
+      evas_object_geometry_get(EV_movebox, &x, &y, NULL, NULL);
+      evas_pointer_output_xy_get(ecore_evas_get(UI_ecore_MainWin), &mx, &my);
+      dx = mx - x;
+      dy = my - y;
+   }
    
 }
 
@@ -357,7 +368,7 @@ ev_resize_fake(int w, int h)
    if (h < 0) h = 100;
 
    evas_object_resize(EV_fakewin, w, h);
-   evas_object_resize(EV_movebox, w, 10);
+   evas_object_resize(EV_movebox, w+8, 14);
    edje_object_part_drag_value_set(EV_fakewin, "miniarrow",
                                    (double)w, (double)h);
    char buf[100];
@@ -370,7 +381,7 @@ ev_move_fake(int x, int y)
 {
    //printf("MOVEBOX: %d %d\n",x,y);
    evas_object_move(EV_fakewin, x, y);
-   evas_object_move(EV_movebox, x, y-14);
+   evas_object_move(EV_movebox, x-4, y-16);
 }
 
 void
@@ -384,9 +395,14 @@ ev_redraw(void)
       //Get the geometry of ETK_canvas
       //evas_object_geometry_get(EV_canvas_bg,&x,&y,&w,&h);
 
+      
       //Get the geometry of fakewin
       evas_object_geometry_get(EV_fakewin,&x,&y,&w,&h);
-
+      
+      //Ensure we respect min e max group size
+      ev_resize_fake(w, h);
+      evas_object_geometry_get(EV_fakewin,&x,&y,&w,&h);
+      
       //place edje editing object
       evas_object_move(edje_o, x, y);
       evas_object_resize(edje_o, w+1, h);

@@ -76,17 +76,17 @@ TestEdjeGroup(char *File,char *Group)
    printf("Test EdjeFile: %s\nGroup: %s\nTheme: %s\n",File,Group,EdjeFile);
    
    /* ecore evas init */
-	ecore_init();      
-	ecore_evas_init();
-	ee = ecore_evas_software_x11_new(NULL, 0,  0, 0, 0, 0);
-	ecore_evas_title_set(ee, "Edje Test Application");
+   ecore_init();
+   ecore_evas_init();
+   ee = ecore_evas_software_x11_new(NULL, 0,  0, 0, 0, 0);
+   ecore_evas_title_set(ee, "Edje Test Application");
    ecore_evas_callback_resize_set(ee, on_test_win_resize);
-	edje_init();
+   edje_init();
    evas = ecore_evas_get(ee);
    
    /* Background */
    EdjeTest_bg = evas_object_image_add(evas);
-   evas_object_image_file_set(EdjeTest_bg, EdjeFile, "images/1");		//TODO Find a method to load by name and not by number
+   evas_object_image_file_set(EdjeTest_bg, EdjeFile, "images/1");//TODO Find a method to load by name and not by number
    evas_object_image_fill_set(EdjeTest_bg,0,0,240,240);
    evas_object_move(EdjeTest_bg, 0, 0);
    evas_object_resize(EdjeTest_bg, 300, 300);
@@ -159,6 +159,7 @@ ChangeGroup(char *group)
    
    //update FakeWin title
    edje_object_part_text_set(EV_fakewin, "title", group);
+   
 }
 
 int

@@ -1272,6 +1272,10 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
    printf("Item Activated Signal on AddMenu EMITTED\n");
    Etk_Tree_Row *row;
    Etk_Combobox_Item *item;
+   int i;
+   char name[32];
+   char name2[32];
+   
    switch ((int)data)
    {
        case NEW_RECT:
@@ -1280,13 +1284,19 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
             ShowAlert("You must first select a group.");
             break;
          }
-         if (!edje_edit_part_add(edje_o, "New rectangle", EDJE_PART_TYPE_RECTANGLE))
+         //generate a unique new name
+         snprintf(name, sizeof(name), "New rectangle");
+         i = 2;
+         while (edje_edit_part_exist(edje_o, name))
+            snprintf(name, sizeof(name), "New rectangle %d", i++);
+         
+         if (!edje_edit_part_add(edje_o, name, EDJE_PART_TYPE_RECTANGLE))
          {
             ShowAlert("Can't create part.");
             break;
          }
-         //TODO generate a unique new name
-         row = AddPartToTree("New rectangle", NULL);
+         
+         row = AddPartToTree(name, NULL);
          etk_tree_row_select(row);
          etk_tree_row_unfold(row);
          PopulateRelComboBoxes();
@@ -1298,13 +1308,19 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
             ShowAlert("You must first select a group.");
             break;
          }
-         if (!edje_edit_part_add(edje_o, "New image", EDJE_PART_TYPE_IMAGE))
+         //generate a unique new name
+         snprintf(name, sizeof(name), "New image");
+         i = 2;
+         while (edje_edit_part_exist(edje_o, name))
+            snprintf(name, sizeof(name), "New image %d", i++);
+      
+         if (!edje_edit_part_add(edje_o, name, EDJE_PART_TYPE_IMAGE))
          {
             ShowAlert("Can't create part.");
             break;
          }
          //TODO generate a unique new name
-         row = AddPartToTree("New image", NULL);
+         row = AddPartToTree(name, NULL);
          
          char *image;
          item = etk_combobox_first_item_get(ETK_COMBOBOX(UI_ImageComboBox));
@@ -1312,7 +1328,7 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
          {
             image = etk_combobox_item_field_get(item, 1);
             if (image)
-               edje_edit_state_image_set(edje_o, "New image",
+               edje_edit_state_image_set(edje_o, name,
                                          "default 0.00", image);
          }
       
@@ -1327,13 +1343,18 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
             ShowAlert("You must first select a group.");
             break;
          }
-         if (!edje_edit_part_add(edje_o, "New text", EDJE_PART_TYPE_TEXT))
+         //generate a unique new name
+         snprintf(name, sizeof(name), "New text");
+         i = 2;
+         while (edje_edit_part_exist(edje_o, name))
+            snprintf(name, sizeof(name), "New text %d", i++);
+         
+         if (!edje_edit_part_add(edje_o, name, EDJE_PART_TYPE_TEXT))
          {
             ShowAlert("Can't create part.");
             break;
          }
-         //TODO generate a unique new name
-         row = AddPartToTree("New text", NULL);
+         row = AddPartToTree(name, NULL);
          
          char *font;
          item = etk_combobox_first_item_get(ETK_COMBOBOX(UI_FontComboBox));
@@ -1341,14 +1362,12 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
          {
             font = etk_combobox_item_field_get(item, 1);
             if (font)
-               edje_edit_state_font_set(edje_o, "New text",
-                                        "default 0.00", font);
+               edje_edit_state_font_set(edje_o, name, "default 0.00", font);
          }
-         edje_edit_state_text_size_set(edje_o, "New text",
-                                       "default 0.00", 16);
-         edje_edit_state_text_set(edje_o, "New text",
-                                  "default 0.00", "Something to say !");
-         edje_edit_part_effect_set(edje_o, "New text", EDJE_TEXT_EFFECT_GLOW);
+         edje_edit_state_text_size_set(edje_o, name, "default 0.00", 16);
+         edje_edit_state_text_set(edje_o, name, "default 0.00",
+                                  "Something to say !");
+         edje_edit_part_effect_set(edje_o, name, EDJE_TEXT_EFFECT_GLOW);
       
          etk_tree_row_select(row);
          etk_tree_row_unfold(row);
@@ -1362,20 +1381,27 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
             break;
          }
          
+         //Generate a unique name
+         snprintf(name, sizeof(name), "state");
+         snprintf(name2, sizeof(name2), "state 0.00");
+         i = 2;
+         while (edje_edit_state_exist(edje_o, Cur.part->string, name2))
+         {
+            snprintf(name, sizeof(name), "state%d", i++);
+            snprintf(name2, sizeof(name2), "%s 0.00", name);
+         }
+         
          //Create state
-         edje_edit_state_add(edje_o, Cur.part->string, "New state");
-         edje_edit_state_rel1_relative_x_set(edje_o, Cur.part->string,
-                                    "New state 0.00", 0.1);
-         edje_edit_state_rel1_relative_y_set(edje_o, Cur.part->string,
-                                    "New state 0.00", 0.1);
-         edje_edit_state_rel2_relative_x_set(edje_o, Cur.part->string,
-                                    "New state 0.00", 0.9);
-         edje_edit_state_rel2_relative_y_set(edje_o, Cur.part->string,
-                                    "New state 0.00", 0.9);
-         edje_edit_state_text_size_set(edje_o, Cur.part->string,
-                                       "New state 0.00", 16);
+         edje_edit_state_add(edje_o, Cur.part->string, name);
+         
+         edje_edit_state_rel1_relative_x_set(edje_o,Cur.part->string,name2,0.1);
+         edje_edit_state_rel1_relative_y_set(edje_o,Cur.part->string,name2,0.1);
+         edje_edit_state_rel2_relative_x_set(edje_o,Cur.part->string,name2,0.9);
+         edje_edit_state_rel2_relative_y_set(edje_o,Cur.part->string,name2,0.9);
+         edje_edit_state_text_size_set(edje_o, Cur.part->string, name2, 16);
+      
          //Add state to tree
-         row = AddStateToTree(Cur.part->string, "New state 0.00");
+         row = AddStateToTree(Cur.part->string, name2);
          etk_tree_row_select(row);
          etk_tree_row_unfold(evas_hash_find(Parts_Hash,Cur.part->string));
          break;
@@ -1386,18 +1412,30 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
             ShowAlert("You must first select a group.");
             break;
          }
-         if (!edje_edit_program_add(edje_o, "New program"))
+         //generate a unique new name
+         snprintf(name, sizeof(name), "New program");
+         i = 2;
+         while (edje_edit_program_exist(edje_o, name))
+            snprintf(name, sizeof(name), "New program %d", i++);
+      
+         if (!edje_edit_program_add(edje_o, name))
          {
             ShowAlert("ERROR: can't add program");
             break;
          }
-         row = AddProgramToTree("New program");
+         row = AddProgramToTree(name);
          etk_tree_row_select(row);
          etk_tree_row_scroll_to(row, ETK_FALSE);
          break;
       
       case NEW_GROUP:
-         if (edje_edit_group_add(edje_o, "New group"))
+         //generate a unique new name
+         snprintf(name, sizeof(name), "New group");
+         i = 2;
+         while (edje_edit_group_exist(edje_o, name))
+            snprintf(name, sizeof(name), "New group %d", i++);
+      
+         if (edje_edit_group_add(edje_o, name))
          {
             PopulateGroupsComboBox();
             etk_combobox_active_item_set(ETK_COMBOBOX(UI_GroupsComboBox),

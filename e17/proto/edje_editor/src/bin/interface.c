@@ -95,11 +95,11 @@ ShowFilechooser(int FileChooserType)
 Etk_Tree_Row *
 AddPartToTree(const char *part_name, Etk_Tree_Row *after)
 {
-   /* If after=0 then append to the tree
+   /* If after=0 then append to the tree (but before programs)
       If after=1 then prepend to the tree
       If after>1 then prepend relative to after
       
-      I hope no one get a real row pointer = 1  :P
+      I hope no one get a real row pointer == 1  :P
    */
    Etk_Tree_Row *row = NULL;
    char buf[20];
@@ -112,6 +112,21 @@ AddPartToTree(const char *part_name, Etk_Tree_Row *after)
       case EDJE_PART_TYPE_TEXT:      strcpy(buf,"TEXT.PNG");  break;
       case EDJE_PART_TYPE_RECTANGLE: strcpy(buf,"RECT.PNG");  break;
       default:                       strcpy(buf,"NONE.PNG");  break;
+   }
+   
+   /* Search for the last row that isn't a program */
+   if (after == 0)
+   {
+      int row_type;
+      
+      after = etk_tree_last_row_get(ETK_TREE(UI_PartsTree));
+      etk_tree_row_fields_get(after, COL_TYPE, &row_type, NULL);
+      
+      while (after && row_type && row_type == ROW_PROG)
+      {
+         after = etk_tree_row_prev_get(after);
+         etk_tree_row_fields_get(after, COL_TYPE, &row_type, NULL);
+      }
    }
    
    if ((int)after > 1)
@@ -172,15 +187,12 @@ AddProgramToTree(const char* prog)
    Etk_Tree_Row *row = NULL;
 
    //printf("Add Program to tree: %s\n",prog->name);
-   
-   //TODO: place the prog after all the parts
    row = etk_tree_row_append(ETK_TREE(UI_PartsTree),
                NULL,
                COL_NAME, EdjeFile,"PROG.PNG", prog,
                COL_TYPE,ROW_PROG,
                NULL);
 
-   //ecore_hash_set(hash, prog, row);
    return row;
 }
 void 
