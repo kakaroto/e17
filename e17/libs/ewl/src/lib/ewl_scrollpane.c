@@ -119,6 +119,9 @@ ewl_scrollpane_init(Ewl_Scrollpane *s)
 
 	s->overlay = ewl_overlay_new();
 	ewl_object_fill_policy_set(EWL_OBJECT(s->overlay), EWL_FLAG_FILL_ALL);
+	ewl_container_child_append(EWL_CONTAINER(s), s->overlay);
+	ewl_widget_internal_set(s->overlay, TRUE);
+	ewl_widget_show(s->overlay);
 
 	/*
 	 * Create the container to hold the contents and it's configure
@@ -126,31 +129,25 @@ ewl_scrollpane_init(Ewl_Scrollpane *s)
 	 */
 	s->box = ewl_vbox_new();
 	ewl_object_fill_policy_set(EWL_OBJECT(s->box), EWL_FLAG_FILL_FILL);
+	ewl_container_child_append(EWL_CONTAINER(s->overlay), s->box);
+	ewl_widget_internal_set(s->box, TRUE);
+	ewl_widget_show(s->box);
 
 	/*
 	 * Create the scrollbars for the scrollpane.
 	 */
 	s->hscrollbar = ewl_hscrollbar_new();
-	s->vscrollbar = ewl_vscrollbar_new();
-
-	/*
-	 * Add the parts to the scrollpane
-	 */
-	ewl_container_child_append(EWL_CONTAINER(s), s->overlay);
-	ewl_container_child_append(EWL_CONTAINER(s->overlay), s->box);
 	ewl_container_child_append(EWL_CONTAINER(s), s->hscrollbar);
-	ewl_container_child_append(EWL_CONTAINER(s), s->vscrollbar);
-
-	ewl_widget_internal_set(s->overlay, TRUE);
-	ewl_widget_internal_set(s->box, TRUE);
 	ewl_widget_internal_set(s->hscrollbar, TRUE);
-	ewl_widget_internal_set(s->vscrollbar, TRUE);
-
-	ewl_widget_show(s->overlay);
-	ewl_widget_show(s->box);
 	ewl_widget_show(s->hscrollbar);
+
+	s->vscrollbar = ewl_vscrollbar_new();
+	ewl_widget_internal_set(s->vscrollbar, TRUE);
+	ewl_container_child_append(EWL_CONTAINER(s), s->vscrollbar);
 	ewl_widget_show(s->vscrollbar);
 
+	/* after we added our internal widgets we can redirect the 
+	 * scrollpane to the content box */
 	ewl_container_redirect_set(EWL_CONTAINER(s), EWL_CONTAINER(s->box));
 
 	/*
