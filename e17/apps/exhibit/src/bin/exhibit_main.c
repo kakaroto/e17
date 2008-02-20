@@ -890,7 +890,8 @@ _ex_main_window_show(char *dir, int fullscreen, int slideshow)
    dnd_types_num = 1;
    dnd_types = calloc(dnd_types_num, sizeof(char*));
    dnd_types[0] = strdup("text/uri-list");
-   etk_signal_connect("drag-drop", ETK_OBJECT(e->win), ETK_CALLBACK(_etk_main_drag_drop_cb), e);
+   // DND disabled for now
+   //etk_signal_connect("drag-drop", ETK_OBJECT(e->win), ETK_CALLBACK(_etk_main_drag_drop_cb), e);
    etk_widget_dnd_types_set(e->win, dnd_types, dnd_types_num);   
    etk_window_title_set(ETK_WINDOW(e->win), WINDOW_TITLE " - Image Viewing the Kewl Way!");
    etk_window_wmclass_set(ETK_WINDOW(e->win), "exhibit", "Exhibit");
@@ -1125,6 +1126,7 @@ _ex_main_window_show(char *dir, int fullscreen, int slideshow)
    etk_paned_child2_set(ETK_PANED(e->hpaned), e->hpaned_shadow, ETK_TRUE);
    
    e->notebook = etk_notebook_new();
+   etk_notebook_tabs_homogeneous_set(ETK_NOTEBOOK(e->notebook), ETK_TRUE);
    etk_notebook_tabs_visible_set(ETK_NOTEBOOK(e->notebook), ETK_FALSE);
    etk_container_add(ETK_CONTAINER(e->hpaned_shadow), e->notebook);
    etk_signal_connect("current-page-changed", ETK_OBJECT(e->notebook), 
