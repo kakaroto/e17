@@ -582,20 +582,35 @@ static void _selection_text_set(Etk_Selection_Type selection, const char *text)
 /* Requests the text from a selection */
 static void _selection_text_request(Etk_Selection_Type selection, Etk_Widget *target)
 {
-   Etk_Engine_Window_Data *engine_data;
    Etk_Toplevel *toplevel;
-   
-   if (!(toplevel = etk_widget_toplevel_parent_get(target)) || !ETK_IS_WINDOW(toplevel))
+   Ecore_X_Window w;
+
+   if (!(toplevel = etk_widget_toplevel_parent_get(target)))
       return;
-   
+
+   if (ETK_IS_WINDOW(toplevel)) {
+      Etk_Engine_Window_Data *engine_data = ETK_WINDOW(toplevel)->engine_data;
+      w = engine_data->x_window;
+   }
+   else if (ETK_IS_EMBED(toplevel))
+   {
+      Ecore_Evas *ee = ecore_evas_ecore_evas_get(ETK_TOPLEVEL(toplevel)->evas);
+      if (!ee) return;
+      w = ecore_evas_software_x11_window_get(ee);
+      if (!w) return;
+   }
+   else
+   {
+      return;
+   }
+
    _selection_widget = target;
-   engine_data = ETK_WINDOW(toplevel)->engine_data;
    if (selection == ETK_SELECTION_PRIMARY)
-      ecore_x_selection_primary_request(engine_data->x_window, ECORE_X_SELECTION_TARGET_UTF8_STRING);
+      ecore_x_selection_primary_request(w, ECORE_X_SELECTION_TARGET_UTF8_STRING);
    else if (selection == ETK_SELECTION_SECONDARY)
-      ecore_x_selection_secondary_request(engine_data->x_window, ECORE_X_SELECTION_TARGET_UTF8_STRING);
+      ecore_x_selection_secondary_request(w, ECORE_X_SELECTION_TARGET_UTF8_STRING);
    else if (selection == ETK_SELECTION_CLIPBOARD)
-      ecore_x_selection_clipboard_request(engine_data->x_window, ECORE_X_SELECTION_TARGET_UTF8_STRING);
+      ecore_x_selection_clipboard_request(w, ECORE_X_SELECTION_TARGET_UTF8_STRING);
 }
 
 /* Clears the given selection */
