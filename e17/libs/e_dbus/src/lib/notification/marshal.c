@@ -461,7 +461,6 @@ e_notify_unmarshal_notify_hints(E_Notification *n, DBusMessageIter *iter)
       DBusMessageIter variant;
       const char *s_val;
       char y_val;
-      dbus_int32_t i_val;
       dbus_bool_t b_val;
 
       dbus_message_iter_get_basic(&dict, &key);
@@ -494,12 +493,12 @@ e_notify_unmarshal_notify_hints(E_Notification *n, DBusMessageIter *iter)
         }
       else if (!strcmp(key, "x"))
       {
-        x = i_val;
+        dbus_message_iter_get_basic(&variant, &x);
         x_set = 1;
       }
       else if (!strcmp(key, "y"))
       {
-        y = i_val;
+        dbus_message_iter_get_basic(&variant, &y);
         y_set = 1;
       }
       else if (!strcmp(key, "image_data"))
