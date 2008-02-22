@@ -347,25 +347,106 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
 
 /* Group frame callbacks */
 Etk_Bool
-on_GroupNameEntry_text_changed(Etk_Object *object, void *data)
+on_GroupNameEntry_key_down(Etk_Object *object, Etk_Event_Key_Down *event, void *data)
 {
-   //printf("Text Changed Signal on PartNameEntry EMITTED (text: %s)\n",etk_entry_text_get(ETK_ENTRY(object)));
-
-   const char *name;
-   name = etk_entry_text_get(ETK_ENTRY(object));
+   printf("PRESSED %s\n", event->keyname);
    
-   edje_edit_group_name_set(edje_o, name);
+   if (!strcmp(event->keyname, "Return"))
+      on_GroupNameEntryImage_mouse_clicked(
+                                 ETK_OBJECT(ETK_ENTRY(object)->secondary_image),
+                                 NULL);
+   return ETK_TRUE;
+}
+
+Etk_Bool
+on_GroupNameEntryImage_mouse_clicked(Etk_Object *object, void *data)
+{
+   const char *name;
+   
+   printf("Mouse Click Signal on GroupNameEntryImage Emitted\n");
+   
+   name = etk_entry_text_get(ETK_ENTRY(UI_GroupNameEntry));
+   
+   if (!name || !etk_string_length_get(Cur.group)) return ETK_TRUE;
+   
+   if (!strcmp(name, Cur.group->string))
+   {
+      etk_widget_hide(ETK_WIDGET(UI_GroupNameEntryImage));
+      return ETK_TRUE;
+   }
+   
+   if (!edje_edit_group_name_set(edje_o, name))
+   {
+      ShowAlert("Can't rename group.<br>Another group with this name exist?");
+      return ETK_TRUE;
+   }
    
    //Update Group Combobox
    Etk_Combobox_Item *item;
    item = etk_combobox_active_item_get(ETK_COMBOBOX(UI_GroupsComboBox));
-   etk_signal_block("item-activated",ETK_OBJECT(UI_GroupsComboBox), on_GroupsComboBox_activated, NULL);
+   etk_signal_block("item-activated",ETK_OBJECT(UI_GroupsComboBox),
+                    on_GroupsComboBox_activated, NULL);
    etk_combobox_item_fields_set(item, name);
-   etk_signal_unblock("item-activated",ETK_OBJECT(UI_GroupsComboBox), on_GroupsComboBox_activated, NULL);
+   etk_signal_unblock("item-activated",ETK_OBJECT(UI_GroupsComboBox),
+                      on_GroupsComboBox_activated, NULL);
     
    //Update FakeWin title
    edje_object_part_text_set(EV_fakewin, "title", name);
+   
+   /* Hide the entry image */
+   etk_widget_hide(ETK_WIDGET(UI_GroupNameEntryImage));
+   
+   
+   //~ /* change the name in edje */
+   //~ if (!edje_edit_part_name_set(edje_o, Cur.part->string, name))
+   //~ {
+      //~ ShowAlert("Can't set part name.<br>Another name with this name exist? ");
+      //~ return ETK_TRUE;
+   //~ }
+   
+   //~ /* Set new Current name */
+   //~ Cur.part = etk_string_set(Cur.part, name);
+   
+   //~ //Update PartTree
+   //~ row = etk_tree_selected_row_get(ETK_TREE(UI_PartsTree));
+   
+   //~ switch (edje_edit_part_type_get(edje_o, Cur.part->string))
+   //~ {
+      //~ case EDJE_PART_TYPE_IMAGE:
+         //~ etk_tree_row_fields_set(row,TRUE,
+                                 //~ COL_NAME, EdjeFile, "IMAGE.PNG", name, NULL);
+         //~ break;
+      //~ case EDJE_PART_TYPE_RECTANGLE:
+         //~ etk_tree_row_fields_set(row,TRUE,
+                                 //~ COL_NAME, EdjeFile, "RECT.PNG", name, NULL);
+         //~ break;
+      //~ case EDJE_PART_TYPE_TEXT:
+         //~ etk_tree_row_fields_set(row,TRUE,
+                                 //~ COL_NAME, EdjeFile, "TEXT.PNG", name, NULL);
+         //~ break;
+      //~ default:
+         //~ etk_tree_row_fields_set(row,TRUE,
+                                 //~ COL_NAME, EdjeFile, "NONE.PNG", name, NULL);
+         //~ break;
+   //~ }
+   
+   //~ /* Update hidden colon on every child */
+   //~ child = etk_tree_row_first_child_get(row);
+   //~ etk_tree_row_fields_set(child, TRUE, COL_PARENT, name, NULL);
+   //~ while ((child = etk_tree_row_next_get(child)))
+      //~ etk_tree_row_fields_set(child, TRUE, COL_PARENT, name, NULL);
+    
+   //~ /* Update Parts_Hash */
+   //~ Parts_Hash = evas_hash_del(Parts_Hash, Cur.part->string, NULL);
+   //~ Parts_Hash = evas_hash_add(Parts_Hash, name, row);
+   
+   //~ /* Recreate rel combobox */
+   //~ PopulateRelComboBoxes();  //TODO do a focus-out callback for this (don't need to do on every key!!)
+   
+   //~ /* Hide the image */
+   //~ etk_widget_hide(ETK_WIDGET(UI_PartNameEntryImage));
 
+   
    return ETK_TRUE;
 }
 
@@ -398,65 +479,88 @@ on_GroupSpinner_value_changed(Etk_Range *range, double value, void *data)
 
 /* Parts & Descriptions Callbacks*/
 Etk_Bool
-on_PartNameEntry_text_changed(Etk_Object *object, void *data)
+on_PartNameEntry_key_down(Etk_Object *object, Etk_Event_Key_Down *event, void *data)
 {
-   Etk_Tree_Row *row;
-   const char *text;
-   //printf("Text Changed Signal on PartNameEntry EMITTED (text: %s)\n",etk_entry_text_get(ETK_ENTRY(object)));
-   if (etk_string_length_get(Cur.part))
-   {
-      //Update PartTree
-      row = etk_tree_selected_row_get(ETK_TREE(UI_PartsTree));
-      text = etk_entry_text_get(ETK_ENTRY(object));
-      
-      printf("** TYPE: %d\n", edje_edit_part_type_get(edje_o, Cur.part->string));
-      switch (edje_edit_part_type_get(edje_o, Cur.part->string))
-      {
-         case EDJE_PART_TYPE_IMAGE:
-            etk_tree_row_fields_set(row,TRUE,
-                                    COL_NAME, EdjeFile, "IMAGE.PNG", text,
-                                    NULL); 
-            break;
-         case EDJE_PART_TYPE_RECTANGLE:
-            etk_tree_row_fields_set(row,TRUE,
-                                    COL_NAME, EdjeFile, "RECT.PNG", text,
-                                    NULL); 
-            break;
-         case EDJE_PART_TYPE_TEXT:
-            etk_tree_row_fields_set(row,TRUE,
-                                    COL_NAME, EdjeFile, "TEXT.PNG", text,
-                                    NULL); 
-            break;
-         default:
-            etk_tree_row_fields_set(row,TRUE,
-                                    COL_NAME, EdjeFile, "NONE.PNG", text,
-                                    NULL);
-            break;
-      }
-      
-      /* Update hidden colon on every child */
-      Etk_Tree_Row *child;
-      child = etk_tree_row_first_child_get(row);
-      etk_tree_row_fields_set(child, TRUE, COL_PARENT, text, NULL);
-      while ((child = etk_tree_row_next_get(child)))
-         etk_tree_row_fields_set(child, TRUE, COL_PARENT, text, NULL);
-       
-      /* Update Parts_Hash */
-      Parts_Hash = evas_hash_del(Parts_Hash, Cur.part->string, NULL);
-      Parts_Hash = evas_hash_add(Parts_Hash, text, row);
-       
-      /* change the name in edje */
-      edje_edit_part_name_set(edje_o, Cur.part->string, text);
-      
-      /* Set new Current name */
-      Cur.part = etk_string_set(Cur.part, text);
-      
-      /* Recreate rel combobox */
-      PopulateRelComboBoxes();  //TODO do a focus-out callback for this (don't need to do on every key!!)
-   }
+   printf("PRESSED %s\n", event->keyname);
+   
+   if (!strcmp(event->keyname, "Return"))
+      on_PartNameEntryImage_mouse_clicked(
+                                 ETK_OBJECT(ETK_ENTRY(object)->secondary_image),
+                                 NULL);
    return ETK_TRUE;
 }
 
+Etk_Bool
+on_PartNameEntryImage_mouse_clicked(Etk_Object *object, void *data)
+{
+   const char *name;
+   Etk_Tree_Row *row;
+   Etk_Tree_Row *child;
+   
+   printf("Mouse Click Signal on PartNameEntryImage Emitted\n");
+   
+   name = etk_entry_text_get(ETK_ENTRY(UI_PartNameEntry));
+   
+   if (!name || !etk_string_length_get(Cur.part)) return ETK_TRUE;
+   
+   if (!strcmp(name, Cur.part->string))
+   {
+      etk_widget_hide(ETK_WIDGET(UI_PartNameEntryImage));
+      return ETK_TRUE;
+   }
+   
+   /* change the name in edje */
+   if (!edje_edit_part_name_set(edje_o, Cur.part->string, name))
+   {
+      ShowAlert("Can't set part name.<br>Another name with this name exist? ");
+      return ETK_TRUE;
+   }
+   
+   /* Set new Current name */
+   Cur.part = etk_string_set(Cur.part, name);
+   
+   //Update PartTree
+   row = etk_tree_selected_row_get(ETK_TREE(UI_PartsTree));
+   
+   switch (edje_edit_part_type_get(edje_o, Cur.part->string))
+   {
+      case EDJE_PART_TYPE_IMAGE:
+         etk_tree_row_fields_set(row,TRUE,
+                                 COL_NAME, EdjeFile, "IMAGE.PNG", name, NULL);
+         break;
+      case EDJE_PART_TYPE_RECTANGLE:
+         etk_tree_row_fields_set(row,TRUE,
+                                 COL_NAME, EdjeFile, "RECT.PNG", name, NULL);
+         break;
+      case EDJE_PART_TYPE_TEXT:
+         etk_tree_row_fields_set(row,TRUE,
+                                 COL_NAME, EdjeFile, "TEXT.PNG", name, NULL);
+         break;
+      default:
+         etk_tree_row_fields_set(row,TRUE,
+                                 COL_NAME, EdjeFile, "NONE.PNG", name, NULL);
+         break;
+   }
+   
+   /* Update hidden colon on every child */
+   child = etk_tree_row_first_child_get(row);
+   etk_tree_row_fields_set(child, TRUE, COL_PARENT, name, NULL);
+   while ((child = etk_tree_row_next_get(child)))
+      etk_tree_row_fields_set(child, TRUE, COL_PARENT, name, NULL);
+    
+   /* Update Parts_Hash */
+   Parts_Hash = evas_hash_del(Parts_Hash, Cur.part->string, NULL);
+   Parts_Hash = evas_hash_add(Parts_Hash, name, row);
+   
+   /* Recreate rel combobox */
+   PopulateRelComboBoxes();  //TODO do a focus-out callback for this (don't need to do on every key!!)
+   
+   /* Hide the image */
+   etk_widget_hide(ETK_WIDGET(UI_PartNameEntryImage));
+
+   
+   return ETK_TRUE;
+}
 
 Etk_Bool
 on_CliptoComboBox_item_activated(Etk_Combobox *combobox, Etk_Combobox_Item *item, void *data)
@@ -499,46 +603,65 @@ on_PartEventsRepeatCheck_toggled(Etk_Object *object, void *data)
 }
 
 Etk_Bool
-on_StateEntry_text_changed(Etk_Object *object, void *data)
+on_StateEntry_key_down(Etk_Object *object, Etk_Event_Key_Down *event, void *data)
 {
-   const char *nn;   //new name
-   printf("Text Changed Signal on StateEntry EMITTED\n");
-
-   if (etk_string_length_get(Cur.state))
+   printf("PRESSED %s\n", event->keyname);
+   if (!strcmp("default 0.00", Cur.state->string))
    {
-      if (strcmp("default 0.00", Cur.state->string))
-      {
-         nn = etk_entry_text_get(ETK_ENTRY(object));
-         if (edje_edit_state_name_set(edje_o, Cur.part->string, Cur.state->string, nn))
-         {
-            /* update tree */
-            Etk_Tree_Row *row;
-            row = etk_tree_selected_row_get(ETK_TREE(UI_PartsTree));
-            etk_tree_row_fields_set(row,TRUE,
-                                       COL_NAME, EdjeFile, "DESC.PNG", nn,
-                                       NULL);
-            /* update Cur */
-            Cur.state = etk_string_set(Cur.state, nn);
-             
-         }
-         else
-         {
-            ShowAlert("<b>Wrong name format</b><br>Name must be in the form:<br>\"default 0.00\"");
-         }
-      }
-      else
-      {
-         ShowAlert("You can't rename default 0.0");
-         etk_signal_block("text-changed",ETK_OBJECT(object),
-                          on_StateEntry_text_changed, NULL);
-         etk_entry_text_set(ETK_ENTRY(object), Cur.state->string);
-         etk_signal_unblock("text-changed",ETK_OBJECT(object),
-                            on_StateEntry_text_changed, NULL);
-      }
+      ShowAlert("You can't rename default 0.0");
+      return ETK_TRUE;
    }
    
+   if (!strcmp(event->keyname, "Return"))
+      on_StateEntryImage_mouse_clicked(
+                                 ETK_OBJECT(ETK_ENTRY(object)->secondary_image),
+                                 NULL);
    return ETK_TRUE;
 }
+
+Etk_Bool
+on_StateEntryImage_mouse_clicked(Etk_Object *object, void *data)
+{
+   const char *name;
+   
+   printf("Mouse Click Signal on StateEntryImage Emitted\n");
+   
+   name = etk_entry_text_get(ETK_ENTRY(UI_StateEntry));
+   
+   if (!name || !etk_string_length_get(Cur.state)) return ETK_TRUE;
+   
+   if (!strcmp(name, Cur.state->string))
+   {
+      etk_widget_hide(ETK_WIDGET(UI_StateEntryImage));
+      return ETK_TRUE;
+   }
+   
+   /* Change state name */
+   if (strcmp("default 0.00", Cur.state->string))
+   {
+      if (edje_edit_state_name_set(edje_o, Cur.part->string, Cur.state->string, name))
+      {
+         /* update tree */
+         Etk_Tree_Row *row;
+         row = etk_tree_selected_row_get(ETK_TREE(UI_PartsTree));
+         etk_tree_row_fields_set(row,TRUE,
+                                    COL_NAME, EdjeFile, "DESC.PNG", name,
+                                    NULL);
+         /* update Cur */
+         Cur.state = etk_string_set(Cur.state, name);
+         /* Hide the entry image */
+         etk_widget_hide(ETK_WIDGET(UI_StateEntryImage));
+      }
+      else
+         ShowAlert("<b>Wrong name format</b><br>Name must be in the form:<br>\"default 0.00\"");
+   }
+   else
+      ShowAlert("You can't rename default 0.0");
+
+   return ETK_TRUE;
+}
+
+
 
 Etk_Bool
 on_AspectSpinner_value_changed(Etk_Range *range, double value, void *data)
@@ -933,16 +1056,36 @@ on_ActionComboBox_changed(Etk_Combobox *combobox, void *data)
    return ETK_TRUE;
 }
 
+
 Etk_Bool
-on_ProgramEntry_text_changed(Etk_Object *object, void *data)
+on_ProgramEntry_key_down(Etk_Object *object, Etk_Event_Key_Down *event, void *data)
+{
+   printf("PRESSED %s\n", event->keyname);
+   
+   if (!strcmp(event->keyname, "Return"))
+      on_ProgramEntryImage_mouse_clicked(
+                                 ETK_OBJECT(ETK_ENTRY(object)->secondary_image),
+                                 NULL);
+   return ETK_TRUE;
+}
+
+Etk_Bool
+on_ProgramEntryImage_mouse_clicked(Etk_Object *object, void *data)
 {
    const char *name;
-
-   //printf("Text Changed Signal on ProgramEntry Emitted\n");
    
-   if (!etk_string_length_get(Cur.prog)) return ETK_TRUE;
+   printf("Mouse Click Signal on ProgramEntryImage Emitted\n");
    
    name = etk_entry_text_get(ETK_ENTRY(UI_ProgramEntry));
+   
+   if (!name || !etk_string_length_get(Cur.prog)) return ETK_TRUE;
+   
+   if (!strcmp(name, Cur.prog->string))
+   {
+      etk_widget_hide(ETK_WIDGET(UI_ProgramEntryImage));
+      return ETK_TRUE;
+   }
+   
    
    if (edje_edit_program_name_set(edje_o, Cur.prog->string, name))
    {
@@ -954,7 +1097,12 @@ on_ProgramEntry_text_changed(Etk_Object *object, void *data)
                               NULL);
       /* update Cur */
       Cur.prog = etk_string_set(Cur.prog, name);
+      
+      /* Hide the image */
+      etk_widget_hide(ETK_WIDGET(UI_ProgramEntryImage));
    }
+   else
+      ShowAlert("Can't rename program.<br>Another program with this name just exist?");
    
    return ETK_TRUE;
 }
@@ -1111,7 +1259,8 @@ Etk_Bool
 on_DurationSpinner_value_changed(Etk_Range *range, double value, void *data)
 {
    printf("value Changed Signal on DurationSpinner Emitted\n");
-   edje_edit_program_transition_time_set(edje_o, Cur.prog->string,
+   if (etk_string_length_get(Cur.prog))
+      edje_edit_program_transition_time_set(edje_o, Cur.prog->string,
                            etk_range_value_get(ETK_RANGE(UI_DurationSpinner)));
    
    return ETK_TRUE;
@@ -1636,5 +1785,13 @@ Etk_Bool
 on_AlertDialog_response(Etk_Dialog *dialog, int response_id, void *data)
 {
    etk_widget_hide(ETK_WIDGET(dialog));
+   return ETK_TRUE;
+}
+
+Etk_Bool
+on_NamesEntry_text_changed(Etk_Object *object, void *data)
+{
+   //printf("Text Changed Signal on one of the Names Entry Emitted\n");
+   etk_widget_show(ETK_WIDGET(ETK_ENTRY(object)->secondary_image));
    return ETK_TRUE;
 }

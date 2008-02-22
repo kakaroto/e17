@@ -132,7 +132,7 @@ Evas_Object    *edje_o;                //The edje object we are editing
 Evas_Hash      *Parts_Hash;            //Associate part names with Etk_Tree_Row*
 
 Evas_Object    *EV_fakewin;            //The simple window implementation
-Evas_Object    *EV_movebox;            //  FIXME
+Evas_Object    *EV_movebox;            //The object used for moving fakewin
 Evas_Object    *focus_handler;         //The yellow box around the selected part
 Evas_Object    *rel1_handler;          //The red point
 Evas_Object    *rel2_handler;          //The blue point
@@ -142,7 +142,7 @@ Evas_Object    *rel2X_parent_handler;  //
 Evas_Object    *rel2Y_parent_handler;  //
 Evas_Object    *Consolle;              //The lower consolle panel
 Evas_List      *stack;                 //Stack for the consolle
-int            consolle_count;        //Counter for the consolle
+int            consolle_count;         //Counter for the consolle
 
 /* FUNCTION PROTOTYPES*/
 void DebugInfo(int full);

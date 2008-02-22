@@ -33,6 +33,7 @@ Etk_Widget *UI_ColorWin;
 Etk_Widget *UI_ColorPicker;
 /* group frame objects */
 Etk_Widget *UI_GroupNameEntry;
+Etk_Widget *UI_GroupNameEntryImage;
 Etk_Widget *UI_GroupMinWSpinner;
 Etk_Widget *UI_GroupMinHSpinner;
 Etk_Widget *UI_GroupMaxWSpinner;
@@ -40,13 +41,14 @@ Etk_Widget *UI_GroupMaxHSpinner;
 Etk_Widget *UI_CurrentGroupSizeLabel;
 /* part frame objects */
 Etk_Widget *UI_PartNameEntry;
+Etk_Widget *UI_PartNameEntryImage;
 Etk_Widget *UI_PartTypeComboBox;
 Etk_Widget *UI_PartEventsCheck;
 Etk_Widget *UI_PartEventsRepeatCheck;
 Etk_Widget *UI_CliptoComboBox;
 /* state frame objects */
 Etk_Widget *UI_StateEntry;
-//Etk_Widget *UI_StateIndexSpinner;
+Etk_Widget *UI_StateEntryImage;
 Etk_Widget *UI_StateMinWSpinner;
 Etk_Widget *UI_StateMinHSpinner;
 Etk_Widget *UI_StateMaxWSpinner;
@@ -96,6 +98,7 @@ Etk_Widget *UI_ScriptBox;
 Etk_Widget *UI_ScriptSaveButton;
 /* program frame objects */
 Etk_Widget *UI_ProgramEntry;
+Etk_Widget  *UI_ProgramEntryImage;
 Etk_Widget *UI_SignalEntry;
 Etk_Widget *UI_ActionComboBox;
 Etk_Widget *UI_TransiComboBox;

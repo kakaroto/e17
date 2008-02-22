@@ -4,7 +4,7 @@ RCS file: /cvs/e/e17/libs/edje/Doxyfile,v
 retrieving revision 1.4
 diff -u -r1.4 Doxyfile
 --- Doxyfile	6 Dec 2007 23:40:48 -0000	1.4
-+++ Doxyfile	20 Feb 2008 19:23:00 -0000
++++ Doxyfile	22 Feb 2008 02:32:10 -0000
 @@ -1,7 +1,7 @@
  PROJECT_NAME           = Edje
  PROJECT_NUMBER         =
@@ -29,7 +29,7 @@ RCS file: /cvs/e/e17/libs/edje/configure.in,v
 retrieving revision 1.93
 diff -u -r1.93 configure.in
 --- configure.in	25 Jan 2008 03:35:46 -0000	1.93
-+++ configure.in	20 Feb 2008 19:23:00 -0000
++++ configure.in	22 Feb 2008 02:32:10 -0000
 @@ -66,6 +66,7 @@
    evas >= 0.9.9
    ecore-evas >= 0.9.9
@@ -44,7 +44,7 @@ RCS file: /cvs/e/e17/libs/edje/gendoc,v
 retrieving revision 1.6
 diff -u -r1.6 gendoc
 --- gendoc	6 Dec 2007 23:42:38 -0000	1.6
-+++ gendoc	20 Feb 2008 19:23:00 -0000
++++ gendoc	22 Feb 2008 02:32:10 -0000
 @@ -1,7 +1,7 @@
  #!/bin/sh
  cp ./edje.c.in ./edje.c
@@ -68,7 +68,7 @@ Index: src/lib/Edje_Edit.h
 RCS file: src/lib/Edje_Edit.h
 diff -N src/lib/Edje_Edit.h
 --- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ src/lib/Edje_Edit.h	20 Feb 2008 19:23:00 -0000
++++ src/lib/Edje_Edit.h	22 Feb 2008 02:32:10 -0000
 @@ -0,0 +1,1342 @@
 +#ifndef _EDJE_EDIT_H
 +#define _EDJE_EDIT_H
@@ -225,7 +225,7 @@ diff -N src/lib/Edje_Edit.h
 + * You can only rename a group that is currently loaded
 + * Note that the relative getter function don't exist as it don't make sense ;)
 + */
-+EAPI void
++EAPI unsigned char         ///@return 1 on success, 0 on failure
 +edje_edit_group_name_set(
 +   Evas_Object *obj,       ///< The edje object
 +   const char  *new_name   ///< The new name for the group
@@ -319,7 +319,7 @@ diff -N src/lib/Edje_Edit.h
 +/**Set a new name for part.
 + * Note that the relative getter function don't exist as it don't make sense ;)
 + */
-+EAPI void
++EAPI unsigned char         ///@return 1 on success, 0 on failure
 +edje_edit_part_name_set(
 +   Evas_Object *obj,       ///< The edje object
 +   const char  *part,      ///< The name of the part to rename
@@ -1418,7 +1418,7 @@ RCS file: /cvs/e/e17/libs/edje/src/lib/Makefile.am,v
 retrieving revision 1.39
 diff -u -r1.39 Makefile.am
 --- src/lib/Makefile.am	18 Jan 2008 06:38:46 -0000	1.39
-+++ src/lib/Makefile.am	20 Feb 2008 19:23:00 -0000
++++ src/lib/Makefile.am	22 Feb 2008 02:32:10 -0000
 @@ -14,7 +14,8 @@
  libedje.la
  
@@ -1444,8 +1444,8 @@ Index: src/lib/edje_edit.c
 RCS file: src/lib/edje_edit.c
 diff -N src/lib/edje_edit.c
 --- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ src/lib/edje_edit.c	20 Feb 2008 19:23:01 -0000
-@@ -0,0 +1,3205 @@
++++ src/lib/edje_edit.c	22 Feb 2008 02:32:11 -0000
+@@ -0,0 +1,3214 @@
 +/*
 + * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
 + */
@@ -2186,15 +2186,17 @@ diff -N src/lib/edje_edit.c
 +   return 0;
 +}
 +
-+EAPI void
++EAPI unsigned char
 +edje_edit_group_name_set(Evas_Object *obj, const char *new_name)
 +{
 +   Evas_List *l;
 +   int id;
 +  
-+   GET_ED_OR_RETURN()
++   GET_ED_OR_RETURN(0)
++   if (!new_name) return 0;
++   if (edje_edit_group_exist(obj, new_name)) return 0;
 +   
-+   Edje_Part_Collection *pc;   
++   Edje_Part_Collection *pc;
 +   pc = ed->collection;
 +
 +   printf("Set name of current group: %s [id: %d][new name: %s]\n",
@@ -2209,7 +2211,7 @@ diff -N src/lib/edje_edit.c
 +      Edje_Part_Collection_Directory_Entry *pce = l->data;
 +      if (pc->id == pce->id)
 +      {
-+         //if (pce->entry) free(pce->entry); //Also this cause segv
++         //if (pce->entry) free(pce->entry); //TODO Also this cause segv
 +         pce->entry = mem_strdup(new_name);
 +         
 +         //ed->file->collection_hash = evas_hash_del(ed->file->collection_hash, pc->entry, edc);
@@ -2275,16 +2277,19 @@ diff -N src/lib/edje_edit.c
 +   return parts;
 +}
 +
-+EAPI void
++EAPI unsigned char
 +edje_edit_part_name_set(Evas_Object *obj, const char* part, const char* new_name)
 +{
-+   GET_RP_OR_RETURN()
-+   if (!new_name) return;
++   GET_RP_OR_RETURN(0)
++   if (!new_name) return 0;
++   if (_edje_real_part_get(ed, new_name)) return 0;
 +   
 +   printf("Set name of part: %s [new name: %s]\n", part, new_name);
 +   
 +   if (rp->part->name) evas_stringshare_del(rp->part->name);
 +   rp->part->name = (char *)evas_stringshare_add(new_name);
++   
++   return 1;
 +}
 +
 +
@@ -3915,6 +3920,8 @@ diff -N src/lib/edje_edit.c
 +   int i;
 +   
 +   GET_ED_OR_RETURN(NULL)
++      
++   if (!prog_name) return NULL;
 +
 +   for (i = 0; i < ed->table_programs_size; i++)
 +   {
@@ -4126,6 +4133,8 @@ diff -N src/lib/edje_edit.c
 +   GET_EPR_OR_RETURN(0)
 +   if (!new_name) return 0;
 +   
++   if (_edje_program_get_byname(obj, new_name)) return 0;
++      
 +   printf("SET NAME for program: %s [new name: %s]\n", prog, new_name);
 +   
 +   if (epr->name) evas_stringshare_del(epr->name);
@@ -4657,7 +4666,7 @@ RCS file: /cvs/e/e17/libs/edje/src/lib/edje_embryo.c,v
 retrieving revision 1.58
 diff -u -r1.58 edje_embryo.c
 --- src/lib/edje_embryo.c	25 Jan 2008 03:35:46 -0000	1.58
-+++ src/lib/edje_embryo.c	20 Feb 2008 19:23:01 -0000
++++ src/lib/edje_embryo.c	22 Feb 2008 02:32:11 -0000
 @@ -847,7 +847,7 @@
     Edje *ed;
     int part_id = 0;
@@ -4673,7 +4682,7 @@ RCS file: /cvs/e/e17/libs/edje/src/lib/edje_load.c,v
 retrieving revision 1.111
 diff -u -r1.111 edje_load.c
 --- src/lib/edje_load.c	18 Jan 2008 06:34:04 -0000	1.111
-+++ src/lib/edje_load.c	20 Feb 2008 19:23:01 -0000
++++ src/lib/edje_load.c	22 Feb 2008 02:32:11 -0000
 @@ -5,7 +5,7 @@
  #include "Edje.h"
  #include "edje_private.h"
@@ -4698,7 +4707,7 @@ RCS file: /cvs/e/e17/libs/edje/src/lib/edje_private.h,v
 retrieving revision 1.137
 diff -u -r1.137 edje_private.h
 --- src/lib/edje_private.h	19 Jan 2008 01:00:14 -0000	1.137
-+++ src/lib/edje_private.h	20 Feb 2008 19:23:01 -0000
++++ src/lib/edje_private.h	22 Feb 2008 02:32:11 -0000
 @@ -328,31 +328,31 @@
  
  struct _Edje_Program /* a conditional program to be run */
