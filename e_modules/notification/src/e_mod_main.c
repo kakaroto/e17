@@ -9,6 +9,7 @@ struct _Popup_Data
   E_Win *win;
   Evas *e;
   Evas_Object *theme;
+  const char *app_name;
   Evas_Object *app_icon;
   Ecore_Timer *timer;
 };
@@ -30,6 +31,10 @@ static void _notification_cb_close_notification(E_Notification_Daemon *daemon,
 static int  _notification_timer_cb(void *data);
 static void _notification_theme_cb_deleted(void *data, Evas_Object *obj, 
                                            const char *emission, const char *source);
+static void _notification_theme_cb_close(void *data, Evas_Object *obj, 
+                                         const char *emission, const char *source);
+static void _notification_theme_cb_find(void *data, Evas_Object *obj, 
+                                        const char *emission, const char *source);
 
 static Popup_Data *_notification_popup_new(E_Notification *n);
 static void        _notification_popup_place(Popup_Data *popup, int num);
@@ -233,6 +238,52 @@ _notification_theme_cb_deleted(void *data,
   edje_object_signal_emit(popup->theme, "notification,new", "notification");
 }
 
+static void
+_notification_theme_cb_close(void *data, 
+                             Evas_Object *obj __UNUSED__, 
+                             const char *emission __UNUSED__, 
+                             const char *source __UNUSED__)
+{
+  Popup_Data *popup = data;
+  _notification_popup_del(e_notification_id_get(popup->notif), 
+                          E_NOTIFICATION_CLOSED_DISMISSED);
+}
+
+static void
+_notification_theme_cb_find(void *data, 
+                            Evas_Object *obj __UNUSED__, 
+                            const char *emission __UNUSED__, 
+                            const char *source __UNUSED__)
+{
+  Popup_Data *popup = data;
+  Evas_List *l;
+
+  if (!popup->app_name) return;
+
+  for (l = e_border_client_list(); l; l = l->next)
+    {
+      int compare_len;
+      E_Border *bd = l->data;
+
+      compare_len = strlen(popup->app_name);
+      if (strlen(bd->client.icccm.name) < compare_len)
+        compare_len = strlen(bd->client.icccm.name);
+
+      /* We can't be sure that the app_name really match the application name.
+       * Some plugin put their name instead. But this search gives some good
+       * results.
+       */
+      if (!strncasecmp(bd->client.icccm.name, popup->app_name, compare_len))
+        {
+          e_desk_show(bd->desk);
+          e_border_show(bd);
+          e_border_raise(bd);
+          e_border_focus_set_with_pointer(bd);
+          break;
+        }
+    }
+}
+
 /* Local functions */
 static Popup_Data *
 _notification_popup_new(E_Notification *n)
@@ -264,6 +315,7 @@ _notification_popup_new(E_Notification *n)
    e_win_sticky_set(popup->win, 1);
    ecore_x_icccm_transient_for_set(popup->win->evas_win, con->win);
    ecore_x_icccm_protocol_set(popup->win->evas_win, ECORE_X_WM_PROTOCOL_TAKE_FOCUS, 0);
+
    ecore_x_netwm_window_type_set(popup->win->evas_win, ECORE_X_WINDOW_TYPE_DOCK);
    ecore_x_netwm_window_state_set(popup->win->evas_win, state, 6);
 
@@ -278,6 +330,10 @@ _notification_popup_new(E_Notification *n)
    evas_object_show(popup->theme);
    edje_object_signal_callback_add(popup->theme, "notification,deleted", "theme", 
                                    _notification_theme_cb_deleted, popup);
+   edje_object_signal_callback_add(popup->theme, "notification,close", "theme", 
+                                   _notification_theme_cb_close, popup);
+   edje_object_signal_callback_add(popup->theme, "notification,find", "theme", 
+                                   _notification_theme_cb_find, popup);
 
    /* Uncomment to use shaped popups */
    //e_win_shaped_set(popup->win, 1);
@@ -293,32 +349,45 @@ _notification_popup_new(E_Notification *n)
 static void
 _notification_popup_place(Popup_Data *popup, int num)
 {
-   int w, h, dir = 0;
+   int x, y, w, h, dir = 0;
 
    evas_object_geometry_get(popup->theme, NULL, NULL, &w, &h);
-   switch (notification_cfg->direction)
+   if (e_notification_hint_xy_get(popup->notif, &x, &y))
      {
-        case DIRECTION_DOWN:
-        case DIRECTION_RIGHT:
-          dir = 1;
-          break;
-        case DIRECTION_UP:
-        case DIRECTION_LEFT:
-          dir = -1;
-          break;
-     }
+       if (!popup->win->container) return;
 
-   if (notification_cfg->direction == DIRECTION_DOWN ||
-       notification_cfg->direction == DIRECTION_UP)
-     e_win_move(popup->win, 
-                notification_cfg->placement.x, 
-                notification_cfg->placement.y 
-                  + dir * num * (h + notification_cfg->gap));
+       if (x + w > popup->win->container->w)
+         x -= w;
+       if (y + h > popup->win->container->h)
+         y -= h;
+       e_win_move(popup->win, x, y);
+     }
    else
-     e_win_move(popup->win, 
-                notification_cfg->placement.x 
-                  + dir * num * (w + notification_cfg->gap), 
-                notification_cfg->placement.y);
+     {
+       switch (notification_cfg->direction)
+         {
+         case DIRECTION_DOWN:
+         case DIRECTION_RIGHT:
+           dir = 1;
+           break;
+         case DIRECTION_UP:
+         case DIRECTION_LEFT:
+           dir = -1;
+           break;
+         }
+
+       if (notification_cfg->direction == DIRECTION_DOWN ||
+           notification_cfg->direction == DIRECTION_UP)
+         e_win_move(popup->win, 
+                    notification_cfg->placement.x, 
+                    notification_cfg->placement.y 
+                    + dir * num * (h + notification_cfg->gap));
+       else
+         e_win_move(popup->win, 
+                    notification_cfg->placement.x 
+                    + dir * num * (w + notification_cfg->gap), 
+                    notification_cfg->placement.y);
+     }
 }
 
 static void
@@ -330,6 +399,8 @@ _notification_popup_refresh(Popup_Data *popup)
    int w, h;
 
    if (!popup) return;
+
+   popup->app_name = e_notification_app_name_get(popup->notif);
 
    if (popup->app_icon) 
      {
@@ -430,7 +501,7 @@ _notification_format_message(E_Notification *n)
    int size = 512;
 
    msg = calloc(1, 512);
-   snprintf(msg, 511, "<subject>%s</subject><br><body>", 
+   snprintf(msg, 511, "<subject>%s</subject><br><body>",
             e_notification_summary_get(n));
    len = strlen(msg);
 
