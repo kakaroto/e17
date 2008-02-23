@@ -39,7 +39,6 @@ This package will install the Enlightenment window manager.
 %install
 test "x$RPM_BUILD_ROOT" != "x" && rm -rf $RPM_BUILD_ROOT
 %{__make} install DESTDIR=$RPM_BUILD_ROOT %{?mflags_install}
-rm -f $RPM_BUILD_ROOT/usr/lib*/e16/*.a
 rm -f $RPM_BUILD_ROOT/usr/lib*/e16/*.la
 mkdir -p $RPM_BUILD_ROOT/etc/X11/xinit/Xclients.d
 cp $RPM_BUILD_ROOT/usr/share/e16/misc/Xclients.* $RPM_BUILD_ROOT/etc/X11/xinit/Xclients.d/
