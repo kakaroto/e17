@@ -91,8 +91,7 @@ TextStateLoadFont(TextState * ts)
 		  ts->height = as + ds;
 	       }
 	  }
-	if (s2)
-	   free(s2);
+	Efree(s2);
 	if (ts->efont)
 	   return;
      }

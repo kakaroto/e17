@@ -55,9 +55,13 @@ void                ClientDestroy(Client * c);
 void                Alert(const char *fmt, ...);
 
 #define Ecalloc     calloc
-#define Efree       free
 #define Emalloc     malloc
 #define Erealloc    realloc
+#if HAVE_FREE_NULL_BUG
+#define Efree(p)    if (p) free(p)
+#else
+#define Efree       free
+#endif
 
 #define EMALLOC(type, num) (type*)Emalloc((num)*sizeof(type))
 #define EREALLOC(type, ptr, num) (type*)Erealloc(ptr, (num)*sizeof(type))

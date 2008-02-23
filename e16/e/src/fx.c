@@ -671,8 +671,7 @@ FX_ImageSpinner_Quit(void)
 {
    RemoveTimerEvent("FX_IMAGESPINNER_TIMEOUT");
    XClearArea(disp, fx_imagespinner_win, 0, 0, VRoot.w, VRoot.h, False);
-   if (fx_imagespinner_params)
-      Efree(fx_imagespinner_params);
+   Efree(fx_imagespinner_params);
    fx_imagespinner_params = NULL;
    fx_imagespinner_win = None;
 }

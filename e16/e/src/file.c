@@ -316,8 +316,7 @@ path_test(const char *file, unsigned int test)
 	if (file_test(s, test))
 	   return s;
      }
-   if (s)
-      Efree(s);
+   Efree(s);
    return NULL;
 }
 

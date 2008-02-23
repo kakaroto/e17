@@ -128,8 +128,7 @@ EXidDestroy(Win win)
 #endif
    if (win->rects)
       XFree(win->rects);
-   if (win->cbl.lst)
-      Efree(win->cbl.lst);
+   Efree(win->cbl.lst);
    Efree(win);
 }
 
@@ -1499,8 +1498,7 @@ EShapePropagate(Win win)
    return win->num_rect;
 
  bail_out:
-   if (rects)
-      Efree(rects);
+   Efree(rects);
    EShapeCombineMask(win, ShapeBounding, 0, 0, None, ShapeSet);
    return 0;
 }

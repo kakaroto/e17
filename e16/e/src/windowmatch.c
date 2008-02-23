@@ -123,12 +123,9 @@ WindowMatchDestroy(WindowMatch * wm)
 
    ecore_list_node_remove(wm_list, wm);
 
-   if (wm->name)
-      Efree(wm->name);
-   if (wm->value)
-      Efree(wm->value);
-   if (wm->args)
-      Efree(wm->args);
+   Efree(wm->name);
+   Efree(wm->value);
+   Efree(wm->args);
 
    Efree(wm);
 }
@@ -659,7 +656,7 @@ WindowMatchEwinOpsAction(EWin * ewin, int op, const char *args)
 	return;
 
      case EWIN_OP_TITLE:
-	_EFREE(EwinGetIcccmName(ewin));
+	Efree(EwinGetIcccmName(ewin));
 	EwinGetIcccmName(ewin) = Estrdup(args);
 	break;
 

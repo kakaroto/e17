@@ -130,8 +130,7 @@ StrlistFree(char **lst, int num)
    if (!lst)
       return;
    while (num--)
-      if (lst[num])
-	 Efree(lst[num]);
+      Efree(lst[num]);
    Efree(lst);
 }
 

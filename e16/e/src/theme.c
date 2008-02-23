@@ -106,10 +106,8 @@ append_merge_dir(char *dir, char ***list, int *count)
 	     tmp2 = fileof(str[i]);
 	     if ((tmp != NULL) && (tmp2 != NULL) && (!strcmp(tmp, tmp2)))
 		already = 1;
-	     if (tmp)
-		Efree(tmp);
-	     if (tmp2)
-		Efree(tmp2);
+	     Efree(tmp);
+	     Efree(tmp2);
 	  }
 
 	if (already)
@@ -421,12 +419,10 @@ ThemePathFind(void)
 	      EDirRoot(), EDirUser());
      }
 
-   if (Conf.theme.name)
-      Efree(Conf.theme.name);
+   Efree(Conf.theme.name);
    Conf.theme.name = (theme) ? fullfileof(theme) : NULL;
 
-   if (Mode.theme.path)
-      Efree(Mode.theme.path);
+   Efree(Mode.theme.path);
    Mode.theme.path = theme;
 }
 

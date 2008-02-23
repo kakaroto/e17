@@ -173,13 +173,11 @@ ContainerDestroy(Container * ct, int exiting)
 
    ct->ops->Exit(ct, exiting);
 
-   if (ct->name)
-      Efree(ct->name);
+   Efree(ct->name);
 
    EDestroyWindow(ct->win);
 
-   if (ct->objs)
-      Efree(ct->objs);
+   Efree(ct->objs);
 
    Efree(ct);
 
@@ -1547,8 +1545,7 @@ _DlgFillContainer(Dialog * d, DItem * table, void *data)
    tmp_ib_cover_hide = ct->cover_hide;
    tmp_ib_autoresize_anchor = ct->auto_resize_anchor;
    tmp_ib_anim_mode = ct->anim_mode;
-   if (tmp_ib_name)
-      Efree(tmp_ib_name);
+   Efree(tmp_ib_name);
    tmp_ib_name = Estrdup(ct->name);
 
    DialogSetTitle(d, ct->dlg_title);

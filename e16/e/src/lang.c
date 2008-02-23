@@ -137,8 +137,7 @@ EstrInt2EncFree(const char *str, int want_utf8)
    if (Mode.locale.utf8_int == want_utf8)
       return;
 
-   if (str)
-      Efree((char *)str);
+   Efree((char *)str);
 #else
    str = NULL;
    want_utf8 = 0;

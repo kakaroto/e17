@@ -190,7 +190,6 @@ ClientDestroy(Client * c)
    if (!c)
       return;
 
-   if (c->msg)
-      Efree(c->msg);
+   Efree(c->msg);
    Efree(c);
 }

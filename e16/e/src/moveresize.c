@@ -227,8 +227,7 @@ ActionMoveSuspend(void)
 	     DrawEwinShape(ewin, Mode_mr.mode, ewin->shape_x,
 			   ewin->shape_y, ewin->client.w, ewin->client.h, 3, i);
 	  }
-	if (lst)
-	   Efree(lst);
+	Efree(lst);
 
 	EUngrabServer();
      }
@@ -279,8 +278,7 @@ ActionMoveResume(void)
 	DrawEwinShape(ewin, Mode_mr.mode, x, y,
 		      ewin->client.w, ewin->client.h, fl, i);
      }
-   if (lst)
-      Efree(lst);
+   Efree(lst);
 
    return 0;
 }

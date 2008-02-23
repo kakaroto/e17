@@ -122,8 +122,7 @@ TimersRun(double tt)
 	qe->func(qe->runtime_val, qe->runtime_data);
 
 	/* free the timer */
-	if (qe->name)
-	   Efree(qe->name);
+	Efree(qe->name);
 	Efree(qe);
      }
 
@@ -164,10 +163,8 @@ RemoveTimerEvent(const char *name)
 	else
 	   q_first = qe->next;
 	/* free it */
-	if (qe->name)
-	   Efree(qe->name);
-	if (qe)
-	   Efree(qe);
+	Efree(qe->name);
+	Efree(qe);
 	/* done */
 	return 1;
      }
@@ -303,8 +300,7 @@ AnimatorDel(Animator * an)
 #endif
 
    ecore_list_node_remove(animator_list, an);
-   if (an->name)
-      Efree(an->name);
+   Efree(an->name);
    Efree(an);
 
    if (ecore_list_count(animator_list) == 0)

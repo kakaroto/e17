@@ -79,8 +79,7 @@ RemoveActionType(ActionType * ActionTypeToRemove)
    ptr = ActionTypeToRemove;
    while (ptr)
      {
-	if (ptr->params)
-	   Efree(ptr->params);
+	Efree(ptr->params);
 	pp = ptr;
 	ptr = ptr->next;
 	Efree(pp);
@@ -123,10 +122,8 @@ ActionDestroy(Action * aa)
       UnGrabActionKey(aa);
    if (aa->action)
       RemoveActionType(aa->action);
-   if (aa->tooltipstring)
-      Efree(aa->tooltipstring);
-   if (aa->key_str)
-      Efree(aa->key_str);
+   Efree(aa->tooltipstring);
+   Efree(aa->key_str);
    Efree(aa);
 }
 
@@ -211,12 +208,9 @@ ActionclassDestroy(ActionClass * ac)
 
    for (i = 0; i < ac->num; i++)
       ActionDestroy(ac->list[i]);
-   if (ac->list)
-      Efree(ac->list);
-   if (ac->name)
-      Efree(ac->name);
-   if (ac->tooltipstring)
-      Efree(ac->tooltipstring);
+   Efree(ac->list);
+   Efree(ac->name);
+   Efree(ac->tooltipstring);
    Efree(ac);
    mode_action_destroy = 1;
 }
@@ -306,8 +300,6 @@ AclassConfigLoad(FILE * fs)
 		(aclass_tooltipstring) ? Estrdup((aclass_tooltipstring[0]) ?
 						 aclass_tooltipstring :
 						 "?!?") : NULL;
-	     _EFREE(aclass_tooltipstring);
-	     _EFREE(action_tooltipstring);
 	     err = 0;
 	     goto done;
 
@@ -457,7 +449,8 @@ AclassConfigLoad(FILE * fs)
 		  aa = ActionCreate(event, anymod, mod, anybut, but, anykey,
 				    key, action_tooltipstring);
 		  /* the correct place to grab an action key */
-		  _EFREE(action_tooltipstring);
+		  Efree(action_tooltipstring);
+		  action_tooltipstring = NULL;
 		  key[0] = '\0';
 		  if (global)
 		     GrabActionKey(aa);
@@ -482,8 +475,8 @@ AclassConfigLoad(FILE * fs)
       ActionclassDestroy(ac);
 
  done:
-   _EFREE(aclass_tooltipstring);
-   _EFREE(action_tooltipstring);
+   Efree(aclass_tooltipstring);
+   Efree(action_tooltipstring);
 
    return err;
 }

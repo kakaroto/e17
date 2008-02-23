@@ -1822,7 +1822,8 @@ ECompMgrWinDel(EObj * eo)
    REGION_DESTROY(cw->extents);
    REGION_DESTROY(cw->clip);
 
-   _EFREE(eo->cmhook);
+   Efree(eo->cmhook);
+   eo->cmhook = NULL;
 
    _ECM_SET_STACK_CHANGED();
 }
@@ -2392,8 +2393,7 @@ ECompMgrShadowsInit(int mode, int cleanup)
       OpacityFix(Conf_compmgr.shadows.sharp.opacity, 100);
    Mode_compmgr.opac_sharp = .01 * Conf_compmgr.shadows.sharp.opacity;
 
-   if (gaussianMap)
-      Efree(gaussianMap);
+   Efree(gaussianMap);
    gaussianMap = NULL;
 
    if (mode != ECM_SHADOWS_OFF)

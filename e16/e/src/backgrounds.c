@@ -210,20 +210,16 @@ BackgroundImagesKeep(Background * bg, int onoff)
 static void
 BackgroundFilesRemove(Background * bg)
 {
-   if (bg->bg.file)
-      Efree(bg->bg.file);
+   Efree(bg->bg.file);
    bg->bg.file = NULL;
 
-   if (bg->bg.real_file)
-      Efree(bg->bg.real_file);
+   Efree(bg->bg.real_file);
    bg->bg.real_file = NULL;
 
-   if (bg->top.file)
-      Efree(bg->top.file);
+   Efree(bg->top.file);
    bg->top.file = NULL;
 
-   if (bg->top.real_file)
-      Efree(bg->top.real_file);
+   Efree(bg->top.real_file);
    bg->top.real_file = NULL;
 
    BackgroundImagesFree(bg);
@@ -249,8 +245,7 @@ BackgroundDestroy(Background * bg)
    BackgroundFilesRemove(bg);
    BackgroundPixmapFree(bg);
 
-   if (bg->name)
-      Efree(bg->name);
+   Efree(bg->name);
 
    Efree(bg);
 
@@ -424,8 +419,7 @@ BackgroundModify(Background * bg, EColor * solid, const char *bgn, char tile,
      }
    else
       updated = 1;
-   if (bg->bg.file)
-      Efree(bg->bg.file);
+   Efree(bg->bg.file);
    bg->bg.file = (bgn[0]) ? Estrdup(bgn) : NULL;
    if ((int)tile != bg->bg_tile)
       updated = 1;
@@ -453,8 +447,7 @@ BackgroundModify(Background * bg, EColor * solid, const char *bgn, char tile,
      }
    else
       updated = 1;
-   if (bg->top.file)
-      Efree(bg->top.file);
+   Efree(bg->top.file);
    bg->top.file = (top[0]) ? Estrdup(top) : NULL;
    if ((int)tkeep_aspect != bg->top.keep_aspect)
       updated = 1;
@@ -1193,8 +1186,7 @@ BackgroundsConfigLoad(FILE * fs)
 	       }
 	     else
 	       {
-		  if (name)
-		     Efree(name);
+		  Efree(name);
 		  name = Estrdup(s2);
 	       }
 	     break;
@@ -1230,19 +1222,14 @@ BackgroundsConfigLoad(FILE * fs)
 		    &i3, &i4, &i5, &i6);
 	     if (!ignore)
 	       {
-		  if (bg1)
-		     Efree(bg1);
+		  Efree(bg1);
 		  bg1 = Estrdup(s2);
 	       }
 	     else
 	       {
-		  if (bg->bg.file)
-		     Efree(bg->bg.file);
-		  if (bg->top.file)
-		    {
-		       Efree(bg->top.file);
-		       bg->top.file = NULL;
-		    }
+		  Efree(bg->bg.file);
+		  Efree(bg->top.file);
+		  bg->top.file = NULL;
 		  bg->bg.file = Estrdup(s2);
 		  bg->bg_tile = i1;
 		  bg->bg.keep_aspect = i2;
@@ -1258,8 +1245,7 @@ BackgroundsConfigLoad(FILE * fs)
 		    &j4, &j5);
 	     if (!ignore)
 	       {
-		  if (bg2)
-		     Efree(bg2);
+		  Efree(bg2);
 		  bg2 = Estrdup(s2);
 	       }
 	     else
@@ -1280,12 +1266,9 @@ BackgroundsConfigLoad(FILE * fs)
    err = -1;
 
  done:
-   if (name)
-      Efree(name);
-   if (bg1)
-      Efree(bg1);
-   if (bg2)
-      Efree(bg2);
+   Efree(name);
+   Efree(bg1);
+   Efree(bg2);
 
    return err;
 }
@@ -1614,8 +1597,7 @@ BG_DialogSetFileName(DItem * di)
    Esnprintf(s, sizeof(s),
 	     _("Background definition information:\nName: %s\nFile: %s\n"),
 	     BackgroundGetName(tmp_bg), (stmp) ? stmp : _("-NONE-"));
-   if (stmp)
-      Efree(stmp);
+   Efree(stmp);
    DialogItemSetText(di, s);
 }
 
@@ -2389,8 +2371,7 @@ BackgroundSet1(const char *name, const char *params)
      }
    else if (!strcmp(type, "bg.file"))
      {
-	if (bg->bg.file)
-	   Efree(bg->bg.file);
+	Efree(bg->bg.file);
 	bg->bg.file = Estrdup(p);
      }
    else if (!strcmp(type, "bg.tile"))
@@ -2419,8 +2400,7 @@ BackgroundSet1(const char *name, const char *params)
      }
    else if (!strcmp(type, "top.file"))
      {
-	if (bg->top.file)
-	   Efree(bg->top.file);
+	Efree(bg->top.file);
 	bg->top.file = Estrdup(p);
      }
    else if (!strcmp(type, "top.keep_aspect"))

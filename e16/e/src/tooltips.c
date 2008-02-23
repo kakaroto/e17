@@ -661,8 +661,7 @@ TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
 	  }
      }
 
-   if (heights)
-      Efree(heights);
+   Efree(heights);
 }
 
 void

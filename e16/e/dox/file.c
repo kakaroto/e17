@@ -44,10 +44,8 @@ freestrlist(char **l, int num)
    if (!l)
       return;
    while (num--)
-      if (l[num])
-	 free(l[num]);
-   free(l);
-   return;
+      Efree(l[num]);
+   Efree(l);
 }
 
 void
@@ -110,7 +108,6 @@ word(char *s, int num, char *wd)
 	  }
 	*wd = 0;
      }
-   return;
 }
 
 #ifdef USE_WORD_MB
@@ -265,7 +262,6 @@ word_mb(char *s, int num, char *wd, int *spaceflag)
 	  }
 	*wd = 0;
      }
-   return;
 }
 #endif
 
@@ -294,14 +290,14 @@ findLocalizedFile(char *fname)
 	sprintf(fname, "%s.%s", tmp, lang);
 	if (exists(fname))
 	  {
-	     free(tmp);
-	     free(lang);
+	     Efree(tmp);
+	     Efree(lang);
 	     return 1;
 	  }
      }
    strcpy(fname, tmp);
-   free(tmp);
-   free(lang);
+   Efree(tmp);
+   Efree(lang);
 
    return 0;
 }

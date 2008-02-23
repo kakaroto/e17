@@ -248,8 +248,7 @@ set_save_props(SmcConn smc_conn, int master_flag)
    props[n++] = &priorityProp;
 
    SmcSetProperties(smc_conn, n, props);
-   if (user)
-      Efree(user);
+   Efree(user);
 }
 
 /* This function is usually exclusively devoted to saving data.
@@ -386,8 +385,7 @@ ice_init(void)
 			SmcSaveCompleteProcMask |
 			SmcShutdownCancelledProcMask, &callbacks,
 			client_id, &sm_client_id, 4096, error_string_ret);
-   if (client_id)
-      Efree(client_id);
+   Efree(client_id);
 
    if (error_string_ret[0])
       Eprintf("While connecting to session manager: %s.", error_string_ret);

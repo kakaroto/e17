@@ -96,10 +96,9 @@ SclassDestroy(SoundClass * sclass)
 
    ecore_list_node_remove(sound_list, sclass);
    _SclassSampleDestroy(sclass, NULL);
-   if (sclass->name)
-      Efree(sclass->name);
-   if (sclass->file)
-      Efree(sclass->file);
+   Efree(sclass->name);
+   Efree(sclass->file);
+
    Efree(sclass);
 }
 

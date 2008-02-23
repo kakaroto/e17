@@ -502,8 +502,7 @@ EDirRoot(void)
 static void
 EConfNameSet(const char *name)
 {
-   if (Mode.conf.name)
-      Efree(Mode.conf.name);
+   Efree(Mode.conf.name);
    Mode.conf.name = Estrdup(name);
    Esetenv("ECONFNAME", Mode.conf.name);
 }
@@ -513,8 +512,7 @@ EDirUserSet(const char *dir)
 {
    if (!strcmp(dir, EDirUser()))
       return;
-   if (Mode.conf.dir)
-      Efree(Mode.conf.dir);
+   Efree(Mode.conf.dir);
    Mode.conf.dir = Estrdup(dir);
 }
 
@@ -523,8 +521,7 @@ EDirUserCacheSet(const char *dir)
 {
    if (!strcmp(dir, EDirUser()))
       return;
-   if (Mode.conf.cache_dir)
-      Efree(Mode.conf.cache_dir);
+   Efree(Mode.conf.cache_dir);
    Mode.conf.cache_dir = Estrdup(dir);
 }
 

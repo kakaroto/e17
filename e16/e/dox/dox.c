@@ -243,8 +243,8 @@ while (ll) \
 { \
   l = ll; \
   ll = ll->next; \
-  free(l->name); \
-  free(l); \
+  Efree(l->name); \
+  Efree(l); \
 }
 
 #define UPDATE_NOW \
@@ -572,7 +572,7 @@ main(int argc, char **argv)
 				      dirlen = sp - exe;
 				      if (dirlen > 1)
 					{
-					   free(docdir);
+					   Efree(docdir);
 					   docdir = EMALLOC(char, dirlen + 1);
 
 					   memcpy(docdir, exe, dirlen);
@@ -580,8 +580,7 @@ main(int argc, char **argv)
 					}
 				      GetObjects(p);
 				      pclose(p);
-				      if (page_hist)
-					 free(page_hist);
+				      Efree(page_hist);
 				      page_hist = EMALLOC(int, 1);
 
 				      page_hist[0] = 0;

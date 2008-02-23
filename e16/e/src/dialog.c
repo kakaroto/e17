@@ -232,7 +232,8 @@ DialogBindKey(Dialog * d, const char *key, DialogCallbackFunc * func, int val,
 void
 DialogKeybindingsDestroy(Dialog * d)
 {
-   _EFREE(d->keybindings);
+   Efree(d->keybindings);
+   d->keybindings = NULL;
    d->num_bindings = 0;
 }
 
@@ -267,10 +268,8 @@ DialogDestroy(Dialog * d)
 {
    ecore_list_node_remove(dialog_list, d);
 
-   if (d->name)
-      Efree(d->name);
-   if (d->title)
-      Efree(d->title);
+   Efree(d->name);
+   Efree(d->title);
    DialogKeybindingsDestroy(d);
    if (d->item)
       DialogItemDestroy(d->item, 0);
@@ -298,8 +297,7 @@ DialogFind(const char *name)
 void
 DialogSetTitle(Dialog * d, const char *title)
 {
-   if (d->title)
-      Efree(d->title);
+   Efree(d->title);
    d->title = Estrdup(title);
    d->set_title = 1;
 }
@@ -1439,10 +1437,8 @@ DialogRealizeItem(Dialog * d, DItem * di)
 			  r++;
 		       }
 		  }
-		if (col_size)
-		   Efree(col_size);
-		if (row_size)
-		   Efree(row_size);
+		Efree(col_size);
+		Efree(row_size);
 	     }
 	}
 	break;
@@ -1799,8 +1795,7 @@ DialogItemsRealize(Dialog * d)
 void
 DialogItemSetText(DItem * di, const char *text)
 {
-   if (di->text)
-      Efree(di->text);
+   Efree(di->text);
    di->text = Estrdup(text);
 }
 
@@ -1876,8 +1871,7 @@ DialogItemSeparatorSetOrientation(DItem * di, char horizontal)
 void
 DialogItemImageSetFile(DItem * di, const char *image)
 {
-   if (di->item.image.image)
-      Efree(di->item.image.image);
+   Efree(di->item.image.image);
    di->item.image.image = Estrdup(image);
    di->fill_h = 0;
    di->fill_v = 0;
@@ -2001,9 +1995,7 @@ DialogItemTableEmpty(DItem * di)
    for (i = 0; i < di->item.table.num_items; i++)
       DialogItemDestroy(di->item.table.items[i], 1);
 
-   if (di->item.table.items)
-      Efree(di->item.table.items);
-
+   Efree(di->item.table.items);
    di->item.table.items = NULL;
    di->item.table.num_items = 0;
 }
@@ -2014,8 +2006,7 @@ DialogItemDestroy(DItem * di, int clean)
    if (di->type == DITEM_TABLE)
       DialogItemTableEmpty(di);
 
-   if (di->text)
-      Efree(di->text);
+   Efree(di->text);
 
    switch (di->type)
      {
@@ -2027,8 +2018,7 @@ DialogItemDestroy(DItem * di, int clean)
 	EDestroyWindow(di->item.check_button.check_win);
 	break;
      case DITEM_IMAGE:
-	if (di->item.image.image)
-	   Efree(di->item.image.image);
+	Efree(di->item.image.image);
 	break;
      case DITEM_RADIOBUTTON:
 	if (!clean)

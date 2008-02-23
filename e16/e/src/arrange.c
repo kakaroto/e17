@@ -424,14 +424,10 @@ ArrangeRects(const RectBox * fixed, int fixed_count, RectBox * floating,
 
  done:
    /* free up memory */
-   if (xarray)
-      Efree(xarray);
-   if (yarray)
-      Efree(yarray);
-   if (filled)
-      Efree(filled);
-   if (spaces)
-      Efree(spaces);
+   Efree(xarray);
+   Efree(yarray);
+   Efree(filled);
+   Efree(spaces);
 }
 
 void
@@ -638,8 +634,7 @@ SnapEwin(EWin * ewin, int dx, int dy, int *new_dx, int *new_dy)
 	   dy = 0;
      }
 
-   if (lst)
-      Efree(lst);
+   Efree(lst);
 
    if ((odx != dx) || (ody != dy))
      {
@@ -851,10 +846,8 @@ ArrangeEwinXY(EWin * ewin, int *px, int *py)
 	     break;
 	  }
      }
-   if (ret)
-      Efree(ret);
-   if (fixed)
-      Efree(fixed);
+   Efree(ret);
+   Efree(fixed);
 }
 
 void
@@ -918,12 +911,9 @@ ArrangeEwins(const char *params)
 	   EwinMove(ewin, ret[i].x, ret[i].y);
      }
 
-   if (fixed)
-      Efree(fixed);
-   if (ret)
-      Efree(ret);
-   if (floating)
-      Efree(floating);
+   Efree(fixed);
+   Efree(ret);
+   Efree(floating);
 
  done:
    return;

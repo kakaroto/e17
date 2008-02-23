@@ -392,8 +392,7 @@ EwinDestroy(EWin * ewin)
 	if (lst[i]->icccm.transient_count < 0)	/* Paranoia? */
 	   lst[i]->icccm.transient_count = 0;
      }
-   if (lst)
-      Efree(lst);
+   Efree(lst);
 
    EwinCleanup(ewin);
    EobjListOrderDel(&ewin->o);
@@ -402,26 +401,18 @@ EwinDestroy(EWin * ewin)
 
    HintsSetClientList();
 
-   if (ewin->icccm.wm_icon_name)
-      Efree(ewin->icccm.wm_icon_name);
-   if (ewin->icccm.wm_role)
-      Efree(ewin->icccm.wm_role);
-   if (ewin->icccm.wm_command)
-      Efree(ewin->icccm.wm_command);
-   if (ewin->icccm.wm_machine)
-      Efree(ewin->icccm.wm_machine);
-   if (ewin->ewmh.wm_name)
-      Efree(ewin->ewmh.wm_name);
-   if (ewin->ewmh.wm_icon_name)
-      Efree(ewin->ewmh.wm_icon_name);
-   if (ewin->ewmh.wm_icon)
-      Efree(ewin->ewmh.wm_icon);
-   if (ewin->bits)
-      Efree(ewin->bits);
-   if (ewin->session_id)
-      Efree(ewin->session_id);
+   Efree(ewin->icccm.wm_icon_name);
+   Efree(ewin->icccm.wm_role);
+   Efree(ewin->icccm.wm_command);
+   Efree(ewin->icccm.wm_machine);
+   Efree(ewin->ewmh.wm_name);
+   Efree(ewin->ewmh.wm_icon_name);
+   Efree(ewin->ewmh.wm_icon);
+   Efree(ewin->bits);
+   Efree(ewin->session_id);
    FreePmapMask(&ewin->mini_pmm);
    GroupsEwinRemove(ewin);
+
    Efree(ewin);
 }
 
@@ -1385,8 +1376,7 @@ EwinRaise(EWin * ewin)
    lst = EwinListTransients(ewin, &num, 1);
    for (i = 0; i < num; i++)
       EwinRaise(lst[i]);
-   if (lst)
-      Efree(lst);
+   Efree(lst);
 
    if (call_depth == 1)
      {
@@ -1421,8 +1411,7 @@ EwinLower(EWin * ewin)
    lst = EwinListTransientFor(ewin, &num);
    for (i = 0; i < num; i++)
       EwinLower(lst[i]);
-   if (lst)
-      Efree(lst);
+   Efree(lst);
 
    if (call_depth == 1)
      {

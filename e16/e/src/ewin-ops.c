@@ -419,8 +419,7 @@ doEwinMoveResize(EWin * ewin, Desk * dsk, int x, int y, int w, int h, int flags)
 			    EoGetY(lst[i]) + dy, 0, 0,
 			    flags & (MRF_DESK | MRF_MOVE |
 				     MRF_FLOAT | MRF_UNFLOAT));
-	if (lst)
-	   Efree(lst);
+	Efree(lst);
      }
 
    EwinDetermineArea(ewin);
@@ -588,8 +587,7 @@ EwinIconify(EWin * ewin)
    if (lst && call_depth == 1)
       GNOME_SetClientList();
 #endif
-   if (lst)
-      Efree(lst);
+   Efree(lst);
 
    EwinStateUpdate(ewin);
    HintsSetWindowState(ewin);
@@ -663,8 +661,7 @@ EwinDeIconify1(EWin * ewin, int dx, int dy)
    if (lst && call_depth == 1)
       GNOME_SetClientList();
 #endif
-   if (lst)
-      Efree(lst);
+   Efree(lst);
 
    EwinStateUpdate(ewin);
    HintsSetWindowState(ewin);
@@ -1308,8 +1305,7 @@ EwinOpFullscreen(EWin * ewin, int source __UNUSED__, int on)
 		  EoSetLayer(lst[i], lst[i]->save_fs.layer +
 			     EoGetLayer(ewin) - ewin->save_fs.layer);
 	       }
-	     if (lst)
-		Efree(lst);
+	     Efree(lst);
 	  }
 
 	EwinRaise(ewin);
@@ -1334,8 +1330,7 @@ EwinOpFullscreen(EWin * ewin, int source __UNUSED__, int on)
 	     lst = EwinListTransients(ewin, &num, 0);
 	     for (i = 0; i < num; i++)
 		EoSetLayer(lst[i], lst[i]->save_fs.layer);
-	     if (lst)
-		Efree(lst);
+	     Efree(lst);
 	  }
 	EoSetLayer(ewin, ewin->save_fs.layer);
 
@@ -1428,8 +1423,7 @@ EwinOpClose(EWin * ewin, int source __UNUSED__)
 	ICCCM_Delete(gwins[i]);
 	SoundPlay("SOUND_WINDOW_CLOSE");
      }
-   if (gwins)
-      Efree(gwins);
+   Efree(gwins);
 }
 
 void
@@ -1524,8 +1518,7 @@ EwinOpRaiseLower(EWin * ewin)
 	   EwinRaise(gwins[j]);
      }
 
-   if (gwins)
-      Efree(gwins);
+   Efree(gwins);
 }
 #endif
 
@@ -1554,8 +1547,7 @@ EwinOpStick(EWin * ewin, int source __UNUSED__, int on)
 	     EwinStick(gwins[i]);
 	  }
      }
-   if (gwins)
-      Efree(gwins);
+   Efree(gwins);
 }
 
 void
@@ -1636,8 +1628,7 @@ EwinOpIconify(EWin * ewin, int source __UNUSED__, int on)
 	     EwinIconify(gwins[i]);
 	  }
      }
-   if (gwins)
-      Efree(gwins);
+   Efree(gwins);
 }
 
 void
@@ -1736,8 +1727,7 @@ EwinOpSetBorder(EWin * ewin, int source __UNUSED__, const char *name)
 	  }
 	SnapshotEwinUpdate(gwins[i], SNAP_USE_BORDER);
      }
-   if (gwins)
-      Efree(gwins);
+   Efree(gwins);
 }
 
 void

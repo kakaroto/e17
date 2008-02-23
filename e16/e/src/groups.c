@@ -102,8 +102,8 @@ GroupDestroy(Group * g)
 
    if (g == Mode_groups.current)
       Mode_groups.current = NULL;
-   if (g->members)
-      Efree(g->members);
+   Efree(g->members);
+
    Efree(g);
 }
 

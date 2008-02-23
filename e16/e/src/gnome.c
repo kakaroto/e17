@@ -644,8 +644,7 @@ GNOME_SetDeskNames(void)
    ecore_x_window_prop_string_list_set(VRoot.xwin, atom_set, names, n_desks);
 
    for (i = 0; i < n_desks; i++)
-      if (names[i])
-	 Efree(names[i]);
+      Efree(names[i]);
    Efree(names);
 }
 
@@ -674,8 +673,7 @@ GNOME_SetClientList(void)
 	  }
      }
    ecore_x_window_prop_card32_set(VRoot.xwin, atom_set, wl, j);
-   if (wl)
-      Efree(wl);
+   Efree(wl);
 }
 
 static void

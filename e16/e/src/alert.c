@@ -536,12 +536,9 @@ ShowAlert(const char *title,
      }
 
  done:
-   if (str1)
-      Efree(str1);
-   if (str2)
-      Efree(str2);
-   if (str3)
-      Efree(str3);
+   Efree(str1);
+   Efree(str2);
+   Efree(str3);
 }
 
 void

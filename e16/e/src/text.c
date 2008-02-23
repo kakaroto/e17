@@ -391,8 +391,7 @@ TextstateTextFitMB(TextState * ts, char **ptext, int *pw, int textwidth_limit)
    Efree(text);
    *ptext = new_line;
  done:
-   if (wc_line)
-      Efree(wc_line);
+   Efree(wc_line);
    EwcClose();
 }
 

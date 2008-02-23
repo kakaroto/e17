@@ -412,8 +412,7 @@ CfgItemSetFromString(const CfgItem * ci, const char *str)
 	*((float *)ci->ptr) = fval;
 	break;
      case ITEM_TYPE_STRING:
-	if (*(char **)ci->ptr)
-	   Efree(*(char **)ci->ptr);
+	Efree(*(char **)ci->ptr);
 	if (*str == '\0')
 	   str = NULL;
 	*((char **)ci->ptr) = Estrdup(str);

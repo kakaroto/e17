@@ -75,16 +75,12 @@ ClientDestroy(Client * c)
 
    ecore_list_node_remove(client_list, c);
 
-   if (c->name)
-      Efree(c->name);
-   if (c->msg)
-      Efree(c->msg);
-   if (c->clientname)
-      Efree(c->clientname);
-   if (c->version)
-      Efree(c->version);
-   if (c->info)
-      Efree(c->info);
+   Efree(c->name);
+   Efree(c->msg);
+   Efree(c->clientname);
+   Efree(c->version);
+   Efree(c->info);
+
    Efree(c);
 }
 
@@ -101,14 +97,12 @@ ClientConfigure(Client * c, const char *str)
 
    if (!strcmp(param, "clientname"))
      {
-	if (c->clientname)
-	   Efree(c->clientname);
+	Efree(c->clientname);
 	c->clientname = Estrdup(value);
      }
    else if (!strcmp(param, "version"))
      {
-	if (c->version)
-	   Efree(c->version);
+	Efree(c->version);
 	c->version = Estrdup(value);
      }
    else if (!strcmp(param, "author"))
@@ -125,8 +119,7 @@ ClientConfigure(Client * c, const char *str)
      }
    else if (!strcmp(param, "info"))
      {
-	if (c->info)
-	   Efree(c->info);
+	Efree(c->info);
 	c->info = Estrdup(value);
      }
    else if (!strcmp(param, "pixmap"))

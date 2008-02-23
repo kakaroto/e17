@@ -125,10 +125,9 @@ ECursorDestroy(ECursor * ec)
 
    ecore_list_node_remove(cursor_list, ec);
 
-   if (ec->name)
-      Efree(ec->name);
-   if (ec->file)
-      Efree(ec->file);
+   Efree(ec->name);
+   Efree(ec->file);
+
    Efree(ec);
 }
 

@@ -612,11 +612,8 @@ EWMH_GetWindowIcons(EWin * ewin)
    unsigned int       *val;
    int                 num;
 
-   if (ewin->ewmh.wm_icon)
-     {
-	Efree(ewin->ewmh.wm_icon);
-	ewin->ewmh.wm_icon = NULL;
-     }
+   Efree(ewin->ewmh.wm_icon);
+   ewin->ewmh.wm_icon = NULL;
 
    num = ecore_x_window_prop_card32_list_get(EwinGetClientXwin(ewin),
 					     ECORE_X_ATOM_NET_WM_ICON, &val);

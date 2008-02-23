@@ -510,8 +510,7 @@ MenuCreateFromGnome(const char *name, Menu * parent, MenuStyle * ms,
 			 }
 		       if (iname)
 			 {
-			    if (en_name)
-			       Efree(en_name);
+			    Efree(en_name);
 			 }
 		       else
 			 {
@@ -532,12 +531,9 @@ MenuCreateFromGnome(const char *name, Menu * parent, MenuStyle * ms,
 				 MenuAddItem(m, mi);
 			      }
 			 }
-		       if (iname)
-			  Efree(iname);
-		       if (exec)
-			  Efree(exec);
-		       if (texec)
-			  Efree(texec);
+		       Efree(iname);
+		       Efree(exec);
+		       Efree(texec);
 		    }
 	       }
 	  }
@@ -622,8 +618,7 @@ MenuCreateFromBorders(const char *name, MenuStyle * ms)
 	     MenuAddItem(m, mi);
 	  }
      }
-   if (lst)
-      Efree(lst);
+   Efree(lst);
 
    return m;
 }

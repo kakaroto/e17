@@ -192,9 +192,7 @@ ButtonDestroy(Button * b)
    ImageclassFree(b->iclass);
    ActionclassFree(b->aclass);
    TextclassFree(b->tclass);
-
-   if (b->label)
-      Efree(b->label);
+   Efree(b->label);
 
    Efree(b);
 }

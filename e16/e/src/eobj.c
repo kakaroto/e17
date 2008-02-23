@@ -246,12 +246,9 @@ EobjFini(EObj * eo)
    else
       EDestroyWindow(eo->win);
 
-   if (eo->icccm.wm_name)
-      Efree(eo->icccm.wm_name);
-   if (eo->icccm.wm_res_name)
-      Efree(eo->icccm.wm_res_name);
-   if (eo->icccm.wm_res_class)
-      Efree(eo->icccm.wm_res_class);
+   Efree(eo->icccm.wm_name);
+   Efree(eo->icccm.wm_res_name);
+   Efree(eo->icccm.wm_res_class);
 }
 
 void

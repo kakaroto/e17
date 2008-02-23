@@ -397,8 +397,7 @@ SelectIconboxForEwin(EWin * ewin)
 		  ib_sel = ct;
 	       }
 	  }
-	if (lst)
-	   Efree(lst);
+	Efree(lst);
      }
 
    return ib_sel;
@@ -435,8 +434,7 @@ IconboxesUpdateEwinIcon(EWin * ewin, int icon_mode)
 	ct = lst[i];
 	IconboxUpdateEwinIcon(ct, ewin, icon_mode);
      }
-   if (lst)
-      Efree(lst);
+   Efree(lst);
 }
 
 static void

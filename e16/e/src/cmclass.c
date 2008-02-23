@@ -309,20 +309,13 @@ ColorModifierConfigLoad(FILE * fs)
    err = -1;
 
  done:
-   if (name)
-      Efree(name);
-   if (rx)
-      Efree(rx);
-   if (ry)
-      Efree(ry);
-   if (gx)
-      Efree(gx);
-   if (gy)
-      Efree(gy);
-   if (bx)
-      Efree(bx);
-   if (by)
-      Efree(by);
+   Efree(name);
+   Efree(rx);
+   Efree(ry);
+   Efree(gx);
+   Efree(gy);
+   Efree(bx);
+   Efree(by);
 
    return err;
 }
@@ -338,18 +331,12 @@ ModifyCMClass(char *name, int rnum, unsigned char *rpx, unsigned char *rpy,
    if (!cm)
       return;
 
-   if (cm->red.px)
-      Efree(cm->red.px);
-   if (cm->red.py)
-      Efree(cm->red.py);
-   if (cm->green.px)
-      Efree(cm->green.px);
-   if (cm->green.py)
-      Efree(cm->green.py);
-   if (cm->blue.px)
-      Efree(cm->blue.px);
-   if (cm->blue.py)
-      Efree(cm->blue.py);
+   Efree(cm->red.px);
+   Efree(cm->red.py);
+   Efree(cm->green.px);
+   Efree(cm->green.py);
+   Efree(cm->blue.px);
+   Efree(cm->blue.py);
 
    cm->red.px = NULL;
    cm->red.py = NULL;
@@ -602,18 +589,12 @@ IPC_ColormodifierSet(const char *params)
 	AddItem(cm, cm->name, 0, LIST_TYPE_COLORMODIFIER);
      }
    Efree(name);
-   if (rpx)
-      Efree(rpx);
-   if (rpy)
-      Efree(rpy);
-   if (gpx)
-      Efree(gpx);
-   if (gpy)
-      Efree(gpy);
-   if (bpx)
-      Efree(bpx);
-   if (bpy)
-      Efree(bpy);
+   Efree(rpx);
+   Efree(rpy);
+   Efree(gpx);
+   Efree(gpy);
+   Efree(bpx);
+   Efree(bpy);
 }
 
 static const IpcItem CmClassIpcArray[] = {

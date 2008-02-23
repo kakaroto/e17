@@ -281,8 +281,7 @@ WarpFocusHide(void)
    if (fw && EoIsShown(fw))
       WarpFocusWinHide(fw);
 
-   if (warplist)
-      Efree(warplist);
+   Efree(warplist);
    warplist = NULL;
    warplist_num = 0;
 }

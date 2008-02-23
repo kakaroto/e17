@@ -38,8 +38,9 @@ _FontAliasDestroy(void *data)
 
    if (!fa)
       return;
-   _EFREE(fa->name);
-   _EFREE(fa->font);
+   Efree(fa->name);
+   Efree(fa->font);
+
    Efree(fa);
 }
 

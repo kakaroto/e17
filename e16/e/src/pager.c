@@ -160,8 +160,7 @@ PagerDestroy(Pager * p)
    ecore_list_node_remove(pager_list, p);
 
    PagerScanCancel(p);
-   if (p->name)
-      Efree(p->name);
+   Efree(p->name);
    EDestroyWindow(p->win);
    PagerHiwinHide();
    if (p->bgpmap != None)
@@ -1378,8 +1377,7 @@ EwinGroupMove(EWin * ewin, Desk * dsk, int x, int y)
 	   EwinOpMove(gwins[i], OPSRC_USER, EoGetX(gwins[i]) + dx,
 		      EoGetY(gwins[i]) + dy);
      }
-   if (gwins)
-      Efree(gwins);
+   Efree(gwins);
 }
 
 static void
@@ -1524,8 +1522,7 @@ PagerHiwinHandleMouseUp(Pager * p, int px, int py, int button)
 		       EwinIconify(gwins[i]);
 		    }
 	       }
-	     if (gwins)
-		Efree(gwins);
+	     Efree(gwins);
 	  }
 	else if (ewin2 && ewin2->props.vroot)
 	  {

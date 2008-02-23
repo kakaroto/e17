@@ -1440,8 +1440,7 @@ DeskRestack(Desk * dsk)
 
    XRestackWindows(disp, wl, tot);
 
-   if (wl)
-      Efree(wl);
+   Efree(wl);
 
  done:
    if (dsk->stack.update_client_list)

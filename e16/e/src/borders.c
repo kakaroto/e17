@@ -477,8 +477,7 @@ EwinBorderDetach(EWin * ewin)
 	if (ewin->bits[i].win)
 	   EDestroyWindow(ewin->bits[i].win);
      }
-   if (ewin->bits)
-      Efree(ewin->bits);
+   Efree(ewin->bits);
    ewin->bits = NULL;
    BorderDecRefcount(b);
 
@@ -647,13 +646,9 @@ BorderDestroy(Border * b)
 	ECursorFree(b->part[i].ec);
      }
 
-   if (b->num_winparts > 0)
-      Efree(b->part);
-
-   if (b->name)
-      Efree(b->name);
-   if (b->group_border_name)
-      Efree(b->group_border_name);
+   Efree(b->part);
+   Efree(b->name);
+   Efree(b->group_border_name);
    ActionclassFree(b->aclass);
 }
 

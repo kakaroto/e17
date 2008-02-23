@@ -69,10 +69,13 @@ TextstateCreate(const char *font)
 static void
 TextStateDestroy(TextState * ts)
 {
-   if (ts->fontname)
-      Efree(ts->fontname);
+   if (!ts)
+      return;
+
+   Efree(ts->fontname);
    if (ts->ops)
       ts->ops->Destroy(ts);
+
    Efree(ts);
 }
 
@@ -104,40 +107,24 @@ TextclassDestroy(TextClass * tc)
 		 tc->ref_count);
 	return;
      }
-   if (tc->name)
-      Efree(tc->name);
-   if (tc->norm.normal)
-      TextStateDestroy(tc->norm.normal);
-   if (tc->norm.hilited)
-      TextStateDestroy(tc->norm.hilited);
-   if (tc->norm.clicked)
-      TextStateDestroy(tc->norm.clicked);
-   if (tc->norm.disabled)
-      TextStateDestroy(tc->norm.disabled);
-   if (tc->active.normal)
-      TextStateDestroy(tc->active.normal);
-   if (tc->active.hilited)
-      TextStateDestroy(tc->active.hilited);
-   if (tc->active.clicked)
-      TextStateDestroy(tc->active.clicked);
-   if (tc->active.disabled)
-      TextStateDestroy(tc->active.disabled);
-   if (tc->sticky.normal)
-      TextStateDestroy(tc->sticky.normal);
-   if (tc->sticky.hilited)
-      TextStateDestroy(tc->sticky.hilited);
-   if (tc->sticky.clicked)
-      TextStateDestroy(tc->sticky.clicked);
-   if (tc->sticky.disabled)
-      TextStateDestroy(tc->sticky.disabled);
-   if (tc->sticky_active.normal)
-      TextStateDestroy(tc->sticky_active.normal);
-   if (tc->sticky_active.hilited)
-      TextStateDestroy(tc->sticky_active.hilited);
-   if (tc->sticky_active.clicked)
-      TextStateDestroy(tc->sticky_active.clicked);
-   if (tc->sticky_active.disabled)
-      TextStateDestroy(tc->sticky_active.disabled);
+   Efree(tc->name);
+   TextStateDestroy(tc->norm.normal);
+   TextStateDestroy(tc->norm.hilited);
+   TextStateDestroy(tc->norm.clicked);
+   TextStateDestroy(tc->norm.disabled);
+   TextStateDestroy(tc->active.normal);
+   TextStateDestroy(tc->active.hilited);
+   TextStateDestroy(tc->active.clicked);
+   TextStateDestroy(tc->active.disabled);
+   TextStateDestroy(tc->sticky.normal);
+   TextStateDestroy(tc->sticky.hilited);
+   TextStateDestroy(tc->sticky.clicked);
+   TextStateDestroy(tc->sticky.disabled);
+   TextStateDestroy(tc->sticky_active.normal);
+   TextStateDestroy(tc->sticky_active.hilited);
+   TextStateDestroy(tc->sticky_active.clicked);
+   TextStateDestroy(tc->sticky_active.disabled);
+
    Efree(tc);
 }
 
@@ -178,7 +165,6 @@ TextclassSetJustification(TextClass * tc, int just)
 static void
 TextclassPopulate(TextClass * tclass)
 {
-
    if (!tclass)
       return;
 

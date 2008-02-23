@@ -102,22 +102,15 @@ SnapshotDestroy(Snapshot * sn)
    if (sn->used)
       sn->used->snap = NULL;
 
-   if (sn->name)
-      Efree(sn->name);
-   if (sn->win_title)
-      Efree(sn->win_title);
-   if (sn->win_name)
-      Efree(sn->win_name);
-   if (sn->win_class)
-      Efree(sn->win_class);
-   if (sn->win_role)
-      Efree(sn->win_role);
-   if (sn->border_name)
-      Efree(sn->border_name);
-   if (sn->cmd)
-      Efree(sn->cmd);
-   if (sn->groups)
-      Efree(sn->groups);
+   Efree(sn->name);
+   Efree(sn->win_title);
+   Efree(sn->win_name);
+   Efree(sn->win_class);
+   Efree(sn->win_role);
+   Efree(sn->border_name);
+   Efree(sn->cmd);
+   Efree(sn->groups);
+
    Efree(sn);
 }
 
@@ -311,8 +304,7 @@ SnapshotEwinGet(EWin * ewin, unsigned int match_flags)
 static void
 SnapEwinBorder(Snapshot * sn, const EWin * ewin)
 {
-   if (sn->border_name)
-      Efree(sn->border_name);
+   Efree(sn->border_name);
    sn->border_name = NULL;
    if (ewin->previous_border)
       sn->border_name = Estrdup(BorderGetName(ewin->previous_border));
@@ -389,8 +381,7 @@ SnapEwinCmd(Snapshot * sn, const EWin * ewin)
        strcmp(ewin->icccm.wm_machine, Mode.wm.machine_name))
       return;
 
-   if (sn->cmd)
-      Efree(sn->cmd);
+   Efree(sn->cmd);
    sn->cmd = Estrdup(ewin->icccm.wm_command);
 }
 
@@ -406,8 +397,8 @@ SnapEwinGroups(Snapshot * sn, const EWin * ewin, char onoff)
 
    if (!ewin->groups)
      {
-	if (sn->groups)
-	   Efree(sn->groups);
+	Efree(sn->groups);
+	sn->groups = NULL;
 	sn->num_groups = 0;
 	return;
      }
@@ -427,9 +418,7 @@ SnapEwinGroups(Snapshot * sn, const EWin * ewin, char onoff)
 		     sn = SnapshotEwinGet(gwins[i], SNAP_MATCH_DEFAULT);
 		  if (sn)
 		    {
-		       if (sn->groups)
-			  Efree(sn->groups);
-
+		       Efree(sn->groups);
 		       sn->groups = EMALLOC(int, num_groups);
 
 		       sn->num_groups = num_groups;
@@ -447,8 +436,8 @@ SnapEwinGroups(Snapshot * sn, const EWin * ewin, char onoff)
 		  sn = gwins[i]->snap;
 		  if (sn)
 		    {
-		       if (sn->groups)
-			  Efree(sn->groups);
+		       Efree(sn->groups);
+		       sn->groups = NULL;
 		       sn->num_groups = 0;
 		    }
 	       }

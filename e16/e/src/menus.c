@@ -384,8 +384,7 @@ MenuShow(Menu * m, char noshow)
 static void
 MenuStyleSetName(MenuStyle * ms, const char *name)
 {
-   if (ms->name)
-      Efree(ms->name);
+   Efree(ms->name);
    ms->name = Estrdup(name);
 }
 
@@ -486,8 +485,7 @@ MenuSetIconSize(Menu * m, int size)
 void
 MenuSetData(Menu * m, char *data)
 {
-   if (m->data)
-      Efree(m->data);
+   Efree(m->data);
    m->data = data;
 }
 
@@ -578,14 +576,10 @@ MenuDestroy(Menu * m)
    if (m->win)
       EDestroyWindow(m->win);
 
-   if (m->name)
-      Efree(m->name);
-   if (m->alias)
-      Efree(m->alias);
-   if (m->title)
-      Efree(m->title);
-   if (m->data)
-      Efree(m->data);
+   Efree(m->name);
+   Efree(m->alias);
+   Efree(m->title);
+   Efree(m->data);
 
    Efree(m);
 }
@@ -612,20 +606,16 @@ MenuEmpty(Menu * m, int destroying)
 	     mi->child->ref_count--;
 	     MenuDestroy(mi->child);
 	  }
-	if (mi->text)
-	   Efree(mi->text);
-	if (mi->params)
-	   Efree(mi->params);
+	Efree(mi->text);
+	Efree(mi->params);
 	for (j = 0; j < 3; j++)
 	   FreePmapMask(&(mi->pmm[j]));
 	if (!destroying && mi->win)
 	   EDestroyWindow(mi->win);
 	ImageclassFree(mi->icon_iclass);
-	if (mi)
-	   Efree(mi);
+	Efree(mi);
      }
-   if (m->items)
-      Efree(m->items);
+   Efree(m->items);
    m->items = NULL;
    m->num = 0;
    m->sel_item = NULL;

@@ -224,38 +224,34 @@ ImagestateCreate(const char *file)
 }
 
 static void
-FreeImageState(ImageState * i)
+ImagestateDestroy(ImageState * is)
 {
+   if (!is)
+      return;
 
-   Efree(i->im_file);
-   Efree(i->real_file);
+   Efree(is->im_file);
+   Efree(is->real_file);
 
-   if (i->im)
-     {
-	EImageFree(i->im);
-	i->im = NULL;
-     }
+   if (is->im)
+      EImageFree(is->im);
 
-   if (i->border)
-      Efree(i->border);
+   Efree(is->border);
 
 #if ENABLE_COLOR_MODIFIERS
-   if (i->colmod)
-      i->colmod->ref_count--;
+   if (is->colmod)
+      is->colmod->ref_count--;
 #endif
+
+   Efree(is);
 }
 
 static void
 FreeImageStateArray(ImageStateArray * isa)
 {
-   FreeImageState(isa->normal);
-   Efree(isa->normal);
-   FreeImageState(isa->hilited);
-   Efree(isa->hilited);
-   FreeImageState(isa->clicked);
-   Efree(isa->clicked);
-   FreeImageState(isa->disabled);
-   Efree(isa->disabled);
+   ImagestateDestroy(isa->normal);
+   ImagestateDestroy(isa->hilited);
+   ImagestateDestroy(isa->clicked);
+   ImagestateDestroy(isa->disabled);
 }
 
 static void
@@ -362,8 +358,7 @@ ImageclassDestroy(ImageClass * ic)
 
    ecore_list_node_remove(iclass_list, ic);
 
-   if (ic->name)
-      Efree(ic->name);
+   Efree(ic->name);
 
    FreeImageStateArray(&(ic->norm));
    FreeImageStateArray(&(ic->active));
@@ -374,6 +369,8 @@ ImageclassDestroy(ImageClass * ic)
    if (ic->colmod)
       ic->colmod->ref_count--;
 #endif
+
+   Efree(ic);
 }
 
 ImageClass         *

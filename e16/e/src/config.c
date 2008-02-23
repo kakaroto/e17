@@ -253,12 +253,9 @@ ConfigFilePreparse(const char *path, const char *dest)
 	     def_shell, path, dest);
    system(execline);
 
-   if (def_user)
-      Efree(def_user);
-   if (def_shell)
-      Efree(def_shell);
-   if (def_home)
-      Efree(def_home);
+   Efree(def_user);
+   Efree(def_shell);
+   Efree(def_home);
 
    return exists(dest) ? 0 : 1;
 }

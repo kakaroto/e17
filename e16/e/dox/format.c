@@ -423,29 +423,22 @@ GetObjects(FILE * f)
 	  {
 	     int                 j;
 
-	     if (page[i].name)
-		free(page[i].name);
-	     if (page[i].background)
-		free(page[i].background);
+	     Efree(page[i].name);
+	     Efree(page[i].background);
 	     for (j = 0; j < page[i].count; j++)
 	       {
 		  switch (page[i].obj[j].type)
 		    {
 		    case IMG:
-		       if (((Img_ *) page[i].obj[j].object)->src)
-			  free(((Img_ *) page[i].obj[j].object)->src);
-		       if (((Img_ *) page[i].obj[j].object)->src2)
-			  free(((Img_ *) page[i].obj[j].object)->src2);
-		       if (((Img_ *) page[i].obj[j].object)->src3)
-			  free(((Img_ *) page[i].obj[j].object)->src3);
-		       if (((Img_ *) page[i].obj[j].object)->link)
-			  free(((Img_ *) page[i].obj[j].object)->link);
+		       Efree(((Img_ *) page[i].obj[j].object)->src);
+		       Efree(((Img_ *) page[i].obj[j].object)->src2);
+		       Efree(((Img_ *) page[i].obj[j].object)->src3);
+		       Efree(((Img_ *) page[i].obj[j].object)->link);
 		       break;
 		    case BR:
 		       break;
 		    case FONT:
-		       if (((Font_ *) page[i].obj[j].object)->face)
-			  free(((Font_ *) page[i].obj[j].object)->face);
+		       Efree(((Font_ *) page[i].obj[j].object)->face);
 		       break;
 		    case P:
 		       break;
@@ -454,13 +447,11 @@ GetObjects(FILE * f)
 		    case PAGE:
 		       break;
 		    }
-		  if (page[i].obj[j].object)
-		     free(page[i].obj[j].object);
+		  Efree(page[i].obj[j].object);
 	       }
-	     if (page[i].obj)
-		free(page[i].obj);
+	     Efree(page[i].obj);
 	  }
-	free(page);
+	Efree(page);
 	num_pages = 0;
 	page = NULL;
 	have_font = 0;
@@ -482,8 +473,7 @@ GetObjects(FILE * f)
 	       {
 		  if (!GetNextTag(&obj))
 		    {
-		       if (fdat)
-			  free(fdat);
+		       Efree(fdat);
 		       return 0;
 		    }
 	       }
@@ -492,8 +482,7 @@ GetObjects(FILE * f)
 	  {
 	     if (!GetNextTag(&obj))
 	       {
-		  if (fdat)
-		     free(fdat);
+		  Efree(fdat);
 		  return 0;
 	       }
 	  }
@@ -513,7 +502,7 @@ GetObjects(FILE * f)
 	   have_font = 1;
 	obj.object = NULL;
      }
-   free(fdat);
+   Efree(fdat);
 }
 
 int

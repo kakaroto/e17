@@ -56,8 +56,12 @@
 #include <stdlib.h>
 #define Ecalloc     calloc
 #define Emalloc     malloc
-#define Efree       free
 #define Erealloc    realloc
+#if HAVE_FREE_NULL_BUG
+#define Efree(p)    if (p) free(p)
+#else
+#define Efree       free
+#endif
 
 #define ECALLOC(type, num) (type*)Ecalloc(num, sizeof(type))
 #define EMALLOC(type, num) (type*)Emalloc((num)*sizeof(type))
