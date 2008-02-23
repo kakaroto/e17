@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-02-11 22:01+0100\n"
+"POT-Creation-Date: 2008-02-17 16:54+0100\n"
 "PO-Revision-Date: 2000-01-14 20:43-0300\n"
 "Last-Translator: Vladimir STEPANOV <stepanov@bird.iki.rssi.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -41,8 +41,8 @@ msgid ""
 "Kim Woelders - kim@woelders.dk\n"
 msgstr ""
 
-#: src/aclass.c:205 src/backgrounds.c:242 src/borders.c:636 src/buttons.c:184
-#: src/cmclass.c:84 src/cursors.c:122 src/iclass.c:358 src/tclass.c:103
+#: src/aclass.c:202 src/backgrounds.c:238 src/borders.c:635 src/buttons.c:184
+#: src/cmclass.c:84 src/cursors.c:122 src/iclass.c:359 src/tclass.c:111
 #: src/tooltips.c:134
 #, c-format
 msgid "%u references remain\n"
@@ -151,23 +151,23 @@ msgstr ""
 msgid "Enlightenment Error"
 msgstr "Ошибка Enlightenment"
 
-#: src/alert.c:571
+#: src/alert.c:568
 msgid "Enlightenment Message Dialog"
 msgstr "Диалог сообщения Enlightenment"
 
-#: src/alert.c:571
+#: src/alert.c:568
 msgid "Ignore this"
 msgstr "Игнорировать"
 
-#: src/alert.c:572
+#: src/alert.c:569
 msgid "Restart Enlightenment"
 msgstr "Перезапустить Enlightenment"
 
-#: src/alert.c:572 src/setup.c:177
+#: src/alert.c:569 src/setup.c:177
 msgid "Quit Enlightenment"
 msgstr "Выйти из Enlightenment"
 
-#: src/backgrounds.c:1615
+#: src/backgrounds.c:1598
 #, c-format
 msgid ""
 "Background definition information:\n"
@@ -178,11 +178,11 @@ msgstr ""
 "Название: %s\n"
 "Файл: %s\n"
 
-#: src/backgrounds.c:1616
+#: src/backgrounds.c:1599
 msgid "-NONE-"
 msgstr "-ПУСТО-"
 
-#: src/backgrounds.c:1796 src/backgrounds.c:1798
+#: src/backgrounds.c:1778 src/backgrounds.c:1780
 msgid ""
 "No\n"
 "Background"
@@ -190,40 +190,40 @@ msgstr ""
 "Без\n"
 "рисунка"
 
-#: src/backgrounds.c:1892 src/backgrounds.c:2321
+#: src/backgrounds.c:1874 src/backgrounds.c:2303
 #, c-format
 msgid "Unused backgrounds freed after %2i:%02i:%02i"
 msgstr "Освобождать неиcпользуемые картинки после %2i:%02i:%02i"
 
-#: src/backgrounds.c:2107
+#: src/backgrounds.c:2089
 msgid "Use background image"
 msgstr "Использовать картинку"
 
-#: src/backgrounds.c:2111
+#: src/backgrounds.c:2093
 msgid "Keep aspect on scale"
 msgstr "Сохранять аспектное отношение"
 
-#: src/backgrounds.c:2115
+#: src/backgrounds.c:2097
 msgid "Tile image across background"
 msgstr "Расположить картинку черепицей"
 
-#: src/backgrounds.c:2124
+#: src/backgrounds.c:2106
 msgid "Move to Front\n"
 msgstr "Переместить вперед\n"
 
-#: src/backgrounds.c:2129
+#: src/backgrounds.c:2111
 msgid "Duplicate\n"
 msgstr "Дублировать\n"
 
-#: src/backgrounds.c:2133
+#: src/backgrounds.c:2115
 msgid "Unlist\n"
 msgstr "Убрать\n"
 
-#: src/backgrounds.c:2138
+#: src/backgrounds.c:2120
 msgid "Delete File\n"
 msgstr "Стереть файл\n"
 
-#: src/backgrounds.c:2149
+#: src/backgrounds.c:2131
 msgid ""
 "Background\n"
 "Image\n"
@@ -237,72 +237,72 @@ msgstr ""
 "фонового\n"
 "рисунка\n"
 
-#: src/backgrounds.c:2206
+#: src/backgrounds.c:2188
 msgid "BG Colour\n"
 msgstr "Цвет фона\n"
 
-#: src/backgrounds.c:2211
+#: src/backgrounds.c:2193
 msgid "Red:\n"
 msgstr "Красный:\n"
 
-#: src/backgrounds.c:2222
+#: src/backgrounds.c:2204
 msgid "Green:\n"
 msgstr "Зеленый:\n"
 
-#: src/backgrounds.c:2233
+#: src/backgrounds.c:2215
 msgid "Blue:\n"
 msgstr "Синий:\n"
 
-#: src/backgrounds.c:2266
+#: src/backgrounds.c:2248
 msgid "Pre-scan BG's"
 msgstr "Предварительно сканировать"
 
-#: src/backgrounds.c:2274
+#: src/backgrounds.c:2256
 msgid "Sort by File"
 msgstr "По имени файла"
 
-#: src/backgrounds.c:2279
+#: src/backgrounds.c:2261
 msgid "Sort by Attr."
 msgstr "По аттрибутам"
 
-#: src/backgrounds.c:2285
+#: src/backgrounds.c:2267
 msgid "Sort by Image"
 msgstr "По имени"
 
-#: src/backgrounds.c:2305
+#: src/backgrounds.c:2287
 msgid "Use dithering in Hi-Colour"
 msgstr "Использовать сглаживание в Hi-Colour"
 
-#: src/backgrounds.c:2309
+#: src/backgrounds.c:2291
 msgid "Background overrides theme"
 msgstr "Фоновый рисунок перекрывает установки темы"
 
-#: src/backgrounds.c:2314
+#: src/backgrounds.c:2296
 msgid "Enable background transparency compatibility mode"
 msgstr ""
 
-#: src/backgrounds.c:2338 src/mod-trans.c:193
+#: src/backgrounds.c:2320 src/mod-trans.c:193
 #, fuzzy
 msgid "Background"
 msgstr ""
 "Без\n"
 "рисунка"
 
-#: src/backgrounds.c:2339
+#: src/backgrounds.c:2321
 msgid "Desktop Background Settings"
 msgstr "Установки фонового рисунка"
 
-#: src/backgrounds.c:2342
+#: src/backgrounds.c:2324
 msgid ""
 "Enlightenment Desktop\n"
 "Background Settings Dialog\n"
 msgstr ""
 
-#: src/comms.c:250
+#: src/comms.c:241
 msgid "E IPC Error"
 msgstr "Ошибка E IPC"
 
-#: src/comms.c:251
+#: src/comms.c:242
 #, c-format
 msgid ""
 "Received Unknown Client Message.\n"
@@ -319,12 +319,12 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: src/config.c:195 src/config.c:294
+#: src/config.c:195 src/config.c:291
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
 msgstr "CONFIG: игнорирую лишние данные в \"%s\"\n"
 
-#: src/config.c:203 src/config.c:301
+#: src/config.c:203 src/config.c:298
 #, c-format
 msgid "CONFIG: missing required data in \"%s\"\n"
 msgstr "CONFIG: в \"%s\" отсутствуют требуемые данные\n"
@@ -351,19 +351,19 @@ msgstr ""
 "Предупреждение:  Похоже, кофигурирование завершилось до\n"
 "окончания загрузки блока Menu.  Результат сомнителен...\n"
 
-#: src/config.c:310
+#: src/config.c:307
 msgid "Theme versioning ERROR"
 msgstr "ОШИБКА версии темы"
 
-#: src/config.c:311
+#: src/config.c:308
 msgid "Restart with Defaults"
 msgstr "Перезапуск \"по умолчанию\""
 
-#: src/config.c:312
+#: src/config.c:309
 msgid "Abort and Exit"
 msgstr "Выход"
 
-#: src/config.c:313
+#: src/config.c:310
 #, fuzzy, c-format
 msgid ""
 "ERROR:\n"
@@ -400,124 +400,124 @@ msgstr ""
 "window manager, и эта тема уже использует преимущества новых\n"
 "возможностей Enlightenment.\n"
 
-#: src/config.c:605
+#: src/config.c:602
 msgid "Enlightenment Starting..."
 msgstr "Запуск Enlightenment..."
 
-#: src/container.c:1216
+#: src/container.c:1214
 #, fuzzy
 msgid "Settings..."
 msgstr "Настройки фокуса"
 
-#: src/container.c:1220 src/dialog.c:887 src/pager.c:1011 config/strings.c:30
+#: src/container.c:1218 src/dialog.c:885 src/pager.c:1010 config/strings.c:30
 #: config/strings.c:132
 msgid "Close"
 msgstr "Закрыть"
 
-#: src/container.c:1225 config/strings.c:83
+#: src/container.c:1223 config/strings.c:83
 msgid "Create New Iconbox"
 msgstr "Сделать новый Iconbox"
 
-#: src/container.c:1521 src/container.c:1595
+#: src/container.c:1519 src/container.c:1592
 #, fuzzy, c-format
 msgid "Icon size: %2d"
 msgstr "Размер пиктограммы"
 
-#: src/container.c:1559
+#: src/container.c:1556
 msgid "Transparent background"
 msgstr "Прозрачный фон"
 
-#: src/container.c:1563
+#: src/container.c:1560
 #, fuzzy
 msgid "Hide inner border"
 msgstr "Показать/спрятать эту группу"
 
-#: src/container.c:1567
+#: src/container.c:1564
 msgid "Draw base image behind Icons"
 msgstr "Рисовать основной фон под пиктограммами"
 
-#: src/container.c:1571
+#: src/container.c:1568
 msgid "Hide scrollbar when not needed"
 msgstr "Прятать полосу прокрутки, когда она не нужна"
 
-#: src/container.c:1575
+#: src/container.c:1572
 msgid "Automatically resize to fit Icons"
 msgstr "Автоматически менять размер по количеству пиктограмм"
 
-#: src/container.c:1582
+#: src/container.c:1579
 msgid "Alignment of anchoring when automatically resizing:"
 msgstr ""
 
-#: src/container.c:1613
+#: src/container.c:1610
 msgid "Orientation:"
 msgstr "Ориентация:"
 
-#: src/container.c:1618
+#: src/container.c:1615
 msgid "Scrollbar side:"
 msgstr "Полоса прокрутки:"
 
-#: src/container.c:1623
+#: src/container.c:1620
 msgid "Scrollbar arrows:"
 msgstr "Стрелки:"
 
-#: src/container.c:1626
+#: src/container.c:1623
 msgid "Horizontal"
 msgstr "Горизонтальная"
 
-#: src/container.c:1631
+#: src/container.c:1628
 msgid "Left / Top"
 msgstr "Слева / вверху"
 
-#: src/container.c:1636
+#: src/container.c:1633
 msgid "Start"
 msgstr "В начале"
 
-#: src/container.c:1641
+#: src/container.c:1638
 msgid "Vertical"
 msgstr "Вертикальная"
 
-#: src/container.c:1647
+#: src/container.c:1644
 msgid "Right / Bottom"
 msgstr "Справа / внизу"
 
-#: src/container.c:1653
+#: src/container.c:1650
 msgid "Both ends"
 msgstr "С обеих сторон"
 
-#: src/container.c:1661
+#: src/container.c:1658
 msgid "End"
 msgstr "В конце"
 
-#: src/container.c:1669 src/focus.c:846
+#: src/container.c:1666 src/focus.c:846
 msgid "None"
 msgstr "Нигде"
 
-#: src/container.c:1679
+#: src/container.c:1676
 msgid "Show icon names"
 msgstr "Показывать имена пиктограмм"
 
-#: src/container.c:1683
+#: src/container.c:1680
 msgid "Animate when iconifying to this Iconbox"
 msgstr "Анимировать сворачивание в этот Iconbox"
 
-#: src/container.c:1693
+#: src/container.c:1690
 msgid "Icon image display policy (if one operation fails, try the next):"
 msgstr ""
 "Способ отображения пиктограмм (если один не работает, пробовать следующий):"
 
-#: src/container.c:1698
+#: src/container.c:1695
 msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
 msgstr "Снимок окна, Пиктограмма приложения, Пиктограмма Enlightenment"
 
-#: src/container.c:1705
+#: src/container.c:1702
 msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
 msgstr "Пиктограмма приложения, Пиктограмма Enlightenment, Снимок окна"
 
-#: src/container.c:1710
+#: src/container.c:1707
 msgid "Use Enlightenment Icon, Snapshot Window"
 msgstr "Пиктограмма Enlightenment, Снимок окна"
 
-#: src/container.c:1723
+#: src/container.c:1720
 #, fuzzy
 msgid ""
 "Enlightenment Iconbox\n"
@@ -578,72 +578,72 @@ msgstr ""
 "Кликните здесь, чтобы опустить этот\n"
 "рабочий стол вниз.\n"
 
-#: src/desktops.c:2295 src/desktops.c:2334
+#: src/desktops.c:2294 src/desktops.c:2333
 #, c-format
 msgid "%i Desktops"
 msgstr "%i рабочих столов"
 
-#: src/desktops.c:2297 src/desktops.c:2336
+#: src/desktops.c:2296 src/desktops.c:2335
 #, c-format
 msgid "%i Desktop"
 msgstr "%i рабочий стол"
 
-#: src/desktops.c:2329
+#: src/desktops.c:2328
 msgid "Number of virtual desktops:\n"
 msgstr "Количество виртуальных рабочих столов:\n"
 
-#: src/desktops.c:2358
+#: src/desktops.c:2357
 msgid "Slide desktops around when changing"
 msgstr ""
 
-#: src/desktops.c:2364
+#: src/desktops.c:2363
 msgid "Desktop Slide speed:\n"
 msgstr ""
 
-#: src/desktops.c:2378
+#: src/desktops.c:2377
 msgid "Wrap desktops around"
 msgstr ""
 
-#: src/desktops.c:2386
+#: src/desktops.c:2385
 msgid "Display desktop dragbar"
 msgstr "Показывать Dragbar"
 
-#: src/desktops.c:2392
+#: src/desktops.c:2391
 msgid "Drag bar position:"
 msgstr "Сторона экрана, на которой расположен Dragbar"
 
-#: src/desktops.c:2396
+#: src/desktops.c:2395
 msgid "Top"
 msgstr "Верхняя"
 
-#: src/desktops.c:2402
+#: src/desktops.c:2401
 msgid "Bottom"
 msgstr "Нижняя"
 
-#: src/desktops.c:2408 src/pager.c:1920 src/pager.c:1945 src/pager.c:1970
+#: src/desktops.c:2407 src/pager.c:1917 src/pager.c:1942 src/pager.c:1967
 msgid "Left"
 msgstr "Левая"
 
-#: src/desktops.c:2414 src/pager.c:1932 src/pager.c:1957 src/pager.c:1982
+#: src/desktops.c:2413 src/pager.c:1929 src/pager.c:1954 src/pager.c:1979
 msgid "Right"
 msgstr "Правая"
 
-#: src/desktops.c:2422 src/menus-misc.c:713
+#: src/desktops.c:2421 src/menus-misc.c:708
 #, fuzzy
 msgid "Desks"
 msgstr "Рабочий стол"
 
-#: src/desktops.c:2423
+#: src/desktops.c:2422
 msgid "Multiple Desktop Settings"
 msgstr "Установки рабочих столов"
 
-#: src/desktops.c:2426
+#: src/desktops.c:2425
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
 msgstr ""
 
-#: src/desktops.c:2496 src/desktops.c:2531
+#: src/desktops.c:2495 src/desktops.c:2530
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -652,7 +652,7 @@ msgstr ""
 "%i x %i\n"
 "экранов"
 
-#: src/desktops.c:2499 src/desktops.c:2534
+#: src/desktops.c:2498 src/desktops.c:2533
 msgid ""
 "1\n"
 "Screen in size"
@@ -660,58 +660,58 @@ msgstr ""
 "1\n"
 "экран"
 
-#: src/desktops.c:2527
+#: src/desktops.c:2526
 msgid "Virtual Desktop size:\n"
 msgstr "Размер виртуального рабочего стола:\n"
 
-#: src/desktops.c:2568
+#: src/desktops.c:2567
 msgid "Wrap virtual desktops around"
 msgstr ""
 
-#: src/desktops.c:2575
+#: src/desktops.c:2574
 msgid "Edge Flip Mode:"
 msgstr ""
 
-#: src/desktops.c:2578
+#: src/desktops.c:2577
 msgid "Off"
 msgstr ""
 
-#: src/desktops.c:2583
+#: src/desktops.c:2582
 msgid "On"
 msgstr ""
 
-#: src/desktops.c:2588
+#: src/desktops.c:2587
 msgid "Only when moving window"
 msgstr ""
 
-#: src/desktops.c:2594
+#: src/desktops.c:2593
 msgid "Resistance at edge of screen:\n"
 msgstr "\"Сопротивление\" на границе экрана:\n"
 
-#: src/desktops.c:2606
+#: src/desktops.c:2605
 msgid "Areas"
 msgstr ""
 
-#: src/desktops.c:2607
+#: src/desktops.c:2606
 msgid "Virtual Desktop Settings"
 msgstr "Установки виртуальных рабочих столов"
 
-#: src/desktops.c:2610
+#: src/desktops.c:2609
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
 msgstr ""
 
-#: src/dialog.c:875 src/dialog.c:2101 src/dialog.c:2132 src/events.c:87
-#: src/setup.c:165 src/sound.c:198
+#: src/dialog.c:873 src/dialog.c:2091 src/dialog.c:2122 src/events.c:87
+#: src/setup.c:165 src/sound.c:197
 msgid "OK"
 msgstr ""
 
-#: src/dialog.c:880
+#: src/dialog.c:878
 msgid "Apply"
 msgstr "Применить"
 
-#: src/dialog.c:2132
+#: src/dialog.c:2122
 msgid "Attention !!!"
 msgstr "Внимание !!!"
 
@@ -852,32 +852,32 @@ msgid ""
 "Settings Dialog\n"
 msgstr ""
 
-#: src/fx.c:900
+#: src/fx.c:899
 msgid "Effects"
 msgstr ""
 
-#: src/fx.c:903
+#: src/fx.c:902
 #, fuzzy
 msgid "Enable Effect: Raindrops"
 msgstr "Невозможно показать дождевые капли"
 
-#: src/fx.c:907
+#: src/fx.c:906
 msgid "Ripples"
 msgstr ""
 
-#: src/fx.c:911
+#: src/fx.c:910
 msgid "Waves"
 msgstr ""
 
-#: src/fx.c:917
+#: src/fx.c:916
 msgid "FX"
 msgstr ""
 
-#: src/fx.c:918
+#: src/fx.c:917
 msgid "Special FX Settings"
 msgstr "Установки спецэффектов"
 
-#: src/fx.c:921
+#: src/fx.c:920
 msgid ""
 "Enlightenment Special Effects\n"
 "Settings Dialog\n"
@@ -1012,7 +1012,7 @@ msgstr ""
 msgid "Swap Window Locations"
 msgstr "Окно"
 
-#: src/groups.c:1018 src/menus-misc.c:773 config/strings.c:147
+#: src/groups.c:1018 src/menus-misc.c:768 config/strings.c:147
 #, fuzzy
 msgid "Groups"
 msgstr "Группа %i"
@@ -1127,21 +1127,21 @@ msgstr ""
 "и установку ОС. Такая ошибка встречается крайне редко на рабочем\n"
 "оборудовании.\n"
 
-#: src/hints.c:574
+#: src/hints.c:601
 #, fuzzy
 msgid "Selection Error!"
 msgstr "Рабочий стол"
 
-#: src/hints.c:574
+#: src/hints.c:601
 #, c-format
 msgid "Could not acquire selection: %s"
 msgstr ""
 
-#: src/iconify.c:470
+#: src/iconify.c:468
 msgid "Iconbox Options"
 msgstr "Iconbox"
 
-#: src/iconify.c:471
+#: src/iconify.c:469
 msgid "Iconbox Settings"
 msgstr "Установки Iconbox"
 
@@ -1209,14 +1209,14 @@ msgstr "\"help <команда>\": описание команды\n"
 msgid "         <command>     : <description>\n"
 msgstr "<команда> : <описание>\n"
 
-#: src/main.c:585
+#: src/main.c:582
 #, c-format
 msgid ""
 "%s must be a directory in which you have\n"
 "read, write, and execute permission.\n"
 msgstr ""
 
-#: src/main.c:695
+#: src/main.c:692
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1245,7 +1245,7 @@ msgstr ""
 "кем-то удалены, программа стерта кем-либо, либо ошибка в\n"
 "установке Enlightenment.\n"
 
-#: src/main.c:709
+#: src/main.c:706
 #, fuzzy, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1270,67 +1270,67 @@ msgstr ""
 msgid "Magnifier"
 msgstr ""
 
-#: src/menus-misc.c:584 config/strings.c:91
+#: src/menus-misc.c:580 config/strings.c:91
 #, fuzzy
 msgid "Themes"
 msgstr "Некорректная тема"
 
-#: src/menus-misc.c:610
+#: src/menus-misc.c:606
 #, fuzzy
 msgid "Border"
 msgstr "Стиль рамки"
 
-#: src/menus-misc.c:673
+#: src/menus-misc.c:668
 #, fuzzy
 msgid "Window List"
 msgstr "Окно"
 
-#: src/menus-misc.c:695
+#: src/menus-misc.c:690
 #, fuzzy
 msgid "Go to this Desktop"
 msgstr "Перейти на этот рабочий стол"
 
-#: src/menus-misc.c:699 src/menus-misc.c:795
+#: src/menus-misc.c:694 src/menus-misc.c:790
 #, c-format
 msgid "Desktop %i"
 msgstr "Рабочий стол %i"
 
-#: src/menus-misc.c:742
+#: src/menus-misc.c:737
 msgid "Show/Hide this group"
 msgstr "Показать/спрятать эту группу"
 
-#: src/menus-misc.c:747
+#: src/menus-misc.c:742
 msgid "Iconify this group"
 msgstr "Свернуть эту группу"
 
-#: src/menus-misc.c:758
+#: src/menus-misc.c:753
 #, c-format
 msgid "Group %i"
 msgstr "Группа %i"
 
-#: src/menus.c:2055
+#: src/menus.c:2045
 msgid "Animated display of menus"
 msgstr ""
 
-#: src/menus.c:2060
+#: src/menus.c:2050
 msgid "Always pop up menus on screen"
 msgstr ""
 
-#: src/menus.c:2065
+#: src/menus.c:2055
 msgid "Warp pointer after moving menus"
 msgstr ""
 
-#: src/menus.c:2071
+#: src/menus.c:2061
 #, fuzzy
 msgid "Menus"
 msgstr "Стиль рамки"
 
-#: src/menus.c:2072
+#: src/menus.c:2062
 #, fuzzy
 msgid "Menu Settings"
 msgstr "Установки звука"
 
-#: src/menus.c:2075
+#: src/menus.c:2065
 #, fuzzy
 msgid ""
 "Enlightenment Menu\n"
@@ -1397,131 +1397,131 @@ msgid ""
 "Settings Dialog\n"
 msgstr "Диалог сообщения Enlightenment"
 
-#: src/pager.c:1004 config/strings.c:49 config/strings.c:131
+#: src/pager.c:1003 config/strings.c:49 config/strings.c:131
 msgid "Window Options"
 msgstr "Окно"
 
-#: src/pager.c:1007 config/strings.c:51 config/strings.c:134
+#: src/pager.c:1006 config/strings.c:51 config/strings.c:134
 msgid "Iconify"
 msgstr "Свернуть"
 
-#: src/pager.c:1015 config/strings.c:133
+#: src/pager.c:1014 config/strings.c:133
 msgid "Annihilate"
 msgstr "Уничтожить"
 
-#: src/pager.c:1019
+#: src/pager.c:1018
 msgid "Stick / Unstick"
 msgstr "Закрепить / Освободить"
 
-#: src/pager.c:1028
+#: src/pager.c:1027
 msgid "Desktop Options"
 msgstr "Рабочий стол"
 
-#: src/pager.c:1030
+#: src/pager.c:1029
 msgid "Pager Settings..."
 msgstr "Установки Pager-а..."
 
-#: src/pager.c:1035
+#: src/pager.c:1034
 msgid "Snapshotting Off"
 msgstr "Выключить отображение экрана"
 
-#: src/pager.c:1039
+#: src/pager.c:1038
 msgid "High Quality Off"
 msgstr "Низкое качество"
 
-#: src/pager.c:1041
+#: src/pager.c:1040
 msgid "High Quality On"
 msgstr "Высокое качество"
 
-#: src/pager.c:1046
+#: src/pager.c:1045
 msgid "Snapshotting On"
 msgstr "Включить отображение экрана"
 
-#: src/pager.c:1050
+#: src/pager.c:1049
 msgid "Zoom Off"
 msgstr ""
 
-#: src/pager.c:1052
+#: src/pager.c:1051
 msgid "Zoom On"
 msgstr ""
 
-#: src/pager.c:1809 src/pager.c:1900
+#: src/pager.c:1806 src/pager.c:1897
 msgid "Pager scanning speed:"
 msgstr "Скорость сканирования:"
 
-#: src/pager.c:1810 src/pager.c:1901
+#: src/pager.c:1807 src/pager.c:1898
 msgid "lines per second"
 msgstr "линий в секунду"
 
-#: src/pager.c:1839
+#: src/pager.c:1836
 msgid "Enable pager display"
 msgstr "Включить Pager"
 
-#: src/pager.c:1849
+#: src/pager.c:1846
 msgid "Pager Mode:"
 msgstr ""
 
-#: src/pager.c:1853
+#: src/pager.c:1850
 #, fuzzy
 msgid "Simple"
 msgstr "Размер"
 
-#: src/pager.c:1859
+#: src/pager.c:1856
 msgid "Make miniature snapshots of the screen"
 msgstr "Отображать экран"
 
-#: src/pager.c:1866
+#: src/pager.c:1863
 msgid "Live Update"
 msgstr ""
 
-#: src/pager.c:1877
+#: src/pager.c:1874
 msgid "Smooth high quality snapshots in snapshot mode"
 msgstr "Высокое качество иконок в режиме отображения экрана"
 
-#: src/pager.c:1882
+#: src/pager.c:1879
 msgid "Zoom in on pager windows when mouse is over them"
 msgstr "Увеличивать иконки окон при прохождении курсора"
 
-#: src/pager.c:1888
+#: src/pager.c:1885
 msgid "Pop up window title when mouse is over the window"
 msgstr "Показывать заголовок окна, когда курсор над иконкой"
 
-#: src/pager.c:1893
+#: src/pager.c:1890
 msgid "Continuously scan screen to update pager"
 msgstr "Непрерывно сканировать экран"
 
-#: src/pager.c:1916
+#: src/pager.c:1913
 msgid "Mouse button to select and drag windows:"
 msgstr "Кнопка для выбора и перемещения окон:"
 
-#: src/pager.c:1926 src/pager.c:1951 src/pager.c:1976
+#: src/pager.c:1923 src/pager.c:1948 src/pager.c:1973
 msgid "Middle"
 msgstr "Средняя"
 
-#: src/pager.c:1941
+#: src/pager.c:1938
 msgid "Mouse button to select desktops:"
 msgstr "Кнопка для выбора рабочих столов:"
 
-#: src/pager.c:1966
+#: src/pager.c:1963
 msgid "Mouse button to display pager menu:"
 msgstr "Кнопка для отображения меню Pager-а:"
 
-#: src/pager.c:1990
+#: src/pager.c:1987
 #, fuzzy
 msgid "Pagers"
 msgstr "Настройки Pager-а"
 
-#: src/pager.c:1991
+#: src/pager.c:1988
 msgid "Pager Settings"
 msgstr "Настройки Pager-а"
 
-#: src/pager.c:1994
+#: src/pager.c:1991
 msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog\n"
 msgstr ""
 
-#: src/session.c:342
+#: src/session.c:341
 msgid ""
 "ERROR!\n"
 "\n"
@@ -1547,11 +1547,11 @@ msgstr ""
 "\n"
 "... надеюсь.\n"
 
-#: src/session.c:642
+#: src/session.c:640
 msgid "Are you sure?"
 msgstr "Вы уверены?"
 
-#: src/session.c:644
+#: src/session.c:642
 msgid ""
 "\n"
 "\n"
@@ -1565,47 +1565,47 @@ msgstr ""
 "\n"
 "\n"
 
-#: src/session.c:654
+#: src/session.c:652
 #, fuzzy
 msgid "  Yes, Shut Down  "
 msgstr "  Да, хочу  "
 
-#: src/session.c:656
+#: src/session.c:654
 #, fuzzy
 msgid "  Yes, Reboot  "
 msgstr "  Да, хочу  "
 
-#: src/session.c:659
+#: src/session.c:657
 msgid "  Yes, Log Out  "
 msgstr "  Да, хочу  "
 
-#: src/session.c:661
+#: src/session.c:659
 msgid "  No  "
 msgstr "  Нет  "
 
-#: src/session.c:792
+#: src/session.c:790
 msgid "Enable Session Script"
 msgstr ""
 
-#: src/session.c:797
+#: src/session.c:795
 msgid "Enable Logout Dialog"
 msgstr ""
 
-#: src/session.c:802
+#: src/session.c:800
 msgid "Enable Reboot/Halt on Logout"
 msgstr ""
 
-#: src/session.c:808
+#: src/session.c:806
 #, fuzzy
 msgid "Session"
 msgstr "Установки звука"
 
-#: src/session.c:809
+#: src/session.c:807
 #, fuzzy
 msgid "Session Settings"
 msgstr "Установки звука"
 
-#: src/session.c:812
+#: src/session.c:810
 #, fuzzy
 msgid ""
 "Enlightenment Session\n"
@@ -1953,135 +1953,135 @@ msgstr ""
 "некорректно. Если Ваш X-сервер более поздней версии, чем X11,\n"
 "то автор Enlightenment о таком еще не слышал и не видел такового.\n"
 
-#: src/snaps.c:743
+#: src/snaps.c:732
 msgid "Title:"
 msgstr ""
 
-#: src/snaps.c:755
+#: src/snaps.c:744
 msgid "Name:"
 msgstr ""
 
-#: src/snaps.c:768
+#: src/snaps.c:757
 msgid "Class:"
 msgstr ""
 
-#: src/snaps.c:781
+#: src/snaps.c:770
 #, fuzzy
 msgid "Role:"
 msgstr "Красный:\n"
 
-#: src/snaps.c:794
+#: src/snaps.c:783
 msgid "Command:"
 msgstr ""
 
-#: src/snaps.c:834
+#: src/snaps.c:823
 msgid "Track Changes"
 msgstr ""
 
-#: src/snaps.c:839
+#: src/snaps.c:828
 msgid "Location"
 msgstr "Положение"
 
-#: src/snaps.c:844
+#: src/snaps.c:833
 msgid "Border style"
 msgstr "Стиль рамки"
 
-#: src/snaps.c:849 config/strings.c:181
+#: src/snaps.c:838 config/strings.c:181
 msgid "Size"
 msgstr "Размер"
 
-#: src/snaps.c:854 config/strings.c:89
+#: src/snaps.c:843 config/strings.c:89
 msgid "Desktop"
 msgstr "Рабочий стол"
 
-#: src/snaps.c:859
+#: src/snaps.c:848
 msgid "Shaded state"
 msgstr ""
 
-#: src/snaps.c:864
+#: src/snaps.c:853
 msgid "Sticky state"
 msgstr "Прикрепленность"
 
-#: src/snaps.c:869
+#: src/snaps.c:858
 msgid "Stacking layer"
 msgstr "Уровень"
 
-#: src/snaps.c:874
+#: src/snaps.c:863
 msgid "Window List Skip"
 msgstr ""
 
-#: src/snaps.c:880 config/strings.c:144 config/strings.c:170
+#: src/snaps.c:869 config/strings.c:144 config/strings.c:170
 msgid "Opacity"
 msgstr ""
 
-#: src/snaps.c:885
+#: src/snaps.c:874
 msgid "Shadowing"
 msgstr ""
 
-#: src/snaps.c:891
+#: src/snaps.c:880
 msgid "Flags"
 msgstr ""
 
-#: src/snaps.c:910
+#: src/snaps.c:899
 msgid "Restart application on login"
 msgstr "Запускать при входе"
 
-#: src/snaps.c:929
+#: src/snaps.c:918
 msgid "Remember this window's group(s)"
 msgstr "Запомнить группу этого окна"
 
-#: src/snaps.c:937
+#: src/snaps.c:926
 msgid "Remembered Application Attributes"
 msgstr ""
 
-#: src/snaps.c:940
+#: src/snaps.c:929
 msgid ""
 "Select the attributes of this\n"
 "window you wish to Remember\n"
 "from now on\n"
 msgstr ""
 
-#: src/snaps.c:1031
+#: src/snaps.c:1020
 #, fuzzy
 msgid "Delete"
 msgstr "Стереть файл\n"
 
-#: src/snaps.c:1059
+#: src/snaps.c:1048
 msgid "Remembered Settings..."
 msgstr ""
 
-#: src/snaps.c:1066
+#: src/snaps.c:1055
 msgid "Unused"
 msgstr ""
 
-#: src/snaps.c:1079
+#: src/snaps.c:1068
 msgid "There are no active windows with remembered attributes."
 msgstr ""
 
-#: src/snaps.c:1085
+#: src/snaps.c:1074
 #, fuzzy
 msgid "Remember"
 msgstr "Установки Pager-а..."
 
-#: src/snaps.c:1086
+#: src/snaps.c:1075
 msgid "Remembered Windows Settings"
 msgstr ""
 
-#: src/snaps.c:1089
+#: src/snaps.c:1078
 msgid ""
 "Enlightenment Remembered\n"
 "Windows Settings Dialog\n"
 msgstr ""
 
-#: src/snaps.c:1182
+#: src/snaps.c:1171
 msgid "Error saving snaps file\n"
 msgstr "Ошибка сохранения сессионного файла\n"
 
-#: src/sound.c:124
+#: src/sound.c:123
 msgid "Error finding sound file"
 msgstr "Ошибка: звуковой файл не найден"
 
-#: src/sound.c:125
+#: src/sound.c:124
 #, c-format
 msgid ""
 "Warning!  Enlightenment was unable to load the\n"
@@ -2096,11 +2096,11 @@ msgstr ""
 "Enlightenment продолжит работу, однако, возможно,\n"
 "Вам следует проверить установки конфигурации.\n"
 
-#: src/sound.c:198
+#: src/sound.c:197
 msgid "Error initialising sound"
 msgstr "Ошибка инициализации звука"
 
-#: src/sound.c:199
+#: src/sound.c:198
 msgid ""
 "Audio was enabled for Enlightenment but there was an error\n"
 "communicating with the audio server (Esound). Audio will\n"
@@ -2110,19 +2110,19 @@ msgstr ""
 "ошибка при установлении соединения с Esound. Поддержка звука\n"
 "будет сейчас отключена.\n"
 
-#: src/sound.c:312
+#: src/sound.c:311
 msgid "Enable sounds"
 msgstr "Включить поддержу звука"
 
-#: src/sound.c:318
+#: src/sound.c:317
 msgid "Sound"
 msgstr ""
 
-#: src/sound.c:319
+#: src/sound.c:318
 msgid "Audio Settings"
 msgstr "Установки звука"
 
-#: src/sound.c:322
+#: src/sound.c:321
 msgid ""
 "Enlightenment Audio\n"
 "Settings Dialog\n"
@@ -2160,15 +2160,15 @@ msgstr "Установки автоматического поднятия окон"
 msgid "Theme %s does not contain a %s file\n"
 msgstr "В теме отсутствует файл sound.cfg\n"
 
-#: src/theme.c:344
+#: src/theme.c:342
 msgid "Unknown\n"
 msgstr ""
 
-#: src/theme.c:389
+#: src/theme.c:387
 msgid "Bad Theme"
 msgstr "Некорректная тема"
 
-#: src/theme.c:390
+#: src/theme.c:388
 #, c-format
 msgid ""
 "The theme:\n"
@@ -2187,7 +2187,7 @@ msgstr ""
 "Причина, из-за которой тема не может быть использована:\n"
 "%s"
 
-#: src/theme.c:416
+#: src/theme.c:414
 #, c-format
 msgid ""
 "No themes were found in the default theme directory:\n"
@@ -2197,28 +2197,28 @@ msgid ""
 "Proceeding from here is mostly pointless.\n"
 msgstr ""
 
-#: src/tooltips.c:861
+#: src/tooltips.c:860
 msgid "Display Tooltips"
 msgstr "Показывать подсказки"
 
-#: src/tooltips.c:866
+#: src/tooltips.c:865
 msgid "Display Root Window Tips"
 msgstr "Показывать подсказки на \"корневом\" окне"
 
-#: src/tooltips.c:871
+#: src/tooltips.c:870
 msgid "Tooltip Delay:\n"
 msgstr "Задержка подсказки:\n"
 
-#: src/tooltips.c:882
+#: src/tooltips.c:881
 #, fuzzy
 msgid "Tooltips"
 msgstr "Задержка подсказки:\n"
 
-#: src/tooltips.c:883
+#: src/tooltips.c:882
 msgid "Tooltip Settings"
 msgstr "Установки подсказок"
 
-#: src/tooltips.c:886
+#: src/tooltips.c:885
 msgid ""
 "Enlightenment Tooltip\n"
 "Settings Dialog\n"
