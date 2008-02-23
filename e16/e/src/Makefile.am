@@ -150,7 +150,7 @@ libe16_LTLIBRARIES = $(LIBSND_ESD) $(LIBFNT_IFT) $(LIBFNT_XFT) $(LIBFNT_PANGO)
 
 if USE_LIBESD
 LIBSND_ESD = libsound_esd.la
-libsound_esd_la_SOURCES   = sound_esd.c
+libsound_esd_la_SOURCES   = sound_esd.c sound_load.c
 libsound_esd_la_CFLAGS    = $(ESD_CFLAGS)
 libsound_esd_la_LIBADD    = $(ESD_LIBS)
 libsound_esd_la_LDFLAGS   = -module -avoid-version
