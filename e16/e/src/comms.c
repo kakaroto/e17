@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2007 Kim Woelders
+ * Copyright (C) 2004-2008 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -23,6 +23,7 @@
  */
 #include "E.h"
 #include "comms.h"
+#include "hints.h"
 #include "ipc.h"
 #include "e16-ecore_hints.h"
 #include "e16-ecore_list.h"
@@ -44,9 +45,6 @@ static void         CommsSend(Client * c, const char *s);
 static Ecore_List  *client_list = NULL;
 
 static Win          comms_win = NoWin;
-
-static Atom         XA_ENLIGHTENMENT_COMMS = 0;
-static Atom         XA_ENL_MSG = 0;
 
 static Client      *
 ClientCreate(Window xwin)
@@ -165,7 +163,7 @@ ClientCommsGet(Client ** c, XClientMessageEvent * ev)
 
    if ((!ev) || (!c))
       return NULL;
-   if (ev->message_type != XA_ENL_MSG)
+   if (ev->message_type != E16_ATOM_COMMS_MSG)
       return NULL;
 
    s[12] = 0;
@@ -304,12 +302,8 @@ CommsInit(void)
    EventCallbackRegister(VRoot.win, 0, ClientHandleRootEvents, NULL);
 
    Esnprintf(s, sizeof(s), "WINID %8lx", WinGetXwin(comms_win));
-   XA_ENLIGHTENMENT_COMMS = XInternAtom(disp, "ENLIGHTENMENT_COMMS", False);
-   ecore_x_window_prop_string_set(WinGetXwin(comms_win), XA_ENLIGHTENMENT_COMMS,
-				  s);
-   ecore_x_window_prop_string_set(VRoot.xwin, XA_ENLIGHTENMENT_COMMS, s);
-
-   XA_ENL_MSG = XInternAtom(disp, "ENL_MSG", False);
+   ecore_x_window_prop_string_set(WinGetXwin(comms_win), E16_ATOM_COMMS_WIN, s);
+   ecore_x_window_prop_string_set(VRoot.xwin, E16_ATOM_COMMS_WIN, s);
 }
 
 static void
@@ -327,7 +321,7 @@ CommsDoSend(Window win, const char *s)
    ev.xclient.serial = 0;
    ev.xclient.send_event = True;
    ev.xclient.window = win;
-   ev.xclient.message_type = XA_ENL_MSG;
+   ev.xclient.message_type = E16_ATOM_COMMS_MSG;
    ev.xclient.format = 8;
    for (i = 0; i < len + 1; i += 12)
      {

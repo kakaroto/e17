@@ -33,33 +33,57 @@
 #include "xwin.h"
 #include <X11/Xatom.h>
 
-/* Misc atoms */
-Atom                E_XA_MANAGER = 0;
+#define N_ITEMS(x) (sizeof(x)/sizeof(x[0]))
 
-Atom                E_XROOTPMAP_ID;
-Atom                E_XROOTCOLOR_PIXEL;
+static const char  *const atoms_misc_names[] = {
+   /* Misc atoms */
+   "MANAGER",
 
-/* E16 atoms */
-static Ecore_X_Atom ENL_INTERNAL_AREA_DATA;
-static Ecore_X_Atom ENL_INTERNAL_DESK_DATA;
-static Ecore_X_Atom ENL_WIN_DATA;
-static Ecore_X_Atom ENL_WIN_BORDER;
+   /* Root background atoms */
+   "_XROOTPMAP_ID",
+   "_XROOTCOLOR_PIXEL",
+
+   /* E16 atoms */
+   "ENLIGHTENMENT_VERSION",
+
+   "ENLIGHTENMENT_COMMS",
+   "ENL_MSG",
+
+   "ENL_INTERNAL_AREA_DATA",
+   "ENL_INTERNAL_DESK_DATA",
+   "ENL_WIN_DATA",
+   "ENL_WIN_BORDER"
+};
+
+unsigned int        atoms_misc[10];
+
+void
+AtomListIntern(const char *const *names, unsigned int num, unsigned int *atoms)
+{
+#if SIZEOF_INT == SIZEOF_LONG
+   XInternAtoms(disp, (char **)names, num, False, (Atom *) atoms);
+#else
+   unsigned int        i;
+   Atom               *_atoms;
+
+   _atoms = EMALLOC(Atom, num);
+   if (!_atoms)
+      return;
+
+   XInternAtoms(disp, (char **)names, num, False, _atoms);
+   for (i = 0; i < num; i++)
+      atoms[i] = _atoms[i];
+
+   Efree(_atoms);
+#endif
+}
 
 void
 HintsInit(void)
 {
-   Atom                atom;
    Window              win;
 
-   E_XA_MANAGER = XInternAtom(disp, "MANAGER", False);
-
-   E_XROOTPMAP_ID = XInternAtom(disp, "_XROOTPMAP_ID", False);
-   E_XROOTCOLOR_PIXEL = XInternAtom(disp, "_XROOTCOLOR_PIXEL", False);
-
-   ENL_INTERNAL_AREA_DATA = XInternAtom(disp, "ENL_INTERNAL_AREA_DATA", False);
-   ENL_INTERNAL_DESK_DATA = XInternAtom(disp, "ENL_INTERNAL_DESK_DATA", False);
-   ENL_WIN_DATA = XInternAtom(disp, "ENL_WIN_DATA", False);
-   ENL_WIN_BORDER = XInternAtom(disp, "ENL_WIN_BORDER", False);
+   AtomListIntern(atoms_misc_names, N_ITEMS(atoms_misc_names), atoms_misc);
 
    win = XCreateSimpleWindow(disp, VRoot.xwin, -200, -200, 5, 5, 0, 0, 0);
 
@@ -69,8 +93,8 @@ HintsInit(void)
    GNOME_SetHints(win);
 #endif
    EWMH_Init(win);
-   atom = XInternAtom(disp, "ENLIGHTENMENT_VERSION", False);
-   ecore_x_window_prop_string_set(VRoot.xwin, atom, e_wm_version);
+
+   ecore_x_window_prop_string_set(VRoot.xwin, E16_ATOM_VERSION, e_wm_version);
 
    if (Mode.wm.window)
      {
@@ -374,10 +398,10 @@ EHintsSetInfo(const EWin * ewin)
    c[10] = ewin->save_fs.h;
    c[11] = ewin->save_fs.layer;
 
-   ecore_x_window_prop_card32_set(EwinGetClientXwin(ewin), ENL_WIN_DATA,
+   ecore_x_window_prop_card32_set(EwinGetClientXwin(ewin), E16_ATOM_WIN_DATA,
 				  (unsigned int *)c, ENL_DATA_ITEMS);
 
-   ecore_x_window_prop_string_set(EwinGetClientXwin(ewin), ENL_WIN_BORDER,
+   ecore_x_window_prop_string_set(EwinGetClientXwin(ewin), E16_ATOM_WIN_BORDER,
 				  ewin->normal_border->name);
 
    if (EDebug(EDBUG_TYPE_SNAPS))
@@ -398,8 +422,9 @@ EHintsGetInfo(EWin * ewin)
    if (EwinIsInternal(ewin))
       return;
 
-   num = ecore_x_window_prop_card32_get(EwinGetClientXwin(ewin), ENL_WIN_DATA,
-					(unsigned int *)c, ENL_DATA_ITEMS + 1);
+   num =
+      ecore_x_window_prop_card32_get(EwinGetClientXwin(ewin), E16_ATOM_WIN_DATA,
+				     (unsigned int *)c, ENL_DATA_ITEMS + 1);
    if (num < 0)
       return;
 
@@ -434,7 +459,8 @@ EHintsGetInfo(EWin * ewin)
      }
 
    str =
-      ecore_x_window_prop_string_get(EwinGetClientXwin(ewin), ENL_WIN_BORDER);
+      ecore_x_window_prop_string_get(EwinGetClientXwin(ewin),
+				     E16_ATOM_WIN_BORDER);
    if (str)
       EwinSetBorderByName(ewin, str);
    Efree(str);
@@ -469,11 +495,12 @@ EHintsSetDeskInfo(void)
 	c[(i * 2) + 1] = ay;
      }
 
-   ecore_x_window_prop_card32_set(VRoot.xwin, ENL_INTERNAL_AREA_DATA,
+   ecore_x_window_prop_card32_set(VRoot.xwin, E16_ATOM_INTERNAL_AREA_DATA,
 				  c, 2 * n_desks);
 
    c[0] = DesksGetCurrentNum();
-   ecore_x_window_prop_card32_set(VRoot.xwin, ENL_INTERNAL_DESK_DATA, c, 1);
+   ecore_x_window_prop_card32_set(VRoot.xwin, E16_ATOM_INTERNAL_DESK_DATA, c,
+				  1);
 
    Efree(c);
 
@@ -496,7 +523,7 @@ EHintsGetDeskInfo(void)
    if (!c)
       return;
 
-   num = ecore_x_window_prop_card32_get(VRoot.xwin, ENL_INTERNAL_AREA_DATA,
+   num = ecore_x_window_prop_card32_get(VRoot.xwin, E16_ATOM_INTERNAL_AREA_DATA,
 					c, 2 * n_desks);
    if (num > 0)
      {
@@ -504,7 +531,7 @@ EHintsGetDeskInfo(void)
 	   DeskSetArea(DeskGet(i), c[(i * 2)], c[(i * 2) + 1]);
      }
 
-   num = ecore_x_window_prop_card32_get(VRoot.xwin, ENL_INTERNAL_DESK_DATA,
+   num = ecore_x_window_prop_card32_get(VRoot.xwin, E16_ATOM_INTERNAL_DESK_DATA,
 					c, 1);
    if (num > 0)
      {

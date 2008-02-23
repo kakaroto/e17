@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2007 Kim Woelders
+ * Copyright (C) 2004-2008 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -106,30 +106,31 @@ char               *ecore_x_window_prop_string_get(Ecore_X_Window win,
 						   Ecore_X_Atom atom);
 
 /* Misc. */
-extern Ecore_X_Atom ECORE_X_ATOM_UTF8_STRING;
+#include "X11/Xatom.h"
+extern unsigned int atoms_icccm[];
+
+#define ECORE_X_ATOM_UTF8_STRING		atoms_icccm[8]
 
 /* ICCCM */
-extern Ecore_X_Atom ECORE_X_ATOM_WM_STATE;
-extern Ecore_X_Atom ECORE_X_ATOM_WM_DELETE_WINDOW;
-extern Ecore_X_Atom ECORE_X_ATOM_WM_TAKE_FOCUS;
-extern Ecore_X_Atom ECORE_X_ATOM_WM_PROTOCOLS;
-extern Ecore_X_Atom ECORE_X_ATOM_WM_CLASS;
-extern Ecore_X_Atom ECORE_X_ATOM_WM_NAME;
-extern Ecore_X_Atom ECORE_X_ATOM_WM_COMMAND;
-extern Ecore_X_Atom ECORE_X_ATOM_WM_ICON_NAME;
-extern Ecore_X_Atom ECORE_X_ATOM_WM_CLIENT_MACHINE;
-extern Ecore_X_Atom ECORE_X_ATOM_WM_CHANGE_STATE;
-extern Ecore_X_Atom ECORE_X_ATOM_WM_COLORMAP_WINDOWS;
-extern Ecore_X_Atom ECORE_X_ATOM_WM_WINDOW_ROLE;
-extern Ecore_X_Atom ECORE_X_ATOM_WM_HINTS;
-extern Ecore_X_Atom ECORE_X_ATOM_WM_NORMAL_HINTS;
-extern Ecore_X_Atom ECORE_X_ATOM_WM_CLIENT_LEADER;
-extern Ecore_X_Atom ECORE_X_ATOM_WM_TRANSIENT_FOR;
-extern Ecore_X_Atom ECORE_X_ATOM_WM_SAVE_YOURSELF;
+#define ECORE_X_ATOM_WM_STATE			atoms_icccm[0]
+#define ECORE_X_ATOM_WM_WINDOW_ROLE		atoms_icccm[1]
+#define ECORE_X_ATOM_WM_CLIENT_LEADER		atoms_icccm[2]
+#define ECORE_X_ATOM_WM_COLORMAP_WINDOWS	atoms_icccm[3]
+#define ECORE_X_ATOM_WM_CHANGE_STATE		atoms_icccm[4]
+#define ECORE_X_ATOM_WM_PROTOCOLS		atoms_icccm[5]
+#define ECORE_X_ATOM_WM_DELETE_WINDOW		atoms_icccm[6]
+#define ECORE_X_ATOM_WM_TAKE_FOCUS		atoms_icccm[7]
 
-#if 0
-extern Ecore_X_Atom ECORE_X_ATOM_WM_SAVE_YOURSELF;
-#endif
+#define CHECK_COUNT_ICCCM 9
+
+#define ECORE_X_ATOM_WM_CLASS			XA_WM_CLASS
+#define ECORE_X_ATOM_WM_NAME			XA_WM_NAME
+#define ECORE_X_ATOM_WM_COMMAND			XA_WM_COMMAND
+#define ECORE_X_ATOM_WM_ICON_NAME		XA_WM_ICON_NAME
+#define ECORE_X_ATOM_WM_CLIENT_MACHINE		XA_WM_CLIENT_MACHINE
+#define ECORE_X_ATOM_WM_HINTS			XA_WM_HINTS
+#define ECORE_X_ATOM_WM_NORMAL_HINTS		XA_WM_NORMAL_HINTS
+#define ECORE_X_ATOM_WM_TRANSIENT_FOR		XA_WM_TRANSIENT_FOR
 
 void                ecore_x_icccm_init(void);
 
@@ -148,104 +149,109 @@ void                ecore_x_icccm_name_class_get(Ecore_X_Window win,
 						 char **name, char **clss);
 
 /* NETWM (EWMH) */
-extern Ecore_X_Atom ECORE_X_ATOM_NET_SUPPORTED;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_SUPPORTING_WM_CHECK;
+extern unsigned int atoms_netwm[];
 
-extern Ecore_X_Atom ECORE_X_ATOM_NET_NUMBER_OF_DESKTOPS;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_VIRTUAL_ROOTS;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_DESKTOP_GEOMETRY;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_DESKTOP_NAMES;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_DESKTOP_VIEWPORT;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WORKAREA;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_CURRENT_DESKTOP;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_SHOWING_DESKTOP;
+/* Window manager info */
+#define ECORE_X_ATOM_NET_SUPPORTED			atoms_netwm[0]
+#define ECORE_X_ATOM_NET_SUPPORTING_WM_CHECK		atoms_netwm[1]
 
-extern Ecore_X_Atom ECORE_X_ATOM_NET_ACTIVE_WINDOW;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_CLIENT_LIST;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_CLIENT_LIST_STACKING;
+/* Desktop status/requests */
+#define ECORE_X_ATOM_NET_NUMBER_OF_DESKTOPS		atoms_netwm[2]
+#define ECORE_X_ATOM_NET_VIRTUAL_ROOTS			atoms_netwm[3]
+#define ECORE_X_ATOM_NET_DESKTOP_GEOMETRY		atoms_netwm[4]
+#define ECORE_X_ATOM_NET_DESKTOP_NAMES			atoms_netwm[5]
+#define ECORE_X_ATOM_NET_DESKTOP_VIEWPORT		atoms_netwm[6]
+#define ECORE_X_ATOM_NET_WORKAREA			atoms_netwm[7]
+#define ECORE_X_ATOM_NET_CURRENT_DESKTOP		atoms_netwm[8]
+#define ECORE_X_ATOM_NET_SHOWING_DESKTOP		atoms_netwm[9]
 
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_NAME;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_VISIBLE_NAME;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_ICON_NAME;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_VISIBLE_ICON_NAME;
+#define ECORE_X_ATOM_NET_ACTIVE_WINDOW			atoms_netwm[10]
+#define ECORE_X_ATOM_NET_CLIENT_LIST			atoms_netwm[11]
+#define ECORE_X_ATOM_NET_CLIENT_LIST_STACKING		atoms_netwm[12]
 
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_DESKTOP;
+/* Client window props/client messages */
+#define ECORE_X_ATOM_NET_WM_NAME			atoms_netwm[13]
+#define ECORE_X_ATOM_NET_WM_VISIBLE_NAME		atoms_netwm[14]
+#define ECORE_X_ATOM_NET_WM_ICON_NAME			atoms_netwm[15]
+#define ECORE_X_ATOM_NET_WM_VISIBLE_ICON_NAME		atoms_netwm[16]
 
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_WINDOW_TYPE;
+#define ECORE_X_ATOM_NET_WM_DESKTOP			atoms_netwm[17]
 
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_WINDOW_TYPE_DESKTOP;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_WINDOW_TYPE_DOCK;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_WINDOW_TYPE_TOOLBAR;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_WINDOW_TYPE_MENU;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_WINDOW_TYPE_UTILITY;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_WINDOW_TYPE_SPLASH;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_WINDOW_TYPE_DIALOG;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_WINDOW_TYPE_NORMAL;
+#define ECORE_X_ATOM_NET_WM_WINDOW_TYPE			atoms_netwm[18]
+#define ECORE_X_ATOM_NET_WM_WINDOW_TYPE_DESKTOP		atoms_netwm[19]
+#define ECORE_X_ATOM_NET_WM_WINDOW_TYPE_DOCK		atoms_netwm[20]
+#define ECORE_X_ATOM_NET_WM_WINDOW_TYPE_TOOLBAR		atoms_netwm[21]
+#define ECORE_X_ATOM_NET_WM_WINDOW_TYPE_MENU		atoms_netwm[22]
+#define ECORE_X_ATOM_NET_WM_WINDOW_TYPE_UTILITY		atoms_netwm[23]
+#define ECORE_X_ATOM_NET_WM_WINDOW_TYPE_SPLASH		atoms_netwm[24]
+#define ECORE_X_ATOM_NET_WM_WINDOW_TYPE_DIALOG		atoms_netwm[25]
+#define ECORE_X_ATOM_NET_WM_WINDOW_TYPE_NORMAL		atoms_netwm[26]
 
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_STATE;
+#define ECORE_X_ATOM_NET_WM_STATE			atoms_netwm[27]
+#define ECORE_X_ATOM_NET_WM_STATE_MODAL			atoms_netwm[28]
+#define ECORE_X_ATOM_NET_WM_STATE_STICKY		atoms_netwm[29]
+#define ECORE_X_ATOM_NET_WM_STATE_MAXIMIZED_VERT	atoms_netwm[30]
+#define ECORE_X_ATOM_NET_WM_STATE_MAXIMIZED_HORZ	atoms_netwm[31]
+#define ECORE_X_ATOM_NET_WM_STATE_SHADED		atoms_netwm[32]
+#define ECORE_X_ATOM_NET_WM_STATE_SKIP_TASKBAR		atoms_netwm[33]
+#define ECORE_X_ATOM_NET_WM_STATE_SKIP_PAGER		atoms_netwm[34]
+#define ECORE_X_ATOM_NET_WM_STATE_HIDDEN		atoms_netwm[35]
+#define ECORE_X_ATOM_NET_WM_STATE_FULLSCREEN		atoms_netwm[36]
+#define ECORE_X_ATOM_NET_WM_STATE_ABOVE			atoms_netwm[37]
+#define ECORE_X_ATOM_NET_WM_STATE_BELOW			atoms_netwm[38]
+#define ECORE_X_ATOM_NET_WM_STATE_DEMANDS_ATTENTION	atoms_netwm[39]
 
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_STATE_MODAL;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_STATE_STICKY;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_STATE_MAXIMIZED_VERT;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_STATE_MAXIMIZED_HORZ;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_STATE_SHADED;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_STATE_SKIP_TASKBAR;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_STATE_SKIP_PAGER;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_STATE_HIDDEN;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_STATE_FULLSCREEN;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_STATE_ABOVE;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_STATE_BELOW;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_STATE_DEMANDS_ATTENTION;
+#define ECORE_X_ATOM_NET_WM_ALLOWED_ACTIONS		atoms_netwm[40]
+#define ECORE_X_ATOM_NET_WM_ACTION_MOVE			atoms_netwm[41]
+#define ECORE_X_ATOM_NET_WM_ACTION_RESIZE		atoms_netwm[42]
+#define ECORE_X_ATOM_NET_WM_ACTION_MINIMIZE		atoms_netwm[43]
+#define ECORE_X_ATOM_NET_WM_ACTION_SHADE		atoms_netwm[44]
+#define ECORE_X_ATOM_NET_WM_ACTION_STICK		atoms_netwm[45]
+#define ECORE_X_ATOM_NET_WM_ACTION_MAXIMIZE_HORZ	atoms_netwm[46]
+#define ECORE_X_ATOM_NET_WM_ACTION_MAXIMIZE_VERT	atoms_netwm[47]
+#define ECORE_X_ATOM_NET_WM_ACTION_FULLSCREEN		atoms_netwm[48]
+#define ECORE_X_ATOM_NET_WM_ACTION_CHANGE_DESKTOP	atoms_netwm[49]
+#define ECORE_X_ATOM_NET_WM_ACTION_CLOSE		atoms_netwm[50]
+#define ECORE_X_ATOM_NET_WM_ACTION_ABOVE		atoms_netwm[51]
+#define ECORE_X_ATOM_NET_WM_ACTION_BELOW		atoms_netwm[52]
 
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_ALLOWED_ACTIONS;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_ACTION_MOVE;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_ACTION_RESIZE;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_ACTION_MINIMIZE;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_ACTION_SHADE;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_ACTION_STICK;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_ACTION_MAXIMIZE_HORZ;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_ACTION_MAXIMIZE_VERT;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_ACTION_FULLSCREEN;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_ACTION_CHANGE_DESKTOP;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_ACTION_CLOSE;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_ACTION_ABOVE;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_ACTION_BELOW;
+#define ECORE_X_ATOM_NET_WM_STRUT			atoms_netwm[53]
+#define ECORE_X_ATOM_NET_WM_STRUT_PARTIAL		atoms_netwm[54]
 
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_STRUT;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_STRUT_PARTIAL;
+#define ECORE_X_ATOM_NET_FRAME_EXTENTS			atoms_netwm[55]
 
-extern Ecore_X_Atom ECORE_X_ATOM_NET_FRAME_EXTENTS;
+#define ECORE_X_ATOM_NET_WM_ICON			atoms_netwm[56]
 
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_ICON;
-
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_USER_TIME;
+#define ECORE_X_ATOM_NET_WM_USER_TIME			atoms_netwm[57]
 
 #if 0				/* Not used */
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_ICON_GEOMETRY;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_PID;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_HANDLED_ICONS;
+#define ECORE_X_ATOM_NET_WM_ICON_GEOMETRY		atoms_netwm[0]
+#define ECORE_X_ATOM_NET_WM_PID				atoms_netwm[0]
+#define ECORE_X_ATOM_NET_WM_HANDLED_ICONS		atoms_netwm[0]
 
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_PING;
+#define ECORE_X_ATOM_NET_WM_PING			atoms_netwm[0]
 #endif
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_SYNC_REQUEST;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_SYNC_REQUEST_COUNTER;
+#define ECORE_X_ATOM_NET_WM_SYNC_REQUEST		atoms_netwm[58]
+#define ECORE_X_ATOM_NET_WM_SYNC_REQUEST_COUNTER	atoms_netwm[59]
 
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_WINDOW_OPACITY;
+#define ECORE_X_ATOM_NET_WM_WINDOW_OPACITY		atoms_netwm[60]
 
 /* Misc window ops */
-extern Ecore_X_Atom ECORE_X_ATOM_NET_CLOSE_WINDOW;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_MOVERESIZE_WINDOW;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_WM_MOVERESIZE;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_RESTACK_WINDOW;
+#define ECORE_X_ATOM_NET_CLOSE_WINDOW			atoms_netwm[61]
+#define ECORE_X_ATOM_NET_MOVERESIZE_WINDOW		atoms_netwm[62]
+#define ECORE_X_ATOM_NET_WM_MOVERESIZE			atoms_netwm[63]
+#define ECORE_X_ATOM_NET_RESTACK_WINDOW			atoms_netwm[64]
 
 #if 0				/* Not yet implemented */
-extern Ecore_X_Atom ECORE_X_ATOM_NET_REQUEST_FRAME_EXTENTS;
+#define ECORE_X_ATOM_NET_REQUEST_FRAME_EXTENTS		atoms_netwm[0]
 #endif
 
 /* Startup notification */
-extern Ecore_X_Atom ECORE_X_ATOM_NET_STARTUP_ID;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_STARTUP_INFO_BEGIN;
-extern Ecore_X_Atom ECORE_X_ATOM_NET_STARTUP_INFO;
+#define ECORE_X_ATOM_NET_STARTUP_ID			atoms_netwm[65]
+#define ECORE_X_ATOM_NET_STARTUP_INFO_BEGIN		atoms_netwm[66]
+#define ECORE_X_ATOM_NET_STARTUP_INFO			atoms_netwm[67]
+
+#define CHECK_COUNT_NETWM 68
 
 void                ecore_x_netwm_init(void);
 
