@@ -392,57 +392,6 @@ on_GroupNameEntryImage_mouse_clicked(Etk_Object *object, void *data)
    /* Hide the entry image */
    etk_widget_hide(ETK_WIDGET(UI_GroupNameEntryImage));
    
-   
-   //~ /* change the name in edje */
-   //~ if (!edje_edit_part_name_set(edje_o, Cur.part->string, name))
-   //~ {
-      //~ ShowAlert("Can't set part name.<br>Another name with this name exist? ");
-      //~ return ETK_TRUE;
-   //~ }
-   
-   //~ /* Set new Current name */
-   //~ Cur.part = etk_string_set(Cur.part, name);
-   
-   //~ //Update PartTree
-   //~ row = etk_tree_selected_row_get(ETK_TREE(UI_PartsTree));
-   
-   //~ switch (edje_edit_part_type_get(edje_o, Cur.part->string))
-   //~ {
-      //~ case EDJE_PART_TYPE_IMAGE:
-         //~ etk_tree_row_fields_set(row,TRUE,
-                                 //~ COL_NAME, EdjeFile, "IMAGE.PNG", name, NULL);
-         //~ break;
-      //~ case EDJE_PART_TYPE_RECTANGLE:
-         //~ etk_tree_row_fields_set(row,TRUE,
-                                 //~ COL_NAME, EdjeFile, "RECT.PNG", name, NULL);
-         //~ break;
-      //~ case EDJE_PART_TYPE_TEXT:
-         //~ etk_tree_row_fields_set(row,TRUE,
-                                 //~ COL_NAME, EdjeFile, "TEXT.PNG", name, NULL);
-         //~ break;
-      //~ default:
-         //~ etk_tree_row_fields_set(row,TRUE,
-                                 //~ COL_NAME, EdjeFile, "NONE.PNG", name, NULL);
-         //~ break;
-   //~ }
-   
-   //~ /* Update hidden colon on every child */
-   //~ child = etk_tree_row_first_child_get(row);
-   //~ etk_tree_row_fields_set(child, TRUE, COL_PARENT, name, NULL);
-   //~ while ((child = etk_tree_row_next_get(child)))
-      //~ etk_tree_row_fields_set(child, TRUE, COL_PARENT, name, NULL);
-    
-   //~ /* Update Parts_Hash */
-   //~ Parts_Hash = evas_hash_del(Parts_Hash, Cur.part->string, NULL);
-   //~ Parts_Hash = evas_hash_add(Parts_Hash, name, row);
-   
-   //~ /* Recreate rel combobox */
-   //~ PopulateRelComboBoxes();  //TODO do a focus-out callback for this (don't need to do on every key!!)
-   
-   //~ /* Hide the image */
-   //~ etk_widget_hide(ETK_WIDGET(UI_PartNameEntryImage));
-
-   
    return ETK_TRUE;
 }
 
@@ -549,7 +498,8 @@ on_PartNameEntryImage_mouse_clicked(Etk_Object *object, void *data)
    Parts_Hash = evas_hash_add(Parts_Hash, name, row);
    
    /* Recreate rel combobox */
-   PopulateRelComboBoxes();  //TODO do a focus-out callback for this (don't need to do on every key!!)
+   PopulateRelComboBoxes();
+   PopulateSourceComboEntry();
    
    /* Hide the image */
    etk_widget_hide(ETK_WIDGET(UI_PartNameEntryImage));
@@ -1445,6 +1395,7 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
          etk_tree_row_select(row);
          etk_tree_row_unfold(row);
          PopulateRelComboBoxes();
+         PopulateSourceComboEntry();
          break;
       
       case NEW_IMAGE:
@@ -1480,6 +1431,7 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
          etk_tree_row_select(row);
          etk_tree_row_unfold(row);
          PopulateRelComboBoxes();
+         PopulateSourceComboEntry();
          break;
       
       case NEW_TEXT:
@@ -1517,6 +1469,7 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
          etk_tree_row_select(row);
          etk_tree_row_unfold(row);
          PopulateRelComboBoxes();
+         PopulateSourceComboEntry();
          break;
       
       case NEW_DESC:
@@ -1654,6 +1607,7 @@ on_RemoveMenu_item_activated(Etk_Object *object, void *data)
          }
          
          PopulateRelComboBoxes();
+         PopulateSourceComboEntry();
          //ev_redraw();
          break;
       
