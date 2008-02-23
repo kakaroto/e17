@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2007 Kim Woelders
+ * Copyright (C) 2004-2008 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -37,10 +37,13 @@
 #endif
 
 #if HAVE___ATTRIBUTE__
-#define __PRINTF__ __attribute__((__format__(__printf__, 1, 2)))
+#define __PRINTF_N__(no)  __attribute__((__format__(__printf__, (no), (no)+1)))
 #else
-#define __PRINTF__
+#define __PRINTF_N__(no)
 #endif
+#define __PRINTF__   __PRINTF_N__(1)
+#define __PRINTF_2__ __PRINTF_N__(2)
+#define __PRINTF_5__ __PRINTF_N__(5)
 
 #if HAVE_STRDUP
 #define USE_LIBC_STRDUP  1	/* Use libc strdup if present */
