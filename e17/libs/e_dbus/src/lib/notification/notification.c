@@ -392,7 +392,7 @@ e_notification_image_evas_object_add(Evas *evas, E_Notification_Image *img)
               if (img->has_alpha)
                 *dest += *(src + 3) << 24;
               else
-                *dest += 0 << 24;
+                *dest += 255 << 24;
             }
         }
     }
