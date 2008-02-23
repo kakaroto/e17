@@ -32,6 +32,8 @@
 #include "tclass.h"
 #include "xwin.h"
 
+#define ENABLE_DESTROY 0	/* Broken */
+
 #if ENABLE_COLOR_MODIFIERS
 typedef struct
 {
@@ -223,6 +225,7 @@ ImagestateCreate(const char *file)
    return is;
 }
 
+#if ENABLE_DESTROY
 static void
 ImagestateDestroy(ImageState * is)
 {
@@ -253,6 +256,7 @@ FreeImageStateArray(ImageStateArray * isa)
    ImagestateDestroy(isa->clicked);
    ImagestateDestroy(isa->disabled);
 }
+#endif /* ENABLE_DESTROY */
 
 static void
 ImagestateColorsAlloc(ImageState * is)
@@ -343,6 +347,7 @@ ImageclassCreate(const char *name)
    return ic;
 }
 
+#if ENABLE_DESTROY
 static void
 ImageclassDestroy(ImageClass * ic)
 {
@@ -372,6 +377,7 @@ ImageclassDestroy(ImageClass * ic)
 
    Efree(ic);
 }
+#endif /* ENABLE_DESTROY */
 
 ImageClass         *
 ImageclassAlloc(const char *name, int fallback)
@@ -1438,7 +1444,9 @@ ImageclassIpc(const char *params)
 
    if (!strcmp(param2, "delete"))
      {
+#if ENABLE_DESTROY
 	ImageclassDestroy(ic);
+#endif
      }
    else if (!strcmp(param2, "modify"))
      {
@@ -1551,7 +1559,7 @@ static const IpcItem ImageclassIpcArray[] = {
    {
     ImageclassIpc,
     "imageclass", NULL,
-    "List imageclasses, create/delete/modify/apply an imageclass",
+    "List imageclasses, apply an imageclass",
     NULL}
    ,
 };

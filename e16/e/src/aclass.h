@@ -29,7 +29,6 @@
 /* aclass.c */
 int                 AclassConfigLoad(FILE * fs);
 ActionClass        *ActionclassCreate(const char *name, int global);
-void                ActionclassDestroy(ActionClass * ac);
 Action             *ActionCreate(char event, char anymod, int mod, int anybut,
 				 int but, char anykey, const char *key,
 				 const char *tooltipstring);

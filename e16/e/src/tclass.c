@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2007 Kim Woelders
+ * Copyright (C) 2004-2008 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -28,6 +28,8 @@
 #include "iclass.h"
 #include "tclass.h"
 #include "xwin.h"
+
+#define ENABLE_DESTROY 0	/* Broken */
 
 static Ecore_List  *tclass_list = NULL;
 
@@ -66,6 +68,7 @@ TextstateCreate(const char *font)
    return ts;
 }
 
+#if ENABLE_DESTROY
 static void
 TextStateDestroy(TextState * ts)
 {
@@ -78,6 +81,7 @@ TextStateDestroy(TextState * ts)
 
    Efree(ts);
 }
+#endif
 
 static TextClass   *
 TextclassCreate(const char *name)
@@ -98,6 +102,7 @@ TextclassCreate(const char *name)
    return tc;
 }
 
+#if ENABLE_DESTROY
 static void
 TextclassDestroy(TextClass * tc)
 {
@@ -127,6 +132,7 @@ TextclassDestroy(TextClass * tc)
 
    Efree(tc);
 }
+#endif /* ENABLE_DESTROY */
 
 TextClass          *
 TextclassAlloc(const char *name, int fallback)
@@ -403,7 +409,7 @@ TextclassIpc(const char *params)
    p = params;
    l = 0;
    param1[0] = param2[0] = '\0';
-   sscanf(params, "%1000s %1000s %n", param1, param2, &l);
+   sscanf(p, "%1000s %1000s %n", param1, param2, &l);
    p += l;
 
    if (!strncmp(param1, "list", 2))
@@ -433,7 +439,9 @@ TextclassIpc(const char *params)
 
    if (!strcmp(param2, "delete"))
      {
+#if ENABLE_DESTROY
 	TextclassDestroy(tc);
+#endif
      }
    else if (!strcmp(param2, "modify"))
      {
@@ -498,7 +506,7 @@ TextclassIpc(const char *params)
      }
    else
      {
-	IpcPrintf("Error: Unknown operation specified\n");
+	IpcPrintf("Error: unknown operation specified\n");
      }
 }
 
@@ -506,7 +514,7 @@ static const IpcItem TextclassIpcArray[] = {
    {
     TextclassIpc,
     "textclass", NULL,
-    "List textclasses, create/delete/modify/apply a textclass",
+    "List textclasses, apply a textclass",
     NULL}
    ,
 };

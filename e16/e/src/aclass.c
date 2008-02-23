@@ -189,7 +189,7 @@ ActionclassCreate(const char *name, int global)
    return ac;
 }
 
-void
+static void
 ActionclassDestroy(ActionClass * ac)
 {
    int                 i;
@@ -211,6 +211,7 @@ ActionclassDestroy(ActionClass * ac)
    Efree(ac->list);
    Efree(ac->name);
    Efree(ac->tooltipstring);
+
    Efree(ac);
    mode_action_destroy = 1;
 }
