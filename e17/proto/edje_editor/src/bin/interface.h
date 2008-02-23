@@ -31,6 +31,10 @@ Etk_Widget *UI_FilechooserSaveButton;
 Etk_Widget *UI_FilechooserLoadButton;
 Etk_Widget *UI_ColorWin;
 Etk_Widget *UI_ColorPicker;
+/* toolbar objects */
+Etk_Widget *UI_PlayButton;
+Etk_Widget *UI_PlayImage;
+Etk_Widget *UI_PauseImage;
 /* group frame objects */
 Etk_Widget *UI_GroupNameEntry;
 Etk_Widget *UI_GroupNameEntryImage;
@@ -171,5 +175,6 @@ void ShowFilechooser(int FileChooserType);
 void ShowAlert(char* text);
 void ConsolleLog(char *text);
 void ConsolleClear(void);
+void TogglePlayButton(int set);
 
 #endif

@@ -4,7 +4,7 @@ RCS file: /cvs/e/e17/libs/edje/Doxyfile,v
 retrieving revision 1.4
 diff -u -r1.4 Doxyfile
 --- Doxyfile	6 Dec 2007 23:40:48 -0000	1.4
-+++ Doxyfile	22 Feb 2008 02:32:10 -0000
++++ Doxyfile	23 Feb 2008 03:46:45 -0000
 @@ -1,7 +1,7 @@
  PROJECT_NAME           = Edje
  PROJECT_NUMBER         =
@@ -23,28 +23,13 @@ diff -u -r1.4 Doxyfile
  INHERIT_DOCS           = YES
  INLINE_INFO            = YES
  SORT_MEMBER_DOCS       = YES
-Index: configure.in
-===================================================================
-RCS file: /cvs/e/e17/libs/edje/configure.in,v
-retrieving revision 1.93
-diff -u -r1.93 configure.in
---- configure.in	25 Jan 2008 03:35:46 -0000	1.93
-+++ configure.in	22 Feb 2008 02:32:10 -0000
-@@ -66,6 +66,7 @@
-   evas >= 0.9.9
-   ecore-evas >= 0.9.9
-   ecore-job >= 0.9.9
-+  ecore-file >= 0.9.9
-   eet >= 0.9.10
-   embryo >= 0.9.1
- ])
 Index: gendoc
 ===================================================================
 RCS file: /cvs/e/e17/libs/edje/gendoc,v
 retrieving revision 1.6
 diff -u -r1.6 gendoc
 --- gendoc	6 Dec 2007 23:42:38 -0000	1.6
-+++ gendoc	22 Feb 2008 02:32:10 -0000
++++ gendoc	23 Feb 2008 03:46:46 -0000
 @@ -1,7 +1,7 @@
  #!/bin/sh
  cp ./edje.c.in ./edje.c
@@ -68,7 +53,7 @@ Index: src/lib/Edje_Edit.h
 RCS file: src/lib/Edje_Edit.h
 diff -N src/lib/Edje_Edit.h
 --- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ src/lib/Edje_Edit.h	22 Feb 2008 02:32:10 -0000
++++ src/lib/Edje_Edit.h	23 Feb 2008 03:46:46 -0000
 @@ -0,0 +1,1342 @@
 +#ifndef _EDJE_EDIT_H
 +#define _EDJE_EDIT_H
@@ -1418,7 +1403,7 @@ RCS file: /cvs/e/e17/libs/edje/src/lib/Makefile.am,v
 retrieving revision 1.39
 diff -u -r1.39 Makefile.am
 --- src/lib/Makefile.am	18 Jan 2008 06:38:46 -0000	1.39
-+++ src/lib/Makefile.am	22 Feb 2008 02:32:10 -0000
++++ src/lib/Makefile.am	23 Feb 2008 03:46:46 -0000
 @@ -14,7 +14,8 @@
  libedje.la
  
@@ -1444,7 +1429,7 @@ Index: src/lib/edje_edit.c
 RCS file: src/lib/edje_edit.c
 diff -N src/lib/edje_edit.c
 --- /dev/null	1 Jan 1970 00:00:00 -0000
-+++ src/lib/edje_edit.c	22 Feb 2008 02:32:11 -0000
++++ src/lib/edje_edit.c	23 Feb 2008 03:46:46 -0000
 @@ -0,0 +1,3214 @@
 +/*
 + * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
@@ -4666,7 +4651,7 @@ RCS file: /cvs/e/e17/libs/edje/src/lib/edje_embryo.c,v
 retrieving revision 1.58
 diff -u -r1.58 edje_embryo.c
 --- src/lib/edje_embryo.c	25 Jan 2008 03:35:46 -0000	1.58
-+++ src/lib/edje_embryo.c	22 Feb 2008 02:32:11 -0000
++++ src/lib/edje_embryo.c	23 Feb 2008 03:46:46 -0000
 @@ -847,7 +847,7 @@
     Edje *ed;
     int part_id = 0;
@@ -4679,20 +4664,20 @@ diff -u -r1.58 edje_embryo.c
 Index: src/lib/edje_load.c
 ===================================================================
 RCS file: /cvs/e/e17/libs/edje/src/lib/edje_load.c,v
-retrieving revision 1.111
-diff -u -r1.111 edje_load.c
---- src/lib/edje_load.c	18 Jan 2008 06:34:04 -0000	1.111
-+++ src/lib/edje_load.c	22 Feb 2008 02:32:11 -0000
+retrieving revision 1.113
+diff -u -r1.113 edje_load.c
+--- src/lib/edje_load.c	22 Feb 2008 10:42:50 -0000	1.113
++++ src/lib/edje_load.c	23 Feb 2008 03:46:46 -0000
 @@ -5,7 +5,7 @@
  #include "Edje.h"
  #include "edje_private.h"
  
 -static void _edje_collection_free_part_description_free(Edje_Part_Description *desc);
 +void _edje_collection_free_part_description_free(Edje_Part_Description *desc);
- static Evas_Bool _edje_file_collection_hash_foreach(Evas_Hash *hash, const char *key, void *data, void *fdata);
+ static Evas_Bool _edje_file_collection_hash_foreach(const Evas_Hash *hash, const char *key, void *data, void *fdata);
  #ifdef EDJE_PROGRAM_CACHE
  static int  _edje_collection_free_prog_cache_matches_free_cb(Evas_Hash *hash, const char *key, void *data, void *fdata);
-@@ -916,7 +916,7 @@
+@@ -918,7 +918,7 @@
     free(ec);
  }
  
@@ -4704,11 +4689,11 @@ diff -u -r1.111 edje_load.c
 Index: src/lib/edje_private.h
 ===================================================================
 RCS file: /cvs/e/e17/libs/edje/src/lib/edje_private.h,v
-retrieving revision 1.137
-diff -u -r1.137 edje_private.h
---- src/lib/edje_private.h	19 Jan 2008 01:00:14 -0000	1.137
-+++ src/lib/edje_private.h	22 Feb 2008 02:32:11 -0000
-@@ -328,31 +328,31 @@
+retrieving revision 1.138
+diff -u -r1.138 edje_private.h
+--- src/lib/edje_private.h	21 Feb 2008 18:48:36 -0000	1.138
++++ src/lib/edje_private.h	23 Feb 2008 03:46:46 -0000
+@@ -329,31 +329,31 @@
  
  struct _Edje_Program /* a conditional program to be run */
  {
@@ -4755,7 +4740,7 @@ diff -u -r1.137 edje_private.h
  };
  
  struct _Edje_Program_Target /* the target of an action */
-@@ -411,7 +411,7 @@
+@@ -412,7 +412,7 @@
  
  struct _Edje_Part
  {
@@ -4764,7 +4749,7 @@ diff -u -r1.137 edje_private.h
     Edje_Part_Description *default_desc; /* the part descriptor for default */
     Evas_List             *other_desc; /* other possible descriptors */
     char                  *source;
-@@ -450,7 +450,7 @@
+@@ -451,7 +451,7 @@
  {
     struct {
        double         value; /* the value of the state (for ranges) */

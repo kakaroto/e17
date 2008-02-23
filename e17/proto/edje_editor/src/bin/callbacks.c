@@ -209,11 +209,7 @@ on_AllButton_click(Etk_Button *button, void *data)
       edje_object_signal_emit(edje_ui,"set_bg4","edje_editor");
       break;
    case TOOLBAR_PLAY:
-      ShowAlert("Not yet implemented");
-      //   snprintf(cmd,1024,"edje_editor -t \"%s\" \"%s\" &",
-      //            Cur.open_file_name,Cur.eg->name);
-      //   printf("TESTING EDJE. cmd: %s\n",cmd);
-      //   system(cmd);
+      TogglePlayButton(-1);
       break;
    case TOOLBAR_DEBUG:
       //DebugInfo(FALSE);

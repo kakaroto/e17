@@ -52,6 +52,7 @@ enum various
    TOOLBAR_SAVE_EDC,
    TOOLBAR_SAVE_EDJ,
    TOOLBAR_PLAY,
+   TOOLBAR_PAUSE,
    TOOLBAR_MOVE_UP,
    TOOLBAR_MOVE_DOWN,
    TOOLBAR_OPTION_BG1,
@@ -97,6 +98,7 @@ enum various
    DRAG_MINIARROW,
    DRAG_REL1,
    DRAG_REL2,
+   DRAG_MOVE,
    DRAG_MOVEBOX,
    REL_COMBO_INTERFACE,
    IMAGE_TWEEN_UP,
@@ -136,6 +138,7 @@ Evas_Object    *EV_movebox;            //The object used for moving fakewin
 Evas_Object    *focus_handler;         //The yellow box around the selected part
 Evas_Object    *rel1_handler;          //The red point
 Evas_Object    *rel2_handler;          //The blue point
+Evas_Object    *move_handler;          //The central move arrows
 Evas_Object    *rel1X_parent_handler;  //The 4 line that show the container for each side of the part
 Evas_Object    *rel1Y_parent_handler;  //
 Evas_Object    *rel2X_parent_handler;  //

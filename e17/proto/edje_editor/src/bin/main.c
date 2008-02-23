@@ -136,6 +136,9 @@ ChangeGroup(char *group)
 
    if (Cur.group->string && !strcmp(group, Cur.group->string)) return;
    printf("Change to group: %s\n", group);
+
+   TogglePlayButton(1);
+   
    edje_edit_save(edje_o);
    evas_object_hide(edje_o);
    ConsolleClear();

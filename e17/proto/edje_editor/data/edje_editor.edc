@@ -143,6 +143,7 @@ images {
    image: "fakewin.png" LOSSY 95;
    image: "rel1.png" LOSSY 95;
    image: "rel2.png" LOSSY 95;
+   image: "move.png" LOSSY 95;
    image: "e17.png" LOSSY 95;
    image: "miniarrow.png" LOSSY 95;
 }
@@ -471,7 +472,6 @@ collections {
          part{
             name: "rel1";
             type: IMAGE;
-            //dragable {x: 1 1 1; y: 1 1 1;}
             description {
                state: "default" 0.0;
                visible: 1;
@@ -484,20 +484,6 @@ collections {
       programs{
          // Rel1 Prog
          program{
-            name: "Rel1_Show";
-            signal: "REL1_SHOW";
-            source: "edje_editor";
-            action: STATE_SET "visible" 0.0;
-            target: "rel1";
-         }
-         program{
-            name: "Rel1_Hide";
-            signal: "REL1_HIDE";
-            source: "edje_editor";
-            action: STATE_SET "default" 0.0;
-            target: "rel1";
-         }
-         program{
             name: "StartDrag";
             signal: "mouse,down,1";
             source: "rel1";
@@ -508,12 +494,6 @@ collections {
             signal: "mouse,up,1";
             source: "rel1";
             action: SIGNAL_EMIT "END_DRAG" "rel1";
-         }
-         program{
-            name: "Drag";
-            signal: "mouse,move";
-            source: "rel1";
-            action: SIGNAL_EMIT "DRAG" "rel1";
          }
       }
    }
@@ -546,11 +526,35 @@ collections {
             source: "rel2";
             action: SIGNAL_EMIT "END_DRAG" "rel2";
          }
+      }
+   }
+   group{
+      name: "MoveH";
+      parts{
+         part{
+            name: "move";
+            type: IMAGE;
+            description {
+               state: "default" 0.0;
+               visible: 1;
+               rel1 {relative: 0.0 0.0; offset: 0 0;}
+               rel2 {relative: 0.0 0.0; offset: 12 12;}
+               image {normal: "move.png";}
+            }
+         }
+      }
+      programs{
          program{
-            name: "Drag";
-            signal: "mouse,move";
-            source: "rel2";
-            action: SIGNAL_EMIT "DRAG" "rel2";
+            name: "StartDrag";
+            signal: "mouse,down,1";
+            source: "move";
+            action: SIGNAL_EMIT "START_DRAG" "MoveH";
+         }
+         program{
+            name: "EndDrag";
+            signal: "mouse,up,1";
+            source: "move";
+            action: SIGNAL_EMIT "END_DRAG" "MoveH";
          }
       }
    }

@@ -44,6 +44,28 @@ ConsolleLog(char *text)
       edje_object_part_text_set(Consolle, "line4", evas_list_nth(stack, 3));
       edje_object_part_text_set(Consolle, "line5", evas_list_nth(stack, 4));
 }
+
+void
+TogglePlayButton(int set)
+{
+   /* set    -1 = toggle   0 = pause   1 = play   */
+   if (set == -1)
+      set = !edje_object_play_get(edje_o);
+   
+   if (set == 0)
+   {
+      edje_object_play_set(edje_o, 0);
+      etk_button_image_set(ETK_BUTTON(UI_PlayButton), ETK_IMAGE(UI_PlayImage));
+      etk_object_properties_set(ETK_OBJECT(UI_PlayButton),"label","Play Edje",NULL);
+   }
+   else if (set == 1)
+   {
+      edje_object_play_set(edje_o, 1);
+      etk_button_image_set(ETK_BUTTON(UI_PlayButton), ETK_IMAGE(UI_PauseImage));
+      etk_object_properties_set(ETK_OBJECT(UI_PlayButton),"label","Pause Edje",NULL);
+   }
+}
+
 void
 ShowAlert(char* text)
 {
@@ -1366,7 +1388,6 @@ create_toolbar(Etk_Toolbar_Orientation o)
                ETK_CALLBACK(on_RemoveMenu_item_activated), (void*)REMOVE_GROUP);
    etk_menu_shell_append(ETK_MENU_SHELL(UI_RemoveMenu), ETK_MENU_ITEM(menu_item));
 
-      
    //program 
    menu_item = etk_menu_item_image_new_with_label("Selected Program");
    image = etk_image_new_from_edje(EdjeFile,"PROG.PNG");
@@ -1436,7 +1457,25 @@ create_toolbar(Etk_Toolbar_Orientation o)
    etk_signal_connect("activated", ETK_OBJECT(menu_item),
                ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_OPTION_BG4);
    etk_menu_shell_append(ETK_MENU_SHELL(UI_OptionsMenu), ETK_MENU_ITEM(menu_item));
+   
+   sep = etk_vseparator_new();
+   etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), sep, ETK_BOX_START);
+
+   //UI_PlayButton
+   UI_PlayImage = etk_image_new_from_stock(ETK_STOCK_MEDIA_PLAYBACK_START, ETK_STOCK_MEDIUM);
+   UI_PauseImage = etk_image_new_from_stock(ETK_STOCK_MEDIA_PLAYBACK_PAUSE, ETK_STOCK_MEDIUM);
+   UI_PlayButton = etk_tool_button_new();
+   etk_button_image_set (ETK_BUTTON(UI_PlayButton), ETK_IMAGE(UI_PauseImage));
+   etk_object_properties_set(ETK_OBJECT(UI_PlayButton),"label","Pause Edje",NULL);
+   etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), UI_PlayButton, ETK_BOX_START);
+   etk_signal_connect("clicked", ETK_OBJECT(UI_PlayButton),
+                     ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_PLAY);
+   
 #if DEBUG_MODE
+   //Separator
+   sep = etk_vseparator_new();
+   etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), sep, ETK_BOX_START);
+   
    //DebugButton
    button = etk_tool_button_new_from_stock(ETK_STOCK_DOCUMENT_PROPERTIES);
    etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), button, ETK_BOX_START);
