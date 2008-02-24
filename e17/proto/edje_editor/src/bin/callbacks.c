@@ -481,6 +481,10 @@ on_PartNameEntryImage_mouse_clicked(Etk_Object *object, void *data)
          etk_tree_row_fields_set(row,TRUE,
                                  COL_NAME, EdjeFile, "TEXT.PNG", name, NULL);
          break;
+      case EDJE_PART_TYPE_SWALLOW:
+         etk_tree_row_fields_set(row,TRUE,
+                                 COL_NAME, EdjeFile, "SWAL.PNG", name, NULL);
+         break;
       default:
          etk_tree_row_fields_set(row,TRUE,
                                  COL_NAME, EdjeFile, "NONE.PNG", name, NULL);
@@ -1466,6 +1470,29 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
                                   "Something to say !");
          edje_edit_part_effect_set(edje_o, name, EDJE_TEXT_EFFECT_GLOW);
       
+         etk_tree_row_select(row);
+         etk_tree_row_unfold(row);
+         PopulateRelComboBoxes();
+         PopulateSourceComboEntry();
+         break;
+      case NEW_SWAL:
+         if (!etk_string_length_get(Cur.group))
+         {
+            ShowAlert("You must first select a group.");
+            break;
+         }
+         //generate a unique new name
+         snprintf(name, sizeof(name), "New swallow");
+         i = 2;
+         while (edje_edit_part_exist(edje_o, name))
+            snprintf(name, sizeof(name), "New swallow %d", i++);
+         
+         if (!edje_edit_part_add(edje_o, name, EDJE_PART_TYPE_SWALLOW))
+         {
+            ShowAlert("Can't create part.");
+            break;
+         }
+         row = AddPartToTree(name, NULL);
          etk_tree_row_select(row);
          etk_tree_row_unfold(row);
          PopulateRelComboBoxes();

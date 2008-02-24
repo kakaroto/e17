@@ -280,6 +280,12 @@ ev_draw_focus(void)
       evas_object_resize(focus_handler,
             pw + o1x - o2x + 2, 
             ph + o1y - o2y + 2);
+      
+      if (edje_edit_part_type_get(edje_o, Cur.part->string) == EDJE_PART_TYPE_SWALLOW)
+         edje_object_signal_emit(focus_handler, "SwallShow", "edje_editor");
+      else
+         edje_object_signal_emit(focus_handler, "SwallHide", "edje_editor");
+      
       evas_object_raise(focus_handler);
       evas_object_show(focus_handler);
    }else

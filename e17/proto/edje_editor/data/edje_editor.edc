@@ -132,6 +132,8 @@ images {
    image: "image.png" LOSSY 95;
    image: "rect.png" LOSSY 95;
    image: "text.png" LOSSY 95;
+   image: "swallow.png" LOSSY 95;
+   image: "swallow2.png" LOSSY 95;
    image: "desc.png" LOSSY 95;
    image: "e17.png" LOSSY 95;
    image: "none.png" LOSSY 95;
@@ -203,6 +205,24 @@ collections {
                rel1 {relative: 0.0 0.0; offset: 0 0;}
                rel2 {relative: 0.0 0.0; offset: 20 15;}
                image {normal: "text.png";}
+            }
+         }
+      }
+   }
+   group{
+      name: "SWAL.PNG";
+      min: 15 15;
+      max: 15 15;
+      parts{
+         part{
+            name: "StaticImage";
+            type: IMAGE;
+            mouse_events: 0;
+            description{
+               state: "default" 0.0;
+               rel1 {relative: 0.0 0.0; offset: 0 0;}
+               rel2 {relative: 0.0 0.0; offset: 19 14;}
+               image {normal: "swallow.png";}
             }
          }
       }
@@ -463,6 +483,43 @@ collections {
                rel2 {relative: 1.0 1.0; offset: 0 0;}
                image {normal: "focus.png"; border: 15 15 15 15;}
             }
+         }
+         part {
+            name: "swall";
+            type: IMAGE;
+            mouse_events: 0;
+            description {
+               state: "default" 0.0;
+               color: 255 255 255 0;
+               rel1 {relative: 0.0 0.0; offset: 2 2; to: "rect";}
+               rel2 {relative: 1.0 1.0; offset: -3 -3; to: "rect";}
+               image {normal: "swallow2.png";}
+               fill {
+                  origin{relative: 0.0 0.0; offset: 0 0 ;}
+                  size{relative: 0.0 0.0; offset: 15 15;}
+               }
+            }
+            description {
+               state: "visible" 0.0;
+               inherit: "default" 0.0 ;
+               color: 255 255 255 100;
+            }
+         }
+      }
+      programs{
+         program{
+            name: "swallhide";
+            signal: "SwallHide";
+            source: "edje_editor";
+            action: STATE_SET "default" 0.0;
+            target: "swall";
+         }
+         program{
+            name: "swallshow";
+            signal: "SwallShow";
+            source: "edje_editor";
+            action: STATE_SET "visible" 0.0;
+            target: "swall";
          }
       }
    }
