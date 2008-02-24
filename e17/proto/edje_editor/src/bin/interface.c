@@ -2497,8 +2497,17 @@ create_program_frame(void)
                                                    ETK_STOCK_SMALL);
    etk_entry_image_set(ETK_ENTRY(UI_ProgramEntry), ETK_ENTRY_IMAGE_SECONDARY,
                        ETK_IMAGE(UI_ProgramEntryImage));
-   etk_table_attach_default(ETK_TABLE(table),UI_ProgramEntry, 1, 3, 0, 0);
+   etk_table_attach_default(ETK_TABLE(table),UI_ProgramEntry, 1, 2, 0, 0);
    
+   
+   //ScriptSaveButton
+   UI_RunProgButton = etk_button_new_from_stock(ETK_STOCK_MEDIA_PLAYBACK_START);
+   etk_object_properties_set(ETK_OBJECT(UI_RunProgButton),
+                              "label","Run",NULL);
+   etk_table_attach_default(ETK_TABLE(table),UI_RunProgButton, 3, 3, 0, 0);
+   
+   etk_signal_connect("clicked", ETK_OBJECT(UI_RunProgButton),
+            ETK_CALLBACK(on_AllButton_click), (void*)RUN_PROG);
    
    //UI_SourceEntry
    label = etk_label_new("<b>Source</b>");

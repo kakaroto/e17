@@ -102,7 +102,8 @@ Etk_Widget *UI_ScriptBox;
 Etk_Widget *UI_ScriptSaveButton;
 /* program frame objects */
 Etk_Widget *UI_ProgramEntry;
-Etk_Widget  *UI_ProgramEntryImage;
+Etk_Widget *UI_ProgramEntryImage;
+Etk_Widget *UI_RunProgButton;
 Etk_Widget *UI_SignalEntry;
 Etk_Widget *UI_ActionComboBox;
 Etk_Widget *UI_TransiComboBox;

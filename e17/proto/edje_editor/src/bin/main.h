@@ -107,8 +107,7 @@ enum various
    IMAGE_TWEEN_ADD,
    IMAGE_TWEEN_DELETE,
    SAVE_SCRIPT,
-   LOAD_WIN,
-   SAVE_WIN
+   RUN_PROG
 };
 
 struct Current_State

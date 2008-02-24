@@ -216,16 +216,20 @@ on_AllButton_click(Etk_Button *button, void *data)
       edje_edit_print_internal_status(edje_o);
       break;
    case IMAGE_TWEEN_UP:
-         ShowAlert("Up not yet implemented.");
+      ShowAlert("Up not yet implemented.");
       break;
    case IMAGE_TWEEN_DOWN:
-         ShowAlert("Down not yet implemented.");
+      ShowAlert("Down not yet implemented.");
+      break;
+   case RUN_PROG:
+      if (etk_string_length_get(Cur.prog))
+         edje_edit_program_run(edje_o, Cur.prog->string);
       break;
    case SAVE_SCRIPT:
-         text = etk_textblock_text_get(ETK_TEXT_VIEW(UI_ScriptBox)->textblock,
-                                       ETK_TRUE);
-         ShowAlert("Script not yet implemented.");
-         etk_object_destroy(ETK_OBJECT(text));
+      text = etk_textblock_text_get(ETK_TEXT_VIEW(UI_ScriptBox)->textblock,
+                                    ETK_TRUE);
+      ShowAlert("Script not yet implemented.");
+      etk_object_destroy(ETK_OBJECT(text));
       break;
    default:
       break;
