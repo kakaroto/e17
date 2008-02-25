@@ -203,7 +203,7 @@ _population_init(E_Module *m)
 }
 
 Evas_Bool 
-_action_free(Evas_Hash *hash, const char *key, void *data, void *fdata)
+_action_free(const Evas_Hash *hash, const char *key, void *data, void *fdata)
 {
    Action *a;
    a = data;
@@ -358,7 +358,7 @@ _load_custom_action(Population *pop, const char *filename, char *name)
    
    return c;
 }
-Evas_Bool hash_fn(Evas_Hash *hash, const char *key, void *data, void *fdata)
+Evas_Bool hash_fn(const Evas_Hash *hash, const char *key, void *data, void *fdata)
 {
    Action *a = data;
    printf("PENGUINS: Load action: '%s' w:%d h:%d speed:%d\n", key, a->w, a->h, a->speed);

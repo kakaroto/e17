@@ -58,7 +58,7 @@ static void _emu_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void 
 static void _emu_menu_cb_post_deactivate(void *data, E_Menu *m);
 
 static void _emu_menu_cb_action(void *data, E_Menu *m, E_Menu_Item *mi);
-static Evas_Bool _emu_menus_hash_cb_free(Evas_Hash *hash, const char *key, void *data, void *fdata);
+static Evas_Bool _emu_menus_hash_cb_free(const Evas_Hash *hash, const char *key, void *data, void *fdata);
 
 //static void _emu_cb_menu_configure(void *data, E_Menu *m, E_Menu_Item *mi);
 
@@ -1026,7 +1026,7 @@ _emu_menu_cb_action(void *data, E_Menu *m, E_Menu_Item *mi)
  * @ingroup Emu_Module_Menu_Group
  */
 static Evas_Bool
-_emu_menus_hash_cb_free(Evas_Hash *hash, const char *key, void *data, void *fdata)
+_emu_menus_hash_cb_free(const Evas_Hash *hash, const char *key, void *data, void *fdata)
 {
    Easy_Menu *menu;
 
