@@ -291,6 +291,8 @@ _notification_popup_new(E_Notification *n)
    E_Container *con;
    Popup_Data *popup;
    char buf[PATH_MAX];
+   const char *shape_option;
+   int shaped;
    Ecore_X_Window_State state[5] = { 
      ECORE_X_WINDOW_STATE_STICKY,
      ECORE_X_WINDOW_STATE_SKIP_TASKBAR,
@@ -335,9 +337,26 @@ _notification_popup_new(E_Notification *n)
    edje_object_signal_callback_add(popup->theme, "notification,find", "theme", 
                                    _notification_theme_cb_find, popup);
 
-   /* Uncomment to use shaped popups */
-   //e_win_shaped_set(popup->win, 1);
-   //e_win_avoid_damage_set(popup->win, 1);
+   shape_option = edje_object_data_get(popup->theme, "shaped");
+   if (shape_option)
+     {
+	if (!strcmp(shape_option, "1"))
+	  shaped = 1;
+	else
+	  shaped = 0;
+	if (e_config->use_composite)
+	  {
+	     ecore_evas_alpha_set(popup->win->ecore_evas, shaped);
+             e_container_window_raise(popup->win->container,
+                     ecore_evas_software_x11_window_get(popup->win->ecore_evas),
+                     ecore_evas_layer_get(popup->win->ecore_evas));
+	  }
+	else
+          {
+             e_win_shaped_set(popup->win, shaped);
+             e_win_avoid_damage_set(popup->win, shaped);
+          }
+     }
 
    _notification_popup_refresh(popup);
    _notification_popup_place(popup, evas_list_count(dd->popups));
