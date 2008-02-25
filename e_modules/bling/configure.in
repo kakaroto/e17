@@ -93,11 +93,8 @@ x_libs="-L/usr/X11R6/lib -lX11 -lXext -lXrender -lXcomposite"
 AC_SUBST(x_cflags)
 AC_SUBST(x_libs)
 
-### FIXME: module.desktop doesn't need generating (anymore)
-
 AC_OUTPUT([
 Makefile
-module.desktop
 e_modules-bling.spec
 ], [
 ])
