@@ -169,6 +169,30 @@ if test "x$want_fb" = "xyes"; then
 fi
 AM_CONDITIONAL(BUILD_FB, test "x$have_fb" = "xyes")
 
+### DIRECTFB
+want_directfb="yes"
+AC_MSG_CHECKING(whether DirectFB)
+AC_ARG_ENABLE(directfb,
+  AC_HELP_STRING([--enable-directfb], [enable DirectFB engine]),
+  [ want_directfb=$enableval ]
+)
+AC_MSG_RESULT($want_directfb)
+if test "x$want_directfb" = "xyes"; then
+  PKG_CHECK_EXISTS(evas-directfb,
+    [
+      AC_DEFINE(HAVE_EVAS_DIRECTFB, 1, [Evas DirectFB Engine Support])
+      have_evas_directfb="yes"
+    ],
+    [ have_evas_directfb="no" ]
+  )
+fi
+if test "x$have_evas_directfb" = "xyes"; then
+  PKG_CHECK_MODULES([DIRECTFB], directfb,
+    [ have_directfb="yes" ],
+    [ have_directfb="no" ])
+fi
+AM_CONDITIONAL(BUILD_DIRECTFB, test "x$have_directfb" = "xyes")
+
 # TODO: Check availability of libs
 ### DirectDraw
 want_software_ddraw="yes"
@@ -301,6 +325,7 @@ echo "    Software DirectDraw 16 bits..: ${have_software_16_ddraw}"
 echo "    Direct3D.....................: ${have_direct3d}"
 echo "    Software SDL.................: ${have_software_sdl}"
 echo "    FB...........................: ${have_fb}"
+echo "    DirectFB.....................: ${have_directfb}"
 echo
 echo "  Installation:"
 echo "    prefix.......................: ${prefix}"

@@ -1203,6 +1203,10 @@ _engine_args(int argc, char **argv)
    if (engine_fb_args(argc, argv))
      loop_func = engine_fb_loop;
 #endif
+#if HAVE_EVAS_DIRECTFB
+   if (engine_directfb_args(argc, argv))
+     loop_func = engine_directfb_loop;
+#endif
    if ((!loop_func) || (!profile_ok))
      {
 	fprintf(stderr,
@@ -1244,6 +1248,9 @@ _engine_args(int argc, char **argv)
 #endif
 #if HAVE_EVAS_FB
 	       	" fb"
+#endif
+#if HAVE_EVAS_DIRECTFB
+	       	" directfb"
 #endif
 		"\n"
 		"Where PROFILE can be one of:\n"

@@ -2,7 +2,7 @@ MAINTAINERCLEANFILES = Makefile.in
 INCLUDES = -I$(includedir) \
 	   -I$(top_srcdir) \
 	   -I$(top_srcdir)/src/bin \
-	   @EVAS_CFLAGS@ @x_cflags@ @SDL_CFLAGS@ \
+	   @EVAS_CFLAGS@ @x_cflags@ @SDL_CFLAGS@ @DIRECTFB_CFLAGS@ \
 	   -DPACKAGE_BIN_DIR=\"@PACKAGE_BIN_DIR@\" \
 	   -DPACKAGE_LIB_DIR=\"@PACKAGE_LIB_DIR@\" \
 	   -DPACKAGE_DATA_DIR=\"@PACKAGE_DATA_DIR@\"
@@ -53,7 +53,7 @@ image_blend_occlude2_very_many.c \
 image_blend_occlude3_very_many.c \
 poly_blend.c
 
-expedite_LDFLAGS = @EVAS_LIBS@ @SDL_LIBS@ @x_libs@ @ddraw_libs@ @ddraw_16_libs@ @d3d_libs@ @glew_libs@ -lm
+expedite_LDFLAGS = @EVAS_LIBS@ @SDL_LIBS@ @x_libs@ @ddraw_libs@ @ddraw_16_libs@ @d3d_libs@ @glew_libs@ @DIRECTFB_LIBS@ -lm
 
 if BUILD_SOFTWARE_X11
 expedite_SOURCES += \
@@ -103,5 +103,10 @@ endif
 if BUILD_FB
 expedite_SOURCES += \
 engine_fb.c engine_fb.h
+endif
+
+if BUILD_DIRECTFB
+expedite_SOURCES += \
+engine_directfb.c engine_directfb.h
 endif
 

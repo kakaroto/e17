@@ -44,6 +44,9 @@
 #if HAVE_EVAS_FB
 #include "engine_fb.h"
 #endif
+#if HAVE_EVAS_DIRECTFB
+#include "engine_directfb.h"
+#endif
 #include "ui.h"
 #include "about.h"
 
