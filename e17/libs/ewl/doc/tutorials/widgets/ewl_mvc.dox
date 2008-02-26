@@ -43,7 +43,7 @@
  * @endcode
  * 
  * In this example we're creating a simple Ewl_List widget and using a helper 
- * method to create a model to work with Ecore_LIst data. In this case our list 
+ * method to create a model to work with Ecore_List data. In this case our list 
  * is storing string objects so we can use the provided ewl_label_view_get() to get 
  * a pre-created view object.
  */
