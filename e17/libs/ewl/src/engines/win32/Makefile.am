@@ -20,5 +20,6 @@ ewl_engine_win32.c
 
 win32_la_LIBADD = $(top_builddir)/src/lib/libewl.la @ECORE_WIN32_LIBS@ @ECORE_LIBS@
 win32_la_LDFLAGS = -module @create_shared_lib@ -version-info @INTERFACE_VERSION@
+win32_la_LIBTOOLFLAGS = --tag=disable-static
 
 endif

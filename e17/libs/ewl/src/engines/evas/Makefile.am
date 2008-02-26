@@ -19,6 +19,7 @@ ewl_engine_evas.c
 
 evas_la_LIBADD = $(top_builddir)/src/lib/libewl.la @EDJE_LIBS@ @ECORE_LIBS@ @EVAS_LIBS@
 evas_la_LDFLAGS = -module @create_shared_lib@ -version-info @INTERFACE_VERSION@
+evas_la_LIBTOOLFLAGS = --tag=disable-static
 evas_la_DEPENDENCIES =
 
 endif

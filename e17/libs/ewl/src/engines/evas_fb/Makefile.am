@@ -20,6 +20,7 @@ ewl_engine_evas_fb.c
 
 evas_fb_la_LIBADD = $(top_builddir)/src/lib/libewl.la
 evas_fb_la_LDFLAGS = -module -version-info @INTERFACE_VERSION@
+evas_fb_la_LIBTOOLFLAGS = --tag=disable-static
 evas_fb_la_DEPENDENCIES =
 
 endif
