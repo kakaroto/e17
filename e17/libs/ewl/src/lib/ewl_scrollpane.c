@@ -192,7 +192,7 @@ ewl_scrollpane_init(Ewl_Scrollpane *s)
 
 /**
  * @param s: The scrollpane to setup
- * @param use: To use kinetic scrolling or not
+ * @param type: To use kinetic scrolling or not
  * @return Returns no value
  * @brief Sets up default values and callbacks for kinetic scrolling
  */
@@ -1232,7 +1232,7 @@ ewl_scrollpane_cb_scroll(Ewl_Scrollpane *s, double x, double y,
 
 /**
  * @param s: The scrollpane to work with
- * @param w: The maximum velocity
+ * @param v: The maximum velocity
  * @return Returns no value
  * @brief Sets the maximum velocity for kinetic scrolling
  */
@@ -1265,7 +1265,7 @@ ewl_scrollpane_kinetic_max_velocity_get(Ewl_Scrollpane *s)
 
 /**
  * @param s: The scrollpane to work with
- * @param w: The minimum velocity
+ * @param v: The minimum velocity
  * @return Returns no value
  * @brief Sets the minimum velocity for kinetic scrolling
  */
@@ -1298,7 +1298,7 @@ ewl_scrollpane_kinetic_min_velocity_get(Ewl_Scrollpane *s)
 
 /**
  * @param s: The scrollpane to work with
- * @param w: The multiplier to reduce velocity
+ * @param d: The multiplier to reduce velocity
  * @return Returns no value
  * @brief Sets the multiplier to reduce the velocity of kinetic scrolling
  */
@@ -1331,7 +1331,7 @@ ewl_scrollpane_kinetic_dampen_get(Ewl_Scrollpane *s)
 
 /**
  * @param s: The scrollpane to work with
- * @param w: The desired frames per second
+ * @param fps: The desired frames per second
  * @return Returns no value
  * @brief Sets the number of times per second to recalculate velocity and update the tree
  */

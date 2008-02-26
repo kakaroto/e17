@@ -2077,7 +2077,7 @@ ewl_embed_dnd_aware_remove(Ewl_Embed *embed)
 }
 
 /**
- * @param win: The window to set the selection on
+ * @param emb: The embed to set the selection on
  * @param txt: The text to set into the selection
  * @return Returns no value.
  *

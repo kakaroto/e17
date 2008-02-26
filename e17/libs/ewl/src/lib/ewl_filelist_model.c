@@ -21,7 +21,7 @@ static unsigned int ewl_filelist_model_filter_main
 
 /**
  * @param path: The path to the directory to read
- * @param skip_hidden: TRUE shows hidden files, FALSE does not
+ * @param show_dot: TRUE shows dot files, FALSE does not
  * @param show_dot_dot: TRUE shows .. for navigating upwards, FALSE does not
  * @param filter: The Ewl_Filelist_Filter to use
  * @return Returns an Ewl_Filelist_Directory structure
@@ -392,8 +392,8 @@ static void free_file(Ewl_Filelist_File *file)
 }
 
 /**
- * @param data: The model to work with
- * @param hidden: TRUE shows hidden files, FALSE does not
+ * @param dir: The Ewl_Filelist_Directory to work with
+ * @param show_dot: TRUE shows dot files, FALSE does not
  * @return Returns TRUE if a change in data, FALSE if not
  * @brief This function sets whether the filelist should contain hidden files
  */
@@ -418,7 +418,7 @@ ewl_filelist_model_show_dot_files_set(Ewl_Filelist_Directory *dir,
 }
 
 /**
- * @param data: The model to work with
+ * @param dir: The Ewl_Filelist_Directory to work with
  * @return Returns if the model shows dot files
  * @brief Returns if the model shows dot files
  */

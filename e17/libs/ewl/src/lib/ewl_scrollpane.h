@@ -38,7 +38,7 @@
 typedef struct Ewl_Scrollpane_Scroll_Info_Base Ewl_Scrollpane_Scroll_Info_Base;
 
 /**
- * @def EWL_SCROLLPANE_SCROLL_INFO_Base(scroll_info)
+ * @def EWL_SCROLLPANE_SCROLL_INFO_BASE(scroll_info)
  * Typecasts a pointer to an Ewl_Scrollpane_Scroll_Info_Base pointer.
  */
 #define EWL_SCROLLPANE_SCROLL_INFO_BASE(scroll_info) ((Ewl_Scrollpane_Scroll_Info_Base *) scroll_info)

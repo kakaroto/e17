@@ -579,7 +579,8 @@ ewl_filepicker_selected_files_get(Ewl_Filepicker *fp)
 /**
  * @param fp: The filepicker to work with
  * @param name: The name to display for the filter
- * @param filter: The actual regular expression for the filter
+ * @param extension: The extension to filter for
+ * @param mime_types: The mime types to filter for
  * @return Returns no value
  * @brief Add the filter named @a name to the combo box in the filepicker.
  */
