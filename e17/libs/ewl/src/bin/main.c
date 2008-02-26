@@ -450,6 +450,12 @@ run_test_boxed(Ewl_Test *t)
 {
 	Ewl_Widget *c, *n;
 
+	statusbar_text_set(t->name);
+
+	fill_source_text(t);
+	fill_tutorial_text(t);
+	setup_unit_tests(t);
+
 	/* make sure we have a function if we aren't a straight unit test */
 	if ((t->type != EWL_TEST_TYPE_UNIT) && (!t->func))
 	{
@@ -457,12 +463,6 @@ run_test_boxed(Ewl_Test *t)
 								t->name);
 		return;
 	}
-
-	statusbar_text_set(t->name);
-
-	fill_source_text(t);
-	fill_tutorial_text(t);
-	setup_unit_tests(t);
 
 	c = ewl_widget_name_find("execute_box");
 	ewl_container_reset(EWL_CONTAINER(c));
