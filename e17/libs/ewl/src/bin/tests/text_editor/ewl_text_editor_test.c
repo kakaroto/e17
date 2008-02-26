@@ -20,7 +20,7 @@ typedef struct
 {
 	char *name;
 	void (*cb)(Ewl_Widget *w, void *ev, void *data);
-} Control;
+} Ewl_Text_Editor_Control;
 
 static char *txt = "I'm not a lumberjack, or a fur trader,\n"
 		"I don't live in an igloo,\n"
@@ -217,7 +217,7 @@ create_test(Ewl_Container *box)
 
 	{
 		int i;
-		Control btns [] = {
+		Ewl_Text_Editor_Control btns [] = {
 				{"Fetch", ete_cb_fetch},
 				{"Set",   ete_cb_set},
 				{"Load",  ete_cb_load},

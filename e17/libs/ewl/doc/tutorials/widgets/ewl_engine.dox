@@ -1,0 +1,23 @@
+/**
+ * @addtogroup Ewl_Embed
+ * @section embed_tut Tutorial
+ *
+ * The embed allows for overriding the engine used for rendering and display
+ * so that an application can have multiple target engines. This is most commonly
+ * used through the window layer as the embed itself does not create windows in
+ * the display system. The reason it is not implemented at the window level is
+ * that the embed will need the correct engine information in order to interact
+ * with menus, tooltips and similar widgets.
+ *
+ * @code
+ * Ewl_Widget *window;
+ * window = ewl_window_new();
+ * ewl_embed_engine_name_set(EWL_EMBED(window), "evas_buffer");
+ * ewl_widget_show(window);
+ * @endcode
+ *
+ * The code above demonstrates how to setup an embed to render to an ARGB
+ * data buffer. When the window is realized it will create a data buffer and
+ * store that as the window information on the embed.
+ *
+ */

@@ -1,0 +1,29 @@
+/**
+ * @addtogroup Ewl_Box
+ * @section box_tut Tutorial
+ *
+ * The Ewl_Box provides a simple linear layout container. There are a few
+ * options to control the layout characteristics, but much of the layout is
+ * dependent on the child widget settings. The first option encountered is the
+ * orientation, which is either horizontal or vertical. Both orientations are
+ * implemented within the same box widget, and is set with
+ * ewl_box_orientation_set, but shortcuts exist in the form of ewl_hbox_new and
+ * ewl_vbox_new. The default orientation is horizontal.
+ *
+ * @code
+ * Ewl_Widget *box;
+ * box = ewl_hbox_new();
+ * ewl_widget_show(box);
+ * @endcode
+ *
+ * After creating the box, children are added with the standard container calls
+ * common to most containers. For example, a label and entry would be added as
+ * follows.
+ *
+ * @code
+ * ewl_container_child_append(EWL_CONTAINER(box), label);
+ * ewl_container_child_append(EWL_CONTAINER(box), entry);
+ * @endcode
+ *
+ * This would result in a label followed by the entry laid out horizontally.
+ */

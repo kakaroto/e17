@@ -22,7 +22,7 @@ static Ewl_Media_Module_Type module_type;
 typedef struct {
 	Ewl_Stock_Type name;
 	Ewl_Callback_Function func;
-} Control;
+} Ewl_Media_Test_Control;
 
 static int create_test(Ewl_Container *box);
 static void create_media_window(Ewl_Media_Module_Type type);
@@ -281,7 +281,7 @@ create_media_window(Ewl_Media_Module_Type type)
 	ewl_widget_show(b);
 
 	{
-		Control controls [] = {
+		Ewl_Media_Test_Control controls [] = {
 			{ EWL_STOCK_PLAY, play_cb },
 			{ EWL_STOCK_STOP, stop_cb },
 			{ EWL_STOCK_REWIND, rew_cb },

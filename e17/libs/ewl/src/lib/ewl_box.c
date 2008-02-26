@@ -268,7 +268,8 @@ ewl_box_orientation_get(Ewl_Box *b)
  * @param b: the box to change homogeneous layout
  * @param h: the boolean value to change the layout mode to
  * @return Returns no value.
- * @brief Change the homogeneous layout of the box
+ * @brief Change the homogeneous layout of the box, setting TRUE will give all
+ * children the same size.
  *
  * If the box is set to be homogeneous (TRUE) it will give all children the 
  * same size. By default the box is inhomogeneous.

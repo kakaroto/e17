@@ -1,0 +1,40 @@
+/**
+ * @addtogroup Ewl_Entry
+ * @section entry_tut Tutorial
+ *
+ * The Ewl_Entry provides a widget for editing single line or multi-line text.
+ * Since the entry widget inherits from Ewl_Text, all operations that
+ * can be performed on text can be used on the entry, including programmatic
+ * control of formatting, selections and text contents.
+ *
+ * @code
+ * Ewl_Widget *entry;
+ * entry = ewl_entry_new();
+ * ewl_text_text_set(EWL_TEXT(entry), "Text to display");
+ * ewl_widget_show(entry);
+ * @endcode
+ *
+ * Almost all manipulation of the entry widget is performed through the
+ * Ewl_Text API, with some minor exceptions. Since the entry widget takes user
+ * input, it requires an API to enable or disable the editing capability.
+ *
+ * @code
+ * void ewl_entry_editable_set(Ewl_Entry *e, unsigned int editable);
+ * unsigned int ewl_entry_editable_get(Ewl_Entry *e);
+ * @endcode
+ *
+ * It is also important to be able to indicate if the text entry can contain
+ * multiple lines of text, as the reaction to the Enter/Return keys changes.
+ * When multiline is enabled, Enter will insert a carriage return in the text,
+ * otherwise it raises an EWL_CALLBACK_VALUE_CHANGED callback on the entry
+ * widget.
+ *
+ * @code
+ * void ewl_entry_multiline_set(Ewl_Entry *e, unsigned int multiline);
+ * unsigned int ewl_entry_multiline_get(Ewl_Entry *e);
+ * @endcode
+ *
+ * By inheriting from Ewl_Text, the capabalities of Ewl_Entry are expanded to
+ * the full API available for text manipulation. This reduces the number of
+ * calls for the user to learn without sacrificing functionality.
+ */

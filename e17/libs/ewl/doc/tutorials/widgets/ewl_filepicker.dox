@@ -1,0 +1,62 @@
+/**
+ * @addtogroup Ewl_Filepicker
+ * @section filepicker_tut Tutorial
+ *
+ * The Ewl_Filepicker widget provides a method for selecting files. The
+ * filepicker can support multiple views of the files, this also allows the
+ * app to provide it's own view.
+ *
+ * @code
+ * Ewl_Widget *fp;
+ * fp = ewl_filepicker_new();
+ * ewl_widget_show(fp);
+ * @endcode
+ *
+ * The filepicker will default to the users home directory. If that dosen't
+ * exist it will attemp to use /tmp, failing that it will fall back to the /
+ * directory. The following two calls can be used to retrieve or set the
+ * current directory.
+ *
+ * @code
+ * ewl_filepicker_directory_set(fp);
+ * ewl_filepicker_directory_get(fp);
+ * @endcode
+ *
+ * Along with changing the directory you can also specify if the picker will
+ * allow for multiple file selections, showing dot files, showing the
+ * favorites panel or setting the file filter. This is done with the
+ * following code:
+ *
+ * @code
+ * ewl_filepicker_multiselect_set(fp, TRUE);
+ * ms = ewl_filepicker_multiselect_get(fp);
+ *
+ * ewl_filepicker_show_dot_files_set(fp, TRUE);
+ * dot = ewl_filepicker_show_dot_files_get(fp);
+ *
+ * ewl_filepicker_show_favorites_set(fp, TRUE);
+ * fav = ewl_filepicker_show_favorites_get(fp);
+ *
+ * ewl_filepicker_filter_set(fp, filter);
+ * filter = ewl_filepicker_filter_get(fp);
+ * @endcode
+ *
+ * You can also change the view used for the file list.
+ *
+ * @code
+ * ewl_filepicker_list_view_set(fp, view);
+ * view = ewl_filepicker_list_view_get(fp);
+ * @endcode
+ *
+ * @section filepicker_add_view Adding Views
+ *
+ * A view of the file list in the filepicker is a subclass of the
+ * Ewl_Filelist widget. These subclasses will provide the code for the
+ * actual list display. They will receive callbacks as settings are changed
+ * on the filepicker to notify of the display changes.
+ *
+ * If you wish to write your own view you will need to create an Ewl_View
+ * and set the constructor for your widget as the construct field. The
+ * constructor will need to setup the appropriate callbacks to as specified
+ * in the Ewl_Filelist structure.
+ */

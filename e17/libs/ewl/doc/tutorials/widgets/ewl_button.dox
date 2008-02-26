@@ -1,0 +1,16 @@
+/**
+ * @addtogroup Ewl_Button
+ * @section button_tut Tutorial
+ *
+ * The Ewl_Button includes an icon and label by default but is actually a full
+ * container that can hold any type of non-toplevel widget. Because of this
+ * flexibility many other widget types inherit from the button.
+ *
+ * @code
+ * Ewl_Widget *button;
+ * button = ewl_button_new();
+ * ewl_button_label_set(EWL_BUTTON(button), "Button label");
+ * ewl_widget_show(button);
+ * @endcode
+ *
+ */

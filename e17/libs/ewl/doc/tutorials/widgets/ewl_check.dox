@@ -1,0 +1,12 @@
+/**
+ * @addtogroup Ewl_Check
+ * @section check_tut Tutorial
+ *
+ *
+ * @code
+ * Ewl_Widget *check;
+ * check = ewl_check_new();
+ * ewl_check_checked_set(EWL_CHECK(check), FALSE);
+ * ewl_widget_show(check);
+ * @endcode
+ */

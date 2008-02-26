@@ -1,0 +1,72 @@
+/**
+ * @addtogroup Ewl_Text
+ * @section text_tut Tutorial
+ *
+ * The Ewl_Text widget provides for a multi-line text layout widget. It can
+ * be utilized whenever the display of text is required in an application.
+ * It works well with the Ewl_Scrollpane to provide a scrollable text area.
+ *
+ * @code
+ * Ewl_Widget *text;
+ * text = ewl_text_new();
+ * ewl_text_text_set(EWL_TEXT(text), "set the text here");
+ * ewl_widget_show(text);
+ * @endcode
+ *
+ * Once the text object is created you can change the text, retrieve the
+ * current text contents or get the text length. These things can be done
+ * with:
+ *
+ * @code
+ * void ewl_text_text_set(Ewl_Text *t, const char *txt);
+ * void ewl_text_text_prepend(Ewl_Text *t, const char *txt);
+ * void ewl_text_text_append(Ewl_Text *t, const char *txt);
+ * void ewl_text_text_insert(Ewl_Text *t, const char *txt, int len);
+ * char *ewl_text_text_get(Ewl_Text *t);
+ * int ewl_text_length_get(Ewl_Text *t);
+ * void ewl_text_clear(Ewl_Text *t);
+ * void ewl_text_text_delete(Ewl_Text *t, unsigned int len);
+ * @endcode
+ *
+ * The Ewl_Text widget allows you to perform style changes to the text in
+ * the widget. Different portions of the text can be different colours,
+ * fonts or styles. You can either set the styling, colours or fonts before
+ * the text is set, or you can apply the settings to the text afterwards.
+ *
+ * The colour settings of the text can be manipulated with the following:
+ * @code
+ * void ewl_text_color_set(Ewl_Text *t, int r, int g, int b, int a);
+ * void ewl_text_color_get(Ewl_Text *t, int *r, int *g, int *b, int *a);
+ * void ewl_text_color_apply(Ewl_Text *t, int r, int g, int b, int a, unsigned int len);
+ * @endcode
+ *
+ * There are similar calls to mainipluate the font, font size, font colour,
+ * background colour, glow colour, outline colour, strikethrough colour,
+ * underline colour, double underline colour, alignment, wrap and style information.
+ *
+ * Styles have a few extra calls to make them easier to use. These include:
+ * @code
+ * void ewl_text_style_add(Ewl_Text *t, Ewl_Text_Style style, unsigned int len);
+ * void ewl_text_style_del(Ewl_Text *t, Ewl_Text_Style style, unsigned int len);
+ * void ewl_text_style_invert(Ewl_Text *t, Ewl_Text_Style style, unsigned int len);
+ * unsigned int ewl_text_style_has(Ewl_Text *t, Ewl_Text_Style style, unsigned int idx);
+ * @endcode
+ *
+ * If you want users to be able to select text from the Ewl_Text widget
+ * you'll use:
+ * @code
+ * void ewl_text_selectable_set(Ewl_Text *t, unsigned int selectable);
+ * unsigned int ewl_text_selectable_get(Ewl_Text *t);
+ * @endcode
+ *
+ * After the user has made a selection it can be checked and retrieved with:
+ * @code
+ * unsigned int ewl_text_has_selection(Ewl_Text *t);
+ * Ewl_Text_Trigger *ewl_text_selection_get(Ewl_Text *t);
+ * char *ewl_text_selection_text_get(Ewl_Text *t);
+ * @endcode
+ *
+ * This should hopefully give you some idea of the capabilities of the
+ * Ewl_Text widget. Take a look at the test code and the header file for
+ * more information.
+ */

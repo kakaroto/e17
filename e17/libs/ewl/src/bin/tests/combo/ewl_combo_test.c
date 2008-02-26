@@ -12,76 +12,11 @@
 #include <string.h>
 #include <stdlib.h>
 
-/**
- * @addtogroup Ewl_Combo
- * @section combo_tut Tutorial
- *
- * The Ewl_Combo widget is based on a Model/View/Controller design. Before
- * you can use the combo you need to setup your startting data structure,
- * your model and your view. Once everything is created if you want to
- * change your data all you have to do is tell the combo that it's data is
- * dirty and it will redisplay the combo box.
- *
- * @code
- * model = ewl_model_new();
- * ewl_model_data_fetch_set(model, combo_test_data_fetch);
- * ewl_model_data_count_set(model, combo_test_data_count_get);
-
- * view = ewl_view_new();
- * ewl_view_constructor_set(view, ewl_label_new);
- * ewl_view_assign_set(view, EWL_VIEW_ASSIGN(ewl_label_text_set));
- * ewl_view_header_fetch_set(view, combo_test_data_header_fetch);
-
- * combo = ewl_combo_new();
- * ewl_callback_append(combo, EWL_CALLBACK_VALUE_CHANGED,
- * 				combo_value_changed, NULL);
- * ewl_mvc_model_set(EWL_MVC(combo), model);
- * ewl_mvc_view_set(EWL_MVC(combo), view);
- * ewl_mvc_data_set(EWL_MVC(combo), data);
- * ewl_widget_show(combo);
- * @endcode
- *
- * If you have a custom widget you wish to display you can set your own
- * functions into the view to draw your widget. In this case we just want a
- * simple label displayed.
- *
- * The data header is optional and will be displayed at the top of your
- * combo. In the case where the combo is editable it will use the header as
- * the normal display. In this case you are responsible for creating and
- * populating the widget.
- *
- * @code
- * static Ewl_Widget *combo_test_data_header_fetch(void *data,
- *							unsigned int col);
- * static void *combo_test_data_fetch(void *data, unsigned int row,
- *						unsigned int col);
- * static unsigned int combo_test_data_count_get(void *data);
- * @endcode
- *
- * The three model functions are responsible for getting the information
- * from your model as needed. Each time the combo needs another row of data
- * it will call the data_fetch function. The col parameter is unused by the
- * combo box. The count_get function is responsible for returning a count of
- * the number of items in your data structure. Each of these three functions
- * receive a void *data param. This is your data as set into the combo box
- * so you shouldn't need to create a global pointer to the data.
- *
- * @note If you set the combo to editable, with ewl_combo_editable set then
- * instead of using the model/view to get the data we will query the view
- * for the header. It is then up to the app to do what they will with the
- * header to make it 'editable'. In most cases, this will mean packing an
- * entry into there with the value from the data. In this case you will need
- * to attach a EWL_CALLBACK_VALUE_CHANGED callback to the entry and handle
- * its value change yourself. The combo won't know about any changed values
- * in the entry and will always have the value from the data.
- */
-
-typedef struct Combo_Test_Data Combo_Test_Data;
-struct Combo_Test_Data
+typedef struct
 {
 	unsigned int count;
 	char ** data;
-};
+} Ewl_Combo_Test_Data;
 
 static void *combo_test_data_setup(void);
 static int create_test(Ewl_Container *win);
@@ -213,7 +148,7 @@ create_test(Ewl_Container *box)
 static void *
 combo_test_data_setup(void)
 {
-	Combo_Test_Data *data;
+	Ewl_Combo_Test_Data *data;
 	unsigned int i;
 
 	const char *icons[] = {
@@ -234,7 +169,7 @@ combo_test_data_setup(void)
 		EWL_ICON_FORMAT_JUSTIFY_RIGHT,
 	};
 
-	data = calloc(1, sizeof(Combo_Test_Data));
+	data = calloc(1, sizeof(Ewl_Combo_Test_Data));
 	data->count = sizeof(icons) / sizeof(const char *);
 
 	data->data = calloc(data->count, sizeof(char *));
@@ -266,7 +201,7 @@ static void *
 combo_test_data_fetch(void *data, unsigned int row,
 				unsigned int col __UNUSED__)
 {
-	Combo_Test_Data *d;
+	Ewl_Combo_Test_Data *d;
 
 	d = data;
 	if (row < d->count)
@@ -278,7 +213,7 @@ combo_test_data_fetch(void *data, unsigned int row,
 static unsigned int
 combo_test_data_count_get(void *data)
 {
-	Combo_Test_Data *d;
+	Ewl_Combo_Test_Data *d;
 
 	d = data;
 	return d->count;
@@ -288,7 +223,7 @@ static void
 combo_value_changed(Ewl_Widget *w, void *ev __UNUSED__,
 				void *data __UNUSED__)
 {
-	Combo_Test_Data *d;
+	Ewl_Combo_Test_Data *d;
 	Ewl_Selection_Idx *idx;
 
 	d = ewl_mvc_data_get(EWL_MVC(w));
@@ -305,7 +240,7 @@ combo_cb_add(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 					void *data __UNUSED__)
 {
 	Ewl_Widget *c;
-	Combo_Test_Data *d;
+	Ewl_Combo_Test_Data *d;
 	unsigned int s;
 
 	c = ewl_widget_name_find("combo_label");
@@ -329,7 +264,7 @@ combo_cb_clear(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 							void *data __UNUSED__)
 {
 	Ewl_Widget *c;
-	Combo_Test_Data *d;
+	Ewl_Combo_Test_Data *d;
 
 	c = ewl_widget_name_find("combo_label");
 	d = ewl_mvc_data_get(EWL_MVC(c));
@@ -347,7 +282,7 @@ combo_cb_clear(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 static Ewl_Widget *
 combo_test_editable_cb_header_fetch(void *data, unsigned int col __UNUSED__)
 {
-	Combo_Test_Data *d;
+	Ewl_Combo_Test_Data *d;
 	Ewl_Widget *w, *o, *o2;
 	Ewl_Selection_Idx *idx;
 	char *val;

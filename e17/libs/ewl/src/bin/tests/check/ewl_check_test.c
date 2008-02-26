@@ -7,19 +7,6 @@
 #include <string.h>
 #include <limits.h>
 
-/**
- * @addtogroup Ewl_Check
- * @section text_tut Tutorial
- *
- *
- * @code
- * Ewl_Widget *check;
- * check = ewl_check_new();
- * ewl_check_checked_set(EWL_CHECK(check), FALSE);
- * ewl_widget_show(check);
- * @endcode
- */
-
 static int check_test_new(char *buf, int len);
 
 static Ewl_Unit_Test check_unit_tests[] = {

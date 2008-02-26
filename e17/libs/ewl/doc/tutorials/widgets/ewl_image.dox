@@ -1,0 +1,64 @@
+/**
+ * @addtogroup Ewl_Image
+ * @section image_tut Tutorial
+ *
+ * The Ewl_Image widget provides methods for displaying an image in an EWL
+ * application. The image widget also supports a limited set of methods for
+ * manipulating the displayed image.
+ *
+ * @code
+ * Ewl_Widget *image;
+ * image = ewl_image_new();
+ * ewl_image_file_path_set(EWL_IMAGE(image), "/usr/share/ewl/image.png");
+ * ewl_widget_show(image);
+ * @endcode
+ *
+ * After creating an image widget, the most common operation is to set the
+ * path or key on the widget. The key is only used if an edje is loaded as the
+ * image, indicating the group to load. This will cause the widget to setup
+ * its sizing information when it is realized based on the original image
+ * size. It is also possible to request the current file and key set on the
+ * image widget.
+ *
+ * @code
+ * void ewl_image_file_set(Ewl_Image *i, const char *im, const char *key);
+ * void ewl_image_file_path_set(Ewl_Image *i, const char *im);
+ * const char *ewl_image_file_path_get(Ewl_Image *i);
+ * void ewl_image_file_key_set(Ewl_Image *i, const char *key);
+ * const char *ewl_image_file_key_get(Ewl_Image *i);
+ * @endcode
+ *
+ * Along with the image to be displayed, the basic operations of scaling
+ * and tiling can be applied to the displayed image. Scaling can be applied on
+ * either a relative or absolute scale. The functions that refer to scale are
+ * a multiplier of the images set size, so 2.0 would result in an image double
+ * the original size. The size functions force the image to be scaled to
+ * specified dimensions. Setting a tile on an image causes the image to repeat
+ * when the specified dimensions are reached, the x and y coordinates indicate
+ * the starting offset within the available area where tiling begins.
+ *
+ * @code
+ * void ewl_image_scale_set(Ewl_Image *i, double wp, double hp);
+ * void ewl_image_scale_get(Ewl_Image *i, double *wp, double *hp);
+ * void ewl_image_size_set(Ewl_Image *i, int w, int h);
+ * void ewl_image_size_get(Ewl_Image *i, int *w, int *h);
+ * void ewl_image_tile_set(Ewl_Image *i, int x, int y, int w, int h);
+ * @endcode
+ *
+ * Two settings also impact the sizing, but are not explicit in how they
+ * determine the new size. The proportional setting causes the image to be
+ * displayed at the original aspect ratio of the specified image, regardless
+ * of scaling. The constrain setting sets a maximum size on the dimensions of
+ * an image, but will not scale the image if it's smaller than that size.
+ *
+ * @code
+ * void ewl_image_proportional_set(Ewl_Image *i, char p);
+ * char ewl_image_proportional_get(Ewl_Image *i);
+ * void ewl_image_constrain_set(Ewl_Image *i, unsigned int size);
+ * unsigned int ewl_image_constrain_get(Ewl_Image *i);
+ * @endcode
+ *
+ * Since the image is inherited from the base widget class, all of the
+ * standard widget and object operations can be applied to the image widget.
+ * This includes resizing, theming, color tinting and packing in containers.
+ */
