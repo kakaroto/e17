@@ -3,6 +3,13 @@
 #define EWL_IO_MANAGER_H
 
 /**
+ * @addtogroup Ewl_IO_Manager Ewl_IO_Manager: An input manager
+ * @brief Defines a class for handling reading various input and creating the correct widgets
+ *
+ * @{
+ */
+
+/**
  * Ewl_IO_Manager_Plugin
  */
 typedef struct Ewl_IO_Manager_Plugin Ewl_IO_Manager_Plugin;
@@ -37,6 +44,10 @@ int		 ewl_io_manager_uri_write(Ewl_Widget *data, const
 					char *uri, const char *mime);
 int		 ewl_io_manager_string_write(Ewl_Widget *data,
 					char **string, const char *mime);
+
+/**
+ * @}
+ */
 
 #endif
 

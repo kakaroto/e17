@@ -47,10 +47,11 @@ static Ecore_List *child_add_list= NULL;
  */
 #define EWL_CONFIGURE_QUEUE_SIZE 4092
 
-/*
- * Memory buffer for tracking widgets ready for a configure pass
- */
 typedef struct Ewl_Configure_Queue Ewl_Configure_Queue;
+
+/**
+ * @brief Memory buffer for tracking widgets ready for a configure pass
+ */
 struct Ewl_Configure_Queue
 {
 	int end;

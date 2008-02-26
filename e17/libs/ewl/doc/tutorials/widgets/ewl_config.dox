@@ -9,7 +9,7 @@
  * also possible to set temporary settings that won't be saved back to permanent storage.
  * 
  * Ewl stores its configuration information in the ewl.cfg file. This file 
- * will be located in <prefix>/etc/ewl.cfg. If the user wishes to set 
+ * will be located in &lt;prefix&gt;/etc/ewl.cfg. If the user wishes to set 
  * overrides they can be placed in $HOME/.ewl/config/ewl.cfg.
  * 
  * @code
@@ -49,8 +49,8 @@
  * for your own application. This will provide you with the system-wide, 
  * user specific and allow you to override based on your command line switches.
  * 
- * Your configuration files will be stored in <ewl prefix>/etc/ewl/apps/<name>.cfg 
- * for the global settings and $HOME/.ewl/config/apps/<name>.cfg for the user 
+ * Your configuration files will be stored in &lt;ewl prefix&gt;/etc/ewl/apps/&lt;name&gt;.cfg 
+ * for the global settings and $HOME/.ewl/config/apps/&lt;name&gt;.cfg for the user 
  * specific settings.
  * 
  * Below is a simple example of loading an apps configuration data, reading 
@@ -107,7 +107,7 @@
  * 
  * The first step is to initialize our configuration data. This is done by 
  * calling Ewl_config *ewl_config_new(const char *app_name);. This will look 
- * for a configuation file with the name <app name>.cfg in the directories 
+ * for a configuation file with the name &lt;app name&gt;.cfg in the directories 
  * listed above. The system values will be loaded first, then any user values 
  * will be loaded to override.
  * 

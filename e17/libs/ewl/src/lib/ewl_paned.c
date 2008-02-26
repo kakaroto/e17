@@ -5,18 +5,25 @@
 #include "ewl_private.h"
 #include "ewl_debug.h"
 
-typedef struct
+typedef struct Ewl_Paned_Pane_Info Ewl_Paned_Pane_Info;
+
+/**
+ * @brief Stores information about a pane in the paned widget
+ */
+struct Ewl_Paned_Pane_Info
 {
 	Ewl_Widget *pane;
 	Ewl_Paned_Size_Info *info;
 	int size;
 	unsigned char fixed:1;
-} Ewl_Paned_Pane_Info;
+};
+
+typedef struct Ewl_Paned_Layout Ewl_Paned_Layout;
 
 /**
  * @brief Contains information on a paned layout
  */
-typedef struct 
+struct Ewl_Paned_Layout
 {
 	int (*minimum_size)(Ewl_Object *o);
 	int (*current_size)(Ewl_Object *o);
@@ -27,7 +34,7 @@ typedef struct
 	void (*stable_request)(Ewl_Object *o, int size);
 	void (*position_request)(Ewl_Object *o, int pos);
 	void (*stable_position_request)(Ewl_Object *o, int pos);
-} Ewl_Paned_Layout;
+};
 
 static Ewl_Paned_Layout *horizontal_layout = NULL;
 static Ewl_Paned_Layout *vertical_layout = NULL;

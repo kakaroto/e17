@@ -15,12 +15,17 @@
 
 #define EWL_TREE_EXPANSIONS_LIST(el) ((Ewl_Tree_Expansions_List *)(el))
 
-typedef struct
+typedef struct Ewl_Tree_Expansions_List Ewl_Tree_Expansions_List;
+
+/**
+ * @brief Stores informtion on tree expansion points
+ */
+struct Ewl_Tree_Expansions_List
 {
 	Ewl_Container *c;
 	unsigned int *expanded;
 	unsigned int size;
-} Ewl_Tree_Expansions_List;
+};
 
 static void ewl_tree_build_tree(Ewl_Tree *tree);
 static void ewl_tree_build_tree_rows(Ewl_Tree *tree,

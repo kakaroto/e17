@@ -18,6 +18,10 @@
 #include "ewl_debug.h"
 
 typedef struct Ewl_Filepicker_Dialog Ewl_Filepicker_Dialog;
+
+/**
+ * @brief Used to store information about the filepicker
+ */
 struct Ewl_Filepicker_Dialog
 {
 	Ewl_Filepicker *fp;

@@ -19,6 +19,10 @@ static void ewl_scrollpane_cb_mouse_move_normal(Ewl_Widget *w, void *ev, void *d
 static int ewl_scrollpane_cb_scroll_timer_normal(void *data);
 
 typedef struct Ewl_Scrollpane_Scroll_Info_Normal Ewl_Scrollpane_Scroll_Info_Normal;
+
+/**
+ * @brief Stores information on a normal scrollpane
+ */
 struct Ewl_Scrollpane_Scroll_Info_Normal
 {
 	int x;
@@ -30,6 +34,10 @@ struct Ewl_Scrollpane_Scroll_Info_Normal
 };
 
 typedef struct Ewl_Scrollpane_Scroll_Info_Embedded Ewl_Scrollpane_Scroll_Info_Embedded;
+
+/**
+ * @brief Stores information on an embedded scrollpane
+ */
 struct Ewl_Scrollpane_Scroll_Info_Embedded
 {
 	int xs;
