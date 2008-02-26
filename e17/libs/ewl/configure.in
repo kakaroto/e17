@@ -354,6 +354,9 @@ data/themes/ewl_embed_test/Makefile
 data/themes/ewl_embed_test/images/Makefile
 tools/Makefile
 tools/ewl_config/Makefile
+doc/Makefile
+doc/tutorials/Makefile
+doc/tutorials/widgets/Makefile
 debian/changelog
 ])
 

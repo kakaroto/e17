@@ -70,8 +70,10 @@ static void run_window_test(Ewl_Test *test, int width, int height);
 static int run_unit_tests(Ewl_Test *test);
 static int create_main_test_window(Ewl_Container *win);
 static void fill_source_text(Ewl_Test *test);
+static void fill_tutorial_text(Ewl_Test *test);
+static char *read_file(const char *filename);
 static void text_parse(char *str);
-static void tutorial_parse(Ewl_Text *tutorial, char *str);
+static void tutorial_parse(char *str);
 static void setup_unit_tests(Ewl_Test *test);
 
 static void statusbar_label_update(Ewl_Widget *w, void *ev, void *data);
@@ -415,7 +417,7 @@ run_unit_tests(Ewl_Test *test)
 static void
 statusbar_text_set(const char *text)
 {
-   	Ewl_Widget *stat;
+	Ewl_Widget *stat;
 	char info[1024];
 
 	stat = ewl_widget_name_find("statusbar");
@@ -429,6 +431,7 @@ run_unit_test_boxed(Ewl_Test *t)
 	Ewl_Widget *c, *n;
 
 	fill_source_text(t);
+	fill_tutorial_text(t);
 	setup_unit_tests(t);
 
 	statusbar_text_set(t->name);
@@ -458,6 +461,7 @@ run_test_boxed(Ewl_Test *t)
 	statusbar_text_set(t->name);
 
 	fill_source_text(t);
+	fill_tutorial_text(t);
 	setup_unit_tests(t);
 
 	c = ewl_widget_name_find("execute_box");
@@ -757,18 +761,47 @@ statusbar_label_update(Ewl_Widget *w __UNUSED__, void *ev, void *data)
 static void
 fill_source_text(Ewl_Test *test)
 {
-	struct stat buf;
+	char *txt;
 	char filename[PATH_MAX];
 
-	snprintf(filename, sizeof(filename), PACKAGE_DATA_DIR "/ewl/examples/%s",
-								test->filename);
+	snprintf(filename, sizeof(filename), 
+			PACKAGE_DATA_DIR "/ewl/examples/%s", test->filename);
+
+	txt = read_file(filename);
+	text_parse(txt);
+	if (txt) free(txt);
+}
+
+static void
+fill_tutorial_text(Ewl_Test *test)
+{
+	char *txt, *file, *p;
+	char filename[PATH_MAX];
+
+	file = strdup(test->filename);
+	p = strrchr(file, '_');
+	if ((p != NULL) && (*p != '\0')) *p = '\0';
+	
+	snprintf(filename, sizeof(filename),
+			PACKAGE_DATA_DIR "/ewl/tutorials/%s.dox", file);
+
+	txt = read_file(filename);
+	tutorial_parse(txt);
+	if (txt) free(txt);
+}
+
+static char *
+read_file(const char *filename)
+{
+	char *str = NULL;
+	struct stat buf;
+
 	if (ecore_file_exists(filename))
 	{
 		FILE *file;
-		file = fopen(filename, "r");
-		if (!file) return;
 
-		char *str;
+		file = fopen(filename, "r");
+		if (!file) return NULL;
 
 		stat(filename, &buf);
 
@@ -776,36 +809,34 @@ fill_source_text(Ewl_Test *test)
 		fread(str, buf.st_size, 1, file);
 		str[buf.st_size] = '\0';
 		fclose(file);
-
-		text_parse(str);
-		free(str);
 	}
-	else {
-		char *str;
+	else
+	{
 		gzFile file;
-		unsigned int size;
-		unsigned int step;
-		unsigned int len = 0;
+		unsigned int size, step, len = 0;
+		char path[PATH_MAX];
 		int ret;
 
 		/* let see if a compressed version exists */
-		ecore_strlcat(filename, ".gz", sizeof(filename));
-		if (!ecore_file_exists(filename)) return;
+		snprintf(path, sizeof(path), "%s.gz", filename);
+		if (!ecore_file_exists(path)) return NULL;
 
-		file = gzopen(filename, "rb");
-		if (!file) return;
+		file = gzopen(path, "rb");
+		if (!file) return NULL;
 
 		stat(filename, &buf);
 
 		step = buf.st_size;
 		size = step * 4;
 		str = malloc(sizeof(char) * (size + 1));
-		while ((ret = gzread(file, str + (size - 4 * step), step))) {
-			if (ret < 0) {
+		while ((ret = gzread(file, str + (size - 4 * step), step)))
+		{
+			if (ret < 0)
+			{
 				fprintf(stderr, "Could not open gzipped file\n");
 				gzclose(file);
 				free(str);
-				return;
+				return NULL;
 			}
 			size += step;
 			str = realloc(str, sizeof(char) * (size + 1));
@@ -813,10 +844,8 @@ fill_source_text(Ewl_Test *test)
 		}
 		str[len] = '\0';
 		gzclose(file);
-
-		text_parse(str);
-		free(str);
 	}
+	return str;
 }
 
 static void
@@ -885,77 +914,36 @@ cb_run_unit_tests(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 static void
 text_parse(char *str)
 {
-	Ewl_Widget *txt, *tutorial;
+	Ewl_Widget *txt;
 	Ewl_Widget *txtpane;
-	char *start, *end, tmp;
 
 	txtpane = ewl_widget_name_find("source_pane");
-	tutorial = ewl_widget_name_find("tutorial_text");
 
 	ewl_container_reset(EWL_CONTAINER(txtpane));
+	if (!str) return;
 
-	start = strstr(str, "/**");
-	if (!start)
+	txt = ewl_io_manager_string_read(str, "text/c");
+	if (txt)
 	{
-		txt = ewl_io_manager_string_read(str, "text/c");
-		if (txt) {
-			ewl_text_wrap_set(EWL_TEXT(txt), EWL_TEXT_WRAP_WORD);
-			ewl_text_selectable_set(EWL_TEXT(txt), TRUE);
-			ewl_widget_show(txt);
-			ewl_container_child_append(EWL_CONTAINER(txtpane), txt);
-		}
-		ewl_text_clear(EWL_TEXT(tutorial));
-		return;
+		ewl_text_wrap_set(EWL_TEXT(txt), EWL_TEXT_WRAP_WORD);
+		ewl_text_selectable_set(EWL_TEXT(txt), TRUE);
+		ewl_widget_show(txt);
+		ewl_container_child_append(EWL_CONTAINER(txtpane), txt);
 	}
-
-	end = strstr(start, "*/");
-	end++;
-
-	while (*(start - 1) == '\n') start --;
-
-	tmp = *start;
-	*start = '\0';
-
-	{
-		size_t len1 = strlen(str);
-		size_t len2 = strlen(end + 1);
-		char *source = malloc(sizeof(char) * (len1 + len2 + 1));
-
-		if (!source)
-			return;
-
-		strncpy(source, str, len1);
-		strncpy(source + len1, end + 1, len2 + 1);
-
-		txt = ewl_io_manager_string_read(source, "text/c");
-
-		if (txt) {
-			ewl_text_wrap_set(EWL_TEXT(txt), EWL_TEXT_WRAP_WORD);
-			ewl_text_selectable_set(EWL_TEXT(txt), TRUE);
-			ewl_container_child_append(EWL_CONTAINER(txtpane), txt);
-			ewl_widget_show(txt);
-		}
-
-		free(source);
-	}
-
-	*start = tmp;
-	tmp = *end;
-	*end = '\0';
-
-	ewl_text_clear(EWL_TEXT(tutorial));
-	tutorial_parse(EWL_TEXT(tutorial), start);
-
-	*end = tmp;
 }
 
 static void
-tutorial_parse(Ewl_Text *tutorial, char *str)
+tutorial_parse(char *str)
 {
 	char *start, *end;
 	int handled_newline = 0;
 	int in_codeblock = 0;
 	int not_double = 0;
+	Ewl_Text *tutorial;
+
+	tutorial = EWL_TEXT(ewl_widget_name_find("tutorial_text"));
+	ewl_text_text_set(tutorial, NULL);
+	if (!str) return;
 
 	start = str;
 
@@ -1001,12 +989,12 @@ tutorial_parse(Ewl_Text *tutorial, char *str)
 		}
 
 		/* The * is only special after a newline character */
-		else if ((*end == '*' || *end == ' ') && handled_newline)
+		else if ((*end == '*' || *end == ' ' || *end == '/') && handled_newline)
 		{
 			if (*end == ' ') end++;
 			while (*end == '*') end++;
 
-			/* we only want ot skip "* " if in a code block */
+			/* we only want to skip "* " if in a code block */
 			if (in_codeblock)
 			{
 				if (*end == ' ') end ++;
@@ -1014,7 +1002,8 @@ tutorial_parse(Ewl_Text *tutorial, char *str)
 			/* otherwise skip the * and all spaces */
 			else
 			{
-				while ((*end == '*') || (*end == ' ') || (*end == '\t'))
+				while ((*end == '*') || (*end == ' ') || 
+						(*end == '/') || (*end == '\t'))
 					end++;
 			}
 
