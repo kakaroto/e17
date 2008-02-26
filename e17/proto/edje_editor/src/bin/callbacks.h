@@ -15,6 +15,7 @@ Etk_Bool on_ColorDialog_change             (Etk_Object *object, void *data);
 Etk_Bool on_PartNameEntryImage_mouse_clicked(Etk_Object *object, void *data);
 Etk_Bool on_PartNameEntry_key_down         (Etk_Object *object, Etk_Event_Key_Down *event, void *data);
 Etk_Bool on_CliptoComboBox_item_activated  (Etk_Combobox *combobox, Etk_Combobox_Item *item, void *data);
+Etk_Bool on_PartSourceComboBox_item_activated(Etk_Combobox *combobox, Etk_Combobox_Item *item, void *data);
 Etk_Bool on_PartEventsCheck_toggled        (Etk_Object *object, void *data);
 Etk_Bool on_PartEventsRepeatCheck_toggled  (Etk_Object *object, void *data);
 Etk_Bool on_StateEntry_key_down            (Etk_Object *object, Etk_Event_Key_Down *event, void *data);

@@ -50,6 +50,8 @@ Etk_Widget *UI_PartTypeComboBox;
 Etk_Widget *UI_PartEventsCheck;
 Etk_Widget *UI_PartEventsRepeatCheck;
 Etk_Widget *UI_CliptoComboBox;
+Etk_Widget *UI_PartSourceComboBox;
+Etk_Widget *UI_PartSourceLabel;
 /* state frame objects */
 Etk_Widget *UI_StateEntry;
 Etk_Widget *UI_StateEntryImage;
@@ -177,5 +179,6 @@ void ShowAlert(char* text);
 void ConsolleLog(char *text);
 void ConsolleClear(void);
 void TogglePlayButton(int set);
+char* GetPartTypeImage(int part_type);
 
 #endif

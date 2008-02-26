@@ -37,8 +37,9 @@ ecore_resize_callback(Ecore_Evas *ecore_evas)
    evas_object_move(embed_object, 0, 55);
    evas_object_resize(embed_object, TREE_WIDTH, win_h - 55);
    
+   //Resize Consolle
    evas_object_move(Consolle, TREE_WIDTH + 5, win_h - 80);
-   evas_object_resize(Consolle, 400, 75);
+   evas_object_resize(Consolle, win_w - TREE_WIDTH - 10, 75);
 }
 /* Catch all the signal from the editing edje object */
 void
@@ -128,6 +129,9 @@ on_AllButton_click(Etk_Button *button, void *data)
       else
          row = AddPartToTree(Cur.part->string, (void*)1);
       etk_tree_row_select(row);
+      //Reload the edje if needed
+      if (edje_edit_part_type_get(edje_o, Cur.part->string) == EDJE_PART_TYPE_GROUP)
+         ReloadEdje();
       break;
    
    case TOOLBAR_MOVE_DOWN: //Raise
@@ -147,6 +151,9 @@ on_AllButton_click(Etk_Button *button, void *data)
       etk_tree_row_delete(row);
       row = AddPartToTree(Cur.part->string, next);
       etk_tree_row_select(row);
+      //Reload the edje if needed
+      if (edje_edit_part_type_get(edje_o, Cur.part->string) == EDJE_PART_TYPE_GROUP)
+         ReloadEdje();
       break;
       
    case TOOLBAR_IMAGE_FILE_ADD:
@@ -443,6 +450,7 @@ Etk_Bool
 on_PartNameEntryImage_mouse_clicked(Etk_Object *object, void *data)
 {
    const char *name;
+   char *image_name;
    Etk_Tree_Row *row;
    Etk_Tree_Row *child;
    
@@ -470,30 +478,11 @@ on_PartNameEntryImage_mouse_clicked(Etk_Object *object, void *data)
    
    //Update PartTree
    row = etk_tree_selected_row_get(ETK_TREE(UI_PartsTree));
+   image_name = GetPartTypeImage(edje_edit_part_type_get(edje_o, Cur.part->string));
+   etk_tree_row_fields_set(row,TRUE,
+                           COL_NAME, EdjeFile, image_name, name, NULL);
+   free(image_name);
    
-   switch (edje_edit_part_type_get(edje_o, Cur.part->string))
-   {
-      case EDJE_PART_TYPE_IMAGE:
-         etk_tree_row_fields_set(row,TRUE,
-                                 COL_NAME, EdjeFile, "IMAGE.PNG", name, NULL);
-         break;
-      case EDJE_PART_TYPE_RECTANGLE:
-         etk_tree_row_fields_set(row,TRUE,
-                                 COL_NAME, EdjeFile, "RECT.PNG", name, NULL);
-         break;
-      case EDJE_PART_TYPE_TEXT:
-         etk_tree_row_fields_set(row,TRUE,
-                                 COL_NAME, EdjeFile, "TEXT.PNG", name, NULL);
-         break;
-      case EDJE_PART_TYPE_SWALLOW:
-         etk_tree_row_fields_set(row,TRUE,
-                                 COL_NAME, EdjeFile, "SWAL.PNG", name, NULL);
-         break;
-      default:
-         etk_tree_row_fields_set(row,TRUE,
-                                 COL_NAME, EdjeFile, "NONE.PNG", name, NULL);
-         break;
-   }
    
    /* Update hidden colon on every child */
    child = etk_tree_row_first_child_get(row);
@@ -528,6 +517,30 @@ on_CliptoComboBox_item_activated(Etk_Combobox *combobox, Etk_Combobox_Item *item
    else
       edje_edit_part_clip_to_set(edje_o, Cur.part->string, NULL);
    
+   
+   return ETK_TRUE;
+}
+
+Etk_Bool
+on_PartSourceComboBox_item_activated(Etk_Combobox *combobox, Etk_Combobox_Item *item, void *data)
+{
+   char *gr;
+   printf("Item Activated Signal on PartSourceCombobox EMITTED\n");
+   
+   gr = etk_combobox_item_field_get(item,0);
+   
+   if (!strcmp(gr, Cur.group->string))
+   {
+      ShowAlert("A group can't contain itself");
+      return ETK_TRUE;
+   }
+   
+   if (strcmp(gr, "None"))
+      edje_edit_part_source_set(edje_o, Cur.part->string, gr);
+   else
+      edje_edit_part_source_set(edje_o, Cur.part->string, NULL);
+   
+   ReloadEdje();
    
    return ETK_TRUE;
 }
@@ -1502,7 +1515,30 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
          PopulateRelComboBoxes();
          PopulateSourceComboEntry();
          break;
-      
+      case NEW_GROUPSWAL:
+         if (!etk_string_length_get(Cur.group))
+         {
+            ShowAlert("You must first select a group.");
+            break;
+         }
+         //generate a unique new name
+         snprintf(name, sizeof(name), "New group swallow");
+         i = 2;
+         while (edje_edit_part_exist(edje_o, name))
+            snprintf(name, sizeof(name), "New group swallow %d", i++);
+         
+         if (!edje_edit_part_add(edje_o, name, EDJE_PART_TYPE_GROUP))
+         {
+            ShowAlert("Can't create part.");
+            break;
+         }
+         row = AddPartToTree(name, NULL);
+         etk_tree_row_select(row);
+         etk_tree_row_unfold(row);
+         PopulateRelComboBoxes();
+         PopulateSourceComboEntry();
+
+         break;
       case NEW_DESC:
          if (!etk_string_length_get(Cur.part))
          {

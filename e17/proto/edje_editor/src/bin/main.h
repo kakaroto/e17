@@ -69,6 +69,7 @@ enum various
    NEW_RECT,
    NEW_TEXT,
    NEW_SWAL,
+   NEW_GROUPSWAL,
    NEW_PROG,
    NEW_DESC,
    NEW_GROUP,
@@ -151,6 +152,7 @@ int            consolle_count;         //Counter for the consolle
 void DebugInfo(int full);
 int LoadEDJ(char *file);
 void ChangeGroup(char *group);
+void ReloadEdje(void);
 
 
 //This define is copied from edje_private.h (find a way to export it)

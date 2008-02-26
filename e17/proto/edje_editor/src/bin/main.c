@@ -165,6 +165,19 @@ ChangeGroup(char *group)
    
 }
 
+void ReloadEdje(void)
+{
+   if (!etk_string_length_get(Cur.group)) return;
+   if (!etk_string_length_get(Cur.edj_temp_name)) return;
+   
+   //Set a fake object to make sure edje is reloading
+   //maybe we can fix this removing the check from _edje_object_file_set_internal
+   edje_edit_save(edje_o);
+   edje_object_file_set(edje_o, EdjeFile, "IMAGE.PNG");
+   edje_object_file_set(edje_o, Cur.edj_temp_name->string, Cur.group->string);
+   
+}
+
 int
 LoadEDJ(char *file)
 {
