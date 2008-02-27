@@ -1,0 +1,36 @@
+/**
+ * @page fill_policies Fill Policies
+
+As widgets are packed together their fill policies kick in and 
+adjust the widget sizes as needed to make everything fit. The fill 
+policies of Ewl can be a bit confusing for the first time user, hell, 
+I still have problems at times.
+
+The basis for how fill policies fit together is shown the following image.
+
+@image html object_sizing.png
+
+There are three sizes to any widget:
+  - minimum size
+  - preferred size
+  - maximum size
+
+As the name implies the widget wants to be set to its 
+@e preferred size whenever possible. If the fill policy allows, the 
+widget can also shrink or grow within the bounds of its @e minimum and 
+@e maximum sizes.
+
+@verbatim
+    Fill Policy       | Effect  
+----------------------------------------------------------------
+EWL_FLAG_FILL_NONE    | Do not fill or shrink in any direction
+EWL_FLAG_FILL_VSHRINK | Vertically shrink
+EWL_FLAG_FILL_HSHRINK | Horizontally shrink
+EWL_FLAG_FILL_SHRINK  | Shrink both horizontally and vertically
+EWL_FLAG_FILL_VFILL   | Vertically fill
+EWL_FLAG_FILL_HFILL   | Horizontally fill
+EWL_FLAG_FILL_FILL    | Fill both horizontally and vertically
+EWL_FLAG_FILL_ALL     | Shrink or fill as needed
+@endverbatim
+
+ */

@@ -1,0 +1,18 @@
+/**
+ * @page layering Layering Scheme
+
+As widgets are placed inside containers, there becomes the issue of
+specifying which widget gets drawn on top. It's important that the widgets placed
+inside of a container are above the containers background, or the user
+would be unable to view the placed widgets.
+
+EWL handles the layering so the programmer dosen't need to worry about
+it. In some cases it is necessary for a widget to overlap another widget
+with the same parent. In this case you set the layer priority of the
+widget to a higher value (negitive values are possible).
+
+If you want a widget to be placed over top of all other widgets, like
+floater for example, you can set the widget to be 'top layered'. This
+setting will also effect the children of that widget.
+
+ */

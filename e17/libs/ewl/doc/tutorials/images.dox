@@ -1,0 +1,10 @@
+/**
+ * @page images Documentation Images
+
+Diagram describing Ewl_Object fields
+@image html object_fields.png
+
+Diagram describing how Ewl_Object fields affect sizing.
+@image html object_sizing.png
+
+ */

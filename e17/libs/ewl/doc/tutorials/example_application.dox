@@ -1,0 +1,427 @@
+/**
+ * @page getting_started Getting Started
+
+Well, we've got to start somewhere. Personally, I don't like starting 
+with Hello World. Generally doesn't give a good feel for the toolkit. 
+So, we're going to start with something a bit more complicated. We're 
+going to make a simple image preview application.
+
+Ok, we're going to jump straight into the action here. There is a complete 
+code listing provided at the end of the article.
+
+@code
+#include <Ewl.h>
+#include <Ecore_File.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#ifndef PATH_MAX
+#define PATH_MAX 4096
+#endif
+
+static void usage(void);
+static void build_gui(const char *dir);
+static void cb_main_quit(Ewl_Widget *w, void *ev, void *data);
+@endcode
+
+Every Ewl application has to include @e Ewl.h. This will provide all the 
+necessary headers in order to work with Ewl. Along with this we include a
+ few other common headers. The @e Ecore_File.h header will provide us with 
+some routines to work with files and directories.
+
+@note
+All Ewl callbacks use the same signature. 
+void name(Ewl_Widget *w, void *ev, void *data). This makes 
+life a lot easier when working with Ewl as you don't have to go 
+looking up what the specific signature of your callback.
+
+@code
+int
+main(int argc, char ** argv)
+{
+    int ret = 1, i;
+    char *dir = NULL;
+
+    if (!ewl_init(&argc, argv))
+    {
+        fprintf(stderr, "Unable to initialize Ewl.\n");
+        goto EXIT; 
+    }
+
+    for (i = 1; i < argc; i++)
+    {
+        if (!strncmp(argv[i], "-h", 2))
+        {
+            usage();
+            ret = 0;
+            goto EWL_SHUTDOWN;
+        }
+        else if (!strncmp(argv[i], "-d", 2))
+        {
+            if (++i < argc)
+                dir = strdup(argv[i]);
+            else
+            {
+                usage();
+                goto EWL_SHUTDOWN;
+            }
+        }
+    }
+
+    if (!dir)
+    {
+        dir = getenv("PWD");
+        if (!dir)
+        {
+            fprintf(stderr, "Unable to find directory for images.\n");
+            goto EWL_SHUTDOWN;
+        } 
+        else
+            dir = strdup(dir);
+    }
+
+    if (!ecore_file_exists(dir) ||
+            !ecore_file_is_dir(dir))
+    {
+        fprintf(stderr, "Invalid directory given.\n");
+        goto DIR_SHUTDOWN;
+    }
+
+    build_gui(dir);
+
+    ewl_main();
+    ret = 0;
+
+DIR_SHUTDOWN:
+    free(dir);
+EWL_SHUTDOWN:
+    ewl_shutdown();
+EXIT:
+    return ret;
+}
+@endcode
+
+Moving on we get to the @e main routine for the application. The things to 
+note in here are the use of ewl_init() to 
+initialize Ewl. This will return @e FALSE if the library was unable to be 
+initailized, TRUE is returned otherwise. Passing in @e argc and @e argv is 
+optional. If you set them to @e NULL Ewl won't be able to parse out any of 
+its command line flags but will work correctly otherwise.
+
+With Ewl initialized we then proceed to do a bit of work to parse out our 
+command line options and verifying that the given directory exists. With this 
+done we call build_gui(const char *dir) to build the interface. We'll get 
+to that in a minute.
+
+In order for your Ewl application to run you have to call ewl_main(). 
+This will start the main loop running. This loop will only exit when the 
+application is terminated. The ewl_main() call will actually call 
+ewl_shutdown() before it exists. I add one in anyway in case we've 
+terminated before running the main loop. Just makes sure we always 
+clean up after ourselves.
+
+@code
+static void
+usage(void)
+{
+    printf("image_preview [OPTIONS]\n"
+            " OPTIONS\n"
+            " -d <dir>  - Directory of images.\n"
+            " -h        - Show help.\n"
+            "\n");
+}
+@endcode
+
+This is just a simple routine to spit out the usage information for the 
+app. Nothing to see here, moving along.
+
+@code
+static void
+build_gui(const char *dir)
+{
+    Ewl_Widget *win, *box, *scroll, *o;
+    Ecore_List *files;
+    char *file;
+
+    win = ewl_window_new();
+    ewl_window_name_set(EWL_WINDOW(win), "image_preview");
+    ewl_window_title_set(EWL_WINDOW(win), "Image Preview");
+    ewl_window_class_set(EWL_WINDOW(win), "image_preview");
+    ewl_object_size_request(EWL_OBJECT(win), 600, 400);
+    ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, 
+                                        cb_main_quit, NULL);
+    ewl_widget_show(win);
+@endcode
+
+The first thing we need to do is create the window. This is done with a 
+simple call to ewl_window_new(). We can then proceed to 
+set the name, class and title of the window. These are things the window 
+manager will use and should typically always be set. We then want to force 
+our window to be a specific size. Ewl can determine this size for you at 
+runtime but if you force a size by using the 
+ewl_object_size_request() call. 
+You'll notice we're casting our window to an @e Ewl_Object * structure. This is 
+because @e Ewl_Window inherits from @e Ewl_Object.
+
+@note
+All of the @e _new() routines in Ewl return the same @e Ewl_Widget * object. 
+Ewl uses a form of inheritance for it's objects. Take a look at the 
+@link object_model Object Model @endlink section for more information
+
+The last step is to setup a callback for when the window is terminated. 
+If we don't do this the only way to close the window will be to 
+use @e Ctrl-C in the terminal (or explicitly @e kill the application.) We will 
+be hooking in the @e EWL_CALLBACK_DELETE_WINDOW callback and having it execute 
+the @e cb_main_quit function when triggered. We could pass extra information 
+to the callback in the fourth paramter but in this case we just pass @e NULL.
+
+@note
+By default an @e Ewl_Window doesn't have a layout policy. Any widgets that 
+are packed into the window will be placed at 0,0 (the top left of the screen). 
+In order to get an acceptable layout you pretty much always need to pack one 
+of the container widgets into the window.
+
+@code
+    scroll = ewl_scrollpane_new();
+    ewl_container_child_append(EWL_CONTAINER(win), scroll);
+    ewl_widget_show(scroll);
+@endcode
+
+If we have a lot of images in our directory we'll want to be able to 
+scroll through them. This is easily done by creating a scrollpane. 
+Similar to the window we use ewl_scrollpane_new() to create 
+the new scrollpane. We then pack the pane into the window.
+
+@note
+More information on widget packing can be found in the @link widget_packing Widget Packing@endlink section.
+
+@code
+    box = ewl_hfreebox_new();
+    ewl_container_child_append(EWL_CONTAINER(scroll), box);
+    ewl_widget_show(box);
+@endcode
+
+The freebox in Ewl provides a nice autolayout of widgets that will shift 
+with the window size. In this case we want the icons to layout in a 
+horizontal fashion so we call ewl_hfreebox_new(). If we had 
+wanted a vertical layout we would have used ewl_vfreebox_new(). 
+We then pack the freebox into the scrollpane.
+
+@code
+    files = ecore_file_ls(dir);
+    ecore_list_goto_first(files);
+    while ((file = ecore_list_next(files)))
+    {
+        const char *mime;
+        char path[PATH_MAX];
+
+        snprintf(path, sizeof(path), "%s/%s", dir, file);
+        mime = ewl_io_manager_uri_mime_type_get(path);
+        if (!mime || strncmp(mime, "image/", 6))
+            continue;
+
+        o = ewl_icon_simple_new();
+        ewl_icon_thumbnailing_set(EWL_ICON(o), TRUE);
+        ewl_icon_label_set(EWL_ICON(o), file);
+        ewl_icon_image_set(EWL_ICON(o), path, NULL);
+        ewl_icon_constrain_set(EWL_ICON(o), 128);
+        ewl_container_child_append(EWL_CONTAINER(box), o);
+        ewl_widget_show(o);
+    }
+    ecore_list_destroy(files);
+}
+@endcode
+
+We now get into the meat of the application. We get a listing of files in the 
+given directory using ecore_file_list() and iterate 
+the returned files. We only really care about images so we use the 
+ewl_io_manager_uri_mime_type_get() call to get 
+the MIME type of our file.
+
+For each image we then proceed to get an @e Ewl_Icon. This is done with 
+ewl_icon_simple_new(). We're using the simple version of 
+@e Ewl_Icon as we don't need many of the provided features. The one we do 
+need, that simple disables, is thumbnailing. To that end we re-enable 
+the thumbing by calling ewl_icon_thumbnailling_set().
+
+We want to set the label for our icon to the name of the given file 
+so we call ewl_icon_label_set() and set the actual image into the icon using 
+ewl_icon_image_set().  You'll only need to use the @e path option if you're 
+setting an Edje as the image. We aren't in this case so we set it to @e NULL.
+
+We want our image to be 128 pixels in size so we call ewl_icon_image_constrain() 
+to force the size to 128 pixels.
+
+@note
+As the images are thumbnailed Ewl will set a temporary image to be displayed. 
+You could also set an alternate text string to be displayed in case the image 
+isn't available throught the Ewl_Icon API. The thumbnailling is done with 
+Epsilon and follows the FreeDesktop specification for image thumbnailling.
+
+@code
+static void
+cb_main_quit(Ewl_Widget *win, void *ev, void *data)
+{
+    ewl_main_quit();
+}
+@endcode
+
+The cb_main_quit() routine 
+will be trigged when the window receives a close event. We terminate the 
+main loop by calling ewl_main_quit() which will cause the application 
+to exit the ewl_main() loop started in the @e main routine.
+
+@section compilation Compilation
+With the code written it's a simple process to get everything compiled. 
+We can use @e pkg-config to get the information on the CFLAGS and LDLIBS 
+needed to successfully compile an Ewl application.
+
+@code
+gcc -g -o image_preview image_preview.c `pkg-config ewl --libs --cflags` -lecore_file
+@endcode
+
+@section code_listing Code Listing
+@code
+#include <Ewl.h>
+#include <Ecore_File.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#ifndef PATH_MAX
+#define PATH_MAX 4096
+#endif
+
+static void usage(void);
+static void build_gui(const char *dir);
+static void cb_main_quit(Ewl_Widget *w, void *ev, void *data);
+
+int
+main(int argc, char ** argv)
+{
+    int ret = 1, i;
+    char *dir = NULL;
+
+    if (!ewl_init(&argc, argv))
+    {
+        fprintf(stderr, "Unable to initialize Ewl.\n");
+        goto EXIT; 
+    }
+
+    for (i = 1; i < argc; i++)
+    {
+        if (!strncmp(argv[i], "-h", 2))
+        {
+            usage();
+            ret = 0;
+            goto EWL_SHUTDOWN;
+        }
+        else if (!strncmp(argv[i], "-d", 2))
+        {
+            if (++i < argc)
+                dir = strdup(argv[i]);
+            else
+            {
+                usage();
+                goto EWL_SHUTDOWN;
+            }
+        }
+    }
+
+    if (!dir)
+    {
+        dir = getenv("PWD");
+        if (!dir)
+        {
+            fprintf(stderr, "Unable to find directory for images.\n");
+            goto EWL_SHUTDOWN;
+        } 
+        else
+            dir = strdup(dir);
+    }
+
+    if (!ecore_file_exists(dir) ||
+            !ecore_file_is_dir(dir))
+    {
+        fprintf(stderr, "Invalid directory given.\n");
+        goto DIR_SHUTDOWN;
+    }
+
+    build_gui(dir);
+
+    ewl_main();
+    ret = 0;
+
+DIR_SHUTDOWN:
+    free(dir);
+EWL_SHUTDOWN:
+    ewl_shutdown();
+EXIT:
+    return ret;
+}
+
+static void
+usage(void)
+{
+    printf("image_preview [OPTIONS]\n"
+            " OPTIONS\n"
+            " -d <dir>  - Directory of images.\n"
+            " -h        - Show help.\n"
+            "\n");
+}
+
+static void
+build_gui(const char *dir)
+{
+    Ewl_Widget *win, *box, *scroll, *o;
+    Ecore_List *files;
+    char *file;
+
+    win = ewl_window_new();
+    ewl_window_name_set(EWL_WINDOW(win), "image_preview");
+    ewl_window_title_set(EWL_WINDOW(win), "Image Preview");
+    ewl_window_class_set(EWL_WINDOW(win), "image_preview");
+    ewl_object_size_request(EWL_OBJECT(win), 600, 400);
+    ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, 
+                                        cb_main_quit, NULL);
+    ewl_widget_show(win);
+
+    scroll = ewl_scrollpane_new();
+    ewl_container_child_append(EWL_CONTAINER(win), scroll);
+    ewl_widget_show(scroll);
+
+    box = ewl_hfreebox_new();
+    ewl_container_child_append(EWL_CONTAINER(scroll), box);
+    ewl_widget_show(box);
+
+    files = ecore_file_ls(dir);
+    ecore_list_goto_first(files);
+    while ((file = ecore_list_next(files)))
+    {
+        const char *mime;
+        char path[PATH_MAX];
+
+        snprintf(path, sizeof(path), "%s/%s", dir, file);
+        mime = ewl_io_manager_uri_mime_type_get(path);
+        if (!mime || strncmp(mime, "image/", 6))
+            continue;
+
+        o = ewl_icon_simple_new();
+        ewl_icon_thumbnailing_set(EWL_ICON(o), TRUE);
+        ewl_icon_label_set(EWL_ICON(o), file);
+        ewl_icon_image_set(EWL_ICON(o), path, NULL);
+        ewl_icon_constrain_set(EWL_ICON(o), 128);
+        ewl_container_child_append(EWL_CONTAINER(box), o);
+        ewl_widget_show(o);
+    }
+    ecore_list_destroy(files);
+}
+
+static void
+cb_main_quit(Ewl_Widget *w, void *ev, void *data)
+{
+    ewl_main_quit();
+}
+@endcode
+ */

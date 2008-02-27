@@ -1,0 +1,21 @@
+/**
+ * @page callback_info Callbacks
+
+To do work in a GUI, it is necessary to know when certain actions occur.
+Ewl handles notification of actions using a common technique called
+callbacks. When the end programmer wants to know when a specific event
+occurs to a widget, they can add a callback to it using ewl_callback_append()
+or one of the similar functions. One of the arguments to these functions is
+a pointer to a function. This function will get called when Ewl receives
+the specified event on that widget. You can attach callbacks to any widget,
+and with containers you can even mark them to intercept events to their
+child widgets.
+
+One feature of Ewl that is different from other toolkits is that it makes
+extensive use of internal callbacks. In fact, almost all appearance changes
+for widgets are actually callbacks, and most of the ewl_widget calls
+actually do very little work, but trigger specific callbacks. This feature
+allows for overriding specific actions on a widget, or for ordering user
+specified callbacks relative to internal ones.
+
+ */

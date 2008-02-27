@@ -1,0 +1,93 @@
+/**
+ * @mainpage The Enlightened Widget Library
+
+@section intro Introduction
+
+The Enlightened Widget Library (Ewl) is a high level toolkit 
+providing all of the widgets you'll need to create your application.  
+Ewl is built on the Enlightenment Foundataion Libraries and makes heavy 
+use of the provided technologies. The goal of Ewl is to abstract the 
+use of these backends and to present an easy to use object model to 
+the end programmer.  The expansive object oriented style API provides 
+tools to easily extend widgets and containers for new situations.
+
+Overall, Ewl is similar in design and functionality to other common 
+toolkits such as GTK+ and QT. The APIs differ, but the overall 
+concepts and ideas are similar. If you are familiar with these other 
+toolkits getting into Ewl should be relatively simple.
+
+Inheritance is used extensively throughout Ewl to reduce code 
+duplication and simplify the programming API. Any functions that 
+operate on a an inherited class will also operate on the inheriting 
+class. This can be seen in the Ewl_Entry and Ewl_Text case. An Ewl_Entry 
+inherits from Ewl_Text so a lot of the operations you'll use to set 
+text colors and font information are the ewl_text_* class.
+
+@section features Features
+Among the wide variety of features Ewl provides are:
+ - Object, widget and container abstraction layers;
+ - A variety of containers for laying out widgets in arrangements such as boxes, tables and lists;
+ - Simple widgets such as buttons, labels, images and progressbars;
+ - Decorative containers for wrapping borders and controls around widgets;
+ - High level data abstractions including lists, expandable trees and combo boxes;
+ -  An extraordinarily flexible theming system;
+ - High level abstractions to build applications quickly, such as file and color dialogs, as well as a menu system;
+ - A flexible event system to allow application programmers to hook into nearly every change that occurs;
+ - ewl_test: a tutorial and testing application. 
+
+@section install Installation
+As was mentioned Ewl depends on a few of the EFL libraries for its functionality. 
+These libraries include:
+ - Evas
+ - Ecore
+ - Edje
+ - Efreet
+ - Epsilon (optional)
+ - Emotion (optional)
+ - Tango (The Tango icon set is used by Ewl. If it isn't installed Ewl will still work, you just won't see any icons displayed.)
+
+Ewl has been setup to use, if available, OpenGL, framebuffer or 
+software X11 support in Evas. You only require one of these engines to 
+function but can have all of them compiled in, if desired. 
+
+@note
+The framebuffer and OpenGL engines have had a lot less testing then the 
+software engine, so your mileage may vary in their usage. About 90% 
+of the code in the OpenGL engine is shared with the software engine 
+so it should be pretty stable.
+
+Once you have the pre-requisites installed you can install Ewl. This 
+is done with your standard set of procedures:
+
+@code
+  ./autogen.sh    (if you've checked out from cvs)
+  ./configure
+  make
+  make install    (as root)
+@endcode
+
+You can check that everything is working correctly by running:
+
+@code ewl_test @endcode
+
+@section next_steps Next Steps
+You should now have a working installation of Ewl available to you. So, where do 
+you go from here? Well, a good place to start is the 
+@link getting_started Getting Started@endlink pages. They will guide you through
+creating a simple application with Ewl.
+
+Once you've got the basics down you can take a look at some of the more advanced
+topics:
+ - @link widget_packing Widget Packing @endlink
+ - @link fill_policies Fill Policies @endlink
+ - @link callback_info Callbacks @endlink
+ - @link layering Layering Scheme @endlink
+ - @link object_model The Object Model @endlink
+ - @link theming Theming @endlink
+
+@section resources Resources
+There are several resources scattered around that can help you on the road to learning Ewl:
+  - http://wiki.enlightenment.org/index.php/EWL -- Enlightenment Wiki
+  - http://docs.enlightenment.org/api/ewl/html -- Ewl Doxygen API reference
+
+ */

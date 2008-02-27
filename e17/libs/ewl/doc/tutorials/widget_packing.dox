@@ -1,0 +1,42 @@
+/**
+ * @page widget_packing Widget Packing
+
+Everything in Ewl is made up of widgets. The combinations of these 
+widgets are what form the basis for your applications. By packing 
+these widgets together you can achieve the layouts you require for 
+your application. 
+
+@section padding_and_insets Padding and Insets
+Each widget in Ewl is provided with a set of padding and inset values. 
+These can either be provided through a data block in the theme:
+
+@code
+data {
+   item: "pad" 10;
+   item: "inset" 10;
+   item: "inset/left" 20;
+}
+@endcode
+
+or using the provided function calls:
+
+@code
+void ewl_object_padding_set(Ewl_Object *o, int l, int r, int t, int b);
+void ewl_object_insets_set(Ewl_Object *o, int l, int r, int t, int b);
+@endcode
+
+If you use both then the function call will override the theme settings.
+
+As you can see from the data block you can provide a single value to 
+provide for all four settings or you can set each setting individually. 
+So, in this case we have set the @e inset padding to 10 but over-ridden the 
+@e inset/left padding to be 20.
+
+Depending on if you use padding or insets the space will be added to the 
+container in differing fashions, and effect some of the available 
+container sizing calls. The interactions of the padding and function 
+calls is seen in the image below.
+
+@image html object_fields.png
+
+ */
