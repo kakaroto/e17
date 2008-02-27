@@ -1,6 +1,8 @@
 [Desktop Entry]
 Type=Link
 Name=Mail
+Name[eo]=Retmesaĝo
 Icon=e-module-mail
 Comment=<hilight>Mail Gadget</hilight><br><br>Mail notification gadget. Checks POP3, IMAP, maildir, and mbox mailboxes.
+Comment[eo]=<hilight>Modulo de retmesaĝo</hilight><br><br>Vanaĵo por retmesaĝa averto. Inspektas POP3, IMAP, maildir kaj mbox retpoŝtkestojn.
 Comment[it]=<hilight>Modulo Mail</hilight><br><br>Modulo per notificare l'arrivo di posta. Controlla caselle POP3, IMAP, maildir e mbox.

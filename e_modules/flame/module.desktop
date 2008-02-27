@@ -1,7 +1,9 @@
 [Desktop Entry]
 Type=Link
 Name=Flame
+Name[eo]=Flamoj
 Icon=e-module-flame
 X-Enlightenment-ModuleType=appearance
 Comment=<hilight>Flame Module</hilight><br><br>A module to display flames on the desktop.
+Comment[eo]=<hilight>Modulo de Flamoj</hilight><br><br>Vidigi flamojn sur la labortablo.
 Comment[it]=<hilight>Modulo Flame</hilight><br><br>Un modulo per visualizzare fiamme sul desktop.

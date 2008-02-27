@@ -1,6 +1,8 @@
 [Desktop Entry]
 Type=Link
 Name=Forecasts
+Name[eo]=Veteraj prognozoj
 Icon=e-module-forecasts
 Comment=<hilight>Forecasts Gadget</hilight><br><br>The forecasts gadget will display the current weather conditions plus a few days forecast.
-Comment[it]=<hilight>Modulo Forecasts</hilight><br><br>Il modulo forecasts mostrerà le attuali condizioni del tempo e le previsioni per qualche giorno.
+Comment[eo]=<hilight>Modulo de veteraj prognozoj</hilight><br><br>Vidigi la nunan veteron kaj prognozo por kelkaj tagoj.
+Comment[it]=<hilight>Modulo Forecasts</hilight><br><br>Il modulo forecasts mostrerï¿½ le attuali condizioni del tempo e le previsioni per qualche giorno.

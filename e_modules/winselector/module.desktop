@@ -1,6 +1,8 @@
 [Desktop Entry]
 Type=Link
 Name=Winselector
+Name[eo]=Fenestro-elektilo
 Icon=e-module-winselector
 Comment=<hilight>Winselector Gadget</hilight><br><br>This module provides a menu-based access to all the windows.
-Comment[it]=<hilight>Modulo Winselector</hilight><br><br>Questo modulo fornisce accesso a tutte le finestre tramite menù.
+Comment[eo]=<hilight>Modulo de fenestro-elektilo</hilight><br><br>Provizi aliron al Ä‰iuj fenestroj per menuo.
+Comment[it]=<hilight>Modulo Winselector</hilight><br><br>Questo modulo fornisce accesso a tutte le finestre tramite menï¿½.

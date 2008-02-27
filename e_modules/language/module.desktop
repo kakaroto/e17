@@ -1,10 +1,12 @@
 [Desktop Entry]
 Type=Link
 Name=Language
+Name[eo]=Lingvo
 Exec=enlightenment
 StartupNotify=false
 X-Enlightenment-WaitExit=false
 X-Enlightenment-IconClass=language,gadget
 Icon=e-module-language
 Comment=<hilight>Language Gadget</hilight><br><br>Gadget to control active keyboard, keyboard layout, and layout variant.
+Comment[eo]=<hilight>Modulo de lingvoj</hilight><br><br>Kontroli la aktivan klavaron, klavaran aranĝon kaj klavaran variaĵon.
 Comment[it]=<hilight>Modulo Language</hilight><br><br>Modulo per controllare la tastiera attiva, il layout di tastiera e le varianti del layout.

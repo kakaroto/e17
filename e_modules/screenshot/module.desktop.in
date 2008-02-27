@@ -1,6 +1,8 @@
 [Desktop Entry]
 Type=Link
 Name=Screenshot
+Name[eo]=Ekrankopio
 Icon=e-module-screenshot
-Comment=<hilight>Screenshot Gadget</hilight><br><br>Gadget to take screenshots utilizing emprint.
+Comment=<hilight>Screenshot Gadget</hilight><br><br>Gadget to take screenshots using emprint.
+Comment[eo]=<hilight>Modulo de ekrankopio</hilight><br><br>Ekrankopii per emprint.
 Comment[it]=<hilight>Modulo Screenshot</hilight><br><br>Modulo per la cattura di istantanee dello schermo utilizzando emprint.

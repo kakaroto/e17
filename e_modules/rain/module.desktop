@@ -1,7 +1,9 @@
 [Desktop Entry]
 Type=Link
 Name=Rain
+Name[eo]=Pluvo
 Icon=e-module-rain
 X-Enlightenment-ModuleType=appearance
 Comment=<hilight>Rain Module</hilight><br><br>Module to display rain on the desktop.
+Comment[eo]=<hilight>Modulo de pluvo</hilight><br><br>Vidigi pluvon sur la labortablo.
 Comment[it]=<hilight>Modulo Rain</hilight><br><br>Modulo per visualizzare la pioggia sul desktop.

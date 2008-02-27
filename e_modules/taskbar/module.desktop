@@ -1,7 +1,9 @@
 [Desktop Entry]
 Type=Link
 Name=Taskbar
+Name[eo]=Taskopleto
 X-Enlightenment-IconClass=taskbar,gadget
 Icon=e-module-taskbar
 Comment=<hilight>Taskbar Gadget</hilight><br><br>Gadget to provide a taskbar.
+Comment[eo]=<hilight>Modulo de taskopleto</hilight><br><br>Provizi taskopleton.
 Comment[it]=<hilight>Modulo Taskbar</hilight><br><br>Modulo che fornisce una taskbar.

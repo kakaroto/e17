@@ -1,6 +1,8 @@
 [Desktop Entry]
 Type=Link
 Name=Net
+Name[eo]=Reto
 Icon=e-module-net
 Comment=<hilight>Net Gadget</hilight><br><br>Network interface monitor.
+Comment[eo]=<hilight>Modulo de reto</hilight><br><br>Elrigardi la retan interfacon.
 Comment[it]=<hilight>Modulo Net</hilight><br><br>Monitor delle interfacce di rete.

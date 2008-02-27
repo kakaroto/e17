@@ -1,10 +1,12 @@
 [Desktop Entry]
 Type=Link
 Name=Alarm
+Name[eo]=Alarmilo
 Exec=enlightenment
 StartupNotify=false
 X-Enlightenment-WaitExit=false
 X-Enlightenment-IconClass=alarm,gadget
 Icon=e-module-alarm
 Comment=<hilight>Alarm Module</hilight><br><br>A module which allows you to set popup reminders.
+Comment[eo]=<hilight>Modulo Alarmilo</hilight><br><br>Difini spruĉfenestrajn memorigilojn.
 Comment[it]=<hilight>Modulo Alarm</hilight><br><br>Un modulo che consente di impostare dei popup di promemoria.

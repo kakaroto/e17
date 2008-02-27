@@ -1,6 +1,8 @@
 [Desktop Entry]
 Type=Link
 Name=Uptime
+Name[eo]=Daŭro de funkciado
 Icon=e-module-uptime
 Comment=<hilight>Uptime Gadget</hilight><br><br>Gadget to display the current uptime of the system.
+Comment[eo]=<hilight>Modulo de daŭro de funkciado</hilight><br><br>Vidigi la nunan daŭron de funkciado de la operaciumo.
 Comment[it]=<hilight>Modulo Uptime</hilight><br><br>Modulo per visualizzare il tempo di servizio del sistema.

@@ -1,6 +1,8 @@
 [Desktop Entry]
 Type=Link
 Name=Mem
+Name[eo]=Memoro
 Icon=e-module-mem
 Comment=<hilight>Mem Gadget</hilight><br><br>Used to monitor memory utilization.
+Comment[eo]=<hilight>Modulo de memoro</hilight><br><br>Elrigardi la uzadon de memoro.
 Comment[it]=<hilight>Modulo Mem</hilight><br><br>Usato per il monitoraggio dell'utilizzo della memoria.

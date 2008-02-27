@@ -1,6 +1,8 @@
 [Desktop Entry]
 Type=Link
 Name=Cpu
+Name[eo]=Ĉeforgano
 Icon=e-module-cpu
 Comment=<hilight>CPU Gadget</hilight><br><br>Used to monitor CPU utilization.
+Comment[eo]=<hilight>Modulo de Ĉeforgano</hilight><br><br>Elrigardi la uzadon de la ĉeforgano.
 Comment[it]=<hilight>Modulo CPU</hilight><br><br>Usato per monitorare l'utilizzo della CPU.
