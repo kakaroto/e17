@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
 "POT-Creation-Date: 2008-02-17 16:54+0100\n"
-"PO-Revision-Date: 2008-01-24 08:46+0900\n"
+"PO-Revision-Date: 2008-02-28 11:14+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1170,17 +1170,15 @@ msgstr ""
 "コードバージョン        : %s\n"
 
 #: src/ipc.c:1423 src/ipc.c:1430
-#, fuzzy, c-format
+#, c-format
 msgid "e16 was built without %s support"
-msgstr "コンポジットサポートが組み込まれていません."
+msgstr "このe16は %s に対応していません"
 
 #: src/ipc.c:1424
-#, fuzzy
 msgid "composite"
 msgstr "コンポジット"
 
 #: src/ipc.c:1431
-#, fuzzy
 msgid "sound"
 msgstr "サウンド"
 
@@ -1885,15 +1883,15 @@ msgstr "影をぼかす"
 
 #: src/settings.c:654
 msgid "Default focused window opacity:"
-msgstr ""
+msgstr "フォーカスがあるウィンドウのデフォルトの不透明度"
 
 #: src/settings.c:665
 msgid "Default unfocused window opacity:"
-msgstr ""
+msgstr "フォーカスがないウィンドウのデフォルトの不透明度"
 
 #: src/settings.c:676
 msgid "Default pop-up window opacity:"
-msgstr ""
+msgstr "ポップアップウィンドウのデフォルトの不透明度"
 
 #: src/settings.c:687
 msgid "Composite"
