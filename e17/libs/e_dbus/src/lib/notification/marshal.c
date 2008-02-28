@@ -452,6 +452,10 @@ e_notify_unmarshal_notify_hints(E_Notification *n, DBusMessageIter *iter)
   int x_set = 0, y_set = 0;
   int x, y;
   dbus_message_iter_recurse(iter, &arr);
+  
+  if (dbus_message_iter_get_arg_type(&arr) == DBUS_TYPE_INVALID)
+    return;
+  
   do
   {
     DBusMessageIter dict;
