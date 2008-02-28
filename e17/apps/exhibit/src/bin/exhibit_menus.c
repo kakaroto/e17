@@ -8,7 +8,7 @@
 #define EX_MENU_ITEM_GET_RETURN(o) \
    Etk_Menu_Item *item; \
    if (!(item = ETK_MENU_ITEM(o))) \
-     return; 
+     return 1; 
 
 char *ex_images[] = 
 {
@@ -97,7 +97,7 @@ _ex_menu_item_new(Ex_Menu_Item_Type item_type, const char *label,
    return menu_item;
 }
 
-void
+int
 _ex_menu_new_tab_cb(Etk_Object *obj, void *data)
 {
    Ex_Tab *tab;
@@ -107,24 +107,26 @@ _ex_menu_new_tab_cb(Etk_Object *obj, void *data)
    tab = _ex_tab_new(e, e->cur_tab->dir);
    _ex_main_window_tab_append(tab);
    _ex_main_populate_files(NULL, EX_TREE_UPDATE_ALL);
+	 return 1;
 }
 
-void
+int
 _ex_menu_delete_tab_cb(Etk_Object *obj, void *data)
 {
    if(evas_list_count(e->tabs) <= 1)
      {
 	 _ex_main_dialog_show("No tabs open! Create new with Ctrl^t", 
 	       ETK_MESSAGE_DIALOG_INFO);
-	return;
+	return 1;
      }
      
    EX_MENU_ITEM_GET_RETURN(obj);
 
    _ex_tab_delete();
+	 return 1;
 }
 
-void
+int
 _ex_menu_save_image_cb(Etk_Object *obj, void *data)
 {
    Etk_Tree_Row *r;
@@ -132,62 +134,68 @@ _ex_menu_save_image_cb(Etk_Object *obj, void *data)
    
    r = etk_tree_selected_row_get(ETK_TREE(e->cur_tab->itree));
 
-   if(!r) return;
+   if(!r) return 1;
    _ex_image_save(ETK_IMAGE(e->cur_tab->image));
+	 return 1;
 }
 
-void
+int
 _ex_menu_save_image_as_cb(Etk_Object *obj, void *data)
 {   
    EX_MENU_ITEM_GET_RETURN(obj);
 
    if (!e->cur_tab->image_loaded)
-     return;
+     return 1;
 
    _ex_image_save_as();
+	 return 1;
 }
 
-void
+int
 _ex_menu_rename_cb(Etk_Object *obj, void *data)
 {
    EX_MENU_ITEM_GET_RETURN(obj);
    
    if (!e->cur_tab->image_loaded)
-     return;
+     return 1;
    
    _ex_image_rename();
+	 return 1;
 }
 
-void
+int
 _ex_menu_delete_cb(Etk_Object *obj, void *data)
 {
    EX_MENU_ITEM_GET_RETURN(obj);
 
    if (!e->cur_tab->image_loaded)
-     return;
+     return 1;
 
    _ex_image_delete(e);
+	 return 1;
 }
 
-void
+int
 _ex_menu_move_cb(Etk_Object *obj, void *data)
 {
    EX_MENU_ITEM_GET_RETURN(obj);
 
    if (!e->cur_tab->image_loaded)
-     return;
+     return 1;
 
    _ex_image_move();
+	 return 1;
 }
 
-void
+int
 _ex_menu_options_cb(Etk_Object *obj, void *data)
 {
    EX_MENU_ITEM_GET_RETURN(obj);
    _ex_options_window_show();
+	 return 1;
 }
 
-void
+int
 _ex_menu_quit_cb(Etk_Object *obj, void *data)
 {
    EX_MENU_ITEM_GET_RETURN(obj);
@@ -197,33 +205,36 @@ _ex_menu_quit_cb(Etk_Object *obj, void *data)
        _ex_options_save(e);
      }
 
-   etk_main_quit();   
+   etk_main_quit();
+	 return 1;
 }
 
-void
+int
 _ex_menu_run_in_cb(Etk_Object *obj, void *data)
 {
    const char *cmd = data;
    EX_MENU_ITEM_GET_RETURN(obj);
 
    if (!e->cur_tab->image_loaded)
-     return;
+     return 1;
 
    _ex_image_run(cmd);
+	 return 1;
 }
 
-void
+int
 _ex_menu_undo_cb(Etk_Object *obj, void *data)
 {
    EX_MENU_ITEM_GET_RETURN(obj);
    
    if (!e->cur_tab->image_loaded)
-     return;
+     return 1;
 
-   _ex_image_undo(ETK_IMAGE(e->cur_tab->image));   
+   _ex_image_undo(ETK_IMAGE(e->cur_tab->image));
+	 return 1;
 }
 
-void
+int
 _ex_menu_rot_clockwise_cb(Etk_Object *obj, void *data)
 {
    int           w, h;
@@ -231,16 +242,17 @@ _ex_menu_rot_clockwise_cb(Etk_Object *obj, void *data)
    EX_MENU_ITEM_GET_RETURN(obj);
    
    if (!e->cur_tab->image_loaded)
-     return;
+     return 1;
 
    _ex_image_flip_diagonal(ETK_IMAGE(e->cur_tab->image), 1);
    etk_image_size_get(ETK_IMAGE(e->cur_tab->image), &w, &h);
    snprintf(size, sizeof(size), "( %d x %d )", w, h);
    etk_statusbar_message_pop(ETK_STATUSBAR(e->statusbar[1]), 0);
    etk_statusbar_message_push(ETK_STATUSBAR(e->statusbar[1]), size, 0);
+	 return 1;
 }
 
-void
+int
 _ex_menu_rot_counter_clockwise_cb(Etk_Object *obj, void *data)
 {
    int           w, h;
@@ -248,66 +260,71 @@ _ex_menu_rot_counter_clockwise_cb(Etk_Object *obj, void *data)
    EX_MENU_ITEM_GET_RETURN(obj);
    
    if (!e->cur_tab->image_loaded)
-     return;
+     return 1;
    
    _ex_image_flip_diagonal(ETK_IMAGE(e->cur_tab->image), 2);
    etk_image_size_get(ETK_IMAGE(e->cur_tab->image), &w, &h);
    snprintf(size, sizeof(size), "( %d x %d )", w, h);
    etk_statusbar_message_pop(ETK_STATUSBAR(e->statusbar[1]), 0);
-   etk_statusbar_message_push(ETK_STATUSBAR(e->statusbar[1]), size, 0);   
+   etk_statusbar_message_push(ETK_STATUSBAR(e->statusbar[1]), size, 0);
+	 return 1;
 }
 
-void
+int
 _ex_menu_flip_horizontal_cb(Etk_Object *obj, void *data)
 {
    EX_MENU_ITEM_GET_RETURN(obj);
    
    if (!e->cur_tab->image_loaded)
-     return;
+     return 1;
 
    _ex_image_flip_horizontal(ETK_IMAGE(e->cur_tab->image));
+	 return 1;
 }
 
-void
+int
 _ex_menu_flip_vertical_cb(Etk_Object *obj, void *data)
 {
    EX_MENU_ITEM_GET_RETURN(obj);
    
    if (!e->cur_tab->image_loaded)
-     return;
+     return 1;
 
-   _ex_image_flip_vertical(ETK_IMAGE(e->cur_tab->image));   
+   _ex_image_flip_vertical(ETK_IMAGE(e->cur_tab->image));
+	 return 1;
 }
 
-void
+int
 _ex_menu_blur_cb(Etk_Object *obj, void *data)
 {
    EX_MENU_ITEM_GET_RETURN(obj);
    
    if (!e->cur_tab->image_loaded)
-     return;
+     return 1;
 
-   _ex_image_blur(ETK_IMAGE(e->cur_tab->image));   
+   _ex_image_blur(ETK_IMAGE(e->cur_tab->image));
+	 return 1;
 }
 
-void
+int
 _ex_menu_sharpen_cb(Etk_Object *obj, void *data)
 {
    EX_MENU_ITEM_GET_RETURN(obj);
    
    if (!e->cur_tab->image_loaded)
-     return;
+     return 1;
 
-   _ex_image_sharpen(ETK_IMAGE(e->cur_tab->image));   
+   _ex_image_sharpen(ETK_IMAGE(e->cur_tab->image));
+	 return 1;
 }
 
-void
+int
 _ex_menu_brighten_cb(Etk_Object *obj, void *data)
 {
    EX_MENU_ITEM_GET_RETURN(obj);
    
    if (!e->cur_tab->image_loaded)
-     return;
+     return 1;
 
    e->brightness = e->options->brighten_thresh;
    
@@ -319,93 +336,103 @@ _ex_menu_brighten_cb(Etk_Object *obj, void *data)
 
    D(("Using brightness %d\n", e->brightness));
    _ex_image_brightness(ETK_IMAGE(e->cur_tab->image), e->brightness);
+	 return 1;
 }
 
-void
+int
 _ex_menu_darken_cb(Etk_Object *obj, void *data)
 {
    EX_MENU_ITEM_GET_RETURN(obj);
    
    if (!e->cur_tab->image_loaded)
-     return;
+     return 1;
    
    e->brightness -= 10;
    if(e->brightness < 0)
      e->brightness = 0;   
    _ex_image_brightness(ETK_IMAGE(e->cur_tab->image), e->brightness);
+	 return 1;
 }
 
-void
+int
 _ex_menu_set_wallpaper_cb(Etk_Object *obj, void *data)
 {
    EX_MENU_ITEM_GET_RETURN(obj);
 
    if (!e->cur_tab->image_loaded)
-     return;
+     return 1;
    
    _ex_image_wallpaper_set(ETK_IMAGE(e->cur_tab->image));
+	 return 1;
 }
 
-void
+int
 _ex_menu_zoom_in_cb(Etk_Object *obj, void *data)
 {
-   _ex_tab_current_zoom_in(data);  
+   _ex_tab_current_zoom_in(data);
+	 return 1;
 }
 
-void
+int
 _ex_menu_zoom_out_cb(Etk_Object *obj, void *data)
 {
    _ex_tab_current_zoom_out(data);
+	 return 1;
 }
 
-void
+int
 _ex_menu_zoom_one_to_one_cb(Etk_Object *obj, void *data)
 {
-   _ex_tab_current_zoom_one_to_one(data);    
+   _ex_tab_current_zoom_one_to_one(data);
+	 return 1;
 }
 
-void
+int
 _ex_menu_fit_to_window_cb(Etk_Object *obj, void *data)
 {
    _ex_tab_current_fit_to_window(data);
+	 return 1;
 }
 
-void
+int
 _ex_menu_window_fullscreen_toggle_cb(Etk_Object *obj, void *data)
 {
    EX_MENU_ITEM_GET_RETURN(obj);
    
    e = data;   
    _ex_main_window_fullscreen_toggle();
+	 return 1;
 }
 
-void
+int
 _ex_menu_toggle_slideshow_cb(Etk_Object *obj, void *data)
 {
    EX_MENU_ITEM_GET_RETURN(obj);
    
    e = data;   
    _ex_main_window_slideshow_toggle();
+	 return 1;
 }
 
-void
+int
 _ex_menu_refresh_cb(Etk_Object *obj, void *data)
 {
    EX_MENU_ITEM_GET_RETURN(obj);
 
    if (!e->cur_tab->image_loaded)
-     return;
+     return 1;
 
    _ex_image_refresh();
+	 return 1;
 }
 
-void
+int
 _ex_menu_comments_cb(Etk_Object *obj, void *data)
 {   
    EX_MENU_ITEM_GET_RETURN(obj);
    
    if (!e->cur_tab->image_loaded)
-     return;
+     return 1;
 
    if(!e->cur_tab->comment.visible)
      {
@@ -437,9 +464,10 @@ _ex_menu_comments_cb(Etk_Object *obj, void *data)
 
    /* Save this as settings since we want "remember state" for this */
    _ex_options_save(e);
+	 return 1;
 }
 
-void
+int
 _ex_menu_add_to_fav_cb(Etk_Object *obj, void *data)
 {
    Etk_Tree_Row *r;
@@ -447,16 +475,17 @@ _ex_menu_add_to_fav_cb(Etk_Object *obj, void *data)
    EX_MENU_ITEM_GET_RETURN(obj);
 
    r = etk_tree_selected_row_get(ETK_TREE(e->cur_tab->itree));
-   if(!r) return;
+   if(!r) return 1;
    
    etk_tree_row_fields_get(r, etk_tree_nth_col_get(ETK_TREE(e->cur_tab->itree), 0), 
 			   NULL, NULL, &icol_string, NULL);
 
    _ex_favorites_add(e, icol_string);
    //free(icol_string);
+	 return 1;
 }
 
-void
+int
 _ex_menu_remove_from_fav_cb(Etk_Object *obj, void *data)
 {
    Etk_Tree_Row *r;
@@ -464,15 +493,16 @@ _ex_menu_remove_from_fav_cb(Etk_Object *obj, void *data)
    EX_MENU_ITEM_GET_RETURN(obj);
    
    r = etk_tree_selected_row_get(ETK_TREE(e->cur_tab->itree));
-      if(!r) return;
+      if(!r) return 1;
 
    etk_tree_row_fields_get(r, etk_tree_nth_col_get(ETK_TREE(e->cur_tab->itree), 0), 
 			   NULL, NULL, &icol_string, NULL);
    _ex_favorites_del(e, icol_string);
    //free(icol_string);
+	 return 1;
 }
 
-void
+int
 _ex_menu_go_to_fav_cb(Etk_Object *obj, void *data)
 {    
    EX_MENU_ITEM_GET_RETURN(obj);
@@ -484,9 +514,10 @@ _ex_menu_go_to_fav_cb(Etk_Object *obj, void *data)
    etk_tree_clear(ETK_TREE(e->cur_tab->dtree));
    etk_combobox_entry_clear(ETK_COMBOBOX_ENTRY(e->combobox_entry));
    _ex_main_populate_files(NULL, EX_TREE_UPDATE_ALL);
+	 return 1;
 }
 
-void
+int
 _ex_menu_about_cb(Etk_Object *obj, void *data)
 {
    static Etk_Widget *win = NULL;
@@ -501,7 +532,7 @@ _ex_menu_about_cb(Etk_Object *obj, void *data)
    if(win)
      {
 	etk_widget_show_all(win);
-	return;
+	return 1;
      }
 
    win = etk_dialog_new();
@@ -581,5 +612,5 @@ _ex_menu_about_cb(Etk_Object *obj, void *data)
 	 ETK_FALSE);
    etk_textblock_object_cursor_visible_set(ETK_TEXT_VIEW(helptext)->textblock_object,
 	 ETK_FALSE);
-
+	 return 1;
 }
