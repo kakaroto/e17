@@ -26,6 +26,7 @@ static void _setup(void)
      {
 	o = evas_object_image_add(evas);
 	o_images[i] = o;
+	evas_object_image_colorspace_set(o, EVAS_COLORSPACE_ARGB8888);
 	evas_object_image_size_set(o, 640, 480);
 	evas_object_image_alpha_set(o, 0);
 	evas_object_image_fill_set(o, 0, 0, 640, 480);
