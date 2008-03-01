@@ -253,6 +253,31 @@ _ShapeSet(ShapeWin * sw, int md, int x, int y, int w, int h,
    EoShapeUpdate(sw, 0);
 }
 
+static PixImg      *root_pi = NULL;
+static PixImg      *ewin_pi = NULL;
+static PixImg      *draw_pi = NULL;
+
+static void
+_PixImgsCreate(Window root, const EWin * ewin)
+{
+   root_pi = ECreatePixImg(root, VRoot.w, VRoot.h);
+   ewin_pi = ECreatePixImg(root, EoGetW(ewin), EoGetH(ewin));
+   draw_pi = ECreatePixImg(root, EoGetW(ewin), EoGetH(ewin));
+}
+
+static void
+_PixImgsDestroy(void)
+{
+   EDestroyPixImg(root_pi);
+   EDestroyPixImg(ewin_pi);
+   EDestroyPixImg(draw_pi);
+   EBlendRemoveShape(NULL, 0, 0, 0);
+   EBlendPixImg(NULL, NULL, NULL, NULL, 0, 0, 0, 0);
+   root_pi = NULL;
+   ewin_pi = NULL;
+   draw_pi = NULL;
+}
+
 void
 DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h,
 	      int firstlast, int seqno)
@@ -389,28 +414,15 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h,
 	break;
      case 5:
 	{
-	   static PixImg      *ewin_pi = NULL;
-	   static PixImg      *root_pi = NULL;
-	   static PixImg      *draw_pi = NULL;
-
 	   if (firstlast == 0)
 	     {
-		XGCValues           gcv2;
 		GC                  gc2;
 
-		if (ewin_pi)
-		   EDestroyPixImg(ewin_pi);
-		if (root_pi)
-		   EDestroyPixImg(root_pi);
-		if (draw_pi)
-		   EDestroyPixImg(draw_pi);
-		EBlendRemoveShape(NULL, 0, 0, 0);
-		EBlendPixImg(NULL, NULL, NULL, NULL, 0, 0, 0, 0);
-		root_pi = ECreatePixImg(root, VRoot.w, VRoot.h);
-		ewin_pi = ECreatePixImg(root, EoGetW(ewin), EoGetH(ewin));
-		draw_pi = ECreatePixImg(root, EoGetW(ewin), EoGetH(ewin));
+		_PixImgsDestroy();
+		_PixImgsCreate(root, ewin);
 		if ((!root_pi) || (!ewin_pi) || (!draw_pi))
 		  {
+		     _PixImgsDestroy();
 		     Conf.movres.mode_move = 0;
 		     EUngrabServer();
 		     DrawEwinShape(ewin, Conf.movres.mode_move, x, y, w, h,
@@ -419,7 +431,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h,
 		  }
 		EFillPixmap(root, root_pi->pmap, x1, y1, EoGetW(ewin),
 			    EoGetH(ewin));
-		gc2 = EXCreateGC(root_pi->pmap, 0, &gcv2);
+		gc2 = EXCreateGC(root_pi->pmap, 0, NULL);
 		XCopyArea(disp, root_pi->pmap, ewin_pi->pmap, gc2, x1, y1,
 			  EoGetW(ewin), EoGetH(ewin), 0, 0);
 		EXFreeGC(gc2);
@@ -485,17 +497,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h,
 	     {
 		EPastePixmap(root, root_pi->pmap, x1, y1, EoGetW(ewin),
 			     EoGetH(ewin));
-		if (ewin_pi)
-		   EDestroyPixImg(ewin_pi);
-		if (root_pi)
-		   EDestroyPixImg(root_pi);
-		if (draw_pi)
-		   EDestroyPixImg(draw_pi);
-		EBlendRemoveShape(NULL, 0, 0, 0);
-		EBlendPixImg(NULL, NULL, NULL, NULL, 0, 0, 0, 0);
-		ewin_pi = NULL;
-		root_pi = NULL;
-		draw_pi = NULL;
+		_PixImgsDestroy();
 	     }
 	   else if (firstlast == 3)
 	     {
