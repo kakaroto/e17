@@ -154,12 +154,12 @@ SetupX(const char *dstr)
    EventsInit();
 
    /* select all the root window events to start managing */
-   Mode.wm.xselect = 1;
+   Mode.events.last_error_code = 0;
    mask =
       StructureNotifyMask | SubstructureNotifyMask | SubstructureRedirectMask;
    ESelectInput(VRoot.win, mask);
    ESync(0);
-   if (!Mode.wm.xselect)
+   if (Mode.events.last_error_code)
      {
 	AlertX(_("Another Window Manager is already running"),
 	       _("OK"), NULL, NULL,
@@ -168,7 +168,6 @@ SetupX(const char *dstr)
 		 "you can successfully run Enlightenment.\n"));
 	EExit(1);
      }
-   Mode.wm.xselect = 0;
 
    /* warn, if necessary about X version problems */
    if (ProtocolVersion(disp) != 11)

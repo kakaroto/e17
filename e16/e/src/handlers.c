@@ -189,10 +189,7 @@ HandleXError(Display * d __UNUSED__, XErrorEvent * ev)
 		ev->request_code, ev->minor_code, buf);
      }
 
-   if (Mode.wm.xselect &&
-       (ev->request_code == X_ChangeWindowAttributes) &&
-       (ev->error_code == BadAccess))
-      Mode.wm.xselect = 0;
+   Mode.events.last_error_code = ev->error_code;
 }
 
 void

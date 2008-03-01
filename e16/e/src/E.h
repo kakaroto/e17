@@ -472,6 +472,7 @@ typedef struct
       Window              last_bpress2;
       unsigned int        last_button;
       unsigned int        last_keycode;
+      unsigned char       last_error_code;
       char                double_click;
       char                on_screen;
 #if USE_COMPOSITE
@@ -536,7 +537,6 @@ typedef struct
       char                session_start;
       char                startup;
       char                restart;
-      char                xselect;
       char                exiting;
       char                in_signal_handler;
       char                exit_now;
