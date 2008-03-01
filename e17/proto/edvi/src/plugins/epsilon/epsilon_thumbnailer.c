@@ -62,7 +62,6 @@ epsilon_generate_thumb (Epsilon * e)
    Edvi_Property *property;
    Edvi_Document *document;
    Edvi_Page     *page;
-   int            page_number;
    const int     *pixels;
    char          *param_kpathsea_mode  = "cx";
 
@@ -114,6 +113,7 @@ epsilon_generate_thumb (Epsilon * e)
    edvi_device_delete (device);
  no_device:
    edvi_shutdown ();
+   return NULL;
 }
 
 Epsilon_Plugin *

@@ -62,8 +62,8 @@ edvi_init (int dpi, char *kpathsea_mode, int aa,
     g = bg_g + ceil(((double)(fg_g - bg_g) * i) / (double)(aa_nlevels - 1));
     b = bg_b + ceil(((double)(fg_b - bg_b) * i) / (double)(aa_nlevels - 1));
     _edvi_color_map[i] = ((bg_a << 24) |
-                          (r << 16)   |
-                          (g << 8)    |
+                          (r << 16)    |
+                          (g << 8)     |
                           (b));
   }
 
@@ -100,7 +100,7 @@ edvi_offset_y_get ()
   return _edvi_offset_y;
 }
 
-unsigned int *
+const unsigned int *
 edvi_color_map_get ()
 {
   return _edvi_color_map;

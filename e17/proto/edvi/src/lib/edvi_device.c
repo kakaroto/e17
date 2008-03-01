@@ -5,6 +5,12 @@
 #include "edvi_private.h"
 #include "edvi_main.h"
 
+#if HAVE___ATTRIBUTE__
+#define __UNUSED__ __attribute__((unused))
+#else
+#define __UNUSED__
+#endif
+
 
 static Edvi_Framebuffer *_edvi_device_fb = NULL;
 static Evas_Object      *_edvi_device_o = NULL;
@@ -13,7 +19,10 @@ static double            _edvi_device_offset_y = EDVI_DEFAULT_OFFSET_Y;
 static int               _edvi_device_draw_page_finished = 0;
 
 static void
-_edvi_device_aa_put (long x, long y, long w, long h)
+_edvi_device_aa_put (long x,
+                     long y,
+                     long w,
+                     long h)
 {
   unsigned short *aa_buff = NULL;
   unsigned int   *m = NULL;
@@ -53,7 +62,7 @@ _edvi_device_aa_put (long x, long y, long w, long h)
   m = (unsigned int *)evas_object_image_data_get (_edvi_device_o, 1);
   if (!m)
     goto sortie;
-  colormap = edvi_color_map_get ();
+  colormap = (unsigned int *)edvi_color_map_get ();
   for (j = 0; j < aa_bh; j++) {
     for (i = 0; i < aa_bw; i++) {
       if ((colormap[aa_buff[aa_bw * j + i]] >> 24) == 0) {
@@ -71,8 +80,14 @@ _edvi_device_aa_put (long x, long y, long w, long h)
 }
 
 static void
-DEV_put_bitmap_rgb(DVI_DEVICE dev, DVI dvi, DVI_BITMAP bm, int font_id, 
-		   long dvipos, long code_point, long x, long y)
+DEV_put_bitmap_rgb(DVI_DEVICE dev __UNUSED__,
+                   DVI        dvi __UNUSED__,
+                   DVI_BITMAP bm,
+                   int        font_id __UNUSED__,
+		   long       dvipos __UNUSED__,
+                   long       code_point __UNUSED__,
+                   long       x,
+                   long       y)
 {
   DVI_fb_put_bitmap (_edvi_device_fb->dvi_framebuffer, bm,
                      x + _edvi_device_offset_x,
@@ -83,7 +98,9 @@ DEV_put_bitmap_rgb(DVI_DEVICE dev, DVI dvi, DVI_BITMAP bm, int font_id,
 }
 
 static int
-DEV_poll(DVI_DEVICE dev, DVI dvi, int poll_type)
+DEV_poll(DVI_DEVICE dev __UNUSED__,
+         DVI        dvi __UNUSED__,
+         int        poll_type)
 {
   static int  t = 0;
 
@@ -99,8 +116,8 @@ DEV_poll(DVI_DEVICE dev, DVI dvi, int poll_type)
 
 
 static void
-_edvi_put_rectangle(DVI_DEVICE dev,
-                    DVI        dvi, 
+_edvi_put_rectangle(DVI_DEVICE dev __UNUSED__,
+                    DVI        dvi __UNUSED__,
                     long       x,
                     long       y,
                     long       w,

@@ -131,7 +131,7 @@ edvi_page_number_get (Edvi_Page *page)
 
 void
 edvi_page_mag_set (Edvi_Page *page,
-                  double     mag)
+                   double     mag)
 {
   if (!page)
     return;
@@ -219,6 +219,6 @@ edvi_page_orientation_get (Edvi_Page *page)
 {
   if (!page)
     return EDVI_PAGE_ORIENTATION_PORTRAIT;
-  
+
   return page->orientation;
 }

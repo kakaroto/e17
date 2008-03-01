@@ -9,6 +9,12 @@
 #include "etk_utils.h"
 #include "config.h"
 
+#if HAVE___ATTRIBUTE__
+#define __UNUSED__ __attribute__((unused))
+#else
+#define __UNUSED__
+#endif
+
 
 #define round(a) ( ((a)<0.0) ? (int)(floor((a) - 0.5)) : (int)(floor((a) + 0.5)) )
 
@@ -89,7 +95,7 @@ void etk_dvi_file_set(Etk_Dvi *dvi, const char *filename)
       edvi_document_delete (dvi->dvi_document);
 
    dvi->dvi_document = edvi_document_new (dvi->filename, dvi->dvi_device, dvi->dvi_property);
-   dvi->page = -1;
+   dvi->page = 0;
 
    _etk_dvi_load(dvi);
 }
@@ -126,7 +132,6 @@ void etk_dvi_page_set(Etk_Dvi *dvi, int page)
 /**
  * @brief Get the page number
  * @param dvi: the dvi to change page
- * @param page: the page number
  * @return Returns the page number
  */
 int etk_dvi_page_get(Etk_Dvi *dvi)
@@ -142,7 +147,7 @@ int etk_dvi_page_get(Etk_Dvi *dvi)
  * @param dvi an dvi
  * @return Returns the document of the dvi (NULL on failure)
  */
-Edvi_Document *etk_dvi_dvi_document_get (Etk_Dvi *dvi)
+const Edvi_Document *etk_dvi_dvi_document_get (Etk_Dvi *dvi)
 {
    if (!dvi)
       return NULL;
@@ -155,7 +160,7 @@ Edvi_Document *etk_dvi_dvi_document_get (Etk_Dvi *dvi)
  * @param dvi an dvi
  * @return Returns the current page of the dvi document (NULL on failure)
  */
-Edvi_Page *etk_dvi_dvi_page_get (Etk_Dvi *dvi)
+const Edvi_Page *etk_dvi_dvi_page_get (Etk_Dvi *dvi)
 {
    if (!dvi)
       return NULL;
@@ -187,6 +192,14 @@ void etk_dvi_size_get(Etk_Dvi *dvi, int *width, int *height)
       evas_object_image_size_get(dvi->dvi_object, width, height);
 }
 
+/**
+ * @param dvi: the dvi to change the orientation
+ * @param o: the orientation
+ * @return Returns no value.
+ * @brief Set an orientation of the document
+ *
+ * Sets an orientation @p o of the document
+ */
 void etk_dvi_orientation_set (Etk_Dvi *dvi, Edvi_Page_Orientation o)
 {
    if (!dvi || !dvi->dvi_page || (dvi->orientation == o))
@@ -196,6 +209,12 @@ void etk_dvi_orientation_set (Etk_Dvi *dvi, Edvi_Page_Orientation o)
    _etk_dvi_load (dvi);
 }
 
+/**
+ * @param dvi: the dvi widget to get the orientation of
+ * @return Returns the orientation of the document.
+ * @brief get the orientation of the document @p dvi. If @p dvi
+ * is NULL, return EDVI_PAGE_ORIENTATION_PORTRAIT
+ */
 Edvi_Page_Orientation etk_dvi_orientation_get (Etk_Dvi *dvi)
 {
    if (!dvi || !dvi->dvi_page)
@@ -204,6 +223,16 @@ Edvi_Page_Orientation etk_dvi_orientation_get (Etk_Dvi *dvi)
    return edvi_page_orientation_get (dvi->dvi_page);
 }
 
+/**
+ * @param dvi: the dvi to change the scale
+ * @param hscale: the horizontal scale
+ * @param vscale: the vertical scale
+ * @return Returns no value.
+ * @brief Set the scale of the document
+ *
+ * Sets the horizontal scale @p hscale ans the vertical scale @p vscale
+ * of the document @p dvi
+ */
 void etk_dvi_scale_set (Etk_Dvi *dvi, double hscale, double vscale)
 {
    if (!dvi)
@@ -217,6 +246,14 @@ void etk_dvi_scale_set (Etk_Dvi *dvi, double hscale, double vscale)
    _etk_dvi_load (dvi);
 }
 
+/**
+ * @param dvi: the dvi widget to get the orientation of
+ * @param hscale: horizontal scale of the current page
+ * @param vscale: vertical scale of the current page
+ * @return Returns  no value.
+ * @brief get the horizontal scale @p hscale ans the vertical scale
+ * @p vscale of the document @p dvi. If @p dvi is NULL, their values are 1.0
+ */
 void etk_dvi_scale_get (Etk_Dvi *dvi, double *hscale, double *vscale)
 {
   if (!dvi) {
@@ -235,6 +272,11 @@ void etk_dvi_scale_get (Etk_Dvi *dvi, double *hscale, double *vscale)
   }
 }
 
+/**
+ * @param dvi: the dvi widget
+ * @return Returns  no value.
+ * @brief go to the next page and render it
+ */
 void
 etk_dvi_page_next (Etk_Dvi *dvi)
 {
@@ -249,6 +291,11 @@ etk_dvi_page_next (Etk_Dvi *dvi)
   etk_dvi_page_set (dvi, page);
 }
 
+/**
+ * @param dvi: the dvi widget
+ * @return Returns  no value.
+ * @brief go to the previous page and render it
+ */
 void
 etk_dvi_page_previous (Etk_Dvi *dvi)
 {
@@ -258,52 +305,6 @@ etk_dvi_page_previous (Etk_Dvi *dvi)
     return;
 
   page = dvi->page - 1;
-  if (page < 0)
-    page = 0;
-  etk_dvi_page_set (dvi, page);
-}
-
-void
-etk_dvi_page_page_length_set (Etk_Dvi *dvi, int page_length)
-{
-  if (!dvi || (page_length <= 0) || (dvi->page_length == page_length))
-    return;
-
-  dvi->page_length = page_length;
-}
-
-int
-etk_dvi_page_page_length_get (Etk_Dvi *dvi)
-{
-  if (!dvi)
-    return 0;
-
-  return dvi->page_length;
-}
-
-void
-etk_dvi_page_page_next (Etk_Dvi *dvi)
-{
-  int page;
-
-  if (!dvi)
-    return;
-
-  page = dvi->page + dvi->page_length;
-  if (page >= edvi_document_page_count_get(dvi->dvi_document))
-    page = edvi_document_page_count_get(dvi->dvi_document) - 1;
-  etk_dvi_page_set (dvi, page);
-}
-
-void
-etk_dvi_page_page_previous (Etk_Dvi *dvi)
-{
-  int page;
-
-  if (!dvi)
-    return;
-
-  page = dvi->page - dvi->page_length;
   if (page < 0)
     page = 0;
   etk_dvi_page_set (dvi, page);
@@ -326,7 +327,6 @@ static void _etk_dvi_constructor(Etk_Dvi *dvi)
    dvi->dvi_object = NULL;
    dvi->filename = NULL;
    dvi->page = -1;
-   dvi->page_length = 10;
 
    dvi->dvi_device = edvi_device_new (edvi_dpi_get(), edvi_dpi_get());
    dvi->dvi_property = edvi_property_new();
@@ -458,7 +458,7 @@ static void _etk_dvi_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
  **************************/
 
 /* Called when the dvi is realized */
-static Etk_Bool _etk_dvi_realize_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_dvi_realize_cb(Etk_Object *object, void *data __UNUSED__)
 {
    Etk_Dvi *dvi;
    Evas *evas;
@@ -476,7 +476,7 @@ static Etk_Bool _etk_dvi_realize_cb(Etk_Object *object, void *data)
 }
 
 /* Called when the dvi is unrealized */
-static Etk_Bool _etk_dvi_unrealize_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_dvi_unrealize_cb(Etk_Object *object, void *data __UNUSED__)
 {
    Etk_Dvi *dvi;
 
@@ -545,4 +545,6 @@ static void _etk_dvi_load(Etk_Dvi *dvi)
    etk_widget_size_recalc_queue(widget);
 }
 
-/** @} */
+/**
+ * @}
+ */

@@ -1,3 +1,51 @@
+2008-03-01  Vincent Torri  <doursse at users dot sf dot net>
+
+	* Makefile.am:
+	* configure.in:
+	* src/bin/Makefile.am:
+	* src/lib/Makefile.am:
+	* src/plugins/epsilon/Makefile.am:
+	* src/plugins/ewl/Makefile.am:
+	clean up the build system
+
+	* src/bin/edvi_esmart_test.c: (app_signal_exit),
+	(app_delete_request):
+	* src/bin/edvi_etk_test.c: (main), (_quit_cb), (_change_page_cb):
+	* src/bin/edvi_evas_test.c: (app_signal_exit),
+	(app_delete_request):
+	* src/bin/edvi_ewl_test.c: (main), (_quit_cb), (_change_page_cb):
+	* src/lib/Edvi.h:
+	* src/lib/edvi_device.c: (_edvi_device_aa_put),
+	(DEV_put_bitmap_rgb), (DEV_poll), (_edvi_put_rectangle):
+	* src/lib/edvi_device.h:
+	* src/lib/edvi_document.c: (edvi_document_page_count_get):
+	* src/lib/edvi_document.h:
+	* src/lib/edvi_enum.h:
+	* src/lib/edvi_main.c: (edvi_init):
+	* src/lib/edvi_main.h:
+	* src/lib/edvi_page.c: (edvi_page_mag_set),
+	(edvi_page_orientation_get):
+	* src/lib/edvi_page.h:
+	* src/lib/edvi_property.h:
+	* src/lib/esmart_dvi.c: (esmart_dvi_init):
+	* src/lib/esmart_dvi.h:
+	* src/lib/etk_dvi.c: (etk_dvi_file_set),
+	(etk_dvi_dvi_document_get), (etk_dvi_dvi_page_get),
+	(_etk_dvi_constructor), (_etk_dvi_realize_cb),
+	(_etk_dvi_unrealize_cb):
+	* src/lib/etk_dvi.h:
+	* src/lib/ewl_dvi.c: (ewl_dvi_init), (ewl_dvi_file_set),
+	(ewl_dvi_dvi_document_get), (ewl_dvi_dvi_page_get),
+	(ewl_dvi_reveal_cb):
+	* src/lib/ewl_dvi.h:
+	* src/plugins/epsilon/epsilon_thumbnailer.c:
+	(epsilon_generate_thumb):
+	* src/plugins/ewl/ewl_dvi.c: (_change_page_cb), (create_test),
+	(create_dvi_fd_cb), (dvi_load):
+	Add a *lot* of documentation
+	use __UNUSED__ where needed
+	minor fixes
+
 2007-12-17  Vincent Torri  <doursse at users dot sf dot net>
 
 	* src/lib/Edvi.h:

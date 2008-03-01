@@ -3,10 +3,33 @@
 
 #include <Edvi.h>
 
+
 /**
  * @file ewl_dvi.h
- * @defgroup Ewl_Dvi Dvi: An Dvi Display Widget
- * Provides a widget for displaying evas loadable dvis, and edjes.
+ * @defgroup Ewl_Dvi Ewl Dvi
+ * @brief A DVI display Widget for the Ewl toolkit
+ *
+ * Provides a widget for displaying DVI files in an Ewl widget.
+ * To use an Ewl_Dwi widget, create it with  ewl_dvi_new(), and
+ * set the file with ewl_dvi_file_set(). For example:
+ *
+ * @code
+ * #include <Ewl.h>
+ * #include <ewl_dvi.h>
+ *
+ * Ewl_Widget *dvi;
+ * char       *filename
+ *
+ * dvi = ewl_dvi_new ();
+ * ewl_dvi_file_set (EWL_DVI (dvi), filename);
+ * ewl_widget_show (dvi);
+ * @endcode
+ *
+ * To change the page, use ewl_dvi_page_set() or ewl_dvi_page_next()
+ * / ewl_dvi_page_previous().
+ *
+ * The orientation of the page can be changed with
+ * ewl_dvi_orientation_set().
  *
  * @{
  */
@@ -23,7 +46,8 @@
 #define EWL_DVI_TYPE "dvi"
 
 /**
- * The Ewl_Dvi widget
+ * @typedef Ewl_Dvi
+ * @brief An Ewl dvi widget is a simple widget that displays a DVI document
  */
 typedef struct Ewl_Dvi Ewl_Dvi;
 
@@ -34,25 +58,25 @@ typedef struct Ewl_Dvi Ewl_Dvi;
 #define EWL_DVI(dvi) ((Ewl_Dvi *) dvi)
 
 /**
+ * @struct Ewl_Dvi
  * Inherits from Ewl_Widget and extends to provide a dvi widget
  */
 struct Ewl_Dvi
 {
-	Ewl_Widget            widget;
-	void                 *image;
-	char                 *filename;
-	int                   ow;
-	int                   oh;
-	int                   page;
-	int                   page_length;
+	Ewl_Widget            widget;         /**< Inherit from Ewl_Widget */
+	void                 *image;          /**< The evas object for the image */
+	char                 *filename;       /**< The file name */
+	int                   ow;             /**< The original image width */
+	int                   oh;             /**< The original image height */
+	int                   page;           /**< The page number */
 
-	Edvi_Device          *dvi_device;
-	Edvi_Property        *dvi_property;
-	Edvi_Document        *dvi_document;
-	Edvi_Page            *dvi_page;
-	Edvi_Page_Orientation orientation;
-	double                hscale;
-	double                vscale;
+	Edvi_Device          *dvi_device;     /**< The Edvi device */
+	Edvi_Property        *dvi_property;   /**< The Edvi property */
+	Edvi_Document        *dvi_document;   /**< The Edvi document */
+	Edvi_Page            *dvi_page;       /**< The Edvi current page */
+	Edvi_Page_Orientation orientation;    /**< The orientation */
+	double                hscale;         /**< The horizontal scale */
+	double                vscale;         /**< The vertical scale */
 
 };
 
@@ -61,8 +85,8 @@ int                   ewl_dvi_init(Ewl_Dvi *dvi);
 void                  ewl_dvi_file_set(Ewl_Dvi *dvi, const char *filename);
 void                  ewl_dvi_page_set(Ewl_Dvi *dvi, int page);
 int                   ewl_dvi_page_get(Ewl_Dvi *dvi);
-Edvi_Document        *ewl_dvi_dvi_document_get (Ewl_Dvi *dvi);
-Edvi_Page            *ewl_dvi_dvi_page_get (Ewl_Dvi *dvi);
+const Edvi_Document  *ewl_dvi_dvi_document_get (Ewl_Dvi *dvi);
+const Edvi_Page      *ewl_dvi_dvi_page_get (Ewl_Dvi *dvi);
 void                  ewl_dvi_size_get (Ewl_Dvi *dvi, int *width, int *height);
 
 void                  ewl_dvi_orientation_set (Ewl_Dvi *dvi, Edvi_Page_Orientation o);
@@ -72,10 +96,6 @@ void                  ewl_dvi_scale_set (Ewl_Dvi *dvi, double hscale, double vsc
 void                  ewl_dvi_scale_get (Ewl_Dvi *dvi, double *hscale, double *vscale);
 void                  ewl_dvi_page_next (Ewl_Dvi *dvi);
 void                  ewl_dvi_page_previous (Ewl_Dvi *dvi);
-void                  ewl_dvi_page_page_length_set (Ewl_Dvi *dvi, int page_length);
-int                   ewl_dvi_page_page_length_get (Ewl_Dvi *dvi);
-void                  ewl_dvi_page_page_next (Ewl_Dvi *dvi);
-void                  ewl_dvi_page_page_previous (Ewl_Dvi *dvi);
 
 /*
  * Internally used callbacks, override at your own risk.
@@ -88,5 +108,6 @@ void ewl_dvi_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data );
 /**
  * @}
  */
+
 
 #endif				/* __EWL_DVI_H__ */

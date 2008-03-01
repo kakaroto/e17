@@ -6,6 +6,14 @@
 
 #include "etk_dvi.h"
 
+#include "config.h"
+
+#if HAVE___ATTRIBUTE__
+#define __UNUSED__ __attribute__((unused))
+#else
+#define __UNUSED__
+#endif
+
 
 static Etk_Bool _quit_cb(void *data);
 static Etk_Bool _change_page_cb (Etk_Object *object, Etk_Tree_Row *row, Etk_Event_Mouse_Up *event, void *data);
@@ -35,7 +43,7 @@ main (int argc, char *argv[])
     return EXIT_FAILURE;
   }
 
-  etk_init (&argc, &argv);
+  etk_init (argc, argv);
 
   /* We open the dvi file */
   dvi = etk_dvi_new ();
@@ -102,14 +110,14 @@ main (int argc, char *argv[])
 }
 
 static Etk_Bool
-_quit_cb(void *data)
+_quit_cb(void *data __UNUSED__)
 {
   etk_main_quit ();
   return ETK_TRUE;
 }
 
 static Etk_Bool
-_change_page_cb (Etk_Object *object, Etk_Tree_Row *row, Etk_Event_Mouse_Up *event, void *data)
+_change_page_cb (Etk_Object *object, Etk_Tree_Row *row, Etk_Event_Mouse_Up *event __UNUSED__, void *data)
 {
   Etk_Tree *tree;
   Etk_Dvi  *dvi;

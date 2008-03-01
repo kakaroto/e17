@@ -6,6 +6,14 @@
 
 #include "ewl_dvi.h"
 
+#include "config.h"
+
+#if HAVE___ATTRIBUTE__
+#define __UNUSED__ __attribute__((unused))
+#else
+#define __UNUSED__
+#endif
+
 
 static void _quit_cb (Ewl_Widget * w, void *ev_data, void *user_data);
 static void _change_page_cb (Ewl_Widget *widget, void *ev_data, void *user_data);
@@ -21,7 +29,7 @@ main (int argc, char *argv[])
   Ewl_View       *view;
   Ewl_Widget     *dvi;
   Ewl_Widget     *sp;
-  Edvi_Document  *document;
+  const Edvi_Document  *document;
   int             page_count;
   int             i;
 
@@ -90,6 +98,7 @@ main (int argc, char *argv[])
   ewl_container_child_append (EWL_CONTAINER (sp), list);
   ewl_widget_show (list);
 
+  ewl_dvi_scale_set (EWL_DVI (dvi), 0.5, 0.5);
   ewl_container_child_append (EWL_CONTAINER (hbox), dvi);
   ewl_widget_show (dvi);
 
@@ -102,7 +111,7 @@ main (int argc, char *argv[])
   return EXIT_SUCCESS;
 }
 
-static void _quit_cb (Ewl_Widget * w, void *ev_data, void *user_data)
+static void _quit_cb (Ewl_Widget * w, void *ev_data __UNUSED__, void *user_data)
 {
   Ecore_List *list;
 
@@ -115,7 +124,7 @@ static void _quit_cb (Ewl_Widget * w, void *ev_data, void *user_data)
 }
 
 static void
-_change_page_cb (Ewl_Widget *widget, void *ev_data, void *user_data)
+_change_page_cb (Ewl_Widget *widget, void *ev_data __UNUSED__, void *user_data)
 {
   Ewl_Dvi           *dvi;
   Ewl_List          *list;
@@ -127,7 +136,7 @@ _change_page_cb (Ewl_Widget *widget, void *ev_data, void *user_data)
   idx = ewl_mvc_selected_get(EWL_MVC(list));
 
   dvi = EWL_DVI (user_data);
-  if (idx->row != ewl_dvi_page_get (dvi)) {
+  if (idx->row != (unsigned int)ewl_dvi_page_get (dvi)) {
     ewl_dvi_page_set (dvi, idx->row);
     ewl_callback_call (EWL_WIDGET (dvi), EWL_CALLBACK_REVEAL);
   }

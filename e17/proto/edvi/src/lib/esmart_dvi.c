@@ -63,6 +63,12 @@ static Evas_Smart  *smart = NULL;
 /* Externally accessible calls */
 /*******************************/
 
+
+/**
+ * @addtogroup Esmart_Dvi
+ * @{
+ */
+
 /**
  * Add a smart dvi object to an evas
  *
@@ -70,7 +76,6 @@ static Evas_Smart  *smart = NULL;
  * @return The file name
  *
  * Add a smart dvi object to the evas @p evas, or NULL on failure
- *
  */
 Evas_Object *
 esmart_dvi_add (Evas *evas)
@@ -87,7 +92,6 @@ esmart_dvi_add (Evas *evas)
  * @return 1 on success, 0 otherwise
  *
  * Initialize the smart dvi object @p obj
- *
  */
 Evas_Bool
 esmart_dvi_init (Evas_Object *obj)
@@ -99,7 +103,6 @@ esmart_dvi_init (Evas_Object *obj)
   if (sp->filename) free (sp->filename);
   sp->filename = NULL;
   sp->page = -1;
-  sp->page_length = 10;
 
   sp->dvi_device = edvi_device_new (edvi_dpi_get(), edvi_dpi_get());
   sp->dvi_property = edvi_property_new();
@@ -121,7 +124,6 @@ esmart_dvi_init (Evas_Object *obj)
  * @param filename: The file name
  *
  * Set the file name of the smart dvi object @p obj
- *
  */
 void
 esmart_dvi_file_set (Evas_Object *obj, const char *filename)
@@ -152,7 +154,6 @@ esmart_dvi_file_set (Evas_Object *obj, const char *filename)
  * @return The name of the file, or @c NULL on failure
  *
  * Return the name of the file used for the smart dvi object @p obj
- *
  */
 const char *
 esmart_dvi_file_get (Evas_Object *obj)
@@ -171,7 +172,6 @@ esmart_dvi_file_get (Evas_Object *obj)
  * @param page: The page number
  *
  * Set the page number of the smart dvi object @p obj
- *
  */
 void
 esmart_dvi_page_set (Evas_Object *obj, int page)
@@ -195,7 +195,6 @@ esmart_dvi_page_set (Evas_Object *obj, int page)
  * @return The page number
  *
  * Return the page number of the smart dvi object @p obj
- *
  */
 int
 esmart_dvi_page_get(Evas_Object *obj)
@@ -214,9 +213,8 @@ esmart_dvi_page_get(Evas_Object *obj)
  * @return The document of the dvi (NULL on failure)
  *
  * Return the document of the smart dvi object @p obj
- *
  */
-Edvi_Document *
+const Edvi_Document *
 esmart_dvi_dvi_document_get (Evas_Object *obj)
 {
   Smart_Dvi *sp;
@@ -233,9 +231,8 @@ esmart_dvi_dvi_document_get (Evas_Object *obj)
  * @return The current page of the dvi (NULL on failure)
  *
  * Return the current page of the smart dvi object @p obj
- *
  */
-Edvi_Page *
+const Edvi_Page *
 esmart_dvi_dvi_page_get (Evas_Object *obj)
 {
   Smart_Dvi *sp;
@@ -273,6 +270,12 @@ void esmart_dvi_size_get(Evas_Object *obj, int *width, int *height)
    }
 }
 
+/**
+ * @brief Sets the orientation of a smart dvi object
+ *
+ * @param obj The Evas object
+ * @param o The orientation
+ */
 void
 esmart_dvi_orientation_set (Evas_Object          *obj,
                             Edvi_Page_Orientation o)
@@ -288,6 +291,12 @@ esmart_dvi_orientation_set (Evas_Object          *obj,
   _smart_page_render (obj);
 }
 
+/**
+ * @brief Gets the orientation of a smart dvi object
+ *
+ * @param obj The Evas object
+ * @return The orientation
+ */
 Edvi_Page_Orientation
 esmart_dvi_orientation_get (Evas_Object *obj)
 {
@@ -298,6 +307,13 @@ esmart_dvi_orientation_get (Evas_Object *obj)
   return sp->orientation;
 }
 
+/**
+ * @brief Sets the scale of the DVI document
+ *
+ * @param obj The Evas object
+ * @param hscale The horizontal scale
+ * @param vscale The vertical scale
+ */
 void
 esmart_dvi_scale_set (Evas_Object *obj,
                       double       hscale,
@@ -316,6 +332,13 @@ esmart_dvi_scale_set (Evas_Object *obj,
   _smart_page_render (obj);
 }
 
+/**
+ * @brief Gets the scale of the DVI document
+ *
+ * @param obj The Evas object
+ * @param hscale The horizontal scale
+ * @param vscale The vertical scale
+ */
 void
 esmart_dvi_scale_get (Evas_Object *obj,
                       double      *hscale,
@@ -341,6 +364,11 @@ esmart_dvi_scale_get (Evas_Object *obj,
   }
 }
 
+/**
+ * @brief Go to the next page and render it
+ *
+ * @param obj: the smart object
+ */
 void
 esmart_dvi_page_next (Evas_Object *obj)
 {
@@ -355,6 +383,11 @@ esmart_dvi_page_next (Evas_Object *obj)
   esmart_dvi_page_set (obj, page);
 }
 
+/**
+ * @brief Go to the previous page and render it
+ *
+ * @param obj: the smart object
+ */
 void
 esmart_dvi_page_previous (Evas_Object *obj)
 {
@@ -369,55 +402,9 @@ esmart_dvi_page_previous (Evas_Object *obj)
   esmart_dvi_page_set (obj, page);
 }
 
-void
-esmart_dvi_page_page_length_set (Evas_Object *obj, int page_length)
-{
-  Smart_Dvi *sp;
-
-  E_SMART_OBJ_GET(sp, obj, E_OBJ_NAME);
-
-  if ((page_length <= 0) || (sp->page_length == page_length))
-    return;
-  sp->page_length = page_length;
-}
-
-int
-esmart_dvi_page_page_length_get (Evas_Object *obj)
-{
-  Smart_Dvi *sp;
-
-  E_SMART_OBJ_GET_RETURN(sp, obj, E_OBJ_NAME, 0);
-
-  return sp->page_length;
-}
-
-void
-esmart_dvi_page_page_next (Evas_Object *obj)
-{
-  Smart_Dvi *sp;
-  int        page;
-
-  E_SMART_OBJ_GET(sp, obj, E_OBJ_NAME);
-
-  page = sp->page + sp->page_length;
-  if (page > (edvi_document_page_count_get(sp->dvi_document) - 1))
-    page = edvi_document_page_count_get(sp->dvi_document) - 1;
-  esmart_dvi_page_set (obj, sp->page);
-}
-
-void
-esmart_dvi_page_page_previous (Evas_Object *obj)
-{
-  Smart_Dvi *sp;
-  int        page;
-
-  E_SMART_OBJ_GET(sp, obj, E_OBJ_NAME);
-
-  page = sp->page - sp->page_length;
-  if (page < 0)
-    page = 0;
-  esmart_dvi_page_set (obj, page);
-}
+/**
+ * @}
+ */
 
 
 /*******************************************/

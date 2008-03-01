@@ -1,5 +1,7 @@
 #include <math.h>
 
+#include "config.h"
+
 #include <Ewl.h>
 #include "ewl_debug.h"
 #include "ewl_macros.h"
@@ -13,6 +15,12 @@
 
 
 #define round(a) ( ((a)<0.0) ? (int)(floor((a) - 0.5)) : (int)(floor((a) + 0.5)) )
+
+
+/**
+ * @addtogroup Ewl_Dvi
+ * @{
+ */
 
 /**
  * @return Returns a pointer to a new dvi widget on success, NULL on failure.
@@ -79,7 +87,6 @@ ewl_dvi_init(Ewl_Dvi *dvi)
 
 	dvi->filename = NULL;
 	dvi->page = -1;
-	dvi->page_length = 10;
 
 	dvi->dvi_device = edvi_device_new (edvi_dpi_get(), edvi_dpi_get());
 	dvi->dvi_property = edvi_property_new();
@@ -145,26 +152,26 @@ ewl_dvi_file_set(Ewl_Dvi *dvi, const char *filename)
 	}
 
 	dvi->dvi_document = edvi_document_new (filename, dvi->dvi_device, dvi->dvi_property);
-	dvi->page = -1;
+	dvi->page = 0;
 
 	/*
 	 * Load the new dvi if widget has been realized
 	 */
 	if (REALIZED(w)) {
 		ewl_widget_unrealize(w);
-		ewl_widget_realize(w);
+		ewl_widget_reveal(w);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
- * @param dvi: the dvi to change constrain setting
- * @param size: the minimum constrain size
+ * @param dvi: the dvi to set the page of
+ * @param page:  the page number
  * @return Returns no value.
- * @brief Set a size which, if the dvi is bigger than, scale proportionally
+ * @brief Set the page of the document
  *
- * Sets a size to scale to proportionally if the dvi exceeds this size
+ * Sets the page of the document @p dvi to @p page
  */
 void ewl_dvi_page_set(Ewl_Dvi *dvi, int page)
 {
@@ -188,7 +195,7 @@ void ewl_dvi_page_set(Ewl_Dvi *dvi, int page)
  * @return Returns the document of the dvi (NULL on failure)
  * @brief get the document of the dvi
  */
-Edvi_Document *ewl_dvi_dvi_document_get (Ewl_Dvi *dvi)
+const Edvi_Document *ewl_dvi_dvi_document_get (Ewl_Dvi *dvi)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET(dvi, NULL);
@@ -202,7 +209,7 @@ Edvi_Document *ewl_dvi_dvi_document_get (Ewl_Dvi *dvi)
  * @return Returns the current page of the dvi (NULL on failure)
  * @brief get the current page of the dvi
  */
-Edvi_Page *ewl_dvi_dvi_page_get (Ewl_Dvi *dvi)
+const Edvi_Page *ewl_dvi_dvi_page_get (Ewl_Dvi *dvi)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET(dvi, NULL);
@@ -236,6 +243,14 @@ void ewl_dvi_dvi_size_get (Ewl_Dvi *dvi, int *width, int *height)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param dvi: the dvi to change the orientation
+ * @param o: the orientation
+ * @return Returns no value.
+ * @brief Set an orientation of the document
+ *
+ * Sets an orientation @p o of the document
+ */
 void
 ewl_dvi_orientation_set (Ewl_Dvi *dvi, Edvi_Page_Orientation o)
 {
@@ -252,6 +267,12 @@ ewl_dvi_orientation_set (Ewl_Dvi *dvi, Edvi_Page_Orientation o)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param dvi: the dvi widget to get the orientation of
+ * @return Returns the orientation of the document.
+ * @brief get the orientation of the document @p dvi. If @p dvi
+ * is NULL, return EDVI_PAGE_ORIENTATION_PORTRAIT
+ */
 Edvi_Page_Orientation
 ewl_dvi_orientation_get (Ewl_Dvi *dvi)
 {
@@ -265,6 +286,16 @@ ewl_dvi_orientation_get (Ewl_Dvi *dvi)
 	DRETURN_INT(edvi_page_orientation_get (dvi->dvi_page), DLEVEL_STABLE);
 }
 
+/**
+ * @param dvi: the dvi to change the scale
+ * @param hscale: the horizontal scale
+ * @param vscale: the vertical scale
+ * @return Returns no value.
+ * @brief Set the scale of the document
+ *
+ * Sets the horizontal scale @p hscale ans the vertical scale @p vscale
+ * of the document @p dvi
+ */
 void
 ewl_dvi_scale_set (Ewl_Dvi *dvi, double hscale, double vscale)
 {
@@ -282,6 +313,14 @@ ewl_dvi_scale_set (Ewl_Dvi *dvi, double hscale, double vscale)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param dvi: the dvi widget to get the orientation of
+ * @param hscale: horizontal scale of the current page
+ * @param vscale: vertical scale of the current page
+ * @return Returns  no value.
+ * @brief get the horizontal scale @p hscale ans the vertical scale
+ * @p vscale of the document @p dvi. If @p dvi is NULL, their values are 1.0
+ */
 void
 ewl_dvi_scale_get (Ewl_Dvi *dvi, double *hscale, double *vscale)
 {
@@ -301,6 +340,11 @@ ewl_dvi_scale_get (Ewl_Dvi *dvi, double *hscale, double *vscale)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param dvi: the dvi widget
+ * @return Returns  no value.
+ * @brief go to the next page and render it
+ */
 void
 ewl_dvi_page_next (Ewl_Dvi *dvi)
 {
@@ -321,6 +365,11 @@ ewl_dvi_page_next (Ewl_Dvi *dvi)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param dvi: the dvi widget
+ * @return Returns  no value.
+ * @brief go to the previous page and render it
+ */
 void
 ewl_dvi_page_previous (Ewl_Dvi *dvi)
 {
@@ -341,74 +390,14 @@ ewl_dvi_page_previous (Ewl_Dvi *dvi)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
-void
-ewl_dvi_page_page_length_set (Ewl_Dvi *dvi, int page_length)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(dvi);
-	DCHECK_TYPE(dvi, EWL_DVI_TYPE);
-
-	if (!dvi || (page_length <= 0) || (dvi->page_length == page_length))
-		DLEAVE_FUNCTION(DLEVEL_STABLE);
-
-	dvi->page_length = page_length;
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-int
-ewl_dvi_page_page_length_get (Ewl_Dvi *dvi)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(dvi, 0);
-	DCHECK_TYPE_RET(dvi, EWL_DVI_TYPE, 0);
-
-	if (!dvi)
-		DRETURN_INT(0, DLEVEL_STABLE);
-
-	DRETURN_INT(dvi->page_length, DLEVEL_STABLE);
-}
-
-void
-ewl_dvi_page_page_next (Ewl_Dvi *dvi)
-{
-	int page;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(dvi);
-	DCHECK_TYPE(dvi, EWL_DVI_TYPE);
-
-	if (!dvi)
-		DLEAVE_FUNCTION(DLEVEL_STABLE);
-
-	page = dvi->page + dvi->page_length;
-	if (page >= edvi_document_page_count_get(dvi->dvi_document))
-		page = edvi_document_page_count_get(dvi->dvi_document) - 1;
-	ewl_dvi_page_set (dvi, page);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void
-ewl_dvi_page_page_previous (Ewl_Dvi *dvi)
-{
-	int page;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(dvi);
-	DCHECK_TYPE(dvi, EWL_DVI_TYPE);
-
-	if (!dvi)
-		DLEAVE_FUNCTION(DLEVEL_STABLE);
-
-	page = dvi->page - dvi->page_length;
-	if (page < 0)
-		page = 0;
-	ewl_dvi_page_set (dvi, page);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The reveal callback
+ */
 void
 ewl_dvi_reveal_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 		  void *user_data __UNUSED__)
@@ -422,6 +411,8 @@ ewl_dvi_reveal_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	dvi = EWL_DVI(w);
 	emb = ewl_embed_widget_find(w);
+	if (!emb)
+		DRETURN(DLEVEL_STABLE);
 
 	/*
 	 * Load the dvi
@@ -435,8 +426,8 @@ ewl_dvi_reveal_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	if (dvi->dvi_document) {
 		unsigned int *m;
-		int w;
-		int h;
+		int           w;
+		int           h;
 
 		if (dvi->dvi_page)
 			edvi_page_delete (dvi->dvi_page);
@@ -447,7 +438,7 @@ ewl_dvi_reveal_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 		evas_object_image_size_set (dvi->image, w, h);
 		evas_object_image_fill_set (dvi->image, 0, 0, w, h);
 		m = (unsigned int *)evas_object_image_data_get (dvi->image, 1);
-                if (!m)
+		if (!m)
 			DRETURN(DLEVEL_STABLE);
 
 		memset(m, (255 << 24) | (255 << 16) | (255 << 8) | 255, w * h * 4);
@@ -479,6 +470,14 @@ ewl_dvi_reveal_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The obscure callback
+ */
 void
 ewl_dvi_obscure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 						void *user_data __UNUSED__)
@@ -501,6 +500,14 @@ ewl_dvi_obscure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The configure callback
+ */
 void
 ewl_dvi_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 						void *user_data __UNUSED__)
@@ -539,6 +546,14 @@ ewl_dvi_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The destroy callback
+ */
 void
 ewl_dvi_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 		   void *user_data __UNUSED__)
@@ -563,3 +578,7 @@ ewl_dvi_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
+/**
+ * @}
+ */

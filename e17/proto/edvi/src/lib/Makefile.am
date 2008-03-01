@@ -11,9 +11,12 @@ EDVI_ETK_WIDGET = etk_dvi.c
 EDVI_ETK_HEADER = etk_dvi.h
 endif
 
-INCLUDES = 			\
--I. -I$(top_srcdir)/src/lib	\
-@EWL_CFLAGS@ @ETK_CFLAGS@ @EDVI_CFLAGS@
+AM_CPPFLAGS = \
+-I. \
+-I$(top_srcdir)/src/lib	\
+@EWL_CFLAGS@ \
+@ETK_CFLAGS@ \
+@EDVI_CFLAGS@
 
 lib_LTLIBRARIES = libedvi.la
 
@@ -48,3 +51,4 @@ installed_headersdir = $(prefix)/include/edvi
 installed_headers_DATA = $(EDVIHEADERS)
 
 libedvi_la_LIBADD = @ETK_LIBS@ @EWL_LIBS@ @EDVI_LIBS@
+libedvi_la_LDFLAGS = -version-info @version_info@

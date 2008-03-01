@@ -55,7 +55,7 @@ edvi_document_delete (Edvi_Document *document)
 }
 
 int
-edvi_document_page_count_get (Edvi_Document *document)
+edvi_document_page_count_get (const Edvi_Document *document)
 {
   if (!document || !document->dvi_document)
     return 0;

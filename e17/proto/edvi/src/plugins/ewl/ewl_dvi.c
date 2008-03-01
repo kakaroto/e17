@@ -15,6 +15,14 @@
 #include "Edvi.h"
 #include "ewl_dvi.h"
 
+#include "config.h"
+
+#if HAVE___ATTRIBUTE__
+#define __UNUSED__ __attribute__((unused))
+#else
+#define __UNUSED__
+#endif
+
 
 static Ewl_Widget     *dvi;
 static Ewl_Widget     *list;
@@ -43,7 +51,7 @@ test_info (Ewl_Test *test)
 }
 
 static void
-_change_page_cb (Ewl_Widget *widget, void *ev_data, void *user_data)
+_change_page_cb (Ewl_Widget *widget, void *ev_data __UNUSED__, void *user_data)
 {
   Ewl_Dvi           *dvi;
   Ewl_List          *list;
@@ -55,7 +63,7 @@ _change_page_cb (Ewl_Widget *widget, void *ev_data, void *user_data)
   idx = ewl_mvc_selected_get(EWL_MVC(list));
 
   dvi = EWL_DVI (user_data);
-  if (idx->row != ewl_dvi_page_get (dvi)) {
+  if (idx->row != (unsigned int)ewl_dvi_page_get (dvi)) {
     ewl_dvi_page_set (dvi, idx->row);
     ewl_callback_call (EWL_WIDGET (dvi), EWL_CALLBACK_REVEAL);
   }
@@ -67,7 +75,6 @@ create_test (Ewl_Container *box)
   Ewl_Widget     *hbox;
   Ewl_Widget     *button;
   Ewl_Widget     *scrollpane;
-  char *          dvi_file = NULL;
 
   if (!edvi_init (300, "cx", 4,
                   1.0, 1.0,
@@ -142,7 +149,7 @@ create_test (Ewl_Container *box)
 }
 
 static void
-create_dvi_fd_cb(Ewl_Widget *w, void *ev_data,
+create_dvi_fd_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
                  void *user_data)
 {
   if (fd)
@@ -205,9 +212,9 @@ create_dvi_fd_window_response (Ewl_Widget *w, void *ev, void *data)
 static void
 dvi_load (const char *filename)
 {
-  Edvi_Document   *document;
-  int              page_count;
-  int              i;
+  const Edvi_Document *document;
+  int                  page_count;
+  int                  i;
 
   if (!filename)
     return;
