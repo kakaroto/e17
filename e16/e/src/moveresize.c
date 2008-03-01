@@ -503,18 +503,24 @@ ActionMoveHandleMotion(void)
 	for (i = 0; i < num; i++)
 	  {
 	     ewin1 = gwins[i];
-	     DrawEwinShape(ewin1, Mode_mr.mode, EoGetX(ewin1),
-			   EoGetY(ewin1), ewin1->client.w, ewin1->client.h, 0,
-			   i);
+	     DrawEwinShape(ewin1, Mode_mr.mode, EoGetX(ewin1), EoGetY(ewin1),
+			   ewin1->client.w, ewin1->client.h, 0, i);
+	     if (Conf.movres.mode_move == 0)
+		Mode_mr.mode = 0;
 	  }
 	Mode.mode = MODE_MOVE;
 	dx = Mode.events.mx - Mode_mr.start_x;
 	dy = Mode.events.my - Mode_mr.start_y;
      }
-   else
+   else if (Mode.mode == MODE_MOVE)
      {
 	dx = Mode.events.mx - Mode.events.px;
 	dy = Mode.events.my - Mode.events.py;
+     }
+   else
+     {
+	/* It should not be possible to get here. */
+	goto done;
      }
 
    jumpx = 0;
@@ -688,6 +694,8 @@ ActionMoveHandleMotion(void)
 	     Efree(all_gwins);
 	  }
      }
+
+ done:
    Efree(gwins);
 }
 
