@@ -20,7 +20,6 @@ ewl_engine_xcb.c
 
 xcb_la_LIBADD = $(top_builddir)/src/lib/libewl.la
 xcb_la_LDFLAGS = -module -version-info @INTERFACE_VERSION@
-x11_la_LIBTOOLFLAGS = --tag=disable-static
 xcb_la_DEPENDENCIES =
 
 endif

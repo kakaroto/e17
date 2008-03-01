@@ -20,7 +20,6 @@ pkg_LTLIBRARIES = ewl_statusbar_test.la
 ewl_statusbar_test_la_SOURCES = ewl_statusbar_test.c
 ewl_statusbar_test_la_LIBADD = $(top_builddir)/src/lib/libewl.la
 ewl_statusbar_test_la_LDFLAGS = -module @create_shared_lib@ -avoid-version
-ewl_statusbar_test_la_LIBTOOLFLAGS = --tag=disable-static
 
 FILES = $(ewl_statusbar_test_la_SOURCES)
 

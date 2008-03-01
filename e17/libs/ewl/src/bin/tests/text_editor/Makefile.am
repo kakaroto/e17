@@ -20,7 +20,6 @@ pkg_LTLIBRARIES = ewl_text_editor_test.la
 ewl_text_editor_test_la_SOURCES = ewl_text_editor_test.c
 ewl_text_editor_test_la_LIBADD = $(top_builddir)/src/lib/libewl.la @ECORE_LIBS@
 ewl_text_editor_test_la_LDFLAGS = -module @create_shared_lib@ -avoid-version
-ewl_text_editor_test_la_LIBTOOLFLAGS = --tag=disable-static
 
 FILES = $(ewl_text_editor_test_la_SOURCES)
 

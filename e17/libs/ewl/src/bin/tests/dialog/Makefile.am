@@ -20,7 +20,6 @@ pkg_LTLIBRARIES = ewl_dialog_test.la
 ewl_dialog_test_la_SOURCES = ewl_dialog_test.c
 ewl_dialog_test_la_LIBADD = $(top_builddir)/src/lib/libewl.la
 ewl_dialog_test_la_LDFLAGS = -module @create_shared_lib@ -avoid-version
-ewl_dialog_test_la_LIBTOOLFLAGS = --tag=disable-static
 
 FILES = $(ewl_dialog_test_la_SOURCES)
 

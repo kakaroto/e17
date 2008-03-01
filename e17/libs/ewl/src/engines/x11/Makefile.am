@@ -19,7 +19,6 @@ ewl_engine_x11.c
 
 x11_la_LIBADD = $(top_builddir)/src/lib/libewl.la
 x11_la_LDFLAGS = -module -version-info @INTERFACE_VERSION@
-x11_la_LIBTOOLFLAGS = --tag=disable-static
 x11_la_DEPENDENCIES =
 
 endif
