@@ -52,6 +52,9 @@ static const SoundOps *ops = NULL;
 #if defined(HAVE_SOUND_ESD)
 extern const SoundOps SoundOps_esd;
 static const SoundOps *ops = &SoundOps_esd;
+#elif defined(HAVE_SOUND_PA)
+extern const SoundOps SoundOps_pa;
+static const SoundOps *ops = &SoundOps_pa;
 #endif
 #endif
 

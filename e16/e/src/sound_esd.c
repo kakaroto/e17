@@ -142,4 +142,4 @@ const SoundOps      SoundOps_esd = {
    _sound_esd_Play,
 };
 
-#endif /* HAVE_SOUND && HAVE_LIBESD */
+#endif /* HAVE_SOUND && HAVE_SOUND_ESD */
