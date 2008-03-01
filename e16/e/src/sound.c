@@ -363,11 +363,13 @@ SoundIpc(const char *params)
    else if (!strncmp(cmd, "off", 2))
      {
 	SoundExit();
+	autosave();
      }
    else if (!strncmp(cmd, "on", 2))
      {
 	Conf_sound.enable = 1;
 	SoundInit();
+	autosave();
      }
    else if (!strncmp(cmd, "play", 2))
      {
