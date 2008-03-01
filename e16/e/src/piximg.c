@@ -75,23 +75,29 @@ ECreatePixImg(Window win, int w, int h)
 	       {
 		  pi->shminfo->shmaddr = pi->xim->data =
 		     (char *)shmat(pi->shminfo->shmid, 0, 0);
-		  if (pi->shminfo->shmaddr)
+		  if (pi->shminfo->shmaddr != (void *)-1)
 		    {
 		       pi->shminfo->readOnly = False;
+		       Mode.events.last_error_code = 0;
 		       XShmAttach(disp, pi->shminfo);
-		       pi->pmap =
-			  XShmCreatePixmap(disp, win, pi->shminfo->shmaddr,
-					   pi->shminfo, w, h, VRoot.depth);
-		       if (pi->pmap)
+		       ESync(0);
+		       if (Mode.events.last_error_code == 0)
 			 {
-			    gcv.subwindow_mode = IncludeInferiors;
-			    pi->gc = EXCreateGC(win, GCSubwindowMode, &gcv);
-			    if (pi->gc)
-			       return pi;
+			    pi->pmap =
+			       XShmCreatePixmap(disp, win, pi->shminfo->shmaddr,
+						pi->shminfo, w, h, VRoot.depth);
+			    if (pi->pmap)
+			      {
+				 gcv.subwindow_mode = IncludeInferiors;
+				 pi->gc =
+				    EXCreateGC(win, GCSubwindowMode, &gcv);
+				 if (pi->gc)
+				    return pi;
 
-			    EFreePixmap(pi->pmap);
+				 EFreePixmap(pi->pmap);
+			      }
+			    XShmDetach(disp, pi->shminfo);
 			 }
-		       XShmDetach(disp, pi->shminfo);
 		       shmdt(pi->shminfo->shmaddr);
 		    }
 		  shmctl(pi->shminfo->shmid, IPC_RMID, 0);
