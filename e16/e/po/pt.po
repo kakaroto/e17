@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-02-17 16:54+0100\n"
+"POT-Creation-Date: 2008-03-01 13:38+0100\n"
 "PO-Revision-Date: 2000-03-07 16:35+0100\n"
 "Last-Translator: Daniel Vieira Pereira <gunsmithcat@ip.pt>\n"
 "Language-Team: Portuguese <pt@li.org>\n"
@@ -162,7 +162,7 @@ msgstr "Ignorar"
 msgid "Restart Enlightenment"
 msgstr "Reiniciar o Enlightenment"
 
-#: src/alert.c:569 src/setup.c:177
+#: src/alert.c:569 src/setup.c:176
 msgid "Quit Enlightenment"
 msgstr "Sair do Enlightenment"
 
@@ -700,7 +700,7 @@ msgid ""
 msgstr ""
 
 #: src/dialog.c:873 src/dialog.c:2091 src/dialog.c:2122 src/events.c:87
-#: src/setup.c:165 src/sound.c:197
+#: src/setup.c:165 src/sound.c:200
 msgid "OK"
 msgstr "OK"
 
@@ -1925,15 +1925,15 @@ msgid ""
 "you can successfully run Enlightenment.\n"
 msgstr ""
 
-#: src/setup.c:176
+#: src/setup.c:175
 msgid "X server version error"
 msgstr "Erro na versão do servidor de X"
 
-#: src/setup.c:176
+#: src/setup.c:175
 msgid "Ignore this error"
 msgstr "Ignorar este erro"
 
-#: src/setup.c:178
+#: src/setup.c:177
 #, c-format
 msgid ""
 "WARNING:\n"
@@ -2075,11 +2075,11 @@ msgstr ""
 msgid "Error saving snaps file\n"
 msgstr "Erro ao salvar o ficheiro de miniaturas\n"
 
-#: src/sound.c:123
+#: src/sound.c:126
 msgid "Error finding sound file"
 msgstr "Erro ao procurar ficheiro de som"
 
-#: src/sound.c:124
+#: src/sound.c:127
 #, c-format
 msgid ""
 "Warning!  Enlightenment was unable to load the\n"
@@ -2094,11 +2094,11 @@ msgstr ""
 "O Enlightenment continuará a funcionar, mas\n"
 "aconselhamos que verifique a sua configuração.\n"
 
-#: src/sound.c:197
+#: src/sound.c:200
 msgid "Error initialising sound"
 msgstr "Erro ao inicializar o som"
 
-#: src/sound.c:198
+#: src/sound.c:201
 msgid ""
 "Audio was enabled for Enlightenment but there was an error\n"
 "communicating with the audio server (Esound). Audio will\n"
@@ -2108,19 +2108,19 @@ msgstr ""
 "ao comunicar com o servidor de som (Esound). O Som será\n"
 "desligado agora.\n"
 
-#: src/sound.c:311
+#: src/sound.c:314
 msgid "Enable sounds"
 msgstr "Ligar sons"
 
-#: src/sound.c:317
+#: src/sound.c:320
 msgid "Sound"
 msgstr ""
 
-#: src/sound.c:318
+#: src/sound.c:321
 msgid "Audio Settings"
 msgstr "Opções do Som"
 
-#: src/sound.c:321
+#: src/sound.c:324
 msgid ""
 "Enlightenment Audio\n"
 "Settings Dialog\n"

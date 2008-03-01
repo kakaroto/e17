@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-02-17 16:54+0100\n"
+"POT-Creation-Date: 2008-03-01 13:38+0100\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Adam Kisiel <kisiel@if.pw.edu.pl>\n"
 "Language-Team: Polshi <pl@li.org>\n"
@@ -160,7 +160,7 @@ msgstr "Zignoruj to"
 msgid "Restart Enlightenment"
 msgstr "Uruchom Enlightenment ponownie"
 
-#: src/alert.c:569 src/setup.c:177
+#: src/alert.c:569 src/setup.c:176
 msgid "Quit Enlightenment"
 msgstr "Wyjd¼ z Enlightenment"
 
@@ -704,7 +704,7 @@ msgstr ""
 "Enlightenment\n"
 
 #: src/dialog.c:873 src/dialog.c:2091 src/dialog.c:2122 src/events.c:87
-#: src/setup.c:165 src/sound.c:197
+#: src/setup.c:165 src/sound.c:200
 msgid "OK"
 msgstr "OK"
 
@@ -1960,15 +1960,15 @@ msgid ""
 "you can successfully run Enlightenment.\n"
 msgstr ""
 
-#: src/setup.c:176
+#: src/setup.c:175
 msgid "X server version error"
 msgstr "B³±d wersji XSerwera"
 
-#: src/setup.c:176
+#: src/setup.c:175
 msgid "Ignore this error"
 msgstr "Zignoruj ten b³±d"
 
-#: src/setup.c:178
+#: src/setup.c:177
 #, c-format
 msgid ""
 "WARNING:\n"
@@ -2116,11 +2116,11 @@ msgstr ""
 msgid "Error saving snaps file\n"
 msgstr "B³±d w zapisie pliku zdjêæ\n"
 
-#: src/sound.c:123
+#: src/sound.c:126
 msgid "Error finding sound file"
 msgstr "B³±d przy znajdowaniu pliku d¼wiêkowego"
 
-#: src/sound.c:124
+#: src/sound.c:127
 #, c-format
 msgid ""
 "Warning!  Enlightenment was unable to load the\n"
@@ -2135,11 +2135,11 @@ msgstr ""
 "Enlightenment bêdzie dalej dzia³a³, ale byæ mo¿e zechcesz\n"
 "sprawdziæ swoj± koniguracjê.\n"
 
-#: src/sound.c:197
+#: src/sound.c:200
 msgid "Error initialising sound"
 msgstr "B³±d przy inicjalizacji d¼wiêku"
 
-#: src/sound.c:198
+#: src/sound.c:201
 msgid ""
 "Audio was enabled for Enlightenment but there was an error\n"
 "communicating with the audio server (Esound). Audio will\n"
@@ -2149,19 +2149,19 @@ msgstr ""
 "przy komunikacji z serwerem Audio (Esound). D¼wiêk zostanie\n"
 "teraz wy³±czony.\n"
 
-#: src/sound.c:311
+#: src/sound.c:314
 msgid "Enable sounds"
 msgstr "W³±cz d¼wiêki"
 
-#: src/sound.c:317
+#: src/sound.c:320
 msgid "Sound"
 msgstr ""
 
-#: src/sound.c:318
+#: src/sound.c:321
 msgid "Audio Settings"
 msgstr "Ustawienia Audio"
 
-#: src/sound.c:321
+#: src/sound.c:324
 msgid ""
 "Enlightenment Audio\n"
 "Settings Dialog\n"

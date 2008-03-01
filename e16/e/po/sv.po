@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-02-17 16:54+0100\n"
+"POT-Creation-Date: 2008-03-01 13:38+0100\n"
 "PO-Revision-Date: 2000-04-10 17:30+0200\n"
 "Last-Translator: Bernt Holmberg <bernt@grub01.physto.se>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -161,7 +161,7 @@ msgstr "Ignorera detta"
 msgid "Restart Enlightenment"
 msgstr "Starta om Enlightenment"
 
-#: src/alert.c:569 src/setup.c:177
+#: src/alert.c:569 src/setup.c:176
 msgid "Quit Enlightenment"
 msgstr "Avsluta Enlightenment"
 
@@ -702,7 +702,7 @@ msgstr ""
 "virtuella skrivbordsinställningar\n"
 
 #: src/dialog.c:873 src/dialog.c:2091 src/dialog.c:2122 src/events.c:87
-#: src/setup.c:165 src/sound.c:197
+#: src/setup.c:165 src/sound.c:200
 msgid "OK"
 msgstr "Ok"
 
@@ -1961,15 +1961,15 @@ msgid ""
 "you can successfully run Enlightenment.\n"
 msgstr ""
 
-#: src/setup.c:176
+#: src/setup.c:175
 msgid "X server version error"
 msgstr "X server av fel version"
 
-#: src/setup.c:176
+#: src/setup.c:175
 msgid "Ignore this error"
 msgstr "Ignorera detta fel"
 
-#: src/setup.c:178
+#: src/setup.c:177
 #, c-format
 msgid ""
 "WARNING:\n"
@@ -2117,11 +2117,11 @@ msgstr ""
 msgid "Error saving snaps file\n"
 msgstr "Fel vid sparande av snaps fil\n"
 
-#: src/sound.c:123
+#: src/sound.c:126
 msgid "Error finding sound file"
 msgstr "Fel vid sökning efter ljudfil"
 
-#: src/sound.c:124
+#: src/sound.c:127
 #, c-format
 msgid ""
 "Warning!  Enlightenment was unable to load the\n"
@@ -2136,11 +2136,11 @@ msgstr ""
 "Enlightenment kommer att fortsätta fungera, men du kanske\n"
 "vill kontrollera dina konfigureringsinställningar.\n"
 
-#: src/sound.c:197
+#: src/sound.c:200
 msgid "Error initialising sound"
 msgstr "Fel vid initiering av ljud"
 
-#: src/sound.c:198
+#: src/sound.c:201
 msgid ""
 "Audio was enabled for Enlightenment but there was an error\n"
 "communicating with the audio server (Esound). Audio will\n"
@@ -2150,19 +2150,19 @@ msgstr ""
 "vid kommunikation med ljudservern (Esound). Ljud kommer\n"
 "nu att deaktiveras.\n"
 
-#: src/sound.c:311
+#: src/sound.c:314
 msgid "Enable sounds"
 msgstr "Möjliggör ljud"
 
-#: src/sound.c:317
+#: src/sound.c:320
 msgid "Sound"
 msgstr ""
 
-#: src/sound.c:318
+#: src/sound.c:321
 msgid "Audio Settings"
 msgstr "Ljudinställningar"
 
-#: src/sound.c:321
+#: src/sound.c:324
 msgid ""
 "Enlightenment Audio\n"
 "Settings Dialog\n"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bosnian\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-02-17 16:54+0100\n"
+"POT-Creation-Date: 2008-03-01 13:38+0100\n"
 "PO-Revision-Date: 2004-08-26 00:52+0200\n"
 "Last-Translator: Kemal Šanjta <gomez@lugzdk.ba>\n"
 "Language-Team: Bosnian <lokal@linux.org.ba>\n"
@@ -179,7 +179,7 @@ msgstr "Ignoriŷi ovo"
 msgid "Restart Enlightenment"
 msgstr "Ponovo pokreni Enlightenment"
 
-#: src/alert.c:569 src/setup.c:177
+#: src/alert.c:569 src/setup.c:176
 msgid "Quit Enlightenment"
 msgstr "Iza�i iz Enlightenment-a"
 
@@ -719,7 +719,7 @@ msgstr ""
 "Dijalog osobina\n"
 
 #: src/dialog.c:873 src/dialog.c:2091 src/dialog.c:2122 src/events.c:87
-#: src/setup.c:165 src/sound.c:197
+#: src/setup.c:165 src/sound.c:200
 msgid "OK"
 msgstr "Uredu"
 
@@ -1967,15 +1967,15 @@ msgid ""
 "you can successfully run Enlightenment.\n"
 msgstr ""
 
-#: src/setup.c:176
+#: src/setup.c:175
 msgid "X server version error"
 msgstr "X server greŷka verzije"
 
-#: src/setup.c:176
+#: src/setup.c:175
 msgid "Ignore this error"
 msgstr "Ignoriŷi ovu greŷku"
 
-#: src/setup.c:178
+#: src/setup.c:177
 #, c-format
 msgid ""
 "WARNING:\n"
@@ -2123,11 +2123,11 @@ msgstr ""
 msgid "Error saving snaps file\n"
 msgstr "Greŷka prilikom snimanja slike\n"
 
-#: src/sound.c:123
+#: src/sound.c:126
 msgid "Error finding sound file"
 msgstr "Greŷka u traŵenju zvuīne datoteke"
 
-#: src/sound.c:124
+#: src/sound.c:127
 #, c-format
 msgid ""
 "Warning!  Enlightenment was unable to load the\n"
@@ -2142,11 +2142,11 @@ msgstr ""
 "Enlightenment �e nastaviti sa radom, ali Vi bi\n"
 "moŵda trebali provjeriti vaŷe konfiguracijske osobine.\n"
 
-#: src/sound.c:197
+#: src/sound.c:200
 msgid "Error initialising sound"
 msgstr "Greŷka u inicijalizaciji zvuka"
 
-#: src/sound.c:198
+#: src/sound.c:201
 msgid ""
 "Audio was enabled for Enlightenment but there was an error\n"
 "communicating with the audio server (Esound). Audio will\n"
@@ -2156,19 +2156,19 @@ msgstr ""
 "u komuniciranju sa serverom za zvuk (Esound). Zvuk �e sada biti\n"
 "iskljuīen.\n"
 
-#: src/sound.c:311
+#: src/sound.c:314
 msgid "Enable sounds"
 msgstr "Omogu�i zvukove"
 
-#: src/sound.c:317
+#: src/sound.c:320
 msgid "Sound"
 msgstr ""
 
-#: src/sound.c:318
+#: src/sound.c:321
 msgid "Audio Settings"
 msgstr "Audio osobine"
 
-#: src/sound.c:321
+#: src/sound.c:324
 msgid ""
 "Enlightenment Audio\n"
 "Settings Dialog\n"

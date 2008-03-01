@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.17.1\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-02-17 16:54+0100\n"
+"POT-Creation-Date: 2008-03-01 13:38+0100\n"
 "PO-Revision-Date: 2004-08-29 01:02:30+0900\n"
 "Last-Translator: Michael Kim <lavnrose@e.sarang.net>\n"
 "Language-Team: Korean <translation-team-ko@lists.sourceforge.net>\n"
@@ -178,7 +178,7 @@ msgstr "무시"
 msgid "Restart Enlightenment"
 msgstr "인라이튼먼트 재시작"
 
-#: src/alert.c:569 src/setup.c:177
+#: src/alert.c:569 src/setup.c:176
 msgid "Quit Enlightenment"
 msgstr "인라이튼먼트 종료"
 
@@ -717,7 +717,7 @@ msgstr ""
 "설정 대화상자\n"
 
 #: src/dialog.c:873 src/dialog.c:2091 src/dialog.c:2122 src/events.c:87
-#: src/setup.c:165 src/sound.c:197
+#: src/setup.c:165 src/sound.c:200
 msgid "OK"
 msgstr "확인"
 
@@ -1963,15 +1963,15 @@ msgid ""
 "you can successfully run Enlightenment.\n"
 msgstr ""
 
-#: src/setup.c:176
+#: src/setup.c:175
 msgid "X server version error"
 msgstr "X 서버 버전 오류"
 
-#: src/setup.c:176
+#: src/setup.c:175
 msgid "Ignore this error"
 msgstr "이 오류 무시"
 
-#: src/setup.c:178
+#: src/setup.c:177
 #, c-format
 msgid ""
 "WARNING:\n"
@@ -2119,11 +2119,11 @@ msgstr ""
 msgid "Error saving snaps file\n"
 msgstr "스냅 파일 저장 오류\n"
 
-#: src/sound.c:123
+#: src/sound.c:126
 msgid "Error finding sound file"
 msgstr "사운드 파일 찾기 오류"
 
-#: src/sound.c:124
+#: src/sound.c:127
 #, c-format
 msgid ""
 "Warning!  Enlightenment was unable to load the\n"
@@ -2138,11 +2138,11 @@ msgstr ""
 "인라이튼먼트는 동작을 계속할 것입니다만\n"
 "당신의 환경설정을 확인해 보시기 바랍니다.\n"
 
-#: src/sound.c:197
+#: src/sound.c:200
 msgid "Error initialising sound"
 msgstr "사운드 초기화 오류"
 
-#: src/sound.c:198
+#: src/sound.c:201
 msgid ""
 "Audio was enabled for Enlightenment but there was an error\n"
 "communicating with the audio server (Esound). Audio will\n"
@@ -2152,19 +2152,19 @@ msgstr ""
 "통신 오류가 발생했습니다. 오디오는 지금부터 사용되지\n"
 "않을 것입니다.\n"
 
-#: src/sound.c:311
+#: src/sound.c:314
 msgid "Enable sounds"
 msgstr "사운드 사용"
 
-#: src/sound.c:317
+#: src/sound.c:320
 msgid "Sound"
 msgstr ""
 
-#: src/sound.c:318
+#: src/sound.c:321
 msgid "Audio Settings"
 msgstr "오디오 설정"
 
-#: src/sound.c:321
+#: src/sound.c:324
 msgid ""
 "Enlightenment Audio\n"
 "Settings Dialog\n"

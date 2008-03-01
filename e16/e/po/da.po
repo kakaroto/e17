@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-02-17 16:54+0100\n"
+"POT-Creation-Date: 2008-03-01 13:38+0100\n"
 "PO-Revision-Date: 2008-02-10 19:59+0100\n"
 "Last-Translator: Kim Woelders <kim@woelders.dk>\n"
 "Language-Team: Dansk/Danish <sslug-locale@sslug.dk>\n"
@@ -172,7 +172,7 @@ msgstr "Ignorér dette"
 msgid "Restart Enlightenment"
 msgstr "Genstart Enlightenment"
 
-#: src/alert.c:569 src/setup.c:177
+#: src/alert.c:569 src/setup.c:176
 msgid "Quit Enlightenment"
 msgstr "Afslut Enlightenment"
 
@@ -685,7 +685,7 @@ msgstr ""
 "virtuelle skriveborde\n"
 
 #: src/dialog.c:873 src/dialog.c:2091 src/dialog.c:2122 src/events.c:87
-#: src/setup.c:165 src/sound.c:197
+#: src/setup.c:165 src/sound.c:200
 msgid "OK"
 msgstr "Ok"
 
@@ -1807,15 +1807,15 @@ msgstr ""
 "\n"
 "Du er nødt til at lukke den ned før du kan bruge Enlightenment.\n"
 
-#: src/setup.c:176
+#: src/setup.c:175
 msgid "X server version error"
 msgstr "X-server versionsfejl"
 
-#: src/setup.c:176
+#: src/setup.c:175
 msgid "Ignore this error"
 msgstr "Ignorér denne fejl"
 
-#: src/setup.c:178
+#: src/setup.c:177
 #, c-format
 msgid ""
 "WARNING:\n"
@@ -1951,11 +1951,11 @@ msgstr ""
 msgid "Error saving snaps file\n"
 msgstr "Fejl ved gemning af skærmdumpsfil\n"
 
-#: src/sound.c:123
+#: src/sound.c:126
 msgid "Error finding sound file"
 msgstr "Kunne ikke finde lydfil"
 
-#: src/sound.c:124
+#: src/sound.c:127
 #, c-format
 msgid ""
 "Warning!  Enlightenment was unable to load the\n"
@@ -1967,11 +1967,11 @@ msgstr ""
 "Advarsel! e16 kunne ikke læse denne lydfil:\n"
 "%s\n"
 
-#: src/sound.c:197
+#: src/sound.c:200
 msgid "Error initialising sound"
 msgstr "Fejl under opstart af lyd"
 
-#: src/sound.c:198
+#: src/sound.c:201
 msgid ""
 "Audio was enabled for Enlightenment but there was an error\n"
 "communicating with the audio server (Esound). Audio will\n"
@@ -1980,19 +1980,19 @@ msgstr ""
 "Der var et problem med at kommunikere med audioserveren (esound).\n"
 "Lyd vil nu blive deaktiveret.\n"
 
-#: src/sound.c:311
+#: src/sound.c:314
 msgid "Enable sounds"
 msgstr "Brug lyde"
 
-#: src/sound.c:317
+#: src/sound.c:320
 msgid "Sound"
 msgstr "Lyd"
 
-#: src/sound.c:318
+#: src/sound.c:321
 msgid "Audio Settings"
 msgstr "Lydindstillinger"
 
-#: src/sound.c:321
+#: src/sound.c:324
 msgid ""
 "Enlightenment Audio\n"
 "Settings Dialog\n"

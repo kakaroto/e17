@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-02-17 16:54+0100\n"
+"POT-Creation-Date: 2008-03-01 13:38+0100\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: György Horák <dyuri@horak.hu>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
@@ -173,7 +173,7 @@ msgstr "Hiba átlépése"
 msgid "Restart Enlightenment"
 msgstr "Enlightenment újraindítása"
 
-#: src/alert.c:569 src/setup.c:177
+#: src/alert.c:569 src/setup.c:176
 msgid "Quit Enlightenment"
 msgstr "Kilépés"
 
@@ -710,7 +710,7 @@ msgstr ""
 "beállításai\n"
 
 #: src/dialog.c:873 src/dialog.c:2091 src/dialog.c:2122 src/events.c:87
-#: src/setup.c:165 src/sound.c:197
+#: src/setup.c:165 src/sound.c:200
 msgid "OK"
 msgstr "OK"
 
@@ -1901,15 +1901,15 @@ msgstr ""
 "Ki kell lépnie a jelenlegi ablakkezelõbõl, majd azután\n"
 "indíthatja az Enlightenmentet.\n"
 
-#: src/setup.c:176
+#: src/setup.c:175
 msgid "X server version error"
 msgstr "X-szerver verzió hiba"
 
-#: src/setup.c:176
+#: src/setup.c:175
 msgid "Ignore this error"
 msgstr "Hiba átlépése"
 
-#: src/setup.c:178
+#: src/setup.c:177
 #, c-format
 msgid ""
 "WARNING:\n"
@@ -2053,11 +2053,11 @@ msgstr "Enlightenment maradandó ablakbeállítások\n"
 msgid "Error saving snaps file\n"
 msgstr "Hiba a snap fájl mentésekor\n"
 
-#: src/sound.c:123
+#: src/sound.c:126
 msgid "Error finding sound file"
 msgstr "Hiba a hangfájl keresésekor"
 
-#: src/sound.c:124
+#: src/sound.c:127
 #, c-format
 msgid ""
 "Warning!  Enlightenment was unable to load the\n"
@@ -2072,11 +2072,11 @@ msgstr ""
 "Az Enlightenment folytatja mûködését, de ajánlott\n"
 "ellenõrizni a konfigurációs beállításokat.\n"
 
-#: src/sound.c:197
+#: src/sound.c:200
 msgid "Error initialising sound"
 msgstr "Hiba a hang inicializálásakor"
 
-#: src/sound.c:198
+#: src/sound.c:201
 msgid ""
 "Audio was enabled for Enlightenment but there was an error\n"
 "communicating with the audio server (Esound). Audio will\n"
@@ -2086,19 +2086,19 @@ msgstr ""
 "de nem sikerült kommunikálni a hangszerverrel (Esound).\n"
 "Nem lesznek hangok.\n"
 
-#: src/sound.c:311
+#: src/sound.c:314
 msgid "Enable sounds"
 msgstr "Hangok engedélyezése"
 
-#: src/sound.c:317
+#: src/sound.c:320
 msgid "Sound"
 msgstr "Hang"
 
-#: src/sound.c:318
+#: src/sound.c:321
 msgid "Audio Settings"
 msgstr "Hang beállításai"
 
-#: src/sound.c:321
+#: src/sound.c:324
 msgid ""
 "Enlightenment Audio\n"
 "Settings Dialog\n"
