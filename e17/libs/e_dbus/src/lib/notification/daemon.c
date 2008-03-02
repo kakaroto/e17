@@ -91,10 +91,16 @@ e_notification_daemon_add(const char *name, const char *vendor)
   return daemon;
 }
 
+
 EAPI void
 e_notification_daemon_free(E_Notification_Daemon *daemon)
 {
-  if (daemon->obj) e_dbus_object_free(daemon->obj);
+  e_dbus_release_name(daemon->conn, E_NOTIFICATION_BUS_NAME, NULL, NULL);
+  if (daemon->obj) 
+    {
+      e_dbus_object_interface_detach(daemon->obj, daemon->iface);
+      e_dbus_object_free(daemon->obj);
+    }
   if (daemon->conn) e_dbus_connection_close(daemon->conn);
   if (daemon->name) free(daemon->name);
   if (daemon->vendor) free(daemon->vendor);

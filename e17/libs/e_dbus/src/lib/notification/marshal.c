@@ -299,6 +299,11 @@ e_notify_marshal_notify(E_Notification *n)
   DBusMessage *msg;
   DBusMessageIter iter, sub;
 
+  if (!n->app_name) n->app_name = strdup("");
+  if (!n->app_icon) n->app_icon = strdup("");
+  if (!n->summary) n->summary = strdup("");
+  if (!n->body) n->body = strdup("");
+
   msg = e_notification_call_new("Notify");
   dbus_message_append_args(msg, 
     DBUS_TYPE_STRING, &(n->app_name),
