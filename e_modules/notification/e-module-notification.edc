@@ -1,6 +1,7 @@
 /* Guidelines for a notification theme.
  *
  * Groups needed :
+ *  - modules/notification/logo : Logo for the module and it must contain at least one part named image.
  *  - modules/notification/main : Main theme for the popup
  * The theme must contains two parts :
  *  - notification.swallow.app_icon  : Contains the notification icon
@@ -46,6 +47,24 @@ collections {
             type: IMAGE;
             description {
                state: "default" 0.0;
+               aspect: 1 1;
+               image.normal: "module_icon.png";
+            }
+         }
+      }
+   }
+
+   /* Module Logo */
+   group {
+      name: "modules/notification/logo";
+      parts {
+         part {
+            name: "image";
+            mouse_events: 0;
+            type: IMAGE;
+            description {
+               state: "default" 0.0;
+               aspect: 1 1;
                image.normal: "module_icon.png";
             }
          }
@@ -188,6 +207,12 @@ collections {
                rel1.offset: 5  127;
                rel2.offset: 85 127;
             }
+            description {
+               state: "no_icon" 0.0;
+               inherit: "default" 0.0;
+               rel1.offset: 0  0;
+               rel2.offset: 0  0;
+            }
          }
 
          /* Message text */
@@ -199,7 +224,7 @@ collections {
             description {
                state: "default" 0.0;
                align: 0.0 0.5;
-                      //	fixed: 1 1;
+               //fixed: 1 1;
 
                rel1 { 
                   to_x: "notification.swallow.app_icon";
@@ -278,17 +303,17 @@ collections {
          }
 
          program {
-           name: "close";
-           signal: "mouse,down,1";
-           source: "notification.close_btn";
-           action: SIGNAL_EMIT "notification,close" "theme";
+            name: "close";
+            signal: "mouse,down,1";
+            source: "notification.close_btn";
+            action: SIGNAL_EMIT "notification,close" "theme";
          }
 
          program {
-           name: "find";
-           signal: "mouse,down,1";
-           source: "base";
-           action: SIGNAL_EMIT "notification,find" "theme";
+            name: "find";
+            signal: "mouse,down,1";
+            source: "base";
+            action: SIGNAL_EMIT "notification,find" "theme";
          }
       }
    }

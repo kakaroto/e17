@@ -18,7 +18,8 @@ files_DATA = module.desktop \
 EXTRA_DIST = $(files_DATA) \
 	     images/e17_dialog_watermark.png \
 	     images/e17_menu_bg_border.png \
-	     images/module_icon.png
+	     images/module_icon.png \
+	     images/close_btn.png
 
 %.edj:  %.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $< $@

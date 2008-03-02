@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Notification module (e17)\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-01-26 22:35+0100\n"
+"POT-Creation-Date: 2008-03-02 01:36+0100\n"
 "PO-Revision-Date: 2008-01-23 01:50+0200\n"
 "Last-Translator: Jani väyrynen <janivayrynen@gmail.com>\n"
 "Language-Team: Finnish <janivayrynen@gmail.com>\n"
@@ -14,19 +14,24 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/e_mod_main.c:65
+#: src/e_mod_main.c:117
+#, fuzzy
+msgid "Notification Box"
+msgstr "Huomautus"
+
+#: src/e_mod_main.c:168
 msgid "Extensions"
 msgstr "Laajennukset"
 
-#: src/e_mod_main.c:67
+#: src/e_mod_main.c:170
 msgid "Notification"
 msgstr "Huomautus"
 
-#: src/e_mod_main.c:93 src/e_mod_main.c:111
+#: src/e_mod_main.c:211 src/e_mod_main.c:229
 msgid "Notification Configuration Updated"
 msgstr "Huomautuksen asetukset päivitetty"
 
-#: src/e_mod_main.c:94
+#: src/e_mod_main.c:212
 msgid ""
 "Notification Module Configuration data needed upgrading. Your old "
 "configuration<br> has been wiped and a new set of defaults initialized. "
@@ -45,7 +50,7 @@ msgstr ""
 "tilanteen<br>lisäämällä tarvittavat toiminnot. Voit asettaa "
 "asiat<br>uudelleen mieleiseksesi. Pahoittelut aiheutetusta vaivasta.<br>"
 
-#: src/e_mod_main.c:112
+#: src/e_mod_main.c:230
 msgid ""
 "Your Notification Module Configuration is NEWER than the Notification Module "
 "version. This is very<br>strange. This should not happen unless you "
@@ -61,33 +66,53 @@ msgstr ""
 "varotoimena<br>asetuksesi on nyt palautettu oletusarvoihin. Pahoittelut "
 "aiheutetusta vaivasta.<br>"
 
-#: src/e_mod_config.c:40
+#: src/e_mod_config.c:42
 msgid "Notification Configuration"
 msgstr "Huomautuksen asetukset"
 
-#: src/e_mod_config.c:83
+#: src/e_mod_config.c:86
+msgid "Urgency"
+msgstr ""
+
+#: src/e_mod_config.c:87
+msgid "Levels of urgency to popup : "
+msgstr ""
+
+#: src/e_mod_config.c:89
+msgid "low"
+msgstr ""
+
+#: src/e_mod_config.c:91
+msgid "normal"
+msgstr ""
+
+#: src/e_mod_config.c:93
+msgid "critical"
+msgstr ""
+
+#: src/e_mod_config.c:98
 msgid "Placement"
 msgstr "Asettelu"
 
-#: src/e_mod_config.c:84
+#: src/e_mod_config.c:99
 #, c-format
 msgid "%2.0f x"
 msgstr "%2.0f x"
 
-#: src/e_mod_config.c:87
+#: src/e_mod_config.c:102
 #, c-format
 msgid "%2.0f y"
 msgstr "%2.0f y"
 
-#: src/e_mod_config.c:92
+#: src/e_mod_config.c:107
 msgid "Direction"
 msgstr "Suunta"
 
-#: src/e_mod_config.c:104
+#: src/e_mod_config.c:119
 msgid "Gap size"
 msgstr "Raon koko"
 
-#: src/e_mod_config.c:105
+#: src/e_mod_config.c:120
 #, c-format
 msgid "%2.0f pixels"
 msgstr "%2.0f pikseliä"

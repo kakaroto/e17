@@ -1,9 +1,11 @@
-#include <e.h>
 #include "e_mod_main.h"
 
 struct _E_Config_Dialog_Data 
 {
    int direction;
+   int show_low;
+   int show_normal;
+   int show_critical;
    int gap;
    struct 
      {
@@ -64,22 +66,35 @@ _free_data(E_Config_Dialog *cfd __UNUSED__, E_Config_Dialog_Data *cfdata)
 static void 
 _fill_data(E_Config_Dialog_Data *cfdata) 
 {
-   cfdata->direction   = notification_cfg->direction;
-   cfdata->gap         = notification_cfg->gap;
-   cfdata->placement.x = notification_cfg->placement.x;
-   cfdata->placement.y = notification_cfg->placement.y;
+   cfdata->show_low      = notification_cfg->show_low;
+   cfdata->show_normal   = notification_cfg->show_normal;
+   cfdata->show_critical = notification_cfg->show_critical;
+   cfdata->direction     = notification_cfg->direction;
+   cfdata->gap           = notification_cfg->gap;
+   cfdata->placement.x   = notification_cfg->placement.x;
+   cfdata->placement.y   = notification_cfg->placement.y;
 }
 
 static Evas_Object *
 _basic_create(E_Config_Dialog *cfd __UNUSED__, Evas *evas, E_Config_Dialog_Data *cfdata) 
 {
-   Evas_Object *o = NULL, *of = NULL;
-   Evas_Object *ow = NULL;
+   Evas_Object *o = NULL, *of = NULL, *ow = NULL;
    E_Radio_Group *rg;
    E_Manager *man;
 
-   man = e_manager_current_get();
    o = e_widget_list_add(evas, 0, 0);
+   of = e_widget_framelist_add(evas, D_("Urgency"), 0);
+   ow = e_widget_label_add(evas, D_("Levels of urgency to popup : "));
+   e_widget_framelist_object_append(of, ow);
+   ow = e_widget_check_add(evas, D_("low"), &(cfdata->show_low));
+   e_widget_framelist_object_append(of, ow);
+   ow = e_widget_check_add(evas, D_("normal"), &(cfdata->show_normal));
+   e_widget_framelist_object_append(of, ow);
+   ow = e_widget_check_add(evas, D_("critical"), &(cfdata->show_critical));
+   e_widget_framelist_object_append(of, ow);
+   e_widget_list_object_append(o, of, 1, 1, 0.5);
+
+   man = e_manager_current_get();
    of = e_widget_framelist_add(evas, D_("Placement"), 0);
    ow = e_widget_slider_add(evas, 1, 0, D_("%2.0f x"), 0.0, man->w, 1.0, 0, 
                             NULL, &(cfdata->placement.x), 200);
@@ -113,10 +128,13 @@ _basic_create(E_Config_Dialog *cfd __UNUSED__, Evas *evas, E_Config_Dialog_Data 
 static int 
 _basic_apply(E_Config_Dialog *cfd __UNUSED__, E_Config_Dialog_Data *cfdata) 
 {
-   notification_cfg->direction   = cfdata->direction;
-   notification_cfg->gap         = cfdata->gap;
-   notification_cfg->placement.x = cfdata->placement.x;
-   notification_cfg->placement.y = cfdata->placement.y;
+   notification_cfg->show_low      = cfdata->show_low;
+   notification_cfg->show_normal   = cfdata->show_normal;
+   notification_cfg->show_critical = cfdata->show_critical;
+   notification_cfg->direction     = cfdata->direction;
+   notification_cfg->gap           = cfdata->gap;
+   notification_cfg->placement.x   = cfdata->placement.x;
+   notification_cfg->placement.y   = cfdata->placement.y;
 
    e_modapi_save(notification_mod);
    return 1;
