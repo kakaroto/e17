@@ -2,6 +2,11 @@ use 5.008004;
 use ExtUtils::MakeMaker;
 use Devel::PPPort;
 
+my $cflags = `pkg-config --cflags etk`;
+my $libs = `pkg-config --libs etk`;
+if ($cflags eq "" || $libs eq "") {
+	die "Cannot find Etk.";
+}
 # Add the boot section
 my $debug = $ARGV[0] eq "debug" ? 1 : 0;
 my @list = grep { $_ ne "Etk" } map { s/\.xs$//; $_  } <*.xs>;
@@ -32,9 +37,9 @@ WriteMakefile(
     ($] >= 5.005 ?     
       (ABSTRACT       => 'Perl bindings for the Enlightened ToolKit (Etk)',
        AUTHOR         => q|Chady 'Leviathan' Kassouf <chady.kassouf@gmail.com>|) : ()),
-    LIBS              => [`pkg-config --libs etk`],
+    LIBS              => [$libs],
     DEFINE            => '', #'-DDEBUG', 
-    INC               => "-g -I. `pkg-config --cflags etk`", 
+    INC               => "-g -I. $cflags",
     XSPROTOARG        => '-noprototypes',
     OBJECT            => '$(O_FILES)', 
     clean             => {FILES=>"Etk.xs"},
