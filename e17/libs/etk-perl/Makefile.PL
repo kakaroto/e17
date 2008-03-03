@@ -5,7 +5,10 @@ use Devel::PPPort;
 # dependency check
 print "Checking for Etk...";
 my $etklib = `pkg-config --variable=version etk`;
-die "pkg-config can't find etk, make sure that etk is installed, and that your PKG_CONFIG_PATH is correct" unless $etklib;
+unless ($etklib) {
+	print "pkg-config can't find etk, make sure that etk is installed, and that your PKG_CONFIG_PATH is correct\n";
+	exit(0);
+}
 print "Ok\n";
 
 Devel::PPPort::WriteFile();
