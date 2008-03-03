@@ -220,7 +220,8 @@ on_AllButton_click(Etk_Button *button, void *data)
       break;
    case TOOLBAR_DEBUG:
       //DebugInfo(FALSE);
-      edje_edit_print_internal_status(edje_o);
+      ChangeGroup("e/module/battery/main");
+      //edje_edit_print_internal_status(edje_o);
       break;
    case IMAGE_TWEEN_UP:
       ShowAlert("Up not yet implemented.");

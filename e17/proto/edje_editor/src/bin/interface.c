@@ -298,7 +298,7 @@ PopulateGroupsComboBox(void)
    etk_signal_unblock("item-activated",ETK_OBJECT(UI_PartSourceComboBox),
                       on_PartSourceComboBox_item_activated, NULL);
    
-   
+   //Select the first group and load it
    etk_combobox_active_item_set(ETK_COMBOBOX(UI_GroupsComboBox),
       etk_combobox_first_item_get(ETK_COMBOBOX(UI_GroupsComboBox)));
 }
