@@ -210,7 +210,7 @@ void ewl_frontend_dialog_config_open(Eli_App * eap)
     border_box = ewl_border_new();
     ewl_border_label_set(EWL_BORDER(border_box), _("Render Engine"));
     ewl_container_child_append(EWL_CONTAINER(vbox), border_box);
-    ewl_object_fill_policy_set(EWL_OBJECT(border_box), EWL_FLAG_FILL_VFILL);
+    ewl_object_fill_policy_set(EWL_OBJECT(border_box), EWL_FLAG_FILL_FILL);
     ewl_object_alignment_set(EWL_OBJECT(border_box), EWL_FLAG_ALIGN_CENTER);
     ewl_object_alignment_set(EWL_OBJECT(main_box), EWL_FLAG_ALIGN_TOP);
     ewl_widget_show(border_box);
