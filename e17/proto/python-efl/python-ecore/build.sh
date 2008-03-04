@@ -1,7 +1,7 @@
 #!/bin/sh
 
 PREFIX="$HOME/usr"
-PYX_FILES="ecore/ecore.c_ecore.pyx ecore/evas/ecore.evas.c_ecore_evas.pyx ecore/x/ecore.x.c_ecore_x.pyx ecore/x/ecore.x.screensaver.pyx"
+PYX_FILES="ecore/ecore.c_ecore.pyx ecore/evas/ecore.evas.c_ecore_evas.pyx ecore/x/ecore.x.c_ecore_x.pyx ecore/x/ecore.x.screensaver.pyx ecore/imf/ecore.imf.c_ecore_imf.pyx"
 
 for arg in $@; do
     case $arg in
