@@ -19,7 +19,7 @@ pkg_LTLIBRARIES = ewl_callback_test.la
 
 ewl_callback_test_la_SOURCES = ewl_callback_test.c
 ewl_callback_test_la_LIBADD = $(top_builddir)/src/lib/libewl.la
-ewl_callback_test_la_LDFLAGS = -module @create_shared_lib@ -avoid-version 
+ewl_callback_test_la_LDFLAGS = -module @create_shared_lib@ -avoid-version
 
 FILES = $(ewl_callback_test_la_SOURCES)
 

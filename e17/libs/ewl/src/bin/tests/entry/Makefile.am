@@ -23,7 +23,7 @@ ewl_entry_test_la_LDFLAGS = -module @create_shared_lib@ -avoid-version
 
 FILES = $(ewl_entry_test_la_SOURCES)
 
-exampledir 			=	$(pkgdatadir)/examples/
-example_DATA 			=	$(FILES)
+exampledir = $(pkgdatadir)/examples/
+example_DATA = $(FILES)
 
 endif
