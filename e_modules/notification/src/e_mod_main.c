@@ -244,7 +244,7 @@ e_modapi_init(E_Module *m)
      {
        notification_cfg = _notification_cfg_new();
      }
-   else
+   else if (evas_list_count(notification_cfg->items) > 0)
      {
        Config_Item *ci;
        const char *p;
