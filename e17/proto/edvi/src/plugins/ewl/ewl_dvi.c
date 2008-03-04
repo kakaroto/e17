@@ -10,7 +10,7 @@
 #include <ewl_scrollpane.h>
 #include <ewl_label.h>
 #include <ewl_list.h>
-#include <ewl_tree2.h>
+#include <ewl_tree.h>
 
 #include "Edvi.h"
 #include "ewl_dvi.h"
