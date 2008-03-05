@@ -217,6 +217,7 @@ _config_item_get(const char *id)
    ci->okstate_mode = 0;
    ci->okstate_exitcode = 0;
    ci->okstate_string = evas_stringshare_add("");
+   ci->okstate_lines = 0;
    ci->refresh_after_dblclk_cmd = 0;
    ci->poll_time_mins = 0.0;
    ci->poll_time_hours = 0.0;
@@ -303,13 +304,22 @@ _execwatch_cmd_exit(void *data, int type, void *event)
 		  lines = inst->read->lines;
 		  for (i = 0; lines[i].line != NULL; i++)
 		    {
-		       if (strstr(lines[i].line, inst->ci->okstate_string))
+		       if (inst->ci->okstate_mode == 1)
 			 {
-			    _execwatch_icon(inst, "cmd_ok");
-			    icon_set = 1;
-			    break;
+			    if (strstr(lines[i].line, inst->ci->okstate_string))
+			      {
+				 _execwatch_icon(inst, "cmd_ok");
+				 icon_set = 1;
+				 break;
+			      }
 			 }
 		    }
+		  if (inst->ci->okstate_mode == 2)
+		    if (i == inst->ci->okstate_lines)
+		      {
+			 _execwatch_icon(inst, "cmd_ok");
+			 icon_set = 1;
+		      }
 		  if (!icon_set) _execwatch_icon(inst, "cmd_error");
 	       }
 	     else
@@ -562,6 +572,7 @@ e_modapi_init(E_Module *m)
    E_CONFIG_VAL(D, T, okstate_mode, INT);
    E_CONFIG_VAL(D, T, okstate_exitcode, INT);
    E_CONFIG_VAL(D, T, okstate_string, STR);
+   E_CONFIG_VAL(D, T, okstate_lines, INT);
    E_CONFIG_VAL(D, T, refresh_after_dblclk_cmd, INT);
    E_CONFIG_VAL(D, T, poll_time_mins, DOUBLE);
    E_CONFIG_VAL(D, T, poll_time_hours, DOUBLE);
@@ -586,6 +597,7 @@ e_modapi_init(E_Module *m)
 	ci->okstate_mode = 0;
 	ci->okstate_exitcode = 0;
 	ci->okstate_string = evas_stringshare_add("");
+	ci->okstate_lines = 0;
 	ci->refresh_after_dblclk_cmd = 0;
 	ci->poll_time_mins = 0.0;
 	ci->poll_time_hours = 0.0;

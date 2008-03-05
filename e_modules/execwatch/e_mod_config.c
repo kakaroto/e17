@@ -11,6 +11,7 @@ struct _E_Config_Dialog_Data
    char *dblclk_cmd;
    char *okstate_string;
    char *okstate_exitcode;
+   char *okstate_lines;
    int okstate_mode;
    int refresh_after_dblclk_cmd;
    double poll_time_mins;
@@ -71,6 +72,8 @@ _fill_data(Config_Item * ci, E_Config_Dialog_Data * cfdata)
 
    snprintf (buf, sizeof(buf), "%d", ci->okstate_exitcode);
    cfdata->okstate_exitcode = strdup(buf);
+   snprintf (buf, sizeof(buf), "%d", ci->okstate_lines);
+   cfdata->okstate_lines = strdup(buf);
    cfdata->okstate_mode = ci->okstate_mode;
    cfdata->refresh_after_dblclk_cmd = ci->refresh_after_dblclk_cmd;
    cfdata->poll_time_mins = (ci->poll_time_mins / 60);
@@ -134,14 +137,20 @@ _basic_create_widgets(E_Config_Dialog * cfd, Evas * evas, E_Config_Dialog_Data *
    e_widget_min_size_set(ob, 150, 1);
    e_widget_frametable_object_append(of, ob, 1, 3, 1, 1, 1, 0, 1, 0);
 
+   ob = e_widget_radio_add (evas, D_ ("Expected Lines"), 2, rg);
+   e_widget_frametable_object_append(of, ob, 0, 4, 1, 1, 1, 0, 1, 0);
+   ob = e_widget_entry_add(evas, &cfdata->okstate_lines, NULL, NULL, NULL);
+   e_widget_min_size_set(ob, 150, 1);
+   e_widget_frametable_object_append(of, ob, 1, 4, 1, 1, 1, 0, 1, 0);
+
    ob = e_widget_label_add(evas, D_("Poll Time"));
-   e_widget_frametable_object_append(of, ob, 0, 4, 2, 1, 1, 0, 1, 0);
+   e_widget_frametable_object_append(of, ob, 0, 5, 2, 1, 1, 0, 1, 0);
    ob = e_widget_slider_add(evas, 1, 0, D_("%2.0f mins"), 0.0, 59.0, 1.0, 0,
 			  &(cfdata->poll_time_mins), NULL, 40);
-   e_widget_frametable_object_append(of, ob, 1, 4, 2, 1, 1, 0, 1, 0);
+   e_widget_frametable_object_append(of, ob, 1, 5, 2, 1, 1, 0, 1, 0);
    ob = e_widget_slider_add(evas, 1, 0, D_("%2.0f hours"), 0.0, 24.0, 1.0, 0,
 			  &(cfdata->poll_time_hours), NULL, 40);
-   e_widget_frametable_object_append(of, ob, 1, 5, 2, 1, 1, 0, 1, 0);
+   e_widget_frametable_object_append(of, ob, 1, 6, 2, 1, 1, 0, 1, 0);
 
    e_widget_list_object_append(o, of, 1, 1, 0.5);
    of = e_widget_frametable_add(evas, D_("Icon Settings"), 0);
@@ -173,8 +182,12 @@ _basic_apply_data(E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
 
    ci = cfd->data;
    if (!strlen(cfdata->status_cmd)) return 0;
-   if (!cfdata->okstate_mode && !strlen(cfdata->okstate_exitcode)) return 0;
-   if (cfdata->okstate_mode && !strlen(cfdata->okstate_string)) return 0;
+   switch (cfdata->okstate_mode)
+     {
+	case 0: if (!strlen(cfdata->okstate_exitcode)) return 0;
+	case 1: if (!strlen(cfdata->okstate_string)) return 0;
+	case 2: if (!strlen(cfdata->okstate_lines)) return 0;
+     }
    if (!cfdata->poll_time_mins && !cfdata->poll_time_hours) return 0;
 
    if (ci->display_name) evas_stringshare_del(ci->display_name);
@@ -193,6 +206,8 @@ _basic_apply_data(E_Config_Dialog * cfd, E_Config_Dialog_Data * cfdata)
      }
    if (strlen(cfdata->okstate_exitcode))
      ci->okstate_exitcode = atoi (cfdata->okstate_exitcode);
+   if (strlen(cfdata->okstate_lines))
+     ci->okstate_lines = atoi (cfdata->okstate_lines);
    ci->okstate_mode = cfdata->okstate_mode;
    ci->refresh_after_dblclk_cmd = cfdata->refresh_after_dblclk_cmd;
    ci->poll_time_mins = (cfdata->poll_time_mins * 60);

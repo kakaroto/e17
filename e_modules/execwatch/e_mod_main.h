@@ -25,6 +25,7 @@ struct _Config_Item
    const char *dblclk_cmd;
    const char *okstate_string;
    int okstate_exitcode;
+   int okstate_lines;
    int okstate_mode;
    int refresh_after_dblclk_cmd;
    double poll_time_mins;
