@@ -220,7 +220,9 @@ on_AllButton_click(Etk_Button *button, void *data)
       break;
    case TOOLBAR_DEBUG:
       //DebugInfo(FALSE);
-      ChangeGroup("e/module/battery/main");
+      ChangeGroup("New group");
+      //edje_edit_group_add(edje_o, "dai cazzo");
+      //on_AddMenu_item_activated(NULL, NEW_RECT);
       //edje_edit_print_internal_status(edje_o);
       break;
    case IMAGE_TWEEN_UP:

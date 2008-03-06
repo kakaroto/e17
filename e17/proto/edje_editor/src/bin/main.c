@@ -138,11 +138,17 @@ ChangeGroup(char *group)
    printf("Change to group: %s\n", group);
 
    TogglePlayButton(1);
+   
    if (etk_string_length_get(Cur.group))
       edje_edit_save(edje_o);
+   
    evas_object_hide(edje_o);
    ConsolleClear();
-   edje_edit_load(edje_o, Cur.edj_temp_name->string, group);
+   if (!edje_object_file_set(edje_o, Cur.edj_temp_name->string, group))
+   {
+      ShowAlert("Error loading group");
+      return;
+   }
    evas_object_show(edje_o);
    Parts_Hash = NULL;         //TODO FREE
    
