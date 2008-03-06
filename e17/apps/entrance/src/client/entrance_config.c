@@ -20,8 +20,8 @@ struct _Entrance_Config_And_Path
 static void _cb_xsessions_foreach(void *list_data, void *data);
 static void _cb_desktop_xsessions_foreach(void *list_data, void *data);
 static void _entrance_xsessions_dir_scan(const char *dir, Entrance_Config *e);
-static Evas_Bool _cb_users_free(Evas_Hash *hash, const char *key, void *data, void *fdata);
-static Evas_Bool _cb_x_sessions_free(Evas_Hash *hash, const char *key, void *data, void *fdata);
+static Evas_Bool _cb_users_free(const Evas_Hash *hash, const char *key, void *data, void *fdata);
+static Evas_Bool _cb_x_sessions_free(const Evas_Hash *hash, const char *key, void *data, void *fdata);
 
 /**
 @file entrance_config.c
@@ -488,7 +488,7 @@ _cb_xsessions_foreach(void *list_data, void *data)
    Entrance_Config *e;
    Entrance_X_Session *exs = NULL;
    Ecore_List *commands;
-   char *command;
+   char *command = NULL;
    char path[PATH_MAX];
 
    if (!filename)
@@ -573,7 +573,7 @@ _cb_desktop_xsessions_foreach(void *list_data, void *data)
 }
 
 static Evas_Bool
-_cb_users_free(Evas_Hash *hash, const char *key, void *data, void *fdata)
+_cb_users_free(const Evas_Hash *hash, const char *key, void *data, void *fdata)
 {
   Entrance_User *user = data;
   entrance_user_free(user);
@@ -581,7 +581,7 @@ _cb_users_free(Evas_Hash *hash, const char *key, void *data, void *fdata)
 }
 
 static Evas_Bool
-_cb_x_sessions_free(Evas_Hash *hash, const char *key, void *data, void *fdata)
+_cb_x_sessions_free(const Evas_Hash *hash, const char *key, void *data, void *fdata)
 {
   Entrance_X_Session *x_session = data;
   entrance_x_session_free(x_session);
