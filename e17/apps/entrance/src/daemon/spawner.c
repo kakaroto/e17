@@ -33,7 +33,6 @@ static void _sigaction_cb_sigusr(int);
 
 static int _event_cb_exited(void *, int, void *);
 static int _event_cb_signal_exit(void *, int, void *);
-static void _cb_atexit(void);
 
 
 void
@@ -438,10 +437,4 @@ _event_cb_signal_exit(void *data, int type, void *event)
    syslog(LOG_INFO, "Display and display manager are shutting down.");
    ecore_main_loop_quit();
    return 0;
-}
-
-static void
-_cb_atexit(void)
-{
-   entranced_debug("Entranced exits.\n");
 }
