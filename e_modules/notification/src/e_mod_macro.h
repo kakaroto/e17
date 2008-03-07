@@ -14,5 +14,8 @@
 #undef  MIN_LEN
 #define MIN_LEN(str1, str2) strlen(str1) < strlen(str2) ? strlen(str1) : strlen(str2)
 
+#undef  MAX
+#define MAX(x, y) (((x) > (y)) ? (x) : (y))
+
 #endif
 

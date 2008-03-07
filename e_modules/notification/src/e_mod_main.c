@@ -62,6 +62,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    evas_object_event_callback_add(b->o_box, EVAS_CALLBACK_RESIZE,
                                   notification_box_cb_obj_moveresize, inst);
    notification_cfg->instances = evas_list_append(notification_cfg->instances, inst);
+   _gc_orient(gcc);
    return gcc;
 }
 
@@ -93,7 +94,7 @@ _gc_orient(E_Gadcon_Client *gcc)
       case E_GADCON_ORIENT_CORNER_BL:
       case E_GADCON_ORIENT_CORNER_BR:
 	notification_box_orient_set(inst->n_box, 1);
-	e_gadcon_client_aspect_set(gcc, evas_list_count(inst->n_box->icons) * 16, 16);
+	e_gadcon_client_aspect_set(gcc, MAX(evas_list_count(inst->n_box->icons), 1) * 16, 16);
 	break;
       case E_GADCON_ORIENT_VERT:
       case E_GADCON_ORIENT_LEFT:
@@ -103,7 +104,7 @@ _gc_orient(E_Gadcon_Client *gcc)
       case E_GADCON_ORIENT_CORNER_LB:
       case E_GADCON_ORIENT_CORNER_RB:
 	notification_box_orient_set(inst->n_box, 0);
-	e_gadcon_client_aspect_set(gcc, 16, evas_list_count(inst->n_box->icons) * 16);
+	e_gadcon_client_aspect_set(gcc, 16, MAX(evas_list_count(inst->n_box->icons), 1) * 16);
 	break;
       default:
 	break;

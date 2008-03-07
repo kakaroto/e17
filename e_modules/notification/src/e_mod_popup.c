@@ -248,7 +248,9 @@ _notification_popup_refresh(Popup_Data *popup)
 
       snprintf(buf, sizeof(buf), "%s/e-module-notification.edj", notification_mod->dir);
       popup->app_icon = edje_object_add(popup->e);
-      edje_object_file_set(popup->app_icon, buf, "modules/notification/logo");
+      if (!e_theme_edje_object_set(popup->app_icon, "base/theme/modules/notification",
+                                   "modules/notification/logo"))
+        edje_object_file_set(popup->app_icon, buf, "modules/notification/logo");
       evas_object_resize(popup->app_icon, 80, 80);
       edje_extern_object_min_size_set(popup->app_icon, 80, 80);
       edje_extern_object_max_size_set(popup->app_icon, 80, 80);
