@@ -105,6 +105,8 @@ _basic_create(E_Config_Dialog *cfd __UNUSED__, Evas *evas, E_Config_Dialog_Data 
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
    of = e_widget_framelist_add(evas, D_("Direction"), 0);
+   ow = e_widget_label_add(evas, D_("Direction in which popups will stack themselves : "));
+   e_widget_framelist_object_append(of, ow);
    rg = e_widget_radio_group_new(&(cfdata->direction));
    ow = e_widget_radio_add(evas, "up", DIRECTION_UP, rg);
    e_widget_framelist_object_append(of, ow);
@@ -116,7 +118,9 @@ _basic_create(E_Config_Dialog *cfd __UNUSED__, Evas *evas, E_Config_Dialog_Data 
    e_widget_framelist_object_append(of, ow);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
-   of = e_widget_framelist_add(evas, D_("Gap size"), 0);
+   of = e_widget_framelist_add(evas, D_("Gap"), 0);
+   ow = e_widget_label_add(evas, D_("Size of the gap between two popups : "));
+   e_widget_framelist_object_append(of, ow);
    ow = e_widget_slider_add(evas, 1, 0, D_("%2.0f pixels"), 0.0, 50, 1.0, 0, 
                             NULL, &(cfdata->gap), 200);
    e_widget_framelist_object_append(of, ow);
