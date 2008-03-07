@@ -1,0 +1,88 @@
+dnl Process this file with autoconf to produce a configure script.
+
+# get rid of that stupid cache mechanism
+rm -f config.cache
+
+AC_INIT(iiirk, 0.1.0, heka.lok@gmail.com)
+AC_PREREQ(2.52)
+AC_CONFIG_SRCDIR(configure.in)
+AC_CANONICAL_BUILD
+AC_CANONICAL_HOST
+AC_ISC_POSIX
+
+AM_INIT_AUTOMAKE(1.8)
+AM_CONFIG_HEADER(config.h)
+
+AC_PROG_CC
+AM_PROG_CC_STDC
+AC_HEADER_STDC
+AC_C_CONST
+
+define([AC_LIBTOOL_LANG_CXX_CONFIG], [:])dnl
+define([AC_LIBTOOL_LANG_F77_CONFIG], [:])dnl
+AC_PROG_LIBTOOL
+
+AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION(0.14)
+
+MODULE_ARCH="$host_os-$host_cpu"
+AC_SUBST(MODULE_ARCH)
+AC_DEFINE_UNQUOTED(MODULE_ARCH, "$MODULE_ARCH", "Module architecture")
+
+AC_PATH_PROG(EDJE_CC, "edje_cc", "", $PATH)
+
+AC_PATH_PROG(E_CONFIG, "enlightenment-config", "", $PATH)
+e_cflags=`$E_CONFIG --cflags`
+e_libs=`$E_CONFIG --libs`
+e_modules=`$E_CONFIG --module-dir`
+AC_SUBST(e_cflags)
+AC_SUBST(e_libs)
+AC_SUBST(top_builddir)
+
+dnl prefix
+if test "x${prefix}" = "xNONE"
+then
+  prefix=`$E_CONFIG --libs | cut -c 3- | cut -f 1 | sed -e 's/\/lib$//'`
+fi
+
+dnl datadir
+if test "x${datadir}" = "x\${datarootdir}"
+then
+	datadir="${prefix}/lib/enlightenment/modules/${PACKAGE}"    
+fi
+
+AC_ARG_ENABLE(homedir-install,
+  AS_HELP_STRING([--enable-homedir-install], [Install module in homedir]),
+  [ prefix="${HOME}"
+    datadir="${prefix}/.e/e/modules/${PACKAGE}" ]
+)
+
+AC_OUTPUT([
+Makefile
+src/Makefile
+po/Makefile.in
+module.desktop
+], [
+])
+
+echo
+echo "--------------------------------------------------------------------------------"
+echo "  $PACKAGE $VERSION"
+echo "--------------------------------------------------------------------------------"
+echo
+echo "Installation Path ...: $datadir"
+echo
+if test -n "$CFLAGS"
+then
+	echo "CFLAGS ..............: $CFLAGS"
+else
+	echo "CFLAGS ..............: None"
+fi
+if test -n "$LDFLAGS"
+then
+	echo "LDFLAGS .............: $LDFLAGS"
+else
+	echo "LDFLAGS .............: None"
+fi
+echo
+
