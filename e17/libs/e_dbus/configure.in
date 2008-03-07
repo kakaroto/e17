@@ -27,19 +27,19 @@ AC_SUBST(version_info)
 
 dnl Check enabled modules to build
 AC_ARG_ENABLE(ehal,
-				  AC_HELP_STRING([--disable-ehal], 
+				  AC_HELP_STRING([--disable-ehal],
 									  [Disable ehal build]),
-				  [enable_ehal="no"], 
+				  [enable_ehal=$enableval],
 				  [enable_ehal="yes"])
 AC_ARG_ENABLE(enm,
 				  AC_HELP_STRING([--disable-enm], 
 									  [Disable enm build]),
-				  [enable_enm="no"], 
+				  [enable_enm=$enableval],
 				  [enable_enm="yes"])
 AC_ARG_ENABLE(enotify,
 				  AC_HELP_STRING([--disable-enotify], 
 									  [Disable enotify build]),
-				  [enable_enotify="no"], 
+				  [enable_enotify=$enableval],
 				  [enable_enotify="yes"])
 
 
