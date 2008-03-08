@@ -202,9 +202,10 @@ static void
 _notification_popup_refresh(Popup_Data *popup)
 {
   const char *icon_path;
+  const char *app_icon_max;
   char *msg;
   void *img;
-  int w, h;
+  int w, h, width = 80, height = 80;
 
   if (!popup) return;
 
@@ -217,6 +218,26 @@ _notification_popup_refresh(Popup_Data *popup)
       popup->app_icon = NULL;
     }
 
+  app_icon_max = edje_object_data_get(popup->theme, "app_icon_max");
+  if (app_icon_max)
+    {
+      char *endptr;
+
+      errno = 0;
+      width = strtol(app_icon_max, &endptr, 10);
+      if (errno != 0 && width == 0 || endptr == app_icon_max) 
+        {
+          width = 80;
+          height = 80;
+        }
+      else
+        {
+          endptr++;
+          if (endptr) height = strtol(endptr, NULL, 10);
+          else height = 80;
+        }
+    }
+
   /* Check if the app specify an icon either by a path or by a hint */
   if ((icon_path = e_notification_app_icon_get(popup->notif)) && *icon_path)
     {
@@ -224,23 +245,12 @@ _notification_popup_refresh(Popup_Data *popup)
       popup->app_icon = evas_object_image_add(popup->e);
       evas_object_image_file_set(popup->app_icon, icon_path, NULL);
       evas_object_image_size_get(popup->app_icon, &w, &h);
-      if (w > 80 || h > 80)
-        {
-          int v;
-          v = w > h ? w : h;
-          h = h * 80 / v;
-          w = w * 80 / v;
-        }
       evas_object_image_fill_set(popup->app_icon, 0, 0, w, h);
-      edje_extern_object_min_size_set(popup->app_icon, w, h);
-      edje_extern_object_max_size_set(popup->app_icon, w, h);
     }
   else if ((img = e_notification_hint_icon_data_get(popup->notif)))
     {
       popup->app_icon = e_notification_image_evas_object_add(popup->e, img);
       evas_object_image_size_get(popup->app_icon, &w, &h);
-      edje_extern_object_min_size_set(popup->app_icon, w, h);
-      edje_extern_object_max_size_set(popup->app_icon, w, h);
     }
   else
     {
@@ -251,11 +261,27 @@ _notification_popup_refresh(Popup_Data *popup)
       if (!e_theme_edje_object_set(popup->app_icon, "base/theme/modules/notification",
                                    "modules/notification/logo"))
         edje_object_file_set(popup->app_icon, buf, "modules/notification/logo");
-      evas_object_resize(popup->app_icon, 80, 80);
-      edje_extern_object_min_size_set(popup->app_icon, 80, 80);
-      edje_extern_object_max_size_set(popup->app_icon, 80, 80);
+      w = width; h = height;
     }
 
+  if (w > width || h > height)
+    {
+      int v;
+      v = w > h ? w : h;
+      h = h * height / v;
+      w = w * width / v;
+      evas_object_image_fill_set(popup->app_icon, 0, 0, w, h);
+      evas_object_resize(popup->app_icon, w, h);
+      edje_extern_object_min_size_set(popup->app_icon, w, h);
+      edje_extern_object_max_size_set(popup->app_icon, w, h);
+    }
+  else
+    {
+      evas_object_resize(popup->app_icon, w, h);
+      edje_extern_object_min_size_set(popup->app_icon, w, h);
+      edje_extern_object_max_size_set(popup->app_icon, w, h);
+    }
+  
   edje_object_calc_force(popup->theme);
   edje_object_part_swallow(popup->theme, "notification.swallow.app_icon", popup->app_icon);
   edje_object_signal_emit(popup->theme, "notification,icon", "notification");

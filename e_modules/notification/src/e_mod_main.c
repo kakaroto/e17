@@ -127,7 +127,9 @@ _gc_icon(Evas *evas)
    o = edje_object_add(evas);
    snprintf(buf, sizeof(buf), "%s/e-module-notification.edj",
 	    e_module_dir_get(notification_mod));
-   edje_object_file_set(o, buf, "icon");
+   if (!e_theme_edje_object_set(o, "base/theme/modules/notification",
+                                "icon"))
+     edje_object_file_set(o, buf, "icon");
    return o;
 }
 

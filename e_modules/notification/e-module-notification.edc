@@ -74,6 +74,9 @@ collections {
    /* Popup Theme */
    group {
       name: "modules/notification/main";
+      data {
+        item: "app_icon_max" "80 80";
+      }
       parts {
          /* Background */
          part {
