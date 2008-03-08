@@ -89,7 +89,7 @@ __EXPORT__ char   **StrlistFromString(const char *str, int delim, int *num);
 void                Esetenv(const char *name, const char *value);
 
 /* misc.c */
-void __PRINTF__     Eprintf(const char *fmt, ...);
+__EXPORT__ void __PRINTF__ Eprintf(const char *fmt, ...);
 
 #ifdef HAVE_SNPRINTF
 #define Evsnprintf vsnprintf

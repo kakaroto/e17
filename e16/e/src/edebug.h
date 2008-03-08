@@ -23,6 +23,8 @@
 #ifndef _EDEBUG_H_
 #define _EDEBUG_H_
 
+#include "util.h"
+
 #define ENABLE_DEBUG_EVENTS 1
 
 #if ENABLE_DEBUG_EVENTS
@@ -61,7 +63,7 @@
 
 void                EDebugInit(const char *s);
 void                EDebugSet(unsigned int type, int value);
-int                 EDebug(unsigned int type);
+__EXPORT__ int      EDebug(unsigned int type);
 
 #else
 

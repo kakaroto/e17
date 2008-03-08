@@ -48,11 +48,9 @@ SoundSampleGetData(const char *file, SoundSampleData * ssd)
 #else
    afSetVirtualByteOrder(in_file, AF_DEFAULT_TRACK, AF_BYTEORDER_LITTLEENDIAN);
 #endif
-#if !USE_MODULES
    if (EDebug(EDBUG_TYPE_SOUND))
       Eprintf("SoundSampleGetData chan=%d width=%d rate=%d\n", ssd->channels,
 	      ssd->bit_per_sample, ssd->rate);
-#endif
 
    bytes_per_frame = (ssd->bit_per_sample * ssd->channels) / 8;
    ssd->size = frame_count * bytes_per_frame;

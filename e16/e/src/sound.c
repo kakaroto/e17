@@ -49,10 +49,10 @@ static Ecore_List  *sound_list = NULL;
 #if USE_MODULES
 static const SoundOps *ops = NULL;
 #else
-#if defined(HAVE_SOUND_ESD)
+#if HAVE_SOUND_ESD
 extern const SoundOps SoundOps_esd;
 static const SoundOps *ops = &SoundOps_esd;
-#elif defined(HAVE_SOUND_PA)
+#elif HAVE_SOUND_PA
 extern const SoundOps SoundOps_pa;
 static const SoundOps *ops = &SoundOps_pa;
 #endif
@@ -190,18 +190,22 @@ SoundInit(void)
    err = -1;
 #if USE_MODULES
    if (!ops)
+#if HAVE_SOUND_ESD
       ops = ModLoadSym("sound", "SoundOps", "esd");
+#elif HAVE_SOUND_PA
+      ops = ModLoadSym("sound", "SoundOps", "pa");
+#endif
 #endif
    if (ops && ops->Init)
       err = ops->Init();
 
    if (err)
      {
+	Conf_sound.enable = 0;
 	AlertX(_("Error initialising sound"), _("OK"), NULL, NULL,
 	       _("Audio was enabled for Enlightenment but there was an error\n"
 		 "communicating with the audio server (Esound). Audio will\n"
 		 "now be disabled.\n"));
-	Conf_sound.enable = 0;
      }
 }
 
