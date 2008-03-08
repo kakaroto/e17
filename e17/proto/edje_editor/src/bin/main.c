@@ -144,6 +144,12 @@ ChangeGroup(char *group)
    
    evas_object_hide(edje_o);
    ConsolleClear();
+   
+   //evas_object_del(edje_o);
+   //edje_o = NULL;
+   //edje_o = edje_object_add(UI_evas);
+   //edje_object_signal_callback_add(edje_o, "*", "*", signal_cb, NULL);
+   
    if (!edje_object_file_set(edje_o, Cur.edj_temp_name->string, group))
    {
       ShowAlert("Error loading group");
