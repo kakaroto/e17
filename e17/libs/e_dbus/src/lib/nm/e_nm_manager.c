@@ -18,7 +18,7 @@ e_nm_get_devices(E_NM_Context *ctx, E_DBus_Callback_Func cb_func, void *data)
   DBusMessage *msg;
   int ret;
 
-  msg = e_nm_manager_call_new("getDevices");
+  msg = e_nm_manager_call_new("GetDevices");
 
   ret = e_dbus_method_call_send(ctx->conn, msg, cb_nm_string_list, cb_func, free_nm_string_list, -1, data) ? 1 : 0;
   dbus_message_unref(msg);

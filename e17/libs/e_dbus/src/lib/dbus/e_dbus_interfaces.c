@@ -6,6 +6,15 @@
  * objects on the bus should implement.
  */
 
+/**
+ * Ping the dbus peer
+ *
+ * @param conn the dbus connection
+ * @param destination the bus name that the object is on
+ * @param path the object path
+ * @param cb_return a callback for a successful return
+ * @param data data to pass to the callbacks
+ */
 EAPI void
 e_dbus_peer_ping(E_DBus_Connection*conn, const char *destination, const char *path, E_DBus_Method_Return_Cb cb_return, void *data)
 {
@@ -15,6 +24,15 @@ e_dbus_peer_ping(E_DBus_Connection*conn, const char *destination, const char *pa
   e_dbus_message_send(conn, msg, cb_return, -1, data);
 }
 
+/**
+ * Get the UUID of the peer
+ *
+ * @param conn the dbus connection
+ * @param destination the bus name that the object is on
+ * @param path the object path
+ * @param cb_return a callback for a successful return
+ * @param data data to pass to the callbacks
+ */
 EAPI void
 e_dbus_peer_get_machine_id(E_DBus_Connection*conn, const char *destination, const char *path, E_DBus_Method_Return_Cb cb_return, void *data)
 {
@@ -23,7 +41,6 @@ e_dbus_peer_get_machine_id(E_DBus_Connection*conn, const char *destination, cons
   msg = dbus_message_new_method_call(destination, path, "org.freedesktop.DBus.Peer", "GetMachineId");
   e_dbus_message_send(conn, msg, cb_return, -1, data);
 }
-
 
 /**
  * Get the value of a property on an object

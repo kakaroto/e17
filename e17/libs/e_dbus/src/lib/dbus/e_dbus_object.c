@@ -172,7 +172,7 @@ e_dbus_object_init(void)
   {
     if (introspectable_interface) e_dbus_interface_unref(introspectable_interface);
     introspectable_interface = NULL;
-    if (properties_interface) e_dbus_interface_unref(introspectable_interface);
+    if (properties_interface) e_dbus_interface_unref(properties_interface);
     properties_interface = NULL;
     return 0;
   }
@@ -188,6 +188,9 @@ e_dbus_object_shutdown(void)
 {
   e_dbus_interface_unref(introspectable_interface);
   introspectable_interface = NULL;
+
+  e_dbus_interface_unref(properties_interface);
+  properties_interface = NULL;
 }
 
 /**

@@ -2,6 +2,7 @@
 #define E_HM_H
 
 #include <E_DBus.h>
+#include <Ecore_Data.h>
 
 #ifdef EAPI
 #undef EAPI
@@ -25,6 +26,77 @@
 #endif
 
 typedef struct E_NM_Context E_NM_Context;
+
+/**
+ * Matching structs for the new "object" based DBus API
+ * VPN is missing as this was still missing the redesign for the new 0.7 API
+ */
+typedef struct E_NM_Device E_NM_Device;
+struct E_NM_Device
+{
+   char *udi; /* object_path */
+   char *interface;
+   char *driver;
+   uint capabilities;
+   int  ip4address;
+   uint state;
+   char *ip4config; /* object_path */
+   int  carrier;
+   uint type;
+};
+
+typedef struct E_NM_Device_Wireless E_NM_Device_Wireless;
+struct E_NM_Device_Wireless
+{
+   char *hwaddress;
+   int   mode;
+   uint bitrate;
+   char *activeaccesspoint; /* object_path */
+   uint wirelesscapabilities;
+};
+
+typedef struct E_NM_Device_Wired E_NM_Device_Wired;
+struct E_NM_Device_Wired
+{
+   char *hwaddress;
+   uint speed;
+};
+
+typedef struct E_NM_Access_Point E_NM_Access_Point;
+struct E_NM_Access_Point
+{
+   uint flags;
+   uint wpaflags;
+   uint rsnflags;
+   char *ssid;
+   uint frequency;
+   char *hwaddress;
+   int  mode;
+   uint rate;
+   uint strength;
+};
+
+typedef struct E_NM_IP4Config E_NM_IP4Config;
+struct E_NM_IP4Config
+{
+   uint address;
+   uint gateway;
+   uint netmask;
+   uint broadcast;
+   char *hostname;
+   Ecore_List *nameserver;  /* uints */
+   Ecore_List *domains; /* char* */
+   char *nisdomain;
+   Ecore_List *nisserver; /* uints */
+};
+
+typedef struct E_NM_Manager E_NM_Manager;
+struct E_NM_Manager
+{
+   int wirelessenabled; /* writeable*/
+   int wirelesshardwareenabled;
+   uint state;
+};
 
 typedef void (*E_NM_Cb_Manager_State_Change) (void *data, int state);
 typedef void (*E_NM_Cb_Manager_Device_Added) (void *data, const char *device);
