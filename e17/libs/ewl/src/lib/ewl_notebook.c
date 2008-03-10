@@ -45,7 +45,6 @@ ewl_notebook_init(Ewl_Notebook *n)
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
 	ewl_box_orientation_set(EWL_BOX(n), EWL_ORIENTATION_VERTICAL);
-	ewl_object_fill_policy_set(EWL_OBJECT(n), EWL_FLAG_FILL_ALL);
 
 	ewl_widget_appearance_set(EWL_WIDGET(n), EWL_NOTEBOOK_TYPE);
 	ewl_widget_inherit(EWL_WIDGET(n), EWL_NOTEBOOK_TYPE);
