@@ -1,0 +1,125 @@
+# translation of forecasts.po to hungarian
+# Copyright (C) YEAR Enlightenment development team
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Lisovszki  <lisovszki@gmail.com>, 2008.
+msgid ""
+msgstr ""
+"Project-Id-Version: forecasts\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2008-01-22 19:20+0100\n"
+"PO-Revision-Date: 2008-02-02 20:40+0100\n"
+"Last-Translator: Lisovszki  <lisovszki@gmail.com>\n"
+"Language-Team: hungarian <hu@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms:  nplurals=2; plural=(n != 1);\n"
+
+#: e_mod_config.c:42
+msgid "Forecasts Configuration"
+msgstr "Előrejelzés beállításai"
+
+#: e_mod_config.c:90
+msgid "Display Settings"
+msgstr "Megjelenítési beállítások"
+
+#: e_mod_config.c:91
+msgid "Poll Time"
+msgstr "Kutatási idő"
+
+#: e_mod_config.c:94
+#, c-format
+msgid "%2.0f minutes"
+msgstr "%2.0f perc"
+
+#: e_mod_config.c:97
+msgid "Show Description"
+msgstr "Leírás megjelenítése"
+
+#: e_mod_config.c:99
+msgid "Popup on mouse over"
+msgstr "Felbukkanó ablak, ha az egér rajta van"
+
+#: e_mod_config.c:103
+msgid "Unit Settings"
+msgstr "Egység beállítások"
+
+#: e_mod_config.c:105
+msgid "Metric"
+msgstr "Metrikus"
+
+#: e_mod_config.c:107
+msgid "English"
+msgstr "Angol"
+
+#: e_mod_config.c:111
+msgid "Yahoo Forecasts Code"
+msgstr "Yahoo előrejelzés kód"
+
+#: e_mod_config.c:112
+msgid "Yahoo Forecasts Code/US Zip Code"
+msgstr "Yahoo előrejelzés kód/USA Zip kód"
+
+#: e_mod_config.c:117
+msgid "To find the code for your area, go to:"
+msgstr "Hogy megtaláld a területi kódodat, menj ide:"
+
+#: e_mod_config.c:119
+#, c-format
+msgid "%s, find your area, and look at the URL"
+msgstr "%s, keresd meg a területed, és néz meg az URL-t"
+
+#: e_mod_main.c:243
+msgid "Forecasts"
+msgstr "Előrejelzés"
+
+#: e_mod_main.c:288
+msgid "Configuration"
+msgstr "Beállítás"
+
+#: e_mod_main.c:969
+msgid "Wind Chill"
+msgstr "Szél fagyossága"
+
+#: e_mod_main.c:975
+msgid "Wind Speed"
+msgstr "Szélsebesség"
+
+#: e_mod_main.c:981
+msgid "Humidity"
+msgstr "Páratartalom"
+
+#: e_mod_main.c:987
+msgid "Visibility"
+msgstr "Láthatóság"
+
+#: e_mod_main.c:993
+msgid "Pressure"
+msgstr "Nyomás"
+
+#: e_mod_main.c:1000
+msgid "Rising"
+msgstr "Napsütés"
+
+#: e_mod_main.c:1002
+msgid "Falling"
+msgstr "Eső"
+
+#: e_mod_main.c:1004
+msgid "Steady"
+msgstr "Stabil"
+
+#: e_mod_main.c:1008
+msgid "Sunrise / Sunset"
+msgstr "Napfelkelte / Napnyugta"
+
+#: e_mod_main.c:1031
+msgid "High"
+msgstr "Magas"
+
+#: e_mod_main.c:1042
+msgid "Low"
+msgstr "Alacsony"
+

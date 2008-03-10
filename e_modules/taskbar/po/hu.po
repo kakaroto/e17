@@ -1,0 +1,47 @@
+# translation of taskbar.po to hungarian
+# Copyright (C) YEAR Enlightenment development team
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Lisovszki  <lisovszki@gmail.com>, 2008.
+msgid ""
+msgstr ""
+"Project-Id-Version: taskbar\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2008-01-22 21:47+0100\n"
+"PO-Revision-Date: 2008-02-02 23:33+0100\n"
+"Last-Translator: Lisovszki  <lisovszki@gmail.com>\n"
+"Language-Team: hungarian <hu@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms:  nplurals=2; plural=(n != 1);\n"
+
+#: e_mod_config.c:32
+msgid "Taskbar Configuration"
+msgstr "Feladatlista beállítás"
+
+#: e_mod_config.c:75
+msgid "Display"
+msgstr "Megjelenítés"
+
+#: e_mod_config.c:76
+msgid "Highlight Window on Mouse Over"
+msgstr "Ablak kiemelése, ha az egér felette van"
+
+#: e_mod_config.c:81
+msgid "Show Sliding Labels"
+msgstr "Címkék megjelenítése"
+
+#: e_mod_config.c:86
+msgid "Show windows from all desktops"
+msgstr "Minden asztal ablakainak megjelenítése"
+
+#: e_mod_main.c:217
+msgid "Taskbar"
+msgstr "Feladatlista"
+
+#: e_mod_main.c:312 e_mod_main.c:839
+msgid "Configuration"
+msgstr "Beállítás"
+
