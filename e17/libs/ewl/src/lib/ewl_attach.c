@@ -689,7 +689,7 @@ ewl_attach_cb_tooltip_timer(void *data)
 	Ewl_Embed *emb;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(data, FALSE);
+	DCHECK_PARAM_PTR_RET(data, ECORE_CALLBACK_CANCEL);
 
 	/* we are returning false so that will shutdown the timer, just need
 	 * to make sure we don't try to del it a second time so set it NULL */
@@ -698,7 +698,7 @@ ewl_attach_cb_tooltip_timer(void *data)
 	w = data;
 	emb = ewl_embed_widget_find(w);
 	if (!emb)
-		DRETURN_INT(FALSE, DLEVEL_STABLE);
+		DRETURN_INT(ECORE_CALLBACK_CANCEL, DLEVEL_STABLE);
 
 	if (!(ewl_attach_tooltip->win))
 	{
@@ -775,7 +775,7 @@ ewl_attach_cb_tooltip_timer(void *data)
 					ewl_attach_tooltip->x,
 					ewl_attach_tooltip->y);
 
-	DRETURN_INT(FALSE, DLEVEL_STABLE);
+	DRETURN_INT(ECORE_CALLBACK_CANCEL, DLEVEL_STABLE);
 }
 
 static void

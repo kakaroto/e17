@@ -550,7 +550,7 @@ ewl_spinner_timer(void *data)
 	int velocity;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(data, FALSE);
+	DCHECK_PARAM_PTR_RET(data, ECORE_CALLBACK_CANCEL);
 
 	s = EWL_SPINNER(data);
 	r = EWL_RANGE(s);
@@ -584,7 +584,7 @@ ewl_spinner_timer(void *data)
 	ewl_range_value_set(r, r->value + step);
 	s->last_value += step;
 
-	DRETURN_INT(TRUE, DLEVEL_STABLE);
+	DRETURN_INT(ECORE_CALLBACK_RENEW, DLEVEL_STABLE);
 }
 
 static void

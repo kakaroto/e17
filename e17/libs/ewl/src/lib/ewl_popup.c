@@ -339,8 +339,8 @@ ewl_popup_move_timer(void *data)
 	int ex, ey, mx, my;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(data, FALSE);
-	DCHECK_TYPE_RET(data, EWL_POPUP_TYPE, FALSE);
+	DCHECK_PARAM_PTR_RET(data, ECORE_CALLBACK_CANCEL);
+	DCHECK_TYPE_RET(data, EWL_POPUP_TYPE, ECORE_CALLBACK_CANCEL);
 
 	p = EWL_POPUP(data);
 
@@ -358,7 +358,7 @@ ewl_popup_move_timer(void *data)
 	ewl_embed_window_position_get(EWL_EMBED(p), &ex, &ey);
 	ewl_embed_mouse_move_feed(EWL_EMBED(p), mx - ex, my - ey, 0);
 
-	DRETURN_INT(TRUE, DLEVEL_STABLE);
+	DRETURN_INT(ECORE_CALLBACK_RENEW, DLEVEL_STABLE);
 }
 
 /**

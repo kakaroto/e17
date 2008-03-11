@@ -707,8 +707,8 @@ ewl_seeker_timer(void *data)
 	double value, posval, step;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(data, FALSE);
-	DCHECK_TYPE_RET(data, EWL_SEEKER_TYPE, FALSE);
+	DCHECK_PARAM_PTR_RET(data, ECORE_CALLBACK_CANCEL);
+	DCHECK_TYPE_RET(data, EWL_SEEKER_TYPE, ECORE_CALLBACK_CANCEL);
 
 	s = EWL_SEEKER(data);
 	value = ewl_range_value_get(EWL_RANGE(s));
@@ -742,6 +742,6 @@ ewl_seeker_timer(void *data)
 
 	ewl_range_value_set(EWL_RANGE(s), value);
 
-	DRETURN_INT(TRUE, DLEVEL_STABLE);
+	DRETURN_INT(ECORE_CALLBACK_RENEW, DLEVEL_STABLE);
 }
 

@@ -546,7 +546,7 @@ ewl_scrollbar_timer(void *data)
 	int velocity;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(data, FALSE);
+	DCHECK_PARAM_PTR_RET(data, ECORE_CALLBACK_CANCEL);
 
 	s = EWL_SCROLLBAR(data);
 
@@ -572,5 +572,5 @@ ewl_scrollbar_timer(void *data)
 
 	ewl_range_value_set(EWL_RANGE(s->seeker), value);
 
-	DRETURN_INT(TRUE, DLEVEL_STABLE);
+	DRETURN_INT(ECORE_CALLBACK_RENEW, DLEVEL_STABLE);
 }
