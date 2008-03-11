@@ -55,7 +55,7 @@ jpeg_la_LIBADD       = @JPEGLIBS@ $(top_builddir)/src/lib/libImlib2.la
 png_la_SOURCES       = loader_png.c
 png_la_LDFLAGS       = -module -avoid-version
 png_la_LIBADD        = @PNG_LIBS@ $(top_builddir)/src/lib/libImlib2.la
-                       
+
 tiff_la_SOURCES      = loader_tiff.c
 tiff_la_LDFLAGS      = -module -avoid-version
 tiff_la_LIBADD       = @TIFFLIBS@ $(top_builddir)/src/lib/libImlib2.la

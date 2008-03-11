@@ -273,15 +273,11 @@ AC_ARG_WITH(png,
 AC_MSG_RESULT($png_loader)
 
 if test "$png_loader" != no ; then
-  PKG_CHECK_EXISTS(libpng12,
-    [ PKG_CHECK_MODULES(PNG, libpng12, [ png_ok="yes" ], [ png_ok="no"]) ],
-    [
-      PKG_CHECK_EXISTS(libpng10,
-        [ PKG_CHECK_MODULES(PNG, libpng10, [ png_ok="yes" ], [ png_ok="no"]) ],
-        [ PKG_CHECK_MODULES(PNG, libpng, [ png_ok="yes" ], [ png_ok="no"]) ]
-      )
-    ]
-  )
+  PKG_CHECK_MODULES(PNG, libpng, [ png_ok="yes" ], [
+    PKG_CHECK_MODULES(PNG, libpng12, [ png_ok="yes" ], [
+      PKG_CHECK_MODULES(PNG, libpng10, [ png_ok="yes" ], [ png_ok="no"])
+    ])
+  ])
 fi
 AM_CONDITIONAL(BUILD_PNG_LOADER, test "$png_ok" = yes)
 
