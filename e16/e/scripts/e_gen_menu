@@ -29,8 +29,8 @@ $Prefixes = "/usr/local:/usr:/opt:/opt/kde:$ENV{'KDEDIR'}";
 $Prefixes = "$Prefixes:/opt/kde3:/opt/gnome";	# SUSE
 $Prefixes = RemoveDuplcates($Prefixes);
 
-# Where to look for GNOME2/KDE2,3 stuff
-$AppDirs = MkDirList($Prefixes, "/share/applications:/share/applications/kde");
+# Where to look for GNOME/KDE stuff
+$AppDirs = MkDirList($Prefixes, "/share/applications:/share/applications/kde:/share/applications/kde4");
 
 $IconDirs = MkDirList($Prefixes, "/share/pixmaps:/share/icons");
 $IconDirs2 = MkDirList($Prefixes, "/share/icons");
