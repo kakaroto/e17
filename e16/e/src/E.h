@@ -344,13 +344,14 @@ typedef struct
    {
       char                manual;
       char                manual_mouse_pointer;
+      char                center_if_desk_full;
+      char                ignore_struts;
+      char                raise_fullscreen;
       char                slidein;
       char                cleanupslide;
       int                 slidemode;
       int                 slidespeedmap;
       int                 slidespeedcleanup;
-      char                ignore_struts;
-      char                raise_fullscreen;
 #ifdef HAVE_XINERAMA
       char                extra_head;	/* Not used */
 #endif

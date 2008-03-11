@@ -39,7 +39,7 @@ typedef struct
 typedef struct
 {
    int                 x, y;
-   int                 p;
+   int                 p, q;
 } RectInfo;
 
 static int
@@ -173,7 +173,7 @@ ArrangeFindSpace(const int *xarray, int xsize, const int *yarray, int ysize,
 		 int wx, int wy, int ww, int wh)
 {
    int                 i, j, w, h, fw, fh, z1, z2;
-   int                 cost;
+   int                 cost, desk;
    int                 num_spaces = *ns;
 
    if (wx < xarray[0] || (wx != xarray[0] && wx + ww > xarray[xsize - 1]))
@@ -181,7 +181,7 @@ ArrangeFindSpace(const int *xarray, int xsize, const int *yarray, int ysize,
    if (wy < yarray[0] || (wy != yarray[0] && wy + wh > yarray[ysize - 1]))
       return;
 
-   cost = 0;
+   cost = desk = 0;
    fh = wh;
 #if DEBUG_ARRANGE > 1
    Eprintf("Check-A %d,%d %dx%d\n", wx, wy, ww, wh);
@@ -208,7 +208,10 @@ ArrangeFindSpace(const int *xarray, int xsize, const int *yarray, int ysize,
 #if DEBUG_ARRANGE > 1
 	     Eprintf("Add [%d,%d] %3dx%3d: %2d\n", i, j, w, h, Filled(i, j));
 #endif
-	     cost += w * h * Filled(i, j);
+	     if (Filled(i, j) == 0)
+		desk += w * h;
+	     else
+		cost += w * h * Filled(i, j);
 	     fw -= w;
 	     if (fw <= 0)
 		break;
@@ -219,11 +222,13 @@ ArrangeFindSpace(const int *xarray, int xsize, const int *yarray, int ysize,
      }
 
 #if DEBUG_ARRANGE
-   Eprintf("Check %4d,%4d %3dx%3d cost=%d\n", wx, wy, ww, wh, cost);
+   Eprintf("Check %4d,%4d %3dx%3d cost=%d desk=%d\n", wx, wy, ww, wh,
+	   cost, desk);
 #endif
    spaces[num_spaces].x = wx;
    spaces[num_spaces].y = wy;
    spaces[num_spaces].p = cost;
+   spaces[num_spaces].q = desk;
    num_spaces++;
    *ns = num_spaces;
 }
@@ -393,17 +398,26 @@ ArrangeRects(const RectBox * fixed, int fixed_count, RectBox * floating,
 	/* find the first space that fits */
 	k = 0;
 	sort = 0x7fffffff;	/* NB! Break at 0 == free space */
-	for (j = 0; j < num_spaces && sort; j++)
+	for (j = 0; j < num_spaces; j++)
 	  {
-	     if (spaces[j].p >= sort)
+	     a1 = spaces[j].p - spaces[j].q * 4;
+	     if (a1 >= sort)
 		continue;
-	     sort = spaces[j].p;
+	     sort = a1;
 	     k = j;
 	     if (sort == 0)
 		break;
 	  }
-	sorted[num_sorted].x = spaces[k].x;
-	sorted[num_sorted].y = spaces[k].y;
+	if (spaces[k].q == 0 && Conf.place.center_if_desk_full)
+	  {
+	     sorted[num_sorted].x = (tx1 + tx2 - floating[i].w) / 2;
+	     sorted[num_sorted].y = (ty1 + ty2 - floating[i].h) / 2;
+	  }
+	else
+	  {
+	     sorted[num_sorted].x = spaces[k].x;
+	     sorted[num_sorted].y = spaces[k].y;
+	  }
 	sorted[num_sorted].data = floating[i].data;
 	sorted[num_sorted].w = floating[i].w;
 	sorted[num_sorted].h = floating[i].h;

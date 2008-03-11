@@ -223,6 +223,7 @@ static char         tmp_with_leader;
 static char         tmp_switch_popup;
 static char         tmp_manual_placement;
 static char         tmp_manual_placement_mouse_pointer;
+static char         tmp_center_if_desk_full;
 static char         tmp_map_slide;
 static char         tmp_cleanup_slide;
 static int          tmp_slide_mode;
@@ -247,6 +248,7 @@ CB_ConfigurePlacement(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 
 	Conf.place.manual = tmp_manual_placement;
 	Conf.place.manual_mouse_pointer = tmp_manual_placement_mouse_pointer;
+	Conf.place.center_if_desk_full = tmp_center_if_desk_full;
 
 	Conf.place.slidein = tmp_map_slide;
 	Conf.place.cleanupslide = tmp_cleanup_slide;
@@ -277,6 +279,7 @@ _DlgFillPlacement(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
 
    tmp_manual_placement = Conf.place.manual;
    tmp_manual_placement_mouse_pointer = Conf.place.manual_mouse_pointer;
+   tmp_center_if_desk_full = Conf.place.center_if_desk_full;
 
    tmp_map_slide = Conf.place.slidein;
    tmp_cleanup_slide = Conf.place.cleanupslide;
@@ -318,6 +321,11 @@ _DlgFillPlacement(Dialog * d __UNUSED__, DItem * table, void *data __UNUSED__)
    DialogItemSetColSpan(di, 2);
    DialogItemSetText(di, _("Place windows under mouse"));
    DialogItemCheckButtonSetPtr(di, &tmp_manual_placement_mouse_pointer);
+
+   di = DialogAddItem(table, DITEM_CHECKBUTTON);
+   DialogItemSetColSpan(di, 2);
+   DialogItemSetText(di, _("Center windows when desk is full"));
+   DialogItemCheckButtonSetPtr(di, &tmp_center_if_desk_full);
 
    di = DialogAddItem(table, DITEM_CHECKBUTTON);
    DialogItemSetColSpan(di, 2);
