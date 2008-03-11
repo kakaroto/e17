@@ -47,6 +47,10 @@ ArrangeAddToList(int *array, int current_size, int value)
 {
    int                 i, j;
 
+   if (current_size >= 2 &&
+       (value <= array[0] || value >= array[current_size - 1]))
+      return current_size;
+
    for (i = 0; i < current_size; i++)
      {
 	if (value < array[i])
@@ -66,7 +70,7 @@ ArrangeAddToList(int *array, int current_size, int value)
 #define Filled(x,y) (filled[(y * (xsize - 1)) + x])
 
 static void
-ArrangeMakeFillLists(int startx, int width, int starty, int height,
+ArrangeMakeFillLists(int tx1, int tx2, int ty1, int ty2, int fitw, int fith,
 		     const RectBox * sorted, int num_sorted,
 		     int *xarray, int *nx, int *yarray, int *ny,
 		     unsigned char *filled)
@@ -78,21 +82,25 @@ ArrangeMakeFillLists(int startx, int width, int starty, int height,
    ysize = 0;
 
    /* put all the sorted rects into the xy arrays */
-   xsize = ArrangeAddToList(xarray, xsize, startx);
-   xsize = ArrangeAddToList(xarray, xsize, width);
-   ysize = ArrangeAddToList(yarray, ysize, starty);
-   ysize = ArrangeAddToList(yarray, ysize, height);
+   xsize = ArrangeAddToList(xarray, xsize, tx1);
+   xsize = ArrangeAddToList(xarray, xsize, tx2);
+   ysize = ArrangeAddToList(yarray, ysize, ty1);
+   ysize = ArrangeAddToList(yarray, ysize, ty2);
 
    for (j = 0; j < num_sorted; j++)
      {
-	if (sorted[j].x < width)
-	   xsize = ArrangeAddToList(xarray, xsize, sorted[j].x);
-	if ((sorted[j].x + sorted[j].w) < width)
-	   xsize = ArrangeAddToList(xarray, xsize, sorted[j].x + sorted[j].w);
-	if (sorted[j].y < height)
-	   ysize = ArrangeAddToList(yarray, ysize, sorted[j].y);
-	if ((sorted[j].y + sorted[j].h) < height)
-	   ysize = ArrangeAddToList(yarray, ysize, sorted[j].y + sorted[j].h);
+	x1 = sorted[j].x;
+	x2 = x1 + sorted[j].w;
+	xsize = ArrangeAddToList(xarray, xsize, x1);
+	xsize = ArrangeAddToList(xarray, xsize, x2);
+	xsize = ArrangeAddToList(xarray, xsize, x1 - fitw);
+	xsize = ArrangeAddToList(xarray, xsize, x2 - fitw);
+	y1 = sorted[j].y;
+	y2 = y1 + sorted[j].h;
+	ysize = ArrangeAddToList(yarray, ysize, y1);
+	ysize = ArrangeAddToList(yarray, ysize, y2);
+	ysize = ArrangeAddToList(yarray, ysize, y1 - fith);
+	ysize = ArrangeAddToList(yarray, ysize, y2 - fith);
      }
 #if DEBUG_ARRANGE
    for (j = 0; j < xsize; j++)
@@ -165,7 +173,7 @@ ArrangeFindSpace(const int *xarray, int xsize, const int *yarray, int ysize,
 		 int wx, int wy, int ww, int wh)
 {
    int                 i, j, w, h, fw, fh, z1, z2;
-   unsigned int        a;
+   int                 cost;
    int                 num_spaces = *ns;
 
    if (wx < xarray[0] || (wx != xarray[0] && wx + ww > xarray[xsize - 1]))
@@ -173,10 +181,10 @@ ArrangeFindSpace(const int *xarray, int xsize, const int *yarray, int ysize,
    if (wy < yarray[0] || (wy != yarray[0] && wy + wh > yarray[ysize - 1]))
       return;
 
-   a = 0;
+   cost = 0;
    fh = wh;
-#if DEBUG_ARRANGE
-   Eprintf("Check %d,%d %dx%d\n", wx, wy, ww, wh);
+#if DEBUG_ARRANGE > 1
+   Eprintf("Check-A %d,%d %dx%d\n", wx, wy, ww, wh);
 #endif
    for (j = 0; j < ysize - 1; j++)
      {
@@ -191,7 +199,7 @@ ArrangeFindSpace(const int *xarray, int xsize, const int *yarray, int ysize,
 	for (i = 0; i < xsize - 1; i++)
 	  {
 	     z2 = xarray[i + 1];
-	     if (z2 < wx)
+	     if (z2 <= wx)
 		continue;
 
 	     z1 = wx > xarray[i] ? wx : xarray[i];
@@ -200,7 +208,7 @@ ArrangeFindSpace(const int *xarray, int xsize, const int *yarray, int ysize,
 #if DEBUG_ARRANGE > 1
 	     Eprintf("Add [%d,%d] %3dx%3d: %2d\n", i, j, w, h, Filled(i, j));
 #endif
-	     a += w * h * Filled(i, j);
+	     cost += w * h * Filled(i, j);
 	     fw -= w;
 	     if (fw <= 0)
 		break;
@@ -210,24 +218,25 @@ ArrangeFindSpace(const int *xarray, int xsize, const int *yarray, int ysize,
 	   break;
      }
 
+#if DEBUG_ARRANGE
+   Eprintf("Check %4d,%4d %3dx%3d cost=%d\n", wx, wy, ww, wh, cost);
+#endif
    spaces[num_spaces].x = wx;
    spaces[num_spaces].y = wy;
-   spaces[num_spaces].p = a;
+   spaces[num_spaces].p = cost;
    num_spaces++;
    *ns = num_spaces;
 }
 
 static void
 ArrangeFindSpaces(const int *xarray, int xsize, const int *yarray, int ysize,
-		  unsigned char *filled, RectInfo * spaces, int *ns,
-		  RectBox * fit)
+		  unsigned char *filled, RectInfo * spaces, int max_spaces,
+		  int *ns, RectBox * fit)
 {
-   int                 ix, iy, fx, fy, fw, fh, ns_max;
+   int                 ix, iy, fx, fy, fw, fh;
 
    /* create list of all "spaces" */
    *ns = 0;
-   ns_max = xsize > ysize ? xsize : ysize;
-   ns_max *= ns_max;
    fw = fit->w;
    fh = fit->h;
    for (iy = 0; iy < ysize; iy++)
@@ -240,31 +249,13 @@ ArrangeFindSpaces(const int *xarray, int xsize, const int *yarray, int ysize,
 
 	     ArrangeFindSpace(xarray, xsize, yarray, ysize, filled, spaces, ns,
 			      fx, fy, fw, fh);
-	     if (*ns >= ns_max)
-		goto done;
-	     ArrangeFindSpace(xarray, xsize, yarray, ysize, filled, spaces, ns,
-			      fx - fw, fy, fw, fh);
-	     if (*ns >= ns_max)
-		goto done;
-	     ArrangeFindSpace(xarray, xsize, yarray, ysize, filled, spaces, ns,
-			      fx, fy - fh, fw, fh);
-	     if (*ns >= ns_max)
-		goto done;
-	     ArrangeFindSpace(xarray, xsize, yarray, ysize, filled, spaces, ns,
-			      fx - fw, fy - fh, fw, fh);
-	     if (*ns >= ns_max)
+	     if (*ns >= max_spaces)
 		goto done;
 	  }
      }
 
  done:
    ;
-#if DEBUG_ARRANGE
-   for (ix = 0; ix < *ns; ix++)
-      Eprintf("Spaces: x,y=%4d,%4d wxh=%3dx%3d p=%2d\n",
-	      spaces[ix].x, spaces[ix].y, spaces[ix].w, spaces[ix].h,
-	      spaces[ix].p);
-#endif
 }
 
 static void
@@ -295,16 +286,20 @@ ArrangeRects(const RectBox * fixed, int fixed_count, RectBox * floating,
 	     int width, int height, int policy, char initial_window)
 {
    int                 num_sorted;
+   int                 tx1, ty1, tx2, ty2;
    int                 xsize = 0, ysize = 0;
    int                *xarray, *yarray;
    int                 i, j, k;
    unsigned char      *filled;
    RectInfo           *spaces;
-   int                 num_spaces;
+   int                 num_spaces, max_spaces;
    int                 sort;
    int                 a1, a2;
-   int                 num_leftover;
 
+   tx1 = startx;
+   ty1 = starty;
+   tx2 = startx + width;
+   ty2 = starty + height;
    if (initial_window)
      {
 	int                 xx1, yy1, xx2, yy2;
@@ -312,17 +307,17 @@ ArrangeRects(const RectBox * fixed, int fixed_count, RectBox * floating,
 	ScreenGetAvailableAreaByPointer(&xx1, &yy1, &xx2, &yy2);
 	xx2 += xx1;
 	yy2 += yy1;
-	if (startx < xx1)
-	   startx = xx1;
-	if (width > xx2)
-	   width = xx2;
-	if (starty < yy1)
-	   starty = yy1;
-	if (height > yy2)
-	   height = yy2;
+	if (tx1 < xx1)
+	   tx1 = xx1;
+	if (tx2 > xx2)
+	   tx2 = xx2;
+	if (ty1 < yy1)
+	   ty1 = yy1;
+	if (ty2 > yy2)
+	   ty2 = yy2;
      }
 #if DEBUG_ARRANGE
-   Eprintf("Start %d,%d %dx%d\n", startx, starty, width, height);
+   Eprintf("Target area %d,%d -> %d,%d\n", tx1, ty1, tx2, ty2);
 #endif
 
    switch (policy)
@@ -370,11 +365,12 @@ ArrangeRects(const RectBox * fixed, int fixed_count, RectBox * floating,
 
    /* for every floating rect in order, "fit" it into the sorted list */
    i = ((fixed_count + floating_count) * 2) + 2;
+   max_spaces = i * i;
    xarray = EMALLOC(int, i);
    yarray = EMALLOC(int, i);
-   filled = EMALLOC(unsigned char, i * i);
+   filled = EMALLOC(unsigned char, max_spaces);
 
-   spaces = EMALLOC(RectInfo, i * i);
+   spaces = EMALLOC(RectInfo, max_spaces);
 
    if (!xarray || !yarray || !filled || !spaces)
       goto done;
@@ -384,15 +380,15 @@ ArrangeRects(const RectBox * fixed, int fixed_count, RectBox * floating,
    num_sorted = fixed_count;
 
    /* go through each floating rect in order and "fit" it in */
-   num_leftover = 0;
    for (i = 0; i < floating_count; i++)
      {
-	ArrangeMakeFillLists(startx, width, starty, height, sorted, num_sorted,
+	ArrangeMakeFillLists(tx1, tx2, ty1, ty2, floating[i].w, floating[i].h,
+			     sorted, num_sorted,
 			     xarray, &xsize, yarray, &ysize, filled);
 
 	/* create list of all "spaces" */
 	ArrangeFindSpaces(xarray, xsize, yarray, ysize, filled,
-			  spaces, &num_spaces, floating + i);
+			  spaces, max_spaces, &num_spaces, floating + i);
 
 	/* find the first space that fits */
 	k = 0;
