@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.7\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-03-01 13:38+0100\n"
+"POT-Creation-Date: 2008-03-12 23:27+0100\n"
 "PO-Revision-Date: 2004-09-14 20:43-0300\n"
 "Last-Translator: Viktor Kojouharov\n"
 "Language-Team: Bulgarian\n"
@@ -713,7 +713,7 @@ msgid ""
 msgstr "Е: Виртуални полетаДиалог за настройки\n"
 
 #: src/dialog.c:873 src/dialog.c:2091 src/dialog.c:2122 src/events.c:87
-#: src/setup.c:165 src/sound.c:200
+#: src/setup.c:165 src/sound.c:205
 msgid "OK"
 msgstr "Да"
 
@@ -1385,7 +1385,7 @@ msgstr "E Диалози:"
 msgid "Tooltips:"
 msgstr "Съвети:"
 
-#: src/mod-trans.c:165 src/settings.c:78 src/settings.c:83 src/settings.c:337
+#: src/mod-trans.c:165 src/settings.c:78 src/settings.c:83 src/settings.c:345
 msgid "Opaque"
 msgstr "Плътен"
 
@@ -1634,19 +1634,19 @@ msgstr "Режими за движение:"
 msgid "Resize Methods:"
 msgstr "Режими за промяна на размера:"
 
-#: src/settings.c:88 src/settings.c:93 src/settings.c:342
+#: src/settings.c:88 src/settings.c:93 src/settings.c:350
 msgid "Technical"
 msgstr "Технически"
 
-#: src/settings.c:98 src/settings.c:103 src/settings.c:347
+#: src/settings.c:98 src/settings.c:103 src/settings.c:355
 msgid "Box"
 msgstr "Кутия"
 
-#: src/settings.c:108 src/settings.c:113 src/settings.c:352
+#: src/settings.c:108 src/settings.c:113 src/settings.c:360
 msgid "Shaded"
 msgstr "Затъмнен"
 
-#: src/settings.c:118 src/settings.c:123 src/settings.c:357
+#: src/settings.c:118 src/settings.c:123 src/settings.c:365
 msgid "Semi-Solid"
 msgstr "Полу-плътен"
 
@@ -1717,74 +1717,79 @@ msgstr ""
 "Е: движение и промяна на размера\n"
 "Диалог за настройки на режимите\n"
 
-#: src/settings.c:301
+#: src/settings.c:304
 msgid "Dialog windows appear together with their owner"
 msgstr "Диалогови прозорци се появяват заедно с притежателите им"
 
-#: src/settings.c:306
+#: src/settings.c:309
 msgid "Switch to desktop where dialog appears"
 msgstr "Премествай екрана до полето в което се показва диалогът"
 
-#: src/settings.c:314
+#: src/settings.c:317
 msgid "Place windows manually"
 msgstr "Слагайте прозорците ръчно"
 
-#: src/settings.c:319
+#: src/settings.c:322
 msgid "Place windows under mouse"
 msgstr "Слагай прозорците под мишката"
 
-#: src/settings.c:324
+#: src/settings.c:327
+#, fuzzy
+msgid "Center windows when desk is full"
+msgstr "Включвай навити прозорци в списъкът за фокус"
+
+#: src/settings.c:332
 msgid "Slide windows in when they appear"
 msgstr "Плъзгай прозорците когато се показват"
 
-#: src/settings.c:329
+#: src/settings.c:337
 msgid "Slide windows around when cleaning up"
 msgstr "Плъзгай прозорците когато чистите"
 
-#: src/settings.c:334
+#: src/settings.c:342
 msgid "Slide Method:"
 msgstr "Режим на плъзгане"
 
-#: src/settings.c:367
+#: src/settings.c:375
 #, fuzzy
 msgid "Appear Slide speed:"
 msgstr "Бързина на плъзгане на появяване: (бавно)\n"
 
-#: src/settings.c:378
+#: src/settings.c:386
 #, fuzzy
 msgid "Cleanup Slide speed:"
 msgstr "Бързина на чистене на плъзгането: (бавно)\n"
 
-#: src/settings.c:391
+#: src/settings.c:399
 msgid "Animate shading and unshading of windows"
 msgstr "Анимирай завиване и развиване на прозорци"
 
-#: src/settings.c:397
+#: src/settings.c:405
 #, fuzzy
 msgid "Window Shading speed:"
 msgstr "Бързина на навиване на прозорци: (бавно)\n"
 
-#: src/settings.c:410
+#: src/settings.c:418
 msgid "Ignore struts"
 msgstr "Игнорирай структурите"
 
-#: src/settings.c:415
+#: src/settings.c:423
 msgid "Raise fullscreen windows"
 msgstr "Вдигни прозорци които са на цял екран"
 
-#: src/settings.c:423
+#: src/settings.c:431
 msgid "Place windows on another head when full"
 msgstr "Слагай прозорците на друга глава след запълване"
 
-#: src/settings.c:431
+#: src/settings.c:439
 msgid "Placement"
 msgstr ""
 
-#: src/settings.c:432
+#: src/settings.c:440
 msgid "Window Placement Settings"
 msgstr "Настройки за разположение на прозорци"
 
-#: src/settings.c:435
+#: src/settings.c:443
 msgid ""
 "Enlightenment Window Placement\n"
 "Settings Dialog\n"
@@ -1792,24 +1797,24 @@ msgstr ""
 "Е: Разположение на прозорци\n"
 "Диалог за настройки\n"
 
-#: src/settings.c:466
+#: src/settings.c:474
 msgid "Raise Windows Automatically"
 msgstr "Автоматично вдигайте прозорците"
 
-#: src/settings.c:472
+#: src/settings.c:480
 msgid "Autoraise delay:"
 msgstr "Забавяне при автоматично вдигане:"
 
-#: src/settings.c:483
+#: src/settings.c:491
 #, fuzzy
 msgid "Autoraise"
 msgstr "Забавяне при автоматично вдигане:"
 
-#: src/settings.c:484
+#: src/settings.c:492
 msgid "Autoraise Settings"
 msgstr "Настройки за автоматично вдигане"
 
-#: src/settings.c:487
+#: src/settings.c:495
 msgid ""
 "Enlightenment Automatic Raising\n"
 "of Windows Settings Dialog\n"
@@ -1817,32 +1822,32 @@ msgstr ""
 "Е: Автоматично вдигане\n"
 "на прозорци. Диалог за настройки\n"
 
-#: src/settings.c:524
+#: src/settings.c:532
 msgid "Enable Dialog Headers"
 msgstr "Разрешавай header-и за диалози"
 
-#: src/settings.c:530
+#: src/settings.c:538
 msgid "Enable Button Images"
 msgstr "Разрешавай картини на бутоните"
 
-#: src/settings.c:539
+#: src/settings.c:547
 msgid "Enable sliding startup windows"
 msgstr ""
 
-#: src/settings.c:547
+#: src/settings.c:555
 msgid "Use saveunders to reduce window exposures"
 msgstr "Използвай saveunder-и за намаляване на грешки"
 
-#: src/settings.c:553 config/strings.c:145 config/strings.c:161
+#: src/settings.c:561 config/strings.c:145 config/strings.c:161
 #, fuzzy
 msgid "Miscellaneous"
 msgstr "Други настройки"
 
-#: src/settings.c:554
+#: src/settings.c:562
 msgid "Miscellaneous Settings"
 msgstr "Други настройки"
 
-#: src/settings.c:557
+#: src/settings.c:565
 msgid ""
 "Enlightenment Miscellaneous\n"
 "Settings Dialog\n"
@@ -1850,59 +1855,59 @@ msgstr ""
 "Е: Други\n"
 "Диалог за настройки\n"
 
-#: src/settings.c:598
+#: src/settings.c:606
 msgid "Enable Composite"
 msgstr "Включи Композитора"
 
-#: src/settings.c:606
+#: src/settings.c:614
 #, fuzzy
 msgid "Enable Fading"
 msgstr "Разрешавай обръщането през ръбовете"
 
-#: src/settings.c:612
+#: src/settings.c:620
 #, fuzzy
 msgid "Fading Speed:"
 msgstr "Бързина на изчезване\n"
 
-#: src/settings.c:625
+#: src/settings.c:633
 msgid "Shadows Off"
 msgstr "Без сенки"
 
-#: src/settings.c:631
+#: src/settings.c:639
 msgid "Shadows Sharp"
 msgstr "Остри сенки"
 
-#: src/settings.c:637
+#: src/settings.c:645
 #, fuzzy
 msgid "Shadows Sharp2"
 msgstr "Остри сенки"
 
-#: src/settings.c:643
+#: src/settings.c:651
 msgid "Shadows Blurred"
 msgstr "Меки сенки"
 
-#: src/settings.c:654
+#: src/settings.c:662
 msgid "Default focused window opacity:"
 msgstr ""
 
-#: src/settings.c:665
+#: src/settings.c:673
 msgid "Default unfocused window opacity:"
 msgstr ""
 
-#: src/settings.c:676
+#: src/settings.c:684
 msgid "Default pop-up window opacity:"
 msgstr ""
 
-#: src/settings.c:687
+#: src/settings.c:695
 #, fuzzy
 msgid "Composite"
 msgstr "Включи Композитора"
 
-#: src/settings.c:688
+#: src/settings.c:696
 msgid "Composite Settings"
 msgstr "Настройки за композитора"
 
-#: src/settings.c:691
+#: src/settings.c:699
 msgid ""
 "Enlightenment Composite\n"
 "Settings Dialog\n"
@@ -1910,7 +1915,7 @@ msgstr ""
 "Е: Композитор\n"
 "Диалог за настройки\n"
 
-#: src/settings.c:780
+#: src/settings.c:788
 #, fuzzy
 msgid "Enlightenment Settings"
 msgstr "Enlightenment стартира..."
@@ -2124,11 +2129,11 @@ msgstr ""
 "Enlightenment ще продължи да работи, но може\n"
 "да погледнете вашата конфигурация.\n"
 
-#: src/sound.c:200
+#: src/sound.c:205
 msgid "Error initialising sound"
 msgstr "Грешка при пускането на звука"
 
-#: src/sound.c:201
+#: src/sound.c:206
 msgid ""
 "Audio was enabled for Enlightenment but there was an error\n"
 "communicating with the audio server (Esound). Audio will\n"
@@ -2138,19 +2143,19 @@ msgstr ""
 "свързването със звуковия сървър (Esound). Поддръжката на звукът\n"
 "ще бъде спряна.\n"
 
-#: src/sound.c:314
+#: src/sound.c:318
 msgid "Enable sounds"
 msgstr "Включи звукове"
 
-#: src/sound.c:320
+#: src/sound.c:324
 msgid "Sound"
 msgstr "Звук"
 
-#: src/sound.c:321
+#: src/sound.c:325
 msgid "Audio Settings"
 msgstr "Настройки на звука"
 
-#: src/sound.c:324
+#: src/sound.c:328
 msgid ""
 "Enlightenment Audio\n"
 "Settings Dialog\n"

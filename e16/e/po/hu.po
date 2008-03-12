@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-03-01 13:38+0100\n"
+"POT-Creation-Date: 2008-03-12 23:27+0100\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: György Horák <dyuri@horak.hu>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
@@ -710,7 +710,7 @@ msgstr ""
 "beállításai\n"
 
 #: src/dialog.c:873 src/dialog.c:2091 src/dialog.c:2122 src/events.c:87
-#: src/setup.c:165 src/sound.c:200
+#: src/setup.c:165 src/sound.c:205
 msgid "OK"
 msgstr "OK"
 
@@ -1339,7 +1339,7 @@ msgstr "E párbeszédablakok:"
 msgid "Tooltips:"
 msgstr "Tippek:\n"
 
-#: src/mod-trans.c:165 src/settings.c:78 src/settings.c:83 src/settings.c:337
+#: src/mod-trans.c:165 src/settings.c:78 src/settings.c:83 src/settings.c:345
 msgid "Opaque"
 msgstr "Átlátszatlan"
 
@@ -1582,19 +1582,19 @@ msgstr "Mozgatás módja:"
 msgid "Resize Methods:"
 msgstr "Átméretezés módja:"
 
-#: src/settings.c:88 src/settings.c:93 src/settings.c:342
+#: src/settings.c:88 src/settings.c:93 src/settings.c:350
 msgid "Technical"
 msgstr "Mûszaki"
 
-#: src/settings.c:98 src/settings.c:103 src/settings.c:347
+#: src/settings.c:98 src/settings.c:103 src/settings.c:355
 msgid "Box"
 msgstr "Keretes"
 
-#: src/settings.c:108 src/settings.c:113 src/settings.c:352
+#: src/settings.c:108 src/settings.c:113 src/settings.c:360
 msgid "Shaded"
 msgstr "Árnyékolt"
 
-#: src/settings.c:118 src/settings.c:123 src/settings.c:357
+#: src/settings.c:118 src/settings.c:123 src/settings.c:365
 msgid "Semi-Solid"
 msgstr "Félig-teli"
 
@@ -1664,77 +1664,82 @@ msgstr ""
 "Enlightenment mozgatás és\n"
 "átméretezés beállításai\n"
 
-#: src/settings.c:301
+#: src/settings.c:304
 msgid "Dialog windows appear together with their owner"
 msgstr "Párbeszédablak a tulajdonosával együtt jelenik meg"
 
-#: src/settings.c:306
+#: src/settings.c:309
 msgid "Switch to desktop where dialog appears"
 msgstr "Átváltás arra az asztalra, ahol az ablak megjelenik"
 
-#: src/settings.c:314
+#: src/settings.c:317
 msgid "Place windows manually"
 msgstr "Ablakok kézi elhelyezése"
 
-#: src/settings.c:319
+#: src/settings.c:322
 #, fuzzy
 msgid "Place windows under mouse"
 msgstr "Ablakok kézi elhelyezése"
 
-#: src/settings.c:324
+#: src/settings.c:327
+#, fuzzy
+msgid "Center windows when desk is full"
+msgstr "Árnyékolt ablakok bevétele a fókusz listába"
+
+#: src/settings.c:332
 msgid "Slide windows in when they appear"
 msgstr "Animáció az ablakok megjelenésénél"
 
-#: src/settings.c:329
+#: src/settings.c:337
 msgid "Slide windows around when cleaning up"
 msgstr ""
 
-#: src/settings.c:334
+#: src/settings.c:342
 msgid "Slide Method:"
 msgstr "Csúsztatás módja:"
 
-#: src/settings.c:367
+#: src/settings.c:375
 #, fuzzy
 msgid "Appear Slide speed:"
 msgstr "Megjelenítési animáció sebessége: (lassú)\n"
 
-#: src/settings.c:378
+#: src/settings.c:386
 #, fuzzy
 msgid "Cleanup Slide speed:"
 msgstr "Cleanup animáció sebessége: (lassú)\n"
 
-#: src/settings.c:391
+#: src/settings.c:399
 msgid "Animate shading and unshading of windows"
 msgstr "Ablakok árnyékolásának animálása"
 
-#: src/settings.c:397
+#: src/settings.c:405
 #, fuzzy
 msgid "Window Shading speed:"
 msgstr "Ablakok árnyékolásának sebessége: (lassú)\n"
 
-#: src/settings.c:410
+#: src/settings.c:418
 #, fuzzy
 msgid "Ignore struts"
 msgstr "Hiba átlépése"
 
-#: src/settings.c:415
+#: src/settings.c:423
 msgid "Raise fullscreen windows"
 msgstr "Teljes képernyõs ablakok felemelése"
 
-#: src/settings.c:423
+#: src/settings.c:431
 #, fuzzy
 msgid "Place windows on another head when full"
 msgstr "Ablakok kézi elhelyezése"
 
-#: src/settings.c:431
+#: src/settings.c:439
 msgid "Placement"
 msgstr ""
 
-#: src/settings.c:432
+#: src/settings.c:440
 msgid "Window Placement Settings"
 msgstr "Ablakelhelyezés beállításai"
 
-#: src/settings.c:435
+#: src/settings.c:443
 msgid ""
 "Enlightenment Window Placement\n"
 "Settings Dialog\n"
@@ -1742,24 +1747,24 @@ msgstr ""
 "Enlightenment ablakelhelyezés\n"
 "beállításai\n"
 
-#: src/settings.c:466
+#: src/settings.c:474
 msgid "Raise Windows Automatically"
 msgstr "Ablakok automatikus felemelkedése"
 
-#: src/settings.c:472
+#: src/settings.c:480
 msgid "Autoraise delay:"
 msgstr "Felemelkedéssel vár:"
 
-#: src/settings.c:483
+#: src/settings.c:491
 #, fuzzy
 msgid "Autoraise"
 msgstr "Felemelkedéssel vár:"
 
-#: src/settings.c:484
+#: src/settings.c:492
 msgid "Autoraise Settings"
 msgstr "Auto-felemelkedési beállítások"
 
-#: src/settings.c:487
+#: src/settings.c:495
 msgid ""
 "Enlightenment Automatic Raising\n"
 "of Windows Settings Dialog\n"
@@ -1767,33 +1772,33 @@ msgstr ""
 "Enlightenment Automatikus ablak\n"
 "felemelkedési beállítások\n"
 
-#: src/settings.c:524
+#: src/settings.c:532
 msgid "Enable Dialog Headers"
 msgstr "Fejléc párbeszédablakoknak"
 
-#: src/settings.c:530
+#: src/settings.c:538
 #, fuzzy
 msgid "Enable Button Images"
 msgstr "Hangok engedélyezése"
 
-#: src/settings.c:539
+#: src/settings.c:547
 msgid "Enable sliding startup windows"
 msgstr ""
 
-#: src/settings.c:547
+#: src/settings.c:555
 msgid "Use saveunders to reduce window exposures"
 msgstr "Alámentések használata ablak felfedés gyorsításához"
 
-#: src/settings.c:553 config/strings.c:145 config/strings.c:161
+#: src/settings.c:561 config/strings.c:145 config/strings.c:161
 #, fuzzy
 msgid "Miscellaneous"
 msgstr "Vegyes beállítások"
 
-#: src/settings.c:554
+#: src/settings.c:562
 msgid "Miscellaneous Settings"
 msgstr "Vegyes beállítások"
 
-#: src/settings.c:557
+#: src/settings.c:565
 msgid ""
 "Enlightenment Miscellaneous\n"
 "Settings Dialog\n"
@@ -1801,61 +1806,61 @@ msgstr ""
 "Enlightenment vegyes\n"
 "beállítások\n"
 
-#: src/settings.c:598
+#: src/settings.c:606
 #, fuzzy
 msgid "Enable Composite"
 msgstr "Composite engedélyezése"
 
-#: src/settings.c:606
+#: src/settings.c:614
 #, fuzzy
 msgid "Enable Fading"
 msgstr "Asztal él-érzékenység"
 
-#: src/settings.c:612
+#: src/settings.c:620
 #, fuzzy
 msgid "Fading Speed:"
 msgstr "Halványodási sebesség\n"
 
-#: src/settings.c:625
+#: src/settings.c:633
 msgid "Shadows Off"
 msgstr "Árnyékok ki"
 
-#: src/settings.c:631
+#: src/settings.c:639
 msgid "Shadows Sharp"
 msgstr "Éles árnyékok"
 
-#: src/settings.c:637
+#: src/settings.c:645
 #, fuzzy
 msgid "Shadows Sharp2"
 msgstr "Éles árnyékok"
 
-#: src/settings.c:643
+#: src/settings.c:651
 msgid "Shadows Blurred"
 msgstr "Elmosott árnyékok"
 
-#: src/settings.c:654
+#: src/settings.c:662
 msgid "Default focused window opacity:"
 msgstr ""
 
-#: src/settings.c:665
+#: src/settings.c:673
 msgid "Default unfocused window opacity:"
 msgstr ""
 
-#: src/settings.c:676
+#: src/settings.c:684
 msgid "Default pop-up window opacity:"
 msgstr ""
 
-#: src/settings.c:687
+#: src/settings.c:695
 #, fuzzy
 msgid "Composite"
 msgstr "Composite engedélyezése"
 
-#: src/settings.c:688
+#: src/settings.c:696
 #, fuzzy
 msgid "Composite Settings"
 msgstr "Composite beállításai"
 
-#: src/settings.c:691
+#: src/settings.c:699
 #, fuzzy
 msgid ""
 "Enlightenment Composite\n"
@@ -1864,7 +1869,7 @@ msgstr ""
 "Enlightenment üzenetablak\n"
 "beállításai\n"
 
-#: src/settings.c:780
+#: src/settings.c:788
 #, fuzzy
 msgid "Enlightenment Settings"
 msgstr "Az Enlightenment indítása..."
@@ -2072,11 +2077,11 @@ msgstr ""
 "Az Enlightenment folytatja mûködését, de ajánlott\n"
 "ellenõrizni a konfigurációs beállításokat.\n"
 
-#: src/sound.c:200
+#: src/sound.c:205
 msgid "Error initialising sound"
 msgstr "Hiba a hang inicializálásakor"
 
-#: src/sound.c:201
+#: src/sound.c:206
 msgid ""
 "Audio was enabled for Enlightenment but there was an error\n"
 "communicating with the audio server (Esound). Audio will\n"
@@ -2086,19 +2091,19 @@ msgstr ""
 "de nem sikerült kommunikálni a hangszerverrel (Esound).\n"
 "Nem lesznek hangok.\n"
 
-#: src/sound.c:314
+#: src/sound.c:318
 msgid "Enable sounds"
 msgstr "Hangok engedélyezése"
 
-#: src/sound.c:320
+#: src/sound.c:324
 msgid "Sound"
 msgstr "Hang"
 
-#: src/sound.c:321
+#: src/sound.c:325
 msgid "Audio Settings"
 msgstr "Hang beállításai"
 
-#: src/sound.c:324
+#: src/sound.c:328
 msgid ""
 "Enlightenment Audio\n"
 "Settings Dialog\n"

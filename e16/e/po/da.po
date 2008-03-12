@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-03-01 13:38+0100\n"
+"POT-Creation-Date: 2008-03-12 23:27+0100\n"
 "PO-Revision-Date: 2008-02-10 19:59+0100\n"
 "Last-Translator: Kim Woelders <kim@woelders.dk>\n"
 "Language-Team: Dansk/Danish <sslug-locale@sslug.dk>\n"
@@ -685,7 +685,7 @@ msgstr ""
 "virtuelle skriveborde\n"
 
 #: src/dialog.c:873 src/dialog.c:2091 src/dialog.c:2122 src/events.c:87
-#: src/setup.c:165 src/sound.c:200
+#: src/setup.c:165 src/sound.c:205
 msgid "OK"
 msgstr "Ok"
 
@@ -1278,7 +1278,7 @@ msgstr "E dialoger:"
 msgid "Tooltips:"
 msgstr "Værktøjstips:"
 
-#: src/mod-trans.c:165 src/settings.c:78 src/settings.c:83 src/settings.c:337
+#: src/mod-trans.c:165 src/settings.c:78 src/settings.c:83 src/settings.c:345
 msgid "Opaque"
 msgstr "Ugennemsigtig"
 
@@ -1510,19 +1510,19 @@ msgstr "Flyttemetoder:"
 msgid "Resize Methods:"
 msgstr "Størrelsesændrings metoder:"
 
-#: src/settings.c:88 src/settings.c:93 src/settings.c:342
+#: src/settings.c:88 src/settings.c:93 src/settings.c:350
 msgid "Technical"
 msgstr "Teknisk"
 
-#: src/settings.c:98 src/settings.c:103 src/settings.c:347
+#: src/settings.c:98 src/settings.c:103 src/settings.c:355
 msgid "Box"
 msgstr "Boks"
 
-#: src/settings.c:108 src/settings.c:113 src/settings.c:352
+#: src/settings.c:108 src/settings.c:113 src/settings.c:360
 msgid "Shaded"
 msgstr "Oprullet"
 
-#: src/settings.c:118 src/settings.c:123 src/settings.c:357
+#: src/settings.c:118 src/settings.c:123 src/settings.c:365
 msgid "Semi-Solid"
 msgstr "Semi-solid"
 
@@ -1590,71 +1590,76 @@ msgstr ""
 "Indstillinger for\n"
 "flytning og størrelsesændring\n"
 
-#: src/settings.c:301
+#: src/settings.c:304
 msgid "Dialog windows appear together with their owner"
 msgstr "Dialogvinduer kommer frem ved siden af deres ejer"
 
-#: src/settings.c:306
+#: src/settings.c:309
 msgid "Switch to desktop where dialog appears"
 msgstr "Skift til skrivebord hvor dialog dukker op"
 
-#: src/settings.c:314
+#: src/settings.c:317
 msgid "Place windows manually"
 msgstr "Placér vinduer manuelt"
 
-#: src/settings.c:319
+#: src/settings.c:322
 msgid "Place windows under mouse"
 msgstr "Placér vinduer under markør"
 
-#: src/settings.c:324
+#: src/settings.c:327
+#, fuzzy
+msgid "Center windows when desk is full"
+msgstr "Inkluder vinduer på andre skriveborde i fokuslisten"
+
+#: src/settings.c:332
 msgid "Slide windows in when they appear"
 msgstr "Vinduer glider ind på skærmen når de oprettes"
 
-#: src/settings.c:329
+#: src/settings.c:337
 msgid "Slide windows around when cleaning up"
 msgstr "Vinduer glider rundt når der ryddes op på skrivebordet"
 
-#: src/settings.c:334
+#: src/settings.c:342
 msgid "Slide Method:"
 msgstr "Glidningsmetode:"
 
-#: src/settings.c:367
+#: src/settings.c:375
 msgid "Appear Slide speed:"
 msgstr "Glidehastighed ved oprettelse:"
 
-#: src/settings.c:378
+#: src/settings.c:386
 msgid "Cleanup Slide speed:"
 msgstr "Glidehastighed ved oprydning:"
 
-#: src/settings.c:391
+#: src/settings.c:399
 msgid "Animate shading and unshading of windows"
 msgstr "Animeret op/nedrulning af vinduer"
 
-#: src/settings.c:397
+#: src/settings.c:405
 msgid "Window Shading speed:"
 msgstr "Op/nedrulninghastighed:"
 
-#: src/settings.c:410
+#: src/settings.c:418
 msgid "Ignore struts"
 msgstr "Ignorér 'struts'"
 
-#: src/settings.c:415
+#: src/settings.c:423
 msgid "Raise fullscreen windows"
 msgstr "Løft fuldskærmsvinduer"
 
-#: src/settings.c:423
+#: src/settings.c:431
 msgid "Place windows on another head when full"
 msgstr "Placér vinduer på anden skærm hvis fuld"
 
-#: src/settings.c:431
+#: src/settings.c:439
 msgid "Placement"
 msgstr "Placering"
 
-#: src/settings.c:432
+#: src/settings.c:440
 msgid "Window Placement Settings"
 msgstr "Indstillinger for vinduesplacering"
 
-#: src/settings.c:435
+#: src/settings.c:443
 msgid ""
 "Enlightenment Window Placement\n"
 "Settings Dialog\n"
@@ -1662,23 +1667,23 @@ msgstr ""
 "Indstillinger for\n"
 "vinduesplacering\n"
 
-#: src/settings.c:466
+#: src/settings.c:474
 msgid "Raise Windows Automatically"
 msgstr "Løft vinduer automatisk"
 
-#: src/settings.c:472
+#: src/settings.c:480
 msgid "Autoraise delay:"
 msgstr "Forsinkelse:"
 
-#: src/settings.c:483
+#: src/settings.c:491
 msgid "Autoraise"
 msgstr "Autoløft"
 
-#: src/settings.c:484
+#: src/settings.c:492
 msgid "Autoraise Settings"
 msgstr "Autoløftindstillinger"
 
-#: src/settings.c:487
+#: src/settings.c:495
 msgid ""
 "Enlightenment Automatic Raising\n"
 "of Windows Settings Dialog\n"
@@ -1686,31 +1691,31 @@ msgstr ""
 "Indstillinger for\n"
 "automatisk løft af vinduer\n"
 
-#: src/settings.c:524
+#: src/settings.c:532
 msgid "Enable Dialog Headers"
 msgstr "Aktivér dialoghoveder"
 
-#: src/settings.c:530
+#: src/settings.c:538
 msgid "Enable Button Images"
 msgstr "Aktivér billeder i knapper"
 
-#: src/settings.c:539
+#: src/settings.c:547
 msgid "Enable sliding startup windows"
 msgstr "Aktivér glidende vinduer under start"
 
-#: src/settings.c:547
+#: src/settings.c:555
 msgid "Use saveunders to reduce window exposures"
 msgstr "Brug saveunders til at reducere vindueseksponeringer"
 
-#: src/settings.c:553 config/strings.c:145 config/strings.c:161
+#: src/settings.c:561 config/strings.c:145 config/strings.c:161
 msgid "Miscellaneous"
 msgstr "Diverse"
 
-#: src/settings.c:554
+#: src/settings.c:562
 msgid "Miscellaneous Settings"
 msgstr "Diverse indstillinger"
 
-#: src/settings.c:557
+#: src/settings.c:565
 msgid ""
 "Enlightenment Miscellaneous\n"
 "Settings Dialog\n"
@@ -1718,55 +1723,55 @@ msgstr ""
 "Indstillinger for\n"
 "diverse funktioner\n"
 
-#: src/settings.c:598
+#: src/settings.c:606
 msgid "Enable Composite"
 msgstr "Aktivér composite"
 
-#: src/settings.c:606
+#: src/settings.c:614
 msgid "Enable Fading"
 msgstr "Aktivér fading"
 
-#: src/settings.c:612
+#: src/settings.c:620
 msgid "Fading Speed:"
 msgstr "Fadinghastighed:"
 
-#: src/settings.c:625
+#: src/settings.c:633
 msgid "Shadows Off"
 msgstr "Ingen skygger"
 
-#: src/settings.c:631
+#: src/settings.c:639
 msgid "Shadows Sharp"
 msgstr "Skarpe skygger"
 
-#: src/settings.c:637
+#: src/settings.c:645
 msgid "Shadows Sharp2"
 msgstr "Skarpe skygger(2)"
 
-#: src/settings.c:643
+#: src/settings.c:651
 msgid "Shadows Blurred"
 msgstr "Uskarpe skygger"
 
-#: src/settings.c:654
+#: src/settings.c:662
 msgid "Default focused window opacity:"
 msgstr "Standard uigennemsigtighed for aktivt vindue:"
 
-#: src/settings.c:665
+#: src/settings.c:673
 msgid "Default unfocused window opacity:"
 msgstr "Standard uigennemsigtighed for inaktivt vindue:"
 
-#: src/settings.c:676
+#: src/settings.c:684
 msgid "Default pop-up window opacity:"
 msgstr "Standard uigennemsigtighed for pop-op vinduer:"
 
-#: src/settings.c:687
+#: src/settings.c:695
 msgid "Composite"
 msgstr "Composite"
 
-#: src/settings.c:688
+#: src/settings.c:696
 msgid "Composite Settings"
 msgstr "Compositeindstillinger"
 
-#: src/settings.c:691
+#: src/settings.c:699
 msgid ""
 "Enlightenment Composite\n"
 "Settings Dialog\n"
@@ -1774,7 +1779,7 @@ msgstr ""
 "Indstillinger for\n"
 "composite\n"
 
-#: src/settings.c:780
+#: src/settings.c:788
 msgid "Enlightenment Settings"
 msgstr "Enlightenment indstillinger"
 
@@ -1967,11 +1972,11 @@ msgstr ""
 "Advarsel! e16 kunne ikke læse denne lydfil:\n"
 "%s\n"
 
-#: src/sound.c:200
+#: src/sound.c:205
 msgid "Error initialising sound"
 msgstr "Fejl under opstart af lyd"
 
-#: src/sound.c:201
+#: src/sound.c:206
 msgid ""
 "Audio was enabled for Enlightenment but there was an error\n"
 "communicating with the audio server (Esound). Audio will\n"
@@ -1980,19 +1985,19 @@ msgstr ""
 "Der var et problem med at kommunikere med audioserveren (esound).\n"
 "Lyd vil nu blive deaktiveret.\n"
 
-#: src/sound.c:314
+#: src/sound.c:318
 msgid "Enable sounds"
 msgstr "Brug lyde"
 
-#: src/sound.c:320
+#: src/sound.c:324
 msgid "Sound"
 msgstr "Lyd"
 
-#: src/sound.c:321
+#: src/sound.c:325
 msgid "Audio Settings"
 msgstr "Lydindstillinger"
 
-#: src/sound.c:324
+#: src/sound.c:328
 msgid ""
 "Enlightenment Audio\n"
 "Settings Dialog\n"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16-0.16.8.12-fr\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-03-01 13:38+0100\n"
+"POT-Creation-Date: 2008-03-12 23:27+0100\n"
 "PO-Revision-Date: 2008-03-01 14:58+0100\n"
 "Last-Translator: Tristan D. <trinine@free.fr>\n"
 "Language-Team: French\n"
@@ -717,7 +717,7 @@ msgstr ""
 "Bureaux virtuels\n"
 
 #: src/dialog.c:873 src/dialog.c:2091 src/dialog.c:2122 src/events.c:87
-#: src/setup.c:165 src/sound.c:200
+#: src/setup.c:165 src/sound.c:205
 msgid "OK"
 msgstr "OK"
 
@@ -1370,7 +1370,7 @@ msgstr "Dialogues:"
 msgid "Tooltips:"
 msgstr "Bulles d'aide:"
 
-#: src/mod-trans.c:165 src/settings.c:78 src/settings.c:83 src/settings.c:337
+#: src/mod-trans.c:165 src/settings.c:78 src/settings.c:83 src/settings.c:345
 msgid "Opaque"
 msgstr "Opaque"
 
@@ -1618,19 +1618,19 @@ msgstr ""
 "Méthodes de\n"
 "Redimensionnement:"
 
-#: src/settings.c:88 src/settings.c:93 src/settings.c:342
+#: src/settings.c:88 src/settings.c:93 src/settings.c:350
 msgid "Technical"
 msgstr "Technique"
 
-#: src/settings.c:98 src/settings.c:103 src/settings.c:347
+#: src/settings.c:98 src/settings.c:103 src/settings.c:355
 msgid "Box"
 msgstr "Boîte"
 
-#: src/settings.c:108 src/settings.c:113 src/settings.c:352
+#: src/settings.c:108 src/settings.c:113 src/settings.c:360
 msgid "Shaded"
 msgstr "Ombrée"
 
-#: src/settings.c:118 src/settings.c:123 src/settings.c:357
+#: src/settings.c:118 src/settings.c:123 src/settings.c:365
 msgid "Semi-Solid"
 msgstr "Semi-solide"
 
@@ -1698,71 +1698,76 @@ msgstr ""
 "Dialogue de paramétrage de\n"
 "Déplacement et de Taille de Fenêtre\n"
 
-#: src/settings.c:301
+#: src/settings.c:304
 msgid "Dialog windows appear together with their owner"
 msgstr "Les fenêtres de dialogue apparaissent en même temps que leur parent"
 
-#: src/settings.c:306
+#: src/settings.c:309
 msgid "Switch to desktop where dialog appears"
 msgstr "Aller au bureau où une fenêtre apparaît"
 
-#: src/settings.c:314
+#: src/settings.c:317
 msgid "Place windows manually"
 msgstr "Placer les fenêtres manuellement"
 
-#: src/settings.c:319
+#: src/settings.c:322
 msgid "Place windows under mouse"
 msgstr "Placer les fenêtres sous la souris"
 
-#: src/settings.c:324
+#: src/settings.c:327
+#, fuzzy
+msgid "Center windows when desk is full"
+msgstr "Inclure les fenêtres des autres bureaux dans la liste de fenêtres"
+
+#: src/settings.c:332
 msgid "Slide windows in when they appear"
 msgstr "Faire glisser les fenêtres lorsqu'elles apparaissent"
 
-#: src/settings.c:329
+#: src/settings.c:337
 msgid "Slide windows around when cleaning up"
 msgstr "Faire glisser les fenêtres lorsqu'elles disparaissent"
 
-#: src/settings.c:334
+#: src/settings.c:342
 msgid "Slide Method:"
 msgstr "Méthode de glissement:"
 
-#: src/settings.c:367
+#: src/settings.c:375
 msgid "Appear Slide speed:"
 msgstr "Vitesse d'apparition des fenêtres:"
 
-#: src/settings.c:378
+#: src/settings.c:386
 msgid "Cleanup Slide speed:"
 msgstr "Vitesse de disparition des fenêtres:"
 
-#: src/settings.c:391
+#: src/settings.c:399
 msgid "Animate shading and unshading of windows"
 msgstr "Animer le masquage des fenêtres"
 
-#: src/settings.c:397
+#: src/settings.c:405
 msgid "Window Shading speed:"
 msgstr "Vitesse de masquage des fenêtres:"
 
-#: src/settings.c:410
+#: src/settings.c:418
 msgid "Ignore struts"
 msgstr "Ignorer les enjambements"
 
-#: src/settings.c:415
+#: src/settings.c:423
 msgid "Raise fullscreen windows"
 msgstr "Élever les fenêtres en plein écran"
 
-#: src/settings.c:423
+#: src/settings.c:431
 msgid "Place windows on another head when full"
 msgstr "Placer les fenêtres manuellement quand tout est plein"
 
-#: src/settings.c:431
+#: src/settings.c:439
 msgid "Placement"
 msgstr "Placement "
 
-#: src/settings.c:432
+#: src/settings.c:440
 msgid "Window Placement Settings"
 msgstr "Paramètres de Placement des fenêtres"
 
-#: src/settings.c:435
+#: src/settings.c:443
 msgid ""
 "Enlightenment Window Placement\n"
 "Settings Dialog\n"
@@ -1770,23 +1775,23 @@ msgstr ""
 "Dialogue de paramétrage de\n"
 "Placement des fenêtres\n"
 
-#: src/settings.c:466
+#: src/settings.c:474
 msgid "Raise Windows Automatically"
 msgstr "Élever les fenêtres automatiquement"
 
-#: src/settings.c:472
+#: src/settings.c:480
 msgid "Autoraise delay:"
 msgstr "Délai d'Auto-élévation:"
 
-#: src/settings.c:483
+#: src/settings.c:491
 msgid "Autoraise"
 msgstr "Auto-élévation"
 
-#: src/settings.c:484
+#: src/settings.c:492
 msgid "Autoraise Settings"
 msgstr "Paramètres d'Auto-élévation"
 
-#: src/settings.c:487
+#: src/settings.c:495
 msgid ""
 "Enlightenment Automatic Raising\n"
 "of Windows Settings Dialog\n"
@@ -1794,31 +1799,31 @@ msgstr ""
 "Dialogue de paramétrage de\n"
 "l'Auto-élévation\n"
 
-#: src/settings.c:524
+#: src/settings.c:532
 msgid "Enable Dialog Headers"
 msgstr "Activer les en-têtes sur les dialogues"
 
-#: src/settings.c:530
+#: src/settings.c:538
 msgid "Enable Button Images"
 msgstr "Images de Bouton (fonction désormais désactivée)"
 
-#: src/settings.c:539
+#: src/settings.c:547
 msgid "Enable sliding startup windows"
 msgstr "Activer les rideaux glissants au démarrage"
 
-#: src/settings.c:547
+#: src/settings.c:555
 msgid "Use saveunders to reduce window exposures"
 msgstr "Utiliser le SaveUnder pour réduire le nombre de rafraîchissements"
 
-#: src/settings.c:553 config/strings.c:145 config/strings.c:161
+#: src/settings.c:561 config/strings.c:145 config/strings.c:161
 msgid "Miscellaneous"
 msgstr "Divers"
 
-#: src/settings.c:554
+#: src/settings.c:562
 msgid "Miscellaneous Settings"
 msgstr "Paramètres Divers"
 
-#: src/settings.c:557
+#: src/settings.c:565
 msgid ""
 "Enlightenment Miscellaneous\n"
 "Settings Dialog\n"
@@ -1826,55 +1831,55 @@ msgstr ""
 "Dialogue de paramétrage\n"
 "Divers\n"
 
-#: src/settings.c:598
+#: src/settings.c:606
 msgid "Enable Composite"
 msgstr "Activer l'extension Composite"
 
-#: src/settings.c:606
+#: src/settings.c:614
 msgid "Enable Fading"
 msgstr "Activer le fondu"
 
-#: src/settings.c:612
+#: src/settings.c:620
 msgid "Fading Speed:"
 msgstr "Vitesse de fondu:"
 
-#: src/settings.c:625
+#: src/settings.c:633
 msgid "Shadows Off"
 msgstr "Ombres Désactivées"
 
-#: src/settings.c:631
+#: src/settings.c:639
 msgid "Shadows Sharp"
 msgstr "Ombres Nettes"
 
-#: src/settings.c:637
+#: src/settings.c:645
 msgid "Shadows Sharp2"
 msgstr "Ombres Nettes2"
 
-#: src/settings.c:643
+#: src/settings.c:651
 msgid "Shadows Blurred"
 msgstr "Ombres Brouillées"
 
-#: src/settings.c:654
+#: src/settings.c:662
 msgid "Default focused window opacity:"
 msgstr "Opacité par défaut des fenêtres avec le focus :"
 
-#: src/settings.c:665
+#: src/settings.c:673
 msgid "Default unfocused window opacity:"
 msgstr "Opacité par défaut des fenêtres sans le focus :"
 
-#: src/settings.c:676
+#: src/settings.c:684
 msgid "Default pop-up window opacity:"
 msgstr "Opacité par défaut des fenêtres nouvellement ouvertes :"
 
-#: src/settings.c:687
+#: src/settings.c:695
 msgid "Composite"
 msgstr "Extension Composite"
 
-#: src/settings.c:688
+#: src/settings.c:696
 msgid "Composite Settings"
 msgstr "Paramètres de l'extension Composite"
 
-#: src/settings.c:691
+#: src/settings.c:699
 msgid ""
 "Enlightenment Composite\n"
 "Settings Dialog\n"
@@ -1882,7 +1887,7 @@ msgstr ""
 "Dialogue de paramétrage de\n"
 "l'extension Composite\n"
 
-#: src/settings.c:780
+#: src/settings.c:788
 msgid "Enlightenment Settings"
 msgstr "Paramètres d'Enlightenment..."
 
@@ -2095,11 +2100,11 @@ msgstr ""
 "Enlightenment va continuer à fonctionner mais\n"
 "vous devriez vérifier votre configuration.\n"
 
-#: src/sound.c:200
+#: src/sound.c:205
 msgid "Error initialising sound"
 msgstr "Erreur lors de l'initialisation du son"
 
-#: src/sound.c:201
+#: src/sound.c:206
 msgid ""
 "Audio was enabled for Enlightenment but there was an error\n"
 "communicating with the audio server (Esound). Audio will\n"
@@ -2108,19 +2113,19 @@ msgstr ""
 "Les sons sont activés, mais il y a eu une erreur de communication\n"
 "avec le serveur audio (Esound). Le son sera maintenant désactivé.\n"
 
-#: src/sound.c:314
+#: src/sound.c:318
 msgid "Enable sounds"
 msgstr "Activer les sons"
 
-#: src/sound.c:320
+#: src/sound.c:324
 msgid "Sound"
 msgstr "Son"
 
-#: src/sound.c:321
+#: src/sound.c:325
 msgid "Audio Settings"
 msgstr "Paramètres Audio"
 
-#: src/sound.c:324
+#: src/sound.c:328
 msgid ""
 "Enlightenment Audio\n"
 "Settings Dialog\n"
