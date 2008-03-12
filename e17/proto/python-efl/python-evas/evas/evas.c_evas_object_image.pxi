@@ -1,30 +1,9 @@
 # This file is included verbatim by c_evas.pyx
 
 
-## for mask support
-cdef extern from "evas_object_image_mask.h":
-    int evas_object_image_mask_fill(Evas_Object *src, Evas_Object *mask, 
-        Evas_Object *surface, int x_mask, int y_mask, int x_surface, int y_surface)
-
-def image_mask_fill(source, mask, surface, int x_mask, int y_mask, 
-    int x_surface, int y_surface):
-        cdef Image isource = <Image> source
-        cdef Image imask = <Image> mask
-        cdef Image isurface = <Image> surface
-        evas_object_image_mask_fill(isource.obj, imask.obj, isurface.obj, 
-           x_mask, y_mask, x_surface, y_surface)
-
-
-## for rotate support
-cdef extern from "evas_object_image_rotate.h":
-    ctypedef enum Rotation:
-            ROTATE_NONE
-            ROTATE_90
-            ROTATE_180
-            ROTATE_270
-
-    void evas_object_image_rotate(Evas_Object *image, Rotation rotation)
-
+def image_mask_fill(Image source, Image mask, Image surface, int x_mask, int y_mask, int x_surface, int y_surface):
+    evas_object_image_mask_fill(source.obj, mask.obj, surface.obj,
+                                x_mask, y_mask, x_surface, y_surface)
 
 cdef int _data_size_get(Evas_Object *obj):
     cdef int stride, h, bpp, cspace, have_alpha
@@ -464,7 +443,7 @@ cdef public class Image(Object) [object PyEvasImage, type PyEvasImage_Type]:
             self.colorspace_set(value)
 
     def rotate(self, int rotation):
-        evas_object_image_rotate(self.obj, <Rotation>rotation)
+        evas_object_image_rotate(self.obj, <Evas_Object_Image_Rotation>rotation)
 
     def reload(self):
         "Force reload of image data."

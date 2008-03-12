@@ -531,6 +531,18 @@ cdef extern from "Evas.h":
     void evas_object_text_style_pad_get(Evas_Object *obj, int *l, int *r, int *t, int *b)
 
 
+cdef extern from "evas_object_image_python_extras.h":
+    ctypedef enum Evas_Object_Image_Rotation:
+            ROTATE_NONE
+            ROTATE_90
+            ROTATE_180
+            ROTATE_270
+
+    int evas_object_image_mask_fill(Evas_Object *src, Evas_Object *mask, Evas_Object *surface, int x_mask, int y_mask, int x_surface, int y_surface)
+    void evas_object_image_rotate(Evas_Object *image, Evas_Object_Image_Rotation rotation)
+
+
+
 cdef public class Rect [object PyEvasRect, type PyEvasRect_Type]:
     cdef int x0, y0, x1, y1, cx, cy, _w, _h
 
