@@ -10,8 +10,38 @@ _calc_stride(int w)
    int pad;
 
    pad = w % 4;
-   if (!pad)  return w;
+   if (!pad) return w;
    else return w + 4 - pad;
+}
+
+static inline int
+_calc_image_byte_size(Evas_Colorspace colorspace, Rotation rotation,
+                      int stride, int w, int h, unsigned char has_alpha)
+{
+    int dst_stride, dst_height;
+    int image_byte_size;
+
+    if (rotation == ROTATE_90 || rotation == ROTATE_270) {
+        dst_stride = _calc_stride(h);
+        dst_height = w;
+    } else {
+        dst_stride = stride;
+        dst_height = h;
+    }
+
+    switch (colorspace) {
+        case EVAS_COLORSPACE_ARGB8888:
+            image_byte_size = IMG_BYTE_SIZE_ARGB8888(dst_stride, dst_height, has_alpha);
+            break;
+        case EVAS_COLORSPACE_RGB565_A5P:
+            image_byte_size = IMG_BYTE_SIZE_RGB565(dst_stride, dst_height, has_alpha);
+            break;
+        default:
+            image_byte_size = -1;
+            break;
+    }
+
+    return image_byte_size;
 }
 
 static void
@@ -279,42 +309,48 @@ _rgb565_image_rotate(Rotation rotation,
     char *dst_alpha;
     const char *src_alpha;
 
-    if(has_alpha) {
-        dst_alpha = &dst[src_stride * h * 2];
-        src_alpha = &src[h * w * 2];
-    }
+    if (has_alpha)
+        src_alpha = src + src_stride * h * 2;
 
-    switch(rotation) {
+    switch (rotation) {
         case ROTATE_90:
             dst_stride = _calc_stride(h);
             _data16_image_rotate_90(dst, src,
                                     dst_stride, src_stride,
                                     out_x, out_y, w, h);
-            if(has_alpha)
+            if (has_alpha) {
+                dst_alpha = dst + dst_stride * w * 2;
                 _data8_image_rotate_90(dst_alpha, src_alpha,
                                        dst_stride, src_stride,
                                        out_x, out_y, w, h);
+            }
             break;
         case ROTATE_180:
-            dst_stride = _calc_stride(src_stride);
+            dst_stride = src_stride;
             _data16_image_rotate_180(dst, src,
                                      dst_stride, src_stride,
                                      out_x, out_y, w, h);
-            if(has_alpha)
+            if (has_alpha) {
+                dst_alpha = dst + dst_stride * h * 2;
                 _data8_image_rotate_180(dst_alpha, src_alpha,
                                         dst_stride, src_stride,
                                         out_x, out_y, w, h);
+            }
             break;
         case ROTATE_270:
             dst_stride = _calc_stride(h);
             _data16_image_rotate_270(dst, src,
                                      dst_stride, src_stride,
                                      out_x, out_y, w, h);
-            if(has_alpha)
+            if (has_alpha) {
+                dst_alpha = dst + dst_stride * w * 2;
                 _data8_image_rotate_270(dst_alpha, src_alpha,
                                         dst_stride, src_stride,
                                         out_x, out_y, w, h);
+            }
             break;
+        case ROTATE_NONE:
+	    break;
     }
 }
 
@@ -345,6 +381,8 @@ _argb8888_image_rotate(Rotation rotation,
                                      dst_stride, src_stride,
                                      out_x, out_y, w, h);
             break;
+        case ROTATE_NONE:
+	    break;
     }
 }
 
@@ -362,33 +400,30 @@ evas_object_image_rotate(Evas_Object *image, Rotation rotation)
     stride = evas_object_image_stride_get(image);
     has_alpha = evas_object_image_alpha_get(image);
 
-    switch(colorspace) {
+    image_byte_size = _calc_image_byte_size(colorspace, rotation,
+                                            stride, width,
+                                            height, has_alpha);
+    if (image_byte_size <= 0)
+        return;
+
+    new_buffer = malloc(image_byte_size);
+    src_data = evas_object_image_data_get(image, FALSE);
+
+    switch (colorspace) {
         case EVAS_COLORSPACE_ARGB8888:
-            image_byte_size = IMG_BYTE_SIZE_ARGB8888(stride, height, stride);
-            if(image_byte_size <= 0)
-                return;
-
-            new_buffer = (char*) malloc(image_byte_size);
-            src_data = (char*) evas_object_image_data_get(image, FALSE);
-
-            /* dst_stride set to original height */
             _argb8888_image_rotate(rotation, new_buffer, src_data,
                                    stride, 0, 0, width, height);
             break;
         case EVAS_COLORSPACE_RGB565_A5P:
-            image_byte_size = IMG_BYTE_SIZE_RGB565(stride, height, stride);
-            if(image_byte_size <= 0)
-                return;
-
-            new_buffer = (char*) malloc(image_byte_size);
-            src_data = (char*) evas_object_image_data_get(image, FALSE);
-
-            /* dst_stride set to original height */
             _rgb565_image_rotate(rotation, new_buffer, src_data,
                                  stride, has_alpha, 0, 0, width, height);
             break;
-        default:
-            return;
+        case EVAS_COLORSPACE_YCBCR422P601_PL:
+	   fputs("Colorspace YCBCR422P601_PL not handled\n", stderr);
+	   break;
+        case EVAS_COLORSPACE_YCBCR422P709_PL:
+	   fputs("Colorspace YCBCR422P709_PL not handled\n", stderr);
+	   break;
     }
 
     if (rotation == ROTATE_90 || rotation == ROTATE_270)
