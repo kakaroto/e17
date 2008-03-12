@@ -55,6 +55,7 @@ ewl_dnd_init(void)
 	if (!ewl_dnd_accepted_hash)
 		goto ACCEPTED_ERROR;
 
+	ecore_hash_free_value_cb_set(ewl_dnd_accepted_hash, free);
 	ewl_dnd_widget = NULL;
 	ewl_dnd_default_cursor = NULL;
 	ewl_dragging_current = 0;
