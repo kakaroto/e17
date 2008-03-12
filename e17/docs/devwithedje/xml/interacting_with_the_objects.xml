@@ -34,6 +34,7 @@
         ecore_main_loop_quit();
         ecore_evas_shutdown();
         ecore_shutdown();
+        edje_shutdown();
     }
     ...
     int main() {

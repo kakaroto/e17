@@ -2,14 +2,14 @@
     <title>Book Overview</title>
 
 <para>In the following paragraphs I will present a brief explanation of the
-      contents of each chapter and section. Section titles are emphasised while
-      Chapter titles are strongly emphasised.</para>
+      contents of each chapter and section. Section titles are emphasized while
+      Chapter titles are strongly emphasized.</para>
       
 <!-- New Chapter -->
 
 <formalpara>
     <title>I. Structure of a graphical application</title>
-    Looking at the code of some of the many open source applications avialable,
+    Looking at the code of some of the many open source applications available,
     we can find common components in their structure. This chapter introduces
     the concept of a Event loop and how does it deal with the interaction
     between the functionality and the interface.
@@ -18,7 +18,7 @@
 <para>
     <emphasis>I.I. Decomposing the frontend.</emphasis>
     There are different approaches to the creation of Graphical User
-    Interfaces, some provide more flexibilty while others development speed. In
+    Interfaces, some provide more flexibility while others development speed. In
     any case, the end product will make available the same mechanisms to the
     rest of the application.
 </para>
@@ -27,7 +27,7 @@
 
 <formalpara>
     <title>II. Introduction to Edje</title>
-    Edje is a compromise between flexibilty and development time. Comparing it
+    Edje is a compromise between flexibility and development time. Comparing it
     to a plain canvas or a fully featured toolkit can show us how it fits in a
     comfortable middle ground with advantages for designers and developers
     alike.
@@ -37,7 +37,7 @@
     <emphasis>II.I. The foundations.</emphasis>
     Edje allows low level control of the interface without forcing the
     developer through a low level API. The interface objects are implemented as
-    Evas objects, but through a compeletely new language friendly to designers
+    Evas objects, but through a completely new language friendly to designers
     and independent from the application code.
 </para>
 
@@ -58,16 +58,16 @@
 </formalpara>
 
 <para>
-    <emphasis>III.I Working with the canvas</emphasis>
+    <emphasis>III.I Working with the canvas.</emphasis>
     Including new Edje objects inside the previously setup canvas can be
     explained with this simple example.
 </para>
 
 <para>
-    <emphasis>III.II Interacting with the objects</emphasis>
+    <emphasis>III.II Interacting with the objects.</emphasis>
     There are different channels for the application to interact with the
     interface. For the sake of brevity I will include an example of each one to
-    serve as an introduction for the pratical examples to come in the next
+    serve as an introduction for the practical examples to come in the next
     chapters.
 </para>
 
@@ -78,17 +78,17 @@
     Interfaces need to resolve two problems, presenting information to users
     and taking orders from them. The past chapters presented enough information
     to solve the first. In the following chapters we will review the second.
-    The widget iself can be seen as a small application inside our interfaces.
+    The widget itself can be seen as a small application inside our interfaces.
     As an example let's examine the structure of a common widget, the combox.
 </formalpara>
 
 <para>
-    <emphasis>IV.I. The common widget design</emphasis>
+    <emphasis>IV.I. The common widget design.</emphasis>
     Revisar el diseño de los widget combox en varias librerias, mostrar las
     pattern usadas y concluir porque MVC es la mejor (si es que lo es).
 </para>
 
-<para>
+<!--<para>
     <emphasis>IV.II. Widget design with Edje</emphasis>
     If the Model View Controller pattern is the choice for developing
     a widget the place Edje ocuppies becomes quite clear. Mostrar el papel
@@ -107,78 +107,70 @@
     Añadir una introduccion a ETK y añadir mi vision sobre como debeira ser
     usado en conjunto con Edje destacando claramente que es una opinion
     personal.
-</para>
+</para>-->
 
 <!-- New Chapter -->
 
 <formalpara>
-    <title>V. Implementacion del widget</title>
-    Presentar estrucutura inicial del codigo paralelizandola con IV.II
+    <title>V. The first application, Edje Analyzer</title>
+    In this chapter we will create a simple Edje application to view and
+    interact with any Edje theme file. This section presents and explains the
+    "main()" function along with the global variables and function prototypes.
 </formalpara>
 
 <para>
-    <emphasis>V.I. The backend</emphasis>
-    (temporary section name) it will include the C implementation of widgets in a
-    way similar to EWL.
+    <emphasis>V.I. The first widget, the window.</emphasis>
+    As we know, creating a window is not as simple as we would hope. This
+    chapter introduces a method to offload window settings and interface layout
+    to an Edje object.
 </para>
 
 <para>
-    <emphasis>V.II. The frontend</emphasis>
-    (Another temporary section name) it will include the EDC Implementation of the
-    widget in a way it fits the method used by the EWL developers.
+    <emphasis>V.I.I. Developer, meet SWALLOW parts.</emphasis>
+    Edje provies a simple yet very powerful method to layout the components of
+    an interface. This is a simple introduction to the concept.
 </para>
 
 <para>
-    <emphasis>V.III. The Inclusion</emphasis>
-    (Another temporary section name) it will include the method to insert the
-    custom widget in the application.
+    <emphasis>V.I.II. Designer, meet GROUP parts.</emphasis>
+    A note about the additional uses for Edje groups that both designer and
+    developer should be aware off.
 </para>
 
-<para>
-    <emphasis>V.IV. Saving time with EWL widgets</emphasis>
-    Introduction to EWL widgets, a brief list of what is available and the method
-    to include the widgets in the application.
-</para>
+<section>
+    <title>Useful resources</title>
 
-<para>
-    <emphasis>V.V. Interaction</emphasis>
-    The final example showing how to interact with the combination of EWL, custom
-    and non-widget elements in our application.
-</para>
-
-    <section>
-        <title>Useful resources</title>
-
-        <para>Before we begin I would list a collection of books and articles that
-            I found critical while understanding about the Enlightenment
-            Foundation Libraries.
+    <para>
+        Before we begin I would list a collection of books and articles that
+        I found critical for learning about the Enlightenment Foundation
+        Libraries.
             
-            <itemizedlist>
-                <listitem>
-                    <ulink url="http://docs.enlightenment.org/api/edje/htm">
-                        <citetitle>The Edje API Reference</citetitle> by
-                        Carsten Haitzler.</ulink>
-                </listitem>
-                <listitem>
-                    <ulink url="http://docs.enlightenment.org/books/edjebook/edjebook.pdf">
-                        <citetitle>Building Interfaces with Edje: The Edje
-                            Developers Guide</citetitle> by Ben Rockwood.</ulink>
-                </listitem>
-                <listitem>
-                    <ulink url="http://docs.enlightenment.org/books/cookbook/eflcookbook.html">
-                        <citetitle>The EFL Cookbook</citetitle> by several
-                        authors.</ulink>
-                </listitem>
-                <listitem>
-                    <ulink url="http://homepages.pathfinder.gr/kazanaki/contrib/">
-                        <citetitle>Introduction to the Enlightenment foundation
-                            libraries</citetitle> by Kostis Kapelonis.</ulink>
-                </listitem>
-                <listitem>
-                    <ulink url="http://rephorm.com/pages/tutorials/evas/toc">
-                        <citetitle>Evas Tutorials</citetitle> by rephorm</ulink>
-                </listitem>
-          </itemizedlist></para>
-  </section>
+        <itemizedlist>
+            <listitem>
+                <ulink url="http://docs.enlightenment.org/api/edje/htm">
+                <citetitle>The Edje API Reference</citetitle> by Carsten
+                Haitzler.</ulink>
+            </listitem>
+            <listitem>
+                <ulink url="http://docs.enlightenment.org/books/edjebook/edjebook.pdf">
+                <citetitle>Building Interfaces with Edje: The Edje Developers
+                Guide</citetitle> by Ben Rockwood.</ulink>
+            </listitem>
+            <listitem>
+                <ulink url="http://docs.enlightenment.org/books/cookbook/eflcookbook.html">
+                <citetitle>The EFL Cookbook</citetitle> by several authors.</ulink>
+            </listitem>
+            <listitem>
+                <ulink url="http://homepages.pathfinder.gr/kazanaki/contrib/">
+                <citetitle>Introduction to the Enlightenment foundation
+                libraries</citetitle> by Kostis Kapelonis.</ulink>
+            </listitem>
+            <listitem>
+                <ulink url="http://rephorm.com/pages/tutorials/evas/toc">
+                <citetitle>Evas Tutorials</citetitle> by rephorm</ulink>
+            </listitem>
+        </itemizedlist>
+    </para>
+</section>
 
 </chapter>

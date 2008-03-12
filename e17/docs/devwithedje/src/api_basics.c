@@ -26,6 +26,7 @@ good_bye(void *data, int type, void *event)
     ecore_main_loop_quit();
     ecore_evas_shutdown();
     ecore_shutdown();
+    edje_shutdown();
 }
 
 void

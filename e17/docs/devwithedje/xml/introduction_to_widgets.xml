@@ -40,11 +40,11 @@
     <para>
         With a common toolkit/widget library it would be impossible for
         "Artist 2" to implement the source list he envisioned. The developer
-        would have to program a new widget using the same, complex, in the view
-        of the artist, programming language that the library uses. The
-        developer would also have to alter the code of the application for it
-        to change the widget depending on the theme selected by the user. If he
-        used Edje this issue would not exist.
+        would have to program a new widget using the same complex (to the
+        eyes of the artist) programming language that the library uses. The
+        developer would also have to alter the code of the application so it
+        changes the widget depending on the theme selected by the user.
+        Properly structured Edje applications do not suffer of this issue.
     </para>
 
     <para>
