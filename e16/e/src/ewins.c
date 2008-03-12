@@ -1814,7 +1814,11 @@ typedef union
       unsigned            nua:1;
       unsigned            ctf:1;
       unsigned            nbg:1;
-      unsigned:           29;
+      unsigned:           5;
+      unsigned:           16;
+      unsigned            no_fade:1;
+      unsigned            no_shadow:1;
+      unsigned:           6;
    } f;
 } EWinMiscFlags2;
 
@@ -1833,6 +1837,10 @@ EwinFlagsEncode(const EWin * ewin, unsigned int *flags)
    fm2.f.nua = ewin->props.never_use_area;
    fm2.f.ctf = ewin->props.focusclick;
    fm2.f.nbg = ewin->props.no_button_grabs;
+#if USE_COMPOSITE
+   fm2.f.no_fade = !EoGetFade(ewin);
+   fm2.f.no_shadow = !EoGetShadow(ewin);
+#endif
 
    flags[0] = fm.all;
    flags[1] = fm2.all;
@@ -1853,6 +1861,10 @@ EwinFlagsDecode(EWin * ewin, const unsigned int *flags)
    ewin->props.never_use_area = fm2.f.nua;
    ewin->props.focusclick = fm2.f.ctf;
    ewin->props.no_button_grabs = fm2.f.nbg;
+#if USE_COMPOSITE
+   EoSetFade(ewin, !fm2.f.no_fade);
+   EoSetShadow(ewin, !fm2.f.no_shadow);
+#endif
 }
 
 void
