@@ -123,7 +123,7 @@ class evas_install_headers(install_headers):
 
 
 setup(name='python-evas',
-      version='0.2.1',
+      version='0.2.2',
       license='BSD',
       author='Gustavo Sverzut Barbieri',
       author_email='barbieri@gmail.com',
