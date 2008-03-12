@@ -34,10 +34,12 @@ _calc_image_byte_size(Evas_Colorspace colorspace, Evas_Object_Image_Rotation rot
    switch (colorspace)
      {
       case EVAS_COLORSPACE_ARGB8888:
-	 image_byte_size = IMG_BYTE_SIZE_ARGB8888(dst_stride, dst_height, has_alpha);
+	 image_byte_size = IMG_BYTE_SIZE_ARGB8888(dst_stride, dst_height,
+						  has_alpha);
 	 break;
       case EVAS_COLORSPACE_RGB565_A5P:
-	 image_byte_size = IMG_BYTE_SIZE_RGB565(dst_stride, dst_height, has_alpha);
+	 image_byte_size = IMG_BYTE_SIZE_RGB565(dst_stride, dst_height,
+						has_alpha);
 	 break;
       default:
 	 image_byte_size = -1;
@@ -48,18 +50,20 @@ _calc_image_byte_size(Evas_Colorspace colorspace, Evas_Object_Image_Rotation rot
 }
 
 static void
-_data8_image_rotate_90(char *dst, const char *src, int dst_stride, int src_stride, int out_x, int out_y, int w, int h)
+_data8_image_rotate_90(DATA8 *dst, const DATA8 *src, int dst_stride, int src_stride, int out_x, int out_y, int w, int h)
 {
-   DATA8 *dp, *sp;
-   int x, y;
+   const DATA8 *sp;
+   DATA8 *dp;
+   int y;
 
-   sp = (DATA8 *) src;
-   dp = ((DATA8 *) dst) + ((out_x +
-			    (w + out_y - 1) * dst_stride));
+   sp = src;
+   dp = dst + ((out_x + (w + out_y - 1) * dst_stride));
 
    for (y = 0; y < h; y++)
      {
-        DATA8 *dp_itr, *sp_itr;
+	const DATA8 *sp_itr;
+        DATA8 *dp_itr;
+	int x;
 
         sp_itr = sp;
         dp_itr = dp;
@@ -77,18 +81,20 @@ _data8_image_rotate_90(char *dst, const char *src, int dst_stride, int src_strid
 }
 
 static void
-_data16_image_rotate_90(char *dst, const char *src, int dst_stride, int src_stride, int out_x, int out_y, int w, int h)
+_data16_image_rotate_90(DATA16 *dst, const DATA16 *src, int dst_stride, int src_stride, int out_x, int out_y, int w, int h)
 {
-   DATA16 *dp, *sp;
-   int x, y;
+   const DATA16 *sp;
+   DATA16 *dp;
+   int y;
 
-   sp = (DATA16 *) src;
-   dp = ((DATA16 *) dst) + ((out_x +
-			     (w + out_y - 1) * dst_stride));
+   sp = src;
+   dp = dst + ((out_x + (w + out_y - 1) * dst_stride));
 
    for (y = 0; y < h; y++)
      {
-        DATA16 *dp_itr, *sp_itr;
+	const DATA16 *sp_itr;
+        DATA16 *dp_itr;
+	int x;
 
         sp_itr = sp;
         dp_itr = dp;
@@ -106,18 +112,20 @@ _data16_image_rotate_90(char *dst, const char *src, int dst_stride, int src_stri
 }
 
 static void
-_data32_image_rotate_90(char *dst, const char *src, int dst_stride, int src_stride, int out_x, int out_y, int w, int h)
+_data32_image_rotate_90(DATA32 *dst, const DATA32 *src, int dst_stride, int src_stride, int out_x, int out_y, int w, int h)
 {
-   DATA32 *dp, *sp;
-   int x, y;
+   const DATA32 *sp;
+   DATA32 *dp;
+   int y;
 
-   sp = (DATA32 *) src;
-   dp = ((DATA32 *) dst) + ((out_x +
-			     (w + out_y - 1) * dst_stride));
+   sp = src;
+   dp = dst + ((out_x + (w + out_y - 1) * dst_stride));
 
    for (y = 0; y < h; y++)
      {
-        DATA32 *dp_itr, *sp_itr;
+	const DATA32 *sp_itr;
+        DATA32 *dp_itr;
+	int x;
 
         sp_itr = sp;
         dp_itr = dp;
@@ -135,18 +143,21 @@ _data32_image_rotate_90(char *dst, const char *src, int dst_stride, int src_stri
 }
 
 static void
-_data8_image_rotate_180(char *dst, const char *src, int dst_stride, int src_stride, int out_x, int out_y, int w, int h)
+_data8_image_rotate_180(DATA8 *dst, const DATA8 *src, int dst_stride, int src_stride, int out_x, int out_y, int w, int h)
 {
-   DATA8 *dp, *sp;
-   int x, y;
+   const DATA8 *sp;
+   DATA8 *dp;
+   int y;
 
-   sp = (DATA8 *) src;
-   dp = ((DATA8 *) dst) + ((w + out_x - 1) +
-			   (h + out_y - 1) * dst_stride);
+   sp = src;
+   dp = dst + ((w + out_x - 1) + (h + out_y - 1) * dst_stride);
 
    for (y = 0; y < h; y++)
      {
-        DATA8 *dp_itr, *sp_itr;
+	const DATA8 *sp_itr;
+        DATA8 *dp_itr;
+	int x;
+
         sp_itr = sp;
         dp_itr = dp;
 
@@ -163,45 +174,21 @@ _data8_image_rotate_180(char *dst, const char *src, int dst_stride, int src_stri
 }
 
 static void
-_data16_image_rotate_180(char *dst, const char *src, int dst_stride, int src_stride, int out_x, int out_y, int w, int h)
+_data16_image_rotate_180(DATA16 *dst, const DATA16 *src, int dst_stride, int src_stride, int out_x, int out_y, int w, int h)
 {
-   DATA16 *dp, *sp;
-   int x, y;
+   const DATA16 *sp;
+   DATA16 *dp;
+   int y;
 
-   sp = (DATA16 *) src;
-   dp = ((DATA16 *) dst) + ((w + out_x - 1) +
-			    (h + out_y - 1) * dst_stride);
+   sp = src;
+   dp = dst + ((w + out_x - 1) + (h + out_y - 1) * dst_stride);
 
    for (y = 0; y < h; y++)
      {
-        DATA16 *dp_itr, *sp_itr;
-        sp_itr = sp;
-        dp_itr = dp;
+	const DATA16 *sp_itr;
+        DATA16 *dp_itr;
+	int x;
 
-        for (x = 0; x < w; x++)
-	  {
-             *dp_itr = *sp_itr;
-
-             sp_itr++;
-             dp_itr--;
-	  }
-        sp += src_stride;
-        dp -= dst_stride;
-     }
-}
-static void
-_data32_image_rotate_180(char *dst, const char *src, int dst_stride, int src_stride, int out_x, int out_y, int w, int h)
-{
-   DATA32 *dp, *sp;
-   int x, y;
-
-   sp = (DATA32 *) src;
-   dp = ((DATA32 *) dst) + ((w + out_x - 1) +
-			    (h + out_y - 1) * dst_stride);
-
-   for (y = 0; y < h; y++)
-     {
-        DATA32 *dp_itr, *sp_itr;
         sp_itr = sp;
         dp_itr = dp;
 
@@ -218,18 +205,52 @@ _data32_image_rotate_180(char *dst, const char *src, int dst_stride, int src_str
 }
 
 static void
-_data8_image_rotate_270(char *dst, const char *src, int dst_stride, int src_stride, int out_x, int out_y, int w, int h)
+_data32_image_rotate_180(DATA32 *dst, const DATA32 *src, int dst_stride, int src_stride, int out_x, int out_y, int w, int h)
 {
-   DATA8 *dp, *sp;
-   int x, y;
+   const DATA32 *sp;
+   DATA32 *dp;
+   int y;
 
-   sp = (DATA8 *) src;
-   dp = ((DATA8 *) dst) + ((h + out_x - 1) +
-			   out_y * dst_stride);
+   sp = src;
+   dp = dst + ((w + out_x - 1) + (h + out_y - 1) * dst_stride);
 
    for (y = 0; y < h; y++)
      {
-        DATA8 *dp_itr, *sp_itr;
+	const DATA32 *sp_itr;
+        DATA32 *dp_itr;
+	int x;
+
+        sp_itr = sp;
+        dp_itr = dp;
+
+        for (x = 0; x < w; x++)
+	  {
+             *dp_itr = *sp_itr;
+
+             sp_itr++;
+             dp_itr--;
+	  }
+        sp += src_stride;
+        dp -= dst_stride;
+     }
+}
+
+static void
+_data8_image_rotate_270(DATA8 *dst, const DATA8 *src, int dst_stride, int src_stride, int out_x, int out_y, int w, int h)
+{
+   const DATA8 *sp;
+   DATA8 *dp;
+   int y;
+
+   sp = src;
+   dp = dst + ((h + out_x - 1) + out_y * dst_stride);
+
+   for (y = 0; y < h; y++)
+     {
+	const DATA8 *sp_itr;
+        DATA8 *dp_itr;
+	int x;
+
         sp_itr = sp;
         dp_itr = dp;
 
@@ -246,18 +267,21 @@ _data8_image_rotate_270(char *dst, const char *src, int dst_stride, int src_stri
 }
 
 static void
-_data16_image_rotate_270(char *dst, const char *src, int dst_stride, int src_stride, int out_x, int out_y, int w, int h)
+_data16_image_rotate_270(DATA16 *dst, const DATA16 *src, int dst_stride, int src_stride, int out_x, int out_y, int w, int h)
 {
-   DATA16 *dp, *sp;
-   int x, y;
+   const DATA16 *sp;
+   DATA16 *dp;
+   int y;
 
-   sp = (DATA16 *) src;
-   dp = ((DATA16 *) dst) + ((h + out_x - 1) +
-			    out_y * dst_stride);
+   sp = src;
+   dp = dst + ((h + out_x - 1) + out_y * dst_stride);
 
    for (y = 0; y < h; y++)
      {
-        DATA16 *dp_itr, *sp_itr;
+	const DATA16 *sp_itr;
+        DATA16 *dp_itr;
+	int x;
+
         sp_itr = sp;
         dp_itr = dp;
 
@@ -274,18 +298,21 @@ _data16_image_rotate_270(char *dst, const char *src, int dst_stride, int src_str
 }
 
 static void
-_data32_image_rotate_270(char *dst, const char *src, int dst_stride, int src_stride, int out_x, int out_y, int w, int h)
+_data32_image_rotate_270(DATA32 *dst, const DATA32 *src, int dst_stride, int src_stride, int out_x, int out_y, int w, int h)
 {
-   DATA32 *dp, *sp;
-   int x, y;
+   const DATA32 *sp;
+   DATA32 *dp;
+   int y;
 
-   sp = (DATA32 *) src;
-   dp = ((DATA32 *) dst) + ((h + out_x - 1) +
-			    out_y * dst_stride);
+   sp = src;
+   dp = dst + ((h + out_x - 1) + out_y * dst_stride);
 
    for (y = 0; y < h; y++)
      {
-        DATA32 *dp_itr, *sp_itr;
+	const DATA32 *sp_itr;
+        DATA32 *dp_itr;
+	int x;
+
         sp_itr = sp;
         dp_itr = dp;
 
@@ -302,14 +329,14 @@ _data32_image_rotate_270(char *dst, const char *src, int dst_stride, int src_str
 }
 
 static void
-_rgb565_image_rotate(Evas_Object_Image_Rotation rotation, char *dst, const char *src, int src_stride, unsigned char has_alpha, int out_x, int out_y, int w, int h)
+_rgb565_image_rotate(Evas_Object_Image_Rotation rotation, DATA16 *dst, const DATA16 *src, int src_stride, unsigned char has_alpha, int out_x, int out_y, int w, int h)
 {
    int dst_stride;
-   char *dst_alpha;
-   const char *src_alpha;
+   DATA8 *dst_alpha;
+   const DATA8 *src_alpha;
 
    if (has_alpha)
-     src_alpha = src + src_stride * h * 2;
+     src_alpha = (const DATA8*)(src + src_stride * h);
 
    switch (rotation)
      {
@@ -320,7 +347,7 @@ _rgb565_image_rotate(Evas_Object_Image_Rotation rotation, char *dst, const char 
 				 out_x, out_y, w, h);
 	 if (has_alpha)
 	   {
-	      dst_alpha = dst + dst_stride * w * 2;
+	      dst_alpha = (DATA8 *)(dst + dst_stride * w);
 	      _data8_image_rotate_90(dst_alpha, src_alpha,
 				     dst_stride, src_stride,
 				     out_x, out_y, w, h);
@@ -333,7 +360,7 @@ _rgb565_image_rotate(Evas_Object_Image_Rotation rotation, char *dst, const char 
 				  out_x, out_y, w, h);
 	 if (has_alpha)
 	   {
-	      dst_alpha = dst + dst_stride * h * 2;
+	      dst_alpha = (DATA8 *)(dst + dst_stride * h);
 	      _data8_image_rotate_180(dst_alpha, src_alpha,
 				      dst_stride, src_stride,
 				      out_x, out_y, w, h);
@@ -346,7 +373,7 @@ _rgb565_image_rotate(Evas_Object_Image_Rotation rotation, char *dst, const char 
 				  out_x, out_y, w, h);
 	 if (has_alpha)
 	   {
-	      dst_alpha = dst + dst_stride * w * 2;
+	      dst_alpha = (DATA8 *)(dst + dst_stride * w);
 	      _data8_image_rotate_270(dst_alpha, src_alpha,
 				      dst_stride, src_stride,
 				      out_x, out_y, w, h);
@@ -358,7 +385,7 @@ _rgb565_image_rotate(Evas_Object_Image_Rotation rotation, char *dst, const char 
 }
 
 static void
-_argb8888_image_rotate(Evas_Object_Image_Rotation rotation, char *dst, const char *src, int src_stride, int out_x, int out_y, int w, int h)
+_argb8888_image_rotate(Evas_Object_Image_Rotation rotation, DATA32 *dst, const DATA32 *src, int src_stride, int out_x, int out_y, int w, int h)
 {
    int dst_stride;
 
@@ -394,8 +421,7 @@ evas_object_image_rotate(Evas_Object *image, Evas_Object_Image_Rotation rotation
    int image_byte_size;
    int stride, width, height;
    unsigned char has_alpha;
-   char *new_buffer;
-   char *src_data;
+   void *new_buffer, *src_data;
 
    evas_object_image_size_get(image, &width, &height);
    stride = evas_object_image_stride_get(image);
@@ -408,6 +434,9 @@ evas_object_image_rotate(Evas_Object *image, Evas_Object_Image_Rotation rotation
      return;
 
    new_buffer = malloc(image_byte_size);
+   if (!new_buffer)
+     return;
+
    src_data = evas_object_image_data_get(image, 0);
 
    switch (colorspace)

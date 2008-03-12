@@ -9,60 +9,61 @@
 
 
 static void
-_argb8888_image_mask_fill(char *dst, const char *src, const char *msk, const char *srf, int x_msk, int y_msk, int x_srf, int y_srf, int src_stride, int src_width, int src_height, int msk_stride, int msk_width, int msk_height, int srf_stride, int srf_width, int srf_height)
+_argb8888_image_mask_fill(DATA32 *dst, const DATA32 *src, const DATA32 *msk, const DATA32 *srf, int x_msk, int y_msk, int x_srf, int y_srf, int src_stride, int src_width, int src_height, int msk_stride, int msk_width, int msk_height, int srf_stride, int srf_width, int srf_height)
 {
-   int x, y, xp, yp, xs, ys;
-   int r, g, b, a;
-   DATA32 pixel, pxa, pxb;
-   DATA32 *sp = (DATA32 *) src;
-   DATA32 *mp = (DATA32 *) msk;
-   DATA32 *fp = (DATA32 *) srf;
-   DATA32 *dp = (DATA32 *) dst;
+   int y;
 
    for (y = 0; y < src_height; y++)
-     for (x = 0; x < src_width; x++)
-       {
-	  xp = x - x_msk;
-	  yp = y - y_msk;
-	  xs = x - x_srf;
-	  ys = y - y_srf;
+     {
+	int x;
 
-	  pixel = *(BPIXEL(sp, x, y, src_stride));
+	for (x = 0; x < src_width; x++)
+	  {
+	     int xp, yp, xs, ys;
+	     DATA32 pixel;
 
-	  if ((xp >= 0) && (xp < msk_width) &&
-	      (yp >= 0) && (yp < msk_height) &&
-	      (xs >= 0) && (xs < srf_width) &&
-	      (ys >= 0) && (ys < srf_height))
-	    {
-	       pxa = *(BPIXEL(mp, xp, yp, msk_stride));
-	       pxb = *(BPIXEL(fp, xs, ys, srf_stride));
-	       if (pxa != 0)
-		 {
-                    a = MEDPIXEL((pixel >> 24) & 0xFF,
-                                 (pxa >> 24) & 0xFF, (pxb >> 24) & 0xFF);
-                    r = MEDPIXEL((pixel >> 16) & 0xFF,
-                                 (pxa >> 16) & 0xFF, (pxb >> 16) & 0xFF);
-                    g = MEDPIXEL((pixel >> 8) & 0xFF,
-                                 (pxa >> 8) & 0xFF, (pxb >> 8) & 0xFF);
-                    b = MEDPIXEL(pixel & 0xFF, pxa & 0xFF, pxb & 0xFF);
-                    pixel = (a << 24) | (r << 16) | (g << 8) | b;
-		 }
-            }
+	     xp = x - x_msk;
+	     yp = y - y_msk;
+	     xs = x - x_srf;
+	     ys = y - y_srf;
 
-	  *(BPIXEL(dp, x, y, src_stride)) = pixel;
-       }
+	     pixel = *(BPIXEL(src, x, y, src_stride));
+
+	     if ((xp >= 0) && (xp < msk_width) &&
+		 (yp >= 0) && (yp < msk_height) &&
+		 (xs >= 0) && (xs < srf_width) &&
+		 (ys >= 0) && (ys < srf_height))
+	       {
+		  DATA32 pxa, pxb;
+
+		  pxa = *(BPIXEL(msk, xp, yp, msk_stride));
+		  pxb = *(BPIXEL(srf, xs, ys, srf_stride));
+		  if (pxa != 0)
+		    {
+		       int r, g, b, a;
+
+		       a = MEDPIXEL((pixel >> 24) & 0xFF,
+				    (pxa >> 24) & 0xFF, (pxb >> 24) & 0xFF);
+		       r = MEDPIXEL((pixel >> 16) & 0xFF,
+				    (pxa >> 16) & 0xFF, (pxb >> 16) & 0xFF);
+		       g = MEDPIXEL((pixel >> 8) & 0xFF,
+				    (pxa >> 8) & 0xFF, (pxb >> 8) & 0xFF);
+		       b = MEDPIXEL(pixel & 0xFF, pxa & 0xFF, pxb & 0xFF);
+		       pixel = (a << 24) | (r << 16) | (g << 8) | b;
+		    }
+	       }
+
+	     *(BPIXEL(dst, x, y, src_stride)) = pixel;
+	  }
+     }
 }
-
 
 int
 evas_object_image_mask_fill(Evas_Object *src, Evas_Object *mask, Evas_Object *surface, int x_mask, int y_mask, int x_surface, int y_surface)
 {
    int alloc_size;
    unsigned char has_alpha;
-   char *src_data;
-   char *msk_data;
-   char *srf_data;
-   char *new_buffer;
+   void *src_data, *msk_data, *srf_data, *new_buffer;
    int src_stride, src_width, src_height;
    int msk_stride, msk_width, msk_height;
    int srf_stride, srf_width, srf_height;
@@ -77,10 +78,15 @@ evas_object_image_mask_fill(Evas_Object *src, Evas_Object *mask, Evas_Object *su
 
    evas_object_image_size_get(src, &src_width, &src_height);
    src_stride = evas_object_image_stride_get(src);
+   src_data = evas_object_image_data_get(src, 0);
+
    evas_object_image_size_get(mask, &msk_width, &msk_height);
    msk_stride = evas_object_image_stride_get(mask);
+   msk_data = evas_object_image_data_get(mask, 0);
+
    evas_object_image_size_get(surface, &srf_width, &srf_height);
    srf_stride = evas_object_image_stride_get(surface);
+   srf_data = evas_object_image_data_get(surface, 0);
 
    has_alpha = evas_object_image_alpha_get(src);
 
@@ -91,10 +97,6 @@ evas_object_image_mask_fill(Evas_Object *src, Evas_Object *mask, Evas_Object *su
 	 new_buffer = malloc(alloc_size);
 	 if (!new_buffer)
 	   return 3;
-
-	 src_data = evas_object_image_data_get(src, 0);
-	 msk_data = evas_object_image_data_get(mask, 0);
-	 srf_data = evas_object_image_data_get(surface, 0);
 
 	 _argb8888_image_mask_fill(new_buffer, src_data, msk_data,
 				   srf_data, x_mask, y_mask,
