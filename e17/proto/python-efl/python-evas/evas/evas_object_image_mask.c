@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <Evas.h>
 
-#include "evas_object_image_python_extras.h"
+#include "evas/evas_object_image_python_extras.h"
 
 #define BPIXEL(base, x, y, stride) (base + (y * stride + x))
 #define MEDPIXEL(src, msk, srf) (((src) * (msk)) + (srf) * (255 - (msk)))/255

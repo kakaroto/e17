@@ -531,7 +531,7 @@ cdef extern from "Evas.h":
     void evas_object_text_style_pad_get(Evas_Object *obj, int *l, int *r, int *t, int *b)
 
 
-cdef extern from "evas_object_image_python_extras.h":
+cdef extern from "evas/evas_object_image_python_extras.h":
     ctypedef enum Evas_Object_Image_Rotation:
             ROTATE_NONE
             ROTATE_90

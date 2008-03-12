@@ -60,6 +60,7 @@ evasmodule = Extension('evas.c_evas',
 
 
 headers = ['evas/evas.c_evas.h',
+           'include/evas/evas_object_image_python_extras.h',
            'include/evas/python_evas_utils.h',
            'include/evas/c_evas.pxd',
            'include/evas/python.pxd',
