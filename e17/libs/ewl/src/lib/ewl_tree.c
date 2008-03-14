@@ -111,6 +111,7 @@ ewl_tree_init(Ewl_Tree *tree)
 	/* set the default row view */
 	ewl_tree_content_view_set(tree, ewl_tree_view_scrolled_get());
 
+	ewl_tree_column_count_set(tree, 1);
 	ewl_tree_headers_visible_set(tree, TRUE);
 	ewl_tree_fixed_rows_set(tree, FALSE);
 	ewl_tree_alternate_row_colors_set(tree, TRUE);
