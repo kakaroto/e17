@@ -6,6 +6,7 @@
 #include "ewl_private.h"
 #include "ewl_debug.h"
 
+static void ewl_expansion_expandable_update(Ewl_Expansion *ex);
 /**
  * @return Returns the newly allocated expansion on success, NULL on failure.
  * @brief Allocate and initialize a new expansion
@@ -54,50 +55,10 @@ ewl_expansion_init(Ewl_Expansion *cb)
 
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
 	ewl_object_alignment_set(EWL_OBJECT(w), EWL_FLAG_ALIGN_TOP);
-	ewl_object_preferred_inner_size_set(EWL_OBJECT(w), 20, 20);
-
-	ewl_callback_append(w, EWL_CALLBACK_MOUSE_OUT,
-				ewl_expansion_cb_update_expandable, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_REVEAL,
 				ewl_expansion_cb_reveal, NULL);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
-}
-
-/**
- * @param cb: the expansion to change the status
- * @param c: the new status of the expansion
- * @return Returns no value.
- * @brief Change the expanded status of the expansion
- *
- * Changes the expanded status of the expansion and updates it's appearance
- * to reflect the change.
- */
-void
-ewl_expansion_expanded_set(Ewl_Expansion *cb, int c)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(cb);
-	DCHECK_TYPE(cb, EWL_EXPANSION_TYPE);
-
-	ewl_check_checked_set(EWL_CHECK(cb), c);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param cb: the expansion to examine for it's expanded state
- * @return Returns TRUE if the expansion is expanded, FALSE if not.
- * @brief Determine the expanded state of the expansion
- */
-int
-ewl_expansion_is_expanded(Ewl_Expansion *cb)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(cb, FALSE);
-	DCHECK_TYPE_RET(cb, EWL_EXPANSION_TYPE, FALSE);
-
-	DRETURN_INT(ewl_check_is_checked(EWL_CHECK(cb)), DLEVEL_STABLE);
 }
 
 /**
@@ -117,7 +78,7 @@ ewl_expansion_expandable_set(Ewl_Expansion *cb, int c)
 	DCHECK_TYPE(cb, EWL_EXPANSION_TYPE);
 
 	cb->expandable = !!c;
-	ewl_expansion_cb_update_expandable(EWL_WIDGET(cb), NULL, NULL);
+	ewl_expansion_expandable_update(cb);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -145,25 +106,22 @@ ewl_expansion_is_expandable(Ewl_Expansion *cb)
  * @return Returns no value
  * @brief Callback to update the expansion
  */
-void
-ewl_expansion_cb_update_expandable(Ewl_Widget *w, void *ev_data __UNUSED__,
-					void *user_data __UNUSED__)
+static void
+ewl_expansion_expandable_update(Ewl_Expansion *ex)
 {
-	Ewl_Expansion *cb;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_EXPANSION_TYPE);
+	DCHECK_PARAM_PTR(ex);
+	DCHECK_TYPE(ex, EWL_EXPANSION_TYPE);
 
-	cb = EWL_EXPANSION(w);
-	if (cb->expandable)
-		ewl_widget_state_set(w, "expandable", EWL_STATE_TRANSIENT);
+	if (ex->expandable)
+		ewl_widget_state_set(EWL_WIDGET(ex), "expandable", 
+							EWL_STATE_TRANSIENT);
 	else
-		ewl_widget_state_set(w, "nonexpandable", EWL_STATE_TRANSIENT);
+		ewl_widget_state_set(EWL_WIDGET(ex), "nonexpandable", 
+							EWL_STATE_TRANSIENT);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
-
 
 /**
  * @internal
@@ -179,9 +137,9 @@ ewl_expansion_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+	DCHECK_TYPE(w, EWL_EXPANSION_TYPE);
 
-	ewl_expansion_cb_update_expandable(w, NULL, NULL);
+	ewl_expansion_expandable_update(EWL_EXPANSION(w));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
