@@ -4679,3 +4679,28 @@ Add configuration of default opacities.
 Cleanups.
 Add stuff for checking if various XSync's are really needed.
 
+
+-------------------------------------------------------------------------------
+
+Fri Mar 14 09:56:22 CET 2008
+(Kim)
+
+--- 0.16.8.13 0.01 ---
+Avoid building unused static libraries.
+Add some checking of printf style prototypes.
+Use XInternAtoms to speed up initial atom fetch.
+Assume free(0) is ok (if not HAVE_FREE_NULL_BUG will have to be defined).
+Disable broken image/text class destroy functions.
+Fix modules build.
+Japanese translation update (Yasufumi Haga).
+French translation update (Tristan D.).
+Call autosave() on eesh sound on/off.
+Optionally use PulseAudio to play sounds.
+Simplify X-error checking.
+Fix potential segv during translucent moves (noted by Pietro Cerutti, bug 392).
+Fix memory leak if translucent move initialisation fails.
+Fix bugs when shared memory image creation fails causing memory leak and X-errors.
+Various sound/module/visibility fixes.
+Add option to center new windows when desk is full (suggested by George L. Yermulnik).
+Pick up some kde4 apps in menu generation.
+Add shadow and fading flags to the remembered flag list.
