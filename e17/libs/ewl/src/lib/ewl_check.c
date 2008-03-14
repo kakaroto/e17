@@ -79,6 +79,9 @@ ewl_check_checked_set(Ewl_Check *cb, int c)
 	DCHECK_PARAM_PTR(cb);
 	DCHECK_TYPE(cb, EWL_CHECK_TYPE);
 
+	if (cb->checked == !!c)
+		DRETURN(DLEVEL_STABLE);
+
 	cb->checked = !!c;
 	ewl_check_cb_update_check(EWL_WIDGET(cb), NULL, NULL);
 
