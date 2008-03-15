@@ -1,0 +1,99 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: ePhoto\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2008-03-15 20:59+0200\n"
+"Last-Translator: Danny Moshnakov <admin@moshnakov.org>\n"
+"Language-Team: russian <ru@li.org> <ru@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Poedit-Language: Russian\n"
+"X-Poedit-Country: RUSSIAN FEDERATION\n"
+
+#: src/bin/ephoto_utils.c:9
+#, c-format
+msgid "%'.0f Bytes"
+msgstr "%'.0f Байт"
+
+#: src/bin/ephoto_utils.c:14
+#, c-format
+msgid "%'.0f KB"
+msgstr "%'.0f КБ"
+
+#: src/bin/ephoto_utils.c:20
+#, c-format
+msgid "%'.0f MB"
+msgstr "%'.0f МБ"
+
+#: src/bin/ephoto_utils.c:25
+#, c-format
+msgid "%'.1f GB"
+msgstr "%'.1f ГБ"
+
+#: src/bin/ephoto_main.c:115
+msgid "Normal View"
+msgstr "Обычный Вид"
+
+#: src/bin/ephoto_main.c:123
+msgid "List View"
+msgstr "Вид Списком"
+
+#: src/bin/ephoto_main.c:131
+msgid "Single View"
+msgstr "Одиночный Вид"
+
+#: src/bin/ephoto_main.c:139
+msgid "Move to edit view"
+msgstr "Двигать для редактирования вида"
+
+#: src/bin/ephoto_main.c:151
+msgid "You do not have libexif 0.6.13"
+msgstr "У вас нет libexif 0.6.13"
+
+#: src/bin/ephoto_main.c:157
+msgid "View Exif Data"
+msgstr "Просмотреть Данные EXIF"
+
+#: src/bin/ephoto_main.c:164
+msgid "Toggle Fullscreen"
+msgstr "Переключить Полноэкранный Режим"
+
+#: src/bin/ephoto_main.c:172
+msgid "Start a Slideshow"
+msgstr "Начать Показ Слайдов"
+
+#: src/bin/ephoto_list_view.c:96
+msgid "Name"
+msgstr "Имя"
+
+#: src/bin/ephoto_list_view.c:98
+msgid "Pixels"
+msgstr "Точки растра"
+
+#: src/bin/ephoto_list_view.c:100
+msgid "Size"
+msgstr "Размер"
+
+#: src/bin/ephoto_edit_view.c:42
+msgid "Standard Tools"
+msgstr "Стандартные Инструменты"
+
+#: src/bin/ephoto_edit_view.c:50
+msgid "Advanced Tools"
+msgstr "Продвинутые Инструменты"
+
+#: src/bin/ephoto_edit_view.c:72
+#: src/bin/ephoto_single_view.c:33
+msgid "Previous Image"
+msgstr "Предыдущее Изображение"
+
+#: src/bin/ephoto_edit_view.c:76
+#: src/bin/ephoto_single_view.c:39
+msgid "Next Image"
+msgstr "Следующее Изображение"
+
+#: src/bin/ephoto_exif.c:103
+msgid "No Exif Data Exists"
+msgstr "Нет Данных EXIF"
+
