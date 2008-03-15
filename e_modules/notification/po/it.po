@@ -6,15 +6,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Notification\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-03-02 18:44+0100\n"
-"PO-Revision-Date: 2008-03-02 19:19+0100\n"
+"POT-Creation-Date: 2008-03-15 20:43+0100\n"
+"PO-Revision-Date: 2008-03-15 20:49+0100\n"
 "Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8-bit\n"
 
-#: src/e_mod_box.c:667 src/e_mod_box.c:813
+#: src/e_mod_box.c:669 src/e_mod_box.c:815
 msgid "Configuration"
 msgstr "Configurazione"
 
@@ -60,11 +60,19 @@ msgstr "%2.0f y"
 msgid "Direction"
 msgstr "Direzione"
 
-#: src/e_mod_config.c:119
-msgid "Gap size"
-msgstr "Dimensione del gap"
+#: src/e_mod_config.c:108
+msgid "Direction in which popups will stack themselves : "
+msgstr "Direzione per l'affiancamento dei popup:"
 
-#: src/e_mod_config.c:120
+#: src/e_mod_config.c:121
+msgid "Gap"
+msgstr "Intervallo"
+
+#: src/e_mod_config.c:122
+msgid "Size of the gap between two popups : "
+msgstr "Intervallo tra due popup:"
+
+#: src/e_mod_config.c:124
 #, c-format
 msgid "%2.0f pixels"
 msgstr "%2.0f pixel"
@@ -85,23 +93,23 @@ msgstr "Mostra etichetta icona"
 msgid "Levels of urgency to store : "
 msgstr "Livelli di urgenza da salvare:"
 
-#: src/e_mod_main.c:117
+#: src/e_mod_main.c:118
 msgid "Notification Box"
 msgstr "Notification"
 
-#: src/e_mod_main.c:168
+#: src/e_mod_main.c:171
 msgid "Extensions"
 msgstr "Estensioni"
 
-#: src/e_mod_main.c:170
+#: src/e_mod_main.c:173
 msgid "Notification"
 msgstr "Notification"
 
-#: src/e_mod_main.c:211 src/e_mod_main.c:229
+#: src/e_mod_main.c:214 src/e_mod_main.c:232
 msgid "Notification Configuration Updated"
 msgstr "Configurazione modulo Notification aggiornata"
 
-#: src/e_mod_main.c:212
+#: src/e_mod_main.c:215
 msgid ""
 "Notification Module Configuration data needed upgrading. Your old "
 "configuration<br> has been wiped and a new set of defaults initialized. "
@@ -121,7 +129,7 @@ msgstr ""
 "Potete riconfigurare le cose a vostro piacimento. Ci<br>scusiamo per "
 "l'inconveniente."
 
-#: src/e_mod_main.c:230
+#: src/e_mod_main.c:233
 msgid ""
 "Your Notification Module Configuration is NEWER than the Notification Module "
 "version. This is very<br>strange. This should not happen unless you "
@@ -137,3 +145,4 @@ msgstr ""
 "versione<br>più nuova del modulo notifica. A scopo precauzionale la "
 "vostra<br>configurazione è stata adesso ripristinata ai valori predefiniti."
 "<br>Ci scusiamo per l'inconveniente."
+
