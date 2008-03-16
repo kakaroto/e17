@@ -1461,7 +1461,7 @@ ewl_tree_cb_node_child_hide(Ewl_Container *c, Ewl_Widget *w)
 	if (w == node->handle)
 		DRETURN(DLEVEL_STABLE);
 
-	if (ecore_dlist_count(c) < 3)
+	if (ecore_dlist_count(c->children) < 3)
 	{
 		if (node->handle && VISIBLE(node->handle))
 			ewl_widget_hide(node->handle);
@@ -1503,7 +1503,7 @@ ewl_tree_cb_node_child_add(Ewl_Container *c, Ewl_Widget *w __UNUSED__)
 
 	node = EWL_TREE_NODE(c);
 
-	if (ecore_list_count(c->children) > 2)
+	if (ecore_dlist_count(c->children) > 2)
 	{
 		/* XXX what do we do if !node->handle? */
 		if (node->handle && HIDDEN(node->handle))
