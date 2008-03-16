@@ -2,6 +2,9 @@ use 5.008004;
 use ExtUtils::MakeMaker;
 use Devel::PPPort;
 
+# no windows support
+die "OS unsupported" if $^O =~ /win/;
+
 # dependency check
 print "Checking for Etk...";
 my $etklib = `pkg-config --variable=version etk`;

@@ -1,15 +1,9 @@
 TODO:
 	- Add initialization options
+	- Add support for creating new widgets from Perl
 	- complete callback system 
-	- perldoc everything
+	- Documentation
 	- complete Tests
-		* Combobox
-		* TextBlock
-		* Tooltips
-		* Toplevel_Widget
-		* Tree
-		* Window
-		* Widget
 	- Image new from data
 	- fix DND
 

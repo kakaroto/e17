@@ -26,6 +26,7 @@ xs/Iconbox.xs
 xs/Image.xs
 xs/Label.xs
 xs/Makefile.PL
+xs/Mdi.xs
 xs/Menu.xs
 xs/MessageDialog.xs
 xs/Notebook.xs
