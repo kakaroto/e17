@@ -54,7 +54,6 @@ static void _menu_cb_exec(void *data, E_Menu * m, E_Menu_Item * mi);
 
 static E_Config_DD *conf_edd = NULL;
 static E_Config_DD *conf_item_edd = NULL;
-static E_Action *act = NULL;
 
 Config *execwatch_config = NULL;
 
@@ -280,8 +279,8 @@ _execwatch_cmd_exit(void *data, int type, void *event)
    if (!ev->exe) return 1;
    if (!ecore_exe_tag_get(ev->exe)) return 1;
    inst = ecore_exe_data_get(ev->exe);
-   if (!inst) return;
-   if (!inst->ci) return;
+   if (!inst) return 1;
+   if (!inst->ci) return 1;
 
    if (!strcmp(ecore_exe_tag_get(ev->exe), STATUS_EXE_TAG))
      {
@@ -392,7 +391,7 @@ _execwatch_popup_content_create(Instance *inst)
 
    evas = inst->popup->win->evas;
    o = e_widget_list_add(evas, 0, 0);
-   snprintf(buf, sizeof(buf), "Output (%0.2d:%0.2d): %s", local_time->tm_hour,
+   snprintf(buf, sizeof(buf), "Output (%02d:%02d): %s", local_time->tm_hour,
 							  local_time->tm_min,
 							  inst->ci->display_name);
    of = e_widget_framelist_add (evas, buf, 0);
