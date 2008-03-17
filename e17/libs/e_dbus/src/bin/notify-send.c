@@ -84,7 +84,7 @@ main(int argc, char **argv)
     case 't':
       errno = 0;
       timeout = strtol(optarg, &endptr, 10);
-      if (errno != 0 && timeout == 0 ||endptr == optarg ) 
+      if ((errno != 0 && timeout == 0) || endptr == optarg) 
         {
           fprintf(stderr, "Cannot parse integer value '%s' for -t\n", optarg);
           return EXIT_FAILURE;
