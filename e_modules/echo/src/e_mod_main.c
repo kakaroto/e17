@@ -172,7 +172,7 @@ _gc_icon(Evas *evas)
 static const char *
 _gc_id_new(void) 
 {
-   char buf[PATH_MAX];
+   static char buf[PATH_MAX];
 
    snprintf(buf, sizeof(buf), "%s.%d", _gc_class.name, 
             evas_list_count(instances));
