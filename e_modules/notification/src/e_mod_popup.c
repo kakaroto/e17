@@ -225,7 +225,7 @@ _notification_popup_refresh(Popup_Data *popup)
 
       errno = 0;
       width = strtol(app_icon_max, &endptr, 10);
-      if (errno != 0 && width == 0 || endptr == app_icon_max) 
+      if ((errno != 0 && width == 0) || endptr == app_icon_max) 
         {
           width = 80;
           height = 80;
