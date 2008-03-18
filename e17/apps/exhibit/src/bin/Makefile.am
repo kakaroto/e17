@@ -2,7 +2,6 @@
 
 INCLUDES = \
 -Wall -g \
--I/usr/local/include \
 -I$(top_srcdir)/lib \
 @exhibit_cflags@ \
 @optional_cflags@

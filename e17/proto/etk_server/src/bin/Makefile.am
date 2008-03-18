@@ -5,7 +5,6 @@ MAINTAINERCLEANFILES = Makefile.in etk_server_valid_funcs.c \
 
 INCLUDES = \
 -Wall -export-dynamic \
--I/usr/local/include \
 -I$(top_srcdir)/lib \
 @my_includes@
 

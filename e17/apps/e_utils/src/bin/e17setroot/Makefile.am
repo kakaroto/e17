@@ -2,7 +2,6 @@
 
 INCLUDES = \
 -I../lib \
--I/usr/local/include \
 -I$(top_srcdir)/lib \
 @EET_CFLAGS@ \
 @ENGRAVE_CFLAGS@ \

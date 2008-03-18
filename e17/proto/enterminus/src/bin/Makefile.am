@@ -1,7 +1,6 @@
 ## Process this file with automake to produce Makefile.in
 
 INCLUDES = \
--I/usr/local/include \
 -I$(top_srcdir)/lib \
 @evas_CFLAGS@ @ecore_CFLAGS@
 

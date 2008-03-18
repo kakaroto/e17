@@ -3,7 +3,6 @@ MAINTAINERCLEANFILES = Makefile.in
 
 INCLUDES = \
 -Wall -g \
--I/usr/local/include \
 -I$(top_srcdir)/lib \
 @ECORE_CFLAGS@ \
 @ETK_CFLAGS@ \
