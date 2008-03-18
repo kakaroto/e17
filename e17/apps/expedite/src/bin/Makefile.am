@@ -1,6 +1,5 @@
 MAINTAINERCLEANFILES = Makefile.in
-INCLUDES = -I$(includedir) \
-	   -I$(top_srcdir) \
+INCLUDES = -I$(top_srcdir) \
 	   -I$(top_srcdir)/src/bin \
 	   @EVAS_CFLAGS@ @x_cflags@ @SDL_CFLAGS@ @DIRECTFB_CFLAGS@ \
 	   -DPACKAGE_BIN_DIR=\"@PACKAGE_BIN_DIR@\" \
