@@ -3,6 +3,8 @@
 struct _E_Config_Dialog_Data 
 {
    int show_label;
+   int show_popup;
+   int focus_window;
    int store_low;
    int store_normal;
    int store_critical;
@@ -42,6 +44,8 @@ static void
 _ci_fill_data(Config_Item *ci, E_Config_Dialog_Data *cfdata)
 {
    cfdata->show_label     = ci->show_label;
+   cfdata->show_popup     = ci->show_popup;
+   cfdata->focus_window   = ci->focus_window;
    cfdata->store_low      = ci->store_low;
    cfdata->store_normal   = ci->store_normal;
    cfdata->store_critical = ci->store_critical;
@@ -78,6 +82,10 @@ _ci_basic_create_widgets(E_Config_Dialog *cfd __UNUSED__,
    of = e_widget_framelist_add(evas, D_("General Settings"), 0);
    ob = e_widget_check_add(evas, D_("Show Icon Label"), &(cfdata->show_label));
    e_widget_framelist_object_append(of, ob);
+   ob = e_widget_check_add(evas, D_("Show the popup on mouse over"), &(cfdata->show_popup));
+   e_widget_framelist_object_append(of, ob);
+   ob = e_widget_check_add(evas, D_("Focus the source window when clicking"), &(cfdata->focus_window));
+   e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
 
    of = e_widget_framelist_add(evas, D_("Urgency"), 0);
@@ -101,6 +109,8 @@ _ci_basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    
    ci = cfd->data;
    ci->show_label     = cfdata->show_label;
+   ci->show_popup     = cfdata->show_popup;
+   ci->focus_window   = cfdata->focus_window;
    ci->store_low      = cfdata->store_low;
    ci->store_normal   = cfdata->store_normal;
    ci->store_critical = cfdata->store_critical;

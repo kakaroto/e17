@@ -180,6 +180,8 @@ e_modapi_init(E_Module *m)
    #define D conf_item_edd
    E_CONFIG_VAL(D, T, id, STR);
    E_CONFIG_VAL(D, T, show_label, INT);
+   E_CONFIG_VAL(D, T, show_popup, INT);
+   E_CONFIG_VAL(D, T, focus_window, INT);
    E_CONFIG_VAL(D, T, store_low, INT);
    E_CONFIG_VAL(D, T, store_normal, INT);
    E_CONFIG_VAL(D, T, store_critical, INT);

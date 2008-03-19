@@ -54,6 +54,8 @@ struct _Config_Item
 {
    const char *id;
    int show_label;
+   int show_popup;
+   int focus_window;
    int store_low;
    int store_normal;
    int store_critical;

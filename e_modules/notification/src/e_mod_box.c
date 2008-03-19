@@ -229,6 +229,8 @@ notification_box_config_item_get(const char *id)
   ci = E_NEW(Config_Item, 1);
   ci->id = evas_stringshare_add(id);
   ci->show_label     = 1;
+  ci->show_popup     = 1;
+  ci->focus_window   = 1;
   ci->store_low      = 1;
   ci->store_normal   = 1;
   ci->store_critical = 0;
@@ -722,15 +724,18 @@ _notification_box_cb_icon_mouse_in(void *data,
                                    void *event_info __UNUSED__)
 {
   Notification_Box_Icon *ic;
+  Config_Item *ci;
 
-  ic = data;
+  if (!(ic = data) || !ic->n_box || !ic->n_box->inst) return;
+  if (!(ci = ic->n_box->inst->ci)) return;
+
   _notification_box_icon_signal_emit(ic, "e,state,focused", "e");
-  if (ic->n_box->inst->ci->show_label)
+  if (ci->show_label)
     {
       _notification_box_icon_fill_label(ic);
       _notification_box_icon_signal_emit(ic, "e,action,show,label", "e");
     }
-  if (!ic->popup && !ic->mouse_in_timer)
+  if (ci->show_popup && !ic->popup && !ic->mouse_in_timer)
     ic->mouse_in_timer = ecore_timer_add(0.5, _notification_box_cb_icon_mouse_still_in, ic);
 }
 
@@ -774,7 +779,7 @@ _notification_box_cb_icon_mouse_up(void *data,
   b = ic->n_box;
   if ((ev->button == 1))
     {
-      if (ic->border)
+      if (b->inst->ci->focus_window && ic->border)
         {
           e_border_uniconify(ic->border);
           e_desk_show(ic->border->desk);
