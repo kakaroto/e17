@@ -451,10 +451,22 @@ a.b:hover {
     float                 : right;
     clear                 : right;
     margin                : 0px 0px 2em 2em;
-    margin-bottom         : 2em;
     background-color      : #ededf0;
-    padding               : 1em;
     background-image      : url('i/section-plug-header.png');
+    background-repeat     : repeat-x;
+}
+
+.section-plug .left-border {
+    margin: 0px;    
+    background-image      : url('i/section-plug-header-left.png');
+    background-repeat     : no-repeat;
+}
+
+.section-plug .right-border {
+    margin: 0px;
+    padding: 1em;
+    background-image      : url('i/section-plug-header-right.png');
+    background-position   : top right;
     background-repeat     : no-repeat;
 }
 

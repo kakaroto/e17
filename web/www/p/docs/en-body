@@ -1,6 +1,8 @@
 <h1>Documentation</h1>
 
 <div class="section-plug">
+<div class="left-border">
+<div class="right-border">
 <h3>EFL API Docs</h3>
 <p>Generated doxygen API documentation for various libraries.</p>
   <ul>
@@ -30,6 +32,8 @@
    <li>Efreet [<a href="http://docs.enlightenment.org/api/efreet/html">HTML</a>] 
         [<a href="http://docs.enlightenment.org/api/efreet/efreet-reference.pdf">PDF</a>]</li>
   </ul>
+</div>
+</div>
 </div>
 
 <p>

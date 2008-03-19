@@ -1,6 +1,8 @@
 <h1>Support</h1>
 
 <div class="section-plug">
+<div class="left-border">
+<div class="right-border">
 <h3><a href="http://wiki.enlightenment.org/index.php/Main_Page">Wiki</a></h3>
 <p>Frequently updated tutorials and guides for both users and developers.</p>
 <ul>
@@ -15,8 +17,12 @@ Installing the EFL</a></li>
 <li><a href="http://wiki.enlightenment.org/index.php/Main_Page">[more]</a></li>
 </ul>
 </div>
+</div>
+</div>
 
 <div class="section-plug">
+<div class="left-border">
+<div class="right-border">
 <h3><a href="http://docs.enlightenment.org/">Docs</a></h3>
 <p>API References, stable development manuals and books.</p>
 <ul>
@@ -30,6 +36,8 @@ API Reference</a></li>
 API Reference</a></li>
 <li><a href="http://docs.enlightenment.org/">[more]</a></li>
 </ul>
+</div>
+</div>
 </div>
 
 <p>There is a great community of helpful developers and users surrounding
