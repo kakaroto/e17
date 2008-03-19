@@ -142,6 +142,7 @@ images
    image: "btn_disabled.png" COMP;
    image: "back.png" COMP;
    image: "forward.png" COMP;
+   image: "refresh.png" COMP;
    image: "up.png" COMP;
 }
 
@@ -195,5 +196,6 @@ collections
      }
    BTN("back")
    BTN("forward")
+   BTN("refresh")
    BTN("up")
 }

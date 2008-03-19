@@ -6,7 +6,7 @@ struct _Instance
 {
    E_Gadcon_Client *gcc;
    Evas_Object *o_base, *o_list;
-   Evas_Object *o_back, *o_up, *o_forward;
+   Evas_Object *o_back, *o_up, *o_forward, *o_refresh;
    E_Toolbar *tbar;
 
    Ecore_List *history;
@@ -30,6 +30,9 @@ static void             _cb_forward_click (void *data, Evas_Object *obj,
 					   const char *emission, 
 					   const char *source);
 static void             _cb_up_click      (void *data, Evas_Object *obj, 
+					   const char *emission, 
+					   const char *source);
+static void             _cb_refresh_click (void *data, Evas_Object *obj, 
 					   const char *emission, 
 					   const char *source);
 static void             _cb_changed       (void *data, Evas_Object *obj, 
@@ -90,6 +93,16 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    evas_object_show(inst->o_forward);
    e_widget_list_object_append(inst->o_list, inst->o_forward, 1, 1, 0.5);
 
+   inst->o_refresh = edje_object_add(gc->evas);
+   if (!e_theme_edje_object_set(inst->o_refresh, "base/theme/modules/efm_nav", 
+				"modules/efm_nav/refresh"))
+     edje_object_file_set(inst->o_refresh, buf, "modules/efm_nav/refresh");
+   edje_object_signal_callback_add(inst->o_refresh, "e,action,click", "", 
+				   _cb_refresh_click, inst);
+   evas_object_show(inst->o_refresh);
+   e_widget_list_object_append(inst->o_list, inst->o_refresh, 1, 1, 0.5);
+
+
    inst->o_up = edje_object_add(gc->evas);
    if (!e_theme_edje_object_set(inst->o_up, "base/theme/modules/efm_nav", 
 				"modules/efm_nav/up"))
@@ -133,6 +146,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    if (inst->o_back) evas_object_del(inst->o_back);
    if (inst->o_up) evas_object_del(inst->o_up);
    if (inst->o_forward) evas_object_del(inst->o_forward);
+   if (inst->o_refresh) evas_object_del(inst->o_refresh);
    if (inst->o_list) evas_object_del(inst->o_list);
    if (inst->o_base) evas_object_del(inst->o_base);
    E_FREE(inst);
@@ -287,6 +301,21 @@ _cb_forward_click(void *data, Evas_Object *obj, const char *emission, const char
      }
    inst->ignore_dir = 1;
    e_fm2_path_set(o_fm, hist, "/");
+}
+
+static void 
+_cb_refresh_click(void *data, Evas_Object *obj, const char *emission, const char *source) 
+{
+   Instance *inst;
+   Evas_Object *o_fm;
+   char *hist;
+   int i = 0;
+
+   inst = data;
+   if ((!inst) || (!inst->tbar)) return;
+   o_fm = e_toolbar_fm2_get(inst->tbar);
+   if (!o_fm) return;
+   e_fm2_path_set(o_fm, NULL, e_fm2_real_path_get(o_fm));
 }
 
 static void 
