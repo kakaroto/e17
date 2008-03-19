@@ -113,18 +113,25 @@ h2 {
    font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
    color                  : #000000;
    font-size              : 1.3em;
+   margin                 : 0; 
+   padding                : 0;
 }
 
 h3 {
    font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
    color                  : #000000;
    font-size              : 1.1em;
+   margin                 : 0; 
+   padding                : 0;
 }
 
 p {
    font-family            : "Bitstream Vera", "Vera", "Trebuchet MS", Trebuchet, Tahoma, sans-serif;
    color                  : #444444;
    font-size              : 0.9em;
+   margin-top: 2px; 
+   margin-bottom: 10px;
+   padding: 0;
 }
 
 p.tiny {
@@ -410,7 +417,6 @@ a.b:hover {
 
 .news-title {
    font-size              : 1.1em;
-   margin-bottom          : -1.2ex;
 }
 
 .news-title a, .news-title a:visited, .news-title a:hover {
@@ -478,7 +484,7 @@ a.b:hover {
 }
 
 .section-plug li {
-    margin                : 0px 0px 1em 0px;
+    margin                : 0px 0px 2px 0px;
     padding               : 0px;
     font-size             : 0.8em;
     font-weight           : bold;

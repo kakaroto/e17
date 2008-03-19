@@ -1,5 +1,38 @@
-<h1>Enlightenment Documentation</h1>
- <p>
+<h1>Documentation</h1>
+
+<div class="section-plug">
+<h3>EFL API Docs</h3>
+<p>Generated doxygen API documentation for various libraries.</p>
+  <ul>
+   <li>Imlib2 [<a href="http://docs.enlightenment.org/api/imlib2/html">HTML</a>] 
+        [<a href="http://docs.enlightenment.org/api/imlib2/imlib2-reference.pdf">PDF</a>]</li>
+   <li>Eet [<a href="http://docs.enlightenment.org/api/eet/html">HTML</a>] 
+        [<a href="http://docs.enlightenment.org/api/eet/eet-reference.pdf">PDF</a>]</li>
+   <li>Evas [<a href="http://docs.enlightenment.org/api/evas/html">HTML</a>] 
+        [<a href="http://docs.enlightenment.org/api/evas/evas-reference.pdf">PDF</a>]</li>
+   <li>Ecore [<a href="http://docs.enlightenment.org/api/ecore/html">HTML</a>] 
+        [<a href="http://docs.enlightenment.org/api/ecore/ecore-reference.pdf">PDF</a>]</li>
+   <li>Edje [<a href="http://docs.enlightenment.org/api/edje/html">HTML</a>] 
+        [<a href="http://docs.enlightenment.org/api/edje/edje-reference.pdf">PDF</a>]</li>
+   <li>Embryo [<a href="http://docs.enlightenment.org/api/embryo/html">HTML</a>] 
+        [<a href="http://docs.enlightenment.org/api/embryo/embryo-reference.pdf">PDF</a>]</li>
+   <li>Epeg [<a href="http://docs.enlightenment.org/api/epeg/html">HTML</a>] 
+        [<a href="http://docs.enlightenment.org/api/epeg/epeg-reference.pdf">PDF</a>]</li>
+   <li>Epsilon [<a href="http://docs.enlightenment.org/api/epsilon/html">HTML</a>] 
+        [<a href="http://docs.enlightenment.org/api/epsilon/epsilon-reference.pdf">PDF</a>]</li>
+   <li>Ewl [<a href="http://docs.enlightenment.org/api/ewl/html">HTML</a>] 
+        [<a href="http://docs.enlightenment.org/api/ewl/ewl-reference.pdf">PDF</a>]</li>
+   <li>Etk [<a href="http://docs.enlightenment.org/api/etk/html">HTML</a>]</li>
+   <li>Emotion [<a href="http://docs.enlightenment.org/api/emotion/html">HTML</a>] 
+        [<a href="http://docs.enlightenment.org/api/emotion/emotion-reference.pdf">PDF</a>]</li>
+   <li>Engrave [<a href="http://docs.enlightenment.org/api/engrave/html">HTML</a>] 
+        [<a href="http://docs.enlightenment.org/api/engrave/engrave-reference.pdf">PDF</a>]</li>
+   <li>Efreet [<a href="http://docs.enlightenment.org/api/efreet/html">HTML</a>] 
+        [<a href="http://docs.enlightenment.org/api/efreet/efreet-reference.pdf">PDF</a>]</li>
+  </ul>
+</div>
+
+<p>
   The Enlightenment Project covers more than simple window management. Whether
   you're a user, developer, or just someone looking for some good bathroom
   material, if you are in need of answers, you should find something of
@@ -72,41 +105,6 @@
   application development and make nearly any application completely
   skinable by even non-programmers.<br />
   Written by <a href="mailto:benrNO@SPAMcuddletech.com">Ben 'technikolor' Rockwood</a>.
- </p>
-
-<h2>EFL API Docs</h2>
- <p>
-  Many of the libraries in CVS have Doxygen documentation included. You can
-  either generate this documentation using the <code>gendoc</code> script in
-  each library directory, or view the documentation here. <br />
-
-  <ul>
-   <li>Imlib2 [<a href="http://docs.enlightenment.org/api/imlib2/html">HTML</a>] 
-        [<a href="http://docs.enlightenment.org/api/imlib2/imlib2-reference.pdf">PDF</a>]</li>
-   <li>Eet [<a href="http://docs.enlightenment.org/api/eet/html">HTML</a>] 
-        [<a href="http://docs.enlightenment.org/api/eet/eet-reference.pdf">PDF</a>]</li>
-   <li>Evas [<a href="http://docs.enlightenment.org/api/evas/html">HTML</a>] 
-        [<a href="http://docs.enlightenment.org/api/evas/evas-reference.pdf">PDF</a>]</li>
-   <li>Ecore [<a href="http://docs.enlightenment.org/api/ecore/html">HTML</a>] 
-        [<a href="http://docs.enlightenment.org/api/ecore/ecore-reference.pdf">PDF</a>]</li>
-   <li>Edje [<a href="http://docs.enlightenment.org/api/edje/html">HTML</a>] 
-        [<a href="http://docs.enlightenment.org/api/edje/edje-reference.pdf">PDF</a>]</li>
-   <li>Embryo [<a href="http://docs.enlightenment.org/api/embryo/html">HTML</a>] 
-        [<a href="http://docs.enlightenment.org/api/embryo/embryo-reference.pdf">PDF</a>]</li>
-   <li>Epeg [<a href="http://docs.enlightenment.org/api/epeg/html">HTML</a>] 
-        [<a href="http://docs.enlightenment.org/api/epeg/epeg-reference.pdf">PDF</a>]</li>
-   <li>Epsilon [<a href="http://docs.enlightenment.org/api/epsilon/html">HTML</a>] 
-        [<a href="http://docs.enlightenment.org/api/epsilon/epsilon-reference.pdf">PDF</a>]</li>
-   <li>Ewl [<a href="http://docs.enlightenment.org/api/ewl/html">HTML</a>] 
-        [<a href="http://docs.enlightenment.org/api/ewl/ewl-reference.pdf">PDF</a>]</li>
-   <li>Etk [<a href="http://docs.enlightenment.org/api/etk/html">HTML</a>]</li>
-   <li>Emotion [<a href="http://docs.enlightenment.org/api/emotion/html">HTML</a>] 
-        [<a href="http://docs.enlightenment.org/api/emotion/emotion-reference.pdf">PDF</a>]</li>
-   <li>Engrave [<a href="http://docs.enlightenment.org/api/engrave/html">HTML</a>] 
-        [<a href="http://docs.enlightenment.org/api/engrave/engrave-reference.pdf">PDF</a>]</li>
-   <li>Efreet [<a href="http://docs.enlightenment.org/api/efreet/html">HTML</a>] 
-        [<a href="http://docs.enlightenment.org/api/efreet/efreet-reference.pdf">PDF</a>]</li>
-  </ul>
  </p>
 
 <h2>Enlightenment DR16 Documentation</h2>
