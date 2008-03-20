@@ -19,6 +19,8 @@ static int int_overwrite(char *buf, int len);
 static int float_overwrite(char *buf, int len);
 static int color_overwrite(char *buf, int len);
 
+static int remove_key(char *buf, int len);
+
 
 /*
  * This set of tests is targeted at config
@@ -33,6 +35,7 @@ static Ewl_Unit_Test config_unit_tests[] = {
 		{"int overwrite", int_overwrite, NULL, -1, 0},
 		{"float overwrite", float_overwrite, NULL, -1, 0},
 		{"color overwrite", color_overwrite, NULL, -1, 0},
+		{"remove key", remove_key, NULL, -1, 0},
 		{NULL, NULL, NULL, -1, 0}
 	};
 
@@ -359,4 +362,129 @@ color_overwrite(char *buf, int len)
 
 	return ret;
 }
+
+/*
+ * Remove items from the hashes
+ *
+ * Note, this test case accesses widget internals. Don't do this in your
+ * code. It's just the best way to do the tests. Again, don't do what I'm
+ * doing.
+ */
+static int
+remove_key(char *buf, int len)
+{
+	int ret = 1;
+	Ewl_Config *cfg;
+
+	cfg = ewl_config_new("unit test");
+
+	cfg->data.system = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+	ecore_hash_free_key_cb_set(cfg->data.system, free);
+	ecore_hash_free_value_cb_set(cfg->data.system, free);
+	ecore_hash_set(cfg->data.system, strdup("/test/key"), strdup("value"));
+	ecore_hash_set(cfg->data.system, strdup("/system/remove"), strdup("value"));
+	ecore_hash_set(cfg->data.system, strdup("/user/remove"), strdup("value"));
+	ecore_hash_set(cfg->data.system, strdup("/instance/remove"), strdup("value"));
+
+	cfg->data.user = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+	ecore_hash_free_key_cb_set(cfg->data.user, free);
+	ecore_hash_free_value_cb_set(cfg->data.user, free);
+	ecore_hash_set(cfg->data.user, strdup("/test/key"), strdup("value"));
+	ecore_hash_set(cfg->data.user, strdup("/system/remove"), strdup("value"));
+	ecore_hash_set(cfg->data.user, strdup("/user/remove"), strdup("value"));
+	ecore_hash_set(cfg->data.user, strdup("/instance/remove"), strdup("value"));
+
+	cfg->data.instance = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+	ecore_hash_free_key_cb_set(cfg->data.instance, free);
+	ecore_hash_free_value_cb_set(cfg->data.instance, free);
+	ecore_hash_set(cfg->data.instance, strdup("/test/key"), strdup("value"));
+	ecore_hash_set(cfg->data.instance, strdup("/system/remove"), strdup("value"));
+	ecore_hash_set(cfg->data.instance, strdup("/user/remove"), strdup("value"));
+	ecore_hash_set(cfg->data.instance, strdup("/instance/remove"), strdup("value"));
+
+	ewl_config_key_remove(cfg, "/test/key");
+	if (ecore_hash_get(cfg->data.system, "/test/key") != NULL)
+	{
+		LOG_FAILURE(buf, len, "System hash contains key after key remove");
+		ret = 0;
+		goto EXIT;
+	}
+	else if (ecore_hash_get(cfg->data.user, "/test/key") != NULL)
+	{
+		LOG_FAILURE(buf, len, "User hash contains key after key remove");
+		ret = 0;
+		goto EXIT;
+	}
+	else if (ecore_hash_get(cfg->data.instance, "/test/key") != NULL)
+	{
+		LOG_FAILURE(buf, len, "Instance hash contains key after key remove");
+		ret = 0;
+		goto EXIT;
+	}
+
+	ewl_config_system_key_remove(cfg, "/system/remove");
+	if (ecore_hash_get(cfg->data.system, "/system/remove") != NULL)
+	{
+		LOG_FAILURE(buf, len, "System hash contains key after system key remove");
+		ret = 0;
+		goto EXIT;
+	}
+	else if (ecore_hash_get(cfg->data.user, "/system/remove") == NULL)
+	{
+		LOG_FAILURE(buf, len, "User hash missing key after system key remove");
+		ret = 0;
+		goto EXIT;
+	}
+	else if (ecore_hash_get(cfg->data.instance, "/system/remove") == NULL)
+	{
+		LOG_FAILURE(buf, len, "Instance hash missing key after system key remove");
+		ret = 0;
+		goto EXIT;
+	}
+
+	ewl_config_user_key_remove(cfg, "/user/remove");
+	if (ecore_hash_get(cfg->data.system, "/user/remove") == NULL)
+	{
+		LOG_FAILURE(buf, len, "System hash missing key after user key remove");
+		ret = 0;
+		goto EXIT;
+	}
+	else if (ecore_hash_get(cfg->data.user, "/user/remove") != NULL)
+	{
+		LOG_FAILURE(buf, len, "User hash contains key after user key remove");
+		ret = 0;
+		goto EXIT;
+	}
+	else if (ecore_hash_get(cfg->data.instance, "/user/remove") == NULL)
+	{
+		LOG_FAILURE(buf, len, "Instance hash missing key after user key remove");
+		ret = 0;
+		goto EXIT;
+	}
+
+	ewl_config_instance_key_remove(cfg, "/instance/remove");
+	if (ecore_hash_get(cfg->data.system, "/instance/remove") == NULL)
+	{
+		LOG_FAILURE(buf, len, "System hash missing key after instance key remove");
+		ret = 0;
+		goto EXIT;
+	}
+	else if (ecore_hash_get(cfg->data.user, "/instance/remove") == NULL)
+	{
+		LOG_FAILURE(buf, len, "User hash missing key after instance key remove");
+		ret = 0;
+		goto EXIT;
+	}
+	else if (ecore_hash_get(cfg->data.instance, "/instance/remove") != NULL)
+	{
+		LOG_FAILURE(buf, len, "Instance hash contains key after instance key remove");
+		ret = 0;
+		goto EXIT;
+	}
+
+EXIT:
+	ewl_config_destroy(cfg);
+	return ret;
+}
+
 

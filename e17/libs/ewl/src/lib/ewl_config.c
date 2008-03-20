@@ -352,8 +352,7 @@ ewl_config_color_get(Ewl_Config *cfg, const char *k, int *r, int *g,
 	DCHECK_PARAM_PTR(k);
 
 	val = ewl_config_get(cfg, k);
-	if (val)
-		sscanf(val, "%i %i %i %i", &tmp_r, &tmp_g, &tmp_b, &tmp_a);
+	if (val) sscanf(val, "%i %i %i %i", &tmp_r, &tmp_g, &tmp_b, &tmp_a);
 
 	if (r) *r = tmp_r;
 	if (g) *g = tmp_g;
@@ -363,6 +362,82 @@ ewl_config_color_get(Ewl_Config *cfg, const char *k, int *r, int *g,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param cfg: The Ewl_Config to work with
+ * @param k: The key to remove
+ * @return Returns no value
+ * @brief Removes key from configuration
+ */
+void
+ewl_config_key_remove(Ewl_Config *cfg, const char *k)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(cfg);
+	DCHECK_PARAM_PTR(k);
+
+	ewl_config_instance_key_remove(cfg, k);
+	ewl_config_system_key_remove(cfg, k);
+	ewl_config_user_key_remove(cfg, k);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param cfg: The Ewl_Config to work with
+ * @param k: The key to remove
+ * @return Returns no value
+ * @brief Removes the given key from the instance configuration data
+ */
+void
+ewl_config_instance_key_remove(Ewl_Config *cfg, const char *k)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(cfg);
+	DCHECK_PARAM_PTR(k);
+
+	if (cfg->data.instance && (ecore_hash_get(cfg->data.instance, k)))
+		ecore_hash_remove(cfg->data.instance, k);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param cfg: The Ewl_Config to work with
+ * @param k: The key to remove
+ * @return Returns no value
+ * @brief Removes the given key from the system configuration data
+ */
+void
+ewl_config_system_key_remove(Ewl_Config *cfg, const char *k)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(cfg);
+	DCHECK_PARAM_PTR(k);
+
+	if (cfg->data.system && (ecore_hash_get(cfg->data.system, k)))
+		ecore_hash_remove(cfg->data.system, k);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param cfg: The Ewl_Config to work with
+ * @param k: The key to remove
+ * @return Returns no value
+ * @brief Removes the given key from the user configuration data
+ */
+void
+ewl_config_user_key_remove(Ewl_Config *cfg, const char *k)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(cfg);
+	DCHECK_PARAM_PTR(k);
+
+	if (cfg->data.user && (ecore_hash_get(cfg->data.user, k)))
+		ecore_hash_remove(cfg->data.user, k);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
 
 /**
  * @param cfg: The Ewl_Config to work with

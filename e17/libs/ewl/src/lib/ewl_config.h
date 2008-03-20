@@ -56,6 +56,11 @@ void		 ewl_config_color_get(Ewl_Config *cfg, const char *k,
 						int *r, int *g,
 						int *b, int *a);
 
+void		 ewl_config_key_remove(Ewl_Config *cfg, const char *k);
+void 		 ewl_config_instance_key_remove(Ewl_Config *cfg, const char *k);
+void		 ewl_config_system_key_remove(Ewl_Config *cfg, const char *k);
+void	 	 ewl_config_user_key_remove(Ewl_Config *cfg, const char *k);
+
 int		 ewl_config_can_save_system(Ewl_Config *cfg);
 int		 ewl_config_system_save(Ewl_Config *cfg);
 int		 ewl_config_user_save(Ewl_Config *cfg);
