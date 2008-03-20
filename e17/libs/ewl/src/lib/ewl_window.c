@@ -261,6 +261,8 @@ ewl_window_borderless_set(Ewl_Window *win, unsigned int border)
 	else win->flags &= ~EWL_WINDOW_BORDERLESS;
 
 	ewl_engine_window_borderless_set(win);
+	ewl_widget_unrealize(EWL_WIDGET(win));
+	ewl_widget_realize(EWL_WIDGET(win));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
