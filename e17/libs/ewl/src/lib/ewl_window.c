@@ -237,25 +237,47 @@ ewl_window_class_get(Ewl_Window *win)
 }
 
 /**
- * @param win: the window to remove the border
+ * @param win: the window to change the border flag on
+ * @param border: the borderless flag to set, either TRUe or FALSE
  * @return Returns no value.
- * @brief Remove the border from the specified window
+ * @brief Changes the border from the specified window
  *
- * Remove the border from the specified widget and call the
- * necessary X lib functions to update the appearance.
+ * Changes the border from the specified window
  */
 void
-ewl_window_borderless_set(Ewl_Window *win)
+ewl_window_borderless_set(Ewl_Window *win, unsigned int border)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(win);
 	DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
-	win->flags |= EWL_WINDOW_BORDERLESS;
+	border = !!border;
+
+	/* do nothing if already set */
+	if (border == ewl_window_borderless_get(win))
+		DRETURN(DLEVEL_STABLE);
+
+	if (border) win->flags |= EWL_WINDOW_BORDERLESS;
+	else win->flags &= ~EWL_WINDOW_BORDERLESS;
 
 	ewl_engine_window_borderless_set(win);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param win: The window to get the border settings from
+ * @return Returns TRUE if the window is borderless, FALSE otherwise
+ * @brief Retrieves the borderless flag for the window
+ */
+unsigned int
+ewl_window_borderless_get(Ewl_Window *win)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET(win, FALSE);
+	DCHECK_TYPE_RET(win, EWL_WINDOW_TYPE, FALSE);
+
+	DRETURN_INT(!!(win->flags & EWL_WINDOW_BORDERLESS), DLEVEL_STABLE);
 }
 
 /**

@@ -82,7 +82,8 @@ void 		 ewl_window_name_set(Ewl_Window *win, const char *name);
 const char 	*ewl_window_name_get(Ewl_Window *win);
 void 		 ewl_window_class_set(Ewl_Window *win, const char *classname);
 const char	*ewl_window_class_get(Ewl_Window *win);
-void 		 ewl_window_borderless_set(Ewl_Window *win);
+void 		 ewl_window_borderless_set(Ewl_Window *win, unsigned int border);
+unsigned int 	 ewl_window_borderless_get(Ewl_Window *win);
 void 		 ewl_window_dialog_set(Ewl_Window *win, int dialog);
 int 		 ewl_window_dialog_get(Ewl_Window *win);
 void 		 ewl_window_fullscreen_set(Ewl_Window *win,

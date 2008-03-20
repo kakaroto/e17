@@ -171,12 +171,15 @@ borderless_set_get(char *buf, int len)
 	int ret = 0;
 
 	win = ewl_window_new();
-	ewl_window_borderless_set(EWL_WINDOW(win));
-
-	if (EWL_WINDOW(win)->flags & EWL_WINDOW_BORDERLESS)
+	ewl_window_borderless_set(EWL_WINDOW(win), TRUE);
+	if (ewl_window_borderless_get(EWL_WINDOW(win)))
 		ret = 1;
 	else
-		snprintf(buf, len, "borderless set failed");
+		snprintf(buf, len, "setting borderless TRUE failed");
+
+	ewl_window_borderless_set(EWL_WINDOW(win), FALSE);
+	if (ewl_window_borderless_get(EWL_WINDOW(win)))
+		snprintf(buf, len, "setting borderless FALSE failed");
 
 	ewl_widget_destroy(win);
 
