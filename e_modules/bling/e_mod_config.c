@@ -15,6 +15,9 @@ struct _E_Config_Dialog_Data
    int fade_opacity;
    double fade_in_step;
    double fade_out_step;
+
+   int inactive_transparent;
+   double inactive_opacity;
 };
 
 /* Protos */
@@ -26,9 +29,6 @@ static Evas_Object *_advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E
 static int _advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 static void _fill_data(Bling *b, E_Config_Dialog_Data *cfdata);
 
-
-//void
-//_config_bling_module(E_Container *con, Bling *b)
 
 EAPI E_Config_Dialog *
 e_int_config_bling_module(E_Container *con, const char *params __UNUSED__)
@@ -84,6 +84,9 @@ _fill_data(Bling *b, E_Config_Dialog_Data *cfdata)
    cfdata->fade_opacity = b->config->fx_fade_opacity_enable;
    cfdata->fade_in_step = b->config->fx_fade_in_step * 100.0;
    cfdata->fade_out_step = b->config->fx_fade_out_step * 100.0;
+
+   cfdata->inactive_opacity = b->config->trans_inactive_value;
+   cfdata->inactive_transparent = (cfdata->inactive_opacity == 100) ? 0 : 1;
 }
 
 static void
@@ -107,6 +110,8 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    e_widget_framelist_object_append(of, ob);
    ob = e_widget_check_add(evas, "Enable Windows In/Out", (&(cfdata->fade_enable)));
    e_widget_framelist_object_append(of, ob);
+   ob = e_widget_check_add(evas, "Inactive Window Opaque", (&(cfdata->inactive_transparent)));
+   e_widget_framelist_object_append(of, ob);
    ob = e_widget_check_add(evas, "Fade On Opacity Changes", (&(cfdata->fade_opacity)));
    e_widget_framelist_object_append(of, ob);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
@@ -124,6 +129,7 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    b->config->shadow_enable = cfdata->shadow_enable;
    b->config->fx_fade_enable = cfdata->fade_enable;
    b->config->fx_fade_opacity_enable = cfdata->fade_opacity;
+   b->config->trans_inactive_value = cfdata->inactive_transparent ? 75 : 100;
 
    e_config_save_queue();
    bling_composite_restart(b);
@@ -188,6 +194,12 @@ _advanced_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data 
    e_widget_table_object_append(ot, ob, 0, i, 1, 1, 0, 0, 0, 0);
    ob = e_widget_slider_add(evas, 1, 0, "%.0f", 1.0, 100.0, 1, 0, &(cfdata->fade_out_step), NULL, 150);
    e_widget_table_object_append(ot, ob, 1, i, 1, 1, 0, 0, 1, 0);
+   i++;
+
+   ob = e_widget_label_add(evas, "Window Opacity");
+   e_widget_table_object_append(ot, ob, 0, i, 1, 1, 0, 0, 0, 0);
+   ob = e_widget_slider_add(evas, 1, 0, "%.0f", 0.0, 100.0, 1, 0, &(cfdata->inactive_opacity), NULL, 150);
+   e_widget_table_object_append(ot, ob, 1, i, 1, 1, 0, 0, 1, 0);
 
    e_widget_framelist_object_append(of, ot);
    e_widget_list_object_append(o, of, 1, 1, 0.5);
@@ -211,6 +223,8 @@ _advanced_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    b->config->fx_fade_opacity_enable = cfdata->fade_opacity;
    b->config->fx_fade_in_step = cfdata->fade_in_step/100.0;
    b->config->fx_fade_out_step = cfdata->fade_out_step/100.0;
+
+   b->config->trans_inactive_value = cfdata->inactive_opacity;
    
    e_config_save_queue();
    bling_composite_restart(b);
