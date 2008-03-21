@@ -190,6 +190,8 @@ if test "x$have_evas_directfb" = "xyes"; then
   PKG_CHECK_MODULES([DIRECTFB], directfb,
     [ have_directfb="yes" ],
     [ have_directfb="no" ])
+else
+    have_directfb="no"
 fi
 AM_CONDITIONAL(BUILD_DIRECTFB, test "x$have_directfb" = "xyes")
 
