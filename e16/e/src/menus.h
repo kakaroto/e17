@@ -42,7 +42,6 @@ Menu               *MenuCreate(const char *name, const char *title,
 void                MenuDestroy(Menu * m);
 void                MenuHide(Menu * m);
 void                MenuEmpty(Menu * m, int destroying);
-void                MenuRepack(Menu * m);
 int                 MenuLoad(Menu * m);
 Menu               *MenuFind(const char *name, const char *param);
 MenuItem           *MenuItemCreate(const char *text, ImageClass * ic,

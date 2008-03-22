@@ -60,25 +60,6 @@ EModuleFind(const char *name)
    return NULL;
 }
 
-#if 0				/* Unused */
-static void
-EModuleCommand(const EModule * em, const char *cmd, const char *prm)
-{
-   int                 i;
-   int                 ni = em->ipc.num;
-   const IpcItem      *pi = em->ipc.lst;
-
-   for (i = 0; i < ni; i++)
-     {
-	if (strcasecmp(cmd, pi->name) && (!pi->nick || strcmp(cmd, pi->nick)))
-	   continue;
-
-	pi->func(prm);
-	break;
-     }
-}
-#endif
-
 int
 ModuleConfigSet(const char *name, const char *item, const char *params)
 {
@@ -145,22 +126,6 @@ ModuleConfigShow(const char *name, const char *item)
 
    return 0;
 }
-
-#if 0				/* Unused */
-int
-ModuleCommand(const char *name, const char *cmd, const char *params)
-{
-   const EModule      *em;
-
-   em = EModuleFind(name);
-   if (!em)
-      return -1;
-
-   EModuleCommand(em, cmd, params);
-
-   return 0;
-}
-#endif
 
 void
 ModulesSignal(int sig, void *prm)

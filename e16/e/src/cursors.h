@@ -41,7 +41,6 @@
 #define ECSR_ACT_RESIZE_BR 11
 #define ECSR_COUNT         12
 
-ECursor            *ECursorFind(const char *name);
 ECursor            *ECursorAlloc(const char *name);
 void                ECursorFree(ECursor * ec);
 void                ECursorApply(ECursor * ec, Win win);

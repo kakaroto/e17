@@ -137,7 +137,7 @@ _ECursorMatchName(const void *data, const void *match)
    return strcmp(((const ECursor *)data)->name, (const char *)match);
 }
 
-ECursor            *
+static ECursor     *
 ECursorFind(const char *name)
 {
    if (!name || !name[0])

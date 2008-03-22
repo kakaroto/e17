@@ -77,8 +77,6 @@ void                ModuleListFree(const EModule ** lst);
 int                 ModuleConfigSet(const char *name, const char *item,
 				    const char *params);
 int                 ModuleConfigShow(const char *name, const char *item);
-int                 ModuleCommand(const char *name, const char *cmd,
-				  const char *params);
 
 void                ModulesSignal(int signal, void *prm);
 void                ModulesConfigShow(void);

@@ -133,7 +133,7 @@ ActionMoveStart(EWin * ewin, char constrained, int nogroup)
    return 0;
 }
 
-int
+static int
 ActionMoveEnd(EWin * ewin)
 {
    EWin              **gwins;
@@ -422,7 +422,7 @@ ActionResizeStart(EWin * ewin, int hv)
    return 0;
 }
 
-int
+static int
 ActionResizeEnd(EWin * ewin)
 {
    if (ewin && ewin != Mode_mr.ewin)

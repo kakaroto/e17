@@ -670,7 +670,7 @@ EwinStateUpdate(EWin * ewin)
    SnapshotEwinUpdate(ewin, SNAP_USE_FLAGS);
 }
 
-void
+static void
 AddToFamily(EWin * ewin, Window xwin)
 {
    EWin               *ewin2;

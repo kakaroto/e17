@@ -370,7 +370,6 @@ void                EwinGetPosition(const EWin * ewin, int x, int y, int bw,
 void                EwinUpdateShapeInfo(EWin * ewin);
 void                EwinPropagateShapes(EWin * ewin);
 void                EwinStateUpdate(EWin * ewin);
-void                AddToFamily(EWin * ewin, Window win);
 EWin               *AddInternalToFamily(Win win, const char *bname, int type,
 					const EWinOps * ops, void *ptr);
 void                EwinReparent(EWin * ewin, Win parent);
@@ -410,7 +409,6 @@ void                SlideEwinTo(EWin * ewin, int fx, int fy, int tx, int ty,
 				int speed, int mode);
 void                SlideEwinsTo(EWin ** ewin, int *fx, int *fy, int *tx,
 				 int *ty, int num_wins, int speed, int mode);
-void                EwinFixPosition(EWin * ewin);
 void                EwinMove(EWin * ewin, int x, int y);
 void                EwinResize(EWin * ewin, int w, int h);
 void                EwinMoveResize(EWin * ewin, int x, int y, int w, int h);
@@ -471,9 +469,7 @@ void                EwinSyncRequestWait(EWin * ewin);
 
 /* moveresize.c */
 int                 ActionMoveStart(EWin * ewin, char constrained, int nogroup);
-int                 ActionMoveEnd(EWin * ewin);
 int                 ActionResizeStart(EWin * ewin, int hv);
-int                 ActionResizeEnd(EWin * ewin);
 
 int                 ActionsSuspend(void);
 int                 ActionsResume(void);

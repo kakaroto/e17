@@ -144,7 +144,6 @@ int                 ICCCM_ProcessClientClientMessage(EWin * ewin,
 int                 ICCCM_ProcessRootClientMessage(XClientMessageEvent * event);
 void                ICCCM_GetTitle(EWin * ewin);
 void                ICCCM_Delete(const EWin * ewin);
-void                ICCCM_Save(const EWin * ewin);
 void                ICCCM_Iconify(const EWin * ewin);
 void                ICCCM_DeIconify(const EWin * ewin);
 void                ICCCM_SizeMatch(const EWin * ewin, int wi, int hi, int *pwo,
