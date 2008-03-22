@@ -12,7 +12,7 @@ msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
 "POT-Creation-Date: 2008-03-12 23:27+0100\n"
-"PO-Revision-Date: 2008-02-28 11:14+0900\n"
+"PO-Revision-Date: 2008-03-19 20:00+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -1730,16 +1730,15 @@ msgstr "ダイアログが表示されたデスクトップに移動する"
 
 #: src/settings.c:317
 msgid "Place windows manually"
-msgstr "ウィンドウ配置は手動で行う"
+msgstr "手動でウィンドウを配置する"
 
 #: src/settings.c:322
 msgid "Place windows under mouse"
 msgstr "マウスのある位置にウィンドウを配置する"
 
 #: src/settings.c:327
-#, fuzzy
 msgid "Center windows when desk is full"
-msgstr "他のデスクトップのウィンドウもフォーカスリストに含める"
+msgstr "デスクトップが一杯ならウィンドウを中央に配置する"
 
 #: src/settings.c:332
 msgid "Slide windows in when they appear"
