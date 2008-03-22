@@ -1,8 +1,6 @@
 - Bugs
   - Autosized iconboxes can wander off when resizing screen.
     e.g. when anchored right and iconify-change size-deiconify.
-  - Occasional segv on second screen when killing e16.
-  - Occasional TMP_... droppings in ~/.e16/. Most likely related to latter.
 
 - Docs
   - Update
