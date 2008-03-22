@@ -3,13 +3,13 @@
 # Copyright (C) 1999-2000, 2004, 2005 Free Software Foundation, Inc.
 # Sylvain GIL <tootella@tootella.com>, 1999-2000.
 # Ludwig Noujarret <ludwig@noujarret.com>, 2004, 2005.
-# Tristan D. <trinine@free.fr>, 2007
+# Tristan D. <trinine@free.fr>, 2007, 2008
 msgid ""
 msgstr ""
-"Project-Id-Version: e16-0.16.8.12-fr\n"
+"Project-Id-Version: e16-0.16.8.13-0.01-fr\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
 "POT-Creation-Date: 2008-03-12 23:27+0100\n"
-"PO-Revision-Date: 2008-03-01 14:58+0100\n"
+"PO-Revision-Date: 2008-03-19 13:55+0100\n"
 "Last-Translator: Tristan D. <trinine@free.fr>\n"
 "Language-Team: French\n"
 "MIME-Version: 1.0\n"
@@ -1715,9 +1715,8 @@ msgid "Place windows under mouse"
 msgstr "Placer les fenêtres sous la souris"
 
 #: src/settings.c:327
-#, fuzzy
 msgid "Center windows when desk is full"
-msgstr "Inclure les fenêtres des autres bureaux dans la liste de fenêtres"
+msgstr "Placer les fenêtres au centre quand le bureau est plein"
 
 #: src/settings.c:332
 msgid "Slide windows in when they appear"
@@ -2814,3 +2813,4 @@ msgstr "Autres"
 #: config/strings.c:198
 msgid "Epplets"
 msgstr "Epplets"
+
