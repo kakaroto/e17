@@ -720,7 +720,7 @@ ecore_list_first_goto(Ecore_List * list)
 static void        *
 _ecore_list_first_goto(Ecore_List * list)
 {
-   if (!list || !list->first)
+   if (!list->first)
       return NULL;
 
    list->current = list->first;
@@ -871,14 +871,16 @@ static int
 _ecore_list_for_each(Ecore_List * list, Ecore_For_Each function,
 		     void *user_data)
 {
-   void               *value;
+   Ecore_List_Node    *node, *next;
 
-   if (!list || !function)
+   if (!function)
       return FALSE;
 
-   _ecore_list_first_goto(list);
-   while ((value = _ecore_list_next(list)) != NULL)
-      function(value, user_data);
+   for (node = list->first; node; node = next)
+     {
+	next = node->next;
+	function(node->data, user_data);
+     }
 
    return TRUE;
 }
@@ -904,15 +906,17 @@ static void        *
 _ecore_list_find(Ecore_List * list, Ecore_Compare_Cb function,
 		 const void *user_data)
 {
-   void               *value;
+   Ecore_List_Node    *node, *next;
 
-   if (!list || !function)
+   if (!function)
       return NULL;
 
-   _ecore_list_first_goto(list);
-   while ((value = _ecore_list_next(list)) != NULL)
-      if (!function(value, user_data))
-	 return value;
+   for (node = list->first; node; node = next)
+     {
+	next = node->next;
+	if (!function(node->data, user_data))
+	   return node->data;
+     }
 
    return NULL;
 }
