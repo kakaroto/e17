@@ -33,6 +33,10 @@ e_modapi_init(E_Module *m)
 
    b->module = m;
    bling_mod = m;
+   
+   /* Delayed start fix the 'trasparent-window-on-start' bug */
+   /* This is a hack. We need to find the bug and solve it!! */
+   e_module_delayed_set(m, 1);
 
    return b;
 }
