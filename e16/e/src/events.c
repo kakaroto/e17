@@ -897,21 +897,26 @@ EventShow(const XEvent * ev)
      {
      case KeyPress:
      case KeyRelease:
-	goto case_common;
+	Eprintf("%s sub=%#lx x,y=%d,%d state=%#x keycode=%#x ss=%d\n", buf,
+		ev->xkey.subwindow, ev->xkey.x, ev->xkey.y,
+		ev->xkey.state, ev->xkey.keycode, ev->xkey.same_screen);
+	break;
      case ButtonPress:
      case ButtonRelease:
-	Eprintf("%s sub=%#lx state=%#x button=%#x\n", buf,
-		ev->xbutton.subwindow, ev->xbutton.state, ev->xbutton.button);
+	Eprintf("%s sub=%#lx x,y=%d,%d state=%#x button=%#x ss=%d\n", buf,
+		ev->xbutton.subwindow, ev->xbutton.x, ev->xbutton.y,
+		ev->xbutton.state, ev->xbutton.button, ev->xbutton.same_screen);
 	break;
      case MotionNotify:
-	Eprintf("%s sub=%#lx x,y=%d,%d rx,ry=%d,%d\n", buf,
+	Eprintf("%s sub=%#lx x,y=%d,%d rx,ry=%d,%d ss=%d\n", buf,
 		ev->xmotion.subwindow, ev->xmotion.x, ev->xmotion.y,
-		ev->xmotion.x_root, ev->xmotion.y_root);
+		ev->xmotion.x_root, ev->xmotion.y_root,
+		ev->xmotion.same_screen);
 	break;
      case EnterNotify:
      case LeaveNotify:
-	Eprintf("%s sub=%#lx m=%s d=%s sscreen=%d focus=%d\n", buf,
-		ev->xcrossing.subwindow,
+	Eprintf("%s sub=%#lx x,y=%d,%d m=%s d=%s ss=%d focus=%d\n", buf,
+		ev->xcrossing.subwindow, ev->xcrossing.x, ev->xcrossing.y,
 		EventNotifyModeName(ev->xcrossing.mode),
 		EventNotifyDetailName(ev->xcrossing.detail),
 		ev->xcrossing.same_screen, ev->xcrossing.focus);
