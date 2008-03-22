@@ -113,7 +113,6 @@ ewl_grid_dimensions_set(Ewl_Grid *g, int cols, int rows)
 		DRETURN(DLEVEL_STABLE);
 
 	IF_FREE(g->map);
-	g->map = NULL;
 	g->data_dirty = TRUE;
 
 	if (cols != g->cols) {
@@ -350,7 +349,6 @@ ewl_grid_child_position_set(Ewl_Grid *g, Ewl_Widget *w,
 	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
 	IF_FREE(g->map);
-	g->map = NULL;
 	g->data_dirty = TRUE;
 
 	/*
@@ -992,9 +990,6 @@ ewl_grid_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
 	IF_FREE(g->map);
 	IF_FREE(g->col_size)
 	IF_FREE(g->row_size)
-	g->col_size = NULL;
-	g->row_size = NULL;
-	g->map = NULL;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1571,7 +1566,6 @@ ewl_grid_cb_child_remove(Ewl_Container *c, Ewl_Widget *w, int idx __UNUSED__)
 		g->space--;
 
 	IF_FREE(g->map);
-	g->map = NULL;
 	g->data_dirty = TRUE;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
