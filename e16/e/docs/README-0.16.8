@@ -472,11 +472,21 @@ misc.opacity.menus = 85
 misc.opacity.movres = 60
 # [int] Composite opacity of tooltip windows
 misc.opacity.tooltips = 80
+# [int] Composite opacity of focused windows
+misc.opacity.focused = 100
+# [int] Composite opacity of unfocused windows
+misc.opacity.unfocused = 100
 
 # [bool] Place windows manually
 misc.place.manual = 0
 # [bool] Place windows under pointer
 misc.place.manual_mouse_pointer = 0
+# [bool] Center windows when desk is full
+misc.place.center_if_desk_full = 0
+# [bool] Ignore windows with struts (e.g. panels) when placing new window
+misc.place.ignore_struts = 0
+# [bool] Raise fullscreen windows (increase stacking level while fullscreen)
+misc.place.raise_fullscreen = 0
 # [bool] Slide windows in
 misc.place.slidein = 0
 # [bool] Slide windows around while cleaning up
@@ -487,10 +497,6 @@ misc.place.slidemode = 0
 misc.place.slidespeedmap = 6000
 # [int] Window cleanup slidespeed
 misc.place.slidespeedcleanup = 8000
-# [bool] Ignore windows with struts (e.g. panels) when placing new window
-misc.place.ignore_struts = 0
-# [bool] Raise fullscreen windows (increase stacking level while fullscreen)
-misc.place.raise_fullscreen = 0
 
 # [bool] Enable session scripts
 misc.session.enable_script = 0
@@ -527,9 +533,11 @@ misc.testing.argb_internal_objects = 0
 misc.testing.argb_internal_clients = 0
 misc.testing.argb_clients = 0
 misc.testing.argb_clients_inherit_attr = 0
-misc.testing.enable_startup_id = 1
 misc.testing.image_cache_size = -1
 misc.testing.mask_alpha_threshold = 8
+misc.testing.enable_startup_id = 1
+misc.testing.use_render_for_scaling = 0
+misc.testing.no_sync_mask = 0
 
 # [bool] Save configuration changes
 misc.autosave = 1
@@ -537,6 +545,8 @@ misc.autosave = 1
 misc.memory_paranoia = 1
 # [bool] Use save-unders when appropriate
 misc.save_under = 0
+# [bool] Show differential time in debug output
+misc.difftime = 0
 
 # [bool] Enable pagers
 pagers.enable = 1
@@ -567,7 +577,7 @@ theme.localise = 0
 # [string] Theme
 theme.name = winter
 # [string] Colon separated list of directories containing e16 themes
-theme.extra_path = /mnt/fc4/src/E/themes/e16
+theme.extra_path = 
 # [string] Colon separated list of additional TrueType font directories
 theme.ttfont_path = 
 # [bool] Use alternative font configuration file (specified by theme.font_cfg)
