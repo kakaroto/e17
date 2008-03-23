@@ -37,8 +37,7 @@ static PangoContext *_pango_ctx = NULL;
 
 /* Beware! The layout of FontCtxPangoXft must match FontCtxXft
  * in order to reuse the _xft_Fdc... functions. */
-typedef struct
-{
+typedef struct {
    PangoFontDescription *font;
    Win                 win;
    Drawable            draw;

@@ -39,8 +39,7 @@
    ButtonPressMask | ButtonReleaseMask | EnterWindowMask | LeaveWindowMask | \
    PointerMotionMask)
 
-typedef struct
-{
+typedef struct {
    EObj                o;
    char               *name;
    char                direction;
@@ -54,8 +53,7 @@ static void         SlideoutCalcSize(Slideout * s);
 
 static Ecore_List  *slideout_list = NULL;
 
-static struct
-{
+static struct {
    Slideout           *active;
 } Mode_slideouts =
 {

@@ -30,8 +30,7 @@
 #define Estrdup strdup
 #endif
 
-struct _sample
-{
+struct _sample {
    SoundSampleData     ssd;
    int                 id;
 };

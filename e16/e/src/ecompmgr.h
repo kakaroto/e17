@@ -28,8 +28,7 @@
 #include "eobj.h"
 #include "etypes.h"
 
-typedef struct
-{
+typedef struct {
    char                enable;
    int                 shadow;
    char                fading;

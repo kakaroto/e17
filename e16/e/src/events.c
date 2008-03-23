@@ -56,14 +56,12 @@ static const char  *EventName(unsigned int type);
  * Server extension handling
  */
 
-typedef struct
-{
+typedef struct {
    int                 event_base, error_base;
    int                 major, minor;
 } EServerExtData;
 
-typedef struct
-{
+typedef struct {
    const char         *name;
    unsigned int        ix;
    int                 (*query_ext) (Display * dpy, int *event, int *error);
@@ -206,8 +204,7 @@ ExtQuery(const EServerExt * ext)
  * File descriptor handling
  */
 
-struct _EventFdDesc
-{
+struct _EventFdDesc {
    const char         *name;
    int                 fd;
    void                (*handler) (void);

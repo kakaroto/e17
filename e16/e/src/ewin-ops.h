@@ -23,8 +23,7 @@
 #ifndef _EWIN_OPS_H_
 #define _EWIN_OPS_H_
 
-typedef enum
-{
+typedef enum {
    EWIN_OP_INVALID,
 
    EWIN_OP_BORDER,
@@ -77,8 +76,7 @@ typedef enum
    EWIN_OP_NO_REDIRECT,
 } winop_e;
 
-typedef struct
-{
+typedef struct {
    const char         *name;
    char                len;
    char                ok_ipc;

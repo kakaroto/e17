@@ -25,8 +25,7 @@
 
 #include "config.h"
 
-typedef struct
-{
+typedef struct {
    unsigned int        channels;
    unsigned int        bit_per_sample;
    unsigned int        rate;
@@ -36,8 +35,7 @@ typedef struct
 
 typedef struct _sample Sample;
 
-typedef struct
-{
+typedef struct {
    int                 (*Init) (void);
    void                (*Exit) (void);
    Sample             *(*SampleLoad) (const char *file);

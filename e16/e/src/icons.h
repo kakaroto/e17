@@ -26,8 +26,7 @@
 
 #include "eimage.h"
 
-typedef enum
-{
+typedef enum {
    EWIN_ICON_TYPE_APP,
    EWIN_ICON_TYPE_IMG,
    EWIN_ICON_TYPE_SNAP,

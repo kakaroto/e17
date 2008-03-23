@@ -58,20 +58,17 @@ typedef void        (EventCallbackFunc) (Win win, XEvent * ev, void *prm);
 
 #define EXPOSE_WIN 1
 #if EXPOSE_WIN || DECLARE_WIN
-typedef struct
-{
+typedef struct {
    EventCallbackFunc  *func;
    void               *prm;
 } EventCallbackItem;
 
-typedef struct
-{
+typedef struct {
    int                 num;
    EventCallbackItem  *lst;
 } EventCallbackList;
 
-struct _xwin
-{
+struct _xwin {
    struct _xwin       *next;
    struct _xwin       *prev;
    EventCallbackList   cbl;
@@ -219,8 +216,7 @@ Pixmap              EWindowGetShapePixmap(Win win);
 Bool                EQueryPointer(Win win, int *px, int *py,
 				  Window * pchild, unsigned int *pmask);
 
-typedef struct
-{
+typedef struct {
    unsigned long       pixel;
    unsigned char       alpha, red, green, blue;
 } EColor;
@@ -257,8 +253,7 @@ GC                  EXCreateGC(Drawable draw, unsigned long mask,
 			       XGCValues * val);
 int                 EXFreeGC(GC gc);
 
-typedef struct
-{
+typedef struct {
    char                type;
    Pixmap              pmap;
    Pixmap              mask;

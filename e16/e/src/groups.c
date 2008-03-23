@@ -41,14 +41,12 @@
 
 static Ecore_List  *group_list = NULL;
 
-static struct
-{
+static struct {
    GroupConfig         dflt;
    char                swapmove;
 } Conf_groups;
 
-static struct
-{
+static struct {
    Group              *current;
 } Mode_groups;
 
@@ -741,8 +739,7 @@ ChooseGroupDialog(EWin * ewin, const char *message, char group_select,
    DialogShowSimple(&DlgGroupChoose, (void *)message);
 }
 
-typedef struct
-{
+typedef struct {
    EWin               *ewin;
    GroupConfig         cfg;	/* Dialog data for current group */
    GroupConfig        *cfgs;	/* Work copy of ewin group cfgs */

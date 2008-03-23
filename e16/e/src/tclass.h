@@ -48,8 +48,7 @@
 #define FONT_TYPE_PANGO_XFT     5	/* Pango-Xft       */
 #endif
 
-typedef struct
-{
+typedef struct {
    int                 (*Load) (TextState * ts, const char *name);
    void                (*Destroy) (TextState * ts);
    void                (*TextSize) (TextState * ts, const char *text, int len,
@@ -64,13 +63,11 @@ typedef struct
    void                (*FdcSetColor) (TextState * ts, EColor * xc);
 } FontOps;
 
-struct _textstate
-{
+struct _textstate {
    char               *fontname;
    char                type;
    char                need_utf8;
-   struct
-   {
+   struct {
       char                mode;
       char                orientation;
       char                effect;
@@ -81,17 +78,14 @@ struct _textstate
    const FontOps      *ops;
 };
 
-struct _textclass
-{
+struct _textclass {
    char               *name;
-   struct
-   {
+   struct {
       TextState          *normal;
       TextState          *hilited;
       TextState          *clicked;
       TextState          *disabled;
-   }
-   norm               , active, sticky, sticky_active;
+   } norm             , active, sticky, sticky_active;
    int                 justification;
    unsigned int        ref_count;
 };

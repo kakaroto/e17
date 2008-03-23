@@ -34,8 +34,7 @@
 #include "timers.h"
 #include "xwin.h"
 
-static struct
-{
+static struct {
    EWin               *ewin;
    int                 mode;
    int                 start_x, start_y;

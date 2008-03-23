@@ -30,8 +30,7 @@
 #include <X11/extensions/Xinerama.h>
 #endif
 
-typedef struct
-{
+typedef struct {
    int                 type;
    int                 head;
    int                 x, y;

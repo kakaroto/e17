@@ -40,8 +40,7 @@
 #define FX_OP_STOP   2
 #define FX_OP_TOGGLE 3
 
-typedef struct
-{
+typedef struct {
    const char         *name;
    void                (*init_func) (const char *name);
    void                (*desk_func) (void);
@@ -49,8 +48,7 @@ typedef struct
    void                (*pause_func) (void);
    char                enabled;
    char                paused;
-}
-FXHandler;
+} FXHandler;
 
 /****************************** RIPPLES *************************************/
 
@@ -172,13 +170,11 @@ static Window       fx_raindrops_win = None;
 static int          fx_raindrops_number = 4;
 static PixImg      *fx_raindrops_draw = NULL;
 
-typedef struct
-{
+typedef struct {
    int                 x, y;
    int                 count;
    PixImg             *buf;
-}
-DropContext;
+} DropContext;
 
 static DropContext  fx_raindrops[4];
 

@@ -34,8 +34,7 @@
 
 #define DEBUG_DIALOGS 0
 
-typedef struct
-{
+typedef struct {
    char                horizontal;
 
    char                numeric;
@@ -71,34 +70,29 @@ typedef struct
    Win                 border_win;
 } DItemSlider;
 
-typedef struct
-{
+typedef struct {
    Win                 area_win;
    int                 w, h;
    DialogItemCallbackFunc *init_func;
    DialogItemCallbackFunc *event_func;
 } DItemArea;
 
-typedef struct
-{
+typedef struct {
    Win                 check_win;
    int                 check_orig_w, check_orig_h;
    char                onoff;
    char               *onoff_ptr;
 } DItemCheckButton;
 
-typedef struct
-{
+typedef struct {
    char               *image;
 } DItemImage;
 
-typedef struct
-{
+typedef struct {
    char                horizontal;
 } DItemSeparator;
 
-typedef struct
-{
+typedef struct {
    int                 num_columns;
    char                border;
    char                homogenous_h;
@@ -107,8 +101,7 @@ typedef struct
    DItem             **items;
 } DItemTable;
 
-typedef struct
-{
+typedef struct {
    Win                 radio_win;
    int                 radio_orig_w, radio_orig_h;
    char                onoff;
@@ -119,8 +112,7 @@ typedef struct
    DialogItemCallbackFunc *event_func;
 } DItemRadioButton;
 
-struct _ditem
-{
+struct _ditem {
    int                 type;
    Dialog             *dlg;
    DialogCallbackFunc *func;
@@ -140,8 +132,7 @@ struct _ditem
    int                 x, y, w, h;
    Win                 win;
    char               *text;
-   union
-   {
+   union {
       DItemCheckButton    check_button;
       DItemTable          table;
       DItemImage          image;
@@ -149,8 +140,7 @@ struct _ditem
       DItemRadioButton    radio_button;
       DItemSlider         slider;
       DItemArea           area;
-   }
-   item;
+   } item;
 
    char                realized;
    char                update;
@@ -160,16 +150,14 @@ struct _ditem
    char                clicked;
 };
 
-typedef struct
-{
+typedef struct {
    KeyCode             key;
    DialogCallbackFunc *func;
    int                 val;
    void               *data;
 } DKeyBind;
 
-struct _dialog
-{
+struct _dialog {
    EWin               *ewin;
    Win                 win;
    int                 w, h;

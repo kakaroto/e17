@@ -23,8 +23,7 @@
 #include "E.h"
 #include "e16-ecore_list.h"
 
-typedef struct
-{
+typedef struct {
    char               *name;
    char               *font;
 } FontAlias;

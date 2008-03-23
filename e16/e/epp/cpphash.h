@@ -2,15 +2,13 @@ enum node_type;
 
 /* different kinds of things that can appear in the value field
    of a hash node.  Actually, this may be useless now. */
-union hashval
-{
+union hashval {
    int                 ival;
    char               *cpval;
    DEFINITION         *defn;
 };
 
-struct hashnode
-{
+struct hashnode {
    struct hashnode    *next;	/* double links for easy deletion */
    struct hashnode    *prev;
    struct hashnode   **bucket_hdr;	/* also, a back pointer to this node's hash

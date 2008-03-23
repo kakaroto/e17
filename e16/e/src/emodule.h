@@ -26,8 +26,7 @@
 #include "econfig.h"
 #include "ipc.h"
 
-typedef struct
-{
+typedef struct {
    const char         *name;
    const char         *nick;
    void                (*Signal) (int sig, void *prm);
@@ -35,8 +34,7 @@ typedef struct
    CfgItemList         cfg;
 } EModule;
 
-typedef enum
-{
+typedef enum {
    ESIGNAL_NONE,
    ESIGNAL_INIT,
    ESIGNAL_CONFIGURE,

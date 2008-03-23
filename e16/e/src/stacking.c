@@ -32,8 +32,7 @@
 
 typedef struct _eobjlist EobjList;
 
-struct _eobjlist
-{
+struct _eobjlist {
    const char         *name;
    int                 nalloc;
    int                 nwins;

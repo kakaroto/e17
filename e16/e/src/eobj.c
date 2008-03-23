@@ -594,8 +594,7 @@ void
 EobjsSlideBy(EObj ** peo, int num, int dx, int dy, int speed)
 {
    int                 i, k, x, y;
-   struct _xy
-   {
+   struct _xy {
       int                 x, y;
    }                  *xy;
 

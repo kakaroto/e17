@@ -401,8 +401,7 @@ TextstateTextFitMB(TextState * ts, char **ptext, int *pw, int textwidth_limit)
  */
 extern const FontOps FontOpsXfs;
 
-typedef struct
-{
+typedef struct {
    XFontSet            font;
    int                 ascent;
    Win                 win;
@@ -519,8 +518,7 @@ const FontOps       FontOpsXfs = {
  */
 extern const FontOps FontOpsXfont;
 
-typedef struct
-{
+typedef struct {
    XFontStruct        *font;
    Win                 win;
    Drawable            draw;
@@ -649,8 +647,7 @@ TsTextDraw(TextState * ts, int x, int y, const char *text, int len)
    ts->ops->TextDraw(ts, x, y, text, len);
 }
 
-typedef struct
-{
+typedef struct {
    const char         *type;
    const FontOps      *ops;
    char                checked;

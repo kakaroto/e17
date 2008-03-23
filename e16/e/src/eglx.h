@@ -30,8 +30,7 @@
 
 typedef struct _etexture ETexture;
 
-struct _etexture
-{
+struct _etexture {
    unsigned int        texture;
    unsigned short      target;
    unsigned char       type;

@@ -66,8 +66,7 @@
 
 typedef struct _efont Efont;
 
-typedef struct _root
-{
+typedef struct _root {
    Window              win;
    Visual             *vis;
    unsigned int        depth;
@@ -76,8 +75,7 @@ typedef struct _root
    unsigned int        w, h;
 } Root;
 
-typedef struct _textstate
-{
+typedef struct _textstate {
    char               *fontname;
    XColor              fg_col;
    XColor              bg_col;
@@ -91,8 +89,7 @@ typedef struct _textstate
    int                 height;
 } TextState;
 
-typedef struct _link
-{
+typedef struct _link {
    char               *name;
    int                 x, y, w, h;
    struct _link       *next;

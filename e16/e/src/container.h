@@ -28,21 +28,18 @@
 
 typedef struct _container Container;
 
-typedef struct
-{
+typedef struct {
    unsigned int        anim_time;	/* Animation run time  (ms) */
 } ContainerCfg;
 
-typedef struct
-{
+typedef struct {
    void               *obj;
    int                 xo, yo, wo, ho;	/* Outer */
    int                 xi, yi, wi, hi;	/* Inner */
    EImage             *im;
 } ContainerObject;
 
-typedef struct
-{
+typedef struct {
    void                (*Init) (Container * ct);
    void                (*Exit) (Container * ct, int wm_exit);
    void                (*Signal) (Container * ct, int signal, void *prm);
@@ -52,8 +49,7 @@ typedef struct
 				    EImage * im);
 } ContainerOps;
 
-struct _container
-{
+struct _container {
    const ContainerOps *ops;
    const char         *wm_name;
    const char         *menu_title;

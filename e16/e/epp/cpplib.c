@@ -163,8 +163,7 @@ static const char  *predefs = "";
 #define REGISTER_PREFIX ""
 #endif
 
-struct directive
-{
+struct directive {
    int                 length;
    int                 (*func) (cpp_reader * pfile, struct directive * keyword,
 				unsigned char *buf, unsigned char *limit);
@@ -180,14 +179,12 @@ struct directive
  * Each value is itself a list of "tokens".
  * These are strings that are compared by name.  */
 
-struct tokenlist_list
-{
+struct tokenlist_list {
    struct tokenlist_list *next;
    struct arglist     *tokens;
 };
 
-struct assertion_hashnode
-{
+struct assertion_hashnode {
    struct assertion_hashnode *next;	/* double links for easy deletion */
    struct assertion_hashnode *prev;
    /* also, a back pointer to this node's hash
@@ -230,16 +227,14 @@ struct assertion_hashnode
 
 char               *progname;
 
-struct cpp_pending
-{
+struct cpp_pending {
    struct cpp_pending *next;
    const char         *cmd;
    const char         *arg;
 };
 
 /* Structure returned by create_definition */
-typedef struct
-{
+typedef struct {
    struct definition  *defn;
    char               *symnam;
    int                 symlen;
@@ -303,8 +298,7 @@ static cpp_buffer  *cpp_push_buffer(cpp_reader * pfile, unsigned char *buffer,
 static cpp_buffer  *cpp_pop_buffer(cpp_reader * pfile);
 
 /* Last arg to output_line_command.  */
-enum file_change_code
-{
+enum file_change_code {
    same_file, enter_file, leave_file
 };
 
@@ -369,8 +363,7 @@ static void         parse_goto_mark(struct parse_marker *pmark,
 static void         parse_move_mark(struct parse_marker *pmark,
 				    cpp_reader * pfile);
 
-struct file_name_list
-{
+struct file_name_list {
    struct file_name_list *next;
    char               *fname;
    /* If the following is nonzero, it is a macro name.
@@ -393,15 +386,13 @@ struct file_name_list
 /* #include <file> just looks in the stack. */
 /* -I directories are added to the end, then the defaults are added. */
 /* The */
-static struct default_include
-{
+static struct default_include {
    const char         *fname;	/* The name of the directory.  */
    int                 cplusplus;	/* Only look here if we're compiling C++.  */
    int                 cxx_aware;	/* Includes in this directory don't need to
 					 * be wrapped in extern "C" when compiling
 					 * C++.  */
-}
-include_defaults_array[]
+} include_defaults_array[]
 #ifdef INCLUDE_DEFAULTS
    = INCLUDE_DEFAULTS;
 
@@ -1184,8 +1175,7 @@ pass_thru_directive(char *buf, char *limit, cpp_reader * pfile,
  * the current #define has been processed and entered into the
  * hash table. */
 
-struct arglist
-{
+struct arglist {
    struct arglist     *next;
    char               *name;
    int                 length;
@@ -1934,8 +1924,7 @@ do_define(cpp_reader * pfile, struct directive *keyword,
 /* raw and expanded are relative to ARG_BASE */
 #define ARG_BASE ((pfile)->token_buffer)
 
-struct argdata
-{
+struct argdata {
    /* Strings relative to pfile->token_buffer */
    long                raw, expanded, stringified;
    int                 raw_length, expand_length;
@@ -5369,8 +5358,7 @@ add_import(cpp_reader * pfile, int fd, char *fname)
  * of lines with two tokens on each line.  The first token is the name
  * to map, and the second token is the actual name to use.  */
 
-struct file_name_map
-{
+struct file_name_map {
    struct file_name_map *map_next;
    char               *map_from;
    char               *map_to;
@@ -5411,8 +5399,7 @@ read_filename_string(int ch, FILE * f)
 }
 
 /* This structure holds a linked list of file name maps, one per directory. */
-struct file_name_map_list
-{
+struct file_name_map_list {
    struct file_name_map_list *map_list_next;
    char               *map_list_name;
    struct file_name_map *map_list_map;

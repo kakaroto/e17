@@ -31,8 +31,7 @@
 #define DEBUG_SYSTRAY 0
 
 /* Systray object info */
-typedef struct
-{
+typedef struct {
    Win                 win;
    char                mapped;
 } SWin;

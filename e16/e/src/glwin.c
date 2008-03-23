@@ -50,18 +50,15 @@
 #define D2printf(fmt...)
 #endif /* ENABLE_DEBUG */
 
-static struct
-{
+static struct {
    char                mode;
 } Conf_glwin;
 
-static struct
-{
+static struct {
    char                active;
 } Mode_glwin;
 
-typedef struct
-{
+typedef struct {
    EObj               *eo;
    char                grabbing;
    EWin               *ewin;

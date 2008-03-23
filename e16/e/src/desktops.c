@@ -53,15 +53,13 @@
 
 #define ENLIGHTENMENT_CONF_NUM_DESKTOPS 32
 
-typedef struct
-{
+typedef struct {
    Desk               *current;
    Desk               *previous;
    Desk               *desk[ENLIGHTENMENT_CONF_NUM_DESKTOPS];
    unsigned int        order[ENLIGHTENMENT_CONF_NUM_DESKTOPS];
    int                 drag_x0, drag_y0;
-}
-Desktops;
+} Desktops;
 
 static void         DeskRaise(unsigned int num);
 static void         DeskLower(unsigned int num);

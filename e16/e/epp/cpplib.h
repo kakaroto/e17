@@ -43,8 +43,7 @@ typedef struct cpp_reader cpp_reader;
 typedef struct cpp_buffer cpp_buffer;
 typedef struct cpp_options cpp_options;
 
-enum cpp_token
-{
+enum cpp_token {
    CPP_EOF = -1,
    CPP_OTHER = 0,
    CPP_COMMENT = 1,
@@ -72,8 +71,7 @@ typedef int         (*parse_cleanup_t) (cpp_buffer *, cpp_reader *);
 /* A parse_marker indicates a previous position,
    which we can backtrack to. */
 
-struct parse_marker
-{
+struct parse_marker {
    cpp_buffer         *buf;
    struct parse_marker *next;
    int                 position;
@@ -87,8 +85,7 @@ extern void         cpp_skip_hspace(cpp_reader * pfile);
 
 #define IMPORT_HASH_SIZE 31
 
-struct import_file
-{
+struct import_file {
    char               *name;
    ino_t               inode;
    dev_t               dev;
@@ -98,13 +95,11 @@ struct import_file
 /* If we have a huge buffer, may need to cache more recent counts */
 #define CPP_LINE_BASE(BUF) ((BUF)->buf + (BUF)->line_base)
 
-enum dump_type
-{
+enum dump_type {
    dump_none = 0, dump_only, dump_names, dump_definitions
 };
 
-struct cpp_buffer
-{
+struct cpp_buffer {
    unsigned char      *buf;
    unsigned char      *cur;
    unsigned char      *rlimit;	/* end of valid data */
@@ -160,8 +155,7 @@ typedef struct assertion_hashnode ASSERTION_HASHNODE;
 #define CPP_STACK_MAX 200
 #endif
 
-struct cpp_reader
-{
+struct cpp_reader {
    unsigned char      *limit;
    parse_underflow_t   get_token;
    cpp_buffer         *buffer;
@@ -294,8 +288,7 @@ struct cpp_reader
 #endif
 
 /* Pointed to by parse_file::data. */
-struct cpp_options
-{
+struct cpp_options {
    const char         *in_fname;
 
    /* Name of output file, for error messages.  */
@@ -496,8 +489,7 @@ extern char        *progname;
    by a separate piece of code. */
 
 /* different flavors of hash nodes --- also used in keyword table */
-enum node_type
-{
+enum node_type {
    T_DEFINE = 1,		/* the `#define' keyword */
    T_INCLUDE,			/* the `#include' keyword */
    T_INCLUDE_NEXT,		/* the `#include_next' keyword */
@@ -558,8 +550,7 @@ enum node_type
      { (0, 1), (1, 1), (1, 1), ..., (1, 1), NULL }
    where (x, y) means (nchars, argno). */
 
-struct reflist
-{
+struct reflist {
    struct reflist     *next;
    char                stringify;	/* nonzero if this arg was preceded by a
 					 * # operator. */
@@ -572,8 +563,7 @@ struct reflist
 };
 
 typedef struct definition DEFINITION;
-struct definition
-{
+struct definition {
    int                 nargs;
    int                 length;	/* length of expansion string */
    int                 predefined;	/* True if the macro was builtin or */
@@ -583,15 +573,13 @@ struct definition
    const char         *file;	/* File of definition */
    char                rest_args;	/* Nonzero if last arg. absorbs the rest */
    struct reflist     *pattern;
-   union
-   {
+   union {
       /* Names of macro args, concatenated in reverse order
        * with comma-space between them.
        * The only use of this is that we warn on redefinition
        * if this differs between the old and new definitions.  */
       unsigned char      *argnames;
-   }
-   args;
+   } args;
 };
 
 extern unsigned char is_idchar[256];
@@ -599,8 +587,7 @@ extern unsigned char is_idchar[256];
 /* Stack of conditionals currently in progress
    (including both successful and failing conditionals).  */
 
-struct if_stack
-{
+struct if_stack {
    struct if_stack    *next;	/* for chaining to the next stack frame */
    const char         *fname;	/* copied from input when frame is made */
    int                 lineno;	/* similarly */

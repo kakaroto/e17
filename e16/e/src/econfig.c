@@ -29,14 +29,12 @@
  * Braindead flat ASCII config file implementation
  */
 
-typedef struct
-{
+typedef struct {
    char               *key;
    char               *value;
 } ECfgFileItem;
 
-typedef struct
-{
+typedef struct {
    FILE               *fs;
    int                 nitms;
    ECfgFileItem       *pitms;

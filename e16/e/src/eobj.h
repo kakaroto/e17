@@ -28,8 +28,7 @@
 
 typedef struct _eobj EObj;
 
-struct _eobj
-{
+struct _eobj {
    Win                 win;	/* The top level window */
    short               type;	/* Ewin, button, other, ... */
    short               ilayer;	/* Internal stacking layer */
@@ -48,8 +47,7 @@ struct _eobj
    unsigned            fade:1;	/* Enable fading */
    unsigned            fading:1;	/* Is fading */
    unsigned            ghost:1;	/* Ghost window */
-   struct
-   {
+   struct {
       char               *wm_name;
       char               *wm_res_name;
       char               *wm_res_class;

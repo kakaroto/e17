@@ -1236,8 +1236,7 @@ IPC_Warp(const char *params)
 }
 
 #if ENABLE_IPC_INSERT_KEYS
-struct _keyset
-{
+struct _keyset {
    const char         *sym;
    int                 state;
    const char         *ch;

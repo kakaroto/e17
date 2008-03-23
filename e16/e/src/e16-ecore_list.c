@@ -43,14 +43,12 @@
 
 #if !USE_ECORE
 
-struct _ecore_list_node
-{
+struct _ecore_list_node {
    void               *data;
    struct _ecore_list_node *next;
 };
 
-struct _ecore_list
-{
+struct _ecore_list {
    Ecore_List_Node    *first;	/* The first node in the list */
    Ecore_List_Node    *last;	/* The last node in the list */
    Ecore_List_Node    *current;	/* The current node in the list */

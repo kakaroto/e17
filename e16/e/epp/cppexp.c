@@ -41,8 +41,7 @@
 #include <string.h>
 
 /* This is used for communicating lists of keywords with cccp.c.  */
-struct arglist
-{
+struct arglist {
    struct arglist     *next;
    unsigned char      *name;
    int                 length;
@@ -124,8 +123,7 @@ struct arglist
 #define SKIP_OPERAND 8
 /*#define UNSIGNEDP 16 */
 
-struct operation
-{
+struct operation {
    short               op;
    char                rprio;	/* Priority of op (relative to it right operand). */
    char                flags;
@@ -242,8 +240,7 @@ parse_number(struct operation *op, cpp_reader * pfile, const char *start,
    op->op = INT;
 }
 
-struct token
-{
+struct token {
    const char         *oper;
    int                 token;
 };

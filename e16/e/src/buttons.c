@@ -41,8 +41,7 @@
    ButtonPressMask | ButtonReleaseMask | EnterWindowMask | LeaveWindowMask | \
    PointerMotionMask)
 
-typedef struct
-{
+typedef struct {
    Constraints         width, height;
    int                 xorigin, yorigin;
    int                 xabs, xrel;
@@ -50,11 +49,9 @@ typedef struct
    int                 xsizerel, xsizeabs;
    int                 ysizerel, ysizeabs;
    char                size_from_image;
-}
-BGeometry;
+} BGeometry;
 
-struct _button
-{
+struct _button {
    EObj                o;
    BGeometry           geom;
    ImageClass         *iclass;
@@ -77,8 +74,7 @@ struct _button
 
 static Ecore_List  *button_list = NULL;
 
-static struct
-{
+static struct {
    Button             *button;
    char                loading_user;
    char                move_pending;
@@ -925,8 +921,7 @@ ButtonsSighan(int sig, void *prm __UNUSED__)
      }
 }
 
-typedef struct
-{
+typedef struct {
    int                 id;
    int                 match;
    const char         *regex;

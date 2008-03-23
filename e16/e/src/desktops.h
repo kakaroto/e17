@@ -34,8 +34,7 @@
 #define DESK_BG_TIMEOUT         3
 #define DESK_BG_RECONFIGURE_ALL 4
 
-struct _desk
-{
+struct _desk {
    EObj                o;
    unsigned int        num;
    char                viewable;
@@ -43,8 +42,7 @@ struct _desk
    Button             *tag;
    int                 current_area_x;
    int                 current_area_y;
-   struct
-   {
+   struct {
       Background         *bg;
       EObj               *o;
 #if USE_COMPOSITE
@@ -55,8 +53,7 @@ struct _desk
       unsigned long       pixel;
       unsigned int        seq_no;
    } bg;
-   struct
-   {
+   struct {
       int                 dirty;
       EObj               *latest;
       char                update_client_list;

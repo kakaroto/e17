@@ -210,14 +210,11 @@
  */
 #include "etypes.h"
 
-typedef struct
-{
+typedef struct {
    int                 min, max;
-}
-Constraints;
+} Constraints;
 
-typedef struct
-{
+typedef struct {
    Window              xwin;
    Win                 win;
    Visual             *vis;
@@ -225,11 +222,9 @@ typedef struct
    Colormap            cmap;
    int                 scr;
    int                 w, h;
-}
-RealRoot;
+} RealRoot;
 
-typedef struct
-{
+typedef struct {
    Window              xwin;
    Win                 win;
    Visual             *vis;
@@ -238,33 +233,26 @@ typedef struct
    int                 scr;
    int                 w, h;
    Pixmap              pmap;	/* Compositing buffer */
-}
-VirtRoot;
+} VirtRoot;
 
 /* Configuration parameters */
-typedef struct
-{
-   struct
-   {
+typedef struct {
+   struct {
       unsigned int        step;	/* Animation time step, ms */
    } animation;
-   struct
-   {
+   struct {
       char                enable;
       int                 delay;	/* milliseconds */
    } autoraise;
-   struct
-   {
+   struct {
       char                hiquality;
       char                user;
       int                 timeout;
    } backgrounds;
-   struct
-   {
+   struct {
       int                 move_resistance;
    } buttons;
-   struct
-   {
+   struct {
       unsigned int        num;
       int                 dragdir;
       int                 dragbar_width;
@@ -279,21 +267,18 @@ typedef struct
       int                 edge_flip_mode;
       int                 edge_flip_resistance;
    } desks;
-   struct
-   {
+   struct {
       char                headers;
       char                button_image;
    } dialogs;
-   struct
-   {
+   struct {
       char                enable;	/* wmdockapp only */
       char                sticky;	/* Make dockapps sticky by default */
       int                 dirmode;
       int                 startx;
       int                 starty;
    } dock;
-   struct
-   {
+   struct {
       int                 mode;
       char                clickraises;
       char                transientsfollowleader;
@@ -305,24 +290,20 @@ typedef struct
       char                warp_on_next;
       char                warp_always;
    } focus;
-   struct
-   {
+   struct {
       char                set_xroot_info_on_root_window;
    } hints;
-   struct
-   {
+   struct {
       char                animate;
       char                onscreen;
       char                warp;
       char                show_icons;
       int                 icon_size;
-      struct
-      {
+      struct {
 	 KeySym              left, right, up, down, escape, ret;
       } key;
    } menus;
-   struct
-   {
+   struct {
       int                 mode_move;
       int                 mode_resize;
       int                 mode_info;
@@ -332,16 +313,14 @@ typedef struct
       char                update_while_moving;
       char                enable_sync_request;
    } movres;
-   struct
-   {
+   struct {
       int                 movres;
       int                 menus;
       int                 tooltips;
       int                 focused;
       int                 unfocused;
    } opacity;
-   struct
-   {
+   struct {
       char                manual;
       char                manual_mouse_pointer;
       char                center_if_desk_full;
@@ -356,8 +335,7 @@ typedef struct
       char                extra_head;	/* Not used */
 #endif
    } place;
-   struct
-   {
+   struct {
       char                enable_script;
       char               *script;
       char                enable_logout_dialog;
@@ -365,24 +343,20 @@ typedef struct
       char               *cmd_reboot;
       char               *cmd_halt;
    } session;
-   struct
-   {
+   struct {
       char                animate;
       int                 speed;
    } shading;
-   struct
-   {
+   struct {
       char                enable;
       int                 edge_snap_dist;
       int                 screen_snap_dist;
    } snap;
-   struct
-   {
+   struct {
       char                firsttime;
       char                animate;
    } startup;
-   struct
-   {
+   struct {
       char                localise;
       char                use_alt_font_cfg;
       char               *name;
@@ -391,8 +365,7 @@ typedef struct
       char               *font_cfg;
    } theme;
 #ifdef ENABLE_THEME_TRANSPARENCY
-   struct
-   {
+   struct {
       int                 alpha;
       int                 border;
       int                 widget;
@@ -406,8 +379,7 @@ typedef struct
       int                 warplist;
    } trans;
 #endif
-   struct
-   {
+   struct {
       char                enable;
       char                showsticky;
       char                showshaded;
@@ -419,8 +391,7 @@ typedef struct
       int                 icon_mode;
    } warplist;
 
-   struct
-   {
+   struct {
       char                argb_internal_objects;
       char                argb_internal_clients;
       char                argb_clients;
@@ -436,23 +407,18 @@ typedef struct
    char                memory_paranoia;
    char                save_under;
    char                difftime;
-}
-EConf;
+} EConf;
 
-typedef struct
-{
-   struct
-   {
+typedef struct {
+   struct {
       unsigned int        startup_id;
    } apps;
-   struct
-   {
+   struct {
       char               *name;
       char               *dir;
       char               *cache_dir;
    } conf;
-   struct
-   {
+   struct {
       char               *name;
       int                 screens;
 #ifdef HAVE_XINERAMA
@@ -462,8 +428,7 @@ typedef struct
       XID                 server_time;
 #endif
    } display;
-   struct
-   {
+   struct {
       Time                time;
       int                 cx, cy;	/* Any detected pointer movement */
       int                 mx, my;	/* Motion event */
@@ -480,55 +445,45 @@ typedef struct
       unsigned int        damage_count;
 #endif
    } events;
-   struct
-   {
+   struct {
       int                 server_grabbed;
       char                pointer_grab_active;
       Window              pointer_grab_window;
    } grabs;
-   struct
-   {
+   struct {
       const char         *lang;
       char                utf8_int;	/* Use UTF-8 internally */
       char                utf8_loc;	/* Locale is UTF-8 */
    } locale;
-   struct
-   {
+   struct {
       unsigned int        mod_key_mask;
       unsigned int        mod_combos[8];
    } masks;
-   struct
-   {
+   struct {
       char                check;	/* Avoid losing windows offscreen */
       char                swap;
       int                 swapcoord_x, swapcoord_y;
    } move;
-   struct
-   {
+   struct {
       signed char         enable_features;
       char                doing_manual;
       char                doing_slide;
    } place;
-   struct
-   {
+   struct {
       int                 w_old;
       int                 h_old;
    } screen;
-   struct
-   {
+   struct {
       unsigned int        extensions;
    } server;
-   struct
-   {
+   struct {
       Pixmap              ext_pmap;
       char                ext_pmap_valid;
    } root;
-   struct
-   {
+   struct {
       char               *path;
    } theme;
-   struct
-   {
+   struct {
       char               *exec_name;	/* argv[0] */
       char                master;	/* We are the master E */
       char                single;	/* No slaves */
@@ -563,8 +518,7 @@ typedef struct
    char                showing_desktop;
    Window              button_proxy_win;
    char                firsttime;
-}
-EMode;
+} EMode;
 
 /*
  * Function prototypes

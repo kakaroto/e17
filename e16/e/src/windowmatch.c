@@ -33,8 +33,7 @@
 
 typedef struct _windowmatch WindowMatch;
 
-struct _windowmatch
-{
+struct _windowmatch {
    char               *name;
    /* Match criteria */
    char                match;
@@ -573,8 +572,7 @@ WindowMatchEobjTest(const WindowMatch * wm, const EObj * eo)
 }
 #endif
 
-typedef struct
-{
+typedef struct {
    int                 type;
    const EWin         *ewin;
 } wmatch_type_data;

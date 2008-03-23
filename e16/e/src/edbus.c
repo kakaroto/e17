@@ -37,8 +37,7 @@
 #define D2printf(fmt...)
 #endif
 
-typedef struct
-{
+typedef struct {
    char               *name;
    DBusConnection     *conn;
    DBusWatch          *watch;

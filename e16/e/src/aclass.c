@@ -32,15 +32,12 @@
 #include "grabs.h"
 #include <ctype.h>
 
-typedef struct _actiontype
-{
+typedef struct _actiontype {
    char               *params;
    struct _actiontype *next;
-}
-ActionType;
+} ActionType;
 
-struct _action
-{
+struct _action {
    char                event;
    char                anymodifier;
    int                 modifiers;
@@ -53,8 +50,7 @@ struct _action
    ActionType         *action;
 };
 
-struct _actionclass
-{
+struct _actionclass {
    char               *name;
    int                 num;
    Action            **list;

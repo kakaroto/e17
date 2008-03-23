@@ -65,8 +65,7 @@ static void         RunInitPrograms(void);
 static int          eoptind = 0;
 const char         *eoptarg = NULL;
 
-typedef struct
-{
+typedef struct {
    char                sopt;
    char                arg;
    const char         *lopt;

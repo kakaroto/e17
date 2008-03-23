@@ -27,8 +27,7 @@
 #include <sys/time.h>
 
 typedef struct _qentry Qentry;
-struct _qentry
-{
+struct _qentry {
    char               *name;
    double              at_time;
    void                (*func) (int val, void *data);
@@ -179,8 +178,7 @@ static Ecore_List  *idler_list = NULL;
 
 typedef void        (IdlerFunc) (void *data);
 
-struct _idler
-{
+struct _idler {
    int                 order;
    IdlerFunc          *func;
    void               *data;
@@ -239,8 +237,7 @@ static Ecore_List  *animator_list = NULL;
 
 typedef int         (AnimatorFunc) (void *data);
 
-struct _animator
-{
+struct _animator {
    char               *name;
    AnimatorFunc       *func;
    void               *data;

@@ -107,8 +107,7 @@ glx_funcs_init(void)
 
 static void         EobjTexturesFree(void);
 
-typedef struct
-{
+typedef struct {
    XVisualInfo        *vi;
    GLXContext          ctx;
    GLXFBConfig         fbc;

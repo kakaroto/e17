@@ -25,8 +25,7 @@
 
 #include <X11/extensions/XShm.h>
 
-typedef struct _PixImg
-{
+typedef struct _PixImg {
    XImage             *xim;
    XShmSegmentInfo    *shminfo;
    Pixmap              pmap;

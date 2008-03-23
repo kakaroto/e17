@@ -42,8 +42,7 @@
 #define D4printf(fmt...)
 #endif
 
-struct _sample
-{
+struct _sample {
    SoundSampleData     ssd;
    char               *name;
    unsigned int        written;

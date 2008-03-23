@@ -272,16 +272,14 @@ EwcWcsToStr(const wchar_t * wcs, int wcl, char *str, int len)
  * Setup
  */
 
-static struct
-{
+static struct {
    char               *internal;
    char               *exported;
 } Conf_locale =
 {
 NULL, NULL};
 
-static struct
-{
+static struct {
    char                init;
    char               *env_language;
    char               *env_lc_all;

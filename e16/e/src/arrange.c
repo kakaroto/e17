@@ -29,15 +29,13 @@
 
 #define DEBUG_ARRANGE 0
 
-typedef struct
-{
+typedef struct {
    void               *data;
    int                 x, y, w, h;
    int                 p;
 } RectBox;
 
-typedef struct
-{
+typedef struct {
    int                 x, y;
    int                 p, q;
 } RectInfo;

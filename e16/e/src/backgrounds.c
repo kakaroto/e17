@@ -36,8 +36,7 @@
 #include "timers.h"
 #include "xwin.h"
 
-typedef struct
-{
+typedef struct {
    char               *file;
    char               *real_file;
    EImage             *im;
@@ -46,8 +45,7 @@ typedef struct
    int                 xperc, yperc;
 } BgPart;
 
-struct _background
-{
+struct _background {
    char               *name;
    Pixmap              pmap;
    time_t              last_viewed;

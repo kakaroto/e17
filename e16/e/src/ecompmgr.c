@@ -91,8 +91,7 @@
 
 typedef struct _cmhook ECmWinInfo;
 
-struct _cmhook
-{
+struct _cmhook {
    EObj               *next;	/* Paint order */
    EObj               *prev;	/* Paint order */
    Pixmap              pixmap;
@@ -142,8 +141,7 @@ struct _cmhook
 #define ECM_OR_ON_MAPUNMAP   2
 #define ECM_OR_ON_CREATE     3
 
-static struct
-{
+static struct {
    char                enable;
    char                resize_fix_enable;
    char                use_name_pixmap;
@@ -151,27 +149,22 @@ static struct
    char                use_cow;
 #endif
    int                 mode;
-   struct
-   {
+   struct {
       int                 mode;
       int                 offset_x, offset_y;
-      struct
-      {
+      struct {
 	 int                 opacity;
 	 int                 radius;
       } blur;
-      struct
-      {
+      struct {
 	 int                 opacity;
       } sharp;
    } shadows;
-   struct
-   {
+   struct {
       char                enable;
       unsigned int        time;	/* Fading time, ms */
    } fading;
-   struct
-   {
+   struct {
       int                 mode;
       int                 opacity;
    } override_redirect;
@@ -185,8 +178,7 @@ static struct
 #define ECM_MODE_WINDOW 2
 #define ECM_MODE_AUTO   3
 
-static struct
-{
+static struct {
    int                 mode;
    Window              root;
 #if USE_COMPOSITE_OVERLAY_WINDOW
@@ -760,8 +752,7 @@ ECompMgrDamageAll(void)
 
 static Picture      transBlackPicture;
 
-typedef struct
-{
+typedef struct {
    int                 size;
    double             *data;
 } conv;

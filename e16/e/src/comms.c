@@ -29,8 +29,7 @@
 #include "e16-ecore_list.h"
 #include "xwin.h"
 
-typedef struct
-{
+typedef struct {
    char               *name;
    Window              xwin;
    char               *msg;

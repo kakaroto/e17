@@ -63,8 +63,7 @@
 #define EwinGetVX2(ew) (ew->vx + EoGetW(ew))
 #define EwinGetVY2(ew) (ew->vy + EoGetH(ew))
 
-static struct
-{
+static struct {
    char                enable;
    char                zoom;
    char                title;
@@ -76,16 +75,14 @@ static struct
    int                 menu_button;
 } Conf_pagers;
 
-static struct
-{
+static struct {
    int                 zoom;
    Idler              *idler;
    char                update_pending;
    char                timer_pending;
 } Mode_pagers;
 
-typedef struct
-{
+typedef struct {
    EWin               *ewin;
    Win                 win;
    int                 w, h;
@@ -749,8 +746,7 @@ PagerShow(Pager * p)
    EwinShow(ewin);
 }
 
-typedef struct
-{
+typedef struct {
    Desk               *dsk;
    void                (*func) (Pager * p, void *prm);
    void               *prm;
@@ -778,8 +774,7 @@ PagersForeach(Desk * dsk, void (*func) (Pager * p, void *prm), void *prm)
    ecore_list_for_each(pager_list, _PagersForeachFunc, &data);
 }
 
-typedef struct
-{
+typedef struct {
    int                 why;
    int                 x1, y1, x2, y2;
 } pager_update_data;

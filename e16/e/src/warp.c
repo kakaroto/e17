@@ -45,15 +45,13 @@
 #include "xwin.h"
 #include <X11/keysym.h>
 
-typedef struct
-{
+typedef struct {
    EWin               *ewin;
    Win                 win;
    char               *txt;
 } WarplistItem;
 
-typedef struct
-{
+typedef struct {
    EObj                o;
    TextClass          *tc;
    ImageClass         *ic;

@@ -1794,11 +1794,9 @@ EwinWarpTo(EWin * ewin)
    Mode.mouse_over_ewin = ewin;
 }
 
-typedef union
-{
+typedef union {
    unsigned int        all;
-   struct
-   {
+   struct {
       unsigned char       rsvd;
       unsigned char       inh_app;
       unsigned char       inh_user;
@@ -1806,11 +1804,9 @@ typedef union
    } f;
 } EWinMiscFlags;
 
-typedef union
-{
+typedef union {
    unsigned int        all;
-   struct
-   {
+   struct {
       unsigned            nua:1;
       unsigned            ctf:1;
       unsigned            nbg:1;
@@ -1912,8 +1908,7 @@ EwinSlideIn(int val __UNUSED__, void *data)
 /*
  * Change requests
  */
-static struct
-{
+static struct {
    unsigned int        flags;
    EWin                ewin_old;
 } EWinChanges;

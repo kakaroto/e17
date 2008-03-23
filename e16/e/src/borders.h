@@ -27,27 +27,20 @@
 #include "eimage.h"
 #include "etypes.h"
 
-typedef struct
-{
+typedef struct {
    int                 originbox;
-   struct
-   {
+   struct {
       int                 percent;
       int                 absolute;
-   }
-   x                  , y;
-}
-WinPoint;
+   } x                , y;
+} WinPoint;
 
-typedef struct
-{
+typedef struct {
    Constraints         width, height;
    WinPoint            topleft, bottomright;
-}
-Geometry;
+} Geometry;
 
-typedef struct
-{
+typedef struct {
    Geometry            geom;
    ImageClass         *iclass;
    ActionClass        *aclass;
@@ -56,11 +49,9 @@ typedef struct
    signed char         ontop;
    int                 flags;
    char                keep_for_shade;
-}
-WinPart;
+} WinPart;
 
-struct _border
-{
+struct _border {
    char               *name;
    char               *group_border_name;
    EImageBorder        border;
@@ -73,8 +64,7 @@ struct _border
    ActionClass        *aclass;
 };
 
-struct _ewinbit
-{
+struct _ewinbit {
    EWin               *ewin;	/* Belongs to */
    Win                 win;
    int                 x, y, w, h;

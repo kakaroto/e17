@@ -118,8 +118,7 @@ word_mb(char *s, int num, char *wd, int *spaceflag)
    char               *start, *finish, *ss, *w;
 
    int                 wcflg, mbflg;
-   struct char_class
-   {
+   struct char_class {
       const char         *name;
       wctype_t            wt;
    }                  *cc, char_class_tbl[] =

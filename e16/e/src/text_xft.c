@@ -33,8 +33,7 @@
  */
 __EXPORT__ extern const FontOps FontOps_xft;
 
-typedef struct
-{
+typedef struct {
    XftFont            *font;
    Win                 win;
    Drawable            draw;

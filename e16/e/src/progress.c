@@ -27,8 +27,7 @@
 #include "tclass.h"
 #include "xwin.h"
 
-struct _progressbar
-{
+struct _progressbar {
    EObj               *win;
    EObj               *n_win;
    EObj               *p_win;

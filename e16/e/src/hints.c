@@ -353,10 +353,8 @@ HintsSetRootInfo(Win win, Pixmap pmap, unsigned int color)
 				  1);
 }
 
-typedef union
-{
-   struct
-   {
+typedef union {
+   struct {
       unsigned            version:8;
       unsigned            rsvd:22;
       unsigned            docked:1;
@@ -567,8 +565,7 @@ EHintsSetInfoOnAll(void)
  * Selections.
  */
 
-struct _selection
-{
+struct _selection {
    Atom                atom;
    Time                time;
    Win                 win;

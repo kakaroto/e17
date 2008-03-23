@@ -44,8 +44,7 @@ static const char   gray_bits[] = { 0x01, 0x02 };
 static const char   gray3_bits[] = { 0x01, 0x00, 0x04, 0x00 };
 #endif
 
-typedef struct
-{
+typedef struct {
    EObj                o;
    Pixmap              mask;
    GC                  gc;

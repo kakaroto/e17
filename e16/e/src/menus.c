@@ -48,8 +48,7 @@
 
 #define MENU_UNLOAD_CHECK_IMTERVAL 300	/* Seconds */
 
-static struct
-{
+static struct {
    Menu               *first;
    Menu               *active;
    EWin               *context_ewin;
@@ -57,8 +56,7 @@ static struct
    char                just_shown;
 } Mode_menus;
 
-struct _menustyle
-{
+struct _menustyle {
    char               *name;
    TextClass          *tclass;
    ImageClass         *bg_iclass;
@@ -72,8 +70,7 @@ struct _menustyle
    unsigned int        ref_count;
 };
 
-struct _menuitem
-{
+struct _menuitem {
    Menu               *menu;
    ImageClass         *icon_iclass;
    char               *text;
@@ -91,8 +88,7 @@ struct _menuitem
    short               text_y;
 };
 
-struct _menu
-{
+struct _menu {
    EWin               *ewin;
    Win                 win;
    PmapMask            pmm;
@@ -1494,8 +1490,7 @@ MenusHandleMotion(void)
 }
 #endif
 
-struct _mdata
-{
+struct _mdata {
    Menu               *m;
    MenuItem           *mi;
 };

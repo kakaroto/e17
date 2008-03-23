@@ -33,8 +33,7 @@
 
 #define DEBUG_HIWIN 0
 
-struct _hiwin
-{
+struct _hiwin {
    EObj                o;
    EWin               *ewin;
    int                 zoom;
@@ -46,8 +45,7 @@ struct _hiwin
    EImage             *im;
 };
 
-typedef struct
-{
+typedef struct {
    void                (*init) (Hiwin * phi);
    void                (*draw) (Hiwin * phi);
    void                (*fini) (Hiwin * phi, int shown);

@@ -57,8 +57,7 @@ typedef struct _ditem DItem;
 typedef void        (DialogCallbackFunc) (Dialog * d, int val, void *data);
 typedef void        (DialogItemCallbackFunc) (DItem * di, int val, void *data);
 
-typedef struct
-{
+typedef struct {
    const char         *name;
    const char         *label;
    const char         *title;

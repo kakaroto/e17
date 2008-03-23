@@ -29,8 +29,7 @@
 #include "settings.h"
 #include "sound.h"
 
-typedef struct
-{
+typedef struct {
    char               *name;
    char               *file;
    Sample             *sample;
@@ -38,8 +37,7 @@ typedef struct
 
 #define SC_NAME(sc) ((sc) ? (sc)->name : "(none)")
 
-static struct
-{
+static struct {
    char                enable;
    char               *theme;
 } Conf_sound;

@@ -29,8 +29,7 @@
 typedef void        EImage;
 typedef void        EImageColorModifier;
 
-typedef struct
-{
+typedef struct {
    int                 left, right, top, bottom;
 } EImageBorder;
 

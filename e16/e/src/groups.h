@@ -40,8 +40,7 @@
 #define GROUP_ACTION_SET_WINDOW_BORDER       8
 #define GROUP_ACTION_RAISE_LOWER             9
 
-typedef struct _groupconfig
-{
+typedef struct _groupconfig {
    char                iconify;
    char                kill;
    char                mirror;
@@ -50,11 +49,9 @@ typedef struct _groupconfig
    char                set_border;
    char                shade;
    char                stick;
-}
-GroupConfig;
+} GroupConfig;
 
-struct _group
-{
+struct _group {
    int                 index;
    EWin              **members;
    int                 num_members;

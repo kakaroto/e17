@@ -102,8 +102,7 @@ EFont_draw_string(EImage * im, EFont * f, int x, int y,
    imlib_text_draw(x, y - imlib_get_font_ascent(), text);
 }
 
-typedef struct
-{
+typedef struct {
    EFont              *font;
    EImage             *im;
    int                 r, g, b;

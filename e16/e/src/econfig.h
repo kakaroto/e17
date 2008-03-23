@@ -23,8 +23,7 @@
 #ifndef _ECONFIG_H_
 #define _ECONFIG_H_
 
-typedef struct
-{
+typedef struct {
    const char         *name;
    void               *ptr;
    char                type;
@@ -32,14 +31,12 @@ typedef struct
    void                (*func) (void *item, const char *value);
 } CfgItem;
 
-typedef struct
-{
+typedef struct {
    int                 num;
    const CfgItem      *lst;
 } CfgItemList;
 
-typedef enum
-{
+typedef enum {
    ITEM_TYPE_BOOL,
    ITEM_TYPE_INT,
    ITEM_TYPE_HEX,

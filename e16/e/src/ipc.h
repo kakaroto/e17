@@ -27,8 +27,7 @@
 #include "etypes.h"
 #include "util.h"
 
-typedef struct
-{
+typedef struct {
    void                (*func) (const char *line);
    const char         *name;
    const char         *nick;
@@ -36,8 +35,7 @@ typedef struct
    const char         *extended_help_text;
 } IpcItem;
 
-typedef struct
-{
+typedef struct {
    int                 num;
    const IpcItem      *lst;
 } IpcItemList;

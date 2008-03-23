@@ -43,8 +43,7 @@
 #define USE_ANIMATOR 1
 
 /* Magnifier window */
-typedef struct
-{
+typedef struct {
    EWin               *ewin;
    const char         *title;
    int                 cx, cy;	/* Center */

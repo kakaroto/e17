@@ -27,8 +27,7 @@
 #define DEFAULT_LINKCOLOR_G 50
 #define DEFAULT_LINKCOLOR_B 160
 
-typedef enum _type
-{
+typedef enum _type {
    IMG,
    BR,
    FONT,
@@ -37,8 +36,7 @@ typedef enum _type
    PAGE
 } Type;
 
-typedef struct _img
-{
+typedef struct _img {
    char               *src;
    char               *src2;
    char               *src3;
@@ -47,25 +45,21 @@ typedef struct _img
    int                 w, h;
 } Img_;
 
-typedef struct _font
-{
+typedef struct _font {
    char               *face;
    int                 r, g, b;
 } Font_;
 
-typedef struct _p
-{
+typedef struct _p {
    float               align;
 } P_;
 
-typedef struct _object
-{
+typedef struct _object {
    Type                type;
    void               *object;
 } Object;
 
-typedef struct _page
-{
+typedef struct _page {
    char               *name;
    int                 count;
    Object             *obj;

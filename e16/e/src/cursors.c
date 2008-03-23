@@ -29,8 +29,7 @@
 #include "emodule.h"
 #include "xwin.h"
 
-struct _ecursor
-{
+struct _ecursor {
    char               *name;
    char               *file;
    Cursor              cursor;

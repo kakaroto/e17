@@ -37,8 +37,7 @@
 #define USE_LIBC_STRDUP  1	/* Use libc strdup if present */
 #endif
 
-typedef struct
-{
+typedef struct {
    Window              win;
    char               *msg;
 } Client;

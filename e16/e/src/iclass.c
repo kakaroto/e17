@@ -35,26 +35,21 @@
 #define ENABLE_DESTROY 0	/* Broken */
 
 #if ENABLE_COLOR_MODIFIERS
-typedef struct
-{
+typedef struct {
    int                 num;
    unsigned char      *px;
    unsigned char      *py;
    unsigned char       map[256];
-}
-ModCurve;
+} ModCurve;
 
-typedef struct
-{
+typedef struct {
    char               *name;
    ModCurve            red, green, blue;
    unsigned int        ref_count;
-}
-ColorModifierClass;
+} ColorModifierClass;
 #endif
 
-struct _imagestate
-{
+struct _imagestate {
    char               *im_file;
    char               *real_file;
    char                got_colors;
@@ -70,17 +65,14 @@ struct _imagestate
 #endif
 };
 
-typedef struct
-{
+typedef struct {
    ImageState         *normal;
    ImageState         *hilited;
    ImageState         *clicked;
    ImageState         *disabled;
-}
-ImageStateArray;
+} ImageStateArray;
 
-struct _imageclass
-{
+struct _imageclass {
    char               *name;
    ImageStateArray     norm, active, sticky, sticky_active;
    EImageBorder        padding;

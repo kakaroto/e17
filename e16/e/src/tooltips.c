@@ -37,23 +37,20 @@
 
 static Ecore_List  *tt_list = NULL;
 
-static struct
-{
+static struct {
    char                enable;
    char                showroottooltip;
    int                 delay;	/* milliseconds */
 } Conf_tooltips;
 
-static struct
-{
+static struct {
    int                 inhibit;
    char                root_motion_mask_set;
    CB_GetAclass       *ac_func;
    void               *ac_data;
 } Mode_tooltips;
 
-struct _tooltip
-{
+struct _tooltip {
    const char         *name;
    ImageClass         *iclass[5];
    TextClass          *tclass;

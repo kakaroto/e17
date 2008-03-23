@@ -22,8 +22,7 @@
  */
 #include "dox.h"
 
-struct _efont
-{
+struct _efont {
    Imlib_Font          face;
 };
 

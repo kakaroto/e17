@@ -35,8 +35,7 @@
 #include "timers.h"
 #include "xwin.h"
 
-struct _snapshot
-{
+struct _snapshot {
    char               *name;
    char               *win_title;
    char               *win_name;
@@ -550,12 +549,10 @@ SnapshotEwinRemove(EWin * ewin)
 /*
  * Snapshot dialogs
  */
-typedef struct
-{
+typedef struct {
    Window              client;
 
-   struct
-   {
+   struct {
       char                title;
       char                name;
       char                clss;
@@ -946,8 +943,7 @@ SnapshotEwinDialog(const EWin * ewin)
  * _another_ global var, or a wrapper struct to pass data to the 
  * callback funcs besides the dialog itself -- this is much easier */
 
-typedef struct _remwinlist
-{
+typedef struct _remwinlist {
    Snapshot           *snap;
    char                remove;
 } RememberWinList;

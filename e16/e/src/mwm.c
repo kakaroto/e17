@@ -59,15 +59,13 @@
 static Atom         _MOTIF_WM_HINTS = 0;
 
 /* Motif window hints */
-typedef struct
-{
+typedef struct {
    long                flags;
    long                functions;
    long                decorations;
    long                inputMode;
    long                status;
-}
-MWMHints;
+} MWMHints;
 
 void
 MWM_GetHints(EWin * ewin, Atom atom_change)
@@ -180,12 +178,10 @@ void
 MWM_SetInfo(void)
 {
    Atom                a1;
-   struct
-   {
+   struct {
       long                flags;
       Window              win;
-   }
-   mwminfo;
+   } mwminfo;
 
    a1 = XInternAtom(disp, "_MOTIF_WM_INFO", False);
    mwminfo.flags = 2;

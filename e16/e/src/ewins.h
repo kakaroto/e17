@@ -34,11 +34,9 @@
 #define OPSRC_USER      2
 #define OPSRC_WM        3
 
-typedef union
-{
+typedef union {
    unsigned char       all:8;
-   struct
-   {
+   struct {
       unsigned char       rsvd:2;
       unsigned char       border:1;	/* W   */
       unsigned char       close:1;	/*  AU */
@@ -56,8 +54,7 @@ typedef union
 #define EwinInhGetWM(ewin, item)       (ewin->inh_wm.b.item)
 #define EwinInhSetWM(ewin, item, on)   ewin->inh_wm.b.item = (on)
 
-typedef struct
-{
+typedef struct {
    void                (*Init) (EWin * ewin);
    void                (*Layout) (EWin * ewin, int *px, int *py, int *pw,
 				  int *ph);
@@ -65,8 +62,7 @@ typedef struct
    void                (*Close) (EWin * ewin);
 } EWinOps;
 
-struct _ewin
-{
+struct _ewin {
    EObj                o;
    char                type;
    Win                 win_container;
@@ -76,8 +72,7 @@ struct _ewin
    const Border       *previous_border;
    EWinBit            *bits;
 
-   struct
-   {
+   struct {
       Win                 win;
       int                 x, y, w, h, bw;
       int                 grav;
@@ -85,8 +80,7 @@ struct _ewin
       long                event_mask;
    } client;
 
-   struct
-   {
+   struct {
       char                state;
       char                visibility;
       char                shaped;
@@ -132,8 +126,7 @@ struct _ewin
       unsigned            inhibit_actions:1;
       unsigned            inhibit_focus:1;
    } state;
-   struct
-   {
+   struct {
       /* User config */
       unsigned int        focused_opacity;
       unsigned            never_use_area:1;
@@ -160,8 +153,7 @@ struct _ewin
    EWinInhibit         inh_app;
    EWinInhibit         inh_user;
    EWinInhibit         inh_wm;
-   struct
-   {
+   struct {
       char               *wm_icon_name;
       char               *wm_role;
       char               *wm_command;
@@ -192,8 +184,7 @@ struct _ewin
 
       char                is_group_leader;
    } icccm;
-   struct
-   {
+   struct {
       unsigned            valid:1;
       unsigned            decor_border:1;
       unsigned            decor_resizeh:1;
@@ -207,8 +198,7 @@ struct _ewin
       unsigned            func_maximize:1;
       unsigned            func_close:1;
    } mwm;
-   struct
-   {
+   struct {
       char               *wm_name;
       char               *wm_icon_name;
       unsigned int       *wm_icon, wm_icon_len;
@@ -218,11 +208,9 @@ struct _ewin
       XID                 sync_request_counter;
       long long           sync_request_count;
 #endif
-      union
-      {
+      union {
 	 unsigned char       all;
-	 struct
-	 {
+	 struct {
 	    unsigned            desktop:1;
 	    unsigned            dock:1;
 	    unsigned            toolbar:1;
@@ -234,18 +222,15 @@ struct _ewin
 	 } b;
       } type;
    } ewmh;
-   struct
-   {
+   struct {
       signed char         gravity;
       int                 ax, ay;	/* Current placed area */
       int                 gx, gy;	/* Distance to edge given by gravity */
    } place;
-   struct
-   {
+   struct {
       int                 left, right, top, bottom;
    } strut;
-   struct
-   {
+   struct {
       char                shape;
       char                border;
    } update;
@@ -264,13 +249,11 @@ struct _ewin
    int                 head;	/* Unused? */
 
    int                 vx, vy;	/* Position in virtual root */
-   struct
-   {				/* Saved state before maximization */
+   struct {			/* Saved state before maximization */
       int                 x, y;	/* Position */
       int                 w, h;	/* Size */
    } save_max;
-   struct
-   {				/* Saved state before fullscreen */
+   struct {			/* Saved state before fullscreen */
       int                 x, y;	/* Position */
       int                 w, h;	/* Size */
       int                 layer;	/* Layer */
