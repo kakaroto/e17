@@ -3,46 +3,19 @@ dnl Process this file with autoconf to produce a configure script.
 # get rid of that stupid cache mechanism
 rm -f config.cache
 
-AC_INIT(configure.in)
-AM_INIT_AUTOMAKE(expedite, 0.6.0)
+AC_INIT(expedite, 0.6.0, enlightenment-devel@lists.sourceforge.net)
+AC_PREREQ(2.52)
+AC_CONFIG_SRCDIR(configure.in)
+
+AM_INIT_AUTOMAKE(1.6 dist-bzip2)
 AM_CONFIG_HEADER(config.h)
 
 AC_ISC_POSIX
+AC_PROG_CXX
 AC_PROG_CC
 AM_PROG_CC_STDC
 AC_HEADER_STDC
 AC_C_CONST
-AM_ENABLE_SHARED
-AM_PROG_LIBTOOL
-
-if test "x${bindir}" = 'xNONE'; then
-  if test "x${prefix}" = "xNONE"; then
-    PACKAGE_BIN_DIR="${ac_default_prefix}/bin"
-  else
-    PACKAGE_BIN_DIR="${prefix}/bin"
-  fi
-else
-  PACKAGE_BIN_DIR="${bindir}"
-fi
-AC_SUBST(PACKAGE_BIN_DIR)
-
-if test "x${libdir}" = 'xNONE'; then
-  if test "x${prefix}" = "xNONE"; then
-    PACKAGE_LIB_DIR="${ac_default_prefix}/lib"
-  else
-    PACKAGE_LIB_DIR="${prefix}/lib"
-  fi
-else
-  PACKAGE_LIB_DIR="${libdir}"
-fi
-AC_SUBST(PACKAGE_LIB_DIR)
-
-if test "x${prefix}" = "xNONE"; then
-  PACKAGE_DATA_DIR="${ac_default_prefix}/share/${PACKAGE}"
-else
-  PACKAGE_DATA_DIR="${prefix}/share/${PACKAGE}"
-fi
-AC_SUBST(PACKAGE_DATA_DIR)
 
 PKG_CHECK_MODULES([EVAS], evas)
 
@@ -55,227 +28,40 @@ AC_ARG_ENABLE(simple-x11,
 )
 
 ### OpenGL GLEW
-want_opengl_glew="yes"
-AC_MSG_CHECKING(whether OpenGL GLEW)
-AC_ARG_ENABLE(opengl-glew,
-  AC_HELP_STRING([--enable-opengl-glew], [enable OpenGL GLEW engine]),
-  [ want_opengl_glew=$enableval ]
-)
-AC_MSG_RESULT($want_opengl_glew)
-if test "x$want_opengl_glew" = "xyes"; then
-  PKG_CHECK_EXISTS(evas-opengl-glew,
-    [
-      AC_DEFINE(HAVE_EVAS_OPENGL_GLEW, 1, [Evas GL Glew Engine Support])
-      have_opengl_glew="yes"
-      glew_libs="-lglew32 -lgdi32"
-    ],
-    [ have_opengl_glew="no" ]
-  )
-fi
-AM_CONDITIONAL(BUILD_OPENGL_GLEW, test "x$have_opengl_glew" = "xyes")
+EXPEDITE_CHECK_ENGINE([opengl-glew], [OpenGL Glew], "yes", [glew_libs="-lglew32 -lgdi32"])
 
 ### OpenGL X11
-want_opengl_x11="yes"
-AC_MSG_CHECKING(whether OpenGL X11)
-AC_ARG_ENABLE(opengl-x11,
-  AC_HELP_STRING([--enable-opengl-x11], [enable OpenGL X11 engine]),
-  [ want_opengl_x11=$enableval ]
-)
-AC_MSG_RESULT($want_opengl_x11)
-if test "x$want_opengl_x11" = "xyes"; then
-  PKG_CHECK_EXISTS(evas-opengl-x11,
-    [
-      AC_DEFINE(HAVE_EVAS_OPENGL_X11, 1, [Evas GL X11 Engine Support])
-      have_opengl_x11="yes"
-    ],
-    [ have_opengl_x11="no" ]
-  )
-fi
-AM_CONDITIONAL(BUILD_OPENGL_X11, test "x$have_opengl_x11" = "xyes")
+EXPEDITE_CHECK_ENGINE([opengl-x11], [OpenGL X11], "yes")
 
 ### Software X11
-want_software_x11="yes"
-AC_MSG_CHECKING(whether Software X11)
-AC_ARG_ENABLE(software-x11,
-  AC_HELP_STRING([--enable-software-x11], [enable Software X11 engine]),
-  [ want_software_x11=$enableval ]
-)
-AC_MSG_RESULT($want_software_x11)
-if test "x$want_software_x11" = "xyes"; then
-  PKG_CHECK_EXISTS(evas-software-x11,
-    [
-      AC_DEFINE(HAVE_EVAS_SOFTWARE_X11, 1, [Evas Software X11 Engine Support])
-      have_software_x11="yes"
-    ],
-    [ have_software_x11="no" ]
-  )
-fi
-AM_CONDITIONAL(BUILD_SOFTWARE_X11, test "x$have_software_x11" = "xyes")
+EXPEDITE_CHECK_ENGINE([software-x11], [Software X11], "yes")
 
 ### XRender X11
-want_xrender_x11="yes"
-AC_MSG_CHECKING(whether XRender X11)
-AC_ARG_ENABLE(xrender-x11,
-  AC_HELP_STRING([--enable-xrender-x11], [enable XRender X11 engine]),
-  [ want_xrender_x11=$enableval ]
-)
-AC_MSG_RESULT($want_xrender_x11)
-if test "x$want_xrender_x11" = "xyes"; then
-  PKG_CHECK_EXISTS(evas-xrender-x11,
-    [
-      AC_DEFINE(HAVE_EVAS_XRENDER_X11, 1, [Evas XRender X11 Engine Support])
-      have_xrender_x11="yes"
-    ],
-    [ have_xrender_x11="no" ]
-  )
-fi
-AM_CONDITIONAL(BUILD_XRENDER_X11, test "x$have_xrender_x11" = "xyes")
+EXPEDITE_CHECK_ENGINE([xrender-x11], [XRender X11], "yes")
 
 ### Software 16bit X11
-want_software_16_x11="yes"
-AC_MSG_CHECKING(whether Software 16bit X11)
-AC_ARG_ENABLE(software-16-x11,
-  AC_HELP_STRING([--enable-software-16-x11], [enable Software 16bit X11 engine]),
-  [ want_software_16_x11=$enableval ]
-)
-AC_MSG_RESULT($want_software_16_x11)
-if test "x$want_software_16_x11" = "xyes"; then
-  PKG_CHECK_EXISTS(evas-software-16-x11,
-    [
-      AC_DEFINE(HAVE_EVAS_SOFTWARE_16_X11, 1, [Evas Software 16bit X11 Engine Support])
-      have_software_16_x11="yes"
-    ],
-    [ have_software_16_x11="no" ]
-  )
-fi
-AM_CONDITIONAL(BUILD_SOFTWARE_16_X11, test "x$have_software_16_x11" = "xyes")
+EXPEDITE_CHECK_ENGINE([software-16-x11], [Software 16 bits X11], "yes")
 
 ### FB
-want_fb="yes"
-AC_MSG_CHECKING(whether Framebuffer)
-AC_ARG_ENABLE(fb,
-  AC_HELP_STRING([--enable-fb], [enable Framebuffer engine]),
-  [ want_fb=$enableval ]
-)
-AC_MSG_RESULT($want_fb)
-if test "x$want_fb" = "xyes"; then
-  PKG_CHECK_EXISTS(evas-framebuffer,
-    [
-      AC_DEFINE(HAVE_EVAS_FB, 1, [Evas FB Engine Support])
-      have_fb="yes"
-    ],
-    [ have_fb="no" ]
-  )
-fi
-AM_CONDITIONAL(BUILD_FB, test "x$have_fb" = "xyes")
+EXPEDITE_CHECK_ENGINE([fb], [Framebuffer], "yes")
 
 ### DIRECTFB
-want_directfb="yes"
-AC_MSG_CHECKING(whether DirectFB)
-AC_ARG_ENABLE(directfb,
-  AC_HELP_STRING([--enable-directfb], [enable DirectFB engine]),
-  [ want_directfb=$enableval ]
-)
-AC_MSG_RESULT($want_directfb)
-if test "x$want_directfb" = "xyes"; then
-  PKG_CHECK_EXISTS(evas-directfb,
-    [
-      AC_DEFINE(HAVE_EVAS_DIRECTFB, 1, [Evas DirectFB Engine Support])
-      have_evas_directfb="yes"
-    ],
-    [ have_evas_directfb="no" ]
-  )
-fi
-if test "x$have_evas_directfb" = "xyes"; then
-  PKG_CHECK_MODULES([DIRECTFB], directfb,
-    [ have_directfb="yes" ],
-    [ have_directfb="no" ])
-else
-    have_directfb="no"
-fi
-AM_CONDITIONAL(BUILD_DIRECTFB, test "x$have_directfb" = "xyes")
+EXPEDITE_CHECK_ENGINE([directfb], [DirectFB], "yes")
 
 # TODO: Check availability of libs
 ### DirectDraw
-want_software_ddraw="yes"
-AC_MSG_CHECKING(whether Software DirectDraw)
-AC_ARG_ENABLE(software-ddraw,
-  AC_HELP_STRING([--enable-software-ddraw], [enable Software DirectDraw engine]),
-  [ want_software_ddraw=$enableval ]
-)
-AC_MSG_RESULT($want_software_ddraw)
-if test "x$want_software_ddraw" = "xyes"; then
-  PKG_CHECK_EXISTS(evas-software-ddraw,
-    [
-      AC_DEFINE(HAVE_EVAS_SOFTWARE_DDRAW, 1, [Evas Software DirectDraw Engine Support])
-      have_software_ddraw="yes"
-      ddraw_libs="-lddraw -ldxguid"
-    ],
-    [ have_software_ddraw="no" ]
-  )
-fi
-AM_CONDITIONAL(BUILD_SOFTWARE_DDRAW, test "x$have_software_ddraw" = "xyes")
+EXPEDITE_CHECK_ENGINE([software-ddraw], [Software DirectDraw], "yes", [ddraw_libs="-lddraw -ldxguid"])
 
 # TODO: Check availability of libs
 ### 16bit DirectDraw
-want_software_16_ddraw="yes"
-AC_MSG_CHECKING(whether Software 16bit DirectDraw)
-AC_ARG_ENABLE(software-16-ddraw,
-  AC_HELP_STRING([--enable-software-16-ddraw], [enable Software 16bit DirectDraw engine]),
-  [ want_software_16_ddraw=$enableval ]
-)
-AC_MSG_RESULT($want_software_16_ddraw)
-if test "x$want_software_ddraw" = "xyes"; then
-  PKG_CHECK_EXISTS(evas-software-16-ddraw,
-    [
-      AC_DEFINE(HAVE_EVAS_SOFTWARE_16_DDRAW, 1, [Evas Software 16bit DirectDraw Engine Support])
-      have_software_16_ddraw="yes"
-      ddraw_libs="-lddraw -ldxguid"
-    ],
-    [ have_software_16_ddraw="no" ]
-  )
-fi
-AM_CONDITIONAL(BUILD_SOFTWARE_16_DDRAW, test "x$have_software_16_ddraw" = "xyes")
+EXPEDITE_CHECK_ENGINE([software-16-ddraw], [Software 16 bits DirectDraw], "yes", [ddraw_libs="-lddraw -ldxguid"])
 
 # TODO: Check availability of libs
 ### Direct3D
-want_direct3d="yes"
-AC_MSG_CHECKING(whether Direct3D)
-AC_ARG_ENABLE(direct3d,
-  AC_HELP_STRING([--enable-direct3d], [enable Direct3D engine]),
-  [ want_direct3d=$enableval ]
-)
-AC_MSG_RESULT($want_direct3d)
-if test "x$want_direct3d" = "xyes"; then
-  PKG_CHECK_EXISTS(evas-direct3d,
-    [
-      AC_DEFINE(HAVE_EVAS_DIRECT3D, 1, [Evas Direct3D Engine Support])
-      have_direct3d="yes"
-      d3d_libs="-ld3d9 -ld3dx9d"
-    ],
-    [ have_direct3d="no" ]
-  )
-fi
-AM_CONDITIONAL(BUILD_DIRECT3D, test "x$have_direct3d" = "xyes")
+EXPEDITE_CHECK_ENGINE([direct3d], [Direct3D], "yes", [d3d_libs="-ld3d9 -ld3dx9d"])
 
 ### Software SDL
-want_software_sdl="yes"
-AC_MSG_CHECKING(whether Software SDL)
-AC_ARG_ENABLE(software-sdl,
-  AC_HELP_STRING([--enable-software-sdl], [enable Software SDL engine]),
-  [ want_software_sdl=$enableval ]
-)
-AC_MSG_RESULT($want_software_sdl)
-if test "x$want_software_sdl" = "xyes"; then
-  PKG_CHECK_EXISTS(evas-software-sdl,
-    [
-      AC_DEFINE(HAVE_EVAS_SOFTWARE_SDL, 1, [Evas Software SDL Engine Support])
-      have_software_sdl="yes"
-    ],
-    [ have_software_sdl="no" ]
-  )
-fi
-AM_CONDITIONAL(BUILD_SOFTWARE_SDL, test "x$have_software_sdl" = "xyes")
+EXPEDITE_CHECK_ENGINE([software-sdl], [Software SDL], "yes")
 
 if test "x$have_software_x11" = "xyes" -o "x$have_software_16_x11" = "xyes" -o "x$have_xrender_x11" = "xyes" -o "x$have_opengl_x11" = "xyes"; then
   AC_PATH_XTRA
@@ -298,6 +84,13 @@ if test "x$have_software_sdl" = "xyes"; then
     [ have_sdl="no" ])
 fi
 AM_CONDITIONAL(BUILD_SDL, test "x$have_sdl" = "xyes")
+
+if test "x$have_directfb" = "xyes"; then
+  PKG_CHECK_MODULES([DIRECTFB], directfb,
+    [ have_directfb="yes" ],
+    [ have_directfb="no" ])
+fi
+AM_CONDITIONAL(BUILD_DIRECTFB, test "x$have_directfb" = "xyes")
 
 AC_SUBST(x_cflags)
 AC_SUBST(x_libs)

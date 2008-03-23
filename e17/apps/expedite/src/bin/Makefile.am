@@ -1,10 +1,15 @@
 MAINTAINERCLEANFILES = Makefile.in
-INCLUDES = -I$(top_srcdir) \
-	   -I$(top_srcdir)/src/bin \
-	   @EVAS_CFLAGS@ @x_cflags@ @SDL_CFLAGS@ @DIRECTFB_CFLAGS@ \
-	   -DPACKAGE_BIN_DIR=\"@PACKAGE_BIN_DIR@\" \
-	   -DPACKAGE_LIB_DIR=\"@PACKAGE_LIB_DIR@\" \
-	   -DPACKAGE_DATA_DIR=\"@PACKAGE_DATA_DIR@\"
+
+AM_CPPFLAGS = \
+-I$(top_srcdir) \
+-I$(top_srcdir)/src/bin \
+-DPACKAGE_BIN_DIR=\"$(bindir)\" \
+-DPACKAGE_LIB_DIR=\"$(libdir)\" \
+-DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\" \
+@EVAS_CFLAGS@ \
+@x_cflags@ \
+@SDL_CFLAGS@ \
+@DIRECTFB_CFLAGS@
 
 bin_PROGRAMS = expedite
 
