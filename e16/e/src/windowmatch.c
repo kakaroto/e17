@@ -866,35 +866,43 @@ WindowMatchEobjOpsParse(EObj * eo, const char *ops)
    return err;
 }
 
-void
-WindowMatchEwinOps(EWin * ewin)
+static void
+_WindowMatchEwinFunc(void *_wm, void *_ew)
 {
-   const WindowMatch  *wm;
+   const WindowMatch  *wm = (WindowMatch *) _wm;
+   EWin               *ew = (EWin *) _ew;
 
-   ECORE_LIST_FOR_EACH(wm_list, wm)
-   {
-      if (wm->op != MATCH_OP_WINOP || !WindowMatchEwinTest(wm, ewin))
-	 continue;
+   if (wm->op != MATCH_OP_WINOP || !WindowMatchEwinTest(wm, ew))
+      return;
 
-      /* Match found - do the ops */
-      WindowMatchEobjOpsParse(EoObj(ewin), wm->args);
-   }
+   /* Match found - do the ops */
+   WindowMatchEobjOpsParse(EoObj(ew), wm->args);
+}
+
+void
+WindowMatchEwinOps(EWin * ew)
+{
+   ecore_list_for_each(wm_list, _WindowMatchEwinFunc, ew);
 }
 
 #if USE_COMPOSITE
+static void
+_WindowMatchEobjFunc(void *_wm, void *_eo)
+{
+   const WindowMatch  *wm = (WindowMatch *) _wm;
+   EObj               *eo = (EObj *) _eo;
+
+   if (wm->op != MATCH_OP_WINOP || !WindowMatchEobjTest(wm, eo))
+      return;
+
+   /* Match found - do the ops */
+   WindowMatchEobjOpsParse(eo, wm->args);
+}
+
 void
 WindowMatchEobjOps(EObj * eo)
 {
-   const WindowMatch  *wm;
-
-   ECORE_LIST_FOR_EACH(wm_list, wm)
-   {
-      if (wm->op != MATCH_OP_WINOP || !WindowMatchEobjTest(wm, eo))
-	 continue;
-
-      /* Match found - do the ops */
-      WindowMatchEobjOpsParse(eo, wm->args);
-   }
+   ecore_list_for_each(wm_list, _WindowMatchEobjFunc, eo);
 }
 #endif
 

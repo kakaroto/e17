@@ -214,15 +214,21 @@ IdlerDel(Idler * id)
    Efree(id);
 }
 
+static void
+_IdlerRun(void *_id, void *prm __UNUSED__)
+{
+   Idler              *id = (Idler *) _id;
+
+   id->func(id->data);
+}
+
 void
 IdlersRun(void)
 {
-   Idler              *id;
-
    if (EDebug(EDBUG_TYPE_IDLERS))
       Eprintf("IdlersRun\n");
 
-   ECORE_LIST_FOR_EACH(idler_list, id) id->func(id->data);
+   ecore_list_for_each(idler_list, _IdlerRun, NULL);
 }
 
 /*
@@ -241,20 +247,23 @@ struct _animator
 };
 
 static void
-AnimatorsRun(int val __UNUSED__, void *data __UNUSED__)
+_AnimatorRun(void *_an, void *prm __UNUSED__)
 {
-   Animator           *an;
+   Animator           *an = (Animator *) _an;
    int                 again;
 
-   ECORE_LIST_FOR_EACH(animator_list, an)
-   {
 #if DEBUG_ANIMATORS > 1
-      Eprintf("AnimatorRun %p\n", an);
+   Eprintf("AnimatorRun %p\n", an);
 #endif
-      again = an->func(an->data);
-      if (!again)
-	 AnimatorDel(an);
-   }
+   again = an->func(an->data);
+   if (!again)
+      AnimatorDel(an);
+}
+
+static void
+AnimatorsRun(int val __UNUSED__, void *data __UNUSED__)
+{
+   ecore_list_for_each(animator_list, _AnimatorRun, NULL);
 
    if (ecore_list_count(animator_list))
       DoIn("Anim", 1e-3 * Conf.animation.step, AnimatorsRun, 0, NULL);

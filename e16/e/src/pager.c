@@ -749,25 +749,33 @@ PagerShow(Pager * p)
    EwinShow(ewin);
 }
 
+typedef struct
+{
+   Desk               *dsk;
+   void                (*func) (Pager * p, void *prm);
+   void               *prm;
+} pager_foreach_data;
+
+static void
+_PagersForeachFunc(void *item, void *prm)
+{
+   Pager              *p = (Pager *) item;
+   pager_foreach_data *data = (pager_foreach_data *) prm;
+
+   if (data->dsk && data->dsk != p->dsk)
+      return;
+   data->func(p, data->prm);
+}
+
 static void
 PagersForeach(Desk * dsk, void (*func) (Pager * p, void *prm), void *prm)
 {
-   Pager              *p, *p_cur;
+   pager_foreach_data  data;
 
-   if (!pager_list)
-      return;
-
-   /* We may get here recursively */
-   p_cur = (Pager *) ecore_list_current(pager_list);
-
-   ECORE_LIST_FOR_EACH(pager_list, p)
-   {
-      if (dsk && dsk != p->dsk)
-	 continue;
-      func(p, prm);
-   }
-
-   ecore_list_goto(pager_list, p_cur);
+   data.dsk = dsk;
+   data.func = func;
+   data.prm = prm;
+   ecore_list_for_each(pager_list, _PagersForeachFunc, &data);
 }
 
 typedef struct
