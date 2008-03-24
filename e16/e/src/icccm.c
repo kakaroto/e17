@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2007 Kim Woelders
+ * Copyright (C) 2004-2008 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -167,14 +167,14 @@ ICCCM_SizeMatch(const EWin * ewin, int wi, int hi, int *pwo, int *pho)
    w = wi;
    h = hi;
 
-   if (w < ewin->icccm.width.min)
-      w = ewin->icccm.width.min;
-   if (w > ewin->icccm.width.max)
-      w = ewin->icccm.width.max;
-   if (h < ewin->icccm.height.min)
-      h = ewin->icccm.height.min;
-   if (h > ewin->icccm.height.max)
-      h = ewin->icccm.height.max;
+   if (w < ewin->icccm.width_min)
+      w = ewin->icccm.width_min;
+   if (w > ewin->icccm.width_max)
+      w = ewin->icccm.width_max;
+   if (h < ewin->icccm.height_min)
+      h = ewin->icccm.height_min;
+   if (h > ewin->icccm.height_max)
+      h = ewin->icccm.height_max;
    if ((w > 0) && (h > 0))
      {
 	w -= ewin->icccm.base_w;
@@ -240,10 +240,10 @@ ICCCM_SetSizeConstraints(EWin * ewin, unsigned int wmin, unsigned int hmin,
 			 unsigned int winc, unsigned int hinc,
 			 double amin, double amax)
 {
-   ewin->icccm.width.min = wmin;
-   ewin->icccm.height.min = hmin;
-   ewin->icccm.width.max = wmax;
-   ewin->icccm.height.max = hmax;
+   ewin->icccm.width_min = wmin;
+   ewin->icccm.height_min = hmin;
+   ewin->icccm.width_max = wmax;
+   ewin->icccm.height_max = hmax;
 
    ewin->icccm.base_w = wbase;
    ewin->icccm.base_h = hbase;
@@ -443,24 +443,24 @@ ICCCM_GetGeoms(EWin * ewin)
 
 	if (hint.flags & PMinSize)
 	  {
-	     ewin->icccm.width.min = MAX(0, hint.min_width);
-	     ewin->icccm.height.min = MAX(0, hint.min_height);
+	     ewin->icccm.width_min = MAX(0, hint.min_width);
+	     ewin->icccm.height_min = MAX(0, hint.min_height);
 	  }
 	else
 	  {
-	     ewin->icccm.width.min = 0;
-	     ewin->icccm.height.min = 0;
+	     ewin->icccm.width_min = 0;
+	     ewin->icccm.height_min = 0;
 	  }
 
 	if (hint.flags & PMaxSize)
 	  {
-	     ewin->icccm.width.max = MIN(hint.max_width, 65535);
-	     ewin->icccm.height.max = MIN(hint.max_height, 65535);
+	     ewin->icccm.width_max = MIN(hint.max_width, 65535);
+	     ewin->icccm.height_max = MIN(hint.max_height, 65535);
 	  }
 	else
 	  {
-	     ewin->icccm.width.max = 65535;
-	     ewin->icccm.height.max = 65535;
+	     ewin->icccm.width_max = 65535;
+	     ewin->icccm.height_max = 65535;
 	  }
 
 	if (hint.flags & PResizeInc)
@@ -508,23 +508,23 @@ ICCCM_GetGeoms(EWin * ewin)
 	  }
 	else
 	  {
-	     ewin->icccm.base_w = ewin->icccm.width.min;
-	     ewin->icccm.base_h = ewin->icccm.height.min;
+	     ewin->icccm.base_w = ewin->icccm.width_min;
+	     ewin->icccm.base_h = ewin->icccm.height_min;
 	  }
 
-	if (ewin->icccm.width.min < ewin->icccm.base_w)
-	   ewin->icccm.width.min = ewin->icccm.base_w;
-	if (ewin->icccm.height.min < ewin->icccm.base_h)
-	   ewin->icccm.height.min = ewin->icccm.base_h;
+	if (ewin->icccm.width_min < ewin->icccm.base_w)
+	   ewin->icccm.width_min = ewin->icccm.base_w;
+	if (ewin->icccm.height_min < ewin->icccm.base_h)
+	   ewin->icccm.height_min = ewin->icccm.base_h;
 
-	if (ewin->icccm.width.max < ewin->icccm.base_w)
-	   ewin->icccm.width.max = ewin->icccm.base_w;
-	if (ewin->icccm.height.max < ewin->icccm.base_h)
-	   ewin->icccm.height.max = ewin->icccm.base_h;
+	if (ewin->icccm.width_max < ewin->icccm.base_w)
+	   ewin->icccm.width_max = ewin->icccm.base_w;
+	if (ewin->icccm.height_max < ewin->icccm.base_h)
+	   ewin->icccm.height_max = ewin->icccm.base_h;
      }
 
-   ewin->props.no_resize_h = (ewin->icccm.width.min == ewin->icccm.width.max);
-   ewin->props.no_resize_v = (ewin->icccm.height.min == ewin->icccm.height.max);
+   ewin->props.no_resize_h = (ewin->icccm.width_min == ewin->icccm.width_max);
+   ewin->props.no_resize_v = (ewin->icccm.height_min == ewin->icccm.height_max);
 
    if (EDebug(EDBUG_TYPE_SNAPS))
       Eprintf("Snap get icccm %#lx: %4d+%4d %4dx%4d: %s\n",

@@ -41,8 +41,8 @@ struct _windowmatch {
    char                prop;
    char                qual;
    char               *value;
-   Constraints         width;
-   Constraints         height;
+   int                 width_min, width_max;
+   int                 height_min, height_max;
    /* Match actions */
    char               *args;
    Border             *border;
@@ -108,8 +108,8 @@ WindowMatchCreate(const char *name)
    ecore_list_prepend(wm_list, b);
 
    b->name = Estrdup(name);
-   b->width.max = 99999;
-   b->height.max = 99999;
+   b->width_max = 99999;
+   b->height_max = 99999;
 
    return b;
 }
@@ -188,7 +188,7 @@ WindowMatchConfigLoad(FILE * fs)
 		wm->match = MATCH_TYPE_SIZE;
 	     else
 		wm->match = MATCH_TYPE_SIZE_H;
-	     sscanf(s, "%*s %u %u", &(wm->width.min), &(wm->width.max));
+	     sscanf(s, "%*s %u %u", &(wm->width_min), &(wm->width_max));
 	     break;
 	  case WINDOWMATCH_HEIGHT:
 	     if (!wm)
@@ -197,7 +197,7 @@ WindowMatchConfigLoad(FILE * fs)
 		wm->match = MATCH_TYPE_SIZE;
 	     else
 		wm->match = MATCH_TYPE_SIZE_V;
-	     sscanf(s, "%*s %u %u", &(wm->height.min), &(wm->height.max));
+	     sscanf(s, "%*s %u %u", &(wm->height_min), &(wm->height_max));
 	     break;
 
 	  case WINDOWMATCH_TRANSIENT:
@@ -325,24 +325,24 @@ WindowMatchDecode(const char *line)
 	num = sscanf(value, "%u-%ux%u-%u", &w1, &w2, &h1, &h2);
 	if (num < 4)
 	   goto case_error;
-	wm->width.min = w1;
-	wm->width.max = w2;
-	wm->height.min = h1;
-	wm->height.max = h2;
+	wm->width_min = w1;
+	wm->width_max = w2;
+	wm->height_min = h1;
+	wm->height_max = h2;
 	break;
      case MATCH_TYPE_SIZE_H:
 	num = sscanf(value, "%u-%u", &w1, &w2);
 	if (num < 2)
 	   goto case_error;
-	wm->width.min = w1;
-	wm->width.max = w2;
+	wm->width_min = w1;
+	wm->width_max = w2;
 	break;
      case MATCH_TYPE_SIZE_V:
 	num = sscanf(value, "%u-%u", &h1, &h2);
 	if (num < 2)
 	   goto case_error;
-	wm->height.min = h1;
-	wm->height.max = h2;
+	wm->height_min = h1;
+	wm->height_max = h2;
 	break;
 
      case MATCH_TYPE_PROP:
@@ -427,16 +427,16 @@ WindowMatchEncode(WindowMatch * wm, char *buf, int len)
 
      case MATCH_TYPE_SIZE:
 	value = s;
-	sprintf(s, "%u-%ux%u-%u", wm->width.min, wm->width.max,
-		wm->height.min, wm->height.max);
+	sprintf(s, "%u-%ux%u-%u", wm->width_min, wm->width_max,
+		wm->height_min, wm->height_max);
 	break;
      case MATCH_TYPE_SIZE_H:
 	value = s;
-	sprintf(s, "%u-%u", wm->width.min, wm->width.max);
+	sprintf(s, "%u-%u", wm->width_min, wm->width_max);
 	break;
      case MATCH_TYPE_SIZE_V:
 	value = s;
-	sprintf(s, "%u-%u", wm->height.min, wm->height.max);
+	sprintf(s, "%u-%u", wm->height_min, wm->height_max);
 	break;
 
      case MATCH_TYPE_PROP:
@@ -504,18 +504,18 @@ WindowMatchEwinTest(const WindowMatch * wm, const EWin * ewin)
 	return matchregexp(wm->value, EwinGetIcccmClass(ewin));
 
      case MATCH_TYPE_SIZE:
-	match = (ewin->client.w >= wm->width.min &&
-		 ewin->client.w <= wm->width.max &&
-		 ewin->client.h >= wm->height.min &&
-		 ewin->client.h <= wm->height.max);
+	match = (ewin->client.w >= wm->width_min &&
+		 ewin->client.w <= wm->width_max &&
+		 ewin->client.h >= wm->height_min &&
+		 ewin->client.h <= wm->height_max);
 	break;
      case MATCH_TYPE_SIZE_H:
-	match = (ewin->client.w >= wm->width.min &&
-		 ewin->client.w <= wm->width.max);
+	match = (ewin->client.w >= wm->width_min &&
+		 ewin->client.w <= wm->width_max);
 	break;
      case MATCH_TYPE_SIZE_V:
-	match = (ewin->client.h >= wm->height.min &&
-		 ewin->client.h <= wm->height.max);
+	match = (ewin->client.h >= wm->height_min &&
+		 ewin->client.h <= wm->height_max);
 	break;
 
      case MATCH_TYPE_PROP:

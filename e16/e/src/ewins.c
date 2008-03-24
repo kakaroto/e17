@@ -104,10 +104,10 @@ EwinCreate(int type)
 
    ewin->icccm.need_input = 1;
 
-   ewin->icccm.width.min = 0;
-   ewin->icccm.height.min = 0;
-   ewin->icccm.width.max = 65535;
-   ewin->icccm.height.max = 65535;
+   ewin->icccm.width_min = 0;
+   ewin->icccm.height_min = 0;
+   ewin->icccm.width_max = 65535;
+   ewin->icccm.height_max = 65535;
    ewin->icccm.base_w = 0;
    ewin->icccm.base_h = 0;
    ewin->icccm.w_inc = 1;

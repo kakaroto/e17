@@ -176,7 +176,8 @@ struct _ewin {
       Window              client_leader;
 
       /* WM_NORMAL_HINTS */
-      Constraints         width, height;
+      int                 width_min, width_max;
+      int                 height_min, height_max;
       int                 base_w, base_h;
       int                 w_inc, h_inc;
       int                 grav;

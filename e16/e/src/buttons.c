@@ -42,7 +42,8 @@
    PointerMotionMask)
 
 typedef struct {
-   Constraints         width, height;
+   int                 width_min, width_max;
+   int                 height_min, height_max;
    int                 xorigin, yorigin;
    int                 xabs, xrel;
    int                 yabs, yrel;
@@ -140,10 +141,10 @@ ButtonCreate(const char *name, int id, const char *iclass,
       b->tclass = TextclassAlloc(tclass, 1);
 
    b->flags = flags;
-   b->geom.width.min = minw;
-   b->geom.width.max = maxw;
-   b->geom.height.min = minh;
-   b->geom.height.max = maxh;
+   b->geom.width_min = minw;
+   b->geom.width_max = maxw;
+   b->geom.height_min = minh;
+   b->geom.height_max = maxh;
    b->geom.xorigin = xo;
    b->geom.yorigin = yo;
    b->geom.xabs = xa;
@@ -236,14 +237,14 @@ ButtonCalc(Button * b)
 	w = ((b->geom.xsizerel * VRoot.w) >> 10) + b->geom.xsizeabs;
 	h = ((b->geom.ysizerel * VRoot.h) >> 10) + b->geom.ysizeabs;
      }
-   if (w > b->geom.width.max)
-      w = b->geom.width.max;
-   else if (w < b->geom.width.min)
-      w = b->geom.width.min;
-   if (h > b->geom.height.max)
-      h = b->geom.height.max;
-   else if (h < b->geom.height.min)
-      h = b->geom.height.min;
+   if (w > b->geom.width_max)
+      w = b->geom.width_max;
+   else if (w < b->geom.width_min)
+      w = b->geom.width_min;
+   if (h > b->geom.height_max)
+      h = b->geom.height_max;
+   else if (h < b->geom.height_min)
+      h = b->geom.height_min;
    xo = (w * b->geom.xorigin) >> 10;
    yo = (h * b->geom.yorigin) >> 10;
    x = ((b->geom.xrel * VRoot.w) >> 10) + b->geom.xabs - xo;
@@ -703,10 +704,10 @@ ButtonsConfigLoad(FILE * fs)
 		  pbt->flags = flags;
 		  pbt->internal = internal;
 		  pbt->default_show = show;
-		  pbt->geom.width.min = minw;
-		  pbt->geom.width.max = maxw;
-		  pbt->geom.height.min = minh;
-		  pbt->geom.height.max = maxh;
+		  pbt->geom.width_min = minw;
+		  pbt->geom.width_max = maxw;
+		  pbt->geom.height_min = minh;
+		  pbt->geom.height_max = maxh;
 		  pbt->geom.xorigin = xo;
 		  pbt->geom.yorigin = yo;
 		  pbt->geom.xabs = xa;
@@ -853,10 +854,10 @@ ButtonsConfigSave(void)
 	 fprintf(fs, "11 %s\n", ActionclassGetName(b->aclass));
       if (EoGetLayer(b) >= 0)
 	 fprintf(fs, "453 %i\n", EoGetLayer(b));
-      fprintf(fs, "456 %i\n", b->geom.width.min);
-      fprintf(fs, "457 %i\n", b->geom.width.max);
-      fprintf(fs, "468 %i\n", b->geom.height.min);
-      fprintf(fs, "469 %i\n", b->geom.height.max);
+      fprintf(fs, "456 %i\n", b->geom.width_min);
+      fprintf(fs, "457 %i\n", b->geom.width_max);
+      fprintf(fs, "468 %i\n", b->geom.height_min);
+      fprintf(fs, "469 %i\n", b->geom.height_max);
       fprintf(fs, "528 %i\n", b->geom.xorigin);
       fprintf(fs, "529 %i\n", b->geom.yorigin);
       fprintf(fs, "530 %i\n", b->geom.xabs);

@@ -29,6 +29,10 @@
 #include "etypes.h"
 
 typedef struct {
+   int                 min, max;
+} WinLimit;
+
+typedef struct {
    int                 originbox;
    struct {
       int                 percent;
@@ -37,7 +41,7 @@ typedef struct {
 } WinPoint;
 
 typedef struct {
-   Constraints         width, height;
+   WinLimit            width, height;
    WinPoint            topleft, bottomright;
 } Geometry;
 

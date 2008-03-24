@@ -210,10 +210,6 @@
 #include "etypes.h"
 
 typedef struct {
-   int                 min, max;
-} Constraints;
-
-typedef struct {
    Window              xwin;
    Win                 win;
    Visual             *vis;
