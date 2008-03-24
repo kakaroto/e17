@@ -2190,7 +2190,7 @@ EwinsSetFree(void)
 
 	/* This makes E determine the client window stacking at exit */
 	EwinInstantUnShade(ewin);
-	EReparentWindow(EwinGetClientWin(ewin), RRoot.win,
+	EReparentWindow(EwinGetClientWin(ewin), RROOT,
 			ewin->client.x, ewin->client.y);
      }
 }

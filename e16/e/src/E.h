@@ -210,14 +210,10 @@
 #include "etypes.h"
 
 typedef struct {
-   Window              xwin;
    Win                 win;
-   Visual             *vis;
-   int                 depth;
-   Colormap            cmap;
-   int                 scr;
-   int                 w, h;
 } RealRoot;
+
+#define RROOT RRoot.win
 
 typedef struct {
    Window              xwin;

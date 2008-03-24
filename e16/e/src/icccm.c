@@ -283,7 +283,7 @@ ICCCM_Configure(EWin * ewin)
    ev.xconfigure.y = ewin->client.y;
 #endif
    if (Mode.wm.window)
-      XTranslateCoordinates(disp, VRoot.xwin, RRoot.xwin,
+      ETranslateCoordinates(VRoot.win, RROOT,
 			    ev.xconfigure.x, ev.xconfigure.y,
 			    &ev.xconfigure.x, &ev.xconfigure.y, &child);
    ev.xconfigure.width = ewin->client.w;

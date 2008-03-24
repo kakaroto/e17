@@ -1869,17 +1869,8 @@ DeskRootResize(int root, int w, int h)
 
    if (root)
      {
-#if 0
-	RRoot.w = DisplayWidth(disp, RRoot.scr);
-	RRoot.h = DisplayHeight(disp, RRoot.scr);
-
-	if (w != RRoot.w || h != RRoot.h)
-	   Eprintf
-	      ("DeskRootResize (root): Screen size mismatch: root=%dx%d event=%dx%d\n",
-	       RRoot.w, RRoot.h, w, h);
-#endif
-	RRoot.w = w;
-	RRoot.h = h;
+	WinGetW(RROOT) = w;
+	WinGetH(RROOT) = h;
      }
 
    if (w == VRoot.w && h == VRoot.h)

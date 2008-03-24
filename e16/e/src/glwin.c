@@ -631,7 +631,7 @@ GlwinCreate(const char *title __UNUSED__, int width, int height)
    int                 x, y;
 
 #if 0
-   win = RRoot.win;
+   win = RROOT;
 #else
    win = VRoot.win;
 #endif

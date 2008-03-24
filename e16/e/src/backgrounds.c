@@ -532,7 +532,7 @@ BackgroundCreatePixmap(Win win, unsigned int w, unsigned int h)
     * invalid one from a previous session.
     */
    pmap = ECreatePixmap(win, w, h, 0);
-   if (win == RRoot.win && pmap == Mode.root.ext_pmap)
+   if (win == RROOT && pmap == Mode.root.ext_pmap)
      {
 	EFreePixmap(pmap);
 	pmap = ECreatePixmap(win, w, h, 0);

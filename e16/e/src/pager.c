@@ -1535,7 +1535,7 @@ PagerHiwinHandleMouseUp(Pager * p, int px, int py, int button)
 	else if (!in_vroot)
 	  {
 	     /* Move back to real root */
-	     EwinReparent(ewin, RRoot.win);
+	     EwinReparent(ewin, RROOT);
 	  }
 	else
 	  {

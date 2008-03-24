@@ -119,23 +119,16 @@ SetupX(const char *dstr)
    XSetIOErrorHandler((XIOErrorHandler) HandleXIOError);
 
    /* Root defaults */
-   RRoot.scr = DefaultScreen(disp);
-   RRoot.xwin = DefaultRootWindow(disp);
-   RRoot.w = DisplayWidth(disp, RRoot.scr);
-   RRoot.h = DisplayHeight(disp, RRoot.scr);
-   RRoot.vis = DefaultVisual(disp, RRoot.scr);
-   RRoot.depth = DefaultDepth(disp, RRoot.scr);
-   RRoot.cmap = DefaultColormap(disp, RRoot.scr);
-   RRoot.win = ERegisterWindow(RRoot.xwin, NULL);
+   RROOT = ERegisterWindow(DefaultRootWindow(disp), NULL);
 
-   VRoot.xwin = RRoot.xwin;
-   VRoot.vis = RRoot.vis;
-   VRoot.depth = RRoot.depth;
-   VRoot.cmap = RRoot.cmap;
+   VRoot.xwin = WinGetXwin(RROOT);
+   VRoot.vis = WinGetVisual(RROOT);
+   VRoot.depth = WinGetDepth(RROOT);
+   VRoot.cmap = WinGetCmap(RROOT);
 
    if (Mode.wm.window)
      {
-	VRoot.win = ECreateWindow(RRoot.win, 0, 0, VRoot.w, VRoot.h, 0);
+	VRoot.win = ECreateWindow(RROOT, 0, 0, VRoot.w, VRoot.h, 0);
 	VRoot.xwin = WinGetXwin(VRoot.win);
 
 	/* Enable eesh and edox to pix up the virtual root */
@@ -145,9 +138,9 @@ SetupX(const char *dstr)
    else
      {
 	/* Running E normally on the root window */
-	VRoot.win = RRoot.win;
-	VRoot.w = RRoot.w;
-	VRoot.h = RRoot.h;
+	VRoot.win = RROOT;
+	VRoot.w = WinGetW(RROOT);
+	VRoot.h = WinGetH(RROOT);
      }
 
    /* Initialise event handling */
