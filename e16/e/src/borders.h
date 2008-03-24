@@ -24,6 +24,7 @@
 #ifndef _BORDERS_H_
 #define _BORDERS_H_
 
+#include <X11/Xlib.h>
 #include "eimage.h"
 #include "etypes.h"
 

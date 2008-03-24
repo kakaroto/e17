@@ -23,7 +23,7 @@
 #ifndef _EIMAGE_H_
 #define _EIMAGE_H_
 
-#include <X11/Xlib.h>
+#include <X11/X.h>
 #include "xwin.h"
 
 typedef void        EImage;
@@ -38,7 +38,7 @@ typedef struct {
 #define EIMAGE_HIGH_MASK_THR    0x0004
 #define EIMAGE_ISCALE           0x0f00	/* Intermediate scaling */
 
-void                EImageInit(Display * dpy);
+void                EImageInit(void);
 int                 EImageSetCacheSize(int size);
 
 EImage             *EImageCreate(int w, int h);

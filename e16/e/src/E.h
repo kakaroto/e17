@@ -37,8 +37,7 @@
 
 #define USE_EXT_INIT_WIN 1
 
-#include <X11/Xlib.h>
-#include <X11/extensions/shape.h>
+#include <X11/X.h>
 
 #ifdef HAVE_SM
 #define USE_SM 1

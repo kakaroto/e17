@@ -23,6 +23,8 @@
 #ifndef _FOCUS_H_
 #define _FOCUS_H_
 
+#include <X11/Xlib.h>
+
 /* focus.c */
 #define FOCUS_NOP         0
 #define FOCUS_INIT        1

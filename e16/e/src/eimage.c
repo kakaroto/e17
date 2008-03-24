@@ -33,8 +33,10 @@ static Visual      *_default_vis;
 static Colormap     _default_cmap;
 
 void
-EImageInit(Display * dpy)
+EImageInit(void)
 {
+   Display            *dpy = disp;
+
    imlib_set_cache_size(2048 * 1024);
    imlib_set_font_cache_size(512 * 1024);
 

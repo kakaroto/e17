@@ -247,7 +247,7 @@ main(int argc, char **argv)
    Esetenv("ETHEME", Mode.theme.path);
 
    /* Move elsewhere? */
-   EImageInit(disp);
+   EImageInit();
    HintsInit();
    CommsInit();
    SessionInit();

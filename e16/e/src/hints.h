@@ -24,6 +24,7 @@
 #ifndef _HINTS_H_
 #define _HINTS_H_
 
+#include <X11/Xlib.h>
 #include "etypes.h"
 #include "xwin.h"
 

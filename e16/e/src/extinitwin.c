@@ -45,7 +45,7 @@ ExtInitWinMain(void)
 
    EGrabServer();
 
-   EImageInit(disp);
+   EImageInit();
 
    attr.backing_store = NotUseful;
    attr.override_redirect = True;

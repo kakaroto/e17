@@ -24,6 +24,9 @@
 #ifndef _XWIN_H_
 #define _XWIN_H_
 
+#include <X11/Xlib.h>
+#include <X11/extensions/shape.h>
+
 Display            *EDisplayOpen(const char *dstr, int scr);
 void                EDisplayClose(void);
 void                EDisplayDisconnect(void);
