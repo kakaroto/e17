@@ -202,7 +202,7 @@ main(int argc, char **argv)
 	     EDebugSet(EDBUG_TYPE_VERBOSE, 1);
 	     break;
 	  case 'w':
-	     sscanf(eoptarg, "%dx%d", &VRoot.w, &VRoot.h);
+	     sscanf(eoptarg, "%dx%d", &Mode.wm.win_w, &Mode.wm.win_h);
 	     Mode.wm.window = 1;
 	     Mode.wm.single = 1;
 	     Mode.wm.master = 0;
@@ -266,7 +266,7 @@ main(int argc, char **argv)
    ModulesSignal(ESIGNAL_CONFIGURE, NULL);
 
    /* Set root window cursor */
-   ECsrApply(ECSR_ROOT, VRoot.xwin);
+   ECsrApply(ECSR_ROOT, WinGetXwin(VROOT));
 
 #ifdef USE_EXT_INIT_WIN
    /* Kill the E process owning the "init window" */
@@ -274,7 +274,7 @@ main(int argc, char **argv)
 #endif
 
    if (Mode.wm.window)
-      EMapWindow(VRoot.win);
+      EMapWindow(VROOT);
 
    /* let's make sure we set this up and go to our desk anyways */
    DeskGoto(DesksGetCurrent());
@@ -325,7 +325,7 @@ EExit(int exitcode)
 	/* XSetInputFocus(disp, None, RevertToParent, CurrentTime); */
 	/* I think this is a better way to release the grabs: (felix) */
 	XSetInputFocus(disp, PointerRoot, RevertToPointerRoot, CurrentTime);
-	XSelectInput(disp, VRoot.xwin, 0);
+	XSelectInput(disp, WinGetXwin(VROOT), 0);
 	EDisplayClose();
      }
 

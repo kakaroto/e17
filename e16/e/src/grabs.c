@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2007 Kim Woelders
+ * Copyright (C) 2004-2008 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -57,7 +57,7 @@ int
 GrabPointerSet(Win win, unsigned int csr, int confine)
 {
    int                 ret = -1;
-   Window              confine_to = (confine) ? VRoot.xwin : None;
+   Window              confine_to = (confine) ? WinGetXwin(VROOT) : None;
 
    ret = XGrabPointer(disp, WinGetXwin(win), False,
 		      ButtonPressMask | ButtonReleaseMask | PointerMotionMask |

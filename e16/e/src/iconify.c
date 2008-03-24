@@ -62,7 +62,7 @@ IB_Animate_A(char iconify, EWin * ewin, EWin * ibox)
    double              a, aa, spd, t0;
    int                 x, y, x1, y1, x2, y2, x3, y3, x4, y4, w, h;
    int                 fx, fy, fw, fh, tx, ty, tw, th;
-   Window              root = VRoot.xwin;
+   Window              root = WinGetXwin(VROOT);
    GC                  gc;
    XGCValues           gcv;
 
@@ -158,7 +158,7 @@ IB_Animate_B(char iconify, EWin * ewin, EWin * ibox)
    double              a, spd, t0;
    int                 x, y, w, h;
    int                 fx, fy, fw, fh, tx, ty, tw, th;
-   Window              root = VRoot.xwin;
+   Window              root = WinGetXwin(VROOT);
    GC                  gc;
    XGCValues           gcv;
 
@@ -390,7 +390,8 @@ SelectIconboxForEwin(EWin * ewin)
 	     dist = (dx * dx) + (dy * dy);
 	     if ((!EoIsSticky(ct->ewin)) &&
 		 (EoGetDesk(ct->ewin) != EoGetDesk(ewin)))
-		dist += (VRoot.w * VRoot.w) + (VRoot.h * VRoot.h);
+		dist += (WinGetW(VROOT) * WinGetW(VROOT)) +
+		   (WinGetH(VROOT) * WinGetH(VROOT));
 	     if (dist < min_dist)
 	       {
 		  min_dist = dist;

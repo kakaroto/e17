@@ -65,7 +65,7 @@ ProgressbarCreate(const char *name, int w, int h)
    p->h = h;
    p->value = 0;
 
-   x = (VRoot.w - w) / 2;
+   x = (WinGetW(VROOT) - w) / 2;
    y = 32 + (pnum * h * 2);
 
    p->win = EobjWindowCreate(EOBJ_TYPE_MISC, x, y, w - (h * 5), h, 1, name);

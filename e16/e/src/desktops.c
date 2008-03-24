@@ -98,8 +98,8 @@ DeskControlsCreate(Desk * dsk)
       Conf.desks.dragbar_width = 64;
    if (Conf.desks.dragbar_length < 0)
       Conf.desks.dragbar_length = 0;
-   else if (Conf.desks.dragbar_length > VRoot.w)
-      Conf.desks.dragbar_length = VRoot.w;
+   else if (Conf.desks.dragbar_length > WinGetW(VROOT))
+      Conf.desks.dragbar_length = WinGetW(VROOT);
 
    Esnprintf(ac1, sizeof(ac1), "DRAGBAR_DESKTOP_%i", dsk->num);
    if (!ActionclassFind(ac1))
@@ -232,7 +232,7 @@ DeskControlsCreate(Desk * dsk)
      case 0:
 	w[0] = w[1] = w[2] = h[0] = h[1] = Conf.desks.dragbar_width;
 	if (Conf.desks.dragbar_length == 0)
-	   h[2] = VRoot.h - (Conf.desks.dragbar_width * 2);
+	   h[2] = WinGetH(VROOT) - (Conf.desks.dragbar_width * 2);
 	else
 	   h[2] = Conf.desks.dragbar_length;
 	x[0] = x[1] = x[2] = 0;
@@ -243,10 +243,10 @@ DeskControlsCreate(Desk * dsk)
      case 1:
 	w[0] = w[1] = w[2] = h[0] = h[1] = Conf.desks.dragbar_width;
 	if (Conf.desks.dragbar_length == 0)
-	   h[2] = VRoot.h - (Conf.desks.dragbar_width * 2);
+	   h[2] = WinGetH(VROOT) - (Conf.desks.dragbar_width * 2);
 	else
 	   h[2] = Conf.desks.dragbar_length;
-	x[0] = x[1] = x[2] = VRoot.w - Conf.desks.dragbar_width;
+	x[0] = x[1] = x[2] = WinGetW(VROOT) - Conf.desks.dragbar_width;
 	y[m] = 0;
 	y[n] = y[m] + h[m];
 	y[o] = y[n] + h[n];
@@ -254,7 +254,7 @@ DeskControlsCreate(Desk * dsk)
      case 2:
 	h[0] = h[1] = h[2] = w[0] = w[1] = Conf.desks.dragbar_width;
 	if (Conf.desks.dragbar_length == 0)
-	   w[2] = VRoot.w - (Conf.desks.dragbar_width * 2);
+	   w[2] = WinGetW(VROOT) - (Conf.desks.dragbar_width * 2);
 	else
 	   w[2] = Conf.desks.dragbar_length;
 	y[0] = y[1] = y[2] = 0;
@@ -265,10 +265,10 @@ DeskControlsCreate(Desk * dsk)
      case 3:
 	h[0] = h[1] = h[2] = w[0] = w[1] = Conf.desks.dragbar_width;
 	if (Conf.desks.dragbar_length == 0)
-	   w[2] = VRoot.w - (Conf.desks.dragbar_width * 2);
+	   w[2] = WinGetW(VROOT) - (Conf.desks.dragbar_width * 2);
 	else
 	   w[2] = Conf.desks.dragbar_length;
-	y[0] = y[1] = y[2] = VRoot.h - Conf.desks.dragbar_width;
+	y[0] = y[1] = y[2] = WinGetH(VROOT) - Conf.desks.dragbar_width;
 	x[m] = 0;
 	x[n] = x[m] + w[m];
 	x[o] = x[n] + w[n];
@@ -306,7 +306,7 @@ DeskControlsCreate(Desk * dsk)
 	     b = ButtonCreate("_DESKTOP_DESKRAY_DRAG_CONTROL", 2, ic4, ac1,
 			      NULL, NULL, 1, FLAG_FIXED_VERT, 1, 99999, 1,
 			      99999, 0, 0,
-			      EoGetX(dsk) + VRoot.w -
+			      EoGetX(dsk) + WinGetW(VROOT) -
 			      Conf.desks.dragbar_width, 0, EoGetY(dsk),
 			      0, 0, 0, 0, 0, 1, 0, 1);
 	  }
@@ -322,8 +322,8 @@ DeskControlsCreate(Desk * dsk)
 	     b = ButtonCreate("_DESKTOP_DESKRAY_DRAG_CONTROL", 2, ic4, ac1,
 			      NULL, NULL, 1, FLAG_FIXED_HORIZ, 1, 99999, 1,
 			      99999, 0, 0, EoGetX(dsk), 0,
-			      EoGetY(dsk) + VRoot.h - Conf.desks.dragbar_width,
-			      0, 0, 0, 0, 0, 1, 0, 1);
+			      EoGetY(dsk) + WinGetH(VROOT) -
+			      Conf.desks.dragbar_width, 0, 0, 0, 0, 0, 1, 0, 1);
 	  }
      }
 #endif
@@ -356,7 +356,7 @@ DeskConfigure(Desk * dsk)
 
    if (dsk->num > 0)
      {
-	EoMove(dsk, VRoot.w, 0);
+	EoMove(dsk, WinGetW(VROOT), 0);
 	EoMap(dsk, 0);
      }
 
@@ -382,11 +382,12 @@ DeskCreate(int desk, int configure)
    dsk->num = desk;
    desks.order[desk] = desk;
 
-   win = (desk == 0) ? VRoot.win : NoWin;
+   win = (desk == 0) ? VROOT : NoWin;
 
    Esnprintf(buf, sizeof(buf), "Desk-%d", desk);
    EoSetNoRedirect(dsk, 1);
-   EoInit(dsk, EOBJ_TYPE_DESK, win, 0, 0, VRoot.w, VRoot.h, 0, buf);
+   EoInit(dsk, EOBJ_TYPE_DESK, win,
+	  0, 0, WinGetW(VROOT), WinGetH(VROOT), 0, buf);
    EventCallbackRegister(EoGetWin(dsk), 0, DeskHandleEvents, dsk);
    EoSetFade(dsk, 0);
    EoSetShadow(dsk, 0);
@@ -397,7 +398,8 @@ DeskCreate(int desk, int configure)
 #if !USE_BG_WIN_ON_ALL_DESKS	/* TBD - Use per virtual root bg window? */
 #if USE_COMPOSITE
 	/* Add background window */
-	eo = EobjWindowCreate(EOBJ_TYPE_ROOT_BG, 0, 0, VRoot.w, VRoot.h,
+	eo = EobjWindowCreate(EOBJ_TYPE_ROOT_BG,
+			      0, 0, WinGetW(VROOT), WinGetH(VROOT),
 			      0, "Root-bg");
 	eo->floating = 0;
 	eo->fade = eo->shadow = 0;
@@ -420,7 +422,8 @@ DeskCreate(int desk, int configure)
 #if USE_COMPOSITE
    /* Add background window */
    Esnprintf(buf, sizeof(buf), "Desk-bg-%d", desk);
-   eo = EobjWindowCreate(EOBJ_TYPE_MISC, 0, 0, VRoot.w, VRoot.h, 0, buf);
+   eo = EobjWindowCreate(EOBJ_TYPE_MISC,
+			 0, 0, WinGetW(VROOT), WinGetH(VROOT), 0, buf);
    eo->floating = 0;
    eo->fade = eo->shadow = 0;
    EobjReparent(eo, EoObj(dsk), 0, 0);
@@ -474,7 +477,7 @@ Win
 DeskGetBackgroundWin(const Desk * dsk)
 {
    if (!dsk)
-      return VRoot.win;
+      return VROOT;
    return EobjGetWin(dsk->bg.o);
 }
 
@@ -537,14 +540,14 @@ DeskBackgroundConfigure(Desk * dsk)
 	     if (pmap != None)
 	       {
 		  ESetWindowBackgroundPixmap(win, pmap);
-		  if (dsk->num == 0 && win != VRoot.win)
-		     ESetWindowBackgroundPixmap(VRoot.win, pmap);
+		  if (dsk->num == 0 && win != VROOT)
+		     ESetWindowBackgroundPixmap(VROOT, pmap);
 	       }
 	     else
 	       {
 		  ESetWindowBackground(win, pixel);
-		  if (dsk->num == 0 && win != VRoot.win)
-		     ESetWindowBackground(VRoot.win, pixel);
+		  if (dsk->num == 0 && win != VROOT)
+		     ESetWindowBackground(VROOT, pixel);
 	       }
 	     EClearWindow(win);
 	  }
@@ -557,8 +560,8 @@ DeskBackgroundConfigure(Desk * dsk)
 	   HintsSetRootInfo(EoGetWin(dsk), None, 0);
 
 	ESetWindowBackgroundPixmap(win, None);
-	if (dsk->num == 0 && win != VRoot.win)
-	   ESetWindowBackgroundPixmap(VRoot.win, None);
+	if (dsk->num == 0 && win != VROOT)
+	   ESetWindowBackgroundPixmap(VROOT, None);
      }
 }
 
@@ -644,7 +647,7 @@ DeskBackgroundRefresh(Desk * dsk, int why)
 
    if (bg && dsk->viewable)
       if (Conf.hints.set_xroot_info_on_root_window && dsk->num > 0)
-	 HintsSetRootInfo(VRoot.win, pmap, pixel);
+	 HintsSetRootInfo(VROOT, pmap, pixel);
 
    if (changed)
       ModulesSignal(ESIGNAL_BACKGROUND_CHANGE, dsk);
@@ -700,7 +703,7 @@ DeskResize(int desk, int w, int h)
 
    if (dsk->num != 0)
      {
-	x = (dsk->viewable) ? EoGetX(dsk) : VRoot.w;
+	x = (dsk->viewable) ? EoGetX(dsk) : WinGetW(VROOT);
 	EoMoveResize(dsk, x, 0, w, h);
      }
 #if USE_COMPOSITE
@@ -1009,8 +1012,8 @@ DesktopAt(int x, int y)
    for (i = 0; i < Conf.desks.num; i++)
      {
 	dsk = _DeskGet(desks.order[i]);
-	if (x >= EoGetX(dsk) && x < (EoGetX(dsk) + VRoot.w) &&
-	    y >= EoGetY(dsk) && y < (EoGetY(dsk) + VRoot.h))
+	if (x >= EoGetX(dsk) && x < (EoGetX(dsk) + WinGetW(VROOT)) &&
+	    y >= EoGetY(dsk) && y < (EoGetY(dsk) + WinGetH(VROOT)))
 	   return _DeskGet(desks.order[i]);
      }
    return _DeskGet(0);
@@ -1126,7 +1129,7 @@ DeskHide(unsigned int desk)
    if (dsk->viewable)
       BackgroundTouch(dsk->bg.bg);
    dsk->viewable = 0;
-   EoMove(dsk, VRoot.w, 0);
+   EoMove(dsk, WinGetW(VROOT), 0);
 }
 
 static void
@@ -1209,20 +1212,20 @@ DeskGoto(Desk * dsk)
 		    {
 		    default:
 		    case 0:
-		       x = VRoot.w;
+		       x = WinGetW(VROOT);
 		       y = 0;
 		       break;
 		    case 1:
-		       x = -VRoot.w;
+		       x = -WinGetW(VROOT);
 		       y = 0;
 		       break;
 		    case 2:
 		       x = 0;
-		       y = VRoot.h;
+		       y = WinGetH(VROOT);
 		       break;
 		    case 3:
 		       x = 0;
-		       y = -VRoot.h;
+		       y = -WinGetH(VROOT);
 		       break;
 		    }
 		  DeskMove(dsk, x, y);
@@ -1626,8 +1629,8 @@ DeskCurrentGotoArea(int ax, int ay)
 
    ModulesSignal(ESIGNAL_AREA_SWITCH_START, NULL);
 
-   dx = VRoot.w * (ax - pax);
-   dy = VRoot.h * (ay - pay);
+   dx = WinGetW(VROOT) * (ax - pax);
+   dy = WinGetH(VROOT) * (ay - pay);
 
    if (dx < 0)
       SoundPlay("SOUND_MOVE_AREA_LEFT");
@@ -1862,8 +1865,6 @@ DeskEventButtonRelease(Desk * dsk, XEvent * ev)
 static void
 DeskRootResize(int root, int w, int h)
 {
-   int                 ww, hh;
-
    if (EDebug(EDBUG_TYPE_DESKS))
       Eprintf("DeskRootResize %d %dx%d\n", root, w, h);
 
@@ -1873,20 +1874,17 @@ DeskRootResize(int root, int w, int h)
 	WinGetH(RROOT) = h;
      }
 
-   if (w == VRoot.w && h == VRoot.h)
+   if (w == WinGetW(VROOT) && h == WinGetH(VROOT))
       return;
 
-   EWindowSync(VRoot.win);
+   EWindowSync(VROOT);
 
    /* Quit if size is not final */
-   EGetGeometry(VRoot.win, NULL, NULL, NULL, &ww, &hh, NULL, NULL);
-   if (w != ww || h != hh)
+   if (w != WinGetW(VROOT) || h != WinGetH(VROOT))
       return;
 
-   Mode.screen.w_old = VRoot.w;
-   Mode.screen.h_old = VRoot.h;
-   VRoot.w = w;
-   VRoot.h = h;
+   Mode.screen.w_old = WinGetW(VROOT);
+   Mode.screen.h_old = WinGetH(VROOT);
 
    ScreenInit();
    DesksResize(w, h);
@@ -1910,7 +1908,7 @@ DeskPropertyChange(Desk * dsk, XEvent * ev)
 	if (EDebug(EDBUG_TYPE_DESKS))
 	   Eprintf("DeskPropertyChange win=%#lx _XROOTPMAP_ID=%#lx\n",
 		   ev->xany.window, pmap);
-	if (ev->xany.window != VRoot.xwin)
+	if (ev->xany.window != WinGetXwin(VROOT))
 	   return;
 	if (pmap == dsk->bg.pmap)
 	   return;
@@ -1925,7 +1923,7 @@ DeskPropertyChange(Desk * dsk, XEvent * ev)
 	if (EDebug(EDBUG_TYPE_DESKS))
 	   Eprintf("DeskPropertyChange win=%#lx _XROOTCOLOR_PIXEL\n",
 		   ev->xany.window);
-	if (ev->xany.window != VRoot.xwin)
+	if (ev->xany.window != WinGetXwin(VROOT))
 	   return;
      }
 }
@@ -1958,12 +1956,12 @@ DeskHandleEvents(Win win __UNUSED__, XEvent * ev, void *prm)
 	break;
 
      case ConfigureNotify:
-	if (ev->xconfigure.window == VRoot.xwin)
+	if (ev->xconfigure.window == WinGetXwin(VROOT))
 	   DeskRootResize(0, ev->xconfigure.width, ev->xconfigure.height);
 	break;
 
      case PropertyNotify:
-	if (ev->xany.window == VRoot.xwin)
+	if (ev->xany.window == WinGetXwin(VROOT))
 	   DeskPropertyChange(dsk, ev);
 	break;
 
@@ -2005,7 +2003,7 @@ DeskDragdirSet(const char *params)
    for (i = 1; i < Conf.desks.num; i++)
      {
 	dsk = _DeskGet(i);
-	EoMove(dsk, (dsk->viewable) ? 0 : VRoot.w, 0);
+	EoMove(dsk, (dsk->viewable) ? 0 : WinGetW(VROOT), 0);
      }
    DesksControlsRefresh();
 }

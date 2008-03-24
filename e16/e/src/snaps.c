@@ -336,8 +336,8 @@ SnapEwinLocation(Snapshot * sn, const EWin * ewin)
    if (!EoIsSticky(ewin))
      {
 	DeskGetArea(EoGetDesk(ewin), &ax, &ay);
-	sn->x += ((ax - sn->area_x) * VRoot.w);
-	sn->y += ((ay - sn->area_y) * VRoot.h);
+	sn->x += ((ax - sn->area_x) * WinGetW(VROOT));
+	sn->y += ((ay - sn->area_y) * WinGetH(VROOT));
      }
 }
 
@@ -1123,7 +1123,7 @@ Real_SaveSnapInfo(int dumval __UNUSED__, void *dumdat __UNUSED__)
       if (sn->use_flags & SNAP_USE_DESK)
 	 fprintf(f, "DESKTOP: %i\n", sn->desktop);
       if (sn->use_flags & SNAP_USE_POS)
-	 fprintf(f, "RES: %i %i\n", VRoot.w, VRoot.h);
+	 fprintf(f, "RES: %i %i\n", WinGetW(VROOT), WinGetH(VROOT));
       if (sn->use_flags & SNAP_USE_SIZE)
 	 fprintf(f, "WH: %i %i\n", sn->w, sn->h);
       if (sn->use_flags & SNAP_USE_POS)
@@ -1199,8 +1199,8 @@ LoadSnapInfo(void)
    if (!f)
       return;
 
-   res_w = VRoot.w;
-   res_h = VRoot.h;
+   res_w = WinGetW(VROOT);
+   res_h = WinGetH(VROOT);
    while (fgets(buf, sizeof(buf), f))
      {
 	s = strchr(buf, ':');
@@ -1212,8 +1212,8 @@ LoadSnapInfo(void)
 	   continue;
 	if (!strcmp(buf, "NEW"))
 	  {
-	     res_w = VRoot.w;
-	     res_h = VRoot.h;
+	     res_w = WinGetW(VROOT);
+	     res_h = WinGetH(VROOT);
 	     sn = SnapshotCreate(s);
 	  }
 	else if (sn)
@@ -1288,7 +1288,7 @@ LoadSnapInfo(void)
 		  sn->x = a;
 		  sn->y = b;
 		  /* we changed reses since we last used this snapshot file */
-		  if (res_w != VRoot.w)
+		  if (res_w != WinGetW(VROOT))
 		    {
 		       if (sn->use_flags & SNAP_USE_SIZE)
 			 {
@@ -1296,15 +1296,16 @@ LoadSnapInfo(void)
 			       sn->x = 0;
 			    else
 			       sn->x =
-				  (sn->x * (VRoot.w - sn->w)) / (res_w - sn->w);
+				  (sn->x * (WinGetW(VROOT) - sn->w)) /
+				  (res_w - sn->w);
 			 }
 		       else
 			 {
-			    if (sn->x >= VRoot.w)
-			       sn->x = VRoot.w - 32;
+			    if (sn->x >= WinGetW(VROOT))
+			       sn->x = WinGetW(VROOT) - 32;
 			 }
 		    }
-		  if (res_h != VRoot.h)
+		  if (res_h != WinGetH(VROOT))
 		    {
 		       if (sn->use_flags & SNAP_USE_SIZE)
 			 {
@@ -1312,12 +1313,13 @@ LoadSnapInfo(void)
 			       sn->y = 0;
 			    else
 			       sn->y =
-				  (sn->y * (VRoot.h - sn->h)) / (res_h - sn->h);
+				  (sn->y * (WinGetH(VROOT) - sn->h)) /
+				  (res_h - sn->h);
 			 }
 		       else
 			 {
-			    if (sn->y >= VRoot.h)
-			       sn->y = VRoot.h - 32;
+			    if (sn->y >= WinGetH(VROOT))
+			       sn->y = WinGetH(VROOT) - 32;
 			 }
 		    }
 		  sn->area_x = c;
@@ -1445,8 +1447,8 @@ SnapshotEwinApply(EWin * ewin)
 	if (!EoIsSticky(ewin))
 	  {
 	     DeskGetArea(EoGetDesk(ewin), &ax, &ay);
-	     ewin->client.x += ((sn->area_x - ax) * VRoot.w);
-	     ewin->client.y += ((sn->area_y - ay) * VRoot.h);
+	     ewin->client.x += ((sn->area_x - ax) * WinGetW(VROOT));
+	     ewin->client.y += ((sn->area_y - ay) * WinGetH(VROOT));
 	  }
 	EMoveResizeWindow(EwinGetClientWin(ewin), ewin->client.x,
 			  ewin->client.y, ewin->client.w, ewin->client.h);

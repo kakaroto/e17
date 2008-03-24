@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2007 Kim Woelders
+ * Copyright (C) 2004-2008 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -41,18 +41,18 @@ DockappFindEmptySpotFor(EWin * eapp)
 	x = Conf.dock.startx;
 	if (x < 0)
 	   x = 0;
-	else if (x > VRoot.w - EoGetW(eapp))
-	   x = VRoot.w - EoGetW(eapp);
+	else if (x > WinGetW(VROOT) - EoGetW(eapp))
+	   x = WinGetW(VROOT) - EoGetW(eapp);
 
 	y = Conf.dock.starty;
 	if (y < 0)
 	   y = 0;
-	else if (y > VRoot.h - EoGetH(eapp))
-	   y = VRoot.h - EoGetH(eapp);
+	else if (y > WinGetH(VROOT) - EoGetH(eapp))
+	   y = WinGetH(VROOT) - EoGetH(eapp);
      }
 
-   step_right = Conf.dock.startx < VRoot.w;
-   step_down = Conf.dock.starty < VRoot.h;
+   step_right = Conf.dock.startx < WinGetW(VROOT);
+   step_down = Conf.dock.starty < WinGetH(VROOT);
 
    lst = EwinListGetAll(&num);
    for (j = 0; j < num; j++)
@@ -78,7 +78,7 @@ DockappFindEmptySpotFor(EWin * eapp)
 		  {
 		  case DOCK_RIGHT:
 		     x = EoGetX(ewin) + EoGetW(ewin);
-		     if (x + w >= VRoot.w)
+		     if (x + w >= WinGetW(VROOT))
 		       {
 			  x = Conf.dock.startx;
 			  y += (step_down) ? h : -h;
@@ -94,7 +94,7 @@ DockappFindEmptySpotFor(EWin * eapp)
 		     break;
 		  case DOCK_DOWN:
 		     y = EoGetY(ewin) + EoGetH(ewin);
-		     if (y + h >= VRoot.h)
+		     if (y + h >= WinGetH(VROOT))
 		       {
 			  y = Conf.dock.starty;
 			  x += (step_right) ? w : -w;
@@ -104,7 +104,7 @@ DockappFindEmptySpotFor(EWin * eapp)
 		     y = EoGetY(ewin) - h;
 		     if (y < 0)
 		       {
-			  y = VRoot.h - h;
+			  y = WinGetH(VROOT) - h;
 			  x += (step_right) ? w : -w;
 		       }
 		     break;
@@ -112,10 +112,10 @@ DockappFindEmptySpotFor(EWin * eapp)
 	     }
 	}
 
-   if (x < 0 || y < 0 || x + w > VRoot.w || y + h > VRoot.h)
+   if (x < 0 || y < 0 || x + w > WinGetW(VROOT) || y + h > WinGetH(VROOT))
      {
-	x = VRoot.w - w / 2;
-	y = VRoot.h - h / 2;
+	x = WinGetW(VROOT) - w / 2;
+	y = WinGetH(VROOT) - h / 2;
      }
 
    EoMove(eapp, x, y);

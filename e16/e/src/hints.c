@@ -85,7 +85,8 @@ HintsInit(void)
 
    AtomListIntern(atoms_misc_names, N_ITEMS(atoms_misc_names), atoms_misc);
 
-   win = XCreateSimpleWindow(disp, VRoot.xwin, -200, -200, 5, 5, 0, 0, 0);
+   win = XCreateSimpleWindow(disp, WinGetXwin(VROOT), -200, -200, 5, 5,
+			     0, 0, 0);
 
    ICCCM_Init();
    MWM_SetInfo();
@@ -94,15 +95,16 @@ HintsInit(void)
 #endif
    EWMH_Init(win);
 
-   ecore_x_window_prop_string_set(VRoot.xwin, E16_ATOM_VERSION, e_wm_version);
+   ecore_x_window_prop_string_set(WinGetXwin(VROOT), E16_ATOM_VERSION,
+				  e_wm_version);
 
    if (Mode.wm.window)
      {
-	HintsSetWindowName(VRoot.win, "Enlightenment");
-	HintsSetWindowClass(VRoot.win, "Virtual-Root", "Enlightenment");
+	HintsSetWindowName(VROOT, "Enlightenment");
+	HintsSetWindowClass(VROOT, "Virtual-Root", "Enlightenment");
      }
 
-   Mode.root.ext_pmap = HintsGetRootPixmap(VRoot.win);
+   Mode.root.ext_pmap = HintsGetRootPixmap(VROOT);
    Mode.root.ext_pmap_valid = EDrawableCheck(Mode.root.ext_pmap, 0);
 }
 
@@ -493,19 +495,19 @@ EHintsSetDeskInfo(void)
 	c[(i * 2) + 1] = ay;
      }
 
-   ecore_x_window_prop_card32_set(VRoot.xwin, E16_ATOM_INTERNAL_AREA_DATA,
-				  c, 2 * n_desks);
+   ecore_x_window_prop_card32_set(WinGetXwin(VROOT),
+				  E16_ATOM_INTERNAL_AREA_DATA, c, 2 * n_desks);
 
    c[0] = DesksGetCurrentNum();
-   ecore_x_window_prop_card32_set(VRoot.xwin, E16_ATOM_INTERNAL_DESK_DATA, c,
-				  1);
+   ecore_x_window_prop_card32_set(WinGetXwin(VROOT),
+				  E16_ATOM_INTERNAL_DESK_DATA, c, 1);
 
    Efree(c);
 
    if (Mode.root.ext_pmap_valid)
      {
-	HintsSetRootInfo(VRoot.win, Mode.root.ext_pmap, 0);
-	ESetWindowBackgroundPixmap(VRoot.win, Mode.root.ext_pmap);
+	HintsSetRootInfo(VROOT, Mode.root.ext_pmap, 0);
+	ESetWindowBackgroundPixmap(VROOT, Mode.root.ext_pmap);
      }
 }
 
@@ -521,7 +523,8 @@ EHintsGetDeskInfo(void)
    if (!c)
       return;
 
-   num = ecore_x_window_prop_card32_get(VRoot.xwin, E16_ATOM_INTERNAL_AREA_DATA,
+   num = ecore_x_window_prop_card32_get(WinGetXwin(VROOT),
+					E16_ATOM_INTERNAL_AREA_DATA,
 					c, 2 * n_desks);
    if (num > 0)
      {
@@ -529,8 +532,8 @@ EHintsGetDeskInfo(void)
 	   DeskSetArea(DeskGet(i), c[(i * 2)], c[(i * 2) + 1]);
      }
 
-   num = ecore_x_window_prop_card32_get(VRoot.xwin, E16_ATOM_INTERNAL_DESK_DATA,
-					c, 1);
+   num = ecore_x_window_prop_card32_get(WinGetXwin(VROOT),
+					E16_ATOM_INTERNAL_DESK_DATA, c, 1);
    if (num > 0)
      {
 	DesksSetCurrent(DeskGet(c[0]));
@@ -587,7 +590,7 @@ SelectionAcquire(const char *name, EventCallbackFunc * func, void *data)
 
    sel->atom = XInternAtom(disp, buf, False);
    sel->time = EGetTimestamp();
-   sel->win = ECreateEventWindow(VRoot.win, -100, -100, 1, 1);
+   sel->win = ECreateEventWindow(VROOT, -100, -100, 1, 1);
 
    sel->func = func;
    sel->data = data;
@@ -608,7 +611,7 @@ SelectionAcquire(const char *name, EventCallbackFunc * func, void *data)
 	EventCallbackRegister(sel->win, 0, sel->func, sel->data);
      }
 
-   ecore_x_client_message32_send(VRoot.xwin, E_XA_MANAGER,
+   ecore_x_client_message32_send(WinGetXwin(VROOT), E_XA_MANAGER,
 				 StructureNotifyMask, CurrentTime, sel->atom,
 				 WinGetXwin(sel->win), 0, 0);
 

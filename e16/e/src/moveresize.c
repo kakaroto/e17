@@ -574,7 +574,8 @@ ActionMoveHandleMotion(void)
       ndy = min_dy;
 
    screen_snap_dist =
-      Mode.constrained ? (VRoot.w + VRoot.h) : Conf.snap.screen_snap_dist;
+      Mode.constrained ? (WinGetW(VROOT) +
+			  WinGetH(VROOT)) : Conf.snap.screen_snap_dist;
 
    for (i = 0; i < num; i++)
      {
@@ -587,10 +588,10 @@ ActionMoveHandleMotion(void)
 	if ((ndx != dx) &&
 	    (((ewin1->shape_x == 0) &&
 	      (dd > screen_snap_dist)) ||
-	     ((ewin1->shape_x == (VRoot.w - EoGetW(ewin1))) &&
+	     ((ewin1->shape_x == (WinGetW(VROOT) - EoGetW(ewin1))) &&
 	      (dd > screen_snap_dist)) ||
 	     ((ewin1->shape_x != 0) &&
-	      (ewin1->shape_x != (VRoot.w - EoGetW(ewin1)) &&
+	      (ewin1->shape_x != (WinGetW(VROOT) - EoGetW(ewin1)) &&
 	       (dd > Conf.snap.edge_snap_dist)))))
 	  {
 	     jumpx = 1;
@@ -604,10 +605,10 @@ ActionMoveHandleMotion(void)
 	if ((ndy != dy) &&
 	    (((ewin1->shape_y == 0) &&
 	      (dd > screen_snap_dist)) ||
-	     ((ewin1->shape_y == (VRoot.h - EoGetH(ewin1))) &&
+	     ((ewin1->shape_y == (WinGetH(VROOT) - EoGetH(ewin1))) &&
 	      (dd > screen_snap_dist)) ||
 	     ((ewin1->shape_y != 0) &&
-	      (ewin1->shape_y != (VRoot.h - EoGetH(ewin1)) &&
+	      (ewin1->shape_y != (WinGetH(VROOT) - EoGetH(ewin1)) &&
 	       (dd > Conf.snap.edge_snap_dist)))))
 	  {
 	     jumpy = 1;

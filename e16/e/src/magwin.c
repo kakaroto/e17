@@ -114,23 +114,23 @@ MagwinRedraw(MagWindow * mw, int paint)
       mw->scale = 6;
    scale = pow(2., (double)(mw->scale));
    sw = (int)((ww + .999 * scale) / scale);
-   if (sw > VRoot.w)
-      scale = (double)ww / (double)VRoot.w;
+   if (sw > WinGetW(VROOT))
+      scale = (double)ww / (double)WinGetW(VROOT);
    sh = (int)((wh + .999 * scale) / scale);
-   if (sh > VRoot.h && scale < (double)wh / (double)VRoot.h)
-      scale = (double)wh / (double)VRoot.h;
+   if (sh > WinGetH(VROOT) && scale < (double)wh / (double)WinGetH(VROOT))
+      scale = (double)wh / (double)WinGetH(VROOT);
    sw = (int)((ww + .999 * scale) / scale);
    sh = (int)((wh + .999 * scale) / scale);
    sx = mw->cx - sw / 2;
    sy = mw->cy - sh / 2;
    if (sx < 0)
       sx = 0;
-   else if (sx + sw > VRoot.w)
-      sx = VRoot.w - sw;
+   else if (sx + sw > WinGetW(VROOT))
+      sx = WinGetW(VROOT) - sw;
    if (sy < 0)
       sy = 0;
-   else if (sy + sh > VRoot.h)
-      sy = VRoot.h - sh;
+   else if (sy + sh > WinGetH(VROOT))
+      sy = WinGetH(VROOT) - sh;
 
    mw->sx = sx;
    mw->sy = sy;
@@ -143,8 +143,8 @@ MagwinRedraw(MagWindow * mw, int paint)
 
 	dw = (int)(sw * scale + .5);
 	dh = (int)(sh * scale + .5);
-	draw = (VRoot.pmap != None) ? VRoot.pmap : VRoot.xwin;
-	ScaleRect(VRoot.win, draw, EwinGetClientWin(mw->ewin),
+	draw = (VRoot.pmap != None) ? VRoot.pmap : WinGetXwin(VROOT);
+	ScaleRect(VROOT, draw, EwinGetClientWin(mw->ewin),
 		  EwinGetClientXwin(mw->ewin), sx, sy, sw, sh,
 		  0, 0, dw, dh, (mw->filter) ? EIMAGE_ANTI_ALIAS : 0);
      }
@@ -166,10 +166,10 @@ MagwinRedraw(MagWindow * mw, int paint)
    /* Show info about pixel at cursor (if in magnifier) */
    qx = (int)(px / scale);
    qy = (int)(py / scale);
-   if (qx > VRoot.w - 1)
-      qx = VRoot.w - 1;
-   if (qy > VRoot.h - 1)
-      qy = VRoot.h - 1;
+   if (qx > WinGetW(VROOT) - 1)
+      qx = WinGetW(VROOT) - 1;
+   if (qy > WinGetH(VROOT) - 1)
+      qy = WinGetH(VROOT) - 1;
    Esnprintf(buf, sizeof(buf), "%d,%d: pixel=%#08x", sx + qx, sy + qy, pixel);
    MagwinDrawText(mw, 10, 20, buf);
 }
@@ -265,8 +265,8 @@ MagwinKeyPress(MagWindow * mw, KeySym key)
 	break;
      case XK_Right:
 	mw->cx += mw->step;
-	if (mw->cx > VRoot.w - mw->sw / 2)
-	   mw->cx = VRoot.w - mw->sw / 2;
+	if (mw->cx > WinGetW(VROOT) - mw->sw / 2)
+	   mw->cx = WinGetW(VROOT) - mw->sw / 2;
 	break;
      case XK_Up:
 	mw->cy -= mw->step;
@@ -275,8 +275,8 @@ MagwinKeyPress(MagWindow * mw, KeySym key)
 	break;
      case XK_Down:
 	mw->cy += mw->step;
-	if (mw->cy > VRoot.h - mw->sh / 2)
-	   mw->cy = VRoot.h - mw->sh / 2;
+	if (mw->cy > WinGetH(VROOT) - mw->sh / 2)
+	   mw->cy = WinGetH(VROOT) - mw->sh / 2;
 	break;
 
      case XK_r:		/* Switch render mode */
@@ -402,13 +402,13 @@ MagwinCreate(const char *title, int width, int height)
    if (!mw)
       return NULL;
 
-   win = VRoot.win;
+   win = VROOT;
    w = width;
    h = height;
    x = ((win->w - w) / 2);
    y = ((win->h - h) / 2);
 
-   win = ECreateClientWindow(VRoot.win, x, y, w, h);
+   win = ECreateClientWindow(VROOT, x, y, w, h);
 
    mw->title = title;
    mw->ewin = AddInternalToFamily(win, NULL, EWIN_TYPE_MISC, &_MagEwinOps, mw);
@@ -430,7 +430,7 @@ MagwinCreate(const char *title, int width, int height)
 
    EventCallbackRegister(win, 0, MagwinEvent, mw);
 
-   EQueryPointer(VRoot.win, &mw->cx, &mw->cy, NULL, NULL);
+   EQueryPointer(VROOT, &mw->cx, &mw->cy, NULL, NULL);
    mw->scale = 1;
    mw->step = 4;
 
@@ -454,7 +454,8 @@ MagwinShow(void)
    if (MagWin)
       return;
 
-   MagWin = MagwinCreate(_("Magnifier"), VRoot.w / 4, VRoot.h / 4);
+   MagWin = MagwinCreate(_("Magnifier"),
+			 WinGetW(VROOT) / 4, WinGetH(VROOT) / 4);
    if (!MagWin)
      {
 	Eprintf("Failed to create magnifier window\n");

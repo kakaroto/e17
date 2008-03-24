@@ -49,7 +49,7 @@ ICCCM_Init(void)
 	Atom                wm_props[1];
 
 	wm_props[0] = ECORE_X_ATOM_WM_DELETE_WINDOW;
-	XSetWMProtocols(disp, VRoot.xwin, wm_props, 1);
+	XSetWMProtocols(disp, WinGetXwin(VROOT), wm_props, 1);
      }
 }
 
@@ -283,7 +283,7 @@ ICCCM_Configure(EWin * ewin)
    ev.xconfigure.y = ewin->client.y;
 #endif
    if (Mode.wm.window)
-      ETranslateCoordinates(VRoot.win, RROOT,
+      ETranslateCoordinates(VROOT, RROOT,
 			    ev.xconfigure.x, ev.xconfigure.y,
 			    &ev.xconfigure.x, &ev.xconfigure.y, &child);
    ev.xconfigure.width = ewin->client.w;
@@ -376,7 +376,8 @@ ICCCM_Focus(const EWin * ewin)
 
    if (!ewin)
      {
-	XSetInputFocus(disp, VRoot.xwin, RevertToPointerRoot, Mode.events.time);
+	XSetInputFocus(disp, WinGetXwin(VROOT), RevertToPointerRoot,
+		       Mode.events.time);
 	HintsSetActiveWindow(None);
 	return;
      }
@@ -420,7 +421,7 @@ ICCCM_GetGeoms(EWin * ewin)
 			  dsk = DesksGetCurrent();
 		       ewin->client.x -= EoGetX(dsk);
 		       ewin->client.y -= EoGetY(dsk);
-		       if (ewin->client.x + ewin->client.w >= VRoot.w)
+		       if (ewin->client.x + ewin->client.w >= WinGetW(VROOT))
 			 {
 			    ewin->client.x += EoGetX(dsk);
 			 }
@@ -428,7 +429,7 @@ ICCCM_GetGeoms(EWin * ewin)
 			 {
 			    ewin->client.x += EoGetX(dsk);
 			 }
-		       if (ewin->client.y + ewin->client.h >= VRoot.h)
+		       if (ewin->client.y + ewin->client.h >= WinGetH(VROOT))
 			 {
 			    ewin->client.y += EoGetY(dsk);
 			 }
@@ -775,7 +776,7 @@ ICCCM_SetIconSizes(void)
    is->max_height = 48;
    is->width_inc = 1;
    is->height_inc = 1;
-   XSetIconSizes(disp, VRoot.xwin, is, 1);
+   XSetIconSizes(disp, WinGetXwin(VROOT), is, 1);
    XFree(is);
 }
 

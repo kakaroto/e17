@@ -64,7 +64,8 @@ ECreatePixImg(Window win, int w, int h)
    pi->shminfo = EMALLOC(XShmSegmentInfo, 1);
    if (pi->shminfo)
      {
-	pi->xim = XShmCreateImage(disp, VRoot.vis, VRoot.depth, ZPixmap, NULL,
+	pi->xim = XShmCreateImage(disp, WinGetVisual(VROOT),
+				  WinGetDepth(VROOT), ZPixmap, NULL,
 				  pi->shminfo, w, h);
 	if (pi->xim)
 	  {
@@ -85,7 +86,8 @@ ECreatePixImg(Window win, int w, int h)
 			 {
 			    pi->pmap =
 			       XShmCreatePixmap(disp, win, pi->shminfo->shmaddr,
-						pi->shminfo, w, h, VRoot.depth);
+						pi->shminfo, w, h,
+						WinGetDepth(VROOT));
 			    if (pi->pmap)
 			      {
 				 gcv.subwindow_mode = IncludeInferiors;
@@ -130,7 +132,7 @@ void
 EBlendRemoveShape(Win win, Pixmap pmap, int x, int y)
 {
    static GC           gc = 0;
-   Window              root = VRoot.xwin;
+   Window              root = WinGetXwin(VROOT);
    int                 w, h;
 
    if (!win)
@@ -181,7 +183,7 @@ EBlendPixImg(Win win, PixImg * s1, PixImg * s2, PixImg * dst, int x, int y,
 	     int w, int h)
 {
    static GC           gc = 0;
-   Window              root = VRoot.xwin;
+   Window              root = WinGetXwin(VROOT);
    int                 i, j, ox, oy;
 
    if (!win)
@@ -207,18 +209,18 @@ EBlendPixImg(Win win, PixImg * s1, PixImg * s2, PixImg * dst, int x, int y,
 
    ox = 0;
    oy = 0;
-   if ((x >= VRoot.w) || (y >= VRoot.h))
+   if ((x >= WinGetW(VROOT)) || (y >= WinGetH(VROOT)))
       return;
-   if (x + w > VRoot.w)
-      w -= ((x + w) - VRoot.w);
+   if (x + w > WinGetW(VROOT))
+      w -= ((x + w) - WinGetW(VROOT));
    if (x < 0)
      {
 	ox = -x;
 	w -= ox;
 	x = 0;
      }
-   if (y + h > VRoot.h)
-      h -= ((y + h) - VRoot.h);
+   if (y + h > WinGetH(VROOT))
+      h -= ((y + h) - WinGetH(VROOT));
    if (y < 0)
      {
 	oy = -y;

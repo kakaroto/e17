@@ -64,14 +64,14 @@ ECursorCreate(const char *name, const char *image, int native_id, EColor * fg,
 	mask = 0;
 	xh = 0;
 	yh = 0;
-	XReadBitmapFile(disp, VRoot.xwin, msk, &w, &h, &mask, &xh, &yh);
-	XReadBitmapFile(disp, VRoot.xwin, img, &w, &h, &pmap, &xh, &yh);
-	XQueryBestCursor(disp, VRoot.xwin, w, h, &ww, &hh);
+	XReadBitmapFile(disp, WinGetXwin(VROOT), msk, &w, &h, &mask, &xh, &yh);
+	XReadBitmapFile(disp, WinGetXwin(VROOT), img, &w, &h, &pmap, &xh, &yh);
+	XQueryBestCursor(disp, WinGetXwin(VROOT), w, h, &ww, &hh);
 	curs = None;
 	if ((w <= ww) && (h <= hh) && (pmap))
 	  {
-	     EAllocXColor(VRoot.cmap, &fgxc, fg);
-	     EAllocXColor(VRoot.cmap, &bgxc, bg);
+	     EAllocXColor(WinGetCmap(VROOT), &fgxc, fg);
+	     EAllocXColor(WinGetCmap(VROOT), &bgxc, bg);
 	     if (xh < 0 || xh >= (int)w)
 		xh = (int)w / 2;
 	     if (yh < 0 || yh >= (int)h)

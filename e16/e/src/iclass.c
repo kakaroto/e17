@@ -256,11 +256,11 @@ ImagestateColorsAlloc(ImageState * is)
    if (!is || is->got_colors)
       return;
 
-   EAllocColor(VRoot.cmap, &is->bg);
-   EAllocColor(VRoot.cmap, &is->hi);
-   EAllocColor(VRoot.cmap, &is->lo);
-   EAllocColor(VRoot.cmap, &is->hihi);
-   EAllocColor(VRoot.cmap, &is->lolo);
+   EAllocColor(WinGetCmap(VROOT), &is->bg);
+   EAllocColor(WinGetCmap(VROOT), &is->hi);
+   EAllocColor(WinGetCmap(VROOT), &is->lo);
+   EAllocColor(WinGetCmap(VROOT), &is->hihi);
+   EAllocColor(WinGetCmap(VROOT), &is->lolo);
 
    is->got_colors = 1;
 }
@@ -850,8 +850,8 @@ pt_get_bg_image(Window win, int w, int h, int use_root)
    bg = DeskGetBackgroundPixmap(DesksGetCurrent());
    if (use_root || bg == None)
      {
-	cr = VRoot.xwin;
-	bg = VRoot.xwin;
+	cr = WinGetXwin(VROOT);
+	bg = WinGetXwin(VROOT);
      }
    else
      {
@@ -861,7 +861,7 @@ pt_get_bg_image(Window win, int w, int h, int use_root)
 #if 0
    Eprintf("pt_get_bg_image %#lx %d %d %d %d\n", win, xx, yy, w, h);
 #endif
-   if (xx < VRoot.w && yy < VRoot.h && xx + w >= 0 && yy + h >= 0)
+   if (xx < WinGetW(VROOT) && yy < WinGetH(VROOT) && xx + w >= 0 && yy + h >= 0)
      {
 	/* Create the background base image */
 	ii = EImageGrabDrawable(bg, None, xx, yy, w, h, !EServerIsGrabbed());

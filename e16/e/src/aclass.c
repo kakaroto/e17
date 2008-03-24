@@ -1497,7 +1497,7 @@ GrabActionKey(Action * aa)
 
    mod = (aa->anymodifier) ? AnyModifier : aa->modifiers;
 
-   GrabKeySet(aa->key, mod, VRoot.win);
+   GrabKeySet(aa->key, mod, VROOT);
 }
 
 static void
@@ -1510,5 +1510,5 @@ UnGrabActionKey(Action * aa)
 
    mod = (aa->anymodifier) ? AnyModifier : aa->modifiers;
 
-   GrabKeyRelease(aa->key, mod, VRoot.win);
+   GrabKeyRelease(aa->key, mod, VROOT);
 }

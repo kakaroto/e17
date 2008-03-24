@@ -216,15 +216,12 @@ typedef struct {
 #define RROOT RRoot.win
 
 typedef struct {
-   Window              xwin;
    Win                 win;
-   Visual             *vis;
-   int                 depth;
-   Colormap            cmap;
    int                 scr;
-   int                 w, h;
    Pixmap              pmap;	/* Compositing buffer */
 } VirtRoot;
+
+#define VROOT VRoot.win
 
 /* Configuration parameters */
 typedef struct {
@@ -489,6 +486,7 @@ typedef struct {
       char                exit_now;
       char                save_ok;
       char                coredump;
+      int                 win_w, win_h;
       int                 exit_mode;
       char               *exit_param;
       int                 child_count;

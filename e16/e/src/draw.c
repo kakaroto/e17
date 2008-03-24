@@ -90,14 +90,14 @@ static Font         font = None;	/* Used in mode 1 (technical) */
     if (_d < 3) _d = 3; \
     DRAW_H_ARROW(_dr, _gc, _a + bl, _a + bl + _c - 1, _b + bt + _d - 16); \
     DRAW_H_ARROW(_dr, _gc, 0, _a - 1, _b + bt + (_d / 2)); \
-    DRAW_H_ARROW(_dr, _gc, _a + _c + bl + br, VRoot.w - 1, _b + bt + (_d / 2)); \
+    DRAW_H_ARROW(_dr, _gc, _a + _c + bl + br, WinGetW(VROOT) - 1, _b + bt + (_d / 2)); \
     DRAW_V_ARROW(_dr, _gc, _b + bt, _b + bt + _d - 1, _a + bl + 16); \
     DRAW_V_ARROW(_dr, _gc, 0, _b - 1, _a + bl + (_c / 2)); \
-    DRAW_V_ARROW(_dr, _gc, _b + _d + bt + bb, VRoot.h - 1, _a + bl + (_c / 2)); \
-    XDrawLine(disp, _dr, _gc, _a, 0, _a, VRoot.h); \
-    XDrawLine(disp, _dr, _gc, _a + _c + bl + br - 1, 0, _a + _c + bl + br - 1, VRoot.h); \
-    XDrawLine(disp, _dr, _gc, 0, _b, VRoot.w, _b); \
-    XDrawLine(disp, _dr, _gc, 0, _b + _d + bt + bb - 1, VRoot.w, _b + _d + bt + bb - 1); \
+    DRAW_V_ARROW(_dr, _gc, _b + _d + bt + bb, WinGetH(VROOT) - 1, _a + bl + (_c / 2)); \
+    XDrawLine(disp, _dr, _gc, _a, 0, _a, WinGetH(VROOT)); \
+    XDrawLine(disp, _dr, _gc, _a + _c + bl + br - 1, 0, _a + _c + bl + br - 1, WinGetH(VROOT)); \
+    XDrawLine(disp, _dr, _gc, 0, _b, WinGetW(VROOT), _b); \
+    XDrawLine(disp, _dr, _gc, 0, _b + _d + bt + bb - 1, WinGetW(VROOT), _b + _d + bt + bb - 1); \
     XDrawRectangle(disp, _dr, _gc, _a + bl + 1, _b + bt + 1, _c - 3, _d - 3); \
   } while(0)
 
@@ -158,7 +158,7 @@ _ShapeGetColor(void)
 
    color_value = Conf.movres.color;
    SET_COLOR(&color, _R(color_value), _G(color_value), _B(color_value));
-   EAllocColor(VRoot.cmap, &color);
+   EAllocColor(WinGetCmap(VROOT), &color);
    color_pixel = color.pixel;
    color_valid = 1;
 
@@ -187,7 +187,8 @@ _ShapeWinCreate(int md)
    if (!sw)
       return NULL;
 
-   EoInit(sw, EOBJ_TYPE_MISC, None, 0, 0, VRoot.w, VRoot.h, 2, "Wires");
+   EoInit(sw, EOBJ_TYPE_MISC, None,
+	  0, 0, WinGetW(VROOT), WinGetH(VROOT), 2, "Wires");
    if (!EoGetWin(sw))
       goto bail_out;
 
@@ -203,7 +204,8 @@ _ShapeWinCreate(int md)
 
    if (md == 1)
      {
-	sw->mask = ECreatePixmap(EoGetWin(sw), VRoot.w, VRoot.h, 1);
+	sw->mask =
+	   ECreatePixmap(EoGetWin(sw), WinGetW(VROOT), WinGetH(VROOT), 1);
 	sw->gc = EXCreateGC(sw->mask, 0, NULL);
 	if (sw->mask == None || !sw->gc)
 	   goto bail_out;
@@ -230,7 +232,8 @@ _ShapeSet(ShapeWin * sw, int md, int x, int y, int w, int h,
 	char                str[32];
 
 	XSetForeground(disp, sw->gc, 0);
-	XFillRectangle(disp, sw->mask, sw->gc, 0, 0, VRoot.w, VRoot.h);
+	XFillRectangle(disp, sw->mask, sw->gc,
+		       0, 0, WinGetW(VROOT), WinGetH(VROOT));
 	XSetForeground(disp, sw->gc, 1);
 	DO_DRAW_MODE_1(sw->mask, sw->gc, x, y, w, h);
 	EShapeCombineMask(EoGetWin(sw), ShapeBounding, 0, 0, sw->mask,
@@ -259,7 +262,7 @@ static PixImg      *draw_pi = NULL;
 static void
 _PixImgsCreate(Window root, const EWin * ewin)
 {
-   root_pi = ECreatePixImg(root, VRoot.w, VRoot.h);
+   root_pi = ECreatePixImg(root, WinGetW(VROOT), WinGetH(VROOT));
    ewin_pi = ECreatePixImg(root, EoGetW(ewin), EoGetH(ewin));
    draw_pi = ECreatePixImg(root, EoGetW(ewin), EoGetH(ewin));
 }
@@ -283,7 +286,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h,
 {
    static GC           gc = 0;
    static Pixmap       b2 = 0, b3 = 0;
-   Window              root = VRoot.xwin;
+   Window              root = WinGetXwin(VROOT);
    int                 x1, y1, w1, h1, dx, dy;
    int                 bl, br, bt, bb;
    char                str[32];
@@ -512,7 +515,7 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h,
 
 		wt = EoGetW(ewin);
 		ht = EoGetH(ewin);
-		root_pi = ECreatePixImg(root, VRoot.w, VRoot.h);
+		root_pi = ECreatePixImg(root, WinGetW(VROOT), WinGetH(VROOT));
 		EFillPixmap(root, root_pi->pmap, x, y, wt, ht);
 		EBlendPixImg(EoGetWin(ewin), root_pi, ewin_pi, draw_pi, x, y,
 			     EoGetW(ewin), EoGetH(ewin));

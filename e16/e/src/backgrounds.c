@@ -492,12 +492,12 @@ BgFindImageSize(BgPart * bgp, unsigned int rw, unsigned int rh,
    if (bgp->xperc > 0)
       w = (rw * bgp->xperc) >> 10;
    else
-      w = (iw * rw) / VRoot.w;
+      w = (iw * rw) / WinGetW(VROOT);
 
    if (bgp->yperc > 0)
       h = (rh * bgp->yperc) >> 10;
    else
-      h = (ih * rh) / VRoot.h;
+      h = (ih * rh) / WinGetH(VROOT);
 
    if (w <= 0)
       w = 1;
@@ -614,7 +614,7 @@ BackgroundRealize(Background * bg, Win win, Drawable draw, unsigned int rw,
    if (!hasbg && !hasfg)
      {
 	/* Solid color only */
-	EAllocColor(VRoot.cmap, &bg->bg_solid);
+	EAllocColor(WinGetCmap(VROOT), &bg->bg_solid);
 
 	if (!is_win)
 	  {
@@ -840,7 +840,7 @@ BrackgroundCreateFromImage(const char *bgid, const char *file,
    if (bg)
       return bg;
 
-   scr_asp = (VRoot.w << 16) / VRoot.h;
+   scr_asp = (WinGetW(VROOT) << 16) / WinGetH(VROOT);
    im_asp = (width << 16) / height;
    if (width == height)
      {
@@ -988,8 +988,8 @@ BackgroundCacheMini(Background * bg, int keep, int nuke)
      }
 
    /* Create new cached bg mini image */
-   pmap = ECreatePixmap(VRoot.win, 64, 48, 0);
-   BackgroundApplyPmap(bg, VRoot.win, pmap, 64, 48);
+   pmap = ECreatePixmap(VROOT, 64, 48, 0);
+   BackgroundApplyPmap(bg, VROOT, pmap, 64, 48);
    im = EImageGrabDrawable(pmap, None, 0, 0, 64, 48, 0);
    EImageSave(im, s);
    EFreePixmap(pmap);

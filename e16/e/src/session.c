@@ -514,7 +514,7 @@ doSMExit(int mode, const char *params)
      {
 	/* We may get here from HandleXIOError */
 	EwinsSetFree();
-	XSelectInput(disp, VRoot.xwin, 0);
+	XSelectInput(disp, WinGetXwin(VROOT), 0);
 	ExtInitWinKill();
 	ESync(0);
 
@@ -553,7 +553,8 @@ doSMExit(int mode, const char *params)
 	   l +=
 	      Esnprintf(s + l, sizeof(s) - l, " -m %d", Mode.wm.master_screen);
 	if (Mode.wm.window)
-	   l += Esnprintf(s + l, sizeof(s) - l, " -w %dx%d", VRoot.w, VRoot.h);
+	   l += Esnprintf(s + l, sizeof(s) - l, " -w %dx%d",
+			  WinGetW(VROOT), WinGetH(VROOT));
 #if USE_SM
 	if (sm_client_id)
 	   l += Esnprintf(s + l, sizeof(s) - l, " -S %s", sm_client_id);

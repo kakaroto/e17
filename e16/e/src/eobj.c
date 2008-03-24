@@ -175,7 +175,7 @@ EobjInit(EObj * eo, int type, Win win, int x, int y, int w, int h,
      {
 	if (type == EOBJ_TYPE_EVENT)
 	  {
-	     win = ECreateEventWindow(VRoot.win, x, y, w, h);
+	     win = ECreateEventWindow(VROOT, x, y, w, h);
 	     eo->inputonly = 1;
 	  }
 	else
@@ -218,7 +218,7 @@ EobjInit(EObj * eo, int type, Win win, int x, int y, int w, int h,
      }
    ECompMgrWinNew(eo);
 #endif
-   if (EobjGetXwin(eo) != VRoot.xwin)
+   if (EobjGetXwin(eo) != WinGetXwin(VROOT))
       EobjListStackAdd(eo, 1);
 
    if (EDebug(EDBUG_TYPE_EWINS))

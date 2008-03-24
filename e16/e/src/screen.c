@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2003-2007 Kim Woelders
+ * Copyright (C) 2003-2008 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -97,8 +97,9 @@ ScreenSplit(unsigned int nx, unsigned int ny)
 
    for (i = 0; i < nx; i++)
       for (j = 0; j < ny; j++)
-	 ScreenAdd(1, VRoot.scr, i * VRoot.w / nx, j * VRoot.h / ny,
-		   VRoot.w / nx, VRoot.h / ny);
+	 ScreenAdd(1, VRoot.scr,
+		   i * WinGetW(VROOT) / nx, j * WinGetH(VROOT) / ny,
+		   WinGetW(VROOT) / nx, WinGetH(VROOT) / ny);
 }
 
 void
@@ -144,7 +145,7 @@ ScreenShowInfo(const char *prm __UNUSED__)
    else
      {
 	IpcPrintf(" %2d     %2d       %5d     %5d     %5d     %5d\n",
-		  0, VRoot.scr, 0, 0, VRoot.w, VRoot.h);
+		  0, VRoot.scr, 0, 0, WinGetW(VROOT), WinGetH(VROOT));
      }
 }
 
@@ -166,8 +167,8 @@ ScreenGetGeometryByHead(int head, int *px, int *py, int *pw, int *ph)
      {
 	x = 0;
 	y = 0;
-	w = VRoot.w;
-	h = VRoot.h;
+	w = WinGetW(VROOT);
+	h = WinGetH(VROOT);
      }
 
    *px = x;
@@ -237,8 +238,8 @@ VRootGetAvailableArea(int *px, int *py, int *pw, int *ph)
 
    *px = l;
    *py = t;
-   *pw = VRoot.w - (l + r);
-   *ph = VRoot.h - (t + b);
+   *pw = WinGetW(VROOT) - (l + r);
+   *ph = WinGetH(VROOT) - (t + b);
 }
 
 int

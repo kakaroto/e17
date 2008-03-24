@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007 Kim Woelders
+ * Copyright (C) 2007-2008 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -246,7 +246,7 @@ DbusInit(void)
 
    if (Mode.wm.window)
      {
-	sprintf(buf, "org.e16.wm.w%#x", (unsigned int)VRoot.xwin);
+	sprintf(buf, "org.e16.wm.w%#x", (unsigned int)WinGetXwin(VROOT));
      }
    else
      {

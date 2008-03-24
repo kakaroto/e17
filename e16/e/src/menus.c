@@ -169,7 +169,7 @@ MenuHide(Menu * m)
    if (ewin)
      {
 	EUnmapWindow(m->win);
-	EReparentWindow(m->win, VRoot.win, ewin->client.x, ewin->client.y);
+	EReparentWindow(m->win, VROOT, ewin->client.x, ewin->client.y);
 	EwinHide(ewin);
      }
    m->ewin = NULL;
@@ -701,7 +701,7 @@ MenuRealize(Menu * m)
 
    if (!m->win)
      {
-	m->win = ECreateClientWindow(VRoot.win, 0, 0, 1, 1);
+	m->win = ECreateClientWindow(VROOT, 0, 0, 1, 1);
 	EventCallbackRegister(m->win, 0, MenuHandleEvents, m);
      }
 
@@ -808,7 +808,7 @@ MenuRealize(Menu * m)
    mmw = 0;
    mmh = 0;
 
-   nmaxy = 3 * VRoot.h / (4 * maxh + 1);
+   nmaxy = 3 * WinGetH(VROOT) / (4 * maxh + 1);
    if (m->style->maxy && nmaxy > m->style->maxy)
       nmaxy = m->style->maxy;
 
@@ -1009,8 +1009,9 @@ MenuShowMasker(Menu * m __UNUSED__)
 
    if (!eo)
      {
-	eo = EobjWindowCreate(EOBJ_TYPE_EVENT, 0, 0, VRoot.w, VRoot.h, 0,
-			      "Masker");
+	eo = EobjWindowCreate(EOBJ_TYPE_EVENT,
+			      0, 0, WinGetW(VROOT), WinGetH(VROOT),
+			      0, "Masker");
 	if (!eo)
 	   return;
 
@@ -1354,7 +1355,7 @@ MenusHandleMotion(void)
 	     xdist = x_org + menu_scroll_dist - (Mode.events.mx);
 	  }
 
-	if (Mode.events.my > (VRoot.h - (menu_scroll_dist + 1)))
+	if (Mode.events.my > (WinGetH(VROOT) - (menu_scroll_dist + 1)))
 	  {
 	     ydist =
 		-(menu_scroll_dist + (Mode.events.my - (y_org + my_height)));

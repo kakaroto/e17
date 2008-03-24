@@ -144,7 +144,7 @@ PagerCreate(void)
    ecore_list_append(pager_list, p);
 
    p->name = NULL;
-   p->win = ECreateClientWindow(VRoot.win, 0, 0, 1, 1);
+   p->win = ECreateClientWindow(VROOT, 0, 0, 1, 1);
    EventCallbackRegister(p->win, 0, PagerEvent, p);
    p->sel_win = ECreateWindow(p->win, 0, 0, 1, 1, 0);
 
@@ -234,18 +234,18 @@ PagerScanTimeout(int val __UNUSED__, void *data)
    /* Due to a bug in imlib2 <= 1.2.0 we have to scan left->right in stead
     * of top->bottom, at least for now. */
    y = ((phase & 0xfffffff8) + offsets[phase % 8]) % hh;
-   y2 = (y * VRoot.h) / hh;
+   y2 = (y * WinGetH(VROOT)) / hh;
 
-   ScaleRect(VRoot.win, VRoot.xwin, p->win, WinGetPmap(p->win), 0, y2,
-	     VRoot.w, VRoot.h / hh, xx, yy + y, ww, 1, HIQ);
+   ScaleRect(VROOT, WinGetXwin(VROOT), p->win, WinGetPmap(p->win), 0,
+	     y2, WinGetW(VROOT), WinGetH(VROOT) / hh, xx, yy + y, ww, 1, HIQ);
    EClearArea(p->win, xx, yy + y, ww, 1, False);
    y2 = p->h;
 #else
    y = ((phase & 0xfffffff8) + offsets[phase % 8]) % ww;
-   y2 = (y * VRoot.w) / ww;
+   y2 = (y * WinGetW(VROOT)) / ww;
 
-   ScaleRect(VRoot.win, VRoot.xwin, p->win, WinGetPmap(p->win), y2, 0,
-	     VRoot.w / ww, VRoot.h, xx + y, yy, 1, hh, HIQ);
+   ScaleRect(VROOT, WinGetXwin(VROOT), p->win, WinGetPmap(p->win), y2,
+	     0, WinGetW(VROOT) / ww, WinGetH(VROOT), xx + y, yy, 1, hh, HIQ);
    EClearArea(p->win, xx + y, yy, 1, hh, False);
    y2 = p->w;
 #endif
@@ -280,8 +280,8 @@ PagerEwinUpdateMini(Pager * p, EWin * ewin)
    Drawable            draw;
    int                 pager_mode = PagersGetMode();
 
-   w = (EoGetW(ewin) * p->dw) / VRoot.w;
-   h = (EoGetH(ewin) * p->dh) / VRoot.h;
+   w = (EoGetW(ewin) * p->dw) / WinGetW(VROOT);
+   h = (EoGetH(ewin) * p->dh) / WinGetH(VROOT);
 
    if (w < 1)
       w = 1;
@@ -362,8 +362,8 @@ doPagerUpdate(Pager * p)
    p->update_phase = 0;
    DesksGetAreaSize(&ax, &ay);
    DeskGetArea(p->dsk, &cx, &cy);
-   vx = cx * VRoot.w;
-   vy = cy * VRoot.h;
+   vx = cx * WinGetW(VROOT);
+   vy = cy * WinGetH(VROOT);
 
    update_screen_included = update_screen_only = 0;
    if (pager_mode == PAGER_MODE_SNAP && p->dsk == DesksGetCurrent()
@@ -371,12 +371,12 @@ doPagerUpdate(Pager * p)
      {
 	/* Update from screen unless update area is entirely off-screen */
 	if (!(p->x2 <= vx || p->y2 <= vy ||
-	      p->x1 >= vx + VRoot.w || p->y1 >= vy + VRoot.h))
+	      p->x1 >= vx + WinGetW(VROOT) || p->y1 >= vy + WinGetH(VROOT)))
 	   update_screen_included = 1;
 
 	/* Check if update area is entirely on-screen */
 	if (p->x1 >= vx && p->y1 >= vy &&
-	    p->x2 <= vx + VRoot.w && p->y2 <= vy + VRoot.h)
+	    p->x2 <= vx + WinGetW(VROOT) && p->y2 <= vy + WinGetH(VROOT))
 	   update_screen_only = 1;
      }
    p->x1 = p->y1 = 99999;
@@ -433,10 +433,10 @@ doPagerUpdate(Pager * p)
 	if (!EoIsShown(ewin))
 	   continue;
 
-	wx = (EwinGetVX(ewin) * p->dw) / VRoot.w;
-	wy = (EwinGetVY(ewin) * p->dh) / VRoot.h;
-	ww = (EoGetW(ewin) * p->dw) / VRoot.w;
-	wh = (EoGetH(ewin) * p->dh) / VRoot.h;
+	wx = (EwinGetVX(ewin) * p->dw) / WinGetW(VROOT);
+	wy = (EwinGetVY(ewin) * p->dh) / WinGetH(VROOT);
+	ww = (EoGetW(ewin) * p->dw) / WinGetW(VROOT);
+	wh = (EoGetH(ewin) * p->dh) / WinGetH(VROOT);
 
 	if (ewin->mini_pmm.pmap)
 	  {
@@ -468,8 +468,9 @@ doPagerUpdate(Pager * p)
  do_screen_update:
    Dprintf("doPagerUpdate %d: Snap screen\n", p->dsk->num);
    /* Update pager area by snapshotting entire screen */
-   ScaleRect(VRoot.win, VRoot.xwin, p->win, pmap, 0, 0,
-	     VRoot.w, VRoot.h, cx * p->dw, cy * p->dh, p->dw, p->dh, HIQ);
+   ScaleRect(VROOT, WinGetXwin(VROOT), p->win, pmap, 0, 0,
+	     WinGetW(VROOT), WinGetH(VROOT), cx * p->dw, cy * p->dh,
+	     p->dw, p->dh, HIQ);
 
    EClearWindow(p->win);
 
@@ -508,7 +509,7 @@ PagerReconfigure(Pager * p, int apply)
 
    DesksGetAreaSize(&ax, &ay);
 
-   aspect = ((double)VRoot.w) / ((double)VRoot.h);
+   aspect = ((double)WinGetW(VROOT)) / ((double)WinGetH(VROOT));
 
    dx = 2;
    for (;;)
@@ -526,16 +527,17 @@ PagerReconfigure(Pager * p, int apply)
      }
 
    ICCCM_SetSizeConstraints(p->ewin,
-			    VRoot.w / 64 * ax, VRoot.h / 64 * ay,
-			    VRoot.w / 4 * ax, VRoot.h / 4 * ay,
-			    0, 0, dx * ax, dy * ay,
+			    WinGetW(VROOT) / 64 * ax,
+			    WinGetH(VROOT) / 64 * ay,
+			    WinGetW(VROOT) / 4 * ax,
+			    WinGetH(VROOT) / 4 * ay, 0, 0, dx * ax, dy * ay,
 			    aspect * ((double)ax / (double)ay),
 			    aspect * ((double)ax / (double)ay));
 
    if (apply)
      {
-	w = (int)((double)ax * (double)VRoot.w / (double)p->scale + .5);
-	h = (int)((double)ay * (double)VRoot.h / (double)p->scale + .5);
+	w = (int)((double)ax * (double)WinGetW(VROOT) / (double)p->scale + .5);
+	h = (int)((double)ay * (double)WinGetH(VROOT) / (double)p->scale + .5);
 	EwinResize(p->ewin, w + (dx * ax) / 2, h + (dy * ay) / 2);
 	EwinReposition(p->ewin);
      }
@@ -592,7 +594,7 @@ PagerUpdateBg(Pager * p)
 
    if (pager_mode != PAGER_MODE_SIMPLE && p->dsk->bg.pmap)
      {
-	ScaleTile(VRoot.win, p->dsk->bg.pmap, p->win, pmap,
+	ScaleTile(VROOT, p->dsk->bg.pmap, p->win, pmap,
 		  0, 0, p->dw, p->dh, HIQ);
 	return;
      }
@@ -662,7 +664,8 @@ _PagerEwinMoveResize(EWin * ewin, int resize __UNUSED__)
    p->dh = h / ay;
 
    if (p->scale <= 0. || Mode.op_source == OPSRC_USER)
-      p->scale = ((float)VRoot.w / p->dw + (float)VRoot.h / p->dh) / 2;
+      p->scale = ((float)WinGetW(VROOT) / p->dw +
+		  (float)WinGetH(VROOT) / p->dh) / 2;
 
    p->do_newbg = 1;
    PagerCheckUpdate(p, NULL);
@@ -712,8 +715,8 @@ PagerShow(Pager * p)
    if (!ewin)
       return;
 
-   p->screen_w = VRoot.w;
-   p->screen_h = VRoot.h;
+   p->screen_w = WinGetW(VROOT);
+   p->screen_h = WinGetH(VROOT);
 
    PagerReconfigure(p, 0);
 
@@ -736,11 +739,11 @@ PagerShow(Pager * p)
 	int                 ax, ay;
 
 	DesksGetAreaSize(&ax, &ay);
-	w = ((48 * VRoot.w) / VRoot.h) * ax;
+	w = ((48 * WinGetW(VROOT)) / WinGetH(VROOT)) * ax;
 	h = 48 * ay;
 	EwinResize(ewin, w, h);	/* Does layout */
-	EwinMove(ewin, 0,
-		 VRoot.h - (DesksGetNumber() - p->dsk->num) * EoGetH(ewin));
+	EwinMove(ewin, 0, WinGetH(VROOT) -
+		 (DesksGetNumber() - p->dsk->num) * EoGetH(ewin));
      }
 
    EwinShow(ewin);
@@ -874,10 +877,10 @@ PagerEwinUpdateFromPager(Pager * p, EWin * ewin)
    y = EwinGetVY(ewin);
    w = EoGetW(ewin);
    h = EoGetH(ewin);
-   x = (x * p->dw) / VRoot.w;
-   y = (y * p->dh) / VRoot.h;
-   w = (w * p->dw) / VRoot.w;
-   h = (h * p->dh) / VRoot.h;
+   x = (x * p->dw) / WinGetW(VROOT);
+   y = (y * p->dh) / WinGetH(VROOT);
+   w = (w * p->dw) / WinGetW(VROOT);
+   h = (h * p->dh) / WinGetH(VROOT);
    if (w <= 0)
       w = 1;
    if (h <= 0)
@@ -973,10 +976,10 @@ EwinInPagerAt(Pager * p, int px, int py)
 	if (!EoIsShown(ewin))
 	   continue;
 
-	x = (EwinGetVX(ewin) * p->dw) / VRoot.w;
-	y = (EwinGetVY(ewin) * p->dh) / VRoot.h;
-	w = (EoGetW(ewin) * p->dw) / VRoot.w;
-	h = (EoGetH(ewin) * p->dh) / VRoot.h;
+	x = (EwinGetVX(ewin) * p->dw) / WinGetW(VROOT);
+	y = (EwinGetVY(ewin) * p->dh) / WinGetH(VROOT);
+	w = (EoGetW(ewin) * p->dw) / WinGetW(VROOT);
+	h = (EoGetH(ewin) * p->dh) / WinGetH(VROOT);
 
 	if (px >= x && py >= y && px < (x + w) && py < (y + h))
 	   return ewin;
@@ -1132,11 +1135,11 @@ PagerHiwinInit(Pager * p, EWin * ewin)
 	hiwin = phi;
      }
 
-   wx = (EwinGetVX(ewin) * p->dw) / VRoot.w;
-   wy = (EwinGetVY(ewin) * p->dh) / VRoot.h;
-   ww = (EoGetW(ewin) * p->dw) / VRoot.w;
-   wh = (EoGetH(ewin) * p->dh) / VRoot.h;
-   ETranslateCoordinates(p->win, VRoot.win, 0, 0, &px, &py, NULL);
+   wx = (EwinGetVX(ewin) * p->dw) / WinGetW(VROOT);
+   wy = (EwinGetVY(ewin) * p->dh) / WinGetH(VROOT);
+   ww = (EoGetW(ewin) * p->dw) / WinGetW(VROOT);
+   wh = (EoGetH(ewin) * p->dh) / WinGetH(VROOT);
+   ETranslateCoordinates(p->win, VROOT, 0, 0, &px, &py, NULL);
 
    HiwinInit(phi, ewin);
    HiwinSetGeom(phi, px + wx, py + wy, ww, wh);
@@ -1402,10 +1405,10 @@ PagerEwinMove(Pager * p __UNUSED__, Pager * pd, EWin * ewin)
    HiwinMove(phi, x + dx, y + dy);
 
    /* Find real window position */
-   ETranslateCoordinates(VRoot.win, pd->win, x, y, &px, &py, NULL);
+   ETranslateCoordinates(VROOT, pd->win, x, y, &px, &py, NULL);
    DeskGetArea(pd->dsk, &cx, &cy);
-   x = (px * VRoot.w) / pd->dw - cx * VRoot.w;
-   y = (py * VRoot.h) / pd->dh - cy * VRoot.h;
+   x = (px * WinGetW(VROOT)) / pd->dw - cx * WinGetW(VROOT);
+   y = (py * WinGetH(VROOT)) / pd->dh - cy * WinGetH(VROOT);
 
    /* Move all group members */
    EwinGroupMove(ewin, pd->dsk, x, y);
@@ -1499,8 +1502,8 @@ PagerHiwinHandleMouseUp(Pager * p, int px, int py, int button)
    if (!ewin)
       goto done;
 
-   in_vroot = (Mode.events.cx >= 0 && Mode.events.cx < VRoot.w &&
-	       Mode.events.cy >= 0 && Mode.events.cy < VRoot.h);
+   in_vroot = (Mode.events.cx >= 0 && Mode.events.cx < WinGetW(VROOT) &&
+	       Mode.events.cy >= 0 && Mode.events.cy < WinGetH(VROOT));
 
    if (button == Conf_pagers.win_button)
      {

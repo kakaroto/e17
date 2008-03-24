@@ -234,8 +234,8 @@ ButtonCalc(Button * b)
      }
    else
      {
-	w = ((b->geom.xsizerel * VRoot.w) >> 10) + b->geom.xsizeabs;
-	h = ((b->geom.ysizerel * VRoot.h) >> 10) + b->geom.ysizeabs;
+	w = ((b->geom.xsizerel * WinGetW(VROOT)) >> 10) + b->geom.xsizeabs;
+	h = ((b->geom.ysizerel * WinGetH(VROOT)) >> 10) + b->geom.ysizeabs;
      }
    if (w > b->geom.width_max)
       w = b->geom.width_max;
@@ -247,8 +247,8 @@ ButtonCalc(Button * b)
       h = b->geom.height_min;
    xo = (w * b->geom.xorigin) >> 10;
    yo = (h * b->geom.yorigin) >> 10;
-   x = ((b->geom.xrel * VRoot.w) >> 10) + b->geom.xabs - xo;
-   y = ((b->geom.yrel * VRoot.h) >> 10) + b->geom.yabs - yo;
+   x = ((b->geom.xrel * WinGetW(VROOT)) >> 10) + b->geom.xabs - xo;
+   y = ((b->geom.yrel * WinGetH(VROOT)) >> 10) + b->geom.yabs - yo;
 
    EoMoveResize(b, x, y, w, h);
 }
@@ -338,21 +338,21 @@ ButtonMoveToCoord(Button * b, int x, int y)
    if (ButtonIsFixed(b))
       return;
 
-   if ((x + (EoGetW(b) >> 1)) < (VRoot.w / 3))
+   if ((x + (EoGetW(b) >> 1)) < (WinGetW(VROOT) / 3))
       relx = 0;
-   else if ((x + (EoGetW(b) >> 1)) > ((VRoot.w * 2) / 3))
+   else if ((x + (EoGetW(b) >> 1)) > ((WinGetW(VROOT) * 2) / 3))
       relx = 1024;
    else
       relx = 512;
-   rx = (relx * VRoot.w) >> 10;
+   rx = (relx * WinGetW(VROOT)) >> 10;
    absx = x - rx;
-   if ((y + (EoGetH(b) >> 1)) < (VRoot.h / 3))
+   if ((y + (EoGetH(b) >> 1)) < (WinGetH(VROOT) / 3))
       rely = 0;
-   else if ((y + (EoGetH(b) >> 1)) > ((VRoot.h * 2) / 3))
+   else if ((y + (EoGetH(b) >> 1)) > ((WinGetH(VROOT) * 2) / 3))
       rely = 1024;
    else
       rely = 512;
-   ry = (rely * VRoot.h) >> 10;
+   ry = (rely * WinGetH(VROOT)) >> 10;
    absy = y - ry;
    if (!(b->flags & FLAG_FIXED_HORIZ))
      {

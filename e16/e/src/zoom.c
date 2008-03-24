@@ -186,7 +186,7 @@ ZoomMask(int x, int y, int w, int h)
    if (x < 0 || y < 0 || w <= 0 || h <= 0)
       return 0;
 
-   win = ECreateWindow(VRoot.win, x, y, w, h, 0);
+   win = ECreateWindow(VROOT, x, y, w, h, 0);
    ESetWindowBackground(win, BlackPixel(disp, VRoot.scr));
    ERaiseWindow(win);
    EMapWindow(win);

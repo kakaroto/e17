@@ -437,8 +437,8 @@ TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
    else
       EUnmapWindow(tt->iwin);
 
-   dx = x - VRoot.w / 2;
-   dy = y - VRoot.h / 2;
+   dx = x - WinGetW(VROOT) / 2;
+   dy = y - WinGetH(VROOT) / 2;
 
    if ((dy == 0) && (dx == 0))
       dy = -1;
@@ -470,38 +470,38 @@ TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
 	if (tt->win[0])
 	  {
 	     yy = y - ((ady * 10 * dist) / 100);
-	     xx = x - (dist * 10 * dx) / (100 * VRoot.w / 2);
+	     xx = x - (dist * 10 * dx) / (100 * WinGetW(VROOT) / 2);
 	     EobjMove(tt->win[0], xx - 4, yy - 4);
 	  }
 
 	if (tt->win[1])
 	  {
 	     yy = y - ((ady * 30 * dist) / 100);
-	     xx = x - (dist * 30 * dx) / (100 * VRoot.w / 2);
+	     xx = x - (dist * 30 * dx) / (100 * WinGetW(VROOT) / 2);
 	     EobjMove(tt->win[1], xx - 8, yy - 8);
 	  }
 
 	if (tt->win[2])
 	  {
 	     yy = y - ((ady * 50 * dist) / 100);
-	     xx = x - (dist * 50 * dx) / (100 * VRoot.w / 2);
+	     xx = x - (dist * 50 * dx) / (100 * WinGetW(VROOT) / 2);
 	     EobjMove(tt->win[2], xx - 12, yy - 12);
 	  }
 
 	if (tt->win[3])
 	  {
 	     yy = y - ((ady * 80 * dist) / 100);
-	     xx = x - (dist * 80 * dx) / (100 * VRoot.w / 2);
+	     xx = x - (dist * 80 * dx) / (100 * WinGetW(VROOT) / 2);
 	     EobjMove(tt->win[3], xx - 16, yy - 16);
 	  }
 
 	yy = y - ((ady * 100 * dist) / 100);
-	xx = x - (dist * 100 * dx) / (100 * VRoot.w / 2);
+	xx = x - (dist * 100 * dx) / (100 * WinGetW(VROOT) / 2);
 	if (ady < 0)
 	   hh = 0;
 	else
 	   hh = h;
-	ww = (w / 2) + ((dx * w) / (VRoot.w / 2));
+	ww = (w / 2) + ((dx * w) / (WinGetW(VROOT) / 2));
      }
    else
       /*   +-------+   */
@@ -524,38 +524,38 @@ TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
 	if (tt->win[0])
 	  {
 	     xx = x - ((adx * 10 * dist) / 100);
-	     yy = y - (dist * 10 * dy) / (100 * VRoot.h / 2);
+	     yy = y - (dist * 10 * dy) / (100 * WinGetH(VROOT) / 2);
 	     EobjMove(tt->win[0], xx - 4, yy - 4);
 	  }
 
 	if (tt->win[1])
 	  {
 	     xx = x - ((adx * 30 * dist) / 100);
-	     yy = y - (dist * 30 * dy) / (100 * VRoot.h / 2);
+	     yy = y - (dist * 30 * dy) / (100 * WinGetH(VROOT) / 2);
 	     EobjMove(tt->win[1], xx - 8, yy - 8);
 	  }
 
 	if (tt->win[2])
 	  {
 	     xx = x - ((adx * 50 * dist) / 100);
-	     yy = y - (dist * 50 * dy) / (100 * VRoot.h / 2);
+	     yy = y - (dist * 50 * dy) / (100 * WinGetH(VROOT) / 2);
 	     EobjMove(tt->win[2], xx - 12, yy - 12);
 	  }
 
 	if (tt->win[3])
 	  {
 	     xx = x - ((adx * 80 * dist) / 100);
-	     yy = y - (dist * 80 * dy) / (100 * VRoot.h / 2);
+	     yy = y - (dist * 80 * dy) / (100 * WinGetH(VROOT) / 2);
 	     EobjMove(tt->win[3], xx - 16, yy - 16);
 	  }
 
 	xx = x - ((adx * 100 * dist) / 100);
-	yy = y - (dist * 100 * dy) / (100 * VRoot.h / 2);
+	yy = y - (dist * 100 * dy) / (100 * WinGetH(VROOT) / 2);
 	if (adx < 0)
 	   ww = 0;
 	else
 	   ww = w;
-	hh = (h / 2) + ((dy * h) / (VRoot.h / 2));
+	hh = (h / 2) + ((dy * h) / (WinGetH(VROOT) / 2));
      }
 
    EobjMoveResize(tt->TTWIN, xx - ww, yy - hh, w, h);
@@ -736,7 +736,7 @@ ToolTipTimeout(int val __UNUSED__, void *data __UNUSED__)
       return;
 
    /* In case this is a virtual root */
-   if (x < 0 || y < 0 || x >= VRoot.w || y >= VRoot.h)
+   if (x < 0 || y < 0 || x >= WinGetW(VROOT) || y >= WinGetH(VROOT))
       return;
 
    /* dont pop up tooltip is mouse button down */
@@ -779,7 +779,7 @@ TooltipsSetPending(int type, CB_GetAclass * func, void *data)
 	if (!Mode_tooltips.root_motion_mask_set)
 	  {
 	     Mode_tooltips.root_motion_mask_set = 1;
-	     ESelectInputChange(VRoot.win, PointerMotionMask, 0);
+	     ESelectInputChange(VROOT, PointerMotionMask, 0);
 	  }
      }
    else
@@ -787,7 +787,7 @@ TooltipsSetPending(int type, CB_GetAclass * func, void *data)
 	if (Mode_tooltips.root_motion_mask_set)
 	  {
 	     Mode_tooltips.root_motion_mask_set = 0;
-	     ESelectInputChange(VRoot.win, 0, PointerMotionMask);
+	     ESelectInputChange(VROOT, 0, PointerMotionMask);
 	  }
      }
 

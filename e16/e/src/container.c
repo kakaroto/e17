@@ -115,7 +115,7 @@ ContainerCreate(const char *name)
    ct->scrollbar_clicked = 0;
    ct->scrollbox_clicked = 0;
 
-   ct->win = ECreateClientWindow(VRoot.win, 0, 0, 1, 1);
+   ct->win = ECreateClientWindow(VROOT, 0, 0, 1, 1);
    ct->icon_win = ECreateWindow(ct->win, 0, 0, 128, 26, 0);
    EventCallbackRegister(ct->icon_win, 0, ContainerEventIconWin, ct);
    ct->cover_win = ECreateWindow(ct->win, 0, 0, 128, 26, 0);
@@ -324,7 +324,8 @@ ContainerShow(Container * ct)
 	/* The first one */
 	EwinMoveToDesktop(ewin, EoGetDesk(ewin));
 	EwinResize(ewin, 128, 32);
-	EwinMove(ewin, VRoot.w - EoGetW(ewin), VRoot.h - EoGetH(ewin));
+	EwinMove(ewin, WinGetW(VROOT) - EoGetW(ewin),
+		 WinGetH(VROOT) - EoGetH(ewin));
      }
 
    EwinShow(ewin);
@@ -1013,15 +1014,15 @@ ContainerLayout(Container * ct, int *px, int *py, int *pw, int *ph)
 	     add = ct->max;
 	     if (ct->ewin->border)
 	       {
-		  if ((bt + bb + add) > VRoot.h)
-		     add = VRoot.h - (bt + bb);
+		  if ((bt + bb + add) > WinGetH(VROOT))
+		     add = WinGetH(VROOT) - (bt + bb);
 	       }
 	     y += (((ct->ewin->client.h - add) * ct->auto_resize_anchor) >> 10);
 	     h = add;
 	     if (ct->ewin->border)
 	       {
-		  if ((EoGetY(ct->ewin) + bt + bb + add) > VRoot.h)
-		     y = VRoot.h - (bt + bb + add);
+		  if ((EoGetY(ct->ewin) + bt + bb + add) > WinGetH(VROOT))
+		     y = WinGetH(VROOT) - (bt + bb + add);
 	       }
 	  }
 	else
@@ -1029,15 +1030,15 @@ ContainerLayout(Container * ct, int *px, int *py, int *pw, int *ph)
 	     add = ct->max;
 	     if (ct->ewin->border)
 	       {
-		  if ((bl + br + add) > VRoot.w)
-		     add = VRoot.w - (bl + br);
+		  if ((bl + br + add) > WinGetW(VROOT))
+		     add = WinGetW(VROOT) - (bl + br);
 	       }
 	     x += (((ct->ewin->client.w - add) * ct->auto_resize_anchor) >> 10);
 	     w = add;
 	     if (ct->ewin->border)
 	       {
-		  if ((EoGetX(ct->ewin) + bl + br + add) > VRoot.w)
-		     x = VRoot.w - (bl + br + add);
+		  if ((EoGetX(ct->ewin) + bl + br + add) > WinGetW(VROOT))
+		     x = WinGetW(VROOT) - (bl + br + add);
 	       }
 	  }
      }

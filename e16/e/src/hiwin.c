@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2007 Kim Woelders
+ * Copyright (C) 2004-2008 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -395,8 +395,8 @@ HiwinShow(Hiwin * phi, EWin * ewin, int zoom, int confine)
      }
    else
      {
-	x = VRoot.w / 2;
-	y = VRoot.h / 2;
+	x = WinGetW(VROOT) / 2;
+	y = WinGetH(VROOT) / 2;
 	w = zoom * EoGetW(phi->ewin) / 4;
 	h = zoom * EoGetH(phi->ewin) / 4;
 	step = 0;

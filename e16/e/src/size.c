@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2003-2007 Kim Woelders
+ * Copyright (C) 2003-2008 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -86,13 +86,13 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int direction)
 	if (direction & MAX_HOR)
 	  {
 	     x = 0;
-	     w = VRoot.w;
+	     w = WinGetW(VROOT);
 	     ewin->state.maximized_horz = 1;
 	  }
 	if (direction & MAX_VER)
 	  {
 	     y = 0;
-	     h = VRoot.h;
+	     h = WinGetH(VROOT);
 	     ewin->state.maximized_vert = 1;
 	  }
 	break;

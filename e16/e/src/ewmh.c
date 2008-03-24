@@ -175,11 +175,12 @@ EWMH_Init(Window win_wm_check)
    atom_list[atom_count++] = ECORE_X_ATOM_NET_FRAME_EXTENTS;
    atom_list[atom_count++] = ECORE_X_ATOM_NET_WM_WINDOW_OPACITY;
 
-   ecore_x_window_prop_atom_set(VRoot.xwin, ECORE_X_ATOM_NET_SUPPORTED,
-				atom_list, atom_count);
+   ecore_x_window_prop_atom_set(WinGetXwin(VROOT),
+				ECORE_X_ATOM_NET_SUPPORTED, atom_list,
+				atom_count);
 
    /* Set WM info properties */
-   ecore_x_netwm_wm_identify(VRoot.xwin, win_wm_check, e_wm_name);
+   ecore_x_netwm_wm_identify(WinGetXwin(VROOT), win_wm_check, e_wm_name);
 }
 
 /*
@@ -189,7 +190,7 @@ EWMH_Init(Window win_wm_check)
 void
 EWMH_SetDesktopCount(void)
 {
-   ecore_x_netwm_desk_count_set(VRoot.xwin, DesksGetNumber());
+   ecore_x_netwm_desk_count_set(WinGetXwin(VROOT), DesksGetNumber());
 }
 
 void
@@ -206,7 +207,7 @@ EWMH_SetDesktopRoots(void)
    for (i = 0; i < n_desks; i++)
       wl[i] = EoGetXwin(DeskGet(i));
 
-   ecore_x_netwm_desk_roots_set(VRoot.xwin, wl, n_desks);
+   ecore_x_netwm_desk_roots_set(WinGetXwin(VROOT), wl, n_desks);
 
    Efree(wl);
 }
@@ -215,7 +216,7 @@ void
 EWMH_SetDesktopNames(void)
 {
    /* Fall back to defaults */
-   ecore_x_netwm_desk_names_set(VRoot.xwin, NULL, DesksGetNumber());
+   ecore_x_netwm_desk_names_set(WinGetXwin(VROOT), NULL, DesksGetNumber());
 }
 
 void
@@ -224,7 +225,8 @@ EWMH_SetDesktopSize(void)
    int                 ax, ay;
 
    DesksGetAreaSize(&ax, &ay);
-   ecore_x_netwm_desk_size_set(VRoot.xwin, ax * VRoot.w, ay * VRoot.h);
+   ecore_x_netwm_desk_size_set(WinGetXwin(VROOT), ax * WinGetW(VROOT),
+			       ay * WinGetH(VROOT));
 }
 
 void
@@ -244,11 +246,11 @@ EWMH_SetWorkArea(void)
      {
 	p_coord[4 * i] = 0;
 	p_coord[4 * i + 1] = 0;
-	p_coord[4 * i + 2] = VRoot.w;
-	p_coord[4 * i + 3] = VRoot.h;
+	p_coord[4 * i + 2] = WinGetW(VROOT);
+	p_coord[4 * i + 3] = WinGetH(VROOT);
      }
 
-   ecore_x_netwm_desk_workareas_set(VRoot.xwin, p_coord, n_desks);
+   ecore_x_netwm_desk_workareas_set(WinGetXwin(VROOT), p_coord, n_desks);
 
    Efree(p_coord);
 }
@@ -256,7 +258,7 @@ EWMH_SetWorkArea(void)
 void
 EWMH_SetCurrentDesktop(void)
 {
-   ecore_x_netwm_desk_current_set(VRoot.xwin, DesksGetCurrentNum());
+   ecore_x_netwm_desk_current_set(WinGetXwin(VROOT), DesksGetCurrentNum());
 }
 
 void
@@ -275,11 +277,11 @@ EWMH_SetDesktopViewport(void)
    for (i = 0; i < n_desks; i++)
      {
 	DeskGetArea(DeskGet(i), &ax, &ay);
-	p_coord[2 * i] = ax * VRoot.w;
-	p_coord[2 * i + 1] = ay * VRoot.h;
+	p_coord[2 * i] = ax * WinGetW(VROOT);
+	p_coord[2 * i + 1] = ay * WinGetH(VROOT);
      }
 
-   ecore_x_netwm_desk_viewports_set(VRoot.xwin, p_coord, n_desks);
+   ecore_x_netwm_desk_viewports_set(WinGetXwin(VROOT), p_coord, n_desks);
 
    Efree(p_coord);
 }
@@ -287,7 +289,7 @@ EWMH_SetDesktopViewport(void)
 void
 EWMH_SetShowingDesktop(int on)
 {
-   ecore_x_netwm_showing_desktop_set(VRoot.xwin, on);
+   ecore_x_netwm_showing_desktop_set(WinGetXwin(VROOT), on);
 }
 
 /*
@@ -308,12 +310,12 @@ EWMH_SetClientList(void)
 	wl = EMALLOC(Ecore_X_Window, num);
 	for (i = 0; i < num; i++)
 	   wl[i] = EwinGetClientXwin(lst[i]);
-	ecore_x_netwm_client_list_set(VRoot.xwin, wl, num);
+	ecore_x_netwm_client_list_set(WinGetXwin(VROOT), wl, num);
 	Efree(wl);
      }
    else
      {
-	ecore_x_netwm_client_list_set(VRoot.xwin, NULL, 0);
+	ecore_x_netwm_client_list_set(WinGetXwin(VROOT), NULL, 0);
      }
 }
 
@@ -331,12 +333,12 @@ EWMH_SetClientStacking(void)
 	wl = EMALLOC(Ecore_X_Window, num);
 	for (i = 0; i < num; i++)
 	   wl[i] = EwinGetClientXwin(lst[num - i - 1]);
-	ecore_x_netwm_client_list_stacking_set(VRoot.xwin, wl, num);
+	ecore_x_netwm_client_list_stacking_set(WinGetXwin(VROOT), wl, num);
 	Efree(wl);
      }
    else
      {
-	ecore_x_netwm_client_list_stacking_set(VRoot.xwin, NULL, 0);
+	ecore_x_netwm_client_list_stacking_set(WinGetXwin(VROOT), NULL, 0);
      }
 }
 
@@ -348,7 +350,7 @@ EWMH_SetActiveWindow(Window win)
    if (win == win_last_set)
       return;
 
-   ecore_x_netwm_client_active_set(VRoot.xwin, win);
+   ecore_x_netwm_client_active_set(WinGetXwin(VROOT), win);
    win_last_set = win;
 }
 
@@ -1064,7 +1066,8 @@ EWMH_ProcessRootClientMessage(XClientMessageEvent * ev)
      }
    if (ev->message_type == ECORE_X_ATOM_NET_DESKTOP_VIEWPORT)
      {
-	DeskCurrentGotoArea(ev->data.l[0] / VRoot.w, ev->data.l[1] / VRoot.h);
+	DeskCurrentGotoArea(ev->data.l[0] / WinGetW(VROOT),
+			    ev->data.l[1] / WinGetH(VROOT));
 	return 1;
      }
    if (ev->message_type == ECORE_X_ATOM_NET_SHOWING_DESKTOP)

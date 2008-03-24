@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2007 Kim Woelders
+ * Copyright (C) 2004-2008 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -130,11 +130,11 @@ ExtInitSS(int available)
      {
 	XScreenSaverInfo   *xssi = XScreenSaverAllocInfo();
 
-	XScreenSaverQueryInfo(disp, VRoot.xwin, xssi);
+	XScreenSaverQueryInfo(disp, WinGetXwin(VROOT), xssi);
 	Eprintf(" Screen saver window=%#lx\n", xssi->window);
 	XFree(xssi);
      }
-   XScreenSaverSelectInput(disp, VRoot.xwin,
+   XScreenSaverSelectInput(disp, WinGetXwin(VROOT),
 			   ScreenSaverNotifyMask | ScreenSaverCycleMask);
 }
 #endif
@@ -147,7 +147,7 @@ ExtInitRR(int available)
       return;
 
    /* Listen for RandR events */
-   XRRSelectInput(disp, VRoot.xwin, RRScreenChangeNotifyMask);
+   XRRSelectInput(disp, WinGetXwin(VROOT), RRScreenChangeNotifyMask);
 }
 #endif
 
@@ -277,7 +277,7 @@ ModeGetXY(Window rwin, int rx, int ry)
 
    if (Mode.wm.window)
      {
-	XTranslateCoordinates(disp, rwin, VRoot.xwin, rx, ry,
+	XTranslateCoordinates(disp, rwin, WinGetXwin(VROOT), rx, ry,
 			      &Mode.events.cx, &Mode.events.cy, &child);
      }
    else
@@ -307,7 +307,7 @@ HandleEvent(XEvent * ev)
 	Mode.events.time = ev->xkey.time;
 	ModeGetXY(ev->xbutton.root, ev->xkey.x_root, ev->xkey.y_root);
 #if 0				/* FIXME - Why? */
-	if (ev->xkey.root != VRoot.xwin)
+	if (ev->xkey.root != WinGetXwin(VROOT))
 	  {
 	     XSetInputFocus(disp, ev->xkey.root, RevertToPointerRoot,
 			    CurrentTime);
@@ -373,7 +373,7 @@ HandleEvent(XEvent * ev)
 	break;
 
       do_stuff:
-	if (ev->xany.window == VRoot.xwin)
+	if (ev->xany.window == WinGetXwin(VROOT))
 	   ActionclassesGlobalEvent(ev);
 	break;
      }

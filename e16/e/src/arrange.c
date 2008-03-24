@@ -777,16 +777,16 @@ ArrangeGetRectList(RectBox ** pfixed, int *nfixed, RectBox ** pfloating,
 	     w += x;
 	     x = 0;
 	  }
-	if ((x + w) > VRoot.w)
-	   w = VRoot.w - x;
+	if ((x + w) > WinGetW(VROOT))
+	   w = WinGetW(VROOT) - x;
 
 	if (y < 0)
 	  {
 	     h += y;
 	     y = 0;
 	  }
-	if ((y + h) > VRoot.h)
-	   h = VRoot.h - y;
+	if ((y + h) > WinGetH(VROOT))
+	   h = WinGetH(VROOT) - y;
 
 	if ((w <= 0) || (h <= 0))
 	   continue;
@@ -842,8 +842,8 @@ ArrangeEwinXY(EWin * ewin, int *px, int *py)
    newrect.p = EoGetLayer(ewin);
 
    ret = EMALLOC(RectBox, num + 1);
-   ArrangeRects(fixed, num, &newrect, 1, ret, 0, 0, VRoot.w, VRoot.h,
-		ARRANGE_BY_SIZE, 1);
+   ArrangeRects(fixed, num, &newrect, 1, ret, 0, 0,
+		WinGetW(VROOT), WinGetH(VROOT), ARRANGE_BY_SIZE, 1);
 
    for (i = 0; i < num + 1; i++)
      {
@@ -899,8 +899,8 @@ ArrangeEwins(const char *params)
    ArrangeGetRectList(&fixed, &nfix, &floating, &nflt, NULL);
 
    ret = EMALLOC(RectBox, nflt + nfix);
-   ArrangeRects(fixed, nfix, floating, nflt, ret, 0, 0, VRoot.w, VRoot.h,
-		method, 1);
+   ArrangeRects(fixed, nfix, floating, nflt, ret, 0, 0,
+		WinGetW(VROOT), WinGetH(VROOT), method, 1);
 
    for (i = nfix; i < nflt + nfix; i++)
      {

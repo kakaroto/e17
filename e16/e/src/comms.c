@@ -288,14 +288,14 @@ CommsInit(void)
 {
    char                s[1024];
 
-   comms_win = ECreateEventWindow(VRoot.win, -100, -100, 5, 5);
+   comms_win = ECreateEventWindow(VROOT, -100, -100, 5, 5);
    ESelectInput(comms_win, StructureNotifyMask | SubstructureNotifyMask);
    EventCallbackRegister(comms_win, 0, ClientHandleCommsEvents, NULL);
-   EventCallbackRegister(VRoot.win, 0, ClientHandleRootEvents, NULL);
+   EventCallbackRegister(VROOT, 0, ClientHandleRootEvents, NULL);
 
    Esnprintf(s, sizeof(s), "WINID %8lx", WinGetXwin(comms_win));
    ecore_x_window_prop_string_set(WinGetXwin(comms_win), E16_ATOM_COMMS_WIN, s);
-   ecore_x_window_prop_string_set(VRoot.xwin, E16_ATOM_COMMS_WIN, s);
+   ecore_x_window_prop_string_set(WinGetXwin(VROOT), E16_ATOM_COMMS_WIN, s);
 }
 
 static void

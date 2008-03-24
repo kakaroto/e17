@@ -96,7 +96,7 @@ SlideoutShow(Slideout * s, EWin * ewin, Win win)
 
    SlideoutCalcSize(s);
    EGetGeometry(win, NULL, NULL, NULL, &w, &h, NULL, NULL);
-   ETranslateCoordinates(win, VRoot.win, 0, 0, &x, &y, NULL);
+   ETranslateCoordinates(win, VROOT, 0, 0, &x, &y, NULL);
 
    sw = EoGetW(s);
    sh = EoGetH(s);
@@ -107,7 +107,7 @@ SlideoutShow(Slideout * s, EWin * ewin, Win win)
      case 2:
 	xx = x + ((w - sw) >> 1);
 	yy = y - sh;
-	if ((yy < 0) && (sh < VRoot.h))
+	if ((yy < 0) && (sh < WinGetH(VROOT)))
 	  {
 	     pdir = s->direction;
 	     s->direction = 1;
@@ -119,7 +119,7 @@ SlideoutShow(Slideout * s, EWin * ewin, Win win)
      case 3:
 	xx = x + ((w - sw) >> 1);
 	yy = y + h;
-	if (((yy + sh) > VRoot.h) && (sh < VRoot.h))
+	if (((yy + sh) > WinGetH(VROOT)) && (sh < WinGetH(VROOT)))
 	  {
 	     pdir = s->direction;
 	     s->direction = 0;
@@ -131,7 +131,7 @@ SlideoutShow(Slideout * s, EWin * ewin, Win win)
      case 0:
 	xx = x - sw;
 	yy = y + ((h - sh) >> 1);
-	if ((xx < 0) && (sw < VRoot.w))
+	if ((xx < 0) && (sw < WinGetW(VROOT)))
 	  {
 	     pdir = s->direction;
 	     s->direction = 1;
@@ -143,7 +143,7 @@ SlideoutShow(Slideout * s, EWin * ewin, Win win)
      case 1:
 	xx = x + w;
 	yy = y + ((h - sh) >> 1);
-	if (((xx + sw) > VRoot.w) && (sw < VRoot.w))
+	if (((xx + sw) > WinGetW(VROOT)) && (sw < WinGetW(VROOT)))
 	  {
 	     pdir = s->direction;
 	     s->direction = 0;

@@ -57,38 +57,40 @@ StartupWindowsCreate(void)
 
    if (bg_sideways)
      {
-	x = VRoot.w / 2;
+	x = WinGetW(VROOT) / 2;
 	y = 0;
-	bx = VRoot.w - Conf.desks.dragbar_width;
+	bx = WinGetW(VROOT) - Conf.desks.dragbar_width;
 	by = 0;
 	bw = Conf.desks.dragbar_width;
-	bh = VRoot.h;
+	bh = WinGetH(VROOT);
      }
    else
      {
 	x = 0;
-	y = VRoot.h / 2;
+	y = WinGetH(VROOT) / 2;
 	bx = 0;
-	by = VRoot.h - Conf.desks.dragbar_width;
-	bw = VRoot.w;
+	by = WinGetH(VROOT) - Conf.desks.dragbar_width;
+	bw = WinGetW(VROOT);
 	bh = Conf.desks.dragbar_width;
      }
 
-   eo = EobjWindowCreate(EOBJ_TYPE_MISC, -x, -y, VRoot.w, VRoot.h, 1, "Init-1");
+   eo = EobjWindowCreate(EOBJ_TYPE_MISC,
+			 -x, -y, WinGetW(VROOT), WinGetH(VROOT), 1, "Init-1");
    if (!eo)
       return;
    init_win1 = eo;
    w1 = eo->win;
    eo->fade = eo->shadow = 0;
-   win1 = ECreateWindow(w1, x, y, VRoot.w, VRoot.h, 0);
+   win1 = ECreateWindow(w1, x, y, WinGetW(VROOT), WinGetH(VROOT), 0);
 
-   eo = EobjWindowCreate(EOBJ_TYPE_MISC, x, y, VRoot.w, VRoot.h, 1, "Init-2");
+   eo = EobjWindowCreate(EOBJ_TYPE_MISC,
+			 x, y, WinGetW(VROOT), WinGetH(VROOT), 1, "Init-2");
    if (!eo)
       return;
    init_win2 = eo;
    w2 = eo->win;
    eo->fade = eo->shadow = 0;
-   win2 = ECreateWindow(w2, -x, -y, VRoot.w, VRoot.h, 0);
+   win2 = ECreateWindow(w2, -x, -y, WinGetW(VROOT), WinGetH(VROOT), 0);
 
    EMapWindow(win1);
    EMapWindow(win2);
@@ -104,8 +106,8 @@ StartupWindowsCreate(void)
 	ImageclassApply(ic, b2, 0, 0, 0, ST_SOLID);
      }
 
-   BackgroundSet(bg, win1, VRoot.w, VRoot.h);
-   BackgroundSet(bg, win2, VRoot.w, VRoot.h);
+   BackgroundSet(bg, win1, WinGetW(VROOT), WinGetH(VROOT));
+   BackgroundSet(bg, win2, WinGetW(VROOT), WinGetH(VROOT));
    BackgroundDestroyByName("STARTUP_BACKGROUND_SIDEWAYS");
    BackgroundDestroyByName("STARTUP_BACKGROUND");
 
@@ -125,7 +127,7 @@ doStartupWindowsOpen(void *data __UNUSED__)
 
    if (bg_sideways)
      {				/* so we can have two different slide methods */
-	ty = (VRoot.w / 2);
+	ty = (WinGetW(VROOT) / 2);
 	xOffset = (ty * k) >> 10;
 	x = ty;
 	yOffset = 0;
@@ -133,7 +135,7 @@ doStartupWindowsOpen(void *data __UNUSED__)
      }
    else
      {
-	ty = (VRoot.h / 2);
+	ty = (WinGetH(VROOT) / 2);
 	xOffset = 0;
 	x = 0;
 	yOffset = (ty * k) >> 10;

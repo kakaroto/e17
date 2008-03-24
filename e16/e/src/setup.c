@@ -121,26 +121,18 @@ SetupX(const char *dstr)
    /* Root defaults */
    RROOT = ERegisterWindow(DefaultRootWindow(disp), NULL);
 
-   VRoot.xwin = WinGetXwin(RROOT);
-   VRoot.vis = WinGetVisual(RROOT);
-   VRoot.depth = WinGetDepth(RROOT);
-   VRoot.cmap = WinGetCmap(RROOT);
-
    if (Mode.wm.window)
      {
-	VRoot.win = ECreateWindow(RROOT, 0, 0, VRoot.w, VRoot.h, 0);
-	VRoot.xwin = WinGetXwin(VRoot.win);
+	VROOT = ECreateWindow(RROOT, 0, 0, Mode.wm.win_w, Mode.wm.win_h, 0);
 
 	/* Enable eesh and edox to pix up the virtual root */
-	Esnprintf(buf, sizeof(buf), "%#lx", VRoot.xwin);
+	Esnprintf(buf, sizeof(buf), "%#lx", WinGetXwin(VROOT));
 	Esetenv("ENL_WM_ROOT", buf);
      }
    else
      {
 	/* Running E normally on the root window */
-	VRoot.win = RROOT;
-	VRoot.w = WinGetW(RROOT);
-	VRoot.h = WinGetH(RROOT);
+	VROOT = RROOT;
      }
 
    /* Initialise event handling */
@@ -150,7 +142,7 @@ SetupX(const char *dstr)
    Mode.events.last_error_code = 0;
    mask =
       StructureNotifyMask | SubstructureNotifyMask | SubstructureRedirectMask;
-   ESelectInput(VRoot.win, mask);
+   ESelectInput(VROOT, mask);
    ESync(0);
    if (Mode.events.last_error_code)
      {

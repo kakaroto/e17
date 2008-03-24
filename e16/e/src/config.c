@@ -248,9 +248,9 @@ ConfigFilePreparse(const char *path, const char *dest)
 	     "%s %s",
 	     epp_path, EDirRoot(), Mode.theme.path, EDirRoot(),
 	     E_PKG_VERSION, EDirRoot(), EDirBin(),
-	     Mode.theme.path, EDirUser(), EDirUserCache(), VRoot.w,
-	     VRoot.h, VRoot.w, VRoot.h, VRoot.depth, def_user, def_home,
-	     def_shell, path, dest);
+	     Mode.theme.path, EDirUser(), EDirUserCache(),
+	     WinGetW(VROOT), WinGetH(VROOT), WinGetW(VROOT), WinGetH(VROOT),
+	     WinGetDepth(VROOT), def_user, def_home, def_shell, path, dest);
    system(execline);
 
    Efree(def_user);

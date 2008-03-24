@@ -185,7 +185,7 @@ MWM_SetInfo(void)
 
    a1 = XInternAtom(disp, "_MOTIF_WM_INFO", False);
    mwminfo.flags = 2;
-   mwminfo.win = VRoot.xwin;
-   XChangeProperty(disp, VRoot.xwin, a1, a1, 32, PropModeReplace,
+   mwminfo.win = WinGetXwin(VROOT);
+   XChangeProperty(disp, WinGetXwin(VROOT), a1, a1, 32, PropModeReplace,
 		   (unsigned char *)&mwminfo, 2);
 }

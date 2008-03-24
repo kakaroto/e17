@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2007 Kim Woelders
+ * Copyright (C) 2004-2008 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -141,7 +141,7 @@ SystrayObjUnmanage(Container * ct __UNUSED__, Win win, int gone)
      {
 	ESelectInput(win, NoEventMask);
 	EUnmapWindow(win);
-	EReparentWindow(win, VRoot.win, 0, 0);
+	EReparentWindow(win, VROOT, 0, 0);
 	XRemoveFromSaveSet(disp, WinGetXwin(win));
      }
    EventCallbackUnregister(win, 0, SystrayItemEvent, ct);

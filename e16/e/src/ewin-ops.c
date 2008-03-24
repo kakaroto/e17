@@ -128,14 +128,14 @@ EwinFixPosition(EWin * ewin)
       return;
 
    x = EoGetX(ewin);
-   if ((x + ewin->border->border.left + 1) > VRoot.w)
-      x = VRoot.w - ewin->border->border.left - 1;
+   if ((x + ewin->border->border.left + 1) > WinGetW(VROOT))
+      x = WinGetW(VROOT) - ewin->border->border.left - 1;
    else if ((x + EoGetW(ewin) - ewin->border->border.right - 1) < 0)
       x = 0 - EoGetW(ewin) + ewin->border->border.right + 1;
 
    y = EoGetY(ewin);
-   if ((y + ewin->border->border.top + 1) > VRoot.h)
-      y = VRoot.h - ewin->border->border.top - 1;
+   if ((y + ewin->border->border.top + 1) > WinGetH(VROOT))
+      y = WinGetH(VROOT) - ewin->border->border.top - 1;
    else if ((y + EoGetH(ewin) - ewin->border->border.bottom - 1) < 0)
       y = 0 - EoGetH(ewin) + ewin->border->border.bottom + 1;
 
@@ -241,8 +241,8 @@ doEwinMoveResize(EWin * ewin, Desk * dsk, int x, int y, int w, int h, int flags)
    if (Mode.mode == MODE_NONE && Mode.move.check)
      {
 	/* Don't throw windows offscreen */
-	sw = VRoot.w;
-	sh = VRoot.h;
+	sw = WinGetW(VROOT);
+	sh = WinGetH(VROOT);
 	if (EoIsSticky(ewin))
 	  {
 	     xo = yo = 0;
@@ -600,18 +600,19 @@ GetOnScreenPos(int x, int y, int w, int h, int *px, int *py)
 {
    int                 dx, dy;
 
-   if (x + w > 4 && x <= VRoot.w - 4 && y + h > 4 && y <= VRoot.h - 4)
+   if (x + w > 4 && x <= WinGetW(VROOT) - 4 &&
+       y + h > 4 && y <= WinGetH(VROOT) - 4)
       goto done;
 
    dx = w / 2;
    dy = h / 2;
-   x = (x + dx) % VRoot.w;
+   x = (x + dx) % WinGetW(VROOT);
    if (x < 0)
-      x += VRoot.w;
+      x += WinGetW(VROOT);
    x -= dx;
-   y = (y + dy) % VRoot.h;
+   y = (y + dy) % WinGetH(VROOT);
    if (y < 0)
-      y += VRoot.h;
+      y += WinGetH(VROOT);
    y -= dy;
 
  done:
@@ -715,13 +716,13 @@ EwinStick(EWin * ewin)
    /* Avoid "losing" windows made sticky while not in the current viewport */
    dx = EoGetW(ewin) / 2;
    dy = EoGetH(ewin) / 2;
-   x = (EoGetX(ewin) + dx) % VRoot.w;
+   x = (EoGetX(ewin) + dx) % WinGetW(VROOT);
    if (x < 0)
-      x += VRoot.w;
+      x += WinGetW(VROOT);
    x -= dx;
-   y = (EoGetY(ewin) + dy) % VRoot.h;
+   y = (EoGetY(ewin) + dy) % WinGetH(VROOT);
    if (y < 0)
-      y += VRoot.h;
+      y += WinGetH(VROOT);
    y -= dy;
 
    EoSetSticky(ewin, 1);
@@ -1382,8 +1383,8 @@ void
 EwinMoveToArea(EWin * ewin, int ax, int ay)
 {
    DesksFixArea(&ax, &ay);
-   EwinMove(ewin, EoGetX(ewin) + (VRoot.w * (ax - ewin->area_x)),
-	    EoGetY(ewin) + (VRoot.h * (ay - ewin->area_y)));
+   EwinMove(ewin, EoGetX(ewin) + (WinGetW(VROOT) * (ax - ewin->area_x)),
+	    EoGetY(ewin) + (WinGetH(VROOT) * (ay - ewin->area_y)));
 }
 
 void

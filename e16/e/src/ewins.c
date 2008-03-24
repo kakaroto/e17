@@ -230,7 +230,7 @@ EwinManage(EWin * ewin)
    if (!frame)
      {
 	frame =
-	   ECreateObjectWindow(VRoot.win, ewin->client.x, ewin->client.y,
+	   ECreateObjectWindow(VROOT, ewin->client.x, ewin->client.y,
 			       ewin->client.w, ewin->client.h, 0, 0,
 			       EwinGetClientWin(ewin));
 	ewin->win_container =
@@ -439,23 +439,23 @@ DetermineEwinFloat(EWin * ewin, int dx, int dy)
 	  {
 	  case 0:
 	     if (((x + dx < 0) ||
-		  ((x + dx + w <= VRoot.w) &&
+		  ((x + dx + w <= WinGetW(VROOT)) &&
 		   (DesktopAt(xd + x + dx + w - 1, yd) != dsk))))
 		dofloat = 1;
 	     break;
 	  case 1:
-	     if (((x + dx + w > VRoot.w) ||
+	     if (((x + dx + w > WinGetW(VROOT)) ||
 		  ((x + dx >= 0) && (DesktopAt(xd + x + dx, yd) != dsk))))
 		dofloat = 1;
 	     break;
 	  case 2:
 	     if (((y + dy < 0) ||
-		  ((y + dy + h <= VRoot.h) &&
+		  ((y + dy + h <= WinGetH(VROOT)) &&
 		   (DesktopAt(xd, yd + y + dy + h - 1) != dsk))))
 		dofloat = 1;
 	     break;
 	  case 3:
-	     if (((y + dy + h > VRoot.h) ||
+	     if (((y + dy + h > WinGetH(VROOT)) ||
 		  ((y + dy >= 0) && (DesktopAt(xd, yd + y + dy) != dsk))))
 		dofloat = 1;
 	     break;
@@ -710,10 +710,10 @@ AddToFamily(EWin * ewin, Window xwin)
    if (ewin->icccm.transient)
      {
 	if (ewin->icccm.transient_for == None ||
-	    ewin->icccm.transient_for == VRoot.xwin)
+	    ewin->icccm.transient_for == WinGetXwin(VROOT))
 	  {
 	     /* Group transient */
-	     ewin->icccm.transient_for = VRoot.xwin;
+	     ewin->icccm.transient_for = WinGetXwin(VROOT);
 #if 0				/* Maybe? */
 	     ewin->layer++;
 #endif
@@ -808,7 +808,7 @@ AddToFamily(EWin * ewin, Window xwin)
 	if (Conf.place.manual && !Mode.place.doing_manual &&
 	    !ewin->state.placed && !ewin->icccm.transient)
 	  {
-	     if (GrabPointerSet(VRoot.win, ECSR_GRAB, 0) == GrabSuccess)
+	     if (GrabPointerSet(VROOT, ECSR_GRAB, 0) == GrabSuccess)
 		manplace = 1;
 	  }
      }
@@ -833,8 +833,8 @@ AddToFamily(EWin * ewin, Window xwin)
 	     cy -= EoGetH(ewin) / 2;
 
 	     /* keep it all on this screen if possible */
-	     cx = MIN(cx, VRoot.w - EoGetW(ewin));
-	     cy = MIN(cy, VRoot.h - EoGetH(ewin));
+	     cx = MIN(cx, WinGetW(VROOT) - EoGetW(ewin));
+	     cy = MIN(cy, WinGetH(VROOT) - EoGetH(ewin));
 	     cx = MAX(cx, 0);
 	     cy = MAX(cy, 0);
 
@@ -850,7 +850,7 @@ AddToFamily(EWin * ewin, Window xwin)
 	     ewin2 = NULL;
 	     if (EwinGetTransientFor(ewin) != None)
 		ewin2 = EwinFindByClient(EwinGetTransientFor(ewin));
-	     parent = (ewin2) ? EoGetWin(ewin) : VRoot.win;
+	     parent = (ewin2) ? EoGetWin(ewin) : VROOT;
 	     x = (WinGetW(parent) - EoGetW(ewin)) / 2;
 	     y = (WinGetH(parent) - EoGetH(ewin)) / 2;
 	  }
@@ -890,7 +890,7 @@ AddToFamily(EWin * ewin, Window xwin)
 	EwinMoveToDesktopAt(ewin, dsk, x, y);
 	EwinMove(ewin, x, y);
 	EwinShow(ewin);
-	GrabPointerSet(VRoot.win, ECSR_GRAB, 0);
+	GrabPointerSet(VROOT, ECSR_GRAB, 0);
 	Mode.place.doing_manual = 1;
 	EoSetFloating(ewin, 1);	/* Causes reparenting to root */
 	ActionMoveStart(ewin, 0, 0);
@@ -901,23 +901,23 @@ AddToFamily(EWin * ewin, Window xwin)
 	k = rand() % 4;
 	if (k == 0)
 	  {
-	     fx = (rand() % (VRoot.w)) - EoGetW(ewin);
+	     fx = (rand() % (WinGetW(VROOT))) - EoGetW(ewin);
 	     fy = -EoGetH(ewin);
 	  }
 	else if (k == 1)
 	  {
-	     fx = (rand() % (VRoot.w));
-	     fy = VRoot.h;
+	     fx = (rand() % (WinGetW(VROOT)));
+	     fy = WinGetH(VROOT);
 	  }
 	else if (k == 2)
 	  {
 	     fx = -EoGetW(ewin);
-	     fy = (rand() % (VRoot.h));
+	     fy = (rand() % (WinGetH(VROOT)));
 	  }
 	else
 	  {
-	     fx = VRoot.w;
-	     fy = (rand() % (VRoot.h)) - EoGetH(ewin);
+	     fx = WinGetW(VROOT);
+	     fy = (rand() % (WinGetH(VROOT))) - EoGetH(ewin);
 	  }
 	Mode.place.doing_slide = 1;
 	ewin->state.animated = 1;
@@ -1036,7 +1036,7 @@ EwinWithdraw(EWin * ewin, Win to)
 	/* Park the client window on the new root */
 	x = ewin->client.x;
 	y = ewin->client.y;
-	ETranslateCoordinates(EwinGetClientWin(ewin), VRoot.win,
+	ETranslateCoordinates(EwinGetClientWin(ewin), VROOT,
 			      -ewin->border->border.left,
 			      -ewin->border->border.top, &x, &y, &win);
 	EReparentWindow(EwinGetClientWin(ewin), to, x, y);
@@ -1190,7 +1190,7 @@ EwinEventUnmap(EWin * ewin, XEvent * ev)
    if (EoIsGone(ewin))
       return;
 
-   EwinWithdraw(ewin, VRoot.win);
+   EwinWithdraw(ewin, VROOT);
 }
 
 static void
@@ -1598,7 +1598,7 @@ EwinIsOnScreen(const EWin * ewin)
    w = EoGetW(ewin);
    h = EoGetH(ewin);
 
-   if (x + w <= 0 || x >= VRoot.w || y + h <= 0 || y >= VRoot.h)
+   if (x + w <= 0 || x >= WinGetW(VROOT) || y + h <= 0 || y >= WinGetH(VROOT))
       return 0;
 
    return 1;
@@ -1617,8 +1617,8 @@ EwinRememberPositionSet(EWin * ewin)
    if (!EoIsSticky(ewin))
      {
 	DeskGetArea(EoGetDesk(ewin), &ax, &ay);
-	ewin->req_x += ax * VRoot.w;
-	ewin->req_y += ay * VRoot.h;
+	ewin->req_x += ax * WinGetW(VROOT);
+	ewin->req_y += ay * WinGetH(VROOT);
      }
 }
 
@@ -1635,8 +1635,8 @@ EwinRememberPositionGet(EWin * ewin, Desk * dsk, int *px, int *py)
    if (!EoIsSticky(ewin))
      {
 	DeskGetArea(dsk, &ax, &ay);
-	x -= ax * VRoot.w;
-	y -= ay * VRoot.h;
+	x -= ax * WinGetW(VROOT);
+	y -= ay * WinGetH(VROOT);
      }
 
    *px = x;
@@ -1715,8 +1715,8 @@ EwinReposition(EWin * ewin)
 
    wdo = Mode.screen.w_old;
    hdo = Mode.screen.h_old;
-   wdn = VRoot.w;
-   hdn = VRoot.h;
+   wdn = WinGetW(VROOT);
+   hdn = WinGetH(VROOT);
 
    x = EoGetX(ewin);
    y = EoGetY(ewin);
@@ -2016,7 +2016,7 @@ EwinListTransients(const EWin * ewin, int *num, int group)
 	if (ew == ewin)
 	   continue;
 
-	if (EwinGetTransientFor(ew) == VRoot.xwin &&
+	if (EwinGetTransientFor(ew) == WinGetXwin(VROOT) &&
 	    EwinGetWindowGroup(ew) == EwinGetWindowGroup(ewin))
 	  {
 	     lst = EREALLOC(EWin *, lst, j + 1);
@@ -2053,7 +2053,7 @@ EwinListTransientFor(const EWin * ewin, int *num)
 	/* Regular parent or if root trans, top level group members */
 	if ((EwinGetTransientFor(ewin) == EwinGetClientXwin(ew)) ||
 	    (!EwinIsTransient(ew) &&
-	     EwinGetTransientFor(ewin) == VRoot.xwin &&
+	     EwinGetTransientFor(ewin) == WinGetXwin(VROOT) &&
 	     EwinGetWindowGroup(ew) == EwinGetWindowGroup(ewin)))
 	  {
 	     lst = EREALLOC(EWin *, lst, j + 1);
@@ -2132,7 +2132,7 @@ EwinsManage(void)
 
    xwins = NULL;
    num = 0;
-   XQueryTree(disp, VRoot.xwin, &rt, &par, &xwins, &num);
+   XQueryTree(disp, WinGetXwin(VROOT), &rt, &par, &xwins, &num);
    if (!xwins)
       return;
 
@@ -2464,7 +2464,7 @@ EwinHandleEventsRoot(Win win __UNUSED__, XEvent * ev, void *prm __UNUSED__)
 static void
 EwinsInit(void)
 {
-   EventCallbackRegister(VRoot.win, 0, EwinHandleEventsRoot, NULL);
+   EventCallbackRegister(VROOT, 0, EwinHandleEventsRoot, NULL);
 }
 
 /*

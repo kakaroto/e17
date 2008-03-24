@@ -391,7 +391,8 @@ ECreateArgbWindow(Win parent, int x, int y, int w, int h, Win cwin)
 	  {
 	     argb_visual = EVisualFindARGB();
 	     argb_cmap =
-		XCreateColormap(disp, VRoot.xwin, argb_visual, AllocNone);
+		XCreateColormap(disp, WinGetXwin(VROOT), argb_visual,
+				AllocNone);
 	  }
 	depth = 32;
 	vis = argb_visual;
@@ -411,7 +412,7 @@ ECreateWindowVD(Win parent, int x, int y, int w, int h,
    if (!vis || depth == 0)
       return 0;
 
-   cmap = XCreateColormap(disp, VRoot.xwin, vis, AllocNone);
+   cmap = XCreateColormap(disp, WinGetXwin(VROOT), vis, AllocNone);
 
    return ECreateWindowVDC(parent, x, y, w, h, vis, depth, cmap);
 }
@@ -504,7 +505,7 @@ ECreateFocusWindow(Win parent, int x, int y, int w, int h)
 
    attr.backing_store = NotUseful;
    attr.override_redirect = False;
-   attr.colormap = VRoot.cmap;
+   attr.colormap = WinGetCmap(VROOT);
    attr.border_pixel = 0;
    attr.background_pixel = 0;
    attr.save_under = False;
@@ -728,8 +729,8 @@ ECreateWinFromXwin(Window xwin)
    win->w = w;
    win->h = h;
    win->depth = depth;
-   win->visual = VRoot.vis;
-   win->cmap = VRoot.cmap;
+   win->visual = WinGetVisual(VROOT);
+   win->cmap = WinGetCmap(VROOT);
 
    return win;
 }
@@ -935,7 +936,7 @@ EGetGeometry(Win win, Window * root_return, int *x, int *y,
    if (depth)
       *depth = win->depth;
    if (root_return)
-      *root_return = VRoot.xwin;
+      *root_return = WinGetXwin(VROOT);
 
    return 1;
 }
@@ -1092,7 +1093,7 @@ EXQueryPointer(Window xwin, int *px, int *py, Window * pchild,
    unsigned int        mask;
 
    if (xwin == None)
-      xwin = VRoot.xwin;
+      xwin = WinGetXwin(VROOT);
 
    if (!px)
       px = &root_x;
@@ -1112,7 +1113,7 @@ EQueryPointer(Win win, int *px, int *py, Window * pchild, unsigned int *pmask)
 {
    Window              xwin;
 
-   xwin = (win) ? win->xwin : VRoot.xwin;
+   xwin = (win) ? win->xwin : WinGetXwin(VROOT);
 
    return EXQueryPointer(xwin, px, py, pchild, pmask);
 }
@@ -1861,7 +1862,7 @@ EGetTimestamp(void)
    if (win_ts == None)
      {
 	attr.override_redirect = False;
-	win_ts = XCreateWindow(disp, VRoot.xwin, -100, -100, 1, 1, 0,
+	win_ts = XCreateWindow(disp, WinGetXwin(VROOT), -100, -100, 1, 1, 0,
 			       CopyFromParent, InputOnly, CopyFromParent,
 			       CWOverrideRedirect, &attr);
 	XSelectInput(disp, win_ts, PropertyChangeMask);

@@ -62,25 +62,25 @@ EdgeTimeout(int val, void *data __UNUSED__)
      case 0:
 	if (ax == 0 && !Conf.desks.areas_wraparound)
 	   return;
-	dx = VRoot.w - 2;
+	dx = WinGetW(VROOT) - 2;
 	dax = -1;
 	break;
      case 1:
 	if (ax == (aw - 1) && !Conf.desks.areas_wraparound)
 	   return;
-	dx = -(VRoot.w - 2);
+	dx = -(WinGetW(VROOT) - 2);
 	dax = 1;
 	break;
      case 2:
 	if (ay == 0 && !Conf.desks.areas_wraparound)
 	   return;
-	dy = VRoot.h - 2;
+	dy = WinGetH(VROOT) - 2;
 	day = -1;
 	break;
      case 3:
 	if (ay == (ah - 1) && !Conf.desks.areas_wraparound)
 	   return;
-	dy = -(VRoot.h - 2);
+	dy = -(WinGetH(VROOT) - 2);
 	day = 1;
 	break;
      default:
@@ -94,7 +94,7 @@ EdgeTimeout(int val, void *data __UNUSED__)
    Mode.events.py = Mode.events.my;
    Mode.events.mx = Mode.events.cx += dx;
    Mode.events.my = Mode.events.cy += dy;
-   EXWarpPointer(VRoot.xwin, Mode.events.mx, Mode.events.my);
+   EXWarpPointer(WinGetXwin(VROOT), Mode.events.mx, Mode.events.my);
    DeskCurrentMoveAreaBy(dax, day);
    Mode.events.px = Mode.events.mx;
    Mode.events.py = Mode.events.my;
@@ -155,11 +155,11 @@ EdgeCheckMotion(int x, int y)
 
    if (x == 0)
       dir = 0;
-   else if (x == VRoot.w - 1)
+   else if (x == WinGetW(VROOT) - 1)
       dir = 1;
    else if (y == 0)
       dir = 2;
-   else if (y == VRoot.h - 1)
+   else if (y == WinGetH(VROOT) - 1)
       dir = 3;
    else
       dir = -1;
@@ -180,21 +180,21 @@ EdgeWindowShow(int which, int on)
      default:
      case 1:			/* Left */
 	eo = w1;
-	h = VRoot.h;
+	h = WinGetH(VROOT);
 	break;
      case 2:			/* Right */
 	eo = w2;
-	x = VRoot.w - 1;
-	h = VRoot.h;
+	x = WinGetW(VROOT) - 1;
+	h = WinGetH(VROOT);
 	break;
      case 3:			/* Top */
 	eo = w3;
-	w = VRoot.w;
+	w = WinGetW(VROOT);
 	break;
      case 4:			/* Bottom */
 	eo = w4;
-	y = VRoot.h - 1;
-	w = VRoot.w;
+	y = WinGetH(VROOT) - 1;
+	w = WinGetW(VROOT);
 	break;
      }
 
@@ -222,12 +222,16 @@ EdgeWindowsShow(void)
 
    if (!w1)
      {
-	w1 = EobjWindowCreate(EOBJ_TYPE_EVENT, 0, 0, 1, VRoot.h, 0, "Edge-L");
-	w2 = EobjWindowCreate(EOBJ_TYPE_EVENT, VRoot.w - 1, 0, 1, VRoot.h, 0,
-			      "Edge-R");
-	w3 = EobjWindowCreate(EOBJ_TYPE_EVENT, 0, 0, VRoot.w, 1, 0, "Edge-T");
-	w4 = EobjWindowCreate(EOBJ_TYPE_EVENT, 0, VRoot.h - 1, VRoot.w, 1, 0,
-			      "Edge-B");
+	w1 = EobjWindowCreate(EOBJ_TYPE_EVENT,
+			      0, 0, 1, WinGetH(VROOT), 0, "Edge-L");
+	w2 = EobjWindowCreate(EOBJ_TYPE_EVENT,
+			      WinGetW(VROOT) - 1, 0, 1, WinGetH(VROOT),
+			      0, "Edge-R");
+	w3 = EobjWindowCreate(EOBJ_TYPE_EVENT,
+			      0, 0, WinGetW(VROOT), 1, 0, "Edge-T");
+	w4 = EobjWindowCreate(EOBJ_TYPE_EVENT,
+			      0, WinGetH(VROOT) - 1, WinGetW(VROOT), 1,
+			      0, "Edge-B");
 	ESelectInput(w1->win, EnterWindowMask | LeaveWindowMask);
 	ESelectInput(w2->win, EnterWindowMask | LeaveWindowMask);
 	ESelectInput(w3->win, EnterWindowMask | LeaveWindowMask);

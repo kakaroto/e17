@@ -144,7 +144,8 @@ IPC_Screen(const char *params)
      }
    else if (!strncmp(param, "size", 2))
      {
-	IpcPrintf("Screen %d  size %dx%d\n", VRoot.scr, VRoot.w, VRoot.h);
+	IpcPrintf("Screen %d  size %dx%d\n", VRoot.scr,
+		  WinGetW(VROOT), WinGetH(VROOT));
      }
    else if (!strcmp(param, "split"))
      {
@@ -1213,7 +1214,7 @@ IPC_Warp(const char *params)
    else if (!strncmp(params, "abs", 3))
      {
 	sscanf(params, "%*s %i %i", &x, &y);
-	EXWarpPointer(VRoot.xwin, x, y);
+	EXWarpPointer(WinGetXwin(VROOT), x, y);
      }
    else if (!strncmp(params, "rel", 3))
      {

@@ -597,7 +597,7 @@ ECompMgrDeskConfigure(Desk * dsk)
      {
 	GC                  gc;
 
-	pmap = XCreatePixmap(disp, Mode_compmgr.root, 1, 1, VRoot.depth);
+	pmap = XCreatePixmap(disp, Mode_compmgr.root, 1, 1, WinGetDepth(VROOT));
 	gc = EXCreateGC(pmap, 0, NULL);
 	XSetClipMask(disp, gc, 0);
 	XSetFillStyle(disp, gc, FillSolid);
@@ -611,7 +611,7 @@ ECompMgrDeskConfigure(Desk * dsk)
      }
 
    pa.repeat = True;
-   pictfmt = XRenderFindVisualFormat(disp, VRoot.vis);
+   pictfmt = XRenderFindVisualFormat(disp, WinGetVisual(VROOT));
    pict = XRenderCreatePicture(disp, pmap, pictfmt, CPRepeat, &pa);
 
    if (pmap != dsk->bg.pmap)
@@ -1526,7 +1526,7 @@ ECompMgrWinNew(EObj * eo)
    if (!Mode_compmgr.active)	/* FIXME - Here? */
       return;
 
-   if (eo->inputonly || eo->win == VRoot.win)
+   if (eo->inputonly || eo->win == VROOT)
      {
 	eo->noredir = 1;
 	return;
@@ -2269,7 +2269,7 @@ ECompMgrRepaint(void)
    D1printf("ECompMgrRepaint desk picture=%#lx\n", pict);
    XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, region);
    XRenderComposite(dpy, PictOpSrc, pict, None, pbuf,
-		    0, 0, 0, 0, 0, 0, VRoot.w, VRoot.h);
+		    0, 0, 0, 0, 0, 0, WinGetW(VROOT), WinGetH(VROOT));
 #endif
 
    /* Paint trans windows and shadows bottom up */
@@ -2284,7 +2284,7 @@ ECompMgrRepaint(void)
      {
 	XFixesSetPictureClipRegion(dpy, pbuf, 0, 0, Mode_compmgr.damage);
 	XRenderComposite(dpy, PictOpSrc, pbuf, None, rootPicture,
-			 0, 0, 0, 0, 0, 0, VRoot.w, VRoot.h);
+			 0, 0, 0, 0, 0, 0, WinGetW(VROOT), WinGetH(VROOT));
      }
 
    Mode_compmgr.got_damage = 0;
@@ -2303,7 +2303,7 @@ static void
 ECompMgrRootBufferCreate(unsigned int w, unsigned int h)
 {
    /* Root buffer picture and pixmap */
-   rootBuffer = EPictureCreateBuffer(VRoot.win, w, h, &VRoot.pmap);
+   rootBuffer = EPictureCreateBuffer(VROOT, w, h, &VRoot.pmap);
 
    /* Screen region */
    Mode_compmgr.rgn_screen = ERegionCreateRect(0, 0, w, h);
@@ -2340,7 +2340,7 @@ ECompMgrRootExpose(void *prm __UNUSED__, XEvent * ev)
    static int          n_expose = 0;
    int                 more = ev->xexpose.count + 1;
 
-   if (ev->xexpose.window != VRoot.xwin)
+   if (ev->xexpose.window != WinGetXwin(VROOT))
       return;
 
    D1printf("ECompMgrRootExpose %d %d %d\n", n_expose, size_expose,
@@ -2435,13 +2435,13 @@ ECompMgrStart(void)
    Conf_compmgr.override_redirect.opacity =
       OpacityFix(Conf_compmgr.override_redirect.opacity, 100);
 
-   ECompMgrRootBufferCreate(VRoot.w, VRoot.h);
+   ECompMgrRootBufferCreate(WinGetW(VROOT), WinGetH(VROOT));
 
-   Mode_compmgr.root = VRoot.xwin;
+   Mode_compmgr.root = WinGetXwin(VROOT);
 #if USE_COMPOSITE_OVERLAY_WINDOW
    if (Conf_compmgr.use_cow && !Mode.wm.window)
      {
-	Mode_compmgr.cow = XCompositeGetOverlayWindow(disp, VRoot.xwin);
+	Mode_compmgr.cow = XCompositeGetOverlayWindow(disp, WinGetXwin(VROOT));
 	if (Mode_compmgr.cow != None)
 	  {
 	     /* Ok, got the cow! */
@@ -2462,7 +2462,7 @@ ECompMgrStart(void)
 #endif
 
    pa.subwindow_mode = IncludeInferiors;
-   pictfmt = XRenderFindVisualFormat(disp, VRoot.vis);
+   pictfmt = XRenderFindVisualFormat(disp, WinGetVisual(VROOT));
    rootPicture =
       XRenderCreatePicture(disp, Mode_compmgr.root, pictfmt, CPSubwindowMode,
 			   &pa);
@@ -2474,18 +2474,19 @@ ECompMgrStart(void)
    switch (Mode_compmgr.mode)
      {
      case ECM_MODE_ROOT:
-	XCompositeRedirectSubwindows(disp, VRoot.xwin, CompositeRedirectManual);
+	XCompositeRedirectSubwindows(disp, WinGetXwin(VROOT),
+				     CompositeRedirectManual);
 #if USE_DESK_EXPOSE		/* FIXME - Remove? */
-	ESelectInputChange(VRoot.xwin, ExposureMask, 0);
+	ESelectInputChange(WinGetXwin(VROOT), ExposureMask, 0);
 #endif
 	break;
      case ECM_MODE_WINDOW:
 #if USE_DESK_EXPOSE		/* FIXME - Remove? */
-	ESelectInputChange(VRoot.xwin, ExposureMask, 0);
+	ESelectInputChange(WinGetXwin(VROOT), ExposureMask, 0);
 #endif
 	break;
      case ECM_MODE_AUTO:
-	XCompositeRedirectSubwindows(disp, VRoot.xwin,
+	XCompositeRedirectSubwindows(disp, WinGetXwin(VROOT),
 				     CompositeRedirectAutomatic);
 	break;
      }
@@ -2495,7 +2496,7 @@ ECompMgrStart(void)
    rgn_tmp = ERegionCreate();
    rgn_tmp2 = ERegionCreate();
 
-   EventCallbackRegister(VRoot.win, 0, ECompMgrHandleRootEvent, NULL);
+   EventCallbackRegister(VROOT, 0, ECompMgrHandleRootEvent, NULL);
 
    wm_cm_sel = SelectionAcquire("_NET_WM_CM_S", NULL, NULL);
 
@@ -2560,14 +2561,15 @@ ECompMgrStop(void)
    REGION_DESTROY(rgn_tmp2);
 
    if (Mode_compmgr.mode == ECM_MODE_ROOT)
-      XCompositeUnredirectSubwindows(disp, VRoot.xwin, CompositeRedirectManual);
+      XCompositeUnredirectSubwindows(disp, WinGetXwin(VROOT),
+				     CompositeRedirectManual);
 
-   EventCallbackUnregister(VRoot.win, 0, ECompMgrHandleRootEvent, NULL);
+   EventCallbackUnregister(VROOT, 0, ECompMgrHandleRootEvent, NULL);
 
 #if USE_COMPOSITE_OVERLAY_WINDOW
    if (Mode_compmgr.cow != None)
      {
-	XCompositeReleaseOverlayWindow(disp, VRoot.xwin);
+	XCompositeReleaseOverlayWindow(disp, WinGetXwin(VROOT));
 	Mode_compmgr.cow = None;
      }
 #endif
@@ -2721,13 +2723,13 @@ ECompMgrHandleRootEvent(Win win __UNUSED__, XEvent * ev, void *prm)
      case ReparentNotify:
      case EX_EVENT_REPARENT_GONE:
 	xwin = ev->xreparent.window;
-	if (ev->xreparent.parent == VRoot.xwin)
+	if (ev->xreparent.parent == WinGetXwin(VROOT))
 	   goto case_CreateNotify;
 	else
 	   goto case_DestroyNotify;
 
      case ConfigureNotify:
-	if (ev->xconfigure.window == VRoot.xwin)
+	if (ev->xconfigure.window == WinGetXwin(VROOT))
 	  {
 	     ECompMgrRootConfigure(prm, ev);
 	  }

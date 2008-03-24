@@ -504,8 +504,8 @@ void
 FocusNewDeskBegin(void)
 {
    /* Freeze keyboard */
-   XGrabKeyboard(disp, VRoot.xwin, False, GrabModeAsync, GrabModeSync,
-		 CurrentTime);
+   XGrabKeyboard(disp, WinGetXwin(VROOT), False, GrabModeAsync,
+		 GrabModeSync, CurrentTime);
 
    focus_pending_new = NULL;
    doFocusToEwin(NULL, FOCUS_DESK_LEAVE);
@@ -564,7 +564,7 @@ FocusHandleEnter(EWin * ewin, XEvent * ev)
    if (!ewin)
      {
 	/* Entering root may mean entering this screen */
-	if (win == VRoot.xwin &&
+	if (win == WinGetXwin(VROOT) &&
 	    (ev->xcrossing.mode == NotifyNormal &&
 	     ev->xcrossing.detail != NotifyInferior))
 	  {
@@ -599,7 +599,7 @@ FocusHandleLeave(EWin * ewin __UNUSED__, XEvent * ev)
    Window              win = ev->xcrossing.window;
 
    /* Leaving root may mean entering other screen */
-   if (win == VRoot.xwin &&
+   if (win == WinGetXwin(VROOT) &&
        (ev->xcrossing.mode == NotifyNormal &&
 	ev->xcrossing.detail != NotifyInferior))
       FocusToEWin(NULL, FOCUS_DESK_LEAVE);
