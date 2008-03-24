@@ -301,11 +301,12 @@ ERegionCreateFromRects(XRectangle * rectangles, int nrectangles)
 #endif
 
 static              XserverRegion
-ERegionCreateFromWindow(Window win)
+ERegionCreateFromWindow(Win win)
 {
    XserverRegion       rgn;
 
-   rgn = XFixesCreateRegionFromWindow(disp, win, WindowRegionBounding);
+   rgn =
+      XFixesCreateRegionFromWindow(disp, WinGetXwin(win), WindowRegionBounding);
 
 #if DEBUG_REGIONS
    n_rgn_c++;
@@ -494,15 +495,14 @@ EPictureCreateSolid(Bool argb, double a, double r, double g, double b)
 }
 
 static              Picture
-EPictureCreateBuffer(Window win, int w, int h, int depth, Visual * vis,
-		     Pixmap * ppmap)
+EPictureCreateBuffer(Win win, int w, int h, Pixmap * ppmap)
 {
    Picture             pict;
    Pixmap              pmap;
    XRenderPictFormat  *pictfmt;
 
-   pmap = XCreatePixmap(disp, win, w, h, depth);
-   pictfmt = XRenderFindVisualFormat(disp, vis);
+   pmap = XCreatePixmap(disp, WinGetXwin(win), w, h, WinGetDepth(win));
+   pictfmt = XRenderFindVisualFormat(disp, WinGetVisual(win));
    pict = XRenderCreatePicture(disp, pmap, pictfmt, 0, 0);
    if (ppmap)
       *ppmap = pmap;
@@ -549,8 +549,7 @@ ECompMgrMoveResizeFix(EObj * eo, int x, int y, int w, int h)
      }
 
    /* Resizing - grab old contents */
-   pict = EPictureCreateBuffer(EobjGetXwin(eo), wo, ho, WinGetDepth(eo->win),
-			       WinGetVisual(eo->win), NULL);
+   pict = EPictureCreateBuffer(EobjGetWin(eo), wo, ho, NULL);
    XRenderComposite(disp, PictOpSrc, cw->picture, None, pict, 0, 0, 0, 0, 0, 0,
 		    wo, ho);
 
@@ -1142,7 +1141,7 @@ ECompMgrWinSetShape(EObj * eo)
 
    if (cw->shape == None)
      {
-	cw->shape = ERegionCreateFromWindow(EobjGetXwin(eo));
+	cw->shape = ERegionCreateFromWindow(EobjGetWin(eo));
 
 	if (WinIsShaped(EobjGetWin(eo)))
 	  {
@@ -1512,7 +1511,7 @@ ECompMgrWinSetPicts(EObj * eo)
 	  {
 	     XserverRegion       clip;
 
-	     clip = ERegionCreateFromWindow(EobjGetXwin(eo));
+	     clip = ERegionCreateFromWindow(EobjGetWin(eo));
 	     XFixesSetPictureClipRegion(disp, cw->picture, 0, 0, clip);
 	     ERegionDestroy(clip);
 	  }
@@ -2304,8 +2303,7 @@ static void
 ECompMgrRootBufferCreate(unsigned int w, unsigned int h)
 {
    /* Root buffer picture and pixmap */
-   rootBuffer = EPictureCreateBuffer(VRoot.xwin, w, h,
-				     VRoot.depth, VRoot.vis, &VRoot.pmap);
+   rootBuffer = EPictureCreateBuffer(VRoot.win, w, h, &VRoot.pmap);
 
    /* Screen region */
    Mode_compmgr.rgn_screen = ERegionCreateRect(0, 0, w, h);
