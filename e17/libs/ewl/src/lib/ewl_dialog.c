@@ -149,7 +149,7 @@ ewl_dialog_action_position_set(Ewl_Dialog *d, Ewl_Position pos)
 		ewl_box_orientation_set(EWL_BOX(d->action_box),
 					EWL_ORIENTATION_VERTICAL);
 		ewl_object_fill_policy_set(EWL_OBJECT(d->action_area),
-			   EWL_FLAG_FILL_VFILL | EWL_FLAG_FILL_HSHRINK);
+			   EWL_FLAG_FILL_VFILL);
 	}
 	else {
 		ewl_box_orientation_set(EWL_BOX(d->box),
@@ -159,7 +159,7 @@ ewl_dialog_action_position_set(Ewl_Dialog *d, Ewl_Position pos)
 		ewl_box_orientation_set(EWL_BOX(d->action_box),
 					EWL_ORIENTATION_HORIZONTAL);
 		ewl_object_fill_policy_set(EWL_OBJECT(d->action_area),
-			   EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
+			   EWL_FLAG_FILL_HFILL);
 	}
 
 	ewl_container_child_remove(EWL_CONTAINER(d->box), d->separator);
