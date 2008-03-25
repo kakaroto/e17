@@ -96,7 +96,7 @@ ewl_dialog_init(Ewl_Dialog *dialog)
 	dialog->action_area = ewl_cell_new();
 	ewl_widget_appearance_set(dialog->action_area, "actionarea");
 	ewl_object_fill_policy_set(EWL_OBJECT(dialog->action_area),
-			   EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
+			   EWL_FLAG_FILL_HFILL);
 	ewl_widget_internal_set(dialog->action_area, TRUE);
 	ewl_container_child_append(EWL_CONTAINER(dialog->box), 
 			dialog->action_area);
