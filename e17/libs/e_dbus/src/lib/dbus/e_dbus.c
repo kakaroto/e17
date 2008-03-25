@@ -142,14 +142,20 @@ static E_DBus_Connection *
 e_dbus_connection_new(DBusConnection *conn)
 {
   E_DBus_Connection *cd;
+  const char *conn_name;
 
   cd = calloc(1, sizeof(E_DBus_Connection));
   if (!cd) return NULL;
 
   cd->conn = conn;
-  cd->conn_name = strdup(dbus_bus_get_unique_name(conn));
-
-  DEBUG(1, "Connected! Name: %s\n", cd->conn_name);
+  conn_name = dbus_bus_get_unique_name(conn);
+  if (conn_name)
+  {
+    DEBUG(1, "Connected! Name: %s\n", conn_name);
+    cd->conn_name = strdup(conn_name);
+  }
+  else
+    DEBUG(1, "Not connected\n");
 
   cd->shared_type = -1;
   cd->fd_handlers = ecore_list_new();
