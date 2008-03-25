@@ -367,7 +367,7 @@ ArrangeRects(const RectBox * fixed, int fixed_count, RectBox * floating,
      }
 
    /* for every floating rect in order, "fit" it into the sorted list */
-   i = ((fixed_count + floating_count) * 2) + 2;
+   i = ((fixed_count + floating_count) * 4) + 2;
    max_spaces = i * i;
    xarray = EMALLOC(int, i);
    yarray = EMALLOC(int, i);
