@@ -1,17 +1,15 @@
 /*
  * This file defines functions that query each of the functions provided by
- * the NetworkManager Device interface.
+ * the org.freedesktop.NetworkManager.Device DBus interface.
  */
 
 #include "E_Nm.h"
 #include "e_nm_private.h"
 #include <Ecore_Data.h>
 
+
 /**
- * Get the system name of a NetworkManager device
- *
- * Returns an Ecore_List of dbus object paths for network devices. This list is
- * of const char *, and is freed automatically after the callback returns.
+ * Get the UDI of a NetworkManager device
  *
  * @param ctx an e_nm context
  * @param device a NetworkManager device to communicate with
@@ -19,11 +17,130 @@
  * @param data user data to pass to the callback function
  */
 EAPI int
-e_nm_device_get_name(E_NM_Context *ctx, const char *device,
-                     E_DBus_Callback_Func cb_func, void *data)
+e_nm_device_get_udi(E_NM_Context *ctx, const char *device,
+                    E_DBus_Callback_Func cb_func, void *data)
 {
-  return e_nm_get_from_device(ctx, device, cb_func, data, "getName",
-                              DBUS_TYPE_STRING);
+  /* FIXME: Decide how to handle the return value for this functions */
+  e_nm_device_properties_get(ctx->conn, device, "Udi", cb_func, data);
+}
+
+
+/**
+ * Get the interface name of a NetworkManager device
+ *
+ * @param ctx an e_nm context
+ * @param device a NetworkManager device to communicate with
+ * @param cb a callback, used when the method returns (or an error is received)
+ * @param data user data to pass to the callback function
+ */
+EAPI int
+e_nm_device_get_interface(E_NM_Context *ctx, const char *device,
+                          E_DBus_Callback_Func cb_func, void *data)
+{
+  /* FIXME: Decide how to handle the return value for this functions */
+  e_nm_device_properties_get(ctx->conn, device, "Interface", cb_func, data);
+}
+
+
+/**
+ * Get the driver name of a NetworkManager device
+ *
+ * @param ctx an e_nm context
+ * @param device a NetworkManager device to communicate with
+ * @param cb a callback, used when the method returns (or an error is received)
+ * @param data user data to pass to the callback function
+ */
+EAPI int
+e_nm_device_get_driver(E_NM_Context *ctx, const char *device,
+                       E_DBus_Callback_Func cb_func, void *data)
+{
+  /* FIXME: Decide how to handle the return value for this functions */
+  e_nm_device_properties_get(ctx->conn, device, "Driver", cb_func, data);
+}
+
+
+/**
+ * Get the capabilities of a NetworkManager device
+ *
+ * @param ctx an e_nm context
+ * @param device a NetworkManager device to communicate with
+ * @param cb a callback, used when the method returns (or an error is received)
+ * @param data user data to pass to the callback function
+ */
+EAPI int
+e_nm_device_get_capabilities(E_NM_Context *ctx, const char *device,
+                             E_DBus_Callback_Func cb_func, void *data)
+{
+  /* FIXME: Decide how to handle the return value for this functions */
+  e_nm_device_properties_get(ctx->conn, device, "Capabilities", cb_func, data);
+}
+
+
+/**
+ * Get the IPv4 address of a NetworkManager device
+ *
+ * @param ctx an e_nm context
+ * @param device a NetworkManager device to communicate with
+ * @param cb a callback, used when the method returns (or an error is received)
+ * @param data user data to pass to the callback function
+ */
+EAPI int
+e_nm_device_get_ip4address(E_NM_Context *ctx, const char *device,
+                           E_DBus_Callback_Func cb_func, void *data)
+{
+  /* FIXME: Decide how to handle the return value for this functions */
+  e_nm_device_properties_get(ctx->conn, device, "Ip4Address", cb_func, data);
+}
+
+
+/**
+ * Get the state of a NetworkManager device
+ *
+ * @param ctx an e_nm context
+ * @param device a NetworkManager device to communicate with
+ * @param cb a callback, used when the method returns (or an error is received)
+ * @param data user data to pass to the callback function
+ */
+EAPI int
+e_nm_device_get_state(E_NM_Context *ctx, const char *device,
+                      E_DBus_Callback_Func cb_func, void *data)
+{
+  /* FIXME: Decide how to handle the return value for this functions */
+  e_nm_device_properties_get(ctx->conn, device, "State", cb_func, data);
+}
+
+
+/**
+ * Get the IPv4 config object path of a NetworkManager device
+ *
+ * @param ctx an e_nm context
+ * @param device a NetworkManager device to communicate with
+ * @param cb a callback, used when the method returns (or an error is received)
+ * @param data user data to pass to the callback function
+ */
+EAPI int
+e_nm_device_get_ip4config(E_NM_Context *ctx, const char *device,
+                          E_DBus_Callback_Func cb_func, void *data)
+{
+  /* FIXME: Decide how to handle the return value for this functions */
+  e_nm_device_properties_get(ctx->conn, device, "Ip4Config", cb_func, data);
+}
+
+
+/**
+ * Get the carrier status of a NetworkManager device
+ *
+ * @param ctx an e_nm context
+ * @param device a NetworkManager device to communicate with
+ * @param cb a callback, used when the method returns (or an error is received)
+ * @param data user data to pass to the callback function
+ */
+EAPI int
+e_nm_device_get_carrier(E_NM_Context *ctx, const char *device,
+                        E_DBus_Callback_Func cb_func, void *data)
+{
+  /* FIXME: Decide how to handle the return value for this functions */
+  e_nm_device_properties_get(ctx->conn, device, "Carrier", cb_func, data);
 }
 
 
@@ -43,117 +160,6 @@ EAPI int
 e_nm_device_get_type(E_NM_Context *ctx, const char *device, 
                      E_DBus_Callback_Func cb_func, void *data)
 {
-  return e_nm_get_from_device(ctx, device, cb_func, data, "getType",
-                              DBUS_TYPE_INT32);
+  /* FIXME: Decide how to handle the return value for this functions */
+  e_nm_device_properties_get(ctx->conn, device, "DeviceType", cb_func, data);
 }
-
-
-/**
- * Get the HAL UDI of a NetworkManager device
- *
- * @param ctx an e_nm context
- * @param device a NetworkManager device to communicate with
- * @param cb a callback, used when the method returns (or an error is received)
- * @param data user data to pass to the callback function
- */
-EAPI int
-e_nm_device_get_hal_udi(E_NM_Context *ctx, const char *device,
-                        E_DBus_Callback_Func cb_func, void *data)
-{
-  return e_nm_get_from_device(ctx, device, cb_func, data, "getHalUdi",
-                              DBUS_TYPE_STRING);
-}
-
-
-/**
- * Get the IPv4 address of a NetworkManager device
- *
- * @param ctx an e_nm context
- * @param device a NetworkManager device to communicate with
- * @param cb a callback, used when the method returns (or an error is received)
- * @param data user data to pass to the callback function
- */
-EAPI int
-e_nm_device_get_ip4_address(E_NM_Context *ctx, const char *device,
-                            E_DBus_Callback_Func cb_func, void *data)
-{
-  return e_nm_get_from_device(ctx, device, cb_func, data, "getIP4Address",
-                              DBUS_TYPE_UINT32);
-}
-
-
-/**
- * Get the link status of a NetworkManager device
- *
- * @param ctx an e_nm context
- * @param device a NetworkManager device to communicate with
- * @param cb a callback, used when the method returns (or an error is received)
- * @param data user data to pass to the callback function
- */
-EAPI int
-e_nm_device_get_link_active(E_NM_Context *ctx, const char *device,
-                            E_DBus_Callback_Func cb_func, void *data)
-{
-  return e_nm_get_from_device(ctx, device, cb_func, data, "getLinkActive",
-                              DBUS_TYPE_BOOLEAN);
-}
-
-
-/**
- * Get the signal strength of a the wireless network that a NetworkManager 
- * device is connected to.
- *
- * @param ctx an e_nm context
- * @param device a NetworkManager device to communicate with
- * @param cb a callback, used when the method returns (or an error is received)
- * @param data user data to pass to the callback function
- */
-EAPI int
-e_nm_device_wireless_get_strength(E_NM_Context *ctx, const char *device,
-                            E_DBus_Callback_Func cb_func, void *data)
-{
-  return e_nm_get_from_device(ctx, device, cb_func, data, "getStrength",
-                              DBUS_TYPE_INT32);
-}
-
-
-/**
- * Find the NetworkManager device's currently associated wireless network
- *
- * @param ctx an e_nm context
- * @param device a NetworkManager device to communicate with
- * @param cb a callback, used when the method returns (or an error is received)
- * @param data user data to pass to the callback function
- */
-EAPI int
-e_nm_device_wireless_get_active_network(E_NM_Context *ctx, const char *device,
-                                        E_DBus_Callback_Func cb_func, void *data)
-{
-  return e_nm_get_from_device(ctx, device, cb_func, data, "getActiveNetwork",
-                              DBUS_TYPE_STRING);
-}
-
-
-/**
- * Get the list of available wireless networks
- *
- * Returns an Ecore_List of wireless network names
- *
- * @param ctx an e_nm context
- * @param device a NetworkManager device to communicate with
- * @param cb a callback, used when the method returns (or an error is received)
- * @param data user data to pass to the callback function
- */
-EAPI int
-e_nm_device_wireless_get_networks(E_NM_Context *ctx, const char *device, 
-                                  E_DBus_Callback_Func cb_func, void *data)
-{
-  DBusMessage *msg;
-  int ret;
-
-  msg = e_nm_device_call_new(device, "getNetworks");
-  ret = e_dbus_method_call_send(ctx->conn, msg, cb_nm_string_list, cb_func, free_nm_string_list, -1, data) ? 1 : 0;
-  dbus_message_unref(msg);
-  return ret;
-}
-

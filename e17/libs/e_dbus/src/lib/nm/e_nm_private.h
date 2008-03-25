@@ -16,6 +16,7 @@
 
 #define e_nm_network_call_new(member) dbus_message_new_method_call(E_NM_SERVICE, E_NM_PATH_NETWORK_MANAGER, E_NM_INTERFACE_NETWORK_MANAGER, member)
 
+#define e_nm_device_properties_get(con, dev, prop, cb, data) e_dbus_properties_get(con, E_NM_SERVICE, dev, E_NM_INTERFACE_DEVICE, prop, (E_DBus_Method_Return_Cb) cb, data)
 
 struct E_NM_Context
 {
