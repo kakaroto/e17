@@ -548,8 +548,7 @@ cdef public class Rect [object PyEvasRect, type PyEvasRect_Type]:
 
 
 cdef class EventPoint:
-    cdef readonly int x
-    cdef readonly int y
+    cdef Evas_Point *obj
 
     cdef void _set_obj(self, Evas_Point *obj)
 
@@ -562,71 +561,56 @@ cdef class EventPosition:
 
 
 cdef class EventMouseIn:
+    cdef Evas_Event_Mouse_In *obj
     cdef readonly EventPosition position
-    cdef readonly int buttons
-    cdef readonly unsigned timestamp
 
     cdef void _set_obj(self, void *ptr)
 
 
 cdef class EventMouseOut:
+    cdef Evas_Event_Mouse_Out *obj
     cdef readonly EventPosition position
-    cdef readonly int buttons
-    cdef readonly unsigned timestamp
 
     cdef void _set_obj(self, void *ptr)
 
 
 cdef class EventMouseDown:
+    cdef Evas_Event_Mouse_Down *obj
     cdef readonly EventPosition position
-    cdef readonly int button
-    cdef readonly unsigned timestamp
 
     cdef void _set_obj(self, void *ptr)
 
 
 cdef class EventMouseUp:
+    cdef Evas_Event_Mouse_Up *obj
     cdef readonly EventPosition position
-    cdef readonly int button
-    cdef readonly unsigned timestamp
 
     cdef void _set_obj(self, void *ptr)
 
 
 cdef class EventMouseMove:
+    cdef Evas_Event_Mouse_Move *obj
     cdef readonly EventPosition position
     cdef readonly EventPosition prev_position
-    cdef readonly int buttons
-    cdef readonly unsigned timestamp
 
     cdef void _set_obj(self, void *ptr)
 
 
 cdef class EventMouseWheel:
+    cdef Evas_Event_Mouse_Wheel *obj
     cdef readonly EventPosition position
-    cdef readonly int direction
-    cdef readonly int z
-    cdef readonly unsigned timestamp
 
     cdef void _set_obj(self, void *ptr)
 
 
 cdef class EventKeyDown:
-    cdef readonly object keyname
-    cdef readonly object key
-    cdef readonly object string
-    cdef readonly object compose
-    cdef readonly unsigned timestamp
+    cdef Evas_Event_Key_Down *obj
 
     cdef void _set_obj(self, void *ptr)
 
 
 cdef class EventKeyUp:
-    cdef readonly object keyname
-    cdef readonly object key
-    cdef readonly object string
-    cdef readonly object compose
-    cdef readonly unsigned timestamp
+    cdef Evas_Event_Key_Up *obj
 
     cdef void _set_obj(self, void *ptr)
 
