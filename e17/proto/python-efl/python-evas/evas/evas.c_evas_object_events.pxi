@@ -80,11 +80,11 @@ cdef class EventMouseIn:
     def __str__(self):
         self._check_validity()
         return ("%s(buttons=%d, output=(%d, %d), canvas=(%d, %d), "
-                "timestamp=%d)") % \
+                "timestamp=%d, event_flags=%#x)") % \
                 (self.__class__.__name__, self.obj.buttons,
                  self.obj.output.x, self.obj.output.y,
                  self.obj.canvas.x, self.obj.canvas.y,
-                 self.obj.timestamp)
+                 self.obj.timestamp, self.event_flags)
 
     property buttons:
         def __get__(self):
@@ -95,6 +95,15 @@ cdef class EventMouseIn:
         def __get__(self):
             self._check_validity()
             return self.obj.timestamp
+
+    property event_flags:
+        def __get__(self):
+            self._check_validity()
+            return <int>self.obj.event_flags
+
+        def __set__(self, flags):
+            self._check_validity()
+            self.obj.event_flags = flags
 
 
 cdef class EventMouseOut:
@@ -114,11 +123,11 @@ cdef class EventMouseOut:
     def __str__(self):
         self._check_validity()
         return ("%s(buttons=%d, output=(%d, %d), canvas=(%d, %d), "
-                "timestamp=%d)") % \
+                "timestamp=%d, event_flags=%#x)") % \
                 (self.__class__.__name__, self.obj.buttons,
                  self.obj.output.x, self.obj.output.y,
                  self.obj.canvas.x, self.obj.canvas.y,
-                 self.obj.timestamp)
+                 self.obj.timestamp, self.event_flags)
 
     property buttons:
         def __get__(self):
@@ -129,6 +138,15 @@ cdef class EventMouseOut:
         def __get__(self):
             self._check_validity()
             return self.obj.timestamp
+
+    property event_flags:
+        def __get__(self):
+            self._check_validity()
+            return <int>self.obj.event_flags
+
+        def __set__(self, flags):
+            self._check_validity()
+            self.obj.event_flags = flags
 
 
 cdef class EventMouseDown:
@@ -148,11 +166,11 @@ cdef class EventMouseDown:
     def __str__(self):
         self._check_validity()
         return ("%s(button=%d, output=(%d, %d), canvas=(%d, %d), "
-                "timestamp=%d)") % \
+                "timestamp=%d, event_flags=%#x)") % \
                 (self.__class__.__name__, self.obj.button,
                  self.obj.output.x, self.obj.output.y,
                  self.obj.canvas.x, self.obj.canvas.y,
-                 self.obj.timestamp)
+                 self.obj.timestamp, self.event_flags)
 
     property button:
         def __get__(self):
@@ -163,6 +181,15 @@ cdef class EventMouseDown:
         def __get__(self):
             self._check_validity()
             return self.obj.timestamp
+
+    property event_flags:
+        def __get__(self):
+            self._check_validity()
+            return <int>self.obj.event_flags
+
+        def __set__(self, flags):
+            self._check_validity()
+            self.obj.event_flags = flags
 
 
 cdef class EventMouseUp:
@@ -182,11 +209,11 @@ cdef class EventMouseUp:
     def __str__(self):
         self._check_validity()
         return ("%s(button=%d, output=(%d, %d), canvas=(%d, %d), "
-                "timestamp=%d)") % \
+                "timestamp=%d, event_flags=%#x)") % \
                 (self.__class__.__name__, self.obj.button,
                  self.obj.output.x, self.obj.output.y,
                  self.obj.canvas.x, self.obj.canvas.y,
-                 self.obj.timestamp)
+                 self.obj.timestamp, self.event_flags)
 
     property button:
         def __get__(self):
@@ -197,6 +224,15 @@ cdef class EventMouseUp:
         def __get__(self):
             self._check_validity()
             return self.obj.timestamp
+
+    property event_flags:
+        def __get__(self):
+            self._check_validity()
+            return <int>self.obj.event_flags
+
+        def __set__(self, flags):
+            self._check_validity()
+            self.obj.event_flags = flags
 
 
 cdef class EventMouseMove:
@@ -220,13 +256,14 @@ cdef class EventMouseMove:
     def __str__(self):
         self._check_validity()
         return ("%s(buttons=%d, output=(%d, %d), canvas=(%d, %d), "
-                "prev_output=(%d, %d), prev_canvas=(%d, %d), timestamp=%d)") %\
+                "prev_output=(%d, %d), prev_canvas=(%d, %d), timestamp=%d, "
+                "event_flags=%#x)") %\
                 (self.__class__.__name__, self.obj.buttons,
                  self.obj.cur.output.x, self.obj.cur.output.y,
                  self.obj.cur.canvas.x, self.obj.cur.canvas.y,
                  self.obj.prev.output.x, self.obj.prev.output.y,
                  self.obj.prev.canvas.x, self.obj.prev.canvas.y,
-                 self.obj.timestamp)
+                 self.obj.timestamp, self.event_flags)
 
     property buttons:
         def __get__(self):
@@ -237,6 +274,15 @@ cdef class EventMouseMove:
         def __get__(self):
             self._check_validity()
             return self.obj.timestamp
+
+    property event_flags:
+        def __get__(self):
+            self._check_validity()
+            return <int>self.obj.event_flags
+
+        def __set__(self, flags):
+            self._check_validity()
+            self.obj.event_flags = flags
 
 
 cdef class EventMouseWheel:
@@ -256,11 +302,11 @@ cdef class EventMouseWheel:
     def __str__(self):
         self._check_validity()
         return ("%s(direction=%d, z=%d, output=(%d, %d), "
-                "canvas=(%d, %d), timestamp=%d)") % \
+                "canvas=(%d, %d), timestamp=%d, event_flags=%#x)") % \
                 (self.__class__.__name__, self.obj.direction, self.obj.z,
                  self.obj.output.x, self.obj.output.y,
                  self.obj.canvas.x, self.obj.canvas.y,
-                 self.obj.timestamp)
+                 self.obj.timestamp, self.event_flags)
 
     property timestamp:
         def __get__(self):
@@ -277,6 +323,15 @@ cdef class EventMouseWheel:
             self._check_validity()
             return self.obj.z
 
+    property event_flags:
+        def __get__(self):
+            self._check_validity()
+            return <int>self.obj.event_flags
+
+        def __set__(self, flags):
+            self._check_validity()
+            self.obj.event_flags = flags
+
 
 cdef class EventKeyDown:
     cdef void _set_obj(self, void *ptr):
@@ -292,10 +347,10 @@ cdef class EventKeyDown:
     def __str__(self):
         self._check_validity()
         return ("%s(keyname=%r, key=%r, string=%r, compose=%r, "
-                "timestamp=%d)") % \
+                "timestamp=%d, event_flags=%#x)") % \
                 (self.__class__.__name__, self.keyname,
                  self.key, self.string, self.compose,
-                 self.obj.timestamp)
+                 self.obj.timestamp, self.event_flags)
 
     property keyname:
         def __get__(self):
@@ -333,6 +388,15 @@ cdef class EventKeyDown:
         def __get__(self):
             self._check_validity()
             return self.obj.timestamp
+
+    property event_flags:
+        def __get__(self):
+            self._check_validity()
+            return <int>self.obj.event_flags
+
+        def __set__(self, flags):
+            self._check_validity()
+            self.obj.event_flags = flags
 
 
 cdef class EventKeyUp:
@@ -349,10 +413,10 @@ cdef class EventKeyUp:
     def __str__(self):
         self._check_validity()
         return ("%s(keyname=%r, key=%r, string=%r, compose=%r, "
-                "timestamp=%d)") % \
+                "timestamp=%d, event_flags=%#x)") % \
                 (self.__class__.__name__, self.keyname,
                  self.key, self.string, self.compose,
-                 self.obj.timestamp)
+                 self.obj.timestamp, self.event_flags)
 
     property keyname:
         def __get__(self):
@@ -391,3 +455,11 @@ cdef class EventKeyUp:
             self._check_validity()
             return self.obj.timestamp
 
+    property event_flags:
+        def __get__(self):
+            self._check_validity()
+            return <int>self.obj.event_flags
+
+        def __set__(self, flags):
+            self._check_validity()
+            self.obj.event_flags = flags

@@ -42,6 +42,11 @@ cdef extern from "Evas.h":
         EVAS_BUTTON_TRIPLE_CLICK
 
 
+    ctypedef enum Evas_Event_Flags:
+        EVAS_EVENT_FLAG_NONE
+        EVAS_EVENT_FLAG_ON_HOLD
+
+
     ctypedef enum Evas_Font_Hinting_Flags:
         EVAS_FONT_HINTING_NONE
         EVAS_FONT_HINTING_AUTO
@@ -151,6 +156,7 @@ cdef extern from "Evas.h":
         Evas_Modifier *modifiers
         Evas_Lock *locks
         unsigned int timestamp
+        Evas_Event_Flags event_flags
 
     ctypedef struct Evas_Event_Mouse_Out:
         int buttons
@@ -160,6 +166,7 @@ cdef extern from "Evas.h":
         Evas_Modifier *modifiers
         Evas_Lock *locks
         unsigned int timestamp
+        Evas_Event_Flags event_flags
 
     ctypedef struct Evas_Event_Mouse_Down:
         int button
@@ -170,6 +177,7 @@ cdef extern from "Evas.h":
         Evas_Lock *locks
         Evas_Button_Flags flags
         unsigned int timestamp
+        Evas_Event_Flags event_flags
 
     ctypedef struct Evas_Event_Mouse_Up:
         int button
@@ -180,6 +188,7 @@ cdef extern from "Evas.h":
         Evas_Lock *locks
         Evas_Button_Flags flags
         unsigned int timestamp
+        Evas_Event_Flags event_flags
 
     ctypedef struct Evas_Event_Mouse_Move:
         int buttons
@@ -189,6 +198,7 @@ cdef extern from "Evas.h":
         Evas_Modifier *modifiers
         Evas_Lock *locks
         unsigned int timestamp
+        Evas_Event_Flags event_flags
 
     ctypedef struct Evas_Event_Mouse_Wheel:
         int direction # 0 = default up/down wheel
@@ -199,6 +209,7 @@ cdef extern from "Evas.h":
         Evas_Modifier *modifiers
         Evas_Lock *locks
         unsigned int timestamp
+        Evas_Event_Flags event_flags
 
     ctypedef struct Evas_Event_Key_Down:
         char *keyname
@@ -209,6 +220,7 @@ cdef extern from "Evas.h":
         char *string
         char *compose
         unsigned int timestamp
+        Evas_Event_Flags event_flags
 
     ctypedef struct Evas_Event_Key_Up:
         char *keyname
@@ -219,6 +231,7 @@ cdef extern from "Evas.h":
         char *string
         char *compose
         unsigned int timestamp
+        Evas_Event_Flags event_flags
 
 
     ####################################################################
