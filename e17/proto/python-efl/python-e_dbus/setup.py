@@ -29,8 +29,16 @@ def pkgconfig(*packages, **kw):
         flag  = flag_map.get(token[:2], None)
         if flag is not None:
             kw.setdefault(flag, []).append(token[2:])
+        elif token.startswith("-Wl,"):
+            kw.setdefault("extra_link_args", []).append(token)
         else:
-            print "WARNING: Unknown pkg-config flag: %s" % token
+            kw.setdefault("extra_compile_args", []).append(token)
+
+    if "extra_link_args" in kw:
+        print "Using extra_link_args: %s" % " ".join(kw["extra_link_args"])
+    if "extra_compile_args" in kw:
+        print "Using extra_compile_args: %s" % " ".join(kw["extra_compile_args"])
+
     return kw
 
 
