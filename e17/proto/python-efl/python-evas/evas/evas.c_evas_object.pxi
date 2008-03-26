@@ -869,6 +869,9 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
                C{EVAS_CALLBACK_MOUSE_*}, C{EVAS_CALLBACK_KEY_*}, while the
                second is used by events without. Parameters given at the
                end of C{event_callback_add()} will be given to the callback.
+               Note that the object passed to the callback in B{event}
+               parameter will only be valid during the callback, using it
+               after callback returns will raise an ValueError.
 
         @raise ValueError: if B{type} is unknown.
         @raise TypeError: if B{func} is not callable.

@@ -551,6 +551,8 @@ cdef class EventPoint:
     cdef Evas_Point *obj
 
     cdef void _set_obj(self, Evas_Point *obj)
+    cdef void _unset_obj(self)
+    cdef void _check_validity(self) except *
 
 
 cdef class EventPosition:
@@ -558,6 +560,7 @@ cdef class EventPosition:
     cdef readonly EventPoint canvas
 
     cdef void _set_objs(self, void *output, void *canvas)
+    cdef void _unset_objs(self)
 
 
 cdef class EventMouseIn:
@@ -565,6 +568,8 @@ cdef class EventMouseIn:
     cdef readonly EventPosition position
 
     cdef void _set_obj(self, void *ptr)
+    cdef void _unset_obj(self)
+    cdef void _check_validity(self) except *
 
 
 cdef class EventMouseOut:
@@ -572,6 +577,8 @@ cdef class EventMouseOut:
     cdef readonly EventPosition position
 
     cdef void _set_obj(self, void *ptr)
+    cdef void _unset_obj(self)
+    cdef void _check_validity(self) except *
 
 
 cdef class EventMouseDown:
@@ -579,6 +586,8 @@ cdef class EventMouseDown:
     cdef readonly EventPosition position
 
     cdef void _set_obj(self, void *ptr)
+    cdef void _unset_obj(self)
+    cdef void _check_validity(self) except *
 
 
 cdef class EventMouseUp:
@@ -586,6 +595,8 @@ cdef class EventMouseUp:
     cdef readonly EventPosition position
 
     cdef void _set_obj(self, void *ptr)
+    cdef void _unset_obj(self)
+    cdef void _check_validity(self) except *
 
 
 cdef class EventMouseMove:
@@ -594,6 +605,8 @@ cdef class EventMouseMove:
     cdef readonly EventPosition prev_position
 
     cdef void _set_obj(self, void *ptr)
+    cdef void _unset_obj(self)
+    cdef void _check_validity(self) except *
 
 
 cdef class EventMouseWheel:
@@ -601,18 +614,24 @@ cdef class EventMouseWheel:
     cdef readonly EventPosition position
 
     cdef void _set_obj(self, void *ptr)
+    cdef void _unset_obj(self)
+    cdef void _check_validity(self) except *
 
 
 cdef class EventKeyDown:
     cdef Evas_Event_Key_Down *obj
 
     cdef void _set_obj(self, void *ptr)
+    cdef void _unset_obj(self)
+    cdef void _check_validity(self) except *
 
 
 cdef class EventKeyUp:
     cdef Evas_Event_Key_Up *obj
 
     cdef void _set_obj(self, void *ptr)
+    cdef void _unset_obj(self)
+    cdef void _check_validity(self) except *
 
 
 cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:

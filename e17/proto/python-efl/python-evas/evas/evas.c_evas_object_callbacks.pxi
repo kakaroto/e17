@@ -30,6 +30,7 @@ cdef void cb_mouse_in(void *data, Evas *e,
     event = EventMouseIn()
     event._set_obj(e_inf)
     cb_dispatcher(<Object>data, event, EVAS_CALLBACK_MOUSE_IN)
+    event._unset_obj()
 
 
 cdef void cb_mouse_out(void *data, Evas *e,
@@ -38,6 +39,7 @@ cdef void cb_mouse_out(void *data, Evas *e,
     event = EventMouseOut()
     event._set_obj(e_inf)
     cb_dispatcher(<Object>data, event, EVAS_CALLBACK_MOUSE_OUT)
+    event._unset_obj()
 
 
 cdef void cb_mouse_down(void *data, Evas *e,
@@ -46,6 +48,7 @@ cdef void cb_mouse_down(void *data, Evas *e,
     event = EventMouseDown()
     event._set_obj(e_inf)
     cb_dispatcher(<Object>data, event, EVAS_CALLBACK_MOUSE_DOWN)
+    event._unset_obj()
 
 
 cdef void cb_mouse_up(void *data, Evas *e,
@@ -54,6 +57,7 @@ cdef void cb_mouse_up(void *data, Evas *e,
     event = EventMouseUp()
     event._set_obj(e_inf)
     cb_dispatcher(<Object>data, event, EVAS_CALLBACK_MOUSE_UP)
+    event._unset_obj()
 
 
 cdef void cb_mouse_move(void *data, Evas *e,
@@ -62,6 +66,7 @@ cdef void cb_mouse_move(void *data, Evas *e,
     event = EventMouseMove()
     event._set_obj(e_inf)
     cb_dispatcher(<Object>data, event, EVAS_CALLBACK_MOUSE_MOVE)
+    event._unset_obj()
 
 
 cdef void cb_mouse_wheel(void *data, Evas *e,
@@ -70,6 +75,7 @@ cdef void cb_mouse_wheel(void *data, Evas *e,
     event = EventMouseWheel()
     event._set_obj(e_inf)
     cb_dispatcher(<Object>data, event, EVAS_CALLBACK_MOUSE_WHEEL)
+    event._unset_obj()
 
 
 cdef void cb_free(void *data, Evas *e,
@@ -83,6 +89,7 @@ cdef void cb_key_down(void *data, Evas *e,
     event = EventKeyDown()
     event._set_obj(e_inf)
     cb_dispatcher(<Object>data, event, EVAS_CALLBACK_KEY_DOWN)
+    event._unset_obj()
 
 
 cdef void cb_key_up(void *data, Evas *e,
@@ -91,6 +98,7 @@ cdef void cb_key_up(void *data, Evas *e,
     event = EventKeyUp()
     event._set_obj(e_inf)
     cb_dispatcher(<Object>data, event, EVAS_CALLBACK_KEY_UP)
+    event._unset_obj()
 
 
 cdef void cb_focus_in(void *data, Evas *e,

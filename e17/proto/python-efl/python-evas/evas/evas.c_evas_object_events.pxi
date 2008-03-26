@@ -4,25 +4,38 @@ cdef class EventPoint:
     cdef void _set_obj(self, Evas_Point *obj):
         self.obj = obj
 
+    cdef void _unset_obj(self):
+        self.obj = NULL
+
     def __str__(self):
+        self._check_validity()
         return "%s(%d, %d)" % (self.__class__.__name__, self.obj.x, self.obj.y)
+
+    cdef void _check_validity(self) except *:
+        if self.obj == NULL:
+            raise ValueError("EventPoint object is invalid.")
 
     property x:
         def __get__(self):
+            self._check_validity()
             return self.obj.x
 
     property y:
         def __get__(self):
+            self._check_validity()
             return self.obj.y
 
     property xy:
         def __get__(self):
+            self._check_validity()
             return (self.obj.x, self.obj.y)
 
     def __len__(self):
+        self._check_validity()
         return 2
 
     def __getitem__(self, int index):
+        self._check_validity()
         if index == 0:
             return self.obj.x
         elif index == 1:
@@ -39,6 +52,10 @@ cdef class EventPosition:
         self.canvas = EventPoint()
         self.canvas._set_obj(<Evas_Point*>canvas)
 
+    cdef void _unset_objs(self):
+        self.output._unset_obj()
+        self.canvas._unset_obj()
+
     def __str__(self):
         return "%s(output=(%d, %d), canvas=(%d, %d))" % \
                (self.__class__.__name__, self.output.x, self.output.y,
@@ -52,7 +69,16 @@ cdef class EventMouseIn:
         self.position = EventPosition()
         self.position._set_objs(&self.obj.output, &self.obj.canvas)
 
+    cdef void _unset_obj(self):
+        self.obj = NULL
+        self.position._unset_objs()
+
+    cdef void _check_validity(self) except *:
+        if self.obj == NULL:
+            raise ValueError("EventMouseIn object is invalid.")
+
     def __str__(self):
+        self._check_validity()
         return ("%s(buttons=%d, output=(%d, %d), canvas=(%d, %d), "
                 "timestamp=%d)") % \
                 (self.__class__.__name__, self.obj.buttons,
@@ -62,10 +88,12 @@ cdef class EventMouseIn:
 
     property buttons:
         def __get__(self):
+            self._check_validity()
             return self.obj.buttons
 
     property timestamp:
         def __get__(self):
+            self._check_validity()
             return self.obj.timestamp
 
 
@@ -75,7 +103,16 @@ cdef class EventMouseOut:
         self.position = EventPosition()
         self.position._set_objs(&self.obj.output, &self.obj.canvas)
 
+    cdef void _unset_obj(self):
+        self.obj = NULL
+        self.position._unset_objs()
+
+    cdef void _check_validity(self) except *:
+        if self.obj == NULL:
+            raise ValueError("EventMouseOut object is invalid.")
+
     def __str__(self):
+        self._check_validity()
         return ("%s(buttons=%d, output=(%d, %d), canvas=(%d, %d), "
                 "timestamp=%d)") % \
                 (self.__class__.__name__, self.obj.buttons,
@@ -85,10 +122,12 @@ cdef class EventMouseOut:
 
     property buttons:
         def __get__(self):
+            self._check_validity()
             return self.obj.buttons
 
     property timestamp:
         def __get__(self):
+            self._check_validity()
             return self.obj.timestamp
 
 
@@ -98,7 +137,16 @@ cdef class EventMouseDown:
         self.position = EventPosition()
         self.position._set_objs(&self.obj.output, &self.obj.canvas)
 
+    cdef void _unset_obj(self):
+        self.obj = NULL
+        self.position._unset_objs()
+
+    cdef void _check_validity(self) except *:
+        if self.obj == NULL:
+            raise ValueError("EventMouseDown object is invalid.")
+
     def __str__(self):
+        self._check_validity()
         return ("%s(button=%d, output=(%d, %d), canvas=(%d, %d), "
                 "timestamp=%d)") % \
                 (self.__class__.__name__, self.obj.button,
@@ -108,10 +156,12 @@ cdef class EventMouseDown:
 
     property button:
         def __get__(self):
+            self._check_validity()
             return self.obj.button
 
     property timestamp:
         def __get__(self):
+            self._check_validity()
             return self.obj.timestamp
 
 
@@ -121,7 +171,16 @@ cdef class EventMouseUp:
         self.position = EventPosition()
         self.position._set_objs(&self.obj.output, &self.obj.canvas)
 
+    cdef void _unset_obj(self):
+        self.obj = NULL
+        self.position._unset_objs()
+
+    cdef void _check_validity(self) except *:
+        if self.obj == NULL:
+            raise ValueError("EventMouseUp object is invalid.")
+
     def __str__(self):
+        self._check_validity()
         return ("%s(button=%d, output=(%d, %d), canvas=(%d, %d), "
                 "timestamp=%d)") % \
                 (self.__class__.__name__, self.obj.button,
@@ -131,10 +190,12 @@ cdef class EventMouseUp:
 
     property button:
         def __get__(self):
+            self._check_validity()
             return self.obj.button
 
     property timestamp:
         def __get__(self):
+            self._check_validity()
             return self.obj.timestamp
 
 
@@ -147,7 +208,17 @@ cdef class EventMouseMove:
         self.prev_position._set_objs(&self.obj.prev.output,
                                      &self.obj.prev.canvas)
 
+    cdef void _unset_obj(self):
+        self.obj = NULL
+        self.position._unset_objs()
+        self.prev_position._unset_objs()
+
+    cdef void _check_validity(self) except *:
+        if self.obj == NULL:
+            raise ValueError("EventMouseMove object is invalid.")
+
     def __str__(self):
+        self._check_validity()
         return ("%s(buttons=%d, output=(%d, %d), canvas=(%d, %d), "
                 "prev_output=(%d, %d), prev_canvas=(%d, %d), timestamp=%d)") %\
                 (self.__class__.__name__, self.obj.buttons,
@@ -159,10 +230,12 @@ cdef class EventMouseMove:
 
     property buttons:
         def __get__(self):
+            self._check_validity()
             return self.obj.buttons
 
     property timestamp:
         def __get__(self):
+            self._check_validity()
             return self.obj.timestamp
 
 
@@ -172,7 +245,16 @@ cdef class EventMouseWheel:
         self.position = EventPosition()
         self.position._set_objs(&self.obj.output, &self.obj.canvas)
 
+    cdef void _unset_obj(self):
+        self.obj = NULL
+        self.position._unset_objs()
+
+    cdef void _check_validity(self) except *:
+        if self.obj == NULL:
+            raise ValueError("EventMouseWheel object is invalid.")
+
     def __str__(self):
+        self._check_validity()
         return ("%s(direction=%d, z=%d, output=(%d, %d), "
                 "canvas=(%d, %d), timestamp=%d)") % \
                 (self.__class__.__name__, self.obj.direction, self.obj.z,
@@ -182,14 +264,17 @@ cdef class EventMouseWheel:
 
     property timestamp:
         def __get__(self):
+            self._check_validity()
             return self.obj.timestamp
 
     property direction:
         def __get__(self):
+            self._check_validity()
             return self.obj.direction
 
     property z:
         def __get__(self):
+            self._check_validity()
             return self.obj.z
 
 
@@ -197,7 +282,15 @@ cdef class EventKeyDown:
     cdef void _set_obj(self, void *ptr):
         self.obj = <Evas_Event_Key_Down*>ptr
 
+    cdef void _unset_obj(self):
+        self.obj = NULL
+
+    cdef void _check_validity(self) except *:
+        if self.obj == NULL:
+            raise ValueError("EventKeyDown object is invalid.")
+
     def __str__(self):
+        self._check_validity()
         return ("%s(keyname=%r, key=%r, string=%r, compose=%r, "
                 "timestamp=%d)") % \
                 (self.__class__.__name__, self.keyname,
@@ -206,6 +299,7 @@ cdef class EventKeyDown:
 
     property keyname:
         def __get__(self):
+            self._check_validity()
             if self.obj.keyname == NULL:
                 return None
             else:
@@ -213,6 +307,7 @@ cdef class EventKeyDown:
 
     property key:
         def __get__(self):
+            self._check_validity()
             if self.obj.key == NULL:
                 return None
             else:
@@ -220,6 +315,7 @@ cdef class EventKeyDown:
 
     property string:
         def __get__(self):
+            self._check_validity()
             if self.obj.string == NULL:
                 return None
             else:
@@ -227,6 +323,7 @@ cdef class EventKeyDown:
 
     property compose:
         def __get__(self):
+            self._check_validity()
             if self.obj.compose == NULL:
                 return None
             else:
@@ -234,6 +331,7 @@ cdef class EventKeyDown:
 
     property timestamp:
         def __get__(self):
+            self._check_validity()
             return self.obj.timestamp
 
 
@@ -241,7 +339,15 @@ cdef class EventKeyUp:
     cdef void _set_obj(self, void *ptr):
         self.obj = <Evas_Event_Key_Up*>ptr
 
+    cdef void _unset_obj(self):
+        self.obj = NULL
+
+    cdef void _check_validity(self) except *:
+        if self.obj == NULL:
+            raise ValueError("EventKeyUp object is invalid.")
+
     def __str__(self):
+        self._check_validity()
         return ("%s(keyname=%r, key=%r, string=%r, compose=%r, "
                 "timestamp=%d)") % \
                 (self.__class__.__name__, self.keyname,
@@ -250,6 +356,7 @@ cdef class EventKeyUp:
 
     property keyname:
         def __get__(self):
+            self._check_validity()
             if self.obj.keyname == NULL:
                 return None
             else:
@@ -257,6 +364,7 @@ cdef class EventKeyUp:
 
     property key:
         def __get__(self):
+            self._check_validity()
             if self.obj.key == NULL:
                 return None
             else:
@@ -264,6 +372,7 @@ cdef class EventKeyUp:
 
     property string:
         def __get__(self):
+            self._check_validity()
             if self.obj.string == NULL:
                 return None
             else:
@@ -271,6 +380,7 @@ cdef class EventKeyUp:
 
     property compose:
         def __get__(self):
+            self._check_validity()
             if self.obj.compose == NULL:
                 return None
             else:
@@ -278,5 +388,6 @@ cdef class EventKeyUp:
 
     property timestamp:
         def __get__(self):
+            self._check_validity()
             return self.obj.timestamp
 
