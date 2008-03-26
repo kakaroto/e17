@@ -4704,3 +4704,20 @@ Various sound/module/visibility fixes.
 Add option to center new windows when desk is full (suggested by George L. Yermulnik).
 Pick up some kde4 apps in menu generation.
 Add shadow and fading flags to the remembered flag list.
+
+-------------------------------------------------------------------------------
+
+Thu Mar 27 00:21:35 CET 2008
+(Kim)
+
+--- 0.16.8.13 0.02 ---
+Japanese translation update (Yasufumi Haga).
+French translation update (Tristan D.).
+Speed up list iterators.
+Use ecore_list_for_each in stead of ECORE_LIST_FOR_EACH (faster).
+Add -brs to indent profile.
+Eliminate Constraints.
+Eliminate redundant RRoot variables.
+Eliminate redundant VRoot vars.
+Fix potential segv during window placement.
+Background scaling tweak (debian bug 471577).
