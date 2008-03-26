@@ -486,8 +486,10 @@ BgFindImageSize(BgPart * bgp, unsigned int rw, unsigned int rh,
 
    EImageGetSize(bgp->im, &iw, &ih);
 
+#if 0				/* FIXME - Remove? */
    if (bgp->keep_aspect)
       bgp->xperc = bgp->yperc;
+#endif
 
    if (bgp->xperc > 0)
       w = (rw * bgp->xperc) >> 10;
