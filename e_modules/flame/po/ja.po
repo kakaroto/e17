@@ -3,15 +3,14 @@
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 # Yasufumi Haga <yasufumi.haga@nifty.com>, 2006
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Flame\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2007-11-14 22:24+0100\n"
-"PO-Revision-Date: 2006-04-09 10:00+0900\n"
+"PO-Revision-Date: 2008-03-20 15:18+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language-Team: none\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -21,16 +20,14 @@ msgid "Appearance"
 msgstr ""
 
 #: e_mod_main.c:63
-#, fuzzy
 msgid "Flame"
-msgstr "炎の色"
+msgstr "炎"
 
 #: e_mod_config.c:47
 msgid "Flame Configuration"
 msgstr "flame の設定"
 
 #: e_mod_config.c:94 e_mod_config.c:177
-#, fuzzy
 msgid "Flame Color"
 msgstr "炎の色"
 
