@@ -1,4 +1,8 @@
 /*
+ * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
+ */
+
+/*
  * Copyright © 2003 Keith Packard
  *
  * Permission to use, copy, modify, distribute, and sell this software and its
@@ -1224,7 +1228,11 @@ composite_win_unmap(Ecore_X_Window id, Bool fade)
    }     
       
 #if HAS_NAME_WINDOW_PIXMAP
-   if (w->pixmap && fade && config->fx_fade_enable)
+   E_Border *bd;
+   bd = e_border_find_by_window(id);
+
+   if ((!bd || (bd && !bd->fx.start.x && !bd->fx.start.y)) &&
+       w->pixmap && fade && config->fx_fade_enable)
       composite_fade_set(w, w->opacity * 1.0 / OPAQUE, 0.0,
                config->fx_fade_out_step, unmap_callback, False, False, True);
    else
