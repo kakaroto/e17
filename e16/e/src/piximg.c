@@ -79,10 +79,10 @@ ECreatePixImg(Window win, int w, int h)
 		  if (pi->shminfo->shmaddr != (void *)-1)
 		    {
 		       pi->shminfo->readOnly = False;
-		       Mode.events.last_error_code = 0;
+		       Dpy.last_error_code = 0;
 		       XShmAttach(disp, pi->shminfo);
 		       ESync(0);
-		       if (Mode.events.last_error_code == 0)
+		       if (Dpy.last_error_code == 0)
 			 {
 			    pi->pmap =
 			       XShmCreatePixmap(disp, win, pi->shminfo->shmaddr,
@@ -279,7 +279,7 @@ EBlendPixImg(Win win, PixImg * s1, PixImg * s2, PixImg * dst, int x, int y,
 	  }
 	break;
      case 16:
-	if (DefaultDepth(disp, VRoot.scr) != 15)
+	if (WinGetDepth(VROOT) != 15)
 	  {
 	     for (j = 0; j < h; j++)
 	       {

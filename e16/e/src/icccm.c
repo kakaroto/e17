@@ -347,7 +347,7 @@ ICCCM_Cmap(EWin * ewin)
 	       {
 		  if (XGetWindowAttributes(disp, wlist[i], &xwa))
 		    {
-		       if (xwa.colormap != DefaultColormap(disp, VRoot.scr))
+		       if (xwa.colormap != WinGetCmap(VROOT))
 			 {
 			    XInstallColormap(disp, xwa.colormap);
 			    Mode.current_cmap = xwa.colormap;

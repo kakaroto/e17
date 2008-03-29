@@ -101,9 +101,9 @@ IB_Animate_A(char iconify, EWin * ewin, EWin * ibox)
    gcv.subwindow_mode = IncludeInferiors;
    gcv.function = GXxor;
    gcv.line_width = 2;
-   gcv.foreground = WhitePixel(disp, VRoot.scr);
+   gcv.foreground = Dpy.pixel_white;
    if (gcv.foreground == 0)
-      gcv.foreground = BlackPixel(disp, VRoot.scr);
+      gcv.foreground = Dpy.pixel_black;
    gc = EXCreateGC(root,
 		   GCFunction | GCForeground | GCSubwindowMode | GCLineWidth,
 		   &gcv);
@@ -191,9 +191,9 @@ IB_Animate_B(char iconify, EWin * ewin, EWin * ibox)
    gcv.subwindow_mode = IncludeInferiors;
    gcv.function = GXxor;
    gcv.fill_style = FillOpaqueStippled;
-   gcv.foreground = WhitePixel(disp, VRoot.scr);
+   gcv.foreground = Dpy.pixel_white;
    if (gcv.foreground == 0)
-      gcv.foreground = BlackPixel(disp, VRoot.scr);
+      gcv.foreground = Dpy.pixel_black;
    gc = EXCreateGC(root,
 		   GCFunction | GCForeground | GCSubwindowMode | GCFillStyle,
 		   &gcv);

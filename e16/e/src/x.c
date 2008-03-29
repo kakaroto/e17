@@ -40,7 +40,7 @@
 #define DEBUG_XWIN   0
 #define DEBUG_PIXMAP 0
 
-Display            *disp = NULL;
+EDisplay            Dpy;
 
 #if USE_COMPOSITE
 static Visual      *argb_visual = NULL;
@@ -109,6 +109,12 @@ WinGetCmap(const Win win)
    return win->cmap;
 }
 #endif
+
+void
+EXInit(void)
+{
+   memset(&Dpy, 0, sizeof(Dpy));
+}
 
 static              Win
 EXidCreate(void)
@@ -1753,7 +1759,7 @@ HandleXError(Display * dpy, XErrorEvent * ev)
 		ev->request_code, ev->minor_code, buf);
      }
 
-   Mode.events.last_error_code = ev->error_code;
+   Dpy.last_error_code = ev->error_code;
 
    return 0;
 }
@@ -1789,34 +1795,34 @@ EDisplaySetErrorHandlers(void (*fatal) (void))
 void
 EGrabServer(void)
 {
-   if (Mode.grabs.server_grabbed <= 0)
+   if (Dpy.server_grabbed <= 0)
      {
 	if (EDebug(EDBUG_TYPE_GRABS))
 	   Eprintf("EGrabServer\n");
 	XGrabServer(disp);
      }
-   Mode.grabs.server_grabbed++;
+   Dpy.server_grabbed++;
 }
 
 void
 EUngrabServer(void)
 {
-   if (Mode.grabs.server_grabbed == 1)
+   if (Dpy.server_grabbed == 1)
      {
 	XUngrabServer(disp);
 	XFlush(disp);
 	if (EDebug(EDBUG_TYPE_GRABS))
 	   Eprintf("EUngrabServer\n");
      }
-   Mode.grabs.server_grabbed--;
-   if (Mode.grabs.server_grabbed < 0)
-      Mode.grabs.server_grabbed = 0;
+   Dpy.server_grabbed--;
+   if (Dpy.server_grabbed < 0)
+      Dpy.server_grabbed = 0;
 }
 
 int
 EServerIsGrabbed(void)
 {
-   return Mode.grabs.server_grabbed;
+   return Dpy.server_grabbed;
 }
 
 void
@@ -1846,7 +1852,7 @@ EVisualFindARGB(void)
    int                 i, num;
    Visual             *vis;
 
-   xvit.screen = VRoot.scr;
+   xvit.screen = Dpy.screen;
    xvit.depth = 32;
 #if __cplusplus
    xvit.c_class = TrueColor;

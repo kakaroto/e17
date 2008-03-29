@@ -38,11 +38,9 @@
 #define ECORE_X_PROP_LIST_ADD       1
 #define ECORE_X_PROP_LIST_TOGGLE    2
 
-extern Display     *disp;
-
-#define _ecore_x_disp disp
-
 #ifdef USE_ECORE_X
+
+extern Display     *_ecore_x_disp;
 
 void
 ecore_x_icccm_state_set_iconic(Ecore_X_Window win)
@@ -69,6 +67,9 @@ ecore_x_icccm_state_set_withdrawn(Ecore_X_Window win)
 #include <assert.h>
 #endif
 #include "hints.h"
+#include "xwin.h"
+
+#define _ecore_x_disp disp
 
 #define N_ITEMS(x) (sizeof(x)/sizeof(x[0]))
 

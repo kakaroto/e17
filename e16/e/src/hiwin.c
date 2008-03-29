@@ -179,9 +179,9 @@ HiwinRenderPixmapInit(Hiwin * phi)
 static void
 HiwinRenderPixmapDrawX(Hiwin * phi, Drawable draw)
 {
-   XSetForeground(disp, phi->gc, BlackPixel(disp, VRoot.scr));
+   XSetForeground(disp, phi->gc, Dpy.pixel_black);
    XFillRectangle(disp, draw, phi->gc, 0, 0, EoGetW(phi), EoGetH(phi));
-   XSetForeground(disp, phi->gc, WhitePixel(disp, VRoot.scr));
+   XSetForeground(disp, phi->gc, Dpy.pixel_white);
    XFillRectangle(disp, draw, phi->gc, 1, 1, EoGetW(phi) - 2, EoGetH(phi) - 2);
 }
 

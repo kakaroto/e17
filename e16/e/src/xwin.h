@@ -28,7 +28,31 @@
 #include <X11/extensions/shape.h>
 #include "util.h"
 
-__EXPORT__ extern Display *disp;
+typedef struct _xwin *Win;
+
+typedef struct {
+   Display            *disp;
+   char               *name;
+   int                 screens;
+   int                 screen;
+   unsigned int        pixel_black;
+   unsigned int        pixel_white;
+
+   Win                 rroot;	/* Real root window */
+   Win                 vroot;	/* Virtual root window */
+
+   int                 server_grabbed;
+
+   unsigned char       last_error_code;
+} EDisplay;
+
+__EXPORT__ extern EDisplay Dpy;
+
+#define disp  Dpy.disp
+#define RROOT Dpy.rroot
+#define VROOT Dpy.vroot
+
+void                EXInit(void);
 
 int                 EDisplayOpen(const char *dstr, int scr);
 void                EDisplayClose(void);
@@ -58,7 +82,6 @@ Visual             *EVisualFindARGB(void);
 
 Time                EGetTimestamp(void);
 
-typedef struct _xwin *Win;
 typedef void        (EventCallbackFunc) (Win win, XEvent * ev, void *prm);
 
 #define NoWin ((Win)0)

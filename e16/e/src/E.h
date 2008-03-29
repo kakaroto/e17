@@ -209,20 +209,6 @@
  */
 #include "etypes.h"
 
-typedef struct {
-   Win                 win;
-} RealRoot;
-
-#define RROOT RRoot.win
-
-typedef struct {
-   Win                 win;
-   int                 scr;
-   Pixmap              pmap;	/* Compositing buffer */
-} VirtRoot;
-
-#define VROOT VRoot.win
-
 /* Configuration parameters */
 typedef struct {
    struct {
@@ -407,8 +393,7 @@ typedef struct {
       char               *cache_dir;
    } conf;
    struct {
-      char               *name;
-      int                 screens;
+      char                dummy;	/* Prevent empty struct */
 #ifdef HAVE_XINERAMA
       char                xinerama_active;
 #endif
@@ -426,7 +411,6 @@ typedef struct {
       Window              last_bpress2;
       unsigned int        last_button;
       unsigned int        last_keycode;
-      unsigned char       last_error_code;
       char                double_click;
       char                on_screen;
 #if USE_COMPOSITE
@@ -434,7 +418,6 @@ typedef struct {
 #endif
    } events;
    struct {
-      int                 server_grabbed;
       char                pointer_grab_active;
       Window              pointer_grab_window;
    } grabs;
@@ -614,7 +597,5 @@ char              **ThemesList(int *num);
 extern const char   e_wm_name[];
 extern const char   e_wm_version[];
 extern const char   e_wm_date[];
-extern RealRoot     RRoot;
-__EXPORT__ extern VirtRoot VRoot;
 __EXPORT__ extern EConf Conf;
 __EXPORT__ extern EMode Mode;

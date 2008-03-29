@@ -44,8 +44,8 @@ static char         zoom_can = 0;
 static void
 FillStdVidModes(void)
 {
-   XF86VidModeGetAllModeLines(disp, VRoot.scr, &std_vid_modes_num,
-			      &std_vid_modes);
+   XF86VidModeGetAllModeLines(disp, Dpy.screen,
+			      &std_vid_modes_num, &std_vid_modes);
 }
 
 static XF86VidModeModeInfo *
@@ -93,34 +93,37 @@ SwitchRes(char inout, int x, int y, int w, int h)
 {
    static int          vp_x, vp_y;
    XF86VidModeModeInfo *mode = NULL;
+   int                 scr;
+
+   scr = Dpy.screen;
 
    if (inout)
      {
 	XF86VidModeModeLine curmode;
 	int                 dotclock;
 
-	if (!XF86VidModeGetModeLine(disp, VRoot.scr, &dotclock, &curmode))
+	if (!XF86VidModeGetModeLine(disp, scr, &dotclock, &curmode))
 	   return mode;
-	XF86VidModeGetViewPort(disp, VRoot.scr, &vp_x, &vp_y);
+	XF86VidModeGetViewPort(disp, scr, &vp_x, &vp_y);
 
 	mode = FindMode(w, h);
 	if (mode)
 	  {
-	     XF86VidModeLockModeSwitch(disp, VRoot.scr, 0);
+	     XF86VidModeLockModeSwitch(disp, scr, 0);
 	     std_vid_mode_cur = GetModeIndex(dotclock, &curmode);
-	     XF86VidModeSwitchToMode(disp, VRoot.scr, mode);
-	     XF86VidModeSetViewPort(disp, VRoot.scr, x, y);
-	     XF86VidModeLockModeSwitch(disp, VRoot.scr, 1);
+	     XF86VidModeSwitchToMode(disp, scr, mode);
+	     XF86VidModeSetViewPort(disp, scr, x, y);
+	     XF86VidModeLockModeSwitch(disp, scr, 1);
 	  }
      }
    else
      {
 	mode = std_vid_modes[std_vid_mode_cur];
-	XF86VidModeLockModeSwitch(disp, VRoot.scr, 0);
-	XF86VidModeSwitchToMode(disp, VRoot.scr, mode);
-	XF86VidModeSetViewPort(disp, VRoot.scr, vp_x, vp_y);
+	XF86VidModeLockModeSwitch(disp, scr, 0);
+	XF86VidModeSwitchToMode(disp, scr, mode);
+	XF86VidModeSetViewPort(disp, scr, vp_x, vp_y);
 #if 0				/* No, don't lock or we can't switch resolution */
-	XF86VidModeLockModeSwitch(disp, VRoot.scr, 1);
+	XF86VidModeLockModeSwitch(disp, scr, 1);
 #endif
      }
    return mode;
@@ -187,7 +190,7 @@ ZoomMask(int x, int y, int w, int h)
       return 0;
 
    win = ECreateWindow(VROOT, x, y, w, h, 0);
-   ESetWindowBackground(win, BlackPixel(disp, VRoot.scr));
+   ESetWindowBackground(win, Dpy.pixel_black);
    ERaiseWindow(win);
    EMapWindow(win);
 

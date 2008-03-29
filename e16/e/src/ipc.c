@@ -144,7 +144,7 @@ IPC_Screen(const char *params)
      }
    else if (!strncmp(param, "size", 2))
      {
-	IpcPrintf("Screen %d  size %dx%d\n", VRoot.scr,
+	IpcPrintf("Screen %d  size %dx%d\n", Dpy.screen,
 		  WinGetW(VROOT), WinGetH(VROOT));
      }
    else if (!strcmp(param, "split"))
@@ -1223,7 +1223,7 @@ IPC_Warp(const char *params)
      }
    else if (!strncmp(params, "scr", 3))
      {
-	x = (VRoot.scr + 1) % ScreenCount(disp);
+	x = (Dpy.screen + 1) % ScreenCount(disp);
 	sscanf(params, "%*s %i", &x);
 	if (x >= 0 && x < ScreenCount(disp))
 	   EXWarpPointer(RootWindow(disp, x), DisplayWidth(disp, x) / 2,

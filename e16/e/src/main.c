@@ -47,8 +47,6 @@ const char          e_wm_name[] = "Enlightenment";
 const char          e_wm_version[] = VERSION;
 const char          e_wm_date[] = E_CHECKOUT_DATE;
 
-RealRoot            RRoot;
-VirtRoot            VRoot;
 EConf               Conf;
 EMode               Mode;
 
@@ -108,11 +106,11 @@ main(int argc, char **argv)
    Mode.wm.exec_name = argv[0];
    Mode.wm.startup = 1;
 
-   memset(&VRoot, 0, sizeof(VRoot));
-   VRoot.scr = -1;
-
    Mode.mode = MODE_NONE;
    Mode.move.check = 1;
+
+   EXInit();
+   Dpy.screen = -1;
 
    str = getenv("EDEBUG");
    if (str)
@@ -185,7 +183,7 @@ main(int argc, char **argv)
 	     break;
 	  case 's':
 	     Mode.wm.single = 1;
-	     VRoot.scr = strtoul(eoptarg, NULL, 10);
+	     Dpy.screen = strtoul(eoptarg, NULL, 10);
 	     break;
 	  case 'S':
 	     SetSMID(eoptarg);
@@ -648,13 +646,13 @@ EGetSavePrefix(void)
 
    if (Mode.conf.name)
       Esnprintf(buf, sizeof(buf), "%s/%s-%d", EDirUser(), EConfName(),
-		VRoot.scr);
+		Dpy.screen);
    else if (Mode.wm.window)
       Esnprintf(buf, sizeof(buf), "%s/%s-window", EDirUser(),
 		EConfNameDefault());
    else
       Esnprintf(buf, sizeof(buf), "%s/%s-%s", EDirUser(), EConfNameDefault(),
-		Mode.display.name);
+		Dpy.name);
    def_prefix = Estrdup(buf);
 
    for (s = def_prefix; (s = strchr(s, ':')) != NULL; *s = '-')

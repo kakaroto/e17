@@ -586,7 +586,7 @@ SelectionAcquire(const char *name, EventCallbackFunc * func, void *data)
    if (!sel)
       return sel;
 
-   Esnprintf(buf, sizeof(buf), "%s%d", name, VRoot.scr);
+   Esnprintf(buf, sizeof(buf), "%s%d", name, Dpy.screen);
 
    sel->atom = XInternAtom(disp, buf, False);
    sel->time = EGetTimestamp();

@@ -1748,7 +1748,7 @@ BG_RedrawView(void)
 
    ic_button = ImageclassFind("DIALOG_BUTTON", 0);
 
-   XSetForeground(disp, gc, BlackPixel(disp, VRoot.scr));
+   XSetForeground(disp, gc, Dpy.pixel_black);
    XFillRectangle(disp, pmap, gc, 0, 0, w, h);
 
    x = -(num * (64 + 8) - w) * tmp_bg_sel_sliderval / (4 * num);

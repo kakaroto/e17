@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2007 Kim Woelders
+ * Copyright (C) 2006-2008 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -48,9 +48,9 @@ _xft_Load(TextState * ts, const char *name)
    FontCtxXft         *fdc;
 
    if (name[0] == '-')
-      font = XftFontOpenXlfd(disp, VRoot.scr, name);
+      font = XftFontOpenXlfd(disp, Dpy.screen, name);
    else
-      font = XftFontOpenName(disp, VRoot.scr, name);
+      font = XftFontOpenName(disp, Dpy.screen, name);
 
    if (!font)
       return -1;

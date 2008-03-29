@@ -97,7 +97,7 @@ ScreenSplit(unsigned int nx, unsigned int ny)
 
    for (i = 0; i < nx; i++)
       for (j = 0; j < ny; j++)
-	 ScreenAdd(1, VRoot.scr,
+	 ScreenAdd(1, Dpy.screen,
 		   i * WinGetW(VROOT) / nx, j * WinGetH(VROOT) / ny,
 		   WinGetW(VROOT) / nx, WinGetH(VROOT) / ny);
 }
@@ -145,7 +145,7 @@ ScreenShowInfo(const char *prm __UNUSED__)
    else
      {
 	IpcPrintf(" %2d     %2d       %5d     %5d     %5d     %5d\n",
-		  0, VRoot.scr, 0, 0, WinGetW(VROOT), WinGetH(VROOT));
+		  0, Dpy.screen, 0, 0, WinGetW(VROOT), WinGetH(VROOT));
      }
 }
 

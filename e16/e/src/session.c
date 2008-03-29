@@ -548,7 +548,7 @@ doSMExit(int mode, const char *params)
 	l = 0;
 	l += Esnprintf(s + l, sizeof(s) - l, "exec %s -f", Mode.wm.exec_name);
 	if (Mode.wm.single)
-	   l += Esnprintf(s + l, sizeof(s) - l, " -s %d", VRoot.scr);
+	   l += Esnprintf(s + l, sizeof(s) - l, " -s %d", Dpy.screen);
 	else if (!Mode.wm.master)
 	   l +=
 	      Esnprintf(s + l, sizeof(s) - l, " -m %d", Mode.wm.master_screen);

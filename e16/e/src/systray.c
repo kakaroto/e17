@@ -421,7 +421,7 @@ SystrayInit(Container * ct)
    char                buf[32];
    Win                 win;
 
-   Esnprintf(buf, sizeof(buf), "_NET_SYSTEM_TRAY_S%d", VRoot.scr);
+   Esnprintf(buf, sizeof(buf), "_NET_SYSTEM_TRAY_S%d", Dpy.screen);
 
    E_XA__XEMBED = XInternAtom(disp, "_XEMBED", False);
    E_XA__XEMBED_INFO = XInternAtom(disp, "_XEMBED_INFO", False);

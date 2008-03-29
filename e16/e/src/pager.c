@@ -452,9 +452,9 @@ doPagerUpdate(Pager * p)
 	  }
 	else
 	  {
-	     XSetForeground(disp, gc, BlackPixel(disp, VRoot.scr));
+	     XSetForeground(disp, gc, Dpy.pixel_black);
 	     XDrawRectangle(disp, pmap, gc, wx - 1, wy - 1, ww + 1, wh + 1);
-	     XSetForeground(disp, gc, WhitePixel(disp, VRoot.scr));
+	     XSetForeground(disp, gc, Dpy.pixel_white);
 	     XFillRectangle(disp, pmap, gc, wx, wy, ww, wh);
 	  }
      }
@@ -611,9 +611,9 @@ PagerUpdateBg(Pager * p)
    if (gc == None)
       return;
 
-   XSetForeground(disp, gc, BlackPixel(disp, VRoot.scr));
+   XSetForeground(disp, gc, Dpy.pixel_black);
    XDrawRectangle(disp, pmap, gc, 0, 0, p->dw, p->dh);
-   XSetForeground(disp, gc, WhitePixel(disp, VRoot.scr));
+   XSetForeground(disp, gc, Dpy.pixel_white);
    XFillRectangle(disp, pmap, gc, 1, 1, p->dw - 2, p->dh - 2);
 
    EXFreeGC(gc);

@@ -52,7 +52,7 @@ SetupX(const char *dstr)
       dstr = ":0";
 
    /* Open a connection to the diplay nominated by the DISPLAY variable */
-   err = EDisplayOpen(dstr, VRoot.scr);
+   err = EDisplayOpen(dstr, Dpy.screen);
    if (err)
      {
 	Alert(_("Enlightenment cannot connect to the display nominated by\n"
@@ -71,24 +71,23 @@ SetupX(const char *dstr)
    if (getenv("ESYNCHRONIZE"))
       XSynchronize(disp, True);
 
-   VRoot.scr = DefaultScreen(disp);
-   Mode.display.screens = ScreenCount(disp);
+   Dpy.screens = ScreenCount(disp);
+   Dpy.screen = DefaultScreen(disp);
 
    if (Mode.wm.master ||
-       Mode.wm.master_screen < 0 ||
-       Mode.wm.master_screen >= Mode.display.screens)
-      Mode.wm.master_screen = VRoot.scr;
+       Mode.wm.master_screen < 0 || Mode.wm.master_screen >= Dpy.screens)
+      Mode.wm.master_screen = Dpy.screen;
 
    /* Start up on multiple heads, if appropriate */
-   if (Mode.display.screens > 1 && !Mode.wm.single && !Mode.wm.restart)
+   if (Dpy.screens > 1 && !Mode.wm.single && !Mode.wm.restart)
      {
 	int                 i;
 
-	for (i = 0; i < Mode.display.screens; i++)
+	for (i = 0; i < Dpy.screens; i++)
 	  {
 	     pid_t               pid;
 
-	     if (i == VRoot.scr)
+	     if (i == Dpy.screen)
 		continue;
 
 	     pid = fork();
@@ -106,7 +105,7 @@ SetupX(const char *dstr)
 		  EDisplayDisconnect();
 		  Mode.wm.master = 0;
 		  Mode.wm.pid = getpid();
-		  VRoot.scr = i;
+		  Dpy.screen = i;
 		  ExtInitWinSet(None);
 #ifdef SIGSTOP
 		  kill(getpid(), SIGSTOP);
@@ -118,8 +117,11 @@ SetupX(const char *dstr)
 	  }
      }
 
-   Mode.display.name = Estrdup(DisplayString(disp));
-   Esetenv("DISPLAY", Mode.display.name);
+   Dpy.name = Estrdup(DisplayString(disp));
+   Esetenv("DISPLAY", Dpy.name);
+
+   Dpy.pixel_black = BlackPixel(disp, Dpy.screen);
+   Dpy.pixel_white = WhitePixel(disp, Dpy.screen);
 
    EDisplaySetErrorHandlers(HandleXIOError);
 
@@ -144,12 +146,12 @@ SetupX(const char *dstr)
    EventsInit();
 
    /* select all the root window events to start managing */
-   Mode.events.last_error_code = 0;
+   Dpy.last_error_code = 0;
    mask =
       StructureNotifyMask | SubstructureNotifyMask | SubstructureRedirectMask;
    ESelectInput(VROOT, mask);
    ESync(0);
-   if (Mode.events.last_error_code)
+   if (Dpy.last_error_code)
      {
 	AlertX(_("Another Window Manager is already running"),
 	       _("OK"), NULL, NULL,

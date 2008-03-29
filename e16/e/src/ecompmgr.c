@@ -184,6 +184,7 @@ static struct {
 #if USE_COMPOSITE_OVERLAY_WINDOW
    Window              cow;
 #endif
+   Pixmap              pmap;	/* Compositing buffer */
    char                active;
    char                use_pixmap;
    char                reorder;
@@ -2304,7 +2305,7 @@ static void
 ECompMgrRootBufferCreate(unsigned int w, unsigned int h)
 {
    /* Root buffer picture and pixmap */
-   rootBuffer = EPictureCreateBuffer(VROOT, w, h, &VRoot.pmap);
+   rootBuffer = EPictureCreateBuffer(VROOT, w, h, &Mode_compmgr.pmap);
 
    /* Screen region */
    Mode_compmgr.rgn_screen = ERegionCreateRect(0, 0, w, h);
@@ -2317,10 +2318,16 @@ static void
 ECompMgrRootBufferDestroy(void)
 {
    PICTURE_DESTROY(rootBuffer);
-   PIXMAP_DESTROY(VRoot.pmap);
+   PIXMAP_DESTROY(Mode_compmgr.pmap);
 
    REGION_DESTROY(Mode_compmgr.rgn_screen);
    REGION_DESTROY(Mode_compmgr.rgn_clip);
+}
+
+Pixmap
+ECompMgrGetRootBuffer(void)
+{
+   return Mode_compmgr.pmap;
 }
 
 static void

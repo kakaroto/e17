@@ -24,6 +24,7 @@
 #include "edbus.h"
 #include "events.h"
 #include "ipc.h"
+#include "xwin.h"
 #include <dbus/dbus.h>
 
 #define ENABLE_INTROSPECTION 1
@@ -246,16 +247,16 @@ DbusInit(void)
 
    if (Mode.wm.window)
      {
-	sprintf(buf, "org.e16.wm.w%#x", (unsigned int)WinGetXwin(VROOT));
+	sprintf(buf, "org.e16.wm.p%u", (unsigned int)Mode.wm.pid);
      }
    else
      {
 	const char         *s;
 
-	s = strchr(Mode.display.name, ':');
+	s = strchr(Dpy.name, ':');
 	if (!s)
 	   return;
-	sprintf(buf, "org.e16.wm.d%ds%d", atoi(s + 1), VRoot.scr);
+	sprintf(buf, "org.e16.wm.d%ds%d", atoi(s + 1), Dpy.screen);
      }
    dbus_data.name = Estrdup(buf);
    Esetenv("ENL_DBUS_NAME", dbus_data.name);

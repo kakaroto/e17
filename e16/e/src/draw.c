@@ -376,9 +376,9 @@ DrawEwinShape(EWin * ewin, int md, int x, int y, int w, int h,
 	XGCValues           gcv;
 
 	gcv.function = GXxor;
-	gcv.foreground = WhitePixel(disp, VRoot.scr);
+	gcv.foreground = Dpy.pixel_white;
 	if (gcv.foreground == 0)
-	   gcv.foreground = BlackPixel(disp, VRoot.scr);
+	   gcv.foreground = Dpy.pixel_black;
 	gcv.subwindow_mode = IncludeInferiors;
 	gc = EXCreateGC(root,
 			GCFunction | GCForeground | GCSubwindowMode, &gcv);

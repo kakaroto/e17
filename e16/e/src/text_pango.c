@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2007 Kim Woelders
+ * Copyright (C) 2007-2008 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -53,7 +53,7 @@ _pango_xft_Load(TextState * ts, const char *name)
    PangoFontMask       flags;
 
    if (!_pango_ctx)
-      _pango_ctx = pango_xft_get_context(disp, VRoot.scr);
+      _pango_ctx = pango_xft_get_context(disp, Dpy.screen);
    if (!_pango_ctx)
       return -1;
 

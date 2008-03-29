@@ -1576,7 +1576,7 @@ DialogDrawItem(Dialog * d, DItem * di)
 	      pad = ImageclassGetPadding(d->iclass);
 	      gcv.subwindow_mode = IncludeInferiors;
 	      gc = EXCreateGC(WinGetPmap(d->win), GCSubwindowMode, &gcv);
-	      XSetForeground(disp, gc, BlackPixel(disp, VRoot.scr));
+	      XSetForeground(disp, gc, Dpy.pixel_black);
 	      XDrawRectangle(disp, WinGetPmap(d->win), gc,
 			     pad->left + di->x, pad->top + di->y, di->w, di->h);
 	      EXFreeGC(gc);
