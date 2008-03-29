@@ -1112,6 +1112,7 @@ composite_win_repair(Win * w)
 static void
 composite_win_map(Ecore_X_Window id, Bool fade)
 {
+   E_Border *bd = e_border_find_by_window(id);
    Win *w = composite_win_find(id);
 
    if (!w)
@@ -1138,7 +1139,8 @@ composite_win_map(Ecore_X_Window id, Bool fade)
 #endif
    w->damaged = 0;
 
-   if (fade && config->fx_fade_enable)
+   if ((!bd || (bd && !bd->fx.start.x && !bd->fx.start.y)) &&
+	fade && config->fx_fade_enable)
       composite_fade_set(w, 0, get_opacity_percent(w, 1.0),
                config->fx_fade_in_step, 0, False, True, True);
 }
@@ -1200,6 +1202,7 @@ unmap_callback(Win * w, Bool gone)
 static void
 composite_win_unmap(Ecore_X_Window id, Bool fade)
 {
+   E_Border *bd = e_border_find_by_window(id);
    Win *w = composite_win_find(id);
 
    if (!w)
@@ -1228,11 +1231,8 @@ composite_win_unmap(Ecore_X_Window id, Bool fade)
    }     
       
 #if HAS_NAME_WINDOW_PIXMAP
-   E_Border *bd;
-   bd = e_border_find_by_window(id);
-
    if ((!bd || (bd && !bd->fx.start.x && !bd->fx.start.y)) &&
-       w->pixmap && fade && config->fx_fade_enable)
+	w->pixmap && fade && config->fx_fade_enable)
       composite_fade_set(w, w->opacity * 1.0 / OPAQUE, 0.0,
                config->fx_fade_out_step, unmap_callback, False, False, True);
    else
