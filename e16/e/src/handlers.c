@@ -23,10 +23,8 @@
  */
 #include "E.h"
 #include "session.h"
-#include "xwin.h"
 #include <sys/wait.h>
 #include <signal.h>
-#include <X11/Xproto.h>
 
 static void
 SignalHandler(int sig)
@@ -174,27 +172,4 @@ SignalsRestore(void)
 {
    /* This function will restore all the signal handlers for E */
    doSignalsSetup(0);
-}
-
-void
-HandleXError(Display * d __UNUSED__, XErrorEvent * ev)
-{
-   char                buf[64];
-
-   if (EDebug(1))
-     {
-	XGetErrorText(disp, ev->error_code, buf, 63);
-	Eprintf("*** ERROR: xid=%#lx error=%i req=%i/%i: %s\n",
-		ev->resourceid, ev->error_code,
-		ev->request_code, ev->minor_code, buf);
-     }
-
-   Mode.events.last_error_code = ev->error_code;
-}
-
-void
-HandleXIOError(Display * d __UNUSED__)
-{
-   disp = NULL;
-   SessionExit(EEXIT_ERROR, NULL);
 }

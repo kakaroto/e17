@@ -570,8 +570,6 @@ const char         *FontLookup(const char *name);
 /* handlers.c */
 void                SignalsSetup(void);
 void                SignalsRestore(void);
-void                HandleXError(Display * d, XErrorEvent * ev);
-void                HandleXIOError(Display * d);
 
 /* main.c */
 void                EExit(int exitcode);
@@ -616,7 +614,6 @@ char              **ThemesList(int *num);
 extern const char   e_wm_name[];
 extern const char   e_wm_version[];
 extern const char   e_wm_date[];
-__EXPORT__ extern Display *disp;
 extern RealRoot     RRoot;
 __EXPORT__ extern VirtRoot VRoot;
 __EXPORT__ extern EConf Conf;

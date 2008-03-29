@@ -25,9 +25,16 @@
 #include "events.h"
 #include "ewins.h"
 #include "screen.h"
+#include "session.h"
 #include "xwin.h"
 #include <signal.h>
 #include <X11/keysym.h>
+
+static void
+HandleXIOError(void)
+{
+   SessionExit(EEXIT_ERROR, NULL);
+}
 
 /*
  * This function sets up all of our connections to X
@@ -35,6 +42,7 @@
 void
 SetupX(const char *dstr)
 {
+   int                 err;
    char                buf[128];
    long                mask;
 
@@ -44,8 +52,8 @@ SetupX(const char *dstr)
       dstr = ":0";
 
    /* Open a connection to the diplay nominated by the DISPLAY variable */
-   disp = EDisplayOpen(dstr, VRoot.scr);
-   if (!disp)
+   err = EDisplayOpen(dstr, VRoot.scr);
+   if (err)
      {
 	Alert(_("Enlightenment cannot connect to the display nominated by\n"
 		"your shell's DISPLAY environment variable. You may set this\n"
@@ -103,7 +111,7 @@ SetupX(const char *dstr)
 #ifdef SIGSTOP
 		  kill(getpid(), SIGSTOP);
 #endif
-		  disp = EDisplayOpen(dstr, i);
+		  EDisplayOpen(dstr, i);
 		  /* Terminate the loop as I am the child process... */
 		  break;
 	       }
@@ -113,10 +121,7 @@ SetupX(const char *dstr)
    Mode.display.name = Estrdup(DisplayString(disp));
    Esetenv("DISPLAY", Mode.display.name);
 
-   /* set up an error handler for then E would normally have fatal X errors */
-   XSetErrorHandler((XErrorHandler) HandleXError);
-   /* set up a handler for when the X Connection goes down */
-   XSetIOErrorHandler((XIOErrorHandler) HandleXIOError);
+   EDisplaySetErrorHandlers(HandleXIOError);
 
    /* Root defaults */
    RROOT = ERegisterWindow(DefaultRootWindow(disp), NULL);

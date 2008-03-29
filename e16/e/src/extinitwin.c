@@ -30,18 +30,20 @@
 static              Window
 ExtInitWinMain(void)
 {
+   int                 i, err;
    Ecore_X_Window      win;
    XGCValues           gcv;
    GC                  gc;
    Pixmap              pmap, mask;
    Atom                a;
-   int                 i;
    XSetWindowAttributes attr;
 
    if (EDebug(EDBUG_TYPE_SESSION))
       Eprintf("ExtInitWinMain enter\n");
 
-   disp = EDisplayOpen(NULL, -1);
+   err = EDisplayOpen(NULL, -1);
+   if (err)
+      return None;
 
    EGrabServer();
 

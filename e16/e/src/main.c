@@ -47,7 +47,6 @@ const char          e_wm_name[] = "Enlightenment";
 const char          e_wm_version[] = VERSION;
 const char          e_wm_date[] = E_CHECKOUT_DATE;
 
-Display            *disp;
 RealRoot            RRoot;
 VirtRoot            VRoot;
 EConf               Conf;

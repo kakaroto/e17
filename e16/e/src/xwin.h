@@ -26,10 +26,14 @@
 
 #include <X11/Xlib.h>
 #include <X11/extensions/shape.h>
+#include "util.h"
 
-Display            *EDisplayOpen(const char *dstr, int scr);
+__EXPORT__ extern Display *disp;
+
+int                 EDisplayOpen(const char *dstr, int scr);
 void                EDisplayClose(void);
 void                EDisplayDisconnect(void);
+void                EDisplaySetErrorHandlers(void (*fatal) (void));
 
 void                EGrabServer(void);
 void                EUngrabServer(void);

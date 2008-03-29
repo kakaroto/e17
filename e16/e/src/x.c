@@ -40,6 +40,8 @@
 #define DEBUG_XWIN   0
 #define DEBUG_PIXMAP 0
 
+Display            *disp = NULL;
+
 #if USE_COMPOSITE
 static Visual      *argb_visual = NULL;
 static Colormap     argb_cmap = None;
@@ -1677,11 +1679,10 @@ EWindowGetShapePixmap(Win win)
  * Display
  */
 
-Display            *
+int
 EDisplayOpen(const char *dstr, int scr)
 {
    char                dbuf[256], *s;
-   Display            *dpy;
 
    if (scr >= 0)
      {
@@ -1700,12 +1701,12 @@ EDisplayOpen(const char *dstr, int scr)
 
 #ifdef USE_ECORE_X
    ecore_x_init(dstr);
-   dpy = ecore_x_display_get();
+   disp = ecore_x_display_get();
 #else
-   dpy = XOpenDisplay(dstr);
+   disp = XOpenDisplay(dstr);
 #endif
 
-   return dpy;
+   return (disp) ? 0 : -1;
 }
 
 void
@@ -1737,6 +1738,48 @@ EDisplayDisconnect(void)
    XSetIOErrorHandler(NULL);
 
    disp = NULL;
+}
+
+static int
+HandleXError(Display * dpy, XErrorEvent * ev)
+{
+   char                buf[64];
+
+   if (EDebug(1))
+     {
+	XGetErrorText(dpy, ev->error_code, buf, 63);
+	Eprintf("*** ERROR: xid=%#lx error=%i req=%i/%i: %s\n",
+		ev->resourceid, ev->error_code,
+		ev->request_code, ev->minor_code, buf);
+     }
+
+   Mode.events.last_error_code = ev->error_code;
+
+   return 0;
+}
+
+static void         (*EXIOErrorFunc) (void) = NULL;
+
+static int
+HandleXIOError(Display * dpy __UNUSED__)
+{
+   disp = NULL;
+
+   if (EXIOErrorFunc)
+      EXIOErrorFunc();
+
+   return 0;
+}
+
+void
+EDisplaySetErrorHandlers(void (*fatal) (void))
+{
+   /* set up an error handler for then E would normally have fatal X errors */
+   XSetErrorHandler(HandleXError);
+
+   /* set up a handler for when the X Connection goes down */
+   EXIOErrorFunc = fatal;
+   XSetIOErrorHandler(HandleXIOError);
 }
 
 /*
