@@ -65,15 +65,12 @@ ArrangeAddToList(int *array, int current_size, int value)
    return current_size + 1;
 }
 
-#define Filled(x,y) (filled[(y * (xsize - 1)) + x])
-
 static void
-ArrangeMakeFillLists(int tx1, int tx2, int ty1, int ty2, int fitw, int fith,
-		     const RectBox * sorted, int num_sorted,
-		     int *xarray, int *nx, int *yarray, int *ny,
-		     unsigned char *filled)
+ArrangeMakeXYArrays(int tx1, int tx2, int ty1, int ty2, int fitw, int fith,
+		    const RectBox * sorted, int num_sorted,
+		    int *xarray, int *nx, int *yarray, int *ny)
 {
-   int                 j, x1, x2, y1, y2, k, y, x;
+   int                 j, x1, x2, y1, y2;
    int                 xsize, ysize;
 
    xsize = 0;
@@ -82,8 +79,10 @@ ArrangeMakeFillLists(int tx1, int tx2, int ty1, int ty2, int fitw, int fith,
    /* put all the sorted rects into the xy arrays */
    xsize = ArrangeAddToList(xarray, xsize, tx1);
    xsize = ArrangeAddToList(xarray, xsize, tx2);
+   xsize = ArrangeAddToList(xarray, xsize, tx2 - fitw);
    ysize = ArrangeAddToList(yarray, ysize, ty1);
    ysize = ArrangeAddToList(yarray, ysize, ty2);
+   ysize = ArrangeAddToList(yarray, ysize, ty2 - fith);
 
    for (j = 0; j < num_sorted; j++)
      {
@@ -106,6 +105,19 @@ ArrangeMakeFillLists(int tx1, int tx2, int ty1, int ty2, int fitw, int fith,
    for (j = 0; j < ysize; j++)
       Eprintf("yarray[%d] = %d\n", j, yarray[j]);
 #endif
+
+   *nx = xsize;
+   *ny = ysize;
+}
+
+#define Filled(x,y) (filled[(y * (xsize - 1)) + x])
+
+static void
+ArrangeMakeFillLists(const RectBox * sorted, int num_sorted,
+		     int *xarray, int xsize, int *yarray, int ysize,
+		     unsigned char *filled)
+{
+   int                 j, x1, x2, y1, y2, k, y, x;
 
    /* fill the allocation array */
    for (j = 0; j < (xsize - 1) * (ysize - 1); filled[j++] = 0)
@@ -160,9 +172,6 @@ ArrangeMakeFillLists(int tx1, int tx2, int ty1, int ty2, int fitw, int fith,
 	printf("\n");
      }
 #endif
-
-   *nx = xsize;
-   *ny = ysize;
 }
 
 static void
@@ -295,7 +304,7 @@ ArrangeRects(const RectBox * fixed, int fixed_count, RectBox * floating,
    int                 i, j, k;
    unsigned char      *filled;
    RectInfo           *spaces;
-   int                 num_spaces, max_spaces;
+   int                 num_spaces, alloc_spaces;
    int                 sort;
    int                 a1, a2;
 
@@ -368,14 +377,14 @@ ArrangeRects(const RectBox * fixed, int fixed_count, RectBox * floating,
 
    /* for every floating rect in order, "fit" it into the sorted list */
    i = ((fixed_count + floating_count) * 4) + 2;
-   max_spaces = i * i;
    xarray = EMALLOC(int, i);
    yarray = EMALLOC(int, i);
-   filled = EMALLOC(unsigned char, max_spaces);
 
-   spaces = EMALLOC(RectInfo, max_spaces);
+   filled = NULL;
+   spaces = NULL;
+   alloc_spaces = 0;
 
-   if (!xarray || !yarray || !filled || !spaces)
+   if (!xarray || !yarray)
       goto done;
 
    /* copy "fixed" rects into the sorted list */
@@ -385,13 +394,30 @@ ArrangeRects(const RectBox * fixed, int fixed_count, RectBox * floating,
    /* go through each floating rect in order and "fit" it in */
    for (i = 0; i < floating_count; i++)
      {
-	ArrangeMakeFillLists(tx1, tx2, ty1, ty2, floating[i].w, floating[i].h,
-			     sorted, num_sorted,
-			     xarray, &xsize, yarray, &ysize, filled);
+	ArrangeMakeXYArrays(tx1, tx2, ty1, ty2, floating[i].w, floating[i].h,
+			    sorted, num_sorted, xarray, &xsize, yarray, &ysize);
+	num_spaces = xsize * ysize;
+	if (alloc_spaces < num_spaces)
+	  {
+	     unsigned char      *ptr_f;
+	     RectInfo           *ptr_s;
+
+	     ptr_f = EREALLOC(unsigned char, filled, num_spaces);
+
+	     if (ptr_f)
+		filled = ptr_f;
+	     ptr_s = EREALLOC(RectInfo, spaces, num_spaces);
+	     if (ptr_s)
+		spaces = ptr_s;
+	     if (!ptr_f || !ptr_s)
+		goto done;
+	  }
+	ArrangeMakeFillLists(sorted, num_sorted,
+			     xarray, xsize, yarray, ysize, filled);
 
 	/* create list of all "spaces" */
 	ArrangeFindSpaces(xarray, xsize, yarray, ysize, filled,
-			  spaces, max_spaces, &num_spaces, floating + i);
+			  spaces, alloc_spaces, &num_spaces, floating + i);
 
 	/* find the first space that fits */
 	k = 0;
@@ -841,7 +867,7 @@ ArrangeEwinXY(EWin * ewin, int *px, int *py)
    newrect.h = EoGetH(ewin);
    newrect.p = EoGetLayer(ewin);
 
-   ret = EMALLOC(RectBox, num + 1);
+   ret = ECALLOC(RectBox, num + 1);
    ArrangeRects(fixed, num, &newrect, 1, ret, 0, 0,
 		WinGetW(VROOT), WinGetH(VROOT), ARRANGE_BY_SIZE, 1);
 
@@ -898,7 +924,7 @@ ArrangeEwins(const char *params)
 
    ArrangeGetRectList(&fixed, &nfix, &floating, &nflt, NULL);
 
-   ret = EMALLOC(RectBox, nflt + nfix);
+   ret = ECALLOC(RectBox, nflt + nfix);
    ArrangeRects(fixed, nfix, floating, nflt, ret, 0, 0,
 		WinGetW(VROOT), WinGetH(VROOT), method, 1);
 
