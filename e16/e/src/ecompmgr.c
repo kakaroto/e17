@@ -1705,7 +1705,8 @@ ECompMgrWinReparent(EObj * eo, Desk * dsk, int change_xy)
    ECmWinInfo         *cw = eo->cmhook;
 
    D1printf("ECompMgrWinReparent %#lx %#lx d=%d->%d x,y=%d,%d %d\n",
-	    EobjGetXwin(eo), cw->extents, eo->desk->num, dsk->num,
+	    EobjGetXwin(eo), cw->extents,
+	    (eo->desk) ? (int)eo->desk->num : -1, dsk->num,
 	    EobjGetX(eo), EobjGetY(eo), change_xy);
 
    if (!eo->shown)
