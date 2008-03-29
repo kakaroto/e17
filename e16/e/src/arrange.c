@@ -411,6 +411,7 @@ ArrangeRects(const RectBox * fixed, int fixed_count, RectBox * floating,
 		spaces = ptr_s;
 	     if (!ptr_f || !ptr_s)
 		goto done;
+	     alloc_spaces = num_spaces;
 	  }
 	ArrangeMakeFillLists(sorted, num_sorted,
 			     xarray, xsize, yarray, ysize, filled);
