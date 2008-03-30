@@ -1,12 +1,13 @@
 #include "main.h"
 
-#include <windows.h>
 #include <windowsx.h>
-#include <ddraw.h>
 #include <Evas_Engine_Software_16_DDraw.h>
 
 
 static HWND window;
+
+
+extern "C" {
 
 static int
 _directdraw_init (HWND                 window,
@@ -18,21 +19,20 @@ _directdraw_init (HWND                 window,
                   LPDIRECTDRAWSURFACE *surface_source,
                   int                 *depth)
 {
-   DDSURFACEDESC2      surface_desc;
-   DDPIXELFORMAT       pixel_format;
-   LPDIRECTDRAW        o;
-   DDSURFACEDESC2     *sd;
-   void               *source;
-   HRESULT             res;
+   DDSURFACEDESC surface_desc;
+   DDPIXELFORMAT pixel_format;
+   LPDIRECTDRAW  o;
+   void         *source;
+   HRESULT       res;
 
-   res = DirectDrawCreateEx (NULL, (void **)&o, &IID_IDirectDraw7, NULL);
+   res = DirectDrawCreate (NULL, &o, NULL);
    if (FAILED(res))
      return 0;
 
-   res = IDirectDraw7_SetCooperativeLevel (o, window, DDSCL_NORMAL);
+   res = o->SetCooperativeLevel (window, DDSCL_NORMAL);
    if (FAILED(res))
      {
-        IDirectDraw7_Release (o);
+        o->Release ();
         return 0;
      }
 
@@ -41,12 +41,10 @@ _directdraw_init (HWND                 window,
    surface_desc.dwFlags = DDSD_CAPS;
    surface_desc.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE;
 
-   sd=&surface_desc;
-   res = IDirectDraw7_CreateSurface (o, (DDSURFACEDESC *)sd,
-                                     surface_primary, NULL);
+   res = o->CreateSurface (&surface_desc, surface_primary, NULL);
    if (FAILED(res))
      {
-        IDirectDraw7_Release (o);
+        o->Release ();
         return 0;
      }
 
@@ -57,28 +55,23 @@ _directdraw_init (HWND                 window,
    surface_desc.dwWidth = width;
    surface_desc.dwHeight = height;
 
-   sd=&surface_desc;
-   res = IDirectDraw7_CreateSurface (o, (DDSURFACEDESC *)sd,
-                                     surface_back, NULL);
+   res = o->CreateSurface (&surface_desc, surface_back, NULL);
    if (FAILED(res))
      {
-        IDirectDrawSurface7_Release (*surface_primary);
-        IDirectDraw7_Release (o);
+        (*surface_primary)->Release ();
+        o->Release ();
         return 0;
      }
 
    ZeroMemory(&pixel_format, sizeof(pixel_format));
    pixel_format.dwSize = sizeof(pixel_format);
-   IDirectDrawSurface7_GetPixelFormat(*surface_primary, &pixel_format);
-
-   *object = o;
-   *depth = pixel_format.dwRGBBitCount;
+   (*surface_primary)->GetPixelFormat(&pixel_format);
 
    source = malloc(width * height * 2);
    if (!source)
      {
-        IDirectDrawSurface7_Release (*surface_primary);
-        IDirectDraw7_Release (o);
+        (*surface_primary)->Release ();
+        o->Release ();
         return 0;
      }
 
@@ -92,21 +85,18 @@ _directdraw_init (HWND                 window,
    surface_desc.dwHeight = height;
    surface_desc.lPitch = 2 * surface_desc.dwWidth;
    surface_desc.lpSurface = source;
-
    surface_desc.ddpfPixelFormat = pixel_format;
 
-   /* Hack to cleanly remove a warning */
-   sd = &surface_desc;
-   if (FAILED(IDirectDraw7_CreateSurface(*object,
-                                         (DDSURFACEDESC *)sd,
-                                         surface_source,
-                                         NULL)))
+   if (FAILED(o->CreateSurface(&surface_desc, surface_source, NULL)))
      {
         free(source);
-        IDirectDrawSurface7_Release (*surface_primary);
-        IDirectDraw7_Release (o);
+        (*surface_primary)->Release ();
+        o->Release ();
         return 0;
      }
+
+   *object = o;
+   *depth = pixel_format.dwRGBBitCount;
 
    return 1;
 }
@@ -280,6 +270,8 @@ engine_software_16_ddraw_args(int argc, char **argv)
    LPDIRECTDRAWSURFACE                 surface_back;
    LPDIRECTDRAWSURFACE                 surface_source;
    Evas_Engine_Info_Software_16_DDraw *einfo;
+   DWORD                               style;
+   DWORD                               exstyle;
    int                                 depth;
    int                                 i;
    int                                 ok = 0;
@@ -296,7 +288,7 @@ engine_software_16_ddraw_args(int argc, char **argv)
 
    hinstance = GetModuleHandle(0);
 
-   wc.style = 0;
+   wc.style = CS_HREDRAW | CS_VREDRAW;
    wc.lpfnWndProc = MainWndProc;
    wc.cbClsExtra = 0;
    wc.cbWndExtra = 0;
@@ -309,16 +301,19 @@ engine_software_16_ddraw_args(int argc, char **argv)
 
    if(!RegisterClass(&wc)) return EXIT_FAILURE;
 
+   style = WS_OVERLAPPEDWINDOW | WS_SIZEBOX;
+   exstyle = 0;
+
    rect.left = 0;
    rect.top = 0;
    rect.right = win_w;
    rect.bottom = win_h;
-   AdjustWindowRect (&rect, WS_OVERLAPPEDWINDOW | WS_SIZEBOX, FALSE);
+   AdjustWindowRectEx(&rect, style, FALSE, exstyle);
 
-   window = CreateWindowEx(0,
+   window = CreateWindowEx(exstyle,
                            "Evas_Software_16_DDraw_Test",
                            "Evas_Software_16_DDraw_Test",
-                           WS_OVERLAPPEDWINDOW | WS_SIZEBOX,
+                           style,
                            CW_USEDEFAULT, CW_USEDEFAULT,
                            rect.right - rect.left, rect.bottom - rect.top,
                            NULL, NULL, hinstance, NULL);
@@ -330,14 +325,14 @@ engine_software_16_ddraw_args(int argc, char **argv)
                          &surface_back,
                          &surface_source,
                          &depth))
-     return 0;
+     return EXIT_FAILURE;
 
    evas_output_method_set(evas, evas_render_method_lookup("software_16_ddraw"));
    einfo = (Evas_Engine_Info_Software_16_DDraw *)evas_engine_info_get(evas);
    if (!einfo)
      {
-        printf("Evas does not support the 16bit Software DirectDraw Engine\n");
-        return 0;
+       fprintf(stderr, "Evas does not support the 16 bits Software DirectDraw Engine\n");
+        return EXIT_FAILURE;
      }
 
    einfo->info.window = window;

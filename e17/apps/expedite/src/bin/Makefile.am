@@ -57,7 +57,7 @@ image_blend_occlude2_very_many.c \
 image_blend_occlude3_very_many.c \
 poly_blend.c
 
-expedite_LDFLAGS = @EVAS_LIBS@ @SDL_LIBS@ @x_libs@ @ddraw_libs@ @ddraw_16_libs@ @d3d_libs@ @glew_libs@ @DIRECTFB_LIBS@ -lm
+expedite_LDADD = @EVAS_LIBS@ @SDL_LIBS@ @x_libs@ @ddraw_libs@ @ddraw_16_libs@ @d3d_libs@ @glew_libs@ @DIRECTFB_LIBS@ -lm
 
 if BUILD_SOFTWARE_X11
 expedite_SOURCES += \
@@ -91,7 +91,7 @@ endif
 
 if BUILD_SOFTWARE_16_DDRAW
 expedite_SOURCES += \
-engine_software_16_ddraw.c engine_software_16_ddraw.h
+engine_software_16_ddraw.cpp engine_software_16_ddraw.h
 endif
 
 if BUILD_DIRECT3D
