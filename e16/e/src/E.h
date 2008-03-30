@@ -73,40 +73,12 @@
 #define ENABLE_TRANSPARENCY 1
 #define ENABLE_THEME_TRANSPARENCY 1
 
-/* sgi's stdio.h has:
- * 
- * #if _SGIAPI && _NO_ANSIMODE
- * extern int      vsnprintf(char *, ssize_t, const char *, char *);
- * #endif
- * 
- * so workaround...
- */
-
-#ifdef __sgi
-#ifdef _NO_ANSIMODE
-#undef _NO_ANSIMODE
-#endif
-#endif
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdarg.h>
 #include <string.h>
 #include <sys/types.h>
 #include <unistd.h>
-
-#ifndef HAVE_GETCWD
-#error "ERROR: Enlightenment needs a system with getcwd() in it's libs."
-#error "You may have to upgrade your Operating system, Distribution, base"
-#error "system libraries etc. Please see the the instructions for your"
-#error "particular Operating System or Distribution"
-#endif
-#ifndef HAVE_MKDIR
-#error "ERROR: Enlightenment needs a system with mkdir() in it's libs."
-#error "You may have to upgrade your Operating system, Distribution, base"
-#error "system libraries etc. Please see the the instructions for your"
-#error "particular Operating System or Distribution"
-#endif
 
 #ifndef HAVE_STRCASESTR
 # define strcasestr(haystack, needle) strstr(haystack, needle)
