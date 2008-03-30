@@ -19,11 +19,11 @@ _directdraw_init (HWND                 window,
                   LPDIRECTDRAWCLIPPER *clipper,
                   int                 *depth)
 {
-   DDSURFACEDESC      surface_desc;
-   DDPIXELFORMAT       pixel_format;
-   LPDIRECTDRAW        o;
-   DDSURFACEDESC     *sd;
-   HRESULT             res;
+   DDSURFACEDESC  surface_desc;
+   DDPIXELFORMAT  pixel_format;
+   LPDIRECTDRAW   o;
+   DDSURFACEDESC *sd;
+   HRESULT        res;
 
    res = DirectDrawCreate (NULL, &o, NULL);
    if (FAILED(res))
@@ -308,9 +308,6 @@ engine_software_ddraw_args(int argc, char **argv)
    rect.bottom = win_h;
    AdjustWindowRectEx (&rect, style, FALSE, exstyle);
 
-   fprintf (stderr, " * 1 %d %d\n",
-            (int)(rect.right - rect.left), (int)(rect.bottom - rect.top));
-
    window = CreateWindowEx(exstyle,
                            "Evas_Software_DDraw_Test",
                            "Evas_Software_DDraw_Test",
@@ -320,23 +317,19 @@ engine_software_ddraw_args(int argc, char **argv)
                            NULL, NULL, hinstance, NULL);
    if (!window) return EXIT_FAILURE;
 
-   fprintf (stderr, " * 2\n");
-
    if (!_directdraw_init(window, win_w, win_h,
                          &object,
                          &surface_primary,
                          &surface_back,
                          &clipper,
                          &depth))
-     return 0;
-
-   fprintf (stderr, " * 3\n");
+     return EXIT_FAILURE;
 
    evas_output_method_set(evas, evas_render_method_lookup("software_ddraw"));
    einfo = (Evas_Engine_Info_Software_DDraw *)evas_engine_info_get(evas);
    if (!einfo)
      {
-        printf("Evas does not support the Software DirectDraw Engine\n");
+       fprintf(stderr, "Evas does not support the Software DirectDraw Engine\n");
         return 0;
      }
 
