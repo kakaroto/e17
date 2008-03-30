@@ -1,12 +1,13 @@
 #include "main.h"
 
-#include <windows.h>
 #include <windowsx.h>
-#include <ddraw.h>
 #include <Evas_Engine_Software_DDraw.h>
 
 
 static HWND window;
+
+
+extern "C" {
 
 static int
 _directdraw_init (HWND                 window,
@@ -15,38 +16,38 @@ _directdraw_init (HWND                 window,
                   LPDIRECTDRAW        *object,
                   LPDIRECTDRAWSURFACE *surface_primary,
                   LPDIRECTDRAWSURFACE *surface_back,
+                  LPDIRECTDRAWCLIPPER *clipper,
                   int                 *depth)
 {
-   DDSURFACEDESC2      surface_desc;
+   DDSURFACEDESC      surface_desc;
    DDPIXELFORMAT       pixel_format;
-   LPDIRECTDRAWCLIPPER clipper;
    LPDIRECTDRAW        o;
-   DDSURFACEDESC2     *sd;
+   DDSURFACEDESC     *sd;
    HRESULT             res;
 
-   res = DirectDrawCreateEx (NULL, (void **)&o, &IID_IDirectDraw7, NULL);
+   res = DirectDrawCreate (NULL, &o, NULL);
    if (FAILED(res))
      return 0;
 
-   res = IDirectDraw7_SetCooperativeLevel (o, window, DDSCL_NORMAL);
+   res = o->SetCooperativeLevel (window, DDSCL_NORMAL);
    if (FAILED(res))
      {
-        IDirectDraw7_Release (o);
+        o->Release ();
         return 0;
      }
 
-   res = IDirectDraw7_CreateClipper (o, 0, &clipper, NULL);
+   res = o->CreateClipper (0, clipper, NULL);
    if (FAILED(res))
      {
-        IDirectDraw7_Release (o);
+        o->Release ();
         return 0;
      }
 
-   res = IDirectDrawClipper_SetHWnd (clipper, 0, window);
+   res = (*clipper)->SetHWnd (0, window);
    if (FAILED(res))
      {
-        IDirectDrawClipper_Release (clipper);
-        IDirectDraw7_Release (o);
+        (*clipper)->Release ();
+        o->Release ();
         return 0;
      }
 
@@ -55,22 +56,20 @@ _directdraw_init (HWND                 window,
    surface_desc.dwFlags = DDSD_CAPS;
    surface_desc.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE;
 
-   sd=&surface_desc;
-   res = IDirectDraw7_CreateSurface (o, (DDSURFACEDESC *)sd,
-                                     surface_primary, NULL);
+   res = o->CreateSurface (&surface_desc, surface_primary, NULL);
    if (FAILED(res))
      {
-        IDirectDrawClipper_Release (clipper);
-        IDirectDraw7_Release (o);
+        (*clipper)->Release ();
+        o->Release ();
         return 0;
      }
 
-   res = IDirectDrawSurface7_SetClipper (*surface_primary, clipper);
+   res = (*surface_primary)->SetClipper (*clipper);
    if (FAILED(res))
      {
-        IDirectDrawClipper_Release (clipper);
-        IDirectDrawSurface7_Release (*surface_primary);
-        IDirectDraw7_Release (o);
+        (*surface_primary)->Release ();
+        (*clipper)->Release ();
+        o->Release ();
         return 0;
      }
 
@@ -81,20 +80,18 @@ _directdraw_init (HWND                 window,
    surface_desc.dwWidth = width;
    surface_desc.dwHeight = height;
 
-   sd=&surface_desc;
-   res = IDirectDraw7_CreateSurface (o, (DDSURFACEDESC *)sd,
-                                     surface_back, NULL);
+   res = o->CreateSurface (&surface_desc, surface_back, NULL);
    if (FAILED(res))
      {
-        IDirectDrawClipper_Release (clipper);
-        IDirectDrawSurface7_Release (*surface_primary);
-        IDirectDraw7_Release (o);
+        (*surface_primary)->Release ();
+        (*clipper)->Release ();
+        o->Release ();
         return 0;
      }
 
    ZeroMemory(&pixel_format, sizeof(pixel_format));
    pixel_format.dwSize = sizeof(pixel_format);
-   IDirectDrawSurface7_GetPixelFormat(*surface_primary, &pixel_format);
+   (*surface_primary)->GetPixelFormat(&pixel_format);
 
    *object = o;
    *depth = pixel_format.dwRGBBitCount;
@@ -269,7 +266,10 @@ engine_software_ddraw_args(int argc, char **argv)
    LPDIRECTDRAW                     object;
    LPDIRECTDRAWSURFACE              surface_primary;
    LPDIRECTDRAWSURFACE              surface_back;
+   LPDIRECTDRAWCLIPPER              clipper;
    Evas_Engine_Info_Software_DDraw *einfo;
+   DWORD                            style;
+   DWORD                            exstyle;
    int                              depth;
    int                              i;
    int                              ok = 0;
@@ -286,40 +286,51 @@ engine_software_ddraw_args(int argc, char **argv)
 
    hinstance = GetModuleHandle(0);
 
-   wc.style = 0;
+   wc.style = CS_HREDRAW | CS_VREDRAW;
    wc.lpfnWndProc = MainWndProc;
    wc.cbClsExtra = 0;
    wc.cbWndExtra = 0;
    wc.hInstance = hinstance;
    wc.hIcon = LoadIcon (NULL, IDI_APPLICATION);
    wc.hCursor = LoadCursor (NULL, IDC_ARROW);
-   wc.hbrBackground = (HBRUSH)(1 + COLOR_BTNFACE);
+   wc.hbrBackground = GetSysColorBrush(COLOR_BTNFACE);
    wc.lpszMenuName =  NULL;
    wc.lpszClassName = "Evas_Software_DDraw_Test";
 
    if(!RegisterClass(&wc)) return EXIT_FAILURE;
 
+   style = WS_OVERLAPPEDWINDOW | WS_SIZEBOX;
+   exstyle = 0;
+
    rect.left = 0;
    rect.top = 0;
    rect.right = win_w;
    rect.bottom = win_h;
-   AdjustWindowRect (&rect, WS_OVERLAPPEDWINDOW | WS_SIZEBOX, FALSE);
+   AdjustWindowRectEx (&rect, style, FALSE, exstyle);
 
-   window = CreateWindowEx(0,
+   fprintf (stderr, " * 1 %d %d\n",
+            (int)(rect.right - rect.left), (int)(rect.bottom - rect.top));
+
+   window = CreateWindowEx(exstyle,
                            "Evas_Software_DDraw_Test",
                            "Evas_Software_DDraw_Test",
-                           WS_OVERLAPPEDWINDOW | WS_SIZEBOX,
+                           style,
                            CW_USEDEFAULT, CW_USEDEFAULT,
                            rect.right - rect.left, rect.bottom - rect.top,
                            NULL, NULL, hinstance, NULL);
    if (!window) return EXIT_FAILURE;
 
+   fprintf (stderr, " * 2\n");
+
    if (!_directdraw_init(window, win_w, win_h,
                          &object,
                          &surface_primary,
                          &surface_back,
+                         &clipper,
                          &depth))
      return 0;
+
+   fprintf (stderr, " * 3\n");
 
    evas_output_method_set(evas, evas_render_method_lookup("software_ddraw"));
    einfo = (Evas_Engine_Info_Software_DDraw *)evas_engine_info_get(evas);
@@ -359,4 +370,7 @@ engine_software_ddraw_loop(void)
    DispatchMessage (&msg);
 
    goto again;
+}
+
+
 }

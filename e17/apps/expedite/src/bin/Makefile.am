@@ -86,7 +86,7 @@ endif
 
 if BUILD_SOFTWARE_DDRAW
 expedite_SOURCES += \
-engine_software_ddraw.c engine_software_ddraw.h
+engine_software_ddraw.cpp engine_software_ddraw.h
 endif
 
 if BUILD_SOFTWARE_16_DDRAW
