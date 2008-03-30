@@ -27,8 +27,7 @@
 #include <X11/Xlib.h>
 #include <X11/extensions/shape.h>
 #include "util.h"
-
-typedef struct _xwin *Win;
+#include "xtypes.h"
 
 typedef struct {
    Display            *disp;
@@ -206,23 +205,15 @@ int                 ETranslateCoordinates(Win src_w, Win dst_w,
 					  Window * child_return);
 int                 EDrawableCheck(Drawable draw, int grab);
 
-#define ESelectInput(win, event_mask) \
-	XSelectInput(disp, WinGetXwin(win), event_mask)
-
-#define EChangeWindowAttributes(win, mask, attr) \
-	XChangeWindowAttributes(disp, WinGetXwin(win), mask, attr)
-#define ESetWindowBorderWidth(win, bw) \
-	XSetWindowBorderWidth(disp, WinGetXwin(win), bw)
-
-#define ERaiseWindow(win) \
-	XRaiseWindow(disp, WinGetXwin(win))
-#define ELowerWindow(win) \
-	XLowerWindow(disp, WinGetXwin(win))
-
-#define EClearWindow(win) \
-	XClearWindow(disp, WinGetXwin(win))
-#define EClearArea(win, x, y, w, h, exp) \
-	XClearArea(disp, WinGetXwin(win), x, y, w, h, exp)
+void                ESelectInput(Win win, unsigned int event_mask);
+void                EChangeWindowAttributes(Win win, unsigned int mask,
+					    XSetWindowAttributes * attr);
+void                ESetWindowBorderWidth(Win win, unsigned int bw);
+void                ERaiseWindow(Win win);
+void                ELowerWindow(Win win);
+void                EClearWindow(Win win);
+void                EClearArea(Win win, int x, int y,
+			       unsigned int w, unsigned int h);
 
 Pixmap              ECreatePixmap(Win win, unsigned int width,
 				  unsigned int height, unsigned int depth);
@@ -264,8 +255,8 @@ Window              EXWindowGetParent(Window xwin);
 int                 EXGetGeometry(Window xwin, Window * root_return,
 				  int *x, int *y, int *w, int *h, int *bw,
 				  int *depth);
-#define EXGetWindowAttributes(win, xwa) \
-	XGetWindowAttributes(disp, WinGetXwin(win), xwa)
+
+void                EXRestackWindows(Window * windows, int nwindows);
 
 void                EXCopyArea(Drawable src, Drawable dst, int sx, int sy,
 			       unsigned int w, unsigned int h, int dx, int dy);
@@ -282,6 +273,14 @@ Pixmap              EXCreatePixmapCopy(Pixmap src, unsigned int w,
 GC                  EXCreateGC(Drawable draw, unsigned long mask,
 			       XGCValues * val);
 int                 EXFreeGC(GC gc);
+
+void                EXSendEvent(Window xwin, long event_mask, XEvent * ev);
+
+KeyCode             EKeysymToKeycode(KeySym keysym);
+KeyCode             EKeynameToKeycode(const char *name);
+const char         *EKeycodeToString(KeyCode keycode, int index);
+
+Atom                EInternAtom(const char *name);
 
 typedef struct {
    char                type;

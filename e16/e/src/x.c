@@ -1071,11 +1071,58 @@ ESetWindowBackground(Win win, unsigned int col)
    XSetWindowBackground(disp, win->xwin, col);
 }
 
+void
+ESelectInput(Win win, unsigned int event_mask)
+{
+   XSelectInput(disp, win->xwin, event_mask);
+}
+
+void
+EChangeWindowAttributes(Win win, unsigned int mask, XSetWindowAttributes * attr)
+{
+   XChangeWindowAttributes(disp, win->xwin, mask, attr);
+}
+
+void
+ESetWindowBorderWidth(Win win, unsigned int bw)
+{
+   XSetWindowBorderWidth(disp, win->xwin, bw);
+}
+
+void
+ERaiseWindow(Win win)
+{
+   XRaiseWindow(disp, win->xwin);
+}
+
+void
+ELowerWindow(Win win)
+{
+   XLowerWindow(disp, win->xwin);
+}
+
+void
+EXRestackWindows(Window * windows, int nwindows)
+{
+   XRestackWindows(disp, windows, nwindows);
+}
+
+void
+EClearWindow(Win win)
+{
+   XClearWindow(disp, win->xwin);
+}
+
+void
+EClearArea(Win win, int x, int y, unsigned int w, unsigned int h)
+{
+   XClearArea(disp, win->xwin, x, y, w, h, False);
+}
+
 int
-ETranslateCoordinates(Win src_w, Win dst_w,
-		      int src_x, int src_y,
-		      int *dest_x_return,
-		      int *dest_y_return, Window * child_return)
+ETranslateCoordinates(Win src_w, Win dst_w, int src_x, int src_y,
+		      int *dest_x_return, int *dest_y_return,
+		      Window * child_return)
 {
    Window              child;
 
@@ -1154,6 +1201,30 @@ EDrawableCheck(Drawable draw, int grab)
       EUngrabServer();
 
    return ok;
+}
+
+KeyCode
+EKeysymToKeycode(KeySym keysym)
+{
+   return XKeysymToKeycode(disp, keysym);
+}
+
+KeyCode
+EKeynameToKeycode(const char *name)
+{
+   return XKeysymToKeycode(disp, XStringToKeysym(name));
+}
+
+const char         *
+EKeycodeToString(KeyCode keycode, int ix)
+{
+   return XKeysymToString(XKeycodeToKeysym(disp, keycode, ix));
+}
+
+Atom
+EInternAtom(const char *name)
+{
+   return XInternAtom(disp, name, False);
 }
 
 #define DEBUG_SHAPE_OPS 0
@@ -1627,6 +1698,12 @@ int
 EXFreeGC(GC gc)
 {
    return XFreeGC(disp, gc);
+}
+
+void
+EXSendEvent(Window xwin, long event_mask, XEvent * ev)
+{
+   XSendEvent(disp, xwin, False, event_mask, ev);
 }
 
 void

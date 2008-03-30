@@ -24,6 +24,7 @@
 #include "E.h"
 #include "emodule.h"
 #include "lang.h"
+#include <X11/Xlib.h>
 
 #ifdef HAVE_LOCALE_H
 #include <locale.h>

@@ -24,7 +24,7 @@
 #define _EIMAGE_H_
 
 #include <X11/X.h>
-#include "xwin.h"
+#include "xtypes.h"
 
 typedef void        EImage;
 typedef void        EImageColorModifier;

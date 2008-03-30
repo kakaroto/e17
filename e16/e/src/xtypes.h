@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
+ * Copyright (C) 2008 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -20,28 +20,9 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-#ifndef _PIXIMG_H_
-#define _PIXIMG_H_
+#ifndef _XTYPES_H_
+#define _XTYPES_H_
 
-#include <X11/Xlib.h>
-#include <X11/extensions/XShm.h>
+typedef struct _xwin *Win;
 
-typedef struct _PixImg {
-   XImage             *xim;
-   XShmSegmentInfo    *shminfo;
-   Pixmap              pmap;
-   GC                  gc;
-} PixImg;
-
-void                EFillPixmap(Window win, Pixmap pmap, int x, int y, int w,
-				int h);
-void                EPastePixmap(Window win, Pixmap pmap, int x, int y, int w,
-				 int h);
-
-PixImg             *ECreatePixImg(Window win, int w, int h);
-void                EDestroyPixImg(PixImg * pi);
-void                EBlendRemoveShape(Win win, Pixmap pmap, int x, int y);
-void                EBlendPixImg(Win win, PixImg * s1, PixImg * s2,
-				 PixImg * dst, int x, int y, int w, int h);
-
-#endif /* _PIXIMG_H_ */
+#endif /* _XTYPES_H_ */

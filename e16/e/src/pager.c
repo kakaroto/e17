@@ -238,7 +238,7 @@ PagerScanTimeout(int val __UNUSED__, void *data)
 
    ScaleRect(VROOT, WinGetXwin(VROOT), p->win, WinGetPmap(p->win), 0,
 	     y2, WinGetW(VROOT), WinGetH(VROOT) / hh, xx, yy + y, ww, 1, HIQ);
-   EClearArea(p->win, xx, yy + y, ww, 1, False);
+   EClearArea(p->win, xx, yy + y, ww, 1);
    y2 = p->h;
 #else
    y = ((phase & 0xfffffff8) + offsets[phase % 8]) % ww;
@@ -246,7 +246,7 @@ PagerScanTimeout(int val __UNUSED__, void *data)
 
    ScaleRect(VROOT, WinGetXwin(VROOT), p->win, WinGetPmap(p->win), y2,
 	     0, WinGetW(VROOT) / ww, WinGetH(VROOT), xx + y, yy, 1, hh, HIQ);
-   EClearArea(p->win, xx + y, yy, 1, hh, False);
+   EClearArea(p->win, xx + y, yy, 1, hh);
    y2 = p->w;
 #endif
    p->update_phase++;

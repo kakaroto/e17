@@ -27,6 +27,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <X11/Xlib.h>
+#include <X11/keysym.h>
 #include "alert.h"
 #include "lang.h"
 #include "session.h"
@@ -382,7 +383,7 @@ ShowAlert(const char *title,
 	switch (ev.type)
 	  {
 	  case KeyPress:
-	     key = XKeysymToKeycode(dd, XStringToKeysym("F1"));
+	     key = XKeysymToKeycode(dd, XK_F1);
 	     if (key == ev.xkey.keycode)
 	       {
 		  DRAW_BOX_IN(dd, gc, b1, 0, 0, mh + 10, fh + 10);
@@ -392,7 +393,7 @@ ShowAlert(const char *title,
 		  button = 1;
 		  break;
 	       }
-	     key = XKeysymToKeycode(dd, XStringToKeysym("F2"));
+	     key = XKeysymToKeycode(dd, XK_F2);
 	     if (key == ev.xkey.keycode)
 	       {
 		  DRAW_BOX_IN(dd, gc, b2, 0, 0, mh + 10, fh + 10);
@@ -402,7 +403,7 @@ ShowAlert(const char *title,
 		  button = 2;
 		  break;
 	       }
-	     key = XKeysymToKeycode(dd, XStringToKeysym("F3"));
+	     key = XKeysymToKeycode(dd, XK_F3);
 	     if (key == ev.xkey.keycode)
 	       {
 		  DRAW_BOX_IN(dd, gc, b3, 0, 0, mh + 10, fh + 10);

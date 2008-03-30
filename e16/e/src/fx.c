@@ -139,7 +139,7 @@ FX_Ripple_Quit(void)
 {
    RemoveTimerEvent("FX_RIPPLE_TIMEOUT");
    EClearArea(fx_ripple_win, 0, WinGetH(VROOT) - fx_ripple_waterh,
-	      WinGetW(VROOT), fx_ripple_waterh, False);
+	      WinGetW(VROOT), fx_ripple_waterh);
 }
 
 static void
@@ -579,7 +579,7 @@ FX_Waves_Quit(void)
 {
    RemoveTimerEvent("FX_WAVE_TIMEOUT");
    EClearArea(fx_wave_win, 0, WinGetH(VROOT) - FX_WAVE_WATERH,
-	      WinGetW(VROOT), FX_WAVE_WATERH, False);
+	      WinGetW(VROOT), FX_WAVE_WATERH);
 }
 
 static void

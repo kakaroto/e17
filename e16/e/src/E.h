@@ -65,7 +65,7 @@
 #define USE_GLX 1
 #endif
 
-#include "xwin.h"
+#include "xtypes.h"
 
 #define ENABLE_COLOR_MODIFIERS 0	/* Not functional */
 #define ENABLE_DESKRAY         0	/* Not functional */

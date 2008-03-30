@@ -80,7 +80,7 @@ MWM_GetHints(EWin * ewin, Atom atom_change)
       return;
 
    if (!_MOTIF_WM_HINTS)
-      _MOTIF_WM_HINTS = XInternAtom(disp, "_MOTIF_WM_HINTS", False);
+      _MOTIF_WM_HINTS = EInternAtom("_MOTIF_WM_HINTS");
 
    if (atom_change && atom_change != _MOTIF_WM_HINTS)
       return;
@@ -183,7 +183,7 @@ MWM_SetInfo(void)
       Window              win;
    } mwminfo;
 
-   a1 = XInternAtom(disp, "_MOTIF_WM_INFO", False);
+   a1 = EInternAtom("_MOTIF_WM_INFO");
    mwminfo.flags = 2;
    mwminfo.win = WinGetXwin(VROOT);
    XChangeProperty(disp, WinGetXwin(VROOT), a1, a1, 32, PropModeReplace,

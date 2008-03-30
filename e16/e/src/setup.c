@@ -191,8 +191,8 @@ SetupX(const char *dstr)
 
       numlock = scrollock = 0;
       mod = XGetModifierMapping(disp);
-      nl = XKeysymToKeycode(disp, XK_Num_Lock);
-      sl = XKeysymToKeycode(disp, XK_Scroll_Lock);
+      nl = EKeysymToKeycode(XK_Num_Lock);
+      sl = EKeysymToKeycode(XK_Scroll_Lock);
       if ((mod) && (mod->max_keypermod > 0))
 	{
 	   for (i = 0; i < (8 * mod->max_keypermod); i++)

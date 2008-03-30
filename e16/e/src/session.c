@@ -424,7 +424,7 @@ SessionInit(void)
       return;
 
 #if 0				/* Unused */
-   atom_sm_client_id = XInternAtom(disp, "SM_CLIENT_ID", False);
+   atom_sm_client_id = EInternAtom("SM_CLIENT_ID");
 #endif
 
 #if USE_SM
@@ -514,7 +514,7 @@ doSMExit(int mode, const char *params)
      {
 	/* We may get here from HandleXIOError */
 	EwinsSetFree();
-	XSelectInput(disp, WinGetXwin(VROOT), 0);
+	ESelectInput(VROOT, 0);
 	ExtInitWinKill();
 	ESync(0);
 

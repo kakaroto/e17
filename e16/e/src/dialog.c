@@ -213,8 +213,7 @@ DialogBindKey(Dialog * d, const char *key, DialogCallbackFunc * func, int val,
    d->keybindings[d->num_bindings - 1].val = val;
    d->keybindings[d->num_bindings - 1].func = func;
    d->keybindings[d->num_bindings - 1].data = data;
-   d->keybindings[d->num_bindings - 1].key =
-      XKeysymToKeycode(disp, XStringToKeysym(key));
+   d->keybindings[d->num_bindings - 1].key = EKeynameToKeycode(key);
 }
 
 void
@@ -1734,8 +1733,7 @@ DialogUpdate(Dialog * d)
    if (d->item)
       DialogDrawItem(d, d->item);
    if (d->xu1 < d->xu2 && d->yu1 < d->yu2)
-      EClearArea(d->win, d->xu1, d->yu1, d->xu2 - d->xu1, d->yu2 - d->yu1,
-		 False);
+      EClearArea(d->win, d->xu1, d->yu1, d->xu2 - d->xu1, d->yu2 - d->yu1);
    d->update = 0;
    d->xu1 = d->yu1 = 99999;
    d->xu2 = d->yu2 = 0;

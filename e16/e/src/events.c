@@ -313,7 +313,7 @@ HandleEvent(XEvent * ev)
 			    CurrentTime);
 	     ESync();
 	     ev->xkey.time = CurrentTime;
-	     XSendEvent(disp, ev->xkey.root, False, 0, ev);
+	     EXSendEvent(ev->xkey.root, 0, ev);
 	     return;
 	  }
 #endif

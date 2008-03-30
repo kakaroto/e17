@@ -558,7 +558,7 @@ EwinBorderSetTo(EWin * ewin, const Border * b)
 	   if (!b->part[i].ontop)
 	      wl[j++] = WinGetXwin(ewin->bits[i].win);
 	}
-      XRestackWindows(disp, wl, j);
+      EXRestackWindows(wl, j);
       Efree(wl);
    }
 

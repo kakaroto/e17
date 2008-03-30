@@ -327,7 +327,7 @@ CommsDoSend(Window win, const char *s)
 	ss[20] = 0;
 	for (k = 0; k < 20; k++)
 	   ev.xclient.data.b[k] = ss[k];
-	XSendEvent(disp, win, False, 0, (XEvent *) & ev);
+	EXSendEvent(win, 0, (XEvent *) & ev);
      }
 }
 

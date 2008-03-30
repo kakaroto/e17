@@ -72,7 +72,7 @@ ExtInitWinMain(void)
    XFreePixmap(disp, pmap);
    XFreeGC(disp, gc);
 
-   a = XInternAtom(disp, "ENLIGHTENMENT_RESTART_SCREEN", False);
+   a = EInternAtom("ENLIGHTENMENT_RESTART_SCREEN");
    ecore_x_window_prop_window_set(WinGetXwin(VROOT), a, &win, 1);
 
    XSelectInput(disp, win, StructureNotifyMask);
@@ -160,7 +160,7 @@ ExtInitWinCreate(void)
    if (EDebug(EDBUG_TYPE_SESSION))
       Eprintf("ExtInitWinCreate\n");
 
-   a = XInternAtom(disp, "ENLIGHTENMENT_RESTART_SCREEN", False);
+   a = EInternAtom("ENLIGHTENMENT_RESTART_SCREEN");
    ESync(0);
 
    if (fork())

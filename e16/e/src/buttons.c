@@ -494,7 +494,7 @@ ButtonEventMouseDown(Button * b, XEvent * ev)
 	Window              win = ev->xbutton.window;
 
 	ev->xbutton.window = b->inside_win;
-	XSendEvent(disp, b->inside_win, False, ButtonPressMask, ev);
+	EXSendEvent(b->inside_win, ButtonPressMask, ev);
 	ev->xbutton.window = win;
      }
 
@@ -522,7 +522,7 @@ ButtonEventMouseUp(Button * b, XEvent * ev)
 	Window              win = ev->xbutton.window;
 
 	ev->xbutton.window = b->inside_win;
-	XSendEvent(disp, b->inside_win, False, ButtonReleaseMask, ev);
+	EXSendEvent(b->inside_win, ButtonReleaseMask, ev);
 	ev->xbutton.window = win;
      }
 

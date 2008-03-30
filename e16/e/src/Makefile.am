@@ -106,6 +106,7 @@ e16_SOURCES = \
 	warp.c			\
 	windowmatch.c   	windowmatch.h		\
 	x.c                     xwin.h			\
+	xtypes.h                \
 	zoom.c			\
 	$(MODULE_SRCS)		\
 	$(SRCS_GNOME) 		\

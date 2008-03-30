@@ -28,27 +28,17 @@
 #include <X11/extensions/Xrender.h>
 #endif
 
-static Window       _default_draw;
-static Visual      *_default_vis;
-static Colormap     _default_cmap;
-
 void
 EImageInit(void)
 {
-   Display            *dpy = disp;
-
    imlib_set_cache_size(2048 * 1024);
    imlib_set_font_cache_size(512 * 1024);
 
    imlib_set_color_usage(128);
 
-   _default_draw = DefaultRootWindow(dpy);
-   _default_vis = DefaultVisual(dpy, DefaultScreen(dpy));
-   _default_cmap = DefaultColormap(dpy, DefaultScreen(dpy));
-
-   imlib_context_set_display(dpy);
-   imlib_context_set_visual(_default_vis);
-   imlib_context_set_colormap(_default_cmap);
+   imlib_context_set_display(disp);
+   imlib_context_set_visual(WinGetVisual(VROOT));
+   imlib_context_set_colormap(WinGetCmap(VROOT));
 
 #ifdef HAVE_IMLIB_CONTEXT_SET_MASK_ALPHA_THRESHOLD
    imlib_context_set_mask_alpha_threshold(Conf.testing.mask_alpha_threshold);
@@ -402,7 +392,7 @@ EImageGrabDrawableScaled(Win win, Drawable draw, Pixmap mask,
 						get_mask_from_shape);
 
    if (vis)
-      imlib_context_set_visual(_default_vis);
+      imlib_context_set_visual(WinGetVisual(VROOT));
 
    return im;
 }
@@ -426,7 +416,7 @@ EImageRenderOnDrawable(EImage * im, Win win, Drawable draw, int flags,
       _EImageFlagsReset();
 
    if (vis)
-      imlib_context_set_visual(_default_vis);
+      imlib_context_set_visual(WinGetVisual(VROOT));
 }
 
 void
@@ -437,7 +427,7 @@ EImageRenderPixmaps(EImage * im, Win win, int flags,
    Pixmap              m;
 
    imlib_context_set_image(im);
-   imlib_context_set_drawable((win) ? WinGetXwin(win) : _default_draw);
+   imlib_context_set_drawable((win) ? WinGetXwin(win) : WinGetXwin(VROOT));
    vis = (win) ? WinGetVisual(win) : NULL;
    if (vis)
       imlib_context_set_visual(vis);
@@ -458,7 +448,7 @@ EImageRenderPixmaps(EImage * im, Win win, int flags,
       _EImageFlagsReset();
 
    if (vis)
-      imlib_context_set_visual(_default_vis);
+      imlib_context_set_visual(WinGetVisual(VROOT));
 }
 
 void

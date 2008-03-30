@@ -24,6 +24,7 @@
 #include "E.h"
 #include "cursors.h"
 #include "grabs.h"
+#include "xwin.h"
 
 int
 GrabKeyboardSet(Win win)

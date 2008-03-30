@@ -1439,7 +1439,7 @@ DeskRestack(Desk * dsk)
 		   EXWindowGetParent(wl[i]));
      }
 
-   XRestackWindows(disp, wl, tot);
+   EXRestackWindows(wl, tot);
 
    Efree(wl);
 
@@ -1737,8 +1737,7 @@ static void
 ButtonProxySendEvent(XEvent * ev)
 {
    if (Mode.button_proxy_win)
-      XSendEvent(disp, Mode.button_proxy_win, False, SubstructureNotifyMask,
-		 ev);
+      EXSendEvent(Mode.button_proxy_win, SubstructureNotifyMask, ev);
 }
 
 static void

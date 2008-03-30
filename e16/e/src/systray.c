@@ -423,12 +423,10 @@ SystrayInit(Container * ct)
 
    Esnprintf(buf, sizeof(buf), "_NET_SYSTEM_TRAY_S%d", Dpy.screen);
 
-   E_XA__XEMBED = XInternAtom(disp, "_XEMBED", False);
-   E_XA__XEMBED_INFO = XInternAtom(disp, "_XEMBED_INFO", False);
-   _NET_SYSTEM_TRAY_OPCODE =
-      XInternAtom(disp, "_NET_SYSTEM_TRAY_OPCODE", False);
-   _NET_SYSTEM_TRAY_MESSAGE_DATA =
-      XInternAtom(disp, "_NET_SYSTEM_TRAY_MESSAGE_DATA", False);
+   E_XA__XEMBED = EInternAtom("_XEMBED");
+   E_XA__XEMBED_INFO = EInternAtom("_XEMBED_INFO");
+   _NET_SYSTEM_TRAY_OPCODE = EInternAtom("_NET_SYSTEM_TRAY_OPCODE");
+   _NET_SYSTEM_TRAY_MESSAGE_DATA = EInternAtom("_NET_SYSTEM_TRAY_MESSAGE_DATA");
 
    /* Acquire selection */
    if (systray_sel)

@@ -1375,12 +1375,12 @@ IPC_InsertKeys(const char *params, Client * c __UNUSED__)
 		continue;
 
 	     i += strlen(ks[j].ch) - 1;
-	     ev.keycode = XKeysymToKeycode(disp, XStringToKeysym(ks[j].sym));
+	     ev.keycode = EKeynameToKeycode(ks[j].sym);
 	     ev.state = ks[j].state;
 	     ev.type = KeyPress;
-	     XSendEvent(disp, win, False, 0, (XEvent *) & ev);
+	     EXSendEvent(win, 0, (XEvent *) & ev);
 	     ev.type = KeyRelease;
-	     XSendEvent(disp, win, False, 0, (XEvent *) & ev);
+	     EXSendEvent(win, 0, (XEvent *) & ev);
 	     break;
 	  }
      }

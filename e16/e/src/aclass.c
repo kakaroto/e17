@@ -99,7 +99,7 @@ ActionCreate(char event, char anymod, int mod, int anybut, int but,
    if (!key || !key[0] || (event != EVENT_KEY_DOWN && event != EVENT_KEY_UP))
       aa->key = 0;
    else
-      aa->key = XKeysymToKeycode(disp, XStringToKeysym(key));
+      aa->key = EKeynameToKeycode(key);
    aa->key_str = (aa->key) ? Estrdup(key) : NULL;
    aa->tooltipstring =
       (tooltipstring) ? Estrdup((tooltipstring[0]) ? tooltipstring : "?!?") :
@@ -1242,9 +1242,9 @@ IPC_KeybindingsGet(const char *params __UNUSED__)
 	aa = ac->list[i];
 	if ((aa) && (aa->action) && (aa->event == EVENT_KEY_DOWN))
 	  {
-	     char               *key;
+	     const char         *key;
 
-	     key = XKeysymToString(XKeycodeToKeysym(disp, aa->key, 0));
+	     key = EKeycodeToString(aa->key, 0);
 	     if (!key)
 		continue;
 

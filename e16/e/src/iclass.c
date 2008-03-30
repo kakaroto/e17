@@ -840,24 +840,24 @@ pt_type_to_flags(int image_type)
 }
 
 static EImage      *
-pt_get_bg_image(Window win, int w, int h, int use_root)
+pt_get_bg_image(Win win, int w, int h, int use_root)
 {
    EImage             *ii = NULL;
-   Window              cr, dummy;
+   Win                 cr;
    Drawable            bg;
    int                 xx, yy;
 
    bg = DeskGetBackgroundPixmap(DesksGetCurrent());
    if (use_root || bg == None)
      {
-	cr = WinGetXwin(VROOT);
+	cr = VROOT;
 	bg = WinGetXwin(VROOT);
      }
    else
      {
-	cr = EoGetXwin(DesksGetCurrent());
+	cr = EoGetWin(DesksGetCurrent());
      }
-   XTranslateCoordinates(disp, win, cr, 0, 0, &xx, &yy, &dummy);
+   ETranslateCoordinates(win, cr, 0, 0, &xx, &yy, NULL);
 #if 0
    Eprintf("pt_get_bg_image %#lx %d %d %d %d\n", win, xx, yy, w, h);
 #endif
@@ -890,7 +890,7 @@ ImageclassGetImageBlended(ImageClass * ic, Win win, int w, int h, int active,
    flags = pt_type_to_flags(image_type);
    if (flags != ICLASS_ATTR_OPAQUE)
      {
-	bg = pt_get_bg_image(WinGetXwin(win), w, h, flags & ICLASS_ATTR_GLASS);
+	bg = pt_get_bg_image(win, w, h, flags & ICLASS_ATTR_GLASS);
 	if (bg)
 	  {
 	     EImageBlendCM(bg, im, (flags & ICLASS_ATTR_USE_CM) ? icm : NULL);
@@ -932,7 +932,7 @@ ImagestateMakePmapMask(ImageState * is, Win win, PmapMask * pmm,
 
    if (flags != ICLASS_ATTR_OPAQUE)
      {
-	ii = pt_get_bg_image(WinGetXwin(win), w, h, flags & ICLASS_ATTR_GLASS);
+	ii = pt_get_bg_image(win, w, h, flags & ICLASS_ATTR_GLASS);
      }
    else
      {

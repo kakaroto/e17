@@ -588,7 +588,7 @@ SelectionAcquire(const char *name, EventCallbackFunc * func, void *data)
 
    Esnprintf(buf, sizeof(buf), "%s%d", name, Dpy.screen);
 
-   sel->atom = XInternAtom(disp, buf, False);
+   sel->atom = EInternAtom(buf);
    sel->time = EGetTimestamp();
    sel->win = ECreateEventWindow(VROOT, -100, -100, 1, 1);
 

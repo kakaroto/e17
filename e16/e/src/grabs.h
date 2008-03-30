@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2006-2007 Kim Woelders
+ * Copyright (C) 2006-2008 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -24,7 +24,7 @@
 #ifndef _GRABS_H_
 #define _GRABS_H_
 
-#include "xwin.h"
+#include "xtypes.h"
 
 int                 GrabKeyboardSet(Win win);
 int                 GrabKeyboardRelease(void);

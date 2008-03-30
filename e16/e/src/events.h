@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2006-2007 Kim Woelders
+ * Copyright (C) 2006-2008 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -22,6 +22,8 @@
  */
 #ifndef _EVENTS_H_
 #define _EVENTS_H_
+
+#include <X11/Xlib.h>
 
 /* Re-mapped X-events */
 #define EX_EVENT_CREATE_GONE             64
