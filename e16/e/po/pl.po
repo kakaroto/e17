@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-03-26 22:44+0100\n"
+"POT-Creation-Date: 2008-03-29 00:59+0100\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Adam Kisiel <kisiel@if.pw.edu.pl>\n"
 "Language-Team: Polshi <pl@li.org>\n"
@@ -144,23 +144,23 @@ msgid ""
 "%s\n"
 msgstr ""
 
-#: src/alert.c:209
+#: src/alert.c:210
 msgid "Enlightenment Error"
 msgstr "B³±d Enlightenment"
 
-#: src/alert.c:568
+#: src/alert.c:569
 msgid "Enlightenment Message Dialog"
 msgstr "Okno wiadomo¶ci Enlightenment"
 
-#: src/alert.c:568
+#: src/alert.c:569
 msgid "Ignore this"
 msgstr "Zignoruj to"
 
-#: src/alert.c:569
+#: src/alert.c:570
 msgid "Restart Enlightenment"
 msgstr "Uruchom Enlightenment ponownie"
 
-#: src/alert.c:569 src/setup.c:161
+#: src/alert.c:570 src/setup.c:168
 msgid "Quit Enlightenment"
 msgstr "Wyjd¼ z Enlightenment"
 
@@ -408,7 +408,7 @@ msgstr "Uruchamianie Enlightenment..."
 msgid "Settings..."
 msgstr "Ustawienia Aktywacji"
 
-#: src/container.c:1219 src/dialog.c:873 src/pager.c:1016 config/strings.c:30
+#: src/container.c:1219 src/dialog.c:872 src/pager.c:1016 config/strings.c:30
 #: config/strings.c:132
 msgid "Close"
 msgstr "Zamknij"
@@ -573,68 +573,68 @@ msgstr ""
 "Aby schowaæ ten Pulpit na dno,\n"
 "kliknij tutaj\n"
 
-#: src/desktops.c:2281 src/desktops.c:2320
+#: src/desktops.c:2280 src/desktops.c:2319
 #, c-format
 msgid "%i Desktops"
 msgstr "%i Puplpitów"
 
-#: src/desktops.c:2283 src/desktops.c:2322
+#: src/desktops.c:2282 src/desktops.c:2321
 #, c-format
 msgid "%i Desktop"
 msgstr "Pulpit %i"
 
-#: src/desktops.c:2315
+#: src/desktops.c:2314
 msgid "Number of virtual desktops:\n"
 msgstr "Ilo¶æ Pulpitów wirtualnych:\n"
 
-#: src/desktops.c:2344
+#: src/desktops.c:2343
 msgid "Slide desktops around when changing"
 msgstr "Pulpity ¶lizgaj± siê podczas ich zmiany"
 
-#: src/desktops.c:2350
+#: src/desktops.c:2349
 #, fuzzy
 msgid "Desktop Slide speed:\n"
 msgstr "Szybko¶æ ¶lizgania siê Pulpitów: (wolno)\n"
 
-#: src/desktops.c:2364
+#: src/desktops.c:2363
 #, fuzzy
 msgid "Wrap desktops around"
 msgstr "Zawijaj Wirtulane Pulpity"
 
-#: src/desktops.c:2372
+#: src/desktops.c:2371
 msgid "Display desktop dragbar"
 msgstr "Wy¶wietlaj Pasek Przeci±gania Pulpitu"
 
-#: src/desktops.c:2378
+#: src/desktops.c:2377
 msgid "Drag bar position:"
 msgstr "Pozycja Paska Przeci±gania"
 
-#: src/desktops.c:2382
+#: src/desktops.c:2381
 msgid "Top"
 msgstr "Góra"
 
-#: src/desktops.c:2388
+#: src/desktops.c:2387
 msgid "Bottom"
 msgstr "Dó³"
 
-#: src/desktops.c:2394 src/pager.c:1923 src/pager.c:1948 src/pager.c:1973
+#: src/desktops.c:2393 src/pager.c:1923 src/pager.c:1948 src/pager.c:1973
 msgid "Left"
 msgstr "Lewo"
 
-#: src/desktops.c:2400 src/pager.c:1935 src/pager.c:1960 src/pager.c:1985
+#: src/desktops.c:2399 src/pager.c:1935 src/pager.c:1960 src/pager.c:1985
 msgid "Right"
 msgstr "Prawo"
 
-#: src/desktops.c:2408 src/menus-misc.c:708
+#: src/desktops.c:2407 src/menus-misc.c:708
 #, fuzzy
 msgid "Desks"
 msgstr "Pulpit"
 
-#: src/desktops.c:2409
+#: src/desktops.c:2408
 msgid "Multiple Desktop Settings"
 msgstr "Ustawienia Wielu Pulpitów"
 
-#: src/desktops.c:2412
+#: src/desktops.c:2411
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -642,7 +642,7 @@ msgstr ""
 "Okno ustawieñ Wielu Pulpitów\n"
 "Enlightenment\n"
 
-#: src/desktops.c:2482 src/desktops.c:2517
+#: src/desktops.c:2481 src/desktops.c:2516
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -651,7 +651,7 @@ msgstr ""
 "%i x %i\n"
 "Pulpitów"
 
-#: src/desktops.c:2485 src/desktops.c:2520
+#: src/desktops.c:2484 src/desktops.c:2519
 msgid ""
 "1\n"
 "Screen in size"
@@ -659,43 +659,43 @@ msgstr ""
 "1\n"
 "Pulpitu"
 
-#: src/desktops.c:2513
+#: src/desktops.c:2512
 msgid "Virtual Desktop size:\n"
 msgstr "Rozmiar Wirtualnego Pulpitu :\n"
 
-#: src/desktops.c:2554
+#: src/desktops.c:2553
 msgid "Wrap virtual desktops around"
 msgstr "Zawijaj Wirtulane Pulpity"
 
-#: src/desktops.c:2561
+#: src/desktops.c:2560
 msgid "Edge Flip Mode:"
 msgstr ""
 
-#: src/desktops.c:2564
+#: src/desktops.c:2563
 msgid "Off"
 msgstr ""
 
-#: src/desktops.c:2569
+#: src/desktops.c:2568
 msgid "On"
 msgstr ""
 
-#: src/desktops.c:2574
+#: src/desktops.c:2573
 msgid "Only when moving window"
 msgstr ""
 
-#: src/desktops.c:2580
+#: src/desktops.c:2579
 msgid "Resistance at edge of screen:\n"
 msgstr "Czu³o¶æ na prze³±czanie przy brzegach ekranu:\n"
 
-#: src/desktops.c:2592
+#: src/desktops.c:2591
 msgid "Areas"
 msgstr ""
 
-#: src/desktops.c:2593
+#: src/desktops.c:2592
 msgid "Virtual Desktop Settings"
 msgstr "Ustawienia Wirtualnego Biurka"
 
-#: src/desktops.c:2596
+#: src/desktops.c:2595
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -703,20 +703,20 @@ msgstr ""
 "Okno ustawieñ Wirtualnego Biurka\n"
 "Enlightenment\n"
 
-#: src/dialog.c:861 src/dialog.c:2079 src/dialog.c:2110 src/events.c:85
-#: src/setup.c:150 src/sound.c:203
+#: src/dialog.c:860 src/dialog.c:2077 src/dialog.c:2108 src/events.c:85
+#: src/setup.c:157 src/sound.c:203
 msgid "OK"
 msgstr "OK"
 
-#: src/dialog.c:866
+#: src/dialog.c:865
 msgid "Apply"
 msgstr "Zastosuj"
 
-#: src/dialog.c:2110
+#: src/dialog.c:2108
 msgid "Attention !!!"
 msgstr "Uwaga !"
 
-#: src/ecompmgr.c:2603
+#: src/ecompmgr.c:2611
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -1051,7 +1051,7 @@ msgstr "   Wybierz grupê, z której mam usun±æ okno.  "
 msgid "Select the group to break:"
 msgstr "  Wybierz grupê, któr± mam rozbiæ  "
 
-#: src/handlers.c:64
+#: src/handlers.c:62
 #, fuzzy, c-format
 msgid ""
 "Enlightenment performed an Illegal Instruction.\n"
@@ -1072,7 +1072,7 @@ msgstr ""
 "i byæ mo¿e równie¿ wszystke biblioteki pomocnicze, które\n"
 "zainstalowano w formie binarnej\n"
 
-#: src/handlers.c:74
+#: src/handlers.c:72
 msgid ""
 "Enlightenment caused a Floating Point Exception.\n"
 "\n"
@@ -1096,7 +1096,7 @@ msgstr ""
 "gdzie powstaje b³±d i wy¶lij nam u¿yteczny 'Bug Report' z informacj±\n"
 "¶ledz±c± i zrzutem warto¶ci zmiennych\n"
 
-#: src/handlers.c:86
+#: src/handlers.c:84
 msgid ""
 "Enlightenment caused Segment Violation (Segfault)\n"
 "\n"
@@ -1120,7 +1120,7 @@ msgstr ""
 "gdzie powstaje b³±d i wy¶lij nam u¿yteczny 'Bug Report' z informacj±\n"
 "¶ledz±c± i zrzutem warto¶ci zmiennych\n"
 
-#: src/handlers.c:98
+#: src/handlers.c:96
 msgid ""
 "Enlightenment caused Bus Error.\n"
 "\n"
@@ -1216,14 +1216,14 @@ msgstr "wpisz \"help <komenda>\" aby uzyskaæ opis pojedynczej komendy\n"
 msgid "         <command>     : <description>\n"
 msgstr "<komenda> : <opis>\n"
 
-#: src/main.c:581
+#: src/main.c:578
 #, c-format
 msgid ""
 "%s must be a directory in which you have\n"
 "read, write, and execute permission.\n"
 msgstr ""
 
-#: src/main.c:691
+#: src/main.c:688
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1252,7 +1252,7 @@ msgstr ""
 "rêczne skasowanie pliku, lub b³±d w instalacji\n"
 "Enlightenment.\n"
 
-#: src/main.c:705
+#: src/main.c:702
 #, fuzzy, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1274,7 +1274,7 @@ msgstr ""
 "zaistalowany poprawnie.\n"
 "\n"
 
-#: src/magwin.c:457
+#: src/magwin.c:459
 msgid "Magnifier"
 msgstr ""
 
@@ -1929,7 +1929,7 @@ msgstr ""
 msgid "Enlightenment Settings"
 msgstr "Uruchamianie Enlightenment..."
 
-#: src/setup.c:50
+#: src/setup.c:58
 msgid ""
 "Enlightenment cannot connect to the display nominated by\n"
 "your shell's DISPLAY environment variable. You may set this\n"
@@ -1953,11 +1953,11 @@ msgstr ""
 "XSerwera, preczytaj strony podrêcznika X, xdm i startx zanim\n"
 "podejmiesz dalsze dzia³ania.\n"
 
-#: src/setup.c:149
+#: src/setup.c:156
 msgid "Another Window Manager is already running"
 msgstr "Inny Menad¼er Okien jest ju¿ uruchomiony"
 
-#: src/setup.c:151
+#: src/setup.c:158
 msgid ""
 "Another Window Manager is already running.\n"
 "\n"
@@ -1965,15 +1965,15 @@ msgid ""
 "you can successfully run Enlightenment.\n"
 msgstr ""
 
-#: src/setup.c:160
+#: src/setup.c:167
 msgid "X server version error"
 msgstr "B³±d wersji XSerwera"
 
-#: src/setup.c:160
+#: src/setup.c:167
 msgid "Ignore this error"
 msgstr "Zignoruj ten b³±d"
 
-#: src/setup.c:162
+#: src/setup.c:169
 #, c-format
 msgid ""
 "WARNING:\n"
@@ -2174,7 +2174,7 @@ msgstr ""
 "Okno ustwieñ Audio\n"
 "Enlightenment\n"
 
-#: src/systray.c:331 src/systray.c:436 src/systray.c:444
+#: src/systray.c:331 src/systray.c:434 src/systray.c:442
 #, fuzzy
 msgid "Systray Error!"
 msgstr "B³±d w sekcji ECursor"
@@ -2183,20 +2183,20 @@ msgstr "B³±d w sekcji ECursor"
 msgid "Systray went elsewhere?!?"
 msgstr ""
 
-#: src/systray.c:436
+#: src/systray.c:434
 msgid "Only one systray is allowed"
 msgstr ""
 
-#: src/systray.c:444
+#: src/systray.c:442
 msgid "Could not activate systray"
 msgstr ""
 
-#: src/systray.c:454
+#: src/systray.c:452
 #, fuzzy
 msgid "Systray Options"
 msgstr "Opcje pulpitu"
 
-#: src/systray.c:455
+#: src/systray.c:453
 #, fuzzy
 msgid "Systray Settings"
 msgstr "Ustawienia Auto-Podnoszenia"

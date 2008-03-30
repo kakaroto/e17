@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-03-26 22:44+0100\n"
+"POT-Creation-Date: 2008-03-29 00:59+0100\n"
 "PO-Revision-Date: 2005-06-14 23:39+0100\n"
 "Last-Translator: jacinto calvo sintes <netman2@seriousman.org>\n"
 "Language-Team: \n"
@@ -166,23 +166,23 @@ msgstr ""
 "Hubo un error durante la ejecución del programa:\n"
 "%s\n"
 
-#: src/alert.c:209
+#: src/alert.c:210
 msgid "Enlightenment Error"
 msgstr "Error de Enlightenment "
 
-#: src/alert.c:568
+#: src/alert.c:569
 msgid "Enlightenment Message Dialog"
 msgstr "Mensaje de Diálogo de Enlightenment "
 
-#: src/alert.c:568
+#: src/alert.c:569
 msgid "Ignore this"
 msgstr "Ignorar esto "
 
-#: src/alert.c:569
+#: src/alert.c:570
 msgid "Restart Enlightenment"
 msgstr "Reiniciar Enlightenment"
 
-#: src/alert.c:569 src/setup.c:161
+#: src/alert.c:570 src/setup.c:168
 msgid "Quit Enlightenment"
 msgstr "Salir de Enlightenment "
 
@@ -427,7 +427,7 @@ msgstr "Iniciando Enlightenment... "
 msgid "Settings..."
 msgstr "Configurar enfoque"
 
-#: src/container.c:1219 src/dialog.c:873 src/pager.c:1016 config/strings.c:30
+#: src/container.c:1219 src/dialog.c:872 src/pager.c:1016 config/strings.c:30
 #: config/strings.c:132
 msgid "Close"
 msgstr "Cerrar"
@@ -592,67 +592,67 @@ msgstr ""
 "Pulse aquí para llevar este Escritorio\n"
 "hacia el fondo.\n"
 
-#: src/desktops.c:2281 src/desktops.c:2320
+#: src/desktops.c:2280 src/desktops.c:2319
 #, c-format
 msgid "%i Desktops"
 msgstr "%i Escritorios"
 
-#: src/desktops.c:2283 src/desktops.c:2322
+#: src/desktops.c:2282 src/desktops.c:2321
 #, c-format
 msgid "%i Desktop"
 msgstr "%i Escritorio"
 
-#: src/desktops.c:2315
+#: src/desktops.c:2314
 msgid "Number of virtual desktops:\n"
 msgstr "Número de Escritorios Virtuales:\n"
 
-#: src/desktops.c:2344
+#: src/desktops.c:2343
 msgid "Slide desktops around when changing"
 msgstr "Desplazar escritorios al conmutar entre ellos"
 
-#: src/desktops.c:2350
+#: src/desktops.c:2349
 #, fuzzy
 msgid "Desktop Slide speed:\n"
 msgstr "Velocidad de Desplazamiento de Escritorios: (lenta)\n"
 
-#: src/desktops.c:2364
+#: src/desktops.c:2363
 msgid "Wrap desktops around"
 msgstr "Enganchar los escritorios entre ellos"
 
-#: src/desktops.c:2372
+#: src/desktops.c:2371
 msgid "Display desktop dragbar"
 msgstr "Mostrar Barra de Arrastre de Escritorios"
 
-#: src/desktops.c:2378
+#: src/desktops.c:2377
 msgid "Drag bar position:"
 msgstr "Ubicación de la Barra de Arrastre:"
 
-#: src/desktops.c:2382
+#: src/desktops.c:2381
 msgid "Top"
 msgstr "Arriba"
 
-#: src/desktops.c:2388
+#: src/desktops.c:2387
 msgid "Bottom"
 msgstr "Abajo"
 
-#: src/desktops.c:2394 src/pager.c:1923 src/pager.c:1948 src/pager.c:1973
+#: src/desktops.c:2393 src/pager.c:1923 src/pager.c:1948 src/pager.c:1973
 msgid "Left"
 msgstr "Izquierdo"
 
-#: src/desktops.c:2400 src/pager.c:1935 src/pager.c:1960 src/pager.c:1985
+#: src/desktops.c:2399 src/pager.c:1935 src/pager.c:1960 src/pager.c:1985
 msgid "Right"
 msgstr "Derecho"
 
-#: src/desktops.c:2408 src/menus-misc.c:708
+#: src/desktops.c:2407 src/menus-misc.c:708
 #, fuzzy
 msgid "Desks"
 msgstr "Escritorio"
 
-#: src/desktops.c:2409
+#: src/desktops.c:2408
 msgid "Multiple Desktop Settings"
 msgstr "Configurar Escritorios Múltiples"
 
-#: src/desktops.c:2412
+#: src/desktops.c:2411
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -660,7 +660,7 @@ msgstr ""
 "Multiples Escritorios Enlightenment\n"
 "Dálogo de Configuracion\n"
 
-#: src/desktops.c:2482 src/desktops.c:2517
+#: src/desktops.c:2481 src/desktops.c:2516
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -669,7 +669,7 @@ msgstr ""
 "%i x %i\n"
 "pantallas de tamaño"
 
-#: src/desktops.c:2485 src/desktops.c:2520
+#: src/desktops.c:2484 src/desktops.c:2519
 msgid ""
 "1\n"
 "Screen in size"
@@ -677,43 +677,43 @@ msgstr ""
 "1\n"
 "Pantalla de tamaño"
 
-#: src/desktops.c:2513
+#: src/desktops.c:2512
 msgid "Virtual Desktop size:\n"
 msgstr "Tamaño de Escritorio Virtual:\n"
 
-#: src/desktops.c:2554
+#: src/desktops.c:2553
 msgid "Wrap virtual desktops around"
 msgstr "Enganchar escritorios virtuales entre ellos"
 
-#: src/desktops.c:2561
+#: src/desktops.c:2560
 msgid "Edge Flip Mode:"
 msgstr ""
 
-#: src/desktops.c:2564
+#: src/desktops.c:2563
 msgid "Off"
 msgstr ""
 
-#: src/desktops.c:2569
+#: src/desktops.c:2568
 msgid "On"
 msgstr ""
 
-#: src/desktops.c:2574
+#: src/desktops.c:2573
 msgid "Only when moving window"
 msgstr ""
 
-#: src/desktops.c:2580
+#: src/desktops.c:2579
 msgid "Resistance at edge of screen:\n"
 msgstr "Resistencia al borde de la pantalla:\n"
 
-#: src/desktops.c:2592
+#: src/desktops.c:2591
 msgid "Areas"
 msgstr ""
 
-#: src/desktops.c:2593
+#: src/desktops.c:2592
 msgid "Virtual Desktop Settings"
 msgstr "Configurar Escritorios Virtuales"
 
-#: src/desktops.c:2596
+#: src/desktops.c:2595
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -721,20 +721,20 @@ msgstr ""
 "Escritorios Virtuales Enlightenment\n"
 "Diálogo de Configuracion\n"
 
-#: src/dialog.c:861 src/dialog.c:2079 src/dialog.c:2110 src/events.c:85
-#: src/setup.c:150 src/sound.c:203
+#: src/dialog.c:860 src/dialog.c:2077 src/dialog.c:2108 src/events.c:85
+#: src/setup.c:157 src/sound.c:203
 msgid "OK"
 msgstr "OK"
 
-#: src/dialog.c:866
+#: src/dialog.c:865
 msgid "Apply"
 msgstr "Aplicar"
 
-#: src/dialog.c:2110
+#: src/dialog.c:2108
 msgid "Attention !!!"
 msgstr "Atención !!! "
 
-#: src/ecompmgr.c:2603
+#: src/ecompmgr.c:2611
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -1070,7 +1070,7 @@ msgstr "   Seleccione el grupo del que la ventana será retirada."
 msgid "Select the group to break:"
 msgstr "  Seleccione el grupo que desea dividir"
 
-#: src/handlers.c:64
+#: src/handlers.c:62
 #, c-format
 msgid ""
 "Enlightenment performed an Illegal Instruction.\n"
@@ -1092,7 +1092,7 @@ msgstr ""
 "de\n"
 "soporte que tiene en formato binario para ejecutar Enlightenment.\n"
 
-#: src/handlers.c:74
+#: src/handlers.c:72
 msgid ""
 "Enlightenment caused a Floating Point Exception.\n"
 "\n"
@@ -1117,7 +1117,7 @@ msgstr ""
 "donde falló y enviar un reporte de bugs útil, con información sobre\n"
 "elseguimiento, y demás detalles útiles, etc.\n"
 
-#: src/handlers.c:86
+#: src/handlers.c:84
 msgid ""
 "Enlightenment caused Segment Violation (Segfault)\n"
 "\n"
@@ -1142,7 +1142,7 @@ msgstr ""
 "donde falló y enviar un reporte de bugs útil, con información sobre\n"
 "elseguimiento, y demás detalles útiles, etc.\n"
 
-#: src/handlers.c:98
+#: src/handlers.c:96
 msgid ""
 "Enlightenment caused Bus Error.\n"
 "\n"
@@ -1232,14 +1232,14 @@ msgstr "Use \"Ayuda <comando>\" para obtener una descripción individual\n"
 msgid "         <command>     : <description>\n"
 msgstr "        <comando>   : <descripción>\n"
 
-#: src/main.c:581
+#: src/main.c:578
 #, c-format
 msgid ""
 "%s must be a directory in which you have\n"
 "read, write, and execute permission.\n"
 msgstr ""
 
-#: src/main.c:691
+#: src/main.c:688
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1269,7 +1269,7 @@ msgstr ""
 "paquetes mal construidos, la eliminación manual de dicho programa\n"
 "ó un error en la instalación de Enlightenment.\n"
 
-#: src/main.c:705
+#: src/main.c:702
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1290,7 +1290,7 @@ msgstr ""
 "Por favor, rectifique esta situación y asegúrese de que DOX\n"
 "se haya instalado correctamente.\n"
 
-#: src/magwin.c:457
+#: src/magwin.c:459
 msgid "Magnifier"
 msgstr ""
 
@@ -1928,7 +1928,7 @@ msgstr ""
 msgid "Enlightenment Settings"
 msgstr "Iniciando Enlightenment... "
 
-#: src/setup.c:50
+#: src/setup.c:58
 msgid ""
 "Enlightenment cannot connect to the display nominated by\n"
 "your shell's DISPLAY environment variable. You may set this\n"
@@ -1952,11 +1952,11 @@ msgstr ""
 "su sistema, ó al vendedor del Servidor X, ó lea las páginas del\n"
 "manual de X, xmd y startx antes de proseguir.\n"
 
-#: src/setup.c:149
+#: src/setup.c:156
 msgid "Another Window Manager is already running"
 msgstr "Otro Administrador de Ventanas se está ejecutando."
 
-#: src/setup.c:151
+#: src/setup.c:158
 msgid ""
 "Another Window Manager is already running.\n"
 "\n"
@@ -1968,15 +1968,15 @@ msgstr ""
 "Deberás cerrar tu Gestor de Ventanas primero, para poder\n"
 "arrancar satisfactoriamente Enlightenment.\n"
 
-#: src/setup.c:160
+#: src/setup.c:167
 msgid "X server version error"
 msgstr "Error en la versión del Servidor X"
 
-#: src/setup.c:160
+#: src/setup.c:167
 msgid "Ignore this error"
 msgstr "Ignorar este error"
 
-#: src/setup.c:162
+#: src/setup.c:169
 #, c-format
 msgid ""
 "WARNING:\n"
@@ -2175,7 +2175,7 @@ msgstr ""
 "Enlightenment Audio\n"
 "Dialogo de configuracion\n"
 
-#: src/systray.c:331 src/systray.c:436 src/systray.c:444
+#: src/systray.c:331 src/systray.c:434 src/systray.c:442
 msgid "Systray Error!"
 msgstr "Error del Bandeja de Sistema!"
 
@@ -2183,19 +2183,19 @@ msgstr "Error del Bandeja de Sistema!"
 msgid "Systray went elsewhere?!?"
 msgstr ""
 
-#: src/systray.c:436
+#: src/systray.c:434
 msgid "Only one systray is allowed"
 msgstr "Solo una Bandeja de Sistema permitida"
 
-#: src/systray.c:444
+#: src/systray.c:442
 msgid "Could not activate systray"
 msgstr "No se pudo activar la Bandeja de Sistema"
 
-#: src/systray.c:454
+#: src/systray.c:452
 msgid "Systray Options"
 msgstr "Opciones de Bandeja de Sistema"
 
-#: src/systray.c:455
+#: src/systray.c:453
 msgid "Systray Settings"
 msgstr "Configurar Bandeja de Sistema"
 

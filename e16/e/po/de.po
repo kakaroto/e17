@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-03-26 22:44+0100\n"
+"POT-Creation-Date: 2008-03-29 00:59+0100\n"
 "PO-Revision-Date: 2000-03-29 21:12+0200\n"
 "Last-Translator: Matthias Warkus <mawa@iname.com>\n"
 "Language-Team: Enlightenment l10n <e-develop@enlightenment.org>\n"
@@ -156,31 +156,31 @@ msgid ""
 msgstr ""
 
 # src/alert.c:178
-#: src/alert.c:209
+#: src/alert.c:210
 msgid "Enlightenment Error"
 msgstr "Enlightenment-Fehler"
 
 # src/main.c:89
-#: src/alert.c:568
+#: src/alert.c:569
 msgid "Enlightenment Message Dialog"
 msgstr "Enlightenment-Meldungsfenster"
 
 # src/main.c:90 src/memory.c:196 src/memory.c:277 src/memory.c:297
 # src/memory.c:378
-#: src/alert.c:568
+#: src/alert.c:569
 msgid "Ignore this"
 msgstr "Dies ignorieren"
 
 # src/main.c:91 src/memory.c:197 src/memory.c:277 src/memory.c:298
 # src/memory.c:378 src/memory.c:396
-#: src/alert.c:569
+#: src/alert.c:570
 msgid "Restart Enlightenment"
 msgstr "Enlightenment neu starten"
 
 # src/main.c:92 src/memory.c:197 src/memory.c:278 src/memory.c:298
 # src/memory.c:379 src/memory.c:396 src/setup.c:295 src/setup.c:329
 # src/setup.c:341 src/setup.c:403
-#: src/alert.c:569 src/setup.c:161
+#: src/alert.c:570 src/setup.c:168
 msgid "Quit Enlightenment"
 msgstr "Enlightenment verlassen"
 
@@ -482,7 +482,7 @@ msgstr "Fokus-Einstellungen"
 # src/settings.c:1524 src/settings.c:1612 src/settings.c:2014
 # src/settings.c:3407 src/settings.c:3752 src/settings.c:4050
 # src/settings.c:4188
-#: src/container.c:1219 src/dialog.c:873 src/pager.c:1016 config/strings.c:30
+#: src/container.c:1219 src/dialog.c:872 src/pager.c:1016 config/strings.c:30
 #: config/strings.c:132
 msgid "Close"
 msgstr "Schließen"
@@ -677,84 +677,84 @@ msgstr ""
 "ganz nach unten zu bringen.\n"
 
 # src/settings.c:830 src/settings.c:889
-#: src/desktops.c:2281 src/desktops.c:2320
+#: src/desktops.c:2280 src/desktops.c:2319
 #, c-format
 msgid "%i Desktops"
 msgstr "%i Desktops"
 
 # src/settings.c:832 src/settings.c:891
-#: src/desktops.c:2283 src/desktops.c:2322
+#: src/desktops.c:2282 src/desktops.c:2321
 #, c-format
 msgid "%i Desktop"
 msgstr "%i Desktop"
 
 # src/settings.c:882
-#: src/desktops.c:2315
+#: src/desktops.c:2314
 msgid "Number of virtual desktops:\n"
 msgstr "Anzahl virtueller Desktops:\n"
 
 # src/settings.c:1750
-#: src/desktops.c:2344
+#: src/desktops.c:2343
 msgid "Slide desktops around when changing"
 msgstr "Desktops gleiten beim Wechseln herum"
 
 # src/settings.c:1922
-#: src/desktops.c:2350
+#: src/desktops.c:2349
 #, fuzzy
 msgid "Desktop Slide speed:\n"
 msgstr "Desktop-Gleitgeschwindigkeit (langsam)\n"
 
 # src/settings.c:1120
-#: src/desktops.c:2364
+#: src/desktops.c:2363
 #, fuzzy
 msgid "Wrap desktops around"
 msgstr "Virtuelle Desktops zyklisch durchlaufen"
 
 # src/settings.c:1858
-#: src/desktops.c:2372
+#: src/desktops.c:2371
 msgid "Display desktop dragbar"
 msgstr "Desktop-Ziehbalken anzeigen"
 
 # src/settings.c:1867
-#: src/desktops.c:2378
+#: src/desktops.c:2377
 msgid "Drag bar position:"
 msgstr "Position des Ziehbalkens:"
 
 # src/settings.c:1878
-#: src/desktops.c:2382
+#: src/desktops.c:2381
 msgid "Top"
 msgstr "Oben"
 
 # src/settings.c:1885
-#: src/desktops.c:2388
+#: src/desktops.c:2387
 msgid "Bottom"
 msgstr "Unten"
 
 # src/settings.c:218 src/settings.c:250 src/settings.c:282
 # src/settings.c:1896
-#: src/desktops.c:2394 src/pager.c:1923 src/pager.c:1948 src/pager.c:1973
+#: src/desktops.c:2393 src/pager.c:1923 src/pager.c:1948 src/pager.c:1973
 msgid "Left"
 msgstr "Links"
 
 # src/settings.c:234 src/settings.c:266 src/settings.c:298
 # src/settings.c:1903
-#: src/desktops.c:2400 src/pager.c:1935 src/pager.c:1960 src/pager.c:1985
+#: src/desktops.c:2399 src/pager.c:1935 src/pager.c:1960 src/pager.c:1985
 msgid "Right"
 msgstr "Rechts"
 
 # src/snaps.c:453
-#: src/desktops.c:2408 src/menus-misc.c:708
+#: src/desktops.c:2407 src/menus-misc.c:708
 #, fuzzy
 msgid "Desks"
 msgstr "Desktop"
 
 # src/settings.c:856
-#: src/desktops.c:2409
+#: src/desktops.c:2408
 msgid "Multiple Desktop Settings"
 msgstr "Mehrfach-Desktop-Einstellungen"
 
 # src/main.c:89
-#: src/desktops.c:2412
+#: src/desktops.c:2411
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -763,7 +763,7 @@ msgstr ""
 "Einstellungsdialog\n"
 
 # src/settings.c:1007 src/settings.c:1072
-#: src/desktops.c:2482 src/desktops.c:2517
+#: src/desktops.c:2481 src/desktops.c:2516
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -773,7 +773,7 @@ msgstr ""
 "Bildschirme groß"
 
 # src/settings.c:1010 src/settings.c:1075
-#: src/desktops.c:2485 src/desktops.c:2520
+#: src/desktops.c:2484 src/desktops.c:2519
 msgid ""
 "1\n"
 "Screen in size"
@@ -782,47 +782,47 @@ msgstr ""
 "Bildschirm groß"
 
 # src/settings.c:1066
-#: src/desktops.c:2513
+#: src/desktops.c:2512
 msgid "Virtual Desktop size:\n"
 msgstr "Virtuelle Desktopgröße:\n"
 
 # src/settings.c:1120
-#: src/desktops.c:2554
+#: src/desktops.c:2553
 msgid "Wrap virtual desktops around"
 msgstr "Virtuelle Desktops zyklisch durchlaufen"
 
-#: src/desktops.c:2561
+#: src/desktops.c:2560
 msgid "Edge Flip Mode:"
 msgstr ""
 
-#: src/desktops.c:2564
+#: src/desktops.c:2563
 msgid "Off"
 msgstr ""
 
-#: src/desktops.c:2569
+#: src/desktops.c:2568
 msgid "On"
 msgstr ""
 
-#: src/desktops.c:2574
+#: src/desktops.c:2573
 msgid "Only when moving window"
 msgstr ""
 
 # src/settings.c:1134
-#: src/desktops.c:2580
+#: src/desktops.c:2579
 msgid "Resistance at edge of screen:\n"
 msgstr "Widerstand der Bildschirmkante:\n"
 
-#: src/desktops.c:2592
+#: src/desktops.c:2591
 msgid "Areas"
 msgstr ""
 
 # src/settings.c:1040
-#: src/desktops.c:2593
+#: src/desktops.c:2592
 msgid "Virtual Desktop Settings"
 msgstr "Einstellungen zu virtuellen Desktops"
 
 # src/settings.c:1040
-#: src/desktops.c:2596
+#: src/desktops.c:2595
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -836,8 +836,8 @@ msgstr ""
 # src/settings.c:1460 src/settings.c:1522 src/settings.c:1610
 # src/settings.c:2012 src/settings.c:3405 src/settings.c:3750
 # src/settings.c:4048 src/settings.c:4186 src/snaps.c:547 src/sound.c:262
-#: src/dialog.c:861 src/dialog.c:2079 src/dialog.c:2110 src/events.c:85
-#: src/setup.c:150 src/sound.c:203
+#: src/dialog.c:860 src/dialog.c:2077 src/dialog.c:2108 src/events.c:85
+#: src/setup.c:157 src/sound.c:203
 msgid "OK"
 msgstr "OK"
 
@@ -846,16 +846,16 @@ msgstr "OK"
 # src/settings.c:1461 src/settings.c:1523 src/settings.c:1611
 # src/settings.c:2013 src/settings.c:3406 src/settings.c:3751
 # src/settings.c:4049 src/settings.c:4187 src/snaps.c:548
-#: src/dialog.c:866
+#: src/dialog.c:865
 msgid "Apply"
 msgstr "Übernehmen"
 
 # src/dialog.c:304
-#: src/dialog.c:2110
+#: src/dialog.c:2108
 msgid "Attention !!!"
 msgstr "Achtung!"
 
-#: src/ecompmgr.c:2603
+#: src/ecompmgr.c:2611
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -1247,7 +1247,7 @@ msgid "Select the group to break:"
 msgstr "  Wählen Sie die aufzulösende Gruppe  "
 
 # src/handlers.c:59
-#: src/handlers.c:64
+#: src/handlers.c:62
 #, c-format
 msgid ""
 "Enlightenment performed an Illegal Instruction.\n"
@@ -1270,7 +1270,7 @@ msgstr ""
 "die Sie im Binärformat erhalten haben.\n"
 
 # src/handlers.c:87
-#: src/handlers.c:74
+#: src/handlers.c:72
 msgid ""
 "Enlightenment caused a Floating Point Exception.\n"
 "\n"
@@ -1297,7 +1297,7 @@ msgstr ""
 "ein, der die Backtrace-Information, Variableninhalte etc. enthält.\n"
 
 # src/handlers.c:112
-#: src/handlers.c:86
+#: src/handlers.c:84
 msgid ""
 "Enlightenment caused Segment Violation (Segfault)\n"
 "\n"
@@ -1324,7 +1324,7 @@ msgstr ""
 "Information, Variableninhalte etc. enthält.\n"
 
 # src/handlers.c:198
-#: src/handlers.c:98
+#: src/handlers.c:96
 msgid ""
 "Enlightenment caused Bus Error.\n"
 "\n"
@@ -1429,7 +1429,7 @@ msgstr "\"help <befehl>\" gibt eine nähere Beschreibung\n"
 msgid "         <command>     : <description>\n"
 msgstr "<befehl> : <beschreibung>\n"
 
-#: src/main.c:581
+#: src/main.c:578
 #, c-format
 msgid ""
 "%s must be a directory in which you have\n"
@@ -1437,7 +1437,7 @@ msgid ""
 msgstr ""
 
 # src/misc.c:61
-#: src/main.c:691
+#: src/main.c:688
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1467,7 +1467,7 @@ msgstr ""
 "beim Installieren von Enlightenment.\n"
 
 # src/misc.c:77
-#: src/main.c:705
+#: src/main.c:702
 #, fuzzy, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1488,7 +1488,7 @@ msgstr ""
 "Bitte beheben Sie dieses Problem und sorgen Sie dafür, dass dox\n"
 "korrekt installiert ist.\n"
 
-#: src/magwin.c:457
+#: src/magwin.c:459
 msgid "Magnifier"
 msgstr ""
 
@@ -2242,7 +2242,7 @@ msgid "Enlightenment Settings"
 msgstr "Enlightenment startet..."
 
 # src/setup.c:222
-#: src/setup.c:50
+#: src/setup.c:58
 msgid ""
 "Enlightenment cannot connect to the display nominated by\n"
 "your shell's DISPLAY environment variable. You may set this\n"
@@ -2268,11 +2268,11 @@ msgstr ""
 "oder startx, bevor Sie weitermachen.\n"
 
 # src/handlers.c:217
-#: src/setup.c:149
+#: src/setup.c:156
 msgid "Another Window Manager is already running"
 msgstr "Ein anderer Fenstermanager läuft bereits"
 
-#: src/setup.c:151
+#: src/setup.c:158
 msgid ""
 "Another Window Manager is already running.\n"
 "\n"
@@ -2281,17 +2281,17 @@ msgid ""
 msgstr ""
 
 # src/setup.c:402
-#: src/setup.c:160
+#: src/setup.c:167
 msgid "X server version error"
 msgstr "X-Server-Versionsfehler"
 
 # src/setup.c:403
-#: src/setup.c:160
+#: src/setup.c:167
 msgid "Ignore this error"
 msgstr "Ignorieren Sie diesen Fehler"
 
 # src/setup.c:404
-#: src/setup.c:162
+#: src/setup.c:169
 #, c-format
 msgid ""
 "WARNING:\n"
@@ -2516,7 +2516,7 @@ msgid ""
 msgstr ""
 
 # src/comms.c:2214
-#: src/systray.c:331 src/systray.c:436 src/systray.c:444
+#: src/systray.c:331 src/systray.c:434 src/systray.c:442
 #, fuzzy
 msgid "Systray Error!"
 msgstr "ECursor-Fehler!"
@@ -2525,22 +2525,22 @@ msgstr "ECursor-Fehler!"
 msgid "Systray went elsewhere?!?"
 msgstr ""
 
-#: src/systray.c:436
+#: src/systray.c:434
 msgid "Only one systray is allowed"
 msgstr ""
 
-#: src/systray.c:444
+#: src/systray.c:442
 msgid "Could not activate systray"
 msgstr ""
 
 # src/pager.c:1295
-#: src/systray.c:454
+#: src/systray.c:452
 #, fuzzy
 msgid "Systray Options"
 msgstr "Desktopoptionen"
 
 # src/settings.c:1304
-#: src/systray.c:455
+#: src/systray.c:453
 #, fuzzy
 msgid "Systray Settings"
 msgstr "Einstellungen zum automatischen Anheben"

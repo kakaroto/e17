@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bosnian\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-03-26 22:44+0100\n"
+"POT-Creation-Date: 2008-03-29 00:59+0100\n"
 "PO-Revision-Date: 2004-08-26 00:52+0200\n"
 "Last-Translator: Kemal Šanjta <gomez@lugzdk.ba>\n"
 "Language-Team: Bosnian <lokal@linux.org.ba>\n"
@@ -163,23 +163,23 @@ msgid ""
 "%s\n"
 msgstr ""
 
-#: src/alert.c:209
+#: src/alert.c:210
 msgid "Enlightenment Error"
 msgstr "Enlightenment greŷka"
 
-#: src/alert.c:568
+#: src/alert.c:569
 msgid "Enlightenment Message Dialog"
 msgstr "Enlightenment dijalog poruka"
 
-#: src/alert.c:568
+#: src/alert.c:569
 msgid "Ignore this"
 msgstr "Ignoriŷi ovo"
 
-#: src/alert.c:569
+#: src/alert.c:570
 msgid "Restart Enlightenment"
 msgstr "Ponovo pokreni Enlightenment"
 
-#: src/alert.c:569 src/setup.c:161
+#: src/alert.c:570 src/setup.c:168
 msgid "Quit Enlightenment"
 msgstr "Iza�i iz Enlightenment-a"
 
@@ -424,7 +424,7 @@ msgstr "Enlightenment se pokre�e..."
 msgid "Settings..."
 msgstr "Osobine usmjeravanja"
 
-#: src/container.c:1219 src/dialog.c:873 src/pager.c:1016 config/strings.c:30
+#: src/container.c:1219 src/dialog.c:872 src/pager.c:1016 config/strings.c:30
 #: config/strings.c:132
 msgid "Close"
 msgstr "Zatvori"
@@ -589,67 +589,67 @@ msgstr ""
 "Kliknite ovdje da spustite ovaj desktop\n"
 "na dno.\n"
 
-#: src/desktops.c:2281 src/desktops.c:2320
+#: src/desktops.c:2280 src/desktops.c:2319
 #, c-format
 msgid "%i Desktops"
 msgstr "%i Desktopi"
 
-#: src/desktops.c:2283 src/desktops.c:2322
+#: src/desktops.c:2282 src/desktops.c:2321
 #, c-format
 msgid "%i Desktop"
 msgstr "%i Desktop"
 
-#: src/desktops.c:2315
+#: src/desktops.c:2314
 msgid "Number of virtual desktops:\n"
 msgstr "Broj virtualnih Desktopa:\n"
 
-#: src/desktops.c:2344
+#: src/desktops.c:2343
 msgid "Slide desktops around when changing"
 msgstr "Klizaj prozore okolo kada mijenjam"
 
-#: src/desktops.c:2350
+#: src/desktops.c:2349
 #, fuzzy
 msgid "Desktop Slide speed:\n"
 msgstr "Brzina klizanja Desktop-a: (sporo)\n"
 
-#: src/desktops.c:2364
+#: src/desktops.c:2363
 msgid "Wrap desktops around"
 msgstr "Uvij prozore okolo"
 
-#: src/desktops.c:2372
+#: src/desktops.c:2371
 msgid "Display desktop dragbar"
 msgstr "Prikaŵi dektop dragbar"
 
-#: src/desktops.c:2378
+#: src/desktops.c:2377
 msgid "Drag bar position:"
 msgstr "Dragbar pozicija:"
 
-#: src/desktops.c:2382
+#: src/desktops.c:2381
 msgid "Top"
 msgstr "Vrh"
 
-#: src/desktops.c:2388
+#: src/desktops.c:2387
 msgid "Bottom"
 msgstr "Dno"
 
-#: src/desktops.c:2394 src/pager.c:1923 src/pager.c:1948 src/pager.c:1973
+#: src/desktops.c:2393 src/pager.c:1923 src/pager.c:1948 src/pager.c:1973
 msgid "Left"
 msgstr "Lijevo"
 
-#: src/desktops.c:2400 src/pager.c:1935 src/pager.c:1960 src/pager.c:1985
+#: src/desktops.c:2399 src/pager.c:1935 src/pager.c:1960 src/pager.c:1985
 msgid "Right"
 msgstr "Desno"
 
-#: src/desktops.c:2408 src/menus-misc.c:708
+#: src/desktops.c:2407 src/menus-misc.c:708
 #, fuzzy
 msgid "Desks"
 msgstr "Desktop"
 
-#: src/desktops.c:2409
+#: src/desktops.c:2408
 msgid "Multiple Desktop Settings"
 msgstr "Osobine viŷestrukih desktopa"
 
-#: src/desktops.c:2412
+#: src/desktops.c:2411
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -657,7 +657,7 @@ msgstr ""
 "Enlightenment Viŷestruki Dektop\n"
 "dijalog osobina\n"
 
-#: src/desktops.c:2482 src/desktops.c:2517
+#: src/desktops.c:2481 src/desktops.c:2516
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -666,7 +666,7 @@ msgstr ""
 "%i x %i\n"
 "Ekrana u veliīini"
 
-#: src/desktops.c:2485 src/desktops.c:2520
+#: src/desktops.c:2484 src/desktops.c:2519
 msgid ""
 "1\n"
 "Screen in size"
@@ -674,43 +674,43 @@ msgstr ""
 "1\n"
 "Ekran u veliīini"
 
-#: src/desktops.c:2513
+#: src/desktops.c:2512
 msgid "Virtual Desktop size:\n"
 msgstr "Veliīina virtualnog Desktopa:\n"
 
-#: src/desktops.c:2554
+#: src/desktops.c:2553
 msgid "Wrap virtual desktops around"
 msgstr "Uvij vitrualne desktope okolo"
 
-#: src/desktops.c:2561
+#: src/desktops.c:2560
 msgid "Edge Flip Mode:"
 msgstr ""
 
-#: src/desktops.c:2564
+#: src/desktops.c:2563
 msgid "Off"
 msgstr ""
 
-#: src/desktops.c:2569
+#: src/desktops.c:2568
 msgid "On"
 msgstr ""
 
-#: src/desktops.c:2574
+#: src/desktops.c:2573
 msgid "Only when moving window"
 msgstr ""
 
-#: src/desktops.c:2580
+#: src/desktops.c:2579
 msgid "Resistance at edge of screen:\n"
 msgstr "Otpor precrtavanja ekrana:\n"
 
-#: src/desktops.c:2592
+#: src/desktops.c:2591
 msgid "Areas"
 msgstr ""
 
-#: src/desktops.c:2593
+#: src/desktops.c:2592
 msgid "Virtual Desktop Settings"
 msgstr "Osobine virtualnih Desktopa"
 
-#: src/desktops.c:2596
+#: src/desktops.c:2595
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -718,20 +718,20 @@ msgstr ""
 "Enlightenment Virtual Desktop\n"
 "Dijalog osobina\n"
 
-#: src/dialog.c:861 src/dialog.c:2079 src/dialog.c:2110 src/events.c:85
-#: src/setup.c:150 src/sound.c:203
+#: src/dialog.c:860 src/dialog.c:2077 src/dialog.c:2108 src/events.c:85
+#: src/setup.c:157 src/sound.c:203
 msgid "OK"
 msgstr "Uredu"
 
-#: src/dialog.c:866
+#: src/dialog.c:865
 msgid "Apply"
 msgstr "Izvrŷi"
 
-#: src/dialog.c:2110
+#: src/dialog.c:2108
 msgid "Attention !!!"
 msgstr "Paŵnja !!!"
 
-#: src/ecompmgr.c:2603
+#: src/ecompmgr.c:2611
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -1065,7 +1065,7 @@ msgstr "   Oznaīite grupu iz koje ŵelite pomjeriti prozor.  "
 msgid "Select the group to break:"
 msgstr "  Oznaīite grupu za slamanje  "
 
-#: src/handlers.c:64
+#: src/handlers.c:62
 #, c-format
 msgid ""
 "Enlightenment performed an Illegal Instruction.\n"
@@ -1086,7 +1086,7 @@ msgstr ""
 "re-compile Enlightenment and possibly any support libraries\n"
 "that you got in binary format to run Enlightenment.\n"
 
-#: src/handlers.c:74
+#: src/handlers.c:72
 msgid ""
 "Enlightenment caused a Floating Point Exception.\n"
 "\n"
@@ -1110,7 +1110,7 @@ msgstr ""
 "send in a useful bug report with backtrace information and variable\n"
 "dumps etc.\n"
 
-#: src/handlers.c:86
+#: src/handlers.c:84
 msgid ""
 "Enlightenment caused Segment Violation (Segfault)\n"
 "\n"
@@ -1134,7 +1134,7 @@ msgstr ""
 "useful bug report with backtrace information and variable\n"
 "dumps etc.\n"
 
-#: src/handlers.c:98
+#: src/handlers.c:96
 msgid ""
 "Enlightenment caused Bus Error.\n"
 "\n"
@@ -1230,14 +1230,14 @@ msgstr "koristi \"help <command>\" za individualni opis\n"
 msgid "         <command>     : <description>\n"
 msgstr "      <command>   : <description>\n"
 
-#: src/main.c:581
+#: src/main.c:578
 #, c-format
 msgid ""
 "%s must be a directory in which you have\n"
 "read, write, and execute permission.\n"
 msgstr ""
 
-#: src/main.c:691
+#: src/main.c:688
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1266,7 +1266,7 @@ msgstr ""
 "packages, someone manually deleting that program or perhaps\n"
 "an error in installing Enlightenment.\n"
 
-#: src/main.c:705
+#: src/main.c:702
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1287,7 +1287,7 @@ msgstr ""
 "Molim popravite ovu situaciju i budite sigurni da je instaliran\n"
 "ispravno.\n"
 
-#: src/magwin.c:457
+#: src/magwin.c:459
 msgid "Magnifier"
 msgstr ""
 
@@ -1936,7 +1936,7 @@ msgstr ""
 msgid "Enlightenment Settings"
 msgstr "Enlightenment se pokre�e..."
 
-#: src/setup.c:50
+#: src/setup.c:58
 msgid ""
 "Enlightenment cannot connect to the display nominated by\n"
 "your shell's DISPLAY environment variable. You may set this\n"
@@ -1960,11 +1960,11 @@ msgstr ""
 "administrator, or Xserver vendor, or read the X, xdm and\n"
 "startx manual pages before proceeding.\n"
 
-#: src/setup.c:149
+#: src/setup.c:156
 msgid "Another Window Manager is already running"
 msgstr "Neki drugi upravitelj prozora je ve� pokrenut"
 
-#: src/setup.c:151
+#: src/setup.c:158
 msgid ""
 "Another Window Manager is already running.\n"
 "\n"
@@ -1972,15 +1972,15 @@ msgid ""
 "you can successfully run Enlightenment.\n"
 msgstr ""
 
-#: src/setup.c:160
+#: src/setup.c:167
 msgid "X server version error"
 msgstr "X server greŷka verzije"
 
-#: src/setup.c:160
+#: src/setup.c:167
 msgid "Ignore this error"
 msgstr "Ignoriŷi ovu greŷku"
 
-#: src/setup.c:162
+#: src/setup.c:169
 #, c-format
 msgid ""
 "WARNING:\n"
@@ -2181,7 +2181,7 @@ msgstr ""
 "Enlightenment Audio\n"
 "dijalog osobina\n"
 
-#: src/systray.c:331 src/systray.c:436 src/systray.c:444
+#: src/systray.c:331 src/systray.c:434 src/systray.c:442
 #, fuzzy
 msgid "Systray Error!"
 msgstr "ECursor greŷka!"
@@ -2190,20 +2190,20 @@ msgstr "ECursor greŷka!"
 msgid "Systray went elsewhere?!?"
 msgstr ""
 
-#: src/systray.c:436
+#: src/systray.c:434
 msgid "Only one systray is allowed"
 msgstr ""
 
-#: src/systray.c:444
+#: src/systray.c:442
 msgid "Could not activate systray"
 msgstr ""
 
-#: src/systray.c:454
+#: src/systray.c:452
 #, fuzzy
 msgid "Systray Options"
 msgstr "Opcije Desktopa"
 
-#: src/systray.c:455
+#: src/systray.c:453
 #, fuzzy
 msgid "Systray Settings"
 msgstr "Osobine automatskog pove�avanja"

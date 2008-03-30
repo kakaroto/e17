@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.7\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-03-26 22:44+0100\n"
+"POT-Creation-Date: 2008-03-29 00:59+0100\n"
 "PO-Revision-Date: 2004-09-14 20:43-0300\n"
 "Last-Translator: Viktor Kojouharov\n"
 "Language-Team: Bulgarian\n"
@@ -159,23 +159,23 @@ msgid ""
 "%s\n"
 msgstr ""
 
-#: src/alert.c:209
+#: src/alert.c:210
 msgid "Enlightenment Error"
 msgstr "Грешка на Enlightenment"
 
-#: src/alert.c:568
+#: src/alert.c:569
 msgid "Enlightenment Message Dialog"
 msgstr "Диалог за съобщения на Enlightenment"
 
-#: src/alert.c:568
+#: src/alert.c:569
 msgid "Ignore this"
 msgstr "Игнорирайте това"
 
-#: src/alert.c:569
+#: src/alert.c:570
 msgid "Restart Enlightenment"
 msgstr "Рестартирайте Enlightenment"
 
-#: src/alert.c:569 src/setup.c:161
+#: src/alert.c:570 src/setup.c:168
 msgid "Quit Enlightenment"
 msgstr "Излезте от Enlightenment"
 
@@ -419,7 +419,7 @@ msgstr "Enlightenment стартира..."
 msgid "Settings..."
 msgstr "Настройки за фокуса"
 
-#: src/container.c:1219 src/dialog.c:873 src/pager.c:1016 config/strings.c:30
+#: src/container.c:1219 src/dialog.c:872 src/pager.c:1016 config/strings.c:30
 #: config/strings.c:132
 msgid "Close"
 msgstr "Затвори"
@@ -585,67 +585,67 @@ msgstr ""
 "Щтракнете тук за да свалите това\n"
 "поле най-долу.\n"
 
-#: src/desktops.c:2281 src/desktops.c:2320
+#: src/desktops.c:2280 src/desktops.c:2319
 #, c-format
 msgid "%i Desktops"
 msgstr "%i работни полета"
 
-#: src/desktops.c:2283 src/desktops.c:2322
+#: src/desktops.c:2282 src/desktops.c:2321
 #, c-format
 msgid "%i Desktop"
 msgstr "%i поле"
 
-#: src/desktops.c:2315
+#: src/desktops.c:2314
 msgid "Number of virtual desktops:\n"
 msgstr "Брой на виртуални работни полета:\n"
 
-#: src/desktops.c:2344
+#: src/desktops.c:2343
 msgid "Slide desktops around when changing"
 msgstr "Плъзгай полетата когато ги сменяте"
 
-#: src/desktops.c:2350
+#: src/desktops.c:2349
 #, fuzzy
 msgid "Desktop Slide speed:\n"
 msgstr "Бързина на плъзгане на полето: (бавно)\n"
 
-#: src/desktops.c:2364
+#: src/desktops.c:2363
 msgid "Wrap desktops around"
 msgstr "Застъпете полетата"
 
-#: src/desktops.c:2372
+#: src/desktops.c:2371
 msgid "Display desktop dragbar"
 msgstr "Показвай Dragbar-ът"
 
-#: src/desktops.c:2378
+#: src/desktops.c:2377
 msgid "Drag bar position:"
 msgstr "Позиция на Dragbar-ът"
 
-#: src/desktops.c:2382
+#: src/desktops.c:2381
 msgid "Top"
 msgstr "Отгоре"
 
-#: src/desktops.c:2388
+#: src/desktops.c:2387
 msgid "Bottom"
 msgstr "Отдолу"
 
-#: src/desktops.c:2394 src/pager.c:1923 src/pager.c:1948 src/pager.c:1973
+#: src/desktops.c:2393 src/pager.c:1923 src/pager.c:1948 src/pager.c:1973
 msgid "Left"
 msgstr "Левият"
 
-#: src/desktops.c:2400 src/pager.c:1935 src/pager.c:1960 src/pager.c:1985
+#: src/desktops.c:2399 src/pager.c:1935 src/pager.c:1960 src/pager.c:1985
 msgid "Right"
 msgstr "Десният"
 
-#: src/desktops.c:2408 src/menus-misc.c:708
+#: src/desktops.c:2407 src/menus-misc.c:708
 #, fuzzy
 msgid "Desks"
 msgstr "Поле"
 
-#: src/desktops.c:2409
+#: src/desktops.c:2408
 msgid "Multiple Desktop Settings"
 msgstr "Настройки за много работни полета"
 
-#: src/desktops.c:2412
+#: src/desktops.c:2411
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -653,7 +653,7 @@ msgstr ""
 "Е: Много работни полета\n"
 "Диалог за настройки\n"
 
-#: src/desktops.c:2482 src/desktops.c:2517
+#: src/desktops.c:2481 src/desktops.c:2516
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -662,7 +662,7 @@ msgstr ""
 "%i x %i\n"
 "Екрани с размер"
 
-#: src/desktops.c:2485 src/desktops.c:2520
+#: src/desktops.c:2484 src/desktops.c:2519
 msgid ""
 "1\n"
 "Screen in size"
@@ -670,62 +670,62 @@ msgstr ""
 "1\n"
 "Екран с размер"
 
-#: src/desktops.c:2513
+#: src/desktops.c:2512
 msgid "Virtual Desktop size:\n"
 msgstr "Размер на виртуалното поле:\n"
 
-#: src/desktops.c:2554
+#: src/desktops.c:2553
 msgid "Wrap virtual desktops around"
 msgstr "Застъпвай виртуалните полета"
 
-#: src/desktops.c:2561
+#: src/desktops.c:2560
 msgid "Edge Flip Mode:"
 msgstr ""
 
-#: src/desktops.c:2564
+#: src/desktops.c:2563
 msgid "Off"
 msgstr ""
 
-#: src/desktops.c:2569
+#: src/desktops.c:2568
 msgid "On"
 msgstr ""
 
-#: src/desktops.c:2574
+#: src/desktops.c:2573
 msgid "Only when moving window"
 msgstr ""
 
-#: src/desktops.c:2580
+#: src/desktops.c:2579
 msgid "Resistance at edge of screen:\n"
 msgstr "\"Съпротивление\" на ръбовете на екрана:\n"
 
-#: src/desktops.c:2592
+#: src/desktops.c:2591
 msgid "Areas"
 msgstr ""
 
-#: src/desktops.c:2593
+#: src/desktops.c:2592
 msgid "Virtual Desktop Settings"
 msgstr "Настройки на виртуални полета"
 
-#: src/desktops.c:2596
+#: src/desktops.c:2595
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
 msgstr "Е: Виртуални полетаДиалог за настройки\n"
 
-#: src/dialog.c:861 src/dialog.c:2079 src/dialog.c:2110 src/events.c:85
-#: src/setup.c:150 src/sound.c:203
+#: src/dialog.c:860 src/dialog.c:2077 src/dialog.c:2108 src/events.c:85
+#: src/setup.c:157 src/sound.c:203
 msgid "OK"
 msgstr "Да"
 
-#: src/dialog.c:866
+#: src/dialog.c:865
 msgid "Apply"
 msgstr "Приложи"
 
-#: src/dialog.c:2110
+#: src/dialog.c:2108
 msgid "Attention !!!"
 msgstr "Внимание !!!"
 
-#: src/ecompmgr.c:2603
+#: src/ecompmgr.c:2611
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -1062,7 +1062,7 @@ msgstr "   Изберете групата, от която да махнете прозореца.  "
 msgid "Select the group to break:"
 msgstr "  Изберете групата, която да разтрогнете  "
 
-#: src/handlers.c:64
+#: src/handlers.c:62
 #, c-format
 msgid ""
 "Enlightenment performed an Illegal Instruction.\n"
@@ -1082,7 +1082,7 @@ msgstr ""
 "за вашата система, или прекомпилирайте Е и по възможност\n"
 "всички поддържащи библиотеки които сте взели във двоичен формат.\n"
 
-#: src/handlers.c:74
+#: src/handlers.c:72
 msgid ""
 "Enlightenment caused a Floating Point Exception.\n"
 "\n"
@@ -1108,7 +1108,7 @@ msgstr ""
 "кога е умрял и да изпратите полезна информация с информация за  "
 "проследяването.\n"
 
-#: src/handlers.c:86
+#: src/handlers.c:84
 msgid ""
 "Enlightenment caused Segment Violation (Segfault)\n"
 "\n"
@@ -1134,7 +1134,7 @@ msgstr ""
 "кога е умрял и да изпратите полезна информация с информация за  "
 "проследяването.\n"
 
-#: src/handlers.c:98
+#: src/handlers.c:96
 msgid ""
 "Enlightenment caused Bus Error.\n"
 "\n"
@@ -1224,14 +1224,14 @@ msgstr "\"help <команда>\": описание за дадена команда\n"
 msgid "         <command>     : <description>\n"
 msgstr "<команда> : <описание>\n"
 
-#: src/main.c:581
+#: src/main.c:578
 #, c-format
 msgid ""
 "%s must be a directory in which you have\n"
 "read, write, and execute permission.\n"
 msgstr ""
 
-#: src/main.c:691
+#: src/main.c:688
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1260,7 +1260,7 @@ msgstr ""
 "създадени пакети, някой ръчно е изтрил програмата или е имало\n"
 "грешка при инсталирането на Enlightenment.\n"
 
-#: src/main.c:705
+#: src/main.c:702
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1281,7 +1281,7 @@ msgstr ""
 "Моля, коригирайте тази ситуация и се осигурете че е инсталирана\n"
 "правилно.\n"
 
-#: src/magwin.c:457
+#: src/magwin.c:459
 msgid "Magnifier"
 msgstr ""
 
@@ -1920,7 +1920,7 @@ msgstr ""
 msgid "Enlightenment Settings"
 msgstr "Enlightenment стартира..."
 
-#: src/setup.c:50
+#: src/setup.c:58
 msgid ""
 "Enlightenment cannot connect to the display nominated by\n"
 "your shell's DISPLAY environment variable. You may set this\n"
@@ -1942,11 +1942,11 @@ msgstr ""
 "с вашият системен администратор, или прочетете ръководствата на Х, xdm\n"
 "и startx преди да продължитежите.\n"
 
-#: src/setup.c:149
+#: src/setup.c:156
 msgid "Another Window Manager is already running"
 msgstr "Друг Администратор на Прозорци вече работи"
 
-#: src/setup.c:151
+#: src/setup.c:158
 msgid ""
 "Another Window Manager is already running.\n"
 "\n"
@@ -1957,15 +1957,15 @@ msgstr ""
 "\n"
 "Трябва да го затворите за да стартирате успешно Е.\n"
 
-#: src/setup.c:160
+#: src/setup.c:167
 msgid "X server version error"
 msgstr "Грешка версия на X-сървъра"
 
-#: src/setup.c:160
+#: src/setup.c:167
 msgid "Ignore this error"
 msgstr "Игнорирай тази грешка"
 
-#: src/setup.c:162
+#: src/setup.c:169
 #, c-format
 msgid ""
 "WARNING:\n"
@@ -2163,7 +2163,7 @@ msgstr ""
 "Е: Звук\n"
 "Диалог за настройки\n"
 
-#: src/systray.c:331 src/systray.c:436 src/systray.c:444
+#: src/systray.c:331 src/systray.c:434 src/systray.c:442
 #, fuzzy
 msgid "Systray Error!"
 msgstr "Ecursor Грешка!"
@@ -2172,19 +2172,19 @@ msgstr "Ecursor Грешка!"
 msgid "Systray went elsewhere?!?"
 msgstr ""
 
-#: src/systray.c:436
+#: src/systray.c:434
 msgid "Only one systray is allowed"
 msgstr ""
 
-#: src/systray.c:444
+#: src/systray.c:442
 msgid "Could not activate systray"
 msgstr ""
 
-#: src/systray.c:454
+#: src/systray.c:452
 msgid "Systray Options"
 msgstr "Опции за системната табла"
 
-#: src/systray.c:455
+#: src/systray.c:453
 msgid "Systray Settings"
 msgstr "Настройки за системната табла"
 
