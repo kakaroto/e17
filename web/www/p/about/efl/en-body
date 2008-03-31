@@ -5,6 +5,17 @@
     <h1>EFL Overview</h1>
 
     <span class="contentmain">
+    <p>Library specific pages:</p>
+    <p>
+     <ul>
+      <li><?php a("about/efl/eet", "Eet");?></li>
+     </ul>
+    </p>
+    </span>
+    
+    <hr>
+    
+    <span class="contentmain">
      <p>The Enlightenment Foundation Libraries (EFL) are a collection of libraries that make up the foundation 
      of the DR17 window manager.  While their original intent was solely to support the window manager, the libraries
      quickly took on a life of their own, which is a contributing factor to the delays of the window manager itself.
@@ -42,8 +53,7 @@
      your standard block diagram.</p>
 
      <center>
-      <a href="i/efl.png" target="_self">
-       <img width="300" height="50" src="i/efl.png" class="shot" />
+       <?php img("efl.png", "EFL Diagram");?>
       </a>
      </center>
 
