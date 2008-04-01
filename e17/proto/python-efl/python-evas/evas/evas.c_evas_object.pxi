@@ -196,7 +196,7 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
        on_mouse_move_del, on_mouse_out_add, on_mouse_out_del, on_mouse_up_add,
        on_mouse_up_del, on_mouse_wheel_add, on_mouse_wheel_del, on_move_add,
        on_move_del, on_resize_add, on_resize_del, on_restack_add,
-       on_restack_del, on_show_add, on_show_del
+       on_restack_del, on_show_add, on_show_del, on_hold_add, on_hold_del
     @group Often unused: render_op_set, render_op_get, render_op,
        color_interpolation_set, color_interpolation_get, color_interpolation,
        anti_alias_set, anti_alias_get, anti_alias, pointer_mode_set,
@@ -1098,6 +1098,14 @@ cdef public class Object [object PyEvasObject, type PyEvasObject_Type]:
     def on_del_del(self, func):
         "Same as event_callback_del(EVAS_CALLBACK_DEL, ...)"
         self.event_callback_del(EVAS_CALLBACK_FREE, func)
+
+    def on_hold_add(self, func, *a, **k):
+        "Same as event_callback_add(EVAS_CALLBACK_HOLD, ...)"
+        self.event_callback_add(EVAS_CALLBACK_HOLD, func, *a, **k)
+
+    def on_hold_del(self, func):
+        "Same as event_callback_del(EVAS_CALLBACK_HOLD, ...)"
+        self.event_callback_del(EVAS_CALLBACK_HOLD, func)
 
     def pass_events_get(self):
         "@rtype: bool"

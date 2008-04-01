@@ -138,9 +138,18 @@ cdef void cb_del(void *data, Evas *e,
     cb_dispatcher2(<Object>data, EVAS_CALLBACK_DEL)
 
 
+cdef void cb_hold(void *data, Evas *e,
+                  Evas_Object *obj, void *e_inf) with gil:
+    cdef EventHold event
+    event = EventHold()
+    event._set_obj(e_inf)
+    cb_dispatcher(<Object>data, event, EVAS_CALLBACK_HOLD)
+    event._unset_obj()
+
+
 cdef int evas_event_callbacks_len
-cdef evas_event_callback_t evas_event_callbacks[17]
-evas_event_callbacks_len = 17
+cdef evas_event_callback_t evas_event_callbacks[18]
+evas_event_callbacks_len = 18
 evas_event_callbacks[<int>EVAS_CALLBACK_MOUSE_IN] = cb_mouse_in
 evas_event_callbacks[<int>EVAS_CALLBACK_MOUSE_OUT] = cb_mouse_out
 evas_event_callbacks[<int>EVAS_CALLBACK_MOUSE_DOWN] = cb_mouse_down
@@ -158,3 +167,4 @@ evas_event_callbacks[<int>EVAS_CALLBACK_MOVE] = cb_move
 evas_event_callbacks[<int>EVAS_CALLBACK_RESIZE] = cb_resize
 evas_event_callbacks[<int>EVAS_CALLBACK_RESTACK] = cb_restack
 evas_event_callbacks[<int>EVAS_CALLBACK_DEL] = cb_del
+evas_event_callbacks[<int>EVAS_CALLBACK_HOLD] = cb_hold

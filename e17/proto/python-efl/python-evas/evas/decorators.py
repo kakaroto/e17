@@ -73,3 +73,7 @@ def restack_callback(func):
 def del_callback(func):
     func.evas_event_callback = evas.EVAS_CALLBACK_DEL
     return staticmethod(func)
+
+def hold_callback(func):
+    func.evas_event_callback = evas.EVAS_CALLBACK_HOLD
+    return staticmethod(func)

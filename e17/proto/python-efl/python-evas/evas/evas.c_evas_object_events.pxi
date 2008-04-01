@@ -463,3 +463,40 @@ cdef class EventKeyUp:
         def __set__(self, flags):
             self._check_validity()
             self.obj.event_flags = flags
+
+
+cdef class EventHold:
+    cdef void _set_obj(self, void *ptr):
+        self.obj = <Evas_Event_Hold*>ptr
+
+    cdef void _unset_obj(self):
+        self.obj = NULL
+
+    cdef void _check_validity(self) except *:
+        if self.obj == NULL:
+            raise ValueError("EventHold object is invalid.")
+
+    def __str__(self):
+        self._check_validity()
+        return ("%s(hold=%d, timestamp=%d, event_flags=%#x)") % \
+                (self.__class__.__name__, self.hold,
+                 self.obj.timestamp, self.event_flags)
+
+    property hold:
+        def __get__(self):
+            self._check_validity()
+            return self.obj.hold
+
+    property timestamp:
+        def __get__(self):
+            self._check_validity()
+            return self.obj.timestamp
+
+    property event_flags:
+        def __get__(self):
+            self._check_validity()
+            return <int>self.obj.event_flags
+
+        def __set__(self, flags):
+            self._check_validity()
+            self.obj.event_flags = flags

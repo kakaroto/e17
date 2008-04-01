@@ -24,6 +24,7 @@ cdef extern from "Evas.h":
         EVAS_CALLBACK_RESIZE
         EVAS_CALLBACK_RESTACK
         EVAS_CALLBACK_DEL
+        EVAS_CALLBACK_HOLD
 
 
     cdef enum Evas_Load_Error:
@@ -230,6 +231,12 @@ cdef extern from "Evas.h":
         char *key
         char *string
         char *compose
+        unsigned int timestamp
+        Evas_Event_Flags event_flags
+
+    ctypedef struct Evas_Event_Hold:
+        int hold
+        void *data
         unsigned int timestamp
         Evas_Event_Flags event_flags
 
@@ -641,6 +648,14 @@ cdef class EventKeyDown:
 
 cdef class EventKeyUp:
     cdef Evas_Event_Key_Up *obj
+
+    cdef void _set_obj(self, void *ptr)
+    cdef void _unset_obj(self)
+    cdef void _check_validity(self) except *
+
+
+cdef class EventHold:
+    cdef Evas_Event_Hold *obj
 
     cdef void _set_obj(self, void *ptr)
     cdef void _unset_obj(self)
