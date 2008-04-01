@@ -38,7 +38,8 @@ void setup_window()
 
 	vbox = ewl_vbox_new();
 	ewl_container_child_append(EWL_CONTAINER(hbox), vbox);
-	ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_HFILL);
+	ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_HFILL);
+	ewl_box_homogeneous_set(EWL_OBJECT(vbox), 1);
 	ewl_widget_show(vbox);
 
 	if(mode == SUDOPROG)
@@ -51,11 +52,11 @@ void setup_window()
 						"Execute");
 		ewl_callback_append(exec, EWL_CALLBACK_FOCUS_OUT, unfocus_cb,
 						"Execute");
-		exec_empty = 1;
 		ewl_text_align_set(EWL_TEXT(exec),EWL_FLAG_ALIGN_LEFT);
 		ewl_text_text_set(EWL_TEXT(exec),"Execute");
 		ewl_text_cursor_position_set(EWL_TEXT(exec),0);
 		ewl_text_color_apply(EWL_TEXT(exec),100,100,100,200,strlen("Execute"));
+		ewl_object_minimum_h_set(EWL_OBJECT(exec), 20);
 		ewl_widget_show(exec);
 	}	
 
@@ -71,6 +72,7 @@ void setup_window()
 	ewl_text_text_set(EWL_TEXT(entry),"Password");
 	ewl_text_cursor_position_set(EWL_TEXT(entry),0);
 	ewl_text_color_apply(EWL_TEXT(entry),100,100,100,200,strlen("Password"));
+	ewl_object_minimum_h_set(EWL_OBJECT(entry), 20);
 	
 	if(!auth_passed)
 		ewl_widget_show(entry);

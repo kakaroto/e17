@@ -20,7 +20,6 @@ Ewl_Widget *entry;
 char cmd[1024];
 Ecore_Exe *sudo;
 int auth_passed;
-int exec_empty;
 int startup;
 int failure;
 
