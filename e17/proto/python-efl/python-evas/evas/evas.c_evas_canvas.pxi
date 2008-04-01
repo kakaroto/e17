@@ -37,6 +37,7 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
            font_cache, font_path_clear, font_path_append, font_path_prepend,
            font_path_list, font_available_list, font_hinting_can_hint,
            font_hinting_set, font_hinting_get, font_hinting
+    @group Event feeding: feed_hold
     @group Often unused: damage_rectangle_add, obscured_rectangle_add,
            obscured_clear, render_updates, render, norender, freeze_get,
            output_method_set, output_method_get, output_method
@@ -519,6 +520,10 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
     def freeze_get(self):
         "@rtype: int"
         return evas_event_freeze_get(self.obj)
+
+    # Event feeding
+    def feed_hold(self, int hold, unsigned int timestamp):
+        evas_event_feed_hold(self.obj, hold, timestamp, NULL)
 
     # Factory
     def Rectangle(self, **kargs):

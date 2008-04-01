@@ -310,6 +310,8 @@ cdef extern from "Evas.h":
     void evas_event_thaw(Evas *e)
     int evas_event_freeze_get(Evas *e)
 
+    void evas_event_feed_hold(Evas *e, int hold, unsigned int timestamp, void *data)
+
     void evas_font_path_clear(Evas *e)
     void evas_font_path_append(Evas *e, char *path)
     void evas_font_path_prepend(Evas *e, char *path)
