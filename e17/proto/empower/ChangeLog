@@ -1,3 +1,5 @@
+3-31-08 -- Version 1.5.1
+  - Fix an issue with the entry boxes collapsing when empty.
 5-31-07 -- Version 1.5
 	- Starting empower with no options will allow you to specify a command in
 	  the window.  If you need to authenticate, you will also type in your
