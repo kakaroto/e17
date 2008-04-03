@@ -114,6 +114,8 @@ _basic_create_widgets(E_Config_Dialog * cfd, Evas * evas, E_Config_Dialog_Data *
    e_widget_framelist_object_append (of, ob);
    ob = e_widget_radio_add(evas, D_("Set wallpaper on current desktop"), 0, rg);
    e_widget_framelist_object_append (of, ob);
+   ob = e_widget_radio_add(evas, D_("Set wallpaper on current screen"), 2, rg);
+   e_widget_framelist_object_append (of, ob);
    if(ecore_x_xinerama_screen_count_get() > 1)
      {
        ob = e_widget_radio_add(evas, D_("Set wallpaper on current monitor (Xinerama support)"), 2, rg);
