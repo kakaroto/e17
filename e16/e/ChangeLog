@@ -4721,3 +4721,14 @@ Eliminate redundant RRoot variables.
 Eliminate redundant VRoot vars.
 Fix potential segv during window placement.
 Background scaling tweak (debian bug 471577).
+
+-------------------------------------------------------------------------------
+
+Thu Apr  3 19:48:45 CEST 2008
+(Kim)
+
+--- 0.16.8.13 0.03 ---
+Fix bug, avoid allocating excessively large arrays in window placement.
+Eliminate RRoot and VRoot.
+Rewrap more X stuff.
+Remove obsolete (I think) sgi _NO_ANSIMODE stuff. Cleanups.
