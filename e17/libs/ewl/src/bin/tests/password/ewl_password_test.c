@@ -40,6 +40,7 @@ create_test(Ewl_Container *box)
 	ewl_widget_show(password[0]);
 
 	password[1] = ewl_password_new();
+	ewl_text_color_set(EWL_TEXT(password[1]), 255, 0, 0, 255);
 	ewl_password_text_set(EWL_PASSWORD(password[1]), "E W L ! ! !");
 	ewl_object_padding_set(EWL_OBJECT(password[1]), 5, 5, 0, 0);
 	ewl_container_child_append(box, password[1]);
