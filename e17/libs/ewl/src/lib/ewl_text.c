@@ -744,6 +744,59 @@ ewl_text_text_delete(Ewl_Text *t, unsigned int char_len)
 }
 
 /**
+ * @param e: the text to set the obscuring character
+ * @param o: the character to obscure the password characters. This need to be
+ *           a string, because UTF-8 characters can be longer then one byte.
+ *           If it is not a valid UTF-8 character it will fallback to an
+ *           asterix (*). NULL will turn the option off and let the text widget
+ *           return to the normal text view.
+ * @return Returns no value.
+ * @brief Sets the character used to obscure the text for a password. Every
+ * character will be replaced by this character on the output.
+ */
+void
+ewl_text_obscure_set(Ewl_Text *t, const char *o)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(t);
+	DCHECK_TYPE(t, EWL_TEXT_TYPE);
+
+	/* free the old character */
+	IF_FREE(t->obscure);
+
+	/* do some checking */
+	if (ewl_text_char_utf8_is(o)) {
+		size_t len;
+
+		len = EWL_TEXT_CHAR_BYTE_LEN(o);
+		t->obscure = NEW(char, len + 1);
+		memcpy(t->obscure, o, len);
+		t->obscure[len] = 0;
+	}
+	else
+		t->obscure = strdup("*");
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param t: the text to retrieve the obscuring character
+ * @return Returns the character value of the obscuring character. This is
+ *         a null-terminated string containing an UTF-8 character or NULL
+ *         if the text isn't set to obscure the text.
+ * @brief Retrieves the character used to obscure the text for a password.
+ */
+const char *
+ewl_text_obscure_get(Ewl_Text *t)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET(t, 0);
+	DCHECK_TYPE_RET(t, EWL_TEXT_TYPE, 0);
+
+	DRETURN_INT(t->obscure, DLEVEL_STABLE);
+}
+
+/**
  * @param t: The text to set the selectable value of
  * @param selectable: The selectable value to set
  * @return Returns no value
@@ -2948,15 +3001,36 @@ ewl_text_cb_format(Ewl_Text_Fmt_Node *node, Ewl_Text *t, unsigned int byte_idx)
 	if (node->tx != ewl_text_default_context)
 		evas_textblock_cursor_format_append(cursor, node->tx->format);
 
-	ptr = t->text + byte_idx;
-	tmp = *(ptr + node->byte_len);
-	if (strlen(ptr) < node->byte_len)
-		DWARNING("Byte length of node %u overruns actual text %d",
-				node->byte_len, (int)strlen(ptr));
-	*(ptr + node->byte_len) = '\0';
+	if (!t->obscure)
+	{
+		ptr = t->text + byte_idx;
+		tmp = *(ptr + node->byte_len);
+		if (strlen(ptr) < node->byte_len)
+			DWARNING("Byte length of node %u overruns actual"
+				 " text %d", node->byte_len, (int)strlen(ptr));
+		*(ptr + node->byte_len) = '\0';
 
-	ewl_text_plaintext_parse(t->textblock, ptr);
-	*(ptr + node->byte_len) = tmp;
+		ewl_text_plaintext_parse(t->textblock, ptr);
+		*(ptr + node->byte_len) = tmp;
+	}
+	else
+	{
+		char *otxt;
+		size_t len;
+
+		int i;
+
+		len = strlen(t->obscure);
+		otxt = alloca(len * node->char_len + 1);
+		ptr = otxt;
+		for (i = 0; i < node->char_len; i++)
+		{
+			memcpy(ptr, t->obscure, len);
+			ptr += len;
+		}
+		*ptr = '\0';
+		ewl_text_plaintext_parse(t->textblock, otxt);
+	}
 
 	evas_textblock_cursor_format_append(cursor, "-");
 
@@ -3334,6 +3408,7 @@ ewl_text_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 
 	t = EWL_TEXT(w);
 
+	IF_FREE(t->obscure);
 	/* Note, we don't explictly destroy the triggers or the selection
 	 * because they will be cleared, because they are children of the
 	 * text widget itself */

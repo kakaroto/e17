@@ -66,6 +66,7 @@ struct Ewl_Entry
 };
 
 Ewl_Widget	*ewl_entry_new(void);
+Ewl_Widget	*ewl_password_new(void);
 int 		 ewl_entry_init(Ewl_Entry *e);
 
 void		 ewl_entry_multiline_set(Ewl_Entry *e, unsigned int multiline);

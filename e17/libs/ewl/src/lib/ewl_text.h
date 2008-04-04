@@ -71,7 +71,8 @@ struct Ewl_Text
 	void *textblock;	  /**< The Evas_Object_Textblock */
 
 	char *text;		  /**< The text itself */
-
+	char *obscure;            /**< The utf8 character to be displayed
+				       instead of the real text */
 	struct
 	{
 		unsigned int chars; 	/**< Number of characters in the text */
@@ -131,6 +132,8 @@ void		 ewl_text_text_append(Ewl_Text *t, const char *text);
 void		 ewl_text_text_insert(Ewl_Text *t, const char *text,
 						unsigned int char_idx);
 void		 ewl_text_text_delete(Ewl_Text *t, unsigned int length);
+
+void		 ewl_text_obscure_set(Ewl_Text *t, const char *utf8_character);
 
 void		 ewl_text_selectable_set(Ewl_Text *t, unsigned int selectable);
 unsigned int	 ewl_text_selectable_get(Ewl_Text *t);

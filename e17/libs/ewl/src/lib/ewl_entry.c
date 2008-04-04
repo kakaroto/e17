@@ -111,6 +111,27 @@ ewl_entry_new(void)
 }
 
 /**
+ * @return Returns a new password widget on success, NULL on failure.
+ * @brief Allocate and initialize a new password widget
+ *
+ * A password widget is an entry with a set obscure character. The default is a
+ * star (*)
+ */
+Ewl_Widget *
+ewl_password_new(void)
+{
+	Ewl_Widget *e;
+	
+	DENTER_FUNCTION(DLEVEL_STABLE);
+
+	e = ewl_entry_new();
+	ewl_widget_appearance_set(e, "password/"EWL_ENTRY_TYPE);
+	ewl_text_obscure_set(EWL_TEXT(e), "*");
+	
+	DRETURN_PTR(e, DLEVEL_STABLE);
+}
+
+/**
  * @param e: The Ewl_Entry to initialize
  * @return Returns TRUE on success or FALSE on failure
  * @brief Initializes an Ewl_Entry widget to default values

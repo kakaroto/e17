@@ -2,7 +2,7 @@
 #include "Ewl_Test.h"
 #include "ewl_test_private.h"
 #include "ewl_button.h"
-#include "ewl_password.h"
+#include "ewl_entry.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -30,7 +30,7 @@ create_test(Ewl_Container *box)
 	Ewl_Widget *button_hbox, *button[2];
 
 	password[0] = ewl_password_new();
-	ewl_password_text_set(EWL_PASSWORD(password[0]), "Play with me ?");
+	ewl_text_text_set(EWL_TEXT(password[0]), "Play with me ?");
 	ewl_object_padding_set(EWL_OBJECT(password[0]), 5, 5, 5, 0);
 	ewl_container_child_append(box, password[0]);
 	ewl_callback_append(password[0], EWL_CALLBACK_VALUE_CHANGED,
@@ -41,7 +41,7 @@ create_test(Ewl_Container *box)
 
 	password[1] = ewl_password_new();
 	ewl_text_color_set(EWL_TEXT(password[1]), 255, 0, 0, 255);
-	ewl_password_text_set(EWL_PASSWORD(password[1]), "E W L ! ! !");
+	ewl_text_text_append(EWL_TEXT(password[1]), "E W L ! ! !");
 	ewl_object_padding_set(EWL_OBJECT(password[1]), 5, 5, 0, 0);
 	ewl_container_child_append(box, password[1]);
 	ewl_callback_append(password[1], EWL_CALLBACK_VALUE_CHANGED,
@@ -84,11 +84,11 @@ cb_fetch_password_text(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 {
 	char *s;
 
-	s = ewl_password_text_get(EWL_PASSWORD(password[0]));
+	s = ewl_text_text_get(EWL_TEXT(password[0]));
 	printf("First password covers: %s\n", s);
 	free(s);
 
-	s = ewl_password_text_get(EWL_PASSWORD(password[1]));
+	s = ewl_text_text_get(EWL_TEXT(password[1]));
 	printf("Second password covers: %s\n", s);
 	free(s);
 }
@@ -97,7 +97,7 @@ static void
 cb_set_password_text(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 						void *data __UNUSED__)
 {
-	ewl_password_text_set(EWL_PASSWORD(password[0]), "Play with me ?");
-	ewl_password_text_set(EWL_PASSWORD(password[1]), "E W L ! ! !");
+	ewl_text_text_set(EWL_TEXT(password[0]), "Play with me ?");
+	ewl_text_text_set(EWL_TEXT(password[1]), "E W L ! ! !");
 }
 

@@ -8,7 +8,6 @@
 #include "ewl_menu.h"
 #include "ewl_notebook.h"
 #include "ewl_paned.h"
-#include "ewl_password.h"
 #include "ewl_radiobutton.h"
 #include "ewl_separator.h"
 #include "ewl_seeker.h"
@@ -228,7 +227,7 @@ widgets_build(void)
 	ewl_widget_show(misc);
 
 	misc = ewl_password_new();
-	ewl_password_text_set(EWL_PASSWORD(misc), "Password entry");
+	ewl_text_text_set(EWL_TEXT(misc), "Password entry");
 	ewl_object_alignment_set(EWL_OBJECT(misc), EWL_FLAG_ALIGN_LEFT);
 	ewl_container_child_append(EWL_CONTAINER(vbox), misc);
 	ewl_widget_show(misc);
