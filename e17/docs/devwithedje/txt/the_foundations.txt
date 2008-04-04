@@ -1,0 +1,54 @@
+From a developer's point of view, we cannot expect to understand how Edje works
+without going through a brief introduction about the Evas first. Luckily for 
+this writer, an excellent introduction to Evas has already been written in the
+API Reference.
+
+    Evas is a clean display canvas API for several target display systems that 
+    can draw anti-aliased text, smooth super and sub-sampled scaled images, 
+    alpha-blend objects much and more.
+                      
+    It abstracts any need to know much about what the characteristics of your 
+    display system are or what graphics calls are used to draw them and how. It
+    deals on an object level where all you do is create and manipulate objects 
+    in a canvas, set their properties, and the rest is done for you.
+                      
+    Evas optimises the rendering pipeline to minimise effort in redrawing 
+    changes made to the canvas and so takes this work out of the programmers 
+    hand, saving a lot of time and energy.
+                      
+    It's small and lean, designed to work on embedded systems all the way to 
+    large and powerful multi-cpu workstations. It can be compiled to only have 
+    the features you need for your target platform if you so wish, thus keeping 
+    it small and lean. It has several display back-ends, letting it display on 
+    several display systems, making it portable for cross-device and 
+    cross-platform development.
+
+When using the Evas API directly, the developer uses function calls n the format
+object_line_add and object_image_add to include the different primitives in our
+canvas. Each of these primitives would be included in the form of an "Evas 
+object".
+
+But Evas is not limited to simply rendering primitive objects. The most common 
+use for a canvas is to assemble multiple primitives like lines or rectangles 
+into figures like charts or diagrams. In order to maintain coherency among all 
+the primitives the developer was forced to implement functions that abstracted
+manipulation of the figure from the manipulation of its components. One of 
+these "workarounds" is now known as Evas Smart Objects.
+              
+Smart objects are implemented by the developer to create new Evas object types. 
+Functions like add, del, hide, show are implemented using the regular Evas API 
+to affect each primitive. This collection of functions is grouped into a new 
+Evas Smart Class structure that consist of a list of pointers to the functions,
+the object type name and version. The instances resulting from these classes 
+would be manipulated by the canvas in the same way it does for any other 
+object.
+
+Edje is implemented as a more abstract type of smart object. The list of 
+primitives to manipulate is not hard coded into the functions forming the Smart
+Class. Edje has functions that analyze the structure of a compiled theme file 
+and get the list of primitives and their properties from a given "group" inside
+the file.
+
+In the end Edje interfaces can be seen as an illustration over a canvas. Space
+they can share with other primitive and smart objects. Without an Evas canvas 
+there is no Edje theme.

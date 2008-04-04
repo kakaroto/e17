@@ -1,48 +1,29 @@
-# DocBook XML Document Transformation Makefile
-# Required tools:
-# - xmlto (Available as Debian package)
-# - fop (Available as Debian package)
-# - Jimi Image library which is available from Sun at http://xmlgraphics.apache.org/fop/0.20.5/graphics.html#packages
-#
-# You are also advised to install all xml-related Debian packages
-# The book "Docbook the Definitive GUIDE" is also available as a Debian package
-#
-# Many thanks to Ben Rockwood for his help.
-#
-# Kostis Kapelonis
-# Summer 2006
+# To create all the document types you need python and docutils.
+# To create PDFs you need pdflatex from texlive.
 
-
-### File without suffix
 FILE = devwithedje
 
-FOP = fop
-XMLTO = xmlto
-
-all: pdf html html_single
-
-fo: 
-	$(XMLTO) fo $(FILE).xml
-
-pdf: fo
-	$(FOP) $(FILE).fo -pdf $(FILE).pdf
-	rm -f $(FILE).fo
-
-txt:
-	$(XMLTO) txt $(FILE).xml
+all: html latex pdf
 
 html:
-	$(XMLTO) xhtml $(FILE).xml
+	rst2html.py --cloak-email-addresses --stylesheet=devwithedje.css  $(FILE).txt $(FILE).html
+	cp -f $(FILE).html pre-rendered
 
-html_single:
-	$(XMLTO) xhtml-nochunks $(FILE).xml
+latex: 
+	rst2latex.py --use-latex-toc --documentclass=book --documentoptions=12pt,a4paper --stylesheet=stylesheet.tex $(FILE).txt $(FILE).tex
+	cp -f $(FILE).tex pre-rendered
+ 
+pdf:
+	pdflatex $(FILE).tex
+	pdflatex $(FILE).tex #the second run is required for internal references
+	cp -f $(FILE).pdf pre-rendered
 
 clean:
-	@echo "REMOVING EVERYTHING BUT MAKEFILE AND XML SOURCE!!!!!"
-	rm -f *.html
-	rm -f $(FILE).pdf $(FILE).fo
-	rm -f $(FILE).txt
-
-check: 
-	xmllint --valid --noout $(FILE).xml
-
+	@echo "Removing files..."
+	rm -f $(FILE).html
+	rm -f $(FILE).tex
+	rm -f $(FILE).log
+	rm -f $(FILE).out
+	rm -f $(FILE).pdf
+	rm -f $(FILE).aux
+	rm -f $(FILE).toc

@@ -1,0 +1,22 @@
+/*  Margenes y Padding.
+    Ver: http://leftjustified.net/journal/2004/10/19/global-ws-reset/ */
+* 
+    {
+    padding:0;
+    margin:0;
+    }
+
+h1, h2, h3, h4, h5, h6, p, pre, blockquote, label, ul, ol, dl, fieldset, address 
+    {
+    margin:1em 5%;
+    }
+
+li, dd
+    {
+    margin-left:5%;
+    }
+
+fieldset 
+    {
+    padding: .5em;
+    }

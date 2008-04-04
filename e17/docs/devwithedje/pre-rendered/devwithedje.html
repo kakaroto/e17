@@ -1,0 +1,611 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
+<title>Application development with Edje</title>
+<meta name="author" content="Andres Blanc" />
+<meta name="date" content="2008/04/03" />
+<meta name="copyright" content="This book is distributed under the terms of the Attribution-NonCommercial-ShareAlike CC license. See: http://creativecommons.org/licenses/by-nc-sa/3.0/. Contact me if you are interested in a license for commercial distribution." />
+<style type="text/css">
+
+/*  Margenes y Padding.
+    Ver: http://leftjustified.net/journal/2004/10/19/global-ws-reset/ */
+* 
+    {
+    padding:0;
+    margin:0;
+    }
+
+h1, h2, h3, h4, h5, h6, p, pre, blockquote, label, ul, ol, dl, fieldset, address 
+    {
+    margin:1em 5%;
+    }
+
+li, dd
+    {
+    margin-left:5%;
+    }
+
+fieldset 
+    {
+    padding: .5em;
+    }
+</style>
+</head>
+<body>
+<div class="document" id="application-development-with-edje">
+<h1 class="title">Application development with Edje</h1>
+<table class="docinfo" frame="void" rules="none">
+<col class="docinfo-name" />
+<col class="docinfo-content" />
+<tbody valign="top">
+<tr class="field"><th class="docinfo-name">Title:</th><td class="field-body">Application development with Edje</td>
+</tr>
+<tr class="field"><th class="docinfo-name">Subtitle:</th><td class="field-body">From the very basics</td>
+</tr>
+<tr><th class="docinfo-name">Author:</th>
+<td>Andres Blanc</td></tr>
+<tr><th class="docinfo-name">Contact:</th>
+<td><a class="first last reference external" href="mailto:andresblanc&#37;&#52;&#48;gmail&#46;com">andresblanc<span>&#64;</span>gmail<span>&#46;</span>com</a></td></tr>
+<tr><th class="docinfo-name">Version:</th>
+<td>1.0</td></tr>
+<tr><th class="docinfo-name">Date:</th>
+<td>2008/04/03</td></tr>
+<tr><th class="docinfo-name">Copyright:</th>
+<td>This book is distributed under the terms of the Attribution-NonCommercial-ShareAlike
+CC license. See: <a class="reference external" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">http://creativecommons.org/licenses/by-nc-sa/3.0/</a>.
+Contact me if you are interested in a license for commercial
+distribution.</td></tr>
+</tbody>
+</table>
+<div class="abstract topic">
+<p class="topic-title first">Abstract</p>
+<p>An introduction to GUI based application development. Starts from
+the most basic concepts and introduces the EFL libraries that deal
+with each of them. It covers Edje, Ecore, Evas and EWL. This book
+is intended to cover all the concepts needed by a novice programmer
+to create a full blown Edje based application.</p>
+</div>
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#book-overview" id="id1">Book overview</a></li>
+<li><a class="reference internal" href="#structure-of-a-graphical-application" id="id2">Structure of a graphical application</a><ul>
+<li><a class="reference internal" href="#decomposing-the-frontend" id="id3">Decomposing the frontend</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#introduction-to-edje" id="id4">Introduction to Edje</a><ul>
+<li><a class="reference internal" href="#the-foundations" id="id5">The foundations</a></li>
+<li><a class="reference internal" href="#convenient-libraries" id="id6">Convenient libraries</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#the-foundations-in-practice" id="id7">The foundations in practice</a><ul>
+<li><a class="reference internal" href="#working-with-the-canvas" id="id8">Working with the canvas</a></li>
+<li><a class="reference internal" href="#interacting-with-the-objects" id="id9">Interacting with the objects</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#introduction-to-widgets" id="id10">Introduction to widgets</a></li>
+</ul>
+</div>
+<div class="section" id="book-overview">
+<h1><a class="toc-backref" href="#id1">Book overview</a></h1>
+<p>I. <a class="reference internal" href="#structure-of-a-graphical-application">Structure of a graphical application</a>.
+If we look through the code of some of the many open source applications
+available, we can find most of them share a common structure. This chapter
+introduces the reader to said structure, to the concept of an Event loop and
+how does it deal with the interaction between form and function.</p>
+<p>I.I. <a class="reference internal" href="#decomposing-the-frontend">Decomposing the frontend</a>.
+There are different approaches to the creation of Graphical User Interfaces,
+some provide flexibility while others shorter development time. In the end, the
+rest of the application will have to go through the same mechanism to deal
+with the interface.</p>
+<p>II. <a class="reference internal" href="#introduction-to-edje">Introduction to Edje</a>.
+Edje is a compromise between flexibility and development time. Comparing it to
+a plain canvas or a fully featured toolkit can show us how it fits in the
+middle ground and provides advantages for designers and developers alike.</p>
+<p>II.I. <a class="reference internal" href="#the-foundations">The foundations</a>.
+Edje allows low level control of the interface without forcing the developer
+through a low level API. The interface objects are implemented as Evas objects,
+but through a completely new language friendly to designers and independent
+from the application code.</p>
+<p>II.II. <a class="reference internal" href="#convenient-libraries">Convenient libraries</a>
+To load an Edje interface the application needs to setup an Evas canvas first.
+This would look as a burden for the developer, dealing with issues specific to
+the underlying system. Thankfully Evas is supported by an additional library
+that resolve most of these issues, Ecore.</p>
+<p>III. <a class="reference internal" href="#the-foundations-in-practice">The foundations in practice</a>.
+Practical examples of the Englighenment Foundation Libraries required for a
+common Edje application.</p>
+<p>III.I <a class="reference internal" href="#working-with-the-canvas">Working with the canvas</a>.
+Including new Edje objects inside the previously setup canvas can be explained
+with this simple example.</p>
+<p>III.II <a class="reference internal" href="#interacting-with-the-objects">Interacting with the objects</a>.
+There are different channels for the application to interact with the
+interface. For the sake of brevity I will include an example of each one to
+serve as an introduction for the practical examples to come in the next
+chapters.</p>
+<p>IV. <a class="reference internal" href="#introduction-to-widgets">Introduction to widgets</a>.
+Interfaces need to resolve two problems, presenting information to users and
+taking orders from them. The past chapters presented enough information to
+solve the first. In the following chapters we will review the second. The
+widget itself can be seen as a small application inside our interfaces. As an
+example let's examine the structure of a common widget, the combox.</p>
+</div>
+<div class="section" id="structure-of-a-graphical-application">
+<h1><a class="toc-backref" href="#id2">Structure of a graphical application</a></h1>
+<p>So... you want to create a GUI application? I assume so since you choosed this
+book as instructive, or at least bathroom, material. You could google &quot;GUI&quot; and
+&quot;library&quot; to feel overwhelmed by the large number of development libraries
+avilable. As you look through the source of your (open source) favorites you
+will realize that all of them, and the applications that use them, share a
+common structure. In this chapter we will review that structure.</p>
+<p>At this point it is convenient to note that the concepts seen in this book and
+the applications resulting from them translate painlessly to special purpose
+computers or embed devices running under alternative architectures like ARM or
+PPC. Edje and related libraries are not only efficient but portable.</p>
+<p>The structure of the averange graphical application is built around a concept
+known as event (or signal) driven execution. Event driven applications are
+persistent and depend on a gate guardian to call the appropriate functions in
+the appropriate moment. This gate guardian is known as the Event loop (or main
+loop).</p>
+<div align="center" class="align-center"><img alt="img/graphical_application_components.png" class="align-center" src="img/graphical_application_components.png" style="width: 85%;" /></div>
+<p>The functions that form a event driven application (with a GUI) can be split
+among two groups. The first group is know as the backend, these functions deal
+with the actual purpose of the application, crunching numbers, decoding media
+files and so on. The second group is known as the frontend, the prupose of
+these functions is to present the results from the backend to their human
+overlords and to receive orders from them.</p>
+<p>Between the backend and the frontend is where the Event loop lives, its mission
+is to connect both ends of the application. Not only between them but also with
+their environment. The Event loop mantains a list of signals to look out for
+and functions related to them. When a signal is received, the Event loop look
+it up in a list and executes the corresponding function or functions.</p>
+<p>For the application to work, the Event loop needs to be aware of events in the
+interface, thus it is  usually provided by the same library that provides the
+GUI elements. It also needs to be aware of events in the system where the
+application is running. Even when the concept is simple, creating a portable
+and properly abstracted event loop is no simple task.</p>
+<div class="section" id="decomposing-the-frontend">
+<h2><a class="toc-backref" href="#id3">Decomposing the frontend</a></h2>
+<p>There are many libraries that aid creation of a GUI. From a plain canvas
+consisting of primitive design objects, like a line or a rectangle, to complex
+layout schemes and predefined interface elements, the latter known as &quot;toolkit&quot;
+or widget library. As opposed to the first, in a toolkit the canvas is just
+another widget.</p>
+<p>Regardless of the method of choice, the resulting GUI has to provide the same
+resources to the rest of the application. A mechanism to present information
+to the user, a mechanism to know when the user interacts with the interface and
+a mechanism to retreive information that resulted from said interaction.</p>
+<p>In the case of the plain canvas the application developer must assemble the
+interface elements, know as widgets, using primitive objects. A very simple
+text entry widget could consist of a rectangle and a string of text. Besides
+assembling the widget, the developer has to instruct the Event loop  to call a
+given function on a given interface event on either primitive object. It is
+possible to discriminate between, for example, a click in the rectangle from a
+click in the string.</p>
+<p>In the case of a toolkit library the application developer would simply include
+a predefined &quot;text entry&quot; widget. The events from this object would be dealt
+with in terms of the object as a whole. It wouldn't seem that there is much
+difference between using a canvas or using a toolkit library until we consider
+all the possiblities, like focus, overflowing text, copying, pasting,
+selecting, etc.</p>
+<p>Deciding which approach to use is, of course, up to the developer to decide as
+each one provide capabilities useful for different types of applications. But
+as we will find out further ahead in this book, these examples only represent
+opposite extremes and there is an alternative approach that sits quite
+comfortably in the middle. Edje.</p>
+</div>
+</div>
+<div class="section" id="introduction-to-edje">
+<h1><a class="toc-backref" href="#id4">Introduction to Edje</a></h1>
+<p>Allow me to begin this chapter with a quote from the introduction of Edje's API
+Reference. After all, I cannot expect to give Edje a better introduction than
+its creator:</p>
+<blockquote>
+<p>Edje is a complex graphical design and layout library. [..]</p>
+<p>[..] Edje should serve all the purposes of creating visual elements
+(borders of windows, scrollbars, etc.) and allow the designer the ability
+to animate, layout and control the look and feel of any program using Edje
+as its basic GUI constructor. This library allows for multiple collections
+of Layouts in one file, sharing the same image database and thus allowing a
+whole theme to be conveniently packaged into 1 file and shipped around.</p>
+<p>Edje [..] separates the layout and behavior logic. Edje files ship with an
+image database, used by all the parts in all the collections to source
+graphical data. [..] Each part collection consists of a list of visual
+parts, as well as a list of programs. A program is a conditionally run
+program that if a particular event occurs (a button is pressed, a mouse
+enters or leaves a part) will trigger an action that may affect other
+parts. In this way a part collection can be &quot;programmed&quot; via its file as to
+hilight buttons when the mouse passes over them or show hidden parts when a
+button is clicked somewhere etc. The actions performed in changing from one
+state to another are also allowed to transition over a period of time,
+allowing animation.</p>
+<p>[..] This separation and simplistic event driven style of programming can
+produce almost any look and feel one could want for basic visual elements.
+Anything more complex is likely the domain of an application or widget set
+that may use Edje as a convenient way of being able to configure parts of
+the display.</p>
+</blockquote>
+<p>As we have seen in the past chapters, there are roughly two methods for
+creating Graphical User Interfaces. In both cases it had to be implemented
+through a programming language. In one case, an API was used by the application
+developer to assemble interface elements from more primitive objects, in the
+other case the API was used to include objects already defined by a library.
+Any changes to an nterface object beyond simplistic style modifications had to
+be submitted by the designer to the developer. Layout changes were only
+slightly less difficult than behavior changes. The idea of working on the
+interface objects and their composition in a live environment, like a web
+developer does, was pretty much unthinkable.</p>
+<p>This is where the Edje library fits in, it liberates the designer and the
+developer from eachother. The artists uses the Edje Data Collection language to
+manipulate primitive objects. EDC is in some ways comparable to Cascading Style
+Sheets but its free of the framework that markup imposes. From the other side,
+the developer only has to include the resulting object and setup the callbacks
+(by the main loop) to the backend functions.</p>
+<div align="center" class="align-center"><img alt="img/workflow.png" class="align-center" src="img/workflow.png" style="width: 85%;" /></div>
+<p>Except for the usage of nested blocks, the sintax of an EDC file is similar to
+CSS. What really sets them appart is that with EDC the designer it's free to
+create and layout design elements as he sees fit. With CSS the designer is
+limited to applying style and layout properties to a structure of objects
+defined by the markup. With Edje each design object, know as &quot;part&quot;, is created
+by the designer and the final interface object composed by those parts, known
+as &quot;group&quot;, is used by the developer. The resulting theme file can consist of
+multiple groups representing multiple interface object.</p>
+<p>The application developer will find out that the Edje API is small, since the
+developer is not expected to alter the composition of a group. The API focus on
+high level manipulation of groups, like forcing a maximum size, but provides
+some functions to alter the content of a part when it's necessary to transmit
+information, like altering a paragraph of text with a message.</p>
+<p>If we compare Edje to both extremes of GUI development we can see it provides
+the flexibility of developing your own interface objects from a plain canvas,
+yet remain almost as simple as including a predefined object from a toolkit. Of
+course Edje has shortcomings of its own and we will explore them in this book
+as well.</p>
+<div class="section" id="the-foundations">
+<h2><a class="toc-backref" href="#id5">The foundations</a></h2>
+<p>From a developer's point of view, we cannot expect to understand how Edje works
+without going through a brief introduction about the Evas first. Luckily for
+this writer, an excellent introduction to Evas has already been written in the
+API Reference.</p>
+<blockquote>
+<p>Evas is a clean display canvas API for several target display systems that
+can draw anti-aliased text, smooth super and sub-sampled scaled images,
+alpha-blend objects much and more.</p>
+<p>It abstracts any need to know much about what the characteristics of your
+display system are or what graphics calls are used to draw them and how. It
+deals on an object level where all you do is create and manipulate objects
+in a canvas, set their properties, and the rest is done for you.</p>
+<p>Evas optimises the rendering pipeline to minimise effort in redrawing
+changes made to the canvas and so takes this work out of the programmers
+hand, saving a lot of time and energy.</p>
+<p>It's small and lean, designed to work on embedded systems all the way to
+large and powerful multi-cpu workstations. It can be compiled to only have
+the features you need for your target platform if you so wish, thus keeping
+it small and lean. It has several display back-ends, letting it display on
+several display systems, making it portable for cross-device and
+cross-platform development.</p>
+</blockquote>
+<p>When using the Evas API directly, the developer uses function calls n the format
+object_line_add and object_image_add to include the different primitives in our
+canvas. Each of these primitives would be included in the form of an &quot;Evas
+object&quot;.</p>
+<p>But Evas is not limited to simply rendering primitive objects. The most common
+use for a canvas is to assemble multiple primitives like lines or rectangles
+into figures like charts or diagrams. In order to maintain coherency among all
+the primitives the developer was forced to implement functions that abstracted
+manipulation of the figure from the manipulation of its components. One of
+these &quot;workarounds&quot; is now known as Evas Smart Objects.</p>
+<p>Smart objects are implemented by the developer to create new Evas object types.
+Functions like add, del, hide, show are implemented using the regular Evas API
+to affect each primitive. This collection of functions is grouped into a new
+Evas Smart Class structure that consist of a list of pointers to the functions,
+the object type name and version. The instances resulting from these classes
+would be manipulated by the canvas in the same way it does for any other
+object.</p>
+<p>Edje is implemented as a more abstract type of smart object. The list of
+primitives to manipulate is not hard coded into the functions forming the Smart
+Class. Edje has functions that analyze the structure of a compiled theme file
+and get the list of primitives and their properties from a given &quot;group&quot; inside
+the file.</p>
+<p>In the end Edje interfaces can be seen as an illustration over a canvas. Space
+they can share with other primitive and smart objects. Without an Evas canvas
+there is no Edje theme.</p>
+</div>
+<div class="section" id="convenient-libraries">
+<h2><a class="toc-backref" href="#id6">Convenient libraries</a></h2>
+<p>The normal process to get a canvas up and running can be bothersome. Evas
+supports multiple rendering engines, like the software, xrender and opengl
+flavors of X11 and framebuffer devices. But before any rendering can be done
+the developer has to complete an Evas_Engine_Info structure with the required
+information about the target engine. This forces the developer to research the
+different functions to get that information for each target. Alternatively he
+can use a shortcut available for most of them.</p>
+<p>As you might have realized by at this point, I intend to quote the official API
+reference at every chance I get. This one comes straight from the &quot;The Ecore
+Main Loop&quot; page:</p>
+<blockquote>
+<p>Ecore is a clean and tiny event loop library with many modules to do lots
+of convenient things for a programmer, to save time and effort.</p>
+<p>It's small and lean, designed to work on embedded systems all the way to
+large and powerful multi-cpu workstations. It serializes all system
+signals, events etc. into a single event queue, that is easily processed
+without needing to worry about concurrency. A properly written,
+event-driven program using this kind of programming doesn't need threads,
+nor has to worry about concurrency. It turns a program into a state
+machine, and makes it very robust and easy to follow.</p>
+</blockquote>
+<p>At the beginning of its life, the Ecore library was used as a Event loop and
+loop management is still one of the modules that composes Ecore.</p>
+<div align="center" class="align-center"><img alt="img/required_libraries.png" class="align-center" src="img/required_libraries.png" style="width: 85%;" /></div>
+<p>Today, Ecore encompasses a long list of modules properly namespaced and
+prefixed with &quot;Ecore_&quot;. From what we have seen in the previous chapters, there
+are two modules that jump right out of the list. The first Ecore_Evas and
+second named Ecore. The first provides convenient functions to setup the Evas
+canvas and the later provides the loop management functionality described
+above.</p>
+<p>The developer needs an Evas canvas to render the Edje interface and Ecore_Evas
+is the simplest way to get an Evas canvas up and running. This wrapper is
+intended to support every backend that Evas supports with its respective (and
+sometimes unique) attributes. It trivializes initialization to a couple of
+lines and multiple engine support to an application reload.</p>
+</div>
+</div>
+<div class="section" id="the-foundations-in-practice">
+<h1><a class="toc-backref" href="#id7">The foundations in practice</a></h1>
+<p>By pointing out that the Enlightenment Foundation Libraries are designed in a
+Object Oriented manner I wish not to raise the wrath of OO purists but to
+simplify the mental image of the structure of the EFL C API in the reader's
+imagination.</p>
+<p>Now that the pitchforks are back in the barn allow me to put it in more clear
+terms with a simple example:</p>
+<pre class="literal-block">
+Evas_Object *button = NULL;
+button = edje_object_add(evascanvas);
+edje_object_file_set(button, &quot;theme.edj&quot;, &quot;button&quot;);
+</pre>
+<p>This is a simple C snippet that could be translated into a more (sintactically
+speaking) object oriented language like Python as:</p>
+<pre class="literal-block">
+button = Evas_Object()
+button.file_set(&quot;theme.edj&quot;,&quot;button&quot;)
+</pre>
+<p>The differences between the code snippets could be written off as &quot;sintactic
+sugar&quot; but it serves to demonstrate the structure which the EFL C API follows.
+If we dissected the last function call we could split it into three groups.
+First, the class of the object to manipulate, <tt class="docutils literal"><span class="pre">edje_object</span></tt>, second, the
+method to call <tt class="docutils literal"><span class="pre">file_set</span></tt> and third the pointer to the object instance
+<tt class="docutils literal"><span class="pre">(button,</span></tt> along with the parameters <tt class="docutils literal"><span class="pre">&quot;theme.edj&quot;,&quot;button&quot;)</span></tt> or, in more
+generic terms, <tt class="docutils literal"><span class="pre">class_method(instance,parameters)</span></tt>.</p>
+<p>The first source snippet in the following tutorial is, of course, the first
+exception. The following function calls deal with the library itself. Anyway,
+displaying a simple Edje object in a window is a task with a few well defined
+steps that begin by initializing the necessary libraries:</p>
+<pre class="literal-block">
+#include &lt;stdlib.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;Evas.h&gt;
+#include &lt;Ecore.h&gt;
+#include &lt;Ecore_Evas.h&gt;
+
+int main() {
+    if (!ecore_init()) return EXIT_FAILURE;
+    if (!ecore_evas_init()) return EXIT_FAILURE;
+    ...
+</pre>
+<p>All initialize-able Enlightenment Foundation Libraries do so in the format
+<tt class="docutils literal"><span class="pre">library_name_init()</span></tt>. Both Ecore and Ecore_Evas need to be initialized
+before being used and both will return success or failure using standard C
+values (0 is failure, any other number is success), hence the <tt class="docutils literal"><span class="pre">if</span></tt>.</p>
+<p>This would be a good moment to note that the assembled, and commented, version
+of the source code of these examples can be found in CVS repository of the
+Enlightenment project: <tt class="docutils literal"><span class="pre">docs/devwithedje/src</span></tt></p>
+<p>In order to render a canvas its necessary to create a canvas wrapper that will
+host it and to store a pointer to it for future reference:</p>
+<pre class="literal-block">
+...
+Ecore_Evas  *ecore_evas = NULL;
+...
+ecore_evas = ecore_evas_software_x11_new(NULL, 0, 0, 0, 800, 600);
+if (!ecore_evas) return EXIT_FAILURE;
+...
+</pre>
+<p>While the software_x11 engine is being used in this example, its possible to
+use any other supported engine by simply changing the second line to
+<tt class="docutils literal"><span class="pre">ecore_evas_enginename_new()</span></tt>. A list of supported engines and their
+parameters can be found in the Official API reference.</p>
+<p>Once the canvas wrapper has been setup we need to change its state to visible:</p>
+<pre class="literal-block">
+...
+ecore_evas_title_set(ecore_evas, &quot;Example Application&quot;);
+ecore_evas_name_class_set(ecore_evas, &quot;testapp&quot;, &quot;Testapp&quot;);
+ecore_evas_show(ecore_evas);
+...
+</pre>
+<p>While the first two lines are optional, it is useful to see the way we set the
+title name and class of the window that will host our canvas. The third
+function sets the given canvas wrapper to visible, this can be reversed later
+with <tt class="docutils literal"><span class="pre">ecore_evas_hide()</span></tt>.</p>
+<p>The canvas wrapper is ready to go, but the actual canvas that will be use to
+draw our Edje objects is nowhere to be found:</p>
+<pre class="literal-block">
+...
+Evas *evas = NULL;
+...
+evas = ecore_evas_get(ecore_evas);
+...
+</pre>
+<p>The function ecore_evas_get() returns a pointer to the canvas housed in the
+canvas wrapper, this is the pointer we need in order to include our Edje
+objects later.</p>
+<p>The execution loop for the program can also be conveniently handled by Ecore:</p>
+<pre class="literal-block">
+...
+ecore_main_loop_begin();
+...
+</pre>
+<p>Once ecore_main_loop_begin(..) has been called, both the canvas wrapper and
+the canvas itself will be drawn in their current state (a 800x600px empty
+window in this case). Ecore will continue to loop until an event handled by it
+occurs.</p>
+<p>Once the execution of the main loop has finished it's a good practice to shut
+down any library we initiated:</p>
+<pre class="literal-block">
+    ...
+    ecore_evas_shutdown();
+    ecore_shutdown();
+}
+...
+</pre>
+<div class="section" id="working-with-the-canvas">
+<h2><a class="toc-backref" href="#id8">Working with the canvas</a></h2>
+<p>Now that we know how to setup the enviroment to display the Edje objects we
+will review how to include and interact with the objects themselves. The
+following code is platform independent and can be merged with the example code
+provided before or with the equivalent for any other platform.</p>
+<p>Just like the last time we begin by including the necessary header files and
+initializing the libraries:</p>
+<pre class="literal-block">
+...
+#include &lt;Edje.h&gt;
+...
+int main() {
+    ...
+    if (!edje_init()) return EXIT_FAILURE;
+    ...
+</pre>
+<p>After a pointer to the canvas has been aquired, we need a pointer to a valid
+Evas object to insert our Edje object:</p>
+<pre class="literal-block">
+...
+Evas_Object *edje = NULL;
+...
+edje = edje_object_add(evas);
+edje_object_file_set(edje, &quot;testfile.edj&quot;, &quot;testgroup&quot;);
+...
+</pre>
+<p>Both functions are specific to Edje, in the first case we use edje_object_add
+to create a pointer to an Evas object and edje_object_file_set to add the
+contents represented by &quot;testgroup&quot; in &quot;testfile.edj&quot;.</p>
+<p>As with any other Evas object we need to instruct Evas to make it visible, but
+not before adjusting the object inside the canvas or since we are only showing
+one object, adjust the canvas to the size of our object:</p>
+<pre class="literal-block">
+...
+Evas_Coord width, height;
+...
+evas_object_move(edje, 0, 0);
+edje_object_size_min_get(edje, &amp;amp;width, &amp;amp;height);
+evas_object_resize(edje, width, height);
+ecore_evas_resize(ecore_evas, width, height);
+evas_object_show(edje);
+...
+</pre>
+<p>First we use evas_object_move to move our Edje object to the left-most, up-most
+corner of the canvas. The function edje_object_size_min_get, returns the
+minimal possible size of the object and evas_object_resize changes the current
+size of the object to those values.</p>
+<p>Before the end, we resize the canvas to the same values the object has with
+ecore_evas_resize and (finally) instruct Evas to show the object.</p>
+</div>
+<div class="section" id="interacting-with-the-objects">
+<h2><a class="toc-backref" href="#id9">Interacting with the objects</a></h2>
+<p>To understand how to interact with Edje or any other Evas based object we need
+to review the basics of how the main loop manager handles events. Ecore
+maintains a list of pointers to functions to be called when a signal of a given
+type is received. These functions are known as signal &quot;handlers&quot;.</p>
+<p>By default, Ecore awareness is limited to system singals like HUP or KILL.
+Additional libraries or modules like Ecore_Evas register new signal types for
+the event loop to be aware of. In the specific case of Evas the new signal
+types deal with the interaction between the user and the Evas objects displayed
+in the canvas.</p>
+<p>The developer can manipulate the list of handlers as well as creating new
+signal types. The latter among other subjects like timers and pollers exceed
+the scope of this book and are properly documented by the API reference and the
+EFL Cookbook.</p>
+<p>We will begin by setting up a simple signal handler that will be called any
+time the application is closed:</p>
+<pre class="literal-block">
+Ecore_Event_Handler* close = NULL;
+...
+int
+good_bye(void *data, int type, void *event)
+{
+    //Removing handler for no reason other than API showoff
+    if (ecore_event_handler_del(close))
+        printf(&quot;Handler deleted\n&quot;);
+
+    printf(&quot;Good bye! \n&quot;);
+    ecore_main_loop_quit();
+    ecore_evas_shutdown();
+    ecore_shutdown();
+    edje_shutdown();
+}
+...
+int main() {
+...
+    close = ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT,
+                                    good_bye,&quot;data&quot;);
+    ...
+    ecore_main_loop_begin();
+    ...
+</pre>
+<p>This example moves the library shutdown procedure from the main function to the
+&quot;good_bye&quot; function. Then before the main loop is initiated we add the handler
+for this signal type. The last parameter it's a pointer to any kind of data you
+want to pass to the handler function, in this case is just a string containing
+&quot;data&quot;.</p>
+<p>Interaction with the interface works in a similar way. The Edje library
+registers its own handler function in the Ecore loop. This handler will be
+called for every signal coming from the interface. Therefore, in order to react
+to interface events we need to register our functions as &quot;callbacks&quot; in this
+handler's list:</p>
+<pre class="literal-block">
+...
+void
+colorize(void *data, Evas_Object *o, const char *emission,
+         const char *source)
+{
+    Evas_Coord x,y;
+    evas_pointer_canvas_xy_get(evas,&amp;amp;x,&amp;amp;y);
+    if(x &gt; 255) x = 255;
+    if(y &gt; 255) y = 255;             //R,   G,   B,   A,
+    edje_color_class_set(&quot;main color&quot;, 190, x,   y,   255,
+                                       255, 255, 255, 255,
+                                       255, 255, 255, 255);
+}
+...
+int main() {
+    ...
+    edje_object_signal_callback_add(edje, &quot;mouse,move&quot;, &quot;*&quot;,
+                                    colorize,&quot;data&quot;);
+    ...
+    ecore_main_loop_begin();
+    ...
+</pre>
+<p>The resulting application changes the color of every part using the &quot;main
+color&quot; color class every time the mouse moves inside the interface. If you use
+the EDC theme included in the assembled example the result will be a small
+rectangle in the middle of the canvas that changes of color as we move our
+mouse around.</p>
+<p>The function that produces this effect is our handler, or callback, <tt class="docutils literal"><span class="pre">colorize</span></tt>.
+We call functions from the Evas API <tt class="docutils literal"><span class="pre">evas_pointer_canvas_xy_get</span></tt> and the Edje
+API <tt class="docutils literal"><span class="pre">edje_color_class_set</span></tt>. The first call gets the current coordinates of
+the mouse pointer position. The second call uses those values to alter the
+color class &quot;main color&quot;.</p>
+<p>Before the main loop begins we use <tt class="docutils literal"><span class="pre">edje_object_signal_callback_add</span></tt> to
+register our callback. The real handler keeps its own list of functions to call.
+This list's index is a combination of the signal identification and the name of
+the source that emitted it. In this particular case, the function <tt class="docutils literal"><span class="pre">colorize</span></tt>
+will be called when the signal &quot;mouse,move&quot; is emitted by any object in the
+interface. Edje string matching supports wildcards for both the name and source
+of the signal.</p>
+</div>
+</div>
+<div class="section" id="introduction-to-widgets">
+<h1><a class="toc-backref" href="#id10">Introduction to widgets</a></h1>
+</div>
+</div>
+</body>
+</html>

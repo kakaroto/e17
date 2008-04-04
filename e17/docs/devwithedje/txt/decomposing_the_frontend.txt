@@ -1,0 +1,31 @@
+There are many libraries that aid creation of a GUI. From a plain canvas 
+consisting of primitive design objects, like a line or a rectangle, to complex
+layout schemes and predefined interface elements, the latter known as "toolkit"
+or widget library. As opposed to the first, in a toolkit the canvas is just 
+another widget.
+
+Regardless of the method of choice, the resulting GUI has to provide the same 
+resources to the rest of the application. A mechanism to present information
+to the user, a mechanism to know when the user interacts with the interface and
+a mechanism to retreive information that resulted from said interaction.
+
+In the case of the plain canvas the application developer must assemble the 
+interface elements, know as widgets, using primitive objects. A very simple 
+text entry widget could consist of a rectangle and a string of text. Besides
+assembling the widget, the developer has to instruct the Event loop  to call a
+given function on a given interface event on either primitive object. It is
+possible to discriminate between, for example, a click in the rectangle from a
+click in the string.
+
+In the case of a toolkit library the application developer would simply include
+a predefined "text entry" widget. The events from this object would be dealt
+with in terms of the object as a whole. It wouldn't seem that there is much
+difference between using a canvas or using a toolkit library until we consider
+all the possiblities, like focus, overflowing text, copying, pasting, 
+selecting, etc.
+
+Deciding which approach to use is, of course, up to the developer to decide as 
+each one provide capabilities useful for different types of applications. But 
+as we will find out further ahead in this book, these examples only represent 
+opposite extremes and there is an alternative approach that sits quite 
+comfortably in the middle. Edje.

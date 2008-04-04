@@ -1,0 +1,40 @@
+So... you want to create a GUI application? I assume so since you choosed this 
+book as instructive, or at least bathroom, material. You could google "GUI" and
+"library" to feel overwhelmed by the large number of development libraries
+avilable. As you look through the source of your (open source) favorites you 
+will realize that all of them, and the applications that use them, share a 
+common structure. In this chapter we will review that structure.
+
+At this point it is convenient to note that the concepts seen in this book and
+the applications resulting from them translate painlessly to special purpose
+computers or embed devices running under alternative architectures like ARM or 
+PPC. Edje and related libraries are not only efficient but portable.
+
+The structure of the averange graphical application is built around a concept 
+known as event (or signal) driven execution. Event driven applications are 
+persistent and depend on a gate guardian to call the appropriate functions in 
+the appropriate moment. This gate guardian is known as the Event loop (or main 
+loop).
+
+..  image:: img/graphical_application_components.png
+    :width: 85%
+    :align: center
+
+The functions that form a event driven application (with a GUI) can be split
+among two groups. The first group is know as the backend, these functions deal 
+with the actual purpose of the application, crunching numbers, decoding media 
+files and so on. The second group is known as the frontend, the prupose of 
+these functions is to present the results from the backend to their human
+overlords and to receive orders from them.
+
+Between the backend and the frontend is where the Event loop lives, its mission 
+is to connect both ends of the application. Not only between them but also with
+their environment. The Event loop mantains a list of signals to look out for 
+and functions related to them. When a signal is received, the Event loop look
+it up in a list and executes the corresponding function or functions.
+
+For the application to work, the Event loop needs to be aware of events in the 
+interface, thus it is  usually provided by the same library that provides the 
+GUI elements. It also needs to be aware of events in the system where the 
+application is running. Even when the concept is simple, creating a portable 
+and properly abstracted event loop is no simple task.

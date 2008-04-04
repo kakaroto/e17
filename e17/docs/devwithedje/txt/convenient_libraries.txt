@@ -1,0 +1,45 @@
+The normal process to get a canvas up and running can be bothersome. Evas 
+supports multiple rendering engines, like the software, xrender and opengl 
+flavors of X11 and framebuffer devices. But before any rendering can be done 
+the developer has to complete an Evas_Engine_Info structure with the required
+information about the target engine. This forces the developer to research the 
+different functions to get that information for each target. Alternatively he 
+can use a shortcut available for most of them.
+
+As you might have realized by at this point, I intend to quote the official API
+reference at every chance I get. This one comes straight from the "The Ecore 
+Main Loop" page:
+
+    Ecore is a clean and tiny event loop library with many modules to do lots 
+    of convenient things for a programmer, to save time and effort.
+
+    It's small and lean, designed to work on embedded systems all the way to 
+    large and powerful multi-cpu workstations. It serializes all system 
+    signals, events etc. into a single event queue, that is easily processed 
+    without needing to worry about concurrency. A properly written, 
+    event-driven program using this kind of programming doesn't need threads, 
+    nor has to worry about concurrency. It turns a program into a state 
+    machine, and makes it very robust and easy to follow.
+
+At the beginning of its life, the Ecore library was used as a Event loop and 
+loop management is still one of the modules that composes Ecore.
+
+..  image:: img/required_libraries.png
+    :width: 85%
+    :align: center
+
+Today, Ecore encompasses a long list of modules properly namespaced and 
+prefixed with "Ecore\_". From what we have seen in the previous chapters, there
+are two modules that jump right out of the list. The first Ecore_Evas and 
+second named Ecore. The first provides convenient functions to setup the Evas 
+canvas and the later provides the loop management functionality described 
+above.
+
+The developer needs an Evas canvas to render the Edje interface and Ecore_Evas
+is the simplest way to get an Evas canvas up and running. This wrapper is 
+intended to support every backend that Evas supports with its respective (and 
+sometimes unique) attributes. It trivializes initialization to a couple of 
+lines and multiple engine support to an application reload.
+
+
+         

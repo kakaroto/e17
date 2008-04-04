@@ -1,0 +1,117 @@
+=================================
+Application development with Edje
+=================================
+:Title:     Application development with Edje
+:Subtitle:  From the very basics
+:Author:    Andres Blanc
+:Contact:   andresblanc@gmail.com
+:Version:   1.0
+:Date:      2008/04/03
+:Copyright: This book is distributed under the terms of the Attribution-NonCommercial-ShareAlike
+            CC license. See: http://creativecommons.org/licenses/by-nc-sa/3.0/.
+            Contact me if you are interested in a license for commercial
+            distribution.
+:Abstract:  An introduction to GUI based application development. Starts from
+            the most basic concepts and introduces the EFL libraries that deal
+            with each of them. It covers Edje, Ecore, Evas and EWL. This book 
+            is intended to cover all the concepts needed by a novice programmer 
+            to create a full blown Edje based application.
+
+.. contents::
+
+~~~~~~~~~~~~~
+Book overview
+~~~~~~~~~~~~~
+I. `Structure of a graphical application`_.
+If we look through the code of some of the many open source applications 
+available, we can find most of them share a common structure. This chapter
+introduces the reader to said structure, to the concept of an Event loop and
+how does it deal with the interaction between form and function.
+
+I.I. `Decomposing the frontend`_.
+There are different approaches to the creation of Graphical User Interfaces, 
+some provide flexibility while others shorter development time. In the end, the
+rest of the application will have to go through the same mechanism to deal
+with the interface.
+
+II. `Introduction to Edje`_.
+Edje is a compromise between flexibility and development time. Comparing it to 
+a plain canvas or a fully featured toolkit can show us how it fits in the 
+middle ground and provides advantages for designers and developers alike.
+
+II.I. `The foundations`_.
+Edje allows low level control of the interface without forcing the developer 
+through a low level API. The interface objects are implemented as Evas objects,
+but through a completely new language friendly to designers and independent 
+from the application code.
+
+II.II. `Convenient libraries`_
+To load an Edje interface the application needs to setup an Evas canvas first.
+This would look as a burden for the developer, dealing with issues specific to 
+the underlying system. Thankfully Evas is supported by an additional library 
+that resolve most of these issues, Ecore.
+
+III. `The foundations in practice`_.
+Practical examples of the Englighenment Foundation Libraries required for a
+common Edje application.
+
+III.I `Working with the canvas`_.
+Including new Edje objects inside the previously setup canvas can be explained 
+with this simple example.
+
+III.II `Interacting with the objects`_.
+There are different channels for the application to interact with the 
+interface. For the sake of brevity I will include an example of each one to 
+serve as an introduction for the practical examples to come in the next 
+chapters.
+
+IV. `Introduction to widgets`_.
+Interfaces need to resolve two problems, presenting information to users and 
+taking orders from them. The past chapters presented enough information to 
+solve the first. In the following chapters we will review the second. The 
+widget itself can be seen as a small application inside our interfaces. As an
+example let's examine the structure of a common widget, the combox.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Structure of a graphical application
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. include:: txt/structure_of_a_graphical_application.txt
+
+------------------------
+Decomposing the frontend
+------------------------
+.. include:: txt/decomposing_the_frontend.txt
+
+~~~~~~~~~~~~~~~~~~~~
+Introduction to Edje
+~~~~~~~~~~~~~~~~~~~~
+.. include:: txt/introduction_to_edje.txt
+
+---------------
+The foundations
+---------------
+.. include:: txt/the_foundations.txt
+
+--------------------
+Convenient libraries
+--------------------
+.. include:: txt/convenient_libraries.txt
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+The foundations in practice
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. include:: txt/the_foundations_in_practice.txt
+
+-----------------------
+Working with the canvas
+-----------------------
+.. include:: txt/working_with_the_canvas.txt
+
+----------------------------
+Interacting with the objects
+----------------------------
+.. include:: txt/interacting_with_the_objects.txt
+
+~~~~~~~~~~~~~~~~~~~~~~~
+Introduction to widgets
+~~~~~~~~~~~~~~~~~~~~~~~
