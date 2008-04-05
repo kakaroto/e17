@@ -2,6 +2,5 @@
 .libs
 Makefile
 Makefile.in
-enlightenment
-enlightenment_eapp
-enlightenment_remote
+exquisite
+exquisite-write
