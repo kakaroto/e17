@@ -27,6 +27,8 @@ extern"C" {
 #include <ewl_box.h>
 #include <ewl_border.h>
 
+#include <ewl_overlay.h>
+
 #include <ewl_cell.h>
 #include <ewl_row.h>
 
