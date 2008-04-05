@@ -1,5 +1,9 @@
 .deps
 .libs
+intl
+m4
+po
+ABOUT-NLS
 Makefile
 Makefile.in
 aclocal.m4

@@ -1,5 +1,6 @@
 .deps
 .libs
+po
 Makefile
 Makefile.in
 aclocal.m4
@@ -14,6 +15,7 @@ config.sub
 configure
 depcomp
 *.lo
+e_modules-execwatch.spec
 execwatch.edj
 install-sh
 libtool
