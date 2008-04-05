@@ -23,7 +23,7 @@ void key_down_cb(Ewl_Widget *w, void *event, void *data)
 					if(ev->base.keyname[1] == '\0' && 
 						(isalpha(*(ev->base.keyname)) || 
 							isdigit(*(ev->base.keyname))))
-						ewl_password_text_set(EWL_PASSWORD(entry),ev->base.keyname);
+						ewl_text_text_set(EWL_TEXT(entry),ev->base.keyname);
 					failure = 0;
 				}
 				else
@@ -43,17 +43,13 @@ void key_down_cb(Ewl_Widget *w, void *event, void *data)
 void focus_cb(Ewl_Widget *w, void *event, void *data)
 {
 	const char* text = (char*)data;
-	if(EWL_PASSWORD_IS(w))
-	{
-		if(!ewl_password_text_get(EWL_PASSWORD(w)))
-			ewl_password_clear(EWL_PASSWORD(w));
-	}
-	else if(EWL_ENTRY_IS(w))
-	{
-		if(ewl_text_text_get(EWL_TEXT(w)) && 
+
+	if(ewl_text_text_get(EWL_TEXT(w)) && 
 			!strcmp(ewl_text_text_get(EWL_TEXT(w)),text))
 			ewl_text_clear(EWL_TEXT(w));
-	}
+
+	if(ewl_widget_name_get(w) && !strcmp(ewl_widget_name_get(w),"password"))
+		ewl_text_obscure_set(EWL_TEXT(w), "*");
 }
 
 void unfocus_cb(Ewl_Widget *w, void *event, void *data)
@@ -65,6 +61,9 @@ void unfocus_cb(Ewl_Widget *w, void *event, void *data)
 		ewl_text_text_set(EWL_TEXT(w),text);			
 		ewl_text_cursor_position_set(EWL_TEXT(w),0);
 		ewl_text_color_apply(EWL_TEXT(w),100,100,100,200,strlen(text));
+	
+		if(ewl_widget_name_get(w) && !strcmp(ewl_widget_name_get(w),"password"))
+			ewl_text_obscure_set(EWL_TEXT(w), NULL);
 	}
 }
 
@@ -85,7 +84,7 @@ void check_pass_cb(Ewl_Widget *w, void *event, void *data)
 {	
 	char *pass;
 	
-	if(data && !auth_passed) pass = ewl_password_text_get(EWL_PASSWORD(data));
+	if(data && !auth_passed) pass = ewl_text_text_get(EWL_TEXT(data));
 
 	if(pass && strlen(pass))
 	{

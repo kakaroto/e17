@@ -46,6 +46,7 @@ void setup_window()
 	{
 		exec = ewl_entry_new();
 		ewl_container_child_append(EWL_CONTAINER(vbox), exec);
+		ewl_widget_name_set(exec, "exec");
 		ewl_callback_append(exec, EWL_CALLBACK_VALUE_CHANGED, check_pass_cb, 
 					    entry);
 		ewl_callback_append(exec, EWL_CALLBACK_FOCUS_IN, focus_cb,
@@ -60,8 +61,9 @@ void setup_window()
 		ewl_widget_show(exec);
 	}	
 
-	entry = ewl_password_new();
+	entry = ewl_entry_new();
 	ewl_container_child_append(EWL_CONTAINER(vbox), entry);
+  ewl_widget_name_set(entry, "password");
 	ewl_callback_append(entry, EWL_CALLBACK_VALUE_CHANGED, check_pass_cb, 
 					    entry);
 	ewl_callback_append(entry, EWL_CALLBACK_FOCUS_IN, focus_cb,
@@ -87,10 +89,7 @@ void display_window()
 	{		
 		ewl_widget_enable(win);
 		
-		ewl_password_clear(EWL_PASSWORD(entry));
-		ewl_text_text_set(EWL_TEXT(entry),"Password");
-		ewl_text_cursor_position_set(EWL_TEXT(entry),0);
-		ewl_text_color_apply(EWL_TEXT(entry),100,100,100,200,strlen("Password"));
+		ewl_text_clear(EWL_TEXT(entry));
 		failure = 1;
 	}
 	else
