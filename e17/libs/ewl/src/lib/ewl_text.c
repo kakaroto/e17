@@ -764,8 +764,9 @@ ewl_text_obscure_set(Ewl_Text *t, const char *o)
 	/* free the old character */
 	IF_FREE(t->obscure);
 
-	/* do some checking */
-	if (ewl_text_char_utf8_is(o)) {
+	if (!o)
+		t->obscure = NULL;
+	else if (ewl_text_char_utf8_is(o)) {
 		size_t len;
 
 		len = EWL_TEXT_CHAR_BYTE_LEN(o);
@@ -775,6 +776,9 @@ ewl_text_obscure_set(Ewl_Text *t, const char *o)
 	}
 	else
 		t->obscure = strdup("*");
+	
+	t->dirty = TRUE;
+	ewl_widget_configure(EWL_WIDGET(t));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
