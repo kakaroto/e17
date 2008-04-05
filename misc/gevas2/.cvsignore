@@ -13,6 +13,7 @@ config.h.in
 config.log
 config.status
 config.sub
+gevas.pc
 libtool
 ltmain.sh
 stamp-h1
