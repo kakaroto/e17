@@ -62,6 +62,8 @@ static void ewl_text_triggers_place(Ewl_Text *t);
 static void ewl_text_triggers_unrealize(Ewl_Text *t);
 static void ewl_text_triggers_show(Ewl_Text *t);
 static void ewl_text_triggers_hide(Ewl_Text *t);
+static unsigned int  ewl_text_drawn_byte_to_char(Ewl_Text *t, unsigned int byte_idx);
+static unsigned int  ewl_text_char_to_drawn_byte(Ewl_Text *t, unsigned int char_idx);
 
 /**
  * @return Returns a new Ewl_Text widget on success, NULL on failure.
@@ -291,8 +293,8 @@ ewl_text_index_geometry_map(Ewl_Text *t, unsigned int char_idx,
 		shifting = 1;
 	}
 
-	ewl_text_fmt_char_to_byte(t->formatting.nodes, char_idx,
-						0, &byte_idx, NULL);
+	byte_idx = ewl_text_char_to_drawn_byte(t, char_idx);
+
 	cursor = ewl_text_textblock_cursor_position(t, byte_idx);
 	evas_textblock_cursor_char_geometry_get(cursor, &tx, &ty, &tw, &th);
 	evas_textblock_cursor_free(cursor);
@@ -364,7 +366,7 @@ ewl_text_coord_index_map(Ewl_Text *t, int x, int y)
 
 				/* Increment if we're on the last line */
 				if (!txt || (strcmp(txt, "\n")))
-					char_idx ++;
+					char_idx++;
 			}
 		}
 		else
@@ -378,12 +380,11 @@ ewl_text_coord_index_map(Ewl_Text *t, int x, int y)
 		evas_textblock_cursor_char_geometry_get(cursor,
 						&cx, &cy, &cw, &ch);
 		if (tx > (cx + ((cw + 1) >> 1)))
-			 char_idx ++;
+			 char_idx++;
 	}
 
 	byte_idx = ewl_text_textblock_cursor_to_index(cursor);
-	ewl_text_fmt_byte_to_char(t->formatting.nodes, byte_idx,
-						0, &ctmp, NULL);
+	ctmp = ewl_text_drawn_byte_to_char(t, byte_idx);
 	evas_textblock_cursor_free(cursor);
 
 	char_idx += ctmp;
@@ -1049,8 +1050,7 @@ ewl_text_cursor_position_line_up_get(Ewl_Text *t)
 	DCHECK_TYPE_RET(t, EWL_TEXT_TYPE, t->cursor_position);
 
 	cur_char_idx = ewl_text_cursor_position_get(t);
-	ewl_text_fmt_char_to_byte(t->formatting.nodes, cur_char_idx,
-						0, &byte_idx, NULL);
+	byte_idx = ewl_text_char_to_drawn_byte(t, cur_char_idx);
 
 	cursor = ewl_text_textblock_cursor_position(t, byte_idx);
 	line = evas_textblock_cursor_char_geometry_get(cursor, &cx, NULL,
@@ -1075,9 +1075,7 @@ ewl_text_cursor_position_line_up_get(Ewl_Text *t)
 	}
 
 	byte_idx = ewl_text_textblock_cursor_to_index(cursor);
-	cur_char_idx = 0;
-	ewl_text_fmt_byte_to_char(t->formatting.nodes, byte_idx,
-						0, &cur_char_idx, NULL);
+	cur_char_idx = ewl_text_drawn_byte_to_char(t, byte_idx);
 
 	DRETURN_INT(cur_char_idx, DLEVEL_STABLE);
 }
@@ -2987,7 +2985,6 @@ ewl_text_display(Ewl_Text *t)
 static void
 ewl_text_cb_format(Ewl_Text_Fmt_Node *node, Ewl_Text *t, unsigned int byte_idx)
 {
-	char *ptr, tmp;
 	Evas_Textblock_Cursor *cursor;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -3007,6 +3004,7 @@ ewl_text_cb_format(Ewl_Text_Fmt_Node *node, Ewl_Text *t, unsigned int byte_idx)
 
 	if (!t->obscure)
 	{
+		char *ptr, tmp;
 		ptr = t->text + byte_idx;
 		tmp = *(ptr + node->byte_len);
 		if (strlen(ptr) < node->byte_len)
@@ -3019,9 +3017,8 @@ ewl_text_cb_format(Ewl_Text_Fmt_Node *node, Ewl_Text *t, unsigned int byte_idx)
 	}
 	else
 	{
-		char *otxt;
+		char *otxt, *ptr;
 		size_t len;
-
 		int i;
 
 		len = strlen(t->obscure);
@@ -3094,10 +3091,10 @@ ewl_text_plaintext_parse(Evas_Object *tb, char *txt)
  * character index. You _MUST_ call evas_textblock_cursor_free(cursor)
  * on this object so it won't leak */
 static Evas_Textblock_Cursor *
-ewl_text_textblock_cursor_position(Ewl_Text *t, unsigned int char_idx)
+ewl_text_textblock_cursor_position(Ewl_Text *t, unsigned int byte_idx)
 {
 	Evas_Textblock_Cursor *cursor;
-	unsigned int cur_char_idx = 0;
+	unsigned int cur_byte_idx = 0;
 	const char *txt;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -3119,13 +3116,13 @@ ewl_text_textblock_cursor_position(Ewl_Text *t, unsigned int char_idx)
 			if ((!strcmp(txt, "\n")) || (!strcmp(txt, "\t")))
 			{
 				/* will this push us past the end? */
-				if ((cur_char_idx + 1) > char_idx)
+				if ((cur_byte_idx + 1) > byte_idx)
 				{
 					evas_textblock_cursor_pos_set(cursor,
-						char_idx - cur_char_idx);
+						byte_idx - cur_byte_idx);
 					break;
 				}
-				else cur_char_idx ++;
+				else cur_byte_idx++;
 			}
 		}
 		else
@@ -3140,15 +3137,13 @@ ewl_text_textblock_cursor_position(Ewl_Text *t, unsigned int char_idx)
 			/* if this would move us past our index, find the
 			 * difference between our desired index and the
 			 * current index and set that */
-			/* XXX I thought evas uses for all things byte indices
-			 * shouldn't we transform thos char_idx to byte_idx? */
-			if ((cur_char_idx + pos) > char_idx)
+			if ((cur_byte_idx + pos) > byte_idx)
 			{
 				evas_textblock_cursor_pos_set(cursor,
-						char_idx - cur_char_idx);
+						byte_idx - cur_byte_idx);
 				break;
 			}
-			cur_char_idx += pos;
+			cur_byte_idx += pos;
 		}
 
 		/* if we fail to goto the next node, just assume we're at
@@ -3162,7 +3157,7 @@ ewl_text_textblock_cursor_position(Ewl_Text *t, unsigned int char_idx)
 
 		/* This shouldn't happen, we've moved past our index. Just
 		 * checking so the loop isn't (hopefully) infinite */
-		if (cur_char_idx > char_idx)
+		if (cur_byte_idx > byte_idx)
 		{
 			DWARNING("This shouldn't happen, breaking loop.");
 			break;
@@ -4054,5 +4049,47 @@ ewl_text_trigger_add(Ewl_Text *t, Ewl_Text_Trigger *trigger)
 		ecore_list_append(t->triggers, trigger);
 
 	DRETURN(DLEVEL_STABLE);
+}
+
+static unsigned int
+ewl_text_drawn_byte_to_char(Ewl_Text *t, unsigned int byte_idx)
+{
+	unsigned int char_idx = 0;
+	
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET(t, 0);
+	DCHECK_TYPE_RET(t, EWL_TEXT_TYPE, 0);
+	
+	if (!t->obscure)
+		ewl_text_fmt_byte_to_char(t->formatting.nodes, byte_idx,
+						0, &char_idx, NULL);
+	else {
+		size_t len = strlen(t->obscure);
+
+		if (len != 0)
+			char_idx = byte_idx / len;
+		else
+			char_idx = ewl_text_length_get(t);
+	}
+	
+	DRETURN_INT(char_idx, DLEVEL_STABLE);
+}
+
+static unsigned int
+ewl_text_char_to_drawn_byte(Ewl_Text *t, unsigned int char_idx)
+{
+	unsigned int byte_idx = 0;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET(t, 0);
+	DCHECK_TYPE_RET(t, EWL_TEXT_TYPE, 0);
+
+	if (!t->obscure)
+		ewl_text_fmt_char_to_byte(t->formatting.nodes, char_idx,
+						0, &byte_idx, NULL);
+	else
+		byte_idx = char_idx * strlen(t->obscure);
+
+	DRETURN_INT(byte_idx, DLEVEL_STABLE);
 }
 
