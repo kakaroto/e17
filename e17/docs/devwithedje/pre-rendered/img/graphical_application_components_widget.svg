@@ -2,7 +2,7 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:cc="http://creativecommons.org/ns#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
@@ -12,7 +12,7 @@
    height="480"
    id="svg2"
    sodipodi:version="0.32"
-   inkscape:version="0.45.1"
+   inkscape:version="0.46"
    version="1.0"
    sodipodi:docbase="/home/andres/desarollo/e.org/devwithedje/img"
    sodipodi:docname="graphical_application_components_widget.svg"
@@ -22,6 +22,40 @@
    inkscape:export-ydpi="300">
   <defs
      id="defs4">
+    <marker
+       inkscape:stockid="Arrow2Lend"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow2Lend"
+       style="overflow:visible;">
+      <path
+         id="path3888"
+         style="font-size:12.0;fill-rule:evenodd;stroke-width:0.62500000;stroke-linejoin:round;"
+         d="M 8.7185878,4.0337352 L -2.2072895,0.016013256 L 8.7185884,-4.0017078 C 6.9730900,-1.6296469 6.9831476,1.6157441 8.7185878,4.0337352 z "
+         transform="scale(1.1) rotate(180) translate(1,0)" />
+    </marker>
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="-1040.4477 : 327.07374 : 1"
+       inkscape:vp_y="0 : 1095.0366 : 0"
+       inkscape:vp_z="1238.4206 : 327.07374 : 1"
+       inkscape:persp3d-origin="98.986519 : 239.47081 : 1"
+       id="perspective2567" />
+    <inkscape:perspective
+       id="perspective2525"
+       inkscape:persp3d-origin="131.28318 : 216.9922 : 1"
+       inkscape:vp_z="1270.7173 : 304.59513 : 1"
+       inkscape:vp_y="0 : 1095.0366 : 0"
+       inkscape:vp_x="-1008.151 : 304.59513 : 1"
+       sodipodi:type="inkscape:persp3d" />
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="-590.59746 : 212.62691 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="809.59682 : 212.62691 : 1"
+       inkscape:persp3d-origin="109.49968 : 132.62691 : 1"
+       id="perspective66" />
     <marker
        inkscape:stockid="Arrow1Mend"
        orient="auto"
@@ -44,8 +78,8 @@
      inkscape:pageopacity="1"
      inkscape:pageshadow="2"
      inkscape:zoom="1"
-     inkscape:cx="-156.13189"
-     inkscape:cy="114.5"
+     inkscape:cx="298.46774"
+     inkscape:cy="262.5"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      width="640px"
@@ -53,8 +87,6 @@
      borderlayer="true"
      inkscape:showpageshadow="false"
      showgrid="true"
-     gridcolor="#3f3fff"
-     gridopacity="0.07058824"
      objecttolerance="0.4"
      inkscape:object-points="false"
      inkscape:grid-points="true"
@@ -62,18 +94,28 @@
      inkscape:guide-bbox="true"
      showguides="true"
      inkscape:object-paths="false"
-     inkscape:window-width="993"
-     inkscape:window-height="771"
-     inkscape:window-x="157"
+     inkscape:window-width="757"
+     inkscape:window-height="573"
+     inkscape:window-x="35"
      inkscape:window-y="0"
-     gridspacingx="1px"
-     gridspacingy="1px"
-     gridempspacing="0"
-     gridempcolor="#e83fff"
-     gridempopacity="1"
      gridanglex="30px"
      gridanglez="30px"
-     grid_units="px" />
+     grid_units="px">
+    <inkscape:grid
+       id="GridFromPre046Settings"
+       type="xygrid"
+       originx="0px"
+       originy="0px"
+       spacingx="1px"
+       spacingy="1px"
+       color="#3f3fff"
+       empcolor="#e83fff"
+       opacity="0.07058824"
+       empopacity="0.05882353"
+       empspacing="0"
+       visible="true"
+       enabled="true" />
+  </sodipodi:namedview>
   <metadata
      id="metadata7">
     <rdf:RDF>
@@ -109,24 +151,31 @@
        d="M 10,10 L 580,10 L 580,420 L 10,420 L 10,10 z "
        id="rect2204" />
     <path
-       style="fill:#afc6e9;fill-opacity:1;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1"
+       style="fill:#a4c0e4;fill-opacity:1;stroke-width:1;stroke-miterlimit:4;stroke-opacity:1"
        d="M 270,50 L 560,50 L 560,400 L 420,400 L 420,170 L 270,170 L 270,50 z "
        id="rect2195"
        sodipodi:nodetypes="ccccccc" />
     <rect
-       style="opacity:1;fill:#afc6e9;fill-opacity:1;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="opacity:1;fill:#a4c0e4;fill-opacity:1;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect2193"
        width="140"
        height="220"
        x="270"
        y="180" />
     <rect
-       style="opacity:1;fill:#afc6e9;fill-opacity:1;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="opacity:1;fill:#a4c0e4;fill-opacity:1;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        id="rect2191"
        width="230"
        height="350"
        x="30"
        y="50" />
+    <rect
+       style="opacity:1;fill:#6193cf;fill-opacity:1"
+       id="rect2439"
+       width="210"
+       height="30"
+       x="40"
+       y="330" />
     <text
        xml:space="preserve"
        style="font-size:14px;font-style:normal;font-weight:bold;fill:#214478;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
@@ -216,16 +265,6 @@
          id="tspan2215"
          x="440"
          y="272.40234">Widget (combox)</tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-size:8px;font-style:normal;font-weight:bold;writing-mode:lr-tb;fill:#d5e5ff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:DejaVu Sans"
-       x="447.76758"
-       y="300"
-       id="text2217"><tspan
-         sodipodi:role="line"
-         id="tspan2219"
-         x="447.76758"
-         y="300">Internal Handlers</tspan></text>
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker-start:none;marker-end:url(#Arrow1Mend);stroke-opacity:1"
        d="M 550,292.40234 L 590,292.40234"
@@ -329,6 +368,20 @@
        d="M 440,305 L 540,305"
        id="path4405"
        sodipodi:nodetypes="cc" />
+    <text
+       xml:space="preserve"
+       style="font-size:8px;font-style:normal;font-weight:bold;writing-mode:lr-tb;fill:#d5e5ff;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:DejaVu Sans"
+       x="451.76758"
+       y="296"
+       id="text2217"><tspan
+         sodipodi:role="line"
+         x="451.76758"
+         y="296"
+         id="tspan2449">Widget's internal</tspan><tspan
+         sodipodi:role="line"
+         x="451.76758"
+         y="306"
+         id="tspan2453">handler function</tspan></text>
     <path
        style="fill:#afc6e9;fill-rule:evenodd;stroke:#87aade;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="M 410,345 L 270,345"
@@ -383,5 +436,15 @@
        d="M 270,345 L 260,345"
        id="path3428"
        sodipodi:nodetypes="cc" />
+    <text
+       xml:space="preserve"
+       style="font-size:10px;font-style:normal;font-weight:bold;writing-mode:lr-tb;fill:#eeeeee;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:DejaVu Sans;-inkscape-font-specification:DejaVu Sans Bold"
+       x="60"
+       y="348"
+       id="text2441"><tspan
+         sodipodi:role="line"
+         id="tspan2443"
+         x="60"
+         y="348">Application's handler function</tspan></text>
   </g>
 </svg>
