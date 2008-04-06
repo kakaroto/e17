@@ -27,7 +27,7 @@ test_info(Ewl_Test *test)
 static int
 create_test(Ewl_Container *box)
 {
-	Ewl_Widget *button_hbox, *button[2];
+	Ewl_Widget *button_hbox, *button[3];
 
 	password[0] = ewl_password_new();
 	ewl_text_text_set(EWL_TEXT(password[0]), "Play with me ?");
@@ -40,6 +40,7 @@ create_test(Ewl_Container *box)
 	ewl_widget_show(password[0]);
 
 	password[1] = ewl_password_new();
+	ewl_text_obscure_set(EWL_TEXT(password[1]), "•");
 	ewl_text_color_set(EWL_TEXT(password[1]), 255, 0, 0, 255);
 	ewl_text_text_append(EWL_TEXT(password[1]), "E W L ! ! !");
 	ewl_object_padding_set(EWL_OBJECT(password[1]), 5, 5, 0, 0);
@@ -49,6 +50,17 @@ create_test(Ewl_Container *box)
 	ewl_object_fill_policy_set(EWL_OBJECT(password[1]),
 				   EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK);
 	ewl_widget_show(password[1]);
+
+	password[2] = ewl_password_new();
+	ewl_text_obscure_set(EWL_TEXT(password[2]), "");
+	ewl_text_text_append(EWL_TEXT(password[2]), "hidden text");
+	ewl_object_padding_set(EWL_OBJECT(password[2]), 5, 5, 0, 0);
+	ewl_container_child_append(box, password[2]);
+	ewl_callback_append(password[2], EWL_CALLBACK_VALUE_CHANGED,
+			    cb_fetch_password_text, NULL);
+	ewl_object_fill_policy_set(EWL_OBJECT(password[2]),
+				   EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK);
+	ewl_widget_show(password[2]);
 
 	button_hbox = ewl_hbox_new();
 	ewl_object_fill_policy_set(EWL_OBJECT(button_hbox), EWL_FLAG_FILL_VFILL);
@@ -91,6 +103,10 @@ cb_fetch_password_text(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 	s = ewl_text_text_get(EWL_TEXT(password[1]));
 	printf("Second password covers: %s\n", s);
 	free(s);
+	
+	s = ewl_text_text_get(EWL_TEXT(password[2]));
+	printf("Third password covers: %s\n", s);
+	free(s);
 }
 
 static void
@@ -99,5 +115,6 @@ cb_set_password_text(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 {
 	ewl_text_text_set(EWL_TEXT(password[0]), "Play with me ?");
 	ewl_text_text_set(EWL_TEXT(password[1]), "E W L ! ! !");
+	ewl_text_text_set(EWL_TEXT(password[2]), "hidden text");
 }
 
