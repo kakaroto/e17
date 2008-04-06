@@ -14,6 +14,7 @@ latex:
 	cp -f $(FILE).tex pre-rendered
  
 pdf:
+	make latex
 	pdflatex $(FILE).tex
 	pdflatex $(FILE).tex #the second run is required for internal references
 	cp -f $(FILE).pdf pre-rendered

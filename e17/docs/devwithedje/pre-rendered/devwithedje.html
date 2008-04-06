@@ -7,7 +7,7 @@
 <title>Application development with Edje</title>
 <meta name="author" content="Andres Blanc" />
 <meta name="date" content="2008/04/03" />
-<meta name="copyright" content="This book is distributed under the terms of the Attribution-NonCommercial-ShareAlike CC license. See: http://creativecommons.org/licenses/by-nc-sa/3.0/. Contact me if you are interested in a license for commercial distribution." />
+<meta name="copyright" content="This book is distributed under the terms of the Attribution-ShareAlike CC license. See: http://creativecommons.org/licenses/by-sa/3.0/." />
 <style type="text/css">
 
 /*  Margenes y Padding.
@@ -54,10 +54,8 @@ fieldset
 <tr><th class="docinfo-name">Date:</th>
 <td>2008/04/03</td></tr>
 <tr><th class="docinfo-name">Copyright:</th>
-<td>This book is distributed under the terms of the Attribution-NonCommercial-ShareAlike
-CC license. See: <a class="reference external" href="http://creativecommons.org/licenses/by-nc-sa/3.0/">http://creativecommons.org/licenses/by-nc-sa/3.0/</a>.
-Contact me if you are interested in a license for commercial
-distribution.</td></tr>
+<td>This book is distributed under the terms of the Attribution-ShareAlike
+CC license. See: <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">http://creativecommons.org/licenses/by-sa/3.0/</a>.</td></tr>
 </tbody>
 </table>
 <div class="abstract topic">
@@ -72,11 +70,9 @@ to create a full blown Edje based application.</p>
 <p class="topic-title first">Contents</p>
 <ul class="simple">
 <li><a class="reference internal" href="#book-overview" id="id1">Book overview</a></li>
-<li><a class="reference internal" href="#structure-of-a-graphical-application" id="id2">Structure of a graphical application</a><ul>
+<li><a class="reference internal" href="#about-graphical-user-interfaces" id="id2">About Graphical User Interfaces</a><ul>
 <li><a class="reference internal" href="#decomposing-the-frontend" id="id3">Decomposing the frontend</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#introduction-to-edje" id="id4">Introduction to Edje</a><ul>
+<li><a class="reference internal" href="#introduction-to-edje" id="id4">Introduction to Edje</a></li>
 <li><a class="reference internal" href="#the-foundations" id="id5">The foundations</a></li>
 <li><a class="reference internal" href="#convenient-libraries" id="id6">Convenient libraries</a></li>
 </ul>
@@ -84,14 +80,23 @@ to create a full blown Edje based application.</p>
 <li><a class="reference internal" href="#the-foundations-in-practice" id="id7">The foundations in practice</a><ul>
 <li><a class="reference internal" href="#working-with-the-canvas" id="id8">Working with the canvas</a></li>
 <li><a class="reference internal" href="#interacting-with-the-objects" id="id9">Interacting with the objects</a></li>
+<li><a class="reference internal" href="#building-a-framework" id="id10">Building a framework</a><ul>
+<li><a class="reference internal" href="#getting-the-interface-up" id="id11">Getting the interface up</a></li>
+<li><a class="reference internal" href="#settings-are-important-too" id="id12">Settings are important too</a></li>
+<li><a class="reference internal" href="#simpler-interface-management" id="id13">Simpler interface management</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#introduction-to-widgets" id="id10">Introduction to widgets</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#introduction-to-widgets" id="id14">Introduction to widgets</a><ul>
+<li><a class="reference internal" href="#widgets-with-edje" id="id15">Widgets with Edje</a></li>
+</ul>
+</li>
 </ul>
 </div>
 <div class="section" id="book-overview">
 <h1><a class="toc-backref" href="#id1">Book overview</a></h1>
-<p>I. <a class="reference internal" href="#structure-of-a-graphical-application">Structure of a graphical application</a>.
+<p>I. <a class="reference internal" href="#about-graphical-user-interfaces">About Graphical User Interfaces</a>.
 If we look through the code of some of the many open source applications
 available, we can find most of them share a common structure. This chapter
 introduces the reader to said structure, to the concept of an Event loop and
@@ -101,40 +106,53 @@ There are different approaches to the creation of Graphical User Interfaces,
 some provide flexibility while others shorter development time. In the end, the
 rest of the application will have to go through the same mechanism to deal
 with the interface.</p>
-<p>II. <a class="reference internal" href="#introduction-to-edje">Introduction to Edje</a>.
+<p>I.II. <a class="reference internal" href="#introduction-to-edje">Introduction to Edje</a>.
 Edje is a compromise between flexibility and development time. Comparing it to
 a plain canvas or a fully featured toolkit can show us how it fits in the
 middle ground and provides advantages for designers and developers alike.</p>
-<p>II.I. <a class="reference internal" href="#the-foundations">The foundations</a>.
+<p>I.III. <a class="reference internal" href="#the-foundations">The foundations</a>.
 Edje allows low level control of the interface without forcing the developer
 through a low level API. The interface objects are implemented as Evas objects,
 but through a completely new language friendly to designers and independent
 from the application code.</p>
-<p>II.II. <a class="reference internal" href="#convenient-libraries">Convenient libraries</a>
+<p>I.IV. <a class="reference internal" href="#convenient-libraries">Convenient libraries</a>
 To load an Edje interface the application needs to setup an Evas canvas first.
 This would look as a burden for the developer, dealing with issues specific to
 the underlying system. Thankfully Evas is supported by an additional library
 that resolve most of these issues, Ecore.</p>
-<p>III. <a class="reference internal" href="#the-foundations-in-practice">The foundations in practice</a>.
+<p>II. <a class="reference internal" href="#the-foundations-in-practice">The foundations in practice</a>.
 Practical examples of the Englighenment Foundation Libraries required for a
 common Edje application.</p>
-<p>III.I <a class="reference internal" href="#working-with-the-canvas">Working with the canvas</a>.
+<p>II.I. <a class="reference internal" href="#working-with-the-canvas">Working with the canvas</a>.
 Including new Edje objects inside the previously setup canvas can be explained
 with this simple example.</p>
-<p>III.II <a class="reference internal" href="#interacting-with-the-objects">Interacting with the objects</a>.
+<p>II.II. <a class="reference internal" href="#interacting-with-the-objects">Interacting with the objects</a>.
 There are different channels for the application to interact with the
 interface. For the sake of brevity I will include an example of each one to
 serve as an introduction for the practical examples to come in the next
 chapters.</p>
-<p>IV. <a class="reference internal" href="#introduction-to-widgets">Introduction to widgets</a>.
+<p>II.III. <a class="reference internal" href="#building-a-framework">Building a framework</a>.
+- An brief introduction to the concept of the framework
+- Code sample of the main.c file and general explanation</p>
+<p>II.III.I. <a class="reference internal" href="#getting-the-interface-up">Getting the interface up</a>.
+- A mention of the environment_init/shutdown functions without code examples
+- A code sample + explanation of the the window creation functions</p>
+<p>II.III.II. <a class="reference internal" href="#settings-are-important-too">Settings are important too</a>.
+- An brief introduction to Ecore_Config (refer to the cookbook).
+- A code sample + explanation of functions that deal with multiple theme files.</p>
+<p>II.III.III. <a class="reference internal" href="#simpler-interface-management">Simpler interface management</a>.
+- A code sample + explanation of the functions that fetch the theme objects</p>
+<p>III. <a class="reference internal" href="#introduction-to-widgets">Introduction to widgets</a>.
 Interfaces need to resolve two problems, presenting information to users and
 taking orders from them. The past chapters presented enough information to
-solve the first. In the following chapters we will review the second. The
-widget itself can be seen as a small application inside our interfaces. As an
-example let's examine the structure of a common widget, the combox.</p>
+solve the first. In the following chapters we will review the second.</p>
+<p>III.I. <a class="reference internal" href="#widgets-with-edje">Widgets with Edje</a>.
+Since this is a book about Edje it might be a good idea to detail the way Edje
+simplifies custom widget creation by reviewing the list of tasks presented in
+the previous chapter and how Edje helps with each task.</p>
 </div>
-<div class="section" id="structure-of-a-graphical-application">
-<h1><a class="toc-backref" href="#id2">Structure of a graphical application</a></h1>
+<div class="section" id="about-graphical-user-interfaces">
+<h1><a class="toc-backref" href="#id2">About Graphical User Interfaces</a></h1>
 <p>So... you want to create a GUI application? I assume so since you choosed this
 book as instructive, or at least bathroom, material. You could google &quot;GUI&quot; and
 &quot;library&quot; to feel overwhelmed by the large number of development libraries
@@ -197,9 +215,8 @@ as we will find out further ahead in this book, these examples only represent
 opposite extremes and there is an alternative approach that sits quite
 comfortably in the middle. Edje.</p>
 </div>
-</div>
 <div class="section" id="introduction-to-edje">
-<h1><a class="toc-backref" href="#id4">Introduction to Edje</a></h1>
+<h2><a class="toc-backref" href="#id4">Introduction to Edje</a></h2>
 <p>Allow me to begin this chapter with a quote from the introduction of Edje's API
 Reference. After all, I cannot expect to give Edje a better introduction than
 its creator:</p>
@@ -263,6 +280,7 @@ the flexibility of developing your own interface objects from a plain canvas,
 yet remain almost as simple as including a predefined object from a toolkit. Of
 course Edje has shortcomings of its own and we will explore them in this book
 as well.</p>
+</div>
 <div class="section" id="the-foundations">
 <h2><a class="toc-backref" href="#id5">The foundations</a></h2>
 <p>From a developer's point of view, we cannot expect to understand how Edje works
@@ -602,9 +620,89 @@ will be called when the signal &quot;mouse,move&quot; is emitted by any object i
 interface. Edje string matching supports wildcards for both the name and source
 of the signal.</p>
 </div>
+<div class="section" id="building-a-framework">
+<h2><a class="toc-backref" href="#id10">Building a framework</a></h2>
+<p>Hopefully the reader has not been introduced to the concept of software
+frameworks by web based monsters like Ruby on Rails. Personally I think RoR is
+great, my point is that a framework does not necessarily mean big complex,
+abstract software libraries. A framework can be seen as the standardization of
+common, complex tasks into a library shared by group of applications. With a
+framework short development times means a compromise with flexibility.</p>
+<p>In this section and the following subsections we will develop an application
+framework for applications with a specific profile. An X11 desktop application
+that doesn't require any exotic manipulation of its theme files and with a
+interface simple enough that all its objects can be laid out using a single
+Edje object.</p>
+<p>The tasks that this framework will take care of are pretty straight forward:
+* Maintain a configuration file (in the default location used by Ecore_Config).
+* Setup the window properties and main layout from a theme object.
+* Manage theme objects, including changing a theme file on runtime and
+maintaining two the files, current and default.</p>
+<p>The example application will be an Edje group viewer, this application will
+receive a filename and a group name, it will display the application inside a
+viewport, print the last signal emitted by the group and provide a minimap for
+navigating the viewport. Without further ado, here it is, the main file:</p>
+<div class="system-message">
+<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">devwithedje.txt</tt>, line 678)</p>
+Literal block expected; none found.</div>
+<div class="section" id="getting-the-interface-up">
+<h3><a class="toc-backref" href="#id11">Getting the interface up</a></h3>
+</div>
+<div class="section" id="settings-are-important-too">
+<h3><a class="toc-backref" href="#id12">Settings are important too</a></h3>
+</div>
+<div class="section" id="simpler-interface-management">
+<h3><a class="toc-backref" href="#id13">Simpler interface management</a></h3>
+</div>
+</div>
 </div>
 <div class="section" id="introduction-to-widgets">
-<h1><a class="toc-backref" href="#id10">Introduction to widgets</a></h1>
+<h1><a class="toc-backref" href="#id14">Introduction to widgets</a></h1>
+<p>Graphical User Interfaces do not only to display information, they convey
+information. Interface elements have a meaning of their own and this meaning
+alters the user's perception on the information displayed, for better or for
+worse. A flexible interface design system means the designer can add more
+meaning to the information. Features like multiple states and transitions
+extend this capacity to the point where the designer's creativity is the limit.</p>
+<p>As the application matures the number of elments in the interface will grow.
+These elements will be grouped by some common property or prupose. Functions to
+deal with these groups as a unit are also going to be created. This is not an
+unique process and anyone creating a GUI from scratch would go through it.
+These groups and the functions that deal with them is what is commonly know as
+&quot;widgets&quot;. Widgets work as a small application inside our own.</p>
+<p>In order to work a widget needs access to the drawing device to request that
+the primitive objects that conform it be drawn. Most widgets will want to
+interact with their environment, thus they need to be familiar with the Event
+loop managing the application. As we would do with a plain interface, the
+widget will register callbacks for its own functions that deal with events in
+the primitive objects that conform it.</p>
+<div align="center" class="align-center"><img alt="img/graphical_application_components_widget.png" class="align-center" src="img/graphical_application_components_widget.png" style="width: 85%;" /></div>
+<p>In order to be possible for the rest of the application to interact effectively
+with a widget it has to provide the Event loop with new signal types
+representing abstracted version of its interface signals. It basically
+intercepts what would be otherwise normal interface signals and (sometimes)
+replace them with its own abstracted versions.</p>
+<p>In general terms, a developer implementing a widget from the scratch would have
+to program functions to:</p>
+<ul class="simple">
+<li>Manipulate the canvas to draw its primitives.</li>
+<li>Register new signal types to emit as a widget.</li>
+<li>Display information and retreive changes.</li>
+<li>Handle events ocurring in the environment that affect it.</li>
+<li>Handle events ocurring on its primitives.</li>
+</ul>
+<p>Depending on the complexity of the widgets, the amount of functions represented
+by the last item can become quite large.</p>
+<div class="section" id="widgets-with-edje">
+<h2><a class="toc-backref" href="#id15">Widgets with Edje</a></h2>
+<p>We have seen there are roughly 5 kinds of functions that have to be implemented
+in order to create a widget from scratch. Altought the way groups are split
+might not seem equitative to the amount of work each one might entail, the
+divisions are concordant with the shortcuts Edje provides. For the cases where
+the number of functions in one group seems to clearly outweights the others,
+Edje provides additional shortcuts not directly related to the design concepts
+and design elements we have seen in the previous chapters.</p>
+</div>
 </div>
 </div>
 </body>

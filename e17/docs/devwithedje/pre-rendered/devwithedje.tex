@@ -84,10 +84,8 @@ pdfauthor={Andres Blanc}
 \textbf{Date}: &
 	2008/04/03 \\
 \textbf{Copyright}: &
-	This book is distributed under the terms of the Attribution-NonCommercial-ShareAlike
-CC license. See: \href{http://creativecommons.org/licenses/by-nc-sa/3.0/}{http://creativecommons.org/licenses/by-nc-sa/3.0/}.
-Contact me if you are interested in a license for commercial
-distribution. \\
+	This book is distributed under the terms of the Attribution-ShareAlike
+CC license. See: \href{http://creativecommons.org/licenses/by-sa/3.0/}{http://creativecommons.org/licenses/by-sa/3.0/}. \\
 \end{tabularx}
 \end{center}
 
@@ -116,7 +114,7 @@ to create a full blown Edje based application.
 \chapter{Book overview}
 \label{book-overview}
 
-I. \href{\#structure-of-a-graphical-application}{Structure of a graphical application}.
+I. \href{\#about-graphical-user-interfaces}{About Graphical User Interfaces}.
 If we look through the code of some of the many open source applications
 available, we can find most of them share a common structure. This chapter
 introduces the reader to said structure, to the concept of an Event loop and
@@ -128,50 +126,68 @@ some provide flexibility while others shorter development time. In the end, the
 rest of the application will have to go through the same mechanism to deal
 with the interface.
 
-II. \href{\#introduction-to-edje}{Introduction to Edje}.
+I.II. \href{\#introduction-to-edje}{Introduction to Edje}.
 Edje is a compromise between flexibility and development time. Comparing it to
 a plain canvas or a fully featured toolkit can show us how it fits in the
 middle ground and provides advantages for designers and developers alike.
 
-II.I. \href{\#the-foundations}{The foundations}.
+I.III. \href{\#the-foundations}{The foundations}.
 Edje allows low level control of the interface without forcing the developer
 through a low level API. The interface objects are implemented as Evas objects,
 but through a completely new language friendly to designers and independent
 from the application code.
 
-II.II. \href{\#convenient-libraries}{Convenient libraries}
+I.IV. \href{\#convenient-libraries}{Convenient libraries}
 To load an Edje interface the application needs to setup an Evas canvas first.
 This would look as a burden for the developer, dealing with issues specific to
 the underlying system. Thankfully Evas is supported by an additional library
 that resolve most of these issues, Ecore.
 
-III. \href{\#the-foundations-in-practice}{The foundations in practice}.
+II. \href{\#the-foundations-in-practice}{The foundations in practice}.
 Practical examples of the Englighenment Foundation Libraries required for a
 common Edje application.
 
-III.I \href{\#working-with-the-canvas}{Working with the canvas}.
+II.I. \href{\#working-with-the-canvas}{Working with the canvas}.
 Including new Edje objects inside the previously setup canvas can be explained
 with this simple example.
 
-III.II \href{\#interacting-with-the-objects}{Interacting with the objects}.
+II.II. \href{\#interacting-with-the-objects}{Interacting with the objects}.
 There are different channels for the application to interact with the
 interface. For the sake of brevity I will include an example of each one to
 serve as an introduction for the practical examples to come in the next
 chapters.
 
-IV. \href{\#introduction-to-widgets}{Introduction to widgets}.
+II.III. \href{\#building-a-framework}{Building a framework}.
+- An brief introduction to the concept of the framework
+- Code sample of the main.c file and general explanation
+
+II.III.I. \href{\#getting-the-interface-up}{Getting the interface up}.
+- A mention of the environment{\_}init/shutdown functions without code examples
+- A code sample + explanation of the the window creation functions
+
+II.III.II. \href{\#settings-are-important-too}{Settings are important too}.
+- An brief introduction to Ecore{\_}Config (refer to the cookbook).
+- A code sample + explanation of functions that deal with multiple theme files.
+
+II.III.III. \href{\#simpler-interface-management}{Simpler interface management}.
+- A code sample + explanation of the functions that fetch the theme objects
+
+III. \href{\#introduction-to-widgets}{Introduction to widgets}.
 Interfaces need to resolve two problems, presenting information to users and
 taking orders from them. The past chapters presented enough information to
-solve the first. In the following chapters we will review the second. The
-widget itself can be seen as a small application inside our interfaces. As an
-example let's examine the structure of a common widget, the combox.
+solve the first. In the following chapters we will review the second.
+
+III.I. \href{\#widgets-with-edje}{Widgets with Edje}.
+Since this is a book about Edje it might be a good idea to detail the way Edje
+simplifies custom widget creation by reviewing the list of tasks presented in
+the previous chapter and how Edje helps with each task.
 
 
 %___________________________________________________________________________
 
-\hypertarget{structure-of-a-graphical-application}{}
-\chapter{Structure of a graphical application}
-\label{structure-of-a-graphical-application}
+\hypertarget{about-graphical-user-interfaces}{}
+\chapter{About Graphical User Interfaces}
+\label{about-graphical-user-interfaces}
 
 So... you want to create a GUI application? I assume so since you choosed this
 book as instructive, or at least bathroom, material. You could google ``GUI'' and
@@ -255,7 +271,7 @@ comfortably in the middle. Edje.
 %___________________________________________________________________________
 
 \hypertarget{introduction-to-edje}{}
-\chapter{Introduction to Edje}
+\section{Introduction to Edje}
 \label{introduction-to-edje}
 
 Allow me to begin this chapter with a quote from the introduction of Edje's API
@@ -744,8 +760,130 @@ of the signal.
 
 %___________________________________________________________________________
 
+\hypertarget{building-a-framework}{}
+\section{Building a framework}
+\label{building-a-framework}
+
+Hopefully the reader has not been introduced to the concept of software
+frameworks by web based monsters like Ruby on Rails. Personally I think RoR is
+great, my point is that a framework does not necessarily mean big complex,
+abstract software libraries. A framework can be seen as the standardization of
+common, complex tasks into a library shared by group of applications. With a
+framework short development times means a compromise with flexibility.
+
+In this section and the following subsections we will develop an application
+framework for applications with a specific profile. An X11 desktop application
+that doesn't require any exotic manipulation of its theme files and with a
+interface simple enough that all its objects can be laid out using a single
+Edje object.
+
+The tasks that this framework will take care of are pretty straight forward:
+* Maintain a configuration file (in the default location used by Ecore{\_}Config).
+* Setup the window properties and main layout from a theme object.
+* Manage theme objects, including changing a theme file on runtime and
+maintaining two the files, current and default.
+
+The example application will be an Edje group viewer, this application will
+receive a filename and a group name, it will display the application inside a
+viewport, print the last signal emitted by the group and provide a minimap for
+navigating the viewport. Without further ado, here it is, the main file:
+
+Literal block expected; none found.
+
+
+
+%___________________________________________________________________________
+
+\hypertarget{getting-the-interface-up}{}
+\subsection{Getting the interface up}
+\label{getting-the-interface-up}
+
+
+%___________________________________________________________________________
+
+\hypertarget{settings-are-important-too}{}
+\subsection{Settings are important too}
+\label{settings-are-important-too}
+
+
+%___________________________________________________________________________
+
+\hypertarget{simpler-interface-management}{}
+\subsection{Simpler interface management}
+\label{simpler-interface-management}
+
+
+%___________________________________________________________________________
+
 \hypertarget{introduction-to-widgets}{}
 \chapter{Introduction to widgets}
 \label{introduction-to-widgets}
+
+Graphical User Interfaces do not only to display information, they convey
+information. Interface elements have a meaning of their own and this meaning
+alters the user's perception on the information displayed, for better or for
+worse. A flexible interface design system means the designer can add more
+meaning to the information. Features like multiple states and transitions
+extend this capacity to the point where the designer's creativity is the limit.
+
+As the application matures the number of elments in the interface will grow.
+These elements will be grouped by some common property or prupose. Functions to
+deal with these groups as a unit are also going to be created. This is not an
+unique process and anyone creating a GUI from scratch would go through it.
+These groups and the functions that deal with them is what is commonly know as
+``widgets''. Widgets work as a small application inside our own.
+
+In order to work a widget needs access to the drawing device to request that
+the primitive objects that conform it be drawn. Most widgets will want to
+interact with their environment, thus they need to be familiar with the Event
+loop managing the application. As we would do with a plain interface, the
+widget will register callbacks for its own functions that deal with events in
+the primitive objects that conform it.
+
+{\hfill\includegraphics[width=0.850\linewidth]{img/graphical_application_components_widget.png}\hfill}
+
+In order to be possible for the rest of the application to interact effectively
+with a widget it has to provide the Event loop with new signal types
+representing abstracted version of its interface signals. It basically
+intercepts what would be otherwise normal interface signals and (sometimes)
+replace them with its own abstracted versions.
+
+In general terms, a developer implementing a widget from the scratch would have
+to program functions to:
+\begin{itemize}
+\item {} 
+Manipulate the canvas to draw its primitives.
+
+\item {} 
+Register new signal types to emit as a widget.
+
+\item {} 
+Display information and retreive changes.
+
+\item {} 
+Handle events ocurring in the environment that affect it.
+
+\item {} 
+Handle events ocurring on its primitives.
+
+\end{itemize}
+
+Depending on the complexity of the widgets, the amount of functions represented
+by the last item can become quite large.
+
+
+%___________________________________________________________________________
+
+\hypertarget{widgets-with-edje}{}
+\section{Widgets with Edje}
+\label{widgets-with-edje}
+
+We have seen there are roughly 5 kinds of functions that have to be implemented
+in order to create a widget from scratch. Altought the way groups are split
+might not seem equitative to the amount of work each one might entail, the
+divisions are concordant with the shortcuts Edje provides. For the cases where
+the number of functions in one group seems to clearly outweights the others,
+Edje provides additional shortcuts not directly related to the design concepts
+and design elements we have seen in the previous chapters.
 
 \end{document}

@@ -7,10 +7,8 @@ Application development with Edje
 :Contact:   andresblanc@gmail.com
 :Version:   1.0
 :Date:      2008/04/03
-:Copyright: This book is distributed under the terms of the Attribution-NonCommercial-ShareAlike
-            CC license. See: http://creativecommons.org/licenses/by-nc-sa/3.0/.
-            Contact me if you are interested in a license for commercial
-            distribution.
+:Copyright: This book is distributed under the terms of the Attribution-ShareAlike
+            CC license. See: http://creativecommons.org/licenses/by-sa/3.0/.
 :Abstract:  An introduction to GUI based application development. Starts from
             the most basic concepts and introduces the EFL libraries that deal
             with each of them. It covers Edje, Ecore, Evas and EWL. This book 
@@ -22,7 +20,7 @@ Application development with Edje
 ~~~~~~~~~~~~~
 Book overview
 ~~~~~~~~~~~~~
-I. `Structure of a graphical application`_.
+I. `About Graphical User Interfaces`_.
 If we look through the code of some of the many open source applications 
 available, we can find most of them share a common structure. This chapter
 introduces the reader to said structure, to the concept of an Event loop and
@@ -34,57 +32,75 @@ some provide flexibility while others shorter development time. In the end, the
 rest of the application will have to go through the same mechanism to deal
 with the interface.
 
-II. `Introduction to Edje`_.
+I.II. `Introduction to Edje`_.
 Edje is a compromise between flexibility and development time. Comparing it to 
 a plain canvas or a fully featured toolkit can show us how it fits in the 
 middle ground and provides advantages for designers and developers alike.
 
-II.I. `The foundations`_.
+I.III. `The foundations`_.
 Edje allows low level control of the interface without forcing the developer 
 through a low level API. The interface objects are implemented as Evas objects,
 but through a completely new language friendly to designers and independent 
 from the application code.
 
-II.II. `Convenient libraries`_
+I.IV. `Convenient libraries`_
 To load an Edje interface the application needs to setup an Evas canvas first.
 This would look as a burden for the developer, dealing with issues specific to 
 the underlying system. Thankfully Evas is supported by an additional library 
 that resolve most of these issues, Ecore.
 
-III. `The foundations in practice`_.
+II. `The foundations in practice`_.
 Practical examples of the Englighenment Foundation Libraries required for a
 common Edje application.
 
-III.I `Working with the canvas`_.
+II.I. `Working with the canvas`_.
 Including new Edje objects inside the previously setup canvas can be explained 
 with this simple example.
 
-III.II `Interacting with the objects`_.
+II.II. `Interacting with the objects`_.
 There are different channels for the application to interact with the 
 interface. For the sake of brevity I will include an example of each one to 
 serve as an introduction for the practical examples to come in the next 
 chapters.
 
-IV. `Introduction to widgets`_.
+II.III. `Building a framework`_.
+- An brief introduction to the concept of the framework
+- Code sample of the main.c file and general explanation
+
+II.III.I. `Getting the interface up`_.
+- A mention of the environment_init/shutdown functions without code examples
+- A code sample + explanation of the the window creation functions
+
+II.III.II. `Settings are important too`_.
+- An brief introduction to Ecore_Config (refer to the cookbook).
+- A code sample + explanation of functions that deal with multiple theme files.
+
+II.III.III. `Simpler interface management`_.
+- A code sample + explanation of the functions that fetch the theme objects
+
+III. `Introduction to widgets`_.
 Interfaces need to resolve two problems, presenting information to users and 
 taking orders from them. The past chapters presented enough information to 
-solve the first. In the following chapters we will review the second. The 
-widget itself can be seen as a small application inside our interfaces. As an
-example let's examine the structure of a common widget, the combox.
+solve the first. In the following chapters we will review the second.
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-Structure of a graphical application
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-.. include:: txt/structure_of_a_graphical_application.txt
+III.I. `Widgets with Edje`_.
+Since this is a book about Edje it might be a good idea to detail the way Edje
+simplifies custom widget creation by reviewing the list of tasks presented in
+the previous chapter and how Edje helps with each task.
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+About Graphical User Interfaces
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. include:: txt/about_graphical_user_interfaces.txt
 
 ------------------------
 Decomposing the frontend
 ------------------------
 .. include:: txt/decomposing_the_frontend.txt
 
-~~~~~~~~~~~~~~~~~~~~
+--------------------
 Introduction to Edje
-~~~~~~~~~~~~~~~~~~~~
+--------------------
 .. include:: txt/introduction_to_edje.txt
 
 ---------------
@@ -112,6 +128,26 @@ Interacting with the objects
 ----------------------------
 .. include:: txt/interacting_with_the_objects.txt
 
+--------------------
+Building a framework
+--------------------
+.. include:: txt/building_a_framework.txt
+
+Getting the interface up
+........................
+
+Settings are important too
+..........................
+
+Simpler interface management
+............................
+
 ~~~~~~~~~~~~~~~~~~~~~~~
 Introduction to widgets
 ~~~~~~~~~~~~~~~~~~~~~~~
+.. include:: txt/introduction_to_widgets.txt
+
+-----------------
+Widgets with Edje
+-----------------
+.. include:: txt/widgets_with_edje.txt
