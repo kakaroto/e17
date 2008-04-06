@@ -1,0 +1,7 @@
+We have seen there are roughly 5 kinds of functions that have to be implemented
+in order to create a widget from scratch. Altought the way groups are split
+might not seem equitative to the amount of work each one might entail, the
+divisions are concordant with the shortcuts Edje provides. For the cases where
+the number of functions in one group seems to clearly outweights the others, 
+Edje provides additional shortcuts not directly related to the design concepts
+and design elements we have seen in the previous chapters.

@@ -1,0 +1,42 @@
+Graphical User Interfaces do not only to display information, they convey
+information. Interface elements have a meaning of their own and this meaning 
+alters the user's perception on the information displayed, for better or for 
+worse. A flexible interface design system means the designer can add more 
+meaning to the information. Features like multiple states and transitions 
+extend this capacity to the point where the designer's creativity is the limit.
+
+As the application matures the number of elments in the interface will grow.
+These elements will be grouped by some common property or prupose. Functions to
+deal with these groups as a unit are also going to be created. This is not an
+unique process and anyone creating a GUI from scratch would go through it. 
+These groups and the functions that deal with them is what is commonly know as 
+"widgets". Widgets work as a small application inside our own.
+
+In order to work a widget needs access to the drawing device to request that
+the primitive objects that conform it be drawn. Most widgets will want to
+interact with their environment, thus they need to be familiar with the Event
+loop managing the application. As we would do with a plain interface, the 
+widget will register callbacks for its own functions that deal with events in
+the primitive objects that conform it.
+
+..  image:: img/graphical_application_components_widget.png
+    :width: 85%
+    :align: center
+
+In order to be possible for the rest of the application to interact effectively
+with a widget it has to provide the Event loop with new signal types 
+representing abstracted version of its interface signals. It basically 
+intercepts what would be otherwise normal interface signals and (sometimes)
+replace them with its own abstracted versions.
+
+In general terms, a developer implementing a widget from the scratch would have
+to program functions to:
+
+* Manipulate the canvas to draw its primitives.
+* Register new signal types to emit as a widget.
+* Display information and retreive changes.
+* Handle events ocurring in the environment that affect it.
+* Handle events ocurring on its primitives.
+
+Depending on the complexity of the widgets, the amount of functions represented
+by the last item can become quite large.

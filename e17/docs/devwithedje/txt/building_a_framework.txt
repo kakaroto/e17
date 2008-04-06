@@ -1,0 +1,23 @@
+Hopefully the reader has not been introduced to the concept of software 
+frameworks by web based monsters like Ruby on Rails. Personally I think RoR is
+great, my point is that a framework does not necessarily mean big complex,
+abstract software libraries. A framework can be seen as the standardization of
+common, complex tasks into a library shared by group of applications. With a 
+framework short development times means a compromise with flexibility.
+
+In this section and the following subsections we will develop an application
+framework for applications with a specific profile. An X11 desktop application
+that doesn't require any exotic manipulation of its theme files and with a
+interface simple enough that all its objects can be laid out using a single
+Edje object.
+
+The tasks that this framework will take care of are pretty straight forward:
+* Maintain a configuration file (in the default location used by Ecore_Config).
+* Setup the window properties and main layout from a theme object.
+* Manage theme objects, including changing a theme file on runtime and 
+maintaining two the files, current and default.
+
+The example application will be an Edje group viewer, this application will
+receive a filename and a group name, it will display the application inside a
+viewport, print the last signal emitted by the group and provide a minimap for
+navigating the viewport. Without further ado, here it is, the main file::
