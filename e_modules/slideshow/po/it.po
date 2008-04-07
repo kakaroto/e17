@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Slideshow\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-14 22:37+0100\n"
-"PO-Revision-Date: 2007-11-18 19:34+0100\n"
+"POT-Creation-Date: 2008-04-05 18:03+0200\n"
+"PO-Revision-Date: 2008-04-05 18:07+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
@@ -55,7 +55,11 @@ msgstr "Imposta sfondo su tutti i desktop"
 msgid "Set wallpaper on current desktop"
 msgstr "Imposta sfondo sul desktop attuale"
 
-#: e_mod_config.c:119
+#: e_mod_config.c:117
+msgid "Set wallpaper on current screen"
+msgstr "Imposta sfondo sullo schermo attuale"
+
+#: e_mod_config.c:121
 msgid "Set wallpaper on current monitor (Xinerama support)"
 msgstr "Imposta sfondo sul monitor attuale (supporto Xinerama)"
 

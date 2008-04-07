@@ -6,15 +6,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Notification\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-03-15 20:43+0100\n"
-"PO-Revision-Date: 2008-03-15 20:49+0100\n"
+"POT-Creation-Date: 2008-04-05 18:03+0200\n"
+"PO-Revision-Date: 2008-04-05 18:07+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8-bit\n"
 
-#: src/e_mod_box.c:669 src/e_mod_box.c:815
+#: src/e_mod_box.c:671 src/e_mod_box.c:820
 msgid "Configuration"
 msgstr "Configurazione"
 
@@ -22,7 +22,7 @@ msgstr "Configurazione"
 msgid "Notification Configuration"
 msgstr "Configurazione modulo Notification"
 
-#: src/e_mod_config.c:86 src/e_mod_config_item.c:83
+#: src/e_mod_config.c:86 src/e_mod_config_item.c:91
 msgid "Urgency"
 msgstr "Urgenza"
 
@@ -30,15 +30,15 @@ msgstr "Urgenza"
 msgid "Levels of urgency to popup : "
 msgstr "Livelli di urgenza da notificare:"
 
-#: src/e_mod_config.c:89 src/e_mod_config_item.c:86
+#: src/e_mod_config.c:89 src/e_mod_config_item.c:94
 msgid "low"
 msgstr "basso"
 
-#: src/e_mod_config.c:91 src/e_mod_config_item.c:88
+#: src/e_mod_config.c:91 src/e_mod_config_item.c:96
 msgid "normal"
 msgstr "normale"
 
-#: src/e_mod_config.c:93 src/e_mod_config_item.c:90
+#: src/e_mod_config.c:93 src/e_mod_config_item.c:98
 msgid "critical"
 msgstr "critico"
 
@@ -77,19 +77,27 @@ msgstr "Intervallo tra due popup:"
 msgid "%2.0f pixels"
 msgstr "%2.0f pixel"
 
-#: src/e_mod_config_item.c:35
+#: src/e_mod_config_item.c:37
 msgid "Notification Box Configuration"
 msgstr "Configurazione modulo Notification"
 
-#: src/e_mod_config_item.c:78
+#: src/e_mod_config_item.c:82
 msgid "General Settings"
 msgstr "Impostazioni generali"
 
-#: src/e_mod_config_item.c:79
+#: src/e_mod_config_item.c:83
 msgid "Show Icon Label"
 msgstr "Mostra etichetta icona"
 
-#: src/e_mod_config_item.c:84
+#: src/e_mod_config_item.c:85
+msgid "Show the popup on mouse over"
+msgstr "Mostra popup al passaggio del mouse"
+
+#: src/e_mod_config_item.c:87
+msgid "Focus the source window when clicking"
+msgstr "Sposta fuoco su finestra sorgente al click"
+
+#: src/e_mod_config_item.c:92
 msgid "Levels of urgency to store : "
 msgstr "Livelli di urgenza da salvare:"
 
@@ -105,11 +113,11 @@ msgstr "Estensioni"
 msgid "Notification"
 msgstr "Notification"
 
-#: src/e_mod_main.c:214 src/e_mod_main.c:232
+#: src/e_mod_main.c:216 src/e_mod_main.c:234
 msgid "Notification Configuration Updated"
 msgstr "Configurazione modulo Notification aggiornata"
 
-#: src/e_mod_main.c:215
+#: src/e_mod_main.c:217
 msgid ""
 "Notification Module Configuration data needed upgrading. Your old "
 "configuration<br> has been wiped and a new set of defaults initialized. "
@@ -129,7 +137,7 @@ msgstr ""
 "Potete riconfigurare le cose a vostro piacimento. Ci<br>scusiamo per "
 "l'inconveniente."
 
-#: src/e_mod_main.c:233
+#: src/e_mod_main.c:235
 msgid ""
 "Your Notification Module Configuration is NEWER than the Notification Module "
 "version. This is very<br>strange. This should not happen unless you "
@@ -145,4 +153,3 @@ msgstr ""
 "versione<br>più nuova del modulo notifica. A scopo precauzionale la "
 "vostra<br>configurazione è stata adesso ripristinata ai valori predefiniti."
 "<br>Ci scusiamo per l'inconveniente."
-
