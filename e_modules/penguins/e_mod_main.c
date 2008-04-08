@@ -106,8 +106,6 @@ _population_init(E_Module *m)
 {
    Population *pop;
    Evas_List *managers, *l, *l2;
-
-   printf("PENGUINS: Starting up...\n");
    
    pop = calloc(1, sizeof(Population));
    if (!pop)
@@ -150,8 +148,8 @@ _population_init(E_Module *m)
       {
          E_Container *con;
          con = l2->data;
-         printf("PENGUINS: E_container found: '%s' [x:%d y:%d w:%d h:%d]\n",
-                 con->name, con->x, con->y, con->w, con->h);
+         //printf("PENGUINS: E_container found: '%s' [x:%d y:%d w:%d h:%d]\n",
+         //        con->name, con->x, con->y, con->w, con->h);
          pop->cons = evas_list_append(pop->cons, con);
          pop->canvas = con->bg_evas;
          //e_container_shape_change_callback_add(con, _win_shape_change, NULL);
@@ -187,7 +185,7 @@ _population_init(E_Module *m)
             name = edje_file_data_get(buf, "PopulationName");
             if (name)
             {
-               printf("PENGUINS: Theme found: %s (%s)\n", filename, name);
+               //printf("PENGUINS: Theme found: %s (%s)\n", filename, name);
                pop->themes = evas_list_append(pop->themes, strdup(buf));
             }
          }
@@ -198,7 +196,7 @@ _population_init(E_Module *m)
    _population_load(pop);
 
    pop->animator = ecore_animator_add(_cb_animator, pop);
-   //srand(ecore_time_get());    TODO we need it?
+
    return pop;
 }
 
@@ -215,7 +213,7 @@ _action_free(const Evas_Hash *hash, const char *key, void *data, void *fdata)
 static void
 _population_free(Population *pop)
 {
-   printf("PENGUINS: Free Population\n");
+   //printf("PENGUINS: Free Population\n");
  
    while (pop->penguins)
      {
@@ -380,7 +378,7 @@ _theme_load(Population *pop)
    if (!name) 
       return;
    
-   printf("PENGUINS: Load theme: %s (%s)\n", name, pop->conf->theme);
+   //printf("PENGUINS: Load theme: %s (%s)\n", name, pop->conf->theme);
    
    // load standard actions
    _load_action(pop, pop->conf->theme, "Walker", ID_WALKER);
@@ -398,14 +396,14 @@ _theme_load(Population *pop)
    while (_load_custom_action(pop, pop->conf->theme, buf))
       snprintf(buf, sizeof(buf), "Custom_%d", i++);
    
-   evas_hash_foreach(pop->actions, hash_fn, NULL);
-   Evas_List *l;
-   for (l = pop->customs; l; l = l->next )
-   {
-      Custom_Action *c = l->data;
-      printf("PENGUINS: Load custom action: name:'%s' w:%d h:%d h_speed:%d v_speed:%d\n",
-               c->name, c->w, c->h, c->h_speed, c->v_speed);
-   }
+   // evas_hash_foreach(pop->actions, hash_fn, NULL);
+   // Evas_List *l;
+   // for (l = pop->customs; l; l = l->next )
+   // {
+   //    Custom_Action *c = l->data;
+   //    printf("PENGUINS: Load custom action: name:'%s' w:%d h:%d h_speed:%d v_speed:%d\n",
+   //             c->name, c->w, c->h, c->h_speed, c->v_speed);
+   // }
 }
 static void
 _population_load(Population *pop)
@@ -418,9 +416,9 @@ _population_load(Population *pop)
    evas_output_viewport_get(pop->canvas, &xx, &yy, &ww, &hh);
   
    //Create edje
-   printf("PENGUINS: Creating %d penguins\n", pop->conf->penguins_count);
+   //printf("PENGUINS: Creating %d penguins\n", pop->conf->penguins_count);
 
-	
+
    for (i = 0; i < pop->conf->penguins_count; i++)
      {
         tux = malloc(sizeof(Penguin));
@@ -466,7 +464,7 @@ _cb_click_r (void *data, Evas_Object *o, const char *emi, const char *src)
 static void
 _cb_click_c (void *data, Evas_Object *o, const char *emi, const char *src)
 {
-   printf("Center-click on TUX !!!\n");
+   //printf("Center-click on TUX !!!\n");
 }
 
 static void

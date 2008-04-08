@@ -18,7 +18,6 @@ static void _free_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 static Evas_Object *_basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata);
 static int _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata);
 static void _fill_data(Population *pop, E_Config_Dialog_Data *cfdata);
-static void _ilist_cb_selected(void *data);
 
 EAPI E_Config_Dialog *
 e_int_config_penguins_module(E_Container *con, const char *params __UNUSED__)
@@ -127,8 +126,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
          oi = edje_object_add(evas);
          edje_object_file_set(oi, theme, "icon");
          //printf("TEMA: %s (%s)\n", name, cfdata->theme);
-         e_widget_ilist_append(ol, oi, name, 
-               _ilist_cb_selected, theme, theme);
+         e_widget_ilist_append(ol, oi, name, NULL, theme, theme);
          if (strcmp(theme, cfdata->theme) == 0)
          {
             e_widget_ilist_selected_set(ol, count);
@@ -143,14 +141,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 
    return o;
 }
-static void
-_ilist_cb_selected(void *data)
-{
-   char *th;
-   th = data;
 
-   printf("CB %s\n", th);
-}
 static int
 _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 {
