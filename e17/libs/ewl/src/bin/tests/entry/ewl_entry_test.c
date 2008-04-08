@@ -52,14 +52,9 @@ static void
 set_entry_text(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 					void *user_data __UNUSED__)
 {
-	ewl_text_color_set(EWL_TEXT(entry[0]), 0, 0, 0, 255);
-	ewl_text_color_set(EWL_TEXT(entry[1]), 0, 0, 0, 255);
-	ewl_text_color_set(EWL_TEXT(entry[2]), 0, 0, 0, 255);
-
 	ewl_text_text_set(EWL_TEXT(entry[0]), "Play with me ?");
-	ewl_text_text_set(EWL_TEXT(entry[1]), "E W L ! ! !");
-
-	ewl_text_clear(EWL_TEXT(entry[2]));
+	ewl_text_clear(EWL_TEXT(entry[1]));
+	ewl_text_text_set(EWL_TEXT(entry[2]), "Not more than 30 characters");
 }
 
 static int
@@ -80,14 +75,11 @@ create_test(Ewl_Container *box)
 	entry[0] = ewl_entry_new();
 	ewl_text_text_set(EWL_TEXT(entry[0]), "Play with me ?");
 	ewl_entry_multiline_set(EWL_ENTRY(entry[0]), 1);
-	ewl_text_color_set(EWL_TEXT(entry[0]), 255, 0, 0, 255);
 	ewl_object_padding_set(EWL_OBJECT(entry[0]), 5, 5, 5, 0);
 	ewl_container_child_append(EWL_CONTAINER(entry_box), entry[0]);
 	ewl_widget_show(entry[0]);
 
 	entry[1] = ewl_entry_new();
-	ewl_text_text_set(EWL_TEXT(entry[1]), "E W L ! ! !");
-	ewl_text_color_set(EWL_TEXT(entry[1]), 255, 0, 0, 255);
 	ewl_object_padding_set(EWL_OBJECT(entry[1]), 5, 5, 0, 0);
 	ewl_container_child_append(EWL_CONTAINER(entry_box), entry[1]);
 	ewl_widget_show(entry[1]);
