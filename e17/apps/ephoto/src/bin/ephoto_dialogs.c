@@ -1,11 +1,11 @@
 #include "ephoto.h"
 
 static void close_dialog(Ewl_Widget *w, void *event, void *data);
+static void add_ok(Ewl_Widget *w, void *event, void *data);
+Ewl_Widget *name_entry, *desc_entry;
 
-static Ewl_Widget *save_quality, *save_entry;
-
-/*Close or Cancel the Dialog*/
-static void close_dialog(Ewl_Widget *w, void *event, void *data)
+static void 
+close_dialog(Ewl_Widget *w, void *event, void *data)
 {
 	Ewl_Widget *win;
 	
@@ -14,21 +14,30 @@ static void close_dialog(Ewl_Widget *w, void *event, void *data)
 	ewl_widget_destroy(win);
 }
 
-/*Add an About Dialog*/
-void about_dialog(Ewl_Widget *w, void *event, void *data)
+void 
+about_dialog(Ewl_Widget *w, void *event, void *data)
 {
-	Ewl_Widget *window, *button, *image, *vbox, *text;
+	Ewl_Widget *window, *button, *image, *vbox, *sp, *text;
 	
-	window = add_window("About Ephoto", 300, 400, NULL, NULL);
-        ewl_callback_append(window, EWL_CALLBACK_DELETE_WINDOW, close_dialog, window);
+	window = add_window("About Ephoto", 200, 300, NULL, NULL);
+        ewl_callback_append(window, EWL_CALLBACK_DELETE_WINDOW, close_dialog, 
+					window);
 
         vbox = add_box(window, EWL_ORIENTATION_VERTICAL, 3);
         ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_ALL);
 
-	image = add_image(vbox, PACKAGE_DATA_DIR "/images/photo_lens.png", 0, NULL, NULL);
+	image = add_image(vbox, PACKAGE_DATA_DIR "/images/photo_lens.png", 0, 
+					NULL, NULL);
+	ewl_image_constrain_set(EWL_IMAGE(image), 144);
 	ewl_object_alignment_set(EWL_OBJECT(image), EWL_FLAG_ALIGN_CENTER);
+	ewl_object_fill_policy_set(EWL_OBJECT(image), EWL_FLAG_FILL_SHRINK);
 
-	text = add_text(vbox, "Ephoto is an advanced image viewer that allows\n"
+	sp = ewl_scrollpane_new();
+	ewl_object_fill_policy_set(EWL_OBJECT(sp), EWL_FLAG_FILL_ALL);
+	ewl_container_child_append(EWL_CONTAINER(vbox), sp);
+	ewl_widget_show(sp);
+
+	text = add_text(sp, "Ephoto is an advanced image viewer that allows\n"
 		       "you to view images using several methods. They\n"
 		       "include an icon view, a list view, and a single\n"
 		       "image view.  You can also view exif data, view\n"
@@ -37,91 +46,59 @@ void about_dialog(Ewl_Widget *w, void *event, void *data)
 		       "editing options.");
 
 	ewl_text_wrap_set(EWL_TEXT(text), EWL_TEXT_WRAP_WORD);
-        ewl_object_alignment_set(EWL_OBJECT(text), EWL_FLAG_ALIGN_CENTER);
+	ewl_object_alignment_set(EWL_OBJECT(text), EWL_FLAG_ALIGN_CENTER);
 
 	button = add_button(vbox, "Close",
-                                PACKAGE_DATA_DIR "/images/dialog-close.png",
-                                                                close_dialog, window);
+				PACKAGE_DATA_DIR "/images/dialog-close.png",
+				close_dialog, window);
         ewl_button_image_size_set(EWL_BUTTON(button), 25, 25);
 	ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_CENTER);	
 
 	return;
 }
 
-static void save_image(Ewl_Widget *w, void *event, void *data)
+static void
+add_ok(Ewl_Widget *w, void *event, void *data)
 {
-	const char *file;
-	char flags[PATH_MAX];
-	char *ext;
+        Ewl_Widget *win = data;
+        char *name, *desc;
 
-	file = ewl_text_text_get(EWL_TEXT(save_entry));
+        name = ewl_text_text_get(EWL_TEXT(name_entry));
+        desc = ewl_text_text_get(EWL_TEXT(desc_entry));
 
-	ext = strrchr(file, '.')+1;
-	if (!strncmp(ext, "png", 3))
-	{
-		snprintf(flags, PATH_MAX, "compress=%i",
-                 	       (int)ewl_range_value_get(EWL_RANGE(save_quality)));
-	}
-	else
-	{
-		double svalue;
-		float jvalue;
- 
-		svalue = ewl_range_value_get(EWL_RANGE(save_quality));
-		jvalue = (svalue / 9) * 100;
-
-		snprintf(flags, PATH_MAX, "quality=%.0f", jvalue);
-	}
-
-	if(!file) return;
-
-        if(VISIBLE(em->eimage))
+        if (name)
         {
-        	evas_object_image_save(EWL_IMAGE(em->eimage)->image,
-                                                        file, NULL, flags);
+                ephoto_db_add_album(em->db, name, desc);
+                populate_albums(NULL, NULL, NULL);
         }
-	
-	ewl_widget_destroy(EWL_WIDGET(data));
+
+        ewl_widget_destroy(win);
 }
 
-void save_dialog(const char *file)
+void 
+add_album_dialog(Ewl_Widget *w, void *event, void *data)
 {
-        Ewl_Widget *save_win, *vbox, *hbox, *button;
-        
-	save_win = add_window("Save Image", 300, 100, NULL, NULL);
-	ewl_callback_append(save_win, EWL_CALLBACK_DELETE_WINDOW, close_dialog, save_win);        
+        Ewl_Widget *window, *vbox, *hbox;
 
-	vbox = add_box(save_win, EWL_ORIENTATION_VERTICAL, 5);
-	ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_ALL);
+        window = add_window("Add Album", 340, 160, NULL, NULL);
+        ewl_callback_append(window, EWL_CALLBACK_DELETE_WINDOW, close_dialog, 
+					window);
 
-	add_label(vbox, "Save As:");
+        vbox = add_box(window, EWL_ORIENTATION_VERTICAL, 5);
+        ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_ALL);
 
-	save_entry = add_entry(vbox, "default.jpg", NULL, NULL);
+        add_text(vbox, "Please provide a name for the new album:");
 
-	add_label(vbox, "Quality/Compression:");
+        name_entry = add_entry(vbox, "New Album", NULL, NULL);
 
-	save_quality = ewl_hseeker_new();
-	ewl_range_minimum_value_set(EWL_RANGE(save_quality), 1);
-	ewl_range_maximum_value_set(EWL_RANGE(save_quality), 9);
-	ewl_range_step_set(EWL_RANGE(save_quality), 1);
-	ewl_range_value_set(EWL_RANGE(save_quality), 7);
-	ewl_container_child_append(EWL_CONTAINER(vbox), save_quality);
-	ewl_widget_show(save_quality);
+        add_text(vbox, "Please provide a short description for this album:");
 
-	hbox = add_box(vbox, EWL_ORIENTATION_HORIZONTAL, 5);
-	ewl_object_alignment_set(EWL_OBJECT(hbox), EWL_FLAG_ALIGN_CENTER);
-	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_SHRINK);
+        desc_entry = add_entry(vbox, "Album Description", NULL, NULL);
 
-	button = add_button(hbox, "Save", 
-				PACKAGE_DATA_DIR "/images/stock_save.png", 
-							save_image, save_win);
-	ewl_button_image_size_set(EWL_BUTTON(button), 25, 25);	
+        hbox = add_box(vbox, EWL_ORIENTATION_HORIZONTAL, 5);
+        ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_SHRINK);
 
-	button = add_button(hbox, "Close", 
-				PACKAGE_DATA_DIR "/images/dialog-close.png", 
-							close_dialog, NULL);
-        ewl_button_image_size_set(EWL_BUTTON(button), 25, 25);
+        add_button(hbox, "Save", NULL, add_ok, window);
 
-	return;
+        add_button(hbox, "Cancel", NULL, close_dialog, window);
 }
-

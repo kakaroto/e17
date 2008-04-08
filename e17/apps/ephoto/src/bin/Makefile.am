@@ -6,25 +6,23 @@ MAINTAINERCLEANFILES = *.o ephoto config.h.in config.h Makefile.in Makefile \
 bin_PROGRAMS = ephoto
 
 ephoto_SOURCES = ephoto.c \
-		      ephoto_browsing.c \
-		      ephoto_browser.c \
-		      ephoto_database.c \
-		      ephoto_dialogs.c \
-		      ephoto_edit_view.c \
-		      ephoto_exif.c \
-		      ephoto_gui.c \
-		      ephoto_imaging.c \
-		      ephoto_list_view.c \
-		      ephoto_main.c \
-		      ephoto_nls.c \
-		      ephoto_normal_view.c \
-		      ephoto_single_view.c \
-		      ephoto_slideshow.c \
-		      ephoto_utils.c
+		 ephoto_albums.c \
+		 ephoto_database.c \
+		 ephoto_dialogs.c \
+		 ephoto_exif.c \
+		 ephoto_gui.c \
+		 ephoto_imaging.c \
+		 ephoto_import.c \
+		 ephoto_main.c \
+		 ephoto_nls.c \
+		 ephoto_normal_view.c \
+		 ephoto_single_view.c \
+		 ephoto_slideshow.c \
+		 ephoto_utils.c
 		     
-ephoto_CFLAGS = @EWL_CFLAGS@ @SQLITE_CFLAGS@ @EXIF_CFLAGS@ @EFREET_MIME_CFLAGS@ -Wall
+ephoto_CFLAGS = @EWL_CFLAGS@ @SQLITE_CFLAGS@ @EXIF_CFLAGS@ @EFREET_MIME_CFLAGS@ @EPSILON_CFLAGS@ -Wall
 
-ephoto_LDADD =  @EWL_LIBS@ @SQLITE_LIBS@ @EXIF_LIBS@ @EFREET_MIME_LIBS@
+ephoto_LDADD =  @EWL_LIBS@ @SQLITE_LIBS@ @EXIF_LIBS@ @EFREET_MIME_LIBS@ @EPSILON_LIBS@
 
 EXTRA_DIST = \
 	     ephoto.h

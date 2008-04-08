@@ -6,7 +6,8 @@ static void show_first_image(Ewl_Widget *w, void *event, void *data);
 static Ecore_Timer *change;
 static Ewl_Widget *win;
 
-static int change_picture(void *data)
+static int 
+change_picture(void *data)
 {
 	char *image_path;
 	Ewl_Widget *image;
@@ -28,13 +29,15 @@ static int change_picture(void *data)
 	return 1;
 }
 
-static void destroy(Ewl_Widget *w, void *event, void *data)
+static void 
+destroy(Ewl_Widget *w, void *event, void *data)
 {
 	ewl_widget_destroy(win);
 	ecore_timer_del(change);
 }
 
-static void show_first_image(Ewl_Widget *w, void *event, void *data)
+static void 
+show_first_image(Ewl_Widget *w, void *event, void *data)
 {
 	char *image_path;
 	
@@ -48,7 +51,8 @@ static void show_first_image(Ewl_Widget *w, void *event, void *data)
 	return;
 }
 
-void start_slideshow(Ewl_Widget *w, void *event, void *data)
+void 
+start_slideshow(Ewl_Widget *w, void *event, void *data)
 {
 	Ewl_Widget *cell, *image;
 
@@ -56,13 +60,12 @@ void start_slideshow(Ewl_Widget *w, void *event, void *data)
 	ewl_window_fullscreen_set(EWL_WINDOW(win), 1);
 	ewl_callback_append(win, EWL_CALLBACK_CLICKED, destroy, NULL);
 
-	image = add_image(win, PACKAGE_DATA_DIR "/images/black.png", 0, NULL, NULL);
-	ewl_image_proportional_set(EWL_IMAGE(image), FALSE);
-        ewl_object_fill_policy_set(EWL_OBJECT(image), EWL_FLAG_FILL_ALL);
-
 	cell = ewl_cell_new();
 	ewl_object_fill_policy_set(EWL_OBJECT(cell), EWL_FLAG_FILL_ALL);
 	ewl_container_child_append(EWL_CONTAINER(win), cell);
+	ewl_theme_data_str_set(cell, "/cell/file", 
+				PACKAGE_DATA_DIR "/images/single_vbox.edj");
+        ewl_theme_data_str_set(cell, "/cell/group", "bg");
 	ewl_widget_show(cell);
 
 	image = add_image(cell, NULL, 0, NULL, NULL);

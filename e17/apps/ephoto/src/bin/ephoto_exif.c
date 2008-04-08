@@ -2,11 +2,10 @@
 
 #ifdef BUILD_EXIF_SUPPORT
 static const char *get_image(void);
-static void close_dialog(Ewl_Widget *w, void *event, void *data);
-static void add_exif_to_container(Ewl_Widget *w, void *event, void *data);
+static void list_is_destroyed(Ewl_Widget *w, void *event, void *data);
 
-/*Get the Exif Data for an image and return it in a hash*/
-Ecore_Hash *get_exif_data(const char *file)
+Ecore_Hash *
+get_exif_data(const char *file)
 {
 	const char **args, *title;
 	char value[1024];
@@ -43,7 +42,8 @@ Ecore_Hash *get_exif_data(const char *file)
 			if (entry)
 			{
 				exif_entry_ref(entry);
-				exif_entry_get_value(entry, value, sizeof(value));
+				exif_entry_get_value(entry, value, 
+							sizeof(value));
 				ecore_hash_set(exif_info, strdup(title), 
 							  strdup(value));
 				exif_entry_unref(entry);
@@ -55,8 +55,8 @@ Ecore_Hash *get_exif_data(const char *file)
 	return exif_info;
 }
 
-/*Get the current image*/
-static const char *get_image(void)
+static const char *
+get_image(void)
 {
 	const char *img = NULL;
 
@@ -65,31 +65,23 @@ static const char *get_image(void)
 	return strdup(img);
 }
 
-/*Close a dialog*/
-static void close_dialog(Ewl_Widget *w, void *event, void *data)
+static void
+list_is_destroyed(Ewl_Widget *w, void *event, void *data)
 {
 	Ecore_List *destroy;
-	Ewl_Widget *win;
 
-	win = data;
-	destroy = ewl_widget_data_get(win, "list");
+	destroy = ewl_widget_data_get(w, "list");
 	ecore_list_destroy(destroy);
-	ewl_widget_destroy(win);
-
-	return;
 }
 
-/*Add all the exif information to the container w*/
-static void add_exif_to_container(Ewl_Widget *w, void *event, void *data)
+void 
+display_exif(Ewl_Widget *w, void *event, void *data)
 {
 	const char *img;
 	char *key, *value;
 	char text[PATH_MAX];
 	Ecore_Hash *exif_info;
 	Ecore_List *keys, *values;
-	Ewl_Widget *win;
-
-	win = data;
 
 	values = ecore_list_new();
 	ecore_list_free_cb_set(values, free);
@@ -115,17 +107,18 @@ static void add_exif_to_container(Ewl_Widget *w, void *event, void *data)
 		}
 	}
 	ewl_mvc_data_set(EWL_MVC(w), values);
-	ewl_widget_data_set(win, "list", values);
+	ewl_callback_append(w, EWL_CALLBACK_DESTROY, list_is_destroyed, NULL);
+	ewl_widget_data_set(w, "list", values);
 	ecore_hash_destroy(exif_info);
 		
 	return;
 }
 
-/*Display a dialog which will display exif data*/
-void display_exif_dialog(Ewl_Widget *w, void *event, void *data)
+void 
+add_exif_to_container(Ewl_Widget *c)
 {
 	const char *img;
-	Ewl_Widget *win, *vbox, *image, *sp, *list, *text;
+	Ewl_Widget *sp, *list;
 	Ewl_Model *model;
 	Ewl_View *view;
 	
@@ -135,25 +128,9 @@ void display_exif_dialog(Ewl_Widget *w, void *event, void *data)
 		return;
 	}
 
-	win = add_window("Ephoto Exif Info", 310, 460, NULL, NULL);
-	ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW, close_dialog, win);
-	ewl_window_dialog_set(EWL_WINDOW(win), 1);
-
-	vbox = add_box(win, EWL_ORIENTATION_VERTICAL, 5);
-	ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_ALL);
-
-	text = add_text(vbox, "Preview");
-
-	image = add_image(vbox, img, 1, NULL, NULL);
-	ewl_image_constrain_set(EWL_IMAGE(image), 120);
-	ewl_object_alignment_set(EWL_OBJECT(image), EWL_FLAG_ALIGN_CENTER);
-	ewl_object_fill_policy_set(EWL_OBJECT(image), EWL_FLAG_FILL_SHRINK);
-
-	text = add_text(vbox, "Image Information");
-
 	sp = ewl_scrollpane_new();
 	ewl_object_fill_policy_set(EWL_OBJECT(sp), EWL_FLAG_FILL_ALL);
-	ewl_container_child_append(EWL_CONTAINER(vbox), sp);
+	ewl_container_child_append(EWL_CONTAINER(c), sp);
 	ewl_widget_show(sp);
 	
 	model = ewl_model_ecore_list_get();
@@ -164,10 +141,8 @@ void display_exif_dialog(Ewl_Widget *w, void *event, void *data)
 	ewl_mvc_view_set(EWL_MVC(list), view);
 	ewl_object_fill_policy_set(EWL_OBJECT(list), EWL_FLAG_FILL_ALL);
         ewl_container_child_append(EWL_CONTAINER(sp), list);
-        ewl_callback_append(list, EWL_CALLBACK_SHOW, add_exif_to_container, win);
+        ewl_callback_append(list, EWL_CALLBACK_SHOW, display_exif, NULL);
         ewl_widget_show(list);
-
-	add_button(vbox, "Close", PACKAGE_DATA_DIR "/images/dialog-close.png", close_dialog, win);
 	
 	return;
 }

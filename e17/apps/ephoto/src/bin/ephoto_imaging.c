@@ -1,6 +1,7 @@
 #include "ephoto.h"
 
-unsigned int *flip_horizontal(Ewl_Widget *image)
+unsigned int *
+flip_horizontal(Ewl_Widget *image)
 {
 	unsigned int *im_data, *im_data_new;
 	int index, ind, i, j, ni, nj, ew, eh;
@@ -29,7 +30,8 @@ unsigned int *flip_horizontal(Ewl_Widget *image)
 	return im_data_new;
 }
 
-unsigned int *flip_vertical(Ewl_Widget *image)
+unsigned int *
+flip_vertical(Ewl_Widget *image)
 {
 	unsigned int *im_data, *im_data_new;
 	int index, ind, i, j, ni, nj, ew, eh;
@@ -58,7 +60,8 @@ unsigned int *flip_vertical(Ewl_Widget *image)
 	return im_data_new;
 }
 
-unsigned int *rotate_left(Ewl_Widget *image)
+unsigned int *
+rotate_left(Ewl_Widget *image)
 {
 	unsigned int *im_data, *im_data_new;
 	int index, ind, i, j, ni, nj, ew, eh, nw, nh;
@@ -90,7 +93,8 @@ unsigned int *rotate_left(Ewl_Widget *image)
 	return im_data_new;
 }
 
-unsigned int *rotate_right(Ewl_Widget *image)
+unsigned int *
+rotate_right(Ewl_Widget *image)
 {
 	unsigned int *im_data, *im_data_new;
 	int index, ind, i, j, ni, nj, ew, eh, nw, nh;
@@ -122,7 +126,8 @@ unsigned int *rotate_right(Ewl_Widget *image)
 	return im_data_new;
 }
 
-unsigned int *blur_image(Ewl_Widget *image)
+unsigned int *
+blur_image(Ewl_Widget *image)
 {
 	unsigned int *im_data, *im_data_new, *p1, *p2;
 	int rad = 2;
@@ -214,7 +219,8 @@ unsigned int *blur_image(Ewl_Widget *image)
 	return im_data_new;
 }
 
-unsigned int *sharpen_image(Ewl_Widget *image)
+unsigned int *
+sharpen_image(Ewl_Widget *image)
 {
 	unsigned int *im_data, *im_data_new, *p1, *p2;
 	int a, r, g, b, x, y, w, h;
@@ -273,7 +279,8 @@ unsigned int *sharpen_image(Ewl_Widget *image)
 	return im_data_new;
 }
 
-unsigned int *grayscale_image(Ewl_Widget *image)
+unsigned int *
+grayscale_image(Ewl_Widget *image)
 {
         unsigned int *im_data, *im_data_new;
         int gray, i, r, g, b, a, ew, eh;
@@ -306,7 +313,8 @@ unsigned int *grayscale_image(Ewl_Widget *image)
         return im_data_new;
 }
 
-unsigned int *sepia_image(Ewl_Widget *image)
+unsigned int *
+sepia_image(Ewl_Widget *image)
 {
 	unsigned int *im_data, *im_data_new;
 	int i, r, rr, g, gg, b, bb, a, ew, eh;
@@ -352,19 +360,22 @@ unsigned int *sepia_image(Ewl_Widget *image)
 	return im_data_new;
 }
 
-void update_image(Ewl_Widget *image, int w, int h, unsigned int *data)
+void 
+update_image(Ewl_Widget *image, int w, int h, unsigned int *data)
 {
-	if (w && h && !data)
-	{
-		ewl_image_size_set(EWL_IMAGE(image), w, h);
-		ewl_widget_configure(image);
-	}
-	if (w && h && data)
+        if (!w || !h)
+		return;
+	if (data)
 	{
 		evas_object_image_size_set(EWL_IMAGE(image)->image, w, h);
 		evas_object_image_data_set(EWL_IMAGE(image)->image, data);
 		evas_object_image_data_update_add(EWL_IMAGE(image)->image, 0, 0,
-									 w, h);
+									 w, h);	
 	}
+        else
+        {
+		ewl_image_size_set(EWL_IMAGE(image), w, h);
+                ewl_widget_configure(image);
+        }
 }
    
