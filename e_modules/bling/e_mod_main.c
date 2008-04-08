@@ -24,6 +24,12 @@ e_modapi_init(E_Module *m)
    Bling *b = NULL;
    char buf[4096];
 
+   if (!e_config->use_composite)
+     {
+        e_config->use_composite = 1;
+        e_config_save_queue();
+     }
+   
    b = _bling_init(m);
    if (!b) return NULL;
 
