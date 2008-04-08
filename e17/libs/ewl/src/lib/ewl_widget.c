@@ -619,7 +619,7 @@ ewl_widget_appearance_set(Ewl_Widget *w, const char *appearance)
 
 	/* make sure we have something to do */
 	if (w->appearance && !strcmp(appearance, w->appearance))
-		DLEAVE_FUNCTION(DLEVEL_STABLE);
+		DRETURN(DLEVEL_STABLE);
 
 	/*
 	 * The base appearance is used for determining the theme key of the
