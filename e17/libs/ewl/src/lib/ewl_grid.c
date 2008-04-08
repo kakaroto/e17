@@ -73,6 +73,7 @@ ewl_grid_init(Ewl_Grid *g)
 
 	g->homogeneous_h = FALSE;
 	g->homogeneous_v = FALSE;
+	g->data_dirty = TRUE;
 
 	g->orientation = EWL_ORIENTATION_HORIZONTAL;
 
@@ -356,7 +357,7 @@ ewl_grid_child_position_set(Ewl_Grid *g, Ewl_Widget *w,
 	 */
 	if (start_col < 0) {
 		DWARNING("start_col out of bounds. min is 0.");
-		DLEAVE_FUNCTION(DLEVEL_STABLE);
+		DRETURN(DLEVEL_STABLE);
 	}
 
 	if (end_col >= g->cols)
@@ -366,7 +367,7 @@ ewl_grid_child_position_set(Ewl_Grid *g, Ewl_Widget *w,
 
 	if (start_row < 0) {
 		DWARNING("start_row out of bounds. min is 0.");
-		DLEAVE_FUNCTION(DLEVEL_STABLE);
+		DRETURN(DLEVEL_STABLE);
 	}
 
 	if (end_row >= g->rows)
@@ -380,7 +381,7 @@ ewl_grid_child_position_set(Ewl_Grid *g, Ewl_Widget *w,
 	if (!(child = ewl_widget_data_get(w,g))) {
 		child = NEW(Ewl_Grid_Child, 1);
 		if (!child)
-			DLEAVE_FUNCTION(DLEVEL_STABLE);
+			DRETURN(DLEVEL_STABLE);
 	}
 	else {
 		g->space -= (child->end_col - child->start_col + 1)
@@ -532,7 +533,7 @@ ewl_grid_column_fixed_w_set(Ewl_Grid *g, int col, int width)
 	 */
 	if (col < 0) {
 		DWARNING("parameter 'col' is out of bounds.");
-		DLEAVE_FUNCTION(DLEVEL_STABLE);
+		DRETURN(DLEVEL_STABLE);
 	}
 	else if (col >= g->cols)
 		ewl_grid_dimensions_set(g, col + 1, g->rows);
@@ -586,7 +587,7 @@ ewl_grid_column_relative_w_set(Ewl_Grid *g, int col, float relw)
 	 */
 	if (col < 0) {
 		DWARNING("parameter 'col' is out of bounds.");
-		DLEAVE_FUNCTION(DLEVEL_STABLE);
+		DRETURN(DLEVEL_STABLE);
 	}
 	else if (col >= g->cols)
 		ewl_grid_dimensions_set(g, col + 1, g->rows);
@@ -639,7 +640,7 @@ ewl_grid_column_preferred_w_use(Ewl_Grid *g, int col)
 	 */
 	if (col < 0) {
 		DWARNING("parameter 'col' is out of bounds.");
-		DLEAVE_FUNCTION(DLEVEL_STABLE);
+		DRETURN(DLEVEL_STABLE);
 	}
 	else if (col >= g->cols)
 		ewl_grid_dimensions_set(g, col + 1, g->rows);
@@ -671,7 +672,7 @@ ewl_grid_column_w_remove(Ewl_Grid *g, int col)
 	 */
 	if (col < 0) {
 		DWARNING("parameter 'col' is out of bounds.");
-		DLEAVE_FUNCTION(DLEVEL_STABLE);
+		DRETURN(DLEVEL_STABLE);
 	}
 	else if (col >= g->cols)
 		ewl_grid_dimensions_set(g, col + 1, g->rows);
@@ -725,7 +726,7 @@ ewl_grid_row_fixed_h_set(Ewl_Grid *g, int row, int height)
 	 */
 	if (row < 0) {
 		DWARNING("parameter 'row' is out of bounds.");
-		DLEAVE_FUNCTION(DLEVEL_STABLE);
+		DRETURN(DLEVEL_STABLE);
 	}
 	else if (row >= g->rows)
 		ewl_grid_dimensions_set(g, g->cols, row + 1);
@@ -779,7 +780,7 @@ ewl_grid_row_relative_h_set(Ewl_Grid *g, int row, float relh)
 	 */
 	if (row < 0) {
 		DWARNING("parameter 'row' is out of bounds.");
-		DLEAVE_FUNCTION(DLEVEL_STABLE);
+		DRETURN(DLEVEL_STABLE);
 	}
 	else if (row >= g->rows)
 		ewl_grid_dimensions_set(g, g->cols, row + 1);
@@ -832,7 +833,7 @@ ewl_grid_row_preferred_h_use(Ewl_Grid *g, int row)
 	 */
 	if (row < 0) {
 		DWARNING("parameter 'row' is out of bounds.");
-		DLEAVE_FUNCTION(DLEVEL_STABLE);
+		DRETURN(DLEVEL_STABLE);
 	}
 	else if (row >= g->rows)
 		ewl_grid_dimensions_set(g, g->cols, row + 1);
@@ -864,7 +865,7 @@ ewl_grid_row_h_remove(Ewl_Grid *g, int row)
 	 */
 	if (row < 0) {
 		DWARNING("parameter 'row' is out of bounds.");
-		DLEAVE_FUNCTION(DLEVEL_STABLE);
+		DRETURN(DLEVEL_STABLE);
 	}
 	else if (row >= g->rows)
 		ewl_grid_dimensions_set(g, g->cols, row + 1);
@@ -1320,7 +1321,6 @@ ewl_grid_resize(Ewl_Grid *g)
 
 				default:
 					var += g->row_size[i].preferred_size;
-
 			}
 		}
 

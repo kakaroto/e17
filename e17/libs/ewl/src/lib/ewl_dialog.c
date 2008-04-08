@@ -301,10 +301,6 @@ ewl_dialog_has_separator_set(Ewl_Dialog *dialog, unsigned int has_sep)
 	DCHECK_PARAM_PTR(dialog);
 	DCHECK_TYPE(dialog, EWL_DIALOG_TYPE);
 
-	if (!dialog) {
-		DLEAVE_FUNCTION(DLEVEL_STABLE);
-	}
-
 	if (has_sep && (dialog->separator == NULL)) {
 		ewl_container_child_iterate_begin(EWL_CONTAINER(EWL_DIALOG(dialog)->vbox));
 		n = 0;
