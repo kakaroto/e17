@@ -129,13 +129,14 @@ group
 group
 {
 	name: "ewl/entry/cursor";
-	min: 1 12;
+	min: 1 8;
 	max: 1 10000;
 
 	data
 	{
 		item: "pad" 0;
 		item: "pad/top" 4;
+		item: "pad/bottom" 4;
 	}
 
 	parts

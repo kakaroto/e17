@@ -166,7 +166,7 @@ ewl_entry_init(Ewl_Entry *e)
 	e->cursor = ewl_entry_cursor_new(e);
 	ewl_container_child_append(EWL_CONTAINER(e), e->cursor);
 	ewl_widget_internal_set(e->cursor, TRUE);
-	ewl_object_fill_policy_set(EWL_OBJECT(e->cursor), EWL_FLAG_FILL_SHRINK);
+	ewl_object_fill_policy_set(EWL_OBJECT(e->cursor), EWL_FLAG_FILL_VFILL);
 
 	/* Set the pointer */
 	ewl_attach_mouse_cursor_set(EWL_WIDGET(e), EWL_MOUSE_CURSOR_XTERM);
@@ -182,7 +182,7 @@ ewl_entry_init(Ewl_Entry *e)
 				ewl_entry_cb_focus_in, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_FOCUS_OUT,
 				ewl_entry_cb_focus_out, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
+	ewl_callback_prepend(w, EWL_CALLBACK_CONFIGURE,
 				ewl_entry_cb_configure, NULL);
 	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN,
 				ewl_entry_cb_mouse_down, NULL);
