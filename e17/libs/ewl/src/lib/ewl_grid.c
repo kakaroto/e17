@@ -1272,13 +1272,18 @@ ewl_grid_resize(Ewl_Grid *g)
 		 * we can only distribute the rest size to the
 		 * non-fixed ones
 		 */
-		rel = (double)(new_w - fixed) / (double)var;
-		for (i = 0; i < g->cols; i++)
-			if (g->col_size[i].resize_type
-					== EWL_GRID_RESIZE_NORMAL)
+		if (var != 0) {
+			rel = (double)(new_w - fixed) / (double)var;
+			for (i = 0; i < g->cols; i++) {
+				if (g->col_size[i].resize_type
+						!= EWL_GRID_RESIZE_NORMAL)
+					continue;
+
 				g->col_size[i].current_size =
 					(int)(g->col_size[i].preferred_size
-									* rel);
+							* rel);
+			}
+		}
 	}
 
 	/*
@@ -1328,13 +1333,18 @@ ewl_grid_resize(Ewl_Grid *g)
 		 * we can only distribute the rest size to the
 		 * non-fixed ones
 		 */
-		rel = (double)(new_h - fixed) / (double)var;
-		for (i = 0; i < g->rows; i++)
-			if (g->row_size[i].resize_type
-					== EWL_GRID_RESIZE_NORMAL)
+		if (var != 0) {
+			rel = (double)(new_h - fixed) / (double)var;
+			for (i = 0; i < g->rows; i++) {
+				if (g->row_size[i].resize_type
+						!= EWL_GRID_RESIZE_NORMAL)
+					continue;
+
 				g->row_size[i].current_size =
 					(int)(g->row_size[i].preferred_size
-									* rel);
+							* rel);
+			}
+		}
 	}
 
 	/*
