@@ -44,7 +44,7 @@ add_atree(Ewl_Widget *c)
 	ewl_mvc_view_set(EWL_MVC(tree), view);
 	ewl_mvc_selection_mode_set(EWL_MVC(tree), EWL_SELECTION_MODE_SINGLE);
 	ewl_object_fill_policy_set(EWL_OBJECT(tree), EWL_FLAG_FILL_ALL);
-	ewl_container_child_append(EWL_CONTAINER(c), tree);
+	ewl_container_child_prepend(EWL_CONTAINER(c), tree);
 	ewl_widget_show(tree);
 
 	return tree;

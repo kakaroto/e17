@@ -15,10 +15,12 @@ FILES = add.png \
 	go-down.png \
 	go-next.png \
 	image.png \
+	in.png \
 	list_view.png \
 	media-seek-backward.png \
 	media-seek-forward.png \
 	normal_view.png \
+	out.png \
 	photo_lens.png \
 	preferences-system.png \
 	redo.png \

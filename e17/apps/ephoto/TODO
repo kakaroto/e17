@@ -10,19 +10,17 @@ TODO-
 ===Command Line===
 Get some command line options going!
 ===General===
-Dialogs For Adding/Removing Albums/Images.
+Album/Image Removal
 DRAG AND DROP IS A MUST!
 Keybindings
 ===Layout===
 Ideas and Changes are welcome!
 ===Normal View===
 -
-===Edit View===
-Add Editing Controls(Zooms/Color Enhancement/Histogram/Cropping/etc..).
-Better  Saving Ability(This will include looking into editing and saving exif data).
-Should we list navigation for other images better?(than using buttons with arrows)
 ===Single View===
-Should we list navigation for other images better?(than using buttons with arrwos)
+Add Editing Controls(Zooms/Color Enhancement/Histogram/Cropping/etc..).
+Better Saving Ability(This will include looking into editing and saving exif data).
+Should we list navigation for other images better?(than using buttons with arrows)
 ===Slideshow===
 Need to Add Configuration to Slideshows..
 

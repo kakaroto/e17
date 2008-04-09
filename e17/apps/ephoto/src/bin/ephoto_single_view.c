@@ -117,12 +117,12 @@ add_standard_edit_tools(Ewl_Widget *c)
 {
 	Ewl_Widget *image;
 
-	image = add_image(c, PACKAGE_DATA_DIR "/images/search.png", 0, zoom_in, 
+	image = add_image(c, PACKAGE_DATA_DIR "/images/in.png", 0, zoom_in, 
 					NULL);
         ewl_image_size_set(EWL_IMAGE(image), 25, 25);
         ewl_object_alignment_set(EWL_OBJECT(image), EWL_FLAG_ALIGN_LEFT);
 
-	image = add_image(c, PACKAGE_DATA_DIR "/images/search.png", 0, zoom_out,
+	image = add_image(c, PACKAGE_DATA_DIR "/images/out.png", 0, zoom_out,
 					NULL);
         ewl_image_size_set(EWL_IMAGE(image), 25, 25);
         ewl_object_alignment_set(EWL_OBJECT(image), EWL_FLAG_ALIGN_LEFT);
