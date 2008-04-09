@@ -225,6 +225,8 @@ ewl_text_offsets_get(Ewl_Text *t, int *x, int *y)
 	if (x) *x = t->offset.x;
 	if (y) *y = t->offset.y;
 
+	ewl_widget_configure(EWL_WIDGET(t));
+
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -777,7 +779,7 @@ ewl_text_obscure_set(Ewl_Text *t, const char *o)
 	}
 	else
 		t->obscure = strdup("*");
-	
+
 	t->dirty = TRUE;
 	ewl_widget_configure(EWL_WIDGET(t));
 
@@ -2930,7 +2932,7 @@ ewl_text_size(Ewl_Text *t)
 	yy = CURRENT_Y(t);
 	hh = CURRENT_H(t);
 	ww = CURRENT_W(t);
-	
+
 	evas_object_move(t->textblock, xx + t->offset.x, yy + t->offset.y);
 	evas_object_resize(t->textblock, ww - t->offset.x, hh - t->offset.y);
 
@@ -4060,11 +4062,11 @@ static unsigned int
 ewl_text_drawn_byte_to_char(Ewl_Text *t, unsigned int byte_idx)
 {
 	unsigned int char_idx = 0;
-	
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET(t, 0);
 	DCHECK_TYPE_RET(t, EWL_TEXT_TYPE, 0);
-	
+
 	if (!t->obscure)
 		ewl_text_fmt_byte_to_char(t->formatting.nodes, byte_idx,
 						0, &char_idx, NULL);
@@ -4076,7 +4078,7 @@ ewl_text_drawn_byte_to_char(Ewl_Text *t, unsigned int byte_idx)
 		else
 			char_idx = ewl_text_length_get(t);
 	}
-	
+
 	DRETURN_INT(char_idx, DLEVEL_STABLE);
 }
 
