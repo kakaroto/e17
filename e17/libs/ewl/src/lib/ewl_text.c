@@ -225,8 +225,6 @@ ewl_text_offsets_get(Ewl_Text *t, int *x, int *y)
 	if (x) *x = t->offset.x;
 	if (y) *y = t->offset.y;
 
-	ewl_widget_configure(EWL_WIDGET(t));
-
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -246,6 +244,7 @@ ewl_text_offsets_set(Ewl_Text *t, int x, int y)
 
 	t->offset.x = x;
 	t->offset.y = y;
+
 	ewl_widget_configure(EWL_WIDGET(t));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
