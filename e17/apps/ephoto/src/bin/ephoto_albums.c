@@ -22,6 +22,12 @@ show_albums(Ewl_Widget *c)
 	populate_albums(NULL, NULL, NULL);
 }
 
+static unsigned int
+highlight_cb(void *data, unsigned int row)
+{
+	return 0;
+}
+
 static Ewl_Widget *
 add_atree(Ewl_Widget *c)
 {
@@ -32,6 +38,7 @@ add_atree(Ewl_Widget *c)
 	model = ewl_model_new();
 	ewl_model_data_fetch_set(model, album_data_fetch);
 	ewl_model_data_count_set(model, album_data_count);
+	ewl_model_data_highlight_set(model, highlight_cb);
 
         view = ewl_view_new();
         ewl_view_widget_fetch_set(view, album_view_new);
