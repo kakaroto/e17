@@ -70,7 +70,7 @@ _ex_tab_new(Exhibit *e, char *dir)
    etk_tree_build(ETK_TREE(tab->itree));
 
    tab->dir = _ex_path_normalize(ecore_file_realpath(dir));
-   tab->alignment = etk_alignment_new(0.5, 0.5, 0.0, 0.0);   
+   tab->alignment = etk_alignment_new(0.5, 0.5, 1.0, 1.0);   
    
    tab->image = etk_image_new();
    etk_widget_theme_file_set(tab->image, PACKAGE_DATA_DIR"/gui.edj");
