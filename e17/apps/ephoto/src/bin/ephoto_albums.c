@@ -11,6 +11,7 @@ static unsigned int album_data_count(void *data);
 static void add_rc_menu(Ewl_Widget *w, void *event, void *data);
 static void album_clicked(Ewl_Widget *w, void *event, void *data);
 static void thumb_clicked(Ewl_Widget *w, void *event, void *data);
+static void populate_images(Ewl_Widget *w, void *event, void *data);
 
 void 
 show_albums(Ewl_Widget *c)
@@ -108,7 +109,7 @@ album_data_count(void *data)
 static void album_clicked(Ewl_Widget *w, void *event, void *data)
 {
 	em->current_album = strdup(ewl_icon_label_get(EWL_ICON(w)));
-	populate_albums(NULL, NULL, NULL);
+	populate_images(NULL, NULL, NULL);
 }
 
 static void 
@@ -157,8 +158,8 @@ void
 populate_albums(Ewl_Widget *w, void *event, void *data)
 {
 	const char *album;
-	pthread_t thumb_worker, album_worker, image_worker;
-	int ret1, ret2;
+	pthread_t album_worker;
+	int ret1;
 	
 	album = NULL;
 
@@ -169,26 +170,40 @@ populate_albums(Ewl_Widget *w, void *event, void *data)
 	}
 
 	if (!ecore_list_empty_is(em->albums))
-	{
 		ecore_list_destroy(em->albums);
-	}
-	if (!ecore_list_empty_is(em->images))
-	{
-		ecore_dlist_destroy(em->images);
-	}
 
 	em->albums = ecore_list_new();
-	em->images = ecore_dlist_new();
-	if(em->fbox) ewl_container_reset(EWL_CONTAINER(em->fbox));
-
+	
 	ret1 = pthread_create(&album_worker, NULL, get_albums_pre, NULL);
-	ret2 = pthread_create(&image_worker, NULL, get_aimages_pre, NULL);
-	if (ret1 || ret2)
+	if (ret1)
 	{
 		printf("ERROR: Couldn't create thread!\n");
 		return;
 	}
 	pthread_join(album_worker, NULL);
+
+	populate_images(NULL, NULL, NULL);
+
+	return;
+}
+
+static void
+populate_images(Ewl_Widget *w, void *event, void *data)
+{
+	pthread_t thumb_worker, image_worker;
+	int ret1;
+
+	if (!ecore_list_empty_is(em->images))
+		ecore_dlist_destroy(em->images);
+
+	em->images = ecore_dlist_new();
+	if (em->fbox) ewl_container_reset(EWL_CONTAINER(em->fbox));
+
+	ret1 = pthread_create(&image_worker, NULL, get_aimages_pre, NULL);
+	if (ret1)
+	{	printf("ERROR: Couldn't create thread!\n");
+		return;
+	}
 	pthread_join(image_worker, NULL);
 
 	ret1 = pthread_create(&thumb_worker, NULL, create_athumb, NULL);
