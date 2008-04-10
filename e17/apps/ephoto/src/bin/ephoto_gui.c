@@ -109,8 +109,6 @@ add_label(Ewl_Widget *c, char *lbl)
 	if(lbl) ewl_label_text_set(EWL_LABEL(label), _(lbl));
 	ewl_object_alignment_set(EWL_OBJECT(label), 
 					EWL_FLAG_ALIGN_CENTER);
-	ewl_object_fill_policy_set(EWL_OBJECT(label), 
-					EWL_FLAG_FILL_SHRINK);
 	if(c) ewl_container_child_append(EWL_CONTAINER(c), label);
 	ewl_widget_show(label);
 
@@ -175,8 +173,6 @@ add_text(Ewl_Widget *c, char *txt)
 	if(txt) ewl_text_text_set(EWL_TEXT(text), _(txt));
         ewl_object_alignment_set(EWL_OBJECT(text), 
 					EWL_FLAG_ALIGN_CENTER);
-        ewl_object_fill_policy_set(EWL_OBJECT(text), 
-					EWL_FLAG_FILL_SHRINK);
         if(c) ewl_container_child_append(EWL_CONTAINER(c), text);
         ewl_widget_show(text);
 
