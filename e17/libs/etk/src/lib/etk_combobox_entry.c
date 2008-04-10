@@ -134,7 +134,8 @@ Etk_Type *etk_combobox_entry_item_type_get(void)
 Etk_Widget *etk_combobox_entry_new(void)
 {
    return etk_widget_new(ETK_COMBOBOX_ENTRY_TYPE, "theme-group", "combobox_entry",
-         "focusable", ETK_TRUE, "focus-on-click", ETK_TRUE, NULL);
+         "focusable", ETK_TRUE, "focus-on-click", ETK_FALSE, NULL);
+   // focus-on-click set to false, to allow subwidgets to be focused
 }
 
 /**
@@ -954,7 +955,7 @@ static void _etk_combobox_entry_constructor(Etk_Combobox_Entry *combobox_entry)
          "visible", ETK_TRUE, "internal", ETK_TRUE, NULL);
 
    combobox_entry->button = etk_widget_new(ETK_TOGGLE_BUTTON_TYPE, "theme-group", "button", "theme-parent", combobox_entry,
-         "visible", ETK_TRUE, "repeat-mouse-events", ETK_TRUE, "focusable", ETK_FALSE, "internal", ETK_TRUE, NULL);
+         "visible", ETK_TRUE, "repeat-mouse-events", ETK_FALSE, "focusable", ETK_FALSE, "internal", ETK_TRUE, NULL);
    etk_object_data_set(ETK_OBJECT(combobox_entry->button), "_Etk_Combobox_Entry_Button::Combobox_Entry", combobox_entry);
    etk_widget_parent_set(combobox_entry->hbox, ETK_WIDGET(combobox_entry));
 
@@ -1295,8 +1296,12 @@ static Etk_Bool _etk_combobox_entry_hbox_mouse_up_cb(Etk_Object *object, Etk_Eve
 
    if (!(combobox_entry = ETK_COMBOBOX_ENTRY(data)))
       return ETK_TRUE;
-
-   etk_toggle_button_toggle(ETK_TOGGLE_BUTTON(combobox_entry->button));
+   // dont pop up on whole widget, let toggle button (and on cursor up/down inside entry part) handle this
+   //etk_toggle_button_toggle(ETK_TOGGLE_BUTTON(combobox_entry->button));
+   
+   /* NOTE:
+    * somehow this callback gets fired many times when popping up the popup window
+    */
    return ETK_TRUE;
 }
 
