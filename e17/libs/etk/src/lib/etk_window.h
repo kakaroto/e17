@@ -53,6 +53,7 @@ struct Etk_Window
 
    Etk_Bool (*delete_event)(Etk_Window *window);
    Etk_Window *center_on_window;
+   Etk_Bool center_queued;
    Etk_Bool wait_size_request:1;
 };
 

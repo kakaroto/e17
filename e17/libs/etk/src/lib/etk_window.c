@@ -236,6 +236,7 @@ void etk_window_center_on_window(Etk_Window *window_to_center, Etk_Window *windo
    if (window_to_center->wait_size_request)
    {
       window_to_center->center_on_window = window;
+			window_to_center->center_queued = ETK_TRUE;
       if (window)
          etk_object_weak_pointer_add(ETK_OBJECT(window), (void **)(&window_to_center->center_on_window));
    }
@@ -605,6 +606,7 @@ static void _etk_window_constructor(Etk_Window *window)
 
    window->wait_size_request = ETK_TRUE;
    window->center_on_window = NULL;
+   window->center_queued = ETK_FALSE;
    window->delete_event = _etk_window_delete_event_handler;
 
    etk_engine_window_constructor(window);
@@ -776,8 +778,11 @@ static Etk_Bool _etk_window_size_requested_cb(Etk_Object *object, Etk_Size *requ
          window->wait_size_request = ETK_FALSE;
          if (etk_widget_is_visible(ETK_WIDGET(window)))
             etk_engine_window_show(window);
-         if (window->center_on_window)
+         if (window->center_on_window || window->center_queued)
+				 {
             etk_window_center_on_window(window, window->center_on_window);
+						window->center_queued = ETK_FALSE;
+				 }
       }
    }
 
