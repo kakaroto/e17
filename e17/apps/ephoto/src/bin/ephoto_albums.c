@@ -219,7 +219,7 @@ populate_images(Ewl_Widget *w, void *event, void *data)
 		printf("ERROR: Couldn't create thread!\n");
 		return;
 	}
-	pthread_detach(thumb_worker);
+	pthread_join(thumb_worker, NULL);
 
 	return;
 }
