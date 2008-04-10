@@ -77,11 +77,11 @@ ephoto_import_dialog(Ewl_Widget *w, void *event, void *data)
         vbox = add_box(window, EWL_ORIENTATION_VERTICAL, 10);
         ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_ALL);
 
-        add_text(vbox, "Please provide a name for the new album:");
+        add_label(vbox, "Please provide a name for the new album:");
 
         name_entry = add_entry(vbox, "New Album", NULL, NULL);
 
-        add_text(vbox, "Please provide a short description for this album:");
+        add_label(vbox, "Please provide a short description for this album:");
 
         desc_entry = add_entry(vbox, "Album Description", NULL, NULL);
 
