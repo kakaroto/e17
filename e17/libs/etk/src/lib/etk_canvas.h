@@ -5,6 +5,7 @@
 #include <Evas.h>
 
 #include "etk_widget.h"
+#include "etk_container.h"
 #include "etk_types.h"
 
 #ifdef __cplusplus
@@ -32,11 +33,12 @@ extern "C" {
 struct Etk_Canvas
 {
    /* private: */
-   /* Inherit from Etk_Widget */
-   Etk_Widget widget;
+   /* Inherit from Etk_Container*/
+   Etk_Container container;
 
    Evas_Object *clip;
    Evas_List *objects;
+   Evas_List *widgets;
 };
 
 
@@ -47,6 +49,9 @@ Etk_Bool    etk_canvas_object_add(Etk_Canvas *canvas, Evas_Object *object);
 void        etk_canvas_object_remove(Etk_Canvas *canvas, Evas_Object *object);
 void        etk_canvas_object_move(Etk_Canvas *canvas, Evas_Object *object, int x, int y);
 void        etk_canvas_object_geometry_get(Etk_Canvas *canvas, Evas_Object *object, int *x, int *y, int *w, int *h);
+
+Etk_Bool    etk_canvas_widget_add(Etk_Canvas *canvas, Etk_Widget *widget);
+void        etk_canvas_widget_move(Etk_Canvas *canvas, Etk_Widget *widget, int x, int y);
 
 /** @} */
 

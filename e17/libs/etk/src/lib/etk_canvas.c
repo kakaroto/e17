@@ -1,3 +1,6 @@
+/*
+ * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
+ */
 /** @file etk_canvas.c */
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -39,7 +42,7 @@ Etk_Type *etk_canvas_type_get(void)
 
    if (!canvas_type)
    {
-      canvas_type = etk_type_new("Etk_Canvas", ETK_WIDGET_TYPE,
+      canvas_type = etk_type_new("Etk_Canvas", ETK_CONTAINER_TYPE,
          sizeof(Etk_Canvas), ETK_CONSTRUCTOR(_etk_canvas_constructor),
          NULL, NULL);
    }
@@ -94,6 +97,29 @@ Etk_Bool etk_canvas_object_add(Etk_Canvas *canvas, Evas_Object *object)
    return result;
 }
 
+Etk_Bool etk_canvas_widget_add(Etk_Canvas *canvas, Etk_Widget *widget)
+{
+	Etk_Geometry geometry;
+	Etk_Size size;
+	int cx, cy;
+
+	if (!canvas || !widget)
+		return ETK_FALSE;
+
+	
+	etk_widget_geometry_get(ETK_WIDGET(canvas), &cx, &cy, NULL, NULL);
+	etk_widget_size_request(widget, &size);
+	geometry.x = cx;
+	geometry.y = cy;
+	geometry.w = size.w;
+	geometry.h = size.h;
+	etk_widget_size_allocate(widget, geometry);
+	etk_widget_parent_set(widget, ETK_WIDGET(canvas));
+ 	canvas->widgets = evas_list_append(canvas->widgets, widget);
+
+	return ETK_TRUE;
+}
+
 /**
  * @brief Removes an Evas object from the canvas. The removed object will be automatically hidden
  * @param canvas a canvas
@@ -139,6 +165,24 @@ void etk_canvas_object_move(Etk_Canvas *canvas, Evas_Object *object, int x, int 
    evas_object_move(object, cx + x, cy + y);
 }
 
+void etk_canvas_widget_move(Etk_Canvas *canvas, Etk_Widget *widget, int x, int y)
+{
+	int cx, cy;
+	Etk_Geometry geometry;
+	Etk_Size size;
+
+	if (!canvas || !widget)
+		return;
+
+	etk_widget_geometry_get(ETK_WIDGET(canvas), &cx, &cy, NULL, NULL);
+	etk_widget_size_request(widget, &size);
+	geometry.x = cx + x;
+	geometry.y = cy + y;
+	geometry.w = size.w;
+	geometry.h = size.h;
+	etk_widget_size_allocate(widget, geometry);
+}
+
 /**
  * @brief Gets the geometry of an Evas Object. The returned position will be relative to the canvas' top-left corner
  * @param canvas a canvas
@@ -179,6 +223,7 @@ static void _etk_canvas_constructor(Etk_Canvas *canvas)
 
    canvas->clip = NULL;
    canvas->objects = NULL;
+   canvas->widgets= NULL;
    ETK_WIDGET(canvas)->size_allocate = _etk_canvas_size_allocate;
 
    etk_signal_connect_by_code(ETK_WIDGET_REALIZED_SIGNAL, ETK_OBJECT(canvas), ETK_CALLBACK(_etk_canvas_realized_cb), NULL);
@@ -189,12 +234,31 @@ static void _etk_canvas_constructor(Etk_Canvas *canvas)
 static void _etk_canvas_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
 {
    Etk_Canvas *canvas;
+	 Etk_Widget *child;
+	 Etk_Size size;
+	 Etk_Geometry child_geometry;
+	 Evas_List *l;
+	 int x, y, w, h;
 
    if (!(canvas = ETK_CANVAS(widget)))
       return;
 
    evas_object_move(canvas->clip, geometry.x, geometry.y);
-   evas_object_resize(canvas->clip, geometry.w, geometry.h);
+	 evas_object_resize(canvas->clip, geometry.w, geometry.h);
+
+	 // TODO: this might not be needed everytime, better way?
+	 for (l = canvas->widgets; l; l = l->next)
+	 {
+	 		child = l->data;
+			etk_widget_size_request(child, &size);
+			etk_widget_geometry_get(child, &x, &y, &w, &h);
+			child_geometry.x = x;
+			child_geometry.y = y;
+			child_geometry.w = size.w;
+			child_geometry.h = size.h;
+			etk_widget_size_allocate(child, child_geometry);
+			etk_widget_show_all(child);
+	 }
 }
 
 /**************************
@@ -209,6 +273,7 @@ static Etk_Bool _etk_canvas_realized_cb(Etk_Object *object, void *data)
    Evas *evas;
    Etk_Canvas *canvas;
    Evas_Object *obj;
+   Etk_Widget *widget;
    Evas_List *l;
 
    if (!(canvas = ETK_CANVAS(object)) || !(evas = etk_widget_toplevel_evas_get(ETK_WIDGET(canvas))))
@@ -224,6 +289,12 @@ static Etk_Bool _etk_canvas_realized_cb(Etk_Object *object, void *data)
       evas_object_show(canvas->clip);
    }
 
+   for (l = canvas->widgets; l; l = l->next)
+   {
+      widget = l->data;
+			etk_widget_show_all(widget);
+   }
+
    return ETK_TRUE;
 }
 
@@ -237,7 +308,9 @@ static Etk_Bool _etk_canvas_unrealized_cb(Etk_Object *object, void *data)
 
    canvas->clip = NULL;
    evas_list_free(canvas->objects);
+   evas_list_free(canvas->widgets);
    canvas->objects = NULL;
+   canvas->widgets= NULL;
 
    return ETK_TRUE;
 }
