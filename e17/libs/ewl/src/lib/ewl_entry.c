@@ -121,13 +121,13 @@ Ewl_Widget *
 ewl_password_new(void)
 {
 	Ewl_Widget *e;
-	
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 
 	e = ewl_entry_new();
 	ewl_widget_appearance_set(e, "password/"EWL_ENTRY_TYPE);
 	ewl_text_obscure_set(EWL_TEXT(e), "*");
-	
+
 	DRETURN_PTR(e, DLEVEL_STABLE);
 }
 
@@ -173,6 +173,7 @@ ewl_entry_init(Ewl_Entry *e)
 
 	/* this has to be called after the cursor is created as it will try
 	 * to show the cursor */
+	ewl_entry_multiline_set(e, FALSE);
 	ewl_entry_editable_set(e, TRUE);
 	ewl_text_selectable_set(EWL_TEXT(e), TRUE);
 	ewl_dnd_accepted_types_set(EWL_WIDGET(e), text_types);
@@ -980,4 +981,3 @@ ewl_entry_view_cb_header_fetch(void *data, unsigned int col __UNUSED__)
 
 	DRETURN_PTR(entry, DLEVEL_STABLE);
 }
-
