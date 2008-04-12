@@ -34,6 +34,9 @@ AC_DEFINE_UNQUOTED(INTERFACE_CURRENT, "$INTERFACE_CURRENT", [Interface current v
 AC_DEFINE_UNQUOTED(INTERFACE_REVISION, "$INTERFACE_REVISION", [Interface revision number])
 AC_DEFINE_UNQUOTED(INTERFACE_AGE, "$INTERFACE_AGE", [Interface age number])
 
+dnl disable static lib for modules.
+AC_SUBST([AM_LIBTOOLFLAGS], [--tag=disable-static])
+
 AC_ARG_ENABLE(gcov,
   AC_HELP_STRING([--enable-gcov],
   [compile with coverage profiling instrumentation]),
