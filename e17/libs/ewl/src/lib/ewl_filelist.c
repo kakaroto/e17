@@ -337,7 +337,7 @@ ewl_filelist_filter_set(Ewl_Filelist *fl, Ewl_Filelist_Filter *filter)
 
 /**
  * @param fl: The filelist to get the filter from
- * @return Returns the current filter
+ * @return Returns the current filter.  Do not free returned filter!
  * @brief Retrieves the current filter set on the filelist
  */
 Ewl_Filelist_Filter *

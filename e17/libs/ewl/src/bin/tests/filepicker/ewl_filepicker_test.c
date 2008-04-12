@@ -34,10 +34,13 @@ static int
 create_test(Ewl_Container *box)
 {
 	Ewl_Widget *w;
+	Ewl_Filelist_Filter *f;
 
 	w = ewl_filepicker_new();
-	ewl_filepicker_filter_add(EWL_FILEPICKER(w), "C Files", "*.c", NULL);
+	f = ewl_filepicker_filter_add(EWL_FILEPICKER(w), "C Files",
+			"*.c", NULL);
 	ewl_filepicker_filter_add(EWL_FILEPICKER(w), "D Files", "*.d", NULL);
+	ewl_filepicker_filter_set(EWL_FILEPICKER(w), f);
 	ewl_container_child_append(box, w);
 	ewl_callback_append(w, EWL_CALLBACK_VALUE_CHANGED,
 			ewl_filepicker_cb_value_changed, NULL);

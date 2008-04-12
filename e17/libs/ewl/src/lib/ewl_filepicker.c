@@ -405,16 +405,24 @@ ewl_filepicker_directory_get(Ewl_Filepicker *fp)
  * @param fp: The filepicker to set the filter on
  * @param filter: The filter to set on the filepicker
  * @return Returns no value.
- * @brief Set the given filter into the file picker
+ * @brief Set the given filter into the file picker and updates the combo
  */
 void
-ewl_filepicker_filter_set(Ewl_Filepicker *fp, Ewl_Filelist_Filter *filter)
+ewl_filepicker_filter_set(Ewl_Filepicker *fp,
+					Ewl_Filelist_Filter *filter)
 {
+	int idx;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(fp);
 	DCHECK_TYPE(fp, EWL_FILEPICKER_TYPE);
 
-	ewl_filelist_filter_set(EWL_FILELIST(fp->file_list), filter);
+	if (filter == ewl_filepicker_filter_get(fp))
+		DRETURN(DLEVEL_STABLE);
+
+	ecore_list_goto(fp->filters, filter);
+	idx = ecore_list_index(fp->filters);
+	ewl_mvc_selected_set(EWL_MVC(fp->mvc_filters.combo), NULL, fp, idx, 0);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -422,7 +430,7 @@ ewl_filepicker_filter_set(Ewl_Filepicker *fp, Ewl_Filelist_Filter *filter)
 /**
  * @param fp: The filepicker to get the filter from
  * @return Returns the current filter used in the filepicker
- * @brief Retrieves the current filter used in the filepicker
+ * @brief Retrieves the current filter used in the filepicker.  Do not free the filter!
  */
 Ewl_Filelist_Filter *
 ewl_filepicker_filter_get(Ewl_Filepicker *fp)
@@ -585,10 +593,10 @@ ewl_filepicker_selected_files_get(Ewl_Filepicker *fp)
  * @param name: The name to display for the filter
  * @param extension: The extension to filter for
  * @param mime_types: The mime types to filter for
- * @return Returns no value
+ * @return Returns the filter created. Do not free the returned filter.
  * @brief Add the filter named @a name to the combo box in the filepicker.
  */
-void
+Ewl_Filelist_Filter *
 ewl_filepicker_filter_add(Ewl_Filepicker *fp, const char *name,
 						const char *extension,
 						Ecore_List *mime_types)
@@ -596,11 +604,14 @@ ewl_filepicker_filter_add(Ewl_Filepicker *fp, const char *name,
 	Ewl_Filelist_Filter *f;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(fp);
-	DCHECK_PARAM_PTR(name);
-	DCHECK_TYPE(fp, EWL_FILEPICKER_TYPE);
+	DCHECK_PARAM_PTR_RET(fp, NULL);
+	DCHECK_PARAM_PTR_RET(name, NULL);
+	DCHECK_TYPE_RET(fp, EWL_FILEPICKER_TYPE, NULL);
 
 	f= NEW(Ewl_Filelist_Filter, 1);
+	if (!f)
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
+
 	f->name = strdup(name);
 	if (extension) f->extension = strdup(extension);
 	else f->extension = NULL;
@@ -608,8 +619,10 @@ ewl_filepicker_filter_add(Ewl_Filepicker *fp, const char *name,
 	else f->mime_list = NULL;
 
 	ecore_list_prepend(fp->filters, f);
+	ewl_mvc_dirty_set(EWL_MVC(fp->mvc_filters.combo), TRUE);
+	ewl_mvc_selected_set(EWL_MVC(fp->mvc_filters.combo), NULL, fp, 0, 0);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_PTR(f, DLEVEL_STABLE);
 }
 
 static void
@@ -936,7 +949,7 @@ ewl_filepicker_cb_type_change(Ewl_Widget *w, void *ev __UNUSED__,
 	{
 		ecore_list_index_goto(fp->filters, idx->row);
 		filter = ecore_list_current(fp->filters);
-		ewl_filepicker_filter_set(fp, filter);
+		ewl_filelist_filter_set(EWL_FILELIST(fp->file_list), filter);
 	}
 	
 	FREE(idx);
