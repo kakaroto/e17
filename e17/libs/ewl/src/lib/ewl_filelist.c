@@ -541,6 +541,15 @@ ewl_filelist_selected_file_get(Ewl_Filelist *fl)
 	}
 	FREE(idx);
 
+	if (!file)
+	{
+		/* Get this error now using tree view of filelist, when
+		 * selecting a file too far down in an expansion
+		 */
+		DWARNING("MVC has selected file, but cannot find the data!");
+		DRETURN_PTR(NULL, DLEVEL_STABLE);
+	}
+
 	if (!strcmp(file->name, ".."))
 		snprintf(path, PATH_MAX, "%s", data->name);
 
