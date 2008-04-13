@@ -638,6 +638,10 @@ ewl_box_configure_calc(Ewl_Box * b, Ewl_Object **spread, int *fill_size, int *al
 			i++;
 		}
 	}
+	
+	/* the last widget does not have spacing on its right side, so
+	 * we need to add it again */
+	*fill_size += b->spacing;
 
 	DRETURN_INT(i, DLEVEL_STABLE);
 }
