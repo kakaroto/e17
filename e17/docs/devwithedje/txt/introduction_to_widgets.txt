@@ -32,7 +32,7 @@ replace them with its own abstracted versions.
 In general terms, a developer implementing a widget from the scratch would have
 to program functions to:
 
-* Manipulate the canvas to draw its primitives.
+* Manipulate the canvas primitives to draw the widget.
 * Register new signal types to emit as a widget.
 * Display information and retreive changes.
 * Handle events ocurring in the environment that affect it.

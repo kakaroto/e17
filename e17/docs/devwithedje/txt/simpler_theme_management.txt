@@ -1,0 +1,93 @@
+In the previous section we have seen how to create a window based on parameters
+lifted from a given Edje object refered to as the layout object. If you take
+a look you will see that the layout object was aquired differently than the
+common Edje object, the function is names ``simple_object_add`` and its used
+in the main function to load the themes for the viewport widget and the minimap
+widget as well.
+
+In this chapter we will review all the functions called to make this simpler 
+method of aquiring Edje objects possible::
+
+    Evas_Object *
+    simpler_object_add(Evas *canvas, const char *group)
+    {
+        Evas_Object *o;
+        o = edje_object_add(canvas);
+        if(simpler_object_file_set(o, ecore_config_theme_with_path_get("theme/current"), group))
+        {
+            return o;
+        }
+        else
+        {
+            if(simpler_object_file_set(o, ecore_config_theme_with_path_get("theme/default"), group))
+            {
+                return o;
+            }
+        }    
+        return NULL;
+    }
+
+We begin by the most popular ``simpler_object_add``. All this function really 
+does is to allocate and initate the object in the choosen canvas with 
+``edje_object_add``. The rest of the work is done by ``simpler_object_file_set``
+and ``ecore_config_theme_with_path_get``.
+
+As I have said earlier we are going to use Ecore_Config to manage the 
+application's settings. An introduction to Ecore_Config can be found in the
+"EFL Cookbook" downloaded for free in the Enlightenment project website. This
+particular setting is used to manage a theme file name. Altought this sounds
+like basically managing a string the function``ecore_config_theme_with_path_get``
+show us how it actually work, better expressed in pseudocode::
+
+    ecore_config_theme_with_path_get(key):
+        theme_file_name = search_config_file_for(key)
+        possible_paths = ecore_config_theme_search_path_get()
+        for each path in possible_paths:
+            if theme_file_name in path:
+                return path + theme_file_name
+            else
+                continue
+
+What this means is that a ``ecore_config_theme_*`` property is quite more 
+advanced than a simple path in the form of a string. Now that we have that 
+cleared up lets hit the next function in the calling stack::
+
+    Evas_Bool
+    simpler_object_file_set(Evas_Object *o, const char *path, const char *group)
+    {
+        if(path != NULL)
+        {
+            if(!ecore_file_exists(path))
+            {
+                fprintf(stderr, "Warning: Failed to find the theme file '%s'.\n", path);
+                return FALSE;
+            }
+            else
+            {
+                if(!edje_file_group_exists(path, group))
+                {
+                    fprintf(stderr, "Warning: Failed to find group '%s' in theme file '%s'.\n", group, path);
+                    return FALSE;
+                }
+                else
+                {
+                    edje_object_file_set(o, path, group);
+                    evas_object_show(o);
+                    return TRUE;
+                }
+            }
+        }
+        else
+            return FALSE;
+    }
+
+This function is also quite simple. It basically calls `edje_object_file_set`
+after running some checks to see if the parameters are valid. After that, it 
+sets the object to be displayed with ``evas_object_show`` mainly because the
+default value hides the object and it will not be used as often by the callers 
+of this function.
+
+These, and a couple of more functions are used by every application fitting the
+profile of this framework. I wrote this code expecting you will want to modify
+it, learning a lot in the process, so I commented and structured the full 
+source in Enlightenment's CVS server exactly for this prupose.

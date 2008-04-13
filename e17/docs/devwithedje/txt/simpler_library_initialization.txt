@@ -1,0 +1,66 @@
+We have seen initialization functions previously in this chapter and other that 
+an increased level of verbosity there is nothing special about the use we have
+give them here::
+
+    Evas_Bool
+    simpler_init()
+    {
+        char *path;
+
+        if (ApplicationName == NULL)
+        {
+            fprintf(stderr, "Error: The application's name was not set.\n");
+            return FALSE;
+        }
+
+        if (!evas_init())
+        {
+            fprintf(stderr, "Error: Evas failed to initialize.\n");
+            return FALSE;
+        }
+        ... 
+
+The rest of the initialization functions can be found in the CVS repository, I
+decided to show this particular piece because it shows a characteristic of the
+framework that can become a problem. Having an application's name setup is a 
+requeriment of Ecore_Config. It uses that name to search for or create a 
+configuration directory and file. Unless it was explicitly altered by the 
+developer the default location of the configuration file will be 
+``$HOME/.e/apps/ApplicationName/config.eet``. Once the application's name has 
+been set, we are safe to work with Ecore_Config::
+
+        ...
+        ecore_config_theme_default("theme/default", "default");
+        ecore_config_theme_default("theme/current", "default");
+        if (ecore_config_load() != ECORE_CONFIG_ERR_SUCC)
+        {
+            fprintf(stderr,"Warning: Could not load config from ~/.e/apps/%s/config.eet\n", ApplicationName);
+        }
+        path = ecore_config_theme_with_path_get("theme/default");
+        if (path == NULL)
+        {
+            fprintf(stderr,"Error: The default theme, '%s.edj', was not found in the PATH='%s'.\n", ecore_config_theme_get("theme/default"), ecore_config_theme_default_path_get());
+            return FALSE;
+        }
+        return TRUE;
+    }
+
+An excellent introduction to Ecore_Config already exists in the EFL Cookbook
+and I won't replicate here. But I will resume the functions used in this code
+sample. The first function called is ``ecore_config_theme_default`` and it's 
+used to setup the default value for a given theme configuration item, don't 
+worry, the specifics of "theme configuration items" are explained further down 
+this book. In any case, setting up a default value is useful to ensure a valid 
+value in case the configuration file is non-existent or incomplete.
+
+Right after setting some default values we use ``ecore_config_load`` to load
+the configuration file found in the default location mentioned earlier. It is
+a good practice to not use custom file locations for configuration files 
+because it eases portability of the application. The user will also apreciate
+the additional feeling of certainlity of how an application is going to behave.
+Still, the alternative function ``ecore_config_file_load`` could have been used
+to load a configuration file from a custom location.
+
+Before finishing sucessfully we will have to control that at least the default 
+theme file can be found somewhere. Finding at least one theme file is pretty
+much mandatory for any Edje based application.

@@ -1,17 +1,17 @@
 By pointing out that the Enlightenment Foundation Libraries are designed in a 
 Object Oriented manner I wish not to raise the wrath of OO purists but to 
-simplify the mental image of the structure of the EFL C API in the reader's 
-imagination.
+simplify the reader's mental image of how the EFL C Application Programming
+Interface is structured.
 
-Now that the pitchforks are back in the barn allow me to put it in more clear 
-terms with a simple example::
+Now that the pitchforks are back in the barn and torchs have been put off, 
+allow me to put it in more clear terms using a simple example::
 
     Evas_Object *button = NULL;
     button = edje_object_add(evascanvas);
     edje_object_file_set(button, "theme.edj", "button");
           
 This is a simple C snippet that could be translated into a more (sintactically 
-speaking) object oriented language like Python as::
+speaking) OO language like Python as::
           
     button = Evas_Object()
     button.file_set("theme.edj","button")
@@ -21,8 +21,8 @@ sugar" but it serves to demonstrate the structure which the EFL C API follows.
 If we dissected the last function call we could split it into three groups. 
 First, the class of the object to manipulate, ``edje_object``, second, the 
 method to call ``file_set`` and third the pointer to the object instance 
-``(button,`` along with the parameters ``"theme.edj","button")`` or, in more 
-generic terms, ``class_method(instance,parameters)``.
+``(button,`` along with the parameters ``"theme.edj","button")`` or generically
+speaking, ``class_method(instance,parameters)``.
 
 The first source snippet in the following tutorial is, of course, the first 
 exception. The following function calls deal with the library itself. Anyway, 

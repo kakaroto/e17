@@ -1,23 +1,117 @@
 Hopefully the reader has not been introduced to the concept of software 
 frameworks by web based monsters like Ruby on Rails. Personally I think RoR is
-great, my point is that a framework does not necessarily mean big complex,
-abstract software libraries. A framework can be seen as the standardization of
-common, complex tasks into a library shared by group of applications. With a 
-framework short development times means a compromise with flexibility.
+great and my point is that a framework does not necessarily mean large software
+libraries. A framework can be seen as library of functions determined by the
+similiarity in the profile of the applications that use it. In a framework, 
+shorter development time means either more specific profiles or more complex 
+library code.
 
 In this section and the following subsections we will develop an application
-framework for applications with a specific profile. An X11 desktop application
-that doesn't require any exotic manipulation of its theme files and with a
-interface simple enough that all its objects can be laid out using a single
-Edje object.
+framework for applications with a specific profile: "A X11 desktop application
+that doesn't require any exotic manipulation of its theme or configuration 
+files". A list of the tasks the framework must perform follow:
 
-The tasks that this framework will take care of are pretty straight forward:
-* Maintain a configuration file (in the default location used by Ecore_Config).
-* Setup the window properties and main layout from a theme object.
-* Manage theme objects, including changing a theme file on runtime and 
-maintaining two the files, current and default.
+* Configuration (Using Ecore_Config).
+    * Initialization and shutdown of the necesary services.
+    * Saving configuration changes on exit.
+    * Recall the previously saved values on initialzation.
+    * Control that the necessary configuration and theme files exist.
 
-The example application will be an Edje group viewer, this application will
-receive a filename and a group name, it will display the application inside a
-viewport, print the last signal emitted by the group and provide a minimap for
-navigating the viewport. Without further ado, here it is, the main file::
+* Interface Management
+    * Create windows with their properties lifted from a given Edje object.
+    * Allocate, load and display Edje objects from a "current" theme file, set
+      by the user or a "default" theme file setup by the application developer.
+
+The example application using this framework will be an Edje group viewer, this
+application will receive a filename and a group name, it will display them 
+inside a viewport managed with a minimap. The last signal emitted by the object
+is going to be printed to a given text string. Without further ado, here it is,
+the main file::
+
+    #include "../lib/framework.c"
+    #include "../lib/viewport.c"
+    #include "../lib/minimap.c"
+    #include <string.h>
+    #include <limits.h>
+
+    int arguments_parse(char path[], char group[], int argc, char **argv);
+
+    int main(int argc, char **argv) {
+
+        Ecore_Evas  *mainWindow = NULL;
+        Evas        *mainCanvas = NULL;
+        Evas_Coord   width, height;
+        Evas_Object *mainLayout, *toView, *viewport, *minimap;
+        char         path[PATH_MAX],group[100];
+
+        application_name_set("Plain Edje Viewer");
+        if (!simpler_init()) 
+            return EXIT_FAILURE;
+
+        if(!arguments_parse(path, group, argc, argv))
+            return EXIT_FAILURE;
+
+        mainWindow = simpler_window_new("window/main",NULL);
+        if (!mainWindow)
+            return EXIT_FAILURE;
+        mainCanvas = ecore_evas_get(mainWindow);
+        mainLayout = ecore_evas_data_get(mainWindow,"layout");
+
+The precedeing code snippet shows two of the three shortcuts our framework
+provides. The first function ``simpler_init`` is used to group all the library
+intialization functions along with the configuration initialzation functions.
+Following the library initialzation comes ``simpler_window_new`` which is used
+to create a window based on values provided by a given Edje group. The group
+itself is saved inside the Ecore_Evas canvas wrapper as a data pointer and can
+be retrieved with ``ecore_evas_data_get``. As you might notice we use of a
+function named ``arguments_parse`` to get the path of the requested file and
+group from the array of arguments.
+
+Notice that the call to ``simpler_window_new`` does not have any filename 
+attached to it. But how does the application know where to look this group up? 
+This is the work of Ecore_Config and we will review how is it used in the next 
+section of the book. In any case, the following code snippet show a little more 
+Edje related action::
+
+        toView = edje_object_add(mainCanvas);
+        edje_object_file_set(toView, path, group);
+        edje_object_size_min_calc(toView, &width, &height);
+        if(width <= 0)
+            ecore_evas_geometry_get(mainWindow, NULL, NULL, &width, NULL);
+        if(height <= 0)
+            ecore_evas_geometry_get(mainWindow, NULL, NULL, NULL, &height);
+        evas_object_resize(toView, width, height);
+        evas_object_move(toView,0,0);
+        evas_object_show(toView);
+
+        viewport = viewport_add(mainCanvas);
+        viewport_theme_set(viewport, simpler_object_add(mainCanvas, "widget.minimap"));
+        viewport_target_set(viewport,toView);
+        edje_object_part_swallow(mainLayout,"swallow.viewport", viewport);
+
+        minimap = minimap_add(mainCanvas);
+        minimap_theme_set(minimap, simpler_object_add(mainCanvas, "widget.minimap"));
+        edje_object_part_swallow(mainLayout,"swallow.minimap", minimap);
+        minimap_viewport_set(minimap,viewport);
+
+        ecore_main_loop_begin();
+    }
+
+You might notice the code snippet is split in three bigger sections. In
+these sections we include an Edje object to view, we setup the viewport for the
+object and the minimap for the viewport respectively. Since the application is 
+going to display a
+group of an arbitrary name from an arbitrary file we don't use the shortcut 
+functions to load and display the target. But among these know functions 
+``ecore_evas_geometry_get`` stands out. This function is used to load the 
+current size of the window as the object width or height in case it does not 
+have either one.
+
+The following two code sections setup each widget, we won't review the 
+internals of these yet. We will explore the function ``simpler_object_add``
+that is used to load the theme groups for these widgets. In order to mantain 
+our santity (and to save some trees) some additional functions or pieces have
+been left out of the book. The complete, commented sources for this framework
+and the "Plain Edje Viewer" application can be found in the CVS repository of 
+the Enlightenment proyect under ``e17/docs/devwithedje/src``. Rest assured the 
+omitted functions wont add much to your knowledege about Edje.

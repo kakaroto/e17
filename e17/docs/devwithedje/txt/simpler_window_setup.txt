@@ -1,0 +1,112 @@
+Setting up a window isn't complex by itself, but why would we manually setup
+these properties, copy and paste these big blocks of code and manually
+replace the parameters for them to adjust to our new application when we can 
+use an automated method that also gives more freedom to the designer?
+
+In this example all the properties for the window including the maximum and
+minimum sizes, name and class are setup by a "group" in an Edje theme file. 
+It's up to the developer's personal taste to decide how much control a designer
+will have, thus altering the behaviour of this function was left as an 
+excercice for the reader::
+
+    Ecore_Evas*
+    simpler_window_new(const char *groupName, Ecore_Evas *parent)
+    {
+        Ecore_Evas         *window;
+        Evas               *canvas;
+        Evas_Object        *layout;
+        Window_Properties  *prop;
+        Evas_Coord         width, height;
+
+        if (parent == NULL)
+        {
+            window = ecore_evas_software_x11_new(NULL, 0, 0, 0, 0, 0);
+            ecore_evas_data_set(window, "is_main", "yes");
+        }
+        else 
+        {
+            window = ecore_evas_software_x11_new(NULL, ecore_evas_software_x11_window_get(parent), 0, 0, 0, 0);
+            ecore_evas_data_set(window, "is_main", "no");
+        }
+
+        if (window == NULL)
+        {
+            fprintf(stderr, "Error: Couldn't initiate the canvas wrapper.\n");
+            return NULL;
+        }
+
+        canvas = ecore_evas_get(window);
+        if (canvas == NULL)
+        {
+            fprintf(stderr,"Error: There is no canvas in the window.\n");
+            return NULL;
+        }
+
+        layout = simpler_object_add(canvas, groupName);
+        if (layout == NULL)
+        {
+            fprintf(stderr, "Error: Couldn't load the layout object.\n");
+            return NULL;
+        }
+        ecore_evas_data_set(window,"layout",layout);
+        ...
+
+By now you might be wondering if there is a real reason to abstract functions
+as simple and wildly known such as these? There is no simple answer other than
+that these function set properties that could cause unexpected behaviour later
+in the application. I spent an hour of my life trying to figure out why the
+size calculation of the canvas didn't reflect the size changes that ocurred in
+this very initalization function. 
+
+Now that I have justified the first part of the function we might as well 
+analyze it! Most of these function have been seen before except for two. The 
+first function is ``simpler_object_add``, it is a part of the framework that
+acts as a wrapper for ``edje_object_add`` and ``edje_file_set``. The specifics
+of this function are going to be explained in the next chapters. The second
+function is ``ecore_evas_data_set``, it is a standard Ecore_Evas function and
+it's used to attach pointers to arbitrary data to a given key, in this case
+we save the layout Edje object in the "layout" data pointer. The next functions
+will probably be altered by most application developers, and it can be split
+in three big sections of code::
+
+        ...
+        prop = _window_prop_get(layout);
+        ecore_evas_title_set(window, prop->title);
+        ecore_evas_name_class_set(window, prop->name, prop->class);
+        ecore_evas_size_min_set(window, prop->minw, prop->minh);
+        ecore_evas_size_max_set(window, prop->maxw, prop->maxh);
+
+        evas_object_move(layout, 0, 0);
+        edje_object_size_min_get(layout, &width, &height);
+        evas_object_resize(layout, width, height);
+        ecore_evas_resize(window,  width, height);
+        evas_output_size_set(ecore_evas_get(window), width, height);
+
+        ecore_evas_callback_resize_set(window, _resize_window);
+        ecore_evas_callback_delete_request_set(window, _close_window);
+        ecore_evas_callback_destroy_set(window, _close_window);
+        ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, _close_application, window);
+
+        ecore_evas_show(window);
+        return window;
+    }
+
+We can begin our analysis with the first section of code. There we setup the 
+various properties of the window, including titile, name, class, maximum and 
+minimum size. Some of these properties could have been setup before
+with ``ecore_evas_software_x11_new`` if we wanted them to be hard coded in the
+framework. In this case we needed to load an Edje object to memory and a canvas
+is needed to initialize the objects.
+
+The second section of code looks quite familiar since it is basically a carbon
+copy of code written in "The foundations at practice", this section is used to
+synchronize the sizes of the window and the Edje group used as a layout object.
+
+In the last section we set a couple of callbacks. The first callback resizes
+the layout object along with the window, thus all the inserted objects that are
+relative to the layout are going to be resized when the window is resized. The 
+rest of the callbacks are used to shutdown the application in different 
+situations. The function, ``_close_window`` is quite simple, and will calle
+``_close_application`` when the user closes the main window. A main window is
+any window without a parent, the framework assumes you will only create one 
+parentless window per application.

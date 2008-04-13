@@ -6,18 +6,20 @@ FILE = devwithedje
 all: html latex pdf
 
 html:
-	rst2html.py --cloak-email-addresses --stylesheet=devwithedje.css  $(FILE).txt $(FILE).html
-	cp -f $(FILE).html pre-rendered
-
+	rst2html.py --cloak-email-addresses --stylesheet=$(FILE).css  $(FILE).txt $(FILE).html
+	
 latex: 
-	rst2latex.py --use-latex-toc --documentclass=book --documentoptions=12pt,a4paper --stylesheet=stylesheet.tex $(FILE).txt $(FILE).tex
-	cp -f $(FILE).tex pre-rendered
+	rst2latex.py --use-latex-toc --documentclass=book --documentoptions=12pt,a4paper --stylesheet=$(FILE).sty $(FILE).txt $(FILE).tex
  
 pdf:
 	make latex
 	pdflatex $(FILE).tex
 	pdflatex $(FILE).tex #the second run is required for internal references
+
+install:
+	cp -f $(FILE).html pre-rendered
 	cp -f $(FILE).pdf pre-rendered
+	cp -f $(FILE).tex pre-rendered
 
 clean:
 	@echo "Removing files..."

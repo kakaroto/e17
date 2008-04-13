@@ -1,7 +1,64 @@
 We have seen there are roughly 5 kinds of functions that have to be implemented
-in order to create a widget from scratch. Altought the way groups are split
-might not seem equitative to the amount of work each one might entail, the
-divisions are concordant with the shortcuts Edje provides. For the cases where
-the number of functions in one group seems to clearly outweights the others, 
+in order to create a widget from scratch. Although the way groups are split
+might not seem to correspond with the amount of work each one might entail, the
+divisions concord with the shortcuts Edje provides. For the cases where
+the number of functions in one group seems to clearly outweighs the others, 
 Edje provides additional shortcuts not directly related to the design concepts
 and design elements we have seen in the previous chapters.
+
+I will begin with **Manipulate the canvas primitives to draw the widget** since
+it's the easiest to explain. With a plain canvas approach to widget creation,
+this would mean the developer must manually create each rect, line, etc. that 
+form its widget. Instead, Edje draws the primitive objects based on the 
+designer's  specifications in the Edje Data Collection file, not a single 
+primitive has to be created or manipulated by the application developer.
+
+Addressing the task **Handle events occurring on its primitives** using
+Edje can be done with two different, but compatible, approaches. The first
+approach is also available in the other low level libraries. To intercept all
+the signals coming from the primitive objects that form the widget, filter the
+signals and (sometimes) emit a new kind of signal. This approach is useful in 
+many situations and that's why it is possible to use it in Edje even when it 
+provides an alternative, not available among its low level cousins. With Edje 
+designer can write small "programs" in his EDC files. An Edje program is
+not as complex as the name might make us think. Unless the designer uses a 
+script block (rare) the average Edje program would look like this::
+
+    program {
+        name:       "playthemusic";
+        signal:     "mouse,down,1";
+        source:     "*";
+        action:      action: SIGNAL_EMIT "PLAY" "button";
+    }
+
+There is more to Edje programs than just this, but this example will be enough 
+to illustrate the point. Since Edje programs are limited to their own group, 
+this program is limited to a hypothetical "button" group. What the program does 
+is to emit the signal "PLAY" when the left button is pressed over any part that
+forms the "button" group. The application only has to listen for the PLAY 
+signal. When and why that signal will be emitted is completely up to the 
+designer to decide. He could change "mouse,down,1" to "mouse,wheel,*" and cause
+the music to play when the user uses the mouse wheel over any part of the 
+button.
+
+The previously illustrated program shows that **Register new signal types to
+emit as a widget** will not be as common as it would with another canvas
+library. Most of the time, it will be designer who implements new signal types. 
+Sadly, there is little that Edje can provide concerning **Handle events 
+occurring in the environment that affect it**.
+
+To **Display information and retrieve changes** is quite simple. As with any 
+other low level library, the developer will have to alter some primitive in 
+order to display the requested information. Most of the time this means 
+changing a string of characters, complex diagrams and similar objects go 
+beyond the scope of Edje and enter the realm of Evas programming. Plain Evas 
+objects, of course, integrate perfectly with Edje interfaces.
+
+A difference between a regular canvas lib and Edje concerns conveying subtle
+information by changing the "state" of the interface. Designers can implement 
+any arbitrary number of states for any part or group and change them using 
+simple Edje programs. The same programs can also be triggered by the 
+application. For example, to disable a button in a plain canvas the developer 
+would have to call functions that gray out the background and text. With Edje 
+the developer just emits the signal "DISABLED" to the button and lets the 
+designer implement this however he wants.

@@ -7,7 +7,7 @@
 <title>Application development with Edje</title>
 <meta name="author" content="Andres Blanc" />
 <meta name="date" content="2008/04/03" />
-<meta name="copyright" content="This book is distributed under the terms of the Attribution-ShareAlike CC license. See: http://creativecommons.org/licenses/by-sa/3.0/." />
+<meta name="copyright" content="This book is distributed under the terms of the &quot;Attribution&quot; Creative Commons license. See: http://creativecommons.org/licenses/by/3.0/." />
 <style type="text/css">
 
 /*  Margenes y Padding.
@@ -54,8 +54,8 @@ fieldset
 <tr><th class="docinfo-name">Date:</th>
 <td>2008/04/03</td></tr>
 <tr><th class="docinfo-name">Copyright:</th>
-<td>This book is distributed under the terms of the Attribution-ShareAlike
-CC license. See: <a class="reference external" href="http://creativecommons.org/licenses/by-sa/3.0/">http://creativecommons.org/licenses/by-sa/3.0/</a>.</td></tr>
+<td>This book is distributed under the terms of the &quot;Attribution&quot;
+Creative Commons license. See: <a class="reference external" href="http://creativecommons.org/licenses/by/3.0/">http://creativecommons.org/licenses/by/3.0/</a>.</td></tr>
 </tbody>
 </table>
 <div class="abstract topic">
@@ -81,75 +81,157 @@ to create a full blown Edje based application.</p>
 <li><a class="reference internal" href="#working-with-the-canvas" id="id8">Working with the canvas</a></li>
 <li><a class="reference internal" href="#interacting-with-the-objects" id="id9">Interacting with the objects</a></li>
 <li><a class="reference internal" href="#building-a-framework" id="id10">Building a framework</a><ul>
-<li><a class="reference internal" href="#getting-the-interface-up" id="id11">Getting the interface up</a></li>
-<li><a class="reference internal" href="#settings-are-important-too" id="id12">Settings are important too</a></li>
-<li><a class="reference internal" href="#simpler-interface-management" id="id13">Simpler interface management</a></li>
+<li><a class="reference internal" href="#simpler-library-intialization" id="id11">Simpler library intialization</a></li>
+<li><a class="reference internal" href="#simpler-window-setup" id="id12">Simpler window setup</a></li>
+<li><a class="reference internal" href="#simpler-theme-management" id="id13">Simpler theme management</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li><a class="reference internal" href="#introduction-to-widgets" id="id14">Introduction to widgets</a><ul>
 <li><a class="reference internal" href="#widgets-with-edje" id="id15">Widgets with Edje</a></li>
+<li><a class="reference internal" href="#the-ewl-as-a-shortcut" id="id16">The Ewl as a shortcut</a></li>
+<li><a class="reference internal" href="#implementing-widgets-with-edje" id="id17">Implementing widgets with Edje</a><ul>
+<li><a class="reference internal" href="#introduction-to-smart-objects" id="id18">Introduction to Smart Objects</a></li>
+<li><a class="reference internal" href="#the-foundations-of-a-smart-object" id="id19">The foundations of a Smart Object</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#laying-out-widgets" id="id20">Laying out widgets</a></li>
+<li><a class="reference internal" href="#creating-list-based-widgets" id="id21">Creating list based widgets</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#widgets-by-example" id="id22">Widgets by Example</a><ul>
+<li><a class="reference internal" href="#the-text-entry" id="id23">The text entry</a></li>
+<li><a class="reference internal" href="#the-combox" id="id24">The combox</a></li>
+<li><a class="reference internal" href="#the-kinetic-list" id="id25">The kinetic list</a></li>
+<li><a class="reference internal" href="#the-media-viewport" id="id26">The media viewport</a></li>
+<li><a class="reference internal" href="#flexible-toolbars" id="id27">Flexible toolbars</a></li>
 </ul>
 </li>
 </ul>
 </div>
 <div class="section" id="book-overview">
 <h1><a class="toc-backref" href="#id1">Book overview</a></h1>
-<p>I. <a class="reference internal" href="#about-graphical-user-interfaces">About Graphical User Interfaces</a>.
+<ul>
+<li><p class="first"><a class="reference internal" href="#about-graphical-user-interfaces">About Graphical User Interfaces</a>.
 If we look through the code of some of the many open source applications
 available, we can find most of them share a common structure. This chapter
 introduces the reader to said structure, to the concept of an Event loop and
 how does it deal with the interaction between form and function.</p>
-<p>I.I. <a class="reference internal" href="#decomposing-the-frontend">Decomposing the frontend</a>.
+<ul class="simple">
+<li><a class="reference internal" href="#decomposing-the-frontend">Decomposing the frontend</a>.
 There are different approaches to the creation of Graphical User Interfaces,
 some provide flexibility while others shorter development time. In the end, the
 rest of the application will have to go through the same mechanism to deal
-with the interface.</p>
-<p>I.II. <a class="reference internal" href="#introduction-to-edje">Introduction to Edje</a>.
+with the interface.</li>
+<li><a class="reference internal" href="#introduction-to-edje">Introduction to Edje</a>.
 Edje is a compromise between flexibility and development time. Comparing it to
 a plain canvas or a fully featured toolkit can show us how it fits in the
-middle ground and provides advantages for designers and developers alike.</p>
-<p>I.III. <a class="reference internal" href="#the-foundations">The foundations</a>.
+middle ground and provides advantages for designers and developers alike.</li>
+<li><a class="reference internal" href="#the-foundations">The foundations</a>.
 Edje allows low level control of the interface without forcing the developer
 through a low level API. The interface objects are implemented as Evas objects,
 but through a completely new language friendly to designers and independent
-from the application code.</p>
-<p>I.IV. <a class="reference internal" href="#convenient-libraries">Convenient libraries</a>
+from the application code.</li>
+<li><a class="reference internal" href="#convenient-libraries">Convenient libraries</a>
 To load an Edje interface the application needs to setup an Evas canvas first.
 This would look as a burden for the developer, dealing with issues specific to
 the underlying system. Thankfully Evas is supported by an additional library
-that resolve most of these issues, Ecore.</p>
-<p>II. <a class="reference internal" href="#the-foundations-in-practice">The foundations in practice</a>.
+that resolve most of these issues, Ecore.</li>
+</ul>
+</li>
+<li><p class="first"><a class="reference internal" href="#the-foundations-in-practice">The foundations in practice</a>.
 Practical examples of the Englighenment Foundation Libraries required for a
 common Edje application.</p>
-<p>II.I. <a class="reference internal" href="#working-with-the-canvas">Working with the canvas</a>.
+<ul>
+<li><p class="first"><a class="reference internal" href="#working-with-the-canvas">Working with the canvas</a>.
 Including new Edje objects inside the previously setup canvas can be explained
 with this simple example.</p>
-<p>II.II. <a class="reference internal" href="#interacting-with-the-objects">Interacting with the objects</a>.
+</li>
+<li><p class="first"><a class="reference internal" href="#interacting-with-the-objects">Interacting with the objects</a>.
 There are different channels for the application to interact with the
 interface. For the sake of brevity I will include an example of each one to
 serve as an introduction for the practical examples to come in the next
 chapters.</p>
-<p>II.III. <a class="reference internal" href="#building-a-framework">Building a framework</a>.
-- An brief introduction to the concept of the framework
-- Code sample of the main.c file and general explanation</p>
-<p>II.III.I. <a class="reference internal" href="#getting-the-interface-up">Getting the interface up</a>.
-- A mention of the environment_init/shutdown functions without code examples
-- A code sample + explanation of the the window creation functions</p>
-<p>II.III.II. <a class="reference internal" href="#settings-are-important-too">Settings are important too</a>.
-- An brief introduction to Ecore_Config (refer to the cookbook).
-- A code sample + explanation of functions that deal with multiple theme files.</p>
-<p>II.III.III. <a class="reference internal" href="#simpler-interface-management">Simpler interface management</a>.
-- A code sample + explanation of the functions that fetch the theme objects</p>
-<p>III. <a class="reference internal" href="#introduction-to-widgets">Introduction to widgets</a>.
+</li>
+<li><p class="first"><a class="reference internal" href="#building-a-framework">Building a framework</a>.
+Hopefully the reader's mind won't be filled already with preconceptions about
+this subject. In any case, only the foundations of what could be used to
+form a complex framework are going to be reviewed in this chapter.</p>
+<blockquote>
+<ul class="simple">
+<li><a class="reference internal" href="#simpler-library-intialization">Simpler library intialization</a>.
+We have seen why and how to initialize the necessary EFL libraries. This
+chapter introduces the implementation of a convenience function to do it in one
+call along with control and intialization of configuration and theme files.</li>
+<li><a class="reference internal" href="#simpler-window-setup">Simpler window setup</a>.
+Altought setting up a window is not a complex task there is no reason for not
+using a standarized method that automates some aspects of window creation. Some
+other aspects are left for the designer to manipulate, the end result is less
+code which often means less bugs.</li>
+<li><a class="reference internal" href="#simpler-theme-management">Simpler theme management</a>.
+The EFL are programmed in a incredible flexible way and they cover many uses
+and platforms. The functions explained in this section makes some assumptions
+about the programmer's intentions. If they match with yours, using them can
+mean simpler application code, less development time and less bugs.</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+</li>
+<li><p class="first"><a class="reference internal" href="#introduction-to-widgets">Introduction to widgets</a>.
 Interfaces need to resolve two problems, presenting information to users and
 taking orders from them. The past chapters presented enough information to
 solve the first. In the following chapters we will review the second.</p>
-<p>III.I. <a class="reference internal" href="#widgets-with-edje">Widgets with Edje</a>.
+<ul class="simple">
+<li><a class="reference internal" href="#widgets-with-edje">Widgets with Edje</a>.
 Since this is a book about Edje it might be a good idea to detail the way Edje
 simplifies custom widget creation by reviewing the list of tasks presented in
-the previous chapter and how Edje helps with each task.</p>
+the previous chapter and how Edje helps with each task.</li>
+<li><a class="reference internal" href="#the-ewl-as-a-shortcut">The Ewl as a shortcut</a>.
+The Enlightened Widget Library is a piece of software older than Edje itself.
+But almost as soon as Edje was made aviable the library developers started
+using it as their theme engine. Since widget's from this library can be
+included as another Edje object we can use it as a shortcut for the most
+complex widgets.</li>
+<li><a class="reference internal" href="#implementing-widgets-with-edje">Implementing widgets with Edje</a>.
+It is possible to fully implement widgets using the Edje library alone. But
+this approach grows more unmanageable as the widget becomes more complex. In
+this chapter we will review a simple widget, written using Edje alone and a
+more complex widget that shares the same foundations with Edje objects.<ul>
+<li><a class="reference internal" href="#introduction-to-smart-objects">Introduction to Smart Objects</a>.
+We have seen Smart Objects in the previous chapters and we know they are used
+to implement Edje objects. In this chapters we will analyze the surface code
+of a Smart Object based widget, the minimap.</li>
+<li><a class="reference internal" href="#the-foundations-of-a-smart-object">The foundations of a Smart Object</a>.
+If you felt that basing Edje widgets in Smart Objects seems simple enough, I
+hope that impression does not fade away because of the amount of code presented
+in this chapter. Altought at a first look it might seem complex creating an
+Smart Object is quite simple and logical.</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#laying-out-widgets">Laying out widgets</a>.
+TODO.</li>
+<li><a class="reference internal" href="#creating-list-based-widgets">Creating list based widgets</a>.
+TODO.</li>
+</ul>
+</li>
+<li><p class="first"><a class="reference internal" href="#widgets-by-example">Widgets by Example</a>.
+TODO,</p>
+<ul class="simple">
+<li><a class="reference internal" href="#the-text-entry">The text entry</a>.
+TODO</li>
+<li><a class="reference internal" href="#the-combox">The combox</a>.
+TODO.</li>
+<li><a class="reference internal" href="#the-kinetic-list">The kinetic list</a>.
+TODO.</li>
+<li><a class="reference internal" href="#the-media-viewport">The media viewport</a>.
+TODO.</li>
+<li><a class="reference internal" href="#flexible-toolbars">Flexible toolbars</a>.
+TODO.</li>
+</ul>
+</li>
+</ul>
 </div>
 <div class="section" id="about-graphical-user-interfaces">
 <h1><a class="toc-backref" href="#id2">About Graphical User Interfaces</a></h1>
@@ -374,17 +456,17 @@ lines and multiple engine support to an application reload.</p>
 <h1><a class="toc-backref" href="#id7">The foundations in practice</a></h1>
 <p>By pointing out that the Enlightenment Foundation Libraries are designed in a
 Object Oriented manner I wish not to raise the wrath of OO purists but to
-simplify the mental image of the structure of the EFL C API in the reader's
-imagination.</p>
-<p>Now that the pitchforks are back in the barn allow me to put it in more clear
-terms with a simple example:</p>
+simplify the reader's mental image of how the EFL C Application Programming
+Interface is structured.</p>
+<p>Now that the pitchforks are back in the barn and torchs have been put off,
+allow me to put it in more clear terms using a simple example:</p>
 <pre class="literal-block">
 Evas_Object *button = NULL;
 button = edje_object_add(evascanvas);
 edje_object_file_set(button, &quot;theme.edj&quot;, &quot;button&quot;);
 </pre>
 <p>This is a simple C snippet that could be translated into a more (sintactically
-speaking) object oriented language like Python as:</p>
+speaking) OO language like Python as:</p>
 <pre class="literal-block">
 button = Evas_Object()
 button.file_set(&quot;theme.edj&quot;,&quot;button&quot;)
@@ -394,8 +476,8 @@ sugar&quot; but it serves to demonstrate the structure which the EFL C API follo
 If we dissected the last function call we could split it into three groups.
 First, the class of the object to manipulate, <tt class="docutils literal"><span class="pre">edje_object</span></tt>, second, the
 method to call <tt class="docutils literal"><span class="pre">file_set</span></tt> and third the pointer to the object instance
-<tt class="docutils literal"><span class="pre">(button,</span></tt> along with the parameters <tt class="docutils literal"><span class="pre">&quot;theme.edj&quot;,&quot;button&quot;)</span></tt> or, in more
-generic terms, <tt class="docutils literal"><span class="pre">class_method(instance,parameters)</span></tt>.</p>
+<tt class="docutils literal"><span class="pre">(button,</span></tt> along with the parameters <tt class="docutils literal"><span class="pre">&quot;theme.edj&quot;,&quot;button&quot;)</span></tt> or generically
+speaking, <tt class="docutils literal"><span class="pre">class_method(instance,parameters)</span></tt>.</p>
 <p>The first source snippet in the following tutorial is, of course, the first
 exception. The following function calls deal with the library itself. Anyway,
 displaying a simple Edje object in a window is a task with a few well defined
@@ -624,35 +706,399 @@ of the signal.</p>
 <h2><a class="toc-backref" href="#id10">Building a framework</a></h2>
 <p>Hopefully the reader has not been introduced to the concept of software
 frameworks by web based monsters like Ruby on Rails. Personally I think RoR is
-great, my point is that a framework does not necessarily mean big complex,
-abstract software libraries. A framework can be seen as the standardization of
-common, complex tasks into a library shared by group of applications. With a
-framework short development times means a compromise with flexibility.</p>
+great and my point is that a framework does not necessarily mean large software
+libraries. A framework can be seen as library of functions determined by the
+similiarity in the profile of the applications that use it. In a framework,
+shorter development time means either more specific profiles or more complex
+library code.</p>
 <p>In this section and the following subsections we will develop an application
-framework for applications with a specific profile. An X11 desktop application
-that doesn't require any exotic manipulation of its theme files and with a
-interface simple enough that all its objects can be laid out using a single
-Edje object.</p>
-<p>The tasks that this framework will take care of are pretty straight forward:
-* Maintain a configuration file (in the default location used by Ecore_Config).
-* Setup the window properties and main layout from a theme object.
-* Manage theme objects, including changing a theme file on runtime and
-maintaining two the files, current and default.</p>
-<p>The example application will be an Edje group viewer, this application will
-receive a filename and a group name, it will display the application inside a
-viewport, print the last signal emitted by the group and provide a minimap for
-navigating the viewport. Without further ado, here it is, the main file:</p>
-<div class="system-message">
-<p class="system-message-title">System Message: WARNING/2 (<tt class="docutils">devwithedje.txt</tt>, line 678)</p>
-Literal block expected; none found.</div>
-<div class="section" id="getting-the-interface-up">
-<h3><a class="toc-backref" href="#id11">Getting the interface up</a></h3>
+framework for applications with a specific profile: &quot;A X11 desktop application
+that doesn't require any exotic manipulation of its theme or configuration
+files&quot;. A list of the tasks the framework must perform follow:</p>
+<ul>
+<li><dl class="first docutils">
+<dt>Configuration (Using Ecore_Config).</dt>
+<dd><ul class="first last simple">
+<li>Initialization and shutdown of the necesary services.</li>
+<li>Saving configuration changes on exit.</li>
+<li>Recall the previously saved values on initialzation.</li>
+<li>Control that the necessary configuration and theme files exist.</li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>Interface Management</dt>
+<dd><ul class="first last simple">
+<li>Create windows with their properties lifted from a given Edje object.</li>
+<li>Allocate, load and display Edje objects from a &quot;current&quot; theme file, set
+by the user or a &quot;default&quot; theme file setup by the application developer.</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+<p>The example application using this framework will be an Edje group viewer, this
+application will receive a filename and a group name, it will display them
+inside a viewport managed with a minimap. The last signal emitted by the object
+is going to be printed to a given text string. Without further ado, here it is,
+the main file:</p>
+<pre class="literal-block">
+#include &quot;../lib/framework.c&quot;
+#include &quot;../lib/viewport.c&quot;
+#include &quot;../lib/minimap.c&quot;
+#include &lt;string.h&gt;
+#include &lt;limits.h&gt;
+
+int arguments_parse(char path[], char group[], int argc, char **argv);
+
+int main(int argc, char **argv) {
+
+    Ecore_Evas  *mainWindow = NULL;
+    Evas        *mainCanvas = NULL;
+    Evas_Coord   width, height;
+    Evas_Object *mainLayout, *toView, *viewport, *minimap;
+    char         path[PATH_MAX],group[100];
+
+    application_name_set(&quot;Plain Edje Viewer&quot;);
+    if (!simpler_init())
+        return EXIT_FAILURE;
+
+    if(!arguments_parse(path, group, argc, argv))
+        return EXIT_FAILURE;
+
+    mainWindow = simpler_window_new(&quot;window/main&quot;,NULL);
+    if (!mainWindow)
+        return EXIT_FAILURE;
+    mainCanvas = ecore_evas_get(mainWindow);
+    mainLayout = ecore_evas_data_get(mainWindow,&quot;layout&quot;);
+</pre>
+<p>The precedeing code snippet shows two of the three shortcuts our framework
+provides. The first function <tt class="docutils literal"><span class="pre">simpler_init</span></tt> is used to group all the library
+intialization functions along with the configuration initialzation functions.
+Following the library initialzation comes <tt class="docutils literal"><span class="pre">simpler_window_new</span></tt> which is used
+to create a window based on values provided by a given Edje group. The group
+itself is saved inside the Ecore_Evas canvas wrapper as a data pointer and can
+be retrieved with <tt class="docutils literal"><span class="pre">ecore_evas_data_get</span></tt>. As you might notice we use of a
+function named <tt class="docutils literal"><span class="pre">arguments_parse</span></tt> to get the path of the requested file and
+group from the array of arguments.</p>
+<p>Notice that the call to <tt class="docutils literal"><span class="pre">simpler_window_new</span></tt> does not have any filename
+attached to it. But how does the application know where to look this group up?
+This is the work of Ecore_Config and we will review how is it used in the next
+section of the book. In any case, the following code snippet show a little more
+Edje related action:</p>
+<pre class="literal-block">
+    toView = edje_object_add(mainCanvas);
+    edje_object_file_set(toView, path, group);
+    edje_object_size_min_calc(toView, &amp;width, &amp;height);
+    if(width &lt;= 0)
+        ecore_evas_geometry_get(mainWindow, NULL, NULL, &amp;width, NULL);
+    if(height &lt;= 0)
+        ecore_evas_geometry_get(mainWindow, NULL, NULL, NULL, &amp;height);
+    evas_object_resize(toView, width, height);
+    evas_object_move(toView,0,0);
+    evas_object_show(toView);
+
+    viewport = viewport_add(mainCanvas);
+    viewport_theme_set(viewport, simpler_object_add(mainCanvas, &quot;widget.minimap&quot;));
+    viewport_target_set(viewport,toView);
+    edje_object_part_swallow(mainLayout,&quot;swallow.viewport&quot;, viewport);
+
+    minimap = minimap_add(mainCanvas);
+    minimap_theme_set(minimap, simpler_object_add(mainCanvas, &quot;widget.minimap&quot;));
+    edje_object_part_swallow(mainLayout,&quot;swallow.minimap&quot;, minimap);
+    minimap_viewport_set(minimap,viewport);
+
+    ecore_main_loop_begin();
+}
+</pre>
+<p>You might notice the code snippet is split in three bigger sections. In
+these sections we include an Edje object to view, we setup the viewport for the
+object and the minimap for the viewport respectively. Since the application is
+going to display a
+group of an arbitrary name from an arbitrary file we don't use the shortcut
+functions to load and display the target. But among these know functions
+<tt class="docutils literal"><span class="pre">ecore_evas_geometry_get</span></tt> stands out. This function is used to load the
+current size of the window as the object width or height in case it does not
+have either one.</p>
+<p>The following two code sections setup each widget, we won't review the
+internals of these yet. We will explore the function <tt class="docutils literal"><span class="pre">simpler_object_add</span></tt>
+that is used to load the theme groups for these widgets. In order to mantain
+our santity (and to save some trees) some additional functions or pieces have
+been left out of the book. The complete, commented sources for this framework
+and the &quot;Plain Edje Viewer&quot; application can be found in the CVS repository of
+the Enlightenment proyect under <tt class="docutils literal"><span class="pre">e17/docs/devwithedje/src</span></tt>. Rest assured the
+omitted functions wont add much to your knowledege about Edje.</p>
+<div class="section" id="simpler-library-intialization">
+<h3><a class="toc-backref" href="#id11">Simpler library intialization</a></h3>
+<p>We have seen initialization functions previously in this chapter and other that
+an increased level of verbosity there is nothing special about the use we have
+give them here:</p>
+<pre class="literal-block">
+Evas_Bool
+simpler_init()
+{
+    char *path;
+
+    if (ApplicationName == NULL)
+    {
+        fprintf(stderr, &quot;Error: The application's name was not set.\n&quot;);
+        return FALSE;
+    }
+
+    if (!evas_init())
+    {
+        fprintf(stderr, &quot;Error: Evas failed to initialize.\n&quot;);
+        return FALSE;
+    }
+    ...
+</pre>
+<p>The rest of the initialization functions can be found in the CVS repository, I
+decided to show this particular piece because it shows a characteristic of the
+framework that can become a problem. Having an application's name setup is a
+requeriment of Ecore_Config. It uses that name to search for or create a
+configuration directory and file. Unless it was explicitly altered by the
+developer the default location of the configuration file will be
+<tt class="docutils literal"><span class="pre">$HOME/.e/apps/ApplicationName/config.eet</span></tt>. Once the application's name has
+been set, we are safe to work with Ecore_Config:</p>
+<pre class="literal-block">
+    ...
+    ecore_config_theme_default(&quot;theme/default&quot;, &quot;default&quot;);
+    ecore_config_theme_default(&quot;theme/current&quot;, &quot;default&quot;);
+    if (ecore_config_load() != ECORE_CONFIG_ERR_SUCC)
+    {
+        fprintf(stderr,&quot;Warning: Could not load config from ~/.e/apps/%s/config.eet\n&quot;, ApplicationName);
+    }
+    path = ecore_config_theme_with_path_get(&quot;theme/default&quot;);
+    if (path == NULL)
+    {
+        fprintf(stderr,&quot;Error: The default theme, '%s.edj', was not found in the PATH='%s'.\n&quot;, ecore_config_theme_get(&quot;theme/default&quot;), ecore_config_theme_default_path_get());
+        return FALSE;
+    }
+    return TRUE;
+}
+</pre>
+<p>An excellent introduction to Ecore_Config already exists in the EFL Cookbook
+and I won't replicate here. But I will resume the functions used in this code
+sample. The first function called is <tt class="docutils literal"><span class="pre">ecore_config_theme_default</span></tt> and it's
+used to setup the default value for a given theme configuration item, don't
+worry, the specifics of &quot;theme configuration items&quot; are explained further down
+this book. In any case, setting up a default value is useful to ensure a valid
+value in case the configuration file is non-existent or incomplete.</p>
+<p>Right after setting some default values we use <tt class="docutils literal"><span class="pre">ecore_config_load</span></tt> to load
+the configuration file found in the default location mentioned earlier. It is
+a good practice to not use custom file locations for configuration files
+because it eases portability of the application. The user will also apreciate
+the additional feeling of certainlity of how an application is going to behave.
+Still, the alternative function <tt class="docutils literal"><span class="pre">ecore_config_file_load</span></tt> could have been used
+to load a configuration file from a custom location.</p>
+<p>Before finishing sucessfully we will have to control that at least the default
+theme file can be found somewhere. Finding at least one theme file is pretty
+much mandatory for any Edje based application.</p>
 </div>
-<div class="section" id="settings-are-important-too">
-<h3><a class="toc-backref" href="#id12">Settings are important too</a></h3>
+<div class="section" id="simpler-window-setup">
+<h3><a class="toc-backref" href="#id12">Simpler window setup</a></h3>
+<p>Setting up a window isn't complex by itself, but why would we manually setup
+these properties, copy and paste these big blocks of code and manually
+replace the parameters for them to adjust to our new application when we can
+use an automated method that also gives more freedom to the designer?</p>
+<p>In this example all the properties for the window including the maximum and
+minimum sizes, name and class are setup by a &quot;group&quot; in an Edje theme file.
+It's up to the developer's personal taste to decide how much control a designer
+will have, thus altering the behaviour of this function was left as an
+excercice for the reader:</p>
+<pre class="literal-block">
+Ecore_Evas*
+simpler_window_new(const char *groupName, Ecore_Evas *parent)
+{
+    Ecore_Evas         *window;
+    Evas               *canvas;
+    Evas_Object        *layout;
+    Window_Properties  *prop;
+    Evas_Coord         width, height;
+
+    if (parent == NULL)
+    {
+        window = ecore_evas_software_x11_new(NULL, 0, 0, 0, 0, 0);
+        ecore_evas_data_set(window, &quot;is_main&quot;, &quot;yes&quot;);
+    }
+    else
+    {
+        window = ecore_evas_software_x11_new(NULL, ecore_evas_software_x11_window_get(parent), 0, 0, 0, 0);
+        ecore_evas_data_set(window, &quot;is_main&quot;, &quot;no&quot;);
+    }
+
+    if (window == NULL)
+    {
+        fprintf(stderr, &quot;Error: Couldn't initiate the canvas wrapper.\n&quot;);
+        return NULL;
+    }
+
+    canvas = ecore_evas_get(window);
+    if (canvas == NULL)
+    {
+        fprintf(stderr,&quot;Error: There is no canvas in the window.\n&quot;);
+        return NULL;
+    }
+
+    layout = simpler_object_add(canvas, groupName);
+    if (layout == NULL)
+    {
+        fprintf(stderr, &quot;Error: Couldn't load the layout object.\n&quot;);
+        return NULL;
+    }
+    ecore_evas_data_set(window,&quot;layout&quot;,layout);
+    ...
+</pre>
+<p>By now you might be wondering if there is a real reason to abstract functions
+as simple and wildly known such as these? There is no simple answer other than
+that these function set properties that could cause unexpected behaviour later
+in the application. I spent an hour of my life trying to figure out why the
+size calculation of the canvas didn't reflect the size changes that ocurred in
+this very initalization function.</p>
+<p>Now that I have justified the first part of the function we might as well
+analyze it! Most of these function have been seen before except for two. The
+first function is <tt class="docutils literal"><span class="pre">simpler_object_add</span></tt>, it is a part of the framework that
+acts as a wrapper for <tt class="docutils literal"><span class="pre">edje_object_add</span></tt> and <tt class="docutils literal"><span class="pre">edje_file_set</span></tt>. The specifics
+of this function are going to be explained in the next chapters. The second
+function is <tt class="docutils literal"><span class="pre">ecore_evas_data_set</span></tt>, it is a standard Ecore_Evas function and
+it's used to attach pointers to arbitrary data to a given key, in this case
+we save the layout Edje object in the &quot;layout&quot; data pointer. The next functions
+will probably be altered by most application developers, and it can be split
+in three big sections of code:</p>
+<pre class="literal-block">
+    ...
+    prop = _window_prop_get(layout);
+    ecore_evas_title_set(window, prop-&gt;title);
+    ecore_evas_name_class_set(window, prop-&gt;name, prop-&gt;class);
+    ecore_evas_size_min_set(window, prop-&gt;minw, prop-&gt;minh);
+    ecore_evas_size_max_set(window, prop-&gt;maxw, prop-&gt;maxh);
+
+    evas_object_move(layout, 0, 0);
+    edje_object_size_min_get(layout, &amp;width, &amp;height);
+    evas_object_resize(layout, width, height);
+    ecore_evas_resize(window,  width, height);
+    evas_output_size_set(ecore_evas_get(window), width, height);
+
+    ecore_evas_callback_resize_set(window, _resize_window);
+    ecore_evas_callback_delete_request_set(window, _close_window);
+    ecore_evas_callback_destroy_set(window, _close_window);
+    ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, _close_application, window);
+
+    ecore_evas_show(window);
+    return window;
+}
+</pre>
+<p>We can begin our analysis with the first section of code. There we setup the
+various properties of the window, including titile, name, class, maximum and
+minimum size. Some of these properties could have been setup before
+with <tt class="docutils literal"><span class="pre">ecore_evas_software_x11_new</span></tt> if we wanted them to be hard coded in the
+framework. In this case we needed to load an Edje object to memory and a canvas
+is needed to initialize the objects.</p>
+<p>The second section of code looks quite familiar since it is basically a carbon
+copy of code written in &quot;The foundations at practice&quot;, this section is used to
+synchronize the sizes of the window and the Edje group used as a layout object.</p>
+<p>In the last section we set a couple of callbacks. The first callback resizes
+the layout object along with the window, thus all the inserted objects that are
+relative to the layout are going to be resized when the window is resized. The
+rest of the callbacks are used to shutdown the application in different
+situations. The function, <tt class="docutils literal"><span class="pre">_close_window</span></tt> is quite simple, and will calle
+<tt class="docutils literal"><span class="pre">_close_application</span></tt> when the user closes the main window. A main window is
+any window without a parent, the framework assumes you will only create one
+parentless window per application.</p>
 </div>
-<div class="section" id="simpler-interface-management">
-<h3><a class="toc-backref" href="#id13">Simpler interface management</a></h3>
+<div class="section" id="simpler-theme-management">
+<h3><a class="toc-backref" href="#id13">Simpler theme management</a></h3>
+<p>In the previous section we have seen how to create a window based on parameters
+lifted from a given Edje object refered to as the layout object. If you take
+a look you will see that the layout object was aquired differently than the
+common Edje object, the function is names <tt class="docutils literal"><span class="pre">simple_object_add</span></tt> and its used
+in the main function to load the themes for the viewport widget and the minimap
+widget as well.</p>
+<p>In this chapter we will review all the functions called to make this simpler
+method of aquiring Edje objects possible:</p>
+<pre class="literal-block">
+Evas_Object *
+simpler_object_add(Evas *canvas, const char *group)
+{
+    Evas_Object *o;
+    o = edje_object_add(canvas);
+    if(simpler_object_file_set(o, ecore_config_theme_with_path_get(&quot;theme/current&quot;), group))
+    {
+        return o;
+    }
+    else
+    {
+        if(simpler_object_file_set(o, ecore_config_theme_with_path_get(&quot;theme/default&quot;), group))
+        {
+            return o;
+        }
+    }
+    return NULL;
+}
+</pre>
+<p>We begin by the most popular <tt class="docutils literal"><span class="pre">simpler_object_add</span></tt>. All this function really
+does is to allocate and initate the object in the choosen canvas with
+<tt class="docutils literal"><span class="pre">edje_object_add</span></tt>. The rest of the work is done by <tt class="docutils literal"><span class="pre">simpler_object_file_set</span></tt>
+and <tt class="docutils literal"><span class="pre">ecore_config_theme_with_path_get</span></tt>.</p>
+<p>As I have said earlier we are going to use Ecore_Config to manage the
+application's settings. An introduction to Ecore_Config can be found in the
+&quot;EFL Cookbook&quot; downloaded for free in the Enlightenment project website. This
+particular setting is used to manage a theme file name. Altought this sounds
+like basically managing a string the function``ecore_config_theme_with_path_get``
+show us how it actually work, better expressed in pseudocode:</p>
+<pre class="literal-block">
+ecore_config_theme_with_path_get(key):
+    theme_file_name = search_config_file_for(key)
+    possible_paths = ecore_config_theme_search_path_get()
+    for each path in possible_paths:
+        if theme_file_name in path:
+            return path + theme_file_name
+        else
+            continue
+</pre>
+<p>What this means is that a <tt class="docutils literal"><span class="pre">ecore_config_theme_*</span></tt> property is quite more
+advanced than a simple path in the form of a string. Now that we have that
+cleared up lets hit the next function in the calling stack:</p>
+<pre class="literal-block">
+Evas_Bool
+simpler_object_file_set(Evas_Object *o, const char *path, const char *group)
+{
+    if(path != NULL)
+    {
+        if(!ecore_file_exists(path))
+        {
+            fprintf(stderr, &quot;Warning: Failed to find the theme file '%s'.\n&quot;, path);
+            return FALSE;
+        }
+        else
+        {
+            if(!edje_file_group_exists(path, group))
+            {
+                fprintf(stderr, &quot;Warning: Failed to find group '%s' in theme file '%s'.\n&quot;, group, path);
+                return FALSE;
+            }
+            else
+            {
+                edje_object_file_set(o, path, group);
+                evas_object_show(o);
+                return TRUE;
+            }
+        }
+    }
+    else
+        return FALSE;
+}
+</pre>
+<p>This function is also quite simple. It basically calls <cite>edje_object_file_set</cite>
+after running some checks to see if the parameters are valid. After that, it
+sets the object to be displayed with <tt class="docutils literal"><span class="pre">evas_object_show</span></tt> mainly because the
+default value hides the object and it will not be used as often by the callers
+of this function.</p>
+<p>These, and a couple of more functions are used by every application fitting the
+profile of this framework. I wrote this code expecting you will want to modify
+it, learning a lot in the process, so I commented and structured the full
+source in Enlightenment's CVS server exactly for this prupose.</p>
 </div>
 </div>
 </div>
@@ -685,7 +1131,7 @@ replace them with its own abstracted versions.</p>
 <p>In general terms, a developer implementing a widget from the scratch would have
 to program functions to:</p>
 <ul class="simple">
-<li>Manipulate the canvas to draw its primitives.</li>
+<li>Manipulate the canvas primitives to draw the widget.</li>
 <li>Register new signal types to emit as a widget.</li>
 <li>Display information and retreive changes.</li>
 <li>Handle events ocurring in the environment that affect it.</li>
@@ -696,12 +1142,136 @@ by the last item can become quite large.</p>
 <div class="section" id="widgets-with-edje">
 <h2><a class="toc-backref" href="#id15">Widgets with Edje</a></h2>
 <p>We have seen there are roughly 5 kinds of functions that have to be implemented
-in order to create a widget from scratch. Altought the way groups are split
-might not seem equitative to the amount of work each one might entail, the
-divisions are concordant with the shortcuts Edje provides. For the cases where
-the number of functions in one group seems to clearly outweights the others,
+in order to create a widget from scratch. Although the way groups are split
+might not seem to correspond with the amount of work each one might entail, the
+divisions concord with the shortcuts Edje provides. For the cases where
+the number of functions in one group seems to clearly outweighs the others,
 Edje provides additional shortcuts not directly related to the design concepts
 and design elements we have seen in the previous chapters.</p>
+<p>I will begin with <strong>Manipulate the canvas primitives to draw the widget</strong> since
+it's the easiest to explain. With a plain canvas approach to widget creation,
+this would mean the developer must manually create each rect, line, etc. that
+form its widget. Instead, Edje draws the primitive objects based on the
+designer's  specifications in the Edje Data Collection file, not a single
+primitive has to be created or manipulated by the application developer.</p>
+<p>Addressing the task <strong>Handle events occurring on its primitives</strong> using
+Edje can be done with two different, but compatible, approaches. The first
+approach is also available in the other low level libraries. To intercept all
+the signals coming from the primitive objects that form the widget, filter the
+signals and (sometimes) emit a new kind of signal. This approach is useful in
+many situations and that's why it is possible to use it in Edje even when it
+provides an alternative, not available among its low level cousins. With Edje
+designer can write small &quot;programs&quot; in his EDC files. An Edje program is
+not as complex as the name might make us think. Unless the designer uses a
+script block (rare) the average Edje program would look like this:</p>
+<pre class="literal-block">
+program {
+    name:       &quot;playthemusic&quot;;
+    signal:     &quot;mouse,down,1&quot;;
+    source:     &quot;*&quot;;
+    action:      action: SIGNAL_EMIT &quot;PLAY&quot; &quot;button&quot;;
+}
+</pre>
+<p>There is more to Edje programs than just this, but this example will be enough
+to illustrate the point. Since Edje programs are limited to their own group,
+this program is limited to a hypothetical &quot;button&quot; group. What the program does
+is to emit the signal &quot;PLAY&quot; when the left button is pressed over any part that
+forms the &quot;button&quot; group. The application only has to listen for the PLAY
+signal. When and why that signal will be emitted is completely up to the
+designer to decide. He could change &quot;mouse,down,1&quot; to &quot;mouse,wheel,*&quot; and cause
+the music to play when the user uses the mouse wheel over any part of the
+button.</p>
+<p>The previously illustrated program shows that <strong>Register new signal types to
+emit as a widget</strong> will not be as common as it would with another canvas
+library. Most of the time, it will be designer who implements new signal types.
+Sadly, there is little that Edje can provide concerning <strong>Handle events
+occurring in the environment that affect it</strong>.</p>
+<p>To <strong>Display information and retrieve changes</strong> is quite simple. As with any
+other low level library, the developer will have to alter some primitive in
+order to display the requested information. Most of the time this means
+changing a string of characters, complex diagrams and similar objects go
+beyond the scope of Edje and enter the realm of Evas programming. Plain Evas
+objects, of course, integrate perfectly with Edje interfaces.</p>
+<p>A difference between a regular canvas lib and Edje concerns conveying subtle
+information by changing the &quot;state&quot; of the interface. Designers can implement
+any arbitrary number of states for any part or group and change them using
+simple Edje programs. The same programs can also be triggered by the
+application. For example, to disable a button in a plain canvas the developer
+would have to call functions that gray out the background and text. With Edje
+the developer just emits the signal &quot;DISABLED&quot; to the button and lets the
+designer implement this however he wants.</p>
+</div>
+<div class="section" id="the-ewl-as-a-shortcut">
+<h2><a class="toc-backref" href="#id16">The Ewl as a shortcut</a></h2>
+<p>Creating custom widgets even with the facilities Edje provides can become a
+very complex task with more advanced widgets. Thankfully for us a working
+widget library for those specially-hard widgets already exists. Altought the
+goal of the Enlightened Widget Library are not exactly in synch with the goals
+of plain Edje application development, hard work has been done by the EWL
+developers to make including their widgets in a plain Edje interface possible.</p>
+<p>But before we go into further implementation details it might be a good idea to
+quote the introduction to the Ewl API reference:</p>
+<blockquote>
+<p>The Enlightened Widget Library (Ewl) is a high level toolkit providing all
+of the widgets you'll need to create your application. Ewl is built on the
+Enlightenment Foundataion Libraries and makes heavy use of the provided
+technologies. The goal of Ewl is to abstract the use of these backends and
+to present an easy to use object model to the end programmer. The expansive
+object oriented style API provides tools to easily extend widgets and
+containers for new situations.</p>
+<p>Overall, Ewl is similar in design and functionality to other common
+toolkits such as GTK+ and QT. The APIs differ, but the overall concepts and
+ideas are similar. If you are familiar with these other toolkits getting
+into Ewl should be relatively simple.</p>
+</blockquote>
+<p>Simply put, the goal of the Ewl developers is to abstract Edje as on of many
+rendering backends. This is not a bad thing on its own, but for developers
+wanting to use Edje capabilities to the max the Ewl can become limiting. Great
+care is taken by the Ewl developers to not limit theme designers and this has
+resulted in a library that does <em>not</em> limit the themer more often than it does.</p>
+<p>In any case, the Enlightened Widget Library provides an special type of
+container know as the &quot;embed&quot; container. Widgets included in this container can
+be swallowed into a SWALLOW part in a common Edje interface. Once the widget
+has been included its appereance can be altered in a per-theme basis in order
+for the widget to fit the rest of the application as cleanly as possible.</p>
+<p>You might not want to use Ewl to create simple interface objects like buttons
+and check boxes. But it can become an invaluable time saver for complex widgets
+like trees and file management dialogs. A great resource to learn how to
+include Ewl widgets into an Edje interface is the source code ewl_embed_test.c
+which is logically divided and toroughly commented.</p>
+</div>
+<div class="section" id="implementing-widgets-with-edje">
+<h2><a class="toc-backref" href="#id17">Implementing widgets with Edje</a></h2>
+<div class="section" id="introduction-to-smart-objects">
+<h3><a class="toc-backref" href="#id18">Introduction to Smart Objects</a></h3>
+</div>
+<div class="section" id="the-foundations-of-a-smart-object">
+<h3><a class="toc-backref" href="#id19">The foundations of a Smart Object</a></h3>
+</div>
+</div>
+<div class="section" id="laying-out-widgets">
+<h2><a class="toc-backref" href="#id20">Laying out widgets</a></h2>
+</div>
+<div class="section" id="creating-list-based-widgets">
+<h2><a class="toc-backref" href="#id21">Creating list based widgets</a></h2>
+</div>
+</div>
+<div class="section" id="widgets-by-example">
+<h1><a class="toc-backref" href="#id22">Widgets by Example</a></h1>
+<div class="section" id="the-text-entry">
+<h2><a class="toc-backref" href="#id23">The text entry</a></h2>
+</div>
+<div class="section" id="the-combox">
+<h2><a class="toc-backref" href="#id24">The combox</a></h2>
+</div>
+<div class="section" id="the-kinetic-list">
+<h2><a class="toc-backref" href="#id25">The kinetic list</a></h2>
+</div>
+<div class="section" id="the-media-viewport">
+<h2><a class="toc-backref" href="#id26">The media viewport</a></h2>
+</div>
+<div class="section" id="flexible-toolbars">
+<h2><a class="toc-backref" href="#id27">Flexible toolbars</a></h2>
 </div>
 </div>
 </div>

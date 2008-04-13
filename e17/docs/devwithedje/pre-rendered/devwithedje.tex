@@ -54,7 +54,7 @@
 \newcommand{\rubric}[1]{\subsection*{~\hfill {\it #1} \hfill ~}}
 \newcommand{\titlereference}[1]{\textsl{#1}}
 % end of "some commands"
-\input{stylesheet.tex}
+\input{devwithedje.sty}
 \ifthenelse{\isundefined{\hypersetup}}{
 \usepackage[colorlinks=true,linkcolor=blue,urlcolor=blue]{hyperref}
 }{}
@@ -84,8 +84,8 @@ pdfauthor={Andres Blanc}
 \textbf{Date}: &
 	2008/04/03 \\
 \textbf{Copyright}: &
-	This book is distributed under the terms of the Attribution-ShareAlike
-CC license. See: \href{http://creativecommons.org/licenses/by-sa/3.0/}{http://creativecommons.org/licenses/by-sa/3.0/}. \\
+	This book is distributed under the terms of the ``Attribution''
+Creative Commons license. See: \href{http://creativecommons.org/licenses/by/3.0/}{http://creativecommons.org/licenses/by/3.0/}. \\
 \end{tabularx}
 \end{center}
 
@@ -113,74 +113,171 @@ to create a full blown Edje based application.
 \hypertarget{book-overview}{}
 \chapter{Book overview}
 \label{book-overview}
-
-I. \href{\#about-graphical-user-interfaces}{About Graphical User Interfaces}.
+\begin{itemize}
+\item {} 
+\href{\#about-graphical-user-interfaces}{About Graphical User Interfaces}.
 If we look through the code of some of the many open source applications
 available, we can find most of them share a common structure. This chapter
 introduces the reader to said structure, to the concept of an Event loop and
 how does it deal with the interaction between form and function.
-
-I.I. \href{\#decomposing-the-frontend}{Decomposing the frontend}.
+\begin{itemize}
+\item {} 
+\href{\#decomposing-the-frontend}{Decomposing the frontend}.
 There are different approaches to the creation of Graphical User Interfaces,
 some provide flexibility while others shorter development time. In the end, the
 rest of the application will have to go through the same mechanism to deal
 with the interface.
 
-I.II. \href{\#introduction-to-edje}{Introduction to Edje}.
+\item {} 
+\href{\#introduction-to-edje}{Introduction to Edje}.
 Edje is a compromise between flexibility and development time. Comparing it to
 a plain canvas or a fully featured toolkit can show us how it fits in the
 middle ground and provides advantages for designers and developers alike.
 
-I.III. \href{\#the-foundations}{The foundations}.
+\item {} 
+\href{\#the-foundations}{The foundations}.
 Edje allows low level control of the interface without forcing the developer
 through a low level API. The interface objects are implemented as Evas objects,
 but through a completely new language friendly to designers and independent
 from the application code.
 
-I.IV. \href{\#convenient-libraries}{Convenient libraries}
+\item {} 
+\href{\#convenient-libraries}{Convenient libraries}
 To load an Edje interface the application needs to setup an Evas canvas first.
 This would look as a burden for the developer, dealing with issues specific to
 the underlying system. Thankfully Evas is supported by an additional library
 that resolve most of these issues, Ecore.
 
-II. \href{\#the-foundations-in-practice}{The foundations in practice}.
+\end{itemize}
+
+\item {} 
+\href{\#the-foundations-in-practice}{The foundations in practice}.
 Practical examples of the Englighenment Foundation Libraries required for a
 common Edje application.
-
-II.I. \href{\#working-with-the-canvas}{Working with the canvas}.
+\begin{itemize}
+\item {} 
+\href{\#working-with-the-canvas}{Working with the canvas}.
 Including new Edje objects inside the previously setup canvas can be explained
 with this simple example.
 
-II.II. \href{\#interacting-with-the-objects}{Interacting with the objects}.
+\item {} 
+\href{\#interacting-with-the-objects}{Interacting with the objects}.
 There are different channels for the application to interact with the
 interface. For the sake of brevity I will include an example of each one to
 serve as an introduction for the practical examples to come in the next
 chapters.
 
-II.III. \href{\#building-a-framework}{Building a framework}.
-- An brief introduction to the concept of the framework
-- Code sample of the main.c file and general explanation
+\item {} 
+\href{\#building-a-framework}{Building a framework}.
+Hopefully the reader's mind won't be filled already with preconceptions about
+this subject. In any case, only the foundations of what could be used to
+form a complex framework are going to be reviewed in this chapter.
+\begin{quote}
+\begin{itemize}
+\item {} 
+\href{\#simpler-library-intialization}{Simpler library intialization}.
+We have seen why and how to initialize the necessary EFL libraries. This
+chapter introduces the implementation of a convenience function to do it in one
+call along with control and intialization of configuration and theme files.
 
-II.III.I. \href{\#getting-the-interface-up}{Getting the interface up}.
-- A mention of the environment{\_}init/shutdown functions without code examples
-- A code sample + explanation of the the window creation functions
+\item {} 
+\href{\#simpler-window-setup}{Simpler window setup}.
+Altought setting up a window is not a complex task there is no reason for not
+using a standarized method that automates some aspects of window creation. Some
+other aspects are left for the designer to manipulate, the end result is less
+code which often means less bugs.
 
-II.III.II. \href{\#settings-are-important-too}{Settings are important too}.
-- An brief introduction to Ecore{\_}Config (refer to the cookbook).
-- A code sample + explanation of functions that deal with multiple theme files.
+\item {} 
+\href{\#simpler-theme-management}{Simpler theme management}.
+The EFL are programmed in a incredible flexible way and they cover many uses
+and platforms. The functions explained in this section makes some assumptions
+about the programmer's intentions. If they match with yours, using them can
+mean simpler application code, less development time and less bugs.
 
-II.III.III. \href{\#simpler-interface-management}{Simpler interface management}.
-- A code sample + explanation of the functions that fetch the theme objects
+\end{itemize}
+\end{quote}
 
-III. \href{\#introduction-to-widgets}{Introduction to widgets}.
+\end{itemize}
+
+\item {} 
+\href{\#introduction-to-widgets}{Introduction to widgets}.
 Interfaces need to resolve two problems, presenting information to users and
 taking orders from them. The past chapters presented enough information to
 solve the first. In the following chapters we will review the second.
-
-III.I. \href{\#widgets-with-edje}{Widgets with Edje}.
+\begin{itemize}
+\item {} 
+\href{\#widgets-with-edje}{Widgets with Edje}.
 Since this is a book about Edje it might be a good idea to detail the way Edje
 simplifies custom widget creation by reviewing the list of tasks presented in
 the previous chapter and how Edje helps with each task.
+
+\item {} 
+\href{\#the-ewl-as-a-shortcut}{The Ewl as a shortcut}.
+The Enlightened Widget Library is a piece of software older than Edje itself.
+But almost as soon as Edje was made aviable the library developers started
+using it as their theme engine. Since widget's from this library can be
+included as another Edje object we can use it as a shortcut for the most
+complex widgets.
+
+\item {} 
+\href{\#implementing-widgets-with-edje}{Implementing widgets with Edje}.
+It is possible to fully implement widgets using the Edje library alone. But
+this approach grows more unmanageable as the widget becomes more complex. In
+this chapter we will review a simple widget, written using Edje alone and a
+more complex widget that shares the same foundations with Edje objects.
+\begin{itemize}
+\item {} 
+\href{\#introduction-to-smart-objects}{Introduction to Smart Objects}.
+We have seen Smart Objects in the previous chapters and we know they are used
+to implement Edje objects. In this chapters we will analyze the surface code
+of a Smart Object based widget, the minimap.
+
+\item {} 
+\href{\#the-foundations-of-a-smart-object}{The foundations of a Smart Object}.
+If you felt that basing Edje widgets in Smart Objects seems simple enough, I
+hope that impression does not fade away because of the amount of code presented
+in this chapter. Altought at a first look it might seem complex creating an
+Smart Object is quite simple and logical.
+
+\end{itemize}
+
+\item {} 
+\href{\#laying-out-widgets}{Laying out widgets}.
+TODO.
+
+\item {} 
+\href{\#creating-list-based-widgets}{Creating list based widgets}.
+TODO.
+
+\end{itemize}
+
+\item {} 
+\href{\#widgets-by-example}{Widgets by Example}.
+TODO,
+\begin{itemize}
+\item {} 
+\href{\#the-text-entry}{The text entry}.
+TODO
+
+\item {} 
+\href{\#the-combox}{The combox}.
+TODO.
+
+\item {} 
+\href{\#the-kinetic-list}{The kinetic list}.
+TODO.
+
+\item {} 
+\href{\#the-media-viewport}{The media viewport}.
+TODO.
+
+\item {} 
+\href{\#flexible-toolbars}{Flexible toolbars}.
+TODO.
+
+\end{itemize}
+
+\end{itemize}
 
 
 %___________________________________________________________________________
@@ -471,11 +568,11 @@ lines and multiple engine support to an application reload.
 
 By pointing out that the Enlightenment Foundation Libraries are designed in a
 Object Oriented manner I wish not to raise the wrath of OO purists but to
-simplify the mental image of the structure of the EFL C API in the reader's
-imagination.
+simplify the reader's mental image of how the EFL C Application Programming
+Interface is structured.
 
-Now that the pitchforks are back in the barn allow me to put it in more clear
-terms with a simple example:
+Now that the pitchforks are back in the barn and torchs have been put off,
+allow me to put it in more clear terms using a simple example:
 \begin{quote}{\ttfamily \raggedright \noindent
 Evas{\_}Object~*button~=~NULL;~\\
 button~=~edje{\_}object{\_}add(evascanvas);~\\
@@ -483,7 +580,7 @@ edje{\_}object{\_}file{\_}set(button,~"theme.edj",~"button");
 }\end{quote}
 
 This is a simple C snippet that could be translated into a more (sintactically
-speaking) object oriented language like Python as:
+speaking) OO language like Python as:
 \begin{quote}{\ttfamily \raggedright \noindent
 button~=~Evas{\_}Object()~\\
 button.file{\_}set("theme.edj","button")
@@ -494,8 +591,8 @@ sugar'' but it serves to demonstrate the structure which the EFL C API follows.
 If we dissected the last function call we could split it into three groups.
 First, the class of the object to manipulate, \texttt{edje{\_}object}, second, the
 method to call \texttt{file{\_}set} and third the pointer to the object instance
-\texttt{(button,} along with the parameters \texttt{"theme.edj","button")} or, in more
-generic terms, \texttt{class{\_}method(instance,parameters)}.
+\texttt{(button,} along with the parameters \texttt{"theme.edj","button")} or generically
+speaking, \texttt{class{\_}method(instance,parameters)}.
 
 The first source snippet in the following tutorial is, of course, the first
 exception. The following function calls deal with the library itself. Anyway,
@@ -766,51 +863,447 @@ of the signal.
 
 Hopefully the reader has not been introduced to the concept of software
 frameworks by web based monsters like Ruby on Rails. Personally I think RoR is
-great, my point is that a framework does not necessarily mean big complex,
-abstract software libraries. A framework can be seen as the standardization of
-common, complex tasks into a library shared by group of applications. With a
-framework short development times means a compromise with flexibility.
+great and my point is that a framework does not necessarily mean large software
+libraries. A framework can be seen as library of functions determined by the
+similiarity in the profile of the applications that use it. In a framework,
+shorter development time means either more specific profiles or more complex
+library code.
 
 In this section and the following subsections we will develop an application
-framework for applications with a specific profile. An X11 desktop application
-that doesn't require any exotic manipulation of its theme files and with a
-interface simple enough that all its objects can be laid out using a single
-Edje object.
+framework for applications with a specific profile: ``A X11 desktop application
+that doesn't require any exotic manipulation of its theme or configuration
+files''. A list of the tasks the framework must perform follow:
+\begin{itemize}
+\item {} \begin{description}
+\item[{Configuration (Using Ecore{\_}Config).}] \leavevmode \begin{itemize}
+\item {} 
+Initialization and shutdown of the necesary services.
 
-The tasks that this framework will take care of are pretty straight forward:
-* Maintain a configuration file (in the default location used by Ecore{\_}Config).
-* Setup the window properties and main layout from a theme object.
-* Manage theme objects, including changing a theme file on runtime and
-maintaining two the files, current and default.
+\item {} 
+Saving configuration changes on exit.
 
-The example application will be an Edje group viewer, this application will
-receive a filename and a group name, it will display the application inside a
-viewport, print the last signal emitted by the group and provide a minimap for
-navigating the viewport. Without further ado, here it is, the main file:
+\item {} 
+Recall the previously saved values on initialzation.
 
-Literal block expected; none found.
+\item {} 
+Control that the necessary configuration and theme files exist.
 
+\end{itemize}
+
+\end{description}
+
+\item {} \begin{description}
+\item[{Interface Management}] \leavevmode \begin{itemize}
+\item {} 
+Create windows with their properties lifted from a given Edje object.
+
+\item {} 
+Allocate, load and display Edje objects from a ``current'' theme file, set
+by the user or a ``default'' theme file setup by the application developer.
+
+\end{itemize}
+
+\end{description}
+
+\end{itemize}
+
+The example application using this framework will be an Edje group viewer, this
+application will receive a filename and a group name, it will display them
+inside a viewport managed with a minimap. The last signal emitted by the object
+is going to be printed to a given text string. Without further ado, here it is,
+the main file:
+\begin{quote}{\ttfamily \raggedright \noindent
+{\#}include~"../lib/framework.c"~\\
+{\#}include~"../lib/viewport.c"~\\
+{\#}include~"../lib/minimap.c"~\\
+{\#}include~<string.h>~\\
+{\#}include~<limits.h>~\\
+~\\
+int~arguments{\_}parse(char~path{[}{]},~char~group{[}{]},~int~argc,~char~**argv);~\\
+~\\
+int~main(int~argc,~char~**argv)~{\{}~\\
+~\\
+~~~~Ecore{\_}Evas~~*mainWindow~=~NULL;~\\
+~~~~Evas~~~~~~~~*mainCanvas~=~NULL;~\\
+~~~~Evas{\_}Coord~~~width,~height;~\\
+~~~~Evas{\_}Object~*mainLayout,~*toView,~*viewport,~*minimap;~\\
+~~~~char~~~~~~~~~path{[}PATH{\_}MAX{]},group{[}100{]};~\\
+~\\
+~~~~application{\_}name{\_}set("Plain~Edje~Viewer");~\\
+~~~~if~(!simpler{\_}init())~\\
+~~~~~~~~return~EXIT{\_}FAILURE;~\\
+~\\
+~~~~if(!arguments{\_}parse(path,~group,~argc,~argv))~\\
+~~~~~~~~return~EXIT{\_}FAILURE;~\\
+~\\
+~~~~mainWindow~=~simpler{\_}window{\_}new("window/main",NULL);~\\
+~~~~if~(!mainWindow)~\\
+~~~~~~~~return~EXIT{\_}FAILURE;~\\
+~~~~mainCanvas~=~ecore{\_}evas{\_}get(mainWindow);~\\
+~~~~mainLayout~=~ecore{\_}evas{\_}data{\_}get(mainWindow,"layout");
+}\end{quote}
+
+The precedeing code snippet shows two of the three shortcuts our framework
+provides. The first function \texttt{simpler{\_}init} is used to group all the library
+intialization functions along with the configuration initialzation functions.
+Following the library initialzation comes \texttt{simpler{\_}window{\_}new} which is used
+to create a window based on values provided by a given Edje group. The group
+itself is saved inside the Ecore{\_}Evas canvas wrapper as a data pointer and can
+be retrieved with \texttt{ecore{\_}evas{\_}data{\_}get}. As you might notice we use of a
+function named \texttt{arguments{\_}parse} to get the path of the requested file and
+group from the array of arguments.
+
+Notice that the call to \texttt{simpler{\_}window{\_}new} does not have any filename
+attached to it. But how does the application know where to look this group up?
+This is the work of Ecore{\_}Config and we will review how is it used in the next
+section of the book. In any case, the following code snippet show a little more
+Edje related action:
+\begin{quote}{\ttfamily \raggedright \noindent
+~~~~toView~=~edje{\_}object{\_}add(mainCanvas);~\\
+~~~~edje{\_}object{\_}file{\_}set(toView,~path,~group);~\\
+~~~~edje{\_}object{\_}size{\_}min{\_}calc(toView,~{\&}width,~{\&}height);~\\
+~~~~if(width~<=~0)~\\
+~~~~~~~~ecore{\_}evas{\_}geometry{\_}get(mainWindow,~NULL,~NULL,~{\&}width,~NULL);~\\
+~~~~if(height~<=~0)~\\
+~~~~~~~~ecore{\_}evas{\_}geometry{\_}get(mainWindow,~NULL,~NULL,~NULL,~{\&}height);~\\
+~~~~evas{\_}object{\_}resize(toView,~width,~height);~\\
+~~~~evas{\_}object{\_}move(toView,0,0);~\\
+~~~~evas{\_}object{\_}show(toView);~\\
+~\\
+~~~~viewport~=~viewport{\_}add(mainCanvas);~\\
+~~~~viewport{\_}theme{\_}set(viewport,~simpler{\_}object{\_}add(mainCanvas,~"widget.minimap"));~\\
+~~~~viewport{\_}target{\_}set(viewport,toView);~\\
+~~~~edje{\_}object{\_}part{\_}swallow(mainLayout,"swallow.viewport",~viewport);~\\
+~\\
+~~~~minimap~=~minimap{\_}add(mainCanvas);~\\
+~~~~minimap{\_}theme{\_}set(minimap,~simpler{\_}object{\_}add(mainCanvas,~"widget.minimap"));~\\
+~~~~edje{\_}object{\_}part{\_}swallow(mainLayout,"swallow.minimap",~minimap);~\\
+~~~~minimap{\_}viewport{\_}set(minimap,viewport);~\\
+~\\
+~~~~ecore{\_}main{\_}loop{\_}begin();~\\
+{\}}
+}\end{quote}
+
+You might notice the code snippet is split in three bigger sections. In
+these sections we include an Edje object to view, we setup the viewport for the
+object and the minimap for the viewport respectively. Since the application is
+going to display a
+group of an arbitrary name from an arbitrary file we don't use the shortcut
+functions to load and display the target. But among these know functions
+\texttt{ecore{\_}evas{\_}geometry{\_}get} stands out. This function is used to load the
+current size of the window as the object width or height in case it does not
+have either one.
+
+The following two code sections setup each widget, we won't review the
+internals of these yet. We will explore the function \texttt{simpler{\_}object{\_}add}
+that is used to load the theme groups for these widgets. In order to mantain
+our santity (and to save some trees) some additional functions or pieces have
+been left out of the book. The complete, commented sources for this framework
+and the ``Plain Edje Viewer'' application can be found in the CVS repository of
+the Enlightenment proyect under \texttt{e17/docs/devwithedje/src}. Rest assured the
+omitted functions wont add much to your knowledege about Edje.
 
 
 %___________________________________________________________________________
 
-\hypertarget{getting-the-interface-up}{}
-\subsection{Getting the interface up}
-\label{getting-the-interface-up}
+\hypertarget{simpler-library-intialization}{}
+\subsection{Simpler library intialization}
+\label{simpler-library-intialization}
+
+We have seen initialization functions previously in this chapter and other that
+an increased level of verbosity there is nothing special about the use we have
+give them here:
+\begin{quote}{\ttfamily \raggedright \noindent
+Evas{\_}Bool~\\
+simpler{\_}init()~\\
+{\{}~\\
+~~~~char~*path;~\\
+~\\
+~~~~if~(ApplicationName~==~NULL)~\\
+~~~~{\{}~\\
+~~~~~~~~fprintf(stderr,~"Error:~The~application's~name~was~not~set.{\textbackslash}n");~\\
+~~~~~~~~return~FALSE;~\\
+~~~~{\}}~\\
+~\\
+~~~~if~(!evas{\_}init())~\\
+~~~~{\{}~\\
+~~~~~~~~fprintf(stderr,~"Error:~Evas~failed~to~initialize.{\textbackslash}n");~\\
+~~~~~~~~return~FALSE;~\\
+~~~~{\}}~\\
+~~~~...
+}\end{quote}
+
+The rest of the initialization functions can be found in the CVS repository, I
+decided to show this particular piece because it shows a characteristic of the
+framework that can become a problem. Having an application's name setup is a
+requeriment of Ecore{\_}Config. It uses that name to search for or create a
+configuration directory and file. Unless it was explicitly altered by the
+developer the default location of the configuration file will be
+\texttt{{\$}HOME/.e/apps/ApplicationName/config.eet}. Once the application's name has
+been set, we are safe to work with Ecore{\_}Config:
+\begin{quote}{\ttfamily \raggedright \noindent
+~~~~...~\\
+~~~~ecore{\_}config{\_}theme{\_}default("theme/default",~"default");~\\
+~~~~ecore{\_}config{\_}theme{\_}default("theme/current",~"default");~\\
+~~~~if~(ecore{\_}config{\_}load()~!=~ECORE{\_}CONFIG{\_}ERR{\_}SUCC)~\\
+~~~~{\{}~\\
+~~~~~~~~fprintf(stderr,"Warning:~Could~not~load~config~from~{\textasciitilde}/.e/apps/{\%}s/config.eet{\textbackslash}n",~ApplicationName);~\\
+~~~~{\}}~\\
+~~~~path~=~ecore{\_}config{\_}theme{\_}with{\_}path{\_}get("theme/default");~\\
+~~~~if~(path~==~NULL)~\\
+~~~~{\{}~\\
+~~~~~~~~fprintf(stderr,"Error:~The~default~theme,~'{\%}s.edj',~was~not~found~in~the~PATH='{\%}s'.{\textbackslash}n",~ecore{\_}config{\_}theme{\_}get("theme/default"),~ecore{\_}config{\_}theme{\_}default{\_}path{\_}get());~\\
+~~~~~~~~return~FALSE;~\\
+~~~~{\}}~\\
+~~~~return~TRUE;~\\
+{\}}
+}\end{quote}
+
+An excellent introduction to Ecore{\_}Config already exists in the EFL Cookbook
+and I won't replicate here. But I will resume the functions used in this code
+sample. The first function called is \texttt{ecore{\_}config{\_}theme{\_}default} and it's
+used to setup the default value for a given theme configuration item, don't
+worry, the specifics of ``theme configuration items'' are explained further down
+this book. In any case, setting up a default value is useful to ensure a valid
+value in case the configuration file is non-existent or incomplete.
+
+Right after setting some default values we use \texttt{ecore{\_}config{\_}load} to load
+the configuration file found in the default location mentioned earlier. It is
+a good practice to not use custom file locations for configuration files
+because it eases portability of the application. The user will also apreciate
+the additional feeling of certainlity of how an application is going to behave.
+Still, the alternative function \texttt{ecore{\_}config{\_}file{\_}load} could have been used
+to load a configuration file from a custom location.
+
+Before finishing sucessfully we will have to control that at least the default
+theme file can be found somewhere. Finding at least one theme file is pretty
+much mandatory for any Edje based application.
 
 
 %___________________________________________________________________________
 
-\hypertarget{settings-are-important-too}{}
-\subsection{Settings are important too}
-\label{settings-are-important-too}
+\hypertarget{simpler-window-setup}{}
+\subsection{Simpler window setup}
+\label{simpler-window-setup}
+
+Setting up a window isn't complex by itself, but why would we manually setup
+these properties, copy and paste these big blocks of code and manually
+replace the parameters for them to adjust to our new application when we can
+use an automated method that also gives more freedom to the designer?
+
+In this example all the properties for the window including the maximum and
+minimum sizes, name and class are setup by a ``group'' in an Edje theme file.
+It's up to the developer's personal taste to decide how much control a designer
+will have, thus altering the behaviour of this function was left as an
+excercice for the reader:
+\begin{quote}{\ttfamily \raggedright \noindent
+Ecore{\_}Evas*~\\
+simpler{\_}window{\_}new(const~char~*groupName,~Ecore{\_}Evas~*parent)~\\
+{\{}~\\
+~~~~Ecore{\_}Evas~~~~~~~~~*window;~\\
+~~~~Evas~~~~~~~~~~~~~~~*canvas;~\\
+~~~~Evas{\_}Object~~~~~~~~*layout;~\\
+~~~~Window{\_}Properties~~*prop;~\\
+~~~~Evas{\_}Coord~~~~~~~~~width,~height;~\\
+~\\
+~~~~if~(parent~==~NULL)~\\
+~~~~{\{}~\\
+~~~~~~~~window~=~ecore{\_}evas{\_}software{\_}x11{\_}new(NULL,~0,~0,~0,~0,~0);~\\
+~~~~~~~~ecore{\_}evas{\_}data{\_}set(window,~"is{\_}main",~"yes");~\\
+~~~~{\}}~\\
+~~~~else~\\
+~~~~{\{}~\\
+~~~~~~~~window~=~ecore{\_}evas{\_}software{\_}x11{\_}new(NULL,~ecore{\_}evas{\_}software{\_}x11{\_}window{\_}get(parent),~0,~0,~0,~0);~\\
+~~~~~~~~ecore{\_}evas{\_}data{\_}set(window,~"is{\_}main",~"no");~\\
+~~~~{\}}~\\
+~\\
+~~~~if~(window~==~NULL)~\\
+~~~~{\{}~\\
+~~~~~~~~fprintf(stderr,~"Error:~Couldn't~initiate~the~canvas~wrapper.{\textbackslash}n");~\\
+~~~~~~~~return~NULL;~\\
+~~~~{\}}~\\
+~\\
+~~~~canvas~=~ecore{\_}evas{\_}get(window);~\\
+~~~~if~(canvas~==~NULL)~\\
+~~~~{\{}~\\
+~~~~~~~~fprintf(stderr,"Error:~There~is~no~canvas~in~the~window.{\textbackslash}n");~\\
+~~~~~~~~return~NULL;~\\
+~~~~{\}}~\\
+~\\
+~~~~layout~=~simpler{\_}object{\_}add(canvas,~groupName);~\\
+~~~~if~(layout~==~NULL)~\\
+~~~~{\{}~\\
+~~~~~~~~fprintf(stderr,~"Error:~Couldn't~load~the~layout~object.{\textbackslash}n");~\\
+~~~~~~~~return~NULL;~\\
+~~~~{\}}~\\
+~~~~ecore{\_}evas{\_}data{\_}set(window,"layout",layout);~\\
+~~~~...
+}\end{quote}
+
+By now you might be wondering if there is a real reason to abstract functions
+as simple and wildly known such as these? There is no simple answer other than
+that these function set properties that could cause unexpected behaviour later
+in the application. I spent an hour of my life trying to figure out why the
+size calculation of the canvas didn't reflect the size changes that ocurred in
+this very initalization function.
+
+Now that I have justified the first part of the function we might as well
+analyze it! Most of these function have been seen before except for two. The
+first function is \texttt{simpler{\_}object{\_}add}, it is a part of the framework that
+acts as a wrapper for \texttt{edje{\_}object{\_}add} and \texttt{edje{\_}file{\_}set}. The specifics
+of this function are going to be explained in the next chapters. The second
+function is \texttt{ecore{\_}evas{\_}data{\_}set}, it is a standard Ecore{\_}Evas function and
+it's used to attach pointers to arbitrary data to a given key, in this case
+we save the layout Edje object in the ``layout'' data pointer. The next functions
+will probably be altered by most application developers, and it can be split
+in three big sections of code:
+\begin{quote}{\ttfamily \raggedright \noindent
+~~~~...~\\
+~~~~prop~=~{\_}window{\_}prop{\_}get(layout);~\\
+~~~~ecore{\_}evas{\_}title{\_}set(window,~prop->title);~\\
+~~~~ecore{\_}evas{\_}name{\_}class{\_}set(window,~prop->name,~prop->class);~\\
+~~~~ecore{\_}evas{\_}size{\_}min{\_}set(window,~prop->minw,~prop->minh);~\\
+~~~~ecore{\_}evas{\_}size{\_}max{\_}set(window,~prop->maxw,~prop->maxh);~\\
+~\\
+~~~~evas{\_}object{\_}move(layout,~0,~0);~\\
+~~~~edje{\_}object{\_}size{\_}min{\_}get(layout,~{\&}width,~{\&}height);~\\
+~~~~evas{\_}object{\_}resize(layout,~width,~height);~\\
+~~~~ecore{\_}evas{\_}resize(window,~~width,~height);~\\
+~~~~evas{\_}output{\_}size{\_}set(ecore{\_}evas{\_}get(window),~width,~height);~\\
+~\\
+~~~~ecore{\_}evas{\_}callback{\_}resize{\_}set(window,~{\_}resize{\_}window);~\\
+~~~~ecore{\_}evas{\_}callback{\_}delete{\_}request{\_}set(window,~{\_}close{\_}window);~\\
+~~~~ecore{\_}evas{\_}callback{\_}destroy{\_}set(window,~{\_}close{\_}window);~\\
+~~~~ecore{\_}event{\_}handler{\_}add(ECORE{\_}EVENT{\_}SIGNAL{\_}EXIT,~{\_}close{\_}application,~window);~\\
+~\\
+~~~~ecore{\_}evas{\_}show(window);~\\
+~~~~return~window;~\\
+{\}}
+}\end{quote}
+
+We can begin our analysis with the first section of code. There we setup the
+various properties of the window, including titile, name, class, maximum and
+minimum size. Some of these properties could have been setup before
+with \texttt{ecore{\_}evas{\_}software{\_}x11{\_}new} if we wanted them to be hard coded in the
+framework. In this case we needed to load an Edje object to memory and a canvas
+is needed to initialize the objects.
+
+The second section of code looks quite familiar since it is basically a carbon
+copy of code written in ``The foundations at practice'', this section is used to
+synchronize the sizes of the window and the Edje group used as a layout object.
+
+In the last section we set a couple of callbacks. The first callback resizes
+the layout object along with the window, thus all the inserted objects that are
+relative to the layout are going to be resized when the window is resized. The
+rest of the callbacks are used to shutdown the application in different
+situations. The function, \texttt{{\_}close{\_}window} is quite simple, and will calle
+\texttt{{\_}close{\_}application} when the user closes the main window. A main window is
+any window without a parent, the framework assumes you will only create one
+parentless window per application.
 
 
 %___________________________________________________________________________
 
-\hypertarget{simpler-interface-management}{}
-\subsection{Simpler interface management}
-\label{simpler-interface-management}
+\hypertarget{simpler-theme-management}{}
+\subsection{Simpler theme management}
+\label{simpler-theme-management}
+
+In the previous section we have seen how to create a window based on parameters
+lifted from a given Edje object refered to as the layout object. If you take
+a look you will see that the layout object was aquired differently than the
+common Edje object, the function is names \texttt{simple{\_}object{\_}add} and its used
+in the main function to load the themes for the viewport widget and the minimap
+widget as well.
+
+In this chapter we will review all the functions called to make this simpler
+method of aquiring Edje objects possible:
+\begin{quote}{\ttfamily \raggedright \noindent
+Evas{\_}Object~*~\\
+simpler{\_}object{\_}add(Evas~*canvas,~const~char~*group)~\\
+{\{}~\\
+~~~~Evas{\_}Object~*o;~\\
+~~~~o~=~edje{\_}object{\_}add(canvas);~\\
+~~~~if(simpler{\_}object{\_}file{\_}set(o,~ecore{\_}config{\_}theme{\_}with{\_}path{\_}get("theme/current"),~group))~\\
+~~~~{\{}~\\
+~~~~~~~~return~o;~\\
+~~~~{\}}~\\
+~~~~else~\\
+~~~~{\{}~\\
+~~~~~~~~if(simpler{\_}object{\_}file{\_}set(o,~ecore{\_}config{\_}theme{\_}with{\_}path{\_}get("theme/default"),~group))~\\
+~~~~~~~~{\{}~\\
+~~~~~~~~~~~~return~o;~\\
+~~~~~~~~{\}}~\\
+~~~~{\}}~\\
+~~~~return~NULL;~\\
+{\}}
+}\end{quote}
+
+We begin by the most popular \texttt{simpler{\_}object{\_}add}. All this function really
+does is to allocate and initate the object in the choosen canvas with
+\texttt{edje{\_}object{\_}add}. The rest of the work is done by \texttt{simpler{\_}object{\_}file{\_}set}
+and \texttt{ecore{\_}config{\_}theme{\_}with{\_}path{\_}get}.
+
+As I have said earlier we are going to use Ecore{\_}Config to manage the
+application's settings. An introduction to Ecore{\_}Config can be found in the
+``EFL Cookbook'' downloaded for free in the Enlightenment project website. This
+particular setting is used to manage a theme file name. Altought this sounds
+like basically managing a string the function``ecore{\_}config{\_}theme{\_}with{\_}path{\_}get``
+show us how it actually work, better expressed in pseudocode:
+\begin{quote}{\ttfamily \raggedright \noindent
+ecore{\_}config{\_}theme{\_}with{\_}path{\_}get(key):~\\
+~~~~theme{\_}file{\_}name~=~search{\_}config{\_}file{\_}for(key)~\\
+~~~~possible{\_}paths~=~ecore{\_}config{\_}theme{\_}search{\_}path{\_}get()~\\
+~~~~for~each~path~in~possible{\_}paths:~\\
+~~~~~~~~if~theme{\_}file{\_}name~in~path:~\\
+~~~~~~~~~~~~return~path~+~theme{\_}file{\_}name~\\
+~~~~~~~~else~\\
+~~~~~~~~~~~~continue
+}\end{quote}
+
+What this means is that a \texttt{ecore{\_}config{\_}theme{\_}*} property is quite more
+advanced than a simple path in the form of a string. Now that we have that
+cleared up lets hit the next function in the calling stack:
+\begin{quote}{\ttfamily \raggedright \noindent
+Evas{\_}Bool~\\
+simpler{\_}object{\_}file{\_}set(Evas{\_}Object~*o,~const~char~*path,~const~char~*group)~\\
+{\{}~\\
+~~~~if(path~!=~NULL)~\\
+~~~~{\{}~\\
+~~~~~~~~if(!ecore{\_}file{\_}exists(path))~\\
+~~~~~~~~{\{}~\\
+~~~~~~~~~~~~fprintf(stderr,~"Warning:~Failed~to~find~the~theme~file~'{\%}s'.{\textbackslash}n",~path);~\\
+~~~~~~~~~~~~return~FALSE;~\\
+~~~~~~~~{\}}~\\
+~~~~~~~~else~\\
+~~~~~~~~{\{}~\\
+~~~~~~~~~~~~if(!edje{\_}file{\_}group{\_}exists(path,~group))~\\
+~~~~~~~~~~~~{\{}~\\
+~~~~~~~~~~~~~~~~fprintf(stderr,~"Warning:~Failed~to~find~group~'{\%}s'~in~theme~file~'{\%}s'.{\textbackslash}n",~group,~path);~\\
+~~~~~~~~~~~~~~~~return~FALSE;~\\
+~~~~~~~~~~~~{\}}~\\
+~~~~~~~~~~~~else~\\
+~~~~~~~~~~~~{\{}~\\
+~~~~~~~~~~~~~~~~edje{\_}object{\_}file{\_}set(o,~path,~group);~\\
+~~~~~~~~~~~~~~~~evas{\_}object{\_}show(o);~\\
+~~~~~~~~~~~~~~~~return~TRUE;~\\
+~~~~~~~~~~~~{\}}~\\
+~~~~~~~~{\}}~\\
+~~~~{\}}~\\
+~~~~else~\\
+~~~~~~~~return~FALSE;~\\
+{\}}
+}\end{quote}
+
+This function is also quite simple. It basically calls \titlereference{edje{\_}object{\_}file{\_}set}
+after running some checks to see if the parameters are valid. After that, it
+sets the object to be displayed with \texttt{evas{\_}object{\_}show} mainly because the
+default value hides the object and it will not be used as often by the callers
+of this function.
+
+These, and a couple of more functions are used by every application fitting the
+profile of this framework. I wrote this code expecting you will want to modify
+it, learning a lot in the process, so I commented and structured the full
+source in Enlightenment's CVS server exactly for this prupose.
 
 
 %___________________________________________________________________________
@@ -852,7 +1345,7 @@ In general terms, a developer implementing a widget from the scratch would have
 to program functions to:
 \begin{itemize}
 \item {} 
-Manipulate the canvas to draw its primitives.
+Manipulate the canvas primitives to draw the widget.
 
 \item {} 
 Register new signal types to emit as a widget.
@@ -879,11 +1372,196 @@ by the last item can become quite large.
 \label{widgets-with-edje}
 
 We have seen there are roughly 5 kinds of functions that have to be implemented
-in order to create a widget from scratch. Altought the way groups are split
-might not seem equitative to the amount of work each one might entail, the
-divisions are concordant with the shortcuts Edje provides. For the cases where
-the number of functions in one group seems to clearly outweights the others,
+in order to create a widget from scratch. Although the way groups are split
+might not seem to correspond with the amount of work each one might entail, the
+divisions concord with the shortcuts Edje provides. For the cases where
+the number of functions in one group seems to clearly outweighs the others,
 Edje provides additional shortcuts not directly related to the design concepts
 and design elements we have seen in the previous chapters.
+
+I will begin with \textbf{Manipulate the canvas primitives to draw the widget} since
+it's the easiest to explain. With a plain canvas approach to widget creation,
+this would mean the developer must manually create each rect, line, etc. that
+form its widget. Instead, Edje draws the primitive objects based on the
+designer's  specifications in the Edje Data Collection file, not a single
+primitive has to be created or manipulated by the application developer.
+
+Addressing the task \textbf{Handle events occurring on its primitives} using
+Edje can be done with two different, but compatible, approaches. The first
+approach is also available in the other low level libraries. To intercept all
+the signals coming from the primitive objects that form the widget, filter the
+signals and (sometimes) emit a new kind of signal. This approach is useful in
+many situations and that's why it is possible to use it in Edje even when it
+provides an alternative, not available among its low level cousins. With Edje
+designer can write small ``programs'' in his EDC files. An Edje program is
+not as complex as the name might make us think. Unless the designer uses a
+script block (rare) the average Edje program would look like this:
+\begin{quote}{\ttfamily \raggedright \noindent
+program~{\{}~\\
+~~~~name:~~~~~~~"playthemusic";~\\
+~~~~signal:~~~~~"mouse,down,1";~\\
+~~~~source:~~~~~"*";~\\
+~~~~action:~~~~~~action:~SIGNAL{\_}EMIT~"PLAY"~"button";~\\
+{\}}
+}\end{quote}
+
+There is more to Edje programs than just this, but this example will be enough
+to illustrate the point. Since Edje programs are limited to their own group,
+this program is limited to a hypothetical ``button'' group. What the program does
+is to emit the signal ``PLAY'' when the left button is pressed over any part that
+forms the ``button'' group. The application only has to listen for the PLAY
+signal. When and why that signal will be emitted is completely up to the
+designer to decide. He could change ``mouse,down,1'' to ``mouse,wheel,*'' and cause
+the music to play when the user uses the mouse wheel over any part of the
+button.
+
+The previously illustrated program shows that \textbf{Register new signal types to
+emit as a widget} will not be as common as it would with another canvas
+library. Most of the time, it will be designer who implements new signal types.
+Sadly, there is little that Edje can provide concerning \textbf{Handle events
+occurring in the environment that affect it}.
+
+To \textbf{Display information and retrieve changes} is quite simple. As with any
+other low level library, the developer will have to alter some primitive in
+order to display the requested information. Most of the time this means
+changing a string of characters, complex diagrams and similar objects go
+beyond the scope of Edje and enter the realm of Evas programming. Plain Evas
+objects, of course, integrate perfectly with Edje interfaces.
+
+A difference between a regular canvas lib and Edje concerns conveying subtle
+information by changing the ``state'' of the interface. Designers can implement
+any arbitrary number of states for any part or group and change them using
+simple Edje programs. The same programs can also be triggered by the
+application. For example, to disable a button in a plain canvas the developer
+would have to call functions that gray out the background and text. With Edje
+the developer just emits the signal ``DISABLED'' to the button and lets the
+designer implement this however he wants.
+
+
+%___________________________________________________________________________
+
+\hypertarget{the-ewl-as-a-shortcut}{}
+\section{The Ewl as a shortcut}
+\label{the-ewl-as-a-shortcut}
+
+Creating custom widgets even with the facilities Edje provides can become a
+very complex task with more advanced widgets. Thankfully for us a working
+widget library for those specially-hard widgets already exists. Altought the
+goal of the Enlightened Widget Library are not exactly in synch with the goals
+of plain Edje application development, hard work has been done by the EWL
+developers to make including their widgets in a plain Edje interface possible.
+
+But before we go into further implementation details it might be a good idea to
+quote the introduction to the Ewl API reference:
+\begin{quote}
+
+The Enlightened Widget Library (Ewl) is a high level toolkit providing all
+of the widgets you'll need to create your application. Ewl is built on the
+Enlightenment Foundataion Libraries and makes heavy use of the provided
+technologies. The goal of Ewl is to abstract the use of these backends and
+to present an easy to use object model to the end programmer. The expansive
+object oriented style API provides tools to easily extend widgets and
+containers for new situations.
+
+Overall, Ewl is similar in design and functionality to other common
+toolkits such as GTK+ and QT. The APIs differ, but the overall concepts and
+ideas are similar. If you are familiar with these other toolkits getting
+into Ewl should be relatively simple.
+\end{quote}
+
+Simply put, the goal of the Ewl developers is to abstract Edje as on of many
+rendering backends. This is not a bad thing on its own, but for developers
+wanting to use Edje capabilities to the max the Ewl can become limiting. Great
+care is taken by the Ewl developers to not limit theme designers and this has
+resulted in a library that does \emph{not} limit the themer more often than it does.
+
+In any case, the Enlightened Widget Library provides an special type of
+container know as the ``embed'' container. Widgets included in this container can
+be swallowed into a SWALLOW part in a common Edje interface. Once the widget
+has been included its appereance can be altered in a per-theme basis in order
+for the widget to fit the rest of the application as cleanly as possible.
+
+You might not want to use Ewl to create simple interface objects like buttons
+and check boxes. But it can become an invaluable time saver for complex widgets
+like trees and file management dialogs. A great resource to learn how to
+include Ewl widgets into an Edje interface is the source code ewl{\_}embed{\_}test.c
+which is logically divided and toroughly commented.
+
+
+%___________________________________________________________________________
+
+\hypertarget{implementing-widgets-with-edje}{}
+\section{Implementing widgets with Edje}
+\label{implementing-widgets-with-edje}
+
+
+%___________________________________________________________________________
+
+\hypertarget{introduction-to-smart-objects}{}
+\subsection{Introduction to Smart Objects}
+\label{introduction-to-smart-objects}
+
+
+%___________________________________________________________________________
+
+\hypertarget{the-foundations-of-a-smart-object}{}
+\subsection{The foundations of a Smart Object}
+\label{the-foundations-of-a-smart-object}
+
+
+%___________________________________________________________________________
+
+\hypertarget{laying-out-widgets}{}
+\section{Laying out widgets}
+\label{laying-out-widgets}
+
+
+%___________________________________________________________________________
+
+\hypertarget{creating-list-based-widgets}{}
+\section{Creating list based widgets}
+\label{creating-list-based-widgets}
+
+
+%___________________________________________________________________________
+
+\hypertarget{widgets-by-example}{}
+\chapter{Widgets by Example}
+\label{widgets-by-example}
+
+
+%___________________________________________________________________________
+
+\hypertarget{the-text-entry}{}
+\section{The text entry}
+\label{the-text-entry}
+
+
+%___________________________________________________________________________
+
+\hypertarget{the-combox}{}
+\section{The combox}
+\label{the-combox}
+
+
+%___________________________________________________________________________
+
+\hypertarget{the-kinetic-list}{}
+\section{The kinetic list}
+\label{the-kinetic-list}
+
+
+%___________________________________________________________________________
+
+\hypertarget{the-media-viewport}{}
+\section{The media viewport}
+\label{the-media-viewport}
+
+
+%___________________________________________________________________________
+
+\hypertarget{flexible-toolbars}{}
+\section{Flexible toolbars}
+\label{flexible-toolbars}
 
 \end{document}

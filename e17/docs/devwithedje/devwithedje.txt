@@ -7,8 +7,8 @@ Application development with Edje
 :Contact:   andresblanc@gmail.com
 :Version:   1.0
 :Date:      2008/04/03
-:Copyright: This book is distributed under the terms of the Attribution-ShareAlike
-            CC license. See: http://creativecommons.org/licenses/by-sa/3.0/.
+:Copyright: This book is distributed under the terms of the "Attribution"
+            Creative Commons license. See: http://creativecommons.org/licenses/by/3.0/.
 :Abstract:  An introduction to GUI based application development. Starts from
             the most basic concepts and introduces the EFL libraries that deal
             with each of them. It covers Edje, Ecore, Evas and EWL. This book 
@@ -20,73 +20,113 @@ Application development with Edje
 ~~~~~~~~~~~~~
 Book overview
 ~~~~~~~~~~~~~
-I. `About Graphical User Interfaces`_.
-If we look through the code of some of the many open source applications 
-available, we can find most of them share a common structure. This chapter
-introduces the reader to said structure, to the concept of an Event loop and
-how does it deal with the interaction between form and function.
+* `About Graphical User Interfaces`_.
+  If we look through the code of some of the many open source applications
+  available, we can find most of them share a common structure. This chapter
+  introduces the reader to said structure, to the concept of an Event loop and
+  how does it deal with the interaction between form and function.
 
-I.I. `Decomposing the frontend`_.
-There are different approaches to the creation of Graphical User Interfaces, 
-some provide flexibility while others shorter development time. In the end, the
-rest of the application will have to go through the same mechanism to deal
-with the interface.
+  * `Decomposing the frontend`_.
+    There are different approaches to the creation of Graphical User Interfaces,
+    some provide flexibility while others shorter development time. In the end, the
+    rest of the application will have to go through the same mechanism to deal
+    with the interface.
+  * `Introduction to Edje`_.
+    Edje is a compromise between flexibility and development time. Comparing it to
+    a plain canvas or a fully featured toolkit can show us how it fits in the
+    middle ground and provides advantages for designers and developers alike.
+  * `The foundations`_.
+    Edje allows low level control of the interface without forcing the developer
+    through a low level API. The interface objects are implemented as Evas objects,
+    but through a completely new language friendly to designers and independent
+    from the application code.
+  * `Convenient libraries`_
+    To load an Edje interface the application needs to setup an Evas canvas first.
+    This would look as a burden for the developer, dealing with issues specific to
+    the underlying system. Thankfully Evas is supported by an additional library
+    that resolve most of these issues, Ecore.
 
-I.II. `Introduction to Edje`_.
-Edje is a compromise between flexibility and development time. Comparing it to 
-a plain canvas or a fully featured toolkit can show us how it fits in the 
-middle ground and provides advantages for designers and developers alike.
+* `The foundations in practice`_.
+  Practical examples of the Englighenment Foundation Libraries required for a
+  common Edje application.
 
-I.III. `The foundations`_.
-Edje allows low level control of the interface without forcing the developer 
-through a low level API. The interface objects are implemented as Evas objects,
-but through a completely new language friendly to designers and independent 
-from the application code.
+  * `Working with the canvas`_.
+    Including new Edje objects inside the previously setup canvas can be explained
+    with this simple example.
+  * `Interacting with the objects`_.
+    There are different channels for the application to interact with the
+    interface. For the sake of brevity I will include an example of each one to
+    serve as an introduction for the practical examples to come in the next
+    chapters.
+  * `Building a framework`_.
+    Hopefully the reader's mind won't be filled already with preconceptions about
+    this subject. In any case, only the foundations of what could be used to
+    form a complex framework are going to be reviewed in this chapter.
 
-I.IV. `Convenient libraries`_
-To load an Edje interface the application needs to setup an Evas canvas first.
-This would look as a burden for the developer, dealing with issues specific to 
-the underlying system. Thankfully Evas is supported by an additional library 
-that resolve most of these issues, Ecore.
+      * `Simpler library intialization`_.
+        We have seen why and how to initialize the necessary EFL libraries. This
+        chapter introduces the implementation of a convenience function to do it in one
+        call along with control and intialization of configuration and theme files.
+      * `Simpler window setup`_.
+        Altought setting up a window is not a complex task there is no reason for not
+        using a standarized method that automates some aspects of window creation. Some
+        other aspects are left for the designer to manipulate, the end result is less
+        code which often means less bugs.
+      * `Simpler theme management`_.
+        The EFL are programmed in a incredible flexible way and they cover many uses
+        and platforms. The functions explained in this section makes some assumptions
+        about the programmer's intentions. If they match with yours, using them can
+        mean simpler application code, less development time and less bugs.
 
-II. `The foundations in practice`_.
-Practical examples of the Englighenment Foundation Libraries required for a
-common Edje application.
+* `Introduction to widgets`_.
+  Interfaces need to resolve two problems, presenting information to users and 
+  taking orders from them. The past chapters presented enough information to 
+  solve the first. In the following chapters we will review the second.
 
-II.I. `Working with the canvas`_.
-Including new Edje objects inside the previously setup canvas can be explained 
-with this simple example.
-
-II.II. `Interacting with the objects`_.
-There are different channels for the application to interact with the 
-interface. For the sake of brevity I will include an example of each one to 
-serve as an introduction for the practical examples to come in the next 
-chapters.
-
-II.III. `Building a framework`_.
-- An brief introduction to the concept of the framework
-- Code sample of the main.c file and general explanation
-
-II.III.I. `Getting the interface up`_.
-- A mention of the environment_init/shutdown functions without code examples
-- A code sample + explanation of the the window creation functions
-
-II.III.II. `Settings are important too`_.
-- An brief introduction to Ecore_Config (refer to the cookbook).
-- A code sample + explanation of functions that deal with multiple theme files.
-
-II.III.III. `Simpler interface management`_.
-- A code sample + explanation of the functions that fetch the theme objects
-
-III. `Introduction to widgets`_.
-Interfaces need to resolve two problems, presenting information to users and 
-taking orders from them. The past chapters presented enough information to 
-solve the first. In the following chapters we will review the second.
-
-III.I. `Widgets with Edje`_.
-Since this is a book about Edje it might be a good idea to detail the way Edje
-simplifies custom widget creation by reviewing the list of tasks presented in
-the previous chapter and how Edje helps with each task.
+  * `Widgets with Edje`_.
+    Since this is a book about Edje it might be a good idea to detail the way Edje
+    simplifies custom widget creation by reviewing the list of tasks presented in
+    the previous chapter and how Edje helps with each task.
+  * `The Ewl as a shortcut`_.
+    The Enlightened Widget Library is a piece of software older than Edje itself.
+    But almost as soon as Edje was made aviable the library developers started
+    using it as their theme engine. Since widget's from this library can be
+    included as another Edje object we can use it as a shortcut for the most
+    complex widgets.
+  * `Implementing widgets with Edje`_.
+    It is possible to fully implement widgets using the Edje library alone. But
+    this approach grows more unmanageable as the widget becomes more complex. In
+    this chapter we will review a simple widget, written using Edje alone and a
+    more complex widget that shares the same foundations with Edje objects.
+    
+    * `Introduction to Smart Objects`_.
+      We have seen Smart Objects in the previous chapters and we know they are used
+      to implement Edje objects. In this chapters we will analyze the surface code
+      of a Smart Object based widget, the minimap.
+    * `The foundations of a Smart Object`_.
+      If you felt that basing Edje widgets in Smart Objects seems simple enough, I
+      hope that impression does not fade away because of the amount of code presented
+      in this chapter. Altought at a first look it might seem complex creating an
+      Smart Object is quite simple and logical.
+  
+  * `Laying out widgets`_.
+    TODO.
+  * `Creating list based widgets`_.
+    TODO.
+    
+* `Widgets by Example`_.
+  TODO,
+  
+  * `The text entry`_.
+    TODO  
+  * `The combox`_.
+    TODO.
+  * `The kinetic list`_.
+    TODO.
+  * `The media viewport`_.
+    TODO.
+  * `Flexible toolbars`_.
+    TODO.
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 About Graphical User Interfaces
@@ -133,14 +173,20 @@ Building a framework
 --------------------
 .. include:: txt/building_a_framework.txt
 
-Getting the interface up
+.............................
+Simpler library intialization
+.............................
+.. include:: txt/simpler_library_initialization.txt
+
+....................
+Simpler window setup
+....................
+.. include:: txt/simpler_window_setup.txt
+
 ........................
-
-Settings are important too
-..........................
-
-Simpler interface management
-............................
+Simpler theme management
+........................
+.. include:: txt/simpler_theme_management.txt
 
 ~~~~~~~~~~~~~~~~~~~~~~~
 Introduction to widgets
@@ -151,3 +197,52 @@ Introduction to widgets
 Widgets with Edje
 -----------------
 .. include:: txt/widgets_with_edje.txt
+
+---------------------
+The Ewl as a shortcut
+---------------------
+.. include:: txt/the_ewl_as_a_shortcut.txt
+
+------------------------------
+Implementing widgets with Edje
+------------------------------
+
+.............................
+Introduction to Smart Objects
+.............................
+
+.................................
+The foundations of a Smart Object
+.................................
+
+------------------
+Laying out widgets
+------------------
+
+---------------------------
+Creating list based widgets
+---------------------------
+
+~~~~~~~~~~~~~~~~~~
+Widgets by Example
+~~~~~~~~~~~~~~~~~~
+
+--------------
+The text entry
+--------------
+
+----------
+The combox
+----------
+
+----------------
+The kinetic list
+----------------
+
+------------------
+The media viewport
+------------------
+
+-----------------
+Flexible toolbars
+-----------------
