@@ -530,8 +530,8 @@ ewl_filelist_selected_file_get(Ewl_Filelist *fl)
 	if (!ewl_mvc_selected_count_get(EWL_MVC(fl->controller)))
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	data = ewl_mvc_data_get(EWL_MVC(fl->controller));
 	idx = ewl_mvc_selected_get(EWL_MVC(fl->controller));
+	data = EWL_SELECTION(idx)->data;
 	if (idx->row < data->num_dirs)
 		file = ecore_list_index_goto(data->dirs, idx->row);
 	else
@@ -543,9 +543,7 @@ ewl_filelist_selected_file_get(Ewl_Filelist *fl)
 
 	if (!file)
 	{
-		/* Get this error now using tree view of filelist, when
-		 * selecting a file too far down in an expansion
-		 */
+		/* This should be fixed now */
 		DWARNING("MVC has selected file, but cannot find the data!");
 		DRETURN_PTR(NULL, DLEVEL_STABLE);
 	}
@@ -926,11 +924,11 @@ ewl_filelist_selected_files_get(Ewl_Filelist *fl)
 
 	ret = ecore_list_new();
 
-	data = ewl_mvc_data_get(EWL_MVC(fl->controller));
 	selected = ewl_mvc_selected_list_get(EWL_MVC(fl->controller));
 	ecore_list_first_goto(selected);
 	while ((sel = ecore_list_next(selected)))
 	{
+		data = sel->data;
 		/* If using Index instead of range */
 		if (sel->type == EWL_SELECTION_TYPE_INDEX)
 		{
@@ -943,6 +941,14 @@ ewl_filelist_selected_files_get(Ewl_Filelist *fl)
 			else
 				file = ecore_list_index_goto(data->files,
 						 (idx->row - data->num_dirs));
+
+			if (!file)
+			{
+				/* This should be fixed now */
+				DWARNING("MVC has selected file, but cannot "
+						"find the data!");
+				continue;
+			}
 
 			if (!strcmp(file->name, ".."))
 				snprintf(path, PATH_MAX, "%s", data->name);
@@ -973,6 +979,14 @@ ewl_filelist_selected_files_get(Ewl_Filelist *fl)
 				else
 					file = ecore_list_index_goto(data->files,
 						 (i - data->num_dirs));
+
+				if (!file)
+				{
+					/* This should be fixed now */
+					DWARNING("MVC has selected file, but "
+						"cannot find the data!");
+					continue;
+				}
 
 				if (!strcmp(file->name, ".."))
 					snprintf(path, PATH_MAX, "%s", data->name);
