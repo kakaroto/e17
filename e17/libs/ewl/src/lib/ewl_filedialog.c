@@ -579,4 +579,86 @@ ewl_filedialog_cb_show_favorites(Ewl_Widget *w __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param fd: The filedialog to work with
+ * @t: Non-zero to set the filedialog to a save type
+ * @return Returns no value
+ * @brief Sets the type of the filedialog
+ */
+void
+ewl_filedialog_save_as_set(Ewl_Filedialog *fd, unsigned int t)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(fd);
+	DCHECK_TYPE(fd, EWL_FILEDIALOG_TYPE);
+
+	ewl_filepicker_save_as_set(EWL_FILEPICKER(fd->fp), t);
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param fd: The filedialog to work with
+ * @return Returns non-zero if the filedialog is currently a Save As type
+ * @brief Gets the current type fo the filedialog
+ */
+unsigned int
+ewl_filedialog_save_as_get(Ewl_Filedialog *fd)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET(fd, FALSE);
+	DCHECK_TYPE_RET(fd, EWL_FILEDIALOG_TYPE, FALSE);
+
+	DRETURN_INT(ewl_filepicker_save_as_get(EWL_FILEPICKER(fd->fp)),
+			DLEVEL_STABLE);
+}
+
+/**
+ * @param fd: The filedialog to work with
+ * @param t: Non-zero to allow the filedialog to open directories
+ * @return Returns no value
+ * @brief Sets the filedialog's policy on returning directories
+ */
+void
+ewl_filedialog_return_directories_set(Ewl_Filedialog *fd, unsigned int t)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(fd);
+	DCHECK_TYPE(fd, EWL_FILEDIALOG_TYPE);
+
+	ewl_filepicker_return_directories_set(EWL_FILEPICKER(fd->fp), t);
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param fp: The filedialog to work with
+ * @return Returns non-zero if the filedialog can return directories
+ * @brief Gets the filedialog's policy on returning directories
+ */
+unsigned int
+ewl_filedialog_return_directories_get(Ewl_Filedialog *fd)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET(fd, FALSE);
+	DCHECK_TYPE_RET(fd, EWL_FILEDIALOG_TYPE, FALSE);
+
+	DRETURN_INT(ewl_filepicker_return_directories_get
+			(EWL_FILEPICKER(fd->fp)), DLEVEL_STABLE);
+}
+
+/**
+ * @return Returns a created Save As dialog widget or NULL on failure
+ * @brief A convenience function to create a Save As dialog widget
+ */
+Ewl_Widget *
+ewl_filedialog_save_as_new(void)
+{
+	Ewl_Widget *ret;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	
+	ret = ewl_filedialog_new();
+	ewl_filedialog_save_as_set(EWL_FILEDIALOG(ret), TRUE);
+
+	DRETURN_PTR(ret, DLEVEL_STABLE);
+}
 

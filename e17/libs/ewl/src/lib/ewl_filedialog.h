@@ -91,6 +91,13 @@ void		 ewl_filedialog_filter_add(Ewl_Filedialog *fd,
 						const char *name,
 						const char *filter,
 						Ecore_List *mime_types);
+void		ewl_filedialog_save_as_set(Ewl_Filedialog *fd,
+						unsigned int t);
+unsigned int	ewl_filedialog_save_as_get(Ewl_Filedialog *fd);
+void		ewl_filedialog_return_directories_set(Ewl_Filedialog *fd,
+						unsigned int t);
+unsigned int	ewl_filedialog_return_directories_get(Ewl_Filedialog *fd);
+Ewl_Widget     *ewl_filedialog_save_as_new(void);
 
 /*
  * Internally used callbacks, override at your own risk.

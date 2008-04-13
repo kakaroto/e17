@@ -65,6 +65,7 @@ static Ewl_Widget *ewl_filepicker_cb_path_header(void *data,
 							unsigned int col);
 
 static void ewl_filepicker_filter_free_cb(Ewl_Filelist_Filter *filter);
+static void ewl_filepicker_type_change(Ewl_Filepicker *fp);
 
 
 /**
@@ -108,6 +109,7 @@ ewl_filepicker_init(Ewl_Filepicker *fp)
 	if (!ewl_box_init(EWL_BOX(fp)))
 		DRETURN_INT(FALSE, DLEVEL_STABLE);
 
+	fp->ret_dir = TRUE;
 	ewl_box_orientation_set(EWL_BOX(fp), EWL_ORIENTATION_VERTICAL);
 	ewl_widget_inherit(EWL_WIDGET(fp), EWL_FILEPICKER_TYPE);
 	ewl_widget_appearance_set(EWL_WIDGET(fp), EWL_FILEPICKER_TYPE);
@@ -197,7 +199,6 @@ ewl_filepicker_init(Ewl_Filepicker *fp)
 
 	fp->file_entry = ewl_entry_new();
 	ewl_container_child_append(EWL_CONTAINER(box), fp->file_entry);
-
 	ewl_widget_show(fp->file_entry);
 
 	fp->filters = ecore_list_new();
@@ -235,14 +236,14 @@ ewl_filepicker_init(Ewl_Filepicker *fp)
 	ewl_object_fill_policy_set(EWL_OBJECT(box), EWL_FLAG_FILL_SHRINK);
 	ewl_widget_show(box);
 
-	o = ewl_button_new();
-	ewl_container_child_append(EWL_CONTAINER(box), o);
-	ewl_stock_type_set(EWL_STOCK(o), EWL_STOCK_OK);
-	ewl_callback_append(o, EWL_CALLBACK_CLICKED,
+	fp->ret_button = ewl_button_new();
+	ewl_container_child_append(EWL_CONTAINER(box), fp->ret_button);
+	ewl_stock_type_set(EWL_STOCK(fp->ret_button), EWL_STOCK_OPEN);
+	ewl_callback_append(fp->ret_button, EWL_CALLBACK_CLICKED,
 				ewl_filepicker_cb_button_clicked, fp);
-	ewl_object_fill_policy_set(EWL_OBJECT(o),
+	ewl_object_fill_policy_set(EWL_OBJECT(fp->ret_button),
 				EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
-	ewl_widget_show(o);
+	ewl_widget_show(fp->ret_button);
 
 	o = ewl_button_new();
 	ewl_container_child_append(EWL_CONTAINER(box), o);
@@ -259,6 +260,120 @@ ewl_filepicker_init(Ewl_Filepicker *fp)
 			NULL, fp, 0, 0);
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
+}
+
+/**
+ * @return Returns a created Save As widget or NULL on failure
+ * @brief A convenience function to create a Save As widget
+ */
+Ewl_Widget *
+ewl_filepicker_save_as_new(void)
+{
+	Ewl_Widget *ret;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	
+	ret = ewl_filepicker_new();
+	ewl_filepicker_save_as_set(EWL_FILEPICKER(ret), TRUE);
+
+	DRETURN_PTR(ret, DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * @param fp: The filepicker to change the type of
+ * @return Returns no value
+ * @brief Changes the filepicker to either an open or save as type
+ */
+static void
+ewl_filepicker_type_change(Ewl_Filepicker *fp)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(fp);
+	DCHECK_TYPE(fp, EWL_FILEPICKER_TYPE);
+
+	if (fp->saveas_dialog)
+	{
+		ewl_widget_enable(fp->file_entry);
+		ewl_stock_type_set(EWL_STOCK(fp->ret_button), EWL_STOCK_SAVE);
+	}
+	else
+	{
+		if (ewl_filelist_multiselect_get(EWL_FILELIST(fp->file_list)))
+			ewl_widget_disable(fp->file_entry);
+		ewl_stock_type_set(EWL_STOCK(fp->ret_button), EWL_STOCK_OPEN);
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param fp: The filepicker to work with
+ * @param t: Non-zero to set the filepicker to a save type
+ * @return Returns no value
+ * @brief Sets the type for the filepicker
+ */
+void
+ewl_filepicker_save_as_set(Ewl_Filepicker *fp, unsigned int t)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(fp);
+	DCHECK_TYPE(fp, EWL_FILEPICKER_TYPE);
+
+	if (fp->saveas_dialog == t)
+		DRETURN(DLEVEL_STABLE);
+
+	fp->saveas_dialog = !!t;
+	ewl_filepicker_type_change(fp);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param fp: The filepicker to work with
+ * @return Returns non-zero if the filepicker is currently a Save As type
+ * @brief Gets the current type of the filepicker
+ */
+unsigned int
+ewl_filepicker_save_as_get(Ewl_Filepicker *fp)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET(fp, FALSE);
+	DCHECK_TYPE_RET(fp, EWL_FILEPICKER_TYPE, FALSE);
+
+	DRETURN_INT(fp->saveas_dialog, DLEVEL_STABLE);
+}
+
+/**
+ * @param fp: The filepicker to work with
+ * @param t: Non-zero to allow the filepicker to open directories
+ * @return Returns no value
+ * @brief Sets the filepicker's policy on returning directories
+ */
+void
+ewl_filepicker_return_directories_set(Ewl_Filepicker *fp, unsigned int t)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(fp);
+	DCHECK_TYPE(fp, EWL_FILEPICKER_TYPE);
+
+	fp->ret_dir = !!t;
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param fp: The filepicker to work with
+ * @return Returns non-zero if the filepicker can return directories
+ * @brief Gets the filepicker's policy on returning directories
+ */
+unsigned int
+ewl_filepicker_return_directories_get(Ewl_Filepicker *fp)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET(fp, FALSE);
+	DCHECK_TYPE_RET(fp, EWL_FILEPICKER_TYPE, FALSE);
+
+	DRETURN_INT(fp->ret_dir, DLEVEL_STABLE);
 }
 
 /**
@@ -532,13 +647,15 @@ ewl_filepicker_selected_file_set(Ewl_Filepicker *fp, const char *file)
 
 /**
  * @param fp: The filepicker to get the selected file from
- * @return Returns the currently selected file in the filepicker
+ * @return Returns the full path of the currently selected file in the filepicker
  * @brief Retrieves the currently selected file from the filepicker
  */
 char *
 ewl_filepicker_selected_file_get(Ewl_Filepicker *fp)
 {
-	char *file;
+	char *file, *ret;
+	const char *dir;
+	size_t len, dir_len, file_len;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET(fp, NULL);
@@ -549,9 +666,40 @@ ewl_filepicker_selected_file_get(Ewl_Filepicker *fp)
 	 * selected array from the file list */
 	file = ewl_text_text_get(EWL_TEXT(fp->file_entry));
 	if (!file)
-		file = ewl_filelist_selected_file_get(EWL_FILELIST(fp->file_list));
+		ret = ewl_filelist_selected_file_get(EWL_FILELIST(fp->file_list));
+	else
+	{
+		dir = ewl_filelist_directory_get(EWL_FILELIST(fp->file_list));
+		file_len = strlen(file);
+		if (file_len)
+		{
+			if (file[0] != '/')
+			{
+				dir_len = strlen(dir);
+				if (dir_len == 1)
+					dir_len = 0;
+				len = dir_len + file_len + 2;
+				ret = NEW(char, len);
+				strcat(ret, dir);
+				if (dir_len > 1)
+					strcat(ret, "/");
+				strcat(ret, file);
+			}
+			else
+			{
+				ret = file;
+				file = NULL;
+			}
+		}
+		else
+			ret = NULL;
+	}
 
-	DRETURN_PTR(file, DLEVEL_STABLE);
+	IF_FREE(file);
+	if ((!fp->ret_dir) && (ret) && (ecore_file_is_dir(ret)))
+		FREE(ret);
+
+	DRETURN_PTR(ret, DLEVEL_STABLE);
 }
 
 /**
@@ -642,7 +790,6 @@ ewl_filepicker_cb_list_value_changed(Ewl_Widget *w, void *ev, void *data)
 	e = ev;
 
 	/* clear the text and get the selected file */
-	ewl_text_clear(EWL_TEXT(fp->file_entry));
 	file = ewl_filelist_selected_file_get(fl);
 
 	if (e->response == EWL_FILELIST_EVENT_DIR_CHANGE)
@@ -656,20 +803,47 @@ ewl_filepicker_cb_list_value_changed(Ewl_Widget *w, void *ev, void *data)
 			ewl_widget_disable(fp->dir_button);
 		else
 			ewl_widget_enable(fp->dir_button);
-
+		ewl_text_clear(EWL_TEXT(fp->file_entry));
 		FREE(dir);
 	}
-	else if ((e->response == EWL_FILELIST_EVENT_SELECTION_CHANGE) &&
-					(!fl->multiselect))
-		ewl_text_text_set(EWL_TEXT(fp->file_entry), file);
-
-	else if (e->response == EWL_FILELIST_EVENT_MULTI_TRUE)
-		ewl_widget_disable(EWL_WIDGET(fp->file_entry));
-
-	else if (e->response == EWL_FILELIST_EVENT_MULTI_FALSE)
+	else if (e->response == EWL_FILELIST_EVENT_SELECTION_CHANGE)
 	{
-		ewl_widget_enable(EWL_WIDGET(fp->file_entry));
-		ewl_text_text_set(EWL_TEXT(fp->file_entry), file);
+		if (ecore_file_is_dir(file))
+		{
+			if ((!fp->saveas_dialog) && (!fl->multiselect) &&
+						(fp->ret_dir))
+				ewl_text_text_set(EWL_TEXT(fp->file_entry),
+						file);
+		}
+		else
+		{
+			if (!fl->multiselect)
+				ewl_text_text_set(EWL_TEXT(fp->file_entry),
+					ecore_file_file_get(file));
+		}
+	}
+
+	else if ((e->response == EWL_FILELIST_EVENT_MULTI_TRUE) &&
+				(!fp->saveas_dialog))
+	{
+		ewl_widget_disable(fp->file_entry);
+		ewl_text_clear(EWL_TEXT(fp->file_entry));
+	}
+
+	else if ((e->response == EWL_FILELIST_EVENT_MULTI_FALSE) &&
+				(!fp->saveas_dialog))
+	{
+		if ((ecore_file_is_dir(file)) && (fp->ret_dir))
+		{
+			ewl_text_text_set(EWL_TEXT(fp->file_entry),
+						file);
+		}
+		else
+		{
+			ewl_text_text_set(EWL_TEXT(fp->file_entry),
+					ecore_file_file_get(file));
+		}
+		ewl_widget_enable(fp->file_entry);
 	}
 
 	FREE(file);

@@ -62,7 +62,7 @@ ewl_filepicker_cb_value_changed(Ewl_Widget *w, void *ev,
 	/* need to deal with multiselect in here */
 	switch (e->response)
 	{
-		case EWL_STOCK_OK:
+		case EWL_STOCK_OPEN:
 		{
 			char *file;
 
