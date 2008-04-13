@@ -470,7 +470,8 @@ ewl_text_text_prepend(Ewl_Text *t, const char *text)
 	DCHECK_PARAM_PTR(t);
 
 	/* don't do anything if there is no text */
-	if (!text) DRETURN(DLEVEL_STABLE);
+	if ((!text) || (!text[0]))
+		DRETURN(DLEVEL_STABLE);
 
 	/* don't insert text if we already reached the maximum */
 	if (t->length.max_chars && t->length.chars >= t->length.max_chars)
@@ -514,7 +515,8 @@ ewl_text_text_append(Ewl_Text *t, const char *text)
 	DCHECK_TYPE(t, EWL_TEXT_TYPE);
 
 	/* don't do anything if there is no text */
-	if (!text) DRETURN(DLEVEL_STABLE);
+	if ((!text) || (!text[0]))
+		DRETURN(DLEVEL_STABLE);
 
 	/* don't insert text if we already reached the maximum */
 	if (t->length.max_chars && t->length.chars >= t->length.max_chars)
@@ -558,7 +560,8 @@ ewl_text_text_insert(Ewl_Text *t, const char *text, unsigned int char_idx)
 	DCHECK_TYPE(t, EWL_TEXT_TYPE);
 
 	/* don't do anything if there is no text */
-	if (!text) DRETURN(DLEVEL_STABLE);
+	if ((!text) || (!text[0]))
+		DRETURN(DLEVEL_STABLE);
 
 	/* don't insert text if we already reached the maximum */
 	if (t->length.max_chars && t->length.chars >= t->length.max_chars)
