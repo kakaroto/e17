@@ -13,6 +13,7 @@ static void trigger_cb_mouse_in(Ewl_Widget *w, void *ev, void *data);
 static void trigger_cb(Ewl_Widget *w, void *ev, void *data);
 
 static int text_test_set_get(char *buf, int len);
+static int text_test_set_get_null(char *buf, int len);
 static int text_valid_utf8_set_get(char *buf, int len);
 static int text_invalid_utf8_set_get(char *buf, int len);
 
@@ -20,6 +21,7 @@ static Ewl_Unit_Test text_unit_tests[] = {
 		{"text set/get", text_test_set_get, NULL, -1, 0},
 		{"valid UTF-8 text set/get", text_valid_utf8_set_get, NULL, -1, 0},
 		{"invalid UTF-8 text set/get", text_invalid_utf8_set_get, NULL, -1, 0},
+		{"null text set/get", text_test_set_get_null, NULL, -1, 0},
 		{NULL, NULL, NULL, -1, 0}
 	};
 
@@ -222,6 +224,25 @@ text_test_set_get(char *buf, int len)
 
 	if (strcmp(t, "This is the test text."))
 		LOG_FAILURE(buf, len, "text_get did not match text_set.");
+	else
+		ret = 1;
+
+	return ret;
+}
+
+static int
+text_test_set_get_null(char *buf, int len)
+{
+	Ewl_Widget *o;
+	char *t;
+	int ret = 0;
+
+	o = ewl_text_new();
+	ewl_text_text_set(EWL_TEXT(o), "");
+	t = ewl_text_text_get(EWL_TEXT(o));
+
+	if (t)
+		LOG_FAILURE(buf, len, "text_get did not return null.");
 	else
 		ret = 1;
 
