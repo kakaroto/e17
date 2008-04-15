@@ -29,3 +29,5 @@ ewl.spec
 doc
 *.tar.gz
 ewl_doxy_warnings.txt
+.DS_Store
+a.out.dSYM
