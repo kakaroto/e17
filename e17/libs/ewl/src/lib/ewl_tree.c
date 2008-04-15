@@ -32,6 +32,8 @@ static void ewl_tree_build_tree_rows(Ewl_Tree *tree,
 			Ewl_Model *model, Ewl_View *view, void *data,
 			int colour, Ewl_Container *parent,
 			int hidden);
+static void ewl_tree_headers_build(Ewl_Tree *tree, Ewl_Model *model, 
+			void *mvc_data);
 static void ewl_tree_cb_header_changed(Ewl_Widget *w, void *ev,
 							void *data);
 
@@ -143,6 +145,7 @@ ewl_tree_headers_visible_set(Ewl_Tree *tree, unsigned char visible)
 		DRETURN(DLEVEL_STABLE);
 
 	tree->headers_visible = !!visible;
+	tree->headers_dirty = TRUE;
 
 	if (!tree->headers_visible)
 		ewl_widget_hide(tree->header);
@@ -219,7 +222,11 @@ ewl_tree_column_count_set(Ewl_Tree *tree, unsigned int count)
 	DCHECK_PARAM_PTR(tree);
 	DCHECK_TYPE(tree, EWL_TREE_TYPE);
 
+	if (tree->columns == count)
+		DRETURN(DLEVEL_STABLE);
+	
 	tree->columns = count;
+	tree->headers_dirty = TRUE;
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -600,16 +607,18 @@ ewl_tree_cb_column_sort(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 }
 
 static void
-ewl_tree_header_build(Ewl_Tree *tree,  Ewl_Model *model, Ewl_View *view,
-					void *mvc_data, unsigned int column)
+ewl_tree_header_build(Ewl_Tree *tree, Ewl_Container *box,  Ewl_Model *model,
+			Ewl_View *view,	void *mvc_data, unsigned int column)
 {
-	Ewl_Widget *h, *c;
+	Ewl_Widget *c;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(tree);
 	DCHECK_PARAM_PTR(model);
 	DCHECK_PARAM_PTR(view);
+	DCHECK_PARAM_PTR(box);
 	DCHECK_TYPE(tree, EWL_TREE_TYPE);
+	DCHECK_TYPE(box, EWL_CONTAINER_TYPE);
 
 	if (!tree->headers_visible) DRETURN(DLEVEL_STABLE);
 
@@ -618,11 +627,6 @@ ewl_tree_header_build(Ewl_Tree *tree,  Ewl_Model *model, Ewl_View *view,
 		DWARNING("Missing header_fetch callback.");
 		DRETURN(DLEVEL_STABLE);
 	}
-
-	h = ewl_hbox_new();
-	ewl_container_child_append(EWL_CONTAINER(tree->header), h);
-	ewl_widget_appearance_set(h, "header");
-	ewl_widget_show(h);
 
 	if (model->header)
 		c = view->header_fetch(model->header(mvc_data, column),
@@ -633,20 +637,20 @@ ewl_tree_header_build(Ewl_Tree *tree,  Ewl_Model *model, Ewl_View *view,
 	/* XXX is this really a good idea to override the user's flags ? */
 	ewl_object_fill_policy_set(EWL_OBJECT(c),
 			EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_HFILL);
-	ewl_container_child_append(EWL_CONTAINER(h), c);
+	ewl_container_child_append(box, c);
 	ewl_widget_show(c);
 
 	/* display the sort arrow if needed */
 	if (model->sortable && model->sortable(mvc_data, column))
 	{
-		char *state_str;
+		const char *state_str;
 
-		ewl_callback_append(h, EWL_CALLBACK_CLICKED,
+		ewl_callback_append(EWL_WIDGET(box), EWL_CALLBACK_CLICKED,
 					ewl_tree_cb_column_sort,
 					(unsigned int *)column);
 
 		c = ewl_button_new();
-		ewl_container_child_append(EWL_CONTAINER(h), c);
+		ewl_container_child_append(box, c);
 
 		if ((column == tree->sort.column)
 				&& (tree->sort.direction == EWL_SORT_DIRECTION_ASCENDING))
@@ -707,7 +711,6 @@ ewl_tree_column_build(Ewl_Row *row, Ewl_Model *model, Ewl_View *view,
 static void
 ewl_tree_build_tree(Ewl_Tree *tree)
 {
-	unsigned int i;
 	void *mvc_data;
 	Ewl_Model *model;
 
@@ -720,16 +723,66 @@ ewl_tree_build_tree(Ewl_Tree *tree)
 	if (!model) DRETURN(DLEVEL_STABLE);
 
 	/* setup the headers */
-	ewl_container_reset(EWL_CONTAINER(tree->header));
-	for (i = 0; i < tree->columns; i++)
-		ewl_tree_header_build(tree, model,
-				ewl_mvc_view_get(EWL_MVC(tree)),
-				mvc_data, i);
+	ewl_tree_headers_build(tree, model, mvc_data);
 
+	/* setup the content */
 	ewl_container_reset(EWL_CONTAINER(tree->rows));
 	ewl_tree_build_tree_rows(tree, model,
 				ewl_mvc_view_get(EWL_MVC(tree)), mvc_data,
 				0, EWL_CONTAINER(tree->rows), FALSE);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_tree_headers_build(Ewl_Tree *tree, Ewl_Model *model, void *mvc_data)
+{
+	Ewl_Container *header;
+	unsigned int i;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(tree);
+	DCHECK_TYPE(tree, EWL_TREE_TYPE);
+
+	header = EWL_CONTAINER(tree->header);
+
+	/* if the header is not visible, reset it */
+	if (!tree->headers_visible)
+	{
+		ewl_container_reset(header);
+		DRETURN(DLEVEL_STABLE);
+	}
+
+	/* first check if the count of the columns has changed */
+	if (tree->headers_dirty)
+	{
+		ewl_container_reset(header);
+
+		for (i = 0; i < tree->columns; i++) {
+			Ewl_Widget *h;
+
+			h = ewl_hbox_new();
+			ewl_container_child_append(header, h);
+			ewl_widget_appearance_set(h, "header");
+			ewl_widget_show(h);
+		}
+		tree->headers_dirty = FALSE;
+	}
+
+	ewl_container_child_iterate_begin(header);
+	for (i = 0; i < tree->columns; i++)
+	{
+		Ewl_Widget *h = ewl_container_child_next(header);
+
+		ewl_container_reset(EWL_CONTAINER(h));
+		/* remove it here since the column may be not sortable
+		 * anymore */
+		ewl_callback_del(h, EWL_CALLBACK_CLICKED,
+					ewl_tree_cb_column_sort);
+		ewl_tree_header_build(tree, EWL_CONTAINER(h), model,
+				ewl_mvc_view_get(EWL_MVC(tree)),
+				mvc_data, i);
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

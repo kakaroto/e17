@@ -118,6 +118,7 @@ struct Ewl_Tree
 	unsigned int columns;	/**< Number of columns in the tree */
 	unsigned char fixed:1;    /**< Rows are fixed height */
 	unsigned char headers_visible:1; /**< Are the headers visible? */
+	unsigned char headers_dirty:1; /**< Was the column count changed?*/
 	unsigned char row_color_alternate:1; /**< Are the rows alternating? */
 };
 
