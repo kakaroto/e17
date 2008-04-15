@@ -662,7 +662,6 @@ ewl_tree_header_build(Ewl_Tree *tree, Ewl_Container *box,  Ewl_Model *model,
 			state_str = "default";
 
 		ewl_widget_state_set(c, state_str, EWL_STATE_PERSISTENT);
-		ewl_widget_internal_set(c, TRUE);
 		ewl_object_fill_policy_set(EWL_OBJECT(c), EWL_FLAG_FILL_SHRINK);
 		ewl_object_alignment_set(EWL_OBJECT(c), EWL_FLAG_ALIGN_RIGHT);
 		ewl_widget_show(c);
