@@ -3467,12 +3467,9 @@ ewl_text_cb_mouse_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 				ewl_text_cb_mouse_move, NULL);
 
 	if (!t->selection)
-	{
 		t->selection = ewl_text_selection_new(t);
-		sel = EWL_TEXT_TRIGGER(t->selection);
-	}
-	else
-		sel = EWL_TEXT_TRIGGER(t->selection);
+	
+	sel = EWL_TEXT_TRIGGER(t->selection);
 
 	char_idx = ewl_text_coord_index_map(EWL_TEXT(w), event->x, event->y);
 	modifiers = ewl_ev_modifiers_get();
