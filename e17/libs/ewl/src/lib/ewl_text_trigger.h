@@ -10,6 +10,7 @@
  * @addtogroup Ewl_Text_Trigger Ewl_Text_Trigger: References portions of the
  * text that respond to actions.
  * @brief Defines a class for triggering actions within the text
+ * @remarks Inherits from Ewl_Widget.
  *
  * @{
  */
