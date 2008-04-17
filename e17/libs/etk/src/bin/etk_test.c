@@ -138,6 +138,11 @@ static Etk_Test_App _test_apps[] =
       "Shadow",
       etk_test_shadow_window_create,
       MISC
+   },
+   {
+      "Evas Objects",
+      etk_test_evas_object_window_create,
+      MISC
    }
 };
 static int _num_test_apps = sizeof(_test_apps) / sizeof (_test_apps[0]);

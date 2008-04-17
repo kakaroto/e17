@@ -191,6 +191,8 @@ data/wm/Makefile
 data/wm/default/Makefile
 data/wm/default/fonts/Makefile
 data/wm/default/images/Makefile
+data/test/Makefile
+data/test/clock/Makefile
 data/fonts/Makefile
 data/images/Makefile
 data/icons/Makefile

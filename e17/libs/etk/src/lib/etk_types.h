@@ -56,6 +56,7 @@ typedef struct Etk_Drag Etk_Drag;
 typedef struct Etk_Embed Etk_Embed;
 typedef struct Etk_Engine Etk_Engine;
 typedef struct Etk_Entry Etk_Entry;
+typedef struct Etk_Evas_Object Etk_Evas_Object;
 typedef union  Etk_Event_Global Etk_Event_Global;
 typedef struct Etk_Event_Key_Down Etk_Event_Key_Down;
 typedef struct Etk_Event_Key_Up Etk_Event_Key_Up;

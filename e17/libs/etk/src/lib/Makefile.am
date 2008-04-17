@@ -37,6 +37,7 @@ etk_editable.h \
 etk_embed.h \
 etk_engine.h \
 etk_entry.h \
+etk_evas_object.h \
 etk_event.h \
 etk_filechooser_widget.h \
 etk_fixed.h \
@@ -114,6 +115,7 @@ etk_editable.c \
 etk_embed.c \
 etk_engine.c \
 etk_entry.c \
+etk_evas_object.c \
 etk_event.c \
 etk_filechooser_widget.c \
 etk_fixed.c \

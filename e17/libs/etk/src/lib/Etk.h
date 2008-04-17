@@ -39,6 +39,7 @@ extern "C" {
 #include "etk_embed.h"
 #include "etk_engine.h"
 #include "etk_entry.h"
+#include "etk_evas_object.h"
 #include "etk_event.h"
 #include "etk_filechooser_widget.h"
 #include "etk_fixed.h"

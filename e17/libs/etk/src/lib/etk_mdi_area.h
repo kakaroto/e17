@@ -1,3 +1,6 @@
+/*
+ * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
+ */
 /** @file etk_mdi_area.h */
 #ifndef _ETK_MDI_AREA_H_
 #define _ETK_MDI_AREA_H_
