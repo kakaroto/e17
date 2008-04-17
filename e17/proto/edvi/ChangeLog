@@ -1,3 +1,9 @@
+2008-04-17  Vincent Torri  <doursse at users dot sf dot net>
+
+	* src/bin/edvi_ewl_test.c: (main):
+	ewl_model_ecore_list_instance() instead of
+	ewl_model_ecore_list_get()
+
 2008-03-01  Vincent Torri  <doursse at users dot sf dot net>
 
 	* Makefile.am:

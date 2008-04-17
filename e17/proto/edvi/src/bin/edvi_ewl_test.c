@@ -84,7 +84,7 @@ main (int argc, char *argv[])
     ecore_list_append(str_data, txt);
   }
 
-  model = ewl_model_ecore_list_get();
+  model = ewl_model_ecore_list_instance();
   view = ewl_label_view_get();
 
   list = ewl_list_new ();
