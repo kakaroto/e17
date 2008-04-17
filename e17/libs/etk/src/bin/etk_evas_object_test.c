@@ -22,6 +22,7 @@ void etk_test_evas_object_window_create(void *data)
 	}
 
 	window = etk_window_new();
+  etk_signal_connect_by_code(ETK_WINDOW_DELETE_EVENT_SIGNAL, ETK_OBJECT(window), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
 	etk_window_title_set(ETK_WINDOW(window), "Etk-Evas Object Test");
 
 	evas = etk_toplevel_evas_get(ETK_TOPLEVEL(window));
