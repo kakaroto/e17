@@ -32,7 +32,7 @@ ewl_model_new(void)
  * will setup the fetch and count methods for you
  */
 Ewl_Model *
-ewl_model_ecore_list_get(void)
+ewl_model_ecore_list_instance(void)
 {
 	Ewl_Model *model;
 

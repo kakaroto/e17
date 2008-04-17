@@ -177,7 +177,7 @@ struct Ewl_Model
 Ewl_Model		*ewl_model_new(void);
 int			 ewl_model_init(Ewl_Model *model);
 
-Ewl_Model		*ewl_model_ecore_list_get(void);
+Ewl_Model		*ewl_model_ecore_list_instance(void);
 
 void			 ewl_model_data_fetch_set(Ewl_Model *m,
 					Ewl_Model_Data_Fetch get);

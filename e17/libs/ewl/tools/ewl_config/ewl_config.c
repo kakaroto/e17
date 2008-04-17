@@ -328,7 +328,7 @@ ec_theme_page_setup(Ewl_Notebook *n)
 	list = ecore_list_new();
 	ewl_widget_name_set(o, EC_EWL_THEME);
 	ewl_container_child_append(EWL_CONTAINER(o3), o);
-	ewl_mvc_model_set(EWL_MVC(o), ewl_model_ecore_list_get());
+	ewl_mvc_model_set(EWL_MVC(o), ewl_model_ecore_list_instance());
 	ewl_mvc_view_set(EWL_MVC(o), ewl_label_view_get());
 	ewl_mvc_data_set(EWL_MVC(o), list);
 	ewl_widget_show(o);

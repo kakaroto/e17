@@ -152,7 +152,7 @@ create_test(Ewl_Container *box)
 		ewl_label_text_set(EWL_LABEL(o), "Font Style");
 		ewl_widget_show(o);
 
-		model = ewl_model_ecore_list_get();
+		model = ewl_model_ecore_list_instance();
 		view = ewl_label_view_get();
 		o = ewl_combo_new();
 		ewl_mvc_model_set(EWL_MVC(o), model);

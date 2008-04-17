@@ -69,7 +69,7 @@ create_test(Ewl_Container *box)
 	ewl_container_child_append(box, c);
 	ewl_widget_show(c);
 
-	model = ewl_model_ecore_list_get();
+	model = ewl_model_ecore_list_instance();
 	view = ewl_label_view_get();
 
 	o = ewl_border_new();

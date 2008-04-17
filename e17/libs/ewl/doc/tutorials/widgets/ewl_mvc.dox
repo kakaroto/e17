@@ -33,7 +33,7 @@
  *   Ewl_Model *model;
  *   Ewl_View *view;
  * 
- *   model = ewl_model_ecore_list_get();
+ *   model = ewl_model_ecore_list_instance();
  *   view = ewl_label_view_get();
  * 
  *   list = ewl_list_new();
