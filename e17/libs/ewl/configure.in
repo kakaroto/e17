@@ -195,7 +195,7 @@ PKG_CHECK_MODULES(ECORE_FB,
   [have_ecore_framebuffer="yes"],
   [have_ecore_framebuffer="no"])
 
-EWL_CHECK_ENGINE([framebuffer], [framebuffer], [0.9.9], [$have_ecore_framebuffer])
+EWL_CHECK_ENGINE([fb], [framebuffer], [0.9.9], [$have_ecore_framebuffer])
 
 dnl Buffer engine
 

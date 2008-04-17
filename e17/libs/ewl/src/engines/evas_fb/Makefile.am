@@ -10,7 +10,7 @@ AM_CPPFLAGS = \
 
 pkgdir = $(libdir)/ewl/engines
 
-if EWL_ENABLE_EVAS_FRAMEBUFFER
+if EWL_ENABLE_EVAS_FB
 
 pkg_LTLIBRARIES = evas_fb.la
 
