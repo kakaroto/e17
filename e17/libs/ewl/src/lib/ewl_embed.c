@@ -5,6 +5,7 @@
 #include "ewl_debug.h"
 
 #include <Evas.h>
+#include <Edje.h>
 
 static int ewl_embed_last_mouse_x = 0;
 static int ewl_embed_last_mouse_y = 0;
@@ -1235,6 +1236,11 @@ ewl_embed_object_cache(Ewl_Embed *e, void *obj)
 		const char *type;
 
 		type = evas_object_type_get(obj);
+
+		/* reset the file and the key of the edje object */
+		if (!strcmp(type, "edje"))
+			edje_object_file_set(obj, "", "");
+
 		obj_list = ecore_hash_get(e->obj_cache, (void *)type);
 		if (!obj_list) {
 			obj_list = ecore_list_new();
@@ -1798,6 +1804,7 @@ ewl_embed_desktop_size_get(Ewl_Embed *e, int *w, int *h)
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
 /**
  * @param e: the embed to freeze redraws and canvas events
  * @return Returns no value.
@@ -1814,7 +1821,6 @@ ewl_embed_freeze(Ewl_Embed *e)
 	 * Global freeze on theme events while theme's are being manipulated.
 	 */
 	ewl_engine_theme_freeze(e);
-
 	ewl_engine_canvas_freeze(e);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
