@@ -119,9 +119,8 @@ ewl_border_label_position_set(Ewl_Border *b, Ewl_Position pos)
 	DCHECK_PARAM_PTR(b);
 	DCHECK_TYPE(b, EWL_BORDER_TYPE);
 
-	if (b->label_position == pos) {
-		DLEAVE_FUNCTION(DLEVEL_STABLE);
-	}
+	if (b->label_position == pos) 
+		DRETURN(DLEVEL_STABLE);
 
 	b->label_position = pos;
 	switch (b->label_position) {
