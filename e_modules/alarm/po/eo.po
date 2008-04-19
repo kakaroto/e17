@@ -1,15 +1,16 @@
-# translation of eo.po to
-# Copyright (C) YEAR Enlightenment development team
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# translation of eo.po to Esperanto
+# Esperanto translation of alarm
+# Copyright (C) 2008 Enlightenment development team
+# This file is distributed under the same license as the alarm package.
+# Olivier M. <olivierweb@ifrance.com>, 2008.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: eo\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2007-11-14 22:14+0100\n"
-"PO-Revision-Date: 2008-02-11 20:29+0100\n"
-"Last-Translator: \n"
+"PO-Revision-Date: 2008-04-17 22:22+0200\n"
+"Last-Translator:  <olivierweb@ifrance.com>\n"
 "Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -199,12 +200,10 @@ msgid "No [default]"
 msgstr ""
 
 #: e_mod_config_alarm.c:393 e_mod_config_alarm.c:413
-#, fuzzy
 msgid "Yes"
 msgstr "Jes"
 
 #: e_mod_config_alarm.c:398 e_mod_config_alarm.c:418 e_mod_config_alarm.c:429
-#, fuzzy
 msgid "No"
 msgstr "Ne"
 
@@ -274,12 +273,10 @@ msgid "%1.0f minutes"
 msgstr "%1.0f minutoj"
 
 #: e_mod_main.c:665
-#, fuzzy
 msgid "Ok"
 msgstr "Bone"
 
 #: e_mod_main.c:666
-#, fuzzy
 msgid "Close"
 msgstr "Fermi"
 
