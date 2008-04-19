@@ -1269,13 +1269,15 @@ on_ColorCanvas_realize(Etk_Widget *canvas, void *data)
    //Must use the realize callback on the EtkCanvas object.
    //Because I can't add any object to the canvas before it is realized
    Evas_Object* rect;
+	 Etk_Widget *etk_evas_object;
    //Add the colored rectangle
    rect = evas_object_rectangle_add(etk_widget_toplevel_evas_get(canvas));
-   etk_canvas_object_add(ETK_CANVAS(canvas), rect);
    evas_object_color_set(rect, 100,100,100,255);
    evas_object_resize(rect,300,300);
-   etk_canvas_object_move(ETK_CANVAS(canvas),rect,0,0);
-   evas_object_show(rect);
+	 etk_evas_object = etk_evas_object_new();
+	 etk_evas_object_set_object(ETK_EVAS_OBJECT(etk_evas_object), rect);
+   etk_canvas_put(ETK_CANVAS(canvas), etk_evas_object ,0,0);
+   etk_widget_show_all(etk_evas_object);
    evas_object_event_callback_add(rect, EVAS_CALLBACK_MOUSE_DOWN, on_ColorCanvas_click, data);
    switch ((int)data){
       case COLOR_OBJECT_RECT:
