@@ -2143,7 +2143,7 @@ create_image_frame(void)
 }
 
 static Etk_Widget*
-create_text_frame(void)
+create_text_frame(Evas *evas)
 {
    Etk_Widget *vbox;
    Etk_Widget *hbox;
@@ -2262,11 +2262,11 @@ create_text_frame(void)
    etk_box_append(ETK_BOX(vbox), hbox, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
    //Color buttons
-   etk_box_append(ETK_BOX(hbox), create_a_color_button("Text",COLOR_OBJECT_TEXT,30,30, NULL),
+   etk_box_append(ETK_BOX(hbox), create_a_color_button("Text",COLOR_OBJECT_TEXT,30,30, evas),
                   ETK_BOX_START, ETK_BOX_EXPAND, 0);
-   etk_box_append(ETK_BOX(hbox), create_a_color_button("Shadow",COLOR_OBJECT_SHADOW,30,30, NULL),
+   etk_box_append(ETK_BOX(hbox), create_a_color_button("Shadow",COLOR_OBJECT_SHADOW,30,30, evas),
                   ETK_BOX_START, ETK_BOX_EXPAND, 0);
-   etk_box_append(ETK_BOX(hbox), create_a_color_button("Outline",COLOR_OBJECT_OUTLINE,30,30, NULL),
+   etk_box_append(ETK_BOX(hbox), create_a_color_button("Outline",COLOR_OBJECT_OUTLINE,30,30, evas),
                   ETK_BOX_START, ETK_BOX_EXPAND, 0);
 
    etk_signal_connect("clicked", ETK_OBJECT(UI_FontAddButton),
@@ -2953,7 +2953,7 @@ create_main_window(void)
 
    //TextEmbed
    UI_TextEmbed = etk_embed_new(UI_evas);
-   etk_container_add(ETK_CONTAINER(UI_TextEmbed), create_text_frame());
+   etk_container_add(ETK_CONTAINER(UI_TextEmbed), create_text_frame(UI_evas));
    etk_embed_position_method_set(ETK_EMBED(UI_TextEmbed),
                                  _embed_position_set, UI_ecore_MainWin);
    etk_widget_show_all(UI_TextEmbed);
