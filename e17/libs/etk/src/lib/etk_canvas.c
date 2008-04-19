@@ -1,6 +1,3 @@
-/*
- * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
- */
 /** @file etk_canvas.c */
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -19,11 +16,20 @@
  * @{
  */
 
+typedef struct Etk_Canvas_Child
+{
+   Etk_Widget *child;
+   Etk_Position pos;
+} Etk_Canvas_Child;
+
 static void _etk_canvas_constructor(Etk_Canvas *canvas);
+static void _etk_canvas_destructor(Etk_Canvas *canvas);
+static void _etk_canvas_size_request(Etk_Widget *widget, Etk_Size *size_requisition);
 static void _etk_canvas_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
+static void _etk_canvas_child_add(Etk_Container *container, Etk_Widget *widget);
+static void _etk_canvas_child_remove(Etk_Container *container, Etk_Widget *widget);
+static Evas_List *_etk_canvas_children_get(Etk_Container *container);
 static Etk_Bool _etk_canvas_realized_cb(Etk_Object *object, void *data);
-static Etk_Bool _etk_canvas_unrealized_cb(Etk_Object *object, void *data);
-static void _etk_canvas_object_deleted_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
 
 /**************************
  *
@@ -43,16 +49,17 @@ Etk_Type *etk_canvas_type_get(void)
    if (!canvas_type)
    {
       canvas_type = etk_type_new("Etk_Canvas", ETK_CONTAINER_TYPE,
-         sizeof(Etk_Canvas), ETK_CONSTRUCTOR(_etk_canvas_constructor),
-         NULL, NULL);
+         sizeof(Etk_Canvas),
+         ETK_CONSTRUCTOR(_etk_canvas_constructor),
+         ETK_DESTRUCTOR(_etk_canvas_destructor), NULL);
    }
 
    return canvas_type;
 }
 
 /**
- * @brief Creates a new canvas
- * @return Returns the new canvas widget
+ * @brief Creates a new canvas container
+ * @return Returns the new canvas container
  */
 Etk_Widget *etk_canvas_new(void)
 {
@@ -60,153 +67,89 @@ Etk_Widget *etk_canvas_new(void)
 }
 
 /**
- * @brief Adds an Evas object to the canvas. The object will be moved to the top left corner of the canvas and
- * will be clipped against the canvas. You can then use any Evas function to control the object
- * @param canvas a canvas
- * @param object the object to add
- * @return Returns ETK_TRUE on success, or ETK_FALSE on failure (probably because the canvas and
- * the object do not belong to the same Evas)
- * @note The object will be automatically deleted when the canvas is destroyed
- * @warning The object position remains relative to the window, and not to the canvas itself
- * (See the detailed description of Etk_Canvas, at the top of this page, for more information)
+ * @brief Puts a new child into the canvas container, at the position (x, y)
+ * @param canvas a canvas container
+ * @param child the child to add
+ * @param x the x position where to put the child
+ * @param y the y position where to put the child
  */
-Etk_Bool etk_canvas_object_add(Etk_Canvas *canvas, Evas_Object *object)
+void etk_canvas_put(Etk_Canvas *canvas, Etk_Widget *widget, int x, int y)
 {
-   Etk_Bool result;
-   int cx, cy;
+   Etk_Canvas_Child *child;
 
-   if (!canvas || !object)
-      return ETK_FALSE;
-   if (evas_object_evas_get(object) != etk_widget_toplevel_evas_get(ETK_WIDGET(canvas)))
-   {
-      ETK_WARNING("Unable to add the object to the canvas: the canvas and the object do not belong to the same Evas");
-      return ETK_FALSE;
-   }
+   if (!canvas || !widget)
+      return;
 
-   etk_widget_geometry_get(ETK_WIDGET(canvas), &cx, &cy, NULL, NULL);
-   if ((result = etk_widget_member_object_add(ETK_WIDGET(canvas), object)))
+   child = malloc(sizeof(Etk_Canvas_Child));
+   child->child = widget;
+   child->pos.x = x;
+   child->pos.y = y;
+   canvas->children = evas_list_append(canvas->children, child);
+   etk_object_data_set(ETK_OBJECT(widget), "_Etk_Canvas::Node", evas_list_last(canvas->children));
+
+   if (canvas->clip)
    {
-      evas_object_move(object, cx, cy);
-      evas_object_clip_set(object, canvas->clip);
+      etk_widget_clip_set(widget, canvas->clip);
       evas_object_show(canvas->clip);
-
-      evas_object_event_callback_add(object, EVAS_CALLBACK_FREE, _etk_canvas_object_deleted_cb, canvas);
-      canvas->objects = evas_list_append(canvas->objects, object);
    }
 
-   return result;
-}
-
-Etk_Bool etk_canvas_widget_add(Etk_Canvas *canvas, Etk_Widget *widget)
-{
-	Etk_Geometry geometry;
-	Etk_Size size;
-	int cx, cy;
-
-	if (!canvas || !widget)
-		return ETK_FALSE;
-
-	
-	etk_widget_geometry_get(ETK_WIDGET(canvas), &cx, &cy, NULL, NULL);
-	etk_widget_size_request(widget, &size);
-	geometry.x = cx;
-	geometry.y = cy;
-	geometry.w = size.w;
-	geometry.h = size.h;
-	etk_widget_size_allocate(widget, geometry);
-	etk_widget_parent_set(widget, ETK_WIDGET(canvas));
- 	canvas->widgets = evas_list_append(canvas->widgets, widget);
-
-	return ETK_TRUE;
+   etk_widget_parent_set(widget, ETK_WIDGET(canvas));
+   etk_signal_emit(ETK_CONTAINER_CHILD_ADDED_SIGNAL, ETK_OBJECT(canvas), widget);
 }
 
 /**
- * @brief Removes an Evas object from the canvas. The removed object will be automatically hidden
- * @param canvas a canvas
- * @param object the evas object to remove
+ * @brief Moves an existing child of the canvas container to the position (x, y)
+ * @param canvas a canvas container
+ * @param widget the child to move
+ * @param x the x position where to move the child
+ * @param y the y position where to move the child
  */
-void etk_canvas_object_remove(Etk_Canvas *canvas, Evas_Object *object)
+void etk_canvas_move(Etk_Canvas *canvas, Etk_Widget *widget, int x, int y)
 {
    Evas_List *l;
+   Etk_Canvas_Child *c;
 
-   if (!canvas || !object)
+   if (!canvas || !widget)
       return;
 
-   if ((l = evas_list_find_list(canvas->objects, object)))
+   for (l = canvas->children; l; l = l->next)
    {
-      etk_widget_member_object_del(ETK_WIDGET(canvas), object);
-      evas_object_clip_unset(object);
-      evas_object_hide(object);
-
-      evas_object_event_callback_del(object, EVAS_CALLBACK_FREE, _etk_canvas_object_deleted_cb);
-      canvas->objects = evas_list_remove_list(canvas->objects, l);
-      if (!canvas->objects)
-         evas_object_hide(canvas->clip);
+      c = l->data;
+      if (c->child == widget)
+      {
+         c->pos.x = x;
+         c->pos.y = y;
+         etk_widget_size_recalc_queue(ETK_WIDGET(canvas));
+         break;
+      }
    }
 }
 
 /**
- * @brief Moves an Evas object to position ( @a x, @a y ), relatively to the canvas' top-left corner.
- * @param canvas a canvas
- * @param object the object to move
- * @param x the x component of the position where to move the object, relative to the canvas' top-left corner
- * @param y the y component of the position where to move the object, relative to the canvas' top-left corner
- * @note You can still use evas_object_move() to move an object of the canvas, but the position passed to
- * evas_object_move() is relative to the Evas, not to the canvas.
+ * @brief Gets the position of a child of the canvas container
+ * @param canvas a canvas container
+ * @param widget the child you want the position of
+ * @param x the location where to store the x position of the child (it can be NULL)
+ * @param y the location where to store the y position of the child (it can be NULL)
+ * @note if the child is not contained by the canvas container, @a x and @a y will be set to (0, 0)
  */
-void etk_canvas_object_move(Etk_Canvas *canvas, Evas_Object *object, int x, int y)
+void etk_canvas_child_position_get(Etk_Canvas *canvas, Etk_Widget *widget, int *x, int *y)
 {
-   int cx, cy;
+   Evas_List *l;
+   Etk_Canvas_Child *c;
 
-   if (!canvas || !object)
+   if (x)   *x = 0;
+   if (y)   *y = 0;
+
+   if (!canvas || !widget)
       return;
 
-   etk_widget_geometry_get(ETK_WIDGET(canvas), &cx, &cy, NULL, NULL);
-   evas_object_move(object, cx + x, cy + y);
-}
-
-void etk_canvas_widget_move(Etk_Canvas *canvas, Etk_Widget *widget, int x, int y)
-{
-	int cx, cy;
-	Etk_Geometry geometry;
-	Etk_Size size;
-
-	if (!canvas || !widget)
-		return;
-
-	etk_widget_geometry_get(ETK_WIDGET(canvas), &cx, &cy, NULL, NULL);
-	etk_widget_size_request(widget, &size);
-	geometry.x = cx + x;
-	geometry.y = cy + y;
-	geometry.w = size.w;
-	geometry.h = size.h;
-	etk_widget_size_allocate(widget, geometry);
-}
-
-/**
- * @brief Gets the geometry of an Evas Object. The returned position will be relative to the canvas' top-left corner
- * @param canvas a canvas
- * @param object the object to get the geomtry of
- * @param x the location where to store the x component of the position of the object,
- * relative to the canvas' top-left corner
- * @param y the location where to store the y component of the position of the object,
- * relative to the canvas' top-left corner
- * @param w the location where to store the width of the object
- * @param h the location where to store the height of the object
- * @note You can still use evas_object_geometry_get(), but the position returned by evas_object_geometry_get() is
- * relative to the Evas, not to the canvas.
- */
-void etk_canvas_object_geometry_get(Etk_Canvas *canvas, Evas_Object *object, int *x, int *y, int *w, int *h)
-{
-   int cx, cy;
-
-   if (!canvas || !object)
-      return;
-
-   etk_widget_geometry_get(ETK_WIDGET(canvas), &cx, &cy, NULL, NULL);
-   evas_object_geometry_get(object, x, y, w, h);
-   if (x)   *x -= cx;
-   if (y)   *y -= cy;
+   if ((l = etk_object_data_get(ETK_OBJECT(widget), "_Etk_Canvas::Node")))
+   {
+      c = l->data;
+      if (x)   *x = c->pos.x;
+      if (y)   *y = c->pos.y;
+   }
 }
 
 /**************************
@@ -215,50 +158,145 @@ void etk_canvas_object_geometry_get(Etk_Canvas *canvas, Evas_Object *object, int
  *
  **************************/
 
-/* Initializes the canvas */
+/* Initializes the default values of the canvas container */
 static void _etk_canvas_constructor(Etk_Canvas *canvas)
 {
    if (!canvas)
       return;
 
+   canvas->children = NULL;
    canvas->clip = NULL;
-   canvas->objects = NULL;
-   canvas->widgets= NULL;
+
+   ETK_CONTAINER(canvas)->child_add = _etk_canvas_child_add;
+   ETK_CONTAINER(canvas)->child_remove = _etk_canvas_child_remove;
+   ETK_CONTAINER(canvas)->children_get = _etk_canvas_children_get;
+   ETK_WIDGET(canvas)->size_request = _etk_canvas_size_request;
    ETK_WIDGET(canvas)->size_allocate = _etk_canvas_size_allocate;
 
    etk_signal_connect_by_code(ETK_WIDGET_REALIZED_SIGNAL, ETK_OBJECT(canvas), ETK_CALLBACK(_etk_canvas_realized_cb), NULL);
-   etk_signal_connect_by_code(ETK_WIDGET_UNREALIZED_SIGNAL, ETK_OBJECT(canvas), ETK_CALLBACK(_etk_canvas_unrealized_cb), NULL);
+   etk_signal_connect_swapped_by_code(ETK_WIDGET_UNREALIZED_SIGNAL, ETK_OBJECT(canvas), ETK_CALLBACK(etk_callback_set_null), &canvas->clip);
 }
 
-/* Moves and resizes the clip of the canvas */
+/* Destroys the canvas container */
+static void _etk_canvas_destructor(Etk_Canvas *canvas)
+{
+   if (!canvas)
+      return;
+
+   while (canvas->children)
+   {
+      free(canvas->children->data);
+      canvas->children = evas_list_remove_list(canvas->children, canvas->children);
+   }
+}
+
+/* Calculates the ideal size of the canvas container */
+static void _etk_canvas_size_request(Etk_Widget *widget, Etk_Size *size_requisition)
+{
+   Etk_Canvas *canvas;
+   Etk_Canvas_Child *c;
+   Etk_Size child_size;
+   Evas_List *l;
+
+   if (!(canvas = ETK_CANVAS(widget)) || !size_requisition)
+      return;
+
+   size_requisition->w = 0;
+   size_requisition->h = 0;
+
+   for (l = canvas->children; l; l = l->next)
+   {
+      c = l->data;
+      etk_widget_size_request(c->child, &child_size);
+      size_requisition->w = ETK_MAX(size_requisition->w, c->pos.x + child_size.w);
+      size_requisition->h = ETK_MAX(size_requisition->h, c->pos.y + child_size.h);
+   }
+
+   size_requisition->w += 2 * ETK_CONTAINER(canvas)->border_width;
+   size_requisition->h += 2 * ETK_CONTAINER(canvas)->border_width;
+}
+
+/* Resizes the canvas to the size allocation */
 static void _etk_canvas_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
 {
    Etk_Canvas *canvas;
-	 Etk_Widget *child;
-	 Etk_Size size;
-	 Etk_Geometry child_geometry;
-	 Evas_List *l;
-	 int x, y, w, h;
+   Etk_Canvas_Child *c;
+   Etk_Size child_size;
+   Etk_Geometry child_geometry;
+   Evas_List *l;
 
    if (!(canvas = ETK_CANVAS(widget)))
       return;
 
-   evas_object_move(canvas->clip, geometry.x, geometry.y);
-	 evas_object_resize(canvas->clip, geometry.w, geometry.h);
+   geometry.x += ETK_CONTAINER(canvas)->border_width;
+   geometry.y += ETK_CONTAINER(canvas)->border_width;
+   geometry.w -= 2 * ETK_CONTAINER(canvas)->border_width;
+   geometry.h -= 2 * ETK_CONTAINER(canvas)->border_width;
 
-	 // TODO: this might not be needed everytime, better way?
-	 for (l = canvas->widgets; l; l = l->next)
-	 {
-	 		child = l->data;
-			etk_widget_size_request(child, &size);
-			etk_widget_geometry_get(child, &x, &y, &w, &h);
-			child_geometry.x = x;
-			child_geometry.y = y;
-			child_geometry.w = size.w;
-			child_geometry.h = size.h;
-			etk_widget_size_allocate(child, child_geometry);
-			etk_widget_show_all(child);
-	 }
+   evas_object_move(canvas->clip, geometry.x, geometry.y);
+   evas_object_resize(canvas->clip, geometry.w, geometry.h);
+
+   for (l = canvas->children; l; l = l->next)
+   {
+      c = l->data;
+      etk_widget_size_request(c->child, &child_size);
+      child_geometry.x = geometry.x + c->pos.x;
+      child_geometry.y = geometry.y + c->pos.y;
+      child_geometry.w = child_size.w;
+      child_geometry.h = child_size.h;
+      etk_widget_size_allocate(c->child, child_geometry);
+   }
+}
+
+/* Adds a child to the canvas container */
+static void _etk_canvas_child_add(Etk_Container *container, Etk_Widget *widget)
+{
+   etk_canvas_put(ETK_CANVAS(container), widget, 0, 0);
+}
+
+/* Removes the child from the canvas container */
+static void _etk_canvas_child_remove(Etk_Container *container, Etk_Widget *widget)
+{
+   Etk_Canvas *canvas;
+   Evas_List *l;
+
+   if (!(canvas = ETK_CANVAS(container)) || !widget)
+      return;
+
+   if ((l = etk_object_data_get(ETK_OBJECT(widget), "_Etk_Canvas::Node")))
+   {
+      free(l->data);
+      etk_object_data_set(ETK_OBJECT(widget), "_Etk_Canvas::Node", NULL);
+      canvas->children = evas_list_remove_list(canvas->children, l);
+
+      if (canvas->clip)
+      {
+         etk_widget_clip_unset(widget);
+         if (!canvas->children)
+            evas_object_hide(canvas->clip);
+      }
+
+      etk_signal_emit(ETK_CONTAINER_CHILD_REMOVED_SIGNAL, ETK_OBJECT(canvas), widget);
+   }
+}
+
+/* Gets the list of the children */
+static Evas_List *_etk_canvas_children_get(Etk_Container *container)
+{
+   Etk_Canvas *canvas;
+   Etk_Canvas_Child *c;
+   Evas_List *children, *l;
+
+   if (!(canvas = ETK_CANVAS(container)))
+      return NULL;
+
+   children = NULL;
+   for (l = canvas->children; l; l = l->next)
+   {
+      c = l->data;
+      children = evas_list_append(children, c->child);
+   }
+   return children;
 }
 
 /**************************
@@ -267,65 +305,30 @@ static void _etk_canvas_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
  *
  **************************/
 
-/* Called when the canvas is realized */
+/* Called when the canvas container is realized */
 static Etk_Bool _etk_canvas_realized_cb(Etk_Object *object, void *data)
 {
-   Evas *evas;
    Etk_Canvas *canvas;
-   Evas_Object *obj;
-   Etk_Widget *widget;
+   Etk_Canvas_Child *c;
    Evas_List *l;
+   Evas *evas;
 
-   if (!(canvas = ETK_CANVAS(object)) || !(evas = etk_widget_toplevel_evas_get(ETK_WIDGET(canvas))))
+   if (!(canvas = ETK_CANVAS(object)) || !(evas = etk_widget_toplevel_evas_get(ETK_WIDGET(object))))
       return ETK_TRUE;
 
    canvas->clip = evas_object_rectangle_add(evas);
    etk_widget_member_object_add(ETK_WIDGET(canvas), canvas->clip);
 
-   for (l = canvas->objects; l; l = l->next)
+   for (l = canvas->children; l; l = l->next)
    {
-      obj = l->data;
-      evas_object_clip_set(obj, canvas->clip);
+      c = l->data;
+      etk_widget_clip_set(c->child, canvas->clip);
+   }
+
+   if (canvas->children)
       evas_object_show(canvas->clip);
-   }
-
-   for (l = canvas->widgets; l; l = l->next)
-   {
-      widget = l->data;
-			etk_widget_show_all(widget);
-   }
 
    return ETK_TRUE;
-}
-
-/* Called when the canvas is unrealized */
-static Etk_Bool _etk_canvas_unrealized_cb(Etk_Object *object, void *data)
-{
-   Etk_Canvas *canvas;
-
-   if (!(canvas = ETK_CANVAS(object)))
-      return ETK_TRUE;
-
-   canvas->clip = NULL;
-   evas_list_free(canvas->objects);
-   evas_list_free(canvas->widgets);
-   canvas->objects = NULL;
-   canvas->widgets= NULL;
-
-   return ETK_TRUE;
-}
-
-/* Called when an object of the canvas is deleted */
-static void _etk_canvas_object_deleted_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
-{
-   Etk_Canvas *canvas;
-
-   if (!(canvas = ETK_CANVAS(data)) || !obj)
-      return;
-
-   canvas->objects = evas_list_remove(canvas->objects, obj);
-   if (!canvas->objects)
-      evas_object_hide(canvas->clip);
 }
 
 /** @} */
@@ -339,53 +342,28 @@ static void _etk_canvas_object_deleted_cb(void *data, Evas *e, Evas_Object *obj,
 /**
  * @addtogroup Etk_Canvas
  *
- * @image html widgets/canvas.png
- * To add an object to a canvas, the object and the canvas should belong to the same evas. It means the canvas has
- * to be realized when you create the objects. You can for example create the objects in a callback connected to the
- * @b "realized" signal of the canvas widget.
+ * Etk_Canvas allows you to easily position widgets at canvas coordinates. The children will have the same size as their
+ * requested-size. So to force a child to have a canvas size, you can call etk_widget_size_request_set() on the child. @n
+ * Fox example, to put a button at the position (20, 30), with the size 100x30:
  * @code
- * etk_signal_connect("realized", ETK_OBJECT(canvas), ETK_CALLBACK(canvas_realized_cb), NULL),
+ * Etk_Widget *canvas;
+ * Etk_Widget *child;
  *
- * void canvas_realized_cb(Etk_Widget *canvas, void *data)
- * {
- *    Evas *evas;
- *    Evas_Object *obj;
- *
- *    evas = etk_widget_toplevel_evas_get(canvas);
- *    obj = evas_object_rectangle_add(evas);
- *    etk_canvas_object_add(canvas, obj);
- * }
+ * canvas = etk_canvas_new();
+ * child = etk_button_new();
+ * etk_canvas_put(ETK_CANVAS(canvas), child, 20, 30);
+ * etk_widget_size_request_set(button, 100, 30);
  * @endcode @n
  *
- * Once an object is added to the canvas, you can use any @a evas_object_*() functions to control it. @n
- * You just have to keep in mind that calling evas_object_move() on an object belonging to the canvas will move
- * the object relatively to the top-left corner of the window, and not to the top corner of the canvas itself. @n
- * So if you want to move your object to the position (200, 300) inside the canvas, you first have to get the position
- * (cx, cy) of the canvas and then to move the object relatively to it: @n
- * @code
- * etk_widget_geometry_get(canvas, &cx, &cy, NULL, NULL);
- * evas_object_move(object, cx + 200, cy + 300);
- * @endcode @n
- * The function etk_canvas_object_move() does that for you. @n @n
- *
- * When the canvas is moved, the objects belonging to it are automatically moved with it,
- * but you might want to add a notification callback to the @b "geometry" property of the canvas widget, which will be
- * called each time the geometry of the canvas is changed. That way, you can resize the objects when the size of the
- * canvas is modified: @n
- * @code
- * etk_object_notification_callback_add(ETK_OBJECT(canvas), "geometry", canvas_geometry_changed_cb, NULL);
- *
- * void canvas_geometry_changed_cb(Etk_Object *canvas, const char *property_name, void *data)
- * {
- *    int cx, cy, cw, ch;
- *
- *     etk_widget_geometry_get(ETK_WIDGET(canvas), &cx, &cy, &cw, &ch);
- *    //Move and resize the evas objects here
- * }
- * @endcode @n
+ * Etk_Canvas may seem to make widget positioning simpler but you should actually avoid using it as much as possible.
+ * Indeed, using canvas positions may make widgets overlap and the result can look differently on different configurations
+ * (different themes, different fonts, different languages, ...). Also, if you'll ever want to remove a child from the
+ * canvas container, you will probably have to reposition all the other children of the canvas container. It's heavily
+ * advised to use Etk_Box, Etk_Table or any other kind of containers instead of a canvas container.
  *
  * \par Object Hierarchy:
  * - Etk_Object
  *   - Etk_Widget
- *     - Etk_Canvas
+ *     - Etk_Container
+ *       - Etk_Canvas
  */

@@ -42,7 +42,6 @@ extern "C" {
 #include "etk_evas_object.h"
 #include "etk_event.h"
 #include "etk_filechooser_widget.h"
-#include "etk_fixed.h"
 #include "etk_frame.h"
 #include "etk_iconbox.h"
 #include "etk_image.h"

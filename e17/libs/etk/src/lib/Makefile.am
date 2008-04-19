@@ -40,7 +40,6 @@ etk_entry.h \
 etk_evas_object.h \
 etk_event.h \
 etk_filechooser_widget.h \
-etk_fixed.h \
 etk_frame.h \
 etk_iconbox.h \
 etk_image.h \
@@ -118,7 +117,6 @@ etk_entry.c \
 etk_evas_object.c \
 etk_event.c \
 etk_filechooser_widget.c \
-etk_fixed.c \
 etk_frame.c \
 etk_iconbox.c \
 etk_image.c \
