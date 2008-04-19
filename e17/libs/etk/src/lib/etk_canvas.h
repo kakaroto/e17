@@ -45,6 +45,8 @@ void        etk_canvas_put(Etk_Canvas *canvas, Etk_Widget *widget, int x, int y)
 void        etk_canvas_move(Etk_Canvas *canvas, Etk_Widget *widget, int x, int y);
 void        etk_canvas_child_position_get(Etk_Canvas *canvas, Etk_Widget *widget, int *x, int *y);
 
+Etk_Widget *etk_canvas_object_add(Etk_Canvas *canvas, Evas_Object *evas_object);
+
 /** @} */
 
 #ifdef __cplusplus

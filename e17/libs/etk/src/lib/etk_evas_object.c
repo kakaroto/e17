@@ -104,6 +104,7 @@ void etk_evas_object_set_object(Etk_Evas_Object *etk_evas_object, Evas_Object *e
    {
       etk_evas_object->object = evas_object;
       etk_object_notify(ETK_OBJECT(etk_evas_object), "evas-object");
+      evas_object_data_set(evas_object, "_Etk_Evas_Object::Widget", etk_evas_object);
    }
 
    _etk_evas_object_load(etk_evas_object);

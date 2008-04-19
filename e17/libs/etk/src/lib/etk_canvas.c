@@ -7,6 +7,7 @@
 
 #include <stdlib.h>
 
+#include "etk_evas_object.h"
 #include "etk_signal.h"
 #include "etk_signal_callback.h"
 #include "etk_utils.h"
@@ -150,6 +151,65 @@ void etk_canvas_child_position_get(Etk_Canvas *canvas, Etk_Widget *widget, int *
       if (x)   *x = c->pos.x;
       if (y)   *y = c->pos.y;
    }
+}
+
+/**
+ * @brief Adds an Evas_Object to the canvas. This is a convenience function
+ * that uses Etk_Evas_Object.
+ * @param canvas the canvas container
+ * @parem evas_object the evas object to add
+ * @return returns the Etk_Evas_Object holding the @a evas_object
+ * @note You will need to show the widget after it has been added.
+ */
+Etk_Widget *etk_canvas_object_add(Etk_Canvas *canvas, Evas_Object *evas_object)
+{
+   Etk_Widget *etk_evas_object;
+
+   if (!canvas || !evas_object)
+	    return NULL;
+
+   etk_evas_object = etk_evas_object_new_from_object(evas_object);	 
+	 etk_canvas_put(canvas, etk_evas_object, 0, 0);
+	 return etk_evas_object;
+}
+
+/**
+ * @brief Removed an Evas_Object from the canvas.
+ * @param canvas the canvas container
+ * @param evas_object the Evas_Object to remove
+ */
+void etk_canvas_object_remove(Etk_Canvas *canvas, Evas_Object *evas_object)
+{
+   Etk_Widget *etk_evas_object = NULL;
+
+   if (!canvas || !evas_object)
+	    return;
+
+   if ((etk_evas_object = evas_object_data_get(evas_object, "_Etk_Evas_Object::Widget")) == NULL)
+	    return;
+
+   evas_object_data_set(evas_object, "_Etk_Evas_Object::Widget", NULL);
+   _etk_canvas_child_remove(ETK_CONTAINER(canvas), etk_evas_object);
+}
+
+/**
+ * @brief Moves an Evas_Object around in the canvas
+ * @param canvas the canvas container
+ * @param evas_object the Evas_Object to move
+ * @param x the x coordinate to move to inside the canvas
+ * @param y the y coordinate to move to inside the canvas
+ */
+void etk_canvas_object_move(Etk_Canvas *canvas, Evas_Object *evas_object, int x, int y)
+{
+   Etk_Widget *etk_evas_object = NULL;
+
+   if (!canvas || !evas_object)
+	    return;
+
+   if ((etk_evas_object = evas_object_data_get(evas_object, "_Etk_Evas_Object::Widget")) == NULL)
+	    return;
+
+   etk_canvas_move(canvas, etk_evas_object, x, y);
 }
 
 /**************************
