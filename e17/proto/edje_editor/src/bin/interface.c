@@ -1367,12 +1367,13 @@ create_filechooser_dialog(void)
 }
 
 static Etk_Widget*
-create_a_color_button(char* label_text, int color_button_enum,int w,int h)
+create_a_color_button(char* label_text, int color_button_enum,int w,int h, Evas *evas)
 {
    Etk_Widget *vbox;
-   Etk_Widget *ColorCanvas;
    Etk_Widget *label;
    Etk_Widget *shadow;
+   Evas_Object* rect;
+   Etk_Widget *etk_evas_object;
 
    //vbox
    vbox = etk_vbox_new(ETK_FALSE, 3);
@@ -1385,12 +1386,34 @@ create_a_color_button(char* label_text, int color_button_enum,int w,int h)
    //etk_shadow_shadow_set(Etk_Shadow *shadow, Etk_Shadow_Type type, Etk_Shadow_Edges edges, int radius, int offset_x, int offset_y, int opacity);
    etk_box_append(ETK_BOX(vbox), shadow, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
-   //ColorCanvas
-   ColorCanvas = etk_canvas_new();
-  //etk_box_append(ETK_BOX(vbox), ColorCanvas, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
-   etk_container_add(ETK_CONTAINER(shadow), ColorCanvas);
-   etk_signal_connect("realized", ETK_OBJECT(ColorCanvas), ETK_CALLBACK(on_ColorCanvas_realize), (void*)color_button_enum);
-   etk_widget_size_request_set(ColorCanvas, w, h);
+   //Add the colored rectangle
+   rect = evas_object_rectangle_add(evas);
+   evas_object_color_set(rect, 255,100,100,255);
+   evas_object_resize(rect, w, h);
+   etk_evas_object = etk_evas_object_new();
+   etk_evas_object_set_object(ETK_EVAS_OBJECT(etk_evas_object), rect);
+   evas_object_show(rect);
+   etk_widget_show_all(etk_evas_object);
+   evas_object_event_callback_add(rect, EVAS_CALLBACK_MOUSE_DOWN, on_ColorCanvas_click, (void*)color_button_enum);
+   etk_container_add(ETK_CONTAINER(shadow), etk_evas_object);
+   etk_widget_size_request_set(etk_evas_object, w, h);
+   switch (color_button_enum)
+   {
+      case COLOR_OBJECT_RECT:
+         RectColorObject = rect;
+         break;
+      case COLOR_OBJECT_TEXT:
+         TextColorObject = rect;
+         break;
+      case COLOR_OBJECT_SHADOW:
+         ShadowColorObject = rect;
+         break;
+      case COLOR_OBJECT_OUTLINE:
+         OutlineColorObject = rect;
+         break;
+   }
+   
+
 
    //Label
    if (label_text){
@@ -1976,9 +1999,9 @@ create_description_frame(void)
 }
 
 static Etk_Widget*
-create_rectangle_frame(void)
+create_rectangle_frame(Evas *evas)
 {
-   return create_a_color_button("Color",COLOR_OBJECT_RECT,100,30);
+   return create_a_color_button("Color",COLOR_OBJECT_RECT,100,30, evas);
 }
 
 static Etk_Widget*
@@ -2239,11 +2262,11 @@ create_text_frame(void)
    etk_box_append(ETK_BOX(vbox), hbox, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
    //Color buttons
-   etk_box_append(ETK_BOX(hbox), create_a_color_button("Text",COLOR_OBJECT_TEXT,30,30),
+   etk_box_append(ETK_BOX(hbox), create_a_color_button("Text",COLOR_OBJECT_TEXT,30,30, NULL),
                   ETK_BOX_START, ETK_BOX_EXPAND, 0);
-   etk_box_append(ETK_BOX(hbox), create_a_color_button("Shadow",COLOR_OBJECT_SHADOW,30,30),
+   etk_box_append(ETK_BOX(hbox), create_a_color_button("Shadow",COLOR_OBJECT_SHADOW,30,30, NULL),
                   ETK_BOX_START, ETK_BOX_EXPAND, 0);
-   etk_box_append(ETK_BOX(hbox), create_a_color_button("Outline",COLOR_OBJECT_OUTLINE,30,30),
+   etk_box_append(ETK_BOX(hbox), create_a_color_button("Outline",COLOR_OBJECT_OUTLINE,30,30, NULL),
                   ETK_BOX_START, ETK_BOX_EXPAND, 0);
 
    etk_signal_connect("clicked", ETK_OBJECT(UI_FontAddButton),
@@ -2921,7 +2944,7 @@ create_main_window(void)
 
    //RectEmbed
    UI_RectEmbed = etk_embed_new(UI_evas);
-   etk_container_add(ETK_CONTAINER(UI_RectEmbed), create_rectangle_frame());
+   etk_container_add(ETK_CONTAINER(UI_RectEmbed), create_rectangle_frame(UI_evas));
    etk_embed_position_method_set(ETK_EMBED(UI_RectEmbed),
                                  _embed_position_set, UI_ecore_MainWin);
    etk_widget_show_all(UI_RectEmbed);
