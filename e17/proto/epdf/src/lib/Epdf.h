@@ -50,8 +50,9 @@
  *
  * The simplest way to use Epdf is to load a document using
  * epdf_document_new(), to create a page using epdf_page_new() and to
- * render the page in an Evas object using epdf_page_render(). Here is
- * an example:
+ * render the whole page in an Evas object using epdf_page_render(). If
+ * you want to render only a part of the page, use epdf_page_render_slice().
+ * Here is an example:
  *
  * @code
  * Epdf_Document *document;
@@ -70,10 +71,7 @@
  *
  * o = evas_object_image_add (evas);
  * evas_object_move (o, 0, 0);
- * epdf_page_render (page, device, o,
-                     EPDF_PAGE_ORIENTATION_PORTRAIT,
-                     0, 0, -1, -1,
-                     1.0, 1.0););
+ * epdf_page_render (page, device, o);
  * evas_object_show (o);
  *
  * epdf_page_delete (document);

@@ -6,13 +6,14 @@
 
 
 /**
- * @file ewl_pdf.h
+ * @file esmart_pdf.h
  * @defgroup Esmart_Pdf Esmart Pdf
  * @brief An Evas smart object to display PDF document
  *
  * Provides a smart object for displaying PDF files in an Evas object.
  * Add an object to en evas with esmart_pdf_add(), and set the file
  * with esmart_pdf_file_set() and set the page with esmart_pdf_page_set().
+ * Then, you can render the page on the Evas Object with esmart_pdf_render().
  * For example:
  *
  * @code
@@ -32,6 +33,7 @@
  *
  * esmart_pdf_file_set (o, argv[1]);
  * esmart_pdf_page_set (o, page_number);
+ * esmart_pdf_render (o);
  * evas_object_move (o, 0, 0);
  * evas_object_show (o);
  * @endcode
