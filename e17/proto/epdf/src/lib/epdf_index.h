@@ -2,12 +2,17 @@
 #define __EPDF_INDEX_H__
 
 
-#include "poppler_forward.h"
+#include "epdf_forward.h"
 
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+/**
+ * @file epdf_index.h
+ * @defgroup Epdf_Index Epdf Index
+ * @brief Functions that manage indexes of a PDF document
+ * @ingroup Epdf
+ *
+ * Functions that manage indexes of a PDF document
+ */
 
 
 /**
@@ -17,6 +22,8 @@ extern "C" {
  *
  * Return a newly created Epdf_Index_Item object. This is
  * mainly used for internal usage. You surely don't need to use it
+ *
+ * @ingroup Epdf_Index
  */
 Epdf_Index_Item * epdf_index_item_new ();
 
@@ -27,6 +34,8 @@ Epdf_Index_Item * epdf_index_item_new ();
  * @return The children of the item
  *
  * Return the title of the item @p item
+ *
+ * @ingroup Epdf_Index
  */
 const char *epdf_index_item_title_get (Epdf_Index_Item *item);
 
@@ -38,6 +47,8 @@ const char *epdf_index_item_title_get (Epdf_Index_Item *item);
  *
  * Return a list of all the children of the item @p item (that is, the
  * subsection), or NULL if no child.
+ *
+ * @ingroup Epdf_Index
  */
 Ecore_List *epdf_index_item_children_get (Epdf_Index_Item *item);
 
@@ -48,6 +59,8 @@ Ecore_List *epdf_index_item_children_get (Epdf_Index_Item *item);
  * @return The kind of action of the item
  *
  * Return the kind of action of the item @p item
+ *
+ * @ingroup Epdf_Index
  */
 Epdf_Link_Action_Kind epdf_index_item_action_kind_get (Epdf_Index_Item *item);
 
@@ -59,6 +72,8 @@ Epdf_Link_Action_Kind epdf_index_item_action_kind_get (Epdf_Index_Item *item);
  * @return The destination page of the item
  *
  * Return the destination of the item @p item. The first page is @c 0
+ *
+ * @ingroup Epdf_Index
  */
 int
 epdf_index_item_page_get (Epdf_Document *document, Epdf_Index_Item *item);
@@ -72,7 +87,9 @@ epdf_index_item_page_get (Epdf_Document *document, Epdf_Index_Item *item);
  * Return a newly created Epdf_Index object built from the
  * document @p document. It contains a tree of the index of the
  * documant (a kind of Table of Contents). The result must be freed with
- * epdf_index_delete
+ * epdf_index_delete()
+ *
+ * @ingroup Epdf_Index
  */
 Ecore_List *epdf_index_new (Epdf_Document *document);
 
@@ -82,15 +99,12 @@ Ecore_List *epdf_index_new (Epdf_Document *document);
  * @param index The index to delete
  *
  * Delete the Epdf_Index @p index that has been created
- * with epdf_index_new
+ * with epdf_index_new()
+ *
+ * @ingroup Epdf_Index
  *
  */
 void epdf_index_delete (Ecore_List *index);
-
-
-#ifdef __cplusplus
-}
-#endif
 
 
 #endif /* __EPDF_INDEX_H__ */

@@ -2,12 +2,17 @@
 #define __EPDF_DOCUMENT_H__
 
 
-#include "poppler_forward.h"
+#include "epdf_forward.h"
 
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+/**
+ * @file epdf_document.h
+ * @defgroup Epdf_Document Epdf Document
+ * @brief Functions that manage PDF documents
+ * @ingroup Epdf
+ *
+ * Functions that manage PDF documents
+ */
 
 
 /**
@@ -18,7 +23,9 @@ extern "C" {
  *
  * Return a newly created Epdf_Document object built from the
  * PDF file whose name is @p filename. The result must be freed with
- * epdf_document_delete
+ * epdf_document_delete().
+ *
+ * @ingroup Epdf_Document
  */
 Epdf_Document *epdf_document_new (const char *filename);
 
@@ -28,8 +35,9 @@ Epdf_Document *epdf_document_new (const char *filename);
  * @param document The document to delete
  *
  * Delete the Epdf_Document @p document that has been created
- * withepdf_document_new
+ * with epdf_document_new
  *
+ * @ingroup Epdf_Document
  */
 void epdf_document_delete (Epdf_Document *document);
 
@@ -41,6 +49,7 @@ void epdf_document_delete (Epdf_Document *document);
  *
  * Return the count of the pages of the document @p document
  *
+ * @ingroup Epdf_Document
  */
 int epdf_document_page_count_get (Epdf_Document *document);
 
@@ -52,6 +61,7 @@ int epdf_document_page_count_get (Epdf_Document *document);
  *
  * Return the page mode of the document @p document
  *
+ * @ingroup Epdf_Document
  */
 Epdf_Document_Page_Mode epdf_document_page_mode_get (Epdf_Document *document);
 
@@ -64,6 +74,7 @@ Epdf_Document_Page_Mode epdf_document_page_mode_get (Epdf_Document *document);
  *
  * Unlock the document @p document with the password @p password
  *
+ * @ingroup Epdf_Document
  */
 unsigned char epdf_document_unlock (Epdf_Document *document, const char *password);
 
@@ -75,6 +86,7 @@ unsigned char epdf_document_unlock (Epdf_Document *document, const char *passwor
  *
  * Return whether the document @p document is locked
  *
+ * @ingroup Epdf_Document
  */
 unsigned char epdf_document_is_locked (Epdf_Document *document);
 
@@ -87,6 +99,7 @@ unsigned char epdf_document_is_locked (Epdf_Document *document);
  *
  * Return NULL
  *
+ * @ingroup Epdf_Document
  */
 const char *epdf_document_info_get (Epdf_Document *document, const char *data);
 
@@ -109,6 +122,7 @@ unsigned char epdf_document_is_encrypted (Epdf_Document *document);
  *
  * Return wheter the document @p document is linearized
  *
+ * @ingroup Epdf_Document
  */
 unsigned char epdf_document_is_linearized (Epdf_Document *document);
 
@@ -120,6 +134,7 @@ unsigned char epdf_document_is_linearized (Epdf_Document *document);
  *
  * Return wheter the document @p document is printable
  *
+ * @ingroup Epdf_Document
  */
 unsigned char epdf_document_is_printable (Epdf_Document *document);
 
@@ -131,6 +146,7 @@ unsigned char epdf_document_is_printable (Epdf_Document *document);
  *
  * Return wheter the document @p document is changeable
  *
+ * @ingroup Epdf_Document
  */
 unsigned char epdf_document_is_changeable (Epdf_Document *document);
 
@@ -142,6 +158,7 @@ unsigned char epdf_document_is_changeable (Epdf_Document *document);
  *
  * Return wheter the document @p document is copyable
  *
+ * @ingroup Epdf_Document
  */
 unsigned char epdf_document_is_copyable (Epdf_Document *document);
 
@@ -164,6 +181,7 @@ unsigned char epdf_document_is_notable (Epdf_Document *document);
  *
  * Return the version of the pdf used in the document @p document
  *
+ * @ingroup Epdf_Document
  */
 double epdf_document_pdf_version_get (Epdf_Document *document);
 
@@ -175,6 +193,7 @@ double epdf_document_pdf_version_get (Epdf_Document *document);
  *
  * Return a list of the fonts used in the document @p document
  *
+ * @ingroup Epdf_Document
  */
 Ecore_List *epdf_document_fonts_get (Epdf_Document *document);
 
@@ -182,14 +201,16 @@ Ecore_List *epdf_document_fonts_get (Epdf_Document *document);
  * Return a list of the fonts used in a page of the document
  *
  * @param document The document
+ * @param page_count The page count
  * @return The list of the fonts
  *
  * Return a list of the fonts used in the document @p document in the
  * page number @p page_count
  *
+ * @ingroup Epdf_Document
  */
 Ecore_List * epdf_document_scan_for_fonts (Epdf_Document *document,
-                                                   int                    page_count);
+                                           int             page_count);
 
 
 /* Metadata information functions. Used for display */
@@ -202,6 +223,7 @@ Ecore_List * epdf_document_scan_for_fonts (Epdf_Document *document,
  *
  * Return the filename of the document @p document as a string
  *
+ * @ingroup Epdf_Document
  */
 const char *epdf_document_filename_get (Epdf_Document *document);
 
@@ -214,6 +236,7 @@ const char *epdf_document_filename_get (Epdf_Document *document);
  * Return the title of the document @p document as a string. The
  * result must be freed
  *
+ * @ingroup Epdf_Document
  */
 char *epdf_document_title_get (Epdf_Document *document);
 
@@ -226,6 +249,7 @@ char *epdf_document_title_get (Epdf_Document *document);
  * Return the author of the document @p document as a string. The
  * result must be freed
  *
+ * @ingroup Epdf_Document
  */
 char *epdf_document_author_get (Epdf_Document *document);
 
@@ -250,6 +274,7 @@ char *epdf_document_subject_get (Epdf_Document *document);
  * Return the keywords of the document @p document as a string. The
  * result must be freed
  *
+ * @ingroup Epdf_Document
  */
 char *epdf_document_keywords_get (Epdf_Document *document);
 
@@ -262,6 +287,7 @@ char *epdf_document_keywords_get (Epdf_Document *document);
  * Return the creator of the document @p document as a string. The
  * result must be freed
  *
+ * @ingroup Epdf_Document
  */
 char *epdf_document_creator_get (Epdf_Document *document);
 
@@ -274,6 +300,7 @@ char *epdf_document_creator_get (Epdf_Document *document);
  * Return the producer of the document @p document as a string. The
  * result must be freed
  *
+ * @ingroup Epdf_Document
  */
 char *epdf_document_producer_get (Epdf_Document *document);
 
@@ -286,6 +313,7 @@ char *epdf_document_producer_get (Epdf_Document *document);
  * Return the creation date of the document @p document as a
  * string. The result must be freed.
  *
+ * @ingroup Epdf_Document
  */
 char *epdf_document_creation_date_get (Epdf_Document *document);
 
@@ -298,6 +326,7 @@ char *epdf_document_creation_date_get (Epdf_Document *document);
  * Return the modification date of the document @p document as a
  * string. The result must be freed.
  *
+ * @ingroup Epdf_Document
  */
 char *epdf_document_mod_date_get (Epdf_Document *document);
 
@@ -310,6 +339,7 @@ char *epdf_document_mod_date_get (Epdf_Document *document);
  * Return whether the document @p document is linearized, as a
  * string. The result must not be freed.
  *
+ * @ingroup Epdf_Document
  */
 const char *epdf_document_linearized_get (Epdf_Document *document);
 
@@ -322,6 +352,7 @@ const char *epdf_document_linearized_get (Epdf_Document *document);
  * Return the page mode of the document @p document, as a string. The
  * result must not be freed.
  *
+ * @ingroup Epdf_Document
  */
 const char *epdf_document_page_mode_string_get (Epdf_Document *document);
 
@@ -334,13 +365,9 @@ const char *epdf_document_page_mode_string_get (Epdf_Document *document);
  * Return the page layout of the document @p document, as a string. The
  * result must not be freed.
  *
+ * @ingroup Epdf_Document
  */
 const char *epdf_document_page_layout_string_get (Epdf_Document *document);
-
-
-#ifdef __cplusplus
-}
-#endif
 
 
 #endif /* __EPDF_DOCUMENT_H__ */

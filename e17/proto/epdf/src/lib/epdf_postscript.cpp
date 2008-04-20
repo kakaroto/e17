@@ -6,10 +6,9 @@
 #include <PDFDoc.h>
 #include <PSOutputDev.h>
 
-#include "poppler_enum.h"
-#include "poppler_private.h"
-#include "poppler_document.h"
-#include "poppler_postscript.h"
+#include "epdf_enum.h"
+#include "epdf_private.h"
+#include "Epdf.h"
 
 
 Epdf_Postscript *
@@ -86,9 +85,7 @@ epdf_postscript_print (Epdf_Postscript *postscript)
   ps_dev = new PSOutputDev (postscript->filename,
                             postscript->pdfdoc->getXRef(),
                             postscript->pdfdoc->getCatalog(),
-#ifdef HAVE_POPPLER_0_6
 			    "PS title",
-#endif // HAVE_POPPLER_0_6
                             postscript->first_page,
                             postscript->last_page,
                             psModePS,

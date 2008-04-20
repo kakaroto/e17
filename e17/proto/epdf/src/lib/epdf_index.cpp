@@ -7,10 +7,9 @@
 #include <goo/GooList.h>
 #include <Link.h>
 
-#include "poppler_enum.h"
-#include "poppler_private.h"
-#include "poppler_index.h"
-#include "poppler_document.h"
+#include "epdf_enum.h"
+#include "epdf_private.h"
+#include "Epdf.h"
 
 
 static char *unicode_to_char   (Unicode    *unicode,
@@ -99,11 +98,7 @@ epdf_index_item_page_get (Epdf_Document *document, Epdf_Index_Item *item)
   if (item->action->getKind () != actionGoTo)
     return -1;
 
-#ifdef HAVE_POPPLER_0_6
   GooString *named_dest = ((LinkGoTo *)item->action)->getNamedDest ();
-#else
-  UGooString *named_dest = ((LinkGoTo *)item->action)->getNamedDest ();
-#endif // HAVE_POPPLER_0_6
   LinkDest *dest = ((LinkGoTo *)item->action)->getDest ();
 
   if (!dest && named_dest)
@@ -148,7 +143,7 @@ epdf_index_new (Epdf_Document *document)
 void
 epdf_index_delete (Ecore_List *index)
 {
-  Ecore_List              *items = index;
+  Ecore_List      *items = index;
   Epdf_Index_Item *item;
 
   if (!index)

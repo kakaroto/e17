@@ -1,6 +1,6 @@
 #include <config.h>
 
-#include "poppler.h"
+#include "Epdf.h"
 
 
 const char *

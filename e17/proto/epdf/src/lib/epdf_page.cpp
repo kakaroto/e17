@@ -9,25 +9,20 @@
 #include <PDFDoc.h>
 #include <Page.h>
 #include <Gfx.h>
-#ifdef HAVE_POPPLER_0_6
 # include <PDFDocEncoding.h>
-#else
-# include <UGooString.h>
-#endif // HAVE_POPPLER_0_6
 #include <TextOutputDev.h>
 #include <SplashOutputDev.h>
 #include <splash/SplashBitmap.h>
 
-#include "poppler_enum.h"
-#include "poppler_private.h"
-#include "poppler_page.h"
-#include "poppler_page_transition.h"
+#include "epdf_enum.h"
+#include "epdf_private.h"
+#include "Epdf.h"
 
 double
 get_time(void)
 {
   struct timeval timev;
-  
+
   gettimeofday(&timev, NULL);
 
   return (double)timev.tv_sec + (((double)timev.tv_usec) / 1000000);
@@ -35,7 +30,7 @@ get_time(void)
 
 
 Epdf_Page *
-epdf_page_new (const Epdf_Document *doc, int index)
+epdf_page_new (const Epdf_Document *doc)
 {
   Epdf_Page *page;
 
@@ -46,17 +41,15 @@ epdf_page_new (const Epdf_Document *doc, int index)
   if (!page)
     return NULL;
 
-  page->page = doc->pdfdoc->getCatalog()->getPage(index + 1);
-  if (!page->page) {
-    free (page);
-    return NULL;
-  }
-
   page->doc = (Epdf_Document *)doc;
-  page->index = index;
+  page->page = NULL;
+  page->index = 0;
   page->transition = NULL;
   page->text_dev = NULL;
   page->gfx = NULL;
+  page->orientation = EPDF_PAGE_ORIENTATION_PORTRAIT;
+  page->hscale = 1.0;
+  page->vscale = 1.0;
 
   return page;
 }
@@ -76,13 +69,95 @@ epdf_page_delete (Epdf_Page *page)
 }
 
 void
-epdf_page_render (Epdf_Page *page, Evas_Object *o, Epdf_Page_Orientation orientation, int x, int y, int w, int h, double hscale, double vscale)
+epdf_page_render (Epdf_Page *page, Evas_Object *o)
 {
   SplashOutputDev *output_dev;
   SplashColor      white;
   SplashColorPtr   color_ptr;
   Epdf_Document   *doc;
   unsigned int    *m = NULL;
+  double           hscale;
+  double           vscale;
+  int              rotate;
+  int              width;
+  int              height;
+
+  double t1, t2;
+
+  white[0] = 255;
+  white[1] = 255;
+  white[2] = 255;
+  white[3] = 255;
+
+  doc = page->doc;
+
+  page->page = doc->pdfdoc->getCatalog()->getPage(epdf_page_page_get (page) + 1);
+  if (!page->page)
+    return;
+
+  output_dev = new SplashOutputDev(splashModeXBGR8, 4, gFalse, white);
+  output_dev->startDoc(doc->pdfdoc->getXRef ());
+  switch (page->orientation) {
+  case EPDF_PAGE_ORIENTATION_LANDSCAPE:
+    rotate = 90;
+    break;
+  case EPDF_PAGE_ORIENTATION_UPSIDEDOWN:
+    rotate = 180;
+    break;
+  case EPDF_PAGE_ORIENTATION_SEASCAPE:
+    rotate = 270;
+    break;
+  case EPDF_PAGE_ORIENTATION_PORTRAIT:
+  default:
+    rotate = 0;
+    break;
+  }
+
+  epdf_page_scale_get (page, &hscale, &vscale);
+
+  page->page->display (output_dev,
+                       72.0 * hscale,
+                       72.0 * vscale,
+                       rotate,
+                       false, false, false,
+                       doc->pdfdoc->getCatalog ());
+  color_ptr = output_dev->getBitmap ()->getDataPtr ();
+
+  width = output_dev->getBitmap()->getWidth();
+  height = output_dev->getBitmap()->getHeight();
+
+  //   printf ("%d %d\n", width, height);
+  t1 = get_time ();
+
+  evas_object_image_size_set(o, width, height);
+  evas_object_image_fill_set(o, 0, 0, width, height);
+//   evas_object_image_data_set(o, color_ptr);
+  m = (unsigned int *)evas_object_image_data_get(o, 1);
+  if (!m)
+    goto sortie;
+
+  memcpy (m, color_ptr, height * width * 4);
+  evas_object_image_data_update_add(o, 0, 0, width, height);
+  evas_object_resize(o, width, height);
+  //  evas_object_image_alpha_set (o, 0);
+
+  t2 = get_time ();
+  printf ("temps : %.5f\n", t2 - t1);
+
+ sortie:
+  delete output_dev;
+}
+
+void
+epdf_page_render_slice (Epdf_Page *page, Evas_Object *o, int x, int y, int w, int h)
+{
+  SplashOutputDev *output_dev;
+  SplashColor      white;
+  SplashColorPtr   color_ptr;
+  Epdf_Document   *doc;
+  unsigned int    *m = NULL;
+  double           hscale;
+  double           vscale;
   unsigned int     val;
   int              offset = 0;
   int              rotate;
@@ -98,13 +173,13 @@ epdf_page_render (Epdf_Page *page, Evas_Object *o, Epdf_Page_Orientation orienta
 
   doc = page->doc;
 
-#ifdef HAVE_POPPLER_0_6
+  page->page = doc->pdfdoc->getCatalog()->getPage(epdf_page_page_get (page));
+  if (!page->page)
+    return;
+
   output_dev = new SplashOutputDev(splashModeXBGR8, 4, gFalse, white);
-#else
-  output_dev = new SplashOutputDev(splashModeBGRA8, 4, gFalse, white);
-#endif // HAVE_POPPLER_0_6
   output_dev->startDoc(doc->pdfdoc->getXRef ());
-  switch (orientation) {
+  switch (page->orientation) {
   case EPDF_PAGE_ORIENTATION_LANDSCAPE:
     rotate = 90;
     break;
@@ -119,15 +194,14 @@ epdf_page_render (Epdf_Page *page, Evas_Object *o, Epdf_Page_Orientation orienta
     rotate = 0;
     break;
   }
+
+  epdf_page_scale_get (page, &hscale, &vscale);
+
   page->page->displaySlice (output_dev, 72.0 * hscale, 72.0 * vscale,
                             rotate,
                             false, false,
                             x, y, w, h,
-#ifdef HAVE_POPPLER_0_6
 			    false,
-#else
-			    NULL,
-#endif // HAVE_POPPLER_0_6
                             doc->pdfdoc->getCatalog ());
   color_ptr = output_dev->getBitmap ()->getDataPtr ();
 
@@ -156,11 +230,20 @@ epdf_page_render (Epdf_Page *page, Evas_Object *o, Epdf_Page_Orientation orienta
   delete output_dev;
 }
 
-int
-epdf_page_number_get (Epdf_Page *page)
+void
+epdf_page_page_set (Epdf_Page *page, int p)
 {
   if (!page)
-    return -1;
+    return;
+
+  page->index = p;
+}
+
+int
+epdf_page_page_get (Epdf_Page *page)
+{
+  if (!page)
+    return 0;
 
   return page->index;
 }
@@ -174,7 +257,6 @@ epdf_page_text_output_dev_get (Epdf_Page *page)
   if (!page->text_dev) {
     page->text_dev = new TextOutputDev (NULL, 1, 0, 0);
 
-#ifdef HAVE_POPPLER_0_6
     page->gfx = page->page->createGfx (page->text_dev,
                                        72.0, 72.0, 0,
                                        false, /* useMediaBox */
@@ -183,16 +265,6 @@ epdf_page_text_output_dev_get (Epdf_Page *page)
                                        false, /* printing */
                                        page->doc->pdfdoc->getCatalog (),
                                        NULL, NULL, NULL, NULL);
-#else
-    page->gfx = page->page->createGfx (page->text_dev,
-                                       72.0, 72.0, 0,
-                                       0, /* useMediaBox */
-                                       1, /* Crop */
-                                       -1, -1, -1, -1,
-                                       NULL, /* links */
-                                       page->doc->pdfdoc->getCatalog (),
-                                       NULL, NULL, NULL, NULL);
-#endif // HAVE_POPPLER_0_6
 
     page->page->display(page->gfx);
 
@@ -206,9 +278,8 @@ char *
 epdf_page_text_get (Epdf_Page *page, Epdf_Rectangle r)
 {
   TextOutputDev *text_dev;
-  PDFDoc        *doc;
   GooString     *sel_text;
-  double         height, y1, y2;
+  double         height;
   char          *result;
   PDFRectangle   pdf_selection;
 
@@ -226,11 +297,7 @@ epdf_page_text_get (Epdf_Page *page, Epdf_Rectangle r)
   sel_text = new GooString;
   /* added selectionStyleGlyph to catch up with poppler 0.6. Is that correct
      or should we rather use selectionStyleLine or selectionStyleWord? :M: */
-#ifdef HAVE_POPPLER_0_6
   sel_text = text_dev->getSelectionText (&pdf_selection, selectionStyleGlyph);
-#else
-  sel_text = text_dev->getSelectionText (&pdf_selection);
-#endif // HAVE_POPPLER_0_6
   result = strdup (sel_text->getCString ());
   delete sel_text;
 
@@ -248,15 +315,11 @@ epdf_page_text_find (Epdf_Page    *page,
   double          xMin, yMin, xMax, yMax;
   int             length;
   int             height;
-#ifndef HAVE_POPPLER_0_6
-  UGooString      utext(text);
-#endif // HAVE_POPPLER_0_6
 
 
   if (!page || !text)
     return NULL;
 
-#ifdef HAVE_POPPLER_0_6
   GooString tmp (text);
   Unicode *s;
 
@@ -275,31 +338,20 @@ epdf_page_text_find (Epdf_Page    *page,
 	}
       }
   }
-#endif // HAVE_POPPLER_0_6
 
   length = strlen (text);
 
   output_dev = new TextOutputDev (NULL, 1, 0, 0);
 
   height = epdf_page_height_get (page);
-#ifdef HAVE_POPPLER_0_6
   page->page->display (output_dev, 72, 72, 0, false,
 		       true, false,
 		       page->doc->pdfdoc->getCatalog());
-#else
-  page->page->display (output_dev, 72, 72, 0, 0,
-                       1, NULL,
-                       page->doc->pdfdoc->getCatalog());
-#endif // HAVE_POPPLER_0_6
 
   xMin = 0;
   yMin = 0;
 #warning you probably want to add backwards as parameters
-#ifdef HAVE_POPPLER_0_6
   while (output_dev->findText (s, tmp.getLength (),
-#else
-  while (output_dev->findText (utext.unicode (), utext.getLength (),
-#endif // HAVE_POPPLER_0_6
 			       0, 1, // startAtTop, stopAtBottom
 			       1, 0, // startAtLast, stopAtLast
 			       is_case_sensitive, 0, // caseSensitive, backwards
@@ -334,7 +386,7 @@ epdf_page_width_get (Epdf_Page *page)
 {
   int rotate;
 
-  if (!page)
+  if (!page || !page->page)
     return 0;
 
   rotate = page->page->getRotate ();
@@ -349,7 +401,7 @@ epdf_page_height_get (Epdf_Page *page)
 {
   int rotate;
 
-  if (!page)
+  if (!page || !page->page)
     return 0;
 
   rotate = page->page->getRotate ();
@@ -359,44 +411,45 @@ epdf_page_height_get (Epdf_Page *page)
     return (int)page->page->getMediaHeight ();
 }
 
+void
+epdf_page_scale_set (Epdf_Page *page, double hscale, double vscale)
+{
+  if (!page)
+    return;
+
+ if (hscale != page->hscale) page->hscale = hscale;
+ if (vscale != page->vscale) page->vscale = vscale;
+}
+
+void
+epdf_page_scale_get (Epdf_Page *page, double *hscale, double *vscale)
+{
+  if (!page)
+    {
+      if (hscale) *hscale = 1.0;
+      if (vscale) *vscale = 1.0;
+    }
+
+  if (hscale) *hscale = page->hscale;
+  if (vscale) *vscale = page->vscale;
+}
+
+void
+epdf_page_orientation_set (Epdf_Page            *page,
+                           Epdf_Page_Orientation orientation)
+{
+  if (!page)
+    return;
+
+  if (page->orientation != orientation)
+    page->orientation = orientation;
+}
+
 Epdf_Page_Orientation
 epdf_page_orientation_get (Epdf_Page *page)
 {
-  int rotation;
-
   if (!page)
-    return EPDF_PAGE_ORIENTATION_LANDSCAPE;
-
-  rotation = page->page->getRotate();;
-  switch (rotation) {
-  case 90:
-    return EPDF_PAGE_ORIENTATION_LANDSCAPE;
-  case 180:
-    return EPDF_PAGE_ORIENTATION_UPSIDEDOWN;
-  case 270:
-    return EPDF_PAGE_ORIENTATION_SEASCAPE;
-  default:
     return EPDF_PAGE_ORIENTATION_PORTRAIT;
-  }
-}
 
-const char *
-epdf_page_orientation_name_get (Epdf_Page *page)
-{
-  int rotation;
-
-  if (!page)
-    return "Unknown";
-
-  rotation = page->page->getRotate();;
-  switch (rotation) {
-  case 90:
-    return "Landscape";
-  case 180:
-    return "Upside Down";
-  case 270:
-    return "Seascape";
-  default:
-    return "Portrait";
-  }
+  return page->orientation;
 }

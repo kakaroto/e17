@@ -2,12 +2,7 @@
 #define __EPDF_POSTSCRIPT_H__
 
 
-#include "poppler_forward.h"
-
-
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include "epdf_forward.h"
 
 
 /**
@@ -80,11 +75,6 @@ void epdf_postscript_duplex_set (Epdf_Postscript *postscript,
  *
  */
 void epdf_postscript_print (Epdf_Postscript *postscript);
-
-
-#ifdef __cplusplus
-}
-#endif
 
 
 #endif /* __EPDF_POSTSCRIPT_H__ */

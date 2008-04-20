@@ -11,15 +11,10 @@
 #include <ErrorCodes.h>
 #include <PDFDocEncoding.h>
 #include <UnicodeMap.h>
-#ifndef HAVE_POPPLER_0_6
-# include <UGooString.h>
-#endif // HAVE_POPPLER_0_6
 
-#include "poppler_enum.h"
-#include "poppler_private.h"
-#include "poppler_fontinfo.h"
-#include "poppler_page.h"
-#include "poppler_document.h"
+#include "epdf_enum.h"
+#include "epdf_private.h"
+#include "Epdf.h"
 
 Epdf_Document *
 epdf_document_new (const char *filename)
@@ -34,11 +29,7 @@ epdf_document_new (const char *filename)
     return NULL;
 
   if (!globalParams)
-#ifdef HAVE_POPPLER_0_6
     globalParams = new GlobalParams();
-#else
-    globalParams = new GlobalParams("/etc/xpdfrc");
-#endif // HAVE_POPPLER_0_6
 
   doc->pdfdoc = new PDFDoc (new GooString (filename), NULL);
   if (doc->pdfdoc->isOk() || doc->pdfdoc->getErrorCode() == errEncrypted) {
@@ -85,7 +76,6 @@ PDFDoc *
 epdf_document_doc_get (Epdf_Document *document)
 {
   if (!document) {
-    const char *file = NULL;
     return NULL;
   }
 
@@ -286,6 +276,7 @@ epdf_document_scan_for_fonts (Epdf_Document *document, int page_count)
     char               *font_path = NULL;
     int                 index = 0;
 
+    printf ("1\n");
     if (((::FontInfo*)items->get(i))->getName())
       font_name = ((::FontInfo*)items->get(i))->getName()->getCString();
 
@@ -334,20 +325,13 @@ static char *
 epdf_document_property_get (Epdf_Document *document, const char *property)
 {
   Object     obj;
-#ifndef HAVE_POPPLER_0_6
-  UGooString prop_str(property);
-#endif // HAVE_POPPLER_0_6
   GooString *goo_string;
   char      *title = NULL;
 
   if (!document)
     return NULL;
 
-#ifdef HAVE_POPPLER_0_6
   if (!document->dict->lookup ((char *)property, &obj)->isString ()) {
-#else
-  if (!document->dict->lookup (prop_str, &obj)->isString ()) {
-#endif // HAVE_POPPLER_0_6
     obj.free ();
 
     return NULL;

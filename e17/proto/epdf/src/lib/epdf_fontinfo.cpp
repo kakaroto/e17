@@ -1,9 +1,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "poppler_enum.h"
-#include "poppler_private.h"
-#include "poppler_fontinfo.h"
+#include "epdf_enum.h"
+#include "epdf_private.h"
+#include "Epdf.h"
 
 
 Epdf_Font_Info *

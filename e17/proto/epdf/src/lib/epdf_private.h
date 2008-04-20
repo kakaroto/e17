@@ -45,6 +45,9 @@ struct _Epdf_Page
   Epdf_Document        *doc;
   int                   index;
   ::Page               *page;
+  double                hscale;
+  double                vscale;
+  Epdf_Page_Orientation orientation;
   Epdf_Page_Transition *transition;
   TextOutputDev        *text_dev;
   Gfx                  *gfx;
