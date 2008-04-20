@@ -221,12 +221,6 @@ void ewl_pdf_pdf_size_get (Ewl_Pdf *pdf, int *width, int *height)
 	DCHECK_PARAM_PTR(pdf);
 	DCHECK_TYPE(pdf, EWL_PDF_TYPE);
 
-	if (!pdf) {
-		if (width) *width = 0;
-		if (height) *height = 0;
-                DRETURN(DLEVEL_STABLE);
-	}
-
 	if (width) *width = epdf_page_width_get (pdf->pdf_page);
 	if (height) *height = epdf_page_height_get (pdf->pdf_page);
 
@@ -248,7 +242,7 @@ ewl_pdf_orientation_set (Ewl_Pdf *pdf, Epdf_Page_Orientation o)
 	DCHECK_PARAM_PTR(pdf);
 	DCHECK_TYPE(pdf, EWL_PDF_TYPE);
 
-	if (!pdf || !pdf->pdf_page)
+	if (!pdf->pdf_page)
                 DRETURN(DLEVEL_STABLE);
 
 	epdf_page_orientation_set (pdf->pdf_page, o);
@@ -270,7 +264,7 @@ ewl_pdf_orientation_get (Ewl_Pdf *pdf)
 	DCHECK_PARAM_PTR_RET(pdf, EPDF_PAGE_ORIENTATION_PORTRAIT);
 	DCHECK_TYPE_RET(pdf, EWL_PDF_TYPE, EPDF_PAGE_ORIENTATION_PORTRAIT);
 
-	if (!pdf || !pdf->pdf_page)
+	if (!pdf->pdf_page)
 		DRETURN_INT(EPDF_PAGE_ORIENTATION_PORTRAIT, DLEVEL_STABLE);
 
 	DRETURN_INT(epdf_page_orientation_get (pdf->pdf_page), DLEVEL_STABLE);
@@ -292,9 +286,6 @@ ewl_pdf_scale_set (Ewl_Pdf *pdf, double hscale, double vscale)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(pdf);
 	DCHECK_TYPE(pdf, EWL_PDF_TYPE);
-
-	if (!pdf)
-		DLEAVE_FUNCTION(DLEVEL_STABLE);
 
 	epdf_page_scale_set(pdf->pdf_page, hscale, vscale);
 	ewl_callback_call (EWL_WIDGET (pdf), EWL_CALLBACK_REVEAL);
@@ -336,9 +327,6 @@ ewl_pdf_page_next (Ewl_Pdf *pdf)
 	DCHECK_PARAM_PTR(pdf);
 	DCHECK_TYPE(pdf, EWL_PDF_TYPE);
 
-	if (!pdf)
-		DLEAVE_FUNCTION(DLEVEL_STABLE);
-
 	page = epdf_page_page_get(pdf->pdf_page);
 	if (page < (epdf_document_page_count_get(pdf->pdf_document) - 1))
 		page++;
@@ -360,9 +348,6 @@ ewl_pdf_page_previous (Ewl_Pdf *pdf)
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(pdf);
 	DCHECK_TYPE(pdf, EWL_PDF_TYPE);
-
-	if (!pdf)
-		DLEAVE_FUNCTION(DLEVEL_STABLE);
 
 	page = epdf_page_page_get(pdf->pdf_page);
 	if (page > 0)
