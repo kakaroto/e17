@@ -74,8 +74,8 @@ ewl_list_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 					void *data __UNUSED__)
 {
 	Ewl_List *list;
-	Ewl_Model *model;
-	Ewl_View *view;
+	const Ewl_Model *model;
+	const Ewl_View *view;
 	void *mvc_data;
 	int i;
 
@@ -150,7 +150,7 @@ ewl_list_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
 void
 ewl_list_cb_item_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 {
-	Ewl_Model *model;
+	const Ewl_Model *model;
 	void *mvc_data;
 	int row;
 

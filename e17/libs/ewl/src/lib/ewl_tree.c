@@ -29,10 +29,10 @@ struct Ewl_Tree_Expansions_List
 
 static void ewl_tree_build_tree(Ewl_Tree *tree);
 static void ewl_tree_build_tree_rows(Ewl_Tree *tree,
-			Ewl_Model *model, Ewl_View *view, void *data,
-			int colour, Ewl_Container *parent,
+			const Ewl_Model *model, const Ewl_View *view, 
+			void *data, int colour, Ewl_Container *parent,
 			int hidden);
-static void ewl_tree_headers_build(Ewl_Tree *tree, Ewl_Model *model, 
+static void ewl_tree_headers_build(Ewl_Tree *tree, const Ewl_Model *model, 
 			void *mvc_data);
 static void ewl_tree_cb_header_changed(Ewl_Widget *w, void *ev,
 							void *data);
@@ -253,7 +253,7 @@ ewl_tree_column_count_get(Ewl_Tree *tree)
  * @brief Sets the view to use to generate the content area
  */
 void
-ewl_tree_content_view_set(Ewl_Tree *tree, Ewl_View *view)
+ewl_tree_content_view_set(Ewl_Tree *tree, const Ewl_View *view)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(tree);
@@ -576,7 +576,7 @@ void
 ewl_tree_cb_column_sort(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 {
 	Ewl_Tree *tree;
-	Ewl_Model *model;
+	const Ewl_Model *model;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(w);
@@ -607,8 +607,9 @@ ewl_tree_cb_column_sort(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 }
 
 static void
-ewl_tree_header_build(Ewl_Tree *tree, Ewl_Container *box,  Ewl_Model *model,
-			Ewl_View *view,	void *mvc_data, unsigned int column)
+ewl_tree_header_build(Ewl_Tree *tree, Ewl_Container *box,  
+			const Ewl_Model *model, const Ewl_View *view,
+			void *mvc_data, unsigned int column)
 {
 	Ewl_Widget *c;
 
@@ -671,7 +672,8 @@ ewl_tree_header_build(Ewl_Tree *tree, Ewl_Container *box,  Ewl_Model *model,
 }
 
 static void
-ewl_tree_column_build(Ewl_Row *row, Ewl_Model *model, Ewl_View *view,
+ewl_tree_column_build(Ewl_Row *row, const Ewl_Model *model, 
+				const Ewl_View *view,
 				void *mvc_data, unsigned int r,
 				unsigned int c, Ewl_Widget *node)
 {
@@ -711,7 +713,7 @@ static void
 ewl_tree_build_tree(Ewl_Tree *tree)
 {
 	void *mvc_data;
-	Ewl_Model *model;
+	const Ewl_Model *model;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(tree);
@@ -734,7 +736,7 @@ ewl_tree_build_tree(Ewl_Tree *tree)
 }
 
 static void
-ewl_tree_headers_build(Ewl_Tree *tree, Ewl_Model *model, void *mvc_data)
+ewl_tree_headers_build(Ewl_Tree *tree, const Ewl_Model *model, void *mvc_data)
 {
 	Ewl_Container *header;
 	unsigned int i;
@@ -787,9 +789,9 @@ ewl_tree_headers_build(Ewl_Tree *tree, Ewl_Model *model, void *mvc_data)
 }
 
 static void
-ewl_tree_build_tree_rows(Ewl_Tree *tree, Ewl_Model *model, Ewl_View *view,
-				void *data, int colour, Ewl_Container *parent,
-				int hidden)
+ewl_tree_build_tree_rows(Ewl_Tree *tree, const Ewl_Model *model, 
+				const Ewl_View *view, void *data, int colour, 
+				Ewl_Container *parent, int hidden)
 {
 	unsigned int i = 0, row_count = 0;
 	unsigned int column;
@@ -1154,7 +1156,7 @@ ewl_tree_node_init(Ewl_Tree_Node *node)
 void
 ewl_tree_node_expandable_set(Ewl_Tree_Node *node, unsigned int expandable)
 {
-	Ewl_Model *model;
+	const Ewl_Model *model;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(node);
@@ -1211,7 +1213,7 @@ ewl_tree_node_expand(Ewl_Tree_Node *node)
 {
 	Ewl_Widget *child;
 	Ecore_List *tmp;
-	Ewl_Model *model;
+	const Ewl_Model *model;
 	void *data;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -1249,8 +1251,8 @@ ewl_tree_node_expand(Ewl_Tree_Node *node)
 	data = ewl_mvc_data_get(EWL_MVC(node));
 	if (model->expansion.data && !node->built_children)
 	{
-		Ewl_View *view, *tmp_view = NULL;
-		Ewl_Model *tmp_model;
+		const Ewl_View *view, *tmp_view = NULL;
+		const Ewl_Model *tmp_model;
 
 		if (!node->expansion.data)
 		{
@@ -1412,7 +1414,7 @@ ewl_tree_cb_node_data_unref(Ewl_Widget *w, void *ev_data __UNUSED__,
 						void *user_data __UNUSED__)
 {
 	Ewl_Tree_Node *node;
-	Ewl_Model *model;
+	const Ewl_Model *model;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(w);

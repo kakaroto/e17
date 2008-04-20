@@ -85,7 +85,7 @@ ewl_model_data_header_fetch_set(Ewl_Model *m, Ewl_Model_Data_Header_Fetch get)
  * @brief Retrieves the header fetch function
  */
 Ewl_Model_Data_Header_Fetch
-ewl_model_data_header_fetch_get(Ewl_Model *m)
+ewl_model_data_header_fetch_get(const Ewl_Model *m)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET(m, NULL);
@@ -116,7 +116,7 @@ ewl_model_data_fetch_set(Ewl_Model *m, Ewl_Model_Data_Fetch get)
  * @brief Gets the fetch callback from the model
  */
 Ewl_Model_Data_Fetch
-ewl_model_data_fetch_get(Ewl_Model *m)
+ewl_model_data_fetch_get(const Ewl_Model *m)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET(m, NULL);
@@ -147,7 +147,7 @@ ewl_model_column_sortable_set(Ewl_Model *m, Ewl_Model_Column_Sortable sortable)
  * @brief Retrieves the sortable callback on the model
  */
 Ewl_Model_Column_Sortable
-ewl_model_column_sortable_get(Ewl_Model *m)
+ewl_model_column_sortable_get(const Ewl_Model *m)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET(m, NULL);
@@ -178,7 +178,7 @@ ewl_model_data_sort_set(Ewl_Model *m, Ewl_Model_Data_Sort sort)
  * @brief Gets the sort callback from the model
  */
 Ewl_Model_Data_Sort
-ewl_model_data_sort_get(Ewl_Model *m)
+ewl_model_data_sort_get(const Ewl_Model *m)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET(m, NULL);
@@ -209,7 +209,7 @@ ewl_model_data_highlight_set(Ewl_Model *m, Ewl_Model_Data_Highlight highlight)
  * @brief Retrieves the highlight model set in @a m
  */
 Ewl_Model_Data_Highlight
-ewl_model_data_highlight_get(Ewl_Model *m)
+ewl_model_data_highlight_get(const Ewl_Model *m)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET(m, NULL);
@@ -241,7 +241,7 @@ ewl_model_data_count_set(Ewl_Model *m, Ewl_Model_Data_Count count)
  * @brief Gets the count callback from the model
  */
 Ewl_Model_Data_Count
-ewl_model_data_count_get(Ewl_Model *m)
+ewl_model_data_count_get(const Ewl_Model *m)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET(m, NULL);
@@ -273,7 +273,7 @@ ewl_model_data_unref_set(Ewl_Model *m, Ewl_Model_Data_Unref unref)
  * @brief Gets the unref callback from the model
  */
 Ewl_Model_Data_Unref
-ewl_model_data_unref_get(Ewl_Model *m)
+ewl_model_data_unref_get(const Ewl_Model *m)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET(m, NULL);
@@ -304,7 +304,7 @@ ewl_model_data_expandable_set(Ewl_Model *m, Ewl_Model_Data_Expandable exp)
  * @brief Retrieves the expandable callback set on the model
  */
 Ewl_Model_Data_Expandable
-ewl_model_data_expandable_get(Ewl_Model *m)
+ewl_model_data_expandable_get(const Ewl_Model *m)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET(m, NULL);
@@ -336,7 +336,7 @@ ewl_model_expansion_data_fetch_set(Ewl_Model *m,
  * @brief Gets the expansion_data callback from the model
  */
 Ewl_Model_Expansion_Data_Fetch
-ewl_model_expansion_data_fetch_get(Ewl_Model *m)
+ewl_model_expansion_data_fetch_get(const Ewl_Model *m)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET(m, NULL);
@@ -372,7 +372,7 @@ ewl_model_data_free_set(Ewl_Model *m, Ewl_Model_Data_Free data_free)
  * @brief Get the data free pointer set on this model
  */
 Ewl_Model_Data_Free
-ewl_model_data_free_get(Ewl_Model *m)
+ewl_model_data_free_get(const Ewl_Model *m)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET(m, NULL);
@@ -404,7 +404,7 @@ ewl_model_expansion_model_fetch_set(Ewl_Model *m,
  * @brief Retrieves the model expansion model fetch function
  */
 Ewl_Model_Expansion_Model_Fetch
-ewl_model_expansion_model_fetch_get(Ewl_Model *m)
+ewl_model_expansion_model_fetch_get(const Ewl_Model *m)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET(m, NULL);

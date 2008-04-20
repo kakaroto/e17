@@ -9,7 +9,7 @@
 static void ewl_mvc_selected_clear_private(Ewl_MVC *mvc);
 static unsigned int ewl_mvc_selected_goto(Ewl_MVC *mvc,
 			unsigned int row, unsigned int column);
-static void ewl_mvc_selected_insert(Ewl_MVC *mvc, Ewl_Model *model,
+static void ewl_mvc_selected_insert(Ewl_MVC *mvc, const Ewl_Model *model,
 			void *data, Ewl_Selection *sel,
 			unsigned int row, unsigned int column);
 static void ewl_mvc_selected_range_split(Ewl_MVC *mvc,
@@ -20,9 +20,9 @@ static int ewl_mvc_selection_intersects(Ewl_Selection_Range *range,
 static int ewl_mvc_selection_contained(Ewl_Selection_Range *a,
 						Ewl_Selection_Range *b);
 static int ewl_mvc_line_intersects(int astart, int aend, int bstart, int bend);
-static void ewl_mvc_range_merge(Ecore_List *list, Ewl_Model *model, void *data,
+static void ewl_mvc_range_merge(Ecore_List *list, const Ewl_Model *model, void *data,
 			Ewl_Selection_Range *range, Ewl_Selection_Range *cur);
-static Ewl_Selection *ewl_mvc_selection_make(Ewl_Model *model, void *data,
+static Ewl_Selection *ewl_mvc_selection_make(const Ewl_Model *model, void *data,
 					unsigned int top, unsigned int left,
 					unsigned int bottom, unsigned int right);
 
@@ -67,7 +67,7 @@ ewl_mvc_init(Ewl_MVC *mvc)
  * @brief Sets the given view onto the MVC
  */
 void
-ewl_mvc_view_set(Ewl_MVC *mvc, Ewl_View *view)
+ewl_mvc_view_set(Ewl_MVC *mvc, const Ewl_View *view)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(mvc);
@@ -91,7 +91,7 @@ ewl_mvc_view_set(Ewl_MVC *mvc, Ewl_View *view)
  * @return Returns the current view set on the MVC
  * @brief Retrives the current view set on the MVC
  */
-Ewl_View *
+const Ewl_View *
 ewl_mvc_view_get(Ewl_MVC *mvc)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -127,7 +127,7 @@ ewl_mvc_view_change_cb_set(Ewl_MVC *mvc, void (*cb)(Ewl_MVC *mvc))
  * @brief Sets the given model into the tree
  */
 void
-ewl_mvc_model_set(Ewl_MVC *mvc, Ewl_Model *model)
+ewl_mvc_model_set(Ewl_MVC *mvc, const Ewl_Model *model)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(mvc);
@@ -148,7 +148,7 @@ ewl_mvc_model_set(Ewl_MVC *mvc, Ewl_Model *model)
  * @return Returns the current model set into the MVC widget
  * @brief Retrieves the model set into the MVC widget
  */
-Ewl_Model *
+const Ewl_Model *
 ewl_mvc_model_get(Ewl_MVC *mvc)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -391,12 +391,12 @@ ewl_mvc_selected_list_get(Ewl_MVC *mvc)
  * @brief Sets the given range, inclusive, as selected in the mvc
  */
 void
-ewl_mvc_selected_range_add(Ewl_MVC *mvc, Ewl_Model *model, void *data,
+ewl_mvc_selected_range_add(Ewl_MVC *mvc, const Ewl_Model *model, void *data,
 				unsigned int srow, unsigned int scolumn,
 				unsigned int erow, unsigned int ecolumn)
 {
 	Ewl_Selection *sel;
-	Ewl_Model *mod;
+	const Ewl_Model *mod;
 	unsigned int tmp;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -449,7 +449,7 @@ ewl_mvc_selected_range_add(Ewl_MVC *mvc, Ewl_Model *model, void *data,
  * @brief Sets the given index as selected
  */
 void
-ewl_mvc_selected_set(Ewl_MVC *mvc, Ewl_Model *model, void *data,
+ewl_mvc_selected_set(Ewl_MVC *mvc, const Ewl_Model *model, void *data,
 				unsigned int row, unsigned int column)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -476,10 +476,10 @@ ewl_mvc_selected_set(Ewl_MVC *mvc, Ewl_Model *model, void *data,
  * @brief Adds the given index to the selected list
  */
 void
-ewl_mvc_selected_add(Ewl_MVC *mvc, Ewl_Model *model, void *data,
+ewl_mvc_selected_add(Ewl_MVC *mvc, const Ewl_Model *model, void *data,
 			unsigned int row, unsigned int column)
 {
-	Ewl_Model *mod;
+	const Ewl_Model *mod;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(mvc);
@@ -697,7 +697,7 @@ ewl_mvc_selected_is(Ewl_MVC *mvc, void *data __UNUSED__, unsigned int row,
 }
 
 static void
-ewl_mvc_selected_insert(Ewl_MVC *mvc, Ewl_Model *model, void *data,
+ewl_mvc_selected_insert(Ewl_MVC *mvc, const Ewl_Model *model, void *data,
 		   Ewl_Selection *sel, unsigned int row, unsigned int column)
 {
 	Ewl_Selection_Range *range;
@@ -800,7 +800,7 @@ ewl_mvc_selected_insert(Ewl_MVC *mvc, Ewl_Model *model, void *data,
  * will append into the list as needed. @a cur maybe freed by this operation
  * if it is no longer needed */
 static void
-ewl_mvc_range_merge(Ecore_List *list, Ewl_Model *model, void *data,
+ewl_mvc_range_merge(Ecore_List *list, const Ewl_Model *model, void *data,
 			Ewl_Selection_Range *range, Ewl_Selection_Range *cur)
 {
 	Ewl_Selection *sel;
@@ -896,7 +896,7 @@ ewl_mvc_range_merge(Ecore_List *list, Ewl_Model *model, void *data,
 }
 
 static Ewl_Selection *
-ewl_mvc_selection_make(Ewl_Model *model, void *data, unsigned int top,
+ewl_mvc_selection_make(const Ewl_Model *model, void *data, unsigned int top,
 				unsigned int left, unsigned int bottom,
 				unsigned int right)
 {
@@ -1033,7 +1033,7 @@ ewl_mvc_selected_range_split(Ewl_MVC *mvc, Ewl_Selection_Range *range,
 				unsigned int row, unsigned int column)
 {
 	Ewl_Selection *sel;
-	Ewl_Model *model;
+	const Ewl_Model *model;
 	void *data;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -1098,12 +1098,12 @@ ewl_mvc_selected_range_split(Ewl_MVC *mvc, Ewl_Selection_Range *range,
  * @brief Handles the click of the given cell
  */
 void
-ewl_mvc_handle_click(Ewl_MVC *mvc, Ewl_Model *model, void *data,
+ewl_mvc_handle_click(Ewl_MVC *mvc, const Ewl_Model *model, void *data,
 			unsigned int row, unsigned int column)
 {
 	unsigned int modifiers;
 	int multi_select = FALSE;
-	Ewl_Model *mod;
+	const Ewl_Model *mod;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(mvc);
@@ -1132,7 +1132,7 @@ ewl_mvc_handle_click(Ewl_MVC *mvc, Ewl_Model *model, void *data,
 			Ewl_Selection *sel;
 			void *sdata;
 			unsigned int srow, scolumn;
-			Ewl_Model *smod;
+			const Ewl_Model *smod;
 
 			/* A shift will add the current position into a
 			 * range with the last selected item. If the
@@ -1445,7 +1445,7 @@ ewl_mvc_cb_highlight_destroy(Ewl_Widget *w, void *ev __UNUSED__, void *data)
  * @brief Creates a new index selection based on given values
  */
 Ewl_Selection *
-ewl_mvc_selection_index_new(Ewl_Model *model, void *data, unsigned int row,
+ewl_mvc_selection_index_new(const Ewl_Model *model, void *data, unsigned int row,
 				unsigned int column)
 {
 	Ewl_Selection_Idx *sel;
@@ -1473,7 +1473,7 @@ ewl_mvc_selection_index_new(Ewl_Model *model, void *data, unsigned int row,
  * @brief Creates a new range selection based on given values
  */
 Ewl_Selection *
-ewl_mvc_selection_range_new(Ewl_Model *model, void *data, unsigned int srow,
+ewl_mvc_selection_range_new(const Ewl_Model *model, void *data, unsigned int srow,
 				unsigned int scolumn, unsigned int erow,
 				unsigned int ecolumn)
 {

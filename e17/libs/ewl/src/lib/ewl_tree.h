@@ -98,7 +98,7 @@ struct Ewl_Tree
 {
 	Ewl_MVC mvc; 		/**< Inherit from ewl_mvc. */
 
-	Ewl_View *content_view;	/**< View for the content widget */
+	const Ewl_View *content_view;	/**< View for the content widget */
 
 	Ewl_Widget *header; 	/**< The tree header */
 	Ewl_Widget *rows; 	/**< The rows of the tree */
@@ -136,7 +136,7 @@ void		 ewl_tree_headers_visible_set(Ewl_Tree *tree,
 					       unsigned char visible);
 unsigned int	 ewl_tree_headers_visible_get(Ewl_Tree *tree);
 
-void		 ewl_tree_content_view_set(Ewl_Tree *tree, Ewl_View *view);
+void		 ewl_tree_content_view_set(Ewl_Tree *tree, const Ewl_View *view);
 Ewl_View	*ewl_tree_content_view_get(Ewl_Tree *tree);
 
 Ewl_Tree_Selection_Type ewl_tree_selection_type_get(Ewl_Tree *tree);
@@ -211,7 +211,7 @@ struct Ewl_Tree_Node
 
 	struct
 	{
-		Ewl_Model *model;	/**< The model of the expansion */
+		const Ewl_Model *model;	/**< The model of the expansion */
 		void *data;		/**< The data of the expansion */
 	} expansion;
 

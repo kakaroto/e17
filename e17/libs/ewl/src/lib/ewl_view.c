@@ -32,7 +32,7 @@ ewl_view_new(void)
  * @brief Creates a new Ewl_View object
  */
 Ewl_View *
-ewl_view_clone(Ewl_View *src)
+ewl_view_clone(const Ewl_View *src)
 {
 	Ewl_View *view;
 
@@ -89,7 +89,7 @@ ewl_view_widget_fetch_set(Ewl_View *v, Ewl_View_Widget_Fetch fetch)
  * @brief Get the constructor set on this view
  */
 Ewl_View_Widget_Fetch
-ewl_view_widget_fetch_get(Ewl_View *v)
+ewl_view_widget_fetch_get(const Ewl_View *v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET(v, NULL);
@@ -121,7 +121,7 @@ ewl_view_header_fetch_set(Ewl_View *v, Ewl_View_Header_Fetch f)
  * @brief Gets the header fetch callback from the view
  */
 Ewl_View_Header_Fetch
-ewl_view_header_fetch_get(Ewl_View *v)
+ewl_view_header_fetch_get(const Ewl_View *v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET(v, NULL);
@@ -153,7 +153,7 @@ ewl_view_expansion_view_fetch_set(Ewl_View *v, Ewl_View_Expansion_View_Fetch f)
  * @brief Gets the expansion view fetch callback from the view
  */
 Ewl_View_Expansion_View_Fetch
-ewl_view_expansion_view_fetch_get(Ewl_View *v)
+ewl_view_expansion_view_fetch_get(const Ewl_View *v)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR_RET(v, NULL);

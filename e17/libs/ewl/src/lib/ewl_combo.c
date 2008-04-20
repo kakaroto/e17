@@ -11,10 +11,11 @@
 #include "ewl_debug.h"
 
 static void ewl_combo_cb_selected_change(Ewl_MVC *mvc);
-Ewl_Widget *ewl_combo_submenu_new(Ewl_Combo *c, Ewl_Model *model,
-					Ewl_View *view, void *mvc_data);
+Ewl_Widget *ewl_combo_submenu_new(Ewl_Combo *c, const Ewl_Model *model,
+					const Ewl_View *view, void *mvc_data);
 static void ewl_combo_popup_fill(Ewl_Combo *combo, Ewl_Container *c,
-			Ewl_Model *model, Ewl_View *view, void *mvc_data);
+			const Ewl_Model *model, const Ewl_View *view, 
+			void *mvc_data);
 
 /**
  * @return Returns a pointer to a new combo on success, NULL on failure.
@@ -232,8 +233,8 @@ ewl_combo_cb_decrement_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 								void *data)
 {
 	Ewl_Combo *combo;
-	Ewl_Model *model;
-	Ewl_View *view;
+	const Ewl_Model *model;
+	const Ewl_View *view;
 	void *mvc_data;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -301,7 +302,7 @@ ewl_combo_cb_popup_hide(Ewl_Widget *w __UNUSED__,
 static void
 ewl_combo_cb_selected_change(Ewl_MVC *mvc)
 {
-	Ewl_View *view;
+	const Ewl_View *view;
 	Ewl_Combo *combo;
 	Ewl_Widget *item = NULL;
 
@@ -333,7 +334,7 @@ ewl_combo_cb_selected_change(Ewl_MVC *mvc)
 	if (ewl_mvc_selected_count_get(mvc))
 	{
 		Ewl_Selection_Idx *idx;
-		Ewl_Model *model;
+		const Ewl_Model *model;
 		void *mvc_data;
 
 		idx = ewl_mvc_selected_get(mvc);
@@ -382,8 +383,8 @@ ewl_combo_cb_selected_change(Ewl_MVC *mvc)
  * @brief Callback for when the button to expand the combo is pressed
  */
 Ewl_Widget *
-ewl_combo_submenu_new(Ewl_Combo *combo, Ewl_Model *model, Ewl_View *view,
-			void *mvc_data)
+ewl_combo_submenu_new(Ewl_Combo *combo, const Ewl_Model *model, 
+			const Ewl_View *view, void *mvc_data)
 {
 	Ewl_Widget *menu;
 
@@ -422,8 +423,8 @@ ewl_combo_submenu_new(Ewl_Combo *combo, Ewl_Model *model, Ewl_View *view,
  * @brief fill the given container with the items
  */
 static void
-ewl_combo_popup_fill(Ewl_Combo *combo, Ewl_Container *c, Ewl_Model *model,
-			Ewl_View *view, void *mvc_data)
+ewl_combo_popup_fill(Ewl_Combo *combo, Ewl_Container *c, const Ewl_Model *model,
+			const Ewl_View *view, void *mvc_data)
 {
 	unsigned int count, i;
 
@@ -443,8 +444,8 @@ ewl_combo_popup_fill(Ewl_Combo *combo, Ewl_Container *c, Ewl_Model *model,
 
 		if (model->expansion.is && model->expansion.is(mvc_data, i))
 		{
-			Ewl_Model *em;
-			Ewl_View *ev;
+			const Ewl_Model *em;
+			const Ewl_View *ev;
 			void *ed;
 
 			/* if there shouldn't be a model for the expansion
@@ -573,7 +574,7 @@ ewl_combo_cell_combo_get(Ewl_Combo_Cell *cell)
  * @return Returns no value
  */
 void
-ewl_combo_cell_model_set(Ewl_Combo_Cell *cell, Ewl_Model *model)
+ewl_combo_cell_model_set(Ewl_Combo_Cell *cell, const Ewl_Model *model)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(cell);
@@ -589,7 +590,7 @@ ewl_combo_cell_model_set(Ewl_Combo_Cell *cell, Ewl_Model *model)
  * @param cell: The Ewl_Combo to use
  * @return Returns the model of the cell
  */
-Ewl_Model *
+const Ewl_Model *
 ewl_combo_cell_model_get(Ewl_Combo_Cell *cell)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
@@ -642,7 +643,7 @@ ewl_combo_cell_cb_clicked(Ewl_Widget *w, void *ev __UNUSED__,
 							void *data __UNUSED__)
 {
 	Ewl_Combo *combo;
-	Ewl_Model *model;
+	const Ewl_Model *model;
 	void *mvc_data;
 	int i;
 

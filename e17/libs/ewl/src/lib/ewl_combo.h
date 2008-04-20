@@ -115,7 +115,7 @@ struct Ewl_Combo_Cell
 {
 	Ewl_Cell cell;		/**< Inherit from the cell */
 	Ewl_Combo *combo;	/**< The parent combo */
-	Ewl_Model *model;	/**< The model that was used to build the
+	const Ewl_Model *model;	/**< The model that was used to build the
 					content of the cell */
 	void *mvc_data;		/**< The mvc data that was used to build the
 					content of the cell */
@@ -126,8 +126,9 @@ int		 ewl_combo_cell_init(Ewl_Combo_Cell *c);
 void		 ewl_combo_cell_combo_set(Ewl_Combo_Cell *c, Ewl_Combo *combo);
 Ewl_Combo	*ewl_combo_cell_combo_get(Ewl_Combo_Cell *c);
 
-void		 ewl_combo_cell_model_set(Ewl_Combo_Cell *c, Ewl_Model *model);
-Ewl_Model	*ewl_combo_cell_model_get(Ewl_Combo_Cell *c);
+void		 ewl_combo_cell_model_set(Ewl_Combo_Cell *c, 
+						const Ewl_Model *model);
+const Ewl_Model	*ewl_combo_cell_model_get(Ewl_Combo_Cell *c);
 
 void		 ewl_combo_cell_data_set(Ewl_Combo_Cell *c, void *mvc_data);
 void		*ewl_combo_cell_data_get(Ewl_Combo_Cell *c);
