@@ -278,6 +278,8 @@ if test "$png_loader" != no ; then
       PKG_CHECK_MODULES(PNG, libpng10, [ png_ok="yes" ], [ png_ok="no"])
     ])
   ])
+else
+  png_ok="no"
 fi
 AM_CONDITIONAL(BUILD_PNG_LOADER, test "$png_ok" = yes)
 
