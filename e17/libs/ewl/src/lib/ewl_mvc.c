@@ -33,7 +33,6 @@ static void ewl_mvc_cb_highlight_destroy(Ewl_Widget *w, void *ev, void *data);
 static void ewl_mvc_cb_sel_free(void *data);
 static void ewl_mvc_selection_free(Ewl_Selection *sel);
 
-
 /**
  * @param mvc: The MVC to initialize
  * @return Returns TRUE on success or FALSE if unsuccessful

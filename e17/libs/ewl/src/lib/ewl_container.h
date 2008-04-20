@@ -145,7 +145,7 @@ void 		 ewl_container_child_iterator_set(Ewl_Container *c,
 int 		 ewl_container_child_count_get(Ewl_Container *c);
 int 		 ewl_container_child_count_internal_get(Ewl_Container *c);
 int		 ewl_container_child_count_visible_get(Ewl_Container *c);
-
+void		 ewl_container_children_show(Ewl_Container *c);
 void 		 ewl_container_destroy(Ewl_Container *c);
 void 		 ewl_container_reset(Ewl_Container *c);
 void 		 ewl_container_callback_notify(Ewl_Container *c,

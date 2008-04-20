@@ -1704,4 +1704,31 @@ ewl_container_cb_widget_focus_in(Ewl_Widget *w, void *ev_data, void *user_data)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @param c: The container to work with
+ * @return Returns no value
+ * @brief A convenience function to recursively show the children of a container
+ */
+void
+ewl_container_children_show(Ewl_Container *c)
+{
+	Ewl_Widget *w;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(c);
+	DCHECK_TYPE(c, EWL_CONTAINER_TYPE);
+
+	ewl_widget_show(EWL_WIDGET(c));
+
+	ewl_container_child_iterate_begin(c);
+	while ((w = ewl_container_child_next(c)))
+	{
+		if (EWL_CONTAINER_IS(w))
+			ewl_container_children_show(EWL_CONTAINER(w));
+		else
+			ewl_widget_show(w);
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
 
