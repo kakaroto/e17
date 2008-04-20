@@ -19,10 +19,17 @@
  * @{
  */
 
+#define ETK_SCROLLED_VIEW_DRAG_DAMPING_MAGIC 100
+#define ETK_SCROLLED_VIEW_DRAG_SAMPLE_INTERVAL_MAGIC 0.5f
+
 enum Etk_Scrolled_View_Property_Id
 {
    ETK_SCROLLED_VIEW_HPOLICY_PROPERTY,
-   ETK_SCROLLED_VIEW_VPOLICY_PROPERTY
+   ETK_SCROLLED_VIEW_VPOLICY_PROPERTY,
+   ETK_SCROLLED_VIEW_DRAGABLE_PROPERTY,
+   ETK_SCROLLED_VIEW_DRAG_BOUNCY_PROPERTY,
+	 ETK_SCROLLED_VIEW_DRAG_DAMPING_PROPERTY,
+	 ETK_SCROLLED_VIEW_DRAG_SAMPLE_INTERVAL_PROPERTY
 };
 
 static void _etk_scrolled_view_constructor(Etk_Scrolled_View *scrolled_view);
@@ -69,8 +76,21 @@ Etk_Type *etk_scrolled_view_type_get(void)
 
       etk_type_property_add(scrolled_view_type, "hpolicy", ETK_SCROLLED_VIEW_HPOLICY_PROPERTY,
          ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_POLICY_AUTO));
+
       etk_type_property_add(scrolled_view_type, "vpolicy", ETK_SCROLLED_VIEW_VPOLICY_PROPERTY,
          ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_POLICY_AUTO));
+
+      etk_type_property_add(scrolled_view_type, "dragable", ETK_SCROLLED_VIEW_DRAGABLE_PROPERTY,
+         ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_FALSE));
+
+      etk_type_property_add(scrolled_view_type, "drag-bouncy", ETK_SCROLLED_VIEW_DRAG_BOUNCY_PROPERTY,
+         ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_TRUE));
+
+      etk_type_property_add(scrolled_view_type, "drag-damping", ETK_SCROLLED_VIEW_DRAG_DAMPING_PROPERTY,
+         ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_SCROLLED_VIEW_DRAG_DAMPING_MAGIC));
+
+      etk_type_property_add(scrolled_view_type, "drag-sample-interval", ETK_SCROLLED_VIEW_DRAG_SAMPLE_INTERVAL_PROPERTY,
+         ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(ETK_SCROLLED_VIEW_DRAG_SAMPLE_INTERVAL_MAGIC));
 
       scrolled_view_type->property_set = _etk_scrolled_view_property_set;
       scrolled_view_type->property_get = _etk_scrolled_view_property_get;
@@ -188,9 +208,11 @@ void etk_scrolled_view_policy_get(Etk_Scrolled_View *scrolled_view, Etk_Scrolled
  */ 
 void etk_scrolled_view_dragable_set(Etk_Scrolled_View *scrolled_view, Etk_Bool dragable) 
 {
-   if (!scrolled_view)
+   if (!scrolled_view || scrolled_view->drag.dragable == dragable)
       return;
+
    scrolled_view->drag.dragable = dragable;
+	 etk_object_notify(ETK_OBJECT(scrolled_view), "dragable");
 }
 
 /**
@@ -202,6 +224,7 @@ Etk_Bool etk_scrolled_view_dragable_get(Etk_Scrolled_View *scrolled_view)
 {
    if (!scrolled_view)
       return ETK_FALSE;
+
    return scrolled_view->drag.dragable;
 }
 
@@ -212,9 +235,11 @@ Etk_Bool etk_scrolled_view_dragable_get(Etk_Scrolled_View *scrolled_view)
  */ 
 void etk_scrolled_view_drag_bouncy_set(Etk_Scrolled_View *scrolled_view, Etk_Bool bouncy) 
 {
-   if (!scrolled_view)
+   if (!scrolled_view || scrolled_view->drag.bouncy == bouncy)
       return;
+
    scrolled_view->drag.bouncy = bouncy;
+	 etk_object_notify(ETK_OBJECT(scrolled_view), "drag-bouncy");
 }
 
 /**
@@ -235,12 +260,14 @@ Etk_Bool etk_scrolled_view_drag_bouncy_get(Etk_Scrolled_View *scrolled_view)
  * @param interval The interval of sampling latest scrolling speed (minimial 0.2 second, default 0.5 second)
  * @return Returns the actual sampling interval set. If scrolled_view is NULL returns 0.0f. 
  */
-double etk_scrolled_view_drag_sample_interval_magic_set(Etk_Scrolled_View *scrolled_view,double interval) 
+double etk_scrolled_view_drag_sample_interval_set(Etk_Scrolled_View *scrolled_view,double interval) 
 {
-   if (!scrolled_view)
+   if (!scrolled_view || scrolled_view->drag.sample_magic == interval)
       return 0.0f;
+
    interval = interval >= 0.2f ? interval : 0.2f;
    scrolled_view->drag.sample_magic = interval;
+	 etk_object_notify(ETK_OBJECT(scrolled_view), "drag-sample-interval");
    return scrolled_view->drag.sample_magic;
 }
 
@@ -249,7 +276,7 @@ double etk_scrolled_view_drag_sample_interval_magic_set(Etk_Scrolled_View *scrol
  * @param scrolled_view a scrolled view
  * @return Returns the sampling interval. If scrolled_view is NULL return 0.0f. 
  */
-double etk_scrolled_view_drag_sample_interval_magic_get(Etk_Scrolled_View *scrolled_view)
+double etk_scrolled_view_drag_sample_interval_get(Etk_Scrolled_View *scrolled_view)
 {
    if (!scrolled_view)
       return 0.0f;
@@ -262,11 +289,13 @@ double etk_scrolled_view_drag_sample_interval_magic_get(Etk_Scrolled_View *scrol
  * @param damping The damping factor of the dragable scrolled view (default 100)
  * @return Returns the actual damping factor set
  */ 
-unsigned int etk_scrolled_view_drag_damping_magic_set(Etk_Scrolled_View *scrolled_view,unsigned int damping)
+unsigned int etk_scrolled_view_drag_damping_set(Etk_Scrolled_View *scrolled_view,unsigned int damping)
 {
-   if (!scrolled_view)
+   if (!scrolled_view || scrolled_view->drag.damping_magic == damping)
       return 0;
+
    scrolled_view->drag.damping_magic = damping;
+	 etk_object_notify(ETK_OBJECT(scrolled_view), "drag-damping");
    return scrolled_view->drag.damping_magic;
 }
 
@@ -275,7 +304,7 @@ unsigned int etk_scrolled_view_drag_damping_magic_set(Etk_Scrolled_View *scrolle
  * @param scrolled_view a scrolled view
  * @return Returns the actual damping factor
  */ 
-unsigned int etk_scrolled_view_drag_damping_magic_get(Etk_Scrolled_View *scrolled_view) 
+unsigned int etk_scrolled_view_drag_damping_get(Etk_Scrolled_View *scrolled_view) 
 {
    if (!scrolled_view)
       return 0;
@@ -302,8 +331,8 @@ static void _etk_scrolled_view_constructor(Etk_Scrolled_View *scrolled_view)
    scrolled_view->drag.bouncy      = ETK_TRUE;
 
    // FIXME This can be put in etk_config (Make whole system be configured)
-   etk_scrolled_view_drag_sample_interval_magic_set(scrolled_view,0.5f);
-   etk_scrolled_view_drag_damping_magic_set(scrolled_view,100);
+   etk_scrolled_view_drag_sample_interval_set(scrolled_view, ETK_SCROLLED_VIEW_DRAG_SAMPLE_INTERVAL_MAGIC);
+   etk_scrolled_view_drag_damping_set(scrolled_view, ETK_SCROLLED_VIEW_DRAG_DAMPING_MAGIC);
 
    scrolled_view->hscrollbar = etk_hscrollbar_new(0.0, 0.0, 0.0, 12.0, 50.0, 0.0);
    etk_widget_theme_parent_set(scrolled_view->hscrollbar, ETK_WIDGET(scrolled_view));
@@ -351,7 +380,19 @@ static void _etk_scrolled_view_property_set(Etk_Object *object, int property_id,
       case ETK_SCROLLED_VIEW_VPOLICY_PROPERTY:
          etk_scrolled_view_policy_set(scrolled_view, scrolled_view->hpolicy, etk_property_value_int_get(value));
          break;
-      default:
+      case ETK_SCROLLED_VIEW_DRAGABLE_PROPERTY:
+         etk_scrolled_view_dragable_set(scrolled_view, etk_property_value_bool_get(value));
+         break;
+       case ETK_SCROLLED_VIEW_DRAG_BOUNCY_PROPERTY:
+         etk_scrolled_view_drag_bouncy_set(scrolled_view, etk_property_value_bool_get(value));
+         break;
+       case ETK_SCROLLED_VIEW_DRAG_DAMPING_PROPERTY:
+         etk_scrolled_view_drag_damping_set(scrolled_view, etk_property_value_int_get(value));
+         break;
+       case ETK_SCROLLED_VIEW_DRAG_SAMPLE_INTERVAL_PROPERTY:
+         etk_scrolled_view_drag_sample_interval_set(scrolled_view, etk_property_value_int_get(value));
+         break;
+    default:
          break;
    }
 }
@@ -372,7 +413,19 @@ static void _etk_scrolled_view_property_get(Etk_Object *object, int property_id,
       case ETK_SCROLLED_VIEW_VPOLICY_PROPERTY:
          etk_property_value_int_set(value, scrolled_view->vpolicy);
          break;
-      default:
+      case ETK_SCROLLED_VIEW_DRAGABLE_PROPERTY:
+         etk_property_value_bool_set(value, scrolled_view->drag.dragable);
+         break;
+       case ETK_SCROLLED_VIEW_DRAG_BOUNCY_PROPERTY:
+         etk_property_value_bool_set(value, scrolled_view->drag.bouncy);
+         break;
+       case ETK_SCROLLED_VIEW_DRAG_DAMPING_PROPERTY:
+         etk_property_value_int_set(value, scrolled_view->drag.damping_magic);
+         break;
+       case ETK_SCROLLED_VIEW_DRAG_SAMPLE_INTERVAL_PROPERTY:
+         etk_property_value_int_set(value, scrolled_view->drag.sample_magic);
+         break;
+    default:
          break;
    }
 }
@@ -700,15 +753,16 @@ static Etk_Bool _etk_scrolled_view_mouse_move(Etk_Object *object, Etk_Event_Mous
 
    if (drag->scroll_flag) 
    {
-      if (drag->bar_pressed==ETK_FALSE) 
+      if (drag->bar_pressed == ETK_FALSE) 
       {
          etk_range_value_set(vscrollbar_range, vscrollbar_range->value - (event->cur.widget.y - drag->position.y));
          etk_range_value_set(hscrollbar_range, hscrollbar_range->value - (event->cur.widget.x - drag->position.x));
       }
-      drag->position  = event->cur.widget;
+      drag->position = event->cur.widget;
       delta_time = ecore_time_get() - drag->timestamp;
       // in case delta_time is zero
       delta_time = delta_time == 0.0f ? drag->sample_magic : delta_time;
+
       if (delta_time > drag->sample_magic || drag->old_timestamp == 0) 
       {
          drag->old_timestamp = drag->timestamp;

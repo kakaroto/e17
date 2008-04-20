@@ -85,10 +85,10 @@ void        etk_scrolled_view_dragable_set(Etk_Scrolled_View *scrolled_view, Etk
 Etk_Bool    etk_scrolled_view_dragable_get(Etk_Scrolled_View *scrolled_view);
 void        etk_scrolled_view_drag_bouncy_set(Etk_Scrolled_View *scrolled_view, Etk_Bool bouncy);
 Etk_Bool    etk_scrolled_view_drag_bouncy_get(Etk_Scrolled_View *scrolled_view);
-double      etk_scrolled_view_drag_sample_interval_magic_set(Etk_Scrolled_View *scrolled_view,double interval);
-double      etk_scrolled_view_drag_sample_interval_magic_get(Etk_Scrolled_View *scrolled_view);
-unsigned int etk_scrolled_view_drag_damping_magic_set(Etk_Scrolled_View *scrolled_view,unsigned int damping);
-unsigned int etk_scrolled_view_drag_damping_magic_get(Etk_Scrolled_View *scrolled_view);
+double      etk_scrolled_view_drag_sample_interval_set(Etk_Scrolled_View *scrolled_view, double interval);
+double      etk_scrolled_view_drag_sample_interval_get(Etk_Scrolled_View *scrolled_view);
+unsigned int etk_scrolled_view_drag_damping_set(Etk_Scrolled_View *scrolled_view, unsigned int damping);
+unsigned int etk_scrolled_view_drag_damping_get(Etk_Scrolled_View *scrolled_view);
 
 /** @} */
 
