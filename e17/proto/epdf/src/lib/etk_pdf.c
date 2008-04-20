@@ -9,6 +9,12 @@
 #include "etk_utils.h"
 #include "config.h"
 
+#if HAVE___ATTRIBUTE__
+#define __UNUSED__ __attribute__((unused))
+#else
+#define __UNUSED__
+#endif
+
 
 #define round(a) ( ((a)<0.0) ? (int)(floor((a) - 0.5)) : (int)(floor((a) + 0.5)) )
 
@@ -71,7 +77,7 @@ Etk_Widget *etk_pdf_new()
 
 /**
  * @brief Loads the pdf from a file
- * @param pdf an pdf
+ * @param pdf a pdf
  * @param filename the name of the file to load
  */
 void etk_pdf_file_set(Etk_Pdf *pdf, const char *filename)
@@ -93,6 +99,7 @@ void etk_pdf_file_set(Etk_Pdf *pdf, const char *filename)
 
    pdf->pdf_document = epdf_document_new (pdf->filename);
    pdf->pdf_index = epdf_index_new (pdf->pdf_document);
+   pdf->pdf_page = epdf_page_new (pdf->pdf_document);;
    pdf->page = 0;
 
    pdf->search.o = NULL;
@@ -107,7 +114,7 @@ void etk_pdf_file_set(Etk_Pdf *pdf, const char *filename)
 
 /**
  * @brief Gets the name of the file used for the pdf
- * @param pdf an pdf
+ * @param pdf a pdf
  * @return Returns the name of the file use for the pdf (NULL on failure)
  */
 const char *etk_pdf_file_get(Etk_Pdf *pdf)
@@ -119,26 +126,25 @@ const char *etk_pdf_file_get(Etk_Pdf *pdf)
 
 /**
  * @brief Set a page number
- * @param pdf: the pdf to change page
+ * @param pdf: the pdf to change the page
  * @param page: the page number
  */
 void etk_pdf_page_set(Etk_Pdf *pdf, int page)
 {
    if (!pdf ||
        !pdf->pdf_document ||
-       (page < 1) ||
+       (page < 0) ||
        (page >= epdf_document_page_count_get (pdf->pdf_document)) ||
-       (page == pdf->page))
+       (page == epdf_page_page_get (pdf->pdf_page)))
       return;
 
-   pdf->page = page;
+   epdf_page_page_set (pdf->pdf_page, page);
    _etk_pdf_load (pdf);
 }
 
 /**
  * @brief Get the page number
- * @param pdf: the pdf to change page
- * @param page: the page number
+ * @param pdf: the pdf to get the page
  * @return Returns the page number
  */
 int etk_pdf_page_get(Etk_Pdf *pdf)
@@ -146,46 +152,7 @@ int etk_pdf_page_get(Etk_Pdf *pdf)
    if (!pdf)
       return 0;
 
-   return pdf->page;
-}
-
-/**
- * @brief Gets the poppler document of the pdf
- * @param pdf an pdf
- * @return Returns the poppler document of the pdf (NULL on failure)
- */
-Epdf_Document *etk_pdf_pdf_document_get (Etk_Pdf *pdf)
-{
-   if (!pdf)
-      return NULL;
-
-   return pdf->pdf_document;
-}
-
-/**
- * @brief Gets the current poppler page of the pdf
- * @param pdf an pdf
- * @return Returns the current poppler page of the pdf (NULL on failure)
- */
-Epdf_Page *etk_pdf_pdf_page_get (Etk_Pdf *pdf)
-{
-   if (!pdf)
-      return NULL;
-
-   return pdf->pdf_page;
-}
-
-/**
- * @brief Gets the index of the pdf document
- * @param pdf an pdf
- * @return Returns the index of the pdf document (NULL on failure)
- */
-Ecore_List *etk_pdf_pdf_index_get (Etk_Pdf *pdf)
-{
-   if (!pdf)
-      return NULL;
-
-   return pdf->pdf_index;
+   return epdf_page_page_set (pdf->pdf_page);
 }
 
 /**
@@ -198,18 +165,122 @@ void etk_pdf_size_get(Etk_Pdf *pdf, int *width, int *height)
 {
    if (!pdf)
    {
-      if (width)
-	 *width = 0;
-      if (height)
-	 *height = 0;
+      if (width) *width = 0;
+      if (height) *height = 0;
+      return;
    }
-   else {
-      if (width)
-	 *width = epdf_page_width_get (pdf->pdf_page);
-      if (height)
-	 *height = epdf_page_height_get (pdf->pdf_page);
-   }
-      evas_object_image_size_get(pdf->pdf_object, width, height);
+
+   if (width) *width = epdf_page_width_get (pdf->pdf_page);
+   if (height) *height = epdf_page_height_get (pdf->pdf_page);
+
+   evas_object_image_size_get(pdf->pdf_object, width, height);
+}
+
+/**
+ * @param pdf: the pdf to change the orientation
+ * @param o: the orientation
+ * @return Returns no value.
+ * @brief Set an orientation of the document
+ *
+ * Sets an orientation @p o of the document
+ */
+void etk_pdf_orientation_set (Etk_Pdf *pdf, Epdf_Page_Orientation o)
+{
+   if (!pdf || !pdf->pdf_page)
+      return;
+
+   epdf_page_orientation_set (pdf->pdf_page, o);
+   _etk_pdf_load (pdf);
+}
+
+/**
+ * @param pdf: the pdf widget to get the orientation of
+ * @return Returns the orientation of the document.
+ * @brief get the orientation of the document @p pdf. If @p pdf
+ * is NULL, return EPDF_PAGE_ORIENTATION_PORTRAIT
+ */
+Epdf_Page_Orientation etk_pdf_orientation_get (Etk_Pdf *pdf)
+{
+   if (!pdf || !pdf->pdf_page)
+      return EPDF_PAGE_ORIENTATION_PORTRAIT;
+
+   return epdf_page_orientation_get (pdf->pdf_page);
+}
+
+/**
+ * @param pdf: the pdf to change the scale
+ * @param hscale: the horizontal scale
+ * @param vscale: the vertical scale
+ * @return Returns no value.
+ * @brief Set the scale of the document
+ *
+ * Sets the horizontal scale @p hscale ans the vertical scale @p vscale
+ * of the document @p pdf
+ */
+void etk_pdf_scale_set (Etk_Pdf *pdf, double hscale, double vscale)
+{
+   if (!pdf || !pdf->pdf_page)
+      return;
+
+   epdf_page_scale_set (pdf->pdf_page, hscale, vscale);
+   _etk_pdf_load (pdf);
+}
+
+/**
+ * @param pdf: the pdf widget to get the orientation of
+ * @param hscale: horizontal scale of the current page
+ * @param vscale: vertical scale of the current page
+ * @return Returns  no value.
+ * @brief get the horizontal scale @p hscale ans the vertical scale
+ * @p vscale of the document @p pdf. If @p pdf is NULL, their values are 1.0
+ */
+void etk_pdf_scale_get (Etk_Pdf *pdf, double *hscale, double *vscale)
+{
+  if (!pdf) {
+     if (hscale) *hscale = 1.0;
+     if (vscale) *vscale = 1.0;
+     return;
+  }
+
+  epdf_page_scale_get (pdf->pdf_page, hscale, vscale);
+}
+
+/**
+ * @param pdf: the pdf widget
+ * @return Returns  no value.
+ * @brief go to the next page and render it
+ */
+void
+etk_pdf_page_next (Etk_Pdf *pdf)
+{
+  int page;
+
+  if (!pdf)
+    return;
+
+  page = epdf_page_page_get(pdf->pdf_page);
+  if (page < (epdf_document_page_count_get(pdf->pdf_document) - 1))
+    page++;
+  etk_pdf_page_set (pdf, page);
+}
+
+/**
+ * @param pdf: the pdf widget
+ * @return Returns  no value.
+ * @brief go to the previous page and render it
+ */
+void
+etk_pdf_page_previous (Etk_Pdf *pdf)
+{
+  int page;
+
+  if (!pdf)
+    return;
+
+  page = epdf_page_page_get(pdf->pdf_page);
+  if (page > 0)
+    page--;
+  ewl_pdf_page_set (pdf, page);
 }
 
 void
@@ -327,127 +398,43 @@ etk_pdf_search_next (Etk_Pdf *pdf)
       return ETK_TRUE;
 }
 
-void etk_pdf_orientation_set (Etk_Pdf *pdf, Epdf_Page_Orientation o)
-{
-   if (!pdf || !pdf->pdf_page || (pdf->orientation == o))
-      return;
-
-   printf ("orientation %d\n", o);
-   pdf->orientation = o;
-   _etk_pdf_load (pdf);
-}
-
-Epdf_Page_Orientation etk_pdf_orientation_get (Etk_Pdf *pdf)
-{
-   if (!pdf || !pdf->pdf_page)
-      return EPDF_PAGE_ORIENTATION_PORTRAIT;
-
-   return epdf_page_orientation_get (pdf->pdf_page);
-}
-
-void etk_pdf_scale_set (Etk_Pdf *pdf, double hscale, double vscale)
+/**
+ * @brief Gets the document of the pdf
+ * @param pdf an pdf
+ * @return Returns the document of the pdf (NULL on failure)
+ */
+Epdf_Document *etk_pdf_pdf_document_get (Etk_Pdf *pdf)
 {
    if (!pdf)
-      return;
+      return NULL;
 
-   if (hscale != pdf->hscale)
-     pdf->hscale = hscale;
-
-   if (vscale != pdf->vscale)
-     pdf->vscale = vscale;
-   _etk_pdf_load (pdf);
+   return pdf->pdf_document;
 }
 
-void etk_pdf_scale_get (Etk_Pdf *pdf, double *hscale, double *vscale)
+/**
+ * @brief Gets the current page of the pdf
+ * @param pdf an pdf
+ * @return Returns the poppler page of the pdf (NULL on failure)
+ */
+Epdf_Page *etk_pdf_pdf_page_get (Etk_Pdf *pdf)
 {
-  if (!pdf) {
-     if (hscale)
-        *hscale = 1.0;
+   if (!pdf)
+      return NULL;
 
-     if (vscale)
-        *vscale = 1.0;
-  }
-  else {
-     if (hscale)
-        *hscale = pdf->hscale;
-
-      if (vscale)
-         *vscale = pdf->vscale;
-  }
+   return pdf->pdf_page;
 }
 
-void
-etk_pdf_page_next (Etk_Pdf *pdf)
+/**
+ * @brief Gets the index of the pdf document
+ * @param pdf an pdf
+ * @return Returns the index of the pdf document (NULL on failure)
+ */
+Ecore_List *etk_pdf_pdf_index_get (Etk_Pdf *pdf)
 {
-  int page;
+   if (!pdf)
+      return NULL;
 
-  if (!pdf)
-    return;
-
-  page = pdf->page + 1;
-  if (page >= epdf_document_page_count_get(pdf->pdf_document))
-    page = epdf_document_page_count_get(pdf->pdf_document) - 1;
-  etk_pdf_page_set (pdf, page);
-}
-
-void
-etk_pdf_page_previous (Etk_Pdf *pdf)
-{
-  int page;
-
-  if (!pdf)
-    return;
-
-  page = pdf->page - 1;
-  if (page < 0)
-    page = 0;
-  etk_pdf_page_set (pdf, page);
-}
-
-void
-etk_pdf_page_page_length_set (Etk_Pdf *pdf, int page_length)
-{
-  if (!pdf || (page_length <= 0) || (pdf->page_length == page_length))
-    return;
-
-  pdf->page_length = page_length;
-}
-
-int
-etk_pdf_page_page_length_get (Etk_Pdf *pdf)
-{
-  if (!pdf)
-    return 0;
-
-  return pdf->page_length;
-}
-
-void
-etk_pdf_page_page_next (Etk_Pdf *pdf)
-{
-  int page;
-
-  if (!pdf)
-    return;
-
-  page = pdf->page + pdf->page_length;
-  if (page >= epdf_document_page_count_get(pdf->pdf_document))
-    page = epdf_document_page_count_get(pdf->pdf_document) - 1;
-  etk_pdf_page_set (pdf, page);
-}
-
-void
-etk_pdf_page_page_previous (Etk_Pdf *pdf)
-{
-  int page;
-
-  if (!pdf)
-    return;
-
-  page = pdf->page - pdf->page_length;
-  if (page < 0)
-    page = 0;
-  etk_pdf_page_set (pdf, page);
+   return pdf->pdf_index;
 }
 
 /**************************
@@ -466,16 +453,10 @@ static void _etk_pdf_constructor(Etk_Pdf *pdf)
 
    pdf->pdf_object = NULL;
    pdf->filename = NULL;
-   pdf->page = 0;
-   pdf->page_length = 10;
 
    pdf->pdf_document = NULL;
    pdf->pdf_page = NULL;
    pdf->pdf_index = NULL;
-
-   pdf->orientation = EPDF_PAGE_ORIENTATION_PORTRAIT;
-   pdf->hscale = 1.0;
-   pdf->vscale = 1.0;
 
    pdf->search.o = NULL;
    pdf->search.text = NULL;
@@ -487,8 +468,12 @@ static void _etk_pdf_constructor(Etk_Pdf *pdf)
    widget->size_request = _etk_pdf_size_request;
    widget->size_allocate = _etk_pdf_size_allocate;
 
-   etk_signal_connect("realized", ETK_OBJECT(pdf), ETK_CALLBACK(_etk_pdf_realize_cb), NULL);
-   etk_signal_connect("unrealized", ETK_OBJECT(pdf), ETK_CALLBACK(_etk_pdf_unrealize_cb), NULL);
+   Etk_Signal_Connect_Desc desc[] = {
+      ETK_SC_DESC(ETK_WIDGET_REALIZED_SIGNAL, _etk_pdf_realize_cb),
+      ETK_SC_DESC(ETK_WIDGET_UNREALIZED_SIGNAL, _etk_pdf_unrealize_cb),
+      ETK_SC_DESC_SENTINEL
+   };
+   etk_signal_connect_multiple(desc, ETK_OBJECT(pdf), NULL);
 }
 
 /* Destroys the pdf */
@@ -599,24 +584,27 @@ static void _etk_pdf_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
  **************************/
 
 /* Called when the pdf is realized */
-static void _etk_pdf_realize_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_pdf_realize_cb(Etk_Object *object, void *data __UNUSED__)
 {
    Etk_Pdf *pdf;
    Evas *evas;
 
    if (!(pdf = ETK_PDF(object)) || !(evas = etk_widget_toplevel_evas_get(ETK_WIDGET(pdf))))
-      return;
+      return ETK_FALSE;
    _etk_pdf_load(pdf);
+   return ETK_TRUE;
 }
 
 /* Called when the pdf is unrealized */
-static void _etk_pdf_unrealize_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_pdf_unrealize_cb(Etk_Object *object, void *data __UNUSED__)
 {
    Etk_Pdf *pdf;
 
    if (!(pdf = ETK_PDF(object)))
-      return;
+      return ETK_FALSE;
+
    pdf->pdf_object = NULL;
+   return ETK_TRUE;
 }
 
 /**************************
@@ -653,10 +641,7 @@ static void _etk_pdf_load(Etk_Pdf *pdf)
       if (pdf->pdf_object)
       {
 	 pdf->pdf_page = epdf_page_new (pdf->pdf_document, pdf->page);
-	 epdf_page_render (pdf->pdf_page, pdf->pdf_object,
-                           pdf->orientation,
-                           0, 0, -1, -1,
-                           pdf->hscale, pdf->vscale);
+	 epdf_page_render (pdf->pdf_page, pdf->pdf_object);
       }
       evas_object_show(pdf->pdf_object);
    }
@@ -664,4 +649,6 @@ static void _etk_pdf_load(Etk_Pdf *pdf)
    etk_widget_size_recalc_queue(widget);
 }
 
-/** @} */
+/**
+ * @}
+ */

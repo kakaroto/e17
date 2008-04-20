@@ -1,5 +1,7 @@
 #include <math.h>
 
+#include "config.h"
+
 #include <Ewl.h>
 #include "ewl_debug.h"
 #include "ewl_macros.h"
@@ -14,12 +16,15 @@
 
 #define round(a) ( ((a)<0.0) ? (int)(floor((a) - 0.5)) : (int)(floor((a) + 0.5)) )
 
+
+/**
+ * @addtogroup Ewl_Pdf
+ * @{
+ */
+
 /**
  * @return Returns a pointer to a new pdf widget on success, NULL on failure.
  * @brief Load an pdf widget with specified pdf contents
- *
- * The @a k parameter is primarily used for loading edje groups or keyed data
- * in an pdf.
  */
 Ewl_Widget *
 ewl_pdf_new(void)
@@ -41,7 +46,7 @@ ewl_pdf_new(void)
 }
 
 /**
- * @param pdf: the pdf widget to initialize
+ * @param pdf the pdf widget to initialize
  * @return Returns no value.
  * @brief Initialize an pdf widget to default values and callbacks
  *
@@ -78,16 +83,10 @@ ewl_pdf_init(Ewl_Pdf *pdf)
 			    NULL);
 
 	pdf->filename = NULL;
-	pdf->page = 0;
-	pdf->page_length = 10;
 
 	pdf->pdf_document = NULL;
 	pdf->pdf_page = NULL;
 	pdf->pdf_index = NULL;
-
-	pdf->orientation = EPDF_PAGE_ORIENTATION_PORTRAIT;
-	pdf->hscale = 1.0;
-	pdf->vscale = 1.0;
 
         pdf->search.o = NULL;
         pdf->search.text = NULL;
@@ -100,23 +99,8 @@ ewl_pdf_init(Ewl_Pdf *pdf)
 }
 
 /**
- * @param pdf: the pdf widget to get the file of
- * @return Returns the currently set page
- * @brief get the page this pdf uses
- */
-int
-ewl_pdf_page_get(Ewl_Pdf *pdf)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(pdf, 0);
-	DCHECK_TYPE_RET(pdf, EWL_PDF_TYPE, 0);
-
-	DRETURN_INT(pdf->page, DLEVEL_STABLE);
-}
-
-/**
- * @param pdf: the pdf widget to change the displayed pdf
- * @param filename: the filename to the new pdf to be displayed by @a pdf
+ * @param pdf the pdf widget to change the displayed pdf
+ * @param filename: the path to the new pdf to be displayed by @a pdf
  * @return Returns no value.
  * @brief Change the pdf file displayed by an pdf widget
  *
@@ -139,10 +123,10 @@ ewl_pdf_file_set(Ewl_Pdf *pdf, const char *filename)
 	if (pdf->filename != filename) {
 		IF_FREE(pdf->filename);
 	}
-	if (filename) {
-		pdf->filename = strdup(filename);
-	}
+	if (!filename || (filename[0] == 0))
+		DRETURN(DLEVEL_STABLE);
 
+	pdf->filename = strdup(filename);
 	if (pdf->pdf_document) {
 		if (pdf->pdf_page)
 			epdf_page_delete (pdf->pdf_page);
@@ -152,8 +136,8 @@ ewl_pdf_file_set(Ewl_Pdf *pdf, const char *filename)
 	}
 
 	pdf->pdf_document = epdf_document_new (filename);
+	pdf->pdf_page = epdf_page_new (pdf->pdf_document);
 	pdf->pdf_index = epdf_index_new (pdf->pdf_document);
-	pdf->page = 0;
 
         pdf->search.o = NULL;
         pdf->search.text = NULL;
@@ -173,13 +157,23 @@ ewl_pdf_file_set(Ewl_Pdf *pdf, const char *filename)
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+const char *
+ewl_pdf_file_get(Ewl_Pdf *pdf)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET(pdf, NULL);
+	DCHECK_TYPE_RET(pdf, EWL_PDF_TYPE, NULL);
+
+	DRETURN_PTR(pdf->filename, DLEVEL_STABLE);
+}
+
 /**
- * @param pdf: the pdf to change constrain setting
- * @param size: the minimum constrain size
+ * @param pdf the pdf to set the page of
+ * @param page:  the page number
  * @return Returns no value.
- * @brief Set a size which, if the pdf is bigger than, scale proportionally
+ * @brief Set the page of the document
  *
- * Sets a size to scale to proportionally if the pdf exceeds this size
+ * Sets the page of the document @p pdf to @p page
  */
 void ewl_pdf_page_set(Ewl_Pdf *pdf, int page)
 {
@@ -188,64 +182,37 @@ void ewl_pdf_page_set(Ewl_Pdf *pdf, int page)
 	DCHECK_TYPE(pdf, EWL_PDF_TYPE);
 
 	if (!pdf->pdf_document ||
-	    (page < 1) ||
+	    (page < 0) ||
 	    (page >= epdf_document_page_count_get (pdf->pdf_document)) ||
-	    (page == pdf->page))
-                DLEAVE_FUNCTION(DLEVEL_STABLE);
+	    (page == epdf_page_page_get (pdf->pdf_page)))
+                DRETURN(DLEVEL_STABLE);
 
-	pdf->page = page;
+	epdf_page_page_set(pdf->pdf_page, page);
 	ewl_callback_call (EWL_WIDGET (pdf), EWL_CALLBACK_REVEAL);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
- * @param pdf: the pdf widget to get the poppler document of
- * @return Returns the poppler document of the pdf (NULL on failure)
- * @brief get the poppler document of the pdf
+ * @param pdf the pdf widget to get the file of
+ * @return Returns the currently set page
+ * @brief get the page this pdf uses
  */
-Epdf_Document *ewl_pdf_pdf_document_get (Ewl_Pdf *pdf)
+int
+ewl_pdf_page_get(Ewl_Pdf *pdf)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(pdf, NULL);
-	DCHECK_TYPE_RET(pdf, EWL_PDF_TYPE, NULL);
+	DCHECK_PARAM_PTR_RET(pdf, 0);
+	DCHECK_TYPE_RET(pdf, EWL_PDF_TYPE, 0);
 
-	DRETURN_PTR(pdf->pdf_document, DLEVEL_STABLE);
+	DRETURN_INT(epdf_page_page_get(pdf->pdf_page), DLEVEL_STABLE);
 }
 
 /**
- * @param pdf: the pdf widget to get the current poppler page of
- * @return Returns the current poppler page of the pdf (NULL on failure)
- * @brief get the current poppler page of the pdf
- */
-Epdf_Page *ewl_pdf_pdf_page_get (Ewl_Pdf *pdf)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(pdf, NULL);
-	DCHECK_TYPE_RET(pdf, EWL_PDF_TYPE, NULL);
-
-	DRETURN_PTR(pdf->pdf_page, DLEVEL_STABLE);
-}
-
-/**
- * @param pdf: the pdf widget to get the index of
- * @return Returns the poppler index of the pdf (NULL on failure)
- * @brief get the poppler index of the pdf
- */
-Ecore_List *ewl_pdf_pdf_index_get (Ewl_Pdf *pdf)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(pdf, NULL);
-	DCHECK_TYPE_RET(pdf, EWL_PDF_TYPE, NULL);
-
-	DRETURN_PTR(pdf->pdf_index, DLEVEL_STABLE);
-}
-
-/**
- * @param pdf: the pdf widget to get the size of
+ * @param pdf the pdf widget to get the size of
  * @param width width of the current page
  * @param height height of the current page
- * @brief get the poppler size of the pdf @p pdf. If @p pdf is NULL,
+ * @brief get the size of the pdf @p pdf. If @p pdf is NULL,
  * return a width equal to 0 and a height equal to 0
  */
 void ewl_pdf_pdf_size_get (Ewl_Pdf *pdf, int *width, int *height)
@@ -257,11 +224,150 @@ void ewl_pdf_pdf_size_get (Ewl_Pdf *pdf, int *width, int *height)
 	if (!pdf) {
 		if (width) *width = 0;
 		if (height) *height = 0;
+                DRETURN(DLEVEL_STABLE);
 	}
-	else {
-		if (width) *width = epdf_page_width_get (pdf->pdf_page);
-		if (height) *height = epdf_page_height_get (pdf->pdf_page);
-	}
+
+	if (width) *width = epdf_page_width_get (pdf->pdf_page);
+	if (height) *height = epdf_page_height_get (pdf->pdf_page);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param pdf: the pdf to change the orientation
+ * @param o: the orientation
+ * @return Returns no value.
+ * @brief Set an orientation of the document
+ *
+ * Sets an orientation @p o of the document
+ */
+void
+ewl_pdf_orientation_set (Ewl_Pdf *pdf, Epdf_Page_Orientation o)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(pdf);
+	DCHECK_TYPE(pdf, EWL_PDF_TYPE);
+
+	if (!pdf || !pdf->pdf_page)
+                DRETURN(DLEVEL_STABLE);
+
+	epdf_page_orientation_set (pdf->pdf_page, o);
+	ewl_callback_call (EWL_WIDGET (pdf), EWL_CALLBACK_REVEAL);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param pdf: the pdf widget to get the orientation of
+ * @return Returns the orientation of the document.
+ * @brief get the orientation of the document @p pdf. If @p pdf
+ * is NULL, return EPDF_PAGE_ORIENTATION_PORTRAIT
+ */
+Epdf_Page_Orientation
+ewl_pdf_orientation_get (Ewl_Pdf *pdf)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET(pdf, EPDF_PAGE_ORIENTATION_PORTRAIT);
+	DCHECK_TYPE_RET(pdf, EWL_PDF_TYPE, EPDF_PAGE_ORIENTATION_PORTRAIT);
+
+	if (!pdf || !pdf->pdf_page)
+		DRETURN_INT(EPDF_PAGE_ORIENTATION_PORTRAIT, DLEVEL_STABLE);
+
+	DRETURN_INT(epdf_page_orientation_get (pdf->pdf_page), DLEVEL_STABLE);
+}
+
+/**
+ * @param pdf: the pdf to change the scale
+ * @param hscale: the horizontal scale
+ * @param vscale: the vertical scale
+ * @return Returns no value.
+ * @brief Set the scale of the document
+ *
+ * Sets the horizontal scale @p hscale ans the vertical scale @p vscale
+ * of the document @p pdf
+ */
+void
+ewl_pdf_scale_set (Ewl_Pdf *pdf, double hscale, double vscale)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(pdf);
+	DCHECK_TYPE(pdf, EWL_PDF_TYPE);
+
+	if (!pdf)
+		DLEAVE_FUNCTION(DLEVEL_STABLE);
+
+	epdf_page_scale_set(pdf->pdf_page, hscale, vscale);
+	ewl_callback_call (EWL_WIDGET (pdf), EWL_CALLBACK_REVEAL);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param pdf: the pdf widget to get the orientation of
+ * @param hscale: horizontal scale of the current page
+ * @param vscale: vertical scale of the current page
+ * @return Returns  no value.
+ * @brief get the horizontal scale @p hscale ans the vertical scale
+ * @p vscale of the document @p pdf. If @p pdf is NULL, their values are 1.0
+ */
+void
+ewl_pdf_scale_get (Ewl_Pdf *pdf, double *hscale, double *vscale)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(pdf);
+	DCHECK_TYPE(pdf, EWL_PDF_TYPE);
+
+	epdf_page_scale_get(pdf->pdf_page, hscale, vscale);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param pdf: the pdf widget
+ * @return Returns  no value.
+ * @brief go to the next page and render it
+ */
+void
+ewl_pdf_page_next (Ewl_Pdf *pdf)
+{
+	int page;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(pdf);
+	DCHECK_TYPE(pdf, EWL_PDF_TYPE);
+
+	if (!pdf)
+		DLEAVE_FUNCTION(DLEVEL_STABLE);
+
+	page = epdf_page_page_get(pdf->pdf_page);
+	if (page < (epdf_document_page_count_get(pdf->pdf_document) - 1))
+		page++;
+	ewl_pdf_page_set (pdf, page);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param pdf: the pdf widget
+ * @return Returns  no value.
+ * @brief go to the previous page and render it
+ */
+void
+ewl_pdf_page_previous (Ewl_Pdf *pdf)
+{
+	int page;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(pdf);
+	DCHECK_TYPE(pdf, EWL_PDF_TYPE);
+
+	if (!pdf)
+		DLEAVE_FUNCTION(DLEVEL_STABLE);
+
+	page = epdf_page_page_get(pdf->pdf_page);
+	if (page > 0)
+		page--;
+	ewl_pdf_page_set (pdf, page);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -340,7 +446,7 @@ ewl_pdf_search_next (Ewl_Pdf *pdf)
 
                 pdf->search.page++;
                 printf ("page : %d\n", pdf->search.page);
-                page = epdf_page_new (pdf->pdf_document, pdf->search.page);
+                epdf_page_page_set (pdf->pdf_page, pdf->search.page);
                 pdf->search.list = epdf_page_text_find (page,
                                                         pdf->search.text,
                                                         pdf->search.is_case_sensitive);
@@ -354,7 +460,7 @@ ewl_pdf_search_next (Ewl_Pdf *pdf)
                 Epdf_Rectangle *rect;
 
                 if ((rect = (Epdf_Rectangle *)ecore_list_next (pdf->search.list))) {
-                  if (pdf->search.page != pdf->page) {
+                  if (pdf->search.page != epdf_page_page_get(pdf->pdf_page)) {
                           ewl_pdf_page_set (pdf, pdf->search.page);
                           ewl_callback_call (EWL_WIDGET (pdf), EWL_CALLBACK_REVEAL);
                   }
@@ -387,257 +493,56 @@ ewl_pdf_search_next (Ewl_Pdf *pdf)
                 DRETURN_INT(FALSE, DLEVEL_STABLE);
 }
 
-void
-ewl_pdf_orientation_set (Ewl_Pdf *pdf, Epdf_Page_Orientation o)
+/**
+ * @param pdf the pdf widget to get the document of
+ * @return Returns the document of the pdf (NULL on failure)
+ * @brief get the document of the pdf
+ */
+Epdf_Document *ewl_pdf_pdf_document_get (Ewl_Pdf *pdf)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(pdf);
-	DCHECK_TYPE(pdf, EWL_PDF_TYPE);
+	DCHECK_PARAM_PTR_RET(pdf, NULL);
+	DCHECK_TYPE_RET(pdf, EWL_PDF_TYPE, NULL);
 
-	if (!pdf || !pdf->pdf_page || (pdf->orientation == o))
-		DLEAVE_FUNCTION(DLEVEL_STABLE);
-
-	pdf->orientation = o;
-	ewl_callback_call (EWL_WIDGET (pdf), EWL_CALLBACK_REVEAL);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_PTR(pdf->pdf_document, DLEVEL_STABLE);
 }
 
-Epdf_Page_Orientation
-ewl_pdf_orientation_get (Ewl_Pdf *pdf)
+/**
+ * @param pdf the pdf widget to get the current page of
+ * @return Returns the current page of the pdf (NULL on failure)
+ * @brief get the current page of the pdf
+ */
+Epdf_Page *ewl_pdf_pdf_page_get (Ewl_Pdf *pdf)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(pdf, EPDF_PAGE_ORIENTATION_PORTRAIT);
-	DCHECK_TYPE_RET(pdf, EWL_PDF_TYPE, EPDF_PAGE_ORIENTATION_PORTRAIT);
+	DCHECK_PARAM_PTR_RET(pdf, NULL);
+	DCHECK_TYPE_RET(pdf, EWL_PDF_TYPE, NULL);
 
-	if (!pdf || !pdf->pdf_page)
-		DRETURN_INT(EPDF_PAGE_ORIENTATION_PORTRAIT, DLEVEL_STABLE);
-
-	DRETURN_INT(epdf_page_orientation_get (pdf->pdf_page), DLEVEL_STABLE);
+	DRETURN_PTR(pdf->pdf_page, DLEVEL_STABLE);
 }
 
-void
-ewl_pdf_scale_set (Ewl_Pdf *pdf, double hscale, double vscale)
+/**
+ * @param pdf the pdf widget to get the index of
+ * @return Returns the poppler index of the pdf (NULL on failure)
+ * @brief get the poppler index of the pdf
+ */
+Ecore_List *ewl_pdf_pdf_index_get (Ewl_Pdf *pdf)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(pdf);
-	DCHECK_TYPE(pdf, EWL_PDF_TYPE);
+	DCHECK_PARAM_PTR_RET(pdf, NULL);
+	DCHECK_TYPE_RET(pdf, EWL_PDF_TYPE, NULL);
 
-	if (!pdf)
-		DLEAVE_FUNCTION(DLEVEL_STABLE);
-
-	if (hscale != pdf->hscale) pdf->hscale = hscale;
-	if (vscale != pdf->vscale) pdf->vscale = vscale;
-	ewl_callback_call (EWL_WIDGET (pdf), EWL_CALLBACK_REVEAL);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+	DRETURN_PTR(pdf->pdf_index, DLEVEL_STABLE);
 }
 
-void
-ewl_pdf_scale_get (Ewl_Pdf *pdf, double *hscale, double *vscale)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(pdf);
-	DCHECK_TYPE(pdf, EWL_PDF_TYPE);
-
-	if (!pdf) {
-		if (hscale) *hscale = 1.0;
-		if (vscale) *vscale = 1.0;
-	}
-	else {
-		if (hscale) *hscale = pdf->hscale;
-		if (vscale) *vscale = pdf->vscale;
-	}
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void
-ewl_pdf_page_next (Ewl_Pdf *pdf)
-{
-	int page;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(pdf);
-	DCHECK_TYPE(pdf, EWL_PDF_TYPE);
-
-	if (!pdf)
-		DLEAVE_FUNCTION(DLEVEL_STABLE);
-
-	page = pdf->page;
-	if (page < (epdf_document_page_count_get(pdf->pdf_document) - 1))
-		page++;
-	ewl_pdf_page_set (pdf, page);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void
-ewl_pdf_page_previous (Ewl_Pdf *pdf)
-{
-	int page;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(pdf);
-	DCHECK_TYPE(pdf, EWL_PDF_TYPE);
-
-	if (!pdf)
-		DLEAVE_FUNCTION(DLEVEL_STABLE);
-
-	page = pdf->page;
-	if (page > 0)
-		page--;
-	ewl_pdf_page_set (pdf, page);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void
-ewl_pdf_page_page_length_set (Ewl_Pdf *pdf, int page_length)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(pdf);
-	DCHECK_TYPE(pdf, EWL_PDF_TYPE);
-
-	if (!pdf || (page_length <= 0) || (pdf->page_length == page_length))
-		DLEAVE_FUNCTION(DLEVEL_STABLE);
-
-	pdf->page_length = page_length;
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-int
-ewl_pdf_page_page_length_get (Ewl_Pdf *pdf)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(pdf, 0);
-	DCHECK_TYPE_RET(pdf, EWL_PDF_TYPE, 0);
-
-	if (!pdf)
-		DRETURN_INT(0, DLEVEL_STABLE);
-
-	DRETURN_INT(pdf->page_length, DLEVEL_STABLE);
-}
-
-void
-ewl_pdf_page_page_next (Ewl_Pdf *pdf)
-{
-	int page;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(pdf);
-	DCHECK_TYPE(pdf, EWL_PDF_TYPE);
-
-	if (!pdf)
-		DLEAVE_FUNCTION(DLEVEL_STABLE);
-
-	page = pdf->page + pdf->page_length;
-	if (page >= epdf_document_page_count_get(pdf->pdf_document))
-		page = epdf_document_page_count_get(pdf->pdf_document) - 1;
-	ewl_pdf_page_set (pdf, page);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void
-ewl_pdf_page_page_previous (Ewl_Pdf *pdf)
-{
-	int page;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(pdf);
-	DCHECK_TYPE(pdf, EWL_PDF_TYPE);
-
-	if (!pdf)
-		DLEAVE_FUNCTION(DLEVEL_STABLE);
-
-	page = pdf->page - pdf->page_length;
-	if (page < 0)
-		page = 0;
-	ewl_pdf_page_set (pdf, page);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void
-ewl_pdf_reveal_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
-		  void *user_data __UNUSED__)
-{
-	Ewl_Pdf   *pdf;
-	Ewl_Embed *emb;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
-
-	pdf = EWL_PDF(w);
-	emb = ewl_embed_widget_find(w);
-
-	/*
-	 * Load the pdf
-	 */
-	if (!pdf->image)
-	  pdf->image = ewl_embed_object_request(emb, "pdf");
-	if (!pdf->image)
-	  pdf->image = evas_object_image_add(emb->canvas);
-	if (!pdf->image)
-	  DRETURN(DLEVEL_STABLE);
-
-	if (pdf->pdf_document) {
-		if (pdf->pdf_page)
-			epdf_page_delete (pdf->pdf_page);
-		pdf->pdf_page = epdf_page_new (pdf->pdf_document, pdf->page);
-		epdf_page_render (pdf->pdf_page, pdf->image,
-                                  pdf->orientation,
-                                  0, 0, -1, -1,
-                                  pdf->hscale, pdf->vscale);
-	}
-	evas_object_image_size_get(pdf->image, &pdf->ow, &pdf->oh);
-
-	evas_object_smart_member_add(pdf->image, w->smart_object);
-	if (w->fx_clip_box)
-		evas_object_stack_below(pdf->image, w->fx_clip_box);
-
-	if (w->fx_clip_box)
-		evas_object_clip_set(pdf->image, w->fx_clip_box);
-
-	evas_object_pass_events_set(pdf->image, TRUE);
-	evas_object_show(pdf->image);
-
-	if (!pdf->ow)
-		pdf->ow = 1;
-	if (!pdf->oh)
-		pdf->oh = 1;
-
-	ewl_object_preferred_inner_w_set(EWL_OBJECT(w), pdf->ow);
-	ewl_object_preferred_inner_h_set(EWL_OBJECT(w), pdf->oh);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-void
-ewl_pdf_obscure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
-						void *user_data __UNUSED__)
-{
-	Ewl_Pdf *pdf;
-	Ewl_Embed *emb;
-
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
-
-	emb = ewl_embed_widget_find(w);
-
-	pdf = EWL_PDF(w);
-	if (emb && pdf->image) {
-		ewl_embed_object_cache(emb, pdf->image);
-		pdf->image = NULL;
-	}
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The configure callback
+ */
 void
 ewl_pdf_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 						void *user_data __UNUSED__)
@@ -676,6 +581,101 @@ ewl_pdf_configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The reveal callback
+ */
+void
+ewl_pdf_reveal_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+		  void *user_data __UNUSED__)
+{
+	Ewl_Pdf   *pdf;
+	Ewl_Embed *emb;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+
+	pdf = EWL_PDF(w);
+	emb = ewl_embed_widget_find(w);
+
+	/*
+	 * Load the pdf
+	 */
+	if (!pdf->image)
+	  pdf->image = ewl_embed_object_request(emb, "pdf");
+	if (!pdf->image)
+	  pdf->image = evas_object_image_add(emb->canvas);
+	if (!pdf->image)
+	  DRETURN(DLEVEL_STABLE);
+
+	if (pdf->pdf_document)
+		epdf_page_render (pdf->pdf_page, pdf->image);
+	evas_object_image_size_get(pdf->image, &pdf->ow, &pdf->oh);
+
+	evas_object_smart_member_add(pdf->image, w->smart_object);
+	if (w->fx_clip_box)
+		evas_object_stack_below(pdf->image, w->fx_clip_box);
+
+	if (w->fx_clip_box)
+		evas_object_clip_set(pdf->image, w->fx_clip_box);
+
+	evas_object_pass_events_set(pdf->image, TRUE);
+	evas_object_show(pdf->image);
+
+	if (!pdf->ow)
+		pdf->ow = 1;
+	if (!pdf->oh)
+		pdf->oh = 1;
+
+	ewl_object_preferred_inner_w_set(EWL_OBJECT(w), pdf->ow);
+	ewl_object_preferred_inner_h_set(EWL_OBJECT(w), pdf->oh);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The obscure callback
+ */
+void
+ewl_pdf_obscure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
+						void *user_data __UNUSED__)
+{
+	Ewl_Pdf *pdf;
+	Ewl_Embed *emb;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+
+	emb = ewl_embed_widget_find(w);
+
+	pdf = EWL_PDF(w);
+	if (emb && pdf->image) {
+		ewl_embed_object_cache(emb, pdf->image);
+		pdf->image = NULL;
+	}
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev_data: UNUSED
+ * @param user_data: UNUSED
+ * @return Returns no value
+ * @brief The destroy callback
+ */
 void
 ewl_pdf_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 		   void *user_data __UNUSED__)
@@ -699,3 +699,7 @@ ewl_pdf_destroy_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
+/**
+ * @}
+ */

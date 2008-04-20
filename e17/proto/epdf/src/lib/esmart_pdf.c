@@ -50,8 +50,6 @@ static void _smart_color_set (Evas_Object *obj, int r, int g, int b, int a);
 static void _smart_clip_set (Evas_Object *obj, Evas_Object *clip);
 static void _smart_clip_unset (Evas_Object *obj);
 
-static void _smart_page_render (Evas_Object *obj);
-
 
 /**********************************/
 /* Globals for the E Video Object */
@@ -62,6 +60,12 @@ static Evas_Smart  *smart = NULL;
 /*******************************/
 /* Externally accessible calls */
 /*******************************/
+
+
+/**
+ * @addtogroup Esmart_Pdf
+ * @{
+ */
 
 /**
  * Add a smart pdf object to an evas
@@ -98,16 +102,10 @@ esmart_pdf_init (Evas_Object *obj)
 
   if (sp->filename) free (sp->filename);
   sp->filename = NULL;
-  sp->page = 0;
-  sp->page_length = 10;
 
   sp->pdf_document = NULL;
   sp->pdf_page = NULL;
   sp->pdf_index = NULL;
-
-  sp->orientation = EPDF_PAGE_ORIENTATION_PORTRAIT;
-  sp->hscale = 1.0;
-  sp->vscale = 1.0;
 
   return 1;
 }
@@ -143,6 +141,7 @@ esmart_pdf_file_set (Evas_Object *obj, const char *filename)
         epdf_index_delete (sp->pdf_index);
 
       sp->pdf_document = epdf_document_new (sp->filename);
+      sp->pdf_page = epdf_page_new (sp->pdf_document);
       sp->pdf_index = epdf_index_new (sp->pdf_document);
     }
 }
@@ -182,12 +181,13 @@ esmart_pdf_page_set (Evas_Object *obj, int page)
 
   E_SMART_OBJ_GET(sp, obj, E_OBJ_NAME);
 
-  if ((page >= epdf_document_page_count_get (sp->pdf_document)) ||
-      (page == sp->page))
+  if (!sp->pdf_document ||
+      (page < 0) ||
+      (page >= epdf_document_page_count_get (sp->pdf_document)) ||
+      (page == epdf_page_page_get (sp->pdf_page)))
     return;
 
-  sp->page = page;
-  _smart_page_render (obj);
+  epdf_page_page_set (sp->pdf_page, page);
 }
 
 /**
@@ -206,7 +206,152 @@ esmart_pdf_page_get(Evas_Object *obj)
 
   E_SMART_OBJ_GET_RETURN(sp, obj, E_OBJ_NAME, 0);
 
-  return sp->page;
+  return epdf_page_page_get (sp->pdf_page);
+}
+
+/**
+ * @brief Gets the native size of a smart pdf object
+ *
+ * @param obj The Evas object
+ * @param width the location where to set the native width of the pdf
+ * @param height the location where to set the native height of the pdf
+ */
+void esmart_pdf_size_get(Evas_Object *obj, int *width, int *height)
+{
+  Smart_Pdf *sp;
+
+  E_SMART_OBJ_GET(sp, obj, E_OBJ_NAME);
+
+   if (!sp)
+   {
+      if (width) *width = 0;
+      if (height) *height = 0;
+      return;
+   }
+
+   if (width) *width = epdf_page_width_get (sp->pdf_page);
+   if (height) *height = epdf_page_height_get (sp->pdf_page);
+}
+
+/**
+ * @brief Sets the orientation of a smart pdf object
+ *
+ * @param obj The Evas object
+ * @param o The orientation
+ */
+void
+esmart_pdf_orientation_set (Evas_Object          *obj,
+                            Epdf_Page_Orientation o)
+{
+  Smart_Pdf *sp;
+
+  E_SMART_OBJ_GET(sp, obj, E_OBJ_NAME);
+
+  if (!sp->pdf_page)
+    return;
+
+  epdf_page_orientation_set(sp->pdf_page, o);
+}
+
+/**
+ * @brief Gets the orientation of a smart pdf object
+ *
+ * @param obj The Evas object
+ * @return The orientation
+ */
+Epdf_Page_Orientation
+esmart_pdf_orientation_get (Evas_Object *obj)
+{
+  Smart_Pdf *sp;
+
+  E_SMART_OBJ_GET_RETURN(sp, obj, E_OBJ_NAME, EPDF_PAGE_ORIENTATION_PORTRAIT);
+
+  if (!sp->pdf_page)
+    return EPDF_PAGE_ORIENTATION_PORTRAIT;
+
+  return epdf_page_orientation_get(sp->pdf_page);
+}
+
+/**
+ * @brief Sets the scale of the PDF document
+ *
+ * @param obj The Evas object
+ * @param hscale The horizontal scale
+ * @param vscale The vertical scale
+ */
+void
+esmart_pdf_scale_set (Evas_Object *obj,
+                      double       hscale,
+                      double       vscale)
+{
+  Smart_Pdf *sp;
+
+  E_SMART_OBJ_GET(sp, obj, E_OBJ_NAME);
+
+  epdf_page_scale_set(sp->pdf_page, hscale, vscale);
+}
+
+/**
+ * @brief Gets the scale of the PDF document
+ *
+ * @param obj The Evas object
+ * @param hscale The horizontal scale
+ * @param vscale The vertical scale
+ */
+void
+esmart_pdf_scale_get (Evas_Object *obj,
+                      double      *hscale,
+                      double      *vscale)
+{
+  Smart_Pdf *sp;
+
+  E_SMART_OBJ_GET(sp, obj, E_OBJ_NAME);
+
+  if (!sp) {
+     if (hscale) *hscale = 1.0;
+     if (vscale) *vscale = 1.0;
+     return;
+  }
+
+  epdf_page_scale_get(sp->pdf_page, hscale, vscale);
+}
+
+/**
+ * @brief Go to the next page
+ *
+ * @param obj: the smart object
+ */
+void
+esmart_pdf_page_next (Evas_Object *obj)
+{
+  Smart_Pdf *sp;
+  int        page;
+
+  E_SMART_OBJ_GET(sp, obj, E_OBJ_NAME);
+
+  page = epdf_page_page_get (sp->pdf_page);
+  if (page < (epdf_document_page_count_get(sp->pdf_document) - 1))
+    page++;
+  esmart_pdf_page_set (obj, page);
+}
+
+/**
+ * @brief Go to the previous page
+ *
+ * @param obj: the smart object
+ */
+void
+esmart_pdf_page_previous (Evas_Object *obj)
+{
+  Smart_Pdf *sp;
+  int        page;
+
+  E_SMART_OBJ_GET(sp, obj, E_OBJ_NAME);
+
+  page = epdf_page_page_get (sp->pdf_page);
+  if (page > 0)
+    page--;
+  esmart_pdf_page_set (obj, page);
 }
 
 /**
@@ -267,178 +412,32 @@ esmart_pdf_pdf_index_get (Evas_Object *obj)
 }
 
 /**
- * @brief Gets the native size of a smart pdf object
+ * @brief Render the current page
  *
- * @param obj The Evas object
- * @param width the location where to set the native width of the pdf
- * @param height the location where to set the native height of the pdf
+ * @param obj: the smart object
  */
-void esmart_pdf_size_get(Evas_Object *obj, int *width, int *height)
-{
-  Smart_Pdf *sp;
-
-  E_SMART_OBJ_GET(sp, obj, E_OBJ_NAME);
-
-   if (!sp)
-   {
-      if (width)
-	 *width = 0;
-      if (height)
-	 *height = 0;
-   }
-   else {
-      if (width)
-	 *width = epdf_page_width_get (sp->pdf_page);
-      if (height)
-	 *height = epdf_page_height_get (sp->pdf_page);
-   }
-}
-
 void
-esmart_pdf_orientation_set (Evas_Object          *obj,
-                            Epdf_Page_Orientation o)
+esmart_pdf_render (Evas_Object *obj)
 {
   Smart_Pdf *sp;
 
-  E_SMART_OBJ_GET(sp, obj, E_OBJ_NAME);
+  E_SMART_OBJ_GET (sp, obj, E_OBJ_NAME);
 
-  if (o == sp->orientation)
-    return;
+  if (!sp->filename) return;
 
-  sp->orientation = o;
-  _smart_page_render (obj);
+  if (sp->pdf_document)
+    {
+      if (sp->obj)
+        {
+          epdf_page_render (sp->pdf_page, sp->obj);
+        }
+      evas_object_show (sp->obj);
+    }
 }
 
-Epdf_Page_Orientation
-esmart_pdf_orientation_get (Evas_Object *obj)
-{
-  Smart_Pdf *sp;
-
-  E_SMART_OBJ_GET_RETURN(sp, obj, E_OBJ_NAME, EPDF_PAGE_ORIENTATION_PORTRAIT);
-
-  return sp->orientation;
-}
-
-void
-esmart_pdf_scale_set (Evas_Object *obj,
-                      double       hscale,
-                      double       vscale)
-{
-  Smart_Pdf *sp;
-
-  E_SMART_OBJ_GET(sp, obj, E_OBJ_NAME);
-
-  if (hscale != sp->hscale)
-    sp->hscale = hscale;
-
-  if (vscale != sp->vscale)
-    sp->vscale = vscale;
-
-  _smart_page_render (obj);
-}
-
-void
-esmart_pdf_scale_get (Evas_Object *obj,
-                      double      *hscale,
-                      double      *vscale)
-{
-  Smart_Pdf *sp;
-
-  E_SMART_OBJ_GET(sp, obj, E_OBJ_NAME);
-
-  if (!sp) {
-     if (hscale)
-        *hscale = 1.0;
-
-     if (vscale)
-        *vscale = 1.0;
-  }
-  else {
-     if (hscale)
-        *hscale = sp->hscale;
-
-      if (vscale)
-         *vscale = sp->vscale;
-  }
-}
-
-void
-esmart_pdf_page_next (Evas_Object *obj)
-{
-  Smart_Pdf *sp;
-  int        page;
-
-  E_SMART_OBJ_GET(sp, obj, E_OBJ_NAME);
-
-  page = sp->page;
-  if (page < (epdf_document_page_count_get(sp->pdf_document) - 1))
-    page++;
-  esmart_pdf_page_set (obj, page);
-}
-
-void
-esmart_pdf_page_previous (Evas_Object *obj)
-{
-  Smart_Pdf *sp;
-  int        page;
-
-  E_SMART_OBJ_GET(sp, obj, E_OBJ_NAME);
-
-  page = sp->page;
-  if (page > 0)
-    page--;
-  esmart_pdf_page_set (obj, page);
-}
-
-void
-esmart_pdf_page_page_length_set (Evas_Object *obj, int page_length)
-{
-  Smart_Pdf *sp;
-
-  E_SMART_OBJ_GET(sp, obj, E_OBJ_NAME);
-
-  if ((page_length <= 0) || (sp->page_length == page_length))
-    return;
-  sp->page_length = page_length;
-}
-
-int
-esmart_pdf_page_page_length_get (Evas_Object *obj)
-{
-  Smart_Pdf *sp;
-
-  E_SMART_OBJ_GET_RETURN(sp, obj, E_OBJ_NAME, 0);
-
-  return sp->page_length;
-}
-
-void
-esmart_pdf_page_page_next (Evas_Object *obj)
-{
-  Smart_Pdf *sp;
-  int        page;
-
-  E_SMART_OBJ_GET(sp, obj, E_OBJ_NAME);
-
-  page = sp->page + sp->page_length;
-  if (page > (epdf_document_page_count_get(sp->pdf_document) - 1))
-    page = epdf_document_page_count_get(sp->pdf_document) - 1;
-  esmart_pdf_page_set (obj, sp->page);
-}
-
-void
-esmart_pdf_page_page_previous (Evas_Object *obj)
-{
-  Smart_Pdf *sp;
-  int        page;
-
-  E_SMART_OBJ_GET(sp, obj, E_OBJ_NAME);
-
-  page = sp->page - sp->page_length;
-  if (page < 0)
-    page = 0;
-  esmart_pdf_page_set (obj, page);
-}
+/**
+ * @}
+ */
 
 
 /*******************************************/
@@ -582,28 +581,4 @@ _smart_clip_unset (Evas_Object *obj)
   if (!sp) return;
 
   evas_object_clip_unset (sp->obj);
-}
-
-static void
-_smart_page_render (Evas_Object *obj)
-{
-  Smart_Pdf *sp;
-
-  E_SMART_OBJ_GET (sp, obj, E_OBJ_NAME);
-
-  if (!sp->filename) return;
-
-  if (sp->pdf_document)
-    {
-      if (sp->pdf_page)
-        epdf_page_delete (sp->pdf_page);
-      if (sp->obj)
-        {
-          sp->pdf_page = epdf_page_new (sp->pdf_document, sp->page);
-          epdf_page_render (sp->pdf_page, sp->obj, sp->orientation,
-                            0, 0, -1, -1,
-                            sp->hscale, sp->vscale);
-        }
-      evas_object_show (sp->obj);
-    }
 }

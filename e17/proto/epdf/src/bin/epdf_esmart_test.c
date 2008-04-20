@@ -49,7 +49,7 @@ main (int argc, char *argv[])
   ecore_evas_name_class_set(ee, "esmart_pdf_test", "test_esmart_pdf");
   ecore_evas_callback_resize_set(ee, app_resize);
   ecore_evas_show(ee);
-  
+
   evas = ecore_evas_get(ee);
 
   bg = evas_object_rectangle_add(evas);
@@ -67,12 +67,12 @@ main (int argc, char *argv[])
   }
   esmart_pdf_file_set (o, filename);
   esmart_pdf_page_set (o, page_number);
-  esmart_pdf_scale_set (o, 0.5, 0.5);
+  esmart_pdf_render (o);
   evas_object_move (o, 0, 0);
   evas_object_show (o);
 
   ecore_main_loop_begin ();
-   
+
   ecore_evas_shutdown ();
   ecore_shutdown ();
   evas_shutdown ();
@@ -86,7 +86,7 @@ app_resize(Ecore_Evas *ee)
    Evas_Coord w, h;
    Evas *evas;
    Evas_Object *bg;
-   
+
    evas = ecore_evas_get(ee);
    evas_output_viewport_get(evas, NULL, NULL, &w, &h);
    bg = ecore_evas_data_get(ee, "bg");

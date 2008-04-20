@@ -22,30 +22,30 @@ lib_LTLIBRARIES = libepdf.la
 
 EPDFHEADERS = \
 Epdf.h \
-poppler_document.h \
-poppler_enum.h \
-poppler_fontinfo.h \
-poppler_forward.h \
-poppler.h \
-poppler_index.h \
-poppler_page.h \
-poppler_page_transition.h \
-poppler_postscript.h \
+epdf_document.h \
+epdf_enum.h \
+epdf_fontinfo.h \
+epdf_forward.h \
+epdf_main.h \
+epdf_index.h \
+epdf_page.h \
+epdf_page_transition.h \
+epdf_postscript.h \
+epdf_private.h \
 esmart_pdf.h \
 $(EPDF_EWL_HEADER) \
 $(EPDF_ETK_HEADER)
 
 libepdf_la_SOURCES = \
-poppler.cpp \
-poppler_document.cpp \
-poppler_fontinfo.cpp \
-poppler_index.cpp \
-poppler_page.cpp \
-poppler_page_transition.cpp \
-poppler_postscript.cpp \
+epdf_main.cpp \
+epdf_document.cpp \
+epdf_fontinfo.cpp \
+epdf_index.cpp \
+epdf_page.cpp \
+epdf_page_transition.cpp \
+epdf_postscript.cpp \
 esmart_pdf.c \
 $(EPDFHEADERS) \
-poppler_private.h \
 $(EPDF_EWL_WIDGET) \
 $(EPDF_ETK_WIDGET)
 

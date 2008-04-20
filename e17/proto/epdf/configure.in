@@ -30,34 +30,36 @@ case "$host_os" in
 esac
 AC_SUBST(create_shared_lib)
 
+dnl Checking for __attribute__ support
+AC_MSG_CHECKING([for __attribute__])
+AC_CACHE_VAL(_cv_have___attribute__,
+  [
+    AC_TRY_COMPILE([#include <stdlib.h>],
+      [int func(int x); int foo(int x __attribute__ ((unused))) { exit(1); }],
+      [_cv_have___attribute__="yes"],
+      [_cv_have___attribute__="no"])
+  ]
+)
+
+if test "x${_cv_have___attribute__}" = "xyes" ; then
+   AC_DEFINE(HAVE___ATTRIBUTE__, 1, [Define to 1 if your compiler has __attribute__])
+fi
+AC_MSG_RESULT(${_cv_have___attribute__})
+
 evas_version=0.9.9
 ecore_version=0.9.9
 
-PKG_CHECK_MODULES(EFL,
-   [ evas >= ${evas_version} ecore >= ${ecore_version} ]
+PKG_CHECK_MODULES(EPDF,
+   [ evas >= ${evas_version} ecore >= ${ecore_version}  poppler >= 0.6 ]
 )
 
 PKG_CHECK_MODULES(ECORE_EVAS,
    [ ecore-evas >= ${ecore_version} ]
 )
 
-PKG_CHECK_MODULES(POPPLER, [ poppler >= 0.6 ],
-   [
-    have_poppler_0_6="yes"
-    AC_DEFINE([HAVE_POPPLER_0_6], [1], [Define to 1 if you have Poppler 0.6.])
-   ],
-   [ have_poppler_0_6="no" ]
-)
-if test "x$have_poppler_0_6" = "xno"; then
-   PKG_CHECK_MODULES(POPPLER, [ poppler >= 0.5.4 ],
-      [ ],
-      [ AC_MSG_ERROR([No supported Poppler found.]) ]
-   )
-fi
-
 AC_LANG_PUSH(C++)
 CPPFLAGS_save=$CPPFLAGS
-CPPFLAGS="$CPPFLAGS $POPPLER_CFLAGS"
+CPPFLAGS="$CPPFLAGS $EPDF_CFLAGS"
 AC_CHECK_HEADER([GlobalParams.h],
    [ dummy="yes" ],
    [ AC_MSG_ERROR([Xpdf headers not found. Did you configure poppler with the option --enable-xpdf-headers ?])]
@@ -67,11 +69,6 @@ AC_LANG_POP(C++)
 
 POPPLER_VERSION=`pkg-config --modversion poppler`
 AC_DEFINE_UNQUOTED([POPPLER_VERSION], ["${POPPLER_VERSION}"], [Poppler version.])
-
-EPDF_CFLAGS="$POPPLER_CFLAGS $EFL_CFLAGS"
-EPDF_LIBS="$POPPLER_LIBS $EFL_LIBS"
-AC_SUBST(EPDF_CFLAGS)
-AC_SUBST(EPDF_LIBS)
 
 requirements="poppler evas ecore"
 

@@ -48,7 +48,7 @@ _tree_fill (Ewl_Widget *pdf, Ecore_List *items)
     free (data);
     return NULL;
   }
-  
+
   ecore_list_first_goto (items);
   while ((item = ecore_list_next (items))) {
     Ecore_List *c;
@@ -82,7 +82,7 @@ static void *tree_data_fetch(void *data, unsigned int row, unsigned int column)
   return d->rows[row]->text;
 }
 
-static int
+static unsigned int
 tree_data_count_get (void *data)
 {
   Tree_Data *d;
@@ -227,7 +227,7 @@ main (int argc, char *argv[])
     ecore_list_append(str_data, txt);
   }
 
-  model = ewl_model_ecore_list_get();
+  model = ewl_model_ecore_list_instance();
 
   list = ewl_list_new ();
   ewl_object_fill_policy_set (EWL_OBJECT (list), EWL_FLAG_FILL_ALL);
@@ -267,29 +267,31 @@ static void
 _change_page_cb (Ewl_Widget *widget, void *ev_data, void *user_data)
 {
   Ewl_Pdf           *pdf;
-  Ecore_List        *el;
-  Ewl_Selection_Idx *idx;
+  Ewl_Selection_Idx *sel;
 
   if (ewl_widget_type_is (widget, "list")) {
-    el = ewl_mvc_data_get (EWL_MVC (widget));
-    idx = ewl_mvc_selected_get (EWL_MVC (widget));
+/*     sel = ewl_mvc_selected_get (EWL_MVC (widget)); */
 
-    pdf = EWL_PDF (user_data);
-    if (idx->row != ewl_pdf_page_get (pdf)) {
-      ewl_pdf_page_set (pdf, idx->row);
-      ewl_callback_call (EWL_WIDGET (pdf), EWL_CALLBACK_REVEAL);
-    }
+/*     pdf = EWL_PDF (user_data); */
+/*     if (idx->row != ewl_pdf_page_get (pdf)) { */
+/*       ewl_pdf_page_set (pdf, idx->row); */
+/*       ewl_callback_call (EWL_WIDGET (pdf), EWL_CALLBACK_REVEAL); */
+/*     } */
   }
   else {
-    Ewl_Selection *sel;
     Tree_Data     *data;
+    Tree_Row_Data *row_data;
 
-    el = ewl_mvc_selected_list_get (EWL_MVC (widget));
-    sel = ecore_list_first_goto (el);
-    idx = EWL_SELECTION_IDX(sel);
-    if (!idx) printf ("pas de idx\n");
-    data = (Tree_Data *)ewl_mvc_data_get (EWL_MVC (widget));
-    if (idx)
-      printf ("row %d\n", idx->row);
+    printf ("1\n");
+    sel = ewl_mvc_selected_get (EWL_MVC (widget));
+    if (!sel) return;
+    printf ("2 %d\n\n", sel->row);
+    data = (Tree_Data *)EWL_SELECTION(sel)->data;
+    row_data = data->rows[sel->row];
+    if (row_data) {
+      printf ("3 %d\n\n", row_data->page);
+      ewl_pdf_page_set (pdf, row_data->page);
+      ewl_callback_call (EWL_WIDGET (pdf), EWL_CALLBACK_REVEAL);
+    }
   }
 }

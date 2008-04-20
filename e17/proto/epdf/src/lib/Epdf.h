@@ -2,14 +2,104 @@
 #define __EPDF_H__
 
 
-#include "poppler_enum.h"
-#include "poppler_fontinfo.h"
-#include "poppler_page_transition.h"
-#include "poppler_page.h"
-#include "poppler_document.h"
-#include "poppler_index.h"
-#include "poppler_postscript.h"
-#include "poppler.h"
+/**
+ * @mainpage Epdf library
+ *
+ * @section intro_sec Introduction
+ *
+ * Epdf is a library that provides a C interface to the Poppler library
+ * to render PDF documents in different ways, using an Evas frontend.
+ * Straight Evas can be used, but several widgets implementations can
+ * integrate a PDF document in an Edje user interface using an Evas
+ * smart object, or Ewl or Etk user interface using respective widgets.
+ *
+ * @section install_sec Installation
+ *
+ * The Epdf library requires Evas, Ecore and Poppler to be installed.
+ *
+ * If the Ewl or Etk toolkits are available, then respective widgets
+ * will be built. Also, an Ewl test will be installed.
+ *
+ * If Epsilon is available, then an Epsilon plugin to create PDF
+ * thumbnails will be installed.
+ *
+ * @subsection api_sec API Documentation
+ *
+ * For the Epdf library, the complete api can be read in the
+ * section @ref Epdf.
+ *
+ * For the Esmart object library, the complete api can be read in the
+ * section @ref Esmart_Pdf.
+ *
+ * For the Ewl widget, the complete api can be read in the
+ * section @ref Ewl_Pdf.
+ *
+ * For the Etk widget, the complete api can be read in the
+ * section @ref Etk_Pdf.
+ */
+
+
+/**
+ * @file Epdf.h
+ * @defgroup Epdf  Epdf
+ * @brief A Pdf library that renders PDF documents
+ *
+ * The Epdf library provides a set of functions to manage PDF documents.
+ * It wraps the functions of the Poppler library in a C API and uses
+ * Evas as front end.
+ *
+ * The simplest way to use Epdf is to load a document using
+ * epdf_document_new(), to create a page using epdf_page_new() and to
+ * render the page in an Evas object using epdf_page_render(). Here is
+ * an example:
+ *
+ * @code
+ * Epdf_Document *document;
+ * Epdf_Page     *page;
+ * char          *filename;
+ *
+ * document = epdf_document_new (filename);
+ * if (!document) {
+ *   // manage error here
+ * }
+ *
+ * page = epdf_page_new (document, page_number);
+ * if (!page) {
+ *   // manage error here
+ * }
+ *
+ * o = evas_object_image_add (evas);
+ * evas_object_move (o, 0, 0);
+ * epdf_page_render (page, device, o,
+                     EPDF_PAGE_ORIENTATION_PORTRAIT,
+                     0, 0, -1, -1,
+                     1.0, 1.0););
+ * evas_object_show (o);
+ *
+ * epdf_page_delete (document);
+ * epdf_document_delete (document);
+ * @endcode
+ */
+
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+
+#include "epdf_enum.h"
+#include "epdf_fontinfo.h"
+#include "epdf_page_transition.h"
+#include "epdf_page.h"
+#include "epdf_document.h"
+#include "epdf_index.h"
+#include "epdf_postscript.h"
+#include "epdf_main.h"
+
+
+#ifdef __cplusplus
+}
+#endif
 
 
 #endif /* __EPDF_H__ */

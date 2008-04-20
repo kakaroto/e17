@@ -43,12 +43,13 @@ main (int argc, char *argv[])
     return EXIT_FAILURE;
   }
 
-  page = epdf_page_new (document, page_number);
+  page = epdf_page_new (document);
   if (!page) {
     printf ("Bad page\n");
     epdf_document_delete (document);
     return EXIT_FAILURE;
   }
+  epdf_page_page_set (page, page_number);
 
   document_info_print (document, page);
 
@@ -88,10 +89,7 @@ main (int argc, char *argv[])
 
   o = evas_object_image_add (evas);
   evas_object_move (o, 0, 0);
-  epdf_page_render (page, o,
-                    EPDF_PAGE_ORIENTATION_PORTRAIT,
-                    0, 0, -1, -1,
-                    1.0, 1.0);
+  epdf_page_render (page, o);
   evas_object_show (o);
   ecore_evas_resize (ee, epdf_page_width_get (page), epdf_page_height_get (page));
 
@@ -154,6 +152,7 @@ document_info_print (Epdf_Document *document, Epdf_Page *page)
   char           *mod_date;
   const char     *page_mode;
   const char     *page_layout;
+  const char     *orientation;
 
   printf ("\n");
   printf ("  Poppler version....: %s\n", epdf_poppler_version_get ());
@@ -235,9 +234,24 @@ document_info_print (Epdf_Document *document, Epdf_Page *page)
   printf ("  Page Properties:\n");
   printf ("\n");
 
-  printf ("  Number.............: %d\n", epdf_page_number_get (page));
+  printf ("  Number.............: %d\n", epdf_page_page_get (page));
   printf ("  Size (pixels)......: %d x %d\n", epdf_page_width_get (page), epdf_page_height_get (page));
-  printf ("  Orientation........: %s\n", epdf_page_orientation_name_get (page));
+  switch (epdf_page_orientation_get (page))
+    {
+    case EPDF_PAGE_ORIENTATION_PORTRAIT:
+      orientation = "portrait";
+      break;
+    case EPDF_PAGE_ORIENTATION_LANDSCAPE:
+      orientation = "landscape";
+      break;
+    case EPDF_PAGE_ORIENTATION_UPSIDEDOWN:
+      orientation = "upside down";
+      break;
+    case EPDF_PAGE_ORIENTATION_SEASCAPE:
+      orientation = "seascape";
+      break;
+    }
+  printf ("  Orientation........: %s\n", orientation);
 
   printf ("\n");
 

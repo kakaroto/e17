@@ -1,3 +1,49 @@
+2008-04-20  Vincent Torri  <doursse at users dot sf dot net>
+
+	rename poppler* files to epdf* files.
+	remove poppler 0.4 support (too old)
+
+	* configure.in:
+	add __attribute__ check
+
+	* src/bin/epdf_esmart_test.c: (main), (app_resize):
+	* src/bin/epdf_evas_test.c: (main), (document_info_print):
+	* src/bin/epdf_ewl_test.c: (_tree_fill), (main), (_change_page_cb):
+	* src/lib/Epdf.h:
+	* src/lib/Makefile.am:
+	* src/lib/esmart_pdf.c: (esmart_pdf_init), (esmart_pdf_file_set),
+	(esmart_pdf_page_set), (esmart_pdf_page_get),
+	(esmart_pdf_size_get), (esmart_pdf_orientation_set),
+	(esmart_pdf_orientation_get), (esmart_pdf_scale_set),
+	(esmart_pdf_scale_get), (esmart_pdf_page_next),
+	(esmart_pdf_page_previous), (esmart_pdf_pdf_document_get),
+	(esmart_pdf_pdf_page_get), (esmart_pdf_pdf_index_get),
+	(esmart_pdf_render), (_smart_clip_unset):
+	* src/lib/esmart_pdf.h:
+	* src/lib/etk_pdf.c: (etk_pdf_file_set), (etk_pdf_page_set),
+	(etk_pdf_page_get), (etk_pdf_size_get), (etk_pdf_orientation_set),
+	(etk_pdf_orientation_get), (etk_pdf_scale_set),
+	(etk_pdf_scale_get), (etk_pdf_page_next), (etk_pdf_page_previous),
+	(etk_pdf_pdf_document_get), (etk_pdf_pdf_page_get),
+	(etk_pdf_pdf_index_get), (_etk_pdf_constructor),
+	(_etk_pdf_realize_cb), (_etk_pdf_unrealize_cb), (_etk_pdf_load):
+	* src/lib/etk_pdf.h:
+	* src/lib/ewl_pdf.c: (ewl_pdf_init), (ewl_pdf_file_set),
+	(ewl_pdf_file_get), (ewl_pdf_page_set), (ewl_pdf_page_get),
+	(ewl_pdf_pdf_size_get), (ewl_pdf_orientation_set),
+	(ewl_pdf_orientation_get), (ewl_pdf_scale_set),
+	(ewl_pdf_scale_get), (ewl_pdf_page_next), (ewl_pdf_page_previous),
+	(ewl_pdf_search_next), (ewl_pdf_pdf_document_get),
+	(ewl_pdf_pdf_page_get), (ewl_pdf_pdf_index_get),
+	(ewl_pdf_configure_cb), (ewl_pdf_reveal_cb):
+	* src/lib/ewl_pdf.h:
+	* src/plugins/epsilon/epsilon_thumbnailer.c:
+	(epsilon_generate_thumb):
+	big fat API break. Add epdf_page_render_slice to render only a
+	part of a page. epdf_page_render renders the whole page. *_set
+	functions change the epdf context only. epdf_page_render will use
+	that context.
+
 2008-01-28  Vincent Torri  <doursse at users dot sf dot net>
 
 	* src/plugins/ewl/ewl_pdf.c:
