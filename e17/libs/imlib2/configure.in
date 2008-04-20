@@ -194,13 +194,13 @@ if test "x$have_x" = "xyes"; then
   x_dir=${x_dir:-/usr/X11R6}
   x_cflags=${x_cflags:--I${x_includes:-$x_dir/include}}
   x_libs="${x_libs:--L${x_libraries:-$x_dir/lib}} -lX11 -lXext"
-  AM_CONDITIONAL(BUILD_X11, true)
   AC_DEFINE(BUILD_X11, 1, [enabling X11 support])
 else
   x_cflags=""
   x_libs=""
-  AM_CONDITIONAL(BUILD_X11, false)
+  have_x="no"
 fi
+AM_CONDITIONAL(BUILD_X11, test "x$have_x" = "xyes")
 
 dlopen_libs=""
 AC_CHECK_LIB(dl, dlopen, dlopen_libs=-ldl)
@@ -610,6 +610,7 @@ echo "  GIF.....................: $gif_ok"
 echo "  ZLIB....................: $zlib_ok"
 echo "  BZIP2...................: $bz2_ok"
 echo "  ID3.....................: $id3_ok"
+echo "  X.......................: $have_x"
 echo
 echo
 echo "Use X86 MMX for speed.....: $mmx"
