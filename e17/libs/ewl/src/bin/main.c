@@ -1355,9 +1355,9 @@ ewl_cb_mvc_free(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 	Ewl_Model *model;
 	Ewl_View *view;
 
-	model = ewl_mvc_model_get(EWL_MVC(w));
+	model = (Ewl_Model *)ewl_mvc_model_get(EWL_MVC(w));
 	free(model);
 
-	view = ewl_mvc_view_get(EWL_MVC(w));
+	view = (Ewl_View *)ewl_mvc_view_get(EWL_MVC(w));
 	free(view);
 }
