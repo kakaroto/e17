@@ -45,7 +45,7 @@ struct Ewl_Tree_View_Freebox
 	Ewl_Widget *scroll;		/**< The scroll region */
 };
 
-Ewl_View 	*ewl_tree_view_freebox_get(void);
+const Ewl_View 	*ewl_tree_view_freebox_get(void);
 Ewl_Widget	*ewl_tree_view_freebox_new(void);
 int		 ewl_tree_view_freebox_init(Ewl_Tree_View_Freebox *tv);
 

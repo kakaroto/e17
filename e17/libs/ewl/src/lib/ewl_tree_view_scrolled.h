@@ -51,7 +51,7 @@ struct Ewl_Tree_View_Scrolled
 	unsigned char scroll_visible:1;	/**< Do we we show the headers */
 };
 
-Ewl_View	*ewl_tree_view_scrolled_get(void);
+const Ewl_View	*ewl_tree_view_scrolled_get(void);
 
 Ewl_Widget	*ewl_tree_view_scrolled_new(void);
 int		 ewl_tree_view_scrolled_init(Ewl_Tree_View_Scrolled *tv);

@@ -15,7 +15,7 @@ static Ewl_View *ewl_tree_view_plain_view = NULL;
  * @return Returns a default Ewl_Tree_View_Plain struct
  * @brief Retrieves a shared Ewl_Tree_View_Plain widget
  */
-Ewl_View *
+const Ewl_View *
 ewl_tree_view_plain_get(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);

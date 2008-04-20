@@ -16,7 +16,7 @@ static Ewl_Widget *ewl_tree_view_freebox_cb_widget_fetch(void *data,
  * @return Returns the view for this widget
  * @brief Retrieves the view for this widget
  */
-Ewl_View *
+const Ewl_View *
 ewl_tree_view_freebox_get(void)
 {
 	DENTER_FUNCTION(DLEVEL_STABLE);

@@ -141,7 +141,7 @@ ewl_filelist_setup(Ewl_Filelist *fl)
 static void
 ewl_filelist_view_setup(Ewl_Filelist *fl)
 {
-	Ewl_View *view;
+	const Ewl_View *view;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(fl);
