@@ -460,7 +460,7 @@ static void
 ewl_tree_cb_plain_view(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 {
 	Ewl_Tree *tree;
-	Ewl_View *view;
+	const Ewl_View *view;
 
 	tree = data;
 	if (ewl_checkbutton_is_checked(EWL_CHECKBUTTON(w)))
