@@ -145,7 +145,6 @@ ewl_tree_headers_visible_set(Ewl_Tree *tree, unsigned char visible)
 		DRETURN(DLEVEL_STABLE);
 
 	tree->headers_visible = !!visible;
-	tree->headers_dirty = TRUE;
 
 	if (!tree->headers_visible)
 		ewl_widget_hide(tree->header);
@@ -218,6 +217,8 @@ ewl_tree_alternate_row_colors_get(Ewl_Tree *tree)
 void
 ewl_tree_column_count_set(Ewl_Tree *tree, unsigned int count)
 {
+	int i;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(tree);
 	DCHECK_TYPE(tree, EWL_TREE_TYPE);
@@ -226,7 +227,16 @@ ewl_tree_column_count_set(Ewl_Tree *tree, unsigned int count)
 		DRETURN(DLEVEL_STABLE);
 	
 	tree->columns = count;
-	tree->headers_dirty = TRUE;
+	ewl_container_reset(EWL_CONTAINER(tree->header));
+
+	for (i = 0; i < tree->columns; i++) {
+		Ewl_Widget *h;
+
+		h = ewl_hbox_new();
+		ewl_container_child_append(EWL_CONTAINER(tree->header), h);
+		ewl_widget_appearance_set(h, "header");
+		ewl_widget_show(h);
+	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -553,6 +563,15 @@ ewl_tree_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 
 	tree = EWL_TREE(w);
 
+	if (!tree->headers_visible)
+	{
+		/* Since the header is invisible we need to tell it its
+		 * position and its size to arrange correctly */
+		ewl_object_x_request(EWL_OBJECT(tree->header), CURRENT_X(w));
+		ewl_object_w_request(EWL_OBJECT(tree->header), CURRENT_W(w));
+		ewl_paned_arrange(EWL_PANED(tree->header));
+	}
+
 	/* if the tree isn't dirty we're done */
 	if (!ewl_mvc_dirty_get(EWL_MVC(tree)))
 		DRETURN(DLEVEL_STABLE);
@@ -746,29 +765,6 @@ ewl_tree_headers_build(Ewl_Tree *tree, const Ewl_Model *model, void *mvc_data)
 	DCHECK_TYPE(tree, EWL_TREE_TYPE);
 
 	header = EWL_CONTAINER(tree->header);
-
-	/* if the header is not visible, reset it */
-	if (!tree->headers_visible)
-	{
-		ewl_container_reset(header);
-		DRETURN(DLEVEL_STABLE);
-	}
-
-	/* first check if the count of the columns has changed */
-	if (tree->headers_dirty)
-	{
-		ewl_container_reset(header);
-
-		for (i = 0; i < tree->columns; i++) {
-			Ewl_Widget *h;
-
-			h = ewl_hbox_new();
-			ewl_container_child_append(header, h);
-			ewl_widget_appearance_set(h, "header");
-			ewl_widget_show(h);
-		}
-		tree->headers_dirty = FALSE;
-	}
 
 	ewl_container_child_iterate_begin(header);
 	for (i = 0; i < tree->columns; i++)

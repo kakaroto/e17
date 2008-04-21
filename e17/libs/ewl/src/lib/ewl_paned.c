@@ -515,18 +515,20 @@ ewl_paned_cb_child_hide(Ewl_Container *c, Ewl_Widget *w)
 }
 
 /**
- * @internal
- * @param w: The widget to work with
- * @param ev: UNUSED
- * @param data: UNUSED
+ * @param w: The paned to work with
  * @return Returns no value
- * @brief The configure callback
+ * @brief The arrange the child widgets
+ *
+ * This function is not to be intended to be used, if the widget is visible. Its
+ * purpose is to calculate the new position of the children even if the widget
+ * is hidden. This is useful if the paned serves as a size giver for a row,
+ * like in it is done in the tree widget. Use this function only if you know
+ * what you are doing.
  */
 void
-ewl_paned_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
-					void *data __UNUSED__)
+ewl_paned_arrange(Ewl_Paned *p)
 {
-	Ewl_Paned *p;
+	Ewl_Widget *w;
 	Ewl_Container *c;
 	Ewl_Paned_Pane_Info *panes;
 	int available, pane_num;
@@ -535,10 +537,10 @@ ewl_paned_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 	int used_size;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_PANED_TYPE);
+	DCHECK_PARAM_PTR(p);
+	DCHECK_TYPE(p, EWL_PANED_TYPE);
 
-	p = EWL_PANED(w);
+	w = EWL_WIDGET(p);
 	c = EWL_CONTAINER(p);
 
 	if (ewl_paned_orientation_get(p) == EWL_ORIENTATION_HORIZONTAL)
@@ -584,6 +586,27 @@ ewl_paned_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 
 	p->last_size = used_size;
 	p->last_pos = main_pos;
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev: UNUSED
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief The configure callback
+ */
+void
+ewl_paned_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
+					void *data __UNUSED__)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(w, EWL_PANED_TYPE);
+
+	ewl_paned_arrange(EWL_PANED(w));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
