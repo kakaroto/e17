@@ -19,6 +19,7 @@
  * Return a new Epdf_Font_Info structure
  *
  * @param font_name The name of the font
+ * @param font_path The path of the font
  * @param is_embedded Set the font as embedded
  * @param is_subset Set the font as subset
  * @param type The type of the font
