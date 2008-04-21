@@ -158,8 +158,6 @@ epdf_page_render_slice (Epdf_Page *page, Evas_Object *o, int x, int y, int w, in
   unsigned int    *m = NULL;
   double           hscale;
   double           vscale;
-  unsigned int     val;
-  int              offset = 0;
   int              rotate;
   int              width;
   int              height;

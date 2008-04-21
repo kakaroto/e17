@@ -16,6 +16,14 @@
 #include "epdf_private.h"
 #include "Epdf.h"
 
+
+#if HAVE___ATTRIBUTE__
+# define __UNUSED__ __attribute__((unused))
+#else
+# define __UNUSED__
+#endif
+
+
 Epdf_Document *
 epdf_document_new (const char *filename)
 {
@@ -172,7 +180,7 @@ epdf_document_is_locked (Epdf_Document *document)
 }
 
 const char *
-epdf_document_info_get (Epdf_Document *document, const char *data)
+epdf_document_info_get (Epdf_Document *document __UNUSED__, const char *data __UNUSED__)
 {
   return NULL;
 }
