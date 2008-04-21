@@ -243,6 +243,118 @@ ewl_tree_column_count_set(Ewl_Tree *tree, unsigned int count)
 
 /**
  * @param tree: The tree to work with
+ * @param col: The number of the column to change the fixed size flag
+ * @return Returns no value
+ * @brief Set the fixed size flag of the give column
+ */
+void
+ewl_tree_column_fixed_size_set(Ewl_Tree *tree, unsigned int col, unsigned int fixed)
+{
+	Ewl_Widget *box;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(tree);
+	DCHECK_TYPE(tree, EWL_TREE_TYPE);
+
+	if (col >= tree->columns)
+	{
+		DWARNING("parameter col is out of bounds (%i >= %i)",
+				col, tree->columns);
+		DRETURN(DLEVEL_STABLE);
+	}
+
+	box = ewl_container_child_get(EWL_CONTAINER(tree->header), col);	
+	ewl_paned_fixed_size_set(EWL_PANED(tree->header), box, fixed);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param tree: The tree to work with
+ * @param col: the column to get the fixed size flag
+ * @return Retrieve fixed size flag of the given column
+ */
+unsigned int
+ewl_tree_column_fixed_size_get(Ewl_Tree *tree, unsigned int col)
+{
+	unsigned int ret = 0;
+	Ewl_Widget *box;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET(tree, 0);
+	DCHECK_TYPE_RET(tree, EWL_TREE_TYPE, 0);
+
+	if (col >= tree->columns)
+	{
+		DWARNING("parameter col is out of bounds (%i >= %i)",
+				col, tree->columns);
+		DRETURN_INT(ret, DLEVEL_STABLE);
+	}
+
+	box = ewl_container_child_get(EWL_CONTAINER(tree->header), col);	
+	ret = ewl_paned_fixed_size_get(EWL_PANED(tree->header), box);
+
+	DRETURN_INT(ret, DLEVEL_STABLE);
+}
+
+/**
+ * @param tree: The tree to work with
+ * @param col: The number of the column to change the initial size
+ * @return Returns no value
+ * @brief Set the initial size of the give column
+ */
+void
+ewl_tree_column_initial_size_set(Ewl_Tree *tree, unsigned int col, int size)
+{
+	Ewl_Widget *box;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(tree);
+	DCHECK_TYPE(tree, EWL_TREE_TYPE);
+
+	if (col >= tree->columns)
+	{
+		DWARNING("parameter col is out of bounds (%i >= %i)",
+				col, tree->columns);
+		DRETURN(DLEVEL_STABLE);
+	}
+
+	box = ewl_container_child_get(EWL_CONTAINER(tree->header), col);	
+	ewl_paned_initial_size_set(EWL_PANED(tree->header), box, size);
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param tree: The tree to work with
+ * @param col: the column to get the initial size
+ * @return Retrieve initial size of the given column
+ */
+int
+ewl_tree_column_initial_size_get(Ewl_Tree *tree, unsigned int col)
+{
+	int ret = 0;
+	Ewl_Widget *box;
+
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR_RET(tree, 0);
+	DCHECK_TYPE_RET(tree, EWL_TREE_TYPE, 0);
+
+	if (col >= tree->columns)
+	{
+		DWARNING("parameter col is out of bounds (%i >= %i)",
+				col, tree->columns);
+		DRETURN_INT(ret, DLEVEL_STABLE);
+	}
+
+	box = ewl_container_child_get(EWL_CONTAINER(tree->header), col);	
+	ret = ewl_paned_initial_size_get(EWL_PANED(tree->header), box);
+
+	DRETURN_INT(ret, DLEVEL_STABLE);
+}
+
+/**
+ * @param tree: The tree to work with
  * @return Returns the number of columns in the tree
  * @brief Retrives the number of columns in the tree
  */

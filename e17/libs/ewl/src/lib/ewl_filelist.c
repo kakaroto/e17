@@ -194,6 +194,9 @@ ewl_filelist_view_setup(Ewl_Filelist *fl)
 	else
 	{
 		ewl_tree_column_count_set(EWL_TREE(fl->controller), 1);
+		/* XXX dirty hack, please remove it after we have a
+		 * freebox mvc implementation */
+		ewl_container_reset(EWL_CONTAINER(EWL_TREE(fl->controller)->header));
 		ewl_tree_headers_visible_set(EWL_TREE(fl->controller),
 								FALSE);
 		ewl_tree_alternate_row_colors_set
