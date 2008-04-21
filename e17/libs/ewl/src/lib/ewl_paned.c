@@ -149,6 +149,8 @@ ewl_paned_init(Ewl_Paned *p)
 					ewl_paned_cb_child_remove);
 	ewl_container_show_notify_set(EWL_CONTAINER(p),
 					ewl_paned_cb_child_show);
+	ewl_container_resize_notify_set(EWL_CONTAINER(p),
+					ewl_paned_cb_child_resize);
 	ewl_container_hide_notify_set(EWL_CONTAINER(p),
 					ewl_paned_cb_child_hide);
 
@@ -424,6 +426,46 @@ ewl_paned_cb_child_show(Ewl_Container *c, Ewl_Widget *w)
 
 	ewl_object_preferred_inner_size_set(EWL_OBJECT(c), cw, ch);
 	ewl_paned_grabbers_update(EWL_PANED(c));
+
+	DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * @param c: The container to work with
+ * @param w: The widget to work with
+ * @return Returns no value
+ * @brief The child show callback
+ */
+void
+ewl_paned_cb_child_resize(Ewl_Container *c, Ewl_Widget *w, int size, 
+							Ewl_Orientation o)
+{
+	DENTER_FUNCTION(DLEVEL_STABLE);
+	DCHECK_PARAM_PTR(c);
+	DCHECK_PARAM_PTR(w);
+	DCHECK_TYPE(c, EWL_PANED_TYPE);
+	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+
+	if (o == EWL_PANED(c)->orientation)
+	{
+		Ewl_Paned_Size_Info *info;
+
+		info = ewl_paned_size_info_get(EWL_PANED(c), w);
+		if (!info || !info->initial_size_has)
+		{
+			if (o == EWL_ORIENTATION_HORIZONTAL)
+				ewl_object_preferred_inner_w_set(
+						EWL_OBJECT(c), PREFERRED_W(c)
+						+ size);
+			else
+				ewl_object_preferred_inner_h_set(
+						EWL_OBJECT(c), PREFERRED_H(c)
+						+ size);
+		}
+	}
+	else
+		ewl_container_largest_prefer(c, o);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
