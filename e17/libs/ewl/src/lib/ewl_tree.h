@@ -130,14 +130,6 @@ int 		 ewl_tree_init(Ewl_Tree *tree);
 void		 ewl_tree_column_count_set(Ewl_Tree *tree,
 						unsigned int count);
 unsigned int	 ewl_tree_column_count_get(Ewl_Tree *tree);
-void		 ewl_tree_column_fixed_size_set(Ewl_Tree *tree, 
-					unsigned int col, unsigned int fixed);
-unsigned int	 ewl_tree_column_fixed_size_get(Ewl_Tree *tree, 
-					unsigned int col);
-void		 ewl_tree_column_initial_size_set(Ewl_Tree *tree, 
-					unsigned int col, int size);
-int		 ewl_tree_column_initial_size_get(Ewl_Tree *tree, 
-					unsigned int col);
 
 void		 ewl_tree_headers_visible_set(Ewl_Tree *tree,
 					       unsigned char visible);
