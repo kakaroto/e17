@@ -95,7 +95,7 @@ int		 ewl_paned_initial_size_get(Ewl_Paned *p, Ewl_Widget *child);
 void		 ewl_paned_fixed_size_set(Ewl_Paned *p, Ewl_Widget *child,
 						unsigned int fixed);
 unsigned int	 ewl_paned_fixed_size_get(Ewl_Paned *p, Ewl_Widget *child);
-void		 ewl_paned_arrange(Ewl_Paned *p);
+void		 ewl_paned_arrange(Ewl_Paned *p, int pane_num);
 
 /*
  * Internal functions. Override at your risk.

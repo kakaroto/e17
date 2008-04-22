@@ -681,7 +681,7 @@ ewl_tree_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 		 * position and its size to arrange correctly */
 		ewl_object_x_request(EWL_OBJECT(tree->header), CURRENT_X(w));
 		ewl_object_w_request(EWL_OBJECT(tree->header), CURRENT_W(w));
-		ewl_paned_arrange(EWL_PANED(tree->header));
+		ewl_paned_arrange(EWL_PANED(tree->header), tree->columns);
 	}
 
 	/* if the tree isn't dirty we're done */

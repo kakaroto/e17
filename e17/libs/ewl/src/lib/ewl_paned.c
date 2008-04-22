@@ -57,8 +57,8 @@ static int ewl_paned_pane_info_setup(Ewl_Paned *p, Ewl_Paned_Pane_Info *panes,
 static int ewl_paned_pane_info_collect(Ewl_Paned *p, Ewl_Paned_Pane_Info *panes,
 	       	Ewl_Paned_Layout *layout, int *resizable, int grabber_size);
 static void ewl_paned_pane_info_layout(Ewl_Paned *p, Ewl_Paned_Pane_Info *panes,
-				Ewl_Paned_Layout *layout, int available,
-				int resizable);
+				int pane_num, Ewl_Paned_Layout *layout,
+				int available, int resizable);
 
 static int ewl_paned_widgets_place(Ewl_Paned *p, Ewl_Paned_Pane_Info *panes, 
 		int grabber_size);
@@ -163,6 +163,7 @@ ewl_paned_init(Ewl_Paned *p)
 	ewl_object_alignment_set(EWL_OBJECT(w), EWL_FLAG_ALIGN_LEFT |
 						EWL_FLAG_ALIGN_TOP);
 	ewl_widget_focusable_set(w, FALSE);
+	p->new_panes = TRUE;
 
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -516,6 +517,7 @@ ewl_paned_cb_child_hide(Ewl_Container *c, Ewl_Widget *w)
 
 /**
  * @param w: The paned to work with
+ * @param pane_num: The number of visible panes
  * @return Returns no value
  * @brief The arrange the child widgets
  *
@@ -526,12 +528,12 @@ ewl_paned_cb_child_hide(Ewl_Container *c, Ewl_Widget *w)
  * what you are doing.
  */
 void
-ewl_paned_arrange(Ewl_Paned *p)
+ewl_paned_arrange(Ewl_Paned *p, int pane_num)
 {
 	Ewl_Widget *w;
 	Ewl_Container *c;
 	Ewl_Paned_Pane_Info *panes;
-	int available, pane_num;
+	int available;
 	int main_size, main_pos;
 	int grabber_size, resizable = 0;
 	int used_size;
@@ -556,9 +558,6 @@ ewl_paned_arrange(Ewl_Paned *p)
 		main_pos = CURRENT_Y(w);
 	}
 
-	/* we need to now the number of panes */	
-	pane_num = (ewl_container_child_count_visible_get(c) + 1)/2;
-
 	/* we cannot place the panes if there aren't any */
 	if (pane_num <= 0)
 		DRETURN(DLEVEL_STABLE);
@@ -579,7 +578,7 @@ ewl_paned_arrange(Ewl_Paned *p)
 	
 	available = main_size - grabber_size * (pane_num - 1) - used_size;
 
-	ewl_paned_pane_info_layout(p, panes, layout, available, resizable);
+	ewl_paned_pane_info_layout(p, panes, pane_num, layout, available, resizable);
 	/* now that all of the space is filled we can go and layout all of
 	 * the available widgets */
 	used_size = ewl_paned_widgets_place(p, panes, grabber_size);
@@ -602,11 +601,15 @@ void
 ewl_paned_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 					void *data __UNUSED__)
 {
+	int pane_num;
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(w);
 	DCHECK_TYPE(w, EWL_PANED_TYPE);
 
-	ewl_paned_arrange(EWL_PANED(w));
+	/* we need to now the number of panes */	
+	pane_num = (ewl_container_child_count_visible_get(EWL_CONTAINER(w)) + 1)/2;
+
+	ewl_paned_arrange(EWL_PANED(w), pane_num);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -788,11 +791,9 @@ ewl_paned_pane_info_collect(Ewl_Paned *p, Ewl_Paned_Pane_Info *panes,
 
 static void
 ewl_paned_pane_info_layout(Ewl_Paned *p, Ewl_Paned_Pane_Info *panes, 
-				Ewl_Paned_Layout *layout, int available, 
-				int resizable)
+				int pane_num, Ewl_Paned_Layout *layout, 
+				int available, int resizable)
 {
-	int pane_num = 
-		(ewl_container_child_count_visible_get(EWL_CONTAINER(p)) + 1)/2;
 	int cur_res = resizable;
 
 	DENTER_FUNCTION(DLEVEL_STABLE);
