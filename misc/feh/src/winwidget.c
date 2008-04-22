@@ -862,6 +862,11 @@ winwidget_register(winwidget win)
   windows[window_num - 1] = win;
 
   XSaveContext(disp, win->win, xid_context, (XPointer) win);
+
+#ifdef HAVE_SIXDOF
+    libsixdof_manageWindow( sdof, win->win );
+#endif
+  
   D_RETURN_(4);
 }
 

@@ -119,7 +119,14 @@ feh_main_iteration(int block)
       XNextEvent(disp, &ev);
       if (ev_handler[ev.type])
          (*(ev_handler[ev.type])) (&ev);
-
+      
+#ifdef HAVE_SIXDOF
+      {
+          XAnyEvent* pAny = (XAnyEvent*)&ev;
+          libsixdof_processEvent( sdof, pAny );
+      }
+#endif
+      
       if (window_num == 0)
          D_RETURN(5,0);
    }

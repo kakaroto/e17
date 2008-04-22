@@ -34,6 +34,10 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 #include <arpa/inet.h>
 #include <netdb.h>
 
+#ifdef HAVE_SIXDOF
+#include "sixdof.h"
+#endif
+
 Display *disp = NULL;
 Visual *vis = NULL;
 Screen *scr = NULL;
@@ -98,6 +102,10 @@ init_x_and_imlib(void)
    imlib_add_path_to_font_path(PREFIX "/share/feh/fonts");
    imlib_add_path_to_font_path("./ttfonts");
 
+#ifdef HAVE_SIXDOF
+   sixdof_init( disp );
+#endif
+   
    D_RETURN_(4);
 }
 

@@ -6,7 +6,9 @@ INCLUDES          = -I/usr/X11R6/include $(X_CFLAGS) \
                     -I$(prefix)/include -I$(includedir) \
                     -I. -I$(top_srcdir)/src \
                     -DPREFIX=\""$(prefix)"\" \
-                    @IMLIB_CFLAGS@ @GIBLIB_CFLAGS@
+                    @IMLIB_CFLAGS@ @GIBLIB_CFLAGS@ \
+                    @SIXDOF_CFLAGS@
+
 LIBOBJS = @LIBOBJS@
 
 bin_PROGRAMS      = feh
@@ -15,8 +17,8 @@ options.c options.h winwidget.c winwidget.h menu.c menu.h structs.h \
 filelist.c filelist.h multiwindow.c imlib.c index.c slideshow.c \
 utils.c utils.h keyevents.c timers.c timers.h list.c collage.c debug.h \
 events.c events.h support.c support.h \
-thumbnail.c thumbnail.h ipc.c ipc.h
-feh_LDADD         = -lX11 @IMLIB_LIBS@ @GIBLIB_LIBS@
+thumbnail.c thumbnail.h ipc.c ipc.h sixdof.c sixdof.h
+feh_LDADD         = -lX11 @IMLIB_LIBS@ @GIBLIB_LIBS@ @SIXDOF_LIBS@
 
 images_DATA = about.png menubg_default.png menubg_sky.png \
 menubg_chrome.png menubg_brushed.png \

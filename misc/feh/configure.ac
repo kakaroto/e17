@@ -51,6 +51,17 @@ dnl AC_SUBST(LIBOBJS)
 
 echo "checking for pr0n.... found"
 
+PKG_CHECK_MODULES( SIXDOF, sixdofc >= 0.0.1, 
+[
+	have_sixdof=yes
+	AC_DEFINE(HAVE_SIXDOF)
+	echo "building support for 6 degree-of-freedom devices..."
+],
+[
+	echo "not building support for 6 degree-of-freedom devices..."
+])
+AM_CONDITIONAL(HAVE_SIXDOF, test x"$have_sixdof" = xyes)
+
 AC_OUTPUT(Makefile \
 feh.spec \
 cam/Makefile \
