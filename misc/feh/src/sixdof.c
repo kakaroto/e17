@@ -29,7 +29,6 @@ void slideshow_zoom_in( double v )
     winwidget w = winwidget_get_first_window_of_type( WIN_TYPE_SLIDESHOW );
     if( w )
     {
-        printf("slideshow_zoom_in() v:%f\n",v);
         w->zoom = w->zoom * (1 + ( v * 0.25 ) );
         w->im_x = (w->w - (w->zoom*w->im_w)) / 2;
         w->im_y = (w->h - (w->zoom*w->im_h)) / 2;
@@ -42,7 +41,6 @@ void slideshow_zoom_out( double v )
     winwidget w = winwidget_get_first_window_of_type( WIN_TYPE_SLIDESHOW );
     if( w )
     {
-        printf("slideshow_zoom_out() v:%f\n",v);
         w->zoom = w->zoom * (1 + ( v * 0.25 ) );
         w->im_x = (w->w - (w->zoom*w->im_w)) / 2;
         w->im_y = (w->h - (w->zoom*w->im_h)) / 2;
