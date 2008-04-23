@@ -236,7 +236,7 @@ create_athumb()
 
                 if (imagef)
                 {
-                        thumb = add_image(em->fbox, imagef, 1,
+		        thumb = add_image(em->fbox, imagef, 1,
                                         thumb_clicked, NULL);
                         ewl_image_constrain_set(EWL_IMAGE(thumb),
                                         ewl_range_value_get(EWL_RANGE

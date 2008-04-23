@@ -17,11 +17,20 @@ static void image_sepia(Ewl_Widget *w, void *event, void *data);
 static void close_channel(Ewl_Widget *w, void *event, void *data);
 static void channel_mixer(Ewl_Widget *w, void *event, void *data);
 static void set_requested_image_file(Ewl_Widget *w, void *event, void *data);
+static void set_image_file(Ewl_Widget *w, void *event, void *data);
 
 static void 
 set_requested_image_file(Ewl_Widget *w, void *event, void *data)
 {
 	ewl_image_file_path_set(EWL_IMAGE(w), ec->requested_image);
+}
+
+static void
+set_image_file(Ewl_Widget *w, void *event, void *data)
+{
+	ewl_image_file_path_set(EWL_IMAGE(w), ecore_dlist_current(em->images));
+	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
+	ewl_callback_del(w, EWL_CALLBACK_CONFIGURE, set_image_file);	
 }
 
 Ewl_Widget *
@@ -106,8 +115,8 @@ show_single_view(Ewl_Widget *w, void *event, void *data)
 						em->single_vbox);
 	if (ecore_dlist_current(em->images))
 	{
-		ewl_image_file_path_set(EWL_IMAGE(em->simage), 
-					ecore_dlist_current(em->images));
+		ewl_callback_append(em->simage, EWL_CALLBACK_CONFIGURE,
+						set_image_file, NULL);
 	}
 	return;
 }
