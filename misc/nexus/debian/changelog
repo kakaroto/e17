@@ -1,3 +1,17 @@
+xfonts-nexus (0.0.2-14) unstable; urgency=low
+
+  * Update standards version from 3.6.2 to 3.7.3
+  * Remove ancient transitional package xfont-nexus (closes: #477546)
+
+ -- Simon Horman <horms@debian.org>  Thu, 24 Apr 2008 11:30:40 +1000
+
+xfonts-nexus (0.0.2-13) unstable; urgency=low
+
+  * Removed uneeded postrm and postinst
+    (Also, moving to the 13th floor the week after next)
+
+ -- Simon Horman <horms@debian.org>  Thu,  4 May 2006 09:41:02 +0900
+
 xfonts-nexus (0.0.2-12) unstable; urgency=low
 
   * Resolved problem with paths in invocation of mkfontdir in postinst
