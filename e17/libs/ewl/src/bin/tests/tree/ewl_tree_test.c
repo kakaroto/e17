@@ -507,7 +507,7 @@ tree_cb_value_changed(Ewl_Widget *w, void *ev __UNUSED__,
 
 			idx = EWL_SELECTION_IDX(sel);
 			col = idx->column;
-			if (col != 3)
+			if (col != 2)
 				val = sel->model->fetch(sel->data, idx->row, col);
 			else
 			{
