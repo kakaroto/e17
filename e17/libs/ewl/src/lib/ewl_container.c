@@ -1157,6 +1157,11 @@ ewl_container_child_show_call(Ewl_Container *c, Ewl_Widget *w)
 		DRETURN(DLEVEL_STABLE);
 
 	c->visible_children++;
+	if (c->visible_children > ecore_dlist_count(c->children))
+		DWARNING("visible children count exceed total child count "
+				"(%d > %d)\n", c->visible_children,
+				ecore_dlist_count(c->children));
+
 	if (c->child_show)
 		c->child_show(c, w);
 
