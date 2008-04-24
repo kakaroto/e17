@@ -133,7 +133,7 @@ add_exif_to_container(Ewl_Widget *c)
 	ewl_container_child_append(EWL_CONTAINER(c), sp);
 	ewl_widget_show(sp);
 	
-	model = ewl_model_ecore_list_get();
+	model = ewl_model_ecore_list_instance();
 	view = ewl_label_view_get();
 
 	list = ewl_list_new();
