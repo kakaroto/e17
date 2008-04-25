@@ -43,7 +43,7 @@ static void         CommsSend(Client * c, const char *s);
 
 static Ecore_List  *client_list = NULL;
 
-static Win          comms_win = NoWin;
+static Win          comms_win = NULL;
 
 static Client      *
 ClientCreate(Window xwin)

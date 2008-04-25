@@ -54,7 +54,7 @@ typedef struct {
 
 #define fx_ripple_waterh 64
 static Pixmap       fx_ripple_above = None;
-static Win          fx_ripple_win = NoWin;
+static Win          fx_ripple_win = NULL;
 static int          fx_ripple_count = 0;
 
 static void
@@ -448,7 +448,7 @@ FX_Raindrops_Pause(void)
 #define FX_WAVE_GRABH  (FX_WAVE_WATERH + FX_WAVE_DEPTH)
 #define FX_WAVE_CROSSPERIOD 0.42
 static Pixmap       fx_wave_above = None;
-static Win          fx_wave_win = NoWin;
+static Win          fx_wave_win = NULL;
 static int          fx_wave_count = 0;
 
 static void

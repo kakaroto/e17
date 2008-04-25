@@ -83,8 +83,6 @@ Time                EGetTimestamp(void);
 
 typedef void        (EventCallbackFunc) (Win win, XEvent * ev, void *prm);
 
-#define NoWin ((Win)0)
-
 #define EXPOSE_WIN 1
 #if EXPOSE_WIN || DECLARE_WIN
 typedef struct {

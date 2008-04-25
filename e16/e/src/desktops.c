@@ -382,7 +382,7 @@ DeskCreate(int desk, int configure)
    dsk->num = desk;
    desks.order[desk] = desk;
 
-   win = (desk == 0) ? VROOT : NoWin;
+   win = (desk == 0) ? VROOT : NULL;
 
    Esnprintf(buf, sizeof(buf), "Desk-%d", desk);
    EoSetNoRedirect(dsk, 1);

@@ -1124,7 +1124,7 @@ ITApply(Win win, ImageClass * ic, ImageState * is,
 {
    int                 w, h;
 
-   if (win == NoWin || !ic)
+   if (win == NULL || !ic)
       return;
 
    w = WinGetW(win);
