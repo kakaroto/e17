@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: forecasts\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-01-22 19:20+0100\n"
+"POT-Creation-Date: 2008-04-25 09:43+0200\n"
 "PO-Revision-Date: 2008-02-02 20:40+0100\n"
 "Last-Translator: Lisovszki  <lisovszki@gmail.com>\n"
 "Language-Team: hungarian <hu@li.org>\n"
@@ -81,7 +81,7 @@ msgstr "Beállítás"
 
 #: e_mod_main.c:969
 msgid "Wind Chill"
-msgstr "Szél fagyossága"
+msgstr "Hőmérséklet"
 
 #: e_mod_main.c:975
 msgid "Wind Speed"
@@ -93,11 +93,11 @@ msgstr "Páratartalom"
 
 #: e_mod_main.c:987
 msgid "Visibility"
-msgstr "Láthatóság"
+msgstr "Látótávolság"
 
 #: e_mod_main.c:993
 msgid "Pressure"
-msgstr "Nyomás"
+msgstr "Légnyomás"
 
 #: e_mod_main.c:1000
 msgid "Rising"
@@ -113,13 +113,12 @@ msgstr "Stabil"
 
 #: e_mod_main.c:1008
 msgid "Sunrise / Sunset"
-msgstr "Napfelkelte / Napnyugta"
+msgstr "Napkelte / Napnyugta"
 
 #: e_mod_main.c:1031
 msgid "High"
-msgstr "Magas"
+msgstr "Maximum"
 
 #: e_mod_main.c:1042
 msgid "Low"
-msgstr "Alacsony"
-
+msgstr "Minimum"
