@@ -56,8 +56,6 @@ ewl_list_init(Ewl_List *list)
 	ewl_callback_append(EWL_WIDGET(list), EWL_CALLBACK_CONFIGURE,
 						ewl_list_cb_configure, NULL);
 
-	ewl_container_add_notify_set(EWL_CONTAINER(list), ewl_list_cb_child_add);
-
 	DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
@@ -99,42 +97,23 @@ ewl_list_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 	ewl_container_reset(EWL_CONTAINER(list));
 	for (i = 0; i < (int)model->count(mvc_data); i++)
 	{
-		Ewl_Widget *o;
+		Ewl_Widget *o, *cell;
+
+		cell = ewl_cell_new();
+		ewl_cell_state_change_cb_add(EWL_CELL(cell));
+		ewl_container_child_append(EWL_CONTAINER(list), cell);
+		ewl_callback_append(cell, EWL_CALLBACK_CLICKED,
+				ewl_list_cb_item_clicked, list);
+		ewl_widget_show(cell);
 
 		o = view->fetch(model->fetch(mvc_data, i, 0), i, 0);
 		ewl_widget_show(o);
 
-		ewl_container_child_append(EWL_CONTAINER(list), o);
+		ewl_container_child_append(EWL_CONTAINER(cell), o);
 	}
 
 	ewl_list_cb_selected_change(EWL_MVC(list));
 	ewl_mvc_dirty_set(EWL_MVC(list), FALSE);
-
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @internal
- * @param c: The container to work with
- * @param w: The widget that was added
- * @return Returns no value
- * @brief Adds the needed callbacks to the widget
- */
-void
-ewl_list_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
-{
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(c);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(c, EWL_LIST_TYPE);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
-
-	if (ewl_mvc_selection_mode_get(EWL_MVC(c)) ==
-					EWL_SELECTION_MODE_NONE)
-		DRETURN(DLEVEL_STABLE);
-
-	ewl_callback_append(w, EWL_CALLBACK_CLICKED,
-				ewl_list_cb_item_clicked, c);
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -160,6 +139,10 @@ ewl_list_cb_item_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 	DCHECK_TYPE(data, EWL_LIST_TYPE);
 
+	if (ewl_mvc_selection_mode_get(EWL_MVC(data)) ==
+					EWL_SELECTION_MODE_NONE)
+		DRETURN(DLEVEL_STABLE);
+
 	model = ewl_mvc_model_get(EWL_MVC(data));
 	mvc_data = ewl_mvc_data_get(EWL_MVC(data));
 	row = ewl_container_child_index_get(EWL_CONTAINER(data), w);
@@ -167,17 +150,8 @@ ewl_list_cb_item_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 
 	if ((unsigned int) row > model->count(mvc_data))
 	{
-		if (!EWL_HIGHLIGHT_IS(w))
-		{
-			DWARNING("Unknown widget clicked for container.");
-			DRETURN(DLEVEL_STABLE);
-		}
-
-		/* our row is the index that corresponds to the followed
-		 * widget for this highlight widget */
-		row = ewl_container_child_index_get(EWL_CONTAINER(data),
-				ewl_highlight_follow_get(EWL_HIGHLIGHT(w)));
-		if (row < 0) DRETURN(DLEVEL_STABLE);
+		DWARNING("Don't use container function on MVC widget!");
+		DRETURN(DLEVEL_STABLE);
 	}
 
 	ewl_mvc_handle_click(EWL_MVC(data), NULL, mvc_data, row, 0);

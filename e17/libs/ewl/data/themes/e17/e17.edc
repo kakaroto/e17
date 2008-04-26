@@ -149,6 +149,8 @@ data
 	item: "/tree_header/button/group" "ewl/tree/header/button";
 	item: "/tree_header/grabber/vertical/group" "ewl/separator/vertical";
 	item: "/tree_header/header/button/group" "ewl/tree/header/button";
+	
+	item: "/cell/group" "ewl/tree/cell";
 
 	item: "/row/group" "ewl/row";
 	item: "/expansion/group" "ewl/tree/expansion";

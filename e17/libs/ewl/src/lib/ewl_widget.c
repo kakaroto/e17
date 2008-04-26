@@ -754,6 +754,8 @@ ewl_widget_appearance_path_get(Ewl_Widget *w)
 void
 ewl_widget_state_set(Ewl_Widget *w, const char *state, Ewl_State_Type flag)
 {
+	Ewl_Event_State_Change ev;
+
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(w);
 	DCHECK_PARAM_PTR(state);
@@ -774,7 +776,10 @@ ewl_widget_state_set(Ewl_Widget *w, const char *state, Ewl_State_Type flag)
 		edje_object_signal_emit(w->theme_object, state, "EWL");
 	}
 
-	ewl_callback_call(w, EWL_CALLBACK_STATE_CHANGED);
+	ev.state = state;
+	ev.flag = flag;
+
+	ewl_callback_call_with_event_data(w, EWL_CALLBACK_STATE_CHANGED, &ev);
 
 	DRETURN(DLEVEL_STABLE);
 }

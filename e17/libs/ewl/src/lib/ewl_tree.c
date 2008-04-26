@@ -819,6 +819,7 @@ ewl_tree_column_build(Ewl_Row *row, const Ewl_Model *model,
 	DCHECK_TYPE(row, EWL_ROW_TYPE);
 
 	cell = ewl_cell_new();
+	ewl_cell_state_change_cb_add(EWL_CELL(cell));
 	ewl_object_fill_policy_set(EWL_OBJECT(cell), EWL_FLAG_FILL_ALL);
 	ewl_container_child_append(EWL_CONTAINER(row), cell);
 	ewl_callback_append(cell, EWL_CALLBACK_CLICKED,
@@ -1134,13 +1135,14 @@ ewl_tree_widget_at(Ewl_MVC *mvc, void *data, unsigned int row,
 
 	/* find the row in the container */
 	r = ewl_container_child_get(c, row);
+	r = EWL_WIDGET(EWL_TREE_NODE(r)->row);
+
 	if (tree->type == EWL_TREE_SELECTION_TYPE_ROW)
-		w = EWL_WIDGET(r);
+		w = r;
 	else
 	{
 		/* infact our row is a node so we have to get the row
 		 * to search for the right container */
-		r = EWL_WIDGET(EWL_TREE_NODE(r)->row);
 		w = ewl_container_child_get(EWL_CONTAINER(r), column);
 	}
 

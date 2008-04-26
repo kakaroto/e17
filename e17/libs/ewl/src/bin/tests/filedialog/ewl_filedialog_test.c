@@ -145,5 +145,6 @@ fd_append(void *value, void *data)
 	ewl_label_text_set(EWL_LABEL(o), file);
 	ewl_container_child_append(EWL_CONTAINER(list), o);
 	ewl_widget_show(o);
+	printf("%s\n", file);
 }
 

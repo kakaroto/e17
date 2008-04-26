@@ -55,8 +55,6 @@ create_test(Ewl_Container *box)
 	Ewl_Widget *list, *o;
 	Ewl_Model *model;
 	Ewl_View *view;
-	char *strs[] = {"foo", "bar", "baz", "bobby", NULL};
-	int i;
 	void *data;
 
 	/* create a list using an ecore_list of strings of labels */
@@ -128,29 +126,6 @@ create_test(Ewl_Container *box)
 					list_cb_select_none, NULL);
 	ewl_widget_show(list);
 
-
-	/* create a list by appending label widgets. This dosne't use the
-	 * MVC controls just allows you to use the container functions */
-	o = ewl_border_new();
-	ewl_border_label_set(EWL_BORDER(o), "Container Functions");
-	ewl_container_child_append(EWL_CONTAINER(box), o);
-	ewl_widget_show(o);
-
-	list = ewl_list_new();
-	ewl_container_child_append(EWL_CONTAINER(o), list);
-	ewl_mvc_selection_mode_set(EWL_MVC(list), EWL_SELECTION_MODE_NONE);
-	ewl_callback_append(list, EWL_CALLBACK_VALUE_CHANGED,
-					list_cb_select_none, NULL);
-	ewl_widget_show(list);
-
-	for (i = 0; strs[i]; i++)
-	{
-		o = ewl_label_new();
-		ewl_label_text_set(EWL_LABEL(o), strs[i]);
-		ewl_widget_show(o);
-
-		ewl_container_child_append(EWL_CONTAINER(list), o);
-	}
 
 	return 1;
 }

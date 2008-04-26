@@ -118,6 +118,8 @@ ewl_filelist_setup(Ewl_Filelist *fl)
 	fl->controller = ewl_tree_new();
 	ewl_mvc_view_set(EWL_MVC(fl->controller), fl->view);
 	ewl_mvc_model_set(EWL_MVC(fl->controller), fl->model);
+	ewl_tree_selection_type_set(EWL_TREE(fl->controller),
+			EWL_TREE_SELECTION_TYPE_ROW);
 	ewl_container_child_append(EWL_CONTAINER(fl), fl->controller);
 	ewl_callback_append(EWL_WIDGET(fl->controller),
 			EWL_CALLBACK_CLICKED, ewl_filelist_cb_clicked, fl);
@@ -158,8 +160,6 @@ ewl_filelist_view_setup(Ewl_Filelist *fl)
 								TRUE);
 		ewl_tree_alternate_row_colors_set
 				(EWL_TREE(fl->controller), TRUE);
-		ewl_tree_selection_type_set(EWL_TREE(fl->controller),
-					EWL_TREE_SELECTION_TYPE_CELL);
 		ewl_model_expansion_data_fetch_set(fl->model,
 			ewl_filelist_model_data_expansion_data_fetch);
 		ewl_model_data_expandable_set(fl->model,
@@ -173,8 +173,6 @@ ewl_filelist_view_setup(Ewl_Filelist *fl)
 								TRUE);
 		ewl_tree_alternate_row_colors_set
 				(EWL_TREE(fl->controller), TRUE);
-		ewl_tree_selection_type_set(EWL_TREE(fl->controller),
-					EWL_TREE_SELECTION_TYPE_ROW);
 		view = ewl_tree_view_scrolled_get();
 	}
 	/* Until column view is written just default and throw a warning */
@@ -185,8 +183,6 @@ ewl_filelist_view_setup(Ewl_Filelist *fl)
 								FALSE);
 		ewl_tree_alternate_row_colors_set
 				(EWL_TREE(fl->controller), FALSE);
-		ewl_tree_selection_type_set(EWL_TREE(fl->controller),
-					EWL_TREE_SELECTION_TYPE_ROW);
 		view = ewl_tree_view_freebox_get();
 		DWARNING("Column view not implemented");
 	}
@@ -201,8 +197,6 @@ ewl_filelist_view_setup(Ewl_Filelist *fl)
 								FALSE);
 		ewl_tree_alternate_row_colors_set
 				(EWL_TREE(fl->controller), FALSE);
-		ewl_tree_selection_type_set(EWL_TREE(fl->controller),
-					EWL_TREE_SELECTION_TYPE_ROW);
 		view = ewl_tree_view_freebox_get();
 		fl->view_flag = EWL_FILELIST_VIEW_ICON;
 	}

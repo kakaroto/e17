@@ -456,7 +456,8 @@ ewl_mvc_selected_set(Ewl_MVC *mvc, const Ewl_Model *model, void *data,
 	DCHECK_PARAM_PTR(mvc);
 	DCHECK_TYPE(mvc, EWL_MVC_TYPE);
 
-	if (mvc->selection_mode == EWL_SELECTION_MODE_NONE)
+	if ((mvc->selection_mode == EWL_SELECTION_MODE_NONE) ||
+			(ewl_mvc_selected_is(mvc, data, row, column)))
 		DRETURN(DLEVEL_STABLE);
 
 	ewl_mvc_selected_clear_private(mvc);
@@ -572,7 +573,10 @@ ewl_mvc_selected_rm(Ewl_MVC *mvc, void *data __UNUSED__, unsigned int row,
 		sel = ecore_list_current(mvc->selected);
 
 		if (sel->type == EWL_SELECTION_TYPE_INDEX)
-			ecore_list_remove(mvc->selected);
+		{
+			sel = ecore_list_remove(mvc->selected);
+			ewl_mvc_selection_free(sel);
+		}
 		else
 			ewl_mvc_selected_range_split(mvc,
 				EWL_SELECTION_RANGE(sel), row, column);
@@ -742,6 +746,7 @@ ewl_mvc_selected_insert(Ewl_MVC *mvc, const Ewl_Model *model, void *data,
 	ecore_list_first_goto(mvc->selected);
 	while ((cur = ecore_list_current(mvc->selected)))
 	{
+		/* ecore_list_remove updates the index by itself */
 		if (ewl_mvc_selection_intersects(range, cur))
 		{
 			ecore_list_remove(mvc->selected);
@@ -749,14 +754,13 @@ ewl_mvc_selected_insert(Ewl_MVC *mvc, const Ewl_Model *model, void *data,
 			/* just free indexes as their covered by the
 			 * range and don't need to be re-inserted */
 			if (cur->type == EWL_SELECTION_TYPE_INDEX)
-			{
 				ewl_mvc_selection_free(cur);
-			}
 			else
 				ecore_list_append(intersections, cur);
 
 		}
-		ecore_list_next(mvc->selected);
+		else
+			ecore_list_next(mvc->selected);
 	}
 
 	/* if we intersect nothing just add ourselves to the list
@@ -1082,6 +1086,7 @@ ewl_mvc_selected_range_split(Ewl_MVC *mvc, Ewl_Selection_Range *range,
 							row, range->end.column);
 		ecore_list_append(mvc->selected, sel);
 	}
+
 	ewl_mvc_selection_free(EWL_SELECTION(range));
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1249,8 +1254,6 @@ static void
 ewl_mvc_highlight_do(Ewl_MVC *mvc __UNUSED__, Ewl_Container *c,
 				Ewl_Selection *sel, Ewl_Widget *w)
 {
-	Ewl_Widget *h;
-
 	DENTER_FUNCTION(DLEVEL_STABLE);
 	DCHECK_PARAM_PTR(c);
 	DCHECK_PARAM_PTR(sel);
@@ -1258,20 +1261,17 @@ ewl_mvc_highlight_do(Ewl_MVC *mvc __UNUSED__, Ewl_Container *c,
 	DCHECK_TYPE(c, EWL_CONTAINER_TYPE);
 	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	h = ewl_highlight_new();
-	ewl_highlight_follow_set(EWL_HIGHLIGHT(h), w);
-	ewl_container_child_append(EWL_CONTAINER(c), h);
-	ewl_callback_prepend(h, EWL_CALLBACK_DESTROY,
+	ewl_widget_state_set(w, "selected", EWL_STATE_PERSISTENT);
+	ewl_callback_prepend(w, EWL_CALLBACK_DESTROY,
 			ewl_mvc_cb_highlight_destroy, sel);
-	ewl_widget_show(h);
 
 	if (sel->type == EWL_SELECTION_TYPE_INDEX)
-		sel->highlight = h;
+		sel->highlight = w;
 	else
 	{
 		if (!sel->highlight)
 			sel->highlight = ecore_list_new();
-		ecore_list_append(sel->highlight, h);
+		ecore_list_append(sel->highlight, w);
 	}
 
 	DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1392,7 +1392,8 @@ ewl_mvc_selection_free(Ewl_Selection *sel)
 		{
 			ewl_callback_del(sel->highlight, EWL_CALLBACK_DESTROY,
 					ewl_mvc_cb_highlight_destroy);
-			ewl_widget_destroy(sel->highlight);
+			ewl_widget_state_set(sel->highlight, "deselect",
+					EWL_STATE_PERSISTENT);
 		}
 		else
 		{
@@ -1402,12 +1403,12 @@ ewl_mvc_selection_free(Ewl_Selection *sel)
 			{
 				ewl_callback_del(w, EWL_CALLBACK_DESTROY,
 						ewl_mvc_cb_highlight_destroy);
-				ewl_widget_destroy(w);
+				ewl_widget_state_set(w, "deselect",
+					EWL_STATE_PERSISTENT);
 			}
 
 			IF_FREE_LIST(sel->highlight);
 		}
-		sel->highlight = NULL;
 	}
 	FREE(sel);
 

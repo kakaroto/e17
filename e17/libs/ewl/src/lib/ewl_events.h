@@ -352,6 +352,26 @@ struct Ewl_Event_Action_Response
 	unsigned int response; /**< The response ID */
 };
 
+/**
+ * @def EWL_EVENT_STATE_CHANGE(e)
+ * Typedefs a pointer to an Ewl_Event_State_Change pointer
+ */
+#define EWL_EVENT_STATE_CHANGE(e) ((Ewl_Event_State_Change*)(e))
+
+/**
+ * The Ewl_Event_State_Change type
+ */
+typedef struct Ewl_Event_State_Change Ewl_Event_State_Change;
+
+/**
+ * @brief Provides information about the changed state
+ */
+struct Ewl_Event_State_Change
+{
+	const char *state;
+	Ewl_State_Type flag;
+};
+
 unsigned int 	ewl_ev_modifiers_get(void);
 void 		ewl_ev_modifiers_set(unsigned int modifiers);
 
