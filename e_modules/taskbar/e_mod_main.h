@@ -11,9 +11,9 @@ typedef struct _Config_Item Config_Item;
 
 struct _Config
 {
-   /* just config state */
    E_Module *module;
-   Evas_List *instances;
+   Evas_List *taskbars;
+   Evas_List *borders;
    Evas_List *items;
    E_Menu *menu;
    Evas_List *handlers;
@@ -23,8 +23,6 @@ struct _Config
 struct _Config_Item
 {
    const char *id;
-   int highlight;
-   int show_label;
    int show_all;
 };
 

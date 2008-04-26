@@ -3,8 +3,6 @@
 
 struct _E_Config_Dialog_Data
 {
-   int highlight;
-   int show_label;
    int show_all;
 };
 
@@ -38,8 +36,6 @@ _config_taskbar_module(Config_Item *ci)
 static void
 _fill_data(Config_Item *ci, E_Config_Dialog_Data *cfdata)
 {
-   cfdata->highlight = ci->highlight;
-   cfdata->show_label = ci->show_label;
    cfdata->show_all = ci->show_all;
 }
 
@@ -73,19 +69,7 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    o = e_widget_list_add(evas, 0, 0);
 
    of = e_widget_framelist_add(evas, D_("Display"), 0);
-   ob = e_widget_check_add(evas, D_("Highlight Window on Mouse Over"), &(cfdata->highlight));
-   //if (cfdata->highlight)
-   ////  e_widget_check_checked_set(ob, 1);
-   e_widget_framelist_object_append(of, ob);
-
-   ob = e_widget_check_add(evas, D_("Show Sliding Labels"), &(cfdata->show_label));
-   //if (cfdata->show_label)
-   //  e_widget_check_checked_set(ob, 1);
-   e_widget_framelist_object_append(of, ob);
-
    ob = e_widget_check_add(evas, D_("Show windows from all desktops"), &(cfdata->show_all));
-   //if (cfdata->show_all)
-   //   e_widget_check_checked_set(ob, 1);
    e_widget_framelist_object_append(of, ob);
 
    e_widget_list_object_append(o, of, 1, 1, 0.5);
@@ -99,8 +83,6 @@ _basic_apply_data(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
    Config_Item *ci;
 
    ci = cfd->data;
-   ci->highlight = cfdata->highlight;
-   ci->show_label = cfdata->show_label;
    ci->show_all = cfdata->show_all;
 
    e_config_save_queue();

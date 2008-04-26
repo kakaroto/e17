@@ -3,56 +3,19 @@ fonts
    font: "VeraBd.ttf" "Vera Bold";
 }
 images {
-   image: "e17_ibar_arrow_d.png" COMP;
-   image: "e17_ibar_arrow_l.png" COMP;
-   image: "e17_ibar_arrow_r.png" COMP;
-   image: "e17_ibar_arrow_u.png" COMP;
-   image: "e17_pager_desk.png" COMP;
-   image: "e17_button_sm.png" COMP;
    image: "e17_button_sm2.png" COMP;
    image: "e17_button_sm2_urgent.png" COMP;
    image: "e17_button_sm_disabled.png" COMP;
-   image: "e17_titlebar_glint1.png" COMP;
-   image: "e17_titlebar_glint2.png" COMP;
-   image: "e17_titlebar_glint3.png" COMP;
    image: "focus.png" COMP;
 }
 collections {
    group {
-      name: "modules/taskbar/box";
-      data {
-         item: "expand" "1";
-      }
-      parts {
-         part {
-            name: "icons_holder";
-            type:    SWALLOW;
-            description {
-               state: "default" 0.0;
-               rel1 {
-                  relative: 0.1 0.0;
-               }
-               rel2 {
-                  relative: 0.9 1.0;
-               }
-            }
-         }
-      }
-      programs {
-      }
-   }
-   group {
-      name: "modules/taskbar/icon";
-      data {
-         item: "raise_on_hilight" "0"; // 1 or 0 if u want an icon holder to raise when the mouse (or keyboard) hilights it
-         //	 item: "item_list" "item item2 item3";
-      }
+      name: "modules/taskbar/item";
       parts {
          // app icon clip
          part {
             name:          "item_clip";
             type:          RECT;
-            mouse_events:  0;
             description {
                state:    "default" 0.0;
                color: 255 255 255 255;
@@ -65,7 +28,7 @@ collections {
          part {
             name:          "button_image";
             type:          IMAGE;
-            mouse_events:  0;
+            mouse_events:  1;
             description {
                state:    "default" 0.0;
                //min:      56 16;
@@ -74,13 +37,6 @@ collections {
                image {
                   normal: "e17_button_sm_disabled.png";
                   border: 8 8 8 8;
-               }
-            }
-            description {
-               state:    "clicked" 0.0;
-               inherit:  "default" 0.0;
-               image {
-                  normal: "e17_button_sm2.png";
                }
             }
             description {
@@ -94,16 +50,7 @@ collections {
                }
             }
 
-            description {
-               state:    "focused" 0.0;
-               inherit:  "default" 0.0;
-               //image {
-                 // normal: "e17_button_sm2.png";
-               //}
-            }
-
          }
-
          part {
             name:          "button_image_gold";
             type:          IMAGE;
@@ -123,7 +70,6 @@ collections {
                color: 255 255 255 255;
             }
          }
-
          part {
             name:          "button_image_urgent";
             type:          IMAGE;
@@ -143,7 +89,6 @@ collections {
                color: 255 255 255 255;
             }
          }
-
          // icon display region on button
          part {
             name:          "item";
@@ -236,6 +181,7 @@ collections {
             name:          "over";
             type:          RECT;
             repeat_events: 0;
+            mouse_events: 1;
             description {
                state:    "default" 0.0;
                color: 0 0 0 0;
@@ -244,81 +190,16 @@ collections {
       }
       programs {
          program {
-            name:    "exec_start";
-            signal:  "start";
-            source:  "";
-            action:  STATE_SET "faded" 0.0;
-            transition: LINEAR 0.5;
-            target:  "item_clip";
-         }
-         program {
-            name:    "exec_exec";
-            signal:  "exec";
-            source:  "";
-            action:  STATE_SET "faded" 0.0;
-            transition: LINEAR 0.5;
-            target:  "item_clip";
-            after:   "exec_stop";
-         }
-         program {
-            name:    "exec_stop";
-            signal:  "stop";
-            source:  "";
-            action:  STATE_SET "default" 0.0;
-            target:  "item_clip";
-         }
-         program {
-            name:    "instant_iconify";
-            signal:  "instant_iconify";
+            name:    "iconified";
+            signal:  "iconified";
             source:  "";
             action:  STATE_SET "iconified" 0.0;
             transition: LINEAR 0.0;
             target:  "button_image";
          }
          program {
-            name:    "instant_uniconify";
-            signal:  "instant_uniconify";
-            source:  "";
-            action:  STATE_SET "focused" 0.0;
-            transition: LINEAR 0.0;
-            target:  "button_image";
-         }
-         program {
-            name:    "iconify";
-            signal:  "iconify";
-            source:  "";
-            action:  STATE_SET "iconified" 0.0;
-            transition: LINEAR 0.5;
-            target:  "button_image";
-         }
-         program {
-            name:    "uniconify";
-            signal:  "uniconify";
-            source:  "";
-            action:  STATE_SET "focused" 0.0;
-            transition: LINEAR 0.5;
-            target:  "button_image";
-         }
-
-         program {
-            name:    "but_focused";
-            signal:  "focused";
-            source:  "";
-            action:  STATE_SET "focused" 0.0;
-            transition: LINEAR 0.5;
-            target:  "button_image";
-         }
-         program {
-            name:    "but_unfocused";
-            signal:  "unfocused";
-            source:  "";
-            action:  STATE_SET "default" 0.0;
-            transition: LINEAR 0.5;
-            target:  "button_image";
-         }
-         program {
-            name:    "but_instant_focused";
-            signal:  "instant_focused";
+            name:    "uniconified";
+            signal:  "uniconified";
             source:  "";
             action:  STATE_SET "focused" 0.0;
             transition: LINEAR 0.0;
@@ -362,7 +243,7 @@ collections {
          }
 
          program {
-            name:    "but_focused_gold";
+            name:    "focused";
             signal:  "focused";
             source:  "";
             action:  STATE_SET "focused" 0.0;
@@ -370,199 +251,12 @@ collections {
             target:  "button_image_gold";
          }
          program {
-            name:    "but_unfocused_gold";
+            name:    "unfocused";
             signal:  "unfocused";
             source:  "";
             action:  STATE_SET "default" 0.0;
             transition: LINEAR 0.5;
             target:  "button_image_gold";
-         }
-         program {
-            name:    "but_instant_focused_gold";
-            signal:  "instant_focused";
-            source:  "";
-            action:  STATE_SET "focused" 0.0;
-            transition: LINEAR 0.0;
-            target:  "button_image_gold";
-         }
-
-         program {
-            name:    "instant_focused";
-            signal:  "instant_focused_xxx";
-            source:  "";
-            action:  STATE_SET "focused" 0.0;
-            transition: LINEAR 0.0;
-            target:  "focus";
-         }
-         program {
-            name:    "instant_unfocused";
-            signal:  "instant_unfocused_xxxx";
-            source:  "";
-            action:  STATE_SET "default" 0.0;
-            transition: LINEAR 0.0;
-            target:  "focus";
-         }
-         program {
-            name:    "focused";
-            signal:  "hilight";
-            source:  "";
-            action:  STATE_SET "focused" 0.0;
-            transition: LINEAR 0.5;
-            target:  "focus";
-         }
-         program {
-            name:    "unfocused";
-            signal:  "unhilight";
-            source:  "";
-            action:  STATE_SET "default" 0.0;
-            transition: LINEAR 0.5;
-            target:  "focus";
-         }
-      }
-   }
-
-   group {
-      name: "modules/taskbar/icon_overlay";
-      data {
-         //	 item: "item_list", "item item2 item3";
-      }
-      parts {
-         part {
-            name:          "base";
-            type:          RECT;
-            mouse_events:  0;
-            description {
-               state:    "default" 0.0;
-               color: 255 255 255 0;
-            }
-         }
-         part {
-            name:          "background";
-            type:          RECT;
-            mouse_events:  0;
-            description {
-               state:    "default" 0.0;
-               visible: 0;
-               rel1 {
-                  to:       "base";
-               }
-               rel2 {
-                  to:       "base";
-               }
-               color: 255 255 255 0;
-            }
-            description {
-               state:    "visible" 0.0;
-               visible: 1;
-               rel1 {
-                  to:       "base";
-               }
-               rel2 {
-                  to:       "base";
-               }
-               color: 255 255 255 255;
-            }
-            description {
-               state:    "hidden" 0.0;
-               visible: 1;
-               rel1 {
-                  relative: -0.5  -0.5;
-                  to:       "base";
-               }
-               rel2 {
-                  relative: 1.5  1.5;
-                  to:       "base";
-               }
-               color: 255 255 255 0;
-            }
-            description {
-               state:    "huge" 0.0;
-               visible: 1;
-               rel1 {
-                  relative: -2.0  -2.0;
-                  to:       "base";
-               }
-               rel2 {
-                  relative: 3.0  3.0;
-                  to:       "base";
-               }
-               color: 255 255 255 0;
-            }
-         }
-         part {
-            name:          "item";
-            type:          SWALLOW;
-            mouse_events:  0;
-            clip_to:       "background";
-            description {
-               state:    "default" 0.0;
-               rel1 {
-                  to:       "background";
-               }
-               rel2 {
-                  to:       "background";
-               }
-            }
-         }
-         part {      
-            name: "label";
-            type: TEXT;
-            effect: SOFT_SHADOW;                  
-            mouse_events: 0;
-            description {
-               state: "default" 0.0;
-               align: 0.5 0.0;
-               rel1 {
-                  relative: 0.0  1.0;
-                  offset:   0    -1;
-               }
-               rel2 {
-                  relative: 1.0  1.0;
-                  offset:   -1    -1;
-               }
-               color: 255 255 255 0;
-               color3: 0 0 0 0;
-               text {
-                  text: "Icon Name";
-                  font: "Vera Bold";
-                  size: 10;
-                  min:  1 1;
-                  align: 0.5 0.0;
-                  text_class: "module_normal";
-               }
-            }
-            description {
-               state: "visible" 0.0;
-               inherit: "default" 0.0;
-               rel1 {
-                  relative: 0.0  0.0;
-                  offset:   0    0;
-               }
-               rel2 {
-                  relative: 1.0  1.0;
-                  offset:   -1    -1;
-               }
-               color: 255 255 255 255;
-               color3: 0 0 0 42;
-            }
-         }
-      }
-      programs {
-         program {
-            name:    "go_activeB";
-            signal:  "label_active";
-            source:  "";
-            action:  STATE_SET "visible" 0.0;
-            transition: SINUSOIDAL 0.5;
-            target:  "label";
-         }
-         program {
-            name:    "go_passiveB";
-            signal:  "label_passive";
-            source:  "";
-            action:  STATE_SET "default" 0.0;
-            transition: SINUSOIDAL 1.0;
-            target:  "label";
          }
       }
    }
