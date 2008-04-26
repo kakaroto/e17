@@ -51,7 +51,6 @@ EWLHEADERS = \
 	ewl_filedialog.h \
 	ewl_freebox.h \
 	ewl_grid.h \
-	ewl_highlight.h \
 	ewl_histogram.h \
 	ewl_icon.h \
 	ewl_icon_theme.h \
@@ -135,7 +134,6 @@ EWLSOURCES= \
 	ewl_filedialog.c \
 	ewl_freebox.c \
 	ewl_grid.c \
-	ewl_highlight.c \
 	ewl_histogram.c \
 	ewl_icon.c \
 	ewl_icon_theme.c \
