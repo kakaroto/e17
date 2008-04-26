@@ -55,6 +55,7 @@ static Taskbar *_taskbar_new(Evas *evas, E_Zone *zone, const char *id);
 static void _taskbar_free(Taskbar *taskbar);
 static void _taskbar_refill(Taskbar *taskbar);
 static void _taskbar_refill_all();
+static void _taskbar_refill_border(E_Border *border);
 static void _taskbar_signal_emit(E_Border *border, char *sig, char *src);
 
 static Taskbar_Item *_taskbar_item_find(Taskbar *taskbar, E_Border *border);
@@ -63,6 +64,7 @@ static Taskbar_Item *_taskbar_item_new(Taskbar *taskbar, E_Border *border);
 static int _taskbar_item_check_add(Taskbar *taskbar, E_Border *border);
 static void _taskbar_item_add(Taskbar *taskbar, E_Border *border);
 static void _taskbar_item_remove(Taskbar_Item *item);
+static void _taskbar_item_refill(Taskbar_Item *item);
 static void _taskbar_item_fill(Taskbar_Item *item);
 static void _taskbar_item_free(Taskbar_Item *item);
 static void _taskbar_item_signal_emit(Taskbar_Item *item, char *sig, char *src);
@@ -83,6 +85,7 @@ static int _taskbar_cb_event_border_zone_set(void *data, int type, void *event);
 static int _taskbar_cb_event_border_desk_set(void *data, int type, void *event);
 static int _taskbar_cb_window_focus_in(void *data, int type, void *event);
 static int _taskbar_cb_window_focus_out(void *data, int type, void *event);
+static int _taskbar_cb_event_border_property(void *data, int type, void *event);
 static int _taskbar_cb_event_desk_show(void *data, int type, void *event);
 static int _taskbar_cb_event_border_urgent_change(void *data, int type, void *event);
 
@@ -156,6 +159,8 @@ e_modapi_init(E_Module *m)
       (taskbar_config->handlers, ecore_event_handler_add(E_EVENT_BORDER_FOCUS_IN, _taskbar_cb_window_focus_in, NULL));
    taskbar_config->handlers = evas_list_append
       (taskbar_config->handlers, ecore_event_handler_add(E_EVENT_BORDER_FOCUS_OUT, _taskbar_cb_window_focus_out, NULL));
+   taskbar_config->handlers = evas_list_append
+      (taskbar_config->handlers, ecore_event_handler_add(E_EVENT_BORDER_PROPERTY, _taskbar_cb_event_border_property, NULL));
    taskbar_config->handlers = evas_list_append
       (taskbar_config->handlers, ecore_event_handler_add(E_EVENT_DESK_SHOW, _taskbar_cb_event_desk_show, NULL));
    taskbar_config->handlers = evas_list_append
@@ -387,6 +392,27 @@ _taskbar_refill_all()
      }
 }
 
+
+static void
+_taskbar_refill_border(E_Border *border)
+{
+   Evas_List *l;
+   Evas_List *m;
+   Taskbar *taskbar;
+   Taskbar_Item *item;
+
+   for (l = taskbar_config->taskbars; l; l = l->next)
+     {
+        taskbar = l->data;
+	for (m = taskbar->items; m; m = m->next)
+	   {
+               item = m->data;
+	       if (item->border == border)
+	          _taskbar_item_refill(item);
+	   }
+     }
+}
+
 static void 
 _taskbar_signal_emit(E_Border *border, char *sig, char *src)
 {
@@ -504,6 +530,14 @@ _taskbar_item_free(Taskbar_Item *item)
    e_object_unref(E_OBJECT(item->border));
    evas_object_del(item->o_item);
    free(item);
+}
+
+static void
+_taskbar_item_refill(Taskbar_Item *item)
+{
+   if (item->o_icon)
+      evas_object_del(item->o_icon);
+   _taskbar_item_fill(item);
 }
 
 static void
@@ -808,9 +842,28 @@ _taskbar_cb_event_border_urgent_change(void *data, int type, void *event)
 }
 
 static int
+_taskbar_cb_event_border_property(void *data, int type, void *event)
+{
+   E_Event_Border_Property *ev;
+   E_Border *border;
+
+  ev = event;
+  border = ev->border;
+   if (border)
+      _taskbar_refill_border(border);
+   return 1;
+}
+
+static int
 _taskbar_cb_event_border_icon_change(void *data, int type, void *event)
 {
-   _taskbar_refill_all();
+   E_Event_Border_Icon_Change *ev;
+   E_Border *border;
+
+  ev = event;
+  border = ev->border;
+   if (border)
+      _taskbar_refill_border(border);
    return 1;
 }
 
