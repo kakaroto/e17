@@ -39,8 +39,12 @@ static void *canvas_funcs[EWL_ENGINE_CANVAS_MAX] =
 
 static void *theme_funcs[EWL_ENGINE_THEME_MAX] =
 	{
-		edje_freeze,
-		edje_thaw,
+		/* FIXME: disable these calls for now. They stop ejde reloading
+		 *  the theme object correctly after it was obscured, in some
+		 *  cases. If these problems are solved, please activate them
+		 *  again. For more information see bug #3, #116 and #456*/
+		NULL, //edje_freeze,
+		NULL, //edje_thaw,
 		edje_file_data_get,
 		ee_canvas_smart_new,
 		NULL,
