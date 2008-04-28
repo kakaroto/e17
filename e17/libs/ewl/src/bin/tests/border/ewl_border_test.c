@@ -28,6 +28,7 @@ static Ewl_Unit_Test border_unit_tests[] = {
 		{"Border label set/get", label_set_get_test, NULL, -1, 0},
 		{"Border label position set/get", label_position_set_get_test, NULL, -1, 0},
 		{"Border label alignment set/get", label_alignment_set_get_test, NULL, -1, 0},
+		{NULL, NULL, NULL, -1, 0}
 	};
 
 void
