@@ -1,39 +1,28 @@
-Source: e-dbus
+Source: edbus
 Section: libs
 Priority: optional
-Maintainer: E17 Debian Team <debian@edevelop.org>
-Build-Depends: cdbs, debhelper (>= 5), libecore0-dev, libewl0-dev, libdbus-1-dev, libefreet0-dev
-Standards-Version: 3.7.2
+Maintainer: Falko Schmidt <falko@alphagemini.org>
+Build-Depends: debhelper (>= 6), cdbs, libecore-dev, libdbus-1-dev, libevas-dev
+Standards-Version: 3.7.3
+Homepage: http://www.enlightenment.org
 
-Package: libe-dbus0
+Package: libedbus-dev
+Section: libdevel
 Architecture: any
-Depends: ${shlibs:Depends}, libecore0, libefreet0, libdbus-1-3
-Provides: libe-dbus
-Recommends: libe-dbus0-bin | libe-dbus-bin
-Description: enlightenment interface to dbus
- e-dbus implements some basic convenience wrappers around dbus
- to ease integrating dbus with EFL based applications.
+Depends: libedbus0 (= ${binary:Version}), libdbus-1-dev
+Replaces: libe-dbus0-dev
+Description: D-Bus and HAL wrapper libraries for use with the EFL - Development files
+ Wrappers around D-Bus to ease integrating D-Bus with EFL based applications.
  .
- This package contains the e_dbus library.
+ This packages contains headers and static libraries for libedbus, libehal and
+ libenotify
 
-Package: libe-dbus0-dev
-Section: devel
-Architecture: any
-Depends: ${shlibs:Depends}, libe-dbus0-dev, libecore0-dev, libefreet0-dev, libdbus-1-dev
-Provides: libe-dbus-dev
-Description: enlightenment interface to dbus - develpment files
- e-dbus implements some basic convenience wrappers around dbus
- to ease integrating dbus with EFL based applications.
- .
- This package contains the e_dbus headers and static libraries.
-
-Package: libe-dbus0-bin
+Package: libedbus0
 Architecture: any
 Depends: ${shlibs:Depends}
-Provides: libe-dbus-bin
-Description: enlightenment interface to dbus - helper applications
- e-dbus implements some basic convenience wrappers around dbus
- to ease integrating dbus with EFL based applications.
- .
- This package contains the e_dbus helper applications e_dbus_hal and
- e_dbus_nm.
+Replaces: libe-dbus0
+Description: D-Bus and HAL wrapper libraries for use with the EFL
+ This package contains:
+ - libedbus0 and libehal0 : D-Bus and HAL-related wrappers to ease integrating
+   D-Bus and HAL with EFL-based applications
+ - libenotify0 : provides an EFL-based notification support

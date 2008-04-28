@@ -1,6 +1,6 @@
-e-dbus (@VERSION@-1) unstable; urgency=low
+edbus (@VERSION@-1) unstable; urgency=low
 
   * CVS snapshot.
 
- -- E17 Debian Team <debian@edevelop.org>  Sun, 24 Jun 2007 09:55:42 +0000
+ -- Falko Schmidt <falko@alphagemini.org>  Mon, 28 Apr 2008 15:53:27 +0000
 
