@@ -1241,7 +1241,7 @@ ewl_filelist_cb_clicked(Ewl_Widget *w, void *ev,
 				md->base.x, md->base.y);
 	while (c && c->parent)
 	{
-		if (ewl_widget_type_is(c, "highlight"))
+		if (!ewl_widget_internal_is(c))
 		{
 			i = 1;
 			break;

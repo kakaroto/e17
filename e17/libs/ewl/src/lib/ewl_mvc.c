@@ -455,8 +455,7 @@ ewl_mvc_selected_set(Ewl_MVC *mvc, const Ewl_Model *model, void *data,
 	DCHECK_PARAM_PTR(mvc);
 	DCHECK_TYPE(mvc, EWL_MVC_TYPE);
 
-	if ((mvc->selection_mode == EWL_SELECTION_MODE_NONE) ||
-			(ewl_mvc_selected_is(mvc, data, row, column)))
+	if (mvc->selection_mode == EWL_SELECTION_MODE_NONE)
 		DRETURN(DLEVEL_STABLE);
 
 	ewl_mvc_selected_clear_private(mvc);
