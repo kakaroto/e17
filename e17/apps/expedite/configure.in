@@ -6,6 +6,8 @@ rm -f config.cache
 AC_INIT(expedite, 0.6.0, enlightenment-devel@lists.sourceforge.net)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR(configure.in)
+AC_CANONICAL_BUILD
+AC_CANONICAL_HOST
 
 AM_INIT_AUTOMAKE(1.6 dist-bzip2)
 AM_CONFIG_HEADER(config.h)
@@ -16,6 +18,18 @@ AC_PROG_CC
 AM_PROG_CC_STDC
 AC_HEADER_STDC
 AC_C_CONST
+AM_PROG_CC_C_O
+
+WIN32_CFLAGS=""
+lt_enable_auto_import=""
+case "$host_os" in
+  cegcc)
+    WIN32_CFLAGS="-mwin32"
+    lt_enable_auto_import="-Wl,--enable-auto-import"
+    ;;
+esac
+AC_SUBST(WIN32_CFLAGS)
+AC_SUBST(lt_enable_auto_import)
 
 PKG_CHECK_MODULES([EVAS], evas)
 
@@ -60,6 +74,10 @@ EXPEDITE_CHECK_ENGINE([software-16-ddraw], [Software 16 bits DirectDraw], "yes",
 ### Direct3D
 EXPEDITE_CHECK_ENGINE([direct3d], [Direct3D], "yes", [d3d_libs="-ld3d9 -ld3dx9d"])
 
+# TODO: Check availability of libs
+### 16bit WinCE
+EXPEDITE_CHECK_ENGINE([software-16-wince], [Software 16 bits WinCE], "yes", [wince_16_libs="-laygshell"])
+
 ### Software SDL
 EXPEDITE_CHECK_ENGINE([software-sdl], [Software SDL], "yes")
 
@@ -97,6 +115,7 @@ AC_SUBST(x_libs)
 AC_SUBST(ddraw_libs)
 AC_SUBST(ddraw_16_libs)
 AC_SUBST(d3d_libs)
+AC_SUBST(wince_16_libs)
 AC_SUBST(glew_libs)
 
 AC_OUTPUT([
@@ -118,6 +137,7 @@ echo "    Open GL Glew.................: ${have_opengl_glew}"
 echo "    Software DirectDraw..........: ${have_software_ddraw}"
 echo "    Software DirectDraw 16 bits..: ${have_software_16_ddraw}"
 echo "    Direct3D.....................: ${have_direct3d}"
+echo "    Software WinCE 16 bits.......: ${have_software_16_wince}"
 echo "    Software SDL.................: ${have_software_sdl}"
 echo "    FB...........................: ${have_fb}"
 echo "    DirectFB.....................: ${have_directfb}"

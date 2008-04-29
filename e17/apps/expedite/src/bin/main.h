@@ -38,6 +38,9 @@
 #if HAVE_EVAS_DIRECT3D
 #include "engine_direct3d.h"
 #endif
+#if HAVE_EVAS_SOFTWARE_16_WINCE
+#include "engine_software_16_wince.h"
+#endif
 #if HAVE_EVAS_SOFTWARE_SDL
 #include "engine_software_sdl.h"
 #endif

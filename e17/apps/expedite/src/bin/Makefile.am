@@ -57,7 +57,9 @@ image_blend_occlude2_very_many.c \
 image_blend_occlude3_very_many.c \
 poly_blend.c
 
-expedite_LDADD = @EVAS_LIBS@ @SDL_LIBS@ @x_libs@ @ddraw_libs@ @ddraw_16_libs@ @d3d_libs@ @glew_libs@ @DIRECTFB_LIBS@ -lm
+expedite_CFLAGS = @WIN32_CFLAGS@
+expedite_LDADD = @EVAS_LIBS@ @SDL_LIBS@ @x_libs@ @ddraw_libs@ @ddraw_16_libs@ @d3d_libs@ @wince_16_libs@ @glew_libs@ @DIRECTFB_LIBS@ -lm
+expedite_LDFLAGS = @lt_enable_auto_import@
 
 if BUILD_SOFTWARE_X11
 expedite_SOURCES += \
@@ -97,6 +99,11 @@ endif
 if BUILD_DIRECT3D
 expedite_SOURCES += \
 engine_direct3d.cpp engine_direct3d.h
+endif
+
+if BUILD_SOFTWARE_16_WINCE
+expedite_SOURCES += \
+engine_software_16_wince.c engine_software_16_wince.h
 endif
 
 if BUILD_SOFTWARE_SDL

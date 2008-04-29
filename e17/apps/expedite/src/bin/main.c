@@ -3,6 +3,7 @@
 Evas *evas = NULL;
 int win_w = 720, win_h = 420;
 
+static char *datadir = NULL;
 static int go = 1;
 static void (*loop_func) (void) = NULL;
 
@@ -1087,11 +1088,13 @@ build_path(const char *filename)
      {
         char    *prefix;
 
-        prefix = getenv("EXPEDITE_DATA_DIR");
+        prefix = datadir;
         if (!prefix)
-          strcpy(path, PACKAGE_DATA_DIR"/data/");
-        else
-          snprintf(path, 4096, "%s/", prefix);
+          prefix = getenv("EXPEDITE_DATA_DIR");
+        if (!prefix)
+          prefix = PACKAGE_DATA_DIR"/data/";
+
+        snprintf(path, 4096, "%s/", prefix);
 
         init = 1;
      }
@@ -1154,6 +1157,20 @@ _profile_parse(int argc, char **argv)
    return 1;
 }
 
+static char *
+_datadir_parse(int argc, char **argv)
+{
+   int i;
+
+   for (i = 1; i < argc; i++)
+     {
+	if ((!strcmp(argv[i], "-datadir")) && (i < (argc - 1)))
+          return argv[i + 1];
+     }
+
+   return NULL;
+}
+
 static void
 _engine_args(int argc, char **argv)
 {
@@ -1199,6 +1216,10 @@ _engine_args(int argc, char **argv)
    if (engine_direct3d_args(argc, argv))
      loop_func = engine_direct3d_loop;
 #endif
+#if HAVE_EVAS_SOFTWARE_16_WINCE
+   if (engine_software_16_wince_args(argc, argv))
+     loop_func = engine_software_16_wince_loop;
+#endif
 #if HAVE_EVAS_FB
    if (engine_fb_args(argc, argv))
      loop_func = engine_fb_loop;
@@ -1213,6 +1234,7 @@ _engine_args(int argc, char **argv)
 		"No engine selected.\n"
 		"\n"
 		"Options:\n"
+		"  -datadir path/to/data\n"
 		"  -a (autorun all tests)\n"
 		"  -e ENGINE\n"
 		"  -p PROFILE\n"
@@ -1243,6 +1265,11 @@ _engine_args(int argc, char **argv)
 #if HAVE_EVAS_DIRECT3D
 	       	" direct3d"
 #endif
+#if HAVE_EVAS_SOFTWARE_16_WINCE
+               " wince"
+               " wince-fb"
+               " wince-gapi"
+#endif
 #if HAVE_EVAS_SOFTWARE_SDL
 	       	" sdl"
 #endif
@@ -1260,11 +1287,15 @@ _engine_args(int argc, char **argv)
 	exit(-1);
      }
 
-   prefix = getenv("EXPEDITE_FONTS_DIR");
+   datadir = _datadir_parse(argc, argv);
+
+   prefix = datadir;
    if (!prefix)
-     strcpy(buf, PACKAGE_DATA_DIR"/data");
-   else
-     snprintf(buf, 4096, "%s", prefix);
+     prefix = getenv("EXPEDITE_FONTS_DIR");
+   if (!prefix)
+     prefix = PACKAGE_DATA_DIR"/data";
+
+   snprintf(buf, 4096, "%s", prefix);
 
    evas_output_size_set(evas, win_w, win_h);
    evas_output_viewport_set(evas, 0, 0, win_w, win_h);
