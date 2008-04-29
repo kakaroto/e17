@@ -60,6 +60,7 @@ create_test(Ewl_Container *box)
 	/* create a list using an ecore_list of strings of labels */
 	o = ewl_border_new();
 	ewl_border_label_set(EWL_BORDER(o), "Label List (single select)");
+	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_HFILL);
 	ewl_container_child_append(EWL_CONTAINER(box), o);
 	ewl_widget_show(o);
 
@@ -85,6 +86,7 @@ create_test(Ewl_Container *box)
 	/* create a list using an ecore_list of strings of labels */
 	o = ewl_border_new();
 	ewl_border_label_set(EWL_BORDER(o), "Label List (multi select)");
+	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_HFILL);
 	ewl_container_child_append(EWL_CONTAINER(box), o);
 	ewl_widget_show(o);
 
@@ -139,15 +141,15 @@ list_test_data_setup(void)
 	data->rows = calloc(3, sizeof(List_Test_Row_Data *));
 
 	data->rows[0] = calloc(1, sizeof(List_Test_Row_Data));
-	data->rows[0]->image = strdup("/usr/local/share/ewl/e-logo.png");
+	data->rows[0]->image = strdup(PACKAGE_DATA_DIR"/ewl/images/e-logo.png");
 	data->rows[0]->text = strdup("The E logo");
 
 	data->rows[1] = calloc(1, sizeof(List_Test_Row_Data));
-	data->rows[1]->image = strdup("/usr/local/share/ewl/entice.png");
+	data->rows[1]->image = strdup(PACKAGE_DATA_DIR"/ewl/images/entice.png");
 	data->rows[1]->text = strdup("The Entice image");
 
 	data->rows[2] = calloc(1, sizeof(List_Test_Row_Data));
-	data->rows[2]->image = strdup("/usr/local/share/entrance.png");
+	data->rows[2]->image = strdup(PACKAGE_DATA_DIR"/ewl/images/entrance.png");
 	data->rows[2]->text = strdup("The Entrance image");
 
 	data->count = 3;
@@ -167,6 +169,7 @@ list_test_cb_widget_fetch(void *data, unsigned int row __UNUSED__,
 	w = ewl_button_new();
 	ewl_button_label_set(EWL_BUTTON(w), d->text);
 	ewl_button_image_set(EWL_BUTTON(w), d->image, NULL);
+	ewl_button_image_size_set(EWL_BUTTON(w), 24, 24);
 	ewl_widget_show(w);
 
 	return w;
