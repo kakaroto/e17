@@ -1,9 +1,10 @@
 Source: emodules
 Section: x11
 Priority: optional
-Maintainer: E17 Debian Team <debian@edevelop.org>
-Build-Depends: debhelper (>= 4.0.0), enlightenment-dev, libexml-dev, libxkbfile-dev, libxslt-dev, libxcomposite-dev, libxdamage-dev, libxrender-dev, emprint
-Standards-Version: 3.7.2
+Maintainer: Falko Schmidt <falko@alphagemini.org>
+Build-Depends: cdbs, debhelper (>= 4.0.0), enlightenment-dev, libexml-dev, libxkbfile-dev, libxslt-dev, libxcomposite-dev, libxdamage-dev, libxrender-dev, emprint, libe-dbus0-dev
+Standards-Version: 3.7.3
+Homepage: http://www.enlightenment.org
 
 Package: emodule0-alarm
 Architecture: any
@@ -77,6 +78,15 @@ Description: An E17 module front end
  to some of the things that modules typically do.  The backends can
  be written by anybody in any language.
  
+Package: emodule0-execwatch
+Architecture: any
+Depends: ${shlibs:Depends}, enlightenment
+Provides: emodule-execwatch
+Description: E17 for monitoring frequent command results
+ The execwatch module for E17 allows the user to monitor commands and adds
+ an icon to the shelf. Whenever the exitcode or an expected string changes
+ the icon changes as well.
+ 
 Package: emodule0-flame
 Architecture: any
 Depends: ${shlibs:Depends}, enlightenment
@@ -91,6 +101,16 @@ Depends: ${shlibs:Depends}, enlightenment
 Provides: emodule-forecasts
 Description: An E17 module which displays weather forecasts
  Forecasts is an E17 module which displays the weather forecast.
+
+Package: emodule0-iiirk
+Architecture: any
+Depends: ${shlibs:Depends}, enlightenment
+Provides: emodule-iiirk
+Description: An E17 taskbar module
+ The Iiirk module acts like a taskbar for selected applications only. The
+ purpose of this is having a module behaving like a tray would dock some
+ icons. Due to the status of the system tray specification this module
+ doesn't rely on it, but instead on .desktop and netwm icons only.
 
 Package: emodule0-language
 Architecture: any
@@ -157,6 +177,14 @@ Depends: ${shlibs:Depends}, enlightenment, xdg-utils
 Provides: emodule-news
 Description: The E17 new modules
  An E17 module to display feeds like Rss or Atom on the desktop.
+
+Package: emodule0-notification
+Architecture: any
+Depends: ${shlibs:Depends}, enlightenment, libe-dbus0
+Provides: emodule-notification
+Description: E17 notification daemon
+ An E17 module which provides a notification daemon for E17. It implements
+ the galago specification.
 
 Package: emodule0-penguins
 Architecture: any
@@ -264,43 +292,41 @@ Description: An E17 WLAN monitor module
 
 Package: emodules0-all
 Architecture: any
-Depends: enlightenment, emodule0-alarm, emodule0-bling, emodule0-calendar, emodule0-cpu, emodule0-deskshow, emodule0-echo, emodule0-efm-nav, emodule0-efm-path, emodule0-emu, emodule0-flame, emodule0-forecasts, emodule0-language, emodule0-mail, emodule0-mem, emodule0-mixer, emodule0-moon, emodule0-mpdule, emodule0-net, emodule0-news, emodule0-penguins, emodule0-photo, emodule0-rain, emodule0-screenshot, emodule0-slideshow, emodule0-snow, emodule0-taskbar, emodule0-tclock, emodule0-uptime, emodule0-weather, emodule0-winselector, emodule0-wlan
+Depends: enlightenment, emodule0-alarm, emodule0-bling, emodule0-calendar, emodule0-cpu, emodule0-deskshow, emodule0-echo, emodule0-efm-nav, emodule0-efm-path, emodule0-emu, emodule0-flame, emodule0-forecasts, emodule0-language, emodule0-mail, emodule0-mem, emodule0-mixer, emodule0-moon, emodule0-mpdule, emodule0-net, emodule0-news, emodule0-notification, emodule0-penguins, emodule0-photo, emodule0-rain, emodule0-screenshot, emodule0-slideshow, emodule0-snow, emodule0-taskbar, emodule0-tclock, emodule0-uptime, emodule0-weather, emodule0-winselector, emodule0-wlan
 Conflicts: emodules-extra, evolume
 Provides: emodules-all, e17-modules
 Description: A dummy package for installing all modules for E17
  This package will install the following modules:
- Alarm       : Enlightenment Alarm Module
- Bling       : EFLized Composite Manager for E17.
- Calendar    : Calendar module for the desktop.
- Cpu         : Monitor module for the CPU load.
- Deskshow    : A module that minimizes all windows to show the desktop.
- Echo        : Another sound mixer module.
- EFM-nav     : A file manager history browser.
- EFM-path    : A module for the file manager which displays the path.
- Emu         : A module front end that runs arbitrary back ends
-               written in any language.
- Flame       : Displays flames at the bottom of the screen.
- Forecasts   : Shows the weather forecast.
- Language    : Allows to control keyboard layout, model and variant.
- Mail        : A mail module supporting pop3, imap, mailbox and mdir.
- Mem         : Monitors memory usage.
- Mixer       : Sound mixer module.
- Moon        : Moon Clock module for Enlightenment.
- Mpdule      : MPD status module.
- Net         : Network activity monitoring module.
- News        : Displays Rss or Atom feeds on the desktop.
- Penguins    : Displays penguins on the desktop.
- Photo       : Display, view or set pictures as backgrounds.
- Rain        : Displays rain on the desktop.
- Screenshot  : This module is used to take screenshots. It
-               supports using import and scrot. Version 0.0.2
-               contains only a few basic options for import and
-               scrot. More options will be added later.
- Slideshow   : Port of the e16 E-Slides epplet.
- Snow        : Displays some snow on your desktop.
- Taskbar     : An extension of the default ibox module.
- Tclock      : Simple text Clock module.
- Uptime      : Monitors the uptime.
- Weather     : A module for displaying weather reports.
- Winselector : A module providing menu-based access to all windows.
- Wlan        : Monitors WLAN activity.
+ Alarm        : Enlightenment Alarm Module
+ Bling        : EFLized Composite Manager for E17.
+ Calendar     : Calendar module for the desktop.
+ Cpu          : Monitor module for the CPU load.
+ Deskshow     : A module that minimizes all windows to show the desktop.
+ Echo         : Another sound mixer module.
+ EFM-nav      : A file manager history browser.
+ EFM-path     : A module for the file manager which displays the path.
+ Emu          : A module front end that runs arbitrary back ends
+                written in any language.
+ Flame        : Displays flames at the bottom of the screen.
+ Forecasts    : Shows the weather forecast.
+ Language     : Allows to control keyboard layout, model and variant.
+ Mail         : A mail module supporting pop3, imap, mailbox and mdir.
+ Mem          : Monitors memory usage.
+ Mixer        : Sound mixer module.
+ Moon         : Moon Clock module for Enlightenment.
+ Mpdule       : MPD status module.
+ Net          : Network activity monitoring module.
+ News         : Displays Rss or Atom feeds on the desktop.
+ Notification : A notification daemon.
+ Penguins     : Displays penguins on the desktop.
+ Photo        : Display, view or set pictures as backgrounds.
+ Rain         : Displays rain on the desktop.
+ Screenshot   : This module allows the user to take screenshots.
+ Slideshow    : Port of the e16 E-Slides epplet.
+ Snow         : Displays some snow on your desktop.
+ Taskbar      : An extension of the default ibox module.
+ Tclock       : Simple text Clock module.
+ Uptime       : Monitors the uptime.
+ Weather      : A module for displaying weather reports.
+ Winselector  : A module providing menu-based access to all windows.
+ Wlan         : Monitors WLAN activity.
