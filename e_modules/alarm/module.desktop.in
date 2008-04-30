@@ -2,6 +2,7 @@
 Type=Link
 Name=Alarm
 Name[eo]=Alarmilo
+Name[hu]=Emlékeztető
 Exec=enlightenment
 StartupNotify=false
 X-Enlightenment-WaitExit=false
@@ -9,4 +10,5 @@ X-Enlightenment-IconClass=alarm,gadget
 Icon=e-module-alarm
 Comment=<hilight>Alarm Module</hilight><br><br>A module which allows you to set popup reminders.
 Comment[eo]=<hilight>Modulo Alarmilo</hilight><br><br>Difini spruĉfenestrajn memorigilojn.
+Comment[hu]=<hilight>Emlékeztető modul</hilight><br><br>Egy modul, amellyel felugró figyelmeztetéseket állíthatsz be magadnak.
 Comment[it]=<hilight>Modulo Alarm</hilight><br><br>Un modulo che consente di impostare dei popup di promemoria.

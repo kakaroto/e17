@@ -2,7 +2,9 @@
 Type=Link
 Name=Calendar
 Name[eo]=Kalendaro
+Name[hu]=Naptár
 Icon=e-module-calendar
 Comment=<hilight>Calendar Gadget</hilight><br><br>Calendar sheet showing the current day.
 Comment[eo]=<hilight>Modulo de Kalendaro</hilight><br><br>Kalendara folio vidiganta la nunan tagon.
+Comment[hu]=<hilight>Naptár modul</hilight><br><br>Naptár, amely az aktuális napot mutatja.
 Comment[it]=<hilight>Modulo Calendar</hilight><br><br>Un foglio di calendario che mostra la data attuale.

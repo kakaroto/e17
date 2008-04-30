@@ -2,7 +2,9 @@
 Type=Link
 Name=Mem
 Name[eo]=Memoro
+Name[hu]=Memória
 Icon=e-module-mem
 Comment=<hilight>Mem Gadget</hilight><br><br>Used to monitor memory utilization.
 Comment[eo]=<hilight>Modulo de memoro</hilight><br><br>Elrigardi la uzadon de memoro.
+Comment[hu]=<hilight>Memória modul</hilight><br><br>A fizikai memória foglaltságát jelzi ki.
 Comment[it]=<hilight>Modulo Mem</hilight><br><br>Usato per il monitoraggio dell'utilizzo della memoria.

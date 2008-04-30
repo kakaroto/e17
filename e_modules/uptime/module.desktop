@@ -2,7 +2,9 @@
 Type=Link
 Name=Uptime
 Name[eo]=Daŭro de funkciado
+Name[hu]=Üzemóra
 Icon=e-module-uptime
 Comment=<hilight>Uptime Gadget</hilight><br><br>Gadget to display the current uptime of the system.
 Comment[eo]=<hilight>Modulo de daŭro de funkciado</hilight><br><br>Vidigi la nunan daŭron de funkciado de la operaciumo.
+Comment[hu]=<hilight>Üzemóra modul</hilight><br><br>Egy modul, amely megmutatja mióta van folyamatosan üzemben a rendszer.
 Comment[it]=<hilight>Modulo Uptime</hilight><br><br>Modulo per visualizzare il tempo di servizio del sistema.

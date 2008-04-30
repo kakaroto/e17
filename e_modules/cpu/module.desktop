@@ -2,7 +2,9 @@
 Type=Link
 Name=Cpu
 Name[eo]=Ĉeforgano
+Name[hu]=Processzor
 Icon=e-module-cpu
 Comment=<hilight>CPU Gadget</hilight><br><br>Used to monitor CPU utilization.
 Comment[eo]=<hilight>Modulo de Ĉeforgano</hilight><br><br>Elrigardi la uzadon de la ĉeforgano.
+Comment[hu]=<hilight>Processzor modul</hilight><br><br>A processzor monitorozására (felügyeletére) használható modul.
 Comment[it]=<hilight>Modulo CPU</hilight><br><br>Usato per monitorare l'utilizzo della CPU.

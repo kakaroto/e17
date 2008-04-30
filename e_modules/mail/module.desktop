@@ -2,7 +2,9 @@
 Type=Link
 Name=Mail
 Name[eo]=Retmesaĝo
+Name[hu]=E-mail modul
 Icon=e-module-mail
 Comment=<hilight>Mail Gadget</hilight><br><br>Mail notification gadget. Checks POP3, IMAP, maildir, and mbox mailboxes.
 Comment[eo]=<hilight>Modulo de retmesaĝo</hilight><br><br>Vanaĵo por retmesaĝa averto. Inspektas POP3, IMAP, maildir kaj mbox retpoŝtkestojn.
+Comment[hu]=<hilight>E-mail modul</hilight><br><br>E-mail értesítő modul. Kezeli a POP3, IMAP, maildir, és a mbox postafiókokat.
 Comment[it]=<hilight>Modulo Mail</hilight><br><br>Modulo per notificare l'arrivo di posta. Controlla caselle POP3, IMAP, maildir e mbox.

@@ -2,7 +2,9 @@
 Type=Link
 Name=Deskshow
 Name[eo]=LabortabloVidigilo
+Name[hu]=Munkaasztal megjelenítése
 Icon=e-module-deskshow
 Comment=<hilight>Deskshow Gadget</hilight><br><br>Gadget to allow you to quickly uncover your desktop.
 Comment[eo]=<hilight>Modulo vidigo de labortablo</hilight><br><br>Rapide malkovri sian labortablon.
+Comment[hu]=<hilight>Munkasztal megjelenítő modul</hilight><br><br>A modul segítségével egy kattintásra az összes megnyitott ablak minimalizálódik.
 Comment[it]=<hilight>Modulo Deskshow</hilight><br><br>Modulo che consente di scoprire rapidamente il desktop.

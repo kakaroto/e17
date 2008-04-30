@@ -2,7 +2,9 @@
 Type=Link
 Name=Forecasts
 Name[eo]=Veteraj prognozoj
+Name[hu]=Elõrejelzés
 Icon=e-module-forecasts
 Comment=<hilight>Forecasts Gadget</hilight><br><br>The forecasts gadget will display the current weather conditions plus a few days forecast.
 Comment[eo]=<hilight>Modulo de veteraj prognozoj</hilight><br><br>Vidigi la nunan veteron kaj prognozo por kelkaj tagoj.
-Comment[it]=<hilight>Modulo Forecasts</hilight><br><br>Il modulo forecasts mostrer� le attuali condizioni del tempo e le previsioni per qualche giorno.
+Comment[hu]=<hilight>Elõrejelzõ modul</hilight><br><br>Az elõrejelzõ modul megmutatja az aktuális idõjárást, és elõre jelzi a következõ két nap idõjárását.
+Comment[it]=<hilight>Modulo Forecasts</hilight><br><br>Il modulo forecasts mostrerà le attuali condizioni del tempo e le previsioni per qualche giorno.

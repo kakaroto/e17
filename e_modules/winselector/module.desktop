@@ -2,7 +2,9 @@
 Type=Link
 Name=Winselector
 Name[eo]=Fenestro-elektilo
+Name[hu]=Ablak választó
 Icon=e-module-winselector
 Comment=<hilight>Winselector Gadget</hilight><br><br>This module provides a menu-based access to all the windows.
 Comment[eo]=<hilight>Modulo de fenestro-elektilo</hilight><br><br>Provizi aliron al ĉiuj fenestroj per menuo.
-Comment[it]=<hilight>Modulo Winselector</hilight><br><br>Questo modulo fornisce accesso a tutte le finestre tramite men�.
+Comment[hu]=<hilight>Ablak választó modul</hilight><br><br>Ez a modul elérhetõséget biztosít számunkra az összes megnyitott ablakhoz, amelyeket egy listába rendez.
+Comment[it]=<hilight>Modulo Winselector</hilight><br><br>Questo modulo fornisce accesso a tutte le finestre tramite menù.

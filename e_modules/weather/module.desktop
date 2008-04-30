@@ -2,7 +2,9 @@
 Type=Link
 Name=Weather
 Name[eo]=Vetero
+Name[hu]=Időjárás
 Icon=e-module-weather
 Comment=<hilight>Weather Gadget</hilight><br><br>A weather gadget.
 Comment[eo]=<hilight>Modulo de vetero</hilight><br><br>Vidigi veteron.
+Comment[hu]=<hilight>Időjárás modul</hilight><br><br>Az aktuális, helyi időjárást megjelenítő modul.
 Comment[it]=<hilight>Modulo Weather</hilight><br><br>Un modulo per le condizioni meteo.

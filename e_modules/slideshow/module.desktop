@@ -2,7 +2,9 @@
 Type=Link
 Name=Slideshow
 Name[eo]=Bildoprezentado
+Name[hu]=Diavetítés
 Icon=e-module-slideshow
 Comment=<hilight>Slideshow Module</hilight><br><br>Turns your desktop background into a slideshow.
 Comment[eo]=<hilight>Modulo de bildoprezentado</hilight><br><br>Aliformi la labortablan tapeton en bildoprezentado.
+Comment[hu]=<hilight>Diavetítés modul</hilight><br><br>A munkaasztal háttérképeit váltogatja, megadott időközönként, mint egy diavetítő.
 Comment[it]=<hilight>Modulo Slideshow</hilight><br><br>Trasforma lo sfondo del vostro desktop in uno slideshow.

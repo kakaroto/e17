@@ -2,7 +2,9 @@
 Type=Link
 Name=Screenshot
 Name[eo]=Ekrankopio
+Name[hu]=Képernyőkép készítő
 Icon=e-module-screenshot
 Comment=<hilight>Screenshot Gadget</hilight><br><br>Gadget to take screenshots using emprint.
 Comment[eo]=<hilight>Modulo de ekrankopio</hilight><br><br>Ekrankopii per emprint.
+Comment[hu]=<hilight>Képernyőkép készítő</hilight><br><br>Képernyőkép készítő modul, amely az emprintet használja.
 Comment[it]=<hilight>Modulo Screenshot</hilight><br><br>Modulo per la cattura di istantanee dello schermo utilizzando emprint.

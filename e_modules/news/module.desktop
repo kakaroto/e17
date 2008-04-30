@@ -2,8 +2,10 @@
 Type=Link
 Name=News
 Name[eo]=Novaĵoj
+Name[hu]=Hírek
 Icon=e-module-news
 Comment=<hilight>News Gadget</hilight><br><br>Gadget to monitor RSS feeds.
-Comment[it]=<hilight>Modulo News</hilight><br><br>Modulo per il monitoraggio dei feed RSS.
 Comment[eo]=<hilight>Modulo de novaĵoj</hilight><br><br>Elrigardi la RSS-abonfluojn.
 Comment[fr]=<hilight>Module de nouvelles</hilight><br><br>Module pour suivre les flux RSS.
+Comment[hu]=<hilight>Hírek modul</hilight><br><br>RSS hírforrásokat olvashatunk.
+Comment[it]=<hilight>Modulo News</hilight><br><br>Modulo per il monitoraggio dei feed RSS.

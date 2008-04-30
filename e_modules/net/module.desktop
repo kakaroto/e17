@@ -2,7 +2,9 @@
 Type=Link
 Name=Net
 Name[eo]=Reto
+Name[hu]=Hálózat
 Icon=e-module-net
 Comment=<hilight>Net Gadget</hilight><br><br>Network interface monitor.
 Comment[eo]=<hilight>Modulo de reto</hilight><br><br>Elrigardi la retan interfacon.
+Comment[hu]=<hilight>Hálózati modul</hilight><br><br>A hálózatot követhetjük nyomon (feltöltés/letöltés sebessége)a modullal.
 Comment[it]=<hilight>Modulo Net</hilight><br><br>Monitor delle interfacce di rete.
