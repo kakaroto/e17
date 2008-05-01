@@ -2,5 +2,5 @@ etk (@VERSION@-1) unstable; urgency=low
 
   * a CVS snapshot release.
 
- -- E17 Debian Team <debian@edevelop.org>  Tue,  30 Mar 2006 00:33:25 +0000
+ -- Falko Schmidt <falko@alphagemini.org>  Thu,  1 May 2008 19:13:19 +0000
 
