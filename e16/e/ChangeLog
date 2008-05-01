@@ -4732,3 +4732,10 @@ Fix bug, avoid allocating excessively large arrays in window placement.
 Eliminate RRoot and VRoot.
 Rewrap more X stuff.
 Remove obsolete (I think) sgi _NO_ANSIMODE stuff. Cleanups.
+
+-------------------------------------------------------------------------------
+
+Thu May  1 13:33:22 CEST 2008
+(Kim)
+
+--- 0.16.8.13 ---
