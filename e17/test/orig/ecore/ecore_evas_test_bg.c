@@ -39,7 +39,7 @@ bg_start(void)
    evas_object_color_set(o, 255, 255, 255, 255);
    evas_object_move(o, 0, 0);
    evas_object_resize(o, 240, 320);
-   evas_object_layer_set(o, -1000000);
+   evas_object_layer_set(o, EVAS_LAYER_MIN);
    evas_object_event_callback_add(o, EVAS_CALLBACK_KEY_DOWN, bg_cb_key_down, ee);
    evas_object_event_callback_add(o, EVAS_CALLBACK_KEY_UP, bg_cb_key_up, ee);
    evas_object_focus_set(o, 1);

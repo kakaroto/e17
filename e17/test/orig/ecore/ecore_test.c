@@ -702,7 +702,7 @@ setup_ecore_evas_test(void)
    evas_object_color_set(o, 255, 255, 255, 255);
    evas_object_move(o, 0, 0);
    evas_object_resize(o, 100000, 100000);
-   evas_object_layer_set(o, -1000000);
+   evas_object_layer_set(o, EVAS_LAYER_MIN);
    evas_object_event_callback_add(o, EVAS_CALLBACK_KEY_DOWN, cb_key_down, ee);
    evas_object_focus_set(o, 1);
    evas_object_show(o);

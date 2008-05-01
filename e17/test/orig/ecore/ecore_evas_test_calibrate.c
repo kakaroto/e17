@@ -125,7 +125,7 @@ calibrate_start(void)
 #endif	
    
    o = evas_object_rectangle_add(evas);
-   evas_object_layer_set(o, 1000000); 
+   evas_object_layer_set(o, EVAS_LAYER_MAX - 2);
    evas_object_color_set(o, 255, 255, 255, 120);
    evas_object_move(o, -12000, -16000);
    evas_object_resize(o, 24000, 32000);
@@ -136,7 +136,7 @@ calibrate_start(void)
    o_events = o;
    
    o = evas_object_image_add(evas);
-   evas_object_layer_set(o, 1000001);
+   evas_object_layer_set(o, EVAS_LAYER_MAX - 1);
    evas_object_image_file_set(o, IM"crosshair.png", NULL);   
    evas_object_resize(o, 31, 31);
    evas_object_image_fill_set(o, 0, 0, 31, 31);
@@ -145,7 +145,7 @@ calibrate_start(void)
    o_crosshair = o;
    
    o = evas_object_text_add(evas);
-   evas_object_layer_set(o, 1000002);
+   evas_object_layer_set(o, EVAS_LAYER_MAX);
    evas_object_color_set(o, 0, 0, 0, 255);
    evas_object_text_font_set(o, "Vera", 10);
    evas_object_pass_events_set(o, 1);

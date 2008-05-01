@@ -1057,7 +1057,7 @@ ipc_start(int argc, char **argv)
    if (ecore_evas_shaped_get(es->ecore_evas)) evas_object_color_set(o, 255, 255, 255, 0);
    else evas_object_color_set(o, 255, 255, 255, 255);
    evas_object_data_set(o, "srv", es);
-   evas_object_layer_set(o, -2147483647);
+   evas_object_layer_set(o, EVAS_LAYER_MIN);
    evas_object_move(o, 0, 0);
    ecore_evas_geometry_get(es->ecore_evas, NULL, NULL, &(w), &(h));
    evas_object_resize(o, w, h);

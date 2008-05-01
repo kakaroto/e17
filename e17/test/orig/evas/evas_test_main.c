@@ -141,7 +141,7 @@ loop(void)
 	     test_pattern = evas_object_image_add(evas);
 	     evas_object_move(test_pattern, 0, 0);
 	     evas_object_resize(test_pattern, 720, 480);
-	     evas_object_layer_set(test_pattern, 99999);
+	     evas_object_layer_set(test_pattern, EVAS_LAYER_MAX);
 	     evas_object_image_size_set(test_pattern, 720, 480);
 	     evas_object_image_fill_set(test_pattern, 0, 0, 720, 480);
 	     evas_object_show(test_pattern);
