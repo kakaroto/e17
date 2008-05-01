@@ -2,5 +2,5 @@ epsilon (@VERSION@-1) unstable; urgency=low
 
   * a CVS snapshot release.
 
- -- E17 Debian Team <debian@edevelop.org>  Sun, 02 Apr 2006 16:13:04 +0900
+ -- Falko Schmidt <falko@alphagemini.org>  Thu, 01 May 2008 14:56:36 +0000
 
