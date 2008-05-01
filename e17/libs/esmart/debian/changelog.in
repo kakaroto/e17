@@ -2,5 +2,5 @@ esmart (@VERSION@-1) unstable; urgency=low
 
   * a CVS snapshot release.
 
- -- E17 Debian Team <debian@edevelop.org>  Sun, 02 Apr 2006 06:58:43 +0000
+ -- Falko Schmidt <falko@alphagemini.org>  Thu, 01 May 2008 19:55:13 +0000
 

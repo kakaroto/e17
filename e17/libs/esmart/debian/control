@@ -1,34 +1,33 @@
 Source: esmart
 Section: libs
 Priority: optional
-Maintainer: E17 Debian Team <debian@edevelop.org>
-Build-Depends: debhelper (>> 4.0.0), automake1.7 | automaken, libtool, pkg-config, libecore0-dev, libevas0-dev, libepsilon0-dev, libimlib2-dev, libedje0-dev, libepeg0-dev
-Standards-Version: 3.6.1.0
+Maintainer: Falko Schmidt <falko@alphagemini.org>
+Build-Depends: cdbs, debhelper (>= 6), libtool, pkg-config, libecore-dev, libevas-dev, libepsilon-dev, libimlib2-dev, libedje-dev, libepeg-dev
+Standards-Version: 3.7.3
+Homepage: http://www.enlightenment.org
 
 Package: libesmart0
-Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}
-Suggests: esmart0-test (= ${Source-Version})
+Suggests: libesmart-bin (= ${Source-Version})
 Provides: libesmart
 Description: The Esmart Prototype Library
  Esmart provides a series of smart object prototypes for a variety of uses.
 
-Package: libesmart0-dev
+Package: libesmart-dev
 Architecture: any
 Section: libdevel
-Depends: libesmart0 (= ${Source-Version}), libecore0-dev, libevas0-dev, libepsilon0-dev, libedje0-dev
-Provides: libesmart-dev
-Conflicts: libesmart-dev
+Depends: libesmart0 (= ${Source-Version}), libecore-dev, libevas-dev, libepsilon-dev, libedje-dev
+Provides: libesmart0-dev
 Description: Development files for Esmart
  Esmart is a utility library based on the libraries provided by the
  Enlightenment project.
 
-Package: esmart0-bin
+Package: libesmart-bin
 Section: graphics
 Architecture: any
 Depends: ${shlibs:Depends}
-Provides: esmart-bin
+Provides: libesmart0-bin
 Description: Programs for Esmart
  This package provides programs packaged with Esmart.
  .
