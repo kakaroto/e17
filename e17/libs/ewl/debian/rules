@@ -12,4 +12,4 @@ debian/stamp-autotools-files:
 install/libewl0-dev::
 	mkdir -p debian/libewl0-dev/usr/share/doc/libewl0-dev/
 	cp -a debian/tmp/usr/share/ewl/examples debian/libewl0-dev/usr/share/doc/libewl0-dev/
-
+	./autogen.sh --prefix=/usr $(DEB_CONFIGURE_EXTRA_FLAGS) 
