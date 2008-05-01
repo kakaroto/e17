@@ -2,5 +2,5 @@ exml (@VERSION@-1) unstable; urgency=low
 
   * a CVS snapshot release.
 
- -- E17 Debian Team <debian@edevelop.org>  Tue, 7 Mar 2006 13:30:15 +0000
+ -- Falko Schmidt <falko@alphagemini.org>  Thu, 01 Apr 2008 21:36:54 +0000
 
