@@ -2,5 +2,5 @@ empower (@VERSION@-1) unstable; urgency=low
 
   * a CVS snapshot release.
 
- -- E17 Debian Team <debian@edevelop.org>  Tue, 7 Mar 2006 13:30:15 +0000
+ -- Falko Schmidt <falko@alphagemini.org>  Sat,  3 May 2008 11:47:16 +0000
 
