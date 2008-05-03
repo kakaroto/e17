@@ -2,5 +2,5 @@ enhance (@VERSION@-1) unstable; urgency=low
 
   * a CVS snapshot release.
 
- -- E17 Debian Team <debian@edevelop.org>  Thu,  9 Feb 2006 01:47:09 +0100
+ -- Falko Schmidt <falko@alphagemini.org>  Sat,  3 May 2008 12:30:50 +0000
 

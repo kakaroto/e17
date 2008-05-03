@@ -1,14 +1,14 @@
 Source: enhance
 Section: libs
 Priority: optional
-Maintainer: E17 Debian Team <debian@edevelop.org>
-Build-Depends: debhelper (>= 4.0.0), libexml, libetk-dev
-Standards-Version: 3.6.2.2
+Maintainer: Falko Schmidt <falko@alphagemini.org>
+Build-Depends: cdbs, debhelper (>= 6), libexml0, libetk-dev
+Standards-Version: 3.7.3
+Homepage: http://www.enlightenment.org
 
 Package: libenhance0
 Architecture: any
-Section: libs
-Depends: libetk, libexml
+Depends: ${shlibs:Depends}
 Provides: libenhance
 Description: Library for easy application GUI development
  After using Glade to design a GUI, you can save generate
@@ -20,11 +20,11 @@ Description: Library for easy application GUI development
  callbacks for you. There are several examples in the
  examples directory for you to take a look at.
 
-Package: libenhance0-dev
+Package: libenhance-dev
 Architecture: any
 Section: libdevel
-Depends: libetk, libexml, libenhance0
-Provides: libenhance-dev
+Depends: libetk-dev, libexml-dev, libenhance0 (= ${Source-Version})
+Provides: libenhance0-dev
 Description: Headers for libenhance0
  After using Glade to design a GUI, you can save generate
  the .glade XML file that describes the interface design
