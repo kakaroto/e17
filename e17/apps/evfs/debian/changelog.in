@@ -2,5 +2,5 @@ evfs (@VERSION@-1) unstable; urgency=low
 
   * a CVS snapshot release.
 
- -- E17 Debian Team <debian@edevelop.org>  Thu, 20 Oct 2005 23:28:02 +0200
+ -- Falko Schmidt <falko@alphagemini.org>  Sat,  3 May 2008 10:49:40 +0000
 
