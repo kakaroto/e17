@@ -8,28 +8,28 @@ Homepage: http://www.enlightenment.org
 
 Package: emodule-alarm
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment
+Depends: ${shlibs:Depends}, enlightenment  (>= 0.16.999)
 Provides: emodule0-alarm
 Description: The E17 Alarm Module
  A module to set Alarms in Enlightenment 17.
 
 Package: emodule-bling
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment
+Depends: ${shlibs:Depends}, enlightenment (>= 0.16.999)
 Provides: emodule0-bling
 Description: An E17 module providing a Composite Manager
  An E17 module which acts as a Composite Manager.
 
 Package: emodule-calendar
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment
+Depends: ${shlibs:Depends}, enlightenment (>= 0.16.999)
 Provides: emodule0-calendar
 Description: E17 calendar module
  An E17 module which displays a calendar on the desktop.
  
 Package: emodule-cpu
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment
+Depends: ${shlibs:Depends}, enlightenment (>= 0.16.999)
 Provides: emodule0-cpu
 Description: E17 monitor module for the CPU load
  An E17 module which displays the current CPU load. Features are:
@@ -38,7 +38,7 @@ Description: E17 monitor module for the CPU load
  
 Package: emodule-deskshow
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment
+Depends: ${shlibs:Depends}, enlightenment (>= 0.16.999)
 Provides: emodule0-deskshow
 Description: E17 module which minimizes all windows
  An E17 module which minimizes all windows in order to show the
@@ -46,7 +46,7 @@ Description: E17 module which minimizes all windows
  
 Package: emodule-echo
 Architecture: any
-Depends: ${shlibs:Depends}, libc6 (>= 2.5), enlightenment
+Depends: ${shlibs:Depends}, enlightenment (>= 0.16.999)
 Provides: emodule0-echo
 Description: E17 sound volume module
  An E17 module which allows the user to adjust the volume of the sound
@@ -54,7 +54,7 @@ Description: E17 sound volume module
 
 Package: emodule-efm-nav
 Architecture: any
-Depends: ${shlibs:Depends}, libc6 (>= 2.5), enlightenment
+Depends: ${shlibs:Depends}, enlightenment (>= 0.16.999)
 Provides: emodule0-efm-nav
 Description: E17 file manager navigation module
  An E17 module which allows the user to navigate through the file manager
@@ -62,7 +62,7 @@ Description: E17 file manager navigation module
 
 Package: emodule-efm-path
 Architecture: any
-Depends: ${shlibs:Depends}, libc6 (>= 2.5), enlightenment
+Depends: ${shlibs:Depends}, enlightenment (>= 0.16.999)
 Provides: emodule0-efm-path
 Description: E17 file manager path module
  An E17 module which allows for displaying and editing the path in the
@@ -70,7 +70,7 @@ Description: E17 file manager path module
 
 Package: emodule-emu
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment
+Depends: ${shlibs:Depends}, enlightenment (>= 0.16.999)
 Provides: emodule0-emu
 Description: An E17 module front end
  An E17 module which works as a front end that runs arbitrary back
@@ -80,7 +80,7 @@ Description: An E17 module front end
  
 Package: emodule-execwatch
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment
+Depends: ${shlibs:Depends}, enlightenment (>= 0.16.999)
 Provides: emodule0-execwatch
 Description: E17 for monitoring frequent command results
  The execwatch module for E17 allows the user to monitor commands and adds
@@ -89,7 +89,7 @@ Description: E17 for monitoring frequent command results
  
 Package: emodule-flame
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment
+Depends: ${shlibs:Depends}, enlightenment (>= 0.16.999)
 Provides: emodule0-flame
 Description: An E17 module that draws flames on the desktop
  Flame is an E17 module which draws flames of configurable colors on
@@ -97,14 +97,14 @@ Description: An E17 module that draws flames on the desktop
 
 Package: emodule-forecasts
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment
+Depends: ${shlibs:Depends}, enlightenment (>= 0.16.999)
 Provides: emodule0-forecasts
 Description: An E17 module which displays weather forecasts
  Forecasts is an E17 module which displays the weather forecast.
 
 Package: emodule-iiirk
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment
+Depends: ${shlibs:Depends}, enlightenment (>= 0.16.999)
 Provides: emodule0-iiirk
 Description: An E17 taskbar module
  The Iiirk module acts like a taskbar for selected applications only. The
@@ -114,7 +114,7 @@ Description: An E17 taskbar module
 
 Package: emodule-language
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment, libexml
+Depends: ${shlibs:Depends}, enlightenment (>= 0.16.999), libexml
 Provides: emodule0-language
 Description: An E17 module that manages keyboard layouts and more
  This is an E17 module which allows to control the keyboard layout,
@@ -122,14 +122,14 @@ Description: An E17 module that manages keyboard layouts and more
 
 Package: emodule-mail
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment
+Depends: ${shlibs:Depends}, enlightenment (>= 0.16.999)
 Provides: emodule0-mail
 Description: An E17 module for checking mailboxes
  Mail is an E17 module which checks pop3, imap, mailbox and mdir mailboxes.
  
 Package: emodule-mem
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment
+Depends: ${shlibs:Depends}, enlightenment (>= 0.16.999)
 Provides: emodule0-mem
 Description: An E17 memory monitoring module
  An E17 module which monitors the RAM usage. It features the following:
@@ -140,14 +140,14 @@ Description: An E17 memory monitoring module
  
 Package: emodule-mixer
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment
+Depends: ${shlibs:Depends}, enlightenment (>= 0.16.999)
 Provides: emodule0-mixer
 Description: An E17 sound mixer module
  An E17 module for adjusting the sound mixer settings.
  
 Package: emodule-moon
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment
+Depends: ${shlibs:Depends}, enlightenment (>= 0.16.999)
 Provides: emodule0-moon
 Description: Moon Clock module for Enlightenment
  Moon is an E17 module which displays information about the current
@@ -155,14 +155,14 @@ Description: Moon Clock module for Enlightenment
  
 Package: emodule-mpdule
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment
+Depends: ${shlibs:Depends}, enlightenment (>= 0.16.999)
 Provides: emodule0-mpdule
 Description: MPD module for Enlightenment
  An E17 module to show the MPD status in the shelf.
  
 Package: emodule-net
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment
+Depends: ${shlibs:Depends}, enlightenment (>= 0.16.999)
 Provides: emodule0-net
 Description: An E17 network interface monitor module
  An E17 module which monitors TX and RX events of a specified
@@ -173,14 +173,14 @@ Description: An E17 network interface monitor module
  
 Package: emodule-news
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment, xdg-utils
+Depends: ${shlibs:Depends}, enlightenment (>= 0.16.999), xdg-utils
 Provides: emodule0-news
 Description: The E17 new modules
  An E17 module to display feeds like Rss or Atom on the desktop.
 
 Package: emodule-notification
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment
+Depends: ${shlibs:Depends}, enlightenment (>= 0.16.999)
 Provides: emodule0-notification
 Description: E17 notification daemon
  An E17 module which provides a notification daemon for E17. It implements
@@ -188,14 +188,14 @@ Description: E17 notification daemon
 
 Package: emodule-penguins
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment
+Depends: ${shlibs:Depends}, enlightenment (>= 0.16.999)
 Provides: emodule0-penguins
 Description: The E17 penguins module
  An E17 module to display penguins on the desktop.
  
 Package: emodule-photo
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment
+Depends: ${shlibs:Depends}, enlightenment (>= 0.16.999)
 Provides: emodule0-photo
 Description: An E17 module for displaying pictures
  An E17 module which displays pictures in a slideshow.
@@ -205,7 +205,7 @@ Description: An E17 module for displaying pictures
  
 Package: emodule-rain
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment
+Depends: ${shlibs:Depends}, enlightenment (>= 0.16.999)
 Provides: emodule0-rain
 Description: An E17 module displaying rain on the desktop
  An E17 module which displays falling rainsdrops on the desktop.
@@ -215,14 +215,14 @@ Description: An E17 module displaying rain on the desktop
  
 Package: emodule-screenshot
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment, emprint
+Depends: ${shlibs:Depends}, enlightenment (>= 0.16.999), emprint
 Provides: emodule0-screenshot
 Description: An E17 screenshot module
  An E17 module which enables the user to take screenshots.
  
 Package: emodule-slideshow
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment
+Depends: ${shlibs:Depends}, enlightenment (>= 0.16.999)
 Provides: emodule0-slideshow
 Description: An E17 background cycle module
  An E17 module which changes the desktop background on a given
@@ -230,7 +230,7 @@ Description: An E17 background cycle module
  
 Package: emodule-snow
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment
+Depends: ${shlibs:Depends}, enlightenment (>= 0.16.999)
 Provides: emodule0-snow
 Description: An E17 module displaying rain on the desktop
  An E17 module which displays falling snow flakes on the desktop.
@@ -240,21 +240,21 @@ Description: An E17 module displaying rain on the desktop
 
 Package: emodule-taskbar
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment
+Depends: ${shlibs:Depends}, enlightenment (>= 0.16.999)
 Provides: emodule0-taskbar
 Description: An E17 taskbar module
  An E17 module acts as an extension of the default ibox module.
 
 Package: emodule-tclock
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment
+Depends: ${shlibs:Depends}, enlightenment (>= 0.16.999)
 Provides: emodule0-tclock
 Description: An E17 text clock module
  An E17 module which displays a digital clock on the desktop.
 
 Package: emodule-uptime
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment
+Depends: ${shlibs:Depends}, enlightenment (>= 0.16.999)
 Provides: emodule0-uptime
 Description: An E17 uptime indicator module
  An E17 module indicating the system's current uptime in a configurable
@@ -262,7 +262,7 @@ Description: An E17 uptime indicator module
  
 Package: emodule-weather
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment
+Depends: ${shlibs:Depends}, enlightenment (>= 0.16.999)
 Provides: emodule0-weather
 Description: An E17 weather module
  An E17 module displaying the current weather conditions.
@@ -274,7 +274,7 @@ Description: An E17 weather module
  
 Package: emodule-winselector
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment
+Depends: ${shlibs:Depends}, enlightenment (>= 0.16.999)
 Provides: emodule0-winselector
 Description: An E17 module providing menu-based access to all windows
  An E17 module which enables access to all windows through a shelf
@@ -282,7 +282,7 @@ Description: An E17 module providing menu-based access to all windows
 
 Package: emodule-wlan
 Architecture: any
-Depends: ${shlibs:Depends}, enlightenment
+Depends: ${shlibs:Depends}, enlightenment (>= 0.16.999)
 Provides: emodule0-wlan
 Description: An E17 WLAN monitor module
  An E17 module monitoring the link quality of a wireless network
@@ -292,7 +292,7 @@ Description: An E17 WLAN monitor module
 
 Package: emodules-all
 Architecture: any
-Depends: enlightenment, emodule-alarm, emodule-bling, emodule-calendar, emodule-cpu, emodule-deskshow, emodule-echo, emodule-efm-nav, emodule-efm-path, emodule-emu, emodule-execwatch, emodule-flame, emodule-forecasts, emodule-iiirk, emodule-language, emodule-mail, emodule-mem, emodule-mixer, emodule-moon, emodule-mpdule, emodule-net, emodule-news, emodule-notification, emodule-penguins, emodule-photo, emodule-rain, emodule-screenshot, emodule-slideshow, emodule-snow, emodule-taskbar, emodule-tclock, emodule-uptime, emodule-weather, emodule-winselector, emodule-wlan
+Depends: enlightenment (>= 0.16.999), emodule-alarm, emodule-bling, emodule-calendar, emodule-cpu, emodule-deskshow, emodule-echo, emodule-efm-nav, emodule-efm-path, emodule-emu, emodule-execwatch, emodule-flame, emodule-forecasts, emodule-iiirk, emodule-language, emodule-mail, emodule-mem, emodule-mixer, emodule-moon, emodule-mpdule, emodule-net, emodule-news, emodule-notification, emodule-penguins, emodule-photo, emodule-rain, emodule-screenshot, emodule-slideshow, emodule-snow, emodule-taskbar, emodule-tclock, emodule-uptime, emodule-weather, emodule-winselector, emodule-wlan
 Provides: emodules0-all, e17-modules
 Description: A dummy package for installing all modules for E17
  This package will install all available modules.
