@@ -1,13 +1,14 @@
 Source: entrance-edit-gui
 Section: x11
 Priority: optional
-Maintainer: E17 Debian Team <debian@edevelop.org>
-Build-Depends: cdbs, debhelper (>= 4.1.0), libentrance0-edit-dev, libedje0-dev, libetk0-dev
-Standards-Version: 3.7.2
+Maintainer: Falko Schmidt <falko@alphagemini.org>
+Build-Depends: cdbs, debhelper (>= 6), libentrance-edit-dev, libedje-dev, libetk-dev
+Standards-Version: 3.7.3
+Homepage: http://www.enlightenment.org
 
 Package: entrance-edit-gui
 Architecture: any
-Depends: ${shlibs:Depends}, libentrance0-edit, libentrance0-widgets, libedje0, libetk0
+Depends: ${shlibs:Depends} 
 Description: Entrance configuration editing tool
  Entrance is a login manager similar to gdm or kdm, it is based on the
  Enlightenment Foundation Libraries.  It is fully themeable via Edje.
@@ -15,9 +16,9 @@ Description: Entrance configuration editing tool
  This package provides a tool for editing the configuration data
  of the Enlightened login manager.
 
-Package: libentrance0-widgets
+Package: libentrance-widgets0
 Architecture: any
-Depends: ${shlibs:Depends}, libentrance0-edit, libedje0, libetk0
+Depends: ${shlibs:Depends}
 Provides: libentrance-widgets
 Description: Entrance widget library
  Entrance is a login manager similar to gdm or kdm, it is based on the
@@ -25,10 +26,10 @@ Description: Entrance widget library
  .
  This package contains the Entrance widget library.
 
-Package: libentrance0-widgets-dev
+Package: libentrance-widgets-dev
 Architecture: any
-Depends: libentrance0-edit, libetk0-dev, libedje0-dev
-Provides: libentrance-widgets-dev
+Depends: libentrance-edit-dev, libentrance-widgets0 (= ${Source-Version}), libetk-dev, libedje-dev
+Provides: libentrance-widgets0-dev
 Description: Entrance widget library
  Entrance is a login manager similar to gdm or kdm, it is based on the
  Enlightenment Foundation Libraries.  It is fully themeable via Edje.
