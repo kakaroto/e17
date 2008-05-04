@@ -458,7 +458,9 @@ enna_scanner_init(Enna * enna)
    lms_set_commit_interval(scanner->lms, scanner->commit_interval);
    lms_set_slave_timeout(scanner->lms, scanner->slave_timeout);
    
-   lms_parser_find_and_add(scanner->lms, "id3lib");
+   lms_parser_find_and_add(scanner->lms, "id3");
+   lms_parser_find_and_add(scanner->lms, "asf");
+   lms_parser_find_and_add(scanner->lms, "rm");
    lms_parser_find_and_add(scanner->lms, "audio-dummy");
    lms_parser_find_and_add(scanner->lms, "ogg");
    
