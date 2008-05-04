@@ -1,5 +1,5 @@
 #ifndef E_NM_H
-#define E_HM_H
+#define E_NM_H
 
 #include <E_DBus.h>
 #include <Ecore_Data.h>
