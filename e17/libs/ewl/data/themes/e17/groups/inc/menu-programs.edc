@@ -1,7 +1,7 @@
 program
 {
 	name: "go_active_pre";
-	signal: "mouse,in";
+	signal: "focus,in";
 	source: "*";
 	action: STATE_SET "default" 0.0;
 	target: "title_outline";
@@ -41,7 +41,7 @@ program
 program 
 {
 	name: "go_passive_pre";
-	signal: "mouse,out";
+	signal: "focus,out";
 	source: "*";
 	action: STATE_SET "active" 0.0;
 	target: "title_outline";
