@@ -54,7 +54,7 @@ _ex_tab_new(Exhibit *e, char *dir)
    tab->itree = etk_tree_new();
    etk_scrolled_view_dragable_set(ETK_SCROLLED_VIEW(etk_tree_scrolled_view_get(ETK_TREE(tab->itree))), ETK_TRUE);
    etk_scrolled_view_drag_bouncy_set(ETK_SCROLLED_VIEW(etk_tree_scrolled_view_get(ETK_TREE(tab->itree))), ETK_FALSE);
-   etk_scrolled_view_drag_damping_set(ETK_SCROLLED_VIEW(etk_tree_scrolled_view_get(ETK_TREE(tab->itree))), 2000);
+   etk_scrolled_view_drag_damping_set(ETK_SCROLLED_VIEW(etk_tree_scrolled_view_get(ETK_TREE(tab->itree))), 300);
 
 
 
