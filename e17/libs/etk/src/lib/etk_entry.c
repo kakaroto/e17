@@ -1,5 +1,6 @@
 /** @file etk_entry.c */
 #ifdef HAVE_CONFIG_H
+#define _GNU_SOURCE
 #include "config.h"
 #endif
 
@@ -126,6 +127,8 @@ Etk_Widget *etk_entry_new(void)
  */
 void etk_entry_text_set(Etk_Entry *entry, const char *text)
 {
+   char *text_tmp;
+
    if (!entry)
       return;
 
@@ -134,11 +137,15 @@ void etk_entry_text_set(Etk_Entry *entry, const char *text)
       if (entry->text != text)
       {
          free(entry->text);
-         entry->text = text ? strdup(text) : NULL;
+         entry->text = text ? entry->text_limit == 0 ? strdup(text) : strndup(text, entry->text_limit) : NULL;
       }
    }
-   else
-      etk_editable_text_set(entry->editable_object, text);
+   else 
+   {
+      text_tmp = !text || entry->text_limit == 0 ? strdup(text) : strndup(text, entry->text_limit);
+      etk_editable_text_set(entry->editable_object, text_tmp);
+      free(text_tmp);
+   }
 
    etk_signal_emit(ETK_ENTRY_TEXT_CHANGED_SIGNAL, ETK_OBJECT(entry));
 }
@@ -157,6 +164,37 @@ const char *etk_entry_text_get(Etk_Entry *entry)
       return entry->text;
    else
       return etk_editable_text_get(entry->editable_object);
+}
+
+
+/**
+ * @brief Set the text limit of the entry
+ * @param entry an entry
+ * @param limit the limit of text length, 0 means no limit
+ */
+void etk_entry_text_limit_set(Etk_Entry *entry, int limit) 
+{
+   if (!entry) 
+      return;
+   if (limit >= 0)
+   {
+      entry->text_limit = limit;
+      return;
+   }
+   entry->text_limit = 0;
+   return;
+}
+
+/**
+ * @brief Get the text limit of the entry
+ * @param entry an entry
+ * @return Returns the limit of text entry, 0 means no limit. 
+ */ 
+int etk_entry_text_limit_get(Etk_Entry *entry) 
+{
+   if (!entry)
+      return -1;
+   return entry->text_limit;
 }
 
 /**
@@ -375,6 +413,7 @@ static void _etk_entry_constructor(Etk_Entry *entry)
    entry->imf_ee_handler_commit = NULL;
    entry->imf_ee_handler_delete = NULL;
    entry->text = NULL;
+   entry->text_limit=0;
 
    entry->internal_entry = etk_widget_new(ETK_WIDGET_TYPE, "repeat-mouse-events", ETK_TRUE,
          "theme-group", "entry", "theme-parent", entry, "parent", entry, "internal", ETK_TRUE, NULL);
@@ -562,6 +601,7 @@ static Etk_Bool _etk_entry_internal_realized_cb(Etk_Object *object, void *data)
    Evas *evas;
    const char *ctx_id;
    const Ecore_IMF_Context_Info *ctx_info;
+   char *text_tmp;
 
    if (!(internal_entry = ETK_WIDGET(object)) || !(evas = etk_widget_toplevel_evas_get(internal_entry)))
       return ETK_TRUE;
@@ -609,7 +649,14 @@ static Etk_Bool _etk_entry_internal_realized_cb(Etk_Object *object, void *data)
 
    etk_editable_theme_set(entry->editable_object, etk_widget_theme_file_get(internal_entry),
          etk_widget_theme_group_get(internal_entry));
-   etk_editable_text_set(entry->editable_object, entry->text);
+   if (entry->text_limit==0) 
+      etk_editable_text_set(entry->editable_object, entry->text);
+   else 
+   {
+      text_tmp = entry->text ? strndup(entry->text, entry->text_limit): NULL; 
+      etk_editable_text_set(entry->editable_object, text_tmp);
+      free(text_tmp);
+   }
    etk_editable_password_mode_set(entry->editable_object, entry->password_mode);
 
    if (!etk_widget_is_focused(ETK_WIDGET(entry)))
@@ -665,6 +712,7 @@ static Etk_Bool _etk_entry_internal_unrealized_cb(Etk_Object *object, void *data
 {
    Etk_Entry *entry;
    const char *text;
+   char *text_tmp;
 
    if (!(entry = ETK_ENTRY(etk_object_data_get(object, "_Etk_Entry::Entry"))))
       return ETK_TRUE;
@@ -689,7 +737,12 @@ static Etk_Bool _etk_entry_internal_unrealized_cb(Etk_Object *object, void *data
 
    free(entry->text);
    if ((text = etk_editable_text_get(entry->editable_object)))
-      entry->text = strdup(text);
+   { 
+      if (entry->text_limit==0)
+         entry->text = strdup(text);
+      else 
+         entry->text = strndup(text, entry->text_limit);
+   }
    else
       entry->text = NULL;
 
@@ -823,7 +876,9 @@ static Etk_Bool _etk_entry_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *e
    {
       if (selecting)
          changed |= etk_editable_delete(editable, start_pos, end_pos);
-      changed |= etk_editable_insert(editable, start_pos, event->string);
+      if (!entry->text_limit || 
+            (etk_editable_text_length_get(editable) + strlen(event->string)) <= entry->text_limit)
+         changed |= etk_editable_insert(editable, start_pos, event->string);
    }
    else
       stop_signal = ETK_FALSE;
@@ -1187,7 +1242,9 @@ static Etk_Bool _etk_entry_selection_received_cb(Etk_Object *object, void *event
 
       if (selecting)
          changed |= etk_editable_delete(editable, start_pos, end_pos);
-      changed |= etk_editable_insert(editable, start_pos, text);
+      if (!entry->text_limit || 
+            etk_editable_text_length_get(editable) + strlen(text) <= entry->text_limit)
+         changed |= etk_editable_insert(editable, start_pos, text);
 
       if (changed)
          etk_signal_emit(ETK_ENTRY_TEXT_CHANGED_SIGNAL, ETK_OBJECT(entry));
@@ -1286,7 +1343,9 @@ static int _etk_entry_imf_event_commit_cb(void *data, int type, void *event)
 
    if (selecting)
       changed |= etk_editable_delete(editable, start_pos, end_pos);
-   changed |= etk_editable_insert(editable, start_pos, ev->str);
+   if (!entry->text_limit ||
+         etk_editable_text_length_get(editable) + strlen(ev->str) <= entry->text_limit)
+      changed |= etk_editable_insert(editable, start_pos, ev->str);
 
    if (changed)
       etk_signal_emit(ETK_ENTRY_TEXT_CHANGED_SIGNAL, ETK_OBJECT(entry));

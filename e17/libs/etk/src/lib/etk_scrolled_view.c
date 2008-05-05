@@ -716,6 +716,8 @@ static Etk_Bool _etk_scrolled_view_mouse_down(Etk_Object *object, Etk_Event_Mous
       drag->mouse_down = ETK_TRUE;
       drag->timestamp = ecore_time_get(); 
       drag->old_timestamp = 0.0f;
+      drag->Vx=0;
+      drag->Vy=0;
       drag->position = event->widget;
       drag->bar_position.x = hscrollbar_range->value;
       drag->bar_position.y = vscrollbar_range->value;
@@ -767,8 +769,8 @@ static Etk_Bool _etk_scrolled_view_mouse_move(Etk_Object *object, Etk_Event_Mous
       {
          drag->old_timestamp = drag->timestamp;
          drag->timestamp = ecore_time_get();
-         drag->Vx = (hscrollbar_range->value - drag->bar_position.x) / delta_time;
-         drag->Vy = (vscrollbar_range->value - drag->bar_position.y) / delta_time;
+         drag->Vx = (drag->Vx + (hscrollbar_range->value - drag->bar_position.x) / delta_time) / 2;
+         drag->Vy = (drag->Vy + (vscrollbar_range->value - drag->bar_position.y) / delta_time) / 2;
          drag->bar_position.x = hscrollbar_range->value;
          drag->bar_position.y = vscrollbar_range->value;
       }
@@ -803,6 +805,14 @@ static Etk_Bool _etk_scrolled_view_mouse_up(Etk_Object *object, Etk_Event_Mouse_
    if (drag->scroll_flag) 
    {
       drag->timestamp = ecore_time_get();
+      int max_speed = ETK_SCROLLED_VIEW_DRAG_DAMPING_MAGIC*5;
+      drag->Vx = drag->Vx > 0 ?  
+         drag->Vx > max_speed ?  max_speed : drag->Vx : 
+         drag->Vx < -max_speed ? -max_speed : drag->Vx;
+      drag->Vy = drag->Vy > 0 ?  
+         drag->Vy > max_speed ?  max_speed : drag->Vy : 
+         drag->Vy < -max_speed ? -max_speed : drag->Vy;
+
       ecore_animator_add(&_etk_scrolled_view_motive_bounce, scrolled_view);
       return ETK_TRUE;
    }

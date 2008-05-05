@@ -55,6 +55,7 @@ struct Etk_Entry
    Ecore_IMF_Context *imf_context;
 
    char *text;
+   int text_limit;
 
    Etk_Color highlight_color;
    int image_interspace;
@@ -75,6 +76,8 @@ Etk_Widget *etk_entry_new(void);
 
 void        etk_entry_text_set(Etk_Entry *entry, const char *text);
 const char *etk_entry_text_get(Etk_Entry *entry);
+void        etk_entry_text_limit_set(Etk_Entry *entry, int limit);
+int         etk_entry_text_limit_get(Etk_Entry *entry);
 void        etk_entry_clear(Etk_Entry *entry);
 void        etk_entry_image_set(Etk_Entry *entry, Etk_Entry_Image_Position position, Etk_Image *image);
 Etk_Image  *etk_entry_image_get(Etk_Entry *entry, Etk_Entry_Image_Position position);
