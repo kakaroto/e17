@@ -229,7 +229,7 @@ collections
 	       {
 		  name: "qual_label";
 		  type: TEXT;
-		  clip_to: "fade_clip";
+//		  clip_to: "fade_clip";
 		  effect: SOFT_SHADOW;
 		  description 
 		    {
@@ -388,7 +388,7 @@ collections
 	       {
 		  name: "level_label";
 		  type: TEXT;
-		  clip_to: "fade_clip";
+//		  clip_to: "fade_clip";
 		  effect: SOFT_SHADOW;
 		  description 
 		    {
