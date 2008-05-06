@@ -132,17 +132,24 @@ void etk_entry_text_set(Etk_Entry *entry, const char *text)
    if (!entry)
       return;
 
-   if (!entry->editable_object)
+   if (!text)
+      text_tmp = NULL;
+   else if (entry->text_limit == 0)
+      text_tmp = strdup(text);
+   else
    {
-      if (entry->text != text)
-      {
-         free(entry->text);
-         entry->text = text ? entry->text_limit == 0 ? strdup(text) : strndup(text, entry->text_limit) : NULL;
-      }
+      text_tmp = malloc(entry->text_limit + 1);
+      text_tmp[entry->text_limit] = '\0';
+      strncpy(text_tmp, text, entry->text_limit);
+   }
+
+   if (!entry->editable_object && entry->text != text)
+   {
+      free(entry->text);
+      entry->text = text_tmp;
    }
    else 
    {
-      text_tmp = !text || entry->text_limit == 0 ? strdup(text) : strndup(text, entry->text_limit);
       etk_editable_text_set(entry->editable_object, text_tmp);
       free(text_tmp);
    }
@@ -653,7 +660,14 @@ static Etk_Bool _etk_entry_internal_realized_cb(Etk_Object *object, void *data)
       etk_editable_text_set(entry->editable_object, entry->text);
    else 
    {
-      text_tmp = entry->text ? strndup(entry->text, entry->text_limit): NULL; 
+      if (!entry->text)
+         text_tmp = NULL;
+      else
+      {
+         text_tmp = malloc(entry->text_limit+1);
+         text_tmp[entry->text_limit] = '\0';
+         strncpy(text_tmp, entry->text, entry->text_limit);
+      }
       etk_editable_text_set(entry->editable_object, text_tmp);
       free(text_tmp);
    }
@@ -712,7 +726,6 @@ static Etk_Bool _etk_entry_internal_unrealized_cb(Etk_Object *object, void *data
 {
    Etk_Entry *entry;
    const char *text;
-   char *text_tmp;
 
    if (!(entry = ETK_ENTRY(etk_object_data_get(object, "_Etk_Entry::Entry"))))
       return ETK_TRUE;
@@ -741,7 +754,11 @@ static Etk_Bool _etk_entry_internal_unrealized_cb(Etk_Object *object, void *data
       if (entry->text_limit==0)
          entry->text = strdup(text);
       else 
-         entry->text = strndup(text, entry->text_limit);
+      {
+         entry->text = malloc(entry->text_limit+1);
+         entry->text[entry->text_limit] = '\0';
+         strncpy(entry->text, text, entry->text_limit);
+      }
    }
    else
       entry->text = NULL;
