@@ -1,4 +1,4 @@
-/* vim: set sw=8 ts=8 sts=8 noexpandtab: */
+/* vim: set sw=8 ts=8 sts=8 expandtab: */
 #include "ewl_base.h"
 #include "ewl_radiobutton.h"
 #include "ewl_macros.h"
@@ -12,20 +12,20 @@
 Ewl_Widget *
 ewl_radiobutton_new(void)
 {
-	Ewl_Radiobutton *b;
+        Ewl_Radiobutton *b;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
 
-	b = NEW(Ewl_Radiobutton, 1);
-	if (!b)
-		DRETURN_PTR(NULL, DLEVEL_STABLE);
+        b = NEW(Ewl_Radiobutton, 1);
+        if (!b)
+        	DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	if (!ewl_radiobutton_init(b)) {
-		ewl_widget_destroy(EWL_WIDGET(b));
-		b = NULL;
-	}
+        if (!ewl_radiobutton_init(b)) {
+        	ewl_widget_destroy(EWL_WIDGET(b));
+        	b = NULL;
+        }
 
-	DRETURN_PTR(EWL_WIDGET(b), DLEVEL_STABLE);
+        DRETURN_PTR(EWL_WIDGET(b), DLEVEL_STABLE);
 }
 
 /**
@@ -39,27 +39,27 @@ ewl_radiobutton_new(void)
 int
 ewl_radiobutton_init(Ewl_Radiobutton *rb)
 {
-	Ewl_Checkbutton *cb;
-	Ewl_Widget *w;
+        Ewl_Checkbutton *cb;
+        Ewl_Widget *w;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(rb, FALSE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(rb, FALSE);
 
-	cb = EWL_CHECKBUTTON(rb);
-	w = EWL_WIDGET(rb);
+        cb = EWL_CHECKBUTTON(rb);
+        w = EWL_WIDGET(rb);
 
-	if (!ewl_checkbutton_init(cb))
-		DRETURN_INT(FALSE, DLEVEL_STABLE);
+        if (!ewl_checkbutton_init(cb))
+        	DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	ewl_widget_appearance_set(w, EWL_RADIOBUTTON_TYPE);
-	ewl_widget_inherit(w, EWL_RADIOBUTTON_TYPE);
-	ewl_widget_appearance_set(cb->check, "radio");
-	ewl_callback_append(w, EWL_CALLBACK_CLICKED, ewl_radiobutton_cb_clicked,
-			    NULL);
-	ewl_callback_prepend(w, EWL_CALLBACK_DESTROY, ewl_radiobutton_cb_destroy,
-			    NULL);
+        ewl_widget_appearance_set(w, EWL_RADIOBUTTON_TYPE);
+        ewl_widget_inherit(w, EWL_RADIOBUTTON_TYPE);
+        ewl_widget_appearance_set(cb->check, "radio");
+        ewl_callback_append(w, EWL_CALLBACK_CLICKED, ewl_radiobutton_cb_clicked,
+        		    NULL);
+        ewl_callback_prepend(w, EWL_CALLBACK_DESTROY, ewl_radiobutton_cb_destroy,
+        		    NULL);
 
-	DRETURN_INT(TRUE, DLEVEL_STABLE);
+        DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 /*
@@ -71,13 +71,13 @@ ewl_radiobutton_init(Ewl_Radiobutton *rb)
 void
 ewl_radiobutton_value_set(Ewl_Radiobutton *rb, void *value)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(rb);
-	DCHECK_TYPE(rb, EWL_RADIOBUTTON_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(rb);
+        DCHECK_TYPE(rb, EWL_RADIOBUTTON_TYPE);
 
-	rb->value = value;
+        rb->value = value;
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /*
@@ -88,11 +88,11 @@ ewl_radiobutton_value_set(Ewl_Radiobutton *rb, void *value)
 void *
 ewl_radiobutton_value_get(Ewl_Radiobutton *rb)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(rb, 0);
-	DCHECK_TYPE_RET(rb, EWL_RADIOBUTTON_TYPE, 0);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(rb, 0);
+        DCHECK_TYPE_RET(rb, EWL_RADIOBUTTON_TYPE, 0);
 
-	DRETURN_INT(rb->value, DLEVEL_STABLE);
+        DRETURN_INT(rb->value, DLEVEL_STABLE);
 }
 
 /**
@@ -107,29 +107,29 @@ ewl_radiobutton_value_get(Ewl_Radiobutton *rb)
 void
 ewl_radiobutton_chain_set(Ewl_Radiobutton *rb, Ewl_Radiobutton *crb)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(rb);
-	DCHECK_PARAM_PTR(crb);
-	DCHECK_TYPE(rb, EWL_RADIOBUTTON_TYPE);
-	DCHECK_TYPE(crb, EWL_RADIOBUTTON_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(rb);
+        DCHECK_PARAM_PTR(crb);
+        DCHECK_TYPE(rb, EWL_RADIOBUTTON_TYPE);
+        DCHECK_TYPE(crb, EWL_RADIOBUTTON_TYPE);
 
-	/*
-	 * If a chain doesnt exist, create one
-	 */
-	if (!crb->chain) {
-		crb->chain = ecore_list_new();
+        /*
+         * If a chain doesnt exist, create one
+         */
+        if (!crb->chain) {
+        	crb->chain = ecore_list_new();
 
-		ecore_list_append(crb->chain, rb);
-		ecore_list_append(crb->chain, crb);
-	} else {
+        	ecore_list_append(crb->chain, rb);
+        	ecore_list_append(crb->chain, crb);
+        } else {
 
-		if (!ecore_list_goto(crb->chain, rb))
-			ecore_list_append(crb->chain, rb);
-	}
+        	if (!ecore_list_goto(crb->chain, rb))
+        		ecore_list_append(crb->chain, rb);
+        }
 
-	rb->chain = crb->chain;
+        rb->chain = crb->chain;
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /*
@@ -140,30 +140,30 @@ ewl_radiobutton_chain_set(Ewl_Radiobutton *rb, Ewl_Radiobutton *crb)
 Ewl_Radiobutton *
 ewl_radiobutton_chain_selected_get(Ewl_Radiobutton *rb)
 {
-	Ewl_Checkbutton *c;
+        Ewl_Checkbutton *c;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(rb, NULL);
-	DCHECK_TYPE_RET(rb, EWL_RADIOBUTTON_TYPE, NULL);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(rb, NULL);
+        DCHECK_TYPE_RET(rb, EWL_RADIOBUTTON_TYPE, NULL);
 
-	/* if there is no chain or the chain is empty we have to
-	 * treat it special */
-	if (!rb->chain || ecore_list_empty_is(rb->chain)) {
-		if (ewl_checkbutton_is_checked(EWL_CHECKBUTTON(rb))) {
-			DRETURN_PTR(rb, DLEVEL_STABLE);
-		}
-		else {
-			DRETURN_PTR(NULL, DLEVEL_STABLE);
-		}
-	}
+        /* if there is no chain or the chain is empty we have to
+         * treat it special */
+        if (!rb->chain || ecore_list_empty_is(rb->chain)) {
+        	if (ewl_checkbutton_is_checked(EWL_CHECKBUTTON(rb))) {
+        		DRETURN_PTR(rb, DLEVEL_STABLE);
+        	}
+        	else {
+        		DRETURN_PTR(NULL, DLEVEL_STABLE);
+        	}
+        }
 
-	ecore_list_first_goto(rb->chain);
-	while ((c = ecore_list_next(rb->chain))) {
-		if (ewl_checkbutton_is_checked(c))
-			DRETURN_PTR(c, DLEVEL_STABLE);
-	}
+        ecore_list_first_goto(rb->chain);
+        while ((c = ecore_list_next(rb->chain))) {
+        	if (ewl_checkbutton_is_checked(c))
+        		DRETURN_PTR(c, DLEVEL_STABLE);
+        }
 
-	DRETURN_PTR(NULL, DLEVEL_STABLE);
+        DRETURN_PTR(NULL, DLEVEL_STABLE);
 }
 
 /**
@@ -176,34 +176,34 @@ ewl_radiobutton_chain_selected_get(Ewl_Radiobutton *rb)
  */
 void
 ewl_radiobutton_cb_clicked(Ewl_Widget *w, void *ev_data __UNUSED__,
-					void *user_data __UNUSED__)
+        				void *user_data __UNUSED__)
 {
-	Ewl_Checkbutton *cb;
-	Ewl_Radiobutton *rb;
-	int oc;
+        Ewl_Checkbutton *cb;
+        Ewl_Radiobutton *rb;
+        int oc;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_RADIOBUTTON_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_RADIOBUTTON_TYPE);
 
-	cb = EWL_CHECKBUTTON(w);
-	rb = EWL_RADIOBUTTON(w);
-	oc = ewl_checkbutton_is_checked(cb);
+        cb = EWL_CHECKBUTTON(w);
+        rb = EWL_RADIOBUTTON(w);
+        oc = ewl_checkbutton_is_checked(cb);
 
-	if (rb->chain && !ecore_list_empty_is(rb->chain)) {
-		Ewl_Checkbutton *c;
+        if (rb->chain && !ecore_list_empty_is(rb->chain)) {
+        	Ewl_Checkbutton *c;
 
-		ecore_list_first_goto(rb->chain);
-		while ((c = ecore_list_next(rb->chain))) {
-			ewl_checkbutton_checked_set(c, 0);
-		}
-	}
-	ewl_checkbutton_checked_set(cb, 1);
+        	ecore_list_first_goto(rb->chain);
+        	while ((c = ecore_list_next(rb->chain))) {
+        		ewl_checkbutton_checked_set(c, 0);
+        	}
+        }
+        ewl_checkbutton_checked_set(cb, 1);
 
-	if (oc != ewl_checkbutton_is_checked(cb))
-		ewl_callback_call(w, EWL_CALLBACK_VALUE_CHANGED);
+        if (oc != ewl_checkbutton_is_checked(cb))
+        	ewl_callback_call(w, EWL_CALLBACK_VALUE_CHANGED);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -216,25 +216,25 @@ ewl_radiobutton_cb_clicked(Ewl_Widget *w, void *ev_data __UNUSED__,
  */
 void
 ewl_radiobutton_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
-					void *user_data __UNUSED__)
+        				void *user_data __UNUSED__)
 {
-	Ewl_Radiobutton *rb;
+        Ewl_Radiobutton *rb;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_RADIOBUTTON_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_RADIOBUTTON_TYPE);
 
-	rb = EWL_RADIOBUTTON(w);
+        rb = EWL_RADIOBUTTON(w);
 
-	if (!rb->chain)
-		DRETURN(DLEVEL_STABLE);
+        if (!rb->chain)
+        	DRETURN(DLEVEL_STABLE);
 
-	ecore_list_goto(rb->chain, w);
-	ecore_list_remove(rb->chain);
+        ecore_list_goto(rb->chain, w);
+        ecore_list_remove(rb->chain);
 
-	if (ecore_list_empty_is(rb->chain))
-		IF_FREE_LIST(rb->chain);
+        if (ecore_list_empty_is(rb->chain))
+        	IF_FREE_LIST(rb->chain);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 

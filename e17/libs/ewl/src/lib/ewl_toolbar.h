@@ -1,4 +1,4 @@
-/* vim: set sw=8 ts=8 sts=8 noexpandtab: */
+/* vim: set sw=8 ts=8 sts=8 expandtab: */
 #ifndef EWL_TOOLBAR_H
 #define EWL_TOOLBAR_H
 
@@ -44,8 +44,8 @@ typedef struct Ewl_Toolbar Ewl_Toolbar;
  */
 struct Ewl_Toolbar
 {
-	Ewl_Menubar     menubar; /**< Inherit from Ewl_Menubar */
-	Ewl_Icon_Part   hidden;  /**< which part of icons should be hidden */
+        Ewl_Menubar     menubar; /**< Inherit from Ewl_Menubar */
+        Ewl_Icon_Part   hidden;  /**< which part of icons should be hidden */
 };
 Ewl_Widget     *ewl_htoolbar_new(void);
 Ewl_Widget     *ewl_vtoolbar_new(void);

@@ -1,4 +1,4 @@
-/* vim: set sw=8 ts=8 sts=8 noexpandtab: */
+/* vim: set sw=8 ts=8 sts=8 expandtab: */
 #include "ewl_base.h"
 #include "ewl_stock.h"
 #include "ewl_icon_theme.h"
@@ -12,27 +12,27 @@
  */
 struct
 {
-	const char * const label;
-	const char * const image_key;
-	const char * const tooltip;
+        const char * const label;
+        const char * const image_key;
+        const char * const tooltip;
 } ewl_stock_items[] = {
-		{"Apply", EWL_ICON_DIALOG_APPLY, "Apply"},
-		{/*Arrow*/"Down", EWL_ICON_GO_DOWN, "Down"},
-		{/*Arrow*/"Left", EWL_ICON_GO_PREVIOUS, "Previous"},
-		{/*Arrow*/"Right", EWL_ICON_GO_NEXT, "Next"},
-		{/*Arrow*/"Up",	EWL_ICON_GO_UP, "Up"},
-		{"Cancel", EWL_ICON_DIALOG_CANCEL, "Cancel"},
-		{"FF", EWL_ICON_MEDIA_SEEK_FORWARD, "Fast Forward"},
-		{"Home", EWL_ICON_GO_HOME, "Home"},
-		{"Ok", EWL_ICON_DIALOG_OK, "OK"},
-		{"Open", EWL_ICON_DOCUMENT_OPEN, "Open"},
-		{"Pause", EWL_ICON_MEDIA_PLAYBACK_PAUSE, "Pause"},
-		{"Play", EWL_ICON_MEDIA_PLAYBACK_START, "Play"},
-		{"Quit", EWL_ICON_SYSTEM_LOG_OUT, "Quit"},
-		{"Rewind", EWL_ICON_MEDIA_SEEK_BACKWARD, "Rewind"},
-		{"Save", EWL_ICON_DOCUMENT_SAVE, "Save"},
-		{"Stop", EWL_ICON_MEDIA_PLAYBACK_STOP, "Stop"}
-	};
+        	{"Apply", EWL_ICON_DIALOG_APPLY, "Apply"},
+        	{/*Arrow*/"Down", EWL_ICON_GO_DOWN, "Down"},
+        	{/*Arrow*/"Left", EWL_ICON_GO_PREVIOUS, "Previous"},
+        	{/*Arrow*/"Right", EWL_ICON_GO_NEXT, "Next"},
+        	{/*Arrow*/"Up",	EWL_ICON_GO_UP, "Up"},
+        	{"Cancel", EWL_ICON_DIALOG_CANCEL, "Cancel"},
+        	{"FF", EWL_ICON_MEDIA_SEEK_FORWARD, "Fast Forward"},
+        	{"Home", EWL_ICON_GO_HOME, "Home"},
+        	{"Ok", EWL_ICON_DIALOG_OK, "OK"},
+        	{"Open", EWL_ICON_DOCUMENT_OPEN, "Open"},
+        	{"Pause", EWL_ICON_MEDIA_PLAYBACK_PAUSE, "Pause"},
+        	{"Play", EWL_ICON_MEDIA_PLAYBACK_START, "Play"},
+        	{"Quit", EWL_ICON_SYSTEM_LOG_OUT, "Quit"},
+        	{"Rewind", EWL_ICON_MEDIA_SEEK_BACKWARD, "Rewind"},
+        	{"Save", EWL_ICON_DOCUMENT_SAVE, "Save"},
+        	{"Stop", EWL_ICON_MEDIA_PLAYBACK_STOP, "Stop"}
+        };
 
 /**
  * @param s: the stock widget to initialize
@@ -45,15 +45,15 @@ struct
 int
 ewl_stock_init(Ewl_Stock *s)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(s, FALSE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(s, FALSE);
 
-	if (!ewl_box_init(EWL_BOX(s)))
-		DRETURN_INT(FALSE, DLEVEL_STABLE);
+        if (!ewl_box_init(EWL_BOX(s)))
+        	DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	ewl_widget_inherit(EWL_WIDGET(s), EWL_STOCK_TYPE);
+        ewl_widget_inherit(EWL_WIDGET(s), EWL_STOCK_TYPE);
 
-	DRETURN_INT(TRUE, DLEVEL_STABLE);
+        DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 /**
@@ -66,14 +66,14 @@ ewl_stock_init(Ewl_Stock *s)
 void
 ewl_stock_functions_set(Ewl_Stock *s, const Ewl_Stock_Funcs * const funcs)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(s);
-	DCHECK_PARAM_PTR(funcs);
-	DCHECK_TYPE(s, EWL_STOCK_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(s);
+        DCHECK_PARAM_PTR(funcs);
+        DCHECK_TYPE(s, EWL_STOCK_TYPE);
 
-	s->stock_funcs = funcs;
+        s->stock_funcs = funcs;
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -85,47 +85,47 @@ ewl_stock_functions_set(Ewl_Stock *s, const Ewl_Stock_Funcs * const funcs)
 void
 ewl_stock_type_set(Ewl_Stock *s, Ewl_Stock_Type stock)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(s);
-	DCHECK_TYPE(s, EWL_STOCK_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(s);
+        DCHECK_TYPE(s, EWL_STOCK_TYPE);
 
-	if (stock == s->stock_type)
-		DRETURN(DLEVEL_STABLE);
+        if (stock == s->stock_type)
+        	DRETURN(DLEVEL_STABLE);
 
-	s->stock_type = stock;
+        s->stock_type = stock;
 
-	/* we're done if it's none */
-	if (s->stock_type == EWL_STOCK_NONE)
-		DRETURN(DLEVEL_STABLE);
+        /* we're done if it's none */
+        if (s->stock_type == EWL_STOCK_NONE)
+        	DRETURN(DLEVEL_STABLE);
 
-	/* Can't do anything without the stock funcs */
-	if (!s->stock_funcs)
-		DRETURN(DLEVEL_STABLE);
+        /* Can't do anything without the stock funcs */
+        if (!s->stock_funcs)
+        	DRETURN(DLEVEL_STABLE);
 
-	/* set the label */
-	if (s->stock_funcs->label_set)
-		s->stock_funcs->label_set(s,
-			 ewl_stock_items[s->stock_type].label);
+        /* set the label */
+        if (s->stock_funcs->label_set)
+        	s->stock_funcs->label_set(s,
+        		 ewl_stock_items[s->stock_type].label);
 
-	/* set the image */
-	if (s->stock_funcs->image_set) {
-		const char *data;
+        /* set the image */
+        if (s->stock_funcs->image_set) {
+        	const char *data;
 
-		/* check for an image key */
-		data = ewl_icon_theme_icon_path_get(
-				ewl_stock_items[s->stock_type].image_key,
-				EWL_ICON_SIZE_MEDIUM);
+        	/* check for an image key */
+        	data = ewl_icon_theme_icon_path_get(
+        			ewl_stock_items[s->stock_type].image_key,
+        			EWL_ICON_SIZE_MEDIUM);
 
-		s->stock_funcs->image_set(s, data,
-				ewl_stock_items[s->stock_type].image_key);
-	}
+        	s->stock_funcs->image_set(s, data,
+        			ewl_stock_items[s->stock_type].image_key);
+        }
 
-	/* set the tooltip */
-	if (s->stock_funcs->tooltip_set)
-		s->stock_funcs->tooltip_set(s,
-			ewl_stock_items[s->stock_type].tooltip);
+        /* set the tooltip */
+        if (s->stock_funcs->tooltip_set)
+        	s->stock_funcs->tooltip_set(s,
+        		ewl_stock_items[s->stock_type].tooltip);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -136,11 +136,11 @@ ewl_stock_type_set(Ewl_Stock *s, Ewl_Stock_Type stock)
 Ewl_Stock_Type
 ewl_stock_type_get(Ewl_Stock *s)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(s, EWL_STOCK_NONE);
-	DCHECK_TYPE_RET(s, EWL_STOCK_TYPE, EWL_STOCK_NONE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(s, EWL_STOCK_NONE);
+        DCHECK_TYPE_RET(s, EWL_STOCK_TYPE, EWL_STOCK_NONE);
 
-	DRETURN_INT(s->stock_type, DLEVEL_STABLE);
+        DRETURN_INT(s->stock_type, DLEVEL_STABLE);
 }
 
 

@@ -1,4 +1,4 @@
-/* vim: set sw=8 ts=8 sts=8 noexpandtab: */
+/* vim: set sw=8 ts=8 sts=8 expandtab: */
 #ifndef _EWL_PRIVATE_H
 #define _EWL_PRIVATE_H
 
@@ -61,7 +61,7 @@ void *alloca (size_t);
 #define EWL_CONFIG_THEME_COLOR_CLASSES_OVERRIDE "/ewl/theme/color/classes/override"
 #define EWL_CONFIG_THEME_COLOR_CLASSES_COUNT "/ewl/theme/color/classes/count"
 
-extern Ewl_Config *ewl_config;	/**< The system configuration data */
+extern Ewl_Config *ewl_config;        /**< The system configuration data */
 
 #endif
 

@@ -1,4 +1,4 @@
-/* vim: set sw=8 ts=8 sts=8 noexpandtab: */
+/* vim: set sw=8 ts=8 sts=8 expandtab: */
 #ifndef EWL_RADIOBUTTON_H
 #define EWL_RADIOBUTTON_H
 
@@ -52,19 +52,19 @@ typedef struct Ewl_Radiobutton Ewl_Radiobutton;
  */
 struct Ewl_Radiobutton
 {
-	Ewl_Checkbutton button; /**< Inherit from Ewl_Checkbutton */
-	Ecore_List *chain; /**< List of members of the group */
-	void *value; /**< the value of the radio button */
+        Ewl_Checkbutton button; /**< Inherit from Ewl_Checkbutton */
+        Ecore_List *chain; /**< List of members of the group */
+        void *value; /**< the value of the radio button */
 };
 
-Ewl_Widget 	*ewl_radiobutton_new(void);
-int 		 ewl_radiobutton_init(Ewl_Radiobutton *rb);
+Ewl_Widget         *ewl_radiobutton_new(void);
+int         	 ewl_radiobutton_init(Ewl_Radiobutton *rb);
 
-void		 ewl_radiobutton_value_set(Ewl_Radiobutton *rb, void *v);
-void 		*ewl_radiobutton_value_get(Ewl_Radiobutton *rb);
+void        	 ewl_radiobutton_value_set(Ewl_Radiobutton *rb, void *v);
+void         	*ewl_radiobutton_value_get(Ewl_Radiobutton *rb);
 
-void 		 ewl_radiobutton_chain_set(Ewl_Radiobutton *rb, Ewl_Radiobutton *crb);
-Ewl_Radiobutton	*ewl_radiobutton_chain_selected_get(Ewl_Radiobutton *rb);
+void         	 ewl_radiobutton_chain_set(Ewl_Radiobutton *rb, Ewl_Radiobutton *crb);
+Ewl_Radiobutton        *ewl_radiobutton_chain_selected_get(Ewl_Radiobutton *rb);
 
 /**
  * @def ewl_radiobutton_checked_set(r, c)
@@ -72,7 +72,7 @@ Ewl_Radiobutton	*ewl_radiobutton_chain_selected_get(Ewl_Radiobutton *rb);
  * fields.
  */
 #define ewl_radiobutton_checked_set(r, c) \
-	ewl_checkbutton_checked_set(EWL_CHECKBUTTON(r), c)
+        ewl_checkbutton_checked_set(EWL_CHECKBUTTON(r), c)
 
 /**
  * @def ewl_radiobutton_is_checked(r)
@@ -80,7 +80,7 @@ Ewl_Radiobutton	*ewl_radiobutton_chain_selected_get(Ewl_Radiobutton *rb);
  * fields.
  */
 #define ewl_radiobutton_is_checked(r) \
-	ewl_checkbutton_is_checked(EWL_CHECKBUTTON(r))
+        ewl_checkbutton_is_checked(EWL_CHECKBUTTON(r))
 
 /*
  * Internally used callbacks, override at your own risk.

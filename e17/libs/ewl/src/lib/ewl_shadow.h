@@ -1,4 +1,4 @@
-/* vim: set sw=8 ts=8 sts=8 noexpandtab: */
+/* vim: set sw=8 ts=8 sts=8 expandtab: */
 #ifndef EWL_SHADOW_H
 #define EWL_SHADOW_H
 
@@ -51,11 +51,11 @@ typedef struct Ewl_Shadow Ewl_Shadow;
  */
 struct Ewl_Shadow
 {
-	Ewl_Box box;       /**< Inherit from Ewl_Box */
+        Ewl_Box box;       /**< Inherit from Ewl_Box */
 };
 
-Ewl_Widget	*ewl_shadow_new(void);
-int 		 ewl_shadow_init(Ewl_Shadow *s);
+Ewl_Widget        *ewl_shadow_new(void);
+int         	 ewl_shadow_init(Ewl_Shadow *s);
 
 /**
  * @}

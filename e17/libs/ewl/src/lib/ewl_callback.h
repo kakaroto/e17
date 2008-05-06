@@ -1,4 +1,4 @@
-/* vim: set sw=8 ts=8 sts=8 noexpandtab: */
+/* vim: set sw=8 ts=8 sts=8 expandtab: */
 #ifndef EWL_CALLBACK_H
 #define EWL_CALLBACK_H
 
@@ -24,7 +24,7 @@ typedef struct Ewl_Callback Ewl_Callback;
  * A shortcut for declaring functions that take a callback funciton pointer.
  */
 typedef void (*Ewl_Callback_Function) (Ewl_Widget * widget, void *ev_data,
-					  void *user_data);
+        				  void *user_data);
 
 /**
  * @def EWL_CALLBACK_FUNCTION(cb_func)
@@ -37,10 +37,10 @@ typedef void (*Ewl_Callback_Function) (Ewl_Widget * widget, void *ev_data,
  */
 struct Ewl_Callback
 {
-	Ewl_Callback_Function func; 	/**< Function executed */
-	void *user_data; 		/**< user specified data to pass to func */
-	int references; 		/**< Reference counting */
-	int id; 			/**< id number of this callback */
+        Ewl_Callback_Function func; 	/**< Function executed */
+        void *user_data; 		/**< user specified data to pass to func */
+        int references; 		/**< Reference counting */
+        int id; 			/**< id number of this callback */
 };
 
 
@@ -60,8 +60,8 @@ typedef struct Ewl_Callback_Custom Ewl_Callback_Custom;
  */
 struct Ewl_Callback_Custom
 {
-	Ewl_Callback cb;		/**< Inherit from Ewl_Callback */
-	unsigned int event_id;		/**< Add an event id */
+        Ewl_Callback cb;		/**< Inherit from Ewl_Callback */
+        unsigned int event_id;		/**< Add an event id */
 };
 
 /**
@@ -105,72 +105,72 @@ struct Ewl_Callback_Custom
  * Sets the callback intercept flag from a widget for a certain event type.
  */
 #define EWL_CALLBACK_FLAG_INTERCEPT(w, t) \
-		w->callbacks[EWL_CALLBACK_INDEX(t)].mask |= EWL_CALLBACK_NOTIFY_INTERCEPT
+        	w->callbacks[EWL_CALLBACK_INDEX(t)].mask |= EWL_CALLBACK_NOTIFY_INTERCEPT
 
 /**
  * @def EWL_CALLBACK_FLAG_NOINTERCEPT(w, t)
  * Clears the callback intercept flag from a widget for a certain event type.
  */
 #define EWL_CALLBACK_FLAG_NOINTERCEPT(w, t) \
-		w->callbacks[EWL_CALLBACK_INDEX(t)].mask = \
-			w->callbacks[EWL_CALLBACK_INDEX(t)].mask & ~EWL_CALLBACK_NOTIFY_INTERCEPT
+        	w->callbacks[EWL_CALLBACK_INDEX(t)].mask = \
+        		w->callbacks[EWL_CALLBACK_INDEX(t)].mask & ~EWL_CALLBACK_NOTIFY_INTERCEPT
 
 /**
  * @def EWL_CALLBACK_FLAG_NOTIFY(w, t)
  * Sets the callback notify flag from a widget for a certain event type.
  */
 #define EWL_CALLBACK_FLAG_NOTIFY(w, t) \
-		w->callbacks[EWL_CALLBACK_INDEX(t)].mask |= EWL_CALLBACK_NOTIFY_NOTIFY
+        	w->callbacks[EWL_CALLBACK_INDEX(t)].mask |= EWL_CALLBACK_NOTIFY_NOTIFY
 
 /**
  * @def EWL_CALLBACK_FLAG_NONOTIFY(w, t)
  * Remove the callback notify flag from a widget for a certain event type.
  */
 #define EWL_CALLBACK_FLAG_NONOTIFY(w, t) \
-		w->callbacks[EWL_CALLBACK_INDEX(t)].mask &= ~EWL_CALLBACK_NOTIFY_NOTIFY
+        	w->callbacks[EWL_CALLBACK_INDEX(t)].mask &= ~EWL_CALLBACK_NOTIFY_NOTIFY
 
 /**
  * @def EWL_CALLBACK_SET_DIRECT(w, t)
  * Sets the callback direct flag for a centain event type
  */
 #define EWL_CALLBACK_SET_DIRECT(w, t) \
-		w->callbacks[EWL_CALLBACK_INDEX(t)].mask |= EWL_CALLBACK_TYPE_DIRECT
+        	w->callbacks[EWL_CALLBACK_INDEX(t)].mask |= EWL_CALLBACK_TYPE_DIRECT
 
 /**
  * @def EWL_CALLBACK_SET_NODIRECT(w, t)
  * Clears the callback direct flag from a widget for a certain event type
  */
 #define EWL_CALLBACK_SET_NODIRECT(w, t) \
-		w->callbacks[EWL_CALLBACK_INDEX(t)].mask &= ~EWL_CALLBACK_TYPE_DIRECT
+        	w->callbacks[EWL_CALLBACK_INDEX(t)].mask &= ~EWL_CALLBACK_TYPE_DIRECT
 
-int 		ewl_callbacks_init(void);
-void 		ewl_callbacks_shutdown(void);
-unsigned int	ewl_callback_type_add(void);
+int         	ewl_callbacks_init(void);
+void         	ewl_callbacks_shutdown(void);
+unsigned int        ewl_callback_type_add(void);
 
-int 		ewl_callback_append(Ewl_Widget * widget, unsigned int type,
-					Ewl_Callback_Function func,
-					void *user_data);
-int 		ewl_callback_prepend(Ewl_Widget * widget,
-					unsigned int type,
-					Ewl_Callback_Function func,
-					void *user_data);
-int 		ewl_callback_insert_after(Ewl_Widget * w, unsigned int t,
-					  Ewl_Callback_Function f,
-					  void *user_data,
-					  Ewl_Callback_Function after,
-					  void *after_data);
-void 		ewl_callback_clear(Ewl_Widget * widget);
-void 		ewl_callback_call(Ewl_Widget * widget, unsigned int type);
-void 		ewl_callback_call_with_event_data(Ewl_Widget * widget,
-						  unsigned int type,
-						  void *event_data);
-void 		ewl_callback_del_type(Ewl_Widget * w, unsigned int t);
-void 		ewl_callback_del_cb_id(Ewl_Widget * w, unsigned int t,
-				       int cb_id);
-void 		ewl_callback_del(Ewl_Widget * w, unsigned int t,
-				 Ewl_Callback_Function f);
-void 		ewl_callback_del_with_data(Ewl_Widget * w, unsigned int t,
-				 Ewl_Callback_Function f, void *data);
+int         	ewl_callback_append(Ewl_Widget * widget, unsigned int type,
+        				Ewl_Callback_Function func,
+        				void *user_data);
+int         	ewl_callback_prepend(Ewl_Widget * widget,
+        				unsigned int type,
+        				Ewl_Callback_Function func,
+        				void *user_data);
+int         	ewl_callback_insert_after(Ewl_Widget * w, unsigned int t,
+        				  Ewl_Callback_Function f,
+        				  void *user_data,
+        				  Ewl_Callback_Function after,
+        				  void *after_data);
+void         	ewl_callback_clear(Ewl_Widget * widget);
+void         	ewl_callback_call(Ewl_Widget * widget, unsigned int type);
+void         	ewl_callback_call_with_event_data(Ewl_Widget * widget,
+        					  unsigned int type,
+        					  void *event_data);
+void         	ewl_callback_del_type(Ewl_Widget * w, unsigned int t);
+void         	ewl_callback_del_cb_id(Ewl_Widget * w, unsigned int t,
+        			       int cb_id);
+void         	ewl_callback_del(Ewl_Widget * w, unsigned int t,
+        			 Ewl_Callback_Function f);
+void         	ewl_callback_del_with_data(Ewl_Widget * w, unsigned int t,
+        			 Ewl_Callback_Function f, void *data);
 
 /**
  * @}

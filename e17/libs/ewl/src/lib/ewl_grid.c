@@ -1,4 +1,4 @@
-/* vim: set sw=8 ts=8 sts=8 noexpandtab: */
+/* vim: set sw=8 ts=8 sts=8 expandtab: */
 #include "ewl_base.h"
 #include "ewl_grid.h"
 #include "ewl_macros.h"
@@ -19,20 +19,20 @@ static void ewl_grid_map_start_position_get(Ewl_Grid *g, int *c, int *r);
 Ewl_Widget *
 ewl_grid_new(void)
 {
-	Ewl_Grid *g;
+        Ewl_Grid *g;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
 
-	g = NEW(Ewl_Grid, 1);
-	if (!g)
-		DRETURN_PTR(NULL, DLEVEL_STABLE);
+        g = NEW(Ewl_Grid, 1);
+        if (!g)
+        	DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	if (!ewl_grid_init(g)) {
-		ewl_widget_destroy(EWL_WIDGET(g));
-		g = NULL;
-	}
+        if (!ewl_grid_init(g)) {
+        	ewl_widget_destroy(EWL_WIDGET(g));
+        	g = NULL;
+        }
 
-	DRETURN_PTR(EWL_WIDGET(g), DLEVEL_STABLE);
+        DRETURN_PTR(EWL_WIDGET(g), DLEVEL_STABLE);
 }
 
 /**
@@ -44,50 +44,50 @@ ewl_grid_new(void)
 int
 ewl_grid_init(Ewl_Grid *g)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(g, FALSE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(g, FALSE);
 
-	/*
-	 * Initialize the grids inherited fields
-	 */
-	if (!ewl_container_init(EWL_CONTAINER(g)))
-		DRETURN_INT(FALSE, DLEVEL_STABLE);
+        /*
+         * Initialize the grids inherited fields
+         */
+        if (!ewl_container_init(EWL_CONTAINER(g)))
+        	DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	ewl_widget_appearance_set(EWL_WIDGET(g), EWL_GRID_TYPE);
-	ewl_widget_inherit(EWL_WIDGET(g), EWL_GRID_TYPE);
+        ewl_widget_appearance_set(EWL_WIDGET(g), EWL_GRID_TYPE);
+        ewl_widget_inherit(EWL_WIDGET(g), EWL_GRID_TYPE);
 
-	ewl_container_add_notify_set(EWL_CONTAINER(g), ewl_grid_cb_child_add);
-	ewl_container_remove_notify_set(EWL_CONTAINER(g),
-						ewl_grid_cb_child_remove);
-	ewl_container_show_notify_set(EWL_CONTAINER(g),
-						ewl_grid_cb_child_show);
-	ewl_container_hide_notify_set(EWL_CONTAINER(g),
-						ewl_grid_cb_child_show);
-	ewl_container_resize_notify_set(EWL_CONTAINER(g),
-						ewl_grid_cb_child_resize);
+        ewl_container_add_notify_set(EWL_CONTAINER(g), ewl_grid_cb_child_add);
+        ewl_container_remove_notify_set(EWL_CONTAINER(g),
+        					ewl_grid_cb_child_remove);
+        ewl_container_show_notify_set(EWL_CONTAINER(g),
+        					ewl_grid_cb_child_show);
+        ewl_container_hide_notify_set(EWL_CONTAINER(g),
+        					ewl_grid_cb_child_show);
+        ewl_container_resize_notify_set(EWL_CONTAINER(g),
+        					ewl_grid_cb_child_resize);
 
-	/*
-	 * the smallest size where a grid make sense
-	 */
-	ewl_grid_dimensions_set(g, 2, 2);
+        /*
+         * the smallest size where a grid make sense
+         */
+        ewl_grid_dimensions_set(g, 2, 2);
 
-	g->homogeneous_h = FALSE;
-	g->homogeneous_v = FALSE;
-	g->data_dirty = TRUE;
+        g->homogeneous_h = FALSE;
+        g->homogeneous_v = FALSE;
+        g->data_dirty = TRUE;
 
-	g->orientation = EWL_ORIENTATION_HORIZONTAL;
+        g->orientation = EWL_ORIENTATION_HORIZONTAL;
 
-	/*
-	 * Append callbacks
-	 */
-	ewl_callback_append(EWL_WIDGET(g), EWL_CALLBACK_CONFIGURE,
-					ewl_grid_cb_configure, NULL);
-	ewl_callback_prepend(EWL_WIDGET(g), EWL_CALLBACK_DESTROY,
-					ewl_grid_cb_destroy, NULL);
+        /*
+         * Append callbacks
+         */
+        ewl_callback_append(EWL_WIDGET(g), EWL_CALLBACK_CONFIGURE,
+        				ewl_grid_cb_configure, NULL);
+        ewl_callback_prepend(EWL_WIDGET(g), EWL_CALLBACK_DESTROY,
+        				ewl_grid_cb_destroy, NULL);
 
-	ewl_widget_focusable_set(EWL_WIDGET(g), FALSE);
+        ewl_widget_focusable_set(EWL_WIDGET(g), FALSE);
 
-	DRETURN_INT(TRUE, DLEVEL_STABLE);
+        DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 /**
@@ -100,61 +100,61 @@ ewl_grid_init(Ewl_Grid *g)
 void
 ewl_grid_dimensions_set(Ewl_Grid *g, int cols, int rows)
 {
-	Ewl_Widget *w;
-	Ewl_Grid_Info *col_new, *row_new;
-	int i;
+        Ewl_Widget *w;
+        Ewl_Grid_Info *col_new, *row_new;
+        int i;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(g);
-	DCHECK_TYPE(g, EWL_GRID_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(g);
+        DCHECK_TYPE(g, EWL_GRID_TYPE);
 
-	w = EWL_WIDGET(g);
+        w = EWL_WIDGET(g);
 
-	if ((cols == g->cols) && (rows == g->rows))
-		DRETURN(DLEVEL_STABLE);
+        if ((cols == g->cols) && (rows == g->rows))
+        	DRETURN(DLEVEL_STABLE);
 
-	IF_FREE(g->map);
-	g->data_dirty = TRUE;
+        IF_FREE(g->map);
+        g->data_dirty = TRUE;
 
-	if (cols != g->cols) {
-		col_new = NEW(Ewl_Grid_Info, cols);
-		if (!col_new)
-			DRETURN(DLEVEL_STABLE);
+        if (cols != g->cols) {
+        	col_new = NEW(Ewl_Grid_Info, cols);
+        	if (!col_new)
+        		DRETURN(DLEVEL_STABLE);
 
-		if (g->col_size) {
-			int num;
+        	if (g->col_size) {
+        		int num;
 
-			num = MIN(cols, g->cols);
-			for (i = 0; i < num; i++)
-				col_new[i] = g->col_size[i];
+        		num = MIN(cols, g->cols);
+        		for (i = 0; i < num; i++)
+        			col_new[i] = g->col_size[i];
 
-			FREE(g->col_size);
-		}
-		g->col_size = col_new;
-		g->cols = cols;
-	}
+        		FREE(g->col_size);
+        	}
+        	g->col_size = col_new;
+        	g->cols = cols;
+        }
 
-	if (rows != g->rows) {
-		row_new = NEW(Ewl_Grid_Info, rows);
-		if (!row_new)
-			DRETURN(DLEVEL_STABLE);
+        if (rows != g->rows) {
+        	row_new = NEW(Ewl_Grid_Info, rows);
+        	if (!row_new)
+        		DRETURN(DLEVEL_STABLE);
 
-		if (g->row_size) {
-			int num;
+        	if (g->row_size) {
+        		int num;
 
-			num = MIN(rows, g->rows);
-			for (i = 0; i < num; i++)
-				row_new[i] = g->row_size[i];
+        		num = MIN(rows, g->rows);
+        		for (i = 0; i < num; i++)
+        			row_new[i] = g->row_size[i];
 
-			FREE(g->row_size);
-		}
-		g->row_size = row_new;
-		g->rows = rows;
-	}
+        		FREE(g->row_size);
+        	}
+        	g->row_size = row_new;
+        	g->rows = rows;
+        }
 
-	ewl_widget_configure(w);
+        ewl_widget_configure(w);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -167,14 +167,14 @@ ewl_grid_dimensions_set(Ewl_Grid *g, int cols, int rows)
 void
 ewl_grid_dimensions_get(Ewl_Grid *g, int *cols, int *rows)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(g);
-	DCHECK_TYPE(g, EWL_GRID_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(g);
+        DCHECK_TYPE(g, EWL_GRID_TYPE);
 
-	if (cols) *cols = g->cols;
-	if (rows) *rows = g->rows;
+        if (cols) *cols = g->cols;
+        if (rows) *rows = g->rows;
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -186,19 +186,19 @@ ewl_grid_dimensions_get(Ewl_Grid *g, int *cols, int *rows)
 void
 ewl_grid_orientation_set(Ewl_Grid *g, Ewl_Orientation orientation)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(g);
-	DCHECK_TYPE(g, EWL_GRID_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(g);
+        DCHECK_TYPE(g, EWL_GRID_TYPE);
 
-	if (g->orientation == orientation)
-		DRETURN(DLEVEL_STABLE);
+        if (g->orientation == orientation)
+        	DRETURN(DLEVEL_STABLE);
 
-	g->orientation = orientation;
-	g->data_dirty = TRUE;
+        g->orientation = orientation;
+        g->data_dirty = TRUE;
 
-	ewl_widget_configure(EWL_WIDGET(g));
+        ewl_widget_configure(EWL_WIDGET(g));
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -209,11 +209,11 @@ ewl_grid_orientation_set(Ewl_Grid *g, Ewl_Orientation orientation)
 Ewl_Orientation
 ewl_grid_orientation_get(Ewl_Grid *g)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(g, 0);
-	DCHECK_TYPE_RET(g, EWL_GRID_TYPE, 0);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(g, 0);
+        DCHECK_TYPE_RET(g, EWL_GRID_TYPE, 0);
 
-	DRETURN_INT(g->orientation, DLEVEL_STABLE);
+        DRETURN_INT(g->orientation, DLEVEL_STABLE);
 }
 
 /**
@@ -228,17 +228,17 @@ ewl_grid_orientation_get(Ewl_Grid *g)
 void
 ewl_grid_homogeneous_set(Ewl_Grid *g, unsigned int h)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(g);
-	DCHECK_TYPE(g, EWL_GRID_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(g);
+        DCHECK_TYPE(g, EWL_GRID_TYPE);
 
- 	if (g->homogeneous_h != h)
-		ewl_grid_hhomogeneous_set(g, h);
+         if (g->homogeneous_h != h)
+        	ewl_grid_hhomogeneous_set(g, h);
 
-	if (g->homogeneous_v != h)
-		ewl_grid_vhomogeneous_set(g, h);
+        if (g->homogeneous_v != h)
+        	ewl_grid_vhomogeneous_set(g, h);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -254,18 +254,18 @@ ewl_grid_homogeneous_set(Ewl_Grid *g, unsigned int h)
 void
 ewl_grid_hhomogeneous_set(Ewl_Grid *g, unsigned int h)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(g);
-	DCHECK_TYPE(g, EWL_GRID_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(g);
+        DCHECK_TYPE(g, EWL_GRID_TYPE);
 
-	if (g->homogeneous_h == h)
-		DRETURN(DLEVEL_STABLE);
+        if (g->homogeneous_h == h)
+        	DRETURN(DLEVEL_STABLE);
 
-	g->homogeneous_h = h;
-	g->data_dirty = TRUE;
-	ewl_widget_configure(EWL_WIDGET(g));
+        g->homogeneous_h = h;
+        g->data_dirty = TRUE;
+        ewl_widget_configure(EWL_WIDGET(g));
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -281,18 +281,18 @@ ewl_grid_hhomogeneous_set(Ewl_Grid *g, unsigned int h)
 void
 ewl_grid_vhomogeneous_set(Ewl_Grid *g, unsigned int h)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(g);
-	DCHECK_TYPE(g, EWL_GRID_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(g);
+        DCHECK_TYPE(g, EWL_GRID_TYPE);
 
- 	if (g->homogeneous_v == h)
-		DRETURN(DLEVEL_STABLE);
+         if (g->homogeneous_v == h)
+        	DRETURN(DLEVEL_STABLE);
 
-	g->homogeneous_v = h;
-	g->data_dirty = TRUE;
-	ewl_widget_configure(EWL_WIDGET(g));
+        g->homogeneous_v = h;
+        g->data_dirty = TRUE;
+        ewl_widget_configure(EWL_WIDGET(g));
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -303,11 +303,11 @@ ewl_grid_vhomogeneous_set(Ewl_Grid *g, unsigned int h)
 unsigned int
 ewl_grid_hhomogeneous_get(Ewl_Grid *g)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(g, 0);
-	DCHECK_TYPE_RET(g, EWL_GRID_TYPE, 0);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(g, 0);
+        DCHECK_TYPE_RET(g, EWL_GRID_TYPE, 0);
 
-	DRETURN_INT(g->homogeneous_h, DLEVEL_STABLE);
+        DRETURN_INT(g->homogeneous_h, DLEVEL_STABLE);
 }
 
 /**
@@ -318,11 +318,11 @@ ewl_grid_hhomogeneous_get(Ewl_Grid *g)
 unsigned int
 ewl_grid_vhomogeneous_get(Ewl_Grid *g)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(g, 0);
-	DCHECK_TYPE_RET(g, EWL_GRID_TYPE, 0);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(g, 0);
+        DCHECK_TYPE_RET(g, EWL_GRID_TYPE, 0);
 
-	DRETURN_INT(g->homogeneous_v, DLEVEL_STABLE);
+        DRETURN_INT(g->homogeneous_v, DLEVEL_STABLE);
 }
 
 /**
@@ -337,81 +337,81 @@ ewl_grid_vhomogeneous_get(Ewl_Grid *g)
  */
 void
 ewl_grid_child_position_set(Ewl_Grid *g, Ewl_Widget *w,
-				int start_col, int end_col,
-				int start_row, int end_row)
+        			int start_col, int end_col,
+        			int start_row, int end_row)
 {
-	Ewl_Grid_Child *child;
-	int new_cols, new_rows;
+        Ewl_Grid_Child *child;
+        int new_cols, new_rows;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(g);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(g, EWL_GRID_TYPE);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(g);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(g, EWL_GRID_TYPE);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	IF_FREE(g->map);
-	g->data_dirty = TRUE;
+        IF_FREE(g->map);
+        g->data_dirty = TRUE;
 
-	/*
-	 * check bounds
-	 */
-	if (start_col < 0) {
-		DWARNING("start_col out of bounds. min is 0.");
-		DRETURN(DLEVEL_STABLE);
-	}
+        /*
+         * check bounds
+         */
+        if (start_col < 0) {
+        	DWARNING("start_col out of bounds. min is 0.");
+        	DRETURN(DLEVEL_STABLE);
+        }
 
-	if (end_col >= g->cols)
-		new_cols = end_col + 1;
-	else
-		new_cols = g->cols;
+        if (end_col >= g->cols)
+        	new_cols = end_col + 1;
+        else
+        	new_cols = g->cols;
 
-	if (start_row < 0) {
-		DWARNING("start_row out of bounds. min is 0.");
-		DRETURN(DLEVEL_STABLE);
-	}
+        if (start_row < 0) {
+        	DWARNING("start_row out of bounds. min is 0.");
+        	DRETURN(DLEVEL_STABLE);
+        }
 
-	if (end_row >= g->rows)
-		new_rows = end_row + 1;
-	else
-		new_rows = g->rows;
+        if (end_row >= g->rows)
+        	new_rows = end_row + 1;
+        else
+        	new_rows = g->rows;
 
-	/*
-	 * create a new child
-	 */
-	if (!(child = ewl_widget_data_get(w,g))) {
-		child = NEW(Ewl_Grid_Child, 1);
-		if (!child)
-			DRETURN(DLEVEL_STABLE);
-	}
-	else {
-		g->space -= (child->end_col - child->start_col + 1)
-			* (child->end_row - child->start_row + 1) + 1;
-	}
-	child->start_col = start_col;
-	child->end_col = end_col;
-	child->start_row = start_row;
-	child->end_row = end_row;
+        /*
+         * create a new child
+         */
+        if (!(child = ewl_widget_data_get(w,g))) {
+        	child = NEW(Ewl_Grid_Child, 1);
+        	if (!child)
+        		DRETURN(DLEVEL_STABLE);
+        }
+        else {
+        	g->space -= (child->end_col - child->start_col + 1)
+        		* (child->end_row - child->start_row + 1) + 1;
+        }
+        child->start_col = start_col;
+        child->end_col = end_col;
+        child->start_row = start_row;
+        child->end_row = end_row;
 
-	g->space += (end_col - start_col + 1) * (end_row - start_row + 1) - 1;
+        g->space += (end_col - start_col + 1) * (end_row - start_row + 1) - 1;
 
-	/*
-	 * if there is to less space resize the grid
-	 */
-	if (g->space > (new_cols * new_rows)) {
-		if (g->orientation == EWL_ORIENTATION_HORIZONTAL)
-			new_rows = g->space / new_cols + 1;
-		else
-			new_cols = g->space / new_rows + 1;
-	}
+        /*
+         * if there is to less space resize the grid
+         */
+        if (g->space > (new_cols * new_rows)) {
+        	if (g->orientation == EWL_ORIENTATION_HORIZONTAL)
+        		new_rows = g->space / new_cols + 1;
+        	else
+        		new_cols = g->space / new_rows + 1;
+        }
 
-	/*
-	 * store the child info in the child widget
-	 */
-	ewl_widget_data_set(w, (void *)g, child);
-	ewl_grid_dimensions_set(g, new_cols, new_rows);
-	ewl_widget_configure(EWL_WIDGET(g));
+        /*
+         * store the child info in the child widget
+         */
+        ewl_widget_data_set(w, (void *)g, child);
+        ewl_grid_dimensions_set(g, new_cols, new_rows);
+        ewl_widget_configure(EWL_WIDGET(g));
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -426,71 +426,71 @@ ewl_grid_child_position_set(Ewl_Grid *g, Ewl_Widget *w,
  */
 void
 ewl_grid_child_position_get(Ewl_Grid *g, Ewl_Widget *w,
-				int *start_col, int *end_col,
-				int *start_row, int *end_row)
+        			int *start_col, int *end_col,
+        			int *start_row, int *end_row)
 {
-	Ewl_Grid_Child *child;
-	int sc, ec, sr, er;
+        Ewl_Grid_Child *child;
+        int sc, ec, sr, er;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(g);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(g, EWL_GRID_TYPE);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(g);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(g, EWL_GRID_TYPE);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	child = ewl_widget_data_get(w, g);
-	if (child) {
-		/*
-		 * for a fixed-positioned widget we can
-		 * just return the data
-		 */
-		sc = child->start_col;
-		ec = child->end_col;
-		sr = child->start_row;
-		er = child->end_row;
-	}
-	else {
-		Ewl_Widget *c;
-		int col, row;
-		void (*go_next)(Ewl_Grid *g, int *c, int *r);
-		/*
-		 * for a floating widget we have to search
-		 * for the current position
-		 */
-		if (!g->map)
-			ewl_grid_map_recalc(g);
-		/*
-		 * setup the position stuff for the floating
-		 * widgets
-	 	 */
-		ewl_grid_map_start_position_get(g, &col, &row);
-		if (g->orientation == EWL_ORIENTATION_HORIZONTAL)
-			go_next = ewl_grid_hmap_position_next;
-		else
-			go_next = ewl_grid_vmap_position_next;
+        child = ewl_widget_data_get(w, g);
+        if (child) {
+        	/*
+        	 * for a fixed-positioned widget we can
+        	 * just return the data
+        	 */
+        	sc = child->start_col;
+        	ec = child->end_col;
+        	sr = child->start_row;
+        	er = child->end_row;
+        }
+        else {
+        	Ewl_Widget *c;
+        	int col, row;
+        	void (*go_next)(Ewl_Grid *g, int *c, int *r);
+        	/*
+        	 * for a floating widget we have to search
+        	 * for the current position
+        	 */
+        	if (!g->map)
+        		ewl_grid_map_recalc(g);
+        	/*
+        	 * setup the position stuff for the floating
+        	 * widgets
+         	 */
+        	ewl_grid_map_start_position_get(g, &col, &row);
+        	if (g->orientation == EWL_ORIENTATION_HORIZONTAL)
+        		go_next = ewl_grid_hmap_position_next;
+        	else
+        		go_next = ewl_grid_vmap_position_next;
 
-		/*
-		 * and now find the current position
-		 */
-		ecore_dlist_first_goto(EWL_CONTAINER(g)->children);
-		while ((c = ecore_dlist_next(EWL_CONTAINER(g)->children))
-				&& c != w) {
-			if (UNMANAGED(c))
-				continue;
+        	/*
+        	 * and now find the current position
+        	 */
+        	ecore_dlist_first_goto(EWL_CONTAINER(g)->children);
+        	while ((c = ecore_dlist_next(EWL_CONTAINER(g)->children))
+        			&& c != w) {
+        		if (UNMANAGED(c))
+        			continue;
 
-			if (!ewl_widget_data_get(c, g))
-				go_next(g, &col, &row);
-		}
-		sc = ec = col;
-		sr = er = row;
-	}
+        		if (!ewl_widget_data_get(c, g))
+        			go_next(g, &col, &row);
+        	}
+        	sc = ec = col;
+        	sr = er = row;
+        }
 
-	if (start_col) *start_col = sc;
-	if (end_col) *end_col = ec;
-	if (start_row) *start_row = sr;
-	if (end_row) *end_row = er;
+        if (start_col) *start_col = sc;
+        if (end_col) *end_col = ec;
+        if (start_row) *start_row = sr;
+        if (end_row) *end_row = er;
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -504,14 +504,14 @@ ewl_grid_child_position_get(Ewl_Grid *g, Ewl_Widget *w,
 int
 ewl_grid_column_current_w_get(Ewl_Grid *g, int col)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(g, 0);
-	DCHECK_TYPE_RET(g, EWL_GRID_TYPE, 0);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(g, 0);
+        DCHECK_TYPE_RET(g, EWL_GRID_TYPE, 0);
 
-	if ((col >= g->cols) || (col < 0))
-		DRETURN_INT(0, DLEVEL_STABLE);
+        if ((col >= g->cols) || (col < 0))
+        	DRETURN_INT(0, DLEVEL_STABLE);
 
-	DRETURN_INT(g->col_size[col].current_size, DLEVEL_STABLE);
+        DRETURN_INT(g->col_size[col].current_size, DLEVEL_STABLE);
 }
 
 /**
@@ -524,27 +524,27 @@ ewl_grid_column_current_w_get(Ewl_Grid *g, int col)
 void
 ewl_grid_column_fixed_w_set(Ewl_Grid *g, int col, int width)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(g);
-	DCHECK_TYPE(g, EWL_GRID_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(g);
+        DCHECK_TYPE(g, EWL_GRID_TYPE);
 
-	/*
-	 * check bounds
-	 */
-	if (col < 0) {
-		DWARNING("parameter 'col' is out of bounds.");
-		DRETURN(DLEVEL_STABLE);
-	}
-	else if (col >= g->cols)
-		ewl_grid_dimensions_set(g, col + 1, g->rows);
+        /*
+         * check bounds
+         */
+        if (col < 0) {
+        	DWARNING("parameter 'col' is out of bounds.");
+        	DRETURN(DLEVEL_STABLE);
+        }
+        else if (col >= g->cols)
+        	ewl_grid_dimensions_set(g, col + 1, g->rows);
 
-	g->col_size[col].resize_type = EWL_GRID_RESIZE_FIXED;
-	g->col_size[col].user.size = width;
-	g->data_dirty = TRUE;
+        g->col_size[col].resize_type = EWL_GRID_RESIZE_FIXED;
+        g->col_size[col].user.size = width;
+        g->data_dirty = TRUE;
 
-	ewl_widget_configure(EWL_WIDGET(g));
+        ewl_widget_configure(EWL_WIDGET(g));
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -558,14 +558,14 @@ ewl_grid_column_fixed_w_set(Ewl_Grid *g, int col, int width)
 int
 ewl_grid_column_fixed_w_get(Ewl_Grid *g, int col)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(g, 0);
-	DCHECK_TYPE_RET(g, EWL_GRID_TYPE, 0);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(g, 0);
+        DCHECK_TYPE_RET(g, EWL_GRID_TYPE, 0);
 
-	if ((col >= g->cols) || (col < 0))
-		DRETURN_INT(0, DLEVEL_STABLE);
+        if ((col >= g->cols) || (col < 0))
+        	DRETURN_INT(0, DLEVEL_STABLE);
 
-	DRETURN_INT(g->col_size[col].user.size, DLEVEL_STABLE);
+        DRETURN_INT(g->col_size[col].user.size, DLEVEL_STABLE);
 }
 
 /**
@@ -578,27 +578,27 @@ ewl_grid_column_fixed_w_get(Ewl_Grid *g, int col)
 void
 ewl_grid_column_relative_w_set(Ewl_Grid *g, int col, float relw)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(g);
-	DCHECK_TYPE(g, EWL_GRID_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(g);
+        DCHECK_TYPE(g, EWL_GRID_TYPE);
 
-	/*
-	 * check bounds
-	 */
-	if (col < 0) {
-		DWARNING("parameter 'col' is out of bounds.");
-		DRETURN(DLEVEL_STABLE);
-	}
-	else if (col >= g->cols)
-		ewl_grid_dimensions_set(g, col + 1, g->rows);
+        /*
+         * check bounds
+         */
+        if (col < 0) {
+        	DWARNING("parameter 'col' is out of bounds.");
+        	DRETURN(DLEVEL_STABLE);
+        }
+        else if (col >= g->cols)
+        	ewl_grid_dimensions_set(g, col + 1, g->rows);
 
-	g->col_size[col].resize_type = EWL_GRID_RESIZE_RELATIVE;
-	g->col_size[col].user.rel_size = relw;
-	g->data_dirty = TRUE;
+        g->col_size[col].resize_type = EWL_GRID_RESIZE_RELATIVE;
+        g->col_size[col].user.rel_size = relw;
+        g->data_dirty = TRUE;
 
-	ewl_widget_configure(EWL_WIDGET(g));
+        ewl_widget_configure(EWL_WIDGET(g));
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -612,14 +612,14 @@ ewl_grid_column_relative_w_set(Ewl_Grid *g, int col, float relw)
 float
 ewl_grid_column_relative_w_get(Ewl_Grid *g, int col)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(g, 0.0);
-	DCHECK_TYPE_RET(g, EWL_GRID_TYPE, 0.0);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(g, 0.0);
+        DCHECK_TYPE_RET(g, EWL_GRID_TYPE, 0.0);
 
-	if ((col >= g->cols) || (col < 0))
-		DRETURN_FLOAT(0.0, DLEVEL_STABLE);
+        if ((col >= g->cols) || (col < 0))
+        	DRETURN_FLOAT(0.0, DLEVEL_STABLE);
 
-	DRETURN_FLOAT(g->col_size[col].user.rel_size, DLEVEL_STABLE);
+        DRETURN_FLOAT(g->col_size[col].user.rel_size, DLEVEL_STABLE);
 }
 
 /**
@@ -631,27 +631,27 @@ ewl_grid_column_relative_w_get(Ewl_Grid *g, int col)
 void
 ewl_grid_column_preferred_w_use(Ewl_Grid *g, int col)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(g);
-	DCHECK_TYPE(g, EWL_GRID_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(g);
+        DCHECK_TYPE(g, EWL_GRID_TYPE);
 
-	/*
-	 * check bounds
-	 */
-	if (col < 0) {
-		DWARNING("parameter 'col' is out of bounds.");
-		DRETURN(DLEVEL_STABLE);
-	}
-	else if (col >= g->cols)
-		ewl_grid_dimensions_set(g, col + 1, g->rows);
+        /*
+         * check bounds
+         */
+        if (col < 0) {
+        	DWARNING("parameter 'col' is out of bounds.");
+        	DRETURN(DLEVEL_STABLE);
+        }
+        else if (col >= g->cols)
+        	ewl_grid_dimensions_set(g, col + 1, g->rows);
 
-	g->col_size[col].resize_type = EWL_GRID_RESIZE_NONE;
-	g->col_size[col].user.size = 0;
-	g->data_dirty = TRUE;
+        g->col_size[col].resize_type = EWL_GRID_RESIZE_NONE;
+        g->col_size[col].user.size = 0;
+        g->data_dirty = TRUE;
 
-	ewl_widget_configure(EWL_WIDGET(g));
+        ewl_widget_configure(EWL_WIDGET(g));
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -663,27 +663,27 @@ ewl_grid_column_preferred_w_use(Ewl_Grid *g, int col)
 void
 ewl_grid_column_w_remove(Ewl_Grid *g, int col)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(g);
-	DCHECK_TYPE(g, EWL_GRID_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(g);
+        DCHECK_TYPE(g, EWL_GRID_TYPE);
 
-	/*
-	 * check bounds
-	 */
-	if (col < 0) {
-		DWARNING("parameter 'col' is out of bounds.");
-		DRETURN(DLEVEL_STABLE);
-	}
-	else if (col >= g->cols)
-		ewl_grid_dimensions_set(g, col + 1, g->rows);
+        /*
+         * check bounds
+         */
+        if (col < 0) {
+        	DWARNING("parameter 'col' is out of bounds.");
+        	DRETURN(DLEVEL_STABLE);
+        }
+        else if (col >= g->cols)
+        	ewl_grid_dimensions_set(g, col + 1, g->rows);
 
-	g->col_size[col].resize_type = EWL_GRID_RESIZE_NORMAL;
-	g->col_size[col].user.size = 0;
-	g->data_dirty = TRUE;
+        g->col_size[col].resize_type = EWL_GRID_RESIZE_NORMAL;
+        g->col_size[col].user.size = 0;
+        g->data_dirty = TRUE;
 
-	ewl_widget_configure(EWL_WIDGET(g));
+        ewl_widget_configure(EWL_WIDGET(g));
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -697,14 +697,14 @@ ewl_grid_column_w_remove(Ewl_Grid *g, int col)
 int
 ewl_grid_row_current_h_get(Ewl_Grid *g, int row)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(g, 0);
-	DCHECK_TYPE_RET(g, EWL_GRID_TYPE, 0);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(g, 0);
+        DCHECK_TYPE_RET(g, EWL_GRID_TYPE, 0);
 
-	if ((row >= g->rows) || (row < 0))
-		DRETURN_INT(0, DLEVEL_STABLE);
+        if ((row >= g->rows) || (row < 0))
+        	DRETURN_INT(0, DLEVEL_STABLE);
 
-	DRETURN_INT(g->row_size[row].current_size, DLEVEL_STABLE);
+        DRETURN_INT(g->row_size[row].current_size, DLEVEL_STABLE);
 }
 
 /**
@@ -717,27 +717,27 @@ ewl_grid_row_current_h_get(Ewl_Grid *g, int row)
 void
 ewl_grid_row_fixed_h_set(Ewl_Grid *g, int row, int height)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(g);
-	DCHECK_TYPE(g, EWL_GRID_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(g);
+        DCHECK_TYPE(g, EWL_GRID_TYPE);
 
-	/*
-	 * check bounds
-	 */
-	if (row < 0) {
-		DWARNING("parameter 'row' is out of bounds.");
-		DRETURN(DLEVEL_STABLE);
-	}
-	else if (row >= g->rows)
-		ewl_grid_dimensions_set(g, g->cols, row + 1);
+        /*
+         * check bounds
+         */
+        if (row < 0) {
+        	DWARNING("parameter 'row' is out of bounds.");
+        	DRETURN(DLEVEL_STABLE);
+        }
+        else if (row >= g->rows)
+        	ewl_grid_dimensions_set(g, g->cols, row + 1);
 
-	g->row_size[row].resize_type = EWL_GRID_RESIZE_FIXED;
-	g->row_size[row].user.size = height;
-	g->data_dirty = TRUE;
+        g->row_size[row].resize_type = EWL_GRID_RESIZE_FIXED;
+        g->row_size[row].user.size = height;
+        g->data_dirty = TRUE;
 
-	ewl_widget_configure(EWL_WIDGET(g));
+        ewl_widget_configure(EWL_WIDGET(g));
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -751,14 +751,14 @@ ewl_grid_row_fixed_h_set(Ewl_Grid *g, int row, int height)
 int
 ewl_grid_row_fixed_h_get(Ewl_Grid *g, int row)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(g, 0);
-	DCHECK_TYPE_RET(g, EWL_GRID_TYPE, 0);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(g, 0);
+        DCHECK_TYPE_RET(g, EWL_GRID_TYPE, 0);
 
-	if ((row >= g->rows) || (row < 0))
-		DRETURN_INT(0, DLEVEL_STABLE);
+        if ((row >= g->rows) || (row < 0))
+        	DRETURN_INT(0, DLEVEL_STABLE);
 
-	DRETURN_INT(g->row_size[row].user.size, DLEVEL_STABLE);
+        DRETURN_INT(g->row_size[row].user.size, DLEVEL_STABLE);
 }
 
 /**
@@ -771,27 +771,27 @@ ewl_grid_row_fixed_h_get(Ewl_Grid *g, int row)
 void
 ewl_grid_row_relative_h_set(Ewl_Grid *g, int row, float relh)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(g);
-	DCHECK_TYPE(g, EWL_GRID_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(g);
+        DCHECK_TYPE(g, EWL_GRID_TYPE);
 
-	/*
-	 * check bounds
-	 */
-	if (row < 0) {
-		DWARNING("parameter 'row' is out of bounds.");
-		DRETURN(DLEVEL_STABLE);
-	}
-	else if (row >= g->rows)
-		ewl_grid_dimensions_set(g, g->cols, row + 1);
+        /*
+         * check bounds
+         */
+        if (row < 0) {
+        	DWARNING("parameter 'row' is out of bounds.");
+        	DRETURN(DLEVEL_STABLE);
+        }
+        else if (row >= g->rows)
+        	ewl_grid_dimensions_set(g, g->cols, row + 1);
 
-	g->row_size[row].resize_type = EWL_GRID_RESIZE_RELATIVE;
-	g->row_size[row].user.rel_size = relh;
-	g->data_dirty = TRUE;
+        g->row_size[row].resize_type = EWL_GRID_RESIZE_RELATIVE;
+        g->row_size[row].user.rel_size = relh;
+        g->data_dirty = TRUE;
 
-	ewl_widget_configure(EWL_WIDGET(g));
+        ewl_widget_configure(EWL_WIDGET(g));
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -805,14 +805,14 @@ ewl_grid_row_relative_h_set(Ewl_Grid *g, int row, float relh)
 float
 ewl_grid_row_relative_h_get(Ewl_Grid *g, int row)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(g, 0.0);
-	DCHECK_TYPE_RET(g, EWL_GRID_TYPE, 0.0);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(g, 0.0);
+        DCHECK_TYPE_RET(g, EWL_GRID_TYPE, 0.0);
 
-	if ((row >= g->rows) || (row < 0))
-		DRETURN_FLOAT(0.0, DLEVEL_STABLE);
+        if ((row >= g->rows) || (row < 0))
+        	DRETURN_FLOAT(0.0, DLEVEL_STABLE);
 
-	DRETURN_FLOAT(g->row_size[row].user.rel_size, DLEVEL_STABLE);
+        DRETURN_FLOAT(g->row_size[row].user.rel_size, DLEVEL_STABLE);
 }
 
 /**
@@ -824,27 +824,27 @@ ewl_grid_row_relative_h_get(Ewl_Grid *g, int row)
 void
 ewl_grid_row_preferred_h_use(Ewl_Grid *g, int row)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(g);
-	DCHECK_TYPE(g, EWL_GRID_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(g);
+        DCHECK_TYPE(g, EWL_GRID_TYPE);
 
-	/*
-	 * check bounds
-	 */
-	if (row < 0) {
-		DWARNING("parameter 'row' is out of bounds.");
-		DRETURN(DLEVEL_STABLE);
-	}
-	else if (row >= g->rows)
-		ewl_grid_dimensions_set(g, g->cols, row + 1);
+        /*
+         * check bounds
+         */
+        if (row < 0) {
+        	DWARNING("parameter 'row' is out of bounds.");
+        	DRETURN(DLEVEL_STABLE);
+        }
+        else if (row >= g->rows)
+        	ewl_grid_dimensions_set(g, g->cols, row + 1);
 
-	g->row_size[row].resize_type = EWL_GRID_RESIZE_NONE;
-	g->row_size[row].user.size = 0;
-	g->data_dirty = TRUE;
+        g->row_size[row].resize_type = EWL_GRID_RESIZE_NONE;
+        g->row_size[row].user.size = 0;
+        g->data_dirty = TRUE;
 
-	ewl_widget_configure(EWL_WIDGET(g));
+        ewl_widget_configure(EWL_WIDGET(g));
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -856,27 +856,27 @@ ewl_grid_row_preferred_h_use(Ewl_Grid *g, int row)
 void
 ewl_grid_row_h_remove(Ewl_Grid *g, int row)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(g);
-	DCHECK_TYPE(g, EWL_GRID_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(g);
+        DCHECK_TYPE(g, EWL_GRID_TYPE);
 
-	/*
-	 * check bounds
-	 */
-	if (row < 0) {
-		DWARNING("parameter 'row' is out of bounds.");
-		DRETURN(DLEVEL_STABLE);
-	}
-	else if (row >= g->rows)
-		ewl_grid_dimensions_set(g, g->cols, row + 1);
+        /*
+         * check bounds
+         */
+        if (row < 0) {
+        	DWARNING("parameter 'row' is out of bounds.");
+        	DRETURN(DLEVEL_STABLE);
+        }
+        else if (row >= g->rows)
+        	ewl_grid_dimensions_set(g, g->cols, row + 1);
 
-	g->row_size[row].resize_type = EWL_GRID_RESIZE_NORMAL;
-	g->row_size[row].user.size = 0;
-	g->data_dirty = TRUE;
+        g->row_size[row].resize_type = EWL_GRID_RESIZE_NORMAL;
+        g->row_size[row].user.size = 0;
+        g->data_dirty = TRUE;
 
-	ewl_widget_configure(EWL_WIDGET(g));
+        ewl_widget_configure(EWL_WIDGET(g));
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -889,83 +889,83 @@ ewl_grid_row_h_remove(Ewl_Grid *g, int row)
  */
 void
 ewl_grid_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
-					void *user_data __UNUSED__)
+        				void *user_data __UNUSED__)
 {
-	Ewl_Grid *g;
-	Ewl_Grid_Child *c;
-	Ewl_Widget *child;
-	int c_w = 0, c_h = 0;	/* child width/height */
-	int c_x = 0, c_y = 0;	/* child x/y coordinate */
-	int col, row;
-	void (*go_next)(Ewl_Grid *g, int *c, int *r);
+        Ewl_Grid *g;
+        Ewl_Grid_Child *c;
+        Ewl_Widget *child;
+        int c_w = 0, c_h = 0;	/* child width/height */
+        int c_x = 0, c_y = 0;	/* child x/y coordinate */
+        int col, row;
+        void (*go_next)(Ewl_Grid *g, int *c, int *r);
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_GRID_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_GRID_TYPE);
 
-	g = EWL_GRID(w);
+        g = EWL_GRID(w);
 
-	if (!g->map)
-		ewl_grid_map_recalc(g);
+        if (!g->map)
+        	ewl_grid_map_recalc(g);
 
-	if (g->data_dirty)
-		ewl_grid_child_data_collect(g);
+        if (g->data_dirty)
+        	ewl_grid_child_data_collect(g);
 
-	ewl_grid_resize(g);
+        ewl_grid_resize(g);
 
-	/*
-	 * setup the position stuff for the floating
-	 * widgets
-	 */
-	ewl_grid_map_start_position_get(g, &col, &row);
-	if (g->orientation == EWL_ORIENTATION_HORIZONTAL)
-		go_next = ewl_grid_hmap_position_next;
-	else
-		go_next = ewl_grid_vmap_position_next;
+        /*
+         * setup the position stuff for the floating
+         * widgets
+         */
+        ewl_grid_map_start_position_get(g, &col, &row);
+        if (g->orientation == EWL_ORIENTATION_HORIZONTAL)
+        	go_next = ewl_grid_hmap_position_next;
+        else
+        	go_next = ewl_grid_vmap_position_next;
 
-	ecore_dlist_first_goto(EWL_CONTAINER(w)->children);
-	while ((child = ecore_dlist_next(EWL_CONTAINER(w)->children))) {
-		if (UNMANAGED(child))
-			continue;
+        ecore_dlist_first_goto(EWL_CONTAINER(w)->children);
+        while ((child = ecore_dlist_next(EWL_CONTAINER(w)->children))) {
+        	if (UNMANAGED(child))
+        		continue;
 
-		c = (Ewl_Grid_Child *)ewl_widget_data_get(child, (void *) g);
-		if (c) {
-			/*
-			 * calculate the geometry of the fixed widgets
-			 */
-			/* calculate child widgets width */
-			c_w = g->col_size[c->end_col].current_pos
-				- g->col_size[c->start_col].current_pos
-				+ g->col_size[c->end_col].current_size;
+        	c = (Ewl_Grid_Child *)ewl_widget_data_get(child, (void *) g);
+        	if (c) {
+        		/*
+        		 * calculate the geometry of the fixed widgets
+        		 */
+        		/* calculate child widgets width */
+        		c_w = g->col_size[c->end_col].current_pos
+        			- g->col_size[c->start_col].current_pos
+        			+ g->col_size[c->end_col].current_size;
 
-			/* calculate child widgets height */
-			c_h = g->row_size[c->end_row].current_pos
-				- g->row_size[c->start_row].current_pos
-				+ g->row_size[c->end_row].current_size;
+        		/* calculate child widgets height */
+        		c_h = g->row_size[c->end_row].current_pos
+        			- g->row_size[c->start_row].current_pos
+        			+ g->row_size[c->end_row].current_size;
 
-			/* calculate child widgets x coordinate */
-			c_x = g->col_size[c->start_col].current_pos;
+        		/* calculate child widgets x coordinate */
+        		c_x = g->col_size[c->start_col].current_pos;
 
-			/* calculate child widgets y coordinate */
-			c_y = g->row_size[c->start_row].current_pos;
-		}
-		else {
-			/*
-			 * get the geometry of the non-fixed widgets
-			 */
-			c_w = g->col_size[col].current_size;
-			c_h = g->row_size[row].current_size;
-			c_x = g->col_size[col].current_pos;
-			c_y = g->row_size[row].current_pos;
+        		/* calculate child widgets y coordinate */
+        		c_y = g->row_size[c->start_row].current_pos;
+        	}
+        	else {
+        		/*
+        		 * get the geometry of the non-fixed widgets
+        		 */
+        		c_w = g->col_size[col].current_size;
+        		c_h = g->row_size[row].current_size;
+        		c_x = g->col_size[col].current_pos;
+        		c_y = g->row_size[row].current_pos;
 
-			go_next(g, &col, &row);
-		}
+        		go_next(g, &col, &row);
+        	}
 
-		ewl_object_place(EWL_OBJECT(child), c_x, c_y, c_w, c_h);
-		ewl_widget_configure(child);
-	}
+        	ewl_object_place(EWL_OBJECT(child), c_x, c_y, c_w, c_h);
+        	ewl_widget_configure(child);
+        }
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -978,21 +978,21 @@ ewl_grid_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
  */
 void
 ewl_grid_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
-				void *user_data __UNUSED__)
+        			void *user_data __UNUSED__)
 {
-	Ewl_Grid *g;
+        Ewl_Grid *g;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_GRID_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_GRID_TYPE);
 
-	g = EWL_GRID(w);
+        g = EWL_GRID(w);
 
-	IF_FREE(g->map);
-	IF_FREE(g->col_size)
-	IF_FREE(g->row_size)
+        IF_FREE(g->map);
+        IF_FREE(g->col_size)
+        IF_FREE(g->row_size)
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -1004,35 +1004,35 @@ ewl_grid_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
 static void
 ewl_grid_map_recalc(Ewl_Grid *g)
 {
-	Ewl_Widget *child;
-	Ewl_Grid_Child *c;
-	int l, k;
+        Ewl_Widget *child;
+        Ewl_Grid_Child *c;
+        int l, k;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(g);
-	DCHECK_TYPE(g, EWL_GRID_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(g);
+        DCHECK_TYPE(g, EWL_GRID_TYPE);
 
-	IF_FREE(g->map);
-	g->map = NEW(char, g->cols * g->rows);
+        IF_FREE(g->map);
+        g->map = NEW(char, g->cols * g->rows);
 
-	ecore_dlist_first_goto(EWL_CONTAINER(g)->children);
-	while ((child = ecore_dlist_next(EWL_CONTAINER(g)->children))) {
-		if (UNMANAGED(child))
-			continue;
+        ecore_dlist_first_goto(EWL_CONTAINER(g)->children);
+        while ((child = ecore_dlist_next(EWL_CONTAINER(g)->children))) {
+        	if (UNMANAGED(child))
+        		continue;
 
-		c = (Ewl_Grid_Child *) ewl_widget_data_get(child, (void *)g);
-		if (!c) continue;
+        	c = (Ewl_Grid_Child *) ewl_widget_data_get(child, (void *)g);
+        	if (!c) continue;
 
-		/*
-		 * mark all positions that content a  positioned widget
-		 */
-		for (l = c->start_col; l <= c->end_col && l < g->cols; l++)
-			for (k = c->start_row; k <= c->end_row
-							&& k < g->rows; k++)
-				g->map[g->cols * k + l]  = 1;
-	}
+        	/*
+        	 * mark all positions that content a  positioned widget
+        	 */
+        	for (l = c->start_col; l <= c->end_col && l < g->cols; l++)
+        		for (k = c->start_row; k <= c->end_row
+        						&& k < g->rows; k++)
+        			g->map[g->cols * k + l]  = 1;
+        }
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -1044,164 +1044,164 @@ ewl_grid_map_recalc(Ewl_Grid *g)
 static void
 ewl_grid_child_data_collect(Ewl_Grid *g)
 {
-	int col, row;
-	Ewl_Grid_Child *c;
-	Ewl_Widget *child;
-	void (*go_next)(Ewl_Grid *g, int *c, int *r);
+        int col, row;
+        Ewl_Grid_Child *c;
+        Ewl_Widget *child;
+        void (*go_next)(Ewl_Grid *g, int *c, int *r);
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(g);
-	DCHECK_TYPE(g, EWL_GRID_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(g);
+        DCHECK_TYPE(g, EWL_GRID_TYPE);
 
-	if (!g->map)
-		ewl_grid_map_recalc(g);
+        if (!g->map)
+        	ewl_grid_map_recalc(g);
 
-	/*
-	 * setup the position stuff for the floating
-	 * widgets
-	 */
-	ewl_grid_map_start_position_get(g, &col, &row);
-	if (g->orientation == EWL_ORIENTATION_HORIZONTAL)
-		go_next = ewl_grid_hmap_position_next;
-	else
-		go_next = ewl_grid_vmap_position_next;
+        /*
+         * setup the position stuff for the floating
+         * widgets
+         */
+        ewl_grid_map_start_position_get(g, &col, &row);
+        if (g->orientation == EWL_ORIENTATION_HORIZONTAL)
+        	go_next = ewl_grid_hmap_position_next;
+        else
+        	go_next = ewl_grid_vmap_position_next;
 
-	/*
-	 * First collect the data of the non-fixed postion widgets
-	 */
-	ecore_dlist_first_goto(EWL_CONTAINER(g)->children);
-	while ((child = ecore_dlist_next(EWL_CONTAINER(g)->children))) {
-		int pref_w, pref_h;
+        /*
+         * First collect the data of the non-fixed postion widgets
+         */
+        ecore_dlist_first_goto(EWL_CONTAINER(g)->children);
+        while ((child = ecore_dlist_next(EWL_CONTAINER(g)->children))) {
+        	int pref_w, pref_h;
 
-		if (UNMANAGED(child))
-			continue;
+        	if (UNMANAGED(child))
+        		continue;
 
-		c = (Ewl_Grid_Child *) ewl_widget_data_get(child, (void *) g);
-		if (c) continue;
+        	c = (Ewl_Grid_Child *) ewl_widget_data_get(child, (void *) g);
+        	if (c) continue;
 
-		/*
-		 * go to the next free place
-		 */
-		pref_w = ewl_object_preferred_w_get(EWL_OBJECT(child));
-		pref_h = ewl_object_preferred_h_get(EWL_OBJECT(child));
-		g->col_size[col].preferred_size =
-				MAX(g->col_size[col].preferred_size, pref_w);
-		g->row_size[row].preferred_size =
-				MAX(g->row_size[row].preferred_size, pref_h);
+        	/*
+        	 * go to the next free place
+        	 */
+        	pref_w = ewl_object_preferred_w_get(EWL_OBJECT(child));
+        	pref_h = ewl_object_preferred_h_get(EWL_OBJECT(child));
+        	g->col_size[col].preferred_size =
+        			MAX(g->col_size[col].preferred_size, pref_w);
+        	g->row_size[row].preferred_size =
+        			MAX(g->row_size[row].preferred_size, pref_h);
 
-		go_next(g, &col, &row);
-	}
+        	go_next(g, &col, &row);
+        }
 
-	/*
-	 *  and now collect the data of the fixed postion widgets
-	 */
-	ecore_dlist_first_goto(EWL_CONTAINER(g)->children);
-	while ((child = ecore_dlist_next(EWL_CONTAINER(g)->children))) {
-		int pref_w = 0, pref_h = 0;
-		int i;
+        /*
+         *  and now collect the data of the fixed postion widgets
+         */
+        ecore_dlist_first_goto(EWL_CONTAINER(g)->children);
+        while ((child = ecore_dlist_next(EWL_CONTAINER(g)->children))) {
+        	int pref_w = 0, pref_h = 0;
+        	int i;
 
-		if (UNMANAGED(child))
-			continue;
+        	if (UNMANAGED(child))
+        		continue;
 
-		c = (Ewl_Grid_Child *) ewl_widget_data_get(child, (void *) g);
-		if (!c) continue;
+        	c = (Ewl_Grid_Child *) ewl_widget_data_get(child, (void *) g);
+        	if (!c) continue;
 
-		/*
-		 * first calculate the current preferred size
-		 * of the cells
-		 */
-		for (i = c->start_col; i <= c->end_col; i++)
-			pref_w += g->col_size[i].preferred_size;
+        	/*
+        	 * first calculate the current preferred size
+        	 * of the cells
+        	 */
+        	for (i = c->start_col; i <= c->end_col; i++)
+        		pref_w += g->col_size[i].preferred_size;
 
-		for (i = c->start_row; i <= c->end_row; i++)
-			pref_h += g->row_size[i].preferred_size;
+        	for (i = c->start_row; i <= c->end_row; i++)
+        		pref_h += g->row_size[i].preferred_size;
 
-		pref_w = ewl_object_preferred_w_get(EWL_OBJECT(child)) - pref_w;
-		pref_h = ewl_object_preferred_h_get(EWL_OBJECT(child)) - pref_h;
+        	pref_w = ewl_object_preferred_w_get(EWL_OBJECT(child)) - pref_w;
+        	pref_h = ewl_object_preferred_h_get(EWL_OBJECT(child)) - pref_h;
 
-		if (pref_w > 0) {
-			pref_w /= c->end_col - c->start_col + 1;
-			for (i = c->start_col; i <= c->end_col; i++)
-				g->col_size[i].preferred_size += pref_w;
-		}
+        	if (pref_w > 0) {
+        		pref_w /= c->end_col - c->start_col + 1;
+        		for (i = c->start_col; i <= c->end_col; i++)
+        			g->col_size[i].preferred_size += pref_w;
+        	}
 
-		if (pref_h > 0) {
-			pref_h /= c->end_row - c->start_row + 1;
-			for (i = c->start_row; i <= c->end_row; i++)
-				g->row_size[i].preferred_size += pref_h;
-		}
-	}
+        	if (pref_h > 0) {
+        		pref_h /= c->end_row - c->start_row + 1;
+        		for (i = c->start_row; i <= c->end_row; i++)
+        			g->row_size[i].preferred_size += pref_h;
+        	}
+        }
 
-	/*
-	 * calculate the preferred size
-	 */
-	if (g->homogeneous_h) {
-		int i, size;
+        /*
+         * calculate the preferred size
+         */
+        if (g->homogeneous_h) {
+        	int i, size;
 
-		for (i = 0, size = 0; i < g->cols; i++)
-			size = MAX(size, g->col_size[i].preferred_size);
+        	for (i = 0, size = 0; i < g->cols; i++)
+        		size = MAX(size, g->col_size[i].preferred_size);
 
-		ewl_object_preferred_inner_w_set(EWL_OBJECT(g), size * g->cols);
-	}
-	else {
-		float rel;
-		int i, fixed;
+        	ewl_object_preferred_inner_w_set(EWL_OBJECT(g), size * g->cols);
+        }
+        else {
+        	float rel;
+        	int i, fixed;
 
-		rel = 0.0;
-		fixed = 0;
-		for (i = 0; i < g->cols; i++) {
-			switch (g->col_size[i].resize_type) {
-				case EWL_GRID_RESIZE_RELATIVE:
-					rel += g->col_size[i].user.rel_size;
-					break;
+        	rel = 0.0;
+        	fixed = 0;
+        	for (i = 0; i < g->cols; i++) {
+        		switch (g->col_size[i].resize_type) {
+        			case EWL_GRID_RESIZE_RELATIVE:
+        				rel += g->col_size[i].user.rel_size;
+        				break;
 
-				case EWL_GRID_RESIZE_FIXED:
-					fixed += g->col_size[i].user.size;
-					break;
+        			case EWL_GRID_RESIZE_FIXED:
+        				fixed += g->col_size[i].user.size;
+        				break;
 
-				default:
-					fixed += g->col_size[i].preferred_size;
-			}
-		}
-		ewl_object_preferred_inner_w_set(EWL_OBJECT(g),
-						(int)(fixed / (1.0 - rel)));
-	}
+        			default:
+        				fixed += g->col_size[i].preferred_size;
+        		}
+        	}
+        	ewl_object_preferred_inner_w_set(EWL_OBJECT(g),
+        					(int)(fixed / (1.0 - rel)));
+        }
 
-	if (g->homogeneous_v) {
-		int i, size;
+        if (g->homogeneous_v) {
+        	int i, size;
 
-		for (i = 0, size = 0; i < g->rows; i++)
-			size = MAX(size, g->row_size[i].preferred_size);
+        	for (i = 0, size = 0; i < g->rows; i++)
+        		size = MAX(size, g->row_size[i].preferred_size);
 
-		ewl_object_preferred_inner_h_set(EWL_OBJECT(g), size * g->rows);
-	}
-	else {
-		float rel;
-		int i, fixed;
+        	ewl_object_preferred_inner_h_set(EWL_OBJECT(g), size * g->rows);
+        }
+        else {
+        	float rel;
+        	int i, fixed;
 
-		rel = 0.0;
-		fixed = 0;
-		for (i = 0; i < g->rows; i++) {
-			switch (g->row_size[i].resize_type) {
-				case EWL_GRID_RESIZE_RELATIVE:
-					rel += g->row_size[i].user.rel_size;
-					break;
+        	rel = 0.0;
+        	fixed = 0;
+        	for (i = 0; i < g->rows; i++) {
+        		switch (g->row_size[i].resize_type) {
+        			case EWL_GRID_RESIZE_RELATIVE:
+        				rel += g->row_size[i].user.rel_size;
+        				break;
 
-				case EWL_GRID_RESIZE_FIXED:
-					fixed += g->row_size[i].user.size;
-					break;
+        			case EWL_GRID_RESIZE_FIXED:
+        				fixed += g->row_size[i].user.size;
+        				break;
 
-				default:
-					fixed += g->row_size[i].preferred_size;
-			}
-		}
-		ewl_object_preferred_inner_h_set(EWL_OBJECT(g),
-						(int)(fixed / (1.0 - rel)));
-	}
+        			default:
+        				fixed += g->row_size[i].preferred_size;
+        		}
+        	}
+        	ewl_object_preferred_inner_h_set(EWL_OBJECT(g),
+        					(int)(fixed / (1.0 - rel)));
+        }
 
-	g->data_dirty = FALSE;
+        g->data_dirty = FALSE;
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -1213,197 +1213,197 @@ ewl_grid_child_data_collect(Ewl_Grid *g)
 static void
 ewl_grid_resize(Ewl_Grid *g)
 {
-	int i, new_w = 0, new_h = 0;
-	int left_over, left_over2;
-	int pos;
+        int i, new_w = 0, new_h = 0;
+        int left_over, left_over2;
+        int pos;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(g);
-	DCHECK_TYPE(g, EWL_GRID_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(g);
+        DCHECK_TYPE(g, EWL_GRID_TYPE);
 
-	new_w = CURRENT_W(g);
-	new_h = CURRENT_H(g);
+        new_w = CURRENT_W(g);
+        new_h = CURRENT_H(g);
 
-	/*
-	 * calculated the new columns' widths
-	 */
-	if (g->homogeneous_h) {
-		for (i = 0; i < g->cols; i++)
-			g->col_size[i].current_size = new_w / g->cols;
-	}
-	else {
-		int var;	/* the variable size part */
-		int fixed;	/* the fixed size part */
-		double rel;
+        /*
+         * calculated the new columns' widths
+         */
+        if (g->homogeneous_h) {
+        	for (i = 0; i < g->cols; i++)
+        		g->col_size[i].current_size = new_w / g->cols;
+        }
+        else {
+        	int var;	/* the variable size part */
+        	int fixed;	/* the fixed size part */
+        	double rel;
 
-		var = fixed = 0;
-		/*
-		 * first we calculate the different parts of the size
-		 */
-		for (i = 0; i < g->cols; i++) {
-			switch (g->col_size[i].resize_type) {
-				case EWL_GRID_RESIZE_RELATIVE:
-					fixed += g->col_size[i].user.rel_size
-								* new_w;
-					g->col_size[i].current_size =
-						g->col_size[i].user.rel_size
-								* new_w;
-					break;
+        	var = fixed = 0;
+        	/*
+        	 * first we calculate the different parts of the size
+        	 */
+        	for (i = 0; i < g->cols; i++) {
+        		switch (g->col_size[i].resize_type) {
+        			case EWL_GRID_RESIZE_RELATIVE:
+        				fixed += g->col_size[i].user.rel_size
+        							* new_w;
+        				g->col_size[i].current_size =
+        					g->col_size[i].user.rel_size
+        							* new_w;
+        				break;
 
-				case EWL_GRID_RESIZE_FIXED:
-					fixed += g->col_size[i].user.size;
-					g->col_size[i].current_size =
-						g->col_size[i].user.size;
-					break;
+        			case EWL_GRID_RESIZE_FIXED:
+        				fixed += g->col_size[i].user.size;
+        				g->col_size[i].current_size =
+        					g->col_size[i].user.size;
+        				break;
 
-				case EWL_GRID_RESIZE_NONE:
-					fixed += g->col_size[i].preferred_size;
-					g->col_size[i].current_size =
-						g->col_size[i].preferred_size;
-					break;
+        			case EWL_GRID_RESIZE_NONE:
+        				fixed += g->col_size[i].preferred_size;
+        				g->col_size[i].current_size =
+        					g->col_size[i].preferred_size;
+        				break;
 
-				default:
-					var += g->col_size[i].preferred_size;
+        			default:
+        				var += g->col_size[i].preferred_size;
 
-			}
-		}
+        		}
+        	}
 
-		/*
-		 * we can only distribute the rest size to the
-		 * non-fixed ones
-		 */
-		if (var != 0) {
-			rel = (double)(new_w - fixed) / (double)var;
-			for (i = 0; i < g->cols; i++) {
-				if (g->col_size[i].resize_type
-						!= EWL_GRID_RESIZE_NORMAL)
-					continue;
+        	/*
+        	 * we can only distribute the rest size to the
+        	 * non-fixed ones
+        	 */
+        	if (var != 0) {
+        		rel = (double)(new_w - fixed) / (double)var;
+        		for (i = 0; i < g->cols; i++) {
+        			if (g->col_size[i].resize_type
+        					!= EWL_GRID_RESIZE_NORMAL)
+        				continue;
 
-				g->col_size[i].current_size =
-					(int)(g->col_size[i].preferred_size
-							* rel);
-			}
-		}
-	}
+        			g->col_size[i].current_size =
+        				(int)(g->col_size[i].preferred_size
+        						* rel);
+        		}
+        	}
+        }
 
-	/*
-	 * calculated the new rows' heights
-	 */
-	if (g->homogeneous_v) {
-		for (i = 0; i < g->rows; i++)
-			g->row_size[i].current_size = new_h / g->rows;
-	}
-	else {
-		int var;	/* the variable size part */
-		int fixed;	/* the fixed size part */
-		double rel;
+        /*
+         * calculated the new rows' heights
+         */
+        if (g->homogeneous_v) {
+        	for (i = 0; i < g->rows; i++)
+        		g->row_size[i].current_size = new_h / g->rows;
+        }
+        else {
+        	int var;	/* the variable size part */
+        	int fixed;	/* the fixed size part */
+        	double rel;
 
-		var = fixed = 0;
-		/*
-		 * first we calculate the different parts of the size
-		 */
-		for (i = 0; i < g->rows; i++) {
-			switch (g->row_size[i].resize_type) {
-				case EWL_GRID_RESIZE_RELATIVE:
-					fixed += g->row_size[i].user.rel_size
-								* new_h;
-					g->row_size[i].current_size =
-						g->row_size[i].user.rel_size
-								* new_h;
-					break;
+        	var = fixed = 0;
+        	/*
+        	 * first we calculate the different parts of the size
+        	 */
+        	for (i = 0; i < g->rows; i++) {
+        		switch (g->row_size[i].resize_type) {
+        			case EWL_GRID_RESIZE_RELATIVE:
+        				fixed += g->row_size[i].user.rel_size
+        							* new_h;
+        				g->row_size[i].current_size =
+        					g->row_size[i].user.rel_size
+        							* new_h;
+        				break;
 
-				case EWL_GRID_RESIZE_FIXED:
-					fixed += g->row_size[i].user.size;
-					g->row_size[i].current_size =
-						g->row_size[i].user.size;
-					break;
+        			case EWL_GRID_RESIZE_FIXED:
+        				fixed += g->row_size[i].user.size;
+        				g->row_size[i].current_size =
+        					g->row_size[i].user.size;
+        				break;
 
-				case EWL_GRID_RESIZE_NONE:
-					fixed += g->row_size[i].preferred_size;
-					g->row_size[i].current_size =
-						g->row_size[i].preferred_size;
-					break;
+        			case EWL_GRID_RESIZE_NONE:
+        				fixed += g->row_size[i].preferred_size;
+        				g->row_size[i].current_size =
+        					g->row_size[i].preferred_size;
+        				break;
 
-				default:
-					var += g->row_size[i].preferred_size;
-			}
-		}
+        			default:
+        				var += g->row_size[i].preferred_size;
+        		}
+        	}
 
-		/*
-		 * we can only distribute the rest size to the
-		 * non-fixed ones
-		 */
-		if (var != 0) {
-			rel = (double)(new_h - fixed) / (double)var;
-			for (i = 0; i < g->rows; i++) {
-				if (g->row_size[i].resize_type
-						!= EWL_GRID_RESIZE_NORMAL)
-					continue;
+        	/*
+        	 * we can only distribute the rest size to the
+        	 * non-fixed ones
+        	 */
+        	if (var != 0) {
+        		rel = (double)(new_h - fixed) / (double)var;
+        		for (i = 0; i < g->rows; i++) {
+        			if (g->row_size[i].resize_type
+        					!= EWL_GRID_RESIZE_NORMAL)
+        				continue;
 
-				g->row_size[i].current_size =
-					(int)(g->row_size[i].preferred_size
-							* rel);
-			}
-		}
-	}
+        			g->row_size[i].current_size =
+        				(int)(g->row_size[i].preferred_size
+        						* rel);
+        		}
+        	}
+        }
 
-	/*
-	 * since the above set values may be doubles rounded down there
-	 * might be some more space to fill at the right and bottom.
-	 * this claims the left over space
-	 */
-	left_over = new_w;
-	for (i = 0; i < g->cols; i++)
-		left_over -= g->col_size[i].current_size;
+        /*
+         * since the above set values may be doubles rounded down there
+         * might be some more space to fill at the right and bottom.
+         * this claims the left over space
+         */
+        left_over = new_w;
+        for (i = 0; i < g->cols; i++)
+        	left_over -= g->col_size[i].current_size;
 
-	if (g->cols == 0)
-		g->cols = 1;
+        if (g->cols == 0)
+        	g->cols = 1;
 
-	while (left_over != 0) {
-		if (left_over > 0) {
-			g->col_size[left_over % g->cols].current_size += 1;
-			left_over--;
-		} else if (left_over < 0) {
-			left_over2 = 0 - left_over;
-			g->col_size[left_over2 % g->cols].current_size -= 1;
-			left_over++;
-		}
-	}
+        while (left_over != 0) {
+        	if (left_over > 0) {
+        		g->col_size[left_over % g->cols].current_size += 1;
+        		left_over--;
+        	} else if (left_over < 0) {
+        		left_over2 = 0 - left_over;
+        		g->col_size[left_over2 % g->cols].current_size -= 1;
+        		left_over++;
+        	}
+        }
 
-	left_over = new_h;
-	for (i = 0; i < g->rows; i++)
-		left_over -= g->row_size[i].current_size;
+        left_over = new_h;
+        for (i = 0; i < g->rows; i++)
+        	left_over -= g->row_size[i].current_size;
 
-	if (g->rows == 0)
-		g->rows = 1;
+        if (g->rows == 0)
+        	g->rows = 1;
 
-	while (left_over != 0) {
-		if (left_over > 0) {
-			g->row_size[left_over % g->rows].current_size += 1;
-			left_over--;
-		} else if (left_over < 0) {
-			left_over2 = 0 - left_over;
-			g->row_size[left_over2 % g->rows].current_size -= 1;
-			left_over++;
-		}
-	}
+        while (left_over != 0) {
+        	if (left_over > 0) {
+        		g->row_size[left_over % g->rows].current_size += 1;
+        		left_over--;
+        	} else if (left_over < 0) {
+        		left_over2 = 0 - left_over;
+        		g->row_size[left_over2 % g->rows].current_size -= 1;
+        		left_over++;
+        	}
+        }
 
-	/*
-	 * calculate the positions
-	 */
-	pos = CURRENT_X(g);
-	for (i = 0; i < g->cols; i++) {
-		g->col_size[i].current_pos = pos;
-		pos += g->col_size[i].current_size;
-	}
+        /*
+         * calculate the positions
+         */
+        pos = CURRENT_X(g);
+        for (i = 0; i < g->cols; i++) {
+        	g->col_size[i].current_pos = pos;
+        	pos += g->col_size[i].current_size;
+        }
 
-	pos = CURRENT_Y(g);
-	for (i = 0; i < g->rows; i++) {
-		g->row_size[i].current_pos = pos;
-		pos += g->row_size[i].current_size;
-	}
+        pos = CURRENT_Y(g);
+        for (i = 0; i < g->rows; i++) {
+        	g->row_size[i].current_pos = pos;
+        	pos += g->row_size[i].current_size;
+        }
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -1419,29 +1419,29 @@ ewl_grid_resize(Ewl_Grid *g)
 static void
 ewl_grid_hmap_position_next(Ewl_Grid *g, int *c, int *r)
 {
-	int col, row;
+        int col, row;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(g);
-	DCHECK_PARAM_PTR(c);
-	DCHECK_PARAM_PTR(r);
-	DCHECK_TYPE(g, EWL_GRID_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(g);
+        DCHECK_PARAM_PTR(c);
+        DCHECK_PARAM_PTR(r);
+        DCHECK_TYPE(g, EWL_GRID_TYPE);
 
-	col = *c;
-	row = *r;
+        col = *c;
+        row = *r;
 
-	do {
-		col++;
-		if (col >= g->cols) {
-			col = 0;
-			row++;
-		}
-	} while (g->map[col + (row * g->cols)] != 0);
+        do {
+        	col++;
+        	if (col >= g->cols) {
+        		col = 0;
+        		row++;
+        	}
+        } while (g->map[col + (row * g->cols)] != 0);
 
-	*c = col;
-	*r = row;
+        *c = col;
+        *r = row;
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -1457,29 +1457,29 @@ ewl_grid_hmap_position_next(Ewl_Grid *g, int *c, int *r)
 static void
 ewl_grid_vmap_position_next(Ewl_Grid *g, int *c, int *r)
 {
-	int col, row;
+        int col, row;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(g);
-	DCHECK_PARAM_PTR(c);
-	DCHECK_PARAM_PTR(r);
-	DCHECK_TYPE(g, EWL_GRID_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(g);
+        DCHECK_PARAM_PTR(c);
+        DCHECK_PARAM_PTR(r);
+        DCHECK_TYPE(g, EWL_GRID_TYPE);
 
-	col = *c;
-	row = *r;
+        col = *c;
+        row = *r;
 
-	do {
-		row++;
-		if (row >= g->rows) {
-			row = 0;
-			col++;
-		}
-	} while (g->map[col + (row * g->cols)] != 0);
+        do {
+        	row++;
+        	if (row >= g->rows) {
+        		row = 0;
+        		col++;
+        	}
+        } while (g->map[col + (row * g->cols)] != 0);
 
-	*c = col;
-	*r = row;
+        *c = col;
+        *r = row;
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -1493,23 +1493,23 @@ ewl_grid_vmap_position_next(Ewl_Grid *g, int *c, int *r)
 static void
 ewl_grid_map_start_position_get(Ewl_Grid *g, int *c, int *r)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(g);
-	DCHECK_PARAM_PTR(c);
-	DCHECK_PARAM_PTR(r);
-	DCHECK_TYPE(g, EWL_GRID_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(g);
+        DCHECK_PARAM_PTR(c);
+        DCHECK_PARAM_PTR(r);
+        DCHECK_TYPE(g, EWL_GRID_TYPE);
 
-	*c = 0;
-	*r = 0;
+        *c = 0;
+        *r = 0;
 
-	if (g->map && *g->map != 0) {
-		if (g->orientation == EWL_ORIENTATION_HORIZONTAL)
-			ewl_grid_hmap_position_next(g, c, r);
-		else
-			ewl_grid_vmap_position_next(g, c, r);
-	}
+        if (g->map && *g->map != 0) {
+        	if (g->orientation == EWL_ORIENTATION_HORIZONTAL)
+        		ewl_grid_hmap_position_next(g, c, r);
+        	else
+        		ewl_grid_vmap_position_next(g, c, r);
+        }
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -1522,26 +1522,26 @@ ewl_grid_map_start_position_get(Ewl_Grid *g, int *c, int *r)
 void
 ewl_grid_cb_child_add(Ewl_Container *p, Ewl_Widget *c __UNUSED__)
 {
-	Ewl_Grid *g;
+        Ewl_Grid *g;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(p);
-	DCHECK_TYPE(p, EWL_GRID_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(p);
+        DCHECK_TYPE(p, EWL_GRID_TYPE);
 
-	g = EWL_GRID(p);
-	g->data_dirty = TRUE;
-	g->space++;
+        g = EWL_GRID(p);
+        g->data_dirty = TRUE;
+        g->space++;
 
-	if (g->space > (g->cols * g->rows)) {
-		if (g->orientation == EWL_ORIENTATION_HORIZONTAL)
-			ewl_grid_dimensions_set(g, g->cols,
-						(g->space / g->cols) + 1);
-		else
-			ewl_grid_dimensions_set(g, (g->space / g->rows) + 1,
-								g->rows);
-	}
+        if (g->space > (g->cols * g->rows)) {
+        	if (g->orientation == EWL_ORIENTATION_HORIZONTAL)
+        		ewl_grid_dimensions_set(g, g->cols,
+        					(g->space / g->cols) + 1);
+        	else
+        		ewl_grid_dimensions_set(g, (g->space / g->rows) + 1,
+        							g->rows);
+        }
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -1555,30 +1555,30 @@ ewl_grid_cb_child_add(Ewl_Container *p, Ewl_Widget *c __UNUSED__)
 void
 ewl_grid_cb_child_remove(Ewl_Container *c, Ewl_Widget *w, int idx __UNUSED__)
 {
-	Ewl_Grid_Child *child;
-	Ewl_Grid *g;
+        Ewl_Grid_Child *child;
+        Ewl_Grid *g;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(c);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(c, EWL_GRID_TYPE);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(c);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(c, EWL_GRID_TYPE);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	g = EWL_GRID(c);
-	child = (Ewl_Grid_Child *)ewl_widget_data_get(w, g);
+        g = EWL_GRID(c);
+        child = (Ewl_Grid_Child *)ewl_widget_data_get(w, g);
 
-	if (child) {
-		g->space -= (child->end_row - child->start_row + 1)
-			* (child->end_col - child->start_col + 1);
-		FREE(child);
-	}
-	else
-		g->space--;
+        if (child) {
+        	g->space -= (child->end_row - child->start_row + 1)
+        		* (child->end_col - child->start_col + 1);
+        	FREE(child);
+        }
+        else
+        	g->space--;
 
-	IF_FREE(g->map);
-	g->data_dirty = TRUE;
+        IF_FREE(g->map);
+        g->data_dirty = TRUE;
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -1591,14 +1591,14 @@ ewl_grid_cb_child_remove(Ewl_Container *c, Ewl_Widget *w, int idx __UNUSED__)
 void
 ewl_grid_cb_child_show(Ewl_Container *p, Ewl_Widget *child __UNUSED__)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(p);
-	DCHECK_TYPE(p, EWL_GRID_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(p);
+        DCHECK_TYPE(p, EWL_GRID_TYPE);
 
-	EWL_GRID(p)->data_dirty = TRUE;
-	ewl_grid_child_data_collect(EWL_GRID(p));
+        EWL_GRID(p)->data_dirty = TRUE;
+        ewl_grid_child_data_collect(EWL_GRID(p));
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -1612,16 +1612,16 @@ ewl_grid_cb_child_show(Ewl_Container *p, Ewl_Widget *child __UNUSED__)
  */
 void
 ewl_grid_cb_child_resize(Ewl_Container *p, Ewl_Widget *child __UNUSED__,
-				int size __UNUSED__,
-				Ewl_Orientation o __UNUSED__)
+        			int size __UNUSED__,
+        			Ewl_Orientation o __UNUSED__)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(p);
-	DCHECK_TYPE(p, EWL_GRID_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(p);
+        DCHECK_TYPE(p, EWL_GRID_TYPE);
 
-	EWL_GRID(p)->data_dirty = TRUE;
-	ewl_widget_configure(EWL_WIDGET(p));
+        EWL_GRID(p)->data_dirty = TRUE;
+        ewl_widget_configure(EWL_WIDGET(p));
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 

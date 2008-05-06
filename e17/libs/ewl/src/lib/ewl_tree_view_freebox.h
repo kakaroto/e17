@@ -1,4 +1,4 @@
-/* vim: set sw=8 ts=8 sts=8 noexpandtab: */
+/* vim: set sw=8 ts=8 sts=8 expandtab: */
 #ifndef EWL_TREE_VIEW_FREEBOX_H
 #define EWL_TREE_VIEW_FREEBOX_H
 
@@ -40,14 +40,14 @@ typedef struct Ewl_Tree_View_Freebox Ewl_Tree_View_Freebox;
  */
 struct Ewl_Tree_View_Freebox
 {
-	Ewl_Tree_View view;		/**< Inherit from Ewl_Tree_View */
-	Ewl_Widget *fbox;		/**< The freebox region */
-	Ewl_Widget *scroll;		/**< The scroll region */
+        Ewl_Tree_View view;		/**< Inherit from Ewl_Tree_View */
+        Ewl_Widget *fbox;		/**< The freebox region */
+        Ewl_Widget *scroll;		/**< The scroll region */
 };
 
-const Ewl_View 	*ewl_tree_view_freebox_get(void);
-Ewl_Widget	*ewl_tree_view_freebox_new(void);
-int		 ewl_tree_view_freebox_init(Ewl_Tree_View_Freebox *tv);
+const Ewl_View         *ewl_tree_view_freebox_get(void);
+Ewl_Widget        *ewl_tree_view_freebox_new(void);
+int        	 ewl_tree_view_freebox_init(Ewl_Tree_View_Freebox *tv);
 
 /**
  * @}

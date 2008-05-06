@@ -1,4 +1,4 @@
-/* vim: set sw=8 ts=8 sts=8 noexpandtab: */
+/* vim: set sw=8 ts=8 sts=8 expandtab: */
 #ifndef EWL_LIST_H
 #define EWL_LIST_H
 
@@ -44,11 +44,11 @@ typedef struct Ewl_List Ewl_List;
  */
 struct Ewl_List
 {
-	Ewl_MVC mvc;		/**< The mvc parent */
+        Ewl_MVC mvc;		/**< The mvc parent */
 };
 
-Ewl_Widget 	*ewl_list_new(void);
-int 		 ewl_list_init(Ewl_List *list);
+Ewl_Widget         *ewl_list_new(void);
+int         	 ewl_list_init(Ewl_List *list);
 
 /*
  * Internal stuff.

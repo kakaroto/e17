@@ -1,4 +1,4 @@
-/* vim: set sw=8 ts=8 sts=8 noexpandtab: */
+/* vim: set sw=8 ts=8 sts=8 expandtab: */
 #ifndef EWL_ENGINE_EVAS_H
 #define EWL_ENGINE_EVAS_H
 
@@ -9,7 +9,7 @@
 typedef struct Ewl_Engine_Evas Ewl_Engine_Evas;
 struct Ewl_Engine_Evas
 {
-	Ewl_Engine engine;
+        Ewl_Engine engine;
 };
 
 #endif

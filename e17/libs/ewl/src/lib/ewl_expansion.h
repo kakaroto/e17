@@ -1,4 +1,4 @@
-/* vim: set sw=8 ts=8 sts=8 noexpandtab: */
+/* vim: set sw=8 ts=8 sts=8 expandtab: */
 #ifndef EWL_EXPANSION_H
 #define EWL_EXPANSION_H
 
@@ -46,16 +46,16 @@ typedef struct Ewl_Expansion Ewl_Expansion;
  */
 struct Ewl_Expansion
 {
-	Ewl_Check w; /**< Inherit from Ewl_Check */
-	int expandable; /**< Indicates if this node is expandable or not */
+        Ewl_Check w; /**< Inherit from Ewl_Check */
+        int expandable; /**< Indicates if this node is expandable or not */
 };
 
-Ewl_Widget 	*ewl_expansion_new(void);
-int 		 ewl_expansion_init(Ewl_Expansion *c);
+Ewl_Widget         *ewl_expansion_new(void);
+int         	 ewl_expansion_init(Ewl_Expansion *c);
 
-int 		 ewl_expansion_is_expandable(Ewl_Expansion *c);
-void 		 ewl_expansion_expandable_set(Ewl_Expansion *c,
-						int expandable);
+int         	 ewl_expansion_is_expandable(Ewl_Expansion *c);
+void         	 ewl_expansion_expandable_set(Ewl_Expansion *c,
+        					int expandable);
 /*
  * Internally used callbacks.
  */

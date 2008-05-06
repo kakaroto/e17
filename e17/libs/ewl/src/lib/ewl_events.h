@@ -1,4 +1,4 @@
-/* vim: set sw=8 ts=8 sts=8 noexpandtab: */
+/* vim: set sw=8 ts=8 sts=8 expandtab: */
 #ifndef EWL_EVENTS_H
 #define EWL_EVENTS_H
 
@@ -25,10 +25,10 @@ typedef struct Ewl_Event_Window_Expose Ewl_Event_Window_Expose;
  */
 struct Ewl_Event_Window_Expose
 {
-	int x; /**< Beginning X coordinate for the expose rectangle */
-	int y; /**< Beginning Y coordinate for the expose rectangle */
-	int w; /**< Width of the expose rectangle */
-	int h; /**< Height of the expose rectangle */
+        int x; /**< Beginning X coordinate for the expose rectangle */
+        int y; /**< Beginning Y coordinate for the expose rectangle */
+        int w; /**< Width of the expose rectangle */
+        int h; /**< Height of the expose rectangle */
 };
 
 /**
@@ -48,8 +48,8 @@ typedef struct Ewl_Event_Key Ewl_Event_Key;
  */
 struct Ewl_Event_Key
 {
-	unsigned int modifiers;	/**< Key modifiers that were pressed */
-	char *keyname;		/**< Name of the key that was pressed */
+        unsigned int modifiers;	/**< Key modifiers that were pressed */
+        char *keyname;		/**< Name of the key that was pressed */
 };
 
 /**
@@ -68,7 +68,7 @@ typedef struct Ewl_Event_Key_Down Ewl_Event_Key_Down;
  */
 struct Ewl_Event_Key_Down
 {
-	Ewl_Event_Key base;	/**< Basic key information */
+        Ewl_Event_Key base;	/**< Basic key information */
 };
 
 /**
@@ -87,7 +87,7 @@ typedef struct Ewl_Event_Key_Up Ewl_Event_Key_Up;
  */
 struct Ewl_Event_Key_Up
 {
-	Ewl_Event_Key base;	/**< Basic key information */
+        Ewl_Event_Key base;	/**< Basic key information */
 };
 
 /**
@@ -106,9 +106,9 @@ typedef struct Ewl_Event_Mouse Ewl_Event_Mouse;
  */
 struct Ewl_Event_Mouse
 {
-	unsigned int modifiers; /**< Modifiers that were pressed */
-	int x;			/**< X coordinate the mouse release occurred at */
-	int y;			/**< Y coordinate the mouse release occurred at */
+        unsigned int modifiers; /**< Modifiers that were pressed */
+        int x;			/**< X coordinate the mouse release occurred at */
+        int y;			/**< Y coordinate the mouse release occurred at */
 };
 
 /**
@@ -127,9 +127,9 @@ typedef struct Ewl_Event_Mouse_Down Ewl_Event_Mouse_Down;
  */
 struct Ewl_Event_Mouse_Down
 {
-	Ewl_Event_Mouse base;	/**< Base mouse information */
-	int button;		/**< The mouse button that was released */
-	int clicks;		/**< Number of consecutive clicks */
+        Ewl_Event_Mouse base;	/**< Base mouse information */
+        int button;		/**< The mouse button that was released */
+        int clicks;		/**< Number of consecutive clicks */
 };
 
 /**
@@ -148,8 +148,8 @@ typedef struct Ewl_Event_Mouse_Up Ewl_Event_Mouse_Up;
  */
 struct Ewl_Event_Mouse_Up
 {
-	Ewl_Event_Mouse base;	/**< Base mouse information */
-	int button;		/**< The mouse button that was released */
+        Ewl_Event_Mouse base;	/**< Base mouse information */
+        int button;		/**< The mouse button that was released */
 };
 
 /**
@@ -168,7 +168,7 @@ typedef struct Ewl_Event_Mouse_Move Ewl_Event_Mouse_Move;
  */
 struct Ewl_Event_Mouse_Move
 {
-	Ewl_Event_Mouse base;	/**< Base mouse information */
+        Ewl_Event_Mouse base;	/**< Base mouse information */
 };
 
 /**
@@ -187,7 +187,7 @@ typedef struct Ewl_Event_Mouse_In Ewl_Event_Mouse_In;
  */
 struct Ewl_Event_Mouse_In
 {
-	Ewl_Event_Mouse base;	/**< Base mouse information */
+        Ewl_Event_Mouse base;	/**< Base mouse information */
 };
 
 /**
@@ -206,7 +206,7 @@ typedef struct Ewl_Event_Mouse_Out Ewl_Event_Mouse_Out;
  */
 struct Ewl_Event_Mouse_Out
 {
-	Ewl_Event_Mouse base; /**< Base mouse information */
+        Ewl_Event_Mouse base; /**< Base mouse information */
 };
 
 /**
@@ -225,9 +225,9 @@ typedef struct Ewl_Event_Mouse_Wheel Ewl_Event_Mouse_Wheel;
  */
 struct Ewl_Event_Mouse_Wheel
 {
-	Ewl_Event_Mouse base;	/**< Base mouse information */
-	int z;			/**< Z value of mouse wheel */
-	int dir;		/**< Direction mouse wheel scrolled */
+        Ewl_Event_Mouse base;	/**< Base mouse information */
+        int z;			/**< Z value of mouse wheel */
+        int dir;		/**< Direction mouse wheel scrolled */
 };
 
 /**
@@ -246,8 +246,8 @@ typedef struct Ewl_Dnd_Types Ewl_Dnd_Types;
  */
 struct Ewl_Dnd_Types
 {
-	int num_types;	/**< The number of DND types */
-	char** types;	/**< The list of DND types */
+        int num_types;	/**< The number of DND types */
+        char** types;	/**< The list of DND types */
 };
 
 /**
@@ -266,8 +266,8 @@ typedef struct Ewl_Event_Dnd_Position Ewl_Event_Dnd_Position;
  */
 struct Ewl_Event_Dnd_Position
 {
-	int x; /**< X coordinate the mouse moved to */
-	int y; /**< Y coordinate the mouse moved to */
+        int x; /**< X coordinate the mouse moved to */
+        int y; /**< Y coordinate the mouse moved to */
 };
 
 /**
@@ -286,9 +286,9 @@ typedef struct Ewl_Event_Dnd_Drop Ewl_Event_Dnd_Drop;
  */
 struct Ewl_Event_Dnd_Drop
 {
-	int x; /**< X coordinate the mouse moved to */
-	int y; /**< Y coordinate the mouse moved to */
-	void* data; /**< Data from drop source 	    */
+        int x; /**< X coordinate the mouse moved to */
+        int y; /**< Y coordinate the mouse moved to */
+        void* data; /**< Data from drop source 	    */
 };
 
 /**
@@ -307,10 +307,10 @@ typedef struct Ewl_Event_Dnd_Data_Received Ewl_Event_Dnd_Data_Received;
  */
 struct Ewl_Event_Dnd_Data_Received
 {
-	char *type; /**< Type of data from drop source */
-	void *data; /**< Data from drop source */
-	unsigned int len; /**< Length of received data */
-	unsigned int format; /**< Bit format of received data */
+        char *type; /**< Type of data from drop source */
+        void *data; /**< Data from drop source */
+        unsigned int len; /**< Length of received data */
+        unsigned int format; /**< Bit format of received data */
 };
 
 /**
@@ -329,8 +329,8 @@ typedef struct Ewl_Event_Dnd_Data_Request Ewl_Event_Dnd_Data_Request;
  */
 struct Ewl_Event_Dnd_Data_Request
 {
-	void *handle; /**< Engine specific handle for responding to request */
-	char *type;   /**< Type of data requested */
+        void *handle; /**< Engine specific handle for responding to request */
+        char *type;   /**< Type of data requested */
 };
 
 /**
@@ -349,7 +349,7 @@ typedef struct Ewl_Event_Action_Response Ewl_Event_Action_Response;
  */
 struct Ewl_Event_Action_Response
 {
-	unsigned int response; /**< The response ID */
+        unsigned int response; /**< The response ID */
 };
 
 /**
@@ -368,12 +368,12 @@ typedef struct Ewl_Event_State_Change Ewl_Event_State_Change;
  */
 struct Ewl_Event_State_Change
 {
-	const char *state;
-	Ewl_State_Type flag;
+        const char *state;
+        Ewl_State_Type flag;
 };
 
-unsigned int 	ewl_ev_modifiers_get(void);
-void 		ewl_ev_modifiers_set(unsigned int modifiers);
+unsigned int         ewl_ev_modifiers_get(void);
+void         	ewl_ev_modifiers_set(unsigned int modifiers);
 
 /**
  * @}

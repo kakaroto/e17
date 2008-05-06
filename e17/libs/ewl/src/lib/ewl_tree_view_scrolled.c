@@ -1,4 +1,4 @@
-/* vim: set sw=8 ts=8 sts=8 noexpandtab: */
+/* vim: set sw=8 ts=8 sts=8 expandtab: */
 #include "ewl_base.h"
 #include "ewl_tree_view_scrolled.h"
 #include "ewl_scrollpane.h"
@@ -9,7 +9,7 @@
 static Ewl_View *ewl_tree_view_scrolled_view = NULL;
 
 static Ewl_Widget * ewl_tree_view_cb_widget_fetch(void *data, unsigned int col,
-							unsigned int row);
+        						unsigned int row);
 
 /**
  * @return Returns the view for this widget
@@ -18,31 +18,31 @@ static Ewl_Widget * ewl_tree_view_cb_widget_fetch(void *data, unsigned int col,
 const Ewl_View *
 ewl_tree_view_scrolled_get(void)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
 
-	if (!ewl_tree_view_scrolled_view)
-	{
-		ewl_tree_view_scrolled_view = ewl_view_new();
-		ewl_view_widget_fetch_set(ewl_tree_view_scrolled_view,
-					ewl_tree_view_cb_widget_fetch);
-	}
+        if (!ewl_tree_view_scrolled_view)
+        {
+        	ewl_tree_view_scrolled_view = ewl_view_new();
+        	ewl_view_widget_fetch_set(ewl_tree_view_scrolled_view,
+        				ewl_tree_view_cb_widget_fetch);
+        }
 
-	DRETURN_PTR(ewl_tree_view_scrolled_view, DLEVEL_STABLE);
+        DRETURN_PTR(ewl_tree_view_scrolled_view, DLEVEL_STABLE);
 }
 
 static Ewl_Widget *
 ewl_tree_view_cb_widget_fetch(void *data __UNUSED__,
-				unsigned int col __UNUSED__,
-				unsigned int row __UNUSED__)
+        			unsigned int col __UNUSED__,
+        			unsigned int row __UNUSED__)
 {
-	Ewl_Widget *tree;
+        Ewl_Widget *tree;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
 
-	tree = ewl_tree_view_scrolled_new();
-	ewl_widget_show(tree);
+        tree = ewl_tree_view_scrolled_new();
+        ewl_widget_show(tree);
 
-	DRETURN_PTR(tree, DLEVEL_STABLE);
+        DRETURN_PTR(tree, DLEVEL_STABLE);
 }
 
 /**
@@ -52,21 +52,21 @@ ewl_tree_view_cb_widget_fetch(void *data __UNUSED__,
 Ewl_Widget *
 ewl_tree_view_scrolled_new(void)
 {
-	Ewl_Widget *w;
+        Ewl_Widget *w;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
 
-	w = NEW(Ewl_Tree_View_Scrolled, 1);
-	if (!w)
-		DRETURN_PTR(NULL, DLEVEL_STABLE);
+        w = NEW(Ewl_Tree_View_Scrolled, 1);
+        if (!w)
+        	DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	if (!ewl_tree_view_scrolled_init(EWL_TREE_VIEW_SCROLLED(w)))
-	{
-		ewl_widget_destroy(w);
-		w = NULL;
-	}
+        if (!ewl_tree_view_scrolled_init(EWL_TREE_VIEW_SCROLLED(w)))
+        {
+        	ewl_widget_destroy(w);
+        	w = NULL;
+        }
 
-	DRETURN_PTR(w, DLEVEL_STABLE);
+        DRETURN_PTR(w, DLEVEL_STABLE);
 }
 
 /**
@@ -77,25 +77,25 @@ ewl_tree_view_scrolled_new(void)
 int
 ewl_tree_view_scrolled_init(Ewl_Tree_View_Scrolled *tv)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(tv, FALSE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(tv, FALSE);
 
-	if (!ewl_tree_view_init(EWL_TREE_VIEW(tv)))
-		DRETURN_INT(FALSE, DLEVEL_STABLE);
+        if (!ewl_tree_view_init(EWL_TREE_VIEW(tv)))
+        	DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	ewl_box_orientation_set(EWL_BOX(tv), EWL_ORIENTATION_VERTICAL);
-	ewl_widget_inherit(EWL_WIDGET(tv), EWL_TREE_VIEW_SCROLLED_TYPE);
+        ewl_box_orientation_set(EWL_BOX(tv), EWL_ORIENTATION_VERTICAL);
+        ewl_widget_inherit(EWL_WIDGET(tv), EWL_TREE_VIEW_SCROLLED_TYPE);
 
-	tv->scroll = ewl_scrollpane_new();
-	ewl_container_child_append(EWL_CONTAINER(tv), tv->scroll);
-	ewl_widget_show(tv->scroll);
+        tv->scroll = ewl_scrollpane_new();
+        ewl_container_child_append(EWL_CONTAINER(tv), tv->scroll);
+        ewl_widget_show(tv->scroll);
 
-	tv->scroll_header = FALSE;
-	tv->scroll_visible = TRUE;
+        tv->scroll_header = FALSE;
+        tv->scroll_visible = TRUE;
 
-	ewl_container_redirect_set(EWL_CONTAINER(tv), EWL_CONTAINER(tv->scroll));
+        ewl_container_redirect_set(EWL_CONTAINER(tv), EWL_CONTAINER(tv->scroll));
 
-	DRETURN_INT(TRUE, DLEVEL_STABLE);
+        DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 /**
@@ -106,34 +106,34 @@ ewl_tree_view_scrolled_init(Ewl_Tree_View_Scrolled *tv)
  */
 void
 ewl_tree_view_scrolled_scroll_headers_set(Ewl_Tree_View *view,
-						unsigned int scroll)
+        					unsigned int scroll)
 {
-	Ewl_Tree_View_Scrolled *vs;
+        Ewl_Tree_View_Scrolled *vs;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(view);
-	DCHECK_TYPE(view, EWL_TREE_VIEW_SCROLLED_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(view);
+        DCHECK_TYPE(view, EWL_TREE_VIEW_SCROLLED_TYPE);
 
-	if (!view->parent)
-	{
-		DWARNING("Need parent tree before setting headers scrolled.");
-		DRETURN(DLEVEL_STABLE);
-	}
+        if (!view->parent)
+        {
+        	DWARNING("Need parent tree before setting headers scrolled.");
+        	DRETURN(DLEVEL_STABLE);
+        }
 
-	vs = EWL_TREE_VIEW_SCROLLED(view);
+        vs = EWL_TREE_VIEW_SCROLLED(view);
 
-	if (vs->scroll_header == scroll)
-		DRETURN(DLEVEL_STABLE);
+        if (vs->scroll_header == scroll)
+        	DRETURN(DLEVEL_STABLE);
 
-	vs->scroll_header = scroll;
-	if (vs->scroll_header)
-		ewl_container_child_prepend(EWL_CONTAINER(vs),
-						view->parent->header);
-	else
-		ewl_container_child_prepend(EWL_CONTAINER(view->parent),
-							view->parent->header);
+        vs->scroll_header = scroll;
+        if (vs->scroll_header)
+        	ewl_container_child_prepend(EWL_CONTAINER(vs),
+        					view->parent->header);
+        else
+        	ewl_container_child_prepend(EWL_CONTAINER(view->parent),
+        						view->parent->header);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -144,14 +144,14 @@ ewl_tree_view_scrolled_scroll_headers_set(Ewl_Tree_View *view,
 unsigned int
 ewl_tree_view_scrolled_scroll_headers_get(Ewl_Tree_View *view)
 {
-	Ewl_Tree_View_Scrolled *vs;
+        Ewl_Tree_View_Scrolled *vs;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(view, FALSE);
-	DCHECK_TYPE_RET(view, EWL_TREE_VIEW_SCROLLED_TYPE, FALSE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(view, FALSE);
+        DCHECK_TYPE_RET(view, EWL_TREE_VIEW_SCROLLED_TYPE, FALSE);
 
-	vs = EWL_TREE_VIEW_SCROLLED(view);
+        vs = EWL_TREE_VIEW_SCROLLED(view);
 
-	DRETURN_INT(vs->scroll_header, DLEVEL_STABLE);
+        DRETURN_INT(vs->scroll_header, DLEVEL_STABLE);
 }
 

@@ -1,4 +1,4 @@
-/* vim: set sw=8 ts=8 sts=8 noexpandtab: */
+/* vim: set sw=8 ts=8 sts=8 expandtab: */
 #ifndef EWL_MEDIA_H
 #define EWL_MEDIA_H
 
@@ -48,44 +48,44 @@ typedef struct Ewl_Media Ewl_Media;
  */
 struct Ewl_Media
 {
-	Ewl_Widget widget; 	/**< Inherit from Ewl_Widget */
-	void *video;  	/**< Emotion does the actual work */
-	Ewl_Media_Module_Type module; /**< Path to the module file */
-	char *media; 		/**< Path to the media file */
-	int block_seek; 	/**< Temporarily prevent seeking */
+        Ewl_Widget widget; 	/**< Inherit from Ewl_Widget */
+        void *video;  	/**< Emotion does the actual work */
+        Ewl_Media_Module_Type module; /**< Path to the module file */
+        char *media; 		/**< Path to the media file */
+        int block_seek; 	/**< Temporarily prevent seeking */
 
-	double volume;		/**< The volume setting */
-	double position;	/**< The position setting */
-	unsigned char mute:1;	/**< The mute value */
+        double volume;		/**< The volume setting */
+        double position;	/**< The position setting */
+        unsigned char mute:1;	/**< The mute value */
 };
 
-Ewl_Widget		*ewl_media_new(void);
-int		 	 ewl_media_init(Ewl_Media *m);
+Ewl_Widget        	*ewl_media_new(void);
+int        	 	 ewl_media_init(Ewl_Media *m);
 
-unsigned int		 ewl_media_is_available(void);
+unsigned int        	 ewl_media_is_available(void);
 
-int			 ewl_media_module_set(Ewl_Media *m,
-						Ewl_Media_Module_Type module);
-Ewl_Media_Module_Type 	 ewl_media_module_get(Ewl_Media *m);
+int        		 ewl_media_module_set(Ewl_Media *m,
+        					Ewl_Media_Module_Type module);
+Ewl_Media_Module_Type          ewl_media_module_get(Ewl_Media *m);
 
-void			 ewl_media_media_set(Ewl_Media *m, const char *media);
-const char 		*ewl_media_media_get(Ewl_Media *m);
+void        		 ewl_media_media_set(Ewl_Media *m, const char *media);
+const char         	*ewl_media_media_get(Ewl_Media *m);
 
-int			 ewl_media_length_get(Ewl_Media *m);
-void			 ewl_media_length_time_get(Ewl_Media *m, int *h,
-							int *min, double *s);
+int        		 ewl_media_length_get(Ewl_Media *m);
+void        		 ewl_media_length_time_get(Ewl_Media *m, int *h,
+        						int *min, double *s);
 
-void			 ewl_media_play_set(Ewl_Media *m, int p);
-int			 ewl_media_seekable_get(Ewl_Media *m);
-double			 ewl_media_position_get(Ewl_Media *m);
-void			 ewl_media_position_time_get(Ewl_Media *m, int *h,
-							int *min, double *s);
-void			 ewl_media_position_set(Ewl_Media *m, double p);
+void        		 ewl_media_play_set(Ewl_Media *m, int p);
+int        		 ewl_media_seekable_get(Ewl_Media *m);
+double        		 ewl_media_position_get(Ewl_Media *m);
+void        		 ewl_media_position_time_get(Ewl_Media *m, int *h,
+        						int *min, double *s);
+void        		 ewl_media_position_set(Ewl_Media *m, double p);
 
-int			 ewl_media_audio_mute_get(Ewl_Media *m);
-void			 ewl_media_audio_mute_set(Ewl_Media *m, int mute);
-double			 ewl_media_audio_volume_get(Ewl_Media *m);
-void			 ewl_media_audio_volume_set(Ewl_Media *m, double v);
+int        		 ewl_media_audio_mute_get(Ewl_Media *m);
+void        		 ewl_media_audio_mute_set(Ewl_Media *m, int mute);
+double        		 ewl_media_audio_volume_get(Ewl_Media *m);
+void        		 ewl_media_audio_volume_set(Ewl_Media *m, double v);
 
 /*
  * Internally used callbacks, override at your own risk.

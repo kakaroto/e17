@@ -1,4 +1,4 @@
-/* vim: set sw=8 ts=8 sts=8 noexpandtab: */
+/* vim: set sw=8 ts=8 sts=8 expandtab: */
 #ifndef EWL_HISTOGRAM_H
 #define EWL_HISTOGRAM_H
 
@@ -43,31 +43,31 @@ typedef struct Ewl_Histogram Ewl_Histogram;
  */
 struct Ewl_Histogram
 {
-	Ewl_Image image; /**< Inherit from the image widget */
-	Ewl_Image *source; /**< Source image used for data graph */
-	Ewl_Color_Set color; /**< Color for drawing the histogram */
+        Ewl_Image image; /**< Inherit from the image widget */
+        Ewl_Image *source; /**< Source image used for data graph */
+        Ewl_Color_Set color; /**< Color for drawing the histogram */
 
-	int graph[256]; /**< Calculated histogram points */
-	int maxv; /**< Largest data point in graph */
-	Ewl_Histogram_Channel channel; /**< Channel of data for graphing */
+        int graph[256]; /**< Calculated histogram points */
+        int maxv; /**< Largest data point in graph */
+        Ewl_Histogram_Channel channel; /**< Channel of data for graphing */
 };
 
-Ewl_Widget 	*ewl_histogram_new(void);
-int 		 ewl_histogram_init(Ewl_Histogram *histogram);
+Ewl_Widget         *ewl_histogram_new(void);
+int         	 ewl_histogram_init(Ewl_Histogram *histogram);
 
-void 		 ewl_histogram_color_set(Ewl_Histogram *histogram,
-						unsigned int r, unsigned int g,
-						unsigned int b, unsigned int a);
-void 		 ewl_histogram_color_get(Ewl_Histogram *histogram,
-						unsigned int *r, unsigned int *g,
-						unsigned int *b, unsigned int *a);
+void         	 ewl_histogram_color_set(Ewl_Histogram *histogram,
+        					unsigned int r, unsigned int g,
+        					unsigned int b, unsigned int a);
+void         	 ewl_histogram_color_get(Ewl_Histogram *histogram,
+        					unsigned int *r, unsigned int *g,
+        					unsigned int *b, unsigned int *a);
 
-void 		 ewl_histogram_image_set(Ewl_Histogram *histogram,
-						Ewl_Image *image);
-Ewl_Image 	*ewl_histogram_image_get(Ewl_Histogram *histogram);
+void         	 ewl_histogram_image_set(Ewl_Histogram *histogram,
+        					Ewl_Image *image);
+Ewl_Image         *ewl_histogram_image_get(Ewl_Histogram *histogram);
 
-void 		 ewl_histogram_channel_set(Ewl_Histogram *histogram,
-						Ewl_Histogram_Channel channel);
+void         	 ewl_histogram_channel_set(Ewl_Histogram *histogram,
+        					Ewl_Histogram_Channel channel);
 Ewl_Histogram_Channel ewl_histogram_channel_get(Ewl_Histogram *histogram);
 
 /*

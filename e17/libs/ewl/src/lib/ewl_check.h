@@ -1,4 +1,4 @@
-/* vim: set sw=8 ts=8 sts=8 noexpandtab: */
+/* vim: set sw=8 ts=8 sts=8 expandtab: */
 #ifndef EWL_CHECK_H
 #define EWL_CHECK_H
 
@@ -48,15 +48,15 @@ typedef struct Ewl_Check Ewl_Check;
  */
 struct Ewl_Check
 {
-	Ewl_Widget w; /**< Inherit from Ewl_Widget */
-	int checked; /**< Indicates if this is checked */
+        Ewl_Widget w; /**< Inherit from Ewl_Widget */
+        int checked; /**< Indicates if this is checked */
 };
 
-Ewl_Widget 	*ewl_check_new(void);
-int 		 ewl_check_init(Ewl_Check *c);
+Ewl_Widget         *ewl_check_new(void);
+int         	 ewl_check_init(Ewl_Check *c);
 
-int 		 ewl_check_is_checked(Ewl_Check *c);
-void 		 ewl_check_checked_set(Ewl_Check *c, int checked);
+int         	 ewl_check_is_checked(Ewl_Check *c);
+void         	 ewl_check_checked_set(Ewl_Check *c, int checked);
 
 /*
  * Internally used callbacks.

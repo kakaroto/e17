@@ -1,4 +1,4 @@
-/* vim: set sw=8 ts=8 sts=8 noexpandtab: */
+/* vim: set sw=8 ts=8 sts=8 expandtab: */
 #include "ewl_base.h"
 #include "ewl_private.h"
 #include "ewl_macros.h"
@@ -14,9 +14,9 @@ static unsigned int key_modifiers = 0;
 unsigned int
 ewl_ev_modifiers_get(void)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
 
-	DRETURN_INT(key_modifiers, DLEVEL_STABLE);
+        DRETURN_INT(key_modifiers, DLEVEL_STABLE);
 }
 
 /**
@@ -27,10 +27,10 @@ ewl_ev_modifiers_get(void)
 void
 ewl_ev_modifiers_set(unsigned int modifiers)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
 
-	key_modifiers = modifiers;
+        key_modifiers = modifiers;
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 

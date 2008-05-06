@@ -1,4 +1,4 @@
-/* vim: set sw=8 ts=8 sts=8 noexpandtab: */
+/* vim: set sw=8 ts=8 sts=8 expandtab: */
 #ifndef EWL_ENGINE_XCB_H
 #define EWL_ENGINE_XCB_H
 
@@ -10,7 +10,7 @@
 typedef struct Ewl_Engine_Xcb Ewl_Engine_Xcb;
 struct Ewl_Engine_Xcb
 {
-	Ewl_Engine engine;
+        Ewl_Engine engine;
 };
 
 #endif

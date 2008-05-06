@@ -1,4 +1,4 @@
-/* vim: set sw=8 ts=8 sts=8 noexpandtab: */
+/* vim: set sw=8 ts=8 sts=8 expandtab: */
 #ifndef EWL_MACROS_H
 #define EWL_MACROS_H
 
@@ -24,10 +24,10 @@
  */
 #define REALLOC(dat, type, num) \
 { \
-	if (dat) \
-	  { \
-		dat = realloc(dat, sizeof(type) * num); \
-	  } \
+        if (dat) \
+          { \
+        	dat = realloc(dat, sizeof(type) * num); \
+          } \
 }
 
 #undef FREE
@@ -37,7 +37,7 @@
  */
 #define FREE(dat) \
 { \
-	free(dat); dat = NULL; \
+        free(dat); dat = NULL; \
 }
 
 
@@ -48,7 +48,7 @@
  */
 #define IF_FREE(dat) \
 { \
-	if (dat) FREE(dat); \
+        if (dat) FREE(dat); \
 }
 
 #undef IF_FREE_LIST
@@ -58,10 +58,10 @@
  */
 #define IF_FREE_LIST(list) \
 { \
-	if (list) { \
-		ecore_list_destroy(list); \
-		list = NULL; \
-	} \
+        if (list) { \
+        	ecore_list_destroy(list); \
+        	list = NULL; \
+        } \
 }
 
 #undef IF_FREE_HASH
@@ -71,10 +71,10 @@
  */
 #define IF_FREE_HASH(hash) \
 { \
-	if (hash) { \
-		ecore_hash_destroy(hash); \
-		hash = NULL; \
-	} \
+        if (hash) { \
+        	ecore_hash_destroy(hash); \
+        	hash = NULL; \
+        } \
 }
 
 #undef IF_RELEASE
@@ -84,10 +84,10 @@
  */
 #define IF_RELEASE(item) \
 { \
-	if (item) { \
-		ecore_string_release(item); \
-		item = NULL; \
-	} \
+        if (item) { \
+        	ecore_string_release(item); \
+        	item = NULL; \
+        } \
 }
 
 #undef ZERO

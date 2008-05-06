@@ -1,4 +1,4 @@
-/* vim: set sw=8 ts=8 sts=8 noexpandtab: */
+/* vim: set sw=8 ts=8 sts=8 expandtab: */
 #ifndef EWL_SEPARATOR_H
 #define EWL_SEPARATOR_H
 
@@ -52,15 +52,15 @@ typedef struct Ewl_Separator Ewl_Separator;
  */
 struct Ewl_Separator
 {
-	Ewl_Widget      widget; /**< Inherit from Ewl_Widget */
-	Ewl_Orientation orientation; /**< Sets drawing horizontal or vertical */
+        Ewl_Widget      widget; /**< Inherit from Ewl_Widget */
+        Ewl_Orientation orientation; /**< Sets drawing horizontal or vertical */
 };
 
-Ewl_Widget 	*ewl_separator_new(void);
-Ewl_Widget 	*ewl_hseparator_new(void);
-Ewl_Widget 	*ewl_vseparator_new(void);
-int 		 ewl_separator_init(Ewl_Separator *s);
-void 		 ewl_separator_orientation_set(Ewl_Separator *s, Ewl_Orientation o);
+Ewl_Widget         *ewl_separator_new(void);
+Ewl_Widget         *ewl_hseparator_new(void);
+Ewl_Widget         *ewl_vseparator_new(void);
+int         	 ewl_separator_init(Ewl_Separator *s);
+void         	 ewl_separator_orientation_set(Ewl_Separator *s, Ewl_Orientation o);
 Ewl_Orientation  ewl_separator_orientation_get(Ewl_Separator *s);
 
 /**

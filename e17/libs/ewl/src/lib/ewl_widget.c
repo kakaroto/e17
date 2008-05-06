@@ -1,4 +1,4 @@
-/* vim: set sw=8 ts=8 sts=8 noexpandtab: */
+/* vim: set sw=8 ts=8 sts=8 expandtab: */
 #include "ewl_base.h"
 #include "ewl_private.h"
 #include "ewl_macros.h"
@@ -12,11 +12,11 @@ static Ecore_Hash *ewl_widget_data_table = NULL;
 static Evas_Smart *widget_smart = NULL;
 
 static void ewl_widget_theme_padding_get(Ewl_Widget *w, int *l, int *r,
-						int *t, int *b);
+        					int *t, int *b);
 static void ewl_widget_theme_insets_get(Ewl_Widget *w, int *l, int *r,
-						int *t, int *b);
+        					int *t, int *b);
 static void ewl_widget_appearance_part_text_apply(Ewl_Widget *w,
-						  const char *part, const char *text);
+        					  const char *part, const char *text);
 static void ewl_widget_layer_stack_add(Ewl_Widget *w);
 static void ewl_widget_layer_update(Ewl_Widget *w);
 static Evas_Object *ewl_widget_layer_neighbor_find_above(Ewl_Widget *w);
@@ -34,20 +34,20 @@ static void ewl_widget_name_table_shutdown(void);
 Ewl_Widget *
 ewl_widget_new(void)
 {
-	Ewl_Widget *w;
+        Ewl_Widget *w;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
 
-	w = NEW(Ewl_Widget, 1);
-	if (!w)
-		DRETURN_PTR(NULL, DLEVEL_STABLE);
+        w = NEW(Ewl_Widget, 1);
+        if (!w)
+        	DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	if (!ewl_widget_init(w)) {
-		FREE(w);
-		w = NULL;
-	}
+        if (!ewl_widget_init(w)) {
+        	FREE(w);
+        	w = NULL;
+        }
 
-	DRETURN_PTR(w, DLEVEL_STABLE);
+        DRETURN_PTR(w, DLEVEL_STABLE);
 }
 
 /**
@@ -61,64 +61,64 @@ ewl_widget_new(void)
 int
 ewl_widget_init(Ewl_Widget *w)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(w, FALSE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(w, FALSE);
 
-	ewl_widget_inherit(w, EWL_WIDGET_TYPE);
+        ewl_widget_inherit(w, EWL_WIDGET_TYPE);
 
-	/*
-	 * Set size fields on the object
-	 */
-	if (!ewl_object_init(EWL_OBJECT(w)))
-		DRETURN_INT(FALSE, DLEVEL_STABLE);
+        /*
+         * Set size fields on the object
+         */
+        if (!ewl_object_init(EWL_OBJECT(w)))
+        	DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	/*
-	 * Set up the necessary theme structures
-	 */
-	if (!ewl_theme_widget_init(w))
-		DRETURN_INT(FALSE, DLEVEL_STABLE);
+        /*
+         * Set up the necessary theme structures
+         */
+        if (!ewl_theme_widget_init(w))
+        	DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	ewl_object_state_remove(EWL_OBJECT(w), EWL_FLAGS_STATE_MASK);
+        ewl_object_state_remove(EWL_OBJECT(w), EWL_FLAGS_STATE_MASK);
 
-	/*
-	 * Add the common callbacks that all widgets must perform
-	 */
-	ewl_callback_append(w, EWL_CALLBACK_SHOW, ewl_widget_cb_show, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_HIDE, ewl_widget_cb_hide, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_REVEAL, ewl_widget_cb_reveal, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_OBSCURE, ewl_widget_cb_obscure,
-				NULL);
-	ewl_callback_append(w, EWL_CALLBACK_REALIZE, ewl_widget_cb_realize,
-				NULL);
-	ewl_callback_append(w, EWL_CALLBACK_UNREALIZE, ewl_widget_cb_unrealize,
-				NULL);
-	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, ewl_widget_cb_configure,
-				NULL);
-	ewl_callback_append(w, EWL_CALLBACK_REPARENT, ewl_widget_cb_reparent,
-				NULL);
-	ewl_callback_append(w, EWL_CALLBACK_WIDGET_ENABLE, ewl_widget_cb_enable,
-				NULL);
-	ewl_callback_append(w, EWL_CALLBACK_WIDGET_DISABLE,
-				ewl_widget_cb_disable, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_FOCUS_IN, ewl_widget_cb_focus_in,
-				NULL);
-	ewl_callback_append(w, EWL_CALLBACK_FOCUS_OUT, ewl_widget_cb_focus_out,
-				NULL);
-	ewl_callback_append(w, EWL_CALLBACK_MOUSE_IN, ewl_widget_cb_mouse_in,
-				NULL);
-	ewl_callback_append(w, EWL_CALLBACK_MOUSE_OUT, ewl_widget_cb_mouse_out,
-				NULL);
-	ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN,
-				ewl_widget_cb_mouse_down, NULL);
-	ewl_callback_append(w, EWL_CALLBACK_MOUSE_UP, ewl_widget_cb_mouse_up,
-				NULL);
-	ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE,
-				ewl_widget_cb_mouse_move, NULL);
+        /*
+         * Add the common callbacks that all widgets must perform
+         */
+        ewl_callback_append(w, EWL_CALLBACK_SHOW, ewl_widget_cb_show, NULL);
+        ewl_callback_append(w, EWL_CALLBACK_HIDE, ewl_widget_cb_hide, NULL);
+        ewl_callback_append(w, EWL_CALLBACK_REVEAL, ewl_widget_cb_reveal, NULL);
+        ewl_callback_append(w, EWL_CALLBACK_OBSCURE, ewl_widget_cb_obscure,
+        			NULL);
+        ewl_callback_append(w, EWL_CALLBACK_REALIZE, ewl_widget_cb_realize,
+        			NULL);
+        ewl_callback_append(w, EWL_CALLBACK_UNREALIZE, ewl_widget_cb_unrealize,
+        			NULL);
+        ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, ewl_widget_cb_configure,
+        			NULL);
+        ewl_callback_append(w, EWL_CALLBACK_REPARENT, ewl_widget_cb_reparent,
+        			NULL);
+        ewl_callback_append(w, EWL_CALLBACK_WIDGET_ENABLE, ewl_widget_cb_enable,
+        			NULL);
+        ewl_callback_append(w, EWL_CALLBACK_WIDGET_DISABLE,
+        			ewl_widget_cb_disable, NULL);
+        ewl_callback_append(w, EWL_CALLBACK_FOCUS_IN, ewl_widget_cb_focus_in,
+        			NULL);
+        ewl_callback_append(w, EWL_CALLBACK_FOCUS_OUT, ewl_widget_cb_focus_out,
+        			NULL);
+        ewl_callback_append(w, EWL_CALLBACK_MOUSE_IN, ewl_widget_cb_mouse_in,
+        			NULL);
+        ewl_callback_append(w, EWL_CALLBACK_MOUSE_OUT, ewl_widget_cb_mouse_out,
+        			NULL);
+        ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN,
+        			ewl_widget_cb_mouse_down, NULL);
+        ewl_callback_append(w, EWL_CALLBACK_MOUSE_UP, ewl_widget_cb_mouse_up,
+        			NULL);
+        ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE,
+        			ewl_widget_cb_mouse_move, NULL);
 
-	/* widgets can take focus by default */
-	ewl_widget_focusable_set(w, TRUE);
+        /* widgets can take focus by default */
+        ewl_widget_focusable_set(w, TRUE);
 
-	DRETURN_INT(TRUE, DLEVEL_STABLE);
+        DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 /**
@@ -130,28 +130,28 @@ ewl_widget_init(Ewl_Widget *w)
 void
 ewl_widget_name_set(Ewl_Widget *w, const char *name)
 {
-	char *t;
+        char *t;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	if (!ewl_widget_name_table)
-	{
-		ewl_widget_name_table = ecore_hash_new(ecore_str_hash,
-							ecore_str_compare);
-		ecore_hash_free_key_cb_set(ewl_widget_name_table,
-						ECORE_FREE_CB(free));
-		ewl_shutdown_add(ewl_widget_name_table_shutdown);
-	}
+        if (!ewl_widget_name_table)
+        {
+        	ewl_widget_name_table = ecore_hash_new(ecore_str_hash,
+        						ecore_str_compare);
+        	ecore_hash_free_key_cb_set(ewl_widget_name_table,
+        					ECORE_FREE_CB(free));
+        	ewl_shutdown_add(ewl_widget_name_table_shutdown);
+        }
 
-	t = (name ? strdup(name) : NULL);
-	ewl_attach_name_set(w, t);
+        t = (name ? strdup(name) : NULL);
+        ewl_attach_name_set(w, t);
 
-	if (ewl_widget_name_table)
-		ecore_hash_set(ewl_widget_name_table, t, w);
+        if (ewl_widget_name_table)
+        	ecore_hash_set(ewl_widget_name_table, t, w);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -162,11 +162,11 @@ ewl_widget_name_set(Ewl_Widget *w, const char *name)
 const char *
 ewl_widget_name_get(Ewl_Widget *w)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(w, NULL);
-	DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, NULL);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(w, NULL);
+        DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, NULL);
 
-	DRETURN_PTR(ewl_attach_name_get(w), DLEVEL_STABLE);
+        DRETURN_PTR(ewl_attach_name_get(w), DLEVEL_STABLE);
 }
 
 /**
@@ -177,16 +177,16 @@ ewl_widget_name_get(Ewl_Widget *w)
 Ewl_Widget *
 ewl_widget_name_find(const char *name)
 {
-	Ewl_Widget *match = NULL;
+        Ewl_Widget *match = NULL;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(name, NULL);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(name, NULL);
 
-	if (ewl_widget_name_table)
-		match = EWL_WIDGET(ecore_hash_get(ewl_widget_name_table,
-							(void *)name));
+        if (ewl_widget_name_table)
+        	match = EWL_WIDGET(ecore_hash_get(ewl_widget_name_table,
+        						(void *)name));
 
-	DRETURN_PTR(match, DLEVEL_STABLE);
+        DRETURN_PTR(match, DLEVEL_STABLE);
 }
 
 /**
@@ -199,40 +199,40 @@ ewl_widget_name_find(const char *name)
 void
 ewl_widget_realize(Ewl_Widget *w)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	if (REALIZED(w))
-		DRETURN(DLEVEL_STABLE);
+        if (REALIZED(w))
+        	DRETURN(DLEVEL_STABLE);
 
-	if (ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_SCHEDULED_REVEAL)
-			&& !ewl_object_queued_has(EWL_OBJECT(w),
-						EWL_FLAG_QUEUED_PROCESS_REVEAL))
-		ewl_realize_cancel_request(w);
+        if (ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_SCHEDULED_REVEAL)
+        		&& !ewl_object_queued_has(EWL_OBJECT(w),
+        					EWL_FLAG_QUEUED_PROCESS_REVEAL))
+        	ewl_realize_cancel_request(w);
 
-	/*
-	 * The parent's realize function will get us here again.
-	 */
-	if (w->parent && !REALIZED(w->parent))
-		ewl_widget_realize(w->parent);
+        /*
+         * The parent's realize function will get us here again.
+         */
+        if (w->parent && !REALIZED(w->parent))
+        	ewl_widget_realize(w->parent);
 
-	/*
-	 * The parent should be realized at this point, and we can handle
-	 * realizing ourselves.
-	 */
-	if (w->parent || ewl_object_toplevel_get(EWL_OBJECT(w))) {
-		ewl_object_queued_add(EWL_OBJECT(w), EWL_FLAG_QUEUED_PROCESS_REVEAL);
-		ewl_callback_call(w, EWL_CALLBACK_REALIZE);
-		ewl_object_queued_remove(EWL_OBJECT(w),
-					 EWL_FLAG_QUEUED_PROCESS_REVEAL);
+        /*
+         * The parent should be realized at this point, and we can handle
+         * realizing ourselves.
+         */
+        if (w->parent || ewl_object_toplevel_get(EWL_OBJECT(w))) {
+        	ewl_object_queued_add(EWL_OBJECT(w), EWL_FLAG_QUEUED_PROCESS_REVEAL);
+        	ewl_callback_call(w, EWL_CALLBACK_REALIZE);
+        	ewl_object_queued_remove(EWL_OBJECT(w),
+        				 EWL_FLAG_QUEUED_PROCESS_REVEAL);
 
-		ewl_object_visible_add(EWL_OBJECT(w),
-					EWL_FLAG_VISIBLE_REALIZED);
-		ewl_widget_obscure(w);
-	}
+        	ewl_object_visible_add(EWL_OBJECT(w),
+        				EWL_FLAG_VISIBLE_REALIZED);
+        	ewl_widget_obscure(w);
+        }
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -245,22 +245,22 @@ ewl_widget_realize(Ewl_Widget *w)
 void
 ewl_widget_unrealize(Ewl_Widget *w)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	if (ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_SCHEDULED_REVEAL))
-		ewl_realize_cancel_request(w);
+        if (ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_SCHEDULED_REVEAL))
+        	ewl_realize_cancel_request(w);
 
-	if (!REALIZED(w))
-		DRETURN(DLEVEL_STABLE);
+        if (!REALIZED(w))
+        	DRETURN(DLEVEL_STABLE);
 
-	ewl_widget_obscure(w);
+        ewl_widget_obscure(w);
 
-	ewl_callback_call(w, EWL_CALLBACK_UNREALIZE);
-	ewl_object_visible_remove(EWL_OBJECT(w), EWL_FLAG_VISIBLE_REALIZED);
+        ewl_callback_call(w, EWL_CALLBACK_UNREALIZE);
+        ewl_object_visible_remove(EWL_OBJECT(w), EWL_FLAG_VISIBLE_REALIZED);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -271,30 +271,30 @@ ewl_widget_unrealize(Ewl_Widget *w)
 void
 ewl_widget_reveal(Ewl_Widget *w)
 {
-	Ewl_Embed *emb;
+        Ewl_Embed *emb;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	/*
-	 * Already revealed widgets can be skipped, as can unrealized widgets,
-	 * unless the are already queued for reveal, ie. in the realize process.
-	 */
-	if (REVEALED(w) || (!REALIZED(w) && !ewl_object_queued_has(
-					EWL_OBJECT(w),
-					EWL_FLAG_QUEUED_PROCESS_REVEAL)))
-		DRETURN(DLEVEL_STABLE);
+        /*
+         * Already revealed widgets can be skipped, as can unrealized widgets,
+         * unless the are already queued for reveal, ie. in the realize process.
+         */
+        if (REVEALED(w) || (!REALIZED(w) && !ewl_object_queued_has(
+        				EWL_OBJECT(w),
+        				EWL_FLAG_QUEUED_PROCESS_REVEAL)))
+        	DRETURN(DLEVEL_STABLE);
 
-	ewl_object_visible_add(EWL_OBJECT(w), EWL_FLAG_VISIBLE_REVEALED);
+        ewl_object_visible_add(EWL_OBJECT(w), EWL_FLAG_VISIBLE_REVEALED);
 
-	emb = ewl_embed_widget_find(w);
-	if (emb && emb->canvas)
-		ewl_callback_call(w, EWL_CALLBACK_REVEAL);
+        emb = ewl_embed_widget_find(w);
+        if (emb && emb->canvas)
+        	ewl_callback_call(w, EWL_CALLBACK_REVEAL);
 
-	ewl_widget_configure(w);
+        ewl_widget_configure(w);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -304,19 +304,19 @@ ewl_widget_reveal(Ewl_Widget *w)
  */
 void ewl_widget_obscure(Ewl_Widget *w)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
 
-	if (!REVEALED(w))
-		DRETURN(DLEVEL_STABLE);
+        if (!REVEALED(w))
+        	DRETURN(DLEVEL_STABLE);
 
-	ewl_object_visible_remove(EWL_OBJECT(w), EWL_FLAG_VISIBLE_REVEALED);
+        ewl_object_visible_remove(EWL_OBJECT(w), EWL_FLAG_VISIBLE_REVEALED);
 
-	if (REALIZED(w) || ewl_object_queued_has(EWL_OBJECT(w),
-				EWL_FLAG_QUEUED_SCHEDULED_REVEAL))
-		ewl_callback_call(w, EWL_CALLBACK_OBSCURE);
+        if (REALIZED(w) || ewl_object_queued_has(EWL_OBJECT(w),
+        			EWL_FLAG_QUEUED_SCHEDULED_REVEAL))
+        	ewl_callback_call(w, EWL_CALLBACK_OBSCURE);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -331,30 +331,30 @@ void ewl_widget_obscure(Ewl_Widget *w)
 void
 ewl_widget_show(Ewl_Widget *w)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	/*
-	 * Nothing to do if already visible.
-	 */
-	if (VISIBLE(w))
-		DRETURN(DLEVEL_STABLE);
+        /*
+         * Nothing to do if already visible.
+         */
+        if (VISIBLE(w))
+        	DRETURN(DLEVEL_STABLE);
 
-	/*
-	 * Flag that this is a visible widget
-	 */
-	ewl_object_visible_add(EWL_OBJECT(w), EWL_FLAG_VISIBLE_SHOWN);
+        /*
+         * Flag that this is a visible widget
+         */
+        ewl_object_visible_add(EWL_OBJECT(w), EWL_FLAG_VISIBLE_SHOWN);
 
-	/*
-	 * If realized, go about our business, otherwise queue for realize.
-	 */
-	if (REALIZED(w))
-		ewl_callback_call(w, EWL_CALLBACK_SHOW);
-	else
-		ewl_realize_request(w);
+        /*
+         * If realized, go about our business, otherwise queue for realize.
+         */
+        if (REALIZED(w))
+        	ewl_callback_call(w, EWL_CALLBACK_SHOW);
+        else
+        	ewl_realize_request(w);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -368,30 +368,30 @@ ewl_widget_show(Ewl_Widget *w)
 void
 ewl_widget_hide(Ewl_Widget *w)
 {
-	Ewl_Embed *emb;
+        Ewl_Embed *emb;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	if (ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_SCHEDULED_REVEAL))
-		ewl_realize_cancel_request(w);
+        if (ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_SCHEDULED_REVEAL))
+        	ewl_realize_cancel_request(w);
 
-	/*
-	 * Already hidden? Then no work to be done.
-	 */
-	if (HIDDEN(w))
-		DRETURN(DLEVEL_STABLE);
+        /*
+         * Already hidden? Then no work to be done.
+         */
+        if (HIDDEN(w))
+        	DRETURN(DLEVEL_STABLE);
 
-	emb = ewl_embed_widget_find(w);
-	if (emb) ewl_embed_info_widgets_cleanup(emb, w);
+        emb = ewl_embed_widget_find(w);
+        if (emb) ewl_embed_info_widgets_cleanup(emb, w);
 
-	ewl_object_visible_remove(EWL_OBJECT(w), EWL_FLAG_VISIBLE_SHOWN);
+        ewl_object_visible_remove(EWL_OBJECT(w), EWL_FLAG_VISIBLE_SHOWN);
 
-	if (REALIZED(w))
-		ewl_callback_call(w, EWL_CALLBACK_HIDE);
+        if (REALIZED(w))
+        	ewl_callback_call(w, EWL_CALLBACK_HIDE);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -405,49 +405,49 @@ ewl_widget_hide(Ewl_Widget *w)
 void
 ewl_widget_destroy(Ewl_Widget *w)
 {
-	int i;
-	Ewl_Embed *emb;
+        int i;
+        Ewl_Embed *emb;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	if (DESTROYED(w))
-		DRETURN(DLEVEL_STABLE);
+        if (DESTROYED(w))
+        	DRETURN(DLEVEL_STABLE);
 
-	emb = ewl_embed_widget_find(w);
-	if (emb) ewl_embed_info_widgets_cleanup(emb, w);
+        emb = ewl_embed_widget_find(w);
+        if (emb) ewl_embed_info_widgets_cleanup(emb, w);
 
-	/*
-	 * Request prior to hiding so we can skip resizing for child widgets
-	 * being hidden.
-	 */
-	ewl_destroy_request(w);
+        /*
+         * Request prior to hiding so we can skip resizing for child widgets
+         * being hidden.
+         */
+        ewl_destroy_request(w);
 
-	ewl_widget_hide(w);
-	ewl_widget_unrealize(w);
+        ewl_widget_hide(w);
+        ewl_widget_unrealize(w);
 
-	/*
-	 * remove ourselves from any containers
-	 */
-	ewl_widget_parent_set(w, NULL);
+        /*
+         * remove ourselves from any containers
+         */
+        ewl_widget_parent_set(w, NULL);
 
-	/*
-	 * Clear out the callbacks, this is a bit tricky because we don't want
-	 * to continue using this widget after the callbacks have been
-	 * deleted. Clear all callbacks except for the destroy callbacks.
-	 * This preserves the list of the destroy type so we don't get a segfault.
-	 *
-	 * We delete these now so that we can't possibly get any callbacks before the
-	 * idler kicks in
-	 */
-	for (i = 0; i < (EWL_CALLBACK_MAX + 1); i++)
-	{
-		if (i == EWL_CALLBACK_DESTROY) continue;
-		ewl_callback_del_type(w, i);
-	}
+        /*
+         * Clear out the callbacks, this is a bit tricky because we don't want
+         * to continue using this widget after the callbacks have been
+         * deleted. Clear all callbacks except for the destroy callbacks.
+         * This preserves the list of the destroy type so we don't get a segfault.
+         *
+         * We delete these now so that we can't possibly get any callbacks before the
+         * idler kicks in
+         */
+        for (i = 0; i < (EWL_CALLBACK_MAX + 1); i++)
+        {
+        	if (i == EWL_CALLBACK_DESTROY) continue;
+        	ewl_callback_del_type(w, i);
+        }
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -461,16 +461,16 @@ ewl_widget_destroy(Ewl_Widget *w)
 void
 ewl_widget_configure(Ewl_Widget *w)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	if ((!VISIBLE(w)) || (w->parent && !REVEALED(w->parent)))
-		DRETURN(DLEVEL_STABLE);
+        if ((!VISIBLE(w)) || (w->parent && !REVEALED(w->parent)))
+        	DRETURN(DLEVEL_STABLE);
 
-	ewl_configure_request(w);
+        ewl_configure_request(w);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -484,13 +484,13 @@ ewl_widget_configure(Ewl_Widget *w)
 void
 ewl_widget_reparent(Ewl_Widget *w)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	ewl_callback_call_with_event_data(w, EWL_CALLBACK_REPARENT, w->parent);
+        ewl_callback_call_with_event_data(w, EWL_CALLBACK_REPARENT, w->parent);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -506,25 +506,25 @@ ewl_widget_reparent(Ewl_Widget *w)
 void
 ewl_widget_data_set(Ewl_Widget *w, void *k, void *v)
 {
-	Ecore_Hash *w_data;
+        Ecore_Hash *w_data;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_PARAM_PTR(k);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_PARAM_PTR(k);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	if (!ewl_widget_data_table)
-		ewl_widget_data_table = ecore_hash_new(NULL, NULL);
+        if (!ewl_widget_data_table)
+        	ewl_widget_data_table = ecore_hash_new(NULL, NULL);
 
-	w_data = ecore_hash_get(ewl_widget_data_table, w);
-	if (!w_data) {
-		w_data = ecore_hash_new(NULL, NULL);
-		ecore_hash_set(ewl_widget_data_table, w, w_data);
-	}
+        w_data = ecore_hash_get(ewl_widget_data_table, w);
+        if (!w_data) {
+        	w_data = ecore_hash_new(NULL, NULL);
+        	ecore_hash_set(ewl_widget_data_table, w, w_data);
+        }
 
-	ecore_hash_set(w_data, k, v);
+        ecore_hash_set(w_data, k, v);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -541,34 +541,34 @@ ewl_widget_data_set(Ewl_Widget *w, void *k, void *v)
 void *
 ewl_widget_data_del(Ewl_Widget *w, void *k)
 {
-	void *data;
-	Ecore_Hash *w_data;
+        void *data;
+        Ecore_Hash *w_data;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(w, NULL);
-	DCHECK_PARAM_PTR_RET(k, NULL);
-	DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, NULL);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(w, NULL);
+        DCHECK_PARAM_PTR_RET(k, NULL);
+        DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, NULL);
 
-	/* none of the widgets have data attached */
-	if (!ewl_widget_data_table)
-		DRETURN_PTR(NULL, DLEVEL_STABLE);
+        /* none of the widgets have data attached */
+        if (!ewl_widget_data_table)
+        	DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	w_data = ecore_hash_get(ewl_widget_data_table, w);
+        w_data = ecore_hash_get(ewl_widget_data_table, w);
 
-	/* our widget has no data attached */
-	if (!w_data) DRETURN_PTR(NULL, DLEVEL_STABLE);
+        /* our widget has no data attached */
+        if (!w_data) DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	data = ecore_hash_remove(w_data, k);
+        data = ecore_hash_remove(w_data, k);
 
-	if (ecore_hash_count(w_data) == 0) {
-		ecore_hash_remove(ewl_widget_data_table, w);
-		IF_FREE_HASH(w_data);
+        if (ecore_hash_count(w_data) == 0) {
+        	ecore_hash_remove(ewl_widget_data_table, w);
+        	IF_FREE_HASH(w_data);
 
-		if (ecore_hash_count(ewl_widget_data_table) == 0)
-			IF_FREE_HASH(ewl_widget_data_table);
-	}
+        	if (ecore_hash_count(ewl_widget_data_table) == 0)
+        		IF_FREE_HASH(ewl_widget_data_table);
+        }
 
-	DRETURN_PTR(data, DLEVEL_STABLE);
+        DRETURN_PTR(data, DLEVEL_STABLE);
 }
 
 /**
@@ -582,22 +582,22 @@ ewl_widget_data_del(Ewl_Widget *w, void *k)
 void *
 ewl_widget_data_get(Ewl_Widget *w, void *k)
 {
-	void *data = NULL;
-	Ecore_Hash *w_data;
+        void *data = NULL;
+        Ecore_Hash *w_data;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(w, NULL);
-	DCHECK_PARAM_PTR_RET(k, NULL);
-	DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, NULL);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(w, NULL);
+        DCHECK_PARAM_PTR_RET(k, NULL);
+        DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, NULL);
 
-	/* no widgets have data */
-	if (!ewl_widget_data_table)
-		DRETURN_PTR(NULL, DLEVEL_STABLE);
+        /* no widgets have data */
+        if (!ewl_widget_data_table)
+        	DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	w_data = ecore_hash_get(ewl_widget_data_table, w);
-	if (w_data) data = ecore_hash_get(w_data, k);
+        w_data = ecore_hash_get(ewl_widget_data_table, w);
+        if (w_data) data = ecore_hash_get(w_data, k);
 
-	DRETURN_PTR(data, DLEVEL_STABLE);
+        DRETURN_PTR(data, DLEVEL_STABLE);
 }
 
 /**
@@ -612,33 +612,33 @@ ewl_widget_data_get(Ewl_Widget *w, void *k)
 void
 ewl_widget_appearance_set(Ewl_Widget *w, const char *appearance)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_PARAM_PTR(appearance);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_PARAM_PTR(appearance);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	/* make sure we have something to do */
-	if (w->appearance && !strcmp(appearance, w->appearance))
-		DRETURN(DLEVEL_STABLE);
+        /* make sure we have something to do */
+        if (w->appearance && !strcmp(appearance, w->appearance))
+        	DRETURN(DLEVEL_STABLE);
 
-	/*
-	 * The base appearance is used for determining the theme key of the
-	 * widget. Intentionally lose a reference to the ecore string to keep a
-	 * reference cached for later re-use.
-	 */
-	w->appearance = ecore_string_instance(appearance);
-	if (!w->appearance)
-		DRETURN(DLEVEL_STABLE);
+        /*
+         * The base appearance is used for determining the theme key of the
+         * widget. Intentionally lose a reference to the ecore string to keep a
+         * reference cached for later re-use.
+         */
+        w->appearance = ecore_string_instance(appearance);
+        if (!w->appearance)
+        	DRETURN(DLEVEL_STABLE);
 
-	/*
-	 * Recreate the visible components of the widget if necessary.
-	 */
-	if (REALIZED(w)) {
-		ewl_widget_unrealize(w);
-		ewl_widget_realize(w);
-	}
+        /*
+         * Recreate the visible components of the widget if necessary.
+         */
+        if (REALIZED(w)) {
+        	ewl_widget_unrealize(w);
+        	ewl_widget_realize(w);
+        }
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -650,11 +650,11 @@ ewl_widget_appearance_set(Ewl_Widget *w, const char *appearance)
 char *
 ewl_widget_appearance_get(Ewl_Widget *w)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(w, NULL);
-	DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, NULL);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(w, NULL);
+        DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, NULL);
 
-	DRETURN_PTR((w->appearance ? strdup(w->appearance) : NULL), DLEVEL_STABLE);
+        DRETURN_PTR((w->appearance ? strdup(w->appearance) : NULL), DLEVEL_STABLE);
 }
 
 /**
@@ -668,23 +668,23 @@ ewl_widget_appearance_get(Ewl_Widget *w)
 int
 ewl_widget_appearance_path_size_get(Ewl_Widget *w)
 {
-	int size;
+        int size;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(w, 0);
-	DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, 0);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(w, 0);
+        DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, 0);
 
-	/*
-	 * Allocate enough for the appearance plus a leading "/"
-	 */
-	size = 0;
-	while (w) {
-		size += (w->appearance ? strlen(w->appearance) : 0) + 1;
-		w = w->parent;
-	}
-	size++;
+        /*
+         * Allocate enough for the appearance plus a leading "/"
+         */
+        size = 0;
+        while (w) {
+        	size += (w->appearance ? strlen(w->appearance) : 0) + 1;
+        	w = w->parent;
+        }
+        size++;
 
-	DRETURN_INT(size, DLEVEL_STABLE);
+        DRETURN_INT(size, DLEVEL_STABLE);
 }
 
 /**
@@ -699,23 +699,23 @@ ewl_widget_appearance_path_size_get(Ewl_Widget *w)
 int
 ewl_widget_appearance_path_copy(Ewl_Widget *w, char *buf, int size)
 {
-	int len, used;
+        int len, used;
 
-	used = 0;
-	len = (w->appearance ? strlen(w->appearance) : 0);
+        used = 0;
+        len = (w->appearance ? strlen(w->appearance) : 0);
 
-	if (w->parent) {
-		used += ewl_widget_appearance_path_copy(w->parent, buf,
-				size - len);
-	}
+        if (w->parent) {
+        	used += ewl_widget_appearance_path_copy(w->parent, buf,
+        			size - len);
+        }
 
-	*(buf + used) = '/';
-	used++;
-	used += ecore_strlcpy(buf + used,
-			(w->appearance ? w->appearance : ""),
-				size - used);
+        *(buf + used) = '/';
+        used++;
+        used += ecore_strlcpy(buf + used,
+        		(w->appearance ? w->appearance : ""),
+        			size - used);
 
-	DRETURN_INT(used, DLEVEL_STABLE);
+        DRETURN_INT(used, DLEVEL_STABLE);
 }
 
 /**
@@ -727,18 +727,18 @@ ewl_widget_appearance_path_copy(Ewl_Widget *w, char *buf, int size)
 char *
 ewl_widget_appearance_path_get(Ewl_Widget *w)
 {
-	char *ret = NULL;
-	int len = 0;
+        char *ret = NULL;
+        int len = 0;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(w, NULL);
-	DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, NULL);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(w, NULL);
+        DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, NULL);
 
-	len = ewl_widget_appearance_path_size_get(w);
-	ret = NEW(char *, len);
-	ewl_widget_appearance_path_copy(w, ret, len);
+        len = ewl_widget_appearance_path_size_get(w);
+        ret = NEW(char *, len);
+        ewl_widget_appearance_path_copy(w, ret, len);
 
-	DRETURN_PTR(ret, DLEVEL_STABLE);
+        DRETURN_PTR(ret, DLEVEL_STABLE);
 }
 
 /**
@@ -754,34 +754,34 @@ ewl_widget_appearance_path_get(Ewl_Widget *w)
 void
 ewl_widget_state_set(Ewl_Widget *w, const char *state, Ewl_State_Type flag)
 {
-	Ewl_Event_State_Change ev;
+        Ewl_Event_State_Change ev;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_PARAM_PTR(state);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_PARAM_PTR(state);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	/*
-	 * Intentionally lose a reference to the ecore string to keep a
-	 * reference cached for later re-use.
-	 */
-	if (flag == EWL_STATE_PERSISTENT)
-		w->theme_state = ecore_string_instance((char *)state);
+        /*
+         * Intentionally lose a reference to the ecore string to keep a
+         * reference cached for later re-use.
+         */
+        if (flag == EWL_STATE_PERSISTENT)
+        	w->theme_state = ecore_string_instance((char *)state);
 
-	if (w->theme_object) {
-		if (ewl_config_cache.print_signals)
-			printf("Emitting: %s to %p (%s)\n", state, w,
-							w->appearance);
+        if (w->theme_object) {
+        	if (ewl_config_cache.print_signals)
+        		printf("Emitting: %s to %p (%s)\n", state, w,
+        						w->appearance);
 
-		edje_object_signal_emit(w->theme_object, state, "EWL");
-	}
+        	edje_object_signal_emit(w->theme_object, state, "EWL");
+        }
 
-	ev.state = state;
-	ev.flag = flag;
+        ev.state = state;
+        ev.flag = flag;
 
-	ewl_callback_call_with_event_data(w, EWL_CALLBACK_STATE_CHANGED, &ev);
+        ewl_callback_call_with_event_data(w, EWL_CALLBACK_STATE_CHANGED, &ev);
 
-	DRETURN(DLEVEL_STABLE);
+        DRETURN(DLEVEL_STABLE);
 }
 
 /**
@@ -796,56 +796,56 @@ ewl_widget_state_set(Ewl_Widget *w, const char *state, Ewl_State_Type flag)
 void
 ewl_widget_parent_set(Ewl_Widget *w, Ewl_Widget *p)
 {
-	Ewl_Widget *tmp;
-	Ewl_Container *op;
-	Ewl_Embed *emb;
+        Ewl_Widget *tmp;
+        Ewl_Container *op;
+        Ewl_Embed *emb;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	/* check if our new parent is the same as our old parent */
-	op = EWL_CONTAINER(w->parent);
-	if (op == EWL_CONTAINER(p))
-		DRETURN(DLEVEL_STABLE);
+        /* check if our new parent is the same as our old parent */
+        op = EWL_CONTAINER(w->parent);
+        if (op == EWL_CONTAINER(p))
+        	DRETURN(DLEVEL_STABLE);
 
-	/* if no parent, obsure the widget */
-	if (!p) ewl_widget_obscure(w);
+        /* if no parent, obsure the widget */
+        if (!p) ewl_widget_obscure(w);
 
-	emb = ewl_embed_widget_find(w);
-	if (emb) ewl_embed_info_widgets_cleanup(emb, w);
+        emb = ewl_embed_widget_find(w);
+        if (emb) ewl_embed_info_widgets_cleanup(emb, w);
 
-	/*
-	 * Verify this will not result in recursively nested widgets.
-	 */
-	tmp = p;
-	while (tmp) {
-		if (tmp == w) {
-			DWARNING("ERROR: Recursivly nested widgets.");
-			DRETURN(DLEVEL_STABLE);
-		}
-		tmp = tmp->parent;
-	}
+        /*
+         * Verify this will not result in recursively nested widgets.
+         */
+        tmp = p;
+        while (tmp) {
+        	if (tmp == w) {
+        		DWARNING("ERROR: Recursivly nested widgets.");
+        		DRETURN(DLEVEL_STABLE);
+        	}
+        	tmp = tmp->parent;
+        }
 
-	/* set the parent to NULL before doing the child remove */
-	w->parent = NULL;
+        /* set the parent to NULL before doing the child remove */
+        w->parent = NULL;
 
-	/*
-	 * A widget cannot be the child of multiple widgets, so remove it
-	 * from a previous parent before adding to this parent.
-	 */
-	if (op) ewl_container_child_remove(op, w);
+        /*
+         * A widget cannot be the child of multiple widgets, so remove it
+         * from a previous parent before adding to this parent.
+         */
+        if (op) ewl_container_child_remove(op, w);
 
-	/*
-	 * Set this to the new parent here as child_remove will try to call
-	 * us again if our parent isn't NULL with a NULL parent. This makes
-	 * sure the parent is set when the remove is done.
-	 */
-	w->parent = p;
+        /*
+         * Set this to the new parent here as child_remove will try to call
+         * us again if our parent isn't NULL with a NULL parent. This makes
+         * sure the parent is set when the remove is done.
+         */
+        w->parent = p;
 
-	ewl_callback_call_with_event_data(w, EWL_CALLBACK_REPARENT, p);
+        ewl_callback_call_with_event_data(w, EWL_CALLBACK_REPARENT, p);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -856,11 +856,11 @@ ewl_widget_parent_set(Ewl_Widget *w, Ewl_Widget *p)
 Ewl_Widget *
 ewl_widget_parent_get(Ewl_Widget *w)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(w, NULL);
-	DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, NULL);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(w, NULL);
+        DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, NULL);
 
-	DRETURN_PTR(w->parent, DLEVEL_STABLE);
+        DRETURN_PTR(w->parent, DLEVEL_STABLE);
 }
 
 /**
@@ -875,31 +875,31 @@ ewl_widget_parent_get(Ewl_Widget *w)
 static void
 ewl_widget_appearance_part_text_apply(Ewl_Widget *w, const char *part, const char *text)
 {
-	Evas_Coord nw, nh;
+        Evas_Coord nw, nh;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	if (!w->theme_object)
-		DRETURN(DLEVEL_STABLE);
+        if (!w->theme_object)
+        	DRETURN(DLEVEL_STABLE);
 
-	/*
-	 * Fill in the default part to use when the key is NULL.
-	 */
-	if (!part || !*part)
-		part = ewl_theme_data_str_get(w, "textpart");
+        /*
+         * Fill in the default part to use when the key is NULL.
+         */
+        if (!part || !*part)
+        	part = ewl_theme_data_str_get(w, "textpart");
 
-	/*
-	 * Set the text to empty if text is NULL. Edje defaults to using the
-	 * default value specified in the theme.
-	 */
-	edje_object_part_text_set(w->theme_object, part, (text ? text : ""));
-	edje_object_size_min_calc(w->theme_object, &nw, &nh);
+        /*
+         * Set the text to empty if text is NULL. Edje defaults to using the
+         * default value specified in the theme.
+         */
+        edje_object_part_text_set(w->theme_object, part, (text ? text : ""));
+        edje_object_size_min_calc(w->theme_object, &nw, &nh);
 
-	ewl_object_preferred_inner_size_set(EWL_OBJECT(w), (int)nw, (int)nh);
+        ewl_object_preferred_inner_size_set(EWL_OBJECT(w), (int)nw, (int)nh);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -918,82 +918,82 @@ ewl_widget_appearance_part_text_apply(Ewl_Widget *w, const char *part, const cha
 void
 ewl_widget_appearance_part_text_set(Ewl_Widget *w, const char *part, const char *text)
 {
-	unsigned int i;
-	Ewl_Pair *match = NULL;
+        unsigned int i;
+        Ewl_Pair *match = NULL;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	if (part && !*part)
-		part = NULL;
+        if (part && !*part)
+        	part = NULL;
 
-	/*
-	 * Check for an existing instance of the part key.
-	 */
-	if (w->theme_text.list) {
-		if (w->theme_text.direct) {
-			match = EWL_PAIR(w->theme_text.list);
-			if (part != match->key ||
-					(part && strcmp(part, match->key)))
-				match = NULL;
-		}
-		else {
-			for (i = 0; i < w->theme_text.len; i++) {
-				Ewl_Pair *current = w->theme_text.list[i];
-				if (part == current->key ||
-						(part && !strcmp(current->key, part))) {
-					match = current;
-					break;
-				}
-			}
-		}
-	}
+        /*
+         * Check for an existing instance of the part key.
+         */
+        if (w->theme_text.list) {
+        	if (w->theme_text.direct) {
+        		match = EWL_PAIR(w->theme_text.list);
+        		if (part != match->key ||
+        				(part && strcmp(part, match->key)))
+        			match = NULL;
+        	}
+        	else {
+        		for (i = 0; i < w->theme_text.len; i++) {
+        			Ewl_Pair *current = w->theme_text.list[i];
+        			if (part == current->key ||
+        					(part && !strcmp(current->key, part))) {
+        				match = current;
+        				break;
+        			}
+        		}
+        	}
+        }
 
-	/*
-	 * Part key exists and the value is the same as the current value.
-	 */
-	if (match) {
-	       	if (text && match->value && !strcmp(text, match->value))
-			DRETURN(DLEVEL_STABLE);
+        /*
+         * Part key exists and the value is the same as the current value.
+         */
+        if (match) {
+               	if (text && match->value && !strcmp(text, match->value))
+        		DRETURN(DLEVEL_STABLE);
 
-		IF_FREE(match->value);
-	}
-	else {
-		match = NEW(Ewl_Pair, 1);
-		if (!match) DRETURN(DLEVEL_STABLE);
+        	IF_FREE(match->value);
+        }
+        else {
+        	match = NEW(Ewl_Pair, 1);
+        	if (!match) DRETURN(DLEVEL_STABLE);
 
-		if (part) match->key = ecore_string_instance(part);
-		else match->key = NULL;
-		w->theme_text.len++;
+        	if (part) match->key = ecore_string_instance(part);
+        	else match->key = NULL;
+        	w->theme_text.len++;
 
-		if (!w->theme_text.list) {
-			w->theme_text.direct = 1;
-			w->theme_text.list = (Ewl_Pair **)match;
-		}
-		else {
-			if (w->theme_text.direct) {
-				Ewl_Pair *old = EWL_PAIR(w->theme_text.list);
-				w->theme_text.list = NEW(Ewl_Pair *, 2);
-				w->theme_text.list[0] = old;
-			}
-			else {
-				w->theme_text.list = realloc(w->theme_text.list,
-						sizeof(Ewl_Pair) *
-						w->theme_text.len);
-			}
-			w->theme_text.list[w->theme_text.len - 1] = match;
-		}
-	}
+        	if (!w->theme_text.list) {
+        		w->theme_text.direct = 1;
+        		w->theme_text.list = (Ewl_Pair **)match;
+        	}
+        	else {
+        		if (w->theme_text.direct) {
+        			Ewl_Pair *old = EWL_PAIR(w->theme_text.list);
+        			w->theme_text.list = NEW(Ewl_Pair *, 2);
+        			w->theme_text.list[0] = old;
+        		}
+        		else {
+        			w->theme_text.list = realloc(w->theme_text.list,
+        					sizeof(Ewl_Pair) *
+        					w->theme_text.len);
+        		}
+        		w->theme_text.list[w->theme_text.len - 1] = match;
+        	}
+        }
 
-	/*
-	 * What should be the default if you enter NULL? A blank string?
-	 * Revert to the text specified in the Edje? Use blank for now.
-	 */
-	match->value = (text ? strdup(text) : NULL);
-	ewl_widget_appearance_part_text_apply(w, match->key, match->value);
+        /*
+         * What should be the default if you enter NULL? A blank string?
+         * Revert to the text specified in the Edje? Use blank for now.
+         */
+        match->value = (text ? strdup(text) : NULL);
+        ewl_widget_appearance_part_text_apply(w, match->key, match->value);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -1012,38 +1012,38 @@ ewl_widget_appearance_part_text_set(Ewl_Widget *w, const char *part, const char 
 const char *
 ewl_widget_appearance_part_text_get(Ewl_Widget *w, const char *part)
 {
-	unsigned int i;
-	Ewl_Pair *match = NULL;
+        unsigned int i;
+        Ewl_Pair *match = NULL;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(w, NULL);
-	DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, NULL);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(w, NULL);
+        DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, NULL);
 
-	/*
-	 * Check for an existing instance of the part key.
-	 */
-	if (w->theme_text.list) {
-		if (w->theme_text.direct) {
-			match = EWL_PAIR(w->theme_text.list);
-			if (part != match->key &&
-					(part && match->key &&
-					 strcmp(part, match->key)))
-				match = NULL;
-		}
-		else {
-			for (i = 0; i < w->theme_text.len; i++) {
-				Ewl_Pair *current = w->theme_text.list[i];
-				if (part == match->key ||
-						(part && match->key &&
-						 !strcmp(part, match->key))) {
-					match = current;
-					break;
-				}
-			}
-		}
-	}
+        /*
+         * Check for an existing instance of the part key.
+         */
+        if (w->theme_text.list) {
+        	if (w->theme_text.direct) {
+        		match = EWL_PAIR(w->theme_text.list);
+        		if (part != match->key &&
+        				(part && match->key &&
+        				 strcmp(part, match->key)))
+        			match = NULL;
+        	}
+        	else {
+        		for (i = 0; i < w->theme_text.len; i++) {
+        			Ewl_Pair *current = w->theme_text.list[i];
+        			if (part == match->key ||
+        					(part && match->key &&
+        					 !strcmp(part, match->key))) {
+        				match = current;
+        				break;
+        			}
+        		}
+        	}
+        }
 
-	DRETURN_PTR((match ? match->value : NULL), DLEVEL_STABLE);
+        DRETURN_PTR((match ? match->value : NULL), DLEVEL_STABLE);
 }
 
 /**
@@ -1061,13 +1061,13 @@ ewl_widget_appearance_part_text_get(Ewl_Widget *w, const char *part)
 void
 ewl_widget_appearance_text_set(Ewl_Widget *w, const char *text)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	ewl_widget_appearance_part_text_set(w, NULL, text);
+        ewl_widget_appearance_part_text_set(w, NULL, text);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -1081,17 +1081,17 @@ ewl_widget_appearance_text_set(Ewl_Widget *w, const char *text)
 const char *
 ewl_widget_appearance_text_get(Ewl_Widget *w)
 {
-	const char *part, *match = NULL;
+        const char *part, *match = NULL;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(w, NULL);
-	DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, NULL);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(w, NULL);
+        DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, NULL);
 
-	part = ewl_theme_data_str_get(w, "textpart");
-	if (part) match = ewl_widget_appearance_part_text_get(w, part);
-	if (!match) match = ewl_widget_appearance_part_text_get(w, NULL);
+        part = ewl_theme_data_str_get(w, "textpart");
+        if (part) match = ewl_widget_appearance_part_text_get(w, part);
+        if (!match) match = ewl_widget_appearance_part_text_get(w, NULL);
 
-	DRETURN_PTR(match, DLEVEL_STABLE);
+        DRETURN_PTR(match, DLEVEL_STABLE);
 }
 
 /**
@@ -1104,17 +1104,17 @@ ewl_widget_appearance_text_get(Ewl_Widget *w)
 void
 ewl_widget_enable(Ewl_Widget *w)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	if (DISABLED(w)) {
-		ewl_object_state_remove(EWL_OBJECT(w), EWL_FLAGS_STATE_MASK);
-		ewl_object_state_add(EWL_OBJECT(w), EWL_FLAG_STATE_NORMAL);
-		ewl_callback_call(w, EWL_CALLBACK_WIDGET_ENABLE);
-	}
+        if (DISABLED(w)) {
+        	ewl_object_state_remove(EWL_OBJECT(w), EWL_FLAGS_STATE_MASK);
+        	ewl_object_state_add(EWL_OBJECT(w), EWL_FLAG_STATE_NORMAL);
+        	ewl_callback_call(w, EWL_CALLBACK_WIDGET_ENABLE);
+        }
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -1127,17 +1127,17 @@ ewl_widget_enable(Ewl_Widget *w)
 void
 ewl_widget_disable(Ewl_Widget *w)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	if (!DISABLED(w)) {
-		ewl_object_state_remove(EWL_OBJECT(w), EWL_FLAGS_STATE_MASK);
-		ewl_object_state_add(EWL_OBJECT(w), EWL_FLAG_STATE_DISABLED);
-		ewl_callback_call(w, EWL_CALLBACK_WIDGET_DISABLE);
-	}
+        if (!DISABLED(w)) {
+        	ewl_object_state_remove(EWL_OBJECT(w), EWL_FLAGS_STATE_MASK);
+        	ewl_object_state_add(EWL_OBJECT(w), EWL_FLAG_STATE_DISABLED);
+        	ewl_callback_call(w, EWL_CALLBACK_WIDGET_DISABLE);
+        }
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -1152,14 +1152,14 @@ ewl_widget_disable(Ewl_Widget *w)
 void
 ewl_widget_layer_priority_set(Ewl_Widget *w, int layer)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	w->layer = layer;
-	if (REALIZED(w)) ewl_widget_layer_update(w);
+        w->layer = layer;
+        if (REALIZED(w)) ewl_widget_layer_update(w);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -1170,11 +1170,11 @@ ewl_widget_layer_priority_set(Ewl_Widget *w, int layer)
 int
 ewl_widget_layer_priority_get(Ewl_Widget *w)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(w, 0);
-	DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, 0);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(w, 0);
+        DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, 0);
 
-	DRETURN_INT(w->layer, DLEVEL_STABLE);
+        DRETURN_INT(w->layer, DLEVEL_STABLE);
 }
 
 /**
@@ -1188,21 +1188,21 @@ ewl_widget_layer_priority_get(Ewl_Widget *w)
 void
 ewl_widget_layer_top_set(Ewl_Widget *w, int top)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	if (w->toplayered == top)
-		DRETURN(DLEVEL_STABLE);
+        if (w->toplayered == top)
+        	DRETURN(DLEVEL_STABLE);
 
-	w->toplayered = top;
+        w->toplayered = top;
 
-	if (REALIZED(w)) {
-		ewl_widget_layer_stack_add(w);
-		ewl_widget_layer_update(w);
-	}
+        if (REALIZED(w)) {
+        	ewl_widget_layer_stack_add(w);
+        	ewl_widget_layer_update(w);
+        }
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -1214,11 +1214,11 @@ ewl_widget_layer_top_set(Ewl_Widget *w, int top)
 int
 ewl_widget_layer_top_get(Ewl_Widget *w)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(w, FALSE);
-	DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, 0);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(w, FALSE);
+        DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, 0);
 
-	DRETURN_INT(w->toplayered, DLEVEL_STABLE);
+        DRETURN_INT(w->toplayered, DLEVEL_STABLE);
 }
 
 /**
@@ -1232,16 +1232,16 @@ ewl_widget_layer_top_get(Ewl_Widget *w)
 void
 ewl_widget_tab_order_append(Ewl_Widget *w)
 {
-	Ewl_Embed *emb;
+        Ewl_Embed *emb;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	emb = ewl_embed_widget_find(w);
-	if (emb) ewl_embed_tab_order_append(emb, w);
+        emb = ewl_embed_widget_find(w);
+        if (emb) ewl_embed_tab_order_append(emb, w);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -1255,16 +1255,16 @@ ewl_widget_tab_order_append(Ewl_Widget *w)
 void
 ewl_widget_tab_order_prepend(Ewl_Widget *w)
 {
-	Ewl_Embed *emb;
+        Ewl_Embed *emb;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	emb = ewl_embed_widget_find(w);
-	if (emb) ewl_embed_tab_order_prepend(emb, w);
+        emb = ewl_embed_widget_find(w);
+        if (emb) ewl_embed_tab_order_prepend(emb, w);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -1279,16 +1279,16 @@ ewl_widget_tab_order_prepend(Ewl_Widget *w)
 void
 ewl_widget_tab_order_insert(Ewl_Widget *w, unsigned int idx)
 {
-	Ewl_Embed *emb;
+        Ewl_Embed *emb;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	emb = ewl_embed_widget_find(w);
-	if (emb) ewl_embed_tab_order_insert(emb, w, idx);
+        emb = ewl_embed_widget_find(w);
+        if (emb) ewl_embed_tab_order_insert(emb, w, idx);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -1300,18 +1300,18 @@ ewl_widget_tab_order_insert(Ewl_Widget *w, unsigned int idx)
 void
 ewl_widget_tab_order_insert_before(Ewl_Widget *w, Ewl_Widget *before)
 {
-	Ewl_Embed *emb;
+        Ewl_Embed *emb;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_PARAM_PTR(before);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
-	DCHECK_TYPE(before, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_PARAM_PTR(before);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DCHECK_TYPE(before, EWL_WIDGET_TYPE);
 
-	emb = ewl_embed_widget_find(w);
-	if (emb) ewl_embed_tab_order_insert_before(emb, w, before);
+        emb = ewl_embed_widget_find(w);
+        if (emb) ewl_embed_tab_order_insert_before(emb, w, before);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -1324,18 +1324,18 @@ ewl_widget_tab_order_insert_before(Ewl_Widget *w, Ewl_Widget *before)
 void
 ewl_widget_tab_order_insert_after(Ewl_Widget *w, Ewl_Widget *after)
 {
-	Ewl_Embed *emb;
+        Ewl_Embed *emb;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_PARAM_PTR(after);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
-	DCHECK_TYPE(after, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_PARAM_PTR(after);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DCHECK_TYPE(after, EWL_WIDGET_TYPE);
 
-	emb = ewl_embed_widget_find(w);
-	if (emb) ewl_embed_tab_order_insert_after(emb, w, after);
+        emb = ewl_embed_widget_find(w);
+        if (emb) ewl_embed_tab_order_insert_after(emb, w, after);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -1346,16 +1346,16 @@ ewl_widget_tab_order_insert_after(Ewl_Widget *w, Ewl_Widget *after)
 void
 ewl_widget_tab_order_remove(Ewl_Widget *w)
 {
-	Ewl_Embed *emb;
+        Ewl_Embed *emb;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	emb = ewl_embed_widget_find(w);
-	if (emb) ewl_embed_tab_order_remove(emb, w);
+        emb = ewl_embed_widget_find(w);
+        if (emb) ewl_embed_tab_order_remove(emb, w);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -1367,20 +1367,20 @@ ewl_widget_tab_order_remove(Ewl_Widget *w)
 void
 ewl_widget_ignore_focus_change_set(Ewl_Widget *w, unsigned int val)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	if (val)
-		ewl_object_flags_add(EWL_OBJECT(w),
-				EWL_FLAG_PROPERTY_BLOCK_TAB_FOCUS,
-				EWL_FLAGS_PROPERTY_MASK);
-	else
-		ewl_object_flags_remove(EWL_OBJECT(w),
-				EWL_FLAG_PROPERTY_BLOCK_TAB_FOCUS,
-				EWL_FLAGS_PROPERTY_MASK);
+        if (val)
+        	ewl_object_flags_add(EWL_OBJECT(w),
+        			EWL_FLAG_PROPERTY_BLOCK_TAB_FOCUS,
+        			EWL_FLAGS_PROPERTY_MASK);
+        else
+        	ewl_object_flags_remove(EWL_OBJECT(w),
+        			EWL_FLAG_PROPERTY_BLOCK_TAB_FOCUS,
+        			EWL_FLAGS_PROPERTY_MASK);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -1391,16 +1391,16 @@ ewl_widget_ignore_focus_change_set(Ewl_Widget *w, unsigned int val)
 unsigned int
 ewl_widget_ignore_focus_change_get(Ewl_Widget *w)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(w, FALSE);
-	DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, FALSE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(w, FALSE);
+        DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, FALSE);
 
-	if (ewl_object_flags_has(EWL_OBJECT(w),
-					EWL_FLAG_PROPERTY_BLOCK_TAB_FOCUS,
-					EWL_FLAGS_PROPERTY_MASK))
-		DRETURN_INT(TRUE, DLEVEL_STABLE);
+        if (ewl_object_flags_has(EWL_OBJECT(w),
+        				EWL_FLAG_PROPERTY_BLOCK_TAB_FOCUS,
+        				EWL_FLAGS_PROPERTY_MASK))
+        	DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-	DRETURN_INT(FALSE, DLEVEL_STABLE);
+        DRETURN_INT(FALSE, DLEVEL_STABLE);
 }
 
 /**
@@ -1412,20 +1412,20 @@ ewl_widget_ignore_focus_change_get(Ewl_Widget *w)
 void
 ewl_widget_focusable_set(Ewl_Widget *w, unsigned int val)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	if (val)
-		ewl_object_flags_add(EWL_OBJECT(w),
-				EWL_FLAG_PROPERTY_FOCUSABLE,
-				EWL_FLAGS_PROPERTY_MASK);
-	else
-		ewl_object_flags_remove(EWL_OBJECT(w),
-				EWL_FLAG_PROPERTY_FOCUSABLE,
-				EWL_FLAGS_PROPERTY_MASK);
+        if (val)
+        	ewl_object_flags_add(EWL_OBJECT(w),
+        			EWL_FLAG_PROPERTY_FOCUSABLE,
+        			EWL_FLAGS_PROPERTY_MASK);
+        else
+        	ewl_object_flags_remove(EWL_OBJECT(w),
+        			EWL_FLAG_PROPERTY_FOCUSABLE,
+        			EWL_FLAGS_PROPERTY_MASK);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -1436,16 +1436,16 @@ ewl_widget_focusable_set(Ewl_Widget *w, unsigned int val)
 unsigned int
 ewl_widget_focusable_get(Ewl_Widget *w)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(w, FALSE);
-	DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, FALSE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(w, FALSE);
+        DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, FALSE);
 
-	if (ewl_object_flags_has(EWL_OBJECT(w),
-					EWL_FLAG_PROPERTY_FOCUSABLE,
-					EWL_FLAGS_PROPERTY_MASK))
-		DRETURN_INT(TRUE, DLEVEL_STABLE);
+        if (ewl_object_flags_has(EWL_OBJECT(w),
+        				EWL_FLAG_PROPERTY_FOCUSABLE,
+        				EWL_FLAGS_PROPERTY_MASK))
+        	DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-	DRETURN_INT(FALSE, DLEVEL_STABLE);
+        DRETURN_INT(FALSE, DLEVEL_STABLE);
 }
 
 /**
@@ -1456,23 +1456,23 @@ ewl_widget_focusable_get(Ewl_Widget *w)
 void
 ewl_widget_tree_print(Ewl_Widget *w)
 {
-	int j, i = 0;
+        int j, i = 0;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	while (w) {
-		for (j = 0; j < i; j++)
-			printf("\t");
+        while (w) {
+        	for (j = 0; j < i; j++)
+        		printf("\t");
 
-		ewl_widget_print(w);
+        	ewl_widget_print(w);
 
-		w = w->parent;
-		i++;
-	}
+        	w = w->parent;
+        	i++;
+        }
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -1483,22 +1483,22 @@ ewl_widget_tree_print(Ewl_Widget *w)
 void
 ewl_widget_print(Ewl_Widget *w)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	printf("%p:%s geometry (%d, %d) %d x %d\n\t%s, %s, %s, %s\n",
-			w, w->appearance,
-			ewl_object_current_x_get(EWL_OBJECT(w)),
-			ewl_object_current_y_get(EWL_OBJECT(w)),
-			ewl_object_current_w_get(EWL_OBJECT(w)),
-			ewl_object_current_h_get(EWL_OBJECT(w)),
-			(VISIBLE(w) ? "visible" : "not visible"),
-			(REALIZED(w) ? "realized" : "not realized"),
-			(DESTROYED(w) ? "destroyed" : "not destroyed"),
-			(DISABLED(w) ? "disabled" : "enabled"));
+        printf("%p:%s geometry (%d, %d) %d x %d\n\t%s, %s, %s, %s\n",
+        		w, w->appearance,
+        		ewl_object_current_x_get(EWL_OBJECT(w)),
+        		ewl_object_current_y_get(EWL_OBJECT(w)),
+        		ewl_object_current_w_get(EWL_OBJECT(w)),
+        		ewl_object_current_h_get(EWL_OBJECT(w)),
+        		(VISIBLE(w) ? "visible" : "not visible"),
+        		(REALIZED(w) ? "realized" : "not realized"),
+        		(DESTROYED(w) ? "destroyed" : "not destroyed"),
+        		(DISABLED(w) ? "disabled" : "enabled"));
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -1509,76 +1509,76 @@ ewl_widget_print(Ewl_Widget *w)
 void
 ewl_widget_print_verbose(Ewl_Widget *w)
 {
-	unsigned int flags;
+        unsigned int flags;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	flags = ewl_object_fill_policy_get(EWL_OBJECT(w));
+        flags = ewl_object_fill_policy_get(EWL_OBJECT(w));
 
-	ewl_widget_print(w);
-	printf("\tPreferred size: %dx%d",
-			ewl_object_preferred_w_get(EWL_OBJECT(w)),
-			ewl_object_preferred_h_get(EWL_OBJECT(w)));
-	printf("\tMinimum size: %dx%d",
-			ewl_object_minimum_w_get(EWL_OBJECT(w)),
-			ewl_object_minimum_h_get(EWL_OBJECT(w)));
-	printf("\tMaximum size: %dx%d\n",
-			ewl_object_maximum_w_get(EWL_OBJECT(w)),
-			ewl_object_maximum_h_get(EWL_OBJECT(w)));
-	printf("\tInsets: %d, %d, %d, %d\n",
-			ewl_object_insets_left_get(EWL_OBJECT(w)),
-			ewl_object_insets_right_get(EWL_OBJECT(w)),
-			ewl_object_insets_top_get(EWL_OBJECT(w)),
-			ewl_object_insets_bottom_get(EWL_OBJECT(w)));
-	printf("\tPadding: %d, %d, %d, %d\n",
-			ewl_object_padding_left_get(EWL_OBJECT(w)),
-			ewl_object_padding_right_get(EWL_OBJECT(w)),
-			ewl_object_padding_top_get(EWL_OBJECT(w)),
-			ewl_object_padding_bottom_get(EWL_OBJECT(w)));
-	printf("\tFill policy:");
+        ewl_widget_print(w);
+        printf("\tPreferred size: %dx%d",
+        		ewl_object_preferred_w_get(EWL_OBJECT(w)),
+        		ewl_object_preferred_h_get(EWL_OBJECT(w)));
+        printf("\tMinimum size: %dx%d",
+        		ewl_object_minimum_w_get(EWL_OBJECT(w)),
+        		ewl_object_minimum_h_get(EWL_OBJECT(w)));
+        printf("\tMaximum size: %dx%d\n",
+        		ewl_object_maximum_w_get(EWL_OBJECT(w)),
+        		ewl_object_maximum_h_get(EWL_OBJECT(w)));
+        printf("\tInsets: %d, %d, %d, %d\n",
+        		ewl_object_insets_left_get(EWL_OBJECT(w)),
+        		ewl_object_insets_right_get(EWL_OBJECT(w)),
+        		ewl_object_insets_top_get(EWL_OBJECT(w)),
+        		ewl_object_insets_bottom_get(EWL_OBJECT(w)));
+        printf("\tPadding: %d, %d, %d, %d\n",
+        		ewl_object_padding_left_get(EWL_OBJECT(w)),
+        		ewl_object_padding_right_get(EWL_OBJECT(w)),
+        		ewl_object_padding_top_get(EWL_OBJECT(w)),
+        		ewl_object_padding_bottom_get(EWL_OBJECT(w)));
+        printf("\tFill policy:");
 
-	if (!flags)
-		printf(" NONE");
+        if (!flags)
+        	printf(" NONE");
 
-	else {
-		if (flags & EWL_FLAG_FILL_HSHRINK)
-			printf(" HSHRINK");
+        else {
+        	if (flags & EWL_FLAG_FILL_HSHRINK)
+        		printf(" HSHRINK");
 
-		if (flags & EWL_FLAG_FILL_HFILL)
-			printf(" HFILL");
+        	if (flags & EWL_FLAG_FILL_HFILL)
+        		printf(" HFILL");
 
-		if (flags & EWL_FLAG_FILL_VSHRINK)
-			printf(" VSHRINK");
+        	if (flags & EWL_FLAG_FILL_VSHRINK)
+        		printf(" VSHRINK");
 
-		if (flags & EWL_FLAG_FILL_VFILL)
-			printf(" VFILL");
-	}
-	printf("\n");
+        	if (flags & EWL_FLAG_FILL_VFILL)
+        		printf(" VFILL");
+        }
+        printf("\n");
 
-	flags = ewl_object_alignment_get(EWL_OBJECT(w));
+        flags = ewl_object_alignment_get(EWL_OBJECT(w));
 
-	printf("\tAlignment:");
-	if (!flags)
-		printf(" CENTER");
+        printf("\tAlignment:");
+        if (!flags)
+        	printf(" CENTER");
 
-	else {
-		if (flags & EWL_FLAG_ALIGN_LEFT)
-			printf(" LEFT");
+        else {
+        	if (flags & EWL_FLAG_ALIGN_LEFT)
+        		printf(" LEFT");
 
-		if (flags & EWL_FLAG_ALIGN_RIGHT)
-			printf(" RIGHT");
+        	if (flags & EWL_FLAG_ALIGN_RIGHT)
+        		printf(" RIGHT");
 
-		if (flags & EWL_FLAG_ALIGN_TOP)
-			printf(" TOP");
+        	if (flags & EWL_FLAG_ALIGN_TOP)
+        		printf(" TOP");
 
-		if (flags & EWL_FLAG_ALIGN_BOTTOM)
-			printf(" BOTTOM");
-	}
-	printf("\n");
+        	if (flags & EWL_FLAG_ALIGN_BOTTOM)
+        		printf(" BOTTOM");
+        }
+        printf("\n");
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -1596,19 +1596,19 @@ ewl_widget_print_verbose(Ewl_Widget *w)
 void
 ewl_widget_internal_set(Ewl_Widget *w, unsigned int val)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	if (val)
-		ewl_object_flags_add(EWL_OBJECT(w), EWL_FLAG_PROPERTY_INTERNAL,
-				EWL_FLAGS_PROPERTY_MASK);
-	else
-		ewl_object_flags_remove(EWL_OBJECT(w),
-				EWL_FLAG_PROPERTY_INTERNAL,
-				EWL_FLAGS_PROPERTY_MASK);
+        if (val)
+        	ewl_object_flags_add(EWL_OBJECT(w), EWL_FLAG_PROPERTY_INTERNAL,
+        			EWL_FLAGS_PROPERTY_MASK);
+        else
+        	ewl_object_flags_remove(EWL_OBJECT(w),
+        			EWL_FLAG_PROPERTY_INTERNAL,
+        			EWL_FLAGS_PROPERTY_MASK);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -1630,18 +1630,18 @@ ewl_widget_internal_set(Ewl_Widget *w, unsigned int val)
 void
 ewl_widget_unmanaged_set(Ewl_Widget *w, unsigned int val)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	if (w->parent) {
-		DWARNING("It is not possible to change the unmanage state "
-				"of a widget that has already a parent!\n");
-		DRETURN(DLEVEL_STABLE);
-	}
-	w->unmanaged = !!val;
+        if (w->parent) {
+        	DWARNING("It is not possible to change the unmanage state "
+        			"of a widget that has already a parent!\n");
+        	DRETURN(DLEVEL_STABLE);
+        }
+        w->unmanaged = !!val;
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -1653,56 +1653,56 @@ ewl_widget_unmanaged_set(Ewl_Widget *w, unsigned int val)
 void
 ewl_widget_inherit(Ewl_Widget *widget, const char *inherit)
 {
-	size_t len;
-	char *tmp = NULL;
-	const char *tmp2 = NULL;
+        size_t len;
+        char *tmp = NULL;
+        const char *tmp2 = NULL;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(widget);
-	DCHECK_PARAM_PTR(inherit);
-	/* can't check the inheritence here as we don't know if the widget
-	 * has any inheritence yet (ewl_widget_init() calls this function to
-	 * set the inheritence) */
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(widget);
+        DCHECK_PARAM_PTR(inherit);
+        /* can't check the inheritence here as we don't know if the widget
+         * has any inheritence yet (ewl_widget_init() calls this function to
+         * set the inheritence) */
 
-	len = strlen(inherit) +  3;
+        len = strlen(inherit) +  3;
 
-	tmp2 = widget->inheritance;
-	if (tmp2) len += strlen(tmp2);
+        tmp2 = widget->inheritance;
+        if (tmp2) len += strlen(tmp2);
 
-	tmp = alloca(sizeof(char) * len);
-	if (tmp) {
-		size_t used = 0;
+        tmp = alloca(sizeof(char) * len);
+        if (tmp) {
+        	size_t used = 0;
 
-		/* Copy the existing inherited types */
-		if (tmp2) used = ecore_strlcpy(tmp, tmp2, len);
+        	/* Copy the existing inherited types */
+        	if (tmp2) used = ecore_strlcpy(tmp, tmp2, len);
 
-		/* Insert the leading colon */
-		if (used < len - 1) {
-			*(tmp + used) = ':';
-			used++;
-		}
+        	/* Insert the leading colon */
+        	if (used < len - 1) {
+        		*(tmp + used) = ':';
+        		used++;
+        	}
 
-		/* Copy newly inherited type */
-		if (used < len)
-			used += ecore_strlcpy(tmp + used, inherit, len - used);
+        	/* Copy newly inherited type */
+        	if (used < len)
+        		used += ecore_strlcpy(tmp + used, inherit, len - used);
 
-		/* Insert trailing colon */
-		if (used < len - 1) {
-			*(tmp + used) = ':';
-			used++;
-		}
+        	/* Insert trailing colon */
+        	if (used < len - 1) {
+        		*(tmp + used) = ':';
+        		used++;
+        	}
 
-		/* Terminate the string */
-		*(tmp + used) = '\0';
-	}
+        	/* Terminate the string */
+        	*(tmp + used) = '\0';
+        }
 
-	/*
-	 * Intentionally lose a reference to the ecore string to keep a
-	 * reference cached for later re-use.
-	 */
-	widget->inheritance = ecore_string_instance(tmp);
+        /*
+         * Intentionally lose a reference to the ecore string to keep a
+         * reference cached for later re-use.
+         */
+        widget->inheritance = ecore_string_instance(tmp);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -1714,47 +1714,47 @@ ewl_widget_inherit(Ewl_Widget *widget, const char *inherit)
 unsigned int
 ewl_widget_type_is(Ewl_Widget *widget, const char *type)
 {
-	int found = FALSE;
+        int found = FALSE;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(widget, FALSE);
-	DCHECK_PARAM_PTR_RET(type, FALSE);
-	/* we don't check the type of the widget in here or we'll get into
-	 * an infinate loop ... */
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(widget, FALSE);
+        DCHECK_PARAM_PTR_RET(type, FALSE);
+        /* we don't check the type of the widget in here or we'll get into
+         * an infinate loop ... */
 
-	if (widget->inheritance)
-	{
-		char *match, *end;
+        if (widget->inheritance)
+        {
+        	char *match, *end;
 
-		match = (char *)widget->inheritance;
-		end = match + 1;
+        	match = (char *)widget->inheritance;
+        	end = match + 1;
 
-		while (*end != '\0')
-		{
-			int count = 0;
+        	while (*end != '\0')
+        	{
+        		int count = 0;
 
-			/* while the type still matches the current part of
-			 * the string */
-			while ((*end != ':') && (*(type + count) == *end))
-			{
-				count ++;
-				end ++;
-			}
+        		/* while the type still matches the current part of
+        		 * the string */
+        		while ((*end != ':') && (*(type + count) == *end))
+        		{
+        			count ++;
+        			end ++;
+        		}
 
-			/* if we ended with the : then this is a match */
-			if ((*end == ':') && (*(type + count) == '\0'))
-			{
-				found = TRUE;
-				break;
-			}
+        		/* if we ended with the : then this is a match */
+        		if ((*end == ':') && (*(type + count) == '\0'))
+        		{
+        			found = TRUE;
+        			break;
+        		}
 
-			/* move to the next set of :s and then move past it */
-			while ((*end != '\0') && (*end != ':')) end ++;
-			if ((*end == ':') && (*(++end) == ':')) end++;
-		}
-	}
+        		/* move to the next set of :s and then move past it */
+        		while ((*end != '\0') && (*end != ':')) end ++;
+        		if ((*end == ':') && (*(++end) == ':')) end++;
+        	}
+        }
 
-	DRETURN_INT(found, DLEVEL_STABLE);
+        DRETURN_INT(found, DLEVEL_STABLE);
 }
 
 /**
@@ -1766,15 +1766,15 @@ ewl_widget_type_is(Ewl_Widget *widget, const char *type)
 unsigned int
 ewl_widget_internal_is(Ewl_Widget *w)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(w, FALSE);
-	DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, FALSE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(w, FALSE);
+        DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, FALSE);
 
-	if (ewl_object_flags_has(EWL_OBJECT(w), EWL_FLAG_PROPERTY_INTERNAL,
-				EWL_FLAGS_PROPERTY_MASK))
-		DRETURN_INT(TRUE, DLEVEL_STABLE);
+        if (ewl_object_flags_has(EWL_OBJECT(w), EWL_FLAG_PROPERTY_INTERNAL,
+        			EWL_FLAGS_PROPERTY_MASK))
+        	DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-	DRETURN_INT(FALSE, DLEVEL_STABLE);
+        DRETURN_INT(FALSE, DLEVEL_STABLE);
 }
 
 /**
@@ -1786,11 +1786,11 @@ ewl_widget_internal_is(Ewl_Widget *w)
 unsigned int
 ewl_widget_unmanaged_is(Ewl_Widget *w)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(w, FALSE);
-	DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, FALSE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(w, FALSE);
+        DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, FALSE);
 
-	DRETURN_INT(UNMANAGED(w), DLEVEL_STABLE);
+        DRETURN_INT(UNMANAGED(w), DLEVEL_STABLE);
 }
 
 /**
@@ -1801,90 +1801,90 @@ ewl_widget_unmanaged_is(Ewl_Widget *w)
 unsigned int
 ewl_widget_onscreen_is(Ewl_Widget *w)
 {
-	int onscreen = FALSE;
-	Ewl_Embed *emb;
+        int onscreen = FALSE;
+        Ewl_Embed *emb;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(w, 0);
-	DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, 0);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(w, 0);
+        DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, 0);
 
-	/*
-	 * Until an embed is present, the widget is off screen by default.
-	 */
-	emb = ewl_embed_widget_find(w);
-	if (emb) onscreen = TRUE;
+        /*
+         * Until an embed is present, the widget is off screen by default.
+         */
+        emb = ewl_embed_widget_find(w);
+        if (emb) onscreen = TRUE;
 
-	/*
-	 * We don't need to configure if it's outside the viewable space in
-	 * it's parent widget. This does not recurse upwards to determine
-	 * ancestor clipped areas, but does obscure items that are outside the
-	 * top level container.
-	 */
-	if (w->parent) {
-		int x = 0, y = 0;
-		int width = 0, height = 0;
-		Ewl_Widget *p = w->parent;
+        /*
+         * We don't need to configure if it's outside the viewable space in
+         * it's parent widget. This does not recurse upwards to determine
+         * ancestor clipped areas, but does obscure items that are outside the
+         * top level container.
+         */
+        if (w->parent) {
+        	int x = 0, y = 0;
+        	int width = 0, height = 0;
+        	Ewl_Widget *p = w->parent;
 
-		/*
-		 * Check if widget is right of the visible area.
-		 */
-		x = ewl_object_current_x_get(EWL_OBJECT(w));
-		if (x > (CURRENT_X(p) + CURRENT_W(p)))
-			onscreen = FALSE;
+        	/*
+        	 * Check if widget is right of the visible area.
+        	 */
+        	x = ewl_object_current_x_get(EWL_OBJECT(w));
+        	if (x > (CURRENT_X(p) + CURRENT_W(p)))
+        		onscreen = FALSE;
 
-		if (onscreen) {
-			if (x > (CURRENT_X(emb) + CURRENT_W(emb)))
-				onscreen = FALSE;
-		}
+        	if (onscreen) {
+        		if (x > (CURRENT_X(emb) + CURRENT_W(emb)))
+        			onscreen = FALSE;
+        	}
 
-		/*
-		 * Check if widget is below the visible area.
-		 */
-		if (onscreen) {
-			y = ewl_object_current_y_get(EWL_OBJECT(w));
-			if (y > (CURRENT_Y(p) + CURRENT_H(p)))
-				onscreen = FALSE;
-		}
+        	/*
+        	 * Check if widget is below the visible area.
+        	 */
+        	if (onscreen) {
+        		y = ewl_object_current_y_get(EWL_OBJECT(w));
+        		if (y > (CURRENT_Y(p) + CURRENT_H(p)))
+        			onscreen = FALSE;
+        	}
 
-		if (onscreen) {
-			if (y > (CURRENT_Y(emb) + CURRENT_H(emb)))
-				onscreen = FALSE;
-		}
+        	if (onscreen) {
+        		if (y > (CURRENT_Y(emb) + CURRENT_H(emb)))
+        			onscreen = FALSE;
+        	}
 
-		/*
-		 * Check if widget is left of visible area.
-		 */
-		if (onscreen) {
-			width = ewl_object_current_w_get(EWL_OBJECT(w));
-			if ((x + width) < CURRENT_X(p))
-				onscreen = FALSE;
-		}
+        	/*
+        	 * Check if widget is left of visible area.
+        	 */
+        	if (onscreen) {
+        		width = ewl_object_current_w_get(EWL_OBJECT(w));
+        		if ((x + width) < CURRENT_X(p))
+        			onscreen = FALSE;
+        	}
 
-		if (onscreen) {
-			if ((x + width) < CURRENT_X(emb))
-				onscreen = FALSE;
-		}
+        	if (onscreen) {
+        		if ((x + width) < CURRENT_X(emb))
+        			onscreen = FALSE;
+        	}
 
-		/*
-		 * Check if widget is above visible area.
-		 */
-		if (onscreen) {
-			height = ewl_object_current_h_get(EWL_OBJECT(w));
-			if ((y + height) < CURRENT_Y(p))
-				onscreen = FALSE;
-		}
+        	/*
+        	 * Check if widget is above visible area.
+        	 */
+        	if (onscreen) {
+        		height = ewl_object_current_h_get(EWL_OBJECT(w));
+        		if ((y + height) < CURRENT_Y(p))
+        			onscreen = FALSE;
+        	}
 
-		if (onscreen) {
-			if ((y + height) < CURRENT_Y(emb))
-				onscreen = FALSE;
-		}
-	}
+        	if (onscreen) {
+        		if ((y + height) < CURRENT_Y(emb))
+        			onscreen = FALSE;
+        	}
+        }
 
-	if (onscreen == TRUE && w->parent) {
-		if ((ewl_widget_onscreen_is(w->parent) == FALSE)) onscreen = FALSE;
-	}
+        if (onscreen == TRUE && w->parent) {
+        	if ((ewl_widget_onscreen_is(w->parent) == FALSE)) onscreen = FALSE;
+        }
 
-	DRETURN_INT(onscreen, DLEVEL_STABLE);
+        DRETURN_INT(onscreen, DLEVEL_STABLE);
 }
 
 /**
@@ -1896,38 +1896,38 @@ ewl_widget_onscreen_is(Ewl_Widget *w)
 void
 ewl_widget_clipped_set(Ewl_Widget *w, unsigned int val)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	if (val)
-		ewl_object_flags_remove(EWL_OBJECT(w), EWL_FLAG_VISIBLE_NOCLIP,
-					EWL_FLAGS_VISIBLE_MASK);
-	else
-		ewl_object_flags_add(EWL_OBJECT(w), EWL_FLAG_VISIBLE_NOCLIP,
-					EWL_FLAGS_VISIBLE_MASK);
+        if (val)
+        	ewl_object_flags_remove(EWL_OBJECT(w), EWL_FLAG_VISIBLE_NOCLIP,
+        				EWL_FLAGS_VISIBLE_MASK);
+        else
+        	ewl_object_flags_add(EWL_OBJECT(w), EWL_FLAG_VISIBLE_NOCLIP,
+        				EWL_FLAGS_VISIBLE_MASK);
 
-	if (!REALIZED(w) || (val && w->fx_clip_box) ||
-			(!val && !w->fx_clip_box))
-		DRETURN(DLEVEL_STABLE);
+        if (!REALIZED(w) || (val && w->fx_clip_box) ||
+        		(!val && !w->fx_clip_box))
+        	DRETURN(DLEVEL_STABLE);
 
-	if (val) {
-		Ewl_Embed *emb;
+        if (val) {
+        	Ewl_Embed *emb;
 
-		emb = ewl_embed_widget_find(w);
-		if (!emb || !emb->canvas)
-			DRETURN(DLEVEL_STABLE);
+        	emb = ewl_embed_widget_find(w);
+        	if (!emb || !emb->canvas)
+        		DRETURN(DLEVEL_STABLE);
 
-		w->fx_clip_box = evas_object_rectangle_add(emb->canvas);
-		evas_object_pass_events_set(w->fx_clip_box, TRUE);
-		ewl_widget_configure(w);
-	}
-	else {
-		ewl_canvas_object_destroy(w->fx_clip_box);
-		w->fx_clip_box = NULL;
-	}
+        	w->fx_clip_box = evas_object_rectangle_add(emb->canvas);
+        	evas_object_pass_events_set(w->fx_clip_box, TRUE);
+        	ewl_widget_configure(w);
+        }
+        else {
+        	ewl_canvas_object_destroy(w->fx_clip_box);
+        	w->fx_clip_box = NULL;
+        }
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -1938,15 +1938,15 @@ ewl_widget_clipped_set(Ewl_Widget *w, unsigned int val)
 unsigned int
 ewl_widget_clipped_is(Ewl_Widget *w)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(w, FALSE);
-	DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, FALSE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(w, FALSE);
+        DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, FALSE);
 
-	if (ewl_object_flags_has(EWL_OBJECT(w), EWL_FLAG_VISIBLE_NOCLIP,
-					EWL_FLAGS_VISIBLE_MASK))
-		DRETURN_INT(FALSE, DLEVEL_STABLE);
+        if (ewl_object_flags_has(EWL_OBJECT(w), EWL_FLAG_VISIBLE_NOCLIP,
+        				EWL_FLAGS_VISIBLE_MASK))
+        	DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	DRETURN_INT(TRUE, DLEVEL_STABLE);
+        DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 /**
@@ -1958,21 +1958,21 @@ ewl_widget_clipped_is(Ewl_Widget *w)
 int
 ewl_widget_parent_of(Ewl_Widget *c, Ewl_Widget *w)
 {
-	Ewl_Widget *parent;
+        Ewl_Widget *parent;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(c, FALSE);
-	DCHECK_TYPE_RET(c, EWL_WIDGET_TYPE, FALSE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(c, FALSE);
+        DCHECK_TYPE_RET(c, EWL_WIDGET_TYPE, FALSE);
 
-	if (!w) DRETURN_INT(FALSE, DLEVEL_STABLE);
+        if (!w) DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	parent = w;
-	while ((parent = parent->parent)) {
-		if (parent == c)
-			DRETURN_INT(TRUE, DLEVEL_STABLE);
-	}
+        parent = w;
+        while ((parent = parent->parent)) {
+        	if (parent == c)
+        		DRETURN_INT(TRUE, DLEVEL_STABLE);
+        }
 
-	DRETURN_INT(FALSE, DLEVEL_STABLE);
+        DRETURN_INT(FALSE, DLEVEL_STABLE);
 }
 
 /**
@@ -1983,19 +1983,19 @@ ewl_widget_parent_of(Ewl_Widget *c, Ewl_Widget *w)
 void
 ewl_widget_focus_send(Ewl_Widget *w)
 {
-	Ewl_Embed *emb;
+        Ewl_Embed *emb;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	emb = ewl_embed_widget_find(w);
-	if (!emb) DRETURN(DLEVEL_STABLE);
+        emb = ewl_embed_widget_find(w);
+        if (!emb) DRETURN(DLEVEL_STABLE);
 
-	ewl_embed_active_set(emb, TRUE);
-	ewl_embed_focused_widget_set(emb, w);
+        ewl_embed_active_set(emb, TRUE);
+        ewl_embed_focused_widget_set(emb, w);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -2005,15 +2005,15 @@ ewl_widget_focus_send(Ewl_Widget *w)
 Ewl_Widget *
 ewl_widget_focused_get(void)
 {
-	Ewl_Embed *emb;
-	Ewl_Widget *w = NULL;
+        Ewl_Embed *emb;
+        Ewl_Widget *w = NULL;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
 
-	emb = ewl_embed_active_embed_get();
-	if (emb) w = ewl_embed_focused_widget_get(emb);
+        emb = ewl_embed_active_embed_get();
+        if (emb) w = ewl_embed_focused_widget_get(emb);
 
-	DRETURN_PTR(w, DLEVEL_STABLE);
+        DRETURN_PTR(w, DLEVEL_STABLE);
 }
 
 /**
@@ -2027,25 +2027,25 @@ ewl_widget_focused_get(void)
  */
 void
 ewl_widget_color_set(Ewl_Widget *w, unsigned int r, unsigned int g,
-					unsigned int b, unsigned int a)
+        				unsigned int b, unsigned int a)
 {
-	Ewl_Color_Set *color;
+        Ewl_Color_Set *color;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	color = NEW(Ewl_Color_Set, 1);
-	color->r = r;
-	color->g = g;
-	color->b = b;
-	color->a = a;
-	ewl_attach_color_set(w, color);
+        color = NEW(Ewl_Color_Set, 1);
+        color->r = r;
+        color->g = g;
+        color->b = b;
+        color->a = a;
+        ewl_attach_color_set(w, color);
 
-	if (w->fx_clip_box)
-		evas_object_color_set(w->fx_clip_box, r, g, b, a);
+        if (w->fx_clip_box)
+        	evas_object_color_set(w->fx_clip_box, r, g, b, a);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -2059,176 +2059,176 @@ ewl_widget_color_set(Ewl_Widget *w, unsigned int r, unsigned int g,
  */
 void
 ewl_widget_color_get(Ewl_Widget *w, unsigned int *r, unsigned int *g,
-					unsigned int *b, unsigned int *a)
+        				unsigned int *b, unsigned int *a)
 {
-	Ewl_Color_Set *color;
+        Ewl_Color_Set *color;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	color = ewl_attach_color_get(w);
-	if (!color) DRETURN(DLEVEL_STABLE);
+        color = ewl_attach_color_get(w);
+        if (!color) DRETURN(DLEVEL_STABLE);
 
-	if (r) *r = color->r;
-	if (g) *g = color->g;
-	if (b) *b = color->b;
-	if (a) *a = color->a;
+        if (r) *r = color->r;
+        if (g) *g = color->g;
+        if (b) *b = color->b;
+        if (a) *a = color->a;
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 static void
 ewl_widget_layer_stack_add(Ewl_Widget *w)
 {
-	Evas_Object *smart_parent;
+        Evas_Object *smart_parent;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	if (w->parent && !REVEALED(w->parent))
-		DRETURN(DLEVEL_STABLE);
+        if (w->parent && !REVEALED(w->parent))
+        	DRETURN(DLEVEL_STABLE);
 
-	if (w->parent && !w->toplayered)
-		smart_parent = w->parent->smart_object;
-	else {
-		Ewl_Embed *emb;
+        if (w->parent && !w->toplayered)
+        	smart_parent = w->parent->smart_object;
+        else {
+        	Ewl_Embed *emb;
 
-		emb = ewl_embed_widget_find(w);
-		smart_parent = emb->smart;
-	}
+        	emb = ewl_embed_widget_find(w);
+        	smart_parent = emb->smart;
+        }
 
-	evas_object_smart_member_add(w->smart_object, smart_parent);
+        evas_object_smart_member_add(w->smart_object, smart_parent);
 
-	if (w->theme_object)
-		evas_object_smart_member_add(w->theme_object, w->smart_object);
+        if (w->theme_object)
+        	evas_object_smart_member_add(w->theme_object, w->smart_object);
 
-	if (w->fx_clip_box)
-		evas_object_smart_member_add(w->fx_clip_box, w->smart_object);
+        if (w->fx_clip_box)
+        	evas_object_smart_member_add(w->fx_clip_box, w->smart_object);
 
-	if (w->theme_object && w->fx_clip_box)
-		evas_object_stack_below(w->theme_object, w->fx_clip_box);
+        if (w->theme_object && w->fx_clip_box)
+        	evas_object_stack_below(w->theme_object, w->fx_clip_box);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 static void
 ewl_widget_layer_update(Ewl_Widget *w)
 {
-	Ewl_Widget *p;
-	int layer;
+        Ewl_Widget *p;
+        int layer;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	if (!(p = w->parent))
-		DRETURN(DLEVEL_STABLE);
+        if (!(p = w->parent))
+        	DRETURN(DLEVEL_STABLE);
 
-	/* check first if the widget should be on the top */
-	if (w->toplayered)
-	{
-		evas_object_raise(w->smart_object);
-		DRETURN(DLEVEL_STABLE);
-	}
+        /* check first if the widget should be on the top */
+        if (w->toplayered)
+        {
+        	evas_object_raise(w->smart_object);
+        	DRETURN(DLEVEL_STABLE);
+        }
 
-	layer = ewl_widget_layer_priority_get(w);
-	if (layer == 0)
-		evas_object_stack_above(w->smart_object, p->fx_clip_box);
+        layer = ewl_widget_layer_priority_get(w);
+        if (layer == 0)
+        	evas_object_stack_above(w->smart_object, p->fx_clip_box);
 
-	else if (layer > 0) {
-		Evas_Object *above;
+        else if (layer > 0) {
+        	Evas_Object *above;
 
-		if (!(above = ewl_widget_layer_neighbor_find_above(w)))
-		{
-			DWARNING("No object to stack above.");
-			DRETURN(DLEVEL_STABLE);
-		}
-		evas_object_stack_above(w->smart_object, above);
-	}
-	else {
-		Evas_Object *below;
+        	if (!(above = ewl_widget_layer_neighbor_find_above(w)))
+        	{
+        		DWARNING("No object to stack above.");
+        		DRETURN(DLEVEL_STABLE);
+        	}
+        	evas_object_stack_above(w->smart_object, above);
+        }
+        else {
+        	Evas_Object *below;
 
-		if (!(below = ewl_widget_layer_neighbor_find_below(w)))
-		{
-			DWARNING("No object to stack below.");
-			DRETURN(DLEVEL_STABLE);
-		}
-		evas_object_stack_below(w->smart_object, below);
-	}
+        	if (!(below = ewl_widget_layer_neighbor_find_below(w)))
+        	{
+        		DWARNING("No object to stack below.");
+        		DRETURN(DLEVEL_STABLE);
+        	}
+        	evas_object_stack_below(w->smart_object, below);
+        }
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 static Evas_Object *
 ewl_widget_layer_neighbor_find_above(Ewl_Widget *w)
 {
-	Evas_Object *o, *ol;
+        Evas_Object *o, *ol;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(w, NULL);
-	DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, NULL);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(w, NULL);
+        DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, NULL);
 
-	if (!w->parent)
-		DRETURN_PTR(NULL, DLEVEL_STABLE);
+        if (!w->parent)
+        	DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	o = ol = w->parent->fx_clip_box;
+        o = ol = w->parent->fx_clip_box;
 
-	while ((o = evas_object_above_get(o)))
-	{
-		Ewl_Widget *found;
+        while ((o = evas_object_above_get(o)))
+        {
+        	Ewl_Widget *found;
 
-		found = evas_object_data_get(o, "EWL");
-		/*
-		 * Perhaps it is a cached object so no reason to stop iterating
-		 */
-		if (found) {
-			/* ignore the widget itself */
-			if (w == found) continue;
-			if (ewl_widget_layer_priority_get(w) <=
-					ewl_widget_layer_priority_get(found))
-				break;
-			ol = o;
-		}
-	}
+        	found = evas_object_data_get(o, "EWL");
+        	/*
+        	 * Perhaps it is a cached object so no reason to stop iterating
+        	 */
+        	if (found) {
+        		/* ignore the widget itself */
+        		if (w == found) continue;
+        		if (ewl_widget_layer_priority_get(w) <=
+        				ewl_widget_layer_priority_get(found))
+        			break;
+        		ol = o;
+        	}
+        }
 
-	DRETURN_PTR(ol, DLEVEL_STABLE);
+        DRETURN_PTR(ol, DLEVEL_STABLE);
 }
 
 static Evas_Object *
 ewl_widget_layer_neighbor_find_below(Ewl_Widget *w)
 {
-	Evas_Object *o, *ol;
+        Evas_Object *o, *ol;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(w, NULL);
-	DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, NULL);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(w, NULL);
+        DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, NULL);
 
-	if (!w->parent)
-		DRETURN_PTR(NULL, DLEVEL_STABLE);
+        if (!w->parent)
+        	DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-	o = ol = w->parent->fx_clip_box;
+        o = ol = w->parent->fx_clip_box;
 
-	while ((o = evas_object_below_get(o)))
-	{
-		Ewl_Widget *found;
+        while ((o = evas_object_below_get(o)))
+        {
+        	Ewl_Widget *found;
 
-		found = evas_object_data_get(o, "EWL");
-		/*
-		 * Perhaps it is a cached object so no reason to stop iterating
-		 */
-		if (found) {
-			/* ignore the widget itself */
-			if (w == found) continue;
-			if (ewl_widget_layer_priority_get(w) >=
-					ewl_widget_layer_priority_get(found))
-				break;
-			ol = o;
-		}
-	}
+        	found = evas_object_data_get(o, "EWL");
+        	/*
+        	 * Perhaps it is a cached object so no reason to stop iterating
+        	 */
+        	if (found) {
+        		/* ignore the widget itself */
+        		if (w == found) continue;
+        		if (ewl_widget_layer_priority_get(w) >=
+        				ewl_widget_layer_priority_get(found))
+        			break;
+        		ol = o;
+        	}
+        }
 
-	DRETURN_PTR(ol, DLEVEL_STABLE);
+        DRETURN_PTR(ol, DLEVEL_STABLE);
 }
 
 /**
@@ -2240,59 +2240,59 @@ ewl_widget_layer_neighbor_find_below(Ewl_Widget *w)
 void
 ewl_widget_free(Ewl_Widget *w)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	/*
-	 * cleanup the attachment lists
-	 */
-	if (w->attach)
-	{
-		ewl_attach_list_del(w->attach, EWL_ATTACH_TYPE_TOOLTIP);
-		ewl_attach_list_del(w->attach, EWL_ATTACH_TYPE_COLOR);
-		ewl_attach_list_del(w->attach, EWL_ATTACH_TYPE_NAME);
-	}
+        /*
+         * cleanup the attachment lists
+         */
+        if (w->attach)
+        {
+        	ewl_attach_list_del(w->attach, EWL_ATTACH_TYPE_TOOLTIP);
+        	ewl_attach_list_del(w->attach, EWL_ATTACH_TYPE_COLOR);
+        	ewl_attach_list_del(w->attach, EWL_ATTACH_TYPE_NAME);
+        }
 
-	/*
-	 * Free up appearance related information
-	 */
-	ewl_theme_widget_shutdown(w);
+        /*
+         * Free up appearance related information
+         */
+        ewl_theme_widget_shutdown(w);
 
-	IF_RELEASE(w->appearance);
-	IF_RELEASE(w->inheritance)
-	IF_RELEASE(w->theme_state);
+        IF_RELEASE(w->appearance);
+        IF_RELEASE(w->inheritance)
+        IF_RELEASE(w->theme_state);
 
-	if (w->theme_text.list) {
-		if (w->theme_text.direct) {
-			Ewl_Pair *pair = EWL_PAIR(w->theme_text.list);
-			IF_RELEASE(pair->key);
-			FREE(EWL_PAIR(w->theme_text.list)->value);
-		}
-		else {
-			unsigned int i;
-			for (i = 0; i < w->theme_text.len; i++) {
-				Ewl_Pair *pair = EWL_PAIR(w->theme_text.list[i]);
-				IF_RELEASE(pair->key);
-				FREE(w->theme_text.list[i]->value);
-				FREE(w->theme_text.list[i]);
-			}
-		}
+        if (w->theme_text.list) {
+        	if (w->theme_text.direct) {
+        		Ewl_Pair *pair = EWL_PAIR(w->theme_text.list);
+        		IF_RELEASE(pair->key);
+        		FREE(EWL_PAIR(w->theme_text.list)->value);
+        	}
+        	else {
+        		unsigned int i;
+        		for (i = 0; i < w->theme_text.len; i++) {
+        			Ewl_Pair *pair = EWL_PAIR(w->theme_text.list[i]);
+        			IF_RELEASE(pair->key);
+        			FREE(w->theme_text.list[i]->value);
+        			FREE(w->theme_text.list[i]);
+        		}
+        	}
 
-		FREE(w->theme_text.list);
-		w->theme_text.len = 0;
-	}
+        	FREE(w->theme_text.list);
+        	w->theme_text.len = 0;
+        }
 
-	if (ewl_widget_data_table) {
-		Ecore_Hash *w_data;
+        if (ewl_widget_data_table) {
+        	Ecore_Hash *w_data;
 
-		w_data = ecore_hash_remove(ewl_widget_data_table, w);
-		IF_FREE_HASH(w_data);
-	}
+        	w_data = ecore_hash_remove(ewl_widget_data_table, w);
+        	IF_FREE_HASH(w_data);
+        }
 
-	FREE(w);
+        FREE(w);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -2305,24 +2305,24 @@ ewl_widget_free(Ewl_Widget *w)
  */
 void
 ewl_widget_cb_show(Ewl_Widget *w, void *ev_data __UNUSED__,
-			void *user_data __UNUSED__)
+        		void *user_data __UNUSED__)
 {
-	Ewl_Container *pc;
+        Ewl_Container *pc;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	if (w->smart_object) evas_object_show(w->smart_object);
-	if (w->fx_clip_box) evas_object_show(w->fx_clip_box);
-	if (w->theme_object) evas_object_show(w->theme_object);
+        if (w->smart_object) evas_object_show(w->smart_object);
+        if (w->fx_clip_box) evas_object_show(w->fx_clip_box);
+        if (w->theme_object) evas_object_show(w->theme_object);
 
-	pc = EWL_CONTAINER(w->parent);
-	if (pc) ewl_container_child_show_call(pc, w);
+        pc = EWL_CONTAINER(w->parent);
+        if (pc) ewl_container_child_show_call(pc, w);
 
-	ewl_widget_tab_order_prepend(w);
+        ewl_widget_tab_order_prepend(w);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -2335,27 +2335,27 @@ ewl_widget_cb_show(Ewl_Widget *w, void *ev_data __UNUSED__,
  */
 void
 ewl_widget_cb_hide(Ewl_Widget *w, void *ev_data __UNUSED__,
-			void *user_data __UNUSED__)
+        		void *user_data __UNUSED__)
 {
-	Ewl_Container *pc;
-	Ewl_Embed *emb;
+        Ewl_Container *pc;
+        Ewl_Embed *emb;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	ewl_widget_obscure(w);
+        ewl_widget_obscure(w);
 
-	/*
-	 * Notify parent of hidden state.
-	 */
-	pc = EWL_CONTAINER(w->parent);
-	if (pc) ewl_container_child_hide_call(pc, w);
+        /*
+         * Notify parent of hidden state.
+         */
+        pc = EWL_CONTAINER(w->parent);
+        if (pc) ewl_container_child_hide_call(pc, w);
 
-	emb = ewl_embed_widget_find(w);
-	if (emb) ewl_embed_info_widgets_cleanup(emb, w);
+        emb = ewl_embed_widget_find(w);
+        if (emb) ewl_embed_info_widgets_cleanup(emb, w);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -2368,161 +2368,161 @@ ewl_widget_cb_hide(Ewl_Widget *w, void *ev_data __UNUSED__,
  */
 void
 ewl_widget_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
-					  void *user_data __UNUSED__)
+        				  void *user_data __UNUSED__)
 {
-	Ewl_Embed *emb;
+        Ewl_Embed *emb;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
 
-	emb = ewl_embed_widget_find(w);
-	if (!emb || !emb->canvas)
-		DRETURN(DLEVEL_STABLE);
+        emb = ewl_embed_widget_find(w);
+        if (!emb || !emb->canvas)
+        	DRETURN(DLEVEL_STABLE);
 
-	/*
-	 * Increment the dnd awareness counter on the embed.
-	 */
-	if (ewl_object_flags_has(EWL_OBJECT(w), EWL_FLAG_PROPERTY_DND_TARGET,
-				EWL_FLAGS_PROPERTY_MASK))
-		ewl_embed_dnd_aware_set(emb);
+        /*
+         * Increment the dnd awareness counter on the embed.
+         */
+        if (ewl_object_flags_has(EWL_OBJECT(w), EWL_FLAG_PROPERTY_DND_TARGET,
+        			EWL_FLAGS_PROPERTY_MASK))
+        	ewl_embed_dnd_aware_set(emb);
 
-	/*
-	 * Smart Object allocation
-	 */
-	if (!w->smart_object) {
-		/*
-		 * Attempt to load a cached object first, fallback to adding a
-		 * new one.
-		 */
-		w->smart_object = ewl_embed_object_request(emb, "Ewl Widget Smart Object");
-		if (!w->smart_object) {
-			if (!widget_smart) {
-				static const Evas_Smart_Class sc = {
-					"Ewl Widget Smart Object",
-					EVAS_SMART_CLASS_VERSION,
-					NULL, NULL, NULL, NULL, NULL,
-				       	NULL, NULL, NULL, NULL, NULL
-				};
-				widget_smart = evas_smart_class_new(&sc);
-			}
-			w->smart_object = evas_object_smart_add(emb->canvas, widget_smart);
-		}
-		evas_object_data_set(w->smart_object, "EWL", w);
-	}
+        /*
+         * Smart Object allocation
+         */
+        if (!w->smart_object) {
+        	/*
+        	 * Attempt to load a cached object first, fallback to adding a
+        	 * new one.
+        	 */
+        	w->smart_object = ewl_embed_object_request(emb, "Ewl Widget Smart Object");
+        	if (!w->smart_object) {
+        		if (!widget_smart) {
+        			static const Evas_Smart_Class sc = {
+        				"Ewl Widget Smart Object",
+        				EVAS_SMART_CLASS_VERSION,
+        				NULL, NULL, NULL, NULL, NULL,
+        			       	NULL, NULL, NULL, NULL, NULL
+        			};
+        			widget_smart = evas_smart_class_new(&sc);
+        		}
+        		w->smart_object = evas_object_smart_add(emb->canvas, widget_smart);
+        	}
+        	evas_object_data_set(w->smart_object, "EWL", w);
+        }
 
-	/*
-	 * No object allocated yet for this widget
-	 */
-	if (!w->theme_object && w->theme_path && w->theme_group) {
-		/*
-		 * Attempt to load a cached object first, fallback to adding a
-		 * new one.
-		 */
-		w->theme_object = ewl_embed_object_request(emb, "edje");
-		if (!w->theme_object)
-			w->theme_object = edje_object_add(emb->canvas);
+        /*
+         * No object allocated yet for this widget
+         */
+        if (!w->theme_object && w->theme_path && w->theme_group) {
+        	/*
+        	 * Attempt to load a cached object first, fallback to adding a
+        	 * new one.
+        	 */
+        	w->theme_object = ewl_embed_object_request(emb, "edje");
+        	if (!w->theme_object)
+        		w->theme_object = edje_object_add(emb->canvas);
 
-		/*
-		 * Attempt to load the theme object
-		 */
-		evas_object_repeat_events_set(w->theme_object, 1);
-		if (!edje_object_file_set(w->theme_object, w->theme_path, w->theme_group))
-			DWARNING("Error setting edje object %s, %s.",
-					w->theme_path, w->theme_group);
+        	/*
+        	 * Attempt to load the theme object
+        	 */
+        	evas_object_repeat_events_set(w->theme_object, 1);
+        	if (!edje_object_file_set(w->theme_object, w->theme_path, w->theme_group))
+        		DWARNING("Error setting edje object %s, %s.",
+        				w->theme_path, w->theme_group);
 
-		/*
-		 * If the file failed to load, destroy the unnecessary evas
-		 * object.
-		 */
-		if (edje_object_load_error_get(w->theme_object)) {
-			evas_object_del(w->theme_object);
-			w->theme_object = NULL;
-		}
+        	/*
+        	 * If the file failed to load, destroy the unnecessary evas
+        	 * object.
+        	 */
+        	if (edje_object_load_error_get(w->theme_object)) {
+        		evas_object_del(w->theme_object);
+        		w->theme_object = NULL;
+        	}
 
-		/*
-		 * Set the state of the theme object
-		 */
-		if (w->theme_state)
-			ewl_widget_state_set(w, (char *)w->theme_state,
-						EWL_STATE_PERSISTENT);
+        	/*
+        	 * Set the state of the theme object
+        	 */
+        	if (w->theme_state)
+        		ewl_widget_state_set(w, (char *)w->theme_state,
+        					EWL_STATE_PERSISTENT);
 
-		if (DISABLED(w))
-			ewl_widget_state_set(w, "disabled",
-						EWL_STATE_PERSISTENT);
+        	if (DISABLED(w))
+        		ewl_widget_state_set(w, "disabled",
+        					EWL_STATE_PERSISTENT);
 
-		/*
-		 * Apply any text overrides
-		 */
-		if (w->theme_object && w->theme_text.list) {
-			const char *key;
-		       	char *value;
+        	/*
+        	 * Apply any text overrides
+        	 */
+        	if (w->theme_object && w->theme_text.list) {
+        		const char *key;
+        	       	char *value;
 
-			if (w->theme_text.direct) {
-				key = EWL_PAIR(w->theme_text.list)->key;
-				value = EWL_PAIR(w->theme_text.list)->value;
-				ewl_widget_appearance_part_text_apply(w, key, value);
-			}
-			else {
-				unsigned int i;
-				for (i = 0; i < w->theme_text.len; i++) {
-					key = w->theme_text.list[i]->key;
-					value = w->theme_text.list[i]->value;
-					ewl_widget_appearance_part_text_apply(w, key, value);
-				}
-			}
-		}
-	}
+        		if (w->theme_text.direct) {
+        			key = EWL_PAIR(w->theme_text.list)->key;
+        			value = EWL_PAIR(w->theme_text.list)->value;
+        			ewl_widget_appearance_part_text_apply(w, key, value);
+        		}
+        		else {
+        			unsigned int i;
+        			for (i = 0; i < w->theme_text.len; i++) {
+        				key = w->theme_text.list[i]->key;
+        				value = w->theme_text.list[i]->value;
+        				ewl_widget_appearance_part_text_apply(w, key, value);
+        			}
+        		}
+        	}
+        }
 
-	/*
-	 * Create clip box if necessary
-	 */
-	if (!w->fx_clip_box && !ewl_object_flags_get(EWL_OBJECT(w),
-						EWL_FLAG_VISIBLE_NOCLIP)) {
-		w->fx_clip_box = ewl_embed_object_request(emb, "rectangle");
-		if (!w->fx_clip_box)
-			w->fx_clip_box = evas_object_rectangle_add(emb->canvas);
+        /*
+         * Create clip box if necessary
+         */
+        if (!w->fx_clip_box && !ewl_object_flags_get(EWL_OBJECT(w),
+        					EWL_FLAG_VISIBLE_NOCLIP)) {
+        	w->fx_clip_box = ewl_embed_object_request(emb, "rectangle");
+        	if (!w->fx_clip_box)
+        		w->fx_clip_box = evas_object_rectangle_add(emb->canvas);
 
-		evas_object_pass_events_set(w->fx_clip_box, TRUE);
-	}
+        	evas_object_pass_events_set(w->fx_clip_box, TRUE);
+        }
 
-	if (w->theme_object && w->fx_clip_box)
-		evas_object_clip_set(w->theme_object, w->fx_clip_box);
+        if (w->theme_object && w->fx_clip_box)
+        	evas_object_clip_set(w->theme_object, w->fx_clip_box);
 
-	/*
-	 * Setup the appropriate clippings.
-	 */
-	if (w->parent && EWL_CONTAINER(w->parent)->clip_box && w->fx_clip_box) {
-		evas_object_clip_set(w->fx_clip_box,
-				EWL_CONTAINER(w->parent)->clip_box);
-		evas_object_show(EWL_CONTAINER(w->parent)->clip_box);
-	}
+        /*
+         * Setup the appropriate clippings.
+         */
+        if (w->parent && EWL_CONTAINER(w->parent)->clip_box && w->fx_clip_box) {
+        	evas_object_clip_set(w->fx_clip_box,
+        			EWL_CONTAINER(w->parent)->clip_box);
+        	evas_object_show(EWL_CONTAINER(w->parent)->clip_box);
+        }
 
-	/*
-	 * Set the layer of the clip box and theme object
-	 */
-	ewl_widget_layer_stack_add(w);
+        /*
+         * Set the layer of the clip box and theme object
+         */
+        ewl_widget_layer_stack_add(w);
 
-	if (w->parent && REVEALED(w->parent))
-		ewl_widget_layer_update(w);
+        if (w->parent && REVEALED(w->parent))
+        	ewl_widget_layer_update(w);
 
-	if (w->fx_clip_box) {
-		Ewl_Color_Set *color;
+        if (w->fx_clip_box) {
+        	Ewl_Color_Set *color;
 
-		color = ewl_attach_color_get(w);
-		if (color)
-			evas_object_color_set(w->fx_clip_box, color->r,
-						color->g, color->b, color->a);
-	}
+        	color = ewl_attach_color_get(w);
+        	if (color)
+        		evas_object_color_set(w->fx_clip_box, color->r,
+        					color->g, color->b, color->a);
+        }
 
-	/*
-	 * Show the theme and clip box if widget is visible
-	 */
-	if (VISIBLE(w)) {
-		if (w->fx_clip_box) evas_object_show(w->fx_clip_box);
-		if (w->theme_object) evas_object_show(w->theme_object);
-	}
+        /*
+         * Show the theme and clip box if widget is visible
+         */
+        if (VISIBLE(w)) {
+        	if (w->fx_clip_box) evas_object_show(w->fx_clip_box);
+        	if (w->theme_object) evas_object_show(w->theme_object);
+        }
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -2535,60 +2535,60 @@ ewl_widget_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
  */
 void
 ewl_widget_cb_obscure(Ewl_Widget *w, void *ev_data __UNUSED__,
-					   void *user_data __UNUSED__)
+        				   void *user_data __UNUSED__)
 {
-	Ewl_Embed *emb;
-	Ewl_Container *pc;
+        Ewl_Embed *emb;
+        Ewl_Container *pc;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
 
-	emb = ewl_embed_widget_find(w);
-	if (!emb) DRETURN(DLEVEL_STABLE);
+        emb = ewl_embed_widget_find(w);
+        if (!emb) DRETURN(DLEVEL_STABLE);
 
-	pc = EWL_CONTAINER(w->parent);
+        pc = EWL_CONTAINER(w->parent);
 
-	/*
-	 * Decrement the dnd awareness counter on the embed.
-	 */
-	if (ewl_object_flags_has(EWL_OBJECT(w), EWL_FLAG_PROPERTY_DND_TARGET,
-				EWL_FLAGS_PROPERTY_MASK))
-		ewl_embed_dnd_aware_remove(emb);
+        /*
+         * Decrement the dnd awareness counter on the embed.
+         */
+        if (ewl_object_flags_has(EWL_OBJECT(w), EWL_FLAG_PROPERTY_DND_TARGET,
+        			EWL_FLAGS_PROPERTY_MASK))
+        	ewl_embed_dnd_aware_remove(emb);
 
-	/*
-	 * Remove all properties on the edje and hand it back to the embed for
-	 * caching.
-	 */
-	if (w->theme_object) {
-		ewl_embed_object_cache(emb, w->theme_object);
-		w->theme_object = NULL;
-	}
+        /*
+         * Remove all properties on the edje and hand it back to the embed for
+         * caching.
+         */
+        if (w->theme_object) {
+        	ewl_embed_object_cache(emb, w->theme_object);
+        	w->theme_object = NULL;
+        }
 
-	/*
-	 * Repeat the process for the clip rect, but also hide the parent clip
-	 * box if there are no visible children. If we don't hide it, there
-	 * will be a white rectangle displayed.
-	 */
-	if (w->fx_clip_box) {
-		ewl_embed_object_cache(emb, w->fx_clip_box);
-		w->fx_clip_box = NULL;
-	}
+        /*
+         * Repeat the process for the clip rect, but also hide the parent clip
+         * box if there are no visible children. If we don't hide it, there
+         * will be a white rectangle displayed.
+         */
+        if (w->fx_clip_box) {
+        	ewl_embed_object_cache(emb, w->fx_clip_box);
+        	w->fx_clip_box = NULL;
+        }
 
-	if (w->smart_object) {
-		evas_object_data_del(w->smart_object, "EWL");
-		ewl_embed_object_cache(emb, w->smart_object);
-		w->smart_object = NULL;
-	}
+        if (w->smart_object) {
+        	evas_object_data_del(w->smart_object, "EWL");
+        	ewl_embed_object_cache(emb, w->smart_object);
+        	w->smart_object = NULL;
+        }
 
-	/*
-	 * This has to happen last to be sure we've removed all clipped parts
-	 */
-	if (pc && pc->clip_box) {
-		if (!evas_object_clipees_get(pc->clip_box))
-			evas_object_hide(pc->clip_box);
-	}
+        /*
+         * This has to happen last to be sure we've removed all clipped parts
+         */
+        if (pc && pc->clip_box) {
+        	if (!evas_object_clipees_get(pc->clip_box))
+        		evas_object_hide(pc->clip_box);
+        }
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -2601,140 +2601,140 @@ ewl_widget_cb_obscure(Ewl_Widget *w, void *ev_data __UNUSED__,
  */
 void
 ewl_widget_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
-			void *user_data __UNUSED__)
+        		void *user_data __UNUSED__)
 {
-	int l = 0, r = 0, t = 0, b = 0;
-	int i_l = 0, i_r = 0, i_t = 0, i_b = 0;
-	int p_l = 0, p_r = 0, p_t = 0, p_b = 0;
-	char *i = NULL;
-	const char *group = NULL;
-	Evas_Coord width, height;
-	Ewl_Embed *emb = NULL;
+        int l = 0, r = 0, t = 0, b = 0;
+        int i_l = 0, i_r = 0, i_t = 0, i_b = 0;
+        int p_l = 0, p_r = 0, p_t = 0, p_b = 0;
+        char *i = NULL;
+        const char *group = NULL;
+        Evas_Coord width, height;
+        Ewl_Embed *emb = NULL;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	emb = ewl_embed_widget_find(w);
+        emb = ewl_embed_widget_find(w);
 
-	/*
-	 * Retrieve the path to the theme file that will be loaded
-	 * return if no file to be loaded.
-	 */
-	i = ewl_theme_image_get(w, "file");
-	if (i) {
-		const char *t;
+        /*
+         * Retrieve the path to the theme file that will be loaded
+         * return if no file to be loaded.
+         */
+        i = ewl_theme_image_get(w, "file");
+        if (i) {
+        	const char *t;
 
-		t = w->theme_path;
-		w->theme_path = ecore_string_instance(i);
+        	t = w->theme_path;
+        	w->theme_path = ecore_string_instance(i);
 
-		/* free this after, if it's the same string we dont' want to
-		 * release all references on it */
-		IF_RELEASE(t);
+        	/* free this after, if it's the same string we dont' want to
+        	 * release all references on it */
+        	IF_RELEASE(t);
 
-	} else {
-		IF_RELEASE(w->theme_path);
-	}
+        } else {
+        	IF_RELEASE(w->theme_path);
+        }
 
-	/*
-	 * Defer group loading until the theme is loaded.
-	 */
-	group = ewl_theme_data_str_get(w, "group");
-	if (group) {
-		const char *t;
+        /*
+         * Defer group loading until the theme is loaded.
+         */
+        group = ewl_theme_data_str_get(w, "group");
+        if (group) {
+        	const char *t;
 
-		t = w->theme_group;
-		w->theme_group = ecore_string_instance(group);
+        	t = w->theme_group;
+        	w->theme_group = ecore_string_instance(group);
 
-		/* free this after, if it's the same string we dont' want to
-		 * release all references on it */
-		IF_RELEASE(t);
+        	/* free this after, if it's the same string we dont' want to
+        	 * release all references on it */
+        	IF_RELEASE(t);
 
-	} else {
-		IF_RELEASE(w->theme_group);
-	}
+        } else {
+        	IF_RELEASE(w->theme_group);
+        }
 
-	IF_FREE(i);
+        IF_FREE(i);
 
-	/*
-	 * Reveal is done in this part of the callback to avoid duplicate code
-	 * for creating the evas objects. Must be done in the callback so that
-	 * prepended callbacks in the embed can create the evas, windows,
-	 * etc.
-	 */
-	ewl_widget_reveal(w);
+        /*
+         * Reveal is done in this part of the callback to avoid duplicate code
+         * for creating the evas objects. Must be done in the callback so that
+         * prepended callbacks in the embed can create the evas, windows,
+         * etc.
+         */
+        ewl_widget_reveal(w);
 
-	/*
-	 * Set up the theme object on the widgets evas
-	 */
-	if (w->theme_object) {
-		ewl_widget_theme_insets_get(w, &i_l, &i_r, &i_t, &i_b);
-		ewl_widget_theme_padding_get(w, &p_l, &p_r, &p_t, &p_b);
+        /*
+         * Set up the theme object on the widgets evas
+         */
+        if (w->theme_object) {
+        	ewl_widget_theme_insets_get(w, &i_l, &i_r, &i_t, &i_b);
+        	ewl_widget_theme_padding_get(w, &p_l, &p_r, &p_t, &p_b);
 
-		ewl_object_insets_get(EWL_OBJECT(w), &l, &r, &t, &b);
+        	ewl_object_insets_get(EWL_OBJECT(w), &l, &r, &t, &b);
 
-		/*
-		 * Use previously set insets and padding if available.
-		 */
-		if (l) i_l = l;
-		if (r) i_r = r;
-		if (t) i_t = t;
-		if (b) i_b = b;
+        	/*
+        	 * Use previously set insets and padding if available.
+        	 */
+        	if (l) i_l = l;
+        	if (r) i_r = r;
+        	if (t) i_t = t;
+        	if (b) i_b = b;
 
-		ewl_object_padding_get(EWL_OBJECT(w), &l, &r, &t, &b);
+        	ewl_object_padding_get(EWL_OBJECT(w), &l, &r, &t, &b);
 
-		if (l) p_l = l;
-		if (r) p_r = r;
-		if (t) p_t = t;
-		if (b) p_b = b;
+        	if (l) p_l = l;
+        	if (r) p_r = r;
+        	if (t) p_t = t;
+        	if (b) p_b = b;
 
-		/*
-		 * Assign the relevant insets and padding.
-		 */
-		ewl_object_insets_set(EWL_OBJECT(w), i_l, i_r, i_t, i_b);
-		ewl_object_padding_set(EWL_OBJECT(w), p_l, p_r, p_t, p_b);
+        	/*
+        	 * Assign the relevant insets and padding.
+        	 */
+        	ewl_object_insets_set(EWL_OBJECT(w), i_l, i_r, i_t, i_b);
+        	ewl_object_padding_set(EWL_OBJECT(w), p_l, p_r, p_t, p_b);
 
-		i_l = CURRENT_X(w);
-		i_t = CURRENT_Y(w);
-		ewl_object_x_request(EWL_OBJECT(w), i_l);
-		ewl_object_y_request(EWL_OBJECT(w), i_t);
+        	i_l = CURRENT_X(w);
+        	i_t = CURRENT_Y(w);
+        	ewl_object_x_request(EWL_OBJECT(w), i_l);
+        	ewl_object_y_request(EWL_OBJECT(w), i_t);
 
-		/*
-		 * Propagate minimum sizes from the bit theme to the widget.
-		 */
-		edje_object_size_min_get(w->theme_object, &width, &height);
-		i_l = (int)(width);
-		i_t = (int)(height);
+        	/*
+        	 * Propagate minimum sizes from the bit theme to the widget.
+        	 */
+        	edje_object_size_min_get(w->theme_object, &width, &height);
+        	i_l = (int)(width);
+        	i_t = (int)(height);
 
-		if (i_l > 0 && MINIMUM_W(w) == EWL_OBJECT_MIN_SIZE
-				&& i_l > EWL_OBJECT_MIN_SIZE
-				&& i_l <= EWL_OBJECT_MAX_SIZE)
-			ewl_object_minimum_w_set(EWL_OBJECT(w), i_l);
+        	if (i_l > 0 && MINIMUM_W(w) == EWL_OBJECT_MIN_SIZE
+        			&& i_l > EWL_OBJECT_MIN_SIZE
+        			&& i_l <= EWL_OBJECT_MAX_SIZE)
+        		ewl_object_minimum_w_set(EWL_OBJECT(w), i_l);
 
-		if (i_t > 0 && MINIMUM_H(w) == EWL_OBJECT_MIN_SIZE
-				&& i_t > EWL_OBJECT_MIN_SIZE
-				&& i_t <= EWL_OBJECT_MAX_SIZE)
-			ewl_object_minimum_h_set(EWL_OBJECT(w), i_t);
+        	if (i_t > 0 && MINIMUM_H(w) == EWL_OBJECT_MIN_SIZE
+        			&& i_t > EWL_OBJECT_MIN_SIZE
+        			&& i_t <= EWL_OBJECT_MAX_SIZE)
+        		ewl_object_minimum_h_set(EWL_OBJECT(w), i_t);
 
-		/*
-		 * Propagate maximum sizes from the bit theme to the widget.
-		 */
-		edje_object_size_max_get(w->theme_object, &width, &height);
-		i_l = (int)(width);
-		i_t = (int)(height);
+        	/*
+        	 * Propagate maximum sizes from the bit theme to the widget.
+        	 */
+        	edje_object_size_max_get(w->theme_object, &width, &height);
+        	i_l = (int)(width);
+        	i_t = (int)(height);
 
-		if (i_l > 0 && MAXIMUM_W(w) == EWL_OBJECT_MAX_SIZE
-				&& i_l >= EWL_OBJECT_MIN_SIZE
-				&& i_l < EWL_OBJECT_MAX_SIZE)
-			ewl_object_maximum_w_set(EWL_OBJECT(w), i_l);
+        	if (i_l > 0 && MAXIMUM_W(w) == EWL_OBJECT_MAX_SIZE
+        			&& i_l >= EWL_OBJECT_MIN_SIZE
+        			&& i_l < EWL_OBJECT_MAX_SIZE)
+        		ewl_object_maximum_w_set(EWL_OBJECT(w), i_l);
 
-		if (i_t > 0 && MAXIMUM_H(w) == EWL_OBJECT_MAX_SIZE
-				&& i_t >= EWL_OBJECT_MIN_SIZE
-				&& i_t < EWL_OBJECT_MAX_SIZE)
-			ewl_object_maximum_h_set(EWL_OBJECT(w), i_t);
-	}
+        	if (i_t > 0 && MAXIMUM_H(w) == EWL_OBJECT_MAX_SIZE
+        			&& i_t >= EWL_OBJECT_MIN_SIZE
+        			&& i_t < EWL_OBJECT_MAX_SIZE)
+        		ewl_object_maximum_h_set(EWL_OBJECT(w), i_t);
+        }
 
-	DRETURN(DLEVEL_STABLE);
+        DRETURN(DLEVEL_STABLE);
 }
 
 /**
@@ -2747,47 +2747,47 @@ ewl_widget_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
  */
 void
 ewl_widget_cb_unrealize(Ewl_Widget *w, void *ev_data __UNUSED__,
-			void *user_data __UNUSED__)
+        		void *user_data __UNUSED__)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	if (w->theme_object) {
-		int i_l, i_r, i_t, i_b;
-		int p_l, p_r, p_t, p_b;
-		int l, r, t, b;
+        if (w->theme_object) {
+        	int i_l, i_r, i_t, i_b;
+        	int p_l, p_r, p_t, p_b;
+        	int l, r, t, b;
 
-		ewl_widget_theme_insets_get(w, &l, &r, &t, &b);
+        	ewl_widget_theme_insets_get(w, &l, &r, &t, &b);
 
-		ewl_object_insets_get(EWL_OBJECT(w), &i_l, &i_r, &i_t, &i_b);
-		ewl_object_padding_get(EWL_OBJECT(w), &p_l, &p_r, &p_t, &p_b);
+        	ewl_object_insets_get(EWL_OBJECT(w), &i_l, &i_r, &i_t, &i_b);
+        	ewl_object_padding_get(EWL_OBJECT(w), &p_l, &p_r, &p_t, &p_b);
 
-		/*
-		 * If the inset/padding values have been changed in code we
-		 * want to leave the code set values. Otherwise, if the
-		 * widget is using the theme set values, we reset to the
-		 * default of 0 for padding/insets
-		 */
-		if (l == i_l) i_l = 0;
-		if (r == i_r) i_r = 0;
-		if (t == i_t) i_t = 0;
-		if (b == i_b) i_b = 0;
+        	/*
+        	 * If the inset/padding values have been changed in code we
+        	 * want to leave the code set values. Otherwise, if the
+        	 * widget is using the theme set values, we reset to the
+        	 * default of 0 for padding/insets
+        	 */
+        	if (l == i_l) i_l = 0;
+        	if (r == i_r) i_r = 0;
+        	if (t == i_t) i_t = 0;
+        	if (b == i_b) i_b = 0;
 
-		ewl_widget_theme_padding_get(w, &l, &r, &t, &b);
-		if (l == p_l) p_l = 0;
-		if (r == p_r) p_r = 0;
-		if (t == p_t) p_t = 0;
-		if (b == p_b) p_b = 0;
+        	ewl_widget_theme_padding_get(w, &l, &r, &t, &b);
+        	if (l == p_l) p_l = 0;
+        	if (r == p_r) p_r = 0;
+        	if (t == p_t) p_t = 0;
+        	if (b == p_b) p_b = 0;
 
-		/*
-		 * Assign the relevant insets and padding.
-		 */
-		ewl_object_insets_set(EWL_OBJECT(w), i_l, i_r, i_t, i_b);
-		ewl_object_padding_set(EWL_OBJECT(w), p_l, p_r, p_t, p_b);
-	}
+        	/*
+        	 * Assign the relevant insets and padding.
+        	 */
+        	ewl_object_insets_set(EWL_OBJECT(w), i_l, i_r, i_t, i_b);
+        	ewl_object_padding_set(EWL_OBJECT(w), p_l, p_r, p_t, p_b);
+        }
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -2800,37 +2800,37 @@ ewl_widget_cb_unrealize(Ewl_Widget *w, void *ev_data __UNUSED__,
  */
 void
 ewl_widget_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
-			void *user_data __UNUSED__)
+        		void *user_data __UNUSED__)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	/*
-	 * Adjust the clip box to display the widget.
-	 */
-	if (w->fx_clip_box) {
-		evas_object_move(w->fx_clip_box,
-				CURRENT_X(w) - INSET_LEFT(w),
-				CURRENT_Y(w) - INSET_TOP(w));
-		evas_object_resize(w->fx_clip_box,
-				CURRENT_W(w) + INSET_LEFT(w) + INSET_RIGHT(w),
-				CURRENT_H(w) + INSET_TOP(w) + INSET_BOTTOM(w));
-	}
+        /*
+         * Adjust the clip box to display the widget.
+         */
+        if (w->fx_clip_box) {
+        	evas_object_move(w->fx_clip_box,
+        			CURRENT_X(w) - INSET_LEFT(w),
+        			CURRENT_Y(w) - INSET_TOP(w));
+        	evas_object_resize(w->fx_clip_box,
+        			CURRENT_W(w) + INSET_LEFT(w) + INSET_RIGHT(w),
+        			CURRENT_H(w) + INSET_TOP(w) + INSET_BOTTOM(w));
+        }
 
-	/*
-	 * Move the base theme object to the correct size and position
-	 */
-	if (w->theme_object) {
-		evas_object_move(w->theme_object,
-				CURRENT_X(w) - INSET_LEFT(w),
-				CURRENT_Y(w) - INSET_TOP(w));
-		evas_object_resize(w->theme_object,
-				CURRENT_W(w) + INSET_LEFT(w) + INSET_RIGHT(w),
-				CURRENT_H(w) + INSET_TOP(w) + INSET_BOTTOM(w));
-	}
+        /*
+         * Move the base theme object to the correct size and position
+         */
+        if (w->theme_object) {
+        	evas_object_move(w->theme_object,
+        			CURRENT_X(w) - INSET_LEFT(w),
+        			CURRENT_Y(w) - INSET_TOP(w));
+        	evas_object_resize(w->theme_object,
+        			CURRENT_W(w) + INSET_LEFT(w) + INSET_RIGHT(w),
+        			CURRENT_H(w) + INSET_TOP(w) + INSET_BOTTOM(w));
+        }
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -2843,22 +2843,22 @@ ewl_widget_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
  */
 void
 ewl_widget_cb_reparent(Ewl_Widget *w, void *ev_data __UNUSED__,
-			void *user_data __UNUSED__)
+        		void *user_data __UNUSED__)
 {
-	Ewl_Container *pc;
+        Ewl_Container *pc;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	pc = EWL_CONTAINER(w->parent);
-	if (REALIZED(w))
-		ewl_widget_unrealize(w);
+        pc = EWL_CONTAINER(w->parent);
+        if (REALIZED(w))
+        	ewl_widget_unrealize(w);
 
-	if (pc && REALIZED(pc) && VISIBLE(w) && !REALIZED(w))
-		ewl_realize_request(w);
+        if (pc && REALIZED(pc) && VISIBLE(w) && !REALIZED(w))
+        	ewl_realize_request(w);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 
@@ -2872,15 +2872,15 @@ ewl_widget_cb_reparent(Ewl_Widget *w, void *ev_data __UNUSED__,
  */
 void
 ewl_widget_cb_enable(Ewl_Widget *w, void *ev_data __UNUSED__,
-					void *user_data __UNUSED__)
+        				void *user_data __UNUSED__)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	ewl_widget_state_set(w, "enabled", EWL_STATE_PERSISTENT);
+        ewl_widget_state_set(w, "enabled", EWL_STATE_PERSISTENT);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -2893,15 +2893,15 @@ ewl_widget_cb_enable(Ewl_Widget *w, void *ev_data __UNUSED__,
  */
 void
 ewl_widget_cb_disable(Ewl_Widget *w, void *ev_data __UNUSED__,
-					void *user_data __UNUSED__)
+        				void *user_data __UNUSED__)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	ewl_widget_state_set(w, "disabled", EWL_STATE_PERSISTENT);
+        ewl_widget_state_set(w, "disabled", EWL_STATE_PERSISTENT);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -2914,18 +2914,18 @@ ewl_widget_cb_disable(Ewl_Widget *w, void *ev_data __UNUSED__,
  */
 void
 ewl_widget_cb_focus_in(Ewl_Widget *w, void *ev_data __UNUSED__,
-				void *user_data __UNUSED__)
+        			void *user_data __UNUSED__)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	if (DISABLED(w))
-		DRETURN(DLEVEL_STABLE);
+        if (DISABLED(w))
+        	DRETURN(DLEVEL_STABLE);
 
-	ewl_widget_state_set(w, "focus,in", EWL_STATE_TRANSIENT);
+        ewl_widget_state_set(w, "focus,in", EWL_STATE_TRANSIENT);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -2938,18 +2938,18 @@ ewl_widget_cb_focus_in(Ewl_Widget *w, void *ev_data __UNUSED__,
  */
 void
 ewl_widget_cb_focus_out(Ewl_Widget *w, void *ev_data __UNUSED__,
-				void *user_data __UNUSED__)
+        			void *user_data __UNUSED__)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	if (DISABLED(w))
-		DRETURN(DLEVEL_STABLE);
+        if (DISABLED(w))
+        	DRETURN(DLEVEL_STABLE);
 
-	ewl_widget_state_set(w, "focus,out", EWL_STATE_TRANSIENT);
+        ewl_widget_state_set(w, "focus,out", EWL_STATE_TRANSIENT);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -2962,18 +2962,18 @@ ewl_widget_cb_focus_out(Ewl_Widget *w, void *ev_data __UNUSED__,
  */
 void
 ewl_widget_cb_mouse_in(Ewl_Widget *w, void *ev_data __UNUSED__,
-				void *user_data __UNUSED__)
+        			void *user_data __UNUSED__)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	if (DISABLED(w))
-		DRETURN(DLEVEL_STABLE);
+        if (DISABLED(w))
+        	DRETURN(DLEVEL_STABLE);
 
-	ewl_widget_state_set(w, "mouse,in", EWL_STATE_TRANSIENT);
+        ewl_widget_state_set(w, "mouse,in", EWL_STATE_TRANSIENT);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -2986,18 +2986,18 @@ ewl_widget_cb_mouse_in(Ewl_Widget *w, void *ev_data __UNUSED__,
  */
 void
 ewl_widget_cb_mouse_out(Ewl_Widget *w, void *ev_data __UNUSED__,
-				void *user_data __UNUSED__)
+        			void *user_data __UNUSED__)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	if (DISABLED(w))
-		DRETURN(DLEVEL_STABLE);
+        if (DISABLED(w))
+        	DRETURN(DLEVEL_STABLE);
 
-	ewl_widget_state_set(w, "mouse,out", EWL_STATE_TRANSIENT);
+        ewl_widget_state_set(w, "mouse,out", EWL_STATE_TRANSIENT);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -3010,22 +3010,22 @@ ewl_widget_cb_mouse_out(Ewl_Widget *w, void *ev_data __UNUSED__,
  */
 void
 ewl_widget_cb_mouse_down(Ewl_Widget *w, void *ev_data,
-				void *user_data __UNUSED__)
+        			void *user_data __UNUSED__)
 {
-	Ewl_Event_Mouse_Down *e = ev_data;
-	char state[14];
+        Ewl_Event_Mouse_Down *e = ev_data;
+        char state[14];
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	if (DISABLED(w))
-		DRETURN(DLEVEL_STABLE);
+        if (DISABLED(w))
+        	DRETURN(DLEVEL_STABLE);
 
-	snprintf(state, sizeof(state), "mouse,down,%i", e->button);
-	ewl_widget_state_set(w, state, EWL_STATE_TRANSIENT);
+        snprintf(state, sizeof(state), "mouse,down,%i", e->button);
+        ewl_widget_state_set(w, state, EWL_STATE_TRANSIENT);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -3038,44 +3038,44 @@ ewl_widget_cb_mouse_down(Ewl_Widget *w, void *ev_data,
  */
 void
 ewl_widget_cb_mouse_up(Ewl_Widget *w, void *ev_data,
-				void *user_data __UNUSED__)
+        			void *user_data __UNUSED__)
 {
-	Ewl_Event_Mouse_Up *e = ev_data;
-	char state[14];
+        Ewl_Event_Mouse_Up *e = ev_data;
+        char state[14];
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	if (DISABLED(w))
-		DRETURN(DLEVEL_STABLE);
+        if (DISABLED(w))
+        	DRETURN(DLEVEL_STABLE);
 
-	if (ewl_object_state_has(EWL_OBJECT(w), EWL_FLAG_STATE_DND)) {
-		ewl_object_state_remove(EWL_OBJECT(w), EWL_FLAG_STATE_DND);
-		ewl_dnd_drag_drop(w);
-	}
+        if (ewl_object_state_has(EWL_OBJECT(w), EWL_FLAG_STATE_DND)) {
+        	ewl_object_state_remove(EWL_OBJECT(w), EWL_FLAG_STATE_DND);
+        	ewl_dnd_drag_drop(w);
+        }
 
-	snprintf(state, sizeof(state), "mouse,up,%i", e->button);
-	ewl_widget_state_set(w, state, EWL_STATE_TRANSIENT);
+        snprintf(state, sizeof(state), "mouse,up,%i", e->button);
+        ewl_widget_state_set(w, state, EWL_STATE_TRANSIENT);
 
-	if (ewl_object_state_has(EWL_OBJECT(w), EWL_FLAG_STATE_MOUSE_IN)) {
-		int x, y;
+        if (ewl_object_state_has(EWL_OBJECT(w), EWL_FLAG_STATE_MOUSE_IN)) {
+        	int x, y;
 
-		ewl_widget_state_set(w, "mouse,in", EWL_STATE_TRANSIENT);
-		x = e->base.x - (CURRENT_X(w) - INSET_LEFT(w));
-		y = e->base.y - (CURRENT_Y(w) - INSET_TOP(w));
-		if ((x > 0) && (x < CURRENT_W(w) + INSET_HORIZONTAL(w)) &&
-				(y > 0) && (y < CURRENT_H(w) + INSET_VERTICAL(w))) {
-			ewl_callback_call_with_event_data(w,
-					EWL_CALLBACK_CLICKED, ev_data);
-		}
-		else
-			ewl_embed_mouse_move_feed(ewl_embed_widget_find(w),
-					e->base.x, e->base.y, e->base.modifiers);
-	} else
-		ewl_widget_state_set(w, "mouse,out", EWL_STATE_TRANSIENT);
+        	ewl_widget_state_set(w, "mouse,in", EWL_STATE_TRANSIENT);
+        	x = e->base.x - (CURRENT_X(w) - INSET_LEFT(w));
+        	y = e->base.y - (CURRENT_Y(w) - INSET_TOP(w));
+        	if ((x > 0) && (x < CURRENT_W(w) + INSET_HORIZONTAL(w)) &&
+        			(y > 0) && (y < CURRENT_H(w) + INSET_VERTICAL(w))) {
+        		ewl_callback_call_with_event_data(w,
+        				EWL_CALLBACK_CLICKED, ev_data);
+        	}
+        	else
+        		ewl_embed_mouse_move_feed(ewl_embed_widget_find(w),
+        				e->base.x, e->base.y, e->base.modifiers);
+        } else
+        	ewl_widget_state_set(w, "mouse,out", EWL_STATE_TRANSIENT);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -3088,126 +3088,126 @@ ewl_widget_cb_mouse_up(Ewl_Widget *w, void *ev_data,
  */
 void
 ewl_widget_cb_mouse_move(Ewl_Widget *w, void *ev_data,
-				void *user_data __UNUSED__)
+        			void *user_data __UNUSED__)
 {
-	Ewl_Embed *embed;
-	Ewl_Object *o;
-	Ewl_Event_Mouse *ev = ev_data;
+        Ewl_Embed *embed;
+        Ewl_Object *o;
+        Ewl_Event_Mouse *ev = ev_data;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	o = EWL_OBJECT(w);
+        o = EWL_OBJECT(w);
 
-	ewl_widget_state_set(w, "mouse,move", EWL_STATE_TRANSIENT);
-	if (ewl_object_state_has(o, EWL_FLAG_STATE_PRESSED) &&
-			ewl_object_flags_has(o, EWL_FLAG_PROPERTY_DND_SOURCE,
-				EWL_FLAGS_PROPERTY_MASK)) {
+        ewl_widget_state_set(w, "mouse,move", EWL_STATE_TRANSIENT);
+        if (ewl_object_state_has(o, EWL_FLAG_STATE_PRESSED) &&
+        		ewl_object_flags_has(o, EWL_FLAG_PROPERTY_DND_SOURCE,
+        			EWL_FLAGS_PROPERTY_MASK)) {
 
-		embed = ewl_embed_widget_find(w);
-		if (!ewl_object_state_has(o, EWL_FLAG_STATE_DND)) {
-			ewl_object_state_add(o, EWL_FLAG_STATE_DND);
-			embed->last.drag_widget = w;
-			ewl_dnd_drag_start(w);
-		}
+        	embed = ewl_embed_widget_find(w);
+        	if (!ewl_object_state_has(o, EWL_FLAG_STATE_DND)) {
+        		ewl_object_state_add(o, EWL_FLAG_STATE_DND);
+        		embed->last.drag_widget = w;
+        		ewl_dnd_drag_start(w);
+        	}
 
-		if (ev && (ev->x > CURRENT_X(embed) &&
-				ev->y > CURRENT_Y(embed) &&
-				ev->x < CURRENT_X(embed) + CURRENT_W(embed) &&
-				ev->y < CURRENT_Y(embed) + CURRENT_H(embed))) {
-			ewl_embed_dnd_position_feed(EWL_EMBED(embed),
-							ev->x, ev->y,
-							NULL, NULL,
-							NULL, NULL);
-		}
-	}
+        	if (ev && (ev->x > CURRENT_X(embed) &&
+        			ev->y > CURRENT_Y(embed) &&
+        			ev->x < CURRENT_X(embed) + CURRENT_W(embed) &&
+        			ev->y < CURRENT_Y(embed) + CURRENT_H(embed))) {
+        		ewl_embed_dnd_position_feed(EWL_EMBED(embed),
+        						ev->x, ev->y,
+        						NULL, NULL,
+        						NULL, NULL);
+        	}
+        }
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 static void
 ewl_widget_theme_padding_get(Ewl_Widget *w, int *l, int *r, int *t, int *b)
 {
-	const char *key;
+        const char *key;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	/*
-	 * Read in the padding values from the edje file
-	 */
-	key = edje_object_data_get(w->theme_object, "pad");
-	if (key) {
-		int val = atoi(key);
+        /*
+         * Read in the padding values from the edje file
+         */
+        key = edje_object_data_get(w->theme_object, "pad");
+        if (key) {
+        	int val = atoi(key);
 
-		if (l) *l = val;
-		if (r) *r = val;
-		if (t) *t = val;
-		if (b) *b = val;
-	}
+        	if (l) *l = val;
+        	if (r) *r = val;
+        	if (t) *t = val;
+        	if (b) *b = val;
+        }
 
-	key = edje_object_data_get(w->theme_object, "pad/left");
-	if (key && l) *l = atoi(key);
+        key = edje_object_data_get(w->theme_object, "pad/left");
+        if (key && l) *l = atoi(key);
 
-	key = edje_object_data_get(w->theme_object, "pad/right");
-	if (key && r) *r = atoi(key);
+        key = edje_object_data_get(w->theme_object, "pad/right");
+        if (key && r) *r = atoi(key);
 
-	key = edje_object_data_get(w->theme_object, "pad/top");
-	if (key && t) *t = atoi(key);
+        key = edje_object_data_get(w->theme_object, "pad/top");
+        if (key && t) *t = atoi(key);
 
-	key = edje_object_data_get(w->theme_object, "pad/bottom");
-	if (key && b) *b = atoi(key);
+        key = edje_object_data_get(w->theme_object, "pad/bottom");
+        if (key && b) *b = atoi(key);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 static void
 ewl_widget_theme_insets_get(Ewl_Widget *w, int *l, int *r, int *t, int *b)
 {
-	const char *key;
+        const char *key;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(w);
-	DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-	/*
-	 * Read in the inset values from the edje file
-	 */
-	key = edje_object_data_get(w->theme_object, "inset");
-	if (key) {
-		int val = atoi(key);
+        /*
+         * Read in the inset values from the edje file
+         */
+        key = edje_object_data_get(w->theme_object, "inset");
+        if (key) {
+        	int val = atoi(key);
 
-		if (l) *l = val;
-		if (r) *r = val;
-		if (t) *t = val;
-		if (b) *b = val;
-	}
+        	if (l) *l = val;
+        	if (r) *r = val;
+        	if (t) *t = val;
+        	if (b) *b = val;
+        }
 
-	key = edje_object_data_get(w->theme_object, "inset/left");
-	if (key && l) *l = atoi(key);
+        key = edje_object_data_get(w->theme_object, "inset/left");
+        if (key && l) *l = atoi(key);
 
-	key = edje_object_data_get(w->theme_object, "inset/right");
-	if (key && r) *r = atoi(key);
+        key = edje_object_data_get(w->theme_object, "inset/right");
+        if (key && r) *r = atoi(key);
 
-	key = edje_object_data_get(w->theme_object, "inset/top");
-	if (key && t) *t = atoi(key);
+        key = edje_object_data_get(w->theme_object, "inset/top");
+        if (key && t) *t = atoi(key);
 
-	key = edje_object_data_get(w->theme_object, "inset/bottom");
-	if (key && b) *b = atoi(key);
+        key = edje_object_data_get(w->theme_object, "inset/bottom");
+        if (key && b) *b = atoi(key);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 static void
 ewl_widget_name_table_shutdown(void)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
 
-	IF_FREE_HASH(ewl_widget_name_table);
+        IF_FREE_HASH(ewl_widget_name_table);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 

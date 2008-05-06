@@ -1,4 +1,4 @@
-/* vim: set sw=8 ts=8 sts=8 noexpandtab: */
+/* vim: set sw=8 ts=8 sts=8 expandtab: */
 #ifndef EWL_BOX_H
 #define EWL_BOX_H
 
@@ -54,38 +54,38 @@ typedef struct Ewl_Box Ewl_Box;
  */
 struct Ewl_Box
 {
-	Ewl_Container container; 	/**< Inherit from Ewl_Container */
+        Ewl_Container container; 	/**< Inherit from Ewl_Container */
 
-	Ewl_Orientation orientation; 	/**< Indicate the orientation of layout */
-	int spacing; 			/**< Space between each widget in the box */
+        Ewl_Orientation orientation; 	/**< Indicate the orientation of layout */
+        int spacing; 			/**< Space between each widget in the box */
 
-	unsigned int homogeneous; 	/**< Flag indicating space assignemnt */
+        unsigned int homogeneous; 	/**< Flag indicating space assignemnt */
 };
 
-Ewl_Widget 	*ewl_box_new(void);
-Ewl_Widget 	*ewl_hbox_new(void);
-Ewl_Widget 	*ewl_vbox_new(void);
-int  		 ewl_box_init(Ewl_Box *box);
-void 		 ewl_box_orientation_set(Ewl_Box *b, Ewl_Orientation o);
+Ewl_Widget         *ewl_box_new(void);
+Ewl_Widget         *ewl_hbox_new(void);
+Ewl_Widget         *ewl_vbox_new(void);
+int          	 ewl_box_init(Ewl_Box *box);
+void         	 ewl_box_orientation_set(Ewl_Box *b, Ewl_Orientation o);
 Ewl_Orientation  ewl_box_orientation_get(Ewl_Box *b);
-void 		 ewl_box_spacing_set(Ewl_Box *b, int spacing);
-void 	 	 ewl_box_homogeneous_set(Ewl_Box *b, unsigned int h);
-unsigned int 	 ewl_box_homogeneous_get(Ewl_Box *b);
+void         	 ewl_box_spacing_set(Ewl_Box *b, int spacing);
+void          	 ewl_box_homogeneous_set(Ewl_Box *b, unsigned int h);
+unsigned int          ewl_box_homogeneous_get(Ewl_Box *b);
 
 /*
  * Internally used callbacks, override at your own risk.
  */
 void ewl_box_cb_child_resize(Ewl_Container *c, Ewl_Widget *w, int size,
-							Ewl_Orientation o);
+        						Ewl_Orientation o);
 void ewl_box_cb_child_homogeneous_resize(Ewl_Container *c,
-				Ewl_Widget *w, int size, Ewl_Orientation o);
+        			Ewl_Widget *w, int size, Ewl_Orientation o);
 void ewl_box_cb_child_show(Ewl_Container *c, Ewl_Widget *w);
 void ewl_box_cb_child_hide(Ewl_Container *c, Ewl_Widget *w);
 void ewl_box_cb_child_homogeneous_show(Ewl_Container *c, Ewl_Widget *w);
 
 void ewl_box_cb_configure(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_box_cb_configure_homogeneous(Ewl_Widget *w, void *ev_data,
-							void *user_data);
+        						void *user_data);
 
 /**
  * @}

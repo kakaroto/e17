@@ -1,4 +1,4 @@
-/* vim: set sw=8 ts=8 sts=8 noexpandtab: */
+/* vim: set sw=8 ts=8 sts=8 expandtab: */
 #ifndef EWL_MENU_H
 #define EWL_MENU_H
 
@@ -50,10 +50,10 @@ typedef struct Ewl_Menu Ewl_Menu;
  */
 struct Ewl_Menu
 {
-	Ewl_Menu_Item  item;		/**< Inherit from Ewl_Menu_Base */
-	Ewl_Widget *popup;              /**< The popup holding the menu items */
+        Ewl_Menu_Item  item;		/**< Inherit from Ewl_Menu_Base */
+        Ewl_Widget *popup;              /**< The popup holding the menu items */
 
-	Ewl_Widget *menubar_parent;	/**< Parent menu bar */
+        Ewl_Widget *menubar_parent;	/**< Parent menu bar */
 };
 
 /**
@@ -66,17 +66,17 @@ typedef struct Ewl_Menu_Info Ewl_Menu_Info;
  */
 struct Ewl_Menu_Info
 {
-	const char *name;		/**< The name of the menu item */
-	const char *img;		/**< The menu item image */
-	void (*cb)(Ewl_Widget *w, void *ev, void *data); /**< The menu item callback */
+        const char *name;		/**< The name of the menu item */
+        const char *img;		/**< The menu item image */
+        void (*cb)(Ewl_Widget *w, void *ev, void *data); /**< The menu item callback */
 };
 
-Ewl_Widget	*ewl_menu_new(void);
-int		 ewl_menu_init(Ewl_Menu *menu);
+Ewl_Widget        *ewl_menu_new(void);
+int        	 ewl_menu_init(Ewl_Menu *menu);
 
-void		 ewl_menu_from_info(Ewl_Menu *menu, Ewl_Menu_Info *info);
+void        	 ewl_menu_from_info(Ewl_Menu *menu, Ewl_Menu_Info *info);
 
-void		 ewl_menu_collapse(Ewl_Menu *menu);
+void        	 ewl_menu_collapse(Ewl_Menu *menu);
 
 /*
  * Internally used callbacks, override at your own risk.

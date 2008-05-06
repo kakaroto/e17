@@ -1,4 +1,4 @@
-/* vim: set sw=8 ts=8 sts=8 noexpandtab: */
+/* vim: set sw=8 ts=8 sts=8 expandtab: */
 #include "ewl_base.h"
 #include "ewl_view.h"
 #include "ewl_macros.h"
@@ -12,18 +12,18 @@
 Ewl_View *
 ewl_view_new(void)
 {
-	Ewl_View *view;
+        Ewl_View *view;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
 
-	view = NEW(Ewl_View, 1);
-	if (!ewl_view_init(view))
-	{
-		FREE(view);
-		DRETURN_PTR(NULL, DLEVEL_STABLE);
-	}
+        view = NEW(Ewl_View, 1);
+        if (!ewl_view_init(view))
+        {
+        	FREE(view);
+        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+        }
 
-	DRETURN_PTR(view, DLEVEL_STABLE);
+        DRETURN_PTR(view, DLEVEL_STABLE);
 }
 
 /**
@@ -34,21 +34,21 @@ ewl_view_new(void)
 Ewl_View *
 ewl_view_clone(const Ewl_View *src)
 {
-	Ewl_View *view;
+        Ewl_View *view;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
 
-	view = NEW(Ewl_View, 1);
-	if (!ewl_view_init(view))
-	{
-		FREE(view);
-		DRETURN_PTR(NULL, DLEVEL_STABLE);
-	}
+        view = NEW(Ewl_View, 1);
+        if (!ewl_view_init(view))
+        {
+        	FREE(view);
+        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+        }
 
-	memcpy(view, src, sizeof(Ewl_View));
-	/* FIXME: Reset reference count once we add that feature */
+        memcpy(view, src, sizeof(Ewl_View));
+        /* FIXME: Reset reference count once we add that feature */
 
-	DRETURN_PTR(view, DLEVEL_STABLE);
+        DRETURN_PTR(view, DLEVEL_STABLE);
 }
 
 /**
@@ -59,10 +59,10 @@ ewl_view_clone(const Ewl_View *src)
 int
 ewl_view_init(Ewl_View *view)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(view, FALSE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(view, FALSE);
 
-	DRETURN_INT(TRUE, DLEVEL_STABLE);
+        DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 /**
@@ -74,12 +74,12 @@ ewl_view_init(Ewl_View *view)
 void
 ewl_view_widget_fetch_set(Ewl_View *v, Ewl_View_Widget_Fetch fetch)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(v);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(v);
 
-	v->fetch = fetch;
+        v->fetch = fetch;
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -91,10 +91,10 @@ ewl_view_widget_fetch_set(Ewl_View *v, Ewl_View_Widget_Fetch fetch)
 Ewl_View_Widget_Fetch
 ewl_view_widget_fetch_get(const Ewl_View *v)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(v, NULL);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(v, NULL);
 
-	DRETURN_PTR(v->fetch, DLEVEL_STABLE);
+        DRETURN_PTR(v->fetch, DLEVEL_STABLE);
 }
 
 /**
@@ -106,12 +106,12 @@ ewl_view_widget_fetch_get(const Ewl_View *v)
 void
 ewl_view_header_fetch_set(Ewl_View *v, Ewl_View_Header_Fetch f)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(v);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(v);
 
-	v->header_fetch = f;
+        v->header_fetch = f;
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -123,10 +123,10 @@ ewl_view_header_fetch_set(Ewl_View *v, Ewl_View_Header_Fetch f)
 Ewl_View_Header_Fetch
 ewl_view_header_fetch_get(const Ewl_View *v)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(v, NULL);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(v, NULL);
 
-	DRETURN_PTR(v->header_fetch, DLEVEL_STABLE);
+        DRETURN_PTR(v->header_fetch, DLEVEL_STABLE);
 }
 
 /**
@@ -138,12 +138,12 @@ ewl_view_header_fetch_get(const Ewl_View *v)
 void
 ewl_view_expansion_view_fetch_set(Ewl_View *v, Ewl_View_Expansion_View_Fetch f)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(v);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(v);
 
-	v->expansion = f;
+        v->expansion = f;
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -155,9 +155,9 @@ ewl_view_expansion_view_fetch_set(Ewl_View *v, Ewl_View_Expansion_View_Fetch f)
 Ewl_View_Expansion_View_Fetch
 ewl_view_expansion_view_fetch_get(const Ewl_View *v)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(v, NULL);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(v, NULL);
 
-	DRETURN_PTR(v->expansion, DLEVEL_STABLE);
+        DRETURN_PTR(v->expansion, DLEVEL_STABLE);
 }
 

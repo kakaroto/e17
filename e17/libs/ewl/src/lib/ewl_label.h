@@ -1,4 +1,4 @@
-/* vim: set sw=8 ts=8 sts=8 noexpandtab: */
+/* vim: set sw=8 ts=8 sts=8 expandtab: */
 #ifndef EWL_LABEL_H
 #define EWL_LABEL_H
 
@@ -48,17 +48,17 @@ typedef struct Ewl_Label Ewl_Label;
  */
 struct Ewl_Label
 {
-	Ewl_Widget widget;      /**< Inherit from Ewl_Widget */
+        Ewl_Widget widget;      /**< Inherit from Ewl_Widget */
 };
 
-Ewl_Widget 	*ewl_label_new(void);
-int 		 ewl_label_init(Ewl_Label *la);
-Ewl_View	*ewl_label_view_get(void);
+Ewl_Widget         *ewl_label_new(void);
+int         	 ewl_label_init(Ewl_Label *la);
+Ewl_View        *ewl_label_view_get(void);
 
-void 		 ewl_label_text_set(Ewl_Label *la, const char *text);
-const char 	*ewl_label_text_get(Ewl_Label *la);
+void         	 ewl_label_text_set(Ewl_Label *la, const char *text);
+const char         *ewl_label_text_get(Ewl_Label *la);
 
-Ewl_View 	*ewl_label_view_get(void);
+Ewl_View         *ewl_label_view_get(void);
 
 /**
  * @}

@@ -1,4 +1,4 @@
-/* vim: set sw=8 ts=8 sts=8 noexpandtab: */
+/* vim: set sw=8 ts=8 sts=8 expandtab: */
 #ifndef EWL_MENU_ITEM_H
 #define EWL_MENU_ITEM_H
 
@@ -50,12 +50,12 @@ typedef struct Ewl_Menu_Item Ewl_Menu_Item;
  */
 struct Ewl_Menu_Item
 {
-	Ewl_Button button; 	/**< Inherit from Ewl_Button */
-	Ewl_Widget *inmenu; 	/**< Set if inside a menu */
+        Ewl_Button button; 	/**< Inherit from Ewl_Button */
+        Ewl_Widget *inmenu; 	/**< Set if inside a menu */
 };
 
-Ewl_Widget	*ewl_menu_item_new(void);
-int		 ewl_menu_item_init(Ewl_Menu_Item *menu);
+Ewl_Widget        *ewl_menu_item_new(void);
+int        	 ewl_menu_item_init(Ewl_Menu_Item *menu);
 
 /**
  * @}

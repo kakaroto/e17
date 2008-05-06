@@ -1,4 +1,4 @@
-/* vim: set sw=8 ts=8 sts=8 noexpandtab: */
+/* vim: set sw=8 ts=8 sts=8 expandtab: */
 #ifndef EWL_SPACER_H
 #define EWL_SPACER_H
 
@@ -42,7 +42,7 @@ typedef struct Ewl_Spacer Ewl_Spacer;
  */
 struct Ewl_Spacer
 {
-	Ewl_Widget widget; /**< Inherit from Ewl_Widget */
+        Ewl_Widget widget; /**< Inherit from Ewl_Widget */
 };
 
 /**
@@ -51,8 +51,8 @@ struct Ewl_Spacer
  */
 #define EWL_SPACER(spacer) ((Ewl_Spacer *) spacer)
 
-Ewl_Widget	*ewl_spacer_new(void);
-int		 ewl_spacer_init(Ewl_Spacer *s);
+Ewl_Widget        *ewl_spacer_new(void);
+int        	 ewl_spacer_init(Ewl_Spacer *s);
 
 /**
  * @}

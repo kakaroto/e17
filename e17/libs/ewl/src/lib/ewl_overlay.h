@@ -1,4 +1,4 @@
-/* vim: set sw=8 ts=8 sts=8 noexpandtab: */
+/* vim: set sw=8 ts=8 sts=8 expandtab: */
 #ifndef EWL_OVERLAY_H
 #define EWL_OVERLAY_H
 
@@ -50,11 +50,11 @@ typedef struct Ewl_Overlay Ewl_Overlay;
  */
 struct Ewl_Overlay
 {
-	Ewl_Container   container; /**< Inherits from the Ewl_Container class */
+        Ewl_Container   container; /**< Inherits from the Ewl_Container class */
 };
 
-Ewl_Widget 	*ewl_overlay_new(void);
-int 		 ewl_overlay_init(Ewl_Overlay *win);
+Ewl_Widget         *ewl_overlay_new(void);
+int         	 ewl_overlay_init(Ewl_Overlay *win);
 
 /*
  * Internally used callbacks, override at your own risk.
@@ -63,7 +63,7 @@ void ewl_overlay_cb_configure(Ewl_Widget *w, void *ev_data, void *user_data);
 
 void ewl_overlay_cb_child_show(Ewl_Container *emb, Ewl_Widget *child);
 void ewl_overlay_cb_child_resize(Ewl_Container *c, Ewl_Widget *w, int size,
-			       Ewl_Orientation o);
+        		       Ewl_Orientation o);
 
 /**
  * @}

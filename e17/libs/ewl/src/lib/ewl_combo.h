@@ -1,4 +1,4 @@
-/* vim: set sw=8 ts=8 sts=8 noexpandtab: */
+/* vim: set sw=8 ts=8 sts=8 expandtab: */
 #ifndef EWL_COMBO_H
 #define EWL_COMBO_H
 
@@ -52,27 +52,27 @@ typedef struct Ewl_Combo Ewl_Combo;
  */
 struct Ewl_Combo
 {
-	Ewl_MVC mvc; /**< Inherit from Ewl_MVC */
+        Ewl_MVC mvc; /**< Inherit from Ewl_MVC */
 
-	Ewl_Widget *popup; 	/**< Use a popup to display with. */
-	Ewl_Widget *button; 	/**< expand/contract button */
-	Ewl_Widget *header; 	/**< The combo header widget */
-	unsigned char editable:1; /**< Is the combo editable */
-	unsigned char scrollable:1; /**< Is the combo scrollable */
+        Ewl_Widget *popup; 	/**< Use a popup to display with. */
+        Ewl_Widget *button; 	/**< expand/contract button */
+        Ewl_Widget *header; 	/**< The combo header widget */
+        unsigned char editable:1; /**< Is the combo editable */
+        unsigned char scrollable:1; /**< Is the combo scrollable */
 };
 
-Ewl_Widget 	*ewl_combo_new(void);
-int		 ewl_combo_init(Ewl_Combo *combo);
+Ewl_Widget         *ewl_combo_new(void);
+int        	 ewl_combo_init(Ewl_Combo *combo);
 
-void		 ewl_combo_editable_set(Ewl_Combo *combo,
-						unsigned int editable);
-unsigned int	 ewl_combo_editable_get(Ewl_Combo *combo);
-void		 ewl_combo_scrollable_set(Ewl_Combo *combo,
-						unsigned int scrollable);
-unsigned int	 ewl_combo_scrollable_get(Ewl_Combo *combo);
+void        	 ewl_combo_editable_set(Ewl_Combo *combo,
+        					unsigned int editable);
+unsigned int         ewl_combo_editable_get(Ewl_Combo *combo);
+void        	 ewl_combo_scrollable_set(Ewl_Combo *combo,
+        					unsigned int scrollable);
+unsigned int         ewl_combo_scrollable_get(Ewl_Combo *combo);
 
-void		 ewl_combo_popup_container_set(Ewl_Combo *combo,
-						Ewl_Container *c);
+void        	 ewl_combo_popup_container_set(Ewl_Combo *combo,
+        					Ewl_Container *c);
 
 
 /*
@@ -113,25 +113,25 @@ typedef struct Ewl_Combo_Cell Ewl_Combo_Cell;
  */
 struct Ewl_Combo_Cell
 {
-	Ewl_Cell cell;		/**< Inherit from the cell */
-	Ewl_Combo *combo;	/**< The parent combo */
-	const Ewl_Model *model;	/**< The model that was used to build the
-					content of the cell */
-	void *mvc_data;		/**< The mvc data that was used to build the
-					content of the cell */
+        Ewl_Cell cell;		/**< Inherit from the cell */
+        Ewl_Combo *combo;	/**< The parent combo */
+        const Ewl_Model *model;	/**< The model that was used to build the
+        				content of the cell */
+        void *mvc_data;		/**< The mvc data that was used to build the
+        				content of the cell */
 };
 
-Ewl_Widget	*ewl_combo_cell_new(void);
-int		 ewl_combo_cell_init(Ewl_Combo_Cell *c);
-void		 ewl_combo_cell_combo_set(Ewl_Combo_Cell *c, Ewl_Combo *combo);
-Ewl_Combo	*ewl_combo_cell_combo_get(Ewl_Combo_Cell *c);
+Ewl_Widget        *ewl_combo_cell_new(void);
+int        	 ewl_combo_cell_init(Ewl_Combo_Cell *c);
+void        	 ewl_combo_cell_combo_set(Ewl_Combo_Cell *c, Ewl_Combo *combo);
+Ewl_Combo        *ewl_combo_cell_combo_get(Ewl_Combo_Cell *c);
 
-void		 ewl_combo_cell_model_set(Ewl_Combo_Cell *c, 
-						const Ewl_Model *model);
-const Ewl_Model	*ewl_combo_cell_model_get(Ewl_Combo_Cell *c);
+void        	 ewl_combo_cell_model_set(Ewl_Combo_Cell *c, 
+        					const Ewl_Model *model);
+const Ewl_Model        *ewl_combo_cell_model_get(Ewl_Combo_Cell *c);
 
-void		 ewl_combo_cell_data_set(Ewl_Combo_Cell *c, void *mvc_data);
-void		*ewl_combo_cell_data_get(Ewl_Combo_Cell *c);
+void        	 ewl_combo_cell_data_set(Ewl_Combo_Cell *c, void *mvc_data);
+void        	*ewl_combo_cell_data_get(Ewl_Combo_Cell *c);
 
 /**
  * @}

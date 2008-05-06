@@ -1,4 +1,4 @@
-/* vim: set sw=8 ts=8 sts=8 noexpandtab: */
+/* vim: set sw=8 ts=8 sts=8 expandtab: */
 #ifndef EWL_CURSOR_H
 #define EWL_CURSOR_H
 
@@ -47,13 +47,13 @@ typedef struct Ewl_Cursor Ewl_Cursor;
  */
 struct Ewl_Cursor
 {
-	Ewl_Window window;	/**< Inherit from Ewl_Window */
-	int refcount;		/**< Number of references to cursor */
-	int handle;		/**< Engine id for generated cursor */
+        Ewl_Window window;	/**< Inherit from Ewl_Window */
+        int refcount;		/**< Number of references to cursor */
+        int handle;		/**< Engine id for generated cursor */
 };
 
-Ewl_Widget 	*ewl_cursor_new(void);
-int 		 ewl_cursor_init(Ewl_Cursor *c);
+Ewl_Widget         *ewl_cursor_new(void);
+int         	 ewl_cursor_init(Ewl_Cursor *c);
 
 /**
  * @}

@@ -1,4 +1,4 @@
-/* vim: set sw=8 ts=8 sts=8 noexpandtab: */
+/* vim: set sw=8 ts=8 sts=8 expandtab: */
 #include "ewl_base.h"
 #include "ewl_range.h"
 #include "ewl_macros.h"
@@ -17,28 +17,28 @@
 int
 ewl_range_init(Ewl_Range *r)
 {
-	Ewl_Widget *w;
+        Ewl_Widget *w;
 
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(r, FALSE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(r, FALSE);
 
-	w = EWL_WIDGET(r);
+        w = EWL_WIDGET(r);
 
-	if (!ewl_container_init(EWL_CONTAINER(w)))
-		DRETURN_INT(FALSE, DLEVEL_STABLE);
+        if (!ewl_container_init(EWL_CONTAINER(w)))
+        	DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-	ewl_widget_inherit(w, EWL_RANGE_TYPE);
+        ewl_widget_inherit(w, EWL_RANGE_TYPE);
 
-	/*
-	 * Set sane default values
-	 */
-	r->value = 0.0;
-	r->min_val = 0.0;
-	r->max_val = 100.0;
-	r->step = 10.0;
-	r->invert = FALSE;
+        /*
+         * Set sane default values
+         */
+        r->value = 0.0;
+        r->min_val = 0.0;
+        r->max_val = 100.0;
+        r->step = 10.0;
+        r->invert = FALSE;
 
-	DRETURN_INT(TRUE, DLEVEL_STABLE);
+        DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 /**
@@ -51,26 +51,26 @@ ewl_range_init(Ewl_Range *r)
 void
 ewl_range_value_set(Ewl_Range *r, double v)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(r);
-	DCHECK_TYPE(r, EWL_RANGE_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(r);
+        DCHECK_TYPE(r, EWL_RANGE_TYPE);
 
-	if (r->value == v)
-		DRETURN(DLEVEL_STABLE);
+        if (r->value == v)
+        	DRETURN(DLEVEL_STABLE);
 
-	if (!r->unknown_range) {
-		if (v < r->min_val)
-			r->value = r->min_val;
-		else if (v > r->max_val)
-			r->value = r->max_val;
-		else
-			r->value = v;
-	}
+        if (!r->unknown_range) {
+        	if (v < r->min_val)
+        		r->value = r->min_val;
+        	else if (v > r->max_val)
+        		r->value = r->max_val;
+        	else
+        		r->value = v;
+        }
 
-	ewl_callback_call(EWL_WIDGET(r), EWL_CALLBACK_VALUE_CHANGED);
-	ewl_widget_configure(EWL_WIDGET(r));
+        ewl_callback_call(EWL_WIDGET(r), EWL_CALLBACK_VALUE_CHANGED);
+        ewl_widget_configure(EWL_WIDGET(r));
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 
@@ -82,11 +82,11 @@ ewl_range_value_set(Ewl_Range *r, double v)
 double
 ewl_range_value_get(Ewl_Range *r)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(r, 0.0);
-	DCHECK_TYPE_RET(r, EWL_RANGE_TYPE, 0.0);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(r, 0.0);
+        DCHECK_TYPE_RET(r, EWL_RANGE_TYPE, 0.0);
 
-	DRETURN_FLOAT(r->value, DLEVEL_STABLE);
+        DRETURN_FLOAT(r->value, DLEVEL_STABLE);
 }
 
 /**
@@ -100,17 +100,17 @@ ewl_range_value_get(Ewl_Range *r)
 void
 ewl_range_minimum_value_set(Ewl_Range *r, double minv)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(r);
-	DCHECK_TYPE(r, EWL_RANGE_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(r);
+        DCHECK_TYPE(r, EWL_RANGE_TYPE);
 
-	r->min_val = minv;
+        r->min_val = minv;
 
-	/* update to the min value if needed */
-	if (r->value < r->min_val)
-		ewl_range_value_set(r, r->min_val);
+        /* update to the min value if needed */
+        if (r->value < r->min_val)
+        	ewl_range_value_set(r, r->min_val);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -121,11 +121,11 @@ ewl_range_minimum_value_set(Ewl_Range *r, double minv)
 double
 ewl_range_minimum_value_get(Ewl_Range *r)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(r, 0.0);
-	DCHECK_TYPE_RET(r, EWL_RANGE_TYPE, 0.0);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(r, 0.0);
+        DCHECK_TYPE_RET(r, EWL_RANGE_TYPE, 0.0);
 
-	DRETURN_FLOAT(r->min_val, DLEVEL_STABLE);
+        DRETURN_FLOAT(r->min_val, DLEVEL_STABLE);
 }
 
 /**
@@ -139,17 +139,17 @@ ewl_range_minimum_value_get(Ewl_Range *r)
 void
 ewl_range_maximum_value_set(Ewl_Range *r, double maxv)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(r);
-	DCHECK_TYPE(r, EWL_RANGE_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(r);
+        DCHECK_TYPE(r, EWL_RANGE_TYPE);
 
-	r->max_val = maxv;
+        r->max_val = maxv;
 
-	/* update to max value if needed */
-	if (r->value > r->max_val)
-		ewl_range_value_set(r, r->max_val);
+        /* update to max value if needed */
+        if (r->value > r->max_val)
+        	ewl_range_value_set(r, r->max_val);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -160,11 +160,11 @@ ewl_range_maximum_value_set(Ewl_Range *r, double maxv)
 double
 ewl_range_maximum_value_get(Ewl_Range *r)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(r, 0.0);
-	DCHECK_TYPE_RET(r, EWL_RANGE_TYPE, 0.0);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(r, 0.0);
+        DCHECK_TYPE_RET(r, EWL_RANGE_TYPE, 0.0);
 
-	DRETURN_FLOAT(r->max_val, DLEVEL_STABLE);
+        DRETURN_FLOAT(r->max_val, DLEVEL_STABLE);
 }
 /**
  * @param r: the range to change step
@@ -178,16 +178,16 @@ ewl_range_maximum_value_get(Ewl_Range *r)
 void
 ewl_range_step_set(Ewl_Range *r, double step)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(r);
-	DCHECK_TYPE(r, EWL_RANGE_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(r);
+        DCHECK_TYPE(r, EWL_RANGE_TYPE);
 
-	if (step > r->max_val - r->min_val)
-		step = r->max_val - r->min_val;
+        if (step > r->max_val - r->min_val)
+        	step = r->max_val - r->min_val;
 
-	r->step = step;
+        r->step = step;
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -198,12 +198,12 @@ ewl_range_step_set(Ewl_Range *r, double step)
 double
 ewl_range_step_get(Ewl_Range *r)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(r, 0.0);
-	DCHECK_TYPE_RET(r, EWL_RANGE_TYPE, 0.0);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(r, 0.0);
+        DCHECK_TYPE_RET(r, EWL_RANGE_TYPE, 0.0);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
-	DRETURN_FLOAT(r->step, DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DRETURN_FLOAT(r->step, DLEVEL_STABLE);
 }
 
 /**
@@ -215,17 +215,17 @@ ewl_range_step_get(Ewl_Range *r)
 void
 ewl_range_invert_set(Ewl_Range *r, unsigned int invert)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(r);
-	DCHECK_TYPE(r, EWL_RANGE_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(r);
+        DCHECK_TYPE(r, EWL_RANGE_TYPE);
 
-	if (r->invert != !!invert)
-	{
-		r->invert = !!invert;
-		ewl_widget_configure(EWL_WIDGET(r));
-	}
+        if (r->invert != !!invert)
+        {
+        	r->invert = !!invert;
+        	ewl_widget_configure(EWL_WIDGET(r));
+        }
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -236,11 +236,11 @@ ewl_range_invert_set(Ewl_Range *r, unsigned int invert)
 unsigned int
 ewl_range_invert_get(Ewl_Range *r)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR_RET(r, FALSE);
-	DCHECK_TYPE_RET(r, EWL_RANGE_TYPE, FALSE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(r, FALSE);
+        DCHECK_TYPE_RET(r, EWL_RANGE_TYPE, FALSE);
 
-	DRETURN_INT(r->invert, DLEVEL_STABLE);
+        DRETURN_INT(r->invert, DLEVEL_STABLE);
 }
 
 /**
@@ -252,14 +252,14 @@ ewl_range_invert_get(Ewl_Range *r)
 void
 ewl_range_unknown_set(Ewl_Range *r, unsigned int unknown)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(r);
-	DCHECK_TYPE(r, EWL_RANGE_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(r);
+        DCHECK_TYPE(r, EWL_RANGE_TYPE);
 
-	if (r->unknown_range != !!unknown) {
-		r->unknown_range = !!unknown;
-		ewl_widget_configure(EWL_WIDGET(r));
-	}
+        if (r->unknown_range != !!unknown) {
+        	r->unknown_range = !!unknown;
+        	ewl_widget_configure(EWL_WIDGET(r));
+        }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -290,13 +290,13 @@ ewl_range_unknown_get(Ewl_Range *r)
 void
 ewl_range_increase(Ewl_Range *r)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(r);
-	DCHECK_TYPE(r, EWL_RANGE_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(r);
+        DCHECK_TYPE(r, EWL_RANGE_TYPE);
 
-	ewl_range_value_set(r, r->value + r->step);
+        ewl_range_value_set(r, r->value + r->step);
 
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -309,11 +309,11 @@ ewl_range_increase(Ewl_Range *r)
 void
 ewl_range_decrease(Ewl_Range *r)
 {
-	DENTER_FUNCTION(DLEVEL_STABLE);
-	DCHECK_PARAM_PTR(r);
-	DCHECK_TYPE(r, EWL_RANGE_TYPE);
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(r);
+        DCHECK_TYPE(r, EWL_RANGE_TYPE);
 
-	ewl_range_value_set(r, r->value - r->step);
-	DLEAVE_FUNCTION(DLEVEL_STABLE);
+        ewl_range_value_set(r, r->value - r->step);
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
