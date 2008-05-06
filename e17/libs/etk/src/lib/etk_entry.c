@@ -201,8 +201,7 @@ void etk_entry_text_limit_set(Etk_Entry *entry, size_t limit)
  */ 
 size_t etk_entry_text_limit_get(Etk_Entry *entry) 
 {
-   if (!entry)
-      return -1;
+   if (!entry) return 0;
    return entry->text_limit;
 }
 
