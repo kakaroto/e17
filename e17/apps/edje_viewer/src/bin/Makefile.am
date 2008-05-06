@@ -1,14 +1,22 @@
-## Process this file with automake to produce Makefile.in
 
-INCLUDES = @evas_CFLAGS@ @ecore_CFLAGS@ @edje_CFLAGS@ @etk_CFLAGS@
+MAINTAINERCLEANFILES = Makefile.in
+
+AM_CPPFLAGS = \
+-I$(top_srcdir)/src/lib \
+-DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\" \
+@EDJE_VIEWER_CFLAGS@
 
 bin_PROGRAMS = edje_viewer
 
-edje_viewer_INCLUDES = \
-edje_viewer.h edje_etk.h etk_gui.h conf.h
-
 edje_viewer_SOURCES = \
-edje_etk.c etk_gui.c main.c conf.c \
-$(edje_viewer_INCLUDES)
+conf.c \
+edje_etk.c \
+etk_gui.c \
+main.c
 
-edje_viewer_LDADD = @evas_LIBS@ @ecore_LIBS@ @edje_LIBS@ @etk_LIBS@
+edje_viewer_LDADD = @EDJE_VIEWER_LIBS@
+
+EXTRA_DIST = \
+conf.h \
+edje_etk.h \
+etk_gui.h

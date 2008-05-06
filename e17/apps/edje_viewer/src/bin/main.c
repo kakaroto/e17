@@ -2,7 +2,10 @@
  * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
  */
 
-#include "edje_viewer.h"
+#include <Etk.h>
+
+#include "conf.h"
+#include "etk_gui.h"
 
 int main(int argc, char **argv)
 {

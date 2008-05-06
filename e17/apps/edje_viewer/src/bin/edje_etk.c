@@ -2,7 +2,28 @@
  * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
  */
 
-#include "edje_viewer.h"
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
+#include <string.h>
+
+#include <Edje.h>
+#include <Etk.h>
+
+#include "edje_etk.h"
+#include "etk_gui.h"
+#include "conf.h"
+
+#if HAVE___ATTRIBUTE__
+#define __UNUSED__ __attribute__((unused))
+#else
+#define __UNUSED__
+#endif
+
+#define DAT PACKAGE_DATA_DIR"/"
+
+#define FREE(ptr) do { if(ptr) { free(ptr); ptr = NULL; }} while (0);
 
 static void edje_move_resize(Demo_Edje *de, Evas_Coord xx, Evas_Coord yy,
       Evas_Coord ww, Evas_Coord hh);
@@ -71,7 +92,7 @@ void bg_setup(Etk_Canvas *canvas)
    etk_canvas_object_add(canvas, o);
 }
 
-void canvas_resize_cb(Etk_Object *canvas, const char *property_name, void *data)
+void canvas_resize_cb(Etk_Object *canvas, const char *property_name __UNUSED__, void *data __UNUSED__)
 {
    Evas *evas;
    Evas_Coord x, y, w, h;
@@ -94,7 +115,7 @@ void canvas_resize_cb(Etk_Object *canvas, const char *property_name, void *data)
 }
 
 void list_entries(const char *file, Etk_Tree *tree,
-      Etk_Canvas *canvas)
+      Etk_Canvas *canvas __UNUSED__)
 {
    Evas_List *entries;
    Evas_List *collections = NULL;
@@ -370,7 +391,7 @@ static void edje_move_resize(Demo_Edje *de, Evas_Coord xx, Evas_Coord yy,
 }
 
 static void bottom_down_cb
-(void *data, Evas *e, Evas_Object *obj, void *event_info)
+(void *data, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
 {
     Demo_Edje *de;
     Evas_Event_Mouse_Down *ev;
@@ -393,7 +414,7 @@ static void bottom_down_cb
     de->vdir = vdir;
 }
 
-static void top_down_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
+static void top_down_cb(void *data, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
     Demo_Edje *de;
 
@@ -409,7 +430,7 @@ static void top_down_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
     evas_object_raise(de->edje);
 }
 
-static void top_up_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
+static void top_up_cb(void *data, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
     Demo_Edje *de;
 
@@ -417,7 +438,7 @@ static void top_up_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
     de->down_top = 0;
 }
 
-static void top_move_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
+static void top_move_cb(void *data, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
 {
     Demo_Edje *de;
     Evas_Event_Mouse_Move *ev;
@@ -464,7 +485,7 @@ static void top_move_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 }
 
 static void bottom_up_cb
-(void *data, Evas *e, Evas_Object *obj, void *event_info)
+(void *data, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info __UNUSED__)
 {
     Demo_Edje *de;
 
@@ -473,7 +494,7 @@ static void bottom_up_cb
 }
 
 static void bottom_move_cb
-(void *data, Evas *e, Evas_Object *obj, void *event_info)
+(void *data, Evas *e __UNUSED__, Evas_Object *obj __UNUSED__, void *event_info)
 {
     Demo_Edje *de;
     Evas_Event_Mouse_Move *ev;

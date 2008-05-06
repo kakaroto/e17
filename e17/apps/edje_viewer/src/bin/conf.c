@@ -2,7 +2,19 @@
  * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
  */
 
-#include "edje_viewer.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+
+#include <Ecore_Config.h>
+
+#include "conf.h"
+
+#ifndef PATH_MAX
+#define PATH_MAX 4096
+#endif
+
+#define FREE(ptr) do { if(ptr) { free(ptr); ptr = NULL; }} while (0);
 
 void edje_viewer_config_init(void)
 {
@@ -54,8 +66,8 @@ char *edje_viewer_config_recent_get(int number)
 
 void edje_viewer_config_recent_set(const char *path)
 {
-   int count, key_length, i;
-   char key[sizeof("/recent/") + 8], *key_v, *val, *cwd;
+   int count, i;
+   char key[sizeof("/recent/") + 8], *key_v, *val;
    char new_path[PATH_MAX];
 
    if (!path) return;
@@ -105,28 +117,28 @@ void edje_viewer_config_last_set(const char *path)
    ecore_config_string_set("/recent/last", new_path);
 }
 
-Etk_Bool edje_viewer_config_open_last_get(void)
+unsigned char edje_viewer_config_open_last_get(void)
 {
-   Etk_Bool check;
+   unsigned char check;
    check = ecore_config_int_get("/startup/open_last");
 
    return check;
 }
 
-void edje_viewer_config_open_last_set(Etk_Bool check)
+void edje_viewer_config_open_last_set(unsigned char check)
 {
    ecore_config_int_set("/startup/open_last", check);
 }
 
-Etk_Bool edje_viewer_config_sort_parts_get(void)
+unsigned char edje_viewer_config_sort_parts_get(void)
 {
-   Etk_Bool check;
+   unsigned char check;
    check = ecore_config_int_get("/startup/sort_parts");
 
    return check;
 }
 
-void edje_viewer_config_sort_parts_set(Etk_Bool check)
+void edje_viewer_config_sort_parts_set(unsigned char check)
 {
    ecore_config_int_set("/startup/sort_parts", check);
 }
