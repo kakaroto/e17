@@ -138,9 +138,11 @@ void etk_entry_text_set(Etk_Entry *entry, const char *text)
       text_tmp = strdup(text);
    else
    {
-      text_tmp = malloc(entry->text_limit + 1);
-      text_tmp[entry->text_limit] = '\0';
-      strncpy(text_tmp, text, entry->text_limit);
+      size_t limit = strlen(text);
+      limit = ETK_MIN(entry->text_limit, limit);
+      text_tmp = malloc(limit + 1);
+      text_tmp[limit] = '\0';
+      strncpy(text_tmp, text, limit);
    }
 
    if (!entry->editable_object && entry->text != text)
@@ -179,7 +181,7 @@ const char *etk_entry_text_get(Etk_Entry *entry)
  * @param entry an entry
  * @param limit the limit of text length, 0 means no limit
  */
-void etk_entry_text_limit_set(Etk_Entry *entry, int limit) 
+void etk_entry_text_limit_set(Etk_Entry *entry, size_t limit) 
 {
    if (!entry) 
       return;
@@ -197,7 +199,7 @@ void etk_entry_text_limit_set(Etk_Entry *entry, int limit)
  * @param entry an entry
  * @return Returns the limit of text entry, 0 means no limit. 
  */ 
-int etk_entry_text_limit_get(Etk_Entry *entry) 
+size_t etk_entry_text_limit_get(Etk_Entry *entry) 
 {
    if (!entry)
       return -1;
@@ -420,7 +422,7 @@ static void _etk_entry_constructor(Etk_Entry *entry)
    entry->imf_ee_handler_commit = NULL;
    entry->imf_ee_handler_delete = NULL;
    entry->text = NULL;
-   entry->text_limit=0;
+   entry->text_limit = 0;
 
    entry->internal_entry = etk_widget_new(ETK_WIDGET_TYPE, "repeat-mouse-events", ETK_TRUE,
          "theme-group", "entry", "theme-parent", entry, "parent", entry, "internal", ETK_TRUE, NULL);
@@ -656,7 +658,7 @@ static Etk_Bool _etk_entry_internal_realized_cb(Etk_Object *object, void *data)
 
    etk_editable_theme_set(entry->editable_object, etk_widget_theme_file_get(internal_entry),
          etk_widget_theme_group_get(internal_entry));
-   if (entry->text_limit==0) 
+   if (entry->text_limit == 0) 
       etk_editable_text_set(entry->editable_object, entry->text);
    else 
    {
@@ -664,9 +666,11 @@ static Etk_Bool _etk_entry_internal_realized_cb(Etk_Object *object, void *data)
          text_tmp = NULL;
       else
       {
-         text_tmp = malloc(entry->text_limit+1);
-         text_tmp[entry->text_limit] = '\0';
-         strncpy(text_tmp, entry->text, entry->text_limit);
+         size_t limit = strlen(entry->text);
+         limit = ETK_MIN(entry->text_limit, limit);
+         text_tmp = malloc(limit+1);
+         text_tmp[limit] = '\0';
+         strncpy(text_tmp, entry->text, limit);
       }
       etk_editable_text_set(entry->editable_object, text_tmp);
       free(text_tmp);
@@ -755,9 +759,11 @@ static Etk_Bool _etk_entry_internal_unrealized_cb(Etk_Object *object, void *data
          entry->text = strdup(text);
       else 
       {
-         entry->text = malloc(entry->text_limit+1);
-         entry->text[entry->text_limit] = '\0';
-         strncpy(entry->text, text, entry->text_limit);
+         size_t limit = strlen(text);
+         limit = ETK_MIN(entry->text_limit, limit);
+         entry->text = malloc(limit+1);
+         entry->text[limit] = '\0';
+         strncpy(entry->text, text, limit);
       }
    }
    else
