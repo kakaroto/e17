@@ -2,14 +2,14 @@ Source: edje-viewer
 Section: graphics
 Priority: optional
 Maintainer: Falko Schmidt <falko@alphagemini.org>
-Build-Depends: cdbs, debhelper (>= 6), libecore-dev, libevas-dev, libedje-dev, libetk-dev, enlightenment (>= 0.16.999)
+Build-Depends: cdbs, debhelper (>= 6), libecore-dev, libevas-dev, libedje-dev, libetk-dev
 Standards-Version: 3.7.3
 Homepage: http://www.enlightenment.org
 
 Package: edje-viewer
 Architecture: any
 Depends: ${shlibs:Depends}
-Recommends: enlightenment (>= 0.16.999)
+Recommends: e17 (>= 0.16.999)
 Description: A simple viewer for edj files
  Edje-viewer should provide more ease of use than the
  edje viewer that comes with edje itself.
