@@ -4044,7 +4044,7 @@ imlib_image_copy_alpha_to_image(Imlib_Image image_source, int x, int y)
    if ((!(im->data)) && (im->loader) && (im->loader->load))
       im->loader->load(im, NULL, 0, 1);
    if ((!(im2->data)) && (im2->loader) && (im2->loader->load))
-      im2->loader->load(im, NULL, 0, 1);
+      im2->loader->load(im2, NULL, 0, 1);
    if (!(im->data))
       return;
    if (!(im2->data))
