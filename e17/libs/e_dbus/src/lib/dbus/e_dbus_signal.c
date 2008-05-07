@@ -133,7 +133,6 @@ e_dbus_signal_handler_add(E_DBus_Connection *conn, const char *sender, const cha
   DBusError err;
 
   sh = calloc(1, sizeof(E_DBus_Signal_Handler));
-  printf("calloc: %p\n", sh);
 
   strcpy(match, "type='signal'");
   len = 13;
@@ -156,7 +155,6 @@ e_dbus_signal_handler_add(E_DBus_Connection *conn, const char *sender, const cha
   ADD_MATCH_PIECE(interface)
   ADD_MATCH_PIECE(member)
 
-  printf("MATCH ON: %s\n", match);
   sh->cb_signal = cb_signal;
   sh->data = data;
 
