@@ -18,12 +18,12 @@ ewl_shadow_new(void)
 
         s = NEW(Ewl_Shadow, 1);
         if (!s)
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
 
         if (!ewl_shadow_init(s))
         {
-        	ewl_widget_destroy(EWL_WIDGET(s));
-        	s = NULL;
+                ewl_widget_destroy(EWL_WIDGET(s));
+                s = NULL;
         }
 
         DRETURN_PTR(EWL_WIDGET(s), DLEVEL_STABLE);
@@ -41,7 +41,7 @@ ewl_shadow_init(Ewl_Shadow *s)
         DCHECK_PARAM_PTR_RET(s, FALSE);
 
         if (!ewl_box_init(EWL_BOX(s)))
-        	DRETURN_INT(FALSE, DLEVEL_STABLE);
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
 
         ewl_box_orientation_set(EWL_BOX(s), EWL_ORIENTATION_VERTICAL);
         ewl_object_fill_policy_set(EWL_OBJECT(s), EWL_FLAG_FILL_SHRINK);

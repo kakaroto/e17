@@ -19,8 +19,8 @@ ewl_model_new(void)
         model = NEW(Ewl_Model, 1);
         if (!ewl_model_init(model))
         {
-        	FREE(model);
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                FREE(model);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
         }
 
         DRETURN_PTR(model, DLEVEL_STABLE);
@@ -41,8 +41,8 @@ ewl_model_ecore_list_instance(void)
         model = ewl_model_new();
         if (model)
         {
-        	ewl_model_data_fetch_set(model, ewl_model_cb_ecore_list_fetch);
-        	ewl_model_data_count_set(model, ewl_model_cb_ecore_list_count);
+                ewl_model_data_fetch_set(model, ewl_model_cb_ecore_list_fetch);
+                ewl_model_data_count_set(model, ewl_model_cb_ecore_list_count);
         }
 
         DRETURN_PTR(model, DLEVEL_STABLE);
@@ -320,7 +320,7 @@ ewl_model_data_expandable_get(const Ewl_Model *m)
  */
 void
 ewl_model_expansion_data_fetch_set(Ewl_Model *m,
-        			Ewl_Model_Expansion_Data_Fetch get)
+                                Ewl_Model_Expansion_Data_Fetch get)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(m);
@@ -388,7 +388,7 @@ ewl_model_data_free_get(const Ewl_Model *m)
  */
 void
 ewl_model_expansion_model_fetch_set(Ewl_Model *m,
-        			Ewl_Model_Expansion_Model_Fetch f)
+                                Ewl_Model_Expansion_Model_Fetch f)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(m);
@@ -421,7 +421,7 @@ ewl_model_expansion_model_fetch_get(const Ewl_Model *m)
  */
 void *
 ewl_model_cb_ecore_list_fetch(void *data, unsigned int row,
-        			unsigned int col __UNUSED__)
+                                unsigned int col __UNUSED__)
 {
         Ecore_List *list;
 

@@ -41,7 +41,7 @@ create_test(Ewl_Container *box)
         button = ewl_button_new();
         ewl_button_label_set(EWL_BUTTON(button), "push");
         ewl_callback_append(button, EWL_CALLBACK_CLICKED, button_push_cb,
-        							statusbar);
+                                                                statusbar);
         ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
         ewl_container_child_append(EWL_CONTAINER(hbox), button);
         ewl_widget_show(button);
@@ -49,7 +49,7 @@ create_test(Ewl_Container *box)
         button = ewl_button_new();
         ewl_button_label_set(EWL_BUTTON(button), "pop");
         ewl_callback_append(button, EWL_CALLBACK_CLICKED, button_pop_cb,
-        							statusbar);
+                                                                statusbar);
         ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
         ewl_container_child_append(EWL_CONTAINER(hbox), button);
         ewl_widget_show(button);
@@ -59,7 +59,7 @@ create_test(Ewl_Container *box)
 
 static void
 button_push_cb(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
-        					void *data)
+                                                void *data)
 {
         Ewl_Statusbar *sb;
         char msg[20];
@@ -72,7 +72,7 @@ button_push_cb(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
 static void
 button_pop_cb(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
-        					void *data)
+                                                void *data)
 {
         Ewl_Statusbar *sb;
 

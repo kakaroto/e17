@@ -33,8 +33,8 @@ create_test(Ewl_Container *box)
         o = ewl_entry_new();
         ewl_attach_mouse_argb_cursor_set(o, pointer_win);
         ewl_text_text_set(EWL_TEXT(o), "Expect to see a button cursor\n"
-        	       "over this entry and a normal cursor\n"
-        	       "over other parts of the window");
+                       "over this entry and a normal cursor\n"
+                       "over other parts of the window");
         ewl_entry_editable_set(EWL_ENTRY(o), FALSE);
         ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_NONE);
         ewl_container_child_append(EWL_CONTAINER(box), o);

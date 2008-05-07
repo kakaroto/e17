@@ -37,14 +37,14 @@ struct Tree_Test_Data
 static int create_test(Ewl_Container *win);
 static void *tree_test_data_setup(void);
 static Ewl_Widget *tree_test_cb_widget_fetch(void *data, unsigned int row,
-        					unsigned int column);
+                                                unsigned int column);
 static void *tree_test_cb_header_data_fetch(void *data, unsigned int column);
 static Ewl_Widget *tree_test_cb_header_fetch(void *data, unsigned int column);
 static void *tree_test_data_fetch(void *data, unsigned int row,
-        					unsigned int column);
+                                                unsigned int column);
 static int tree_test_column_sortable(void *data, unsigned int column);
 static void tree_test_data_sort(void *data, unsigned int column,
-        					Ewl_Sort_Direction sort);
+                                                Ewl_Sort_Direction sort);
 static unsigned int tree_test_data_count_get(void *data);
 static int tree_test_data_expandable_get(void *data, unsigned int row);
 static void *tree_test_data_expansion_fetch(void *data, unsigned int row);
@@ -61,7 +61,7 @@ test_info(Ewl_Test *test)
 {
         test->name = "Tree";
         test->tip = "Defines a widget for laying out other\n"
-        		"widgets in a tree or list like manner.";
+                        "widgets in a tree or list like manner.";
         test->filename = __FILE__;
         test->func = create_test;
         test->type = EWL_TEST_TYPE_CONTAINER;
@@ -78,7 +78,7 @@ create_test(Ewl_Container *box)
         o2 = ewl_hbox_new();
         ewl_container_child_append(box, o2);
         ewl_object_fill_policy_set(EWL_OBJECT(o2),
-        			EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_HFILL);
+                                EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_HFILL);
         ewl_widget_show(o2);
 
         /* create our data */
@@ -89,13 +89,13 @@ create_test(Ewl_Container *box)
         model = ewl_model_new();
         ewl_model_data_fetch_set(model, tree_test_data_fetch);
         ewl_model_data_header_fetch_set(model,
-        			tree_test_cb_header_data_fetch);
+                                tree_test_cb_header_data_fetch);
         ewl_model_data_sort_set(model, tree_test_data_sort);
         ewl_model_column_sortable_set(model, tree_test_column_sortable);
         ewl_model_data_count_set(model, tree_test_data_count_get);
         ewl_model_data_expandable_set(model, tree_test_data_expandable_get);
         ewl_model_expansion_data_fetch_set(model,
-        			tree_test_data_expansion_fetch);
+                                tree_test_data_expansion_fetch);
 
         view = ewl_view_new();
         ewl_view_widget_fetch_set(view, tree_test_cb_widget_fetch);
@@ -105,7 +105,7 @@ create_test(Ewl_Container *box)
         ewl_container_child_append(EWL_CONTAINER(box), tree);
         ewl_object_fill_policy_set(EWL_OBJECT(tree), EWL_FLAG_FILL_ALL);
         ewl_callback_append(tree, EWL_CALLBACK_VALUE_CHANGED,
-        				tree_cb_value_changed, NULL);
+                                        tree_cb_value_changed, NULL);
         ewl_mvc_data_set(EWL_MVC(tree), data);
         ewl_mvc_model_set(EWL_MVC(tree), model);
         ewl_mvc_view_set(EWL_MVC(tree), view);
@@ -125,7 +125,7 @@ create_test(Ewl_Container *box)
         ewl_button_label_set(EWL_BUTTON(o), "Scroll headers");
         ewl_container_child_append(EWL_CONTAINER(o3), o);
         ewl_callback_append(o, EWL_CALLBACK_CLICKED,
-        			ewl_tree_cb_scroll_headers, tree);
+                                ewl_tree_cb_scroll_headers, tree);
         ewl_widget_show(o);
 
         o = ewl_checkbutton_new();
@@ -133,7 +133,7 @@ create_test(Ewl_Container *box)
         ewl_button_label_set(EWL_BUTTON(o), "Hide headers");
         ewl_container_child_append(EWL_CONTAINER(o3), o);
         ewl_callback_append(o, EWL_CALLBACK_CLICKED,
-        			ewl_tree_cb_hide_headers, tree);
+                                ewl_tree_cb_hide_headers, tree);
         ewl_widget_show(o);
 
         o = ewl_checkbutton_new();
@@ -141,7 +141,7 @@ create_test(Ewl_Container *box)
         ewl_button_label_set(EWL_BUTTON(o), "Plain view");
         ewl_container_child_append(EWL_CONTAINER(o2), o);
         ewl_callback_append(o, EWL_CALLBACK_CLICKED,
-        			ewl_tree_cb_plain_view, tree);
+                                ewl_tree_cb_plain_view, tree);
         ewl_widget_show(o);
 
         o = ewl_spinner_new();
@@ -160,7 +160,7 @@ create_test(Ewl_Container *box)
         ewl_button_label_set(EWL_BUTTON(o), "Set number of rows");
         ewl_container_child_append(EWL_CONTAINER(o2), o);
         ewl_callback_append(o, EWL_CALLBACK_CLICKED,
-        			ewl_tree_cb_set_rows_clicked, NULL);
+                                ewl_tree_cb_set_rows_clicked, NULL);
         ewl_widget_show(o);
 
         o = ewl_button_new();
@@ -168,7 +168,7 @@ create_test(Ewl_Container *box)
         ewl_button_label_set(EWL_BUTTON(o), "Row select");
         ewl_container_child_append(EWL_CONTAINER(o2), o);
         ewl_callback_append(o, EWL_CALLBACK_CLICKED,
-        			tree_cb_select_mode_change, NULL);
+                                tree_cb_select_mode_change, NULL);
         ewl_widget_show(o);
 
         return 1;
@@ -248,29 +248,29 @@ tree_test_data_setup(void)
 
 static Ewl_Widget *
 tree_test_cb_widget_fetch(void *data, unsigned int row __UNUSED__,
-        				unsigned int column)
+                                        unsigned int column)
 {
         Ewl_Widget *w = NULL;
 
         switch (column) {
-        	case 0:
-        		w = ewl_label_new();
-        		ewl_label_text_set(EWL_LABEL(w), data);
-        		break;
-        	case 1:
-        		w = ewl_image_new();
-        		ewl_image_file_path_set(EWL_IMAGE(w), data);
-        		break;
-        	case 2:
-        		{
-        			Tree_Test_Row_Data *d;
-        			d = data;
+                case 0:
+                        w = ewl_label_new();
+                        ewl_label_text_set(EWL_LABEL(w), data);
+                        break;
+                case 1:
+                        w = ewl_image_new();
+                        ewl_image_file_path_set(EWL_IMAGE(w), data);
+                        break;
+                case 2:
+                        {
+                                Tree_Test_Row_Data *d;
+                                d = data;
 
-        			w = ewl_button_new();
-        			ewl_button_label_set(EWL_BUTTON(w), d->text);
-        			ewl_button_image_set(EWL_BUTTON(w), d->image, NULL);
-        		}
-        		break;
+                                w = ewl_button_new();
+                                ewl_button_label_set(EWL_BUTTON(w), d->text);
+                                ewl_button_image_set(EWL_BUTTON(w), d->image, NULL);
+                        }
+                        break;
         }
         ewl_widget_show(w);
 
@@ -281,10 +281,10 @@ static void *
 tree_test_cb_header_data_fetch(void *data __UNUSED__, unsigned int column)
 {
         if (column == 0)
-        	return "Title";
+                return "Title";
 
         if (column == 1)
-        	return "Image";
+                return "Image";
 
         return "Button";
 }
@@ -313,25 +313,25 @@ tree_test_data_fetch(void *data, unsigned int row, unsigned int column)
          * normal app */
         if (row >= d->row_count)
         {
-        	printf("Asking for too many rows %d (count == %d)\n",
-        						row, d->row_count);
-        	return NULL;
+                printf("Asking for too many rows %d (count == %d)\n",
+                                                        row, d->row_count);
+                return NULL;
         }
 
         if (column == 0)
-        	val = d->rows[row % d->count]->text;
+                val = d->rows[row % d->count]->text;
 
         else if (column == 1)
-        	val = d->rows[row % d->count]->image;
+                val = d->rows[row % d->count]->image;
 
         else if (column == 2)
-        	val = d->rows[row % d->count];
+                val = d->rows[row % d->count];
 
         else
         {
-        	/* NOTE: this is just for testing purposes, should not be
-        	 * needed in a normal app */
-        	printf("Unknown column %d\n", column);
+                /* NOTE: this is just for testing purposes, should not be
+                 * needed in a normal app */
+                printf("Unknown column %d\n", column);
         }
 
         return val;
@@ -345,45 +345,45 @@ tree_test_data_sort(void *data, unsigned int column, Ewl_Sort_Direction sort)
 
         /* just leave it if we're in sort none. */
         if (sort == EWL_SORT_DIRECTION_NONE)
-        	return;
+                return;
 
         d = data;
 
         for (i = (d->count - 1); i >= 0; i--)
         {
-        	int j;
+                int j;
 
-        	for (j = 1; j <= i; j++)
-        	{
-        		char *a, *b;
+                for (j = 1; j <= i; j++)
+                {
+                        char *a, *b;
 
-        		if (column == 0)
-        		{
-        			a = d->rows[j - 1]->text;
-        			b = d->rows[j]->text;
-        		}
-        		else
-        		{
-        			a = d->rows[j - 1]->image;
-        			b = d->rows[j]->image;
-        		}
+                        if (column == 0)
+                        {
+                                a = d->rows[j - 1]->text;
+                                b = d->rows[j]->text;
+                        }
+                        else
+                        {
+                                a = d->rows[j - 1]->image;
+                                b = d->rows[j]->image;
+                        }
 
-        		if (((sort == EWL_SORT_DIRECTION_ASCENDING)
-        					&& strcmp(a, b) > 0)
-        				|| ((sort == EWL_SORT_DIRECTION_DESCENDING)
-        					&& strcmp(a, b) < 0))
-        		{
-        			char *temp;
+                        if (((sort == EWL_SORT_DIRECTION_ASCENDING)
+                                                && strcmp(a, b) > 0)
+                                        || ((sort == EWL_SORT_DIRECTION_DESCENDING)
+                                                && strcmp(a, b) < 0))
+                        {
+                                char *temp;
 
-        			temp = d->rows[j - 1]->text;
-        			d->rows[j - 1]->text = d->rows[j]->text;
-        			d->rows[j]->text = temp;
+                                temp = d->rows[j - 1]->text;
+                                d->rows[j - 1]->text = d->rows[j]->text;
+                                d->rows[j]->text = temp;
 
-        			temp = d->rows[j - 1]->image;
-        			d->rows[j - 1]->image = d->rows[j]->image;
-        			d->rows[j]->image = temp;
-        		}
-        	}
+                                temp = d->rows[j - 1]->image;
+                                d->rows[j - 1]->image = d->rows[j]->image;
+                                d->rows[j]->image = temp;
+                        }
+                }
         }
 }
 
@@ -412,7 +412,7 @@ tree_test_data_expandable_get(void *data, unsigned int row)
         d = data;
 
         if (d && d->rows[row % d->count])
-        	ret = d->rows[row % d->count]->expandable;
+                ret = d->rows[row % d->count]->expandable;
 
         return ret;
 }
@@ -438,8 +438,8 @@ ewl_tree_cb_scroll_headers(Ewl_Widget *w, void *ev __UNUSED__, void *data)
         view = ewl_tree_content_widget_get(tree);
 
         if (EWL_TREE_VIEW_SCROLLED_IS(view))
-        	ewl_tree_view_scrolled_scroll_headers_set(EWL_TREE_VIEW(view),
-        		ewl_checkbutton_is_checked(EWL_CHECKBUTTON(w)));
+                ewl_tree_view_scrolled_scroll_headers_set(EWL_TREE_VIEW(view),
+                        ewl_checkbutton_is_checked(EWL_CHECKBUTTON(w)));
 }
 
 static void
@@ -451,7 +451,7 @@ ewl_tree_cb_hide_headers(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, void *da
         tree = data;
 
         if (ewl_tree_headers_visible_get(tree))
-        	vis = FALSE;
+                vis = FALSE;
 
         ewl_tree_headers_visible_set(tree, vis);
 }
@@ -464,16 +464,16 @@ ewl_tree_cb_plain_view(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 
         tree = data;
         if (ewl_checkbutton_is_checked(EWL_CHECKBUTTON(w)))
-        	view = ewl_tree_view_plain_get();
+                view = ewl_tree_view_plain_get();
         else
-        	view = ewl_tree_view_scrolled_get();
+                view = ewl_tree_view_scrolled_get();
 
         ewl_tree_content_view_set(EWL_TREE(tree), view);
 }
 
 static void
 ewl_tree_cb_set_rows_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
-        					void *data __UNUSED__)
+                                                void *data __UNUSED__)
 {
         Ewl_Widget *spinner, *tree;
         Tree_Test_Data *d;
@@ -489,7 +489,7 @@ ewl_tree_cb_set_rows_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
 static void
 tree_cb_value_changed(Ewl_Widget *w, void *ev __UNUSED__,
-        				void *data __UNUSED__)
+                                        void *data __UNUSED__)
 {
         Ecore_List *selected;
         Ewl_Selection *sel;
@@ -499,73 +499,73 @@ tree_cb_value_changed(Ewl_Widget *w, void *ev __UNUSED__,
         ecore_list_first_goto(selected);
         while ((sel = ecore_list_next(selected)))
         {
-        	if (sel->type == EWL_SELECTION_TYPE_INDEX)
-        	{
-        		char *val;
-        		unsigned int col;
-        		Ewl_Selection_Idx *idx;
+                if (sel->type == EWL_SELECTION_TYPE_INDEX)
+                {
+                        char *val;
+                        unsigned int col;
+                        Ewl_Selection_Idx *idx;
 
-        		idx = EWL_SELECTION_IDX(sel);
-        		col = idx->column;
-        		if (col != 2)
-        			val = sel->model->fetch(sel->data, idx->row, col);
-        		else
-        		{
-        			Tree_Test_Row_Data *d;
-        			d = sel->model->fetch(sel->data, idx->row, col);
-        			val = d->text;
-        		}
+                        idx = EWL_SELECTION_IDX(sel);
+                        col = idx->column;
+                        if (col != 2)
+                                val = sel->model->fetch(sel->data, idx->row, col);
+                        else
+                        {
+                                Tree_Test_Row_Data *d;
+                                d = sel->model->fetch(sel->data, idx->row, col);
+                                val = d->text;
+                        }
 
-        		printf("    [%d,%d] %s\n", idx->row, idx->column, val);
-        	}
-        	else
-        	{
-        		Ewl_Selection_Range *idx;
-        		unsigned int i, k;
+                        printf("    [%d,%d] %s\n", idx->row, idx->column, val);
+                }
+                else
+                {
+                        Ewl_Selection_Range *idx;
+                        unsigned int i, k;
 
-        		idx = EWL_SELECTION_RANGE(sel);
-        		for (i = idx->start.row; i <= idx->end.row; i++)
-        		{
-        			for (k = idx->start.column; k <=
-        						idx->end.column; k++)
-        			{
-        				char *val;
+                        idx = EWL_SELECTION_RANGE(sel);
+                        for (i = idx->start.row; i <= idx->end.row; i++)
+                        {
+                                for (k = idx->start.column; k <=
+                                                        idx->end.column; k++)
+                                {
+                                        char *val;
 
-        				if (k != 3)
-        					val = sel->model->fetch(sel->data,
-        								i, k);
-        				else
-        				{
-        					Tree_Test_Row_Data *d;
-        					d = sel->model->fetch(sel->data,
-        								i, k);
-        					val = d->text;
-        				}
-        				printf("    [%d,%d] %s\n", i, k, val);
-        			}
-        		}
-        	}
+                                        if (k != 3)
+                                                val = sel->model->fetch(sel->data,
+                                                                        i, k);
+                                        else
+                                        {
+                                                Tree_Test_Row_Data *d;
+                                                d = sel->model->fetch(sel->data,
+                                                                        i, k);
+                                                val = d->text;
+                                        }
+                                        printf("    [%d,%d] %s\n", i, k, val);
+                                }
+                        }
+                }
         }
 }
 
 static void
 tree_cb_select_mode_change(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
-        					void *data __UNUSED__)
+                                                void *data __UNUSED__)
 {
         Ewl_Widget *tree;
 
         tree = ewl_widget_name_find("tree");
         if (!strcmp(ewl_button_label_get(EWL_BUTTON(w)), "Row select"))
         {
-        	ewl_button_label_set(EWL_BUTTON(w), "Cell select");
-        	ewl_tree_selection_type_set(EWL_TREE(tree),
-        				EWL_TREE_SELECTION_TYPE_ROW);
+                ewl_button_label_set(EWL_BUTTON(w), "Cell select");
+                ewl_tree_selection_type_set(EWL_TREE(tree),
+                                        EWL_TREE_SELECTION_TYPE_ROW);
         }
         else
         {
-        	ewl_button_label_set(EWL_BUTTON(w), "Row select");
-        	ewl_tree_selection_type_set(EWL_TREE(tree),
-        				EWL_TREE_SELECTION_TYPE_CELL);
+                ewl_button_label_set(EWL_BUTTON(w), "Row select");
+                ewl_tree_selection_type_set(EWL_TREE(tree),
+                                        EWL_TREE_SELECTION_TYPE_CELL);
         }
 }
 

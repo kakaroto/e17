@@ -8,7 +8,7 @@
 #include <Evas_Engine_Software_Xcb.h>
 
 #define EWL_ENGINE_EVAS_SOFTWARE_XCB(engine) \
-        	((Ewl_Engine_Evas_Software_Xcb *)engine)
+                ((Ewl_Engine_Evas_Software_Xcb *)engine)
 
 typedef struct Ewl_Engine_Evas_Software_Xcb Ewl_Engine_Evas_Software_Xcb;
 struct Ewl_Engine_Evas_Software_Xcb

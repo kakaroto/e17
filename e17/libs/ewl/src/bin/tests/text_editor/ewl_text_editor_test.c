@@ -23,26 +23,26 @@ typedef struct
 } Ewl_Text_Editor_Control;
 
 static char *txt = "I'm not a lumberjack, or a fur trader,\n"
-        	"I don't live in an igloo,\n"
-        	"Or eat blubber,\n"
-        	"Or own a dogsled,\n"
-        	"And I don't know Jimmy, Sally, or Suzie from Canada,"
-        	"although I'm certain they're really really nice,\n"
-        	"I have a Prime Minister, not a President,\n"
-        	"I speak English and French, not American,\n"
-        	"And I pronounce it about, not aboot,\n"
-        	"I can proudly sew my country's flag on my backpack,\n"
-        	"I believe in peacekeeping, not policing,\n"
-        	"diversity, not assimilation,\n"
-        	"and that the Beaver is a truly proud and nobel animal,\n"
-        	"a touque is a hat,\n"
-        	"a chesterfield is a couch,\n"
-        	"and it is pronounced Zed, not Zee, Zed,\n"
-        	"Canada is the 2nd largest land mass,\n"
-        	"the first nation of hockey,\n"
-        	"and the best part of North America,\n"
-        	"My name is Joe,\n"
-        	"and I AM CANADIAN!!!!!";
+                "I don't live in an igloo,\n"
+                "Or eat blubber,\n"
+                "Or own a dogsled,\n"
+                "And I don't know Jimmy, Sally, or Suzie from Canada,"
+                "although I'm certain they're really really nice,\n"
+                "I have a Prime Minister, not a President,\n"
+                "I speak English and French, not American,\n"
+                "And I pronounce it about, not aboot,\n"
+                "I can proudly sew my country's flag on my backpack,\n"
+                "I believe in peacekeeping, not policing,\n"
+                "diversity, not assimilation,\n"
+                "and that the Beaver is a truly proud and nobel animal,\n"
+                "a touque is a hat,\n"
+                "a chesterfield is a couch,\n"
+                "and it is pronounced Zed, not Zee, Zed,\n"
+                "Canada is the 2nd largest land mass,\n"
+                "the first nation of hockey,\n"
+                "and the best part of North America,\n"
+                "My name is Joe,\n"
+                "and I AM CANADIAN!!!!!";
 
 static int create_test(Ewl_Container *box);
 
@@ -70,7 +70,7 @@ test_info(Ewl_Test *test)
 {
         test->name = "Text Editor";
         test->tip = "Defines a class for multi-line text layout\n"
-        		"and formatting.";
+                        "and formatting.";
         test->filename = __FILE__;
         test->func = create_test;
         test->type = EWL_TEST_TYPE_ADVANCED;
@@ -87,109 +87,109 @@ create_test(Ewl_Container *box)
         ewl_widget_show(hbox);
 
         {
-        	int i;
-        	Ewl_Model *model;
-        	Ewl_View *view;
-        	Ecore_List *styles;
+                int i;
+                Ewl_Model *model;
+                Ewl_View *view;
+                Ecore_List *styles;
 
-        	struct
-        	{
-        		char *icon;
-        		char *tooltip;
-        		void (*cb)(Ewl_Widget *w, void *ev, void *data);
-        	} format[] = {
-        		{EWL_ICON_FORMAT_JUSTIFY_LEFT, "Left align",
-        						ete_cb_justify_left},
-        		{EWL_ICON_FORMAT_JUSTIFY_CENTER, "Center",
-        						ete_cb_justify_center},
-        		{EWL_ICON_FORMAT_JUSTIFY_RIGHT, "Right align",
-        						ete_cb_justify_right},
-        		{EWL_ICON_FORMAT_TEXT_BOLD, "Bold", ete_cb_bold},
-        		{EWL_ICON_FORMAT_TEXT_ITALIC, "Italic", ete_cb_italic},
-        		{EWL_ICON_FORMAT_TEXT_UNDERLINE, "Underline",
-        						ete_cb_underline},
-        		{EWL_ICON_FORMAT_TEXT_STRIKETHROUGH, "Strikethrough",
-        						ete_cb_strikethrough},
-        		{NULL, NULL, NULL}
-        	};
+                struct
+                {
+                        char *icon;
+                        char *tooltip;
+                        void (*cb)(Ewl_Widget *w, void *ev, void *data);
+                } format[] = {
+                        {EWL_ICON_FORMAT_JUSTIFY_LEFT, "Left align",
+                                                        ete_cb_justify_left},
+                        {EWL_ICON_FORMAT_JUSTIFY_CENTER, "Center",
+                                                        ete_cb_justify_center},
+                        {EWL_ICON_FORMAT_JUSTIFY_RIGHT, "Right align",
+                                                        ete_cb_justify_right},
+                        {EWL_ICON_FORMAT_TEXT_BOLD, "Bold", ete_cb_bold},
+                        {EWL_ICON_FORMAT_TEXT_ITALIC, "Italic", ete_cb_italic},
+                        {EWL_ICON_FORMAT_TEXT_UNDERLINE, "Underline",
+                                                        ete_cb_underline},
+                        {EWL_ICON_FORMAT_TEXT_STRIKETHROUGH, "Strikethrough",
+                                                        ete_cb_strikethrough},
+                        {NULL, NULL, NULL}
+                };
 
-        	styles = ecore_list_new();
-        	ecore_list_append(styles, "None");
-        	ecore_list_append(styles, "Shadow");
-        	ecore_list_append(styles, "Soft Shadow");
-        	ecore_list_append(styles, "Far Shadow");
-        	ecore_list_append(styles, "Glow");
-        	ecore_list_append(styles, "Outline");
+                styles = ecore_list_new();
+                ecore_list_append(styles, "None");
+                ecore_list_append(styles, "Shadow");
+                ecore_list_append(styles, "Soft Shadow");
+                ecore_list_append(styles, "Far Shadow");
+                ecore_list_append(styles, "Glow");
+                ecore_list_append(styles, "Outline");
 
-        	for (i = 0; format[i].icon != NULL; i++)
-        	{
-        		const char *path;
+                for (i = 0; format[i].icon != NULL; i++)
+                {
+                        const char *path;
 
-        		path = ewl_icon_theme_icon_path_get(format[i].icon,
-        						EWL_ICON_SIZE_SMALL);
+                        path = ewl_icon_theme_icon_path_get(format[i].icon,
+                                                        EWL_ICON_SIZE_SMALL);
 
-        		o = ewl_icon_simple_new();
-        		ewl_icon_image_set(EWL_ICON(o), path,
-        						format[i].icon);
-        		ewl_icon_label_set(EWL_ICON(o), format[i].tooltip);
-        		ewl_container_child_append(EWL_CONTAINER(hbox), o);
-        		ewl_object_fill_policy_set(EWL_OBJECT(o),
-        						EWL_FLAG_FILL_VFILL);
-        		ewl_callback_append(o, EWL_CALLBACK_CLICKED,
-        						format[i].cb, NULL);
-        		ewl_attach_tooltip_text_set(o, format[i].tooltip);
-        		ewl_widget_show(o);
-        	}
+                        o = ewl_icon_simple_new();
+                        ewl_icon_image_set(EWL_ICON(o), path,
+                                                        format[i].icon);
+                        ewl_icon_label_set(EWL_ICON(o), format[i].tooltip);
+                        ewl_container_child_append(EWL_CONTAINER(hbox), o);
+                        ewl_object_fill_policy_set(EWL_OBJECT(o),
+                                                        EWL_FLAG_FILL_VFILL);
+                        ewl_callback_append(o, EWL_CALLBACK_CLICKED,
+                                                        format[i].cb, NULL);
+                        ewl_attach_tooltip_text_set(o, format[i].tooltip);
+                        ewl_widget_show(o);
+                }
 
-        	o = ewl_spacer_new();
-        	ewl_container_child_append(EWL_CONTAINER(hbox), o);
-        	ewl_widget_show(o);
+                o = ewl_spacer_new();
+                ewl_container_child_append(EWL_CONTAINER(hbox), o);
+                ewl_widget_show(o);
 
-        	o = ewl_label_new();
-        	ewl_container_child_append(EWL_CONTAINER(hbox), o);
-        	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_NONE);
-        	ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_LEFT);
-        	ewl_label_text_set(EWL_LABEL(o), "Font Style");
-        	ewl_widget_show(o);
+                o = ewl_label_new();
+                ewl_container_child_append(EWL_CONTAINER(hbox), o);
+                ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_NONE);
+                ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_LEFT);
+                ewl_label_text_set(EWL_LABEL(o), "Font Style");
+                ewl_widget_show(o);
 
-        	model = ewl_model_ecore_list_instance();
-        	view = ewl_label_view_get();
-        	o = ewl_combo_new();
-        	ewl_mvc_model_set(EWL_MVC(o), model);
-        	ewl_mvc_view_set(EWL_MVC(o), view);
-        	ewl_mvc_data_set(EWL_MVC(o), styles);
-        	ewl_mvc_selected_set(EWL_MVC(o), NULL,
-        			ewl_mvc_data_get(EWL_MVC(o)), 0, 0);
-        	ewl_container_child_append(EWL_CONTAINER(hbox), o);
-        	ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,
-        					ete_cb_styles_changed, NULL);
-        	ewl_object_fill_policy_set(EWL_OBJECT(o),
-        			EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
-        	ewl_widget_show(o);
+                model = ewl_model_ecore_list_instance();
+                view = ewl_label_view_get();
+                o = ewl_combo_new();
+                ewl_mvc_model_set(EWL_MVC(o), model);
+                ewl_mvc_view_set(EWL_MVC(o), view);
+                ewl_mvc_data_set(EWL_MVC(o), styles);
+                ewl_mvc_selected_set(EWL_MVC(o), NULL,
+                                ewl_mvc_data_get(EWL_MVC(o)), 0, 0);
+                ewl_container_child_append(EWL_CONTAINER(hbox), o);
+                ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,
+                                                ete_cb_styles_changed, NULL);
+                ewl_object_fill_policy_set(EWL_OBJECT(o),
+                                EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
+                ewl_widget_show(o);
 
-        	o = ewl_label_new();
-        	ewl_container_child_append(EWL_CONTAINER(hbox), o);
-        	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_NONE);
-        	ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_LEFT);
-        	ewl_label_text_set(EWL_LABEL(o), "Font Size");
-        	ewl_widget_show(o);
+                o = ewl_label_new();
+                ewl_container_child_append(EWL_CONTAINER(hbox), o);
+                ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_NONE);
+                ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_LEFT);
+                ewl_label_text_set(EWL_LABEL(o), "Font Size");
+                ewl_widget_show(o);
 
-        	o = ewl_spinner_new();
-        	ewl_container_child_append(EWL_CONTAINER(hbox), o);
-        	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_NONE);
-        	ewl_range_value_set(EWL_RANGE(o), 12);
-        	ewl_range_minimum_value_set(EWL_RANGE(o), 8);
-        	ewl_range_maximum_value_set(EWL_RANGE(o), 72);
-        	ewl_range_step_set(EWL_RANGE(o), 1);
-        	ewl_spinner_digits_set(EWL_SPINNER(o), 0);
-        	ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,
-        				ete_cb_font_size, NULL);
-        	ewl_widget_show(o);
+                o = ewl_spinner_new();
+                ewl_container_child_append(EWL_CONTAINER(hbox), o);
+                ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_NONE);
+                ewl_range_value_set(EWL_RANGE(o), 12);
+                ewl_range_minimum_value_set(EWL_RANGE(o), 8);
+                ewl_range_maximum_value_set(EWL_RANGE(o), 72);
+                ewl_range_step_set(EWL_RANGE(o), 1);
+                ewl_spinner_digits_set(EWL_SPINNER(o), 0);
+                ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,
+                                        ete_cb_font_size, NULL);
+                ewl_widget_show(o);
         }
 
         scroll = ewl_scrollpane_new();
         ewl_scrollpane_hscrollbar_flag_set(EWL_SCROLLPANE(scroll),
-        				EWL_SCROLLPANE_FLAG_ALWAYS_HIDDEN);
+                                        EWL_SCROLLPANE_FLAG_ALWAYS_HIDDEN);
         ewl_container_child_append(EWL_CONTAINER(box), scroll);
         ewl_widget_name_set(scroll, "scrollpane");
         ewl_widget_show(scroll);
@@ -216,25 +216,25 @@ create_test(Ewl_Container *box)
         ewl_widget_show(hbox);
 
         {
-        	int i;
-        	Ewl_Text_Editor_Control btns [] = {
-        			{"Fetch", ete_cb_fetch},
-        			{"Set",   ete_cb_set},
-        			{"Load",  ete_cb_load},
-        			{"Clear", ete_cb_clear},
-        			{NULL, NULL}
-        		};
+                int i;
+                Ewl_Text_Editor_Control btns [] = {
+                                {"Fetch", ete_cb_fetch},
+                                {"Set",   ete_cb_set},
+                                {"Load",  ete_cb_load},
+                                {"Clear", ete_cb_clear},
+                                {NULL, NULL}
+                        };
 
-        	for (i = 0; btns[i].name != NULL; i++)
-        	{
-        		o = ewl_button_new();
-        		ewl_button_label_set(EWL_BUTTON(o), btns[i].name);
-        		ewl_container_child_append(EWL_CONTAINER(hbox), o);
-        		ewl_object_fill_policy_set(EWL_OBJECT(o),
-        				EWL_FLAG_FILL_HSHRINK|EWL_FLAG_FILL_VSHRINK);
-        		ewl_callback_append(o, EWL_CALLBACK_CLICKED, btns[i].cb, NULL);
-        		ewl_widget_show(o);
-        	}
+                for (i = 0; btns[i].name != NULL; i++)
+                {
+                        o = ewl_button_new();
+                        ewl_button_label_set(EWL_BUTTON(o), btns[i].name);
+                        ewl_container_child_append(EWL_CONTAINER(hbox), o);
+                        ewl_object_fill_policy_set(EWL_OBJECT(o),
+                                        EWL_FLAG_FILL_HSHRINK|EWL_FLAG_FILL_VSHRINK);
+                        ewl_callback_append(o, EWL_CALLBACK_CLICKED, btns[i].cb, NULL);
+                        ewl_widget_show(o);
+                }
 
         }
 
@@ -251,30 +251,30 @@ ete_style_apply(Ewl_Text *t, Ewl_Text_Style s)
         styles = ewl_text_styles_get(t, cursor_pos);
 
         if (styles & s)
-        	styles &= ~s;
+                styles &= ~s;
         else
-        	styles |= s;
+                styles |= s;
 
         if (ewl_text_has_selection(t))
         {
-        	Ewl_Text_Trigger *selection;
+                Ewl_Text_Trigger *selection;
 
-        	selection = EWL_TEXT_TRIGGER(ewl_text_selection_get(t));
-        	ewl_text_cursor_position_set(t,
-        			ewl_text_trigger_start_pos_get(selection));
+                selection = EWL_TEXT_TRIGGER(ewl_text_selection_get(t));
+                ewl_text_cursor_position_set(t,
+                                ewl_text_trigger_start_pos_get(selection));
 
-        	ewl_text_styles_apply(t, styles,
-        			ewl_text_trigger_length_get(selection));
+                ewl_text_styles_apply(t, styles,
+                                ewl_text_trigger_length_get(selection));
 
-        	ewl_text_cursor_position_set(t, cursor_pos);
+                ewl_text_cursor_position_set(t, cursor_pos);
         }
         else
-        	ewl_text_styles_set(t, styles);
+                ewl_text_styles_set(t, styles);
 }
 
 static void
 ete_cb_styles_changed(Ewl_Widget *w, void *ev __UNUSED__,
-        				void *data __UNUSED__)
+                                        void *data __UNUSED__)
 {
         Ewl_Widget *entry;
         Ewl_Selection_Idx *idx;
@@ -285,29 +285,29 @@ ete_cb_styles_changed(Ewl_Widget *w, void *ev __UNUSED__,
 
         entry = ewl_widget_name_find("entry");
         if (!strcmp(str, "None"))
-        	ete_style_apply(EWL_TEXT(entry), EWL_TEXT_STYLE_NONE);
+                ete_style_apply(EWL_TEXT(entry), EWL_TEXT_STYLE_NONE);
 
         else if (!strcmp(str, "Shadow"))
-        	ete_style_apply(EWL_TEXT(entry), EWL_TEXT_STYLE_SHADOW);
+                ete_style_apply(EWL_TEXT(entry), EWL_TEXT_STYLE_SHADOW);
 
         else if (!strcmp(str, "Soft Shadow"))
-        	ete_style_apply(EWL_TEXT(entry), EWL_TEXT_STYLE_SOFT_SHADOW);
+                ete_style_apply(EWL_TEXT(entry), EWL_TEXT_STYLE_SOFT_SHADOW);
 
         else if (!strcmp(str, "Far Shadow"))
-        	ete_style_apply(EWL_TEXT(entry), EWL_TEXT_STYLE_FAR_SHADOW);
+                ete_style_apply(EWL_TEXT(entry), EWL_TEXT_STYLE_FAR_SHADOW);
 
         else if (!strcmp(str, "Glow"))
-        	ete_style_apply(EWL_TEXT(entry), EWL_TEXT_STYLE_GLOW);
+                ete_style_apply(EWL_TEXT(entry), EWL_TEXT_STYLE_GLOW);
 
         else if (!strcmp(str, "Outline"))
-        	ete_style_apply(EWL_TEXT(entry), EWL_TEXT_STYLE_OUTLINE);
+                ete_style_apply(EWL_TEXT(entry), EWL_TEXT_STYLE_OUTLINE);
 
 
 }
 
 static void
 ete_cb_strikethrough(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
-        					void *data __UNUSED__)
+                                                void *data __UNUSED__)
 {
         Ewl_Widget *entry;
 
@@ -317,7 +317,7 @@ ete_cb_strikethrough(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
 static void
 ete_cb_underline(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
-        					void *data __UNUSED__)
+                                                void *data __UNUSED__)
 {
         Ewl_Widget *entry;
 
@@ -336,41 +336,41 @@ ete_align_apply(unsigned int align)
 
         if (ewl_text_has_selection(t))
         {
-        	Ewl_Text_Trigger *selection;
-        	unsigned int cursor_pos;
+                Ewl_Text_Trigger *selection;
+                unsigned int cursor_pos;
 
-        	cursor_pos = ewl_text_cursor_position_get(t);
+                cursor_pos = ewl_text_cursor_position_get(t);
 
-        	selection = EWL_TEXT_TRIGGER(ewl_text_selection_get(t));
-        	ewl_text_cursor_position_set(t,
-        			ewl_text_trigger_start_pos_get(selection));
+                selection = EWL_TEXT_TRIGGER(ewl_text_selection_get(t));
+                ewl_text_cursor_position_set(t,
+                                ewl_text_trigger_start_pos_get(selection));
 
-        	ewl_text_align_apply(t, align,
-        			ewl_text_trigger_length_get(selection));
+                ewl_text_align_apply(t, align,
+                                ewl_text_trigger_length_get(selection));
 
-        	ewl_text_cursor_position_set(t, cursor_pos);
+                ewl_text_cursor_position_set(t, cursor_pos);
         }
         else
-        	ewl_text_align_set(t, align);
+                ewl_text_align_set(t, align);
 }
 
 static void
 ete_cb_justify_left(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
-        					void *data __UNUSED__)
+                                                void *data __UNUSED__)
 {
         ete_align_apply(EWL_FLAG_ALIGN_LEFT);
 }
 
 static void
 ete_cb_justify_center(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
-        					void *data __UNUSED__)
+                                                void *data __UNUSED__)
 {
         ete_align_apply(EWL_FLAG_ALIGN_CENTER);
 }
 
 static void
 ete_cb_justify_right(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
-        					void *data __UNUSED__)
+                                                void *data __UNUSED__)
 {
         ete_align_apply(EWL_FLAG_ALIGN_RIGHT);
 }
@@ -386,91 +386,91 @@ ete_font_apply(char *font)
         t = EWL_TEXT(w);
 
         if (ewl_text_has_selection(EWL_TEXT(t)))
-        	of = ewl_text_font_get(EWL_TEXT(t),
-        			ewl_text_trigger_start_pos_get(
-        				EWL_TEXT_TRIGGER(ewl_text_selection_get(EWL_TEXT(t)))));
+                of = ewl_text_font_get(EWL_TEXT(t),
+                                ewl_text_trigger_start_pos_get(
+                                        EWL_TEXT_TRIGGER(ewl_text_selection_get(EWL_TEXT(t)))));
         else
-        	of = ewl_text_font_get(EWL_TEXT(t),
-        			ewl_text_cursor_position_get(EWL_TEXT(t)));
+                of = ewl_text_font_get(EWL_TEXT(t),
+                                ewl_text_cursor_position_get(EWL_TEXT(t)));
 
         if (!strcmp(of, "ewl/default/bold-italic"))
         {
-        	if (!strcmp(font, "ewl/default/bold"))
-        		font = "ewl/default/italic";
-        	else if (!strcmp(font, "ewl/default/italic"))
-        		font = "ewl/default/bold";
+                if (!strcmp(font, "ewl/default/bold"))
+                        font = "ewl/default/italic";
+                else if (!strcmp(font, "ewl/default/italic"))
+                        font = "ewl/default/bold";
         }
         else if ((!strcmp(of, "ewl/default/italic") && !strcmp(font, "ewl/default/bold"))
-        		|| ((!strcmp(of, "ewl/default/bold") && (!strcmp(font, "ewl/default/italic")))))
-        	font = "ewl/default/bold-italic";
+                        || ((!strcmp(of, "ewl/default/bold") && (!strcmp(font, "ewl/default/italic")))))
+                font = "ewl/default/bold-italic";
 
         else if (!strcmp(of, font))
-        	font = "ewl/default";
+                font = "ewl/default";
 
         if (ewl_text_has_selection(t))
         {
-        	Ewl_Text_Trigger *selection;
-        	unsigned int cursor_pos;
+                Ewl_Text_Trigger *selection;
+                unsigned int cursor_pos;
 
-        	cursor_pos = ewl_text_cursor_position_get(t);
+                cursor_pos = ewl_text_cursor_position_get(t);
 
-        	selection = EWL_TEXT_TRIGGER(ewl_text_selection_get(t));
-        	ewl_text_cursor_position_set(t,
-        			ewl_text_trigger_start_pos_get(selection));
+                selection = EWL_TEXT_TRIGGER(ewl_text_selection_get(t));
+                ewl_text_cursor_position_set(t,
+                                ewl_text_trigger_start_pos_get(selection));
 
-        	ewl_text_font_apply(t, font,
-        			ewl_text_trigger_length_get(selection));
+                ewl_text_font_apply(t, font,
+                                ewl_text_trigger_length_get(selection));
 
-        	ewl_text_cursor_position_set(t, cursor_pos);
+                ewl_text_cursor_position_set(t, cursor_pos);
         }
         else
-        	ewl_text_font_set(t, font);
+                ewl_text_font_set(t, font);
 }
 
 static void
 ete_cb_bold(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
-        				void *data __UNUSED__)
+                                        void *data __UNUSED__)
 {
         ete_font_apply("ewl/default/bold");
 }
 
 static void
 ete_cb_italic(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
-        				void *data __UNUSED__)
+                                        void *data __UNUSED__)
 {
         ete_font_apply("ewl/default/italic");
 }
 
 static void
 ete_cb_font_size(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
-        					void *data __UNUSED__)
+                                                void *data __UNUSED__)
 {
         Ewl_Widget *entry;
 
         entry = ewl_widget_name_find("entry");
         if (ewl_text_has_selection(EWL_TEXT(entry)))
         {
-        	unsigned int cursor_pos;
-        	Ewl_Text_Trigger *selection;
+                unsigned int cursor_pos;
+                Ewl_Text_Trigger *selection;
 
-        	cursor_pos = ewl_text_cursor_position_get(EWL_TEXT(entry));
-        	selection = EWL_TEXT_TRIGGER(ewl_text_selection_get(
-        				EWL_TEXT(entry)));
-        	ewl_text_cursor_position_set(EWL_TEXT(entry),
-        				ewl_text_trigger_start_pos_get(selection));
-        	ewl_text_font_size_apply(EWL_TEXT(entry),
-        				ewl_range_value_get(EWL_RANGE(w)),
-        				ewl_text_trigger_length_get(selection));
-        	ewl_text_cursor_position_set(EWL_TEXT(entry), cursor_pos);
+                cursor_pos = ewl_text_cursor_position_get(EWL_TEXT(entry));
+                selection = EWL_TEXT_TRIGGER(ewl_text_selection_get(
+                                        EWL_TEXT(entry)));
+                ewl_text_cursor_position_set(EWL_TEXT(entry),
+                                        ewl_text_trigger_start_pos_get(selection));
+                ewl_text_font_size_apply(EWL_TEXT(entry),
+                                        ewl_range_value_get(EWL_RANGE(w)),
+                                        ewl_text_trigger_length_get(selection));
+                ewl_text_cursor_position_set(EWL_TEXT(entry), cursor_pos);
         }
         else
-        	ewl_text_font_size_set(EWL_TEXT(entry),
-        				ewl_range_value_get(EWL_RANGE(w)));
+                ewl_text_font_size_set(EWL_TEXT(entry),
+                                        ewl_range_value_get(EWL_RANGE(w)));
 }
 
 static void
 ete_cb_fetch(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
-        				void *data __UNUSED__)
+                                        void *data __UNUSED__)
 {
         Ewl_Widget *entry;
         char *txt;
@@ -479,14 +479,14 @@ ete_cb_fetch(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
         txt = ewl_text_text_get(EWL_TEXT(entry));
 
         if (txt) {
-        	printf("%s\n", txt);
-        	free(txt);
+                printf("%s\n", txt);
+                free(txt);
         }
 }
 
 static void
 ete_cb_set(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
-        				void *data __UNUSED__)
+                                        void *data __UNUSED__)
 {
         Ewl_Widget *entry;
 
@@ -496,14 +496,14 @@ ete_cb_set(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
 static void
 ete_cb_load(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
-        				void *data __UNUSED__)
+                                        void *data __UNUSED__)
 {
         printf("I do nothing yet ...\n");
 }
 
 static void
 ete_cb_clear(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
-        				void *data __UNUSED__)
+                                        void *data __UNUSED__)
 {
         Ewl_Widget *entry, *scroll;
 

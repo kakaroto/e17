@@ -24,11 +24,11 @@ static int label_position_set_get_test(char *buf, int len);
 static int label_alignment_set_get_test(char *buf, int len);
 
 static Ewl_Unit_Test border_unit_tests[] = {
-        	{"Border is", border_is_test, NULL, -1, 0},
-        	{"Border label set/get", label_set_get_test, NULL, -1, 0},
-        	{"Border label position set/get", label_position_set_get_test, NULL, -1, 0},
-        	{"Border label alignment set/get", label_alignment_set_get_test, NULL, -1, 0},
-        	{NULL, NULL, NULL, -1, 0}
+                {"Border is", border_is_test, NULL, -1, 0},
+                {"Border label set/get", label_set_get_test, NULL, -1, 0},
+                {"Border label position set/get", label_position_set_get_test, NULL, -1, 0},
+                {"Border label alignment set/get", label_alignment_set_get_test, NULL, -1, 0},
+                {NULL, NULL, NULL, -1, 0}
         };
 
 void
@@ -36,7 +36,7 @@ test_info(Ewl_Test *test)
 {
         test->name = "Border";
         test->tip = "Defines the Ewl_Border class for displaying\n"
-        		"a container with a label.";
+                        "a container with a label.";
         test->filename = __FILE__;
         test->func = create_test;
         test->type = EWL_TEST_TYPE_CONTAINER;
@@ -75,7 +75,7 @@ create_test(Ewl_Container *box)
         ewl_button_label_set(EWL_BUTTON(button_atop), "Top");
         ewl_container_child_append(EWL_CONTAINER(avbox), button_atop);
         ewl_callback_append(button_atop, EWL_CALLBACK_VALUE_CHANGED,
-        		    border_change_alignment, border);
+                            border_change_alignment, border);
         ewl_widget_show(button_atop);
 
         button_aleft = ewl_radiobutton_new();
@@ -83,36 +83,36 @@ create_test(Ewl_Container *box)
         ewl_checkbutton_checked_set(EWL_CHECKBUTTON(button_aleft), TRUE);
         ewl_container_child_append(EWL_CONTAINER(avbox), button_aleft);
         ewl_radiobutton_chain_set(EWL_RADIOBUTTON(button_aleft),
-        			  EWL_RADIOBUTTON(button_atop));
+                                  EWL_RADIOBUTTON(button_atop));
         ewl_callback_append(button_aleft, EWL_CALLBACK_VALUE_CHANGED,
-        		    border_change_alignment, border);
+                            border_change_alignment, border);
         ewl_widget_show(button_aleft);
 
         button_acenter = ewl_radiobutton_new();
         ewl_button_label_set(EWL_BUTTON(button_acenter), "Center");
         ewl_radiobutton_chain_set(EWL_RADIOBUTTON(button_acenter),
-        			  EWL_RADIOBUTTON(button_aleft));
+                                  EWL_RADIOBUTTON(button_aleft));
         ewl_container_child_append(EWL_CONTAINER(avbox), button_acenter);
         ewl_callback_append(button_acenter, EWL_CALLBACK_VALUE_CHANGED,
-        		    border_change_alignment, border);
+                            border_change_alignment, border);
         ewl_widget_show(button_acenter);
 
         button_aright = ewl_radiobutton_new();
         ewl_button_label_set(EWL_BUTTON(button_aright), "Right");
         ewl_radiobutton_chain_set(EWL_RADIOBUTTON(button_aright),
-        			  EWL_RADIOBUTTON(button_acenter));
+                                  EWL_RADIOBUTTON(button_acenter));
         ewl_container_child_append(EWL_CONTAINER(avbox), button_aright);
         ewl_callback_append(button_aright, EWL_CALLBACK_VALUE_CHANGED,
-        		    border_change_alignment, border);
+                            border_change_alignment, border);
         ewl_widget_show(button_aright);
 
         button_abottom = ewl_radiobutton_new();
         ewl_button_label_set(EWL_BUTTON(button_abottom), "Bottom");
         ewl_radiobutton_chain_set(EWL_RADIOBUTTON(button_abottom),
-        			  EWL_RADIOBUTTON(button_aright));
+                                  EWL_RADIOBUTTON(button_aright));
         ewl_container_child_append(EWL_CONTAINER(avbox), button_abottom);
         ewl_callback_append(button_abottom, EWL_CALLBACK_VALUE_CHANGED,
-        		    border_change_alignment, border);
+                            border_change_alignment, border);
         ewl_widget_show(button_abottom);
 
         separator = ewl_vseparator_new();
@@ -133,35 +133,35 @@ create_test(Ewl_Container *box)
         ewl_button_label_set(EWL_BUTTON(button_pleft), "Left");
         ewl_container_child_append(EWL_CONTAINER(pvbox), button_pleft);
         ewl_callback_append(button_pleft, EWL_CALLBACK_VALUE_CHANGED,
-        		    border_change_position, border);
+                            border_change_position, border);
         ewl_widget_show(button_pleft);
 
         button_pright = ewl_radiobutton_new();
         ewl_button_label_set(EWL_BUTTON(button_pright), "Right");
         ewl_radiobutton_chain_set(EWL_RADIOBUTTON(button_pright),
-        			  EWL_RADIOBUTTON(button_pleft));
+                                  EWL_RADIOBUTTON(button_pleft));
         ewl_container_child_append(EWL_CONTAINER(pvbox), button_pright);
         ewl_callback_append(button_pright, EWL_CALLBACK_VALUE_CHANGED,
-        		    border_change_position, border);
+                            border_change_position, border);
         ewl_widget_show(button_pright);
 
         button_ptop = ewl_radiobutton_new();
         ewl_button_label_set(EWL_BUTTON(button_ptop), "Top");
         ewl_checkbutton_checked_set(EWL_CHECKBUTTON(button_ptop), TRUE);
         ewl_radiobutton_chain_set(EWL_RADIOBUTTON(button_ptop),
-        			  EWL_RADIOBUTTON(button_pright));
+                                  EWL_RADIOBUTTON(button_pright));
         ewl_container_child_append(EWL_CONTAINER(pvbox), button_ptop);
         ewl_callback_append(button_ptop, EWL_CALLBACK_VALUE_CHANGED,
-        		    border_change_position, border);
+                            border_change_position, border);
         ewl_widget_show(button_ptop);
 
         button_pbottom = ewl_radiobutton_new();
         ewl_button_label_set(EWL_BUTTON(button_pbottom), "Bottom");
         ewl_radiobutton_chain_set(EWL_RADIOBUTTON(button_pbottom),
-        			  EWL_RADIOBUTTON(button_ptop));
+                                  EWL_RADIOBUTTON(button_ptop));
         ewl_container_child_append(EWL_CONTAINER(pvbox), button_pbottom);
         ewl_callback_append(button_pbottom, EWL_CALLBACK_VALUE_CHANGED,
-        		    border_change_position, border);
+                            border_change_position, border);
         ewl_widget_show(button_pbottom);
 
         cvbox = ewl_vbox_new();
@@ -178,7 +178,7 @@ create_test(Ewl_Container *box)
         ewl_button_label_set(EWL_BUTTON(button_check), "Disable");
         ewl_container_child_append(EWL_CONTAINER(cvbox), button_check);
         ewl_callback_append(button_check, EWL_CALLBACK_CLICKED,
-        		    checkbutton_cb, border);
+                            checkbutton_cb, border);
         ewl_widget_show(button_check);
 
         return 1;
@@ -186,47 +186,47 @@ create_test(Ewl_Container *box)
 
 static void
 border_change_alignment(Ewl_Widget *w, void *ev __UNUSED__,
-        				void *data __UNUSED__)
+                                        void *data __UNUSED__)
 {
         if (!ewl_checkbutton_is_checked(EWL_CHECKBUTTON(w)))
-        	return;
+                return;
 
         if (w == button_aleft)
-        	ewl_border_label_alignment_set(data, EWL_FLAG_ALIGN_LEFT);
+                ewl_border_label_alignment_set(data, EWL_FLAG_ALIGN_LEFT);
 
         else if (w == button_acenter)
-        	ewl_border_label_alignment_set(data, EWL_FLAG_ALIGN_CENTER);
+                ewl_border_label_alignment_set(data, EWL_FLAG_ALIGN_CENTER);
 
         else if (w == button_aright)
-        	ewl_border_label_alignment_set(data, EWL_FLAG_ALIGN_RIGHT);
+                ewl_border_label_alignment_set(data, EWL_FLAG_ALIGN_RIGHT);
 
         else if (w == button_atop)
-        	ewl_border_label_alignment_set(data, EWL_FLAG_ALIGN_TOP);
+                ewl_border_label_alignment_set(data, EWL_FLAG_ALIGN_TOP);
 
         else if (w == button_abottom)
-        	ewl_border_label_alignment_set(data, EWL_FLAG_ALIGN_BOTTOM);
+                ewl_border_label_alignment_set(data, EWL_FLAG_ALIGN_BOTTOM);
 
         return;
 }
 
 static void
 border_change_position(Ewl_Widget *w, void *ev __UNUSED__,
-        				void *data __UNUSED__)
+                                        void *data __UNUSED__)
 {
         if (!ewl_checkbutton_is_checked(EWL_CHECKBUTTON(w)))
-        	return;
+                return;
 
         if (w == button_pleft)
-        	ewl_border_label_position_set(data, EWL_POSITION_LEFT);
+                ewl_border_label_position_set(data, EWL_POSITION_LEFT);
 
         else if (w == button_pright)
-        	ewl_border_label_position_set(data, EWL_POSITION_RIGHT);
+                ewl_border_label_position_set(data, EWL_POSITION_RIGHT);
 
         else if (w == button_ptop)
-        	ewl_border_label_position_set(data, EWL_POSITION_TOP);
+                ewl_border_label_position_set(data, EWL_POSITION_TOP);
 
         else if (w == button_pbottom)
-        	ewl_border_label_position_set(data, EWL_POSITION_BOTTOM);
+                ewl_border_label_position_set(data, EWL_POSITION_BOTTOM);
 }
 
 static void
@@ -234,13 +234,13 @@ checkbutton_cb(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 {
         if (ewl_checkbutton_is_checked(EWL_CHECKBUTTON(w)))
         {
-        	ewl_widget_disable(EWL_WIDGET(data));
-        	ewl_button_label_set(EWL_BUTTON(w), "Enable");
+                ewl_widget_disable(EWL_WIDGET(data));
+                ewl_button_label_set(EWL_BUTTON(w), "Enable");
         }
         else if (!ewl_checkbutton_is_checked(EWL_CHECKBUTTON(w)))
         {
-        	ewl_widget_enable(EWL_WIDGET(data));
-        	ewl_button_label_set(EWL_BUTTON(w), "Disable");
+                ewl_widget_enable(EWL_WIDGET(data));
+                ewl_button_label_set(EWL_BUTTON(w), "Disable");
         }
 }
 
@@ -251,9 +251,9 @@ static int border_is_test(char *buf, int len)
 
         border = ewl_border_new();
         if (ewl_widget_type_is(border, EWL_BORDER_TYPE))
-        	ret = 1;
+                ret = 1;
         else
-        	LOG_FAILURE(buf, len, "border type doesn't match");
+                LOG_FAILURE(buf, len, "border type doesn't match");
 
         ewl_widget_destroy(border);
 
@@ -267,17 +267,17 @@ static int label_set_get_test(char *buf, int len)
 
         border = ewl_border_new();
         if (ewl_border_label_get(EWL_BORDER(border)))
-        	LOG_FAILURE(buf, len, "default border label set");
+                LOG_FAILURE(buf, len, "default border label set");
         else {
-        	const char *label;
+                const char *label;
 
-        	ewl_border_label_set(EWL_BORDER(border), "label value");
+                ewl_border_label_set(EWL_BORDER(border), "label value");
 
-        	label = ewl_border_label_get(EWL_BORDER(border));
-        	if (label && !strcmp(label, "label value"))
-        		ret = 1;
-        	else
-        		LOG_FAILURE(buf, len, "border label doesn't match");
+                label = ewl_border_label_get(EWL_BORDER(border));
+                if (label && !strcmp(label, "label value"))
+                        ret = 1;
+                else
+                        LOG_FAILURE(buf, len, "border label doesn't match");
         }
 
         ewl_widget_destroy(border);
@@ -294,36 +294,36 @@ static int label_position_set_get_test(char *buf, int len)
         border = ewl_border_new();
         pos = ewl_border_label_position_get(EWL_BORDER(border));
         if (pos != EWL_POSITION_TOP) {
-        	LOG_FAILURE(buf, len, "default border label position wrong");
-        	goto POSITION_ERROR;
+                LOG_FAILURE(buf, len, "default border label position wrong");
+                goto POSITION_ERROR;
         }
 
         ewl_border_label_position_set(EWL_BORDER(border), EWL_POSITION_LEFT);
         pos = ewl_border_label_position_get(EWL_BORDER(border));
         if (pos != EWL_POSITION_LEFT) {
-        	LOG_FAILURE(buf, len, "border label position not left");
-        	goto POSITION_ERROR;
+                LOG_FAILURE(buf, len, "border label position not left");
+                goto POSITION_ERROR;
         }
 
         ewl_border_label_position_set(EWL_BORDER(border), EWL_POSITION_RIGHT);
         pos = ewl_border_label_position_get(EWL_BORDER(border));
         if (pos != EWL_POSITION_RIGHT) {
-        	LOG_FAILURE(buf, len, "border label position not right");
-        	goto POSITION_ERROR;
+                LOG_FAILURE(buf, len, "border label position not right");
+                goto POSITION_ERROR;
         }
 
         ewl_border_label_position_set(EWL_BORDER(border), EWL_POSITION_BOTTOM);
         pos = ewl_border_label_position_get(EWL_BORDER(border));
         if (pos != EWL_POSITION_BOTTOM) {
-        	LOG_FAILURE(buf, len, "border label position not bottom");
-        	goto POSITION_ERROR;
+                LOG_FAILURE(buf, len, "border label position not bottom");
+                goto POSITION_ERROR;
         }
 
         ewl_border_label_position_set(EWL_BORDER(border), EWL_POSITION_TOP);
         pos = ewl_border_label_position_get(EWL_BORDER(border));
         if (pos != EWL_POSITION_TOP) {
-        	LOG_FAILURE(buf, len, "border label position not top");
-        	goto POSITION_ERROR;
+                LOG_FAILURE(buf, len, "border label position not top");
+                goto POSITION_ERROR;
         }
 
         ret = 1;
@@ -344,50 +344,50 @@ static int label_alignment_set_get_test(char *buf, int len)
         border = ewl_border_new();
         align = ewl_border_label_alignment_get(EWL_BORDER(border));
         if (align != EWL_FLAG_ALIGN_LEFT) {
-        	LOG_FAILURE(buf, len, "default border label alignment wrong");
-        	goto POSITION_ERROR;
+                LOG_FAILURE(buf, len, "default border label alignment wrong");
+                goto POSITION_ERROR;
         }
 
         req_align = (EWL_FLAG_ALIGN_LEFT | EWL_FLAG_ALIGN_RIGHT |
-        			EWL_FLAG_ALIGN_BOTTOM | EWL_FLAG_ALIGN_TOP |
-        			EWL_FLAG_ALIGN_CENTER);
+                                EWL_FLAG_ALIGN_BOTTOM | EWL_FLAG_ALIGN_TOP |
+                                EWL_FLAG_ALIGN_CENTER);
 
         while (req_align >= 0) {
 
-        	ewl_border_label_alignment_set(EWL_BORDER(border), req_align);
-        	align = ewl_border_label_alignment_get(EWL_BORDER(border));
-        	if (align != req_align) {
-        		LOG_FAILURE(buf, len,
-        				"border label alignment %x does not "
-        				"match requested %x", align, req_align);
-        		goto POSITION_ERROR;
-        	}
+                ewl_border_label_alignment_set(EWL_BORDER(border), req_align);
+                align = ewl_border_label_alignment_get(EWL_BORDER(border));
+                if (align != req_align) {
+                        LOG_FAILURE(buf, len,
+                                        "border label alignment %x does not "
+                                        "match requested %x", align, req_align);
+                        goto POSITION_ERROR;
+                }
 
-        	--req_align;
+                --req_align;
         }
 
         ewl_border_label_alignment_set(EWL_BORDER(border),
-        		EWL_FLAG_ALIGN_RIGHT);
+                        EWL_FLAG_ALIGN_RIGHT);
         align = ewl_border_label_alignment_get(EWL_BORDER(border));
         if (align != EWL_FLAG_ALIGN_RIGHT) {
-        	LOG_FAILURE(buf, len, "border label alignment not right");
-        	goto POSITION_ERROR;
+                LOG_FAILURE(buf, len, "border label alignment not right");
+                goto POSITION_ERROR;
         }
 
         ewl_border_label_alignment_set(EWL_BORDER(border),
-        		EWL_FLAG_ALIGN_BOTTOM);
+                        EWL_FLAG_ALIGN_BOTTOM);
         align = ewl_border_label_alignment_get(EWL_BORDER(border));
         if (align != EWL_FLAG_ALIGN_BOTTOM) {
-        	LOG_FAILURE(buf, len, "border label alignment not bottom");
-        	goto POSITION_ERROR;
+                LOG_FAILURE(buf, len, "border label alignment not bottom");
+                goto POSITION_ERROR;
         }
 
         ewl_border_label_alignment_set(EWL_BORDER(border),
-        		EWL_FLAG_ALIGN_TOP);
+                        EWL_FLAG_ALIGN_TOP);
         align = ewl_border_label_alignment_get(EWL_BORDER(border));
         if (align != EWL_FLAG_ALIGN_TOP) {
-        	LOG_FAILURE(buf, len, "border label alignment not top");
-        	goto POSITION_ERROR;
+                LOG_FAILURE(buf, len, "border label alignment not top");
+                goto POSITION_ERROR;
         }
 
         ret = 1;

@@ -60,19 +60,19 @@ struct Ewl_Floater
 
 
 Ewl_Widget         *ewl_floater_new(void);
-int          	 ewl_floater_init(Ewl_Floater *f);
-void         	 ewl_floater_follow_set(Ewl_Floater *f, Ewl_Widget *p);
+int                   ewl_floater_init(Ewl_Floater *f);
+void                  ewl_floater_follow_set(Ewl_Floater *f, Ewl_Widget *p);
 Ewl_Widget         *ewl_floater_follow_get(Ewl_Floater *f);
-void         	 ewl_floater_position_set(Ewl_Floater *parent, int x, int y);
+void                  ewl_floater_position_set(Ewl_Floater *parent, int x, int y);
 
 /*
  * Internally used callbacks, override at your own risk.
  */
 void ewl_floater_cb_destroy(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_floater_cb_follow_configure(Ewl_Widget *w, void *ev_data,
-        					void *user_data);
+                                                void *user_data);
 void ewl_floater_cb_follow_destroy(Ewl_Widget *w, void *ev_data,
-        			   		void *user_data);
+                                                   void *user_data);
 
 /**
  * @}

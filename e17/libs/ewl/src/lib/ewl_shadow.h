@@ -55,7 +55,7 @@ struct Ewl_Shadow
 };
 
 Ewl_Widget        *ewl_shadow_new(void);
-int         	 ewl_shadow_init(Ewl_Shadow *s);
+int                  ewl_shadow_init(Ewl_Shadow *s);
 
 /**
  * @}

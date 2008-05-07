@@ -49,15 +49,15 @@ typedef struct Ewl_Datepicker Ewl_Datepicker;
  */
 struct Ewl_Datepicker
 {
-        Ewl_Text  text; 		/**< Inherit from Ewl_Text */
+        Ewl_Text  text;                 /**< Inherit from Ewl_Text */
 
-        Ewl_Widget *calendar;		/**< The calendar */
-        Ewl_Widget *calendar_window;	/**< The window */
+        Ewl_Widget *calendar;                /**< The calendar */
+        Ewl_Widget *calendar_window;        /**< The window */
 
 };
 
 Ewl_Widget        *ewl_datepicker_new(void);
-int        	 ewl_datepicker_init(Ewl_Datepicker* datepicker);
+int                 ewl_datepicker_init(Ewl_Datepicker* datepicker);
 
 /*
  * Internally used callbacks, override at your risk
@@ -65,7 +65,7 @@ int        	 ewl_datepicker_init(Ewl_Datepicker* datepicker);
 void ewl_datepicker_cb_destroy(Ewl_Widget *w, void *ev, void *user_data);
 void ewl_datepicker_cb_value_changed(Ewl_Widget *w, void *ev, void *user_data);
 void ewl_datepicker_cb_window_mouse_down(Ewl_Widget *w, void *ev,
-        						void *user_data);
+                                                        void *user_data);
 
 /**
  * @}

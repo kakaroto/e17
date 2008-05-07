@@ -65,22 +65,22 @@ struct Ewl_Seeker
 Ewl_Widget         *ewl_seeker_new(void);
 Ewl_Widget         *ewl_hseeker_new(void);
 Ewl_Widget          *ewl_vseeker_new(void);
-int         	 ewl_seeker_init(Ewl_Seeker *s);
+int                  ewl_seeker_init(Ewl_Seeker *s);
 
-void         	 ewl_seeker_orientation_set(Ewl_Seeker *s, Ewl_Orientation o);
+void                  ewl_seeker_orientation_set(Ewl_Seeker *s, Ewl_Orientation o);
 Ewl_Orientation  ewl_seeker_orientation_get(Ewl_Seeker *s);
 
-void         	 ewl_seeker_autohide_set(Ewl_Seeker *s, int v);
-int         	 ewl_seeker_autohide_get(Ewl_Seeker *s);
+void                  ewl_seeker_autohide_set(Ewl_Seeker *s, int v);
+int                  ewl_seeker_autohide_get(Ewl_Seeker *s);
 
 /*
  * Internally used callbacks, override at your own risk.
  */
 void ewl_seeker_cb_configure(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_seeker_cb_button_mouse_down(Ewl_Widget *w, void *ev_data,
-        					void *user_data);
+                                                void *user_data);
 void ewl_seeker_cb_button_mouse_up(Ewl_Widget *w, void *ev_data,
-        				      void *user_data);
+                                              void *user_data);
 void ewl_seeker_cb_mouse_move(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_seeker_cb_mouse_down(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_seeker_cb_mouse_up(Ewl_Widget *w, void *ev_data, void *user_data);

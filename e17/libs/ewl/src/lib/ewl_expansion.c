@@ -20,11 +20,11 @@ ewl_expansion_new(void)
 
         b = NEW(Ewl_Expansion, 1);
         if (!b)
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
 
         if (!ewl_expansion_init(EWL_EXPANSION(b))) {
-        	ewl_widget_destroy(EWL_WIDGET(b));
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                ewl_widget_destroy(EWL_WIDGET(b));
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
         }
 
         DRETURN_PTR(EWL_WIDGET(b), DLEVEL_STABLE);
@@ -48,7 +48,7 @@ ewl_expansion_init(Ewl_Expansion *cb)
 
         w = EWL_WIDGET(cb);
         if (!ewl_check_init(EWL_CHECK(w)))
-        	DRETURN_INT(FALSE, DLEVEL_STABLE);
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
 
         ewl_widget_appearance_set(w, EWL_EXPANSION_TYPE);
         ewl_widget_inherit(w, EWL_EXPANSION_TYPE);
@@ -56,7 +56,7 @@ ewl_expansion_init(Ewl_Expansion *cb)
         ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
         ewl_object_alignment_set(EWL_OBJECT(w), EWL_FLAG_ALIGN_TOP);
         ewl_callback_append(w, EWL_CALLBACK_REVEAL,
-        			ewl_expansion_cb_reveal, NULL);
+                                ewl_expansion_cb_reveal, NULL);
 
         DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -114,11 +114,11 @@ ewl_expansion_expandable_update(Ewl_Expansion *ex)
         DCHECK_TYPE(ex, EWL_EXPANSION_TYPE);
 
         if (ex->expandable)
-        	ewl_widget_state_set(EWL_WIDGET(ex), "expandable", 
-        						EWL_STATE_TRANSIENT);
+                ewl_widget_state_set(EWL_WIDGET(ex), "expandable", 
+                                                        EWL_STATE_TRANSIENT);
         else
-        	ewl_widget_state_set(EWL_WIDGET(ex), "nonexpandable", 
-        						EWL_STATE_TRANSIENT);
+                ewl_widget_state_set(EWL_WIDGET(ex), "nonexpandable", 
+                                                        EWL_STATE_TRANSIENT);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -133,7 +133,7 @@ ewl_expansion_expandable_update(Ewl_Expansion *ex)
  */
 void
 ewl_expansion_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
-        				void *user_data __UNUSED__)
+                                        void *user_data __UNUSED__)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(w);

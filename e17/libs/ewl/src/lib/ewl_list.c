@@ -6,8 +6,8 @@
 #include "ewl_debug.h"
 
 static Ewl_Widget *ewl_list_widget_at(Ewl_MVC *mvc, void *data,
-        				unsigned int row,
-        				unsigned int column);
+                                        unsigned int row,
+                                        unsigned int column);
 
 /**
  * @return Returns a new Ewl_Widget on success or NULL on failure
@@ -22,12 +22,12 @@ ewl_list_new(void)
 
         list = NEW(Ewl_List, 1);
         if (!list)
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
 
         if (!ewl_list_init(EWL_LIST(list)))
         {
-        	ewl_widget_destroy(list);
-        	list = NULL;
+                ewl_widget_destroy(list);
+                list = NULL;
         }
 
         DRETURN_PTR(list, DLEVEL_STABLE);
@@ -45,7 +45,7 @@ ewl_list_init(Ewl_List *list)
         DCHECK_PARAM_PTR_RET(list, FALSE);
 
         if (!ewl_mvc_init(EWL_MVC(list)))
-        	DRETURN_INT(FALSE, DLEVEL_STABLE);
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
 
         ewl_widget_appearance_set(EWL_WIDGET(list), EWL_LIST_TYPE);
         ewl_widget_inherit(EWL_WIDGET(list), EWL_LIST_TYPE);
@@ -53,7 +53,7 @@ ewl_list_init(Ewl_List *list)
         ewl_mvc_selected_change_cb_set(EWL_MVC(list), ewl_list_cb_selected_change);
 
         ewl_callback_append(EWL_WIDGET(list), EWL_CALLBACK_CONFIGURE,
-        					ewl_list_cb_configure, NULL);
+                                                ewl_list_cb_configure, NULL);
 
         DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -68,7 +68,7 @@ ewl_list_init(Ewl_List *list)
  */
 void
 ewl_list_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
-        				void *data __UNUSED__)
+                                        void *data __UNUSED__)
 {
         Ewl_List *list;
         const Ewl_Model *model;
@@ -89,26 +89,26 @@ ewl_list_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
         /* if either the list isn't dirty or some of the MVC controls have
          * not been set on the list just leave this up to the box to handle */
         if ((!ewl_mvc_dirty_get(EWL_MVC(list)))
-        		|| !model || !view || !mvc_data)
-        	DRETURN(DLEVEL_STABLE);
+                        || !model || !view || !mvc_data)
+                DRETURN(DLEVEL_STABLE);
 
         /* create all the widgets and pack into the container */
         ewl_container_reset(EWL_CONTAINER(list));
         for (i = 0; i < (int)model->count(mvc_data); i++)
         {
-        	Ewl_Widget *o, *cell;
+                Ewl_Widget *o, *cell;
 
-        	cell = ewl_cell_new();
-        	ewl_cell_state_change_cb_add(EWL_CELL(cell));
-        	ewl_container_child_append(EWL_CONTAINER(list), cell);
-        	ewl_callback_append(cell, EWL_CALLBACK_CLICKED,
-        			ewl_list_cb_item_clicked, list);
-        	ewl_widget_show(cell);
+                cell = ewl_cell_new();
+                ewl_cell_state_change_cb_add(EWL_CELL(cell));
+                ewl_container_child_append(EWL_CONTAINER(list), cell);
+                ewl_callback_append(cell, EWL_CALLBACK_CLICKED,
+                                ewl_list_cb_item_clicked, list);
+                ewl_widget_show(cell);
 
-        	o = view->fetch(model->fetch(mvc_data, i, 0), i, 0);
-        	ewl_widget_show(o);
+                o = view->fetch(model->fetch(mvc_data, i, 0), i, 0);
+                ewl_widget_show(o);
 
-        	ewl_container_child_append(EWL_CONTAINER(cell), o);
+                ewl_container_child_append(EWL_CONTAINER(cell), o);
         }
 
         ewl_list_cb_selected_change(EWL_MVC(list));
@@ -139,8 +139,8 @@ ewl_list_cb_item_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
         DCHECK_TYPE(data, EWL_LIST_TYPE);
 
         if (ewl_mvc_selection_mode_get(EWL_MVC(data)) ==
-        				EWL_SELECTION_MODE_NONE)
-        	DRETURN(DLEVEL_STABLE);
+                                        EWL_SELECTION_MODE_NONE)
+                DRETURN(DLEVEL_STABLE);
 
         model = ewl_mvc_model_get(EWL_MVC(data));
         mvc_data = ewl_mvc_data_get(EWL_MVC(data));
@@ -149,8 +149,8 @@ ewl_list_cb_item_clicked(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 
         if ((unsigned int) row > model->count(mvc_data))
         {
-        	DWARNING("Don't use container function on MVC widget!");
-        	DRETURN(DLEVEL_STABLE);
+                DWARNING("Don't use container function on MVC widget!");
+                DRETURN(DLEVEL_STABLE);
         }
 
         ewl_mvc_handle_click(EWL_MVC(data), NULL, mvc_data, row, 0);
@@ -178,7 +178,7 @@ ewl_list_cb_selected_change(Ewl_MVC *mvc)
 
 static Ewl_Widget *
 ewl_list_widget_at(Ewl_MVC *mvc, void *data __UNUSED__, unsigned int row,
-        				unsigned int column __UNUSED__)
+                                        unsigned int column __UNUSED__)
 {
         Ewl_Widget *w;
 

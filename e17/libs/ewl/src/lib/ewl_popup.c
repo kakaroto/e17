@@ -25,11 +25,11 @@ ewl_popup_new(void)
 
         p = NEW(Ewl_Popup, 1);
         if (!p)
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
 
         if (!ewl_popup_init(p)) {
-        	ewl_widget_destroy(EWL_WIDGET(p));
-        	p = NULL;
+                ewl_widget_destroy(EWL_WIDGET(p));
+                p = NULL;
         }
 
         DRETURN_PTR(EWL_WIDGET(p), DLEVEL_STABLE);
@@ -53,7 +53,7 @@ ewl_popup_init(Ewl_Popup *p)
 
         w = EWL_WIDGET(p);
         if (!ewl_window_init(EWL_WINDOW(w)))
-        	DRETURN_INT(FALSE, DLEVEL_STABLE);
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
 
         ewl_widget_inherit(w, EWL_POPUP_TYPE);
         ewl_widget_appearance_set(w, EWL_POPUP_TYPE);
@@ -62,9 +62,9 @@ ewl_popup_init(Ewl_Popup *p)
         ewl_window_override_set(EWL_WINDOW(p), TRUE);
 
         ewl_container_show_notify_set(EWL_CONTAINER(p),
-        				ewl_popup_cb_child_show);
+                                        ewl_popup_cb_child_show);
         ewl_container_resize_notify_set(EWL_CONTAINER(p),
-        				ewl_popup_cb_child_resize);
+                                        ewl_popup_cb_child_resize);
 
         /*
          * add the callbacks
@@ -72,9 +72,9 @@ ewl_popup_init(Ewl_Popup *p)
         ewl_callback_append(w, EWL_CALLBACK_SHOW, ewl_popup_cb_show, NULL);
         ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, ewl_popup_cb_show, NULL);
         ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE, ewl_popup_cb_mouse_move,
-        								NULL);
+                                                                        NULL);
         ewl_callback_prepend(w, EWL_CALLBACK_DESTROY, ewl_popup_cb_destroy,
-        								NULL);
+                                                                        NULL);
 
         DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -129,21 +129,21 @@ ewl_popup_follow_set(Ewl_Popup *p, Ewl_Widget *w)
         DCHECK_TYPE(p, EWL_POPUP_TYPE);
 
         if (p->follow == w)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         if (p->follow) {
-        	ewl_callback_del_with_data(p->follow, EWL_CALLBACK_DESTROY,
-        					ewl_popup_cb_follow_destroy, p);
-        	ewl_callback_del_with_data(p->follow, EWL_CALLBACK_CONFIGURE,
-        					ewl_popup_cb_follow_configure,
-        					p);
+                ewl_callback_del_with_data(p->follow, EWL_CALLBACK_DESTROY,
+                                                ewl_popup_cb_follow_destroy, p);
+                ewl_callback_del_with_data(p->follow, EWL_CALLBACK_CONFIGURE,
+                                                ewl_popup_cb_follow_configure,
+                                                p);
         }
 
         if (w) {
-        	ewl_callback_prepend(w, EWL_CALLBACK_DESTROY,
-        				ewl_popup_cb_follow_destroy, p);
-        	ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
-        				ewl_popup_cb_follow_configure, p);
+                ewl_callback_prepend(w, EWL_CALLBACK_DESTROY,
+                                        ewl_popup_cb_follow_destroy, p);
+                ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
+                                        ewl_popup_cb_follow_configure, p);
         }
 
         p->follow = w;
@@ -251,7 +251,7 @@ ewl_popup_offset_set(Ewl_Popup *p, int x, int y)
  */
 void
 ewl_popup_cb_show(Ewl_Widget *w, void *ev_data __UNUSED__,
-        			void *user_data __UNUSED__)
+                                void *user_data __UNUSED__)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(w);
@@ -261,34 +261,34 @@ ewl_popup_cb_show(Ewl_Widget *w, void *ev_data __UNUSED__,
         ewl_popup_position_check(EWL_POPUP(w));
 
         if (ewl_window_pointer_grab_get(EWL_WINDOW(w)))
-        	ewl_window_pointer_grab_set(EWL_WINDOW(w), TRUE);
+                ewl_window_pointer_grab_set(EWL_WINDOW(w), TRUE);
 
         if (ewl_window_keyboard_grab_get(EWL_WINDOW(w)))
-        	ewl_window_keyboard_grab_set(EWL_WINDOW(w), TRUE);
+                ewl_window_keyboard_grab_set(EWL_WINDOW(w), TRUE);
 
         /* Popups should be flagged as transient for their parent windows */
         if (EWL_POPUP(w)->follow) {
-        	Ewl_Embed *emb;
-        	emb = ewl_embed_widget_find(EWL_POPUP(w)->follow);
-        	if (emb) {
-        		void *pwin = NULL;
-        		/*
-        		 * If the followed window is transient, defer to that
-        		 * window's parent
-        		 */
-        		if (EWL_WINDOW_IS(emb)) {
-        			Ewl_Window *win = EWL_WINDOW(emb);
+                Ewl_Embed *emb;
+                emb = ewl_embed_widget_find(EWL_POPUP(w)->follow);
+                if (emb) {
+                        void *pwin = NULL;
+                        /*
+                         * If the followed window is transient, defer to that
+                         * window's parent
+                         */
+                        if (EWL_WINDOW_IS(emb)) {
+                                Ewl_Window *win = EWL_WINDOW(emb);
 
-        			if (win->flags & EWL_WINDOW_TRANSIENT)
-        				pwin = win->transient.ewl->window;
-        			else if (win->flags & EWL_WINDOW_TRANSIENT_FOREIGN)
-        				pwin = win->transient.foreign;
-        		}
+                                if (win->flags & EWL_WINDOW_TRANSIENT)
+                                        pwin = win->transient.ewl->window;
+                                else if (win->flags & EWL_WINDOW_TRANSIENT_FOREIGN)
+                                        pwin = win->transient.foreign;
+                        }
 
-        		if (!pwin)
-        			pwin = emb->canvas_window;
-        		ewl_window_transient_for_foreign(EWL_WINDOW(w), pwin);
-        	}
+                        if (!pwin)
+                                pwin = emb->canvas_window;
+                        ewl_window_transient_for_foreign(EWL_WINDOW(w), pwin);
+                }
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -304,7 +304,7 @@ ewl_popup_cb_show(Ewl_Widget *w, void *ev_data __UNUSED__,
  */
 void
 ewl_popup_cb_mouse_move(Ewl_Widget *w, void *ev_data __UNUSED__,
-        			void *user_data __UNUSED__)
+                                void *user_data __UNUSED__)
 {
         Ewl_Popup *p;
         int dx, dy;
@@ -317,7 +317,7 @@ ewl_popup_cb_mouse_move(Ewl_Widget *w, void *ev_data __UNUSED__,
 
         /* do we need to move the window? */
         if (p->moving || !ewl_popup_move_direction_get(p, &dx, &dy))
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         /* FIXME the time  schouldn't be a hardcoded value */
         ecore_timer_add(0.02, ewl_popup_move_timer, p);
@@ -345,8 +345,8 @@ ewl_popup_move_timer(void *data)
         p = EWL_POPUP(data);
 
         if (!ewl_popup_move_direction_get(p, &dx, &dy)) {
-        	ewl_popup_move_stop(p);
-        	DRETURN_INT(FALSE, DLEVEL_STABLE);
+                ewl_popup_move_stop(p);
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
         }
 
         /* FIXME the velocity should be configurable and not hardcoded */
@@ -389,22 +389,22 @@ ewl_popup_move_direction_get(Ewl_Popup *p, int *dx, int *dy)
 
         /* check if the mouse is inside of the popup */
         if (x < 0 || y < 0 || x > CURRENT_W(p) || y > CURRENT_H(p))
-        	DRETURN_INT(FALSE, DLEVEL_STABLE);
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
 
         /* and now determine the directions of the move */
         if (mx <= 0)
-        	*dx = 1;
+                *dx = 1;
         else if (mx >= dw - 1)
-        	*dx = -1;
+                *dx = -1;
         else
-        	*dx = 0;
+                *dx = 0;
 
         if (my <= 0)
-        	*dy = 1;
+                *dy = 1;
         else if (my >= dh - 1)
-        	*dy = -1;
+                *dy = -1;
         else
-        	*dy = 0;
+                *dy = 0;
 
         /* if both are 0 the window doesn't need to be moved */
         DRETURN_INT((*dx != 0 || *dy != 0), DLEVEL_STABLE);
@@ -434,11 +434,11 @@ ewl_popup_move(Ewl_Popup *p, int dx, int dy)
         p->moving = TRUE;
         /* move the follow, too, if it is a popup child */
         if (p->follow) {
-        	Ewl_Embed *e;
+                Ewl_Embed *e;
 
-        	e = ewl_embed_widget_find(EWL_WIDGET(p->follow));
-        	if (EWL_POPUP_IS(e))
-        		ewl_popup_move(EWL_POPUP(e), dx, dy);
+                e = ewl_embed_widget_find(EWL_WIDGET(p->follow));
+                if (EWL_POPUP_IS(e))
+                        ewl_popup_move(EWL_POPUP(e), dx, dy);
         }
 
         ewl_window_move(EWL_WINDOW(p), x, y);
@@ -463,11 +463,11 @@ ewl_popup_move_stop(Ewl_Popup *p)
 
         /* stop moving the follow, too, if it is a popup child */
         if (p->follow) {
-        	Ewl_Embed *e;
+                Ewl_Embed *e;
 
-        	e = ewl_embed_widget_find(EWL_WIDGET(p->follow));
-        	if (EWL_POPUP_IS(e))
-        		ewl_popup_move_stop(EWL_POPUP(e));
+                e = ewl_embed_widget_find(EWL_WIDGET(p->follow));
+                if (EWL_POPUP_IS(e))
+                        ewl_popup_move_stop(EWL_POPUP(e));
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -483,7 +483,7 @@ ewl_popup_move_stop(Ewl_Popup *p)
  */
 void
 ewl_popup_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
-        			void *user_data __UNUSED__)
+                                void *user_data __UNUSED__)
 {
         Ewl_Popup *p;
 
@@ -493,8 +493,8 @@ ewl_popup_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
 
         p = EWL_POPUP(w);
         if (p->follow)
-        	ewl_callback_del_with_data(p->follow, EWL_CALLBACK_DESTROY,
-        				ewl_popup_cb_follow_destroy, p);
+                ewl_callback_del_with_data(p->follow, EWL_CALLBACK_DESTROY,
+                                        ewl_popup_cb_follow_destroy, p);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -509,7 +509,7 @@ ewl_popup_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
  */
 void
 ewl_popup_cb_follow_configure(Ewl_Widget *w __UNUSED__,
-        			void *ev_data __UNUSED__, void *user_data)
+                                void *ev_data __UNUSED__, void *user_data)
 {
         Ewl_Popup *p;
 
@@ -534,7 +534,7 @@ ewl_popup_cb_follow_configure(Ewl_Widget *w __UNUSED__,
  */
 void
 ewl_popup_cb_follow_destroy(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
-        			void *user_data)
+                                void *user_data)
 {
         Ewl_Popup *p;
 
@@ -546,7 +546,7 @@ ewl_popup_cb_follow_destroy(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
         p->follow = NULL;
 
         if (p->type != EWL_POPUP_TYPE_NONE)
-        	ewl_widget_hide(EWL_WIDGET(p));
+                ewl_widget_hide(EWL_WIDGET(p));
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -605,59 +605,59 @@ ewl_popup_position_check(Ewl_Popup *p)
         DCHECK_TYPE(p, EWL_POPUP_TYPE);
 
         if (p->type == EWL_POPUP_TYPE_NONE || p->moving)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         if (p->follow) {
-        	Ewl_Embed *emb;
+                Ewl_Embed *emb;
 
-        	emb = ewl_embed_widget_find(p->follow);
-        	ewl_embed_desktop_size_get(emb, &desk_w, &desk_h);
-        	ewl_embed_window_position_get(emb, &win_x, &win_y);
+                emb = ewl_embed_widget_find(p->follow);
+                ewl_embed_desktop_size_get(emb, &desk_w, &desk_h);
+                ewl_embed_window_position_get(emb, &win_x, &win_y);
         }
         else
-        	ewl_embed_desktop_size_get(EWL_EMBED(p), &desk_w, &desk_h);
+                ewl_embed_desktop_size_get(EWL_EMBED(p), &desk_w, &desk_h);
 
         if (p->type == EWL_POPUP_TYPE_MOUSE) {
-        	x = win_x + p->mouse.x;
-        	y = win_y + p->mouse.y;
+                x = win_x + p->mouse.x;
+                y = win_y + p->mouse.y;
 
-        	if (x + p->offset.x + CURRENT_W(p) > desk_w)
-        		x -= p->offset.x + CURRENT_W(p);
-        	else
-        		x += p->offset.x;
+                if (x + p->offset.x + CURRENT_W(p) > desk_w)
+                        x -= p->offset.x + CURRENT_W(p);
+                else
+                        x += p->offset.x;
 
-        	if (y + p->offset.y + CURRENT_H(p) > desk_h)
-        		y -= p->offset.y + CURRENT_H(p);
-        	else
-        		y += p->offset.y;
+                if (y + p->offset.y + CURRENT_H(p) > desk_h)
+                        y -= p->offset.y + CURRENT_H(p);
+                else
+                        y += p->offset.y;
         }
         else if (p->type == EWL_POPUP_TYPE_MENU_VERTICAL) {
 
-        	x = win_x + CURRENT_X(p->follow);
-        	y = win_y + CURRENT_Y(p->follow);
+                x = win_x + CURRENT_X(p->follow);
+                y = win_y + CURRENT_Y(p->follow);
 
-        	if (x + CURRENT_W(p) > desk_w && x > desk_w / 2)
-        		x = desk_w - CURRENT_W(p);
+                if (x + CURRENT_W(p) > desk_w && x > desk_w / 2)
+                        x = desk_w - CURRENT_W(p);
 
-        	if (y + CURRENT_H(p->follow) + CURRENT_H(p) > desk_h
-        			&& y > desk_h / 2)
-        		y -= CURRENT_H(p);
-        	else
-        		y += CURRENT_H(p->follow);
+                if (y + CURRENT_H(p->follow) + CURRENT_H(p) > desk_h
+                                && y > desk_h / 2)
+                        y -= CURRENT_H(p);
+                else
+                        y += CURRENT_H(p->follow);
         }
         else if (p->type == EWL_POPUP_TYPE_MENU_HORIZONTAL) {
 
-        	x = win_x + CURRENT_X(p->follow);
-        	y = win_y + CURRENT_Y(p->follow);
+                x = win_x + CURRENT_X(p->follow);
+                y = win_y + CURRENT_Y(p->follow);
 
-        	if (x + CURRENT_W(p->follow) + CURRENT_W(p) > desk_w
-        			&& x > desk_w / 2)
-        		x -= CURRENT_W(p);
-        	else
-        		x += CURRENT_W(p->follow);
+                if (x + CURRENT_W(p->follow) + CURRENT_W(p) > desk_w
+                                && x > desk_w / 2)
+                        x -= CURRENT_W(p);
+                else
+                        x += CURRENT_W(p->follow);
 
-        	if (y + CURRENT_H(p) > desk_h && y > desk_h / 2)
-        		y = desk_h - CURRENT_H(p);
+                if (y + CURRENT_H(p) > desk_h && y > desk_h / 2)
+                        y = desk_h - CURRENT_H(p);
         }
 
         ewl_window_move(EWL_WINDOW(p), x, y);
@@ -673,13 +673,13 @@ ewl_popup_size_check(Ewl_Popup *p)
         DCHECK_TYPE(p, EWL_POPUP_TYPE);
 
         if (!p->follow || p->type == EWL_POPUP_TYPE_NONE || !p->fit_to_follow)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         if (p->type == EWL_POPUP_TYPE_MENU_VERTICAL)
-        	ewl_object_w_request(EWL_OBJECT(p), CURRENT_W(p->follow));
+                ewl_object_w_request(EWL_OBJECT(p), CURRENT_W(p->follow));
 
         else if (p->type == EWL_POPUP_TYPE_MENU_HORIZONTAL)
-        	ewl_object_h_request(EWL_OBJECT(p), CURRENT_H(p->follow));
+                ewl_object_h_request(EWL_OBJECT(p), CURRENT_H(p->follow));
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

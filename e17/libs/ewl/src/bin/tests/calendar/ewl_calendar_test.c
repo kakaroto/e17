@@ -26,8 +26,8 @@ create_test(Ewl_Container *box)
         cal = ewl_calendar_new();
         ewl_container_child_append(EWL_CONTAINER(box), cal);
         ewl_callback_append(EWL_WIDGET(cal),
-        		EWL_CALLBACK_VALUE_CHANGED, ewl_calendar_test,
-        		cal);
+                        EWL_CALLBACK_VALUE_CHANGED, ewl_calendar_test,
+                        cal);
         ewl_widget_show(cal);
 
         return 1;

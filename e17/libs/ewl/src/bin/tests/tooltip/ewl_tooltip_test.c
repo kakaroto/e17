@@ -12,7 +12,7 @@ test_info(Ewl_Test *test)
 {
         test->name = "Tooltip";
         test->tip = "Defines a widget for displaying short\n"
-        		"messages after a delay.";
+                        "messages after a delay.";
         test->filename = __FILE__;
         test->func = create_test;
         test->type = EWL_TEST_TYPE_SIMPLE;

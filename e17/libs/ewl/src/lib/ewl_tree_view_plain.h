@@ -44,13 +44,13 @@ typedef struct Ewl_Tree_View_Plain Ewl_Tree_View_Plain;
  */
 struct Ewl_Tree_View_Plain
 {
-        Ewl_Tree_View view;	/**< Inherit from Ewl_Tree_View */
+        Ewl_Tree_View view;        /**< Inherit from Ewl_Tree_View */
 };
 
 const Ewl_View        *ewl_tree_view_plain_get(void);
 
 Ewl_Widget        *ewl_tree_view_plain_new(void);
-int        	 ewl_tree_view_plain_init(Ewl_Tree_View_Plain *tv);
+int                 ewl_tree_view_plain_init(Ewl_Tree_View_Plain *tv);
 
 /**
  * @}

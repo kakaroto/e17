@@ -48,14 +48,14 @@ typedef struct Ewl_Row Ewl_Row;
  */
 struct Ewl_Row
 {
-        Ewl_Container container;	/**< Inherit from Ewl_Container */
-        Ewl_Container *header;		/**< The header row */
+        Ewl_Container container;        /**< Inherit from Ewl_Container */
+        Ewl_Container *header;                /**< The header row */
 };
 
 Ewl_Widget         *ewl_row_new(void);
-int         	 ewl_row_init(Ewl_Row *row);
+int                  ewl_row_init(Ewl_Row *row);
 
-void         	 ewl_row_header_set(Ewl_Row *row, Ewl_Container *header);
+void                  ewl_row_header_set(Ewl_Row *row, Ewl_Container *header);
 Ewl_Widget         *ewl_row_column_get(Ewl_Row *row, short n);
 
 /*
@@ -63,14 +63,14 @@ Ewl_Widget         *ewl_row_column_get(Ewl_Row *row, short n);
  */
 void ewl_row_cb_configure(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_row_cb_header_configure(Ewl_Widget *w, void *ev_data,
-        					void *user_data);
+                                                void *user_data);
 void ewl_row_cb_header_destroy(Ewl_Widget *w, void *ev_data,
-        					void *user_data);
+                                                void *user_data);
 
 void ewl_row_cb_child_show(Ewl_Container *c, Ewl_Widget *w);
 void ewl_row_cb_child_hide(Ewl_Container *c, Ewl_Widget *w);
 void ewl_row_cb_child_resize(Ewl_Container *c, Ewl_Widget *w, int size,
-        				       Ewl_Orientation o);
+                                               Ewl_Orientation o);
 
 /**
  * @}

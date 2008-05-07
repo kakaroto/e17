@@ -23,11 +23,11 @@ ewl_table_new(int cols, int rows, char **col_headers)
 
         t = NEW(Ewl_Table, 1);
         if (!t)
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
 
         if (!ewl_table_init(t, cols, rows, col_headers)) {
-        	ewl_widget_destroy(EWL_WIDGET(t));
-        	t = NULL;
+                ewl_widget_destroy(EWL_WIDGET(t));
+                t = NULL;
         }
 
         DRETURN_PTR(EWL_WIDGET(t), DLEVEL_STABLE);
@@ -58,7 +58,7 @@ ewl_table_init(Ewl_Table *t, int cols, int rows, char **col_headers)
          * Iniitialize the tables inherited fields
          */
         if (!ewl_container_init(EWL_CONTAINER(t))) {
-        	DRETURN_INT(FALSE, DLEVEL_STABLE);
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
         }
         ewl_widget_appearance_set(EWL_WIDGET(t), EWL_TABLE_TYPE);
         ewl_widget_inherit(EWL_WIDGET(t), EWL_TABLE_TYPE);
@@ -71,9 +71,9 @@ ewl_table_init(Ewl_Table *t, int cols, int rows, char **col_headers)
          */
         t->grid = (Ewl_Grid *)ewl_grid_new();
         if (col_headers)
-        	ewl_grid_dimensions_set(t->grid, cols, rows + 1);
+                ewl_grid_dimensions_set(t->grid, cols, rows + 1);
         else
-        	ewl_grid_dimensions_set(t->grid, cols, rows);
+                ewl_grid_dimensions_set(t->grid, cols, rows);
         ewl_container_child_append(EWL_CONTAINER(t), EWL_WIDGET(t->grid));
         ewl_widget_show(EWL_WIDGET(t->grid));
 
@@ -82,23 +82,23 @@ ewl_table_init(Ewl_Table *t, int cols, int rows, char **col_headers)
          */
         if (col_headers != NULL) {
 
-        	for (i = 1; i <= cols; i++) {
-        		cell = (Ewl_Cell *) ewl_cell_new();
-        		button = ewl_button_new();
-        		ewl_button_label_set(EWL_BUTTON(button), col_headers[i - 1]);
-        		ewl_widget_disable(button);
-        		ewl_container_child_append(EWL_CONTAINER(cell), button);
-        		ewl_object_fill_policy_set(EWL_OBJECT(cell),
-        					EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_HFILL);
-        		ewl_container_child_append(EWL_CONTAINER(t->grid),
-        						EWL_WIDGET(cell));
-        		ewl_grid_child_position_set(t->grid, EWL_WIDGET(cell),
-        							i, i, 1, 1);
-        		ewl_widget_show(EWL_WIDGET(button));
-        		ewl_widget_show(EWL_WIDGET(cell));
-        	}
+                for (i = 1; i <= cols; i++) {
+                        cell = (Ewl_Cell *) ewl_cell_new();
+                        button = ewl_button_new();
+                        ewl_button_label_set(EWL_BUTTON(button), col_headers[i - 1]);
+                        ewl_widget_disable(button);
+                        ewl_container_child_append(EWL_CONTAINER(cell), button);
+                        ewl_object_fill_policy_set(EWL_OBJECT(cell),
+                                                EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_HFILL);
+                        ewl_container_child_append(EWL_CONTAINER(t->grid),
+                                                        EWL_WIDGET(cell));
+                        ewl_grid_child_position_set(t->grid, EWL_WIDGET(cell),
+                                                                i, i, 1, 1);
+                        ewl_widget_show(EWL_WIDGET(button));
+                        ewl_widget_show(EWL_WIDGET(cell));
+                }
 
-        	t->col_headers = col_headers;
+                t->col_headers = col_headers;
         }
 
         t->row_select = 0;
@@ -114,7 +114,7 @@ ewl_table_init(Ewl_Table *t, int cols, int rows, char **col_headers)
          * Append callbacks
          */
         ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_CONFIGURE,
-        				ewl_table_cb_configure, NULL);
+                                        ewl_table_cb_configure, NULL);
 
         DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -131,7 +131,7 @@ ewl_table_init(Ewl_Table *t, int cols, int rows, char **col_headers)
  */
 void
 ewl_table_add(Ewl_Table *table, Ewl_Widget *w,
-        	int start_col, int end_col, int start_row, int end_row)
+                int start_col, int end_col, int start_row, int end_row)
 {
         Ewl_Cell *cell;
 
@@ -145,16 +145,16 @@ ewl_table_add(Ewl_Table *table, Ewl_Widget *w,
         ewl_container_child_append(EWL_CONTAINER (cell), w);
 
         ewl_container_child_append(EWL_CONTAINER(table->grid),
-        						EWL_WIDGET(cell));
+                                                        EWL_WIDGET(cell));
         if (table->col_headers)
-        	ewl_grid_child_position_set(table->grid, EWL_WIDGET(cell),
-        			start_col, end_col, start_row + 1, end_row + 1);
+                ewl_grid_child_position_set(table->grid, EWL_WIDGET(cell),
+                                start_col, end_col, start_row + 1, end_row + 1);
         else
-        	ewl_grid_child_position_set(table->grid, EWL_WIDGET(cell),
-        			start_col, end_col, start_row, end_row);
+                ewl_grid_child_position_set(table->grid, EWL_WIDGET(cell),
+                                start_col, end_col, start_row, end_row);
 
         ewl_callback_prepend(EWL_WIDGET(cell), EWL_CALLBACK_MOUSE_UP,
-        			ewl_table_cb_child_select, table);
+                                ewl_table_cb_child_select, table);
 
         ewl_widget_show(EWL_WIDGET(cell));
 
@@ -173,8 +173,8 @@ ewl_table_add(Ewl_Table *table, Ewl_Widget *w,
  */
 void
 ewl_table_col_row_get(Ewl_Table *t, Ewl_Cell *cell,
-        		   int *start_col, int *end_col, int *start_row,
-        		   int *end_row)
+                           int *start_col, int *end_col, int *start_row,
+                           int *end_row)
 {
 
         /*---------------------------------
@@ -200,17 +200,17 @@ ewl_table_col_row_get(Ewl_Table *t, Ewl_Cell *cell,
         ecore_dlist_first_goto(children);
         while ((child = ecore_dlist_next(children)) != NULL)
         {
-        	if (child == EWL_WIDGET(cell)) {
-        		g_child = (Ewl_Grid_Child *) ewl_widget_data_get(child,
-        				(void *) t->grid);
+                if (child == EWL_WIDGET(cell)) {
+                        g_child = (Ewl_Grid_Child *) ewl_widget_data_get(child,
+                                        (void *) t->grid);
 
-        		if (start_col) *start_col = g_child->start_col;
-        		if (end_col) *end_col = g_child->end_col;
-        		if (start_row) *start_row = g_child->start_row;
-        		if (end_row) *end_row = g_child->end_row;
+                        if (start_col) *start_col = g_child->start_col;
+                        if (end_col) *end_col = g_child->end_col;
+                        if (start_row) *start_row = g_child->start_row;
+                        if (end_row) *end_row = g_child->end_row;
 
-        		break;
-        	}
+                        break;
+                }
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -227,7 +227,7 @@ ewl_table_col_row_get(Ewl_Table *t, Ewl_Cell *cell,
  */
 Ecore_List *
 ewl_table_find(Ewl_Table *t, int start_col, int end_col,
-        			int start_row, int end_row)
+                                int start_row, int end_row)
 {
         /*---------------------------------
          * DEVELOPER NOTE:
@@ -252,13 +252,13 @@ ewl_table_find(Ewl_Table *t, int start_col, int end_col,
 
         ecore_dlist_first_goto(children);
         while ((child = ecore_dlist_next(children)) != NULL) {
-        	gc = (Ewl_Grid_Child *) ewl_widget_data_get(child,
-        					(void *) t->grid);
+                gc = (Ewl_Grid_Child *) ewl_widget_data_get(child,
+                                                (void *) t->grid);
 
-        	if (start_col >= gc->start_col && end_col <= gc->end_col &&
-        		start_row >= gc->start_row && end_row <= gc->end_row) {
-        		ecore_list_append(list, child);
-        	}
+                if (start_col >= gc->start_col && end_col <= gc->end_col &&
+                        start_row >= gc->start_row && end_row <= gc->end_row) {
+                        ecore_list_append(list, child);
+                }
         }
 
         DRETURN_PTR(list, DLEVEL_STABLE);
@@ -364,27 +364,27 @@ ewl_table_reset(Ewl_Table *t, int cols, int rows, char **col_headers)
 
         ewl_container_reset(EWL_CONTAINER(t->grid));
         if (col_headers != NULL)
-        	ewl_grid_dimensions_set(EWL_GRID(t->grid), cols, rows+1);
+                ewl_grid_dimensions_set(EWL_GRID(t->grid), cols, rows+1);
         else
-        	ewl_grid_dimensions_set(EWL_GRID(t->grid), cols, rows);
+                ewl_grid_dimensions_set(EWL_GRID(t->grid), cols, rows);
 
         if (col_headers != NULL) {
 
-        	for (i = 1; i <= cols; i++) {
-        		cell = (Ewl_Cell *) ewl_cell_new();
-        		button = ewl_button_new();
-        		ewl_button_label_set(EWL_BUTTON(button), col_headers[i - 1]);
-        		ewl_widget_disable(button);
-        		ewl_container_child_append(EWL_CONTAINER(cell), button);
-        		ewl_container_child_append(EWL_CONTAINER(t->grid),
-        						EWL_WIDGET(cell));
-        		ewl_grid_child_position_set(t->grid, EWL_WIDGET(cell),
-        							i, i, 1, 1);
-        		ewl_widget_show(button);
-        		ewl_widget_show(EWL_WIDGET(cell));
-        	}
+                for (i = 1; i <= cols; i++) {
+                        cell = (Ewl_Cell *) ewl_cell_new();
+                        button = ewl_button_new();
+                        ewl_button_label_set(EWL_BUTTON(button), col_headers[i - 1]);
+                        ewl_widget_disable(button);
+                        ewl_container_child_append(EWL_CONTAINER(cell), button);
+                        ewl_container_child_append(EWL_CONTAINER(t->grid),
+                                                        EWL_WIDGET(cell));
+                        ewl_grid_child_position_set(t->grid, EWL_WIDGET(cell),
+                                                                i, i, 1, 1);
+                        ewl_widget_show(button);
+                        ewl_widget_show(EWL_WIDGET(cell));
+                }
 
-        	t->col_headers = col_headers;
+                t->col_headers = col_headers;
         }
 
         ewl_widget_configure(EWL_WIDGET(t));
@@ -412,19 +412,19 @@ ewl_table_selected_get(Ewl_Table *t)
         children = EWL_CONTAINER(t->grid)->children;
         ecore_dlist_first_goto(children);
         while ((child = ecore_dlist_next(children)) != NULL) {
-        	gc = (Ewl_Grid_Child *) ewl_widget_data_get(child,
-        					(void *) t->grid);
+                gc = (Ewl_Grid_Child *) ewl_widget_data_get(child,
+                                                (void *) t->grid);
 
-        	if (t->selected.start_c == gc->start_col &&
-        			t->selected.start_r == gc->start_row &&
-        			t->selected.end_c == gc->end_col &&
-        			t->selected.end_r == gc->end_row) {
+                if (t->selected.start_c == gc->start_col &&
+                                t->selected.start_r == gc->start_row &&
+                                t->selected.end_c == gc->end_col &&
+                                t->selected.end_r == gc->end_row) {
 
-        		tw = (Ewl_Text *) ecore_dlist_first_goto(
-        				EWL_CONTAINER(child)->children);
+                        tw = (Ewl_Text *) ecore_dlist_first_goto(
+                                        EWL_CONTAINER(child)->children);
 
-        		DRETURN_PTR(ewl_text_text_get(tw), DLEVEL_STABLE);
-        	}
+                        DRETURN_PTR(ewl_text_text_get(tw), DLEVEL_STABLE);
+                }
         }
 
         DRETURN_PTR(strdup(""), DLEVEL_STABLE);
@@ -440,7 +440,7 @@ ewl_table_selected_get(Ewl_Table *t)
  */
 void
 ewl_table_cb_child_select(Ewl_Widget *w, void *ev_data __UNUSED__,
-        						void *user_data)
+                                                        void *user_data)
 {
         Ewl_Table *t;
         Ewl_Grid_Child *gc;
@@ -472,7 +472,7 @@ ewl_table_cb_child_select(Ewl_Widget *w, void *ev_data __UNUSED__,
  */
 void
 ewl_table_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
-        				void *user_data __UNUSED__)
+                                        void *user_data __UNUSED__)
 {
         /*---------------------------------
          * DEVELOPER NOTE:
@@ -490,11 +490,11 @@ ewl_table_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
         table = EWL_TABLE(w);
 
         ewl_object_geometry_request(EWL_OBJECT(table->grid),
-        				CURRENT_X(w), CURRENT_Y(w),
-        				CURRENT_W(w) - INSET_LEFT(w) +
-        				INSET_RIGHT(w),
-        				CURRENT_H(w) - INSET_TOP(w) +
-        				INSET_BOTTOM(w));
+                                        CURRENT_X(w), CURRENT_Y(w),
+                                        CURRENT_W(w) - INSET_LEFT(w) +
+                                        INSET_RIGHT(w),
+                                        CURRENT_H(w) - INSET_TOP(w) +
+                                        INSET_BOTTOM(w));
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -518,7 +518,7 @@ ewl_table_cb_child_show(Ewl_Container *p, Ewl_Widget *c __UNUSED__)
 
         table = EWL_TABLE (p);
         ewl_object_preferred_inner_size_get (EWL_OBJECT (table->grid),
-        						&width_g, &height_g);
+                                                        &width_g, &height_g);
         ewl_object_preferred_inner_size_set (EWL_OBJECT (table), width_g, height_g);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -541,9 +541,9 @@ ewl_table_homogeneous_set(Ewl_Table *table, unsigned int h)
         DCHECK_TYPE(table, EWL_TABLE_TYPE);
 
          if (table->homogeneous_h != h)
-        	ewl_table_hhomogeneous_set(table, h);
+                ewl_table_hhomogeneous_set(table, h);
         if (table->homogeneous_v != h)
-        	ewl_table_vhomogeneous_set(table, h);
+                ewl_table_vhomogeneous_set(table, h);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -567,8 +567,8 @@ ewl_table_hhomogeneous_set(Ewl_Table *table, unsigned int h)
 
          if (table->homogeneous_h != h)
         {
-        	table->homogeneous_h = h;
-        	ewl_grid_hhomogeneous_set (EWL_GRID (table->grid), h );
+                table->homogeneous_h = h;
+                ewl_grid_hhomogeneous_set (EWL_GRID (table->grid), h );
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -593,8 +593,8 @@ ewl_table_vhomogeneous_set(Ewl_Table *table, unsigned int h)
 
          if (table->homogeneous_v != h)
         {
-        	table->homogeneous_v = h;
-        	ewl_grid_vhomogeneous_set (EWL_GRID (table->grid), h );
+                table->homogeneous_v = h;
+                ewl_grid_vhomogeneous_set (EWL_GRID (table->grid), h );
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);

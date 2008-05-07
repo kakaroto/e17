@@ -52,7 +52,7 @@ struct Ewl_Spacer
 #define EWL_SPACER(spacer) ((Ewl_Spacer *) spacer)
 
 Ewl_Widget        *ewl_spacer_new(void);
-int        	 ewl_spacer_init(Ewl_Spacer *s);
+int                 ewl_spacer_init(Ewl_Spacer *s);
 
 /**
  * @}

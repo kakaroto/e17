@@ -19,7 +19,7 @@
 
 static void
 edje_text(void *data, Evas_Object *obj __UNUSED__,
-        	const char *emission, const char *source)
+                const char *emission, const char *source)
 {
         char *buf;
         char *text;
@@ -27,7 +27,7 @@ edje_text(void *data, Evas_Object *obj __UNUSED__,
         Ewl_Widget *label = data;
 
         if (strstr(emission, "Present") != emission)
-        	return;
+                return;
 
         text = (char *)emission + strlen("Present");
         len = strlen(text);
@@ -52,7 +52,7 @@ edje_text(void *data, Evas_Object *obj __UNUSED__,
 
 static void
 start_text(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
-        				void *user_data)
+                                        void *user_data)
 {
         Ewl_Widget *label = user_data;
 
@@ -65,7 +65,7 @@ start_text(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
         ewl_text_font_set(EWL_TEXT(label), "ewl/default");
         ewl_text_font_size_set(EWL_TEXT(label), 7);
         ewl_text_text_append(EWL_TEXT(label), "We hope you enjoy your stay.\n"
-        				      "Please visit us at:\n");
+                                              "Please visit us at:\n");
         ewl_text_color_set(EWL_TEXT(label), 0, 0, 255, 190);
         ewl_text_text_append(EWL_TEXT(label), "http://www.enlightenment.org/");
         ewl_text_color_set(EWL_TEXT(label), 0, 0, 0, 255);
@@ -75,27 +75,27 @@ static void
 reveal_logo_cb(Ewl_Widget *w, void *ev_data __UNUSED__, void *user_data)
 {
         edje_object_signal_callback_add(w->theme_object, "Present*", "*",
-        		edje_text, user_data);
+                        edje_text, user_data);
 }
 
 static void
 obscure_logo_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
-        			void *user_data __UNUSED__)
+                                void *user_data __UNUSED__)
 {
         edje_object_signal_callback_del(w->theme_object, "Present*", "*",
-        		edje_text);
+                        edje_text);
 }
 
 static void
 close_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
-        				void *user_data __UNUSED__)
+                                        void *user_data __UNUSED__)
 {
         ewl_main_quit();
 }
 
 static void
 button_down(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
-        			void *user_data)
+                                void *user_data)
 {
         Ewl_Widget *logo = user_data;
         ewl_widget_state_set(logo, "start_tour", EWL_STATE_PERSISTENT);
@@ -105,7 +105,7 @@ button_down(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 
 static void
 quit_demo(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
-        			void *user_data __UNUSED__)
+                                void *user_data __UNUSED__)
 {
         ewl_main_quit();
 }

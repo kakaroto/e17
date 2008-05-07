@@ -19,11 +19,11 @@ ewl_menubar_new(void)
 
         mb = NEW(Ewl_Menubar, 1);
         if (!mb)
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
 
         if (!ewl_menubar_init(mb)) {
-        	ewl_widget_destroy(EWL_WIDGET(mb));
-        	mb = NULL;
+                ewl_widget_destroy(EWL_WIDGET(mb));
+                mb = NULL;
         }
 
         DRETURN_PTR(EWL_WIDGET(mb), DLEVEL_STABLE);
@@ -43,10 +43,10 @@ ewl_hmenubar_new(void)
 
         mb = ewl_menubar_new();
         if (!mb)
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
 
         ewl_menubar_orientation_set(EWL_MENUBAR(mb),
-        			EWL_ORIENTATION_HORIZONTAL);
+                                EWL_ORIENTATION_HORIZONTAL);
 
         DRETURN_PTR(mb, DLEVEL_STABLE);
 }
@@ -65,10 +65,10 @@ ewl_vmenubar_new(void)
 
         mb = ewl_menubar_new();
         if (!mb)
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
 
         ewl_menubar_orientation_set(EWL_MENUBAR(mb),
-        			EWL_ORIENTATION_VERTICAL);
+                                EWL_ORIENTATION_VERTICAL);
 
         DRETURN_PTR(mb, DLEVEL_STABLE);
 }
@@ -85,22 +85,22 @@ ewl_menubar_init(Ewl_Menubar *mb)
         DCHECK_PARAM_PTR_RET(mb, FALSE);
 
         if (!ewl_box_init(EWL_BOX(mb))) {
-        	DRETURN_INT(FALSE, DLEVEL_STABLE);
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
         }
         ewl_widget_appearance_set(EWL_WIDGET(mb), EWL_MENUBAR_TYPE);
         ewl_widget_inherit(EWL_WIDGET(mb), EWL_MENUBAR_TYPE);
 
         mb->inner_box = ewl_hbox_new();
         ewl_container_child_append(EWL_CONTAINER(mb),
-        				EWL_WIDGET(mb->inner_box));
+                                        EWL_WIDGET(mb->inner_box));
         ewl_widget_internal_set(EWL_WIDGET(mb->inner_box), TRUE);
         ewl_widget_show(EWL_WIDGET(mb->inner_box));
 
         ewl_container_redirect_set(EWL_CONTAINER(mb),
-        				EWL_CONTAINER(mb->inner_box));
+                                        EWL_CONTAINER(mb->inner_box));
 
         ewl_container_add_notify_set(EWL_CONTAINER(mb->inner_box),
-        				ewl_menubar_cb_child_add);
+                                        ewl_menubar_cb_child_add);
 
         ewl_menubar_orientation_set(mb, EWL_ORIENTATION_HORIZONTAL);
 
@@ -125,15 +125,15 @@ ewl_menubar_from_info(Ewl_Menubar *mb, Ewl_Menubar_Info *info)
 
         for (i = 0; info[i].name != NULL; i++)
         {
-        	Ewl_Widget *menu;
+                Ewl_Widget *menu;
 
-        	menu = ewl_menu_new();
-        	ewl_button_label_set(EWL_BUTTON(menu), info[i].name);
-        	ewl_menu_from_info(EWL_MENU(menu), info[i].menu);
-        	ewl_container_child_append(EWL_CONTAINER(mb), menu);
-        	ewl_object_fill_policy_set(EWL_OBJECT(menu),
-        			EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_VFILL);
-        	ewl_widget_show(menu);
+                menu = ewl_menu_new();
+                ewl_button_label_set(EWL_BUTTON(menu), info[i].name);
+                ewl_menu_from_info(EWL_MENU(menu), info[i].menu);
+                ewl_container_child_append(EWL_CONTAINER(mb), menu);
+                ewl_object_fill_policy_set(EWL_OBJECT(menu),
+                                EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_VFILL);
+                ewl_widget_show(menu);
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -154,20 +154,20 @@ ewl_menubar_orientation_set(Ewl_Menubar *mb, Ewl_Orientation o)
 
         ewl_box_orientation_set(EWL_BOX(mb), o);
         if (o == EWL_ORIENTATION_HORIZONTAL) {
-        	ewl_object_fill_policy_set(EWL_OBJECT(mb),
-        			EWL_FLAG_FILL_HFILL);
-        	ewl_box_orientation_set(EWL_BOX(mb->inner_box),
-        			EWL_ORIENTATION_HORIZONTAL);
-        	ewl_object_fill_policy_set(EWL_OBJECT(mb->inner_box),
-        			EWL_FLAG_FILL_HFILL);
+                ewl_object_fill_policy_set(EWL_OBJECT(mb),
+                                EWL_FLAG_FILL_HFILL);
+                ewl_box_orientation_set(EWL_BOX(mb->inner_box),
+                                EWL_ORIENTATION_HORIZONTAL);
+                ewl_object_fill_policy_set(EWL_OBJECT(mb->inner_box),
+                                EWL_FLAG_FILL_HFILL);
 
         } else if (o == EWL_ORIENTATION_VERTICAL) {
-        	ewl_object_fill_policy_set(EWL_OBJECT(mb),
-        			EWL_FLAG_FILL_VFILL);
-        	ewl_box_orientation_set(EWL_BOX(mb->inner_box),
-        			EWL_ORIENTATION_VERTICAL);
-        	ewl_object_fill_policy_set(EWL_OBJECT(mb->inner_box),
-        			EWL_FLAG_FILL_VFILL);
+                ewl_object_fill_policy_set(EWL_OBJECT(mb),
+                                EWL_FLAG_FILL_VFILL);
+                ewl_box_orientation_set(EWL_BOX(mb->inner_box),
+                                EWL_ORIENTATION_VERTICAL);
+                ewl_object_fill_policy_set(EWL_OBJECT(mb->inner_box),
+                                EWL_FLAG_FILL_VFILL);
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -206,7 +206,7 @@ ewl_menubar_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
         DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
         if (EWL_MENU_IS(w))
-        	EWL_MENU(w)->menubar_parent = EWL_WIDGET(c);
+                EWL_MENU(w)->menubar_parent = EWL_WIDGET(c);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 

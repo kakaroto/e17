@@ -54,7 +54,7 @@ struct Ewl_Overlay
 };
 
 Ewl_Widget         *ewl_overlay_new(void);
-int         	 ewl_overlay_init(Ewl_Overlay *win);
+int                  ewl_overlay_init(Ewl_Overlay *win);
 
 /*
  * Internally used callbacks, override at your own risk.
@@ -63,7 +63,7 @@ void ewl_overlay_cb_configure(Ewl_Widget *w, void *ev_data, void *user_data);
 
 void ewl_overlay_cb_child_show(Ewl_Container *emb, Ewl_Widget *child);
 void ewl_overlay_cb_child_resize(Ewl_Container *c, Ewl_Widget *w, int size,
-        		       Ewl_Orientation o);
+                               Ewl_Orientation o);
 
 /**
  * @}

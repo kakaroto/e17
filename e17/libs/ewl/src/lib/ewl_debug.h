@@ -25,15 +25,15 @@ typedef struct Ewl_Config_Cache Ewl_Config_Cache;
  */
 struct Ewl_Config_Cache
 {
-        int level;			/**< Debug level */
-        unsigned char enable:1;		/**< Enable debugging */
-        unsigned char segv:1;		/**< Segv on D* messages */
-        unsigned char backtrace:1;	/**< Print backtrace on D* messages */
-        unsigned char evas_render:1;	/**< Debug evas render calls */
-        unsigned char gc_reap:1;	/**< Debug garbage collection */
+        int level;                        /**< Debug level */
+        unsigned char enable:1;                /**< Enable debugging */
+        unsigned char segv:1;                /**< Segv on D* messages */
+        unsigned char backtrace:1;        /**< Print backtrace on D* messages */
+        unsigned char evas_render:1;        /**< Debug evas render calls */
+        unsigned char gc_reap:1;        /**< Debug garbage collection */
 
-        unsigned char print_signals:1;	/**< Print theme signals */
-        unsigned char print_keys:1;	/**< Print theem keys */
+        unsigned char print_signals:1;        /**< Print theme signals */
+        unsigned char print_keys:1;        /**< Print theem keys */
 };
 
 extern Ewl_Config_Cache ewl_config_cache; /**< system debug data */
@@ -46,9 +46,9 @@ extern Ewl_Config_Cache ewl_config_cache; /**< system debug data */
 { \
         if (DEBUGGING(lvl)) \
           { \
-        	ewl_debug_indent_print(1); \
-        	fprintf(stderr, "--> %f - %s:%i\tEntering %s();\n", \
-        		ecore_time_get(), __FILE__, __LINE__, __func__); \
+                ewl_debug_indent_print(1); \
+                fprintf(stderr, "--> %f - %s:%i\tEntering %s();\n", \
+                        ecore_time_get(), __FILE__, __LINE__, __func__); \
           } \
 }
 
@@ -56,9 +56,9 @@ extern Ewl_Config_Cache ewl_config_cache; /**< system debug data */
 { \
         if (DEBUGGING(lvl)) \
           { \
-        	ewl_debug_indent_print(-1); \
-        	fprintf(stderr, "<--  %f - %s:%i\tLeaving  %s();\n", \
-        		ecore_time_get(), __FILE__, __LINE__, __func__); \
+                ewl_debug_indent_print(-1); \
+                fprintf(stderr, "<--  %f - %s:%i\tLeaving  %s();\n", \
+                        ecore_time_get(), __FILE__, __LINE__, __func__); \
           } \
 }
 
@@ -67,9 +67,9 @@ extern Ewl_Config_Cache ewl_config_cache; /**< system debug data */
         DLEAVE_FUNCTION(lvl); \
         if (DEBUGGING(lvl)) \
           { \
-        	ewl_debug_indent_print(0); \
-        	fprintf(stderr, "<-- %f - %s:%i\tReturn in %s();\n", \
-        		ecore_time_get(), __FILE__, __LINE__, __func__); \
+                ewl_debug_indent_print(0); \
+                fprintf(stderr, "<-- %f - %s:%i\tReturn in %s();\n", \
+                        ecore_time_get(), __FILE__, __LINE__, __func__); \
           } \
         return; \
 }
@@ -79,9 +79,9 @@ extern Ewl_Config_Cache ewl_config_cache; /**< system debug data */
         DLEAVE_FUNCTION(lvl); \
         if (DEBUGGING(lvl)) \
           { \
-        	ewl_debug_indent_print(0); \
-        	fprintf(stderr, "<-- %f - %s:%i\tReturning %p in %s();\n", \
-        		ecore_time_get(), __FILE__, __LINE__, (void *) (ptr), __func__); \
+                ewl_debug_indent_print(0); \
+                fprintf(stderr, "<-- %f - %s:%i\tReturning %p in %s();\n", \
+                        ecore_time_get(), __FILE__, __LINE__, (void *) (ptr), __func__); \
           } \
         return (void *)(ptr); \
 }
@@ -91,9 +91,9 @@ extern Ewl_Config_Cache ewl_config_cache; /**< system debug data */
         DLEAVE_FUNCTION(lvl); \
         if (DEBUGGING(lvl)) \
           { \
-        	ewl_debug_indent_print(0); \
-        	fprintf(stderr, "<-- %f - %s:%i\tReturning %f in %s();\n", \
-        		ecore_time_get(), __FILE__, __LINE__, (float) (num), __func__); \
+                ewl_debug_indent_print(0); \
+                fprintf(stderr, "<-- %f - %s:%i\tReturning %f in %s();\n", \
+                        ecore_time_get(), __FILE__, __LINE__, (float) (num), __func__); \
           } \
         return num; \
 }
@@ -103,9 +103,9 @@ extern Ewl_Config_Cache ewl_config_cache; /**< system debug data */
         DLEAVE_FUNCTION(lvl); \
         if (DEBUGGING(lvl)) \
           { \
-        	ewl_debug_indent_print(0); \
-        	fprintf(stderr, "<-- %f - %s:%i\tReturning %i in %s();\n", \
-        		ecore_time_get(), __FILE__, __LINE__, (int) (num), __func__); \
+                ewl_debug_indent_print(0); \
+                fprintf(stderr, "<-- %f - %s:%i\tReturning %i in %s();\n", \
+                        ecore_time_get(), __FILE__, __LINE__, (int) (num), __func__); \
           } \
         return num; \
 }
@@ -114,7 +114,7 @@ extern Ewl_Config_Cache ewl_config_cache; /**< system debug data */
 { \
         ewl_print_warning(); \
         fprintf(stderr, "\tIn function:\n\n" \
-        		"\t%s();\n\n", __func__); \
+                        "\t%s();\n\n", __func__); \
         fprintf(stderr, fmt, ## args); \
         fprintf(stderr, "\n"); \
         ewl_backtrace(); \
@@ -125,16 +125,16 @@ extern Ewl_Config_Cache ewl_config_cache; /**< system debug data */
 { \
         if (!(ptr)) \
           { \
-        	ewl_print_warning(); \
-        	fprintf(stderr, "\tThis program is calling:\n\n" \
-        			"\t%s();\n\n" \
-        			"\tWith the parameter:\n\n" \
-        			"\t%s\n\n" \
-        			"\tbeing NULL. Please fix your program.\n", \
-        			__func__, # ptr); \
-        	ewl_backtrace(); \
-        	ewl_segv(); \
-        	return; \
+                ewl_print_warning(); \
+                fprintf(stderr, "\tThis program is calling:\n\n" \
+                                "\t%s();\n\n" \
+                                "\tWith the parameter:\n\n" \
+                                "\t%s\n\n" \
+                                "\tbeing NULL. Please fix your program.\n", \
+                                __func__, # ptr); \
+                ewl_backtrace(); \
+                ewl_segv(); \
+                return; \
           } \
 }
 
@@ -142,16 +142,16 @@ extern Ewl_Config_Cache ewl_config_cache; /**< system debug data */
 { \
         if (!(ptr)) \
           { \
-        	ewl_print_warning(); \
-        	fprintf(stderr, "\tThis program is calling:\n\n" \
-        			"\t%s();\n\n" \
-        			"\tWith the parameter:\n\n" \
-        			"\t%s\n\n" \
-        			"\tbeing NULL. Please fix your program.\n", \
-        			__func__, # ptr); \
-        	ewl_backtrace(); \
-        	ewl_segv(); \
-        	return ret; \
+                ewl_print_warning(); \
+                fprintf(stderr, "\tThis program is calling:\n\n" \
+                                "\t%s();\n\n" \
+                                "\tWith the parameter:\n\n" \
+                                "\t%s\n\n" \
+                                "\tbeing NULL. Please fix your program.\n", \
+                                __func__, # ptr); \
+                ewl_backtrace(); \
+                ewl_segv(); \
+                return ret; \
           } \
 }
 
@@ -159,20 +159,20 @@ extern Ewl_Config_Cache ewl_config_cache; /**< system debug data */
 { \
         if (ptr && !ewl_widget_type_is(EWL_WIDGET(ptr), type)) \
         { \
-        	ewl_print_warning(); \
-        	fprintf(stderr, "\tThis program is calling:\n\n" \
-        			"\t%s();\n\n" \
-        			"\tWith the paramter:\n\n" \
-        			"\t%s\n\n" \
-        			"\tas the wrong type. (%s) instead of (%s).\n" \
-        			"\tPlease fix your program.\n", \
-        			__func__, # ptr, \
-        			(EWL_WIDGET(ptr)->inheritance ? \
-        				EWL_WIDGET(ptr)->inheritance : \
-        				"NULL") , type); \
-        	ewl_backtrace(); \
-        	ewl_segv(); \
-        	return; \
+                ewl_print_warning(); \
+                fprintf(stderr, "\tThis program is calling:\n\n" \
+                                "\t%s();\n\n" \
+                                "\tWith the paramter:\n\n" \
+                                "\t%s\n\n" \
+                                "\tas the wrong type. (%s) instead of (%s).\n" \
+                                "\tPlease fix your program.\n", \
+                                __func__, # ptr, \
+                                (EWL_WIDGET(ptr)->inheritance ? \
+                                        EWL_WIDGET(ptr)->inheritance : \
+                                        "NULL") , type); \
+                ewl_backtrace(); \
+                ewl_segv(); \
+                return; \
         } \
 }
 
@@ -180,20 +180,20 @@ extern Ewl_Config_Cache ewl_config_cache; /**< system debug data */
 { \
         if (ptr && !ewl_widget_type_is(EWL_WIDGET(ptr), type)) \
         { \
-        	ewl_print_warning(); \
-        	fprintf(stderr, "\tThis program is calling:\n\n" \
-        			"\t%s();\n\n" \
-        			"\tWith the paramter:\n\n" \
-        			"\t%s\n\n" \
-        			"\tas the wrong type. (%s) instead of (%s).\n" \
-        			"\tPlease fix your program.\n", \
-        			__func__, # ptr, \
-        			(EWL_WIDGET(ptr)->inheritance ? \
-        				EWL_WIDGET(ptr)->inheritance : \
-        				"NULL") , type); \
-        	ewl_backtrace(); \
-        	ewl_segv(); \
-        	return ret; \
+                ewl_print_warning(); \
+                fprintf(stderr, "\tThis program is calling:\n\n" \
+                                "\t%s();\n\n" \
+                                "\tWith the paramter:\n\n" \
+                                "\t%s\n\n" \
+                                "\tas the wrong type. (%s) instead of (%s).\n" \
+                                "\tPlease fix your program.\n", \
+                                __func__, # ptr, \
+                                (EWL_WIDGET(ptr)->inheritance ? \
+                                        EWL_WIDGET(ptr)->inheritance : \
+                                        "NULL") , type); \
+                ewl_backtrace(); \
+                ewl_segv(); \
+                return ret; \
         } \
 }
 
@@ -209,13 +209,13 @@ extern Ewl_Config_Cache ewl_config_cache; /**< system debug data */
 #define DCHECK_PARAM_PTR(ptr) \
 { \
         if (!(ptr)) { \
-        	return; \
+                return; \
         } \
 }
 #define DCHECK_PARAM_PTR_RET(ptr, ret) \
 { \
         if (!(ptr)) { \
-        	return ret; \
+                return ret; \
         } \
 }
 #define DCHECK_TYPE(ptr, type) {}
@@ -226,7 +226,7 @@ extern Ewl_Config_Cache ewl_config_cache; /**< system debug data */
 { \
         ewl_print_warning(); \
         fprintf(stderr, "\tIn function:\n\n" \
-        		"\t%s();\n\n", __func__); \
+                        "\t%s();\n\n", __func__); \
         fprintf(stderr, fmt); \
 }
 

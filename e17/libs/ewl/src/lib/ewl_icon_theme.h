@@ -9,10 +9,10 @@
  * @{
  */
 
-int        	 ewl_icon_theme_init(void);
-void        	 ewl_icon_theme_shutdown(void);
+int                 ewl_icon_theme_init(void);
+void                 ewl_icon_theme_shutdown(void);
 
-void         	 ewl_icon_theme_theme_change(void);
+void                  ewl_icon_theme_theme_change(void);
 
 const char        *ewl_icon_theme_icon_path_get(const char *icon, int size);
 
@@ -122,7 +122,7 @@ const char        *ewl_icon_theme_icon_path_get(const char *icon, int size);
 #define EWL_ICON_HELP_BROWSER "help-browser"        /**< help browser */
 #define EWL_ICON_MULTIMEDIA_VOLUME_CONTROL "multimedia-volume-control"        /**< multimedia volume control */
 #define EWL_ICON_PREFERENCES_DESKTOP_ACCESSIBILITY "preferences-desktop-accessibility"        /**< pref desktop
-        											accessibility */
+                                                                                                accessibility */
 #define EWL_ICON_PREFERENCES_DESKTOP_FONT "preferences-desktop-font"        /**< pref desktop font */
 #define EWL_ICON_PREFERENCES_DESKTOP_KEYBOARD "preferences-desktop-keyboard" /**< pref desktop keyboard */
 #define EWL_ICON_PREFERENCES_DESKTOP_LOCALE "preferences-desktop-locale" /**< pref desktop locale */
@@ -146,9 +146,9 @@ const char        *ewl_icon_theme_icon_path_get(const char *icon, int size);
 #define EWL_ICON_APPLICATIONS_UTILITIES "applications-utilities"        /**< apps utilities */
 #define EWL_ICON_PREFERENCES_DESKTOP "preferences-desktop"        /**< prefs desktop */
 #define EWL_ICON_PREFERENCES_DESKTOP_ACCESSIBILITY "preferences-desktop-accessibility"        /**< prefs desktop
-        											accessibility */
+                                                                                                accessibility */
 #define EWL_ICON_PREFERENCES_DESKTOP_PERIPHERALS "preferences-desktop-peripherals" /**< prefs desktop
-        											peripherals */
+                                                                                                peripherals */
 #define EWL_ICON_PREFERENCES_DESKTOP_PERSONAL "preferences-desktop-personal" /**< prefs desktop personal */
 #define EWL_ICON_PREFERENCES_OTHER "preferences-other"        /**< prefs other */
 #define EWL_ICON_PREFERENCES_SYSTEM "preferences-system"        /**< prefs system */

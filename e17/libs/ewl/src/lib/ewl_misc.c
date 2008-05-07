@@ -92,8 +92,8 @@ void
 ewl_print_warning(void)
 {
         fprintf(stderr, "\n***** Ewl Developer Warning ***** :\n"
-        	" To find where this is occurring set a breakpoint\n"
-        	" for the function ewl_print_warning.\n");
+                " To find where this is occurring set a breakpoint\n"
+                " for the function ewl_print_warning.\n");
 }
 
 /**
@@ -104,8 +104,8 @@ void
 ewl_segv(void)
 {
         if (ewl_config_cache.segv) {
-        	char *null = NULL;
-        	*null = '\0';
+                char *null = NULL;
+                *null = '\0';
         }
 }
 
@@ -123,13 +123,13 @@ ewl_backtrace(void)
         size_t i;
 
         if (!ewl_config_cache.backtrace)
-        	return;
+                return;
 
         fprintf(stderr, "\n***** Backtrace *****\n");
         size = backtrace(array, 128);
         strings = backtrace_symbols(array, size);
         for (i = 0; i < size; i++)
-        	fprintf(stderr, "%s\n", strings[i]);
+                fprintf(stderr, "%s\n", strings[i]);
 
         FREE(strings);
 #endif
@@ -153,53 +153,53 @@ ewl_init(int *argc, char **argv)
 
         /* check if we are already initialized */
         if (++ewl_init_count > 1)
-        	DRETURN_INT(ewl_init_count, DLEVEL_STABLE);
+                DRETURN_INT(ewl_init_count, DLEVEL_STABLE);
 
         /* set the locale for string collation if it isn't already set */
         locale = setlocale(LC_COLLATE, NULL);
         if (strcmp(locale, "C") || strcmp(locale, "POSIX")) {
-        	setlocale(LC_COLLATE, "");
+                setlocale(LC_COLLATE, "");
         }
 
         shutdown_queue = ecore_list_new();
         if (!shutdown_queue) {
-        	fprintf(stderr, "Could not create Ewl shutdown queue.\n");
-        	goto ERROR;
+                fprintf(stderr, "Could not create Ewl shutdown queue.\n");
+                goto ERROR;
         }
 
         if (!evas_init()) {
-        	fprintf(stderr, "Could not initialize Evas.\n");
-        	goto ERROR;
+                fprintf(stderr, "Could not initialize Evas.\n");
+                goto ERROR;
         }
         ecore_list_prepend(shutdown_queue, evas_shutdown);
 
         if (!ecore_init()) {
-        	fprintf(stderr, "Could not initialize Ecore.\n");
-        	goto ERROR;
+                fprintf(stderr, "Could not initialize Ecore.\n");
+                goto ERROR;
         }
         ecore_list_prepend(shutdown_queue, ecore_shutdown);
 
         if (!efreet_init()) {
-        	fprintf(stderr, "Could not initialize Efreet.\n");
-        	goto ERROR;
+                fprintf(stderr, "Could not initialize Efreet.\n");
+                goto ERROR;
         }
         ecore_list_prepend(shutdown_queue, efreet_shutdown);
 
         if (!efreet_mime_init()) {
-        	fprintf(stderr, "Could not initialize Efreet_Mime.\n");
-        	goto ERROR;
+                fprintf(stderr, "Could not initialize Efreet_Mime.\n");
+                goto ERROR;
         }
         ecore_list_prepend(shutdown_queue, efreet_mime_shutdown);
 
         if (!ecore_string_init()) {
-        	fprintf(stderr, "Could not initialize Ecore Strings.\n");
-        	goto ERROR;
+                fprintf(stderr, "Could not initialize Ecore Strings.\n");
+                goto ERROR;
         }
         ecore_list_prepend(shutdown_queue, ecore_string_shutdown);
 
         if (!edje_init()) {
-        	fprintf(stderr, "Could not initialize Edje.\n");
-        	goto ERROR;
+                fprintf(stderr, "Could not initialize Edje.\n");
+                goto ERROR;
         }
         ecore_list_prepend(shutdown_queue, edje_shutdown);
 
@@ -216,14 +216,14 @@ ewl_init(int *argc, char **argv)
         ewl_window_list = ecore_list_new();
         shutdown_hooks = ecore_list_new();
         if ((!reveal_list) || (!obscure_list) || (!configure_active)
-        		|| (!configure_available)
-        		|| (!realize_list) || (!destroy_list)
-        		|| (!free_evas_list) || (!free_evas_object_list)
-        		|| (!child_add_list) || (!ewl_embed_list)
-        		|| (!ewl_window_list) || (!shutdown_hooks)) {
-        	fprintf(stderr, "Unable to initialize internal configuration."
-        			" Out of memory?\n");
-        	goto ERROR;
+                        || (!configure_available)
+                        || (!realize_list) || (!destroy_list)
+                        || (!free_evas_list) || (!free_evas_object_list)
+                        || (!child_add_list) || (!ewl_embed_list)
+                        || (!ewl_window_list) || (!shutdown_hooks)) {
+                fprintf(stderr, "Unable to initialize internal configuration."
+                                " Out of memory?\n");
+                goto ERROR;
         }
 
         /*
@@ -233,14 +233,14 @@ ewl_init(int *argc, char **argv)
         ecore_list_free_cb_set(configure_available, free);
 
         if (!ewl_config_init()) {
-        	fprintf(stderr, "Could not initialize Ewl Config.\n");
-        	goto ERROR;
+                fprintf(stderr, "Could not initialize Ewl Config.\n");
+                goto ERROR;
         }
         ecore_list_prepend(shutdown_queue, ewl_config_shutdown);
 
         if (!ewl_engines_init()) {
-        	fprintf(stderr, "Could not intialize Ewl Engines.\n");
-        	goto ERROR;
+                fprintf(stderr, "Could not intialize Ewl Engines.\n");
+                goto ERROR;
         }
         ecore_list_prepend(shutdown_queue, ewl_engines_shutdown);
 
@@ -253,14 +253,14 @@ ewl_init(int *argc, char **argv)
         /* we create the engine we will be working with here so that it is
          * initialized before we start to use it. */
         if (!ewl_engine_new(ewl_config_string_get(ewl_config,
-        				EWL_CONFIG_ENGINE_NAME), argc, argv)) {
-        	fprintf(stderr, "Could not initialize Ewl Engine.\n");
-        	goto ERROR;
+                                        EWL_CONFIG_ENGINE_NAME), argc, argv)) {
+                fprintf(stderr, "Could not initialize Ewl Engine.\n");
+                goto ERROR;
         }
 
         if (!ewl_callbacks_init()) {
-        	fprintf(stderr, "Could not initialize Ewl Callback system.\n");
-        	goto ERROR;
+                fprintf(stderr, "Could not initialize Ewl Callback system.\n");
+                goto ERROR;
         }
         ecore_list_prepend(shutdown_queue, ewl_callbacks_shutdown);
 
@@ -269,38 +269,38 @@ ewl_init(int *argc, char **argv)
         EWL_CALLBACK_DELETE_WINDOW = ewl_callback_type_add();
 
         if (!ewl_theme_init()) {
-        	fprintf(stderr, "Could not setup Ewl Theme system.\n");
-        	goto ERROR;
+                fprintf(stderr, "Could not setup Ewl Theme system.\n");
+                goto ERROR;
         }
         ecore_list_prepend(shutdown_queue, ewl_theme_shutdown);
 
         if (!ewl_icon_theme_init()) {
-        	fprintf(stderr, "Could not initialize Ewl Icon Theme system.\n");
-        	goto ERROR;
+                fprintf(stderr, "Could not initialize Ewl Icon Theme system.\n");
+                goto ERROR;
         }
         ecore_list_prepend(shutdown_queue, ewl_icon_theme_shutdown);
 
         if (!ewl_dnd_init()) {
-        	fprintf(stderr, "Could not initialize Ewl DND support.\n");
-        	goto ERROR;
+                fprintf(stderr, "Could not initialize Ewl DND support.\n");
+                goto ERROR;
         }
         ecore_list_prepend(shutdown_queue, ewl_dnd_shutdown);
 
         if (!ewl_io_manager_init()) {
-        	fprintf(stderr, "Could not initialize Ewl IO Manager.\n");
-        	goto ERROR;
+                fprintf(stderr, "Could not initialize Ewl IO Manager.\n");
+                goto ERROR;
         }
         ecore_list_prepend(shutdown_queue, ewl_io_manager_shutdown);
 
         if (!ewl_text_context_init()) {
-        	fprintf(stderr, "Could not initialize Ewl Text Context system.\n");
-        	goto ERROR;
+                fprintf(stderr, "Could not initialize Ewl Text Context system.\n");
+                goto ERROR;
         }
         ecore_list_prepend(shutdown_queue, ewl_text_context_shutdown);
 
         if (!(idle_enterer = ecore_idle_enterer_add(ewl_idle_render, NULL))) {
-        	fprintf(stderr, "Could not create Idle Enterer.\n");
-        	goto ERROR;
+                fprintf(stderr, "Could not create Idle Enterer.\n");
+                goto ERROR;
         }
 
         DRETURN_INT(ewl_init_count, DLEVEL_STABLE);
@@ -326,10 +326,10 @@ ewl_shutdown(void)
         DENTER_FUNCTION(DLEVEL_STABLE);
 
         if (--ewl_init_count)
-        	DRETURN_INT(ewl_init_count, DLEVEL_STABLE);
+                DRETURN_INT(ewl_init_count, DLEVEL_STABLE);
 
         while ((hook = ecore_list_first_remove(shutdown_hooks)))
-        	hook();
+                hook();
         IF_FREE_LIST(shutdown_hooks);
 
         /*
@@ -337,20 +337,20 @@ ewl_shutdown(void)
          */
         if (ewl_embed_list)
         {
-        	Ewl_Widget *emb;
+                Ewl_Widget *emb;
 
-        	while ((emb = ecore_list_first_remove(ewl_embed_list)))
-        		ewl_widget_destroy(emb);
+                while ((emb = ecore_list_first_remove(ewl_embed_list)))
+                        ewl_widget_destroy(emb);
 
-        	while (ewl_garbage_collect_idler(NULL) > 0)
-        		;
-        	IF_FREE_LIST(ewl_embed_list);
+                while (ewl_garbage_collect_idler(NULL) > 0)
+                        ;
+                IF_FREE_LIST(ewl_embed_list);
         }
 
         if (idle_enterer)
         {
-        	ecore_idle_enterer_del(idle_enterer);
-        	idle_enterer = NULL;
+                ecore_idle_enterer_del(idle_enterer);
+                idle_enterer = NULL;
         }
 
         /*
@@ -369,7 +369,7 @@ ewl_shutdown(void)
 
         /* shutdown all the subsystems */
         while ((shutdown = ecore_list_first_remove(shutdown_queue)))
-        	shutdown();
+                shutdown();
         IF_FREE_LIST(shutdown_queue);
 
         DRETURN_INT(ewl_init_count, DLEVEL_STABLE);
@@ -438,21 +438,21 @@ ewl_idle_render(void *data __UNUSED__)
         DENTER_FUNCTION(DLEVEL_STABLE);
 
         if (!ewl_embed_list) {
-        	DERROR("EWL has not been initialized. Exiting....\n");
-        	ewl_main_quit();
-        	DRETURN_INT(FALSE, DLEVEL_STABLE);
+                DERROR("EWL has not been initialized. Exiting....\n");
+                ewl_main_quit();
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
         }
 
         if (ecore_list_empty_is(ewl_embed_list))
-        	DRETURN_INT(TRUE, DLEVEL_STABLE);
+                DRETURN_INT(TRUE, DLEVEL_STABLE);
 
         /*
          * Freeze events on the evases to reduce overhead
          */
         ecore_list_first_goto(ewl_embed_list);
         while ((emb = ecore_list_next(ewl_embed_list)) != NULL)
-        	if (REALIZED(emb))
-        		ewl_embed_freeze(emb);
+                if (REALIZED(emb))
+                        ewl_embed_freeze(emb);
 
         /*
          * Clean out the unused widgets first, to avoid them being drawn or
@@ -460,40 +460,40 @@ ewl_idle_render(void *data __UNUSED__)
          * finally layout the widgets.
          */
         if (!ecore_list_empty_is(destroy_list) ||
-        		!ecore_list_empty_is(free_evas_list) ||
-        		!ecore_list_empty_is(free_evas_object_list))
-        	ewl_garbage_collect = ecore_idler_add(ewl_garbage_collect_idler,
-        					      NULL);
+                        !ecore_list_empty_is(free_evas_list) ||
+                        !ecore_list_empty_is(free_evas_object_list))
+                ewl_garbage_collect = ecore_idler_add(ewl_garbage_collect_idler,
+                                                      NULL);
 
         if (!ecore_list_empty_is(realize_list))
-        	ewl_realize_queue();
+                ewl_realize_queue();
 
         while (!ecore_list_empty_is(configure_active)) {
-        	ewl_configure_queue_run();
+                ewl_configure_queue_run();
 
-        	/*
-        	 * Reclaim obscured objects at this point
-        	 */
-        	while ((w = ecore_list_first_remove(obscure_list))) {
-        		/*
-        		 * Ensure the widget is still obscured, then mark it
-        		 * revealed so that the obscure will succeed (and mark
-        		 * it obscured again.
-        		 */
-        		if (REVEALED(w))
-        			ewl_widget_obscure(w);
-        	}
+                /*
+                 * Reclaim obscured objects at this point
+                 */
+                while ((w = ecore_list_first_remove(obscure_list))) {
+                        /*
+                         * Ensure the widget is still obscured, then mark it
+                         * revealed so that the obscure will succeed (and mark
+                         * it obscured again.
+                         */
+                        if (REVEALED(w))
+                                ewl_widget_obscure(w);
+                }
 
-        	/*
-        	 * Allocate objects to revealed widgets.
-        	 */
-        	while ((w = ecore_list_first_remove(reveal_list))) {
-        		/*
-        		 * Follow the same logic as the obscure loop.
-        		 */
-        		if (!REVEALED(w))
-        			ewl_widget_reveal(w);
-        	}
+                /*
+                 * Allocate objects to revealed widgets.
+                 */
+                while ((w = ecore_list_first_remove(reveal_list))) {
+                        /*
+                         * Follow the same logic as the obscure loop.
+                         */
+                        if (!REVEALED(w))
+                                ewl_widget_reveal(w);
+                }
         }
 
         /*
@@ -501,22 +501,22 @@ ewl_idle_render(void *data __UNUSED__)
          */
         ecore_list_first_goto(ewl_embed_list);
         while ((emb = ecore_list_next(ewl_embed_list)) != NULL) {
-        	ewl_embed_thaw(emb);
+                ewl_embed_thaw(emb);
 
-        	if (REALIZED(emb)) {
-        		double render_time = 0;
+                if (REALIZED(emb)) {
+                        double render_time = 0;
 
-        		if (ewl_config_cache.evas_render) {
-        			printf("Entering render\n");
-        			render_time = ecore_time_get();
-        		}
+                        if (ewl_config_cache.evas_render) {
+                                printf("Entering render\n");
+                                render_time = ecore_time_get();
+                        }
 
-        		ewl_engine_canvas_render(emb);
+                        ewl_engine_canvas_render(emb);
 
-        		if (ewl_config_cache.evas_render)
-        			printf("Render time: %f seconds\n",
-        					ecore_time_get() - render_time);
-        	}
+                        if (ewl_config_cache.evas_render)
+                                printf("Render time: %f seconds\n",
+                                                ecore_time_get() - render_time);
+                }
         }
 
         DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -556,122 +556,122 @@ ewl_init_parse_options(int *argc, char **argv)
         DENTER_FUNCTION(DLEVEL_STABLE);
 
         if (!argc || !argv)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         engines = ewl_engine_names_get();
 
         i = 0;
         while (i < *argc) {
-        	if (!strcmp(argv[i], "--ewl-segv")) {
-        		ewl_config_int_set(ewl_config, EWL_CONFIG_DEBUG_SEGV,
-        					1, EWL_STATE_TRANSIENT);
-        		matched++;
-        	}
-        	else if (!strcmp(argv[i], "--ewl-backtrace")) {
-        		ewl_config_int_set(ewl_config,
-        				EWL_CONFIG_DEBUG_BACKTRACE, 1,
-        				EWL_STATE_TRANSIENT);
-        		matched++;
-        	}
-        	else if (!strcmp(argv[i], "--ewl-theme")) {
-        		if (i + 1 < *argc) {
-        			ewl_config_string_set(ewl_config,
-        						EWL_CONFIG_THEME_NAME,
-        						argv[i + 1],
-        						EWL_STATE_TRANSIENT);
-        			matched++;
-        		}
-        		matched++;
-        	}
-        	else if (!strcmp(argv[i], "--ewl-print-theme-keys")) {
-        		ewl_config_int_set(ewl_config,
-        				EWL_CONFIG_THEME_PRINT_KEYS, 1,
-        				EWL_STATE_TRANSIENT);
-        		matched++;
-        	}
-        	else if (!strcmp(argv[i], "--ewl-print-theme-signals")) {
-        		ewl_config_int_set(ewl_config,
-        				EWL_CONFIG_THEME_PRINT_SIGNALS, 1,
-        				EWL_STATE_TRANSIENT);
-        		matched++;
-        	}
-        	else if (!strcmp(argv[i], "--ewl-print-gc-reap")) {
-        		ewl_config_int_set(ewl_config,
-        				EWL_CONFIG_DEBUG_GC_REAP, 1,
-        				EWL_STATE_TRANSIENT);
-        		matched++;
-        	}
-        	else if (!strcmp(argv[i], "--ewl-debug")) {
-        		if ((i + 1) < *argc) {
-        			ewl_config_int_set(ewl_config,
-        				EWL_CONFIG_DEBUG_LEVEL, atoi(argv[i + 1]),
-        				EWL_STATE_TRANSIENT);
-        			matched++;
-        		} else {
-        			ewl_config_int_set(ewl_config,
-        				EWL_CONFIG_DEBUG_LEVEL, 1,
-        				EWL_STATE_TRANSIENT);
-        		}
-        		ewl_config_int_set(ewl_config,
-        				EWL_CONFIG_DEBUG_ENABLE, 1,
-        				EWL_STATE_TRANSIENT);
-        		matched ++;
-        	}
-        	else if (!strcmp(argv[i], "--ewl-debug-paint")) {
-        		ewl_config_int_set(ewl_config,
-        				EWL_CONFIG_DEBUG_EVAS_RENDER, 1,
-        				EWL_STATE_TRANSIENT);
-        		matched ++;
-        	}
-        	else if (!strcmp(argv[i], "--ewl-help")) {
-        		ewl_print_help();
-        		matched ++;
+                if (!strcmp(argv[i], "--ewl-segv")) {
+                        ewl_config_int_set(ewl_config, EWL_CONFIG_DEBUG_SEGV,
+                                                1, EWL_STATE_TRANSIENT);
+                        matched++;
+                }
+                else if (!strcmp(argv[i], "--ewl-backtrace")) {
+                        ewl_config_int_set(ewl_config,
+                                        EWL_CONFIG_DEBUG_BACKTRACE, 1,
+                                        EWL_STATE_TRANSIENT);
+                        matched++;
+                }
+                else if (!strcmp(argv[i], "--ewl-theme")) {
+                        if (i + 1 < *argc) {
+                                ewl_config_string_set(ewl_config,
+                                                        EWL_CONFIG_THEME_NAME,
+                                                        argv[i + 1],
+                                                        EWL_STATE_TRANSIENT);
+                                matched++;
+                        }
+                        matched++;
+                }
+                else if (!strcmp(argv[i], "--ewl-print-theme-keys")) {
+                        ewl_config_int_set(ewl_config,
+                                        EWL_CONFIG_THEME_PRINT_KEYS, 1,
+                                        EWL_STATE_TRANSIENT);
+                        matched++;
+                }
+                else if (!strcmp(argv[i], "--ewl-print-theme-signals")) {
+                        ewl_config_int_set(ewl_config,
+                                        EWL_CONFIG_THEME_PRINT_SIGNALS, 1,
+                                        EWL_STATE_TRANSIENT);
+                        matched++;
+                }
+                else if (!strcmp(argv[i], "--ewl-print-gc-reap")) {
+                        ewl_config_int_set(ewl_config,
+                                        EWL_CONFIG_DEBUG_GC_REAP, 1,
+                                        EWL_STATE_TRANSIENT);
+                        matched++;
+                }
+                else if (!strcmp(argv[i], "--ewl-debug")) {
+                        if ((i + 1) < *argc) {
+                                ewl_config_int_set(ewl_config,
+                                        EWL_CONFIG_DEBUG_LEVEL, atoi(argv[i + 1]),
+                                        EWL_STATE_TRANSIENT);
+                                matched++;
+                        } else {
+                                ewl_config_int_set(ewl_config,
+                                        EWL_CONFIG_DEBUG_LEVEL, 1,
+                                        EWL_STATE_TRANSIENT);
+                        }
+                        ewl_config_int_set(ewl_config,
+                                        EWL_CONFIG_DEBUG_ENABLE, 1,
+                                        EWL_STATE_TRANSIENT);
+                        matched ++;
+                }
+                else if (!strcmp(argv[i], "--ewl-debug-paint")) {
+                        ewl_config_int_set(ewl_config,
+                                        EWL_CONFIG_DEBUG_EVAS_RENDER, 1,
+                                        EWL_STATE_TRANSIENT);
+                        matched ++;
+                }
+                else if (!strcmp(argv[i], "--ewl-help")) {
+                        ewl_print_help();
+                        matched ++;
 
-        		/* this has to exit. otherwise we end up returning
-        		 * FALSE from ewl_init which triggers the app to
-        		 * spit out an error */
-        		exit(0);
-        	}
-        	else if (!strncmp(argv[i], "--ewl-", 6)) {
-        		unsigned int len;
+                        /* this has to exit. otherwise we end up returning
+                         * FALSE from ewl_init which triggers the app to
+                         * spit out an error */
+                        exit(0);
+                }
+                else if (!strncmp(argv[i], "--ewl-", 6)) {
+                        unsigned int len;
 
-        		len = strlen("--ewl-");
-        		if (strlen(argv[i]) > len)
-        		{
-        			char *eng;
-        			char *name;
+                        len = strlen("--ewl-");
+                        if (strlen(argv[i]) > len)
+                        {
+                                char *eng;
+                                char *name;
 
-        			eng = strdup(argv[i] + len);
+                                eng = strdup(argv[i] + len);
 
-        			while ((name = strchr(eng, '-')))
-        				*name = '_';
+                                while ((name = strchr(eng, '-')))
+                                        *name = '_';
 
-        			ecore_list_first_goto(engines);
-        			while ((name = ecore_list_next(engines)))
-        			{
-        				if (!strcmp(eng, name))
-        				{
-        					ewl_config_string_set(ewl_config,
-        						EWL_CONFIG_ENGINE_NAME, name,
-        						EWL_STATE_TRANSIENT);
-        					matched ++;
+                                ecore_list_first_goto(engines);
+                                while ((name = ecore_list_next(engines)))
+                                {
+                                        if (!strcmp(eng, name))
+                                        {
+                                                ewl_config_string_set(ewl_config,
+                                                        EWL_CONFIG_ENGINE_NAME, name,
+                                                        EWL_STATE_TRANSIENT);
+                                                matched ++;
 
-        					break;
-        				}
-        			}
+                                                break;
+                                        }
+                                }
 
-        			FREE(eng);
-        		}
-        	}
+                                FREE(eng);
+                        }
+                }
 
-        	if (matched > 0) {
-        		while (matched) {
-        			ewl_init_remove_option(argc, argv, i);
-        			matched--;
-        		}
-        	}
-        	else
-        		i++;
+                if (matched > 0) {
+                        while (matched) {
+                                ewl_init_remove_option(argc, argv, i);
+                                matched--;
+                        }
+                }
+                else
+                        i++;
         }
         IF_FREE_LIST(engines);
 
@@ -687,7 +687,7 @@ ewl_init_remove_option(int *argc, char **argv, int i)
 
         *argc = *argc - 1;
         for (j = i; j < *argc; j++)
-        	argv[j] = argv[j + 1];
+                argv[j] = argv[j + 1];
         argv[j] = NULL;
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -706,26 +706,26 @@ ewl_print_help(void)
         DENTER_FUNCTION(DLEVEL_STABLE);
 
         printf("EWL Help\n"
-        	"\t--ewl-backtrace           Print a stack trace warnings occur.\n"
-        	"\t--ewl-debug <level>       Set the debugging printf level.\n"
-        	"\t--ewl-debug-paint         Enable repaint debugging.\n"
-        	"\t--ewl-help                Print this help message.\n"
-        	"\t--ewl-print-gc-reap       Print garbage collection stats.\n"
-        	"\t--ewl-print-theme-keys    Print theme keys matched widgets.\n"
-        	"\t--ewl-print-theme-signals Print theme keys matched widgets.\n"
-        	"\t--ewl-segv                Trigger crash when warning printed.\n"
-        	"\t--ewl-theme <theme>       Set the theme to use for widgets.\n"
-        	" AVAILABLE ENGINES\n");
+                "\t--ewl-backtrace           Print a stack trace warnings occur.\n"
+                "\t--ewl-debug <level>       Set the debugging printf level.\n"
+                "\t--ewl-debug-paint         Enable repaint debugging.\n"
+                "\t--ewl-help                Print this help message.\n"
+                "\t--ewl-print-gc-reap       Print garbage collection stats.\n"
+                "\t--ewl-print-theme-keys    Print theme keys matched widgets.\n"
+                "\t--ewl-print-theme-signals Print theme keys matched widgets.\n"
+                "\t--ewl-segv                Trigger crash when warning printed.\n"
+                "\t--ewl-theme <theme>       Set the theme to use for widgets.\n"
+                " AVAILABLE ENGINES\n");
 
         names = ewl_engine_names_get();
         while ((name = ecore_list_first_remove(names)))
         {
-        	char *t;
-        	while ((t = strchr(name, '_')))
-        		*t = '-';
+                char *t;
+                while ((t = strchr(name, '_')))
+                        *t = '-';
 
-        	printf("\t--ewl-%s\n", name);
-        	FREE(name);
+                printf("\t--ewl-%s\n", name);
+                FREE(name);
         }
         IF_FREE_LIST(names);
 
@@ -752,7 +752,7 @@ ewl_configure_request(Ewl_Widget * w)
         DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
         if (!VISIBLE(w))
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         o = EWL_OBJECT(w);
 
@@ -761,9 +761,9 @@ ewl_configure_request(Ewl_Widget * w)
          * within a configure callback.
          */
         if (ewl_object_queued_has(o, (EWL_FLAG_QUEUED_SCHEDULED_DESTROY |
-        			EWL_FLAG_QUEUED_SCHEDULED_CONFIGURE |
-        			EWL_FLAG_QUEUED_PROCESS_CONFIGURE)))
-        	DRETURN(DLEVEL_STABLE);
+                                EWL_FLAG_QUEUED_SCHEDULED_CONFIGURE |
+                                EWL_FLAG_QUEUED_PROCESS_CONFIGURE)))
+                DRETURN(DLEVEL_STABLE);
 
         /*
          * Check for any parent scheduled for configuration, and look for the
@@ -771,24 +771,24 @@ ewl_configure_request(Ewl_Widget * w)
          */
         search = w;
         while (search->parent) {
-        	search = search->parent;
-        	if (ewl_object_queued_has(EWL_OBJECT(search),
-        				EWL_FLAG_QUEUED_SCHEDULED_CONFIGURE))
-        		DRETURN(DLEVEL_TESTING);
+                search = search->parent;
+                if (ewl_object_queued_has(EWL_OBJECT(search),
+                                        EWL_FLAG_QUEUED_SCHEDULED_CONFIGURE))
+                        DRETURN(DLEVEL_TESTING);
         }
 
         /*
          * Verify top level widget is not queued for configure.
          */
         if (ewl_object_queued_has(EWL_OBJECT(search),
-        			EWL_FLAG_QUEUED_SCHEDULED_CONFIGURE))
-        	DRETURN(DLEVEL_TESTING);
+                                EWL_FLAG_QUEUED_SCHEDULED_CONFIGURE))
+                DRETURN(DLEVEL_TESTING);
 
         /*
          * Stop processing if this widget doesn't have a valid embed parent.
          */
         if (!ewl_object_toplevel_get(EWL_OBJECT(search)))
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
         emb = EWL_EMBED(search);
 
         /*
@@ -804,29 +804,29 @@ ewl_configure_request(Ewl_Widget * w)
          * one.
          */
         if (queue_buffer) {
-        	if (queue_buffer->end >= EWL_CONFIGURE_QUEUE_SIZE)
-        		queue_buffer = NULL;
+                if (queue_buffer->end >= EWL_CONFIGURE_QUEUE_SIZE)
+                        queue_buffer = NULL;
         }
 
         if (!queue_buffer) {
-        	/*
-        	 * Attempt to use a previously allocated buffer first, fallback
-        	 * to allocating one.
-        	 */
-        	if (!ecore_list_empty_is(configure_available)) {
-        		queue_buffer = ecore_list_first_remove(configure_available);
-        	}
-        	else {
-        		queue_buffer = NEW(Ewl_Configure_Queue, 1);
-        	}
-        	ecore_list_append(configure_active, queue_buffer);
+                /*
+                 * Attempt to use a previously allocated buffer first, fallback
+                 * to allocating one.
+                 */
+                if (!ecore_list_empty_is(configure_available)) {
+                        queue_buffer = ecore_list_first_remove(configure_available);
+                }
+                else {
+                        queue_buffer = NEW(Ewl_Configure_Queue, 1);
+                }
+                ecore_list_append(configure_active, queue_buffer);
         }
 
         /*
          * Add the widget to the end of the queue.
          */
         if (queue_buffer)
-        	queue_buffer->buffer[queue_buffer->end++] = w;
+                queue_buffer->buffer[queue_buffer->end++] = w;
 
         DLEAVE_FUNCTION(DLEVEL_TESTING);
 }
@@ -837,9 +837,9 @@ ewl_configure_queue_widget_run(Ewl_Widget *w)
         DENTER_FUNCTION(DLEVEL_STABLE);
 
         if (ewl_object_toplevel_get(EWL_OBJECT(w))) {
-        	ewl_object_size_request(EWL_OBJECT(w),
-        			ewl_object_current_w_get(EWL_OBJECT(w)),
-        			ewl_object_current_h_get(EWL_OBJECT(w)));
+                ewl_object_size_request(EWL_OBJECT(w),
+                                ewl_object_current_w_get(EWL_OBJECT(w)),
+                                ewl_object_current_h_get(EWL_OBJECT(w)));
         }
 
         /*
@@ -854,18 +854,18 @@ ewl_configure_queue_widget_run(Ewl_Widget *w)
          * queued to receive new evas objects.
          */
         if (!ewl_widget_onscreen_is(w)) {
-        	if (REVEALED(w))
-        		ecore_list_prepend(obscure_list, w);
+                if (REVEALED(w))
+                        ecore_list_prepend(obscure_list, w);
         }
         else {
-        	if (!REVEALED(w))
-        		ecore_list_prepend(reveal_list, w);
+                if (!REVEALED(w))
+                        ecore_list_prepend(reveal_list, w);
 
-        	ewl_object_queued_add(EWL_OBJECT(w), EWL_FLAG_QUEUED_PROCESS_CONFIGURE);
-        	if (REALIZED(w) && VISIBLE(w) && REVEALED(w))
-        		ewl_callback_call(w, EWL_CALLBACK_CONFIGURE);
-        	ewl_object_queued_remove(EWL_OBJECT(w),
-        		EWL_FLAG_QUEUED_PROCESS_CONFIGURE);
+                ewl_object_queued_add(EWL_OBJECT(w), EWL_FLAG_QUEUED_PROCESS_CONFIGURE);
+                if (REALIZED(w) && VISIBLE(w) && REVEALED(w))
+                        ewl_callback_call(w, EWL_CALLBACK_CONFIGURE);
+                ewl_object_queued_remove(EWL_OBJECT(w),
+                        EWL_FLAG_QUEUED_PROCESS_CONFIGURE);
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -887,19 +887,19 @@ ewl_configure_queue_run(void)
          * Configure any widgets that need it.
          */
         while ((queue_buffer = ecore_list_first_remove(configure_active))) {
-        	int i;
-        	for (i = 0; i < queue_buffer->end; i++) {
-        		Ewl_Widget *w;
+                int i;
+                for (i = 0; i < queue_buffer->end; i++) {
+                        Ewl_Widget *w;
 
-        		w = queue_buffer->buffer[i];
-        		ewl_configure_queue_widget_run(w);
-        	}
+                        w = queue_buffer->buffer[i];
+                        ewl_configure_queue_widget_run(w);
+                }
 
-        	/*
-        	 * Add to the available list re-initialized.
-        	 */
-        	queue_buffer->end = 0;
-        	ecore_list_prepend(configure_available, queue_buffer);
+                /*
+                 * Add to the available list re-initialized.
+                 */
+                queue_buffer->end = 0;
+                ecore_list_prepend(configure_available, queue_buffer);
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -921,21 +921,21 @@ ewl_configure_cancel_request(Ewl_Widget *w)
 
         ecore_list_first_goto(configure_active);
         while ((queue_buffer = ecore_list_next(configure_active))) {
-        	int i;
-        	for (i = 0; i < queue_buffer->end; i++) {
-        		Ewl_Widget *tmp;
+                int i;
+                for (i = 0; i < queue_buffer->end; i++) {
+                        Ewl_Widget *tmp;
 
-        		tmp = queue_buffer->buffer[i];
-        		if (tmp == w) {
-        			ewl_object_queued_remove(EWL_OBJECT(w),
-        						 EWL_FLAG_QUEUED_SCHEDULED_CONFIGURE);
-        			if (i < queue_buffer->end - 1)
-        				memmove(queue_buffer->buffer + i,
-        					queue_buffer->buffer + i + 1,
-        					queue_buffer->end - i - 1);
-        			queue_buffer->end--;
-        		}
-        	}
+                        tmp = queue_buffer->buffer[i];
+                        if (tmp == w) {
+                                ewl_object_queued_remove(EWL_OBJECT(w),
+                                                         EWL_FLAG_QUEUED_SCHEDULED_CONFIGURE);
+                                if (i < queue_buffer->end - 1)
+                                        memmove(queue_buffer->buffer + i,
+                                                queue_buffer->buffer + i + 1,
+                                                queue_buffer->end - i - 1);
+                                queue_buffer->end--;
+                        }
+                }
         }
 
         DLEAVE_FUNCTION(DLEVEL_TESTING);
@@ -957,18 +957,18 @@ ewl_realize_request(Ewl_Widget *w)
         DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
         if (ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_SCHEDULED_REVEAL))
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         if (!ewl_object_flags_get(EWL_OBJECT(w), EWL_FLAG_PROPERTY_TOPLEVEL)) {
-        	Ewl_Object *o = EWL_OBJECT(w->parent);
-        	if (!o)
-        		DRETURN(DLEVEL_STABLE);
+                Ewl_Object *o = EWL_OBJECT(w->parent);
+                if (!o)
+                        DRETURN(DLEVEL_STABLE);
 
-        	if (!ewl_object_queued_has(EWL_OBJECT(o),
-        			EWL_FLAG_QUEUED_PROCESS_REVEAL)) {
-        		if (!REALIZED(o))
-        			DRETURN(DLEVEL_STABLE);
-        	}
+                if (!ewl_object_queued_has(EWL_OBJECT(o),
+                                EWL_FLAG_QUEUED_PROCESS_REVEAL)) {
+                        if (!REALIZED(o))
+                                DRETURN(DLEVEL_STABLE);
+                }
         }
 
         ewl_object_queued_add(EWL_OBJECT(w), EWL_FLAG_QUEUED_SCHEDULED_REVEAL);
@@ -995,9 +995,9 @@ ewl_realize_cancel_request(Ewl_Widget *w)
         ecore_list_goto(realize_list, w);
         if (ecore_list_current(realize_list) == w)
         {
-        	ewl_object_queued_remove(EWL_OBJECT(w),
-        				 EWL_FLAG_QUEUED_SCHEDULED_REVEAL);
-        	ecore_list_remove(realize_list);
+                ewl_object_queued_remove(EWL_OBJECT(w),
+                                         EWL_FLAG_QUEUED_SCHEDULED_REVEAL);
+                ecore_list_remove(realize_list);
         }
 
         DLEAVE_FUNCTION(DLEVEL_TESTING);
@@ -1022,14 +1022,14 @@ ewl_realize_queue(void)
          * or they are a toplevel widget.
          */
         while ((w = ecore_list_first_remove(realize_list))) {
-        	if (VISIBLE(w) && !REALIZED(w)) {
-        		ewl_object_queued_add(EWL_OBJECT(w),
-        					EWL_FLAG_QUEUED_PROCESS_REVEAL);
-        		ewl_widget_realize(EWL_WIDGET(w));
-        		ewl_object_queued_remove(EWL_OBJECT(w),
-        					EWL_FLAG_QUEUED_PROCESS_REVEAL);
-        		ecore_list_prepend(child_add_list, w);
-        	}
+                if (VISIBLE(w) && !REALIZED(w)) {
+                        ewl_object_queued_add(EWL_OBJECT(w),
+                                                EWL_FLAG_QUEUED_PROCESS_REVEAL);
+                        ewl_widget_realize(EWL_WIDGET(w));
+                        ewl_object_queued_remove(EWL_OBJECT(w),
+                                                EWL_FLAG_QUEUED_PROCESS_REVEAL);
+                        ecore_list_prepend(child_add_list, w);
+                }
         }
 
         /*
@@ -1037,27 +1037,27 @@ ewl_realize_queue(void)
          * top.
          */
         while ((w = ecore_list_first_remove(child_add_list))) {
-        	/*
-        	 * Check visibility in case the realize callback changed it.
-        	 */
-        	if (VISIBLE(w))
-        		ewl_callback_call(w, EWL_CALLBACK_SHOW);
+                /*
+                 * Check visibility in case the realize callback changed it.
+                 */
+                if (VISIBLE(w))
+                        ewl_callback_call(w, EWL_CALLBACK_SHOW);
 
-        	/*
-        	 * Give the top level widgets their initial preferred size.
-        	 */
-        	if (ewl_object_flags_get(EWL_OBJECT(w),
-        				 EWL_FLAG_PROPERTY_TOPLEVEL)) {
-        		ewl_object_size_request(EWL_OBJECT(w),
-        			ewl_object_current_w_get(EWL_OBJECT(w)),
-        			ewl_object_current_h_get(EWL_OBJECT(w)));
-        	}
+                /*
+                 * Give the top level widgets their initial preferred size.
+                 */
+                if (ewl_object_flags_get(EWL_OBJECT(w),
+                                         EWL_FLAG_PROPERTY_TOPLEVEL)) {
+                        ewl_object_size_request(EWL_OBJECT(w),
+                                ewl_object_current_w_get(EWL_OBJECT(w)),
+                                ewl_object_current_h_get(EWL_OBJECT(w)));
+                }
 
-        	/*
-        	 * Indicate widget no longer on the realize queue.
-        	 */
-        	ewl_object_queued_remove(EWL_OBJECT(w),
-        				 EWL_FLAG_QUEUED_SCHEDULED_REVEAL);
+                /*
+                 * Indicate widget no longer on the realize queue.
+                 */
+                ewl_object_queued_remove(EWL_OBJECT(w),
+                                         EWL_FLAG_QUEUED_SCHEDULED_REVEAL);
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1079,10 +1079,10 @@ ewl_destroy_request(Ewl_Widget *w)
         DCHECK_PARAM_PTR(w);
 
         if (DESTROYED(w))
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         if (CONFIGURED(w))
-        	ewl_configure_cancel_request(w);
+                ewl_configure_cancel_request(w);
 
         ewl_object_queued_add(EWL_OBJECT(w), EWL_FLAG_QUEUED_SCHEDULED_DESTROY);
 
@@ -1095,7 +1095,7 @@ ewl_destroy_request(Ewl_Widget *w)
          * Schedule child widgets for destruction.
          */
         if (ewl_object_recursive_get(EWL_OBJECT(w)))
-        	ewl_container_destroy(EWL_CONTAINER(w));
+                ewl_container_destroy(EWL_CONTAINER(w));
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1156,48 +1156,48 @@ ewl_garbage_collect_idler(void *data __UNUSED__)
         if (ewl_config_cache.gc_reap) printf("---\n");
 
         while ((cleanup < EWL_GC_LIMIT) &&
-        		(w = ecore_list_first_remove(destroy_list))) {
-        	if (ewl_object_queued_has(EWL_OBJECT(w),
-        				  EWL_FLAG_QUEUED_SCHEDULED_CONFIGURE))
-        		ewl_configure_cancel_request(w);
+                        (w = ecore_list_first_remove(destroy_list))) {
+                if (ewl_object_queued_has(EWL_OBJECT(w),
+                                          EWL_FLAG_QUEUED_SCHEDULED_CONFIGURE))
+                        ewl_configure_cancel_request(w);
 
-        	ewl_callback_call(w, EWL_CALLBACK_DESTROY);
-        	ewl_callback_del_type(w, EWL_CALLBACK_DESTROY);
-        	ewl_widget_free(w);
-        	cleanup++;
+                ewl_callback_call(w, EWL_CALLBACK_DESTROY);
+                ewl_callback_del_type(w, EWL_CALLBACK_DESTROY);
+                ewl_widget_free(w);
+                cleanup++;
         }
 
         if (ewl_config_cache.gc_reap)
-        	printf("Destroyed %d EWL objects\n", cleanup);
+                printf("Destroyed %d EWL objects\n", cleanup);
         cleanup = 0;
 
         while ((obj = ecore_list_first_remove(free_evas_object_list))) {
-        	evas_object_del(obj);
-        	cleanup++;
+                evas_object_del(obj);
+                cleanup++;
         }
 
         if (ewl_config_cache.gc_reap)
-        	printf("Destroyed %d Evas Objects\n", cleanup);
+                printf("Destroyed %d Evas Objects\n", cleanup);
         cleanup = 0;
 
         /* make sure the widget and object lists are clear before trying to
          * remove the evas canvas */
         if ((ecore_list_count(free_evas_object_list) == 0)
-        		&& (ecore_list_count(destroy_list) == 0)) {
-        	while ((evas = ecore_list_first_remove(free_evas_list))) {
-        		evas_free(evas);
-        		cleanup++;
-        	}
+                        && (ecore_list_count(destroy_list) == 0)) {
+                while ((evas = ecore_list_first_remove(free_evas_list))) {
+                        evas_free(evas);
+                        cleanup++;
+                }
         }
 
         if (ewl_config_cache.gc_reap)
-        	printf("Destroyed %d Evas\n---\n", cleanup);
+                printf("Destroyed %d Evas\n---\n", cleanup);
 
         /* We set the ewl_garbage_collect to NULL because when we return 0
          * (because destroy_list is empty) ecore will cleanup the idler
          * memory for us. */
         if (!ecore_list_count(destroy_list))
-        	ewl_garbage_collect = NULL;
+                ewl_garbage_collect = NULL;
 
         DRETURN_INT(ecore_list_count(destroy_list), DLEVEL_STABLE);
 }
@@ -1232,10 +1232,10 @@ ewl_debug_indent_print(int mod_dir)
         if (mod_dir < 0) ewl_debug_indent_lvl --;
 
         if (ewl_debug_indent_lvl < 0)
-        	ewl_debug_indent_lvl = 0;
+                ewl_debug_indent_lvl = 0;
 
         for (indent = 0; indent < (ewl_debug_indent_lvl << 1) + 2; indent++)
-        	fputc(' ', stderr);
+                fputc(' ', stderr);
 
         if (mod_dir > 0) ewl_debug_indent_lvl ++;
 }

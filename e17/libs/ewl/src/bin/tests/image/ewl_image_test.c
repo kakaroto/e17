@@ -33,12 +33,12 @@ static int constrain_test_set_get(char *buf, int len);
 static int proportional_test_set_get(char *buf, int len);
 
 static Ewl_Unit_Test image_unit_tests[] = {
-        	{"image path set/get", path_test_set_get, NULL, -1, 0},
-        	{"image scale set/get", scale_test_set_get, NULL, -1, 0},
-        	{"image size set/get", size_test_set_get, NULL, -1, 0},
-        	{"image constrain set/get", constrain_test_set_get, NULL, -1, 0},
-        	{"image proportional set/get", proportional_test_set_get, NULL, -1, 0},
-        	{NULL, NULL, NULL, -1, 0}
+                {"image path set/get", path_test_set_get, NULL, -1, 0},
+                {"image scale set/get", scale_test_set_get, NULL, -1, 0},
+                {"image size set/get", size_test_set_get, NULL, -1, 0},
+                {"image constrain set/get", constrain_test_set_get, NULL, -1, 0},
+                {"image proportional set/get", proportional_test_set_get, NULL, -1, 0},
+                {NULL, NULL, NULL, -1, 0}
         };
 
 void
@@ -46,7 +46,7 @@ test_info(Ewl_Test *test)
 {
         test->name = "Image";
         test->tip = "Provides a widget for displaying evas\n"
-        			"loadable images, and edjes.";
+                                "loadable images, and edjes.";
         test->filename = __FILE__;
         test->func = create_test;
         test->type = EWL_TEST_TYPE_SIMPLE;
@@ -55,16 +55,16 @@ test_info(Ewl_Test *test)
 
 static void
 destroy_image_test(Ewl_Widget * w __UNUSED__, void *ev_data __UNUSED__,
-        					void *user_data __UNUSED__)
+                                                void *user_data __UNUSED__)
 {
         ecore_dlist_destroy(images);
         if (last_dir)
-        	free(last_dir);
+                free(last_dir);
 }
 
 static void
 image_goto_prev_cb(Ewl_Widget * w __UNUSED__, void *ev_data __UNUSED__,
-        				void *user_data __UNUSED__)
+                                        void *user_data __UNUSED__)
 {
         char *img = NULL;
 
@@ -79,7 +79,7 @@ image_goto_prev_cb(Ewl_Widget * w __UNUSED__, void *ev_data __UNUSED__,
 
 static void
 image_remove_cb(Ewl_Widget * w __UNUSED__, void *ev_data __UNUSED__,
-        				void *user_data __UNUSED__)
+                                        void *user_data __UNUSED__)
 {
         char *img = NULL;
 
@@ -97,16 +97,16 @@ static void
 image_load(const char *img)
 {
         if (img && ecore_file_exists(img)) {
-        	ecore_dlist_append(images, strdup(img));
-        	ecore_dlist_last_goto(images);
-        	ewl_image_file_set(EWL_IMAGE(image), img, NULL);
+                ecore_dlist_append(images, strdup(img));
+                ecore_dlist_last_goto(images);
+                ewl_image_file_set(EWL_IMAGE(image), img, NULL);
         } else
-        	printf("ERROR: %s does not exist\n", img);
+                printf("ERROR: %s does not exist\n", img);
 }
 
 static void
 image_goto_next_cb(Ewl_Widget * w __UNUSED__, void *ev_data __UNUSED__,
-        				void *user_data __UNUSED__)
+                                        void *user_data __UNUSED__)
 {
         char *img = NULL;
 
@@ -114,7 +114,7 @@ image_goto_next_cb(Ewl_Widget * w __UNUSED__, void *ev_data __UNUSED__,
         img = ecore_dlist_current(images);
 
         if (!img)
-        	img = ecore_dlist_first_goto(images);
+                img = ecore_dlist_first_goto(images);
 
         ewl_text_text_set(EWL_TEXT(entry_path), img);
         ewl_image_file_set(EWL_IMAGE(image), img, NULL);
@@ -122,7 +122,7 @@ image_goto_next_cb(Ewl_Widget * w __UNUSED__, void *ev_data __UNUSED__,
 
 void
 entry_path_cb_value_changed(Ewl_Widget *w, void *ev_data __UNUSED__, 
-        						void *data __UNUSED__)
+                                                        void *data __UNUSED__)
 {
         char *img;
 
@@ -145,18 +145,18 @@ create_test(Ewl_Container *image_box)
 
         scrollpane = ewl_scrollpane_new();
         ewl_callback_append(scrollpane, EWL_CALLBACK_DELETE_WINDOW,
-        		destroy_image_test, NULL);
+                        destroy_image_test, NULL);
         ewl_container_child_append(image_box, scrollpane);
         ewl_widget_show(scrollpane);
 
         if ((ecore_file_exists(PACKAGE_DATA_DIR "/ewl/images/e-logo.png")))
-        	image_file = strdup(PACKAGE_DATA_DIR "/ewl/images/e-logo.png");
+                image_file = strdup(PACKAGE_DATA_DIR "/ewl/images/e-logo.png");
         else if ((ecore_file_exists(PACKAGE_SOURCE_DIR "/data/images/e-logo.png")))
-        	image_file = strdup(PACKAGE_SOURCE_DIR "/data/images/e-logo.png");
+                image_file = strdup(PACKAGE_SOURCE_DIR "/data/images/e-logo.png");
         else if ((ecore_file_exists("./data/images/e-logo.png")))
-        	image_file = strdup("./data/images/e-logo.png");
+                image_file = strdup("./data/images/e-logo.png");
         else if ((ecore_file_exists("../data/images/e-logo.png")))
-        	image_file = strdup("../data/images/e-logo.png");
+                image_file = strdup("../data/images/e-logo.png");
 
         image = ewl_image_new();
         ewl_image_file_set(EWL_IMAGE(image), image_file, NULL);
@@ -166,29 +166,29 @@ create_test(Ewl_Container *image_box)
         ewl_widget_show(image);
 
         if (image_file)
-        	ecore_dlist_append(images, image_file);
+                ecore_dlist_append(images, image_file);
 
         box = ewl_hbox_new();
         ewl_box_spacing_set(EWL_BOX(box), 5);
         ewl_object_fill_policy_set(EWL_OBJECT(box),
-        			   EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK);
+                                   EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK);
         ewl_container_child_append(image_box, box);
         ewl_widget_show(box);
 
         entry_path = ewl_entry_new();
         ewl_text_text_set(EWL_TEXT(entry_path), image_file);
         ewl_object_fill_policy_set(EWL_OBJECT(entry_path),
-        			   EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK);
+                                   EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK);
         ewl_object_alignment_set(EWL_OBJECT(entry_path), EWL_FLAG_ALIGN_CENTER);
         ewl_container_child_append(EWL_CONTAINER(box), entry_path);
         ewl_callback_append(entry_path, EWL_CALLBACK_VALUE_CHANGED,
-        		entry_path_cb_value_changed, NULL);
+                        entry_path_cb_value_changed, NULL);
         ewl_widget_show(entry_path);
 
         button = ewl_button_new();
         ewl_stock_type_set(EWL_STOCK(button), EWL_STOCK_OPEN);
         ewl_callback_append(button, EWL_CALLBACK_CLICKED,
-        		    create_image_fd_cb, entry_path);
+                            create_image_fd_cb, entry_path);
         ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_NONE);
         ewl_container_child_append(EWL_CONTAINER(box), button);
         ewl_widget_show(button);
@@ -196,9 +196,9 @@ create_test(Ewl_Container *image_box)
         box = ewl_hbox_new();
         ewl_box_spacing_set(EWL_BOX(box), 5);
         ewl_object_fill_policy_set(EWL_OBJECT(box),
-        			   EWL_FLAG_FILL_NONE);
+                                   EWL_FLAG_FILL_NONE);
         ewl_object_alignment_set(EWL_OBJECT(box),
-        			 EWL_FLAG_ALIGN_CENTER);
+                                 EWL_FLAG_ALIGN_CENTER);
         ewl_container_child_append(image_box, box);
         ewl_widget_show(box);
 
@@ -207,7 +207,7 @@ create_test(Ewl_Container *image_box)
         ewl_button_label_set(EWL_BUTTON(button), "Previous");
         ewl_container_child_append(EWL_CONTAINER(box), button);
         ewl_callback_append(button, EWL_CALLBACK_CLICKED,
-        		    image_goto_prev_cb, NULL);
+                            image_goto_prev_cb, NULL);
         ewl_widget_show(button);
 
         /* the remove button */
@@ -215,7 +215,7 @@ create_test(Ewl_Container *image_box)
         ewl_button_label_set(EWL_BUTTON(button), "Remove");
         ewl_container_child_append(EWL_CONTAINER(box), button);
         ewl_callback_append(button, EWL_CALLBACK_CLICKED,
-        		    image_remove_cb, NULL);
+                            image_remove_cb, NULL);
         ewl_widget_show(button);
 
         /* the next button */
@@ -223,7 +223,7 @@ create_test(Ewl_Container *image_box)
         ewl_button_label_set(EWL_BUTTON(button), "Next");
         ewl_container_child_append(EWL_CONTAINER(box), button);
         ewl_callback_append(button, EWL_CALLBACK_CLICKED,
-        		    image_goto_next_cb, NULL);
+                            image_goto_next_cb, NULL);
         ewl_widget_show(button);
 
         box = ewl_hbox_new();
@@ -244,19 +244,19 @@ create_test(Ewl_Container *image_box)
 
 static void
 create_image_fd_cb(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
-        			    void *user_data)
+                                    void *user_data)
 {
         if (fd)
-        	return;
+                return;
 
         fd = ewl_filedialog_new();
         ewl_window_title_set(EWL_WINDOW(fd), "Select an Image...");
         ewl_window_name_set(EWL_WINDOW(fd), "EWL Image Test");
         ewl_window_class_set(EWL_WINDOW(fd), "EWL Filedialog");
         ewl_callback_append(fd, EWL_CALLBACK_VALUE_CHANGED,
-        		    create_image_fd_window_response, user_data);
+                            create_image_fd_window_response, user_data);
         if (last_dir)
-        	ewl_filedialog_directory_set(EWL_FILEDIALOG(fd), last_dir);
+                ewl_filedialog_directory_set(EWL_FILEDIALOG(fd), last_dir);
         ewl_widget_show(fd);
 }
 
@@ -269,27 +269,27 @@ create_image_fd_window_response(Ewl_Widget *w, void *ev, void *data)
         e = ev;
 
         if (e->response == EWL_STOCK_OK) {
-        	char *filename;
-        	const char *dir;
+                char *filename;
+                const char *dir;
 
-        	filename = ewl_filedialog_selected_file_get(EWL_FILEDIALOG (w));
-        	printf("File open from image test: %s\n", filename);
-        	if (filename) {
-        		ewl_text_text_set(EWL_TEXT(entry), filename);
-        		image_load(filename);
-        		free (filename);
-        	}
-        	if (last_dir) {
-        		free(last_dir);
-        		last_dir = NULL;
-        	}
-        	
-        	dir = ewl_filedialog_directory_get(EWL_FILEDIALOG(fd));
-        	if (dir)
-        		last_dir = strdup(dir);
+                filename = ewl_filedialog_selected_file_get(EWL_FILEDIALOG (w));
+                printf("File open from image test: %s\n", filename);
+                if (filename) {
+                        ewl_text_text_set(EWL_TEXT(entry), filename);
+                        image_load(filename);
+                        free (filename);
+                }
+                if (last_dir) {
+                        free(last_dir);
+                        last_dir = NULL;
+                }
+                
+                dir = ewl_filedialog_directory_get(EWL_FILEDIALOG(fd));
+                if (dir)
+                        last_dir = strdup(dir);
         }
         else {
-        	printf("Test program says bugger off.\n");
+                printf("Test program says bugger off.\n");
         }
 
         ewl_widget_destroy(fd);
@@ -311,9 +311,9 @@ path_test_set_get(char *buf, int len)
         t = ewl_image_file_path_get(EWL_IMAGE(o));
 
         if (strcmp(t, "/invalid/path"))
-        	LOG_FAILURE(buf, len, "path_get did not match path_set.");
+                LOG_FAILURE(buf, len, "path_get did not match path_set.");
         else
-        	ret = 1;
+                ret = 1;
 
         return ret;
 }
@@ -330,9 +330,9 @@ scale_test_set_get(char *buf, int len)
         ewl_image_scale_get(EWL_IMAGE(o), &sw, &sh);
 
         if (sw != 2.0 || sh != 2.0)
-        	LOG_FAILURE(buf, len, "scale_get did not match scale_set.");
+                LOG_FAILURE(buf, len, "scale_get did not match scale_set.");
         else
-        	ret = 1;
+                ret = 1;
 
         return ret;
 }
@@ -349,9 +349,9 @@ size_test_set_get(char *buf, int len)
         ewl_image_size_get(EWL_IMAGE(o), &sw, &sh);
 
         if (sw != 2 || sh != 2)
-        	LOG_FAILURE(buf, len, "size_get did not match size_set.");
+                LOG_FAILURE(buf, len, "size_get did not match size_set.");
         else
-        	ret = 1;
+                ret = 1;
 
         return ret;
 }
@@ -368,9 +368,9 @@ constrain_test_set_get(char *buf, int len)
         sw = ewl_image_constrain_get(EWL_IMAGE(o));
 
         if (sw != 2)
-        	LOG_FAILURE(buf, len, "scale_get did not match scale_set.");
+                LOG_FAILURE(buf, len, "scale_get did not match scale_set.");
         else
-        	ret = 1;
+                ret = 1;
 
         return ret;
 }
@@ -387,9 +387,9 @@ proportional_test_set_get(char *buf, int len)
         p = ewl_image_proportional_get(EWL_IMAGE(o));
 
         if (p != TRUE)
-        	LOG_FAILURE(buf, len, "proportional_get did not match set.");
+                LOG_FAILURE(buf, len, "proportional_get did not match set.");
         else
-        	ret = 1;
+                ret = 1;
 
         return ret;
 }

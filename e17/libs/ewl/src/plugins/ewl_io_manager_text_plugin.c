@@ -17,19 +17,19 @@ ewl_io_manager_plugin_uri_read(const char *uri)
         file = fopen(uri, "r");
         if (file)
         {
-        	struct stat buf;
-        	char *str;
+                struct stat buf;
+                char *str;
 
-        	ret = ewl_text_new();
+                ret = ewl_text_new();
 
-        	stat(uri, &buf);
-        	str = malloc(sizeof(char) * (buf.st_size + 1));
-        	fread(str, buf.st_size, 1, file);
-        	str[buf.st_size] = '\0';
-        	fclose(file);
+                stat(uri, &buf);
+                str = malloc(sizeof(char) * (buf.st_size + 1));
+                fread(str, buf.st_size, 1, file);
+                str[buf.st_size] = '\0';
+                fclose(file);
 
-        	ewl_text_text_set(EWL_TEXT(ret), str);
-        	FREE(str);
+                ewl_text_text_set(EWL_TEXT(ret), str);
+                FREE(str);
         }
 
         DRETURN_PTR(ret, DLEVEL_STABLE);
@@ -62,15 +62,15 @@ ewl_io_manager_plugin_uri_write(Ewl_Widget *data, const char *uri)
         file = fopen(uri, "w");
         if (file)
         {
-        	char *txt;
+                char *txt;
 
-        	txt = ewl_text_text_get(EWL_TEXT(data));
-        	fwrite(txt, sizeof(char), strlen(txt), file);
+                txt = ewl_text_text_get(EWL_TEXT(data));
+                fwrite(txt, sizeof(char), strlen(txt), file);
 
-        	FREE(txt);
-        	fclose(file);
+                FREE(txt);
+                fclose(file);
 
-        	ret = TRUE;
+                ret = TRUE;
         }
 
         DRETURN_INT(ret, DLEVEL_STABLE);

@@ -14,7 +14,7 @@ int
 ewl_tree_view_init(Ewl_Tree_View *v)
 {
         if (!ewl_box_init(EWL_BOX(v)))
-        	DRETURN_INT(FALSE, DLEVEL_STABLE);
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
 
         ewl_widget_inherit(EWL_WIDGET(v), EWL_TREE_VIEW_TYPE);
         ewl_box_orientation_set(EWL_BOX(v), EWL_ORIENTATION_VERTICAL);

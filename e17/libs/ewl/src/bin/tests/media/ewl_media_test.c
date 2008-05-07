@@ -57,22 +57,22 @@ create_test(Ewl_Container *box)
 
         if (!ewl_media_is_available())
         {
-        	o = ewl_label_new();
-        	ewl_label_text_set(EWL_LABEL(o),
-        			"Ewl_Media is not available. "
-        			"Please install Emotion "
-        			"and rebuild Ewl.");
-        	ewl_container_child_append(box, o);
-        	ewl_widget_show(o);
+                o = ewl_label_new();
+                ewl_label_text_set(EWL_LABEL(o),
+                                "Ewl_Media is not available. "
+                                "Please install Emotion "
+                                "and rebuild Ewl.");
+                ewl_container_child_append(box, o);
+                ewl_widget_show(o);
 
-        	return 1;
+                return 1;
         }
 
         o = ewl_radiobutton_new();
         ewl_button_label_set(EWL_BUTTON(o), "Gstreamer");
         ewl_container_child_append(box, o);
         ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,
-        				cb_gstreamer_change, NULL);
+                                        cb_gstreamer_change, NULL);
         ewl_widget_show(o);
 
         o2 = ewl_radiobutton_new();
@@ -81,7 +81,7 @@ create_test(Ewl_Container *box)
         ewl_checkbutton_checked_set(EWL_CHECKBUTTON(o2), TRUE);
         ewl_container_child_append(box, o2);
         ewl_callback_append(o2, EWL_CALLBACK_VALUE_CHANGED,
-        				cb_xine_change, NULL);
+                                        cb_xine_change, NULL);
         ewl_widget_show(o2);
 
         module_type = EWL_MEDIA_MODULE_XINE;
@@ -97,14 +97,14 @@ create_test(Ewl_Container *box)
 
 static void
 cb_gstreamer_change(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
-        				void *data __UNUSED__)
+                                        void *data __UNUSED__)
 {
         module_type = EWL_MEDIA_MODULE_GSTREAMER;
 }
 
 static void
 cb_xine_change(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
-        				void *data __UNUSED__)
+                                        void *data __UNUSED__)
 {
         module_type = EWL_MEDIA_MODULE_XINE;
 }
@@ -123,21 +123,21 @@ del_cb(Ewl_Widget *w, void *event __UNUSED__, void *data __UNUSED__)
 
 static void
 play_cb(Ewl_Widget *w __UNUSED__, void *event __UNUSED__,
-        			void *data __UNUSED__)
+                                void *data __UNUSED__)
 {
         ewl_media_play_set(EWL_MEDIA(video), 1);
 }
 
 static void
 stop_cb(Ewl_Widget *w __UNUSED__, void *event __UNUSED__,
-        			void *data __UNUSED__)
+                                void *data __UNUSED__)
 {
         ewl_media_play_set(EWL_MEDIA(video), 0);
 }
 
 static void
 ff_cb(Ewl_Widget *w __UNUSED__, void *event __UNUSED__,
-        			void *data __UNUSED__)
+                                void *data __UNUSED__)
 {
         double p;
 
@@ -147,7 +147,7 @@ ff_cb(Ewl_Widget *w __UNUSED__, void *event __UNUSED__,
 
 static void
 rew_cb(Ewl_Widget *w __UNUSED__, void *event __UNUSED__,
-        			void *data __UNUSED__)
+                                void *data __UNUSED__)
 {
         double p;
 
@@ -175,13 +175,13 @@ video_change_cb(Ewl_Widget *w __UNUSED__, void *event __UNUSED__, void *data)
 
 static void
 seeker_move_cb(Ewl_Widget *w __UNUSED__, void *event __UNUSED__,
-        				void *data __UNUSED__)
+                                        void *data __UNUSED__)
 {
         double val;
 
         val = ewl_range_value_get(EWL_RANGE(seeker));
         if (ewl_media_seekable_get(EWL_MEDIA(video)))
-        	ewl_media_position_set(EWL_MEDIA(video), val);
+                ewl_media_position_set(EWL_MEDIA(video), val);
 }
 
 static void
@@ -194,26 +194,26 @@ open_file_cb(Ewl_Widget *w, void *event, void *data __UNUSED__)
         e = event;
         if (e->response == EWL_STOCK_OK)
         {
-        	int len;
-        	char *file = NULL;
+                int len;
+                char *file = NULL;
 
-        	file = ewl_filedialog_selected_file_get(EWL_FILEDIALOG(w));
-        	ewl_media_media_set(EWL_MEDIA(video), file);
-        	if (file) free(file);
+                file = ewl_filedialog_selected_file_get(EWL_FILEDIALOG(w));
+                ewl_media_media_set(EWL_MEDIA(video), file);
+                if (file) free(file);
 
-        	len = ewl_media_length_get(EWL_MEDIA(video));
-        	ewl_range_maximum_value_set(EWL_RANGE(seeker), len);
+                len = ewl_media_length_get(EWL_MEDIA(video));
+                ewl_range_maximum_value_set(EWL_RANGE(seeker), len);
         }
 }
 
 static void
 open_cb(Ewl_Widget *w __UNUSED__, void *event __UNUSED__,
-        				void *data __UNUSED__)
+                                        void *data __UNUSED__)
 {
         if (!fd_win)
         {
-        	fd_win = ewl_filedialog_new();
-        	ewl_callback_append(fd_win, EWL_CALLBACK_VALUE_CHANGED, open_file_cb, NULL);
+                fd_win = ewl_filedialog_new();
+                ewl_callback_append(fd_win, EWL_CALLBACK_VALUE_CHANGED, open_file_cb, NULL);
         }
 
         ewl_widget_show(fd_win);
@@ -225,13 +225,13 @@ key_up_cb(Ewl_Widget *w, void *event, void *data)
         Ewl_Event_Key *e = event;
 
         if (!strcmp(e->keyname, "p"))
-        	ewl_media_play_set(EWL_MEDIA(video), 1);
+                ewl_media_play_set(EWL_MEDIA(video), 1);
 
         else if (!strcmp(e->keyname, "s"))
-        	ewl_media_play_set(EWL_MEDIA(video), 0);
+                ewl_media_play_set(EWL_MEDIA(video), 0);
 
         else if (!strcmp(e->keyname, "q"))
-        	del_cb(w, event, data);
+                del_cb(w, event, data);
 }
 
 static void
@@ -271,7 +271,7 @@ create_media_window(Ewl_Media_Module_Type type)
         /* box to contain contols and scrollers */
         controls = ewl_vbox_new();
         ewl_object_fill_policy_set(EWL_OBJECT(controls),
-        		EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_HFILL);
+                        EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_HFILL);
         ewl_container_child_append(EWL_CONTAINER(b), controls);
         ewl_widget_show(controls);
 
@@ -281,24 +281,24 @@ create_media_window(Ewl_Media_Module_Type type)
         ewl_widget_show(b);
 
         {
-        	Ewl_Media_Test_Control controls [] = {
-        		{ EWL_STOCK_PLAY, play_cb },
-        		{ EWL_STOCK_STOP, stop_cb },
-        		{ EWL_STOCK_REWIND, rew_cb },
-        		{ EWL_STOCK_FASTFORWARD, ff_cb },
-        		{ EWL_STOCK_OPEN, open_cb },
-        		{ EWL_STOCK_NONE, NULL }
-        	};
-        	int i;
+                Ewl_Media_Test_Control controls [] = {
+                        { EWL_STOCK_PLAY, play_cb },
+                        { EWL_STOCK_STOP, stop_cb },
+                        { EWL_STOCK_REWIND, rew_cb },
+                        { EWL_STOCK_FASTFORWARD, ff_cb },
+                        { EWL_STOCK_OPEN, open_cb },
+                        { EWL_STOCK_NONE, NULL }
+                };
+                int i;
 
-        	for(i = 0; controls[i].name != EWL_STOCK_NONE; i++) {
-        		o = ewl_button_new();
-        		ewl_stock_type_set(EWL_STOCK(o), controls[i].name);
-        		ewl_container_child_append(EWL_CONTAINER(b), o);
-        		ewl_callback_append(o, EWL_CALLBACK_CLICKED,
-        				controls[i].func, NULL);
-        		ewl_widget_show(o);
-        	}
+                for(i = 0; controls[i].name != EWL_STOCK_NONE; i++) {
+                        o = ewl_button_new();
+                        ewl_stock_type_set(EWL_STOCK(o), controls[i].name);
+                        ewl_container_child_append(EWL_CONTAINER(b), o);
+                        ewl_callback_append(o, EWL_CALLBACK_CLICKED,
+                                        controls[i].func, NULL);
+                        ewl_widget_show(o);
+                }
         }
 
         b = ewl_hbox_new();
@@ -309,7 +309,7 @@ create_media_window(Ewl_Media_Module_Type type)
         seeker = ewl_hseeker_new();
         ewl_container_child_append(EWL_CONTAINER(b), seeker);
         ewl_object_fill_policy_set(EWL_OBJECT(seeker),
-        		EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_HFILL);
+                        EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_HFILL);
         ewl_range_value_set(EWL_RANGE(seeker), 0.0);
         ewl_range_maximum_value_set(EWL_RANGE(seeker), 0.0);
         ewl_range_step_set(EWL_RANGE(seeker), 1.0);

@@ -44,7 +44,7 @@ ewl_io_manager_plugin_uri_write(Ewl_Widget *data, const char *uri)
 
         img = EWL_IMAGE(data);
         if (!img->image)
-        	DRETURN_INT(ret, DLEVEL_STABLE);
+                DRETURN_INT(ret, DLEVEL_STABLE);
 
         ret = evas_object_image_save(img->image, uri, NULL, NULL);
 
@@ -53,7 +53,7 @@ ewl_io_manager_plugin_uri_write(Ewl_Widget *data, const char *uri)
 
 int
 ewl_io_manager_plugin_string_write(Ewl_Widget *data,
-        			const char **string __UNUSED__)
+                                const char **string __UNUSED__)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR_RET(data, FALSE);

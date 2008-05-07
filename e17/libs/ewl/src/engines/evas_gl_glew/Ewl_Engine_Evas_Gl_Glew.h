@@ -8,7 +8,7 @@
 #include <Ecore_Win32.h>
 
 #define EWL_ENGINE_EVAS_GL_GLEW(engine) \
-        	((Ewl_Engine_Evas_Gl_Glew *)engine)
+                ((Ewl_Engine_Evas_Gl_Glew *)engine)
 
 typedef struct Ewl_Engine_Evas_Gl_Glew Ewl_Engine_Evas_Gl_Glew;
 struct Ewl_Engine_Evas_Gl_Glew

@@ -42,12 +42,12 @@ ewl_icon_new(void)
 
         w = NEW(Ewl_Icon, 1);
         if (!w)
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
 
         if (!ewl_icon_init(EWL_ICON(w)))
         {
-        	ewl_widget_destroy(w);
-        	w = NULL;
+                ewl_widget_destroy(w);
+                w = NULL;
         }
 
         DRETURN_PTR(w, DLEVEL_STABLE);
@@ -74,7 +74,7 @@ ewl_icon_simple_new(void)
 
         w = ewl_icon_new();
         if (!w)
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
 
         ewl_icon_label_complex_set(EWL_ICON(w), FALSE);
         ewl_icon_label_compressed_set(EWL_ICON(w), FALSE);
@@ -96,7 +96,7 @@ ewl_icon_init(Ewl_Icon *icon)
         DCHECK_PARAM_PTR_RET(icon, FALSE);
 
         if (!ewl_stock_init(EWL_STOCK((icon))))
-        	DRETURN_INT(FALSE, DLEVEL_STABLE);
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
 
         ewl_stock_functions_set(EWL_STOCK(icon), &stock_funcs);
         ewl_stock_type_set(EWL_STOCK(icon), EWL_STOCK_NONE);
@@ -109,7 +109,7 @@ ewl_icon_init(Ewl_Icon *icon)
         ewl_widget_inherit(EWL_WIDGET(icon), EWL_ICON_TYPE);
 
         ewl_callback_prepend(EWL_WIDGET(icon), EWL_CALLBACK_DESTROY,
-        				ewl_icon_cb_destroy, NULL);
+                                        ewl_icon_cb_destroy, NULL);
         /*
          * set some defaults
          */
@@ -134,7 +134,7 @@ ewl_icon_type_set(Ewl_Icon *icon, Ewl_Icon_Type type)
         DCHECK_TYPE(icon, EWL_ICON_TYPE);
 
         if (icon->type == type)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         icon->type = type;
 
@@ -142,10 +142,10 @@ ewl_icon_type_set(Ewl_Icon *icon, Ewl_Icon_Type type)
          * data */
         if (icon->extended)
         {
-        	if (type == EWL_ICON_TYPE_SHORT)
-        		ewl_widget_hide(icon->extended);
-        	else
-        		ewl_widget_show(icon->extended);
+                if (type == EWL_ICON_TYPE_SHORT)
+                        ewl_widget_hide(icon->extended);
+                else
+                        ewl_widget_show(icon->extended);
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -180,7 +180,7 @@ ewl_icon_part_hide(Ewl_Icon *icon, Ewl_Icon_Part part)
         DCHECK_TYPE(icon, EWL_ICON_TYPE);
 
         if (icon->hidden == part)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         icon->hidden = part;
 
@@ -207,44 +207,44 @@ ewl_icon_image_set(Ewl_Icon *icon, const char *file, const char *key)
         DCHECK_TYPE(icon, EWL_ICON_TYPE);
 
         if (icon->image)
-        	ewl_widget_destroy(icon->image);
+                ewl_widget_destroy(icon->image);
 
         img = ewl_image_new();
         ewl_image_file_set(EWL_IMAGE(img), file, key);
 
         if (icon->thumbnailing)
         {
-        	icon->image = ewl_image_thumbnail_get(EWL_IMAGE(img));
-        	ewl_callback_append(icon->image, EWL_CALLBACK_VALUE_CHANGED,
-        				ewl_icon_cb_thumb_value_changed, icon);
+                icon->image = ewl_image_thumbnail_get(EWL_IMAGE(img));
+                ewl_callback_append(icon->image, EWL_CALLBACK_VALUE_CHANGED,
+                                        ewl_icon_cb_thumb_value_changed, icon);
         }
         else
-        	icon->image = img;
+                icon->image = img;
 
         ewl_icon_constrain_set(icon, icon->constrain);
         ewl_image_proportional_set(EWL_IMAGE(icon->image), TRUE);
         ewl_object_alignment_set(EWL_OBJECT(icon->image),
-        					EWL_FLAG_ALIGN_CENTER);
+                                                EWL_FLAG_ALIGN_CENTER);
         ewl_widget_internal_set(icon->image, TRUE);
         ewl_container_child_prepend(EWL_CONTAINER(icon), icon->image);
 
         if (icon->hidden == EWL_ICON_PART_IMAGE)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         if (!icon->thumbnailing)
-        	ewl_icon_parts_update(icon);
+                ewl_icon_parts_update(icon);
         else if (!icon->alt)
         {
-        	const char *path;
+                const char *path;
 
-        	path = ewl_icon_theme_icon_path_get(
-        				EWL_ICON_IMAGE_LOADING, 0),
-        	ewl_image_file_set(EWL_IMAGE(icon->image), path,
-        				EWL_ICON_IMAGE_LOADING);
-        	ewl_widget_show(icon->image);
+                path = ewl_icon_theme_icon_path_get(
+                                        EWL_ICON_IMAGE_LOADING, 0),
+                ewl_image_file_set(EWL_IMAGE(icon->image), path,
+                                        EWL_ICON_IMAGE_LOADING);
+                ewl_widget_show(icon->image);
         }
         else
-        	ewl_widget_show(icon->alt);
+                ewl_widget_show(icon->alt);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -265,7 +265,7 @@ ewl_icon_image_file_get(Ewl_Icon *icon)
         DCHECK_TYPE_RET(icon, EWL_ICON_TYPE, NULL);
 
         if (icon->image)
-        	file = ewl_image_file_path_get(EWL_IMAGE(icon->image));
+                file = ewl_image_file_path_get(EWL_IMAGE(icon->image));
 
         DRETURN_PTR(file, DLEVEL_STABLE);
 }
@@ -284,15 +284,15 @@ ewl_icon_editable_set(Ewl_Icon *icon, unsigned int e)
         DCHECK_TYPE(icon, EWL_ICON_TYPE);
 
         if (icon->editable == e)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         icon->editable = e;
         if (icon->editable && icon->label)
-        	ewl_callback_append(icon->label, EWL_CALLBACK_MOUSE_DOWN,
-        				ewl_icon_cb_label_mouse_down, icon);
+                ewl_callback_append(icon->label, EWL_CALLBACK_MOUSE_DOWN,
+                                        ewl_icon_cb_label_mouse_down, icon);
         else if (icon->label)
-        	ewl_callback_del(icon->label, EWL_CALLBACK_MOUSE_DOWN,
-        				ewl_icon_cb_label_mouse_down);
+                ewl_callback_del(icon->label, EWL_CALLBACK_MOUSE_DOWN,
+                                        ewl_icon_cb_label_mouse_down);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -327,17 +327,17 @@ ewl_icon_label_set(Ewl_Icon *icon, const char *label)
 
         if (!label)
         {
-        	if (icon->label)
-        	{
-        		ewl_icon_label_text_set(icon, NULL);
-        		IF_FREE(icon->label_text);
-        	}
+                if (icon->label)
+                {
+                        ewl_icon_label_text_set(icon, NULL);
+                        IF_FREE(icon->label_text);
+                }
 
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
         }
 
         if (!icon->label)
-        	ewl_icon_label_build(icon);
+                ewl_icon_label_build(icon);
 
         icon->label_text = strdup(label);
         ewl_icon_label_update(icon);
@@ -358,7 +358,7 @@ ewl_icon_label_get(Ewl_Icon *icon)
         DCHECK_TYPE_RET(icon, EWL_ICON_TYPE, NULL);
 
         if (!icon->label)
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
 
         DRETURN_PTR(icon->label_text, DLEVEL_STABLE);
 }
@@ -381,16 +381,16 @@ ewl_icon_extended_data_set(Ewl_Icon *icon, Ewl_Widget *ext)
         DCHECK_TYPE(icon, EWL_ICON_TYPE);
 
         if (icon->extended)
-        	ewl_widget_destroy(icon->extended);
+                ewl_widget_destroy(icon->extended);
 
         icon->extended = ext;
         ewl_widget_internal_set(icon->extended, TRUE);
         ewl_container_child_append(EWL_CONTAINER(icon), icon->extended);
 
         if (icon->type == EWL_ICON_TYPE_SHORT)
-        	ewl_widget_hide(icon->extended);
+                ewl_widget_hide(icon->extended);
         else
-        	ewl_widget_show(icon->extended);
+                ewl_widget_show(icon->extended);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -425,7 +425,7 @@ ewl_icon_constrain_set(Ewl_Icon *icon, unsigned int val)
 
         icon->constrain = val;
         if (icon->image)
-        	ewl_image_constrain_set(EWL_IMAGE(icon->image), val);
+                ewl_image_constrain_set(EWL_IMAGE(icon->image), val);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -460,7 +460,7 @@ ewl_icon_label_compressed_set(Ewl_Icon *icon, unsigned int compress)
 
         /* nothing to do if no compression change */
         if (compress == icon->compress_label)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         icon->compress_label = !!compress;
         ewl_icon_label_update(icon);
@@ -498,12 +498,12 @@ ewl_icon_label_complex_set(Ewl_Icon *icon, unsigned int c)
         DCHECK_TYPE(icon, EWL_ICON_TYPE);
 
         if (icon->complex_label == !!c)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         icon->complex_label = !!c;
 
         if (!icon->label)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         /*
          * we are now switching from Ewl_Label to Ewl_Text
@@ -549,7 +549,7 @@ ewl_icon_thumbnailing_set(Ewl_Icon *icon, unsigned int t)
         DCHECK_TYPE(icon, EWL_ICON_TYPE);
 
         if (icon->thumbnailing == !!t)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         icon->thumbnailing = !!t;
 
@@ -588,8 +588,8 @@ ewl_icon_alt_text_set(Ewl_Icon *icon, const char *txt)
 
         if (icon->alt)
         {
-        	ewl_label_text_set(EWL_LABEL(icon->alt), txt);
-        	DRETURN(DLEVEL_STABLE);
+                ewl_label_text_set(EWL_LABEL(icon->alt), txt);
+                DRETURN(DLEVEL_STABLE);
         }
 
         icon->alt = ewl_label_new();
@@ -603,10 +603,10 @@ ewl_icon_alt_text_set(Ewl_Icon *icon, const char *txt)
         img = ewl_icon_theme_icon_path_get(EWL_ICON_IMAGE_LOADING, 0);
         file = ewl_icon_image_file_get(icon);
         if ((!file || !ecore_file_exists(ewl_icon_image_file_get(icon))) ||
-        		(icon->image && !strcmp(img, file)))
+                        (icon->image && !strcmp(img, file)))
         {
-        	if (icon->image) ewl_widget_hide(icon->image);
-        	ewl_widget_show(icon->alt);
+                if (icon->image) ewl_widget_hide(icon->image);
+                ewl_widget_show(icon->alt);
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -652,7 +652,7 @@ ewl_icon_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 
 static void
 ewl_icon_cb_label_mouse_down(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
-        					void *data)
+                                                void *data)
 {
         Ewl_Icon *icon;
         Ewl_Widget *entry;
@@ -674,14 +674,14 @@ ewl_icon_cb_label_mouse_down(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
         /* put the entry in the same spot as the label */
         ewl_object_current_geometry_get(EWL_OBJECT(icon->label), &x, &y,
-        						NULL, NULL);
+                                                        NULL, NULL);
         ewl_object_position_request(EWL_OBJECT(entry), x, y);
         ewl_widget_show(entry);
 
         ewl_callback_append(entry, EWL_CALLBACK_FOCUS_OUT,
-        			ewl_icon_cb_entry_focus_out, icon);
+                                ewl_icon_cb_entry_focus_out, icon);
         ewl_callback_append(entry, EWL_CALLBACK_VALUE_CHANGED,
-        			ewl_icon_cb_entry_value_changed, icon);
+                                ewl_icon_cb_entry_value_changed, icon);
 
         ewl_embed_focused_widget_set(emb, entry);
 
@@ -738,42 +738,42 @@ ewl_icon_parts_update(Ewl_Icon *icon)
          * show both the label and the image
          */
         if (icon->hidden == EWL_ICON_PART_NONE) {
-        	if (icon->label)
-        		ewl_widget_show(icon->label);
-        	if (icon->image)
-        		ewl_widget_show(icon->image);
+                if (icon->label)
+                        ewl_widget_show(icon->label);
+                if (icon->image)
+                        ewl_widget_show(icon->image);
         }
         /*
          * show only the label
          */
         else if (icon->hidden == EWL_ICON_PART_IMAGE) {
-        	if (icon->label && icon->image) {
-        		ewl_widget_show(icon->label);
-        		ewl_widget_hide(icon->image);
-        	}
-        	else if (icon->label)
-        		ewl_widget_show(icon->label);
-        	/*
-        	 * show the image if there is no label
-        	 */
-        	else if (icon->image)
-        		ewl_widget_show(icon->image);
+                if (icon->label && icon->image) {
+                        ewl_widget_show(icon->label);
+                        ewl_widget_hide(icon->image);
+                }
+                else if (icon->label)
+                        ewl_widget_show(icon->label);
+                /*
+                 * show the image if there is no label
+                 */
+                else if (icon->image)
+                        ewl_widget_show(icon->image);
         }
         /*
          * show only the image
          */
         else if (icon->hidden == EWL_ICON_PART_LABEL) {
-        	if (icon->label && icon->image) {
-        		ewl_widget_show(icon->image);
-        		ewl_widget_hide(icon->label);
-        	}
-        	else if (icon->image)
-        		ewl_widget_show(icon->image);
-        	/*
-        	 * show label if there is no image
-        	 */
-        	else if (icon->label)
-        		ewl_widget_show(icon->label);
+                if (icon->label && icon->image) {
+                        ewl_widget_show(icon->image);
+                        ewl_widget_hide(icon->label);
+                }
+                else if (icon->image)
+                        ewl_widget_show(icon->image);
+                /*
+                 * show label if there is no image
+                 */
+                else if (icon->label)
+                        ewl_widget_show(icon->label);
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -787,36 +787,36 @@ ewl_icon_label_build(Ewl_Icon *icon)
         DCHECK_TYPE(icon, EWL_ICON_TYPE);
 
         if (icon->complex_label)
-        	icon->label = ewl_text_new();
+                icon->label = ewl_text_new();
         else
-        	icon->label = ewl_label_new();
+                icon->label = ewl_label_new();
 
         ewl_object_fill_policy_set(EWL_OBJECT(icon->label),
-        				EWL_FLAG_FILL_NONE);
+                                        EWL_FLAG_FILL_NONE);
         ewl_object_alignment_set(EWL_OBJECT(icon->label),
-        				EWL_FLAG_ALIGN_CENTER);
+                                        EWL_FLAG_ALIGN_CENTER);
 
         if (icon->editable)
-        	ewl_callback_append(icon->label,
-        			EWL_CALLBACK_MOUSE_DOWN,
-        			ewl_icon_cb_label_mouse_down, icon);
+                ewl_callback_append(icon->label,
+                                EWL_CALLBACK_MOUSE_DOWN,
+                                ewl_icon_cb_label_mouse_down, icon);
 
         if (icon->hidden != EWL_ICON_PART_LABEL)
-        	ewl_widget_show(icon->label);
+                ewl_widget_show(icon->label);
 
         /* if we have a image make sure we are after it, but
          * before anything that is after the image */
         if (icon->image && icon->extended)
         {
-        	int idx;
-        	idx = ewl_container_child_index_get(EWL_CONTAINER(icon),
-        					icon->image);
-        	ewl_container_child_insert_internal(EWL_CONTAINER(icon),
-        				icon->label, idx + 1);
+                int idx;
+                idx = ewl_container_child_index_get(EWL_CONTAINER(icon),
+                                                icon->image);
+                ewl_container_child_insert_internal(EWL_CONTAINER(icon),
+                                        icon->label, idx + 1);
         }
         else
-        	ewl_container_child_append(EWL_CONTAINER(icon),
-        						icon->label);
+                ewl_container_child_append(EWL_CONTAINER(icon),
+                                                        icon->label);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -829,9 +829,9 @@ ewl_icon_label_text_set(Ewl_Icon *icon, const char *txt)
         DCHECK_TYPE(icon, EWL_ICON_TYPE);
 
         if (icon->complex_label)
-        	ewl_text_text_set(EWL_TEXT(icon->label), txt);
+                ewl_text_text_set(EWL_TEXT(icon->label), txt);
         else
-        	ewl_label_text_set(EWL_LABEL(icon->label), txt);
+                ewl_label_text_set(EWL_LABEL(icon->label), txt);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -845,29 +845,29 @@ ewl_icon_label_update(Ewl_Icon *icon)
 
         /* nothing to do if no label set */
         if (!icon->label_text)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         if (icon->compress_label &&
-        		(strlen(icon->label_text) > EWL_ICON_COMPRESS_SIZE))
+                        (strlen(icon->label_text) > EWL_ICON_COMPRESS_SIZE))
         {
-        	char *c;
+                char *c;
 
-        	c = NEW(char, EWL_ICON_COMPRESS_SIZE + 4);
-        	strncpy(c, icon->label_text, EWL_ICON_COMPRESS_SIZE);
-        	strcat(c, "...");
+                c = NEW(char, EWL_ICON_COMPRESS_SIZE + 4);
+                strncpy(c, icon->label_text, EWL_ICON_COMPRESS_SIZE);
+                strcat(c, "...");
 
-        	ewl_icon_label_text_set(icon, c);
-        	FREE(c);
+                ewl_icon_label_text_set(icon, c);
+                FREE(c);
         }
         else
-        	ewl_icon_label_text_set(icon, icon->label_text);
+                ewl_icon_label_text_set(icon, icon->label_text);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 static void
 ewl_icon_cb_thumb_value_changed(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
-        							void *data)
+                                                                void *data)
 {
         Ewl_Icon *icon;
 
@@ -877,10 +877,10 @@ ewl_icon_cb_thumb_value_changed(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
         icon = EWL_ICON(data);
         if (icon->alt && VISIBLE(icon->alt))
-        	ewl_widget_hide(icon->alt);
+                ewl_widget_hide(icon->alt);
 
         if (!VISIBLE(icon->image))
-        	ewl_widget_show(icon->image);
+                ewl_widget_show(icon->image);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

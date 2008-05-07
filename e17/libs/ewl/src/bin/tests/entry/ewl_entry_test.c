@@ -17,7 +17,7 @@ test_info(Ewl_Test *test)
 {
         test->name = "Entry";
         test->tip = "Defines the Ewl_Entry class to allow\n"
-        	"for single line editable text.";
+                "for single line editable text.";
         test->filename = __FILE__;
         test->func = create_test;
         test->type = EWL_TEST_TYPE_SIMPLE;
@@ -25,32 +25,32 @@ test_info(Ewl_Test *test)
 
 static void
 fetch_entry_text(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
-        			void *user_data __UNUSED__)
+                                void *user_data __UNUSED__)
 {
         char *s;
 
         s = ewl_text_text_get(EWL_TEXT(entry[0]));
         if (s) {
-        	printf("First entry covers: %s\n", s);
-        	free(s);
+                printf("First entry covers: %s\n", s);
+                free(s);
         }
 
         s = ewl_text_text_get(EWL_TEXT(entry[1]));
         if (s) {
-        	printf("Second entry covers: %s\n", s);
-        	free(s);
+                printf("Second entry covers: %s\n", s);
+                free(s);
         }
 
         s = ewl_text_text_get(EWL_TEXT(entry[2]));
         if (s) {
-        	printf("Third entry covers: %s\n", s);
-        	free(s);
+                printf("Third entry covers: %s\n", s);
+                free(s);
         }
 }
 
 static void
 set_entry_text(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
-        				void *user_data __UNUSED__)
+                                        void *user_data __UNUSED__)
 {
         ewl_text_text_set(EWL_TEXT(entry[0]), "Play with me ?");
         ewl_text_clear(EWL_TEXT(entry[1]));
@@ -108,14 +108,14 @@ create_test(Ewl_Container *box)
         ewl_button_label_set(EWL_BUTTON(button[0]), "Fetch text");
         ewl_container_child_append(EWL_CONTAINER(button_hbox), button[0]);
         ewl_callback_append(button[0], EWL_CALLBACK_CLICKED,
-        			fetch_entry_text, NULL);
+                                fetch_entry_text, NULL);
         ewl_widget_show(button[0]);
 
         button[1] = ewl_button_new();
         ewl_button_label_set(EWL_BUTTON(button[1]), "Set Text");
         ewl_container_child_append(EWL_CONTAINER(button_hbox), button[1]);
         ewl_callback_append(button[1], EWL_CALLBACK_CLICKED,
-        			set_entry_text, NULL);
+                                set_entry_text, NULL);
         ewl_widget_show(button[1]);
 
         o = ewl_label_new();

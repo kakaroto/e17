@@ -11,8 +11,8 @@ static void ee_canvas_setup(Ewl_Window *win, int debug);
 
 static void *canvas_funcs[EWL_ENGINE_CANVAS_MAX] =
         {
-        	ee_canvas_setup,
-        	NULL, NULL, NULL, NULL
+                ee_canvas_setup,
+                NULL, NULL, NULL, NULL
         };
 
 Ecore_DList *
@@ -38,12 +38,12 @@ ewl_engine_create(int *argc __UNUSED__, char ** argv __UNUSED__)
 
         engine = NEW(Ewl_Engine_Evas_Gl_Glew, 1);
         if (!engine)
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
 
         if (!ee_init(EWL_ENGINE(engine)))
         {
-        	FREE(engine);
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                FREE(engine);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
         }
 
         DRETURN_PTR(EWL_ENGINE(engine), DLEVEL_STABLE);
@@ -91,9 +91,9 @@ ee_canvas_setup(Ewl_Window *win, int debug)
 
         if (!ecore_win32_glew_init(win->window))
         {
-        	fprintf(stderr, "[Ewl] Unable to set OpenGL Glew data "
-        			"for rendering, ");
-        	exit(-1);
+                fprintf(stderr, "[Ewl] Unable to set OpenGL Glew data "
+                                "for rendering, ");
+                exit(-1);
         }
 
         evas = evas_new();
@@ -102,8 +102,8 @@ ee_canvas_setup(Ewl_Window *win, int debug)
         info = evas_engine_info_get(evas);
         if (!info)
         {
-        	fprintf(stderr, "Unable to use gl_glew engine for rendering, ");
-        	exit(-1);
+                fprintf(stderr, "Unable to use gl_glew engine for rendering, ");
+                exit(-1);
         }
 
         glinfo = (Evas_Engine_Info_GL_Glew *)info;
@@ -115,11 +115,11 @@ ee_canvas_setup(Ewl_Window *win, int debug)
 
         evas_engine_info_set(evas, info);
         evas_output_size_set(evas, ewl_object_current_w_get(o),
-        				ewl_object_current_h_get(o));
+                                        ewl_object_current_h_get(o));
         evas_output_viewport_set(evas, ewl_object_current_x_get(o),
-        				ewl_object_current_y_get(o),
-        				ewl_object_current_w_get(o),
-        				ewl_object_current_h_get(o));
+                                        ewl_object_current_y_get(o),
+                                        ewl_object_current_w_get(o),
+                                        ewl_object_current_h_get(o));
         ewl_embed_canvas_set(EWL_EMBED(win), evas, win->window);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);

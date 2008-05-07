@@ -8,7 +8,7 @@
 #include <Evas_Engine_SDL.h>
 
 #define EWL_ENGINE_EVAS_SOFTWARE_SDL(engine) \
-        	((Ewl_Engine_Evas_Software_SDL *)engine)
+                ((Ewl_Engine_Evas_Software_SDL *)engine)
 
 typedef struct Ewl_Engine_Evas_Software_SDL Ewl_Engine_Evas_Software_SDL;
 struct Ewl_Engine_Evas_Software_SDL

@@ -9,7 +9,7 @@
 static Ewl_View *ewl_tree_view_scrolled_view = NULL;
 
 static Ewl_Widget * ewl_tree_view_cb_widget_fetch(void *data, unsigned int col,
-        						unsigned int row);
+                                                        unsigned int row);
 
 /**
  * @return Returns the view for this widget
@@ -22,9 +22,9 @@ ewl_tree_view_scrolled_get(void)
 
         if (!ewl_tree_view_scrolled_view)
         {
-        	ewl_tree_view_scrolled_view = ewl_view_new();
-        	ewl_view_widget_fetch_set(ewl_tree_view_scrolled_view,
-        				ewl_tree_view_cb_widget_fetch);
+                ewl_tree_view_scrolled_view = ewl_view_new();
+                ewl_view_widget_fetch_set(ewl_tree_view_scrolled_view,
+                                        ewl_tree_view_cb_widget_fetch);
         }
 
         DRETURN_PTR(ewl_tree_view_scrolled_view, DLEVEL_STABLE);
@@ -32,8 +32,8 @@ ewl_tree_view_scrolled_get(void)
 
 static Ewl_Widget *
 ewl_tree_view_cb_widget_fetch(void *data __UNUSED__,
-        			unsigned int col __UNUSED__,
-        			unsigned int row __UNUSED__)
+                                unsigned int col __UNUSED__,
+                                unsigned int row __UNUSED__)
 {
         Ewl_Widget *tree;
 
@@ -58,12 +58,12 @@ ewl_tree_view_scrolled_new(void)
 
         w = NEW(Ewl_Tree_View_Scrolled, 1);
         if (!w)
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
 
         if (!ewl_tree_view_scrolled_init(EWL_TREE_VIEW_SCROLLED(w)))
         {
-        	ewl_widget_destroy(w);
-        	w = NULL;
+                ewl_widget_destroy(w);
+                w = NULL;
         }
 
         DRETURN_PTR(w, DLEVEL_STABLE);
@@ -81,7 +81,7 @@ ewl_tree_view_scrolled_init(Ewl_Tree_View_Scrolled *tv)
         DCHECK_PARAM_PTR_RET(tv, FALSE);
 
         if (!ewl_tree_view_init(EWL_TREE_VIEW(tv)))
-        	DRETURN_INT(FALSE, DLEVEL_STABLE);
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
 
         ewl_box_orientation_set(EWL_BOX(tv), EWL_ORIENTATION_VERTICAL);
         ewl_widget_inherit(EWL_WIDGET(tv), EWL_TREE_VIEW_SCROLLED_TYPE);
@@ -106,7 +106,7 @@ ewl_tree_view_scrolled_init(Ewl_Tree_View_Scrolled *tv)
  */
 void
 ewl_tree_view_scrolled_scroll_headers_set(Ewl_Tree_View *view,
-        					unsigned int scroll)
+                                                unsigned int scroll)
 {
         Ewl_Tree_View_Scrolled *vs;
 
@@ -116,22 +116,22 @@ ewl_tree_view_scrolled_scroll_headers_set(Ewl_Tree_View *view,
 
         if (!view->parent)
         {
-        	DWARNING("Need parent tree before setting headers scrolled.");
-        	DRETURN(DLEVEL_STABLE);
+                DWARNING("Need parent tree before setting headers scrolled.");
+                DRETURN(DLEVEL_STABLE);
         }
 
         vs = EWL_TREE_VIEW_SCROLLED(view);
 
         if (vs->scroll_header == scroll)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         vs->scroll_header = scroll;
         if (vs->scroll_header)
-        	ewl_container_child_prepend(EWL_CONTAINER(vs),
-        					view->parent->header);
+                ewl_container_child_prepend(EWL_CONTAINER(vs),
+                                                view->parent->header);
         else
-        	ewl_container_child_prepend(EWL_CONTAINER(view->parent),
-        						view->parent->header);
+                ewl_container_child_prepend(EWL_CONTAINER(view->parent),
+                                                        view->parent->header);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

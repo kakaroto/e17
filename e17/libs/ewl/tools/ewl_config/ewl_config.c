@@ -57,92 +57,92 @@ main(int argc, char ** argv)
 
         if (!ewl_init(&argc, argv))
         {
-        	fprintf(stderr, "Unable to init ewl.\n");
-        	goto EXIT;
+                fprintf(stderr, "Unable to init ewl.\n");
+                goto EXIT;
         }
 
         for (i = 1; i < argc; i++)
         {
-        	if ((!strncmp(argv[i], "-s", 2))
-        			|| (!strncmp(argv[i], "-set", 4)))
-        	{
-        		if (++i < argc)
-        		{
-        			char *t, *key, *val;
+                if ((!strncmp(argv[i], "-s", 2))
+                                || (!strncmp(argv[i], "-set", 4)))
+                {
+                        if (++i < argc)
+                        {
+                                char *t, *key, *val;
 
-        			t = strdup(argv[i]);
-        			key = t;
-        			val = strchr(t, '=');
+                                t = strdup(argv[i]);
+                                key = t;
+                                val = strchr(t, '=');
 
-        			if (!val)
-        			{
-        				usage();
-        				goto EWL_SHUTDOWN;
-        			}
+                                if (!val)
+                                {
+                                        usage();
+                                        goto EWL_SHUTDOWN;
+                                }
 
-        			*val = '\0';
-        			val++;
+                                *val = '\0';
+                                val++;
 
-        			ewl_config_string_set(ewl_config, key, val,
-        						EWL_STATE_PERSISTENT);
-        			free(t);
+                                ewl_config_string_set(ewl_config, key, val,
+                                                        EWL_STATE_PERSISTENT);
+                                free(t);
 
-        			did_something = 1;
-        		}
-        		else
-        		{
-        			usage();
-        			goto EWL_SHUTDOWN;
-        		}
-        	}
-        	else if ((!strncmp(argv[i], "-g", 2))
-        			|| (!strncmp(argv[i], "-get", 4)))
-        	{
-        		if (++i < argc)
-        		{
-        			const char *val;
+                                did_something = 1;
+                        }
+                        else
+                        {
+                                usage();
+                                goto EWL_SHUTDOWN;
+                        }
+                }
+                else if ((!strncmp(argv[i], "-g", 2))
+                                || (!strncmp(argv[i], "-get", 4)))
+                {
+                        if (++i < argc)
+                        {
+                                const char *val;
 
-        			val = ewl_config_string_get(ewl_config, argv[i]);
-        			printf("%s = %s\n", argv[i], val);
+                                val = ewl_config_string_get(ewl_config, argv[i]);
+                                printf("%s = %s\n", argv[i], val);
 
-        			did_something = 1;
-        		}
-        		else
-        		{
-        			usage();
-        			goto EWL_SHUTDOWN;
-        		}
-        	}
-        	else if (!strncmp(argv[i], "-r", 2))
-        	{
-        		if (!ewl_config_can_save_system(ewl_config))
-        		{
-        			fprintf(stderr, "Insufficient permission to save "
-        					"system configuration.\n");
-        			goto EWL_SHUTDOWN;
-        		}
-        		save_system = 1;
-        	}
-        	else if ((!strncmp(argv[i], "-h", 2))
-        			|| (!strncasecmp(argv[i], "--help", 6)))
-        	{
-        		usage();
-        		ret = 0;
-        		goto EWL_SHUTDOWN;
-        	}
+                                did_something = 1;
+                        }
+                        else
+                        {
+                                usage();
+                                goto EWL_SHUTDOWN;
+                        }
+                }
+                else if (!strncmp(argv[i], "-r", 2))
+                {
+                        if (!ewl_config_can_save_system(ewl_config))
+                        {
+                                fprintf(stderr, "Insufficient permission to save "
+                                                "system configuration.\n");
+                                goto EWL_SHUTDOWN;
+                        }
+                        save_system = 1;
+                }
+                else if ((!strncmp(argv[i], "-h", 2))
+                                || (!strncasecmp(argv[i], "--help", 6)))
+                {
+                        usage();
+                        ret = 0;
+                        goto EWL_SHUTDOWN;
+                }
         }
 
         if (did_something)
         {
-        	if (save_system)
-        		ewl_config_system_save(ewl_config);
-        	else
-        		ewl_config_user_save(ewl_config);
+                if (save_system)
+                        ewl_config_system_save(ewl_config);
+                else
+                        ewl_config_user_save(ewl_config);
         }
         else
         {
-        	ec_main_win(save_system);
-        	ewl_main();
+                ec_main_win(save_system);
+                ewl_main();
         }
 
         ret = 0;
@@ -157,11 +157,11 @@ static void
 usage(void)
 {
         printf("\n"
-        	"ewl_config [OPTIONS] [-set key=value] [-get key]\n"
-        	" OPTIONS\n"
-        	"  -r                    \t - Save the system configuration file\n"
-        	"  -h|--help             \t - Print help information\n"
-        	"\n");
+                "ewl_config [OPTIONS] [-set key=value] [-get key]\n"
+                " OPTIONS\n"
+                "  -r                    \t - Save the system configuration file\n"
+                "  -h|--help             \t - Print help information\n"
+                "\n");
 }
 
 static void
@@ -176,7 +176,7 @@ ec_main_win(int save_system)
         ewl_object_size_request(EWL_OBJECT(o), 450, 250);
         ewl_widget_name_set(o, EC_WIN_MAIN);
         ewl_callback_append(o, EWL_CALLBACK_DELETE_WINDOW,
-        				ec_cb_delete_window, NULL);
+                                        ec_cb_delete_window, NULL);
         ewl_widget_show(o);
 
         box = ewl_vbox_new();
@@ -187,7 +187,7 @@ ec_main_win(int save_system)
         ewl_container_child_append(EWL_CONTAINER(box), o);
         ec_menubar_setup(EWL_MENUBAR(o));
         ewl_object_fill_policy_set(EWL_OBJECT(o),
-        		EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
+                        EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
         ewl_widget_show(o);
 
         o = ewl_notebook_new();
@@ -214,9 +214,9 @@ ec_main_win(int save_system)
         o = ewl_button_new();
         ewl_button_label_set(EWL_BUTTON(o), "Revert");
         ewl_button_image_set(EWL_BUTTON(o),
-        		ewl_icon_theme_icon_path_get(EWL_ICON_DIALOG_CANCEL,
-        						EWL_ICON_SIZE_MEDIUM),
-        		EWL_ICON_DIALOG_CANCEL);
+                        ewl_icon_theme_icon_path_get(EWL_ICON_DIALOG_CANCEL,
+                                                        EWL_ICON_SIZE_MEDIUM),
+                        EWL_ICON_DIALOG_CANCEL);
         ewl_container_child_append(EWL_CONTAINER(o2), o);
         ewl_callback_append(o, EWL_CALLBACK_CLICKED, ec_cb_revert, NULL);
         ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_VFILL);
@@ -243,12 +243,12 @@ ec_main_win(int save_system)
         ewl_widget_show(o);
 
         if (!ewl_config_can_save_system(ewl_config))
-        	ewl_widget_disable(o);
+                ewl_widget_disable(o);
 }
 
 static void
 ec_cb_delete_window(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
-        				void *data __UNUSED__)
+                                        void *data __UNUSED__)
 {
         ewl_main_quit();
 }
@@ -261,41 +261,41 @@ ec_menubar_setup(Ewl_Menubar *m)
         int i;
 
         Ewl_Menu_Info file_menu[] = {
-        	{"Save", EC_ICON(DOCUMENT_SAVE), ec_cb_apply},
-        	{"Revert", EC_ICON(DOCUMENT_REVERT), ec_cb_revert},
-        	{"Quit", EC_ICON(APPLICATION_EXIT), ec_cb_delete_window},
-        	{NULL, NULL, NULL}
+                {"Save", EC_ICON(DOCUMENT_SAVE), ec_cb_apply},
+                {"Revert", EC_ICON(DOCUMENT_REVERT), ec_cb_revert},
+                {"Quit", EC_ICON(APPLICATION_EXIT), ec_cb_delete_window},
+                {NULL, NULL, NULL}
         };
 
         Ewl_Menu_Info help_menu[] = {
-        	{"About", EC_ICON(HELP_ABOUT), ec_cb_about},
-        	{NULL, NULL, NULL}
+                {"About", EC_ICON(HELP_ABOUT), ec_cb_about},
+                {NULL, NULL, NULL}
         };
 
         Ec_Gui_Menu menus[] = {
-        	{"File", file_menu},
-        	{"Help", help_menu},
-        	{NULL, NULL}
+                {"File", file_menu},
+                {"Help", help_menu},
+                {NULL, NULL}
         };
 
         for (i = 0; menus[i].name != NULL; i++)
         {
-        	/* pack in a spacer before the help text */
-        	if (menus[i + 1].name == NULL)
-        	{
-        		o = ewl_spacer_new();
-        		ewl_container_child_append(EWL_CONTAINER(m), o);
-        		ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_FILL);
-        		ewl_widget_show(o);
-        	}
+                /* pack in a spacer before the help text */
+                if (menus[i + 1].name == NULL)
+                {
+                        o = ewl_spacer_new();
+                        ewl_container_child_append(EWL_CONTAINER(m), o);
+                        ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_FILL);
+                        ewl_widget_show(o);
+                }
 
-        	menu = ewl_menu_new();
-        	ewl_button_label_set(EWL_BUTTON(menu), menus[i].name);
-        	ewl_container_child_append(EWL_CONTAINER(m), menu);
-        	ewl_object_fill_policy_set(EWL_OBJECT(menu),
-        			EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_VFILL);
-        	ewl_menu_from_info(EWL_MENU(menu), menus[i].info);
-        	ewl_widget_show(menu);
+                menu = ewl_menu_new();
+                ewl_button_label_set(EWL_BUTTON(menu), menus[i].name);
+                ewl_container_child_append(EWL_CONTAINER(m), menu);
+                ewl_object_fill_policy_set(EWL_OBJECT(menu),
+                                EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_VFILL);
+                ewl_menu_from_info(EWL_MENU(menu), menus[i].info);
+                ewl_widget_show(menu);
         }
 }
 
@@ -337,11 +337,11 @@ ec_theme_page_setup(Ewl_Notebook *n)
         rep = opendir(PACKAGE_DATA_DIR "/ewl/themes");
         if (rep)
         {
-        	int ret;
+                int ret;
 
-        	ret = ec_themes_get(rep, list, v);
-        	if (ret >= 0)
-        		sel = ret;
+                ret = ec_themes_get(rep, list, v);
+                if (ret >= 0)
+                        sel = ret;
         }
         closedir(rep);
 
@@ -350,16 +350,16 @@ ec_theme_page_setup(Ewl_Notebook *n)
         rep = opendir(path);
         if (rep)
         {
-        	int ret;
+                int ret;
 
-        	ret = ec_themes_get(rep, list, v);
-        	if (ret >= 0)
-        		sel = ret;
+                ret = ec_themes_get(rep, list, v);
+                if (ret >= 0)
+                        sel = ret;
         }
         closedir(rep);
 
         if (sel >= 0)
-        	ewl_mvc_selected_set(EWL_MVC(o), NULL, list, sel, 0);
+                ewl_mvc_selected_set(EWL_MVC(o), NULL, list, sel, 0);
         ewl_mvc_dirty_set(EWL_MVC(o), TRUE);
 
         o2 = ewl_border_new();
@@ -382,7 +382,7 @@ ec_theme_page_setup(Ewl_Notebook *n)
         ewl_widget_name_set(o, EC_ICON_THEME);
         ewl_container_child_append(EWL_CONTAINER(box), o);
         ewl_text_text_set(EWL_TEXT(o),
-        	ewl_config_string_get(ewl_config, EWL_CONFIG_THEME_ICON_THEME));
+                ewl_config_string_get(ewl_config, EWL_CONFIG_THEME_ICON_THEME));
         ewl_widget_show(o);
 
         o = ewl_label_new();
@@ -428,7 +428,7 @@ ec_engine_page_setup(Ewl_Notebook *n)
         o = ewl_entry_new();
         ewl_widget_name_set(o, EC_ENGINE_NAME);
         ewl_text_text_set(EWL_TEXT(o),
-        	ewl_config_string_get(ewl_config, EWL_CONFIG_ENGINE_NAME));
+                ewl_config_string_get(ewl_config, EWL_CONFIG_ENGINE_NAME));
         ewl_container_child_append(EWL_CONTAINER(o2), o);
         ewl_widget_show(o);
 
@@ -441,7 +441,7 @@ ec_engine_page_setup(Ewl_Notebook *n)
         o = ewl_entry_new();
         ewl_widget_name_set(o, EC_EVAS_FONT_CACHE);
         ewl_text_text_set(EWL_TEXT(o),
-        	ewl_config_string_get(ewl_config, EWL_CONFIG_CACHE_EVAS_FONT));
+                ewl_config_string_get(ewl_config, EWL_CONFIG_CACHE_EVAS_FONT));
         ewl_container_child_append(EWL_CONTAINER(o2), o);
         ewl_widget_show(o);
 
@@ -454,7 +454,7 @@ ec_engine_page_setup(Ewl_Notebook *n)
         o = ewl_entry_new();
         ewl_widget_name_set(o, EC_EVAS_IMAGE_CACHE);
         ewl_text_text_set(EWL_TEXT(o),
-        	ewl_config_string_get(ewl_config, EWL_CONFIG_CACHE_EVAS_IMAGE));
+                ewl_config_string_get(ewl_config, EWL_CONFIG_CACHE_EVAS_IMAGE));
         ewl_container_child_append(EWL_CONTAINER(o2), o);
         ewl_widget_show(o);
 }
@@ -467,20 +467,20 @@ ec_debug_page_setup(Ewl_Notebook *n)
 
         struct
         {
-        	char *label;
-        	char *key;
-        	char *name;
-        	int spinner;
+                char *label;
+                char *key;
+                char *name;
+                int spinner;
         } buttons[] = {
-        	{"Enabled", EWL_CONFIG_DEBUG_ENABLE, EC_DEBUG_ENABLE, 0},
-        	{"Level", EWL_CONFIG_DEBUG_LEVEL, EC_DEBUG_LEVEL, 1},
-        	{"Segv", EWL_CONFIG_DEBUG_SEGV, EC_DEBUG_SEGV, 0},
-        	{"Backtrace", EWL_CONFIG_DEBUG_BACKTRACE, EC_DEBUG_BACKTRACE, 0},
-        	{"Evas rendering", EWL_CONFIG_DEBUG_EVAS_RENDER, EC_DEBUG_EVAS_RENDER, 0},
-        	{"Garbage Collection", EWL_CONFIG_DEBUG_GC_REAP, EC_DEBUG_GARBAGE, 0},
-        	{"Print theme keys", EWL_CONFIG_THEME_PRINT_KEYS, EC_THEME_KEYS, 0},
-        	{"Print theme signals", EWL_CONFIG_THEME_PRINT_SIGNALS, EC_THEME_SIGNALS, 0},
-        	{NULL, NULL, NULL, 0}
+                {"Enabled", EWL_CONFIG_DEBUG_ENABLE, EC_DEBUG_ENABLE, 0},
+                {"Level", EWL_CONFIG_DEBUG_LEVEL, EC_DEBUG_LEVEL, 1},
+                {"Segv", EWL_CONFIG_DEBUG_SEGV, EC_DEBUG_SEGV, 0},
+                {"Backtrace", EWL_CONFIG_DEBUG_BACKTRACE, EC_DEBUG_BACKTRACE, 0},
+                {"Evas rendering", EWL_CONFIG_DEBUG_EVAS_RENDER, EC_DEBUG_EVAS_RENDER, 0},
+                {"Garbage Collection", EWL_CONFIG_DEBUG_GC_REAP, EC_DEBUG_GARBAGE, 0},
+                {"Print theme keys", EWL_CONFIG_THEME_PRINT_KEYS, EC_THEME_KEYS, 0},
+                {"Print theme signals", EWL_CONFIG_THEME_PRINT_SIGNALS, EC_THEME_SIGNALS, 0},
+                {NULL, NULL, NULL, 0}
         };
 
         box = ewl_vbox_new();
@@ -492,62 +492,62 @@ ec_debug_page_setup(Ewl_Notebook *n)
         ewl_grid_vhomogeneous_set(EWL_GRID(o2), TRUE);
         ewl_container_child_append(EWL_CONTAINER(box), o2);
         ewl_object_fill_policy_set(EWL_OBJECT(o2), EWL_FLAG_FILL_HSHRINK |
-        					EWL_FLAG_FILL_HFILL);
+                                                EWL_FLAG_FILL_HFILL);
         ewl_widget_show(o2);
 
         for (i = 0; buttons[i].label != NULL; i++)
         {
-        	Ewl_Widget *o;
+                Ewl_Widget *o;
 
-        	if (buttons[i].spinner)
-        	{
-        		Ewl_Widget *s;
+                if (buttons[i].spinner)
+                {
+                        Ewl_Widget *s;
 
-        		o = ewl_hbox_new();
-        		ewl_widget_show(o);
+                        o = ewl_hbox_new();
+                        ewl_widget_show(o);
 
-        		s = ewl_label_new();
-        		ewl_label_text_set(EWL_LABEL(s), buttons[i].label);
-        		ewl_container_child_append(EWL_CONTAINER(o), s);
-        		ewl_widget_show(s);
+                        s = ewl_label_new();
+                        ewl_label_text_set(EWL_LABEL(s), buttons[i].label);
+                        ewl_container_child_append(EWL_CONTAINER(o), s);
+                        ewl_widget_show(s);
 
-        		s = ewl_spinner_new();
-        		ewl_widget_name_set(s, buttons[i].name);
-        		ewl_spinner_digits_set(EWL_SPINNER(s), 0);
-        		ewl_range_minimum_value_set(EWL_RANGE(s), 0);
-        		ewl_range_maximum_value_set(EWL_RANGE(s), 100);
-        		ewl_range_step_set(EWL_RANGE(s), 1);
-        		ewl_range_value_set(EWL_RANGE(s),
-        			ewl_config_int_get(ewl_config, buttons[i].key));
-        		ewl_container_child_append(EWL_CONTAINER(o), s);
-        		ewl_widget_show(s);
-        	}
-        	else
-        	{
-        		o = ewl_checkbutton_new();
-        		ewl_widget_name_set(o, buttons[i].name);
-        		ewl_object_alignment_set(EWL_OBJECT(o),
-        				EWL_FLAG_ALIGN_LEFT);
-        		ewl_button_label_set(EWL_BUTTON(o), buttons[i].label);
-        		ewl_checkbutton_checked_set(EWL_CHECKBUTTON(o),
-        			ewl_config_int_get(ewl_config, buttons[i].key));
-        		ewl_widget_show(o);
-        	}
-        	ewl_container_child_append(EWL_CONTAINER(o2), o);
+                        s = ewl_spinner_new();
+                        ewl_widget_name_set(s, buttons[i].name);
+                        ewl_spinner_digits_set(EWL_SPINNER(s), 0);
+                        ewl_range_minimum_value_set(EWL_RANGE(s), 0);
+                        ewl_range_maximum_value_set(EWL_RANGE(s), 100);
+                        ewl_range_step_set(EWL_RANGE(s), 1);
+                        ewl_range_value_set(EWL_RANGE(s),
+                                ewl_config_int_get(ewl_config, buttons[i].key));
+                        ewl_container_child_append(EWL_CONTAINER(o), s);
+                        ewl_widget_show(s);
+                }
+                else
+                {
+                        o = ewl_checkbutton_new();
+                        ewl_widget_name_set(o, buttons[i].name);
+                        ewl_object_alignment_set(EWL_OBJECT(o),
+                                        EWL_FLAG_ALIGN_LEFT);
+                        ewl_button_label_set(EWL_BUTTON(o), buttons[i].label);
+                        ewl_checkbutton_checked_set(EWL_CHECKBUTTON(o),
+                                ewl_config_int_get(ewl_config, buttons[i].key));
+                        ewl_widget_show(o);
+                }
+                ewl_container_child_append(EWL_CONTAINER(o2), o);
         }
 }
 
 static void
 ec_cb_about(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
-        				void *data __UNUSED__)
+                                        void *data __UNUSED__)
 {
         Ewl_Widget *about, *o;
 
         about = ewl_widget_name_find(EC_WIN_ABOUT);
         if (about)
         {
-        	ewl_widget_show(about);
-        	return;
+                ewl_widget_show(about);
+                return;
         }
 
         about = ewl_dialog_new();
@@ -556,9 +556,9 @@ ec_cb_about(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
         ewl_window_class_set(EWL_WINDOW(about), "ewl_config");
         ewl_widget_name_set(about, EC_WIN_ABOUT);
         ewl_window_transient_for(EWL_WINDOW(about),
-        		EWL_WINDOW(ewl_widget_name_find(EC_WIN_MAIN)));
+                        EWL_WINDOW(ewl_widget_name_find(EC_WIN_MAIN)));
         ewl_callback_append(about, EWL_CALLBACK_DELETE_WINDOW,
-        						ec_cb_win_hide, about);
+                                                        ec_cb_win_hide, about);
         ewl_widget_show(about);
         ewl_dialog_active_area_set(EWL_DIALOG(about), EWL_POSITION_TOP);
 
@@ -601,7 +601,7 @@ ec_cb_win_hide(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, void *data)
 
 static void
 ec_cb_revert(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
-        				void *data __UNUSED__)
+                                        void *data __UNUSED__)
 {
         Ewl_Widget *o;
         Ecore_List *list;
@@ -610,29 +610,29 @@ ec_cb_revert(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
         struct
         {
-        	char *name;
-        	char *key;
+                char *name;
+                char *key;
         } checks[] = {
-        	{EC_DEBUG_ENABLE, EWL_CONFIG_DEBUG_ENABLE},
-        	{EC_DEBUG_SEGV, EWL_CONFIG_DEBUG_SEGV},
-        	{EC_DEBUG_BACKTRACE, EWL_CONFIG_DEBUG_BACKTRACE},
-        	{EC_DEBUG_EVAS_RENDER, EWL_CONFIG_DEBUG_EVAS_RENDER},
-        	{EC_DEBUG_GARBAGE, EWL_CONFIG_DEBUG_GC_REAP},
-        	{EC_THEME_KEYS, EWL_CONFIG_THEME_PRINT_KEYS},
-        	{EC_THEME_SIGNALS, EWL_CONFIG_THEME_PRINT_SIGNALS},
-        	{NULL, NULL}
+                {EC_DEBUG_ENABLE, EWL_CONFIG_DEBUG_ENABLE},
+                {EC_DEBUG_SEGV, EWL_CONFIG_DEBUG_SEGV},
+                {EC_DEBUG_BACKTRACE, EWL_CONFIG_DEBUG_BACKTRACE},
+                {EC_DEBUG_EVAS_RENDER, EWL_CONFIG_DEBUG_EVAS_RENDER},
+                {EC_DEBUG_GARBAGE, EWL_CONFIG_DEBUG_GC_REAP},
+                {EC_THEME_KEYS, EWL_CONFIG_THEME_PRINT_KEYS},
+                {EC_THEME_SIGNALS, EWL_CONFIG_THEME_PRINT_SIGNALS},
+                {NULL, NULL}
         };
 
         struct
         {
-        	char *name;
-        	char *key;
+                char *name;
+                char *key;
         } strings[] = {
-        	{EC_ICON_THEME, EWL_CONFIG_THEME_ICON_THEME},
-        	{EC_ENGINE_NAME, EWL_CONFIG_ENGINE_NAME},
-        	{EC_EVAS_IMAGE_CACHE, EWL_CONFIG_CACHE_EVAS_IMAGE},
-        	{EC_EVAS_FONT_CACHE, EWL_CONFIG_CACHE_EVAS_FONT},
-        	{NULL, NULL}
+                {EC_ICON_THEME, EWL_CONFIG_THEME_ICON_THEME},
+                {EC_ENGINE_NAME, EWL_CONFIG_ENGINE_NAME},
+                {EC_EVAS_IMAGE_CACHE, EWL_CONFIG_CACHE_EVAS_IMAGE},
+                {EC_EVAS_FONT_CACHE, EWL_CONFIG_CACHE_EVAS_FONT},
+                {NULL, NULL}
         };
 
         o = ewl_widget_name_find(EC_EWL_THEME);
@@ -642,9 +642,9 @@ ec_cb_revert(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
         ecore_list_first_goto(list);
         while ((lval = ecore_list_next(list)))
         {
-        	if (!strcmp(v, lval))
-        		break;
-        	sel++;
+                if (!strcmp(v, lval))
+                        break;
+                sel++;
         }
         ewl_mvc_selected_set(EWL_MVC(o), NULL, list, sel, 0);
 
@@ -654,26 +654,26 @@ ec_cb_revert(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
         for (sel = 0; strings[sel].name != NULL; sel++)
         {
-        	o = ewl_widget_name_find(strings[sel].name);
-        	ewl_text_text_set(EWL_TEXT(o),
-        		ewl_config_string_get(ewl_config, strings[sel].key));
+                o = ewl_widget_name_find(strings[sel].name);
+                ewl_text_text_set(EWL_TEXT(o),
+                        ewl_config_string_get(ewl_config, strings[sel].key));
         }
 
         o = ewl_widget_name_find(EC_DEBUG_LEVEL);
         ewl_range_value_set(EWL_RANGE(o),
-        	ewl_config_int_get(ewl_config, EWL_CONFIG_DEBUG_LEVEL));
+                ewl_config_int_get(ewl_config, EWL_CONFIG_DEBUG_LEVEL));
 
         for (sel = 0; checks[sel].name != NULL; sel++)
         {
-        	o = ewl_widget_name_find(checks[sel].name);
-        	ewl_checkbutton_checked_set(EWL_CHECKBUTTON(o),
-        		ewl_config_int_get(ewl_config, checks[sel].key));
+                o = ewl_widget_name_find(checks[sel].name);
+                ewl_checkbutton_checked_set(EWL_CHECKBUTTON(o),
+                        ewl_config_int_get(ewl_config, checks[sel].key));
         }
 }
 
 static void
 ec_cb_apply(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
-        				void *data __UNUSED__)
+                                        void *data __UNUSED__)
 {
         Ewl_Widget *o;
         Ecore_List *list;
@@ -683,72 +683,72 @@ ec_cb_apply(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
         struct
         {
-        	char *name;
-        	char *key;
+                char *name;
+                char *key;
         } checks[] = {
-        	{EC_DEBUG_ENABLE, EWL_CONFIG_DEBUG_ENABLE},
-        	{EC_DEBUG_SEGV, EWL_CONFIG_DEBUG_SEGV},
-        	{EC_DEBUG_BACKTRACE, EWL_CONFIG_DEBUG_BACKTRACE},
-        	{EC_DEBUG_EVAS_RENDER, EWL_CONFIG_DEBUG_EVAS_RENDER},
-        	{EC_DEBUG_GARBAGE, EWL_CONFIG_DEBUG_GC_REAP},
-        	{EC_THEME_KEYS, EWL_CONFIG_THEME_PRINT_KEYS},
-        	{EC_THEME_SIGNALS, EWL_CONFIG_THEME_PRINT_SIGNALS},
-        	{NULL, NULL}
+                {EC_DEBUG_ENABLE, EWL_CONFIG_DEBUG_ENABLE},
+                {EC_DEBUG_SEGV, EWL_CONFIG_DEBUG_SEGV},
+                {EC_DEBUG_BACKTRACE, EWL_CONFIG_DEBUG_BACKTRACE},
+                {EC_DEBUG_EVAS_RENDER, EWL_CONFIG_DEBUG_EVAS_RENDER},
+                {EC_DEBUG_GARBAGE, EWL_CONFIG_DEBUG_GC_REAP},
+                {EC_THEME_KEYS, EWL_CONFIG_THEME_PRINT_KEYS},
+                {EC_THEME_SIGNALS, EWL_CONFIG_THEME_PRINT_SIGNALS},
+                {NULL, NULL}
         };
 
         struct
         {
-        	char *name;
-        	char *key;
+                char *name;
+                char *key;
         } strings[] = {
-        	{EC_ICON_THEME, EWL_CONFIG_THEME_ICON_THEME},
-        	{EC_ENGINE_NAME, EWL_CONFIG_ENGINE_NAME},
-        	{EC_EVAS_IMAGE_CACHE, EWL_CONFIG_CACHE_EVAS_IMAGE},
-        	{EC_EVAS_FONT_CACHE, EWL_CONFIG_CACHE_EVAS_FONT},
-        	{NULL, NULL}
+                {EC_ICON_THEME, EWL_CONFIG_THEME_ICON_THEME},
+                {EC_ENGINE_NAME, EWL_CONFIG_ENGINE_NAME},
+                {EC_EVAS_IMAGE_CACHE, EWL_CONFIG_CACHE_EVAS_IMAGE},
+                {EC_EVAS_FONT_CACHE, EWL_CONFIG_CACHE_EVAS_FONT},
+                {NULL, NULL}
         };
 
         for (i = 0; checks[i].name != NULL; i++)
         {
-        	o = ewl_widget_name_find(checks[i].name);
-        	if (ewl_checkbutton_is_checked(EWL_CHECKBUTTON(o)) !=
-        			ewl_config_int_get(ewl_config, checks[i].key))
-        		ewl_config_int_set(ewl_config, checks[i].key,
-        				ewl_checkbutton_is_checked(EWL_CHECKBUTTON(o)),
-        				EWL_STATE_PERSISTENT);
+                o = ewl_widget_name_find(checks[i].name);
+                if (ewl_checkbutton_is_checked(EWL_CHECKBUTTON(o)) !=
+                                ewl_config_int_get(ewl_config, checks[i].key))
+                        ewl_config_int_set(ewl_config, checks[i].key,
+                                        ewl_checkbutton_is_checked(EWL_CHECKBUTTON(o)),
+                                        EWL_STATE_PERSISTENT);
         }
 
         for (i = 0; strings[i].name != NULL; i++)
         {
-        	char *new;
+                char *new;
 
-        	o = ewl_widget_name_find(strings[i].name);
-        	new = ewl_text_text_get(EWL_TEXT(o));
-        	if (strcmp(new, ewl_config_string_get(ewl_config,
-        					strings[i].key)))
-        	{
-        		ewl_config_string_set(ewl_config,
-        				strings[i].key, new,
-        				EWL_STATE_PERSISTENT);
-        	}
+                o = ewl_widget_name_find(strings[i].name);
+                new = ewl_text_text_get(EWL_TEXT(o));
+                if (strcmp(new, ewl_config_string_get(ewl_config,
+                                                strings[i].key)))
+                {
+                        ewl_config_string_set(ewl_config,
+                                        strings[i].key, new,
+                                        EWL_STATE_PERSISTENT);
+                }
         }
 
         o = ewl_widget_name_find(EC_DEBUG_LEVEL);
         if (ewl_range_value_get(EWL_RANGE(o)) !=
-        		ewl_config_int_get(ewl_config, EWL_CONFIG_DEBUG_LEVEL))
+                        ewl_config_int_get(ewl_config, EWL_CONFIG_DEBUG_LEVEL))
         {
-        	ewl_config_int_set(ewl_config, EWL_CONFIG_DEBUG_LEVEL,
-        				ewl_range_value_get(EWL_RANGE(o)),
-        				EWL_STATE_PERSISTENT);
+                ewl_config_int_set(ewl_config, EWL_CONFIG_DEBUG_LEVEL,
+                                        ewl_range_value_get(EWL_RANGE(o)),
+                                        EWL_STATE_PERSISTENT);
         }
 
         o = ewl_widget_name_find(EC_ICON_SIZE);
         val = ewl_range_value_get(EWL_RANGE(o));
         if (val != ewl_config_int_get(ewl_config, EWL_CONFIG_THEME_ICON_SIZE))
         {
-        	ewl_config_int_set(ewl_config,
-        			EWL_CONFIG_THEME_ICON_SIZE, val,
-        			EWL_STATE_PERSISTENT);
+                ewl_config_int_set(ewl_config,
+                                EWL_CONFIG_THEME_ICON_SIZE, val,
+                                EWL_STATE_PERSISTENT);
         }
 
         o = ewl_widget_name_find(EC_EWL_THEME);
@@ -756,28 +756,28 @@ ec_cb_apply(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
         idx = ewl_mvc_selected_get(EWL_MVC(o));
         if (idx)
         {
-        	ecore_list_index_goto(list, idx->row);
-        	v = ecore_list_current(list);
+                ecore_list_index_goto(list, idx->row);
+                v = ecore_list_current(list);
 
-        	if (strcmp(v, ewl_config_string_get(ewl_config,
-        					EWL_CONFIG_THEME_NAME)))
-        	{
-        		ewl_config_string_set(ewl_config,
-        				EWL_CONFIG_THEME_NAME, v,
-        				EWL_STATE_PERSISTENT);
-        	}
+                if (strcmp(v, ewl_config_string_get(ewl_config,
+                                                EWL_CONFIG_THEME_NAME)))
+                {
+                        ewl_config_string_set(ewl_config,
+                                        EWL_CONFIG_THEME_NAME, v,
+                                        EWL_STATE_PERSISTENT);
+                }
         }
 
         o = ewl_widget_name_find(EC_SAVE_SYSTEM);
         if (ewl_checkbutton_is_checked(EWL_CHECKBUTTON(o)))
         {
-        	if (!ewl_config_can_save_system(ewl_config))
-        		fprintf(stderr, "Cannot save system config.\n");
-        	else
-        		ewl_config_system_save(ewl_config);
+                if (!ewl_config_can_save_system(ewl_config))
+                        fprintf(stderr, "Cannot save system config.\n");
+                else
+                        ewl_config_system_save(ewl_config);
         }
         else
-        	ewl_config_user_save(ewl_config);
+                ewl_config_user_save(ewl_config);
 }
 
 int
@@ -788,23 +788,23 @@ ec_themes_get(DIR *rep, Ecore_List *list, const char *v)
 
         while ((file = readdir(rep)))
         {
-        	int len;
+                int len;
 
-        	len = strlen(file->d_name);
+                len = strlen(file->d_name);
 
-        	if ((len >= 4) &&
-        			(!strcmp(file->d_name + len - 4, ".edj")))
-        	{
-        		char *t;
+                if ((len >= 4) &&
+                                (!strcmp(file->d_name + len - 4, ".edj")))
+                {
+                        char *t;
 
-        		t = strdup(file->d_name);
-        		*(t + len - 4) = '\0';
+                        t = strdup(file->d_name);
+                        *(t + len - 4) = '\0';
 
-        		ecore_list_append(list, t);
+                        ecore_list_append(list, t);
 
-        		if (!strcmp(t, v))
-        			z = ecore_list_count(list) - 1;
-        	}
+                        if (!strcmp(t, v))
+                                z = ecore_list_count(list) - 1;
+                }
         }
 
         return z;

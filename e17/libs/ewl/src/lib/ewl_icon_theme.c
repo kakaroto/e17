@@ -12,8 +12,8 @@ static Ecore_Hash *ewl_icon_theme_cache = NULL;
 static Ecore_Hash *ewl_icon_fallback_theme_cache = NULL;
 static void ewl_icon_theme_cb_free(void *data);
 static const char *ewl_icon_theme_icon_path_get_helper(const char *icon,
-        				const char *size, const char *theme,
-        				const char *key, Ecore_Hash *cache);
+                                        const char *size, const char *theme,
+                                        const char *key, Ecore_Hash *cache);
 
 /**
  * @return Returns TRUE on success or FALSE on failure
@@ -26,16 +26,16 @@ ewl_icon_theme_init(void)
 
         if (!ewl_icon_theme_cache)
         {
-        	ewl_icon_theme_cache = ecore_hash_new(ecore_str_hash, ecore_str_compare);
-        	ecore_hash_free_key_cb_set(ewl_icon_theme_cache, ewl_icon_theme_cb_free);
-        	ecore_hash_free_value_cb_set(ewl_icon_theme_cache, free);
+                ewl_icon_theme_cache = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+                ecore_hash_free_key_cb_set(ewl_icon_theme_cache, ewl_icon_theme_cb_free);
+                ecore_hash_free_value_cb_set(ewl_icon_theme_cache, free);
 
-        	ewl_icon_fallback_theme_cache = ecore_hash_new(
-        					ecore_str_hash, ecore_str_compare);
-        	ecore_hash_free_key_cb_set(ewl_icon_fallback_theme_cache,
-        					ewl_icon_theme_cb_free);
-        	ecore_hash_free_value_cb_set(ewl_icon_fallback_theme_cache,
-        					free);
+                ewl_icon_fallback_theme_cache = ecore_hash_new(
+                                                ecore_str_hash, ecore_str_compare);
+                ecore_hash_free_key_cb_set(ewl_icon_fallback_theme_cache,
+                                                ewl_icon_theme_cb_free);
+                ecore_hash_free_value_cb_set(ewl_icon_fallback_theme_cache,
+                                                free);
         }
 
         DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -72,10 +72,10 @@ ewl_icon_theme_theme_change(void)
 
         /* check if this is an edje theme */
         if (icon_theme && (!strncasecmp(icon_theme + (strlen(icon_theme) - 4),
-        				      ".edj", 4)))
-        	ewl_icon_theme_is_edje = 1;
+                                              ".edj", 4)))
+                ewl_icon_theme_is_edje = 1;
         else
-        	ewl_icon_theme_is_edje = 0;
+                ewl_icon_theme_is_edje = 0;
 
         /* destroy the cache and re-create it */
         IF_FREE_HASH(ewl_icon_theme_cache);
@@ -106,39 +106,39 @@ ewl_icon_theme_icon_path_get(const char *icon, int size)
         DCHECK_PARAM_PTR_RET(icon, NULL);
 
         icon_theme = ewl_config_string_get(ewl_config,
-        			EWL_CONFIG_THEME_ICON_THEME);
+                                EWL_CONFIG_THEME_ICON_THEME);
 
         /* make sure we have an icon theme */
         if (!icon_theme)
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
 
         /* if our theme is an edje just return the .edj file */
         if (ewl_icon_theme_is_edje)
-        	DRETURN_PTR(icon_theme, DLEVEL_STABLE);
+                DRETURN_PTR(icon_theme, DLEVEL_STABLE);
 
         if (size == 0)
-        	size = ewl_config_int_get(ewl_config,
-        				EWL_CONFIG_THEME_ICON_SIZE);
+                size = ewl_config_int_get(ewl_config,
+                                        EWL_CONFIG_THEME_ICON_SIZE);
 
         snprintf(icon_size, sizeof(icon_size), "%dx%d", size, size);
         snprintf(key, sizeof(key), "%s@%s", icon, icon_size);
         ret = ewl_icon_theme_icon_path_get_helper(icon, icon_size, icon_theme,
-        					key, ewl_icon_theme_cache);
+                                                key, ewl_icon_theme_cache);
 
         if (ret == EWL_THEME_KEY_NOMATCH)
-        	ret = ewl_icon_theme_icon_path_get_helper(icon, icon_size, "EWL",
-        				key, ewl_icon_fallback_theme_cache);
+                ret = ewl_icon_theme_icon_path_get_helper(icon, icon_size, "EWL",
+                                        key, ewl_icon_fallback_theme_cache);
 
         if (ret == EWL_THEME_KEY_NOMATCH)
-        	ret = NULL;
+                ret = NULL;
 
         DRETURN_PTR(ret, DLEVEL_STABLE);
 }
 
 static const char *
 ewl_icon_theme_icon_path_get_helper(const char *icon, const char *size,
-        				const char *theme, const char *key,
-        				Ecore_Hash *cache)
+                                        const char *theme, const char *key,
+                                        Ecore_Hash *cache)
 {
         char *ret;
 
@@ -148,10 +148,10 @@ ewl_icon_theme_icon_path_get_helper(const char *icon, const char *size,
         ret = ecore_hash_get(cache, key);
         if (!ret)
         {
-        	/* XXX: How to store NOMATCH in the cache? The cache is strings which must be free'd */
-        	ret = efreet_icon_path_find(theme, icon, size);
-        	if (!ret) ret = EWL_THEME_KEY_NOMATCH;
-        	else ecore_hash_set(cache, strdup(key), (void *)ret);
+                /* XXX: How to store NOMATCH in the cache? The cache is strings which must be free'd */
+                ret = efreet_icon_path_find(theme, icon, size);
+                if (!ret) ret = EWL_THEME_KEY_NOMATCH;
+                else ecore_hash_set(cache, strdup(key), (void *)ret);
         }
 
         DRETURN_PTR(ret, DLEVEL_STABLE);;
@@ -163,7 +163,7 @@ ewl_icon_theme_cb_free(void *data)
         DENTER_FUNCTION(DLEVEL_STABLE);
 
         if (data == EWL_THEME_KEY_NOMATCH)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         IF_FREE(data);
 

@@ -19,11 +19,11 @@ ewl_statusbar_new(void)
 
         sb = NEW(Ewl_Statusbar, 1);
         if (!sb)
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
 
         if (!ewl_statusbar_init(sb)) {
-        	ewl_widget_destroy(EWL_WIDGET(sb));
-        	sb = NULL;
+                ewl_widget_destroy(EWL_WIDGET(sb));
+                sb = NULL;
         }
 
         DRETURN_PTR(EWL_WIDGET(sb), DLEVEL_STABLE);
@@ -45,11 +45,11 @@ ewl_statusbar_init(Ewl_Statusbar *sb)
         w = EWL_WIDGET(sb);
 
         if (!ewl_box_init(EWL_BOX(sb))) {
-        	DRETURN_INT(FALSE, DLEVEL_STABLE);
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
         }
 
         ewl_object_fill_policy_set(EWL_OBJECT(w),
-        		EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
+                        EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
 
         ewl_box_orientation_set(EWL_BOX(sb), EWL_ORIENTATION_HORIZONTAL);
         ewl_widget_appearance_set(w, EWL_STATUSBAR_TYPE);
@@ -75,12 +75,12 @@ ewl_statusbar_init(Ewl_Statusbar *sb)
         ewl_widget_show(sb->right);
 
         ewl_container_redirect_set(EWL_CONTAINER(sb),
-        				EWL_CONTAINER(sb->right));
+                                        EWL_CONTAINER(sb->right));
 
         sb->stack = ecore_list_new();
 
         ewl_callback_append(EWL_WIDGET(sb), EWL_CALLBACK_DESTROY,
-        				ewl_statusbar_cb_destroy, NULL);
+                                        ewl_statusbar_cb_destroy, NULL);
 
         DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -172,9 +172,9 @@ ewl_statusbar_active_set(Ewl_Statusbar *sb, Ewl_Position pos)
         DCHECK_TYPE(sb, EWL_STATUSBAR_TYPE);
 
         if ((pos == EWL_POSITION_LEFT) || (pos == EWL_POSITION_TOP))
-        	ewl_container_redirect_set(EWL_CONTAINER(sb), EWL_CONTAINER(sb->left));
+                ewl_container_redirect_set(EWL_CONTAINER(sb), EWL_CONTAINER(sb->left));
         else
-        	ewl_container_redirect_set(EWL_CONTAINER(sb), EWL_CONTAINER(sb->right));
+                ewl_container_redirect_set(EWL_CONTAINER(sb), EWL_CONTAINER(sb->right));
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -278,8 +278,8 @@ ewl_statusbar_push(Ewl_Statusbar *sb, char *txt)
         DCHECK_TYPE(sb, EWL_STATUSBAR_TYPE);
 
         if (sb->current) {
-        	ewl_widget_hide(sb->current);
-        	// ewl_container_child_remove(EWL_CONTAINER(sb->status), sb->current);
+                ewl_widget_hide(sb->current);
+                // ewl_container_child_remove(EWL_CONTAINER(sb->status), sb->current);
         }
 
         sb->current = ewl_label_new();
@@ -309,11 +309,11 @@ ewl_statusbar_pop(Ewl_Statusbar *sb)
 
         current = ecore_list_first_remove(sb->stack);
         if (current)
-        	ewl_widget_destroy(current);
+                ewl_widget_destroy(current);
 
         current = ecore_list_first_goto(sb->stack);
         if (current)
-        	ewl_widget_show(current);
+                ewl_widget_show(current);
 
         sb->current = current;
 
@@ -322,7 +322,7 @@ ewl_statusbar_pop(Ewl_Statusbar *sb)
 
 void
 ewl_statusbar_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__,
-        				void *data __UNUSED__)
+                                        void *data __UNUSED__)
 {
         Ewl_Statusbar *sb;
 

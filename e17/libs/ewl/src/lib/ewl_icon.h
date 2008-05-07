@@ -44,19 +44,19 @@ typedef struct Ewl_Icon Ewl_Icon;
  */
 struct Ewl_Icon
 {
-        Ewl_Stock stock;	/**< Inherit from Ewl_Box */
-        Ewl_Widget *label;	/**< The icons label */
-        Ewl_Widget *image;	/**< The icons image */
-        Ewl_Widget *alt;	/**< The icons alt text */
-        Ewl_Widget *extended;	/**< The icons extended information */
+        Ewl_Stock stock;        /**< Inherit from Ewl_Box */
+        Ewl_Widget *label;        /**< The icons label */
+        Ewl_Widget *image;        /**< The icons image */
+        Ewl_Widget *alt;        /**< The icons alt text */
+        Ewl_Widget *extended;        /**< The icons extended information */
 
-        char *label_text;	/**< The label text */
+        char *label_text;        /**< The label text */
 
-        unsigned int constrain;		/**< The image constrain value */
+        unsigned int constrain;                /**< The image constrain value */
 
-        Ewl_Icon_Type type;		/**< The icons type */
-        Ewl_Icon_Part hidden;		/**< The hidden part */
-        unsigned char editable:1;	/**< Is the icon editable? */
+        Ewl_Icon_Type type;                /**< The icons type */
+        Ewl_Icon_Part hidden;                /**< The hidden part */
+        unsigned char editable:1;        /**< Is the icon editable? */
         unsigned char compress_label:1; /**< Should the label be compressed? */
         unsigned char complex_label:1;  /**< Should the label be a Ewl_Text? */
         unsigned char thumbnailing:1;   /**< Should the image be thumbnailed?*/
@@ -64,41 +64,41 @@ struct Ewl_Icon
 
 Ewl_Widget        *ewl_icon_new(void);
 Ewl_Widget      *ewl_icon_simple_new(void);
-int        	 ewl_icon_init(Ewl_Icon *icon);
+int                 ewl_icon_init(Ewl_Icon *icon);
 
-void        	 ewl_icon_type_set(Ewl_Icon *icon, Ewl_Icon_Type type);
+void                 ewl_icon_type_set(Ewl_Icon *icon, Ewl_Icon_Type type);
 Ewl_Icon_Type         ewl_icon_type_get(Ewl_Icon *icon);
 
 void             ewl_icon_part_hide(Ewl_Icon *icon, Ewl_Icon_Part part);
 
-void        	 ewl_icon_image_set(Ewl_Icon *icon, const char *file,
-        					const char *key);
+void                 ewl_icon_image_set(Ewl_Icon *icon, const char *file,
+                                                const char *key);
 const char         *ewl_icon_image_file_get(Ewl_Icon *icon);
 
 void             ewl_icon_thumbnailing_set(Ewl_Icon *icon, unsigned int thumb);
 unsigned int     ewl_icon_thumbnailing_get(Ewl_Icon *icon);
 
-void        	 ewl_icon_constrain_set(Ewl_Icon *icon, unsigned int val);
+void                 ewl_icon_constrain_set(Ewl_Icon *icon, unsigned int val);
 unsigned int         ewl_icon_constrain_get(Ewl_Icon *icon);
 
-void        	 ewl_icon_alt_text_set(Ewl_Icon *icon, const char *txt);
+void                 ewl_icon_alt_text_set(Ewl_Icon *icon, const char *txt);
 const char        *ewl_icon_alt_text_get(Ewl_Icon *icon);
 
-void        	 ewl_icon_label_set(Ewl_Icon *icon, const char *label);
+void                 ewl_icon_label_set(Ewl_Icon *icon, const char *label);
 const char        *ewl_icon_label_get(Ewl_Icon *icon);
 
-void        	 ewl_icon_editable_set(Ewl_Icon *icon, unsigned int e);
+void                 ewl_icon_editable_set(Ewl_Icon *icon, unsigned int e);
 unsigned int         ewl_icon_editable_get(Ewl_Icon *icon);
 
-void        	 ewl_icon_label_compressed_set(Ewl_Icon *icon,
-        					unsigned int compress);
+void                 ewl_icon_label_compressed_set(Ewl_Icon *icon,
+                                                unsigned int compress);
 unsigned int         ewl_icon_label_compressed_get(Ewl_Icon *icon);
 
 void             ewl_icon_label_complex_set(Ewl_Icon *icon,
-        					unsigned int complex_label);
+                                                unsigned int complex_label);
 unsigned int     ewl_icon_label_complex_get(Ewl_Icon *icon);
 
-void        	 ewl_icon_extended_data_set(Ewl_Icon *icon, Ewl_Widget *ext);
+void                 ewl_icon_extended_data_set(Ewl_Icon *icon, Ewl_Widget *ext);
 Ewl_Widget        *ewl_icon_extended_data_get(Ewl_Icon *icon);
 
 /*

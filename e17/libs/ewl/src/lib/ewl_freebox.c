@@ -69,12 +69,12 @@ ewl_freebox_new(void)
 
         fb = NEW(Ewl_Freebox, 1);
         if (!fb)
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
 
         if (!ewl_freebox_init(EWL_FREEBOX(fb)))
         {
-        	ewl_widget_destroy(fb);
-        	fb = NULL;
+                ewl_widget_destroy(fb);
+                fb = NULL;
         }
 
         DRETURN_PTR(fb, DLEVEL_STABLE);
@@ -92,17 +92,17 @@ ewl_freebox_init(Ewl_Freebox *fb)
         DCHECK_PARAM_PTR_RET(fb, TRUE);
 
         if (!ewl_container_init(EWL_CONTAINER(fb)))
-        	DRETURN_INT(FALSE, DLEVEL_STABLE);
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
 
         ewl_widget_appearance_set(EWL_WIDGET(fb), EWL_FREEBOX_TYPE);
         ewl_widget_inherit(EWL_WIDGET(fb), EWL_FREEBOX_TYPE);
 
         ewl_callback_append(EWL_WIDGET(fb), EWL_CALLBACK_CONFIGURE,
-        			ewl_freebox_cb_configure, NULL);
+                                ewl_freebox_cb_configure, NULL);
         ewl_container_add_notify_set(EWL_CONTAINER(fb),
-        			ewl_freebox_cb_child_add);
+                                ewl_freebox_cb_child_add);
         ewl_container_show_notify_set(EWL_CONTAINER(fb),
-        			ewl_freebox_cb_child_show);
+                                ewl_freebox_cb_child_show);
 
         fb->layout = EWL_FREEBOX_LAYOUT_AUTO;
         fb->orientation = EWL_ORIENTATION_HORIZONTAL;
@@ -126,7 +126,7 @@ ewl_freebox_orientation_set(Ewl_Freebox *fb, Ewl_Orientation orientation)
         DCHECK_TYPE(fb, EWL_FREEBOX_TYPE);
 
         if (orientation == fb->orientation)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         fb->orientation = orientation;
         ewl_widget_configure(EWL_WIDGET(fb));
@@ -145,7 +145,7 @@ ewl_freebox_orientation_get(Ewl_Freebox *fb)
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR_RET(fb, EWL_ORIENTATION_HORIZONTAL);
         DCHECK_TYPE_RET(fb, EWL_FREEBOX_TYPE,
-        				EWL_ORIENTATION_HORIZONTAL);
+                                        EWL_ORIENTATION_HORIZONTAL);
 
         DRETURN_INT(fb->orientation, DLEVEL_STABLE);
 }
@@ -164,7 +164,7 @@ ewl_freebox_layout_type_set(Ewl_Freebox *fb, Ewl_Freebox_Layout_Type type)
         DCHECK_TYPE(fb, EWL_FREEBOX_TYPE);
 
         if (fb->layout == type)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         fb->layout = type;
         ewl_widget_configure(EWL_WIDGET(fb));
@@ -202,7 +202,7 @@ ewl_freebox_comparator_set(Ewl_Freebox *fb, Ewl_Freebox_Comparator cmp)
         DCHECK_TYPE(fb, EWL_FREEBOX_TYPE);
 
         if (fb->comparator == cmp)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         fb->comparator = cmp;
         fb->sorted = FALSE;
@@ -257,7 +257,7 @@ ewl_freebox_resort(Ewl_Freebox *fb)
  */
 void
 ewl_freebox_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
-        				void *data __UNUSED__)
+                                        void *data __UNUSED__)
 {
         Ewl_Freebox *fb;
 
@@ -267,13 +267,13 @@ ewl_freebox_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 
         fb = EWL_FREEBOX(w);
         if (fb->layout == EWL_FREEBOX_LAYOUT_AUTO)
-        	ewl_freebox_layout_auto(fb);
+                ewl_freebox_layout_auto(fb);
 
         else if (fb->layout == EWL_FREEBOX_LAYOUT_MANUAL)
-        	ewl_freebox_layout_manual(fb);
+                ewl_freebox_layout_manual(fb);
 
         else if (fb->layout == EWL_FREEBOX_LAYOUT_COMPARATOR)
-        	ewl_freebox_layout_comparator(fb);
+                ewl_freebox_layout_comparator(fb);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -349,33 +349,33 @@ ewl_freebox_layout_auto(Ewl_Freebox *fb)
         DCHECK_TYPE(fb, EWL_FREEBOX_TYPE);
 
         pad = ewl_theme_data_int_get(EWL_WIDGET(fb),
-        				"auto/padding");
+                                        "auto/padding");
 
         if (fb->orientation == EWL_ORIENTATION_HORIZONTAL)
         {
-        	pref_inner = ewl_object_preferred_inner_h_set;
-        	current_pos = ewl_object_current_x_get;
-        	current_size = ewl_object_current_w_get;
-        	current_anchor = ewl_object_current_y_get;
+                pref_inner = ewl_object_preferred_inner_h_set;
+                current_pos = ewl_object_current_x_get;
+                current_size = ewl_object_current_w_get;
+                current_anchor = ewl_object_current_y_get;
 
-        	stable_dir = &child_w;
-        	grow_dir = &child_h;
+                stable_dir = &child_w;
+                grow_dir = &child_h;
 
-        	x = &cur_align;
-        	y = &cur_pos;
+                x = &cur_align;
+                y = &cur_pos;
         }
         else
         {
-        	pref_inner = ewl_object_preferred_inner_w_set;
-        	current_pos = ewl_object_current_y_get;
-        	current_size = ewl_object_current_h_get;
-        	current_anchor = ewl_object_current_x_get;
+                pref_inner = ewl_object_preferred_inner_w_set;
+                current_pos = ewl_object_current_y_get;
+                current_size = ewl_object_current_h_get;
+                current_anchor = ewl_object_current_x_get;
 
-        	stable_dir = &child_h;
-        	grow_dir = &child_w;
+                stable_dir = &child_h;
+                grow_dir = &child_w;
 
-        	x = &cur_pos;
-        	y = &cur_align;
+                x = &cur_pos;
+                y = &cur_align;
         }
 
         base_pos = current_pos(EWL_OBJECT(fb));
@@ -393,20 +393,20 @@ ewl_freebox_layout_auto(Ewl_Freebox *fb)
         ecore_dlist_first_goto(c->children);
         while ((child = ecore_dlist_next(c->children)))
         {
-        	if (!VISIBLE(child) || UNMANAGED(child)) continue;
-        	ewl_object_preferred_size_get(EWL_OBJECT(child),
-        					&child_w, &child_h);
+                if (!VISIBLE(child) || UNMANAGED(child)) continue;
+                ewl_object_preferred_size_get(EWL_OBJECT(child),
+                                                &child_w, &child_h);
 
-        	/* past end of widget, wrap */
-        	if ((cur_align + *stable_dir) > max_pos)
-        	{
-        		cur_align = base_pos;
-        		cur_pos += *col_size + pad;
-        		*(++col_size) = 0;
-        	}
+                /* past end of widget, wrap */
+                if ((cur_align + *stable_dir) > max_pos)
+                {
+                        cur_align = base_pos;
+                        cur_pos += *col_size + pad;
+                        *(++col_size) = 0;
+                }
 
-        	*col_size = MAX(*col_size, *grow_dir);
-        	cur_align += *stable_dir + pad;
+                *col_size = MAX(*col_size, *grow_dir);
+                cur_align += *stable_dir + pad;
         }
 
         /* reset the start values */
@@ -418,22 +418,22 @@ ewl_freebox_layout_auto(Ewl_Freebox *fb)
         ecore_dlist_first_goto(c->children);
         while ((child = ecore_dlist_next(c->children)))
         {
-        	if (!VISIBLE(child) || UNMANAGED(child)) continue;
-        	ewl_object_preferred_size_get(EWL_OBJECT(child),
-        					&child_w, &child_h);
+                if (!VISIBLE(child) || UNMANAGED(child)) continue;
+                ewl_object_preferred_size_get(EWL_OBJECT(child),
+                                                &child_w, &child_h);
 
-        	/* past end of widget, wrap */
-        	if ((cur_align + *stable_dir) > max_pos)
-        	{
-        		cur_align = base_pos;
-        		cur_pos += *col_size + pad;
-        		col_size++;
-        	}
+                /* past end of widget, wrap */
+                if ((cur_align + *stable_dir) > max_pos)
+                {
+                        cur_align = base_pos;
+                        cur_pos += *col_size + pad;
+                        col_size++;
+                }
 
-        	*grow_dir = *col_size;
+                *grow_dir = *col_size;
 
-        	ewl_object_place(EWL_OBJECT(child), *x, *y, child_w, child_h);
-        	cur_align += *stable_dir + pad;
+                ewl_object_place(EWL_OBJECT(child), *x, *y, child_w, child_h);
+                cur_align += *stable_dir + pad;
         }
         pref_inner(EWL_OBJECT(fb), cur_pos - start_pos + *col_size + pad);
 
@@ -471,10 +471,10 @@ ewl_freebox_layout_comparator(Ewl_Freebox *fb)
         /* we're boned if we don't have a comparator */
         if (!fb->comparator)
         {
-        	DWARNING("No comparator set and using "
-        		 "EWL_FREEBOX_LAYOUT_COMPARATOR. "
-        		 "Bad programmer, bad.");
-        	DRETURN(DLEVEL_STABLE);
+                DWARNING("No comparator set and using "
+                         "EWL_FREEBOX_LAYOUT_COMPARATOR. "
+                         "Bad programmer, bad.");
+                DRETURN(DLEVEL_STABLE);
         }
 
         c = EWL_CONTAINER(fb);
@@ -482,13 +482,13 @@ ewl_freebox_layout_comparator(Ewl_Freebox *fb)
         /* sort the data if needed */
         if (!fb->sorted)
         {
-        	ecore_dlist_sort(c->children, ECORE_COMPARE_CB(fb->comparator),
-        				ECORE_SORT_MIN);
+                ecore_dlist_sort(c->children, ECORE_COMPARE_CB(fb->comparator),
+                                        ECORE_SORT_MIN);
 
-        	/* we set sorted to TRUE at the end here as each of those
-        	 * inserts into the container will trigger our child_add
-        	 * callback which will set sorted to FALSE */
-        	fb->sorted = TRUE;
+                /* we set sorted to TRUE at the end here as each of those
+                 * inserts into the container will trigger our child_add
+                 * callback which will set sorted to FALSE */
+                fb->sorted = TRUE;
         }
 
         /* just use the autolayout which will layout in the order the items

@@ -19,8 +19,8 @@ ewl_view_new(void)
         view = NEW(Ewl_View, 1);
         if (!ewl_view_init(view))
         {
-        	FREE(view);
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                FREE(view);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
         }
 
         DRETURN_PTR(view, DLEVEL_STABLE);
@@ -41,8 +41,8 @@ ewl_view_clone(const Ewl_View *src)
         view = NEW(Ewl_View, 1);
         if (!ewl_view_init(view))
         {
-        	FREE(view);
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                FREE(view);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
         }
 
         memcpy(view, src, sizeof(Ewl_View));

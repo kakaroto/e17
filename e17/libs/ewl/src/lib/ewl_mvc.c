@@ -7,27 +7,27 @@
 
 static void ewl_mvc_selected_clear_private(Ewl_MVC *mvc);
 static unsigned int ewl_mvc_selected_goto(Ewl_MVC *mvc,
-        		unsigned int row, unsigned int column);
+                        unsigned int row, unsigned int column);
 static void ewl_mvc_selected_insert(Ewl_MVC *mvc, const Ewl_Model *model,
-        		void *data, Ewl_Selection *sel,
-        		unsigned int row, unsigned int column);
+                        void *data, Ewl_Selection *sel,
+                        unsigned int row, unsigned int column);
 static void ewl_mvc_selected_range_split(Ewl_MVC *mvc,
-        		Ewl_Selection_Range *range,
-        		unsigned int row, unsigned int column);
+                        Ewl_Selection_Range *range,
+                        unsigned int row, unsigned int column);
 static int ewl_mvc_selection_intersects(Ewl_Selection_Range *range,
-        					Ewl_Selection *sel);
+                                                Ewl_Selection *sel);
 static int ewl_mvc_selection_contained(Ewl_Selection_Range *a,
-        					Ewl_Selection_Range *b);
+                                                Ewl_Selection_Range *b);
 static int ewl_mvc_line_intersects(int astart, int aend, int bstart, int bend);
 static void ewl_mvc_range_merge(Ecore_List *list, const Ewl_Model *model, void *data,
-        		Ewl_Selection_Range *range, Ewl_Selection_Range *cur);
+                        Ewl_Selection_Range *range, Ewl_Selection_Range *cur);
 static Ewl_Selection *ewl_mvc_selection_make(const Ewl_Model *model, void *data,
-        				unsigned int top, unsigned int left,
-        				unsigned int bottom, unsigned int right);
+                                        unsigned int top, unsigned int left,
+                                        unsigned int bottom, unsigned int right);
 
 static void ewl_mvc_selected_change_notify(Ewl_MVC *mvc);
 static void ewl_mvc_highlight_do(Ewl_MVC *mvc, Ewl_Container *c,
-        			Ewl_Selection *sel, Ewl_Widget *w);
+                                Ewl_Selection *sel, Ewl_Widget *w);
 static void ewl_mvc_cb_highlight_destroy(Ewl_Widget *w, void *ev, void *data);
 static void ewl_mvc_cb_sel_free(void *data);
 static void ewl_mvc_selection_free(Ewl_Selection *sel);
@@ -44,15 +44,15 @@ ewl_mvc_init(Ewl_MVC *mvc)
         DCHECK_PARAM_PTR_RET(mvc, FALSE);
 
         if (!ewl_box_init(EWL_BOX(mvc)))
-        	DRETURN_INT(FALSE, DLEVEL_STABLE);
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
 
         ewl_widget_inherit(EWL_WIDGET(mvc), EWL_MVC_TYPE);
         ewl_box_orientation_set(EWL_BOX(mvc), EWL_ORIENTATION_VERTICAL);
 
         ewl_callback_append(EWL_WIDGET(mvc), EWL_CALLBACK_DESTROY,
-        				ewl_mvc_cb_destroy, NULL);
+                                        ewl_mvc_cb_destroy, NULL);
         ewl_callback_append(EWL_WIDGET(mvc), EWL_CALLBACK_DESTROY,
-        				ewl_mvc_cb_data_unref, NULL);
+                                        ewl_mvc_cb_data_unref, NULL);
 
         ewl_mvc_selection_mode_set(mvc, EWL_SELECTION_MODE_SINGLE);
 
@@ -74,11 +74,11 @@ ewl_mvc_view_set(Ewl_MVC *mvc, const Ewl_View *view)
         DCHECK_TYPE(mvc, EWL_MVC_TYPE);
 
         if (mvc->view == view)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         mvc->view = view;
         if (mvc->cb.view_change)
-        	mvc->cb.view_change(mvc);
+                mvc->cb.view_change(mvc);
 
         ewl_mvc_dirty_set(mvc, TRUE);
 
@@ -134,7 +134,7 @@ ewl_mvc_model_set(Ewl_MVC *mvc, const Ewl_Model *model)
         DCHECK_TYPE(mvc, EWL_MVC_TYPE);
 
         if (mvc->model == model)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         mvc->model = model;
         ewl_mvc_dirty_set(mvc, TRUE);
@@ -208,7 +208,7 @@ ewl_mvc_dirty_set(Ewl_MVC *mvc, unsigned int dirty)
         DCHECK_TYPE(mvc, EWL_MVC_TYPE);
 
         if (mvc->dirty == dirty)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         mvc->dirty = !!dirty;
         ewl_widget_configure(EWL_WIDGET(mvc));
@@ -245,17 +245,17 @@ ewl_mvc_selection_mode_set(Ewl_MVC *mvc, Ewl_Selection_Mode mode)
         DCHECK_TYPE(mvc, EWL_MVC_TYPE);
 
         if (mvc->selection_mode == mode)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         mvc->selection_mode = mode;
         if (mode == EWL_SELECTION_MODE_NONE)
         {
-        	IF_FREE_LIST(mvc->selected);
+                IF_FREE_LIST(mvc->selected);
         }
         else if (!mvc->selected)
         {
-        	mvc->selected = ecore_list_new();
-        	ecore_list_free_cb_set(mvc->selected, ewl_mvc_cb_sel_free);
+                mvc->selected = ecore_list_new();
+                ecore_list_free_cb_set(mvc->selected, ewl_mvc_cb_sel_free);
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -289,7 +289,7 @@ ewl_mvc_selected_clear(Ewl_MVC *mvc)
         DCHECK_TYPE(mvc, EWL_MVC_TYPE);
 
         if (mvc->selection_mode == EWL_SELECTION_MODE_NONE)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         ewl_mvc_selected_clear_private(mvc);
         ewl_mvc_selected_change_notify(mvc);
@@ -307,10 +307,10 @@ ewl_mvc_selected_clear_private(Ewl_MVC *mvc)
         DCHECK_TYPE(mvc, EWL_MVC_TYPE);
 
         if (mvc->selection_mode == EWL_SELECTION_MODE_NONE)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         while ((sel = ecore_list_first_remove(mvc->selected)))
-        	ewl_mvc_selection_free(sel);
+                ewl_mvc_selection_free(sel);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -333,24 +333,24 @@ ewl_mvc_selected_list_set(Ewl_MVC *mvc, Ecore_List *list)
         DCHECK_TYPE(mvc, EWL_MVC_TYPE);
 
         if (mvc->selection_mode == EWL_SELECTION_MODE_NONE)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         count = ewl_mvc_selected_count_get(mvc);
         ewl_mvc_selected_clear_private(mvc);
 
         if (!list || (ecore_list_count(list) == 0))
         {
-        	if (count > 0) ewl_mvc_selected_change_notify(mvc);
-        	DRETURN(DLEVEL_STABLE);
+                if (count > 0) ewl_mvc_selected_change_notify(mvc);
+                DRETURN(DLEVEL_STABLE);
         }
 
         ewl_mvc_selected_insert(mvc, NULL, NULL,
-        		ecore_list_first_remove(list), 0, 0);
+                        ecore_list_first_remove(list), 0, 0);
 
         if (mvc->selection_mode == EWL_SELECTION_MODE_MULTI)
         {
-        	while ((sel = ecore_list_first_remove(list)))
-        		ewl_mvc_selected_insert(mvc, NULL, NULL, sel, 0, 0);
+                while ((sel = ecore_list_first_remove(list)))
+                        ewl_mvc_selected_insert(mvc, NULL, NULL, sel, 0, 0);
         }
 
         ewl_mvc_selected_change_notify(mvc);
@@ -372,7 +372,7 @@ ewl_mvc_selected_list_get(Ewl_MVC *mvc)
         DCHECK_TYPE_RET(mvc, EWL_MVC_TYPE, NULL);
 
         if (mvc->selection_mode == EWL_SELECTION_MODE_NONE)
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
 
         DRETURN_PTR(mvc->selected, DLEVEL_STABLE);
 }
@@ -391,8 +391,8 @@ ewl_mvc_selected_list_get(Ewl_MVC *mvc)
  */
 void
 ewl_mvc_selected_range_add(Ewl_MVC *mvc, const Ewl_Model *model, void *data,
-        			unsigned int srow, unsigned int scolumn,
-        			unsigned int erow, unsigned int ecolumn)
+                                unsigned int srow, unsigned int scolumn,
+                                unsigned int erow, unsigned int ecolumn)
 {
         Ewl_Selection *sel;
         const Ewl_Model *mod;
@@ -403,7 +403,7 @@ ewl_mvc_selected_range_add(Ewl_MVC *mvc, const Ewl_Model *model, void *data,
         DCHECK_TYPE(mvc, EWL_MVC_TYPE);
 
         if (mvc->selection_mode == EWL_SELECTION_MODE_NONE)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         if (model) mod = model;
         else mod = ewl_mvc_model_get(mvc);
@@ -411,25 +411,25 @@ ewl_mvc_selected_range_add(Ewl_MVC *mvc, const Ewl_Model *model, void *data,
         /* make sure the start comes before the end */
         if (erow < srow)
         {
-        	tmp = erow;
-        	erow = srow;
-        	srow = tmp;
+                tmp = erow;
+                erow = srow;
+                srow = tmp;
         }
 
         if (ecolumn < scolumn)
         {
-        	tmp = ecolumn;
-        	ecolumn = scolumn;
-        	scolumn = tmp;
+                tmp = ecolumn;
+                ecolumn = scolumn;
+                scolumn = tmp;
         }
 
         if (mvc->selection_mode == EWL_SELECTION_MODE_SINGLE)
-        	ewl_mvc_selected_insert(mvc, mod, data, NULL, srow, scolumn);
+                ewl_mvc_selected_insert(mvc, mod, data, NULL, srow, scolumn);
         else
         {
-        	sel = ewl_mvc_selection_range_new(mod, data, srow, scolumn,
-        						erow, ecolumn);
-        	ewl_mvc_selected_insert(mvc, NULL, NULL, sel, 0, 0);
+                sel = ewl_mvc_selection_range_new(mod, data, srow, scolumn,
+                                                        erow, ecolumn);
+                ewl_mvc_selected_insert(mvc, NULL, NULL, sel, 0, 0);
         }
 
         ewl_mvc_selected_change_notify(mvc);
@@ -449,14 +449,14 @@ ewl_mvc_selected_range_add(Ewl_MVC *mvc, const Ewl_Model *model, void *data,
  */
 void
 ewl_mvc_selected_set(Ewl_MVC *mvc, const Ewl_Model *model, void *data,
-        			unsigned int row, unsigned int column)
+                                unsigned int row, unsigned int column)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(mvc);
         DCHECK_TYPE(mvc, EWL_MVC_TYPE);
 
         if (mvc->selection_mode == EWL_SELECTION_MODE_NONE)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         ewl_mvc_selected_clear_private(mvc);
         ewl_mvc_selected_add(mvc, model, data, row, column);
@@ -476,7 +476,7 @@ ewl_mvc_selected_set(Ewl_MVC *mvc, const Ewl_Model *model, void *data,
  */
 void
 ewl_mvc_selected_add(Ewl_MVC *mvc, const Ewl_Model *model, void *data,
-        		unsigned int row, unsigned int column)
+                        unsigned int row, unsigned int column)
 {
         const Ewl_Model *mod;
 
@@ -485,7 +485,7 @@ ewl_mvc_selected_add(Ewl_MVC *mvc, const Ewl_Model *model, void *data,
         DCHECK_TYPE(mvc, EWL_MVC_TYPE);
 
         if (mvc->selection_mode == EWL_SELECTION_MODE_NONE)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         if (model) mod = model;
         else mod = ewl_mvc_model_get(mvc);
@@ -515,7 +515,7 @@ ewl_mvc_selected_get(Ewl_MVC *mvc)
         DCHECK_TYPE_RET(mvc, EWL_MVC_TYPE, NULL);
 
         if (mvc->selection_mode == EWL_SELECTION_MODE_NONE)
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
 
         ecore_list_last_goto(mvc->selected);
         sel = ecore_list_current(mvc->selected);
@@ -527,19 +527,19 @@ ewl_mvc_selected_get(Ewl_MVC *mvc)
         ret->sel.data = sel->data;
         if (sel->type == EWL_SELECTION_TYPE_INDEX)
         {
-        	Ewl_Selection_Idx *si;
+                Ewl_Selection_Idx *si;
 
-        	si = EWL_SELECTION_IDX(sel);
-        	ret->row = si->row;
-        	ret->column = si->column;
+                si = EWL_SELECTION_IDX(sel);
+                ret->row = si->row;
+                ret->column = si->column;
         }
         else
         {
-        	Ewl_Selection_Range *si;
+                Ewl_Selection_Range *si;
 
-        	si = EWL_SELECTION_RANGE(sel);
-        	ret->row = si->start.row;
-        	ret->column = si->start.column;
+                si = EWL_SELECTION_RANGE(sel);
+                ret->row = si->start.row;
+                ret->column = si->start.column;
         }
 
         DRETURN_PTR(ret, DLEVEL_STABLE);
@@ -555,7 +555,7 @@ ewl_mvc_selected_get(Ewl_MVC *mvc)
  */
 void
 ewl_mvc_selected_rm(Ewl_MVC *mvc, void *data __UNUSED__, unsigned int row,
-        		unsigned int column)
+                        unsigned int column)
 {
         Ewl_Selection *sel;
 
@@ -564,22 +564,22 @@ ewl_mvc_selected_rm(Ewl_MVC *mvc, void *data __UNUSED__, unsigned int row,
         DCHECK_TYPE(mvc, EWL_MVC_TYPE);
 
         if (mvc->selection_mode == EWL_SELECTION_MODE_NONE)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         if (ewl_mvc_selected_goto(mvc, row, column))
         {
-        	sel = ecore_list_current(mvc->selected);
+                sel = ecore_list_current(mvc->selected);
 
-        	if (sel->type == EWL_SELECTION_TYPE_INDEX)
-        	{
-        		sel = ecore_list_remove(mvc->selected);
-        		ewl_mvc_selection_free(sel);
-        	}
-        	else
-        		ewl_mvc_selected_range_split(mvc,
-        			EWL_SELECTION_RANGE(sel), row, column);
+                if (sel->type == EWL_SELECTION_TYPE_INDEX)
+                {
+                        sel = ecore_list_remove(mvc->selected);
+                        ewl_mvc_selection_free(sel);
+                }
+                else
+                        ewl_mvc_selected_range_split(mvc,
+                                EWL_SELECTION_RANGE(sel), row, column);
 
-        	ewl_mvc_selected_change_notify(mvc);
+                ewl_mvc_selected_change_notify(mvc);
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -603,32 +603,32 @@ ewl_mvc_selected_count_get(Ewl_MVC *mvc)
         DCHECK_TYPE_RET(mvc, EWL_MVC_TYPE, 0);
 
         if (mvc->selection_mode == EWL_SELECTION_MODE_NONE)
-        	DRETURN_INT(0, DLEVEL_STABLE);
+                DRETURN_INT(0, DLEVEL_STABLE);
 
         /* make sure we only return 1 or 0 for the single select case */
         if (mvc->selection_mode == EWL_SELECTION_MODE_SINGLE)
         {
-        	if (ecore_list_count(mvc->selected))
-        		DRETURN_INT(1, DLEVEL_STABLE);
+                if (ecore_list_count(mvc->selected))
+                        DRETURN_INT(1, DLEVEL_STABLE);
 
-        	DRETURN_INT(0, DLEVEL_STABLE);
+                DRETURN_INT(0, DLEVEL_STABLE);
         }
 
         ecore_list_first_goto(mvc->selected);
         while ((sel = ecore_list_next(mvc->selected)))
         {
-        	if (sel->type == EWL_SELECTION_TYPE_INDEX)
-        		count ++;
-        	else if (sel->type == EWL_SELECTION_TYPE_RANGE)
-        	{
-        		Ewl_Selection_Range *r;
-        		unsigned int rows = 0, columns = 0;
+                if (sel->type == EWL_SELECTION_TYPE_INDEX)
+                        count ++;
+                else if (sel->type == EWL_SELECTION_TYPE_RANGE)
+                {
+                        Ewl_Selection_Range *r;
+                        unsigned int rows = 0, columns = 0;
 
-        		r = EWL_SELECTION_RANGE(sel);
-        		rows = (r->end.row - r->start.row) + 1;
-        		columns = (r->end.column - r->start.column) + 1;
-        		count += (rows * columns);
-        	}
+                        r = EWL_SELECTION_RANGE(sel);
+                        rows = (r->end.row - r->start.row) + 1;
+                        columns = (r->end.column - r->start.column) + 1;
+                        count += (rows * columns);
+                }
         }
 
         DRETURN_INT(count, DLEVEL_STABLE);
@@ -651,26 +651,26 @@ ewl_mvc_selected_goto(Ewl_MVC *mvc, unsigned int row, unsigned int column)
         ecore_list_first_goto(mvc->selected);
         while ((sel = ecore_list_current(mvc->selected)))
         {
-        	if (sel->type == EWL_SELECTION_TYPE_INDEX)
-        	{
-        		Ewl_Selection_Idx *idx;
-        		idx = EWL_SELECTION_IDX(sel);
-        		if ((idx->row == row) && (idx->column == column))
-        			DRETURN_INT(TRUE, DLEVEL_STABLE);
-        	}
-        	else
-        	{
-        		Ewl_Selection_Range *r;
+                if (sel->type == EWL_SELECTION_TYPE_INDEX)
+                {
+                        Ewl_Selection_Idx *idx;
+                        idx = EWL_SELECTION_IDX(sel);
+                        if ((idx->row == row) && (idx->column == column))
+                                DRETURN_INT(TRUE, DLEVEL_STABLE);
+                }
+                else
+                {
+                        Ewl_Selection_Range *r;
 
-        		r = EWL_SELECTION_RANGE(sel);
+                        r = EWL_SELECTION_RANGE(sel);
 
-        		/* see if we match within the range */
-        		if ((r->start.row <= row) && (r->start.column <= column)
-        				&& (r->end.row >= row)
-        				&& (r->end.column >= column))
-        			DRETURN_INT(TRUE, DLEVEL_STABLE);
-        	}
-        	ecore_list_next(mvc->selected);
+                        /* see if we match within the range */
+                        if ((r->start.row <= row) && (r->start.column <= column)
+                                        && (r->end.row >= row)
+                                        && (r->end.column >= column))
+                                DRETURN_INT(TRUE, DLEVEL_STABLE);
+                }
+                ecore_list_next(mvc->selected);
         }
 
         DRETURN_INT(FALSE, DLEVEL_STABLE);
@@ -686,21 +686,21 @@ ewl_mvc_selected_goto(Ewl_MVC *mvc, unsigned int row, unsigned int column)
  */
 unsigned int
 ewl_mvc_selected_is(Ewl_MVC *mvc, void *data __UNUSED__, unsigned int row,
-        					unsigned int column)
+                                                unsigned int column)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR_RET(mvc, FALSE);
         DCHECK_TYPE_RET(mvc, EWL_MVC_TYPE, FALSE);
 
         if (mvc->selection_mode == EWL_SELECTION_MODE_NONE)
-        	DRETURN_INT(FALSE, DLEVEL_STABLE);
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
 
         DRETURN_INT(ewl_mvc_selected_goto(mvc, row, column), DLEVEL_STABLE);
 }
 
 static void
 ewl_mvc_selected_insert(Ewl_MVC *mvc, const Ewl_Model *model, void *data,
-        	   Ewl_Selection *sel, unsigned int row, unsigned int column)
+                   Ewl_Selection *sel, unsigned int row, unsigned int column)
 {
         Ewl_Selection_Range *range;
         Ewl_Selection *cur;
@@ -710,25 +710,25 @@ ewl_mvc_selected_insert(Ewl_MVC *mvc, const Ewl_Model *model, void *data,
         DCHECK_PARAM_PTR(mvc);
 
         if (!sel)
-        	sel = EWL_SELECTION(ewl_mvc_selection_index_new(model,
-        						data, row, column));
+                sel = EWL_SELECTION(ewl_mvc_selection_index_new(model,
+                                                        data, row, column));
 
         /* if this is an index and the index is already selected
          * then we're done. Otherwise, just insert the item into the list
          * and be done with it. */
         if (sel->type == EWL_SELECTION_TYPE_INDEX)
         {
-        	Ewl_Selection_Idx *idx;
+                Ewl_Selection_Idx *idx;
 
-        	idx = EWL_SELECTION_IDX(sel);
-        	if (ewl_mvc_selected_goto(mvc, idx->row, idx->column))
-        	{
-        		ewl_mvc_selection_free(sel);
-        		DRETURN(DLEVEL_STABLE);
-        	}
+                idx = EWL_SELECTION_IDX(sel);
+                if (ewl_mvc_selected_goto(mvc, idx->row, idx->column))
+                {
+                        ewl_mvc_selection_free(sel);
+                        DRETURN(DLEVEL_STABLE);
+                }
 
-        	ecore_list_append(mvc->selected, sel);
-        	DRETURN(DLEVEL_STABLE);
+                ecore_list_append(mvc->selected, sel);
+                DRETURN(DLEVEL_STABLE);
         }
 
         /* We've got a range we're trying to insert from here onwards */
@@ -744,53 +744,53 @@ ewl_mvc_selected_insert(Ewl_MVC *mvc, const Ewl_Model *model, void *data,
         ecore_list_first_goto(mvc->selected);
         while ((cur = ecore_list_current(mvc->selected)))
         {
-        	/* ecore_list_remove updates the index by itself */
-        	if (ewl_mvc_selection_intersects(range, cur))
-        	{
-        		ecore_list_remove(mvc->selected);
+                /* ecore_list_remove updates the index by itself */
+                if (ewl_mvc_selection_intersects(range, cur))
+                {
+                        ecore_list_remove(mvc->selected);
 
-        		/* just free indexes as their covered by the
-        		 * range and don't need to be re-inserted */
-        		if (cur->type == EWL_SELECTION_TYPE_INDEX)
-        			ewl_mvc_selection_free(cur);
-        		else
-        			ecore_list_append(intersections, cur);
+                        /* just free indexes as their covered by the
+                         * range and don't need to be re-inserted */
+                        if (cur->type == EWL_SELECTION_TYPE_INDEX)
+                                ewl_mvc_selection_free(cur);
+                        else
+                                ecore_list_append(intersections, cur);
 
-        	}
-        	else
-        		ecore_list_next(mvc->selected);
+                }
+                else
+                        ecore_list_next(mvc->selected);
         }
 
         /* if we intersect nothing just add ourselves to the list
          * and be done with it */
         if (ecore_list_count(intersections) == 0)
-        	ecore_list_insert(mvc->selected, range);
+                ecore_list_insert(mvc->selected, range);
         else
         {
-        	Ewl_Selection_Range *ptr;
+                Ewl_Selection_Range *ptr;
 
-        	while ((ptr = ecore_list_first_remove(intersections)))
-        	{
-        		/* if range is contained inside current then
-        		 * this can be the only intersection. we add
-        		 * current to the list, destroy range and
-        		 * are done
-        		 *
-        		 * We can't do this inside
-        		 * ewl_mvc_range_merge() as we free range in
-        		 * this case and keep ptr. This is backwards
-        		 * to what's expected by _merge()
-        		 */
-        		if (ewl_mvc_selection_contained(ptr, range))
-        		{
-        			ecore_list_append(mvc->selected, ptr);
-        			ewl_mvc_selection_free(EWL_SELECTION(range));
-        			range = NULL;
-        			break;
-        		}
-        		ewl_mvc_range_merge(mvc->selected, model, data, range, ptr);
-        	}
-        	if (range) ecore_list_append(mvc->selected, range);
+                while ((ptr = ecore_list_first_remove(intersections)))
+                {
+                        /* if range is contained inside current then
+                         * this can be the only intersection. we add
+                         * current to the list, destroy range and
+                         * are done
+                         *
+                         * We can't do this inside
+                         * ewl_mvc_range_merge() as we free range in
+                         * this case and keep ptr. This is backwards
+                         * to what's expected by _merge()
+                         */
+                        if (ewl_mvc_selection_contained(ptr, range))
+                        {
+                                ecore_list_append(mvc->selected, ptr);
+                                ewl_mvc_selection_free(EWL_SELECTION(range));
+                                range = NULL;
+                                break;
+                        }
+                        ewl_mvc_range_merge(mvc->selected, model, data, range, ptr);
+                }
+                if (range) ecore_list_append(mvc->selected, range);
         }
         ecore_list_destroy(intersections);
 
@@ -803,7 +803,7 @@ ewl_mvc_selected_insert(Ewl_MVC *mvc, const Ewl_Model *model, void *data,
  * if it is no longer needed */
 static void
 ewl_mvc_range_merge(Ecore_List *list, const Ewl_Model *model, void *data,
-        		Ewl_Selection_Range *range, Ewl_Selection_Range *cur)
+                        Ewl_Selection_Range *range, Ewl_Selection_Range *cur)
 {
         Ewl_Selection *sel;
 
@@ -817,23 +817,23 @@ ewl_mvc_range_merge(Ecore_List *list, const Ewl_Model *model, void *data,
          * range */
         if (ewl_mvc_selection_contained(range, cur))
         {
-        	ewl_mvc_selection_free(EWL_SELECTION(cur));
-        	DRETURN(DLEVEL_STABLE);
+                ewl_mvc_selection_free(EWL_SELECTION(cur));
+                DRETURN(DLEVEL_STABLE);
         }
 
         /* see if this is a merge of the two along one of the sides */
         if (((range->start.row == cur->start.row)
-        		&& (range->end.row == cur->end.row))
-        	|| ((range->start.column == cur->start.column)
-        		&& (range->end.column == cur->end.column)))
+                        && (range->end.row == cur->end.row))
+                || ((range->start.column == cur->start.column)
+                        && (range->end.column == cur->end.column)))
         {
-        	range->start.row = MIN(range->start.row, cur->start.row);
-        	range->start.column = MIN(range->start.column, cur->start.column);
-        	range->end.row = MAX(range->end.row, cur->end.row);
-        	range->end.column = MAX(range->end.column, cur->end.column);
+                range->start.row = MIN(range->start.row, cur->start.row);
+                range->start.column = MIN(range->start.column, cur->start.column);
+                range->end.row = MAX(range->end.row, cur->end.row);
+                range->end.column = MAX(range->end.column, cur->end.column);
 
-        	ewl_mvc_selection_free(EWL_SELECTION(cur));
-        	DRETURN(DLEVEL_STABLE);
+                ewl_mvc_selection_free(EWL_SELECTION(cur));
+                DRETURN(DLEVEL_STABLE);
         }
 
         /* not merged and not overlapped we're going to need to split @a cur
@@ -854,43 +854,43 @@ ewl_mvc_range_merge(Ecore_List *list, const Ewl_Model *model, void *data,
         /* find everything above (case 1) */
         if (cur->start.row < range->start.row)
         {
-        	sel = ewl_mvc_selection_make(model, data, cur->start.row,
-        					cur->start.column,
-        					range->start.row - 1,
-        					cur->end.column);
-        	ecore_list_append(list, sel);
+                sel = ewl_mvc_selection_make(model, data, cur->start.row,
+                                                cur->start.column,
+                                                range->start.row - 1,
+                                                cur->end.column);
+                ecore_list_append(list, sel);
         }
 
         /* find everything left (case 2) */
         if (cur->start.column < range->start.column)
         {
-        	sel = ewl_mvc_selection_make(model, data,
-        					MAX(range->start.row, cur->start.row),
-        					cur->start.column,
-        					cur->end.row,
-        					range->start.column - 1);
-        	ecore_list_append(list, sel);
+                sel = ewl_mvc_selection_make(model, data,
+                                                MAX(range->start.row, cur->start.row),
+                                                cur->start.column,
+                                                cur->end.row,
+                                                range->start.column - 1);
+                ecore_list_append(list, sel);
         }
 
         /* find everything below (case 3) */
         if (cur->end.row > range->end.row)
         {
-        	sel = ewl_mvc_selection_make(model, data, range->end.row + 1,
-        					MAX(range->start.column, cur->start.column),
-        					cur->end.row,
-        					cur->end.column);
-        	ecore_list_append(list, sel);
+                sel = ewl_mvc_selection_make(model, data, range->end.row + 1,
+                                                MAX(range->start.column, cur->start.column),
+                                                cur->end.row,
+                                                cur->end.column);
+                ecore_list_append(list, sel);
         }
 
         /* find everything left (case 4) */
         if (cur->end.column > range->end.column)
         {
-        	sel = ewl_mvc_selection_make(model, data,
-        					MAX(range->start.row, cur->start.row),
-        					range->end.column + 1,
-        					MIN(range->end.row, cur->end.row),
-        					cur->end.column);
-        	ecore_list_append(list, sel);
+                sel = ewl_mvc_selection_make(model, data,
+                                                MAX(range->start.row, cur->start.row),
+                                                range->end.column + 1,
+                                                MIN(range->end.row, cur->end.row),
+                                                cur->end.column);
+                ecore_list_append(list, sel);
         }
         ewl_mvc_selection_free(EWL_SELECTION(cur));
 
@@ -899,8 +899,8 @@ ewl_mvc_range_merge(Ecore_List *list, const Ewl_Model *model, void *data,
 
 static Ewl_Selection *
 ewl_mvc_selection_make(const Ewl_Model *model, void *data, unsigned int top,
-        			unsigned int left, unsigned int bottom,
-        			unsigned int right)
+                                unsigned int left, unsigned int bottom,
+                                unsigned int right)
 {
         Ewl_Selection *sel;
 
@@ -908,12 +908,12 @@ ewl_mvc_selection_make(const Ewl_Model *model, void *data, unsigned int top,
 
         if ((top != bottom) || (left != right))
         {
-        	sel = EWL_SELECTION(ewl_mvc_selection_range_new(model,
-        				data, top, left, bottom, right));
+                sel = EWL_SELECTION(ewl_mvc_selection_range_new(model,
+                                        data, top, left, bottom, right));
         }
         else
-        	sel = EWL_SELECTION(ewl_mvc_selection_index_new(model,
-        					data, top, left));
+                sel = EWL_SELECTION(ewl_mvc_selection_index_new(model,
+                                                data, top, left));
 
         DRETURN_PTR(sel, DLEVEL_STABLE);
 }
@@ -930,42 +930,42 @@ ewl_mvc_selection_intersects(Ewl_Selection_Range *range, Ewl_Selection *sel)
 
         if (sel->type == EWL_SELECTION_TYPE_INDEX)
         {
-        	Ewl_Selection_Idx *idx;
+                Ewl_Selection_Idx *idx;
 
-        	idx = EWL_SELECTION_IDX(sel);
-        	if ((range->start.row <= idx->row) && (range->end.row >= idx->row)
-        			&& (range->start.column <= idx->column)
-        			&& (range->end.column >= idx->column))
-        	{
-        		DRETURN_INT(TRUE, DLEVEL_STABLE);
-        	}
+                idx = EWL_SELECTION_IDX(sel);
+                if ((range->start.row <= idx->row) && (range->end.row >= idx->row)
+                                && (range->start.column <= idx->column)
+                                && (range->end.column >= idx->column))
+                {
+                        DRETURN_INT(TRUE, DLEVEL_STABLE);
+                }
         }
         else
         {
-        	Ewl_Selection_Range *cur;
-        	cur = EWL_SELECTION_RANGE(sel);
+                Ewl_Selection_Range *cur;
+                cur = EWL_SELECTION_RANGE(sel);
 
-        	/* is one range completely inside another */
-        	if ((ewl_mvc_selection_contained(range, cur))
-        			|| (ewl_mvc_selection_contained(cur, range)))
-        		DRETURN_INT(TRUE, DLEVEL_STABLE);
+                /* is one range completely inside another */
+                if ((ewl_mvc_selection_contained(range, cur))
+                                || (ewl_mvc_selection_contained(cur, range)))
+                        DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-        	/* if the columns intersect and the rows intersect then the
-        	 * boxes intersect */
-        	if (ewl_mvc_line_intersects(cur->start.row, cur->end.row,
-        					range->start.row, range->end.row)
-        			|| ewl_mvc_line_intersects(range->start.row, range->end.row,
-        					cur->start.row, cur->end.row))
-        	{
-        		if (ewl_mvc_line_intersects(cur->start.column, cur->end.column,
-        					range->start.column, range->end.column)
-        				|| ewl_mvc_line_intersects(range->start.column,
-        						range->end.column, cur->start.column,
-        						cur->end.column))
-        		{
-        			DRETURN_INT(TRUE, DLEVEL_STABLE);
-        		}
-        	}
+                /* if the columns intersect and the rows intersect then the
+                 * boxes intersect */
+                if (ewl_mvc_line_intersects(cur->start.row, cur->end.row,
+                                                range->start.row, range->end.row)
+                                || ewl_mvc_line_intersects(range->start.row, range->end.row,
+                                                cur->start.row, cur->end.row))
+                {
+                        if (ewl_mvc_line_intersects(cur->start.column, cur->end.column,
+                                                range->start.column, range->end.column)
+                                        || ewl_mvc_line_intersects(range->start.column,
+                                                        range->end.column, cur->start.column,
+                                                        cur->end.column))
+                        {
+                                DRETURN_INT(TRUE, DLEVEL_STABLE);
+                        }
+                }
         }
 
         DRETURN_INT(FALSE, DLEVEL_STABLE);
@@ -986,10 +986,10 @@ ewl_mvc_line_intersects(int astart, int aend, int bstart, int bend)
         DENTER_FUNCTION(DLEVEL_STABLE);
 
         if ((((astart <= bstart) && (bstart <= aend))
-        			|| ((astart <= bend) && (bend <= aend)))
-        		|| (((bstart <= astart) && (astart <= bend))
-        			|| ((bstart <= aend) && (aend <= bend))))
-        	DRETURN_INT(TRUE, DLEVEL_STABLE);
+                                || ((astart <= bend) && (bend <= aend)))
+                        || (((bstart <= astart) && (astart <= bend))
+                                || ((bstart <= aend) && (aend <= bend))))
+                DRETURN_INT(TRUE, DLEVEL_STABLE);
 
         DRETURN_INT(FALSE, DLEVEL_STABLE);
 }
@@ -1005,14 +1005,14 @@ ewl_mvc_selection_contained(Ewl_Selection_Range *a, Ewl_Selection_Range *b)
         DCHECK_PARAM_PTR_RET(b, FALSE);
 
         if ((a->start.column <= b->start.column)
-        		&& (b->start.column <= a->end.column)
-        		&& (a->start.column <= b->end.column)
-        		&& (b->end.column <= a->end.column)
-        		&& (a->start.row <= b->start.row)
-        		&& (b->start.row <= a->end.row)
-        		&& (a->start.row <= b->end.row)
-        		&& (b->end.row <= a->end.row))
-        	DRETURN_INT(TRUE, DLEVEL_STABLE);
+                        && (b->start.column <= a->end.column)
+                        && (a->start.column <= b->end.column)
+                        && (b->end.column <= a->end.column)
+                        && (a->start.row <= b->start.row)
+                        && (b->start.row <= a->end.row)
+                        && (a->start.row <= b->end.row)
+                        && (b->end.row <= a->end.row))
+                DRETURN_INT(TRUE, DLEVEL_STABLE);
 
         DRETURN_INT(FALSE, DLEVEL_STABLE);
 }
@@ -1032,7 +1032,7 @@ ewl_mvc_selection_contained(Ewl_Selection_Range *a, Ewl_Selection_Range *b)
  */
 static void
 ewl_mvc_selected_range_split(Ewl_MVC *mvc, Ewl_Selection_Range *range,
-        			unsigned int row, unsigned int column)
+                                unsigned int row, unsigned int column)
 {
         Ewl_Selection *sel;
         const Ewl_Model *model;
@@ -1051,38 +1051,38 @@ ewl_mvc_selected_range_split(Ewl_MVC *mvc, Ewl_Selection_Range *range,
         /* we have something above, case 1 */
         if (range->start.row < row)
         {
-        	sel = ewl_mvc_selection_make(model, data, range->start.row,
-        						range->start.column,
-        						row - 1,
-        						range->end.column);
-        	ecore_list_append(mvc->selected, sel);
+                sel = ewl_mvc_selection_make(model, data, range->start.row,
+                                                        range->start.column,
+                                                        row - 1,
+                                                        range->end.column);
+                ecore_list_append(mvc->selected, sel);
         }
 
         /* something left, case 2 */
         if (range->start.column < column)
         {
-        	sel = ewl_mvc_selection_make(model, data, row,
-        						range->start.column,
-        						range->end.row,
-        						column - 1);
-        	ecore_list_append(mvc->selected, sel);
+                sel = ewl_mvc_selection_make(model, data, row,
+                                                        range->start.column,
+                                                        range->end.row,
+                                                        column - 1);
+                ecore_list_append(mvc->selected, sel);
         }
 
         /* something below, case 3 */
         if (range->end.row > row)
         {
-        	sel = ewl_mvc_selection_make(model, data, row + 1, column,
-        						range->end.row,
-        						range->end.column);
-        	ecore_list_append(mvc->selected, sel);
+                sel = ewl_mvc_selection_make(model, data, row + 1, column,
+                                                        range->end.row,
+                                                        range->end.column);
+                ecore_list_append(mvc->selected, sel);
         }
 
         /* something right, case 4 */
         if (range->end.column > row)
         {
-        	sel = ewl_mvc_selection_make(model, data, row, column + 1,
-        						row, range->end.column);
-        	ecore_list_append(mvc->selected, sel);
+                sel = ewl_mvc_selection_make(model, data, row, column + 1,
+                                                        row, range->end.column);
+                ecore_list_append(mvc->selected, sel);
         }
 
         ewl_mvc_selection_free(EWL_SELECTION(range));
@@ -1102,7 +1102,7 @@ ewl_mvc_selected_range_split(Ewl_MVC *mvc, Ewl_Selection_Range *range,
  */
 void
 ewl_mvc_handle_click(Ewl_MVC *mvc, const Ewl_Model *model, void *data,
-        		unsigned int row, unsigned int column)
+                        unsigned int row, unsigned int column)
 {
         unsigned int modifiers;
         int multi_select = FALSE;
@@ -1114,13 +1114,13 @@ ewl_mvc_handle_click(Ewl_MVC *mvc, const Ewl_Model *model, void *data,
 
         switch (ewl_mvc_selection_mode_get(mvc))
         {
-        	case EWL_SELECTION_MODE_NONE:
-        		DRETURN(DLEVEL_STABLE);
-        	case EWL_SELECTION_MODE_MULTI:
-        		multi_select = TRUE;
-        		break;
-        	default:
-        		break;
+                case EWL_SELECTION_MODE_NONE:
+                        DRETURN(DLEVEL_STABLE);
+                case EWL_SELECTION_MODE_MULTI:
+                        multi_select = TRUE;
+                        break;
+                default:
+                        break;
         }
 
         if (model) mod = model;
@@ -1129,55 +1129,55 @@ ewl_mvc_handle_click(Ewl_MVC *mvc, const Ewl_Model *model, void *data,
         modifiers = ewl_ev_modifiers_get();
         if (multi_select && (modifiers & EWL_KEY_MODIFIER_SHIFT))
         {
-        	/* is this the first click? */
-        	if (ewl_mvc_selected_count_get(mvc) > 0)
-        	{
-        		Ewl_Selection *sel;
-        		void *sdata;
-        		unsigned int srow, scolumn;
-        		const Ewl_Model *smod;
+                /* is this the first click? */
+                if (ewl_mvc_selected_count_get(mvc) > 0)
+                {
+                        Ewl_Selection *sel;
+                        void *sdata;
+                        unsigned int srow, scolumn;
+                        const Ewl_Model *smod;
 
-        		/* A shift will add the current position into a
-        		 * range with the last selected item. If the
-        		 * last selected is a range, it will take the
-        		 * start position */
-        		sel = ecore_list_last_goto(mvc->selected);
-        		if (sel->type == EWL_SELECTION_TYPE_INDEX)
-        		{
-        			Ewl_Selection_Idx *idx;
+                        /* A shift will add the current position into a
+                         * range with the last selected item. If the
+                         * last selected is a range, it will take the
+                         * start position */
+                        sel = ecore_list_last_goto(mvc->selected);
+                        if (sel->type == EWL_SELECTION_TYPE_INDEX)
+                        {
+                                Ewl_Selection_Idx *idx;
 
-        			idx = EWL_SELECTION_IDX(sel);
-        			smod = sel->model;
-        			sdata = sel->data;
-        			srow = idx->row;
-        			scolumn = idx->column;
-        		}
-        		else
-        		{
-        			Ewl_Selection_Range *idx;
+                                idx = EWL_SELECTION_IDX(sel);
+                                smod = sel->model;
+                                sdata = sel->data;
+                                srow = idx->row;
+                                scolumn = idx->column;
+                        }
+                        else
+                        {
+                                Ewl_Selection_Range *idx;
 
-        			idx = EWL_SELECTION_RANGE(sel);
-        			smod = sel->model;
-        			sdata = sel->data;
-        			srow = idx->start.row;
-        			scolumn = idx->start.column;
-        		}
+                                idx = EWL_SELECTION_RANGE(sel);
+                                smod = sel->model;
+                                sdata = sel->data;
+                                srow = idx->start.row;
+                                scolumn = idx->start.column;
+                        }
 
-        		ewl_mvc_selected_range_add(mvc, smod, data, srow, scolumn,
-        						row, column);
-        	}
-        	else
-        		ewl_mvc_selected_set(mvc, mod, data, row, column);
+                        ewl_mvc_selected_range_add(mvc, smod, data, srow, scolumn,
+                                                        row, column);
+                }
+                else
+                        ewl_mvc_selected_set(mvc, mod, data, row, column);
         }
         else if (multi_select && (modifiers & EWL_KEY_MODIFIER_CTRL))
         {
-        	if (ewl_mvc_selected_is(mvc, data, row, column))
-        		ewl_mvc_selected_rm(mvc, data, row, column);
-        	else
-        		ewl_mvc_selected_add(mvc, mod, data, row, column);
+                if (ewl_mvc_selected_is(mvc, data, row, column))
+                        ewl_mvc_selected_rm(mvc, data, row, column);
+                else
+                        ewl_mvc_selected_add(mvc, mod, data, row, column);
         }
         else
-        	ewl_mvc_selected_set(mvc, mod, data, row, column);
+                ewl_mvc_selected_set(mvc, mod, data, row, column);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1194,7 +1194,7 @@ ewl_mvc_handle_click(Ewl_MVC *mvc, const Ewl_Model *model, void *data,
 void
 ewl_mvc_highlight(Ewl_MVC *mvc, Ewl_Container *c,
         Ewl_Widget *(*widget)(Ewl_MVC *mvc, void *data, unsigned int row,
-        				unsigned int column))
+                                        unsigned int column))
 {
         Ewl_Selection *sel;
 
@@ -1204,45 +1204,45 @@ ewl_mvc_highlight(Ewl_MVC *mvc, Ewl_Container *c,
         DCHECK_TYPE(mvc, EWL_MVC_TYPE);
 
         if (!mvc->selected || !REALIZED(mvc))
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         ecore_list_first_goto(mvc->selected);
         while ((sel = ecore_list_next(mvc->selected)))
         {
-        	Ewl_Widget *w;
+                Ewl_Widget *w;
 
-        	/* if it's already highlighted we can skip it */
-        	if (sel->highlight) continue;
+                /* if it's already highlighted we can skip it */
+                if (sel->highlight) continue;
 
-        	if (sel->type == EWL_SELECTION_TYPE_INDEX)
-        	{
-        		Ewl_Selection_Idx *idx;
+                if (sel->type == EWL_SELECTION_TYPE_INDEX)
+                {
+                        Ewl_Selection_Idx *idx;
 
-        		idx = EWL_SELECTION_IDX(sel);
-        		w = widget(mvc, sel->data, idx->row, idx->column);
-        		/* w can be NULL, for example when the selected
-        		 * row or widget is hidden or collapsed */
-        		if (w)
-        			ewl_mvc_highlight_do(mvc, c, sel, w);
-        	}
-        	else
-        	{
-        		unsigned int i, k;
-        		Ewl_Selection_Range *idx;
+                        idx = EWL_SELECTION_IDX(sel);
+                        w = widget(mvc, sel->data, idx->row, idx->column);
+                        /* w can be NULL, for example when the selected
+                         * row or widget is hidden or collapsed */
+                        if (w)
+                                ewl_mvc_highlight_do(mvc, c, sel, w);
+                }
+                else
+                {
+                        unsigned int i, k;
+                        Ewl_Selection_Range *idx;
 
-        		idx = EWL_SELECTION_RANGE(sel);
-        		for (i = idx->start.row; i <= idx->end.row; i++)
-        		{
-        			for (k = idx->start.column;
-        					k <= idx->end.column; k++)
-        			{
-        				w = widget(mvc, sel->data, i, k);
-        				if (!w) continue;
-        				
-        				ewl_mvc_highlight_do(mvc, c, sel, w);
-        			}
-        		}
-        	}
+                        idx = EWL_SELECTION_RANGE(sel);
+                        for (i = idx->start.row; i <= idx->end.row; i++)
+                        {
+                                for (k = idx->start.column;
+                                                k <= idx->end.column; k++)
+                                {
+                                        w = widget(mvc, sel->data, i, k);
+                                        if (!w) continue;
+                                        
+                                        ewl_mvc_highlight_do(mvc, c, sel, w);
+                                }
+                        }
+                }
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1250,7 +1250,7 @@ ewl_mvc_highlight(Ewl_MVC *mvc, Ewl_Container *c,
 
 static void
 ewl_mvc_highlight_do(Ewl_MVC *mvc __UNUSED__, Ewl_Container *c,
-        			Ewl_Selection *sel, Ewl_Widget *w)
+                                Ewl_Selection *sel, Ewl_Widget *w)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(c);
@@ -1261,15 +1261,15 @@ ewl_mvc_highlight_do(Ewl_MVC *mvc __UNUSED__, Ewl_Container *c,
 
         ewl_widget_state_set(w, "selected", EWL_STATE_PERSISTENT);
         ewl_callback_prepend(w, EWL_CALLBACK_DESTROY,
-        		ewl_mvc_cb_highlight_destroy, sel);
+                        ewl_mvc_cb_highlight_destroy, sel);
 
         if (sel->type == EWL_SELECTION_TYPE_INDEX)
-        	sel->highlight = w;
+                sel->highlight = w;
         else
         {
-        	if (!sel->highlight)
-        		sel->highlight = ecore_list_new();
-        	ecore_list_append(sel->highlight, w);
+                if (!sel->highlight)
+                        sel->highlight = ecore_list_new();
+                ecore_list_append(sel->highlight, w);
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1291,7 +1291,7 @@ ewl_mvc_selected_change_cb_set(Ewl_MVC *mvc, void (*cb)(Ewl_MVC *mvc))
 
         mvc->cb.selected_change = cb;
         if (mvc->selected && (ecore_list_count(mvc->selected) > 0))
-        	cb(mvc);
+                cb(mvc);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1339,8 +1339,8 @@ ewl_mvc_cb_data_unref(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
         /* unref the data, we don't need it anylonger */
         if (mvc->data && mvc->model && mvc->model->unref)
         {
-        	mvc->model->unref(mvc->data);
-        	mvc->data = NULL;
+                mvc->model->unref(mvc->data);
+                mvc->data = NULL;
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1355,7 +1355,7 @@ ewl_mvc_selected_change_notify(Ewl_MVC *mvc)
 
         /* notify any inheriting widgets */
         if (mvc->cb.selected_change)
-        	mvc->cb.selected_change(mvc);
+                mvc->cb.selected_change(mvc);
 
         /* notify the app */
         ewl_callback_call(EWL_WIDGET(mvc), EWL_CALLBACK_VALUE_CHANGED);
@@ -1386,27 +1386,27 @@ ewl_mvc_selection_free(Ewl_Selection *sel)
          * and causes highlights to hang around */
         if (sel->highlight)
         {
-        	if (sel->type == EWL_SELECTION_TYPE_INDEX)
-        	{
-        		ewl_callback_del(sel->highlight, EWL_CALLBACK_DESTROY,
-        				ewl_mvc_cb_highlight_destroy);
-        		ewl_widget_state_set(sel->highlight, "deselect",
-        				EWL_STATE_PERSISTENT);
-        	}
-        	else
-        	{
-        		Ewl_Widget *w;
+                if (sel->type == EWL_SELECTION_TYPE_INDEX)
+                {
+                        ewl_callback_del(sel->highlight, EWL_CALLBACK_DESTROY,
+                                        ewl_mvc_cb_highlight_destroy);
+                        ewl_widget_state_set(sel->highlight, "deselect",
+                                        EWL_STATE_PERSISTENT);
+                }
+                else
+                {
+                        Ewl_Widget *w;
 
-        		while ((w = ecore_list_first_remove(sel->highlight)))
-        		{
-        			ewl_callback_del(w, EWL_CALLBACK_DESTROY,
-        					ewl_mvc_cb_highlight_destroy);
-        			ewl_widget_state_set(w, "deselect",
-        				EWL_STATE_PERSISTENT);
-        		}
+                        while ((w = ecore_list_first_remove(sel->highlight)))
+                        {
+                                ewl_callback_del(w, EWL_CALLBACK_DESTROY,
+                                                ewl_mvc_cb_highlight_destroy);
+                                ewl_widget_state_set(w, "deselect",
+                                        EWL_STATE_PERSISTENT);
+                        }
 
-        		IF_FREE_LIST(sel->highlight);
-        	}
+                        IF_FREE_LIST(sel->highlight);
+                }
         }
         FREE(sel);
 
@@ -1422,14 +1422,14 @@ ewl_mvc_cb_highlight_destroy(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 
         sel = data;
         if (sel->type == EWL_SELECTION_TYPE_INDEX)
-        	sel->highlight = NULL;
+                sel->highlight = NULL;
         else
         {
-        	Ewl_Widget *cur;
+                Ewl_Widget *cur;
 
-        	ecore_list_goto(sel->highlight, w);
-        	cur = ecore_list_current(sel->highlight);
-        	if (cur == w) ecore_list_remove(sel->highlight);
+                ecore_list_goto(sel->highlight, w);
+                cur = ecore_list_current(sel->highlight);
+                if (cur == w) ecore_list_remove(sel->highlight);
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1445,7 +1445,7 @@ ewl_mvc_cb_highlight_destroy(Ewl_Widget *w, void *ev __UNUSED__, void *data)
  */
 Ewl_Selection *
 ewl_mvc_selection_index_new(const Ewl_Model *model, void *data, unsigned int row,
-        			unsigned int column)
+                                unsigned int column)
 {
         Ewl_Selection_Idx *sel;
 
@@ -1473,8 +1473,8 @@ ewl_mvc_selection_index_new(const Ewl_Model *model, void *data, unsigned int row
  */
 Ewl_Selection *
 ewl_mvc_selection_range_new(const Ewl_Model *model, void *data, unsigned int srow,
-        			unsigned int scolumn, unsigned int erow,
-        			unsigned int ecolumn)
+                                unsigned int scolumn, unsigned int erow,
+                                unsigned int ecolumn)
 {
         Ewl_Selection_Range *sel;
 

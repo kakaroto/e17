@@ -23,10 +23,10 @@ ewl_histogram_new(void)
 
         hist = NEW(Ewl_Histogram, 1);
         if (!hist)
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
 
         if (!ewl_histogram_init(hist)) {
-        	FREE(hist);
+                FREE(hist);
         }
 
         DRETURN_PTR(EWL_WIDGET(hist), DLEVEL_STABLE);
@@ -46,12 +46,12 @@ ewl_histogram_init(Ewl_Histogram *hist)
         DCHECK_PARAM_PTR_RET(hist, FALSE);
 
         if (!ewl_image_init(EWL_IMAGE(hist)))
-        	DRETURN_INT(FALSE, DLEVEL_STABLE);
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
 
         ewl_widget_appearance_set(w, EWL_HISTOGRAM_TYPE);
         ewl_widget_inherit(w, EWL_HISTOGRAM_TYPE);
         ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
-        			    ewl_histogram_cb_configure, NULL);
+                                    ewl_histogram_cb_configure, NULL);
         ewl_object_preferred_inner_size_set(EWL_OBJECT(hist), 256, 256);
         hist->channel = EWL_HISTOGRAM_CHANNEL_R;
 
@@ -69,7 +69,7 @@ ewl_histogram_init(Ewl_Histogram *hist)
  */
 void
 ewl_histogram_color_set(Ewl_Histogram *hist, unsigned int r, unsigned int g,
-        					unsigned int b, unsigned int a)
+                                                unsigned int b, unsigned int a)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(hist);
@@ -95,7 +95,7 @@ ewl_histogram_color_set(Ewl_Histogram *hist, unsigned int r, unsigned int g,
  */
 void
 ewl_histogram_color_get(Ewl_Histogram *hist, unsigned int *r, unsigned int *g,
-        					unsigned int *b, unsigned int *a)
+                                                unsigned int *b, unsigned int *a)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(hist);
@@ -130,7 +130,7 @@ ewl_histogram_channel_set(Ewl_Histogram *hist, Ewl_Histogram_Channel channel)
 
         hist->channel = channel;
         if (hist->source && REALIZED(hist->source))
-        	ewl_histogram_cb_data_load(EWL_WIDGET(hist), NULL, hist);
+                ewl_histogram_cb_data_load(EWL_WIDGET(hist), NULL, hist);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -167,11 +167,11 @@ ewl_histogram_image_set(Ewl_Histogram *hist, Ewl_Image *image)
 
         hist->source = image;
         if (REALIZED(image))
-        	ewl_histogram_cb_data_load(EWL_WIDGET(hist), NULL, hist);
+                ewl_histogram_cb_data_load(EWL_WIDGET(hist), NULL, hist);
 
         /* Append the callback to catch an obscure/reveal */
         ewl_callback_append(EWL_WIDGET(image), EWL_CALLBACK_REVEAL,
-        		ewl_histogram_cb_data_load, hist);
+                        ewl_histogram_cb_data_load, hist);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -201,7 +201,7 @@ ewl_histogram_image_get(Ewl_Histogram *hist)
  */
 void
 ewl_histogram_cb_configure(Ewl_Widget *w, void *event __UNUSED__,
-        					void *data __UNUSED__)
+                                                void *data __UNUSED__)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(w);
@@ -209,7 +209,7 @@ ewl_histogram_cb_configure(Ewl_Widget *w, void *event __UNUSED__,
 
         /* Only bother drawing if we've seen some usable data. */
         if (EWL_HISTOGRAM(w)->maxv)
-        	ewl_histogram_draw(EWL_HISTOGRAM(w));
+                ewl_histogram_draw(EWL_HISTOGRAM(w));
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -234,36 +234,36 @@ ewl_histogram_cb_data_load(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, void *
         DCHECK_TYPE(hist, EWL_HISTOGRAM_TYPE);
 
         if (!hist->source || !REALIZED(hist->source))
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         data = evas_object_image_data_get(hist->source->image, 0);
         evas_object_image_size_get(hist->source->image, &width, &height);
 
         for (y = 0; y < height; y++) {
-        	for (x = 0; x < width; x++) {
-        		unsigned int color;
-        		unsigned char brightness;
+                for (x = 0; x < width; x++) {
+                        unsigned int color;
+                        unsigned char brightness;
 
-        		color = *data;
-        		switch (hist->channel) {
+                        color = *data;
+                        switch (hist->channel) {
 
-        			case EWL_HISTOGRAM_CHANNEL_R:
-        				brightness = R_CALC(color);
-        				break;
-        			case EWL_HISTOGRAM_CHANNEL_G:
-        				brightness = G_CALC(color);
-        				break;
-        			case EWL_HISTOGRAM_CHANNEL_B:
-        				brightness = B_CALC(color);
-        				break;
-        			case EWL_HISTOGRAM_CHANNEL_Y:
-        			default:
-        				brightness = Y_CALC(color);
-        				break;
-        		}
-        		hist->graph[brightness]++;
-        		data++;
-        	}
+                                case EWL_HISTOGRAM_CHANNEL_R:
+                                        brightness = R_CALC(color);
+                                        break;
+                                case EWL_HISTOGRAM_CHANNEL_G:
+                                        brightness = G_CALC(color);
+                                        break;
+                                case EWL_HISTOGRAM_CHANNEL_B:
+                                        brightness = B_CALC(color);
+                                        break;
+                                case EWL_HISTOGRAM_CHANNEL_Y:
+                                default:
+                                        brightness = Y_CALC(color);
+                                        break;
+                        }
+                        hist->graph[brightness]++;
+                        data++;
+                }
         }
 
         /*
@@ -272,8 +272,8 @@ ewl_histogram_cb_data_load(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, void *
          * and this lookup is over a fixed data size.
          */
         for (x = 0; x < 256; x++) {
-        	if (hist->graph[x] > maxv)
-        		maxv = hist->graph[x];
+                if (hist->graph[x] > maxv)
+                        maxv = hist->graph[x];
         }
 
         hist->maxv = maxv;
@@ -302,69 +302,69 @@ ewl_histogram_draw(Ewl_Histogram *hist)
 
         dst = data = evas_object_image_data_get(img, 1);
         if (!data)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         /*
          * If no color specified, choose a sane default for the channel
          * represented.
          */
         if (!hist->color.a) {
-        	color = (unsigned int)(128 << 24);
-        	switch (hist->channel) {
-        		case EWL_HISTOGRAM_CHANNEL_R:
-        			color |= (unsigned int)(128 << 16);
-        			break;
-        		case EWL_HISTOGRAM_CHANNEL_G:
-        			color |= (unsigned int)(128 << 8);
-        			break;
-        		case EWL_HISTOGRAM_CHANNEL_B:
-        			color |= (unsigned int)(128);
-        			break;
-        		default:
-        			break;
-        	}
+                color = (unsigned int)(128 << 24);
+                switch (hist->channel) {
+                        case EWL_HISTOGRAM_CHANNEL_R:
+                                color |= (unsigned int)(128 << 16);
+                                break;
+                        case EWL_HISTOGRAM_CHANNEL_G:
+                                color |= (unsigned int)(128 << 8);
+                                break;
+                        case EWL_HISTOGRAM_CHANNEL_B:
+                                color |= (unsigned int)(128);
+                                break;
+                        default:
+                                break;
+                }
         }
         else
-        	color = (unsigned int)(hist->color.a << 24 |
-        				hist->color.r << 16 |
-        				hist->color.g << 8 |
-        				hist->color.b);
+                color = (unsigned int)(hist->color.a << 24 |
+                                        hist->color.r << 16 |
+                                        hist->color.g << 8 |
+                                        hist->color.b);
 
         for (y = 0; y < img_h; y++) {
-        	for (x = 0; x < img_w; x++) {
-        		int index;
-        		int cutoff;
-        		int x_scale;
-        		int w1, w2;
+                for (x = 0; x < img_w; x++) {
+                        int index;
+                        int cutoff;
+                        int x_scale;
+                        int w1, w2;
 
-        		/* Determine the base index for this x position */
-        		x_scale = x << 8;
-        		index = x_scale / img_w;
+                        /* Determine the base index for this x position */
+                        x_scale = x << 8;
+                        index = x_scale / img_w;
 
-        		/*
-        		 * Determine distance between index points.
-        		 * Used to determine rounding error and distance from
-        		 * next point.
-        		 * This is at x * 256 scale.
-        		 */
-        		w1 = index * img_w;
-        		w2 = w1 + img_w;
+                        /*
+                         * Determine distance between index points.
+                         * Used to determine rounding error and distance from
+                         * next point.
+                         * This is at x * 256 scale.
+                         */
+                        w1 = index * img_w;
+                        w2 = w1 + img_w;
 
-        		cutoff = hist->graph[index];
+                        cutoff = hist->graph[index];
 
-        		/* Determine if this index should be weighted */
-        		if ((x_scale != w1) && (index < 255)
-        				&& (cutoff || hist->graph[index + 1])) {
-        			cutoff = (cutoff * (w2 - x_scale));
-        			cutoff += (hist->graph[index + 1] * (x_scale - w1));
-        			cutoff = (cutoff / (w2 - w1));
-        		}
+                        /* Determine if this index should be weighted */
+                        if ((x_scale != w1) && (index < 255)
+                                        && (cutoff || hist->graph[index + 1])) {
+                                cutoff = (cutoff * (w2 - x_scale));
+                                cutoff += (hist->graph[index + 1] * (x_scale - w1));
+                                cutoff = (cutoff / (w2 - w1));
+                        }
 
-        		cutoff = (img_h * cutoff) / hist->maxv;
+                        cutoff = (img_h * cutoff) / hist->maxv;
 
-        		*dst = ((img_h - y) < cutoff ? color : 0x0);
-        		dst++;
-        	}
+                        *dst = ((img_h - y) < cutoff ? color : 0x0);
+                        dst++;
+                }
         }
 
         evas_object_image_data_set(img, data);

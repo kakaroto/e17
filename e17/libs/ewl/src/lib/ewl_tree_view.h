@@ -46,8 +46,8 @@ typedef struct Ewl_Tree_View Ewl_Tree_View;
  */
 struct Ewl_Tree_View
 {
-        Ewl_Box box;		/**< Inherit from Ewl_Box */
-        Ewl_Tree *parent;	/**< The tree parent */
+        Ewl_Box box;                /**< Inherit from Ewl_Box */
+        Ewl_Tree *parent;        /**< The tree parent */
 };
 
 int ewl_tree_view_init(Ewl_Tree_View *v);

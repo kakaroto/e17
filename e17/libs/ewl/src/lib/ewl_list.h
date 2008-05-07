@@ -44,11 +44,11 @@ typedef struct Ewl_List Ewl_List;
  */
 struct Ewl_List
 {
-        Ewl_MVC mvc;		/**< The mvc parent */
+        Ewl_MVC mvc;                /**< The mvc parent */
 };
 
 Ewl_Widget         *ewl_list_new(void);
-int         	 ewl_list_init(Ewl_List *list);
+int                  ewl_list_init(Ewl_List *list);
 
 /*
  * Internal stuff.

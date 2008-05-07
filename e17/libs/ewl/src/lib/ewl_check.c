@@ -18,11 +18,11 @@ ewl_check_new(void)
 
         b = NEW(Ewl_Check, 1);
         if (!b)
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
 
         if (!ewl_check_init(EWL_CHECK(b))) {
-        	ewl_widget_destroy(EWL_WIDGET(b));
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                ewl_widget_destroy(EWL_WIDGET(b));
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
         }
 
         DRETURN_PTR(EWL_WIDGET(b), DLEVEL_STABLE);
@@ -47,7 +47,7 @@ ewl_check_init(Ewl_Check *cb)
         w = EWL_WIDGET(cb);
 
         if (!ewl_widget_init(w))
-        	DRETURN_INT(FALSE, DLEVEL_STABLE);
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
 
         ewl_widget_appearance_set(w, EWL_CHECK_TYPE);
         ewl_widget_inherit(w, EWL_CHECK_TYPE);
@@ -56,9 +56,9 @@ ewl_check_init(Ewl_Check *cb)
         ewl_object_preferred_inner_size_set(EWL_OBJECT(w), 20, 20);
 
         ewl_callback_append(w, EWL_CALLBACK_CLICKED,
-        			ewl_check_cb_clicked, NULL);
+                                ewl_check_cb_clicked, NULL);
         ewl_callback_append(w, EWL_CALLBACK_MOUSE_OUT,
-        			ewl_check_cb_update_check, NULL);
+                                ewl_check_cb_update_check, NULL);
 
         DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -80,7 +80,7 @@ ewl_check_checked_set(Ewl_Check *cb, int c)
         DCHECK_TYPE(cb, EWL_CHECK_TYPE);
 
         if (cb->checked == !!c)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         cb->checked = !!c;
         ewl_check_cb_update_check(EWL_WIDGET(cb), NULL, NULL);
@@ -113,7 +113,7 @@ ewl_check_is_checked(Ewl_Check *cb)
  */
 void
 ewl_check_cb_clicked(Ewl_Widget *w, void *ev_data __UNUSED__,
-        			void *user_data __UNUSED__)
+                                void *user_data __UNUSED__)
 {
         Ewl_Check *cb;
 
@@ -139,7 +139,7 @@ ewl_check_cb_clicked(Ewl_Widget *w, void *ev_data __UNUSED__,
  */
 void
 ewl_check_cb_update_check(Ewl_Widget *w, void *ev_data __UNUSED__,
-        				void *user_data __UNUSED__)
+                                        void *user_data __UNUSED__)
 {
         Ewl_Check *cb;
 
@@ -149,9 +149,9 @@ ewl_check_cb_update_check(Ewl_Widget *w, void *ev_data __UNUSED__,
 
         cb = EWL_CHECK(w);
         if (cb->checked)
-        	ewl_widget_state_set(w, "checked", EWL_STATE_PERSISTENT);
+                ewl_widget_state_set(w, "checked", EWL_STATE_PERSISTENT);
         else
-        	ewl_widget_state_set(w, "default", EWL_STATE_PERSISTENT);
+                ewl_widget_state_set(w, "default", EWL_STATE_PERSISTENT);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

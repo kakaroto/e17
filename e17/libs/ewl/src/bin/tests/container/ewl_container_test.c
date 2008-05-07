@@ -9,8 +9,8 @@
 static int switch_parents(char *buf, int len);
 
 static Ewl_Unit_Test container_unit_tests[] = {
-        	{"switch parents", switch_parents, NULL, -1, 0},
-        	{NULL, NULL, NULL, -1, 0}
+                {"switch parents", switch_parents, NULL, -1, 0},
+                {NULL, NULL, NULL, -1, 0}
         };
 
 void
@@ -37,8 +37,8 @@ switch_parents(char *buf, int len)
 
         if (!(w->parent == p1))
         {
-        	snprintf(buf, len, "initial parent incorrect (%p vs %p)", w->parent, p1);
-        	return FALSE;
+                snprintf(buf, len, "initial parent incorrect (%p vs %p)", w->parent, p1);
+                return FALSE;
         }
 
         p2 = ewl_vbox_new();
@@ -47,8 +47,8 @@ switch_parents(char *buf, int len)
         ewl_container_child_append(EWL_CONTAINER(p2), w);
         if (!(w->parent == p2))
         {
-        	snprintf(buf, len, "reparent incorrect (%p vs %p)", w->parent, p2);
-        	return FALSE;
+                snprintf(buf, len, "reparent incorrect (%p vs %p)", w->parent, p2);
+                return FALSE;
         }
 
         return TRUE;

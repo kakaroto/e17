@@ -8,7 +8,7 @@
 static int create_test(Ewl_Container *win);
 static void colordialog_cb_launch(Ewl_Widget *w, void *ev, void *data);
 static void colordialog_cb_value_changed(Ewl_Widget *w, void *ev,
-        						void *data);
+                                                        void *data);
 
 void
 test_info(Ewl_Test *test)
@@ -50,22 +50,22 @@ colordialog_cb_value_changed(Ewl_Widget *w, void *ev, void *data __UNUSED__)
         cd_ev = ev;
         if (cd_ev->response == EWL_STOCK_OK)
         {
-        	Ewl_Widget *o;
-        	unsigned int r, g, b, a;
+                Ewl_Widget *o;
+                unsigned int r, g, b, a;
 
-        	o = ewl_widget_name_find("colour_preview");
+                o = ewl_widget_name_find("colour_preview");
 
-        	ewl_colordialog_current_rgb_get(EWL_COLORDIALOG(w), &r, &g, &b);
-        	a = ewl_colordialog_alpha_get(EWL_COLORDIALOG(w));
+                ewl_colordialog_current_rgb_get(EWL_COLORDIALOG(w), &r, &g, &b);
+                a = ewl_colordialog_alpha_get(EWL_COLORDIALOG(w));
 
-        	ewl_widget_color_set(o, r, g, b, a);
+                ewl_widget_color_set(o, r, g, b, a);
         }
         ewl_widget_destroy(w);
 }
 
 static void
 colordialog_cb_launch(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
-        				void *data __UNUSED__)
+                                        void *data __UNUSED__)
 {
         Ewl_Widget *o;
         unsigned int r, g, b, a;
@@ -76,7 +76,7 @@ colordialog_cb_launch(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
         o = ewl_colordialog_new();
         ewl_colordialog_previous_rgba_set(EWL_COLORDIALOG(o), r, g, b, a);
         ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,
-        			colordialog_cb_value_changed, NULL);
+                                colordialog_cb_value_changed, NULL);
         ewl_widget_show(o);
 }
 

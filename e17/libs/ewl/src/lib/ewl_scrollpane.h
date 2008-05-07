@@ -48,13 +48,13 @@ typedef struct Ewl_Scrollpane_Scroll_Info_Base Ewl_Scrollpane_Scroll_Info_Base;
  */
 struct Ewl_Scrollpane_Scroll_Info_Base
 {
-        unsigned char clicked:1;	/**< If the mouse is currently clicked or not */
-        unsigned char active:1;		/**< If the pane is currently moving */
-        int fps;			/**< Number of recalculations per second */
-        double vmax;			/**< Maximum speed in pixels */
-        double vmin;			/**< Minimum speed in pixels */
-        double dampen;			/**< Frictional variable */
-        void *extra;			/**< Additional information */
+        unsigned char clicked:1;        /**< If the mouse is currently clicked or not */
+        unsigned char active:1;                /**< If the pane is currently moving */
+        int fps;                        /**< Number of recalculations per second */
+        double vmax;                        /**< Maximum speed in pixels */
+        double vmin;                        /**< Minimum speed in pixels */
+        double dampen;                        /**< Frictional variable */
+        void *extra;                        /**< Additional information */
 };
 
 /**
@@ -77,58 +77,58 @@ struct Ewl_Scrollpane
 {
         Ewl_Container container;  /**< Inherit from Ewl_Container */
 
-        Ewl_Widget *overlay; 	/**< Clips the enclosed widget */
-        Ewl_Widget *box;  	/**< Lays out enclosed widget */
+        Ewl_Widget *overlay;         /**< Clips the enclosed widget */
+        Ewl_Widget *box;          /**< Lays out enclosed widget */
         Ewl_Widget *hscrollbar; /**< Horizontal scrollbar */
         Ewl_Widget *vscrollbar; /**< Vertical scrollbar */
         Ewl_Scrollpane_Flags hflag;      /**< Flags for horizontal scrollbar */
         Ewl_Scrollpane_Flags vflag;      /**< Flags for vertical scrollbar */
-        Ewl_Scrollpane_Scroll_Info_Base *kinfo;	/**< Kinetic scrolling info */
-        Ewl_Kinetic_Scroll type;	/**< If the scrollpane is to use kinetic scrolling */
+        Ewl_Scrollpane_Scroll_Info_Base *kinfo;        /**< Kinetic scrolling info */
+        Ewl_Kinetic_Scroll type;        /**< If the scrollpane is to use kinetic scrolling */
 };
 
 Ewl_Widget         *ewl_scrollpane_new(void);
-int         	 ewl_scrollpane_init(Ewl_Scrollpane *s);
-void        	 ewl_scrollpane_kinetic_scrolling_set(Ewl_Scrollpane *s,
-        					Ewl_Kinetic_Scroll type);
+int                  ewl_scrollpane_init(Ewl_Scrollpane *s);
+void                 ewl_scrollpane_kinetic_scrolling_set(Ewl_Scrollpane *s,
+                                                Ewl_Kinetic_Scroll type);
 Ewl_Kinetic_Scroll ewl_scrollpane_kinetic_scrolling_get(Ewl_Scrollpane *s);
-void        	 ewl_scrollpane_kinetic_max_velocity_set(Ewl_Scrollpane *s, double v);
-double        	 ewl_scrollpane_kinetic_max_velocity_get(Ewl_Scrollpane *s);
-void        	 ewl_scrollpane_kinetic_min_velocity_set(Ewl_Scrollpane *s, double v);
-double        	 ewl_scrollpane_kinetic_min_velocity_get(Ewl_Scrollpane *s);
-void        	 ewl_scrollpane_kinetic_dampen_set(Ewl_Scrollpane *s, double d);
-double        	 ewl_scrollpane_kinetic_dampen_get(Ewl_Scrollpane *s);
-void        	 ewl_scrollpane_kinetic_fps_set(Ewl_Scrollpane *s, int fps); 
-int        	 ewl_scrollpane_kinetic_fps_get(Ewl_Scrollpane *s);
+void                 ewl_scrollpane_kinetic_max_velocity_set(Ewl_Scrollpane *s, double v);
+double                 ewl_scrollpane_kinetic_max_velocity_get(Ewl_Scrollpane *s);
+void                 ewl_scrollpane_kinetic_min_velocity_set(Ewl_Scrollpane *s, double v);
+double                 ewl_scrollpane_kinetic_min_velocity_get(Ewl_Scrollpane *s);
+void                 ewl_scrollpane_kinetic_dampen_set(Ewl_Scrollpane *s, double d);
+double                 ewl_scrollpane_kinetic_dampen_get(Ewl_Scrollpane *s);
+void                 ewl_scrollpane_kinetic_fps_set(Ewl_Scrollpane *s, int fps); 
+int                 ewl_scrollpane_kinetic_fps_get(Ewl_Scrollpane *s);
 
-void         	 ewl_scrollpane_hscrollbar_flag_set(Ewl_Scrollpane *s,
-        					   Ewl_Scrollpane_Flags f);
-void         	 ewl_scrollpane_vscrollbar_flag_set(Ewl_Scrollpane *s,
-        					   Ewl_Scrollpane_Flags f);
+void                  ewl_scrollpane_hscrollbar_flag_set(Ewl_Scrollpane *s,
+                                                   Ewl_Scrollpane_Flags f);
+void                  ewl_scrollpane_vscrollbar_flag_set(Ewl_Scrollpane *s,
+                                                   Ewl_Scrollpane_Flags f);
 
 Ewl_Scrollpane_Flags ewl_scrollpane_hscrollbar_flag_get(Ewl_Scrollpane *s);
 Ewl_Scrollpane_Flags ewl_scrollpane_vscrollbar_flag_get(Ewl_Scrollpane *s);
 
-double         	 ewl_scrollpane_hscrollbar_value_get(Ewl_Scrollpane *s);
-double         	 ewl_scrollpane_vscrollbar_value_get(Ewl_Scrollpane *s);
+double                  ewl_scrollpane_hscrollbar_value_get(Ewl_Scrollpane *s);
+double                  ewl_scrollpane_vscrollbar_value_get(Ewl_Scrollpane *s);
 
-void         	 ewl_scrollpane_hscrollbar_value_set(Ewl_Scrollpane *s, double val);
-void         	 ewl_scrollpane_vscrollbar_value_set(Ewl_Scrollpane *s, double val);
+void                  ewl_scrollpane_hscrollbar_value_set(Ewl_Scrollpane *s, double val);
+void                  ewl_scrollpane_vscrollbar_value_set(Ewl_Scrollpane *s, double val);
 
-double         	 ewl_scrollpane_hscrollbar_step_get(Ewl_Scrollpane *s);
-double         	 ewl_scrollpane_vscrollbar_step_get(Ewl_Scrollpane *s);
+double                  ewl_scrollpane_hscrollbar_step_get(Ewl_Scrollpane *s);
+double                  ewl_scrollpane_vscrollbar_step_get(Ewl_Scrollpane *s);
 
 /*
  * Internally used callbacks, override at your own risk.
  */
 void ewl_scrollpane_cb_configure(Ewl_Widget *w, void *ev_data,
-        					void *user_data);
+                                                void *user_data);
 void ewl_scrollpane_cb_focus_jump(Ewl_Widget *w, void *ev_data,
-         					void *user_data);
+                                                 void *user_data);
 void ewl_scrollpane_cb_hscroll(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_scrollpane_cb_vscroll(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_scrollpane_cb_wheel_scroll(Ewl_Widget *w, void *ev_data,
-        						void *user_data);
+                                                        void *user_data);
 
 /**
  * @}

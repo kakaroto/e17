@@ -26,8 +26,8 @@ ewl_text_fmt_new(Ewl_Text *t)
         fmt->nodes = ecore_dlist_new();
         if (!fmt->nodes)
         {
-        	ewl_text_fmt_destroy(fmt);
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                ewl_text_fmt_destroy(fmt);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
         }
         ecore_dlist_free_cb_set(fmt->nodes, ewl_text_fmt_node_free);
 
@@ -68,8 +68,8 @@ ewl_text_fmt_clear(Ewl_Text_Fmt *fmt)
 
         while ((node = ecore_dlist_first_remove(fmt->nodes)))
         {
-        	if (node->tx) ewl_text_context_release(node->tx);
-        	FREE(node);
+                if (node->tx) ewl_text_context_release(node->tx);
+                FREE(node);
         }
 
         fmt->current_node.char_idx = 0;
@@ -91,7 +91,7 @@ ewl_text_fmt_clear(Ewl_Text_Fmt *fmt)
  */
 void
 ewl_text_fmt_node_prepend(Ewl_Text_Fmt *fmt, Ewl_Text_Context *tx,
-        		unsigned int char_len, unsigned int byte_len)
+                        unsigned int char_len, unsigned int byte_len)
 {
         Ewl_Text_Fmt_Node *node = NULL;
 
@@ -103,14 +103,14 @@ ewl_text_fmt_node_prepend(Ewl_Text_Fmt *fmt, Ewl_Text_Context *tx,
 
         if (tx)
         {
-        	node = ewl_text_fmt_node_new(tx, char_len, byte_len);
-        	ecore_dlist_prepend(fmt->nodes, node);
+                node = ewl_text_fmt_node_new(tx, char_len, byte_len);
+                ecore_dlist_prepend(fmt->nodes, node);
         }
         else
         {
-        	node = ewl_text_fmt_get_first(fmt);
-        	node->char_len += char_len;
-        	node->byte_len += byte_len;
+                node = ewl_text_fmt_get_first(fmt);
+                node->char_len += char_len;
+                node->byte_len += byte_len;
         }
 
         /* we prepended so we need to add the nodes lengths to the current
@@ -131,7 +131,7 @@ ewl_text_fmt_node_prepend(Ewl_Text_Fmt *fmt, Ewl_Text_Context *tx,
  */
 void
 ewl_text_fmt_node_append(Ewl_Text_Fmt *fmt, Ewl_Text_Context *tx,
-        		unsigned int char_len, unsigned int byte_len)
+                        unsigned int char_len, unsigned int byte_len)
 {
         Ewl_Text_Fmt_Node *node;
 
@@ -141,23 +141,23 @@ ewl_text_fmt_node_append(Ewl_Text_Fmt *fmt, Ewl_Text_Context *tx,
         node = ewl_text_fmt_get_last(fmt);
         if (tx && (!node || (node->char_len > 0)))
         {
-        	node = ewl_text_fmt_node_new(tx, char_len, byte_len);
-        	ecore_dlist_append(fmt->nodes, node);
+                node = ewl_text_fmt_node_new(tx, char_len, byte_len);
+                ecore_dlist_append(fmt->nodes, node);
         }
         else
         {
-        	/* if we've got a new context to use and our current
-        	 * formatting node has no text in it replace its context
-        	 * with the new one */
-        	if (tx && (node->char_len == 0))
-        	{
-        		ewl_text_context_release(node->tx);
-        		node->tx = tx;
-        		ewl_text_context_acquire(node->tx);
-        	}
+                /* if we've got a new context to use and our current
+                 * formatting node has no text in it replace its context
+                 * with the new one */
+                if (tx && (node->char_len == 0))
+                {
+                        ewl_text_context_release(node->tx);
+                        node->tx = tx;
+                        ewl_text_context_acquire(node->tx);
+                }
 
-        	node->char_len += char_len;
-        	node->byte_len += byte_len;
+                node->char_len += char_len;
+                node->byte_len += byte_len;
         }
 
         fmt->length.char_len += char_len;
@@ -177,8 +177,8 @@ ewl_text_fmt_node_append(Ewl_Text_Fmt *fmt, Ewl_Text_Context *tx,
  */
 void
 ewl_text_fmt_node_insert(Ewl_Text_Fmt *fmt, unsigned int idx,
-        		Ewl_Text_Context *tx, unsigned int char_len,
-        		unsigned int byte_len)
+                        Ewl_Text_Context *tx, unsigned int char_len,
+                        unsigned int byte_len)
 {
         Ewl_Text_Fmt_Node *node = NULL, *cur_node, *left = NULL;
 
@@ -190,11 +190,11 @@ ewl_text_fmt_node_insert(Ewl_Text_Fmt *fmt, unsigned int idx,
 
         if (!tx)
         {
-        	node = ewl_text_fmt_get_current(fmt);
-        	node->char_len += char_len;
-        	node->byte_len += byte_len;
+                node = ewl_text_fmt_get_current(fmt);
+                node->char_len += char_len;
+                node->byte_len += byte_len;
 
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
         }
 
         node = ewl_text_fmt_node_new(tx, char_len, byte_len);
@@ -202,62 +202,62 @@ ewl_text_fmt_node_insert(Ewl_Text_Fmt *fmt, unsigned int idx,
 
         /* insert at the current location */
         if (fmt->current_node.char_idx == idx)
-        	ecore_dlist_insert(fmt->nodes, node);
+                ecore_dlist_insert(fmt->nodes, node);
 
         /* insert at the end of the current node */
         else if ((fmt->current_node.char_idx + cur_node->char_len) == idx)
         {
-        	ecore_dlist_next(fmt->nodes);
-        	if (ecore_dlist_current(fmt->nodes))
-        	{
-        		ecore_dlist_insert(fmt->nodes, node);
+                ecore_dlist_next(fmt->nodes);
+                if (ecore_dlist_current(fmt->nodes))
+                {
+                        ecore_dlist_insert(fmt->nodes, node);
 
-        		/* update our index as we're currently on the next node */
-        		fmt->current_node.char_idx += cur_node->char_len;
-        		fmt->current_node.byte_idx += cur_node->byte_len;
-        	}
-        	else
-        	{
-        		ecore_dlist_append(fmt->nodes, node);
-        		ecore_dlist_last_goto(fmt->nodes);
+                        /* update our index as we're currently on the next node */
+                        fmt->current_node.char_idx += cur_node->char_len;
+                        fmt->current_node.byte_idx += cur_node->byte_len;
+                }
+                else
+                {
+                        ecore_dlist_append(fmt->nodes, node);
+                        ecore_dlist_last_goto(fmt->nodes);
 
-        		/* we haven't incremented the sizes yet so we're at
-        		 * the end of the last set of nodes */
-        		fmt->current_node.char_idx = fmt->length.char_len;
-        		fmt->current_node.byte_idx = fmt->length.byte_len;
-        	}
+                        /* we haven't incremented the sizes yet so we're at
+                         * the end of the last set of nodes */
+                        fmt->current_node.char_idx = fmt->length.char_len;
+                        fmt->current_node.byte_idx = fmt->length.byte_len;
+                }
         }
         else
         {
-        	/* insert into the middle of the current node */
-        	left = ewl_text_fmt_node_new(node->tx,
-        			idx - fmt->current_node.char_idx, 0);
-        	ewl_text_fmt_char_to_byte(fmt, idx,
-        				idx - fmt->current_node.char_idx,
-        				NULL, &(left->byte_len));
+                /* insert into the middle of the current node */
+                left = ewl_text_fmt_node_new(node->tx,
+                                idx - fmt->current_node.char_idx, 0);
+                ewl_text_fmt_char_to_byte(fmt, idx,
+                                        idx - fmt->current_node.char_idx,
+                                        NULL, &(left->byte_len));
 
-        	cur_node->char_len -= left->char_len;
-        	cur_node->byte_len -= left->byte_len;
+                cur_node->char_len -= left->char_len;
+                cur_node->byte_len -= left->byte_len;
 
-        	/* insert inserts to the right, so move past the current node so we
-        	 * can insert the two new ones. If we have a node to the left we
-        	 * insert the left node then the new node so the new one is in the
-        	 * middle. If there is no node to the left we insert the new node
-        	 * then the left node. */
-        	ecore_dlist_next(fmt->nodes);
-        	if (ecore_dlist_current(fmt->nodes))
-        	{
-        		ecore_dlist_insert(fmt->nodes, left);
-        		ecore_dlist_insert(fmt->nodes, node);
-        	}
-        	else
-        	{
-        		ecore_dlist_append(fmt->nodes, node);
-        		ecore_dlist_last_goto(fmt->nodes);
-        		ecore_dlist_append(fmt->nodes, left);
-        	}
-        	fmt->current_node.char_idx += cur_node->char_len;
-        	fmt->current_node.byte_idx += cur_node->byte_len;
+                /* insert inserts to the right, so move past the current node so we
+                 * can insert the two new ones. If we have a node to the left we
+                 * insert the left node then the new node so the new one is in the
+                 * middle. If there is no node to the left we insert the new node
+                 * then the left node. */
+                ecore_dlist_next(fmt->nodes);
+                if (ecore_dlist_current(fmt->nodes))
+                {
+                        ecore_dlist_insert(fmt->nodes, left);
+                        ecore_dlist_insert(fmt->nodes, node);
+                }
+                else
+                {
+                        ecore_dlist_append(fmt->nodes, node);
+                        ecore_dlist_last_goto(fmt->nodes);
+                        ecore_dlist_append(fmt->nodes, left);
+                }
+                fmt->current_node.char_idx += cur_node->char_len;
+                fmt->current_node.byte_idx += cur_node->byte_len;
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -272,7 +272,7 @@ ewl_text_fmt_node_insert(Ewl_Text_Fmt *fmt, unsigned int idx,
  */
 void
 ewl_text_fmt_node_delete(Ewl_Text_Fmt *fmt, unsigned int idx,
-        				unsigned int char_len)
+                                        unsigned int char_len)
 {
         Ewl_Text_Fmt_Node *node;
 
@@ -281,9 +281,9 @@ ewl_text_fmt_node_delete(Ewl_Text_Fmt *fmt, unsigned int idx,
 
         if (idx < fmt->current_node.char_idx)
         {
-        	DWARNING("The current position (%u) is higher than the to "
-        			"be to remove position (%u)\n",
-        			fmt->current_node.char_idx, idx);
+                DWARNING("The current position (%u) is higher than the to "
+                                "be to remove position (%u)\n",
+                                fmt->current_node.char_idx, idx);
         }
         /* adjust the char length, we'll adjust the byte length later */
         fmt->length.char_len -= char_len;
@@ -291,43 +291,43 @@ ewl_text_fmt_node_delete(Ewl_Text_Fmt *fmt, unsigned int idx,
         node = ecore_dlist_current(fmt->nodes);
         while (char_len > 0)
         {
-        	unsigned int available;
+                unsigned int available;
 
-        	/* how much space is available in this node to be removed */
-        	available = node->char_len - (idx - fmt->current_node.char_idx);
-        	if (available > char_len) available = char_len;
+                /* how much space is available in this node to be removed */
+                available = node->char_len - (idx - fmt->current_node.char_idx);
+                if (available > char_len) available = char_len;
 
-        	node->char_len -= available;
-        	if (node->char_len > 0)
-        	{
-        		unsigned int byte_len = 0;
+                node->char_len -= available;
+                if (node->char_len > 0)
+                {
+                        unsigned int byte_len = 0;
 
-        		/* Note: we already removed the related text part
-        		 * so it is save to use the new shorter text here */
-        		ewl_text_fmt_char_to_byte(fmt,
-        				fmt->current_node.char_idx,
-        				node->char_len,
-        				NULL, &byte_len);
+                        /* Note: we already removed the related text part
+                         * so it is save to use the new shorter text here */
+                        ewl_text_fmt_char_to_byte(fmt,
+                                        fmt->current_node.char_idx,
+                                        node->char_len,
+                                        NULL, &byte_len);
 
-        		/* deduct the byte count */
-        		fmt->length.byte_len -= node->byte_len - byte_len;
-        		node->byte_len = byte_len;
+                        /* deduct the byte count */
+                        fmt->length.byte_len -= node->byte_len - byte_len;
+                        node->byte_len = byte_len;
 
-        		fmt->current_node.char_idx += node->char_len;
-        		fmt->current_node.byte_idx += node->byte_len;
-        		ecore_dlist_next(fmt->nodes);
-        		node = ecore_dlist_current(fmt->nodes);
-        	}
-        	else
-        	{
-        		/* we still need to adjust the global byte count */
-        		fmt->length.byte_len -= node->byte_len;
+                        fmt->current_node.char_idx += node->char_len;
+                        fmt->current_node.byte_idx += node->byte_len;
+                        ecore_dlist_next(fmt->nodes);
+                        node = ecore_dlist_current(fmt->nodes);
+                }
+                else
+                {
+                        /* we still need to adjust the global byte count */
+                        fmt->length.byte_len -= node->byte_len;
 
-        		ecore_dlist_remove(fmt->nodes);
-        		ewl_text_fmt_node_free(node);
-        		node = ecore_dlist_current(fmt->nodes);
-        	}
-        	char_len -= available;
+                        ecore_dlist_remove(fmt->nodes);
+                        ewl_text_fmt_node_free(node);
+                        node = ecore_dlist_current(fmt->nodes);
+                }
+                char_len -= available;
         }
 
         /* make sure we've still got a current node. if not reset to the
@@ -335,9 +335,9 @@ ewl_text_fmt_node_delete(Ewl_Text_Fmt *fmt, unsigned int idx,
         node = ecore_dlist_current(fmt->nodes);
         if (!node)
         {
-        	ecore_dlist_first_goto(fmt->nodes);
-        	fmt->current_node.char_idx = 0;
-        	fmt->current_node.byte_idx = 0;
+                ecore_dlist_first_goto(fmt->nodes);
+                fmt->current_node.char_idx = 0;
+                fmt->current_node.byte_idx = 0;
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -444,22 +444,22 @@ ewl_text_fmt_goto(Ewl_Text_Fmt *fmt, unsigned int idx)
 
         if (fmt->length.char_len != EWL_TEXT(fmt->text)->length.chars)
         {
-        	DWARNING("The character length of the fmt (%u) is not"
-        			" equal to the length of the text (%u)\n",
-        			fmt->length.char_len,
-        			EWL_TEXT(fmt->text)->length.chars);
+                DWARNING("The character length of the fmt (%u) is not"
+                                " equal to the length of the text (%u)\n",
+                                fmt->length.char_len,
+                                EWL_TEXT(fmt->text)->length.chars);
         }
 
         if (idx >= fmt->length.char_len)
         {
-        	node = ecore_dlist_last_goto(fmt->nodes);
+                node = ecore_dlist_last_goto(fmt->nodes);
 
-        	fmt->current_node.char_idx =
-        		fmt->length.char_len - node->char_len;
-        	fmt->current_node.byte_idx =
-        		fmt->length.byte_len - node->byte_len;
+                fmt->current_node.char_idx =
+                        fmt->length.char_len - node->char_len;
+                fmt->current_node.byte_idx =
+                        fmt->length.byte_len - node->byte_len;
 
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
         }
 
         node = ecore_dlist_first_goto(fmt->nodes);
@@ -468,85 +468,85 @@ ewl_text_fmt_goto(Ewl_Text_Fmt *fmt, unsigned int idx)
 
         while ((fmt->current_node.char_idx + node->char_len) <= idx)
         {
-        	fmt->current_node.char_idx += node->char_len;
-        	fmt->current_node.byte_idx += node->byte_len;
+                fmt->current_node.char_idx += node->char_len;
+                fmt->current_node.byte_idx += node->byte_len;
 
-        	ecore_dlist_next(fmt->nodes);
-        	node = ecore_dlist_current(fmt->nodes);
+                ecore_dlist_next(fmt->nodes);
+                node = ecore_dlist_current(fmt->nodes);
         }
 
 #if 0
         /* set to start of text */
         if (idx == 0)
         {
-        	fmt->current_node.char_idx = 0;
-        	fmt->current_node.byte_idx = 0;
-        	ecore_dlist_first_goto(fmt->nodes);
+                fmt->current_node.char_idx = 0;
+                fmt->current_node.byte_idx = 0;
+                ecore_dlist_first_goto(fmt->nodes);
         }
 
         /* set to end of text */
         else if (idx >= fmt->length.char_len)
         {
-        	node = ecore_dlist_last_goto(fmt->nodes);
+                node = ecore_dlist_last_goto(fmt->nodes);
 
-        	fmt->current_node.char_idx =
-        		fmt->length.char_len - node->char_len;
-        	fmt->current_node.byte_idx =
-        		fmt->length.byte_len - node->byte_len;
+                fmt->current_node.char_idx =
+                        fmt->length.char_len - node->char_len;
+                fmt->current_node.byte_idx =
+                        fmt->length.byte_len - node->byte_len;
         }
 
         /* set to after our current position
           * walk forward until we cover the given position */
         else if (fmt->current_node.char_idx < idx)
         {
-        	node = ecore_dlist_current(fmt->nodes);
-        	while ((node->char_len + fmt->current_node.char_idx) < idx)
-        	{
-        		fmt->current_node.char_idx += node->char_len;
-        		fmt->current_node.byte_idx += node->byte_len;
+                node = ecore_dlist_current(fmt->nodes);
+                while ((node->char_len + fmt->current_node.char_idx) < idx)
+                {
+                        fmt->current_node.char_idx += node->char_len;
+                        fmt->current_node.byte_idx += node->byte_len;
 
-        		ecore_dlist_next(fmt->nodes);
-        		if (!(node = ecore_dlist_current(fmt->nodes)))
-        		{
-        			DWARNING("Incorrectly walked off list.\n");
-        			node = ecore_dlist_last_goto(fmt->nodes);
-        			fmt->current_node.char_idx =
-        				fmt->length.char_len - node->char_len;
-        			fmt->current_node.byte_idx =
-        				fmt->length.byte_len - node->byte_len;
-        		       	break;
-        		}
-        	}
+                        ecore_dlist_next(fmt->nodes);
+                        if (!(node = ecore_dlist_current(fmt->nodes)))
+                        {
+                                DWARNING("Incorrectly walked off list.\n");
+                                node = ecore_dlist_last_goto(fmt->nodes);
+                                fmt->current_node.char_idx =
+                                        fmt->length.char_len - node->char_len;
+                                fmt->current_node.byte_idx =
+                                        fmt->length.byte_len - node->byte_len;
+                                       break;
+                        }
+                }
         }
 
         /* set before our position
          * walk back until we're less then the given position */
         else
         {
-        	while (fmt->current_node.char_idx > idx)
-        	{
-        		ecore_dlist_previous(fmt->nodes);
-        		if (!(node = ecore_dlist_current(fmt->nodes)))
-        		{
-        			DWARNING("Incorrectly walked off list.\n");
-        			node = ecore_dlist_first_goto(fmt->nodes);
-        			fmt->current_node.char_idx = 0;
-        			fmt->current_node.byte_idx = 0;
-        		       	break;
-        		}
+                while (fmt->current_node.char_idx > idx)
+                {
+                        ecore_dlist_previous(fmt->nodes);
+                        if (!(node = ecore_dlist_current(fmt->nodes)))
+                        {
+                                DWARNING("Incorrectly walked off list.\n");
+                                node = ecore_dlist_first_goto(fmt->nodes);
+                                fmt->current_node.char_idx = 0;
+                                fmt->current_node.byte_idx = 0;
+                                       break;
+                        }
 
-        		fmt->current_node.char_idx -= node->char_len;
-        		fmt->current_node.byte_idx -= node->byte_len;
-        	}
+                        fmt->current_node.char_idx -= node->char_len;
+                        fmt->current_node.byte_idx -= node->byte_len;
+                }
         }
 
         if (!(node = ecore_dlist_current(fmt->nodes)))
         {
-        	DWARNING("Unable to place cursor at %d", idx);
+                DWARNING("Unable to place cursor at %d", idx);
 
-        	ecore_dlist_first_goto(fmt->nodes);
-        	fmt->current_node.char_idx = 0;
-        	fmt->current_node.byte_idx = 0;
+                ecore_dlist_first_goto(fmt->nodes);
+                fmt->current_node.char_idx = 0;
+                fmt->current_node.byte_idx = 0;
         }
 #endif
 
@@ -571,9 +571,9 @@ ewl_text_fmt_dump(Ewl_Text_Fmt *fmt)
 
         while ((node = ecore_dlist_next(fmt->nodes)))
         {
-        	printf("%d chars, %d bytes\n", node->char_len, node->byte_len);
-        	ewl_text_context_print(node->tx, "    ");
-        	printf("\n\n");
+                printf("%d chars, %d bytes\n", node->char_len, node->byte_len);
+                ewl_text_context_print(node->tx, "    ");
+                printf("\n\n");
         }
 
         ecore_dlist_goto(fmt->nodes, cur_node);
@@ -595,8 +595,8 @@ ewl_text_fmt_dump(Ewl_Text_Fmt *fmt)
  * started */
 void
 ewl_text_fmt_char_to_byte(Ewl_Text_Fmt *fmt,
-        		unsigned int char_idx, unsigned int char_len,
-        		unsigned int *byte_idx, unsigned int *byte_len)
+                        unsigned int char_idx, unsigned int char_len,
+                        unsigned int *byte_idx, unsigned int *byte_len)
 {
         Ewl_Text *t;
         Ewl_Text_Fmt_Node *current_node, *node = NULL;
@@ -614,76 +614,76 @@ ewl_text_fmt_char_to_byte(Ewl_Text_Fmt *fmt,
         /* first step is to find the actual node that this text represents */
         if (fmt->current_node.char_idx < char_idx)
         {
-        	/* walk forward until we cover the given position */
-        	node = ecore_dlist_current(fmt->nodes);
-        	while ((node->char_len + cur_char_idx) < char_idx)
-        	{
-        		cur_char_idx += node->char_len;
-        		bidx += node->byte_len;
+                /* walk forward until we cover the given position */
+                node = ecore_dlist_current(fmt->nodes);
+                while ((node->char_len + cur_char_idx) < char_idx)
+                {
+                        cur_char_idx += node->char_len;
+                        bidx += node->byte_len;
 
-        		ecore_dlist_next(fmt->nodes);
-        		node = ecore_dlist_current(fmt->nodes);
-        		if (!node) break;
-        	}
-        	move = ecore_dlist_previous;
+                        ecore_dlist_next(fmt->nodes);
+                        node = ecore_dlist_current(fmt->nodes);
+                        if (!node) break;
+                }
+                move = ecore_dlist_previous;
 
-        	if (!node)
-        	{
-        		node = ecore_dlist_last_goto(fmt->nodes);
-        		fmt->current_node.char_idx = fmt->length.char_len - node->char_len;
-        		fmt->current_node.byte_idx = fmt->length.byte_len - node->byte_len;
-        	}
+                if (!node)
+                {
+                        node = ecore_dlist_last_goto(fmt->nodes);
+                        fmt->current_node.char_idx = fmt->length.char_len - node->char_len;
+                        fmt->current_node.byte_idx = fmt->length.byte_len - node->byte_len;
+                }
         }
         else
         {
-        	/* walk back until we're less then the given position */
-        	while (cur_char_idx > char_idx)
-        	{
-        		ecore_dlist_previous(fmt->nodes);
-        		node = ecore_dlist_current(fmt->nodes);
-        		if (!node) break;
+                /* walk back until we're less then the given position */
+                while (cur_char_idx > char_idx)
+                {
+                        ecore_dlist_previous(fmt->nodes);
+                        node = ecore_dlist_current(fmt->nodes);
+                        if (!node) break;
 
-        		cur_char_idx -= node->char_len;
-        		bidx -= node->byte_len;
-        	}
-        	move = ecore_dlist_next;
+                        cur_char_idx -= node->char_len;
+                        bidx -= node->byte_len;
+                }
+                move = ecore_dlist_next;
 
-        	if (!node)
-        	{
-        		node = ecore_dlist_first_goto(fmt->nodes);
-        		fmt->current_node.char_idx = 0;
-        		fmt->current_node.byte_idx = 0;
-        	}
+                if (!node)
+                {
+                        node = ecore_dlist_first_goto(fmt->nodes);
+                        fmt->current_node.char_idx = 0;
+                        fmt->current_node.byte_idx = 0;
+                }
         }
 
         /* we still need to count within this node */
         while (cur_char_idx < char_idx)
         {
-        	unsigned int bytes;
+                unsigned int bytes;
 
-        	ewl_text_text_next_char(t->text + bidx, &bytes);
-        	bidx += bytes;
-        	cur_char_idx ++;
+                ewl_text_text_next_char(t->text + bidx, &bytes);
+                bidx += bytes;
+                cur_char_idx ++;
         }
 
         if (byte_len)
         {
-        	if (char_len == 0) *byte_len = 0;
-        	else
-        	{
-        		char *txt;
+                if (char_len == 0) *byte_len = 0;
+                else
+                {
+                        char *txt;
 
-        		txt = t->text + bidx;
-        		cur_char_idx = 0;
-        		while (cur_char_idx < char_len)
-        		{
-        			unsigned int bytes;
+                        txt = t->text + bidx;
+                        cur_char_idx = 0;
+                        while (cur_char_idx < char_len)
+                        {
+                                unsigned int bytes;
 
-        			txt = ewl_text_text_next_char(txt, &bytes);
-        			*byte_len += bytes;
-        			cur_char_idx ++;
-        		}
-        	}
+                                txt = ewl_text_text_next_char(txt, &bytes);
+                                *byte_len += bytes;
+                                cur_char_idx ++;
+                        }
+                }
         }
 
         if (byte_idx) *byte_idx = bidx;
@@ -691,8 +691,8 @@ ewl_text_fmt_char_to_byte(Ewl_Text_Fmt *fmt,
         node = ecore_dlist_current(fmt->nodes);
         while (node != current_node)
         {
-        	move(fmt->nodes);
-        	node = ecore_dlist_current(fmt->nodes);
+                move(fmt->nodes);
+                node = ecore_dlist_current(fmt->nodes);
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -710,8 +710,8 @@ ewl_text_fmt_char_to_byte(Ewl_Text_Fmt *fmt,
  */
 void
 ewl_text_fmt_byte_to_char(Ewl_Text_Fmt *fmt,
-        		unsigned int byte_idx, unsigned int byte_len,
-        		unsigned int *char_idx, unsigned int *char_len)
+                        unsigned int byte_idx, unsigned int byte_len,
+                        unsigned int *char_idx, unsigned int *char_len)
 {
         Ewl_Text *t;
         Ewl_Text_Fmt_Node *current_node, *node = NULL;
@@ -725,80 +725,80 @@ ewl_text_fmt_byte_to_char(Ewl_Text_Fmt *fmt,
         current_node = ecore_dlist_current(fmt->nodes);
         if (fmt->current_node.byte_idx < byte_idx)
         {
-        	byte_count = fmt->current_node.byte_idx;
-        	cidx = fmt->current_node.char_idx;
+                byte_count = fmt->current_node.byte_idx;
+                cidx = fmt->current_node.char_idx;
 
-        	/* walk forward until we cover the given position */
-        	node = ecore_dlist_current(fmt->nodes);
-        	while ((node->byte_len + byte_count) < byte_idx)
-        	{
-        		byte_count += node->byte_len;
-        		cidx += node->char_len;
+                /* walk forward until we cover the given position */
+                node = ecore_dlist_current(fmt->nodes);
+                while ((node->byte_len + byte_count) < byte_idx)
+                {
+                        byte_count += node->byte_len;
+                        cidx += node->char_len;
 
-        		ecore_dlist_next(fmt->nodes);
-        		node = ecore_dlist_current(fmt->nodes);
-        		if (!node) break;
-        	}
+                        ecore_dlist_next(fmt->nodes);
+                        node = ecore_dlist_current(fmt->nodes);
+                        if (!node) break;
+                }
 
-        	if (!node)
-        	{
-        		node = ecore_dlist_last_goto(fmt->nodes);
-        		fmt->current_node.char_idx = fmt->length.char_len - node->char_len;
-        		fmt->current_node.byte_idx = fmt->length.byte_len - node->byte_len;
-        	}
-        	move = ecore_dlist_previous;
+                if (!node)
+                {
+                        node = ecore_dlist_last_goto(fmt->nodes);
+                        fmt->current_node.char_idx = fmt->length.char_len - node->char_len;
+                        fmt->current_node.byte_idx = fmt->length.byte_len - node->byte_len;
+                }
+                move = ecore_dlist_previous;
         }
         else
         {
-        	/* walk back until we're less then the given position */
-        	node = ecore_dlist_current(fmt->nodes);
-        	while (byte_count > byte_idx)
-        	{
-        		ecore_dlist_previous(fmt->nodes);
-        		node = ecore_dlist_current(fmt->nodes);
-        		if (!node) break;
+                /* walk back until we're less then the given position */
+                node = ecore_dlist_current(fmt->nodes);
+                while (byte_count > byte_idx)
+                {
+                        ecore_dlist_previous(fmt->nodes);
+                        node = ecore_dlist_current(fmt->nodes);
+                        if (!node) break;
 
-        		byte_count -= node->byte_len;
-        		cidx -= node->char_len;
-        	}
+                        byte_count -= node->byte_len;
+                        cidx -= node->char_len;
+                }
 
-        	if (!node)
-        	{
-        		ecore_dlist_first_goto(fmt->nodes);
-        		fmt->current_node.char_idx = 0;
-        		fmt->current_node.byte_idx = 0;
-        	}
-        	move = ecore_dlist_next;
+                if (!node)
+                {
+                        ecore_dlist_first_goto(fmt->nodes);
+                        fmt->current_node.char_idx = 0;
+                        fmt->current_node.byte_idx = 0;
+                }
+                move = ecore_dlist_next;
         }
 
         /* we still need to count within this node */
         while (byte_count < byte_idx)
         {
-        	unsigned int bytes;
+                unsigned int bytes;
 
-        	ewl_text_text_next_char(t->text + byte_count, &bytes);
-        	byte_count += bytes;
-        	cidx ++;
+                ewl_text_text_next_char(t->text + byte_count, &bytes);
+                byte_count += bytes;
+                cidx ++;
         }
 
         if (char_len)
         {
-        	if (byte_len == 0) *char_len = 0;
-        	else
-        	{
-        		char *txt;
+                if (byte_len == 0) *char_len = 0;
+                else
+                {
+                        char *txt;
 
-        		txt = t->text + byte_idx;
-        		byte_count = 0;
-        		while (byte_count < byte_len)
-        		{
-        			unsigned int bytes;
+                        txt = t->text + byte_idx;
+                        byte_count = 0;
+                        while (byte_count < byte_len)
+                        {
+                                unsigned int bytes;
 
-        			txt = ewl_text_text_next_char(txt, &bytes);
-        			byte_count += bytes;
-        			(*char_len) ++;
-        		}
-        	}
+                                txt = ewl_text_text_next_char(txt, &bytes);
+                                byte_count += bytes;
+                                (*char_len) ++;
+                        }
+                }
         }
 
         if (char_idx) *char_idx = cidx;
@@ -806,8 +806,8 @@ ewl_text_fmt_byte_to_char(Ewl_Text_Fmt *fmt,
         node = ecore_dlist_current(fmt->nodes);
         while (node != current_node)
         {
-        	move(fmt->nodes);
-        	node = ecore_dlist_current(fmt->nodes);
+                move(fmt->nodes);
+                node = ecore_dlist_current(fmt->nodes);
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -834,8 +834,8 @@ ewl_text_fmt_walk(Ewl_Text_Fmt *fmt,
         ecore_dlist_first_goto(fmt->nodes);
         while ((node = ecore_dlist_next(fmt->nodes)))
         {
-        	cb(node, fmt->text, byte_idx);
-        	byte_idx += node->byte_len;
+                cb(node, fmt->text, byte_idx);
+                byte_idx += node->byte_len;
         }
         ecore_dlist_goto(fmt->nodes, current_node);
 
@@ -854,8 +854,8 @@ ewl_text_fmt_walk(Ewl_Text_Fmt *fmt,
  */
 void
 ewl_text_fmt_apply(Ewl_Text_Fmt *fmt, unsigned int context_mask,
-        		Ewl_Text_Context *change, unsigned int char_idx,
-        		unsigned int char_len)
+                        Ewl_Text_Context *change, unsigned int char_idx,
+                        unsigned int char_len)
 {
         Ewl_Text *t;
         unsigned int cursor_idx;
@@ -865,7 +865,7 @@ ewl_text_fmt_apply(Ewl_Text_Fmt *fmt, unsigned int context_mask,
         DCHECK_PARAM_PTR(change);
 
         if ((char_len == 0) || (context_mask == EWL_TEXT_CONTEXT_MASK_NONE))
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         cursor_idx = char_idx;
 
@@ -876,132 +876,132 @@ ewl_text_fmt_apply(Ewl_Text_Fmt *fmt, unsigned int context_mask,
         node = ecore_dlist_current(fmt->nodes);
         while (char_len > 0)
         {
-        	/* we've walked off the end of the list */
-        	if (!node) break;
+                /* we've walked off the end of the list */
+                if (!node) break;
 
-        	/* covers entire node */
-        	if ((char_idx == fmt->current_node.char_idx)
-        			&& (node->char_len <= char_len))
-        	{
-        		Ewl_Text_Context *new_tx;
+                /* covers entire node */
+                if ((char_idx == fmt->current_node.char_idx)
+                                && (node->char_len <= char_len))
+                {
+                        Ewl_Text_Context *new_tx;
 
-        		new_tx = ewl_text_context_find(node->tx,
-        					context_mask, change);
-        		ewl_text_context_release(node->tx);
-        		node->tx = new_tx;
+                        new_tx = ewl_text_context_find(node->tx,
+                                                context_mask, change);
+                        ewl_text_context_release(node->tx);
+                        node->tx = new_tx;
 
-        		char_idx += node->char_len;
-        		char_len -= node->char_len;
-        		ecore_dlist_next(fmt->nodes);
+                        char_idx += node->char_len;
+                        char_len -= node->char_len;
+                        ecore_dlist_next(fmt->nodes);
 
-        		fmt->current_node.char_idx += node->char_len;
-        		fmt->current_node.byte_idx += node->byte_len;
-        	}
+                        fmt->current_node.char_idx += node->char_len;
+                        fmt->current_node.byte_idx += node->byte_len;
+                }
 
-        	/* start is the same, node is longer then needed */
-        	else if (char_idx == fmt->current_node.char_idx)
-        	{
-        		unsigned int blen = 0;
-        		Ewl_Text_Fmt_Node *new;
+                /* start is the same, node is longer then needed */
+                else if (char_idx == fmt->current_node.char_idx)
+                {
+                        unsigned int blen = 0;
+                        Ewl_Text_Fmt_Node *new;
 
-        		ewl_text_fmt_char_to_byte(fmt,
-        				char_idx, char_len, NULL, &blen);
+                        ewl_text_fmt_char_to_byte(fmt,
+                                        char_idx, char_len, NULL, &blen);
 
-        		new = ewl_text_fmt_node_new(
-        			ewl_text_context_find(node->tx,
-        					context_mask, change),
-        					char_len, blen);
+                        new = ewl_text_fmt_node_new(
+                                ewl_text_context_find(node->tx,
+                                                context_mask, change),
+                                                char_len, blen);
 
-        		node->char_len -= new->char_len;
-        		node->byte_len -= new->byte_len;
+                        node->char_len -= new->char_len;
+                        node->byte_len -= new->byte_len;
 
-        		ecore_dlist_insert(fmt->nodes, new);
-        		ecore_dlist_next(fmt->nodes);
+                        ecore_dlist_insert(fmt->nodes, new);
+                        ecore_dlist_next(fmt->nodes);
 
-        		fmt->current_node.char_idx += new->char_len;
-        		fmt->current_node.byte_idx += new->byte_len;
+                        fmt->current_node.char_idx += new->char_len;
+                        fmt->current_node.byte_idx += new->byte_len;
 
-        		char_idx += new->char_len;
-        		char_len -= new->char_len;
-        	}
+                        char_idx += new->char_len;
+                        char_len -= new->char_len;
+                }
 
-        	/* starts are different, need to set context on end of node */
-        	else
-        	{
-        		Ewl_Text_Fmt_Node *new;
-        		unsigned int blen = 0, right_skip;
+                /* starts are different, need to set context on end of node */
+                else
+                {
+                        Ewl_Text_Fmt_Node *new;
+                        unsigned int blen = 0, right_skip;
 
-        		if (char_idx < fmt->current_node.char_idx)
-        		{
-        			DWARNING("Cursor index less than formatting node index");
-        			right_skip = 0;
-        		}
-        		else
-        			right_skip = char_idx - fmt->current_node.char_idx;
-        		ewl_text_fmt_char_to_byte(fmt, fmt->current_node.char_idx,
-        						right_skip, NULL, &blen);
+                        if (char_idx < fmt->current_node.char_idx)
+                        {
+                                DWARNING("Cursor index less than formatting node index");
+                                right_skip = 0;
+                        }
+                        else
+                                right_skip = char_idx - fmt->current_node.char_idx;
+                        ewl_text_fmt_char_to_byte(fmt, fmt->current_node.char_idx,
+                                                        right_skip, NULL, &blen);
 
-        		new = ewl_text_fmt_node_new(node->tx, right_skip, blen);
+                        new = ewl_text_fmt_node_new(node->tx, right_skip, blen);
 
-        		ecore_dlist_insert(fmt->nodes, new);
-        		ecore_dlist_next(fmt->nodes);
-        		if (!ecore_dlist_current(fmt->nodes))
-        			ecore_dlist_last_goto(fmt->nodes);
+                        ecore_dlist_insert(fmt->nodes, new);
+                        ecore_dlist_next(fmt->nodes);
+                        if (!ecore_dlist_current(fmt->nodes))
+                                ecore_dlist_last_goto(fmt->nodes);
 
-        		fmt->current_node.char_idx += new->char_len;
-        		fmt->current_node.byte_idx += new->byte_len;
+                        fmt->current_node.char_idx += new->char_len;
+                        fmt->current_node.byte_idx += new->byte_len;
 
-        		/* update node to be the new formatting piece */
-        		node->tx = ewl_text_context_find(node->tx,
-        					context_mask, change);
-        		node->char_len -= new->char_len;
-        		node->byte_len -= new->byte_len;
+                        /* update node to be the new formatting piece */
+                        node->tx = ewl_text_context_find(node->tx,
+                                                context_mask, change);
+                        node->char_len -= new->char_len;
+                        node->byte_len -= new->byte_len;
 
-        		/* the rest of the node is covered */
-        		if (node->char_len <= char_len)
-        		{
-        			char_len -= node->char_len;
-        			char_idx += node->char_len;
+                        /* the rest of the node is covered */
+                        if (node->char_len <= char_len)
+                        {
+                                char_len -= node->char_len;
+                                char_idx += node->char_len;
 
-        			ecore_dlist_next(fmt->nodes);
-        			fmt->current_node.char_idx += node->char_len;
-        			fmt->current_node.byte_idx += node->byte_len;
-        		}
+                                ecore_dlist_next(fmt->nodes);
+                                fmt->current_node.char_idx += node->char_len;
+                                fmt->current_node.byte_idx += node->byte_len;
+                        }
 
-        		/* we need to split the node */
-        		else
-        		{
-        			Ewl_Text_Context *tx;
-        			unsigned int blen = 0;
+                        /* we need to split the node */
+                        else
+                        {
+                                Ewl_Text_Context *tx;
+                                unsigned int blen = 0;
 
-        			tx = new->tx;
-        			ewl_text_fmt_char_to_byte(fmt,
-        					char_idx, char_len,
-        					NULL, &blen);
+                                tx = new->tx;
+                                ewl_text_fmt_char_to_byte(fmt,
+                                                char_idx, char_len,
+                                                NULL, &blen);
 
-        			/* we create a new node which will be our
-        			 * formatting and reset node to be original
-        			 * formatting */
-        			new = ewl_text_fmt_node_new(node->tx,
-        					char_len, blen);
+                                /* we create a new node which will be our
+                                 * formatting and reset node to be original
+                                 * formatting */
+                                new = ewl_text_fmt_node_new(node->tx,
+                                                char_len, blen);
 
-        			ecore_dlist_insert(fmt->nodes, new);
-        			ecore_dlist_next(fmt->nodes);
-        			if (!ecore_dlist_current(fmt->nodes))
-        				ecore_dlist_last_goto(fmt->nodes);
+                                ecore_dlist_insert(fmt->nodes, new);
+                                ecore_dlist_next(fmt->nodes);
+                                if (!ecore_dlist_current(fmt->nodes))
+                                        ecore_dlist_last_goto(fmt->nodes);
 
-        			fmt->current_node.char_idx += new->char_len;
-        			fmt->current_node.byte_idx += new->byte_len;
+                                fmt->current_node.char_idx += new->char_len;
+                                fmt->current_node.byte_idx += new->byte_len;
 
-        			node->tx = tx;
-        			node->char_len -= new->char_len;
-        			node->byte_len -= new->byte_len;
+                                node->tx = tx;
+                                node->char_len -= new->char_len;
+                                node->byte_len -= new->byte_len;
 
-        			char_len -= new->char_len;
-        			char_idx += new->char_len;
-        		}
-        	}
-        	node = ecore_dlist_current(fmt->nodes);
+                                char_len -= new->char_len;
+                                char_idx += new->char_len;
+                        }
+                }
+                node = ecore_dlist_current(fmt->nodes);
         }
 
         /* Reset to the original cursor index */
@@ -1024,7 +1024,7 @@ ewl_text_fmt_apply(Ewl_Text_Fmt *fmt, unsigned int context_mask,
  */
 Ewl_Text_Fmt_Node *
 ewl_text_fmt_node_new(Ewl_Text_Context *tx, unsigned int char_len,
-        				unsigned int byte_len)
+                                        unsigned int byte_len)
 {
         Ewl_Text_Fmt_Node *node;
 

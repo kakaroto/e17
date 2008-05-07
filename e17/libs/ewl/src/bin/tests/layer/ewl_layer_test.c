@@ -53,32 +53,32 @@ create_test(Ewl_Container *box)
          * And now create the first row of buttons
          */
         for (i = 0; i < 20; i++) {
-        	w = ewl_button_new();
-        	ewl_button_label_set(EWL_BUTTON(w), "Hide");
-        	ewl_container_child_append(EWL_CONTAINER(c), w);
-        	ewl_widget_layer_priority_set(w, i - 10);
-        	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
-        	ewl_callback_append(w, EWL_CALLBACK_CLICKED,
-        		spectrum_hide, spec);
-        	ewl_widget_show(w);
+                w = ewl_button_new();
+                ewl_button_label_set(EWL_BUTTON(w), "Hide");
+                ewl_container_child_append(EWL_CONTAINER(c), w);
+                ewl_widget_layer_priority_set(w, i - 10);
+                ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
+                ewl_callback_append(w, EWL_CALLBACK_CLICKED,
+                        spectrum_hide, spec);
+                ewl_widget_show(w);
 
-        	button_row1[i] = w;
+                button_row1[i] = w;
         }
 
         /*
          * Create the second row
          */
         for (i = 0; i < 20; i++) {
-        	w = ewl_button_new();
-        	ewl_button_label_set(EWL_BUTTON(w), "Show");
-        	ewl_container_child_append(EWL_CONTAINER(c), w);
-        	ewl_widget_layer_priority_set(w, 10 - i);
-        	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
-        	ewl_callback_append(w, EWL_CALLBACK_CLICKED,
-        		spectrum_show, spec);
-        	ewl_widget_show(w);
+                w = ewl_button_new();
+                ewl_button_label_set(EWL_BUTTON(w), "Show");
+                ewl_container_child_append(EWL_CONTAINER(c), w);
+                ewl_widget_layer_priority_set(w, 10 - i);
+                ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
+                ewl_callback_append(w, EWL_CALLBACK_CLICKED,
+                        spectrum_show, spec);
+                ewl_widget_show(w);
 
-        	button_row2[i] = w;
+                button_row2[i] = w;
         }
 
         /*
@@ -90,7 +90,7 @@ create_test(Ewl_Container *box)
         ewl_widget_layer_priority_set(w, 3);
         ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
         ewl_callback_append(w, EWL_CALLBACK_CLICKED,
-        		layer_change, NULL);
+                        layer_change, NULL);
         ewl_widget_show(w);
         dbutton[0] = w;
 
@@ -113,7 +113,7 @@ create_test(Ewl_Container *box)
 
 static void
 spectrum_show(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
-        	void *user_data)
+                void *user_data)
 {
         Ewl_Widget *spec;
 
@@ -124,7 +124,7 @@ spectrum_show(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 
 static void
 spectrum_hide(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
-        	void *user_data)
+                void *user_data)
 {
         Ewl_Widget *spec;
 
@@ -135,17 +135,17 @@ spectrum_hide(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
 
 static void
 layer_change(Ewl_Widget *w, void *ev_data __UNUSED__,
-        	void *user_data __UNUSED__)
+                void *user_data __UNUSED__)
 {
         if (ewl_widget_layer_priority_get(w) == 3)
-        	ewl_widget_layer_priority_set(w, 1);
+                ewl_widget_layer_priority_set(w, 1);
         else
-        	ewl_widget_layer_priority_set(w, 3);
+                ewl_widget_layer_priority_set(w, 3);
 }
 
 static void
 configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
-        	void *user_data __UNUSED__)
+                void *user_data __UNUSED__)
 {
         int x, y;
         int i;
@@ -156,14 +156,14 @@ configure_cb(Ewl_Widget *w, void *ev_data __UNUSED__,
          * place the first row of buttons
          */
         for (i = 0; i < 20; i++)
-        	ewl_object_position_request(EWL_OBJECT(button_row1[i]),
-        					i * 5 + x, i * 5 + y);
+                ewl_object_position_request(EWL_OBJECT(button_row1[i]),
+                                                i * 5 + x, i * 5 + y);
         /*
          * place the second row
          */
         for (i = 0; i < 20; i++)
-        	ewl_object_position_request(EWL_OBJECT(button_row2[i]),
-        					i * 5 + 40 + x, i * 5 + y);
+                ewl_object_position_request(EWL_OBJECT(button_row2[i]),
+                                                i * 5 + 40 + x, i * 5 + y);
 
         ewl_object_position_request(EWL_OBJECT(dbutton[0]), 180 + x, 0 + y);
         ewl_object_position_request(EWL_OBJECT(dbutton[1]), 220 + x, 20 + y);

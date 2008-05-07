@@ -57,22 +57,22 @@ typedef struct Ewl_Entry Ewl_Entry;
  */
 struct Ewl_Entry
 {
-        Ewl_Text	 text;			/**< The Ewl_Text parent */
-        Ewl_Widget	*cursor;		/**< The cursor */
+        Ewl_Text         text;                        /**< The Ewl_Text parent */
+        Ewl_Widget        *cursor;                /**< The cursor */
 
-        unsigned int	 multiline:1;		/**< Is the entry multi-line */
-        unsigned int	 editable:1;		/**< Is the entry editable */
-        unsigned int	 in_select_mode:1;	/**< Are we in select mode */
+        unsigned int         multiline:1;                /**< Is the entry multi-line */
+        unsigned int         editable:1;                /**< Is the entry editable */
+        unsigned int         in_select_mode:1;        /**< Are we in select mode */
 };
 
 Ewl_Widget        *ewl_entry_new(void);
 Ewl_Widget        *ewl_password_new(void);
-int         	 ewl_entry_init(Ewl_Entry *e);
+int                  ewl_entry_init(Ewl_Entry *e);
 
-void        	 ewl_entry_multiline_set(Ewl_Entry *e, unsigned int multiline);
+void                 ewl_entry_multiline_set(Ewl_Entry *e, unsigned int multiline);
 unsigned int         ewl_entry_multiline_get(Ewl_Entry *e);
 
-void        	 ewl_entry_editable_set(Ewl_Entry *e, unsigned int editable);
+void                 ewl_entry_editable_set(Ewl_Entry *e, unsigned int editable);
 unsigned int         ewl_entry_editable_get(Ewl_Entry *e);
 
 unsigned int         ewl_entry_selection_clear(Ewl_Entry *e);
@@ -120,13 +120,13 @@ typedef struct Ewl_Entry_Cursor Ewl_Entry_Cursor;
  */
 struct Ewl_Entry_Cursor
 {
-        Ewl_Widget	 widget;	/**< Inherit from Ewl_Widget */
-        Ewl_Entry	*parent;	/**< The parent Ewl_Text */
+        Ewl_Widget         widget;        /**< Inherit from Ewl_Widget */
+        Ewl_Entry        *parent;        /**< The parent Ewl_Text */
 };
 
 Ewl_Widget         *ewl_entry_cursor_new(Ewl_Entry *parent);
-int        	 ewl_entry_cursor_init(Ewl_Entry_Cursor *c, Ewl_Entry *parent);
-void        	 ewl_entry_cursor_position_set(Ewl_Entry_Cursor *c, unsigned int pos);
+int                 ewl_entry_cursor_init(Ewl_Entry_Cursor *c, Ewl_Entry *parent);
+void                 ewl_entry_cursor_position_set(Ewl_Entry_Cursor *c, unsigned int pos);
 unsigned int         ewl_entry_cursor_position_get(Ewl_Entry_Cursor *c);
 
 /**

@@ -10,8 +10,8 @@ static void ee_shutdown(Ewl_Engine *engine);
 
 static void *canvas_funcs[EWL_ENGINE_CANVAS_MAX] =
         {
-        	ee_canvas_setup,
-        	NULL, NULL, NULL, NULL
+                ee_canvas_setup,
+                NULL, NULL, NULL, NULL
         };
 
 static xcb_visualtype_t *
@@ -60,12 +60,12 @@ ewl_engine_create(int *argc __UNUSED__, char ** argv __UNUSED__)
 
         engine = NEW(Ewl_Engine_Evas_Software_Xcb, 1);
         if (!engine)
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
 
         if (!ee_init(EWL_ENGINE(engine)))
         {
-        	FREE(engine);
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                FREE(engine);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
         }
 
         DRETURN_PTR(EWL_ENGINE(engine), DLEVEL_STABLE);
@@ -115,14 +115,14 @@ ee_canvas_setup(Ewl_Window *win, int debug)
 
         evas = evas_new();
         evas_output_method_set(evas,
-        		evas_render_method_lookup("software_xcb"));
+                        evas_render_method_lookup("software_xcb"));
 
         info = evas_engine_info_get(evas);
         if (!info)
         {
-        	fprintf(stderr, "Unable to use software_xcb engine "
-        			"for rendering, ");
-        	exit(-1);
+                fprintf(stderr, "Unable to use software_xcb engine "
+                                "for rendering, ");
+                exit(-1);
         }
 
         sinfo = (Evas_Engine_Info_Software_Xcb *)info;
@@ -130,7 +130,7 @@ ee_canvas_setup(Ewl_Window *win, int debug)
         sinfo->info.conn = ecore_x_connection_get();
         sinfo->info.screen = ecore_x_default_screen_get();
         sinfo->info.visual = visualtype_get(sinfo->info.conn,
-        			sinfo->info.screen);
+                                sinfo->info.screen);
         sinfo->info.colormap = sinfo->info.screen->default_colormap;
         sinfo->info.drawable = (Ecore_X_Window)win->window;
         sinfo->info.depth = sinfo->info.screen->root_depth;
@@ -140,11 +140,11 @@ ee_canvas_setup(Ewl_Window *win, int debug)
         evas_engine_info_set(evas, info);
 
         evas_output_size_set(evas, ewl_object_current_w_get(o),
-        				ewl_object_current_h_get(o));
+                                        ewl_object_current_h_get(o));
         evas_output_viewport_set(evas, ewl_object_current_x_get(o),
-        				ewl_object_current_y_get(o),
-        				ewl_object_current_w_get(o),
-        				ewl_object_current_h_get(o));
+                                        ewl_object_current_y_get(o),
+                                        ewl_object_current_w_get(o),
+                                        ewl_object_current_h_get(o));
         ewl_embed_canvas_set(EWL_EMBED(win), evas, win->window);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);

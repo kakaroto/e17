@@ -26,7 +26,7 @@ static void ewl_image_rotate_90(Ewl_Image *img, int cc);
 
 static Ewl_Widget *ewl_image_view_cb_header_fetch(void *data, unsigned int col);
 static Ewl_Widget *ewl_image_view_cb_widget_fetch(void *data, unsigned int row,
-        						unsigned int col);
+                                                        unsigned int col);
 
 /**
  * @return Returns a pointer to a new image widget on success, NULL on failure.
@@ -44,11 +44,11 @@ ewl_image_new(void)
 
         image = NEW(Ewl_Image, 1);
         if (!image)
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
 
         if (!ewl_image_init(image)) {
-        	ewl_widget_destroy(EWL_WIDGET(image));
-        	image = NULL;
+                ewl_widget_destroy(EWL_WIDGET(image));
+                image = NULL;
         }
 
         DRETURN_PTR(EWL_WIDGET(image), DLEVEL_STABLE);
@@ -74,7 +74,7 @@ ewl_image_view_get(void)
 
 static Ewl_Widget *
 ewl_image_view_cb_widget_fetch(void *data, unsigned int row __UNUSED__,
-        					unsigned int col __UNUSED__)
+                                                unsigned int col __UNUSED__)
 {
         Ewl_Widget *image;
 
@@ -117,7 +117,7 @@ ewl_image_init(Ewl_Image *i)
         w = EWL_WIDGET(i);
 
         if (!ewl_widget_init(w))
-        	DRETURN_INT(FALSE, DLEVEL_STABLE);
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
 
         ewl_widget_appearance_set(w, EWL_IMAGE_TYPE);
         ewl_widget_inherit(w, EWL_IMAGE_TYPE);
@@ -128,19 +128,19 @@ ewl_image_init(Ewl_Image *i)
          * Append necessary callbacks.
          */
         ewl_callback_append(w, EWL_CALLBACK_REVEAL, ewl_image_cb_reveal,
-        		    NULL);
+                            NULL);
         ewl_callback_append(w, EWL_CALLBACK_OBSCURE, ewl_image_cb_obscure,
-        		    NULL);
+                            NULL);
         ewl_callback_prepend(w, EWL_CALLBACK_DESTROY, ewl_image_cb_destroy,
-        		    NULL);
+                            NULL);
         ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, ewl_image_cb_configure,
-        		    NULL);
+                            NULL);
         ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN, ewl_image_cb_mouse_down,
-        		    NULL);
+                            NULL);
         ewl_callback_append(w, EWL_CALLBACK_MOUSE_UP, ewl_image_cb_mouse_up,
-        		    NULL);
+                            NULL);
         ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE, ewl_image_cb_mouse_move,
-        		    NULL);
+                            NULL);
 
         i->sw = 1.0;
         i->sh = 1.0;
@@ -203,11 +203,11 @@ ewl_image_file_key_set(Ewl_Image *i, const char *key)
         DCHECK_TYPE(i, EWL_IMAGE_TYPE);
 
         if (i->path)
-        	ewl_image_file_set(i, i->path, key);
+                ewl_image_file_set(i, i->path, key);
         else
         {
-        	IF_FREE(i->key);
-        	if (key) i->key = strdup(key);
+                IF_FREE(i->key);
+                if (key) i->key = strdup(key);
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -255,19 +255,19 @@ ewl_image_file_set(Ewl_Image *i, const char *im, const char *key)
          * Determine the type of image to be loaded.
          */
         if (im) {
-        	i->type = ewl_image_type_get(im);
-        	i->path = strdup(im);
-        	if (key) i->key = strdup(key);
+                i->type = ewl_image_type_get(im);
+                i->path = strdup(im);
+                if (key) i->key = strdup(key);
         }
         else
-        	i->type = EWL_IMAGE_TYPE_NORMAL;
+                i->type = EWL_IMAGE_TYPE_NORMAL;
 
         /*
          * Load the new image if widget has been realized
          */
         if (REALIZED(w)) {
-        	ewl_widget_obscure(w);
-        	ewl_widget_reveal(w);
+                ewl_widget_obscure(w);
+                ewl_widget_reveal(w);
         }
 
         ewl_callback_call(w, EWL_CALLBACK_VALUE_CHANGED);
@@ -295,20 +295,20 @@ ewl_image_constrain_set(Ewl_Image *i, unsigned int size)
         osize = i->cs;
         i->cs = size;
         if (size) {
-        	ewl_object_preferred_inner_w_set(EWL_OBJECT(i), size);
-        	ewl_object_preferred_inner_h_set(EWL_OBJECT(i), size);
+                ewl_object_preferred_inner_w_set(EWL_OBJECT(i), size);
+                ewl_object_preferred_inner_h_set(EWL_OBJECT(i), size);
         }
         else if (i->sw != 1.0 || i->sh != 1.0) {
-        	ewl_image_scale_set(i, i->sw, i->sh);
+                ewl_image_scale_set(i, i->sw, i->sh);
         }
         else if (i->aw != i->ow || i->ah != i->oh) {
-        	ewl_image_size_set(i, i->aw, i->ah);
+                ewl_image_size_set(i, i->aw, i->ah);
         }
         else {
-        	if (ewl_object_preferred_inner_w_get(EWL_OBJECT(i)) == osize)
-        		ewl_object_preferred_inner_w_set(EWL_OBJECT(i), i->ow);
-        	if (ewl_object_preferred_inner_h_get(EWL_OBJECT(i)) == osize)
-        		ewl_object_preferred_inner_h_set(EWL_OBJECT(i), i->oh);
+                if (ewl_object_preferred_inner_w_get(EWL_OBJECT(i)) == osize)
+                        ewl_object_preferred_inner_w_set(EWL_OBJECT(i), i->ow);
+                if (ewl_object_preferred_inner_h_get(EWL_OBJECT(i)) == osize)
+                        ewl_object_preferred_inner_h_set(EWL_OBJECT(i), i->oh);
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -392,28 +392,28 @@ ewl_image_scale_set(Ewl_Image *i, double wp, double hp)
          * Use set bounds if available, otherwise original image size.
          */
         if (i->cs) {
-        	aw = ah = i->cs;
+                aw = ah = i->cs;
         }
         else {
-        	if (i->aw)
-        		aw = i->aw;
-        	else
-        		aw = i->ow;
+                if (i->aw)
+                        aw = i->aw;
+                else
+                        aw = i->ow;
 
-        	if (i->ah)
-        		ah = i->ah;
-        	else
-        		ah = i->oh;
+                if (i->ah)
+                        ah = i->ah;
+                else
+                        ah = i->oh;
         }
 
         /*
          * Check for proportional scaling and adjust to fit.
          */
         if (i->proportional) {
-        	if (wp < hp)
-        		hp = wp;
-        	else
-        		hp = wp;
+                if (wp < hp)
+                        hp = wp;
+                else
+                        hp = wp;
         }
 
         ewl_object_preferred_inner_w_set(EWL_OBJECT(i), wp * aw);
@@ -438,9 +438,9 @@ ewl_image_scale_get(Ewl_Image *i, double *wp, double *hp)
         DCHECK_TYPE(i, EWL_IMAGE_TYPE);
 
         if (wp)
-        	*wp = i->sw;
+                *wp = i->sw;
         if (hp)
-        	*hp = i->sh;
+                *hp = i->sh;
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -491,9 +491,9 @@ ewl_image_size_get(Ewl_Image *i, int *w, int *h)
         DCHECK_TYPE(i, EWL_IMAGE_TYPE);
 
         if (w)
-        	*w = i->aw;
+                *w = i->aw;
         if (h)
-        	*h = i->ah;
+                *h = i->ah;
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -549,39 +549,39 @@ ewl_image_flip(Ewl_Image *img, Ewl_Orientation orient)
 
         if (orient == EWL_ORIENTATION_VERTICAL)
         {
-        	mx = w;
-        	my = h / 2;
-        	ia = &iy;
-        	ib = &ix;
-        	oa = &oy;
-        	ob = &ox;
-        	s = h;
+                mx = w;
+                my = h / 2;
+                ia = &iy;
+                ib = &ix;
+                oa = &oy;
+                ob = &ox;
+                s = h;
         }
         else
         {
-        	mx = w / 2;
-        	my = h;
-        	ia = &ix;
-        	ib = &iy;
-        	oa = &ox;
-        	ob = &oy;
-        	s = w;
+                mx = w / 2;
+                my = h;
+                ia = &ix;
+                ib = &iy;
+                oa = &ox;
+                ob = &oy;
+                s = w;
         }
 
         for (iy = 0; iy < my; iy++)
         {
-        	for (ix = 0; ix < mx; ix++)
-        	{
-        		*oa = s - 1 - *ia;
-        		*ob = *ib;
+                for (ix = 0; ix < mx; ix++)
+                {
+                        *oa = s - 1 - *ia;
+                        *ob = *ib;
 
-        		i = iy * w + ix;
-        		j = oy * w + ox;
+                        i = iy * w + ix;
+                        j = oy * w + ox;
 
-        		tmp = in[j];
-        		in[j] = in[i];
-        		in[i] = tmp;
-        	}
+                        tmp = in[j];
+                        in[j] = in[i];
+                        in[i] = tmp;
+                }
         }
 
         evas_object_image_data_set(img->image, in);
@@ -604,14 +604,14 @@ ewl_image_rotate(Ewl_Image *i, Ewl_Rotate rotate)
         DCHECK_TYPE(i, EWL_IMAGE_TYPE);
 
         if (rotate == EWL_ROTATE_180)
-        	ewl_image_rotate_180(i);
+                ewl_image_rotate_180(i);
 
         else if ((rotate == EWL_ROTATE_CW_90) ||
-        		(rotate == EWL_ROTATE_CC_270))
-        	ewl_image_rotate_90(i, FALSE);
+                        (rotate == EWL_ROTATE_CC_270))
+                ewl_image_rotate_90(i, FALSE);
 
         else
-        	ewl_image_rotate_90(i, TRUE);
+                ewl_image_rotate_90(i, TRUE);
 
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -633,16 +633,16 @@ ewl_image_thumbnail_get(Ewl_Image *i)
 
 #ifdef BUILD_EPSILON_SUPPORT
         if (i->path && (i->type == EWL_IMAGE_TYPE_NORMAL)) {
-        	thumb = ewl_image_thumbnail_new();
-        	if (thumb) {
-        		ewl_image_thumbnail_request(EWL_IMAGE_THUMBNAIL(thumb),
-        				(char *)ewl_image_file_path_get(i));
-        		EWL_IMAGE_THUMBNAIL(thumb)->orig = EWL_WIDGET(i);
-        		ewl_callback_append(EWL_WIDGET(i),
-        				EWL_CALLBACK_VALUE_CHANGED,
-        				ewl_image_thumbnail_cb_value_changed,
-        				thumb);
-        	}
+                thumb = ewl_image_thumbnail_new();
+                if (thumb) {
+                        ewl_image_thumbnail_request(EWL_IMAGE_THUMBNAIL(thumb),
+                                        (char *)ewl_image_file_path_get(i));
+                        EWL_IMAGE_THUMBNAIL(thumb)->orig = EWL_WIDGET(i);
+                        ewl_callback_append(EWL_WIDGET(i),
+                                        EWL_CALLBACK_VALUE_CHANGED,
+                                        ewl_image_thumbnail_cb_value_changed,
+                                        thumb);
+                }
         }
 #endif
 
@@ -664,7 +664,7 @@ ewl_image_thumbnail_cb_value_changed(Ewl_Widget *w, void *ev, void *data)
         image = w;
 
         ewl_image_thumbnail_request(EWL_IMAGE_THUMBNAIL(thumb),
-        		ewl_image_file_path_get(EWL_IMAGE(image)));
+                        ewl_image_file_path_get(EWL_IMAGE(image)));
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -683,8 +683,8 @@ ewl_image_thumbnail_new(void)
 
         thumb = NEW(Ewl_Image_Thumbnail, 1);
         if (!ewl_image_thumbnail_init(EWL_IMAGE_THUMBNAIL(thumb))) {
-        	ewl_widget_destroy(EWL_WIDGET(thumb));
-        	thumb = NULL;
+                ewl_widget_destroy(EWL_WIDGET(thumb));
+                thumb = NULL;
         }
 
         DRETURN_PTR(thumb, DLEVEL_STABLE);
@@ -702,23 +702,23 @@ ewl_image_thumbnail_init(Ewl_Image_Thumbnail *image)
         DCHECK_PARAM_PTR_RET(image, FALSE);
 
         if (!ewl_image_init(EWL_IMAGE(image)))
-        	DRETURN_INT(FALSE, DLEVEL_STABLE);
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
 
         ewl_widget_appearance_set(EWL_WIDGET(image),
-        				EWL_IMAGE_THUMBNAIL_TYPE);
+                                        EWL_IMAGE_THUMBNAIL_TYPE);
         ewl_widget_inherit(EWL_WIDGET(image), EWL_IMAGE_THUMBNAIL_TYPE);
 
         ewl_callback_prepend(EWL_WIDGET(image), EWL_CALLBACK_DESTROY,
-        		    ewl_image_thumbnail_cb_destroy, NULL);
+                            ewl_image_thumbnail_cb_destroy, NULL);
         image->size = EWL_THUMBNAIL_SIZE_NORMAL;
 
 #ifdef BUILD_EPSILON_SUPPORT
         if (!ewl_image_epsilon_handler) {
-        	epsilon_request_init();
-        	ewl_image_epsilon_handler =
-        		ecore_event_handler_add(EPSILON_EVENT_DONE,
-        				ewl_image_thumbnail_cb_complete,
-        				NULL);
+                epsilon_request_init();
+                ewl_image_epsilon_handler =
+                        ecore_event_handler_add(EPSILON_EVENT_DONE,
+                                        ewl_image_thumbnail_cb_complete,
+                                        NULL);
         }
 #endif
 
@@ -777,7 +777,7 @@ ewl_image_thumbnail_request(Ewl_Image_Thumbnail *thumb, const char *path)
 
 #ifdef BUILD_EPSILON_SUPPORT
         if (thumb->size == EWL_THUMBNAIL_SIZE_NORMAL)
-        	size = EPSILON_THUMB_NORMAL;
+                size = EPSILON_THUMB_NORMAL;
         else size = EPSILON_THUMB_LARGE;
 
         thumb->thumb = epsilon_request_add(path, size, thumb);
@@ -790,7 +790,7 @@ ewl_image_thumbnail_request(Ewl_Image_Thumbnail *thumb, const char *path)
 
 static void
 ewl_image_thumbnail_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__,
-        				void *data __UNUSED__)
+                                        void *data __UNUSED__)
 {
         Ewl_Image_Thumbnail *thumb;
 
@@ -801,9 +801,9 @@ ewl_image_thumbnail_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__,
         thumb = EWL_IMAGE_THUMBNAIL(w);
         if (thumb->thumb) {
 #ifdef BUILD_EPSILON_SUPPORT
-        	epsilon_request_del(thumb->thumb);
+                epsilon_request_del(thumb->thumb);
 #endif
-        	thumb->thumb = NULL;
+                thumb->thumb = NULL;
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -812,7 +812,7 @@ ewl_image_thumbnail_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__,
 #ifdef BUILD_EPSILON_SUPPORT
 static int
 ewl_image_thumbnail_cb_complete(void *data __UNUSED__, int type __UNUSED__,
-        							void *event)
+                                                                void *event)
 {
         Ewl_Image_Thumbnail *thumb;
         Epsilon_Request *ev;
@@ -825,14 +825,14 @@ ewl_image_thumbnail_cb_complete(void *data __UNUSED__, int type __UNUSED__,
 
         if (thumb)
         {
-        	if (ev->dest)
-        	{
-        		ewl_image_file_path_set(EWL_IMAGE(thumb), ev->dest);
-        		ewl_callback_call(EWL_WIDGET(thumb),
-        				EWL_CALLBACK_VALUE_CHANGED);
-        	}
+                if (ev->dest)
+                {
+                        ewl_image_file_path_set(EWL_IMAGE(thumb), ev->dest);
+                        ewl_callback_call(EWL_WIDGET(thumb),
+                                        EWL_CALLBACK_VALUE_CHANGED);
+                }
 
-        	thumb->thumb = NULL;
+                thumb->thumb = NULL;
         }
 
         DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -849,7 +849,7 @@ ewl_image_thumbnail_cb_complete(void *data __UNUSED__, int type __UNUSED__,
  */
 void
 ewl_image_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
-        				void *user_data __UNUSED__)
+                                        void *user_data __UNUSED__)
 {
         Ewl_Image *i;
         Ewl_Embed *emb;
@@ -867,52 +867,52 @@ ewl_image_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
          * Load the image based on the type.
          */
         if (i->type == EWL_IMAGE_TYPE_EDJE) {
-        	if (!i->image)
-        		i->image = ewl_embed_object_request(emb, "edje");
-        	if (!i->image)
-        		i->image = edje_object_add(emb->canvas);
-        	if (!i->image)
-        		DRETURN(DLEVEL_STABLE);
+                if (!i->image)
+                        i->image = ewl_embed_object_request(emb, "edje");
+                if (!i->image)
+                        i->image = edje_object_add(emb->canvas);
+                if (!i->image)
+                        DRETURN(DLEVEL_STABLE);
 
-        	if (i->path)
-        		edje_object_file_set(i->image, i->path, i->key);
-        	edje_object_size_min_get(i->image, &i->ow, &i->oh);
+                if (i->path)
+                        edje_object_file_set(i->image, i->path, i->key);
+                edje_object_size_min_get(i->image, &i->ow, &i->oh);
         } else {
-        	if (!i->image)
-        		i->image = ewl_embed_object_request(emb, EWL_IMAGE_TYPE);
-        	if (!i->image)
-        		i->image = evas_object_image_add(emb->canvas);
-        	if (!i->image)
-        		DRETURN(DLEVEL_STABLE);
+                if (!i->image)
+                        i->image = ewl_embed_object_request(emb, EWL_IMAGE_TYPE);
+                if (!i->image)
+                        i->image = evas_object_image_add(emb->canvas);
+                if (!i->image)
+                        DRETURN(DLEVEL_STABLE);
 
-        	if (i->path)
-        		evas_object_image_file_set(i->image, i->path, i->key);
-        	evas_object_image_size_get(i->image, &i->ow, &i->oh);
+                if (i->path)
+                        evas_object_image_file_set(i->image, i->path, i->key);
+                evas_object_image_size_get(i->image, &i->ow, &i->oh);
         }
 
         evas_object_smart_member_add(i->image, w->smart_object);
         if (w->fx_clip_box)
-        	evas_object_stack_below(i->image, w->fx_clip_box);
+                evas_object_stack_below(i->image, w->fx_clip_box);
 
         if (w->fx_clip_box)
-        	evas_object_clip_set(i->image, w->fx_clip_box);
+                evas_object_clip_set(i->image, w->fx_clip_box);
 
         evas_object_pass_events_set(i->image, TRUE);
         evas_object_show(i->image);
 
         if (!i->ow)
-        	i->ow = 1;
+                i->ow = 1;
         if (!i->oh)
-        	i->oh = 1;
+                i->oh = 1;
 
         /*
          * Bound the scales when proportional.
          */
         if (i->proportional) {
-        	if (i->sw < i->sh)
-        		sh = i->sw;
-        	else
-        		sw = i->sh;
+                if (i->sw < i->sh)
+                        sh = i->sw;
+                else
+                        sw = i->sh;
         }
 
         sw = i->sw;
@@ -922,18 +922,18 @@ ewl_image_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
          * Bound to absolute size.
          */
         if (i->cs) {
-        	ww = hh = i->cs;
+                ww = hh = i->cs;
         }
         else {
-        	if (i->aw)
-        		ww = i->aw;
-        	else
-        		ww = i->ow;
+                if (i->aw)
+                        ww = i->aw;
+                else
+                        ww = i->ow;
 
-        	if (i->ah)
-        		hh = i->ah;
-        	else
-        		hh = i->oh;
+                if (i->ah)
+                        hh = i->ah;
+                else
+                        hh = i->oh;
         }
 
         ewl_object_preferred_inner_w_set(EWL_OBJECT(i), sw * ww);
@@ -952,7 +952,7 @@ ewl_image_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
  */
 void
 ewl_image_cb_obscure(Ewl_Widget *w, void *ev_data __UNUSED__,
-        					void *user_data __UNUSED__)
+                                                void *user_data __UNUSED__)
 {
         Ewl_Image *i;
         Ewl_Embed *emb;
@@ -965,9 +965,9 @@ ewl_image_cb_obscure(Ewl_Widget *w, void *ev_data __UNUSED__,
 
         i = EWL_IMAGE(w);
         if (emb && i->image) {
-        	evas_object_image_file_set(i->image, NULL, NULL);
-        	ewl_embed_object_cache(emb, i->image);
-        	i->image = NULL;
+                evas_object_image_file_set(i->image, NULL, NULL);
+                ewl_embed_object_cache(emb, i->image);
+                i->image = NULL;
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -983,7 +983,7 @@ ewl_image_cb_obscure(Ewl_Widget *w, void *ev_data __UNUSED__,
  */
 void
 ewl_image_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
-        				  void *user_data __UNUSED__)
+                                          void *user_data __UNUSED__)
 {
         Ewl_Image *i;
 
@@ -1009,7 +1009,7 @@ ewl_image_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
  */
 void
 ewl_image_cb_reparent(Ewl_Widget *w, void *ev_data __UNUSED__,
-        					void *user_data __UNUSED__)
+                                                void *user_data __UNUSED__)
 {
         Ewl_Image *i;
 
@@ -1019,7 +1019,7 @@ ewl_image_cb_reparent(Ewl_Widget *w, void *ev_data __UNUSED__,
 
         i = EWL_IMAGE(w);
         if (!i->image)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1034,7 +1034,7 @@ ewl_image_cb_reparent(Ewl_Widget *w, void *ev_data __UNUSED__,
  */
 void
 ewl_image_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
-        					void *user_data __UNUSED__)
+                                                void *user_data __UNUSED__)
 {
         Ewl_Image *i;
         int ww, hh;
@@ -1046,51 +1046,51 @@ ewl_image_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
 
         i = EWL_IMAGE(w);
         if (!i->image)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         ww = CURRENT_W(w);
         hh = CURRENT_H(w);
         if (i->cs) {
-        	/*
-        	 * Limit to the constraining size
-        	 */
-        	if (ww > i->cs)
-        		ww = i->cs;
-        	if (hh > i->cs)
-        		hh = i->cs;
+                /*
+                 * Limit to the constraining size
+                 */
+                if (ww > i->cs)
+                        ww = i->cs;
+                if (hh > i->cs)
+                        hh = i->cs;
 
-        	/*
-        	 * Use images original size if smaller than constraint.
-        	 */
-        	if (ww > i->ow)
-        		ww = i->ow;
-        	if (hh > i->oh)
-        		hh = i->oh;
+                /*
+                 * Use images original size if smaller than constraint.
+                 */
+                if (ww > i->ow)
+                        ww = i->ow;
+                if (hh > i->oh)
+                        hh = i->oh;
         }
 
         /*
          * Fit the proportional scale.
          */
         if (i->proportional) {
-        	double sw, sh;
+                double sw, sh;
 
-        	sw = (double)ww / (double)i->ow;
-        	sh = (double)hh / (double)i->oh;
-        	if (sw < sh) {
-        		hh = sw * i->oh;
-        	}
-        	else {
-        		ww = sh * i->ow;
-        	}
+                sw = (double)ww / (double)i->ow;
+                sh = (double)hh / (double)i->oh;
+                if (sw < sh) {
+                        hh = sw * i->oh;
+                }
+                else {
+                        ww = sh * i->ow;
+                }
         }
 
         /*
          * set the tile width and height if not set already
          */
         if (!i->tile.set) {
-        	i->tile.x = i->tile.y = 0;
-        	i->tile.w = ww;
-        	i->tile.h = hh;
+                i->tile.x = i->tile.y = 0;
+                i->tile.w = ww;
+                i->tile.h = hh;
         }
 
         dx = (CURRENT_W(w) - ww) / 2;
@@ -1100,8 +1100,8 @@ ewl_image_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
          * Move the image into place based on type.
          */
         if (i->type != EWL_IMAGE_TYPE_EDJE)
-        	evas_object_image_fill_set(i->image, i->tile.x, i->tile.y,
-        				i->tile.w, i->tile.h);
+                evas_object_image_fill_set(i->image, i->tile.x, i->tile.y,
+                                        i->tile.w, i->tile.h);
 
         evas_object_move(i->image, CURRENT_X(w) + dx, CURRENT_Y(w) + dy);
         evas_object_resize(i->image, ww, hh);
@@ -1126,7 +1126,7 @@ ewl_image_type_get(const char *i)
             || (l >= 4 && !(strncasecmp(i + l - 4, ".eet", 4)))
             || (l >= 4 && !(strncasecmp(i + l - 4, ".edj", 4)))
             || (l >= 4 && !(strncasecmp(i + l - 4, ".eap", 4))))
-        	DRETURN_INT(EWL_IMAGE_TYPE_EDJE, DLEVEL_STABLE);
+                DRETURN_INT(EWL_IMAGE_TYPE_EDJE, DLEVEL_STABLE);
 
         DRETURN_INT(EWL_IMAGE_TYPE_NORMAL, DLEVEL_STABLE);
 }
@@ -1141,7 +1141,7 @@ ewl_image_type_get(const char *i)
  */
 void
 ewl_image_cb_mouse_down(Ewl_Widget *w, void *ev_data,
-        				void *user_data __UNUSED__)
+                                        void *user_data __UNUSED__)
 {
         Ewl_Image *i;
         Ewl_Embed *emb;
@@ -1156,10 +1156,10 @@ ewl_image_cb_mouse_down(Ewl_Widget *w, void *ev_data,
         ev = ev_data;
 
         if (i->type == EWL_IMAGE_TYPE_EDJE)
-        	evas_event_feed_mouse_down(emb->canvas, ev->button,
-        			EVAS_BUTTON_NONE,
-        			(unsigned int)((unsigned long long)(ecore_time_get() * 1000.0) & 0xffffffff),
-        			NULL);
+                evas_event_feed_mouse_down(emb->canvas, ev->button,
+                                EVAS_BUTTON_NONE,
+                                (unsigned int)((unsigned long long)(ecore_time_get() * 1000.0) & 0xffffffff),
+                                NULL);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1174,7 +1174,7 @@ ewl_image_cb_mouse_down(Ewl_Widget *w, void *ev_data,
  */
 void
 ewl_image_cb_mouse_up(Ewl_Widget *w, void *ev_data,
-        				void *user_data __UNUSED__)
+                                        void *user_data __UNUSED__)
 {
         Ewl_Image *i;
         Ewl_Embed *emb;
@@ -1189,10 +1189,10 @@ ewl_image_cb_mouse_up(Ewl_Widget *w, void *ev_data,
         ev = ev_data;
 
         if (i->type == EWL_IMAGE_TYPE_EDJE && emb)
-        	evas_event_feed_mouse_up(emb->canvas, ev->button,
-        			EVAS_BUTTON_NONE,
-        			(unsigned int)((unsigned long long)(ecore_time_get() * 1000.0) & 0xffffffff),
-        			NULL);
+                evas_event_feed_mouse_up(emb->canvas, ev->button,
+                                EVAS_BUTTON_NONE,
+                                (unsigned int)((unsigned long long)(ecore_time_get() * 1000.0) & 0xffffffff),
+                                NULL);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1207,7 +1207,7 @@ ewl_image_cb_mouse_up(Ewl_Widget *w, void *ev_data,
  */
 void
 ewl_image_cb_mouse_move(Ewl_Widget *w, void *ev_data,
-        				void *user_data __UNUSED__)
+                                        void *user_data __UNUSED__)
 {
         Ewl_Image *i;
         Ewl_Embed *emb;
@@ -1222,9 +1222,9 @@ ewl_image_cb_mouse_move(Ewl_Widget *w, void *ev_data,
         ev = ev_data;
 
         if (i->type == EWL_IMAGE_TYPE_EDJE)
-        	evas_event_feed_mouse_move(emb->canvas, ev->x, ev->y,
-        			(unsigned int)((unsigned long long)(ecore_time_get() * 1000.0) & 0xffffffff),
-        			NULL);
+                evas_event_feed_mouse_move(emb->canvas, ev->x, ev->y,
+                                (unsigned int)((unsigned long long)(ecore_time_get() * 1000.0) & 0xffffffff),
+                                NULL);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1251,34 +1251,34 @@ ewl_image_rotate_90(Ewl_Image *img, int cc)
         /* these pointers pull the invarient conditional out of the loop */
         if (cc)
         {
-        	oa = &oy;
-        	ob = &ox;
-        	ia = &iy;
-        	ib = &ix;
-        	os = oh;
+                oa = &oy;
+                ob = &ox;
+                ia = &iy;
+                ib = &ix;
+                os = oh;
         }
         else
         {
-        	oa = &ox;
-        	ob = &oy;
-        	ia = &ix;
-        	ib = &iy;
-        	os = ow;
+                oa = &ox;
+                ob = &oy;
+                ia = &ix;
+                ib = &iy;
+                os = ow;
         }
 
         for (i = 0; i < (w * h); i++)
         {
-        	ix = i % w;
-        	iy = i / w;
+                ix = i % w;
+                iy = i / w;
 
-        	/* rotate */
-        	*oa = os - 1 - *ib;
-        	*ob = *ia;
+                /* rotate */
+                *oa = os - 1 - *ib;
+                *ob = *ia;
 
-        	/* convert back to array index */
-        	j = oy * ow + ox;
+                /* convert back to array index */
+                j = oy * ow + ox;
 
-        	out[j] = in[i];
+                out[j] = in[i];
         }
 
         img->ow = ow;
@@ -1309,15 +1309,15 @@ ewl_image_rotate_180(Ewl_Image *img)
         size = w * h / 2;
         for (i = 0; i < size; i++)
         {
-        	ix = i % w;
-        	iy = i / w;
-        	ox = w - 1 - ix;
-        	oy = h - 1 - iy;
-        	j = oy * w + ox;
+                ix = i % w;
+                iy = i / w;
+                ox = w - 1 - ix;
+                oy = h - 1 - iy;
+                j = oy * w + ox;
 
-        	tmp = in[j];
-        	in[j] = in[i];
-        	in[i] = tmp;
+                tmp = in[j];
+                in[j] = in[i];
+                in[i] = tmp;
         }
 
         evas_object_image_data_set(img->image, in);

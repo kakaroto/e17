@@ -18,11 +18,11 @@ ewl_spacer_new(void)
 
         s = NEW(Ewl_Spacer, 1);
         if (!s)
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
 
         if (!ewl_spacer_init(s)) {
-        	ewl_widget_destroy(EWL_WIDGET(s));
-        	s = NULL;
+                ewl_widget_destroy(EWL_WIDGET(s));
+                s = NULL;
         }
 
         DRETURN_PTR(EWL_WIDGET(s), DLEVEL_STABLE);

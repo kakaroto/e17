@@ -51,7 +51,7 @@ ewl_widget_cb_click(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
         win = ewl_window_new();
         ewl_window_title_set(EWL_WINDOW(win), "MODAL");
         ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW,
-        				ewl_widget_cb_close_click, NULL);
+                                        ewl_widget_cb_close_click, NULL);
         ewl_widget_show(win);
 
         vbox = ewl_vbox_new();
@@ -61,21 +61,21 @@ ewl_widget_cb_click(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
         o = ewl_button_new();
         ewl_button_label_set(EWL_BUTTON(o), "Go modal");
         ewl_callback_append(o, EWL_CALLBACK_CLICKED,
-        				ewl_widget_cb_go_modal, emb);
+                                        ewl_widget_cb_go_modal, emb);
         ewl_container_child_append(EWL_CONTAINER(vbox), o);
         ewl_widget_show(o);
 
         o = ewl_button_new();
         ewl_button_label_set(EWL_BUTTON(o), "Close");
         ewl_callback_append(o, EWL_CALLBACK_CLICKED,
-        				ewl_widget_cb_close_click, NULL);
+                                        ewl_widget_cb_close_click, NULL);
         ewl_container_child_append(EWL_CONTAINER(vbox), o);
         ewl_widget_show(o);
 }
 
 static void
 ewl_widget_cb_close_click(Ewl_Widget *w, void *ev __UNUSED__,
-        					void *data __UNUSED__)
+                                                void *data __UNUSED__)
 {
         Ewl_Embed *emb;
 

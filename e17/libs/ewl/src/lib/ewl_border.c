@@ -19,12 +19,12 @@ ewl_border_new(void)
 
         b = NEW(Ewl_Border, 1);
         if (!b) {
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
         }
 
         if (!ewl_border_init(b)) {
-        	ewl_widget_destroy(EWL_WIDGET(b));
-        	b = NULL;
+                ewl_widget_destroy(EWL_WIDGET(b));
+                b = NULL;
         }
 
         DRETURN_PTR(EWL_WIDGET(b), DLEVEL_STABLE);
@@ -46,7 +46,7 @@ ewl_border_init(Ewl_Border * b)
         w = EWL_WIDGET(b);
 
         if (!ewl_box_init(EWL_BOX(w))) {
-        	DRETURN_INT(FALSE, DLEVEL_STABLE);
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
         }
         ewl_box_orientation_set(EWL_BOX(w), EWL_ORIENTATION_VERTICAL);
         ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_FILL);
@@ -120,22 +120,22 @@ ewl_border_label_position_set(Ewl_Border *b, Ewl_Position pos)
         DCHECK_TYPE(b, EWL_BORDER_TYPE);
 
         if (b->label_position == pos) 
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         b->label_position = pos;
         switch (b->label_position) {
-        	case EWL_POSITION_LEFT:
-        	case EWL_POSITION_RIGHT:
-        		ewl_box_orientation_set(EWL_BOX(b),
-        					EWL_ORIENTATION_HORIZONTAL);
-        		break;
+                case EWL_POSITION_LEFT:
+                case EWL_POSITION_RIGHT:
+                        ewl_box_orientation_set(EWL_BOX(b),
+                                                EWL_ORIENTATION_HORIZONTAL);
+                        break;
 
-        	case EWL_POSITION_TOP:
-        	case EWL_POSITION_BOTTOM:
-        	default:
-        		ewl_box_orientation_set(EWL_BOX(b),
-        					EWL_ORIENTATION_VERTICAL);
-        		break;
+                case EWL_POSITION_TOP:
+                case EWL_POSITION_BOTTOM:
+                default:
+                        ewl_box_orientation_set(EWL_BOX(b),
+                                                EWL_ORIENTATION_VERTICAL);
+                        break;
         }
         ewl_widget_appearance_set(EWL_WIDGET(b), EWL_BORDER_TYPE);
 
@@ -146,10 +146,10 @@ ewl_border_label_position_set(Ewl_Border *b, Ewl_Position pos)
         ewl_container_child_remove(EWL_CONTAINER(b), b->label);
 
         if ((b->label_position == EWL_POSITION_LEFT)
-        		|| (b->label_position == EWL_POSITION_TOP))
-        	ewl_container_child_prepend(EWL_CONTAINER(b), b->label);
+                        || (b->label_position == EWL_POSITION_TOP))
+                ewl_container_child_prepend(EWL_CONTAINER(b), b->label);
         else
-        	ewl_container_child_append(EWL_CONTAINER(b), b->label);
+                ewl_container_child_append(EWL_CONTAINER(b), b->label);
 
         ewl_container_redirect_set(EWL_CONTAINER(b), EWL_CONTAINER(b->body));
         ewl_widget_configure(EWL_WIDGET(b));

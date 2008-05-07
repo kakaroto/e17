@@ -21,12 +21,12 @@ ewl_cursor_new(void)
 
         w = NEW(Ewl_Cursor, 1);
         if (!w)
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
 
         if (!ewl_cursor_init(EWL_CURSOR(w)))
         {
-        	ewl_widget_destroy(w);
-        	w = NULL;
+                ewl_widget_destroy(w);
+                w = NULL;
         }
 
         DRETURN_PTR(w, DLEVEL_STABLE);
@@ -46,7 +46,7 @@ ewl_cursor_init(Ewl_Cursor *cursor)
         DCHECK_PARAM_PTR_RET(cursor, FALSE);
 
         if (!ewl_window_init(EWL_WINDOW(cursor)))
-        	DRETURN_INT(FALSE, DLEVEL_UNSTABLE);
+                DRETURN_INT(FALSE, DLEVEL_UNSTABLE);
 
         ewl_widget_appearance_set(w, EWL_CURSOR_TYPE);
         ewl_widget_inherit(w, EWL_CURSOR_TYPE);
@@ -56,9 +56,9 @@ ewl_cursor_init(Ewl_Cursor *cursor)
         ewl_embed_engine_name_set(EWL_EMBED(cursor), "evas_buffer");
 
         ewl_callback_append(w, EWL_CALLBACK_VALUE_CHANGED,
-        			ewl_cursor_cb_render, NULL);
+                                ewl_cursor_cb_render, NULL);
         ewl_callback_append(w, EWL_CALLBACK_DESTROY,
-        			ewl_cursor_cb_destroy, NULL);
+                                ewl_cursor_cb_destroy, NULL);
 
         DRETURN_INT(TRUE, DLEVEL_UNSTABLE);
 }
@@ -80,22 +80,22 @@ ewl_cursor_cb_render(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
          */
         parent = ewl_widget_focused_get();
         if (parent)
-        	parent = EWL_WIDGET(ewl_embed_widget_find(parent));
+                parent = EWL_WIDGET(ewl_embed_widget_find(parent));
 
         if (!parent)
-        	DRETURN(DLEVEL_UNSTABLE);
+                DRETURN(DLEVEL_UNSTABLE);
 
         if (cursor->handle)
-        	ewl_engine_pointer_free(EWL_EMBED(parent), cursor->handle);
+                ewl_engine_pointer_free(EWL_EMBED(parent), cursor->handle);
 
         width = ewl_object_current_w_get(EWL_OBJECT(cursor));
         height = ewl_object_current_h_get(EWL_OBJECT(cursor));
 
         handle = ewl_engine_pointer_data_new(EWL_EMBED(parent),
-        		EWL_EMBED(cursor)->canvas_window, width, height);
+                        EWL_EMBED(cursor)->canvas_window, width, height);
 
         if (EWL_EMBED(parent)->cursor == cursor->handle)
-        	ewl_engine_pointer_set(EWL_EMBED(parent), handle);
+                ewl_engine_pointer_set(EWL_EMBED(parent), handle);
 
         cursor->handle = handle;
 
@@ -104,7 +104,7 @@ ewl_cursor_cb_render(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 
 static void
 ewl_cursor_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__,
-        				void *data __UNUSED__)
+                                        void *data __UNUSED__)
 {
         Ewl_Cursor *cursor = EWL_CURSOR(w);
 
@@ -113,8 +113,8 @@ ewl_cursor_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__,
 
         /* FIXME: Also needs to be handled for the correct engine refs
         if (cursor->handle)
-        	ewl_engine_pointer_free(parent, cursor->handle);
-        	*/
+                ewl_engine_pointer_free(parent, cursor->handle);
+                */
         cursor->handle = 0;
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);

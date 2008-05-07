@@ -13,7 +13,7 @@
 
 static void ewl_media_size_update(Ewl_Media *m);
 static void ewl_media_cb_update_timer(void *data, Evas_Object *obj, void
-        	*event_info);
+                *event_info);
 
 /**
  * @return Returns a pointer to a new media on success, NULL on failure.
@@ -29,11 +29,11 @@ ewl_media_new(void)
 #ifdef BUILD_EMOTION_SUPPORT
         m = NEW(Ewl_Media, 1);
         if (!m)
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
 
         if (!ewl_media_init(m)) {
-        	ewl_widget_destroy(EWL_WIDGET(m));
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                ewl_widget_destroy(EWL_WIDGET(m));
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
         }
 #endif
 
@@ -58,19 +58,19 @@ ewl_media_init(Ewl_Media *m)
         w = EWL_WIDGET(m);
 
         if (!ewl_widget_init(w))
-        	DRETURN_INT(FALSE, DLEVEL_STABLE);
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
 
         ewl_widget_appearance_set(w, EWL_MEDIA_TYPE);
         ewl_widget_inherit(EWL_WIDGET(w), EWL_MEDIA_TYPE);
 
         ewl_callback_append(w, EWL_CALLBACK_REALIZE,
-        			ewl_media_cb_realize, NULL);
+                                ewl_media_cb_realize, NULL);
         ewl_callback_append(w, EWL_CALLBACK_REVEAL,
-        			ewl_media_cb_reveal, NULL);
+                                ewl_media_cb_reveal, NULL);
         ewl_callback_append(w, EWL_CALLBACK_UNREALIZE,
-        			ewl_media_cb_unrealize, NULL);
+                                ewl_media_cb_unrealize, NULL);
         ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
-        			ewl_media_cb_configure, NULL);
+                                ewl_media_cb_configure, NULL);
 
         DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -117,19 +117,19 @@ ewl_media_module_set(Ewl_Media *m, Ewl_Media_Module_Type module)
          */
         if (m->video)
         {
-        	switch (module)
-        	{
-        		case EWL_MEDIA_MODULE_GSTREAMER:
-        			ret = emotion_object_init(m->video,
-        					"gstreamer");
-        			break;
+                switch (module)
+                {
+                        case EWL_MEDIA_MODULE_GSTREAMER:
+                                ret = emotion_object_init(m->video,
+                                                "gstreamer");
+                                break;
 
-        		case EWL_MEDIA_MODULE_XINE:
-        		default:
-        			ret = emotion_object_init(m->video,
-        					"xine");
-        			break;
-        	}
+                        case EWL_MEDIA_MODULE_XINE:
+                        default:
+                                ret = emotion_object_init(m->video,
+                                                "xine");
+                                break;
+                }
         }
 #endif
 
@@ -175,7 +175,7 @@ ewl_media_media_set(Ewl_Media *m, const char *media)
          * Update the emotion to the new file
          */
         if (m->video)
-        	emotion_object_file_set(m->video, m->media);
+                emotion_object_file_set(m->video, m->media);
 #endif
 
         /*
@@ -184,7 +184,7 @@ ewl_media_media_set(Ewl_Media *m, const char *media)
          * added.
          */
         if (m->video)
-        	ewl_media_size_update(m);
+                ewl_media_size_update(m);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -220,7 +220,7 @@ ewl_media_length_get(Ewl_Media *m)
 
 #ifdef BUILD_EMOTION_SUPPORT
         if (m->video)
-        	length = emotion_object_play_length_get(m->video);
+                length = emotion_object_play_length_get(m->video);
 #endif
 
         DRETURN_INT(length, DLEVEL_STABLE);
@@ -273,7 +273,7 @@ ewl_media_play_set(Ewl_Media *m, int p)
 
 #ifdef BUILD_EMOTION_SUPPORT
         if (m->video)
-        	emotion_object_play_set(m->video, p);
+                emotion_object_play_set(m->video, p);
 #endif
 
         DRETURN(DLEVEL_STABLE);
@@ -296,7 +296,7 @@ ewl_media_seekable_get(Ewl_Media *m)
 
 #ifdef BUILD_EMOTION_SUPPORT
         if (m->video && !m->block_seek)
-        	seekable = emotion_object_seekable_get(m->video);
+                seekable = emotion_object_seekable_get(m->video);
 #endif
 
         DRETURN_INT(seekable, DLEVEL_STABLE);
@@ -318,7 +318,7 @@ ewl_media_position_get(Ewl_Media *m)
 
 #ifdef BUILD_EMOTION_SUPPORT
         if (m->video)
-        	p = emotion_object_position_get(m->video);
+                p = emotion_object_position_get(m->video);
 #endif
 
         DRETURN_FLOAT(p, DLEVEL_STABLE);
@@ -369,15 +369,15 @@ ewl_media_position_set(Ewl_Media *m, double p)
         DCHECK_TYPE(m, EWL_MEDIA_TYPE);
 
         if (p == m->position)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         m->position = p;
 
 #ifdef BUILD_EMOTION_SUPPORT
         if (m->video && ewl_media_seekable_get(m)) {
-        	m->block_seek = 1;
-        	emotion_object_position_set(m->video, m->position);
-        	m->block_seek = 0;
+                m->block_seek = 1;
+                emotion_object_position_set(m->video, m->position);
+                m->block_seek = 0;
         }
 #endif
 
@@ -413,13 +413,13 @@ ewl_media_audio_mute_set(Ewl_Media *m, int mute)
         DCHECK_TYPE(m, EWL_MEDIA_TYPE);
 
         if (m->mute == !!mute)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         m->mute = !!mute;
 
 #ifdef BUILD_EMOTION_SUPPORT
         if (m->video)
-        	emotion_object_audio_mute_set(m->video, m->mute);
+                emotion_object_audio_mute_set(m->video, m->mute);
 #endif
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -454,13 +454,13 @@ ewl_media_audio_volume_set(Ewl_Media *m, double v)
         DCHECK_TYPE(m, EWL_MEDIA_TYPE);
 
         if (m->volume == v)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         m->volume = v;
 
 #ifdef BUILD_EMOTION_SUPPORT
         if (m->video)
-        	emotion_object_audio_volume_set(m->video, m->volume);
+                emotion_object_audio_volume_set(m->video, m->volume);
 #endif
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -476,7 +476,7 @@ ewl_media_audio_volume_set(Ewl_Media *m, double v)
  */
 void
 ewl_media_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
-        			void *user_data __UNUSED__)
+                                void *user_data __UNUSED__)
 {
         Ewl_Media *m;
         Ewl_Embed *emb;
@@ -498,8 +498,8 @@ ewl_media_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
          */
         m->video = emotion_object_add(emb->canvas);
         if (ewl_media_module_set(m, m->module) && m->media) {
-        	emotion_object_file_set(m->video, m->media);
-        	ewl_media_size_update(m);
+                emotion_object_file_set(m->video, m->media);
+                ewl_media_size_update(m);
         }
 #endif
         /*
@@ -520,7 +520,7 @@ ewl_media_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
  */
 void
 ewl_media_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
-        			void *user_data __UNUSED__)
+                                void *user_data __UNUSED__)
 {
         Ewl_Media *m;
 
@@ -531,11 +531,11 @@ ewl_media_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
         m = EWL_MEDIA(w);
 
         if (m->video) {
-        	evas_object_smart_member_add(m->video, w->smart_object);
-        	if (w->fx_clip_box) {
-        		evas_object_clip_set(m->video, w->fx_clip_box);
-        		evas_object_stack_above(m->video, w->fx_clip_box);
-        	}
+                evas_object_smart_member_add(m->video, w->smart_object);
+                if (w->fx_clip_box) {
+                        evas_object_clip_set(m->video, w->fx_clip_box);
+                        evas_object_stack_above(m->video, w->fx_clip_box);
+                }
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -551,7 +551,7 @@ ewl_media_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
  */
 void
 ewl_media_cb_unrealize(Ewl_Widget *w, void *ev_data __UNUSED__,
-        			void *user_data __UNUSED__)
+                                void *user_data __UNUSED__)
 {
         Ewl_Media *m;
 
@@ -577,7 +577,7 @@ ewl_media_cb_unrealize(Ewl_Widget *w, void *ev_data __UNUSED__,
  */
 void
 ewl_media_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
-        	void *user_data __UNUSED__)
+                void *user_data __UNUSED__)
 {
         Ewl_Media *m;
 
@@ -591,10 +591,10 @@ ewl_media_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
          * Update the emotion position and size.
          */
         if (m->video) {
-        	evas_object_move(m->video, CURRENT_X(w), CURRENT_Y(w));
-        	evas_object_resize(m->video, CURRENT_W(w), CURRENT_H(w));
-        	evas_object_smart_callback_add(m->video, "frame_decode",
-        			ewl_media_cb_update_timer, m);
+                evas_object_move(m->video, CURRENT_X(w), CURRENT_Y(w));
+                evas_object_resize(m->video, CURRENT_W(w), CURRENT_H(w));
+                evas_object_smart_callback_add(m->video, "frame_decode",
+                                ewl_media_cb_update_timer, m);
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -614,15 +614,15 @@ ewl_media_size_update(Ewl_Media *m)
 #endif
 
         if (width && height)
-        	ewl_object_preferred_inner_size_set(EWL_OBJECT(m), width, height);
+                ewl_object_preferred_inner_size_set(EWL_OBJECT(m), width, height);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 static void
 ewl_media_cb_update_timer(void *data,
-        	Evas_Object *obj __UNUSED__,
-        	void *event_info __UNUSED__)
+                Evas_Object *obj __UNUSED__,
+                void *event_info __UNUSED__)
 {
         Ewl_Media *m;
 

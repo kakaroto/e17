@@ -60,13 +60,13 @@ int main(int argc, char ** argv) {
 
         /* create the tree */
         {
-        	char * headers [] = {
-        			"type", "key", "value"
-        	};
+                char * headers [] = {
+                                "type", "key", "value"
+                };
             tree = ewl_tree_new(3);
             ewl_container_child_append(EWL_CONTAINER(hbox), tree);
-        	ewl_object_padding_set(EWL_OBJECT(tree), 2, 0, 0, 0);
-        	ewl_tree_headers_set(EWL_TREE(tree), headers);
+                ewl_object_padding_set(EWL_OBJECT(tree), 2, 0, 0, 0);
+                ewl_tree_headers_set(EWL_TREE(tree), headers);
             ewl_widget_show(tree);
         }
 
@@ -83,22 +83,22 @@ int main(int argc, char ** argv) {
     {
         o = ewl_menu_item_new(NULL, "int");
         ewl_container_child_append(EWL_CONTAINER(combo), o);
-        	ewl_callback_append(o, EWL_CALLBACK_SELECT, type_sel_cb, (int *)EWL_EDB_TYPE_INT);
+                ewl_callback_append(o, EWL_CALLBACK_SELECT, type_sel_cb, (int *)EWL_EDB_TYPE_INT);
         ewl_widget_show(o);
 
         o = ewl_menu_item_new(NULL, "str");
         ewl_container_child_append(EWL_CONTAINER(combo), o);
-        	ewl_callback_append(o, EWL_CALLBACK_SELECT, type_sel_cb, (int *)EWL_EDB_TYPE_STR);
+                ewl_callback_append(o, EWL_CALLBACK_SELECT, type_sel_cb, (int *)EWL_EDB_TYPE_STR);
         ewl_widget_show(o);
 
         o = ewl_menu_item_new(NULL, "float");
         ewl_container_child_append(EWL_CONTAINER(combo), o);
-        	ewl_callback_append(o, EWL_CALLBACK_SELECT, type_sel_cb, (int *)EWL_EDB_TYPE_FLOAT);
+                ewl_callback_append(o, EWL_CALLBACK_SELECT, type_sel_cb, (int *)EWL_EDB_TYPE_FLOAT);
         ewl_widget_show(o);
 
         o = ewl_menu_item_new(NULL, "data");
         ewl_container_child_append(EWL_CONTAINER(combo), o);
-        	ewl_callback_append(o, EWL_CALLBACK_SELECT, type_sel_cb, (int *)EWL_EDB_TYPE_DATA);
+                ewl_callback_append(o, EWL_CALLBACK_SELECT, type_sel_cb, (int *)EWL_EDB_TYPE_DATA);
         ewl_widget_show(o);
     }
 
@@ -110,23 +110,23 @@ int main(int argc, char ** argv) {
 
         /* add/delete buttons on right */
         {
-        	Ewl_Widget *add_del_box = ewl_hbox_new();
-        	ewl_container_child_append(EWL_CONTAINER(box2), add_del_box);
-        	ewl_widget_show(add_del_box);
+                Ewl_Widget *add_del_box = ewl_hbox_new();
+                ewl_container_child_append(EWL_CONTAINER(box2), add_del_box);
+                ewl_widget_show(add_del_box);
 
-        	o = ewl_button_new("add");
-        	ewl_container_child_append(EWL_CONTAINER(add_del_box), o);
-        	ewl_callback_append(o, EWL_CALLBACK_CLICKED, add_cb, NULL);
-        	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
-        	ewl_object_padding_set(EWL_OBJECT(o), 5, 5, 2, 2);
-        	ewl_widget_show(o);
+                o = ewl_button_new("add");
+                ewl_container_child_append(EWL_CONTAINER(add_del_box), o);
+                ewl_callback_append(o, EWL_CALLBACK_CLICKED, add_cb, NULL);
+                ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
+                ewl_object_padding_set(EWL_OBJECT(o), 5, 5, 2, 2);
+                ewl_widget_show(o);
 
-        	o = ewl_button_new("delete");
-        	ewl_container_child_append(EWL_CONTAINER(add_del_box), o);
-        	ewl_callback_append(o, EWL_CALLBACK_CLICKED, delete_cb, NULL);
-        	ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
-        	ewl_object_padding_set(EWL_OBJECT(o), 0, 5, 2, 2);
-        	ewl_widget_show(o);
+                o = ewl_button_new("delete");
+                ewl_container_child_append(EWL_CONTAINER(add_del_box), o);
+                ewl_callback_append(o, EWL_CALLBACK_CLICKED, delete_cb, NULL);
+                ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
+                ewl_object_padding_set(EWL_OBJECT(o), 0, 5, 2, 2);
+                ewl_widget_show(o);
         }
 
     /* create the menu */
@@ -141,12 +141,12 @@ int main(int argc, char ** argv) {
 
         o = ewl_menu_item_new(NULL, "open");
         ewl_container_child_append(EWL_CONTAINER(file), o);
-        	ewl_callback_append(o, EWL_CALLBACK_SELECT, open_cb, NULL);
+                ewl_callback_append(o, EWL_CALLBACK_SELECT, open_cb, NULL);
         ewl_widget_show(o);
 
         o = ewl_menu_item_new(NULL, "save");
         ewl_container_child_append(EWL_CONTAINER(file), o);
-        	ewl_callback_append(o, EWL_CALLBACK_SELECT, save_cb, NULL);
+                ewl_callback_append(o, EWL_CALLBACK_SELECT, save_cb, NULL);
         ewl_widget_show(o);
 
         o = ewl_menu_item_new(NULL, "quit");
@@ -168,7 +168,7 @@ int main(int argc, char ** argv) {
         box2 = ewl_hbox_new();
         ewl_container_child_append(EWL_CONTAINER(box), box2);
         ewl_object_fill_policy_set(EWL_OBJECT(box2),
-        					EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_HFILL);
+                                                EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_HFILL);
         ewl_object_alignment_set(EWL_OBJECT(box2), EWL_FLAG_ALIGN_RIGHT);
         ewl_widget_show(box2);
 
@@ -187,7 +187,7 @@ int main(int argc, char ** argv) {
         ewl_widget_show(o);
 
         if (argc > 1)
-        	open_file_cb(NULL, argv[1], NULL);
+                open_file_cb(NULL, argv[1], NULL);
 
     ewl_main();
     return 1;
@@ -210,55 +210,55 @@ void open_file_cb(Ewl_Widget *w, void *event, void *data) {
 
         fd_win_del_cb(NULL, NULL, fd_win);
         if (file == NULL)
-        	return;
+                return;
 
         db_file = e_db_open(file);
 
         if (db_file == NULL) {
-        	printf("Unable to open file %s\n", file);
-        	return;
+                printf("Unable to open file %s\n", file);
+                return;
         }
 
         key_list = e_db_dump_key_list(file, &num_ret);
         {
-        	int i = 0;
+                int i = 0;
 
-        	for(i = 0; i < num_ret; i++) {
-        		if (key_list[i] != NULL) {
-        			Ewl_Widget * widgets[3];
-        			char *type = e_db_type_get(db_file, key_list[i]);
-        			char val[512];
+                for(i = 0; i < num_ret; i++) {
+                        if (key_list[i] != NULL) {
+                                Ewl_Widget * widgets[3];
+                                char *type = e_db_type_get(db_file, key_list[i]);
+                                char val[512];
 
-        			if (!strcmp(type, "str")) {
-        				snprintf(val, sizeof(val), "%s", e_db_str_get(db_file, key_list[i]));
+                                if (!strcmp(type, "str")) {
+                                        snprintf(val, sizeof(val), "%s", e_db_str_get(db_file, key_list[i]));
 
-        			} else if (!strcmp(type, "float")) {
-        				float f = 0.0;
-        				e_db_float_get(db_file, key_list[i], &f);
-        				snprintf(val, sizeof(val), "%.2f", f);
+                                } else if (!strcmp(type, "float")) {
+                                        float f = 0.0;
+                                        e_db_float_get(db_file, key_list[i], &f);
+                                        snprintf(val, sizeof(val), "%.2f", f);
 
-        			} else if (!strcmp(type, "data")) {
-        				snprintf(val, sizeof(val), "Data not shown");
+                                } else if (!strcmp(type, "data")) {
+                                        snprintf(val, sizeof(val), "Data not shown");
 
-        			} else if (!strcmp(type, "int")) {
-        				int integer = 0;
-        				e_db_int_get(db_file, key_list[i], &integer);
-        				snprintf(val, sizeof(val), "%d", integer);
-        			}
+                                } else if (!strcmp(type, "int")) {
+                                        int integer = 0;
+                                        e_db_int_get(db_file, key_list[i], &integer);
+                                        snprintf(val, sizeof(val), "%d", integer);
+                                }
 
-        			widgets[0] = ewl_text_new(type);
-        			ewl_widget_show(widgets[0]);
+                                widgets[0] = ewl_text_new(type);
+                                ewl_widget_show(widgets[0]);
 
-        			widgets[1] = ewl_text_new(key_list[i]);
-        			ewl_widget_show(widgets[1]);
+                                widgets[1] = ewl_text_new(key_list[i]);
+                                ewl_widget_show(widgets[1]);
 
-        			widgets[2] = ewl_text_new(val);
-        			ewl_widget_show(widgets[2]);
+                                widgets[2] = ewl_text_new(val);
+                                ewl_widget_show(widgets[2]);
 
-        			ewl_tree_row_add(EWL_TREE(tree), NULL, widgets);
-        			free(key_list[i]);
-        		}
-        	}
+                                ewl_tree_row_add(EWL_TREE(tree), NULL, widgets);
+                                free(key_list[i]);
+                        }
+                }
         }
 
         free(key_list);
@@ -302,7 +302,7 @@ void open_cb(Ewl_Widget *w, void *event, void *data) {
 
 void save_cb(Ewl_Widget *w, void *event, void *data) {
         if (db_file == NULL)
-        	return;
+                return;
 
         e_db_close(db_file);
         db_file = NULL;
@@ -328,44 +328,44 @@ void add_cb(Ewl_Widget *w, void *event, void *data) {
         Ewl_Widget *widgets[3];
 
         if ((key == NULL)  || (val == NULL))
-        	return;
+                return;
 
         switch(current_type) {
-        	case EWL_EDB_TYPE_INT:
-        		{
-        			int ival = atoi(val);
-        			widgets[0] = ewl_text_new("int");
-        			ewl_widget_show(widgets[0]);
-        			e_db_int_set(db_file, key, ival);
-        		}
-        		break;
+                case EWL_EDB_TYPE_INT:
+                        {
+                                int ival = atoi(val);
+                                widgets[0] = ewl_text_new("int");
+                                ewl_widget_show(widgets[0]);
+                                e_db_int_set(db_file, key, ival);
+                        }
+                        break;
 
-        	case EWL_EDB_TYPE_STR:
-        		widgets[0] = ewl_text_new("str");
-        		ewl_widget_show(widgets[0]);
-        		e_db_str_set(db_file, key, val);
-        		break;
+                case EWL_EDB_TYPE_STR:
+                        widgets[0] = ewl_text_new("str");
+                        ewl_widget_show(widgets[0]);
+                        e_db_str_set(db_file, key, val);
+                        break;
 
-        	case EWL_EDB_TYPE_FLOAT:
-        		{
-        			float fval = atof(val);
-        			widgets[0] = ewl_text_new("float");
-        			ewl_widget_show(widgets[0]);
-        			e_db_float_set(db_file, key, fval);
-        		}
-        		break;
+                case EWL_EDB_TYPE_FLOAT:
+                        {
+                                float fval = atof(val);
+                                widgets[0] = ewl_text_new("float");
+                                ewl_widget_show(widgets[0]);
+                                e_db_float_set(db_file, key, fval);
+                        }
+                        break;
 
-        	case EWL_EDB_TYPE_DATA:
-        		widgets[0] = ewl_text_new("data");
-        		ewl_widget_show(widgets[0]);
-        		e_db_data_set(db_file, key, val, strlen(val));
-        		free(val);
-        		val = strdup("");
-        		break;
+                case EWL_EDB_TYPE_DATA:
+                        widgets[0] = ewl_text_new("data");
+                        ewl_widget_show(widgets[0]);
+                        e_db_data_set(db_file, key, val, strlen(val));
+                        free(val);
+                        val = strdup("");
+                        break;
 
-        	default:
-        		printf("No type selected\n");
-        		break;
+                default:
+                        printf("No type selected\n");
+                        break;
         }
 
         widgets[1] = ewl_text_new(key);
@@ -387,7 +387,7 @@ void delete_cb(Ewl_Widget *w, void *event, void *data) {
 //        char *current_key = ewl_table_get_selected(EWL_TABLE(table));
 
         if (current_key == NULL)
-        	return;
+                return;
 
         e_db_data_del(db_file, current_key);
 

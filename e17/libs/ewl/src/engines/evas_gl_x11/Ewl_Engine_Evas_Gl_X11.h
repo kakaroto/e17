@@ -8,7 +8,7 @@
 #include <Evas_Engine_GL_X11.h>
 
 #define EWL_ENGINE_EVAS_GL_X11(engine) \
-        	((Ewl_Engine_Evas_Gl_X11 *)engine)
+                ((Ewl_Engine_Evas_Gl_X11 *)engine)
 
 typedef struct Ewl_Engine_Evas_Gl_X11 Ewl_Engine_Evas_Gl_X11;
 struct Ewl_Engine_Evas_Gl_X11

@@ -46,14 +46,14 @@ ewl_dnd_init(void)
         EWL_CALLBACK_DND_DATA_REQUEST = ewl_callback_type_add();
 
         ewl_dnd_provided_hash = ecore_hash_new(ecore_direct_hash,
-        					ecore_direct_compare);
+                                                ecore_direct_compare);
         if (!ewl_dnd_provided_hash)
-        	goto PROVIDED_ERROR;
+                goto PROVIDED_ERROR;
 
         ewl_dnd_accepted_hash = ecore_hash_new(ecore_direct_hash,
-        					ecore_direct_compare);
+                                                ecore_direct_compare);
         if (!ewl_dnd_accepted_hash)
-        	goto ACCEPTED_ERROR;
+                goto ACCEPTED_ERROR;
 
         ecore_hash_free_value_cb_set(ewl_dnd_accepted_hash, free);
         ewl_dnd_widget = NULL;
@@ -107,18 +107,18 @@ ewl_dnd_provided_types_set(Ewl_Widget *w, const char **types)
         IF_FREE(type);
 
         if (types && *types) {
-        	type = ewl_dnd_types_encode(types);
-        	ecore_hash_set(ewl_dnd_provided_hash, w, type);
-        	ewl_object_flags_add(EWL_OBJECT(w),
-        			EWL_FLAG_PROPERTY_DND_SOURCE,
-        			EWL_FLAGS_PROPERTY_MASK);
+                type = ewl_dnd_types_encode(types);
+                ecore_hash_set(ewl_dnd_provided_hash, w, type);
+                ewl_object_flags_add(EWL_OBJECT(w),
+                                EWL_FLAG_PROPERTY_DND_SOURCE,
+                                EWL_FLAGS_PROPERTY_MASK);
         }
         else {
-        	type = ecore_hash_remove(ewl_dnd_provided_hash, w);
-        	IF_FREE(type);
-        	ewl_object_flags_remove(EWL_OBJECT(w),
-        			EWL_FLAG_PROPERTY_DND_SOURCE,
-        			EWL_FLAGS_PROPERTY_MASK);
+                type = ecore_hash_remove(ewl_dnd_provided_hash, w);
+                IF_FREE(type);
+                ewl_object_flags_remove(EWL_OBJECT(w),
+                                EWL_FLAG_PROPERTY_DND_SOURCE,
+                                EWL_FLAGS_PROPERTY_MASK);
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -184,30 +184,30 @@ ewl_dnd_accepted_types_set(Ewl_Widget *w, const char **types)
         IF_FREE(type);
 
         if (types && *types) {
-        	type = ewl_dnd_types_encode(types);
-        	ecore_hash_set(ewl_dnd_accepted_hash, w, type);
-        	ewl_object_flags_add(EWL_OBJECT(w),
-        			EWL_FLAG_PROPERTY_DND_TARGET,
-        			EWL_FLAGS_PROPERTY_MASK);
+                type = ewl_dnd_types_encode(types);
+                ecore_hash_set(ewl_dnd_accepted_hash, w, type);
+                ewl_object_flags_add(EWL_OBJECT(w),
+                                EWL_FLAG_PROPERTY_DND_TARGET,
+                                EWL_FLAGS_PROPERTY_MASK);
 
-        	if (REALIZED(w) && REVEALED(w)) {
-        		Ewl_Embed *emb;
+                if (REALIZED(w) && REVEALED(w)) {
+                        Ewl_Embed *emb;
 
-        		emb = ewl_embed_widget_find(w);
-        		if (emb) ewl_embed_dnd_aware_set(emb);
-        	}
+                        emb = ewl_embed_widget_find(w);
+                        if (emb) ewl_embed_dnd_aware_set(emb);
+                }
         }
         else {
-        	ewl_object_flags_remove(EWL_OBJECT(w),
-        			EWL_FLAG_PROPERTY_DND_TARGET,
-        			EWL_FLAGS_PROPERTY_MASK);
+                ewl_object_flags_remove(EWL_OBJECT(w),
+                                EWL_FLAG_PROPERTY_DND_TARGET,
+                                EWL_FLAGS_PROPERTY_MASK);
 
-        	if (REALIZED(w) && REVEALED(w)) {
-        		Ewl_Embed *emb;
+                if (REALIZED(w) && REVEALED(w)) {
+                        Ewl_Embed *emb;
 
-        		emb = ewl_embed_widget_find(w);
-        		if (emb) ewl_embed_dnd_aware_remove(emb);
-        	}
+                        emb = ewl_embed_widget_find(w);
+                        if (emb) ewl_embed_dnd_aware_remove(emb);
+                }
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -272,7 +272,7 @@ ewl_dnd_drag_start(Ewl_Widget *w)
         DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
         if (!ewl_dnd_status || ewl_dragging_current)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         emb = ewl_embed_widget_find(w);
         if (!emb) DRETURN(DLEVEL_STABLE);
@@ -285,7 +285,7 @@ ewl_dnd_drag_start(Ewl_Widget *w)
          * Count the number of mime types set on the widget.
          */
         for (i = 0; types && types[i]; i++)
-        	;
+                ;
 
         /*
          * Flag the provided DND types on the embed and begin the DND process.
@@ -297,13 +297,13 @@ ewl_dnd_drag_start(Ewl_Widget *w)
          * Create a fallback cursor to display during DND operations.
          */
         if (!ewl_dnd_default_cursor) {
-        	ewl_dnd_default_cursor = ewl_cursor_new();
+                ewl_dnd_default_cursor = ewl_cursor_new();
 
-        	/*
-        	 * Add a theme point as these tend to be a specialized class of cursors.
-        	 */
-        	ewl_widget_appearance_set(ewl_dnd_default_cursor, "dndcursor");
-        	ewl_widget_show(ewl_dnd_default_cursor);
+                /*
+                 * Add a theme point as these tend to be a specialized class of cursors.
+                 */
+                ewl_widget_appearance_set(ewl_dnd_default_cursor, "dndcursor");
+                ewl_widget_show(ewl_dnd_default_cursor);
         }
 
         /*
@@ -420,10 +420,10 @@ ewl_dnd_types_encoded_contains(char *types, char *type)
         DENTER_FUNCTION(DLEVEL_STABLE);
 
         while (*types) {
-        	if (!(strcmp(types, type)))
-        		DRETURN_INT(TRUE, DLEVEL_STABLE);
+                if (!(strcmp(types, type)))
+                        DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-        	types += strlen(types) + 1;
+                types += strlen(types) + 1;
         }
 
         DRETURN_INT(FALSE, DLEVEL_STABLE);
@@ -446,15 +446,15 @@ ewl_dnd_types_encode(const char **types)
          * Determine the length of all types.
          */
         for (tmptype = (char *)types[0]; tmptype; tmptype = (char *)types[i]) {
-        	len += strlen(tmptype) + 1;
-        	i++;
+                len += strlen(tmptype) + 1;
+                i++;
         }
 
         type = tmptype = NEW(char, len + 1);
         count = i;
         for (i = 0; i < count; i++) {
-        	tmptype = ewl_dnd_type_stpcpy(tmptype, types[i]);
-        	tmptype++;
+                tmptype = ewl_dnd_type_stpcpy(tmptype, types[i]);
+                tmptype++;
         }
         *tmptype = '\0';
 
@@ -474,20 +474,20 @@ ewl_dnd_types_decode(const char *types)
         DENTER_FUNCTION(DLEVEL_STABLE);
 
         if (!types)
-        	DRETURN_PTR(types, DLEVEL_STABLE);
+                DRETURN_PTR(types, DLEVEL_STABLE);
 
         /*
          * Short lists so iterate over multiple times rather than incur
          * allocation overhead.
          */
         for (tmp = types, count = 0; *tmp; tmp++, count++) {
-        	while (*tmp) tmp++;
+                while (*tmp) tmp++;
         }
 
         list = NEW(char *, count + 1);
         for (tmp = types, count = 0; *tmp; tmp++, count++) {
-        	list[count] = strdup(tmp);
-        	while (*tmp) tmp++;
+                list[count] = strdup(tmp);
+                while (*tmp) tmp++;
         }
 
         DRETURN_PTR(list, DLEVEL_STABLE);
@@ -505,9 +505,9 @@ ewl_dnd_type_stpcpy(char *dst, const char *src)
         DCHECK_PARAM_PTR_RET(dst, dst);
 
         while (*src) {
-        	*dst = *src;
-        	dst++;
-        	src++;
+                *dst = *src;
+                dst++;
+                src++;
         }
         *dst = '\0';
 

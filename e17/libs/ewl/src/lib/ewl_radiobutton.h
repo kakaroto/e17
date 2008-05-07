@@ -58,12 +58,12 @@ struct Ewl_Radiobutton
 };
 
 Ewl_Widget         *ewl_radiobutton_new(void);
-int         	 ewl_radiobutton_init(Ewl_Radiobutton *rb);
+int                  ewl_radiobutton_init(Ewl_Radiobutton *rb);
 
-void        	 ewl_radiobutton_value_set(Ewl_Radiobutton *rb, void *v);
-void         	*ewl_radiobutton_value_get(Ewl_Radiobutton *rb);
+void                 ewl_radiobutton_value_set(Ewl_Radiobutton *rb, void *v);
+void                 *ewl_radiobutton_value_get(Ewl_Radiobutton *rb);
 
-void         	 ewl_radiobutton_chain_set(Ewl_Radiobutton *rb, Ewl_Radiobutton *crb);
+void                  ewl_radiobutton_chain_set(Ewl_Radiobutton *rb, Ewl_Radiobutton *crb);
 Ewl_Radiobutton        *ewl_radiobutton_chain_selected_get(Ewl_Radiobutton *rb);
 
 /**

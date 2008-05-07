@@ -59,10 +59,10 @@ create_test(Ewl_Container *box)
         ewl_callback_append(EWL_WIDGET(box), EWL_CALLBACK_DESTROY, destroy_test, data);
         for (i = 0; i < 500; i++)
         {
-        	char text[10];
+                char text[10];
 
-        	snprintf(text, sizeof(text), "Row: %d", i);
-        	ecore_list_append(data, strdup(text));
+                snprintf(text, sizeof(text), "Row: %d", i);
+                ecore_list_append(data, strdup(text));
         }
 
         c = ewl_vpaned_new();
@@ -119,13 +119,13 @@ scroll_type_get(char *buf, int len)
 
         tree = ewl_tree_new();
         ewl_tree_kinetic_scrolling_set(EWL_TREE(tree),
-        					EWL_KINETIC_SCROLL_NORMAL);
+                                                EWL_KINETIC_SCROLL_NORMAL);
         type = ewl_tree_kinetic_scrolling_get(EWL_TREE(tree));
 
         if (type != EWL_KINETIC_SCROLL_NORMAL)
         {
-        	LOG_FAILURE(buf, len, "get type is different from the set one");
-        	ret = 0;
+                LOG_FAILURE(buf, len, "get type is different from the set one");
+                ret = 0;
         }
 
         ewl_widget_destroy(tree);
@@ -147,8 +147,8 @@ kinetic_dampen_get(char *buf, int len)
 
         if (val != set)
         {
-        	LOG_FAILURE(buf, len, "get dampen is different from the set dampen");
-        	ret = 0;
+                LOG_FAILURE(buf, len, "get dampen is different from the set dampen");
+                ret = 0;
         }
         
         ewl_widget_destroy(tree);
@@ -170,8 +170,8 @@ kinetic_vmax_get(char *buf, int len)
 
         if (val != set)
         {
-        	LOG_FAILURE(buf, len, "get vmax is different from the set vmax");
-        	ret = 0;
+                LOG_FAILURE(buf, len, "get vmax is different from the set vmax");
+                ret = 0;
         }
 
         ewl_widget_destroy(tree);
@@ -193,8 +193,8 @@ kinetic_vmin_get(char *buf, int len)
 
         if (val != set)
         {
-        	LOG_FAILURE(buf, len, "get vmin is different from the set vmin");
-        	ret = 0;
+                LOG_FAILURE(buf, len, "get vmin is different from the set vmin");
+                ret = 0;
         }
 
         ewl_widget_destroy(tree);
@@ -215,8 +215,8 @@ kinetic_fps_get(char *buf, int len)
 
         if (val != 3)
         {
-        	LOG_FAILURE(buf, len, "get fps is different from the set fps");
-        	ret = 0;
+                LOG_FAILURE(buf, len, "get fps is different from the set fps");
+                ret = 0;
         }
 
         ewl_widget_destroy(tree);

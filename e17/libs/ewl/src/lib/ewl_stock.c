@@ -16,22 +16,22 @@ struct
         const char * const image_key;
         const char * const tooltip;
 } ewl_stock_items[] = {
-        	{"Apply", EWL_ICON_DIALOG_APPLY, "Apply"},
-        	{/*Arrow*/"Down", EWL_ICON_GO_DOWN, "Down"},
-        	{/*Arrow*/"Left", EWL_ICON_GO_PREVIOUS, "Previous"},
-        	{/*Arrow*/"Right", EWL_ICON_GO_NEXT, "Next"},
-        	{/*Arrow*/"Up",	EWL_ICON_GO_UP, "Up"},
-        	{"Cancel", EWL_ICON_DIALOG_CANCEL, "Cancel"},
-        	{"FF", EWL_ICON_MEDIA_SEEK_FORWARD, "Fast Forward"},
-        	{"Home", EWL_ICON_GO_HOME, "Home"},
-        	{"Ok", EWL_ICON_DIALOG_OK, "OK"},
-        	{"Open", EWL_ICON_DOCUMENT_OPEN, "Open"},
-        	{"Pause", EWL_ICON_MEDIA_PLAYBACK_PAUSE, "Pause"},
-        	{"Play", EWL_ICON_MEDIA_PLAYBACK_START, "Play"},
-        	{"Quit", EWL_ICON_SYSTEM_LOG_OUT, "Quit"},
-        	{"Rewind", EWL_ICON_MEDIA_SEEK_BACKWARD, "Rewind"},
-        	{"Save", EWL_ICON_DOCUMENT_SAVE, "Save"},
-        	{"Stop", EWL_ICON_MEDIA_PLAYBACK_STOP, "Stop"}
+                {"Apply", EWL_ICON_DIALOG_APPLY, "Apply"},
+                {/*Arrow*/"Down", EWL_ICON_GO_DOWN, "Down"},
+                {/*Arrow*/"Left", EWL_ICON_GO_PREVIOUS, "Previous"},
+                {/*Arrow*/"Right", EWL_ICON_GO_NEXT, "Next"},
+                {/*Arrow*/"Up",        EWL_ICON_GO_UP, "Up"},
+                {"Cancel", EWL_ICON_DIALOG_CANCEL, "Cancel"},
+                {"FF", EWL_ICON_MEDIA_SEEK_FORWARD, "Fast Forward"},
+                {"Home", EWL_ICON_GO_HOME, "Home"},
+                {"Ok", EWL_ICON_DIALOG_OK, "OK"},
+                {"Open", EWL_ICON_DOCUMENT_OPEN, "Open"},
+                {"Pause", EWL_ICON_MEDIA_PLAYBACK_PAUSE, "Pause"},
+                {"Play", EWL_ICON_MEDIA_PLAYBACK_START, "Play"},
+                {"Quit", EWL_ICON_SYSTEM_LOG_OUT, "Quit"},
+                {"Rewind", EWL_ICON_MEDIA_SEEK_BACKWARD, "Rewind"},
+                {"Save", EWL_ICON_DOCUMENT_SAVE, "Save"},
+                {"Stop", EWL_ICON_MEDIA_PLAYBACK_STOP, "Stop"}
         };
 
 /**
@@ -49,7 +49,7 @@ ewl_stock_init(Ewl_Stock *s)
         DCHECK_PARAM_PTR_RET(s, FALSE);
 
         if (!ewl_box_init(EWL_BOX(s)))
-        	DRETURN_INT(FALSE, DLEVEL_STABLE);
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
 
         ewl_widget_inherit(EWL_WIDGET(s), EWL_STOCK_TYPE);
 
@@ -90,40 +90,40 @@ ewl_stock_type_set(Ewl_Stock *s, Ewl_Stock_Type stock)
         DCHECK_TYPE(s, EWL_STOCK_TYPE);
 
         if (stock == s->stock_type)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         s->stock_type = stock;
 
         /* we're done if it's none */
         if (s->stock_type == EWL_STOCK_NONE)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         /* Can't do anything without the stock funcs */
         if (!s->stock_funcs)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         /* set the label */
         if (s->stock_funcs->label_set)
-        	s->stock_funcs->label_set(s,
-        		 ewl_stock_items[s->stock_type].label);
+                s->stock_funcs->label_set(s,
+                         ewl_stock_items[s->stock_type].label);
 
         /* set the image */
         if (s->stock_funcs->image_set) {
-        	const char *data;
+                const char *data;
 
-        	/* check for an image key */
-        	data = ewl_icon_theme_icon_path_get(
-        			ewl_stock_items[s->stock_type].image_key,
-        			EWL_ICON_SIZE_MEDIUM);
+                /* check for an image key */
+                data = ewl_icon_theme_icon_path_get(
+                                ewl_stock_items[s->stock_type].image_key,
+                                EWL_ICON_SIZE_MEDIUM);
 
-        	s->stock_funcs->image_set(s, data,
-        			ewl_stock_items[s->stock_type].image_key);
+                s->stock_funcs->image_set(s, data,
+                                ewl_stock_items[s->stock_type].image_key);
         }
 
         /* set the tooltip */
         if (s->stock_funcs->tooltip_set)
-        	s->stock_funcs->tooltip_set(s,
-        		ewl_stock_items[s->stock_type].tooltip);
+                s->stock_funcs->tooltip_set(s,
+                        ewl_stock_items[s->stock_type].tooltip);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

@@ -18,7 +18,7 @@ test_info(Ewl_Test *test)
 {
         test->name = "Password";
         test->tip = "Defines the Ewl_Password class to allow\n"
-        		"for single line obscured text.";
+                        "for single line obscured text.";
         test->filename = __FILE__;
         test->func = create_test;
         test->type = EWL_TEST_TYPE_SIMPLE;
@@ -34,9 +34,9 @@ create_test(Ewl_Container *box)
         ewl_object_padding_set(EWL_OBJECT(password[0]), 5, 5, 5, 0);
         ewl_container_child_append(box, password[0]);
         ewl_callback_append(password[0], EWL_CALLBACK_VALUE_CHANGED,
-        		    cb_fetch_password_text, NULL);
+                            cb_fetch_password_text, NULL);
         ewl_object_fill_policy_set(EWL_OBJECT(password[0]),
-        			   EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK);
+                                   EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK);
         ewl_widget_show(password[0]);
 
         password[1] = ewl_password_new();
@@ -46,9 +46,9 @@ create_test(Ewl_Container *box)
         ewl_object_padding_set(EWL_OBJECT(password[1]), 5, 5, 0, 0);
         ewl_container_child_append(box, password[1]);
         ewl_callback_append(password[1], EWL_CALLBACK_VALUE_CHANGED,
-        		    cb_fetch_password_text, NULL);
+                            cb_fetch_password_text, NULL);
         ewl_object_fill_policy_set(EWL_OBJECT(password[1]),
-        			   EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK);
+                                   EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK);
         ewl_widget_show(password[1]);
 
         password[2] = ewl_password_new();
@@ -57,9 +57,9 @@ create_test(Ewl_Container *box)
         ewl_object_padding_set(EWL_OBJECT(password[2]), 5, 5, 0, 0);
         ewl_container_child_append(box, password[2]);
         ewl_callback_append(password[2], EWL_CALLBACK_VALUE_CHANGED,
-        		    cb_fetch_password_text, NULL);
+                            cb_fetch_password_text, NULL);
         ewl_object_fill_policy_set(EWL_OBJECT(password[2]),
-        			   EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK);
+                                   EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK);
         ewl_widget_show(password[2]);
 
         button_hbox = ewl_hbox_new();
@@ -73,7 +73,7 @@ create_test(Ewl_Container *box)
         ewl_button_label_set(EWL_BUTTON(button[0]), "Fetch text");
         ewl_container_child_append(EWL_CONTAINER(button_hbox), button[0]);
         ewl_callback_append(button[0], EWL_CALLBACK_CLICKED,
-        		    cb_fetch_password_text, NULL);
+                            cb_fetch_password_text, NULL);
         ewl_object_fill_policy_set(EWL_OBJECT(button[0]), EWL_FLAG_FILL_NONE);
         ewl_object_alignment_set(EWL_OBJECT(button[0]), EWL_FLAG_ALIGN_CENTER);
         ewl_widget_show(button[0]);
@@ -82,7 +82,7 @@ create_test(Ewl_Container *box)
         ewl_button_label_set(EWL_BUTTON(button[1]), "Set Text");
         ewl_container_child_append(EWL_CONTAINER(button_hbox), button[1]);
         ewl_callback_append(button[1], EWL_CALLBACK_CLICKED,
-        		    cb_set_password_text, NULL);
+                            cb_set_password_text, NULL);
         ewl_object_fill_policy_set(EWL_OBJECT(button[1]), EWL_FLAG_FILL_NONE);
         ewl_object_alignment_set(EWL_OBJECT(button[1]), EWL_FLAG_ALIGN_CENTER);
         ewl_widget_show(button[1]);
@@ -92,7 +92,7 @@ create_test(Ewl_Container *box)
 
 static void
 cb_fetch_password_text(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
-        					void *data __UNUSED__)
+                                                void *data __UNUSED__)
 {
         char *s;
 
@@ -111,7 +111,7 @@ cb_fetch_password_text(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
 static void
 cb_set_password_text(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
-        					void *data __UNUSED__)
+                                                void *data __UNUSED__)
 {
         ewl_text_text_set(EWL_TEXT(password[0]), "Play with me ?");
         ewl_text_text_set(EWL_TEXT(password[1]), "E W L ! ! !");

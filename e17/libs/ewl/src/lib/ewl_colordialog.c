@@ -23,13 +23,13 @@ ewl_colordialog_new(void)
         w = NEW(Ewl_Colordialog, 1);
         if (!w)
         {
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
         }
 
         if (!ewl_colordialog_init(EWL_COLORDIALOG(w)))
         {
-        	ewl_widget_destroy(w);
-        	w = NULL;
+                ewl_widget_destroy(w);
+                w = NULL;
         }
 
         DRETURN_PTR(w, DLEVEL_STABLE);
@@ -49,7 +49,7 @@ ewl_colordialog_init(Ewl_Colordialog *cd)
         DCHECK_PARAM_PTR_RET(cd, FALSE);
 
         if (!ewl_dialog_init(EWL_DIALOG(cd))) {
-        	DRETURN_INT(FALSE, DLEVEL_STABLE);
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
         }
         ewl_widget_inherit(EWL_WIDGET(cd), EWL_COLORDIALOG_TYPE);
 
@@ -59,7 +59,7 @@ ewl_colordialog_init(Ewl_Colordialog *cd)
         ewl_window_class_set(EWL_WINDOW(cd), "Ewl Colordialog");
 
         ewl_callback_append(EWL_WIDGET(cd), EWL_CALLBACK_DELETE_WINDOW,
-        			ewl_colordialog_cb_delete_window, NULL);
+                                ewl_colordialog_cb_delete_window, NULL);
 
         ewl_dialog_active_area_set(EWL_DIALOG(cd), EWL_POSITION_TOP);
 
@@ -68,7 +68,7 @@ ewl_colordialog_init(Ewl_Colordialog *cd)
         ewl_widget_internal_set(cd->picker, TRUE);
         ewl_container_child_append(EWL_CONTAINER(cd), cd->picker);
         ewl_object_fill_policy_set(EWL_OBJECT(cd->picker),
-        				EWL_FLAG_FILL_FILL);
+                                        EWL_FLAG_FILL_FILL);
         ewl_widget_show(cd->picker);
 
         ewl_dialog_active_area_set(EWL_DIALOG(cd), EWL_POSITION_BOTTOM);
@@ -78,14 +78,14 @@ ewl_colordialog_init(Ewl_Colordialog *cd)
         ewl_container_child_append(EWL_CONTAINER(cd), o);
         ewl_stock_type_set(EWL_STOCK(o), EWL_STOCK_OK);
         ewl_callback_append(o, EWL_CALLBACK_CLICKED,
-        				ewl_colordialog_cb_button_click, cd);
+                                        ewl_colordialog_cb_button_click, cd);
         ewl_widget_show(o);
 
         o = ewl_button_new();
         ewl_container_child_append(EWL_CONTAINER(cd), o);
         ewl_stock_type_set(EWL_STOCK(o), EWL_STOCK_CANCEL);
         ewl_callback_append(o, EWL_CALLBACK_CLICKED,
-        				ewl_colordialog_cb_button_click, cd);
+                                        ewl_colordialog_cb_button_click, cd);
         ewl_widget_show(o);
 
         /* enable alpha channel by default */
@@ -179,7 +179,7 @@ ewl_colordialog_alpha_get(Ewl_Colordialog *cd)
  */
 void
 ewl_colordialog_current_rgb_set(Ewl_Colordialog *cd, unsigned int r,
-        			unsigned int g, unsigned int b)
+                                unsigned int g, unsigned int b)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(cd);
@@ -200,7 +200,7 @@ ewl_colordialog_current_rgb_set(Ewl_Colordialog *cd, unsigned int r,
  */
 void
 ewl_colordialog_current_rgb_get(Ewl_Colordialog *cd, unsigned int *r,
-        			unsigned int *g, unsigned int *b)
+                                unsigned int *g, unsigned int *b)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(cd);
@@ -223,8 +223,8 @@ ewl_colordialog_current_rgb_get(Ewl_Colordialog *cd, unsigned int *r,
  */
 void
 ewl_colordialog_previous_rgba_set(Ewl_Colordialog *cd, unsigned int r,
-        			unsigned int g, unsigned int b,
-        			unsigned int a)
+                                unsigned int g, unsigned int b,
+                                unsigned int a)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(cd);
@@ -247,8 +247,8 @@ ewl_colordialog_previous_rgba_set(Ewl_Colordialog *cd, unsigned int r,
  */
 void
 ewl_colordialog_previous_rgba_get(Ewl_Colordialog *cd, unsigned int *r,
-        			unsigned int *g, unsigned int *b, 
-        			unsigned int *a)
+                                unsigned int *g, unsigned int *b, 
+                                unsigned int *a)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(cd);
@@ -332,7 +332,7 @@ ewl_colordialog_cb_button_click(Ewl_Widget *w, void *ev __UNUSED__, void *data)
  */
 void
 ewl_colordialog_cb_delete_window(Ewl_Widget *w, void *ev __UNUSED__,
-        				void *data __UNUSED__)
+                                        void *data __UNUSED__)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(w);
@@ -354,7 +354,7 @@ ewl_colordialog_respond(Ewl_Colordialog *cd, unsigned int response)
 
         cd_ev.response = response;
         ewl_callback_call_with_event_data(EWL_WIDGET(cd),
-        				EWL_CALLBACK_VALUE_CHANGED, &cd_ev);
+                                        EWL_CALLBACK_VALUE_CHANGED, &cd_ev);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

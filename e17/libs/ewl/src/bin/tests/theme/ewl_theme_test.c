@@ -36,7 +36,7 @@ test_info(Ewl_Test *test)
 {
         test->name = "Theme";
         test->tip = "Shows the utilization of themes\n"
-        		"inside a EWL application.";
+                        "inside a EWL application.";
         test->filename = __FILE__;
         test->func = create_test;
         test->type = EWL_TEST_TYPE_ADVANCED;
@@ -70,24 +70,24 @@ create_test(Ewl_Container *box)
         rep = opendir(PACKAGE_DATA_DIR "/ewl/themes");
         while ((file = readdir(rep)))
         {
-        	char *name;
-        	int len;
+                char *name;
+                int len;
 
-        	name = file->d_name;
-        	len = strlen(name);
+                name = file->d_name;
+                len = strlen(name);
 
-        	if ((len >= 4) && (!strcmp(name + len - 4, ".edj"))) {
-        		Ewl_Widget *w;
+                if ((len >= 4) && (!strcmp(name + len - 4, ".edj"))) {
+                        Ewl_Widget *w;
 
-        		w = ewl_button_new();
-        		ewl_button_label_set(EWL_BUTTON(w), name);
-        		ewl_object_fill_policy_set(EWL_OBJECT(w),
-        			EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_HFILL);
-        		ewl_callback_append(w, EWL_CALLBACK_CLICKED,
-        				    cb_select_theme, strdup(name));
-        		ewl_container_child_append(EWL_CONTAINER(list), w);
-        		ewl_widget_show(w);
-        	}
+                        w = ewl_button_new();
+                        ewl_button_label_set(EWL_BUTTON(w), name);
+                        ewl_object_fill_policy_set(EWL_OBJECT(w),
+                                EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_HFILL);
+                        ewl_callback_append(w, EWL_CALLBACK_CLICKED,
+                                            cb_select_theme, strdup(name));
+                        ewl_container_child_append(EWL_CONTAINER(list), w);
+                        ewl_widget_show(w);
+                }
         }
 
         list = ewl_hbox_new();
@@ -130,7 +130,7 @@ cb_select_theme(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, void *data)
         notebook = ewl_widget_name_find("notebook");
 
         snprintf(theme_filename, sizeof(theme_filename),
-        		PACKAGE_DATA_DIR "/ewl/themes/%s", (char *)data);
+                        PACKAGE_DATA_DIR "/ewl/themes/%s", (char *)data);
         ewl_theme_data_reset(notebook);
         ewl_theme_data_str_set(notebook, "/file", theme_filename);
 
@@ -152,7 +152,7 @@ cb_apply_theme(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, void *data)
 
 static void
 cb_default_theme(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
-        				void *data __UNUSED__)
+                                        void *data __UNUSED__)
 {
         Ewl_Widget *db = w;
 
@@ -166,12 +166,12 @@ widgets_build(void)
         Ewl_Widget *misc, *item, *vbox, *notebook;
         int i;
         struct {
-        	char *name;
-        	char *image;
+                char *name;
+                char *image;
         } menus[] = {
-        	{"image", "dia-diagram.png"},
-        	{NULL, NULL},
-        	{"label", NULL}
+                {"image", "dia-diagram.png"},
+                {NULL, NULL},
+                {"label", NULL}
         };
 
         notebook = ewl_notebook_new();
@@ -213,7 +213,7 @@ widgets_build(void)
         vbox = ewl_vbox_new();
         ewl_container_child_append(EWL_CONTAINER(notebook), vbox);
         ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(notebook), vbox,
-        					"Numerical & Text Entries");
+                                                "Numerical & Text Entries");
         ewl_widget_show(vbox);
 
         misc = ewl_entry_new();
@@ -271,17 +271,17 @@ widgets_build(void)
 
         for (i = 0; i < 3; i++)
         {
-        	item = ewl_menu_item_new();
-        	if (menus[i].name)
-        		ewl_button_label_set(EWL_BUTTON(item),
-        					menus[i].name);
+                item = ewl_menu_item_new();
+                if (menus[i].name)
+                        ewl_button_label_set(EWL_BUTTON(item),
+                                                menus[i].name);
 
-        	if (menus[i].image)
-        		ewl_button_image_set(EWL_BUTTON(item),
-        					menus[i].image, NULL);
+                if (menus[i].image)
+                        ewl_button_image_set(EWL_BUTTON(item),
+                                                menus[i].image, NULL);
 
-        	ewl_container_child_append(EWL_CONTAINER(misc), item);
-        	ewl_widget_show(item);
+                ewl_container_child_append(EWL_CONTAINER(misc), item);
+                ewl_widget_show(item);
         }
 
         misc = ewl_hseparator_new();
@@ -295,24 +295,24 @@ XXX Port this to use the model/view system
 
         for (i = 0; i < 3; i++)
         {
-        	item = ewl_menu_item_new();
-        	if (menus[i].name)
-        		ewl_button_label_set(EWL_BUTTON(item),
-        					menus[i].name);
+                item = ewl_menu_item_new();
+                if (menus[i].name)
+                        ewl_button_label_set(EWL_BUTTON(item),
+                                                menus[i].name);
 
-        	if (menus[i].image)
-        		ewl_button_image_set(EWL_BUTTON(item),
-        					menus[i].image, NULL);
+                if (menus[i].image)
+                        ewl_button_image_set(EWL_BUTTON(item),
+                                                menus[i].image, NULL);
 
-        	ewl_container_child_append(EWL_CONTAINER(misc), item);
-        	ewl_widget_show(item);
+                ewl_container_child_append(EWL_CONTAINER(misc), item);
+                ewl_widget_show(item);
         }
 
         /* List/tree */
         vbox = ewl_vbox_new();
         ewl_container_child_append(EWL_CONTAINER(notebook), vbox);
         ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(notebook), vbox,
-        						"List and Tree");
+                                                        "List and Tree");
         ewl_widget_show(vbox);
 
         str = "List";

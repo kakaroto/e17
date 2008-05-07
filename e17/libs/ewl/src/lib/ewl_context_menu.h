@@ -25,7 +25,7 @@
  * Returns TRUE if the widget is an Ewl_Context_Menu, FALSE otherwise
  */
 #define EWL_CONTEXT_MENU_IS(w) (ewl_widget_type_is(EWL_WIDGET(w), \
-        						EWL_CONTEXT_MENU_TYPE))
+                                                        EWL_CONTEXT_MENU_TYPE))
 
 /**
  * Ewl_Context_Menu
@@ -51,31 +51,31 @@ struct Ewl_Context_Menu
 };
 
 Ewl_Widget          *ewl_context_menu_new(void);
-int         	 ewl_context_menu_init(Ewl_Context_Menu *cm);
-void        	 ewl_context_menu_attach(Ewl_Context_Menu *cm, Ewl_Widget *w);
-void        	 ewl_context_menu_detach(Ewl_Context_Menu *cm, Ewl_Widget *w);
+int                  ewl_context_menu_init(Ewl_Context_Menu *cm);
+void                 ewl_context_menu_attach(Ewl_Context_Menu *cm, Ewl_Widget *w);
+void                 ewl_context_menu_detach(Ewl_Context_Menu *cm, Ewl_Widget *w);
 
-void        	 ewl_context_menu_container_set(Ewl_Context_Menu *cm,
-        						Ewl_Container *c);
+void                 ewl_context_menu_container_set(Ewl_Context_Menu *cm,
+                                                        Ewl_Container *c);
 
 /*
  * Internal, override at your own risk
  */
 void ewl_context_menu_cb_hide(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_context_menu_cb_mouse_down(Ewl_Widget *w, void *ev_data,
-        						void *user_data);
+                                                        void *user_data);
 void ewl_context_menu_cb_mouse_move(Ewl_Widget *w, void *ev_data,
-        						void *user_data);
+                                                        void *user_data);
 void ewl_context_menu_cb_focus_in(Ewl_Widget *w, void *ev_data,
-        						void *user_data);
+                                                        void *user_data);
 void ewl_context_menu_cb_attach_mouse_down(Ewl_Widget *w, void *ev_data,
-        						void *user_data);
+                                                        void *user_data);
 void ewl_context_menu_cb_child_add(Ewl_Container *c, Ewl_Widget *w);
 void ewl_context_menu_cb_child_remove(Ewl_Container *c, Ewl_Widget *w, int idx);
 void ewl_context_menu_cb_child_mouse_in(Ewl_Widget *w, void *ev_data,
-        						void *user_data);
+                                                        void *user_data);
 void ewl_context_menu_cb_child_clicked(Ewl_Widget *w, void *ev_data,
-        						void *user_data);
+                                                        void *user_data);
 
 /**
  * @}

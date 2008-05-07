@@ -49,7 +49,7 @@ create_test(Ewl_Container *box)
 
 static void
 cb_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
-        				void *data __UNUSED__)
+                                        void *data __UNUSED__)
 {
         Ewl_Widget *fd;
         Ecore_List *filters;
@@ -84,7 +84,7 @@ cb_open(Ewl_Widget *w, void *ev, void *data __UNUSED__)
         e = ev;
 
         if (e->response == EWL_STOCK_CANCEL)
-        	return;
+                return;
 
         fd = EWL_FILEDIALOG(w);
         s = ewl_filedialog_selected_file_get(fd);
@@ -96,8 +96,8 @@ cb_open(Ewl_Widget *w, void *ev, void *data __UNUSED__)
         t = ewl_io_manager_uri_read(s);
         if (!t)
         {
-        	printf("Unable to create widget from file (%s)\n", s);
-        	return;
+                printf("Unable to create widget from file (%s)\n", s);
+                return;
         }
         ewl_container_child_append(EWL_CONTAINER(scroll), t);
         ewl_widget_show(t);

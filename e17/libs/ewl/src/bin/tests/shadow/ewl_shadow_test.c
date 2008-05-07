@@ -12,7 +12,7 @@ void test_info(Ewl_Test *test)
 {
         test->name = "Shadow";
         test->tip = "Defines the Ewl_Shadow class for displaying\n"
-        		"a container that will shadow other widgets.";
+                        "a container that will shadow other widgets.";
         test->filename = __FILE__;
         test->func = create_test;
         test->type = EWL_TEST_TYPE_CONTAINER;
@@ -32,7 +32,7 @@ create_test(Ewl_Container *box)
 
         image = ewl_image_new();
         ewl_image_file_set(EWL_IMAGE(image),
-        		PACKAGE_DATA_DIR "/ewl/images/elicit.png", NULL);
+                        PACKAGE_DATA_DIR "/ewl/images/elicit.png", NULL);
         ewl_image_size_set(EWL_IMAGE(image), 220, 210);
         ewl_object_alignment_set(EWL_OBJECT(image), EWL_FLAG_ALIGN_CENTER);
         ewl_container_child_append(EWL_CONTAINER(shadow), image);

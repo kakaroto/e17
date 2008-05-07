@@ -23,25 +23,25 @@ static int create_test(Ewl_Container *win);
 static void combo_value_changed(Ewl_Widget *w, void *ev, void *data);
 static Ewl_Widget *combo_test_data_header_fetch(void *data, unsigned int col);
 static void *combo_test_data_fetch(void *data, unsigned int row,
-        					unsigned int col);
+                                                unsigned int col);
 static unsigned int combo_test_data_count_get(void *data);
 static void combo_cb_add(Ewl_Widget *w, void *ev, void *data);
 static void combo_cb_clear(Ewl_Widget *w, void *ev, void *data);
 static void combo_cb_entry_changed(Ewl_Widget *w, void *ev, void *data);
 
 static Ewl_Widget *combo_test_editable_cb_header_fetch(void *data,
-        						unsigned int col);
+                                                        unsigned int col);
 static Ewl_Widget *combo_test_editable_cb_widget_fetch(void *data,
-        						unsigned int row,
-        						unsigned int col);
+                                                        unsigned int row,
+                                                        unsigned int col);
 
 void
 test_info(Ewl_Test *test)
 {
         test->name = "Combo";
         test->tip = "Defines a combo box used internally.\n"
-        	"The contents of the box are not drawn\n"
-        	"outside of the evas.";
+                "The contents of the box are not drawn\n"
+                "outside of the evas.";
         test->filename = __FILE__;
         test->func = create_test;
         test->type = EWL_TEST_TYPE_MISC;
@@ -75,7 +75,7 @@ create_test(Ewl_Container *box)
         ewl_widget_name_set(combo, "combo_label");
         ewl_container_child_append(EWL_CONTAINER(hbox), combo);
         ewl_callback_append(combo, EWL_CALLBACK_VALUE_CHANGED,
-        				combo_value_changed, NULL);
+                                        combo_value_changed, NULL);
         ewl_mvc_model_set(EWL_MVC(combo), model);
         ewl_mvc_view_set(EWL_MVC(combo), view);
         ewl_mvc_data_set(EWL_MVC(combo), data);
@@ -95,7 +95,7 @@ create_test(Ewl_Container *box)
         ewl_combo_popup_container_set(EWL_COMBO(combo), EWL_CONTAINER(grid));
         ewl_container_child_append(EWL_CONTAINER(hbox), combo);
         ewl_callback_append(combo, EWL_CALLBACK_VALUE_CHANGED,
-        				combo_value_changed, NULL);
+                                        combo_value_changed, NULL);
         ewl_mvc_model_set(EWL_MVC(combo), model);
         ewl_mvc_view_set(EWL_MVC(combo), view);
         ewl_mvc_data_set(EWL_MVC(combo), data);
@@ -110,13 +110,13 @@ create_test(Ewl_Container *box)
         view = ewl_view_new();
         ewl_view_widget_fetch_set(view, combo_test_editable_cb_widget_fetch);
         ewl_view_header_fetch_set(view,
-        		combo_test_editable_cb_header_fetch);
+                        combo_test_editable_cb_header_fetch);
 
         combo = ewl_combo_new();
         ewl_widget_name_set(combo, "combo_custom");
         ewl_container_child_append(EWL_CONTAINER(hbox), combo);
         ewl_callback_append(combo, EWL_CALLBACK_VALUE_CHANGED,
-        				combo_value_changed, NULL);
+                                        combo_value_changed, NULL);
         ewl_mvc_model_set(EWL_MVC(combo), model);
         ewl_mvc_view_set(EWL_MVC(combo), view);
         ewl_mvc_data_set(EWL_MVC(combo), data);
@@ -152,21 +152,21 @@ combo_test_data_setup(void)
         unsigned int i;
 
         const char *icons[] = {
-        	EWL_ICON_EDIT_COPY,
-        	EWL_ICON_EDIT_CUT,
-        	EWL_ICON_EDIT_DELETE,
-        	EWL_ICON_EDIT_FIND,
-        	EWL_ICON_EDIT_FIND_REPLACE,
-        	EWL_ICON_EDIT_PASTE,
-        	EWL_ICON_EDIT_REDO,
-        	EWL_ICON_EDIT_SELECT_ALL,
-        	EWL_ICON_EDIT_UNDO,
-        	EWL_ICON_FORMAT_INDENT_LESS,
-        	EWL_ICON_FORMAT_INDENT_MORE,
-        	EWL_ICON_FORMAT_JUSTIFY_CENTER,
-        	EWL_ICON_FORMAT_JUSTIFY_FILL,
-        	EWL_ICON_FORMAT_JUSTIFY_LEFT,
-        	EWL_ICON_FORMAT_JUSTIFY_RIGHT,
+                EWL_ICON_EDIT_COPY,
+                EWL_ICON_EDIT_CUT,
+                EWL_ICON_EDIT_DELETE,
+                EWL_ICON_EDIT_FIND,
+                EWL_ICON_EDIT_FIND_REPLACE,
+                EWL_ICON_EDIT_PASTE,
+                EWL_ICON_EDIT_REDO,
+                EWL_ICON_EDIT_SELECT_ALL,
+                EWL_ICON_EDIT_UNDO,
+                EWL_ICON_FORMAT_INDENT_LESS,
+                EWL_ICON_FORMAT_INDENT_MORE,
+                EWL_ICON_FORMAT_JUSTIFY_CENTER,
+                EWL_ICON_FORMAT_JUSTIFY_FILL,
+                EWL_ICON_FORMAT_JUSTIFY_LEFT,
+                EWL_ICON_FORMAT_JUSTIFY_RIGHT,
         };
 
         data = calloc(1, sizeof(Ewl_Combo_Test_Data));
@@ -176,10 +176,10 @@ combo_test_data_setup(void)
 
         for (i = 0; i < data->count; i++)
         {
-        	const char *icon;
+                const char *icon;
 
-        	icon = ewl_icon_theme_icon_path_get(icons[i], EWL_ICON_SIZE_MEDIUM);
-        	data->data[i] = strdup((icon ? icon : icons[i]));
+                icon = ewl_icon_theme_icon_path_get(icons[i], EWL_ICON_SIZE_MEDIUM);
+                data->data[i] = strdup((icon ? icon : icons[i]));
         }
 
         return data;
@@ -199,15 +199,15 @@ combo_test_data_header_fetch(void *data __UNUSED__, unsigned int col __UNUSED__)
 
 static void *
 combo_test_data_fetch(void *data, unsigned int row,
-        			unsigned int col __UNUSED__)
+                                unsigned int col __UNUSED__)
 {
         Ewl_Combo_Test_Data *d;
 
         d = data;
         if (row < d->count)
-        	return d->data[row];
+                return d->data[row];
         else
-        	return NULL;
+                return NULL;
 }
 
 static unsigned int
@@ -221,7 +221,7 @@ combo_test_data_count_get(void *data)
 
 static void
 combo_value_changed(Ewl_Widget *w, void *ev __UNUSED__,
-        			void *data __UNUSED__)
+                                void *data __UNUSED__)
 {
         Ewl_Combo_Test_Data *d;
         Ewl_Selection_Idx *idx;
@@ -231,13 +231,13 @@ combo_value_changed(Ewl_Widget *w, void *ev __UNUSED__,
 
         /*
         printf("value changed to %d %p)\n",
-        	idx->row, d->data[idx->row]);
+                idx->row, d->data[idx->row]);
         */
 }
 
 static void
 combo_cb_add(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
-        				void *data __UNUSED__)
+                                        void *data __UNUSED__)
 {
         Ewl_Widget *c;
         Ewl_Combo_Test_Data *d;
@@ -261,7 +261,7 @@ combo_cb_add(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
 static void
 combo_cb_clear(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
-        						void *data __UNUSED__)
+                                                        void *data __UNUSED__)
 {
         Ewl_Widget *c;
         Ewl_Combo_Test_Data *d;
@@ -298,22 +298,22 @@ combo_test_editable_cb_header_fetch(void *data, unsigned int col __UNUSED__)
         
         if (idx)
         {
-        	val = strrchr(d->data[idx->row], '/');
-        	ewl_text_text_set(EWL_TEXT(o),
-        			(val ? val + 1 : d->data[idx->row]));
-        	
-        	o2 = ewl_image_new();
-        	ewl_image_file_path_set(EWL_IMAGE(o2), d->data[idx->row]);
-        	ewl_container_child_append(EWL_CONTAINER(w), o2);
-        	ewl_widget_show(o2);
+                val = strrchr(d->data[idx->row], '/');
+                ewl_text_text_set(EWL_TEXT(o),
+                                (val ? val + 1 : d->data[idx->row]));
+                
+                o2 = ewl_image_new();
+                ewl_image_file_path_set(EWL_IMAGE(o2), d->data[idx->row]);
+                ewl_container_child_append(EWL_CONTAINER(w), o2);
+                ewl_widget_show(o2);
         }
 
         else
-        	ewl_text_text_set(EWL_TEXT(o), val);
+                ewl_text_text_set(EWL_TEXT(o), val);
 
         ewl_container_child_append(EWL_CONTAINER(w), o);
         ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,
-        			combo_cb_entry_changed, NULL);
+                                combo_cb_entry_changed, NULL);
         ewl_widget_show(o);
 
         return w;
@@ -321,7 +321,7 @@ combo_test_editable_cb_header_fetch(void *data, unsigned int col __UNUSED__)
 
 static Ewl_Widget *
 combo_test_editable_cb_widget_fetch(void *data, unsigned int row __UNUSED__,
-        					unsigned int col __UNUSED__)
+                                                unsigned int col __UNUSED__)
 {
         Ewl_Widget *w;
         Ewl_Widget *o;
@@ -346,7 +346,7 @@ combo_test_editable_cb_widget_fetch(void *data, unsigned int row __UNUSED__,
 
 static void
 combo_cb_entry_changed(Ewl_Widget *w, void *ev __UNUSED__,
-        				void *data __UNUSED__)
+                                        void *data __UNUSED__)
 {
         printf("value changed to (%s)\n", ewl_text_text_get(EWL_TEXT(w)));
 }

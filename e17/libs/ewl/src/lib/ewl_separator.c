@@ -18,11 +18,11 @@ ewl_separator_new(void)
 
         s = NEW(Ewl_Separator, 1);
         if (!s)
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
 
         if (!ewl_separator_init(s)) {
-        	ewl_widget_destroy(EWL_WIDGET(s));
-        	s = NULL;
+                ewl_widget_destroy(EWL_WIDGET(s));
+                s = NULL;
         }
 
         DRETURN_PTR(EWL_WIDGET(s), DLEVEL_STABLE);
@@ -41,8 +41,8 @@ ewl_hseparator_new(void)
 
         s = ewl_separator_new();
         if (s)
-        	ewl_separator_orientation_set(EWL_SEPARATOR(s),
-        			EWL_ORIENTATION_HORIZONTAL);
+                ewl_separator_orientation_set(EWL_SEPARATOR(s),
+                                EWL_ORIENTATION_HORIZONTAL);
 
         DRETURN_PTR(EWL_WIDGET(s), DLEVEL_STABLE);
 }
@@ -60,8 +60,8 @@ ewl_vseparator_new(void)
 
         s = ewl_separator_new();
         if (s)
-        	ewl_separator_orientation_set(EWL_SEPARATOR(s),
-        			EWL_ORIENTATION_VERTICAL);
+                ewl_separator_orientation_set(EWL_SEPARATOR(s),
+                                EWL_ORIENTATION_VERTICAL);
 
         DRETURN_PTR(EWL_WIDGET(s), DLEVEL_STABLE);
 }
@@ -84,12 +84,12 @@ ewl_separator_init(Ewl_Separator *s)
 
         w = EWL_WIDGET(s);
         if (!ewl_widget_init(w))
-        	DRETURN_INT(FALSE, DLEVEL_STABLE);
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
 
         ewl_widget_inherit(w, EWL_SEPARATOR_TYPE);
         ewl_widget_appearance_set(EWL_WIDGET(s), "hseparator");
         ewl_object_fill_policy_set(EWL_OBJECT(s), EWL_FLAG_FILL_HFILL |
-        					  EWL_FLAG_FILL_SHRINK);
+                                                  EWL_FLAG_FILL_SHRINK);
 
         ewl_object_alignment_set(EWL_OBJECT(s), EWL_FLAG_ALIGN_LEFT);
 
@@ -114,21 +114,21 @@ ewl_separator_orientation_set(Ewl_Separator *s, Ewl_Orientation o)
         DCHECK_TYPE(s, EWL_SEPARATOR_TYPE);
 
         if (s->orientation == o)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         s->orientation = o;
 
         if (o == EWL_ORIENTATION_HORIZONTAL) {
-        	ewl_widget_appearance_set(EWL_WIDGET(s), "hseparator");
-        	ewl_object_fill_policy_set(EWL_OBJECT(s),
-        				   EWL_FLAG_FILL_HFILL |
-        				   EWL_FLAG_FILL_HSHRINK);
+                ewl_widget_appearance_set(EWL_WIDGET(s), "hseparator");
+                ewl_object_fill_policy_set(EWL_OBJECT(s),
+                                           EWL_FLAG_FILL_HFILL |
+                                           EWL_FLAG_FILL_HSHRINK);
         }
         else {
-        	ewl_widget_appearance_set(EWL_WIDGET(s), "vseparator");
-        	ewl_object_fill_policy_set(EWL_OBJECT(s),
-        				   EWL_FLAG_FILL_VFILL |
-        				   EWL_FLAG_FILL_VSHRINK);
+                ewl_widget_appearance_set(EWL_WIDGET(s), "vseparator");
+                ewl_object_fill_policy_set(EWL_OBJECT(s),
+                                           EWL_FLAG_FILL_VFILL |
+                                           EWL_FLAG_FILL_VSHRINK);
         }
 
         ewl_widget_configure(EWL_WIDGET(s));

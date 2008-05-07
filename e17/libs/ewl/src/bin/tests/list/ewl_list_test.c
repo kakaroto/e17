@@ -31,9 +31,9 @@ static void list_cb_value_changed(Ewl_Widget *w, void *ev, void *data);
 static void list_cb_multi_value_changed(Ewl_Widget *w, void *ev, void *data);
 
 static Ewl_Widget *list_test_cb_widget_fetch(void *data, unsigned int row,
-        					unsigned int col);
+                                                unsigned int col);
 static void *list_test_data_fetch(void *data, unsigned int row,
-        					unsigned int column);
+                                                unsigned int column);
 static unsigned int list_test_data_count_get(void *data);
 static void list_cb_select_none(Ewl_Widget *w, void *ev, void *data);
 
@@ -42,7 +42,7 @@ test_info(Ewl_Test *test)
 {
         test->name = "List";
         test->tip = "Defines a widget for laying out other\n"
-        		"widgets in a list like manner.";
+                        "widgets in a list like manner.";
         test->filename = __FILE__;
         test->func = create_test;
         test->type = EWL_TEST_TYPE_CONTAINER;
@@ -80,7 +80,7 @@ create_test(Ewl_Container *box)
         ewl_mvc_view_set(EWL_MVC(list), view);
         ewl_mvc_data_set(EWL_MVC(list), str_data);
         ewl_callback_append(list, EWL_CALLBACK_VALUE_CHANGED,
-        				list_cb_value_changed, NULL);
+                                        list_cb_value_changed, NULL);
         ewl_widget_show(list);
 
         /* create a list using an ecore_list of strings of labels */
@@ -98,7 +98,7 @@ create_test(Ewl_Container *box)
         ewl_mvc_data_set(EWL_MVC(list), str_data);
         ewl_mvc_selection_mode_set(EWL_MVC(list), EWL_SELECTION_MODE_MULTI);
         ewl_callback_append(list, EWL_CALLBACK_VALUE_CHANGED,
-        				list_cb_multi_value_changed, NULL);
+                                        list_cb_multi_value_changed, NULL);
         ewl_widget_show(list);
 
         /* Create a list from a custom array with a custom assign on the
@@ -125,7 +125,7 @@ create_test(Ewl_Container *box)
         ewl_mvc_data_set(EWL_MVC(list), data);
         ewl_mvc_selection_mode_set(EWL_MVC(list), EWL_SELECTION_MODE_NONE);
         ewl_callback_append(list, EWL_CALLBACK_VALUE_CHANGED,
-        				list_cb_select_none, NULL);
+                                        list_cb_select_none, NULL);
         ewl_widget_show(list);
 
 
@@ -159,7 +159,7 @@ list_test_data_setup(void)
 
 static Ewl_Widget *
 list_test_cb_widget_fetch(void *data, unsigned int row __UNUSED__,
-        				unsigned int col __UNUSED__)
+                                        unsigned int col __UNUSED__)
 {
         Ewl_Widget *w;
         List_Test_Row_Data *d;
@@ -177,7 +177,7 @@ list_test_cb_widget_fetch(void *data, unsigned int row __UNUSED__,
 
 static void *
 list_test_data_fetch(void *data, unsigned int row,
-        				unsigned int column __UNUSED__)
+                                        unsigned int column __UNUSED__)
 {
         List_Test_Data *d;
 
@@ -187,8 +187,8 @@ list_test_data_fetch(void *data, unsigned int row,
          * normal app */
         if (row >= d->count)
         {
-        	printf("Asking for too many rows\n");
-        	return NULL;
+                printf("Asking for too many rows\n");
+                return NULL;
         }
 
         return d->rows[row];
@@ -206,7 +206,7 @@ list_test_data_count_get(void *data)
 
 static void
 list_cb_value_changed(Ewl_Widget *w, void *ev __UNUSED__,
-        				void *data __UNUSED__)
+                                        void *data __UNUSED__)
 {
         Ewl_List *list;
         Ecore_List *el;
@@ -218,12 +218,12 @@ list_cb_value_changed(Ewl_Widget *w, void *ev __UNUSED__,
 
         ecore_list_index_goto(el, idx->row);
         printf("Selected (%d) (%s)\n", idx->row,
-        		(char *)ecore_list_current(el));
+                        (char *)ecore_list_current(el));
 }
 
 static void
 list_cb_multi_value_changed(Ewl_Widget *w, void *ev __UNUSED__,
-        					void *data __UNUSED__)
+                                                void *data __UNUSED__)
 {
         Ecore_List *selected, *el;
         Ewl_Selection *sel;
@@ -236,34 +236,34 @@ list_cb_multi_value_changed(Ewl_Widget *w, void *ev __UNUSED__,
         ecore_list_first_goto(selected);
         while ((sel = ecore_list_next(selected)))
         {
-        	if (sel->type == EWL_SELECTION_TYPE_INDEX)
-        	{
-        		Ewl_Selection_Idx *idx;
+                if (sel->type == EWL_SELECTION_TYPE_INDEX)
+                {
+                        Ewl_Selection_Idx *idx;
 
-        		idx = EWL_SELECTION_IDX(sel);
-        		ecore_list_index_goto(el, idx->row);
-        		printf("    %d (%s)\n", idx->row,
-        				(char *)ecore_list_current(el));
-        	}
-        	else
-        	{
-        		Ewl_Selection_Range *idx;
-        		unsigned int i;
+                        idx = EWL_SELECTION_IDX(sel);
+                        ecore_list_index_goto(el, idx->row);
+                        printf("    %d (%s)\n", idx->row,
+                                        (char *)ecore_list_current(el));
+                }
+                else
+                {
+                        Ewl_Selection_Range *idx;
+                        unsigned int i;
 
-        		idx = EWL_SELECTION_RANGE(sel);
-        		for (i = idx->start.row; i <= idx->end.row; i++)
-        		{
-        			ecore_list_index_goto(el, i);
-        			printf("    %d (%s)\n", i,
-        				(char *)ecore_list_current(el));
-        		}
-        	}
+                        idx = EWL_SELECTION_RANGE(sel);
+                        for (i = idx->start.row; i <= idx->end.row; i++)
+                        {
+                                ecore_list_index_goto(el, i);
+                                printf("    %d (%s)\n", i,
+                                        (char *)ecore_list_current(el));
+                        }
+                }
         }
 }
 
 static void
 list_cb_select_none(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
-        					void *data __UNUSED__)
+                                                void *data __UNUSED__)
 {
         printf("ERROR, shouldn't get selection changed callbacks.\n");
 }

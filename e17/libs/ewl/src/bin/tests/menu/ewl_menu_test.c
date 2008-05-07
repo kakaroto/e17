@@ -14,9 +14,9 @@ test_info(Ewl_Test *test)
 {
         test->name = "Menu";
         test->tip = "Defines the basic menu classes that\n"
-        		"are extended to an actual menu\n"
-        		"implementation by inheriting classes\n"
-        		"such as Ewl_Menu and Ewl_IMenu.";
+                        "are extended to an actual menu\n"
+                        "implementation by inheriting classes\n"
+                        "such as Ewl_Menu and Ewl_IMenu.";
         test->filename = __FILE__;
         test->func = create_test;
         test->type = EWL_TEST_TYPE_CONTAINER;
@@ -35,7 +35,7 @@ create_test(Ewl_Container *box)
 
         menu1 = ewl_menu_new();
         ewl_button_image_set(EWL_BUTTON(menu1),
-        			PACKAGE_DATA_DIR "/ewl/images/Draw.png", NULL);
+                                PACKAGE_DATA_DIR "/ewl/images/Draw.png", NULL);
         ewl_button_label_set(EWL_BUTTON(menu1), "Test Menu");
         ewl_container_child_append(EWL_CONTAINER(box), menu1);
         ewl_object_fill_policy_set(EWL_OBJECT(menu1), EWL_FLAG_FILL_SHRINK);
@@ -43,7 +43,7 @@ create_test(Ewl_Container *box)
 
         item = ewl_menu_item_new();
         ewl_button_image_set(EWL_BUTTON(item),
-        			PACKAGE_DATA_DIR "/ewl/images/Open.png", NULL);
+                                PACKAGE_DATA_DIR "/ewl/images/Open.png", NULL);
         ewl_button_label_set(EWL_BUTTON(item), "Dia");
         ewl_container_child_append(EWL_CONTAINER(menu1), item);
         ewl_callback_append(item, EWL_CALLBACK_CLICKED, cb_menu_clicked, NULL);
@@ -51,7 +51,7 @@ create_test(Ewl_Container *box)
 
         item = ewl_menu_item_new();
         ewl_button_image_set(EWL_BUTTON(item),
-        			PACKAGE_DATA_DIR "/ewl/images/Package.png", NULL);
+                                PACKAGE_DATA_DIR "/ewl/images/Package.png", NULL);
         ewl_button_label_set(EWL_BUTTON(item), "Gimp");
         ewl_container_child_append(EWL_CONTAINER(menu1), item);
         ewl_callback_append(item, EWL_CALLBACK_CLICKED, cb_menu_clicked, NULL);

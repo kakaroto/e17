@@ -26,7 +26,7 @@
 { \
         if (dat) \
           { \
-        	dat = realloc(dat, sizeof(type) * num); \
+                dat = realloc(dat, sizeof(type) * num); \
           } \
 }
 
@@ -59,8 +59,8 @@
 #define IF_FREE_LIST(list) \
 { \
         if (list) { \
-        	ecore_list_destroy(list); \
-        	list = NULL; \
+                ecore_list_destroy(list); \
+                list = NULL; \
         } \
 }
 
@@ -72,8 +72,8 @@
 #define IF_FREE_HASH(hash) \
 { \
         if (hash) { \
-        	ecore_hash_destroy(hash); \
-        	hash = NULL; \
+                ecore_hash_destroy(hash); \
+                hash = NULL; \
         } \
 }
 
@@ -85,8 +85,8 @@
 #define IF_RELEASE(item) \
 { \
         if (item) { \
-        	ecore_string_release(item); \
-        	item = NULL; \
+                ecore_string_release(item); \
+                item = NULL; \
         } \
 }
 

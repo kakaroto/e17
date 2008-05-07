@@ -26,34 +26,34 @@ static const char ewl_text_trailing_bytes[32] =
         (ewl_text_trailing_bytes[((unsigned char)((s)[0])) >> 3])
 
 static void ewl_text_current_fmt_set(Ewl_Text *t, unsigned int context_mask,
-        					Ewl_Text_Context *change);
+                                                Ewl_Text_Context *change);
 
 static void ewl_text_text_insert_private(Ewl_Text *t, const char *txt,
-        			unsigned int char_idx, unsigned int *char_len,
-        			unsigned int *byte_len);
+                                unsigned int char_idx, unsigned int *char_len,
+                                unsigned int *byte_len);
 static int ewl_text_char_utf8_is(const char *c);
 
 static void ewl_text_size(Ewl_Text *t);
 static void ewl_text_display(Ewl_Text *t);
 static void ewl_text_cb_format(Ewl_Text_Fmt_Node *node, Ewl_Text *t,
-        					unsigned int byte_idx);
+                                                unsigned int byte_idx);
 static void ewl_text_plaintext_parse(Evas_Object *tb, char *txt);
 
 static Evas_Textblock_Cursor *ewl_text_textblock_cursor_position(Ewl_Text *t,
-        						unsigned int char_idx);
+                                                        unsigned int char_idx);
 static unsigned int ewl_text_textblock_cursor_to_index(
-        					Evas_Textblock_Cursor *cursor);
+                                                Evas_Textblock_Cursor *cursor);
 
 static void ewl_text_triggers_remove(Ewl_Text *t);
 static void ewl_text_triggers_shift(Ewl_Text *t, unsigned int char_pos,
-        			unsigned int char_len, unsigned int del);
+                                unsigned int char_len, unsigned int del);
 static void ewl_text_trigger_position(Ewl_Text *t, Ewl_Text_Trigger *trig);
 
 static void ewl_text_trigger_add(Ewl_Text *t, Ewl_Text_Trigger *trigger);
 
 static Ewl_Widget *ewl_text_selection_new(Ewl_Text *t);
 static void ewl_text_selection_select_to(Ewl_Text_Trigger *s,
-        					unsigned int char_idx);
+                                                unsigned int char_idx);
 
 static void ewl_text_theme_color_get(Ewl_Text *t, Ewl_Color_Set *color, char *name);
 static Ewl_Text_Context *ewl_text_context_default_create(Ewl_Text *t);
@@ -77,12 +77,12 @@ ewl_text_new(void)
 
         w = NEW(Ewl_Text, 1);
         if (!w)
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
 
         if (!ewl_text_init(EWL_TEXT(w)))
         {
-        	ewl_widget_destroy(w);
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                ewl_widget_destroy(w);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
         }
 
         DRETURN_PTR(w, DLEVEL_STABLE);
@@ -100,38 +100,38 @@ ewl_text_init(Ewl_Text *t)
         DCHECK_PARAM_PTR_RET(t, FALSE);
 
         if (!ewl_container_init(EWL_CONTAINER(t)))
-        	DRETURN_INT(FALSE, DLEVEL_STABLE);
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
 
         ewl_widget_appearance_set(EWL_WIDGET(t), EWL_TEXT_TYPE);
         ewl_widget_inherit(EWL_WIDGET(t), EWL_TEXT_TYPE);
 
         ewl_object_fill_policy_set(EWL_OBJECT(t), EWL_FLAG_FILL_HFILL
-        					| EWL_FLAG_FILL_VFILL);
+                                                | EWL_FLAG_FILL_VFILL);
 
         t->formatting.nodes = ewl_text_fmt_new(t);
         if (!t->formatting.nodes)
-        	DRETURN_INT(FALSE, DLEVEL_STABLE);
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
 
         t->formatting.tx = ewl_text_context_default_create(t);
         ewl_text_context_acquire(t->formatting.tx);
 
         ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_CONFIGURE,
-        				ewl_text_cb_configure, NULL);
+                                        ewl_text_cb_configure, NULL);
         ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_REVEAL,
-        				ewl_text_cb_reveal, NULL);
+                                        ewl_text_cb_reveal, NULL);
         ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_OBSCURE,
-        				ewl_text_cb_obscure, NULL);
+                                        ewl_text_cb_obscure, NULL);
         ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_SHOW,
-        				ewl_text_cb_show, NULL);
+                                        ewl_text_cb_show, NULL);
         ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_HIDE,
-        				ewl_text_cb_hide, NULL);
+                                        ewl_text_cb_hide, NULL);
         ewl_callback_prepend(EWL_WIDGET(t), EWL_CALLBACK_DESTROY,
-        				ewl_text_cb_destroy, NULL);
+                                        ewl_text_cb_destroy, NULL);
 
         ewl_container_add_notify_set(EWL_CONTAINER(t),
-        				ewl_text_cb_child_add);
+                                        ewl_text_cb_child_add);
         ewl_container_remove_notify_set(EWL_CONTAINER(t),
-        				ewl_text_cb_child_remove);
+                                        ewl_text_cb_child_remove);
 
         t->dirty = TRUE;
 
@@ -176,17 +176,17 @@ ewl_text_length_maximum_set(Ewl_Text *t, unsigned int char_num)
         DCHECK_TYPE(t, EWL_TEXT_TYPE);
 
         if (t->length.max_chars == char_num)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         t->length.max_chars = char_num;
         if ((char_num > 0) && (char_num < t->length.max_chars))
         {
-        	unsigned int tmp_pos;
+                unsigned int tmp_pos;
 
-        	tmp_pos = ewl_text_cursor_position_get(t);
-        	ewl_text_cursor_position_set(t, char_num);
-        	ewl_text_text_delete(t, ewl_text_length_get(t) - char_num);
-        	ewl_text_cursor_position_set(t, MIN(char_num, tmp_pos));
+                tmp_pos = ewl_text_cursor_position_get(t);
+                ewl_text_cursor_position_set(t, char_num);
+                ewl_text_text_delete(t, ewl_text_length_get(t) - char_num);
+                ewl_text_cursor_position_set(t, MIN(char_num, tmp_pos));
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -261,8 +261,8 @@ ewl_text_offsets_set(Ewl_Text *t, int x, int y)
  */
 void
 ewl_text_index_geometry_map(Ewl_Text *t, unsigned int char_idx,
-        					int *x, int *y,
-        					int *w, int *h)
+                                                int *x, int *y,
+                                                int *w, int *h)
 {
         Evas_Coord tx = 0, ty = 0, tw = 0, th = 0;
         Evas_Textblock_Cursor *cursor;
@@ -276,12 +276,12 @@ ewl_text_index_geometry_map(Ewl_Text *t, unsigned int char_idx,
         /* can't do this if we don't have an evas object */
         if ((!REALIZED(t)) || (!t->textblock) || (!t->text))
         {
-        	if (x) *x = 0;
-        	if (y) *y = 0;
-        	if (w) *w = 1;
-        	if (h) *h = ewl_theme_data_int_get(EWL_WIDGET(t), "font_size");
+                if (x) *x = 0;
+                if (y) *y = 0;
+                if (w) *w = 1;
+                if (h) *h = ewl_theme_data_int_get(EWL_WIDGET(t), "font_size");
 
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
         }
 
         /* force a display of the text */
@@ -289,8 +289,8 @@ ewl_text_index_geometry_map(Ewl_Text *t, unsigned int char_idx,
 
         if (char_idx >= t->length.chars)
         {
-        	char_idx --;
-        	shifting = 1;
+                char_idx --;
+                shifting = 1;
         }
 
         byte_idx = ewl_text_char_to_drawn_byte(t, char_idx);
@@ -330,7 +330,7 @@ ewl_text_coord_index_map(Ewl_Text *t, int x, int y)
         DCHECK_TYPE_RET(t, EWL_TEXT_TYPE, 0);
 
         if ((!REALIZED(t)) || (!t->textblock) || (!t->text))
-        	DRETURN_INT(0, DLEVEL_STABLE);
+                DRETURN_INT(0, DLEVEL_STABLE);
 
         /* force a display of the text */
         if (t->dirty) ewl_text_display(t);
@@ -343,44 +343,44 @@ ewl_text_coord_index_map(Ewl_Text *t, int x, int y)
         /* see if we have the mouse over a char */
         if (!evas_textblock_cursor_char_coord_set(cursor, tx, ty))
         {
-        	int line;
+                int line;
 
-        	/* if not, see if the mouse is by a line */
-        	line = evas_textblock_cursor_line_coord_set(cursor, ty);
-        	if (line >= 0)
-        	{
-        		/* if so, get the line geometry and determine start
-        		 * or end of line */
-        		evas_textblock_cursor_line_geometry_get(cursor,
-        						&cx, &cy, &cw, &ch);
-        		if (x < (cx + (cw / 2)))
-        			evas_textblock_cursor_line_first(cursor);
-        		else
-        		{
-        			const char *txt;
-        			evas_textblock_cursor_line_last(cursor);
+                /* if not, see if the mouse is by a line */
+                line = evas_textblock_cursor_line_coord_set(cursor, ty);
+                if (line >= 0)
+                {
+                        /* if so, get the line geometry and determine start
+                         * or end of line */
+                        evas_textblock_cursor_line_geometry_get(cursor,
+                                                        &cx, &cy, &cw, &ch);
+                        if (x < (cx + (cw / 2)))
+                                evas_textblock_cursor_line_first(cursor);
+                        else
+                        {
+                                const char *txt;
+                                evas_textblock_cursor_line_last(cursor);
 
-        			/* we want to be past the last char so we
-        			 * need to increment this by 1 to begin */
-        			txt = evas_textblock_cursor_node_format_get(cursor);
+                                /* we want to be past the last char so we
+                                 * need to increment this by 1 to begin */
+                                txt = evas_textblock_cursor_node_format_get(cursor);
 
-        			/* Increment if we're on the last line */
-        			if (!txt || (strcmp(txt, "\n")))
-        				char_idx++;
-        		}
-        	}
-        	else
-        	{
-        		evas_textblock_cursor_line_set(cursor, 0);
-        		evas_textblock_cursor_line_first(cursor);
-        	}
+                                /* Increment if we're on the last line */
+                                if (!txt || (strcmp(txt, "\n")))
+                                        char_idx++;
+                        }
+                }
+                else
+                {
+                        evas_textblock_cursor_line_set(cursor, 0);
+                        evas_textblock_cursor_line_first(cursor);
+                }
         }
         else
         {
-        	evas_textblock_cursor_char_geometry_get(cursor,
-        					&cx, &cy, &cw, &ch);
-        	if (tx > (cx + ((cw + 1) >> 1)))
-        		 char_idx++;
+                evas_textblock_cursor_char_geometry_get(cursor,
+                                                &cx, &cy, &cw, &ch);
+                if (tx > (cx + ((cw + 1) >> 1)))
+                         char_idx++;
         }
 
         byte_idx = ewl_text_textblock_cursor_to_index(cursor);
@@ -421,13 +421,13 @@ ewl_text_clear(Ewl_Text *t)
 
         if (t->length.chars > 0)
         {
-        	ewl_text_cursor_position_set(t, 0);
-        	ewl_text_text_delete(t, t->length.chars);
+                ewl_text_cursor_position_set(t, 0);
+                ewl_text_text_delete(t, t->length.chars);
         }
         t->dirty = TRUE;
 
         if (t->formatting.tx)
-        	ewl_text_context_release(t->formatting.tx);
+                ewl_text_context_release(t->formatting.tx);
 
         t->formatting.tx = ewl_text_context_default_create(t);
         ewl_text_fmt_clear(t->formatting.nodes);
@@ -470,23 +470,23 @@ ewl_text_text_prepend(Ewl_Text *t, const char *text)
 
         /* don't do anything if there is no text */
         if ((!text) || (!text[0]))
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         /* don't insert text if we already reached the maximum */
         if (t->length.max_chars && t->length.chars >= t->length.max_chars)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         ewl_text_text_insert_private(t, text, 0, &char_len, &byte_len);
         ewl_text_fmt_node_prepend(t->formatting.nodes,
-        				t->formatting.tx,
-        				char_len, byte_len);
+                                        t->formatting.tx,
+                                        char_len, byte_len);
 
         if (t->formatting.tx)
         {
-        	/* we release this here as the cursor_position_set may not
-        	 * actually remove it if the cursor dosen't move */
-        	ewl_text_context_release(t->formatting.tx);
-        	t->formatting.tx = NULL;
+                /* we release this here as the cursor_position_set may not
+                 * actually remove it if the cursor dosen't move */
+                ewl_text_context_release(t->formatting.tx);
+                t->formatting.tx = NULL;
         }
 
         ewl_text_cursor_position_set(t, char_len);
@@ -515,23 +515,23 @@ ewl_text_text_append(Ewl_Text *t, const char *text)
 
         /* don't do anything if there is no text */
         if ((!text) || (!text[0]))
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         /* don't insert text if we already reached the maximum */
         if (t->length.max_chars && t->length.chars >= t->length.max_chars)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         ewl_text_text_insert_private(t, text, t->length.chars, &char_len, &byte_len);
         ewl_text_fmt_node_append(t->formatting.nodes,
-        				t->formatting.tx,
-        				char_len, byte_len);
+                                        t->formatting.tx,
+                                        char_len, byte_len);
 
         if (t->formatting.tx)
         {
-        	/* we free this here as the cursor_position_set may not
-        	 * actually remove it if the cursor dosen't move */
-        	ewl_text_context_release(t->formatting.tx);
-        	t->formatting.tx = NULL;
+                /* we free this here as the cursor_position_set may not
+                 * actually remove it if the cursor dosen't move */
+                ewl_text_context_release(t->formatting.tx);
+                t->formatting.tx = NULL;
         }
 
         ewl_text_cursor_position_set(t, t->length.chars);
@@ -560,15 +560,15 @@ ewl_text_text_insert(Ewl_Text *t, const char *text, unsigned int char_idx)
 
         /* don't do anything if there is no text */
         if ((!text) || (!text[0]))
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         /* don't insert text if we already reached the maximum */
         if (t->length.max_chars && t->length.chars >= t->length.max_chars)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         /* Limit the index to be within safe boundaries */
         if (char_idx > t->length.chars + 1)
-        	char_idx = t->length.chars + 1;
+                char_idx = t->length.chars + 1;
 
         /* make sure we set the position _before_ inserting the text else
          * it'll fuck up the cursor_position_set call when inserting into
@@ -579,7 +579,7 @@ ewl_text_text_insert(Ewl_Text *t, const char *text, unsigned int char_idx)
 
         ewl_text_text_insert_private(t, text, char_idx, &char_len, &byte_len);
         ewl_text_fmt_node_insert(t->formatting.nodes, char_idx, tx,
-        					char_len, byte_len);
+                                                char_len, byte_len);
 
         if (tx) ewl_text_context_release(tx);
         ewl_text_cursor_position_set(t, char_idx + char_len);
@@ -593,8 +593,8 @@ ewl_text_text_insert(Ewl_Text *t, const char *text, unsigned int char_idx)
 
 static void
 ewl_text_text_insert_private(Ewl_Text *t, const char *txt,
-         		unsigned int char_idx, unsigned int *char_len,
-        		unsigned int *byte_len)
+                         unsigned int char_idx, unsigned int *char_len,
+                        unsigned int *byte_len)
 {
         unsigned int new_byte_len, clen = 0, blen = 0, bidx = 0;
         unsigned int max_chars;
@@ -612,56 +612,56 @@ ewl_text_text_insert_private(Ewl_Text *t, const char *txt,
         max_chars = (t->length.max_chars) ? t->length.max_chars : UINT_MAX;
         while ((*tmp) && ((clen + t->length.chars) < max_chars))
         {
-        	if (ewl_text_char_utf8_is(tmp))
-        		tmp = ewl_text_text_next_char(tmp, NULL);
-        	else
-        		tmp++;
+                if (ewl_text_char_utf8_is(tmp))
+                        tmp = ewl_text_text_next_char(tmp, NULL);
+                else
+                        tmp++;
 
-        	clen++;
+                clen++;
         }
         blen = tmp - txt;
 
         new_byte_len = t->length.bytes + blen;
         if ((new_byte_len + 1) >= t->total_size)
         {
-        	int extend;
+                int extend;
 
-        	/*
-        	 * Determine the size in blocks of EWL_TEXT_EXTEND_VAL
-        	 */
-        	extend = ((new_byte_len + 1) / EWL_TEXT_EXTEND_VAL);
-        	extend = (extend + 1) * EWL_TEXT_EXTEND_VAL;
+                /*
+                 * Determine the size in blocks of EWL_TEXT_EXTEND_VAL
+                 */
+                extend = ((new_byte_len + 1) / EWL_TEXT_EXTEND_VAL);
+                extend = (extend + 1) * EWL_TEXT_EXTEND_VAL;
 
-        	t->text = realloc(t->text, extend * sizeof(char));
-        	t->total_size = extend;
+                t->text = realloc(t->text, extend * sizeof(char));
+                t->total_size = extend;
         }
 
         ewl_text_fmt_char_to_byte(t->formatting.nodes, char_idx,
-        					0, &bidx, NULL);
+                                                0, &bidx, NULL);
 
         if (char_idx < t->length.chars)
-        	memmove(t->text + bidx + blen, t->text + bidx,
-        				t->length.bytes - bidx);
+                memmove(t->text + bidx + blen, t->text + bidx,
+                                        t->length.bytes - bidx);
 
         /* copy the text over, replace invalid UTF-8 chars */
         tmp = (char *)txt;
         ptr = t->text + bidx;
         while (*tmp && (tmp - txt) < (int)blen)
         {
-        	if (ewl_text_char_utf8_is(tmp))
-        	{
-        		char *s;
+                if (ewl_text_char_utf8_is(tmp))
+                {
+                        char *s;
 
-        		s = tmp;
-        		tmp = ewl_text_text_next_char(tmp, NULL);
-        		for ( ; s != tmp; s++, ptr++)
-        			*ptr = *s;
-        	}
-        	else
-        	{
-        		*ptr = '?';
-        		tmp++;
-        	}
+                        s = tmp;
+                        tmp = ewl_text_text_next_char(tmp, NULL);
+                        for ( ; s != tmp; s++, ptr++)
+                                *ptr = *s;
+                }
+                else
+                {
+                        *ptr = '?';
+                        tmp++;
+                }
         }
 
         /* update the text information */
@@ -692,55 +692,55 @@ ewl_text_text_delete(Ewl_Text *t, unsigned int char_len)
         DCHECK_TYPE(t, EWL_TEXT_TYPE);
 
         if ((!t->text) || (char_len == 0) ||
-        		(t->cursor_position >= t->length.chars))
-        	DRETURN(DLEVEL_STABLE);
+                        (t->cursor_position >= t->length.chars))
+                DRETURN(DLEVEL_STABLE);
 
         /* don't try to delete more then we have after the current cursor
          * position */
         if ((t->length.chars - t->cursor_position) < char_len)
-        	char_len = t->length.chars - t->cursor_position;
+                char_len = t->length.chars - t->cursor_position;
 
         ewl_text_fmt_char_to_byte(t->formatting.nodes,
-        			t->cursor_position, char_len,
-        			&byte_idx, &byte_len);
+                                t->cursor_position, char_len,
+                                &byte_idx, &byte_len);
 
         t->length.chars -= char_len;
         if (t->length.chars > 0)
         {
-        	t->length.bytes -= byte_len;
-        	memmove(t->text + byte_idx,
-        			t->text + byte_idx + byte_len,
-        			t->length.bytes - byte_idx);
+                t->length.bytes -= byte_len;
+                memmove(t->text + byte_idx,
+                                t->text + byte_idx + byte_len,
+                                t->length.bytes - byte_idx);
 
-        	t->text[t->length.bytes] = '\0';
+                t->text[t->length.bytes] = '\0';
 
-        	ewl_text_triggers_shift(t, t->cursor_position, char_len, TRUE);
+                ewl_text_triggers_shift(t, t->cursor_position, char_len, TRUE);
         }
         else
         {
-        	IF_FREE(t->text);
-        	t->length.bytes = 0;
-        	t->length.chars = 0;
-        	t->total_size = 0;
-        	t->cursor_position = 0;
-        	ewl_text_triggers_remove(t);
+                IF_FREE(t->text);
+                t->length.bytes = 0;
+                t->length.chars = 0;
+                t->total_size = 0;
+                t->cursor_position = 0;
+                ewl_text_triggers_remove(t);
 
-        	/* cleanup the selection */
-        	if (t->selection)
-        		ewl_widget_destroy(EWL_WIDGET(t->selection));
+                /* cleanup the selection */
+                if (t->selection)
+                        ewl_widget_destroy(EWL_WIDGET(t->selection));
 
-        	t->selection = NULL;
+                t->selection = NULL;
         }
 
         ewl_text_fmt_node_delete(t->formatting.nodes,
-        			t->cursor_position, char_len);
+                                t->cursor_position, char_len);
         t->dirty = TRUE;
 
         if (ewl_text_fmt_node_count_get(t->formatting.nodes) == 0)
-        	t->formatting.tx = ewl_text_context_default_create(t);
+                t->formatting.tx = ewl_text_context_default_create(t);
 
         if (t->cursor_position > t->length.chars)
-        	ewl_text_cursor_position_set(t, t->length.chars);
+                ewl_text_cursor_position_set(t, t->length.chars);
 
         ewl_widget_configure(EWL_WIDGET(t));
 
@@ -770,19 +770,19 @@ ewl_text_obscure_set(Ewl_Text *t, const char *o)
 
         if (!o)
         {
-        	t->obscure = NULL;
+                t->obscure = NULL;
         }
         else if (ewl_text_char_utf8_is(o))
         {
-        	size_t len;
+                size_t len;
 
-        	len = EWL_TEXT_CHAR_BYTE_LEN(o);
-        	t->obscure = NEW(char, len + 1);
-        	memcpy(t->obscure, o, len);
-        	t->obscure[len] = 0;
+                len = EWL_TEXT_CHAR_BYTE_LEN(o);
+                t->obscure = NEW(char, len + 1);
+                memcpy(t->obscure, o, len);
+                t->obscure[len] = 0;
         }
         else
-        	t->obscure = strdup("*");
+                t->obscure = strdup("*");
 
         t->dirty = TRUE;
         ewl_widget_configure(EWL_WIDGET(t));
@@ -821,23 +821,23 @@ ewl_text_selectable_set(Ewl_Text *t, unsigned int selectable)
         DCHECK_TYPE(t, EWL_TEXT_TYPE);
 
         if (t->selectable == selectable)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         t->selectable = selectable;
 
         if (t->selectable)
         {
-        	ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_MOUSE_DOWN,
-        					ewl_text_cb_mouse_down, NULL);
-        	ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_MOUSE_UP,
-        					ewl_text_cb_mouse_up, NULL);
+                ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_MOUSE_DOWN,
+                                                ewl_text_cb_mouse_down, NULL);
+                ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_MOUSE_UP,
+                                                ewl_text_cb_mouse_up, NULL);
         }
         else
         {
-        	ewl_callback_del(EWL_WIDGET(t), EWL_CALLBACK_MOUSE_DOWN,
-        					ewl_text_cb_mouse_down);
-        	ewl_callback_del(EWL_WIDGET(t), EWL_CALLBACK_MOUSE_UP,
-        					ewl_text_cb_mouse_up);
+                ewl_callback_del(EWL_WIDGET(t), EWL_CALLBACK_MOUSE_DOWN,
+                                                ewl_text_cb_mouse_down);
+                ewl_callback_del(EWL_WIDGET(t), EWL_CALLBACK_MOUSE_UP,
+                                                ewl_text_cb_mouse_up);
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -877,12 +877,12 @@ ewl_text_selection_text_get(Ewl_Text *t)
 
         sel = EWL_TEXT_TRIGGER(t->selection);
         if ((!sel) || (sel->char_len == 0))
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
 
         ewl_text_fmt_char_to_byte(t->formatting.nodes,
-         			sel->char_pos,
-         			sel->char_len,
-        			&byte_pos, &byte_len);
+                                 sel->char_pos,
+                                 sel->char_len,
+                                &byte_pos, &byte_len);
 
         ret = malloc(sizeof(char) * (byte_len + 1));
         if (!ret) DRETURN_PTR(NULL, DLEVEL_STABLE);
@@ -910,7 +910,7 @@ ewl_text_selection_get(Ewl_Text *t)
 
         sel = EWL_TEXT_TRIGGER(t->selection);
         if (sel && ewl_text_trigger_length_get(sel) > 0)
-        	DRETURN_PTR(sel, DLEVEL_STABLE);
+                DRETURN_PTR(sel, DLEVEL_STABLE);
 
         DRETURN_PTR(NULL, DLEVEL_STABLE);
 }
@@ -928,7 +928,7 @@ ewl_text_has_selection(Ewl_Text *t)
         DCHECK_TYPE_RET(t, EWL_TEXT_TYPE, FALSE);
 
         if (ewl_text_selection_get(t))
-        	DRETURN_INT(TRUE, DLEVEL_STABLE);
+                DRETURN_INT(TRUE, DLEVEL_STABLE);
 
         DRETURN_INT(FALSE, DLEVEL_STABLE);
 }
@@ -950,17 +950,17 @@ ewl_text_select(Ewl_Text *t, unsigned int char_idx, unsigned int char_len)
         DCHECK_TYPE(t, EWL_TEXT_TYPE);
 
         if (t->length.chars == 0)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         if (char_idx > t->length.chars)
-        	char_idx = t->length.chars;
+                char_idx = t->length.chars;
 
         if (char_idx + char_len > t->length.chars)
-        	char_len = t->length.chars - char_idx;
+                char_len = t->length.chars - char_idx;
 
         /* if we haven't already have an selection create one */
         if (!t->selection)
-        	t->selection = ewl_text_selection_new(t);
+                t->selection = ewl_text_selection_new(t);
 
         s = EWL_TEXT_TRIGGER(t->selection);
         ewl_text_trigger_start_pos_set(s, char_idx);
@@ -1007,13 +1007,13 @@ ewl_text_cursor_position_set(Ewl_Text *t, unsigned int char_pos)
 
         /* it's the same position, do nothing */
         if (char_pos == t->cursor_position)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         /* clean the current context if it exists */
         if (t->formatting.tx)
         {
-        	ewl_text_context_release(t->formatting.tx);
-        	t->formatting.tx = NULL;
+                ewl_text_context_release(t->formatting.tx);
+                t->formatting.tx = NULL;
         }
         t->cursor_position = char_pos;
 
@@ -1060,23 +1060,23 @@ ewl_text_cursor_position_line_up_get(Ewl_Text *t)
 
         cursor = ewl_text_textblock_cursor_position(t, byte_idx);
         line = evas_textblock_cursor_char_geometry_get(cursor, &cx, NULL,
-        							&cw, NULL);
+                                                                &cw, NULL);
         line --;
 
         if (evas_object_textblock_line_number_geometry_get(t->textblock,
-        					line, &lx, &ly, &lw, &lh))
+                                                line, &lx, &ly, &lw, &lh))
         {
-        	if (!evas_textblock_cursor_char_coord_set(cursor,
-        						cx + (cw / 2), ly))
-        	{
-        		if (evas_textblock_cursor_line_set(cursor, line))
-        		{
-        			if ((cx + (cw / 2)) >= (lx + lw))
-        				evas_textblock_cursor_line_last(cursor);
-        			else
-        				evas_textblock_cursor_line_first(cursor);
-        		}
-        	}
+                if (!evas_textblock_cursor_char_coord_set(cursor,
+                                                        cx + (cw / 2), ly))
+                {
+                        if (evas_textblock_cursor_line_set(cursor, line))
+                        {
+                                if ((cx + (cw / 2)) >= (lx + lw))
+                                        evas_textblock_cursor_line_last(cursor);
+                                else
+                                        evas_textblock_cursor_line_first(cursor);
+                        }
+                }
 
         }
 
@@ -1106,34 +1106,34 @@ ewl_text_cursor_position_line_down_get(Ewl_Text *t)
 
         cur_char_idx = ewl_text_cursor_position_get(t);
         ewl_text_fmt_char_to_byte(t->formatting.nodes, cur_char_idx,
-        					0, &byte_idx, NULL);
+                                                0, &byte_idx, NULL);
 
         cursor = ewl_text_textblock_cursor_position(t, byte_idx);
         line = evas_textblock_cursor_char_geometry_get(cursor, &cx, NULL,
-        							&cw, NULL);
+                                                                &cw, NULL);
         line ++;
 
         if (evas_object_textblock_line_number_geometry_get(t->textblock,
-        					line, &lx, &ly, &lw, &lh))
+                                                line, &lx, &ly, &lw, &lh))
         {
-        	if (!evas_textblock_cursor_char_coord_set(cursor,
-        						cx + (cw / 2), ly))
-        	{
-        		if (evas_textblock_cursor_line_set(cursor, line))
-        		{
-        			if ((cx + (cw / 2)) >= (lx + lw))
-        				evas_textblock_cursor_line_last(cursor);
-        			else
-        				evas_textblock_cursor_line_first(cursor);
-        		}
-        	}
+                if (!evas_textblock_cursor_char_coord_set(cursor,
+                                                        cx + (cw / 2), ly))
+                {
+                        if (evas_textblock_cursor_line_set(cursor, line))
+                        {
+                                if ((cx + (cw / 2)) >= (lx + lw))
+                                        evas_textblock_cursor_line_last(cursor);
+                                else
+                                        evas_textblock_cursor_line_first(cursor);
+                        }
+                }
 
         }
 
         byte_idx = ewl_text_textblock_cursor_to_index(cursor);
         cur_char_idx = 0;
         ewl_text_fmt_byte_to_char(t->formatting.nodes, byte_idx,
-        				0, &cur_char_idx, NULL);
+                                        0, &cur_char_idx, NULL);
 
         DRETURN_INT(cur_char_idx, DLEVEL_STABLE);
 }
@@ -1195,16 +1195,16 @@ ewl_text_font_get(Ewl_Text *t, unsigned int char_idx)
         fmt = ewl_text_fmt_get(t->formatting.nodes, char_idx);
         if (fmt && fmt->tx)
         {
-        	if (fmt->tx->font)
-        		font = strdup(fmt->tx->font);
+                if (fmt->tx->font)
+                        font = strdup(fmt->tx->font);
         }
         else
         {
-        	Ewl_Text_Context *tx;
+                Ewl_Text_Context *tx;
 
-        	tx = ewl_text_context_default_create(t);
-        	if (tx->font) font = strdup(tx->font);
-        	ewl_text_context_release(tx);
+                tx = ewl_text_context_default_create(t);
+                if (tx->font) font = strdup(tx->font);
+                ewl_text_context_release(tx);
         }
 
         DRETURN_PTR(font, DLEVEL_STABLE);
@@ -1252,7 +1252,7 @@ ewl_text_font_source_set(Ewl_Text *t, const char *source, const char *font)
  */
 void
 ewl_text_font_source_apply(Ewl_Text *t, const char *source, const char *font,
-        						unsigned int char_len)
+                                                        unsigned int char_len)
 {
         Ewl_Text_Context *tx;
 
@@ -1262,7 +1262,7 @@ ewl_text_font_source_apply(Ewl_Text *t, const char *source, const char *font,
 
         /* if length is 0 we have nothing to do */
         if (char_len == 0)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         tx = ewl_text_context_new();
 
@@ -1275,7 +1275,7 @@ ewl_text_font_source_apply(Ewl_Text *t, const char *source, const char *font,
         if (font) tx->font = ecore_string_instance(font);
 
         ewl_text_fmt_apply(t->formatting.nodes, EWL_TEXT_CONTEXT_MASK_FONT, tx,
-        				t->cursor_position, char_len);
+                                        t->cursor_position, char_len);
         ewl_text_context_release(tx);
         t->dirty = TRUE;
 
@@ -1303,16 +1303,16 @@ ewl_text_font_source_get(Ewl_Text *t, unsigned int char_idx)
         fmt = ewl_text_fmt_get(t->formatting.nodes, char_idx);
         if (fmt && fmt->tx)
         {
-        	if (fmt->tx->font_source)
-        		source = strdup(fmt->tx->font_source);
+                if (fmt->tx->font_source)
+                        source = strdup(fmt->tx->font_source);
         }
         else
         {
-        	Ewl_Text_Context *tx;
+                Ewl_Text_Context *tx;
 
-        	tx = ewl_text_context_default_create(t);
-        	if (tx->font_source) source = strdup(tx->font_source);
-        	ewl_text_context_release(tx);
+                tx = ewl_text_context_default_create(t);
+                if (tx->font_source) source = strdup(tx->font_source);
+                ewl_text_context_release(tx);
         }
 
         DRETURN_PTR(source, DLEVEL_STABLE);
@@ -1360,12 +1360,12 @@ ewl_text_font_size_apply(Ewl_Text *t, unsigned int size, unsigned int char_len)
         DCHECK_TYPE(t, EWL_TEXT_TYPE);
 
         if (char_len == 0)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         tx = ewl_text_context_new();
         tx->size = size;
         ewl_text_fmt_apply(t->formatting.nodes, EWL_TEXT_CONTEXT_MASK_SIZE, tx,
-        					t->cursor_position, char_len);
+                                                t->cursor_position, char_len);
         ewl_text_context_release(tx);
         t->dirty = TRUE;
 
@@ -1393,15 +1393,15 @@ ewl_text_font_size_get(Ewl_Text *t, unsigned int char_idx)
         fmt = ewl_text_fmt_get(t->formatting.nodes, char_idx);
         if (fmt && fmt->tx)
         {
-        	size = fmt->tx->size;
+                size = fmt->tx->size;
         }
         else
         {
-        	Ewl_Text_Context *tx;
+                Ewl_Text_Context *tx;
 
-        	tx = ewl_text_context_default_create(t);
-        	size = tx->size;
-        	ewl_text_context_release(tx);
+                tx = ewl_text_context_default_create(t);
+                size = tx->size;
+                ewl_text_context_release(tx);
         }
 
         DRETURN_INT(size, DLEVEL_STABLE);
@@ -1418,7 +1418,7 @@ ewl_text_font_size_get(Ewl_Text *t, unsigned int char_idx)
  */
 void
 ewl_text_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
-        			unsigned int b, unsigned int a)
+                                unsigned int b, unsigned int a)
 {
         Ewl_Text_Context *change;
 
@@ -1451,8 +1451,8 @@ ewl_text_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
  */
 void
 ewl_text_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
-        			unsigned int b, unsigned int a,
-        			unsigned int char_len)
+                                unsigned int b, unsigned int a,
+                                unsigned int char_len)
 {
         Ewl_Text_Context *tx;
 
@@ -1461,7 +1461,7 @@ ewl_text_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
         DCHECK_TYPE(t, EWL_TEXT_TYPE);
 
         if (char_len == 0)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         tx = ewl_text_context_new();
         tx->color.r = r;
@@ -1470,7 +1470,7 @@ ewl_text_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
         tx->color.a = a;
 
         ewl_text_fmt_apply(t->formatting.nodes, EWL_TEXT_CONTEXT_MASK_COLOR, tx,
-        				t->cursor_position, char_len);
+                                        t->cursor_position, char_len);
         ewl_text_context_release(tx);
         t->dirty = TRUE;
 
@@ -1491,8 +1491,8 @@ ewl_text_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
  */
 void
 ewl_text_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
-        			unsigned int *b, unsigned int *a,
-        			unsigned int char_idx)
+                                unsigned int *b, unsigned int *a,
+                                unsigned int char_idx)
 {
         Ewl_Text_Fmt_Node *fmt;
 
@@ -1503,21 +1503,21 @@ ewl_text_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
         fmt = ewl_text_fmt_get(t->formatting.nodes, char_idx);
         if (fmt && fmt->tx)
         {
-        	if (r) *r = fmt->tx->color.r;
-        	if (g) *g = fmt->tx->color.g;
-        	if (b) *b = fmt->tx->color.b;
-        	if (a) *a = fmt->tx->color.a;
+                if (r) *r = fmt->tx->color.r;
+                if (g) *g = fmt->tx->color.g;
+                if (b) *b = fmt->tx->color.b;
+                if (a) *a = fmt->tx->color.a;
         }
         else
         {
-        	Ewl_Text_Context *tx;
+                Ewl_Text_Context *tx;
 
-        	tx = ewl_text_context_default_create(t);
-        	if (r) *r = tx->color.r;
-        	if (g) *g = tx->color.g;
-        	if (b) *b = tx->color.b;
-        	if (a) *a = tx->color.a;
-        	ewl_text_context_release(tx);
+                tx = ewl_text_context_default_create(t);
+                if (r) *r = tx->color.r;
+                if (g) *g = tx->color.g;
+                if (b) *b = tx->color.b;
+                if (a) *a = tx->color.a;
+                ewl_text_context_release(tx);
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1565,12 +1565,12 @@ ewl_text_align_apply(Ewl_Text *t, unsigned int align, unsigned int char_len)
         DCHECK_TYPE(t, EWL_TEXT_TYPE);
 
         if (char_len == 0)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         tx = ewl_text_context_new();
         tx->align = align;
         ewl_text_fmt_apply(t->formatting.nodes, EWL_TEXT_CONTEXT_MASK_ALIGN, tx,
-        				t->cursor_position, char_len);
+                                        t->cursor_position, char_len);
         ewl_text_context_release(tx);
         t->dirty = TRUE;
 
@@ -1598,15 +1598,15 @@ ewl_text_align_get(Ewl_Text *t, unsigned int char_idx)
         fmt = ewl_text_fmt_get(t->formatting.nodes, char_idx);
         if (fmt && fmt->tx)
         {
-        	align = fmt->tx->align;
+                align = fmt->tx->align;
         }
         else
         {
-        	Ewl_Text_Context *tx;
+                Ewl_Text_Context *tx;
 
-        	tx = ewl_text_context_default_create(t);
-        	align = tx->align;
-        	ewl_text_context_release(tx);
+                tx = ewl_text_context_default_create(t);
+                align = tx->align;
+                ewl_text_context_release(tx);
         }
 
         DRETURN_INT(align, DLEVEL_STABLE);
@@ -1654,12 +1654,12 @@ ewl_text_styles_apply(Ewl_Text *t, unsigned int styles, unsigned int char_len)
         DCHECK_TYPE(t, EWL_TEXT_TYPE);
 
         if (char_len == 0)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         tx = ewl_text_context_new();
         tx->styles = styles;
         ewl_text_fmt_apply(t->formatting.nodes, EWL_TEXT_CONTEXT_MASK_STYLES, tx,
-        				t->cursor_position, char_len);
+                                        t->cursor_position, char_len);
         ewl_text_context_release(tx);
         t->dirty = TRUE;
 
@@ -1773,7 +1773,7 @@ ewl_text_style_has(Ewl_Text *t, Ewl_Text_Style style, unsigned int char_idx)
 
         fmt = ewl_text_fmt_get(t->formatting.nodes, char_idx);
         if (!fmt || !fmt->tx)
-        	DRETURN_INT(FALSE, DLEVEL_STABLE);
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
 
         DRETURN_INT((fmt->tx->styles & style), DLEVEL_STABLE);
 }
@@ -1797,15 +1797,15 @@ ewl_text_styles_get(Ewl_Text *t, unsigned int char_idx)
         fmt = ewl_text_fmt_get(t->formatting.nodes, char_idx);
         if (fmt && fmt->tx)
         {
-        	styles = fmt->tx->styles;
+                styles = fmt->tx->styles;
         }
         else
         {
-        	Ewl_Text_Context *tx;
+                Ewl_Text_Context *tx;
 
-        	tx = ewl_text_context_default_create(t);
-        	styles = tx->styles;
-        	ewl_text_context_release(tx);
+                tx = ewl_text_context_default_create(t);
+                styles = tx->styles;
+                ewl_text_context_release(tx);
         }
 
         DRETURN_INT(styles, DLEVEL_STABLE);
@@ -1830,12 +1830,12 @@ ewl_text_wrap_set(Ewl_Text *t, Ewl_Text_Wrap wrap)
         change->wrap = wrap;
 
         if (wrap == EWL_TEXT_WRAP_NONE)
-        	ewl_object_fill_policy_set(EWL_OBJECT(t), EWL_FLAG_FILL_HFILL
-        						| EWL_FLAG_FILL_VFILL);
+                ewl_object_fill_policy_set(EWL_OBJECT(t), EWL_FLAG_FILL_HFILL
+                                                        | EWL_FLAG_FILL_VFILL);
         else
-        	ewl_object_fill_policy_set(EWL_OBJECT(t), EWL_FLAG_FILL_HSHRINK
-        						| EWL_FLAG_FILL_HFILL
-        						| EWL_FLAG_FILL_VFILL);
+                ewl_object_fill_policy_set(EWL_OBJECT(t), EWL_FLAG_FILL_HSHRINK
+                                                        | EWL_FLAG_FILL_HFILL
+                                                        | EWL_FLAG_FILL_VFILL);
 
         ewl_text_current_fmt_set(t, EWL_TEXT_CONTEXT_MASK_WRAP, change);
         ewl_text_context_release(change);
@@ -1861,12 +1861,12 @@ ewl_text_wrap_apply(Ewl_Text *t, Ewl_Text_Wrap wrap, unsigned int char_len)
         DCHECK_TYPE(t, EWL_TEXT_TYPE);
 
         if (char_len == 0)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         tx = ewl_text_context_new();
         tx->wrap = wrap;
         ewl_text_fmt_apply(t->formatting.nodes, EWL_TEXT_CONTEXT_MASK_WRAP, tx,
-        					t->cursor_position, char_len);
+                                                t->cursor_position, char_len);
         ewl_text_context_release(tx);
         t->dirty = TRUE;
 
@@ -1894,15 +1894,15 @@ ewl_text_wrap_get(Ewl_Text *t, unsigned int char_idx)
         fmt = ewl_text_fmt_get(t->formatting.nodes, char_idx);
         if (fmt && fmt->tx)
         {
-        	wrap = fmt->tx->wrap;
+                wrap = fmt->tx->wrap;
         }
         else
         {
-        	Ewl_Text_Context *tx;
+                Ewl_Text_Context *tx;
 
-        	tx = ewl_text_context_default_create(t);
-        	wrap = tx->wrap;
-        	ewl_text_context_release(tx);
+                tx = ewl_text_context_default_create(t);
+                wrap = tx->wrap;
+                ewl_text_context_release(tx);
         }
 
         DRETURN_INT(wrap, DLEVEL_STABLE);
@@ -1919,7 +1919,7 @@ ewl_text_wrap_get(Ewl_Text *t, unsigned int char_idx)
  */
 void
 ewl_text_bg_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
-        				unsigned int b, unsigned int a)
+                                        unsigned int b, unsigned int a)
 {
         Ewl_Text_Context *change;
 
@@ -1952,8 +1952,8 @@ ewl_text_bg_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
  */
 void
 ewl_text_bg_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
-        				unsigned int b, unsigned int a,
-        				unsigned int char_len)
+                                        unsigned int b, unsigned int a,
+                                        unsigned int char_len)
 {
         Ewl_Text_Context *tx;
 
@@ -1962,7 +1962,7 @@ ewl_text_bg_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
         DCHECK_TYPE(t, EWL_TEXT_TYPE);
 
         if (char_len == 0)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         tx = ewl_text_context_new();
         tx->style_colors.bg.r = r;
@@ -1971,7 +1971,7 @@ ewl_text_bg_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
         tx->style_colors.bg.a = a;
 
         ewl_text_fmt_apply(t->formatting.nodes, EWL_TEXT_CONTEXT_MASK_BG_COLOR,
-        				tx, t->cursor_position, char_len);
+                                        tx, t->cursor_position, char_len);
         ewl_text_context_release(tx);
         t->dirty = TRUE;
 
@@ -1992,8 +1992,8 @@ ewl_text_bg_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
  */
 void
 ewl_text_bg_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
-        				unsigned int *b, unsigned int *a,
-        				unsigned int char_idx)
+                                        unsigned int *b, unsigned int *a,
+                                        unsigned int char_idx)
 {
         Ewl_Text_Fmt_Node *fmt;
 
@@ -2004,21 +2004,21 @@ ewl_text_bg_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
         fmt = ewl_text_fmt_get(t->formatting.nodes, char_idx);
         if (fmt && fmt->tx)
         {
-        	if (r) *r = fmt->tx->style_colors.bg.r;
-        	if (g) *g = fmt->tx->style_colors.bg.g;
-        	if (b) *b = fmt->tx->style_colors.bg.b;
-        	if (a) *a = fmt->tx->style_colors.bg.a;
+                if (r) *r = fmt->tx->style_colors.bg.r;
+                if (g) *g = fmt->tx->style_colors.bg.g;
+                if (b) *b = fmt->tx->style_colors.bg.b;
+                if (a) *a = fmt->tx->style_colors.bg.a;
         }
         else
         {
-        	Ewl_Text_Context *tx;
+                Ewl_Text_Context *tx;
 
-        	tx = ewl_text_context_default_create(t);
-        	if (r) *r = tx->style_colors.bg.r;
-        	if (g) *g = tx->style_colors.bg.g;
-        	if (b) *b = tx->style_colors.bg.b;
-        	if (a) *a = tx->style_colors.bg.a;
-        	ewl_text_context_release(tx);
+                tx = ewl_text_context_default_create(t);
+                if (r) *r = tx->style_colors.bg.r;
+                if (g) *g = tx->style_colors.bg.g;
+                if (b) *b = tx->style_colors.bg.b;
+                if (a) *a = tx->style_colors.bg.a;
+                ewl_text_context_release(tx);
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -2035,7 +2035,7 @@ ewl_text_bg_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
  */
 void
 ewl_text_glow_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
-        				unsigned int b, unsigned int a)
+                                        unsigned int b, unsigned int a)
 {
         Ewl_Text_Context *change;
 
@@ -2068,8 +2068,8 @@ ewl_text_glow_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
  */
 void
 ewl_text_glow_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
-        				unsigned int b, unsigned int a,
-        				unsigned int char_len)
+                                        unsigned int b, unsigned int a,
+                                        unsigned int char_len)
 {
         Ewl_Text_Context *tx;
 
@@ -2078,7 +2078,7 @@ ewl_text_glow_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
         DCHECK_TYPE(t, EWL_TEXT_TYPE);
 
         if (char_len == 0)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         tx = ewl_text_context_new();
         tx->style_colors.glow.r = r;
@@ -2087,7 +2087,7 @@ ewl_text_glow_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
         tx->style_colors.glow.a = a;
 
         ewl_text_fmt_apply(t->formatting.nodes, EWL_TEXT_CONTEXT_MASK_GLOW_COLOR, tx,
-        					t->cursor_position, char_len);
+                                                t->cursor_position, char_len);
         ewl_text_context_release(tx);
         t->dirty = TRUE;
 
@@ -2108,8 +2108,8 @@ ewl_text_glow_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
  */
 void
 ewl_text_glow_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
-        				unsigned int *b, unsigned int *a,
-        				unsigned int char_idx)
+                                        unsigned int *b, unsigned int *a,
+                                        unsigned int char_idx)
 {
         Ewl_Text_Fmt_Node *fmt;
 
@@ -2120,21 +2120,21 @@ ewl_text_glow_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
         fmt = ewl_text_fmt_get(t->formatting.nodes, char_idx);
         if (fmt && fmt->tx)
         {
-        	if (r) *r = fmt->tx->style_colors.glow.r;
-        	if (g) *g = fmt->tx->style_colors.glow.g;
-        	if (b) *b = fmt->tx->style_colors.glow.b;
-        	if (a) *a = fmt->tx->style_colors.glow.a;
+                if (r) *r = fmt->tx->style_colors.glow.r;
+                if (g) *g = fmt->tx->style_colors.glow.g;
+                if (b) *b = fmt->tx->style_colors.glow.b;
+                if (a) *a = fmt->tx->style_colors.glow.a;
         }
         else
         {
-        	Ewl_Text_Context *tx;
+                Ewl_Text_Context *tx;
 
-        	tx = ewl_text_context_default_create(t);
-        	if (r) *r = tx->style_colors.glow.r;
-        	if (g) *g = tx->style_colors.glow.g;
-        	if (b) *b = tx->style_colors.glow.b;
-        	if (a) *a = tx->style_colors.glow.a;
-        	ewl_text_context_release(tx);
+                tx = ewl_text_context_default_create(t);
+                if (r) *r = tx->style_colors.glow.r;
+                if (g) *g = tx->style_colors.glow.g;
+                if (b) *b = tx->style_colors.glow.b;
+                if (a) *a = tx->style_colors.glow.a;
+                ewl_text_context_release(tx);
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -2151,7 +2151,7 @@ ewl_text_glow_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
  */
 void
 ewl_text_outline_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
-        					unsigned int b, unsigned int a)
+                                                unsigned int b, unsigned int a)
 {
         Ewl_Text_Context *change;
 
@@ -2184,8 +2184,8 @@ ewl_text_outline_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
  */
 void
 ewl_text_outline_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
-        					unsigned int b, unsigned int a,
-        					unsigned int char_len)
+                                                unsigned int b, unsigned int a,
+                                                unsigned int char_len)
 {
         Ewl_Text_Context *tx;
 
@@ -2194,7 +2194,7 @@ ewl_text_outline_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
         DCHECK_TYPE(t, EWL_TEXT_TYPE);
 
         if (char_len == 0)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         tx = ewl_text_context_new();
         tx->style_colors.outline.r = r;
@@ -2203,7 +2203,7 @@ ewl_text_outline_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
         tx->style_colors.outline.a = a;
 
         ewl_text_fmt_apply(t->formatting.nodes, EWL_TEXT_CONTEXT_MASK_OUTLINE_COLOR,
-        				tx, t->cursor_position, char_len);
+                                        tx, t->cursor_position, char_len);
         ewl_text_context_release(tx);
         t->dirty = TRUE;
 
@@ -2224,8 +2224,8 @@ ewl_text_outline_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
  */
 void
 ewl_text_outline_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
-        					unsigned int *b, unsigned int *a,
-        					unsigned int char_idx)
+                                                unsigned int *b, unsigned int *a,
+                                                unsigned int char_idx)
 {
         Ewl_Text_Fmt_Node *fmt;
 
@@ -2236,21 +2236,21 @@ ewl_text_outline_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
         fmt = ewl_text_fmt_get(t->formatting.nodes, char_idx);
         if (fmt && fmt->tx)
         {
-        	if (r) *r = fmt->tx->style_colors.outline.r;
-        	if (g) *g = fmt->tx->style_colors.outline.g;
-        	if (b) *b = fmt->tx->style_colors.outline.b;
-        	if (a) *a = fmt->tx->style_colors.outline.a;
+                if (r) *r = fmt->tx->style_colors.outline.r;
+                if (g) *g = fmt->tx->style_colors.outline.g;
+                if (b) *b = fmt->tx->style_colors.outline.b;
+                if (a) *a = fmt->tx->style_colors.outline.a;
         }
         else
         {
-        	Ewl_Text_Context *tx;
+                Ewl_Text_Context *tx;
 
-        	tx = ewl_text_context_default_create(t);
-        	if (r) *r = tx->style_colors.outline.r;
-        	if (g) *g = tx->style_colors.outline.g;
-        	if (b) *b = tx->style_colors.outline.b;
-        	if (a) *a = tx->style_colors.outline.a;
-        	ewl_text_context_release(tx);
+                tx = ewl_text_context_default_create(t);
+                if (r) *r = tx->style_colors.outline.r;
+                if (g) *g = tx->style_colors.outline.g;
+                if (b) *b = tx->style_colors.outline.b;
+                if (a) *a = tx->style_colors.outline.a;
+                ewl_text_context_release(tx);
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -2267,7 +2267,7 @@ ewl_text_outline_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
  */
 void
 ewl_text_shadow_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
-        					unsigned int b, unsigned int a)
+                                                unsigned int b, unsigned int a)
 {
         Ewl_Text_Context *change;
 
@@ -2300,8 +2300,8 @@ ewl_text_shadow_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
  */
 void
 ewl_text_shadow_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
-        					unsigned int b, unsigned int a,
-        					unsigned int char_len)
+                                                unsigned int b, unsigned int a,
+                                                unsigned int char_len)
 {
         Ewl_Text_Context *tx;
 
@@ -2310,7 +2310,7 @@ ewl_text_shadow_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
         DCHECK_TYPE(t, EWL_TEXT_TYPE);
 
         if (char_len == 0)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         tx = ewl_text_context_new();
         tx->style_colors.shadow.r = r;
@@ -2319,7 +2319,7 @@ ewl_text_shadow_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
         tx->style_colors.shadow.a = a;
 
         ewl_text_fmt_apply(t->formatting.nodes, EWL_TEXT_CONTEXT_MASK_SHADOW_COLOR,
-        				tx, t->cursor_position, char_len);
+                                        tx, t->cursor_position, char_len);
         ewl_text_context_release(tx);
         t->dirty = TRUE;
 
@@ -2340,8 +2340,8 @@ ewl_text_shadow_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
  */
 void
 ewl_text_shadow_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
-        					unsigned int *b, unsigned int *a,
-        					unsigned int char_idx)
+                                                unsigned int *b, unsigned int *a,
+                                                unsigned int char_idx)
 {
         Ewl_Text_Fmt_Node *fmt;
 
@@ -2352,21 +2352,21 @@ ewl_text_shadow_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
         fmt = ewl_text_fmt_get(t->formatting.nodes, char_idx);
         if (fmt && fmt->tx)
         {
-        	if (r) *r = fmt->tx->style_colors.shadow.r;
-        	if (g) *g = fmt->tx->style_colors.shadow.g;
-        	if (b) *b = fmt->tx->style_colors.shadow.b;
-        	if (a) *a = fmt->tx->style_colors.shadow.a;
+                if (r) *r = fmt->tx->style_colors.shadow.r;
+                if (g) *g = fmt->tx->style_colors.shadow.g;
+                if (b) *b = fmt->tx->style_colors.shadow.b;
+                if (a) *a = fmt->tx->style_colors.shadow.a;
         }
         else
         {
-        	Ewl_Text_Context *tx;
+                Ewl_Text_Context *tx;
 
-        	tx = ewl_text_context_default_create(t);
-        	if (r) *r = tx->style_colors.shadow.r;
-        	if (g) *g = tx->style_colors.shadow.g;
-        	if (b) *b = tx->style_colors.shadow.b;
-        	if (a) *a = tx->style_colors.shadow.a;
-        	ewl_text_context_release(tx);
+                tx = ewl_text_context_default_create(t);
+                if (r) *r = tx->style_colors.shadow.r;
+                if (g) *g = tx->style_colors.shadow.g;
+                if (b) *b = tx->style_colors.shadow.b;
+                if (a) *a = tx->style_colors.shadow.a;
+                ewl_text_context_release(tx);
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -2383,7 +2383,7 @@ ewl_text_shadow_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
  */
 void
 ewl_text_strikethrough_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
-        					unsigned int b, unsigned int a)
+                                                unsigned int b, unsigned int a)
 {
         Ewl_Text_Context *change;
 
@@ -2416,8 +2416,8 @@ ewl_text_strikethrough_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
  */
 void
 ewl_text_strikethrough_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
-        					unsigned int b, unsigned int a,
-        					unsigned int char_len)
+                                                unsigned int b, unsigned int a,
+                                                unsigned int char_len)
 {
         Ewl_Text_Context *tx;
 
@@ -2426,7 +2426,7 @@ ewl_text_strikethrough_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
         DCHECK_TYPE(t, EWL_TEXT_TYPE);
 
         if (char_len == 0)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         tx = ewl_text_context_new();
         tx->style_colors.strikethrough.r = r;
@@ -2435,7 +2435,7 @@ ewl_text_strikethrough_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
         tx->style_colors.strikethrough.a = a;
 
         ewl_text_fmt_apply(t->formatting.nodes, EWL_TEXT_CONTEXT_MASK_STRIKETHROUGH_COLOR,
-        				tx, t->cursor_position, char_len);
+                                        tx, t->cursor_position, char_len);
         ewl_text_context_release(tx);
         t->dirty = TRUE;
 
@@ -2456,8 +2456,8 @@ ewl_text_strikethrough_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
  */
 void
 ewl_text_strikethrough_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
-        					unsigned int *b, unsigned int *a,
-        					unsigned int char_idx)
+                                                unsigned int *b, unsigned int *a,
+                                                unsigned int char_idx)
 {
         Ewl_Text_Fmt_Node *fmt;
 
@@ -2468,21 +2468,21 @@ ewl_text_strikethrough_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
         fmt = ewl_text_fmt_get(t->formatting.nodes, char_idx);
         if (fmt && fmt->tx)
         {
-        	if (r) *r = fmt->tx->style_colors.strikethrough.r;
-        	if (g) *g = fmt->tx->style_colors.strikethrough.g;
-        	if (b) *b = fmt->tx->style_colors.strikethrough.b;
-        	if (a) *a = fmt->tx->style_colors.strikethrough.a;
+                if (r) *r = fmt->tx->style_colors.strikethrough.r;
+                if (g) *g = fmt->tx->style_colors.strikethrough.g;
+                if (b) *b = fmt->tx->style_colors.strikethrough.b;
+                if (a) *a = fmt->tx->style_colors.strikethrough.a;
         }
         else
         {
-        	Ewl_Text_Context *tx;
+                Ewl_Text_Context *tx;
 
-        	tx = ewl_text_context_default_create(t);
-        	if (r) *r = tx->style_colors.strikethrough.r;
-        	if (g) *g = tx->style_colors.strikethrough.g;
-        	if (b) *b = tx->style_colors.strikethrough.b;
-        	if (a) *a = tx->style_colors.strikethrough.a;
-        	ewl_text_context_release(tx);
+                tx = ewl_text_context_default_create(t);
+                if (r) *r = tx->style_colors.strikethrough.r;
+                if (g) *g = tx->style_colors.strikethrough.g;
+                if (b) *b = tx->style_colors.strikethrough.b;
+                if (a) *a = tx->style_colors.strikethrough.a;
+                ewl_text_context_release(tx);
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -2499,7 +2499,7 @@ ewl_text_strikethrough_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
  */
 void
 ewl_text_underline_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
-        					unsigned int b, unsigned int a)
+                                                unsigned int b, unsigned int a)
 {
         Ewl_Text_Context *change;
 
@@ -2532,8 +2532,8 @@ ewl_text_underline_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
  */
 void
 ewl_text_underline_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
-        					unsigned int b, unsigned int a,
-        					unsigned int char_len)
+                                                unsigned int b, unsigned int a,
+                                                unsigned int char_len)
 {
         Ewl_Text_Context *tx;
 
@@ -2542,7 +2542,7 @@ ewl_text_underline_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
         DCHECK_TYPE(t, EWL_TEXT_TYPE);
 
         if (char_len == 0)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         tx = ewl_text_context_new();
         tx->style_colors.underline.r = r;
@@ -2551,7 +2551,7 @@ ewl_text_underline_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
         tx->style_colors.underline.a = a;
 
         ewl_text_fmt_apply(t->formatting.nodes, EWL_TEXT_CONTEXT_MASK_UNDERLINE_COLOR,
-        				tx, t->cursor_position, char_len);
+                                        tx, t->cursor_position, char_len);
         ewl_text_context_release(tx);
         t->dirty = TRUE;
 
@@ -2572,8 +2572,8 @@ ewl_text_underline_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
  */
 void
 ewl_text_underline_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
-        					unsigned int *b, unsigned int *a,
-        					unsigned int char_idx)
+                                                unsigned int *b, unsigned int *a,
+                                                unsigned int char_idx)
 {
         Ewl_Text_Fmt_Node *fmt;
 
@@ -2584,21 +2584,21 @@ ewl_text_underline_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
         fmt = ewl_text_fmt_get(t->formatting.nodes, char_idx);
         if (fmt && fmt->tx)
         {
-        	if (r) *r = fmt->tx->style_colors.outline.r;
-        	if (g) *g = fmt->tx->style_colors.outline.g;
-        	if (b) *b = fmt->tx->style_colors.outline.b;
-        	if (a) *a = fmt->tx->style_colors.outline.a;
+                if (r) *r = fmt->tx->style_colors.outline.r;
+                if (g) *g = fmt->tx->style_colors.outline.g;
+                if (b) *b = fmt->tx->style_colors.outline.b;
+                if (a) *a = fmt->tx->style_colors.outline.a;
         }
         else
         {
-        	Ewl_Text_Context *tx;
+                Ewl_Text_Context *tx;
 
-        	tx = ewl_text_context_default_create(t);
-        	if (r) *r = tx->style_colors.outline.r;
-        	if (g) *g = tx->style_colors.outline.g;
-        	if (b) *b = tx->style_colors.outline.b;
-        	if (a) *a = tx->style_colors.outline.a;
-        	ewl_text_context_release(tx);
+                tx = ewl_text_context_default_create(t);
+                if (r) *r = tx->style_colors.outline.r;
+                if (g) *g = tx->style_colors.outline.g;
+                if (b) *b = tx->style_colors.outline.b;
+                if (a) *a = tx->style_colors.outline.a;
+                ewl_text_context_release(tx);
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -2615,7 +2615,7 @@ ewl_text_underline_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
  */
 void
 ewl_text_double_underline_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
-        					unsigned int b, unsigned int a)
+                                                unsigned int b, unsigned int a)
 {
         Ewl_Text_Context *change;
 
@@ -2648,8 +2648,8 @@ ewl_text_double_underline_color_set(Ewl_Text *t, unsigned int r, unsigned int g,
  */
 void
 ewl_text_double_underline_color_apply(Ewl_Text *t, unsigned int r, unsigned int g,
-        						unsigned int b, unsigned int a,
-        						unsigned int char_len)
+                                                        unsigned int b, unsigned int a,
+                                                        unsigned int char_len)
 {
         Ewl_Text_Context *tx;
 
@@ -2658,7 +2658,7 @@ ewl_text_double_underline_color_apply(Ewl_Text *t, unsigned int r, unsigned int 
         DCHECK_TYPE(t, EWL_TEXT_TYPE);
 
         if (char_len == 0)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         tx = ewl_text_context_new();
         tx->style_colors.double_underline.r = r;
@@ -2667,7 +2667,7 @@ ewl_text_double_underline_color_apply(Ewl_Text *t, unsigned int r, unsigned int 
         tx->style_colors.double_underline.a = a;
 
         ewl_text_fmt_apply(t->formatting.nodes, EWL_TEXT_CONTEXT_MASK_DOUBLE_UNDERLINE_COLOR,
-        				tx, t->cursor_position, char_len);
+                                        tx, t->cursor_position, char_len);
         ewl_text_context_release(tx);
         t->dirty = TRUE;
 
@@ -2688,8 +2688,8 @@ ewl_text_double_underline_color_apply(Ewl_Text *t, unsigned int r, unsigned int 
  */
 void
 ewl_text_double_underline_color_get(Ewl_Text *t, unsigned int *r, unsigned int *g,
-        					unsigned int *b, unsigned int *a,
-        					unsigned int char_idx)
+                                                unsigned int *b, unsigned int *a,
+                                                unsigned int char_idx)
 {
         Ewl_Text_Fmt_Node *fmt;
 
@@ -2700,21 +2700,21 @@ ewl_text_double_underline_color_get(Ewl_Text *t, unsigned int *r, unsigned int *
         fmt = ewl_text_fmt_get(t->formatting.nodes, char_idx);
         if (fmt && fmt->tx)
         {
-        	if (r) *r = fmt->tx->style_colors.double_underline.r;
-        	if (g) *g = fmt->tx->style_colors.double_underline.g;
-        	if (b) *b = fmt->tx->style_colors.double_underline.b;
-        	if (a) *a = fmt->tx->style_colors.double_underline.a;
+                if (r) *r = fmt->tx->style_colors.double_underline.r;
+                if (g) *g = fmt->tx->style_colors.double_underline.g;
+                if (b) *b = fmt->tx->style_colors.double_underline.b;
+                if (a) *a = fmt->tx->style_colors.double_underline.a;
         }
         else
         {
-        	Ewl_Text_Context *tx;
+                Ewl_Text_Context *tx;
 
-        	tx = ewl_text_context_default_create(t);
-        	if (r) *r = tx->style_colors.double_underline.r;
-        	if (g) *g = tx->style_colors.double_underline.g;
-        	if (b) *b = tx->style_colors.double_underline.b;
-        	if (a) *a = tx->style_colors.double_underline.a;
-        	ewl_text_context_release(tx);
+                tx = ewl_text_context_default_create(t);
+                if (r) *r = tx->style_colors.double_underline.r;
+                if (g) *g = tx->style_colors.double_underline.g;
+                if (b) *b = tx->style_colors.double_underline.b;
+                if (a) *a = tx->style_colors.double_underline.a;
+                ewl_text_context_release(tx);
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -2764,8 +2764,8 @@ ewl_text_context_default_create(Ewl_Text *t)
 
         if (ewl_text_default_context)
         {
-        	ewl_text_context_acquire(ewl_text_default_context);
-        	DRETURN_PTR(ewl_text_default_context, DLEVEL_STABLE);
+                ewl_text_context_acquire(ewl_text_default_context);
+                DRETURN_PTR(ewl_text_default_context, DLEVEL_STABLE);
         }
 
         tmp = ewl_text_context_new();
@@ -2780,65 +2780,65 @@ ewl_text_context_default_create(Ewl_Text *t)
         i = ewl_theme_data_int_get(EWL_WIDGET(t), "underline");
         if (i)
         {
-        	tmp->styles |= EWL_TEXT_STYLE_UNDERLINE;
-        	ewl_text_theme_color_get(t, &(tmp->style_colors.underline),
-        				"underline/color");
+                tmp->styles |= EWL_TEXT_STYLE_UNDERLINE;
+                ewl_text_theme_color_get(t, &(tmp->style_colors.underline),
+                                        "underline/color");
         }
 
         i = ewl_theme_data_int_get(EWL_WIDGET(t), "double_underline");
         if (i)
         {
-        	tmp->styles |= EWL_TEXT_STYLE_DOUBLE_UNDERLINE;
-        	ewl_text_theme_color_get(t, &(tmp->style_colors.double_underline),
-        				"double_underline/color");
+                tmp->styles |= EWL_TEXT_STYLE_DOUBLE_UNDERLINE;
+                ewl_text_theme_color_get(t, &(tmp->style_colors.double_underline),
+                                        "double_underline/color");
         }
 
         i = ewl_theme_data_int_get(EWL_WIDGET(t), "strikethrough");
         if (i)
         {
-        	tmp->styles |= EWL_TEXT_STYLE_STRIKETHROUGH;
-        	ewl_text_theme_color_get(t, &(tmp->style_colors.strikethrough),
-        				"strikethrough/color");
+                tmp->styles |= EWL_TEXT_STYLE_STRIKETHROUGH;
+                ewl_text_theme_color_get(t, &(tmp->style_colors.strikethrough),
+                                        "strikethrough/color");
         }
 
         i = ewl_theme_data_int_get(EWL_WIDGET(t), "shadow");
         if (i)
         {
-        	tmp->styles |= EWL_TEXT_STYLE_SHADOW;
-        	ewl_text_theme_color_get(t, &(tmp->style_colors.shadow),
-        				"shadow/color");
+                tmp->styles |= EWL_TEXT_STYLE_SHADOW;
+                ewl_text_theme_color_get(t, &(tmp->style_colors.shadow),
+                                        "shadow/color");
         }
 
         i = ewl_theme_data_int_get(EWL_WIDGET(t), "soft_shadow");
         if (i)
         {
-        	tmp->styles |= EWL_TEXT_STYLE_SOFT_SHADOW;
-        	ewl_text_theme_color_get(t, &(tmp->style_colors.shadow),
-        				"shadow/color");
+                tmp->styles |= EWL_TEXT_STYLE_SOFT_SHADOW;
+                ewl_text_theme_color_get(t, &(tmp->style_colors.shadow),
+                                        "shadow/color");
         }
 
         i = ewl_theme_data_int_get(EWL_WIDGET(t), "far_shadow");
         if (i)
         {
-        	tmp->styles |= EWL_TEXT_STYLE_FAR_SHADOW;
-        	ewl_text_theme_color_get(t, &(tmp->style_colors.shadow),
-        				"shadow/color");
+                tmp->styles |= EWL_TEXT_STYLE_FAR_SHADOW;
+                ewl_text_theme_color_get(t, &(tmp->style_colors.shadow),
+                                        "shadow/color");
         }
 
         i = ewl_theme_data_int_get(EWL_WIDGET(t), "outline");
         if (i)
         {
-        	tmp->styles |= EWL_TEXT_STYLE_OUTLINE;
-        	ewl_text_theme_color_get(t, &(tmp->style_colors.outline),
-        				"outline/color");
+                tmp->styles |= EWL_TEXT_STYLE_OUTLINE;
+                ewl_text_theme_color_get(t, &(tmp->style_colors.outline),
+                                        "outline/color");
         }
 
         i = ewl_theme_data_int_get(EWL_WIDGET(t), "glow");
         if (i)
         {
-        	tmp->styles |= EWL_TEXT_STYLE_GLOW;
-        	ewl_text_theme_color_get(t, &(tmp->style_colors.glow),
-        				"glow/color");
+                tmp->styles |= EWL_TEXT_STYLE_GLOW;
+                ewl_text_theme_color_get(t, &(tmp->style_colors.glow),
+                                        "glow/color");
         }
 
         /* XXX grab the alignment and wrap data from the theme here */
@@ -2874,34 +2874,34 @@ ewl_text_char_utf8_is(const char *c)
 
         switch (EWL_TEXT_CHAR_BYTE_LEN(t))
         {
-        	case 2:	/* 2 byte */
-        		if ((t[1] & 0xc0) != 0x80)
-        			DRETURN_INT(FALSE, DLEVEL_STABLE);
-        		break;
+                case 2:        /* 2 byte */
+                        if ((t[1] & 0xc0) != 0x80)
+                                DRETURN_INT(FALSE, DLEVEL_STABLE);
+                        break;
 
-        	case 3: /* 3 byte */
-        		if (((t[1] & 0xc0) != 0x80)
-        				|| ((t[2] & 0xc0) != 0x80))
-        			DRETURN_INT(FALSE, DLEVEL_STABLE);
-        		break;
+                case 3: /* 3 byte */
+                        if (((t[1] & 0xc0) != 0x80)
+                                        || ((t[2] & 0xc0) != 0x80))
+                                DRETURN_INT(FALSE, DLEVEL_STABLE);
+                        break;
 
-        	case 4: /* 4 byte */
-        		if (((t[1] & 0xc0) != 0x80)
-        				|| ((t[2] & 0xc0) != 0x80)
-        				|| ((t[3] & 0xc0) != 0x80))
-        			DRETURN_INT(FALSE, DLEVEL_STABLE);
-        		break;
+                case 4: /* 4 byte */
+                        if (((t[1] & 0xc0) != 0x80)
+                                        || ((t[2] & 0xc0) != 0x80)
+                                        || ((t[3] & 0xc0) != 0x80))
+                                DRETURN_INT(FALSE, DLEVEL_STABLE);
+                        break;
 
-        	default:
-        		/* this is actually:
-        		 * case 1:
-        		 * 	We already checked if it is a 7-bit ASCII character,
-        		 * 	so anything else with the length of 1 byte is not
-        		 * 	a valid utf8 character
-        		 * case 5: case 6:
-        		 * 	Although a character sequences of the length 5 or 6
-        		 * 	is possible it is not a legal utf8 character */
-        		DRETURN_INT(FALSE, DLEVEL_STABLE);
+                default:
+                        /* this is actually:
+                         * case 1:
+                         *         We already checked if it is a 7-bit ASCII character,
+                         *         so anything else with the length of 1 byte is not
+                         *         a valid utf8 character
+                         * case 5: case 6:
+                         *         Although a character sequences of the length 5 or 6
+                         *         is possible it is not a legal utf8 character */
+                        DRETURN_INT(FALSE, DLEVEL_STABLE);
         }
 
         DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -2962,23 +2962,23 @@ ewl_text_display(Ewl_Text *t)
         evas_object_textblock_clear(t->textblock);
 
         cursor = (Evas_Textblock_Cursor *)
-        	evas_object_textblock_cursor_get(t->textblock);
+                evas_object_textblock_cursor_get(t->textblock);
         evas_textblock_cursor_text_append(cursor, "");
 
         if (t->length.chars > 0)
         {
-        	Ewl_Text_Context *cur_tx;
-        	unsigned int cur_pos;
+                Ewl_Text_Context *cur_tx;
+                unsigned int cur_pos;
 
-        	/* save these so we can restore the list state */
-        	cur_pos = ewl_text_cursor_position_get(t);
-        	cur_tx = t->formatting.tx;
-        	if (cur_tx) ewl_text_context_acquire(cur_tx);
+                /* save these so we can restore the list state */
+                cur_pos = ewl_text_cursor_position_get(t);
+                cur_tx = t->formatting.tx;
+                if (cur_tx) ewl_text_context_acquire(cur_tx);
 
-        	ewl_text_fmt_walk(t->formatting.nodes, ewl_text_cb_format);
+                ewl_text_fmt_walk(t->formatting.nodes, ewl_text_cb_format);
 
-        	ewl_text_cursor_position_set(t, cur_pos);
-        	t->formatting.tx = cur_tx;
+                ewl_text_cursor_position_set(t, cur_pos);
+                t->formatting.tx = cur_tx;
         }
         evas_object_textblock_size_formatted_get(t->textblock, &w, &h);
 
@@ -3006,42 +3006,42 @@ ewl_text_cb_format(Ewl_Text_Fmt_Node *node, Ewl_Text *t, unsigned int byte_idx)
 
         /* Don't free this as it's suppost to be const ... */
         cursor = (Evas_Textblock_Cursor *)
-        		evas_object_textblock_cursor_get(t->textblock);
+                        evas_object_textblock_cursor_get(t->textblock);
 
         /* only need to append if we aren't default */
         if (node->tx != ewl_text_default_context)
-        	evas_textblock_cursor_format_append(cursor, node->tx->format);
+                evas_textblock_cursor_format_append(cursor, node->tx->format);
 
         if (!t->obscure)
         {
-        	char *ptr, tmp;
-        	ptr = t->text + byte_idx;
-        	tmp = *(ptr + node->byte_len);
-        	if (strlen(ptr) < node->byte_len)
-        		DWARNING("Byte length of node %u overruns actual"
-        			 " text %d", node->byte_len, (int)strlen(ptr));
-        			
-        	*(ptr + node->byte_len) = '\0';
+                char *ptr, tmp;
+                ptr = t->text + byte_idx;
+                tmp = *(ptr + node->byte_len);
+                if (strlen(ptr) < node->byte_len)
+                        DWARNING("Byte length of node %u overruns actual"
+                                 " text %d", node->byte_len, (int)strlen(ptr));
+                                
+                *(ptr + node->byte_len) = '\0';
 
-        	ewl_text_plaintext_parse(t->textblock, ptr);
-        	*(ptr + node->byte_len) = tmp;
+                ewl_text_plaintext_parse(t->textblock, ptr);
+                *(ptr + node->byte_len) = tmp;
         }
         else
         {
-        	char *otxt, *ptr;
-        	size_t len;
-        	int i;
+                char *otxt, *ptr;
+                size_t len;
+                int i;
 
-        	len = strlen(t->obscure);
-        	otxt = alloca(len * node->char_len + 1);
-        	ptr = otxt;
-        	for (i = 0; i < node->char_len; i++)
-        	{
-        		memcpy(ptr, t->obscure, len);
-        		ptr += len;
-        	}
-        	*ptr = '\0';
-        	ewl_text_plaintext_parse(t->textblock, otxt);
+                len = strlen(t->obscure);
+                otxt = alloca(len * node->char_len + 1);
+                ptr = otxt;
+                for (i = 0; i < node->char_len; i++)
+                {
+                        memcpy(ptr, t->obscure, len);
+                        ptr += len;
+                }
+                *ptr = '\0';
+                ewl_text_plaintext_parse(t->textblock, otxt);
         }
 
         evas_textblock_cursor_format_append(cursor, "-");
@@ -3066,32 +3066,32 @@ ewl_text_plaintext_parse(Evas_Object *tb, char *txt)
         cursor = (Evas_Textblock_Cursor *)evas_object_textblock_cursor_get(tb);
         for (tmp = txt; *tmp; tmp = ewl_text_text_next_char(tmp, &idx))
         {
-        	if (*tmp == '\n')
-        	{
-        		*tmp = '\0';
-        		if (*txt) evas_textblock_cursor_text_append(cursor, txt);
-        		evas_textblock_cursor_format_append(cursor, "\n");
-        		*tmp = '\n';
+                if (*tmp == '\n')
+                {
+                        *tmp = '\0';
+                        if (*txt) evas_textblock_cursor_text_append(cursor, txt);
+                        evas_textblock_cursor_format_append(cursor, "\n");
+                        *tmp = '\n';
 
-        		txt = ewl_text_text_next_char(tmp, &idx);
-        	}
-        	else if (*tmp == '\r' && *(tmp + 1) == '\n')
-        	{
-        		*tmp = '\0';
-        		if (*txt) evas_textblock_cursor_text_append(cursor, txt);
-        		evas_textblock_cursor_format_append(cursor, "\n");
-        		*tmp = '\r';
-        		tmp = ewl_text_text_next_char(tmp, &idx);
-        		txt = ewl_text_text_next_char(tmp, &idx);
-        	}
-        	else if (*tmp == '\t')
-        	{
-        		*tmp = '\0';
-        		if (*txt) evas_textblock_cursor_text_append(cursor, txt);
-        		evas_textblock_cursor_format_append(cursor, "\t");
-        		*tmp = '\t';
-        		txt = ewl_text_text_next_char(tmp, &idx);
-        	}
+                        txt = ewl_text_text_next_char(tmp, &idx);
+                }
+                else if (*tmp == '\r' && *(tmp + 1) == '\n')
+                {
+                        *tmp = '\0';
+                        if (*txt) evas_textblock_cursor_text_append(cursor, txt);
+                        evas_textblock_cursor_format_append(cursor, "\n");
+                        *tmp = '\r';
+                        tmp = ewl_text_text_next_char(tmp, &idx);
+                        txt = ewl_text_text_next_char(tmp, &idx);
+                }
+                else if (*tmp == '\t')
+                {
+                        *tmp = '\0';
+                        if (*txt) evas_textblock_cursor_text_append(cursor, txt);
+                        evas_textblock_cursor_format_append(cursor, "\t");
+                        *tmp = '\t';
+                        txt = ewl_text_text_next_char(tmp, &idx);
+                }
         }
         if (*txt) evas_textblock_cursor_text_append(cursor, txt);
 
@@ -3117,62 +3117,62 @@ ewl_text_textblock_cursor_position(Ewl_Text *t, unsigned int byte_idx)
         evas_textblock_cursor_node_first(cursor);
         while (TRUE)
         {
-        	txt = evas_textblock_cursor_node_format_get(cursor);
+                txt = evas_textblock_cursor_node_format_get(cursor);
 
-        	/* if we have text this is a formatting node, need to see if
-        	 * this is a \n or \t as they are special */
-        	if (txt)
-        	{
-        		/* do we have a \n or \t node? */
-        		if ((!strcmp(txt, "\n")) || (!strcmp(txt, "\t")))
-        		{
-        			/* will this push us past the end? */
-        			if ((cur_byte_idx + 1) > byte_idx)
-        			{
-        				evas_textblock_cursor_pos_set(cursor,
-        					byte_idx - cur_byte_idx);
-        				break;
-        			}
-        			else cur_byte_idx++;
-        		}
-        	}
-        	else
-        	{
-        		int pos;
+                /* if we have text this is a formatting node, need to see if
+                 * this is a \n or \t as they are special */
+                if (txt)
+                {
+                        /* do we have a \n or \t node? */
+                        if ((!strcmp(txt, "\n")) || (!strcmp(txt, "\t")))
+                        {
+                                /* will this push us past the end? */
+                                if ((cur_byte_idx + 1) > byte_idx)
+                                {
+                                        evas_textblock_cursor_pos_set(cursor,
+                                                byte_idx - cur_byte_idx);
+                                        break;
+                                }
+                                else cur_byte_idx++;
+                        }
+                }
+                else
+                {
+                        int pos;
 
-        		/* this is a text node, so check the length of the
-        		 * text against our current position and the idx we
-        		 * are looking for */
-        		pos = evas_textblock_cursor_node_text_length_get(cursor);
+                        /* this is a text node, so check the length of the
+                         * text against our current position and the idx we
+                         * are looking for */
+                        pos = evas_textblock_cursor_node_text_length_get(cursor);
 
-        		/* if this would move us past our index, find the
-        		 * difference between our desired index and the
-        		 * current index and set that */
-        		if ((cur_byte_idx + pos) > byte_idx)
-        		{
-        			evas_textblock_cursor_pos_set(cursor,
-        					byte_idx - cur_byte_idx);
-        			break;
-        		}
-        		cur_byte_idx += pos;
-        	}
+                        /* if this would move us past our index, find the
+                         * difference between our desired index and the
+                         * current index and set that */
+                        if ((cur_byte_idx + pos) > byte_idx)
+                        {
+                                evas_textblock_cursor_pos_set(cursor,
+                                                byte_idx - cur_byte_idx);
+                                break;
+                        }
+                        cur_byte_idx += pos;
+                }
 
-        	/* if we fail to goto the next node, just assume we're at
-        	 * the end of the text and jump the cursor there */
-        	if (!evas_textblock_cursor_node_next(cursor))
-        	{
-        		evas_textblock_cursor_node_last(cursor);
-        		evas_textblock_cursor_char_last(cursor);
-        		break;
-        	}
+                /* if we fail to goto the next node, just assume we're at
+                 * the end of the text and jump the cursor there */
+                if (!evas_textblock_cursor_node_next(cursor))
+                {
+                        evas_textblock_cursor_node_last(cursor);
+                        evas_textblock_cursor_char_last(cursor);
+                        break;
+                }
 
-        	/* This shouldn't happen, we've moved past our index. Just
-        	 * checking so the loop isn't (hopefully) infinite */
-        	if (cur_byte_idx > byte_idx)
-        	{
-        		DWARNING("This shouldn't happen, breaking loop.");
-        		break;
-        	}
+                /* This shouldn't happen, we've moved past our index. Just
+                 * checking so the loop isn't (hopefully) infinite */
+                if (cur_byte_idx > byte_idx)
+                {
+                        DWARNING("This shouldn't happen, breaking loop.");
+                        break;
+                }
         }
 
         DRETURN_PTR(cursor, DLEVEL_STABLE);
@@ -3192,12 +3192,12 @@ ewl_text_textblock_cursor_to_index(Evas_Textblock_Cursor *cursor)
         char_idx = evas_textblock_cursor_pos_get(cursor);
         while (evas_textblock_cursor_node_prev(cursor))
         {
-        	const char *txt;
+                const char *txt;
 
-        	txt = evas_textblock_cursor_node_format_get(cursor);
-        	if (!txt) char_idx += evas_textblock_cursor_node_text_length_get(cursor);
-        	else if (!strcmp(txt, "\n")) char_idx ++;
-        	else if (!strcmp(txt, "\t")) char_idx ++;
+                txt = evas_textblock_cursor_node_format_get(cursor);
+                if (!txt) char_idx += evas_textblock_cursor_node_text_length_get(cursor);
+                else if (!strcmp(txt, "\n")) char_idx ++;
+                else if (!strcmp(txt, "\t")) char_idx ++;
         }
 
         DRETURN_INT(char_idx, DLEVEL_STABLE);
@@ -3213,7 +3213,7 @@ ewl_text_textblock_cursor_to_index(Evas_Textblock_Cursor *cursor)
  */
 void
 ewl_text_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
-        				void *data __UNUSED__)
+                                        void *data __UNUSED__)
 {
         Ewl_Text *t;
 
@@ -3227,15 +3227,15 @@ ewl_text_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
         t = EWL_TEXT(w);
         if (t->textblock)
         {
-        	ewl_text_size(t);
-        	if (t->dirty) ewl_text_display(t);
+                ewl_text_size(t);
+                if (t->dirty) ewl_text_display(t);
 
-        	ewl_text_triggers_place(t);
+                ewl_text_triggers_place(t);
 
-        	/* re-configure the selection to make sure it resizes
-        	 * if needed */
-        	if (t->selection)
-        		ewl_widget_configure(EWL_WIDGET(t->selection));
+                /* re-configure the selection to make sure it resizes
+                 * if needed */
+                if (t->selection)
+                        ewl_widget_configure(EWL_WIDGET(t->selection));
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -3264,8 +3264,8 @@ ewl_text_cb_reveal(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
         t = EWL_TEXT(w);
         if (t->textblock)
         {
-        	DWARNING("We have a textblock when we shoudn't.");
-        	DRETURN(DLEVEL_STABLE);
+                DWARNING("We have a textblock when we shoudn't.");
+                DRETURN(DLEVEL_STABLE);
         }
 
         /* find the embed so we know the evas */
@@ -3275,43 +3275,43 @@ ewl_text_cb_reveal(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
         /* create the textblock */
         t->textblock = ewl_embed_object_request(emb, "textblock");
         if (!t->textblock)
-        	t->textblock = evas_object_textblock_add(emb->canvas);
+                t->textblock = evas_object_textblock_add(emb->canvas);
 
         if (t->textblock)
         {
-        	char *fmt2;
-        	int len;
+                char *fmt2;
+                int len;
 
-        	ctx = ewl_text_context_default_create(t);
-        	ewl_text_context_format_string_create(ctx);
+                ctx = ewl_text_context_default_create(t);
+                ewl_text_context_format_string_create(ctx);
 
-        	len = strlen(ctx->format) + 12;  /* 12 == DEFAULT='' + \n + \0 */
-        	fmt2 = NEW(char, len);
-        	snprintf(fmt2, len, "DEFAULT='%s'\n", ctx->format);
+                len = strlen(ctx->format) + 12;  /* 12 == DEFAULT='' + \n + \0 */
+                fmt2 = NEW(char, len);
+                snprintf(fmt2, len, "DEFAULT='%s'\n", ctx->format);
 
-        	st = evas_textblock_style_new();
-        	evas_textblock_style_set(st, fmt2);
-        	evas_object_textblock_style_set(t->textblock, st);
-        	evas_textblock_style_free(st);
+                st = evas_textblock_style_new();
+                evas_textblock_style_set(st, fmt2);
+                evas_object_textblock_style_set(t->textblock, st);
+                evas_textblock_style_free(st);
 
-        	ewl_text_context_release(ctx);
-        	FREE(fmt2);
+                ewl_text_context_release(ctx);
+                FREE(fmt2);
 
-        	if (EWL_CONTAINER(w)->clip_box)
-        	{
-        		evas_object_clip_set(t->textblock, 
-        				EWL_CONTAINER(w)->clip_box);
-        		evas_object_show(EWL_CONTAINER(w)->clip_box);
-        	}
-        	else
-        		DWARNING("Text does not have a clip box!");
+                if (EWL_CONTAINER(w)->clip_box)
+                {
+                        evas_object_clip_set(t->textblock, 
+                                        EWL_CONTAINER(w)->clip_box);
+                        evas_object_show(EWL_CONTAINER(w)->clip_box);
+                }
+                else
+                        DWARNING("Text does not have a clip box!");
 
-        	evas_object_pass_events_set(t->textblock, 1);
-        	evas_object_smart_member_add(t->textblock, w->smart_object);
-        	if (w->fx_clip_box) evas_object_raise(t->textblock);
+                evas_object_pass_events_set(t->textblock, 1);
+                evas_object_smart_member_add(t->textblock, w->smart_object);
+                if (w->fx_clip_box) evas_object_raise(t->textblock);
 
-        	ewl_text_display(t);
-        	evas_object_show(t->textblock);
+                ewl_text_display(t);
+                evas_object_show(t->textblock);
         }
 
         ewl_text_triggers_place(t);
@@ -3329,7 +3329,7 @@ ewl_text_cb_reveal(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
  */
 void
 ewl_text_cb_obscure(Ewl_Widget *w, void *ev __UNUSED__,
-        				void *data __UNUSED__)
+                                        void *data __UNUSED__)
 {
         Ewl_Text *t;
 
@@ -3341,12 +3341,12 @@ ewl_text_cb_obscure(Ewl_Widget *w, void *ev __UNUSED__,
 
         if (t->textblock)
         {
-        	Ewl_Embed *emb;
+                Ewl_Embed *emb;
 
-        	emb = ewl_embed_widget_find(w);
-        	evas_object_textblock_clear(t->textblock);
-        	ewl_embed_object_cache(emb, t->textblock);
-        	t->textblock = NULL;
+                emb = ewl_embed_widget_find(w);
+                evas_object_textblock_clear(t->textblock);
+                ewl_embed_object_cache(emb, t->textblock);
+                t->textblock = NULL;
         }
 
         ewl_text_triggers_unrealize(t);
@@ -3374,8 +3374,8 @@ ewl_text_cb_show(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
         t = EWL_TEXT(w);
         if (t->textblock)
         {
-        	evas_object_show(t->textblock);
-        	ewl_text_triggers_show(t);
+                evas_object_show(t->textblock);
+                ewl_text_triggers_show(t);
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -3464,10 +3464,10 @@ ewl_text_cb_mouse_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
         event = ev;
         t = EWL_TEXT(w);
         ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE,
-        			ewl_text_cb_mouse_move, NULL);
+                                ewl_text_cb_mouse_move, NULL);
 
         if (!t->selection)
-        	t->selection = ewl_text_selection_new(t);
+                t->selection = ewl_text_selection_new(t);
         
         sel = EWL_TEXT_TRIGGER(t->selection);
 
@@ -3475,18 +3475,18 @@ ewl_text_cb_mouse_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
         modifiers = ewl_ev_modifiers_get();
         if (modifiers & EWL_KEY_MODIFIER_SHIFT)
         {
-        	ewl_text_selection_select_to(EWL_TEXT_TRIGGER(t->selection),
-        							char_idx);
+                ewl_text_selection_select_to(EWL_TEXT_TRIGGER(t->selection),
+                                                                char_idx);
         }
         else
         {
-        	ewl_widget_hide(t->selection);
-        	ewl_text_trigger_areas_cleanup(sel);
-        	ewl_widget_show(t->selection);
+                ewl_widget_hide(t->selection);
+                ewl_text_trigger_areas_cleanup(sel);
+                ewl_widget_show(t->selection);
 
-        	ewl_text_trigger_start_pos_set(sel, char_idx);
-        	ewl_text_trigger_base_set(sel, char_idx);
-        	ewl_text_trigger_length_set(sel, 0);
+                ewl_text_trigger_start_pos_set(sel, char_idx);
+                ewl_text_trigger_base_set(sel, char_idx);
+                ewl_text_trigger_length_set(sel, 0);
         }
         t->in_select = TRUE;
         ewl_text_trigger_position(t, sel);
@@ -3524,11 +3524,11 @@ ewl_text_cb_mouse_up(Ewl_Widget *w, void *ev, void *data __UNUSED__)
         modifiers = ewl_ev_modifiers_get();
         if (modifiers & EWL_KEY_MODIFIER_SHIFT)
         {
-        	unsigned int char_idx = 0;
+                unsigned int char_idx = 0;
 
-        	char_idx = ewl_text_coord_index_map(EWL_TEXT(w), event->x, event->y);
-        	ewl_text_selection_select_to(EWL_TEXT_TRIGGER(t->selection),
-        			char_idx);
+                char_idx = ewl_text_coord_index_map(EWL_TEXT(w), event->x, event->y);
+                ewl_text_selection_select_to(EWL_TEXT_TRIGGER(t->selection),
+                                char_idx);
         }
         ewl_text_trigger_position(t, EWL_TEXT_TRIGGER(t->selection));
 
@@ -3558,11 +3558,11 @@ ewl_text_cb_mouse_move(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 
         if (t->in_select)
         {
-        	unsigned int char_idx = 0;
+                unsigned int char_idx = 0;
 
-        	char_idx = ewl_text_coord_index_map(EWL_TEXT(w), event->x, event->y);
-        	ewl_text_selection_select_to(EWL_TEXT_TRIGGER(t->selection), char_idx);
-        	ewl_text_trigger_position(t, EWL_TEXT_TRIGGER(t->selection));
+                char_idx = ewl_text_coord_index_map(EWL_TEXT(w), event->x, event->y);
+                ewl_text_selection_select_to(EWL_TEXT_TRIGGER(t->selection), char_idx);
+                ewl_text_trigger_position(t, EWL_TEXT_TRIGGER(t->selection));
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -3606,24 +3606,24 @@ ewl_text_selection_select_to(Ewl_Text_Trigger *s, unsigned int char_idx)
 
         if (char_idx < base)
         {
-        	ewl_text_trigger_start_pos_set(s, char_idx);
-        	ewl_text_trigger_length_set(s, base - char_idx);
+                ewl_text_trigger_start_pos_set(s, char_idx);
+                ewl_text_trigger_length_set(s, base - char_idx);
         }
         else
         {
-        	ewl_text_trigger_start_pos_set(s, base);
-        	ewl_text_trigger_length_set(s, char_idx - base);
+                ewl_text_trigger_start_pos_set(s, base);
+                ewl_text_trigger_length_set(s, char_idx - base);
         }
 
         /* set the clipboard text */
         txt = ewl_text_selection_text_get(EWL_TEXT(s->text_parent));
         if (txt)
         {
-        	Ewl_Embed *emb;
+                Ewl_Embed *emb;
 
-        	emb = ewl_embed_widget_find(EWL_WIDGET(s->text_parent));
-        	ewl_embed_selection_text_set(emb, txt);
-        	FREE(txt);
+                emb = ewl_embed_widget_find(EWL_WIDGET(s->text_parent));
+                ewl_embed_selection_text_set(emb, txt);
+                FREE(txt);
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -3647,7 +3647,7 @@ ewl_text_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
 
         /* if this is a trigger then add it as such */
         if (EWL_TEXT_TRIGGER_IS(w))
-        	ewl_text_trigger_add(EWL_TEXT(c), EWL_TEXT_TRIGGER(w));
+                ewl_text_trigger_add(EWL_TEXT(c), EWL_TEXT_TRIGGER(w));
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -3672,26 +3672,26 @@ ewl_text_cb_child_remove(Ewl_Container *c, Ewl_Widget *w, int idx __UNUSED__)
         /* if it is a trigger, we need to treat it special */
         if (EWL_TEXT_TRIGGER_IS(w))
         {
-        	Ewl_Text_Trigger *trigger;
+                Ewl_Text_Trigger *trigger;
 
-        	trigger = EWL_TEXT_TRIGGER(w);
-        	ewl_text_trigger_areas_cleanup(trigger);
-        	trigger->text_parent = NULL;
+                trigger = EWL_TEXT_TRIGGER(w);
+                ewl_text_trigger_areas_cleanup(trigger);
+                trigger->text_parent = NULL;
 
-        	if (trigger->type == EWL_TEXT_TRIGGER_TYPE_TRIGGER)
-        	{
-        		ecore_list_goto(EWL_TEXT(c)->triggers, trigger);
-        		ecore_list_remove(EWL_TEXT(c)->triggers);
-        	}
-        	else
-        	{
-        		/* for debug */
-        		if (EWL_TEXT(c)->selection != w)
-        			DWARNING("We are removing a selection, that"
-        				 "isn't our own. WTF is happening?");
-        				
-        		EWL_TEXT(c)->selection = NULL;
-        	}
+                if (trigger->type == EWL_TEXT_TRIGGER_TYPE_TRIGGER)
+                {
+                        ecore_list_goto(EWL_TEXT(c)->triggers, trigger);
+                        ecore_list_remove(EWL_TEXT(c)->triggers);
+                }
+                else
+                {
+                        /* for debug */
+                        if (EWL_TEXT(c)->selection != w)
+                                DWARNING("We are removing a selection, that"
+                                         "isn't our own. WTF is happening?");
+                                        
+                        EWL_TEXT(c)->selection = NULL;
+                }
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -3699,7 +3699,7 @@ ewl_text_cb_child_remove(Ewl_Container *c, Ewl_Widget *w, int idx __UNUSED__)
 
 static void
 ewl_text_current_fmt_set(Ewl_Text *t, unsigned int context_mask,
-        			Ewl_Text_Context *change)
+                                Ewl_Text_Context *change)
 {
         Ewl_Text_Context *old = NULL, *new;
 
@@ -3713,22 +3713,22 @@ ewl_text_current_fmt_set(Ewl_Text *t, unsigned int context_mask,
          * nodes context. */
         if (t->formatting.tx)
         {
-        	old = t->formatting.tx;
+                old = t->formatting.tx;
         }
         else
         {
-        	Ewl_Text_Fmt_Node *fmt;
+                Ewl_Text_Fmt_Node *fmt;
 
-        	fmt = ewl_text_fmt_get_current(t->formatting.nodes);
-        	if (fmt)
-        	{
-        		old = fmt->tx;
+                fmt = ewl_text_fmt_get_current(t->formatting.nodes);
+                if (fmt)
+                {
+                        old = fmt->tx;
 
-        		/* grab on to this so releasing later doesn't screw
-        		 * things up */
-        		ewl_text_context_acquire(old);
-        	}
-        	else old = ewl_text_context_default_create(t);
+                        /* grab on to this so releasing later doesn't screw
+                         * things up */
+                        ewl_text_context_acquire(old);
+                }
+                else old = ewl_text_context_default_create(t);
         }
 
         new = ewl_text_context_find(old, context_mask, change);
@@ -3753,12 +3753,12 @@ ewl_text_trigger_position(Ewl_Text *t, Ewl_Text_Trigger *trig)
         DCHECK_TYPE(trig, EWL_TEXT_TRIGGER_TYPE);
 
         if (trig->char_len == 0)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         ewl_text_trigger_areas_cleanup(trig);
         ewl_text_fmt_char_to_byte(t->formatting.nodes,
-        				trig->char_pos, trig->char_len - 1,
-        				&byte_idx, &byte_len);
+                                        trig->char_pos, trig->char_len - 1,
+                                        &byte_idx, &byte_len);
 
         cur1 = ewl_text_textblock_cursor_position(t, byte_idx);
         cur2 = ewl_text_textblock_cursor_position(t, byte_idx + byte_len);
@@ -3767,15 +3767,15 @@ ewl_text_trigger_position(Ewl_Text *t, Ewl_Text_Trigger *trig)
         rects = evas_textblock_cursor_range_geometry_get(cur1, cur2);
         while (rects)
         {
-        	Evas_Textblock_Rectangle *tr;
+                Evas_Textblock_Rectangle *tr;
 
-        	tr = rects->data;
-        	ewl_text_trigger_area_add(t, trig, tr->x + CURRENT_X(t),
-        					tr->y + CURRENT_Y(t),
-        					tr->w, tr->h);
+                tr = rects->data;
+                ewl_text_trigger_area_add(t, trig, tr->x + CURRENT_X(t),
+                                                tr->y + CURRENT_Y(t),
+                                                tr->w, tr->h);
 
-        	FREE(tr);
-        	rects = evas_list_remove_list(rects, rects);
+                FREE(tr);
+                rects = evas_list_remove_list(rects, rects);
         }
         evas_textblock_cursor_free(cur1);
         evas_textblock_cursor_free(cur2);
@@ -3793,10 +3793,10 @@ ewl_text_triggers_remove(Ewl_Text *t)
         DCHECK_TYPE(t, EWL_TEXT_TYPE);
 
         if (!t->triggers)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         while ((trig = ecore_list_first_remove(t->triggers)))
-        	ewl_widget_destroy(EWL_WIDGET(trig));
+                ewl_widget_destroy(EWL_WIDGET(trig));
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -3805,8 +3805,8 @@ ewl_text_triggers_remove(Ewl_Text *t)
  * position of the current cursors so they appear in the correct positions */
 static void
 ewl_text_triggers_shift(Ewl_Text *t, unsigned int char_pos,
-        				unsigned int char_len,
-        				unsigned int del)
+                                        unsigned int char_len,
+                                        unsigned int del)
 {
         Ewl_Text_Trigger *cur;
 
@@ -3815,80 +3815,80 @@ ewl_text_triggers_shift(Ewl_Text *t, unsigned int char_pos,
         DCHECK_TYPE(t, EWL_TEXT_TYPE);
 
         if (!t->triggers)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         ecore_list_first_goto(t->triggers);
         while ((cur = ecore_list_next(t->triggers)))
         {
-        	/* check if the change is after the trigger */
-        	if (char_pos >= (cur->char_pos + cur->char_len))
-        		continue;
+                /* check if the change is after the trigger */
+                if (char_pos >= (cur->char_pos + cur->char_len))
+                        continue;
 
-        	/* change is completely before the trigger */
-        	if ((char_pos + char_len) < cur->char_pos)
-         	{
-        		if (del) cur->char_pos -= char_len;
-        		else cur->char_pos += char_len;
-        		continue;
-        	}
+                /* change is completely before the trigger */
+                if ((char_pos + char_len) < cur->char_pos)
+                 {
+                        if (del) cur->char_pos -= char_len;
+                        else cur->char_pos += char_len;
+                        continue;
+                }
 
-        	if (del)
-        	{
-        		/* delete the entire trigger? */
-        		if ((char_pos <= cur->char_pos) &&
-        				((char_pos + char_len) >=
-        				 	(cur->char_pos + cur->char_len)))
-        		{
-        			int index;
+                if (del)
+                {
+                        /* delete the entire trigger? */
+                        if ((char_pos <= cur->char_pos) &&
+                                        ((char_pos + char_len) >=
+                                                 (cur->char_pos + cur->char_len)))
+                        {
+                                int index;
 
-        			index = ecore_list_index(t->triggers);
-        			if (index == 0)
-        			{
-        				DWARNING("Is this possible?");
-        			}
-        			else
-        			{
-        				index --;
+                                index = ecore_list_index(t->triggers);
+                                if (index == 0)
+                                {
+                                        DWARNING("Is this possible?");
+                                }
+                                else
+                                {
+                                        index --;
 
-        				/* remove the node before the
-        				 * current one as _next will put us
-        				 * on the next node */
-        				ecore_list_index_goto(t->triggers, index);
-        				ecore_list_remove(t->triggers);
-        				ecore_list_index_goto(t->triggers, index);
-        			}
-        			continue;
-        		}
+                                        /* remove the node before the
+                                         * current one as _next will put us
+                                         * on the next node */
+                                        ecore_list_index_goto(t->triggers, index);
+                                        ecore_list_remove(t->triggers);
+                                        ecore_list_index_goto(t->triggers, index);
+                                }
+                                continue;
+                        }
 
-        		/* delete part of the start of the trigger */
-        		if (char_pos <= cur->char_pos)
-        		{
-        			cur->char_len -= ((char_pos + char_len) - cur->char_pos);
-        			continue;
-        		}
+                        /* delete part of the start of the trigger */
+                        if (char_pos <= cur->char_pos)
+                        {
+                                cur->char_len -= ((char_pos + char_len) - cur->char_pos);
+                                continue;
+                        }
 
-        		/* delete from the center of the trigger */
-        		if ((char_pos >= cur->char_pos) &&
-        				((char_pos + char_len) <=
-        				 	(cur->char_pos + cur->char_len)))
-        		{
-        			cur->char_len -= char_len;
-        			continue;
-        		}
+                        /* delete from the center of the trigger */
+                        if ((char_pos >= cur->char_pos) &&
+                                        ((char_pos + char_len) <=
+                                                 (cur->char_pos + cur->char_len)))
+                        {
+                                cur->char_len -= char_len;
+                                continue;
+                        }
 
-        		/* must be deleted from the end of the trigger then */
-        		cur->char_len = char_pos - cur->char_pos;
-        	}
-        	else
-        	{
-        		/* we are inserting, just see if we are before */
-        		if (char_pos < cur->char_pos)
-        		{
-        			cur->char_pos += char_len;
-        			continue;
-        		}
-        		cur->char_len += char_len;
-        	}
+                        /* must be deleted from the end of the trigger then */
+                        cur->char_len = char_pos - cur->char_pos;
+                }
+                else
+                {
+                        /* we are inserting, just see if we are before */
+                        if (char_pos < cur->char_pos)
+                        {
+                                cur->char_pos += char_len;
+                                continue;
+                        }
+                        cur->char_len += char_len;
+                }
           }
 
          DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -3909,15 +3909,15 @@ ewl_text_triggers_place(Ewl_Text *t)
 
         if (t->triggers)
         {
-        	Ewl_Text_Trigger *cur;
+                Ewl_Text_Trigger *cur;
 
-        	ecore_list_first_goto(t->triggers);
-        	while ((cur = ecore_list_next(t->triggers)))
-        		ewl_text_trigger_position(t, cur);
+                ecore_list_first_goto(t->triggers);
+                while ((cur = ecore_list_next(t->triggers)))
+                        ewl_text_trigger_position(t, cur);
         }
 
         if (t->selection)
-        	ewl_text_trigger_position(t, EWL_TEXT_TRIGGER(t->selection));
+                ewl_text_trigger_position(t, EWL_TEXT_TRIGGER(t->selection));
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -3939,9 +3939,9 @@ ewl_text_triggers_unrealize(Ewl_Text *t)
 
         if (t->triggers)
         {
-        	ecore_list_first_goto(t->triggers);
-        	while ((cur = ecore_list_next(t->triggers)))
-        		ewl_widget_unrealize(EWL_WIDGET(cur));
+                ecore_list_first_goto(t->triggers);
+                while ((cur = ecore_list_next(t->triggers)))
+                        ewl_widget_unrealize(EWL_WIDGET(cur));
         }
 
         if (t->selection) ewl_widget_unrealize(t->selection);
@@ -3966,9 +3966,9 @@ ewl_text_triggers_show(Ewl_Text *t)
 
         if (t->triggers)
         {
-        	ecore_list_first_goto(t->triggers);
-        	while ((cur = ecore_list_next(t->triggers)))
-        		ewl_widget_show(EWL_WIDGET(cur));
+                ecore_list_first_goto(t->triggers);
+                while ((cur = ecore_list_next(t->triggers)))
+                        ewl_widget_show(EWL_WIDGET(cur));
         }
 
         if (t->selection) ewl_widget_show(t->selection);
@@ -3994,9 +3994,9 @@ ewl_text_triggers_hide(Ewl_Text *t)
         /* hide the triggers */
         if (t->triggers)
         {
-        	ecore_list_first_goto(t->triggers);
-        	while ((cur = ecore_list_next(t->triggers)))
-        		ewl_widget_hide(EWL_WIDGET(cur));
+                ecore_list_first_goto(t->triggers);
+                while ((cur = ecore_list_next(t->triggers)))
+                        ewl_widget_hide(EWL_WIDGET(cur));
         }
 
         /* hide the selection */
@@ -4021,54 +4021,54 @@ ewl_text_trigger_add(Ewl_Text *t, Ewl_Text_Trigger *trigger)
 
         /* the rest will be for real triggers only */
         if (trigger->type == EWL_TEXT_TRIGGER_TYPE_SELECTION)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         /* create the trigger list if needed */
         if (!t->triggers)
-        	t->triggers = ecore_list_new();
+                t->triggers = ecore_list_new();
 
         /* if we have no length, we start past the end of the text, or we
          * extend past the end of the text then return an error */
         if ((trigger->char_len == 0)
-        		|| ((trigger->char_pos + trigger->char_len) > t->length.chars))
-        	DRETURN(DLEVEL_STABLE);
+                        || ((trigger->char_pos + trigger->char_len) > t->length.chars))
+                DRETURN(DLEVEL_STABLE);
 
 
         /* check now for overlapping */
         ecore_list_first_goto(t->triggers);
         while ((cur = ecore_list_next(t->triggers)))
         {
-        	if (trigger->char_pos < cur->char_pos)
-        	{
-        		if ((trigger->char_pos + trigger->char_len) < cur->char_pos)
-        			break;
+                if (trigger->char_pos < cur->char_pos)
+                {
+                        if ((trigger->char_pos + trigger->char_len) < cur->char_pos)
+                                break;
 
-        		DWARNING("Overlapping triggers are not allowed.");
-        		DRETURN(DLEVEL_STABLE);
-        	}
+                        DWARNING("Overlapping triggers are not allowed.");
+                        DRETURN(DLEVEL_STABLE);
+                }
 
-        	if ((trigger->char_pos > (cur->char_pos + cur->char_len)))
-        		continue;
+                if ((trigger->char_pos > (cur->char_pos + cur->char_len)))
+                        continue;
 
-        	if ((trigger->char_pos >= cur->char_pos)
-        			&& (trigger->char_pos <= (cur->char_pos + cur->char_len)))
-        	{
-        		DWARNING("Overlapping triggers are not allowed.");
-        		DRETURN(DLEVEL_STABLE);
-        	}
+                if ((trigger->char_pos >= cur->char_pos)
+                                && (trigger->char_pos <= (cur->char_pos + cur->char_len)))
+                {
+                        DWARNING("Overlapping triggers are not allowed.");
+                        DRETURN(DLEVEL_STABLE);
+                }
         }
 
         if (cur)
         {
-        	/* we need to set our position to the one before the one we
-        	 * are on because the _next call in the while will have
-        	 * advanced us to the next node, but we want to insert
-         	 * at the one before that */
-        	ecore_list_index_goto(t->triggers, ecore_list_index(t->triggers) - 1);
-        	ecore_list_insert(t->triggers, trigger);
+                /* we need to set our position to the one before the one we
+                 * are on because the _next call in the while will have
+                 * advanced us to the next node, but we want to insert
+                  * at the one before that */
+                ecore_list_index_goto(t->triggers, ecore_list_index(t->triggers) - 1);
+                ecore_list_insert(t->triggers, trigger);
         }
         else
-        	ecore_list_append(t->triggers, trigger);
+                ecore_list_append(t->triggers, trigger);
 
         DRETURN(DLEVEL_STABLE);
 }
@@ -4083,16 +4083,16 @@ ewl_text_drawn_byte_to_char(Ewl_Text *t, unsigned int byte_idx)
         DCHECK_TYPE_RET(t, EWL_TEXT_TYPE, 0);
 
         if (!t->obscure)
-        	ewl_text_fmt_byte_to_char(t->formatting.nodes, byte_idx,
-        					0, &char_idx, NULL);
+                ewl_text_fmt_byte_to_char(t->formatting.nodes, byte_idx,
+                                                0, &char_idx, NULL);
         else
         {
-        	size_t len = strlen(t->obscure);
+                size_t len = strlen(t->obscure);
 
-        	if (len != 0)
-        		char_idx = byte_idx / len;
-        	else
-        		char_idx = ewl_text_length_get(t);
+                if (len != 0)
+                        char_idx = byte_idx / len;
+                else
+                        char_idx = ewl_text_length_get(t);
         }
 
         DRETURN_INT(char_idx, DLEVEL_STABLE);
@@ -4108,10 +4108,10 @@ ewl_text_char_to_drawn_byte(Ewl_Text *t, unsigned int char_idx)
         DCHECK_TYPE_RET(t, EWL_TEXT_TYPE, 0);
 
         if (!t->obscure)
-        	ewl_text_fmt_char_to_byte(t->formatting.nodes, char_idx,
-        					0, &byte_idx, NULL);
+                ewl_text_fmt_char_to_byte(t->formatting.nodes, char_idx,
+                                                0, &byte_idx, NULL);
         else
-        	byte_idx = char_idx * strlen(t->obscure);
+                byte_idx = char_idx * strlen(t->obscure);
 
         DRETURN_INT(byte_idx, DLEVEL_STABLE);
 }

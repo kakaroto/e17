@@ -25,7 +25,7 @@ ewl_range_init(Ewl_Range *r)
         w = EWL_WIDGET(r);
 
         if (!ewl_container_init(EWL_CONTAINER(w)))
-        	DRETURN_INT(FALSE, DLEVEL_STABLE);
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
 
         ewl_widget_inherit(w, EWL_RANGE_TYPE);
 
@@ -56,15 +56,15 @@ ewl_range_value_set(Ewl_Range *r, double v)
         DCHECK_TYPE(r, EWL_RANGE_TYPE);
 
         if (r->value == v)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         if (!r->unknown_range) {
-        	if (v < r->min_val)
-        		r->value = r->min_val;
-        	else if (v > r->max_val)
-        		r->value = r->max_val;
-        	else
-        		r->value = v;
+                if (v < r->min_val)
+                        r->value = r->min_val;
+                else if (v > r->max_val)
+                        r->value = r->max_val;
+                else
+                        r->value = v;
         }
 
         ewl_callback_call(EWL_WIDGET(r), EWL_CALLBACK_VALUE_CHANGED);
@@ -108,7 +108,7 @@ ewl_range_minimum_value_set(Ewl_Range *r, double minv)
 
         /* update to the min value if needed */
         if (r->value < r->min_val)
-        	ewl_range_value_set(r, r->min_val);
+                ewl_range_value_set(r, r->min_val);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -147,7 +147,7 @@ ewl_range_maximum_value_set(Ewl_Range *r, double maxv)
 
         /* update to max value if needed */
         if (r->value > r->max_val)
-        	ewl_range_value_set(r, r->max_val);
+                ewl_range_value_set(r, r->max_val);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -183,7 +183,7 @@ ewl_range_step_set(Ewl_Range *r, double step)
         DCHECK_TYPE(r, EWL_RANGE_TYPE);
 
         if (step > r->max_val - r->min_val)
-        	step = r->max_val - r->min_val;
+                step = r->max_val - r->min_val;
 
         r->step = step;
 
@@ -221,8 +221,8 @@ ewl_range_invert_set(Ewl_Range *r, unsigned int invert)
 
         if (r->invert != !!invert)
         {
-        	r->invert = !!invert;
-        	ewl_widget_configure(EWL_WIDGET(r));
+                r->invert = !!invert;
+                ewl_widget_configure(EWL_WIDGET(r));
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -257,8 +257,8 @@ ewl_range_unknown_set(Ewl_Range *r, unsigned int unknown)
         DCHECK_TYPE(r, EWL_RANGE_TYPE);
 
         if (r->unknown_range != !!unknown) {
-        	r->unknown_range = !!unknown;
-        	ewl_widget_configure(EWL_WIDGET(r));
+                r->unknown_range = !!unknown;
+                ewl_widget_configure(EWL_WIDGET(r));
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);

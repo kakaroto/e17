@@ -6,7 +6,7 @@
 #include "ewl_debug.h"
 
 static Ewl_Widget *ewl_label_view_cb_widget_fetch(void *data, unsigned int row,
-        						unsigned int col);
+                                                        unsigned int col);
 static Ewl_Widget *ewl_label_view_cb_header_fetch(void *data, unsigned int col);
 
 /**
@@ -22,12 +22,12 @@ ewl_label_new(void)
 
         label = NEW(Ewl_Label, 1);
         if (!label) {
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
         }
 
         if (!ewl_label_init(label)) {
-        	ewl_widget_destroy(EWL_WIDGET(label));
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                ewl_widget_destroy(EWL_WIDGET(label));
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
         }
 
         DRETURN_PTR(EWL_WIDGET(label), DLEVEL_STABLE);
@@ -48,7 +48,7 @@ ewl_label_init(Ewl_Label *la)
 
         w = EWL_WIDGET(la);
         if (!ewl_widget_init(w))
-        	DRETURN_INT(FALSE, DLEVEL_STABLE);
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
 
         ewl_widget_appearance_set(w, EWL_LABEL_TYPE);
         ewl_widget_inherit(w, EWL_LABEL_TYPE);
@@ -113,7 +113,7 @@ ewl_label_view_get(void)
 
 static Ewl_Widget *
 ewl_label_view_cb_widget_fetch(void *data, unsigned int row __UNUSED__,
-        				unsigned int col __UNUSED__)
+                                        unsigned int col __UNUSED__)
 {
         Ewl_Widget *label;
 

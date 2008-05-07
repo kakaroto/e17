@@ -18,11 +18,11 @@ ewl_overlay_new(void)
 
         w = NEW(Ewl_Overlay, 1);
         if (!w)
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
 
         if (!ewl_overlay_init(w)) {
-        	ewl_widget_destroy(EWL_WIDGET(w));
-        	w = NULL;
+                ewl_widget_destroy(EWL_WIDGET(w));
+                w = NULL;
         }
 
         DRETURN_PTR(EWL_WIDGET(w), DLEVEL_STABLE);
@@ -45,15 +45,15 @@ ewl_overlay_init(Ewl_Overlay *w)
          * Initialize the fields of the inherited container class
          */
         if (!ewl_container_init(EWL_CONTAINER(w)))
-        	DRETURN_INT(FALSE, DLEVEL_STABLE);
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
 
         ewl_widget_appearance_set(EWL_WIDGET(w), EWL_OVERLAY_TYPE);
         ewl_widget_inherit(EWL_WIDGET(w), EWL_OVERLAY_TYPE);
 
         ewl_container_show_notify_set(EWL_CONTAINER(w),
-        				ewl_overlay_cb_child_show);
+                                        ewl_overlay_cb_child_show);
         ewl_container_resize_notify_set(EWL_CONTAINER(w),
-        				ewl_overlay_cb_child_resize);
+                                        ewl_overlay_cb_child_resize);
 
         ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
 
@@ -62,7 +62,7 @@ ewl_overlay_init(Ewl_Overlay *w)
          * has special needs for placement.
          */
         ewl_callback_prepend(EWL_WIDGET(w), EWL_CALLBACK_CONFIGURE,
-        		     ewl_overlay_cb_configure, NULL);
+                             ewl_overlay_cb_configure, NULL);
 
         DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -77,7 +77,7 @@ ewl_overlay_init(Ewl_Overlay *w)
  */
 void
 ewl_overlay_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
-        				void *user_data __UNUSED__)
+                                        void *user_data __UNUSED__)
 {
         Ewl_Object *o;
         Ewl_Object *child;
@@ -93,21 +93,21 @@ ewl_overlay_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
          */
         ecore_dlist_first_goto(EWL_CONTAINER(w)->children);
         while ((child = ecore_dlist_next(EWL_CONTAINER(w)->children))) {
-        	int width, height;
-        	/* ignore unmanaged widgets */
-        	if (UNMANAGED(child))
-        		continue;
-        	/*
-        	 * Try to give the child the full size of the overlay from it's
-        	 * base position. The object will constrict it based on the
-        	 * fill policy. Don't add the TOP and LEFT insets since
-        	 * they've already been accounted for.
-        	 */
-        	width = CURRENT_W(w) + CURRENT_X(w);
-               	width -= ewl_object_current_x_get(child);
-        	height = CURRENT_H(w) + CURRENT_Y(w);
-        	height -= ewl_object_current_y_get(child);
-        	ewl_object_size_request(child, width, height);
+                int width, height;
+                /* ignore unmanaged widgets */
+                if (UNMANAGED(child))
+                        continue;
+                /*
+                 * Try to give the child the full size of the overlay from it's
+                 * base position. The object will constrict it based on the
+                 * fill policy. Don't add the TOP and LEFT insets since
+                 * they've already been accounted for.
+                 */
+                width = CURRENT_W(w) + CURRENT_X(w);
+                       width -= ewl_object_current_x_get(child);
+                height = CURRENT_H(w) + CURRENT_Y(w);
+                height -= ewl_object_current_y_get(child);
+                ewl_object_size_request(child, width, height);
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -135,12 +135,12 @@ ewl_overlay_cb_child_show(Ewl_Container *o, Ewl_Widget *child)
                size += ewl_object_preferred_w_get(EWL_OBJECT(child));
                size -= CURRENT_X(o);
         if (size > PREFERRED_W(o))
-        	ewl_object_preferred_inner_w_set(EWL_OBJECT(o), size);
+                ewl_object_preferred_inner_w_set(EWL_OBJECT(o), size);
 
         size = ewl_object_current_y_get(EWL_OBJECT(child)) +
-        	ewl_object_preferred_h_get(EWL_OBJECT(child)) - CURRENT_Y(o);
+                ewl_object_preferred_h_get(EWL_OBJECT(child)) - CURRENT_Y(o);
         if (size > PREFERRED_H(o))
-        	ewl_object_preferred_inner_h_set(EWL_OBJECT(o), size);
+                ewl_object_preferred_inner_h_set(EWL_OBJECT(o), size);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -173,41 +173,41 @@ ewl_overlay_cb_child_resize(Ewl_Container *c, Ewl_Widget *w,
 
         ecore_dlist_first_goto(EWL_CONTAINER(overlay)->children);
         while ((child = ecore_dlist_next(EWL_CONTAINER(overlay)->children))) {
-        	int cs;
+                int cs;
 
-        	/*
-        	 * FIXME: Do we really want to do this?
-        	 * Move children within the bounds of the viewable area
-        	 */
-        	if (ewl_object_current_x_get(child) < CURRENT_X(overlay))
-        		ewl_object_x_request(child, CURRENT_X(overlay));
-        	if (ewl_object_current_y_get(child) < CURRENT_Y(overlay))
-        		ewl_object_y_request(child, CURRENT_Y(overlay));
+                /*
+                 * FIXME: Do we really want to do this?
+                 * Move children within the bounds of the viewable area
+                 */
+                if (ewl_object_current_x_get(child) < CURRENT_X(overlay))
+                        ewl_object_x_request(child, CURRENT_X(overlay));
+                if (ewl_object_current_y_get(child) < CURRENT_Y(overlay))
+                        ewl_object_y_request(child, CURRENT_Y(overlay));
 
-        	cs = ewl_object_current_x_get(child) +
-        		ewl_object_preferred_w_get(child);
+                cs = ewl_object_current_x_get(child) +
+                        ewl_object_preferred_w_get(child);
 
-        	/*
-        	 * Check the width and x position vs. overlay width.
-        	 */
-        	if (maxw < cs)
-        		maxw = cs;
+                /*
+                 * Check the width and x position vs. overlay width.
+                 */
+                if (maxw < cs)
+                        maxw = cs;
 
-        	cs = ewl_object_current_y_get(child) +
-        		ewl_object_preferred_h_get(child);
+                cs = ewl_object_current_y_get(child) +
+                        ewl_object_preferred_h_get(child);
 
-        	/*
-        	 * Check the height and y position vs. overlay height.
-        	 */
-        	if (maxh < cs)
-        		maxh = cs;
+                /*
+                 * Check the height and y position vs. overlay height.
+                 */
+                if (maxh < cs)
+                        maxh = cs;
 
         }
 
         ewl_object_preferred_inner_size_set(EWL_OBJECT(overlay), maxw, maxh);
         ewl_object_size_request(EWL_OBJECT(c),
-        			ewl_object_current_w_get(EWL_OBJECT(c)),
-        			ewl_object_current_h_get(EWL_OBJECT(c)));
+                                ewl_object_current_w_get(EWL_OBJECT(c)),
+                                ewl_object_current_h_get(EWL_OBJECT(c)));
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

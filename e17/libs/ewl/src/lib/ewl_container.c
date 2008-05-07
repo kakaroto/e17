@@ -7,9 +7,9 @@
 #include <Evas.h>
 
 static void ewl_container_child_insert_helper(Ewl_Container *pc,
-        					Ewl_Widget *child,
-        					int index,
-        					int skip_internal);
+                                                Ewl_Widget *child,
+                                                int index,
+                                                int skip_internal);
 static int ewl_container_child_count_get_helper(Ewl_Container *c, int skip);
 
 /**
@@ -34,7 +34,7 @@ ewl_container_init(Ewl_Container *c)
          * Initialize the fields inherited from the widget class
          */
         if (!ewl_widget_init(w))
-        	DRETURN_INT(FALSE, DLEVEL_STABLE);
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
 
         ewl_widget_inherit(w, EWL_CONTAINER_TYPE);
         ewl_object_recursive_set(EWL_OBJECT(w), TRUE);
@@ -49,23 +49,23 @@ ewl_container_init(Ewl_Container *c)
          * children with necessary window and evas information.
          */
         ewl_callback_append(w, EWL_CALLBACK_CONFIGURE,
-        		    ewl_container_cb_configure, NULL);
+                            ewl_container_cb_configure, NULL);
         ewl_callback_append(w, EWL_CALLBACK_OBSCURE,
-        		    ewl_container_cb_obscure, NULL);
+                            ewl_container_cb_obscure, NULL);
         ewl_callback_append(w, EWL_CALLBACK_REVEAL,
-        		    ewl_container_cb_reveal, NULL);
+                            ewl_container_cb_reveal, NULL);
         ewl_callback_append(w, EWL_CALLBACK_REALIZE,
-        		    ewl_container_cb_reveal, NULL);
+                            ewl_container_cb_reveal, NULL);
         ewl_callback_append(w, EWL_CALLBACK_REALIZE,
-        		    ewl_container_cb_realize, NULL);
+                            ewl_container_cb_realize, NULL);
         ewl_callback_append(w, EWL_CALLBACK_UNREALIZE,
-        		    ewl_container_cb_unrealize, NULL);
+                            ewl_container_cb_unrealize, NULL);
         ewl_callback_append(w, EWL_CALLBACK_REPARENT,
-        		    ewl_container_cb_reparent, NULL);
+                            ewl_container_cb_reparent, NULL);
         ewl_callback_append(w, EWL_CALLBACK_WIDGET_ENABLE,
-        		    ewl_container_cb_enable, NULL);
+                            ewl_container_cb_enable, NULL);
         ewl_callback_append(w, EWL_CALLBACK_WIDGET_DISABLE,
-        		    ewl_container_cb_disable, NULL);
+                            ewl_container_cb_disable, NULL);
 
         DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -188,15 +188,15 @@ ewl_container_child_append(Ewl_Container *pc, Ewl_Widget *child)
         DCHECK_TYPE(child, EWL_WIDGET_TYPE);
 
         if (pc == EWL_CONTAINER(child->parent))
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         if (ewl_widget_parent_of(child, EWL_WIDGET(pc))) {
-        	DWARNING("Attempting to make a child a parent of itself.");
-        	DRETURN(DLEVEL_STABLE);
+                DWARNING("Attempting to make a child a parent of itself.");
+                DRETURN(DLEVEL_STABLE);
         }
 
         while (pc->redirect)
-        	pc = pc->redirect;
+                pc = pc->redirect;
 
         ewl_widget_parent_set(child, EWL_WIDGET(pc));
         ecore_dlist_append(pc->children, child);
@@ -223,15 +223,15 @@ ewl_container_child_prepend(Ewl_Container *pc, Ewl_Widget *child)
         DCHECK_TYPE(child, EWL_WIDGET_TYPE);
 
         if (pc == EWL_CONTAINER(child->parent))
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         if (ewl_widget_parent_of(child, EWL_WIDGET(pc))) {
-        	DWARNING("Attempting to make a child a parent of itself.");
-        	DRETURN(DLEVEL_STABLE);
+                DWARNING("Attempting to make a child a parent of itself.");
+                DRETURN(DLEVEL_STABLE);
         }
 
         while (pc->redirect)
-        	pc = pc->redirect;
+                pc = pc->redirect;
 
         ewl_widget_parent_set(child, EWL_WIDGET(pc));
         ecore_dlist_prepend(pc->children, child);
@@ -242,7 +242,7 @@ ewl_container_child_prepend(Ewl_Container *pc, Ewl_Widget *child)
 
 static void
 ewl_container_child_insert_helper(Ewl_Container *pc, Ewl_Widget *child,
-        					int index, int skip_internal)
+                                                int index, int skip_internal)
 {
         Ewl_Widget *cur;
         int idx = 0;
@@ -255,31 +255,31 @@ ewl_container_child_insert_helper(Ewl_Container *pc, Ewl_Widget *child,
 
         /* already inserted */
         if (pc == EWL_CONTAINER(child->parent))
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         if (ewl_widget_parent_of(child, EWL_WIDGET(pc))) {
-        	DWARNING("Attempting to make a child a parent of itself.");
-        	DRETURN(DLEVEL_STABLE);
+                DWARNING("Attempting to make a child a parent of itself.");
+                DRETURN(DLEVEL_STABLE);
         }
 
         /* find the real container */
         while (pc->redirect)
-        	pc = pc->redirect;
+                pc = pc->redirect;
 
         /* find our insertion point */
         ecore_dlist_first_goto(pc->children);
         while ((cur = ecore_dlist_current(pc->children)))
         {
-        	if (skip_internal && ewl_widget_internal_is(cur))
-        	{
-        		ecore_dlist_next(pc->children);
-        		continue;
-        	}
+                if (skip_internal && ewl_widget_internal_is(cur))
+                {
+                        ecore_dlist_next(pc->children);
+                        continue;
+                }
 
-        	if (idx == index) break;
+                if (idx == index) break;
 
-        	idx++;
-        	ecore_dlist_next(pc->children);
+                idx++;
+                ecore_dlist_next(pc->children);
         }
 
         ewl_widget_parent_set(child, EWL_WIDGET(pc));
@@ -326,7 +326,7 @@ ewl_container_child_insert(Ewl_Container *pc, Ewl_Widget *child, int index)
  */
 void
 ewl_container_child_insert_internal(Ewl_Container *pc,
-        			   Ewl_Widget *child, int index)
+                                   Ewl_Widget *child, int index)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(pc);
@@ -360,7 +360,7 @@ ewl_container_child_remove(Ewl_Container *pc, Ewl_Widget *child)
         DCHECK_TYPE(child, EWL_WIDGET_TYPE);
 
         if (child == EWL_WIDGET(pc->redirect))
-        	pc->redirect = NULL;
+                pc->redirect = NULL;
 
         /*
          * First remove reference to the parent if necessary.
@@ -368,12 +368,12 @@ ewl_container_child_remove(Ewl_Container *pc, Ewl_Widget *child)
          * with a NULL parent on the widget.
          */
         if (child->parent) {
-        	ewl_widget_parent_set(child, NULL);
-        	DRETURN(DLEVEL_STABLE);
+                ewl_widget_parent_set(child, NULL);
+                DRETURN(DLEVEL_STABLE);
         }
 
         if (!pc->children)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         /*
          * Traverse the list to the child.
@@ -384,7 +384,7 @@ ewl_container_child_remove(Ewl_Container *pc, Ewl_Widget *child)
          * If the child isn't found, then this isn't it's parent.
          */
         if (!temp)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         /* get the index of the widget we are removing */
         idx = ecore_dlist_index(pc->children);
@@ -394,7 +394,7 @@ ewl_container_child_remove(Ewl_Container *pc, Ewl_Widget *child)
          */
         ecore_dlist_remove(pc->children);
         if (VISIBLE(child) && REALIZED(child))
-        	ewl_container_child_hide_call(pc, child);
+                ewl_container_child_hide_call(pc, child);
 
         ewl_container_child_remove_call(pc, child, idx);
         ewl_widget_configure(EWL_WIDGET(pc));
@@ -422,8 +422,8 @@ ewl_container_child_count_get_helper(Ewl_Container *c, int skip)
         ecore_dlist_first_goto(container->children);
         while ((child = ecore_dlist_next(container->children)))
         {
-        	if (skip && ewl_widget_internal_is(child)) continue;
-        	count++;
+                if (skip && ewl_widget_internal_is(child)) continue;
+                count++;
         }
 
         DRETURN_INT(count, DLEVEL_STABLE);
@@ -490,7 +490,7 @@ ewl_container_child_count_visible_get(Ewl_Container *c)
 
 static Ewl_Widget *
 ewl_container_child_helper_get(Ewl_Container *parent, int index,
-        					unsigned int skip)
+                                                unsigned int skip)
 {
         Ewl_Container *container = NULL;
         Ewl_Widget *child;
@@ -506,9 +506,9 @@ ewl_container_child_helper_get(Ewl_Container *parent, int index,
         ecore_dlist_first_goto(container->children);
 
         while ((child = ecore_dlist_next(container->children))) {
-        	if (skip && ewl_widget_internal_is(child)) continue;
-        	if (count == index) break;
-        	count ++;
+                if (skip && ewl_widget_internal_is(child)) continue;
+                if (count == index) break;
+                count ++;
         }
 
         DRETURN_PTR(((count == index) ? child : NULL), DLEVEL_STABLE);
@@ -558,7 +558,7 @@ ewl_container_child_internal_get(Ewl_Container *parent, int index)
 
 static int
 ewl_container_child_index_helper_get(Ewl_Container *parent, Ewl_Widget *w,
-        						unsigned int skip)
+                                                        unsigned int skip)
 {
         unsigned int idx = 0;
         int ret = -1;
@@ -576,13 +576,13 @@ ewl_container_child_index_helper_get(Ewl_Container *parent, Ewl_Widget *w,
 
         ecore_dlist_first_goto(container->children);
         while ((child = ecore_dlist_next(container->children))) {
-        	if (skip && ewl_widget_internal_is(child)) continue;
-        	if (child == w)
-        	{
-        		ret = idx;
-        		break;
-        	}
-        	idx ++;
+                if (skip && ewl_widget_internal_is(child)) continue;
+                if (child == w)
+                {
+                        ret = idx;
+                        break;
+                }
+                idx ++;
         }
 
         DRETURN_INT(ret, DLEVEL_STABLE);
@@ -654,8 +654,8 @@ ewl_container_child_resize(Ewl_Widget *w, int size, Ewl_Orientation o)
         DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
         if (!size || !REALIZED(w) || ewl_object_queued_has(EWL_OBJECT(w),
-        					EWL_FLAG_QUEUED_SCHEDULED_REVEAL))
-        	DRETURN(DLEVEL_STABLE);
+                                                EWL_FLAG_QUEUED_SCHEDULED_REVEAL))
+                DRETURN(DLEVEL_STABLE);
 
         c = EWL_CONTAINER(w->parent);
 
@@ -665,7 +665,7 @@ ewl_container_child_resize(Ewl_Widget *w, int size, Ewl_Orientation o)
          * child resizes.
          */
         if (HIDDEN(w) || !c || !c->child_resize)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         /*
          * Store the parents current size so we can determine if it changes
@@ -690,9 +690,9 @@ ewl_container_child_resize(Ewl_Widget *w, int size, Ewl_Orientation o)
          * change size (ie. it's parent isn't on the configure queue).
          */
         if (EWL_WIDGET(c)->parent)
-        	ewl_widget_configure(EWL_WIDGET(c)->parent);
+                ewl_widget_configure(EWL_WIDGET(c)->parent);
         else
-        	ewl_widget_configure(EWL_WIDGET(c));
+                ewl_widget_configure(EWL_WIDGET(c));
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -718,7 +718,7 @@ ewl_container_child_at_get(Ewl_Container *widget, int x, int y)
         DCHECK_TYPE_RET(widget, EWL_CONTAINER_TYPE, NULL);
 
         if (!widget->children || ecore_dlist_empty_is(widget->children))
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
 
         ecore_dlist_first_goto(widget->children);
 
@@ -726,21 +726,21 @@ ewl_container_child_at_get(Ewl_Container *widget, int x, int y)
          * Search through the children to find an intersecting child.
          */
         while ((child = ecore_dlist_next(EWL_CONTAINER(widget)->children))) {
-        	if (VISIBLE(child) && !DISABLED(child)
-        	    && x >= (CURRENT_X(child) - INSET_LEFT(child))
-        	    && y >= (CURRENT_Y(child) - INSET_TOP(child))
-        	    && (CURRENT_X(child) + CURRENT_W(child) +
-        		    INSET_RIGHT(child)) >= x
-        	    && (CURRENT_Y(child) + CURRENT_H(child) +
-        		    INSET_BOTTOM(child)) >= y) {
-        		if (child->toplayered) {
-        			found = child;
-        			break;
-        		}
-        		if ((!found || ewl_widget_layer_priority_get(found) <=
-        					ewl_widget_layer_priority_get(child)))
-        			found = child;
-        	}
+                if (VISIBLE(child) && !DISABLED(child)
+                    && x >= (CURRENT_X(child) - INSET_LEFT(child))
+                    && y >= (CURRENT_Y(child) - INSET_TOP(child))
+                    && (CURRENT_X(child) + CURRENT_W(child) +
+                            INSET_RIGHT(child)) >= x
+                    && (CURRENT_Y(child) + CURRENT_H(child) +
+                            INSET_BOTTOM(child)) >= y) {
+                        if (child->toplayered) {
+                                found = child;
+                                break;
+                        }
+                        if ((!found || ewl_widget_layer_priority_get(found) <=
+                                                ewl_widget_layer_priority_get(child)))
+                                found = child;
+                }
         }
 
         DRETURN_PTR(found, DLEVEL_STABLE);
@@ -768,7 +768,7 @@ ewl_container_child_at_recursive_get(Ewl_Container *widget, int x, int y)
         DCHECK_TYPE_RET(widget, EWL_CONTAINER_TYPE, NULL);
 
         if (!widget->children || ecore_dlist_empty_is(widget->children))
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
 
         /*
          * The starting point is the current widget
@@ -780,18 +780,18 @@ ewl_container_child_at_recursive_get(Ewl_Container *widget, int x, int y)
          * found.
          */
         if (!DISABLED(child))
-        	child2 = ewl_container_child_at_get(EWL_CONTAINER(child), x, y);
+                child2 = ewl_container_child_at_get(EWL_CONTAINER(child), x, y);
 
         while (child2) {
-        	if (RECURSIVE(child2))
-        		child = child2;
-        	else
-        		DRETURN_PTR(child2, DLEVEL_STABLE);
+                if (RECURSIVE(child2))
+                        child = child2;
+                else
+                        DRETURN_PTR(child2, DLEVEL_STABLE);
 
-        	if (!DISABLED(child))
-        		child2 = ewl_container_child_at_get(EWL_CONTAINER(child), x, y);
-        	else
-        		child2 = NULL;
+                if (!DISABLED(child))
+                        child2 = ewl_container_child_at_get(EWL_CONTAINER(child), x, y);
+                else
+                        child2 = NULL;
         }
 
         DRETURN_PTR((child2 ? child2 : child), DLEVEL_STABLE);
@@ -815,29 +815,29 @@ ewl_container_reset(Ewl_Container *c)
         DCHECK_TYPE(c, EWL_CONTAINER_TYPE);
 
         while (c->redirect)
-        	c = c->redirect;
+                c = c->redirect;
 
         if (!c->children)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         /*
          * Loop through removing each child and destroying it.
          */
         ecore_dlist_first_goto(c->children);
         while ((w = ecore_dlist_current(c->children))) {
-        	if (!ewl_object_flags_has(EWL_OBJECT(w),
-        				EWL_FLAG_PROPERTY_INTERNAL,
-        				EWL_FLAGS_PROPERTY_MASK)) {
-        		ewl_widget_destroy(w);
+                if (!ewl_object_flags_has(EWL_OBJECT(w),
+                                        EWL_FLAG_PROPERTY_INTERNAL,
+                                        EWL_FLAGS_PROPERTY_MASK)) {
+                        ewl_widget_destroy(w);
 
-        		/*
-        		 * Start over in case the list was modified from a
-        		 * callback.
-        		 */
-        		ecore_dlist_first_goto(c->children);
-        	}
-        	else
-        		ecore_dlist_next(c->children);
+                        /*
+                         * Start over in case the list was modified from a
+                         * callback.
+                         */
+                        ecore_dlist_first_goto(c->children);
+                }
+                else
+                        ecore_dlist_next(c->children);
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -861,7 +861,7 @@ ewl_container_child_iterate_begin(Ewl_Container *c)
         DCHECK_TYPE(c, EWL_CONTAINER_TYPE);
 
         while (c->redirect)
-        	c = c->redirect;
+                c = c->redirect;
 
         ecore_dlist_first_goto(c->children);
 
@@ -883,14 +883,14 @@ ewl_container_child_next(Ewl_Container *c)
         DCHECK_TYPE_RET(c, EWL_CONTAINER_TYPE, NULL);
 
         while (c->redirect)
-        	c = c->redirect;
+                c = c->redirect;
 
         if (c->iterator) {
-        	w = c->iterator(c);
+                w = c->iterator(c);
         }
         else {
-        	while ((w = ecore_dlist_next(c->children)) &&
-        			(ewl_widget_internal_is(w)));
+                while ((w = ecore_dlist_next(c->children)) &&
+                                (ewl_widget_internal_is(w)));
         }
 
         DRETURN_PTR(w, DLEVEL_STABLE);
@@ -1022,21 +1022,21 @@ ewl_container_largest_prefer(Ewl_Container *c, Ewl_Orientation o)
         DCHECK_TYPE(c, EWL_CONTAINER_TYPE);
 
         if (o == EWL_ORIENTATION_HORIZONTAL) {
-        	get_size = ewl_object_preferred_w_get;
-        	set_size = ewl_object_preferred_inner_w_set;
+                get_size = ewl_object_preferred_w_get;
+                set_size = ewl_object_preferred_inner_w_set;
         }
         else {
-        	get_size = ewl_object_preferred_h_get;
-        	set_size = ewl_object_preferred_inner_h_set;
+                get_size = ewl_object_preferred_h_get;
+                set_size = ewl_object_preferred_inner_h_set;
         }
 
         ecore_dlist_first_goto(c->children);
         while ((child = ecore_dlist_next(c->children))) {
-        	if (VISIBLE(child) && REALIZED(child)) {
-        		curr_size = get_size(child);
-        		if (curr_size > max_size)
-        			max_size = curr_size;
-        	}
+                if (VISIBLE(child) && REALIZED(child)) {
+                        curr_size = get_size(child);
+                        if (curr_size > max_size)
+                                max_size = curr_size;
+                }
         }
 
         set_size(EWL_OBJECT(c), max_size);
@@ -1063,18 +1063,18 @@ ewl_container_sum_prefer(Ewl_Container *c, Ewl_Orientation o)
         DCHECK_TYPE(c, EWL_CONTAINER_TYPE);
 
         if (o == EWL_ORIENTATION_HORIZONTAL) {
-        	get_size = ewl_object_preferred_w_get;
-        	set_size = ewl_object_preferred_inner_w_set;
+                get_size = ewl_object_preferred_w_get;
+                set_size = ewl_object_preferred_inner_w_set;
         }
         else {
-        	get_size = ewl_object_preferred_h_get;
-        	set_size = ewl_object_preferred_inner_h_set;
+                get_size = ewl_object_preferred_h_get;
+                set_size = ewl_object_preferred_inner_h_set;
         }
 
         ecore_dlist_first_goto(c->children);
         while ((child = ecore_dlist_next(c->children))) {
-        	if (VISIBLE(child) && REALIZED(child))
-        		curr_size += get_size(child);
+                if (VISIBLE(child) && REALIZED(child))
+                        curr_size += get_size(child);
         }
 
         set_size(EWL_OBJECT(c), curr_size);
@@ -1099,10 +1099,10 @@ ewl_container_child_add_call(Ewl_Container *c, Ewl_Widget *w)
 
         /* ignore unmanaged children */
         if (UNMANAGED(w))
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         if (c->child_add)
-        	c->child_add(c, w);
+                c->child_add(c, w);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1125,14 +1125,14 @@ ewl_container_child_remove_call(Ewl_Container *c, Ewl_Widget *w, int idx)
 
         /* do nothing if the container is being destroyed */
         if (DESTROYED(c))
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
         
         /* ignore unmanaged children */
         if (UNMANAGED(w))
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         if (c->child_remove)
-        	c->child_remove(c, w, idx);
+                c->child_remove(c, w, idx);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1154,22 +1154,22 @@ ewl_container_child_show_call(Ewl_Container *c, Ewl_Widget *w)
 
         /* ignore unmanaged children */
         if (UNMANAGED(w))
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         c->visible_children++;
         if (c->visible_children > ecore_dlist_count(c->children))
-        	DWARNING("visible children count exceed total child count "
-        			"(%d > %d)\n", c->visible_children,
-        			ecore_dlist_count(c->children));
+                DWARNING("visible children count exceed total child count "
+                                "(%d > %d)\n", c->visible_children,
+                                ecore_dlist_count(c->children));
 
         if (c->child_show)
-        	c->child_show(c, w);
+                c->child_show(c, w);
 
         /*
          * Only show it if there are visible children.
          */
         if (c->clip_box)
-        	evas_object_show(c->clip_box);
+                evas_object_show(c->clip_box);
 
         ewl_widget_configure(EWL_WIDGET(c));
 
@@ -1193,24 +1193,24 @@ ewl_container_child_hide_call(Ewl_Container *c, Ewl_Widget *w)
 
         /* ignore unmanaged children */
         if (UNMANAGED(w))
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         /* do nothing if the container is being destroyed */
         if (DESTROYED(c))
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         c->visible_children--;
         if (c->visible_children < 0)
-        	DWARNING("visible_children is %d\n", c->visible_children);
+                DWARNING("visible_children is %d\n", c->visible_children);
 
         if (c->child_hide)
-        	c->child_hide(c, w);
+                c->child_hide(c, w);
 
         if (c->clip_box) {
-        	const Evas_List *clippees;
-        	clippees = evas_object_clipees_get(c->clip_box);
-        	if (!clippees)
-        		evas_object_hide(c->clip_box);
+                const Evas_List *clippees;
+                clippees = evas_object_clipees_get(c->clip_box);
+                if (!clippees)
+                        evas_object_hide(c->clip_box);
         }
 
         ewl_widget_configure(EWL_WIDGET(c));
@@ -1234,19 +1234,19 @@ ewl_container_destroy(Ewl_Container *c)
 
         c->redirect = NULL;
         if (c->children) {
-        	/*
-        	 * Destroy any children still in the container. Do not remove
-        	 * in order to avoid list walking.
-        	 */
-        	while ((child = ecore_dlist_first_goto(c->children))) {
-        		ewl_widget_destroy(child);
-        	}
+                /*
+                 * Destroy any children still in the container. Do not remove
+                 * in order to avoid list walking.
+                 */
+                while ((child = ecore_dlist_first_goto(c->children))) {
+                        ewl_widget_destroy(child);
+                }
 
-        	/*
-        	 * Destroy the container list and set it to NULL.
-        	 */
-        	ecore_dlist_destroy(c->children);
-        	c->children = NULL;
+                /*
+                 * Destroy the container list and set it to NULL.
+                 */
+                ecore_dlist_destroy(c->children);
+                c->children = NULL;
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1267,11 +1267,11 @@ ewl_container_end_redirect_get(Ewl_Container *c)
         DCHECK_TYPE_RET(c, EWL_CONTAINER_TYPE, NULL);
 
         if (!c->redirect)
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
 
         while (c->redirect) {
-        	rc = c->redirect;
-        	c = c->redirect;
+                rc = c->redirect;
+                c = c->redirect;
         }
 
         DRETURN_PTR(rc, DLEVEL_STABLE);
@@ -1322,7 +1322,7 @@ ewl_container_redirect_set(Ewl_Container *c, Ewl_Container *rc)
  */
 void
 ewl_container_cb_reparent(Ewl_Widget *w, void *ev_data __UNUSED__,
-        					void *user_data __UNUSED__)
+                                                void *user_data __UNUSED__)
 {
         Ewl_Widget *child;
 
@@ -1331,14 +1331,14 @@ ewl_container_cb_reparent(Ewl_Widget *w, void *ev_data __UNUSED__,
         DCHECK_TYPE(w, EWL_CONTAINER_TYPE);
 
         if (!EWL_CONTAINER(w)->children)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         /*
          * Reparent all of the containers children
          */
         ecore_dlist_first_goto(EWL_CONTAINER(w)->children);
         while ((child = ecore_dlist_next(EWL_CONTAINER(w)->children)) != NULL) {
-        	ewl_widget_reparent(child);
+                ewl_widget_reparent(child);
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1354,7 +1354,7 @@ ewl_container_cb_reparent(Ewl_Widget *w, void *ev_data __UNUSED__,
  */
 void
 ewl_container_cb_enable(Ewl_Widget *w, void *ev_data __UNUSED__,
-        					void *user_data __UNUSED__)
+                                                void *user_data __UNUSED__)
 {
         Ewl_Widget *child;
 
@@ -1363,14 +1363,14 @@ ewl_container_cb_enable(Ewl_Widget *w, void *ev_data __UNUSED__,
         DCHECK_TYPE(w, EWL_CONTAINER_TYPE);
 
         if (!EWL_CONTAINER(w)->children)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         /*
          * Enable all of the containers children
          */
         ecore_dlist_first_goto(EWL_CONTAINER(w)->children);
         while ((child = ecore_dlist_next(EWL_CONTAINER(w)->children)) != NULL) {
-        	ewl_widget_enable(child);
+                ewl_widget_enable(child);
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1386,7 +1386,7 @@ ewl_container_cb_enable(Ewl_Widget *w, void *ev_data __UNUSED__,
  */
 void
 ewl_container_cb_disable(Ewl_Widget *w, void *ev_data __UNUSED__,
-        					void *user_data __UNUSED__)
+                                                void *user_data __UNUSED__)
 {
         Ewl_Widget *child;
 
@@ -1395,14 +1395,14 @@ ewl_container_cb_disable(Ewl_Widget *w, void *ev_data __UNUSED__,
         DCHECK_TYPE(w, EWL_CONTAINER_TYPE);
 
         if (!EWL_CONTAINER(w)->children)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         /*
          * Disable all of the containers children
          */
         ecore_dlist_first_goto(EWL_CONTAINER(w)->children);
         while ((child = ecore_dlist_next(EWL_CONTAINER(w)->children)) != NULL) {
-        	ewl_widget_disable(child);
+                ewl_widget_disable(child);
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1418,7 +1418,7 @@ ewl_container_cb_disable(Ewl_Widget *w, void *ev_data __UNUSED__,
  */
 void
 ewl_container_cb_obscure(Ewl_Widget *w, void *ev_data __UNUSED__,
-        		 void *user_data __UNUSED__)
+                         void *user_data __UNUSED__)
 {
         Ewl_Embed *e;
         Ewl_Container *c;
@@ -1434,8 +1434,8 @@ ewl_container_cb_obscure(Ewl_Widget *w, void *ev_data __UNUSED__,
          */
         e = ewl_embed_widget_find(EWL_WIDGET(w));
         if (e && c->clip_box) {
-        	ewl_embed_object_cache(e, c->clip_box);
-        	c->clip_box = NULL;
+                ewl_embed_object_cache(e, c->clip_box);
+                c->clip_box = NULL;
         }
 
         /*
@@ -1444,11 +1444,11 @@ ewl_container_cb_obscure(Ewl_Widget *w, void *ev_data __UNUSED__,
          * obscured.
          */
         if (c->children) {
-        	ecore_dlist_first_goto(c->children);
-        	while ((w = ecore_dlist_next(c->children))) {
-        		if (REALIZED(w))
-        			ewl_widget_obscure(w);
-        	}
+                ecore_dlist_first_goto(c->children);
+                while ((w = ecore_dlist_next(c->children))) {
+                        if (REALIZED(w))
+                                ewl_widget_obscure(w);
+                }
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1464,7 +1464,7 @@ ewl_container_cb_obscure(Ewl_Widget *w, void *ev_data __UNUSED__,
  */
 void
 ewl_container_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
-        		void *user_data __UNUSED__)
+                        void *user_data __UNUSED__)
 {
         Ewl_Embed *e;
         Ewl_Container *c;
@@ -1477,7 +1477,7 @@ ewl_container_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
 
         e = ewl_embed_widget_find(EWL_WIDGET(w));
         if (e && !c->clip_box) {
-        	c->clip_box = ewl_embed_object_request(e, "rectangle");
+                c->clip_box = ewl_embed_object_request(e, "rectangle");
         }
 
         /*
@@ -1485,21 +1485,21 @@ ewl_container_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
          * to the wanted area.
          */
         if (!c->clip_box)
-        	c->clip_box = evas_object_rectangle_add(e->canvas);
+                c->clip_box = evas_object_rectangle_add(e->canvas);
 
         /*
          * Setup the remaining properties for the clip box.
          */
         if (c->clip_box) {
-        	evas_object_pass_events_set(c->clip_box, TRUE);
-        	evas_object_smart_member_add(c->clip_box, w->smart_object);
+                evas_object_pass_events_set(c->clip_box, TRUE);
+                evas_object_smart_member_add(c->clip_box, w->smart_object);
 
-        	if (w->fx_clip_box) {
-        		evas_object_clip_set(c->clip_box, w->fx_clip_box);
-        		evas_object_stack_below(c->clip_box, w->fx_clip_box);
-        	}
+                if (w->fx_clip_box) {
+                        evas_object_clip_set(c->clip_box, w->fx_clip_box);
+                        evas_object_stack_below(c->clip_box, w->fx_clip_box);
+                }
 
-        	evas_object_color_set(c->clip_box, 255, 255, 255, 255);
+                evas_object_color_set(c->clip_box, 255, 255, 255, 255);
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1517,7 +1517,7 @@ ewl_container_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
  */
 void
 ewl_container_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
-        					void *user_data __UNUSED__)
+                                                void *user_data __UNUSED__)
 {
         int i = 0;
         Ewl_Container *c;
@@ -1530,7 +1530,7 @@ ewl_container_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
         c = EWL_CONTAINER(w);
 
         if (!c->children || ecore_dlist_empty_is(c->children))
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         /*
          * If this container has not yet been realized, then it's children
@@ -1539,11 +1539,11 @@ ewl_container_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
          * realize any of them that should be visible.
          */
         while ((child = ecore_dlist_index_goto(c->children, i))) {
-        	ewl_callback_call_with_event_data(child, EWL_CALLBACK_REPARENT,
-        			c);
-        	if (VISIBLE(child))
-        		ewl_realize_request(child);
-        	i++;
+                ewl_callback_call_with_event_data(child, EWL_CALLBACK_REPARENT,
+                                c);
+                if (VISIBLE(child))
+                        ewl_realize_request(child);
+                i++;
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1559,21 +1559,21 @@ ewl_container_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
  */
 void
 ewl_container_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
-        					void *user_data __UNUSED__)
+                                                void *user_data __UNUSED__)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(w);
         DCHECK_TYPE(w, EWL_CONTAINER_TYPE);
 
         if (EWL_CONTAINER(w)->clip_box) {
-        	/*
-        	 * Move the clip box into the new position and size of the
-        	 * container.
-        	 */
-        	evas_object_move(EWL_CONTAINER(w)->clip_box,
-        		  CURRENT_X(w), CURRENT_Y(w));
-        	evas_object_resize(EWL_CONTAINER(w)->clip_box,
-        		    CURRENT_W(w), CURRENT_H(w));
+                /*
+                 * Move the clip box into the new position and size of the
+                 * container.
+                 */
+                evas_object_move(EWL_CONTAINER(w)->clip_box,
+                          CURRENT_X(w), CURRENT_Y(w));
+                evas_object_resize(EWL_CONTAINER(w)->clip_box,
+                            CURRENT_W(w), CURRENT_H(w));
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1589,7 +1589,7 @@ ewl_container_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
  */
 void
 ewl_container_cb_unrealize(Ewl_Widget *w, void *ev_data __UNUSED__,
-        					void *user_data __UNUSED__)
+                                                void *user_data __UNUSED__)
 {
         Ewl_Container *c;
         Ewl_Widget *child;
@@ -1604,8 +1604,8 @@ ewl_container_cb_unrealize(Ewl_Widget *w, void *ev_data __UNUSED__,
          * Clean up the clip box of the container.
          */
         if (c->clip_box) {
-        	ewl_canvas_object_destroy(c->clip_box);
-        	c->clip_box = NULL;
+                ewl_canvas_object_destroy(c->clip_box);
+                c->clip_box = NULL;
         }
 
         /*
@@ -1613,10 +1613,10 @@ ewl_container_cb_unrealize(Ewl_Widget *w, void *ev_data __UNUSED__,
          * exist at this point. Is this legitimate ordering?
          */
         if (c->children) {
-        	ecore_dlist_first_goto(c->children);
-        	while ((child = ecore_dlist_next(c->children))) {
-        		ewl_widget_unrealize(child);
-        	}
+                ecore_dlist_first_goto(c->children);
+                while ((child = ecore_dlist_next(c->children))) {
+                        ewl_widget_unrealize(child);
+                }
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1639,12 +1639,12 @@ ewl_container_cb_container_focus_out(Ewl_Widget *w, void *ev_data, void *user_da
         DCHECK_PARAM_PTR(w);
 
         if (ev_data)
-        	focus_in = EWL_WIDGET(ev_data);
+                focus_in = EWL_WIDGET(ev_data);
 
         /* If its a child or is disabled then don't send a signal */
         if ((focus_in) && (!ewl_widget_parent_of(w, focus_in)) &&
-        			(!DISABLED(w)) && (focus_in != w))
-        	ewl_widget_state_set(w, "focus,out", EWL_STATE_TRANSIENT);
+                                (!DISABLED(w)) && (focus_in != w))
+                ewl_widget_state_set(w, "focus,out", EWL_STATE_TRANSIENT);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1666,15 +1666,15 @@ ewl_container_cb_widget_focus_out(Ewl_Widget *w, void *ev_data, void *user_data)
         DCHECK_PARAM_PTR(w);
 
         if (DISABLED(w))
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         c = EWL_CONTAINER(w);
         while (c->redirect)
-        	c = c->redirect;
+                c = c->redirect;
 
         ecore_dlist_first_goto(c->children);
         while ((w = ecore_dlist_next(c->children)))
-        	ewl_widget_state_set(w, "focus,out", EWL_STATE_TRANSIENT);
+                ewl_widget_state_set(w, "focus,out", EWL_STATE_TRANSIENT);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1696,15 +1696,15 @@ ewl_container_cb_widget_focus_in(Ewl_Widget *w, void *ev_data, void *user_data)
         DCHECK_PARAM_PTR(w);
 
         if (DISABLED(w))
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         c = EWL_CONTAINER(w);
         while (c->redirect)
-        	c = c->redirect;
+                c = c->redirect;
 
         ecore_dlist_first_goto(c->children);
         while ((w = ecore_dlist_next(c->children)))
-        	ewl_widget_state_set(w, "focus,in", EWL_STATE_TRANSIENT);
+                ewl_widget_state_set(w, "focus,in", EWL_STATE_TRANSIENT);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1728,10 +1728,10 @@ ewl_container_children_show(Ewl_Container *c)
         ewl_container_child_iterate_begin(c);
         while ((w = ewl_container_child_next(c)))
         {
-        	if (EWL_CONTAINER_IS(w))
-        		ewl_container_children_show(EWL_CONTAINER(w));
-        	else
-        		ewl_widget_show(w);
+                if (EWL_CONTAINER_IS(w))
+                        ewl_container_children_show(EWL_CONTAINER(w));
+                else
+                        ewl_widget_show(w);
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);

@@ -60,9 +60,9 @@ insert(Ewl_Widget *w __UNUSED__, void *e __UNUSED__, void *d __UNUSED__)
         t = ewl_text_text_get(EWL_TEXT(entry));
 
         if (t) {
-        	ewl_text_text_append(EWL_TEXT(text), "\n");
-        	ewl_text_text_append(EWL_TEXT(text), t);
-        	ewl_text_clear(EWL_TEXT(entry));
+                ewl_text_text_append(EWL_TEXT(text), "\n");
+                ewl_text_text_append(EWL_TEXT(text), t);
+                ewl_text_clear(EWL_TEXT(entry));
         }
 }
 
@@ -100,12 +100,12 @@ main(int argc, char **argv)
         edje = edje_object_add(evas);
 
         if (!edje_object_file_set(edje,
-        		PACKAGE_DATA_DIR "/ewl/themes/ewl_embed_test.edj",
-        		"main"))
+                        PACKAGE_DATA_DIR "/ewl/themes/ewl_embed_test.edj",
+                        "main"))
         {
-        	fprintf(stderr, "Error in: %s\n",
-        		PACKAGE_DATA_DIR "/ewl/themes/ewl_embed_test.edj");
-        	return 1;
+                fprintf(stderr, "Error in: %s\n",
+                        PACKAGE_DATA_DIR "/ewl/themes/ewl_embed_test.edj");
+                return 1;
         }
 
         evas_object_move(edje, 0, 0);
@@ -118,7 +118,7 @@ main(int argc, char **argv)
         emb = ewl_embed_new();
         ewl_object_fill_policy_set(EWL_OBJECT(emb), EWL_FLAG_FILL_ALL);
         eo = ewl_embed_canvas_set(EWL_EMBED(emb), evas,
-        		  (void *) ecore_evas_software_x11_window_get(ee));
+                          (void *) ecore_evas_software_x11_window_get(ee));
         ewl_embed_focus_set(EWL_EMBED(emb), TRUE);
         ewl_widget_show(emb);
 
@@ -146,17 +146,17 @@ main(int argc, char **argv)
         text = ewl_text_new();
         ewl_container_child_append(EWL_CONTAINER(wg), text);
         ewl_text_text_append(EWL_TEXT(text),
-        	"You can use EWL in side a evas/edje only app.\n"
-        	"It can actually behave like a normal evas object\n"
-        	"So forget to figure out how to write an entry object,\n"
-        	"simply use the ewl widget! :)\n\n");
+                "You can use EWL in side a evas/edje only app.\n"
+                "It can actually behave like a normal evas object\n"
+                "So forget to figure out how to write an entry object,\n"
+                "simply use the ewl widget! :)\n\n");
         ewl_object_fill_policy_set(EWL_OBJECT(text), EWL_FLAG_FILL_HFILL |
-        		EWL_FLAG_FILL_VFILL);
+                        EWL_FLAG_FILL_VFILL);
         ewl_widget_show(text);
 
         c = ewl_hbox_new();
         ewl_object_fill_policy_set(EWL_OBJECT(c), EWL_FLAG_FILL_NONE |
-        					EWL_FLAG_FILL_HFILL);
+                                                EWL_FLAG_FILL_HFILL);
         ewl_container_child_append(EWL_CONTAINER(vbox), c);
         ewl_widget_show(c);
 
@@ -180,7 +180,7 @@ main(int argc, char **argv)
         emb = ewl_embed_new();
         ewl_object_fill_policy_set(EWL_OBJECT(emb), EWL_FLAG_FILL_ALL);
         eo = ewl_embed_canvas_set(EWL_EMBED(emb), evas,
-        		  (void *) ecore_evas_software_x11_window_get(ee));
+                          (void *) ecore_evas_software_x11_window_get(ee));
         ewl_widget_show(emb);
 
         /*
@@ -194,7 +194,7 @@ main(int argc, char **argv)
 
         c = ewl_hbox_new();
         ewl_object_fill_policy_set(EWL_OBJECT(c), EWL_FLAG_FILL_NONE |
-        					EWL_FLAG_FILL_HFILL);
+                                                EWL_FLAG_FILL_HFILL);
         ewl_container_child_append(EWL_CONTAINER(emb), c);
         ewl_widget_show(c);
 
@@ -221,7 +221,7 @@ main(int argc, char **argv)
         emb = ewl_embed_new();
         ewl_object_fill_policy_set(EWL_OBJECT(emb), EWL_FLAG_FILL_ALL);
         eo = ewl_embed_canvas_set(EWL_EMBED(emb), evas,
-        		  (void *) ecore_evas_software_x11_window_get(ee));
+                          (void *) ecore_evas_software_x11_window_get(ee));
         ewl_embed_focus_set(EWL_EMBED(emb), TRUE);
         ewl_widget_show(emb);
 

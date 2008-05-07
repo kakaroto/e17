@@ -10,8 +10,8 @@ static void ee_shutdown(Ewl_Engine *engine);
 
 static void *canvas_funcs[EWL_ENGINE_CANVAS_MAX] =
         {
-        	ee_canvas_setup,
-        	NULL, NULL, NULL, NULL
+                ee_canvas_setup,
+                NULL, NULL, NULL, NULL
         };
 
 Ecore_DList *
@@ -37,12 +37,12 @@ ewl_engine_create(int *argc __UNUSED__, char ** argv __UNUSED__)
 
         engine = NEW(Ewl_Engine_Evas_Software_X11, 1);
         if (!engine)
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
 
         if (!ee_init(EWL_ENGINE(engine)))
         {
-        	FREE(engine);
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                FREE(engine);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
         }
 
         DRETURN_PTR(EWL_ENGINE(engine), DLEVEL_STABLE);
@@ -92,37 +92,37 @@ ee_canvas_setup(Ewl_Window *win, int debug)
 
         evas = evas_new();
         evas_output_method_set(evas,
-        		evas_render_method_lookup("software_x11"));
+                        evas_render_method_lookup("software_x11"));
 
         info = evas_engine_info_get(evas);
         if (!info)
         {
-        	fprintf(stderr, "Unable to use software_x11 engine "
-        			"for rendering, ");
-        	exit(-1);
+                fprintf(stderr, "Unable to use software_x11 engine "
+                                "for rendering, ");
+                exit(-1);
         }
 
         sinfo = (Evas_Engine_Info_Software_X11 *)info;
 
         sinfo->info.display = ecore_x_display_get();
         sinfo->info.visual = DefaultVisual(sinfo->info.display,
-        			DefaultScreen(sinfo->info.display));
+                                DefaultScreen(sinfo->info.display));
         sinfo->info.colormap = DefaultColormap(sinfo->info.display,
-        			DefaultScreen(sinfo->info.display));
+                                DefaultScreen(sinfo->info.display));
         sinfo->info.drawable = (Ecore_X_Window)win->window;
         sinfo->info.depth = DefaultDepth(sinfo->info.display,
-        			DefaultScreen(sinfo->info.display));
+                                DefaultScreen(sinfo->info.display));
         sinfo->info.rotation = 0;
         sinfo->info.debug = debug;
 
         evas_engine_info_set(evas, info);
 
         evas_output_size_set(evas, ewl_object_current_w_get(o),
-        				ewl_object_current_h_get(o));
+                                        ewl_object_current_h_get(o));
         evas_output_viewport_set(evas, ewl_object_current_x_get(o),
-        				ewl_object_current_y_get(o),
-        				ewl_object_current_w_get(o),
-        				ewl_object_current_h_get(o));
+                                        ewl_object_current_y_get(o),
+                                        ewl_object_current_w_get(o),
+                                        ewl_object_current_h_get(o));
         ewl_embed_canvas_set(EWL_EMBED(win), evas, win->window);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);

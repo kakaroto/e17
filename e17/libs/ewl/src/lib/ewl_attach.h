@@ -37,11 +37,11 @@ typedef struct Ewl_Attach Ewl_Attach;
  */
 struct Ewl_Attach
 {
-        Ewl_Attach_Type type;		/**< The type of the attachment */
+        Ewl_Attach_Type type;                /**< The type of the attachment */
         Ewl_Attach_Data_Type data_type; /**< The data type of the attachment */
 
-        void *data;			/**< The attachment data */
-        void *priv_data;		/**< Any private data in the attachment */
+        void *data;                        /**< The attachment data */
+        void *priv_data;                /**< Any private data in the attachment */
 };
 
 /**
@@ -54,9 +54,9 @@ typedef struct Ewl_Attach_Dnd Ewl_Attach_Dnd;
  */
 struct Ewl_Attach_Dnd
 {
-        Ewl_Widget *cursor;	/**< Cursor displayed for DND */
-        void *data;		/**< The attachment data */
-        int size;		/**< Any private data in the attachment */
+        Ewl_Widget *cursor;        /**< Cursor displayed for DND */
+        void *data;                /**< The attachment data */
+        int size;                /**< Any private data in the attachment */
 };
 
 /**
@@ -80,7 +80,7 @@ struct Ewl_Attach_Dnd
  */
 #define ewl_attach_mouse_cursor_set(w, data) \
         ewl_attach_other_set(EWL_WIDGET(w), EWL_ATTACH_TYPE_MOUSE_CURSOR, \
-        		(int *)data)
+                        (int *)data)
 
 /**
  * @def ewl_attach_mouse_argb_cursor_set(w, cursor)
@@ -88,7 +88,7 @@ struct Ewl_Attach_Dnd
  */
 #define ewl_attach_mouse_argb_cursor_set(w, cursor) \
         ewl_attach_other_set(EWL_WIDGET(w), \
-        		EWL_ATTACH_TYPE_MOUSE_ARGB_CURSOR, cursor)
+                        EWL_ATTACH_TYPE_MOUSE_ARGB_CURSOR, cursor)
 
 /**
  * @def ewl_attach_color_set(w, data)
@@ -124,7 +124,7 @@ struct Ewl_Attach_Dnd
  */
 #define ewl_attach_widget_association_set(w, data) \
         ewl_attach_other_set(EWL_WIDGET(w), \
-        		EWL_ATTACH_TYPE_WIDGET_ASSOCIATION, data)
+                        EWL_ATTACH_TYPE_WIDGET_ASSOCIATION, data)
 
 /**
  * @def ewl_attach_widget_association_get(w)

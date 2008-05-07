@@ -41,9 +41,9 @@ typedef struct Ewl_Attach_List Ewl_Attach_List;
  */
 struct Ewl_Attach_List
 {
-        void **list;		/**< The attachment list */
-        unsigned int direct:1;	/**< Is this a direct pointer to an attached item */
-        unsigned int len:31;	/**< Number of things in the attachment list */
+        void **list;                /**< The attachment list */
+        unsigned int direct:1;        /**< Is this a direct pointer to an attached item */
+        unsigned int len:31;        /**< Number of things in the attachment list */
 };
 
 /**
@@ -63,7 +63,7 @@ typedef struct Ewl_Pair Ewl_Pair;
 struct Ewl_Pair
 {
         const char *key; /**< The key */
-        char *value;	/**< The value */
+        char *value;        /**< The value */
 };
 
 /**
@@ -76,9 +76,9 @@ typedef struct Ewl_Pair_List Ewl_Pair_List;
  */
 struct Ewl_Pair_List
 {
-        Ewl_Pair **list;	/**< The key/value list */
-        unsigned int direct:1;	/**< Does this list point directly to a pair */
-        unsigned int len:31;	/**< Length of the list */
+        Ewl_Pair **list;        /**< The key/value list */
+        unsigned int direct:1;        /**< Does this list point directly to a pair */
+        unsigned int len:31;        /**< Length of the list */
 };
 
 /**
@@ -91,10 +91,10 @@ typedef struct Ewl_Callback_Chain Ewl_Callback_Chain;
  */
 struct Ewl_Callback_Chain
 {
-        void **list;		/**< The callback list */
-        unsigned char mask;	/**< The callback mask */
-        unsigned char len;	/**< Length of the list */
-        unsigned char index;	/**< Current list index */
+        void **list;                /**< The callback list */
+        unsigned char mask;        /**< The callback mask */
+        unsigned char len;        /**< Length of the list */
+        unsigned char index;        /**< Current list index */
 };
 
 /**
@@ -107,10 +107,10 @@ typedef struct Ewl_Color_Set Ewl_Color_Set;
  */
 struct Ewl_Color_Set
 {
-        unsigned char r, 	/**< The red value */
-        	      g, 	/**< The green value */
-        	      b, 	/**< The blue value */
-        	      a;	/**< The alpha value */
+        unsigned char r,         /**< The red value */
+                      g,         /**< The green value */
+                      b,         /**< The blue value */
+                      a;        /**< The alpha value */
 };
 
 /**
@@ -140,7 +140,7 @@ struct Ewl_Widget
         Ewl_Widget *parent; /**< The parent widget, actually a container */
 
         Ewl_Callback_Chain callbacks[EWL_CALLBACK_MAX + 1];
-        					/**< Callback chain array */
+                                                /**< Callback chain array */
         Ewl_Attach_List *attach;       /**< List of attachments on the widget */
 
         void *smart_object; /**< Smart Object for the layer stuff */
@@ -152,105 +152,105 @@ struct Ewl_Widget
         const char *theme_state;    /**< State of the appearance */
         const char *appearance;   /**< Key to lookup appearance in theme */
         const char *inheritance;  /**< Inheritance of path widget */
-        int layer;		/**< the layer relative to the parent */
+        int layer;                /**< the layer relative to the parent */
 
-        Ecore_Hash *theme; 		/**< Overriding theme settings */
-        Ewl_Pair_List theme_text;	/**< Overriding text in theme */
+        Ecore_Hash *theme;                 /**< Overriding theme settings */
+        Ewl_Pair_List theme_text;        /**< Overriding text in theme */
         
-        unsigned char toplayered:1;	/**< Indicates if the widget should
-        				be on the top of the layer stack */
+        unsigned char toplayered:1;        /**< Indicates if the widget should
+                                        be on the top of the layer stack */
         unsigned char unmanaged:1;
 
 };
 
 Ewl_Widget         *ewl_widget_new(void);
-int         	 ewl_widget_init(Ewl_Widget *w);
-void        	 ewl_widget_free(Ewl_Widget *w);
+int                  ewl_widget_init(Ewl_Widget *w);
+void                 ewl_widget_free(Ewl_Widget *w);
 
-void         	 ewl_widget_name_set(Ewl_Widget *w, const char *name);
+void                  ewl_widget_name_set(Ewl_Widget *w, const char *name);
 const char         *ewl_widget_name_get(Ewl_Widget *w);
 Ewl_Widget         *ewl_widget_name_find(const char *name);
 
-void         	 ewl_widget_reparent(Ewl_Widget *widget);
-void         	 ewl_widget_realize(Ewl_Widget *widget);
-void         	 ewl_widget_unrealize(Ewl_Widget *w);
-void         	 ewl_widget_reveal(Ewl_Widget *w);
-void         	 ewl_widget_obscure(Ewl_Widget *w);
-void         	 ewl_widget_show(Ewl_Widget *widget);
-void         	 ewl_widget_hide(Ewl_Widget *widget);
-void          	 ewl_widget_destroy(Ewl_Widget *widget);
-void         	 ewl_widget_configure(Ewl_Widget *widget);
+void                  ewl_widget_reparent(Ewl_Widget *widget);
+void                  ewl_widget_realize(Ewl_Widget *widget);
+void                  ewl_widget_unrealize(Ewl_Widget *w);
+void                  ewl_widget_reveal(Ewl_Widget *w);
+void                  ewl_widget_obscure(Ewl_Widget *w);
+void                  ewl_widget_show(Ewl_Widget *widget);
+void                  ewl_widget_hide(Ewl_Widget *widget);
+void                   ewl_widget_destroy(Ewl_Widget *widget);
+void                  ewl_widget_configure(Ewl_Widget *widget);
 
-void         	 ewl_widget_data_set(Ewl_Widget *w, void *k, void *v);
-void         	*ewl_widget_data_del(Ewl_Widget *w, void *k);
-void         	*ewl_widget_data_get(Ewl_Widget *w, void *k);
+void                  ewl_widget_data_set(Ewl_Widget *w, void *k, void *v);
+void                 *ewl_widget_data_del(Ewl_Widget *w, void *k);
+void                 *ewl_widget_data_get(Ewl_Widget *w, void *k);
 
-void         	 ewl_widget_state_set(Ewl_Widget *w, const char *state,
-        					Ewl_State_Type flag);
+void                  ewl_widget_state_set(Ewl_Widget *w, const char *state,
+                                                Ewl_State_Type flag);
 
-void         	 ewl_widget_appearance_set(Ewl_Widget *w, const char *appearance);
-char         	*ewl_widget_appearance_get(Ewl_Widget *w);
-char         	*ewl_widget_appearance_path_get(Ewl_Widget *w);
-int        	 ewl_widget_appearance_path_size_get(Ewl_Widget *w);
-int        	 ewl_widget_appearance_path_copy(Ewl_Widget *w, char *buf,
-        					int size);
-void         	 ewl_widget_appearance_part_text_set(Ewl_Widget *w, const char *part,
-        					   const char *text);
+void                  ewl_widget_appearance_set(Ewl_Widget *w, const char *appearance);
+char                 *ewl_widget_appearance_get(Ewl_Widget *w);
+char                 *ewl_widget_appearance_path_get(Ewl_Widget *w);
+int                 ewl_widget_appearance_path_size_get(Ewl_Widget *w);
+int                 ewl_widget_appearance_path_copy(Ewl_Widget *w, char *buf,
+                                                int size);
+void                  ewl_widget_appearance_part_text_set(Ewl_Widget *w, const char *part,
+                                                   const char *text);
 const char         *ewl_widget_appearance_part_text_get(Ewl_Widget *w, const char *part);
-void         	 ewl_widget_appearance_text_set(Ewl_Widget *w, const char *text);
+void                  ewl_widget_appearance_text_set(Ewl_Widget *w, const char *text);
 const char        *ewl_widget_appearance_text_get(Ewl_Widget *w);
 
-void         	 ewl_widget_inherit(Ewl_Widget *widget, const char *type);
+void                  ewl_widget_inherit(Ewl_Widget *widget, const char *type);
 
 unsigned int          ewl_widget_type_is(Ewl_Widget *widget, const char *type);
 unsigned int          ewl_widget_onscreen_is(Ewl_Widget *widget);
 
-void         	 ewl_widget_parent_set(Ewl_Widget *w, Ewl_Widget *p);
+void                  ewl_widget_parent_set(Ewl_Widget *w, Ewl_Widget *p);
 Ewl_Widget         *ewl_widget_parent_get(Ewl_Widget *w);
 
-void         	 ewl_widget_enable(Ewl_Widget *w);
-void         	 ewl_widget_disable(Ewl_Widget *w);
+void                  ewl_widget_enable(Ewl_Widget *w);
+void                  ewl_widget_disable(Ewl_Widget *w);
 
-void         	 ewl_widget_print(Ewl_Widget *w);
-void         	 ewl_widget_print_verbose(Ewl_Widget *w);
-void        	 ewl_widget_tree_print(Ewl_Widget *w);
+void                  ewl_widget_print(Ewl_Widget *w);
+void                  ewl_widget_print_verbose(Ewl_Widget *w);
+void                 ewl_widget_tree_print(Ewl_Widget *w);
 
-void         	 ewl_widget_layer_top_set(Ewl_Widget *w, int top);
-int         	 ewl_widget_layer_top_get(Ewl_Widget *w);
-void         	 ewl_widget_layer_priority_set(Ewl_Widget *w, int layer);
-int         	 ewl_widget_layer_priority_get(Ewl_Widget *w);
+void                  ewl_widget_layer_top_set(Ewl_Widget *w, int top);
+int                  ewl_widget_layer_top_get(Ewl_Widget *w);
+void                  ewl_widget_layer_priority_set(Ewl_Widget *w, int layer);
+int                  ewl_widget_layer_priority_get(Ewl_Widget *w);
 
-void         	 ewl_widget_internal_set(Ewl_Widget *w, unsigned int val);
+void                  ewl_widget_internal_set(Ewl_Widget *w, unsigned int val);
 unsigned int     ewl_widget_internal_is(Ewl_Widget *w);
 
-void         	 ewl_widget_unmanaged_set(Ewl_Widget *w, unsigned int val);
+void                  ewl_widget_unmanaged_set(Ewl_Widget *w, unsigned int val);
 unsigned int     ewl_widget_unmanaged_is(Ewl_Widget *w);
 
-void         	 ewl_widget_clipped_set(Ewl_Widget *w, unsigned int val);
+void                  ewl_widget_clipped_set(Ewl_Widget *w, unsigned int val);
 unsigned int     ewl_widget_clipped_is(Ewl_Widget *w);
 
-void         	 ewl_widget_focus_send(Ewl_Widget *w);
+void                  ewl_widget_focus_send(Ewl_Widget *w);
 Ewl_Widget          *ewl_widget_focused_get(void);
 
-void         	 ewl_widget_tab_order_append(Ewl_Widget *w);
-void         	 ewl_widget_tab_order_prepend(Ewl_Widget *w);
-void         	 ewl_widget_tab_order_insert(Ewl_Widget *w, unsigned int idx);
-void        	 ewl_widget_tab_order_insert_before(Ewl_Widget *w, Ewl_Widget *before);
-void        	 ewl_widget_tab_order_insert_after(Ewl_Widget *w, Ewl_Widget *after);
-void         	 ewl_widget_tab_order_remove(Ewl_Widget *w);
+void                  ewl_widget_tab_order_append(Ewl_Widget *w);
+void                  ewl_widget_tab_order_prepend(Ewl_Widget *w);
+void                  ewl_widget_tab_order_insert(Ewl_Widget *w, unsigned int idx);
+void                 ewl_widget_tab_order_insert_before(Ewl_Widget *w, Ewl_Widget *before);
+void                 ewl_widget_tab_order_insert_after(Ewl_Widget *w, Ewl_Widget *after);
+void                  ewl_widget_tab_order_remove(Ewl_Widget *w);
 
-void        	 ewl_widget_focusable_set(Ewl_Widget *w, unsigned int val);
+void                 ewl_widget_focusable_set(Ewl_Widget *w, unsigned int val);
 unsigned int         ewl_widget_focusable_get(Ewl_Widget *w);
 
-void        	 ewl_widget_ignore_focus_change_set(Ewl_Widget *w, unsigned int val);
+void                 ewl_widget_ignore_focus_change_set(Ewl_Widget *w, unsigned int val);
 unsigned int         ewl_widget_ignore_focus_change_get(Ewl_Widget *w);
 
-void         	 ewl_widget_color_set(Ewl_Widget *w, unsigned int r, unsigned int g,
-        						unsigned int b, unsigned int a);
-void         	 ewl_widget_color_get(Ewl_Widget *w, unsigned int *r, unsigned int *g,
-        						unsigned int *b, unsigned int *a);
+void                  ewl_widget_color_set(Ewl_Widget *w, unsigned int r, unsigned int g,
+                                                        unsigned int b, unsigned int a);
+void                  ewl_widget_color_get(Ewl_Widget *w, unsigned int *r, unsigned int *g,
+                                                        unsigned int *b, unsigned int *a);
 
-int         	 ewl_widget_parent_of(Ewl_Widget *c, Ewl_Widget *w);
+int                  ewl_widget_parent_of(Ewl_Widget *c, Ewl_Widget *w);
 
 
 #define UNMANAGED(w) (((const Ewl_Widget *)(w))->unmanaged)

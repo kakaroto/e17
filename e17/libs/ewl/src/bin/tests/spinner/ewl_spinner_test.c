@@ -18,8 +18,8 @@ test_info(Ewl_Test *test)
 {
         test->name = "Spinner";
         test->tip = "Provides a field for entering numerical\n"
-        		"values, along with buttons to increment\n"
-        		"and decrement the value.";
+                        "values, along with buttons to increment\n"
+                        "and decrement the value.";
         test->filename = __FILE__;
         test->func = create_test;
         test->type = EWL_TEST_TYPE_SIMPLE;
@@ -126,7 +126,7 @@ create_test(Ewl_Container *box)
         ewl_button_label_set(EWL_BUTTON(separator), "Get Values");
         ewl_container_child_append(EWL_CONTAINER(box), separator);
         ewl_callback_append(separator, EWL_CALLBACK_CLICKED,
-        				cb_value_show, NULL);
+                                        cb_value_show, NULL);
         ewl_widget_show(separator);
 
         return 1;
@@ -134,13 +134,13 @@ create_test(Ewl_Container *box)
 
 static void
 cb_value_show(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
-        				void *data __UNUSED__)
+                                        void *data __UNUSED__)
 {
         printf("X %d, Y %d, W %d, H %d\n",
-        	(int)ewl_range_value_get(EWL_RANGE(spinner[0])),
-        	(int)ewl_range_value_get(EWL_RANGE(spinner[1])),
-        	(int)ewl_range_value_get(EWL_RANGE(spinner[2])),
-        	(int)ewl_range_value_get(EWL_RANGE(spinner[3])));
+                (int)ewl_range_value_get(EWL_RANGE(spinner[0])),
+                (int)ewl_range_value_get(EWL_RANGE(spinner[1])),
+                (int)ewl_range_value_get(EWL_RANGE(spinner[2])),
+                (int)ewl_range_value_get(EWL_RANGE(spinner[3])));
 }
 
 

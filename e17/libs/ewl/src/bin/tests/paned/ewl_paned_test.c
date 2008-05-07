@@ -8,7 +8,7 @@
 
 static int create_test(Ewl_Container *box);
 static void ewl_paned_test_cb_clicked_destroy(Ewl_Widget *w, void *ev,
-        						void *data);
+                                                        void *data);
 static void ewl_paned_test_cb_clicked(Ewl_Widget *w, void *ev, void *data);
 static void ewl_paned_test_cb_add(Ewl_Widget *w, void *ev, void *data);
 
@@ -21,13 +21,13 @@ static int fixed_size_get(char *buf, int len);
 static int fixed_size_unset_get(char *buf, int len);
 
 static Ewl_Unit_Test paned_unit_tests[] = {
-        	{"get initial size", initial_size_get, NULL, -1, 0},
-        	{"get unset initial size", initial_size_unset_get, NULL, -1, 0},
-        	{"get initial size after remove", initial_size_after_remove_get, NULL, -1, 0},
-        	{"get initial size for many widgets", initial_size_many_get, NULL, -1, 0},
-        	{"get the fixed size flag", fixed_size_get, NULL, -1, 0},
-        	{"get the unset fixed size flag", fixed_size_unset_get, NULL, -1, 0},
-        	{NULL, NULL, NULL, -1, 0}
+                {"get initial size", initial_size_get, NULL, -1, 0},
+                {"get unset initial size", initial_size_unset_get, NULL, -1, 0},
+                {"get initial size after remove", initial_size_after_remove_get, NULL, -1, 0},
+                {"get initial size for many widgets", initial_size_many_get, NULL, -1, 0},
+                {"get the fixed size flag", fixed_size_get, NULL, -1, 0},
+                {"get the unset fixed size flag", fixed_size_unset_get, NULL, -1, 0},
+                {NULL, NULL, NULL, -1, 0}
         };
 
 void
@@ -59,25 +59,25 @@ create_test(Ewl_Container *box)
         ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_FILL);
         ewl_container_child_append(EWL_CONTAINER(pane2), o);
         ewl_callback_append(o, EWL_CALLBACK_CLICKED,
-        		ewl_paned_test_cb_clicked, "Fill");
+                        ewl_paned_test_cb_clicked, "Fill");
         ewl_widget_show(o);
 
         o = ewl_button_new();
         ewl_button_label_set(EWL_BUTTON(o), "HFill | VShrink");
         ewl_object_fill_policy_set(EWL_OBJECT(o),
-        		EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
+                        EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
         ewl_container_child_append(EWL_CONTAINER(pane2), o);
         ewl_callback_append(o, EWL_CALLBACK_CLICKED,
-        		ewl_paned_test_cb_clicked, "HFill | VShrink");
+                        ewl_paned_test_cb_clicked, "HFill | VShrink");
         ewl_widget_show(o);
 
         o = ewl_button_new();
         ewl_button_label_set(EWL_BUTTON(o), "HShrink | VFill");
         ewl_object_fill_policy_set(EWL_OBJECT(o),
-        		EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_VFILL);
+                        EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_VFILL);
         ewl_container_child_append(EWL_CONTAINER(pane2), o);
         ewl_callback_append(o, EWL_CALLBACK_CLICKED,
-        		ewl_paned_test_cb_clicked, "HShrink | VFill");
+                        ewl_paned_test_cb_clicked, "HShrink | VFill");
         ewl_widget_show(o);
 
         o = ewl_button_new();
@@ -85,7 +85,7 @@ create_test(Ewl_Container *box)
         ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
         ewl_container_child_append(EWL_CONTAINER(pane2), o);
         ewl_callback_append(o, EWL_CALLBACK_CLICKED,
-        		ewl_paned_test_cb_clicked, "Shrink");
+                        ewl_paned_test_cb_clicked, "Shrink");
         ewl_widget_show(o);
 
         pane3 = ewl_hpaned_new();
@@ -96,10 +96,10 @@ create_test(Ewl_Container *box)
         ewl_button_label_set(EWL_BUTTON(o), "Left Top");
         ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_NONE);
         ewl_object_alignment_set(EWL_OBJECT(o),
-        			EWL_FLAG_ALIGN_LEFT | EWL_FLAG_ALIGN_TOP);
+                                EWL_FLAG_ALIGN_LEFT | EWL_FLAG_ALIGN_TOP);
         ewl_container_child_append(EWL_CONTAINER(pane3), o);
         ewl_callback_append(o, EWL_CALLBACK_CLICKED,
-        		ewl_paned_test_cb_clicked, "Left Top");
+                        ewl_paned_test_cb_clicked, "Left Top");
         ewl_widget_show(o);
 
         o = ewl_button_new();
@@ -108,23 +108,23 @@ create_test(Ewl_Container *box)
         ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_CENTER);
         ewl_container_child_append(EWL_CONTAINER(pane3), o);
         ewl_callback_append(o, EWL_CALLBACK_CLICKED,
-        		ewl_paned_test_cb_clicked, "Center");
+                        ewl_paned_test_cb_clicked, "Center");
         ewl_widget_show(o);
 
         o = ewl_button_new();
         ewl_button_label_set(EWL_BUTTON(o), "Right Bottom");
         ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_NONE);
         ewl_object_alignment_set(EWL_OBJECT(o),
-        		EWL_FLAG_ALIGN_RIGHT | EWL_FLAG_ALIGN_BOTTOM);
+                        EWL_FLAG_ALIGN_RIGHT | EWL_FLAG_ALIGN_BOTTOM);
         ewl_container_child_append(EWL_CONTAINER(pane3), o);
         ewl_callback_append(o, EWL_CALLBACK_CLICKED,
-        		ewl_paned_test_cb_clicked, "Right Bottom");
+                        ewl_paned_test_cb_clicked, "Right Bottom");
         ewl_widget_show(o);
 
         pbox = ewl_hbox_new();
         ewl_container_child_append(EWL_CONTAINER(pane1), pbox);
         ewl_object_fill_policy_set(EWL_OBJECT(pbox),
-        			EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_NONE);
+                                EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_NONE);
         ewl_widget_show(pbox);
 
         o = ewl_button_new();
@@ -144,7 +144,7 @@ create_test(Ewl_Container *box)
 
 static void
 ewl_paned_test_cb_clicked(Ewl_Widget *w, void *ev __UNUSED__,
-        					void *data)
+                                                void *data)
 {
         printf("Clicked %s\n", (char *)data);
         ewl_widget_hide(w);
@@ -152,7 +152,7 @@ ewl_paned_test_cb_clicked(Ewl_Widget *w, void *ev __UNUSED__,
 
 static void
 ewl_paned_test_cb_clicked_destroy(Ewl_Widget *w, void *ev __UNUSED__,
-        					void *data)
+                                                void *data)
 {
         printf("Destroy Clicked %s\n", (char *)data);
         ewl_widget_destroy(w);
@@ -160,7 +160,7 @@ ewl_paned_test_cb_clicked_destroy(Ewl_Widget *w, void *ev __UNUSED__,
 
 static void
 ewl_paned_test_cb_add(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
-        							void *data)
+                                                                void *data)
 {
         Ewl_Widget *o;
         Ewl_Paned *p;
@@ -172,7 +172,7 @@ ewl_paned_test_cb_add(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
         ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
         ewl_container_child_append(EWL_CONTAINER(p), o);
         ewl_callback_append(o, EWL_CALLBACK_CLICKED,
-        		ewl_paned_test_cb_clicked_destroy, "New Button");
+                        ewl_paned_test_cb_clicked_destroy, "New Button");
         ewl_widget_show(o);
 }
 
@@ -192,8 +192,8 @@ initial_size_get(char *buf, int len)
         val = ewl_paned_initial_size_get(EWL_PANED(paned), child);
 
         if (val != 240) {
-        	LOG_FAILURE(buf, len, "get value is different from the set one");
-        	ret = 0;
+                LOG_FAILURE(buf, len, "get value is different from the set one");
+                ret = 0;
         }
 
         ewl_widget_destroy(paned);
@@ -216,8 +216,8 @@ initial_size_unset_get(char *buf, int len)
         val = ewl_paned_initial_size_get(EWL_PANED(paned), child);
 
         if (val != 0) {
-        	LOG_FAILURE(buf, len, "get value is not 0");
-        	ret = 0;
+                LOG_FAILURE(buf, len, "get value is not 0");
+                ret = 0;
         }
 
         ewl_widget_destroy(paned);
@@ -243,8 +243,8 @@ initial_size_after_remove_get(char *buf, int len)
         val = ewl_paned_initial_size_get(EWL_PANED(paned), child);
 
         if (val != 0) {
-        	LOG_FAILURE(buf, len, "get value is not zero");
-        	ret = 0;
+                LOG_FAILURE(buf, len, "get value is not zero");
+                ret = 0;
         }
 
         ewl_widget_destroy(child);
@@ -265,20 +265,20 @@ initial_size_many_get(char *buf, int len)
 
         /* build the children and set the initial size for them */
         for (i = 0; i < 4; i++) {
-        	w[i] = ewl_cell_new();
-        	ewl_container_child_append(EWL_CONTAINER(paned), w[i]);
-        	ewl_paned_initial_size_set(EWL_PANED(paned), w[i], 240 + i);
+                w[i] = ewl_cell_new();
+                ewl_container_child_append(EWL_CONTAINER(paned), w[i]);
+                ewl_paned_initial_size_set(EWL_PANED(paned), w[i], 240 + i);
         }
 
         /* now check the set values */
         for (i = 0; i < 4; i++) {
-        	int val = ewl_paned_initial_size_get(EWL_PANED(paned), w[i]);
+                int val = ewl_paned_initial_size_get(EWL_PANED(paned), w[i]);
 
-        	if (val != 240 + i) {
-        		LOG_FAILURE(buf, len, "get value is not zero");
-        		ret = 0;
-        		break;
-        	}
+                if (val != 240 + i) {
+                        LOG_FAILURE(buf, len, "get value is not zero");
+                        ret = 0;
+                        break;
+                }
         }
 
         ewl_widget_destroy(paned);
@@ -302,8 +302,8 @@ fixed_size_get(char *buf, int len)
         val = ewl_paned_fixed_size_get(EWL_PANED(paned), child);
 
         if (!val) {
-        	LOG_FAILURE(buf, len, "get value is different from the set one");
-        	ret = 0;
+                LOG_FAILURE(buf, len, "get value is different from the set one");
+                ret = 0;
         }
 
         ewl_widget_destroy(paned);
@@ -326,8 +326,8 @@ fixed_size_unset_get(char *buf, int len)
         val = ewl_paned_fixed_size_get(EWL_PANED(paned), child);
 
         if (val) {
-        	LOG_FAILURE(buf, len, "get value is not FALSE");
-        	ret = 0;
+                LOG_FAILURE(buf, len, "get value is not FALSE");
+                ret = 0;
         }
 
         ewl_widget_destroy(paned);

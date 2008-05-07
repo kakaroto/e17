@@ -10,7 +10,7 @@
 #include "ewl_debug.h"
 
 Ewl_Widget *ewl_filelist_view_widget_fetch(void *data,
-        		unsigned int row __UNUSED__, unsigned int column)
+                        unsigned int row __UNUSED__, unsigned int column)
 {
         Ewl_Widget *ret;
         const char *img = NULL, *stock, *filename;
@@ -22,31 +22,31 @@ Ewl_Widget *ewl_filelist_view_widget_fetch(void *data,
         ret = ewl_icon_simple_new();
         ewl_icon_constrain_set(EWL_ICON(ret), EWL_ICON_SIZE_MEDIUM);
         ewl_box_orientation_set(EWL_BOX(ret),
-        		EWL_ORIENTATION_HORIZONTAL);
+                        EWL_ORIENTATION_HORIZONTAL);
         ewl_object_alignment_set(EWL_OBJECT(ret), EWL_FLAG_ALIGN_LEFT);
 
         /* Get and set data into icon */
         if (column == 0)
         {
-        	if (!strcmp(data, ".."))
-        		img = ewl_icon_theme_icon_path_get
-        					(EWL_ICON_GO_UP,
-        					 EWL_ICON_SIZE_MEDIUM);
-        	else
-        	{
-        		stock = ewl_filelist_stock_icon_get(data);
-        		img = ewl_icon_theme_icon_path_get(stock,
-        					EWL_ICON_SIZE_MEDIUM);
-        	}
-        	if (img) ewl_icon_image_set(EWL_ICON(ret), 
-        					img, NULL);
+                if (!strcmp(data, ".."))
+                        img = ewl_icon_theme_icon_path_get
+                                                (EWL_ICON_GO_UP,
+                                                 EWL_ICON_SIZE_MEDIUM);
+                else
+                {
+                        stock = ewl_filelist_stock_icon_get(data);
+                        img = ewl_icon_theme_icon_path_get(stock,
+                                                EWL_ICON_SIZE_MEDIUM);
+                }
+                if (img) ewl_icon_image_set(EWL_ICON(ret), 
+                                                img, NULL);
 
-        	filename = ecore_file_file_get(data);
-        	ewl_icon_label_set(EWL_ICON(ret), filename);
+                filename = ecore_file_file_get(data);
+                ewl_icon_label_set(EWL_ICON(ret), filename);
         }
         else
         {
-        	ewl_icon_label_set(EWL_ICON(ret), data);
+                ewl_icon_label_set(EWL_ICON(ret), data);
         }
         
         FREE(data);
@@ -56,7 +56,7 @@ Ewl_Widget *ewl_filelist_view_widget_fetch(void *data,
 }
 
 Ewl_Widget *ewl_filelist_view_header_fetch(void *data __UNUSED__,
-        					unsigned int column)
+                                                unsigned int column)
 {
         Ewl_Widget *l;
         char *t;

@@ -9,8 +9,8 @@
 
 static Ewl_View *ewl_tree_view_freebox_view = NULL;
 static Ewl_Widget *ewl_tree_view_freebox_cb_widget_fetch(void *data,
-        						unsigned int col,
-        						unsigned int row);
+                                                        unsigned int col,
+                                                        unsigned int row);
 
 /**
  * @return Returns the view for this widget
@@ -23,9 +23,9 @@ ewl_tree_view_freebox_get(void)
 
         if (!ewl_tree_view_freebox_view)
         {
-        	ewl_tree_view_freebox_view = ewl_view_new();
-        	ewl_view_widget_fetch_set(ewl_tree_view_freebox_view,
-        			ewl_tree_view_freebox_cb_widget_fetch);
+                ewl_tree_view_freebox_view = ewl_view_new();
+                ewl_view_widget_fetch_set(ewl_tree_view_freebox_view,
+                                ewl_tree_view_freebox_cb_widget_fetch);
         }
 
         DRETURN_PTR(ewl_tree_view_freebox_view, DLEVEL_STABLE);
@@ -33,8 +33,8 @@ ewl_tree_view_freebox_get(void)
 
 static Ewl_Widget *
 ewl_tree_view_freebox_cb_widget_fetch(void *data __UNUSED__,
-        				unsigned int col __UNUSED__,
-        				unsigned int row __UNUSED__)
+                                        unsigned int col __UNUSED__,
+                                        unsigned int row __UNUSED__)
 {
         Ewl_Widget *tree;
 
@@ -59,12 +59,12 @@ ewl_tree_view_freebox_new(void)
 
         w = NEW(Ewl_Tree_View_Freebox, 1);
         if (!w)
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
 
         if (!ewl_tree_view_freebox_init(EWL_TREE_VIEW_FREEBOX(w)))
         {
-        	ewl_widget_destroy(w);
-        	w = NULL;
+                ewl_widget_destroy(w);
+                w = NULL;
         }
 
         DRETURN_PTR(w, DLEVEL_STABLE);
@@ -82,7 +82,7 @@ ewl_tree_view_freebox_init(Ewl_Tree_View_Freebox *tv)
         DCHECK_PARAM_PTR_RET(tv, FALSE);
 
         if (!ewl_tree_view_init(EWL_TREE_VIEW(tv)))
-        	DRETURN_INT(FALSE, DLEVEL_STABLE);
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
 
         ewl_box_orientation_set(EWL_BOX(tv), EWL_ORIENTATION_VERTICAL);
         ewl_widget_inherit(EWL_WIDGET(tv), EWL_TREE_VIEW_FREEBOX_TYPE);
@@ -95,12 +95,12 @@ ewl_tree_view_freebox_init(Ewl_Tree_View_Freebox *tv)
 
         tv->fbox = ewl_vfreebox_new();
         ewl_freebox_layout_type_set(EWL_FREEBOX(tv->fbox),
-        			EWL_FREEBOX_LAYOUT_AUTO);
+                                EWL_FREEBOX_LAYOUT_AUTO);
         ewl_container_child_append(EWL_CONTAINER(tv->scroll), tv->fbox);
         ewl_widget_show(tv->fbox);
 
         ewl_container_redirect_set(EWL_CONTAINER(tv), 
-        			EWL_CONTAINER(tv->fbox));
+                                EWL_CONTAINER(tv->fbox));
 
         DRETURN_INT(TRUE, DLEVEL_STABLE);
 }

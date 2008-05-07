@@ -21,12 +21,12 @@ ewl_dialog_new(void)
 
         d = NEW(Ewl_Dialog, 1);
         if (!d) {
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
         }
 
         if (!ewl_dialog_init(d)) {
-        	ewl_widget_destroy(EWL_WIDGET(d));
-        	d = NULL;
+                ewl_widget_destroy(EWL_WIDGET(d));
+                d = NULL;
         }
 
         DRETURN_PTR(EWL_WIDGET(d), DLEVEL_STABLE);
@@ -48,7 +48,7 @@ ewl_dialog_init(Ewl_Dialog *dialog)
         w = EWL_WIDGET(dialog);
 
         if (!ewl_window_init(EWL_WINDOW(dialog))) {
-        	DRETURN_INT(FALSE, DLEVEL_STABLE);
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
         }
 
         ewl_widget_appearance_set(w, EWL_DIALOG_TYPE);
@@ -61,7 +61,7 @@ ewl_dialog_init(Ewl_Dialog *dialog)
          */
         dialog->box = ewl_vbox_new();
         if (!dialog->box) {
-        	DRETURN_INT(FALSE, DLEVEL_STABLE);
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
         }
         ewl_container_child_append(EWL_CONTAINER(dialog), dialog->box);
         ewl_widget_internal_set(dialog->box, TRUE);
@@ -73,7 +73,7 @@ ewl_dialog_init(Ewl_Dialog *dialog)
          */
         dialog->vbox = ewl_vbox_new();
         if (!dialog->vbox) {
-        	DRETURN_INT(FALSE, DLEVEL_STABLE);
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
         }
 
         ewl_container_child_append(EWL_CONTAINER(dialog->box), dialog->vbox);
@@ -84,7 +84,7 @@ ewl_dialog_init(Ewl_Dialog *dialog)
 
         dialog->separator = ewl_hseparator_new();
         if (!dialog->separator) {
-        	DRETURN_INT(FALSE, DLEVEL_STABLE);
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
         }
         ewl_container_child_append(EWL_CONTAINER(dialog->box), dialog->separator);
         ewl_widget_internal_set(dialog->separator, TRUE);
@@ -96,21 +96,21 @@ ewl_dialog_init(Ewl_Dialog *dialog)
         dialog->action_area = ewl_cell_new();
         ewl_widget_appearance_set(dialog->action_area, "actionarea");
         ewl_object_fill_policy_set(EWL_OBJECT(dialog->action_area),
-        		   EWL_FLAG_FILL_HFILL);
+                           EWL_FLAG_FILL_HFILL);
         ewl_widget_internal_set(dialog->action_area, TRUE);
         ewl_container_child_append(EWL_CONTAINER(dialog->box), 
-        		dialog->action_area);
+                        dialog->action_area);
         ewl_widget_show(dialog->action_area);
 
         dialog->action_box = ewl_hbox_new();
         if (!dialog->action_box) {
-        	DRETURN_INT(FALSE, DLEVEL_STABLE);
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
         }
         ewl_container_child_append(EWL_CONTAINER(dialog->action_area), 
-        		dialog->action_box);
+                        dialog->action_box);
         ewl_box_homogeneous_set(EWL_BOX(dialog->action_box), FALSE);
         ewl_object_fill_policy_set(EWL_OBJECT(dialog->action_box),
-        		   EWL_FLAG_FILL_NONE);
+                           EWL_FLAG_FILL_NONE);
         ewl_widget_internal_set(dialog->action_box, TRUE);
         ewl_widget_show(dialog->action_box);
 
@@ -133,7 +133,7 @@ ewl_dialog_action_position_set(Ewl_Dialog *d, Ewl_Position pos)
         DCHECK_TYPE(d, EWL_DIALOG_TYPE);
 
         if (pos == d->position) {
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
         }
 
         d->position = pos;
@@ -142,24 +142,24 @@ ewl_dialog_action_position_set(Ewl_Dialog *d, Ewl_Position pos)
          * First determine the orientation of the dialog area.
          */
         if (pos & (EWL_POSITION_LEFT | EWL_POSITION_RIGHT)) {
-        	ewl_box_orientation_set(EWL_BOX(d->box),
-        				EWL_ORIENTATION_HORIZONTAL);
-        	ewl_separator_orientation_set(EWL_SEPARATOR((d->separator)),
-        				EWL_ORIENTATION_VERTICAL);
-        	ewl_box_orientation_set(EWL_BOX(d->action_box),
-        				EWL_ORIENTATION_VERTICAL);
-        	ewl_object_fill_policy_set(EWL_OBJECT(d->action_area),
-        		   EWL_FLAG_FILL_VFILL);
+                ewl_box_orientation_set(EWL_BOX(d->box),
+                                        EWL_ORIENTATION_HORIZONTAL);
+                ewl_separator_orientation_set(EWL_SEPARATOR((d->separator)),
+                                        EWL_ORIENTATION_VERTICAL);
+                ewl_box_orientation_set(EWL_BOX(d->action_box),
+                                        EWL_ORIENTATION_VERTICAL);
+                ewl_object_fill_policy_set(EWL_OBJECT(d->action_area),
+                           EWL_FLAG_FILL_VFILL);
         }
         else {
-        	ewl_box_orientation_set(EWL_BOX(d->box),
-        				EWL_ORIENTATION_VERTICAL);
-        	ewl_separator_orientation_set(EWL_SEPARATOR((d->separator)),
-        				EWL_ORIENTATION_HORIZONTAL);
-        	ewl_box_orientation_set(EWL_BOX(d->action_box),
-        				EWL_ORIENTATION_HORIZONTAL);
-        	ewl_object_fill_policy_set(EWL_OBJECT(d->action_area),
-        		   EWL_FLAG_FILL_HFILL);
+                ewl_box_orientation_set(EWL_BOX(d->box),
+                                        EWL_ORIENTATION_VERTICAL);
+                ewl_separator_orientation_set(EWL_SEPARATOR((d->separator)),
+                                        EWL_ORIENTATION_HORIZONTAL);
+                ewl_box_orientation_set(EWL_BOX(d->action_box),
+                                        EWL_ORIENTATION_HORIZONTAL);
+                ewl_object_fill_policy_set(EWL_OBJECT(d->action_area),
+                           EWL_FLAG_FILL_HFILL);
         }
 
         ewl_container_child_remove(EWL_CONTAINER(d->box), d->separator);
@@ -169,16 +169,16 @@ ewl_dialog_action_position_set(Ewl_Dialog *d, Ewl_Position pos)
          * Repack order of the widgets to match new position
          */
         if (pos & (EWL_POSITION_LEFT | EWL_POSITION_TOP)) {
-        	ewl_container_child_prepend(EWL_CONTAINER(d->box),
-        				    d->separator);
-        	ewl_container_child_prepend(EWL_CONTAINER(d->box),
-        				    d->action_area);
+                ewl_container_child_prepend(EWL_CONTAINER(d->box),
+                                            d->separator);
+                ewl_container_child_prepend(EWL_CONTAINER(d->box),
+                                            d->action_area);
         }
         else {
-        	ewl_container_child_append(EWL_CONTAINER(d->box),
-        				   d->separator);
-        	ewl_container_child_append(EWL_CONTAINER(d->box),
-        				   d->action_area);
+                ewl_container_child_append(EWL_CONTAINER(d->box),
+                                           d->separator);
+                ewl_container_child_append(EWL_CONTAINER(d->box),
+                                           d->action_area);
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -230,7 +230,7 @@ ewl_dialog_action_fill_policy_get(Ewl_Dialog *d)
         DCHECK_TYPE_RET(d, EWL_DIALOG_TYPE, EWL_FLAG_FILL_NONE);
 
         DRETURN_INT(ewl_object_fill_policy_get(EWL_OBJECT(d->action_box)), 
-        		DLEVEL_STABLE);
+                        DLEVEL_STABLE);
 }
 
 /**
@@ -264,7 +264,7 @@ ewl_dialog_action_alignment_get(Ewl_Dialog *d)
         DCHECK_TYPE_RET(d, EWL_DIALOG_TYPE, EWL_FLAG_FILL_NONE);
 
         DRETURN_INT(ewl_object_alignment_get(EWL_OBJECT(d->action_box)), 
-        		DLEVEL_STABLE);
+                        DLEVEL_STABLE);
 }
 
 /**
@@ -280,7 +280,7 @@ ewl_dialog_has_separator_get(Ewl_Dialog *dialog)
         DCHECK_TYPE_RET(dialog, EWL_DIALOG_TYPE, FALSE);
 
         if (!dialog)
-        	DRETURN_INT(FALSE, DLEVEL_STABLE);
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
 
         DRETURN_INT(dialog->separator != NULL, DLEVEL_STABLE);
 }
@@ -302,23 +302,23 @@ ewl_dialog_has_separator_set(Ewl_Dialog *dialog, unsigned int has_sep)
         DCHECK_TYPE(dialog, EWL_DIALOG_TYPE);
 
         if (has_sep && (dialog->separator == NULL)) {
-        	ewl_container_child_iterate_begin(EWL_CONTAINER(EWL_DIALOG(dialog)->vbox));
-        	n = 0;
-        	child = ewl_container_child_next(EWL_CONTAINER(EWL_DIALOG(dialog)->vbox));
-        	while (child) {
-        		n++;
-        		child = ewl_container_child_next(EWL_CONTAINER(EWL_DIALOG(dialog)->vbox));
-        	}
-        	dialog->separator = ewl_hseparator_new();
-        	ewl_container_child_insert(EWL_CONTAINER(dialog->vbox),
-        				   dialog->separator, n);
-        	ewl_object_fill_policy_set(EWL_OBJECT(dialog->separator),
-        				   EWL_FLAG_FILL_SHRINK);
-        	ewl_widget_show(dialog->separator);
+                ewl_container_child_iterate_begin(EWL_CONTAINER(EWL_DIALOG(dialog)->vbox));
+                n = 0;
+                child = ewl_container_child_next(EWL_CONTAINER(EWL_DIALOG(dialog)->vbox));
+                while (child) {
+                        n++;
+                        child = ewl_container_child_next(EWL_CONTAINER(EWL_DIALOG(dialog)->vbox));
+                }
+                dialog->separator = ewl_hseparator_new();
+                ewl_container_child_insert(EWL_CONTAINER(dialog->vbox),
+                                           dialog->separator, n);
+                ewl_object_fill_policy_set(EWL_OBJECT(dialog->separator),
+                                           EWL_FLAG_FILL_SHRINK);
+                ewl_widget_show(dialog->separator);
 
         } else if (!has_sep && (dialog->separator != NULL)) {
-        	ewl_widget_destroy(dialog->separator);
-        	dialog->separator = NULL;
+                ewl_widget_destroy(dialog->separator);
+                dialog->separator = NULL;
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -341,11 +341,11 @@ ewl_dialog_active_area_set(Ewl_Dialog *d, Ewl_Position pos)
         d->active_area = pos;
 
         if (pos == d->position)
-        	ewl_container_redirect_set(EWL_CONTAINER(d),
-        				   EWL_CONTAINER(d->action_box));
+                ewl_container_redirect_set(EWL_CONTAINER(d),
+                                           EWL_CONTAINER(d->action_box));
         else
-        	ewl_container_redirect_set(EWL_CONTAINER(d),
-        				   EWL_CONTAINER(d->vbox));
+                ewl_container_redirect_set(EWL_CONTAINER(d),
+                                           EWL_CONTAINER(d->vbox));
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

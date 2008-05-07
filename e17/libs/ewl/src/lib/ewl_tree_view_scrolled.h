@@ -44,20 +44,20 @@ typedef struct Ewl_Tree_View_Scrolled Ewl_Tree_View_Scrolled;
  */
 struct Ewl_Tree_View_Scrolled
 {
-        Ewl_Box box;			/**< Inherit from Ewl_Box */
-        Ewl_Widget *scroll;		/**< The scroll region */
+        Ewl_Box box;                        /**< Inherit from Ewl_Box */
+        Ewl_Widget *scroll;                /**< The scroll region */
 
-        unsigned char scroll_header:1;	/**< Do we scroll headers */
-        unsigned char scroll_visible:1;	/**< Do we we show the headers */
+        unsigned char scroll_header:1;        /**< Do we scroll headers */
+        unsigned char scroll_visible:1;        /**< Do we we show the headers */
 };
 
 const Ewl_View        *ewl_tree_view_scrolled_get(void);
 
 Ewl_Widget        *ewl_tree_view_scrolled_new(void);
-int        	 ewl_tree_view_scrolled_init(Ewl_Tree_View_Scrolled *tv);
+int                 ewl_tree_view_scrolled_init(Ewl_Tree_View_Scrolled *tv);
 
-void        	 ewl_tree_view_scrolled_scroll_headers_set(Ewl_Tree_View *view,
-        						unsigned int scroll);
+void                 ewl_tree_view_scrolled_scroll_headers_set(Ewl_Tree_View *view,
+                                                        unsigned int scroll);
 unsigned int         ewl_tree_view_scrolled_scroll_headers_get(Ewl_Tree_View *view);
 
 /**

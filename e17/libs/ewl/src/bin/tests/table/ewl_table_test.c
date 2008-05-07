@@ -13,7 +13,7 @@ test_info(Ewl_Test *test)
 {
         test->name = "Table";
         test->tip = "Defines the Ewl_Table class used for\n"
-        		"laying out Ewl_Widget's in an array.";
+                        "laying out Ewl_Widget's in an array.";
         test->filename = __FILE__;
         test->func = create_test;
         test->type = EWL_TEST_TYPE_CONTAINER;
@@ -40,7 +40,7 @@ create_test(Ewl_Container *box)
         ewl_table_attach(EWL_TABLE(table), button[1], 1, 1, 2, 2);
         ewl_object_set_custom_size(EWL_OBJECT(button[1]), 100, 20);
         ewl_object_fill_policy_set(EWL_OBJECT(button[1]),
-        			   EWL_FLAG_FILL_NORMAL);
+                                   EWL_FLAG_FILL_NORMAL);
         ewl_widget_realize(button[1]);
 
         button[2] = ewl_button_new();
@@ -48,7 +48,7 @@ create_test(Ewl_Container *box)
         ewl_table_attach(EWL_TABLE(table), button[2], 1, 1, 3, 3);
         ewl_object_set_custom_size(EWL_OBJECT(button[2]), 100, 20);
         ewl_object_fill_policy_set(EWL_OBJECT(button[2]),
-        			   EWL_FLAG_FILL_NORMAL);
+                                   EWL_FLAG_FILL_NORMAL);
         ewl_widget_show(button[2]);
 
 
@@ -75,7 +75,7 @@ create_test(Ewl_Container *box)
         ewl_table_attach(EWL_TABLE(table), button[6], 2, 2, 4, 4);
         ewl_object_set_custom_size(EWL_OBJECT(button[6]), 100, 20);
         ewl_object_fill_policy_set(EWL_OBJECT(button[6]),
-        			   EWL_FLAG_FILL_NORMAL);
+                                   EWL_FLAG_FILL_NORMAL);
         ewl_widget_realize(button[6]);
 
         button[7] = ewl_button_new();
@@ -83,7 +83,7 @@ create_test(Ewl_Container *box)
         ewl_table_attach(EWL_TABLE(table), button[7], 3, 3, 4, 4);
         ewl_object_set_custom_size(EWL_OBJECT(button[7]), 100, 20);
         ewl_object_fill_policy_set(EWL_OBJECT(button[7]),
-        			   EWL_FLAG_FILL_NORMAL);
+                                   EWL_FLAG_FILL_NORMAL);
         ewl_widget_realize(button[7]);
 
         button[8] = ewl_button_new();
@@ -102,7 +102,7 @@ create_test(Ewl_Container *box)
         ewl_button_label_set(EWL_BUTTON(button[10]), NULL);
         ewl_object_set_custom_size(EWL_OBJECT(button[10]), 100, 20);
         ewl_object_fill_policy_set(EWL_OBJECT(button[10]),
-        			   EWL_FLAG_FILL_NORMAL);
+                                   EWL_FLAG_FILL_NORMAL);
         ewl_table_attach(EWL_TABLE(table), button[10], 4, 4, 4, 4);
         ewl_widget_realize(button[10]);
 
@@ -110,7 +110,7 @@ create_test(Ewl_Container *box)
         ewl_button_label_set(EWL_BUTTON(button[11]), NULL);
         ewl_object_set_custom_size(EWL_OBJECT(button[11]), 100, 20);
         ewl_object_fill_policy_set(EWL_OBJECT(button[11]),
-        			   EWL_FLAG_FILL_NORMAL);
+                                   EWL_FLAG_FILL_NORMAL);
 
         ewl_table_attach(EWL_TABLE(table), button[11], 4, 4, 5, 5);
         ewl_widget_realize(button[11]);

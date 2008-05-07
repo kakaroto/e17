@@ -22,11 +22,11 @@ ewl_seeker_new(void)
 
         s = NEW(Ewl_Seeker, 1);
         if (!s)
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
 
         if (!ewl_seeker_init(s)) {
-        	ewl_widget_destroy(EWL_WIDGET(s));
-        	s = NULL;
+                ewl_widget_destroy(EWL_WIDGET(s));
+                s = NULL;
         }
 
         DRETURN_PTR(EWL_WIDGET(s), DLEVEL_STABLE);
@@ -45,7 +45,7 @@ ewl_hseeker_new(void)
 
         s = ewl_seeker_new();
         if (!s)
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
 
         ewl_seeker_orientation_set(EWL_SEEKER(s), EWL_ORIENTATION_HORIZONTAL);
 
@@ -65,7 +65,7 @@ ewl_vseeker_new(void)
 
         s = ewl_seeker_new();
         if (!s)
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
 
         ewl_seeker_orientation_set(EWL_SEEKER(s), EWL_ORIENTATION_VERTICAL);
 
@@ -91,7 +91,7 @@ ewl_seeker_init(Ewl_Seeker *s)
         w = EWL_WIDGET(s);
 
         if (!ewl_range_init(EWL_RANGE(w)))
-        	DRETURN_INT(FALSE, DLEVEL_STABLE);
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
 
         /*
          * Initialize the widget fields and set default orientation and type
@@ -99,10 +99,10 @@ ewl_seeker_init(Ewl_Seeker *s)
         ewl_widget_appearance_set(w, "hseeker");
         ewl_widget_inherit(w, EWL_SEEKER_TYPE);
         ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_HFILL |
-        			EWL_FLAG_FILL_HSHRINK);
+                                EWL_FLAG_FILL_HSHRINK);
 
         ewl_container_show_notify_set(EWL_CONTAINER(w),
-        			      ewl_seeker_cb_child_show);
+                                      ewl_seeker_cb_child_show);
 
         /*
          * Create and add the button portion of the seeker
@@ -122,36 +122,36 @@ ewl_seeker_init(Ewl_Seeker *s)
          * Add necessary configuration callbacks
          */
         ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, ewl_seeker_cb_configure,
-        		    NULL);
+                            NULL);
         ewl_callback_append(w, EWL_CALLBACK_MOUSE_DOWN,
-        		    ewl_seeker_cb_mouse_down, NULL);
+                            ewl_seeker_cb_mouse_down, NULL);
         ewl_callback_append(w, EWL_CALLBACK_MOUSE_UP,
-        		    ewl_seeker_cb_mouse_up, NULL);
+                            ewl_seeker_cb_mouse_up, NULL);
         ewl_callback_prepend(w, EWL_CALLBACK_DESTROY,
-        		    ewl_seeker_cb_mouse_up, NULL);
+                            ewl_seeker_cb_mouse_up, NULL);
         ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE,
-        		    ewl_seeker_cb_mouse_move, NULL);
+                            ewl_seeker_cb_mouse_move, NULL);
         ewl_callback_append(w, EWL_CALLBACK_KEY_DOWN,
-        		    ewl_seeker_cb_key_down, NULL);
+                            ewl_seeker_cb_key_down, NULL);
         ewl_callback_append(w, EWL_CALLBACK_FOCUS_IN,
-        		    ewl_container_cb_widget_focus_in, NULL);
+                            ewl_container_cb_widget_focus_in, NULL);
         ewl_callback_append(w, EWL_CALLBACK_FOCUS_OUT,
-        		    ewl_container_cb_widget_focus_out, NULL);
+                            ewl_container_cb_widget_focus_out, NULL);
 
         /*
          * Append a callback for catching mouse movements on the button and
          * add the button to the seeker
          */
         ewl_callback_append(s->button, EWL_CALLBACK_MOUSE_DOWN,
-        		    ewl_seeker_cb_button_mouse_down, NULL);
+                            ewl_seeker_cb_button_mouse_down, NULL);
         ewl_callback_append(s->button, EWL_CALLBACK_MOUSE_UP,
-        		    ewl_seeker_cb_button_mouse_up, NULL);
+                            ewl_seeker_cb_button_mouse_up, NULL);
 
         /*
          * We want to catch mouse movement events from the button.
          */
         ewl_container_callback_notify(EWL_CONTAINER(s),
-        		EWL_CALLBACK_MOUSE_MOVE);
+                        EWL_CALLBACK_MOUSE_MOVE);
 
         DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -170,20 +170,20 @@ ewl_seeker_orientation_set(Ewl_Seeker *s, Ewl_Orientation o)
         DCHECK_TYPE(s, EWL_SEEKER_TYPE);
 
         if (o == s->orientation)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         s->orientation = o;
         if (o == EWL_ORIENTATION_HORIZONTAL) {
-        	ewl_widget_appearance_set(EWL_WIDGET(s), "hseeker");
-        	ewl_widget_appearance_set(s->button, "hbutton");
-        	ewl_object_fill_policy_set(EWL_OBJECT(s), EWL_FLAG_FILL_HFILL |
-        			EWL_FLAG_FILL_HSHRINK);
+                ewl_widget_appearance_set(EWL_WIDGET(s), "hseeker");
+                ewl_widget_appearance_set(s->button, "hbutton");
+                ewl_object_fill_policy_set(EWL_OBJECT(s), EWL_FLAG_FILL_HFILL |
+                                EWL_FLAG_FILL_HSHRINK);
         }
         else {
-        	ewl_widget_appearance_set(EWL_WIDGET(s), "vseeker");
-        	ewl_widget_appearance_set(s->button, "vbutton");
-        	ewl_object_fill_policy_set(EWL_OBJECT(s), EWL_FLAG_FILL_VFILL |
-        			EWL_FLAG_FILL_VSHRINK);
+                ewl_widget_appearance_set(EWL_WIDGET(s), "vseeker");
+                ewl_widget_appearance_set(s->button, "vbutton");
+                ewl_object_fill_policy_set(EWL_OBJECT(s), EWL_FLAG_FILL_VFILL |
+                                EWL_FLAG_FILL_VSHRINK);
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -222,17 +222,17 @@ ewl_seeker_autohide_set(Ewl_Seeker *s, int v)
         DCHECK_TYPE(s, EWL_SEEKER_TYPE);
 
         if (s->autohide == v || s->autohide == -v)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         if (!v) {
-        	s->autohide = v;
-        	if (REALIZED(s))
-        		ewl_widget_show(EWL_WIDGET(s));
+                s->autohide = v;
+                if (REALIZED(s))
+                        ewl_widget_show(EWL_WIDGET(s));
         }
         else if (s->autohide < 0)
-        	s->autohide = -v;
+                s->autohide = -v;
         else
-        	s->autohide = v;
+                s->autohide = v;
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -264,7 +264,7 @@ ewl_seeker_autohide_get(Ewl_Seeker *s)
  */
 void
 ewl_seeker_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
-        				void *user_data __UNUSED__)
+                                        void *user_data __UNUSED__)
 {
         Ewl_Seeker *s;
         Ewl_Range *r;
@@ -282,7 +282,7 @@ ewl_seeker_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
         r = EWL_RANGE(w);
 
         if (!s->button)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         dx = CURRENT_X(s);
         dy = CURRENT_Y(s);
@@ -297,20 +297,20 @@ ewl_seeker_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
          */
         s1 = r->step / range;
         if (s->autohide && s1 >= 1.0) {
-        	ewl_widget_hide(w);
-        	s->autohide = -abs(s->autohide);
+                ewl_widget_hide(w);
+                s->autohide = -abs(s->autohide);
         }
 
         if (r->invert)
-        	s2 = (r->max_val - r->value) / range;
+                s2 = (r->max_val - r->value) / range;
         else
-        	s2 = (r->value - r->min_val) / range;
+                s2 = (r->value - r->min_val) / range;
 
         if (s->orientation == EWL_ORIENTATION_VERTICAL) {
-        	dh *= s1;
+                dh *= s1;
         }
         else {
-        	dw *= s1;
+                dw *= s1;
         }
 
         ewl_object_size_request(EWL_OBJECT(s->button), dw, dh);
@@ -322,10 +322,10 @@ ewl_seeker_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
         nh = ewl_object_current_h_get(EWL_OBJECT(s->button));
 
         if (s->orientation == EWL_ORIENTATION_VERTICAL) {
-        	dy += (CURRENT_H(s) - nh) * s2;
+                dy += (CURRENT_H(s) - nh) * s2;
         }
         else {
-        	dx += (CURRENT_W(s) - nw) * s2;
+                dx += (CURRENT_W(s) - nw) * s2;
         }
 
         ewl_object_place(EWL_OBJECT(s->button), dx, dy, nw, nh);
@@ -343,7 +343,7 @@ ewl_seeker_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
  */
 void
 ewl_seeker_cb_button_mouse_down(Ewl_Widget *w, void *ev_data,
-        				void *user_data __UNUSED__)
+                                        void *user_data __UNUSED__)
 {
         Ewl_Event_Mouse *ev;
         Ewl_Seeker *s;
@@ -361,9 +361,9 @@ ewl_seeker_cb_button_mouse_down(Ewl_Widget *w, void *ev_data,
         ewl_object_current_geometry_get(EWL_OBJECT(w), &xx, &yy, &ww, &hh);
 
         if (s->orientation == EWL_ORIENTATION_HORIZONTAL)
-        	s->dragstart = ev->x - (xx + ((ww + 1) / 2));
+                s->dragstart = ev->x - (xx + ((ww + 1) / 2));
         else
-        	s->dragstart = ev->y - (yy + ((hh + 1) / 2));
+                s->dragstart = ev->y - (yy + ((hh + 1) / 2));
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -378,7 +378,7 @@ ewl_seeker_cb_button_mouse_down(Ewl_Widget *w, void *ev_data,
  */
 void
 ewl_seeker_cb_button_mouse_up(Ewl_Widget *w, void *ev_data __UNUSED__,
-        				void *user_data __UNUSED__)
+                                        void *user_data __UNUSED__)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(w);
@@ -400,7 +400,7 @@ ewl_seeker_cb_button_mouse_up(Ewl_Widget *w, void *ev_data __UNUSED__,
  */
 void
 ewl_seeker_cb_mouse_move(Ewl_Widget *w, void *ev_data,
-        		 void *user_data __UNUSED__)
+                         void *user_data __UNUSED__)
 {
         Ewl_Event_Mouse *ev;
         Ewl_Seeker *s;
@@ -416,7 +416,7 @@ ewl_seeker_cb_mouse_move(Ewl_Widget *w, void *ev_data,
         r = EWL_RANGE(w);
 
         if (r->step == r->max_val - r->min_val)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         ev = ev_data;
 
@@ -425,19 +425,19 @@ ewl_seeker_cb_mouse_move(Ewl_Widget *w, void *ev_data,
          */
         if (!ewl_object_state_has(EWL_OBJECT(s->button), EWL_FLAG_STATE_PRESSED)) {
 
-        	if (s->orientation == EWL_ORIENTATION_HORIZONTAL) {
-        		if (ewl_object_state_has(EWL_OBJECT(s),
-        					EWL_FLAG_STATE_PRESSED)) {
-        			s->dragstart = ev->x;
-        		}
-        	}
-        	else {
-        		if (ewl_object_state_has(EWL_OBJECT(s),
-        					EWL_FLAG_STATE_PRESSED)) {
-        			s->dragstart = ev->y;
-        		}
-        	}
-        	DRETURN(DLEVEL_STABLE);
+                if (s->orientation == EWL_ORIENTATION_HORIZONTAL) {
+                        if (ewl_object_state_has(EWL_OBJECT(s),
+                                                EWL_FLAG_STATE_PRESSED)) {
+                                s->dragstart = ev->x;
+                        }
+                }
+                else {
+                        if (ewl_object_state_has(EWL_OBJECT(s),
+                                                EWL_FLAG_STATE_PRESSED)) {
+                                s->dragstart = ev->y;
+                        }
+                }
+                DRETURN(DLEVEL_STABLE);
         }
 
         scale = ewl_seeker_mouse_value_map(s, ev->x, ev->y);
@@ -458,7 +458,7 @@ ewl_seeker_cb_mouse_move(Ewl_Widget *w, void *ev_data,
  */
 void
 ewl_seeker_cb_mouse_down(Ewl_Widget *w, void *ev_data,
-        			void *user_data __UNUSED__)
+                                void *user_data __UNUSED__)
 {
         Ewl_Seeker *s;
         Ewl_Range *r;
@@ -476,10 +476,10 @@ ewl_seeker_cb_mouse_down(Ewl_Widget *w, void *ev_data,
         r = EWL_RANGE(w);
 
         if (ewl_object_state_has(EWL_OBJECT(s->button), EWL_FLAG_STATE_PRESSED))
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         ewl_object_current_geometry_get(EWL_OBJECT(s->button),
-        				&xx, &yy, &ww, &hh);
+                                        &xx, &yy, &ww, &hh);
 
         value = r->value;
 
@@ -488,24 +488,24 @@ ewl_seeker_cb_mouse_down(Ewl_Widget *w, void *ev_data,
          * relative to the button and the orientation of the seeker.
          */
         if (s->orientation == EWL_ORIENTATION_HORIZONTAL) {
-        	s->dragstart = ev->x;
-        	if (ev->x < xx) {
-        		step = -r->step;
-        	}
-        	else if (ev->x > xx + ww) {
-        		step = r->step;
-        	}
+                s->dragstart = ev->x;
+                if (ev->x < xx) {
+                        step = -r->step;
+                }
+                else if (ev->x > xx + ww) {
+                        step = r->step;
+                }
         }
         else {
-        	s->dragstart = ev->y;
-        	if (ev->y < yy)
-        		step = -r->step;
-        	else if (ev->y > yy + hh)
-        		step = r->step;
+                s->dragstart = ev->y;
+                if (ev->y < yy)
+                        step = -r->step;
+                else if (ev->y > yy + hh)
+                        step = r->step;
         }
 
         if (r->invert)
-        	step = -step;
+                step = -step;
         value += step;
 
         ewl_range_value_set(r, value);
@@ -526,7 +526,7 @@ ewl_seeker_cb_mouse_down(Ewl_Widget *w, void *ev_data,
  */
 void
 ewl_seeker_cb_mouse_up(Ewl_Widget *w, void *ev_data __UNUSED__,
-        			void *user_data __UNUSED__)
+                                void *user_data __UNUSED__)
 {
         Ewl_Seeker *s = EWL_SEEKER(w);
 
@@ -535,7 +535,7 @@ ewl_seeker_cb_mouse_up(Ewl_Widget *w, void *ev_data __UNUSED__,
         DCHECK_TYPE(w, EWL_SEEKER_TYPE);
 
         if (s->timer)
-        	ecore_timer_del(s->timer);
+                ecore_timer_del(s->timer);
 
         s->timer = NULL;
         s->start_time = 0;
@@ -554,7 +554,7 @@ ewl_seeker_cb_mouse_up(Ewl_Widget *w, void *ev_data __UNUSED__,
  */
 void
 ewl_seeker_cb_key_down(Ewl_Widget *w, void *ev_data,
-        			void *user_data __UNUSED__)
+                                void *user_data __UNUSED__)
 {
         Ewl_Range *r;
         Ewl_Event_Key *ev;
@@ -572,32 +572,32 @@ ewl_seeker_cb_key_down(Ewl_Widget *w, void *ev_data,
         r = EWL_RANGE(w);
 
         if (!r->invert) {
-        	increase = ewl_range_increase;
-        	decrease = ewl_range_decrease;
-        	start = r->min_val;
-        	end = r->max_val;
+                increase = ewl_range_increase;
+                decrease = ewl_range_decrease;
+                start = r->min_val;
+                end = r->max_val;
         }
         else {
-        	increase = ewl_range_decrease;
-        	decrease = ewl_range_increase;
-        	start = r->max_val;
-        	end = r->min_val;
+                increase = ewl_range_decrease;
+                decrease = ewl_range_increase;
+                start = r->max_val;
+                end = r->min_val;
         }
 
         if (!strcmp(ev->keyname, "Home"))
-        	ewl_range_value_set(r, start);
+                ewl_range_value_set(r, start);
         else if (!strcmp(ev->keyname, "End"))
-        	ewl_range_value_set(r, end);
+                ewl_range_value_set(r, end);
         else if (!strcmp(ev->keyname, "Left")
-        		|| !strcmp(ev->keyname, "KP_Left")
-        		|| !strcmp(ev->keyname, "Up")
-        		|| !strcmp(ev->keyname, "KP_Up"))
-        	decrease(r);
+                        || !strcmp(ev->keyname, "KP_Left")
+                        || !strcmp(ev->keyname, "Up")
+                        || !strcmp(ev->keyname, "KP_Up"))
+                decrease(r);
         else if (!strcmp(ev->keyname, "Right")
-        		|| !strcmp(ev->keyname, "KP_Right")
-        		|| !strcmp(ev->keyname, "Down")
-        		|| !strcmp(ev->keyname, "KP_Down"))
-        	increase(r);
+                        || !strcmp(ev->keyname, "KP_Right")
+                        || !strcmp(ev->keyname, "Down")
+                        || !strcmp(ev->keyname, "KP_Down"))
+                increase(r);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -627,9 +627,9 @@ ewl_seeker_cb_child_show(Ewl_Container *p, Ewl_Widget *w)
         ph = ewl_object_preferred_h_get(EWL_OBJECT(w));
 
         if (EWL_SEEKER(r)->orientation == EWL_ORIENTATION_HORIZONTAL)
-        	pw *= (r->max_val - r->min_val) / r->step;
+                pw *= (r->max_val - r->min_val) / r->step;
         else
-        	ph *= (r->max_val - r->min_val) / r->step;
+                ph *= (r->max_val - r->min_val) / r->step;
 
         ewl_object_preferred_inner_size_set(EWL_OBJECT(p), pw, ph);
 
@@ -652,19 +652,19 @@ ewl_seeker_mouse_value_map(Ewl_Seeker *s, int mx, int my)
         r = EWL_RANGE(s);
 
         if (s->orientation == EWL_ORIENTATION_HORIZONTAL) {
-        	m = mx;
+                m = mx;
 
-        	dc = CURRENT_X(s);
-        	dg = CURRENT_W(s);
+                dc = CURRENT_X(s);
+                dg = CURRENT_W(s);
 
-        	adjust = ewl_object_current_w_get(EWL_OBJECT(s->button));
+                adjust = ewl_object_current_w_get(EWL_OBJECT(s->button));
         }
         else {
-        	m = my;
-        	dc = CURRENT_Y(s);
-        	dg = CURRENT_H(s);
+                m = my;
+                dc = CURRENT_Y(s);
+                dg = CURRENT_H(s);
 
-        	adjust = ewl_object_current_h_get(EWL_OBJECT(s->button));
+                adjust = ewl_object_current_h_get(EWL_OBJECT(s->button));
         }
 
         /*
@@ -683,9 +683,9 @@ ewl_seeker_mouse_value_map(Ewl_Seeker *s, int mx, int my)
          * Bounds checking on the value.
          */
         if (m < dc)
-        	m = dc;
+                m = dc;
         else if (m > dc + dg)
-        	m = dc + dg;
+                m = dc + dg;
 
         /*
          * Calculate the new value based on the range, sizes and new position.
@@ -693,9 +693,9 @@ ewl_seeker_mouse_value_map(Ewl_Seeker *s, int mx, int my)
         scale = (r->max_val - r->min_val) * (double)(m - dc) / (double)dg;
 
         if (!r->invert)
-        	scale = r->min_val + scale;
+                scale = r->min_val + scale;
         else
-        	scale = r->max_val - scale;
+                scale = r->max_val - scale;
 
         DRETURN_FLOAT(scale, DLEVEL_STABLE);
 }
@@ -718,26 +718,26 @@ ewl_seeker_timer(void *data)
          * Find the value based on mouse position
          */
         posval = ewl_seeker_mouse_value_map(s, s->dragstart * 2,
-        					s->dragstart * 2);
+                                                s->dragstart * 2);
 
         /*
          * Limit the value to the intersection with the mouse.
          */
         if (posval > value) {
-        	if (value + step > posval) {
-        		value = posval;
-        	}
-        	else {
-        		value += step;
-        	}
+                if (value + step > posval) {
+                        value = posval;
+                }
+                else {
+                        value += step;
+                }
         }
         else {
-        	if (value - step < posval) {
-        		value = posval;
-        	}
-        	else {
-        		value -= step;
-        	}
+                if (value - step < posval) {
+                        value = posval;
+                }
+                else {
+                        value -= step;
+                }
         }
 
         ewl_range_value_set(EWL_RANGE(s), value);

@@ -55,30 +55,30 @@ struct Ewl_Progressbar
         Ewl_Range range;     /**< Inherit from Ewl_Range */
         Ewl_Widget *bar;       /**< The moving bar on top */
         Ewl_Widget *label;     /**< text label on the bar */
-        int auto_label;	 /**< flag if user is setting label or not */
+        int auto_label;         /**< flag if user is setting label or not */
 };
 
 
 Ewl_Widget         *ewl_progressbar_new(void);
-int            	 ewl_progressbar_init(Ewl_Progressbar *p);
+int                     ewl_progressbar_init(Ewl_Progressbar *p);
 
-void         	 ewl_progressbar_label_set(Ewl_Progressbar *p, char *label);
-void         	 ewl_progressbar_custom_label_set(Ewl_Progressbar *p,
-        						char *format_string);
+void                  ewl_progressbar_label_set(Ewl_Progressbar *p, char *label);
+void                  ewl_progressbar_custom_label_set(Ewl_Progressbar *p,
+                                                        char *format_string);
 
-void         	 ewl_progressbar_label_show(Ewl_Progressbar *p);
-void         	 ewl_progressbar_label_hide(Ewl_Progressbar *p);
+void                  ewl_progressbar_label_show(Ewl_Progressbar *p);
+void                  ewl_progressbar_label_hide(Ewl_Progressbar *p);
 
 /*
  * Internally used callbacks, override at your own risk.
  */
 void ewl_progressbar_cb_configure(Ewl_Widget *w, void *ev_data,
-        			  void *user_data);
+                                  void *user_data);
 void ewl_progressbar_cb_value_changed(Ewl_Widget *w, void *ev_data,
-        			  void *user_data);
+                                  void *user_data);
 void ewl_progressbar_cb_child_show(Ewl_Container *c, Ewl_Widget *w);
 void ewl_progressbar_cb_child_resize(Ewl_Container *c, Ewl_Widget *w, int size,
-        			     Ewl_Orientation o);
+                                     Ewl_Orientation o);
 
 /**
  * @}

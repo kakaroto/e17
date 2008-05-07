@@ -26,7 +26,7 @@ create_test(Ewl_Container *box)
         colorpicker = ewl_colorpicker_new();
         ewl_container_child_append(EWL_CONTAINER(box), colorpicker);
         ewl_callback_append(colorpicker, EWL_CALLBACK_VALUE_CHANGED,
-        				    color_value_changed, NULL);
+                                            color_value_changed, NULL);
         ewl_widget_show(colorpicker);
 
         return 1;

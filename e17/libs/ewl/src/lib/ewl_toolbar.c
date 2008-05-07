@@ -19,11 +19,11 @@ ewl_toolbar_new(void)
 
         t = NEW(Ewl_Toolbar, 1);
         if (!t)
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
 
         if (!ewl_toolbar_init(t)) {
-        	ewl_widget_destroy(EWL_WIDGET(t));
-        	t = NULL;
+                ewl_widget_destroy(EWL_WIDGET(t));
+                t = NULL;
         }
 
         DRETURN_PTR(EWL_WIDGET(t), DLEVEL_STABLE);
@@ -54,8 +54,8 @@ ewl_vtoolbar_new(void)
 
         t = ewl_toolbar_new();
         if (t)
-        	ewl_toolbar_orientation_set(EWL_TOOLBAR(t),
-        			EWL_ORIENTATION_VERTICAL);
+                ewl_toolbar_orientation_set(EWL_TOOLBAR(t),
+                                EWL_ORIENTATION_VERTICAL);
 
         DRETURN_PTR(t, DLEVEL_STABLE);
 }
@@ -78,18 +78,18 @@ ewl_toolbar_init(Ewl_Toolbar *t)
 
         w = EWL_WIDGET(t);
         if (!ewl_menubar_init(EWL_MENUBAR(t)))
-        	DRETURN_INT(FALSE, DLEVEL_STABLE);
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
 
         ewl_widget_inherit(w, EWL_TOOLBAR_TYPE);
         ewl_widget_appearance_set(w, "htoolbar");
 
         ewl_object_fill_policy_set(EWL_OBJECT(t), EWL_FLAG_FILL_HFILL |
-        					  EWL_FLAG_FILL_SHRINK);
+                                                  EWL_FLAG_FILL_SHRINK);
         ewl_object_alignment_set(EWL_OBJECT(t), EWL_FLAG_ALIGN_LEFT |
-        						EWL_FLAG_ALIGN_TOP);
+                                                        EWL_FLAG_ALIGN_TOP);
 
         ewl_container_add_notify_set(EWL_CONTAINER(EWL_MENUBAR(t)->inner_box),
-        				ewl_toolbar_cb_child_add);
+                                        ewl_toolbar_cb_child_add);
         t->hidden = EWL_ICON_PART_NONE;
 
         DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -110,9 +110,9 @@ ewl_toolbar_orientation_set(Ewl_Toolbar *t, Ewl_Orientation o)
 
         ewl_menubar_orientation_set(EWL_MENUBAR(t), o);
         if (o == EWL_ORIENTATION_HORIZONTAL)
-        	ewl_widget_appearance_set(EWL_WIDGET(t), "htoolbar");
+                ewl_widget_appearance_set(EWL_WIDGET(t), "htoolbar");
         else
-        	ewl_widget_appearance_set(EWL_WIDGET(t), "vtoolbar");
+                ewl_widget_appearance_set(EWL_WIDGET(t), "vtoolbar");
 
         ewl_widget_configure(EWL_WIDGET(t));
 
@@ -150,14 +150,14 @@ ewl_toolbar_icon_part_hide(Ewl_Toolbar *t, Ewl_Icon_Part part)
         DCHECK_TYPE(t, EWL_TOOLBAR_TYPE);
 
         if (t->hidden == part)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         t->hidden = part;
 
         ewl_container_child_iterate_begin(EWL_CONTAINER(t));
         while ((child = ewl_container_child_next(EWL_CONTAINER(t)))) {
-        	if (EWL_ICON_IS(child))
-        		ewl_icon_part_hide(EWL_ICON(child), part);
+                if (EWL_ICON_IS(child))
+                        ewl_icon_part_hide(EWL_ICON(child), part);
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -185,7 +185,7 @@ ewl_toolbar_cb_child_add(Ewl_Container *c, Ewl_Widget *w)
         t = EWL_TOOLBAR(EWL_WIDGET(c)->parent);
 
         if (EWL_ICON_IS(w))
-        	ewl_icon_part_hide(EWL_ICON(w), t->hidden);
+                ewl_icon_part_hide(EWL_ICON(w), t->hidden);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

@@ -13,9 +13,9 @@ test_info(Ewl_Test *test)
 {
         test->name = "Floater";
         test->tip = "Defines a widget for layering above other\n "
-        		"widgets in EWL's drawing area, with\n"
-        		"the ability to follow the movement of\n"
-        		"another widget.";
+                        "widgets in EWL's drawing area, with\n"
+                        "the ability to follow the movement of\n"
+                        "another widget.";
         test->filename = __FILE__;
         test->func = create_test;
         test->type = EWL_TEST_TYPE_SIMPLE;
@@ -31,16 +31,16 @@ create_test(Ewl_Container *box)
         ewl_button_label_set(EWL_BUTTON(radio_button[0]), "With Label");
         ewl_container_child_append(EWL_CONTAINER(box), radio_button[0]);
         ewl_object_alignment_set(EWL_OBJECT(radio_button[0]),
-        			 EWL_FLAG_ALIGN_LEFT);
+                                 EWL_FLAG_ALIGN_LEFT);
         ewl_widget_show(radio_button[0]);
 
         radio_button[1] = ewl_radiobutton_new();
         ewl_button_label_set(EWL_BUTTON(radio_button[1]), NULL);
         ewl_radiobutton_chain_set(EWL_RADIOBUTTON(radio_button[1]),
-        			  EWL_RADIOBUTTON(radio_button[0]));
+                                  EWL_RADIOBUTTON(radio_button[0]));
         ewl_container_child_append(EWL_CONTAINER(box), radio_button[1]);
         ewl_object_alignment_set(EWL_OBJECT(radio_button[1]),
-        			 EWL_FLAG_ALIGN_LEFT);
+                                 EWL_FLAG_ALIGN_LEFT);
         ewl_widget_show(radio_button[1]);
 
         floater = ewl_floater_new();
@@ -73,14 +73,14 @@ create_test(Ewl_Container *box)
         ewl_button_label_set(EWL_BUTTON(check_button[0]), "With Label");
         ewl_container_child_append(EWL_CONTAINER(floater), check_button[0]);
         ewl_object_alignment_set(EWL_OBJECT(check_button[0]),
-        			 EWL_FLAG_ALIGN_LEFT);
+                                 EWL_FLAG_ALIGN_LEFT);
         ewl_widget_show(check_button[0]);
 
         check_button[1] = ewl_checkbutton_new();
         ewl_button_label_set(EWL_BUTTON(check_button[1]), NULL);
         ewl_container_child_append(EWL_CONTAINER(floater), check_button[1]);
         ewl_object_alignment_set(EWL_OBJECT(check_button[1]),
-        			 EWL_FLAG_ALIGN_LEFT);
+                                 EWL_FLAG_ALIGN_LEFT);
         ewl_widget_show(check_button[1]);
 
         return 1;

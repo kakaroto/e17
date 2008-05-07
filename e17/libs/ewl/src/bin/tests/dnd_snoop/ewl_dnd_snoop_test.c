@@ -56,7 +56,7 @@ test_info(Ewl_Test *test)
 {
         test->name = "DND Snoop";
         test->tip = "Watches for Xdnd events and prints information "
-        		"to the console.";
+                        "to the console.";
         test->filename = __FILE__;
         test->func = create_test;
         test->type = EWL_TEST_TYPE_ADVANCED;
@@ -71,35 +71,35 @@ create_test(Ewl_Container *box)
         /* Register DND handlers */
 #ifdef ENABLE_EWL_SOFTWARE_X11
         ewl_dnd_enter_handler = ecore_event_handler_add(
-        				ECORE_X_EVENT_XDND_ENTER,
-        				ewl_dnd_snoop_cb_enter, NULL);
+                                        ECORE_X_EVENT_XDND_ENTER,
+                                        ewl_dnd_snoop_cb_enter, NULL);
         ewl_dnd_position_handler = ecore_event_handler_add(
-        				ECORE_X_EVENT_XDND_POSITION,
-        				ewl_dnd_snoop_cb_position, NULL);
+                                        ECORE_X_EVENT_XDND_POSITION,
+                                        ewl_dnd_snoop_cb_position, NULL);
         ewl_dnd_status_handler = ecore_event_handler_add(
-        				ECORE_X_EVENT_XDND_STATUS,
-        				ewl_dnd_snoop_cb_status, NULL);
+                                        ECORE_X_EVENT_XDND_STATUS,
+                                        ewl_dnd_snoop_cb_status, NULL);
         ewl_dnd_leave_handler = ecore_event_handler_add(
-        				ECORE_X_EVENT_XDND_LEAVE,
-        				ewl_dnd_snoop_cb_leave, NULL);
+                                        ECORE_X_EVENT_XDND_LEAVE,
+                                        ewl_dnd_snoop_cb_leave, NULL);
         ewl_dnd_drop_handler = ecore_event_handler_add(
-        				ECORE_X_EVENT_XDND_DROP,
-        				ewl_dnd_snoop_cb_drop, NULL);
+                                        ECORE_X_EVENT_XDND_DROP,
+                                        ewl_dnd_snoop_cb_drop, NULL);
         ewl_dnd_finished_handler = ecore_event_handler_add(
-        				ECORE_X_EVENT_XDND_FINISHED,
-        				ewl_dnd_snoop_cb_finished, NULL);
+                                        ECORE_X_EVENT_XDND_FINISHED,
+                                        ewl_dnd_snoop_cb_finished, NULL);
         ewl_dnd_selection_clear_handler = ecore_event_handler_add(
-        				ECORE_X_EVENT_SELECTION_CLEAR,
-        				ewl_dnd_snoop_cb_selection_clear, NULL);
+                                        ECORE_X_EVENT_SELECTION_CLEAR,
+                                        ewl_dnd_snoop_cb_selection_clear, NULL);
         ewl_dnd_selection_request_handler = ecore_event_handler_add(
-        				ECORE_X_EVENT_SELECTION_REQUEST,
-        				ewl_dnd_snoop_cb_selection_request, NULL);
+                                        ECORE_X_EVENT_SELECTION_REQUEST,
+                                        ewl_dnd_snoop_cb_selection_request, NULL);
         ewl_dnd_selection_notify_handler = ecore_event_handler_add(
-        				ECORE_X_EVENT_SELECTION_NOTIFY,
-        				ewl_dnd_snoop_cb_selection_notify, NULL);
+                                        ECORE_X_EVENT_SELECTION_NOTIFY,
+                                        ewl_dnd_snoop_cb_selection_notify, NULL);
         ewl_dnd_client_message_handler = ecore_event_handler_add(
-        				ECORE_X_EVENT_CLIENT_MESSAGE,
-        				ewl_dnd_snoop_cb_client_message, NULL);
+                                        ECORE_X_EVENT_CLIENT_MESSAGE,
+                                        ewl_dnd_snoop_cb_client_message, NULL);
 #endif
 
         o = ewl_entry_new();
@@ -122,7 +122,7 @@ create_test(Ewl_Container *box)
         ewl_text_glow_color_set(EWL_TEXT(o), 0, 255, 0, 128);
 
         ewl_object_fill_policy_set(EWL_OBJECT(o),
-        			EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
+                                EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
         ewl_widget_show(o);
 
         scroll = ewl_scrollpane_new();
@@ -144,7 +144,7 @@ create_test(Ewl_Container *box)
         ewl_button_label_set(EWL_BUTTON(o), "Clear");
         ewl_container_child_append(EWL_CONTAINER(box), o);
         ewl_callback_append(o, EWL_CALLBACK_CLICKED,
-        				ewl_dnd_snoop_cb_clear, NULL);
+                                        ewl_dnd_snoop_cb_clear, NULL);
         ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
         ewl_widget_show(o);
 
@@ -168,7 +168,7 @@ ewl_dnd_snoop_output(char *buf)
 
 static void
 ewl_dnd_snoop_cb_dnd_position(Ewl_Widget *w, void *event,
-        					void *data __UNUSED__)
+                                                void *data __UNUSED__)
 {
         char buf[PATH_MAX];
         Ewl_Event_Mouse *ev = event;
@@ -178,7 +178,7 @@ ewl_dnd_snoop_cb_dnd_position(Ewl_Widget *w, void *event,
 
 static void
 ewl_dnd_snoop_cb_dnd_drop(Ewl_Widget *w, void *event,
-        					void *data __UNUSED__)
+                                                void *data __UNUSED__)
 {
         char buf[PATH_MAX];
         Ewl_Event_Dnd_Drop *ev = event;
@@ -188,7 +188,7 @@ ewl_dnd_snoop_cb_dnd_drop(Ewl_Widget *w, void *event,
 
 static void
 ewl_dnd_snoop_cb_dnd_data(Ewl_Widget *w, void *event,
-        					void *data __UNUSED__)
+                                                void *data __UNUSED__)
 {
         char buf[PATH_MAX];
         Ewl_Event_Dnd_Data_Received *ev = event;
@@ -198,7 +198,7 @@ ewl_dnd_snoop_cb_dnd_data(Ewl_Widget *w, void *event,
 
 static void
 ewl_dnd_snoop_cb_dnd_data_request(Ewl_Widget *w, void *event,
-        					void *data __UNUSED__)
+                                                void *data __UNUSED__)
 {
         char buf[PATH_MAX];
         Ewl_Embed *emb;
@@ -211,9 +211,9 @@ ewl_dnd_snoop_cb_dnd_data_request(Ewl_Widget *w, void *event,
         ewl_dnd_snoop_output(buf);
         emb = ewl_embed_widget_find(w);
         if (emb)
-        	ewl_engine_embed_dnd_drag_data_send(emb, ev->handle,
-        			(void *)w->inheritance,
-        			strlen(w->inheritance) + 1);
+                ewl_engine_embed_dnd_drag_data_send(emb, ev->handle,
+                                (void *)w->inheritance,
+                                strlen(w->inheritance) + 1);
 }
 
 #ifdef ENABLE_EWL_SOFTWARE_X11
@@ -228,12 +228,12 @@ ewl_dnd_snoop_cb_enter(void *data __UNUSED__, int type __UNUSED__, void *ev)
         ewl_dnd_snoop_output(buf);
 
         snprintf(buf, sizeof(buf), "\tWindow: %d\n\tSource: %d\n",
-        				event->win, event->source);
+                                        event->win, event->source);
         ewl_dnd_snoop_output(buf);
 
         for (i = 0; i < event->num_types; i++) {
-        	snprintf(buf, sizeof(buf), "\tType: %s\n", event->types[i]);
-        	ewl_dnd_snoop_output(buf);
+                snprintf(buf, sizeof(buf), "\tType: %s\n", event->types[i]);
+                ewl_dnd_snoop_output(buf);
         }
         return 1;
 }
@@ -249,11 +249,11 @@ ewl_dnd_snoop_cb_position(void *data __UNUSED__, int type __UNUSED__, void *ev)
         ewl_dnd_snoop_output(buf);
 
         snprintf(buf, sizeof(buf), "\tWindow: %d\n\tSource: %d\n", event->win,
-        							event->source);
+                                                                event->source);
         ewl_dnd_snoop_output(buf);
 
         snprintf(buf, sizeof(buf), "\tPosition: %d,%d\n", event->position.x,
-        						event->position.y);
+                                                        event->position.y);
         ewl_dnd_snoop_output(buf);
 
         name = XGetAtomName(ecore_x_display_get(), event->action);
@@ -275,17 +275,17 @@ ewl_dnd_snoop_cb_status(void *data __UNUSED__, int type __UNUSED__, void *ev)
         ewl_dnd_snoop_output(buf);
 
         snprintf(buf, sizeof(buf), "\tWindow: %d\n\tTarget: %d\n",
-        					event->win, event->target);
+                                                event->win, event->target);
         ewl_dnd_snoop_output(buf);
 
         snprintf(buf, sizeof(buf), "\tAccepts: %d\n", event->will_accept);
         ewl_dnd_snoop_output(buf);
 
         snprintf(buf, sizeof(buf), "\tRegion: %d,%d %dx%d\n",
-        					event->rectangle.x,
-        					event->rectangle.y,
-        					event->rectangle.width,
-        					event->rectangle.height);
+                                                event->rectangle.x,
+                                                event->rectangle.y,
+                                                event->rectangle.width,
+                                                event->rectangle.height);
         ewl_dnd_snoop_output(buf);
 
         name = XGetAtomName(ecore_x_display_get(), event->action);
@@ -306,7 +306,7 @@ ewl_dnd_snoop_cb_leave(void *data __UNUSED__, int type __UNUSED__, void *ev)
         ewl_dnd_snoop_output(buf);
 
         snprintf(buf, sizeof(buf), "\tWindow: %d\n\tSource: %d\n",
-        					event->win, event->source);
+                                                event->win, event->source);
         ewl_dnd_snoop_output(buf);
 
         return 1;
@@ -323,7 +323,7 @@ ewl_dnd_snoop_cb_drop(void *data __UNUSED__, int type __UNUSED__, void *ev)
         ewl_dnd_snoop_output(buf);
 
         snprintf(buf, sizeof(buf), "\tWindow: %d\n\tSource: %d\n",
-        					event->win, event->source);
+                                                event->win, event->source);
         ewl_dnd_snoop_output(buf);
 
         name = XGetAtomName(ecore_x_display_get(), event->action);
@@ -332,7 +332,7 @@ ewl_dnd_snoop_cb_drop(void *data __UNUSED__, int type __UNUSED__, void *ev)
         ewl_dnd_snoop_output(buf);
 
         snprintf(buf, sizeof(buf), "\tPosition: %d,%d\n",
-        				event->position.x, event->position.y);
+                                        event->position.x, event->position.y);
         ewl_dnd_snoop_output(buf);
 
         return 1;
@@ -349,7 +349,7 @@ ewl_dnd_snoop_cb_finished(void *data __UNUSED__, int type __UNUSED__, void *ev)
         ewl_dnd_snoop_output(buf);
 
         snprintf(buf, sizeof(buf), "\tWindow: %d\n\tTarget: %d\n",
-        					event->win, event->target);
+                                                event->win, event->target);
         ewl_dnd_snoop_output(buf);
 
         snprintf(buf, sizeof(buf), "\tCompleted: %d\n", event->completed);
@@ -365,7 +365,7 @@ ewl_dnd_snoop_cb_finished(void *data __UNUSED__, int type __UNUSED__, void *ev)
 
 static int
 ewl_dnd_snoop_cb_selection_clear(void *data __UNUSED__, int type __UNUSED__,
-        							void *ev)
+                                                                void *ev)
 {
         char buf[1024];
         Ecore_X_Event_Selection_Clear *event = ev;
@@ -374,7 +374,7 @@ ewl_dnd_snoop_cb_selection_clear(void *data __UNUSED__, int type __UNUSED__,
         ewl_dnd_snoop_output(buf);
 
         snprintf(buf, sizeof(buf), "\tWindow: %d\n\tSelection%d\n",
-        					event->win, event->selection);
+                                                event->win, event->selection);
         ewl_dnd_snoop_output(buf);
 
         snprintf(buf, sizeof(buf), "\tTime: %d\n", event->time);
@@ -386,7 +386,7 @@ ewl_dnd_snoop_cb_selection_clear(void *data __UNUSED__, int type __UNUSED__,
 
 static int
 ewl_dnd_snoop_cb_selection_request(void *data __UNUSED__, int type __UNUSED__,
-        							void *ev)
+                                                                void *ev)
 {
         char buf[1024];
         Ecore_X_Event_Selection_Request *event = ev;
@@ -425,7 +425,7 @@ ewl_dnd_snoop_cb_selection_request(void *data __UNUSED__, int type __UNUSED__,
 
 static int
 ewl_dnd_snoop_cb_selection_notify(void *data __UNUSED__, int type __UNUSED__,
-        							void *ev)
+                                                                void *ev)
 {
         char buf[1024];
         Ecore_X_Event_Selection_Notify *event = ev;
@@ -434,7 +434,7 @@ ewl_dnd_snoop_cb_selection_notify(void *data __UNUSED__, int type __UNUSED__,
         ewl_dnd_snoop_output(buf);
 
         snprintf(buf, sizeof(buf), "\tWindow: %d\n\tSelection%d\n",
-        					event->win, event->selection);
+                                                event->win, event->selection);
         ewl_dnd_snoop_output(buf);
 
         snprintf(buf, sizeof(buf), "\tTime: %d\n", event->time);
@@ -452,7 +452,7 @@ ewl_dnd_snoop_cb_selection_notify(void *data __UNUSED__, int type __UNUSED__,
 
 static int
 ewl_dnd_snoop_cb_client_message(void *data __UNUSED__, int type __UNUSED__,
-        							void *ev)
+                                                                void *ev)
 {
         char buf[1024];
         Ecore_X_Event_Client_Message *event = ev;
@@ -463,8 +463,8 @@ ewl_dnd_snoop_cb_client_message(void *data __UNUSED__, int type __UNUSED__,
 
         name = XGetAtomName(ecore_x_display_get(), event->message_type);
         snprintf(buf, sizeof(buf), "\tWindow: %d\n\tType: %s\n",
-        					event->win,
-        					name);
+                                                event->win,
+                                                name);
         XFree(name);
         ewl_dnd_snoop_output(buf);
 
@@ -478,7 +478,7 @@ ewl_dnd_snoop_cb_client_message(void *data __UNUSED__, int type __UNUSED__,
 
 static void
 ewl_dnd_snoop_cb_clear(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
-        					void *data __UNUSED__)
+                                                void *data __UNUSED__)
 {
         ewl_text_clear(EWL_TEXT(text));
 }

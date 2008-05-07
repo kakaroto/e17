@@ -22,8 +22,8 @@ static void ee_shutdown(Ewl_Engine *engine);
 
 static void *canvas_funcs[EWL_ENGINE_CANVAS_MAX] =
         {
-        	ee_canvas_setup,
-        	NULL, NULL, NULL, NULL
+                ee_canvas_setup,
+                NULL, NULL, NULL, NULL
         };
 
 Ecore_DList *
@@ -48,12 +48,12 @@ ewl_engine_create(int *argc __UNUSED__, char ** argv __UNUSED__)
 
         engine = NEW(Ewl_Engine_Evas_Fb, 1);
         if (!engine)
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
 
         if (!ee_init(EWL_ENGINE(engine)))
         {
-        	FREE(engine);
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                FREE(engine);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
         }
 
         DRETURN_PTR(EWL_ENGINE(engine), DLEVEL_STABLE);
@@ -68,33 +68,33 @@ ee_init(Ewl_Engine *engine)
         DCHECK_PARAM_PTR_RET(engine, TRUE);
 
         if (ee_key_down_handler)
-        	DRETURN_INT(TRUE, DLEVEL_STABLE);
+                DRETURN_INT(TRUE, DLEVEL_STABLE);
 
         if (!ecore_fb_init(NULL))
-        	DRETURN_INT(TRUE, DLEVEL_STABLE);
+                DRETURN_INT(TRUE, DLEVEL_STABLE);
 
         ee_key_down_handler = ecore_event_handler_add(
-        				ECORE_FB_EVENT_KEY_DOWN,
-        				ewl_ev_fb_key_down, engine);
+                                        ECORE_FB_EVENT_KEY_DOWN,
+                                        ewl_ev_fb_key_down, engine);
         ee_key_up_handler = ecore_event_handler_add(
-        				ECORE_FB_EVENT_KEY_UP,
-        				ewl_ev_fb_key_up, engine);
+                                        ECORE_FB_EVENT_KEY_UP,
+                                        ewl_ev_fb_key_up, engine);
         ee_mouse_down_handler = ecore_event_handler_add(
-        				ECORE_FB_EVENT_MOUSE_BUTTON_DOWN,
-        				ewl_ev_fb_mouse_down, engine);
+                                        ECORE_FB_EVENT_MOUSE_BUTTON_DOWN,
+                                        ewl_ev_fb_mouse_down, engine);
         ee_mouse_up_handler = ecore_event_handler_add(
-        				ECORE_FB_EVENT_MOUSE_BUTTON_UP,
-        				ewl_ev_fb_mouse_up, engine);
+                                        ECORE_FB_EVENT_MOUSE_BUTTON_UP,
+                                        ewl_ev_fb_mouse_up, engine);
         ee_mouse_move_handler = ecore_event_handler_add(
-        				ECORE_FB_EVENT_MOUSE_MOVE,
-        				ewl_ev_fb_mouse_move, engine);
+                                        ECORE_FB_EVENT_MOUSE_MOVE,
+                                        ewl_ev_fb_mouse_move, engine);
 
         if (!ee_key_down_handler || !ee_key_up_handler
-        		|| !ee_mouse_down_handler || !ee_mouse_up_handler
-        		|| !ee_mouse_move_handler)
+                        || !ee_mouse_down_handler || !ee_mouse_up_handler
+                        || !ee_mouse_move_handler)
         {
-        	ee_shutdown(engine);
-        	DRETURN_INT(FALSE, DLEVEL_STABLE);
+                ee_shutdown(engine);
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
         }
 
         info = NEW(Ewl_Engine_Info, 1);
@@ -113,23 +113,23 @@ ee_shutdown(Ewl_Engine *engine)
         DCHECK_PARAM_PTR(engine);
 
         if (ee_key_down_handler)
-        	ecore_event_handler_del(ee_key_down_handler);
+                ecore_event_handler_del(ee_key_down_handler);
         ee_key_down_handler = NULL;
 
         if (ee_key_up_handler)
-        	ecore_event_handler_del(ee_key_up_handler);
+                ecore_event_handler_del(ee_key_up_handler);
         ee_key_up_handler = NULL;
 
         if (ee_mouse_down_handler)
-        	ecore_event_handler_del(ee_mouse_down_handler);
+                ecore_event_handler_del(ee_mouse_down_handler);
         ee_mouse_down_handler = NULL;
 
         if (ee_mouse_up_handler)
-        	ecore_event_handler_del(ee_mouse_up_handler);
+                ecore_event_handler_del(ee_mouse_up_handler);
         ee_mouse_up_handler = NULL;
 
         if (ee_mouse_move_handler)
-        	ecore_event_handler_del(ee_mouse_move_handler);
+                ecore_event_handler_del(ee_mouse_move_handler);
         ee_mouse_move_handler = NULL;
 
         ecore_fb_shutdown();
@@ -157,8 +157,8 @@ ee_canvas_setup(Ewl_Window *win, int debug __UNUSED__)
         info = evas_engine_info_get(evas);
         if (!info)
         {
-        	fprintf(stderr, "Unable to use evas_fb engine for rendering, ");
-        	exit(-1);
+                fprintf(stderr, "Unable to use evas_fb engine for rendering, ");
+                exit(-1);
         }
 
         win->window = fbinfo = (Evas_Engine_Info_FB *)info;
@@ -173,11 +173,11 @@ ee_canvas_setup(Ewl_Window *win, int debug __UNUSED__)
         o = EWL_OBJECT(win);
         evas_engine_info_set(evas, info);
         evas_output_size_set(evas, ewl_object_current_w_get(o),
-        				ewl_object_current_h_get(o));
+                                        ewl_object_current_h_get(o));
         evas_output_viewport_set(evas, ewl_object_current_x_get(o),
-        				ewl_object_current_y_get(o),
-        				ewl_object_current_w_get(o),
-        				ewl_object_current_h_get(o));
+                                        ewl_object_current_y_get(o),
+                                        ewl_object_current_w_get(o),
+                                        ewl_object_current_h_get(o));
         ewl_embed_canvas_set(EWL_EMBED(win), evas, win->window);
 
         EWL_ENGINE_EVAS_FB(EWL_EMBED(win)->engine)->window = win;
@@ -199,7 +199,7 @@ ewl_ev_fb_key_down(void *data, int type __UNUSED__, void *e)
 
         embed = EWL_EMBED(engine->window);
         if (!embed)
-        	DRETURN_INT(TRUE, DLEVEL_STABLE);
+                DRETURN_INT(TRUE, DLEVEL_STABLE);
 
         ewl_embed_key_down_feed(embed, ev->keyname, ewl_ev_modifiers_get());
 
@@ -220,7 +220,7 @@ ewl_ev_fb_key_up(void *data, int type __UNUSED__, void *e)
 
         embed = EWL_EMBED(engine->window);
         if (!embed)
-        	DRETURN_INT(TRUE, DLEVEL_STABLE);
+                DRETURN_INT(TRUE, DLEVEL_STABLE);
 
         ewl_embed_key_down_feed(embed, ev->keyname, ewl_ev_modifiers_get());
 
@@ -243,12 +243,12 @@ ewl_ev_fb_mouse_down(void *data, int type __UNUSED__, void *e)
 
         embed = EWL_EMBED(engine->window);
         if (!embed)
-        	DRETURN_INT(TRUE, DLEVEL_STABLE);
+                DRETURN_INT(TRUE, DLEVEL_STABLE);
 
         if (ev->double_click)
-        	clicks = 2;
+                clicks = 2;
         if (ev->triple_click)
-        	clicks = 3;
+                clicks = 3;
 
         key_modifiers = ewl_ev_modifiers_get();
 
@@ -257,7 +257,7 @@ ewl_ev_fb_mouse_down(void *data, int type __UNUSED__, void *e)
         ewl_embed_mouse_move_feed(embed, ev->x, ev->y, key_modifiers);
 
         ewl_embed_mouse_down_feed(embed, ev->button, clicks, ev->x, ev->y,
-        			  key_modifiers);
+                                  key_modifiers);
 
         DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -277,7 +277,7 @@ ewl_ev_fb_mouse_up(void *data, int type __UNUSED__, void *e)
 
         embed = EWL_EMBED(engine->window);
         if (!embed)
-        	DRETURN_INT(TRUE, DLEVEL_STABLE);
+                DRETURN_INT(TRUE, DLEVEL_STABLE);
 
         key_modifiers = ewl_ev_modifiers_get();
         ewl_embed_mouse_move_feed(embed, ev->x, ev->y, key_modifiers);
@@ -300,10 +300,10 @@ ewl_ev_fb_mouse_move(void *data, int type __UNUSED__, void *e)
 
         embed = EWL_EMBED(engine->window);
         if (!embed)
-        	DRETURN_INT(TRUE, DLEVEL_STABLE);
+                DRETURN_INT(TRUE, DLEVEL_STABLE);
 
         ewl_embed_mouse_move_feed(embed, ev->x, ev->y,
-        				ewl_ev_modifiers_get());
+                                        ewl_ev_modifiers_get());
 
         DRETURN_INT(TRUE, DLEVEL_STABLE);
 }

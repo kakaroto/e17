@@ -18,11 +18,11 @@ ewl_menu_item_new(void)
 
         item = NEW(Ewl_Menu_Item, 1);
         if (!item)
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
 
         if (!ewl_menu_item_init(item)) {
-        	ewl_widget_destroy(EWL_WIDGET(item));
-        	item = NULL;
+                ewl_widget_destroy(EWL_WIDGET(item));
+                item = NULL;
         }
 
         DRETURN_PTR(EWL_WIDGET(item), DLEVEL_STABLE);
@@ -43,7 +43,7 @@ ewl_menu_item_init(Ewl_Menu_Item *item)
          * Initialize the inherited container fields.
          */
         if (!ewl_button_init(EWL_BUTTON(item)))
-        	DRETURN_INT(FALSE, DLEVEL_STABLE);
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
 
         ewl_button_fill_policy_set(EWL_BUTTON(item), EWL_FLAG_FILL_HFILL);
         ewl_button_alignment_set(EWL_BUTTON(item), EWL_FLAG_ALIGN_LEFT);
@@ -54,7 +54,7 @@ ewl_menu_item_init(Ewl_Menu_Item *item)
 
         ewl_object_fill_policy_set(EWL_OBJECT(item), EWL_FLAG_FILL_HFILL);
         ewl_object_fill_policy_set(EWL_OBJECT(EWL_BUTTON(item)->label_object),
-        		EWL_FLAG_FILL_HFILL);
+                        EWL_FLAG_FILL_HFILL);
 
         DRETURN_INT(TRUE, DLEVEL_STABLE);
 }

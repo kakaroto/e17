@@ -56,10 +56,10 @@ typedef enum Ewl_Callback_Type Ewl_Callback_Type;
  */
 enum Ewl_Event_Notify
 {
-        EWL_CALLBACK_NOTIFY_NONE = 0,		/**< No notification or interception */
-        EWL_CALLBACK_NOTIFY_NOTIFY = 1,		/**< Notify of call */
-        EWL_CALLBACK_NOTIFY_INTERCEPT = 2,	/**< Intercept call */
-        EWL_CALLBACK_TYPE_DIRECT = 4		/**< Direct call */
+        EWL_CALLBACK_NOTIFY_NONE = 0,                /**< No notification or interception */
+        EWL_CALLBACK_NOTIFY_NOTIFY = 1,                /**< Notify of call */
+        EWL_CALLBACK_NOTIFY_INTERCEPT = 2,        /**< Intercept call */
+        EWL_CALLBACK_TYPE_DIRECT = 4                /**< Direct call */
 };
 
 /**
@@ -74,8 +74,8 @@ typedef enum Ewl_Event_Notify Ewl_Event_Notify;
  */
 enum Ewl_Orientation
 {
-        EWL_ORIENTATION_HORIZONTAL,	/**< Horizontal layout */
-        EWL_ORIENTATION_VERTICAL	/**< Vertical layout */
+        EWL_ORIENTATION_HORIZONTAL,        /**< Horizontal layout */
+        EWL_ORIENTATION_VERTICAL        /**< Vertical layout */
 };
 
 /**
@@ -117,45 +117,45 @@ enum Ewl_Flags
         /*
          * Flags identifying the visibility status of the widget
          */
-        EWL_FLAG_VISIBLE_HIDDEN = 0,		/**< Widget hidden */
-        EWL_FLAG_VISIBLE_SHOWN = 0x100,		/**< Widget shown */
-        EWL_FLAG_VISIBLE_REALIZED = 0x200,	/**< Widget realized */
-        EWL_FLAG_VISIBLE_REVEALED = 0x400,	/**< Widget revealed */
-        EWL_FLAG_VISIBLE_NOCLIP = 0x800,	/**< Widget has no clip */
+        EWL_FLAG_VISIBLE_HIDDEN = 0,                /**< Widget hidden */
+        EWL_FLAG_VISIBLE_SHOWN = 0x100,                /**< Widget shown */
+        EWL_FLAG_VISIBLE_REALIZED = 0x200,        /**< Widget realized */
+        EWL_FLAG_VISIBLE_REVEALED = 0x400,        /**< Widget revealed */
+        EWL_FLAG_VISIBLE_NOCLIP = 0x800,        /**< Widget has no clip */
 
         /*
          * Behavior modifying properties.
          */
-        EWL_FLAG_PROPERTY_RECURSIVE 	= 0x1000,	/**< Widget is recursive */
-        EWL_FLAG_PROPERTY_TOPLEVEL 	= 0x2000,	/**< Widget is a top level widget */
-        EWL_FLAG_PROPERTY_INTERNAL 	= 0x4000,	/**< Widget is internal */
-        EWL_FLAG_PROPERTY_BLOCK_TAB_FOCUS = 0x8000,	/**< Widget will block tab focus changes */
-        EWL_FLAG_PROPERTY_FOCUSABLE 	= 0x10000,	/**< Widget is focusable */
-        EWL_FLAG_PROPERTY_IN_TAB_LIST 	= 0x20000, 	/**< Widget is in the tab order */
-        EWL_FLAG_PROPERTY_DND_TARGET	= 0x40000,	/**< Widget is DND aware */
-        EWL_FLAG_PROPERTY_DND_SOURCE	= 0x80000,	/**< Widget is dragable */
+        EWL_FLAG_PROPERTY_RECURSIVE         = 0x1000,        /**< Widget is recursive */
+        EWL_FLAG_PROPERTY_TOPLEVEL         = 0x2000,        /**< Widget is a top level widget */
+        EWL_FLAG_PROPERTY_INTERNAL         = 0x4000,        /**< Widget is internal */
+        EWL_FLAG_PROPERTY_BLOCK_TAB_FOCUS = 0x8000,        /**< Widget will block tab focus changes */
+        EWL_FLAG_PROPERTY_FOCUSABLE         = 0x10000,        /**< Widget is focusable */
+        EWL_FLAG_PROPERTY_IN_TAB_LIST         = 0x20000,         /**< Widget is in the tab order */
+        EWL_FLAG_PROPERTY_DND_TARGET        = 0x40000,        /**< Widget is DND aware */
+        EWL_FLAG_PROPERTY_DND_SOURCE        = 0x80000,        /**< Widget is dragable */
 
         /*
          * Flags to indicate queues this object is on.
          */
-        EWL_FLAG_QUEUED_SCHEDULED_CONFIGURE = 0x100000,	/**< Configure scheduled */
-        EWL_FLAG_QUEUED_SCHEDULED_REVEAL = 0x200000,	/**< Reveal scheduled */
-        EWL_FLAG_QUEUED_SCHEDULED_DESTROY = 0x400000,	/**< Delete scheduled */
+        EWL_FLAG_QUEUED_SCHEDULED_CONFIGURE = 0x100000,        /**< Configure scheduled */
+        EWL_FLAG_QUEUED_SCHEDULED_REVEAL = 0x200000,        /**< Reveal scheduled */
+        EWL_FLAG_QUEUED_SCHEDULED_DESTROY = 0x400000,        /**< Delete scheduled */
 
-        EWL_FLAG_QUEUED_PROCESS_CONFIGURE = 0x800000,	/**< Configure in progress */
-        EWL_FLAG_QUEUED_PROCESS_REVEAL = 0x1000000,	/**< Reveal in progress */
-        EWL_FLAG_QUEUED_PROCESS_DESTROY = 0x2000000,	/**< Delete in progress */
+        EWL_FLAG_QUEUED_PROCESS_CONFIGURE = 0x800000,        /**< Configure in progress */
+        EWL_FLAG_QUEUED_PROCESS_REVEAL = 0x1000000,        /**< Reveal in progress */
+        EWL_FLAG_QUEUED_PROCESS_DESTROY = 0x2000000,        /**< Delete in progress */
 
         /*
          * The state enum specifies the current state of a widget, ie. has it
          * been clicked, does it have the keyboard focus, etc.
          */
-        EWL_FLAG_STATE_NORMAL 	= 0,		/**< Widget state normal */
-        EWL_FLAG_STATE_MOUSE_IN = 0x4000000,	/**< Mouse is in the widget */
-        EWL_FLAG_STATE_PRESSED 	= 0x8000000,	/**< Widget is pressed */
-        EWL_FLAG_STATE_FOCUSED 	= 0x10000000,	/**< Widget has focus */
-        EWL_FLAG_STATE_DISABLED = 0x20000000,	/**< Widget is disabled */
-        EWL_FLAG_STATE_DND 	= 0x40000000,	/**< Widget is engaged in DND */
+        EWL_FLAG_STATE_NORMAL         = 0,                /**< Widget state normal */
+        EWL_FLAG_STATE_MOUSE_IN = 0x4000000,        /**< Mouse is in the widget */
+        EWL_FLAG_STATE_PRESSED         = 0x8000000,        /**< Widget is pressed */
+        EWL_FLAG_STATE_FOCUSED         = 0x10000000,        /**< Widget has focus */
+        EWL_FLAG_STATE_DISABLED = 0x20000000,        /**< Widget is disabled */
+        EWL_FLAG_STATE_DND         = 0x40000000,        /**< Widget is engaged in DND */
 };
 
 /**
@@ -169,51 +169,51 @@ enum Ewl_Flags
  * The alignment mask
  */
 #define EWL_FLAGS_ALIGN_MASK (EWL_FLAG_ALIGN_CENTER | EWL_FLAG_ALIGN_LEFT | \
-        	EWL_FLAG_ALIGN_RIGHT | EWL_FLAG_ALIGN_TOP | \
-        	EWL_FLAG_ALIGN_BOTTOM)
+                EWL_FLAG_ALIGN_RIGHT | EWL_FLAG_ALIGN_TOP | \
+                EWL_FLAG_ALIGN_BOTTOM)
 
 /**
  * @def EWL_FLAGS_FILL_MASK
  * The fill mask
  */
 #define EWL_FLAGS_FILL_MASK (EWL_FLAG_FILL_NONE | EWL_FLAG_FILL_SHRINK | \
-        	EWL_FLAG_FILL_FILL)
+                EWL_FLAG_FILL_FILL)
 
 /**
  * @def EWL_FLAGS_VISIBLE_MASK
  * The visibility mask
  */
 #define EWL_FLAGS_VISIBLE_MASK (EWL_FLAG_VISIBLE_HIDDEN | \
-        	EWL_FLAG_VISIBLE_SHOWN | EWL_FLAG_VISIBLE_REALIZED | \
-        	EWL_FLAG_VISIBLE_REVEALED | EWL_FLAG_VISIBLE_NOCLIP)
+                EWL_FLAG_VISIBLE_SHOWN | EWL_FLAG_VISIBLE_REALIZED | \
+                EWL_FLAG_VISIBLE_REVEALED | EWL_FLAG_VISIBLE_NOCLIP)
 
 /**
  * @def EWL_FLAGS_PROPERTY_MASK
  * The property mask
  */
 #define EWL_FLAGS_PROPERTY_MASK (EWL_FLAG_PROPERTY_RECURSIVE | \
-        	EWL_FLAG_PROPERTY_TOPLEVEL | EWL_FLAG_PROPERTY_INTERNAL | \
-        	EWL_FLAG_PROPERTY_BLOCK_TAB_FOCUS | EWL_FLAG_PROPERTY_FOCUSABLE | \
-        	EWL_FLAG_PROPERTY_DND_TARGET | EWL_FLAG_PROPERTY_DND_SOURCE | \
-        	EWL_FLAG_PROPERTY_IN_TAB_LIST)
+                EWL_FLAG_PROPERTY_TOPLEVEL | EWL_FLAG_PROPERTY_INTERNAL | \
+                EWL_FLAG_PROPERTY_BLOCK_TAB_FOCUS | EWL_FLAG_PROPERTY_FOCUSABLE | \
+                EWL_FLAG_PROPERTY_DND_TARGET | EWL_FLAG_PROPERTY_DND_SOURCE | \
+                EWL_FLAG_PROPERTY_IN_TAB_LIST)
 
 /**
  * @def EWL_FLAGS_QUEUED_MASK
  * The queue mask
  */
 #define EWL_FLAGS_QUEUED_MASK (EWL_FLAG_QUEUED_SCHEDULED_CONFIGURE | \
-        	EWL_FLAG_QUEUED_SCHEDULED_REVEAL | EWL_FLAG_QUEUED_SCHEDULED_DESTROY | \
-        	EWL_FLAG_QUEUED_PROCESS_CONFIGURE | EWL_FLAG_QUEUED_PROCESS_REVEAL | \
-        	EWL_FLAG_QUEUED_PROCESS_DESTROY)
+                EWL_FLAG_QUEUED_SCHEDULED_REVEAL | EWL_FLAG_QUEUED_SCHEDULED_DESTROY | \
+                EWL_FLAG_QUEUED_PROCESS_CONFIGURE | EWL_FLAG_QUEUED_PROCESS_REVEAL | \
+                EWL_FLAG_QUEUED_PROCESS_DESTROY)
 
 /**
  * @def EWL_FLAGS_STATE_MASK
  * The state mask
  */
 #define EWL_FLAGS_STATE_MASK (EWL_FLAG_STATE_NORMAL | \
-        	EWL_FLAG_STATE_MOUSE_IN | EWL_FLAG_STATE_PRESSED | \
-        	EWL_FLAG_STATE_FOCUSED | EWL_FLAG_STATE_DND | \
-        	EWL_FLAG_STATE_DISABLED)
+                EWL_FLAG_STATE_MOUSE_IN | EWL_FLAG_STATE_PRESSED | \
+                EWL_FLAG_STATE_FOCUSED | EWL_FLAG_STATE_DND | \
+                EWL_FLAG_STATE_DISABLED)
 
 /**
  * @enum Ewl_Position
@@ -221,10 +221,10 @@ enum Ewl_Flags
  */
 enum Ewl_Position
 {
-        EWL_POSITION_LEFT = 0x1,	/**< Left position */
-        EWL_POSITION_RIGHT = 0x2,	/**< Right position */
-        EWL_POSITION_TOP = 0x4,		/**< Top position */
-        EWL_POSITION_BOTTOM = 0x8	/**< Bottom position */
+        EWL_POSITION_LEFT = 0x1,        /**< Left position */
+        EWL_POSITION_RIGHT = 0x2,        /**< Right position */
+        EWL_POSITION_TOP = 0x4,                /**< Top position */
+        EWL_POSITION_BOTTOM = 0x8        /**< Bottom position */
 };
 
 /**
@@ -244,22 +244,22 @@ typedef enum Ewl_Position Ewl_Position;
  */
 enum Ewl_Window_Flags
 {
-        EWL_WINDOW_BORDERLESS = 0x1,		/**< Window is borderless */
-        EWL_WINDOW_USER_CONFIGURE = 0x2,	/**< User configure */
-        EWL_WINDOW_GRAB_POINTER = 0x4,		/**< Window grabs pointer */
-        EWL_WINDOW_GRAB_KEYBOARD = 0x8,		/**< Window grabs keyboard */
-        EWL_WINDOW_OVERRIDE = 0x10,		/**< Window override setting */
-        EWL_WINDOW_FULLSCREEN = 0x20,		/**< Window is fullscreen */
-        EWL_WINDOW_DIALOG = 0x40,		/**< Window has no max and min buttons */
-        EWL_WINDOW_MODAL = 0x80,		/**< Window is modal */
-        EWL_WINDOW_TRANSIENT = 0x100,		/**< Window is transient for */
-        EWL_WINDOW_TRANSIENT_FOREIGN = 0x200,	/**< Window is transient for */
-        EWL_WINDOW_LEADER = 0x400,		/**< Window HAS a leader */
-        EWL_WINDOW_LEADER_FOREIGN = 0x800,	/**< Window HAS a leader */
-        EWL_WINDOW_SKIP_TASKBAR = 0x1000,	/**< Window skips taskbar */
-        EWL_WINDOW_SKIP_PAGER = 0x2000,		/**< Window skips pager */
-        EWL_WINDOW_DEMANDS_ATTENTION = 0x4000,	/**< Window requires attention */
-        EWL_WINDOW_URGENT = 0x8000		/**< Window is urgent */
+        EWL_WINDOW_BORDERLESS = 0x1,                /**< Window is borderless */
+        EWL_WINDOW_USER_CONFIGURE = 0x2,        /**< User configure */
+        EWL_WINDOW_GRAB_POINTER = 0x4,                /**< Window grabs pointer */
+        EWL_WINDOW_GRAB_KEYBOARD = 0x8,                /**< Window grabs keyboard */
+        EWL_WINDOW_OVERRIDE = 0x10,                /**< Window override setting */
+        EWL_WINDOW_FULLSCREEN = 0x20,                /**< Window is fullscreen */
+        EWL_WINDOW_DIALOG = 0x40,                /**< Window has no max and min buttons */
+        EWL_WINDOW_MODAL = 0x80,                /**< Window is modal */
+        EWL_WINDOW_TRANSIENT = 0x100,                /**< Window is transient for */
+        EWL_WINDOW_TRANSIENT_FOREIGN = 0x200,        /**< Window is transient for */
+        EWL_WINDOW_LEADER = 0x400,                /**< Window HAS a leader */
+        EWL_WINDOW_LEADER_FOREIGN = 0x800,        /**< Window HAS a leader */
+        EWL_WINDOW_SKIP_TASKBAR = 0x1000,        /**< Window skips taskbar */
+        EWL_WINDOW_SKIP_PAGER = 0x2000,                /**< Window skips pager */
+        EWL_WINDOW_DEMANDS_ATTENTION = 0x4000,        /**< Window requires attention */
+        EWL_WINDOW_URGENT = 0x8000                /**< Window is urgent */
 };
 
 /**
@@ -273,10 +273,10 @@ typedef enum Ewl_Window_Flags Ewl_Window_Flags;
  */
 enum Ewl_Popup_Type
 {
-        EWL_POPUP_TYPE_NONE,		/**< No popup type */
-        EWL_POPUP_TYPE_MOUSE,		/**< Popup off the mouse */
-        EWL_POPUP_TYPE_MENU_HORIZONTAL,	/**< Popup with horizontal data */
-        EWL_POPUP_TYPE_MENU_VERTICAL	/**< Popup with vertical data */
+        EWL_POPUP_TYPE_NONE,                /**< No popup type */
+        EWL_POPUP_TYPE_MOUSE,                /**< Popup off the mouse */
+        EWL_POPUP_TYPE_MENU_HORIZONTAL,        /**< Popup with horizontal data */
+        EWL_POPUP_TYPE_MENU_VERTICAL        /**< Popup with vertical data */
 };
 
 /**
@@ -290,9 +290,9 @@ typedef enum Ewl_Popup_Type Ewl_Popup_Type;
  */
 enum Ewl_Tree_Node_Flags
 {
-        EWL_TREE_NODE_NOEXPAND = 0,	/**< Node does not expand */
-        EWL_TREE_NODE_COLLAPSED = 1,	/**< Node is collapsed */
-        EWL_TREE_NODE_EXPANDED = 2,	/**< Node is expanded */
+        EWL_TREE_NODE_NOEXPAND = 0,        /**< Node does not expand */
+        EWL_TREE_NODE_COLLAPSED = 1,        /**< Node is collapsed */
+        EWL_TREE_NODE_EXPANDED = 2,        /**< Node is expanded */
 };
 
 /**
@@ -306,7 +306,7 @@ typedef enum Ewl_Tree_Node_Flags Ewl_Tree_Node_Flags;
  */
 enum Ewl_Notebook_Flags
 {
-        EWL_NOTEBOOK_FLAG_TABS_HIDDEN = 0x10	/**< Tabbar is hidden */
+        EWL_NOTEBOOK_FLAG_TABS_HIDDEN = 0x10        /**< Tabbar is hidden */
 };
 
 /**
@@ -320,9 +320,9 @@ typedef enum Ewl_Notebook_Flags Ewl_Notebook_Flags;
  */
 enum Ewl_Scrollpane_Flags
 {
-        EWL_SCROLLPANE_FLAG_NONE,		/**< No flags set */
-        EWL_SCROLLPANE_FLAG_AUTO_VISIBLE,	/**< Hide if possible */
-        EWL_SCROLLPANE_FLAG_ALWAYS_HIDDEN	/**< Always hide */
+        EWL_SCROLLPANE_FLAG_NONE,                /**< No flags set */
+        EWL_SCROLLPANE_FLAG_AUTO_VISIBLE,        /**< Hide if possible */
+        EWL_SCROLLPANE_FLAG_ALWAYS_HIDDEN        /**< Always hide */
 };
 
 /**
@@ -336,11 +336,11 @@ typedef enum Ewl_Scrollpane_Flags Ewl_Scrollpane_Flags;
  */
 enum Ewl_Key_Modifiers
 {
-        EWL_KEY_MODIFIER_SHIFT = 0x1,	/**< Shift key */
-        EWL_KEY_MODIFIER_CTRL = 0x2,	/**< Ctrl key */
-        EWL_KEY_MODIFIER_ALT = 0x4,	/**< Alt key */
-        EWL_KEY_MODIFIER_MOD = 0x8,	/**< Mod key */
-        EWL_KEY_MODIFIER_WIN = 0x10,	/**< Win key */
+        EWL_KEY_MODIFIER_SHIFT = 0x1,        /**< Shift key */
+        EWL_KEY_MODIFIER_CTRL = 0x2,        /**< Ctrl key */
+        EWL_KEY_MODIFIER_ALT = 0x4,        /**< Alt key */
+        EWL_KEY_MODIFIER_MOD = 0x8,        /**< Mod key */
+        EWL_KEY_MODIFIER_WIN = 0x10,        /**< Win key */
 };
 
 /**
@@ -614,10 +614,10 @@ typedef enum Ewl_Filelist_Event_Type Ewl_Filelist_Event_Type;
  */
 enum Ewl_Grid_Resize_Type
 {
-        EWL_GRID_RESIZE_NORMAL,		/**< use the standard resize methode */
-        EWL_GRID_RESIZE_FIXED,		/**< use the user set size */
-        EWL_GRID_RESIZE_RELATIVE,	/**< use the user set relative size */
-        EWL_GRID_RESIZE_NONE		/**< use the preferred size of the row */
+        EWL_GRID_RESIZE_NORMAL,                /**< use the standard resize methode */
+        EWL_GRID_RESIZE_FIXED,                /**< use the user set size */
+        EWL_GRID_RESIZE_RELATIVE,        /**< use the user set relative size */
+        EWL_GRID_RESIZE_NONE                /**< use the preferred size of the row */
 };
 
 /**
@@ -754,11 +754,11 @@ typedef enum Ewl_Text_Wrap Ewl_Text_Wrap;
  */
 enum Ewl_Rotate
 {
-        EWL_ROTATE_CW_90,	/**< 90 degree clockwise rotation */
-        EWL_ROTATE_180,		/**< 180 degree rotation */
-        EWL_ROTATE_CW_270,	/**< 270 degree clockwise rotation */
-        EWL_ROTATE_CC_90,	/**< 90 degree counter-clockwise rotation */
-        EWL_ROTATE_CC_270	/**< 270 degree counter-clockwise rotation */
+        EWL_ROTATE_CW_90,        /**< 90 degree clockwise rotation */
+        EWL_ROTATE_180,                /**< 180 degree rotation */
+        EWL_ROTATE_CW_270,        /**< 270 degree clockwise rotation */
+        EWL_ROTATE_CC_90,        /**< 90 degree counter-clockwise rotation */
+        EWL_ROTATE_CC_270        /**< 270 degree counter-clockwise rotation */
 };
 
 /**
@@ -772,8 +772,8 @@ typedef enum Ewl_Rotate Ewl_Rotate;
  */
 enum Ewl_Selection_Type
 {
-        EWL_SELECTION_TYPE_INDEX,	/**< Single index */
-        EWL_SELECTION_TYPE_RANGE	/**< Range of indices */
+        EWL_SELECTION_TYPE_INDEX,        /**< Single index */
+        EWL_SELECTION_TYPE_RANGE        /**< Range of indices */
 };
 
 /**
@@ -787,9 +787,9 @@ typedef enum Ewl_Selection_Type Ewl_Selection_Type;
  */
 enum Ewl_Selection_Mode
 {
-        EWL_SELECTION_MODE_NONE,	/**< No selection allowed */
-        EWL_SELECTION_MODE_SINGLE,	/**< Single select only */
-        EWL_SELECTION_MODE_MULTI	/**< Multi select mode */
+        EWL_SELECTION_MODE_NONE,        /**< No selection allowed */
+        EWL_SELECTION_MODE_SINGLE,        /**< Single select only */
+        EWL_SELECTION_MODE_MULTI        /**< Multi select mode */
 };
 
 /**
@@ -803,8 +803,8 @@ typedef enum Ewl_Selection_Mode Ewl_Selection_Mode;
  */
 enum Ewl_Tree_Selection_Type
 {
-        EWL_TREE_SELECTION_TYPE_ROW,	/**< Row selection */
-        EWL_TREE_SELECTION_TYPE_CELL	/**< Cell selection */
+        EWL_TREE_SELECTION_TYPE_ROW,        /**< Row selection */
+        EWL_TREE_SELECTION_TYPE_CELL        /**< Cell selection */
 };
 
 /**

@@ -9,14 +9,14 @@
 
 static int create_test(Ewl_Container *box);
 static void ewl_filepicker_cb_value_changed(Ewl_Widget *w, void *ev,
-        						void *data);
+                                                        void *data);
 static int directory_test_set_get(char *buf, int len);
 static int directory_test_path_split(char *buf, int len);
 
 static Ewl_Unit_Test filepicker_unit_tests[] = {
-        	{"directory set/get", directory_test_set_get, NULL, -1, 1},
-        	{"directory path split", directory_test_path_split, NULL, -1, 1},
-        	{NULL, NULL, NULL, -1, 0}
+                {"directory set/get", directory_test_set_get, NULL, -1, 1},
+                {"directory path split", directory_test_path_split, NULL, -1, 1},
+                {NULL, NULL, NULL, -1, 0}
         };
 
 void
@@ -38,12 +38,12 @@ create_test(Ewl_Container *box)
 
         w = ewl_filepicker_new();
         f = ewl_filepicker_filter_add(EWL_FILEPICKER(w), "C Files",
-        		"*.c", NULL);
+                        "*.c", NULL);
         ewl_filepicker_filter_add(EWL_FILEPICKER(w), "D Files", "*.d", NULL);
         ewl_filepicker_filter_set(EWL_FILEPICKER(w), f);
         ewl_container_child_append(box, w);
         ewl_callback_append(w, EWL_CALLBACK_VALUE_CHANGED,
-        		ewl_filepicker_cb_value_changed, NULL);
+                        ewl_filepicker_cb_value_changed, NULL);
         ewl_widget_show(w);
 
         return 1;
@@ -51,7 +51,7 @@ create_test(Ewl_Container *box)
 
 static void
 ewl_filepicker_cb_value_changed(Ewl_Widget *w, void *ev,
-        				void *data __UNUSED__)
+                                        void *data __UNUSED__)
 {
         Ewl_Filepicker *fp;
         Ewl_Event_Action_Response *e;
@@ -62,25 +62,25 @@ ewl_filepicker_cb_value_changed(Ewl_Widget *w, void *ev,
         /* need to deal with multiselect in here */
         switch (e->response)
         {
-        	case EWL_STOCK_OPEN:
-        	{
-        		char *file;
+                case EWL_STOCK_OPEN:
+                {
+                        char *file;
 
-        		file = ewl_filepicker_selected_file_get(fp);
+                        file = ewl_filepicker_selected_file_get(fp);
 
-        		if (!file)
-        			printf("No file selected.\n");
-        		else
-        		{
-        			printf("%s\n", file);
-        			free(file);
-        		}
-        		break;
-        	}
-        	default:
-        	case EWL_STOCK_CANCEL:
-        		printf("Cancelled\n");
-        		break;
+                        if (!file)
+                                printf("No file selected.\n");
+                        else
+                        {
+                                printf("%s\n", file);
+                                free(file);
+                        }
+                        break;
+                }
+                default:
+                case EWL_STOCK_CANCEL:
+                        printf("Cancelled\n");
+                        break;
         }
 }
 
@@ -93,14 +93,14 @@ directory_test_set_get(char *buf, int len)
 
         fp = ewl_filepicker_new();
         ewl_filepicker_directory_set(EWL_FILEPICKER(fp),
-        				"/tmp");
+                                        "/tmp");
         t = ewl_filepicker_directory_get(EWL_FILEPICKER(fp));
 
         if (strcmp(t, "/tmp"))
-        	LOG_FAILURE(buf, len, "directory_get did not match "
-        					"directory_set %s", t);
+                LOG_FAILURE(buf, len, "directory_get did not match "
+                                                "directory_set %s", t);
         else
-        	ret = 1;
+                ret = 1;
 
         return ret;
 }
@@ -115,19 +115,19 @@ directory_test_path_split(char *buf, int len)
 
         fp = ewl_filepicker_new();
         ewl_filepicker_directory_set(EWL_FILEPICKER(fp),
-        				"/usr/local/bin/");
+                                        "/usr/local/bin/");
 
         ecore_list_first_goto(EWL_FILEPICKER(fp)->path);
         while ((t = ecore_list_next(EWL_FILEPICKER(fp)->path)))
         {
-        	if (strcmp(rez[i], t))
-        	{
-        		LOG_FAILURE(buf, len, "path list not setup correctly. "
-        				"[%s didn't match %s]", t, rez[i]);
-        		ret = 0;
-        		break;
-        	}
-        	i++;
+                if (strcmp(rez[i], t))
+                {
+                        LOG_FAILURE(buf, len, "path list not setup correctly. "
+                                        "[%s didn't match %s]", t, rez[i]);
+                        ret = 0;
+                        break;
+                }
+                i++;
         }
 
         return ret;

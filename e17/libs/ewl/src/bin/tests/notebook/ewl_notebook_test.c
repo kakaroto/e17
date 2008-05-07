@@ -26,8 +26,8 @@ test_info(Ewl_Test *test)
 {
         test->name = "Notebook";
         test->tip = "Provides a container whose children\n"
-        		"are pages that can be switched\n"
-        		"between using tab labels along one\nedge";
+                        "are pages that can be switched\n"
+                        "between using tab labels along one\nedge";
         test->filename = __FILE__;
         test->func = create_test;
         test->type = EWL_TEST_TYPE_CONTAINER;
@@ -47,15 +47,15 @@ create_test(Ewl_Container *box)
         /* append 3 pages */
         for (count = 1; count < 4; count++)
         {
-        	o2 = ewl_label_new();
-        	snprintf(buf, sizeof(buf), "Page %d", count);
-        	ewl_label_text_set(EWL_LABEL(o2), buf);
-        	ewl_widget_show(o2);
+                o2 = ewl_label_new();
+                snprintf(buf, sizeof(buf), "Page %d", count);
+                ewl_label_text_set(EWL_LABEL(o2), buf);
+                ewl_widget_show(o2);
 
-        	o = create_page(buf);
-        	ewl_container_child_append(EWL_CONTAINER(n), o);
-        	ewl_notebook_page_tab_widget_set(EWL_NOTEBOOK(n), o, o2);
-        	ewl_widget_show(o);
+                o = create_page(buf);
+                ewl_container_child_append(EWL_CONTAINER(n), o);
+                ewl_notebook_page_tab_widget_set(EWL_NOTEBOOK(n), o, o2);
+                ewl_widget_show(o);
         }
 
         /* insert a page after the first */
@@ -81,29 +81,29 @@ create_test(Ewl_Container *box)
 
 static void
 notebook_cb_toggle_clicked(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
-        						void *data __UNUSED__)
+                                                        void *data __UNUSED__)
 {
         Ewl_Widget *n;
 
         n = ewl_widget_name_find("notebook");
         ewl_notebook_tabbar_visible_set(EWL_NOTEBOOK(n),
-        		!ewl_notebook_tabbar_visible_get(EWL_NOTEBOOK(n)));
+                        !ewl_notebook_tabbar_visible_get(EWL_NOTEBOOK(n)));
 }
 
 static void
 notebook_cb_homogeneous_toggle_clicked(Ewl_Widget *w __UNUSED__,
-        			void *ev __UNUSED__, void *data __UNUSED__)
+                                void *ev __UNUSED__, void *data __UNUSED__)
 {
         Ewl_Widget *n;
 
         n = ewl_widget_name_find("notebook");
         ewl_notebook_tabbar_homogeneous_set(EWL_NOTEBOOK(n),
-        		!ewl_notebook_tabbar_homogeneous_get(EWL_NOTEBOOK(n)));
+                        !ewl_notebook_tabbar_homogeneous_get(EWL_NOTEBOOK(n)));
 }
 
 static void
 notebook_change_align(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
-        						void *data)
+                                                        void *data)
 {
         Ewl_Widget *n;
         unsigned int align = EWL_FLAG_ALIGN_CENTER;
@@ -111,15 +111,15 @@ notebook_change_align(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
         pos = data;
         if (!strcmp(pos, "Top"))
-        	align = EWL_FLAG_ALIGN_TOP;
+                align = EWL_FLAG_ALIGN_TOP;
         else if (!strcmp(pos, "Bottom"))
-        	align = EWL_FLAG_ALIGN_BOTTOM;
+                align = EWL_FLAG_ALIGN_BOTTOM;
         else if (!strcmp(pos, "Left"))
-        	align = EWL_FLAG_ALIGN_LEFT;
+                align = EWL_FLAG_ALIGN_LEFT;
         else if (!strcmp(pos, "Right"))
-        	align = EWL_FLAG_ALIGN_RIGHT;
+                align = EWL_FLAG_ALIGN_RIGHT;
         else if (!strcmp(pos, "Center"))
-        	align = EWL_FLAG_ALIGN_CENTER;
+                align = EWL_FLAG_ALIGN_CENTER;
 
         n = ewl_widget_name_find("notebook");
         ewl_notebook_tabbar_alignment_set(EWL_NOTEBOOK(n), align);
@@ -127,7 +127,7 @@ notebook_change_align(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
 static void
 notebook_change_position(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
-        						void *data)
+                                                        void *data)
 {
         Ewl_Widget *n;
         unsigned int align = EWL_POSITION_TOP;
@@ -135,13 +135,13 @@ notebook_change_position(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
         pos = data;
         if (!strcmp(pos, "Top"))
-        	align = EWL_POSITION_TOP;
+                align = EWL_POSITION_TOP;
         else if (!strcmp(pos, "Bottom"))
-        	align = EWL_POSITION_BOTTOM;
+                align = EWL_POSITION_BOTTOM;
         else if (!strcmp(pos, "Left"))
-        	align = EWL_POSITION_LEFT;
+                align = EWL_POSITION_LEFT;
         else if (!strcmp(pos, "Right"))
-        	align = EWL_POSITION_RIGHT;
+                align = EWL_POSITION_RIGHT;
 
         n = ewl_widget_name_find("notebook");
         ewl_notebook_tabbar_position_set(EWL_NOTEBOOK(n), align);
@@ -149,7 +149,7 @@ notebook_change_position(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
 static void
 notebook_append_page(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
-        					void *data __UNUSED__)
+                                                void *data __UNUSED__)
 {
         Ewl_Widget *o2, *o, *vis, *n;
         char buf[10];
@@ -173,7 +173,7 @@ notebook_append_page(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
 static void
 notebook_prepend_page(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
-        					void *data __UNUSED__)
+                                                void *data __UNUSED__)
 {
         Ewl_Widget *n, *o2, *o, *vis;
         char buf[10];
@@ -197,7 +197,7 @@ notebook_prepend_page(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
 static void
 notebook_delete_page(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
-        						void *data)
+                                                        void *data)
 {
         Ewl_Widget *n;
 
@@ -237,22 +237,22 @@ create_main_page(void)
 
         for (i = 0; i < (sizeof(alignment) / sizeof(char *)); i++)
         {
-        	o = ewl_radiobutton_new();
-        	ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_LEFT);
-        	ewl_button_label_set(EWL_BUTTON(o), alignment[i]);
-        	ewl_container_child_append(EWL_CONTAINER(border), o);
-        	ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,
-        				notebook_change_align, alignment[i]);
+                o = ewl_radiobutton_new();
+                ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_LEFT);
+                ewl_button_label_set(EWL_BUTTON(o), alignment[i]);
+                ewl_container_child_append(EWL_CONTAINER(border), o);
+                ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,
+                                        notebook_change_align, alignment[i]);
 
-        	if (o2) ewl_radiobutton_chain_set(EWL_RADIOBUTTON(o),
-        						EWL_RADIOBUTTON(o2));
+                if (o2) ewl_radiobutton_chain_set(EWL_RADIOBUTTON(o),
+                                                        EWL_RADIOBUTTON(o2));
 
-        	if (!strcmp(alignment[i], "Center"))
-        		ewl_checkbutton_checked_set(EWL_CHECKBUTTON(o), TRUE);
+                if (!strcmp(alignment[i], "Center"))
+                        ewl_checkbutton_checked_set(EWL_CHECKBUTTON(o), TRUE);
 
-        	ewl_widget_show(o);
+                ewl_widget_show(o);
 
-        	o2 = o;
+                o2 = o;
         }
 
         /* box to hold position list */
@@ -264,22 +264,22 @@ create_main_page(void)
         o2 = NULL;
         for (i = 0; i < (sizeof(position) / sizeof(char *)); i++)
         {
-        	o = ewl_radiobutton_new();
-        	ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_LEFT);
-        	ewl_button_label_set(EWL_BUTTON(o), position[i]);
-        	ewl_container_child_append(EWL_CONTAINER(border), o);
-        	ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,
-        				notebook_change_position, position[i]);
+                o = ewl_radiobutton_new();
+                ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_LEFT);
+                ewl_button_label_set(EWL_BUTTON(o), position[i]);
+                ewl_container_child_append(EWL_CONTAINER(border), o);
+                ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,
+                                        notebook_change_position, position[i]);
 
-        	if (o2) ewl_radiobutton_chain_set(EWL_RADIOBUTTON(o),
-        						EWL_RADIOBUTTON(o2));
+                if (o2) ewl_radiobutton_chain_set(EWL_RADIOBUTTON(o),
+                                                        EWL_RADIOBUTTON(o2));
 
-        	if (!strcmp(alignment[i], "Top"))
-        		ewl_checkbutton_checked_set(EWL_CHECKBUTTON(o), TRUE);
+                if (!strcmp(alignment[i], "Top"))
+                        ewl_checkbutton_checked_set(EWL_CHECKBUTTON(o), TRUE);
 
-        	ewl_widget_show(o);
+                ewl_widget_show(o);
 
-        	o2 = o;
+                o2 = o;
         }
 
         o = ewl_checkbutton_new();
@@ -289,7 +289,7 @@ create_main_page(void)
         ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
         ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_LEFT);
         ewl_callback_append(o, EWL_CALLBACK_CLICKED,
-        			notebook_cb_toggle_clicked, NULL);
+                                notebook_cb_toggle_clicked, NULL);
         ewl_widget_show(o);
 
         o = ewl_checkbutton_new();
@@ -297,7 +297,7 @@ create_main_page(void)
         ewl_container_child_append(EWL_CONTAINER(body), o);
         ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
         ewl_callback_append(o, EWL_CALLBACK_CLICKED,
-        			notebook_cb_homogeneous_toggle_clicked, NULL);
+                                notebook_cb_homogeneous_toggle_clicked, NULL);
         ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_LEFT);
         ewl_widget_show(o);
 
@@ -329,21 +329,21 @@ create_page(const char *name)
         ewl_button_label_set(EWL_BUTTON(o), "Prepend Page");
         ewl_container_child_append(EWL_CONTAINER(box2), o);
         ewl_callback_append(o, EWL_CALLBACK_CLICKED,
-        			notebook_prepend_page, box);
+                                notebook_prepend_page, box);
         ewl_widget_show(o);
 
         o = ewl_button_new();
         ewl_button_label_set(EWL_BUTTON(o), "Append Page");
         ewl_container_child_append(EWL_CONTAINER(box2), o);
         ewl_callback_append(o, EWL_CALLBACK_CLICKED,
-        			notebook_append_page, box);
+                                notebook_append_page, box);
         ewl_widget_show(o);
 
         o = ewl_button_new();
         ewl_button_label_set(EWL_BUTTON(o), "Remove This Page");
         ewl_container_child_append(EWL_CONTAINER(box), o);
         ewl_callback_append(o, EWL_CALLBACK_CLICKED,
-        			notebook_delete_page, box);
+                                notebook_delete_page, box);
         ewl_widget_show(o);
 
         return box;

@@ -69,14 +69,14 @@ typedef struct Ewl_Paned Ewl_Paned;
  */
 struct Ewl_Paned
 {
-        Ewl_Container container; 	/**< Inherit from Ewl_Container */
-        Ewl_Orientation orientation;	/**< The orientation of the paned */
+        Ewl_Container container;         /**< Inherit from Ewl_Container */
+        Ewl_Orientation orientation;        /**< The orientation of the paned */
 
-        int last_pos;			/**< the last position */
-        int last_size;			/**< the last size */
-        Ewl_Widget *last_pane;		/**< a pointer to the last resized pane */
-        Ewl_Paned_Size_Info *info;	/**< The extra infos for the children */
-        int info_size;			/**< The size of the info array */
+        int last_pos;                        /**< the last position */
+        int last_size;                        /**< the last size */
+        Ewl_Widget *last_pane;                /**< a pointer to the last resized pane */
+        Ewl_Paned_Size_Info *info;        /**< The extra infos for the children */
+        int info_size;                        /**< The size of the info array */
         unsigned short updating_grabbers:1; /**< are we updating the grabbers */
         unsigned short new_panes:1; /**< are there new visible panes */
 };
@@ -84,31 +84,31 @@ struct Ewl_Paned
 Ewl_Widget        *ewl_paned_new(void);
 Ewl_Widget        *ewl_hpaned_new(void);
 Ewl_Widget        *ewl_vpaned_new(void);
-int        	 ewl_paned_init(Ewl_Paned *p);
+int                 ewl_paned_init(Ewl_Paned *p);
 
-void        	 ewl_paned_orientation_set(Ewl_Paned *p, Ewl_Orientation o);
+void                 ewl_paned_orientation_set(Ewl_Paned *p, Ewl_Orientation o);
 Ewl_Orientation         ewl_paned_orientation_get(Ewl_Paned *p);
-void        	 ewl_paned_initial_size_set(Ewl_Paned *p, Ewl_Widget *child,
-        					int size);
-int        	 ewl_paned_initial_size_get(Ewl_Paned *p, Ewl_Widget *child);
+void                 ewl_paned_initial_size_set(Ewl_Paned *p, Ewl_Widget *child,
+                                                int size);
+int                 ewl_paned_initial_size_get(Ewl_Paned *p, Ewl_Widget *child);
 
-void        	 ewl_paned_fixed_size_set(Ewl_Paned *p, Ewl_Widget *child,
-        					unsigned int fixed);
+void                 ewl_paned_fixed_size_set(Ewl_Paned *p, Ewl_Widget *child,
+                                                unsigned int fixed);
 unsigned int         ewl_paned_fixed_size_get(Ewl_Paned *p, Ewl_Widget *child);
-void        	 ewl_paned_arrange(Ewl_Paned *p, int pane_num);
+void                 ewl_paned_arrange(Ewl_Paned *p, int pane_num);
 
 /*
  * Internal functions. Override at your risk.
  */
 Ewl_Paned_Size_Info         *ewl_paned_size_info_add(Ewl_Paned *p, Ewl_Widget *w);
 Ewl_Paned_Size_Info         *ewl_paned_size_info_get(Ewl_Paned *p, Ewl_Widget *w);
-void         		 ewl_paned_size_info_del(Ewl_Paned *p, Ewl_Widget *w);
+void                          ewl_paned_size_info_del(Ewl_Paned *p, Ewl_Widget *w);
 
 void ewl_paned_cb_child_add(Ewl_Container *c, Ewl_Widget *w);
 void ewl_paned_cb_child_remove(Ewl_Container *c, Ewl_Widget *w, int idx);
 void ewl_paned_cb_child_show(Ewl_Container *c, Ewl_Widget *w);
 void ewl_paned_cb_child_resize(Ewl_Container *c, Ewl_Widget *w, int size,
-        			Ewl_Orientation o);
+                                Ewl_Orientation o);
 void ewl_paned_cb_child_hide(Ewl_Container *c, Ewl_Widget *w);
 
 void ewl_paned_cb_configure(Ewl_Widget *w, void *ev, void *data);
@@ -146,19 +146,19 @@ typedef struct Ewl_Paned_Grabber Ewl_Paned_Grabber;
  */
 struct Ewl_Paned_Grabber
 {
-        Ewl_Separator separator;	/**< Inherit from the separator */
-        unsigned int placed:1;		/**< Has the grabber been placed already? */
+        Ewl_Separator separator;        /**< Inherit from the separator */
+        unsigned int placed:1;                /**< Has the grabber been placed already? */
 };
 
 Ewl_Widget         *ewl_paned_grabber_new(void);
-int         	 ewl_paned_grabber_init(Ewl_Paned_Grabber *g);
+int                  ewl_paned_grabber_init(Ewl_Paned_Grabber *g);
 
-void        	 ewl_paned_grabber_paned_orientation_set(Ewl_Paned_Grabber *g,
-        						Ewl_Orientation o);
+void                 ewl_paned_grabber_paned_orientation_set(Ewl_Paned_Grabber *g,
+                                                        Ewl_Orientation o);
 Ewl_Orientation  ewl_paned_grabber_orientation_get(Ewl_Paned_Grabber *g);
 
-void        	 ewl_paned_grabber_show_cursor_for(Ewl_Paned_Grabber *g,
-        						unsigned int dir);
+void                 ewl_paned_grabber_show_cursor_for(Ewl_Paned_Grabber *g,
+                                                        unsigned int dir);
 
 /**
  * @}

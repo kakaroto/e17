@@ -26,7 +26,7 @@ typedef struct Ewl_Model Ewl_Model;
  * A typedef to shorten the definition of the model_fetch callbacks.
  */
 typedef void *(*Ewl_Model_Data_Fetch)(void *data, unsigned int row,
-        					unsigned int column);
+                                                unsigned int column);
 
 /**
  * @def EWL_MODEL_FREE(f)
@@ -84,7 +84,7 @@ typedef void *(*Ewl_Model_Data_Header_Fetch)(void *data, unsigned int col);
  * callback
  */
 typedef Ewl_Model *(*Ewl_Model_Expansion_Model_Fetch)(void *data,
-        					unsigned int row);
+                                                unsigned int row);
 
 /**
  * @def EWL_MODEL_DATA_SORT(f)
@@ -97,7 +97,7 @@ typedef Ewl_Model *(*Ewl_Model_Expansion_Model_Fetch)(void *data,
  * A typedef to shorten the definition of the model_sort callbacks.
  */
 typedef void (*Ewl_Model_Data_Sort)(void *data, unsigned int column,
-        					Ewl_Sort_Direction sort);
+                                                Ewl_Sort_Direction sort);
 
 /**
  * @def EWL_MODEL_DATA_COUNT(f)
@@ -158,9 +158,9 @@ struct Ewl_Model
 {
         struct
         {
-        	Ewl_Model_Data_Expandable is; /**< Is the row expandable */
-        	Ewl_Model_Expansion_Data_Fetch data; /**< Get expansion data */
-        	Ewl_Model_Expansion_Model_Fetch model; /**< Get expansion model */
+                Ewl_Model_Data_Expandable is; /**< Is the row expandable */
+                Ewl_Model_Expansion_Data_Fetch data; /**< Get expansion data */
+                Ewl_Model_Expansion_Model_Fetch model; /**< Get expansion model */
         } expansion;
 
         Ewl_Model_Column_Sortable sortable; /**< Is a column sortable */
@@ -174,60 +174,60 @@ struct Ewl_Model
         Ewl_Model_Data_Highlight highlight; /**< Highlight the cell */
 };
 
-Ewl_Model        	*ewl_model_new(void);
-int        		 ewl_model_init(Ewl_Model *model);
+Ewl_Model                *ewl_model_new(void);
+int                         ewl_model_init(Ewl_Model *model);
 
-Ewl_Model        	*ewl_model_ecore_list_instance(void);
+Ewl_Model                *ewl_model_ecore_list_instance(void);
 
-void        		 ewl_model_data_fetch_set(Ewl_Model *m,
-        				Ewl_Model_Data_Fetch get);
+void                         ewl_model_data_fetch_set(Ewl_Model *m,
+                                        Ewl_Model_Data_Fetch get);
 Ewl_Model_Data_Fetch         ewl_model_data_fetch_get(const Ewl_Model *m);
 
-void        		 ewl_model_data_header_fetch_set(Ewl_Model *m,
-        				Ewl_Model_Data_Header_Fetch get);
+void                         ewl_model_data_header_fetch_set(Ewl_Model *m,
+                                        Ewl_Model_Data_Header_Fetch get);
 Ewl_Model_Data_Header_Fetch ewl_model_data_header_fetch_get(const Ewl_Model *m);
 
-void        		 ewl_model_data_free_set(Ewl_Model *m,
-        				Ewl_Model_Data_Free assign);
+void                         ewl_model_data_free_set(Ewl_Model *m,
+                                        Ewl_Model_Data_Free assign);
 Ewl_Model_Data_Free         ewl_model_data_free_get(const Ewl_Model *m);
 
-void        		 ewl_model_column_sortable_set(Ewl_Model *m,
-        				Ewl_Model_Column_Sortable sortable);
+void                         ewl_model_column_sortable_set(Ewl_Model *m,
+                                        Ewl_Model_Column_Sortable sortable);
 Ewl_Model_Column_Sortable ewl_model_column_sortable_get(const Ewl_Model *m);
 
-void        		 ewl_model_data_sort_set(Ewl_Model *m,
-        				Ewl_Model_Data_Sort sort);
+void                         ewl_model_data_sort_set(Ewl_Model *m,
+                                        Ewl_Model_Data_Sort sort);
 Ewl_Model_Data_Sort         ewl_model_data_sort_get(const Ewl_Model *m);
 
-void        		 ewl_model_data_highlight_set(Ewl_Model *m,
-        				Ewl_Model_Data_Highlight highlight);
+void                         ewl_model_data_highlight_set(Ewl_Model *m,
+                                        Ewl_Model_Data_Highlight highlight);
 Ewl_Model_Data_Highlight ewl_model_data_highlight_get(const Ewl_Model *m);
 
-void        		 ewl_model_data_count_set(Ewl_Model *m,
-        				Ewl_Model_Data_Count count);
+void                         ewl_model_data_count_set(Ewl_Model *m,
+                                        Ewl_Model_Data_Count count);
 Ewl_Model_Data_Count         ewl_model_data_count_get(const Ewl_Model *m);
 
-void        		 ewl_model_data_unref_set(Ewl_Model *m,
-        				Ewl_Model_Data_Unref unref);
+void                         ewl_model_data_unref_set(Ewl_Model *m,
+                                        Ewl_Model_Data_Unref unref);
 Ewl_Model_Data_Unref         ewl_model_data_unref_get(const Ewl_Model *m);
 
-void        		 ewl_model_data_expandable_set(Ewl_Model *m,
-        				Ewl_Model_Data_Expandable exp);
+void                         ewl_model_data_expandable_set(Ewl_Model *m,
+                                        Ewl_Model_Data_Expandable exp);
 Ewl_Model_Data_Expandable ewl_model_data_expandable_get(const Ewl_Model *m);
 
-void        		 ewl_model_expansion_data_fetch_set(Ewl_Model *m,
-        				Ewl_Model_Expansion_Data_Fetch get);
+void                         ewl_model_expansion_data_fetch_set(Ewl_Model *m,
+                                        Ewl_Model_Expansion_Data_Fetch get);
 Ewl_Model_Expansion_Data_Fetch ewl_model_expansion_data_fetch_get(const Ewl_Model *m);
 
-void        		 ewl_model_expansion_model_fetch_set(Ewl_Model *m,
-        				Ewl_Model_Expansion_Model_Fetch f);
+void                         ewl_model_expansion_model_fetch_set(Ewl_Model *m,
+                                        Ewl_Model_Expansion_Model_Fetch f);
 Ewl_Model_Expansion_Model_Fetch ewl_model_expansion_model_fetch_get(const Ewl_Model *m);
 
 /*
  * Internal stuff.
  */
 void *ewl_model_cb_ecore_list_fetch(void *data, unsigned int row,
-        					unsigned int col);
+                                                unsigned int col);
 unsigned int ewl_model_cb_ecore_list_count(void *data);
 
 /**

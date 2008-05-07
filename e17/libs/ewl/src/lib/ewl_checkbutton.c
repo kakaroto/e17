@@ -8,10 +8,10 @@
 #include "ewl_debug.h"
 
 static Ewl_Widget *ewl_checkbutton_view_cb_widget_fetch(void *data,
-        						unsigned int row,
-        						unsigned int col);
+                                                        unsigned int row,
+                                                        unsigned int col);
 static Ewl_Widget *ewl_checkbutton_view_cb_header_fetch(void *data,
-        						unsigned int col);
+                                                        unsigned int col);
 
 /**
  * @return Returns the newly allocated checkbutton on success, NULL on failure.
@@ -26,11 +26,11 @@ ewl_checkbutton_new(void)
 
         b = NEW(Ewl_Checkbutton, 1);
         if (!b)
-        	DRETURN_PTR(NULL, DLEVEL_STABLE);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
 
         if (!ewl_checkbutton_init(b)) {
-        	ewl_widget_destroy(EWL_WIDGET(b));
-        	b = NULL;
+                ewl_widget_destroy(EWL_WIDGET(b));
+                b = NULL;
         }
 
         DRETURN_PTR(EWL_WIDGET(b), DLEVEL_STABLE);
@@ -57,7 +57,7 @@ ewl_checkbutton_init(Ewl_Checkbutton *cb)
         w = EWL_WIDGET(cb);
 
         if (!ewl_button_init(b))
-        	DRETURN_INT(FALSE, DLEVEL_STABLE);
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
 
         ewl_widget_appearance_set(w, EWL_CHECKBUTTON_TYPE);
         ewl_widget_inherit(w, EWL_CHECKBUTTON_TYPE);
@@ -65,7 +65,7 @@ ewl_checkbutton_init(Ewl_Checkbutton *cb)
         ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
         ewl_object_alignment_set(EWL_OBJECT(w), EWL_FLAG_ALIGN_LEFT);
         ewl_callback_append(w, EWL_CALLBACK_CLICKED,
-        			ewl_checkbutton_cb_clicked, NULL);
+                                ewl_checkbutton_cb_clicked, NULL);
 
         cb->label_position = EWL_POSITION_RIGHT;
 
@@ -112,7 +112,7 @@ ewl_checkbutton_is_checked(Ewl_Checkbutton *cb)
         DCHECK_TYPE_RET(cb, EWL_CHECKBUTTON_TYPE, FALSE);
 
         DRETURN_INT(ewl_check_is_checked(EWL_CHECK(EWL_CHECKBUTTON(cb)->check)),
-        		DLEVEL_STABLE);
+                        DLEVEL_STABLE);
 }
 
 /**
@@ -135,11 +135,11 @@ ewl_checkbutton_label_position_set(Ewl_Checkbutton *cb, Ewl_Position p)
         b = EWL_BUTTON(cb);
 
         if (cb->label_position == p)
-        	DRETURN(DLEVEL_STABLE);
+                DRETURN(DLEVEL_STABLE);
 
         cb->label_position = p;
         ewl_container_child_remove(EWL_CONTAINER(cb),
-        		EWL_WIDGET(b->label_object));
+                        EWL_WIDGET(b->label_object));
         ewl_container_child_remove(EWL_CONTAINER(cb), cb->check);
 
         /*
@@ -147,13 +147,13 @@ ewl_checkbutton_label_position_set(Ewl_Checkbutton *cb, Ewl_Position p)
          * order.
          */
         if (p == EWL_POSITION_RIGHT) {
-        	ewl_container_child_append(EWL_CONTAINER(cb), cb->check);
-        	ewl_container_child_append(EWL_CONTAINER(cb),
-        				   EWL_WIDGET(b->label_object));
+                ewl_container_child_append(EWL_CONTAINER(cb), cb->check);
+                ewl_container_child_append(EWL_CONTAINER(cb),
+                                           EWL_WIDGET(b->label_object));
         } else {
-        	ewl_container_child_append(EWL_CONTAINER(cb),
-        				   EWL_WIDGET(b->label_object));
-        	ewl_container_child_append(EWL_CONTAINER(cb), cb->check);
+                ewl_container_child_append(EWL_CONTAINER(cb),
+                                           EWL_WIDGET(b->label_object));
+                ewl_container_child_append(EWL_CONTAINER(cb), cb->check);
         }
 
         ewl_widget_configure(EWL_WIDGET(cb));
@@ -171,7 +171,7 @@ ewl_checkbutton_label_position_set(Ewl_Checkbutton *cb, Ewl_Position p)
  */
 void
 ewl_checkbutton_cb_clicked(Ewl_Widget *w, void *ev_data __UNUSED__,
-        					void *user_data __UNUSED__)
+                                                void *user_data __UNUSED__)
 {
         Ewl_Checkbutton *cb;
 
@@ -182,9 +182,9 @@ ewl_checkbutton_cb_clicked(Ewl_Widget *w, void *ev_data __UNUSED__,
         cb = EWL_CHECKBUTTON(w);
 
         if (ewl_check_is_checked(EWL_CHECK(cb->check)))
-        	ewl_check_checked_set(EWL_CHECK(cb->check), FALSE);
+                ewl_check_checked_set(EWL_CHECK(cb->check), FALSE);
         else
-        	ewl_check_checked_set(EWL_CHECK(cb->check), TRUE);
+                ewl_check_checked_set(EWL_CHECK(cb->check), TRUE);
         ewl_callback_call(w, EWL_CALLBACK_VALUE_CHANGED);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -210,7 +210,7 @@ ewl_checkbutton_view_get(void)
 
 static Ewl_Widget *
 ewl_checkbutton_view_cb_widget_fetch(void *data, unsigned int row __UNUSED__,
-        					unsigned int col __UNUSED__)
+                                                unsigned int col __UNUSED__)
 {
         Ewl_Widget *check;
 
