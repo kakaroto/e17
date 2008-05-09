@@ -1799,7 +1799,7 @@ __imlib_BlendImageToImage(ImlibImage * im_src, ImlibImage * im_dst,
 
    if ((!(im_src->data)) && (im_src->loader) && (im_src->loader->load))
       im_src->loader->load(im_src, NULL, 0, 1);
-   if ((!(im_dst->data)) && (im_dst->loader) && (im_src->loader->load))
+   if ((!(im_dst->data)) && (im_dst->loader) && (im_dst->loader->load))
       im_dst->loader->load(im_dst, NULL, 0, 1);
    if (!im_src->data)
       return;
