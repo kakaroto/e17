@@ -1867,12 +1867,13 @@ DeskRootResize(int root, int w, int h)
    if (EDebug(EDBUG_TYPE_DESKS))
       Eprintf("DeskRootResize %d %dx%d\n", root, w, h);
 
-   if (root)
+   if (root && (VROOT != RROOT))
      {
 	WinGetW(RROOT) = w;
 	WinGetH(RROOT) = h;
      }
 
+   /* Quit if no change */
    if (w == WinGetW(VROOT) && h == WinGetH(VROOT))
       return;
 
@@ -1882,11 +1883,11 @@ DeskRootResize(int root, int w, int h)
    if (w != WinGetW(VROOT) || h != WinGetH(VROOT))
       return;
 
-   Mode.screen.w_old = WinGetW(VROOT);
-   Mode.screen.h_old = WinGetH(VROOT);
-
    ScreenInit();
    DesksResize(w, h);
+
+   Mode.screen.w_old = WinGetW(VROOT);
+   Mode.screen.h_old = WinGetH(VROOT);
 }
 
 static ActionClass *
@@ -2106,6 +2107,9 @@ DesksInit(void)
    unsigned int        i;
 
    memset(&desks, 0, sizeof(desks));
+
+   Mode.screen.w_old = WinGetW(VROOT);
+   Mode.screen.h_old = WinGetH(VROOT);
 
    /* Backward compatibility hack */
    if (Conf.desks.edge_flip_resistance <= 0)
