@@ -577,13 +577,13 @@ epsilon_generate (Epsilon * e)
       epeg_size_get (im, &iw, &ih);
       if (iw > ih)
 	{
-	  th = e->th * ((double) ih / (double) iw);
-	   if (th < 1) th = 1;
+	  th = ((unsigned long) e->tw * ih) / iw;
+	  if (th < 1) th = 1;
 	}
       else
 	{
-	  tw = e->tw * ((double) iw / (double) ih);
-	   if (tw < 1) tw = 1;
+	  tw = ((unsigned long) e->th *  iw) / ih;
+	  if (tw < 1) tw = 1;
 	}
       epeg_decode_size_set (im, tw, th);
       epeg_quality_set (im, 100);
@@ -699,13 +699,13 @@ epsilon_generate (Epsilon * e)
 	ih = imlib_image_get_height ();
 	if (iw > ih)
 	  {
-	    th = e->th * ((double) ih / (double) iw);
-	   if (th < 1) th = 1;
+	     th = ((unsigned long) e->tw * ih) / iw;
+	     if (th < 1) th = 1;
 	  }
 	else
 	  {
-	    tw = e->tw * ((double) iw / (double) ih);
-	   if (tw < 1) tw = 1;
+	     tw = ((unsigned long) e->th *  iw) / ih;
+	     if (tw < 1) tw = 1;
 	  }
 	imlib_context_set_cliprect (0, 0, tw, th);
 	if ((src = imlib_create_cropped_scaled_image (0, 0, iw, ih, tw, th)))
