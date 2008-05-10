@@ -2843,7 +2843,7 @@ ECompMgrSighan(int sig, void *prm __UNUSED__)
 	ECompMgrInit();
 	if (Conf_compmgr.enable)
 	   ECompMgrStart();
-	IdlerAdd(50, _ECompMgrIdler, NULL);
+	IdlerAdd(_ECompMgrIdler, NULL);
 	break;
      }
 }

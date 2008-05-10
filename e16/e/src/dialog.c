@@ -1759,7 +1759,7 @@ _DialogsCheckUpdate(void *data __UNUSED__)
 void
 DialogsInit(void)
 {
-   IdlerAdd(50, _DialogsCheckUpdate, NULL);
+   IdlerAdd(_DialogsCheckUpdate, NULL);
 }
 
 static void

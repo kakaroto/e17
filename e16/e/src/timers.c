@@ -179,13 +179,12 @@ static Ecore_List  *idler_list = NULL;
 typedef void        (IdlerFunc) (void *data);
 
 struct _idler {
-   int                 order;
    IdlerFunc          *func;
    void               *data;
 };
 
 Idler              *
-IdlerAdd(int order, IdlerFunc * func, void *data)
+IdlerAdd(IdlerFunc * func, void *data)
 {
    Idler              *id;
 
@@ -193,7 +192,6 @@ IdlerAdd(int order, IdlerFunc * func, void *data)
    if (!id)
       return NULL;
 
-   id->order = order;		/* Not used atm. */
    id->func = func;
    id->data = data;
 
@@ -238,7 +236,6 @@ static Ecore_List  *animator_list = NULL;
 typedef int         (AnimatorFunc) (void *data);
 
 struct _animator {
-   char               *name;
    AnimatorFunc       *func;
    void               *data;
 };
@@ -278,7 +275,6 @@ AnimatorAdd(AnimatorFunc * func, void *data)
 #if DEBUG_ANIMATORS
    Eprintf("AnimatorAdd %p func=%p data=%p\n", an, func, data);
 #endif
-   an->name = NULL;
    an->func = func;
    an->data = data;
 
@@ -306,7 +302,6 @@ AnimatorDel(Animator * an)
 #endif
 
    ecore_list_node_remove(animator_list, an);
-   Efree(an->name);
    Efree(an);
 
    if (ecore_list_count(animator_list) == 0)
@@ -315,11 +310,3 @@ AnimatorDel(Animator * an)
 	RemoveTimerEvent("Anim");
      }
 }
-
-#if 0				/* Unused */
-void               *
-AnimatorGetData(Animator * an)
-{
-   return an->data;
-}
-#endif

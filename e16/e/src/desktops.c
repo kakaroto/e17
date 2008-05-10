@@ -2159,7 +2159,7 @@ DesksSighan(int sig, void *prm __UNUSED__)
      case ESIGNAL_START:
 	/* Draw all the buttons that belong on the desktop */
 	DeskShowButtons();
-	IdlerAdd(50, _DesksIdler, NULL);
+	IdlerAdd(_DesksIdler, NULL);
 	break;
      }
 }

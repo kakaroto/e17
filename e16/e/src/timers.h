@@ -34,13 +34,12 @@ int                 RemoveTimerEvent(const char *name);
 double              TimersRun(double t);
 
 typedef struct _idler Idler;
-Idler              *IdlerAdd(int order, void (*func) (void *data), void *data);
+Idler              *IdlerAdd(void (*func) (void *data), void *data);
 void                IdlerDel(Idler * id);
 void                IdlersRun(void);
 
 typedef struct _animator Animator;
 Animator           *AnimatorAdd(int (*func) (void *data), void *data);
 void                AnimatorDel(Animator * an);
-void               *AnimatorGetData(Animator * an);
 
 #endif /* _TIMERS_H_ */

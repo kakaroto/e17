@@ -1729,7 +1729,7 @@ PagersShow(int enable)
 	for (i = 0; i < DesksGetNumber(); i++)
 	   PagersForDesktopEnable(DeskGet(i));
 	UpdatePagerSel();
-	Mode_pagers.idler = IdlerAdd(50, _PagersIdler, NULL);
+	Mode_pagers.idler = IdlerAdd(_PagersIdler, NULL);
      }
    else if (!enable && Conf_pagers.enable)
      {

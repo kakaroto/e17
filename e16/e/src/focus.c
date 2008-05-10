@@ -886,7 +886,7 @@ FocusSighan(int sig, void *prm __UNUSED__)
      {
      case ESIGNAL_START:
 	/* Delay focusing a bit to allow things to settle down */
-	IdlerAdd(50, _FocusIdler, NULL);
+	IdlerAdd(_FocusIdler, NULL);
 	DoIn("FOCUS_INIT_TIMEOUT", 0.5, FocusInitTimeout, 0, NULL);
 	break;
 
