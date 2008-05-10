@@ -119,6 +119,9 @@ MainWndProc(HWND   hwnd,
      case WM_CLOSE:
        PostQuitMessage(0);
        return 0;
+     case WM_PAINT:
+       ValidateRect(hwnd, NULL);
+       return 0;
      case WM_KEYDOWN:
      case WM_SYSKEYDOWN: {
         if (backend == 1)
