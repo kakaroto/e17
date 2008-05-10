@@ -89,7 +89,6 @@ Desk               *DesktopAt(int x, int y);
 unsigned int        DesksGetCurrentNum(void);
 void                DesksSetCurrent(Desk * dsk);
 void                DesksGetAreaSize(int *aw, int *ah);
-void                DesksClear(void);
 
 void                DesksFixArea(int *ax, int *ay);
 

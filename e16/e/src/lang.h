@@ -46,7 +46,6 @@ void                LangInit(void);
 void                LangExit(void);
 void                LangExport(void);
 
-char               *EstrLoc2Int(const char *str, int len);
 char               *EstrUtf82Int(const char *str, int len);
 const char         *EstrInt2Enc(const char *str, int want_utf8);
 void                EstrInt2EncFree(const char *str, int want_utf8);

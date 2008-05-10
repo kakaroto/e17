@@ -466,18 +466,6 @@ DetermineEwinFloat(EWin * ewin, int dx, int dy)
      }
 }
 
-#if 0				/* Remove? */
-EWin               *
-GetEwinByCurrentPointer(void)
-{
-   Window              child;
-
-   EQueryPointer(EoGetWin(DesksGetCurrent()), NULL, NULL, &child, NULL);
-
-   return EwinFindByFrame(child);
-}
-#endif
-
 EWin               *
 GetEwinPointerInClient(void)
 {

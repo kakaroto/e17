@@ -197,7 +197,6 @@ EObj               *const *EobjListStackGetForDesk(int *num, Desk * dsk);
 void                EobjListFocusAdd(EObj * eo, int ontop);
 void                EobjListFocusDel(EObj * eo);
 int                 EobjListFocusRaise(EObj * eo);
-int                 EobjListFocusLower(EObj * eo);
 void                EobjListOrderAdd(EObj * eo);
 void                EobjListOrderDel(EObj * eo);
 

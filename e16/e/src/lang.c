@@ -75,6 +75,7 @@ Eiconv(iconv_t icd, const char *txt, size_t len)
 
 #endif
 
+#if 0				/* Unused */
 /* Convert locale to internal format (alloc always) */
 char               *
 EstrLoc2Int(const char *str, int len)
@@ -91,6 +92,7 @@ EstrLoc2Int(const char *str, int len)
       len = strlen(str);
    return Estrndup(str, len);
 }
+#endif
 
 /* Convert UTF-8 to internal format (alloc always) */
 char               *

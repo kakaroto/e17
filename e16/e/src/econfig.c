@@ -462,6 +462,7 @@ CfgItemListNamedItemSet(const CfgItem * pcl, int ncl, const char *item,
    return 0;
 }
 
+#if 0				/* Unused */
 int
 CfgItemListNamedItemToString(const CfgItem * pcl, int ncl, const char *item,
 			     char *buf, int len)
@@ -475,6 +476,7 @@ CfgItemListNamedItemToString(const CfgItem * pcl, int ncl, const char *item,
 
    return 0;
 }
+#endif
 
 /*
  * Set <module>.<item> <value>

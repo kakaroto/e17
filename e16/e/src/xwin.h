@@ -226,7 +226,6 @@ void                EShapeCombineRectangles(Win win, int dest, int x, int y,
 					    int op, int ordering);
 void                EShapeCombineShape(Win win, int dest, int x, int y,
 				       Win src_win, int src_kind, int op);
-XRectangle         *EShapeGetRectangles(Win win, int dest, int *rn, int *ord);
 int                 EShapeCopy(Win dst, Win src);
 int                 EShapePropagate(Win win);
 int                 EShapeCheck(Win win);

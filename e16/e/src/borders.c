@@ -664,26 +664,6 @@ BorderFind(const char *name)
    return (Border *) ecore_list_find(border_list, _BorderMatchName, name);
 }
 
-#if 0				/* Unused */
-Border             *
-BorderAlloc(const char *name)
-{
-   Border             *b;
-
-   b = BorderFind(name);
-   if (b)
-      BorderIncRefcount(b);
-
-   return b;
-}
-
-void
-BorderFree(Border * b)
-{
-   BorderDecRefcount(b);
-}
-#endif
-
 static void
 BorderWinpartAdd(Border * b, const char *iclass, const char *aclass,
 		 const char *tclass, const char *cclass, char ontop, int flags,

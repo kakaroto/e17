@@ -566,6 +566,7 @@ ScaleTile(Win wsrc, Drawable src, Win wdst, Pixmap dst,
    imlib_free_image();
 }
 
+#if 0				/* Unused */
 void
 EDrawableDumpImage(Drawable draw, const char *txt)
 {
@@ -587,6 +588,7 @@ EDrawableDumpImage(Drawable draw, const char *txt)
    imlib_save_image(buf);
    imlib_free_image_and_decache();
 }
+#endif
 
 void
 FreePmapMask(PmapMask * pmm)

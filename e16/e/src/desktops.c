@@ -809,22 +809,6 @@ DesksSetCurrent(Desk * dsk)
    desks.current = dsk;
 }
 
-#if 0				/* Unused */
-void
-DesksClear(void)
-{
-   Desk               *dsk;
-   unsigned int        i;
-
-   for (i = 0; i < Conf.desks.num; i++)
-     {
-	dsk = _DeskGet(i);
-	if (dsk->viewable)
-	   EClearWindow(EoGetWin(dsk));
-     }
-}
-#endif
-
 static void
 DesksResize(int w, int h)
 {

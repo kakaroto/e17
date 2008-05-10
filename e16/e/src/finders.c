@@ -43,23 +43,6 @@ EwinFindByPtr(const EWin * ewin)
    return NULL;
 }
 
-#if 0				/* Remove? */
-EWin               *
-EwinFindByFrame(Window win)
-{
-   EWin               *const *ewins;
-   int                 i, num;
-
-   ewins = EwinListGetAll(&num);
-   for (i = 0; i < num; i++)
-     {
-	if (win == EoGetXwin(ewins[i]))
-	   return ewins[i];
-     }
-   return NULL;
-}
-#endif
-
 EWin               *
 EwinFindByClient(Window win)
 {

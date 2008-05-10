@@ -917,7 +917,7 @@ _DlgFillSnap(Dialog * d, DItem * table, void *data)
      }
 }
 
-const DialogDef     DlgSnap = {
+static const DialogDef DlgSnap = {
    NULL,
    NULL,
    N_("Remembered Application Attributes"),

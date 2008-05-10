@@ -63,8 +63,4 @@ int                 CfgItemListNamedItemSet(const CfgItem * pcl, int ncl,
 					    const char *item,
 					    const char *value);
 
-int                 CfgItemListNamedItemToString(const CfgItem * pcl, int ncl,
-						 const char *item, char *buf,
-						 int len);
-
 #endif /* _ECONFIG_H_ */

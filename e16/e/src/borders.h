@@ -83,8 +83,6 @@ struct _ewinbit {
 
 /* borders.c */
 Border             *BorderFind(const char *name);
-Border             *BorderAlloc(const char *name);
-void                BorderFree(Border * b);
 const char         *BorderGetName(const Border * b);
 int                 BorderConfigLoad(FILE * fs);
 void                EwinBorderSelect(EWin * ewin);

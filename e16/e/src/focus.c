@@ -35,7 +35,6 @@
 #include "xwin.h"
 
 #define EwinListFocusRaise(ewin) EobjListFocusRaise(EoObj(ewin))
-#define EwinListFocusLower(ewin) EobjListFocusLower(EoObj(ewin))
 
 static char         focus_inhibit = 1;
 static char         focus_is_set = 0;
@@ -514,11 +513,6 @@ FocusNewDeskBegin(void)
 void
 FocusNewDesk(void)
 {
-#if 0				/* Remove? */
-   /* Set the mouse-over window */
-   Mode.mouse_over_ewin = GetEwinByCurrentPointer();
-#endif
-
    FocusToEWin(NULL, FOCUS_DESK_ENTER);
 
    /* Unfreeze keyboard */
@@ -530,11 +524,6 @@ FocusInit(void)
 {
    /* Start focusing windows */
    FocusEnable(1);
-
-#if 0				/* Remove? */
-   /* Set the mouse-over window */
-   Mode.mouse_over_ewin = GetEwinByCurrentPointer();
-#endif
 
    focus_pending_why = 0;
    focus_pending_ewin = focus_pending_new = NULL;

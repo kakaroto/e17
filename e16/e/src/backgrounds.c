@@ -944,14 +944,6 @@ BackgroundGetFgFile(const Background * bg)
    return bg->top.file;
 }
 
-#if 0				/* Unused */
-int
-BackgroundGetColor(const Background * bg)
-{
-   return (bg->pmap) ? 0 : bg->bg_solid.pixel;
-}
-#endif
-
 Pixmap
 BackgroundGetPixmap(const Background * bg)
 {

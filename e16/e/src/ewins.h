@@ -345,7 +345,6 @@ void                EwinHide(EWin * ewin);
 void                EwinKill(EWin * ewin);
 void                DetermineEwinFloat(EWin * ewin, int dx, int dy);
 EWin               *GetEwinPointerInClient(void);
-EWin               *GetEwinByCurrentPointer(void);
 EWin               *GetFocusEwin(void);
 EWin               *GetContextEwin(void);
 void                SetContextEwin(EWin * ewin);
@@ -407,8 +406,6 @@ void                EwinInstantUnShade(EWin * ewin);
 void                EwinShade(EWin * ewin);
 void                EwinUnShade(EWin * ewin);
 void                EwinMoveToArea(EWin * ewin, int ax, int ay);
-void                EwinMoveToLinearArea(EWin * ewin, int a);
-void                EwinMoveLinearAreaBy(EWin * ewin, int a);
 
 void                EwinOpMove(EWin * ewin, int source, int x, int y);
 void                EwinOpResize(EWin * ewin, int source, int w, int h);
@@ -439,7 +436,6 @@ void                EwinOpFullscreen(EWin * ewin, int source, int on);
 
 /* finders.c */
 EWin               *EwinFindByPtr(const EWin * ewin);
-EWin               *EwinFindByFrame(Window win);
 EWin               *EwinFindByClient(Window win);
 EWin               *EwinFindByChildren(Window win);
 EWin              **EwinsFindByExpr(const char *match, int *pnum, int *pflags);

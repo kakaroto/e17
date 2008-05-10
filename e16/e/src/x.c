@@ -1378,53 +1378,6 @@ EShapeCombineRectangles(Win win, int dest, int x, int y,
    EShapeUpdate(win);
 }
 
-#if 0				/* Unused */
-XRectangle         *
-EShapeGetRectangles(Win win, int dest, int *rn, int *ord)
-{
-   if (!win)
-      return NULL;
-
-   if (!win->attached)
-     {
-	XRectangle         *r;
-
-#if DEBUG_SHAPE_OPS
-	Eprintf("EShapeGetRectangles-A %#lx nr=%d\n", win->xwin, win->num_rect);
-#endif
-	*rn = win->num_rect;
-	*ord = win->ord;
-	if (win->num_rect > 0)
-	  {
-	     r = EMALLOC(XRectangle, win->num_rect);
-	     if (!r)
-		return NULL;
-	     memcpy(r, win->rects, sizeof(XRectangle) * win->num_rect);
-	     return r;
-	  }
-     }
-   else
-     {
-	XRectangle         *r, *rr;
-
-#if DEBUG_SHAPE_OPS
-	Eprintf("EShapeGetRectangles-B %#lx nr=%d\n", win->xwin, win->num_rect);
-#endif
-	r = XShapeGetRectangles(disp, win->xwin, dest, rn, ord);
-	if (r)
-	  {
-	     rr = EMALLOC(XRectangle, *rn);
-	     if (!rr)
-		return NULL;
-	     memcpy(rr, r, sizeof(XRectangle) * *rn);
-	     XFree(r);
-	     return rr;
-	  }
-     }
-   return NULL;
-}
-#endif
-
 int
 EShapeCopy(Win dst, Win src)
 {

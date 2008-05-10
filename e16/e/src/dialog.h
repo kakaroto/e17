@@ -75,7 +75,6 @@ Dialog             *DialogFind(const char *name);
 void                DialogBindKey(Dialog * d, const char *key,
 				  DialogCallbackFunc * func, int val,
 				  void *data);
-void                DialogSetText(Dialog * d, const char *text);
 void                DialogSetTitle(Dialog * d, const char *title);
 void                DialogSetExitFunction(Dialog * d, DialogCallbackFunc * func,
 					  int val);
