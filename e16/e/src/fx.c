@@ -30,6 +30,9 @@
 #include "xwin.h"
 #include <math.h>
 
+#define E_FX_RAINDROPS          0
+#define E_FX_IMAGESPINNER       0
+
 /* FIXME - Needs cleaning up */
 
 #ifndef M_PI_2
@@ -159,7 +162,8 @@ FX_Ripple_Pause(void)
      }
 }
 
-#ifdef E_FX_RAINDROPS		/* FIXME - Requires eliminating use of PixImg */
+#if E_FX_RAINDROPS
+#include "piximg.h"
 
 /****************************** RAIN DROPS **********************************/
 
@@ -168,7 +172,7 @@ FX_Ripple_Pause(void)
 #define fx_raindrop_duration 32
 #define fx_frequency 4
 #define fx_amplitude 48
-static Window       fx_raindrops_win = None;
+static Win          fx_raindrops_win = NULL;
 static int          fx_raindrops_number = 4;
 static PixImg      *fx_raindrops_draw = NULL;
 
@@ -222,23 +226,24 @@ FX_raindrops_timeout(int val __UNUSED__, void *data __UNUSED__)
 	   EXFreeGC(gc1);
 
 	gcv.subwindow_mode = IncludeInferiors;
-	gc = EXCreateGC(fx_raindrops_win, GCSubwindowMode, &gcv);
-	gc1 = EXCreateGC(fx_raindrops_win, 0L, &gcv);
+	gc = EXCreateGC(WinGetXwin(fx_raindrops_win), GCSubwindowMode, &gcv);
+	gc1 = EXCreateGC(WinGetXwin(fx_raindrops_win), 0L, &gcv);
 
 	fx_raindrops_draw =
-	   ECreatePixImg(fx_raindrops_win, fx_raindrop_size, fx_raindrop_size);
-
+	   ECreatePixImg(WinGetXwin(fx_raindrops_win), fx_raindrop_size,
+			 fx_raindrop_size);
 	if (!fx_raindrops_draw)
 	   return;
 
 	for (i = 0; i < fx_raindrops_number; i++)
 	  {
 	     fx_raindrops[i].buf =
-		ECreatePixImg(fx_raindrops_win, fx_raindrop_size,
+		ECreatePixImg(WinGetXwin(fx_raindrops_win), fx_raindrop_size,
 			      fx_raindrop_size);
 	     if (fx_raindrops[i].buf)
-		XShmGetImage(disp, fx_raindrops_win, fx_raindrops[i].buf->xim,
-			     fx_raindrops[i].x, fx_raindrops[i].y, 0xffffffff);
+		XShmGetImage(disp, WinGetXwin(fx_raindrops_win),
+			     fx_raindrops[i].buf->xim, fx_raindrops[i].x,
+			     fx_raindrops[i].y, 0xffffffff);
 	     if (!fx_raindrops[i].buf)
 		return;
 	  }
@@ -252,9 +257,8 @@ FX_raindrops_timeout(int val __UNUSED__, void *data __UNUSED__)
 	     int                 j, count = 0;
 	     char                intersect = 1;
 
-	     XClearArea(disp, fx_raindrops_win, fx_raindrops[i].x,
-			fx_raindrops[i].y, fx_raindrop_size, fx_raindrop_size,
-			False);
+	     EClearArea(fx_raindrops_win, fx_raindrops[i].x,
+			fx_raindrops[i].y, fx_raindrop_size, fx_raindrop_size);
 	     fx_raindrops[i].count = 0;
 	     while (intersect)
 	       {
@@ -314,7 +318,8 @@ FX_raindrops_timeout(int val __UNUSED__, void *data __UNUSED__)
 			 }
 		    }
 	       }
-	     XShmGetImage(disp, fx_raindrops_win, fx_raindrops[i].buf->xim,
+	     XShmGetImage(disp, WinGetXwin(fx_raindrops_win),
+			  fx_raindrops[i].buf->xim,
 			  fx_raindrops[i].x, fx_raindrops[i].y, 0xffffffff);
 	  }
 	percent_done =
@@ -368,10 +373,11 @@ FX_raindrops_timeout(int val __UNUSED__, void *data __UNUSED__)
 		    }
 	       }
 	  }
-	XShmPutImage(disp, fx_raindrops_win, gc1, fx_raindrops_draw->xim, 0, 0,
+	XShmPutImage(disp, WinGetXwin(fx_raindrops_win), gc1,
+		     fx_raindrops_draw->xim, 0, 0,
 		     fx_raindrops[i].x, fx_raindrops[i].y, fx_raindrop_size,
 		     fx_raindrop_size, False);
-	ESync();
+	ESync(0);
      }
 
    DoIn("FX_RAINDROPS_TIMEOUT", (0.066 /*/ (float)fx_raindrops_number */ ),
@@ -407,8 +413,8 @@ FX_Raindrops_Quit(void)
    RemoveTimerEvent("FX_RAINDROPS_TIMEOUT");
    for (i = 0; i < fx_raindrops_number; i++)
      {
-	XClearArea(disp, fx_raindrops_win, fx_raindrops[i].x, fx_raindrops[i].y,
-		   fx_raindrop_size, fx_raindrop_size, False);
+	EClearArea(fx_raindrops_win, fx_raindrops[i].x, fx_raindrops[i].y,
+		   fx_raindrop_size, fx_raindrop_size);
 	if (fx_raindrops[i].buf)
 	   EDestroyPixImg(fx_raindrops[i].buf);
 	fx_raindrops[i].buf = NULL;
@@ -599,11 +605,11 @@ FX_Waves_Pause(void)
      }
 }
 
-#ifdef E_FX_IMAGESPINNER
+#if E_FX_IMAGESPINNER
 
 /****************************** IMAGESPINNER ********************************/
 
-static Window       fx_imagespinner_win = None;
+static Win          fx_imagespinner_win = NULL;
 static int          fx_imagespinner_count = 3;
 static char        *fx_imagespinner_params = NULL;
 
@@ -641,7 +647,8 @@ FX_imagespinner_timeout(int val __UNUSED__, void *data __UNUSED__)
 	     sscanf(fx_imagespinner_params, "%*s %i %i ", &x, &y);
 	     x = ((WinGetW(VROOT) * x) >> 10) - ((w * x) >> 10);
 	     y = ((WinGetH(VROOT) * y) >> 10) - ((h * y) >> 10);
-	     EImageRenderOnDrawable(im, fx_imagespinner_win, 0, x, y, w, h);
+	     EImageRenderOnDrawable(im, fx_imagespinner_win, None, 0,
+				    x, y, w, h);
 	     EImageFree(im);
 	  }
 	Efree(string);
@@ -668,8 +675,7 @@ static void
 FX_ImageSpinner_Quit(void)
 {
    RemoveTimerEvent("FX_IMAGESPINNER_TIMEOUT");
-   XClearArea(disp, fx_imagespinner_win, 0, 0, WinGetW(VROOT),
-	      WinGetH(VROOT), False);
+   EClearArea(fx_imagespinner_win, 0, 0, WinGetW(VROOT), WinGetH(VROOT));
    Efree(fx_imagespinner_params);
    fx_imagespinner_params = NULL;
    fx_imagespinner_win = None;
@@ -703,13 +709,13 @@ static FXHandler    fx_handlers[] = {
    {"waves",
     FX_Waves_Init, FX_Waves_Desk, FX_Waves_Quit, FX_Waves_Pause,
     0, 0},
-#ifdef E_FX_RAINDROPS		/* FIXME */
+#if E_FX_RAINDROPS		/* FIXME */
    {"raindrops",
     FX_Raindrops_Init, FX_Raindrops_Desk, FX_Raindrops_Quit,
     FX_Raindrops_Pause,
     0, 0},
 #endif
-#ifdef E_FX_IMAGESPINNER
+#if E_FX_IMAGESPINNER
    {"imagespinner",
     FX_ImageSpinner_Init, FX_ImageSpinner_Desk, FX_ImageSpinner_Quit,
     FX_ImageSpinner_Pause,
@@ -971,7 +977,7 @@ static const IpcItem FxIpcArray[] = {
 static const CfgItem FxCfgItems[] = {
    CFR_ITEM_BOOL(fx_handlers[0].enabled, ripples.enabled, 0),
    CFR_ITEM_BOOL(fx_handlers[1].enabled, waves.enabled, 0),
-#ifdef E_FX_RAINDROPS		/* FIXME */
+#if E_FX_RAINDROPS		/* FIXME */
    CFR_ITEM_BOOL(fx_handlers[2].enabled, raindrops.enabled, 0),
 #endif
 };
