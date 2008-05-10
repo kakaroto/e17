@@ -218,6 +218,9 @@ epsilon_cb_server_data(void *data, int type, void *event)
 	if (e->server != epsilon_server)
 		return 1;
 
+	if (!(e && e->data))
+		return 1;
+
 	msg = e->data;
 	Epsilon_Request *thumb;
 
