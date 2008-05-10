@@ -7,114 +7,86 @@
 void
 __imlib_rgb_to_hsv(int r, int g, int b, float *h, float *s, float *v)
 {
-   int                 min, max;
-   int                 delta;
+   float               min, max, delta;
 
-   max = (r + g + abs(r - g)) / 2;
-   max = (max + b + abs(max - b)) / 2;
-   min = (r + g - abs(r - g)) / 2;
-   min = (min + b - abs(min - b)) / 2;
+   min = (((r < g) ? r : g) < b) ? ((r < g) ? r : g) : b;
+   max = (((r > g) ? r : g) > b) ? ((r > g) ? r : g) : b;
 
-   delta = max - min;
-   *v = (float)(100 * max) / 255.0;
-
-   if (max != 0)
-      *s = (float)(100 * delta) / (float)max;
-   else
+   *v = max / 255.0;
+   delta = (max - min);
+   if (delta == 0)
      {
-        *s = 0.0;
         *h = 0.0;
-        *v = 0.0;
+        *s = 0.0;
+        return;
      }
+   *s = delta / max;
    if (r == max)
-     {
-        *h = (float)(100 * (g - b)) / (float)(6.0 * delta);
-     }
+      *h = (g - b) / delta;
+   else if (g == max)
+      *h = 2.0 + (b - r) / delta;
    else
-     {
-        if (g == max)
-          {
-             *h = (float)(100 * (2 * delta + b - r)) / (float)(6.0 * delta);
-          }
-        else
-          {
-             *h = (float)(100 * (4 * delta + r - g)) / (float)(6.0 * delta);
-          }
-     }
-   if (*h < 0.0)
-      *h += 100.0;
-   if (*h > 100.0)
-      *h -= 100.0;
+      *h = 4.0 + (r - g) / delta;
+   *h *= 60.0;
+   if (*h < 0)
+      *h += 360.0;
 }
 
 void
 __imlib_hsv_to_rgb(float h, float s, float v, int *r, int *g, int *b)
 {
-   float               hh, f;
-   float               p, q, t;
-   int                 i;
+   float               f, vf;
+   int                 i, p, q, t, vv;
+
+   vf = 255.0 * v;
+   vv = (int)round(vf);
 
    if (s == 0.0)
      {
-        *r = round((v * 255.0) / 100.0);
-        *g = round((v * 255.0) / 100.0);
-        *b = round((v * 255.0) / 100.0);
-
+        *r = *g = *b = vv;
         return;
      }
 
-   hh = (h * 6.0) / 100.0;
-   i = floor(hh);
-   f = hh - (float)i;
+   h /= 60.0;
+   i = floor(h);
+   f = h - (float)i;
+   p = (int)round(vf * (1.0 - s));
+   q = (int)round(vf * (1.0 - (s * f)));
+   t = (int)round(vf * (1.0 - s * (1.0 - f)));
 
-   p = v * (1.0 - s / 100.0) / 100.0;
-   q = v * (1.0 - (s * f) / 100.0) / 100.0;
-   t = v * (1.0 - s * (1.0 - f) / 100.0) / 100.0;
-
-   switch (i)
+   switch (i % 6)
      {
      case 0:
-        {
-           *r = round(v * 255.0 / 100.0);
-           *g = round(t * 255.0);
-           *b = round(p * 255.0);
-           break;
-        }
+        *r = vv;
+        *g = t;
+        *b = p;
+        break;
      case 1:
-        {
-           *r = round(q * 255.0);
-           *g = round(v * 255.0 / 100.0);
-           *b = round(p * 255.0);
-           break;
-        }
+        *r = q;
+        *g = vv;
+        *b = p;
+        break;
      case 2:
-        {
-           *r = round(p * 255.0);
-           *g = round(v * 255.0 / 100.0);
-           *b = round(t * 255.0);
-           break;
-        }
+        *r = p;
+        *g = vv;
+        *b = t;
+        break;
      case 3:
-        {
-           *r = round(p * 255.0);
-           *g = round(q * 255.0);
-           *b = round(v * 255.0 / 100.0);
-           break;
-        }
+        *r = p;
+        *g = q;
+        *b = vv;
+        break;
      case 4:
-        {
-           *r = round(t * 255.0);
-           *g = round(p * 255.0);
-           *b = round(v * 255.0 / 100.0);
-           break;
-        }
+        *r = t;
+        *g = p;
+        *b = vv;
+        break;
      case 5:
-        {
-           *r = round(v * 255.0 / 100.0);
-           *g = round(p * 255.0);
-           *b = round(q * 255.0);
-           break;
-        }
+     default:
+        *r = vv;
+        *g = p;
+        *b = q;
+        break;
      }
 }
 

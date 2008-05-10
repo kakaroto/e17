@@ -112,7 +112,7 @@ __imlib_MapRange(ImlibRange * rg, int len)
              pmap[i++] = (a << 24) | (r << 16) | (g << 8) | b;
           }
      }
-   inc = ((ll - 1) << 16) / (len);
+   inc = ((ll - 1) << 16) / (len - 1);
    l = 0;
    for (i = 0; i < len; i++)
      {
@@ -194,7 +194,7 @@ __imlib_MapHsvaRange(ImlibRange * rg, int len)
              pmap[i++] = (a << 24) | (r << 16) | (g << 8) | b;
           }
      }
-   inc = ((ll - 1) << 16) / (len);
+   inc = ((ll - 1) << 16) / (len - 1);
    l = 0;
    for (i = 0; i < len; i++)
      {
