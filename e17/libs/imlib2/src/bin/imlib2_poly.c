@@ -50,7 +50,6 @@ main(int argc, char **argv)
    XSelectInput(disp, win,
                 ButtonPressMask | ButtonReleaseMask | ButtonMotionMask |
                 PointerMotionMask | ExposureMask | KeyPressMask);
-   XMapWindow(disp, win);
 
    /**
     * Start rendering
@@ -69,7 +68,9 @@ main(int argc, char **argv)
    h = imlib_image_get_height();
    imlib_context_set_color(0, 0, 0, 255);
    imlib_image_fill_rectangle(0, 0, w, h);
+
    XResizeWindow(disp, win, w, h);
+   XMapWindow(disp, win);
    XSync(disp, False);
 
    poly = imlib_polygon_new();

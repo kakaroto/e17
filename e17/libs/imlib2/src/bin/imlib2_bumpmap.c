@@ -61,7 +61,6 @@ main(int argc, char **argv)
    XSelectInput(disp, win,
                 ButtonPressMask | ButtonReleaseMask | ButtonMotionMask |
                 PointerMotionMask | ExposureMask);
-   XMapWindow(disp, win);
 
    /**
     * Start rendering
@@ -81,9 +80,11 @@ main(int argc, char **argv)
    imlib_context_set_image(im_bg);
    w = imlib_image_get_width();
    h = imlib_image_get_height();
-   printf("Resizing Window to %d by %d\n", w, h);
+
    XResizeWindow(disp, win, w, h);
+   XMapWindow(disp, win);
    XSync(disp, False);
+
    x = -9999;
    y = -9999;
    while (1)
