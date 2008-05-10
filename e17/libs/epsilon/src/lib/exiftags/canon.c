@@ -52,7 +52,7 @@
 struct ccstm {
 	int32_t val;
 	struct descrip *table;
-	const char descr[];
+	const char *descr;
 };
 
 
