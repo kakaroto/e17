@@ -136,11 +136,11 @@ ETimeCurve(int k1, int k2, float k, int mode)
      {
      case 1:			/* Sinuoidal - half cycle */
 	x = x / l - 0.5;	/* x: -0.5 -> 0.5 */
-	x = 0.5 * (1. + sin(x * M_PI));
+	x = (float)(0.5 * (1. + sin(x * M_PI)));
 	break;
      case 2:			/* Sinuoidal - quarter cycle */
 	x = x / l;		/* x: 0 -> 1 */
-	x = sin(x * M_PI / 2);
+	x = (float)sin(x * M_PI / 2);
 	break;
      }
 
