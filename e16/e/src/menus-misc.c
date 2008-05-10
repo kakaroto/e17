@@ -285,7 +285,6 @@ FillFlatFileMenu(Menu * m, const char *file)
    FILE               *f;
    char                first = 1;
    char                s[4096];
-   int                 count;
    unsigned int        len;
 
    f = fopen(file, "r");
@@ -297,7 +296,6 @@ FillFlatFileMenu(Menu * m, const char *file)
 
    MenuSetIconSize(m, 0);	/* Scale to default */
 
-   count = 0;
    while (fgets(s, 4096, f))
      {
 	if (s[0] == '#')

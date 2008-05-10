@@ -69,15 +69,12 @@ static void
 TooltipRealize(ToolTip * tt)
 {
    int                 i, wh;
-   EImage             *im;
    EObj               *eo;
 
    for (i = 0; i < 5; i++)
      {
 	if (!tt->iclass[i])
 	   continue;
-
-	im = ImageclassGetImage(tt->iclass[i], 0, 0, STATE_NORMAL);
 
 	wh = (i + 1) * 8;
 	eo = EobjWindowCreate(EOBJ_TYPE_MISC, -50, -100, wh, wh, 1, tt->name);

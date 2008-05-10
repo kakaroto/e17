@@ -440,7 +440,7 @@ SessionInit(void)
 }
 
 void
-SessionGetInfo(EWin * ewin)
+SessionGetInfo(EWin * ewin __UNUSED__)
 {
 #if 0				/* Unused */
 #if USE_SM
@@ -455,7 +455,6 @@ SessionGetInfo(EWin * ewin)
    ewin = NULL;
 #endif /* USE_SM */
 #endif
-   ewin = NULL;
 }
 
 void
