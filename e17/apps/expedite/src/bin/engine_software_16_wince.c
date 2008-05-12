@@ -26,7 +26,8 @@ typedef struct
 } _GAPI_Key_List;
 
 
-static HWND window;
+static HINSTANCE instance = NULL;
+static HWND window = NULL;
 static int  backend = 0;
 static _GAPI_Key_List *key_list = NULL;
 
@@ -36,7 +37,7 @@ typedef int (*resume) (int backend);
 static suspend _suspend = NULL;
 static resume _resume = NULL;
 
-void
+static void
 _wince_fb_key_down(WPARAM wParam)
 {
    int key;
@@ -67,7 +68,7 @@ _wince_fb_key_down(WPARAM wParam)
      evas_event_feed_key_down(evas, "q", "q", NULL, NULL, 0, NULL);
 }
 
-void
+static void
 _wince_fb_key_up(WPARAM wParam)
 {
    int key;
@@ -90,8 +91,8 @@ _wince_fb_key_up(WPARAM wParam)
      evas_event_feed_key_up(evas, "q", "q", NULL, NULL, 0, NULL);
 }
 
-void
-_wince_gapi_key(WPARAM wParam)
+static void
+_wince_gapi_key_down(WPARAM wParam)
 {
   if (wParam == (unsigned int)key_list->vkLeft)
     evas_event_feed_key_down(evas, "Left", "Left", NULL, NULL, 0, NULL);
@@ -103,6 +104,21 @@ _wince_gapi_key(WPARAM wParam)
      evas_event_feed_key_down(evas, "Q", "Q", NULL, NULL, 0, NULL);
   if (wParam == (unsigned int)key_list->vkC)
      evas_event_feed_key_down(evas, "q", "q", NULL, NULL, 0, NULL);
+}
+
+static void
+_wince_gapi_key_up(WPARAM wParam)
+{
+  if (wParam == (unsigned int)key_list->vkLeft)
+    evas_event_feed_key_up(evas, "Left", "Left", NULL, NULL, 0, NULL);
+  if (wParam == (unsigned int)key_list->vkRight)
+     evas_event_feed_key_up(evas, "Right", "Right", NULL, NULL, 0, NULL);
+  if (wParam == (unsigned int)key_list->vkA)
+     evas_event_feed_key_up(evas, "Return", "Return", NULL, NULL, 0, NULL);
+  if (wParam == (unsigned int)key_list->vkB)
+     evas_event_feed_key_up(evas, "Q", "Q", NULL, NULL, 0, NULL);
+  if (wParam == (unsigned int)key_list->vkC)
+     evas_event_feed_key_up(evas, "q", "q", NULL, NULL, 0, NULL);
 }
 
 static LRESULT CALLBACK
@@ -123,23 +139,19 @@ MainWndProc(HWND   hwnd,
        ValidateRect(hwnd, NULL);
        return 0;
      case WM_KEYDOWN:
-     case WM_SYSKEYDOWN: {
-        if (backend == 1)
-          _wince_fb_key_down(wParam);
-        if (backend == 2)
-          _wince_gapi_key(wParam);
+       if (backend == 1)
+         _wince_fb_key_down(wParam);
+       if (backend == 2)
+         _wince_gapi_key_down(wParam);
 
-        return 0;
-     }
+       return 0;
      case WM_KEYUP:
-     case WM_SYSKEYUP: {
-        if (backend == 1)
-          _wince_fb_key_up(wParam);
-        if (backend == 2)
-          _wince_gapi_key(wParam);
+       if (backend == 1)
+         _wince_fb_key_up(wParam);
+       if (backend == 2)
+         _wince_gapi_key_up(wParam);
 
-        return 0;
-     }
+       return 0;
      case WM_KILLFOCUS:
        if (_suspend)
          _suspend (backend);
@@ -158,7 +170,6 @@ engine_software_16_wince_args(int argc, char **argv)
 {
    WNDCLASS                            wc;
    RECT                                rect;
-   HINSTANCE                           hinstance;
    Evas_Engine_Info_Software_16_WinCE *einfo;
    int                                 width;
    int                                 height;
@@ -182,14 +193,14 @@ engine_software_16_wince_args(int argc, char **argv)
      }
    if (!ok) return 0;
 
-   hinstance = GetModuleHandle(NULL);
+   instance = GetModuleHandle(NULL);
 
    memset (&wc, 0, sizeof (wc));
    wc.style = CS_HREDRAW | CS_VREDRAW;
    wc.lpfnWndProc = MainWndProc;
    wc.cbClsExtra = 0;
    wc.cbWndExtra = 0;
-   wc.hInstance = hinstance;
+   wc.hInstance = instance;
    wc.hIcon = NULL;
    wc.hCursor = LoadCursor (NULL, IDC_ARROW);
    wc.hbrBackground = GetSysColorBrush(COLOR_BTNFACE);
@@ -209,7 +220,7 @@ engine_software_16_wince_args(int argc, char **argv)
                            rect.left, rect.top,
                            rect.right - rect.left,
                            rect.bottom - rect.top,
-                           NULL, NULL, hinstance, NULL);
+                           NULL, NULL, instance, NULL);
    if (!window) return EXIT_FAILURE;
 
    SHFullScreen(window,
