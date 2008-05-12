@@ -325,6 +325,7 @@ ec_theme_page_setup(Ewl_Notebook *n)
         ewl_widget_show(o3);
 
         o = ewl_list_new();
+        ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_HFILL);
         list = ecore_list_new();
         ewl_widget_name_set(o, EC_EWL_THEME);
         ewl_container_child_append(EWL_CONTAINER(o3), o);
