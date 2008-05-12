@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Taskbar\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-14 22:39+0100\n"
+"POT-Creation-Date: 2008-04-30 12:50+0200\n"
 "PO-Revision-Date: 2006-09-09 12:32+0200\n"
 "Last-Translator: Massimo Maiurana <maiurana@inwind.it>\n"
 "Language-Team: none\n"
@@ -14,30 +14,22 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_config.c:32
+#: e_mod_config.c:30
 msgid "Taskbar Configuration"
 msgstr "Configurazione di Taskbar"
 
-#: e_mod_config.c:74
+#: e_mod_config.c:71
 msgid "Display"
 msgstr "Visualizzazione"
 
-#: e_mod_config.c:75
-msgid "Highlight Window on Mouse Over"
-msgstr "Evidenzia finestra al passaggio del mouse"
-
-#: e_mod_config.c:80
-msgid "Show Sliding Labels"
-msgstr "Mostra etichette scorrevoli"
-
-#: e_mod_config.c:85
+#: e_mod_config.c:72
 msgid "Show windows from all desktops"
 msgstr "Mostra finestre da tutti i desktop"
 
-#: e_mod_main.c:214
+#: e_mod_main.c:293 e_mod_main.c:681
 msgid "Taskbar"
 msgstr "Taskbar"
 
-#: e_mod_main.c:308 e_mod_main.c:838
+#: e_mod_main.c:673
 msgid "Configuration"
 msgstr "Configurazione"
