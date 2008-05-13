@@ -46,6 +46,7 @@ SUBDIRS				= \
 	progressbar \
 	puzzle \
 	range \
+	reparent \
 	scrollbar \
 	scrollpane \
 	seeker \
