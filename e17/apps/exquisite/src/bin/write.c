@@ -12,6 +12,8 @@
 
 #include "ipc.h"
 
+int ipc_connect_retry(void *data);
+int ipc_connect_timeout(void *data);
 void ipc_init(void);
 void ipc_shutdown(void);
 

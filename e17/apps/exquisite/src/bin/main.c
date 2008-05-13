@@ -17,6 +17,7 @@ static char *theme = NULL;
 
 static int  _cb_exit(void *data, int ev_type, void *ev);
 static void _cb_delete_request(Ecore_Evas *ee);
+static void _cb_resize(Ecore_Evas *ee);
 static int  _args(void);
     
 int
@@ -55,6 +56,13 @@ static void
 _cb_delete_request(Ecore_Evas *ee)
 {
    ecore_main_loop_quit();
+}
+
+static void
+_cb_resize(Ecore_Evas *ee)
+{
+   evas_output_viewport_get(evas, NULL, NULL, &scr_w, &scr_h);
+   theme_resize();
 }
 
 static int
@@ -181,6 +189,7 @@ _args(void)
    ecore_evas_rotation_set(ee, rot);
    ecore_evas_size_min_set(ee, w, h);
    ecore_evas_size_max_set(ee, w, h);
+   ecore_evas_callback_resize_set(ee, _cb_resize);
    ecore_evas_callback_delete_request_set(ee, _cb_delete_request);
    ecore_evas_title_set(ee, "Exquisite Window");
    ecore_evas_name_class_set(ee, "exquisite", "Exquisite");

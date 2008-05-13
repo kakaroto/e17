@@ -96,6 +96,12 @@ theme_shutdown(void)
    o_bg = NULL;
 }
 
+void
+theme_resize(void)
+{
+   evas_object_resize(o_bg, scr_w, scr_h);
+}
+
 /* emit to theme to shut down - when done call callback func */
 static void (*_theme_exit_func) (void *data) = NULL;
 static void *theme_exit_data = NULL;

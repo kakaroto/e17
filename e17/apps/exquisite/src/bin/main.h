@@ -28,6 +28,7 @@ extern int         quitting;
 
 void theme_init(const char *theme);
 void theme_shutdown(void);
+void theme_resize(void);
 void theme_exit(void (*func) (void *data), void *data);
 void theme_exit_abort(void);
 void theme_title_set(const char *txt);
