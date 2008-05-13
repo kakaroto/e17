@@ -68,6 +68,7 @@ _args(void)
    int h = 480;
    double fps = 60.0;
    int fullscreen = 0;
+   int rot = 0;
    quiet = 1;
 
    ecore_app_args_get(&argc, &argv);
@@ -92,6 +93,11 @@ _args(void)
 	  {
 	     i++;
 	     h = atoi(argv[i]);
+	  }
+	else if ((!strcmp(argv[i], "-rot")) && (i < (argc - 1)))
+	  {
+	     i++;
+	     rot = atoi(argv[i]);
 	  }
 	else if ((!strcmp(argv[i], "-ic")) && (i < (argc - 1)))
 	  {
@@ -140,6 +146,7 @@ _args(void)
 		    "-t theme   Use Theme file 'theme'\n"
 		    "-x res     Use horizontal res 'res'\n"
 		    "-y res     Use vertical res 'res'\n" 
+		    "-rot deg   Use rotation 'deg' if supported by engine (0, 90, 180, 270)\n"
 		    "-ic Kb     Set image cache in Kb\n"
 		    "-fc Kb     Set font cache in Kb\n"
 		    "-fps fps   Set attempted framerate in frames per second\n"
@@ -162,7 +169,7 @@ _args(void)
    else if (engine == GL_X)
      ee = ecore_evas_gl_x11_new(NULL, 0, 0, 0, w, h);
    else if (engine == FB)
-     ee = ecore_evas_fb_new(NULL, 0, w, h);
+     ee = ecore_evas_fb_new(NULL, rot, w, h);
    else if (engine == XRENDER_X)
      ee = ecore_evas_xrender_x11_new(NULL, 0, 0, 0, w, h);
    if (!ee)
@@ -170,6 +177,8 @@ _args(void)
 	printf("Error. Cannot create canvas. Abort.\n");
 	exit(-1);
      }
+   
+   ecore_evas_rotation_set(ee, rot);
    ecore_evas_size_min_set(ee, w, h);
    ecore_evas_size_max_set(ee, w, h);
    ecore_evas_callback_delete_request_set(ee, _cb_delete_request);

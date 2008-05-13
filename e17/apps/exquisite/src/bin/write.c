@@ -22,6 +22,33 @@ static int _ipc_cb_server_del(void *data, int type, void *event);
 static int _ipc_cb_server_data(void *data, int type, void *event);
 
 static Ecore_Ipc_Server *_ipc_server = NULL;
+static int wait_mode = 0;
+static double wait_time = 10.0;
+static Ecore_Timer *connect_timer = NULL;
+static Ecore_Timer *connect_timeout = NULL;
+
+int
+ipc_connect_retry(void *data)
+{
+   if (getenv("EXQUISITE_IPC"))
+     _ipc_server = ecore_ipc_server_connect(ECORE_IPC_LOCAL_SYSTEM, (getenv("EXQUISITE_IPC")), 0, NULL);
+   else
+     _ipc_server = ecore_ipc_server_connect(ECORE_IPC_LOCAL_SYSTEM, "exquisite", 0, NULL);
+   if (_ipc_server)
+     {
+	connect_timer = NULL;
+	return 0;
+     }
+   return 1;
+}
+
+int
+ipc_connect_timeout(void *data)
+{
+   ecore_main_loop_quit();
+   connect_timeout = NULL;
+   return 0;
+}
 
 void
 ipc_init(void)
@@ -31,10 +58,18 @@ ipc_init(void)
      _ipc_server = ecore_ipc_server_connect(ECORE_IPC_LOCAL_SYSTEM, (getenv("EXQUISITE_IPC")), 0, NULL);
    else
      _ipc_server = ecore_ipc_server_connect(ECORE_IPC_LOCAL_SYSTEM, "exquisite", 0, NULL);
-   if (!_ipc_server)
+   if (!wait_mode)
      {
-	_help();
-	ecore_main_loop_quit();
+	if (!_ipc_server)
+	  {
+	     _help();
+	     ecore_main_loop_quit();
+	  }
+     }
+   else
+     {
+	if (!_ipc_server)
+	  connect_timer = ecore_timer_add(0.1, ipc_connect_retry, NULL);
      }
    ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_ADD, _ipc_cb_server_add, NULL);
    ecore_event_handler_add(ECORE_IPC_EVENT_SERVER_DEL, _ipc_cb_server_del, NULL);
@@ -57,7 +92,14 @@ main(int argc, char **argv)
 {
    if (!ecore_init()) return -1;
    ecore_app_args_set(argc, (const char **)argv);
+   if ((argc == 3) && (!strcmp(argv[1], "-wait")))
+     {
+	wait_mode = 1;
+	wait_time = atof(argv[2]);
+     }
    ipc_init();
+   if (wait_mode)
+     connect_timeout = ecore_timer_add(wait_time, ipc_connect_timeout, NULL);
    ecore_main_loop_begin();
    ipc_shutdown();
    ecore_shutdown();
@@ -69,6 +111,7 @@ _help(void)
 {
    printf("Usage:\n"
 	  "  -h            This help\n"
+	  "  -wait N       Wait up to N seconds for exquisite's socket to exist then exit\n"
 	  "  QUIT          Tell splash to exit immediately\n"
 	  "  PROGRESS N    Indicate boot progress is at N percent\n"
 	  "  MSG X         Display string message X\n"
@@ -104,6 +147,13 @@ _ipc_cb_server_add(void *data, int type, void *event)
    char buf[4096];
 	
    e = event;
+   
+   if (wait_mode)
+     {
+	ecore_main_loop_quit();
+	return 1;
+     }
+   
    ecore_app_args_get(&argc, &argv);
    /* parse options */
    if (argc != 2)
