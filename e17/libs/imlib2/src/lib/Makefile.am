@@ -1,6 +1,6 @@
 AUTOMAKE_OPTIONS     = 1.4 foreign
 MAINTAINERCLEANFILES = Makefile.in
-INCLUDES	     = @my_includes@ -I. -I$(top_srcdir)  -I$(top_builddir)
+INCLUDES	     = @my_includes@ -I. -I$(top_srcdir)  -I$(top_builddir)  -DPACKAGE_LIB_DIR=\"$(libdir)\"
 
 lib_LTLIBRARIES      = libImlib2.la
 include_HEADERS      = Imlib2.h
@@ -98,5 +98,5 @@ libImlib2_la_LIBADD       = @my_libs@
 libImlib2_la_DEPENDENCIES = $(top_builddir)/config.h
 endif
 endif
-libImlib2_la_LDFLAGS      = -version-info 5:0:4
+libImlib2_la_LDFLAGS      = -version-info @lt_version@
 

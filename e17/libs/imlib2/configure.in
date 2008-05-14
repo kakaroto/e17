@@ -16,23 +16,26 @@ AC_PROG_CC
 AM_PROG_AS
 
 dnl Set default visibility to hidden?
-AC_ARG_ENABLE(visibility-hiding,
-  [  --enable-visibility-hiding enable visibility hiding @<:@default=no@:>@],,
-  enable_visibility_hiding=no
+AC_ARG_ENABLE([visibility-hiding],
+  [AC_HELP_STRING([--enable-visibility-hiding], [enable visibility hiding @<:@default=no@:>@])],
+  [enable_visibility_hiding=yes],
+  [enable_visibility_hiding=no]
 )
 
 AM_PROG_CC_STDC
 AC_HEADER_STDC
 AC_C_CONST
-AM_ENABLE_SHARED
 
 dnl Next four lines is a hack to prevent libtool checking for CXX/F77
-m4_undefine([AC_PROG_CXX])
-m4_defun([AC_PROG_CXX],[])
-m4_undefine([AC_PROG_F77])
-m4_defun([AC_PROG_F77],[])
-
+define([AC_LIBTOOL_LANG_CXX_CONFIG], [:])dnl
+define([AC_LIBTOOL_LANG_F77_CONFIG], [:])dnl
 AM_PROG_LIBTOOL
+
+VERSION_CUR=5
+VERSION_REV=0
+VERSION_AGE=4
+lt_version=${VERSION_CUR}:${VERSION_REV}:${VERSION_AGE}
+AC_SUBST(lt_version)
 
 dnl See if the compiler supports -std=gnu99 since some math
 dnl functions need it (aka round())
@@ -42,72 +45,6 @@ save_CPPFLAGS="$CPPFLAGS"
 CPPFLAGS="$CPPFLAGS -std=gnu99"
 AC_TRY_COMPILE(,,,[cc_supports_gnu99="no";CPPFLAGS="$save_CPPFLAGS"])
 AC_MSG_RESULT($cc_supports_gnu99)
-
-if test "x${bindir}" = 'x${exec_prefix}/bin'; then
-  if test "x${exec_prefix}" = "xNONE"; then
-    if test "x${prefix}" = "xNONE"; then
-      bindir="${ac_default_prefix}/bin";
-    else
-      bindir="${prefix}/bin";
-    fi
-  else
-    if test "x${prefix}" = "xNONE"; then
-      bindir="${ac_default_prefix}/bin";
-    else
-      bindir="${prefix}/bin";
-    fi
-  fi
-fi
-
-if test "x${libdir}" = 'x${exec_prefix}/lib'; then
-  if test "x${exec_prefix}" = "xNONE"; then
-    if test "x${prefix}" = "xNONE"; then
-      libdir="${ac_default_prefix}/lib";
-    else
-      libdir="${prefix}/lib";
-    fi
-  else
-    if test "x${prefix}" = "xNONE"; then
-      libdir="${ac_default_prefix}/lib";
-    else
-      libdir="${prefix}/lib";
-    fi
-  fi
-fi
-
-dnl Set PACKAGE_BIN_DIR in config.h.
-if test "x${bindir}" = 'xNONE'; then
-  if test "x${prefix}" = "xNONE"; then
-    AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${ac_default_prefix}/bin", [Installation directory for user executables])
-  else
-    AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${prefix}/bin", [Installation directory for user executables])
-  fi
-else
-  AC_DEFINE_UNQUOTED(PACKAGE_BIN_DIR, "${bindir}", [Installation directory for user executables])
-fi
-
-dnl Set PACKAGE_LIB_DIR in config.h.
-if test "x${libdir}" = 'xNONE'; then
-  if test "x${prefix}" = "xNONE"; then
-    AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${ac_default_prefix}/lib", [Installation directory for libraries])
-  else
-    AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${prefix}/lib", [Installation directory for libraries])
-  fi
-else
-  AC_DEFINE_UNQUOTED(PACKAGE_LIB_DIR, "${libdir}", [Installation directory for libraries])
-fi
-
-dnl Set PACKAGE_DATA_DIR in config.h.
-if test "x${prefix}" = "xNONE"; then
-  AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${ac_default_prefix}/share/${PACKAGE}", [Shared Data Directory])
-else
-  AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/share/${PACKAGE}", [Shared Data Directory])
-fi
-
-dnl Set PACKAGE_SOURCE_DIR in config.h.
-packagesrcdir=`cd $srcdir && pwd`
-AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source code directory])
-
 
 
 mmx=no
@@ -124,29 +61,29 @@ case $host_os in
 esac
 
 dnl 
-AC_ARG_ENABLE(mmx,
-[  --enable-mmx            attempt compiling using x86 mmx assembly @<:@default=auto@:>@],
-[
-  if test x$enableval = xyes; then
-    mmx=yes
-    # Cannot compile with both options enabled
-    amd64=no
-  else
-    mmx=no
-  fi
-]
+AC_ARG_ENABLE([mmx],
+  [AC_HELP_STRING([--enable-mmx], [attempt compiling using x86 mmx assembly @<:@default=auto@:>@])],
+  [
+   if test x$enableval = xyes; then
+     mmx=yes
+     # Cannot compile with both options enabled
+     amd64=no
+   else
+     mmx=no
+   fi
+  ]
 )
 
-AC_ARG_ENABLE(amd64,
-[  --enable-amd64          attempt compiling using amd64 assembly @<:@default=auto@:>@],
-[
-  if test x$enableval = xyes; then
-    amd64=yes
-    mmx=no
-  else
-    amd64=no
-  fi
-]
+AC_ARG_ENABLE([amd64],
+  [AC_HELP_STRING([--enable-amd64], [attempt compiling using amd64 assembly @<:@default=auto@:>@])],
+  [
+   if test x$enableval = xyes; then
+     amd64=yes
+     mmx=no
+   else
+     amd64=no
+   fi
+  ]
 )
 
 AC_MSG_CHECKING(whether to enable x86 mmx support)
@@ -164,13 +101,15 @@ AC_MSG_RESULT($amd64)
 AM_CONDITIONAL(BUILD_AMD64, test x$amd64 = xyes)
 
 # check for freetype
-AC_ARG_WITH(freetype-config, [  --with-freetype-config=FREETYPE_CONFIG    use freetype-config specified ],
-[ FREETYPE_CONFIG=$withval;
-  echo "using "$FREETYPE_CONFIG" for freetype-config"; ],
-[ if test -z "$FREETYPE_CONFIG"; then
-    AC_PATH_PROG(FREETYPE_CONFIG, "freetype-config", "", $PATH)
-  fi
-])
+AC_ARG_WITH(freetype-config,
+  [AC_HELP_STRING([--with-freetype-config], [use freetype-config specified])],
+  [ FREETYPE_CONFIG=$withval;
+    echo "using "$FREETYPE_CONFIG" for freetype-config"; ],
+  [ if test -z "$FREETYPE_CONFIG"; then
+      AC_PATH_PROG(FREETYPE_CONFIG, "freetype-config", "", $PATH)
+    fi
+  ]
+)
 freetype_cflags=`$FREETYPE_CONFIG --cflags`
 freetype_libs=`$FREETYPE_CONFIG --libs`
 
@@ -213,15 +152,16 @@ AC_SUBST(my_libs)
 
 
 AC_MSG_CHECKING(whether to enable jpeg support)
-AC_ARG_WITH(jpeg,
-[AC_HELP_STRING([--without-jpeg],[Disable JPEG image loader])],
-[
-  if test "$withval" = no ; then
-    jpeg_loader=no
-  else
-    jpeg_loader=yes
-  fi
-],[ jpeg_loader=auto ]
+AC_ARG_WITH([jpeg],
+  [AC_HELP_STRING([--without-jpeg], [Disable JPEG image loader])],
+  [
+   if test "$withval" = no ; then
+     jpeg_loader=no
+   else
+     jpeg_loader=yes
+   fi
+  ],
+  [ jpeg_loader=auto ]
 )
 AC_MSG_RESULT($jpeg_loader)
 
@@ -260,15 +200,16 @@ AC_SUBST(JPEGLIBS)
 
 
 AC_MSG_CHECKING(whether to enable png support)
-AC_ARG_WITH(png,
-[AC_HELP_STRING([--without-png],[Disable PNG image loader])],
-[
-  if test "$withval" = no ; then
-    png_loader=no
-  else
-    png_loader=yes
-  fi
-],[ png_loader=auto ]
+AC_ARG_WITH([png],
+  [AC_HELP_STRING([--without-png], [Disable PNG image loader])],
+  [
+   if test "$withval" = no ; then
+     png_loader=no
+   else
+     png_loader=yes
+   fi
+  ],
+  [ png_loader=auto ]
 )
 AC_MSG_RESULT($png_loader)
 
@@ -286,15 +227,16 @@ AM_CONDITIONAL(BUILD_PNG_LOADER, test "$png_ok" = yes)
 
 
 AC_MSG_CHECKING(whether to enable tiff support)
-AC_ARG_WITH(tiff,
-[AC_HELP_STRING([--without-tiff],[Disable TIFF image loader])],
-[
-  if test "$withval" = no ; then
-    tiff_loader=no
-  else
-    tiff_loader=yes
-  fi
-],[ tiff_loader=auto ]
+AC_ARG_WITH([tiff],
+  [AC_HELP_STRING([--without-tiff], [Disable TIFF image loader])],
+  [
+   if test "$withval" = no ; then
+     tiff_loader=no
+   else
+     tiff_loader=yes
+   fi
+  ],
+  [ tiff_loader=auto ]
 )
 AC_MSG_RESULT($tiff_loader)
 
@@ -343,19 +285,20 @@ AC_SUBST(TIFFLIBS)
 
 AC_MSG_CHECKING(whether to enable gif support)
 gif_lib=any
-AC_ARG_WITH(gif,
-[AC_HELP_STRING([--without-gif],[Disable GIF image loader])],
-[
-  if test "$withval" = no ; then
-    gif_loader=no
-  else
-    gif_loader=yes
-    case "$withval" in
-      giflib)   gif_lib=giflib;;
-      libungif) gif_lib=libungif;;
-    esac
-  fi
-],[ gif_loader=auto ]
+AC_ARG_WITH([gif],
+  [AC_HELP_STRING([--without-gif], [Disable GIF image loader])],
+  [
+   if test "$withval" = no ; then
+     gif_loader=no
+   else
+     gif_loader=yes
+     case "$withval" in
+       giflib)   gif_lib=giflib;;
+       libungif) gif_lib=libungif;;
+     esac
+   fi
+  ],
+  [ gif_loader=auto ]
 )
 AC_MSG_RESULT($gif_loader)
 
@@ -425,15 +368,16 @@ AC_SUBST(GIFLIBS)
 
 
 AC_MSG_CHECKING(whether to enable zlib support)
-AC_ARG_WITH(zlib,
-[AC_HELP_STRING([--without-zlib],[Disable ZLIB loader])],
-[
-  if test "$withval" = no ; then
-    zlib_loader=no
-  else
-    zlib_loader=yes
-  fi
-],[ zlib_loader=auto ]
+AC_ARG_WITH([zlib],
+  [AC_HELP_STRING([--without-zlib], [Disable ZLIB loader])],
+  [
+   if test "$withval" = no ; then
+     zlib_loader=no
+   else
+     zlib_loader=yes
+   fi
+  ],
+  [ zlib_loader=auto ]
 )
 AC_MSG_RESULT($zlib_loader)
 
@@ -472,15 +416,16 @@ AC_SUBST(ZLIBLIBS)
 
 
 AC_MSG_CHECKING(whether to enable bzip2 support)
-AC_ARG_WITH(bzip2,
-[AC_HELP_STRING([--without-bzip2],[Disable BZIP2 loader])],
-[
-  if test "$withval" = no ; then
-    bz2_loader=no
-  else
-    bz2_loader=yes
-  fi
-],[ bz2_loader=auto ]
+AC_ARG_WITH([bzip2],
+  [AC_HELP_STRING([--without-bzip2], [Disable BZIP2 loader])],
+  [
+   if test "$withval" = no ; then
+     bz2_loader=no
+   else
+     bz2_loader=yes
+   fi
+  ],
+  [ bz2_loader=auto ]
 )
 AC_MSG_RESULT($bz2_loader)
 
@@ -519,15 +464,16 @@ AC_SUBST(BZ2LIBS)
 
 
 AC_MSG_CHECKING(whether to enable id3 support)
-AC_ARG_WITH(id3,
-[AC_HELP_STRING([--without-id3],[Disable ID3 loader])],
-[
-  if test "$withval" = no ; then
-    id3_loader=no
-  else
-    id3_loader=yes
-  fi
-],[ id3_loader=auto ]
+AC_ARG_WITH([id3],
+  [AC_HELP_STRING([--without-id3], [Disable ID3 loader])],
+  [
+   if test "$withval" = no ; then
+     id3_loader=no
+   else
+     id3_loader=yes
+   fi
+  ],
+  [ id3_loader=auto ]
 )
 AC_MSG_RESULT($id3_loader)
 

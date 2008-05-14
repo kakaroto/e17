@@ -2,15 +2,9 @@
 
 SUBDIRS = src data doc
 
-MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
-                       config.h.in config.sub configure install-sh \
-		       ltconfig ltmain.sh missing mkinstalldirs \
-		       stamp-h.in build-stamp configure-stamp depcomp \
-		       imlib2_docs.tar.gz imlib2.c \
-		       README \
-		       imlib2.pc \
-		       imlib2.spec \
-		       debian/changelog
+MAINTAINERCLEANFILES = aclocalm4 config.guess config.h.in \
+		       config.sub configure depcomp install-sh \
+		       ltmain.sh Makefile.in missing imlib2_docs.tar.gz
 
 bin_SCRIPTS = imlib2-config
 

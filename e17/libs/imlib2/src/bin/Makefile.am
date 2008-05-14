@@ -3,6 +3,7 @@ MAINTAINERCLEANFILES = Makefile.in
 INCLUDES = \
 -I../lib \
 -I$(top_srcdir)/src/lib \
+-DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\" \
 @my_includes@
 
 if BUILD_X11
