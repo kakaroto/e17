@@ -784,6 +784,7 @@ fill_tutorial_text(Ewl_Test *test)
         
         snprintf(filename, sizeof(filename),
                         PACKAGE_DATA_DIR "/ewl/tutorials/%s.dox", file);
+        free(file);
 
         txt = read_file(filename);
         tutorial_parse(txt);
