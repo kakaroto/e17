@@ -1,3 +1,7 @@
+# Spanish translation for E17 alarm module.
+# This file is put in the public domain.
+# TeB <pasaeljabon@gmail.com>, 2008.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: Alarm\n"
