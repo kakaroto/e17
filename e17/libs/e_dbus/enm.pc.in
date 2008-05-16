@@ -7,5 +7,5 @@ Name: enotify
 Description: Network Manager convenience library
 Requires: ecore edbus
 Version: @VERSION@
-Libs: -L${libdir} -lenotify
+Libs: -L${libdir} -lenm
 Cflags: -I${includedir}
