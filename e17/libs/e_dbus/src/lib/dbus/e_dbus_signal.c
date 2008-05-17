@@ -53,7 +53,6 @@ e_dbus_signal_init(void)
 void
 e_dbus_signal_shutdown(void)
 {
-  printf("SHUTDOWN\n");
   if (--init) return;
   ecore_list_destroy(signal_handlers);
 
@@ -68,7 +67,6 @@ e_dbus_signal_shutdown(void)
 void
 e_dbus_signal_handler_free(E_DBus_Signal_Handler *sh)
 {
-  printf("free: %p\n", sh);
   if (sh->sender) free(sh->sender);
   if (sh->path) free(sh->path);
   if (sh->interface) free(sh->interface);
@@ -89,7 +87,6 @@ cb_name_owner(void *data, DBusMessage *msg, DBusError *err)
   {
     if (ecore_list_goto(signal_handlers, sh))
       ecore_list_remove(signal_handlers);
-    e_dbus_signal_handler_free(sh);
     dbus_error_free(err);
     return;
   }
@@ -189,8 +186,6 @@ e_dbus_signal_handler_del(E_DBus_Connection *conn, E_DBus_Signal_Handler *sh)
     e_dbus_handler_deletions = 1;
     return;
   }
-  if (!ecore_list_goto(signal_handlers, sh)) return;
-  ecore_list_remove(signal_handlers);
 
   strcpy(match, "type='signal'");
   len = 13;
@@ -213,7 +208,8 @@ e_dbus_signal_handler_del(E_DBus_Connection *conn, E_DBus_Signal_Handler *sh)
 
   dbus_bus_remove_match(conn->conn, match, NULL);
 
-  e_dbus_signal_handler_free(sh);
+  if (!ecore_list_goto(signal_handlers, sh)) return;
+  ecore_list_remove(signal_handlers);
 }
 
 static int
