@@ -123,7 +123,8 @@ _gc_init (E_Gadcon * gc, const char *name, const char *id, const char *style)
     edje_object_signal_emit (inst->weather->weather_obj, "set_style",
 			     "detailed");
 
-  _weather_cb_check (inst);
+   _weather_cb_check (inst);
+
   inst->check_timer =
     ecore_timer_add (inst->ci->poll_time, _weather_cb_check, inst);
   return gcc;
@@ -157,8 +158,7 @@ _gc_shutdown (E_Gadcon_Client * gcc)
 				  _weather_cb_mouse_down);
 
   _weather_free (w);
-  free (inst);
-  inst = NULL;
+   E_FREE(inst);
 }
 
 static void
@@ -388,8 +388,7 @@ e_modapi_shutdown (E_Module * m)
 	evas_stringshare_del (ci->code);
       weather_config->items =
 	evas_list_remove_list (weather_config->items, weather_config->items);
-      free (ci);
-      ci = NULL;
+       E_FREE(ci);
     }
 
   E_FREE (weather_config);
@@ -435,10 +434,9 @@ _weather_new (Evas * evas)
 static void
 _weather_free (Weather * w)
 {
-  evas_object_del (w->weather_obj);
-  evas_object_del (w->icon_obj);
-  free (w);
-  w = NULL;
+   evas_object_del (w->weather_obj);
+   evas_object_del (w->icon_obj);
+   E_FREE(w);
 }
 
 static void
@@ -476,12 +474,11 @@ _weather_cb_check (void *data)
 {
   Instance *inst;
 
-  inst = data;
-  if (inst->server)
-    {
-      ecore_con_server_del (inst->server);
-      inst->server = NULL;
-    }
+   if (!(inst = data)) return 0;
+
+   if (inst->server)
+     ecore_con_server_del (inst->server);
+   inst->server = NULL;
 
   if (proxy.port != 0)
     inst->server =
@@ -490,6 +487,8 @@ _weather_cb_check (void *data)
   else
     inst->server =
       ecore_con_server_connect (ECORE_CON_REMOTE_SYSTEM, inst->ci->host, 80, inst);
+
+   if (!inst->server) return 0;
 
   return 1;
 }
@@ -502,9 +501,7 @@ _weather_server_add (void *data, int type, void *event)
   char buf[1024];
   char icao[1024];
 
-  inst = data;
-  if (!inst)
-    return 1;
+  if (!(inst = data)) return 1;
 
   ev = event;
   if ((!inst->server) || (inst->server != ev->server))
@@ -575,9 +572,7 @@ _weather_parse (void *data)
 
   location[0] = 0;
 
-  inst = data;
-  if (!inst)
-    return 0;
+  if (!(inst = data)) return 0;
   if (inst->buffer == NULL)
     return 0;
 
@@ -664,8 +659,7 @@ _weather_display_set (Instance * inst, int ok)
   char buf[4096];
   char m[4096];
 
-  if (!inst)
-    return;
+  if (!inst) return;
   snprintf (m, sizeof (m), "%s", e_module_dir_get (weather_config->module));
 //   if (!ok) return;
 
@@ -687,8 +681,7 @@ _weather_config_updated (Config_Item *ci)
   Evas_List *l;
   char buf[4096];
 
-  if (!weather_config)
-    return;
+  if (!weather_config) return;
   for (l = weather_config->instances; l; l = l->next)
     {
       Instance *inst;
@@ -708,12 +701,10 @@ _weather_config_updated (Config_Item *ci)
       edje_object_part_text_set (inst->weather->weather_obj, "temp", buf);
 
       _weather_cb_check (inst);
-      if (!inst->check_timer)
-	inst->check_timer =
-	      ecore_timer_add (ci->poll_time, _weather_cb_check,
-			       inst);
+       if (!inst->check_timer)
+         inst->check_timer = ecore_timer_add (ci->poll_time, 
+                                              _weather_cb_check, inst);
       else
-	ecore_timer_interval_set (inst->check_timer,
-				  ci->poll_time);
+	ecore_timer_interval_set (inst->check_timer, ci->poll_time);
     }
 }
