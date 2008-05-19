@@ -82,9 +82,13 @@
     If you wish to use CVS please see the <?php a('contribute', "contributing");?>
     section for more information.</p>
 
+    <hr>
+    
     <p><h2>Releases</h2></p>
     <p>The latest releases of Packages can be found here:</p>
     <p><a href="http://download.enlightenment.org/releases">Releases</a></p>
+    
+    <hr>
     
     <p><h2>Asparagus</h2>(Snapshots)</p>
     <p><?php img("aspara.png", "Asparagus");?></p>
@@ -92,6 +96,8 @@
     <a href="http://download.enlightenment.org/snapshots">download.enlightenment.org/snapshots</a>.</p>
     <p><a href="http://download.enlightenment.org/snapshots/LATEST">Latest Snapshots</a></p>
 
+    <hr>
+    
     <p><h2>Packages</h2></p>
     <p>Unoffical packages are availble for several platforms including:
     Debian, <a href="http://ubuntuforums.org/showthread.php?t=97199&highlight=E17+cvs">Ubuntu</a>,
