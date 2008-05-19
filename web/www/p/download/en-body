@@ -74,15 +74,25 @@
      </table>
     </center>
 
+    <hr>
+
     <h1>Download Enlightenment DR17 and the EFL</h1>
     <p>While DR17 and the EFL are primarily available from CVS there are a few,
     unofficial, packages for various distros along with snapshot tarballs.
     If you wish to use CVS please see the <?php a('contribute', "contributing");?>
     section for more information.</p>
 
+    <p><h2>Releases</h2></p>
+    <p>The latest releases of Packages can be found here:</p>
+    <p><a href="http://download.enlightenment.org/releases">Releases</a></p>
+    
+    <p><h2>Asparagus</h2>(Snapshots)</p>
+    <p><?php img("aspara.png", "Asparagus");?></p>
     <p>Snapshot releases are available from
-    <a href="http://download.enlightenment.org">download.enlightenment.org</a>.</p>
+    <a href="http://download.enlightenment.org/snapshots">download.enlightenment.org/snapshots</a>.</p>
+    <p><a href="http://download.enlightenment.org/snapshots/LATEST">Latest Snapshots</a></p>
 
+    <p><h2>Packages</h2></p>
     <p>Unoffical packages are availble for several platforms including:
     Debian, <a href="http://ubuntuforums.org/showthread.php?t=97199&highlight=E17+cvs">Ubuntu</a>,
     <a href="http://sps.nus.edu.sg/~didierbe">Fedora</a>,
@@ -93,6 +103,7 @@
     <p>There are no guarentees if these packages will work as expected. If you experience
     any problems with DR17 or the EFL using the packages, please first refer to the
     packagers, not to the Enlightenment team.</p>
+    
    </div>
   </td>
  </tr>
