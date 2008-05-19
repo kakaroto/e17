@@ -89,6 +89,7 @@ extern"C" {
 #include <ewl_list.h>
 
 #include <ewl_freebox.h>
+#include <ewl_freebox_mvc.h>
 
 #include <ewl_filelist.h>
 #include <ewl_filelist_model.h>

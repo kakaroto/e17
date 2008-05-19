@@ -50,6 +50,7 @@ EWLHEADERS = \
 	ewl_filepicker.h \
 	ewl_filedialog.h \
 	ewl_freebox.h \
+	ewl_freebox_mvc.h \
 	ewl_grid.h \
 	ewl_histogram.h \
 	ewl_icon.h \
@@ -133,6 +134,7 @@ EWLSOURCES= \
 	ewl_filepicker.c \
 	ewl_filedialog.c \
 	ewl_freebox.c \
+	ewl_freebox_mvc.c \
 	ewl_grid.c \
 	ewl_histogram.c \
 	ewl_icon.c \

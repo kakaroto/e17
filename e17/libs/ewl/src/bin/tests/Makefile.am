@@ -21,6 +21,7 @@ SUBDIRS				= \
 	filepicker \
 	floater \
 	freebox \
+	freebox_mvc \
 	fullscreen \
 	grid \
 	histogram \

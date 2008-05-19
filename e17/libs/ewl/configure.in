@@ -286,6 +286,7 @@ src/bin/tests/filedialog/Makefile
 src/bin/tests/filepicker/Makefile
 src/bin/tests/floater/Makefile
 src/bin/tests/freebox/Makefile
+src/bin/tests/freebox_mvc/Makefile
 src/bin/tests/fullscreen/Makefile
 src/bin/tests/grid/Makefile
 src/bin/tests/histogram/Makefile
