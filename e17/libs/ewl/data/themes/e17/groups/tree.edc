@@ -457,7 +457,6 @@ group
 			signal: "selected";
 			source: "*";
 			action: STATE_SET "selected" 0.0;
-			transition: DECELERATE 0.25;
 			target: "selected";
 		}
 		program
@@ -466,7 +465,6 @@ group
 			signal: "deselect";
 			source: "*";
 			action: STATE_SET "default" 0.0;
-			transition: ACCELERATE 0.01;
 			target: "selected";
 		}
 	}
