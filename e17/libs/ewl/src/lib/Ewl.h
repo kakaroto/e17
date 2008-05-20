@@ -83,7 +83,6 @@ extern"C" {
 
 #include <ewl_tree.h>
 #include <ewl_tree_view.h>
-#include <ewl_tree_view_freebox.h>
 #include <ewl_tree_view_plain.h>
 #include <ewl_tree_view_scrolled.h>
 #include <ewl_list.h>

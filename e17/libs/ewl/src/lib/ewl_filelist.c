@@ -4,14 +4,14 @@
 #include "ewl_filelist_model.h"
 #include "ewl_filelist_view.h"
 #include "ewl_tree.h"
-#include "ewl_tree_view_freebox.h"
-#include "ewl_tree_view_scrolled.h"
+#include "ewl_freebox_mvc.h"
 #include "ewl_mvc.h"
 #include "ewl_icon_theme.h"
 #include "ewl_io_manager.h"
 #include "ewl_macros.h"
 #include "ewl_private.h"
 #include "ewl_debug.h"
+#include "ewl_scrollpane.h"
 #include <sys/types.h>
 #if HAVE_PWD_H
 # include <pwd.h>
@@ -73,7 +73,6 @@ ewl_filelist_init(Ewl_Filelist *fl)
         ewl_callback_prepend(EWL_WIDGET(fl), EWL_CALLBACK_DESTROY,
                                 ewl_filelist_cb_destroy, NULL);
 
-        fl->view_flag = EWL_FILELIST_VIEW_ICON;
         fl->multiselect = FALSE;
         fl->show_dot = FALSE;
 
@@ -114,24 +113,8 @@ ewl_filelist_setup(Ewl_Filelist *fl)
         ewl_model_data_unref_set(fl->model,
                         ewl_filelist_model_data_unref);
 
-        /* For now just create a tree and set different views */
-        fl->controller = ewl_tree_new();
-        ewl_mvc_view_set(EWL_MVC(fl->controller), fl->view);
-        ewl_mvc_model_set(EWL_MVC(fl->controller), fl->model);
-        ewl_tree_selection_type_set(EWL_TREE(fl->controller),
-                        EWL_TREE_SELECTION_TYPE_ROW);
-        ewl_container_child_append(EWL_CONTAINER(fl), fl->controller);
-        ewl_callback_append(EWL_WIDGET(fl->controller),
-                        EWL_CALLBACK_CLICKED, ewl_filelist_cb_clicked, fl);
-        ewl_widget_show(fl->controller);
-
-        if (fl->multiselect)
-                ewl_mvc_selection_mode_set(EWL_MVC(fl->controller),
-                                EWL_SELECTION_MODE_MULTI);
-        else
-                ewl_mvc_selection_mode_set(EWL_MVC(fl->controller),
-                                EWL_SELECTION_MODE_SINGLE);
-
+        /* Set default flag */
+        fl->view_flag = EWL_FILELIST_VIEW_ICON;
         ewl_filelist_view_setup(fl);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -143,11 +126,27 @@ ewl_filelist_setup(Ewl_Filelist *fl)
 static void
 ewl_filelist_view_setup(Ewl_Filelist *fl)
 {
-        const Ewl_View *view;
+        void *data = NULL;
+        Ewl_Widget *p;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(fl);
         DCHECK_TYPE(fl, EWL_FILELIST_TYPE);
+
+        if (fl->controller)
+        {
+                /* We have to check for the scrollpane used for the freebox */
+                p = fl->controller;
+                while (p->parent != EWL_WIDGET(fl))
+                        p = p->parent;
+
+                /* If there is a scrollpane, destroy it */
+                if (p != fl->controller)
+                        ewl_widget_destroy(p);
+                data = ewl_mvc_data_get(EWL_MVC(fl->controller));
+                ewl_mvc_data_set(EWL_MVC(fl->controller), NULL);
+                ewl_widget_destroy(fl->controller);
+        }
 
         /* Set expansions callbacks to NULL right off the bat */
         ewl_model_expansion_data_fetch_set(fl->model, NULL);
@@ -155,55 +154,59 @@ ewl_filelist_view_setup(Ewl_Filelist *fl)
 
         if (fl->view_flag == EWL_FILELIST_VIEW_TREE)
         {
+                fl->controller = ewl_tree_new();
+                ewl_tree_selection_type_set(EWL_TREE(fl->controller),
+                                EWL_TREE_SELECTION_TYPE_ROW);
                 ewl_tree_column_count_set(EWL_TREE(fl->controller), 2);
-                ewl_tree_headers_visible_set(EWL_TREE(fl->controller),
-                                                                TRUE);
-                ewl_tree_alternate_row_colors_set
-                                (EWL_TREE(fl->controller), TRUE);
                 ewl_model_expansion_data_fetch_set(fl->model,
                         ewl_filelist_model_data_expansion_data_fetch);
                 ewl_model_data_expandable_set(fl->model,
                         ewl_filelist_model_data_expandable_get);
-                view = ewl_tree_view_scrolled_get();
+                ewl_container_child_append(EWL_CONTAINER(fl), fl->controller);
         }
         else if (fl->view_flag == EWL_FILELIST_VIEW_LIST)
         {
+                fl->controller = ewl_tree_new();
+                ewl_tree_selection_type_set(EWL_TREE(fl->controller),
+                                EWL_TREE_SELECTION_TYPE_ROW);
                 ewl_tree_column_count_set(EWL_TREE(fl->controller), 6);
-                ewl_tree_headers_visible_set(EWL_TREE(fl->controller),
-                                                                TRUE);
-                ewl_tree_alternate_row_colors_set
-                                (EWL_TREE(fl->controller), TRUE);
-                view = ewl_tree_view_scrolled_get();
+                ewl_container_child_append(EWL_CONTAINER(fl), fl->controller);
         }
         /* Until column view is written just default and throw a warning */
         else if (fl->view_flag == EWL_FILELIST_VIEW_COLUMN)
         {
-                ewl_tree_column_count_set(EWL_TREE(fl->controller), 1);
-                ewl_tree_headers_visible_set(EWL_TREE(fl->controller),
-                                                                FALSE);
-                ewl_tree_alternate_row_colors_set
-                                (EWL_TREE(fl->controller), FALSE);
-                view = ewl_tree_view_freebox_get();
+                p = ewl_scrollpane_new();
+                ewl_container_child_append(EWL_CONTAINER(fl), p);
+                ewl_widget_show(p);
+
+                fl->controller = ewl_vfreebox_mvc_new();
+                ewl_container_child_append(EWL_CONTAINER(p), fl->controller);
                 DWARNING("Column view not implemented");
         }
         /* Make icon view default */
         else
         {
-                ewl_tree_column_count_set(EWL_TREE(fl->controller), 1);
-                /* XXX dirty hack, please remove it after we have a
-                 * freebox mvc implementation */
-                ewl_container_reset(EWL_CONTAINER(EWL_TREE(fl->controller)->header));
-                ewl_tree_headers_visible_set(EWL_TREE(fl->controller),
-                                                                FALSE);
-                ewl_tree_alternate_row_colors_set
-                                (EWL_TREE(fl->controller), FALSE);
-                view = ewl_tree_view_freebox_get();
-                fl->view_flag = EWL_FILELIST_VIEW_ICON;
+                p = ewl_scrollpane_new();
+                ewl_container_child_append(EWL_CONTAINER(fl), p);
+                ewl_widget_show(p);
+
+                fl->controller = ewl_vfreebox_mvc_new();
+                ewl_container_child_append(EWL_CONTAINER(p), fl->controller);
         }
-        
-        /* Set the view and redraw the tree */
-        ewl_tree_content_view_set(EWL_TREE(fl->controller), view);
-        ewl_mvc_dirty_set(EWL_MVC(fl->controller), TRUE);
+
+        /* Once we have mvc created, set specifics into */
+        if (fl->multiselect)
+                ewl_mvc_selection_mode_set(EWL_MVC(fl->controller),
+                                EWL_SELECTION_MODE_MULTI);
+        else
+                ewl_mvc_selection_mode_set(EWL_MVC(fl->controller),
+                                EWL_SELECTION_MODE_SINGLE);
+        ewl_mvc_view_set(EWL_MVC(fl->controller), fl->view);
+        ewl_mvc_model_set(EWL_MVC(fl->controller), fl->model);
+        ewl_mvc_data_set(EWL_MVC(fl->controller), data);
+        ewl_callback_append(EWL_WIDGET(fl->controller),
+                        EWL_CALLBACK_CLICKED, ewl_filelist_cb_clicked, fl);
+        ewl_widget_show(fl->controller);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
