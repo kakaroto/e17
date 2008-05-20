@@ -490,9 +490,6 @@ static void _context_menu_open(void * data, Evas * e, Evas_Object * obj,
     ewl_popup_mouse_position_set(EWL_POPUP(eef->conmenu), x, y);
     ewl_widget_show(eef->conmenu);
     ewl_widget_focus_send(eef->conmenu);
-
-    /* work-around to not keep the object in grap mode */
-    evas_event_feed_mouse_up(e, ev->button, ev->flags, ev->timestamp, NULL);
 }
 
 static void _quit_cb(void * data, Evas_Object * o, const char * emission,
