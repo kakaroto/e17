@@ -50,7 +50,7 @@ _config_mixer_module(void *data, Config_Item *ci)
 
    con = e_container_current_get(e_manager_current_get());
    cfd = e_config_dialog_new(con, D_("Mixer Configuration"), "Mixer", 
-			     "_mixer_config_dialog", buf, 0, v, ci);
+			     "_e_modules_mixer_config_dialog", buf, 0, v, ci);
    mixer_config->config_dialog = cfd;
 }
 

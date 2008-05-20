@@ -1,6 +1,6 @@
 #include "News.h"
 
-#define DIALOG_CLASS "_e_mod_news_config_dialog_feeds"
+#define DIALOG_CLASS "_e_modules_news_feeds_config_dialog"
 
 struct _E_Config_Dialog_Data
 {
@@ -68,7 +68,7 @@ news_config_dialog_feeds_show(void)
    E_Config_Dialog *cfd;
    E_Config_Dialog_View *v;
 
-   if (e_config_dialog_find("E", DIALOG_CLASS))
+   if (e_config_dialog_find("News", DIALOG_CLASS))
      return 0;
 
    v = E_NEW(E_Config_Dialog_View, 1);
@@ -80,7 +80,7 @@ news_config_dialog_feeds_show(void)
    
    cfd = e_config_dialog_new(e_container_current_get(e_manager_current_get()),
 			     D_("News Feeds Configuration"),
-                             "E", DIALOG_CLASS,
+                             "News", DIALOG_CLASS,
                              news_theme_file_get(NEWS_THEME_CAT_ICON), 0, v, NULL);
 
    if (news->config->feed.langs_notset)

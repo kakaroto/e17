@@ -29,7 +29,7 @@ _configure_net_module(void *data)
    Config_Item *ci;
    char buf[PATH_MAX];
 
-   if (e_config_dialog_find("Net", "_netmod_config_dialog")) return;
+   if (e_config_dialog_find("Net", "_e_modules_netmod_config_dialog")) return;
    
    ci = data;
    v = E_NEW(E_Config_Dialog_View, 1);
@@ -42,7 +42,7 @@ _configure_net_module(void *data)
             e_module_dir_get(net_cfg->mod));
    con = e_container_current_get(e_manager_current_get());
    cfd = e_config_dialog_new(con, D_("Net Module Configuration"), "Net", 
-			     "_netmod_config_dialog", buf, 0, v, ci);
+			     "_e_modules_netmod_config_dialog", buf, 0, v, ci);
    net_cfg->cfd = cfd;
 }
 

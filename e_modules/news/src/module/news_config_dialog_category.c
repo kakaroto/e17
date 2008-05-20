@@ -48,7 +48,7 @@ news_config_dialog_category_show(News_Feed_Category *fcat)
    
    cfd = e_config_dialog_new(e_container_current_get(e_manager_current_get()),
 			     D_("News Category Configuration"),
-                             "E", "_e_mod_news_config_dialog_category",
+                             "News", "_e_modules_news_category_config_dialog",
                              news_theme_file_get(NEWS_THEME_CAT_ICON), 0, v, fcat);
 
    return 1;

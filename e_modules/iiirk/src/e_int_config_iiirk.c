@@ -50,7 +50,7 @@ e_int_config_apps_iiirk(E_Container *con, const char *params __UNUSED__)
 	    e_user_homedir_get());
    data = E_NEW(E_Config_Data, 1);
    data->title = evas_stringshare_add(D_("IIirk Applications"));
-   data->dialog = evas_stringshare_add("_config_apps_iiirk_dialog");
+   data->dialog = evas_stringshare_add("_e_modules_iiirk_config_dialog");
    data->icon = evas_stringshare_add("enlightenment/iiirk_applications");
    data->filename = evas_stringshare_add(buf);
 
@@ -79,7 +79,7 @@ _create_dialog(E_Container *con, E_Config_Data *data)
    E_Config_Dialog *cfd;
    E_Config_Dialog_View *v;
 
-   if (e_config_dialog_find("E", data->dialog)) 
+   if (e_config_dialog_find("Iirk", data->dialog)) 
      {
 	if (data->title) evas_stringshare_del(data->title);
 	if (data->dialog) evas_stringshare_del(data->dialog);
@@ -94,7 +94,7 @@ _create_dialog(E_Container *con, E_Config_Data *data)
    v->free_cfdata = _free_data;
    v->basic.create_widgets = _basic_create;
    v->basic.apply_cfdata = _basic_apply;
-   cfd = e_config_dialog_new(con, data->title, "E", data->dialog, 
+   cfd = e_config_dialog_new(con, data->title, "Iirk", data->dialog, 
 			     data->icon, 0, v, data);
    e_dialog_resizable_set(cfd->dia, 1);
    return cfd;

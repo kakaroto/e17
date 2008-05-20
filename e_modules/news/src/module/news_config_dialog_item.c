@@ -1,6 +1,6 @@
 #include "News.h"
 
-#define DIALOG_CLASS "_e_mod_news_config_dialog_item"
+#define DIALOG_CLASS "_e_modules_news_item_config_dialog"
 
 struct _E_Config_Dialog_Data
 {
@@ -38,7 +38,7 @@ news_config_dialog_item_show(News_Item *ni)
    
    cfd = e_config_dialog_new(e_container_current_get(e_manager_current_get()),
 			     D_("News Gadget Configuration"),
-                             "E", DIALOG_CLASS,
+                             "News", DIALOG_CLASS,
                              news_theme_file_get(NEWS_THEME_CAT_ICON), 0, v, ni);
 
    return 1;

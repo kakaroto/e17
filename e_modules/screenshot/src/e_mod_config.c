@@ -34,7 +34,7 @@ e_int_config_screenshot_module(E_Container *con, const char *params __UNUSED__)
    E_Config_Dialog_View *v = NULL;
    char buf[4096];
 
-   if (e_config_dialog_find("Screenshot", "_screenshot_cfg_dlg")) return NULL;
+   if (e_config_dialog_find("Screenshot", "_e_modules_screenshot_config_dialog")) return NULL;
 
    v = E_NEW(E_Config_Dialog_View, 1);
    if (!v) return NULL;
@@ -48,7 +48,7 @@ e_int_config_screenshot_module(E_Container *con, const char *params __UNUSED__)
 
    snprintf(buf, sizeof(buf), "%s/e-module-screenshot.edj", ss_mod->dir);
    cfd = e_config_dialog_new(con, "Screenshot Configuration", "Screenshot", 
-			     "_screenshot_cfg_dlg", buf, 0, v, NULL);
+			     "_e_modules_screenshot_config_dialog", buf, 0, v, NULL);
    ss_cfg->cfd = cfd;
    return cfd;
 }

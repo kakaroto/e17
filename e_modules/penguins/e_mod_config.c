@@ -28,7 +28,7 @@ e_int_config_penguins_module(E_Container *con, const char *params __UNUSED__)
    Population *pop;
 
    pop = penguins_mod->data;
-   if (e_config_dialog_find("E", "_e_mod_penguins_config_dialog")) return NULL;
+   if (e_config_dialog_find("Penguins", "_e_modules_penguins_config_dialog")) return NULL;
    v = E_NEW(E_Config_Dialog_View, 1);
    
    v->create_cfdata = _create_data;
@@ -39,7 +39,7 @@ e_int_config_penguins_module(E_Container *con, const char *params __UNUSED__)
    snprintf(buf, sizeof(buf), "%s/e-module-penguins.edj", e_module_dir_get(pop->module));
    cfd = e_config_dialog_new(con,
 			     D_("Population Settings"),
-			     "E", "_e_mod_penguins_config_dialog",
+			     "Penguins", "_e_modules_penguins_config_dialog",
 			     buf, 0, v, pop);
    pop->config_dialog = cfd;
    return cfd;

@@ -30,8 +30,8 @@ _config_tclock_module (Config_Item * ci)
   E_Container *con;
   char buf[4096];
 
-   if (e_config_dialog_find("TClock", "_tclock_config_dialog")) return;
-   
+  if (e_config_dialog_find("TClock", "_e_modules_tclock_config_dialog")) return;
+
   v = E_NEW (E_Config_Dialog_View, 1);
 
   v->create_cfdata = _create_data;
@@ -43,7 +43,7 @@ _config_tclock_module (Config_Item * ci)
 	    e_module_dir_get (tclock_config->module));
   con = e_container_current_get (e_manager_current_get ());
   cfd = e_config_dialog_new (con, D_ ("Tclock Configuration"), "TClock", 
-			     "_tclock_config_dialog", buf, 0, v, ci);
+			     "_e_modules_tclock_config_dialog", buf, 0, v, ci);
   tclock_config->config_dialog = cfd;
 }
 
