@@ -152,6 +152,8 @@ _gc_icon(Evas *evas)
 static const char *
 _gc_id_new(void)
 {
+   Config_Item *ci;
+   Evas_List   *l;
    const char *id;
    char buf[128];
    int num = 0;
@@ -160,7 +162,8 @@ _gc_id_new(void)
    if (calendar_conf->items)
      {
 	const char *p;
-	p = strrchr(id, '.');
+	ci = evas_list_last(calendar_conf->items)->data;
+	p = strrchr(ci->id, '.');
 	if (p) num = atoi(p + 1) + 1;
      }
    snprintf(buf, sizeof(buf), "%s.%d", _gc_class.name, num);
