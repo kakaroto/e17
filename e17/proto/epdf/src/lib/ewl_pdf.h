@@ -6,7 +6,9 @@
 
 /**
  * @file ewl_pdf.h
+ *
  * @defgroup Ewl_Pdf Ewl Pdf
+ *
  * @brief A PDF display Widget for the Ewl toolkit
  *
  * Provides a widget for displaying PDF files in an Ewl widget.
@@ -63,25 +65,25 @@ typedef struct Ewl_Pdf Ewl_Pdf;
  */
 struct Ewl_Pdf
 {
-	Ewl_Widget            widget;         /**< Inherit from Ewl_Widget */
+        Ewl_Widget            widget;         /**< Inherit from Ewl_Widget */
 
-	void                 *image;          /**< The evas object for the image */
-	char                 *filename;       /**< The file name */
-	int                   ow;             /**< The original image width */
-	int                   oh;             /**< The original image height */
+        void                 *image;          /**< The evas object for the image */
+        char                 *filename;       /**< The file name */
+        int                   ow;             /**< The original image width */
+        int                   oh;             /**< The original image height */
 
-	Epdf_Document        *pdf_document;   /**< The Epdf document */
-	Epdf_Page            *pdf_page;       /**< The Epdf current page */
-	Ecore_List           *pdf_index;      /**< The Epdf index */
+        Epdf_Document        *pdf_document;   /**< The Epdf document */
+        Epdf_Page            *pdf_page;       /**< The Epdf current page */
+        Ecore_List           *pdf_index;      /**< The Epdf index */
 
-	struct {
-		void        *o;
-		char        *text;
-		Ecore_List  *list;
-		int          page;
-		int          is_case_sensitive;
-		int          is_circular;
-	}search;                              /**< The search members */
+        struct {
+                void         *o;
+                char         *text;
+                Ecore_List   *list;
+                int           page;
+                int           is_case_sensitive;
+                int           is_circular;
+        }search;                              /**< The search members */
 
 };
 
@@ -126,4 +128,4 @@ void ewl_pdf_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data );
  */
 
 
-#endif				/* __EWL_PDF_H__ */
+#endif /* __EWL_PDF_H__ */

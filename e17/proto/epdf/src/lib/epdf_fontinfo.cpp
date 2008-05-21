@@ -43,7 +43,7 @@ epdf_font_info_delete (Epdf_Font_Info *fi)
 }
 
 const char *
-epdf_font_info_font_name_get (Epdf_Font_Info *fi)
+epdf_font_info_font_name_get (const Epdf_Font_Info *fi)
 {
   if (!fi)
     return NULL;
@@ -52,7 +52,7 @@ epdf_font_info_font_name_get (Epdf_Font_Info *fi)
 }
 
 const char *
-epdf_font_info_font_path_get (Epdf_Font_Info *fi)
+epdf_font_info_font_path_get (const Epdf_Font_Info *fi)
 {
   if (!fi)
     return NULL;
@@ -61,7 +61,7 @@ epdf_font_info_font_path_get (Epdf_Font_Info *fi)
 }
 
 unsigned char
-epdf_font_info_is_embedded_get (Epdf_Font_Info *fi)
+epdf_font_info_is_embedded_get (const Epdf_Font_Info *fi)
 {
   if (!fi)
     return 0;
@@ -70,7 +70,7 @@ epdf_font_info_is_embedded_get (Epdf_Font_Info *fi)
 }
 
 unsigned char
-epdf_font_info_is_subset_get (Epdf_Font_Info *fi)
+epdf_font_info_is_subset_get (const Epdf_Font_Info *fi)
 {
   if (!fi)
     return 0;
@@ -79,7 +79,7 @@ epdf_font_info_is_subset_get (Epdf_Font_Info *fi)
 }
 
 Epdf_Font_Info_Type
-epdf_font_info_type_get (Epdf_Font_Info *fi)
+epdf_font_info_type_get (const Epdf_Font_Info *fi)
 {
   if (!fi)
     return EPDF_FONT_INFO_UNKNOWN;
@@ -88,9 +88,10 @@ epdf_font_info_type_get (Epdf_Font_Info *fi)
 }
 
 const char *
-epdf_font_info_type_name_get (Epdf_Font_Info *fi)
+epdf_font_info_type_name_get (const Epdf_Font_Info *fi)
 {
   const char *type_name;
+
   if (!fi)
     return NULL;
 

@@ -12,10 +12,10 @@
 
 
 Epdf_Postscript *
-epdf_postscript_new (Epdf_Document *document,
-                     const char    *filename,
-                     int            first_page,
-                     int            last_page)
+epdf_postscript_new (const Epdf_Document *document,
+                     const char          *filename,
+                     int                  first_page,
+                     int                  last_page)
 {
   Epdf_Postscript *ps;
 
@@ -74,7 +74,7 @@ epdf_postscript_duplex_set (Epdf_Postscript *postscript,
 }
 
 void
-epdf_postscript_print (Epdf_Postscript *postscript)
+epdf_postscript_print (const Epdf_Postscript *postscript)
 {
   PSOutputDev *ps_dev;
 

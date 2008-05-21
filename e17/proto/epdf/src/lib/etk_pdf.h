@@ -7,7 +7,9 @@
 
 /**
  * @file etk_pdf.h
+ *
  * @defgroup Etk_Pdf Etk Pdf
+ *
  * @brief A PDF display Widget for the Etk toolkit
  *
  * Provides a widget for displaying PDF files in an Etk widget.
@@ -67,12 +69,12 @@ struct _Etk_Pdf
    Ecore_List           *pdf_index;      /**< The Epdf index */
 
   struct {
-     Evas_Object *o;
-     char        *text;
-     Ecore_List  *list;
-     int          page;
-     int          is_case_sensitive;
-     int          is_circular;
+     Evas_Object        *o;
+     char               *text;
+     Ecore_List         *list;
+     int                 page;
+     int                 is_case_sensitive;
+     int                 is_circular;
   }search;                               /**< The search members */
 };
 

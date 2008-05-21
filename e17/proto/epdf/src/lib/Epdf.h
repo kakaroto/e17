@@ -52,6 +52,7 @@
  * epdf_document_new(), to create a page using epdf_page_new() and to
  * render the whole page in an Evas object using epdf_page_render(). If
  * you want to render only a part of the page, use epdf_page_render_slice().
+ * If you want to view a specific page, use epdf_page_page_set().
  * Here is an example:
  *
  * @code
@@ -64,17 +65,17 @@
  *   // manage error here
  * }
  *
- * page = epdf_page_new (document, page_number);
+ * page = epdf_page_new (document);
  * if (!page) {
  *   // manage error here
  * }
  *
  * o = evas_object_image_add (evas);
  * evas_object_move (o, 0, 0);
- * epdf_page_render (page, device, o);
+ * epdf_page_render (page, o);
  * evas_object_show (o);
  *
- * epdf_page_delete (document);
+ * epdf_page_delete (page);
  * epdf_document_delete (document);
  * @endcode
  */

@@ -10,9 +10,9 @@
 #include "config.h"
 
 #if HAVE___ATTRIBUTE__
-#define __UNUSED__ __attribute__((unused))
+# define __UNUSED__ __attribute__((unused))
 #else
-#define __UNUSED__
+# define __UNUSED__
 #endif
 
 
@@ -33,8 +33,8 @@ static void _etk_pdf_constructor(Etk_Pdf *pdf);
 static void _etk_pdf_destructor(Etk_Pdf *pdf);
 static void _etk_pdf_property_set(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_pdf_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
-static void _etk_pdf_realize_cb(Etk_Object *object, void *data);
-static void _etk_pdf_unrealize_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_pdf_realize_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_pdf_unrealize_cb(Etk_Object *object, void *data);
 static void _etk_pdf_size_request(Etk_Widget *widget, Etk_Size *size_requisition);
 static void _etk_pdf_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 static void _etk_pdf_load(Etk_Pdf *pdf);
@@ -94,13 +94,15 @@ void etk_pdf_file_set(Etk_Pdf *pdf, const char *filename)
    if (pdf->pdf_document)
       epdf_document_delete (pdf->pdf_document);
 
+   if (pdf->pdf_page)
+      epdf_page_delete (pdf->pdf_page);
+
    if (pdf->pdf_index)
       epdf_index_delete (pdf->pdf_index);
 
    pdf->pdf_document = epdf_document_new (pdf->filename);
+   pdf->pdf_page = epdf_page_new (pdf->pdf_document);
    pdf->pdf_index = epdf_index_new (pdf->pdf_document);
-   pdf->pdf_page = epdf_page_new (pdf->pdf_document);;
-   pdf->page = 0;
 
    pdf->search.o = NULL;
    pdf->search.text = NULL;
@@ -152,7 +154,7 @@ int etk_pdf_page_get(Etk_Pdf *pdf)
    if (!pdf)
       return 0;
 
-   return epdf_page_page_set (pdf->pdf_page);
+   return epdf_page_page_get (pdf->pdf_page);
 }
 
 /**
@@ -170,8 +172,7 @@ void etk_pdf_size_get(Etk_Pdf *pdf, int *width, int *height)
       return;
    }
 
-   if (width) *width = epdf_page_width_get (pdf->pdf_page);
-   if (height) *height = epdf_page_height_get (pdf->pdf_page);
+   epdf_page_size_get (pdf->pdf_page, width, height);
 
    evas_object_image_size_get(pdf->pdf_object, width, height);
 }
@@ -280,7 +281,7 @@ etk_pdf_page_previous (Etk_Pdf *pdf)
   page = epdf_page_page_get(pdf->pdf_page);
   if (page > 0)
     page--;
-  ewl_pdf_page_set (pdf, page);
+  etk_pdf_page_set (pdf, page);
 }
 
 void
@@ -349,7 +350,8 @@ etk_pdf_search_next (Etk_Pdf *pdf)
 
      pdf->search.page++;
      printf ("page : %d\n", pdf->search.page);
-     page = epdf_page_new (pdf->pdf_document, pdf->search.page);
+     epdf_page_page_set (pdf->pdf_page, pdf->search.page);
+/*      page = epdf_page_new (pdf->pdf_document, pdf->search.page); */
      pdf->search.list = epdf_page_text_find (page,
                                              pdf->search.text,
                                              pdf->search.is_case_sensitive);
@@ -364,7 +366,7 @@ etk_pdf_search_next (Etk_Pdf *pdf)
      int             x, y, w, h;
 
      if ((rect = (Epdf_Rectangle *)ecore_list_next (pdf->search.list))) {
-       if (pdf->search.page != pdf->page) {
+       if (pdf->search.page != epdf_page_page_get(pdf->pdf_page)) {
          etk_pdf_page_set (pdf, pdf->search.page);
          _etk_pdf_load (pdf);
        }
@@ -636,11 +638,8 @@ static void _etk_pdf_load(Etk_Pdf *pdf)
 	 pdf->pdf_object = evas_object_image_add(evas);
 	 etk_widget_member_object_add(widget, pdf->pdf_object);
       }
-      if (pdf->pdf_page)
-	 epdf_page_delete (pdf->pdf_page);
       if (pdf->pdf_object)
       {
-	 pdf->pdf_page = epdf_page_new (pdf->pdf_document, pdf->page);
 	 epdf_page_render (pdf->pdf_page, pdf->pdf_object);
       }
       evas_object_show(pdf->pdf_object);

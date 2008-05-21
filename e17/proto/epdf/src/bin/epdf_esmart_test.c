@@ -15,11 +15,14 @@ static void app_delete_request(Ecore_Evas *ee);
 int
 main (int argc, char *argv[])
 {
-  Ecore_Evas *ee;
-  Evas *evas;
-  Evas_Object *o, *bg;
-  char *filename;
-  int page_number;
+  Ecore_Evas  *ee;
+  Evas        *evas;
+  Evas_Object *o;
+  Evas_Object *bg;
+  char        *filename;
+  int          page_number;
+  int          width;
+  int          height;
 
   if (argc < 3)
     {
@@ -42,7 +45,7 @@ main (int argc, char *argv[])
     return -1;
   }
 
-  ee = ecore_evas_software_x11_new(NULL, 0,  0, 0, 600, 850);
+  ee = ecore_evas_software_x11_new(NULL, 0,  0, 0, 0, 0);
   ecore_event_handler_add (ECORE_EVENT_SIGNAL_EXIT, app_signal_exit, NULL);
   ecore_evas_callback_delete_request_set(ee, app_delete_request);
   ecore_evas_title_set(ee, "Esmart Pdf Test");
@@ -54,7 +57,6 @@ main (int argc, char *argv[])
 
   bg = evas_object_rectangle_add(evas);
   evas_object_color_set(bg, 0, 0, 0, 255);
-  evas_object_resize(bg, 600, 850);
   evas_object_show(bg);
   ecore_evas_data_set(ee, "bg", bg);
 
@@ -70,6 +72,10 @@ main (int argc, char *argv[])
   esmart_pdf_render (o);
   evas_object_move (o, 0, 0);
   evas_object_show (o);
+
+  esmart_pdf_size_get (o, &width, &height);
+  ecore_evas_resize(ee, width, height);
+  evas_object_resize(bg, width, height);
 
   ecore_main_loop_begin ();
 

@@ -64,17 +64,17 @@ static Evas_Smart  *smart = NULL;
 
 /**
  * @addtogroup Esmart_Pdf
+ *
  * @{
  */
 
 /**
- * Add a smart pdf object to an evas
+ * @brief Add a smart pdf object to an evas
  *
  * @param evas The Evas canvas
  * @return The file name
  *
  * Add a smart pdf object to the evas @p evas, or NULL on failure
- *
  */
 Evas_Object *
 esmart_pdf_add (Evas *evas)
@@ -85,13 +85,12 @@ esmart_pdf_add (Evas *evas)
 }
 
 /**
- * Initialize a smart pdf object
+ * @brief Initialize a smart pdf object
  *
  * @param obj The Evas object
  * @return 1 on success, 0 otherwise
  *
  * Initialize the smart pdf object @p obj
- *
  */
 Evas_Bool
 esmart_pdf_init (Evas_Object *obj)
@@ -111,13 +110,12 @@ esmart_pdf_init (Evas_Object *obj)
 }
 
 /**
- * Set the file name of a smart pdf object
+ * @brief Set the file name of a smart pdf object
  *
  * @param obj The Evas object
  * @param filename: The file name
  *
  * Set the file name of the smart pdf object @p obj
- *
  */
 void
 esmart_pdf_file_set (Evas_Object *obj, const char *filename)
@@ -147,13 +145,12 @@ esmart_pdf_file_set (Evas_Object *obj, const char *filename)
 }
 
 /**
- * Return the name of the file used for a smart pdf object
+ * @brief Return the name of the file used for a smart pdf object
  *
  * @param obj The Evas object
  * @return The name of the file, or @c NULL on failure
  *
  * Return the name of the file used for the smart pdf object @p obj
- *
  */
 const char *
 esmart_pdf_file_get (Evas_Object *obj)
@@ -166,13 +163,12 @@ esmart_pdf_file_get (Evas_Object *obj)
 }
 
 /**
- * Set the page number of a smart pdf object
+ * @brief Set the page number of a smart pdf object
  *
  * @param obj The Evas object
  * @param page: The page number
  *
  * Set the page number of the smart pdf object @p obj
- *
  */
 void
 esmart_pdf_page_set (Evas_Object *obj, int page)
@@ -191,13 +187,12 @@ esmart_pdf_page_set (Evas_Object *obj, int page)
 }
 
 /**
- * Return the page number of a smart pdf object
+ * @brief Return the page number of a smart pdf object
  *
  * @param obj The Evas object
  * @return The page number
  *
  * Return the page number of the smart pdf object @p obj
- *
  */
 int
 esmart_pdf_page_get(Evas_Object *obj)
@@ -229,8 +224,7 @@ void esmart_pdf_size_get(Evas_Object *obj, int *width, int *height)
       return;
    }
 
-   if (width) *width = epdf_page_width_get (sp->pdf_page);
-   if (height) *height = epdf_page_height_get (sp->pdf_page);
+   epdf_page_size_get (sp->pdf_page, width, height);
 }
 
 /**
@@ -355,6 +349,30 @@ esmart_pdf_page_previous (Evas_Object *obj)
 }
 
 /**
+ * @brief Render the current page
+ *
+ * @param obj: the smart object
+ */
+void
+esmart_pdf_render (Evas_Object *obj)
+{
+  Smart_Pdf *sp;
+
+  E_SMART_OBJ_GET (sp, obj, E_OBJ_NAME);
+
+  if (!sp->filename) return;
+
+  if (sp->pdf_document)
+    {
+      if (sp->obj)
+        {
+          epdf_page_render (sp->pdf_page, sp->obj);
+        }
+      evas_object_show (sp->obj);
+    }
+}
+
+/**
  * Return the poppler document of a smart pdf object
  *
  * @param obj The Evas object
@@ -409,30 +427,6 @@ esmart_pdf_pdf_index_get (Evas_Object *obj)
   E_SMART_OBJ_GET_RETURN(sp, obj, E_OBJ_NAME, NULL);
 
   return sp->pdf_index;
-}
-
-/**
- * @brief Render the current page
- *
- * @param obj: the smart object
- */
-void
-esmart_pdf_render (Evas_Object *obj)
-{
-  Smart_Pdf *sp;
-
-  E_SMART_OBJ_GET (sp, obj, E_OBJ_NAME);
-
-  if (!sp->filename) return;
-
-  if (sp->pdf_document)
-    {
-      if (sp->obj)
-        {
-          epdf_page_render (sp->pdf_page, sp->obj);
-        }
-      evas_object_show (sp->obj);
-    }
 }
 
 /**

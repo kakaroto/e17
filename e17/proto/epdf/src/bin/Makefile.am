@@ -11,6 +11,8 @@ endif
 
 bin_PROGRAMS = epdf_evas_test epdf_esmart_test $(EPDF_EWL_TEST) $(EPDF_ETK_TEST)
 
+## evas test
+
 epdf_evas_test_SOURCES = \
 epdf_evas_test.c
 
@@ -23,6 +25,10 @@ epdf_evas_test_LDADD = \
 $(top_builddir)/src/lib/libepdf.la \
 $(EPDF_LIBS) $(ECORE_EVAS_LIBS)
 
+epdf_evas_test_DEPENDENCIES = $(top_builddir)/src/lib/libepdf.la
+
+## esmart test
+
 epdf_esmart_test_SOURCES = \
 epdf_esmart_test.c
 
@@ -34,6 +40,10 @@ epdf_esmart_test_CPPFLAGS =\
 epdf_esmart_test_LDADD = \
 $(top_builddir)/src/lib/libepdf.la \
 $(EPDF_LIBS) $(ECORE_EVAS_LIBS)
+
+epdf_esmart_test_DEPENDENCIES = $(top_builddir)/src/lib/libepdf.la
+
+## ewl test
 
 epdf_ewl_test_SOURCES = \
 epdf_ewl_test.c
@@ -49,6 +59,10 @@ $(top_builddir)/src/lib/libepdf.la \
 $(EPDF_LIBS) \
 $(EWL_LIBS)
 
+epdf_ewl_test_DEPENDENCIES = $(top_builddir)/src/lib/libepdf.la
+
+## etk test
+
 epdf_etk_test_SOURCES = \
 epdf_etk_test.c
 
@@ -61,3 +75,5 @@ epdf_etk_test_CPPFLAGS = \
 epdf_etk_test_LDADD = \
 $(top_builddir)/src/lib/libepdf.la \
 $(EPDF_LIBS)
+
+epdf_etk_test_DEPENDENCIES = $(top_builddir)/src/lib/libepdf.la

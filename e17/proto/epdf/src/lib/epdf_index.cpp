@@ -55,7 +55,7 @@ epdf_index_item_delete (Epdf_Index_Item *item)
 }
 
 const char *
-epdf_index_item_title_get (Epdf_Index_Item *item)
+epdf_index_item_title_get (const Epdf_Index_Item *item)
 {
   if (!item)
     return NULL;
@@ -64,7 +64,7 @@ epdf_index_item_title_get (Epdf_Index_Item *item)
 }
 
 Ecore_List *
-epdf_index_item_children_get (Epdf_Index_Item *item)
+epdf_index_item_children_get (const Epdf_Index_Item *item)
 {
   if (!item)
     return NULL;
@@ -73,7 +73,7 @@ epdf_index_item_children_get (Epdf_Index_Item *item)
 }
 
 Epdf_Link_Action_Kind
-epdf_index_item_action_kind_get (Epdf_Index_Item *item)
+epdf_index_item_action_kind_get (const Epdf_Index_Item *item)
 {
   if (!item || !item->action || !item->action->isOk ())
     return EPDF_LINK_ACTION_UNKNOWN;
@@ -90,8 +90,10 @@ epdf_index_item_action_kind_get (Epdf_Index_Item *item)
 }
 
 int
-epdf_index_item_page_get (Epdf_Document *document, Epdf_Index_Item *item)
+epdf_index_item_page_get (const Epdf_Document *document, const Epdf_Index_Item *item)
 {
+  bool delete_dest = false;
+
   if (!item || !item->action || !item->action->isOk ())
     return -1;
 
@@ -101,23 +103,32 @@ epdf_index_item_page_get (Epdf_Document *document, Epdf_Index_Item *item)
   GooString *named_dest = ((LinkGoTo *)item->action)->getNamedDest ();
   LinkDest *dest = ((LinkGoTo *)item->action)->getDest ();
 
-  if (!dest && named_dest)
+  if (!dest && named_dest) {
     dest = document->pdfdoc->findDest (named_dest);
+    if (dest) delete_dest = true;
+  }
 
   // we really can't find a destination
   if (!dest || !dest->isOk ())
     return -1;
 
-  if (dest->isPageRef ())
-    return document->pdfdoc->findPage (dest->getPageRef ().num, dest->getPageRef ().gen) - 1;
+  if (dest->isPageRef ()) {
+    int page = document->pdfdoc->findPage (dest->getPageRef ().num, dest->getPageRef ().gen) - 1;
+    if (delete_dest) delete dest;
+    return page;
+  }
 
-  return dest->getPageNum () - 1;
+  int page = dest->getPageNum () - 1;
+
+  if (delete_dest) delete dest;
+
+  return page;
 }
 
 /* Index */
 
 Ecore_List *
-epdf_index_new (Epdf_Document *document)
+epdf_index_new (const Epdf_Document *document)
 {
   Outline    *outline;
   GooList    *gitems;
@@ -209,6 +220,7 @@ epdf_index_unfill (Ecore_List *items)
   if (!items)
     return;
 
+  printf ("epdf_index_unfill\n");
   ecore_list_first_goto (items);
   while ((item = (Epdf_Index_Item *)ecore_list_next (items))) {
     if (item->title)

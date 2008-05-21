@@ -3,12 +3,15 @@
 
 
 /**
- * @file epdf.h
+ * @file epdf_main.h
+ *
  * @defgroup Epdf_Main Epdf main functions
- * @brief Functions that manage initialization, shutdown, and other miscellaneous functions
- * @ingroup Epdf
+ *
+ * @brief Functions that manage miscellaneous functions
  *
  * Miscellaenous functions
+ *
+ * @ingroup Epdf
  */
 
 /**

@@ -45,7 +45,6 @@ epdf_page.cpp \
 epdf_page_transition.cpp \
 epdf_postscript.cpp \
 esmart_pdf.c \
-$(EPDFHEADERS) \
 $(EPDF_EWL_WIDGET) \
 $(EPDF_ETK_WIDGET)
 
@@ -54,3 +53,5 @@ installed_headers_DATA = $(EPDFHEADERS)
 
 libepdf_la_LIBADD  = @ETK_LIBS@ @EWL_LIBS@ @EPDF_LIBS@
 libepdf_la_LDFLAGS = @create_shared_lib@ -version-info @version_info@
+
+EXTRA_DIST = $(EPDFHEADERS)

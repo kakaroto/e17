@@ -21,4 +21,6 @@ epdf_thumbnailer_la_LDFLAGS = @create_shared_lib@ -module -avoid-version
 
 epdf_thumbnailer_la_LIBADD = $(top_builddir)/src/lib/libepdf.la @EPSILON_LIBS@
 
+epdf_thumbnailer_la_DEPENDENCIES = $(top_builddir)/src/lib/libepdf.la
+
 EXTRA_DIST = $(epdf_thumbnailer_la_SOURCES)

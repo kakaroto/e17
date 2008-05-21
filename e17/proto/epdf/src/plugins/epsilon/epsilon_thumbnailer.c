@@ -60,23 +60,25 @@ epsilon_generate_thumb (Epsilon * e)
    Epdf_Document *document;
    Epdf_Page     *page;
    int            page_number;
+   int            width;
+   int            height;
    const int     *pixels;
 
    document = epdf_document_new (e->src);
    page = epdf_page_new (document);
    epdf_page_page_set (page, 1);
-   ee = ecore_evas_buffer_new(64,64);
+   epdf_page_size_get (page, &width, &height);
+
+   ee = ecore_evas_buffer_new(width, height);
    evas = ecore_evas_get(ee);
+
    o = evas_object_image_add (evas);
    evas_object_move (o, 0, 0);
    epdf_page_render (page, o);
    evas_object_show (o);
-   ecore_evas_resize (ee, epdf_page_width_get (page), epdf_page_height_get (page));
 
    pixels = ecore_evas_buffer_pixels_get (ee);
-   img = imlib_create_image_using_data (epdf_page_width_get (page),
-					epdf_page_height_get (page),
-					(DATA32 *)pixels);
+   img = imlib_create_image_using_data (width, height, (DATA32 *)pixels);
 
    imlib_context_set_image(img);
 

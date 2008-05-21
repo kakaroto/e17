@@ -27,6 +27,8 @@ libewl_pdf_la_LDFLAGS = \
 -module \
 -avoid-version
 
+libewl_pdf_la_DEPENDENCIES = $(top_builddir)/src/lib/libepdf.la
+
 EXTRA_DIST = $(libewl_pdf_la_SOURCES)
 exampledir = @EWL_TEST_SOURCE_DIR@
 example_DATA = $(libewl_pdf_la_SOURCES)

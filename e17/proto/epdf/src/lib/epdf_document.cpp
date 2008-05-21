@@ -61,11 +61,10 @@ epdf_document_new (const char *filename)
 
     return doc;
   }
-  else {
-    free (doc);
 
-    return NULL;
-  }
+  free (doc);
+
+  return NULL;
 }
 
 void
@@ -80,18 +79,8 @@ epdf_document_delete (Epdf_Document *document)
   free (document);
 }
 
-PDFDoc *
-epdf_document_doc_get (Epdf_Document *document)
-{
-  if (!document) {
-    return NULL;
-  }
-
-  return document->pdfdoc;
-}
-
 int
-epdf_document_page_count_get (Epdf_Document *document)
+epdf_document_page_count_get (const Epdf_Document *document)
 {
   if (!document)
     return 0;
@@ -100,7 +89,7 @@ epdf_document_page_count_get (Epdf_Document *document)
 }
 
 Epdf_Document_Page_Mode
-epdf_document_page_mode_get (Epdf_Document *document)
+epdf_document_page_mode_get (const Epdf_Document *document)
 {
   if (!document || !document->pdfdoc ||
       !document->pdfdoc->getCatalog () || !document->pdfdoc->getCatalog ()->isOk ())
@@ -171,7 +160,7 @@ epdf_document_unlock (Epdf_Document *document, const char *password)
 }
 
 unsigned char
-epdf_document_is_locked (Epdf_Document *document)
+epdf_document_is_locked (const Epdf_Document *document)
 {
   if (!document)
     return 0;
@@ -180,13 +169,13 @@ epdf_document_is_locked (Epdf_Document *document)
 }
 
 const char *
-epdf_document_info_get (Epdf_Document *document __UNUSED__, const char *data __UNUSED__)
+epdf_document_info_get (const Epdf_Document *document __UNUSED__, const char *data __UNUSED__)
 {
   return NULL;
 }
 
 unsigned char
-epdf_document_is_encrypted (Epdf_Document *document)
+epdf_document_is_encrypted (const Epdf_Document *document)
 {
   if (!document)
     return 0;
@@ -195,7 +184,7 @@ epdf_document_is_encrypted (Epdf_Document *document)
 }
 
 unsigned char
-epdf_document_is_linearized (Epdf_Document *document)
+epdf_document_is_linearized (const Epdf_Document *document)
 {
   if (!document)
     return 0;
@@ -204,7 +193,7 @@ epdf_document_is_linearized (Epdf_Document *document)
 }
 
 unsigned char
-epdf_document_is_printable (Epdf_Document *document)
+epdf_document_is_printable (const Epdf_Document *document)
 {
   if (!document)
     return 0;
@@ -213,7 +202,7 @@ epdf_document_is_printable (Epdf_Document *document)
 }
 
 unsigned char
-epdf_document_is_changeable (Epdf_Document *document)
+epdf_document_is_changeable (const Epdf_Document *document)
 {
   if (!document)
     return 0;
@@ -222,7 +211,7 @@ epdf_document_is_changeable (Epdf_Document *document)
 }
 
 unsigned char
-epdf_document_is_copyable (Epdf_Document *document)
+epdf_document_is_copyable (const Epdf_Document *document)
 {
   if (!document)
     return 0;
@@ -231,7 +220,7 @@ epdf_document_is_copyable (Epdf_Document *document)
 }
 
 unsigned char
-epdf_document_is_notable (Epdf_Document *document)
+epdf_document_is_notable (const Epdf_Document *document)
 {
   if (!document)
     return 0;
@@ -241,7 +230,7 @@ epdf_document_is_notable (Epdf_Document *document)
 
 
 double
-epdf_document_pdf_version_get (Epdf_Document *document)
+epdf_document_pdf_version_get (const Epdf_Document *document)
 {
   if (!document)
     return 0.0;
@@ -250,7 +239,7 @@ epdf_document_pdf_version_get (Epdf_Document *document)
 }
 
 Ecore_List *
-epdf_document_fonts_get (Epdf_Document *document)
+epdf_document_fonts_get (const Epdf_Document *document)
 {
   if (!document)
     return NULL;
@@ -260,7 +249,7 @@ epdf_document_fonts_get (Epdf_Document *document)
 }
 
 Ecore_List *
-epdf_document_scan_for_fonts (Epdf_Document *document, int page_count)
+epdf_document_scan_for_fonts (const Epdf_Document *document, int page_count)
 {
   Ecore_List *fonts;
   int         length;
@@ -277,42 +266,44 @@ epdf_document_scan_for_fonts (Epdf_Document *document, int page_count)
   ecore_list_free_cb_set (fonts, ECORE_FREE_CB (epdf_font_info_delete));
 
   for ( int i = 0; i < length; ++i ) {
-    Epdf_Font_Info_Type type;
     Epdf_Font_Info     *font;
     Epdf_Font_Info     *font2;
+    FontInfo           *fi;
     char               *font_name = NULL;
     char               *font_path = NULL;
     int                 index = 0;
 
-    printf ("1\n");
-    if (((::FontInfo*)items->get(i))->getName())
-      font_name = ((::FontInfo*)items->get(i))->getName()->getCString();
+    fi = (::FontInfo*)(items->get(i));
+    if (fi->getName())
+      font_name = fi->getName()->getCString();
 
-    if (((::FontInfo*)items->get(i))->getFile())
-      font_path = ((::FontInfo*)items->get(i))->getFile()->getCString();
+    if (fi->getFile())
+      font_path = fi->getFile()->getCString();
 
-    type = (Epdf_Font_Info_Type)((::FontInfo*)items->get(i))->getType();
     font = epdf_font_info_new (font_name, font_path,
-                               ((::FontInfo*)items->get(i))->getEmbedded(),
-                               ((::FontInfo*)items->get(i))->getSubset(),
-                               type);
+                               fi->getEmbedded(),
+                               fi->getSubset(),
+                               (Epdf_Font_Info_Type)fi->getType());
 
-    while ((font->font_name[index]) &&
-           (font->font_name[index] != '+'))
-      index++;
-    if (font->font_name[index] == '\0')
-      index = 0;
-    else
-      index++;
-    font_name = strdup (font->font_name + index);
-    font2 = epdf_font_info_new (font_name,
-                                font_path,
-                                font->is_embedded,
-                                font->is_subset,
-                                font->type);
-    ecore_list_append (fonts, font2);
-    free (font_name);
-    epdf_font_info_delete (font);
+//     printf ("font name : %s\n", font_name);
+//     printf ("font name : %s\n", font->font_name);
+//     while ((font->font_name[index]) &&
+//            (font->font_name[index] != '+'))
+//       index++;
+//     if (font->font_name[index] == '\0')
+//       index = 0;
+//     else
+//       index++;
+//     font_name = strdup (font->font_name + index);
+//     font2 = epdf_font_info_new (font_name,
+//                                 font_path,
+//                                 font->is_embedded,
+//                                 font->is_subset,
+//                                 font->type);
+//     ecore_list_append (fonts, font2);
+    ecore_list_append (fonts, font);
+//     free (font_name);
+//     epdf_font_info_delete (font);
   }
 
   deleteGooList (items, FontInfo);
@@ -321,7 +312,7 @@ epdf_document_scan_for_fonts (Epdf_Document *document, int page_count)
 }
 
 const char *
-epdf_document_filename_get (Epdf_Document *document)
+epdf_document_filename_get (const Epdf_Document *document)
 {
   if (!document)
     return NULL;
@@ -330,7 +321,7 @@ epdf_document_filename_get (Epdf_Document *document)
 }
 
 static char *
-epdf_document_property_get (Epdf_Document *document, const char *property)
+epdf_document_property_get (const Epdf_Document *document, const char *property)
 {
   Object     obj;
   GooString *goo_string;
@@ -371,7 +362,7 @@ epdf_document_property_get (Epdf_Document *document, const char *property)
 }
 
 char *
-epdf_document_title_get (Epdf_Document *document)
+epdf_document_title_get (const Epdf_Document *document)
 {
   if (!document)
     return NULL;
@@ -380,7 +371,7 @@ epdf_document_title_get (Epdf_Document *document)
 }
 
 char *
-epdf_document_author_get (Epdf_Document *document)
+epdf_document_author_get (const Epdf_Document *document)
 {
   if (!document)
     return NULL;
@@ -389,7 +380,7 @@ epdf_document_author_get (Epdf_Document *document)
 }
 
 char *
-epdf_document_subject_get (Epdf_Document *document)
+epdf_document_subject_get (const Epdf_Document *document)
 {
   if (!document)
     return NULL;
@@ -398,7 +389,7 @@ epdf_document_subject_get (Epdf_Document *document)
 }
 
 char *
-epdf_document_keywords_get (Epdf_Document *document)
+epdf_document_keywords_get (const Epdf_Document *document)
 {
   if (!document)
     return NULL;
@@ -407,7 +398,7 @@ epdf_document_keywords_get (Epdf_Document *document)
 }
 
 char *
-epdf_document_creator_get (Epdf_Document *document)
+epdf_document_creator_get (const Epdf_Document *document)
 {
   if (!document)
     return NULL;
@@ -416,7 +407,7 @@ epdf_document_creator_get (Epdf_Document *document)
 }
 
 char *
-epdf_document_producer_get (Epdf_Document *document)
+epdf_document_producer_get (const Epdf_Document *document)
 {
   if (!document)
     return NULL;
@@ -425,7 +416,7 @@ epdf_document_producer_get (Epdf_Document *document)
 }
 
 static char *
-epdf_document_date_get (Epdf_Document *document, const char *type)
+epdf_document_date_get (const Epdf_Document *document, const char *type)
 {
   Object     obj;
   GooString *goo_string;
@@ -514,7 +505,7 @@ epdf_document_date_get (Epdf_Document *document, const char *type)
 }
 
 char *
-epdf_document_creation_date_get (Epdf_Document *document)
+epdf_document_creation_date_get (const Epdf_Document *document)
 {
   if (!document)
     return NULL;
@@ -523,7 +514,7 @@ epdf_document_creation_date_get (Epdf_Document *document)
 }
 
 char *
-epdf_document_mod_date_get (Epdf_Document *document)
+epdf_document_mod_date_get (const Epdf_Document *document)
 {
   if (!document)
     return NULL;
@@ -532,7 +523,7 @@ epdf_document_mod_date_get (Epdf_Document *document)
 }
 
 const char *
-epdf_document_linearized_get (Epdf_Document *document)
+epdf_document_linearized_get (const Epdf_Document *document)
 {
   if (!document)
     return NULL;
@@ -544,7 +535,7 @@ epdf_document_linearized_get (Epdf_Document *document)
 }
 
 const char *
-epdf_document_page_mode_string_get (Epdf_Document *document)
+epdf_document_page_mode_string_get (const Epdf_Document *document)
 {
   if (!document || !document->pdfdoc ||
       !document->pdfdoc->getCatalog () || !document->pdfdoc->getCatalog ()->isOk ())
@@ -567,7 +558,7 @@ epdf_document_page_mode_string_get (Epdf_Document *document)
 }
 
 const char *
-epdf_document_page_layout_string_get (Epdf_Document *document)
+epdf_document_page_layout_string_get (const Epdf_Document *document)
 {
   if (!document || !document->pdfdoc ||
       !document->pdfdoc->getCatalog () || !document->pdfdoc->getCatalog ()->isOk ())

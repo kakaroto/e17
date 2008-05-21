@@ -24,6 +24,8 @@ main (int argc, char *argv[])
   Epdf_Document *document;
   Epdf_Page     *page;
   int            page_number;
+  int            width;
+  int            height;
 
   if (argc < 3) {
     printf ("\nUsage: %s filename page_number\n\n", argv[0]);
@@ -50,6 +52,7 @@ main (int argc, char *argv[])
     return EXIT_FAILURE;
   }
   epdf_page_page_set (page, page_number);
+  epdf_page_size_get (page, &width, &height);
 
   document_info_print (document, page);
 
@@ -65,11 +68,11 @@ main (int argc, char *argv[])
     return EXIT_FAILURE;
   }
 
-  ee = ecore_evas_software_x11_new (NULL, 0,  0, 0, 600, 850);
+  ee = ecore_evas_software_x11_new (NULL, 0,  0, 0, width, height);
   /* these tests can be improved... */
   if (!ee) {
     printf ("Can not find Software X11 engine. Trying DirectDraw engine...\n");
-    ee = ecore_evas_software_ddraw_new (NULL,  0, 0, 600, 850);
+    ee = ecore_evas_software_ddraw_new (NULL,  0, 0, width, height);
     if (!ee) {
       printf ("Can not find Software X11 engine. Trying DirectDraw engine...\n");
       printf ("Exiting...\n");
@@ -91,7 +94,6 @@ main (int argc, char *argv[])
   evas_object_move (o, 0, 0);
   epdf_page_render (page, o);
   evas_object_show (o);
-  ecore_evas_resize (ee, epdf_page_width_get (page), epdf_page_height_get (page));
 
   ecore_main_loop_begin ();
 
@@ -153,6 +155,8 @@ document_info_print (Epdf_Document *document, Epdf_Page *page)
   const char     *page_mode;
   const char     *page_layout;
   const char     *orientation;
+  int             width;
+  int             height;
 
   printf ("\n");
   printf ("  Poppler version....: %s\n", epdf_poppler_version_get ());
@@ -234,8 +238,10 @@ document_info_print (Epdf_Document *document, Epdf_Page *page)
   printf ("  Page Properties:\n");
   printf ("\n");
 
+  epdf_page_size_get (page, &width, &height);
+
   printf ("  Number.............: %d\n", epdf_page_page_get (page));
-  printf ("  Size (pixels)......: %d x %d\n", epdf_page_width_get (page), epdf_page_height_get (page));
+  printf ("  Size (pixels)......: %d x %d\n", width, height);
   switch (epdf_page_orientation_get (page))
     {
     case EPDF_PAGE_ORIENTATION_PORTRAIT:

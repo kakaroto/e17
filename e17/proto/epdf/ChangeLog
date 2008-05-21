@@ -1,3 +1,58 @@
+2008-05-21  Vincent Torri  <doursse at users dot sf dot net>
+
+	* configure.in:
+	* src/bin/Makefile.am:
+	* src/lib/Makefile.am:
+	* src/plugins/epsilon/Makefile.am:
+	* src/plugins/ewl/Makefile.am:
+	fix autotools
+
+	* Doxyfile:
+	* src/lib/Epdf.h:
+	* src/lib/epdf_document.cpp:
+	* src/lib/epdf_document.h:
+	* src/lib/epdf_fontinfo.cpp:
+	* src/lib/epdf_fontinfo.h:
+	* src/lib/epdf_index.cpp:
+	* src/lib/epdf_index.h:
+	* src/lib/epdf_main.h:
+	* src/lib/epdf_page.cpp:
+	* src/lib/epdf_page.h:
+	* src/lib/epdf_page_transition.h:
+	* src/lib/epdf_postscript.cpp:
+	* src/lib/epdf_postscript.h:
+	* src/lib/esmart_pdf.c: (esmart_pdf_size_get), (esmart_pdf_render),
+	(esmart_pdf_pdf_index_get):
+	* src/lib/esmart_pdf.h:
+	* src/lib/etk_pdf.c: (etk_pdf_file_set), (etk_pdf_page_get),
+	(etk_pdf_size_get), (etk_pdf_page_previous), (etk_pdf_search_next),
+	(_etk_pdf_load):
+	* src/lib/etk_pdf.h:
+	* src/lib/ewl_pdf.c: (ewl_pdf_new), (ewl_pdf_init),
+	(ewl_pdf_file_set), (ewl_pdf_file_get), (ewl_pdf_page_set),
+	(ewl_pdf_page_get), (ewl_pdf_pdf_size_get),
+	(ewl_pdf_orientation_set), (ewl_pdf_orientation_get),
+	(ewl_pdf_scale_set), (ewl_pdf_scale_get), (ewl_pdf_page_next),
+	(ewl_pdf_page_previous), (ewl_pdf_search_text_set),
+	(ewl_pdf_search_first_page_set),
+	(ewl_pdf_search_is_case_sensitive), (ewl_pdf_search_next),
+	(ewl_pdf_pdf_document_get), (ewl_pdf_pdf_page_get),
+	(ewl_pdf_pdf_index_get), (ewl_pdf_configure_cb),
+	(ewl_pdf_reveal_cb), (ewl_pdf_obscure_cb), (ewl_pdf_destroy_cb):
+	* src/lib/ewl_pdf.h:
+	api break : epdf_page_size_get instead of
+	epdf_page_width_get and epdf_page_height_get
+	add const when needed
+	fix documentation
+	change 1 tabulation to 8 spaces in ewl widget
+
+	* src/bin/epdf_esmart_test.c: (main):
+	* src/bin/epdf_evas_test.c: (main), (document_info_print):
+	* src/bin/epdf_ewl_test.c: (_change_page_cb):
+	* src/plugins/epsilon/epsilon_thumbnailer.c:
+	(epsilon_generate_thumb):
+	update to new api
+
 2008-04-20  Vincent Torri  <doursse at users dot sf dot net>
 
 	rename poppler* files to epdf* files.

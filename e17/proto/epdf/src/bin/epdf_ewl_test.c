@@ -269,6 +269,8 @@ _change_page_cb (Ewl_Widget *widget, void *ev_data, void *user_data)
   Ewl_Pdf           *pdf;
   Ewl_Selection_Idx *sel;
 
+  pdf = EWL_PDF (user_data);
+
   if (ewl_widget_type_is (widget, "list")) {
 /*     sel = ewl_mvc_selected_get (EWL_MVC (widget)); */
 
@@ -282,14 +284,11 @@ _change_page_cb (Ewl_Widget *widget, void *ev_data, void *user_data)
     Tree_Data     *data;
     Tree_Row_Data *row_data;
 
-    printf ("1\n");
     sel = ewl_mvc_selected_get (EWL_MVC (widget));
     if (!sel) return;
-    printf ("2 %d\n\n", sel->row);
     data = (Tree_Data *)EWL_SELECTION(sel)->data;
     row_data = data->rows[sel->row];
     if (row_data) {
-      printf ("3 %d\n\n", row_data->page);
       ewl_pdf_page_set (pdf, row_data->page);
       ewl_callback_call (EWL_WIDGET (pdf), EWL_CALLBACK_REVEAL);
     }
