@@ -23,8 +23,6 @@ SNAP=`echo $PACKAGE_VERSION | awk -F. '{printf("%s", $4);}'`
 version_info=`expr $VMAJ + $VMIN`":$VMIC:$VMIN"
 AC_SUBST(version_info)
 
-PKG_CHECK_MODULES(IMLIB2, [imlib2 >= 1.0.0])
-
 PKG_CHECK_MODULES(EVAS, [evas >= 0.9.9])
 
 PKG_CHECK_MODULES(ECORE, [
@@ -35,18 +33,6 @@ PKG_CHECK_MODULES(ECORE, [
 )
 
 PKG_CHECK_MODULES(EDJE, [edje >= 0.5.0])
-
-dnl Make sure the epeg header/lib is available
-PKG_CHECK_MODULES(EPEG, [epeg >= 0.9.0],
-  [
-    AC_DEFINE(HAVE_EPEG_H, 1, [Epeg.h is available])
-    have_epeg="yes"
-  ],
-  [
-    have_epeg="no"
-    AC_MSG_WARN(Cannot find Epeg on your system: jpeg thumbnail suckage!)
-  ]
-)
 
 dnl Make sure the png header/lib is available
 PKG_CHECK_EXISTS(libpng12,
@@ -90,7 +76,7 @@ else
 fi
 AM_CONDITIONAL(HAVE_XINE, test $xine = "xine")
 
-requirements="imlib2 evas ecore-evas ecore-file ecore-ipc edje"
+requirements="evas ecore-evas ecore-file ecore-ipc edje"
 AC_SUBST(requirements)
 
 #####################################################################

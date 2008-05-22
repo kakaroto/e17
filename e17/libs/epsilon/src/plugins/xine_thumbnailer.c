@@ -1,5 +1,4 @@
 #include "Epsilon.h"
-#define X_DISPLAY_MISSING 1
 #include "Epsilon_Plugin.h"
 #include "../config.h"
 
@@ -27,49 +26,17 @@ typedef struct _epsilon_xine_param
   xine_audio_port_t *ao_port;
 } epsilon_xine_param;
 
-Imlib_Image epsilon_thumb_imlib_standardize (void);
-int clip (int val);
-void i_yuy2_to_yv12 (const unsigned char *src, unsigned char *dest, int width,
+static int clip (int val);
+static void i_yuy2_to_yv12 (const unsigned char *src, unsigned char *dest, int width,
 		     int height);
-int yv12_to_rgb (const char *name, int w, int h, DATA8 ** buf,
-		 Imlib_Image * rp);
-Imlib_Image epsilon_generate_thumb (Epsilon * e);
+static int yv12_to_rgb (const char *name, int w, int h, unsigned char ** buf,
+		 Epsilon_Image ** rp);
+static Epsilon_Image *epsilon_generate_thumb (Epsilon * e);
 EAPI Epsilon_Plugin *epsilon_plugin_init (void);
 
 /*----------------------------------------------*/
-Imlib_Image
-epsilon_thumb_imlib_standardize (void)
-{
-  Imlib_Image dst = NULL;
-  int dw, dh;
-  int sw = imlib_image_get_width (), sh = imlib_image_get_height ();
-  int s = 128;
 
-  if (sw > sh)
-    {
-      dw = s;
-      dh = (s * sh) / sw;
-    }
-  else
-    {
-      dh = s;
-      dw = (s * sw) / sh;
-    }
-
-  imlib_context_set_cliprect (0, 0, dw, dh);
-
-  if ((dst = imlib_create_cropped_scaled_image (0, 0, sw, sh, dw, dh)))
-    {
-
-      imlib_context_set_image (dst);
-      imlib_context_set_anti_alias (1);
-      imlib_image_set_has_alpha (1);
-    }
-
-  return dst;
-}
-
-int
+static int
 clip (int val)
 {
   if (val < 0)
@@ -78,7 +45,7 @@ clip (int val)
 }
 
 
-void
+static void
 i_yuy2_to_yv12 (const unsigned char *src, unsigned char *dest, int width,
 		int height)
 {
@@ -112,14 +79,13 @@ i_yuy2_to_yv12 (const unsigned char *src, unsigned char *dest, int width,
     }
 }
 
-int
-yv12_to_rgb (const char *name, int w, int h, DATA8 ** buf, Imlib_Image * rp)
+static int
+yv12_to_rgb (const char *name, int w, int h, unsigned char ** buf, Epsilon_Image ** rp)
 {
-  DATA8 *_y = *buf,		/* video-data (Y, base) */
+  unsigned char *_y = *buf,		/* video-data (Y, base) */
     *_u = _y + (w * h),		/* video-data (U, base) */
     *_v = _y + (w * h) + (w * h) / 4;	/* video-data (V, base) */
-  DATA8 *_rgb,			/* video-data (RGB, base) */
-   *__rgb;			/* video-data (RGB, current row) */
+  unsigned int *rgb;			/* video-data (RGB, base) */
 
   int hw = ((w + 1) / 2), hh = ((h + 1) / 2);
 
@@ -135,29 +101,29 @@ yv12_to_rgb (const char *name, int w, int h, DATA8 ** buf, Imlib_Image * rp)
 
   int ret = 0;
 
-  Imlib_Image dst;		/* destination image (ARGB) */
+  Epsilon_Image *dst;		/* destination image (ARGB) */
 
   if (rp)
     *rp = NULL;
 
-  if (!(dst = imlib_create_image (w, h))) {
+  dst = calloc(1, sizeof(Epsilon_Image));
+  if (!dst) {
     if (XINE_THUMBNAILER_DEBUG) printf("Couldn't create  yv12_to_rgb imlib image..\n");
     return XINE_THUMB_FAIL;
   }
+  dst->w = w;
+  dst->h = h;
+  dst->alpha = 1;
+  dst->data = malloc(dst->w * dst->h * sizeof(int));
+  if (!dst->data)
+     {
+	free(dst);
+	if (XINE_THUMBNAILER_DEBUG) printf("Couldn't create  yv12_to_rgb imlib image..\n");
+	return XINE_THUMB_FAIL;
+     }
+  dst->alpha = 1;
 
-  imlib_context_set_image (dst);
-  imlib_image_set_format ("argb");
-  imlib_image_set_has_alpha (1);
-
-  if (!(_rgb = (DATA8 *) imlib_image_get_data ()))
-    {
-      imlib_free_image ();
-      return XINE_THUMB_FAIL;
-    }
-
-#define BPP 4
-
-  __rgb = _rgb;
+  rgb = dst->data;
 
   for (i = 0; i < h; ++i)
     {
@@ -184,15 +150,15 @@ yv12_to_rgb (const char *name, int w, int h, DATA8 ** buf, Imlib_Image * rp)
 	  g = ((1.1644 * y) - (0.3918 * u) - (0.8130 * v));
 	  b = ((1.1644 * y) + (2.0172 * u));
 
-	  __rgb[(j * BPP) + 0] = clip (b);
-	  __rgb[(j * BPP) + 1] = clip (g);
-	  __rgb[(j * BPP) + 2] = clip (r);
-	  __rgb[(j * BPP) + 3] = 255;
+	  rgb[0] = 0xff000000 |
+	     (clip(b) << 16) |
+	     (clip(g) << 8 ) |
+	     (clip(b)      );
+	  rgb++;
 	}
 
       sy += (sx / w);
 
-      __rgb += (w * BPP);
     }
 
   sy = (sy / h);
@@ -209,15 +175,13 @@ yv12_to_rgb (const char *name, int w, int h, DATA8 ** buf, Imlib_Image * rp)
     *buf = NULL;
   }
 
-  imlib_image_put_back_data ((DATA32 *) _rgb);
-
   if (rp)
     *rp = dst;
 
   return ret;
 }
 
-float
+static float
 pti (int ti)
 {
   if (ti < 0)
@@ -225,17 +189,16 @@ pti (int ti)
   return (ti / 60000.0);
 }
 
-Imlib_Image
+static Epsilon_Image *
 epsilon_generate_thumb (Epsilon * e)
 {
   int ret = XINE_THUMB_SUCCESS;
-  Imlib_Image img = NULL;
-  DATA8 *buf = NULL;
+  Epsilon_Image *img = NULL;
+  unsigned char *buf = NULL;
   int cnt, attempts = 0, length = -1, pos_perc, pos_time, new_perc, new_time,
   req_perc = 500, req_time = 500;
   static int old_length = -1;
   char cfg[PATH_MAX];
-
   epsilon_xine_param *param;
 
   param = calloc (1, sizeof (epsilon_xine_param));
@@ -373,8 +336,8 @@ try_get_chance:
 
       if (format == XINE_IMGFMT_YUY2)
 	{
-	  DATA8 *buf2 = malloc (w * h * 2);
-	  DATA8 *tmp = buf;
+	  unsigned char *buf2 = malloc (w * h * 2);
+	  unsigned char *tmp = buf;
 	  i_yuy2_to_yv12 (buf, buf2, w, h);
 
 	  buf = buf2;
@@ -393,7 +356,8 @@ try_get_chance:
 		{
 		  if (++attempts > 10)
 		    goto close_stream;
-		  imlib_free_image ();
+		  free(img->data);
+		  free(img);
 		  img = NULL;
 		  if (ret == XINE_THUMB_RETRY)
 		    {
@@ -438,12 +402,11 @@ try_get_chance:
 	{
 	  if (img)
 	    {
-	      imlib_free_image ();
+	      free(img->data);
+	      free(img);
 	      img = NULL;
 	    }
 	}
-      else
-	img = epsilon_thumb_imlib_standardize ();
 
       if (param->stream)
 	{
@@ -465,6 +428,7 @@ try_get_chance:
 
       return img;
     }
+   return NULL;
 }
 
 /*---------------------------*/

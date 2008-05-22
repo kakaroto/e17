@@ -60,7 +60,7 @@ static int _epsilon_exists_ext(Epsilon *e, const char *ext, char *path, int path
 static char *epsilon_hash (const char *file);
 #ifdef HAVE_PNG_H
 static FILE *_epsilon_open_png_file_reading (const char *filename);
-static int _epsilon_png_write (const char *file, DATA32 * ptr,
+static int _epsilon_png_write (const char *file, unsigned int * ptr,
 			       int tw, int th, int sw, int sh, char *imformat,
 			       int mtime, char *uri);
 #endif
@@ -137,7 +137,7 @@ epsilon_init (void)
   char* type;
   DIR *dir;
   Epsilon_Plugin *plugin;
-  char plugin_path[1024];
+  char plugin_path[PATH_MAX];
 
   if (epsilon_init_count) return ++epsilon_init_count;
 
@@ -549,189 +549,151 @@ epsilon_exists (Epsilon * e)
 int
 epsilon_generate (Epsilon * e)
 {
-  int iw, ih;
-  int tw, th;
-  char outfile[PATH_MAX];
-  const char* mime;
-  Epsilon_Plugin* plugin;
-
-#ifdef HAVE_EPEG_H
-  Epeg_Image *im;
-  Epeg_Thumbnail_Info info;
-  int len;
-#endif
-
-  if (!e || !e->src || !e->hash)
-    return (EPSILON_FAIL);
+   char buf[PATH_MAX], buf2[PATH_MAX], buf3[256], *ext = NULL;
+   Evas *evas = NULL, *evas_im = NULL;
+   Ecore_Evas *ee = NULL, *ee_im = NULL;
+   Evas_Object *im = NULL, *edje = NULL;
+   int ret = EPSILON_FAIL;
+   int iw, ih, alpha, ww, hh;
+   int *data = NULL;
+   struct stat filestatus;
+   time_t mtime = 0;
+   const char *mime = NULL;
+   Epsilon_Image *img_thm = NULL;
+   Epsilon_Plugin *plugin = NULL;
    
-  tw = e->tw;
-  th = e->th;
+   if (stat(e->src, &filestatus) != 0)
+     return ret;
    
-#ifdef HAVE_EPEG_H
-  len = strlen (e->src);
-  if ((len > 4) &&
-      !strcasecmp (&e->src[len - 3], "jpg") && (im = epeg_file_open (e->src)))
-    {
-      _epsilon_file_name(e->tw, e->hash, "jpg", outfile, sizeof(outfile));
-      epeg_thumbnail_comments_get (im, &info);
-      epeg_size_get (im, &iw, &ih);
-      if (iw > ih)
-	{
-	  th = ((unsigned long) e->tw * ih) / iw;
-	  if (th < 1) th = 1;
-	}
-      else
-	{
-	  tw = ((unsigned long) e->th *  iw) / ih;
-	  if (tw < 1) tw = 1;
-	}
-      epeg_decode_size_set (im, tw, th);
-      epeg_quality_set (im, 100);
-      epeg_thumbnail_comments_enable (im, 1);
-      epeg_file_output_set (im, outfile);
-      if (!epeg_encode (im))
-	{
-	  epeg_close (im);
-	  return (EPSILON_OK);
-	}
-      epeg_close (im);
-    }
-#endif
-  {
-    int mtime;
-    char uri[PATH_MAX];
-    char format[32];
-    struct stat filestatus;
-    int isedje = 0, len=0;
-    Imlib_Image tmp = NULL;
-    Imlib_Image src = NULL;
-    Ecore_Evas *ee = NULL;
-
-    if (stat (e->src, &filestatus) != 0)
-      return (EPSILON_FAIL);
-
-    mtime = filestatus.st_mtime;
-
-    len = strlen (e->src);
-
-   if (!evas_init()) return -1;
-   if (!ecore_init()) {
-     evas_shutdown ();
-     return -1;
-   }
-
-   if (!ecore_evas_init()) {
-     evas_shutdown ();
-     ecore_shutdown ();
-     return -1;
-    }
-
-    if ((len > 4) && (!strcmp (&e->src[len - 3], "edj")))
-      {
-	Evas *evas = NULL;
-	Evas_Object *edje = NULL;
-	const int *pixels;
-	int w, h;
-	edje_init ();
-	if (!e->key)
+   mtime = filestatus.st_mtime;
+   evas_init();
+   ecore_init();
+   ecore_evas_init();
+   edje_init();
+   
+   edje_file_cache_set(0);
+   edje_collection_cache_set(0);
+   ee = ecore_evas_buffer_new(1, 1);
+   evas = ecore_evas_get(ee);
+   evas_image_cache_set(evas, 0);
+   evas_font_cache_set(evas, 0);
+   ww = 0;
+   hh = 0;
+   alpha = 1;
+   
+   ext = strrchr(e->src, '.');
+   if (ext)
+     {
+	mime = epsilon_mime_for_extension_get(ext + 1);
+	if ((plugin = ecore_hash_get(plugins_mime, mime)))
+	  img_thm = (plugin->epsilon_generate_thumb)(e);
+     }
+   
+   if (img_thm)
+     {
+	iw = img_thm->w;
+	ih = img_thm->h;
+	im = evas_object_image_add(evas);
+	alpha = img_thm->alpha;
+	evas_object_image_alpha_set(im, alpha);
+	evas_object_image_size_set(im, iw, ih);
+	evas_object_image_data_set(im, img_thm->data);
+	evas_object_image_data_update_add(im, 0, 0, iw, ih);
+	if ((iw > 0) && (ih > 0))
 	  {
-	    fprintf (stderr, "Key required for this file type! ERROR!!\n");
-	    return (EPSILON_FAIL);
+	     ww = e->tw;
+	     hh = (e->tw * ih) / iw;
+	     if (hh > e->th)
+	       {
+		  hh = e->th;
+		  ww = (e->th * iw) / ih;
+	       }
+	     evas_object_image_fill_set(im, 0, 0, ww, hh);
 	  }
-
-	isedje = 1;
-	if (e->w > 0)
-	  w = e->w;
-	else
-	  w = e->tw;
-
-	if (e->h > 0)
-	  h = e->h;
-	else
-	  h = e->tw;
-
-	ee = ecore_evas_buffer_new (w, h);
-	if (ee)
+	ret = EPSILON_OK;
+     }
+   else if ((ext) &&
+       (!strcasecmp(ext, ".edj")))
+     {
+	ww = e->tw;
+	hh = e->th;
+	im = ecore_evas_object_image_new(ee);
+	ee_im = evas_object_data_get(im, "Ecore_Evas");
+	evas_im = ecore_evas_get(ee_im);
+	evas_image_cache_set(evas_im, 0);
+	evas_font_cache_set(evas_im, 0);
+	evas_object_image_size_set(im, ww * 2, hh * 2);
+	evas_object_image_fill_set(im, 0, 0, ww, hh);
+	edje = edje_object_add(evas_im);
+	if ((edje_object_file_set(edje, e->src, "e/desktop/background")) ||
+	    (edje_object_file_set(edje, e->src, "e/init/splash")) ||
+	    (edje_object_file_set(edje, e->src, "icon")))
 	  {
-	    evas = ecore_evas_get (ee);
-	    edje = edje_object_add (evas);
-	    if (edje_object_file_set (edje, e->src, e->key))
-	      {
-		evas_object_move (edje, 0, 0);
-		evas_object_resize (edje, w, h);
-		evas_object_show (edje);
-		edje_message_signal_process ();
-
-		pixels = ecore_evas_buffer_pixels_get (ee);
-		tmp = imlib_create_image_using_data (w, h, (DATA32 *) pixels);
-
-		imlib_context_set_image (tmp);
-		snprintf (format, sizeof(format), "image/edje");
-	      }
-	    else
-	      {
-	        ecore_evas_free(ee);
-		printf ("Cannot load file %s, group %s\n", e->src, e->key);
-		return (EPSILON_FAIL);
-	      }
+	     ret = EPSILON_OK;
+	     evas_object_move(edje, 0, 0);
+	     evas_object_resize(edje, ww * 2, hh * 2);
+	     evas_object_show(edje);
 	  }
-	else
+     }
+   else
+     {
+	im = evas_object_image_add(evas);
+	evas_object_image_load_size_set(im, e->tw, e->th);
+	evas_object_image_file_set(im, e->src, NULL);
+	if (evas_object_image_load_error_get(im) == EVAS_LOAD_ERROR_NONE)
+	  ret = EPSILON_OK;
+	iw = 0; ih = 0;
+	evas_object_image_size_get(im, &iw, &ih);
+	alpha = evas_object_image_alpha_get(im);
+	if ((iw > 0) && (ih > 0))
 	  {
-	    fprintf (stderr, "Cannot create buffer canvas! ERROR!\n");
-	    return (EPSILON_FAIL);
+	     ww = e->tw;
+	     hh = (e->tw * ih) / iw;
+	     if (hh > e->th)
+	       {
+		  hh = e->th;
+		  ww = (e->th * iw) / ih;
+	       }
+	     evas_object_image_fill_set(im, 0, 0, ww, hh);
 	  }
-      }
-
-   mime = epsilon_mime_for_extension_get( strrchr(e->src, '.')+1);  
-   if (  (plugin = ecore_hash_get(plugins_mime, mime)) ) {
-	tmp = (*plugin->epsilon_generate_thumb)(e);
-   } else {
-        if(!tmp)
-	    tmp = imlib_load_image_immediately_without_cache (e->src);
-	imlib_context_set_image (tmp);
-	snprintf (format, sizeof(format), "image/%s", imlib_image_format ());
-      }
-
-#ifdef HAVE_PNG_H
-    if (tmp)
-      {
-	iw = imlib_image_get_width ();
-	ih = imlib_image_get_height ();
-	if (iw > ih)
+     }
+   evas_object_move(im, 0, 0);
+   evas_object_resize(im, ww, hh);
+   ecore_evas_resize(ee, ww, hh);
+   evas_object_show(im);
+   if ((ret == EPSILON_OK) && (ww > 0))
+     {
+	data = (int *)ecore_evas_buffer_pixels_get(ee);
+	if (data)
 	  {
-	     th = ((unsigned long) e->tw * ih) / iw;
-	     if (th < 1) th = 1;
+	     snprintf(buf, sizeof(buf), "file://%s", e->src);
+	     _epsilon_file_name(e->tw, e->hash, "png", buf2, sizeof(buf2));
+	     /* this is wrong - but hey! good enough? */
+	     if (ext) snprintf(buf3, sizeof(buf3), "image/%s", ext);
+	     else snprintf(buf3, sizeof(buf3), "image/png");
+	     if (_epsilon_png_write(buf2,
+				    data, ww, hh, iw, ih,
+				    buf3, mtime, buf))
+	       {
+		  ret = EPSILON_FAIL;
+	       }
 	  }
-	else
-	  {
-	     tw = ((unsigned long) e->th *  iw) / ih;
-	     if (tw < 1) tw = 1;
-	  }
-	imlib_context_set_cliprect (0, 0, tw, th);
-	if ((src = imlib_create_cropped_scaled_image (0, 0, iw, ih, tw, th)))
-	  {
-	    imlib_free_image_and_decache ();
-	    imlib_context_set_image (src);
-	    imlib_image_set_has_alpha (1);
-	    imlib_image_set_format ("argb");
-	    snprintf (uri, sizeof(uri), "file://%s", e->src);
-	    _epsilon_file_name(e->tw, e->hash, "png", outfile, sizeof(outfile));
-	    if (!_epsilon_png_write (outfile,
-				     imlib_image_get_data (), tw, th, iw, ih,
-				     format, mtime, uri))
-	      {
-		imlib_free_image_and_decache ();
-		if (ee) ecore_evas_free(ee);
-		return (EPSILON_OK);
-	      }
-	    imlib_free_image_and_decache ();
-	  } 
-
-      } 
-#endif
-    if (ee) ecore_evas_free(ee);
-  }
-  return (EPSILON_FAIL);
+     }
+   if (edje) evas_object_del(edje);
+   if (ee_im) ecore_evas_free(ee_im);
+   else if (im) evas_object_del(im);
+   
+   if (img_thm)
+     {
+	free(img_thm->data);
+	free(img_thm);
+     }
+   
+   edje_shutdown();
+   ecore_evas_shutdown();
+   ecore_shutdown();
+   evas_shutdown();
+   return ret;
 }
 
 void
@@ -793,7 +755,7 @@ _epsilon_open_png_file_reading (const char *filename)
   strncpy(&tmpfile[_l-35],_buf,_ll+1); }
 
 static int
-_epsilon_png_write (const char *file, DATA32 * ptr, int tw, int th, int sw,
+_epsilon_png_write (const char *file, unsigned int * ptr, int tw, int th, int sw,
 		    int sh, char *imformat, int mtime, char *uri)
 {
   FILE *fp = NULL;
@@ -801,7 +763,7 @@ _epsilon_png_write (const char *file, DATA32 * ptr, int tw, int th, int sw,
   int i, j, k, has_alpha = 1, ret = 0;
 
 /*
-  DATA32      *ptr=NULL;
+  unsigned int      *ptr=NULL;
 */
   png_infop info_ptr;
   png_color_8 sig_bit;

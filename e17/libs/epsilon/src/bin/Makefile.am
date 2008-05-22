@@ -4,7 +4,6 @@ MAINTAINERCLEANFILES = Makefile.in
 AM_CPPFLAGS = \
 -I$(top_srcdir)/src/lib \
 -I$(top_srcdir)/src/include \
-@IMLIB2_CFLAGS@ \
 @EVAS_CFLAGS@ \
 @ECORE_CFLAGS@ \
 @EDJE_CFLAGS@
@@ -18,8 +17,7 @@ epsilon_LDADD = \
 $(top_builddir)/src/lib/libepsilon.la \
 @EDJE_LIBS@ \
 @ECORE_LIBS@ \
-@EVAS_LIBS@ \
-@IMLIB2_LIBS@
+@EVAS_LIBS@
 
 epsilon_DEPENDENCIES = $(top_builddir)/src/lib/libepsilon.la
 
@@ -31,8 +29,7 @@ epsilon_thumbd_DEPENDENCIES = $(top_builddir)/src/lib/libepsilon.la
 
 epsilon_thumbd_LDADD = \
 $(top_builddir)/src/lib/libepsilon.la \
-@ECORE_LIBS@ \
-@IMLIB2_LIBS@
+@ECORE_LIBS@
 
 epsilon_thumb_test_SOURCES = \
 epsilon_thumb_test.c

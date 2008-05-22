@@ -4,9 +4,7 @@ MAINTAINERCLEANFILES = Makefile.in
 AM_CPPFLAGS = \
 -I$(top_builddir)/src \
 -I$(top_srcdir)/src \
--I$(top_srcdir)/src/lib \
-@IMLIB2_CFLAGS@ \
-@EPEG_CFLAGS@
+-I$(top_srcdir)/src/lib
 
 noinst_LTLIBRARIES = libepsilon_exiftags.la
 
@@ -27,6 +25,6 @@ nikon.c \
 olympus.c \
 tagdefs.c
 
-libepsilon_exiftags_la_LIBADD    = @imlib_libs@ @epeg_libs@
+libepsilon_exiftags_la_LIBADD    =
 libepsilon_exiftags_la_DEPENDENCIES = ../../config.h
 libepsilon_exiftags_la_LDFLAGS      = $(LDFLAGS)

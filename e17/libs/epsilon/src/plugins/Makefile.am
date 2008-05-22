@@ -7,8 +7,7 @@ AM_CPPFLAGS          = \
 -I$(top_srcdir)/src/include \
 -I$(top_srcdir)/src/lib \
 @ECORE_CFLAGS@ \
-@XINE_CFLAGS@ \
-@IMLIB2_CFLAGS@
+@XINE_CFLAGS@
 
 pkgdir =  $(libdir)/epsilon/plugins/
 
@@ -23,4 +22,4 @@ pkg_LTLIBRARIES = $(XINE_L)
 
 xine_thumbnailer_la_SOURCES = xine_thumbnailer.c
 xine_thumbnailer_la_LDFLAGS = -module -avoid-version
-xine_thumbnailer_la_LIBADD = @XINE_LIBS@ @IMLIB2_LIBS@ @ECORE_LIBS@
+xine_thumbnailer_la_LIBADD = @XINE_LIBS@ @ECORE_LIBS@

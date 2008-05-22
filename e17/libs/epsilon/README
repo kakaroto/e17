@@ -39,7 +39,7 @@ epeg enabled
 ############################################################################
 
 Build Instructions:
-1. You need epeg(optional) from cvs, imlib2 and libpng
+1. You need evas and ecore from cvs, and libpng
 2. To compile and test epsilon it's your standard 
     $ ./autogen.sh
     $ make

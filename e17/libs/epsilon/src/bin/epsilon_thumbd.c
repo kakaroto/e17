@@ -127,7 +127,7 @@ void epsilond_init_thumbd_server(Ecore_List* workers)
 	 * Setup the IPC server to handle completed notifications
 	 */
 	thumbd_server = ecore_ipc_server_add(ECORE_IPC_LOCAL_USER, EPSILOND_SOCK, 0, NULL);
-	ecore_ipc_server_client_limit_set(thumbd_server, 50, 0);
+	if (thumb_server) ecore_ipc_server_client_limit_set(thumbd_server, 50, 0);
 
 	/*
 	 * Prepare the handlers for worker IPC events
@@ -774,7 +774,7 @@ epsilond_init()
 	 * Setup the IPC server to handle requests
 	 */
 	thumb_server = ecore_ipc_server_add(ECORE_IPC_LOCAL_USER, EPSILON_SOCK, 0, NULL);
-	ecore_ipc_server_client_limit_set(thumb_server, 50, 0);
+        if (thumb_server) ecore_ipc_server_client_limit_set(thumb_server, 50, 0);
 
 	free(buf);
 
