@@ -105,46 +105,62 @@ ewl_pdf_init(Ewl_Pdf *pdf)
 /**
  * @param pdf the pdf widget to change the displayed pdf
  * @param filename: the path to the new pdf to be displayed by @a pdf
- * @return Returns no value.
+ * @return 0 on failure, 1 otherwise.
  * @brief Change the pdf file displayed by an pdf widget
  *
  * Set the pdf displayed by @a pdf to the one found at the filename @a filename. If an
  * edje is used, a minimum size should be specified in the edje or the code.
  */
-void
+int
 ewl_pdf_file_set(Ewl_Pdf *pdf, const char *filename)
 {
         Ewl_Widget *w;
-        Ewl_Embed *emb;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR(pdf);
+        DCHECK_PARAM_PTR_RET(pdf, FALSE);
         DCHECK_TYPE(pdf, EWL_PDF_TYPE);
 
         w = EWL_WIDGET(pdf);
-        emb = ewl_embed_widget_find(w);
 
         if (pdf->filename != filename) {
                 IF_FREE(pdf->filename);
         }
-        if (!filename || (filename[0] == 0))
-                DRETURN(DLEVEL_STABLE);
+        if (!filename || (filename[0] == '\0'))
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
 
         pdf->filename = strdup(filename);
         if (pdf->pdf_document) {
-                if (pdf->pdf_page)
+                if (pdf->pdf_page) {
                         epdf_page_delete(pdf->pdf_page);
-                if (pdf->pdf_index)
+                        pdf->pdf_page = NULL;
+                }
+                if (pdf->pdf_index) {
                         epdf_index_delete(pdf->pdf_index);
+                        pdf->pdf_index = NULL;
+                }
                 epdf_document_delete(pdf->pdf_document);
+                pdf->pdf_document = NULL;
         }
 
         pdf->pdf_document = epdf_document_new(filename);
         if (!pdf->pdf_document)
-                DRETURN(DLEVEL_STABLE);
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
 
         pdf->pdf_page = epdf_page_new(pdf->pdf_document);
+        if (!pdf->pdf_page) {
+                epdf_document_delete (pdf->pdf_document);
+                pdf->pdf_document = NULL;
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
+        }
+
         pdf->pdf_index = epdf_index_new(pdf->pdf_document);
+        if (!pdf->pdf_index) {
+                epdf_page_delete(pdf->pdf_page);
+                pdf->pdf_page = NULL;
+                epdf_document_delete (pdf->pdf_document);
+                pdf->pdf_document = NULL;
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
+        }
 
         pdf->dirty = 1;
 
@@ -160,7 +176,7 @@ ewl_pdf_file_set(Ewl_Pdf *pdf, const char *filename)
          */
         ewl_widget_configure(w);
 
-        DLEAVE_FUNCTION(DLEVEL_STABLE);
+        DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
 
 /**
@@ -186,7 +202,8 @@ ewl_pdf_file_get(Ewl_Pdf *pdf)
  *
  * Sets the page of the document @p pdf to @p page
  */
-void ewl_pdf_page_set(Ewl_Pdf *pdf, int page)
+void
+ewl_pdf_page_set(Ewl_Pdf *pdf, int page)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(pdf);
@@ -231,14 +248,18 @@ ewl_pdf_page_get(Ewl_Pdf *pdf)
  * @brief get the size of the pdf @p pdf. If @p pdf is NULL,
  * return a width equal to 0 and a height equal to 0
  */
-void ewl_pdf_pdf_size_get(Ewl_Pdf *pdf, int *width, int *height)
+void
+ewl_pdf_pdf_size_get(Ewl_Pdf *pdf, int *width, int *height)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(pdf);
         DCHECK_TYPE(pdf, EWL_PDF_TYPE);
 
-        if (!pdf->pdf_page)
+        if (!pdf->pdf_page) {
+                if (width) *width = 0;
+                if (height) *height = 0;
                 DRETURN(DLEVEL_STABLE);
+        }
 
         epdf_page_size_get(pdf->pdf_page, width, height);
 
@@ -388,6 +409,9 @@ ewl_pdf_page_previous(Ewl_Pdf *pdf)
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(pdf);
         DCHECK_TYPE(pdf, EWL_PDF_TYPE);
+
+        if (!pdf->pdf_page)
+                DRETURN(DLEVEL_STABLE);
 
         page = epdf_page_page_get(pdf->pdf_page);
         if (page > 0)
@@ -567,7 +591,8 @@ ewl_pdf_search_next(Ewl_Pdf *pdf)
  * @return Returns the document of the pdf (NULL on failure)
  * @brief get the document of the pdf
  */
-Epdf_Document *ewl_pdf_pdf_document_get(Ewl_Pdf *pdf)
+Epdf_Document *
+ewl_pdf_pdf_document_get(Ewl_Pdf *pdf)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR_RET(pdf, NULL);
@@ -581,7 +606,8 @@ Epdf_Document *ewl_pdf_pdf_document_get(Ewl_Pdf *pdf)
  * @return Returns the current page of the pdf (NULL on failure)
  * @brief get the current page of the pdf
  */
-Epdf_Page *ewl_pdf_pdf_page_get(Ewl_Pdf *pdf)
+Epdf_Page *
+ewl_pdf_pdf_page_get(Ewl_Pdf *pdf)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR_RET(pdf, NULL);
@@ -595,7 +621,8 @@ Epdf_Page *ewl_pdf_pdf_page_get(Ewl_Pdf *pdf)
  * @return Returns the poppler index of the pdf (NULL on failure)
  * @brief get the poppler index of the pdf
  */
-Ecore_List *ewl_pdf_pdf_index_get(Ewl_Pdf *pdf)
+Ecore_List *
+ewl_pdf_pdf_index_get(Ewl_Pdf *pdf)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR_RET(pdf, NULL);

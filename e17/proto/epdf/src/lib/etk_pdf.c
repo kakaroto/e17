@@ -484,7 +484,7 @@ static void _etk_pdf_destructor(Etk_Pdf *pdf)
    if (!pdf)
       return;
 
-   free(pdf->filename);
+   if (pdf->filename) free(pdf->filename);
    epdf_document_delete (pdf->pdf_document);
    epdf_page_delete (pdf->pdf_page);
    epdf_index_delete (pdf->pdf_index);

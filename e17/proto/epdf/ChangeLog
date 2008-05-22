@@ -1,6 +1,23 @@
 2008-05-22  Vincent Torri  <doursse at users dot sf dot net>
 
 	* src/bin/epdf_esmart_test.c: (main):
+	error from copy paste
+
+	* src/lib/Epdf.h:
+	* src/lib/etk_pdf.c: (_etk_pdf_destructor):
+	* src/lib/etk_pdf.h:
+	* src/lib/ewl_pdf.c: (ewl_pdf_file_set), (ewl_pdf_page_set),
+	(ewl_pdf_pdf_size_get), (ewl_pdf_page_previous),
+	(ewl_pdf_pdf_document_get), (ewl_pdf_pdf_page_get),
+	(ewl_pdf_pdf_index_get):
+	* src/lib/ewl_pdf.h:
+	more checks
+	documentation
+	formatting
+
+2008-05-22  Vincent Torri  <doursse at users dot sf dot net>
+
+	* src/bin/epdf_esmart_test.c: (main):
 	* src/bin/epdf_evas_test.c: (main):
 	correctly init / shutdown the efl
 	improve the sizing of the ecore_evas

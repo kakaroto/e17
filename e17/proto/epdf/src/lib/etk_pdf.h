@@ -13,7 +13,7 @@
  * @brief A PDF display Widget for the Etk toolkit
  *
  * Provides a widget for displaying PDF files in an Etk widget.
- * To use an Etk_Dwi widget, create it with  etk_pdf_new(), and
+ * To use an Etk_Pdf widget, create it with  etk_pdf_new(), and
  * set the file with etk_pdf_file_set(). For example:
  *
  * @code

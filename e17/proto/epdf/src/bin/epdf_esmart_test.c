@@ -75,7 +75,7 @@ main (int argc, char *argv[])
   evas_object_show (o);
 
   esmart_pdf_size_get (o, &width, &height);
-  esmart_ps_scale_get (o, &hscale, &vscale);
+  esmart_pdf_scale_get (o, &hscale, &vscale);
   ee_width = (int)(width * hscale);
   ee_height = (int)(height * vscale);
 

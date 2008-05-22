@@ -75,6 +75,7 @@
  * epdf_page_render (page, o);
  * evas_object_show (o);
  *
+ * evas_object_del (o);
  * epdf_page_delete (page);
  * epdf_document_delete (document);
  * @endcode

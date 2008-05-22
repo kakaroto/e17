@@ -12,7 +12,7 @@
  * @brief A PDF display Widget for the Ewl toolkit
  *
  * Provides a widget for displaying PDF files in an Ewl widget.
- * To use an Ewl_Dwi widget, create it with  ewl_pdf_new(), and
+ * To use an Ewl_Pdf widget, create it with  ewl_pdf_new(), and
  * set the file with ewl_pdf_file_set(). For example:
  *
  * @code
@@ -89,7 +89,7 @@ struct Ewl_Pdf
 Ewl_Widget           *ewl_pdf_new(void);
 int                   ewl_pdf_init(Ewl_Pdf *pdf);
 
-void                  ewl_pdf_file_set(Ewl_Pdf *pdf, const char *filename);
+int                   ewl_pdf_file_set(Ewl_Pdf *pdf, const char *filename);
 const char           *ewl_pdf_file_get(Ewl_Pdf *pdf);
 
 void                  ewl_pdf_page_set(Ewl_Pdf *pdf, int page);
