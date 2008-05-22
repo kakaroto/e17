@@ -59,14 +59,13 @@ epsilon_generate_thumb (Epsilon * e)
    Evas_Object   *o;
    Epdf_Document *document;
    Epdf_Page     *page;
-   int            page_number;
    int            width;
    int            height;
    const int     *pixels;
 
    document = epdf_document_new (e->src);
    page = epdf_page_new (document);
-   epdf_page_page_set (page, 1);
+   epdf_page_page_set (page, 0);
    epdf_page_size_get (page, &width, &height);
 
    ee = ecore_evas_buffer_new(width, height);

@@ -56,15 +56,16 @@ main (int argc, char *argv[])
 
   document_info_print (document, page);
 
-  if (!evas_init()) return -1;
   if (!ecore_init()) {
-    evas_shutdown ();
+    epdf_page_delete (page);
+    epdf_document_delete (document);
     return EXIT_FAILURE;
   }
 
   if (!ecore_evas_init()) {
-    evas_shutdown ();
     ecore_shutdown ();
+    epdf_page_delete (page);
+    epdf_document_delete (document);
     return EXIT_FAILURE;
   }
 
@@ -76,8 +77,10 @@ main (int argc, char *argv[])
     if (!ee) {
       printf ("Can not find Software X11 engine. Trying DirectDraw engine...\n");
       printf ("Exiting...\n");
-      evas_shutdown ();
+      ecore_evas_shutdown ();
       ecore_shutdown ();
+      epdf_page_delete (page);
+      epdf_document_delete (document);
       return EXIT_FAILURE;
     }
   }
@@ -102,7 +105,6 @@ main (int argc, char *argv[])
 
   ecore_evas_shutdown ();
   ecore_shutdown ();
-  evas_shutdown ();
 
   return EXIT_SUCCESS;
 }

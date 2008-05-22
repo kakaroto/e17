@@ -1,3 +1,34 @@
+2008-05-22  Vincent Torri  <doursse at users dot sf dot net>
+
+	* src/bin/epdf_esmart_test.c: (main):
+	* src/bin/epdf_evas_test.c: (main):
+	correctly init / shutdown the efl
+	improve the sizing of the ecore_evas
+
+	* src/lib/epdf_document.cpp:
+	* src/lib/epdf_index.cpp:
+	* src/lib/epdf_page.cpp:
+	* src/lib/epdf_page_transition.cpp:
+	include correctly config.h
+
+	* src/lib/ewl_pdf.c: (ewl_pdf_init), (ewl_pdf_file_set),
+	(ewl_pdf_page_set), (ewl_pdf_page_get), (ewl_pdf_pdf_size_get),
+	(ewl_pdf_orientation_set), (ewl_pdf_orientation_get),
+	(ewl_pdf_scale_set), (ewl_pdf_scale_get), (ewl_pdf_page_next),
+	(ewl_pdf_page_previous), (ewl_pdf_search_text_set),
+	(ewl_pdf_search_first_page_set),
+	(ewl_pdf_search_is_case_sensitive), (ewl_pdf_search_next),
+	(ewl_pdf_pdf_document_get), (ewl_pdf_pdf_page_get),
+	(ewl_pdf_pdf_index_get), (ewl_pdf_configure_cb),
+	(ewl_pdf_reveal_cb), (ewl_pdf_destroy_cb):
+	* src/lib/ewl_pdf.h:
+	render in the configure callback and not in the reveal one.
+	formatting
+
+	* src/plugins/epsilon/epsilon_thumbnailer.c:
+	(epsilon_generate_thumb):
+	remove uneeded variable and render the fisrt page
+
 2008-05-21  Vincent Torri  <doursse at users dot sf dot net>
 
 	* configure.in:

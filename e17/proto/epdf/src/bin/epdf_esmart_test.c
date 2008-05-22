@@ -20,29 +20,30 @@ main (int argc, char *argv[])
   Evas_Object *o;
   Evas_Object *bg;
   char        *filename;
+  double       hscale;
+  double       vscale;
   int          page_number;
   int          width;
   int          height;
+  int          ee_width;
+  int          ee_height;
 
-  if (argc < 3)
-    {
-      printf ("\nUsage: %s filename page_number\n\n", argv[0]);
-      exit (-1);
-    }
+  if (argc < 3) {
+    printf ("\nUsage: %s filename page_number\n\n", argv[0]);
+    return EXIT_FAILURE;
+  }
 
   filename = argv[1];
 
   sscanf (argv[2], "%d", &page_number);
 
-  if (!evas_init()) return -1;
   if (!ecore_init()) {
     evas_shutdown ();
-    return -1;
+    return EXIT_FAILURE;
   }
   if (!ecore_evas_init()) {
     ecore_shutdown ();
-    evas_shutdown ();
-    return -1;
+    return EXIT_FAILURE;
   }
 
   ee = ecore_evas_software_x11_new(NULL, 0,  0, 0, 0, 0);
@@ -64,9 +65,9 @@ main (int argc, char *argv[])
   if (!esmart_pdf_init (o)) {
     ecore_evas_shutdown ();
     ecore_shutdown ();
-    evas_shutdown ();
-    return -1;
+    return EXIT_FAILURE;
   }
+
   esmart_pdf_file_set (o, filename);
   esmart_pdf_page_set (o, page_number);
   esmart_pdf_render (o);
@@ -74,14 +75,18 @@ main (int argc, char *argv[])
   evas_object_show (o);
 
   esmart_pdf_size_get (o, &width, &height);
-  ecore_evas_resize(ee, width, height);
-  evas_object_resize(bg, width, height);
+  esmart_ps_scale_get (o, &hscale, &vscale);
+  ee_width = (int)(width * hscale);
+  ee_height = (int)(height * vscale);
+
+  ecore_evas_resize(ee, ee_width, ee_height);
+  evas_object_resize(bg, ee_width, ee_height);
 
   ecore_main_loop_begin ();
 
+  evas_object_del (o);
   ecore_evas_shutdown ();
   ecore_shutdown ();
-  evas_shutdown ();
 
   return 0;
 }

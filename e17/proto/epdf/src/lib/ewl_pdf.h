@@ -69,8 +69,7 @@ struct Ewl_Pdf
 
         void                 *image;          /**< The evas object for the image */
         char                 *filename;       /**< The file name */
-        int                   ow;             /**< The original image width */
-        int                   oh;             /**< The original image height */
+        int                   dirty;
 
         Epdf_Document        *pdf_document;   /**< The Epdf document */
         Epdf_Page            *pdf_page;       /**< The Epdf current page */

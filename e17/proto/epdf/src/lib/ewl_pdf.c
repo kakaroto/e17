@@ -1,6 +1,8 @@
-#include <math.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif /* HAVE_CONFIG_H */
 
-#include "config.h"
+#include <math.h>
 
 #include <Ewl.h>
 #include "ewl_debug.h"
@@ -88,6 +90,8 @@ ewl_pdf_init(Ewl_Pdf *pdf)
         pdf->pdf_page = NULL;
         pdf->pdf_index = NULL;
 
+        pdf->dirty = 1;
+
         pdf->search.o = NULL;
         pdf->search.text = NULL;
         pdf->search.list = NULL;
@@ -129,18 +133,20 @@ ewl_pdf_file_set(Ewl_Pdf *pdf, const char *filename)
         pdf->filename = strdup(filename);
         if (pdf->pdf_document) {
                 if (pdf->pdf_page)
-                        epdf_page_delete (pdf->pdf_page);
+                        epdf_page_delete(pdf->pdf_page);
                 if (pdf->pdf_index)
-                        epdf_index_delete (pdf->pdf_index);
-                epdf_document_delete (pdf->pdf_document);
+                        epdf_index_delete(pdf->pdf_index);
+                epdf_document_delete(pdf->pdf_document);
         }
 
-        pdf->pdf_document = epdf_document_new (filename);
+        pdf->pdf_document = epdf_document_new(filename);
         if (!pdf->pdf_document)
                 DRETURN(DLEVEL_STABLE);
 
-        pdf->pdf_page = epdf_page_new (pdf->pdf_document);
-        pdf->pdf_index = epdf_index_new (pdf->pdf_document);
+        pdf->pdf_page = epdf_page_new(pdf->pdf_document);
+        pdf->pdf_index = epdf_index_new(pdf->pdf_document);
+
+        pdf->dirty = 1;
 
         pdf->search.o = NULL;
         pdf->search.text = NULL;
@@ -150,12 +156,9 @@ ewl_pdf_file_set(Ewl_Pdf *pdf, const char *filename)
         pdf->search.is_circular = FALSE;
 
         /*
-         * Load the new pdf if widget has been realized
+         * render the widget
          */
-        if (REALIZED(w)) {
-                ewl_widget_unrealize(w);
-                ewl_widget_realize(w);
-        }
+        ewl_widget_configure(w);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -190,13 +193,15 @@ void ewl_pdf_page_set(Ewl_Pdf *pdf, int page)
         DCHECK_TYPE(pdf, EWL_PDF_TYPE);
 
         if (!pdf->pdf_document ||
+            !pdf->pdf_page ||
             (page < 0) ||
-            (page >= epdf_document_page_count_get (pdf->pdf_document)) ||
-            (page == epdf_page_page_get (pdf->pdf_page)))
+            (page >= epdf_document_page_count_get(pdf->pdf_document)) ||
+            (page == epdf_page_page_get(pdf->pdf_page)))
                 DRETURN(DLEVEL_STABLE);
 
+        pdf->dirty = 1;
         epdf_page_page_set(pdf->pdf_page, page);
-        ewl_callback_call (EWL_WIDGET (pdf), EWL_CALLBACK_REVEAL);
+        ewl_widget_configure(EWL_WIDGET(pdf));
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -213,6 +218,9 @@ ewl_pdf_page_get(Ewl_Pdf *pdf)
         DCHECK_PARAM_PTR_RET(pdf, 0);
         DCHECK_TYPE_RET(pdf, EWL_PDF_TYPE, 0);
 
+        if (!pdf->pdf_page)
+                DRETURN_INT(0, DLEVEL_STABLE);
+
         DRETURN_INT(epdf_page_page_get(pdf->pdf_page), DLEVEL_STABLE);
 }
 
@@ -223,13 +231,16 @@ ewl_pdf_page_get(Ewl_Pdf *pdf)
  * @brief get the size of the pdf @p pdf. If @p pdf is NULL,
  * return a width equal to 0 and a height equal to 0
  */
-void ewl_pdf_pdf_size_get (Ewl_Pdf *pdf, int *width, int *height)
+void ewl_pdf_pdf_size_get(Ewl_Pdf *pdf, int *width, int *height)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(pdf);
         DCHECK_TYPE(pdf, EWL_PDF_TYPE);
 
-        epdf_page_size_get (pdf->pdf_page, width, height);
+        if (!pdf->pdf_page)
+                DRETURN(DLEVEL_STABLE);
+
+        epdf_page_size_get(pdf->pdf_page, width, height);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -243,17 +254,18 @@ void ewl_pdf_pdf_size_get (Ewl_Pdf *pdf, int *width, int *height)
  * Sets an orientation @p o of the document
  */
 void
-ewl_pdf_orientation_set (Ewl_Pdf *pdf, Epdf_Page_Orientation o)
+ewl_pdf_orientation_set(Ewl_Pdf *pdf, Epdf_Page_Orientation o)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(pdf);
         DCHECK_TYPE(pdf, EWL_PDF_TYPE);
 
-        if (!pdf->pdf_page)
+        if (!pdf->pdf_page || (epdf_page_orientation_get(pdf->pdf_page) == o))
                 DRETURN(DLEVEL_STABLE);
 
-        epdf_page_orientation_set (pdf->pdf_page, o);
-        ewl_callback_call (EWL_WIDGET (pdf), EWL_CALLBACK_REVEAL);
+        pdf->dirty = 1;
+        epdf_page_orientation_set(pdf->pdf_page, o);
+        ewl_widget_configure(EWL_WIDGET(pdf));
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -265,7 +277,7 @@ ewl_pdf_orientation_set (Ewl_Pdf *pdf, Epdf_Page_Orientation o)
  * is NULL, return EPDF_PAGE_ORIENTATION_PORTRAIT
  */
 Epdf_Page_Orientation
-ewl_pdf_orientation_get (Ewl_Pdf *pdf)
+ewl_pdf_orientation_get(Ewl_Pdf *pdf)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR_RET(pdf, EPDF_PAGE_ORIENTATION_PORTRAIT);
@@ -274,7 +286,7 @@ ewl_pdf_orientation_get (Ewl_Pdf *pdf)
         if (!pdf->pdf_page)
                 DRETURN_INT(EPDF_PAGE_ORIENTATION_PORTRAIT, DLEVEL_STABLE);
 
-        DRETURN_INT(epdf_page_orientation_get (pdf->pdf_page), DLEVEL_STABLE);
+        DRETURN_INT(epdf_page_orientation_get(pdf->pdf_page), DLEVEL_STABLE);
 }
 
 /**
@@ -288,14 +300,25 @@ ewl_pdf_orientation_get (Ewl_Pdf *pdf)
  * of the document @p pdf
  */
 void
-ewl_pdf_scale_set (Ewl_Pdf *pdf, double hscale, double vscale)
+ewl_pdf_scale_set(Ewl_Pdf *pdf, double hscale, double vscale)
 {
+        double hs;
+        double vs;
+
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(pdf);
         DCHECK_TYPE(pdf, EWL_PDF_TYPE);
 
+        if (!pdf->pdf_page)
+                DRETURN(DLEVEL_STABLE);
+
+        epdf_page_scale_get(pdf->pdf_page, &hs, &vs);
+        if ((hs == hscale) && (vs == vscale))
+                DRETURN(DLEVEL_STABLE);
+
+        pdf->dirty = 1;
         epdf_page_scale_set(pdf->pdf_page, hscale, vscale);
-        ewl_callback_call (EWL_WIDGET (pdf), EWL_CALLBACK_REVEAL);
+        ewl_widget_configure(EWL_WIDGET(pdf));
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -309,11 +332,18 @@ ewl_pdf_scale_set (Ewl_Pdf *pdf, double hscale, double vscale)
  * @p vscale of the document @p pdf. If @p pdf is NULL, their values are 1.0
  */
 void
-ewl_pdf_scale_get (Ewl_Pdf *pdf, double *hscale, double *vscale)
+ewl_pdf_scale_get(Ewl_Pdf *pdf, double *hscale, double *vscale)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(pdf);
         DCHECK_TYPE(pdf, EWL_PDF_TYPE);
+
+        if (!pdf->pdf_page)
+        {
+                if (hscale) *hscale = 1.0;
+                if (vscale) *vscale = 1.0;
+                DRETURN(DLEVEL_STABLE);
+        }
 
         epdf_page_scale_get(pdf->pdf_page, hscale, vscale);
 
@@ -326,7 +356,7 @@ ewl_pdf_scale_get (Ewl_Pdf *pdf, double *hscale, double *vscale)
  * @brief go to the next page and render it
  */
 void
-ewl_pdf_page_next (Ewl_Pdf *pdf)
+ewl_pdf_page_next(Ewl_Pdf *pdf)
 {
         int page;
 
@@ -334,10 +364,13 @@ ewl_pdf_page_next (Ewl_Pdf *pdf)
         DCHECK_PARAM_PTR(pdf);
         DCHECK_TYPE(pdf, EWL_PDF_TYPE);
 
+        if (!pdf->pdf_page)
+                DRETURN(DLEVEL_STABLE);
+
         page = epdf_page_page_get(pdf->pdf_page);
         if (page < (epdf_document_page_count_get(pdf->pdf_document) - 1))
                 page++;
-        ewl_pdf_page_set (pdf, page);
+        ewl_pdf_page_set(pdf, page);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -348,7 +381,7 @@ ewl_pdf_page_next (Ewl_Pdf *pdf)
  * @brief go to the previous page and render it
  */
 void
-ewl_pdf_page_previous (Ewl_Pdf *pdf)
+ewl_pdf_page_previous(Ewl_Pdf *pdf)
 {
         int page;
 
@@ -359,7 +392,7 @@ ewl_pdf_page_previous (Ewl_Pdf *pdf)
         page = epdf_page_page_get(pdf->pdf_page);
         if (page > 0)
                 page--;
-        ewl_pdf_page_set (pdf, page);
+        ewl_pdf_page_set(pdf, page);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -373,7 +406,7 @@ ewl_pdf_page_previous (Ewl_Pdf *pdf)
  * Sets the text to search to the value @p text.
  */
 void
-ewl_pdf_search_text_set (Ewl_Pdf *pdf, const char *text)
+ewl_pdf_search_text_set(Ewl_Pdf *pdf, const char *text)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(pdf);
@@ -381,11 +414,11 @@ ewl_pdf_search_text_set (Ewl_Pdf *pdf, const char *text)
 
         if ((!text) ||
             (pdf->search.text &&
-             strcmp (text, pdf->search.text) == 0))
+             strcmp(text, pdf->search.text) == 0))
                 DRETURN(DLEVEL_STABLE);
 
-        if (pdf->search.text) free (pdf->search.text);
-        pdf->search.text = strdup (text);
+        if (pdf->search.text) free(pdf->search.text);
+        pdf->search.text = strdup(text);
         pdf->search.page = -1;
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -401,7 +434,7 @@ ewl_pdf_search_text_set (Ewl_Pdf *pdf, const char *text)
  * from to the value @p page
  */
 void
-ewl_pdf_search_first_page_set (Ewl_Pdf *pdf, int page)
+ewl_pdf_search_first_page_set(Ewl_Pdf *pdf, int page)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(pdf);
@@ -424,7 +457,7 @@ ewl_pdf_search_first_page_set (Ewl_Pdf *pdf, int page)
  * is case sensitive.
  */
 void
-ewl_pdf_search_is_case_sensitive (Ewl_Pdf *pdf, int is_case_sensitive)
+ewl_pdf_search_is_case_sensitive(Ewl_Pdf *pdf, int is_case_sensitive)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(pdf);
@@ -454,7 +487,7 @@ ewl_pdf_search_is_case_sensitive (Ewl_Pdf *pdf, int is_case_sensitive)
  * epdf_page_page_set() is called.
  */
 int
-ewl_pdf_search_next (Ewl_Pdf *pdf)
+ewl_pdf_search_next(Ewl_Pdf *pdf)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR_RET(pdf, FALSE);
@@ -466,60 +499,60 @@ ewl_pdf_search_next (Ewl_Pdf *pdf)
         if (!pdf->search.o) {
                 Ewl_Embed *emb;
 
-                emb = ewl_embed_widget_find(EWL_WIDGET (pdf));
+                emb = ewl_embed_widget_find(EWL_WIDGET(pdf));
                 pdf->search.o = evas_object_rectangle_add(emb->canvas);
                 if (!pdf->search.o)
                         DRETURN_INT(FALSE, DLEVEL_STABLE);
                 evas_object_color_set(pdf->search.o, 0, 128, 0, 128);
-                evas_object_hide (pdf->search.o);
+                evas_object_hide(pdf->search.o);
         }
 
  next_page:
         /* no list, we search one */
         while (!pdf->search.list &&
-               pdf->search.page < epdf_document_page_count_get (pdf->pdf_document)) {
+               pdf->search.page < epdf_document_page_count_get(pdf->pdf_document)) {
                 Epdf_Page *page;
 
                 pdf->search.page++;
-                printf ("page : %d\n", pdf->search.page);
-                epdf_page_page_set (pdf->pdf_page, pdf->search.page);
-                pdf->search.list = epdf_page_text_find (page,
-                                                        pdf->search.text,
-                                                        pdf->search.is_case_sensitive);
+                printf("page : %d\n", pdf->search.page);
+                epdf_page_page_set(pdf->pdf_page, pdf->search.page);
+                pdf->search.list = epdf_page_text_find(page,
+                                                       pdf->search.text,
+                                                       pdf->search.is_case_sensitive);
                 if (pdf->search.list)
-                        ecore_list_first_goto (pdf->search.list);
-                epdf_page_delete (page);
+                        ecore_list_first_goto(pdf->search.list);
+                epdf_page_delete(page);
         }
 
         /* an already existing list or a newly one */
         if (pdf->search.list) {
                 Epdf_Rectangle *rect;
 
-                if ((rect = (Epdf_Rectangle *)ecore_list_next (pdf->search.list))) {
+                if ((rect = (Epdf_Rectangle *)ecore_list_next(pdf->search.list))) {
                   if (pdf->search.page != epdf_page_page_get(pdf->pdf_page)) {
-                          ewl_pdf_page_set (pdf, pdf->search.page);
-                          ewl_callback_call (EWL_WIDGET (pdf), EWL_CALLBACK_REVEAL);
+                          ewl_pdf_page_set(pdf, pdf->search.page);
+                          ewl_callback_call(EWL_WIDGET (pdf), EWL_CALLBACK_REVEAL);
                   }
-                        evas_object_move (pdf->search.o,
-                                          CURRENT_X(EWL_WIDGET (pdf)) + round (rect->x1 - 1),
-                                          CURRENT_Y(EWL_WIDGET (pdf)) + round (rect->y1 - 1));
-                        evas_object_resize (pdf->search.o,
-                                            round (rect->x2 - rect->x1 + 1),
-                                            round (rect->y2 - rect->y1));
-                        if (!evas_object_visible_get (pdf->search.o))
-                                evas_object_show (pdf->search.o);
+                        evas_object_move(pdf->search.o,
+                                         CURRENT_X(EWL_WIDGET(pdf)) + round(rect->x1 - 1),
+                                         CURRENT_Y(EWL_WIDGET(pdf)) + round(rect->y1 - 1));
+                        evas_object_resize(pdf->search.o,
+                                           round(rect->x2 - rect->x1 + 1),
+                                           round(rect->y2 - rect->y1));
+                        if (!evas_object_visible_get(pdf->search.o))
+                                evas_object_show(pdf->search.o);
                         /* we leave... */
                         DRETURN_INT(TRUE, DLEVEL_STABLE);
                 }
                 else { /* no more word to find. We destroy the list */
-                        ecore_list_destroy (pdf->search.list);
+                        ecore_list_destroy(pdf->search.list);
                         pdf->search.list = NULL;
                         /* we search a new one */
-                printf ("page0 : %d\n", pdf->search.page);
+                printf("page0 : %d\n", pdf->search.page);
                         goto next_page;
                 }
         }
-        evas_object_hide (pdf->search.o);
+        evas_object_hide(pdf->search.o);
 
         if (pdf->search.is_circular) {
                 pdf->search.page = -1;
@@ -534,7 +567,7 @@ ewl_pdf_search_next (Ewl_Pdf *pdf)
  * @return Returns the document of the pdf (NULL on failure)
  * @brief get the document of the pdf
  */
-Epdf_Document *ewl_pdf_pdf_document_get (Ewl_Pdf *pdf)
+Epdf_Document *ewl_pdf_pdf_document_get(Ewl_Pdf *pdf)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR_RET(pdf, NULL);
@@ -548,7 +581,7 @@ Epdf_Document *ewl_pdf_pdf_document_get (Ewl_Pdf *pdf)
  * @return Returns the current page of the pdf (NULL on failure)
  * @brief get the current page of the pdf
  */
-Epdf_Page *ewl_pdf_pdf_page_get (Ewl_Pdf *pdf)
+Epdf_Page *ewl_pdf_pdf_page_get(Ewl_Pdf *pdf)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR_RET(pdf, NULL);
@@ -562,7 +595,7 @@ Epdf_Page *ewl_pdf_pdf_page_get (Ewl_Pdf *pdf)
  * @return Returns the poppler index of the pdf (NULL on failure)
  * @brief get the poppler index of the pdf
  */
-Ecore_List *ewl_pdf_pdf_index_get (Ewl_Pdf *pdf)
+Ecore_List *ewl_pdf_pdf_index_get(Ewl_Pdf *pdf)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR_RET(pdf, NULL);
@@ -584,9 +617,12 @@ ewl_pdf_configure_cb(Ewl_Widget *w,
                      void       *ev_data __UNUSED__,
                      void       *user_data __UNUSED__)
 {
-        Ewl_Pdf *pdf;
+        Ewl_Pdf   *pdf;
         Ewl_Embed *emb;
-        int ww, hh;
+        int        ww;
+        int        hh;
+        int        ow;
+        int        oh;
         int dx = 0, dy = 0;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
@@ -594,26 +630,36 @@ ewl_pdf_configure_cb(Ewl_Widget *w,
         DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
         pdf = EWL_PDF(w);
-        if (!pdf->image)
+        if (!pdf->image || !pdf->pdf_page)
                 DRETURN(DLEVEL_STABLE);
 
         emb = ewl_embed_widget_find(w);
 
+        epdf_page_size_get(pdf->pdf_page, &ow, &oh);
+
         ww = CURRENT_W(w);
         hh = CURRENT_H(w);
-        if (ww > pdf->ow)
-                ww = pdf->ow;
-        if (hh > pdf->oh)
-                hh = pdf->oh;
+        if (ww > ow)
+                ww = ow;
+        if (hh > oh)
+                hh = oh;
 
         dx = (CURRENT_W(w) - ww) / 2;
         dy = (CURRENT_H(w) - hh) / 2;
 
         evas_object_image_fill_set(pdf->image, 0, 0,
-                                ww, hh);
+                                ow, oh);
 
-        evas_object_move(pdf->image, CURRENT_X(w) + dx, CURRENT_Y(w) + dy);
-        evas_object_resize(pdf->image, ww, hh);
+        evas_object_move(pdf->image, CURRENT_X(w), CURRENT_Y(w));
+        evas_object_resize(pdf->image, ow, oh);
+        if (pdf->dirty) {
+                epdf_page_render(pdf->pdf_page, pdf->image);
+                pdf->dirty = 0;
+        }
+
+        ewl_object_preferred_inner_w_set(EWL_OBJECT(w), ow);
+        ewl_object_preferred_inner_h_set(EWL_OBJECT(w), oh);
+        ewl_object_minimum_size_set(EWL_OBJECT(w), ow, oh);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -651,10 +697,6 @@ ewl_pdf_reveal_cb(Ewl_Widget *w,
         if (!pdf->image)
           DRETURN(DLEVEL_STABLE);
 
-        if (pdf->pdf_document)
-                epdf_page_render (pdf->pdf_page, pdf->image);
-        evas_object_image_size_get(pdf->image, &pdf->ow, &pdf->oh);
-
         evas_object_smart_member_add(pdf->image, w->smart_object);
         if (w->fx_clip_box)
                 evas_object_stack_below(pdf->image, w->fx_clip_box);
@@ -664,14 +706,6 @@ ewl_pdf_reveal_cb(Ewl_Widget *w,
 
         evas_object_pass_events_set(pdf->image, TRUE);
         evas_object_show(pdf->image);
-
-        if (!pdf->ow)
-                pdf->ow = 1;
-        if (!pdf->oh)
-                pdf->oh = 1;
-
-        ewl_object_preferred_inner_w_set(EWL_OBJECT(w), pdf->ow);
-        ewl_object_preferred_inner_h_set(EWL_OBJECT(w), pdf->oh);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -730,12 +764,12 @@ ewl_pdf_destroy_cb(Ewl_Widget *w,
 
         IF_FREE(pdf->filename);
         if (pdf->pdf_document)
-          epdf_document_delete (pdf->pdf_document);
+          epdf_document_delete(pdf->pdf_document);
         if (pdf->pdf_page)
-          epdf_page_delete (pdf->pdf_page);
+          epdf_page_delete(pdf->pdf_page);
         if (pdf->pdf_index)
-          epdf_index_delete (pdf->pdf_index);
-        if (pdf->search.text) free (pdf->search.text);
+          epdf_index_delete(pdf->pdf_index);
+        if (pdf->search.text) free(pdf->search.text);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

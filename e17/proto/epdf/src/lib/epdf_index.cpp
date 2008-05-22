@@ -197,8 +197,8 @@ epdf_index_fill (Ecore_List *items,
 
   for (int i = 0; i < gitems->getLength (); i++) {
     Epdf_Index_Item *item;
-    OutlineItem *oitem = (OutlineItem *)gitems->get (i);
-    Unicode *utitle = oitem->getTitle ();
+    OutlineItem     *oitem = (OutlineItem *)gitems->get (i);
+    Unicode         *utitle = oitem->getTitle ();
 
     item = epdf_index_item_new ();
     item->title = unicode_to_char (utitle, oitem->getTitleLength ());
@@ -220,7 +220,6 @@ epdf_index_unfill (Ecore_List *items)
   if (!items)
     return;
 
-  printf ("epdf_index_unfill\n");
   ecore_list_first_goto (items);
   while ((item = (Epdf_Index_Item *)ecore_list_next (items))) {
     if (item->title)
