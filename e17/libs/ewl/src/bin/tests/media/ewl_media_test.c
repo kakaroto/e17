@@ -192,7 +192,7 @@ open_file_cb(Ewl_Widget *w, void *event, void *data __UNUSED__)
         ewl_widget_hide(fd_win);
 
         e = event;
-        if (e->response == EWL_STOCK_OK)
+        if (e->response == EWL_STOCK_OPEN)
         {
                 int len;
                 char *file = NULL;
