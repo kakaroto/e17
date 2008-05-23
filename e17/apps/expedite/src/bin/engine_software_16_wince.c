@@ -5,31 +5,9 @@
 #include <Evas_Engine_Software_16_WinCE.h>
 
 
-typedef struct
-{
-  short vkUp;        // key for up
-  POINT ptUp;        // x,y position of key/button.  Not on screen but in screen coordinates.
-  short vkDown;
-  POINT ptDown;
-  short vkLeft;
-  POINT ptLeft;
-  short vkRight;
-  POINT ptRight;
-  short vkA;
-  POINT ptA;
-  short vkB;
-  POINT ptB;
-  short vkC;
-  POINT ptC;
-  short vkStart;
-  POINT ptStart;
-} _GAPI_Key_List;
-
-
 static HINSTANCE instance = NULL;
 static HWND window = NULL;
 static int  backend = 0;
-static _GAPI_Key_List *key_list = NULL;
 
 typedef int (*suspend) (int backend);
 typedef int (*resume) (int backend);
@@ -37,8 +15,40 @@ typedef int (*resume) (int backend);
 static suspend _suspend = NULL;
 static resume _resume = NULL;
 
+
+typedef BOOL (__stdcall *UnregisterFunc1Proc)(UINT, UINT);
+
+static int
+_wince_hardware_keys_register(HWND window)
+{
+   HINSTANCE           core_dll;
+   UnregisterFunc1Proc unregister_fct;
+   int                 i;
+
+   core_dll = LoadLibrary(L"coredll.dll");
+   if (!core_dll)
+     return 0;
+
+   unregister_fct = (UnregisterFunc1Proc)GetProcAddress(core_dll, L"UnregisterFunc1");
+   if (!unregister_fct)
+     {
+        FreeLibrary(core_dll);
+        return 0;
+     }
+
+   for (i = 0xc1; i <= 0xcf; i++)
+     {
+        unregister_fct(MOD_WIN, i);
+        RegisterHotKey(window, i, MOD_WIN, i);
+     }
+
+   FreeLibrary(core_dll);
+
+   return 1;
+}
+
 static void
-_wince_fb_key_down(WPARAM wParam)
+_wince_key_down(WPARAM wParam)
 {
    int key;
 
@@ -56,20 +66,20 @@ _wince_fb_key_down(WPARAM wParam)
         else
           evas_key_lock_on(evas, "Caps_Lock");
      }
-   if (key == VK_RETURN)
+   if ((key == VK_RETURN) || (key == VK_APP1))
      evas_event_feed_key_down(evas, "Return", "Return", NULL, NULL, 0, NULL);
    if (key == VK_LEFT)
      evas_event_feed_key_down(evas, "Left", "Left", NULL, NULL, 0, NULL);
    if (key == VK_RIGHT)
      evas_event_feed_key_down(evas, "Right", "Right", NULL, NULL, 0, NULL);
-   if (key == 81)
+   if ((key == 81) || (key == VK_APP2))
      evas_event_feed_key_down(evas, "Q", "Q", NULL, NULL, 0, NULL);
-   if (key == 113)
+   if ((key == 113) || (key == VK_APP3))
      evas_event_feed_key_down(evas, "q", "q", NULL, NULL, 0, NULL);
 }
 
 static void
-_wince_fb_key_up(WPARAM wParam)
+_wince_key_up(WPARAM wParam)
 {
    int key;
 
@@ -79,45 +89,15 @@ _wince_fb_key_up(WPARAM wParam)
        (key == VK_LSHIFT) ||
        (key == VK_RSHIFT))
      evas_key_modifier_off(evas, "Shift");
-   if (key == VK_RETURN)
+   if ((key == VK_RETURN) || (key == VK_APP1))
      evas_event_feed_key_up(evas, "Return", "Return", NULL, NULL, 0, NULL);
    if (key == VK_LEFT)
      evas_event_feed_key_up(evas, "Left", "Left", NULL, NULL, 0, NULL);
    if (key == VK_RIGHT)
      evas_event_feed_key_up(evas, "Right", "Right", NULL, NULL, 0, NULL);
-   if (key == 81)
+   if ((key == 81) || (key == VK_APP2))
      evas_event_feed_key_up(evas, "Q", "Q", NULL, NULL, 0, NULL);
-   if (key == 113)
-     evas_event_feed_key_up(evas, "q", "q", NULL, NULL, 0, NULL);
-}
-
-static void
-_wince_gapi_key_down(WPARAM wParam)
-{
-  if (wParam == (unsigned int)key_list->vkLeft)
-    evas_event_feed_key_down(evas, "Left", "Left", NULL, NULL, 0, NULL);
-  if (wParam == (unsigned int)key_list->vkRight)
-     evas_event_feed_key_down(evas, "Right", "Right", NULL, NULL, 0, NULL);
-  if (wParam == (unsigned int)key_list->vkA)
-     evas_event_feed_key_down(evas, "Return", "Return", NULL, NULL, 0, NULL);
-  if (wParam == (unsigned int)key_list->vkB)
-     evas_event_feed_key_down(evas, "Q", "Q", NULL, NULL, 0, NULL);
-  if (wParam == (unsigned int)key_list->vkC)
-     evas_event_feed_key_down(evas, "q", "q", NULL, NULL, 0, NULL);
-}
-
-static void
-_wince_gapi_key_up(WPARAM wParam)
-{
-  if (wParam == (unsigned int)key_list->vkLeft)
-    evas_event_feed_key_up(evas, "Left", "Left", NULL, NULL, 0, NULL);
-  if (wParam == (unsigned int)key_list->vkRight)
-     evas_event_feed_key_up(evas, "Right", "Right", NULL, NULL, 0, NULL);
-  if (wParam == (unsigned int)key_list->vkA)
-     evas_event_feed_key_up(evas, "Return", "Return", NULL, NULL, 0, NULL);
-  if (wParam == (unsigned int)key_list->vkB)
-     evas_event_feed_key_up(evas, "Q", "Q", NULL, NULL, 0, NULL);
-  if (wParam == (unsigned int)key_list->vkC)
+   if ((key == 113) || (key == VK_APP3))
      evas_event_feed_key_up(evas, "q", "q", NULL, NULL, 0, NULL);
 }
 
@@ -138,19 +118,14 @@ MainWndProc(HWND   hwnd,
      case WM_PAINT:
        ValidateRect(hwnd, NULL);
        return 0;
+     case WM_HOTKEY:
+       _wince_key_down(wParam);
+       return 0;
      case WM_KEYDOWN:
-       if (backend == 1)
-         _wince_fb_key_down(wParam);
-       if (backend == 2)
-         _wince_gapi_key_down(wParam);
-
+       _wince_key_down(wParam);
        return 0;
      case WM_KEYUP:
-       if (backend == 1)
-         _wince_fb_key_up(wParam);
-       if (backend == 2)
-         _wince_gapi_key_up(wParam);
-
+       _wince_key_up(wParam);
        return 0;
      case WM_KILLFOCUS:
        if (_suspend)
@@ -194,6 +169,7 @@ engine_software_16_wince_args(int argc, char **argv)
    if (!ok) return 0;
 
    instance = GetModuleHandle(NULL);
+   if (!instance) return 0;
 
    memset (&wc, 0, sizeof (wc));
    wc.style = CS_HREDRAW | CS_VREDRAW;
@@ -207,7 +183,11 @@ engine_software_16_wince_args(int argc, char **argv)
    wc.lpszMenuName =  NULL;
    wc.lpszClassName = L"Evas_Software_16_WinCE_Test";
 
-   if(!RegisterClass(&wc)) return EXIT_FAILURE;
+   if(!RegisterClass(&wc))
+     {
+        FreeLibrary(instance);
+        return 0;
+     }
 
    SetRect(&rect, 0, 0,
            GetSystemMetrics(SM_CXSCREEN),
@@ -221,16 +201,32 @@ engine_software_16_wince_args(int argc, char **argv)
                            rect.right - rect.left,
                            rect.bottom - rect.top,
                            NULL, NULL, instance, NULL);
-   if (!window) return EXIT_FAILURE;
+   if (!window)
+     {
+        UnregisterClass(L"Evas_Software_16_WinCE_Test", instance);
+        FreeLibrary(instance);
+        return 0;
+     }
 
    SHFullScreen(window,
                 SHFS_HIDETASKBAR | SHFS_HIDESTARTICON | SHFS_HIDESIPBUTTON);
+
+   if (!_wince_hardware_keys_register(window))
+     {
+        DestroyWindow(window);
+        UnregisterClass(L"Evas_Software_16_WinCE_Test", instance);
+        FreeLibrary(instance);
+        return 0;
+     }
 
    evas_output_method_set(evas, evas_render_method_lookup("software_16_wince"));
    einfo = (Evas_Engine_Info_Software_16_WinCE *)evas_engine_info_get(evas);
    if (!einfo)
      {
         printf("Evas does not support the 16bit Software WinCE Engine\n");
+        DestroyWindow(window);
+        UnregisterClass(L"Evas_Software_16_WinCE_Test", instance);
+        FreeLibrary(instance);
         return 0;
      }
 
@@ -241,7 +237,6 @@ engine_software_16_wince_args(int argc, char **argv)
 
    _suspend = einfo->func.suspend;
    _resume = einfo->func.resume;
-   key_list = einfo->func.default_keys(backend);
 
    /* the second parameter is ignored, as it's the first call of ShowWindow */
    ShowWindow(window, SW_SHOWDEFAULT);
