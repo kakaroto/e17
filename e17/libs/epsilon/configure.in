@@ -111,7 +111,6 @@ echo
 echo "  Thumbnail support....:"
 echo
 echo "    freedesktop png....: $have_png"
-echo "    epeg...............: $have_epeg"
 echo
 echo "  Compilation..........: make"
 echo

@@ -13,6 +13,9 @@ the file is anything other than jpg, the traditional freedesktop.org png
 thumbnailing will occur.  To show the speed increase epeg offers,
 Epsilon builds with and without epeg.
 
+NOTE: Just recently, fast jpeg thumbnailing has been integrated into evas;
+hence Epsilon no longer makes use epeg.
+
 ############################################################################
 
 Some Tests I ran here came out looking like the following:

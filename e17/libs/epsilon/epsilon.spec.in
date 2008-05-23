@@ -22,12 +22,6 @@ library.  The lib itself conforms to the standard put forth by
 freedesktop.org You can find out more information about it at
 http://triq.net/~jens/thumbnail-spec/index.html
 
-Epeg offers very noticeable speed increases to this standard, but it
-is only available if the input image is a jpeg file.  If the file is
-anything other than jpg, the traditional freedesktop.org thumbnailing
-will occur.  To show the speed increase epeg offers, Epsilon can be
-built with and without epeg.
-
 %package devel
 Summary: Epsilon headers and development libraries.
 Group: Development/Libraries
