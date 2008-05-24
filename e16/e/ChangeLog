@@ -4739,3 +4739,15 @@ Thu May  1 13:33:22 CEST 2008
 (Kim)
 
 --- 0.16.8.13 ---
+
+-------------------------------------------------------------------------------
+
+Sat May 24 20:21:19 CEST 2008
+(Kim)
+
+--- 0.16.8.14 0.01 ---
+Fix updates on screen size change (broken in 0.16.8.13).
+Idler/Animator cleanups.
+Remove/comment out unused stuff.
+Simplify timers.
+
