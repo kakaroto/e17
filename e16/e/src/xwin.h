@@ -68,7 +68,6 @@ void                EFlush(void);
 #define ESYNC_MENUS	0x0004
 #define ESYNC_MOVRES	0x0008
 #define ESYNC_FOCUS	0x0010
-#define ESYNC_ICONIFY	0x0020
 #define ESYNC_TLOOP	0x0040
 #define ESYNC_SLIDEOUT	0x0080
 #define ESYNC_STARTUP	0x0100
