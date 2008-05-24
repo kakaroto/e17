@@ -291,7 +291,7 @@ autosave(void)
    if (EDebug(EDBUG_TYPE_SESSION))
       Eprintf("autosave\n");
 
-   Real_SaveSnapInfo(0, NULL);
+   Real_SaveSnapInfo(NULL);
 
    /* Save the configuration parameters */
    ConfigurationSave();

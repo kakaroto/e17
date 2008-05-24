@@ -64,6 +64,7 @@ struct _background {
 };
 
 static Ecore_List  *bg_list = NULL;
+static Timer       *bg_timer = NULL;
 static unsigned int bg_seq_no = 0;
 
 #define N_BG_ASSIGNED 32
@@ -1415,16 +1416,17 @@ BackgroundsAccounting(void)
    }
 }
 
-static void
-BackgroundsTimeout(int val __UNUSED__, void *data __UNUSED__)
+static int
+BackgroundsTimeout(void *data __UNUSED__)
 {
    if (Conf.backgrounds.timeout <= 0)
       Conf.backgrounds.timeout = 1;
 
    BackgroundsAccounting();
 
-   DoIn("BACKGROUND_ACCOUNTING_TIMEOUT", 1.0 * Conf.backgrounds.timeout,
-	BackgroundsTimeout, 0, NULL);
+   TimerSetInterval(bg_timer, 1.0 * Conf.backgrounds.timeout);
+
+   return 1;
 }
 
 static void
@@ -1446,8 +1448,7 @@ BackgroundsSighan(int sig, void *prm __UNUSED__)
 	break;
 
      case ESIGNAL_START:
-	DoIn("BACKGROUND_ACCOUNTING_TIMEOUT", 30.0, BackgroundsTimeout, 0,
-	     NULL);
+	TIMER_ADD(bg_timer, 30.0, BackgroundsTimeout, NULL);
 	break;
 
      case ESIGNAL_EXIT:

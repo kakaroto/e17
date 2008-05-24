@@ -42,6 +42,8 @@ static char         click_pending_update_grabs = 0;
 static int          focus_pending_why = 0;
 static EWin        *focus_pending_ewin = NULL;
 static EWin        *focus_pending_new = NULL;
+static Timer       *focus_timer_autoraise = NULL;
+static Timer       *focus_timer_reverse = NULL;
 
 void
 FocusEnable(int on)
@@ -135,27 +137,32 @@ FocusEwinSelect(void)
    return ewin;
 }
 
-static void
-AutoraiseTimeout(int val, void *data __UNUSED__)
+static int
+AutoraiseTimeout(void *data)
 {
-   EWin               *ewin;
+   EWin               *ewin = (EWin *) data;
 
    if (Conf.focus.mode == MODE_FOCUS_CLICK)
-      return;
+      goto done;
 
-   ewin = EwinFindByClient(val);
-   if (ewin)
+   if (EwinFindByPtr(ewin))	/* May be gone */
       EwinRaise(ewin);
+
+ done:
+   focus_timer_autoraise = NULL;
+   return 0;
 }
 
-static void
-ReverseTimeout(int val, void *data __UNUSED__)
+static int
+ReverseTimeout(void *data)
 {
-   EWin               *ewin;
+   EWin               *ewin = (EWin *) data;
 
-   ewin = EwinFindByClient(val);
-   if (ewin)
+   if (EwinFindByPtr(ewin))	/* May be gone */
       EwinListFocusRaise(ewin);
+
+   focus_timer_reverse = NULL;
+   return 0;
 }
 
 static void
@@ -386,11 +393,11 @@ doFocusToEwin(EWin * ewin, int why)
 
    if (Conf.autoraise.enable)
      {
-	RemoveTimerEvent("AUTORAISE_TIMEOUT");
+	TIMER_DEL(focus_timer_autoraise);
 
 	if (Conf.focus.mode != MODE_FOCUS_CLICK)
-	   DoIn("AUTORAISE_TIMEOUT", 0.001 * Conf.autoraise.delay,
-		AutoraiseTimeout, EwinGetClientXwin(ewin), NULL);
+	   TIMER_ADD(focus_timer_autoraise, 0.001 * Conf.autoraise.delay,
+		     AutoraiseTimeout, ewin);
      }
 
    if (do_raise)
@@ -401,12 +408,11 @@ doFocusToEwin(EWin * ewin, int why)
    if (do_warp)
       EwinWarpTo(ewin);
 
-   RemoveTimerEvent("REVERSE_FOCUS_TIMEOUT");
+   TIMER_DEL(focus_timer_reverse);
    switch (why)
      {
      case FOCUS_PREV:
-	DoIn("REVERSE_FOCUS_TIMEOUT", 0.5, ReverseTimeout,
-	     EwinGetClientXwin(ewin), NULL);
+	TIMER_ADD(focus_timer_reverse, 0.5, ReverseTimeout, ewin);
 	break;
      case FOCUS_DESK_ENTER:
 	if (Conf.focus.mode == MODE_FOCUS_CLICK)
@@ -853,10 +859,11 @@ const DialogDef     DlgFocus = {
  * Focus Module
  */
 
-static void
-FocusInitTimeout(int val __UNUSED__, void *data __UNUSED__)
+static int
+FocusInitTimeout(void *data __UNUSED__)
 {
    FocusInit();
+   return 0;
 }
 
 static void
@@ -871,12 +878,14 @@ _FocusIdler(void *data __UNUSED__)
 static void
 FocusSighan(int sig, void *prm __UNUSED__)
 {
+   Timer              *focus_init_timer;
+
    switch (sig)
      {
      case ESIGNAL_START:
 	/* Delay focusing a bit to allow things to settle down */
 	IdlerAdd(_FocusIdler, NULL);
-	DoIn("FOCUS_INIT_TIMEOUT", 0.5, FocusInitTimeout, 0, NULL);
+	TIMER_ADD(focus_init_timer, 0.5, FocusInitTimeout, NULL);
 	break;
 
      case ESIGNAL_EXIT:

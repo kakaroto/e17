@@ -402,15 +402,18 @@ doMoveConstrainedNoGroup(EWin * ewin, const char *params)
 }
 #endif
 
-static void
-OpacityTimeout(int val, void *data __UNUSED__)
+static int
+OpacityTimeout(void *data)
 {
-   EWin               *ewin;
+   EWin               *ewin = (EWin *) data;
 
-   ewin = EwinFindByClient(val);
-   if (ewin)
-      if (ewin->state.active)
-	 EoChangeOpacity(ewin, ewin->props.focused_opacity);
+   if (!EwinFindByPtr(ewin))	/* May be gone */
+      return 0;
+
+   if (ewin->state.active)
+      EoChangeOpacity(ewin, ewin->props.focused_opacity);
+
+   return 0;
 }
 
 static void
@@ -686,10 +689,11 @@ IpcWinop(const WinOp * wop, EWin * ewin, const char *prm)
 	EwinOpSetOpacity(ewin, OPSRC_USER, a);
 	if (ewin->state.active)
 	  {
+	     Timer              *op_timer;
+
 	     EoChangeOpacity(ewin, OpacityFromPercent(a));
 	     if (ewin->props.focused_opacity)
-		DoIn("OPACITY_TIMEOUT", 0.001 * 700, OpacityTimeout,
-		     EwinGetClientXwin(ewin), NULL);
+		TIMER_ADD(op_timer, 0.001 * 700, OpacityTimeout, ewin);
 	  }
 	break;
 
@@ -1713,28 +1717,29 @@ EFunc(EWin * ewin, const char *params)
    return ok;
 }
 
-static void
-doEFuncDeferred(int val __UNUSED__, void *data)
+static int
+doEFuncDeferred(void *data)
 {
    void              **prm = (void **)data;
    EWin               *ewin;
 
    ewin = (EWin *) prm[0];
    if (ewin && !EwinFindByPtr(ewin))
-      return;
+      return 0;
 
    EFunc(ewin, (const char *)prm[1]);
 
    Efree(prm[1]);
    Efree(data);
+
+   return 0;
 }
 
 void
 EFuncDefer(EWin * ewin, const char *cmd)
 {
-   static int          seqn = 0;
-   char                s[32];
    void              **prm;
+   Timer              *defer_timer;
 
    prm = EMALLOC(void *, 2);
 
@@ -1743,8 +1748,7 @@ EFuncDefer(EWin * ewin, const char *cmd)
    prm[0] = ewin;
    prm[1] = Estrdup(cmd);
 
-   Esnprintf(s, sizeof(s), "EFunc-%d", seqn++);
-   DoIn(s, 0.0, doEFuncDeferred, 0, prm);
+   TIMER_ADD(defer_timer, 0.0, doEFuncDeferred, prm);
 }
 
 static int

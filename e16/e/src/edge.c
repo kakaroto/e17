@@ -30,29 +30,32 @@
 #include "xwin.h"
 
 static EObj        *w1 = NULL, *w2 = NULL, *w3 = NULL, *w4 = NULL;
+static Timer       *edge_timer = NULL;
 
-static void
-EdgeTimeout(int val, void *data __UNUSED__)
+static int
+EdgeTimeout(void *data)
 {
+   int                 val;
    int                 ax, ay, aw, ah, dx, dy, dax, day;
    EWin               *ewin;
 
    if (MenusActive())
-      return;
+      goto done;
    if (Conf.desks.edge_flip_mode == EDGE_FLIP_OFF)
-      return;
+      goto done;
 
    /* Quit if pointer has left screen */
    if (!EQueryPointer(NULL, NULL, NULL, NULL, NULL))
-      return;
+      goto done;
 
    /* Quit if in fullscreen window */
    ewin = GetEwinPointerInClient();
    if (ewin && ewin->state.fullscreen)
-      return;
+      goto done;
 
    DeskCurrentGetArea(&ax, &ay);
    DesksGetAreaSize(&aw, &ah);
+   val = PTR2INT(data);
    dx = 0;
    dy = 0;
    dax = 0;
@@ -61,25 +64,25 @@ EdgeTimeout(int val, void *data __UNUSED__)
      {
      case 0:
 	if (ax == 0 && !Conf.desks.areas_wraparound)
-	   return;
+	   goto done;
 	dx = WinGetW(VROOT) - 2;
 	dax = -1;
 	break;
      case 1:
 	if (ax == (aw - 1) && !Conf.desks.areas_wraparound)
-	   return;
+	   goto done;
 	dx = -(WinGetW(VROOT) - 2);
 	dax = 1;
 	break;
      case 2:
 	if (ay == 0 && !Conf.desks.areas_wraparound)
-	   return;
+	   goto done;
 	dy = WinGetH(VROOT) - 2;
 	day = -1;
 	break;
      case 3:
 	if (ay == (ah - 1) && !Conf.desks.areas_wraparound)
-	   return;
+	   goto done;
 	dy = -(WinGetH(VROOT) - 2);
 	day = 1;
 	break;
@@ -98,6 +101,10 @@ EdgeTimeout(int val, void *data __UNUSED__)
    DeskCurrentMoveAreaBy(dax, day);
    Mode.events.px = Mode.events.mx;
    Mode.events.py = Mode.events.my;
+
+ done:
+   edge_timer = NULL;
+   return 0;
 }
 
 static void
@@ -114,14 +121,13 @@ EdgeEvent(int dir)
    if (Conf.desks.edge_flip_mode == EDGE_FLIP_MOVE && Mode.mode != MODE_MOVE)
       return;
 
-   RemoveTimerEvent("EDGE_TIMEOUT");
+   TIMER_DEL(edge_timer);
    if (dir >= 0)
      {
 	if (Conf.desks.edge_flip_resistance <= 0)
 	   Conf.desks.edge_flip_resistance = 1;
-	DoIn("EDGE_TIMEOUT",
-	     ((double)Conf.desks.edge_flip_resistance) / 100.0, EdgeTimeout,
-	     dir, NULL);
+	TIMER_ADD(edge_timer, ((double)Conf.desks.edge_flip_resistance) / 100.0,
+		  EdgeTimeout, INT2PTR(dir));
      }
    lastdir = dir;
 }

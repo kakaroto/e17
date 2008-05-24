@@ -93,9 +93,9 @@ typedef struct {
    int                 screen_w, screen_h;
    int                 update_phase;
    Win                 sel_win;
+   Timer              *scan_timer;
 
    /* State flags */
-   char                scan_pending;
    char                do_newbg;
    char                do_update;
    int                 x1, y1, x2, y2;
@@ -105,7 +105,7 @@ typedef struct {
 } Pager;
 
 static void         PagerScanCancel(Pager * p);
-static void         PagerScanTimeout(int val, void *data);
+static int          PagerScanTimeout(void *data);
 static void         PagerCheckUpdate(Pager * p, void *prm);
 static void         PagerUpdateEwinsFromPager(Pager * p);
 static void         PagerHiwinHide(void);
@@ -169,31 +169,21 @@ PagerDestroy(Pager * p)
 static void
 PagerScanTrig(Pager * p)
 {
-   char                s[128];
-
-   if (p->scan_pending || Conf_pagers.scanspeed <= 0)
+   if (p->scan_timer || Conf_pagers.scanspeed <= 0)
       return;
 
-   Esnprintf(s, sizeof(s), "pg-scan.%x", (unsigned)WinGetXwin(p->win));
-   DoIn(s, 1 / ((double)Conf_pagers.scanspeed), PagerScanTimeout, 0, p);
-   p->scan_pending = 1;
+   TIMER_ADD(p->scan_timer, 1 / ((double)Conf_pagers.scanspeed),
+	     PagerScanTimeout, p);
 }
 
 static void
 PagerScanCancel(Pager * p)
 {
-   char                s[128];
-
-   if (!p->scan_pending)
-      return;
-   p->scan_pending = 0;
-
-   Esnprintf(s, sizeof(s), "pg-scan.%x", (unsigned)WinGetXwin(p->win));
-   RemoveTimerEvent(s);
+   TIMER_DEL(p->scan_timer);
 }
 
-static void
-PagerScanTimeout(int val __UNUSED__, void *data)
+static int
+PagerScanTimeout(void *data)
 {
    Pager              *p;
    EWin               *ewin;
@@ -201,25 +191,24 @@ PagerScanTimeout(int val __UNUSED__, void *data)
    static int          offsets[8] = { 0, 4, 2, 6, 1, 5, 3, 7 };
    int                 pager_mode = PagersGetMode();
 
-   if (pager_mode != PAGER_MODE_SNAP)
-      return;
-
    p = (Pager *) data;
-   p->scan_pending = 0;
+
+   if (pager_mode != PAGER_MODE_SNAP)
+      goto nomore;
 
    ewin = p->ewin;
    if (!ewin || !EoIsShown(ewin))
-      return;
+      goto nomore;
    if (p->dsk != DesksGetCurrent())
-      return;
+      goto nomore;
    if (ewin->state.visibility == VisibilityFullyObscured)
-      return;
+      goto nomore;
 
-   if (Conf_pagers.scanspeed > 0)
-      PagerScanTrig(p);
+   if (Conf_pagers.scanspeed <= 0)
+      goto nomore;
 
    if (Mode.mode != MODE_NONE)
-      return;
+      goto nomore;
 
    DeskCurrentGetArea(&cx, &cy);
    ww = p->dw;
@@ -228,7 +217,7 @@ PagerScanTimeout(int val __UNUSED__, void *data)
    yy = cy * hh;
    phase = p->update_phase;
    if (ww <= 0 || hh <= 0)
-      return;
+      goto nomore;
 
 #if 0
    /* Due to a bug in imlib2 <= 1.2.0 we have to scan left->right in stead
@@ -255,6 +244,13 @@ PagerScanTimeout(int val __UNUSED__, void *data)
 	PagerUpdateEwinsFromPager(p);
 	p->update_phase = 0;
      }
+
+   TimerSetInterval(p->scan_timer, 1 / ((double)Conf_pagers.scanspeed));
+   return 1;
+
+ nomore:
+   p->scan_timer = NULL;
+   return 0;
 }
 
 #if 0				/* FIXME - Remove? */
@@ -821,10 +817,12 @@ PagerCheckUpdate(Pager * p, void *prm __UNUSED__)
    p->do_newbg = p->do_update = 0;
 }
 
-static void
-_PagersUpdateTimeout(int val __UNUSED__, void *data __UNUSED__)
+static int
+_PagersUpdateTimeout(void *data __UNUSED__)
 {
    Mode_pagers.timer_pending = 0;
+
+   return 0;
 }
 
 static void
@@ -832,6 +830,7 @@ PagersCheckUpdate(void)
 {
    static double       tlast = 0.;
    double              t, dt;
+   Timer              *pager_update_timer;
 
    if (!Mode_pagers.update_pending || !Conf_pagers.enable)
       return;
@@ -844,7 +843,7 @@ PagersCheckUpdate(void)
 	  {
 	     /* The purpose of this timer is to trigger the idler */
 	     if (!Mode_pagers.timer_pending)
-		DoIn("pg-upd", dt, _PagersUpdateTimeout, 0, NULL);
+		TIMER_ADD(pager_update_timer, dt, _PagersUpdateTimeout, NULL);
 	     Mode_pagers.timer_pending = 1;
 	     return;
 	  }
@@ -1284,7 +1283,6 @@ PagerSetHiQ(char onoff)
 static void
 _PagerSetSnap(Pager * p, void *prm __UNUSED__)
 {
-   p->scan_pending = 0;
    PagerScanTrig(p);
 }
 
@@ -1747,19 +1745,23 @@ _PagerReconfigure(Pager * p, void *prm __UNUSED__)
    PagerReconfigure(p, 1);
 }
 
-static void
-_PagersReconfigureTimeout(int val __UNUSED__, void *data __UNUSED__)
+static int
+_PagersReconfigureTimeout(void *data __UNUSED__)
 {
    PagersForeach(NULL, _PagerReconfigure, NULL);
+
+   return 0;
 }
 
 static void
 PagersReconfigure(void)
 {
+   Timer              *pg_timer_cfg;
+
    if (!Conf_pagers.enable)
       return;
 
-   DoIn("pg-cfg", .5, _PagersReconfigureTimeout, 0, NULL);
+   TIMER_ADD(pg_timer_cfg, .5, _PagersReconfigureTimeout, NULL);
 }
 
 /*

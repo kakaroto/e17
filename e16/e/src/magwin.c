@@ -46,6 +46,9 @@
 typedef struct {
    EWin               *ewin;
    const char         *title;
+#if USE_TIMER
+   Timer              *timer;
+#endif
    int                 cx, cy;	/* Center */
    int                 scale;	/* Zoom level */
    int                 sx, sy;	/* Scene x,y */
@@ -200,17 +203,18 @@ _MagwinUpdate(MagWindow * mw)
 }
 
 #if USE_TIMER
-static void
+static int
 _MagwinTimeout(int val __UNUSED__, void *data)
 {
    MagWindow          *mw = (MagWindow *) data;
    int                 again;
 
    again = _MagwinUpdate(mw);
-   if (!again)
-      return;
+   if (again)
+      return 1;
 
-   DoIn("magwin", .050, _MagwinTimeout, 0, data);
+   mw->timer = NULL;
+   return 0;
 }
 #elif USE_ANIMATOR
 static int
@@ -353,7 +357,7 @@ MagwinEvent(Win win __UNUSED__, XEvent * ev, void *prm)
      case MapNotify:
 	MagwinKeyPress(mw, XK_g);
 #if USE_TIMER
-	_MagwinTimeout(1, mw);
+	TIMER_ADD(mw->timer, .050, _MagwinTimeout, 0, mw);
 #elif USE_ANIMATOR
 	AnimatorAdd(_MagwinAnimator, mw);
 #endif
@@ -443,7 +447,7 @@ static void
 MagwinDestroy(MagWindow * mw)
 {
 #if USE_TIMER
-   RemoveTimerEvent("magwin");
+   TIMER_DEL(mw->timer);
 #endif
    EventCallbackUnregister(EwinGetClientWin(mw->ewin), 0, MagwinEvent, mw);
    EDestroyWindow(EwinGetClientWin(mw->ewin));

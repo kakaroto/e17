@@ -71,6 +71,7 @@ struct _snapshot {
 };
 
 static Ecore_List  *ss_list = NULL;
+static Timer       *ss_timer = NULL;
 
 static Snapshot    *
 SnapshotCreate(const char *name)
@@ -1077,16 +1078,16 @@ const DialogDef     DlgRemember = {
 };
 
 /* ... combine writes, only save after a timeout */
-
 void
 SaveSnapInfo(void)
 {
-   DoIn("SAVESNAP_TIMEOUT", 5.0, Real_SaveSnapInfo, 0, NULL);
+   TIMER_DEL(ss_timer);
+   TIMER_ADD(ss_timer, 5.0, Real_SaveSnapInfo, NULL);
 }
 
 /* save out all snapped info to disk */
-void
-Real_SaveSnapInfo(int dumval __UNUSED__, void *dumdat __UNUSED__)
+int
+Real_SaveSnapInfo(void *data __UNUSED__)
 {
    Snapshot           *sn;
    int                 j;
@@ -1094,12 +1095,12 @@ Real_SaveSnapInfo(int dumval __UNUSED__, void *dumdat __UNUSED__)
    FILE               *f;
 
    if (!Mode.wm.save_ok)
-      return;
+      goto done;
 
    Etmp(s);
    f = fopen(s, "w");
    if (!f)
-      return;
+      goto done;
 
    ECORE_LIST_FOR_EACH(ss_list, sn)
    {
@@ -1167,6 +1168,10 @@ Real_SaveSnapInfo(int dumval __UNUSED__, void *dumdat __UNUSED__)
       Alert(_("Error saving snaps file\n"));
 
    SaveGroups();
+
+ done:
+   TIMER_DEL(ss_timer);
+   return 0;
 }
 
 void

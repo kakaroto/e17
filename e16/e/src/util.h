@@ -27,6 +27,9 @@
 #include "config.h"
 #include <stdarg.h>
 
+#define INT2PTR(i) ((void*)(long)(i))
+#define PTR2INT(p) ((int)(long)(p))
+
 /* Inspired by Xfuncproto.h */
 #if defined(__GNUC__) && ((__GNUC__ * 100 + __GNUC_MINOR__) >= 303)
 # define __EXPORT__      __attribute__((visibility("default")))

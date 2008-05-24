@@ -36,6 +36,7 @@
 #include "xwin.h"
 
 static Ecore_List  *tt_list = NULL;
+static Timer       *tt_timer = NULL;
 
 static struct {
    char                enable;
@@ -714,8 +715,8 @@ TooltipsEnable(int enable)
 
 static ToolTip     *ttip = NULL;
 
-static void
-ToolTipTimeout(int val __UNUSED__, void *data __UNUSED__)
+static int
+ToolTipTimeout(void *data __UNUSED__)
 {
    int                 x, y;
    unsigned int        mask;
@@ -725,33 +726,37 @@ ToolTipTimeout(int val __UNUSED__, void *data __UNUSED__)
    if (!ttip)
       ttip = TooltipFind("DEFAULT");
    if (!ttip)
-      return;
+      goto done;
 
    /* In the case of multiple screens, check to make sure
     * the root window is still where the mouse is... */
    if (!EQueryPointer(NULL, &x, &y, NULL, &mask))
-      return;
+      goto done;
 
    /* In case this is a virtual root */
    if (x < 0 || y < 0 || x >= WinGetW(VROOT) || y >= WinGetH(VROOT))
-      return;
+      goto done;
 
    /* dont pop up tooltip is mouse button down */
    if (mask &
        (Button1Mask | Button2Mask | Button3Mask | Button4Mask | Button5Mask))
-      return;
+      goto done;
 
    if (!Mode_tooltips.ac_func)
-      return;
+      goto done;
    ac = Mode_tooltips.ac_func(Mode_tooltips.ac_data);
    if (!ac)
-      return;
+      goto done;
 
    tts = ActionclassGetTooltipString(ac);
    if (!tts)
-      return;
+      goto done;
 
    TooltipShow(ttip, _(tts), ac, x, y);
+
+ done:
+   tt_timer = NULL;
+   return 0;
 }
 
 /*
@@ -769,7 +774,7 @@ TooltipsSetPending(int type, CB_GetAclass * func, void *data)
 
    TooltipHide(ttip);
 
-   RemoveTimerEvent("TOOLTIP_TIMEOUT");
+   TIMER_DEL(tt_timer);
 
    if (Conf_tooltips.showroottooltip)
      {
@@ -795,8 +800,7 @@ TooltipsSetPending(int type, CB_GetAclass * func, void *data)
    if (type && !Conf_tooltips.showroottooltip)
       return;
 
-   DoIn("TOOLTIP_TIMEOUT", 0.001 * Conf_tooltips.delay, ToolTipTimeout, 0,
-	NULL);
+   TIMER_ADD(tt_timer, 0.001 * Conf_tooltips.delay, ToolTipTimeout, NULL);
 }
 
 /*

@@ -26,14 +26,15 @@
 #include "timers.h"
 #include <sys/time.h>
 
-typedef struct _qentry Qentry;
-struct _qentry {
-   char               *name;
+#define DEBUG_TIMERS 0
+
+struct _timer {
+   double              in_time;
    double              at_time;
-   void                (*func) (int val, void *data);
-   struct _qentry     *next;
-   int                 runtime_val;
-   void               *runtime_data;
+   struct _timer      *next;
+   int                 (*func) (void *data);
+   void               *data;
+   char                again;
 };
 
 double
@@ -45,98 +46,155 @@ GetTime(void)
    return (double)timev.tv_sec + (((double)timev.tv_usec) / 1000000);
 }
 
-static Qentry      *q_first = NULL;
+static Timer       *q_first = NULL;
 
-void
-DoIn(const char *name, double in_time, void (*func) (int val, void *data),
-     int runtime_val, void *runtime_data)
+static void
+_TimerSet(Timer * timer)
 {
-   Qentry             *qe, *ptr, *pptr;
+   Timer              *ptr, *pptr;
 
-   RemoveTimerEvent(name);
-   qe = EMALLOC(Qentry, 1);
-   if (!qe)
-      return;
-
-   if (in_time < 0.)		/* No negative in-times */
-      in_time = 0.;
-
+#if DEBUG_TIMERS
    if (EDebug(EDBUG_TYPE_TIMERS))
-      Eprintf("DoIn %8.3f: %s\n", in_time, name);
-
-   qe->name = Estrdup(name);
-   qe->func = func;
-   qe->at_time = GetTime() + in_time;
-   qe->runtime_val = runtime_val;
-   qe->runtime_data = runtime_data;
+      Eprintf("_TimerSet %p: func=%p data=%p\n", timer, timer->func,
+	      timer->data);
+#endif
 
    /* if there is no queue it becomes the queue */
    if (!q_first)
      {
-	q_first = qe;
-	qe->next = NULL;
+	q_first = timer;
+	timer->next = NULL;
      }
    else
      {
 	pptr = NULL;
 	for (ptr = q_first; ptr; pptr = ptr, ptr = ptr->next)
 	  {
-	     if (ptr->at_time > qe->at_time)
+	     if (ptr->at_time > timer->at_time)
 		break;
 	  }
 	if (pptr)
-	   pptr->next = qe;
+	   pptr->next = timer;
 	else
-	   q_first = qe;
-	qe->next = ptr;
+	   q_first = timer;
+	timer->next = ptr;
      }
+}
+
+static void
+_TimerDel(Timer * timer)
+{
+#if DEBUG_TIMERS
+   if (EDebug(EDBUG_TYPE_TIMERS))
+      Eprintf("_TimerDel %p: func=%p data=%p\n", timer, timer->func,
+	      timer->data);
+#endif
+   Efree(timer);
+}
+
+Timer              *
+TimerAdd(double in_time, int (*func) (void *data), void *data)
+{
+   Timer              *timer;
+
+   timer = EMALLOC(Timer, 1);
+   if (!timer)
+      return NULL;
+
+   if (in_time < 0.)		/* No negative in-times */
+      in_time = 0.;
+
+   if (EDebug(EDBUG_TYPE_TIMERS))
+      Eprintf("TimerAdd %p: func=%p data=%p: %8.3f\n", timer,
+	      timer->func, timer->data, in_time);
+
+   timer->func = func;
+   timer->in_time = in_time;
+   timer->at_time = GetTime() + in_time;
+   timer->data = data;
+
+   _TimerSet(timer);		/* Add to timer queue */
+
+   return timer;
 }
 
 double
 TimersRun(double tt)
 {
-   Qentry             *qe;
+   Timer              *timer, *q_old, *q_run;
    double              t;
 
-   qe = q_first;
+   timer = q_first;
    if (!q_first)
       return 0.;		/* No timers pending */
 
    t = tt;
    if (t <= 0.)
-      t = qe->at_time;
+      t = timer->at_time;
 
-   for (; qe; qe = q_first)
+   q_run = NULL;
+   q_old = q_first;
+   for (; timer; timer = q_first)
      {
-	if (qe->at_time > t + 200e-6)	/* Within 200 us is close enough */
+	if (timer->at_time > t + 200e-6)	/* Within 200 us is close enough */
 	   break;
 
 	if (EDebug(EDBUG_TYPE_TIMERS))
-	   Eprintf("TimersRun - run %8.3lf: %s\n", qe->at_time - t, qe->name);
+	   Eprintf("TimersRun - run %p: func=%p data=%p: %8.3lf\n", timer,
+		   timer->func, timer->data, timer->at_time - t);
 
-	/* remove it */
-	q_first = qe->next;
+	q_first = timer->next;
 
-	/* run this callback */
-	qe->func(qe->runtime_val, qe->runtime_data);
+	/* Run this callback */
+	timer->again = timer->func(timer->data);
+	q_run = timer;
+     }
 
-	/* free the timer */
-	Efree(qe->name);
-	Efree(qe);
+   if (q_old != q_first)
+     {
+	/* At least one timer has run */
+	q_run->next = NULL;	/* Terminate expired timer list */
+
+	/* Re-schedule/remove timers that have run */
+	for (timer = q_old; timer; timer = q_old)
+	  {
+	     q_old = timer->next;
+	     if (timer->again)
+	       {
+		  timer->at_time += timer->in_time;
+		  _TimerSet(timer);	/* Add to timer queue */
+	       }
+	     else
+	       {
+		  _TimerDel(timer);
+	       }
+	  }
      }
 
    if (tt <= 0.)		/* Avoid some redundant debug output */
       return tt;
 
+   timer = q_first;
+
    if (EDebug(EDBUG_TYPE_TIMERS) > 1)
      {
-	Qentry             *qp;
+	Timer              *qp;
 
-	for (qp = qe; qp; qp = qp->next)
-	   Eprintf("TimersRun - pend %8.3lf: %s\n", qp->at_time - t, qp->name);
+	for (qp = timer; qp; qp = qp->next)
+	   Eprintf("TimersRun - pend %p: func=%p data=%p: %8.3lf\n", timer,
+		   timer->func, timer->data, timer->at_time - t);
      }
 
-   t = (qe) ? qe->at_time - t : 0.;
+   if (timer)
+     {
+	t = timer->at_time - t;
+	if (t <= 0.)
+	   t = 1e-6;
+     }
+   else
+     {
+	t = 0.;
+     }
 
    if (EDebug(EDBUG_TYPE_TIMERS))
       Eprintf("TimersRun - next in %8.3lf\n", t);
@@ -145,15 +203,15 @@ TimersRun(double tt)
 }
 
 int
-RemoveTimerEvent(const char *name)
+TimerDel(Timer * timer)
 {
-   Qentry             *qe, *ptr, *pptr;
+   Timer              *qe, *ptr, *pptr;
 
    pptr = NULL;
    for (ptr = q_first; ptr; pptr = ptr, ptr = ptr->next)
      {
 	qe = ptr;
-	if (strcmp(qe->name, name))
+	if (qe != timer)
 	   continue;
 
 	/* Match - remove it from the queue */
@@ -161,14 +219,21 @@ RemoveTimerEvent(const char *name)
 	   pptr->next = qe->next;
 	else
 	   q_first = qe->next;
+
 	/* free it */
-	Efree(qe->name);
-	Efree(qe);
+	_TimerDel(timer);
+
 	/* done */
 	return 1;
      }
 
    return 0;
+}
+
+void
+TimerSetInterval(Timer * timer, double dt)
+{
+   timer->in_time = dt;
 }
 
 /*
@@ -232,6 +297,7 @@ IdlersRun(void)
  */
 #define DEBUG_ANIMATORS 0
 static Ecore_List  *animator_list = NULL;
+static Timer       *animator_timer = NULL;
 
 typedef int         (AnimatorFunc) (void *data);
 
@@ -254,13 +320,21 @@ _AnimatorRun(void *_an, void *prm __UNUSED__)
       AnimatorDel(an);
 }
 
-static void
-AnimatorsRun(int val __UNUSED__, void *data __UNUSED__)
+static int
+AnimatorsRun(void *data __UNUSED__)
 {
    ecore_list_for_each(animator_list, _AnimatorRun, NULL);
 
    if (ecore_list_count(animator_list))
-      DoIn("Anim", 1e-3 * Conf.animation.step, AnimatorsRun, 0, NULL);
+     {
+	TimerSetInterval(animator_timer, 1e-3 * Conf.animation.step);
+	return 1;
+     }
+   else
+     {
+	animator_timer = NULL;
+	return 0;
+     }
 }
 
 Animator           *
@@ -288,7 +362,8 @@ AnimatorAdd(AnimatorFunc * func, void *data)
 	if (Conf.animation.step <= 0)
 	   Conf.animation.step = 1;
 	/* Animator list was empty - Add to timer qeueue */
-	DoIn("Anim", 1e-3 * Conf.animation.step, AnimatorsRun, 0, NULL);
+	TIMER_ADD(animator_timer, 1e-3 * Conf.animation.step,
+		  AnimatorsRun, NULL);
      }
 
    return an;
@@ -306,7 +381,7 @@ AnimatorDel(Animator * an)
 
    if (ecore_list_count(animator_list) == 0)
      {
-	/* Animator list was empty - Add to timer qeueue */
-	RemoveTimerEvent("Anim");
+	/* Animator list is empty - Remove from timer qeueue */
+	TIMER_DEL(animator_timer);
      }
 }

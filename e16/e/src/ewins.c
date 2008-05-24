@@ -53,7 +53,7 @@
    /* StructureNotifyMask | */ ResizeRedirectMask | \
    PropertyChangeMask | ColormapChangeMask | VisibilityChangeMask)
 
-static void         EwinSlideIn(int val __UNUSED__, void *data);
+static int          EwinSlideIn(void *data);
 
 static void         EwinChangesStart(EWin * ewin);
 static void         EwinChangesProcess(EWin * ewin);
@@ -886,6 +886,8 @@ AddToFamily(EWin * ewin, Window xwin)
      }
    else if (doslide)
      {
+	Timer              *slide_timer;
+
 	k = rand() % 4;
 	if (k == 0)
 	  {
@@ -915,7 +917,7 @@ AddToFamily(EWin * ewin, Window xwin)
 	EwinShow(ewin);
 	ewin->req_x = x;
 	ewin->req_y = y;
-	DoIn("Slide", 0.05, EwinSlideIn, 0, ewin);
+	TIMER_ADD(slide_timer, 0.05, EwinSlideIn, ewin);
      }
    else
      {
@@ -1876,8 +1878,8 @@ EwinUpdateOpacity(EWin * ewin)
 /*
  * Slidein
  */
-static void
-EwinSlideIn(int val __UNUSED__, void *data)
+static int
+EwinSlideIn(void *data)
 {
    EWin               *ewin = (EWin *) data;
 
@@ -1891,6 +1893,8 @@ EwinSlideIn(int val __UNUSED__, void *data)
  done:
    Mode.place.doing_slide = 0;
    FocusEnable(1);
+
+   return 0;
 }
 
 /*

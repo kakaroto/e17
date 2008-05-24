@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2004-2007 Jaron Omega
- * Copyright (C) 2004-2007 Kim Woelders
+ * Copyright (C) 2004-2008 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -41,16 +41,22 @@ static int          tmp_st_menu;
 static int          tmp_st_tooltip;
 static int          tmp_st_hilight;
 
-static void
-TransparencyChangeTimeout(int val, void *data __UNUSED__)
+static Timer       *st_timer = NULL;
+
+static int
+TransparencyChangeTimeout(void *data)
 {
-   TransparencySet(val);
+   TransparencySet(PTR2INT(data));
+
+   st_timer = NULL;
+   return 0;
 }
 
 static void
 TransparencyChange(int val)
 {
-   DoIn("PT-Change", .01, TransparencyChangeTimeout, val, NULL);
+   TIMER_DEL(st_timer);
+   TIMER_ADD(st_timer, .01, TransparencyChangeTimeout, INT2PTR(val));
 }
 
 static void

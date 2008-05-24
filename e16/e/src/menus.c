@@ -46,7 +46,7 @@
 
 #define DEBUG_MENU_EVENTS 0
 
-#define MENU_UNLOAD_CHECK_IMTERVAL 300	/* Seconds */
+#define MENU_UNLOAD_CHECK_INTERVAL 300	/* Seconds */
 
 static struct {
    Menu               *first;
@@ -135,6 +135,7 @@ static void         MenusHide(void);
 
 static Ecore_List  *menu_list = NULL;
 static Ecore_List  *menu_style_list = NULL;
+static Timer       *menu_timer_submenu = NULL;
 
 static MenuItem    *
 MenuFindItemByChild(Menu * m, Menu * mc)
@@ -1154,7 +1155,7 @@ MenusActive(void)
 static void
 MenusHide(void)
 {
-   RemoveTimerEvent("SUBMENU_SHOW");
+   TIMER_DEL(menu_timer_submenu);
 
    MenuHide(Mode_menus.first);
    Mode_menus.first = NULL;
@@ -1549,8 +1550,8 @@ MenuSelectItemByChild(Menu * m, Menu * mc)
    MenuSelectItem(m, mi, 0);
 }
 
-static void
-SubmenuShowTimeout(int val __UNUSED__, void *dat)
+static int
+SubmenuShowTimeout(void *dat)
 {
    int                 mx, my, my2, xo, yo, mw;
    Menu               *m;
@@ -1561,35 +1562,33 @@ SubmenuShowTimeout(int val __UNUSED__, void *dat)
    int                 bl2, br2, bt2, bb2;
 
    data = (struct _mdata *)dat;
-   if (!data)
-      return;
-   if (!data->m)
-      return;
+   if (!data || !data->m)
+      goto done;
 
    m = data->m;
    if (!ecore_list_goto(menu_list, m))
-      return;
+      goto done;
    ewin = m->ewin;
    if (!ewin || !EwinFindByPtr(ewin))
-      return;
+      goto done;
    if (!EoIsShown(ewin))
-      return;
+      goto done;
 
    mi = data->mi;
    if (!mi)
-      return;
+      goto done;
 
    if (mi->child != m->child)
       MenuHide(m->child);
    m->child = mi->child;
    if (!mi->child)
-      return;
+      goto done;
 
    mi->child->parent = m;
    MenuShow(mi->child, 1);
    ewin2 = mi->child->ewin;
    if (!ewin2 || !EwinFindByPtr(ewin2))
-      return;
+      goto done;
 
    EGetGeometry(mi->win, NULL, &mx, &my, &mw, NULL, NULL, NULL);
    my2 = 0;
@@ -1664,6 +1663,10 @@ SubmenuShowTimeout(int val __UNUSED__, void *dat)
 
    if (Conf.menus.animate)
       EwinUnShade(ewin2);
+
+ done:
+   menu_timer_submenu = NULL;
+   return 0;
 }
 
 static void
@@ -1686,13 +1689,13 @@ MenuActivateItem(Menu * m, MenuItem * mi)
    if (mi && !mi->child && mi_prev && !mi_prev->child)
       return;
 
-   RemoveTimerEvent("SUBMENU_SHOW");
+   TIMER_DEL(menu_timer_submenu);
 
    if ((mi && mi->child && !mi->child->shown) || (mi && mi->child != m->child))
      {
 	mdata.m = m;
 	mdata.mi = mi;
-	DoIn("SUBMENU_SHOW", 0.2, SubmenuShowTimeout, 0, &mdata);
+	TIMER_ADD(menu_timer_submenu, 0.2, SubmenuShowTimeout, &mdata);
      }
 }
 
@@ -1945,8 +1948,8 @@ MenuConfigLoad(FILE * fs)
    return err;
 }
 
-static void
-MenusTimeout(int val __UNUSED__, void *data __UNUSED__)
+static int
+MenusTimeout(void *data __UNUSED__)
 {
    Menu               *m;
    time_t              ts;
@@ -1956,7 +1959,7 @@ MenusTimeout(int val __UNUSED__, void *data __UNUSED__)
    ECORE_LIST_FOR_EACH(menu_list, m)
    {
       if (m->shown || !m->filled ||
-	  ts - m->last_access < MENU_UNLOAD_CHECK_IMTERVAL)
+	  ts - m->last_access < MENU_UNLOAD_CHECK_INTERVAL)
 	 continue;
 
       m->last_change = 0;
@@ -1968,7 +1971,7 @@ MenusTimeout(int val __UNUSED__, void *data __UNUSED__)
 	 MenuDestroy(m);
    }
 
-   DoIn("MenusCheck", 1. * MENU_UNLOAD_CHECK_IMTERVAL, MenusTimeout, 0, NULL);
+   return 1;
 }
 
 /*
@@ -1978,6 +1981,8 @@ MenusTimeout(int val __UNUSED__, void *data __UNUSED__)
 static void
 MenusSighan(int sig, void *prm __UNUSED__)
 {
+   Timer              *menu_unload_timer;
+
    switch (sig)
      {
      case ESIGNAL_CONFIGURE:
@@ -1985,8 +1990,8 @@ MenusSighan(int sig, void *prm __UNUSED__)
 	break;
 
      case ESIGNAL_START:
-	DoIn("MenusCheck", 1. * MENU_UNLOAD_CHECK_IMTERVAL, MenusTimeout, 0,
-	     NULL);
+	TIMER_ADD(menu_unload_timer, 1. * MENU_UNLOAD_CHECK_INTERVAL,
+		  MenusTimeout, NULL);
 	break;
 
      case ESIGNAL_AREA_SWITCH_START:

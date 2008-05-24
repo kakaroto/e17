@@ -473,7 +473,7 @@ SessionSave(int shutdown)
    if (EDebug(EDBUG_TYPE_SESSION))
       Eprintf("SessionSave(%d)\n", shutdown);
 
-   Real_SaveSnapInfo(0, NULL);
+   Real_SaveSnapInfo(NULL);
 
 #if USE_SM
    if (shutdown && sm_conn)
