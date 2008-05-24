@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-03-29 00:59+0100\n"
+"POT-Creation-Date: 2008-05-24 15:56+0200\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: György Horák <dyuri@horak.hu>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
@@ -57,9 +57,9 @@ msgstr ""
 "Mandrake - mandrake@mandrake.net\n"
 "Kim Woelders - kim@woelders.dk\n"
 
-#: src/aclass.c:198 src/backgrounds.c:236 src/borders.c:635 src/buttons.c:181
+#: src/aclass.c:198 src/backgrounds.c:237 src/borders.c:635 src/buttons.c:181
 #: src/cmclass.c:84 src/cursors.c:121 src/iclass.c:351 src/tclass.c:111
-#: src/tooltips.c:131
+#: src/tooltips.c:129
 #, c-format
 msgid "%u references remain\n"
 msgstr "%u referencia maradt\n"
@@ -177,7 +177,7 @@ msgstr "Enlightenment újraindítása"
 msgid "Quit Enlightenment"
 msgstr "Kilépés"
 
-#: src/backgrounds.c:1598
+#: src/backgrounds.c:1591
 #, c-format
 msgid ""
 "Background definition information:\n"
@@ -188,11 +188,11 @@ msgstr ""
 "Név: %s\n"
 "Fájl: %s\n"
 
-#: src/backgrounds.c:1599
+#: src/backgrounds.c:1592
 msgid "-NONE-"
 msgstr "-NINCS-"
 
-#: src/backgrounds.c:1778 src/backgrounds.c:1780
+#: src/backgrounds.c:1771 src/backgrounds.c:1773
 msgid ""
 "No\n"
 "Background"
@@ -200,40 +200,40 @@ msgstr ""
 "Nincs\n"
 "Háttér"
 
-#: src/backgrounds.c:1874 src/backgrounds.c:2303
+#: src/backgrounds.c:1867 src/backgrounds.c:2296
 #, c-format
 msgid "Unused backgrounds freed after %2i:%02i:%02i"
 msgstr "A használaton kívüli hátterek felszabadítása %2i:%02i:%02i után"
 
-#: src/backgrounds.c:2089
+#: src/backgrounds.c:2082
 msgid "Use background image"
 msgstr "Háttérkép használata"
 
-#: src/backgrounds.c:2093
+#: src/backgrounds.c:2086
 msgid "Keep aspect on scale"
 msgstr "Arányok megtartása átméretezésnél"
 
-#: src/backgrounds.c:2097
+#: src/backgrounds.c:2090
 msgid "Tile image across background"
 msgstr "Mozaikszerû elrendezés"
 
-#: src/backgrounds.c:2106
+#: src/backgrounds.c:2099
 msgid "Move to Front\n"
 msgstr "Elõre mozgatás\n"
 
-#: src/backgrounds.c:2111
+#: src/backgrounds.c:2104
 msgid "Duplicate\n"
 msgstr "Másolás\n"
 
-#: src/backgrounds.c:2115
+#: src/backgrounds.c:2108
 msgid "Unlist\n"
 msgstr "Elrejtés\n"
 
-#: src/backgrounds.c:2120
+#: src/backgrounds.c:2113
 msgid "Delete File\n"
 msgstr "Fájl törlése\n"
 
-#: src/backgrounds.c:2131
+#: src/backgrounds.c:2124
 msgid ""
 "Background\n"
 "Image\n"
@@ -246,60 +246,60 @@ msgstr ""
 "és\n"
 "elhelyezkedése\n"
 
-#: src/backgrounds.c:2188
+#: src/backgrounds.c:2181
 msgid "BG Colour\n"
 msgstr "Háttérszín\n"
 
-#: src/backgrounds.c:2193
+#: src/backgrounds.c:2186
 msgid "Red:\n"
 msgstr "Piros:\n"
 
-#: src/backgrounds.c:2204
+#: src/backgrounds.c:2197
 msgid "Green:\n"
 msgstr "Zöld:\n"
 
-#: src/backgrounds.c:2215
+#: src/backgrounds.c:2208
 msgid "Blue:\n"
 msgstr "Kék:\n"
 
-#: src/backgrounds.c:2248
+#: src/backgrounds.c:2241
 msgid "Pre-scan BG's"
 msgstr "Frissítés"
 
-#: src/backgrounds.c:2256
+#: src/backgrounds.c:2249
 msgid "Sort by File"
 msgstr "Fájlnév szerint rendez"
 
-#: src/backgrounds.c:2261
+#: src/backgrounds.c:2254
 msgid "Sort by Attr."
 msgstr "Attribútum szerint rendez"
 
-#: src/backgrounds.c:2267
+#: src/backgrounds.c:2260
 msgid "Sort by Image"
 msgstr "Kép szerint rendez"
 
-#: src/backgrounds.c:2287
+#: src/backgrounds.c:2280
 msgid "Use dithering in Hi-Colour"
 msgstr "Színek elmosása Hi-Color módban"
 
-#: src/backgrounds.c:2291
+#: src/backgrounds.c:2284
 msgid "Background overrides theme"
 msgstr "A háttér felülírja a téma beállításait"
 
-#: src/backgrounds.c:2296
+#: src/backgrounds.c:2289
 msgid "Enable background transparency compatibility mode"
 msgstr ""
 
-#: src/backgrounds.c:2320 src/mod-trans.c:193
+#: src/backgrounds.c:2313 src/mod-trans.c:199
 #, fuzzy
 msgid "Background"
 msgstr "Háttér"
 
-#: src/backgrounds.c:2321
+#: src/backgrounds.c:2314
 msgid "Desktop Background Settings"
 msgstr "Asztalháttér beállításai"
 
-#: src/backgrounds.c:2324
+#: src/backgrounds.c:2317
 msgid ""
 "Enlightenment Desktop\n"
 "Background Settings Dialog\n"
@@ -416,7 +416,7 @@ msgstr "Az Enlightenment indítása..."
 msgid "Settings..."
 msgstr "Fókusz beállításai"
 
-#: src/container.c:1219 src/dialog.c:872 src/pager.c:1016 config/strings.c:30
+#: src/container.c:1219 src/dialog.c:872 src/pager.c:1015 config/strings.c:30
 #: config/strings.c:132
 msgid "Close"
 msgstr "Bezár"
@@ -495,7 +495,7 @@ msgstr "Mindkét végén"
 msgid "End"
 msgstr "Végén"
 
-#: src/container.c:1667 src/focus.c:846
+#: src/container.c:1667 src/focus.c:841
 msgid "None"
 msgstr "Nincs"
 
@@ -580,67 +580,67 @@ msgstr ""
 "Klikkeljen ide, hogy ez az asztal\n"
 "legalulra kerüljön.\n"
 
-#: src/desktops.c:2280 src/desktops.c:2319
+#: src/desktops.c:2268 src/desktops.c:2307
 #, c-format
 msgid "%i Desktops"
 msgstr "%i asztal"
 
-#: src/desktops.c:2282 src/desktops.c:2321
+#: src/desktops.c:2270 src/desktops.c:2309
 #, c-format
 msgid "%i Desktop"
 msgstr "%i asztal"
 
-#: src/desktops.c:2314
+#: src/desktops.c:2302
 msgid "Number of virtual desktops:\n"
 msgstr "Virtuális asztalok száma:\n"
 
-#: src/desktops.c:2343
+#: src/desktops.c:2331
 msgid "Slide desktops around when changing"
 msgstr "Animáció az asztalok váltásánál"
 
-#: src/desktops.c:2349
+#: src/desktops.c:2337
 #, fuzzy
 msgid "Desktop Slide speed:\n"
 msgstr "Asztal animáció sebessége: (lassú)\n"
 
-#: src/desktops.c:2363
+#: src/desktops.c:2351
 msgid "Wrap desktops around"
 msgstr "Asztalok \"körbecsúszása\""
 
-#: src/desktops.c:2371
+#: src/desktops.c:2359
 msgid "Display desktop dragbar"
 msgstr "Dragbar megjelenítése"
 
-#: src/desktops.c:2377
+#: src/desktops.c:2365
 msgid "Drag bar position:"
 msgstr "Dragbar elhelyezkedése:"
 
-#: src/desktops.c:2381
+#: src/desktops.c:2369
 msgid "Top"
 msgstr "Fent"
 
-#: src/desktops.c:2387
+#: src/desktops.c:2375
 msgid "Bottom"
 msgstr "Lent"
 
-#: src/desktops.c:2393 src/pager.c:1923 src/pager.c:1948 src/pager.c:1973
+#: src/desktops.c:2381 src/pager.c:1925 src/pager.c:1950 src/pager.c:1975
 msgid "Left"
 msgstr "Bal"
 
-#: src/desktops.c:2399 src/pager.c:1935 src/pager.c:1960 src/pager.c:1985
+#: src/desktops.c:2387 src/pager.c:1937 src/pager.c:1962 src/pager.c:1987
 msgid "Right"
 msgstr "Jobb"
 
-#: src/desktops.c:2407 src/menus-misc.c:708
+#: src/desktops.c:2395 src/menus-misc.c:706
 #, fuzzy
 msgid "Desks"
 msgstr "Asztal"
 
-#: src/desktops.c:2408
+#: src/desktops.c:2396
 msgid "Multiple Desktop Settings"
 msgstr "Többasztalos üzemmód beállításai"
 
-#: src/desktops.c:2411
+#: src/desktops.c:2399
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -648,7 +648,7 @@ msgstr ""
 "Enlightenment többasztalos üzemmód\n"
 "beállításai\n"
 
-#: src/desktops.c:2481 src/desktops.c:2516
+#: src/desktops.c:2469 src/desktops.c:2504
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -657,7 +657,7 @@ msgstr ""
 "%i x %i\n"
 "képernyõméret"
 
-#: src/desktops.c:2484 src/desktops.c:2519
+#: src/desktops.c:2472 src/desktops.c:2507
 msgid ""
 "1\n"
 "Screen in size"
@@ -665,43 +665,43 @@ msgstr ""
 "1\n"
 "képernyõméret"
 
-#: src/desktops.c:2512
+#: src/desktops.c:2500
 msgid "Virtual Desktop size:\n"
 msgstr "Virtuális asztal mérete:\n"
 
-#: src/desktops.c:2553
+#: src/desktops.c:2541
 msgid "Wrap virtual desktops around"
 msgstr "Virtuális asztalok \"körbecsúszása\""
 
-#: src/desktops.c:2560
+#: src/desktops.c:2548
 msgid "Edge Flip Mode:"
 msgstr ""
 
-#: src/desktops.c:2563
+#: src/desktops.c:2551
 msgid "Off"
 msgstr ""
 
-#: src/desktops.c:2568
+#: src/desktops.c:2556
 msgid "On"
 msgstr ""
 
-#: src/desktops.c:2573
+#: src/desktops.c:2561
 msgid "Only when moving window"
 msgstr ""
 
-#: src/desktops.c:2579
+#: src/desktops.c:2567
 msgid "Resistance at edge of screen:\n"
 msgstr "Érzékenység a kép szélén:\n"
 
-#: src/desktops.c:2591
+#: src/desktops.c:2579
 msgid "Areas"
 msgstr ""
 
-#: src/desktops.c:2592
+#: src/desktops.c:2580
 msgid "Virtual Desktop Settings"
 msgstr "Virtuális asztalok beállításai"
 
-#: src/desktops.c:2595
+#: src/desktops.c:2583
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -754,106 +754,106 @@ msgstr ""
 "\n"
 "Kilépek.\n"
 
-#: src/focus.c:718
+#: src/focus.c:713
 msgid "Focus follows pointer"
 msgstr "A fókusz követi az egérmutatót"
 
-#: src/focus.c:724
+#: src/focus.c:719
 msgid "Focus follows pointer sloppily"
 msgstr "A fókusz lazán követi az egérmutatót"
 
-#: src/focus.c:730
+#: src/focus.c:725
 msgid "Focus follows mouse clicks"
 msgstr "A fókusz követi az egérkattintást"
 
-#: src/focus.c:740
+#: src/focus.c:735
 msgid "Clicking in a window always raises it"
 msgstr "Az ablakok mindig felülre kerülnek egérkattintásnál"
 
-#: src/focus.c:748
+#: src/focus.c:743
 msgid "All new windows first get the focus"
 msgstr "Az új ablakok fókuszt kapnak"
 
-#: src/focus.c:753
+#: src/focus.c:748
 msgid "Only new dialog windows get the focus"
 msgstr "Csak az új ablakok kapnak fókuszt"
 
-#: src/focus.c:760
+#: src/focus.c:755
 msgid "Only new dialogs whose owner is focused get the focus"
 msgstr ""
 
-#: src/focus.c:765
+#: src/focus.c:760
 #, fuzzy
 msgid "Raise windows while switching focus"
 msgstr "Ablakváltás közben fókusz"
 
-#: src/focus.c:771
+#: src/focus.c:766
 #, fuzzy
 msgid "Send mouse pointer to window while switching focus"
 msgstr "Az egérmutató az ablak fölé kerül fókuszváltásnál"
 
-#: src/focus.c:777
+#: src/focus.c:772
 #, fuzzy
 msgid "Always send mouse pointer to window on focus switch"
 msgstr "Az egérmutató az ablak fölé kerül fókuszváltásnál"
 
-#: src/focus.c:785
+#: src/focus.c:780
 msgid "Display and use focus list"
 msgstr "Fókuszlista megjelenítése és használata"
 
-#: src/focus.c:790
+#: src/focus.c:785
 msgid "Include sticky windows in focus list"
 msgstr "Ragadós ablakok bevétele a fókusz listába"
 
-#: src/focus.c:795
+#: src/focus.c:790
 msgid "Include shaded windows in focus list"
 msgstr "Árnyékolt ablakok bevétele a fókusz listába"
 
-#: src/focus.c:800
+#: src/focus.c:795
 msgid "Include iconified windows in focus list"
 msgstr "Ikonizált ablakok bevétele a fókusz listába"
 
-#: src/focus.c:805
+#: src/focus.c:800
 #, fuzzy
 msgid "Include windows on other desks in focus list"
 msgstr "Árnyékolt ablakok bevétele a fókusz listába"
 
-#: src/focus.c:810
+#: src/focus.c:805
 msgid "Focus windows while switching"
 msgstr "Ablakváltás közben fókusz"
 
-#: src/focus.c:815
+#: src/focus.c:810
 msgid "Raise windows after focus switch"
 msgstr "Az ablak felülre kerül fókuszváltás után"
 
-#: src/focus.c:820
+#: src/focus.c:815
 msgid "Send mouse pointer to window after focus switch"
 msgstr "Az egérmutató az ablak fölé kerül fókuszváltás után"
 
-#: src/focus.c:830
+#: src/focus.c:825
 #, fuzzy
 msgid "Focuslist image display policy (if one operation fails, try the next):"
 msgstr ""
 "Ikonmegjelenítés rendje (ha az egyik nem sikerül, megpróbálja a következõt):"
 
-#: src/focus.c:834
+#: src/focus.c:829
 msgid "First E Icon, then App Icon"
 msgstr ""
 
-#: src/focus.c:840
+#: src/focus.c:835
 msgid "First App Icon, then E Icon"
 msgstr ""
 
-#: src/focus.c:854
+#: src/focus.c:849
 #, fuzzy
 msgid "Focus"
 msgstr "Nem kap fókuszt"
 
-#: src/focus.c:855
+#: src/focus.c:850
 msgid "Focus Settings"
 msgstr "Fókusz beállításai"
 
-#: src/focus.c:858
+#: src/focus.c:853
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog\n"
@@ -861,31 +861,31 @@ msgstr ""
 "Enlightenment fókusz\n"
 "beállításai\n"
 
-#: src/fx.c:898
+#: src/fx.c:907
 msgid "Effects"
 msgstr "Effektek"
 
-#: src/fx.c:901
+#: src/fx.c:910
 msgid "Enable Effect: Raindrops"
 msgstr "Effekt bekapcsolása: Esõcseppek"
 
-#: src/fx.c:905
+#: src/fx.c:914
 msgid "Ripples"
 msgstr "Körhullámok"
 
-#: src/fx.c:909
+#: src/fx.c:918
 msgid "Waves"
 msgstr "Hullámok"
 
-#: src/fx.c:915
+#: src/fx.c:924
 msgid "FX"
 msgstr ""
 
-#: src/fx.c:916
+#: src/fx.c:925
 msgid "Special FX Settings"
 msgstr "Speciális effektek beállításai"
 
-#: src/fx.c:919
+#: src/fx.c:928
 msgid ""
 "Enlightenment Special Effects\n"
 "Settings Dialog\n"
@@ -1028,7 +1028,7 @@ msgstr " Globális beállítások: "
 msgid "Swap Window Locations"
 msgstr "Ablak helyének cseréje"
 
-#: src/groups.c:1015 src/menus-misc.c:768 config/strings.c:147
+#: src/groups.c:1015 src/menus-misc.c:766 config/strings.c:147
 #, fuzzy
 msgid "Groups"
 msgstr "%i. csoport"
@@ -1128,11 +1128,11 @@ msgstr "Ikondoboz beállításai"
 msgid "Iconbox Settings"
 msgstr "Ikondoboz beállításai"
 
-#: src/ipc.c:193 src/ipc.c:1423 src/ipc.c:1430
+#: src/ipc.c:193 src/ipc.c:1427 src/ipc.c:1434
 msgid "Message"
 msgstr "Üzenet"
 
-#: src/ipc.c:954
+#: src/ipc.c:958
 #, c-format
 msgid ""
 "Enlightenment Version : %s\n"
@@ -1141,27 +1141,27 @@ msgstr ""
 "Enlightenment verzió     : %s\n"
 "a kód utoljára frissítve : %s\n"
 
-#: src/ipc.c:1423 src/ipc.c:1430
+#: src/ipc.c:1427 src/ipc.c:1434
 #, c-format
 msgid "e16 was built without %s support"
 msgstr ""
 
-#: src/ipc.c:1424
+#: src/ipc.c:1428
 #, fuzzy
 msgid "composite"
 msgstr "Composite engedélyezése"
 
-#: src/ipc.c:1431
+#: src/ipc.c:1435
 #, fuzzy
 msgid "sound"
 msgstr "Hang"
 
-#: src/ipc.c:1765
+#: src/ipc.c:1769
 #, fuzzy
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Enlightenment IPC parancsok súgója"
 
-#: src/ipc.c:1769
+#: src/ipc.c:1773
 #, fuzzy
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
@@ -1171,24 +1171,24 @@ msgstr ""
 "írja be: \"help all\" az összes parancs leírásának megjelenítéséhez\n"
 "írja be: \"help <parancs>\" az egyes parancsok leírásának megjelenítéséhez\n"
 
-#: src/ipc.c:1771 src/ipc.c:1791 src/ipc.c:1803
+#: src/ipc.c:1775 src/ipc.c:1795 src/ipc.c:1807
 #, fuzzy
 msgid "Commands currently available:\n"
 msgstr ""
 "\n"
 "elérhetõ parancsok:\n"
 
-#: src/ipc.c:1789
+#: src/ipc.c:1793
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 
-#: src/ipc.c:1790
+#: src/ipc.c:1794
 #, fuzzy
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr ""
 "Írja be: \"help <parancs>\" az egyes parancsok leírásának megjelenítéséhez\n"
 
-#: src/ipc.c:1792 src/ipc.c:1804
+#: src/ipc.c:1796 src/ipc.c:1808
 #, fuzzy
 msgid "         <command>     : <description>\n"
 msgstr "         <parancs> : <leírás>\n"
@@ -1230,71 +1230,71 @@ msgid ""
 "correctly.\n"
 msgstr ""
 
-#: src/magwin.c:459
+#: src/magwin.c:463
 msgid "Magnifier"
 msgstr ""
 
-#: src/menus-misc.c:580 config/strings.c:91
+#: src/menus-misc.c:578 config/strings.c:91
 #, fuzzy
 msgid "Themes"
 msgstr "Rossz téma"
 
-#: src/menus-misc.c:606
+#: src/menus-misc.c:604
 #, fuzzy
 msgid "Border"
 msgstr "Kerettípus"
 
-#: src/menus-misc.c:668
+#: src/menus-misc.c:666
 #, fuzzy
 msgid "Window List"
 msgstr "Ablaklista-kihagyás"
 
-#: src/menus-misc.c:690
+#: src/menus-misc.c:688
 #, fuzzy
 msgid "Go to this Desktop"
 msgstr "Ugrás erre az asztalra"
 
-#: src/menus-misc.c:694 src/menus-misc.c:790
+#: src/menus-misc.c:692 src/menus-misc.c:788
 #, c-format
 msgid "Desktop %i"
 msgstr "%i. asztal"
 
-#: src/menus-misc.c:737
+#: src/menus-misc.c:735
 msgid "Show/Hide this group"
 msgstr "Csoport mutatása/elrejtése"
 
-#: src/menus-misc.c:742
+#: src/menus-misc.c:740
 msgid "Iconify this group"
 msgstr "Csoport kicsinyítése"
 
-#: src/menus-misc.c:753
+#: src/menus-misc.c:751
 #, c-format
 msgid "Group %i"
 msgstr "%i. csoport"
 
-#: src/menus.c:2041
+#: src/menus.c:2046
 msgid "Animated display of menus"
 msgstr "Menük animálása"
 
-#: src/menus.c:2046
+#: src/menus.c:2051
 msgid "Always pop up menus on screen"
 msgstr "A menük mindig a képben jelennek meg"
 
-#: src/menus.c:2051
+#: src/menus.c:2056
 msgid "Warp pointer after moving menus"
 msgstr "Menük mozgásával együtt az egérmutató is mozog"
 
-#: src/menus.c:2057
+#: src/menus.c:2062
 #, fuzzy
 msgid "Menus"
 msgstr "Menük:"
 
-#: src/menus.c:2058
+#: src/menus.c:2063
 #, fuzzy
 msgid "Menu Settings"
 msgstr "Vegyes beállítások"
 
-#: src/menus.c:2061
+#: src/menus.c:2066
 #, fuzzy
 msgid ""
 "Enlightenment Menu\n"
@@ -1303,60 +1303,60 @@ msgstr ""
 "Enlightenment fókusz\n"
 "beállításai\n"
 
-#: src/mod-trans.c:103 src/mod-trans.c:253
+#: src/mod-trans.c:109 src/mod-trans.c:259
 #, c-format
 msgid "Theme transparency: %2d"
 msgstr "Téma átlátszóság: %2d"
 
-#: src/mod-trans.c:132
+#: src/mod-trans.c:138
 msgid "Changes Might Require Restart:"
 msgstr "A változások életbelépéséhez újraindítás kellhet"
 
-#: src/mod-trans.c:141
+#: src/mod-trans.c:147
 #, fuzzy
 msgid "Borders:"
 msgstr "Kerettípus:"
 
-#: src/mod-trans.c:145
+#: src/mod-trans.c:151
 #, fuzzy
 msgid "Menus:"
 msgstr "Menük:"
 
-#: src/mod-trans.c:149
+#: src/mod-trans.c:155
 msgid "Hilights:"
 msgstr "Kiemelések:"
 
-#: src/mod-trans.c:153
+#: src/mod-trans.c:159
 msgid "E Widgets:"
 msgstr "E widgetek:"
 
-#: src/mod-trans.c:157
+#: src/mod-trans.c:163
 msgid "E Dialogs:"
 msgstr "E párbeszédablakok:"
 
-#: src/mod-trans.c:161
+#: src/mod-trans.c:167
 #, fuzzy
 msgid "Tooltips:"
 msgstr "Tippek:\n"
 
-#: src/mod-trans.c:165 src/settings.c:78 src/settings.c:83 src/settings.c:345
+#: src/mod-trans.c:171 src/settings.c:78 src/settings.c:83 src/settings.c:345
 msgid "Opaque"
 msgstr "Átlátszatlan"
 
-#: src/mod-trans.c:224
+#: src/mod-trans.c:230
 msgid "Glass"
 msgstr "Üveg"
 
-#: src/mod-trans.c:269
+#: src/mod-trans.c:275
 #, fuzzy
 msgid "Transparency"
 msgstr "Téma átlátszóság: %2d"
 
-#: src/mod-trans.c:270
+#: src/mod-trans.c:276
 msgid "Selective Transparency Settings"
 msgstr "Részletes átlátszóság beállítások"
 
-#: src/mod-trans.c:273
+#: src/mod-trans.c:279
 #, fuzzy
 msgid ""
 "Enlightenment Selective Transparency\n"
@@ -1365,125 +1365,125 @@ msgstr ""
 "Enlightenment részletes átlátszóság\n"
 "beállítások\n"
 
-#: src/pager.c:1009 config/strings.c:49 config/strings.c:131
+#: src/pager.c:1008 config/strings.c:49 config/strings.c:131
 msgid "Window Options"
 msgstr "Ablak beállításai"
 
-#: src/pager.c:1012 config/strings.c:51 config/strings.c:134
+#: src/pager.c:1011 config/strings.c:51 config/strings.c:134
 msgid "Iconify"
 msgstr "Kicsinyít"
 
-#: src/pager.c:1020 config/strings.c:133
+#: src/pager.c:1019 config/strings.c:133
 msgid "Annihilate"
 msgstr "Megsemmisít"
 
-#: src/pager.c:1024
+#: src/pager.c:1023
 msgid "Stick / Unstick"
 msgstr "Rögzít"
 
-#: src/pager.c:1033
+#: src/pager.c:1032
 msgid "Desktop Options"
 msgstr "Asztal beállításai"
 
-#: src/pager.c:1035
+#: src/pager.c:1034
 msgid "Pager Settings..."
 msgstr "Pager beállításai..."
 
-#: src/pager.c:1040
+#: src/pager.c:1039
 msgid "Snapshotting Off"
 msgstr "Miniatúra ki"
 
-#: src/pager.c:1044
+#: src/pager.c:1043
 msgid "High Quality Off"
 msgstr "Jó minõség ki"
 
-#: src/pager.c:1046
+#: src/pager.c:1045
 msgid "High Quality On"
 msgstr "Jó minõség be"
 
-#: src/pager.c:1051
+#: src/pager.c:1050
 msgid "Snapshotting On"
 msgstr "Miniatúra be"
 
-#: src/pager.c:1055
+#: src/pager.c:1054
 msgid "Zoom Off"
 msgstr ""
 
-#: src/pager.c:1057
+#: src/pager.c:1056
 msgid "Zoom On"
 msgstr ""
 
-#: src/pager.c:1812 src/pager.c:1903
+#: src/pager.c:1814 src/pager.c:1905
 msgid "Pager scanning speed:"
 msgstr "Pager frissítési sebessége:"
 
-#: src/pager.c:1813 src/pager.c:1904
+#: src/pager.c:1815 src/pager.c:1906
 msgid "lines per second"
 msgstr "sor másodpercenként"
 
-#: src/pager.c:1842
+#: src/pager.c:1844
 msgid "Enable pager display"
 msgstr "Lapozó megjelenítése"
 
-#: src/pager.c:1852
+#: src/pager.c:1854
 msgid "Pager Mode:"
 msgstr ""
 
-#: src/pager.c:1856
+#: src/pager.c:1858
 #, fuzzy
 msgid "Simple"
 msgstr "Körhullámok"
 
-#: src/pager.c:1862
+#: src/pager.c:1864
 msgid "Make miniature snapshots of the screen"
 msgstr "Miniatúrák használata"
 
-#: src/pager.c:1869
+#: src/pager.c:1871
 msgid "Live Update"
 msgstr ""
 
-#: src/pager.c:1880
+#: src/pager.c:1882
 msgid "Smooth high quality snapshots in snapshot mode"
 msgstr "Jó minõségû miniatúrák használata"
 
-#: src/pager.c:1885
+#: src/pager.c:1887
 msgid "Zoom in on pager windows when mouse is over them"
 msgstr "Ablak kinagyítása, amikor az egérmutató fölötte van"
 
-#: src/pager.c:1891
+#: src/pager.c:1893
 msgid "Pop up window title when mouse is over the window"
 msgstr "Ablak nevének megjelenítése, amikor az egérmutató fölötte van"
 
-#: src/pager.c:1896
+#: src/pager.c:1898
 msgid "Continuously scan screen to update pager"
 msgstr "Pager állandó frissítése"
 
-#: src/pager.c:1919
+#: src/pager.c:1921
 msgid "Mouse button to select and drag windows:"
 msgstr "Egérgomb az ablakok kiválasztásához:"
 
-#: src/pager.c:1929 src/pager.c:1954 src/pager.c:1979
+#: src/pager.c:1931 src/pager.c:1956 src/pager.c:1981
 msgid "Middle"
 msgstr "Középsõ"
 
-#: src/pager.c:1944
+#: src/pager.c:1946
 msgid "Mouse button to select desktops:"
 msgstr "Egérgomb az asztalok kiválasztásához:"
 
-#: src/pager.c:1969
+#: src/pager.c:1971
 msgid "Mouse button to display pager menu:"
 msgstr "Egérgomb a pager menü megjelenítéséhez"
 
-#: src/pager.c:1993
+#: src/pager.c:1995
 #, fuzzy
 msgid "Pagers"
 msgstr "Lapozó beállításai"
 
-#: src/pager.c:1994
+#: src/pager.c:1996
 msgid "Pager Settings"
 msgstr "Lapozó beállításai"
 
-#: src/pager.c:1997
+#: src/pager.c:1999
 msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog\n"
@@ -1506,11 +1506,11 @@ msgid ""
 "... I hope.\n"
 msgstr ""
 
-#: src/session.c:641
+#: src/session.c:640
 msgid "Are you sure?"
 msgstr "Biztos benne?"
 
-#: src/session.c:643
+#: src/session.c:642
 msgid ""
 "\n"
 "\n"
@@ -1524,48 +1524,48 @@ msgstr ""
 "\n"
 "\n"
 
-#: src/session.c:653
+#: src/session.c:652
 #, fuzzy
 msgid "  Yes, Shut Down  "
 msgstr "  Igen, kilépek  "
 
-#: src/session.c:655
+#: src/session.c:654
 #, fuzzy
 msgid "  Yes, Reboot  "
 msgstr "  Igen, kilépek  "
 
-#: src/session.c:658
+#: src/session.c:657
 msgid "  Yes, Log Out  "
 msgstr "  Igen, kilépek  "
 
-#: src/session.c:660
+#: src/session.c:659
 msgid "  No  "
 msgstr "  Nem  "
 
-#: src/session.c:791
+#: src/session.c:790
 msgid "Enable Session Script"
 msgstr ""
 
-#: src/session.c:796
+#: src/session.c:795
 #, fuzzy
 msgid "Enable Logout Dialog"
 msgstr "Fejléc párbeszédablakoknak"
 
-#: src/session.c:801
+#: src/session.c:800
 msgid "Enable Reboot/Halt on Logout"
 msgstr ""
 
-#: src/session.c:807
+#: src/session.c:806
 #, fuzzy
 msgid "Session"
 msgstr "Vegyes beállítások"
 
-#: src/session.c:808
+#: src/session.c:807
 #, fuzzy
 msgid "Session Settings"
 msgstr "Vegyes beállítások"
 
-#: src/session.c:811
+#: src/session.c:810
 #, fuzzy
 msgid ""
 "Enlightenment Session\n"
@@ -1929,90 +1929,90 @@ msgstr ""
 "Ez azt jelenti, hogy az Enlightenment fog mûködni,\n"
 "de legalábbis nem lesz teljes értékû.\n"
 
-#: src/snaps.c:729
+#: src/snaps.c:730
 msgid "Title:"
 msgstr "Cím:"
 
-#: src/snaps.c:741
+#: src/snaps.c:742
 msgid "Name:"
 msgstr "Név:"
 
-#: src/snaps.c:754
+#: src/snaps.c:755
 msgid "Class:"
 msgstr "Osztály:"
 
-#: src/snaps.c:767
+#: src/snaps.c:768
 #, fuzzy
 msgid "Role:"
 msgstr "Piros:\n"
 
-#: src/snaps.c:780
+#: src/snaps.c:781
 msgid "Command:"
 msgstr "Parancs:"
 
-#: src/snaps.c:820
+#: src/snaps.c:821
 msgid "Track Changes"
 msgstr ""
 
-#: src/snaps.c:825
+#: src/snaps.c:826
 msgid "Location"
 msgstr "Hely"
 
-#: src/snaps.c:830
+#: src/snaps.c:831
 msgid "Border style"
 msgstr "Kerettípus"
 
-#: src/snaps.c:835 config/strings.c:181
+#: src/snaps.c:836 config/strings.c:181
 msgid "Size"
 msgstr "Méret"
 
-#: src/snaps.c:840 config/strings.c:89
+#: src/snaps.c:841 config/strings.c:89
 msgid "Desktop"
 msgstr "Asztal"
 
-#: src/snaps.c:845
+#: src/snaps.c:846
 msgid "Shaded state"
 msgstr "Árnyékolás"
 
-#: src/snaps.c:850
+#: src/snaps.c:851
 msgid "Sticky state"
 msgstr "Rögzítés"
 
-#: src/snaps.c:855
+#: src/snaps.c:856
 msgid "Stacking layer"
 msgstr "Ragadási szint"
 
-#: src/snaps.c:860
+#: src/snaps.c:861
 msgid "Window List Skip"
 msgstr "Ablaklista-kihagyás"
 
-#: src/snaps.c:866 config/strings.c:144 config/strings.c:170
+#: src/snaps.c:867 config/strings.c:144 config/strings.c:170
 msgid "Opacity"
 msgstr ""
 
-#: src/snaps.c:871
+#: src/snaps.c:872
 #, fuzzy
 msgid "Shadowing"
 msgstr "Árnyékolás"
 
-#: src/snaps.c:877
+#: src/snaps.c:878
 #, fuzzy
 msgid "Flags"
 msgstr "Üveg"
 
-#: src/snaps.c:896
+#: src/snaps.c:897
 msgid "Restart application on login"
 msgstr "Alkalmazás újraindítása belépésnél"
 
-#: src/snaps.c:915
+#: src/snaps.c:916
 msgid "Remember this window's group(s)"
 msgstr "Emlékezzen az ablak csoportjaira"
 
-#: src/snaps.c:923
+#: src/snaps.c:924
 msgid "Remembered Application Attributes"
 msgstr "Alkalmazás maradandó paraméterei"
 
-#: src/snaps.c:926
+#: src/snaps.c:927
 msgid ""
 "Select the attributes of this\n"
 "window you wish to Remember\n"
@@ -2022,39 +2022,39 @@ msgstr ""
 "amelyek megmaradjanak ezen ablak\n"
 "következõ indításainál is\n"
 
-#: src/snaps.c:1016
+#: src/snaps.c:1017
 #, fuzzy
 msgid "Delete"
 msgstr "Fájl törlése\n"
 
-#: src/snaps.c:1044
+#: src/snaps.c:1045
 msgid "Remembered Settings..."
 msgstr "Maradandó beállítások..."
 
-#: src/snaps.c:1051
+#: src/snaps.c:1052
 msgid "Unused"
 msgstr ""
 
-#: src/snaps.c:1064
+#: src/snaps.c:1065
 msgid "There are no active windows with remembered attributes."
 msgstr "Nincs aktív ablak maradandó beállításokkal."
 
-#: src/snaps.c:1070
+#: src/snaps.c:1071
 #, fuzzy
 msgid "Remember"
 msgstr "Maradandó beállítások..."
 
-#: src/snaps.c:1071
+#: src/snaps.c:1072
 msgid "Remembered Windows Settings"
 msgstr "Maradandó ablak beállítások"
 
-#: src/snaps.c:1074
+#: src/snaps.c:1075
 msgid ""
 "Enlightenment Remembered\n"
 "Windows Settings Dialog\n"
 msgstr "Enlightenment maradandó ablakbeállítások\n"
 
-#: src/snaps.c:1167
+#: src/snaps.c:1168
 msgid "Error saving snaps file\n"
 msgstr "Hiba a snap fájl mentésekor\n"
 
@@ -2173,28 +2173,28 @@ msgid ""
 "Proceeding from here is mostly pointless.\n"
 msgstr ""
 
-#: src/tooltips.c:857
+#: src/tooltips.c:858
 msgid "Display Tooltips"
 msgstr "Tippek megjelenítése"
 
-#: src/tooltips.c:862
+#: src/tooltips.c:863
 msgid "Display Root Window Tips"
 msgstr "Tippek megjelenítése az asztalon"
 
-#: src/tooltips.c:867
+#: src/tooltips.c:868
 msgid "Tooltip Delay:\n"
 msgstr "Tippek késleltetése:\n"
 
-#: src/tooltips.c:878
+#: src/tooltips.c:879
 #, fuzzy
 msgid "Tooltips"
 msgstr "Tippek:\n"
 
-#: src/tooltips.c:879
+#: src/tooltips.c:880
 msgid "Tooltip Settings"
 msgstr "Tippek beállításai"
 
-#: src/tooltips.c:882
+#: src/tooltips.c:883
 msgid ""
 "Enlightenment Tooltip\n"
 "Settings Dialog\n"
