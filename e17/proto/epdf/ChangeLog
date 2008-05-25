@@ -1,5 +1,11 @@
 2008-05-25  Vincent Torri  <doursse at users dot sf dot net>
 
+	* src/plugins/epsilon/epsilon_thumbnailer.c:
+	(epsilon_generate_thumb):
+	update epsilon plugin to newest epsilon api
+
+2008-05-25  Vincent Torri  <doursse at users dot sf dot net>
+
 	* src/bin/epdf_etk_test.c: (main):
 	* src/bin/epdf_ewl_test.c: (main):
 	set the scale to 0.5 to test the resizing of the widgets

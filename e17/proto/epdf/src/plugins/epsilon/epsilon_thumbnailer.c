@@ -1,59 +1,14 @@
-#include <Evas.h>
 #include <Ecore_Evas.h>
 #include <Epsilon.h>
 #include <Epsilon_Plugin.h>
 #include <Epdf.h>
 #include <stdlib.h>
+#include <string.h>
 
-Imlib_Image
-epsilon_thumb_imlib_standardize ()
-{
-   Imlib_Image dst = NULL;
-   int         dw;
-   int         dh;
-   int         sw;
-   int         sh;
-   int         s = 128;
-
-   sw = imlib_image_get_width ();
-   sh = imlib_image_get_height ();
-
-   if (sw > sh)
-     {
-        dw = s;
-	dh = (s * sh) / sw;
-     }
-   else
-     {
-        dh = s;
-	dw = (s * sw) / sh;
-     }
-
-   imlib_context_set_cliprect (0, 0, dw, dh);
-
-   if ((dst = imlib_create_cropped_scaled_image (0, 0, sw, sh, dw, dh)))
-     {
-        imlib_context_set_image (dst);
-	imlib_context_set_anti_alias (1);
-	imlib_image_set_has_alpha (1);
-     }
-
-   return dst;
-}
-
-int
-clip (int val)
-{
-   if (val < 0)
-     return 0;
-
-   return (val > 255) ? 255 : val;
-}
-
-Imlib_Image
+Epsilon_Image *
 epsilon_generate_thumb (Epsilon * e)
 {
-   Imlib_Image    img = NULL;
+   Epsilon_Image *dst = NULL;
    Ecore_Evas    *ee;
    Evas          *evas;
    Evas_Object   *o;
@@ -64,7 +19,15 @@ epsilon_generate_thumb (Epsilon * e)
    const int     *pixels;
 
    document = epdf_document_new (e->src);
+   if (!document)
+     return NULL;
+
    page = epdf_page_new (document);
+   if (!page)
+     {
+        epdf_document_delete (document);
+        return NULL;
+     }
    epdf_page_page_set (page, 0);
    epdf_page_size_get (page, &width, &height);
 
@@ -76,15 +39,34 @@ epsilon_generate_thumb (Epsilon * e)
    epdf_page_render (page, o);
    evas_object_show (o);
 
+   dst = calloc(1, sizeof(Epsilon_Image));
+   if (!dst)
+     {
+        epdf_page_delete (page);
+        epdf_document_delete (document);
+        return NULL;
+     }
+
+   dst->w = width;
+   dst->h = height;
+   dst->alpha = 1;
+   dst->data = malloc(dst->w * dst->h * sizeof(int));
+   if (!dst->data)
+     {
+        free(dst);
+        epdf_page_delete (page);
+        epdf_document_delete (document);
+        return NULL;
+     }
+
    pixels = ecore_evas_buffer_pixels_get (ee);
-   img = imlib_create_image_using_data (width, height, (DATA32 *)pixels);
+   memcpy(dst->data, pixels, dst->w * dst->h * sizeof(int));
 
-   imlib_context_set_image(img);
-
+   ecore_evas_free(ee);
    epdf_page_delete (page);
    epdf_document_delete (document);
 
-   return img;
+   return dst;
 }
 
 Epsilon_Plugin *
