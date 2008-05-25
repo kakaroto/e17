@@ -1,4 +1,4 @@
-2008-05-21  Vincent Torri  <doursse at users dot sf dot net>
+2008-05-25  Vincent Torri  <doursse at users dot sf dot net>
 
 	* src/lib/epdf_index.cpp:
 	* src/lib/epdf_postscript.cpp:
