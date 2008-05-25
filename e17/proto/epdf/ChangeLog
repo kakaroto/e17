@@ -1,3 +1,15 @@
+2008-05-21  Vincent Torri  <doursse at users dot sf dot net>
+
+	* src/lib/epdf_index.cpp:
+	* src/lib/epdf_postscript.cpp:
+	add guards around config.h
+
+	* src/lib/ewl_pdf.c:
+	fix initial size of the ewl widget
+
+	* src/bin/epdf_ewl_test.c:
+	clean ewl test
+
 2008-05-22  Vincent Torri  <doursse at users dot sf dot net>
 
 	* src/bin/epdf_esmart_test.c: (main):
