@@ -92,17 +92,17 @@ void etk_pdf_file_set(Etk_Pdf *pdf, const char *filename)
    etk_object_notify(ETK_OBJECT(pdf), "pdf_file");
 
    if (pdf->pdf_document)
-      epdf_document_delete (pdf->pdf_document);
+      epdf_document_delete(pdf->pdf_document);
 
    if (pdf->pdf_page)
-      epdf_page_delete (pdf->pdf_page);
+      epdf_page_delete(pdf->pdf_page);
 
    if (pdf->pdf_index)
-      epdf_index_delete (pdf->pdf_index);
+      epdf_index_delete(pdf->pdf_index);
 
-   pdf->pdf_document = epdf_document_new (pdf->filename);
-   pdf->pdf_page = epdf_page_new (pdf->pdf_document);
-   pdf->pdf_index = epdf_index_new (pdf->pdf_document);
+   pdf->pdf_document = epdf_document_new(pdf->filename);
+   pdf->pdf_page = epdf_page_new(pdf->pdf_document);
+   pdf->pdf_index = epdf_index_new(pdf->pdf_document);
 
    pdf->search.o = NULL;
    pdf->search.text = NULL;
@@ -136,12 +136,12 @@ void etk_pdf_page_set(Etk_Pdf *pdf, int page)
    if (!pdf ||
        !pdf->pdf_document ||
        (page < 0) ||
-       (page >= epdf_document_page_count_get (pdf->pdf_document)) ||
-       (page == epdf_page_page_get (pdf->pdf_page)))
+       (page >= epdf_document_page_count_get(pdf->pdf_document)) ||
+       (page == epdf_page_page_get(pdf->pdf_page)))
       return;
 
-   epdf_page_page_set (pdf->pdf_page, page);
-   _etk_pdf_load (pdf);
+   epdf_page_page_set(pdf->pdf_page, page);
+   _etk_pdf_load(pdf);
 }
 
 /**
@@ -154,7 +154,7 @@ int etk_pdf_page_get(Etk_Pdf *pdf)
    if (!pdf)
       return 0;
 
-   return epdf_page_page_get (pdf->pdf_page);
+   return epdf_page_page_get(pdf->pdf_page);
 }
 
 /**
@@ -172,7 +172,7 @@ void etk_pdf_size_get(Etk_Pdf *pdf, int *width, int *height)
       return;
    }
 
-   epdf_page_size_get (pdf->pdf_page, width, height);
+   epdf_page_size_get(pdf->pdf_page, width, height);
 
    evas_object_image_size_get(pdf->pdf_object, width, height);
 }
@@ -185,13 +185,13 @@ void etk_pdf_size_get(Etk_Pdf *pdf, int *width, int *height)
  *
  * Sets an orientation @p o of the document
  */
-void etk_pdf_orientation_set (Etk_Pdf *pdf, Epdf_Page_Orientation o)
+void etk_pdf_orientation_set(Etk_Pdf *pdf, Epdf_Page_Orientation o)
 {
    if (!pdf || !pdf->pdf_page)
       return;
 
-   epdf_page_orientation_set (pdf->pdf_page, o);
-   _etk_pdf_load (pdf);
+   epdf_page_orientation_set(pdf->pdf_page, o);
+   _etk_pdf_load(pdf);
 }
 
 /**
@@ -200,12 +200,12 @@ void etk_pdf_orientation_set (Etk_Pdf *pdf, Epdf_Page_Orientation o)
  * @brief get the orientation of the document @p pdf. If @p pdf
  * is NULL, return EPDF_PAGE_ORIENTATION_PORTRAIT
  */
-Epdf_Page_Orientation etk_pdf_orientation_get (Etk_Pdf *pdf)
+Epdf_Page_Orientation etk_pdf_orientation_get(Etk_Pdf *pdf)
 {
    if (!pdf || !pdf->pdf_page)
       return EPDF_PAGE_ORIENTATION_PORTRAIT;
 
-   return epdf_page_orientation_get (pdf->pdf_page);
+   return epdf_page_orientation_get(pdf->pdf_page);
 }
 
 /**
@@ -218,13 +218,13 @@ Epdf_Page_Orientation etk_pdf_orientation_get (Etk_Pdf *pdf)
  * Sets the horizontal scale @p hscale ans the vertical scale @p vscale
  * of the document @p pdf
  */
-void etk_pdf_scale_set (Etk_Pdf *pdf, double hscale, double vscale)
+void etk_pdf_scale_set(Etk_Pdf *pdf, double hscale, double vscale)
 {
    if (!pdf || !pdf->pdf_page)
       return;
 
-   epdf_page_scale_set (pdf->pdf_page, hscale, vscale);
-   _etk_pdf_load (pdf);
+   epdf_page_scale_set(pdf->pdf_page, hscale, vscale);
+   _etk_pdf_load(pdf);
 }
 
 /**
@@ -235,7 +235,7 @@ void etk_pdf_scale_set (Etk_Pdf *pdf, double hscale, double vscale)
  * @brief get the horizontal scale @p hscale ans the vertical scale
  * @p vscale of the document @p pdf. If @p pdf is NULL, their values are 1.0
  */
-void etk_pdf_scale_get (Etk_Pdf *pdf, double *hscale, double *vscale)
+void etk_pdf_scale_get(Etk_Pdf *pdf, double *hscale, double *vscale)
 {
   if (!pdf) {
      if (hscale) *hscale = 1.0;
@@ -243,7 +243,7 @@ void etk_pdf_scale_get (Etk_Pdf *pdf, double *hscale, double *vscale)
      return;
   }
 
-  epdf_page_scale_get (pdf->pdf_page, hscale, vscale);
+  epdf_page_scale_get(pdf->pdf_page, hscale, vscale);
 }
 
 /**
@@ -252,7 +252,7 @@ void etk_pdf_scale_get (Etk_Pdf *pdf, double *hscale, double *vscale)
  * @brief go to the next page and render it
  */
 void
-etk_pdf_page_next (Etk_Pdf *pdf)
+etk_pdf_page_next(Etk_Pdf *pdf)
 {
   int page;
 
@@ -262,7 +262,7 @@ etk_pdf_page_next (Etk_Pdf *pdf)
   page = epdf_page_page_get(pdf->pdf_page);
   if (page < (epdf_document_page_count_get(pdf->pdf_document) - 1))
     page++;
-  etk_pdf_page_set (pdf, page);
+  etk_pdf_page_set(pdf, page);
 }
 
 /**
@@ -271,7 +271,7 @@ etk_pdf_page_next (Etk_Pdf *pdf)
  * @brief go to the previous page and render it
  */
 void
-etk_pdf_page_previous (Etk_Pdf *pdf)
+etk_pdf_page_previous(Etk_Pdf *pdf)
 {
   int page;
 
@@ -281,11 +281,11 @@ etk_pdf_page_previous (Etk_Pdf *pdf)
   page = epdf_page_page_get(pdf->pdf_page);
   if (page > 0)
     page--;
-  etk_pdf_page_set (pdf, page);
+  etk_pdf_page_set(pdf, page);
 }
 
 void
-etk_pdf_search_text_set (Etk_Pdf *pdf, const char *text)
+etk_pdf_search_text_set(Etk_Pdf *pdf, const char *text)
 {
    if (!pdf)
       return;
@@ -295,13 +295,13 @@ etk_pdf_search_text_set (Etk_Pdf *pdf, const char *text)
         strcmp (text, pdf->search.text) == 0))
      return;
 
-   if (pdf->search.text) free (pdf->search.text);
-   pdf->search.text = strdup (text);
+   if (pdf->search.text) free(pdf->search.text);
+   pdf->search.text = strdup(text);
    pdf->search.page = -1;
 }
 
 void
-etk_pdf_search_first_page_set (Etk_Pdf *pdf, int page)
+etk_pdf_search_first_page_set(Etk_Pdf *pdf, int page)
 {
    if (!pdf)
       return;
@@ -311,7 +311,7 @@ etk_pdf_search_first_page_set (Etk_Pdf *pdf, int page)
 }
 
 void
-etk_pdf_search_is_case_sensitive (Etk_Pdf *pdf, int is_case_sensitive)
+etk_pdf_search_is_case_sensitive(Etk_Pdf *pdf, int is_case_sensitive)
 {
    if (!pdf)
       return;
@@ -321,7 +321,7 @@ etk_pdf_search_is_case_sensitive (Etk_Pdf *pdf, int is_case_sensitive)
 }
 
 int
-etk_pdf_search_next (Etk_Pdf *pdf)
+etk_pdf_search_next(Etk_Pdf *pdf)
 {
    if (!pdf)
       return ETK_FALSE;
@@ -335,29 +335,29 @@ etk_pdf_search_next (Etk_Pdf *pdf)
       evas = etk_widget_toplevel_evas_get(ETK_WIDGET(pdf));
       if (!evas)
          return ETK_FALSE;
-      pdf->search.o = evas_object_rectangle_add (evas);
+      pdf->search.o = evas_object_rectangle_add(evas);
       if (!pdf->search.o)
          return ETK_FALSE;
       evas_object_color_set(pdf->search.o, 0, 128, 0, 128);
-      evas_object_hide (pdf->search.o);
+      evas_object_hide(pdf->search.o);
    }
 
  next_page:
    /* no list, we search one */
    while (!pdf->search.list &&
-          pdf->search.page < epdf_document_page_count_get (pdf->pdf_document)) {
+          pdf->search.page < epdf_document_page_count_get(pdf->pdf_document)) {
      Epdf_Page *page;
 
      pdf->search.page++;
      printf ("page : %d\n", pdf->search.page);
-     epdf_page_page_set (pdf->pdf_page, pdf->search.page);
-/*      page = epdf_page_new (pdf->pdf_document, pdf->search.page); */
-     pdf->search.list = epdf_page_text_find (page,
-                                             pdf->search.text,
-                                             pdf->search.is_case_sensitive);
+     epdf_page_page_set(pdf->pdf_page, pdf->search.page);
+/*      page = epdf_page_new(pdf->pdf_document, pdf->search.page); */
+     pdf->search.list = epdf_page_text_find(page,
+                                            pdf->search.text,
+                                            pdf->search.is_case_sensitive);
      if (pdf->search.list)
-        ecore_list_first_goto (pdf->search.list);
-     epdf_page_delete (page);
+        ecore_list_first_goto(pdf->search.list);
+     epdf_page_delete(page);
    }
 
    /* an already existing list or a netky one */
@@ -365,32 +365,32 @@ etk_pdf_search_next (Etk_Pdf *pdf)
      Epdf_Rectangle *rect;
      int             x, y, w, h;
 
-     if ((rect = (Epdf_Rectangle *)ecore_list_next (pdf->search.list))) {
+     if ((rect = (Epdf_Rectangle *)ecore_list_next(pdf->search.list))) {
        if (pdf->search.page != epdf_page_page_get(pdf->pdf_page)) {
-         etk_pdf_page_set (pdf, pdf->search.page);
-         _etk_pdf_load (pdf);
+         etk_pdf_page_set(pdf, pdf->search.page);
+         _etk_pdf_load(pdf);
        }
-       etk_widget_geometry_get (ETK_WIDGET (pdf), &x, &y, &w, &h);
-       evas_object_move (pdf->search.o,
-                         x + round (rect->x1 - 1),
-                         y + round (rect->y1 - 1));
-       evas_object_resize (pdf->search.o,
-                           round (rect->x2 - rect->x1 + 1),
-                           round (rect->y2 - rect->y1));
-       if (!evas_object_visible_get (pdf->search.o))
-         evas_object_show (pdf->search.o);
+       etk_widget_geometry_get(ETK_WIDGET(pdf), &x, &y, &w, &h);
+       evas_object_move(pdf->search.o,
+                        x + round(rect->x1 - 1),
+                        y + round(rect->y1 - 1));
+       evas_object_resize(pdf->search.o,
+                          round(rect->x2 - rect->x1 + 1),
+                          round(rect->y2 - rect->y1));
+       if (!evas_object_visible_get(pdf->search.o))
+         evas_object_show(pdf->search.o);
        /* we leave... */
        return ETK_TRUE;
      }
      else { /* no more word to find. We destroy the list */
-       ecore_list_destroy (pdf->search.list);
+       ecore_list_destroy(pdf->search.list);
        pdf->search.list = NULL;
        /* we search a new one */
-       printf ("page0 : %d\n", pdf->search.page);
+       printf("page0 : %d\n", pdf->search.page);
        goto next_page;
      }
    }
-   evas_object_hide (pdf->search.o);
+   evas_object_hide(pdf->search.o);
 
    if (pdf->search.is_circular) {
       pdf->search.page = -1;
@@ -405,7 +405,7 @@ etk_pdf_search_next (Etk_Pdf *pdf)
  * @param pdf an pdf
  * @return Returns the document of the pdf (NULL on failure)
  */
-Epdf_Document *etk_pdf_pdf_document_get (Etk_Pdf *pdf)
+Epdf_Document *etk_pdf_pdf_document_get(Etk_Pdf *pdf)
 {
    if (!pdf)
       return NULL;
@@ -418,7 +418,7 @@ Epdf_Document *etk_pdf_pdf_document_get (Etk_Pdf *pdf)
  * @param pdf an pdf
  * @return Returns the poppler page of the pdf (NULL on failure)
  */
-Epdf_Page *etk_pdf_pdf_page_get (Etk_Pdf *pdf)
+Epdf_Page *etk_pdf_pdf_page_get(Etk_Pdf *pdf)
 {
    if (!pdf)
       return NULL;
@@ -431,7 +431,7 @@ Epdf_Page *etk_pdf_pdf_page_get (Etk_Pdf *pdf)
  * @param pdf an pdf
  * @return Returns the index of the pdf document (NULL on failure)
  */
-Ecore_List *etk_pdf_pdf_index_get (Etk_Pdf *pdf)
+Ecore_List *etk_pdf_pdf_index_get(Etk_Pdf *pdf)
 {
    if (!pdf)
       return NULL;
@@ -485,9 +485,9 @@ static void _etk_pdf_destructor(Etk_Pdf *pdf)
       return;
 
    if (pdf->filename) free(pdf->filename);
-   epdf_document_delete (pdf->pdf_document);
-   epdf_page_delete (pdf->pdf_page);
-   epdf_index_delete (pdf->pdf_index);
+   epdf_document_delete(pdf->pdf_document);
+   epdf_page_delete(pdf->pdf_page);
+   epdf_index_delete(pdf->pdf_index);
 }
 
 /* Sets the property whose id is "property_id" to the value "value" */
@@ -640,7 +640,7 @@ static void _etk_pdf_load(Etk_Pdf *pdf)
       }
       if (pdf->pdf_object)
       {
-	 epdf_page_render (pdf->pdf_page, pdf->pdf_object);
+	 epdf_page_render(pdf->pdf_page, pdf->pdf_object);
       }
       evas_object_show(pdf->pdf_object);
    }

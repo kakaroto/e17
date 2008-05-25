@@ -112,6 +112,7 @@ main (int argc, char *argv[])
     etk_table_attach_default (ETK_TABLE (table), list, 0, 0, 0, 1);
   etk_widget_show (list);
 
+  etk_pdf_scale_set (ETK_PDF (pdf), 0.5, 0.5);
   etk_table_attach (ETK_TABLE (table), pdf,
                     1, 1, 0, 1,
                     0, 0, ETK_TABLE_NONE);

@@ -1,5 +1,26 @@
 2008-05-25  Vincent Torri  <doursse at users dot sf dot net>
 
+	* src/bin/epdf_etk_test.c: (main):
+	* src/bin/epdf_ewl_test.c: (main):
+	set the scale to 0.5 to test the resizing of the widgets
+
+	* src/lib/etk_pdf.c: (etk_pdf_file_set), (etk_pdf_page_set),
+	(etk_pdf_page_get), (etk_pdf_size_get), (etk_pdf_orientation_set),
+	(etk_pdf_orientation_get), (etk_pdf_scale_set),
+	(etk_pdf_scale_get), (etk_pdf_page_next), (etk_pdf_page_previous),
+	(etk_pdf_search_text_set), (etk_pdf_search_first_page_set),
+	(etk_pdf_search_is_case_sensitive), (etk_pdf_search_next),
+	(etk_pdf_pdf_document_get), (etk_pdf_pdf_page_get),
+	(etk_pdf_pdf_index_get), (_etk_pdf_destructor), (_etk_pdf_load):
+	* src/lib/etk_pdf.h:
+	* src/lib/ewl_pdf.c: (ewl_pdf_file_set), (ewl_pdf_search_next),
+	(ewl_pdf_configure_cb), (ewl_pdf_reveal_cb):
+	* src/lib/ewl_pdf.h:
+	formatting
+	take scale into account when dealing with ewl widget
+
+2008-05-25  Vincent Torri  <doursse at users dot sf dot net>
+
 	* src/lib/epdf_index.cpp:
 	* src/lib/epdf_postscript.cpp:
 	add guards around config.h

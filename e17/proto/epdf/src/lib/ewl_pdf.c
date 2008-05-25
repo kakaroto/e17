@@ -163,7 +163,7 @@ ewl_pdf_file_set(Ewl_Pdf *pdf, const char *filename)
 
         pdf->pdf_page = epdf_page_new(pdf->pdf_document);
         if (!pdf->pdf_page) {
-                epdf_document_delete (pdf->pdf_document);
+                epdf_document_delete(pdf->pdf_document);
                 pdf->pdf_document = NULL;
                 DRETURN_INT(FALSE, DLEVEL_STABLE);
         }
@@ -172,7 +172,7 @@ ewl_pdf_file_set(Ewl_Pdf *pdf, const char *filename)
         if (!pdf->pdf_index) {
                 epdf_page_delete(pdf->pdf_page);
                 pdf->pdf_page = NULL;
-                epdf_document_delete (pdf->pdf_document);
+                epdf_document_delete(pdf->pdf_document);
                 pdf->pdf_document = NULL;
                 DRETURN_INT(FALSE, DLEVEL_STABLE);
         }
@@ -561,7 +561,7 @@ ewl_pdf_search_next(Ewl_Pdf *pdf)
                 if ((rect = (Epdf_Rectangle *)ecore_list_next(pdf->search.list))) {
                   if (pdf->search.page != epdf_page_page_get(pdf->pdf_page)) {
                           ewl_pdf_page_set(pdf, pdf->search.page);
-                          ewl_callback_call(EWL_WIDGET (pdf), EWL_CALLBACK_REVEAL);
+                          ewl_callback_call(EWL_WIDGET(pdf), EWL_CALLBACK_REVEAL);
                   }
                         evas_object_move(pdf->search.o,
                                          CURRENT_X(EWL_WIDGET(pdf)) + round(rect->x1 - 1),
@@ -652,6 +652,8 @@ ewl_pdf_configure_cb(Ewl_Widget *w,
 {
         Ewl_Pdf   *pdf;
         Ewl_Embed *emb;
+        double     hscale;
+        double     vscale;
         int        ww;
         int        hh;
         int        ow;
@@ -669,6 +671,9 @@ ewl_pdf_configure_cb(Ewl_Widget *w,
         emb = ewl_embed_widget_find(w);
 
         epdf_page_size_get(pdf->pdf_page, &ow, &oh);
+        epdf_page_scale_get(pdf->pdf_page, &hscale, &vscale);
+        ow = (int)(ow * hscale);
+        oh = (int)(oh * vscale);
 
         ww = CURRENT_W(w);
         hh = CURRENT_H(w);
@@ -680,8 +685,7 @@ ewl_pdf_configure_cb(Ewl_Widget *w,
         dx = (CURRENT_W(w) - ww) / 2;
         dy = (CURRENT_H(w) - hh) / 2;
 
-        evas_object_image_fill_set(pdf->image, 0, 0,
-                                ow, oh);
+        evas_object_image_fill_set(pdf->image, 0, 0, ow, oh);
 
         evas_object_move(pdf->image, CURRENT_X(w), CURRENT_Y(w));
         evas_object_resize(pdf->image, ow, oh);
@@ -711,6 +715,8 @@ ewl_pdf_reveal_cb(Ewl_Widget *w,
 {
         Ewl_Pdf   *pdf;
         Ewl_Embed *emb;
+        double     hscale;
+        double     vscale;
         int        ow;
         int        oh;
 
@@ -739,6 +745,9 @@ ewl_pdf_reveal_cb(Ewl_Widget *w,
         evas_object_show(pdf->image);
 
         epdf_page_size_get(pdf->pdf_page, &ow, &oh);
+        epdf_page_scale_get(pdf->pdf_page, &hscale, &vscale);
+        ow = (int)(ow * hscale);
+        oh = (int)(oh * vscale);
 
         ewl_object_preferred_inner_w_set(EWL_OBJECT(pdf), ow);
         ewl_object_preferred_inner_h_set(EWL_OBJECT(pdf), oh);

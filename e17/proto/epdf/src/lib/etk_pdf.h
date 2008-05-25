@@ -87,24 +87,24 @@ const char           *etk_pdf_file_get(Etk_Pdf *pdf);
 void                  etk_pdf_page_set(Etk_Pdf *pdf, int page);
 int                   etk_pdf_page_get(Etk_Pdf *pdf);
 
-void                  etk_pdf_size_get (Etk_Pdf *pdf, int *width, int *height);
+void                  etk_pdf_size_get(Etk_Pdf *pdf, int *width, int *height);
 
-void                  etk_pdf_orientation_set (Etk_Pdf *pdf, Epdf_Page_Orientation o);
-Epdf_Page_Orientation etk_pdf_orientation_get (Etk_Pdf *pdf);
+void                  etk_pdf_orientation_set(Etk_Pdf *pdf, Epdf_Page_Orientation o);
+Epdf_Page_Orientation etk_pdf_orientation_get(Etk_Pdf *pdf);
 
-void                  etk_pdf_scale_set (Etk_Pdf *pdf, double hscale, double vscale);
-void                  etk_pdf_scale_get (Etk_Pdf *pdf, double *hscale, double *vscale);
+void                  etk_pdf_scale_set(Etk_Pdf *pdf, double hscale, double vscale);
+void                  etk_pdf_scale_get(Etk_Pdf *pdf, double *hscale, double *vscale);
 
-void                  etk_pdf_page_next (Etk_Pdf *pdf);
-void                  etk_pdf_page_previous (Etk_Pdf *pdf);
+void                  etk_pdf_page_next(Etk_Pdf *pdf);
+void                  etk_pdf_page_previous(Etk_Pdf *pdf);
 
-void                  etk_pdf_search_text_set (Etk_Pdf *pdf, const char *text);
-void                  etk_pdf_search_is_case_sensitive (Etk_Pdf *pdf, int is_case_sensitive);
-int                   etk_pdf_search_next (Etk_Pdf *pdf);
+void                  etk_pdf_search_text_set(Etk_Pdf *pdf, const char *text);
+void                  etk_pdf_search_is_case_sensitive(Etk_Pdf *pdf, int is_case_sensitive);
+int                   etk_pdf_search_next(Etk_Pdf *pdf);
 
-Epdf_Document        *etk_pdf_pdf_document_get (Etk_Pdf *pdf);
-Epdf_Page            *etk_pdf_pdf_page_get (Etk_Pdf *pdf);
-Ecore_List           *etk_pdf_pdf_index_get (Etk_Pdf *pdf);
+Epdf_Document        *etk_pdf_pdf_document_get(Etk_Pdf *pdf);
+Epdf_Page            *etk_pdf_pdf_page_get(Etk_Pdf *pdf);
+Ecore_List           *etk_pdf_pdf_index_get(Etk_Pdf *pdf);
 
 /**
  * @}
