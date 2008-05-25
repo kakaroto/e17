@@ -1,6 +1,10 @@
 #ifndef MAIN_H
 #define MAIN_H
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -13,7 +17,6 @@
 #endif
 
 #include <Evas.h>
-#include "config.h"
 #if HAVE_EVAS_SOFTWARE_X11
 #include "engine_software_x11.h"
 #endif
@@ -50,6 +53,7 @@
 #if HAVE_EVAS_DIRECTFB
 #include "engine_directfb.h"
 #endif
+
 #include "ui.h"
 #include "about.h"
 
@@ -58,12 +62,12 @@
 extern Evas *evas;
 extern int   win_w, win_h;
 
-void srnd(void);
+void         srnd(void);
 unsigned int rnd(void);
-double get_time(void);
-const char      *build_path(const char *filename);
-void   engine_loop(void);
-int    engine_abort(void);
+double       get_time(void);
+const char  *build_path(const char *filename);
+void         engine_loop(void);
+int          engine_abort(void);
 
 #define KEY_STD \
    if ((!strcmp(key, "Escape")) || (!strcmp(key, "q")) || (!strcmp(key, "Q")) || (!strcmp(key, "Return"))) \
