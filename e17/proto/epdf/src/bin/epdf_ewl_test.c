@@ -139,7 +139,7 @@ main (int argc, char *argv[])
 
   if (argc == 1) {
     printf ("Usage: %s pdf_file\n", argv[0]);
-    return -1;
+    return EXIT_FAILURE;
   }
 
   ewl_init (&argc, (char **)argv);
@@ -148,16 +148,12 @@ main (int argc, char *argv[])
 
   /* We open the pdf file */
   pdf = ewl_pdf_new ();
-  ewl_pdf_file_set (EWL_PDF (pdf), argv[1]);
-  document = EWL_PDF (pdf)->pdf_document;
-  if (!document) {
-    printf ("The file %s can't be opened\n", argv[1]);
-    ecore_list_destroy (str_data);
-    ewl_main_quit ();
-    return -1;
+  if (!ewl_pdf_file_set (EWL_PDF (pdf), argv[1])) {
+    printf ("Can not load the document %s\nExiting...", argv[1]);
+    ecore_list_destroy (list);
+    ewl_main_quit();
+    return EXIT_FAILURE;
   }
-
-  index = epdf_index_new (document);
 
   window = ewl_window_new ();
   ewl_window_title_set (EWL_WINDOW (window), "Ewl Pdf Test Application");
@@ -175,6 +171,9 @@ main (int argc, char *argv[])
   ewl_container_child_append (EWL_CONTAINER (hbox), vbox);
   ewl_object_fill_policy_set (EWL_OBJECT (vbox), EWL_FLAG_FILL_ALL);
   ewl_widget_show (vbox);
+
+  document = ewl_pdf_pdf_document_get (EWL_PDF (pdf));
+  index = ewl_pdf_pdf_index_get (EWL_PDF (pdf));
 
   /* view for both the list and the tree (if the index exists) */
   view = ewl_label_view_get();
@@ -249,7 +248,7 @@ main (int argc, char *argv[])
 
   ewl_main ();
 
-  return 0;
+  return EXIT_SUCCESS;
 }
 
 static void _quit_cb (Ewl_Widget * w, void *ev_data, void *user_data)

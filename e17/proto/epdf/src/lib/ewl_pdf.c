@@ -125,24 +125,39 @@ ewl_pdf_file_set(Ewl_Pdf *pdf, const char *filename)
         if (pdf->filename != filename) {
                 IF_FREE(pdf->filename);
         }
+
         if (!filename || (filename[0] == '\0'))
                 DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-        pdf->filename = strdup(filename);
+        if (pdf->pdf_index) {
+                epdf_index_delete(pdf->pdf_index);
+                pdf->pdf_index = NULL;
+        }
+
+        if (pdf->pdf_page) {
+                epdf_page_delete(pdf->pdf_page);
+                pdf->pdf_page = NULL;
+        }
+
         if (pdf->pdf_document) {
-                if (pdf->pdf_page) {
-                        epdf_page_delete(pdf->pdf_page);
-                        pdf->pdf_page = NULL;
-                }
-                if (pdf->pdf_index) {
-                        epdf_index_delete(pdf->pdf_index);
-                        pdf->pdf_index = NULL;
-                }
                 epdf_document_delete(pdf->pdf_document);
                 pdf->pdf_document = NULL;
         }
 
-        pdf->pdf_document = epdf_document_new(filename);
+        pdf->filename = strdup(filename);
+
+        pdf->search.o = NULL;
+        pdf->search.text = NULL;
+        pdf->search.list = NULL;
+        pdf->search.page = -1;
+        pdf->search.is_case_sensitive = FALSE;
+        pdf->search.is_circular = FALSE;
+
+        /*
+         * Load the new PDF document
+         */
+
+        pdf->pdf_document = epdf_document_new(pdf->filename);
         if (!pdf->pdf_document)
                 DRETURN_INT(FALSE, DLEVEL_STABLE);
 
@@ -162,19 +177,10 @@ ewl_pdf_file_set(Ewl_Pdf *pdf, const char *filename)
                 DRETURN_INT(FALSE, DLEVEL_STABLE);
         }
 
-        pdf->dirty = 1;
-
-        pdf->search.o = NULL;
-        pdf->search.text = NULL;
-        pdf->search.list = NULL;
-        pdf->search.page = -1;
-        pdf->search.is_case_sensitive = FALSE;
-        pdf->search.is_circular = FALSE;
-
-        /*
-         * render the widget
-         */
-        ewl_widget_configure(w);
+        if (REALIZED(w)) {
+                ewl_widget_obscure(w);
+                ewl_widget_reveal(w);
+        }
 
         DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -686,7 +692,6 @@ ewl_pdf_configure_cb(Ewl_Widget *w,
 
         ewl_object_preferred_inner_w_set(EWL_OBJECT(w), ow);
         ewl_object_preferred_inner_h_set(EWL_OBJECT(w), oh);
-        ewl_object_minimum_size_set(EWL_OBJECT(w), ow, oh);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -706,6 +711,8 @@ ewl_pdf_reveal_cb(Ewl_Widget *w,
 {
         Ewl_Pdf   *pdf;
         Ewl_Embed *emb;
+        int        ow;
+        int        oh;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(w);
@@ -714,9 +721,6 @@ ewl_pdf_reveal_cb(Ewl_Widget *w,
         pdf = EWL_PDF(w);
         emb = ewl_embed_widget_find(w);
 
-        /*
-         * Load the pdf
-         */
         if (!pdf->image)
           pdf->image = ewl_embed_object_request(emb, "pdf");
         if (!pdf->image)
@@ -733,6 +737,11 @@ ewl_pdf_reveal_cb(Ewl_Widget *w,
 
         evas_object_pass_events_set(pdf->image, TRUE);
         evas_object_show(pdf->image);
+
+        epdf_page_size_get(pdf->pdf_page, &ow, &oh);
+
+        ewl_object_preferred_inner_w_set(EWL_OBJECT(pdf), ow);
+        ewl_object_preferred_inner_h_set(EWL_OBJECT(pdf), oh);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
