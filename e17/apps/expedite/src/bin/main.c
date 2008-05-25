@@ -1269,6 +1269,7 @@ _engine_args(int argc, char **argv)
                " wince"
                " wince-fb"
                " wince-gapi"
+               " wince-ddraw"
 #endif
 #if HAVE_EVAS_SOFTWARE_SDL
 	       	" sdl"

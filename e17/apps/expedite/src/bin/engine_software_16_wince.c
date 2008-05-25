@@ -164,6 +164,7 @@ engine_software_16_wince_args(int argc, char **argv)
              if (!strcmp(argv[i], "wince")) ok = 1;
              if (!strcmp(argv[i], "wince-fb")) { ok = 1; backend = 1; }
              if (!strcmp(argv[i], "wince-gapi")) { ok = 1; backend = 2; }
+             if (!strcmp(argv[i], "wince-ddraw")) { ok = 1; backend = 3; }
           }
      }
    if (!ok) return 0;
