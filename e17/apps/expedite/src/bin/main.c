@@ -1147,6 +1147,8 @@ _profile_parse(int argc, char **argv)
 	     else if (!strcmp(argv[i], "wxga"))   {win_w = 1280; win_h = 768 ;}
 	     else if (!strcmp(argv[i], "wxga-p")) {win_w = 768 ; win_h = 1280;}
 	     else if (!strcmp(argv[i], "n800"))   {win_w = 720 ; win_h = 420 ;}
+             else if (!strcmp(argv[i], "pal"))    {win_w = 720 ; win_h = 576 ;}
+             else if (!strcmp(argv[i], "720p"))   {win_w = 1280; win_h = 720 ;}
 	     else
 	       {
 		  printf("Invalid profile: %s\n", argv[i]);
@@ -1272,7 +1274,7 @@ _engine_args(int argc, char **argv)
                " wince-ddraw"
 #endif
 #if HAVE_EVAS_SOFTWARE_SDL
-	       	" sdl"
+               " sdl sdl-16"
 #endif
 #if HAVE_EVAS_FB
 	       	" fb"
@@ -1283,7 +1285,7 @@ _engine_args(int argc, char **argv)
 		"\n"
 		"Where PROFILE can be one of:\n"
 		"  qvga qvga-p vga vga-p wvga wvga-p svga svga-p xga xga-p wxga wxga-p\n"
-		"  n800\n"
+		"  n800 pal 720p\n"
 		);
 	exit(-1);
      }
