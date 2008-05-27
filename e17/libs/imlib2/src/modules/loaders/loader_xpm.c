@@ -286,7 +286,7 @@ load(ImlibImage * im, ImlibProgressFunction progress, char progress_granularity,
                                  if (line[k] != ' ')
                                    {
                                       s[0] = 0;
-                                      sscanf(&line[k], "%65535s", s);
+                                      sscanf(&line[k], "%255s", s);
                                       slen = strlen(s);
                                       k += slen;
                                       if (!strcmp(s, "c"))

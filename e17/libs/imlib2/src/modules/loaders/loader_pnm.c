@@ -68,7 +68,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
              int                 i = 0;
 
              /* read numbers */
-             while (c != EOF && !isspace(c))
+             while (c != EOF && !isspace(c) && (i < 255))
                {
                   buf[i++] = c;
                   c = fgetc(f);
