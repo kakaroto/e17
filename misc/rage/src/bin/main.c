@@ -99,6 +99,8 @@ main(int argc, char **argv)
 	  mode = 3;
         else if (!strcmp(argv[1], "-dfb"))
 	  mode = 4;
+	else if (!strcmp(argv[1], "-sdl"))
+	  mode = 5;
 	else if (!strcmp(argv[i], "-fs"))
 	  fullscreen = 1;
 	else
@@ -134,6 +136,8 @@ main(int argc, char **argv)
      ecore_evas = ecore_evas_xrender_x11_new(NULL, 0, 0, 0, startw, starth);
    if (mode == 4)
      ecore_evas = ecore_evas_directfb_new(NULL, 0, 0, 0, startw, starth);
+   if (mode == 5)
+     ecore_evas = ecore_evas_sdl_new(NULL, startw, starth, 0, 1, 1, 0);
    if (!ecore_evas)
      {
 	printf("ERROR: Cannot create canvas\n");
@@ -261,7 +265,7 @@ main_usage(void)
 {
    printf("Usage:\n");
    printf("  rage "
-	  "[-x11] [-gl] [-fb] [-dfb] [-xr] [-g WxH] [-fs] "
+	  "[-x11] [-gl] [-fb] [-dfb] [-sdl] [-xr] [-g WxH] [-fs] "
 	  "[-t theme] [-cf dir]\n"
 	  );
    exit(-1);
