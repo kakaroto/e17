@@ -932,7 +932,9 @@ ewl_configure_cancel_request(Ewl_Widget *w)
                                 if (i < queue_buffer->end - 1)
                                         memmove(queue_buffer->buffer + i,
                                                 queue_buffer->buffer + i + 1,
-                                                queue_buffer->end - i - 1);
+                                                (queue_buffer->end - i - 1)
+                                                * sizeof(void *));
+
                                 queue_buffer->end--;
                         }
                 }
