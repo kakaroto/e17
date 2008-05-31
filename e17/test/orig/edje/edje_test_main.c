@@ -331,8 +331,6 @@ main(int argc, char **argv)
    evas_object_move(o, 0, 0);
    evas_object_resize(o, 240, 320);
    evas_object_color_set(o, 255, 255, 255, 255);
-   evas_object_event_callback_add(o, EVAS_CALLBACK_KEY_DOWN, key_cb, NULL);
-   evas_object_focus_set(o, 1);
    evas_object_show(o);
    o_bg = o;
    
@@ -342,6 +340,8 @@ main(int argc, char **argv)
    edje_object_file_set(o, argv[1], argv[2]);
    evas_object_move(o, 0, 0);
    evas_object_resize(o, 240, 320);
+   evas_object_event_callback_add(o, EVAS_CALLBACK_KEY_DOWN, key_cb, NULL);
+   evas_object_focus_set(o, 1);
    evas_object_show(o);
    o_edje = o;
 
