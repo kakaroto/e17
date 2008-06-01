@@ -49,6 +49,7 @@
 #include <X11/Xutil.h>
 #include <X11/extensions/Xcomposite.h>
 #include <X11/extensions/Xdamage.h>
+#include <X11/extensions/Xfixes.h>
 #include <X11/extensions/Xrender.h>
 
 #define ENABLE_SHADOWS      1
@@ -461,6 +462,19 @@ ERegionShow(const char *txt, XserverRegion rgn)
  done:
    if (pr)
       XFree(pr);
+}
+
+void
+ECompMgrWinClipToGC(EObj * eo, GC gc)
+{
+   XserverRegion       rgn = rgn_tmp2;
+
+   if (!eo || !eo->cmhook)
+      return;
+
+   ERegionCopy(rgn, Mode_compmgr.rgn_screen);
+   ERegionSubtract(rgn, eo->cmhook->clip);
+   XFixesSetGCClipRegion(disp, gc, 0, 0, rgn);
 }
 
 /*

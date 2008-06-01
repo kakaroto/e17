@@ -473,12 +473,10 @@ DeskDestroy(Desk * dsk)
    Efree(dsk);
 }
 
-Win
-DeskGetBackgroundWin(const Desk * dsk)
+EObj               *
+DeskGetBackgroundObj(const Desk * dsk)
 {
-   if (!dsk)
-      return VROOT;
-   return EobjGetWin(dsk->bg.o);
+   return (dsk) ? dsk->bg.o : NULL;
 }
 
 Pixmap

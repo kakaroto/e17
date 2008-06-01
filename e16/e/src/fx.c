@@ -23,6 +23,7 @@
 #include "E.h"
 #include "desktops.h"
 #include "dialog.h"
+#include "ecompmgr.h"
 #include "eimage.h"
 #include "emodule.h"
 #include "settings.h"
@@ -53,6 +54,13 @@ typedef struct {
    char                paused;
 } FXHandler;
 
+#if USE_COMPOSITE
+/* As of composite 0.4 we need to set the clip region */
+#define SET_GC_CLIP(eo, gc) ECompMgrWinClipToGC(eo, gc)
+#else
+#define SET_GC_CLIP(eo, gc)
+#endif
+
 /****************************** RIPPLES *************************************/
 
 #define fx_ripple_waterh 64
@@ -67,12 +75,15 @@ FX_ripple_timeout(void *data __UNUSED__)
    static double       incv = 0, inch = 0;
    static GC           gc1 = 0, gc = 0;
    int                 y;
+   EObj               *bgeo;
+
+   bgeo = DeskGetBackgroundObj(DesksGetCurrent());
 
    if (fx_ripple_above == None)
      {
 	XGCValues           gcv;
 
-	fx_ripple_win = DeskGetBackgroundWin(DesksGetCurrent());
+	fx_ripple_win = EobjGetWin(bgeo);
 
 	fx_ripple_above =
 	   ECreatePixmap(fx_ripple_win, WinGetW(VROOT),
@@ -87,23 +98,23 @@ FX_ripple_timeout(void *data __UNUSED__)
      }
 
    if (fx_ripple_count == 0)
-      XCopyArea(disp, EoGetXwin(DesksGetCurrent()), fx_ripple_above, gc, 0,
+      XCopyArea(disp, WinGetXwin(fx_ripple_win), fx_ripple_above, gc, 0,
 		WinGetH(VROOT) - (fx_ripple_waterh * 3), WinGetW(VROOT),
 		fx_ripple_waterh * 2, 0, 0);
 
    fx_ripple_count++;
    if (fx_ripple_count > 32)
       fx_ripple_count = 0;
+
    incv += 0.40;
    if (incv > (M_PI_2 * 4))
-     {
-	incv = 0;
-     }
+      incv = 0;
    inch += 0.32;
    if (inch > (M_PI_2 * 4))
-     {
-	inch = 0;
-     }
+      inch = 0;
+
+   SET_GC_CLIP(bgeo, gc1);
+
    for (y = 0; y < fx_ripple_waterh; y++)
      {
 	double              aa, a, p;
@@ -196,6 +207,9 @@ FX_raindrops_timeout(void *data __UNUSED__)
    static char         first = 1;
    static char         sintab[256];
    static unsigned char disttab[fx_raindrop_size][fx_raindrop_size];
+   EObj               *bgeo;
+
+   bgeo = DeskGetBackgroundObj(DesksGetCurrent());
 
    if (fx_raindrops_win == None)
      {
@@ -221,7 +235,7 @@ FX_raindrops_timeout(void *data __UNUSED__)
 	       }
 	  }
 
-	fx_raindrops_win = DeskGetBackgroundWin(DesksGetCurrent());
+	fx_raindrops_win = EobjGetWin(bgeo);
 
 	if (gc)
 	   EXFreeGC(gc);
@@ -251,6 +265,8 @@ FX_raindrops_timeout(void *data __UNUSED__)
 		return 0;
 	  }
      }
+
+   SET_GC_CLIP(bgeo, gc1);
 
    for (i = 0; i < fx_raindrops_number; i++)
      {
@@ -469,13 +485,16 @@ FX_Wave_timeout(void *data __UNUSED__)
    double              incx2;
    static GC           gc1 = 0, gc = 0;
    int                 y;
+   EObj               *bgeo;
+
+   bgeo = DeskGetBackgroundObj(DesksGetCurrent());
 
    /* Check to see if we need to create stuff */
    if (!fx_wave_above)
      {
 	XGCValues           gcv;
 
-	fx_wave_win = DeskGetBackgroundWin(DesksGetCurrent());
+	fx_wave_win = EobjGetWin(bgeo);
 
 	fx_wave_above =
 	   ECreatePixmap(fx_wave_win, WinGetW(VROOT), FX_WAVE_WATERH * 2, 0);
@@ -491,7 +510,7 @@ FX_Wave_timeout(void *data __UNUSED__)
    /* On the zero, grab the desktop again. */
    if (fx_wave_count == 0)
      {
-	XCopyArea(disp, EoGetXwin(DesksGetCurrent()), fx_wave_above, gc, 0,
+	XCopyArea(disp, WinGetXwin(fx_wave_win), fx_wave_above, gc, 0,
 		  WinGetH(VROOT) - (FX_WAVE_WATERH * 3), WinGetW(VROOT),
 		  FX_WAVE_WATERH * 2, 0, 0);
      }
@@ -513,6 +532,8 @@ FX_Wave_timeout(void *data __UNUSED__)
    incx += 0.32;
    if (incx > (M_PI_2 * 4))
       incx = 0;
+
+   SET_GC_CLIP(bgeo, gc1);
 
    /* Copy the area to correct bugs */
    if (fx_wave_count == 0)
@@ -620,10 +641,12 @@ static int
 FX_imagespinner_timeout(void *data __UNUSED__)
 {
    char               *string = NULL;
+   EObj               *bgeo;
 
    if (fx_imagespinner_win == None)
      {
-	fx_imagespinner_win = DeskGetBackgroundWin(DesksGetCurrent());
+	bgeo = DeskGetBackgroundObj(DesksGetCurrent());
+	fx_imagespinner_win = EobjGetWin(bgeo);
      }
 
 #if 0				/* Don't use getword */
@@ -671,7 +694,10 @@ FX_ImageSpinner_Init(const char *name)
 static void
 FX_ImageSpinner_Desk(void)
 {
-   fx_imagespinner_win = DeskGetBackgroundWin(DesksGetCurrent());
+   EObj               *bgeo;
+
+   bgeo = DeskGetBackgroundObj(DesksGetCurrent());
+   fx_imagespinner_win = EobjGetWin(bgeo);
 }
 
 static void
