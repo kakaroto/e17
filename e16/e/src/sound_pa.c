@@ -57,7 +57,9 @@ static pa_sample_spec sample_spec;
 static size_t       sample_length = 0;
 static int          pa_block = 0;
 
-static void
+static void         _sound_pa_Exit(void);
+
+static int
 dispatch(int block)
 {
    int                 err, rc;
@@ -69,10 +71,15 @@ dispatch(int block)
      {
 	err = pa_mainloop_iterate(pa_mloop, pa_block, &rc);
 	D4printf("%s: run err=%d rc=%d\n", __func__, err, rc);
-	if (err == 0)
+	if (err <= 0)
 	   break;
      }
+
+   if (err < 0)
+      _sound_pa_Exit();
+
    D3printf("%s: end\n", __func__);
+   return err;
 }
 
 static void
@@ -93,20 +100,18 @@ context_drain_complete(pa_context * c __UNUSED__, void *userdata __UNUSED__)
 static void
 context_drain(pa_context * c)
 {
-   pa_operation       *o;
+   pa_operation       *op;
 
    D2printf("%s\n", __func__);
-   o = pa_context_drain(c, context_drain_complete, NULL);
-   if (o)
-      pa_operation_unref(o);
+   op = pa_context_drain(c, context_drain_complete, NULL);
+   if (op)
+      pa_operation_unref(op);
    pa_block = 0;
 }
 
 static void
 stream_state_callback(pa_stream * s, void *userdata __UNUSED__)
 {
-   assert(s);
-
    D2printf("%s: state=%d\n", __func__, pa_stream_get_state(s));
    switch (pa_stream_get_state(s))
      {
@@ -120,7 +125,7 @@ stream_state_callback(pa_stream * s, void *userdata __UNUSED__)
 
      case PA_STREAM_FAILED:	/* 3 */
      default:
-	Eprintf("Failed to upload sample: %s\n",
+	Eprintf("PA failure: %s\n",
 		pa_strerror(pa_context_errno(pa_stream_get_context(s))));
 	break;
      }
@@ -150,8 +155,6 @@ stream_write_callback(pa_stream * pas, size_t length, void *userdata)
 static void
 context_state_callback(pa_context * c, void *userdata __UNUSED__)
 {
-   assert(c);
-
    D2printf("%s: state=%d\n", __func__, pa_context_get_state(c));
    switch (pa_context_get_state(c))
      {
@@ -169,7 +172,8 @@ context_state_callback(pa_context * c, void *userdata __UNUSED__)
 
      case PA_CONTEXT_FAILED:	/* 5 */
      default:
-	Eprintf("Connection failure: %s\n", pa_strerror(pa_context_errno(c)));
+	Eprintf("PA failure: %s\n", pa_strerror(pa_context_errno(c)));
+	pa_mainloop_quit(pa_mloop, 1);
 	break;
      }
 }
@@ -187,7 +191,8 @@ _sound_pa_Destroy(Sample * s)
      {
 	op =
 	   pa_context_remove_sample(pa_ctx, s->name, context_op_callback, NULL);
-	pa_operation_unref(op);
+	if (op)
+	   pa_operation_unref(op);
 	dispatch(-1);
      }
    D2printf("%s end\n", __func__);
@@ -201,7 +206,10 @@ static Sample      *
 _sound_pa_Load(const char *file)
 {
    Sample             *s;
-   int                 err;	//, format;
+   int                 err;
+
+   if (!pa_ctx)
+      return NULL;
 
    s = ECALLOC(Sample, 1);
    if (!s)
@@ -229,18 +237,21 @@ _sound_pa_Load(const char *file)
    sample_length = s->ssd.size;
 
    sample_stream = pa_stream_new(pa_ctx, file, &sample_spec, NULL);
-   assert(sample_stream);
+   if (!sample_stream)
+      goto bail_out;
    pa_stream_set_state_callback(sample_stream, stream_state_callback, NULL);
    pa_stream_set_write_callback(sample_stream, stream_write_callback, s);
    pa_stream_connect_upload(sample_stream, sample_length);
-   dispatch(-1);
 
-   if (0)
-     {
-	_sound_pa_Destroy(s);
-	s = NULL;
-     }
+   err = dispatch(-1);
+   if (err)
+      goto bail_out;
+
    return s;
+
+ bail_out:
+   _sound_pa_Destroy(s);
+   return NULL;
 }
 
 static void
@@ -254,7 +265,8 @@ _sound_pa_Play(Sample * s)
 
    op = pa_context_play_sample(pa_ctx, s->name, NULL, PA_VOLUME_NORM,
 			       context_op_callback, NULL);
-   pa_operation_unref(op);
+   if (op)
+      pa_operation_unref(op);
    dispatch(-1);
    D2printf("%s end\n", __func__);
 }
@@ -262,6 +274,7 @@ _sound_pa_Play(Sample * s)
 static void
 _sound_pa_Exit(void)
 {
+   D2printf("%s\n", __func__);
 #if 0
    if (stream)
       pa_stream_unref(stream);
@@ -312,7 +325,9 @@ _sound_pa_Init(void)
    if (err)
       Eprintf("pa_context_connect(): %s\n", pa_strerror(err));
 
-   dispatch(-1);
+   err = dispatch(-1);
+   if (err)
+      goto quit;
 
  done:
    return pa_ctx == NULL;
