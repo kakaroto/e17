@@ -23,6 +23,7 @@ static char       **fpath = NULL;
 static int          fpath_num = 0;
 static Imlib_Object_List *fonts = NULL;
 
+static ImlibFont   *imlib_font_load(const char *name, int faceidx, int size);
 static int          font_modify_cache_cb(Imlib_Hash * hash, const char *key,
                                          void *data, void *fdata);
 static int          font_flush_free_glyph_cb(Imlib_Hash * hash, const char *key,
@@ -34,17 +35,31 @@ static int          font_flush_free_glyph_cb(Imlib_Hash * hash, const char *key,
 ImlibFont          *
 imlib_font_load_joined(const char *fontname)
 {
-   int                 j, size;
+   int                 j, k, size, faceidx;
    char               *name = NULL, *file = NULL, *tmp = NULL;
    ImlibFont          *fn;
 
-   /* split font name (in format name/size) */
+   /* split font name (in format name[:faceidx]/size) */
    for (j = strlen(fontname) - 1; (j >= 0) && (fontname[j] != '/'); j--);
    /* no "/" in font after the first char */
    if (j <= 0)
       return NULL;
    /* get size */
    size = atoi(&(fontname[j + 1]));
+   /* split font faceidx index (in format name[:faceidx]/size) */
+   faceidx = 0;
+   for (k = j - 1; k > 0; k--)
+     {
+        if (fontname[k] >= '0' && fontname[k] <= '9')
+           continue;
+        if (fontname[k] != ':')
+           break;
+        faceidx = atoi(&(fontname[k + 1]));
+        if (faceidx < 0)
+           faceidx = 0;
+        j = k;
+        break;
+     }
    /* split name in front off */
    name = malloc((j + 1) * sizeof(char));
    memcpy(name, fontname, j);
@@ -107,13 +122,13 @@ imlib_font_load_joined(const char *fontname)
    /* didnt find a file? abort */
    if (!file)
       return NULL;
-   fn = imlib_font_load(file, size);
+   fn = imlib_font_load(file, faceidx, size);
    free(file);
    return fn;
 }
 
-ImlibFont          *
-imlib_font_load(const char *name, int size)
+static ImlibFont   *
+imlib_font_load(const char *name, int faceidx, int size)
 {
    int                 error;
    ImlibFont          *fn;
@@ -128,7 +143,7 @@ imlib_font_load(const char *name, int size)
    fn = malloc(sizeof(ImlibFont));
    file = (char *)name;
 
-   error = FT_New_Face(ft_lib, file, 0, &(fn->ft.face));
+   error = FT_New_Face(ft_lib, file, faceidx, &(fn->ft.face));
    if (error)
      {
         free(fn);

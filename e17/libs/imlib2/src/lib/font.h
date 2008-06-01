@@ -77,7 +77,6 @@ char              **imlib_font_list_font_path(int *num_ret);
 char              **imlib_font_list_fonts(int *num_ret);
 
 ImlibFont          *imlib_font_load_joined(const char *name);
-ImlibFont          *imlib_font_load(const char *name, int size);
 void                imlib_font_free(ImlibFont * fn);
 int                 imlib_font_insert_into_fallback_chain_imp(ImlibFont * fn,
                                                               ImlibFont * fallback);
