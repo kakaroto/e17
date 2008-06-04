@@ -37,7 +37,7 @@ ewl_container_init(Ewl_Container *c)
                 DRETURN_INT(FALSE, DLEVEL_STABLE);
 
         ewl_widget_inherit(w, EWL_CONTAINER_TYPE);
-        ewl_object_recursive_set(EWL_OBJECT(w), TRUE);
+        ewl_widget_recursive_set(w, TRUE);
 
         /*
          * Initialize the fields specific to the container class.
@@ -653,7 +653,7 @@ ewl_container_child_resize(Ewl_Widget *w, int size, Ewl_Orientation o)
         DCHECK_PARAM_PTR(w);
         DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-        if (!size || !REALIZED(w) || ewl_object_queued_has(EWL_OBJECT(w),
+        if (!size || !REALIZED(w) || ewl_widget_queued_has(w,
                                                 EWL_FLAG_QUEUED_SCHEDULED_REVEAL))
                 DRETURN(DLEVEL_STABLE);
 
@@ -825,7 +825,7 @@ ewl_container_reset(Ewl_Container *c)
          */
         ecore_dlist_first_goto(c->children);
         while ((w = ecore_dlist_current(c->children))) {
-                if (!ewl_object_flags_has(EWL_OBJECT(w),
+                if (!ewl_widget_flags_has(w,
                                         EWL_FLAG_PROPERTY_INTERNAL,
                                         EWL_FLAGS_PROPERTY_MASK)) {
                         ewl_widget_destroy(w);

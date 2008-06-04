@@ -102,7 +102,7 @@ create_test(Ewl_Container *box)
         ewl_widget_layer_priority_set(w, 2);
         ewl_container_child_append(EWL_CONTAINER(c), w);
         ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
-        ewl_object_state_add(EWL_OBJECT(w), EWL_FLAG_STATE_DISABLED);
+        ewl_widget_disable(w);
         ewl_widget_show(w);
         dbutton[1] = w;
 

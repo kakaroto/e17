@@ -78,7 +78,7 @@ ewl_widget_init(Ewl_Widget *w)
         if (!ewl_theme_widget_init(w))
                 DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-        ewl_object_state_remove(EWL_OBJECT(w), EWL_FLAGS_STATE_MASK);
+        ewl_widget_state_remove(w, EWL_FLAGS_STATE_MASK);
 
         /*
          * Add the common callbacks that all widgets must perform
@@ -206,8 +206,8 @@ ewl_widget_realize(Ewl_Widget *w)
         if (REALIZED(w))
                 DRETURN(DLEVEL_STABLE);
 
-        if (ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_SCHEDULED_REVEAL)
-                        && !ewl_object_queued_has(EWL_OBJECT(w),
+        if (ewl_widget_queued_has(w, EWL_FLAG_QUEUED_SCHEDULED_REVEAL)
+                        && !ewl_widget_queued_has(w,
                                                 EWL_FLAG_QUEUED_PROCESS_REVEAL))
                 ewl_realize_cancel_request(w);
 
@@ -221,14 +221,12 @@ ewl_widget_realize(Ewl_Widget *w)
          * The parent should be realized at this point, and we can handle
          * realizing ourselves.
          */
-        if (w->parent || ewl_object_toplevel_get(EWL_OBJECT(w))) {
-                ewl_object_queued_add(EWL_OBJECT(w), EWL_FLAG_QUEUED_PROCESS_REVEAL);
+        if (w->parent || ewl_widget_toplevel_get(w)) {
+                ewl_widget_queued_add(w, EWL_FLAG_QUEUED_PROCESS_REVEAL);
                 ewl_callback_call(w, EWL_CALLBACK_REALIZE);
-                ewl_object_queued_remove(EWL_OBJECT(w),
-                                         EWL_FLAG_QUEUED_PROCESS_REVEAL);
+                ewl_widget_queued_remove(w, EWL_FLAG_QUEUED_PROCESS_REVEAL);
 
-                ewl_object_visible_add(EWL_OBJECT(w),
-                                        EWL_FLAG_VISIBLE_REALIZED);
+                ewl_widget_visible_add(w, EWL_FLAG_VISIBLE_REALIZED);
                 ewl_widget_obscure(w);
         }
 
@@ -249,7 +247,7 @@ ewl_widget_unrealize(Ewl_Widget *w)
         DCHECK_PARAM_PTR(w);
         DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-        if (ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_SCHEDULED_REVEAL))
+        if (ewl_widget_queued_has(w, EWL_FLAG_QUEUED_SCHEDULED_REVEAL))
                 ewl_realize_cancel_request(w);
 
         if (!REALIZED(w))
@@ -258,7 +256,7 @@ ewl_widget_unrealize(Ewl_Widget *w)
         ewl_widget_obscure(w);
 
         ewl_callback_call(w, EWL_CALLBACK_UNREALIZE);
-        ewl_object_visible_remove(EWL_OBJECT(w), EWL_FLAG_VISIBLE_REALIZED);
+        ewl_widget_visible_remove(w, EWL_FLAG_VISIBLE_REALIZED);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -281,12 +279,11 @@ ewl_widget_reveal(Ewl_Widget *w)
          * Already revealed widgets can be skipped, as can unrealized widgets,
          * unless the are already queued for reveal, ie. in the realize process.
          */
-        if (REVEALED(w) || (!REALIZED(w) && !ewl_object_queued_has(
-                                        EWL_OBJECT(w),
+        if (REVEALED(w) || (!REALIZED(w) && !ewl_widget_queued_has(w,
                                         EWL_FLAG_QUEUED_PROCESS_REVEAL)))
                 DRETURN(DLEVEL_STABLE);
 
-        ewl_object_visible_add(EWL_OBJECT(w), EWL_FLAG_VISIBLE_REVEALED);
+        ewl_widget_visible_add(w, EWL_FLAG_VISIBLE_REVEALED);
 
         emb = ewl_embed_widget_find(w);
         if (emb && emb->canvas)
@@ -310,9 +307,9 @@ void ewl_widget_obscure(Ewl_Widget *w)
         if (!REVEALED(w))
                 DRETURN(DLEVEL_STABLE);
 
-        ewl_object_visible_remove(EWL_OBJECT(w), EWL_FLAG_VISIBLE_REVEALED);
+        ewl_widget_visible_remove(w, EWL_FLAG_VISIBLE_REVEALED);
 
-        if (REALIZED(w) || ewl_object_queued_has(EWL_OBJECT(w),
+        if (REALIZED(w) || ewl_widget_queued_has(w,
                                 EWL_FLAG_QUEUED_SCHEDULED_REVEAL))
                 ewl_callback_call(w, EWL_CALLBACK_OBSCURE);
 
@@ -344,7 +341,7 @@ ewl_widget_show(Ewl_Widget *w)
         /*
          * Flag that this is a visible widget
          */
-        ewl_object_visible_add(EWL_OBJECT(w), EWL_FLAG_VISIBLE_SHOWN);
+        ewl_widget_visible_add(w, EWL_FLAG_VISIBLE_SHOWN);
 
         /*
          * If realized, go about our business, otherwise queue for realize.
@@ -374,7 +371,7 @@ ewl_widget_hide(Ewl_Widget *w)
         DCHECK_PARAM_PTR(w);
         DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-        if (ewl_object_queued_has(EWL_OBJECT(w), EWL_FLAG_QUEUED_SCHEDULED_REVEAL))
+        if (ewl_widget_queued_has(w, EWL_FLAG_QUEUED_SCHEDULED_REVEAL))
                 ewl_realize_cancel_request(w);
 
         /*
@@ -386,7 +383,7 @@ ewl_widget_hide(Ewl_Widget *w)
         emb = ewl_embed_widget_find(w);
         if (emb) ewl_embed_info_widgets_cleanup(emb, w);
 
-        ewl_object_visible_remove(EWL_OBJECT(w), EWL_FLAG_VISIBLE_SHOWN);
+        ewl_widget_visible_remove(w, EWL_FLAG_VISIBLE_SHOWN);
 
         if (REALIZED(w))
                 ewl_callback_call(w, EWL_CALLBACK_HIDE);
@@ -1109,8 +1106,8 @@ ewl_widget_enable(Ewl_Widget *w)
         DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
         if (DISABLED(w)) {
-                ewl_object_state_remove(EWL_OBJECT(w), EWL_FLAGS_STATE_MASK);
-                ewl_object_state_add(EWL_OBJECT(w), EWL_FLAG_STATE_NORMAL);
+                ewl_widget_state_remove(w, EWL_FLAGS_STATE_MASK);
+                ewl_widget_state_add(w, EWL_FLAG_STATE_NORMAL);
                 ewl_callback_call(w, EWL_CALLBACK_WIDGET_ENABLE);
         }
 
@@ -1132,8 +1129,8 @@ ewl_widget_disable(Ewl_Widget *w)
         DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
         if (!DISABLED(w)) {
-                ewl_object_state_remove(EWL_OBJECT(w), EWL_FLAGS_STATE_MASK);
-                ewl_object_state_add(EWL_OBJECT(w), EWL_FLAG_STATE_DISABLED);
+                ewl_widget_state_remove(w, EWL_FLAGS_STATE_MASK);
+                ewl_widget_state_add(w, EWL_FLAG_STATE_DISABLED);
                 ewl_callback_call(w, EWL_CALLBACK_WIDGET_DISABLE);
         }
 
@@ -1372,11 +1369,11 @@ ewl_widget_ignore_focus_change_set(Ewl_Widget *w, unsigned int val)
         DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
         if (val)
-                ewl_object_flags_add(EWL_OBJECT(w),
+                ewl_widget_flags_add(w,
                                 EWL_FLAG_PROPERTY_BLOCK_TAB_FOCUS,
                                 EWL_FLAGS_PROPERTY_MASK);
         else
-                ewl_object_flags_remove(EWL_OBJECT(w),
+                ewl_widget_flags_remove(w,
                                 EWL_FLAG_PROPERTY_BLOCK_TAB_FOCUS,
                                 EWL_FLAGS_PROPERTY_MASK);
 
@@ -1395,7 +1392,7 @@ ewl_widget_ignore_focus_change_get(Ewl_Widget *w)
         DCHECK_PARAM_PTR_RET(w, FALSE);
         DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, FALSE);
 
-        if (ewl_object_flags_has(EWL_OBJECT(w),
+        if (ewl_widget_flags_has(EWL_OBJECT(w),
                                         EWL_FLAG_PROPERTY_BLOCK_TAB_FOCUS,
                                         EWL_FLAGS_PROPERTY_MASK))
                 DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -1417,11 +1414,11 @@ ewl_widget_focusable_set(Ewl_Widget *w, unsigned int val)
         DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
         if (val)
-                ewl_object_flags_add(EWL_OBJECT(w),
+                ewl_widget_flags_add(w,
                                 EWL_FLAG_PROPERTY_FOCUSABLE,
                                 EWL_FLAGS_PROPERTY_MASK);
         else
-                ewl_object_flags_remove(EWL_OBJECT(w),
+                ewl_widget_flags_remove(w,
                                 EWL_FLAG_PROPERTY_FOCUSABLE,
                                 EWL_FLAGS_PROPERTY_MASK);
 
@@ -1440,9 +1437,8 @@ ewl_widget_focusable_get(Ewl_Widget *w)
         DCHECK_PARAM_PTR_RET(w, FALSE);
         DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, FALSE);
 
-        if (ewl_object_flags_has(EWL_OBJECT(w),
-                                        EWL_FLAG_PROPERTY_FOCUSABLE,
-                                        EWL_FLAGS_PROPERTY_MASK))
+        if (ewl_widget_flags_has(w, EWL_FLAG_PROPERTY_FOCUSABLE,
+                                EWL_FLAGS_PROPERTY_MASK))
                 DRETURN_INT(TRUE, DLEVEL_STABLE);
 
         DRETURN_INT(FALSE, DLEVEL_STABLE);
@@ -1601,11 +1597,10 @@ ewl_widget_internal_set(Ewl_Widget *w, unsigned int val)
         DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
         if (val)
-                ewl_object_flags_add(EWL_OBJECT(w), EWL_FLAG_PROPERTY_INTERNAL,
+                ewl_widget_flags_add(w, EWL_FLAG_PROPERTY_INTERNAL,
                                 EWL_FLAGS_PROPERTY_MASK);
         else
-                ewl_object_flags_remove(EWL_OBJECT(w),
-                                EWL_FLAG_PROPERTY_INTERNAL,
+                ewl_widget_flags_remove(w, EWL_FLAG_PROPERTY_INTERNAL,
                                 EWL_FLAGS_PROPERTY_MASK);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1770,7 +1765,7 @@ ewl_widget_internal_is(Ewl_Widget *w)
         DCHECK_PARAM_PTR_RET(w, FALSE);
         DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, FALSE);
 
-        if (ewl_object_flags_has(EWL_OBJECT(w), EWL_FLAG_PROPERTY_INTERNAL,
+        if (ewl_widget_flags_has(w, EWL_FLAG_PROPERTY_INTERNAL,
                                 EWL_FLAGS_PROPERTY_MASK))
                 DRETURN_INT(TRUE, DLEVEL_STABLE);
 
@@ -1901,10 +1896,10 @@ ewl_widget_clipped_set(Ewl_Widget *w, unsigned int val)
         DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
         if (val)
-                ewl_object_flags_remove(EWL_OBJECT(w), EWL_FLAG_VISIBLE_NOCLIP,
+                ewl_widget_flags_remove(w, EWL_FLAG_VISIBLE_NOCLIP,
                                         EWL_FLAGS_VISIBLE_MASK);
         else
-                ewl_object_flags_add(EWL_OBJECT(w), EWL_FLAG_VISIBLE_NOCLIP,
+                ewl_widget_flags_add(w, EWL_FLAG_VISIBLE_NOCLIP,
                                         EWL_FLAGS_VISIBLE_MASK);
 
         if (!REALIZED(w) || (val && w->fx_clip_box) ||
@@ -1942,7 +1937,7 @@ ewl_widget_clipped_is(Ewl_Widget *w)
         DCHECK_PARAM_PTR_RET(w, FALSE);
         DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, FALSE);
 
-        if (ewl_object_flags_has(EWL_OBJECT(w), EWL_FLAG_VISIBLE_NOCLIP,
+        if (ewl_widget_flags_has(w, EWL_FLAG_VISIBLE_NOCLIP,
                                         EWL_FLAGS_VISIBLE_MASK))
                 DRETURN_INT(FALSE, DLEVEL_STABLE);
 
@@ -1973,6 +1968,42 @@ ewl_widget_parent_of(Ewl_Widget *c, Ewl_Widget *w)
         }
 
         DRETURN_INT(FALSE, DLEVEL_STABLE);
+}
+
+/**
+ * @param w: the widget to set the specified widget flags
+ * @param flags: a bitmask of new flags to be set in the widget
+ * @param mask: a bitmask limiting added flags to a certain set
+ * @return Returns no value.
+ * @brief Add the set of flags specified in @a flags to @a w.
+ */
+void
+ewl_widget_flags_add(Ewl_Widget *w, unsigned int flags, unsigned int mask)
+{
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+
+        w->flags |= (flags & mask);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param w: the widget to remove specified state flags
+ * @param flags: a bitmask of flags to be removed from the widget
+ * @param mask: a bitmask limiting removed flags to a certain set
+ * @return Returns no value.
+ * @brief Removes the set of state flags specified in @a flags from @a w.
+ */
+void
+ewl_widget_flags_remove(Ewl_Widget *w, unsigned int flags, unsigned int mask)
+{
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+
+        w->flags &= ~(flags & mask);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -2382,7 +2413,7 @@ ewl_widget_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
         /*
          * Increment the dnd awareness counter on the embed.
          */
-        if (ewl_object_flags_has(EWL_OBJECT(w), EWL_FLAG_PROPERTY_DND_TARGET,
+        if (ewl_widget_flags_has(w, EWL_FLAG_PROPERTY_DND_TARGET,
                                 EWL_FLAGS_PROPERTY_MASK))
                 ewl_embed_dnd_aware_set(emb);
 
@@ -2476,7 +2507,7 @@ ewl_widget_cb_reveal(Ewl_Widget *w, void *ev_data __UNUSED__,
         /*
          * Create clip box if necessary
          */
-        if (!w->fx_clip_box && !ewl_object_flags_get(EWL_OBJECT(w),
+        if (!w->fx_clip_box && !ewl_widget_flags_get(w,
                                                 EWL_FLAG_VISIBLE_NOCLIP)) {
                 w->fx_clip_box = ewl_embed_object_request(emb, "rectangle");
                 if (!w->fx_clip_box)
@@ -2551,7 +2582,7 @@ ewl_widget_cb_obscure(Ewl_Widget *w, void *ev_data __UNUSED__,
         /*
          * Decrement the dnd awareness counter on the embed.
          */
-        if (ewl_object_flags_has(EWL_OBJECT(w), EWL_FLAG_PROPERTY_DND_TARGET,
+        if (ewl_widget_flags_has(w, EWL_FLAG_PROPERTY_DND_TARGET,
                                 EWL_FLAGS_PROPERTY_MASK))
                 ewl_embed_dnd_aware_remove(emb);
 
@@ -3050,15 +3081,15 @@ ewl_widget_cb_mouse_up(Ewl_Widget *w, void *ev_data,
         if (DISABLED(w))
                 DRETURN(DLEVEL_STABLE);
 
-        if (ewl_object_state_has(EWL_OBJECT(w), EWL_FLAG_STATE_DND)) {
-                ewl_object_state_remove(EWL_OBJECT(w), EWL_FLAG_STATE_DND);
+        if (ewl_widget_state_has(w, EWL_FLAG_STATE_DND)) {
+                ewl_widget_state_remove(w, EWL_FLAG_STATE_DND);
                 ewl_dnd_drag_drop(w);
         }
 
         snprintf(state, sizeof(state), "mouse,up,%i", e->button);
         ewl_widget_state_set(w, state, EWL_STATE_TRANSIENT);
 
-        if (ewl_object_state_has(EWL_OBJECT(w), EWL_FLAG_STATE_MOUSE_IN)) {
+        if (ewl_widget_state_has(w, EWL_FLAG_STATE_MOUSE_IN)) {
                 int x, y;
 
                 ewl_widget_state_set(w, "mouse,in", EWL_STATE_TRANSIENT);
@@ -3091,23 +3122,20 @@ ewl_widget_cb_mouse_move(Ewl_Widget *w, void *ev_data,
                                 void *user_data __UNUSED__)
 {
         Ewl_Embed *embed;
-        Ewl_Object *o;
         Ewl_Event_Mouse *ev = ev_data;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(w);
         DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-        o = EWL_OBJECT(w);
-
         ewl_widget_state_set(w, "mouse,move", EWL_STATE_TRANSIENT);
-        if (ewl_object_state_has(o, EWL_FLAG_STATE_PRESSED) &&
-                        ewl_object_flags_has(o, EWL_FLAG_PROPERTY_DND_SOURCE,
+        if (ewl_widget_state_has(w, EWL_FLAG_STATE_PRESSED) &&
+                        ewl_widget_flags_has(w, EWL_FLAG_PROPERTY_DND_SOURCE,
                                 EWL_FLAGS_PROPERTY_MASK)) {
 
                 embed = ewl_embed_widget_find(w);
-                if (!ewl_object_state_has(o, EWL_FLAG_STATE_DND)) {
-                        ewl_object_state_add(o, EWL_FLAG_STATE_DND);
+                if (!ewl_widget_state_has(w, EWL_FLAG_STATE_DND)) {
+                        ewl_widget_state_add(w, EWL_FLAG_STATE_DND);
                         embed->last.drag_widget = w;
                         ewl_dnd_drag_start(w);
                 }

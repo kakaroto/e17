@@ -109,15 +109,13 @@ ewl_dnd_provided_types_set(Ewl_Widget *w, const char **types)
         if (types && *types) {
                 type = ewl_dnd_types_encode(types);
                 ecore_hash_set(ewl_dnd_provided_hash, w, type);
-                ewl_object_flags_add(EWL_OBJECT(w),
-                                EWL_FLAG_PROPERTY_DND_SOURCE,
+                ewl_widget_flags_add(w, EWL_FLAG_PROPERTY_DND_SOURCE,
                                 EWL_FLAGS_PROPERTY_MASK);
         }
         else {
                 type = ecore_hash_remove(ewl_dnd_provided_hash, w);
                 IF_FREE(type);
-                ewl_object_flags_remove(EWL_OBJECT(w),
-                                EWL_FLAG_PROPERTY_DND_SOURCE,
+                ewl_widget_flags_remove(w, EWL_FLAG_PROPERTY_DND_SOURCE,
                                 EWL_FLAGS_PROPERTY_MASK);
         }
 
@@ -186,8 +184,7 @@ ewl_dnd_accepted_types_set(Ewl_Widget *w, const char **types)
         if (types && *types) {
                 type = ewl_dnd_types_encode(types);
                 ecore_hash_set(ewl_dnd_accepted_hash, w, type);
-                ewl_object_flags_add(EWL_OBJECT(w),
-                                EWL_FLAG_PROPERTY_DND_TARGET,
+                ewl_widget_flags_add(w, EWL_FLAG_PROPERTY_DND_TARGET,
                                 EWL_FLAGS_PROPERTY_MASK);
 
                 if (REALIZED(w) && REVEALED(w)) {
@@ -198,8 +195,7 @@ ewl_dnd_accepted_types_set(Ewl_Widget *w, const char **types)
                 }
         }
         else {
-                ewl_object_flags_remove(EWL_OBJECT(w),
-                                EWL_FLAG_PROPERTY_DND_TARGET,
+                ewl_widget_flags_remove(w, EWL_FLAG_PROPERTY_DND_TARGET,
                                 EWL_FLAGS_PROPERTY_MASK);
 
                 if (REALIZED(w) && REVEALED(w)) {

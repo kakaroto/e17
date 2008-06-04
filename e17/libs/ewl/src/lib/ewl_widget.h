@@ -156,6 +156,7 @@ struct Ewl_Widget
 
         Ecore_Hash *theme;                 /**< Overriding theme settings */
         Ewl_Pair_List theme_text;        /**< Overriding text in theme */
+        unsigned int flags;       /**< the widget flags */
         
         unsigned char toplayered:1;        /**< Indicates if the widget should
                                         be on the top of the layer stack */
@@ -252,6 +253,256 @@ void             ewl_widget_color_get(Ewl_Widget *w, unsigned int *r, unsigned i
                                                         unsigned int *b, unsigned int *a);
 
 int              ewl_widget_parent_of(Ewl_Widget *c, Ewl_Widget *w);
+
+void             ewl_widget_flags_add(Ewl_Widget *o, unsigned int flags,
+                                      unsigned int mask);
+void             ewl_widget_flags_remove(Ewl_Widget *o, unsigned int flags,
+                                         unsigned int mask);
+
+/**
+ * @param o: the parameter to retrieve the current value of widget flags
+ * @param mask: get only the flags specified in mask
+ * @return Returns the current setting of the widget flags for @a o.
+ * @brief Retrieves the current setting of the widget flags for @a o.
+ */
+#define ewl_widget_flags_get(o, mask) \
+        (EWL_WIDGET(o)->flags & mask)
+
+/**
+ * @param o: the widget to check for a specified flags
+ * @param check_flags: the bitmask of flags to check on the widget
+ * @param mask: get only the flags specified in mask
+ * @return Returns TRUE if any of the specified flags are set, FALSE otherwise.
+ * @brief Determines if widget has the requested @a flags set.
+ */
+#define ewl_widget_flags_has(o, check_flags, mask) \
+        (!!(EWL_WIDGET(o)->flags & ((check_flags) & mask)))
+
+/**
+ * @param o: the widget to check for a specified flags
+ * @param check_flags: the bitmask of flags to check on the widget
+ * @param mask: get only the flags specified in mask
+ * @return Returns TRUE if the specified flags are set, FALSE otherwise.
+ * @brief Determines if widget has all of the requested @a flags set.
+ */
+#define ewl_widget_flags_has_all(o, check_flags, mask) \
+        ((EWL_WIDGET(o)->flags & ((check_flags) & mask)) == ((check_flags) & mask))
+
+
+/**
+ * @def ewl_widget_recursive_set(o)
+ * @param o: the widget to change the recursive flag
+ * @param val: a boolean indicating the value of the recursive flag
+ * @return Returns no value.
+ * @brief Changes the recursive flag value to match @a val.
+ */
+#define ewl_widget_recursive_set(o, val) \
+        (val ? ewl_widget_flags_add(o, EWL_FLAG_PROPERTY_RECURSIVE, \
+                                    EWL_FLAGS_PROPERTY_MASK) : \
+         ewl_widget_flags_remove(o, EWL_FLAG_PROPERTY_RECURSIVE, \
+                                    EWL_FLAGS_PROPERTY_MASK));
+
+/**
+ * @def ewl_widget_recursive_get(o)
+ * @param o: the parameter to retrieve the current value of recursive flag
+ * @return Returns the current setting of the recursive flag for @a o.
+ * @brief Retrieves the current setting of the recursive flag for @a o.
+ */
+#define ewl_widget_recursive_get(o) \
+        (ewl_widget_flags_get(o, EWL_FLAG_PROPERTY_RECURSIVE))
+
+/**
+ * @def ewl_widget_toplevel_set(o, val)
+ * @param o: the widget to change the top level flag
+ * @param val: a boolean indicating the value of the top level flag
+ * @return Returns no value.
+ * @brief Changes the top level flag value to match @a val.
+ */
+#define ewl_widget_toplevel_set(o, val) \
+        (val ? ewl_widget_flags_add(o, EWL_FLAG_PROPERTY_TOPLEVEL, \
+                                    EWL_FLAGS_PROPERTY_MASK) : \
+         ewl_widget_flags_remove(o, EWL_FLAG_PROPERTY_TOPLEVEL, \
+                                    EWL_FLAGS_PROPERTY_MASK));
+
+/**
+ * @def ewl_widget_toplevel_get(o)
+ * @param o: the parameter to retrieve the current value of top level flag
+ * @return Returns the current setting of the top level flag for @a o.
+ * @brief Retrieves the current setting of the top level flag for @a o.
+ */
+#define ewl_widget_toplevel_get(o) \
+        (ewl_widget_flags_get(o, EWL_FLAG_PROPERTY_TOPLEVEL))
+
+/**
+ * @def ewl_widget_state_add(o, state)
+ * @param o: The widget to work with
+ * @param state: The state to set into the widget
+ * Adds the given state @a state to the widget @a o
+ */
+#define ewl_widget_state_add(o, state) \
+        ewl_widget_flags_add(o, state, EWL_FLAGS_STATE_MASK)
+
+/**
+ * @def ewl_widget_state_remove(o, state)
+ * @param o: The widget to work with
+ * @param state: The state to remove
+ * Removes the given state from the given @a o widget
+ */
+#define ewl_widget_state_remove(o, state) \
+        ewl_widget_flags_remove(o, state, EWL_FLAGS_STATE_MASK)
+
+/**
+ * @def ewl_widget_state_has(o, state)
+ * @param o: The widget to check
+ * @param state: The state to check
+ * Checks if the given state @a state is set on the given widget @a o
+ */
+#define ewl_widget_state_has(o, state) \
+        ewl_widget_flags_has(o, state, EWL_FLAGS_STATE_MASK)
+
+/**
+ * @def ewl_widget_state_get(o, state)
+ * @param o: The widget to work with
+ * @param state: The state to get
+ * Retrives the given state @a state from the widget @a o
+ */
+#define ewl_widget_state_get(o, state) \
+        ewl_widget_flags_get(o, state, EWL_FLAGS_STATE_MASK)
+
+/**
+ * @def ewl_widget_queued_add(o, queued)
+ * @param o: The widget to work with
+ * @param queued: Add the given queue flag to the widget
+ * Adds the given queue flag @a queued to the widget @a o
+ */
+#define ewl_widget_queued_add(o, queued) \
+        ewl_widget_flags_add(o, queued, EWL_FLAGS_QUEUED_MASK)
+
+/**
+ * @def ewl_widget_queued_remove(o, queued)
+ * Remove the @a queued flag from the @a o widget
+ */
+#define ewl_widget_queued_remove(o, queued) \
+        ewl_widget_flags_remove(o, queued, EWL_FLAGS_QUEUED_MASK)
+
+/**
+ * @def ewl_widget_queued_has(o, queued)
+ * Determine if the @a o widget has the @a queued flag set
+ */
+#define ewl_widget_queued_has(o, queued) \
+        ewl_widget_flags_has(o, queued, EWL_FLAGS_QUEUED_MASK)
+
+/**
+ * @def ewl_widget_queued_get(o, queued)
+ * Retrieve the value for the @a queued queue flag
+ */
+#define ewl_widget_queued_get(o, queued) \
+        ewl_widget_flags_get(o, queued, EWL_FLAGS_QUEUED_MASK)
+
+/**
+ * @def ewl_widget_visible_add(o, visible)
+ * Add the @a visible flag to the widget @a o
+ */
+#define ewl_widget_visible_add(o, visible) \
+        ewl_widget_flags_add(o, visible, EWL_FLAGS_VISIBLE_MASK)
+
+/**
+ * @def ewl_widget_visible_remove(o, visible)
+ * Remove the @a visible flag from the widget @a o
+ */
+#define ewl_widget_visible_remove(o, visible) \
+        ewl_widget_flags_remove(o, visible, EWL_FLAGS_VISIBLE_MASK)
+
+/**
+ * @def ewl_widget_visible_has(o, visible)
+ * Check if the @a visible flag is set in the widget @a o
+ */
+#define ewl_widget_visible_has(o, visible) \
+        ewl_widget_flags_has(o, visible, EWL_FLAGS_VISIBLE_MASK)
+
+/**
+ * @def ewl_widget_visible_get(o, visible)
+ * Retrieves the @a visble flag from the widget @a o
+ */
+#define ewl_widget_visible_get(o, visible) \
+        ewl_widget_flags_get(o, visible, EWL_FLAGS_VISIBLE_MASK)
+
+/**
+ * @def RECURSIVE(o)
+ * Used to test if a widget is recursive, aka. an Ewl_Container
+ */
+#define RECURSIVE(o) (EWL_WIDGET(o)->flags & EWL_FLAG_PROPERTY_RECURSIVE)
+
+/**
+ * @def REALIZED(o)
+ * Used to test if a widget has been realized.
+ */
+#define REALIZED(o) (EWL_WIDGET(o)->flags & EWL_FLAG_VISIBLE_REALIZED)
+
+/**
+ * @def VISIBLE(o)
+ * Used to test if a widget is visible.
+ */
+#define VISIBLE(o) (EWL_WIDGET(o)->flags & EWL_FLAG_VISIBLE_SHOWN)
+
+/**
+ * @def REVEALED(o)
+ * Used to determine if a widget is marked as revealed.
+ */
+#define REVEALED(o) (EWL_WIDGET(o)->flags & EWL_FLAG_VISIBLE_REVEALED)
+
+/**
+ * @def HIDDEN(o)
+ * Used to determine if a widget is hidden.
+ */
+#define HIDDEN(o) (!(EWL_WIDGET(o)->flags & EWL_FLAG_VISIBLE_SHOWN))
+
+/**
+ * @def DESTROYED(o)
+ * Used to determine if a widget has been destroyed
+ */
+#define DESTROYED(o) (ewl_widget_queued_has(EWL_WIDGET(o), \
+                                        EWL_FLAG_QUEUED_SCHEDULED_DESTROY) \
+                        || ewl_widget_queued_has(EWL_WIDGET(o), \
+                                        EWL_FLAG_QUEUED_PROCESS_DESTROY))
+
+/**
+ * @def CONFIGURED(o)
+ * Used to determine if a widget is scheduled for configure
+ */
+#define CONFIGURED(o) (ewl_widget_queued_has(EWL_WIDGET(o), \
+                                        EWL_FLAG_QUEUED_SCHEDULED_CONFIGURE) \
+                        || ewl_widget_queued_has(EWL_WIDGET(o), \
+                                        EWL_FLAG_QUEUED_PROCESS_CONFIGURE))
+
+/**
+ * @def DISABLED(o)
+ * Used to determine if a widget is disabled
+ */
+#define DISABLED(o) (ewl_widget_state_has(EWL_WIDGET(o), EWL_FLAG_STATE_DISABLED))
+
+/**
+ * @def ewl_widget_in_tab_list_get(o)
+ * @param o: the parameter to retrieve the current value of the in tab list flag
+ * @return Returns the current setting of the in tab list flag for @a o.
+ * @brief Retrieves the current setting of the in tab list flag for @a o.
+ */
+#define ewl_widget_in_tab_list_get(o) \
+        (ewl_widget_flags_get(o, EWL_FLAG_PROPERTY_IN_TAB_LIST))
+
+/**
+ * @def ewl_widget_in_tab_list_set(o, val)
+ * @param o: the widget to change the in tab list
+ * @param val: a boolean indicating the value of the tab list flag
+ * @return Returns no value.
+ * @brief Changes the tab list flag value to match @a val.
+ */
+#define ewl_widget_in_tab_list_set(o, val) \
+        (val ? ewl_widget_flags_add(o, EWL_FLAG_PROPERTY_IN_TAB_LIST, \
+                                    EWL_FLAGS_PROPERTY_MASK) : \
+         ewl_widget_flags_remove(o, EWL_FLAG_PROPERTY_IN_TAB_LIST, \
+                                    EWL_FLAGS_PROPERTY_MASK));
+
 
 
 #define UNMANAGED(w) (((const Ewl_Widget *)(w))->unmanaged)

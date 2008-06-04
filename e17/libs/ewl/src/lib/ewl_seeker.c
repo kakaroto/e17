@@ -423,19 +423,15 @@ ewl_seeker_cb_mouse_move(Ewl_Widget *w, void *ev_data,
         /*
          * If the button is pressed, then continue to calculate it's value.
          */
-        if (!ewl_object_state_has(EWL_OBJECT(s->button), EWL_FLAG_STATE_PRESSED)) {
+        if (!ewl_widget_state_has(s->button, EWL_FLAG_STATE_PRESSED)) {
 
                 if (s->orientation == EWL_ORIENTATION_HORIZONTAL) {
-                        if (ewl_object_state_has(EWL_OBJECT(s),
-                                                EWL_FLAG_STATE_PRESSED)) {
+                        if (ewl_widget_state_has(s, EWL_FLAG_STATE_PRESSED))
                                 s->dragstart = ev->x;
-                        }
                 }
                 else {
-                        if (ewl_object_state_has(EWL_OBJECT(s),
-                                                EWL_FLAG_STATE_PRESSED)) {
+                        if (ewl_widget_state_has(s, EWL_FLAG_STATE_PRESSED))
                                 s->dragstart = ev->y;
-                        }
                 }
                 DRETURN(DLEVEL_STABLE);
         }
@@ -475,7 +471,7 @@ ewl_seeker_cb_mouse_down(Ewl_Widget *w, void *ev_data,
         s = EWL_SEEKER(w);
         r = EWL_RANGE(w);
 
-        if (ewl_object_state_has(EWL_OBJECT(s->button), EWL_FLAG_STATE_PRESSED))
+        if (ewl_widget_state_has(s->button, EWL_FLAG_STATE_PRESSED))
                 DRETURN(DLEVEL_STABLE);
 
         ewl_object_current_geometry_get(EWL_OBJECT(s->button),

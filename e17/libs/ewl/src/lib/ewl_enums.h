@@ -84,11 +84,10 @@ enum Ewl_Orientation
 typedef enum Ewl_Orientation Ewl_Orientation;
 
 /**
- * @enum Ewl_Flags
- * A variety of flags that affect layout, visibility, scheduling and
- * properties of objects.
+ * @enum Ewl_Object_Flags
+ * A variety of flags that affect the layout of objects.
  */
-enum Ewl_Flags
+enum Ewl_Object_Flags
 {
         /*
          * The alignment enumeration allows for specifying how an element is
@@ -112,50 +111,7 @@ enum Ewl_Flags
         EWL_FLAG_FILL_HFILL = 0x40, /**< Horizontal fill bit */
         EWL_FLAG_FILL_VFILL = 0x80, /**< Vertical fill bit */
         EWL_FLAG_FILL_FILL = EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VFILL, /**< Fill bit */
-        EWL_FLAG_FILL_ALL = EWL_FLAG_FILL_FILL | EWL_FLAG_FILL_SHRINK, /**< Shrunk and fill bit */
-
-        /*
-         * Flags identifying the visibility status of the widget
-         */
-        EWL_FLAG_VISIBLE_HIDDEN = 0,                /**< Widget hidden */
-        EWL_FLAG_VISIBLE_SHOWN = 0x100,                /**< Widget shown */
-        EWL_FLAG_VISIBLE_REALIZED = 0x200,        /**< Widget realized */
-        EWL_FLAG_VISIBLE_REVEALED = 0x400,        /**< Widget revealed */
-        EWL_FLAG_VISIBLE_NOCLIP = 0x800,        /**< Widget has no clip */
-
-        /*
-         * Behavior modifying properties.
-         */
-        EWL_FLAG_PROPERTY_RECURSIVE         = 0x1000,        /**< Widget is recursive */
-        EWL_FLAG_PROPERTY_TOPLEVEL         = 0x2000,        /**< Widget is a top level widget */
-        EWL_FLAG_PROPERTY_INTERNAL         = 0x4000,        /**< Widget is internal */
-        EWL_FLAG_PROPERTY_BLOCK_TAB_FOCUS = 0x8000,        /**< Widget will block tab focus changes */
-        EWL_FLAG_PROPERTY_FOCUSABLE         = 0x10000,        /**< Widget is focusable */
-        EWL_FLAG_PROPERTY_IN_TAB_LIST         = 0x20000,         /**< Widget is in the tab order */
-        EWL_FLAG_PROPERTY_DND_TARGET        = 0x40000,        /**< Widget is DND aware */
-        EWL_FLAG_PROPERTY_DND_SOURCE        = 0x80000,        /**< Widget is dragable */
-
-        /*
-         * Flags to indicate queues this object is on.
-         */
-        EWL_FLAG_QUEUED_SCHEDULED_CONFIGURE = 0x100000,        /**< Configure scheduled */
-        EWL_FLAG_QUEUED_SCHEDULED_REVEAL = 0x200000,        /**< Reveal scheduled */
-        EWL_FLAG_QUEUED_SCHEDULED_DESTROY = 0x400000,        /**< Delete scheduled */
-
-        EWL_FLAG_QUEUED_PROCESS_CONFIGURE = 0x800000,        /**< Configure in progress */
-        EWL_FLAG_QUEUED_PROCESS_REVEAL = 0x1000000,        /**< Reveal in progress */
-        EWL_FLAG_QUEUED_PROCESS_DESTROY = 0x2000000,        /**< Delete in progress */
-
-        /*
-         * The state enum specifies the current state of a widget, ie. has it
-         * been clicked, does it have the keyboard focus, etc.
-         */
-        EWL_FLAG_STATE_NORMAL         = 0,                /**< Widget state normal */
-        EWL_FLAG_STATE_MOUSE_IN = 0x4000000,        /**< Mouse is in the widget */
-        EWL_FLAG_STATE_PRESSED         = 0x8000000,        /**< Widget is pressed */
-        EWL_FLAG_STATE_FOCUSED         = 0x10000000,        /**< Widget has focus */
-        EWL_FLAG_STATE_DISABLED = 0x20000000,        /**< Widget is disabled */
-        EWL_FLAG_STATE_DND         = 0x40000000,        /**< Widget is engaged in DND */
+        EWL_FLAG_FILL_ALL = EWL_FLAG_FILL_FILL | EWL_FLAG_FILL_SHRINK /**< Shrunk and fill bit */
 };
 
 /**
@@ -178,6 +134,58 @@ enum Ewl_Flags
  */
 #define EWL_FLAGS_FILL_MASK (EWL_FLAG_FILL_NONE | EWL_FLAG_FILL_SHRINK | \
                 EWL_FLAG_FILL_FILL)
+
+/**
+ * @enum Ewl_Widget_Flags
+ * A variety of flags that affect visibility, scheduling and
+ * properties of widgets.
+ */
+enum Ewl_Widget_Flags
+{
+        /*
+         * Flags identifying the visibility status of the widget
+         */
+        EWL_FLAG_VISIBLE_HIDDEN   = 0,          /**< Widget hidden */
+        EWL_FLAG_VISIBLE_SHOWN    = 0x1,        /**< Widget shown */
+        EWL_FLAG_VISIBLE_REALIZED = 0x2,        /**< Widget realized */
+        EWL_FLAG_VISIBLE_REVEALED = 0x4,        /**< Widget revealed */
+        EWL_FLAG_VISIBLE_NOCLIP   = 0x8,        /**< Widget has no clip */
+
+        /*
+         * Behavior modifying properties.
+         */
+        EWL_FLAG_PROPERTY_RECURSIVE       = 0x10,  /**< Widget is recursive */
+        EWL_FLAG_PROPERTY_TOPLEVEL        = 0x20,  /**< Widget is a top level widget */
+        EWL_FLAG_PROPERTY_INTERNAL        = 0x40,  /**< Widget is internal */
+        EWL_FLAG_PROPERTY_BLOCK_TAB_FOCUS = 0x80,  /**< Widget will block tab focus changes */
+        EWL_FLAG_PROPERTY_FOCUSABLE       = 0x100, /**< Widget is focusable */
+        EWL_FLAG_PROPERTY_IN_TAB_LIST     = 0x200, /**< Widget is in the tab order */
+        EWL_FLAG_PROPERTY_DND_TARGET      = 0x400, /**< Widget is DND aware */
+        EWL_FLAG_PROPERTY_DND_SOURCE      = 0x800, /**< Widget is dragable */
+
+        /*
+         * Flags to indicate queues this object is on.
+         */
+        EWL_FLAG_QUEUED_SCHEDULED_CONFIGURE = 0x1000,  /**< Configure scheduled */
+        EWL_FLAG_QUEUED_SCHEDULED_REVEAL    = 0x2000,  /**< Reveal scheduled */
+        EWL_FLAG_QUEUED_SCHEDULED_DESTROY   = 0x4000,  /**< Delete scheduled */
+
+        EWL_FLAG_QUEUED_PROCESS_CONFIGURE   = 0x8000,  /**< Configure in progress */
+        EWL_FLAG_QUEUED_PROCESS_REVEAL      = 0x10000, /**< Reveal in progress */
+        EWL_FLAG_QUEUED_PROCESS_DESTROY     = 0x20000, /**< Delete in progress */
+
+        /*
+         * The state enum specifies the current state of a widget, ie. has it
+         * been clicked, does it have the keyboard focus, etc.
+         */
+        EWL_FLAG_STATE_NORMAL   = 0,         /**< Widget state normal */
+        EWL_FLAG_STATE_MOUSE_IN = 0x40000,   /**< Mouse is in the widget */
+        EWL_FLAG_STATE_PRESSED  = 0x80000,   /**< Widget is pressed */
+        EWL_FLAG_STATE_FOCUSED  = 0x100000,  /**< Widget has focus */
+        EWL_FLAG_STATE_DISABLED = 0x200000,  /**< Widget is disabled */
+        EWL_FLAG_STATE_DND      = 0x400000,  /**< Widget is engaged in DND */
+};
+
 
 /**
  * @def EWL_FLAGS_VISIBLE_MASK

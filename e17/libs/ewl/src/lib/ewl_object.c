@@ -1358,7 +1358,7 @@ ewl_object_alignment_get(Ewl_Object *o)
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR_RET(o, 0);
 
-        DRETURN_INT(ewl_object_flags_get(o, EWL_FLAGS_ALIGN_MASK), DLEVEL_STABLE);
+        DRETURN_INT(o->flags & EWL_FLAGS_ALIGN_MASK, DLEVEL_STABLE);
 }
 
 /**
@@ -1372,6 +1372,6 @@ ewl_object_fill_policy_get(Ewl_Object *o)
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR_RET(o, 0);
 
-        DRETURN_INT(ewl_object_flags_get(o, EWL_FLAGS_FILL_MASK), DLEVEL_STABLE);
+        DRETURN_INT(o->flags & EWL_FLAGS_FILL_MASK, DLEVEL_STABLE);
 }
 
