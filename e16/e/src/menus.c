@@ -921,7 +921,7 @@ MenuRedraw(Menu * m)
 	EGetWindowBackgroundPixmap(m->win);
 	EXCopyAreaTiled(m->pmm.pmap, None, WinGetPmap(m->win),
 			0, 0, m->w, m->h, 0, 0);
-	EShapeCombineMask(m->win, ShapeBounding, 0, 0, m->pmm.mask, ShapeSet);
+	EShapeSetMask(m->win, 0, 0, m->pmm.mask);
 	EClearWindow(m->win);
 	for (i = 0; i < m->num; i++)
 	   MenuDrawItem(m, m->items[i], 0, -1);
@@ -996,7 +996,7 @@ MenuDrawItem(Menu * m, MenuItem * mi, char shape, int state)
      }
 
    ESetWindowBackgroundPixmap(mi->win, mi_pmm->pmap);
-   EShapeCombineMask(mi->win, ShapeBounding, 0, 0, mi_pmm->mask, ShapeSet);
+   EShapeSetMask(mi->win, 0, 0, mi_pmm->mask);
    EClearWindow(mi->win);
 
    if ((shape) && (m->style->use_item_bg))

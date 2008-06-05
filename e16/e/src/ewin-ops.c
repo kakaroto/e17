@@ -850,8 +850,7 @@ EwinInstantUnShade(EWin * ewin)
 
 #define _EWIN_ADJUST_SHAPE(ewin, xo, yo) \
   do { \
-    EShapeCombineShape(ewin->win_container, ShapeBounding, xo, yo, \
-                       EwinGetClientWin(ewin), ShapeBounding, ShapeSet); \
+    EShapeSetShape(ewin->win_container, xo, yo, EwinGetClientWin(ewin)); \
     ewin->update.shape = 1; \
   } while (0)
 

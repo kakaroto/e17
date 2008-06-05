@@ -25,6 +25,7 @@
 #include "xwin.h"
 #include <sys/ipc.h>
 #include <sys/shm.h>
+#include <X11/Xutil.h>
 #include <X11/extensions/XShm.h>
 
 void

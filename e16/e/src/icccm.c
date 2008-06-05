@@ -28,6 +28,7 @@
 #include "hints.h"
 #include "session.h"
 #include "xwin.h"
+#include <X11/Xutil.h>
 #if USE_XSYNC
 #include "timers.h"
 #include <X11/extensions/sync.h>

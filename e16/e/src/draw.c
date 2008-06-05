@@ -236,8 +236,10 @@ _ShapeSet(ShapeWin * sw, int md, int x, int y, int w, int h,
 		       0, 0, WinGetW(VROOT), WinGetH(VROOT));
 	XSetForeground(disp, sw->gc, 1);
 	DO_DRAW_MODE_1(sw->mask, sw->gc, x, y, w, h);
-	EShapeCombineMask(EoGetWin(sw), ShapeBounding, 0, 0, sw->mask,
-			  (seqno == 0) ? ShapeSet : ShapeUnion);
+	if (seqno == 0)
+	   EShapeSetMask(EoGetWin(sw), 0, 0, sw->mask);
+	else
+	   EShapeUnionMask(EoGetWin(sw), 0, 0, sw->mask);
      }
    else
      {
@@ -248,9 +250,10 @@ _ShapeSet(ShapeWin * sw, int md, int x, int y, int w, int h,
 	h = (h > 5) ? h - 2 : 3;
 	_SHAPE_SET_RECT((&rl[4]), x + bl + 1, y + bt + 1, w, h);
 
-	EShapeCombineRectangles(EoGetWin(sw), ShapeBounding, 0, 0, rl,
-				8, (seqno == 0) ? ShapeSet : ShapeUnion,
-				Unsorted);
+	if (seqno == 0)
+	   EShapeSetRects(EoGetWin(sw), 0, 0, rl, 8);
+	else
+	   EShapeUnionRects(EoGetWin(sw), 0, 0, rl, 8);
      }
    EoShapeUpdate(sw, 0);
 }

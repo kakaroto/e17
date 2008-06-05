@@ -160,7 +160,7 @@ WarpFocusWinShow(WarpFocusWin * fw)
    fw->mh = h;
 
    /* Reset shape */
-   EShapeCombineMask(EoGetWin(fw), ShapeBounding, 0, 0, None, ShapeSet);
+   EShapeSetMask(EoGetWin(fw), 0, 0, None);
 
    ScreenGetAvailableAreaByPointer(&x, &y, &ww, &hh);
    x += (ww - w) / 2;

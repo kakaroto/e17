@@ -1179,10 +1179,9 @@ ITApply(Win win, ImageClass * ic, ImageState * is,
 	       }
 
 	     if (pmm.w == w && pmm.h == h)
-		EShapeCombineMask(win, ShapeBounding, 0, 0, pmm.mask, ShapeSet);
+		EShapeSetMask(win, 0, 0, pmm.mask);
 	     else if (pmm.mask)
-		EShapeCombineMaskTiled(win, ShapeBounding, 0, 0,
-				       pmm.mask, ShapeSet, w, h);
+		EShapeSetMaskTiled(win, 0, 0, pmm.mask, w, h);
 	  }
 
 	FreePmapMask(&pmm);

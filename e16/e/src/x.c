@@ -30,6 +30,7 @@
 #include <X11/Xatom.h>
 #include <X11/Xutil.h>
 #include <X11/Xresource.h>
+#include <X11/extensions/shape.h>
 #if USE_COMPOSITE
 #include <X11/extensions/Xrender.h>
 #endif
@@ -1290,7 +1291,7 @@ EShapeUpdate(Win win)
 #endif
 }
 
-void
+static void
 EShapeCombineMask(Win win, int dest, int x, int y, Pixmap pmap, int op)
 {
    char                wasshaped = 0;
@@ -1319,7 +1320,7 @@ EShapeCombineMask(Win win, int dest, int x, int y, Pixmap pmap, int op)
       XShapeCombineMask(disp, win->xwin, dest, x, y, pmap, op);
 }
 
-void
+static void
 EShapeCombineMaskTiled(Win win, int dest, int x, int y,
 		       Pixmap pmap, int op, int w, int h)
 {
@@ -1340,7 +1341,7 @@ EShapeCombineMaskTiled(Win win, int dest, int x, int y,
    EFreePixmap(tm);
 }
 
-void
+static void
 EShapeCombineRectangles(Win win, int dest, int x, int y,
 			XRectangle * rect, int n_rects, int op, int ordering)
 {
@@ -1378,53 +1379,15 @@ EShapeCombineRectangles(Win win, int dest, int x, int y,
    EShapeUpdate(win);
 }
 
-int
-EShapeCopy(Win dst, Win src)
+static void
+EShapeCombineShape(Win win, int dest, int x, int y,
+		   Win src_win, int src_kind, int op)
 {
-   XRectangle         *rl;
-   int                 rn;
+   if (!win)
+      return;
 
-   if (!src || !dst)
-      return 0;
-
-   if (src->attached)
-      EShapeUpdate(src);
-
-   rn = src->num_rect;
-   rl = src->rects;
-
-   if (rn < 0)
-     {
-	/* Source has empty shape */
-	EShapeCombineShape(dst, ShapeBounding, 0, 0,
-			   src, ShapeBounding, ShapeSet);
-     }
-   else if (rn == 0)
-     {
-	/* Source has default shape (no shape) */
-	EShapeCombineMask(dst, ShapeBounding, 0, 0, None, ShapeSet);
-     }
-   else if (rn == 1)
-     {
-	if ((rl[0].x <= 0) && (rl[0].y <= 0) && (rl[0].width >= src->w)
-	    && (rl[0].height >= src->h))
-	  {
-	     rn = 0;
-	     EShapeCombineMask(dst, ShapeBounding, 0, 0, None, ShapeSet);
-	  }
-	else
-	  {
-	     EShapeCombineShape(dst, ShapeBounding, 0, 0,
-				src, ShapeBounding, ShapeSet);
-	  }
-     }
-   else
-     {
-	EShapeCombineShape(dst, ShapeBounding, 0, 0,
-			   src, ShapeBounding, ShapeSet);
-     }
-
-   return rn != 0;
+   XShapeCombineShape(disp, win->xwin, dest, x, y, src_win->xwin, src_kind, op);
+   EShapeUpdate(win);
 }
 
 int
@@ -1536,17 +1499,6 @@ EShapePropagate(Win win)
    return 0;
 }
 
-void
-EShapeCombineShape(Win win, int dest, int x, int y,
-		   Win src_win, int src_kind, int op)
-{
-   if (!win)
-      return;
-
-   XShapeCombineShape(disp, win->xwin, dest, x, y, src_win->xwin, src_kind, op);
-   EShapeUpdate(win);
-}
-
 int
 EShapeCheck(Win win)
 {
@@ -1554,6 +1506,46 @@ EShapeCheck(Win win)
       return 0;
 
    return win->num_rect;
+}
+
+void
+EShapeSetMask(Win win, int x, int y, Pixmap mask)
+{
+   EShapeCombineMask(win, ShapeBounding, x, y, mask, ShapeSet);
+}
+
+void
+EShapeUnionMask(Win win, int x, int y, Pixmap mask)
+{
+   EShapeCombineMask(win, ShapeBounding, x, y, mask, ShapeUnion);
+}
+
+void
+EShapeSetMaskTiled(Win win, int x, int y, Pixmap mask, int w, int h)
+{
+   EShapeCombineMaskTiled(win, ShapeBounding, x, y, mask, ShapeSet, w, h);
+}
+
+void
+EShapeSetRects(Win win, int x, int y, XRectangle * rect, int n_rects)
+{
+   EShapeCombineRectangles(win, ShapeBounding, x, y, rect, n_rects,
+			   ShapeSet, Unsorted);
+}
+
+void
+EShapeUnionRects(Win win, int x, int y, XRectangle * rect, int n_rects)
+{
+   EShapeCombineRectangles(win, ShapeBounding, x, y, rect, n_rects,
+			   ShapeUnion, Unsorted);
+}
+
+int
+EShapeSetShape(Win win, int x, int y, Win src_win)
+{
+   EShapeCombineShape(win, ShapeBounding, x, y,
+		      src_win, ShapeBounding, ShapeSet);
+   return win->num_rect != 0;
 }
 
 Pixmap

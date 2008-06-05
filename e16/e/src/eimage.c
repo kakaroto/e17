@@ -465,7 +465,7 @@ EImageApplyToWin(EImage * im, Win win, int flags, int w, int h)
    EImageRenderPixmaps(im, win, flags, &pmap, &mask, w, h);
    ESetWindowBackgroundPixmap(win, pmap);
    if ((mask != None) || (mask == None && WinIsShaped(win)))
-      EShapeCombineMask(win, ShapeBounding, 0, 0, mask, ShapeSet);
+      EShapeSetMask(win, 0, 0, mask);
    EImagePixmapsFree(pmap, mask);
    EClearWindow(win);
 }

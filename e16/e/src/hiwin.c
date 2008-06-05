@@ -99,7 +99,7 @@ HiwinRenderImageInit(Hiwin * phi)
    ESetWindowBackgroundPixmap(EoGetWin(phi), None);
 
    /* Reset shape */
-   EShapeCombineMask(EoGetWin(phi), ShapeBounding, 0, 0, None, ShapeSet);
+   EShapeSetMask(EoGetWin(phi), 0, 0, None);
    EoShapeUpdate(phi, 0);
 }
 

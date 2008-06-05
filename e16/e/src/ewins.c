@@ -39,6 +39,7 @@
 #include "timers.h"
 #include "windowmatch.h"
 #include "xwin.h"
+#include <X11/extensions/shape.h>
 
 #define EWIN_TOP_EVENT_MASK \
   (/* ButtonPressMask | ButtonReleaseMask | */ \
@@ -600,7 +601,8 @@ void
 EwinUpdateShapeInfo(EWin * ewin)
 {
    EGrabServer();
-   ewin->state.shaped = EShapeCopy(ewin->win_container, EwinGetClientWin(ewin));
+   ewin->state.shaped =
+      EShapeSetShape(ewin->win_container, 0, 0, EwinGetClientWin(ewin));
    EUngrabServer();
 
    if (EDebug(EX_EVENT_SHAPE_NOTIFY))

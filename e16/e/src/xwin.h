@@ -25,7 +25,6 @@
 #define _XWIN_H_
 
 #include <X11/Xlib.h>
-#include <X11/extensions/shape.h>
 #include "util.h"
 #include "xtypes.h"
 
@@ -216,16 +215,15 @@ Pixmap              ECreatePixmap(Win win, unsigned int width,
 				  unsigned int height, unsigned int depth);
 void                EFreePixmap(Pixmap pixmap);
 
-void                EShapeCombineMask(Win win, int dest, int x, int y,
-				      Pixmap pmap, int op);
-void                EShapeCombineMaskTiled(Win win, int dest, int x, int y,
-					   Pixmap pmap, int op, int w, int h);
-void                EShapeCombineRectangles(Win win, int dest, int x, int y,
-					    XRectangle * rect, int n_rects,
-					    int op, int ordering);
-void                EShapeCombineShape(Win win, int dest, int x, int y,
-				       Win src_win, int src_kind, int op);
-int                 EShapeCopy(Win dst, Win src);
+void                EShapeSetMask(Win win, int x, int y, Pixmap mask);
+void                EShapeUnionMask(Win win, int x, int y, Pixmap mask);
+void                EShapeSetMaskTiled(Win win, int x, int y, Pixmap mask,
+				       int w, int h);
+void                EShapeSetRects(Win win, int x, int y,
+				   XRectangle * rect, int n_rects);
+void                EShapeUnionRects(Win win, int x, int y,
+				     XRectangle * rect, int n_rects);
+int                 EShapeSetShape(Win win, int x, int y, Win src_win);
 int                 EShapePropagate(Win win);
 int                 EShapeCheck(Win win);
 Pixmap              EWindowGetShapePixmap(Win win);

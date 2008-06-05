@@ -26,6 +26,7 @@
 #include "eimage.h"
 #include "xwin.h"
 #include <sys/time.h>
+#include <X11/extensions/shape.h>
 
 static              Window
 ExtInitWinMain(void)
