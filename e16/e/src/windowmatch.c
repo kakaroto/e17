@@ -674,12 +674,14 @@ WindowMatchEwinOpsAction(EWin * ewin, int op, const char *args)
 	EoSetDesk(ewin, DeskGet(atoi(args)));
 	break;
 
+#if 0				/* Causes crash */
      case EWIN_OP_AREA:
 	a = b = 0;
 	if (sscanf(args, "%u %u", &a, &b) < 2)
 	   break;
 	EwinMoveToArea(ewin, a, b);	/* FIXME - We should not move here */
 	break;
+#endif
 
      case EWIN_OP_MOVE:
 	a = ewin->client.x;
