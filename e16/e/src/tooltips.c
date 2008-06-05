@@ -91,8 +91,13 @@ TooltipCreate(const char *name, const char *ic0, const char *ic1,
 	      const char *tclass, int dist, const char *tooltippic)
 {
    ToolTip            *tt;
+   ImageClass         *ic;
 
    if (ic0 == NULL || tclass == NULL)
+      return NULL;
+
+   ic = ImageclassAlloc(ic0, 0);
+   if (!ic)
       return NULL;
 
    tt = ECALLOC(ToolTip, 1);
@@ -104,7 +109,7 @@ TooltipCreate(const char *name, const char *ic0, const char *ic1,
    tt->iclass[1] = ImageclassAlloc(ic2, 0);
    tt->iclass[2] = ImageclassAlloc(ic3, 0);
    tt->iclass[3] = ImageclassAlloc(ic4, 0);
-   tt->iclass[4] = ImageclassAlloc(ic0, 0);
+   tt->iclass[4] = ic;
    tt->tclass = TextclassAlloc(tclass, 1);
    tt->tooltippic = ImageclassAlloc(tooltippic, 0);
 
