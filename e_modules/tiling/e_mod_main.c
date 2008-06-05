@@ -36,6 +36,7 @@ static E_Action *act_toggletiling = NULL,
 		*act_moveright = NULL,
 		*act_movetop = NULL,
 		*act_movebottom = NULL;
+static int currently_switching_desktop = 0;
 
 /* This hash holds the Tiling_Info-pointers for each desktop */
 static Evas_Hash *info_hash = NULL;
@@ -785,6 +786,9 @@ _e_module_tiling_hide_hook(void *data, int type, void *event)
    DBG("hide-hook\n");
    E_Event_Border_Hide *ev = event;
    rearrange_windows(ev->border, 1);
+
+   if (currently_switching_desktop) return;
+
    /* Ensure that the border is deleted from all available desks */
    static Tiling_Info *_tinfo = NULL;
    Evas_List *l, *ll, *lll, *llll;
@@ -814,6 +818,7 @@ _e_module_tiling_desk_show(void *data, int type, void *event)
 {
    E_Event_Desk_Show *ev = event;
    _desk_show(ev->desk);
+   currently_switching_desktop = 0;
 }
 
 static int
@@ -821,6 +826,7 @@ _e_module_tiling_desk_before_show(void *data, int type, void *event)
 {
    E_Event_Desk_Before_Show *ev = event;
    _desk_before_show(ev->desk);
+   currently_switching_desktop = 1;
 }
 
 static Evas_Bool

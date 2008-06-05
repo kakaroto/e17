@@ -5,6 +5,8 @@
 #include "trivials.h"
 #include <stdarg.h>
 
+#define DEBUG
+
 void
 change_window_border(E_Border *bd, char *bordername)
 {
