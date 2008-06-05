@@ -1,0 +1,3 @@
+debian/tmp/usr/lib/enlightenment/modules/tiling/*.desktop
+debian/tmp/usr/lib/enlightenment/modules/tiling/*.edj
+debian/tmp/usr/lib/enlightenment/modules/tiling/*/*.so
