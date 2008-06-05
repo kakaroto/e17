@@ -441,6 +441,7 @@ ECreateObjectWindow(Win parent, int x, int y, int w, int h, int saveunder,
    switch (type)
      {
      default:
+     case WIN_TYPE_NO_ARGB:
 	break;
      case WIN_TYPE_CLIENT:
 	if (Conf.testing.argb_clients || EVisualIsARGB(cwin->visual))

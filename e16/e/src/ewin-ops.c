@@ -90,7 +90,8 @@ static const WinOp  winops[] = {
    {"no_wm_focus", 0, 1, 1, EWIN_OP_INH_WM_FOCUS},
 
    {"fade", 0, 1, 1, EWIN_OP_FADE},
-   {"noredir", 4, 1, 1, EWIN_OP_NO_REDIRECT},
+   {"no_redir", 4, 1, 1, EWIN_OP_NO_REDIRECT},
+   {"no_argb", 0, 1, 1, EWIN_OP_NO_ARGB},
 
    {NULL, 0, 0, 0, EWIN_OP_INVALID}	/* Terminator */
 };

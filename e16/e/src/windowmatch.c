@@ -778,6 +778,10 @@ WindowMatchEwinOpsAction(EWin * ewin, int op, const char *args)
      case EWIN_OP_NO_REDIRECT:
 	WINOP_SET_BOOL(ewin->o.noredir, args);
 	break;
+
+     case EWIN_OP_NO_ARGB:
+	WINOP_SET_BOOL(ewin->props.no_argb, args);
+	break;
 #endif
      }
 }

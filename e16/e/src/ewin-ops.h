@@ -74,6 +74,7 @@ typedef enum {
    EWIN_OP_FADE,
    EWIN_OP_SHADOW,
    EWIN_OP_NO_REDIRECT,
+   EWIN_OP_NO_ARGB,
 } winop_e;
 
 typedef struct {

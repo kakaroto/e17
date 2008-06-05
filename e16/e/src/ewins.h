@@ -137,6 +137,7 @@ struct _ewin {
       unsigned            skip_winlist:1;
       unsigned            focusclick:1;	/* Click to focus */
       unsigned            no_button_grabs:1;
+      unsigned            no_argb:1;	/* Do not use ARGB frame */
 
       /* Derived from other properties */
       unsigned            no_border:1;	/* Never apply border (MWM/netwm type) */

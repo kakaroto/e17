@@ -232,7 +232,7 @@ EwinManage(EWin * ewin)
    frame = EoGetWin(ewin);
    if (!frame)
      {
-	type = WIN_TYPE_CLIENT;
+	type = (ewin->props.no_argb) ? WIN_TYPE_NO_ARGB : WIN_TYPE_CLIENT;
 	frame =
 	   ECreateObjectWindow(VROOT, ewin->client.x, ewin->client.y,
 			       ewin->client.w, ewin->client.h, 0, type,
@@ -319,7 +319,6 @@ EwinConfigure(EWin * ewin)
 {
    EwinStateUpdate(ewin);
 
-   WindowMatchEwinOps(ewin);	/* Window matches */
    if (!EwinIsInternal(ewin) && Mode.wm.startup)
       EHintsGetInfo(ewin);	/* E restart hints */
    EwinHintsInferProps(ewin);
@@ -689,6 +688,7 @@ AddToFamily(EWin * ewin, Window xwin)
      }
 
    EwinGetHints(ewin);
+   WindowMatchEwinOps(ewin);	/* Window matches */
    EwinManage(ewin);
    EwinConfigure(ewin);
 
@@ -947,6 +947,7 @@ AddInternalToFamily(Win win, const char *bname, int type,
       goto done;
 
    EwinGetAttributes(ewin, win, None);
+   WindowMatchEwinOps(ewin);	/* Window matches */
    EwinManage(ewin);
 
    ewin->data = ptr;
