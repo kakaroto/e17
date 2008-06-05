@@ -219,6 +219,7 @@ EwinManage(EWin * ewin)
 {
    XSetWindowAttributes att;
    Win                 frame;
+   int                 type;
 
    if (ewin->client.w <= 0)
       ewin->client.w = 100;
@@ -231,9 +232,10 @@ EwinManage(EWin * ewin)
    frame = EoGetWin(ewin);
    if (!frame)
      {
+	type = WIN_TYPE_CLIENT;
 	frame =
 	   ECreateObjectWindow(VROOT, ewin->client.x, ewin->client.y,
-			       ewin->client.w, ewin->client.h, 0, 0,
+			       ewin->client.w, ewin->client.h, 0, type,
 			       EwinGetClientWin(ewin));
 	ewin->win_container =
 	   ECreateWindow(frame, 0, 0, ewin->client.w, ewin->client.h, 0);

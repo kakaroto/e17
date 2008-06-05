@@ -440,17 +440,18 @@ ECreateObjectWindow(Win parent, int x, int y, int w, int h, int saveunder,
 
    switch (type)
      {
-     case 0:			/* Client window */
+     default:
+	break;
+     case WIN_TYPE_CLIENT:
 	if (Conf.testing.argb_clients || EVisualIsARGB(cwin->visual))
 	   argb = 1;
 	break;
-     default:
-     case 1:			/* Internal */
+     case WIN_TYPE_INTERNAL:
 	if (Conf.testing.argb_internal_objects)
 	   argb = 1;
 	break;
 #if USE_GLX
-     case 2:			/* Internal GL */
+     case WIN_TYPE_GLX:	/* Internal GL */
 	argb = 1;
 	win =
 	   ECreateWindowVD(parent, x, y, w, h, EGlGetVisual(), EGlGetDepth());

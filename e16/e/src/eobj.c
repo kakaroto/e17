@@ -159,9 +159,9 @@ EobjIsShaped(const EObj * eo)
 #endif
 
 #if USE_GLX
-#define WINTYPE(t) ((t == EOBJ_TYPE_GLX) ? 2 : 1)
+#define WINTYPE(t) ((t == EOBJ_TYPE_GLX) ? WIN_TYPE_GLX : WIN_TYPE_INTERNAL)
 #else
-#define WINTYPE(t) 1
+#define WINTYPE(t) WIN_TYPE_INTERNAL
 #endif
 
 void
