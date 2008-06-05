@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-05-24 15:56+0200\n"
+"POT-Creation-Date: 2008-06-05 14:43+0200\n"
 "PO-Revision-Date: 2000-03-29 21:12+0200\n"
 "Last-Translator: Matthias Warkus <mawa@iname.com>\n"
 "Language-Team: Enlightenment l10n <e-develop@enlightenment.org>\n"
@@ -45,7 +45,7 @@ msgstr ""
 
 #: src/aclass.c:198 src/backgrounds.c:237 src/borders.c:635 src/buttons.c:181
 #: src/cmclass.c:84 src/cursors.c:121 src/iclass.c:351 src/tclass.c:111
-#: src/tooltips.c:129
+#: src/tooltips.c:135
 #, c-format
 msgid "%u references remain\n"
 msgstr "%u Referenzen verbleiben\n"
@@ -677,84 +677,84 @@ msgstr ""
 "ganz nach unten zu bringen.\n"
 
 # src/settings.c:830 src/settings.c:889
-#: src/desktops.c:2268 src/desktops.c:2307
+#: src/desktops.c:2262 src/desktops.c:2301
 #, c-format
 msgid "%i Desktops"
 msgstr "%i Desktops"
 
 # src/settings.c:832 src/settings.c:891
-#: src/desktops.c:2270 src/desktops.c:2309
+#: src/desktops.c:2264 src/desktops.c:2303
 #, c-format
 msgid "%i Desktop"
 msgstr "%i Desktop"
 
 # src/settings.c:882
-#: src/desktops.c:2302
+#: src/desktops.c:2296
 msgid "Number of virtual desktops:\n"
 msgstr "Anzahl virtueller Desktops:\n"
 
 # src/settings.c:1750
-#: src/desktops.c:2331
+#: src/desktops.c:2325
 msgid "Slide desktops around when changing"
 msgstr "Desktops gleiten beim Wechseln herum"
 
 # src/settings.c:1922
-#: src/desktops.c:2337
+#: src/desktops.c:2331
 #, fuzzy
 msgid "Desktop Slide speed:\n"
 msgstr "Desktop-Gleitgeschwindigkeit (langsam)\n"
 
 # src/settings.c:1120
-#: src/desktops.c:2351
+#: src/desktops.c:2345
 #, fuzzy
 msgid "Wrap desktops around"
 msgstr "Virtuelle Desktops zyklisch durchlaufen"
 
 # src/settings.c:1858
-#: src/desktops.c:2359
+#: src/desktops.c:2353
 msgid "Display desktop dragbar"
 msgstr "Desktop-Ziehbalken anzeigen"
 
 # src/settings.c:1867
-#: src/desktops.c:2365
+#: src/desktops.c:2359
 msgid "Drag bar position:"
 msgstr "Position des Ziehbalkens:"
 
 # src/settings.c:1878
-#: src/desktops.c:2369
+#: src/desktops.c:2363
 msgid "Top"
 msgstr "Oben"
 
 # src/settings.c:1885
-#: src/desktops.c:2375
+#: src/desktops.c:2369
 msgid "Bottom"
 msgstr "Unten"
 
 # src/settings.c:218 src/settings.c:250 src/settings.c:282
 # src/settings.c:1896
-#: src/desktops.c:2381 src/pager.c:1925 src/pager.c:1950 src/pager.c:1975
+#: src/desktops.c:2375 src/pager.c:1925 src/pager.c:1950 src/pager.c:1975
 msgid "Left"
 msgstr "Links"
 
 # src/settings.c:234 src/settings.c:266 src/settings.c:298
 # src/settings.c:1903
-#: src/desktops.c:2387 src/pager.c:1937 src/pager.c:1962 src/pager.c:1987
+#: src/desktops.c:2381 src/pager.c:1937 src/pager.c:1962 src/pager.c:1987
 msgid "Right"
 msgstr "Rechts"
 
 # src/snaps.c:453
-#: src/desktops.c:2395 src/menus-misc.c:706
+#: src/desktops.c:2389 src/menus-misc.c:706
 #, fuzzy
 msgid "Desks"
 msgstr "Desktop"
 
 # src/settings.c:856
-#: src/desktops.c:2396
+#: src/desktops.c:2390
 msgid "Multiple Desktop Settings"
 msgstr "Mehrfach-Desktop-Einstellungen"
 
 # src/main.c:89
-#: src/desktops.c:2399
+#: src/desktops.c:2393
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -763,7 +763,7 @@ msgstr ""
 "Einstellungsdialog\n"
 
 # src/settings.c:1007 src/settings.c:1072
-#: src/desktops.c:2469 src/desktops.c:2504
+#: src/desktops.c:2463 src/desktops.c:2498
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -773,7 +773,7 @@ msgstr ""
 "Bildschirme groß"
 
 # src/settings.c:1010 src/settings.c:1075
-#: src/desktops.c:2472 src/desktops.c:2507
+#: src/desktops.c:2466 src/desktops.c:2501
 msgid ""
 "1\n"
 "Screen in size"
@@ -782,47 +782,47 @@ msgstr ""
 "Bildschirm groß"
 
 # src/settings.c:1066
-#: src/desktops.c:2500
+#: src/desktops.c:2494
 msgid "Virtual Desktop size:\n"
 msgstr "Virtuelle Desktopgröße:\n"
 
 # src/settings.c:1120
-#: src/desktops.c:2541
+#: src/desktops.c:2535
 msgid "Wrap virtual desktops around"
 msgstr "Virtuelle Desktops zyklisch durchlaufen"
 
-#: src/desktops.c:2548
+#: src/desktops.c:2542
 msgid "Edge Flip Mode:"
 msgstr ""
 
-#: src/desktops.c:2551
+#: src/desktops.c:2545
 msgid "Off"
 msgstr ""
 
-#: src/desktops.c:2556
+#: src/desktops.c:2550
 msgid "On"
 msgstr ""
 
-#: src/desktops.c:2561
+#: src/desktops.c:2555
 msgid "Only when moving window"
 msgstr ""
 
 # src/settings.c:1134
-#: src/desktops.c:2567
+#: src/desktops.c:2561
 msgid "Resistance at edge of screen:\n"
 msgstr "Widerstand der Bildschirmkante:\n"
 
-#: src/desktops.c:2579
+#: src/desktops.c:2573
 msgid "Areas"
 msgstr ""
 
 # src/settings.c:1040
-#: src/desktops.c:2580
+#: src/desktops.c:2574
 msgid "Virtual Desktop Settings"
 msgstr "Einstellungen zu virtuellen Desktops"
 
 # src/settings.c:1040
-#: src/desktops.c:2583
+#: src/desktops.c:2577
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -836,7 +836,7 @@ msgstr ""
 # src/settings.c:1460 src/settings.c:1522 src/settings.c:1610
 # src/settings.c:2012 src/settings.c:3405 src/settings.c:3750
 # src/settings.c:4048 src/settings.c:4186 src/snaps.c:547 src/sound.c:262
-#: src/dialog.c:860 src/dialog.c:2077 src/dialog.c:2108 src/events.c:85
+#: src/dialog.c:860 src/dialog.c:2077 src/dialog.c:2108 src/events.c:86
 #: src/setup.c:157 src/sound.c:203
 msgid "OK"
 msgstr "OK"
@@ -855,7 +855,7 @@ msgstr "Übernehmen"
 msgid "Attention !!!"
 msgstr "Achtung!"
 
-#: src/ecompmgr.c:2611
+#: src/ecompmgr.c:2626
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -864,12 +864,12 @@ msgid ""
 msgstr ""
 
 # src/setup.c:294 src/setup.c:340
-#: src/events.c:85
+#: src/events.c:86
 msgid "X server setup error"
 msgstr "Einstellungsfehler im X-Server"
 
 # src/setup.c:296
-#: src/events.c:86
+#: src/events.c:87
 msgid ""
 "FATAL ERROR:\n"
 "\n"
@@ -1017,35 +1017,35 @@ msgstr ""
 "Enlightenment Fokus-\n"
 "Einstellungsdialog\n"
 
-#: src/fx.c:907
+#: src/fx.c:933
 msgid "Effects"
 msgstr ""
 
 # src/fx.c:387 src/fx.c:405
-#: src/fx.c:910
+#: src/fx.c:936
 #, fuzzy
 msgid "Enable Effect: Raindrops"
 msgstr "Kann Regentropfen nicht darstellen"
 
-#: src/fx.c:914
+#: src/fx.c:940
 msgid "Ripples"
 msgstr ""
 
-#: src/fx.c:918
+#: src/fx.c:944
 msgid "Waves"
 msgstr ""
 
-#: src/fx.c:924
+#: src/fx.c:950
 msgid "FX"
 msgstr ""
 
 # src/settings.c:1710
-#: src/fx.c:925
+#: src/fx.c:951
 msgid "Special FX Settings"
 msgstr "Special-FX-Einstellungen"
 
 # src/main.c:89
-#: src/fx.c:928
+#: src/fx.c:954
 msgid ""
 "Enlightenment Special Effects\n"
 "Settings Dialog\n"
@@ -2593,33 +2593,33 @@ msgid ""
 msgstr ""
 
 # src/settings.c:1427
-#: src/tooltips.c:858
+#: src/tooltips.c:864
 msgid "Display Tooltips"
 msgstr "Minihilfen Anzeigen"
 
 # src/settings.c:1435
-#: src/tooltips.c:863
+#: src/tooltips.c:869
 msgid "Display Root Window Tips"
 msgstr "Minihilfen zum Hintergrundfenster anzeigen"
 
 # src/settings.c:1443
-#: src/tooltips.c:868
+#: src/tooltips.c:874
 msgid "Tooltip Delay:\n"
 msgstr "Minihilfen-Verzögerung:\n"
 
 # src/settings.c:1443
-#: src/tooltips.c:879
+#: src/tooltips.c:885
 #, fuzzy
 msgid "Tooltips"
 msgstr "Minihilfen-Verzögerung:\n"
 
 # src/settings.c:1403
-#: src/tooltips.c:880
+#: src/tooltips.c:886
 msgid "Tooltip Settings"
 msgstr "Minihilfen-Einstellungen"
 
 # src/main.c:89
-#: src/tooltips.c:883
+#: src/tooltips.c:889
 msgid ""
 "Enlightenment Tooltip\n"
 "Settings Dialog\n"

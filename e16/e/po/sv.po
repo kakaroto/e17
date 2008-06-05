@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-05-24 15:56+0200\n"
+"POT-Creation-Date: 2008-06-05 14:43+0200\n"
 "PO-Revision-Date: 2000-04-10 17:30+0200\n"
 "Last-Translator: Bernt Holmberg <bernt@grub01.physto.se>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -43,7 +43,7 @@ msgstr ""
 
 #: src/aclass.c:198 src/backgrounds.c:237 src/borders.c:635 src/buttons.c:181
 #: src/cmclass.c:84 src/cursors.c:121 src/iclass.c:351 src/tclass.c:111
-#: src/tooltips.c:129
+#: src/tooltips.c:135
 #, c-format
 msgid "%u references remain\n"
 msgstr "%u referenser återstår\n"
@@ -571,68 +571,68 @@ msgstr ""
 "Klicka här för att lägga detta\n"
 "skribord underst.\n"
 
-#: src/desktops.c:2268 src/desktops.c:2307
+#: src/desktops.c:2262 src/desktops.c:2301
 #, c-format
 msgid "%i Desktops"
 msgstr "%i skrivbord"
 
-#: src/desktops.c:2270 src/desktops.c:2309
+#: src/desktops.c:2264 src/desktops.c:2303
 #, c-format
 msgid "%i Desktop"
 msgstr "%i skrivbord"
 
-#: src/desktops.c:2302
+#: src/desktops.c:2296
 msgid "Number of virtual desktops:\n"
 msgstr "Antal virtuella skrivbord:\n"
 
-#: src/desktops.c:2331
+#: src/desktops.c:2325
 msgid "Slide desktops around when changing"
 msgstr "Låt skrivborden glida omkring vid växling"
 
-#: src/desktops.c:2337
+#: src/desktops.c:2331
 #, fuzzy
 msgid "Desktop Slide speed:\n"
 msgstr "Skrivbordets glid fart: (sakta)\n"
 
-#: src/desktops.c:2351
+#: src/desktops.c:2345
 #, fuzzy
 msgid "Wrap desktops around"
 msgstr "Svep omkring virtuella skrivbord"
 
-#: src/desktops.c:2359
+#: src/desktops.c:2353
 msgid "Display desktop dragbar"
 msgstr "Visa skrivbordens draglist"
 
-#: src/desktops.c:2365
+#: src/desktops.c:2359
 msgid "Drag bar position:"
 msgstr "Draglistens läge:"
 
-#: src/desktops.c:2369
+#: src/desktops.c:2363
 msgid "Top"
 msgstr "Upptill"
 
-#: src/desktops.c:2375
+#: src/desktops.c:2369
 msgid "Bottom"
 msgstr "Nertill"
 
-#: src/desktops.c:2381 src/pager.c:1925 src/pager.c:1950 src/pager.c:1975
+#: src/desktops.c:2375 src/pager.c:1925 src/pager.c:1950 src/pager.c:1975
 msgid "Left"
 msgstr "Vänster"
 
-#: src/desktops.c:2387 src/pager.c:1937 src/pager.c:1962 src/pager.c:1987
+#: src/desktops.c:2381 src/pager.c:1937 src/pager.c:1962 src/pager.c:1987
 msgid "Right"
 msgstr "Höger"
 
-#: src/desktops.c:2395 src/menus-misc.c:706
+#: src/desktops.c:2389 src/menus-misc.c:706
 #, fuzzy
 msgid "Desks"
 msgstr "Skrivbord"
 
-#: src/desktops.c:2396
+#: src/desktops.c:2390
 msgid "Multiple Desktop Settings"
 msgstr "Multipla skrivbordsinställningar"
 
-#: src/desktops.c:2399
+#: src/desktops.c:2393
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -640,7 +640,7 @@ msgstr ""
 "Dialog för Enlightenments\n"
 "multipla skrivbordsinställningar\n"
 
-#: src/desktops.c:2469 src/desktops.c:2504
+#: src/desktops.c:2463 src/desktops.c:2498
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -649,7 +649,7 @@ msgstr ""
 "%i x %i\n"
 "skärmar i storlek"
 
-#: src/desktops.c:2472 src/desktops.c:2507
+#: src/desktops.c:2466 src/desktops.c:2501
 msgid ""
 "1\n"
 "Screen in size"
@@ -657,43 +657,43 @@ msgstr ""
 "1\n"
 "skärm i storlek"
 
-#: src/desktops.c:2500
+#: src/desktops.c:2494
 msgid "Virtual Desktop size:\n"
 msgstr "Storlek för virtuella skribord:\n"
 
-#: src/desktops.c:2541
+#: src/desktops.c:2535
 msgid "Wrap virtual desktops around"
 msgstr "Svep omkring virtuella skrivbord"
 
-#: src/desktops.c:2548
+#: src/desktops.c:2542
 msgid "Edge Flip Mode:"
 msgstr ""
 
-#: src/desktops.c:2551
+#: src/desktops.c:2545
 msgid "Off"
 msgstr ""
 
-#: src/desktops.c:2556
+#: src/desktops.c:2550
 msgid "On"
 msgstr ""
 
-#: src/desktops.c:2561
+#: src/desktops.c:2555
 msgid "Only when moving window"
 msgstr ""
 
-#: src/desktops.c:2567
+#: src/desktops.c:2561
 msgid "Resistance at edge of screen:\n"
 msgstr "Motstånd vid bildskärmskanten:\n"
 
-#: src/desktops.c:2579
+#: src/desktops.c:2573
 msgid "Areas"
 msgstr ""
 
-#: src/desktops.c:2580
+#: src/desktops.c:2574
 msgid "Virtual Desktop Settings"
 msgstr "Virtuella skrivbordsinställningar"
 
-#: src/desktops.c:2583
+#: src/desktops.c:2577
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -701,7 +701,7 @@ msgstr ""
 "Dialog för Enlightenments\n"
 "virtuella skrivbordsinställningar\n"
 
-#: src/dialog.c:860 src/dialog.c:2077 src/dialog.c:2108 src/events.c:85
+#: src/dialog.c:860 src/dialog.c:2077 src/dialog.c:2108 src/events.c:86
 #: src/setup.c:157 src/sound.c:203
 msgid "OK"
 msgstr "Ok"
@@ -714,7 +714,7 @@ msgstr "Använd"
 msgid "Attention !!!"
 msgstr "Uppmärksamhet!!!"
 
-#: src/ecompmgr.c:2611
+#: src/ecompmgr.c:2626
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -722,11 +722,11 @@ msgid ""
 "extensions are loaded."
 msgstr ""
 
-#: src/events.c:85
+#: src/events.c:86
 msgid "X server setup error"
 msgstr "X server installationsfel"
 
-#: src/events.c:86
+#: src/events.c:87
 msgid ""
 "FATAL ERROR:\n"
 "\n"
@@ -851,32 +851,32 @@ msgstr ""
 "Dialog för Enlightenments\n"
 "fokusinställningar\n"
 
-#: src/fx.c:907
+#: src/fx.c:933
 msgid "Effects"
 msgstr ""
 
-#: src/fx.c:910
+#: src/fx.c:936
 #, fuzzy
 msgid "Enable Effect: Raindrops"
 msgstr "Kan inte visa regndroppar"
 
-#: src/fx.c:914
+#: src/fx.c:940
 msgid "Ripples"
 msgstr ""
 
-#: src/fx.c:918
+#: src/fx.c:944
 msgid "Waves"
 msgstr ""
 
-#: src/fx.c:924
+#: src/fx.c:950
 msgid "FX"
 msgstr ""
 
-#: src/fx.c:925
+#: src/fx.c:951
 msgid "Special FX Settings"
 msgstr "Specialeffektsinställningar"
 
-#: src/fx.c:928
+#: src/fx.c:954
 msgid ""
 "Enlightenment Special Effects\n"
 "Settings Dialog\n"
@@ -2244,28 +2244,28 @@ msgid ""
 "Proceeding from here is mostly pointless.\n"
 msgstr ""
 
-#: src/tooltips.c:858
+#: src/tooltips.c:864
 msgid "Display Tooltips"
 msgstr "Visa verktygstips"
 
-#: src/tooltips.c:863
+#: src/tooltips.c:869
 msgid "Display Root Window Tips"
 msgstr "Visa rotfönstertips"
 
-#: src/tooltips.c:868
+#: src/tooltips.c:874
 msgid "Tooltip Delay:\n"
 msgstr "Fördröjning av verktygstips:\n"
 
-#: src/tooltips.c:879
+#: src/tooltips.c:885
 #, fuzzy
 msgid "Tooltips"
 msgstr "Fördröjning av verktygstips:\n"
 
-#: src/tooltips.c:880
+#: src/tooltips.c:886
 msgid "Tooltip Settings"
 msgstr "Verktygstipsinställningar"
 
-#: src/tooltips.c:883
+#: src/tooltips.c:889
 msgid ""
 "Enlightenment Tooltip\n"
 "Settings Dialog\n"

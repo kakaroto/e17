@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-05-24 15:56+0200\n"
+"POT-Creation-Date: 2008-06-05 14:43+0200\n"
 "PO-Revision-Date: 2008-03-19 20:00+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -48,7 +48,7 @@ msgstr ""
 
 #: src/aclass.c:198 src/backgrounds.c:237 src/borders.c:635 src/buttons.c:181
 #: src/cmclass.c:84 src/cursors.c:121 src/iclass.c:351 src/tclass.c:111
-#: src/tooltips.c:129
+#: src/tooltips.c:135
 #, c-format
 msgid "%u references remain\n"
 msgstr "%u 参照残っています。\n"
@@ -579,68 +579,68 @@ msgstr ""
 "ここをクリックするとこのデスクトップが\n"
 "下に移ります。\n"
 
-#: src/desktops.c:2268 src/desktops.c:2307
+#: src/desktops.c:2262 src/desktops.c:2301
 #, c-format
 msgid "%i Desktops"
 msgstr "デスクトップ %i 枚"
 
-#: src/desktops.c:2270 src/desktops.c:2309
+#: src/desktops.c:2264 src/desktops.c:2303
 #, c-format
 msgid "%i Desktop"
 msgstr "デスクトップ %i 枚"
 
-#: src/desktops.c:2302
+#: src/desktops.c:2296
 msgid "Number of virtual desktops:\n"
 msgstr "仮想デスクトップの枚数:\n"
 
-#: src/desktops.c:2331
+#: src/desktops.c:2325
 msgid "Slide desktops around when changing"
 msgstr "デスクトップ間を移動する時にスライドする"
 
 #
-#: src/desktops.c:2337
+#: src/desktops.c:2331
 msgid "Desktop Slide speed:\n"
 msgstr "デスクトップのスライド速度\n"
 
 #
-#: src/desktops.c:2351
+#: src/desktops.c:2345
 msgid "Wrap desktops around"
 msgstr "仮想デスクトップの上下左右をつなげる"
 
-#: src/desktops.c:2359
+#: src/desktops.c:2353
 msgid "Display desktop dragbar"
 msgstr "デスクトップにドラッグバーを表示する"
 
-#: src/desktops.c:2365
+#: src/desktops.c:2359
 msgid "Drag bar position:"
 msgstr "ドラッグバーの位置"
 
-#: src/desktops.c:2369
+#: src/desktops.c:2363
 msgid "Top"
 msgstr "上"
 
-#: src/desktops.c:2375
+#: src/desktops.c:2369
 msgid "Bottom"
 msgstr "下"
 
-#: src/desktops.c:2381 src/pager.c:1925 src/pager.c:1950 src/pager.c:1975
+#: src/desktops.c:2375 src/pager.c:1925 src/pager.c:1950 src/pager.c:1975
 msgid "Left"
 msgstr "左"
 
-#: src/desktops.c:2387 src/pager.c:1937 src/pager.c:1962 src/pager.c:1987
+#: src/desktops.c:2381 src/pager.c:1937 src/pager.c:1962 src/pager.c:1987
 msgid "Right"
 msgstr "右"
 
 #
-#: src/desktops.c:2395 src/menus-misc.c:706
+#: src/desktops.c:2389 src/menus-misc.c:706
 msgid "Desks"
 msgstr "マルチデスクトップ"
 
-#: src/desktops.c:2396
+#: src/desktops.c:2390
 msgid "Multiple Desktop Settings"
 msgstr "マルチデスクトップの設定"
 
-#: src/desktops.c:2399
+#: src/desktops.c:2393
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -648,7 +648,7 @@ msgstr ""
 "Enlightenment マルチデスクトップ\n"
 "設定ダイアログ\n"
 
-#: src/desktops.c:2469 src/desktops.c:2504
+#: src/desktops.c:2463 src/desktops.c:2498
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -657,7 +657,7 @@ msgstr ""
 "%i x %i\n"
 "の大きさの仮想デスクトップ"
 
-#: src/desktops.c:2472 src/desktops.c:2507
+#: src/desktops.c:2466 src/desktops.c:2501
 msgid ""
 "1\n"
 "Screen in size"
@@ -665,43 +665,43 @@ msgstr ""
 "1\n"
 "の大きさの仮想デスクトップ"
 
-#: src/desktops.c:2500
+#: src/desktops.c:2494
 msgid "Virtual Desktop size:\n"
 msgstr "仮想デスクトップの大きさ\n"
 
-#: src/desktops.c:2541
+#: src/desktops.c:2535
 msgid "Wrap virtual desktops around"
 msgstr "仮想デスクトップの上下左右をつなげる"
 
-#: src/desktops.c:2548
+#: src/desktops.c:2542
 msgid "Edge Flip Mode:"
 msgstr "マウスカーソルによるデスクトップの切り替え"
 
-#: src/desktops.c:2551
+#: src/desktops.c:2545
 msgid "Off"
 msgstr "無効"
 
-#: src/desktops.c:2556
+#: src/desktops.c:2550
 msgid "On"
 msgstr "有効"
 
-#: src/desktops.c:2561
+#: src/desktops.c:2555
 msgid "Only when moving window"
 msgstr "ウィンドウ移動時のみ切り替える"
 
-#: src/desktops.c:2567
+#: src/desktops.c:2561
 msgid "Resistance at edge of screen:\n"
 msgstr "画面の端に達した時の移動抵抗値\n"
 
-#: src/desktops.c:2579
+#: src/desktops.c:2573
 msgid "Areas"
 msgstr "デスクトップサイズ"
 
-#: src/desktops.c:2580
+#: src/desktops.c:2574
 msgid "Virtual Desktop Settings"
 msgstr "仮想デスクトップ設定"
 
-#: src/desktops.c:2583
+#: src/desktops.c:2577
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -709,7 +709,7 @@ msgstr ""
 "Enlightenment 仮想デスクトップ\n"
 "設定ダイアログ\n"
 
-#: src/dialog.c:860 src/dialog.c:2077 src/dialog.c:2108 src/events.c:85
+#: src/dialog.c:860 src/dialog.c:2077 src/dialog.c:2108 src/events.c:86
 #: src/setup.c:157 src/sound.c:203
 msgid "OK"
 msgstr "了解"
@@ -722,7 +722,7 @@ msgstr "適用"
 msgid "Attention !!!"
 msgstr "注意 !!!"
 
-#: src/ecompmgr.c:2611
+#: src/ecompmgr.c:2626
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -733,11 +733,11 @@ msgstr ""
 "Composite, Damage, Fixes, Render の各拡張機能が\n"
 "ロードされていることを xdpyinfo を使って確認してください."
 
-#: src/events.c:85
+#: src/events.c:86
 msgid "X server setup error"
 msgstr "X サーバーの設定エラー"
 
-#: src/events.c:86
+#: src/events.c:87
 msgid ""
 "FATAL ERROR:\n"
 "\n"
@@ -863,32 +863,32 @@ msgstr ""
 "Enlightenment フォーカス\n"
 "設定ダイアログ\n"
 
-#: src/fx.c:907
+#: src/fx.c:933
 msgid "Effects"
 msgstr "効果"
 
 #
-#: src/fx.c:910
+#: src/fx.c:936
 msgid "Enable Effect: Raindrops"
 msgstr "有効にする効果: 雨滴"
 
-#: src/fx.c:914
+#: src/fx.c:940
 msgid "Ripples"
 msgstr "さざなみ"
 
-#: src/fx.c:918
+#: src/fx.c:944
 msgid "Waves"
 msgstr "ウェーブ"
 
-#: src/fx.c:924
+#: src/fx.c:950
 msgid "FX"
 msgstr ""
 
-#: src/fx.c:925
+#: src/fx.c:951
 msgid "Special FX Settings"
 msgstr "特殊効果の設定"
 
-#: src/fx.c:928
+#: src/fx.c:954
 msgid ""
 "Enlightenment Special Effects\n"
 "Settings Dialog\n"
@@ -2237,28 +2237,28 @@ msgstr ""
 " %s/themes/\n"
 "にもテーマが見つかりません。このまま進めてもほとんど無意味です。\n"
 
-#: src/tooltips.c:858
+#: src/tooltips.c:864
 msgid "Display Tooltips"
 msgstr "ツールチップを表示する"
 
-#: src/tooltips.c:863
+#: src/tooltips.c:869
 msgid "Display Root Window Tips"
 msgstr "ルートウィンドウのツールチップを表示する"
 
-#: src/tooltips.c:868
+#: src/tooltips.c:874
 msgid "Tooltip Delay:\n"
 msgstr "ツールチップが表示されるまでの時間\n"
 
 #
-#: src/tooltips.c:879
+#: src/tooltips.c:885
 msgid "Tooltips"
 msgstr "ツールチップ"
 
-#: src/tooltips.c:880
+#: src/tooltips.c:886
 msgid "Tooltip Settings"
 msgstr "ツールチップの設定"
 
-#: src/tooltips.c:883
+#: src/tooltips.c:889
 msgid ""
 "Enlightenment Tooltip\n"
 "Settings Dialog\n"

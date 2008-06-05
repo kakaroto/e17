@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.17.1\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-05-24 15:56+0200\n"
+"POT-Creation-Date: 2008-06-05 14:43+0200\n"
 "PO-Revision-Date: 2004-08-29 01:02:30+0900\n"
 "Last-Translator: Michael Kim <lavnrose@e.sarang.net>\n"
 "Language-Team: Korean <translation-team-ko@lists.sourceforge.net>\n"
@@ -60,7 +60,7 @@ msgstr ""
 
 #: src/aclass.c:198 src/backgrounds.c:237 src/borders.c:635 src/buttons.c:181
 #: src/cmclass.c:84 src/cursors.c:121 src/iclass.c:351 src/tclass.c:111
-#: src/tooltips.c:129
+#: src/tooltips.c:135
 #, c-format
 msgid "%u references remain\n"
 msgstr "%u개의 참조가 남아있습니다\n"
@@ -587,67 +587,67 @@ msgstr ""
 "데스크탑을 제일 밑으로 내리기 위해서는\n"
 "여기를 클릭하세요.\n"
 
-#: src/desktops.c:2268 src/desktops.c:2307
+#: src/desktops.c:2262 src/desktops.c:2301
 #, c-format
 msgid "%i Desktops"
 msgstr "%i 데스크탑"
 
-#: src/desktops.c:2270 src/desktops.c:2309
+#: src/desktops.c:2264 src/desktops.c:2303
 #, c-format
 msgid "%i Desktop"
 msgstr "%i 데스크탑"
 
-#: src/desktops.c:2302
+#: src/desktops.c:2296
 msgid "Number of virtual desktops:\n"
 msgstr "가상 데스크탑 수:\n"
 
-#: src/desktops.c:2331
+#: src/desktops.c:2325
 msgid "Slide desktops around when changing"
 msgstr "데스크탑 바꿀 때 미끄러짐"
 
-#: src/desktops.c:2337
+#: src/desktops.c:2331
 #, fuzzy
 msgid "Desktop Slide speed:\n"
 msgstr "데스크탑 미끄러짐 속도: (느림)\n"
 
-#: src/desktops.c:2351
+#: src/desktops.c:2345
 msgid "Wrap desktops around"
 msgstr "가상 데스크탑 이동을 반복"
 
-#: src/desktops.c:2359
+#: src/desktops.c:2353
 msgid "Display desktop dragbar"
 msgstr "데스크탑 끌기막대 표시"
 
-#: src/desktops.c:2365
+#: src/desktops.c:2359
 msgid "Drag bar position:"
 msgstr "끌기막대 위치:"
 
-#: src/desktops.c:2369
+#: src/desktops.c:2363
 msgid "Top"
 msgstr "위"
 
-#: src/desktops.c:2375
+#: src/desktops.c:2369
 msgid "Bottom"
 msgstr "아래"
 
-#: src/desktops.c:2381 src/pager.c:1925 src/pager.c:1950 src/pager.c:1975
+#: src/desktops.c:2375 src/pager.c:1925 src/pager.c:1950 src/pager.c:1975
 msgid "Left"
 msgstr "왼쪽"
 
-#: src/desktops.c:2387 src/pager.c:1937 src/pager.c:1962 src/pager.c:1987
+#: src/desktops.c:2381 src/pager.c:1937 src/pager.c:1962 src/pager.c:1987
 msgid "Right"
 msgstr "오른쪽"
 
-#: src/desktops.c:2395 src/menus-misc.c:706
+#: src/desktops.c:2389 src/menus-misc.c:706
 #, fuzzy
 msgid "Desks"
 msgstr "데스크탑"
 
-#: src/desktops.c:2396
+#: src/desktops.c:2390
 msgid "Multiple Desktop Settings"
 msgstr "여러 데스크탑 설정"
 
-#: src/desktops.c:2399
+#: src/desktops.c:2393
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -655,7 +655,7 @@ msgstr ""
 "인라이튼먼트 여러 데스크탑\n"
 "설정 대화상자\n"
 
-#: src/desktops.c:2469 src/desktops.c:2504
+#: src/desktops.c:2463 src/desktops.c:2498
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -664,7 +664,7 @@ msgstr ""
 "%i x %i\n"
 "화면 크기"
 
-#: src/desktops.c:2472 src/desktops.c:2507
+#: src/desktops.c:2466 src/desktops.c:2501
 msgid ""
 "1\n"
 "Screen in size"
@@ -672,43 +672,43 @@ msgstr ""
 "1\n"
 "화면 크기"
 
-#: src/desktops.c:2500
+#: src/desktops.c:2494
 msgid "Virtual Desktop size:\n"
 msgstr "가상 데스크탑 크기:\n"
 
-#: src/desktops.c:2541
+#: src/desktops.c:2535
 msgid "Wrap virtual desktops around"
 msgstr "가상 데스크탑 주변을 겹치기"
 
-#: src/desktops.c:2548
+#: src/desktops.c:2542
 msgid "Edge Flip Mode:"
 msgstr ""
 
-#: src/desktops.c:2551
+#: src/desktops.c:2545
 msgid "Off"
 msgstr ""
 
-#: src/desktops.c:2556
+#: src/desktops.c:2550
 msgid "On"
 msgstr ""
 
-#: src/desktops.c:2561
+#: src/desktops.c:2555
 msgid "Only when moving window"
 msgstr ""
 
-#: src/desktops.c:2567
+#: src/desktops.c:2561
 msgid "Resistance at edge of screen:\n"
 msgstr "스크린 변두리에서의 저항감:\n"
 
-#: src/desktops.c:2579
+#: src/desktops.c:2573
 msgid "Areas"
 msgstr ""
 
-#: src/desktops.c:2580
+#: src/desktops.c:2574
 msgid "Virtual Desktop Settings"
 msgstr "가상 데스크탑 설정"
 
-#: src/desktops.c:2583
+#: src/desktops.c:2577
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -716,7 +716,7 @@ msgstr ""
 "인라이튼먼트 가상 데스크탑\n"
 "설정 대화상자\n"
 
-#: src/dialog.c:860 src/dialog.c:2077 src/dialog.c:2108 src/events.c:85
+#: src/dialog.c:860 src/dialog.c:2077 src/dialog.c:2108 src/events.c:86
 #: src/setup.c:157 src/sound.c:203
 msgid "OK"
 msgstr "확인"
@@ -729,7 +729,7 @@ msgstr "적용"
 msgid "Attention !!!"
 msgstr "주목 !!!"
 
-#: src/ecompmgr.c:2611
+#: src/ecompmgr.c:2626
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -737,11 +737,11 @@ msgid ""
 "extensions are loaded."
 msgstr ""
 
-#: src/events.c:85
+#: src/events.c:86
 msgid "X server setup error"
 msgstr "X 서버 설정 오류"
 
-#: src/events.c:86
+#: src/events.c:87
 msgid ""
 "FATAL ERROR:\n"
 "\n"
@@ -867,31 +867,31 @@ msgstr ""
 "인라이튼먼트 포커스\n"
 "설정 대화상자\n"
 
-#: src/fx.c:907
+#: src/fx.c:933
 msgid "Effects"
 msgstr "효과"
 
-#: src/fx.c:910
+#: src/fx.c:936
 msgid "Enable Effect: Raindrops"
 msgstr "효과 사용: 빗방울"
 
-#: src/fx.c:914
+#: src/fx.c:940
 msgid "Ripples"
 msgstr "잔물결"
 
-#: src/fx.c:918
+#: src/fx.c:944
 msgid "Waves"
 msgstr "물결"
 
-#: src/fx.c:924
+#: src/fx.c:950
 msgid "FX"
 msgstr ""
 
-#: src/fx.c:925
+#: src/fx.c:951
 msgid "Special FX Settings"
 msgstr "특수효과 설정"
 
-#: src/fx.c:928
+#: src/fx.c:954
 msgid ""
 "Enlightenment Special Effects\n"
 "Settings Dialog\n"
@@ -2251,28 +2251,28 @@ msgstr ""
 " %s/themes/\n"
 "현재 동작 이상 진행 할 수 없습니다.\n"
 
-#: src/tooltips.c:858
+#: src/tooltips.c:864
 msgid "Display Tooltips"
 msgstr "툴팁 표시"
 
-#: src/tooltips.c:863
+#: src/tooltips.c:869
 msgid "Display Root Window Tips"
 msgstr "루트 창 팁 표시"
 
-#: src/tooltips.c:868
+#: src/tooltips.c:874
 msgid "Tooltip Delay:\n"
 msgstr "툴팁 지연:\n"
 
-#: src/tooltips.c:879
+#: src/tooltips.c:885
 #, fuzzy
 msgid "Tooltips"
 msgstr "도움말:"
 
-#: src/tooltips.c:880
+#: src/tooltips.c:886
 msgid "Tooltip Settings"
 msgstr "툴팁 설정"
 
-#: src/tooltips.c:883
+#: src/tooltips.c:889
 msgid ""
 "Enlightenment Tooltip\n"
 "Settings Dialog\n"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16-0.16.8.13-0.01-fr\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-05-24 15:56+0200\n"
+"POT-Creation-Date: 2008-06-05 14:43+0200\n"
 "PO-Revision-Date: 2008-03-19 13:55+0100\n"
 "Last-Translator: Tristan D. <trinine@free.fr>\n"
 "Language-Team: French\n"
@@ -63,7 +63,7 @@ msgstr ""
 
 #: src/aclass.c:198 src/backgrounds.c:237 src/borders.c:635 src/buttons.c:181
 #: src/cmclass.c:84 src/cursors.c:121 src/iclass.c:351 src/tclass.c:111
-#: src/tooltips.c:129
+#: src/tooltips.c:135
 #, c-format
 msgid "%u references remain\n"
 msgstr "Il reste %u références\n"
@@ -589,65 +589,65 @@ msgid ""
 "to the bottom.\n"
 msgstr "Cliquez ici pour abaisser ce bureau.\n"
 
-#: src/desktops.c:2268 src/desktops.c:2307
+#: src/desktops.c:2262 src/desktops.c:2301
 #, c-format
 msgid "%i Desktops"
 msgstr "%i Bureaux"
 
-#: src/desktops.c:2270 src/desktops.c:2309
+#: src/desktops.c:2264 src/desktops.c:2303
 #, c-format
 msgid "%i Desktop"
 msgstr "%i Bureau"
 
-#: src/desktops.c:2302
+#: src/desktops.c:2296
 msgid "Number of virtual desktops:\n"
 msgstr "Nombre de bureaux :\n"
 
-#: src/desktops.c:2331
+#: src/desktops.c:2325
 msgid "Slide desktops around when changing"
 msgstr "Faire glisser les bureaux lors des déplacements"
 
-#: src/desktops.c:2337
+#: src/desktops.c:2331
 msgid "Desktop Slide speed:\n"
 msgstr "Vitesse de glissement des bureaux:\n"
 
-#: src/desktops.c:2351
+#: src/desktops.c:2345
 msgid "Wrap desktops around"
 msgstr "Placer les bureaux en boucle"
 
-#: src/desktops.c:2359
+#: src/desktops.c:2353
 msgid "Display desktop dragbar"
 msgstr "Afficher la barre de bureau"
 
-#: src/desktops.c:2365
+#: src/desktops.c:2359
 msgid "Drag bar position:"
 msgstr "Position de la barre de bureau:"
 
-#: src/desktops.c:2369
+#: src/desktops.c:2363
 msgid "Top"
 msgstr "Haut"
 
-#: src/desktops.c:2375
+#: src/desktops.c:2369
 msgid "Bottom"
 msgstr "Bas"
 
-#: src/desktops.c:2381 src/pager.c:1925 src/pager.c:1950 src/pager.c:1975
+#: src/desktops.c:2375 src/pager.c:1925 src/pager.c:1950 src/pager.c:1975
 msgid "Left"
 msgstr "Gauche"
 
-#: src/desktops.c:2387 src/pager.c:1937 src/pager.c:1962 src/pager.c:1987
+#: src/desktops.c:2381 src/pager.c:1937 src/pager.c:1962 src/pager.c:1987
 msgid "Right"
 msgstr "Droit"
 
-#: src/desktops.c:2395 src/menus-misc.c:706
+#: src/desktops.c:2389 src/menus-misc.c:706
 msgid "Desks"
 msgstr "Bureaux multiples"
 
-#: src/desktops.c:2396
+#: src/desktops.c:2390
 msgid "Multiple Desktop Settings"
 msgstr "Paramètres des Bureaux multiples"
 
-#: src/desktops.c:2399
+#: src/desktops.c:2393
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -655,7 +655,7 @@ msgstr ""
 "Dialogue de paramétrage des\n"
 "Bureaux multiples\n"
 
-#: src/desktops.c:2469 src/desktops.c:2504
+#: src/desktops.c:2463 src/desktops.c:2498
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -664,7 +664,7 @@ msgstr ""
 "%i x %i\n"
 "Écrans"
 
-#: src/desktops.c:2472 src/desktops.c:2507
+#: src/desktops.c:2466 src/desktops.c:2501
 msgid ""
 "1\n"
 "Screen in size"
@@ -672,43 +672,43 @@ msgstr ""
 "1\n"
 "Écran"
 
-#: src/desktops.c:2500
+#: src/desktops.c:2494
 msgid "Virtual Desktop size:\n"
 msgstr "Nombre de bureaux virtuels:\n"
 
-#: src/desktops.c:2541
+#: src/desktops.c:2535
 msgid "Wrap virtual desktops around"
 msgstr "Placer les bureaux virtuels en boucle"
 
-#: src/desktops.c:2548
+#: src/desktops.c:2542
 msgid "Edge Flip Mode:"
 msgstr "Bords sensitifs et mode de glissement:"
 
-#: src/desktops.c:2551
+#: src/desktops.c:2545
 msgid "Off"
 msgstr "Glissement désactivé"
 
-#: src/desktops.c:2556
+#: src/desktops.c:2550
 msgid "On"
 msgstr "Glissement activé"
 
-#: src/desktops.c:2561
+#: src/desktops.c:2555
 msgid "Only when moving window"
 msgstr "Seulement lors des déplacements de fenêtre"
 
-#: src/desktops.c:2567
+#: src/desktops.c:2561
 msgid "Resistance at edge of screen:\n"
 msgstr "Sensibilité des bords:\n"
 
-#: src/desktops.c:2579
+#: src/desktops.c:2573
 msgid "Areas"
 msgstr "Bureaux virtuels"
 
-#: src/desktops.c:2580
+#: src/desktops.c:2574
 msgid "Virtual Desktop Settings"
 msgstr "Paramètres des Bureaux virtuels"
 
-#: src/desktops.c:2583
+#: src/desktops.c:2577
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -716,7 +716,7 @@ msgstr ""
 "Dialogue de paramétrage des\n"
 "Bureaux virtuels\n"
 
-#: src/dialog.c:860 src/dialog.c:2077 src/dialog.c:2108 src/events.c:85
+#: src/dialog.c:860 src/dialog.c:2077 src/dialog.c:2108 src/events.c:86
 #: src/setup.c:157 src/sound.c:203
 msgid "OK"
 msgstr "OK"
@@ -729,7 +729,7 @@ msgstr "Appliquer"
 msgid "Attention !!!"
 msgstr "Attention !!!"
 
-#: src/ecompmgr.c:2611
+#: src/ecompmgr.c:2626
 msgid ""
 "Cannot enable Composite Manager.\n"
 "Use xdpyinfo to check that\n"
@@ -741,11 +741,11 @@ msgstr ""
 "les extensions Composite, Damage,\n"
 "Fixes, et Render sont bien chargées."
 
-#: src/events.c:85
+#: src/events.c:86
 msgid "X server setup error"
 msgstr "Erreur de configuration du serveur X"
 
-#: src/events.c:86
+#: src/events.c:87
 msgid ""
 "FATAL ERROR:\n"
 "\n"
@@ -867,31 +867,31 @@ msgstr ""
 "Dialogue de paramétrage du\n"
 "Focus\n"
 
-#: src/fx.c:907
+#: src/fx.c:933
 msgid "Effects"
 msgstr "Effets"
 
-#: src/fx.c:910
+#: src/fx.c:936
 msgid "Enable Effect: Raindrops"
 msgstr "Activer l'effet: Gouttes de pluie"
 
-#: src/fx.c:914
+#: src/fx.c:940
 msgid "Ripples"
 msgstr "Ondes"
 
-#: src/fx.c:918
+#: src/fx.c:944
 msgid "Waves"
 msgstr "Vagues"
 
-#: src/fx.c:924
+#: src/fx.c:950
 msgid "FX"
 msgstr "Effets spéciaux"
 
-#: src/fx.c:925
+#: src/fx.c:951
 msgid "Special FX Settings"
 msgstr "Paramètres des Effets spéciaux"
 
-#: src/fx.c:928
+#: src/fx.c:954
 msgid ""
 "Enlightenment Special Effects\n"
 "Settings Dialog\n"
@@ -2203,27 +2203,27 @@ msgstr ""
 " %s/themes/\n"
 "Poursuivre ne servira à rien.\n"
 
-#: src/tooltips.c:858
+#: src/tooltips.c:864
 msgid "Display Tooltips"
 msgstr "Afficher les Bulles d'aide"
 
-#: src/tooltips.c:863
+#: src/tooltips.c:869
 msgid "Display Root Window Tips"
 msgstr "Afficher les Bulles d'aide du Bureau maître"
 
-#: src/tooltips.c:868
+#: src/tooltips.c:874
 msgid "Tooltip Delay:\n"
 msgstr "Délai d'affichage des Bulles d'aide:\n"
 
-#: src/tooltips.c:879
+#: src/tooltips.c:885
 msgid "Tooltips"
 msgstr "Bulles d'aide"
 
-#: src/tooltips.c:880
+#: src/tooltips.c:886
 msgid "Tooltip Settings"
 msgstr "Paramètres des Bulles d'aide"
 
-#: src/tooltips.c:883
+#: src/tooltips.c:889
 msgid ""
 "Enlightenment Tooltip\n"
 "Settings Dialog\n"
