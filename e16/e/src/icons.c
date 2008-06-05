@@ -115,6 +115,8 @@ IB_SnapEWin(EWin * ewin, int size)
 	mask = EWindowGetShapePixmap(EoGetWin(ewin));
 	im = EImageGrabDrawableScaled(EoGetWin(ewin), draw, mask, 0, 0, ww, hh,
 				      w, h, !EServerIsGrabbed(), 0);
+	if (mask)
+	   EFreePixmap(mask);
      }
    else
      {
