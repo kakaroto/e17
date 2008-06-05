@@ -77,9 +77,9 @@ ProgressbarCreate(const char *name, int w, int h)
 	ProgressbarDestroy(p);
 	return NULL;
      }
-   p->win->fade = 0;
-   p->n_win->fade = 0;
-   p->p_win->fade = 0;
+   p->win->shadow = 1;
+   p->n_win->shadow = 1;
+   p->p_win->shadow = 1;
 
    return p;
 }

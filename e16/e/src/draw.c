@@ -192,8 +192,6 @@ _ShapeWinCreate(int md)
    if (!EoGetWin(sw))
       goto bail_out;
 
-   EoSetShadow(sw, 0);
-   EoSetFade(sw, 0);
    EoSetFloating(sw, 1);
    EoSetLayer(sw, 18);
    ESetWindowBackground(EoGetWin(sw), _ShapeGetColor());

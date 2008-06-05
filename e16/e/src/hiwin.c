@@ -246,7 +246,7 @@ HiwinCreate(void)
       return NULL;
 
    EoInit(phi, EOBJ_TYPE_MISC, None, 0, 0, 3, 3, 1, "HiWin");
-   EoSetShadow(phi, 0);
+   EoSetFade(phi, 1);
    EoSetFloating(phi, 1);
    EoSetLayer(phi, 19);
    EventCallbackRegister(EoGetWin(phi), 0, HiwinEvent, phi);

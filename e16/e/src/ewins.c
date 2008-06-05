@@ -94,6 +94,7 @@ EwinCreate(int type)
    ewin->o.stacked = -1;	/* Not placed on desk yet */
    EoSetDesk(ewin, DesksGetCurrent());
    EoSetLayer(ewin, 4);
+   EoSetFade(ewin, 1);
    EoSetShadow(ewin, 1);
 
    ewin->update.shape = 1;

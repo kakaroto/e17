@@ -389,8 +389,6 @@ DeskCreate(int desk, int configure)
    EoInit(dsk, EOBJ_TYPE_DESK, win,
 	  0, 0, WinGetW(VROOT), WinGetH(VROOT), 0, buf);
    EventCallbackRegister(EoGetWin(dsk), 0, DeskHandleEvents, dsk);
-   EoSetFade(dsk, 0);
-   EoSetShadow(dsk, 0);
    dsk->bg.o = EoObj(dsk);
    if (desk == 0)
      {
@@ -402,7 +400,6 @@ DeskCreate(int desk, int configure)
 			      0, 0, WinGetW(VROOT), WinGetH(VROOT),
 			      0, "Root-bg");
 	eo->floating = 0;
-	eo->fade = eo->shadow = 0;
 	EobjSetLayer(eo, 0);
 	EventCallbackRegister(EobjGetWin(eo), 0, DeskHandleEvents, dsk);
 	dsk->bg.o_bg = eo;
@@ -425,7 +422,6 @@ DeskCreate(int desk, int configure)
    eo = EobjWindowCreate(EOBJ_TYPE_MISC,
 			 0, 0, WinGetW(VROOT), WinGetH(VROOT), 0, buf);
    eo->floating = 0;
-   eo->fade = eo->shadow = 0;
    EobjReparent(eo, EoObj(dsk), 0, 0);
    EobjSetLayer(eo, 0);
    dsk->bg.o_bg = eo;

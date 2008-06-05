@@ -80,7 +80,6 @@ StartupWindowsCreate(void)
       return;
    init_win1 = eo;
    w1 = eo->win;
-   eo->fade = eo->shadow = 0;
    win1 = ECreateWindow(w1, x, y, WinGetW(VROOT), WinGetH(VROOT), 0);
 
    eo = EobjWindowCreate(EOBJ_TYPE_MISC,
@@ -89,7 +88,6 @@ StartupWindowsCreate(void)
       return;
    init_win2 = eo;
    w2 = eo->win;
-   eo->fade = eo->shadow = 0;
    win2 = ECreateWindow(w2, -x, -y, WinGetW(VROOT), WinGetH(VROOT), 0);
 
    EMapWindow(win1);

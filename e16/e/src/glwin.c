@@ -642,6 +642,7 @@ GlwinCreate(const char *title __UNUSED__, int width, int height)
    if (!GLWin.eo)
       return -1;
    win = EobjGetWin(GLWin.eo);
+   GLWin.eo->fade = GLWin.eo->shadow = 1;
 
    EventCallbackRegister(win, 0, GlwinEvent, &GLWin);
 

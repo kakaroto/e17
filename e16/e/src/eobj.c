@@ -206,8 +206,6 @@ EobjInit(EObj * eo, int type, Win win, int x, int y, int w, int h,
       HintsSetWindowName(eo->win, eo->icccm.wm_name);
 
 #if USE_COMPOSITE
-   eo->fade = 1;
-   eo->shadow = 1;
    switch (type)
      {
      case EOBJ_TYPE_EVENT:
@@ -320,6 +318,8 @@ EobjRegister(Window xwin, int type)
       eo->inputonly = 1;
 
    eo->external = 1;
+   eo->fade = 1;
+   eo->shadow = 1;
 
    EobjInit(eo, type, win, attr.x, attr.y, attr.width, attr.height, 0, NULL);
 

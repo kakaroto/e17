@@ -104,6 +104,7 @@ CoordsShow(EWin * ewin)
 	if (!eo)
 	   return;
 	coord_eo = eo;
+	eo->fade = eo->shadow = 1;
 
 	/* Center text (override theme) */
 	TextclassSetJustification(tc, 512);

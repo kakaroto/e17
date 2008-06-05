@@ -81,6 +81,8 @@ WarpFocusWinCreate(void)
    EoInit(fw, EOBJ_TYPE_MISC, None, 0, 0, 1, 1, 1, "Warp");
    EoSetFloating(fw, 1);
    EoSetLayer(fw, 20);
+   EoSetFade(fw, 1);
+   EoSetShadow(fw, 1);
 
    EventCallbackRegister(EoGetWin(fw), 0, WarpFocusHandleEvent, NULL);
    ESelectInput(EoGetWin(fw), ButtonReleaseMask);

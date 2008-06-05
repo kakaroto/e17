@@ -79,6 +79,7 @@ TooltipRealize(ToolTip * tt)
 
 	wh = (i + 1) * 8;
 	eo = EobjWindowCreate(EOBJ_TYPE_MISC, -50, -100, wh, wh, 1, tt->name);
+	eo->fade = eo->shadow = 1;
 	EobjChangeOpacity(eo, OpacityFromPercent(Conf.opacity.tooltips));
 	tt->win[i] = eo;
      }

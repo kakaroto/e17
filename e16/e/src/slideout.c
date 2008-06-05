@@ -74,7 +74,7 @@ SlideoutCreate(const char *name, char dir)
    s->direction = dir;
 
    EoInit(s, EOBJ_TYPE_MISC, None, -10, -10, 1, 1, 1, name);
-   EoSetFade(s, 0);
+   EoSetShadow(s, 1);
    ESelectInput(EoGetWin(s), SLIDEOUT_EVENT_MASK);
    EventCallbackRegister(EoGetWin(s), 0, SlideoutHandleEvent, s);
 

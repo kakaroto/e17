@@ -162,7 +162,7 @@ ButtonCreate(const char *name, int id, const char *iclass,
    EoSetDesk(b, DeskGet(desk));
    EoInit(b, EOBJ_TYPE_BUTTON, None, -100, -100, 50, 50, 0, name);
    EoSetLayer(b, ontop);
-   EoSetShadow(b, 0);
+   EoSetFade(b, 1);
 
    ESelectInput(EoGetWin(b), BUTTON_EVENT_MASK);
    EventCallbackRegister(EoGetWin(b), 0, ButtonHandleEvents, b);
