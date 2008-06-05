@@ -1548,6 +1548,35 @@ EShapeSetShape(Win win, int x, int y, Win src_win)
    return win->num_rect != 0;
 }
 
+/* Build mask from window shape rects */
+Pixmap
+EWindowGetShapePixmap(Win win)
+{
+   Pixmap              mask;
+   GC                  gc;
+   int                 i;
+   const XRectangle   *rect;
+
+   if (win->num_rect == 0)	/* Not shaped */
+      return None;
+
+   mask = ECreatePixmap(win, win->w, win->h, 1);
+   gc = EXCreateGC(mask, 0, NULL);
+
+   XSetForeground(disp, gc, 0);
+   XFillRectangle(disp, mask, gc, 0, 0, win->w, win->h);
+
+   XSetForeground(disp, gc, 1);
+   rect = win->rects;
+   for (i = 0; i < win->num_rect; i++)
+      XFillRectangle(disp, mask, gc, rect[i].x, rect[i].y,
+		     rect[i].width, rect[i].height);
+
+   EXFreeGC(gc);
+
+   return mask;
+}
+
 Pixmap
 ECreatePixmap(Win win, unsigned int width, unsigned int height,
 	      unsigned int depth)
@@ -1667,40 +1696,6 @@ EAllocXColor(Colormap cmap, XColor * pxc, EColor * pec)
    pxc->green = pec->green << 8;
    pxc->blue = pec->blue << 8;
    XAllocColor(disp, cmap, pxc);
-}
-
-/* Build mask from window shape rects */
-/* Snatched from imlib_create_scaled_image_from_drawable() */
-Pixmap
-EWindowGetShapePixmap(Win win)
-{
-   Pixmap              mask;
-   GC                  gc;
-   XRectangle         *rect;
-   int                 i, w, h;
-   int                 rect_num, rect_ord;
-
-   EGetGeometry(win, NULL, NULL, NULL, &w, &h, NULL, NULL);
-   mask = ECreatePixmap(win, w, h, 1);
-
-   gc = EXCreateGC(mask, 0, NULL);
-   XSetForeground(disp, gc, 0);
-
-   rect =
-      XShapeGetRectangles(disp, win->xwin, ShapeBounding, &rect_num, &rect_ord);
-   XFillRectangle(disp, mask, gc, 0, 0, w, h);
-   if (rect)
-     {
-	XSetForeground(disp, gc, 1);
-	for (i = 0; i < rect_num; i++)
-	   XFillRectangle(disp, mask, gc, rect[i].x, rect[i].y,
-			  rect[i].width, rect[i].height);
-	XFree(rect);
-     }
-
-   EXFreeGC(gc);
-
-   return mask;
 }
 
 /*

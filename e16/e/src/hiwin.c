@@ -59,12 +59,8 @@ EobjGetImage(EObj * eo, Drawable draw)
 {
    EImage             *im;
    Pixmap              mask;
-   int                 shaped;
 
-   mask = None;
-   shaped = EShapeCheck(EobjGetWin(eo));
-   if (shaped)
-      mask = EWindowGetShapePixmap(EobjGetWin(eo));
+   mask = EWindowGetShapePixmap(EobjGetWin(eo));
    im = EImageGrabDrawable(draw, mask, 0, 0, EobjGetW(eo), EobjGetH(eo), 0);
    if (mask)
       EFreePixmap(mask);
