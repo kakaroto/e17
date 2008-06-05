@@ -1,0 +1,6 @@
+[Desktop Entry]
+Type=Link
+Name=Tiling
+Icon=e-module-tiling
+Comment=<hilight>Tiling Module</hilight><br>Positions/resizes your windows tilingly, like ion for example.
+X-Enlightenment-ModuleType=appearance
