@@ -18,7 +18,7 @@ evas_software_x11_la_SOURCES = \
 Ewl_Engine_Evas_Software_X11.h \
 ewl_engine_evas_software_x11.c
 
-evas_software_x11_la_LIBADD = $(top_builddir)/src/lib/libewl.la
+evas_software_x11_la_LIBADD = $(top_builddir)/src/lib/libewl.la @ECORE_X_LIBS@ @EVAS_LIBS@
 evas_software_x11_la_LDFLAGS = -module -version-info @INTERFACE_VERSION@
 evas_software_x11_la_DEPENDENCIES =
 

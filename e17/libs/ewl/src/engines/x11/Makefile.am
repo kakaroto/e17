@@ -17,7 +17,7 @@ x11_la_SOURCES = \
 Ewl_Engine_X11.h \
 ewl_engine_x11.c
 
-x11_la_LIBADD = $(top_builddir)/src/lib/libewl.la
+x11_la_LIBADD = $(top_builddir)/src/lib/libewl.la @ECORE_X_LIBS@
 x11_la_LDFLAGS = -module -version-info @INTERFACE_VERSION@
 x11_la_DEPENDENCIES =
 
