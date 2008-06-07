@@ -35,8 +35,6 @@ create_test(Ewl_Container *box)
         ewl_container_child_append(box, password[0]);
         ewl_callback_append(password[0], EWL_CALLBACK_VALUE_CHANGED,
                             cb_fetch_password_text, NULL);
-        ewl_object_fill_policy_set(EWL_OBJECT(password[0]),
-                                   EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK);
         ewl_widget_show(password[0]);
 
         password[1] = ewl_password_new();
@@ -47,8 +45,6 @@ create_test(Ewl_Container *box)
         ewl_container_child_append(box, password[1]);
         ewl_callback_append(password[1], EWL_CALLBACK_VALUE_CHANGED,
                             cb_fetch_password_text, NULL);
-        ewl_object_fill_policy_set(EWL_OBJECT(password[1]),
-                                   EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK);
         ewl_widget_show(password[1]);
 
         password[2] = ewl_password_new();
@@ -58,8 +54,6 @@ create_test(Ewl_Container *box)
         ewl_container_child_append(box, password[2]);
         ewl_callback_append(password[2], EWL_CALLBACK_VALUE_CHANGED,
                             cb_fetch_password_text, NULL);
-        ewl_object_fill_policy_set(EWL_OBJECT(password[2]),
-                                   EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK);
         ewl_widget_show(password[2]);
 
         button_hbox = ewl_hbox_new();
