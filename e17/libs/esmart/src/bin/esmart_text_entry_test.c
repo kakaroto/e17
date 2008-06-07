@@ -1,6 +1,6 @@
 /*
  * esmart_text_entry_test.c
- * 
+ *
  * A test program for the text entry smart objects.
  *
  */
@@ -65,7 +65,6 @@ int main (int argc, char *argv[])
 {
   Evas *evas = NULL;
   Ecore_Evas *ee = NULL;
-  Ecore_X_Window win = 0;
   Evas_Object *o = NULL;
   Evas_Object *edje = NULL;
 
@@ -82,7 +81,6 @@ int main (int argc, char *argv[])
     edje_init();
 
     ee = ecore_evas_software_x11_new (NULL, 0, 0, 0, width, height);
-    win = ecore_evas_software_x11_window_get(ee);
     ecore_evas_title_set (ee, "Enlightenment Text Entry Test");
     ecore_evas_callback_delete_request_set (ee, window_del_cb);
     ecore_evas_callback_resize_set (ee, window_resize_cb);
@@ -101,7 +99,7 @@ int main (int argc, char *argv[])
     evas_object_move (edje, 0, 0);
     evas_object_resize (edje, width, height);
     evas_object_show (edje);
-    
+
     o = esmart_text_entry_new (evas);
     esmart_text_entry_edje_part_set (o, edje, "text");
     evas_object_move (o, 0, 0);
