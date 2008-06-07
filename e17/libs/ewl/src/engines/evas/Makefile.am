@@ -6,6 +6,7 @@ AM_CPPFLAGS = \
 -I$(top_srcdir)/src/engines/evas \
 -I$(top_builddir)/src/engines/evas \
 @EVAS_CFLAGS@ \
+@ECORE_CFLAGS@ \
 @EDJE_CFLAGS@
 
 pkgdir = $(libdir)/ewl/engines
