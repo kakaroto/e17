@@ -4751,3 +4751,20 @@ Idler/Animator cleanups.
 Remove/comment out unused stuff.
 Simplify timers.
 
+
+-------------------------------------------------------------------------------
+
+Mon Jun  9 19:44:16 CEST 2008
+(Kim)
+
+--- 0.16.8.14 0.02 ---
+PulseAudio sound - Avoid lockup/crash if server is not present or dies.
+Fix ripples/waves on xorg 1.4 when compositing is active.
+Fix segv when main imageclass in tooltip is missing.
+Simplify shape functions.
+No need to fetch shape rects in EWindowGetShapePixmap().
+Fix pixmap leak in iconbox snapshots when compositing is active.
+Disable broken set area window match operation.
+Enable fading/shadow when desired (in stead of disabling when not).
+Enable not using ARGB frame for ARGB clients (selected by window match).
+
