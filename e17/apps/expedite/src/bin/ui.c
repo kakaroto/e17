@@ -75,6 +75,10 @@ _ui_all(void)
 	     engine_loop();
 	     evas_render(evas);
 	  }
+	/* This give time to delete the objects of the previous test and make
+	   the result of next test more accurate. Draw back, some time is not
+	   counted at all. */
+	evas_render(evas);
 	t_count++;
 	fps += p_fps;
 	key_func("Escape");
