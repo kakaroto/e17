@@ -628,7 +628,7 @@ _notification_find_source_border(E_Notification *n)
           if (!strncasecmp(bd->client.icccm.name, app_name, compare_len))
             return bd;
         }
-      else if (bd->client.icccm.class)
+      if (bd->client.icccm.class)
         {
           compare_len = MIN_LEN(bd->client.icccm.class, app_name);
           if (!strncasecmp(bd->client.icccm.class, app_name, compare_len))
