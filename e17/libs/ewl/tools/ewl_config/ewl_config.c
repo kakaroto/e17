@@ -315,16 +315,19 @@ ec_theme_page_setup(Ewl_Notebook *n)
 
         o2 = ewl_border_new();
         ewl_border_label_set(EWL_BORDER(o2), "EWL Theme");
+        ewl_object_fill_policy_set(EWL_OBJECT(o2), EWL_FLAG_FILL_VFILL);
         ewl_container_child_append(EWL_CONTAINER(box), o2);
         ewl_widget_show(o2);
 
         o3 = ewl_scrollpane_new();
+        ewl_object_fill_policy_set(EWL_OBJECT(o3), EWL_FLAG_FILL_VFILL
+                        | EWL_FLAG_FILL_VSHRINK);
         ewl_container_child_append(EWL_CONTAINER(o2), o3);
         ewl_widget_show(o3);
 
         o = ewl_list_new();
-        ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_HFILL);
         list = ecore_list_new();
+        ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_HFILL);
         ewl_widget_name_set(o, EC_EWL_THEME);
         ewl_container_child_append(EWL_CONTAINER(o3), o);
         ewl_mvc_model_set(EWL_MVC(o), ewl_model_ecore_list_instance());
