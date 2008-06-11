@@ -73,7 +73,7 @@ main(int argc, char **argv)
    opts = calloc(1, sizeof(Options));
    if (opts  == NULL)
      {
-	printf("calloc() failed.");
+	printf("Cannot allocate memory for Options structure.\n");
 	exit(EXIT_FAILURE);
      }
 
@@ -238,7 +238,7 @@ _em_print_help(void)
 	  "\t\t\t\tthe actual geometry to use for the thumbnail,\n"
 	  "\t\t\t\te.g. 100x100.\n"
 	  "\t\t\t\t(Shorthand: -g)\n"
-	  "\t--quality NUM\t\tImage quality of screenshot\n"
+	  "\t--quality NUM\t\tImage quality of screenshot (in percentage)\n"
 	  "\t--region\t\tSelect a specific screen region\n"
 	  "\t--window\t\tSelect a specifc window to grab\n"
 	  "\t--version\t\tPrint the version.\n"
@@ -251,7 +251,7 @@ _em_print_help(void)
 static void 
 _em_print_version(void) 
 {
-   printf("emprint version "VERSION"\n");
+   printf("Emprint version "VERSION"\n");
    _em_free_options();
    exit(EXIT_SUCCESS);
 }
