@@ -26,14 +26,14 @@ create_test(Ewl_Container *box)
         button = ewl_button_new();
         ewl_button_label_set(EWL_BUTTON(button), "Hover on this button");
         ewl_container_child_append(EWL_CONTAINER(box), button);
-        ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
+        ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_NONE);
         ewl_attach_tooltip_text_set(button, "and see.");
         ewl_widget_show(button);
         
         button = ewl_button_new();
         ewl_button_label_set(EWL_BUTTON(button), "Hover on this button");
         ewl_container_child_append(EWL_CONTAINER(box), button);
-        ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
+        ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_NONE);
         ewl_attach_tooltip_text_set(button, "and see more.");
         ewl_widget_show(button);
 

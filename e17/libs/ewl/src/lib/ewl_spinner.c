@@ -59,7 +59,7 @@ ewl_spinner_init(Ewl_Spinner *s)
         ewl_widget_appearance_set(w, EWL_SPINNER_TYPE);
         ewl_widget_inherit(w, EWL_SPINNER_TYPE);
 
-        ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_HSHRINK |
+        ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_HSHRINKABLE |
                                    EWL_FLAG_FILL_HFILL);
 
         ewl_callback_append(w, EWL_CALLBACK_REALIZE,
@@ -83,7 +83,7 @@ ewl_spinner_init(Ewl_Spinner *s)
         ewl_text_text_set(EWL_TEXT(s->entry), "0");
         ewl_container_child_append(EWL_CONTAINER(s), s->entry);
         ewl_object_fill_policy_set(EWL_OBJECT(s->entry), EWL_FLAG_FILL_HFILL |
-                                   EWL_FLAG_FILL_HSHRINK);
+                                   EWL_FLAG_FILL_HSHRINKABLE);
         ewl_object_alignment_set(EWL_OBJECT(s->entry), EWL_FLAG_ALIGN_LEFT);
 
         ewl_widget_internal_set(EWL_WIDGET(s->entry), TRUE);

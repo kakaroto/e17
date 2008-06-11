@@ -100,7 +100,7 @@ ewl_scrollbar_init(Ewl_Scrollbar *s)
         ewl_widget_appearance_set(w, "hscrollbar");
         ewl_widget_inherit(w, EWL_SCROLLBAR_TYPE);
         ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_HFILL |
-                                                  EWL_FLAG_FILL_HSHRINK);
+                                                  EWL_FLAG_FILL_HSHRINKABLE);
 
         /*
          * Create the basic widgets that are contained in the scrollbar.
@@ -237,6 +237,7 @@ ewl_scrollbar_orientation_set(Ewl_Scrollbar *s, Ewl_Orientation o)
                 DRETURN(DLEVEL_STABLE);
 
         ewl_box_orientation_set(EWL_BOX(s), o);
+        ewl_seeker_orientation_set(EWL_SEEKER(s->seeker), o);
 
         /*
          * Swap scroll direction on orientation change
@@ -246,14 +247,14 @@ ewl_scrollbar_orientation_set(Ewl_Scrollbar *s, Ewl_Orientation o)
         if (o == EWL_ORIENTATION_HORIZONTAL) {
                 ewl_widget_appearance_set(EWL_WIDGET(s), "hscrollbar");
                 ewl_object_fill_policy_set(EWL_OBJECT(s),
-                                EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK);
+                                EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINKABLE);
                 ewl_object_fill_policy_set(EWL_OBJECT(s->seeker),
                                 EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK);
         }
         else {
                 ewl_widget_appearance_set(EWL_WIDGET(s), "vscrollbar");
                 ewl_object_fill_policy_set(EWL_OBJECT(s),
-                                EWL_FLAG_FILL_VFILL | EWL_FLAG_FILL_VSHRINK);
+                                EWL_FLAG_FILL_VFILL | EWL_FLAG_FILL_VSHRINKABLE);
                 ewl_object_fill_policy_set(EWL_OBJECT(s->seeker),
                                 EWL_FLAG_FILL_VFILL | EWL_FLAG_FILL_VSHRINK);
         }
@@ -267,8 +268,6 @@ ewl_scrollbar_orientation_set(Ewl_Scrollbar *s, Ewl_Orientation o)
         ewl_container_child_remove(EWL_CONTAINER(s), s->decrement);
         ewl_container_child_remove(EWL_CONTAINER(s), s->increment);
         ewl_container_child_remove(EWL_CONTAINER(s), s->seeker);
-
-        ewl_seeker_orientation_set(EWL_SEEKER(s->seeker), o);
 
         /*
          * Setup a few orientation specific variables, such as appearance and

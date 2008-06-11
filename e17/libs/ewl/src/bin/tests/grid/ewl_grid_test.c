@@ -91,8 +91,7 @@ create_test(Ewl_Container *box)
         /* the hbox */
         hbox = ewl_hbox_new();
         ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
-        ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_HFILL
-                                        | EWL_FLAG_FILL_VSHRINK);
+        ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_HFILL);
         ewl_box_homogeneous_set(EWL_BOX(hbox), TRUE);
         ewl_widget_show(hbox);
 

@@ -201,7 +201,7 @@ ewl_colorpicker_init(Ewl_Colorpicker *cp)
         ewl_object_padding_set(EWL_OBJECT(o), 2, 2, 2, 2);
         ewl_object_minimum_h_set(EWL_OBJECT(o), 20);
         ewl_object_fill_policy_set(EWL_OBJECT(o),
-                                EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
+                                EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINKABLE);
         cp->preview.current = o;
         ewl_widget_show(o);
 
@@ -220,7 +220,7 @@ ewl_colorpicker_init(Ewl_Colorpicker *cp)
         ewl_object_padding_set(EWL_OBJECT(o), 2, 2, 2, 2);
         ewl_object_minimum_h_set(EWL_OBJECT(o), 20);
         ewl_object_fill_policy_set(EWL_OBJECT(o),
-                                EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
+                                EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINKABLE);
         ewl_callback_append(o, EWL_CALLBACK_CLICKED,
                                 ewl_colorpicker_cb_previous_clicked, cp);
         cp->preview.previous = o;
@@ -230,7 +230,7 @@ ewl_colorpicker_init(Ewl_Colorpicker *cp)
         vbox = ewl_vbox_new();
         ewl_widget_internal_set(vbox, TRUE);
         ewl_container_child_append(EWL_CONTAINER(cp), vbox);
-        ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_SHRINK);
+        ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_SHRINKABLE);
         ewl_widget_show(vbox);
 
         /* setup the spinners and radiobuttons */

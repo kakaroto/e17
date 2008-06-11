@@ -186,8 +186,6 @@ ec_main_win(int save_system)
         o = ewl_hmenubar_new();
         ewl_container_child_append(EWL_CONTAINER(box), o);
         ec_menubar_setup(EWL_MENUBAR(o));
-        ewl_object_fill_policy_set(EWL_OBJECT(o),
-                        EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
         ewl_widget_show(o);
 
         o = ewl_notebook_new();
@@ -293,7 +291,7 @@ ec_menubar_setup(Ewl_Menubar *m)
                 ewl_button_label_set(EWL_BUTTON(menu), menus[i].name);
                 ewl_container_child_append(EWL_CONTAINER(m), menu);
                 ewl_object_fill_policy_set(EWL_OBJECT(menu),
-                                EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_VFILL);
+                                EWL_FLAG_FILL_VFILL);
                 ewl_menu_from_info(EWL_MENU(menu), menus[i].info);
                 ewl_widget_show(menu);
         }
@@ -492,8 +490,7 @@ ec_debug_page_setup(Ewl_Notebook *n)
         o2 = ewl_grid_new();
         ewl_grid_vhomogeneous_set(EWL_GRID(o2), TRUE);
         ewl_container_child_append(EWL_CONTAINER(box), o2);
-        ewl_object_fill_policy_set(EWL_OBJECT(o2), EWL_FLAG_FILL_HSHRINK |
-                                                EWL_FLAG_FILL_HFILL);
+        ewl_object_fill_policy_set(EWL_OBJECT(o2), EWL_FLAG_FILL_HFILL);
         ewl_widget_show(o2);
 
         for (i = 0; buttons[i].label != NULL; i++)
@@ -588,7 +585,7 @@ ec_cb_about(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
         o = ewl_button_new();
         ewl_container_child_append(EWL_CONTAINER(about), o);
         ewl_stock_type_set(EWL_STOCK(o), EWL_STOCK_OK);
-        ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
+        ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_NONE);
         ewl_callback_append(o, EWL_CALLBACK_CLICKED, ec_cb_win_hide, about);
         ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_CENTER);
         ewl_widget_show(o);

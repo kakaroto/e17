@@ -77,8 +77,7 @@ create_test(Ewl_Container *box)
 
         o2 = ewl_hbox_new();
         ewl_container_child_append(box, o2);
-        ewl_object_fill_policy_set(EWL_OBJECT(o2),
-                                EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_HFILL);
+        ewl_object_fill_policy_set(EWL_OBJECT(o2), EWL_FLAG_FILL_HFILL);
         ewl_widget_show(o2);
 
         /* create our data */

@@ -137,7 +137,7 @@ ewl_object_current_w_get(Ewl_Object *o)
                 w = MINIMUM_W(o);
 
         if (w < PREFERRED_W(o) && !(ewl_object_fill_policy_get(o) &
-                                EWL_FLAG_FILL_HSHRINK))
+                                EWL_FLAG_FILL_HSHRINKABLE))
                 w = PREFERRED_W(o);
 
         if (w > MAXIMUM_W(o))
@@ -167,7 +167,7 @@ ewl_object_current_h_get(Ewl_Object *o)
                 h = MINIMUM_H(o);
 
         if (h < PREFERRED_H(o) && !(ewl_object_fill_policy_get(o) &
-                                EWL_FLAG_FILL_VSHRINK))
+                                EWL_FLAG_FILL_VSHRINKABLE))
                 h = PREFERRED_H(o);
 
         if (h > MAXIMUM_H(o))
@@ -215,8 +215,7 @@ ewl_object_preferred_inner_size_set(Ewl_Object *o, int w, int h)
 void
 ewl_object_preferred_inner_w_set(Ewl_Object *o, int w)
 {
-        int old_size;
-        unsigned int resize, fill;
+        int size;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(o);
@@ -224,25 +223,12 @@ ewl_object_preferred_inner_w_set(Ewl_Object *o, int w)
         /*
          * Store the previous size.
          */
-        old_size = PREFERRED_W(o);
-
+        size = ewl_object_preferred_w_get(o);
         o->preferred.w = w;
+        size = ewl_object_preferred_w_get(o) - size;
 
-        if (CURRENT_W(o) < PREFERRED_W(o))
-                fill = EWL_FLAG_FILL_HSHRINK;
-        else if (CURRENT_W(o) > PREFERRED_W(o))
-                fill = EWL_FLAG_FILL_HFILL;
-        else
-                fill = 0;
-
-        resize = ewl_object_fill_policy_get(EWL_OBJECT(o));
-
-        /*
-         * Now update the widgets parent of the change in size if necessary.
-         */
-        if (!(resize & fill))
-                ewl_container_child_resize(EWL_WIDGET(o),
-                                PREFERRED_W(o) - old_size,
+        if (size)
+                ewl_container_child_resize(EWL_WIDGET(o), size,
                                 EWL_ORIENTATION_HORIZONTAL);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -260,34 +246,20 @@ ewl_object_preferred_inner_w_set(Ewl_Object *o, int w)
 void
 ewl_object_preferred_inner_h_set(Ewl_Object *o, int h)
 {
-        int old_size;
-        unsigned int resize, fill;
+        int size;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(o);
 
         /*
-         * Store the previous size
+         * Store the previous size.
          */
-        old_size = PREFERRED_H(o);
-
+        size = ewl_object_preferred_h_get(o);
         o->preferred.h = h;
+        size = ewl_object_preferred_h_get(o) - size;
 
-        if (CURRENT_H(o) < PREFERRED_H(o))
-                fill = EWL_FLAG_FILL_VSHRINK;
-        else if (CURRENT_H(o) > PREFERRED_H(o))
-                fill = EWL_FLAG_FILL_VFILL;
-        else
-                fill = 0;
-
-        resize = ewl_object_fill_policy_get(EWL_OBJECT(o));
-
-        /*
-         * Now update the widgets parent of the change in size if necessary.
-         */
-        if (!(resize & fill))
-                ewl_container_child_resize(EWL_WIDGET(o),
-                                PREFERRED_H(o) - old_size,
+        if (size)
+                ewl_container_child_resize(EWL_WIDGET(o), size,
                                 EWL_ORIENTATION_VERTICAL);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -330,7 +302,8 @@ ewl_object_preferred_w_get(Ewl_Object *o)
 
         add = INSET_HORIZONTAL(o) + PADDING_HORIZONTAL(o);
 
-        if (PREFERRED_W(o) < MINIMUM_W(o))
+        if ((o->flags & (EWL_FLAG_FILL_HSHRINK & ~EWL_FLAG_FILL_HSHRINKABLE))
+                        || PREFERRED_W(o) < MINIMUM_W(o))
                 temp = MINIMUM_W(o);
         else if (PREFERRED_W(o) > MAXIMUM_W(o))
                 temp = MAXIMUM_W(o);
@@ -357,7 +330,8 @@ ewl_object_preferred_h_get(Ewl_Object *o)
 
         add = INSET_VERTICAL(o) + PADDING_VERTICAL(o);
 
-        if (PREFERRED_H(o) < MINIMUM_H(o))
+        if ((o->flags & (EWL_FLAG_FILL_VSHRINK & ~EWL_FLAG_FILL_VSHRINKABLE))
+                        || PREFERRED_H(o) < MINIMUM_H(o))
                 temp = MINIMUM_H(o);
         else if (PREFERRED_H(o) > MAXIMUM_H(o))
                 temp = MAXIMUM_H(o);
@@ -562,7 +536,7 @@ ewl_object_w_request(Ewl_Object *o, int w)
         /*
          * Bound the width by the preferred size first.
          */
-        if ((w < o->preferred.w && !(o->flags & EWL_FLAG_FILL_HSHRINK))
+        if ((w < o->preferred.w && !(o->flags & EWL_FLAG_FILL_HSHRINKABLE))
             || (w > o->preferred.w && !(o->flags & EWL_FLAG_FILL_HFILL)))
                 w = o->preferred.w;
 
@@ -602,7 +576,7 @@ ewl_object_h_request(Ewl_Object *o, int h)
         /*
          * Bound the width by the preferred size first.
          */
-        if ((h < o->preferred.h && !(o->flags & EWL_FLAG_FILL_VSHRINK))
+        if ((h < o->preferred.h && !(o->flags & EWL_FLAG_FILL_VSHRINKABLE))
             || (h > o->preferred.h && !(o->flags & EWL_FLAG_FILL_VFILL)))
                 h = o->preferred.h;
 
@@ -656,7 +630,7 @@ ewl_object_minimum_size_set(Ewl_Object *o, int w, int h)
 void
 ewl_object_minimum_w_set(Ewl_Object *o, int w)
 {
-        int old_size, new_size;
+        int size;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(o);
@@ -667,15 +641,12 @@ ewl_object_minimum_w_set(Ewl_Object *o, int w)
         if (w > EWL_OBJECT_MAX_SIZE)
                 w = EWL_OBJECT_MAX_SIZE;
 
-        old_size = MINIMUM_W(o);
-        new_size = o->minimum.w = w;
+        size = ewl_object_preferred_w_get(o);
+        o->minimum.w = w;
+        size = ewl_object_preferred_w_get(o) - size;
 
-        if (MAXIMUM_W(o) < w)
-                o->minimum.w = w;
-
-        if (PREFERRED_W(o) < MINIMUM_W(o))
-                ewl_container_child_resize(EWL_WIDGET(o),
-                                           MINIMUM_W(o) - PREFERRED_W(o),
+        if (size)
+                ewl_container_child_resize(EWL_WIDGET(o), size,
                                            EWL_ORIENTATION_HORIZONTAL);
 
         if (CURRENT_W(o) < w)
@@ -697,7 +668,7 @@ ewl_object_minimum_w_set(Ewl_Object *o, int w)
 void
 ewl_object_minimum_h_set(Ewl_Object *o, int h)
 {
-        int old_size, new_size;
+        int size;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(o);
@@ -708,15 +679,12 @@ ewl_object_minimum_h_set(Ewl_Object *o, int h)
         if (h > EWL_OBJECT_MAX_SIZE)
                 h = EWL_OBJECT_MAX_SIZE;
 
-        old_size = MINIMUM_H(o);
-        new_size = o->minimum.h = h;
+        size = ewl_object_preferred_h_get(o);
+        o->minimum.h = h;
+        size = ewl_object_preferred_h_get(o) - size;
 
-        if (MAXIMUM_H(o) < h)
-                o->minimum.h = h;
-
-        if (PREFERRED_H(o) < MINIMUM_H(o))
-                ewl_container_child_resize(EWL_WIDGET(o),
-                                           MINIMUM_H(o) - PREFERRED_H(o),
+        if (size)
+                ewl_container_child_resize(EWL_WIDGET(o), size,
                                            EWL_ORIENTATION_VERTICAL);
 
         if (CURRENT_H(o) < h)
@@ -738,7 +706,7 @@ ewl_object_minimum_w_get(Ewl_Object *o)
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR_RET(o, 0);
 
-        if (o->flags & EWL_FLAG_FILL_HSHRINK || MINIMUM_W(o) > PREFERRED_W(o))
+        if (o->flags & EWL_FLAG_FILL_HSHRINKABLE || MINIMUM_W(o) > PREFERRED_W(o))
                 val = MINIMUM_W(o);
         else
                 val = PREFERRED_W(o);
@@ -760,7 +728,7 @@ ewl_object_minimum_h_get(Ewl_Object *o)
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR_RET(o, 0);
 
-        if (o->flags & EWL_FLAG_FILL_VSHRINK || MINIMUM_H(o) > PREFERRED_H(o))
+        if (o->flags & EWL_FLAG_FILL_VSHRINKABLE || MINIMUM_H(o) > PREFERRED_H(o))
                 val = MINIMUM_H(o);
         else
                 val = PREFERRED_H(o);
@@ -827,6 +795,8 @@ ewl_object_maximum_size_set(Ewl_Object *o, int w, int h)
 void
 ewl_object_maximum_w_set(Ewl_Object *o, int w)
 {
+        int size;
+
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(o);
 
@@ -836,13 +806,13 @@ ewl_object_maximum_w_set(Ewl_Object *o, int w)
         if (w > EWL_OBJECT_MAX_SIZE)
                 w = EWL_OBJECT_MAX_SIZE;
 
+        size = ewl_object_preferred_w_get(o);
         o->maximum.w = w;
+        size = ewl_object_preferred_w_get(o) - size;
 
-        if (MINIMUM_W(o) > w)
-                o->maximum.w = w;
-
-        if (PREFERRED_W(o) > MAXIMUM_W(o))
-                ewl_object_preferred_inner_w_set(o, PREFERRED_W(o));
+        if (size)
+                ewl_container_child_resize(EWL_WIDGET(o), size,
+                                           EWL_ORIENTATION_HORIZONTAL);
 
         if (CURRENT_W(o) > w)
                 ewl_object_h_request(o, w);
@@ -863,6 +833,8 @@ ewl_object_maximum_w_set(Ewl_Object *o, int w)
 void
 ewl_object_maximum_h_set(Ewl_Object *o, int h)
 {
+        int size;
+
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(o);
 
@@ -872,13 +844,13 @@ ewl_object_maximum_h_set(Ewl_Object *o, int h)
         if (h > EWL_OBJECT_MAX_SIZE)
                 h = EWL_OBJECT_MAX_SIZE;
 
+        size = ewl_object_preferred_h_get(o);
         o->maximum.h = h;
+        size = ewl_object_preferred_h_get(o) - size;
 
-        if (MINIMUM_H(o) > h)
-                o->minimum.h = h;
-
-        if (PREFERRED_H(o) > MAXIMUM_H(o))
-                ewl_object_preferred_inner_h_set(o, PREFERRED_H(o));
+        if (size)
+                ewl_container_child_resize(EWL_WIDGET(o), size,
+                                           EWL_ORIENTATION_VERTICAL);
 
         if (CURRENT_H(o) > h)
                 ewl_object_h_request(o, h);
@@ -1285,15 +1257,16 @@ ewl_object_place(Ewl_Object *o, int x, int y, int w, int h)
  *
  * Stores the new fill policy value into the object for use when laying out
  * the object. Possible values for the fill policy are EWL_FLAG_FILL_NONE,
- * EWL_FLAG_FILL_HSHRINK, EWL_FLAG_FILL_VSHRINK, EWL_FLAG_FILL_SHRINK,
+ * EWL_FLAG_FILL_HSHRINKABLE, EWL_FLAG_FILL_VSHRINKABLE, EWL_FLAG_FILL_SHRINKABLE,
  * EWL_FLAG_FILL_HFILL, EWL_FLAG_FILL_VFILL and EWL_FLAG_FILL_FILL. You can
  * combine those with a bitwise OR, e.g. EWL_FLAG_FILL_VFILL
- * | EWL_FLAG_FILL_HSHRINK.
+ * | EWL_FLAG_FILL_HSHRINKABLE.
  */
 void
 ewl_object_fill_policy_set(Ewl_Object *o, unsigned int fill)
 {
-        unsigned int old_mask;
+        unsigned int size_update;
+        int w, h;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(o);
@@ -1301,9 +1274,28 @@ ewl_object_fill_policy_set(Ewl_Object *o, unsigned int fill)
         if ((o->flags & EWL_FLAGS_FILL_MASK) == fill)
                 DRETURN(DLEVEL_STABLE);
 
-        old_mask = o->flags;
+        size_update = (o->flags ^ fill) 
+                & (EWL_FLAG_FILL_SHRINK & ~EWL_FLAG_FILL_SHRINKABLE);
+
+        if (size_update)
+                ewl_object_preferred_size_get(o, &w, &h);
+
         ewl_object_flags_remove(o, EWL_FLAGS_FILL_MASK, EWL_FLAGS_FILL_MASK);
         ewl_object_flags_add(o, fill, EWL_FLAGS_FILL_MASK);
+
+        /* if it was unfold or is now we need to update the preferred size */
+        if (size_update)
+        {
+                w = ewl_object_preferred_w_get(o) - w;
+                h = ewl_object_preferred_h_get(o) - h;
+
+                if (w)
+                        ewl_container_child_resize(EWL_WIDGET(o), w,
+                                        EWL_ORIENTATION_HORIZONTAL);
+                if (h)
+                        ewl_container_child_resize(EWL_WIDGET(o), h,
+                                        EWL_ORIENTATION_VERTICAL);
+        }
 
         if (EWL_WIDGET(o)->parent)
                 ewl_widget_configure(EWL_WIDGET(o)->parent);

@@ -170,15 +170,12 @@ create_test(Ewl_Container *image_box)
 
         box = ewl_hbox_new();
         ewl_box_spacing_set(EWL_BOX(box), 5);
-        ewl_object_fill_policy_set(EWL_OBJECT(box),
-                                   EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK);
+        ewl_object_fill_policy_set(EWL_OBJECT(box), EWL_FLAG_FILL_HFILL);
         ewl_container_child_append(image_box, box);
         ewl_widget_show(box);
 
         entry_path = ewl_entry_new();
         ewl_text_text_set(EWL_TEXT(entry_path), image_file);
-        ewl_object_fill_policy_set(EWL_OBJECT(entry_path),
-                                   EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK);
         ewl_object_alignment_set(EWL_OBJECT(entry_path), EWL_FLAG_ALIGN_CENTER);
         ewl_container_child_append(EWL_CONTAINER(box), entry_path);
         ewl_callback_append(entry_path, EWL_CALLBACK_VALUE_CHANGED,

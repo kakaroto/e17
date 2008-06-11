@@ -83,7 +83,7 @@ ewl_progressbar_init(Ewl_Progressbar *p)
                         ewl_progressbar_cb_value_changed, NULL);
 
         ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_HFILL |
-                                                  EWL_FLAG_FILL_VSHRINK);
+                                                  EWL_FLAG_FILL_VSHRINKABLE);
 
         DRETURN_INT(TRUE, DLEVEL_STABLE);
 }

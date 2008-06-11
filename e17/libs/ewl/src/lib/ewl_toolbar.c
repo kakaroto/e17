@@ -84,7 +84,7 @@ ewl_toolbar_init(Ewl_Toolbar *t)
         ewl_widget_appearance_set(w, "htoolbar");
 
         ewl_object_fill_policy_set(EWL_OBJECT(t), EWL_FLAG_FILL_HFILL |
-                                                  EWL_FLAG_FILL_SHRINK);
+                                                  EWL_FLAG_FILL_SHRINKABLE);
         ewl_object_alignment_set(EWL_OBJECT(t), EWL_FLAG_ALIGN_LEFT |
                                                         EWL_FLAG_ALIGN_TOP);
 

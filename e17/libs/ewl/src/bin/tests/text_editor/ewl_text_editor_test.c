@@ -163,8 +163,7 @@ create_test(Ewl_Container *box)
                 ewl_container_child_append(EWL_CONTAINER(hbox), o);
                 ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,
                                                 ete_cb_styles_changed, NULL);
-                ewl_object_fill_policy_set(EWL_OBJECT(o),
-                                EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
+                ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_HFILL);
                 ewl_widget_show(o);
 
                 o = ewl_label_new();
@@ -231,7 +230,7 @@ create_test(Ewl_Container *box)
                         ewl_button_label_set(EWL_BUTTON(o), btns[i].name);
                         ewl_container_child_append(EWL_CONTAINER(hbox), o);
                         ewl_object_fill_policy_set(EWL_OBJECT(o),
-                                        EWL_FLAG_FILL_HSHRINK|EWL_FLAG_FILL_VSHRINK);
+                                        EWL_FLAG_FILL_NONE);
                         ewl_callback_append(o, EWL_CALLBACK_CLICKED, btns[i].cb, NULL);
                         ewl_widget_show(o);
                 }

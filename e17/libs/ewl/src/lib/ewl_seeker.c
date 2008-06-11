@@ -99,7 +99,7 @@ ewl_seeker_init(Ewl_Seeker *s)
         ewl_widget_appearance_set(w, "hseeker");
         ewl_widget_inherit(w, EWL_SEEKER_TYPE);
         ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_HFILL |
-                                EWL_FLAG_FILL_HSHRINK);
+                                EWL_FLAG_FILL_HSHRINKABLE);
 
         ewl_container_show_notify_set(EWL_CONTAINER(w),
                                       ewl_seeker_cb_child_show);
@@ -177,13 +177,13 @@ ewl_seeker_orientation_set(Ewl_Seeker *s, Ewl_Orientation o)
                 ewl_widget_appearance_set(EWL_WIDGET(s), "hseeker");
                 ewl_widget_appearance_set(s->button, "hbutton");
                 ewl_object_fill_policy_set(EWL_OBJECT(s), EWL_FLAG_FILL_HFILL |
-                                EWL_FLAG_FILL_HSHRINK);
+                                EWL_FLAG_FILL_HSHRINKABLE);
         }
         else {
                 ewl_widget_appearance_set(EWL_WIDGET(s), "vseeker");
                 ewl_widget_appearance_set(s->button, "vbutton");
                 ewl_object_fill_policy_set(EWL_OBJECT(s), EWL_FLAG_FILL_VFILL |
-                                EWL_FLAG_FILL_VSHRINK);
+                                EWL_FLAG_FILL_VSHRINKABLE);
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);

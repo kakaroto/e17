@@ -120,9 +120,6 @@ create_test(Ewl_Container *box)
         ewl_text_outline_color_set(EWL_TEXT(o), 200, 200, 200, 200);
         ewl_text_strikethrough_color_set(EWL_TEXT(o), 0, 0, 0, 255);
         ewl_text_glow_color_set(EWL_TEXT(o), 0, 255, 0, 128);
-
-        ewl_object_fill_policy_set(EWL_OBJECT(o),
-                                EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
         ewl_widget_show(o);
 
         scroll = ewl_scrollpane_new();
@@ -145,7 +142,7 @@ create_test(Ewl_Container *box)
         ewl_container_child_append(EWL_CONTAINER(box), o);
         ewl_callback_append(o, EWL_CALLBACK_CLICKED,
                                         ewl_dnd_snoop_cb_clear, NULL);
-        ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
+        ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_NONE);
         ewl_widget_show(o);
 
         o = ewl_button_new();

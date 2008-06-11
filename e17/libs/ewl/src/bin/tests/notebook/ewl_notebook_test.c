@@ -219,8 +219,6 @@ create_main_page(void)
         /* title label */
         o = ewl_label_new();
         ewl_label_text_set(EWL_LABEL(o), "Main");
-        ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_CENTER);
-        ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
         ewl_container_child_append(EWL_CONTAINER(body), o);
         ewl_widget_show(o);
 
@@ -286,7 +284,6 @@ create_main_page(void)
         ewl_checkbutton_checked_set(EWL_CHECKBUTTON(o), TRUE);
         ewl_button_label_set(EWL_BUTTON(o), "Show tabbar");
         ewl_container_child_append(EWL_CONTAINER(body), o);
-        ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
         ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_LEFT);
         ewl_callback_append(o, EWL_CALLBACK_CLICKED,
                                 notebook_cb_toggle_clicked, NULL);
@@ -295,7 +292,6 @@ create_main_page(void)
         o = ewl_checkbutton_new();
         ewl_button_label_set(EWL_BUTTON(o), "Homogeneous tabbar");
         ewl_container_child_append(EWL_CONTAINER(body), o);
-        ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
         ewl_callback_append(o, EWL_CALLBACK_CLICKED,
                                 notebook_cb_homogeneous_toggle_clicked, NULL);
         ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_LEFT);
@@ -316,7 +312,6 @@ create_page(const char *name)
         o = ewl_label_new();
         ewl_label_text_set(EWL_LABEL(o), name);
         ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_CENTER);
-        ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
         ewl_container_child_append(EWL_CONTAINER(box), o);
         ewl_widget_show(o);
 

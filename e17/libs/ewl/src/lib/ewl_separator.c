@@ -89,7 +89,7 @@ ewl_separator_init(Ewl_Separator *s)
         ewl_widget_inherit(w, EWL_SEPARATOR_TYPE);
         ewl_widget_appearance_set(EWL_WIDGET(s), "hseparator");
         ewl_object_fill_policy_set(EWL_OBJECT(s), EWL_FLAG_FILL_HFILL |
-                                                  EWL_FLAG_FILL_SHRINK);
+                                                  EWL_FLAG_FILL_SHRINKABLE);
 
         ewl_object_alignment_set(EWL_OBJECT(s), EWL_FLAG_ALIGN_LEFT);
 
@@ -122,13 +122,13 @@ ewl_separator_orientation_set(Ewl_Separator *s, Ewl_Orientation o)
                 ewl_widget_appearance_set(EWL_WIDGET(s), "hseparator");
                 ewl_object_fill_policy_set(EWL_OBJECT(s),
                                            EWL_FLAG_FILL_HFILL |
-                                           EWL_FLAG_FILL_HSHRINK);
+                                           EWL_FLAG_FILL_HSHRINKABLE);
         }
         else {
                 ewl_widget_appearance_set(EWL_WIDGET(s), "vseparator");
                 ewl_object_fill_policy_set(EWL_OBJECT(s),
                                            EWL_FLAG_FILL_VFILL |
-                                           EWL_FLAG_FILL_VSHRINK);
+                                           EWL_FLAG_FILL_VSHRINKABLE);
         }
 
         ewl_widget_configure(EWL_WIDGET(s));

@@ -82,7 +82,7 @@ create_test(Ewl_Container *box)
                         w = ewl_button_new();
                         ewl_button_label_set(EWL_BUTTON(w), name);
                         ewl_object_fill_policy_set(EWL_OBJECT(w),
-                                EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_HFILL);
+                                EWL_FLAG_FILL_HFILL);
                         ewl_callback_append(w, EWL_CALLBACK_CLICKED,
                                             cb_select_theme, strdup(name));
                         ewl_container_child_append(EWL_CONTAINER(list), w);

@@ -38,7 +38,7 @@ create_test(Ewl_Container *box)
                                 PACKAGE_DATA_DIR "/ewl/images/Draw.png", NULL);
         ewl_button_label_set(EWL_BUTTON(menu1), "Test Menu");
         ewl_container_child_append(EWL_CONTAINER(box), menu1);
-        ewl_object_fill_policy_set(EWL_OBJECT(menu1), EWL_FLAG_FILL_SHRINK);
+        ewl_object_fill_policy_set(EWL_OBJECT(menu1), EWL_FLAG_FILL_NONE);
         ewl_widget_show(menu1);
 
         item = ewl_menu_item_new();

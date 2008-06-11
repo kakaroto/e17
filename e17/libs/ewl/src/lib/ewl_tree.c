@@ -768,7 +768,7 @@ ewl_tree_header_build(Ewl_Tree *tree, Ewl_Container *box,
 
         /* XXX is this really a good idea to override the user's flags ? */
         ewl_object_fill_policy_set(EWL_OBJECT(c),
-                        EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_HFILL);
+                        EWL_FLAG_FILL_HSHRINKABLE | EWL_FLAG_FILL_HFILL);
         ewl_container_child_append(box, c);
         ewl_widget_show(c);
 
@@ -794,7 +794,7 @@ ewl_tree_header_build(Ewl_Tree *tree, Ewl_Container *box,
                         state_str = "default";
 
                 ewl_widget_state_set(c, state_str, EWL_STATE_PERSISTENT);
-                ewl_object_fill_policy_set(EWL_OBJECT(c), EWL_FLAG_FILL_SHRINK);
+                ewl_object_fill_policy_set(EWL_OBJECT(c), EWL_FLAG_FILL_SHRINKABLE);
                 ewl_object_alignment_set(EWL_OBJECT(c), EWL_FLAG_ALIGN_RIGHT);
                 ewl_widget_show(c);
         }
@@ -1250,7 +1250,7 @@ ewl_tree_node_init(Ewl_Tree_Node *node)
                                                 ewl_mvc_cb_data_unref);
 
         ewl_object_fill_policy_set(EWL_OBJECT(node),
-                                EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK);
+                                EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINKABLE);
 
         ewl_callback_del(EWL_WIDGET(node), EWL_CALLBACK_CONFIGURE,
                                                         ewl_box_cb_configure);

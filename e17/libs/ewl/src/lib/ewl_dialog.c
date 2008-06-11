@@ -313,7 +313,7 @@ ewl_dialog_has_separator_set(Ewl_Dialog *dialog, unsigned int has_sep)
                 ewl_container_child_insert(EWL_CONTAINER(dialog->vbox),
                                            dialog->separator, n);
                 ewl_object_fill_policy_set(EWL_OBJECT(dialog->separator),
-                                           EWL_FLAG_FILL_SHRINK);
+                                           EWL_FLAG_FILL_SHRINKABLE);
                 ewl_widget_show(dialog->separator);
 
         } else if (!has_sep && (dialog->separator != NULL)) {

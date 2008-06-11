@@ -44,7 +44,7 @@ ewl_shadow_init(Ewl_Shadow *s)
                 DRETURN_INT(FALSE, DLEVEL_STABLE);
 
         ewl_box_orientation_set(EWL_BOX(s), EWL_ORIENTATION_VERTICAL);
-        ewl_object_fill_policy_set(EWL_OBJECT(s), EWL_FLAG_FILL_SHRINK);
+        ewl_object_fill_policy_set(EWL_OBJECT(s), EWL_FLAG_FILL_SHRINKABLE);
 
         ewl_widget_appearance_set(EWL_WIDGET(s), EWL_SHADOW_TYPE);
         ewl_widget_inherit(EWL_WIDGET(s), EWL_SHADOW_TYPE);

@@ -42,7 +42,7 @@ create_test(Ewl_Container *box)
         ewl_button_label_set(EWL_BUTTON(button), "push");
         ewl_callback_append(button, EWL_CALLBACK_CLICKED, button_push_cb,
                                                                 statusbar);
-        ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
+        ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_NONE);
         ewl_container_child_append(EWL_CONTAINER(hbox), button);
         ewl_widget_show(button);
 
@@ -50,7 +50,7 @@ create_test(Ewl_Container *box)
         ewl_button_label_set(EWL_BUTTON(button), "pop");
         ewl_callback_append(button, EWL_CALLBACK_CLICKED, button_pop_cb,
                                                                 statusbar);
-        ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
+        ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_NONE);
         ewl_container_child_append(EWL_CONTAINER(hbox), button);
         ewl_widget_show(button);
 

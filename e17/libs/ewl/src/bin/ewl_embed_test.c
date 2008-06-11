@@ -169,7 +169,7 @@ main(int argc, char **argv)
 
         wg = ewl_button_new();
         ewl_button_label_set(EWL_BUTTON(wg), "append");
-        ewl_object_fill_policy_set(EWL_OBJECT(wg), EWL_FLAG_FILL_SHRINK);
+        ewl_object_fill_policy_set(EWL_OBJECT(wg), EWL_FLAG_FILL_NONE);
         ewl_container_child_append(EWL_CONTAINER(c), wg);
         ewl_callback_append(wg, EWL_CALLBACK_CLICKED, insert, NULL);
         ewl_widget_show(wg);

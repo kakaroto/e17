@@ -30,8 +30,8 @@
 
 #define NULL_PATH "/dev/null"
 
-#define MAIN_WIDTH 640
-#define MAIN_HEIGHT 320
+#define MAIN_WIDTH 0
+#define MAIN_HEIGHT 0
 
 static Ewl_Model *expansion_model = NULL;
 
@@ -702,7 +702,7 @@ create_main_test_window(Ewl_Container *box)
         ewl_container_child_append(EWL_CONTAINER(o), o2);
         ewl_button_label_set(EWL_BUTTON(o2), "Run unit tests");
         ewl_callback_append(o2, EWL_CALLBACK_CLICKED, cb_run_unit_tests, NULL);
-        ewl_object_fill_policy_set(EWL_OBJECT(o2), EWL_FLAG_FILL_SHRINK);
+        ewl_object_fill_policy_set(EWL_OBJECT(o2), EWL_FLAG_FILL_NONE);
         ewl_widget_name_set(o2, "unit_test_button");
         ewl_widget_show(o2);
 

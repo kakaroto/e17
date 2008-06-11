@@ -49,7 +49,7 @@ ewl_statusbar_init(Ewl_Statusbar *sb)
         }
 
         ewl_object_fill_policy_set(EWL_OBJECT(w),
-                        EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
+                        EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINKABLE);
 
         ewl_box_orientation_set(EWL_BOX(sb), EWL_ORIENTATION_HORIZONTAL);
         ewl_widget_appearance_set(w, EWL_STATUSBAR_TYPE);
@@ -58,7 +58,7 @@ ewl_statusbar_init(Ewl_Statusbar *sb)
         sb->left = ewl_hbox_new();
         ewl_container_child_append(EWL_CONTAINER(sb), sb->left);
         ewl_widget_internal_set(EWL_WIDGET(sb->left), TRUE);
-        ewl_object_fill_policy_set(EWL_OBJECT(sb->left), EWL_FLAG_FILL_SHRINK);
+        ewl_object_fill_policy_set(EWL_OBJECT(sb->left), EWL_FLAG_FILL_SHRINKABLE);
         ewl_widget_show(sb->left);
 
         sb->status = ewl_hbox_new();
@@ -70,7 +70,7 @@ ewl_statusbar_init(Ewl_Statusbar *sb)
         sb->right = ewl_hbox_new();
         ewl_container_child_append(EWL_CONTAINER(sb), sb->right);
         ewl_widget_internal_set(EWL_WIDGET(sb->right), TRUE);
-        ewl_object_fill_policy_set(EWL_OBJECT(sb->right), EWL_FLAG_FILL_SHRINK);
+        ewl_object_fill_policy_set(EWL_OBJECT(sb->right), EWL_FLAG_FILL_SHRINKABLE);
         ewl_object_alignment_set(EWL_OBJECT(sb->right), EWL_FLAG_ALIGN_RIGHT);
         ewl_widget_show(sb->right);
 

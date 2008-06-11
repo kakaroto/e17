@@ -270,8 +270,7 @@ create_media_window(Ewl_Media_Module_Type type)
 
         /* box to contain contols and scrollers */
         controls = ewl_vbox_new();
-        ewl_object_fill_policy_set(EWL_OBJECT(controls),
-                        EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_HFILL);
+        ewl_object_fill_policy_set(EWL_OBJECT(controls), EWL_FLAG_FILL_HFILL);
         ewl_container_child_append(EWL_CONTAINER(b), controls);
         ewl_widget_show(controls);
 
@@ -309,7 +308,7 @@ create_media_window(Ewl_Media_Module_Type type)
         seeker = ewl_hseeker_new();
         ewl_container_child_append(EWL_CONTAINER(b), seeker);
         ewl_object_fill_policy_set(EWL_OBJECT(seeker),
-                        EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_HFILL);
+                        EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_HFILL);
         ewl_range_value_set(EWL_RANGE(seeker), 0.0);
         ewl_range_maximum_value_set(EWL_RANGE(seeker), 0.0);
         ewl_range_step_set(EWL_RANGE(seeker), 1.0);
@@ -319,7 +318,7 @@ create_media_window(Ewl_Media_Module_Type type)
         /* the time text spot */
         ewl_container_child_append(EWL_CONTAINER(b), time);
         ewl_object_insets_set(EWL_OBJECT(time), 0, 3, 0, 0);
-        ewl_object_fill_policy_set(EWL_OBJECT(time), EWL_FLAG_FILL_SHRINK);
+        ewl_object_fill_policy_set(EWL_OBJECT(time), EWL_FLAG_FILL_NONE);
         ewl_widget_show(time);
 }
 

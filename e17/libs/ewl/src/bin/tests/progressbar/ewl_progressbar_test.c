@@ -90,7 +90,10 @@ create_test(Ewl_Container *box)
         progressbar_box = ewl_hbox_new();
         ewl_container_child_append(EWL_CONTAINER(progressbar_vbox),
                                                 progressbar_box);
-        ewl_box_spacing_set(EWL_BOX(progressbar_box), 0);
+        ewl_object_fill_policy_set(EWL_OBJECT(progressbar_box), 
+                        EWL_FLAG_FILL_NONE);
+        ewl_object_alignment_set(EWL_OBJECT(progressbar_box), 
+                                                EWL_FLAG_ALIGN_CENTER);
         ewl_widget_show(progressbar_box);
 
         button = ewl_button_new();
@@ -98,8 +101,6 @@ create_test(Ewl_Container *box)
         ewl_container_child_append(EWL_CONTAINER(progressbar_box), button);
         ewl_callback_prepend(button, EWL_CALLBACK_CLICKED,
                         cb_rerun_progressbars, NULL);
-
-        ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
         ewl_widget_show (button);
 
         button = ewl_button_new();
@@ -107,7 +108,6 @@ create_test(Ewl_Container *box)
         ewl_container_child_append(EWL_CONTAINER(progressbar_box), button);
         ewl_callback_prepend(button, EWL_CALLBACK_CLICKED,
                         cb_set_new_range, NULL);
-        ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_SHRINK);
         ewl_widget_show (button);
 
         return 1;

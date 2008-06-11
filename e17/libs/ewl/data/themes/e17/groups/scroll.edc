@@ -80,6 +80,7 @@ group
 group
 {
 	name: "ewl/seeker/vertical";
+	min: 2 20;
 
 	parts
 	{
@@ -102,6 +103,7 @@ group
 group
 {
 	name: "ewl/seeker/horizontal";
+	min: 20 2;
 
 	parts
 	{

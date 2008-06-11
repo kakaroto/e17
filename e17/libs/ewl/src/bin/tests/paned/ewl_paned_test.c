@@ -63,29 +63,27 @@ create_test(Ewl_Container *box)
         ewl_widget_show(o);
 
         o = ewl_button_new();
-        ewl_button_label_set(EWL_BUTTON(o), "HFill | VShrink");
-        ewl_object_fill_policy_set(EWL_OBJECT(o),
-                        EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
+        ewl_button_label_set(EWL_BUTTON(o), "HFill");
+        ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_HFILL);
         ewl_container_child_append(EWL_CONTAINER(pane2), o);
         ewl_callback_append(o, EWL_CALLBACK_CLICKED,
-                        ewl_paned_test_cb_clicked, "HFill | VShrink");
+                        ewl_paned_test_cb_clicked, "HFill");
         ewl_widget_show(o);
 
         o = ewl_button_new();
-        ewl_button_label_set(EWL_BUTTON(o), "HShrink | VFill");
-        ewl_object_fill_policy_set(EWL_OBJECT(o),
-                        EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_VFILL);
+        ewl_button_label_set(EWL_BUTTON(o), "VFill");
+        ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_VFILL);
         ewl_container_child_append(EWL_CONTAINER(pane2), o);
         ewl_callback_append(o, EWL_CALLBACK_CLICKED,
-                        ewl_paned_test_cb_clicked, "HShrink | VFill");
+                        ewl_paned_test_cb_clicked, "VFill");
         ewl_widget_show(o);
 
         o = ewl_button_new();
-        ewl_button_label_set(EWL_BUTTON(o), "shrink");
-        ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
+        ewl_button_label_set(EWL_BUTTON(o), "shrinkable");
+        ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINKABLE);
         ewl_container_child_append(EWL_CONTAINER(pane2), o);
         ewl_callback_append(o, EWL_CALLBACK_CLICKED,
-                        ewl_paned_test_cb_clicked, "Shrink");
+                        ewl_paned_test_cb_clicked, "Shrinkable");
         ewl_widget_show(o);
 
         pane3 = ewl_hpaned_new();
@@ -169,7 +167,6 @@ ewl_paned_test_cb_add(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 
         o = ewl_button_new();
         ewl_button_label_set(EWL_BUTTON(o), "New Button");
-        ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
         ewl_container_child_append(EWL_CONTAINER(p), o);
         ewl_callback_append(o, EWL_CALLBACK_CLICKED,
                         ewl_paned_test_cb_clicked_destroy, "New Button");

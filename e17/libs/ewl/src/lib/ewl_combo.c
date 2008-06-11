@@ -171,7 +171,7 @@ ewl_combo_scrollable_set(Ewl_Combo *combo, unsigned int scrollable)
                 scroll = ewl_scrollpane_new();
                 ewl_object_fill_policy_set(EWL_OBJECT(scroll),
                                                 EWL_FLAG_FILL_HFILL
-                                                | EWL_FLAG_FILL_SHRINK);
+                                                | EWL_FLAG_FILL_SHRINKABLE);
                 ewl_object_maximum_h_set(EWL_OBJECT(scroll), max_h);
                 ewl_widget_show(scroll);
 

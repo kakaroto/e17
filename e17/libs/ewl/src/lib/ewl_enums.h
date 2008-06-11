@@ -104,14 +104,19 @@ enum Ewl_Object_Flags
          * stretched to fill available space or keep their current size.
          */
         EWL_FLAG_FILL_NONE = 0, /**< Do not fill or shrink in any direction */
-        EWL_FLAG_FILL_HSHRINK = 0x10, /**< Horizontally shrink bit */
-        EWL_FLAG_FILL_VSHRINK = 0x20, /**< Horizontally shrink bit */
-        EWL_FLAG_FILL_SHRINK =
-            EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_VSHRINK, /**< Shrink bit */
+        EWL_FLAG_FILL_HSHRINKABLE = 0x10, /**< Horizontally shrink bit */
+        EWL_FLAG_FILL_VSHRINKABLE = 0x20, /**< Vertical shrink bit */
+        EWL_FLAG_FILL_SHRINKABLE =
+            EWL_FLAG_FILL_HSHRINKABLE | EWL_FLAG_FILL_VSHRINKABLE, /**< Shrink bit */
         EWL_FLAG_FILL_HFILL = 0x40, /**< Horizontal fill bit */
         EWL_FLAG_FILL_VFILL = 0x80, /**< Vertical fill bit */
         EWL_FLAG_FILL_FILL = EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VFILL, /**< Fill bit */
-        EWL_FLAG_FILL_ALL = EWL_FLAG_FILL_FILL | EWL_FLAG_FILL_SHRINK /**< Shrunk and fill bit */
+        EWL_FLAG_FILL_ALL = EWL_FLAG_FILL_FILL | EWL_FLAG_FILL_SHRINKABLE, /**< Shrunk and fill bit */
+        EWL_FLAG_FILL_HSHRINK = 0x100 | EWL_FLAG_FILL_HSHRINKABLE, 
+                                        /**< Horizontal unfold bit */
+        EWL_FLAG_FILL_VSHRINK = 0x200 | EWL_FLAG_FILL_VSHRINKABLE, 
+                                        /**< Horizontal unfold bit */
+        EWL_FLAG_FILL_SHRINK = EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_VSHRINK
 };
 
 /**
@@ -132,8 +137,8 @@ enum Ewl_Object_Flags
  * @def EWL_FLAGS_FILL_MASK
  * The fill mask
  */
-#define EWL_FLAGS_FILL_MASK (EWL_FLAG_FILL_NONE | EWL_FLAG_FILL_SHRINK | \
-                EWL_FLAG_FILL_FILL)
+#define EWL_FLAGS_FILL_MASK (EWL_FLAG_FILL_NONE | EWL_FLAG_FILL_SHRINKABLE | \
+                EWL_FLAG_FILL_FILL | EWL_FLAG_FILL_SHRINK)
 
 /**
  * @enum Ewl_Widget_Flags

@@ -92,7 +92,7 @@ ewl_calendar_init(Ewl_Calendar* ib)
 
         o = ewl_icon_new();
         ewl_container_child_append(EWL_CONTAINER(top_hbox), o);
-        ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
+        ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINKABLE);
         ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_LEFT);
         icon = ewl_icon_theme_icon_path_get(EWL_ICON_GO_PREVIOUS,
                                                 EWL_ICON_SIZE_SMALL);
@@ -106,14 +106,14 @@ ewl_calendar_init(Ewl_Calendar* ib)
         ib->month_label = ewl_label_new();
         ewl_object_fill_policy_set(EWL_OBJECT(ib->month_label),
                                                 EWL_FLAG_FILL_HFILL |
-                                                EWL_FLAG_FILL_VSHRINK);
+                                                EWL_FLAG_FILL_VSHRINKABLE);
         ewl_object_alignment_set(EWL_OBJECT(ib->month_label),
                                                 EWL_FLAG_ALIGN_CENTER);
         ewl_container_child_append(EWL_CONTAINER(top_hbox), ib->month_label);
         ewl_widget_show(ib->month_label);
 
         o = ewl_icon_new();
-        ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
+        ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINKABLE);
         ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_RIGHT);
         ewl_container_child_append(EWL_CONTAINER(top_hbox), o);
         icon = ewl_icon_theme_icon_path_get(EWL_ICON_GO_NEXT,

@@ -54,7 +54,7 @@ typedef struct Ewl_Object Ewl_Object;
  *
  * As illustrated, the fill policy determines how much space an object will
  * use when the request for a specific size is made. When the fill policy
- * contains EWL_FLAG_FILL_HSHRINK, EWL_FLAG_FILL_VSHRINK or both, the
+ * contains EWL_FLAG_FILL_HSHRINKABLE, EWL_FLAG_FILL_VSHRINKABLE or both, the
  * Ewl_Object can be resized down to it's minimum size in width, height or both
  * respectively.
  *
@@ -333,7 +333,7 @@ void             ewl_object_flags_remove(Ewl_Object *o, unsigned int flags,
                 ewl_object_maximum_w_set(o, w); \
                 ewl_object_minimum_w_set(o, w); \
                 ewl_object_fill_policy_set(o, ewl_object_fill_policy_get(o) & \
-                                ~(EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINK)); \
+                                ~(EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_HSHRINKABLE)); \
         }
 
 /**
@@ -347,7 +347,7 @@ void             ewl_object_flags_remove(Ewl_Object *o, unsigned int flags,
                 ewl_object_maximum_h_set(o, h); \
                 ewl_object_minimum_h_set(o, h); \
                 ewl_object_fill_policy_set(o, ewl_object_fill_policy_get(o) & \
-                                ~(EWL_FLAG_FILL_VFILL | EWL_FLAG_FILL_VSHRINK)); \
+                                ~(EWL_FLAG_FILL_VFILL | EWL_FLAG_FILL_VSHRINKABLE)); \
         }
 
 /**

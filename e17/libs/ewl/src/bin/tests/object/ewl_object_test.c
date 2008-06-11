@@ -856,7 +856,8 @@ fill_policy_test_set_get(char *buf, int len)
         ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_ALL);
         fill = ewl_object_fill_policy_get(EWL_OBJECT(w));
 
-        if ((fill & EWL_FLAG_FILL_HSHRINK) && (fill & EWL_FLAG_FILL_VSHRINK) &&
+        if ((fill & EWL_FLAG_FILL_HSHRINKABLE) 
+                        && (fill & EWL_FLAG_FILL_VSHRINKABLE) &&
             (fill & EWL_FLAG_FILL_HFILL) && (fill & EWL_FLAG_FILL_VFILL)) {
                 ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
                 fill = ewl_object_fill_policy_get(EWL_OBJECT(w));

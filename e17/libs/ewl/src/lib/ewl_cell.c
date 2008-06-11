@@ -47,7 +47,7 @@ ewl_cell_init(Ewl_Cell *cell)
                 DRETURN_INT(FALSE, DLEVEL_STABLE);
 
         ewl_object_fill_policy_set(EWL_OBJECT(cell), EWL_FLAG_FILL_FILL |
-                                   EWL_FLAG_FILL_HSHRINK);
+                                   EWL_FLAG_FILL_HSHRINKABLE);
         ewl_widget_appearance_set(EWL_WIDGET(cell), EWL_CELL_TYPE);
         ewl_widget_inherit(EWL_WIDGET(cell), EWL_CELL_TYPE);
 

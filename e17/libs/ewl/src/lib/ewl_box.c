@@ -1079,7 +1079,7 @@ ewl_box_setup(void)
                  * These are the valid fill policies for this widget.
                  */
                 ewl_box_vertical->f_policy =
-                        EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_VFILL;
+                        EWL_FLAG_FILL_VSHRINKABLE | EWL_FLAG_FILL_VFILL;
 
                 /*
                  * This sets the aligments for the non-filling direction.
@@ -1120,7 +1120,7 @@ ewl_box_setup(void)
                  * These are the valid fill policies for this widget.
                  */
                 ewl_box_horizontal->f_policy =
-                        EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_HFILL;
+                        EWL_FLAG_FILL_HSHRINKABLE | EWL_FLAG_FILL_HFILL;
 
                 /*
                  * This sets the aligments for the non-filling direction.

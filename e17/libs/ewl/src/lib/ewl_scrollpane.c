@@ -12,6 +12,7 @@
 
 #define HIST_NUM 20
 
+static void ewl_scrollpane_preferred_size_calc(Ewl_Scrollpane *s);
 /* Normal scrolling functions */
 static void ewl_scrollpane_cb_mouse_down_normal(Ewl_Widget *w, void *ev, void *data);
 static void ewl_scrollpane_cb_mouse_up_normal(Ewl_Widget *w, void *ev, void *data);
@@ -111,10 +112,18 @@ ewl_scrollpane_init(Ewl_Scrollpane *s)
         ewl_widget_appearance_set(w, EWL_SCROLLPANE_TYPE);
         ewl_widget_inherit(w, EWL_SCROLLPANE_TYPE);
         ewl_widget_focusable_set(EWL_WIDGET(s), TRUE);
-        ewl_object_fill_policy_set(EWL_OBJECT(s), EWL_FLAG_FILL_ALL);
+        ewl_object_fill_policy_set(EWL_OBJECT(s), EWL_FLAG_FILL_FILL 
+                                                        | EWL_FLAG_FILL_SHRINK);
 
         ewl_container_callback_notify(EWL_CONTAINER(s), EWL_CALLBACK_FOCUS_IN);
         ewl_container_callback_notify(EWL_CONTAINER(s), EWL_CALLBACK_FOCUS_OUT);
+
+        /* get informed about the children size */
+        ewl_container_show_notify_set(EWL_CONTAINER(s), 
+                                        ewl_scrollpane_cb_child_show);
+        ewl_container_resize_notify_set(EWL_CONTAINER(s), 
+                                        ewl_scrollpane_cb_child_resize);
+
 
         /* Remove the default focus out callback and replace with our own */
         ewl_callback_del(w, EWL_CALLBACK_FOCUS_OUT, ewl_widget_cb_focus_out);
@@ -130,6 +139,12 @@ ewl_scrollpane_init(Ewl_Scrollpane *s)
         ewl_container_child_append(EWL_CONTAINER(s), s->overlay);
         ewl_widget_internal_set(s->overlay, TRUE);
         ewl_widget_show(s->overlay);
+
+        /* override the notify callbacks of the overlay */
+        ewl_container_show_notify_set(EWL_CONTAINER(s->overlay), 
+                                        ewl_scrollpane_cb_overlay_child_show);
+        ewl_container_resize_notify_set(EWL_CONTAINER(s->overlay), 
+                                        ewl_scrollpane_cb_overlay_child_resize);
 
         /*
          * Create the container to hold the contents and it's configure
@@ -167,7 +182,7 @@ ewl_scrollpane_init(Ewl_Scrollpane *s)
                         ewl_scrollpane_cb_focus_jump, NULL);
 
         /*
-         * We need to know whent he scrollbars have value changes in order to
+         * We need to know when he scrollbars have value changes in order to
          * know when to scroll.
          */
         ewl_callback_append(s->hscrollbar, EWL_CALLBACK_VALUE_CHANGED,
@@ -311,7 +326,7 @@ ewl_scrollpane_hscrollbar_flag_set(Ewl_Scrollpane *s, Ewl_Scrollpane_Flags f)
                 unsigned int fill;
                 fill = ewl_object_fill_policy_get(EWL_OBJECT(s->box));
                 ewl_object_fill_policy_set(EWL_OBJECT(s->box),
-                                fill | EWL_FLAG_FILL_HSHRINK);
+                                fill | EWL_FLAG_FILL_HSHRINKABLE);
         }
 
         ewl_widget_configure(EWL_WIDGET(s));
@@ -340,7 +355,7 @@ ewl_scrollpane_vscrollbar_flag_set(Ewl_Scrollpane *s, Ewl_Scrollpane_Flags f)
                 unsigned int fill;
                 fill = ewl_object_fill_policy_get(EWL_OBJECT(s->box));
                 ewl_object_fill_policy_set(EWL_OBJECT(s->box),
-                                fill | EWL_FLAG_FILL_VSHRINK);
+                                fill | EWL_FLAG_FILL_VSHRINKABLE);
         }
 
         ewl_widget_configure(EWL_WIDGET(s));
@@ -518,17 +533,6 @@ ewl_scrollpane_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
         content_h = CURRENT_H(w);
 
         /*
-         * FIXME: This is exposing box internals, should probably just make a
-         * dumb box for the scrollpane.
-         * Force the box to recalculate preferred size to work around children
-         * with shrink fill policies.
-         */
-        ewl_container_largest_prefer(EWL_CONTAINER(s->box),
-                                        EWL_ORIENTATION_HORIZONTAL);
-        ewl_container_sum_prefer(EWL_CONTAINER(s->box),
-                                        EWL_ORIENTATION_VERTICAL);
-
-        /*
          * Get the preferred size of contents to scroll correctly.
          */
         b_width = ewl_object_preferred_w_get(EWL_OBJECT(s->box));
@@ -550,7 +554,7 @@ ewl_scrollpane_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
                          s->hflag == EWL_SCROLLPANE_FLAG_AUTO_VISIBLE))
                 ewl_widget_show(s->hscrollbar);
         else {
-                box_fill |= EWL_FLAG_FILL_HSHRINK;
+                box_fill |= EWL_FLAG_FILL_HSHRINKABLE;
                 ewl_widget_hide(s->hscrollbar);
         }
 
@@ -559,7 +563,7 @@ ewl_scrollpane_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
                          s->vflag == EWL_SCROLLPANE_FLAG_AUTO_VISIBLE))
                 ewl_widget_show(s->vscrollbar);
         else {
-                box_fill |= EWL_FLAG_FILL_VSHRINK;
+                box_fill |= EWL_FLAG_FILL_VSHRINKABLE;
                 ewl_widget_hide(s->vscrollbar);
         }
 
@@ -638,6 +642,128 @@ ewl_scrollpane_cb_configure(Ewl_Widget *w, void *ev_data __UNUSED__,
          * Reset the default fill policy on the box to get updated sizes..
          */
         ewl_object_fill_policy_set(EWL_OBJECT(s->box), old_fill);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * @param p: The scrollbar to work with
+ * @param w: The now visible child
+ * @return Returns no value
+ */
+void
+ewl_scrollpane_cb_child_show(Ewl_Container *p, Ewl_Widget *c __UNUSED__)
+{
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(p);
+        DCHECK_TYPE(p, EWL_SCROLLPANE_TYPE);
+
+        ewl_scrollpane_preferred_size_calc(EWL_SCROLLPANE(p));
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * @param p: The scrollbar to work with
+ * @param w: The resized child (unused)
+ * @param size: unused
+ * @param o: unused
+ * @return Returns no value
+ */
+void
+ewl_scrollpane_cb_child_resize(Ewl_Container *p, Ewl_Widget *c __UNUSED__, 
+                                int size __UNUSED__, 
+                                Ewl_Orientation o __UNUSED__)
+{
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(p);
+        DCHECK_TYPE(p, EWL_SCROLLPANE_TYPE);
+
+        ewl_scrollpane_preferred_size_calc(EWL_SCROLLPANE(p));
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * @param p: The overlay to work with
+ * @param w: The now visible child
+ * @return Returns no value
+ */
+void
+ewl_scrollpane_cb_overlay_child_show(Ewl_Container *p, Ewl_Widget *c)
+{
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(p);
+        DCHECK_TYPE(p, EWL_OVERLAY_TYPE);
+        DCHECK_PARAM_PTR(c);
+        DCHECK_TYPE(c, EWL_WIDGET_TYPE);
+
+        ewl_overlay_cb_child_show(p, c);
+        ewl_scrollpane_preferred_size_calc(EWL_SCROLLPANE(EWL_WIDGET(p)->parent));
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * @param p: The scrollbar to work with
+ * @param w: The resized child (unused)
+ * @param size: unused
+ * @param o: unused
+ * @return Returns no value
+ */
+void
+ewl_scrollpane_cb_overlay_child_resize(Ewl_Container *p, Ewl_Widget *c,
+                int size, Ewl_Orientation o)
+{
+        Ewl_Scrollpane *s;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(p);
+        DCHECK_TYPE(p, EWL_OVERLAY_TYPE);
+        s = EWL_SCROLLPANE(EWL_WIDGET(p)->parent);
+        DCHECK_PARAM_PTR(s);
+        DCHECK_PARAM_PTR(c);
+        DCHECK_TYPE(c, EWL_WIDGET_TYPE);
+        DCHECK_TYPE(s, EWL_SCROLLPANE_TYPE);
+
+        ewl_overlay_cb_child_resize(p, c, size, o);
+
+        if (o == EWL_ORIENTATION_VERTICAL)
+                ewl_object_preferred_inner_h_set(EWL_OBJECT(s),
+                                PREFERRED_H(s) + size);
+        else
+                ewl_object_preferred_inner_w_set(EWL_OBJECT(s),
+                                PREFERRED_W(s) + size);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+static void
+ewl_scrollpane_preferred_size_calc(Ewl_Scrollpane *s)
+{
+        int hs_w = 0, hs_h = 0, vs_w = 0, vs_h = 0;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(s);
+        DCHECK_TYPE(s, EWL_SCROLLPANE_TYPE);
+
+        if (s->hflag != EWL_SCROLLPANE_FLAG_ALWAYS_HIDDEN)
+                ewl_object_preferred_size_get(EWL_OBJECT(s->hscrollbar), 
+                                                &hs_w, &hs_h);
+        if (s->vflag != EWL_SCROLLPANE_FLAG_ALWAYS_HIDDEN)
+                ewl_object_preferred_size_get(EWL_OBJECT(s->vscrollbar), 
+                                                &vs_w, &vs_h);
+
+        ewl_object_minimum_h_set(EWL_OBJECT(s), hs_h + vs_h);
+        ewl_object_minimum_w_set(EWL_OBJECT(s), hs_w + vs_w);
+        ewl_object_preferred_inner_h_set(EWL_OBJECT(s),
+                        ewl_object_preferred_h_get(EWL_OBJECT(s->box)) + hs_h);
+        ewl_object_preferred_inner_w_set(EWL_OBJECT(s),
+                        ewl_object_preferred_w_get(EWL_OBJECT(s->box)) + vs_w);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

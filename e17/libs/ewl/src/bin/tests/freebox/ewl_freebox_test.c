@@ -102,7 +102,7 @@ create_test(Ewl_Container *box)
 
                 o = ewl_button_new();
                 ewl_button_label_set(EWL_BUTTON(o), "Add items");
-                ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
+                ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_NONE);
                 ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_TOP);
                 ewl_container_child_append(EWL_CONTAINER(hbox), o);
                 ewl_callback_append(o, EWL_CALLBACK_CLICKED,
@@ -111,7 +111,7 @@ create_test(Ewl_Container *box)
 
                 o = ewl_button_new();
                 ewl_button_label_set(EWL_BUTTON(o), "Clear items");
-                ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
+                ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_NONE);
                 ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_TOP);
                 ewl_container_child_append(EWL_CONTAINER(hbox), o);
                 ewl_callback_append(o, EWL_CALLBACK_CLICKED,

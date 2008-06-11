@@ -1539,13 +1539,13 @@ ewl_widget_print_verbose(Ewl_Widget *w)
                 printf(" NONE");
 
         else {
-                if (flags & EWL_FLAG_FILL_HSHRINK)
+                if (flags & EWL_FLAG_FILL_HSHRINKABLE)
                         printf(" HSHRINK");
 
                 if (flags & EWL_FLAG_FILL_HFILL)
                         printf(" HFILL");
 
-                if (flags & EWL_FLAG_FILL_VSHRINK)
+                if (flags & EWL_FLAG_FILL_VSHRINKABLE)
                         printf(" VSHRINK");
 
                 if (flags & EWL_FLAG_FILL_VFILL)

@@ -130,6 +130,13 @@ void ewl_scrollpane_cb_vscroll(Ewl_Widget *w, void *ev_data, void *user_data);
 void ewl_scrollpane_cb_wheel_scroll(Ewl_Widget *w, void *ev_data,
                                                         void *user_data);
 
+void ewl_scrollpane_cb_child_show(Ewl_Container *p, Ewl_Widget *c);
+void ewl_scrollpane_cb_child_resize(Ewl_Container *p, Ewl_Widget *c, int size,
+                                                Ewl_Orientation o);
+void ewl_scrollpane_cb_overlay_child_show(Ewl_Container *p, Ewl_Widget *c);
+void ewl_scrollpane_cb_overlay_child_resize(Ewl_Container *p, Ewl_Widget *c, 
+                                                int size, Ewl_Orientation o);
+
 /**
  * @}
  */

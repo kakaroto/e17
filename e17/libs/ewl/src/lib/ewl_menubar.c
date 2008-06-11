@@ -132,7 +132,7 @@ ewl_menubar_from_info(Ewl_Menubar *mb, Ewl_Menubar_Info *info)
                 ewl_menu_from_info(EWL_MENU(menu), info[i].menu);
                 ewl_container_child_append(EWL_CONTAINER(mb), menu);
                 ewl_object_fill_policy_set(EWL_OBJECT(menu),
-                                EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_VFILL);
+                                EWL_FLAG_FILL_HSHRINKABLE | EWL_FLAG_FILL_VFILL);
                 ewl_widget_show(menu);
         }
 

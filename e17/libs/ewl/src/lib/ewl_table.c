@@ -89,7 +89,7 @@ ewl_table_init(Ewl_Table *t, int cols, int rows, char **col_headers)
                         ewl_widget_disable(button);
                         ewl_container_child_append(EWL_CONTAINER(cell), button);
                         ewl_object_fill_policy_set(EWL_OBJECT(cell),
-                                                EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_HFILL);
+                                                EWL_FLAG_FILL_VSHRINKABLE | EWL_FLAG_FILL_HFILL);
                         ewl_container_child_append(EWL_CONTAINER(t->grid),
                                                         EWL_WIDGET(cell));
                         ewl_grid_child_position_set(t->grid, EWL_WIDGET(cell),

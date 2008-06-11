@@ -117,7 +117,8 @@ ewl_filepicker_init(Ewl_Filepicker *fp)
         ewl_callback_prepend(EWL_WIDGET(fp), EWL_CALLBACK_DESTROY,
                                 ewl_filepicker_cb_destroy, NULL);
 
-        ewl_object_preferred_inner_size_set(EWL_OBJECT(fp), 400, 300);
+        /* FIXME that's the wrong way to do it */
+        ewl_object_preferred_inner_size_set(EWL_OBJECT(fp), 300, 100);
 
         fp->mvc_path.model = ewl_model_new();
         ewl_model_data_fetch_set(fp->mvc_path.model,
@@ -165,7 +166,7 @@ ewl_filepicker_init(Ewl_Filepicker *fp)
                                 EWL_CALLBACK_VALUE_CHANGED,
                                 ewl_filepicker_cb_path_change, fp);
         ewl_object_fill_policy_set(EWL_OBJECT(fp->mvc_path.combo),
-                                EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
+                                EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINKABLE);
         ewl_widget_show(fp->mvc_path.combo);
 
         o = ewl_hbox_new();
@@ -175,7 +176,7 @@ ewl_filepicker_init(Ewl_Filepicker *fp)
         fp->favorites_box = ewl_vbox_new();
         ewl_container_child_append(EWL_CONTAINER(o), fp->favorites_box);
         ewl_object_fill_policy_set(EWL_OBJECT(fp->favorites_box),
-                                EWL_FLAG_FILL_HSHRINK | EWL_FLAG_FILL_VFILL);
+                                EWL_FLAG_FILL_HSHRINKABLE | EWL_FLAG_FILL_VFILL);
         ewl_filepicker_favorites_populate(fp);
         ewl_filepicker_show_favorites_set(fp, FALSE);
         
@@ -194,7 +195,7 @@ ewl_filepicker_init(Ewl_Filepicker *fp)
         box = ewl_vbox_new();
         ewl_container_child_append(EWL_CONTAINER(o), box);
         ewl_object_fill_policy_set(EWL_OBJECT(o),
-                        EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
+                        EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINKABLE);
         ewl_widget_show(box);
 
         fp->file_entry = ewl_entry_new();
@@ -228,12 +229,12 @@ ewl_filepicker_init(Ewl_Filepicker *fp)
         ewl_container_child_append(EWL_CONTAINER(box),
                                 fp->mvc_filters.combo);
         ewl_object_fill_policy_set(EWL_OBJECT(fp->mvc_filters.combo),
-                                EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
+                                EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINKABLE);
         ewl_widget_show(fp->mvc_filters.combo);
 
         box = ewl_vbox_new();
         ewl_container_child_append(EWL_CONTAINER(o), box);
-        ewl_object_fill_policy_set(EWL_OBJECT(box), EWL_FLAG_FILL_SHRINK);
+        ewl_object_fill_policy_set(EWL_OBJECT(box), EWL_FLAG_FILL_SHRINKABLE);
         ewl_widget_show(box);
 
         fp->ret_button = ewl_button_new();
@@ -242,7 +243,7 @@ ewl_filepicker_init(Ewl_Filepicker *fp)
         ewl_callback_append(fp->ret_button, EWL_CALLBACK_CLICKED,
                                 ewl_filepicker_cb_button_clicked, fp);
         ewl_object_fill_policy_set(EWL_OBJECT(fp->ret_button),
-                                EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINK);
+                                EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINKABLE);
         ewl_widget_show(fp->ret_button);
 
         o = ewl_button_new();
@@ -250,7 +251,7 @@ ewl_filepicker_init(Ewl_Filepicker *fp)
         ewl_stock_type_set(EWL_STOCK(o), EWL_STOCK_CANCEL);
         ewl_callback_append(o, EWL_CALLBACK_CLICKED,
                                 ewl_filepicker_cb_button_clicked, fp);
-        ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINK);
+        ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_SHRINKABLE);
         ewl_widget_show(o);
         
         /* Set up filelist */
