@@ -3121,7 +3121,7 @@ static void _etk_tree_header_mouse_up_cb(void *data, Evas *e, Evas_Object *obj, 
 {
    Etk_Tree *tree;
    Etk_Tree_Col *col;
-   Evas_Event_Mouse_Down *event = event_info;
+   Evas_Event_Mouse_Up *event = event_info;
    int hx, hy, hw, hh;
    Etk_Bool ascending;
 
@@ -3240,6 +3240,8 @@ static void _etk_tree_row_mouse_down_cb(void *data, Evas *e, Evas_Object *obj, v
    if (!row_object->row->selected || event.modifiers != ETK_MODIFIER_NONE)
       _etk_tree_row_select(row_object->row->tree, row_object->row, event.modifiers);
 
+   _etk_tree_row_signal_emit(row_object->row, row_object, "etk,state,clicked");
+   
    if (event.flags != ETK_MOUSE_NONE)
    {
       etk_signal_emit(ETK_TREE_ROW_CLICKED_SIGNAL, ETK_OBJECT(row_object->row->tree),
