@@ -8,7 +8,7 @@ images
 group
 {
 	name: "ewl/entry";
-	min: 18 18;
+	min: 18 20;
 
 	data
 	{
