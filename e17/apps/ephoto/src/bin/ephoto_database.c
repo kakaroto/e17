@@ -21,7 +21,8 @@ ephoto_db_init(void)
 	images_list = ecore_dlist_new();
 	image_ids = ecore_list_new();
 
-	snprintf(path, PATH_MAX, "%s/.ephoto/.ephoto_database", getenv("HOME"));
+	snprintf(path, PATH_MAX, "%s/.ephoto/.ephoto_database", 
+			getenv("HOME"));
 	snprintf(path2, PATH_MAX, "%s/.ephoto", getenv("HOME"));
 
 	if (!ecore_file_exists(path))

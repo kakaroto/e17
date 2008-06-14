@@ -1,5 +1,6 @@
 #include "ephoto.h"
 
+Ephoto_Main *em;
 static void destroy(Ewl_Widget *w, void *event, void *data);
 
 static void 
@@ -14,13 +15,6 @@ destroy(Ewl_Widget *w, void *event, void *data)
 	free(em->current_album);
 	free(em->current_directory);
 	free(em);
-	if (ec->requested_album)
-		free(ec->requested_album);
-	if (ec->requested_directory)
-		free(ec->requested_directory);
-	if (ec->requested_image)
-		free(ec->requested_image);
-	free(ec);
 	ewl_main_quit();
 	return;
 }
@@ -28,35 +22,42 @@ destroy(Ewl_Widget *w, void *event, void *data)
 void 
 create_main(void)
 {
-	const char *type;
 	char buf[PATH_MAX];
-	Ewl_Widget *hbox, *vbox;
+	Ewl_Widget *hbox, *mbar, *menu, *vbox;
 
-	if (ec->requested_image)
-	{
-		type = efreet_mime_type_get(ec->requested_image);
-		if ((ecore_hash_get(em->types, type)) != "image")
-			ec->requested_image = NULL;
-	}
+	em = NULL;
+        em = calloc(1, sizeof(Ephoto_Main));
 
-	if (ec->requested_album)
-		em->current_album = strdup(ec->requested_album);
-	else
-		em->current_album = strdup("Complete Library");
+        em->albums = ecore_list_new();
+        em->fsystem = ecore_list_new();
+        em->images = ecore_dlist_new();
+
+        em->types = ecore_hash_new(ecore_str_hash, ecore_str_compare);
+        ecore_hash_set(em->types, "image/gif", "image");
+        ecore_hash_set(em->types, "image/jpeg", "image");
+        ecore_hash_set(em->types, "image/png", "image");
+        ecore_hash_set(em->types, "image/svg+xml", "image");
+        ecore_hash_set(em->types, "image/tiff", "image");
+
+	em->current_album = strdup("Complete Library");
 	em->db = ephoto_db_init();
 
-	if (ec->requested_directory)
-		em->current_directory = strdup(ec->requested_directory);
-	else
-	{
-		getcwd(buf, PATH_MAX);
-		em->current_directory = strdup(buf);
-	}
+	getcwd(buf, PATH_MAX);
+	em->current_directory = strdup(buf);
 
-	em->win = add_window("Ephoto!", 715, 500, destroy, NULL);
+	em->win = add_window("Ephoto - Photo Management", 600, 400, destroy, NULL);
 
 	vbox = add_box(em->win, EWL_ORIENTATION_VERTICAL, 5);
 	ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_ALL);
+
+	mbar = add_menubar(vbox);
+
+	menu = add_menu(mbar, "File");
+	add_menu_item(menu, "Exit",
+			PACKAGE_DATA_DIR "/images/exit.png", destroy, NULL);
+	menu = add_menu(mbar, "Help");
+	add_menu_item(menu, "About",
+			PACKAGE_DATA_DIR "/images/help.png", about_dialog, NULL);
 
 	hbox = add_box(vbox, EWL_ORIENTATION_HORIZONTAL, 5);
 	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_HFILL);
@@ -70,16 +71,8 @@ create_main(void)
 	ewl_container_child_append(EWL_CONTAINER(em->view), em->view_box);
 	ewl_widget_show(em->view_box);
 
-	if (ec->requested_image)
-	{
-		add_single_view(em->view_box);
-		add_normal_view(em->view_box);
-	}
-	else
-	{
-		add_normal_view(em->view_box);
-		add_single_view(em->view_box);
-	}
+	add_normal_view(em->view_box);
+	add_single_view(em->view_box);
 
 	return;
 }

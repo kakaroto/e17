@@ -16,19 +16,16 @@ static void image_grayscale(Ewl_Widget *w, void *event, void *data);
 static void image_sepia(Ewl_Widget *w, void *event, void *data);
 static void close_channel(Ewl_Widget *w, void *event, void *data);
 static void channel_mixer(Ewl_Widget *w, void *event, void *data);
-static void set_requested_image_file(Ewl_Widget *w, void *event, void *data);
 static void set_image_file(Ewl_Widget *w, void *event, void *data);
-
-static void 
-set_requested_image_file(Ewl_Widget *w, void *event, void *data)
-{
-	ewl_image_file_path_set(EWL_IMAGE(w), ec->requested_image);
-}
 
 static void
 set_image_file(Ewl_Widget *w, void *event, void *data)
 {
-	ewl_image_file_path_set(EWL_IMAGE(w), ecore_dlist_current(em->images));
+	Ewl_Selection_Idx *i;
+
+	i = ewl_mvc_selected_get(EWL_MVC(em->fbox));
+
+	ewl_image_file_path_set(EWL_IMAGE(w), ecore_dlist_index_goto(em->images, i->row));
 	ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_NONE);
 	ewl_callback_del(w, EWL_CALLBACK_CONFIGURE, set_image_file);	
 }
@@ -36,8 +33,7 @@ set_image_file(Ewl_Widget *w, void *event, void *data)
 Ewl_Widget *
 add_single_view(Ewl_Widget *c)
 {
-	Ewl_Widget *vbox, *ibox, *hbox, *image, *bhbox;
-	Ewl_Widget *standard, *advanced;
+	Ewl_Widget *ibox, *bhbox;
 
 	em->ewin = NULL;
 
@@ -45,29 +41,9 @@ add_single_view(Ewl_Widget *c)
 	ewl_object_fill_policy_set(EWL_OBJECT(em->single_vbox), 
 					EWL_FLAG_FILL_ALL);
 
-	hbox = add_box(em->single_vbox, EWL_ORIENTATION_HORIZONTAL, 2);
-	ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_ALL);
-
-	standard = add_box(hbox, EWL_ORIENTATION_VERTICAL, 2);
-	ewl_object_maximum_w_set(EWL_OBJECT(standard), 30);
-	ewl_object_minimum_w_set(EWL_OBJECT(standard), 30);
-	ewl_object_fill_policy_set(EWL_OBJECT(standard), EWL_FLAG_FILL_VFILL);
-
-	add_standard_edit_tools(standard);
-
-	advanced = add_image(standard, 
-				PACKAGE_DATA_DIR "/images/camera-photo.png", 
-					0, show_advanced, NULL);
-        ewl_image_size_set(EWL_IMAGE(advanced), 25, 25);
-	ewl_object_alignment_set(EWL_OBJECT(advanced), EWL_FLAG_ALIGN_LEFT);
-        ewl_object_fill_policy_set(EWL_OBJECT(advanced), EWL_FLAG_FILL_SHRINK);
-
-	vbox = add_box(hbox, EWL_ORIENTATION_VERTICAL, 0);
-	ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_ALL);
-	
 	ibox = ewl_cell_new();
-	ewl_object_fill_policy_set(EWL_OBJECT(ibox), EWL_FLAG_FILL_ALL);
-	ewl_container_child_append(EWL_CONTAINER(vbox), ibox);
+	ewl_object_fill_policy_set(EWL_OBJECT(ibox), EWL_FLAG_FILL_SHRINK);
+	ewl_container_child_append(EWL_CONTAINER(em->single_vbox), ibox);
 	ewl_widget_show(ibox);
 
         em->simage = add_image(ibox, NULL, 0, NULL, NULL);
@@ -75,35 +51,12 @@ add_single_view(Ewl_Widget *c)
 					EWL_FLAG_ALIGN_CENTER);
         ewl_object_fill_policy_set(EWL_OBJECT(em->simage), 
 					EWL_FLAG_FILL_SHRINK);
-	if (ec->requested_image)
-		ewl_callback_append(em->simage, EWL_CALLBACK_SHOW, 
-					set_requested_image_file, NULL);
 	
-	bhbox = add_box(vbox, EWL_ORIENTATION_HORIZONTAL, 5);
+	bhbox = add_box(em->single_vbox, EWL_ORIENTATION_HORIZONTAL, 5);
 	ewl_object_alignment_set(EWL_OBJECT(bhbox), EWL_FLAG_ALIGN_CENTER);
 	ewl_object_fill_policy_set(EWL_OBJECT(bhbox), EWL_FLAG_FILL_SHRINK);
 
-        image = add_image(bhbox, 
-			PACKAGE_DATA_DIR "/images/media-seek-backward.png", 0, 
-				previous_image, NULL);
-        ewl_image_size_set(EWL_IMAGE(image), 32, 32);
-        ewl_attach_tooltip_text_set(image, _("Previous Image"));
-
-        image = add_image(bhbox, 
-			PACKAGE_DATA_DIR "/images/media-seek-forward.png", 0, 
-				next_image, NULL);
-        ewl_image_size_set(EWL_IMAGE(image), 32, 32);
-        ewl_attach_tooltip_text_set(image, _("Next Image"));
-
-	hbox = add_box(em->single_vbox, EWL_ORIENTATION_HORIZONTAL, 5);
-        ewl_object_alignment_set(EWL_OBJECT(hbox), EWL_FLAG_ALIGN_LEFT);
-        ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_SHRINK);
-
-        image = add_image(hbox, PACKAGE_DATA_DIR "/images/normal_view.png", 0,
-                                show_normal_view, NULL);
-        ewl_image_size_set(EWL_IMAGE(image), 25, 25);
-        ewl_attach_tooltip_text_set(image, _("Image Thumbnail View"));
-        ewl_object_fill_policy_set(EWL_OBJECT(image), EWL_FLAG_FILL_SHRINK);
+	add_standard_edit_tools(bhbox);
 
 	return em->single_vbox;
 }
@@ -124,37 +77,79 @@ show_single_view(Ewl_Widget *w, void *event, void *data)
 static void 
 add_standard_edit_tools(Ewl_Widget *c)
 {
-	Ewl_Widget *image;
+	Ewl_Widget *button;
 
-	image = add_image(c, PACKAGE_DATA_DIR "/images/in.png", 0, zoom_in, 
-					NULL);
-        ewl_image_size_set(EWL_IMAGE(image), 25, 25);
-        ewl_object_alignment_set(EWL_OBJECT(image), EWL_FLAG_ALIGN_LEFT);
+	button = add_button(c, NULL, 
+				PACKAGE_DATA_DIR "/images/in.png", 
+				zoom_in, NULL);
+        ewl_button_image_size_set(EWL_BUTTON(button), 22, 22);
+	ewl_attach_tooltip_text_set(button, _("Zoom In"));
+        ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_LEFT);
+	ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_NONE);
 
-	image = add_image(c, PACKAGE_DATA_DIR "/images/out.png", 0, zoom_out,
-					NULL);
-        ewl_image_size_set(EWL_IMAGE(image), 25, 25);
-        ewl_object_alignment_set(EWL_OBJECT(image), EWL_FLAG_ALIGN_LEFT);
+	button = add_button(c, NULL, 
+				PACKAGE_DATA_DIR "/images/out.png", 
+				zoom_out, NULL);
+        ewl_button_image_size_set(EWL_BUTTON(button), 22, 22);
+	ewl_attach_tooltip_text_set(button, _("Zoom Out"));
+        ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_LEFT);
+	ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_NONE);
 
-	image = add_image(c, PACKAGE_DATA_DIR "/images/undo.png", 0, 
-					rotate_image_left, NULL);
-	ewl_image_size_set(EWL_IMAGE(image), 25, 25);
-	ewl_object_alignment_set(EWL_OBJECT(image), EWL_FLAG_ALIGN_LEFT);
+	button = add_button(c, NULL, 
+				PACKAGE_DATA_DIR "/images/undo.png", 
+				rotate_image_left, NULL);
+	ewl_button_image_size_set(EWL_BUTTON(button), 22, 22);
+	ewl_attach_tooltip_text_set(button, _("Rotate Left"));
+	ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_LEFT);
+	ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_NONE);
 
-        image = add_image(c, PACKAGE_DATA_DIR "/images/redo.png", 0, 
-					rotate_image_right, NULL);
-        ewl_image_size_set(EWL_IMAGE(image), 25, 25);
-	ewl_object_alignment_set(EWL_OBJECT(image), EWL_FLAG_ALIGN_LEFT);
+        button = add_button(c, NULL, 
+				PACKAGE_DATA_DIR "/images/redo.png", 
+				rotate_image_right, NULL);
+        ewl_button_image_size_set(EWL_BUTTON(button), 22, 22);
+	ewl_attach_tooltip_text_set(button, _("Rotate Right"));
+	ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_LEFT);
+	ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_NONE);
 
-        image = add_image(c, PACKAGE_DATA_DIR "/images/go-next.png", 0, 
-					flip_image_horizontal, NULL);
-        ewl_image_size_set(EWL_IMAGE(image), 25, 25);
-	ewl_object_alignment_set(EWL_OBJECT(image), EWL_FLAG_ALIGN_LEFT);
+        button = add_button(c, NULL, 
+				PACKAGE_DATA_DIR "/images/go-next.png", 
+				flip_image_horizontal, NULL);
+        ewl_button_image_size_set(EWL_BUTTON(button), 22, 22);
+	ewl_attach_tooltip_text_set(button, _("Flip Horizontally"));
+	ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_LEFT);
+	ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_NONE);
 
-        image = add_image(c, PACKAGE_DATA_DIR "/images/go-down.png", 0, 
-					flip_image_vertical, NULL);
-	ewl_image_size_set(EWL_IMAGE(image), 25, 25);
-	ewl_object_alignment_set(EWL_OBJECT(image), EWL_FLAG_ALIGN_LEFT);
+        button = add_button(c, NULL, 
+				PACKAGE_DATA_DIR "/images/go-down.png", 
+				flip_image_vertical, NULL);
+	ewl_button_image_size_set(EWL_BUTTON(button), 22, 22);
+	ewl_attach_tooltip_text_set(button, _("Flip Vertically"));
+	ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_LEFT);
+	ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_NONE);
+
+	button = add_button(c, NULL,
+				PACKAGE_DATA_DIR "/images/camera-photo.png",
+				show_advanced, NULL);
+	ewl_button_image_size_set(EWL_BUTTON(button), 22, 22);
+	ewl_attach_tooltip_text_set(button, _("Advanced Tools"));
+	ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_LEFT);
+	ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_NONE);
+
+	button = add_button(c, NULL,
+                                PACKAGE_DATA_DIR "/images/media-seek-backward.png",
+                                previous_image, NULL);
+        ewl_button_image_size_set(EWL_BUTTON(button), 22, 22);
+        ewl_attach_tooltip_text_set(button, _("Previous Image"));
+        ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_LEFT);
+	ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_NONE);
+
+        button = add_button(c, NULL,
+                                PACKAGE_DATA_DIR "/images/media-seek-forward.png",
+                                next_image, NULL);
+        ewl_button_image_size_set(EWL_BUTTON(button), 22, 22);
+        ewl_attach_tooltip_text_set(button, _("Next Image"));
+        ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_LEFT);
+	ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_NONE);
 
 	return;
 }
@@ -169,49 +164,24 @@ destroy(Ewl_Widget *w, void *event, void *data)
 static void 
 show_advanced(void)
 {
-	const char *file;
-	Epsilon *ep;
-	Ewl_Widget *grid, *image;
+	Ewl_Widget *fbox, *button;
 
-	ep = epsilon_new(ecore_dlist_current(em->images));
-        if (!epsilon_exists(ep))
-                epsilon_generate(ep);
-        file = epsilon_thumb_file_get(ep);
-	epsilon_free(ep);
+	em->ewin = add_window("Ephoto Advanced Image Tools!", 
+				240, 185, destroy, NULL);
 
-	em->ewin = add_window("Ephoto Effects!", 375, 100, destroy, NULL);
+	fbox = ewl_hfreebox_new();
+	ewl_object_alignment_set(EWL_OBJECT(fbox), EWL_FLAG_ALIGN_CENTER);
+	ewl_object_fill_policy_set(EWL_OBJECT(fbox), EWL_FLAG_FILL_ALL);
+	ewl_container_child_append(EWL_CONTAINER(em->ewin), fbox);
+	ewl_widget_show(fbox);
 
-	grid = ewl_grid_new();
-	ewl_grid_dimensions_set(EWL_GRID(grid), 1, 4);
-	ewl_object_alignment_set(EWL_OBJECT(grid), EWL_FLAG_ALIGN_CENTER);
-	ewl_object_fill_policy_set(EWL_OBJECT(grid), EWL_FLAG_FILL_ALL);
-	ewl_container_child_append(EWL_CONTAINER(em->ewin), grid);
-	ewl_widget_show(grid);
+	button = add_button(fbox, "Grayscale", NULL, image_grayscale, em->simage);
+		
+	button = add_button(fbox, "Sepia", NULL, image_sepia, em->simage);
 
-	image = add_icon(grid, "Grayscale", file, 0, image_grayscale, 
-					em->simage);
-	ewl_icon_constrain_set(EWL_ICON(image), 81);
-	ewl_callback_append(EWL_ICON(image)->image, EWL_CALLBACK_CONFIGURE, 
-					image_grayscale, EWL_ICON(image)->image);
-	ewl_grid_child_position_set(EWL_GRID(grid), image, 0, 0, 0, 0);
-	
-	image = add_icon(grid, "Sepia", file, 0, image_sepia, em->simage);
-        ewl_icon_constrain_set(EWL_ICON(image), 81);
-        ewl_callback_append(EWL_ICON(image)->image, EWL_CALLBACK_CONFIGURE, 
-					image_sepia, EWL_ICON(image)->image);
-	ewl_grid_child_position_set(EWL_GRID(grid), image, 1, 1, 0, 0);
+	button = add_button(fbox, "Blur", NULL, image_blur, em->simage);
 
-	image = add_icon(grid, "Blur", file, 0, image_blur, em->simage);
-        ewl_icon_constrain_set(EWL_ICON(image), 81);
-        ewl_callback_append(EWL_ICON(image)->image, EWL_CALLBACK_CONFIGURE, 
-					image_blur, EWL_ICON(image)->image);
-	ewl_grid_child_position_set(EWL_GRID(grid), image, 2, 2, 0, 0);
-
-	image = add_icon(grid, "Sharpen", file, 0, image_sharpen, em->simage);
-        ewl_icon_constrain_set(EWL_ICON(image), 81);
-        ewl_callback_append(EWL_ICON(image)->image, EWL_CALLBACK_CONFIGURE, 
-					image_sharpen, EWL_ICON(image)->image);
-	ewl_grid_child_position_set(EWL_GRID(grid), image, 3, 3, 0, 0);
+	button = add_button(fbox, "Sharpen", NULL, image_sharpen, em->simage);
 
 	return;
 }

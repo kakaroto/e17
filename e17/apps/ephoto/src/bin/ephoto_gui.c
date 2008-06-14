@@ -170,7 +170,7 @@ add_text(Ewl_Widget *c, char *txt)
 	Ewl_Widget *text;
 	
 	text = ewl_text_new();
-	if(txt) ewl_text_text_set(EWL_TEXT(text), _(txt));
+	if(txt) ewl_text_text_append(EWL_TEXT(text), _(txt));
         ewl_object_alignment_set(EWL_OBJECT(text), 
 					EWL_FLAG_ALIGN_CENTER);
         if(c) ewl_container_child_append(EWL_CONTAINER(c), text);
@@ -180,18 +180,17 @@ add_text(Ewl_Widget *c, char *txt)
 }
 
 Ewl_Widget *
-add_window(char *name, int w, int h, void *cb, void *data)
+add_window(char *title, int w, int h, void *cb, void *data)
 {
 	Ewl_Widget *win;
 
         win = ewl_window_new();
-	if(name)
-	{
-        	ewl_window_title_set(EWL_WINDOW(win), _(name));
-        	ewl_window_name_set(EWL_WINDOW(win), _(name));
-        }
-	if(w && h) ewl_object_size_request(EWL_OBJECT(win), w, h);
-        if(cb) ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW,
+	if(title)
+	       	ewl_window_title_set(EWL_WINDOW(win), _(title));
+        if(w && h) 
+		ewl_object_size_request(EWL_OBJECT(win), w, h);
+        if(cb) 
+		ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW,
 					cb, data);
         ewl_widget_show(win);
 

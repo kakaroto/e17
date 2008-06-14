@@ -1,8 +1,6 @@
 #include "ephoto.h"
 
 static void close_dialog(Ewl_Widget *w, void *event, void *data);
-static void add_ok(Ewl_Widget *w, void *event, void *data);
-Ewl_Widget *name_entry, *desc_entry;
 
 static void 
 close_dialog(Ewl_Widget *w, void *event, void *data)
@@ -17,13 +15,15 @@ close_dialog(Ewl_Widget *w, void *event, void *data)
 void 
 about_dialog(Ewl_Widget *w, void *event, void *data)
 {
+	char *txt, title[PATH_MAX];
 	Ewl_Widget *window, *button, *image, *vbox, *sp, *text;
 	
-	window = add_window("About Ephoto", 200, 300, NULL, NULL);
+	window = add_window("About Ephoto", 300, 375, NULL, NULL);
+	ewl_window_dialog_set(EWL_WINDOW(window), TRUE);
         ewl_callback_append(window, EWL_CALLBACK_DELETE_WINDOW, close_dialog, 
 					window);
 
-        vbox = add_box(window, EWL_ORIENTATION_VERTICAL, 3);
+        vbox = add_box(window, EWL_ORIENTATION_VERTICAL, 0);
         ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_ALL);
 
 	image = add_image(vbox, PACKAGE_DATA_DIR "/images/photo_lens.png", 0, 
@@ -33,20 +33,33 @@ about_dialog(Ewl_Widget *w, void *event, void *data)
 	ewl_object_fill_policy_set(EWL_OBJECT(image), EWL_FLAG_FILL_SHRINK);
 
 	sp = ewl_scrollpane_new();
-	ewl_object_fill_policy_set(EWL_OBJECT(sp), EWL_FLAG_FILL_ALL);
 	ewl_container_child_append(EWL_CONTAINER(vbox), sp);
 	ewl_widget_show(sp);
 
-	text = add_text(sp, "Ephoto is an advanced image viewer that allows\n"
-		       "you to view images using several methods. They\n"
-		       "include an icon view, a list view, and a single\n"
-		       "image view.  You can also view exif data, view\n"
-		       "images in a fullscreen mode, and view images in a\n"
-		       "slideshow.  The edit view offers simple and advanced\n"
-		       "editing options.");
+	snprintf(title, PATH_MAX, "Ephoto - Version %s", VERSION);
+	txt = "Ephoto is a photo management application that "
+		"organizes images and allows viewing and editing of "
+		"them.  It includes a standard thumbnail browser "
+		"and a single picture browser that allows for "
+		"editing.  Features include viewing exif data, "
+		"viewing slideshows, and exporting your images.";
 
+	text = ewl_text_new();
 	ewl_text_wrap_set(EWL_TEXT(text), EWL_TEXT_WRAP_WORD);
-	ewl_object_alignment_set(EWL_OBJECT(text), EWL_FLAG_ALIGN_CENTER);
+	ewl_text_font_source_set(EWL_TEXT(text), ewl_theme_path_get(), 
+						"ewl/default/bold");
+	ewl_text_font_size_set(EWL_TEXT(text), 20);
+	ewl_text_align_set(EWL_TEXT(text), EWL_FLAG_ALIGN_CENTER);
+	ewl_text_styles_set(EWL_TEXT(text), EWL_TEXT_STYLE_SOFT_SHADOW);
+	ewl_text_text_append(EWL_TEXT(text), title);
+	ewl_text_align_set(EWL_TEXT(text), EWL_FLAG_ALIGN_LEFT);
+	ewl_text_styles_set(EWL_TEXT(text), EWL_TEXT_STYLE_NONE);
+	ewl_text_font_set(EWL_TEXT(text), NULL);
+	ewl_text_font_size_set(EWL_TEXT(text), 14);
+	ewl_text_text_append(EWL_TEXT(text), "\n\n");
+	ewl_text_text_append(EWL_TEXT(text), txt);
+	ewl_container_child_append(EWL_CONTAINER(sp), text);
+	ewl_widget_show(text);
 
 	button = add_button(vbox, "Close",
 				PACKAGE_DATA_DIR "/images/dialog-close.png",
@@ -57,48 +70,3 @@ about_dialog(Ewl_Widget *w, void *event, void *data)
 	return;
 }
 
-static void
-add_ok(Ewl_Widget *w, void *event, void *data)
-{
-        Ewl_Widget *win = data;
-        char *name, *desc;
-
-        name = ewl_text_text_get(EWL_TEXT(name_entry));
-        desc = ewl_text_text_get(EWL_TEXT(desc_entry));
-
-        if (name)
-        {
-                ephoto_db_add_album(em->db, name, desc);
-                populate_albums(NULL, NULL, NULL);
-        }
-
-        ewl_widget_destroy(win);
-}
-
-void 
-add_album_dialog(Ewl_Widget *w, void *event, void *data)
-{
-        Ewl_Widget *window, *vbox, *hbox;
-
-        window = add_window("Add Album", 340, 160, NULL, NULL);
-        ewl_callback_append(window, EWL_CALLBACK_DELETE_WINDOW, close_dialog, 
-					window);
-
-        vbox = add_box(window, EWL_ORIENTATION_VERTICAL, 5);
-        ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_ALL);
-
-        add_text(vbox, "Please provide a name for the new album:");
-
-        name_entry = add_entry(vbox, "New Album", NULL, NULL);
-
-        add_text(vbox, "Please provide a short description for this album:");
-
-        desc_entry = add_entry(vbox, "Album Description", NULL, NULL);
-
-        hbox = add_box(vbox, EWL_ORIENTATION_HORIZONTAL, 5);
-        ewl_object_fill_policy_set(EWL_OBJECT(hbox), EWL_FLAG_FILL_SHRINK);
-
-        add_button(hbox, "Save", NULL, add_ok, window);
-
-        add_button(hbox, "Cancel", NULL, close_dialog, window);
-}

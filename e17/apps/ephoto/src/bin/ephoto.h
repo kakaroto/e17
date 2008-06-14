@@ -69,7 +69,6 @@ void ephoto_db_close(sqlite3 *db);
 
 /*ephoto_dialogs.c*/
 void about_dialog(Ewl_Widget *w, void *event, void *data);
-void add_album_dialog(Ewl_Widget *w, void *event, void *data);
 
 /*ephoto_exif.c*/
 #ifdef BUILD_EXIF_SUPPORT
@@ -108,7 +107,7 @@ Ewl_Widget *add_menu_item(Ewl_Widget *c, char *lbl,
 				void *cb, 
 				void *data);
 Ewl_Widget *add_text(Ewl_Widget *c, char *text);
-Ewl_Widget *add_window(char *name, int w, int h, void *cb, 
+Ewl_Widget *add_window(char *title, int w, int h, void *cb, 
 				void *data);
 
 /*ephoto_imaging.c*/
@@ -170,6 +169,7 @@ struct _Ephoto_Main
         Ewl_Widget *fbox;
         Ewl_Widget *ftree;
 	Ewl_Widget *fthumb_size;
+	Ewl_Widget *scroll;
 	Ewl_Widget *simage;
         Ewl_Widget *single_vbox;
         Ewl_Widget *view;
@@ -178,16 +178,6 @@ struct _Ephoto_Main
         sqlite3 *db;
 };
 
-typedef struct _Ephoto_Config Ephoto_Config;
-
-struct _Ephoto_Config
-{
-	char *requested_album;
-	char *requested_directory;
-	char *requested_image;
-};
-
 extern Ephoto_Main *em;
-extern Ephoto_Config *ec;
 
 #endif

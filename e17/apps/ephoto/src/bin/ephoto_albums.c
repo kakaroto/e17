@@ -10,7 +10,6 @@ static void *album_data_fetch(void *data, unsigned int row,
 static unsigned int album_data_count(void *data);
 static void add_rc_menu(Ewl_Widget *w, void *event, void *data);
 static void album_clicked(Ewl_Widget *w, void *event, void *data);
-static void thumb_clicked(Ewl_Widget *w, void *event, void *data);
 static void populate_images(Ewl_Widget *w, void *event, void *data);
 
 void 
@@ -45,13 +44,14 @@ add_atree(Ewl_Widget *c)
         ewl_view_header_fetch_set(view, album_header_fetch);
 
 	tree = ewl_tree_new();
-	ewl_tree_headers_visible_set(EWL_TREE(tree), 0);
-	ewl_tree_fixed_rows_set(EWL_TREE(tree), 1);
+	ewl_tree_headers_visible_set(EWL_TREE(tree), TRUE);
+	ewl_tree_fixed_rows_set(EWL_TREE(tree), TRUE);
 	ewl_tree_column_count_set(EWL_TREE(tree), 1);
 	ewl_mvc_model_set(EWL_MVC(tree), model);
 	ewl_mvc_view_set(EWL_MVC(tree), view);
 	ewl_mvc_selection_mode_set(EWL_MVC(tree), EWL_SELECTION_MODE_SINGLE);
-	ewl_object_fill_policy_set(EWL_OBJECT(tree), EWL_FLAG_FILL_ALL);
+	ewl_object_fill_policy_set(EWL_OBJECT(tree), EWL_FLAG_FILL_FILL);
+	ewl_object_minimum_w_set(EWL_OBJECT(tree), 180);
 	ewl_container_child_prepend(EWL_CONTAINER(c), tree);
 	ewl_widget_show(tree);
 
@@ -142,25 +142,6 @@ add_rc_menu(Ewl_Widget *w, void *event, void *data)
 					rc_remove, w);
 }
 
-static void 
-thumb_clicked(Ewl_Widget *w, void *event, void *data)
-{
-	const char *file;
-	char *point1;
-
-	file = ewl_widget_name_get(w);
-
-        ecore_dlist_first_goto(em->images);
-        while(ecore_dlist_current(em->images))
-        {
-                point1 = ecore_dlist_current(em->images);
-                if (!strcmp(point1, file)) break;
-                ecore_dlist_next(em->images);
-        }
-
-	show_single_view(NULL, NULL, NULL);
-}
-
 void 
 populate_albums(Ewl_Widget *w, void *event, void *data)
 {
@@ -197,7 +178,7 @@ populate_albums(Ewl_Widget *w, void *event, void *data)
 static void
 populate_images(Ewl_Widget *w, void *event, void *data)
 {
-	pthread_t thumb_worker, image_worker;
+	pthread_t image_worker;
 	int ret1;
 
 	if (!ecore_list_empty_is(em->images))
@@ -213,43 +194,9 @@ populate_images(Ewl_Widget *w, void *event, void *data)
 	}
 	pthread_join(image_worker, NULL);
 
-	ret1 = pthread_create(&thumb_worker, NULL, create_athumb, NULL);
-	if (ret1)
-	{
-		printf("ERROR: Couldn't create thread!\n");
-		return;
-	}
-	pthread_join(thumb_worker, NULL);
+	ewl_mvc_data_set(EWL_MVC(em->fbox), em->images);
 
 	return;
-}
-
-void *
-create_athumb()
-{
-        Ewl_Widget *thumb;
-        char *imagef;
-
-        while (ecore_dlist_current(em->images))
-        {
-                imagef = ecore_dlist_current(em->images);
-
-                if (imagef)
-                {
-		        thumb = add_image(em->fbox, imagef, 1,
-                                        thumb_clicked, NULL);
-                        ewl_image_constrain_set(EWL_IMAGE(thumb),
-                                        ewl_range_value_get(EWL_RANGE
-                                                (em->fthumb_size)));
-                        ewl_object_alignment_set(EWL_OBJECT(thumb),
-                                        EWL_FLAG_ALIGN_CENTER);
-                        ewl_widget_name_set(thumb, imagef);
-                }
-                ecore_dlist_next(em->images);
-        }
-	ewl_widget_configure(em->fbox_vbox);
-
-        pthread_exit(NULL);
 }
 
 void *
