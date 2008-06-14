@@ -74,11 +74,15 @@ EAPI E_Module_Api e_modapi = {E_MODULE_API_VERSION, "Screenshot"};
 EAPI void *
 e_modapi_init(E_Module *m) 
 {
+   char buf[4096];
+
+   snprintf(buf, sizeof(buf), "%s/e-module-screenshot.edj", m->dir);
+
    /* register config dialog for panel */
    e_configure_registry_category_add("extensions", 90, "Screenshot", 
 				     NULL, "enlightenment/extensions");
    e_configure_registry_item_add("extensions/screenshot", 20, "Screenshot", 
-				 NULL, "enlightenment/appearance", 
+				 NULL, buf, 
 				 e_int_config_screenshot_module);
 
    conf_edd = E_CONFIG_DD_NEW("Config", Config);
