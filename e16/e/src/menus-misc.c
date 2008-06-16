@@ -39,6 +39,7 @@ static char         menu_scan_recursive = 0;
 
 static Menu        *MenuCreateFromDirectory(const char *name, Menu * parent,
 					    MenuStyle * ms, const char *dir);
+static int          _ext_is_imagetype(const char *ext);
 
 static MenuItem    *
 MenuItemCreateFromBackground(const char *bgid, const char *file)
@@ -172,6 +173,7 @@ MenuLoadFromDirectory(Menu * m)
 	ext = fileext(ss);
 	if (S_ISDIR(st.st_mode))
 	  {
+	     /* Submenu */
 	     Esnprintf(s, sizeof(s), "%s/%s:%s", dir, list[i], MenuGetName(m));
 	     mm = MenuCreateFromDirectory(s, m, NULL, ss);
 	     mi = MenuItemCreate(list[i], NULL, NULL, mm);
@@ -179,33 +181,22 @@ MenuLoadFromDirectory(Menu * m)
 	     if (f)
 		fprintf(f, "DIR %s\n", list[i]);
 	  }
-/* that's it - people are stupid and have executable images and just */
-/* don't get it - so I'm disablign this to save people from their own */
-/* stupidity */
-/*           else if (st.st_mode & (S_IXUSR | S_IXGRP | S_IXOTH))
- * {
- * mi = MenuItemCreate(list[i], NULL, ss, NULL);
- * MenuAddItem(m, mi);
- * if (f)
- * fprintf(f, "EXE %s\n", list[i]);
- * }
- */
-	else if ((!strcmp(ext, "jpg")) || (!strcmp(ext, "JPG"))
-		 || (!strcmp(ext, "jpeg")) || (!strcmp(ext, "Jpeg"))
-		 || (!strcmp(ext, "JPEG")) || (!strcmp(ext, "Jpg"))
-		 || (!strcmp(ext, "gif")) || (!strcmp(ext, "Gif"))
-		 || (!strcmp(ext, "GIF")) || (!strcmp(ext, "png"))
-		 || (!strcmp(ext, "Png")) || (!strcmp(ext, "PNG"))
-		 || (!strcmp(ext, "tif")) || (!strcmp(ext, "Tif"))
-		 || (!strcmp(ext, "TIFF")) || (!strcmp(ext, "tiff"))
-		 || (!strcmp(ext, "Tiff")) || (!strcmp(ext, "TIFF"))
-		 || (!strcmp(ext, "xpm")) || (!strcmp(ext, "Xpm"))
-		 || (!strcmp(ext, "XPM")) || (!strcmp(ext, "ppm"))
-		 || (!strcmp(ext, "PPM")) || (!strcmp(ext, "pgm"))
-		 || (!strcmp(ext, "PGM")) || (!strcmp(ext, "pnm"))
-		 || (!strcmp(ext, "PNM")) || (!strcmp(ext, "bmp"))
-		 || (!strcmp(ext, "Bmp")) || (!strcmp(ext, "BMP")))
+#if 0
+	else if (st.st_mode & (S_IXUSR | S_IXGRP | S_IXOTH))
 	  {
+	     /* Executable */
+	     /* that's it - people are stupid and have executable images and just */
+	     /* don't get it - so I'm disablign this to save people from their own */
+	     /* stupidity */
+	     mi = MenuItemCreate(list[i], NULL, ss, NULL);
+	     MenuAddItem(m, mi);
+	     if (f)
+		fprintf(f, "EXE %s\n", list[i]);
+	  }
+#endif
+	else if (_ext_is_imagetype(ext))
+	  {
+	     /* Background */
 	     char                s3[512];
 	     int                 aa, bb, cc;
 
@@ -848,4 +839,20 @@ MenusCreateInternal(const char *type, const char *name, const char *style,
      }
 
    return m;
+}
+
+static int
+_ext_is_imagetype(const char *ext)
+{
+   static const char  *const exts[] = {
+      "jpg", "jpeg", "gif", "png", "tif", "tiff",
+      "xpm", "ppm", "pgm", "pnm", "bmp", NULL
+   };
+   int                 i;
+
+   for (i = 0; exts[i]; i++)
+      if (!strcasecmp(exts[i], ext))
+	 return 1;
+
+   return 0;
 }
