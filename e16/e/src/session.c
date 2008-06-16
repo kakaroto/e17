@@ -560,7 +560,7 @@ doSMExit(int mode, const char *params)
 #endif
 #ifdef USE_EXT_INIT_WIN
 	if (new_init_win_ext != None)
-	   l += Esnprintf(s + l, sizeof(s) - l, " -X %li", new_init_win_ext);
+	   l += Esnprintf(s + l, sizeof(s) - l, " -X %#lx", new_init_win_ext);
 #endif
 	if (ss)
 	   l += Esnprintf(s + l, sizeof(s) - l, " -t %s", ss);
