@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16-0.16.8.13-0.01-fr\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-06-05 14:43+0200\n"
+"POT-Creation-Date: 2008-06-15 23:04+0200\n"
 "PO-Revision-Date: 2008-03-19 13:55+0100\n"
 "Last-Translator: Tristan D. <trinine@free.fr>\n"
 "Language-Team: French\n"
@@ -639,7 +639,7 @@ msgstr "Gauche"
 msgid "Right"
 msgstr "Droit"
 
-#: src/desktops.c:2389 src/menus-misc.c:706
+#: src/desktops.c:2389 src/menus-misc.c:697
 msgid "Desks"
 msgstr "Bureaux multiples"
 
@@ -1031,7 +1031,7 @@ msgstr " Paramètres globaux: "
 msgid "Swap Window Locations"
 msgstr "Mettre en cache la position des fenêtres"
 
-#: src/groups.c:1015 src/menus-misc.c:766 config/strings.c:147
+#: src/groups.c:1015 src/menus-misc.c:757 config/strings.c:147
 msgid "Groups"
 msgstr "Groupes"
 
@@ -1275,36 +1275,36 @@ msgstr ""
 msgid "Magnifier"
 msgstr "Loupe"
 
-#: src/menus-misc.c:578 config/strings.c:91
+#: src/menus-misc.c:569 config/strings.c:91
 msgid "Themes"
 msgstr "Thèmes"
 
-#: src/menus-misc.c:604
+#: src/menus-misc.c:595
 msgid "Border"
 msgstr "Bordures"
 
-#: src/menus-misc.c:666
+#: src/menus-misc.c:657
 msgid "Window List"
 msgstr "Liste des fenêtres"
 
-#: src/menus-misc.c:688
+#: src/menus-misc.c:679
 msgid "Go to this Desktop"
 msgstr "Aller vers ce Bureau"
 
-#: src/menus-misc.c:692 src/menus-misc.c:788
+#: src/menus-misc.c:683 src/menus-misc.c:779
 #, c-format
 msgid "Desktop %i"
 msgstr "Bureau %i"
 
-#: src/menus-misc.c:735
+#: src/menus-misc.c:726
 msgid "Show/Hide this group"
 msgstr "Afficher/Masquer ce groupe"
 
-#: src/menus-misc.c:740
+#: src/menus-misc.c:731
 msgid "Iconify this group"
 msgstr "Icônifier ce groupe"
 
-#: src/menus-misc.c:751
+#: src/menus-misc.c:742
 #, c-format
 msgid "Group %i"
 msgstr "Groupe %i"
@@ -2161,15 +2161,15 @@ msgstr "Paramètres de la Zone de notification"
 msgid "Theme %s does not contain a %s file\n"
 msgstr "Le thème %s ne contient pas de fichier %s\n"
 
-#: src/theme.c:342
+#: src/theme.c:346
 msgid "Unknown\n"
 msgstr "Inconnu\n"
 
-#: src/theme.c:387
+#: src/theme.c:391
 msgid "Bad Theme"
 msgstr "Mauvais thème"
 
-#: src/theme.c:388
+#: src/theme.c:392
 #, c-format
 msgid ""
 "The theme:\n"
@@ -2188,7 +2188,7 @@ msgstr ""
 "Le thème n'est pas conforme pour la raison suivante:\n"
 "%s"
 
-#: src/theme.c:414
+#: src/theme.c:418
 #, c-format
 msgid ""
 "No themes were found in the default theme directory:\n"

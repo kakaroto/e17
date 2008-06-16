@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bosnian\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-06-05 14:43+0200\n"
+"POT-Creation-Date: 2008-06-15 23:04+0200\n"
 "PO-Revision-Date: 2004-08-26 00:52+0200\n"
 "Last-Translator: Kemal Šanjta <gomez@lugzdk.ba>\n"
 "Language-Team: Bosnian <lokal@linux.org.ba>\n"
@@ -640,7 +640,7 @@ msgstr "Lijevo"
 msgid "Right"
 msgstr "Desno"
 
-#: src/desktops.c:2389 src/menus-misc.c:706
+#: src/desktops.c:2389 src/menus-misc.c:697
 #, fuzzy
 msgid "Desks"
 msgstr "Desktop"
@@ -1033,7 +1033,7 @@ msgstr " Globalne osobine: "
 msgid "Swap Window Locations"
 msgstr "Swap prozor lokacije"
 
-#: src/groups.c:1015 src/menus-misc.c:766 config/strings.c:147
+#: src/groups.c:1015 src/menus-misc.c:757 config/strings.c:147
 #, fuzzy
 msgid "Groups"
 msgstr "Grupa %i"
@@ -1291,40 +1291,40 @@ msgstr ""
 msgid "Magnifier"
 msgstr ""
 
-#: src/menus-misc.c:578 config/strings.c:91
+#: src/menus-misc.c:569 config/strings.c:91
 #, fuzzy
 msgid "Themes"
 msgstr "Loŷa tema"
 
-#: src/menus-misc.c:604
+#: src/menus-misc.c:595
 #, fuzzy
 msgid "Border"
 msgstr "Rubovi:"
 
-#: src/menus-misc.c:666
+#: src/menus-misc.c:657
 #, fuzzy
 msgid "Window List"
 msgstr "Izbjegni listu prozora"
 
-#: src/menus-misc.c:688
+#: src/menus-misc.c:679
 #, fuzzy
 msgid "Go to this Desktop"
 msgstr "Idi na ovaj Desktop"
 
-#: src/menus-misc.c:692 src/menus-misc.c:788
+#: src/menus-misc.c:683 src/menus-misc.c:779
 #, c-format
 msgid "Desktop %i"
 msgstr "Desktop %i"
 
-#: src/menus-misc.c:735
+#: src/menus-misc.c:726
 msgid "Show/Hide this group"
 msgstr "Pokaŵi/Sakrij ovu grupu"
 
-#: src/menus-misc.c:740
+#: src/menus-misc.c:731
 msgid "Iconify this group"
 msgstr "Ikonificiraj ovu grupu"
 
-#: src/menus-misc.c:751
+#: src/menus-misc.c:742
 #, c-format
 msgid "Group %i"
 msgstr "Grupa %i"
@@ -2213,15 +2213,15 @@ msgstr "Osobine automatskog pove�avanja"
 msgid "Theme %s does not contain a %s file\n"
 msgstr "Tema %s ne sadrŵi %s datoteku\n"
 
-#: src/theme.c:342
+#: src/theme.c:346
 msgid "Unknown\n"
 msgstr "Nepoznato\n"
 
-#: src/theme.c:387
+#: src/theme.c:391
 msgid "Bad Theme"
 msgstr "Loŷa tema"
 
-#: src/theme.c:388
+#: src/theme.c:392
 #, c-format
 msgid ""
 "The theme:\n"
@@ -2239,7 +2239,7 @@ msgstr ""
 "Razlog neispravnosti ove teme je:\n"
 "%s"
 
-#: src/theme.c:414
+#: src/theme.c:418
 #, c-format
 msgid ""
 "No themes were found in the default theme directory:\n"

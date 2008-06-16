@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.7\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-06-05 14:43+0200\n"
+"POT-Creation-Date: 2008-06-15 23:04+0200\n"
 "PO-Revision-Date: 2004-09-14 20:43-0300\n"
 "Last-Translator: Viktor Kojouharov\n"
 "Language-Team: Bulgarian\n"
@@ -636,7 +636,7 @@ msgstr "Левият"
 msgid "Right"
 msgstr "Десният"
 
-#: src/desktops.c:2389 src/menus-misc.c:706
+#: src/desktops.c:2389 src/menus-misc.c:697
 #, fuzzy
 msgid "Desks"
 msgstr "Поле"
@@ -1030,7 +1030,7 @@ msgstr "Глобални настройки"
 msgid "Swap Window Locations"
 msgstr "Размени мястото на прозорците"
 
-#: src/groups.c:1015 src/menus-misc.c:766 config/strings.c:147
+#: src/groups.c:1015 src/menus-misc.c:757 config/strings.c:147
 #, fuzzy
 msgid "Groups"
 msgstr "Група %i"
@@ -1285,38 +1285,38 @@ msgstr ""
 msgid "Magnifier"
 msgstr ""
 
-#: src/menus-misc.c:578 config/strings.c:91
+#: src/menus-misc.c:569 config/strings.c:91
 #, fuzzy
 msgid "Themes"
 msgstr "Некоректна тема"
 
-#: src/menus-misc.c:604
+#: src/menus-misc.c:595
 msgid "Border"
 msgstr "Рамки:"
 
-#: src/menus-misc.c:666
+#: src/menus-misc.c:657
 #, fuzzy
 msgid "Window List"
 msgstr "Лист за пропускане на прозорци"
 
-#: src/menus-misc.c:688
+#: src/menus-misc.c:679
 msgid "Go to this Desktop"
 msgstr "Отиди на това поле"
 
-#: src/menus-misc.c:692 src/menus-misc.c:788
+#: src/menus-misc.c:683 src/menus-misc.c:779
 #, c-format
 msgid "Desktop %i"
 msgstr "Поле %i"
 
-#: src/menus-misc.c:735
+#: src/menus-misc.c:726
 msgid "Show/Hide this group"
 msgstr "Покажи/скрий тази група"
 
-#: src/menus-misc.c:740
+#: src/menus-misc.c:731
 msgid "Iconify this group"
 msgstr "Игнорирай тази група"
 
-#: src/menus-misc.c:751
+#: src/menus-misc.c:742
 #, c-format
 msgid "Group %i"
 msgstr "Група %i"
@@ -2193,15 +2193,15 @@ msgstr "Настройки за системната табла"
 msgid "Theme %s does not contain a %s file\n"
 msgstr "В тема %s липсва файл %s\n"
 
-#: src/theme.c:342
+#: src/theme.c:346
 msgid "Unknown\n"
 msgstr "Непозната\n"
 
-#: src/theme.c:387
+#: src/theme.c:391
 msgid "Bad Theme"
 msgstr "Некоректна тема"
 
-#: src/theme.c:388
+#: src/theme.c:392
 #, c-format
 msgid ""
 "The theme:\n"
@@ -2220,7 +2220,7 @@ msgstr ""
 "Причината тази тема да е некоректна е:\n"
 "%s"
 
-#: src/theme.c:414
+#: src/theme.c:418
 #, c-format
 msgid ""
 "No themes were found in the default theme directory:\n"

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-06-05 14:43+0200\n"
+"POT-Creation-Date: 2008-06-15 23:04+0200\n"
 "PO-Revision-Date: 2000-03-07 12:08+0100\n"
 "Last-Translator: Terje Røsten <terjeros@phys.ntnu.no>\n"
 "Language-Team: Norwegian <no@li.org>\n"
@@ -622,7 +622,7 @@ msgstr "Venstre"
 msgid "Right"
 msgstr "Høyre"
 
-#: src/desktops.c:2389 src/menus-misc.c:706
+#: src/desktops.c:2389 src/menus-misc.c:697
 #, fuzzy
 msgid "Desks"
 msgstr "Skrivebord"
@@ -1015,7 +1015,7 @@ msgstr " Globale innstillinger: "
 msgid "Swap Window Locations"
 msgstr "La vinduer bytte plass"
 
-#: src/groups.c:1015 src/menus-misc.c:766 config/strings.c:147
+#: src/groups.c:1015 src/menus-misc.c:757 config/strings.c:147
 #, fuzzy
 msgid "Groups"
 msgstr "Gruppe %i"
@@ -1271,40 +1271,40 @@ msgstr ""
 msgid "Magnifier"
 msgstr ""
 
-#: src/menus-misc.c:578 config/strings.c:91
+#: src/menus-misc.c:569 config/strings.c:91
 #, fuzzy
 msgid "Themes"
 msgstr "Det er en feil ved temaet"
 
-#: src/menus-misc.c:604
+#: src/menus-misc.c:595
 #, fuzzy
 msgid "Border"
 msgstr "Rammestil"
 
-#: src/menus-misc.c:666
+#: src/menus-misc.c:657
 #, fuzzy
 msgid "Window List"
 msgstr "Overse i vinduslista"
 
-#: src/menus-misc.c:688
+#: src/menus-misc.c:679
 #, fuzzy
 msgid "Go to this Desktop"
 msgstr "Skift fokus til dette skrivebordet"
 
-#: src/menus-misc.c:692 src/menus-misc.c:788
+#: src/menus-misc.c:683 src/menus-misc.c:779
 #, c-format
 msgid "Desktop %i"
 msgstr "Skriverbord nr. %i"
 
-#: src/menus-misc.c:735
+#: src/menus-misc.c:726
 msgid "Show/Hide this group"
 msgstr "Vis/Skjul denne gruppa"
 
-#: src/menus-misc.c:740
+#: src/menus-misc.c:731
 msgid "Iconify this group"
 msgstr "Ikonifiser denne gruppa"
 
-#: src/menus-misc.c:751
+#: src/menus-misc.c:742
 #, c-format
 msgid "Group %i"
 msgstr "Gruppe %i"
@@ -2195,15 +2195,15 @@ msgstr "Automatisk heving"
 msgid "Theme %s does not contain a %s file\n"
 msgstr "Temaet inneholder ikke en sound.cfg fil\n"
 
-#: src/theme.c:342
+#: src/theme.c:346
 msgid "Unknown\n"
 msgstr "Ukjent\n"
 
-#: src/theme.c:387
+#: src/theme.c:391
 msgid "Bad Theme"
 msgstr "Det er en feil ved temaet"
 
-#: src/theme.c:388
+#: src/theme.c:392
 #, c-format
 msgid ""
 "The theme:\n"
@@ -2222,7 +2222,7 @@ msgstr ""
 "Årsaken til feilen ved temaet var:\n"
 "%s"
 
-#: src/theme.c:414
+#: src/theme.c:418
 #, c-format
 msgid ""
 "No themes were found in the default theme directory:\n"
