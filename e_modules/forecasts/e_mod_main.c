@@ -544,13 +544,15 @@ _forecasts_cb_check(void *data)
 {
    Instance *inst;
 
-   inst = data;
+   /* check that data is valid */
+   if (!(inst = data)) return 0;
 
-   if (inst->server)
-     {
-	ecore_con_server_del(inst->server);
-	inst->server = NULL;
-     }
+   /* if we have a previous server, delete it */
+   if (inst->server) ecore_con_server_del(inst->server);
+
+   /* server deleted, set variable to NULL */
+   inst->server = NULL;
+
    if (proxy.port != 0)
      inst->server =
 	ecore_con_server_connect(ECORE_CON_REMOTE_SYSTEM,
@@ -559,6 +561,7 @@ _forecasts_cb_check(void *data)
      inst->server =
 	ecore_con_server_connect(ECORE_CON_REMOTE_SYSTEM, inst->ci->host, 80, inst);
 
+   if (!inst->server) return 0;
    return 1;
 }
 
