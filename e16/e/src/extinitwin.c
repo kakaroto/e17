@@ -25,7 +25,6 @@
 #include "e16-ecore_hints.h"
 #include "eimage.h"
 #include "xwin.h"
-#include <sys/time.h>
 #include <X11/extensions/shape.h>
 
 static              Window
@@ -85,11 +84,11 @@ ExtInitWinMain(void)
       Window              w2, ww;
       char                s[1024];
       EImage             *im;
-      struct timeval      tv;
       int                 dd, x, y, w, h;
       unsigned int        mm;
       Cursor              cs = 0;
       XColor              cl;
+      XWindowAttributes   xwa;
 
       w2 = XCreateWindow(disp, win, 0, 0, 32, 32, 0, CopyFromParent,
 			 InputOutput, CopyFromParent,
@@ -117,6 +116,11 @@ ExtInitWinMain(void)
 	   if (i > 12)
 	      i = 1;
 
+	   /* If we get unmapped we are done */
+	   XGetWindowAttributes(disp, win, &xwa);
+	   if (xwa.map_state == IsUnmapped)
+	      break;
+
 	   Esnprintf(s, sizeof(s), "pix/wait%i.png", i);
 	   if (EDebug(EDBUG_TYPE_SESSION) > 1)
 	      Eprintf("ExtInitWinCreate - child %s\n", s);
@@ -136,9 +140,7 @@ ExtInitWinMain(void)
 		XMapWindow(disp, w2);
 		EImageFree(im);
 	     }
-	   tv.tv_sec = 0;
-	   tv.tv_usec = 50000;
-	   select(0, NULL, NULL, NULL, &tv);
+	   usleep(50000);
 	   ESync(0);
 	}
    }
@@ -229,6 +231,6 @@ ExtInitWinKill(void)
 
    if (EDebug(EDBUG_TYPE_SESSION))
       Eprintf("Kill init window %#lx\n", init_win_ext);
-   XKillClient(disp, init_win_ext);
+   XUnmapWindow(disp, init_win_ext);
    init_win_ext = None;
 }
