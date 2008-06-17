@@ -50,10 +50,10 @@ struct Ewl_Cell
         Ewl_Container container; /**< Inherit from Ewl_Container */
 };
 
-Ewl_Widget         *ewl_cell_new(void);
-int                  ewl_cell_init(Ewl_Cell *cell);
-void                 ewl_cell_state_change_cb_add(Ewl_Cell *cell);
-void                 ewl_cell_state_change_cb_del(Ewl_Cell *cell);
+Ewl_Widget       *ewl_cell_new(void);
+int               ewl_cell_init(Ewl_Cell *cell);
+void              ewl_cell_state_change_cb_add(Ewl_Cell *cell);
+void              ewl_cell_state_change_cb_del(Ewl_Cell *cell);
 
 /*
  * Internally used callbacks, override at your own risk.

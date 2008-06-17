@@ -133,12 +133,12 @@ struct Ewl_Attach_Dnd
 #define ewl_attach_widget_association_get(w) \
         ewl_attach_get(EWL_WIDGET(w), EWL_ATTACH_TYPE_WIDGET_ASSOCIATION)
 
-void ewl_attach_text_set(Ewl_Widget *w, Ewl_Attach_Type t, const char *data);
-void ewl_attach_widget_set(Ewl_Widget *w, Ewl_Attach_Type t, Ewl_Widget *data);
-void ewl_attach_other_set(Ewl_Widget *w, Ewl_Attach_Type t, void *data);
+void  ewl_attach_text_set(Ewl_Widget *w, Ewl_Attach_Type t, const char *data);
+void  ewl_attach_widget_set(Ewl_Widget *w, Ewl_Attach_Type t, Ewl_Widget *data);
+void  ewl_attach_other_set(Ewl_Widget *w, Ewl_Attach_Type t, void *data);
 void *ewl_attach_get(Ewl_Widget *w, Ewl_Attach_Type t);
 
-void ewl_attach_list_del(Ewl_Attach_List *list, Ewl_Attach_Type type);
+void  ewl_attach_list_del(Ewl_Attach_List *list, Ewl_Attach_Type type);
 
 /**
  * @}

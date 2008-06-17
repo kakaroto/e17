@@ -54,23 +54,23 @@ typedef struct Ewl_Box Ewl_Box;
  */
 struct Ewl_Box
 {
-        Ewl_Container container;         /**< Inherit from Ewl_Container */
+        Ewl_Container container;    /**< Inherit from Ewl_Container */
 
-        Ewl_Orientation orientation;         /**< Indicate the orientation of layout */
-        int spacing;                         /**< Space between each widget in the box */
+        Ewl_Orientation orientation;/**< Indicate the orientation of layout */
+        int spacing;                /**< Space between each widget in the box */
 
-        unsigned int homogeneous;         /**< Flag indicating space assignemnt */
+        unsigned int homogeneous;   /**< Flag indicating space assignemnt */
 };
 
-Ewl_Widget         *ewl_box_new(void);
-Ewl_Widget         *ewl_hbox_new(void);
-Ewl_Widget         *ewl_vbox_new(void);
-int                   ewl_box_init(Ewl_Box *box);
-void                  ewl_box_orientation_set(Ewl_Box *b, Ewl_Orientation o);
+Ewl_Widget      *ewl_box_new(void);
+Ewl_Widget      *ewl_hbox_new(void);
+Ewl_Widget      *ewl_vbox_new(void);
+int              ewl_box_init(Ewl_Box *box);
+void             ewl_box_orientation_set(Ewl_Box *b, Ewl_Orientation o);
 Ewl_Orientation  ewl_box_orientation_get(Ewl_Box *b);
-void                  ewl_box_spacing_set(Ewl_Box *b, int spacing);
-void                   ewl_box_homogeneous_set(Ewl_Box *b, unsigned int h);
-unsigned int          ewl_box_homogeneous_get(Ewl_Box *b);
+void             ewl_box_spacing_set(Ewl_Box *b, int spacing);
+void             ewl_box_homogeneous_set(Ewl_Box *b, unsigned int h);
+unsigned int     ewl_box_homogeneous_get(Ewl_Box *b);
 
 /*
  * Internally used callbacks, override at your own risk.
