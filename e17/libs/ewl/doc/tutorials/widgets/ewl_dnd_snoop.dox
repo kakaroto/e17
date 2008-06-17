@@ -65,11 +65,11 @@
  *
  * Once the cursor has been positioned, the only event we care about is
  * receiving the data from the drop. This is accomplished by using the
- * EWL_CALLBACK_DND_DATA callback which should also be placed on the entry
- * widget.
+ * EWL_CALLBACK_DND_DATA_RECEIVED callback which should also be placed on the 
+ * entry widget.
  *
  * @code
- * ewl_callback_append(w, EWL_CALLBACK_DND_DATA, ewl_entry_cb_dnd_data, NULL);
+ * ewl_callback_append(w, EWL_CALLBACK_DND_DATA_RECEIVED, ewl_entry_cb_dnd_data, NULL);
  * @endcode
  *
  * The function prototype for ewl_entry_cb_dnd_data is identical to
