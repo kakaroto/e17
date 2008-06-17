@@ -30,8 +30,8 @@
 
 #define NULL_PATH "/dev/null"
 
-#define MAIN_WIDTH 0
-#define MAIN_HEIGHT 0
+#define MAIN_WIDTH 640
+#define MAIN_HEIGHT 320
 
 static Ewl_Model *expansion_model = NULL;
 
