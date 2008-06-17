@@ -25,8 +25,6 @@ ALL_LINGUAS="bg bs da de en_US es fr hu ko nl no ru sv pt pl pt_BR tr ja"
 AC_PROG_CC
 AM_PROG_CC_C_O
 
-AC_USE_SYSTEM_EXTENSIONS
-
 AC_PROG_MAKE_SET
 AC_PROG_INSTALL
 
