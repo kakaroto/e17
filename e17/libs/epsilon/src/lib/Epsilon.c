@@ -688,7 +688,8 @@ epsilon_generate (Epsilon * e)
 	free(img_thm->data);
 	free(img_thm);
      }
-   
+
+   ecore_evas_free(ee);
    edje_shutdown();
    ecore_evas_shutdown();
    ecore_shutdown();
