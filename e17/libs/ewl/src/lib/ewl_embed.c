@@ -926,10 +926,7 @@ ewl_embed_dnd_position_feed(Ewl_Embed *embed, int x, int y, int* px, int* py, in
                 widget = widget->parent;
         }
 
-        if (!widget) {
-                DWARNING("Could not find widget for dnd position event.");
-                DRETURN_PTR(NULL, DLEVEL_STABLE);
-        }
+        if (!widget) DRETURN_PTR(NULL, DLEVEL_STABLE);
 
         /* If the last position event was over a different widget,
          * feed the leaving widget a 'null' */
@@ -1721,7 +1718,6 @@ ewl_embed_mouse_cursor_set(Ewl_Widget *w)
 
         if ((argb = ewl_attach_get(w, EWL_ATTACH_TYPE_MOUSE_ARGB_CURSOR))) {
                 pointer = argb->handle;
-                ewl_attach_mouse_cursor_set(w, pointer);
         }
 
         if (!pointer) {

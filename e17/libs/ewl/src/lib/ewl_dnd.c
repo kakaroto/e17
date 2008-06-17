@@ -332,10 +332,10 @@ ewl_dnd_drag_drop(Ewl_Widget *w)
         emb = ewl_embed_widget_find(w);
         if (!emb) DRETURN(DLEVEL_STABLE);
 
-        /*
-         * FIXME: Reset the cursor here.
-         */
-        // ewl_embed_mouse_cursor_set(EWL_WIDGET(emb));
+        /* Reset the cursor */
+        ewl_attach_list_del(EWL_WIDGET(emb)->attach,
+                        EWL_ATTACH_TYPE_MOUSE_ARGB_CURSOR);
+        ewl_embed_mouse_cursor_set(EWL_WIDGET(emb));
         ewl_engine_embed_dnd_drag_drop(emb);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
