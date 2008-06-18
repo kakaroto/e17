@@ -437,6 +437,7 @@ ILBM    ilbm;
         }
     }
     if (!full || !ok) {
+        im->w = im->h = 0;
         freeilbm(&ilbm);
         return ok;
     }
@@ -452,11 +453,11 @@ ILBM    ilbm;
     plane[0] = NULL;
 
     im->data = malloc(im->w * im->h * sizeof(DATA32));
-    if (im->data) {
-        n = ilbm.depth;
+    n = ilbm.depth;
+    plane[0] = malloc(((im->w + 15) / 16) * 2 * n);
+    if (im->data && plane[0]) {
         if (ilbm.mask == 1) n++;
 
-        plane[0] = malloc(((im->w + 15) / 16) * 2 * n);
         for (i = 1; i < n; i++) plane[i] = plane[i - 1] + ((im->w + 15) / 16) * 2;
 
         z = ((im->w + 15) / 16) * 2 * n;
@@ -492,9 +493,10 @@ ILBM    ilbm;
 
   /*----------
    * We either had a successful decode, the user cancelled, or we couldn't get
-   * the memory for im->data.
+   * the memory for im->data or plane[0].
    *----------*/
     if (!ok) {
+        im->w = im->h = 0;
         if (im->data) free(im->data);
         im->data = NULL;
     }

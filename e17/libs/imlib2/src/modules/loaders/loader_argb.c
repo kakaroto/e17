@@ -10,7 +10,7 @@ char
 load(ImlibImage * im, ImlibProgressFunction progress,
      char progress_granularity, char immediate_load)
 {
-   int                 w, h, alpha;
+   int                 w = 0, h = 0, alpha = 0;
    FILE               *f;
 
    if (im->data)
@@ -23,11 +23,13 @@ load(ImlibImage * im, ImlibProgressFunction progress,
    {
       char                buf[256], buf2[256];
 
+      buf[0] = '\0';
       if (!fgets(buf, 255, f))
         {
            fclose(f);
            return 0;
         }
+      buf2[0] = '\0';
       sscanf(buf, "%s %i %i %i", buf2, &w, &h, &alpha);
       if (strcmp(buf2, "ARGB"))
         {

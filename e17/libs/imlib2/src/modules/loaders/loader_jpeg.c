@@ -78,6 +78,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
         im->h = h = cinfo.output_height;
 	if ((w < 1) || (h < 1) || (w > 8192) || (h > 8192))
 	  {
+             im->w = im->h = 0;
              jpeg_destroy_decompress(&cinfo);
              fclose(f);
              return 0;
@@ -96,6 +97,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
 
         if (cinfo.rec_outbuf_height > 16)
           {
+             im->w = im->h = 0;
              jpeg_destroy_decompress(&cinfo);
              fclose(f);
              return 0;
@@ -103,6 +105,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
         data = malloc(w * 16 * 3);
         if (!data)
           {
+             im->w = im->h = 0;
              jpeg_destroy_decompress(&cinfo);
              fclose(f);
              return 0;
@@ -111,6 +114,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
         ptr2 = im->data = malloc(w * h * sizeof(DATA32));
         if (!im->data)
           {
+             im->w = im->h = 0;
              free(data);
              jpeg_destroy_decompress(&cinfo);
              fclose(f);

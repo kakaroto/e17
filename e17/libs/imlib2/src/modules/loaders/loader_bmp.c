@@ -565,7 +565,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                   unsigned char *buffer_end_minus_1 = buffer_end - 1;
                   x = 0;
                   y = 0;
-                  for (i = 0; i < imgsize && buffer_ptr < buffer_end_minus_1 && g; i++)
+                  for (i = 0; i < imgsize && buffer_ptr < buffer_end_minus_1; i++)
                     {
                        byte1 = buffer_ptr[0];
                        byte2 = buffer_ptr[1];
