@@ -350,7 +350,9 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                   else
                      dataptr = im->data + (y * im->w);
 
-                  for (x = 0; x < im->w; x++)   /* for each pixel in the row */
+                  for (x = 0;
+                       (x < im->w) && (bufptr + bpp / 8 <= bufend);
+                       x++)   /* for each pixel in the row */
                     {
                        switch (bpp)
                          {
@@ -406,7 +408,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
 
              /* loop until we've got all the pixels or run out of input */
 	     while ((dataptr < final_pixel) &&
-		    ((bufptr + 1 + (bpp / 8)) < bufend))
+		    ((bufptr + 1 + (bpp / 8)) <= bufend))
 	       {
                   int                 count;
 

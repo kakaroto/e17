@@ -95,7 +95,8 @@ load(ImlibImage * im, ImlibProgressFunction progress,
         im->w = w = cinfo.output_width;
         im->h = h = cinfo.output_height;
 
-        if (cinfo.rec_outbuf_height > 16)
+        if ((cinfo.rec_outbuf_height > 16) ||
+            (w < 1) || (h < 1) || (w > 8192) || (h > 8192))
           {
              im->w = im->h = 0;
              jpeg_destroy_decompress(&cinfo);
