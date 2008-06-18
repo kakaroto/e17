@@ -454,10 +454,9 @@ ILBM    ilbm;
 
     im->data = malloc(im->w * im->h * sizeof(DATA32));
     n = ilbm.depth;
+    if (ilbm.mask == 1) n++;
     plane[0] = malloc(((im->w + 15) / 16) * 2 * n);
     if (im->data && plane[0]) {
-        if (ilbm.mask == 1) n++;
-
         for (i = 1; i < n; i++) plane[i] = plane[i - 1] + ((im->w + 15) / 16) * 2;
 
         z = ((im->w + 15) / 16) * 2 * n;
