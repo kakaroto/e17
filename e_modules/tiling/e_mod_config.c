@@ -5,6 +5,7 @@
 #include "e_mod_main.h"
 #include "e_mod_config.h"
 #include "config.h"
+#include "trivials.h"
 
 /* Prototypes */
 static void *_create_data(E_Config_Dialog *cfd);
@@ -140,8 +141,7 @@ _fill_zone_config(E_Zone *zone, E_Config_Dialog_Data *cfdata)
 	  }
 
 	rg = e_widget_radio_group_new(&(vd->layout));
-	Evas_Object *radiolist = e_widget_list_add(evas, 0, 1),
-		    *obj;
+	Evas_Object *radiolist = e_widget_list_add(evas, 0, 1);
 
 	LIST_ADD(radiolist, e_widget_label_add(evas, desk->name));
 	LIST_ADD(radiolist, RADIO("None", TILE_NONE, rg));
@@ -206,7 +206,6 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
 {
    Evas_Object *o, *ob, *of, *osf, *ossf, *ot;
    E_Radio_Group *rg;
-   int i;
    E_Container *con = e_container_current_get(e_manager_current_get());
    E_Zone *zone;
    Evas_List *l;

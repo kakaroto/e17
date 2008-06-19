@@ -71,7 +71,6 @@ static void _taskbar_item_signal_emit(Taskbar_Item *item, char *sig, char *src);
 
 static Config_Item *_taskbar_config_item_get(const char *id);
 
-static void _taskbar_cb_obj_moveresize(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _taskbar_cb_menu_configure(void *data, E_Menu *m, E_Menu_Item *mi);
 static void _taskbar_cb_item_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info);
 static void _taskbar_cb_item_mouse_up(void *data, Evas *e, Evas_Object *obj, void *event_info);
@@ -246,7 +245,6 @@ static void
 _gc_orient(E_Gadcon_Client *gcc)
 {
    Taskbar *taskbar;
-   int orient_changed = 0;
 
    taskbar = (Taskbar *)gcc->data;
 
@@ -320,8 +318,6 @@ static Taskbar *
 _taskbar_new(Evas *evas, E_Zone *zone, const char *id)
 {
    Taskbar *taskbar;
-   char buf[4096];
-   const char *expand;
 
    taskbar = E_NEW(Taskbar, 1);
    taskbar->config = _taskbar_config_item_get(id);
@@ -623,7 +619,6 @@ void
 _taskbar_config_updated(Config_Item *config)
 {
    Evas_List *l;
-   Evas_List *m;
 
    if (!taskbar_config)
       return;

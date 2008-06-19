@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eo\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-14 22:39+0100\n"
+"POT-Creation-Date: 2008-06-19 14:57+0200\n"
 "PO-Revision-Date: 2008-02-11 19:49+0100\n"
 "Last-Translator: Olivier M. <olivierweb@ifrance.com>\n"
 "Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
@@ -15,31 +15,28 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 
-#: e_mod_config.c:32
+#: e_mod_config.c:30
 msgid "Taskbar Configuration"
 msgstr "Konfiguraĵo de TaskListelo"
 
-#: e_mod_config.c:74
+#: e_mod_config.c:71
 msgid "Display"
 msgstr "Vidigi"
 
-#: e_mod_config.c:75
-msgid "Highlight Window on Mouse Over"
-msgstr "Heligi Fenestron dum Movado de Muso"
-
-#: e_mod_config.c:80
-msgid "Show Sliding Labels"
-msgstr "Montri Lumbildajn Etikedojn"
-
-#: e_mod_config.c:85
+#: e_mod_config.c:72
 msgid "Show windows from all desktops"
 msgstr "Montri fenestrojn de ĉiuj labortabloj"
 
-#: e_mod_main.c:214
+#: e_mod_main.c:293 e_mod_main.c:681
 msgid "Taskbar"
 msgstr "Taskolistelo"
 
-#: e_mod_main.c:308 e_mod_main.c:838
+#: e_mod_main.c:673
 msgid "Configuration"
 msgstr "Konfiguraĵo"
 
+#~ msgid "Highlight Window on Mouse Over"
+#~ msgstr "Heligi Fenestron dum Movado de Muso"
+
+#~ msgid "Show Sliding Labels"
+#~ msgstr "Montri Lumbildajn Etikedojn"

@@ -22,7 +22,6 @@ E_Config_DD *tiling_config_edd,
 	    *vdesk_edd;
 static E_Border_Hook *hook = NULL;
 static Ecore_Event_Handler *handler_hide = NULL,
-			   *handler_desk_count = NULL,
 			   *handler_desk_show = NULL,
 			   *handler_desk_before_show = NULL,
 			   *handler_mouse_move = NULL,
@@ -163,7 +162,7 @@ layout_for_desk(E_Desk *desk)
 }
 
 #ifdef DEBUG
-static int
+static void
 print_borderlist()
 {
    if (!tinfo) return;
@@ -787,14 +786,13 @@ _e_module_tiling_hide_hook(void *data, int type, void *event)
    E_Event_Border_Hide *ev = event;
    rearrange_windows(ev->border, 1);
 
-   if (currently_switching_desktop) return;
+   if (currently_switching_desktop) return 1;
 
    /* Ensure that the border is deleted from all available desks */
    static Tiling_Info *_tinfo = NULL;
-   Evas_List *l, *ll, *lll, *llll;
+   Evas_List *l, *ll, *lll;
    E_Zone *zone;
    E_Desk *desk;
-   E_Border *first;
    int i;
 
    for (l = e_manager_list(); l; l = l->next)
@@ -811,6 +809,7 @@ _e_module_tiling_hide_hook(void *data, int type, void *event)
 		   _tinfo->client_list = evas_list_remove(_tinfo->client_list, ev->border);
 	      }
 	 }
+   return 1;
 }
 
 static int
@@ -819,6 +818,7 @@ _e_module_tiling_desk_show(void *data, int type, void *event)
    E_Event_Desk_Show *ev = event;
    _desk_show(ev->desk);
    currently_switching_desktop = 0;
+   return 1;
 }
 
 static int
@@ -827,6 +827,7 @@ _e_module_tiling_desk_before_show(void *data, int type, void *event)
    E_Event_Desk_Before_Show *ev = event;
    _desk_before_show(ev->desk);
    currently_switching_desktop = 1;
+   return 1;
 }
 
 static Evas_Bool
@@ -834,7 +835,7 @@ _clear_bd_from_info_hash(const Evas_Hash *hash, const char *key, void *data, voi
 {
    Tiling_Info *ti = data;
    E_Event_Border_Desk_Set *ev = fdata;
-   if (!ev || !ti || (ti->desk == ev->desk)) return;
+   if (!ev || !ti || (ti->desk == ev->desk)) return 1;
    if (evas_list_find(ti->client_list, ev->border) == ev->border)
      ti->client_list = evas_list_remove(ti->client_list, ev->border);
    if (evas_list_find(ti->floating_windows, ev->border) == ev->border)
@@ -850,6 +851,7 @@ _e_module_tiling_desk_set(void *data, int type, void *event)
     * zone changes or not (depends on the mouse position) */
    E_Event_Border_Desk_Set *ev = event;
    evas_hash_foreach(info_hash, _clear_bd_from_info_hash, ev);
+   return 1;
 }
 
 static int
@@ -865,6 +867,7 @@ _e_module_tiling_mouse_move(void *data, int type, void *event)
 	current_zone = desk->zone;
 	_desk_show(desk);
      }
+   return 1;
 }
 
 
@@ -875,7 +878,7 @@ _e_module_tiling_mouse_move(void *data, int type, void *event)
 EAPI void
 e_mod_tiling_rearrange()
 {
-   Evas_List *l, *ll, *lll, *llll;
+   Evas_List *l, *ll, *lll;
    E_Zone *zone;
    E_Desk *desk;
    E_Border *first;

@@ -2,13 +2,13 @@
 # This file is put in the public domain.
 # Anders Trobäck <enlightenment@troback.com>, 2006.
 # , fuzzy
-# 
-# 
+#
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: Taskbar module for E17 N/A\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-14 22:39+0100\n"
+"POT-Creation-Date: 2008-06-19 14:57+0200\n"
 "PO-Revision-Date: 2006-11-06 08:35+0100\n"
 "Last-Translator: Anders Trobäck <enlightenment@troback.com>\n"
 "Language-Team: Swedish\n"
@@ -16,33 +16,31 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_config.c:32
+#: e_mod_config.c:30
 msgid "Taskbar Configuration"
 msgstr "Taskbar konfiguration"
 
-#: e_mod_config.c:74
+#: e_mod_config.c:71
 msgid "Display"
 msgstr "Visa"
 
-#: e_mod_config.c:75
-msgid "Highlight Window on Mouse Over"
-msgstr "Framhäv fönster när musen är över"
-
-#: e_mod_config.c:80
-msgid "Show Sliding Labels"
-msgstr "Visa beskrivning"
-
-#: e_mod_config.c:85
+#: e_mod_config.c:72
 msgid "Show windows from all desktops"
 msgstr "Visa fönster från alla skrivbord"
 
-#: e_mod_main.c:214
+#: e_mod_main.c:293 e_mod_main.c:681
 msgid "Taskbar"
 msgstr "Taskbar"
 
-#: e_mod_main.c:308 e_mod_main.c:838
+#: e_mod_main.c:673
 msgid "Configuration"
 msgstr "Konfiguration"
+
+#~ msgid "Highlight Window on Mouse Over"
+#~ msgstr "Framhäv fönster när musen är över"
+
+#~ msgid "Show Sliding Labels"
+#~ msgstr "Visa beskrivning"
 
 #~ msgid "Enlightenment Taskbar Module"
 #~ msgstr "Enlightenment Taskbar modul"
