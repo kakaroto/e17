@@ -32,7 +32,7 @@ struct Etk_Viewport
    /* Inherit from Etk_Bin */
    Etk_Bin bin;
 
-   Evas_Object *clip;
+   Evas_Object *clip, *event;
    int xscroll, yscroll;
 };
 

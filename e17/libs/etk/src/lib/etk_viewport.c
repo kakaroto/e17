@@ -70,6 +70,7 @@ static void _etk_viewport_constructor(Etk_Viewport *viewport)
       return;
 
    viewport->clip = NULL;
+   viewport->event = NULL;
    viewport->xscroll = 0;
    viewport->yscroll = 0;
 
@@ -80,6 +81,7 @@ static void _etk_viewport_constructor(Etk_Viewport *viewport)
 
    etk_signal_connect_by_code(ETK_WIDGET_REALIZED_SIGNAL, ETK_OBJECT(viewport), ETK_CALLBACK(_etk_viewport_realized_cb), NULL);
    etk_signal_connect_swapped_by_code(ETK_WIDGET_UNREALIZED_SIGNAL, ETK_OBJECT(viewport), ETK_CALLBACK(etk_callback_set_null), &viewport->clip);
+   etk_signal_connect_swapped_by_code(ETK_WIDGET_UNREALIZED_SIGNAL, ETK_OBJECT(viewport), ETK_CALLBACK(etk_callback_set_null), &viewport->event);
    etk_signal_connect_by_code(ETK_CONTAINER_CHILD_ADDED_SIGNAL, ETK_OBJECT(viewport), ETK_CALLBACK(_etk_viewport_child_added_cb), NULL);
    etk_signal_connect_by_code(ETK_CONTAINER_CHILD_REMOVED_SIGNAL, ETK_OBJECT(viewport), ETK_CALLBACK(_etk_viewport_child_removed_cb), NULL);
 }
@@ -107,6 +109,8 @@ static void _etk_viewport_size_allocate(Etk_Widget *widget, Etk_Geometry geometr
 
    evas_object_move(viewport->clip, geometry.x, geometry.y);
    evas_object_resize(viewport->clip, geometry.w, geometry.h);
+   evas_object_move(viewport->event, geometry.x, geometry.y);
+   evas_object_resize(viewport->event, geometry.w, geometry.h);
 
    if ((child = etk_bin_child_get(ETK_BIN(viewport))))
    {
@@ -184,6 +188,10 @@ static Etk_Bool _etk_viewport_realized_cb(Etk_Object *object, void *data)
       etk_widget_clip_set(child, viewport->clip);
       evas_object_show(viewport->clip);
    }
+   viewport->event = evas_object_rectangle_add(evas);
+   etk_widget_member_object_add(ETK_WIDGET(viewport), viewport->event);
+   evas_object_color_set(viewport->event, 0, 0, 0, 0);
+   evas_object_show(viewport->event);
 
    return ETK_TRUE;
 }
