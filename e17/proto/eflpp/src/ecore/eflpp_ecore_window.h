@@ -71,6 +71,9 @@ class EcoreEvasWindow : public Trackable
     int rotation() const;
     void setShaped( bool );
     bool isShaped() const;
+    
+    void setAlpha( bool alpha );
+    bool hasAlpha () const;
 
     void show();
     void hide();

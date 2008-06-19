@@ -95,7 +95,10 @@ int main( int argc, const char **argv )
 
     /* Create the main window, a window with an embedded canvas */
     efl::EcoreEvasWindowSoftwareX11* mw = new efl::EcoreEvasWindowSoftwareX11( WIDTH, HEIGHT );
-
+    mw->setAlpha (true);
+  
+    mw->show ();
+  
     /* Create some objects on the canvas */
     efl::EvasCanvas* evas = mw->canvas();
 
@@ -103,7 +106,7 @@ int main( int argc, const char **argv )
     cout << "PA: Size = " << s << endl;
 
     efl::EvasRectangle* bg = new efl::EvasRectangle( 0, 0, s.width(), s.height(), evas );
-    bg->setColor( 90, 110, 240, 255 );
+    bg->setColor( 50, 50, 50, 128 );
     bg->setLayer( 0 );
     bg->show();
 

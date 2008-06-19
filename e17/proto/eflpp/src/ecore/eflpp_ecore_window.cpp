@@ -35,7 +35,7 @@ ECORE_EVAS_CALLBACK( callback_post_render_dispatcher, postRenderEvent )
 EcoreEvasWindow::EcoreEvasWindow()
                 :Trackable( "EcoreEvasWindow" )
 {
-  
+  ecore_evas_init ();
 }
 
 
@@ -183,6 +183,16 @@ void EcoreEvasWindow::setShaped( bool b )
 bool EcoreEvasWindow::isShaped() const
 {
     return ecore_evas_shaped_get( _ee );
+}
+
+void EcoreEvasWindow::setAlpha( bool alpha )
+{
+  ecore_evas_alpha_set( _ee, alpha );
+}
+
+bool EcoreEvasWindow::hasAlpha () const
+{
+  return ecore_evas_alpha_get( _ee );
 }
 
 void EcoreEvasWindow::show()
