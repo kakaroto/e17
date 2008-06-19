@@ -133,7 +133,7 @@ e_dbus_connection_data_watch_add(E_DBus_Connection *cd, DBusWatch *watch)
   hd->watch = watch;
 
   hd->enabled = dbus_watch_get_enabled(watch);
-  hd->fd = dbus_watch_get_fd(hd->watch);
+  hd->fd = dbus_watch_get_unix_fd(hd->watch);
   DEBUG(5, "watch add (enabled: %d)\n", hd->enabled);
   if (hd->enabled) e_dbus_fd_handler_add(hd);
 }
