@@ -301,7 +301,9 @@ EImageTile(EImage * im, EImage * tile, int flags, int tw, int th,
 	tim = imlib_create_image(tw, th);
 	imlib_context_set_image(tim);
 	imlib_context_set_blend(0);
+	imlib_context_set_anti_alias(1);
 	imlib_blend_image_onto_image(tile, 0, 0, 0, sw, sh, 0, 0, tw, th);
+	imlib_context_set_anti_alias(0);
      }
    imlib_context_set_image(im);
 
