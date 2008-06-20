@@ -73,7 +73,7 @@
 	HAND_VAL_DESC("19", iprefix"19.png", pw, ph) \
 	HAND_VAL_DESC("20", iprefix"20.png", pw, ph) \
 	HAND_VAL_DESC("21", iprefix"21.png", pw, ph) \
-	HAND_VAL_DESC("22", iprefix"22.png", pw, ph) \ 
+	HAND_VAL_DESC("22", iprefix"22.png", pw, ph) \
 	HAND_VAL_DESC("23", iprefix"23.png", pw, ph) \
 	HAND_VAL_DESC("24", iprefix"24.png", pw, ph) \
 	HAND_VAL_DESC("25", iprefix"25.png", pw, ph) \
