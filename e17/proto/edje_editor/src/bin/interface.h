@@ -35,6 +35,11 @@ Etk_Widget *UI_ColorPicker;
 Etk_Widget *UI_PlayButton;
 Etk_Widget *UI_PlayImage;
 Etk_Widget *UI_PauseImage;
+Etk_Widget *UI_AddStateButton;
+Etk_Widget *UI_RemoveStateButton;
+Etk_Widget *UI_RemovePartButton;
+Etk_Widget *UI_RemoveProgramButton;
+
 /* group frame objects */
 Etk_Widget *UI_GroupNameEntry;
 Etk_Widget *UI_GroupNameEntryImage;

@@ -36,12 +36,17 @@ Usage:
    edje_editor [EDJ]
 
 Example:
-   edje_editor                #Open an empty file
+   edje_editor                #Open a new empty file
    edje_editor default.edj    #Open the given edje file
 
 Testing Edje file:
  edje_editor -t file.edj "group_name"
 
+Shortcuts 
+=======================================
+Ctrl-F      Fullscreen
+Ctrl-S      Save
+Ctrl-Q      Quit
 
 Troubleshooting
 =======================================

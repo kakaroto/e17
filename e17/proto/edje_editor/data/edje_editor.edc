@@ -336,6 +336,42 @@ collections {
          }
       }
    }
+   group{
+      name: "BG3_I.PNG";
+      min: 15 15;
+      max: 15 15;
+      parts{
+         part{
+            name: "StaticImage";
+            type: RECT;
+            mouse_events: 0;
+            description{
+               state: "default" 0.0;
+               color: 255 255 255 255;
+               rel1 {relative: 0.0 0.0; offset: 0 0;}
+               rel2 {relative: 0.0 0.0; offset: 15 15;}
+            }
+         }
+      }
+   }
+   group{
+      name: "BG4_I.PNG";
+      min: 15 15;
+      max: 15 15;
+      parts{
+         part{
+            name: "StaticImage";
+            type: RECT;
+            mouse_events: 0;
+            description{
+               state: "default" 0.0;
+               color: 0 0 0 255;
+               rel1 {relative: 0.0 0.0; offset: 0 0;}
+               rel2 {relative: 0.0 0.0; offset: 15 15;}
+            }
+         }
+      }
+   }
    /************************************************************/
    /*  MainUI
    /************************************************************/

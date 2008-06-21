@@ -12,13 +12,10 @@ EDJE:
 
 EDITOR:
 * Tooltips EVERYWERE  :)
-* Add keybinding
-* Add a handler to move the 2 points togheter
-* A new object add must be take a progressive (and unique) number (newrect1, newrect2...etc)
+* Add more keybindings
 * Make the visible checkbox work (should the visibility apply to the EDC also? not only in the editor?)
 * Duplicate objects (copy/cut/paste??)
 * Fix strange alpha premul on text with effect
-* In the Add/Remove menus disable 'not in context' choice
 * Add CheckBox(radio) in Options Menu
 * Make groups combobox searchable (using a Combo_Entry)
 * gradient

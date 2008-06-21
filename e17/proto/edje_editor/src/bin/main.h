@@ -13,7 +13,7 @@
 #define FAKEWIN_BORDER_BOTTOM 4
 
 #define USE_GL_ENGINE 0
-#define DEBUG_MODE 0
+#define DEBUG_MODE 1
 
 #if DEBUG_MODE
    #define TREE_WIDTH 365
@@ -59,8 +59,10 @@ enum various
    TOOLBAR_OPTION_BG2,
    TOOLBAR_OPTION_BG3,
    TOOLBAR_OPTION_BG4,
+   TOOLBAR_OPTION_FULLSCREEN,
    TOOLBAR_IMAGE_FILE_ADD,
    TOOLBAR_FONT_FILE_ADD,
+   TOOLBAR_QUIT,
    COLOR_OBJECT_RECT,
    COLOR_OBJECT_TEXT,
    COLOR_OBJECT_SHADOW,
@@ -125,7 +127,8 @@ struct Current_State
    
    Etk_String *edj_file_name;
    Etk_String *edj_temp_name;
-    
+   
+   int fullscreen;            //The current main window state   
 }Cur;
 
 /* GLOBALS */

@@ -292,6 +292,7 @@ main(int argc, char **argv)
    Cur.open_file_name = NULL;
    Cur.source_dir = NULL;
    Cur.main_source_file = NULL;
+   Cur.fullscreen = 0;
    stack = NULL;
    
    //Setting Globals

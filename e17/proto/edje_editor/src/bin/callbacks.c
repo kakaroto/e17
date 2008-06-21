@@ -87,7 +87,7 @@ on_AllButton_click(Etk_Button *button, void *data)
          ShowFilechooser(FILECHOOSER_SAVE_EDJ);
          break;
       }
-      
+
       edje_edit_save(edje_o);
       if (!ecore_file_cp(Cur.edj_temp_name->string, Cur.edj_file_name->string))
       {
@@ -101,12 +101,27 @@ on_AllButton_click(Etk_Button *button, void *data)
       ShowFilechooser(FILECHOOSER_SAVE_EDJ);
       break;
    case TOOLBAR_ADD:
+      if (!etk_string_length_get(Cur.part))
+         etk_widget_disabled_set(UI_AddStateButton, 1);
+      else etk_widget_disabled_set(UI_AddStateButton, 0);
       etk_menu_popup(ETK_MENU(UI_AddMenu));
       break;
    case TOOLBAR_REMOVE:
+      if (!etk_string_length_get(Cur.state))
+         etk_widget_disabled_set(UI_RemoveStateButton, 1);
+      else etk_widget_disabled_set(UI_RemoveStateButton, 0);
+      if (!etk_string_length_get(Cur.part))
+         etk_widget_disabled_set(UI_RemovePartButton, 1);
+      else etk_widget_disabled_set(UI_RemovePartButton, 0);
+      if (!etk_string_length_get(Cur.prog))
+         etk_widget_disabled_set(UI_RemoveProgramButton, 1);
+      else etk_widget_disabled_set(UI_RemoveProgramButton, 0);
+
       etk_menu_popup(ETK_MENU(UI_RemoveMenu));
       break;
-   
+   case TOOLBAR_QUIT:
+      etk_main_quit();
+      break;
    case TOOLBAR_MOVE_UP: //Lower
       if (!etk_string_length_get(Cur.part))
       {
@@ -215,6 +230,10 @@ on_AllButton_click(Etk_Button *button, void *data)
    case TOOLBAR_OPTION_BG4:
       edje_object_signal_emit(edje_ui,"set_bg4","edje_editor");
       break;
+   case TOOLBAR_OPTION_FULLSCREEN:
+      Cur.fullscreen = !Cur.fullscreen;
+      ecore_evas_fullscreen_set(UI_ecore_MainWin, Cur.fullscreen);
+      break;
    case TOOLBAR_PLAY:
       TogglePlayButton(-1);
       break;
@@ -246,6 +265,58 @@ on_AllButton_click(Etk_Button *button, void *data)
       }
 
    return ETK_TRUE;
+}
+
+void
+on_Editing_click(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+   Evas_Object *o2;
+   int x, y;
+   Evas_Event_Mouse_Down *ev = event_info;
+   
+  	evas_pointer_output_xy_get(e, &x, &y);
+   
+   printf("CLIK\n");
+   //o2 = evas_object_top_at_pointer_get(e);
+   Evas_List *l =	evas_objects_at_xy_get (e, ev->canvas.x, ev->canvas.y, 1, 1);
+   printf("CLIK %x [%d %d] num: %d\n", obj, ev->canvas.x, ev->canvas.y, evas_list_count(l));
+   
+}
+
+void
+on_Mainwin_key_press(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+   Evas_Event_Key_Down *ev = event_info;
+  
+   printf("*** Logo receive key pressed\n");
+   printf("   keyname: %s\n", ev->keyname);
+   printf("   key: %s\n", ev->key);
+   printf("   string: %s\n", ev->string);
+   printf("   compose: %s\n", ev->compose);
+	
+   
+   /* NOTE: To add new bindings you must add a keygrab for the key
+      you want in create_main_window(). And remember to update the README */
+   
+   /* quit */
+   if (!strcmp(ev->key, "q") &&
+       evas_key_modifier_is_set(ev->modifiers, "Control"))
+      etk_main_quit();
+   
+   /* fullscreen */
+   else if (!strcmp(ev->key, "f") &&
+            evas_key_modifier_is_set(ev->modifiers, "Control"))
+   {    
+      Cur.fullscreen = !Cur.fullscreen;
+      ecore_evas_fullscreen_set(UI_ecore_MainWin, Cur.fullscreen); 	
+   }
+
+   /* save (TODO make some sort of feedback for the user)*/
+   else if (!strcmp(ev->key, "s") &&
+            evas_key_modifier_is_set(ev->modifiers, "Control"))
+      on_AllButton_click(NULL, TOOLBAR_SAVE);
+   
+   
 }
 
 /* Tree callbacks */
@@ -359,7 +430,7 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
 Etk_Bool
 on_GroupNameEntry_key_down(Etk_Object *object, Etk_Event_Key_Down *event, void *data)
 {
-   printf("PRESSED %s\n", event->keyname);
+   //printf("PRESSED %s\n", event->keyname);
    
    if (!strcmp(event->keyname, "Return"))
       on_GroupNameEntryImage_mouse_clicked(

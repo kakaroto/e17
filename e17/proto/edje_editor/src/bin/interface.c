@@ -38,11 +38,11 @@ ConsolleLog(char *text)
       stack = evas_list_remove_list(stack, evas_list_last(stack));
    }
 
-      edje_object_part_text_set(Consolle, "line1", evas_list_nth(stack, 0));
-      edje_object_part_text_set(Consolle, "line2", evas_list_nth(stack, 1));
-      edje_object_part_text_set(Consolle, "line3", evas_list_nth(stack, 2));
-      edje_object_part_text_set(Consolle, "line4", evas_list_nth(stack, 3));
-      edje_object_part_text_set(Consolle, "line5", evas_list_nth(stack, 4));
+   edje_object_part_text_set(Consolle, "line1", evas_list_nth(stack, 0));
+   edje_object_part_text_set(Consolle, "line2", evas_list_nth(stack, 1));
+   edje_object_part_text_set(Consolle, "line3", evas_list_nth(stack, 2));
+   edje_object_part_text_set(Consolle, "line4", evas_list_nth(stack, 3));
+   edje_object_part_text_set(Consolle, "line5", evas_list_nth(stack, 4));
 }
 
 void
@@ -1537,12 +1537,12 @@ create_toolbar(Etk_Toolbar_Orientation o)
    etk_menu_shell_append(ETK_MENU_SHELL(UI_AddMenu), ETK_MENU_ITEM(menu_item));
 
    //New Description
-   menu_item = etk_menu_item_image_new_with_label("A new state to part");
+   UI_AddStateButton = etk_menu_item_image_new_with_label("A new state to part");
    image = etk_image_new_from_edje(EdjeFile,"DESC.PNG");
-   etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
-   etk_signal_connect("activated", ETK_OBJECT(menu_item),
+   etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(UI_AddStateButton), ETK_IMAGE(image));
+   etk_signal_connect("activated", ETK_OBJECT(UI_AddStateButton),
                      ETK_CALLBACK(on_AddMenu_item_activated), (void*)NEW_DESC);
-   etk_menu_shell_append(ETK_MENU_SHELL(UI_AddMenu), ETK_MENU_ITEM(menu_item));
+   etk_menu_shell_append(ETK_MENU_SHELL(UI_AddMenu), ETK_MENU_ITEM(UI_AddStateButton));
 
    //New Group
    menu_item = etk_menu_item_image_new_with_label("A new group to edj");
@@ -1562,37 +1562,37 @@ create_toolbar(Etk_Toolbar_Orientation o)
    UI_RemoveMenu = etk_menu_new();
 
    //description
-   menu_item = etk_menu_item_image_new_with_label("Selected State");
+   UI_RemoveStateButton = etk_menu_item_image_new_with_label("Selected State");
    image = etk_image_new_from_edje(EdjeFile,"DESC.PNG");
-   etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
-   etk_signal_connect("activated", ETK_OBJECT(menu_item),
+   etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(UI_RemoveStateButton), ETK_IMAGE(image));
+   etk_signal_connect("activated", ETK_OBJECT(UI_RemoveStateButton),
          ETK_CALLBACK(on_RemoveMenu_item_activated), (void*)REMOVE_DESCRIPTION);
-   etk_menu_shell_append(ETK_MENU_SHELL(UI_RemoveMenu), ETK_MENU_ITEM(menu_item));
+   etk_menu_shell_append(ETK_MENU_SHELL(UI_RemoveMenu), ETK_MENU_ITEM(UI_RemoveStateButton));
 
    //part
-   menu_item = etk_menu_item_image_new_with_label("Selected Part");
-   etk_signal_connect("activated", ETK_OBJECT(menu_item),
+   UI_RemovePartButton = etk_menu_item_image_new_with_label("Selected Part");
+   etk_signal_connect("activated", ETK_OBJECT(UI_RemovePartButton),
                ETK_CALLBACK(on_RemoveMenu_item_activated), (void*)REMOVE_PART);
-   etk_menu_shell_append(ETK_MENU_SHELL(UI_RemoveMenu), ETK_MENU_ITEM(menu_item));
+   etk_menu_shell_append(ETK_MENU_SHELL(UI_RemoveMenu), ETK_MENU_ITEM(UI_RemovePartButton));
+
+   //program 
+   UI_RemoveProgramButton = etk_menu_item_image_new_with_label("Selected Program");
+   image = etk_image_new_from_edje(EdjeFile,"PROG.PNG");
+   etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(UI_RemoveProgramButton), ETK_IMAGE(image));
+   etk_signal_connect("activated", ETK_OBJECT(UI_RemoveProgramButton),
+               ETK_CALLBACK(on_RemoveMenu_item_activated), (void*)REMOVE_PROG);
+   etk_menu_shell_append(ETK_MENU_SHELL(UI_RemoveMenu), ETK_MENU_ITEM(UI_RemoveProgramButton));
+    
+   sep = etk_vseparator_new();
+   etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), sep, ETK_BOX_START);
 
    //group
-   menu_item = etk_menu_item_image_new_with_label("Selected Group");
+   menu_item = etk_menu_item_image_new_with_label("Current Group");
    image = etk_image_new_from_edje(EdjeFile,"NONE.PNG");
    etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
    etk_signal_connect("activated", ETK_OBJECT(menu_item),
                ETK_CALLBACK(on_RemoveMenu_item_activated), (void*)REMOVE_GROUP);
    etk_menu_shell_append(ETK_MENU_SHELL(UI_RemoveMenu), ETK_MENU_ITEM(menu_item));
-
-   //program 
-   menu_item = etk_menu_item_image_new_with_label("Selected Program");
-   image = etk_image_new_from_edje(EdjeFile,"PROG.PNG");
-   etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
-   etk_signal_connect("activated", ETK_OBJECT(menu_item),
-               ETK_CALLBACK(on_RemoveMenu_item_activated), (void*)REMOVE_PROG);
-   etk_menu_shell_append(ETK_MENU_SHELL(UI_RemoveMenu), ETK_MENU_ITEM(menu_item));
-    
-   sep = etk_vseparator_new();
-   etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), sep, ETK_BOX_START);
 
    //MoveUp Button
    button = etk_tool_button_new_from_stock( ETK_STOCK_GO_UP);
@@ -1639,7 +1639,7 @@ create_toolbar(Etk_Toolbar_Orientation o)
 
    //set bg3
    menu_item = etk_menu_item_image_new_with_label("White background");
-   image = etk_image_new_from_edje(EdjeFile,"NONE.PNG");
+   image = etk_image_new_from_edje(EdjeFile,"BG3_I.PNG");
    etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
    etk_signal_connect("activated", ETK_OBJECT(menu_item),
                ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_OPTION_BG3);
@@ -1647,12 +1647,24 @@ create_toolbar(Etk_Toolbar_Orientation o)
 
    //set bg4
    menu_item = etk_menu_item_image_new_with_label("Black background");
-   image = etk_image_new_from_edje(EdjeFile,"NONE.PNG");
+   image = etk_image_new_from_edje(EdjeFile,"BG4_I.PNG");
    etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
    etk_signal_connect("activated", ETK_OBJECT(menu_item),
                ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_OPTION_BG4);
    etk_menu_shell_append(ETK_MENU_SHELL(UI_OptionsMenu), ETK_MENU_ITEM(menu_item));
    
+   //Separator
+   menu_item = etk_menu_item_separator_new();
+   etk_menu_shell_append(ETK_MENU_SHELL(UI_OptionsMenu), ETK_MENU_ITEM(menu_item));
+
+   //Fullscreen
+   menu_item = etk_menu_item_image_new_with_label("Toggle fullscreen");
+   image = etk_image_new_from_stock(ETK_STOCK_VIDEO_DISPLAY, ETK_STOCK_SMALL);
+   etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
+   etk_signal_connect("activated", ETK_OBJECT(menu_item),
+               ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_OPTION_FULLSCREEN);
+   etk_menu_shell_append(ETK_MENU_SHELL(UI_OptionsMenu), ETK_MENU_ITEM(menu_item));
+  
    sep = etk_vseparator_new();
    etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), sep, ETK_BOX_START);
 
@@ -1678,6 +1690,14 @@ create_toolbar(Etk_Toolbar_Orientation o)
                         ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_DEBUG);
    etk_object_properties_set(ETK_OBJECT(button),"label","Debug",NULL);
 #endif
+   
+   //QuitButton
+   button = etk_tool_button_new_from_stock(ETK_STOCK_SYSTEM_LOG_OUT);
+   etk_object_properties_set(ETK_OBJECT(button),"label","Quit",NULL);
+   etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), button, ETK_BOX_START);
+   etk_signal_connect("clicked", ETK_OBJECT(button),
+                     ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_QUIT);
+   
    return UI_Toolbar;
 }
 
@@ -2909,10 +2929,23 @@ create_main_window(void)
                                  _embed_position_set, UI_ecore_MainWin);
    etk_widget_show_all(UI_PartsTreeEmbed);
    
-   //Logo
+   //Logo (keygrabber)
    Evas_Object *logo;
    logo = edje_object_add(UI_evas);
    edje_object_file_set(logo, EdjeFile, "Logo");
+   evas_object_event_callback_add(logo, EVAS_CALLBACK_KEY_DOWN,
+                                  on_Mainwin_key_press, NULL);
+   Evas_Modifier_Mask mask;
+   mask = evas_key_modifier_mask_get(UI_evas, "Control");
+   evas_object_key_grab(logo, "q", mask, 0, 0); // quit
+   evas_object_key_grab(logo, "f", mask, 0, 0); // fullscreen
+   evas_object_key_grab(logo, "s", mask, 0, 0); // save
+   evas_object_key_grab(logo, "c", mask, 0, 0); // copy selection (TODO)
+   evas_object_key_grab(logo, "v", mask, 0, 0); // paste selection (TODO)
+   evas_object_key_grab(logo, "x", mask, 0, 0); // cut selection (TODO)
+   evas_object_key_grab(logo, "d", mask, 0, 0); // duplicate selection (TODO)
+   evas_object_key_grab(logo, "n", mask, 0, 0); // new object (TODO)
+   
    evas_object_show(logo);
    
    //GroupEmbed
@@ -3021,6 +3054,9 @@ create_main_window(void)
    //Create the main edje object to edit
    edje_o = edje_object_add(UI_evas);
    edje_object_signal_callback_add(edje_o, "*", "*", signal_cb, NULL);
+   evas_object_event_callback_add(edje_o, EVAS_CALLBACK_MOUSE_DOWN,
+                                  on_Editing_click, NULL);
+
 
    /*edje_object_signal_emit(edje_ui,"group_frame_show","edje_editor");
    edje_object_signal_emit(edje_ui,"part_frame_show","edje_editor");
@@ -3032,6 +3068,3 @@ create_main_window(void)
    edje_object_signal_emit(edje_ui,"program_frame_show","edje_editor");
    edje_object_signal_emit(edje_ui,"script_frame_show","edje_editor");*/
 }
-
-
-

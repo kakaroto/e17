@@ -21,6 +21,8 @@ Etk_Bool on_PartEventsRepeatCheck_toggled  (Etk_Object *object, void *data);
 Etk_Bool on_StateEntry_key_down            (Etk_Object *object, Etk_Event_Key_Down *event, void *data);
 Etk_Bool on_StateEntryImage_mouse_clicked  (Etk_Object *object, void *data);
 Etk_Bool on_AllButton_click                (Etk_Button *button, void *data);
+void on_Mainwin_key_press                  (void *data, Evas *e, Evas_Object *obj, void *event_info);
+void on_Editing_click                      (void *data, Evas *e, Evas_Object *obj, void *event_info);   
 Etk_Bool on_AddMenu_item_activated         (Etk_Object *object, void *data);
 Etk_Bool on_RemoveMenu_item_activated      (Etk_Object *object, void *data);
 Etk_Bool on_RelToComboBox_changed          (Etk_Combobox *combobox, void *data);
