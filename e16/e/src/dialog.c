@@ -51,23 +51,19 @@ typedef struct {
 
    int                 base_orig_w, base_orig_h;
    int                 knob_orig_w, knob_orig_h;
-   int                 border_orig_w, border_orig_h;
 
    int                 base_x, base_y, base_w, base_h;
    int                 knob_x, knob_y, knob_w, knob_h;
-   int                 border_x, border_y, border_w, border_h;
    int                 numeric_x, numeric_y, numeric_w, numeric_h;
 
    ImageClass         *ic_base;
    ImageClass         *ic_knob;
-   ImageClass         *ic_border;
 
    char                in_drag;
    int                 wanted_val;
 
    Win                 base_win;
    Win                 knob_win;
-   Win                 border_win;
 } DItemSlider;
 
 typedef struct {
@@ -777,16 +773,12 @@ DialogAddItem(DItem * dii, int type)
 	di->item.slider.min_length = 64;
 	di->item.slider.ic_base = NULL;
 	di->item.slider.ic_knob = NULL;
-	di->item.slider.ic_border = NULL;
 	di->item.slider.base_win = 0;
 	di->item.slider.knob_win = 0;
-	di->item.slider.border_win = 0;
 	di->item.slider.base_orig_w = 10;
 	di->item.slider.base_orig_h = 10;
 	di->item.slider.knob_orig_w = 6;
 	di->item.slider.knob_orig_h = 6;
-	di->item.slider.border_orig_w = 14;
-	di->item.slider.border_orig_h = 14;
 	di->item.slider.base_x = 0;
 	di->item.slider.base_y = 0;
 	di->item.slider.base_w = 0;
@@ -795,10 +787,6 @@ DialogAddItem(DItem * dii, int type)
 	di->item.slider.knob_y = 0;
 	di->item.slider.knob_w = 0;
 	di->item.slider.knob_h = 0;
-	di->item.slider.border_x = 0;
-	di->item.slider.border_y = 0;
-	di->item.slider.border_w = 0;
-	di->item.slider.border_h = 0;
 	di->item.slider.numeric_x = 0;
 	di->item.slider.numeric_y = 0;
 	di->item.slider.numeric_w = 0;
@@ -1071,26 +1059,6 @@ DialogRealizeItem(Dialog * d, DItem * di)
 	     EImageGetSize(im, &di->item.slider.knob_orig_w,
 			   &di->item.slider.knob_orig_h);
 	     EImageFree(im);
-	  }
-
-	if (!di->item.slider.ic_border)
-	  {
-	     if (di->item.slider.horizontal)
-		di->item.slider.ic_border =
-		   ImageclassAlloc("DIALOG_WIDGET_SLIDER_BORDER_HORIZONTAL", 1);
-	     else
-		di->item.slider.ic_border =
-		   ImageclassAlloc("DIALOG_WIDGET_SLIDER_BORDER_VERTICAL", 1);
-	  }
-	im = ImageclassGetImage(di->item.slider.ic_border, 0, 0, 0);
-	if (im)
-	  {
-	     EImageGetSize(im, &di->item.slider.border_orig_w,
-			   &di->item.slider.border_orig_h);
-	     EImageFree(im);
-	     di->item.slider.border_win =
-		ECreateWindow(d->win, -20, -20, 2, 2, 0);
-	     EMapWindow(di->item.slider.border_win);
 	  }
 
 	pad = ImageclassGetPadding(di->item.slider.ic_base);
@@ -1393,10 +1361,6 @@ DialogRealizeItem(Dialog * d, DItem * di)
 			       dii->item.slider.base_y = 0;
 			       dii->item.slider.base_w = dii->w;
 			       dii->item.slider.base_h = dii->h;
-			       dii->item.slider.border_x = 0;
-			       dii->item.slider.border_y = 0;
-			       dii->item.slider.border_w = dii->w;
-			       dii->item.slider.border_h = dii->h;
 			       dii->item.slider.knob_w =
 				  dii->item.slider.knob_orig_w;
 			       dii->item.slider.knob_h =
@@ -1409,15 +1373,6 @@ DialogRealizeItem(Dialog * d, DItem * di)
 						    dii->item.slider.base_y,
 						    dii->item.slider.base_w,
 						    dii->item.slider.base_h);
-			       if (dii->item.slider.border_win)
-				  EMoveResizeWindow(dii->item.slider.
-						    border_win,
-						    dii->x +
-						    dii->item.slider.border_x,
-						    dii->y +
-						    dii->item.slider.border_y,
-						    dii->item.slider.border_w,
-						    dii->item.slider.border_h);
 			       if (dii->win)
 				  EMoveResizeWindow(dii->win,
 						    dii->x +
@@ -1508,12 +1463,6 @@ MoveTableBy(Dialog * d, DItem * di, int dx, int dy)
 				     dii->y + dii->item.slider.knob_y,
 				     dii->item.slider.knob_w,
 				     dii->item.slider.knob_h);
-		if (dii->item.slider.border_win)
-		   EMoveResizeWindow(dii->item.slider.border_win,
-				     dii->x + dii->item.slider.border_x,
-				     dii->y + dii->item.slider.border_y,
-				     dii->item.slider.border_w,
-				     dii->item.slider.border_h);
 		if (dii->win)
 		   EMoveResizeWindow(dii->win,
 				     dii->x + dii->item.slider.numeric_x,
@@ -1635,10 +1584,6 @@ DialogDrawItem(Dialog * d, DItem * di)
 	if (di->item.slider.base_win)
 	   ImageclassApply(di->item.slider.ic_base,
 			   di->item.slider.base_win,
-			   0, 0, STATE_NORMAL, ST_WIDGET);
-	if (di->item.slider.border_win)
-	   ImageclassApply(di->item.slider.ic_border,
-			   di->item.slider.border_win,
 			   0, 0, STATE_NORMAL, ST_WIDGET);
 	state = STATE_NORMAL;
 	if ((di->hilited) && (di->clicked))
@@ -2031,12 +1976,10 @@ DialogItemDestroy(DItem * di, int clean)
      case DITEM_SLIDER:
 	ImageclassFree(di->item.slider.ic_base);
 	ImageclassFree(di->item.slider.ic_knob);
-	ImageclassFree(di->item.slider.ic_border);
 	if (!clean)
 	   break;
 	EDestroyWindow(di->item.slider.base_win);
 	EDestroyWindow(di->item.slider.knob_win);
-	EDestroyWindow(di->item.slider.border_win);
 	break;
      case DITEM_AREA:
 	if (!clean)
@@ -2233,11 +2176,6 @@ DItemEventMouseDown(Win win, DItem * di, XEvent * ev)
 	break;
 
      case DITEM_SLIDER:
-#if 0				/* Do any themes have this? */
-	if (win == di->item.slider.border_win)
-	   break;
-#endif
-
 	if (ev->xbutton.window == WinGetXwin(di->item.slider.knob_win))
 	  {
 	     if (ev->xbutton.button >= 1 && ev->xbutton.button <= 3)
