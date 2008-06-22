@@ -458,9 +458,8 @@ void                ActionsHandleMotion(void);
 int                 ActionsEnd(EWin * ewin);
 
 /* size.c */
-void                MaxSize(EWin * ewin, const char *resize_type);
-void                MaxWidth(EWin * ewin, const char *resize_type);
-void                MaxHeight(EWin * ewin, const char *resize_type);
+void                MaxSizeHV(EWin * ewin, const char *resize_type,
+			      int hor, int ver);
 
 /* stacking.c */
 EWin               *const *EwinListStackGet(int *num);

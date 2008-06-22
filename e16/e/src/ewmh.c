@@ -936,8 +936,7 @@ EWMH_ProcessClientClientMessage(EWin * ewin, XClientMessageEvent * ev)
 	else if (atom == ECORE_X_ATOM_NET_WM_STATE_MAXIMIZED_VERT ||
 		 atom == ECORE_X_ATOM_NET_WM_STATE_MAXIMIZED_HORZ)
 	  {
-	     void                (*func) (EWin *, const char *);
-	     unsigned int        maxh, maxv;
+	     int                 maxh, maxv;
 
 	     maxh = ewin->state.maximized_horz;
 	     maxv = ewin->state.maximized_vert;
@@ -945,25 +944,22 @@ EWMH_ProcessClientClientMessage(EWin * ewin, XClientMessageEvent * ev)
 		 atom2 == ECORE_X_ATOM_NET_WM_STATE_MAXIMIZED_HORZ)
 	       {
 		  /* (ok - ok) */
-		  func = MaxSize;
 		  maxh = do_set(maxh, action);
 		  maxv = do_set(maxv, action);
 	       }
 	     else if (atom == ECORE_X_ATOM_NET_WM_STATE_MAXIMIZED_VERT)
 	       {
-		  func = MaxHeight;
 		  maxv = do_set(maxv, action);
 	       }
 	     else
 	       {
-		  func = MaxWidth;
 		  maxh = do_set(maxh, action);
 	       }
 
 	     if ((ewin->state.maximized_horz != maxh) ||
 		 (ewin->state.maximized_vert != maxv))
 	       {
-		  func(ewin, "available");
+		  MaxSizeHV(ewin, "available", maxh, maxv);
 		  EWMH_SetWindowState(ewin);
 	       }
 	  }

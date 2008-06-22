@@ -26,16 +26,13 @@
 #include "hints.h"
 #include "screen.h"
 
-#define MAX_HOR 0x1
-#define MAX_VER 0x2
-
 #define MAX_ABSOLUTE     0	/* Fill screen */
 #define MAX_AVAILABLE    1	/* Expand until don't cover */
 #define MAX_CONSERVATIVE 2	/* Expand until something */
 #define MAX_XINERAMA     3	/* Fill Xinerama screen */
 
-static void
-MaxSizeHV(EWin * ewin, const char *resize_type, int direction)
+void
+MaxSizeHV(EWin * ewin, const char *resize_type, int hor, int ver)
 {
    int                 x, y, w, h, x1, x2, y1, y2, type, bl, br, bt, bb;
    EWin               *const *lst, *pe;
@@ -44,9 +41,9 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int direction)
    if (!ewin)
       return;
 
-   if (ewin->state.inhibit_max_hor && (direction & MAX_HOR))
+   if (ewin->state.inhibit_max_hor && hor)
       return;
-   if (ewin->state.inhibit_max_ver && (direction & MAX_VER))
+   if (ewin->state.inhibit_max_ver && ver)
       return;
 
    if (ewin->state.maximized_horz || ewin->state.maximized_vert)
@@ -83,13 +80,13 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int direction)
    switch (type)
      {
      case MAX_XINERAMA:
-	if (direction & MAX_HOR)
+	if (hor)
 	  {
 	     x = 0;
 	     w = WinGetW(VROOT);
 	     ewin->state.maximized_horz = 1;
 	  }
-	if (direction & MAX_VER)
+	if (ver)
 	  {
 	     y = 0;
 	     h = WinGetH(VROOT);
@@ -116,7 +113,7 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int direction)
 	     lst = EwinListGetAll(&num);
 	  }
 
-	if (direction & MAX_VER)
+	if (ver)
 	  {
 	     for (i = 0; i < num; i++)
 	       {
@@ -142,7 +139,7 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int direction)
 	     ewin->state.maximized_vert = 1;
 	  }
 
-	if (direction & MAX_HOR)
+	if (hor)
 	  {
 	     for (i = 0; i < num; i++)
 	       {
@@ -189,22 +186,4 @@ MaxSizeHV(EWin * ewin, const char *resize_type, int direction)
    ewin->state.maximizing = 0;
  done:
    HintsSetWindowState(ewin);
-}
-
-void
-MaxWidth(EWin * ewin, const char *resize_type)
-{
-   MaxSizeHV(ewin, resize_type, MAX_HOR);
-}
-
-void
-MaxHeight(EWin * ewin, const char *resize_type)
-{
-   MaxSizeHV(ewin, resize_type, MAX_VER);
-}
-
-void
-MaxSize(EWin * ewin, const char *resize_type)
-{
-   MaxSizeHV(ewin, resize_type, MAX_HOR | MAX_VER);
 }
