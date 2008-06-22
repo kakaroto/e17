@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-06-15 23:04+0200\n"
+"POT-Creation-Date: 2008-06-22 12:50+0200\n"
 "PO-Revision-Date: 2000-03-07 16:35+0100\n"
 "Last-Translator: Daniel Vieira Pereira <gunsmithcat@ip.pt>\n"
 "Language-Team: Portuguese <pt@li.org>\n"
@@ -42,8 +42,8 @@ msgid ""
 "Kim Woelders - kim@woelders.dk\n"
 msgstr ""
 
-#: src/aclass.c:198 src/backgrounds.c:237 src/borders.c:635 src/buttons.c:181
-#: src/cmclass.c:84 src/cursors.c:121 src/iclass.c:351 src/tclass.c:111
+#: src/aclass.c:198 src/backgrounds.c:237 src/borders.c:636 src/buttons.c:181
+#: src/cmclass.c:84 src/cursors.c:121 src/iclass.c:353 src/tclass.c:113
 #: src/tooltips.c:135
 #, c-format
 msgid "%u references remain\n"
@@ -403,121 +403,121 @@ msgstr ""
 msgid "Enlightenment Starting..."
 msgstr "Inicializando o Enlightenment ..."
 
-#: src/container.c:1215
+#: src/container.c:1211
 #, fuzzy
 msgid "Settings..."
 msgstr "Definições de Foco"
 
-#: src/container.c:1219 src/dialog.c:872 src/pager.c:1015 config/strings.c:30
+#: src/container.c:1215 src/dialog.c:860 src/pager.c:1015 config/strings.c:30
 #: config/strings.c:132
 msgid "Close"
 msgstr "Fechar"
 
-#: src/container.c:1224 config/strings.c:83
+#: src/container.c:1220 config/strings.c:83
 msgid "Create New Iconbox"
 msgstr "Criar Nova Caixa de Icones"
 
-#: src/container.c:1520 src/container.c:1593
+#: src/container.c:1516 src/container.c:1589
 #, fuzzy, c-format
 msgid "Icon size: %2d"
 msgstr "Tamanho do Icone"
 
-#: src/container.c:1557
+#: src/container.c:1553
 msgid "Transparent background"
 msgstr "Imagem de fundo transparente"
 
-#: src/container.c:1561
+#: src/container.c:1557
 #, fuzzy
 msgid "Hide inner border"
 msgstr "Mostar/esconder este grupo"
 
-#: src/container.c:1565
+#: src/container.c:1561
 msgid "Draw base image behind Icons"
 msgstr "Desenhar base atrás dos Ícones"
 
-#: src/container.c:1569
+#: src/container.c:1565
 msgid "Hide scrollbar when not needed"
 msgstr "Esconder barra quando não é necessária"
 
-#: src/container.c:1573
+#: src/container.c:1569
 msgid "Automatically resize to fit Icons"
 msgstr "Automaticamente ajustar pelos Ícones"
 
-#: src/container.c:1580
+#: src/container.c:1576
 msgid "Alignment of anchoring when automatically resizing:"
 msgstr "Alinhamento quando o ajuste é automático:"
 
-#: src/container.c:1611
+#: src/container.c:1607
 msgid "Orientation:"
 msgstr "Posicionamento:"
 
-#: src/container.c:1616
+#: src/container.c:1612
 msgid "Scrollbar side:"
 msgstr "Tamanho da barra:"
 
-#: src/container.c:1621
+#: src/container.c:1617
 msgid "Scrollbar arrows:"
 msgstr "Setas da barra:"
 
-#: src/container.c:1624
+#: src/container.c:1620
 msgid "Horizontal"
 msgstr "Horizontal"
 
-#: src/container.c:1629
+#: src/container.c:1625
 msgid "Left / Top"
 msgstr "Esquerda / Topo"
 
-#: src/container.c:1634
+#: src/container.c:1630
 msgid "Start"
 msgstr "Inicio"
 
-#: src/container.c:1639
+#: src/container.c:1635
 msgid "Vertical"
 msgstr "Vertical"
 
-#: src/container.c:1645
+#: src/container.c:1641
 msgid "Right / Bottom"
 msgstr "Direita / Baixo"
 
-#: src/container.c:1651
+#: src/container.c:1647
 msgid "Both ends"
 msgstr "Ambos os lados"
 
-#: src/container.c:1659
+#: src/container.c:1655
 msgid "End"
 msgstr "Fim"
 
-#: src/container.c:1667 src/focus.c:841
+#: src/container.c:1663 src/focus.c:841
 msgid "None"
 msgstr "Nenhuma"
 
-#: src/container.c:1677
+#: src/container.c:1673
 msgid "Show icon names"
 msgstr "Mostrar nome dos ícones"
 
-#: src/container.c:1681
+#: src/container.c:1677
 msgid "Animate when iconifying to this Iconbox"
 msgstr "Animar quando minimizar para esta Caixa de Iconos"
 
-#: src/container.c:1691
+#: src/container.c:1687
 msgid "Icon image display policy (if one operation fails, try the next):"
 msgstr "Ordem de uso de ícones (se uma falha, usa-se a próxima)"
 
-#: src/container.c:1696
+#: src/container.c:1692
 msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
 msgstr ""
 "Miniatura da janela, Usar icone da aplicação, Usar Icone do Enlightenment"
 
-#: src/container.c:1703
+#: src/container.c:1699
 msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
 msgstr ""
 "Usar icone da aplicação, Usar Icone do Enlightenment, Miniatura da janela"
 
-#: src/container.c:1708
+#: src/container.c:1704
 msgid "Use Enlightenment Icon, Snapshot Window"
 msgstr "Usar Icone do Enlightenment, Miniatura da janela"
 
-#: src/container.c:1721
+#: src/container.c:1717
 #, fuzzy
 msgid ""
 "Enlightenment Iconbox\n"
@@ -574,73 +574,73 @@ msgstr ""
 "Prima aqui para mover este desktop\n"
 "para o fundo.\n"
 
-#: src/desktops.c:2262 src/desktops.c:2301
+#: src/desktops.c:2260 src/desktops.c:2299
 #, c-format
 msgid "%i Desktops"
 msgstr "%i Desktops"
 
-#: src/desktops.c:2264 src/desktops.c:2303
+#: src/desktops.c:2262 src/desktops.c:2301
 #, c-format
 msgid "%i Desktop"
 msgstr "%i Desktop"
 
-#: src/desktops.c:2296
+#: src/desktops.c:2294
 msgid "Number of virtual desktops:\n"
 msgstr "Número de desktops virtuais:\n"
 
-#: src/desktops.c:2325
+#: src/desktops.c:2323
 msgid "Slide desktops around when changing"
 msgstr "Deslizar desktops aquando mudança"
 
-#: src/desktops.c:2331
+#: src/desktops.c:2329
 #, fuzzy
 msgid "Desktop Slide speed:\n"
 msgstr "Velocidade de Deslize do Desktop: (lento)\n"
 
-#: src/desktops.c:2345
+#: src/desktops.c:2343
 msgid "Wrap desktops around"
 msgstr ""
 
-#: src/desktops.c:2353
+#: src/desktops.c:2351
 msgid "Display desktop dragbar"
 msgstr "Mostrar barra de arrasto do desktop"
 
-#: src/desktops.c:2359
+#: src/desktops.c:2357
 msgid "Drag bar position:"
 msgstr "Posição da barra de arrasto"
 
-#: src/desktops.c:2363
+#: src/desktops.c:2361
 msgid "Top"
 msgstr "Topo"
 
-#: src/desktops.c:2369
+#: src/desktops.c:2367
 msgid "Bottom"
 msgstr "Baixo"
 
-#: src/desktops.c:2375 src/pager.c:1925 src/pager.c:1950 src/pager.c:1975
+#: src/desktops.c:2373 src/pager.c:1925 src/pager.c:1950 src/pager.c:1975
 msgid "Left"
 msgstr "Esquerda"
 
-#: src/desktops.c:2381 src/pager.c:1937 src/pager.c:1962 src/pager.c:1987
+#: src/desktops.c:2379 src/pager.c:1937 src/pager.c:1962 src/pager.c:1987
 msgid "Right"
 msgstr "Direita"
 
-#: src/desktops.c:2389 src/menus-misc.c:697
+#: src/desktops.c:2387 src/menus-misc.c:697
 #, fuzzy
 msgid "Desks"
 msgstr "Desktop"
 
-#: src/desktops.c:2390
+#: src/desktops.c:2388
 msgid "Multiple Desktop Settings"
 msgstr "Opções de Desktops Multiplos"
 
-#: src/desktops.c:2393
+#: src/desktops.c:2391
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
 msgstr ""
 
-#: src/desktops.c:2463 src/desktops.c:2498
+#: src/desktops.c:2461 src/desktops.c:2496
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -649,7 +649,7 @@ msgstr ""
 "%i x %i\n"
 "Ecrãs em tamanho"
 
-#: src/desktops.c:2466 src/desktops.c:2501
+#: src/desktops.c:2464 src/desktops.c:2499
 msgid ""
 "1\n"
 "Screen in size"
@@ -657,58 +657,58 @@ msgstr ""
 "1\n"
 "Ecrã em tamanho"
 
-#: src/desktops.c:2494
+#: src/desktops.c:2492
 msgid "Virtual Desktop size:\n"
 msgstr "Tamanho do Ecrã Virtual:\n"
 
-#: src/desktops.c:2535
+#: src/desktops.c:2533
 msgid "Wrap virtual desktops around"
 msgstr ""
 
-#: src/desktops.c:2542
+#: src/desktops.c:2540
 msgid "Edge Flip Mode:"
 msgstr ""
 
-#: src/desktops.c:2545
+#: src/desktops.c:2543
 msgid "Off"
 msgstr ""
 
-#: src/desktops.c:2550
+#: src/desktops.c:2548
 msgid "On"
 msgstr ""
 
-#: src/desktops.c:2555
+#: src/desktops.c:2553
 msgid "Only when moving window"
 msgstr ""
 
-#: src/desktops.c:2561
+#: src/desktops.c:2559
 msgid "Resistance at edge of screen:\n"
 msgstr "Resistência no limiar do ecrã:\n"
 
-#: src/desktops.c:2573
+#: src/desktops.c:2571
 msgid "Areas"
 msgstr ""
 
-#: src/desktops.c:2574
+#: src/desktops.c:2572
 msgid "Virtual Desktop Settings"
 msgstr "Definições para os Ecrãs Virtuais"
 
-#: src/desktops.c:2577
+#: src/desktops.c:2575
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
 msgstr ""
 
-#: src/dialog.c:860 src/dialog.c:2077 src/dialog.c:2108 src/events.c:86
+#: src/dialog.c:848 src/dialog.c:2037 src/dialog.c:2068 src/events.c:86
 #: src/setup.c:157 src/sound.c:203
 msgid "OK"
 msgstr "OK"
 
-#: src/dialog.c:865
+#: src/dialog.c:853
 msgid "Apply"
 msgstr "Aplicar"
 
-#: src/dialog.c:2108
+#: src/dialog.c:2068
 msgid "Attention !!!"
 msgstr "Atenção !!!"
 
@@ -1303,29 +1303,29 @@ msgstr "Minimizar este grupo"
 msgid "Group %i"
 msgstr "Grupo %i"
 
-#: src/menus.c:2046
+#: src/menus.c:2059
 msgid "Animated display of menus"
 msgstr "Mostrar menus animados"
 
-#: src/menus.c:2051
+#: src/menus.c:2064
 msgid "Always pop up menus on screen"
 msgstr "Mostrar sempre menus no ecrã"
 
-#: src/menus.c:2056
+#: src/menus.c:2069
 msgid "Warp pointer after moving menus"
 msgstr "Posicionar ponteiro após mover menus"
 
-#: src/menus.c:2062
+#: src/menus.c:2075
 #, fuzzy
 msgid "Menus"
 msgstr "Tipo de janelas"
 
-#: src/menus.c:2063
+#: src/menus.c:2076
 #, fuzzy
 msgid "Menu Settings"
 msgstr "Opções do Som"
 
-#: src/menus.c:2066
+#: src/menus.c:2079
 #, fuzzy
 msgid ""
 "Enlightenment Menu\n"
@@ -2167,11 +2167,11 @@ msgstr "O Tema não contêm o ficheiro sound.cfg\n"
 msgid "Unknown\n"
 msgstr "Desconhecido\n"
 
-#: src/theme.c:391
+#: src/theme.c:392
 msgid "Bad Theme"
 msgstr "Tema Errado"
 
-#: src/theme.c:392
+#: src/theme.c:393
 #, c-format
 msgid ""
 "The theme:\n"
@@ -2190,7 +2190,7 @@ msgstr ""
 "A razão pela qual o tema é considerado defeituoso é:\n"
 "%s"
 
-#: src/theme.c:418
+#: src/theme.c:419
 #, c-format
 msgid ""
 "No themes were found in the default theme directory:\n"

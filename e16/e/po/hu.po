@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-06-15 23:04+0200\n"
+"POT-Creation-Date: 2008-06-22 12:50+0200\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: György Horák <dyuri@horak.hu>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
@@ -57,8 +57,8 @@ msgstr ""
 "Mandrake - mandrake@mandrake.net\n"
 "Kim Woelders - kim@woelders.dk\n"
 
-#: src/aclass.c:198 src/backgrounds.c:237 src/borders.c:635 src/buttons.c:181
-#: src/cmclass.c:84 src/cursors.c:121 src/iclass.c:351 src/tclass.c:111
+#: src/aclass.c:198 src/backgrounds.c:237 src/borders.c:636 src/buttons.c:181
+#: src/cmclass.c:84 src/cursors.c:121 src/iclass.c:353 src/tclass.c:113
 #: src/tooltips.c:135
 #, c-format
 msgid "%u references remain\n"
@@ -411,120 +411,120 @@ msgstr ""
 msgid "Enlightenment Starting..."
 msgstr "Az Enlightenment indítása..."
 
-#: src/container.c:1215
+#: src/container.c:1211
 #, fuzzy
 msgid "Settings..."
 msgstr "Fókusz beállításai"
 
-#: src/container.c:1219 src/dialog.c:872 src/pager.c:1015 config/strings.c:30
+#: src/container.c:1215 src/dialog.c:860 src/pager.c:1015 config/strings.c:30
 #: config/strings.c:132
 msgid "Close"
 msgstr "Bezár"
 
-#: src/container.c:1224 config/strings.c:83
+#: src/container.c:1220 config/strings.c:83
 msgid "Create New Iconbox"
 msgstr "Új ikondoboz létrehozása"
 
-#: src/container.c:1520 src/container.c:1593
+#: src/container.c:1516 src/container.c:1589
 #, fuzzy, c-format
 msgid "Icon size: %2d"
 msgstr "Ikonok mérete"
 
-#: src/container.c:1557
+#: src/container.c:1553
 msgid "Transparent background"
 msgstr "Átlátszó háttér"
 
-#: src/container.c:1561
+#: src/container.c:1557
 #, fuzzy
 msgid "Hide inner border"
 msgstr "Csoport mutatása/elrejtése"
 
-#: src/container.c:1565
+#: src/container.c:1561
 msgid "Draw base image behind Icons"
 msgstr "Háttér kirajzolása az ikonok mögé"
 
-#: src/container.c:1569
+#: src/container.c:1565
 msgid "Hide scrollbar when not needed"
 msgstr "Gördítõsáv elrejtése, amikor nem szükséges"
 
-#: src/container.c:1573
+#: src/container.c:1569
 msgid "Automatically resize to fit Icons"
 msgstr "Automatikus átméretezés, hogy az ikonok elférjenek"
 
-#: src/container.c:1580
+#: src/container.c:1576
 msgid "Alignment of anchoring when automatically resizing:"
 msgstr "Újrarendezõdés automatikus átméretezésnél:"
 
-#: src/container.c:1611
+#: src/container.c:1607
 msgid "Orientation:"
 msgstr "Irány:"
 
-#: src/container.c:1616
+#: src/container.c:1612
 msgid "Scrollbar side:"
 msgstr "Gördítõsáv helye:"
 
-#: src/container.c:1621
+#: src/container.c:1617
 msgid "Scrollbar arrows:"
 msgstr "Nyíl a gördítõsávon:"
 
-#: src/container.c:1624
+#: src/container.c:1620
 msgid "Horizontal"
 msgstr "Vízszintes"
 
-#: src/container.c:1629
+#: src/container.c:1625
 msgid "Left / Top"
 msgstr "Bal / Fent"
 
-#: src/container.c:1634
+#: src/container.c:1630
 msgid "Start"
 msgstr "Elején"
 
-#: src/container.c:1639
+#: src/container.c:1635
 msgid "Vertical"
 msgstr "Függõleges"
 
-#: src/container.c:1645
+#: src/container.c:1641
 msgid "Right / Bottom"
 msgstr "Jobb / Lent"
 
-#: src/container.c:1651
+#: src/container.c:1647
 msgid "Both ends"
 msgstr "Mindkét végén"
 
-#: src/container.c:1659
+#: src/container.c:1655
 msgid "End"
 msgstr "Végén"
 
-#: src/container.c:1667 src/focus.c:841
+#: src/container.c:1663 src/focus.c:841
 msgid "None"
 msgstr "Nincs"
 
-#: src/container.c:1677
+#: src/container.c:1673
 msgid "Show icon names"
 msgstr "Ikonnevek megjelenítése"
 
-#: src/container.c:1681
+#: src/container.c:1677
 msgid "Animate when iconifying to this Iconbox"
 msgstr "Animálás kicsinyítésnél"
 
-#: src/container.c:1691
+#: src/container.c:1687
 msgid "Icon image display policy (if one operation fails, try the next):"
 msgstr ""
 "Ikonmegjelenítés rendje (ha az egyik nem sikerül, megpróbálja a következõt):"
 
-#: src/container.c:1696
+#: src/container.c:1692
 msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
 msgstr "Miniatúra, Program ikon, Enlightenment ikon"
 
-#: src/container.c:1703
+#: src/container.c:1699
 msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
 msgstr "Program ikon, Enlightenment ikon, Miniatúra"
 
-#: src/container.c:1708
+#: src/container.c:1704
 msgid "Use Enlightenment Icon, Snapshot Window"
 msgstr "Enlightenment ikon, Miniatúra"
 
-#: src/container.c:1721
+#: src/container.c:1717
 msgid ""
 "Enlightenment Iconbox\n"
 "Settings Dialog\n"
@@ -580,67 +580,67 @@ msgstr ""
 "Klikkeljen ide, hogy ez az asztal\n"
 "legalulra kerüljön.\n"
 
-#: src/desktops.c:2262 src/desktops.c:2301
+#: src/desktops.c:2260 src/desktops.c:2299
 #, c-format
 msgid "%i Desktops"
 msgstr "%i asztal"
 
-#: src/desktops.c:2264 src/desktops.c:2303
+#: src/desktops.c:2262 src/desktops.c:2301
 #, c-format
 msgid "%i Desktop"
 msgstr "%i asztal"
 
-#: src/desktops.c:2296
+#: src/desktops.c:2294
 msgid "Number of virtual desktops:\n"
 msgstr "Virtuális asztalok száma:\n"
 
-#: src/desktops.c:2325
+#: src/desktops.c:2323
 msgid "Slide desktops around when changing"
 msgstr "Animáció az asztalok váltásánál"
 
-#: src/desktops.c:2331
+#: src/desktops.c:2329
 #, fuzzy
 msgid "Desktop Slide speed:\n"
 msgstr "Asztal animáció sebessége: (lassú)\n"
 
-#: src/desktops.c:2345
+#: src/desktops.c:2343
 msgid "Wrap desktops around"
 msgstr "Asztalok \"körbecsúszása\""
 
-#: src/desktops.c:2353
+#: src/desktops.c:2351
 msgid "Display desktop dragbar"
 msgstr "Dragbar megjelenítése"
 
-#: src/desktops.c:2359
+#: src/desktops.c:2357
 msgid "Drag bar position:"
 msgstr "Dragbar elhelyezkedése:"
 
-#: src/desktops.c:2363
+#: src/desktops.c:2361
 msgid "Top"
 msgstr "Fent"
 
-#: src/desktops.c:2369
+#: src/desktops.c:2367
 msgid "Bottom"
 msgstr "Lent"
 
-#: src/desktops.c:2375 src/pager.c:1925 src/pager.c:1950 src/pager.c:1975
+#: src/desktops.c:2373 src/pager.c:1925 src/pager.c:1950 src/pager.c:1975
 msgid "Left"
 msgstr "Bal"
 
-#: src/desktops.c:2381 src/pager.c:1937 src/pager.c:1962 src/pager.c:1987
+#: src/desktops.c:2379 src/pager.c:1937 src/pager.c:1962 src/pager.c:1987
 msgid "Right"
 msgstr "Jobb"
 
-#: src/desktops.c:2389 src/menus-misc.c:697
+#: src/desktops.c:2387 src/menus-misc.c:697
 #, fuzzy
 msgid "Desks"
 msgstr "Asztal"
 
-#: src/desktops.c:2390
+#: src/desktops.c:2388
 msgid "Multiple Desktop Settings"
 msgstr "Többasztalos üzemmód beállításai"
 
-#: src/desktops.c:2393
+#: src/desktops.c:2391
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -648,7 +648,7 @@ msgstr ""
 "Enlightenment többasztalos üzemmód\n"
 "beállításai\n"
 
-#: src/desktops.c:2463 src/desktops.c:2498
+#: src/desktops.c:2461 src/desktops.c:2496
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -657,7 +657,7 @@ msgstr ""
 "%i x %i\n"
 "képernyõméret"
 
-#: src/desktops.c:2466 src/desktops.c:2501
+#: src/desktops.c:2464 src/desktops.c:2499
 msgid ""
 "1\n"
 "Screen in size"
@@ -665,43 +665,43 @@ msgstr ""
 "1\n"
 "képernyõméret"
 
-#: src/desktops.c:2494
+#: src/desktops.c:2492
 msgid "Virtual Desktop size:\n"
 msgstr "Virtuális asztal mérete:\n"
 
-#: src/desktops.c:2535
+#: src/desktops.c:2533
 msgid "Wrap virtual desktops around"
 msgstr "Virtuális asztalok \"körbecsúszása\""
 
-#: src/desktops.c:2542
+#: src/desktops.c:2540
 msgid "Edge Flip Mode:"
 msgstr ""
 
-#: src/desktops.c:2545
+#: src/desktops.c:2543
 msgid "Off"
 msgstr ""
 
-#: src/desktops.c:2550
+#: src/desktops.c:2548
 msgid "On"
 msgstr ""
 
-#: src/desktops.c:2555
+#: src/desktops.c:2553
 msgid "Only when moving window"
 msgstr ""
 
-#: src/desktops.c:2561
+#: src/desktops.c:2559
 msgid "Resistance at edge of screen:\n"
 msgstr "Érzékenység a kép szélén:\n"
 
-#: src/desktops.c:2573
+#: src/desktops.c:2571
 msgid "Areas"
 msgstr ""
 
-#: src/desktops.c:2574
+#: src/desktops.c:2572
 msgid "Virtual Desktop Settings"
 msgstr "Virtuális asztalok beállításai"
 
-#: src/desktops.c:2577
+#: src/desktops.c:2575
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -709,16 +709,16 @@ msgstr ""
 "Enlightenment virtuális asztalok\n"
 "beállításai\n"
 
-#: src/dialog.c:860 src/dialog.c:2077 src/dialog.c:2108 src/events.c:86
+#: src/dialog.c:848 src/dialog.c:2037 src/dialog.c:2068 src/events.c:86
 #: src/setup.c:157 src/sound.c:203
 msgid "OK"
 msgstr "OK"
 
-#: src/dialog.c:865
+#: src/dialog.c:853
 msgid "Apply"
 msgstr "Alkalmaz"
 
-#: src/dialog.c:2108
+#: src/dialog.c:2068
 msgid "Attention !!!"
 msgstr "Figyelem !!!"
 
@@ -1272,29 +1272,29 @@ msgstr "Csoport kicsinyítése"
 msgid "Group %i"
 msgstr "%i. csoport"
 
-#: src/menus.c:2046
+#: src/menus.c:2059
 msgid "Animated display of menus"
 msgstr "Menük animálása"
 
-#: src/menus.c:2051
+#: src/menus.c:2064
 msgid "Always pop up menus on screen"
 msgstr "A menük mindig a képben jelennek meg"
 
-#: src/menus.c:2056
+#: src/menus.c:2069
 msgid "Warp pointer after moving menus"
 msgstr "Menük mozgásával együtt az egérmutató is mozog"
 
-#: src/menus.c:2062
+#: src/menus.c:2075
 #, fuzzy
 msgid "Menus"
 msgstr "Menük:"
 
-#: src/menus.c:2063
+#: src/menus.c:2076
 #, fuzzy
 msgid "Menu Settings"
 msgstr "Vegyes beállítások"
 
-#: src/menus.c:2066
+#: src/menus.c:2079
 #, fuzzy
 msgid ""
 "Enlightenment Menu\n"
@@ -2147,11 +2147,11 @@ msgstr "A %s téma nem tartalmazza a %s fájlt\n"
 msgid "Unknown\n"
 msgstr "Ismeretlen\n"
 
-#: src/theme.c:391
+#: src/theme.c:392
 msgid "Bad Theme"
 msgstr "Rossz téma"
 
-#: src/theme.c:392
+#: src/theme.c:393
 #, c-format
 msgid ""
 "The theme:\n"
@@ -2163,7 +2163,7 @@ msgid ""
 "%s"
 msgstr ""
 
-#: src/theme.c:418
+#: src/theme.c:419
 #, c-format
 msgid ""
 "No themes were found in the default theme directory:\n"

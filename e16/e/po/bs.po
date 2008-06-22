@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bosnian\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-06-15 23:04+0200\n"
+"POT-Creation-Date: 2008-06-22 12:50+0200\n"
 "PO-Revision-Date: 2004-08-26 00:52+0200\n"
 "Last-Translator: Kemal Šanjta <gomez@lugzdk.ba>\n"
 "Language-Team: Bosnian <lokal@linux.org.ba>\n"
@@ -61,8 +61,8 @@ msgstr ""
 "Mandrake - mandrake@mandrake.net\n"
 "Kim Woelders - kim@woelders.dk\n"
 
-#: src/aclass.c:198 src/backgrounds.c:237 src/borders.c:635 src/buttons.c:181
-#: src/cmclass.c:84 src/cursors.c:121 src/iclass.c:351 src/tclass.c:111
+#: src/aclass.c:198 src/backgrounds.c:237 src/borders.c:636 src/buttons.c:181
+#: src/cmclass.c:84 src/cursors.c:121 src/iclass.c:353 src/tclass.c:113
 #: src/tooltips.c:135
 #, c-format
 msgid "%u references remain\n"
@@ -419,119 +419,119 @@ msgstr ""
 msgid "Enlightenment Starting..."
 msgstr "Enlightenment se pokre�e..."
 
-#: src/container.c:1215
+#: src/container.c:1211
 #, fuzzy
 msgid "Settings..."
 msgstr "Osobine usmjeravanja"
 
-#: src/container.c:1219 src/dialog.c:872 src/pager.c:1015 config/strings.c:30
+#: src/container.c:1215 src/dialog.c:860 src/pager.c:1015 config/strings.c:30
 #: config/strings.c:132
 msgid "Close"
 msgstr "Zatvori"
 
-#: src/container.c:1224 config/strings.c:83
+#: src/container.c:1220 config/strings.c:83
 msgid "Create New Iconbox"
 msgstr "Napravi novi Iconbox"
 
-#: src/container.c:1520 src/container.c:1593
+#: src/container.c:1516 src/container.c:1589
 #, fuzzy, c-format
 msgid "Icon size: %2d"
 msgstr "Veliīina ikone"
 
-#: src/container.c:1557
+#: src/container.c:1553
 msgid "Transparent background"
 msgstr "Providna pozadina"
 
-#: src/container.c:1561
+#: src/container.c:1557
 #, fuzzy
 msgid "Hide inner border"
 msgstr "Pokaŵi/Sakrij ovu grupu"
 
-#: src/container.c:1565
+#: src/container.c:1561
 msgid "Draw base image behind Icons"
 msgstr "Nacrtaj osnovnu sliku ispod ikona"
 
-#: src/container.c:1569
+#: src/container.c:1565
 msgid "Hide scrollbar when not needed"
 msgstr "Sakrij traku za listanje kada nije potrebna"
 
-#: src/container.c:1573
+#: src/container.c:1569
 msgid "Automatically resize to fit Icons"
 msgstr "Automatski promjeni veliīini radi podeŷavanja ikona"
 
-#: src/container.c:1580
+#: src/container.c:1576
 msgid "Alignment of anchoring when automatically resizing:"
 msgstr "Poravnanje uīvrŷ�ivanja prilikom automatske promjene veliīine:"
 
-#: src/container.c:1611
+#: src/container.c:1607
 msgid "Orientation:"
 msgstr "Orjentacija:"
 
-#: src/container.c:1616
+#: src/container.c:1612
 msgid "Scrollbar side:"
 msgstr "Veliīine trake za listanje:"
 
-#: src/container.c:1621
+#: src/container.c:1617
 msgid "Scrollbar arrows:"
 msgstr "Strelice trake za listanje:"
 
-#: src/container.c:1624
+#: src/container.c:1620
 msgid "Horizontal"
 msgstr "Horizontalno"
 
-#: src/container.c:1629
+#: src/container.c:1625
 msgid "Left / Top"
 msgstr "Lijevo / Vrh"
 
-#: src/container.c:1634
+#: src/container.c:1630
 msgid "Start"
 msgstr "Poīetak"
 
-#: src/container.c:1639
+#: src/container.c:1635
 msgid "Vertical"
 msgstr "Vertikalno"
 
-#: src/container.c:1645
+#: src/container.c:1641
 msgid "Right / Bottom"
 msgstr "Desno / Dno"
 
-#: src/container.c:1651
+#: src/container.c:1647
 msgid "Both ends"
 msgstr "Oba kraja"
 
-#: src/container.c:1659
+#: src/container.c:1655
 msgid "End"
 msgstr "Kraj"
 
-#: src/container.c:1667 src/focus.c:841
+#: src/container.c:1663 src/focus.c:841
 msgid "None"
 msgstr "Niŷta"
 
-#: src/container.c:1677
+#: src/container.c:1673
 msgid "Show icon names"
 msgstr "Poka�i imena ikona"
 
-#: src/container.c:1681
+#: src/container.c:1677
 msgid "Animate when iconifying to this Iconbox"
 msgstr "Pokreni prilikom ikonificiranja ovog Iconbox-a"
 
-#: src/container.c:1691
+#: src/container.c:1687
 msgid "Icon image display policy (if one operation fails, try the next):"
 msgstr "Pravila prikaza slike ikone (ako jedna ne uspije, probajte sljede�u):"
 
-#: src/container.c:1696
+#: src/container.c:1692
 msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
 msgstr "Slikaj prozore, koristi ikonu apliacije, koristi Enlightenment ikonu"
 
-#: src/container.c:1703
+#: src/container.c:1699
 msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
 msgstr "Koristi ikonu aplikacije, koristi Enlightenment ikonu, Slikaj prozor"
 
-#: src/container.c:1708
+#: src/container.c:1704
 msgid "Use Enlightenment Icon, Snapshot Window"
 msgstr "Koristi Enlightenment ikonu, Slikaj prozor"
 
-#: src/container.c:1721
+#: src/container.c:1717
 msgid ""
 "Enlightenment Iconbox\n"
 "Settings Dialog\n"
@@ -589,67 +589,67 @@ msgstr ""
 "Kliknite ovdje da spustite ovaj desktop\n"
 "na dno.\n"
 
-#: src/desktops.c:2262 src/desktops.c:2301
+#: src/desktops.c:2260 src/desktops.c:2299
 #, c-format
 msgid "%i Desktops"
 msgstr "%i Desktopi"
 
-#: src/desktops.c:2264 src/desktops.c:2303
+#: src/desktops.c:2262 src/desktops.c:2301
 #, c-format
 msgid "%i Desktop"
 msgstr "%i Desktop"
 
-#: src/desktops.c:2296
+#: src/desktops.c:2294
 msgid "Number of virtual desktops:\n"
 msgstr "Broj virtualnih Desktopa:\n"
 
-#: src/desktops.c:2325
+#: src/desktops.c:2323
 msgid "Slide desktops around when changing"
 msgstr "Klizaj prozore okolo kada mijenjam"
 
-#: src/desktops.c:2331
+#: src/desktops.c:2329
 #, fuzzy
 msgid "Desktop Slide speed:\n"
 msgstr "Brzina klizanja Desktop-a: (sporo)\n"
 
-#: src/desktops.c:2345
+#: src/desktops.c:2343
 msgid "Wrap desktops around"
 msgstr "Uvij prozore okolo"
 
-#: src/desktops.c:2353
+#: src/desktops.c:2351
 msgid "Display desktop dragbar"
 msgstr "Prikaŵi dektop dragbar"
 
-#: src/desktops.c:2359
+#: src/desktops.c:2357
 msgid "Drag bar position:"
 msgstr "Dragbar pozicija:"
 
-#: src/desktops.c:2363
+#: src/desktops.c:2361
 msgid "Top"
 msgstr "Vrh"
 
-#: src/desktops.c:2369
+#: src/desktops.c:2367
 msgid "Bottom"
 msgstr "Dno"
 
-#: src/desktops.c:2375 src/pager.c:1925 src/pager.c:1950 src/pager.c:1975
+#: src/desktops.c:2373 src/pager.c:1925 src/pager.c:1950 src/pager.c:1975
 msgid "Left"
 msgstr "Lijevo"
 
-#: src/desktops.c:2381 src/pager.c:1937 src/pager.c:1962 src/pager.c:1987
+#: src/desktops.c:2379 src/pager.c:1937 src/pager.c:1962 src/pager.c:1987
 msgid "Right"
 msgstr "Desno"
 
-#: src/desktops.c:2389 src/menus-misc.c:697
+#: src/desktops.c:2387 src/menus-misc.c:697
 #, fuzzy
 msgid "Desks"
 msgstr "Desktop"
 
-#: src/desktops.c:2390
+#: src/desktops.c:2388
 msgid "Multiple Desktop Settings"
 msgstr "Osobine viŷestrukih desktopa"
 
-#: src/desktops.c:2393
+#: src/desktops.c:2391
 msgid ""
 "Enlightenment Multiple Desktop\n"
 "Settings Dialog\n"
@@ -657,7 +657,7 @@ msgstr ""
 "Enlightenment Viŷestruki Dektop\n"
 "dijalog osobina\n"
 
-#: src/desktops.c:2463 src/desktops.c:2498
+#: src/desktops.c:2461 src/desktops.c:2496
 #, c-format
 msgid ""
 "%i x %i\n"
@@ -666,7 +666,7 @@ msgstr ""
 "%i x %i\n"
 "Ekrana u veliīini"
 
-#: src/desktops.c:2466 src/desktops.c:2501
+#: src/desktops.c:2464 src/desktops.c:2499
 msgid ""
 "1\n"
 "Screen in size"
@@ -674,43 +674,43 @@ msgstr ""
 "1\n"
 "Ekran u veliīini"
 
-#: src/desktops.c:2494
+#: src/desktops.c:2492
 msgid "Virtual Desktop size:\n"
 msgstr "Veliīina virtualnog Desktopa:\n"
 
-#: src/desktops.c:2535
+#: src/desktops.c:2533
 msgid "Wrap virtual desktops around"
 msgstr "Uvij vitrualne desktope okolo"
 
-#: src/desktops.c:2542
+#: src/desktops.c:2540
 msgid "Edge Flip Mode:"
 msgstr ""
 
-#: src/desktops.c:2545
+#: src/desktops.c:2543
 msgid "Off"
 msgstr ""
 
-#: src/desktops.c:2550
+#: src/desktops.c:2548
 msgid "On"
 msgstr ""
 
-#: src/desktops.c:2555
+#: src/desktops.c:2553
 msgid "Only when moving window"
 msgstr ""
 
-#: src/desktops.c:2561
+#: src/desktops.c:2559
 msgid "Resistance at edge of screen:\n"
 msgstr "Otpor precrtavanja ekrana:\n"
 
-#: src/desktops.c:2573
+#: src/desktops.c:2571
 msgid "Areas"
 msgstr ""
 
-#: src/desktops.c:2574
+#: src/desktops.c:2572
 msgid "Virtual Desktop Settings"
 msgstr "Osobine virtualnih Desktopa"
 
-#: src/desktops.c:2577
+#: src/desktops.c:2575
 msgid ""
 "Enlightenment Virtual Desktop\n"
 "Settings Dialog\n"
@@ -718,16 +718,16 @@ msgstr ""
 "Enlightenment Virtual Desktop\n"
 "Dijalog osobina\n"
 
-#: src/dialog.c:860 src/dialog.c:2077 src/dialog.c:2108 src/events.c:86
+#: src/dialog.c:848 src/dialog.c:2037 src/dialog.c:2068 src/events.c:86
 #: src/setup.c:157 src/sound.c:203
 msgid "OK"
 msgstr "Uredu"
 
-#: src/dialog.c:865
+#: src/dialog.c:853
 msgid "Apply"
 msgstr "Izvrŷi"
 
-#: src/dialog.c:2108
+#: src/dialog.c:2068
 msgid "Attention !!!"
 msgstr "Paŵnja !!!"
 
@@ -1329,29 +1329,29 @@ msgstr "Ikonificiraj ovu grupu"
 msgid "Group %i"
 msgstr "Grupa %i"
 
-#: src/menus.c:2046
+#: src/menus.c:2059
 msgid "Animated display of menus"
 msgstr "Animirani prikazi menija"
 
-#: src/menus.c:2051
+#: src/menus.c:2064
 msgid "Always pop up menus on screen"
 msgstr "Uvijek pop up meniji na ekranu"
 
-#: src/menus.c:2056
+#: src/menus.c:2069
 msgid "Warp pointer after moving menus"
 msgstr "Uvi pokaziva� nakon premjeŷtanja izbornika"
 
-#: src/menus.c:2062
+#: src/menus.c:2075
 #, fuzzy
 msgid "Menus"
 msgstr "Izbornici:"
 
-#: src/menus.c:2063
+#: src/menus.c:2076
 #, fuzzy
 msgid "Menu Settings"
 msgstr "Razne osobine"
 
-#: src/menus.c:2066
+#: src/menus.c:2079
 #, fuzzy
 msgid ""
 "Enlightenment Menu\n"
@@ -2217,11 +2217,11 @@ msgstr "Tema %s ne sadrŵi %s datoteku\n"
 msgid "Unknown\n"
 msgstr "Nepoznato\n"
 
-#: src/theme.c:391
+#: src/theme.c:392
 msgid "Bad Theme"
 msgstr "Loŷa tema"
 
-#: src/theme.c:392
+#: src/theme.c:393
 #, c-format
 msgid ""
 "The theme:\n"
@@ -2239,7 +2239,7 @@ msgstr ""
 "Razlog neispravnosti ove teme je:\n"
 "%s"
 
-#: src/theme.c:418
+#: src/theme.c:419
 #, c-format
 msgid ""
 "No themes were found in the default theme directory:\n"
