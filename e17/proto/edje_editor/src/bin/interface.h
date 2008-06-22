@@ -181,6 +181,7 @@ void UpdateWindowTitle(void);
 
 void ShowFilechooser(int FileChooserType);
 void ShowAlert(char* text);
+void ShowImageBrowser(void);
 void ConsolleLog(char *text);
 void ConsolleClear(void);
 void TogglePlayButton(int set);

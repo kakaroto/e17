@@ -109,6 +109,73 @@ ShowFilechooser(int FileChooserType)
       break;
    }
 }
+void
+ShowImageBrowser(void)
+{
+   Etk_Widget *win;
+   Etk_Widget *iconbox;
+   Etk_Widget *hbox, *vbox;
+   Etk_Widget *button;
+   Evas_List *l, *images;
+   char buf[4096];
+   
+   win = etk_window_new();
+   etk_window_title_set(ETK_WINDOW(win), "Image Browser");
+   etk_container_border_width_set(ETK_CONTAINER(win), 5);
+   //etk_signal_connect_swapped_by_code(ETK_OBJECT_DESTROYED_SIGNAL, ETK_OBJECT(win),
+   //                                ETK_CALLBACK(_main_quit_cb), NULL);
+
+   hbox = etk_hbox_new(ETK_FALSE, 0);
+   etk_container_add (ETK_CONTAINER(win), hbox);
+   
+   iconbox = etk_iconbox_new();
+   etk_box_append (hbox, iconbox, 0, ETK_BOX_EXPAND_FILL, 0);
+   
+   vbox = etk_vbox_new(ETK_TRUE, 0);
+   etk_box_append (hbox, vbox, 0, ETK_BOX_NONE, 5);
+   
+   
+   //AddImageButton
+   button = etk_button_new_from_stock(ETK_STOCK_DOCUMENT_OPEN);
+   etk_object_properties_set(ETK_OBJECT(button), "label","Import image",NULL);
+   etk_button_style_set(button, ETK_BUTTON_BOTH_VERT);
+   etk_box_append(vbox, button, 0, ETK_BOX_NONE, 0);
+   
+   //DeleteImageButton
+   button = etk_button_new_from_stock(ETK_STOCK_EDIT_DELETE);
+   etk_object_properties_set(ETK_OBJECT(button), "label","Delete image",NULL);
+   etk_button_style_set(button, ETK_BUTTON_BOTH_VERT);
+   etk_box_append(vbox, button, 0, ETK_BOX_NONE, 0);
+   
+   //EditImageButton
+   button = etk_button_new_with_label("Edit Image");
+   Etk_Image *image = etk_image_new_from_edje(EdjeFile, "GIMP.PNG");
+   etk_button_image_set(button, image);
+   etk_button_style_set(button, ETK_BUTTON_BOTH_VERT);
+   etk_box_append(vbox, button, 0, ETK_BOX_NONE, 0);
+   
+   
+   /* populate icon list */
+   etk_iconbox_freeze(iconbox);
+   images = l = edje_edit_images_list_get(edje_o);
+   while (l)
+   {
+      snprintf(buf,4096,"images/%d",edje_edit_image_id_get(edje_o, (char*)l->data));
+      printf("IMAGE %s\n", buf);
+      //~ ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_ImageComboBox),
+                     //~ etk_image_new_from_file (Cur.edj_temp_name->string, buf),
+                     //~ (char*)l->data);
+      Etk_Iconbox_Icon * icon;
+      icon = etk_iconbox_append(iconbox,Cur.edj_temp_name->string, buf, (char*)l->data);
+      etk_iconbox_icon_file_set(icon, Cur.edj_temp_name->string, buf);
+      l = l->next;
+   }
+   edje_edit_string_list_free(images);
+   etk_iconbox_thaw(iconbox);
+   
+   etk_widget_show_all(win);
+   
+}
 /***********************************
  *
  * functions to update interface
@@ -1611,6 +1678,25 @@ create_toolbar(Etk_Toolbar_Orientation o)
    sep = etk_vseparator_new();
    etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), sep, ETK_BOX_START);
 
+#if DEBUG_MODE
+   //Images Browser Button
+   button = etk_tool_button_new_from_stock( ETK_STOCK_IMAGE_X_GENERIC);
+   etk_object_properties_set(ETK_OBJECT(button),"label","Images",NULL);
+   etk_signal_connect("clicked", ETK_OBJECT(button),
+                  ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_IMAGE_BROWSER);
+   etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), button, ETK_BOX_START);
+
+   //Font Browser Button
+   button = etk_tool_button_new_from_stock( ETK_STOCK_PREFERENCES_DESKTOP_FONT);
+   etk_object_properties_set(ETK_OBJECT(button),"label","Fonts",NULL);
+   etk_signal_connect("clicked", ETK_OBJECT(button),
+                  ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_FONT_BROWSER);
+   etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), button, ETK_BOX_START);
+
+   sep = etk_vseparator_new();
+   etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), sep, ETK_BOX_START);
+#endif
+   
    //OptionsButton
    button = etk_tool_button_new_from_stock(ETK_STOCK_PREFERENCES_SYSTEM);
    etk_object_properties_set(ETK_OBJECT(button),"label","Options",NULL);

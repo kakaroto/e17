@@ -170,7 +170,12 @@ on_AllButton_click(Etk_Button *button, void *data)
       if (edje_edit_part_type_get(edje_o, Cur.part->string) == EDJE_PART_TYPE_GROUP)
          ReloadEdje();
       break;
-      
+   case TOOLBAR_IMAGE_BROWSER:
+         ShowImageBrowser();
+      break;
+   case TOOLBAR_FONT_BROWSER:
+         ShowAlert("Font Browser");
+      break;
    case TOOLBAR_IMAGE_FILE_ADD:
       ShowFilechooser(FILECHOOSER_IMAGE);
       break;
