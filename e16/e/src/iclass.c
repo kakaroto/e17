@@ -1187,7 +1187,6 @@ ITApply(Win win, ImageClass * ic, ImageState * is,
 	  }
 
 	FreePmapMask(&pmm);
-	EClearWindow(win);
 
 	if ((is->unloadable) || (Conf.memory_paranoia))
 	  {
@@ -1197,21 +1196,32 @@ ITApply(Win win, ImageClass * ic, ImageState * is,
      }
    else
      {
-	/* FIXME - No text */
 	ImagestateColorsAlloc(is);
 
-	ESetWindowBackground(win, is->bg.pixel);
-	EClearWindow(win);
-     }
+	if (is->bevelstyle == BEVEL_NONE && !text)
+	  {
+	     ESetWindowBackground(win, is->bg.pixel);
+	  }
+	else
+	  {
+	     Pixmap              pmap;
+	     GC                  gc;
 
-   if (is->bevelstyle != BEVEL_NONE)
-     {
-	GC                  gc;
-
-	gc = EXCreateGC(WinGetXwin(win), 0, NULL);
-	ImagestateDrawBevel(is, WinGetXwin(win), gc, w, h);
-	EXFreeGC(gc);
+	     pmap = EGetWindowBackgroundPixmap(win);
+	     gc = EXCreateGC(WinGetXwin(win), 0, NULL);
+	     XSetFillStyle(disp, gc, FillSolid);
+	     XSetForeground(disp, gc, is->bg.pixel);
+	     XFillRectangle(disp, pmap, gc, 0, 0, w, h);
+	     if (is->bevelstyle != BEVEL_NONE)
+		ImagestateDrawBevel(is, pmap, gc, w, h);
+	     if (ts && text)
+		TextstateTextDraw(ts, win, pmap, text, 0, 0, w, h,
+				  &(ic->padding), 0,
+				  TextclassGetJustification(tc), flags);
+	     EXFreeGC(gc);
+	  }
      }
+   EClearWindow(win);
 }
 
 void
