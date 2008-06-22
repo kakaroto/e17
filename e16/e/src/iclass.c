@@ -84,6 +84,8 @@ struct _imageclass {
 
 static Ecore_List  *iclass_list = NULL;
 
+static ImageClass  *ImageclassGetFallback(void);
+
 #ifdef ENABLE_THEME_TRANSPARENCY
 
 static EImageColorModifier *icm = NULL;
@@ -422,10 +424,10 @@ ImageclassFind(const char *name, int fallback)
    if (ic || !fallback)
       return ic;
 
-   ic = (ImageClass *) ecore_list_find(iclass_list, _ImageclassMatchName,
-				       "__FALLBACK_ICLASS");
-
-   return ic;
+#if 0
+   Eprintf("%s: Get fallback (%s)\n", __func__, name);
+#endif
+   return ImageclassGetFallback();
 }
 
 #define ISTATE_SET_STATE(which, fallback) \
@@ -1313,13 +1315,19 @@ ImageclassApplyCopy(ImageClass * ic, Win win, int w, int h,
      }
 }
 
-static void
-ImageclassSetupFallback(void)
+static ImageClass  *
+ImageclassGetFallback(void)
 {
    ImageClass         *ic;
 
-   /* create a fallback imageclass in case no imageclass can be found */
-   ic = ImageclassCreate("__FALLBACK_ICLASS");
+   ic = ImageclassFind("__fb_ic", 0);
+   if (ic)
+      return ic;
+
+   /* Create fallback imageclass */
+   ic = ImageclassCreate("__fb_ic");
+   if (!ic)
+      return ic;
 
    ic->norm.normal = ImagestateCreate(NULL);
    ImagestateColorsSetGray(ic->norm.normal, 255, 255, 160, 0, 0);
@@ -1348,36 +1356,41 @@ ImageclassSetupFallback(void)
    SET_COLOR(&(ic->active.clicked->bg), 230, 190, 210);
    ic->active.clicked->bevelstyle = BEVEL_AMIGA;
 
-   ic->padding.left = 8;
-   ic->padding.right = 8;
-   ic->padding.top = 8;
-   ic->padding.bottom = 8;
+   ic->padding.left = 4;
+   ic->padding.right = 4;
+   ic->padding.top = 4;
+   ic->padding.bottom = 4;
 
    ImageclassPopulate(ic);
 
+   return ic;
+}
+
+ImageClass         *
+ImageclassGetBlack(void)
+{
+   ImageClass         *ic;
+
+   ic = ImageclassFind("__BLACK", 0);
+   if (ic)
+      return ic;
+
    /* Create all black image class for filler borders */
    ic = ImageclassCreate("__BLACK");
+   if (!ic)
+      return ic;
 
    ic->norm.normal = ImagestateCreate(NULL);
    ImagestateColorsSetGray(ic->norm.normal, 0, 0, 0, 0, 0);
 
    ImageclassPopulate(ic);
+
+   return ic;
 }
 
 /*
  * Imageclass Module
  */
-
-static void
-ImageclassSighan(int sig, void *prm __UNUSED__)
-{
-   switch (sig)
-     {
-     case ESIGNAL_INIT:
-	ImageclassSetupFallback();
-	break;
-     }
-}
 
 static void
 ImageclassIpc(const char *params)
@@ -1549,7 +1562,7 @@ ImageclassIpc(const char *params)
 static const IpcItem ImageclassIpcArray[] = {
    {
     ImageclassIpc,
-    "imageclass", NULL,
+    "imageclass", "ic",
     "List imageclasses, apply an imageclass",
     NULL}
    ,
@@ -1562,7 +1575,7 @@ static const IpcItem ImageclassIpcArray[] = {
 extern const EModule ModImageclass;
 const EModule       ModImageclass = {
    "imageclass", "ic",
-   ImageclassSighan,
+   NULL,
    {N_IPC_FUNCS, ImageclassIpcArray}
    ,
    {0, NULL}

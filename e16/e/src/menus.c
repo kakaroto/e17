@@ -378,13 +378,6 @@ MenuShow(Menu * m, char noshow)
    m->ref_count++;
 }
 
-static void
-MenuStyleSetName(MenuStyle * ms, const char *name)
-{
-   Efree(ms->name);
-   ms->name = Estrdup(name);
-}
-
 static MenuStyle   *
 MenuStyleCreate(const char *name)
 {
@@ -398,8 +391,8 @@ MenuStyleCreate(const char *name)
       menu_style_list = ecore_list_new();
    ecore_list_prepend(menu_style_list, ms);
 
+   ms->name = Estrdup(name);
    ms->iconpos = ICON_LEFT;
-   MenuStyleSetName(ms, name);
 
    return ms;
 }
@@ -437,8 +430,28 @@ _MenuStyleMatchName(const void *data, const void *match)
 MenuStyle          *
 MenuStyleFind(const char *name)
 {
-   return (MenuStyle *) ecore_list_find(menu_style_list, _MenuStyleMatchName,
-					name);
+   MenuStyle          *ms;
+
+   ms = (MenuStyle *) ecore_list_find(menu_style_list, _MenuStyleMatchName,
+				      name);
+   if (ms)
+      return ms;
+
+   ms = (MenuStyle *) ecore_list_find(menu_style_list, _MenuStyleMatchName,
+				      "__fb_ms");
+   if (ms)
+      return ms;
+
+   ms = MenuStyleCreate("__fb_ms");
+   if (!ms)
+      return ms;
+
+   ms->tclass = TextclassFind(NULL, 1);
+   ms->bg_iclass = ImageclassFind(NULL, 1);
+   ms->item_iclass = ImageclassFind(NULL, 1);
+   ms->sub_iclass = ImageclassFind(NULL, 1);
+
+   return ms;
 }
 
 void
@@ -1930,7 +1943,7 @@ MenuConfigLoad(FILE * fs)
 	     sscanf(p3, "%s %n", s3, &len);
 	     ic = NULL;
 	     if (strcmp("NULL", s3))
-		ic = ImageclassFind(s3, 0);
+		ic = ImageclassFind(s3, 1);
 	     mm = MenuFind(s2, NULL);
 	     mi = MenuItemCreate(p3 + len, ic, NULL, mm);
 	     MenuAddItem(m, mi);

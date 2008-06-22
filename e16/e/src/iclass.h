@@ -109,6 +109,7 @@ EImageBorder       *ImageclassGetPadding(ImageClass * ic);
 ImageState         *ImageclassGetImageState(ImageClass * ic, int state,
 					    int active, int sticky);
 ImageClass         *ImageclassCreateSimple(const char *name, const char *image);
+ImageClass         *ImageclassGetBlack(void);
 EImage             *ImageclassGetImage(ImageClass * ic, int active, int sticky,
 				       int state);
 void                ImageclassApplySimple(ImageClass * ic, Win win,

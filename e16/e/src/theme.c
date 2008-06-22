@@ -373,7 +373,8 @@ ThemeFind(const char *theme)
 	   return ret;
      }
 
-   ret = ThemeGetDefault();
+   if (strcmp(theme, "-"))
+      ret = ThemeGetDefault();
 #if ENABLE_THEME_SANITY_CHECKING
    badtheme = Estrdup(theme);
 #endif
@@ -427,7 +428,7 @@ ThemePathFind(void)
    Conf.theme.name = (theme) ? fullfileof(theme) : NULL;
 
    Efree(Mode.theme.path);
-   Mode.theme.path = theme;
+   Mode.theme.path = (theme) ? theme : Estrdup("-");
 }
 
 static void

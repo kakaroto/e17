@@ -33,6 +33,8 @@
 
 static Ecore_List  *tclass_list = NULL;
 
+static TextClass   *TextclassGetFallback(void);
+
 static char        *
 TextstateFontLookup(const char *name)
 {
@@ -229,10 +231,10 @@ TextclassFind(const char *name, int fallback)
    if (tc || !fallback)
       return tc;
 
-   tc = (TextClass *) ecore_list_find(tclass_list, _TextclassMatchName,
-				      "__FALLBACK_TCLASS");
-
-   return tc;
+#if 0
+   Eprintf("%s: Get fallback (%s)\n", __func__, name);
+#endif
+   return TextclassGetFallback();
 }
 
 int
@@ -369,27 +371,31 @@ TextclassConfigLoad(FILE * fs)
    return err;
 }
 
-/*
- * Textclass Module
- */
-
-static void
-TextclassSighan(int sig, void *prm __UNUSED__)
+static TextClass   *
+TextclassGetFallback(void)
 {
    TextClass          *tc;
 
-   switch (sig)
-     {
-     case ESIGNAL_INIT:
-	/* create a fallback textclass in case no textclass is found */
-	tc = TextclassCreate("__FALLBACK_TCLASS");
-	tc->norm.normal =
-	   TextstateCreate("-*-helvetica-medium-r-*-*-12-*-*-*-*-*-*-*");
-	SET_COLOR(&(tc->norm.normal->fg_col), 0, 0, 0);
-	TextclassPopulate(tc);
-	break;
-     }
+   tc = TextclassFind("__fb_tc", 0);
+   if (tc)
+      return tc;
+
+   /* Create fallback textclass */
+   tc = TextclassCreate("__fb_tc");
+   if (!tc)
+      return tc;
+
+   tc->norm.normal =
+      TextstateCreate("-*-helvetica-medium-r-*-*-12-*-*-*-*-*-*-*");
+   SET_COLOR(&(tc->norm.normal->fg_col), 0, 0, 0);
+   TextclassPopulate(tc);
+
+   return tc;
 }
+
+/*
+ * Textclass Module
+ */
 
 static void
 TextclassIpc(const char *params)
@@ -513,7 +519,7 @@ TextclassIpc(const char *params)
 static const IpcItem TextclassIpcArray[] = {
    {
     TextclassIpc,
-    "textclass", NULL,
+    "textclass", "tc",
     "List textclasses, apply a textclass",
     NULL}
    ,
@@ -526,7 +532,7 @@ static const IpcItem TextclassIpcArray[] = {
 extern const EModule ModTextclass;
 const EModule       ModTextclass = {
    "textclass", "tc",
-   TextclassSighan,
+   NULL,
    {N_IPC_FUNCS, TextclassIpcArray}
    ,
    {0, NULL}

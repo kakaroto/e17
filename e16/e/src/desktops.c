@@ -2204,9 +2204,8 @@ CB_DesktopDisplayRedraw(Dialog * d, int val, void *data)
 
    if (!called)
      {
-	ic = ImageclassFind("SETTINGS_DESKTOP_AREA", 0);
-	if (ic)
-	   ImageclassApply(ic, win, 0, 0, STATE_NORMAL, ST_SOLID);
+	ic = ImageclassFind("SETTINGS_DESKTOP_AREA", 1);
+	ImageclassApply(ic, win, 0, 0, STATE_NORMAL, ST_SOLID);
 	for (i = 0; i < ENLIGHTENMENT_CONF_NUM_DESKTOPS; i++)
 	   wins[i] = 0;
 	called = 1;
@@ -2231,9 +2230,8 @@ CB_DesktopDisplayRedraw(Dialog * d, int val, void *data)
 	       }
 	     else
 	       {
-		  ic = ImageclassFind("SETTINGS_DESKTOP_AREA", 0);
-		  if (ic)
-		     ImageclassApply(ic, wins[i], 0, 0, STATE_NORMAL, ST_SOLID);
+		  ic = ImageclassFind("SETTINGS_DESKTOP_AREA", 1);
+		  ImageclassApply(ic, wins[i], 0, 0, STATE_NORMAL, ST_SOLID);
 	       }
 	  }
      }
@@ -2445,11 +2443,11 @@ CB_AreaDisplayRedraw(Dialog * d __UNUSED__, int val, void *data)
      {
 	ImageClass         *ic;
 
-	ic = ImageclassFind("SETTINGS_AREA_AREA", 0);
+	ic = ImageclassFind("SETTINGS_AREA_AREA", 1);
 	ImageclassApply(ic, win, 0, 0, STATE_NORMAL, ST_SOLID);
 
 	awin = ECreateWindow(win, 0, 0, 18, 14, 0);
-	ic = ImageclassFind("SETTINGS_AREADESK_AREA", 0);
+	ic = ImageclassFind("SETTINGS_AREADESK_AREA", 1);
 	ImageclassApply(ic, awin, 0, 0, STATE_NORMAL, ST_SOLID);
 
 	called = 1;

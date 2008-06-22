@@ -1125,28 +1125,6 @@ ActionclassesGlobalEvent(XEvent * ev)
    return match;
 }
 
-static void
-AclassSetupFallback(void)
-{
-   ActionClass        *ac;
-   Action             *aa;
-
-   /* Create a default fallback actionclass for the fallback border */
-   ac = ActionclassCreate("__FALLBACK_ACTION", 0);
-
-   aa = ActionCreate(EVENT_MOUSE_DOWN, 1, 0, 0, 1, 0, NULL, NULL);
-   ActionclassAddAction(ac, aa);
-   ActionAddTo(aa, "wop * mo ptr");
-
-   aa = ActionCreate(EVENT_MOUSE_DOWN, 1, 0, 0, 2, 0, NULL, NULL);
-   ActionclassAddAction(ac, aa);
-   ActionAddTo(aa, "wop * close");
-
-   aa = ActionCreate(EVENT_MOUSE_DOWN, 1, 0, 0, 3, 0, NULL, NULL);
-   ActionclassAddAction(ac, aa);
-   ActionAddTo(aa, "wop * sz ptr");
-}
-
 /*
  * Actions module
  */
@@ -1157,7 +1135,6 @@ AclassSighan(int sig, void *prm __UNUSED__)
    switch (sig)
      {
      case ESIGNAL_INIT:
-	AclassSetupFallback();
 	AclassConfigLoadConfig("bindings.cfg");
 	AclassConfigLoadUser();
 	break;

@@ -619,8 +619,5 @@ ThemeConfigLoad(void)
    /* Font mappings no longer needed */
    FontConfigUnload();
 
-   /* Loose ends... */
-   BordersSetupFallback();
-
    return 0;
 }

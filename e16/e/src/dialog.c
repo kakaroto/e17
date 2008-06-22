@@ -939,7 +939,7 @@ DialogItemCallCallback(Dialog * d, DItem * di)
 static void
 DialogRealizeItem(Dialog * d, DItem * di)
 {
-   const char         *def = NULL;
+   const char         *iclass, *tclass;
    int                 iw = 0, ih = 0;
    int                 register_win_callback;
    EImage             *im;
@@ -949,43 +949,60 @@ DialogRealizeItem(Dialog * d, DItem * di)
       return;
    di->realized = 1;
 
+   iclass = tclass = NULL;
    if (di->type == DITEM_BUTTON)
      {
-	def = "DIALOG_WIDGET_BUTTON";
+	iclass = "DIALOG_WIDGET_BUTTON";
+	tclass = iclass;
      }
    else if (di->type == DITEM_CHECKBUTTON)
      {
-	def = "DIALOG_WIDGET_CHECK_BUTTON";
+	iclass = "DIALOG_WIDGET_CHECK_BUTTON";
+	tclass = iclass;
      }
    else if (di->type == DITEM_TEXT)
      {
-	def = "DIALOG_WIDGET_TEXT";
+	tclass = "DIALOG_WIDGET_TEXT";
      }
    else if (di->type == DITEM_SEPARATOR)
      {
-	def = "DIALOG_WIDGET_SEPARATOR";
-     }
-   else if (di->type == DITEM_TABLE)
-     {
-	def = "DIALOG_WIDGET_TABLE";
+	iclass = "DIALOG_WIDGET_SEPARATOR";
      }
    else if (di->type == DITEM_RADIOBUTTON)
      {
-	def = "DIALOG_WIDGET_RADIO_BUTTON";
+	iclass = "DIALOG_WIDGET_RADIO_BUTTON";
+	tclass = iclass;
      }
+#if 0
+   else if (di->type == DITEM_SLIDER)
+     {
+	iclass = NULL;
+     }
+#endif
    else if (di->type == DITEM_AREA)
      {
-	def = "DIALOG_WIDGET_AREA";
-     }
-   else
-     {
-	def = "DIALOG_WIDGET_BUTTON";
+	iclass = "DIALOG_WIDGET_AREA";
      }
 
-   if (!di->iclass)
-      di->iclass = ImageclassAlloc(def, 1);
-   if (!di->tclass)
-      di->tclass = TextclassAlloc(def, 1);
+   if (!di->iclass && iclass)
+     {
+	di->iclass = ImageclassAlloc(iclass, 1);
+	if (!di->iclass)
+	  {
+	     di->type = DITEM_NONE;
+	     return;
+	  }
+     }
+
+   if (!di->tclass && tclass)
+     {
+	di->tclass = TextclassAlloc(tclass, 1);
+	if (!di->tclass)
+	  {
+	     di->type = DITEM_NONE;
+	     return;
+	  }
+     }
 
    if (di->type == DITEM_TABLE)
      {
@@ -1713,7 +1730,7 @@ DialogDrawItem(Dialog * d, DItem * di)
 
       draw_text:
 	di->state = state;
-	if (!di->text)
+	if (!di->text || !di->tclass)
 	   break;
 	if (!d->redraw)
 	   EXCopyAreaTiled(d->pmm_bg.pmap, None, WinGetPmap(d->win),

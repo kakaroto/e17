@@ -179,6 +179,9 @@ TextImagePut(EImage * im, Win win, Drawable dst, int x, int y,
 TextState          *
 TextclassGetTextState(TextClass * tclass, int state, int active, int sticky)
 {
+   if (!tclass)
+      return NULL;
+
    if (active)
      {
 	if (!sticky)

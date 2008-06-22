@@ -531,7 +531,7 @@ ContainerLayoutImageWin(Container * ct)
 static void
 ContainerDrawScroll(Container * ct)
 {
-   ImageClass         *ic;
+   ImageClass         *ic, *ic_sbb;
    EImageBorder       *pad;
    int                 arrow_mode = ct->arrow_side;
    int                 bs, bw, bx;
@@ -543,13 +543,13 @@ ContainerDrawScroll(Container * ct)
 	if (ct->h < 2 * ct->arrow_thickness + ct->knob_length)
 	   arrow_mode = 3;	/* No arrows */
 
-	ic = ImageclassFind("ICONBOX_SCROLLBAR_BASE_VERTICAL", 0);
-	pad = ImageclassGetPadding(ic);
+	ic_sbb = ImageclassFind("ICONBOX_SCROLLBAR_BASE_VERTICAL", 1);
+	pad = ImageclassGetPadding(ic_sbb);
 	if (arrow_mode < 3)
 	   bs = ct->h - (ct->arrow_thickness * 2);
 	else
 	   bs = ct->h;
-	if (ic)
+	if (pad)
 	   bs -= pad->top + pad->bottom;
 	bw = (ct->h * bs) / ct->max;
 	if (bs < 1)
@@ -559,7 +559,7 @@ ContainerDrawScroll(Container * ct)
 	if (bw < 1)
 	   bw = 1;
 	bx = ((ct->pos * bs) / ct->max);
-	if (ic)
+	if (pad)
 	   bx += pad->top;
 	if ((ct->scrollbar_hide) && (bw == bs))
 	   goto do_hide_sb;
@@ -686,15 +686,13 @@ ContainerDrawScroll(Container * ct)
 	       }
 	  }
 
-	ic = ImageclassFind("ICONBOX_SCROLLBAR_BASE_VERTICAL", 0);
-	if (ic)
-	   ImageclassApply(ic, ct->scroll_win, 0, 0, STATE_NORMAL, ST_ICONBOX);
+	ImageclassApply(ic_sbb, ct->scroll_win, 0, 0, STATE_NORMAL, ST_ICONBOX);
 
 	EMoveResizeWindow(ct->scrollbar_win,
 			  (ct->scroll_thickness - ct->bar_thickness) / 2, bx,
 			  ct->bar_thickness, bw);
 
-	ic = ImageclassFind("ICONBOX_SCROLLBAR_KNOB_VERTICAL", 0);
+	ic = ImageclassFind("ICONBOX_SCROLLBAR_KNOB_VERTICAL", 1);
 	if (ic)
 	  {
 	     state = STATE_NORMAL;
@@ -728,7 +726,7 @@ ContainerDrawScroll(Container * ct)
 
 	if (arrow_mode < 3)
 	  {
-	     ic = ImageclassFind("ICONBOX_ARROW_UP", 0);
+	     ic = ImageclassFind("ICONBOX_ARROW_UP", 1);
 	     if (ic)
 	       {
 		  state = STATE_NORMAL;
@@ -739,7 +737,7 @@ ContainerDrawScroll(Container * ct)
 		  ImageclassApply(ic, ct->arrow1_win, 0, 0, state, ST_ICONBOX);
 	       }
 
-	     ic = ImageclassFind("ICONBOX_ARROW_DOWN", 0);
+	     ic = ImageclassFind("ICONBOX_ARROW_DOWN", 1);
 	     if (ic)
 	       {
 		  state = STATE_NORMAL;
@@ -756,13 +754,13 @@ ContainerDrawScroll(Container * ct)
 	if (ct->w < 2 * ct->arrow_thickness + ct->knob_length)
 	   arrow_mode = 3;	/* No arrows */
 
-	ic = ImageclassFind("ICONBOX_SCROLLBAR_BASE_HORIZONTAL", 0);
-	pad = ImageclassGetPadding(ic);
+	ic_sbb = ImageclassFind("ICONBOX_SCROLLBAR_BASE_HORIZONTAL", 1);
+	pad = ImageclassGetPadding(ic_sbb);
 	if (arrow_mode < 3)
 	   bs = ct->w - (ct->arrow_thickness * 2);
 	else
 	   bs = ct->w;
-	if (ic)
+	if (pad)
 	   bs -= pad->left + pad->right;
 	bw = (ct->w * bs) / ct->max;
 	if (bs < 1)
@@ -772,7 +770,7 @@ ContainerDrawScroll(Container * ct)
 	if (bw < 1)
 	   bw = 1;
 	bx = ((ct->pos * bs) / ct->max);
-	if (ic)
+	if (pad)
 	   bx += pad->left;
 	if ((ct->scrollbar_hide) && (bw == bs))
 	   goto do_hide_sb;
@@ -902,11 +900,9 @@ ContainerDrawScroll(Container * ct)
 			  (ct->scroll_thickness - ct->bar_thickness) / 2, bw,
 			  ct->bar_thickness);
 
-	ic = ImageclassFind("ICONBOX_SCROLLBAR_BASE_HORIZONTAL", 0);
-	if (ic)
-	   ImageclassApply(ic, ct->scroll_win, 0, 0, STATE_NORMAL, ST_ICONBOX);
+	ImageclassApply(ic_sbb, ct->scroll_win, 0, 0, STATE_NORMAL, ST_ICONBOX);
 
-	ic = ImageclassFind("ICONBOX_SCROLLBAR_KNOB_HORIZONTAL", 0);
+	ic = ImageclassFind("ICONBOX_SCROLLBAR_KNOB_HORIZONTAL", 1);
 	if (ic)
 	  {
 	     state = STATE_NORMAL;
@@ -940,7 +936,7 @@ ContainerDrawScroll(Container * ct)
 
 	if (arrow_mode < 3)
 	  {
-	     ic = ImageclassFind("ICONBOX_ARROW_LEFT", 0);
+	     ic = ImageclassFind("ICONBOX_ARROW_LEFT", 1);
 	     if (ic)
 	       {
 		  state = STATE_NORMAL;
@@ -951,7 +947,7 @@ ContainerDrawScroll(Container * ct)
 		  ImageclassApply(ic, ct->arrow1_win, 0, 0, state, ST_ICONBOX);
 	       }
 
-	     ic = ImageclassFind("ICONBOX_ARROW_RIGHT", 0);
+	     ic = ImageclassFind("ICONBOX_ARROW_RIGHT", 1);
 	     if (ic)
 	       {
 		  state = STATE_NORMAL;
@@ -1297,7 +1293,7 @@ ContainerEventScrollbarWin(Win win __UNUSED__, XEvent * ev, void *prm)
    Container          *ct = (Container *) prm;
    static int          px, py, pos0;
    int                 bs, dp;
-   ImageClass         *ic;
+   ImageClass         *ic_sbb;
    EImageBorder       *pad;
 
    switch (ev->type)
@@ -1333,10 +1329,10 @@ ContainerEventScrollbarWin(Win win __UNUSED__, XEvent * ev, void *prm)
 
 	if (ct->orientation)
 	  {
-	     ic = ImageclassFind("ICONBOX_SCROLLBAR_BASE_VERTICAL", 0);
-	     pad = ImageclassGetPadding(ic);
+	     ic_sbb = ImageclassFind("ICONBOX_SCROLLBAR_BASE_VERTICAL", 1);
+	     pad = ImageclassGetPadding(ic_sbb);
 	     bs = ct->h - (ct->arrow_thickness * 2);
-	     if (ic)
+	     if (pad)
 		bs -= pad->top + pad->bottom;
 	     if (bs < 1)
 		bs = 1;
@@ -1344,10 +1340,10 @@ ContainerEventScrollbarWin(Win win __UNUSED__, XEvent * ev, void *prm)
 	  }
 	else
 	  {
-	     ic = ImageclassFind("ICONBOX_SCROLLBAR_BASE_HORIZONTAL", 0);
-	     pad = ImageclassGetPadding(ic);
+	     ic_sbb = ImageclassFind("ICONBOX_SCROLLBAR_BASE_HORIZONTAL", 1);
+	     pad = ImageclassGetPadding(ic_sbb);
 	     bs = ct->w - (ct->arrow_thickness * 2);
-	     if (ic)
+	     if (pad)
 		bs -= pad->left + pad->right;
 	     if (bs < 1)
 		bs = 1;

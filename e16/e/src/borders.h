@@ -101,6 +101,5 @@ Border             *BorderCreateFiller(int left, int right, int top,
 void                BordersForeach(void (*func) (Border * b, void *data),
 				   void *data);
 Border            **BordersGetList(int *pnum);
-void                BordersSetupFallback(void);
 
 #endif /* _BORDERS_H_ */

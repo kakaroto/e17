@@ -48,6 +48,7 @@ static Ecore_List  *border_list = NULL;
 static void         BorderDestroy(Border * b);
 static void         BorderWinpartHandleEvents(Win win, XEvent * ev, void *prm);
 static void         BorderFrameHandleEvents(Win win, XEvent * ev, void *prm);
+static Border      *BorderGetFallback(void);
 
 static void
 BorderWinpartRealise(EWin * ewin, int i)
@@ -452,7 +453,7 @@ EwinBorderSelect(EWin * ewin)
       b = BorderFind("DEFAULT");
 
    if (!b)
-      b = BorderFind("__FALLBACK_BORDER");
+      b = BorderGetFallback();
 
  done:
    ewin->normal_border = ewin->border = b;
@@ -661,6 +662,8 @@ _BorderMatchName(const void *data, const void *match)
 Border             *
 BorderFind(const char *name)
 {
+   if (!name)
+      return NULL;
    return (Border *) ecore_list_find(border_list, _BorderMatchName, name);
 }
 
@@ -1206,12 +1209,17 @@ BorderCreateFiller(int left, int right, int top, int bottom)
    Border             *b;
 
    b = BorderCreate("__FILLER");
+   if (!b)
+      return b;
+
    b->throwaway = 1;
 
    b->border.left = left;
    b->border.right = right;
    b->border.top = top;
    b->border.bottom = bottom;
+
+   ImageclassGetBlack();	/* Creates the __BLACK ImageClass */
 
    if (top)
       BorderWinpartAdd(b, "__BLACK", NULL, NULL, NULL, 1, FLAG_BUTTON, 0,
@@ -1247,8 +1255,38 @@ BordersGetList(int *pnum)
    return (Border **) ecore_list_items_get(border_list, pnum);
 }
 
-void
-BordersSetupFallback(void)
+static ActionClass *
+BorderGetFallbackAclass(void)
+{
+   ActionClass        *ac;
+   Action             *aa;
+
+   ac = ActionclassFind("__fb_bd_ac");
+   if (ac)
+      return ac;
+
+   /* Create fallback actionclass for the fallback border */
+   ac = ActionclassCreate("__fb_bd_ac", 0);
+   if (!ac)
+      return ac;
+
+   aa = ActionCreate(EVENT_MOUSE_DOWN, 1, 0, 0, 1, 0, NULL, NULL);
+   ActionclassAddAction(ac, aa);
+   ActionAddTo(aa, "wop * mo ptr");
+
+   aa = ActionCreate(EVENT_MOUSE_DOWN, 1, 0, 0, 2, 0, NULL, NULL);
+   ActionclassAddAction(ac, aa);
+   ActionAddTo(aa, "wop * close");
+
+   aa = ActionCreate(EVENT_MOUSE_DOWN, 1, 0, 0, 3, 0, NULL, NULL);
+   ActionclassAddAction(ac, aa);
+   ActionAddTo(aa, "wop * sz ptr");
+
+   return ac;
+}
+
+static Border      *
+BorderGetFallback(void)
 {
    /*
     * This function creates simple internal data members to be used in 
@@ -1257,29 +1295,35 @@ BordersSetupFallback(void)
     * least E won't barf on us then.
     */
    Border             *b;
-   ImageClass         *ic;
    ActionClass        *ac;
 
-   ac = ActionclassFind("__FALLBACK_ACTION");
-   ic = ImageclassFind("__FALLBACK_ICLASS", 0);
+   b = BorderFind("__fb_bd");
+   if (b)
+      return b;
 
-   /* create a fallback border in case no border is found */
-   b = BorderCreate("__FALLBACK_BORDER");
+   ac = BorderGetFallbackAclass();	/* Creates the fallback ac */
+
+   /* Create fallback border */
+   b = BorderCreate("__fb_bd");
+   if (!b)
+      return b;
 
    b->border.left = 8;
    b->border.right = 8;
    b->border.top = 8;
    b->border.bottom = 8;
-   BorderWinpartAdd(b, "__FALLBACK_ICLASS", "__FALLBACK_ACTION", NULL, NULL,
+   BorderWinpartAdd(b, "__fb_ic", "__fb_bd_ac", NULL, NULL,
 		    1, FLAG_BUTTON, 0, 8, 99999, 8, 99999, -1, 0, 0, 0, 0,
 		    -1, 1024, -1, 0, 7, 1);
-   BorderWinpartAdd(b, "__FALLBACK_ICLASS", "__FALLBACK_ACTION", NULL, NULL,
+   BorderWinpartAdd(b, "__fb_ic", "__fb_bd_ac", NULL, NULL,
 		    1, FLAG_BUTTON, 0, 8, 99999, 8, 99999, -1, 0, 0, 1024,
 		    -8, -1, 1024, -1, 1024, -1, 1);
-   BorderWinpartAdd(b, "__FALLBACK_ICLASS", "__FALLBACK_ACTION", NULL, NULL,
+   BorderWinpartAdd(b, "__fb_ic", "__fb_bd_ac", NULL, NULL,
 		    1, FLAG_BUTTON, 0, 8, 99999, 8, 99999, -1, 0, 0, 0, 8,
 		    -1, 0, 7, 1024, -9, 1);
-   BorderWinpartAdd(b, "__FALLBACK_ICLASS", "__FALLBACK_ACTION", NULL, NULL,
+   BorderWinpartAdd(b, "__fb_ic", "__fb_bd_ac", NULL, NULL,
 		    1, FLAG_BUTTON, 0, 8, 99999, 8, 99999, -1, 1024, -8, 0,
 		    8, -1, 1024, -1, 1024, -9, 1);
+
+   return b;
 }
