@@ -788,7 +788,27 @@ AddToFamily(EWin * ewin, Window xwin)
 	goto done;
      }
 
-   EwinResize(ewin, ewin->client.w, ewin->client.h);
+   if (!ewin->state.identified &&
+       (ewin->state.maximized_horz || ewin->state.maximized_vert))
+     {
+	int                 hor, ver;
+
+	/* New client requested maximisation */
+	hor = ewin->state.maximized_horz;
+	ver = ewin->state.maximized_vert;
+	ewin->state.maximized_horz = ewin->state.maximized_vert = 0;
+	MaxSizeHV(ewin, "absolute", hor, ver);
+	/* Set old state to current maximized one */
+	ewin->save_max.x = EoGetX(ewin);
+	ewin->save_max.y = EoGetY(ewin);
+	ewin->save_max.w = ewin->client.w;
+	ewin->save_max.h = ewin->client.h;
+	ewin->state.placed = 0;
+     }
+   else
+     {
+	EwinResize(ewin, ewin->client.w, ewin->client.h);
+     }
 
    doslide = manplace = 0;
    if (Mode.place.enable_features > 0)
