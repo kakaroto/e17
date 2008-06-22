@@ -1437,6 +1437,7 @@ SnapshotEwinApply(EWin * ewin)
      {
 	ewin->client.w = sn->w;
 	ewin->client.h = sn->h;
+	ewin->state.maximized_horz = ewin->state.maximized_vert = 0;
      }
 
    if (use_flags & SNAP_USE_POS)

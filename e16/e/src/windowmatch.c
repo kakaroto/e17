@@ -700,6 +700,7 @@ WindowMatchEwinOpsAction(EWin * ewin, int op, const char *args)
 	   break;
 	ewin->client.w = a;
 	ewin->client.h = b;
+	ewin->state.maximized_horz = ewin->state.maximized_vert = 0;
 	break;
 
      case EWIN_OP_FULLSCREEN:
