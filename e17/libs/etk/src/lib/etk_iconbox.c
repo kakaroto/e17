@@ -1405,11 +1405,20 @@ static void _etk_iconbox_icon_draw(Etk_Iconbox_Icon *icon, Etk_Iconbox_Icon_Obje
       {
          //if (!(icon_object->image = etk_cache_edje_object_find(evas, icon->filename, icon->edje_group)))
          {
-            icon_object->image = edje_object_add(evas);
-            edje_object_file_set(icon_object->image, icon->filename, icon->edje_group);
+            if (edje_file_group_exists(icon->filename, icon->edje_group))
+            {
+               icon_object->image = edje_object_add(evas);
+               edje_object_file_set(icon_object->image, icon->filename, icon->edje_group);
+               icon_object->use_edje = ETK_TRUE;
+               edje_object_size_min_get(icon_object->image, &icon_w, &icon_h);
+            }
+            else
+            {
+               icon_object->image = evas_object_image_add(evas);
+               evas_object_image_file_set(icon_object->image, icon->filename, icon->edje_group);
+               icon_object->use_edje = ETK_FALSE;
+            }
          }
-         edje_object_size_min_get(icon_object->image, &icon_w, &icon_h);
-         icon_object->use_edje = ETK_TRUE;
       }
       if (icon_w <= 0 || icon_h <= 0)
       {
@@ -1451,7 +1460,7 @@ static void _etk_iconbox_icon_draw(Etk_Iconbox_Icon *icon, Etk_Iconbox_Icon_Obje
 
       evas_object_move(icon_object->image, icon_geometry.x, icon_geometry.y);
       evas_object_resize(icon_object->image, icon_geometry.w, icon_geometry.h);
-      if (!icon->edje_group)
+      if (!icon_object->use_edje)
          evas_object_image_fill_set(icon_object->image, 0, 0, icon_geometry.w, icon_geometry.h);
       evas_object_show(icon_object->image);
    }
