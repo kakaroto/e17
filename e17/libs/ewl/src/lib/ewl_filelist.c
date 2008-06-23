@@ -24,7 +24,9 @@
 static void ewl_filelist_setup(Ewl_Filelist *fl);
 static void ewl_filelist_view_setup(Ewl_Filelist *fl);
 static void ewl_filelist_cb_clicked(Ewl_Widget *w, void *ev,
-                                                void *data __UNUSED__);
+                                                void *data);
+void ewl_filelist_monitor_event(void *data, Ecore_File_Monitor *em,
+                        Ecore_File_Event event, const char *path);
 
 /**
  * @return Returns a new Ewl_Filelist widget or NULL on failure
@@ -268,24 +270,50 @@ ewl_filelist_directory_set(Ewl_Filelist *fl, const char *dir)
         }
         else if ((!fl->directory) || (strcmp(dir, fl->directory)))
         {
-                Ewl_Filelist_Directory *data;
                 Ewl_Event_Action_Response ev_data;
 
                 IF_FREE(fl->directory);
                 fl->directory = strdup(dir);
 
-                data = ewl_mvc_data_get(EWL_MVC(fl->controller));
-                if (data) ewl_filelist_model_data_unref(data);
-                
-                data = ewl_filelist_model_directory_new(fl->directory,
-                                                 fl->show_dot, TRUE, fl->filter);
-                ewl_mvc_data_set(EWL_MVC(fl->controller), data);
-                ewl_mvc_dirty_set(EWL_MVC(fl->controller), TRUE);
+                if (fl->fm)
+                        ecore_file_monitor_del(fl->fm);
+                fl->fm = ecore_file_monitor_add(fl->directory,
+                                ewl_filelist_monitor_event, fl);
 
+                ewl_filelist_refresh(fl);
                 ev_data.response = EWL_FILELIST_EVENT_DIR_CHANGE;
                 ewl_callback_call_with_event_data(EWL_WIDGET(fl),
                                 EWL_CALLBACK_VALUE_CHANGED, &ev_data);
         }
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param fl: The filelist to work with
+ * @return Returns no value
+ * @brief Refreshes the filelist when the directory shown is know to have
+ * changed
+ */
+void
+ewl_filelist_refresh(Ewl_Filelist *fl)
+{
+        Ewl_Filelist_Directory *data;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(fl);
+        DCHECK_TYPE(fl, EWL_FILELIST_TYPE);
+
+        if (!fl->directory)
+                DRETURN(DLEVEL_STABLE);
+
+        data = ewl_mvc_data_get(EWL_MVC(fl->controller));
+        if (data) ewl_filelist_model_data_unref(data);
+
+        data = ewl_filelist_model_directory_new(fl->directory,
+                                        fl->show_dot, TRUE, fl->filter);
+        ewl_mvc_data_set(EWL_MVC(fl->controller), data);
+        ewl_mvc_dirty_set(EWL_MVC(fl->controller), TRUE);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1273,5 +1301,14 @@ ewl_filelist_cb_clicked(Ewl_Widget *w, void *ev,
                 ewl_filelist_selected_files_change_notify(fl);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void ewl_filelist_monitor_event(void *data, Ecore_File_Monitor *em __UNUSED__,
+                                        Ecore_File_Event event __UNUSED__,
+                                        const char *path __UNUSED__)
+{
+        Ewl_Filelist *fl = data;
+
+        ewl_filelist_refresh(fl);
 }
 
