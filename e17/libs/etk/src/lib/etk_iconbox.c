@@ -600,6 +600,48 @@ Etk_Iconbox_Icon *etk_iconbox_icon_get_at_xy(Etk_Iconbox *iconbox, int x, int y,
 }
 
 /**
+ * @brief Get the first icon with the given label. If more than one icon has the
+ * same label only the first is returned.
+ * @param iconbox an iconbox
+ * @param label the label to search for
+ * @return Return the icon with the given label, or NULL if the string is not found.
+ */
+Etk_Iconbox_Icon *etk_iconbox_icon_get_by_label(Etk_Iconbox *iconbox, const char *label)
+{
+   Etk_Iconbox_Icon *icon;
+
+   if (!iconbox || !label)
+      return NULL;
+
+   for (icon = iconbox->first_icon; icon; icon = icon->next)
+      if (!strcmp(icon->label, label))
+         return icon;
+
+   return NULL;
+}
+
+/**
+ * @brief Get the first icon with the given data attached. If more than one icon has the
+ * same data only the first is returned.
+ * @param iconbox an iconbox
+ * @param data the data to search for
+ * @return Return the icon with the given data attached, or NULL if the data is not found.
+ */
+Etk_Iconbox_Icon *etk_iconbox_icon_get_by_data(Etk_Iconbox *iconbox, void *data)
+{
+   Etk_Iconbox_Icon *icon;
+
+   if (!iconbox || !data)
+      return NULL;
+
+   for (icon = iconbox->first_icon; icon; icon = icon->next)
+      if (icon->data == data)
+         return icon;
+
+   return NULL;
+}
+
+/**
  * @brief Sets the file path of the icon's image
  * @param icon an icon
  * @param filename the filename of the icon's image
