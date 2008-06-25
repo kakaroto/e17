@@ -7,98 +7,6 @@
 static HWND window;
 
 
-extern "C" {
-
-static int
-_directdraw_init (HWND                 window,
-                  int                  width,
-                  int                  height,
-                  LPDIRECTDRAW        *object,
-                  LPDIRECTDRAWSURFACE *surface_primary,
-                  LPDIRECTDRAWSURFACE *surface_back,
-                  LPDIRECTDRAWCLIPPER *clipper,
-                  int                 *depth)
-{
-   DDSURFACEDESC  surface_desc;
-   DDPIXELFORMAT  pixel_format;
-   LPDIRECTDRAW   o;
-   DDSURFACEDESC *sd;
-   HRESULT        res;
-
-   res = DirectDrawCreate (NULL, &o, NULL);
-   if (FAILED(res))
-     return 0;
-
-   res = o->SetCooperativeLevel (window, DDSCL_NORMAL);
-   if (FAILED(res))
-     {
-        o->Release ();
-        return 0;
-     }
-
-   res = o->CreateClipper (0, clipper, NULL);
-   if (FAILED(res))
-     {
-        o->Release ();
-        return 0;
-     }
-
-   res = (*clipper)->SetHWnd (0, window);
-   if (FAILED(res))
-     {
-        (*clipper)->Release ();
-        o->Release ();
-        return 0;
-     }
-
-   memset(&surface_desc, 0, sizeof(surface_desc));
-   surface_desc.dwSize = sizeof(surface_desc);
-   surface_desc.dwFlags = DDSD_CAPS;
-   surface_desc.ddsCaps.dwCaps = DDSCAPS_PRIMARYSURFACE;
-
-   res = o->CreateSurface (&surface_desc, surface_primary, NULL);
-   if (FAILED(res))
-     {
-        (*clipper)->Release ();
-        o->Release ();
-        return 0;
-     }
-
-   res = (*surface_primary)->SetClipper (*clipper);
-   if (FAILED(res))
-     {
-        (*surface_primary)->Release ();
-        (*clipper)->Release ();
-        o->Release ();
-        return 0;
-     }
-
-   memset (&surface_desc, 0, sizeof(surface_desc));
-   surface_desc.dwSize = sizeof(surface_desc);
-   surface_desc.dwFlags = DDSD_CAPS | DDSD_HEIGHT | DDSD_WIDTH;
-   surface_desc.ddsCaps.dwCaps = DDSCAPS_OFFSCREENPLAIN;
-   surface_desc.dwWidth = width;
-   surface_desc.dwHeight = height;
-
-   res = o->CreateSurface (&surface_desc, surface_back, NULL);
-   if (FAILED(res))
-     {
-        (*surface_primary)->Release ();
-        (*clipper)->Release ();
-        o->Release ();
-        return 0;
-     }
-
-   ZeroMemory(&pixel_format, sizeof(pixel_format));
-   pixel_format.dwSize = sizeof(pixel_format);
-   (*surface_primary)->GetPixelFormat(&pixel_format);
-
-   *object = o;
-   *depth = pixel_format.dwRGBBitCount;
-
-   return 1;
-}
-
 static LRESULT CALLBACK
 MainWndProc(HWND   hwnd,
             UINT   uMsg,
@@ -262,11 +170,8 @@ engine_software_ddraw_args(int argc, char **argv)
 {
    WNDCLASS                         wc;
    RECT                             rect;
-   HINSTANCE                        hinstance;
-   LPDIRECTDRAW                     object;
-   LPDIRECTDRAWSURFACE              surface_primary;
-   LPDIRECTDRAWSURFACE              surface_back;
-   LPDIRECTDRAWCLIPPER              clipper;
+   HINSTANCE                        instance;
+   HDC                              dc;
    Evas_Engine_Info_Software_DDraw *einfo;
    DWORD                            style;
    DWORD                            exstyle;
@@ -284,20 +189,22 @@ engine_software_ddraw_args(int argc, char **argv)
      }
    if (!ok) return 0;
 
-   hinstance = GetModuleHandle(0);
+   instance = GetModuleHandle(0);
+   if (!instance) return 0;
 
    wc.style = CS_HREDRAW | CS_VREDRAW;
    wc.lpfnWndProc = MainWndProc;
    wc.cbClsExtra = 0;
    wc.cbWndExtra = 0;
-   wc.hInstance = hinstance;
+   wc.hInstance = instance;
    wc.hIcon = LoadIcon (NULL, IDI_APPLICATION);
    wc.hCursor = LoadCursor (NULL, IDC_ARROW);
    wc.hbrBackground = GetSysColorBrush(COLOR_BTNFACE);
    wc.lpszMenuName =  NULL;
    wc.lpszClassName = "Evas_Software_DDraw_Test";
 
-   if(!RegisterClass(&wc)) return EXIT_FAILURE;
+   if(!RegisterClass(&wc))
+     goto free_library;
 
    style = WS_OVERLAPPEDWINDOW | WS_SIZEBOX;
    exstyle = 0;
@@ -314,38 +221,44 @@ engine_software_ddraw_args(int argc, char **argv)
                            style,
                            CW_USEDEFAULT, CW_USEDEFAULT,
                            rect.right - rect.left, rect.bottom - rect.top,
-                           NULL, NULL, hinstance, NULL);
-   if (!window) return EXIT_FAILURE;
+                           NULL, NULL, instance, NULL);
+   if (!window)
+     goto unregister_class;
 
-   if (!_directdraw_init(window, win_w, win_h,
-                         &object,
-                         &surface_primary,
-                         &surface_back,
-                         &clipper,
-                         &depth))
-     return EXIT_FAILURE;
+   dc = GetDC(NULL);
+   if (!dc)
+     goto destroy_window;
+
+   depth = GetDeviceCaps(dc, BITSPIXEL);
+   ReleaseDC(NULL, dc);
 
    evas_output_method_set(evas, evas_render_method_lookup("software_ddraw"));
    einfo = (Evas_Engine_Info_Software_DDraw *)evas_engine_info_get(evas);
    if (!einfo)
      {
-       fprintf(stderr, "Evas does not support the Software DirectDraw Engine\n");
-        return 0;
+        fprintf(stderr, "Evas does not support the Software DirectDraw Engine\n");
+        goto destroy_window;
      }
 
    einfo->info.window = window;
-   einfo->info.object = object;
-   einfo->info.surface_primary = surface_primary;
-   einfo->info.surface_back = surface_back;
    einfo->info.depth = depth;
    einfo->info.rotation = 0;
-   evas_engine_info_set(evas, (Evas_Engine_Info *) einfo);
+   evas_engine_info_set(evas, (Evas_Engine_Info *)einfo);
 
    /* the second parameter is ignored, as it's the first call of ShowWindow */
    ShowWindow(window, SW_SHOWDEFAULT);
    UpdateWindow(window);
 
    return 1;
+
+ destroy_window:
+   DestroyWindow(window);
+ unregister_class:
+   UnregisterClass("Evas_Software_DDraw_Test", instance);
+ free_library:
+   FreeLibrary(instance);
+
+   return 0;
 }
 
 void
@@ -363,7 +276,4 @@ engine_software_ddraw_loop(void)
    DispatchMessage (&msg);
 
    goto again;
-}
-
-
 }

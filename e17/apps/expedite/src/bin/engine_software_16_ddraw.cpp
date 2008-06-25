@@ -7,8 +7,6 @@
 static HWND window;
 
 
-extern "C" {
-
 static int
 _directdraw_init (HWND                 window,
                   int                  width,
