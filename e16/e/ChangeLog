@@ -4768,3 +4768,21 @@ Disable broken set area window match operation.
 Enable fading/shadow when desired (in stead of disabling when not).
 Enable not using ARGB frame for ARGB clients (selected by window match).
 
+
+-------------------------------------------------------------------------------
+
+Wed Jun 25 20:23:14 CEST 2008
+(Kim)
+
+--- 0.16.8.14 0.03 ---          
+Set anti-alias when scaling tile.               
+Add some configure option comments.             
+Theme element fallback cleanups 
+- don't create fallback classes before they are needed.
+- use of fallbacks was missing a number of places.
+- setting theme to "-" will run entirely on fallbacks.
+Fix rendering of imageclasses not based on images.
+Remove dialog slider border window (not used in any theme).
+Only one maximisation function. 
+Correctly place/size apps requesting _NET_WM_STATE_MAXIMIZED_...
+
