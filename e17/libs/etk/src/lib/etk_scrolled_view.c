@@ -568,7 +568,7 @@ static void _etk_scrolled_view_size_allocate(Etk_Widget *widget, Etk_Geometry ge
 }
 
 /* Check if reaching the boundary */
-static inline double _etk_scrolled_view_bounce_check (Etk_Range * range, double delta,double v) 
+static inline double _etk_scrolled_view_bounce_check(Etk_Range * range, double delta,double v) 
 {
    double pos = (range->value + delta);
    if (pos <= range->lower) 
@@ -601,8 +601,8 @@ static int _etk_scrolled_view_motive_bounce(void *data)
 
    // Using trapezoid method to calculate the distance. 
    delta_time = ecore_time_get() - drag->timestamp;
-   delta_V = delta_time * (drag->damping_magic + abs(drag->Vx)+ abs(drag->Vy))/2;
-   delta_time = delta_time < 0.01f ? 0.01f: delta_time;
+   delta_V = delta_time * (drag->damping_magic + abs(drag->Vx)+ abs(drag->Vy)) / 2;
+   delta_time = delta_time < 0.01 ? 0.01 : delta_time;
 
    if (drag->Vx < delta_V && drag->Vx > -delta_V) 
    {
@@ -716,9 +716,9 @@ static Etk_Bool _etk_scrolled_view_mouse_down(Etk_Object *object, Etk_Event_Mous
       hscrollbar_range = ETK_RANGE(scrolled_view->hscrollbar);
       drag->mouse_down = ETK_TRUE;
       drag->timestamp = ecore_time_get(); 
-      drag->old_timestamp = 0.0f;
-      drag->Vx=0;
-      drag->Vy=0;
+      drag->old_timestamp = 0.0;
+      drag->Vx = 0;
+      drag->Vy = 0;
       drag->position = event->widget;
       drag->bar_position.x = hscrollbar_range->value;
       drag->bar_position.y = vscrollbar_range->value;

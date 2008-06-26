@@ -3524,7 +3524,7 @@ static void _etk_widget_content_object_resize_cb(Evas_Object *obj, Evas_Coord w,
    widget->inner_geometry.w = w;
    widget->inner_geometry.h = h;
 
-   evas_object_geometry_get(obj, &prev_w, &prev_h, NULL, NULL);
+   evas_object_geometry_get(obj, NULL, NULL, &prev_w, &prev_h);
    if ((prev_w != w || prev_h != h || widget->need_redraw) && widget->size_allocate)
       widget->size_allocate(widget, widget->inner_geometry);
 }
