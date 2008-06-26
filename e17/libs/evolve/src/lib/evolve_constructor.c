@@ -31,7 +31,6 @@ constructor(combobox);
 constructor(dialog);
 constructor(entry);
 constructor(filechooser_widget);
-constructor(fixed);
 constructor(frame, "frame");
 constructor(iconbox);
 constructor(image);
@@ -77,7 +76,6 @@ constructor_evolve(combobox);
 constructor_evolve(dialog);
 constructor_evolve(entry);
 constructor_evolve(filechooser_widget);
-constructor_evolve(fixed);
 constructor_evolve(frame, "frame");
 constructor_evolve(iconbox);
 constructor_evolve(image);
@@ -213,15 +211,6 @@ Evolve_Widget *evolve_gui_entry_new()
 }
 
 /* [TODO] [2] evolve_gui_filechooser_widget_new */
-
-/* [TODO] [2] evolve_gui_fixed_new: add some sort of child to it? */
-Evolve_Widget *evolve_gui_fixed_new()
-{
-   Evolve_Widget *widget;
-   
-   widget = evolve_fixed_new();
-   return widget;
-}
 
 Evolve_Widget *evolve_gui_frame_new()
 {

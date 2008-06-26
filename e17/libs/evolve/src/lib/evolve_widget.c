@@ -107,7 +107,6 @@ void evolve_widget_types_populate()
    WIDGET_TYPE_ADD(embed, Etk_Embed, ETK_EMBED_TYPE);
    WIDGET_TYPE_ADD(entry, Etk_Entry, ETK_ENTRY_TYPE);
    WIDGET_TYPE_ADD(filechooser_widget, Etk_Filechooser_Widget, ETK_FILECHOOSER_WIDGET_TYPE);
-   WIDGET_TYPE_ADD(fixed, Etk_Fixed, ETK_FIXED_TYPE);
    WIDGET_TYPE_ADD(frame, Etk_Frame, ETK_FRAME_TYPE);   
    WIDGET_TYPE_ADD(iconbox, Etk_Iconbox, ETK_ICONBOX_TYPE);
    //WIDGET_TYPE_ADD(iconbox_grid, Etk_Iconbox_Grid, ETK_ICONBOX_GRID_TYPE);
@@ -526,13 +525,6 @@ void evolve_widget_reparent(Evolve_Widget *child, Evolve_Widget *parent)
 	     etk_paned_child2_set(ETK_PANED(parent->widget), child->widget,
 	      evolve_widget_packing_property_int_find(child, "expand", 1));	     
 	  }
-     }
-   /* fixed packing */
-   else if (!strcmp(parent->type, "fixed"))
-     {
-	etk_fixed_put(ETK_FIXED(parent->widget), child->widget,
-	 evolve_widget_packing_property_int_find(child, "x", 0),
-	 evolve_widget_packing_property_int_find(child, "y", 0));
      }
    /* notebook */
    else if (!strcmp(parent->type, "notebook"))
