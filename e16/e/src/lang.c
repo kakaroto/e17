@@ -60,17 +60,26 @@ Eiconv(iconv_t icd, const char *txt, size_t len)
    pi = (char *)txt;
    po = buf;
    ni = (len > 0) ? len : strlen(txt);
-   if (!icd)
-     {
-	Eprintf("*** WARNING - Missing conversion\n");
-	return Estrndup(txt, ni);
-     }
+   if (icd == BAD_CD)
+      return Estrndup(txt, ni);
    no = sizeof(buf);
    err = iconv(icd, &pi, &ni, &po, &no);
 
    po = Estrndup(buf, sizeof(buf) - no);
 
    return po;
+}
+
+static              iconv_t
+EiconvOpen(const char *to, const char *from)
+{
+   iconv_t             icd;
+
+   icd = iconv_open(to, from);
+   if (icd == BAD_CD)
+      Eprintf("*** WARNING - Missing conversion %s->%s\n", from, to);
+
+   return icd;
 }
 
 #endif
@@ -167,11 +176,11 @@ EwcOpen(int utf8)
       enc = nl_langinfo(CODESET);
 
 #if SIZEOF_WCHAR_T == 4
-   iconv_cd_str2wcs = iconv_open("UCS-4", enc);
-   iconv_cd_wcs2str = iconv_open(enc, "UCS-4");
+   iconv_cd_str2wcs = EiconvOpen("UCS-4", enc);
+   iconv_cd_wcs2str = EiconvOpen(enc, "UCS-4");
 #else
-   iconv_cd_str2wcs = iconv_open("WCHAR_T", enc);
-   iconv_cd_wcs2str = iconv_open(enc, "WCHAR_T");
+   iconv_cd_str2wcs = EiconvOpen("WCHAR_T", enc);
+   iconv_cd_wcs2str = EiconvOpen(enc, "WCHAR_T");
 #endif
 
    if (iconv_cd_str2wcs != BAD_CD && iconv_cd_wcs2str != BAD_CD)
@@ -385,15 +394,15 @@ LangInit(void)
 #if HAVE_ICONV
    if (Mode.locale.utf8_int)
      {
-	iconv_cd_loc2int = iconv_open("UTF-8", enc_loc);
-	iconv_cd_int2loc = iconv_open(enc_loc, "UTF-8");
+	iconv_cd_loc2int = EiconvOpen("UTF-8", enc_loc);
+	iconv_cd_int2loc = EiconvOpen(enc_loc, "UTF-8");
 	iconv_cd_utf82int = iconv_cd_int2utf8 = BAD_CD;
      }
    else
      {
 	iconv_cd_loc2int = iconv_cd_int2loc = BAD_CD;
-	iconv_cd_utf82int = iconv_open(enc_loc, "UTF-8");
-	iconv_cd_int2utf8 = iconv_open("UTF-8", enc_loc);
+	iconv_cd_utf82int = EiconvOpen(enc_loc, "UTF-8");
+	iconv_cd_int2utf8 = EiconvOpen("UTF-8", enc_loc);
      }
 #endif
 }
