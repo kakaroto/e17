@@ -392,15 +392,15 @@ LangInit(void)
       Mode.locale.utf8_int = 1;
 
 #if HAVE_ICONV
+   if (Mode.locale.utf8_int && Mode.locale.utf8_loc)
+      return;
    if (Mode.locale.utf8_int)
      {
 	iconv_cd_loc2int = EiconvOpen("UTF-8", enc_loc);
 	iconv_cd_int2loc = EiconvOpen(enc_loc, "UTF-8");
-	iconv_cd_utf82int = iconv_cd_int2utf8 = BAD_CD;
      }
    else
      {
-	iconv_cd_loc2int = iconv_cd_int2loc = BAD_CD;
 	iconv_cd_utf82int = EiconvOpen(enc_loc, "UTF-8");
 	iconv_cd_int2utf8 = EiconvOpen("UTF-8", enc_loc);
      }
