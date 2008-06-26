@@ -92,6 +92,8 @@ _ex_tab_new(Exhibit *e, char *dir)
       
    tab->scrolled_view = etk_scrolled_view_new();
    etk_scrolled_view_policy_set(ETK_SCROLLED_VIEW(tab->scrolled_view), ETK_POLICY_HIDE, ETK_POLICY_HIDE);
+   etk_scrolled_view_dragable_set(ETK_SCROLLED_VIEW(tab->scrolled_view), ETK_TRUE);
+   etk_scrolled_view_drag_bouncy_set((ETK_SCROLLED_VIEW(tab->scrolled_view)), ETK_FALSE);
    etk_scrolled_view_add_with_viewport(ETK_SCROLLED_VIEW(tab->scrolled_view), tab->alignment);
    etk_widget_has_event_object_set(tab->scrolled_view, ETK_TRUE);
    etk_signal_connect("mouse-wheel", ETK_OBJECT(tab->scrolled_view), ETK_CALLBACK(_ex_image_mouse_wheel), e);
