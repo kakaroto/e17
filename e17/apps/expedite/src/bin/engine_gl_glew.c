@@ -8,46 +8,6 @@
 
 static HWND window;
 
-static int
-_opengl_init (HWND   w,
-              int    width,
-              int    height,
-              HDC   *dc,
-              int   *depth)
-{
-   PIXELFORMATDESCRIPTOR pfd;
-   int                   format;
-
-   *dc = GetDC (w);
-   if (!*dc)
-    goto no_dc;
-
-  ZeroMemory (&pfd, sizeof (pfd));
-  pfd.nSize = sizeof (pfd);
-  pfd.nVersion = 1;
-  pfd.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
-  pfd.iPixelType = PFD_TYPE_RGBA;
-  pfd.cColorBits = 24;
-  pfd.cDepthBits = 32;
-  pfd.iLayerType = PFD_MAIN_PLANE;
-
-  format = ChoosePixelFormat (*dc, &pfd);
-  if (!format)
-    goto no_format;
-
-  SetPixelFormat (*dc, format, &pfd);
-
-  *depth = 32;
-
-  return 1;
-
- no_format:
-  ReleaseDC (w, *dc);
- no_dc:
-
-  return 0;
-}
-
 static LRESULT CALLBACK
 MainWndProc(HWND   hwnd,
             UINT   uMsg,
@@ -258,20 +218,6 @@ engine_gl_glew_args(int argc, char **argv)
                            NULL, NULL, hinstance, NULL);
    if (!window) return 0;
 
-   if (!_opengl_init(window, win_w, win_h,
-                     &dc,
-                     &depth))
-     return 0;
-
-   if (GLEW_VERSION_2_0)
-     {
-       printf ("pas 2.0\n");
-       return 0;
-     }
-   else {
-     printf ("2.0 !!\n");
-   }
-
    ShowWindow(window, SW_SHOWDEFAULT);
    UpdateWindow(window);
 
@@ -284,7 +230,6 @@ engine_gl_glew_args(int argc, char **argv)
      }
 
    einfo->info.window = window;
-   einfo->info.dc = dc;
    einfo->info.depth = depth;
    evas_engine_info_set(evas, (Evas_Engine_Info *) einfo);
 

@@ -189,7 +189,7 @@ engine_software_ddraw_args(int argc, char **argv)
      }
    if (!ok) return 0;
 
-   instance = GetModuleHandle(0);
+   instance = GetModuleHandle(NULL);
    if (!instance) return 0;
 
    wc.style = CS_HREDRAW | CS_VREDRAW;
@@ -197,8 +197,8 @@ engine_software_ddraw_args(int argc, char **argv)
    wc.cbClsExtra = 0;
    wc.cbWndExtra = 0;
    wc.hInstance = instance;
-   wc.hIcon = LoadIcon (NULL, IDI_APPLICATION);
-   wc.hCursor = LoadCursor (NULL, IDC_ARROW);
+   wc.hIcon = LoadIcon(NULL, IDI_APPLICATION);
+   wc.hCursor = LoadCursor(NULL, IDC_ARROW);
    wc.hbrBackground = GetSysColorBrush(COLOR_BTNFACE);
    wc.lpszMenuName =  NULL;
    wc.lpszClassName = "Evas_Software_DDraw_Test";

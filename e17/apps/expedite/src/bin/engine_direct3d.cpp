@@ -7,101 +7,6 @@
 static HWND window;
 
 
-extern "C" {
-
-static int
-_direct3d_init (HWND                window,
-                int                 width,
-                int                 height,
-                LPDIRECT3D9        *object,
-                LPDIRECT3DDEVICE9  *device,
-                LPD3DXSPRITE       *sprite,
-                LPDIRECT3DTEXTURE9 *texture,
-                int                *depth)
-{
-  D3DPRESENT_PARAMETERS pp;
-  D3DDISPLAYMODE        dm;
-  D3DSURFACE_DESC       sd;
-  D3DCAPS9              caps;
-  DWORD                 flag;
-
-  *object = Direct3DCreate9 (D3D_SDK_VERSION);
-  if (!*object)
-    goto no_object;
-
-  if (FAILED ((*object)->GetAdapterDisplayMode (D3DADAPTER_DEFAULT, &dm)))
-    goto no_device;
-
-  if (FAILED ((*object)->GetDeviceCaps (D3DADAPTER_DEFAULT,
-                                        D3DDEVTYPE_HAL,
-                                        &caps)))
-    goto no_device;
-
-  flag = (caps.VertexProcessingCaps != 0)
-    ? D3DCREATE_HARDWARE_VERTEXPROCESSING
-    : D3DCREATE_SOFTWARE_VERTEXPROCESSING;
-
-  ZeroMemory(&pp, sizeof(pp));
-  pp.BackBufferWidth = width;
-  pp.BackBufferHeight = height;
-  pp.BackBufferFormat = dm.Format;
-  pp.BackBufferCount = 1;
-  pp.MultiSampleType = D3DMULTISAMPLE_NONE;
-  pp.MultiSampleQuality = 0;
-  pp.SwapEffect = D3DSWAPEFFECT_FLIP;
-  pp.hDeviceWindow = window;
-  pp.Windowed  = TRUE;
-  pp.EnableAutoDepthStencil = FALSE;
-  pp.FullScreen_RefreshRateInHz = 0;
-  pp.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
-
-  if (FAILED((*object)->CreateDevice (D3DADAPTER_DEFAULT,
-                                      D3DDEVTYPE_HAL,
-                                      window,
-                                      flag,
-                                      &pp,
-                                      device)))
-    goto no_device;
-
-  if (FAILED (D3DXCreateSprite (*device, sprite)))
-    goto no_sprite;
-
-  if (FAILED ((*device)->CreateTexture (width, height, 1,
-                                        D3DUSAGE_DYNAMIC,
-                                        dm.Format,
-                                        D3DPOOL_DEFAULT,
-                                        texture, NULL)))
-    goto no_texture;
-
-  if (FAILED ((*texture)->GetLevelDesc (0, &sd)))
-    goto no_level_desc;
-
-  switch (sd.Format) {
-  case D3DFMT_A8R8G8B8:
-  case D3DFMT_X8R8G8B8:
-    *depth = 32;
-    break;
-  case D3DFMT_R5G6B5:
-    *depth = 16;
-    break;
-  default:
-    goto no_level_desc;
-  }
-
-  return 1;
-
- no_level_desc:
-  (*texture)->Release ();
- no_texture:
-  (*sprite)->Release ();
- no_sprite:
-  (*device)->Release ();
- no_device:
-  (*object)->Release ();
- no_object:
-  return 0;
-}
-
 static LRESULT CALLBACK
 MainWndProc(HWND   hwnd,
             UINT   uMsg,
@@ -123,11 +28,11 @@ MainWndProc(HWND   hwnd,
        HDC hdc;
 
        hdc = BeginPaint (window, &ps);
-       EndPaint(window, &ps);
        evas_damage_rectangle_add(evas,
                                  ps.rcPaint.left, ps.rcPaint.top,
                                  ps.rcPaint.right - ps.rcPaint.left,
                                  ps.rcPaint.bottom - ps.rcPaint.top);
+       EndPaint(window, &ps);
        return 0;
      }
      case WM_SIZING:
@@ -265,12 +170,9 @@ engine_direct3d_args(int argc, char **argv)
 {
    WNDCLASS                   wc;
    RECT                       rect;
-   HINSTANCE                  hinstance;
+   HINSTANCE                  instance;
+   HDC                        dc;
    MSG                        msg;
-   LPDIRECT3D9                object;
-   LPDIRECT3DDEVICE9          device;
-   LPD3DXSPRITE               sprite;
-   LPDIRECT3DTEXTURE9         texture;
    Evas_Engine_Info_Direct3D *einfo;
    int                        depth;
    int                        i;
@@ -286,20 +188,22 @@ engine_direct3d_args(int argc, char **argv)
      }
    if (!ok) return 0;
 
-   hinstance = GetModuleHandle(0);
+   instance = GetModuleHandle(NULL);
+   if (!instance) return 0;
 
    wc.style = 0;
    wc.lpfnWndProc = MainWndProc;
    wc.cbClsExtra = 0;
    wc.cbWndExtra = 0;
-   wc.hInstance = hinstance;
+   wc.hInstance = instance;
    wc.hIcon = LoadIcon (NULL, IDI_APPLICATION);
    wc.hCursor = LoadCursor (NULL, IDC_ARROW);
-   wc.hbrBackground = (HBRUSH)(1 + COLOR_BTNFACE);
+   wc.hbrBackground = GetSysColorBrush(COLOR_BTNFACE);
    wc.lpszMenuName =  NULL;
    wc.lpszClassName = "Evas_Direct3D_Test";
 
-   if(!RegisterClass(&wc)) return EXIT_FAILURE;
+   if(!RegisterClass(&wc))
+     goto free_library;
 
    rect.left = 0;
    rect.top = 0;
@@ -313,39 +217,44 @@ engine_direct3d_args(int argc, char **argv)
                            WS_OVERLAPPEDWINDOW | WS_SIZEBOX,
                            CW_USEDEFAULT, CW_USEDEFAULT,
                            rect.right - rect.left, rect.bottom - rect.top,
-                           NULL, NULL, hinstance, NULL);
-   if (!window) return EXIT_FAILURE;
+                           NULL, NULL, instance, NULL);
+   if (!window)
+     goto unregister_class;
 
-   if (!_direct3d_init(window, win_w, win_h,
-                       &object,
-                       &device,
-                       &sprite,
-                       &texture,
-                       &depth))
-     return 0;
+   dc = GetDC(NULL);
+   if (!dc)
+     goto destroy_window;
+
+   depth = GetDeviceCaps(dc, BITSPIXEL);
+   ReleaseDC(NULL, dc);
 
    evas_output_method_set(evas, evas_render_method_lookup("direct3d"));
    einfo = (Evas_Engine_Info_Direct3D *)evas_engine_info_get(evas);
    if (!einfo)
      {
-        printf("Evas does not support the Direct3D Engine\n");
-        return 0;
+       fprintf(stderr, "Evas does not support the Direct3D Engine\n");
+        goto destroy_window;
      }
 
    einfo->info.window = window;
-   einfo->info.object = object;
-   einfo->info.device = device;
-   einfo->info.sprite = sprite;
-   einfo->info.texture = texture;
    einfo->info.depth = depth;
    einfo->info.rotation = 0;
-   evas_engine_info_set(evas, (Evas_Engine_Info *) einfo);
+   evas_engine_info_set(evas, (Evas_Engine_Info *)einfo);
 
    /* the second parameter is ignored, as it's the first call of ShowWindow */
    ShowWindow(window, SW_SHOWDEFAULT);
    UpdateWindow(window);
 
    return 1;
+
+ destroy_window:
+   DestroyWindow(window);
+ unregister_class:
+   UnregisterClass("Evas_Direct3D_Test", instance);
+ free_library:
+   FreeLibrary(instance);
+
+   return 0;
 }
 
 void
@@ -363,7 +272,4 @@ engine_direct3d_loop(void)
    DispatchMessage (&msg);
 
    goto again;
-}
-
-
 }
