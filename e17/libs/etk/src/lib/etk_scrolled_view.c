@@ -28,8 +28,8 @@ enum Etk_Scrolled_View_Property_Id
    ETK_SCROLLED_VIEW_VPOLICY_PROPERTY,
    ETK_SCROLLED_VIEW_DRAGABLE_PROPERTY,
    ETK_SCROLLED_VIEW_DRAG_BOUNCY_PROPERTY,
-	 ETK_SCROLLED_VIEW_DRAG_DAMPING_PROPERTY,
-	 ETK_SCROLLED_VIEW_DRAG_SAMPLE_INTERVAL_PROPERTY
+   ETK_SCROLLED_VIEW_DRAG_DAMPING_PROPERTY,
+   ETK_SCROLLED_VIEW_DRAG_SAMPLE_INTERVAL_PROPERTY
 };
 
 static void _etk_scrolled_view_constructor(Etk_Scrolled_View *scrolled_view);
@@ -212,7 +212,7 @@ void etk_scrolled_view_dragable_set(Etk_Scrolled_View *scrolled_view, Etk_Bool d
       return;
 
    scrolled_view->drag.dragable = dragable;
-	 etk_object_notify(ETK_OBJECT(scrolled_view), "dragable");
+   etk_object_notify(ETK_OBJECT(scrolled_view), "dragable");
 }
 
 /**
@@ -239,7 +239,7 @@ void etk_scrolled_view_drag_bouncy_set(Etk_Scrolled_View *scrolled_view, Etk_Boo
       return;
 
    scrolled_view->drag.bouncy = bouncy;
-	 etk_object_notify(ETK_OBJECT(scrolled_view), "drag-bouncy");
+   etk_object_notify(ETK_OBJECT(scrolled_view), "drag-bouncy");
 }
 
 /**
@@ -267,7 +267,7 @@ double etk_scrolled_view_drag_sample_interval_set(Etk_Scrolled_View *scrolled_vi
 
    interval = interval >= 0.2f ? interval : 0.2f;
    scrolled_view->drag.sample_magic = interval;
-	 etk_object_notify(ETK_OBJECT(scrolled_view), "drag-sample-interval");
+   etk_object_notify(ETK_OBJECT(scrolled_view), "drag-sample-interval");
    return scrolled_view->drag.sample_magic;
 }
 
@@ -295,7 +295,7 @@ unsigned int etk_scrolled_view_drag_damping_set(Etk_Scrolled_View *scrolled_view
       return 0;
 
    scrolled_view->drag.damping_magic = damping;
-	 etk_object_notify(ETK_OBJECT(scrolled_view), "drag-damping");
+   etk_object_notify(ETK_OBJECT(scrolled_view), "drag-damping");
    return scrolled_view->drag.damping_magic;
 }
 
@@ -326,6 +326,7 @@ static void _etk_scrolled_view_constructor(Etk_Scrolled_View *scrolled_view)
    scrolled_view->hpolicy = ETK_POLICY_AUTO;
    scrolled_view->vpolicy = ETK_POLICY_AUTO;
 
+   scrolled_view->drag.mouse_down  = ETK_FALSE;
    scrolled_view->drag.bar_pressed = ETK_FALSE;
    scrolled_view->drag.dragable    = ETK_FALSE;
    scrolled_view->drag.bouncy      = ETK_TRUE;
