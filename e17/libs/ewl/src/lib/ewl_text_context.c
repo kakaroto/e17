@@ -439,9 +439,16 @@ ewl_text_context_format_string_create(Ewl_Text_Context *ctx)
         fmt[pos].val = t;
         fmt[pos++].free = TRUE;
 
-        fmt[pos].key = "backing_color";
-        fmt[pos].val = ewl_text_context_color_string_get(&(ctx->style_colors.bg));
-        fmt[pos++].free = TRUE;
+        if (ctx->style_colors.bg.a)
+        {
+                fmt[pos].key = "backing";
+                fmt[pos].val = "on";
+                fmt[pos++].free = FALSE;
+
+                fmt[pos].key = "backing_color";
+                fmt[pos].val = ewl_text_context_color_string_get(&(ctx->style_colors.bg));
+                fmt[pos++].free = TRUE;
+        }
 
         fmt[pos].key = "color";
         fmt[pos].val = ewl_text_context_color_string_get(&(ctx->color));
@@ -532,8 +539,11 @@ ewl_text_context_hash_cmp(const void *ctx1, const void *ctx2)
 #define KEY_COMPARE(k1, k2) if (k1 > k2) goto CTX1_LARGER; else if (k2 > k1) goto CTX2_LARGER;
 
         KEY_COMPARE(ecore_str_compare(tx1->font, tx2->font), 0);
+        KEY_COMPARE(ecore_str_compare(tx1->font_source, tx2->font_source), 0);
         KEY_COMPARE(tx1->size, tx2->size);
         KEY_COMPARE(tx1->styles, tx2->styles);
+        KEY_COMPARE(tx1->align, tx2->align);
+        KEY_COMPARE(tx1->wrap, tx2->wrap);
         KEY_COMPARE(KEY_BUILD(tx1->color), KEY_BUILD(tx2->color));
         KEY_COMPARE(KEY_BUILD(tx1->style_colors.bg),
                         KEY_BUILD(tx2->style_colors.bg));

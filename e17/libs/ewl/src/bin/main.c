@@ -726,7 +726,6 @@ create_main_test_window(Ewl_Container *box)
         ewl_container_child_append(EWL_CONTAINER(o2), o);
         ewl_widget_name_set(o, "tutorial_text");
         ewl_text_selectable_set(EWL_TEXT(o), TRUE);
-        ewl_text_wrap_set(EWL_TEXT(o), EWL_TEXT_WRAP_WORD);
         ewl_widget_show(o);
 
         o = ewl_statusbar_new();
@@ -926,7 +925,6 @@ text_parse(char *str)
         txt = ewl_io_manager_string_read(str, "text/c");
         if (txt)
         {
-                ewl_text_wrap_set(EWL_TEXT(txt), EWL_TEXT_WRAP_WORD);
                 ewl_text_selectable_set(EWL_TEXT(txt), TRUE);
                 ewl_widget_show(txt);
                 ewl_container_child_append(EWL_CONTAINER(txtpane), txt);
@@ -944,6 +942,7 @@ tutorial_parse(char *str)
 
         tutorial = EWL_TEXT(ewl_widget_name_find("tutorial_text"));
         ewl_text_text_set(tutorial, NULL);
+        ewl_text_wrap_set(tutorial, EWL_TEXT_WRAP_WORD);
         if (!str) return;
 
         start = str;
@@ -1173,14 +1172,18 @@ ewl_test_create_info_window(const char *title, const char *text)
         ewl_text_font_source_set(EWL_TEXT(o), ewl_theme_path_get(), "ewl/default/bold");
         ewl_text_font_size_set(EWL_TEXT(o), 22);
         ewl_text_align_set(EWL_TEXT(o), EWL_FLAG_ALIGN_CENTER);
-        ewl_text_styles_set(EWL_TEXT(o), EWL_TEXT_STYLE_SOFT_SHADOW);
+        ewl_text_styles_set(EWL_TEXT(o), EWL_TEXT_STYLE_FAR_SHADOW);
+        ewl_text_shadow_color_set(EWL_TEXT(o), 0, 0, 0, 30);
         ewl_text_text_append(EWL_TEXT(o), title);
+
+        /* enter the new line before change the alignment */
+        ewl_text_text_append(EWL_TEXT(o), "\n\n");
 
         ewl_text_align_set(EWL_TEXT(o), EWL_FLAG_ALIGN_LEFT);
         ewl_text_styles_set(EWL_TEXT(o), EWL_TEXT_STYLE_NONE);
-        ewl_text_font_set(EWL_TEXT(o), NULL);
+        ewl_text_wrap_set(EWL_TEXT(o), EWL_TEXT_WRAP_WORD);
         ewl_text_font_size_set(EWL_TEXT(o), 12);
-        ewl_text_text_append(EWL_TEXT(o), "\n\n");
+        ewl_text_font_set(EWL_TEXT(o), NULL);
         ewl_text_text_append(EWL_TEXT(o), text);
         ewl_container_child_append(EWL_CONTAINER(vbox), o);
         ewl_widget_show(o);

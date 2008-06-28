@@ -178,6 +178,10 @@ create_test(Ewl_Container *box)
         printf("Appending 'Align Right.\\n' [279]\n");
         ewl_text_text_append(EWL_TEXT(o), "Align Right.\n");  /* 13 */
 
+        ewl_text_bg_color_set(EWL_TEXT(o), 255, 255, 255, 255);
+        ewl_text_align_set(EWL_TEXT(o), EWL_FLAG_ALIGN_LEFT);
+        ewl_text_text_append(EWL_TEXT(o), "White Background\n");
+
         return 1;
 }
 
