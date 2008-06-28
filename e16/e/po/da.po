@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-06-22 12:50+0200\n"
+"POT-Creation-Date: 2008-06-28 21:01+0200\n"
 "PO-Revision-Date: 2008-02-10 19:59+0100\n"
 "Last-Translator: Kim Woelders <kim@woelders.dk>\n"
 "Language-Team: Dansk/Danish <sslug-locale@sslug.dk>\n"
@@ -50,9 +50,8 @@ msgstr ""
 "Mandrake - mandrake@mandrake.net\n"
 "Kim Woelders - kim@woelders.dk\n"
 
-#: src/aclass.c:198 src/backgrounds.c:237 src/borders.c:636 src/buttons.c:181
-#: src/cmclass.c:84 src/cursors.c:121 src/iclass.c:353 src/tclass.c:113
-#: src/tooltips.c:135
+#: src/aclass.c:198 src/backgrounds.c:234 src/borders.c:636 src/buttons.c:181
+#: src/cursors.c:121 src/iclass.c:324 src/tclass.c:113 src/tooltips.c:135
 #, c-format
 msgid "%u references remain\n"
 msgstr "%u referencer endnu\n"
@@ -176,7 +175,7 @@ msgstr "Genstart Enlightenment"
 msgid "Quit Enlightenment"
 msgstr "Afslut Enlightenment"
 
-#: src/backgrounds.c:1591
+#: src/backgrounds.c:1526
 #, c-format
 msgid ""
 "Background definition information:\n"
@@ -187,11 +186,11 @@ msgstr ""
 "Navn: %s\n"
 "Fil : %s\n"
 
-#: src/backgrounds.c:1592
+#: src/backgrounds.c:1527
 msgid "-NONE-"
 msgstr "-INGEN-"
 
-#: src/backgrounds.c:1771 src/backgrounds.c:1773
+#: src/backgrounds.c:1706 src/backgrounds.c:1708
 msgid ""
 "No\n"
 "Background"
@@ -199,40 +198,40 @@ msgstr ""
 "Ingen\n"
 "baggrund"
 
-#: src/backgrounds.c:1867 src/backgrounds.c:2296
+#: src/backgrounds.c:1802 src/backgrounds.c:2231
 #, c-format
 msgid "Unused backgrounds freed after %2i:%02i:%02i"
 msgstr "Ubrugte baggrunde frigjorte efter %2i:%02i:%02i"
 
-#: src/backgrounds.c:2082
+#: src/backgrounds.c:2017
 msgid "Use background image"
 msgstr "Brug baggrundsbillede"
 
-#: src/backgrounds.c:2086
+#: src/backgrounds.c:2021
 msgid "Keep aspect on scale"
 msgstr "Bevar dimensioner ved skalering"
 
-#: src/backgrounds.c:2090
+#: src/backgrounds.c:2025
 msgid "Tile image across background"
 msgstr "'Tile' billede på baggrund"
 
-#: src/backgrounds.c:2099
+#: src/backgrounds.c:2034
 msgid "Move to Front\n"
 msgstr "Flyt til front\n"
 
-#: src/backgrounds.c:2104
+#: src/backgrounds.c:2039
 msgid "Duplicate\n"
 msgstr "Duplikér\n"
 
-#: src/backgrounds.c:2108
+#: src/backgrounds.c:2043
 msgid "Unlist\n"
 msgstr "Aflist\n"
 
-#: src/backgrounds.c:2113
+#: src/backgrounds.c:2048
 msgid "Delete File\n"
 msgstr "Slet fil\n"
 
-#: src/backgrounds.c:2124
+#: src/backgrounds.c:2059
 msgid ""
 "Background\n"
 "Image\n"
@@ -246,59 +245,59 @@ msgstr ""
 "og\n"
 "Justering\n"
 
-#: src/backgrounds.c:2181
+#: src/backgrounds.c:2116
 msgid "BG Colour\n"
 msgstr "Bagg-farve\n"
 
-#: src/backgrounds.c:2186
+#: src/backgrounds.c:2121
 msgid "Red:\n"
 msgstr "Rød:\n"
 
-#: src/backgrounds.c:2197
+#: src/backgrounds.c:2132
 msgid "Green:\n"
 msgstr "Grøn:\n"
 
-#: src/backgrounds.c:2208
+#: src/backgrounds.c:2143
 msgid "Blue:\n"
 msgstr "Blå:\n"
 
-#: src/backgrounds.c:2241
+#: src/backgrounds.c:2176
 msgid "Pre-scan BG's"
 msgstr "Forskan baggrunde"
 
-#: src/backgrounds.c:2249
+#: src/backgrounds.c:2184
 msgid "Sort by File"
 msgstr "Sortér efter fil"
 
-#: src/backgrounds.c:2254
+#: src/backgrounds.c:2189
 msgid "Sort by Attr."
 msgstr "Sortér efter egensk."
 
-#: src/backgrounds.c:2260
+#: src/backgrounds.c:2195
 msgid "Sort by Image"
 msgstr "Sortér efter billede"
 
-#: src/backgrounds.c:2280
+#: src/backgrounds.c:2215
 msgid "Use dithering in Hi-Colour"
 msgstr "Brug dithering i Hi-Colour"
 
-#: src/backgrounds.c:2284
+#: src/backgrounds.c:2219
 msgid "Background overrides theme"
 msgstr "Baggrund tilsidesætter tema"
 
-#: src/backgrounds.c:2289
+#: src/backgrounds.c:2224
 msgid "Enable background transparency compatibility mode"
 msgstr "Aktivér baggrundskompatibilitetsmode"
 
-#: src/backgrounds.c:2313 src/mod-trans.c:199
+#: src/backgrounds.c:2248 src/mod-trans.c:199
 msgid "Background"
 msgstr "Baggrund"
 
-#: src/backgrounds.c:2314
+#: src/backgrounds.c:2249
 msgid "Desktop Background Settings"
 msgstr "Skrivebordsbaggrundsindstillinger"
 
-#: src/backgrounds.c:2317
+#: src/backgrounds.c:2252
 msgid ""
 "Enlightenment Desktop\n"
 "Background Settings Dialog\n"
@@ -390,7 +389,7 @@ msgstr ""
 "Konfigurationen for temaet du har valgt er invalid.\n"
 "Dets revision er %i, men skal være <= %i.\n"
 
-#: src/config.c:602
+#: src/config.c:596
 msgid "Enlightenment Starting..."
 msgstr "Enlightenment starter..."
 
@@ -1426,7 +1425,7 @@ msgstr ""
 "Indstillinger for\n"
 "skærmoversigter\n"
 
-#: src/session.c:341
+#: src/session.c:343
 msgid ""
 "ERROR!\n"
 "\n"
@@ -1441,11 +1440,11 @@ msgid ""
 "... I hope.\n"
 msgstr ""
 
-#: src/session.c:640
+#: src/session.c:642
 msgid "Are you sure?"
 msgstr "Er du sikker?"
 
-#: src/session.c:642
+#: src/session.c:644
 msgid ""
 "\n"
 "\n"
@@ -1458,43 +1457,43 @@ msgstr ""
 "    Er du sikker på at du ønsker at logge ud ?    \n"
 "\n"
 
-#: src/session.c:652
+#: src/session.c:654
 msgid "  Yes, Shut Down  "
 msgstr "  Ja, luk ned"
 
-#: src/session.c:654
+#: src/session.c:656
 msgid "  Yes, Reboot  "
 msgstr "  Ja, genstart"
 
-#: src/session.c:657
+#: src/session.c:659
 msgid "  Yes, Log Out  "
 msgstr "  Ja, log ud  "
 
-#: src/session.c:659
+#: src/session.c:661
 msgid "  No  "
 msgstr "  Nej  "
 
-#: src/session.c:790
+#: src/session.c:792
 msgid "Enable Session Script"
 msgstr "Aktivér sessionsscripts"
 
-#: src/session.c:795
+#: src/session.c:797
 msgid "Enable Logout Dialog"
 msgstr "Aktivér Logout dialog"
 
-#: src/session.c:800
+#: src/session.c:802
 msgid "Enable Reboot/Halt on Logout"
 msgstr "Aktivér Genstart/Luk ned ved Logout"
 
-#: src/session.c:806
+#: src/session.c:808
 msgid "Session"
 msgstr "Session"
 
-#: src/session.c:807
+#: src/session.c:809
 msgid "Session Settings"
 msgstr "Sessionsindstillinger"
 
-#: src/session.c:810
+#: src/session.c:812
 msgid ""
 "Enlightenment Session\n"
 "Settings Dialog\n"
@@ -1779,7 +1778,7 @@ msgstr ""
 "Indstillinger for\n"
 "composite\n"
 
-#: src/settings.c:788
+#: src/settings.c:790
 msgid "Enlightenment Settings"
 msgstr "Enlightenment indstillinger"
 

@@ -53,9 +53,6 @@ struct _background {
    char                bg_tile;
    BgPart              bg;
    BgPart              top;
-#if ENABLE_COLOR_MODIFIERS
-   ColorModifierClass *cmclass;
-#endif
    char                external;
    char                keepim;
    char                referenced;
@@ -470,15 +467,6 @@ BackgroundModify(Background * bg, EColor * solid, const char *bgn, char tile,
    return updated;
 }
 
-#if ENABLE_COLOR_MODIFIERS
-static void
-BackgroundSetColorMofifier(Background * bg, ColorModifierClass * cm)
-{
-   cm->ref_count++;
-   bg->cmclass = cm;
-}
-#endif
-
 static void
 BgFindImageSize(BgPart * bgp, unsigned int rw, unsigned int rh,
 		unsigned int *pw, unsigned int *ph)
@@ -557,10 +545,6 @@ BackgroundRealize(Background * bg, Win win, Drawable draw, unsigned int rw,
    char                hasbg, hasfg;
    EImage             *im;
 
-#if ENABLE_COLOR_MODIFIERS
-   ColorModifierClass *cm;
-#endif
-
    if (bg->bg.file && !bg->bg.im)
      {
 	if (!bg->bg.real_file)
@@ -576,37 +560,6 @@ BackgroundRealize(Background * bg, Win win, Drawable draw, unsigned int rw,
 	if (bg->top.real_file)
 	   bg->top.im = EImageLoad(bg->top.real_file);
      }
-
-#if ENABLE_COLOR_MODIFIERS
-   cm = bg->cmclass;
-   if (cm)
-      cm->ref_count--;
-   else
-      cm = FindItem("BACKGROUND", 0, LIST_FINDBY_NAME, LIST_TYPE_COLORMODIFIER);
-
-   if (cm)
-     {
-	cm->ref_count++;
-#if 0				/* To be implemented? */
-	if (bg->top.im)
-	  {
-	     Imlib_set_image_red_curve(pImlib_Context, bg->top.im, cm->red.map);
-	     Imlib_set_image_green_curve(pImlib_Context, bg->top.im,
-					 cm->green.map);
-	     Imlib_set_image_blue_curve(pImlib_Context, bg->top.im,
-					cm->blue.map);
-	  }
-	if (bg->bg.im)
-	  {
-	     Imlib_set_image_red_curve(pImlib_Context, bg->bg.im, cm->red.map);
-	     Imlib_set_image_green_curve(pImlib_Context, bg->bg.im,
-					 cm->green.map);
-	     Imlib_set_image_blue_curve(pImlib_Context, bg->bg.im,
-					cm->blue.map);
-	  }
-#endif
-     }
-#endif
 
    if (!draw)
       draw = WinGetXwin(win);
@@ -1113,10 +1066,6 @@ BackgroundsConfigLoad(FILE * fs)
    char                ignore = 0;
    unsigned int        desk;
 
-#if ENABLE_COLOR_MODIFIERS
-   ColorModifierClass *cm = NULL;
-#endif
-
    SET_COLOR(&color, 0, 0, 0);
 
    while (GetLine(s, sizeof(s), fs))
@@ -1154,10 +1103,6 @@ BackgroundsConfigLoad(FILE * fs)
 			    bg = BackgroundCreate(name, &color, bg1, i1, i2, i3,
 						  i4, i5, i6, bg2, j1, j2, j3,
 						  j4, j5);
-#if ENABLE_COLOR_MODIFIERS
-			    if (cm)
-			       BackgroundSetColorMofifier(bg, cm);
-#endif
 			 }
 		    }
 	       }
@@ -1165,9 +1110,6 @@ BackgroundsConfigLoad(FILE * fs)
 
 	  case CONFIG_COLORMOD:
 	  case ICLASS_COLORMOD:
-#if ENABLE_COLOR_MODIFIERS
-	     cm = FindItem(s2, 0, LIST_FINDBY_NAME, LIST_TYPE_COLORMODIFIER);
-#endif
 	     break;
 
 	  case CONFIG_CLASSNAME:
@@ -1340,13 +1282,6 @@ BackgroundsConfigSave(void)
 		     bg->top.xjust, bg->top.yjust, bg->top.xperc,
 		     bg->top.yperc);
 	  }
-
-#if ENABLE_COLOR_MODIFIERS
-	if (bg->cmclass)
-	  {
-	     fprintf(fs, "370 %s\n", bg->cmclass->name);
-	  }
-#endif
 
 	for (j = 0; j < N_BG_ASSIGNED; j++)
 	  {
@@ -2614,56 +2549,6 @@ IPC_BackgroundUse(const char *params)
    autosave();
 }
 
-#if ENABLE_COLOR_MODIFIERS
-static void
-IPC_BackgroundColormodifierSet(const char *params)
-{
-   Background         *bg;
-   ColorModifierClass *cm;
-   int                 i;
-   char                buf[FILEPATH_LEN_MAX], buf2[FILEPATH_LEN_MAX];
-
-   if (params == NULL)
-      return;
-
-   sscanf(params, "%1000s %1000s", buf, buf2);
-   bg = BackgroundFind(buf);
-   cm = FindItem(buf2, 0, LIST_FINDBY_NAME, LIST_TYPE_COLORMODIFIER);
-   if ((bg) && (bg->cmclass != cm))
-     {
-	if (!strcmp(buf, "(null)"))
-	  {
-	     bg->cmclass->ref_count--;
-	     bg->cmclass = NULL;
-	  }
-	else if (cm)
-	  {
-	     bg->cmclass->ref_count--;
-	     bg->cmclass = cm;
-	  }
-
-	BackgroundInvalidate(bg, 1);
-     }
-}
-
-static void
-IPC_BackgroundColormodifierGet(const char *params)
-{
-   char                param1[FILEPATH_LEN_MAX], buf[FILEPATH_LEN_MAX];
-   Background         *bg;
-
-   if (params == NULL)
-      return;
-
-   sscanf(params, "%1000s", param1);
-   bg = BackgroundFind(param1);
-   Esnprintf(buf, sizeof(buf), "(null)");
-   if ((bg) && (bg->cmclass))
-      Esnprintf(buf, sizeof(buf), "%s", bg->cmclass->name);
-   IpcPrintf(buf);
-}
-#endif
-
 static const IpcItem BackgroundsIpcArray[] = {
    {
     BackgroundsIpc,
@@ -2684,12 +2569,6 @@ static const IpcItem BackgroundsIpcArray[] = {
    {
     IPC_BackgroundUse, "use_bg", NULL, "Deprecated - do not use", NULL}
    ,
-#if ENABLE_COLOR_MODIFIERS
-   {IPC_BackgroundColormodifierSet, "set_bg_colmod", NULL, "TBD", NULL}
-   ,
-   {IPC_BackgroundColormodifierGet, "get_bg_colmod", NULL, "TBD", NULL}
-   ,
-#endif
 };
 #define N_IPC_FUNCS (sizeof(BackgroundsIpcArray)/sizeof(IpcItem))
 

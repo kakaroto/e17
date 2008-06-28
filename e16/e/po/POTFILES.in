@@ -6,7 +6,6 @@ src/alert.c
 src/backgrounds.c
 src/borders.c
 src/buttons.c
-src/cmclass.c
 src/comms.c
 src/config.c
 src/container.c

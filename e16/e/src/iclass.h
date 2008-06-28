@@ -69,24 +69,6 @@
 #define IC_FLAG_MAKE_MASK       0x02	/* Make mask */
 #define IC_FLAG_FULL_SIZE       0x04	/* Make full size pixmaps */
 
-/* cmclass.c */
-#if ENABLE_COLOR_MODIFIERS
-void                CreateCurve(ModCurve * c);
-void                FreeModCurve(ModCurve * c);
-void                FreeCMClass(ColorModifierClass * cm);
-ColorModifierClass *CreateCMClass(char *name, int rnum, unsigned char *rpx,
-				  unsigned char *rpy, int gnum,
-				  unsigned char *gpx, unsigned char *gpy,
-				  int bnum, unsigned char *bpx,
-				  unsigned char *bpy);
-void                ModifyCMClass(char *name, int rnum, unsigned char *rpx,
-				  unsigned char *rpy, int gnum,
-				  unsigned char *gpx, unsigned char *gpy,
-				  int bnum, unsigned char *bpx,
-				  unsigned char *bpy);
-int                 ColorModifierConfigLoad(FILE * fs);
-#endif
-
 /* iclass.c */
 int                 ImageclassConfigLoad(FILE * fs);
 

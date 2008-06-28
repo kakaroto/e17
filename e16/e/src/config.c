@@ -377,9 +377,6 @@ ConfigFileRead(FILE * fs)
 			  ConfigAlertLoad("Window match");
 		       break;
 		    case CONFIG_COLORMOD:
-#if ENABLE_COLOR_MODIFIERS
-		       Config_ColorModifier(fs);
-#endif
 		       break;
 		    case CONFIG_ACTIONCLASS:
 		       err = AclassConfigLoad(fs);
@@ -567,9 +564,6 @@ ThemeConfigLoad(void)
    static const char  *const config_files[] = {
       "init.cfg",
       "textclasses.cfg",
-#if ENABLE_COLOR_MODIFIERS
-      "colormodifiers.cfg",
-#endif
       "imageclasses.cfg",
       "desktops.cfg",
       "actionclasses.cfg",

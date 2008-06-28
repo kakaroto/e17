@@ -34,21 +34,6 @@
 
 #define ENABLE_DESTROY 0	/* Broken */
 
-#if ENABLE_COLOR_MODIFIERS
-typedef struct {
-   int                 num;
-   unsigned char      *px;
-   unsigned char      *py;
-   unsigned char       map[256];
-} ModCurve;
-
-typedef struct {
-   char               *name;
-   ModCurve            red, green, blue;
-   unsigned int        ref_count;
-} ColorModifierClass;
-#endif
-
 struct _imagestate {
    char               *im_file;
    char               *real_file;
@@ -60,9 +45,6 @@ struct _imagestate {
    int                 pixmapfillstyle;
    EColor              bg, hi, lo, hihi, lolo;
    int                 bevelstyle;
-#if ENABLE_COLOR_MODIFIERS
-   ColorModifierClass *colmod;
-#endif
 };
 
 typedef struct {
@@ -76,9 +58,6 @@ struct _imageclass {
    char               *name;
    ImageStateArray     norm, active, sticky, sticky_active;
    EImageBorder        padding;
-#if ENABLE_COLOR_MODIFIERS
-   ColorModifierClass *colmod;
-#endif
    unsigned int        ref_count;
 };
 
@@ -234,11 +213,6 @@ ImagestateDestroy(ImageState * is)
 
    Efree(is->border);
 
-#if ENABLE_COLOR_MODIFIERS
-   if (is->colmod)
-      is->colmod->ref_count--;
-#endif
-
    Efree(is);
 }
 
@@ -333,9 +307,6 @@ ImageclassCreate(const char *name)
    ic->padding.right = 0;
    ic->padding.top = 0;
    ic->padding.bottom = 0;
-#if ENABLE_COLOR_MODIFIERS
-   ic->colmod = NULL;
-#endif
    ic->ref_count = 0;
 
    return ic;
@@ -363,11 +334,6 @@ ImageclassDestroy(ImageClass * ic)
    FreeImageStateArray(&(ic->active));
    FreeImageStateArray(&(ic->sticky));
    FreeImageStateArray(&(ic->sticky_active));
-
-#if ENABLE_COLOR_MODIFIERS
-   if (ic->colmod)
-      ic->colmod->ref_count--;
-#endif
 
    Efree(ic);
 }
@@ -433,21 +399,9 @@ ImageclassFind(const char *name, int fallback)
 #define ISTATE_SET_STATE(which, fallback) \
    if (!ic->which) ic->which = ic->fallback;
 
-#if ENABLE_COLOR_MODIFIERS
-#define ISTATE_SET_CM(which, fallback) \
-   if (!ic->which->colmod) { \
-      ic->which->colmod = fallback; \
-      if (fallback) fallback->ref_count++; \
-     }
-#endif
-
 static void
 ImageclassPopulate(ImageClass * ic)
 {
-#if ENABLE_COLOR_MODIFIERS
-   ColorModifierClass *cm;
-#endif
-
    if (!ic)
       return;
 
@@ -472,53 +426,6 @@ ImageclassPopulate(ImageClass * ic)
    ISTATE_SET_STATE(sticky_active.hilited, sticky_active.normal);
    ISTATE_SET_STATE(sticky_active.clicked, sticky_active.normal);
    ISTATE_SET_STATE(sticky_active.disabled, sticky_active.normal);
-
-#if ENABLE_COLOR_MODIFIERS
-   if (!ic->colmod)
-     {
-	cm = FindItem("ICLASS", 0, LIST_FINDBY_NAME, LIST_TYPE_COLORMODIFIER);
-	if (!cm)
-	   cm =
-	      FindItem("DEFAULT", 0, LIST_FINDBY_NAME, LIST_TYPE_COLORMODIFIER);
-	ic->colmod = cm;
-     }
-
-   cm = FindItem("NORMAL", 0, LIST_FINDBY_NAME, LIST_TYPE_COLORMODIFIER);
-   if (!cm)
-      cm = ic->colmod;
-
-   ISTATE_SET_CM(norm.normal, cm);
-   ISTATE_SET_CM(norm.hilited, cm);
-   ISTATE_SET_CM(norm.clicked, cm);
-   ISTATE_SET_CM(norm.disabled, cm);
-
-   cm = FindItem("ACTIVE", 0, LIST_FINDBY_NAME, LIST_TYPE_COLORMODIFIER);
-   if (!cm)
-      cm = ic->colmod;
-
-   ISTATE_SET_CM(active.normal, cm);
-   ISTATE_SET_CM(active.hilited, cm);
-   ISTATE_SET_CM(active.clicked, cm);
-   ISTATE_SET_CM(active.disabled, cm);
-
-   cm = FindItem("STICKY", 0, LIST_FINDBY_NAME, LIST_TYPE_COLORMODIFIER);
-   if (!cm)
-      cm = ic->colmod;
-
-   ISTATE_SET_CM(sticky.normal, cm);
-   ISTATE_SET_CM(sticky.hilited, cm);
-   ISTATE_SET_CM(sticky.clicked, cm);
-   ISTATE_SET_CM(sticky.disabled, cm);
-
-   cm = FindItem("STICKY_ACTIVE", 0, LIST_FINDBY_NAME, LIST_TYPE_COLORMODIFIER);
-   if (!cm)
-      cm = ic->colmod;
-
-   ISTATE_SET_CM(sticky_active.normal, cm);
-   ISTATE_SET_CM(sticky_active.hilited, cm);
-   ISTATE_SET_CM(sticky_active.clicked, cm);
-   ISTATE_SET_CM(sticky_active.disabled, cm);
-#endif
 }
 
 int
@@ -531,10 +438,6 @@ ImageclassConfigLoad(FILE * fs)
    ImageClass         *ic = NULL;
    ImageState         *ICToRead = NULL;
    int                 l, r, t, b;
-
-#if ENABLE_COLOR_MODIFIERS
-   ColorModifierClass *cm = NULL;
-#endif
 
    while (GetLine(s, sizeof(s), fs))
      {
@@ -573,28 +476,10 @@ ImageclassConfigLoad(FILE * fs)
 		ic->sticky = ICToInherit->sticky;
 		ic->sticky_active = ICToInherit->sticky_active;
 		ic->padding = ICToInherit->padding;
-#if ENABLE_COLOR_MODIFIERS
-		ic->colmod = ICToInherit->colmod;
-#endif
 	     }
 	     break;
 	  case CONFIG_COLORMOD:
 	  case ICLASS_COLORMOD:
-#if ENABLE_COLOR_MODIFIERS
-	     cm = FindItem(s2, 0, LIST_FINDBY_NAME, LIST_TYPE_COLORMODIFIER);
-	     if (cm)
-	       {
-		  if (ICToRead)
-		    {
-		       ICToRead->colmod = cm;
-		    }
-		  else
-		    {
-		       ic->colmod = cm;
-		    }
-		  cm->ref_count++;
-	       }
-#endif
 	     break;
 	  case ICLASS_PADDING:
 	     l = r = t = b = 0;

@@ -67,7 +67,6 @@
 
 #include "xtypes.h"
 
-#define ENABLE_COLOR_MODIFIERS 0	/* Not functional */
 #define ENABLE_DESKRAY         0	/* Not functional */
 
 #define ENABLE_TRANSPARENCY 1
