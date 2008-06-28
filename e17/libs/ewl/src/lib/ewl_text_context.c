@@ -513,6 +513,8 @@ ewl_text_context_hash_key(const void *ctx)
                 key ^= ecore_str_hash(tx->font_source);
         key ^= (tx->size << 5);
         key ^= (tx->styles << 7);
+        /* FIXME: we need to add align and wrap, to prevent degenerate
+         * hash values */
 
 #define COLOR_HASH(c) (c.r << 24 | c.g << 16 | c.b << 8 | c.a)
         key ^= COLOR_HASH(tx->color);
