@@ -906,7 +906,9 @@ ImageclassGetImageBlended(ImageClass * ic, Win win, int w, int h, int active,
 
    bg = EImageCreateScaled(im, 0, 0, 0, 0, w, h);
 
+#ifdef ENABLE_TRANSPARENCY
  done:
+#endif
    EImageFree(im);
 
    return bg;

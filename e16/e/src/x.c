@@ -23,10 +23,14 @@
  */
 #define DECLARE_WIN 1
 #include "E.h"
+#include "edebug.h"
+#include "util.h"
+#include "xwin.h"
+#include <string.h>
+#include <unistd.h>
 #ifdef USE_ECORE_X
 #include <Ecore_X.h>
 #endif
-#include "xwin.h"
 #include <X11/Xatom.h>
 #include <X11/Xutil.h>
 #include <X11/Xresource.h>

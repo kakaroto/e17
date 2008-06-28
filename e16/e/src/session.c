@@ -101,7 +101,7 @@ set_save_props(SmcConn smc_conn, int master_flag)
    SmProp              styleProp;
    SmProp              priorityProp;
    SmProp             *props[7];
-   char                bufs[32], bufm[32], bufx[32];
+   char                bufs[32], bufm[32];
 
    if (EDebug(EDBUG_TYPE_SESSION))
       Eprintf("set_save_props\n");
@@ -192,6 +192,8 @@ set_save_props(SmcConn smc_conn, int master_flag)
 #ifdef USE_EXT_INIT_WIN
    if (restarting)
      {
+	char                bufx[32];
+
 	Esnprintf(bufx, sizeof(bufx), "%#lx", new_init_win_ext);
 	restartVal[n++].value = (char *)"-X";
 	restartVal[n++].value = bufx;

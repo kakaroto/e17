@@ -729,7 +729,9 @@ static const DialogDef *dialogs[] = {
    &DlgRemember,
    &DlgFx,
    &DlgBackground,
+#ifdef ENABLE_THEME_TRANSPARENCY
    &DlgThemeTrans,
+#endif
 #if USE_COMPOSITE
    &DlgComposite,
 #endif
