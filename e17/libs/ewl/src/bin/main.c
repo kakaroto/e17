@@ -1154,7 +1154,7 @@ tutorial_parse(char *str)
 static void
 ewl_test_create_info_window(const char *title, const char *text)
 {
-        Ewl_Widget *win, *vbox, *o;
+        Ewl_Widget *win, *o;
 
         window_count++;
 
@@ -1165,18 +1165,17 @@ ewl_test_create_info_window(const char *title, const char *text)
         ewl_window_dialog_set(EWL_WINDOW(win), TRUE);
         ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW,
                                         ewl_test_cb_delete_window, win);
-        ewl_object_h_request(EWL_OBJECT(win), 400);
         ewl_widget_show(win);
         
         /* add the dialog content */
         ewl_dialog_active_area_set(EWL_DIALOG(win), EWL_POSITION_TOP);
 
-        vbox = ewl_scrollpane_new();
-        ewl_container_child_append(EWL_CONTAINER(win), vbox);
-        ewl_widget_show(vbox);
-
         o = ewl_text_new();
         ewl_text_font_source_set(EWL_TEXT(o), ewl_theme_path_get(), "ewl/default/bold");
+        /* give it a size hint to calculate a good preferred size in the first 
+         * place */
+        ewl_object_w_request(EWL_OBJECT(o), 300);
+        ewl_object_padding_set(EWL_OBJECT(o), 10, 10, 20, 10);
         ewl_text_font_size_set(EWL_TEXT(o), 22);
         ewl_text_align_set(EWL_TEXT(o), EWL_FLAG_ALIGN_CENTER);
         ewl_text_styles_set(EWL_TEXT(o), EWL_TEXT_STYLE_FAR_SHADOW);
@@ -1192,7 +1191,7 @@ ewl_test_create_info_window(const char *title, const char *text)
         ewl_text_font_size_set(EWL_TEXT(o), 12);
         ewl_text_font_set(EWL_TEXT(o), NULL);
         ewl_text_text_append(EWL_TEXT(o), text);
-        ewl_container_child_append(EWL_CONTAINER(vbox), o);
+        ewl_container_child_append(EWL_CONTAINER(win), o);
         ewl_widget_show(o);
 
         /* add the ok button now */
