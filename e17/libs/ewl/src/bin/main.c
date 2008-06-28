@@ -12,6 +12,7 @@
 #include "ewl_text.h"
 #include "ewl_tree.h"
 #include "ewl_icon_theme.h"
+#include "ewl_dialog.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -324,10 +325,12 @@ ewl_test_cb_unit_test_timer(void *data)
 }
 
 static void
-ewl_test_cb_delete_window(Ewl_Widget *w, void *ev __UNUSED__,
-                                void *data __UNUSED__)
+ewl_test_cb_delete_window(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
+                                void *data)
 {
-        ewl_widget_destroy(w);
+        Ewl_Widget *win = data;
+
+        ewl_widget_destroy(win);
 
         if ((--window_count) < 1)
                 ewl_main_quit();
@@ -364,7 +367,7 @@ run_window_test(Ewl_Test *test, int width, int height)
         ewl_window_name_set(EWL_WINDOW(win), test->name);
         ewl_window_class_set(EWL_WINDOW(win), "Ewl Test Window");
         ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW,
-                                        ewl_test_cb_delete_window, NULL);
+                                        ewl_test_cb_delete_window, win);
         if ((width > 0) && (height > 0))
                 ewl_object_size_request(EWL_OBJECT(win), width, height);
 
@@ -1155,14 +1158,18 @@ ewl_test_create_info_window(const char *title, const char *text)
 
         window_count++;
 
-        win = ewl_window_new();
+        win = ewl_dialog_new();
         ewl_window_title_set(EWL_WINDOW(win), title);
         ewl_window_class_set(EWL_WINDOW(win), "ewl_test");
         ewl_window_name_set(EWL_WINDOW(win), "ewl_test");
+        ewl_window_dialog_set(EWL_WINDOW(win), TRUE);
         ewl_callback_append(win, EWL_CALLBACK_DELETE_WINDOW,
-                                        ewl_test_cb_delete_window, NULL);
-        ewl_object_size_request(EWL_OBJECT(win), 400, 400);
+                                        ewl_test_cb_delete_window, win);
+        ewl_object_h_request(EWL_OBJECT(win), 400);
         ewl_widget_show(win);
+        
+        /* add the dialog content */
+        ewl_dialog_active_area_set(EWL_DIALOG(win), EWL_POSITION_TOP);
 
         vbox = ewl_scrollpane_new();
         ewl_container_child_append(EWL_CONTAINER(win), vbox);
@@ -1186,6 +1193,16 @@ ewl_test_create_info_window(const char *title, const char *text)
         ewl_text_font_set(EWL_TEXT(o), NULL);
         ewl_text_text_append(EWL_TEXT(o), text);
         ewl_container_child_append(EWL_CONTAINER(vbox), o);
+        ewl_widget_show(o);
+
+        /* add the ok button now */
+        ewl_dialog_active_area_set(EWL_DIALOG(win), EWL_POSITION_BOTTOM);
+
+        o = ewl_button_new();
+        ewl_stock_type_set(EWL_STOCK(o), EWL_STOCK_OK);
+        ewl_container_child_append(EWL_CONTAINER(win), o);
+        ewl_callback_append(o, EWL_CALLBACK_CLICKED,
+                                        ewl_test_cb_delete_window, win);
         ewl_widget_show(o);
 }
 
