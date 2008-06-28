@@ -49,17 +49,17 @@ ewl_datepicker_init(Ewl_Datepicker *dp)
 
         ewl_widget_appearance_set(EWL_WIDGET(dp), EWL_DATEPICKER_TYPE);
         ewl_widget_inherit(EWL_WIDGET(dp), EWL_DATEPICKER_TYPE);
-        ewl_object_fill_policy_set(EWL_OBJECT(dp), EWL_FLAG_FILL_HFILL |
-                                                        EWL_FLAG_FILL_NONE);
+        ewl_object_fill_policy_set(EWL_OBJECT(dp), EWL_FLAG_FILL_NONE);
 
         dp->calendar_window = ewl_popup_new();
         ewl_widget_appearance_set(dp->calendar_window,
                                 EWL_DATEPICKER_TYPE"/"EWL_POPUP_TYPE);
         ewl_object_fill_policy_set(EWL_OBJECT(dp->calendar_window),
-                                                EWL_FLAG_FILL_NONE);
+                                                EWL_FLAG_FILL_HFILL);
         ewl_popup_type_set(EWL_POPUP(dp->calendar_window),
                                         EWL_POPUP_TYPE_MENU_VERTICAL);
         ewl_popup_follow_set(EWL_POPUP(dp->calendar_window), EWL_WIDGET(dp));
+        ewl_popup_fit_to_follow_set(EWL_POPUP(dp->calendar_window), TRUE);
         ewl_window_keyboard_grab_set(EWL_WINDOW(dp->calendar_window), TRUE);
         ewl_window_pointer_grab_set(EWL_WINDOW(dp->calendar_window), TRUE);
         ewl_callback_append(dp->calendar_window, EWL_CALLBACK_MOUSE_DOWN,
@@ -67,7 +67,7 @@ ewl_datepicker_init(Ewl_Datepicker *dp)
 
         dp->calendar = ewl_calendar_new();
         ewl_object_fill_policy_set(EWL_OBJECT(dp->calendar),
-                                                        EWL_FLAG_FILL_NONE);
+                                                        EWL_FLAG_FILL_HFILL);
         ewl_container_child_append(EWL_CONTAINER(dp->calendar_window),
                                                         dp->calendar);
         ewl_callback_append(EWL_WIDGET(dp->calendar),
