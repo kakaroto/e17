@@ -1,16 +1,16 @@
 Source: engrave
 Section: libs
 Priority: optional
-Maintainer: Blake Barnett <shadoi@soulmachine.net>
-Build-Depends: debhelper (>> 4.2.0), cdbs, byacc, flex, automake1.7 | automaken, libtool, libecore0-dev, libevas0-dev, libeet0-dev
-Standards-Version: 3.7.2
+Maintainer: Falko Schmidt <falko@alphagemini.org>
+Build-Depends: debhelper (>= 6), cdbs, byacc, flex, automake1.7 | automaken, libtool, libecore-dev, libevas-dev, libeet-dev
+Standards-Version: 3.7.3
+Homepage: http://www.enlightenment.org
 
-Package: libengrave0-dev
+Package: libengrave-dev
 Section: libdevel
 Architecture: any
-Depends: libecore0-dev, libevas0-dev, libeet0-dev
-Provides: libengrave-dev
-Conflicts: libengrave-dev
+Depends: libengrave0 (= ${Source-Version}), libecore-dev, libevas-dev, libeet-dev
+Provides: libengrave0-dev
 Description: Enlightenment edje EDC parsing library development files
  Engrave is a library for loading, and writing EDC files.
  .

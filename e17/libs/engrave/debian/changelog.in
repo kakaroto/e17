@@ -2,5 +2,5 @@ engrave (@VERSION@-1) unstable; urgency=low
 
   * a CVS snapshot release.
 
- -- Blake Barnett (shadoi) <shadoi@soulmachine.net>  Fri, 23 Sep 2005 12:58:48 -0700
+ -- Falko Schmidt <falko@alphagemini.org>  Sun, 29 Jun 2008 13:07:34 +0000
 
