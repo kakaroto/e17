@@ -18,7 +18,7 @@ pkg_LTLIBRARIES = ewl_reparent_test.la
 
 ewl_reparent_test_la_SOURCES = ewl_reparent_test.c
 ewl_reparent_test_la_LIBADD = $(top_builddir)/src/lib/libewl.la
-ewl_reparent_test_la_LDFLAGS = -module @create_shared_lib@ -avoid-version
+ewl_reparent_test_la_LDFLAGS = -module @lt_no_undefined@ -avoid-version
 
 FILES = $(ewl_reparent_test_la_SOURCES)
 

@@ -1,13 +1,12 @@
 /* vim: set sw=8 ts=8 sts=8 expandtab: */
-#include "Ewl_Engine_Evas_Gl_Glew.h"
+#include "Ewl_Engine_Evas_Software_DDraw.h"
 #include "ewl_private.h"
 #include "ewl_debug.h"
 #include "ewl_macros.h"
 
+static void ee_canvas_setup(Ewl_Window *win, int debug);
 static int ee_init(Ewl_Engine *engine);
 static void ee_shutdown(Ewl_Engine *engine);
-
-static void ee_canvas_setup(Ewl_Window *win, int debug);
 
 static void *canvas_funcs[EWL_ENGINE_CANVAS_MAX] =
         {
@@ -32,11 +31,11 @@ ewl_engine_dependancies(void)
 Ewl_Engine *
 ewl_engine_create(int *argc __UNUSED__, char ** argv __UNUSED__)
 {
-        Ewl_Engine_Evas_Gl_Glew *engine;
+        Ewl_Engine_Evas_Software_DDraw *engine;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
 
-        engine = NEW(Ewl_Engine_Evas_Gl_Glew, 1);
+        engine = NEW(Ewl_Engine_Evas_Software_DDraw, 1);
         if (!engine)
                 DRETURN_PTR(NULL, DLEVEL_STABLE);
 
@@ -81,32 +80,36 @@ static void
 ee_canvas_setup(Ewl_Window *win, int debug)
 {
         Evas *evas;
-        Evas_Engine_Info *info = NULL;
-        Evas_Engine_Info_GL_Glew *glinfo;
         Ewl_Object *o;
+        Evas_Engine_Info *info = NULL;
+        Evas_Engine_Info_Software_DDraw *sinfo;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(win);
         DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
+        o = EWL_OBJECT(win);
+
         evas = evas_new();
-        evas_output_method_set(evas, evas_render_method_lookup("gl_glew"));
+        evas_output_method_set(evas,
+                        evas_render_method_lookup("software_ddraw"));
 
         info = evas_engine_info_get(evas);
         if (!info)
         {
-                fprintf(stderr, "Unable to use gl_glew engine for rendering, ");
+                fprintf(stderr, "Unable to use software_ddraw engine "
+                                "for rendering, ");
                 exit(-1);
         }
 
-        glinfo = (Evas_Engine_Info_GL_Glew *)info;
+        sinfo = (Evas_Engine_Info_Software_DDraw *)info;
 
-        glinfo->info.window = ecore_win32_window_hwnd_get((Ecore_Win32_Window *)win->window);;
-        glinfo->info.depth = ecore_win32_screen_depth_get();
-
-        o = EWL_OBJECT(win);
+        sinfo->info.window = ecore_win32_window_hwnd_get((Ecore_Win32_Window *)win->window);
+        sinfo->info.depth = ecore_win32_screen_depth_get();
+        sinfo->info.rotation = 0;
 
         evas_engine_info_set(evas, info);
+
         evas_output_size_set(evas, ewl_object_current_w_get(o),
                                         ewl_object_current_h_get(o));
         evas_output_viewport_set(evas, ewl_object_current_x_get(o),
@@ -117,5 +120,6 @@ ee_canvas_setup(Ewl_Window *win, int debug)
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
 
 

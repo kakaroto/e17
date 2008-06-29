@@ -2,9 +2,6 @@
 #ifndef _EWL_PRIVATE_H
 #define _EWL_PRIVATE_H
 
-#include <Ecore_Str.h>
-#include <Ecore_File.h>
-
 #ifdef HAVE_CONFIG_H
 #include "ewl-config.h"
 #endif
@@ -29,6 +26,9 @@ extern "C"
 # endif
 void *alloca (size_t);
 #endif
+
+#include <Ecore_Str.h>
+#include <Ecore_File.h>
 
 #ifndef PATH_MAX
 #define PATH_MAX 4096

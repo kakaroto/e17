@@ -4,18 +4,26 @@
 #include "ewl_private.h"
 #include "ewl_debug.h"
 
-#include <Evas.h>
 #include <unistd.h>
 #if HAVE_FCNTL_H
 # include <fcntl.h>
 #endif /* HAVE_FCNTL_H */
 #include <libgen.h>
 
-#ifdef _WIN32
-# include <io.h>
-# include <share.h>
-# include <sys/locking.h>
-#endif /* _WIN32 */
+#ifdef HAVE_EVIL
+# include <Evil.h>
+#endif
+
+#include <Evas.h>
+
+/*
+ * On Windows, if the file is not opened in binary mode,
+ * read does not return the correct size, because of
+ * CR / LF translation.
+ */
+#ifndef O_BINARY
+# define O_BINARY 0
+#endif
 
 Ewl_Config *ewl_config = NULL;
 Ewl_Config_Cache ewl_config_cache;
@@ -618,16 +626,8 @@ ewl_config_save(Ewl_Config *cfg, Ecore_Hash *hash, const char *file)
         if (!hash)
                 DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-#ifndef _WIN32
-        fd = open(file, O_CREAT | O_WRONLY | O_TRUNC,
+        fd = open(file, O_CREAT | O_WRONLY | O_TRUNC | O_BINARY,
                         S_IRWXU | S_IRGRP | S_IROTH);
-#else
-# ifdef __MINGW32__
-        fd = _sopen(file, O_CREAT | O_WRONLY | O_TRUNC, _SH_DENYRD, S_IRWXU);
-# else
-        _sopen_s(&fd, file, O_CREAT | O_WRONLY | O_TRUNC, _SH_DENYRD, S_IRWXU);
-# endif /* __MINGW32 */
-#endif /* _WIN32 */
         if (fd == -1)
         {
                 DWARNING("Unable to open cfg file %s.", file);
@@ -971,15 +971,7 @@ ewl_config_file_load(Ewl_Config *cfg, unsigned int is_system, const char *file)
         if (!ecore_file_exists(file))
                 DRETURN_INT(FALSE, DLEVEL_STABLE);
 
-#ifndef _WIN32
-        fd = open(file, O_RDONLY, S_IRUSR);
-#else
-# ifdef __MINGW32__
-        fd = _sopen(file, O_RDONLY, _SH_DENYWR, S_IRUSR);
-# else
-        _sopen_s(&fd, file, O_RDONLY, _SH_DENYWR, S_IRUSR);
-# endif /* __MINGW32 */
-#endif /* _WIN32 */
+        fd = open(file, O_RDONLY | O_BINARY, S_IRUSR);
         if (fd == -1)
         {
                 DWARNING("Unable to open cfg file %s.", file);

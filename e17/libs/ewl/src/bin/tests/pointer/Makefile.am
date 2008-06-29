@@ -19,7 +19,7 @@ pkg_LTLIBRARIES = ewl_pointer_test.la
 
 ewl_pointer_test_la_SOURCES = ewl_pointer_test.c
 ewl_pointer_test_la_LIBADD = $(top_builddir)/src/lib/libewl.la @ECORE_LIBS@
-ewl_pointer_test_la_LDFLAGS = -module @create_shared_lib@ -avoid-version
+ewl_pointer_test_la_LDFLAGS = -module @lt_no_undefined@ -avoid-version
 
 FILES = $(ewl_pointer_test_la_SOURCES)
 

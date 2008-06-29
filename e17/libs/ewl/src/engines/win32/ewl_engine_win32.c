@@ -357,7 +357,7 @@ ee_shutdown(Ewl_Engine *engine)
 static void
 ee_window_new(Ewl_Window *win)
 {
-        Ecore_Win32_Window *xwin;
+        Ecore_Win32_Window *window;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(win);
@@ -368,16 +368,16 @@ ee_window_new(Ewl_Window *win)
                 ewl_object_current_h_get(EWL_OBJECT(win)));
 
         if (win->flags & EWL_WINDOW_OVERRIDE)
-                xwin = ecore_win32_window_override_new(0,
+                window = ecore_win32_window_override_new(0,
                                 EWL_EMBED(win)->x, EWL_EMBED(win)->y,
                                 ewl_object_current_w_get(EWL_OBJECT(win)),
                                 ewl_object_current_h_get(EWL_OBJECT(win)));
         else
-                xwin = ecore_win32_window_new(0,
+                window = ecore_win32_window_new(0,
                                 EWL_EMBED(win)->x, EWL_EMBED(win)->y,
                                 ewl_object_current_w_get(EWL_OBJECT(win)),
                                 ewl_object_current_h_get(EWL_OBJECT(win)));
-        win->window = (void *)xwin;
+        win->window = (void *)window;
 
         printf ("flags : %d %d\n", win->flags & EWL_WINDOW_OVERRIDE, win->flags & EWL_WINDOW_BORDERLESS);
         if (win->flags & EWL_WINDOW_BORDERLESS)

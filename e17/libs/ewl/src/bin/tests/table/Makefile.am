@@ -19,7 +19,7 @@ pkg_LTLIBRARIES = ewl_table_test.la
 
 ewl_table_test_la_SOURCES = ewl_table_test.c
 ewl_table_test_la_LIBADD = $(top_builddir)/src/lib/libewl.la
-ewl_table_test_la_LDFLAGS = -module @create_shared_lib@ -avoid-version
+ewl_table_test_la_LDFLAGS = -module @lt_no_undefined@ -avoid-version
 
 FILES = $(ewl_table_test_la_SOURCES)
 

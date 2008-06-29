@@ -20,7 +20,7 @@ pkg_LTLIBRARIES = ewl_freebox_test.la
 
 ewl_freebox_test_la_SOURCES = ewl_freebox_test.c
 ewl_freebox_test_la_LIBADD = $(top_builddir)/src/lib/libewl.la
-ewl_freebox_test_la_LDFLAGS = -module @create_shared_lib@ -avoid-version
+ewl_freebox_test_la_LDFLAGS = -module @lt_no_undefined@ -avoid-version
 
 FILES = $(ewl_freebox_test_la_SOURCES)
 

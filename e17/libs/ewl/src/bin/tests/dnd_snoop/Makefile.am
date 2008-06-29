@@ -20,7 +20,7 @@ pkg_LTLIBRARIES = ewl_dnd_snoop_test.la
 
 ewl_dnd_snoop_test_la_SOURCES = ewl_dnd_snoop_test.c
 ewl_dnd_snoop_test_la_LIBADD = $(top_builddir)/src/lib/libewl.la @ECORE_X_LIBS@
-ewl_dnd_snoop_test_la_LDFLAGS = -module @create_shared_lib@ -avoid-version
+ewl_dnd_snoop_test_la_LDFLAGS = -module @lt_no_undefined@ -avoid-version
 
 FILES = $(ewl_dnd_snoop_test_la_SOURCES)
 

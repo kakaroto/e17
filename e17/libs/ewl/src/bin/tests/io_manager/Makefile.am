@@ -19,7 +19,7 @@ pkg_LTLIBRARIES = ewl_io_manager_test.la
 
 ewl_io_manager_test_la_SOURCES = ewl_io_manager_test.c
 ewl_io_manager_test_la_LIBADD = $(top_builddir)/src/lib/libewl.la @ECORE_LIBS@
-ewl_io_manager_test_la_LDFLAGS = -module @create_shared_lib@ -avoid-version
+ewl_io_manager_test_la_LDFLAGS = -module @lt_no_undefined@ -avoid-version
 
 FILES = $(ewl_io_manager_test_la_SOURCES)
 

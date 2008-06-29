@@ -19,7 +19,7 @@ pkg_LTLIBRARIES = ewl_grid_test.la
 
 ewl_grid_test_la_SOURCES = ewl_grid_test.c
 ewl_grid_test_la_LIBADD = $(top_builddir)/src/lib/libewl.la
-ewl_grid_test_la_LDFLAGS = -module @create_shared_lib@ -avoid-version
+ewl_grid_test_la_LDFLAGS = -module @lt_no_undefined@ -avoid-version
 
 FILES = $(ewl_grid_test_la_SOURCES)
 

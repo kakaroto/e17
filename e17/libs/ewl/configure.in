@@ -1,4 +1,4 @@
-dnl Process this file with autoconf to produce a configure script.
+# Process this file with autoconf to produce a configure script.
 
 AC_INIT(ewl, 0.5.2.042, enlightenment-devel@lists.sourceforge.net)
 AC_PREREQ(2.52)
@@ -9,20 +9,13 @@ AC_CANONICAL_HOST
 AM_INIT_AUTOMAKE(1.6 dist-bzip2)
 AM_CONFIG_HEADER(ewl-config.h)
 
-AC_ISC_POSIX
-AC_PROG_CC
-AM_PROG_CC_STDC
-AC_HEADER_STDC
-AC_C_CONST
-AC_C___ATTRIBUTE__
-
 AC_LIBTOOL_WIN32_DLL
 define([AC_LIBTOOL_LANG_CXX_CONFIG], [:])dnl
 define([AC_LIBTOOL_LANG_F77_CONFIG], [:])dnl
 AC_PROG_LIBTOOL
 
-dnl Define these at the bottom as they are not release versions, but API
-dnl revisions numbers.
+# Define these at the bottom as they are not release versions, but API
+# revisions numbers.
 INTERFACE_CURRENT="1"
 INTERFACE_REVISION="0"
 INTERFACE_AGE="0"
@@ -34,42 +27,131 @@ AC_DEFINE_UNQUOTED(INTERFACE_CURRENT, "$INTERFACE_CURRENT", [Interface current v
 AC_DEFINE_UNQUOTED(INTERFACE_REVISION, "$INTERFACE_REVISION", [Interface revision number])
 AC_DEFINE_UNQUOTED(INTERFACE_AGE, "$INTERFACE_AGE", [Interface age number])
 
-dnl disable static lib for modules.
+# disable static lib for modules.
 AC_SUBST([AM_LIBTOOLFLAGS], [--tag=disable-static])
 
-AC_ARG_ENABLE(gcov,
-  AC_HELP_STRING([--enable-gcov],
-  [compile with coverage profiling instrumentation]),
-  [enable_gcov=$enableval],
-  [enable_gcov="no"]
-)
-AC_MSG_CHECKING([whether to use profiling instrumentation])
-AC_MSG_RESULT($enable_gcov)
 
-if test "x$enable_gcov" = "xyes" ; then
-  AC_CHECK_PROG(have_lcov,
-    [lcov],
-    [yes],
-    [no]
-  )
-  if test "x$have_lcov" = "xyes" ; then
-    GCOV_CFLAGS="-fprofile-arcs -ftest-coverage"
-    GCOV_LIBS="-lgcov"
-dnl remove any optimisation flag
-    CFLAGS="-O0"
-  else
-    AC_MSG_WARN([lcov is not found, disable profiling instrumentation])
-    enable_gcov="no"
-  fi
+## Check for programs
+AC_ISC_POSIX
+AC_PROG_CC
+AC_PROG_CC_STDC
+PKG_PROG_PKG_CONFIG
+
+## Check for libraries
+AC_CHECK_LIB([m], [sqrt])
+
+case "$host_os" in
+  mingw*|cegcc)
+    PKG_CHECK_MODULES([EVIL], [evil])
+    AC_DEFINE(HAVE_EVIL, 1, [Set to 1 if evil package is installed])
+    ;;
+esac
+
+have_evas="no"
+PKG_CHECK_MODULES([EVAS], [evas >= 0.9.9], [have_evas="yes"])
+AM_CONDITIONAL(EWL_ENABLE_EVAS, test "x$have_evas" = "xyes")
+
+PKG_CHECK_MODULES([EFREET], [efreet >= 0.0.3 efreet-mime])
+PKG_CHECK_MODULES([ECORE], [ecore-txt ecore-file])
+PKG_CHECK_MODULES([ECORE_EVAS], [ecore-evas])
+PKG_CHECK_MODULES([EDJE], [edje >= 0.5.0])
+
+requirements="evas ecore edje efreet"
+
+# Check for libraries needed by engines
+PKG_CHECK_MODULES([ECORE_X], [ecore-x >= 0.9.9], [have_ecore_x="yes"], [have_ecore_x="no"])
+
+PKG_CHECK_MODULES([ECORE_XCB], [xcb >= 1.0 ecore-x >= 0.9.9], [have_ecore_xcb="yes"], [have_ecore_xcb="no"])
+# Disable xcb support for now
+have_ecore_xcb="no"
+
+PKG_CHECK_MODULES([ECORE_WIN32], [ecore-win32 >= 0.9.9], [have_ecore_win32="yes"], [have_ecore_win32="no"])
+
+PKG_CHECK_MODULES([ECORE_SDL], [ecore-sdl >= 0.9.9], [have_ecore_sdl="yes"], [have_ecore_sdl="no"])
+
+PKG_CHECK_MODULES([ECORE_FB], [ecore-fb >= 0.9.9], [have_ecore_framebuffer="yes"], [have_ecore_framebuffer="no"])
+
+# Check for optional libraries
+
+PKG_CHECK_MODULES([EMOTION], [emotion >= 0.0.1], [have_emotion="yes"], [have_emotion="no"])
+PKG_CHECK_MODULES([EPSILON], [epsilon >= 0.3.0], [have_epsilon="yes"], [have_epsilon="no"])
+
+
+## Check for header files
+AC_HEADER_STDC
+AC_CHECK_HEADERS([fcntl.h fnmatch.h grp.h langinfo.h limits.h locale.h pwd.h stddef.h])
+
+## Checks for typedefs, structures, and compiler characteristics.
+AC_TYPE_MODE_T
+AC_TYPE_OFF_T
+AC_TYPE_SIZE_T
+AC_STRUCT_TM
+
+AC_C_CONST
+AC_C___ATTRIBUTE__
+
+# Use -Wall if we have gcc.
+changequote(,)dnl
+if test "x$GCC" = "xyes"; then
+  case " $CFLAGS " in
+  *[\ \	]-Wall[\ \	]*) ;;
+  *) CFLAGS="$CFLAGS -Wall" ;;
+  esac
 fi
-AC_SUBST(GCOV_CFLAGS)
-AC_SUBST(GCOV_LIBS)
+changequote([,])dnl
 
-AM_CONDITIONAL(EWL_ENABLE_GCOV, test "x$enable_gcov" = "xyes")
+# Cross compiling
+WIN32_CFLAGS=""
+case "$host_os" in
+  cegcc*)
+    WIN32_CFLAGS="-mwin32 -mnop-fun-dllimport"
+    ;;
+  mingw*)
+    WIN32_CFLAGS="-mnop-fun-dllimport"
+    ;;
+esac
+AC_SUBST(WIN32_CFLAGS)
 
+
+## Checks for library functions.
 AC_FUNC_ALLOCA
+AC_FUNC_CLOSEDIR_VOID
+AC_FUNC_MALLOC
+AC_FUNC_MEMCMP
+AC_FUNC_REALLOC
+AC_FUNC_STAT
+AC_FUNC_STRCOLL
+AC_CHECK_FUNCS([dup2 memmove memset nl_langinfo setenv setlocale sqrt strcasecmp strchr strdup strncasecmp strrchr strstr])
 
-AC_CHECK_HEADERS([pwd.h grp.h langinfo.h fcntl.h])
+fnmatch_libs=""
+AC_CHECK_FUNCS(fnmatch, res=yes, res=no)
+if test "x$res" = "xno"; then
+	AC_CHECK_LIB(fnmatch, fnmatch, res=yes fnmatch_libs="-lfnmatch", res=no)
+dnl Test for compilation with MinGW.
+dnl fnmatch function is in the libiberty library
+	if test "x$res" = "xno"; then
+		AC_CHECK_LIB(iberty, fnmatch, res=yes fnmatch_libs="-liberty", res=no)
+	fi
+	if test "x$res" = "xno"; then
+		AC_MSG_ERROR([Cannot find fnmatch() in neither libc nor libfnmatch, nor libiberty])
+	fi
+fi
+
+AC_SUBST(fnmatch_libs)
+
+## Set linker flags
+lt_no_undefined=""
+lt_enable_auto_import=""
+case "$host_os" in
+  mingw*|cegcc)
+    lt_enable_auto_import="-Wl,--enable-auto-import"
+    lt_no_undefined="-no-undefined"
+    ;;
+esac
+AC_SUBST(lt_no_undefined)
+AC_SUBST(lt_enable_auto_import)
+
+
 
 have_locking="no"
 AC_COMPILE_IFELSE(
@@ -112,58 +194,12 @@ if test "x${have_locking}" = "xno"; then
   AC_MSG_ERROR([Error: no fcntl() nor _locking() is available.])
 fi
 
-dnl Use -Wall if we have gcc.
-changequote(,)dnl
-if test "x$GCC" = "xyes"; then
-  case " $CFLAGS " in
-  *[\ \	]-Wall[\ \	]*) ;;
-  *) CFLAGS="$CFLAGS -Wall" ;;
-  esac
-fi
-changequote([,])dnl
+## Engines
 
-create_shared_lib=""
-case "$host_os" in
-     mingw|mingw32)
-        create_shared_lib="-no-undefined"
-        ewl_evas_engine_default="evas_gl_glew"
-        ;;
-     *)
-        ewl_evas_engine_default="evas_software_x11"
-        ;;
-esac
-AC_SUBST(create_shared_lib)
-AC_SUBST(ewl_evas_engine_default)
+# Buffer engine
+EWL_CHECK_ENGINE([software_buffer], [buffer], [0.9.9], ["yes"])
 
-have_evas="no"
-PKG_CHECK_MODULES(EVAS, [evas >= 0.9.9], [have_evas="yes"])
-AM_CONDITIONAL(EWL_ENABLE_EVAS, test "x$have_evas" = "xyes")
-
-PKG_CHECK_MODULES(EFREET, [
-  efreet >= 0.0.3
-  efreet-mime
-])
-
-PKG_CHECK_MODULES(ECORE, [
-  ecore-txt
-  ecore-file
-])
-
-PKG_CHECK_MODULES(ECORE_EVAS, [
-  ecore-evas
-])
-
-PKG_CHECK_MODULES(EDJE, [edje >= 0.5.0])
-
-requirements="evas ecore edje efreet"
-
-dnl Xlib engines
-
-PKG_CHECK_MODULES(ECORE_X,
-  [ecore-x >= 0.9.9],
-  [have_ecore_x="yes"],
-  [have_ecore_x="no"])
-
+# Xlib engines
 EWL_CHECK_ENGINE([software_x11], [software X11], [0.9.9], [$have_ecore_x])
 EWL_CHECK_ENGINE([software_16_x11], [software 16 bpp X11], [0.9.9], [$have_ecore_x])
 EWL_CHECK_ENGINE([xrender_x11], [xrender X11], [0.9.9], [$have_ecore_x])
@@ -171,95 +207,103 @@ EWL_CHECK_ENGINE([opengl_x11], [opengl X11], [0.9.9], [$have_ecore_x])
 
 AM_CONDITIONAL(EWL_ENABLE_X11, test "x$have_ecore_x" = "xyes" -a "x$have_software_x11" = "xyes" -o "x$have_software_16_x11" = "xyes" -o "x$have_xrender_x11" = "xyes" -o "x$have_opengl_x11" = "xyes")
 
-dnl XCB engine
-
-PKG_CHECK_MODULES(ECORE_XCB,
-  [xcb >= 1.0 ecore-x >= 0.9.9],
-  [have_ecore_xcb="yes"],
-  [have_ecore_xcb="no"])
-
-dnl Disable xcb support for now
-have_ecore_xcb="no"
-
+# XCB engine
 EWL_CHECK_ENGINE([software_xcb], [software XCB], [0.9.9], [$have_ecore_xcb])
 
 AM_CONDITIONAL(EWL_ENABLE_XCB, test "x$have_software_xcb" = "xyes" -a "x$have_ecore_xcb" = "xyes")
 
-PKG_CHECK_MODULES(ECORE_SDL,
-  [ecore-sdl >= 0.9.9],
-  [have_ecore_sdl="yes"],
-  [have_ecore_sdl="no"])
+dnl Win32 engines
+EWL_CHECK_ENGINE([software_ddraw], [software DirectDraw], [0.9.9], [$have_ecore_win32])
+EWL_CHECK_ENGINE([opengl_glew], [opengl Glew], [0.9.9], [$have_ecore_win32])
 
+AM_CONDITIONAL(EWL_ENABLE_WIN32, test "x$have_ecore_win32" = "xyes" -a "x$have_opengl_glew" = "xyes" -o "x$have_software_ddraw" = "xyes")
+
+# SDL engine
 EWL_CHECK_ENGINE([software_sdl], [software SDL], [0.9.9], [$have_ecore_sdl])
 
 dnl Frame Buffer engine
-
-PKG_CHECK_MODULES(ECORE_FB,
-  [ecore-fb >= 0.9.9],
-  [have_ecore_framebuffer="yes"],
-  [have_ecore_framebuffer="no"])
-
 EWL_CHECK_ENGINE([fb], [framebuffer], [0.9.9], [$have_ecore_framebuffer])
 
-dnl Buffer engine
+# Set default engine
+case "$host_os" in
+     mingw|mingw32)
+        ewl_evas_engine_default="evas_gl_glew"
+        ;;
+     *)
+        ewl_evas_engine_default="evas_software_x11"
+        ;;
+esac
+AC_SUBST(ewl_evas_engine_default)
 
-EWL_CHECK_ENGINE([software_buffer], [buffer], [0.9.9], ["yes"])
 
-dnl Win32 engines
+## Optional components
 
-PKG_CHECK_MODULES(ECORE_WIN32,
-  [ecore-win32 >= 0.9.9],
-  [have_ecore_win32="yes"],
-  [have_ecore_win32="no"])
+if test "x${have_emotion}" = "xyes" ; then
+  ewl_media_include="#include <ewl_media.h>"
+  requirements="$requirements emotion"
+  AC_DEFINE(BUILD_EMOTION_SUPPORT, 1, [Enable Emotion Support for Ewl_Media])
+fi
+AC_SUBST(ewl_media_include)
 
-EWL_CHECK_ENGINE([opengl_glew], [opengl Glew], [0.9.9], [$have_ecore_win32])
+if test "x${have_epsilon}" = "xyes" ; then
+  requirements="$requirements epsilon"
+  AC_DEFINE(BUILD_EPSILON_SUPPORT, 1, [Enable Epsilon Support for Ewl_Image])
+fi
 
-AM_CONDITIONAL(EWL_ENABLE_WIN32, test "x$have_ecore_win32" = "xyes" -a "x$have_opengl_glew" = "xyes" )
 
-PKG_CHECK_MODULES(EMOTION, [emotion >= 0.0.1],
-  [
-    have_emotion="yes"
-    ewl_media_include="#include <ewl_media.h>"
-    requirements="$requirements emotion"
-    AC_DEFINE(BUILD_EMOTION_SUPPORT, 1, [Enable Emotion Support for Ewl_Media])
-  ],
-  [
-    have_emotion="no"
-  ]
-)
+## Arguments
 
-PKG_CHECK_MODULES(EPSILON, [epsilon >= 0.3.0],
-  [
-    have_epsilon="yes"
-    requirements="$requirements epsilon"
-    AC_DEFINE(BUILD_EPSILON_SUPPORT, 1, [Enable Epsilon Support for Ewl_Image])
-  ],
-  [
-    have_epsilon="no"
-  ]
-)
-
+# Debug
 AC_ARG_ENABLE(debug,
 	[AC_HELP_STRING([--enable-debug],[enable debug support])],
 	[enable_debug=$enableval], [enable_debug="yes"])
-if test "x$enable_debug" = xyes ; then
-    AC_DEFINE(EWL_ENABLE_DEBUG, 1, [Enable debug support])
+AC_MSG_CHECKING([whether to build in debug mode])
+AC_MSG_RESULT(${enable_debug})
+
+if test "x${enable_debug}" = "xyes" ; then
+  AC_DEFINE(EWL_ENABLE_DEBUG, 1, [Enable debug support])
 else
-    AC_DEFINE(EWL_ENABLE_DEBUG, 0, [Enable debug support])
+  AC_DEFINE(EWL_ENABLE_DEBUG, 0, [Enable debug support])
+  enable_debug="no"
 fi
 
+# Tests
 AC_ARG_ENABLE(tests,
-	[AC_HELP_STRING([--disable-tests],[disable the build of tests])])
+	[AC_HELP_STRING([--disable-tests],[disable the build of tests])],
+	[enable_tests=$enableval], [enable_tests="yes"])
+AC_MSG_CHECKING([whether to build test program])
+AC_MSG_RESULT(${enable_tests})
 
-if test "x$enableval" = "xyes" ; then
-    enable_tests="yes"
-else
-    enable_tests="no"
+AM_CONDITIONAL(EWL_TESTS_BUILD, test "x${enable_tests}" = "xyes")
+
+# Coverage
+AC_ARG_ENABLE(gcov,
+  AC_HELP_STRING([--enable-gcov],
+  [compile with coverage profiling instrumentation]),
+  [enable_gcov=$enableval],
+  [enable_gcov="no"]
+)
+AC_MSG_CHECKING([whether to use profiling instrumentation])
+AC_MSG_RESULT(${enable_gcov})
+
+if test "x${enable_gcov}" = "xyes" ; then
+  AC_CHECK_PROG(have_lcov, [lcov], [yes], [no])
+
+  if test "x${have_lcov}" = "xyes" ; then
+    GCOV_CFLAGS="-fprofile-arcs -ftest-coverage"
+    GCOV_LIBS="-lgcov"
+dnl remove any optimisation flag
+    CFLAGS="-O0"
+  else
+    AC_MSG_WARN([lcov is not found, disable profiling instrumentation])
+    enable_gcov="no"
+  fi
 fi
+AC_SUBST(GCOV_CFLAGS)
+AC_SUBST(GCOV_LIBS)
 
-AM_CONDITIONAL(EWL_TESTS_BUILD, test "x$enable_tests" = "xyes")
+AM_CONDITIONAL(EWL_ENABLE_GCOV, test "x${enable_gcov}" = "xyes")
 
-AC_SUBST(ewl_media_include)
 
 AC_SUBST(requirements)
 
@@ -349,6 +393,7 @@ src/engines/evas_fb/Makefile
 src/engines/evas_buffer/Makefile
 src/engines/win32/Makefile
 src/engines/evas_gl_glew/Makefile
+src/engines/evas_software_ddraw/Makefile
 data/Makefile
 data/config/Makefile
 data/config/ewl.cfg
@@ -370,30 +415,31 @@ debian/changelog
 ])
 
 echo
-echo "$PACKAGE $VERSION"
+echo "${PACKAGE} ${VERSION}"
 echo
 echo "Engines:"
 echo
-echo "  Software X11.............................: $have_software_x11"
-echo "  Software 16 X11..........................: $have_software_16_x11"
-echo "  OpenGL X11...............................: $have_opengl_x11"
-echo "  XRender X11..............................: $have_xrender_x11"
-echo "  Software XCB.............................: $have_software_xcb"
-echo "  Framebuffer..............................: $have_fb"
-echo "  SDL......................................: $have_software_sdl"
-echo "  Buffer...................................: $have_software_buffer"
-echo "  OpenGL Glew..............................: $have_opengl_glew"
+echo "  Buffer...................................: ${have_software_buffer}"
+echo "  Software X11.............................: ${have_software_x11}"
+echo "  XRender X11..............................: ${have_xrender_x11}"
+echo "  OpenGL X11...............................: ${have_opengl_x11}"
+echo "  Software XCB.............................: ${have_software_xcb}"
+echo "  Software DirectDraw......................: ${have_software_ddraw}"
+echo "  OpenGL Glew..............................: ${have_opengl_glew}"
+echo "  SDL......................................: ${have_software_sdl}"
+echo "  Framebuffer..............................: ${have_fb}"
+echo "  Software 16 X11..........................: ${have_software_16_x11}"
 echo
 echo "Optional Components:"
 echo
-echo "  Emotion Support..........................: $have_emotion"
-echo "  Epsilon Support..........................: $have_epsilon"
+echo "  Emotion Support..........................: ${have_emotion}"
+echo "  Epsilon Support..........................: ${have_epsilon}"
 echo
-echo "Debug Support..............................: $enable_debug"
+echo "Debug Support..............................: ${enable_debug}"
 echo
-echo "Coverage Support...........................: $enable_gcov"
+echo "Coverage Support...........................: ${enable_gcov}"
 echo
-echo "Build tests................................: $enable_tests"
+echo "Build tests................................: ${enable_tests}"
 echo
-echo "Now type 'make' ('gmake' on some systems) to compile $PACKAGE."
+echo "Now type 'make' ('gmake' on some systems) to compile ${PACKAGE}."
 echo

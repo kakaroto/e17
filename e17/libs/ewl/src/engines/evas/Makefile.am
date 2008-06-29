@@ -7,7 +7,8 @@ AM_CPPFLAGS = \
 -I$(top_builddir)/src/engines/evas \
 @EVAS_CFLAGS@ \
 @ECORE_CFLAGS@ \
-@EDJE_CFLAGS@
+@EDJE_CFLAGS@ \
+@WIN32_CFLAGS@
 
 pkgdir = $(libdir)/ewl/engines
 
@@ -19,8 +20,8 @@ evas_la_SOURCES = \
 Ewl_Engine_Evas.h \
 ewl_engine_evas.c
 
-evas_la_LIBADD = $(top_builddir)/src/lib/libewl.la @EDJE_LIBS@ @EVAS_LIBS@
-evas_la_LDFLAGS = -module @create_shared_lib@ -version-info @INTERFACE_VERSION@
+evas_la_LIBADD = $(top_builddir)/src/lib/libewl.la @EDJE_LIBS@ @ECORE_LIBS@ @EVAS_LIBS@
+evas_la_LDFLAGS = @lt_no_undefined@ @lt_enable_auto_import@ -module -version-info @INTERFACE_VERSION@
 evas_la_DEPENDENCIES =
 
 endif

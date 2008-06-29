@@ -20,7 +20,7 @@ Ewl_Engine_Evas_Gl_Glew.h \
 ewl_engine_evas_gl_glew.c
 
 evas_gl_glew_la_LIBADD = $(top_builddir)/src/lib/libewl.la @ECORE_WIN32_LIBS@ @ECORE_LIBS@ @EVAS_LIBS@
-evas_gl_glew_la_LDFLAGS = -module @create_shared_lib@ -version-info @INTERFACE_VERSION@
+evas_gl_glew_la_LDFLAGS = @lt_no_undefined@ @lt_enable_auto_import@ -module -version-info @INTERFACE_VERSION@
 evas_gl_glew_la_DEPENDENCIES =
 
 endif

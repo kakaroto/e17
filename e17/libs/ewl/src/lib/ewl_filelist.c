@@ -12,6 +12,7 @@
 #include "ewl_private.h"
 #include "ewl_debug.h"
 #include "ewl_scrollpane.h"
+
 #include <sys/types.h>
 #if HAVE_PWD_H
 # include <pwd.h>
@@ -649,7 +650,6 @@ ewl_filelist_perms_get(mode_t st_mode)
         if ((S_IWUSR & st_mode) == S_IWUSR) perm[1] = 'w';
         if ((S_IXUSR & st_mode) == S_IXUSR) perm[2] = 'x';
 
-#ifndef _WIN32
         if ((S_IRGRP & st_mode) == S_IRGRP) perm[3] = 'r';
         if ((S_IWGRP & st_mode) == S_IWGRP) perm[4] = 'w';
         if ((S_IXGRP & st_mode) == S_IXGRP) perm[5] = 'x';
@@ -657,14 +657,13 @@ ewl_filelist_perms_get(mode_t st_mode)
         if ((S_IROTH & st_mode) == S_IROTH) perm[6] = 'r';
         if ((S_IWOTH & st_mode) == S_IWOTH) perm[7] = 'w';
         if ((S_IXOTH & st_mode) == S_IXOTH) perm[8] = 'x';
-#endif /* _WIN32 */
 
         DRETURN_PTR(perm, DLEVEL_STABLE);
 }
 
 /**
  * @param st_uid: The userid to lookup. On Windows, this parameter
- *                should be unused.
+ *                is unused.
  * @return Returns the user name for the given user id
  * @brief Convertes the given user id into the approriate user name
  */
@@ -674,10 +673,6 @@ ewl_filelist_username_get(uid_t st_uid)
         char name[PATH_MAX];
 #ifdef HAVE_PWD_H
         struct passwd *pwd = NULL;
-#else
-# ifdef _WIN32
-        char *homedir;
-# endif /* _WIN32 */
 #endif /* HAVE_PWD_H */
 
         DENTER_FUNCTION(DLEVEL_STABLE);
@@ -687,26 +682,6 @@ ewl_filelist_username_get(uid_t st_uid)
         if (pwd)
                 snprintf(name, PATH_MAX, "%s", pwd->pw_name);
         else
-#else
-# ifdef _WIN32
-        /* we are on Windows, so we get the user name from */
-        /* the environment variable HOME or USERPROFILE */
-        homedir = getenv("HOME");
-        if (!homedir) homedir = getenv("USERPROFILE");
-        if (homedir)
-        {
-                char *p;
-                p = homedir;
-                while (p)
-                {
-                        if (*p == '\\') *p = '/';
-                        p++;
-                }
-                p = strrchr(homedir, '/');
-                snprintf(name, PATH_MAX, "%s", p);
-        }
-        else
-# endif /* _WIN32 */
 #endif /* HAVE_PWD_H */
                 snprintf(name, PATH_MAX, "%-8d", (int)st_uid);
 
@@ -714,7 +689,8 @@ ewl_filelist_username_get(uid_t st_uid)
 }
 
 /**
- * @param st_gid: The group id to convert
+ * @param st_gid: The group id to convert On Windows, this parameter
+ *                is unused.
  * @return Returns the group name for the given id
  * @brief Converts the given group id into a group name
  */

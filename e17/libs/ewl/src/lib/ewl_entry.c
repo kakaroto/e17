@@ -10,81 +10,15 @@
 #endif /* HAVE_LANGINFO_H */
 #include "ewl_debug.h"
 
+#ifdef HAVE_EVIL
+# include <Evil.h>
+#endif /* HAVE_EVIL */
+
+
 static Ewl_Widget *ewl_entry_view_cb_widget_fetch(void *data, unsigned int row,
                                                         unsigned int col);
 static Ewl_Widget *ewl_entry_view_cb_header_fetch(void *data, unsigned int col);
 
-#ifdef _WIN32
-# include <locale.h>
-
-typedef int nl_item;
-# define __NL_ITEM( CATEGORY, INDEX )  ((CATEGORY << 16) | INDEX)
-
-# define __NL_ITEM_CATEGORY( ITEM )    (ITEM >> 16)
-# define __NL_ITEM_INDEX( ITEM )       (ITEM & 0xffff)
-
-/*
- * Enumerate the item classification indices...
- *
- */
-enum {
-  /*
-   * LC_CTYPE category...
-   * Character set classification items.
-   *
-   */
-  _NL_CTYPE_CODESET = __NL_ITEM( LC_CTYPE, 0 ),
-
-  /*
-   * Dummy entry, to terminate the list.
-   *
-   */
-  _NL_ITEM_CLASSIFICATION_END
-};
-
-/*
- * Define the public aliases for the enumerated classification indices...
- *
- */
-# define CODESET       _NL_CTYPE_CODESET
-
-static char *replace( char *prev, char *value )
-{
-  if( value == NULL )
-    return prev;
-
-  if( prev )
-    free( prev );
-  return strdup( value );
-}
-
-char *nl_langinfo( nl_item index )
-{
-  // static char result[128];
-  static char *result = NULL;
-  static char *nothing = "";
-
-  switch( index )
-  {
-    case CODESET:
-      {
-        char *p;
-        result = replace( result, setlocale( LC_CTYPE, NULL ));
-        if( (p = strrchr( result, '.' )) == NULL )
-          return nothing;
-
-        if( (++p - result) > 2 )
-          strcpy( result, "cp" );
-        else
-          *result = '\0';
-        strcat( result, p );
-        return result;
-      }
-  }
-  return nothing;
-}
-
-#endif /* _WIN32 */
 
 /**
  * @return Returns a new Ewl_Widget on success or NULL on failure

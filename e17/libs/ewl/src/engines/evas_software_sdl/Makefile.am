@@ -19,7 +19,7 @@ Ewl_Engine_Evas_Software_SDL.h \
 ewl_engine_evas_software_sdl.c
 
 evas_software_sdl_la_LIBADD = $(top_builddir)/src/lib/libewl.la @ECORE_SDL_LIBS@ @EVAS_LIBS@
-evas_software_sdl_la_LDFLAGS = -module @create_shared_lib@ -version-info @INTERFACE_VERSION@
+evas_software_sdl_la_LDFLAGS = -module @lt_no_undefined@ -version-info @INTERFACE_VERSION@
 evas_software_sdl_la_DEPENDENCIES =
 
 endif

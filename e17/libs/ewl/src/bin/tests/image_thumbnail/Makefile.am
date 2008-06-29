@@ -21,7 +21,7 @@ pkg_LTLIBRARIES = ewl_image_thumbnail_test.la
 
 ewl_image_thumbnail_test_la_SOURCES = ewl_image_thumbnail_test.c
 ewl_image_thumbnail_test_la_LIBADD = $(top_builddir)/src/lib/libewl.la @ECORE_LIBS@
-ewl_image_thumbnail_test_la_LDFLAGS = -module @create_shared_lib@ -avoid-version
+ewl_image_thumbnail_test_la_LDFLAGS = -module @lt_no_undefined@ -avoid-version
 
 FILES = $(ewl_image_thumbnail_test_la_SOURCES)
 

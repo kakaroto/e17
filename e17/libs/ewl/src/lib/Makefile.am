@@ -9,7 +9,7 @@ AM_CPPFLAGS = \
 -DPACKAGE_LIB_DIR=\"$(libdir)\" \
 -DPACKAGE_SYSCONF_DIR=\"$(sysconfdir)\" \
 $(GCOV_CFLAGS) \
-@EDJE_CFLAGS@ @ECORE_CFLAGS@ @EVAS_CFLAGS@ @EMOTION_CFLAGS@ @EPSILON_CFLAGS@ @EFREET_CFLAGS@
+@EDJE_CFLAGS@ @ECORE_CFLAGS@ @EVAS_CFLAGS@ @EMOTION_CFLAGS@ @EPSILON_CFLAGS@ @EFREET_CFLAGS@ @EVIL_CFLAGS@
 
 lib_LTLIBRARIES = libewl.la
 
@@ -190,8 +190,8 @@ libewl_la_SOURCES = \
 installed_headersdir = $(prefix)/include/ewl
 installed_headers_DATA = $(EWLHEADERS)
 
-libewl_la_LIBADD = $(GCOV_LIBS) @EMOTION_LIBS@ @EPSILON_LIBS@ @EFREET_LIBS@ @EDJE_LIBS@ @ECORE_LIBS@ @EVAS_LIBS@ -lm
-libewl_la_LDFLAGS = @create_shared_lib@ -version-info @INTERFACE_VERSION@
+libewl_la_LIBADD = $(GCOV_LIBS) @EMOTION_LIBS@ @EPSILON_LIBS@ @EFREET_LIBS@ @EDJE_LIBS@ @ECORE_LIBS@ @EVAS_LIBS@ @EVIL_LIBS@ @fnmatch_libs@ -lm
+libewl_la_LDFLAGS = @lt_no_undefined@ @lt_enable_auto_import@ -version-info @INTERFACE_VERSION@
 libewl_la_LIBTOOLFLAGS =
 
 clean-local:
