@@ -73,6 +73,7 @@ on_AllButton_click(Etk_Button *button, void *data)
    Etk_Tree_Row *row, *next, *prev;
    Etk_Combobox_Item *item;
    Etk_Iconbox_Icon *icon;
+   Evas_List *icons, *l;
 
    switch ((int)data)
       {
@@ -190,17 +191,18 @@ on_AllButton_click(Etk_Button *button, void *data)
       ShowFilechooser(FILECHOOSER_FONT);
       break;
    case IMAGE_TWEEN_ADD:
-      icon = etk_iconbox_icon_get_selected(ETK_ICONBOX(UI_ImageBrowserIconbox));
-      tween = etk_iconbox_icon_label_get(icon);
-      if (tween)
+      icons = etk_iconbox_icon_get_selected(ETK_ICONBOX(UI_ImageBrowserIconbox));
+      for (l = icons; l; l = l->next)
+         if (tween = etk_iconbox_icon_label_get(l->data))
+            edje_edit_state_tween_add(edje_o, Cur.part->string,
+                                      Cur.state->string, tween);
+      if (icons)
       {
-         if(edje_edit_state_tween_add(edje_o, Cur.part->string, Cur.state->string, tween))
-         {
-            PopulateTweenList();
-            row = etk_tree_last_row_get(ETK_TREE(UI_ImageTweenList));
-            etk_tree_row_select(row);
-            etk_tree_row_scroll_to(row, ETK_FALSE);
-         }
+         evas_list_free(icons);
+         PopulateTweenList();
+         row = etk_tree_last_row_get(ETK_TREE(UI_ImageTweenList));
+         etk_tree_row_select(row);
+         etk_tree_row_scroll_to(row, ETK_FALSE);
       }
       else
       {
