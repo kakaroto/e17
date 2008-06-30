@@ -57,6 +57,29 @@ Etk_Widget *etk_viewport_new(void)
    return etk_widget_new(ETK_VIEWPORT_TYPE, NULL);
 }
 
+/**
+ * @brief Sets the hold_events flag for the viewport
+ * This sets the hold_events flag. When set all events on children of the
+ * viewport have the ETK_MODIFIER_ON_HOLD in the modifier flags if it is
+ * used by a scrolled view
+ */
+void etk_viewport_hold_events_set(Etk_Viewport *viewport, Etk_Bool hold_events)
+{
+   if (!viewport) return;
+   viewport->hold_events = hold_events;
+}
+
+/**
+ * @brief Gets the hold_events flag for the viewport
+ * @return Returns the hold_events flag
+ */
+Etk_Bool etk_viewport_hold_events_get(Etk_Viewport *viewport)
+{
+   if (!viewport) return ETK_FALSE;
+   return viewport->hold_events;
+}
+
+
 /**************************
  *
  * Etk specific functions
@@ -168,6 +191,39 @@ static void _etk_viewport_scroll_size_get(Etk_Widget *widget, Etk_Size scrollvie
  *
  **************************/
 
+static void _etk_viewport_mouse_down_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+   Etk_Viewport *viewport;
+   Evas_Event_Mouse_Down *event;
+   
+   if (!(viewport = ETK_VIEWPORT(data)) || !(event = event_info))
+      return;
+   if (viewport->hold_events)
+     event->event_flags |= EVAS_EVENT_FLAG_ON_HOLD;
+}
+
+static void _etk_viewport_mouse_up_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+   Etk_Viewport *viewport;
+   Evas_Event_Mouse_Up *event;
+   
+   if (!(viewport = ETK_VIEWPORT(data)) || !(event = event_info))
+      return;
+   if (viewport->hold_events)
+     event->event_flags |= EVAS_EVENT_FLAG_ON_HOLD;
+}
+
+static void _etk_viewport_mouse_move_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
+{
+   Etk_Viewport *viewport;
+   Evas_Event_Mouse_Down *event;
+   
+   if (!(viewport = ETK_VIEWPORT(data)) || !(event = event_info))
+      return;
+   if (viewport->hold_events)
+     event->event_flags |= EVAS_EVENT_FLAG_ON_HOLD;
+}
+
 /* Called when the viewport is realized */
 static Etk_Bool _etk_viewport_realized_cb(Etk_Object *object, void *data)
 {
@@ -186,8 +242,13 @@ static Etk_Bool _etk_viewport_realized_cb(Etk_Object *object, void *data)
       evas_object_show(viewport->clip);
    }
    viewport->event = evas_object_rectangle_add(evas);
+   evas_object_event_callback_add(viewport->event, EVAS_CALLBACK_MOUSE_DOWN, _etk_viewport_mouse_down_cb, viewport);
+   evas_object_event_callback_add(viewport->event, EVAS_CALLBACK_MOUSE_UP, _etk_viewport_mouse_up_cb, viewport);
+   evas_object_event_callback_add(viewport->event, EVAS_CALLBACK_MOUSE_MOVE, _etk_viewport_mouse_move_cb, viewport);
    etk_widget_member_object_add(ETK_WIDGET(viewport), viewport->event);
    evas_object_color_set(viewport->event, 0, 0, 0, 0);
+   evas_object_repeat_events_set(viewport->event, 1);
+   evas_object_raise(viewport->event);
    evas_object_show(viewport->event);
 
    return ETK_TRUE;
@@ -203,6 +264,7 @@ static Etk_Bool _etk_viewport_child_added_cb(Etk_Object *object, void *child, vo
 
    etk_widget_clip_set(ETK_WIDGET(child), viewport->clip);
    evas_object_show(viewport->clip);
+   evas_object_raise(viewport->event);
    return ETK_TRUE;
 }
 

@@ -3128,6 +3128,9 @@ static void _etk_tree_header_mouse_up_cb(void *data, Evas *e, Evas_Object *obj, 
    if (!(col = ETK_TREE_COL(data)) || !(tree = col->tree) || event->button != 1)
       return;
 
+   if (event->event_flags & EVAS_EVENT_FLAG_ON_HOLD)
+      return;
+   
    if (tree->col_to_resize)
       tree->col_to_resize = NULL;
    else
@@ -3262,6 +3265,9 @@ static void _etk_tree_row_mouse_up_cb(void *data, Evas *e, Evas_Object *obj, voi
    evas_object_geometry_get(obj, &x, &y, &w, &h);
    etk_event_mouse_up_wrap(ETK_WIDGET(row_object->row->tree), event_info, &event);
 
+   if (event.modifiers & ETK_MODIFIER_ON_HOLD)
+      return;
+   
    /* We make sure the mouse button has been released over the row */
    if (ETK_INSIDE(event.canvas.x, event.canvas.y, x, y, w, h))
    {

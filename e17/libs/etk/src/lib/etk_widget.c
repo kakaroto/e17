@@ -2338,7 +2338,8 @@ static void _etk_widget_mouse_up_cb(void *data, Evas *evas, Evas_Object *object,
       etk_signal_emit(ETK_WIDGET_MOUSE_UP_SIGNAL, ETK_OBJECT(widget), &event);
 
       if (ETK_INSIDE(event.canvas.x, event.canvas.y,
-            widget->geometry.x, widget->geometry.y, widget->geometry.w, widget->geometry.h))
+            widget->geometry.x, widget->geometry.y, widget->geometry.w, widget->geometry.h) &&
+	  (!(event.modifiers & ETK_MODIFIER_ON_HOLD)))
       {
          etk_signal_emit(ETK_WIDGET_MOUSE_CLICK_SIGNAL, ETK_OBJECT(widget), &event);
       }

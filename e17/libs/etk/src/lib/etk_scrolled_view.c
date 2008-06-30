@@ -156,6 +156,7 @@ void etk_scrolled_view_add_with_viewport(Etk_Scrolled_View *scrolled_view, Etk_W
    }
 
    etk_container_add(ETK_CONTAINER(viewport), child);
+   scrolled_view->viewport = viewport;
 }
 
 /**
@@ -719,9 +720,10 @@ static Etk_Bool _etk_scrolled_view_mouse_down(Etk_Object *object, Etk_Event_Mous
       drag->old_timestamp = 0.0;
       drag->Vx = 0;
       drag->Vy = 0;
-      drag->position = event->widget;
+      drag->down_position = drag->position = event->widget;
       drag->bar_position.x = hscrollbar_range->value;
       drag->bar_position.y = vscrollbar_range->value;
+      etk_viewport_hold_events_set(scrolled_view->viewport, ETK_FALSE);
    }
    return ETK_FALSE;
 }
@@ -751,11 +753,21 @@ static Etk_Bool _etk_scrolled_view_mouse_move(Etk_Object *object, Etk_Event_Mous
    hscrollbar_range = ETK_RANGE(scrolled_view->hscrollbar);
    if (drag->scroll_flag == 0) 
    {
-         drag->scroll_flag = (event->cur.widget.y - drag->position.y)/vscrollbar_range->step_increment || (event->cur.widget.x - drag->position.x)/hscrollbar_range->step_increment;
+         drag->scroll_flag = (event->cur.widget.y - drag->position.y)/vscrollbar_range->step_increment || (event->cur.widget.x - drag->position.x) / hscrollbar_range->step_increment;
    }
 
    if (drag->scroll_flag) 
    {
+      /* if we have dragged beyond 15 pixels from the down point, in any
+       * direction, set on hold flag */
+      if ((((event->cur.widget.x - drag->down_position.x) *
+	    (event->cur.widget.x - drag->down_position.x)) +
+	   ((event->cur.widget.y - drag->down_position.y) *
+	    (event->cur.widget.y - drag->down_position.y))) >
+	  (15 * 15))
+      {
+	 etk_viewport_hold_events_set(scrolled_view->viewport, ETK_TRUE);
+      }
       if (drag->bar_pressed == ETK_FALSE) 
       {
          etk_range_value_set(vscrollbar_range, vscrollbar_range->value - (event->cur.widget.y - drag->position.y));
@@ -789,6 +801,8 @@ static Etk_Bool _etk_scrolled_view_mouse_up(Etk_Object *object, Etk_Event_Mouse_
    if (!(scrolled_view = ETK_SCROLLED_VIEW(object)))
       return ETK_FALSE;
 
+   etk_viewport_hold_events_set(scrolled_view->viewport, ETK_FALSE);
+   
    if (!drag->dragable) 
       return ETK_FALSE;
 

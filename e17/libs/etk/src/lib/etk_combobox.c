@@ -1545,6 +1545,8 @@ static Etk_Bool _etk_combobox_item_mouse_up_cb(Etk_Object *object, Etk_Event_Mou
       return ETK_TRUE;
    if (event->button != 1 && event->button != 3)
       return ETK_TRUE;
+   if (event->modifiers & ETK_MODIFIER_ON_HOLD)
+      return ETK_TRUE;
 
    etk_combobox_active_item_set(item->combobox, item);
    if (event->button == 1)

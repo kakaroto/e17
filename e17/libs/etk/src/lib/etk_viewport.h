@@ -34,10 +34,13 @@ struct Etk_Viewport
 
    Evas_Object *clip, *event;
    int xscroll, yscroll;
+   Etk_Bool hold_events;
 };
 
 Etk_Type   *etk_viewport_type_get(void);
 Etk_Widget *etk_viewport_new(void);
+void        etk_viewport_hold_events_set(Etk_Viewport *viewport, Etk_Bool hold_events);
+Etk_Bool    etk_viewport_hold_events_get(Etk_Viewport *viewport);
 
 /** @} */
 

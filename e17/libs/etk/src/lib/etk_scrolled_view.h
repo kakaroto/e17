@@ -38,18 +38,19 @@ typedef enum
 
 struct Etk_Scrolled_View_Mouse_Drag 
 {
+   Etk_Position position;
+   Etk_Position down_position;
+   Etk_Position bar_position;
+   double sample_magic;
+   double timestamp;
+   double old_timestamp;
+   double Vx,Vy;
+   int scroll_flag;
+   unsigned int damping_magic;
    Etk_Bool mouse_down;
    Etk_Bool bar_pressed;
    Etk_Bool dragable;
    Etk_Bool bouncy;
-   int scroll_flag;
-   Etk_Position position;
-   Etk_Position bar_position;
-   double sample_magic;
-   unsigned int damping_magic;
-   double timestamp;
-   double old_timestamp;
-   double Vx,Vy;
 };
 
 /**
@@ -64,6 +65,7 @@ struct Etk_Scrolled_View
 
    Etk_Widget *hscrollbar;
    Etk_Widget *vscrollbar;
+   Etk_Widget *viewport;
 
    Etk_Scrolled_View_Policy hpolicy;
    Etk_Scrolled_View_Policy vpolicy;

@@ -87,6 +87,8 @@ void etk_event_mouse_in_wrap(Etk_Widget *widget, Evas_Event_Mouse_In *evas_event
    etk_event->timestamp = evas_event->timestamp;
    _etk_event_modifiers_wrap(evas_event->modifiers, &etk_event->modifiers);
    _etk_event_locks_wrap(evas_event->locks, &etk_event->locks);
+   if (evas_event->event_flags & EVAS_EVENT_FLAG_ON_HOLD)
+     etk_event->modifiers |= ETK_MODIFIER_ON_HOLD;
 }
 
 /**
@@ -108,6 +110,8 @@ void etk_event_mouse_out_wrap(Etk_Widget *widget, Evas_Event_Mouse_Out *evas_eve
    etk_event->timestamp = evas_event->timestamp;
    _etk_event_modifiers_wrap(evas_event->modifiers, &etk_event->modifiers);
    _etk_event_locks_wrap(evas_event->locks, &etk_event->locks);
+   if (evas_event->event_flags & EVAS_EVENT_FLAG_ON_HOLD)
+     etk_event->modifiers |= ETK_MODIFIER_ON_HOLD;
 }
 
 /**
@@ -133,6 +137,8 @@ void etk_event_mouse_move_wrap(Etk_Widget *widget, Evas_Event_Mouse_Move *evas_e
    etk_event->timestamp = evas_event->timestamp;
    _etk_event_modifiers_wrap(evas_event->modifiers, &etk_event->modifiers);
    _etk_event_locks_wrap(evas_event->locks, &etk_event->locks);
+   if (evas_event->event_flags & EVAS_EVENT_FLAG_ON_HOLD)
+     etk_event->modifiers |= ETK_MODIFIER_ON_HOLD;
 }
 
 /**
@@ -155,6 +161,8 @@ void etk_event_mouse_down_wrap(Etk_Widget *widget, Evas_Event_Mouse_Down *evas_e
    _etk_event_modifiers_wrap(evas_event->modifiers, &etk_event->modifiers);
    _etk_event_locks_wrap(evas_event->locks, &etk_event->locks);
    _etk_event_mouse_flags_wrap(evas_event->flags, &etk_event->flags);
+   if (evas_event->event_flags & EVAS_EVENT_FLAG_ON_HOLD)
+     etk_event->modifiers |= ETK_MODIFIER_ON_HOLD;
 }
 
 /**
@@ -177,6 +185,8 @@ void etk_event_mouse_up_wrap(Etk_Widget *widget, Evas_Event_Mouse_Up *evas_event
    _etk_event_modifiers_wrap(evas_event->modifiers, &etk_event->modifiers);
    _etk_event_locks_wrap(evas_event->locks, &etk_event->locks);
    _etk_event_mouse_flags_wrap(evas_event->flags, &etk_event->flags);
+   if (evas_event->event_flags & EVAS_EVENT_FLAG_ON_HOLD)
+     etk_event->modifiers |= ETK_MODIFIER_ON_HOLD;
 }
 
 /**
@@ -200,6 +210,8 @@ void etk_event_mouse_wheel_wrap(Etk_Widget *widget, Evas_Event_Mouse_Wheel *evas
    _etk_event_modifiers_wrap(evas_event->modifiers, &etk_event->modifiers);
    _etk_event_locks_wrap(evas_event->locks, &etk_event->locks);
    etk_event->timestamp = evas_event->timestamp;
+   if (evas_event->event_flags & EVAS_EVENT_FLAG_ON_HOLD)
+     etk_event->modifiers |= ETK_MODIFIER_ON_HOLD;
 }
 
 /**
@@ -217,6 +229,8 @@ void etk_event_key_down_wrap(Etk_Widget *widget, Evas_Event_Key_Down *evas_event
    etk_event->timestamp = evas_event->timestamp;
    _etk_event_modifiers_wrap(evas_event->modifiers, &etk_event->modifiers);
    _etk_event_locks_wrap(evas_event->locks, &etk_event->locks);
+   if (evas_event->event_flags & EVAS_EVENT_FLAG_ON_HOLD)
+     etk_event->modifiers |= ETK_MODIFIER_ON_HOLD;
 }
 
 /**
@@ -234,6 +248,8 @@ void etk_event_key_up_wrap(Etk_Widget *widget, Evas_Event_Key_Up *evas_event, Et
    etk_event->timestamp = evas_event->timestamp;
    _etk_event_modifiers_wrap(evas_event->modifiers, &etk_event->modifiers);
    _etk_event_locks_wrap(evas_event->locks, &etk_event->locks);
+   if (evas_event->event_flags & EVAS_EVENT_FLAG_ON_HOLD)
+     etk_event->modifiers |= ETK_MODIFIER_ON_HOLD;
 }
 
 /**

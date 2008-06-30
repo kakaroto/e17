@@ -36,7 +36,8 @@ typedef enum
    ETK_MODIFIER_CTRL = 1 << 0,          /**< "Control" is pressed */
    ETK_MODIFIER_ALT = 1 << 1,           /**< "Alt" is pressed */
    ETK_MODIFIER_SHIFT = 1 << 2,         /**< "Shift" is pressed */
-   ETK_MODIFIER_WIN = 1 << 3            /**< "Win" (between "Ctrl" and "Alt") is pressed */
+   ETK_MODIFIER_WIN = 1 << 3,           /**< "Win" (between "Ctrl" and "Alt") is pressed */
+   ETK_MODIFIER_ON_HOLD = 1 << 31       /**< When the event is to be "on hold" and is informative only */
 } Etk_Modifiers;
 
 /** @brief The keyboard locks active when the event has been emitted */
