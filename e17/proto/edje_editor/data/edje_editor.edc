@@ -149,6 +149,7 @@ images {
    image: "move.png" LOSSY 95;
    image: "e17.png" LOSSY 95;
    image: "miniarrow.png" LOSSY 95;
+   image: "gimp.png" LOSSY 95;
 }
 
 fonts {
@@ -368,6 +369,24 @@ collections {
                color: 0 0 0 255;
                rel1 {relative: 0.0 0.0; offset: 0 0;}
                rel2 {relative: 0.0 0.0; offset: 15 15;}
+            }
+         }
+      }
+   }
+   group{
+      name: "GIMP.PNG";
+      min: 20 20;
+      max: 100 100;
+      parts{
+         part{
+            name: "StaticImage";
+            type: IMAGE;
+            mouse_events: 0;
+            description{
+               state: "default" 0.0;
+               rel1 {relative: 0.0 0.0; offset: 0 0;}
+               rel2 {relative: 0.0 0.0; offset: 20 20;}
+               image {normal: "gimp.png";}
             }
          }
       }

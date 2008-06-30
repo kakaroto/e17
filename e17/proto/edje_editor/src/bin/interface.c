@@ -2215,6 +2215,7 @@ create_image_browser(void)
    Etk_Widget *frame;
    Etk_Widget *label;
    
+   //ImageBrowserWin
    UI_ImageBrowserWin = etk_window_new();
    etk_window_title_set(ETK_WINDOW(UI_ImageBrowserWin), "Image Browser");
    etk_window_resize(UI_ImageBrowserWin, 590, 370);
@@ -2225,6 +2226,7 @@ create_image_browser(void)
    hbox = etk_hbox_new(ETK_FALSE, 0);
    etk_container_add (ETK_CONTAINER(UI_ImageBrowserWin), hbox);
    
+   //ImageBrowserIconbox
    UI_ImageBrowserIconbox = etk_iconbox_new();
    etk_signal_connect("icon-selected", ETK_OBJECT(UI_ImageBrowserIconbox),
                       ETK_CALLBACK(on_ImageBrowserIconbox_selected), NULL);
@@ -2250,7 +2252,7 @@ create_image_browser(void)
    
    //EditImageButton
    button = etk_button_new_with_label("Edit Image");
-   Etk_Image *image = etk_image_new_from_file(EdjeFile, "GIMP");
+   Etk_Image *image = etk_image_new_from_edje(EdjeFile, "GIMP.PNG");
    etk_button_image_set(button, image);
    etk_button_style_set(button, ETK_BUTTON_BOTH_VERT);
    etk_widget_disabled_set(button, 1);
