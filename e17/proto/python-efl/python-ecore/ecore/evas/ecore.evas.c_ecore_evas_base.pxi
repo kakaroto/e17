@@ -438,6 +438,9 @@ cdef class EcoreEvas:
     def lower(self):
         ecore_evas_lower(self.obj)
 
+    def activate(self):
+        ecore_evas_activate(self.obj)
+
     def title_set(self, char *t):
         ecore_evas_title_set(self.obj, t)
 
