@@ -525,7 +525,7 @@ PopulateImageBrowser(void)
    Evas_List *l, *images;
    char buf[4096];
    
-   etk_iconbox_clear(UI_ImageBrowserIconbox);
+   etk_iconbox_clear(ETK_ICONBOX(UI_ImageBrowserIconbox));
    
    etk_iconbox_freeze(ETK_ICONBOX(UI_ImageBrowserIconbox));
    images = l = edje_edit_images_list_get(edje_o);
@@ -827,7 +827,7 @@ UpdateImageBrowser(void)
       etk_window_title_set(ETK_WINDOW(UI_ImageBrowserWin), buf);
       
       //iconbox
-      etk_iconbox_unselect_all(UI_ImageBrowserIconbox);
+      etk_iconbox_unselect_all(ETK_ICONBOX(UI_ImageBrowserIconbox));
       pi = edje_edit_state_image_get(edje_o, Cur.part->string, Cur.state->string);
       if (pi)
       {
@@ -841,10 +841,10 @@ UpdateImageBrowser(void)
      
       //~ edje_edit_string_free(pi);
       
-      int w, h;
-      etk_image_size_get (etk_image_new_from_file(icon->filename, icon->edje_group), &w, &h);
-      printf("W: %d H: %d (%d)\n", w, h, etk_image_new_from_file(icon->filename, icon->edje_group));
-      etk_label_set(UI_ImageBrowserSizeLabel, "ciccio");
+      //int w, h;
+      //etk_image_size_get (etk_image_new_from_file(icon->filename, icon->edje_group), &w, &h);
+      //printf("W: %d H: %d (%d)\n", w, h, etk_image_new_from_file(icon->filename, icon->edje_group));
+      //etk_label_set(UI_ImageBrowserSizeLabel, "ciccio");
       
    }
    else
@@ -858,7 +858,7 @@ void
 UpdateImageFrame(void)
 {
    //Etk_Combobox_Item *item = NULL;
-   char *im, *pi;
+   const char *im;
     
    //Stop signal propagation
    etk_signal_block("value-changed",ETK_OBJECT(UI_BorderLeftSpinner),
@@ -885,16 +885,16 @@ UpdateImageFrame(void)
    /* Update Image Browser */
    UpdateImageBrowser();
    
-   //Set the images laebl for normal image
-   pi = edje_edit_state_image_get(edje_o, Cur.part->string, Cur.state->string);
-   if (pi)
+   //Set the images label for normal image
+   im = edje_edit_state_image_get(edje_o, Cur.part->string, Cur.state->string);
+   if (im)
    {
-      etk_label_set(UI_ImageNameLabel, pi);
-      edje_edit_string_free(pi);
+      etk_label_set(ETK_LABEL(UI_ImageNameLabel), im);
+      edje_edit_string_free(im);
    }
    else
    {
-      etk_label_set(UI_ImageNameLabel, "none");
+      etk_label_set(ETK_LABEL(UI_ImageNameLabel), "none");
    }
 
    //Set alpha and borders
@@ -1426,7 +1426,8 @@ create_a_color_button(char* label_text, int color_button_enum,int w,int h, Evas 
    etk_evas_object_set_object(ETK_EVAS_OBJECT(etk_evas_object), rect);
    evas_object_show(rect);
    etk_widget_show_all(etk_evas_object);
-   evas_object_event_callback_add(rect, EVAS_CALLBACK_MOUSE_DOWN, on_ColorCanvas_click, (void*)color_button_enum);
+   evas_object_event_callback_add(rect, EVAS_CALLBACK_MOUSE_DOWN,
+                                  on_ColorCanvas_click, (void*)color_button_enum);
    etk_container_add(ETK_CONTAINER(shadow), etk_evas_object);
    etk_widget_size_request_set(etk_evas_object, w, h);
    switch (color_button_enum)
@@ -2214,11 +2215,12 @@ create_image_browser(void)
    Etk_Widget *button;
    Etk_Widget *frame;
    Etk_Widget *label;
+   Etk_Widget *image;
    
    //ImageBrowserWin
    UI_ImageBrowserWin = etk_window_new();
    etk_window_title_set(ETK_WINDOW(UI_ImageBrowserWin), "Image Browser");
-   etk_window_resize(UI_ImageBrowserWin, 590, 370);
+   etk_window_resize(ETK_WINDOW(UI_ImageBrowserWin), 590, 370);
    etk_signal_connect("delete-event", ETK_OBJECT(UI_ImageBrowserWin),
                       ETK_CALLBACK(etk_window_hide_on_delete), NULL);
    etk_container_border_width_set(ETK_CONTAINER(UI_ImageBrowserWin), 5);
@@ -2252,18 +2254,18 @@ create_image_browser(void)
    
    //EditImageButton
    button = etk_button_new_with_label("Edit Image");
-   Etk_Image *image = etk_image_new_from_edje(EdjeFile, "GIMP.PNG");
-   etk_button_image_set(button, image);
-   etk_button_style_set(button, ETK_BUTTON_BOTH_VERT);
+   image = etk_image_new_from_edje(EdjeFile, "GIMP.PNG");
+   etk_button_image_set(ETK_BUTTON(button), ETK_IMAGE(image));
+   etk_button_style_set(ETK_BUTTON(button), ETK_BUTTON_BOTH_VERT);
    etk_widget_disabled_set(button, 1);
-   etk_box_append(vbox, button, 0, ETK_BOX_NONE, 0);
+   etk_box_append(ETK_BOX(vbox), button, 0, ETK_BOX_NONE, 0);
    
    //ImageInfo
    frame = etk_frame_new("Image Info");
-   etk_box_append(vbox, frame, 0, ETK_BOX_EXPAND_FILL, 10);
+   etk_box_append(ETK_BOX(vbox), frame, 0, ETK_BOX_EXPAND_FILL, 10);
    
    vbox2 = etk_vbox_new(ETK_FALSE, 0);
-   etk_container_add(frame, vbox2);
+   etk_container_add(ETK_CONTAINER(frame), vbox2);
    
    label = etk_label_new("<b>name:</b>");
    etk_object_properties_set(ETK_OBJECT(label), "xalign", 0, NULL);
@@ -2291,6 +2293,8 @@ create_image_browser(void)
    etk_signal_connect("clicked", ETK_OBJECT(button),
             ETK_CALLBACK(on_AllButton_click), (void*)IMAGE_BROWSER_CLOSE);
    etk_box_append(ETK_BOX(vbox), button, 0, ETK_BOX_NONE, 0);
+   
+   return UI_ImageBrowserWin;
 }
 
 static Etk_Widget*

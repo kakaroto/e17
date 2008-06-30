@@ -71,8 +71,6 @@ on_AllButton_click(Etk_Button *button, void *data)
    Etk_String *text;
    const char *tween;
    Etk_Tree_Row *row, *next, *prev;
-   Etk_Combobox_Item *item;
-   Etk_Iconbox_Icon *icon;
    Evas_List *icons, *l;
 
    switch ((int)data)
@@ -193,7 +191,7 @@ on_AllButton_click(Etk_Button *button, void *data)
    case IMAGE_TWEEN_ADD:
       icons = etk_iconbox_icon_get_selected(ETK_ICONBOX(UI_ImageBrowserIconbox));
       for (l = icons; l; l = l->next)
-         if (tween = etk_iconbox_icon_label_get(l->data))
+         if ((tween = etk_iconbox_icon_label_get(l->data)))
             edje_edit_state_tween_add(edje_o, Cur.part->string,
                                       Cur.state->string, tween);
       if (icons)
@@ -286,17 +284,13 @@ on_AllButton_click(Etk_Button *button, void *data)
 void
 on_Editing_click(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
-   Evas_Object *o2;
    int x, y;
-   Evas_Event_Mouse_Down *ev = event_info;
    
-  	evas_pointer_output_xy_get(e, &x, &y);
+   evas_pointer_output_xy_get(e, &x, &y);
    
-   printf("CLIK\n");
    //o2 = evas_object_top_at_pointer_get(e);
-   Evas_List *l =	evas_objects_at_xy_get (e, ev->canvas.x, ev->canvas.y, 1, 1);
-   printf("CLIK %x [%d %d] num: %d\n", obj, ev->canvas.x, ev->canvas.y, evas_list_count(l));
-   
+   //Evas_List *l =	evas_objects_at_xy_get (e, ev->canvas.x, ev->canvas.y, 1, 1);
+   //printf("CLIK %x [%d %d] num: %d\n", obj, ev->canvas.x, ev->canvas.y, evas_list_count(l));
 }
 
 void
@@ -330,24 +324,26 @@ on_Mainwin_key_press(void *data, Evas *e, Evas_Object *obj, void *event_info)
    /* save (TODO make some sort of feedback for the user)*/
    else if (!strcmp(ev->key, "s") &&
             evas_key_modifier_is_set(ev->modifiers, "Control"))
-      on_AllButton_click(NULL, TOOLBAR_SAVE);
+      on_AllButton_click(NULL, (void *)TOOLBAR_SAVE);
    
    
 }
 
 /* Image Browser callbacks */
-Etk_Bool 
+Etk_Bool
 on_ImageBrowserIconbox_selected(Etk_Iconbox *iconbox, Etk_Iconbox_Icon *icon, void *data)
 {
    const char *image;
    image = etk_iconbox_icon_label_get(icon);
-   
+
    printf("CLICK ON: %s :)\n", image);
    if (ImageBroserUpdate && etk_string_length_get(Cur.part) && etk_string_length_get(Cur.state))
      {
         edje_edit_state_image_set(edje_o, Cur.part->string, Cur.state->string, image);
      }
    UpdateImageFrame();
+
+   return ETK_TRUE;
 }
 
 /* Tree callbacks */
@@ -1840,13 +1836,15 @@ on_FileChooserDialog_response(Etk_Dialog *dialog, int response_id, void *data)
             Etk_Range *range;
             double upper;
             range = etk_scrolled_view_vscrollbar_get(
-                    etk_iconbox_scrolled_view_get (UI_ImageBrowserIconbox));
+                    etk_iconbox_scrolled_view_get(ETK_ICONBOX(UI_ImageBrowserIconbox)));
             etk_range_range_get(range, NULL, &upper);
             etk_range_value_set(range, upper);
             
-            etk_iconbox_icon_select(etk_iconbox_icon_get_by_label(
-                                    UI_ImageBrowserIconbox,
-            etk_filechooser_widget_selected_file_get(ETK_FILECHOOSER_WIDGET(UI_FileChooser))));
+            Etk_Iconbox_Icon *icon;
+            icon = etk_iconbox_icon_get_by_label(ETK_ICONBOX(UI_ImageBrowserIconbox),
+                                 etk_filechooser_widget_selected_file_get(
+                                 ETK_FILECHOOSER_WIDGET(UI_FileChooser)));
+            etk_iconbox_icon_select(icon);
             
             break;
          case FILECHOOSER_FONT:
@@ -1865,7 +1863,8 @@ on_FileChooserDialog_response(Etk_Dialog *dialog, int response_id, void *data)
       }
       etk_widget_hide(ETK_WIDGET(dialog));
    }
-   else{
+   else
+   {
       etk_widget_hide(ETK_WIDGET(dialog));
    }
 

@@ -176,6 +176,7 @@ void UpdateGroupFrame(void);
 void UpdatePositionFrame(void);
 void UpdateComboPositionFrame(void);
 void UpdateImageFrame(void);
+void UpdateImageBrowser(void);
 void UpdateTextFrame(void);
 void UpdatePartFrame(void);
 void UpdateRectFrame(void);
