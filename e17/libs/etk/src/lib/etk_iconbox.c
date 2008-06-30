@@ -642,12 +642,33 @@ Etk_Iconbox_Icon *etk_iconbox_icon_get_by_data(Etk_Iconbox *iconbox, void *data)
 }
 
 /**
+ * @brief Get all the selected icons.
+ * @param iconbox an iconbox
+ * @return Return an Evas_List of Etk_Iconbox_Icon, or NULL if none is selected.
+ * You must use evas_list_free() to free the list when you don't need anymore.
+ */
+Evas_List *etk_iconbox_icon_get_selected(Etk_Iconbox *iconbox)
+{
+   Etk_Iconbox_Icon *icon;
+   Evas_List *l = NULL;
+
+   if (!iconbox)
+      return NULL;
+
+   for (icon = iconbox->first_icon; icon; icon = icon->next)
+      if (icon->selected)
+         l = evas_list_append(l, icon);
+
+   return l;
+}
+
+/**
  * @brief Get the first selected icon. If more than one icon is selected only
  * the first one is returned.
  * @param iconbox an iconbox
  * @return Return the first selected icon, or NULL if none is selected.
  */
-Etk_Iconbox_Icon *etk_iconbox_icon_get_selected(Etk_Iconbox *iconbox)
+Etk_Iconbox_Icon *etk_iconbox_icon_get_first_selected(Etk_Iconbox *iconbox)
 {
    Etk_Iconbox_Icon *icon;
 
