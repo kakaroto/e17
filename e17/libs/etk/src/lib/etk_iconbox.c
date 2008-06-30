@@ -642,6 +642,26 @@ Etk_Iconbox_Icon *etk_iconbox_icon_get_by_data(Etk_Iconbox *iconbox, void *data)
 }
 
 /**
+ * @brief Get the first selected icon. If more than one icon is selected only
+ * the first one is returned.
+ * @param iconbox an iconbox
+ * @return Return the first selected icon, or NULL if none is selected.
+ */
+Etk_Iconbox_Icon *etk_iconbox_icon_get_selected(Etk_Iconbox *iconbox)
+{
+   Etk_Iconbox_Icon *icon;
+
+   if (!iconbox)
+      return NULL;
+
+   for (icon = iconbox->first_icon; icon; icon = icon->next)
+      if (icon->selected)
+         return icon;
+
+   return NULL;
+}
+
+/**
  * @brief Sets the file path of the icon's image
  * @param icon an icon
  * @param filename the filename of the icon's image
