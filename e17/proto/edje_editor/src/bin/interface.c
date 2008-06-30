@@ -1890,6 +1890,8 @@ create_tree(void)
 
    etk_signal_connect("row-selected", ETK_OBJECT(UI_PartsTree),
                       ETK_CALLBACK(on_PartsTree_row_selected), NULL);
+   etk_signal_connect("row-clicked", ETK_OBJECT(UI_PartsTree),
+                      ETK_CALLBACK(on_PartsTree_click), NULL);
    
    //vbox
    Etk_Widget *vbox;

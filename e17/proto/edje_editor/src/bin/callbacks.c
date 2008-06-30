@@ -453,6 +453,13 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
    return ETK_TRUE;
 }
 
+Etk_Bool
+on_PartsTree_click(Etk_Tree *tree, Etk_Tree_Row *row, Etk_Event_Mouse_Up *event, void *data)
+{
+   if ((event->flags == ETK_MOUSE_DOUBLE_CLICK) && etk_string_length_get(Cur.prog))
+      edje_edit_program_run(edje_o, Cur.prog->string);
+}
+
 /* Group frame callbacks */
 Etk_Bool
 on_GroupNameEntry_key_down(Etk_Object *object, Etk_Event_Key_Down *event, void *data)
