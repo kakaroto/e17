@@ -31,6 +31,11 @@ Etk_Widget *UI_FilechooserSaveButton;
 Etk_Widget *UI_FilechooserLoadButton;
 Etk_Widget *UI_ColorWin;
 Etk_Widget *UI_ColorPicker;
+/* image browser objects */
+Etk_Widget *UI_ImageBrowserIconbox;
+Etk_Widget *UI_ImageBrowserWin;
+Etk_Widget *UI_ImageBrowserSizeLabel;
+
 /* toolbar objects */
 Etk_Widget *UI_PlayButton;
 Etk_Widget *UI_PlayImage;
@@ -79,7 +84,7 @@ Etk_Widget *UI_AspectMaxSpinner;
 Etk_Widget *UI_AspectComboBox;
 /* image frame objects */
 Etk_Widget *UI_ImageTweenList;
-Etk_Widget *UI_ImageComboBox;
+Etk_Widget *UI_ImageNameLabel;
 Etk_Widget *UI_ImageTweenVBox;
 Etk_Widget *UI_ImageAlphaSlider;
 Etk_Widget *UI_AddTweenButton;
@@ -160,12 +165,12 @@ Etk_Tree_Row *AddProgramToTree(const char* prog);
 void PopulateGroupsComboBox(void);
 void PopulateTree(void);
 void PopulateRelComboBoxes(void);
-void PopulateImagesComboBox(void);
 void PopulateFontsComboBox(void);
 void PopulateSourceComboBox(void);
 void PopulateTweenList(void);
 void PopulateSourceComboEntry(void);
 void PopulateSignalComboEntry(void);
+void PopulateImageBrowser(void);
 
 void UpdateGroupFrame(void);
 void UpdatePositionFrame(void);
@@ -181,7 +186,7 @@ void UpdateWindowTitle(void);
 
 void ShowFilechooser(int FileChooserType);
 void ShowAlert(char* text);
-void ShowImageBrowser(void);
+void ShowImageBrowser(int UpdateCurrent);
 void ConsolleLog(char *text);
 void ConsolleClear(void);
 void TogglePlayButton(int set);

@@ -69,9 +69,10 @@ Etk_Bool
 on_AllButton_click(Etk_Button *button, void *data)
 {
    Etk_String *text;
-   char *tween;
+   const char *tween;
    Etk_Tree_Row *row, *next, *prev;
    Etk_Combobox_Item *item;
+   Etk_Iconbox_Icon *icon;
 
    switch ((int)data)
       {
@@ -170,11 +171,17 @@ on_AllButton_click(Etk_Button *button, void *data)
       if (edje_edit_part_type_get(edje_o, Cur.part->string) == EDJE_PART_TYPE_GROUP)
          ReloadEdje();
       break;
+   case IMAGE_BROWSER_SHOW:
+      ShowImageBrowser(1);
+      break;
+   case IMAGE_BROWSER_CLOSE:
+      etk_widget_hide(ETK_WIDGET(UI_ImageBrowserWin));
+      break;
    case TOOLBAR_IMAGE_BROWSER:
-         ShowImageBrowser();
+      ShowImageBrowser(0);
       break;
    case TOOLBAR_FONT_BROWSER:
-         ShowAlert("Font Browser");
+      ShowAlert("Font Browser");
       break;
    case TOOLBAR_IMAGE_FILE_ADD:
       ShowFilechooser(FILECHOOSER_IMAGE);
@@ -183,19 +190,21 @@ on_AllButton_click(Etk_Button *button, void *data)
       ShowFilechooser(FILECHOOSER_FONT);
       break;
    case IMAGE_TWEEN_ADD:
-      item = etk_combobox_active_item_get(ETK_COMBOBOX(UI_ImageComboBox));
-      tween = etk_combobox_item_field_get(item, 1);
-      if (!tween)
+      icon = etk_iconbox_icon_get_selected(ETK_ICONBOX(UI_ImageBrowserIconbox));
+      tween = etk_iconbox_icon_label_get(icon);
+      if (tween)
       {
-         ShowAlert("You must choose an image to add from the combobox below");
+         if(edje_edit_state_tween_add(edje_o, Cur.part->string, Cur.state->string, tween))
+         {
+            PopulateTweenList();
+            row = etk_tree_last_row_get(ETK_TREE(UI_ImageTweenList));
+            etk_tree_row_select(row);
+            etk_tree_row_scroll_to(row, ETK_FALSE);
+         }
       }
-      
-      if(edje_edit_state_tween_add(edje_o, Cur.part->string, Cur.state->string, tween))
+      else
       {
-         PopulateTweenList();
-         row = etk_tree_last_row_get(ETK_TREE(UI_ImageTweenList));
-         etk_tree_row_select(row);
-         etk_tree_row_scroll_to(row, ETK_FALSE);
+         ShowAlert("You must choose an image to add from the Image Browser");
       }
       break;
    case IMAGE_TWEEN_DELETE:
@@ -322,6 +331,21 @@ on_Mainwin_key_press(void *data, Evas *e, Evas_Object *obj, void *event_info)
       on_AllButton_click(NULL, TOOLBAR_SAVE);
    
    
+}
+
+/* Image Browser callbacks */
+Etk_Bool 
+on_ImageBrowserIconbox_selected(Etk_Iconbox *iconbox, Etk_Iconbox_Icon *icon, void *data)
+{
+   const char *image;
+   image = etk_iconbox_icon_label_get(icon);
+   
+   printf("CLICK ON: %s :)\n", image);
+   if (ImageBroserUpdate && etk_string_length_get(Cur.part) && etk_string_length_get(Cur.state))
+     {
+        edje_edit_state_image_set(edje_o, Cur.part->string, Cur.state->string, image);
+     }
+   UpdateImageFrame();
 }
 
 /* Tree callbacks */
@@ -1485,16 +1509,16 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
          //TODO generate a unique new name
          row = AddPartToTree(name, NULL);
          
-         char *image;
-         item = etk_combobox_first_item_get(ETK_COMBOBOX(UI_ImageComboBox));
-         if (item)
+         
+         Evas_List *images;
+         images = edje_edit_images_list_get(edje_o);
+         if (images)
          {
-            image = etk_combobox_item_field_get(item, 1);
-            if (image)
+            if (images->data)
                edje_edit_state_image_set(edje_o, name,
-                                         "default 0.00", image);
+                                         "default 0.00", images->data);
          }
-      
+         
          etk_tree_row_select(row);
          etk_tree_row_unfold(row);
          PopulateRelComboBoxes();
@@ -1809,10 +1833,20 @@ on_FileChooserDialog_response(Etk_Dialog *dialog, int response_id, void *data)
                ShowAlert("ERROR: Can't import image file.");
                break;
             }
-            PopulateImagesComboBox();
-            etk_combobox_active_item_set(ETK_COMBOBOX(UI_ImageComboBox),
-                  etk_combobox_last_item_get(ETK_COMBOBOX(UI_ImageComboBox)));
-         break;
+            PopulateImageBrowser();
+            
+            Etk_Range *range;
+            double upper;
+            range = etk_scrolled_view_vscrollbar_get(
+                    etk_iconbox_scrolled_view_get (UI_ImageBrowserIconbox));
+            etk_range_range_get(range, NULL, &upper);
+            etk_range_value_set(range, upper);
+            
+            etk_iconbox_icon_select(etk_iconbox_icon_get_by_label(
+                                    UI_ImageBrowserIconbox,
+            etk_filechooser_widget_selected_file_get(ETK_FILECHOOSER_WIDGET(UI_FileChooser))));
+            
+            break;
          case FILECHOOSER_FONT:
             snprintf(cmd, 4096, "%s/%s", 
                etk_filechooser_widget_current_folder_get(ETK_FILECHOOSER_WIDGET(UI_FileChooser)),

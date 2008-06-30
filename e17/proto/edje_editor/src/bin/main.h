@@ -56,6 +56,8 @@ enum various
    TOOLBAR_MOVE_UP,
    TOOLBAR_MOVE_DOWN,
    TOOLBAR_IMAGE_BROWSER,
+   IMAGE_BROWSER_SHOW,
+   IMAGE_BROWSER_CLOSE,
    TOOLBAR_FONT_BROWSER,
    TOOLBAR_OPTION_BG1,
    TOOLBAR_OPTION_BG2,
@@ -135,6 +137,7 @@ struct Current_State
 
 /* GLOBALS */
 int            FileChooserOperation;   //The current file chooser operation (FILECHOOSER_OPEN,FILECHOOSER_NEW etc)
+int            ImageBroserUpdate;      //When set to true the image browser will update the current state with the selected image
 char           *EdjeFile;              //The filename of the edje_editor.edj file (witch contain all the graphics used by the program)
 Evas_Object    *edje_o;                //The edje object we are editing
 Evas_Hash      *Parts_Hash;            //Associate part names with Etk_Tree_Row*

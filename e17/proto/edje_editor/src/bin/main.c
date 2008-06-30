@@ -268,7 +268,6 @@ LoadEDJ(char *file)
     
    PopulateGroupsComboBox();
    PopulateFontsComboBox();
-   PopulateImagesComboBox();
    
     
     
@@ -368,7 +367,10 @@ main(int argc, char **argv)
    }
    
    //DebugInfo(FALSE);
-
+   
+   //Show main window
+   ecore_evas_show(UI_ecore_MainWin);
+   
    //Start main loop
    etk_main();
    

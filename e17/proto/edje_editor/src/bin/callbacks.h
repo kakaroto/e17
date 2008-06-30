@@ -12,6 +12,7 @@ Etk_Bool on_canvas_geometry_changed        (Etk_Object *canvas, const char *prop
 Etk_Bool on_PartsTree_row_selected         (Etk_Object *object, Etk_Tree_Row *row, void *data);
 void     on_ColorCanvas_click              (void *data, Evas *e, Evas_Object *obj, void *event_info);
 Etk_Bool on_ColorDialog_change             (Etk_Object *object, void *data);
+Etk_Bool on_ImageBrowserIconbox_selected(Etk_Iconbox *iconbox, Etk_Iconbox_Icon *icon, void *data);
 Etk_Bool on_PartNameEntryImage_mouse_clicked(Etk_Object *object, void *data);
 Etk_Bool on_PartNameEntry_key_down         (Etk_Object *object, Etk_Event_Key_Down *event, void *data);
 Etk_Bool on_CliptoComboBox_item_activated  (Etk_Combobox *combobox, Etk_Combobox_Item *item, void *data);
