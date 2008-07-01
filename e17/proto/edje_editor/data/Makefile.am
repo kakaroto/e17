@@ -1,7 +1,51 @@
 MAINTAINERCLEANFILES = Makefile.in
-EXTRA_DIST = edje_editor.edc blank.edc
+EXTRA_DIST = edje_editor.edc \
+             blank.edc \
+             edje_editor.desktop \
+             images/backdrop.png \
+             images/bg1.png \
+             images/bg1_i.png \
+             images/bg2.png \
+             images/bg2_i.png \
+             images/bg3.png \
+             images/bg4.png \
+             images/frame.png \
+             images/frame_bg.png \
+             images/frame_bg_label.png \
+             images/lbl_group.png \
+             images/lbl_desc.png \
+             images/lbl_image.png \
+             images/lbl_part.png \
+             images/lbl_pos.png \
+             images/lbl_prog.png \
+             images/lbl_rect.png \
+             images/lbl_script.png \
+             images/lbl_text.png \
+             images/logo.png \
+             images/image.png \
+             images/rect.png \
+             images/text.png \
+             images/swallow.png \
+             images/swallow2.png \
+             images/group.png \
+             images/desc.png \
+             images/e17.png \
+             images/none.png \
+             images/focus.png \
+             images/arrow_u.png \
+             images/arrow_d.png \
+             images/arrow_l.png \
+             images/arrow_r.png \
+             images/fakewin.png \
+             images/rel1.png \
+             images/rel2.png \
+             images/move.png \
+             images/miniarrow.png \
+             images/gimp.png \
+             edje_editor.png
+
 SUBDIRS = fonts
-	  
+
 EDJE_CC = edje_cc
 EDJE_FLAGS = \
 -v \

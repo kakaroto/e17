@@ -5,7 +5,6 @@
 #include <Ecore_Evas.h>
 #include "callbacks.h"
 #include "interface.h"
-#include "inout.h"
 #include "main.h"
 #include "evas.h"
 

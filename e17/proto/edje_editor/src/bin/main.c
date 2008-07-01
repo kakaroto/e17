@@ -9,7 +9,6 @@
 
 #include "evas.h"
 #include "interface.h"
-#include "inout.h"
 #include "main.h"
 
 Evas_Object *EdjeTest_bg;
