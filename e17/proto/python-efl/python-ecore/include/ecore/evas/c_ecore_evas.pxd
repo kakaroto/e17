@@ -127,6 +127,7 @@ cdef extern from "Ecore_Evas.h":
     int  ecore_evas_visibility_get(Ecore_Evas *ee)
     void ecore_evas_raise(Ecore_Evas *ee)
     void ecore_evas_lower(Ecore_Evas *ee)
+    void ecore_evas_activate(Ecore_Evas *ee)
     void ecore_evas_title_set(Ecore_Evas *ee, char *t)
     char *ecore_evas_title_get(Ecore_Evas *ee)
     void ecore_evas_name_class_set(Ecore_Evas *ee, char *n, char *c)
