@@ -286,12 +286,6 @@ prepare_canvas(void)
                                   on_StartDrag, (void*)DRAG_MOVEBOX);
    evas_object_event_callback_add(EV_movebox, EVAS_CALLBACK_MOUSE_UP,
                                   on_EndDrag, (void*)DRAG_MOVEBOX);
-
-   // Create Consolle
-   Consolle = edje_object_add(ecore_evas_get(UI_ecore_MainWin));
-   edje_object_file_set(Consolle, EdjeFile, "Consolle");
-   evas_object_show(Consolle);
-   
    
    //Place Fakewin 
    ev_move_fake(TREE_WIDTH + 15, 75);

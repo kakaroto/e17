@@ -114,6 +114,7 @@ enum various
    IMAGE_TWEEN_ADD,
    IMAGE_TWEEN_DELETE,
    SAVE_SCRIPT,
+   EMIT_SIGNAL,
    RUN_PROG
 };
 

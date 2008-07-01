@@ -112,6 +112,9 @@ Etk_Widget *UI_Rel2ToYComboBox;
 /* script frame objects */
 Etk_Widget *UI_ScriptBox;
 Etk_Widget *UI_ScriptSaveButton;
+/* signal emit embed objects */
+Etk_Widget *UI_SignalEmitEntry;
+Etk_Widget *UI_SourceEmitEntry;
 /* program frame objects */
 Etk_Widget *UI_ProgramEntry;
 Etk_Widget *UI_ProgramEntryImage;
@@ -146,6 +149,7 @@ Etk_Widget *UI_ProgramEmbed;
 Etk_Widget *UI_ScriptEmbed;
 Etk_Widget *UI_ImageEmbed;
 Etk_Widget *UI_ToolbarEmbed;
+Etk_Widget *UI_SignalEmbed;
 /* colors objects*/
 Evas_Object *RectColorObject;
 Evas_Object *TextColorObject;

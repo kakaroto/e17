@@ -3013,6 +3013,45 @@ create_script_frame(void)
    return vbox;
 }
 
+static Etk_Widget*
+create_signal_embed(void)
+{
+   Etk_Widget *hbox;
+   Etk_Widget *label;
+   Etk_Widget *button;
+   
+   //hbox
+   hbox = etk_hbox_new(ETK_FALSE, 3);
+   
+   //UI_SignalEmitEntry
+   label = etk_label_new("<b>Signal</b>");
+   etk_box_append(ETK_BOX(hbox), label, 0, ETK_BOX_NONE, 0);
+   UI_SignalEmitEntry = etk_combobox_entry_new();
+   etk_combobox_entry_column_add(ETK_COMBOBOX_ENTRY(UI_SignalEmitEntry),
+                  ETK_COMBOBOX_ENTRY_LABEL, 75, ETK_COMBOBOX_ENTRY_EXPAND, 0.0);
+   etk_combobox_entry_build(ETK_COMBOBOX_ENTRY(UI_SignalEmitEntry));
+   etk_box_append(ETK_BOX(hbox), UI_SignalEmitEntry, 0, ETK_BOX_NONE, 0);
+   
+   //UI_SourceEmitEntry
+   label = etk_label_new("<b>Source</b>");
+   etk_box_append(ETK_BOX(hbox), label, 0, ETK_BOX_NONE, 0);
+   UI_SourceEmitEntry = etk_combobox_entry_new();
+   etk_combobox_entry_column_add(ETK_COMBOBOX_ENTRY(UI_SourceEmitEntry),
+                  ETK_COMBOBOX_ENTRY_LABEL, 75, ETK_COMBOBOX_ENTRY_EXPAND, 0.0);
+   etk_combobox_entry_build(ETK_COMBOBOX_ENTRY(UI_SourceEmitEntry));
+   etk_box_append(ETK_BOX(hbox), UI_SourceEmitEntry, 0, ETK_BOX_NONE, 0);
+   
+   //button
+   button = etk_button_new_from_stock(ETK_STOCK_DIALOG_OK);
+   etk_object_properties_set(ETK_OBJECT(button), "label", "Emit", NULL);
+   etk_box_append(ETK_BOX(hbox), button, 0, ETK_BOX_NONE, 0);
+   
+   etk_signal_connect("clicked", ETK_OBJECT(button),
+                      ETK_CALLBACK(on_AllButton_click), (void*)EMIT_SIGNAL);
+   
+   return hbox;
+}
+
 static void 
 _embed_position_set(void *position_data, int *x, int *y)
 {
@@ -3164,6 +3203,21 @@ create_main_window(void)
    etk_widget_show_all(UI_ScriptEmbed);
    edje_object_part_swallow(edje_ui,"script_frame_swallow",
                             etk_embed_object_get(ETK_EMBED(UI_ScriptEmbed)));
+
+   
+   //Consolle
+   Consolle = edje_object_add(ecore_evas_get(UI_ecore_MainWin));
+   edje_object_file_set(Consolle, EdjeFile, "Consolle");
+   evas_object_show(Consolle);
+   
+   //SignalEmitEmbed
+   UI_SignalEmbed = etk_embed_new(UI_evas);
+   etk_container_add(ETK_CONTAINER(UI_SignalEmbed), create_signal_embed());
+   etk_embed_position_method_set(ETK_EMBED(UI_SignalEmbed),
+                                 _embed_position_set, UI_ecore_MainWin);
+   etk_widget_show_all(UI_SignalEmbed);
+   edje_object_part_swallow(Consolle,"signal_swallow",
+                            etk_embed_object_get(ETK_EMBED(UI_SignalEmbed)));
    
    //Filechooser
    UI_FileChooserDialog = create_filechooser_dialog();

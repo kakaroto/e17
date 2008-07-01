@@ -38,7 +38,7 @@ ecore_resize_callback(Ecore_Evas *ecore_evas)
    evas_object_resize(embed_object, TREE_WIDTH, win_h - 55);
    
    //Resize Consolle
-   evas_object_move(Consolle, TREE_WIDTH + 5, win_h - 80);
+   evas_object_move(Consolle, TREE_WIDTH + 5, win_h - 105);
    evas_object_resize(Consolle, win_w - TREE_WIDTH - 10, 75);
 }
 /* Catch all the signal from the editing edje object */
@@ -72,6 +72,7 @@ on_AllButton_click(Etk_Button *button, void *data)
    const char *tween;
    Etk_Tree_Row *row, *next, *prev;
    Evas_List *icons, *l;
+   char *sig, *sou;
 
    switch ((int)data)
       {
@@ -263,6 +264,11 @@ on_AllButton_click(Etk_Button *button, void *data)
       break;
    case IMAGE_TWEEN_DOWN:
       ShowAlert("Down not yet implemented.");
+      break;
+   case EMIT_SIGNAL:
+      sig = etk_entry_text_get(etk_combobox_entry_entry_get(UI_SignalEmitEntry));
+      sou = etk_entry_text_get(etk_combobox_entry_entry_get(UI_SourceEmitEntry));
+      edje_object_signal_emit(edje_o, sig, sou);
       break;
    case RUN_PROG:
       if (etk_string_length_get(Cur.prog))
