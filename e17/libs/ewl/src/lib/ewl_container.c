@@ -474,7 +474,8 @@ ewl_container_child_count_internal_get(Ewl_Container *c)
  *
  * This function return the number of visible child widgets in this container,
  * no matter if the container is set to redirect or not.
- * Note: other than ewl_container_count_get() and
+ * 
+ * @note Other than ewl_container_count_get() and
  * ewl_container_count_internal_get() it does not return the number of
  * children in the redirection end container.
  */

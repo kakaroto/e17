@@ -11,7 +11,7 @@
  * @return Returns no value.
  * @brief Initialize the range to some sane starting values
  *
- * Note, there is no ewl_range_new(), becasue range only serves
+ * @note There is no ewl_range_new(), becasue range only serves
  * as a common API for seeker, spinner and progressbar
  */
 int

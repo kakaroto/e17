@@ -733,7 +733,7 @@ ewl_window_leader_foreign_set(Ewl_Window *win, Ewl_Embed_Window *leader)
  * @return leader of the window or NULL
  * @brief Gets the leader of this window
  *
- * Note: this function returns even NULL if the leader
+ * @note this function returns even NULL if the leader
  * is a foreign window
  */
 Ewl_Window *
@@ -754,7 +754,7 @@ ewl_window_leader_get(Ewl_Window *win)
  * @return Returns the leader of this window or NULL
  * @brief Gets the leader of this window
  *
- * Note: this function returns even NULL if the leader
+ * @note this function returns even NULL if the leader
  * is a ewl window
  */
 Ewl_Embed_Window *

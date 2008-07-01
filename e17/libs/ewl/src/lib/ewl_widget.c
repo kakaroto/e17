@@ -1072,7 +1072,7 @@ ewl_widget_appearance_text_set(Ewl_Widget *w, const char *text)
  * @return Returns the current text on success, NULL on failure.
  * @brief Retrieve the text of the given theme part of a widget
  *
- * Note, the returned value will only be valid until the next time
+ * @note The returned value will only be valid until the next time
  * ewl_widget_appearance_text_set() is called on this widget.
  */
 const char *
@@ -1619,7 +1619,7 @@ ewl_widget_internal_set(Ewl_Widget *w, unsigned int val)
  * the same layer with its sibling widgets. In most cases you also want to
  * set it as internal.
  *
- * Note: You cannot change the unmanaged state if the widget already has
+ * @note You cannot change the unmanaged state if the widget already has
  * a parent.
  */
 void

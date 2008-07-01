@@ -170,7 +170,11 @@ ewl_icon_type_get(Ewl_Icon *icon)
  * @param icon: The icon to set the part to hide of
  * @param part: The part to hide
  * @return Returns no value.
- * @brief Hide the given part of the icon. Note: You can only hide one part.
+ * @brief Hide the given part of the icon.
+ *
+ * The give part of the icon will be hidden.
+ *
+ * @note You can only hide one part.
  */
 void
 ewl_icon_part_hide(Ewl_Icon *icon, Ewl_Icon_Part part)
