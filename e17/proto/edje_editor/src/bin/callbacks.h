@@ -10,6 +10,7 @@ Etk_Bool on_GroupSpinner_value_changed     (Etk_Range *range, double value, void
 Etk_Bool on_canvas_geometry_changed        (Etk_Object *canvas, const char *property_name, void *data);
 Etk_Bool on_PartsTree_row_selected         (Etk_Object *object, Etk_Tree_Row *row, void *data);
 Etk_Bool on_PartsTree_click                (Etk_Tree *tree, Etk_Tree_Row *row, Etk_Event_Mouse_Up *event, void *data);
+Etk_Bool on_SignalEmitEntry_activated      (Etk_Combobox_Entry *combo, void *data);
 void     on_ColorCanvas_click              (void *data, Evas *e, Evas_Object *obj, void *event_info);
 Etk_Bool on_ColorDialog_change             (Etk_Object *object, void *data);
 Etk_Bool on_ImageBrowserIconbox_selected(Etk_Iconbox *iconbox, Etk_Iconbox_Icon *icon, void *data);

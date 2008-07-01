@@ -63,6 +63,43 @@ on_GroupsComboBox_activated(Etk_Combobox *combobox, Etk_Combobox_Item *item, voi
    return ETK_TRUE;
 }
 
+
+void
+emit_entry_item_append_ifnot(Etk_Widget *combo_entry, const char *text)
+{
+   Etk_Combobox_Entry_Item *item;
+   char *str;
+   
+   if (!text || strlen(text) < 1) return;
+   
+   item = etk_combobox_entry_first_item_get(combo_entry);
+   while (item)
+   {
+      str = etk_combobox_entry_item_field_get(item, 0);
+      if (!strcmp(str, text))
+         return;
+      item = etk_combobox_entry_item_next_get(item);
+   } 
+   
+   etk_combobox_entry_item_append(combo_entry, text);
+}
+
+Etk_Bool
+on_SignalEmitEntry_activated(Etk_Combobox_Entry *combo, void *data)
+{
+   Etk_Combobox_Entry_Item *item;
+   Etk_Widget *entry;
+   char *str;
+   
+   entry = etk_combobox_entry_entry_get(combo);
+   item = etk_combobox_entry_active_item_get(combo);
+ 
+   str = etk_combobox_entry_item_field_get(item, 0);
+   etk_entry_text_set(entry, str);
+   
+   return ETK_TRUE;
+}
+
 /* All the buttons Callback */
 Etk_Bool
 on_AllButton_click(Etk_Button *button, void *data)
@@ -268,6 +305,8 @@ on_AllButton_click(Etk_Button *button, void *data)
       sig = etk_entry_text_get(etk_combobox_entry_entry_get(UI_SignalEmitEntry));
       sou = etk_entry_text_get(etk_combobox_entry_entry_get(UI_SourceEmitEntry));
       edje_object_signal_emit(edje_o, sig, sou);
+      emit_entry_item_append_ifnot(UI_SignalEmitEntry, sig);
+      emit_entry_item_append_ifnot(UI_SourceEmitEntry, sou);
       break;
    case RUN_PROG:
       if (etk_string_length_get(Cur.prog))
