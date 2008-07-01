@@ -1171,7 +1171,7 @@ ewl_test_create_info_window(const char *title, const char *text)
         ewl_dialog_active_area_set(EWL_DIALOG(win), EWL_POSITION_TOP);
 
         o = ewl_text_new();
-        ewl_text_font_source_set(EWL_TEXT(o), ewl_theme_path_get(), "ewl/default/bold");
+        ewl_text_font_set(EWL_TEXT(o), "ewl/default/bold");
         /* give it a size hint to calculate a good preferred size in the first 
          * place */
         ewl_object_w_request(EWL_OBJECT(o), 300);
