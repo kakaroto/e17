@@ -152,6 +152,10 @@ Evas_Object    *rel1X_parent_handler;  //The 4 line that show the container for 
 Evas_Object    *rel1Y_parent_handler;  //
 Evas_Object    *rel2X_parent_handler;  //
 Evas_Object    *rel2Y_parent_handler;  //
+Evas_Object    *rel1X_align_guide;     //The 4 line (2 blu & 2 red) used for align on drag operation
+Evas_Object    *rel1Y_align_guide;     //
+Evas_Object    *rel2X_align_guide;     //
+Evas_Object    *rel2Y_align_guide;     //
 Evas_Object    *Consolle;              //The lower consolle panel
 Evas_List      *stack;                 //Stack for the consolle
 int            consolle_count;         //Counter for the consolle

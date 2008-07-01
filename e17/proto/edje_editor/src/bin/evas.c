@@ -54,7 +54,7 @@ on_Drag(void *data, Evas *e, Evas_Object *obj, void *event_info)
 
       edje_edit_state_rel1_relative_y_set(edje_o, Cur.part->string,
                   Cur.state->string,(float)(mouse_y - parenty)/(float)parenth);
-
+      
       UpdatePositionFrame();
    }
    // Move Rel2 Point
@@ -108,6 +108,7 @@ on_Drag(void *data, Evas *e, Evas_Object *obj, void *event_info)
 
       UpdatePositionFrame();
    }
+   
    ev_redraw();
 
    //printf("Drag %s - ",source);
@@ -122,12 +123,24 @@ on_StartDrag(void *data, Evas_Object *o, const char *em, const char *src)
    Evas_Coord x, y, mx, my;
    //printf("Start Drag\n");
 
-   if ((int)data == DRAG_REL1) 
+   if ((int)data == DRAG_REL1)
+   {
       evas_object_event_callback_add(rel1_handler, EVAS_CALLBACK_MOUSE_MOVE,
                                     on_Drag,(void*)DRAG_REL1);
-   if ((int)data == DRAG_REL2) 
+      evas_object_show(rel1X_align_guide);
+      evas_object_raise(rel1X_align_guide);
+      evas_object_show(rel1Y_align_guide);
+      evas_object_raise(rel1Y_align_guide);
+   }
+   if ((int)data == DRAG_REL2)
+   {
       evas_object_event_callback_add(rel2_handler, EVAS_CALLBACK_MOUSE_MOVE,
                                     on_Drag,(void*)DRAG_REL2);
+      evas_object_show(rel2X_align_guide);
+      evas_object_raise(rel2X_align_guide);
+      evas_object_show(rel2Y_align_guide);
+      evas_object_raise(rel2Y_align_guide);
+   }
    if ((int)data == DRAG_MOVE)
    {
       evas_object_event_callback_add(move_handler, EVAS_CALLBACK_MOUSE_MOVE,
@@ -138,6 +151,15 @@ on_StartDrag(void *data, Evas_Object *o, const char *em, const char *src)
       dy = my - y - 3;
       edje_object_part_geometry_get(edje_o, Cur.part->string, NULL, NULL,
                                     &dx2, &dy2);
+      
+      evas_object_show(rel1X_align_guide);
+      evas_object_raise(rel1X_align_guide);
+      evas_object_show(rel1Y_align_guide);
+      evas_object_raise(rel1Y_align_guide);
+      evas_object_show(rel2X_align_guide);
+      evas_object_raise(rel2X_align_guide);
+      evas_object_show(rel2Y_align_guide);
+      evas_object_raise(rel2Y_align_guide);
    }
    
    if ((int)data == DRAG_MOVEBOX)
@@ -157,11 +179,33 @@ on_EndDrag(void *data, Evas_Object *o, const char *emission, const char *source)
 {
    //printf("End Drag\n");
    if ((int)data == DRAG_REL1)
+   {
       evas_object_event_callback_del(rel1_handler,EVAS_CALLBACK_MOUSE_MOVE,on_Drag);
+      evas_object_hide(rel1X_align_guide);
+      evas_object_hide(rel1Y_align_guide);
+      evas_object_line_xy_set(rel1X_align_guide, 0, 0, 0, 0);
+      evas_object_line_xy_set(rel1Y_align_guide, 0, 0, 0, 0);
+   }
    if ((int)data == DRAG_REL2)
+   {
       evas_object_event_callback_del(rel2_handler,EVAS_CALLBACK_MOUSE_MOVE,on_Drag);
+      evas_object_hide(rel2X_align_guide);
+      evas_object_hide(rel2Y_align_guide);
+      evas_object_line_xy_set(rel2X_align_guide, 0, 0, 0, 0);
+      evas_object_line_xy_set(rel2Y_align_guide, 0, 0, 0, 0);
+   }
    if ((int)data == DRAG_MOVE)
+   {
       evas_object_event_callback_del(move_handler,EVAS_CALLBACK_MOUSE_MOVE,on_Drag);
+      evas_object_hide(rel1X_align_guide);
+      evas_object_hide(rel1Y_align_guide);
+      evas_object_line_xy_set(rel1X_align_guide, 0, 0, 0, 0);
+      evas_object_line_xy_set(rel1Y_align_guide, 0, 0, 0, 0);
+      evas_object_hide(rel2X_align_guide);
+      evas_object_hide(rel2Y_align_guide);
+      evas_object_line_xy_set(rel2X_align_guide, 0, 0, 0, 0);
+      evas_object_line_xy_set(rel2Y_align_guide, 0, 0, 0, 0);
+   }
    if ((int)data == DRAG_MOVEBOX)
       evas_object_event_callback_del(EV_movebox,EVAS_CALLBACK_MOUSE_MOVE,on_Drag);
    if ((int)data == DRAG_MINIARROW)
@@ -215,6 +259,17 @@ prepare_canvas(void)
 
    rel2Y_parent_handler = evas_object_line_add(ecore_evas_get(UI_ecore_MainWin));
    evas_object_color_set(rel2Y_parent_handler, 0, 0, 255, 200);
+
+   //Create Align Guides
+   rel1X_align_guide = evas_object_line_add(ecore_evas_get(UI_ecore_MainWin));
+   evas_object_color_set(rel1X_align_guide, 180, 0, 0, 180);
+   rel1Y_align_guide = evas_object_line_add(ecore_evas_get(UI_ecore_MainWin));
+   evas_object_color_set(rel1Y_align_guide, 180, 0, 0, 180);
+
+   rel2X_align_guide = evas_object_line_add(ecore_evas_get(UI_ecore_MainWin));
+   evas_object_color_set(rel2X_align_guide, 0, 0, 180, 180);
+   rel2Y_align_guide = evas_object_line_add(ecore_evas_get(UI_ecore_MainWin));
+   evas_object_color_set(rel2Y_align_guide, 0, 0, 180, 180);
 
    // Create Fake win
    EV_fakewin = edje_object_add(ecore_evas_get(UI_ecore_MainWin));
@@ -393,6 +448,15 @@ ev_draw_focus(void)
       evas_object_line_xy_set(rel2Y_parent_handler, ParentX+ParentW, ParentY,
                                             ParentX+ParentW, ParentY+ParentH);
 
+      
+      //Place the align guides
+      evas_object_geometry_get(rel1_handler, &px, &py, NULL, NULL);
+      evas_object_line_xy_set(rel1X_align_guide, px + 2, 0, px + 2, 2000); //TODO FIX 2000
+      evas_object_line_xy_set(rel1Y_align_guide, 0, py + 2, 2000, py + 2); //TODO FIX 2000
+      evas_object_geometry_get(rel2_handler, &px, &py, NULL, NULL);
+      evas_object_line_xy_set(rel2X_align_guide, px + 2, 0, px + 2, 2000); //TODO FIX 2000
+      evas_object_line_xy_set(rel2Y_align_guide, 0, py + 2, 2000, py + 2); //TODO FIX 2000
+      
       evas_object_raise(rel1X_parent_handler);
       evas_object_show(rel1X_parent_handler);
       evas_object_raise(rel1Y_parent_handler);
