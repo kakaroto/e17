@@ -140,7 +140,7 @@ ChangeGroup(char *group)
       edje_edit_save(edje_o);
    
    evas_object_hide(edje_o);
-   ConsolleClear();
+   consolle_clear();
    
    //evas_object_del(edje_o);
    //edje_o = NULL;

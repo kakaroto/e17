@@ -246,7 +246,7 @@ create_main_window(void)
 
 
    //Consolle
-   Consolle = create_consolle();
+   EV_Consolle = consolle_create();
    
    //Filechooser
    UI_FileChooserDialog = create_filechooser_dialog();
@@ -294,8 +294,8 @@ ecore_resize_callback(Ecore_Evas *ecore_evas)
    evas_object_resize(embed_object, TREE_WIDTH, win_h - 55);
    
    //Resize Consolle
-   evas_object_move(Consolle, TREE_WIDTH + 5, win_h - 105);
-   evas_object_resize(Consolle, win_w - TREE_WIDTH - 10, 75);
+   evas_object_move(EV_Consolle, TREE_WIDTH + 5, win_h - 105);
+   evas_object_resize(EV_Consolle, win_w - TREE_WIDTH - 10, 75);
 }
 /* Catch all the signal from the editing edje object */
 void
@@ -305,7 +305,7 @@ signal_cb(void *data, Evas_Object *o, const char *sig, const char *src)
    consolle_count++;
    snprintf(buf, sizeof(buf), "[%d]  SIGNAL = '%s'     SOURCE = '%s'",
             consolle_count, sig, src);
-   ConsolleLog(buf);
+   consolle_log(buf);
 }
 
 
@@ -321,7 +321,6 @@ on_AllButton_click(Etk_Button *button, void *data)
    const char *tween;
    Etk_Tree_Row *row, *next, *prev;
    Evas_List *icons, *l;
-   const char *sig, *sou;
 
    switch ((int)data)
       {
@@ -513,13 +512,6 @@ on_AllButton_click(Etk_Button *button, void *data)
       break;
    case IMAGE_TWEEN_DOWN:
       ShowAlert("Down not yet implemented.");
-      break;
-   case EMIT_SIGNAL:
-      sig = etk_entry_text_get(ETK_ENTRY(etk_combobox_entry_entry_get(ETK_COMBOBOX_ENTRY(UI_SignalEmitEntry))));
-      sou = etk_entry_text_get(ETK_ENTRY(etk_combobox_entry_entry_get(ETK_COMBOBOX_ENTRY(UI_SourceEmitEntry))));
-      edje_object_signal_emit(edje_o, sig, sou);
-      emit_entry_item_append_ifnot(UI_SignalEmitEntry, sig);
-      emit_entry_item_append_ifnot(UI_SourceEmitEntry, sou);
       break;
    case RUN_PROG:
       if (etk_string_length_get(Cur.prog))

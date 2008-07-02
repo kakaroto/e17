@@ -4,9 +4,50 @@
 #include <Edje_Edit.h>
 #include "main.h"
 
+/***   Locals   ***/
+static void _consolle_entry_item_append_ifnotexist(Etk_Widget *combo_entry, const char *text);
+static Etk_Widget* _create_signal_embed(void);
 
-void
-emit_entry_item_append_ifnot(Etk_Widget *combo_entry, const char *text)
+static Etk_Widget *UI_SignalEmitEntry;
+static Etk_Widget *UI_SourceEmitEntry;
+
+/***   Callbacks   ***/
+Etk_Bool
+_consolle_button_click_cb(Etk_Button *button, void *data)
+{
+   const char *sig, *sou;
+   
+   sig = etk_entry_text_get(ETK_ENTRY(etk_combobox_entry_entry_get(ETK_COMBOBOX_ENTRY(UI_SignalEmitEntry))));
+   sou = etk_entry_text_get(ETK_ENTRY(etk_combobox_entry_entry_get(ETK_COMBOBOX_ENTRY(UI_SourceEmitEntry))));
+   
+   edje_object_signal_emit(edje_o, sig, sou);
+   
+   _consolle_entry_item_append_ifnotexist(UI_SignalEmitEntry, sig);
+   _consolle_entry_item_append_ifnotexist(UI_SourceEmitEntry, sou);
+   
+   return ETK_TRUE;
+}
+
+Etk_Bool
+_consolle_combobox_entry_activated_cb(Etk_Combobox_Entry *combo, void *data)
+{
+   Etk_Combobox_Entry_Item *item;
+   Etk_Widget *entry;
+   char *str;
+   
+   entry = etk_combobox_entry_entry_get(combo);
+   item = etk_combobox_entry_active_item_get(combo);
+ 
+   str = etk_combobox_entry_item_field_get(item, 0);
+   etk_entry_text_set(ETK_ENTRY(entry), str);
+   
+   return ETK_TRUE;
+}
+
+
+/***   Internals   ***/
+static void
+_consolle_entry_item_append_ifnotexist(Etk_Widget *combo_entry, const char *text)
 {
    Etk_Combobox_Entry_Item *item;
    char *str;
@@ -25,64 +66,8 @@ emit_entry_item_append_ifnot(Etk_Widget *combo_entry, const char *text)
    etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(combo_entry), text);
 }
 
-Evas_Object *
-create_consolle(void)
-{
-   Etk_Widget *embed;
-   
-   Consolle = edje_object_add(ecore_evas_get(UI_ecore_MainWin));
-   edje_object_file_set(Consolle, EdjeFile, "Consolle");
-   evas_object_show(Consolle);
-   
-   //Embed Signal Emit
-   embed = etk_embed_new(UI_evas);
-   etk_container_add(ETK_CONTAINER(embed), create_signal_embed());
-   etk_embed_position_method_set(ETK_EMBED(embed), _embed_position_set,
-                                 UI_ecore_MainWin);
-   etk_widget_show_all(embed);
-   edje_object_part_swallow(Consolle,"signal_swallow",
-                            etk_embed_object_get(ETK_EMBED(embed)));
-   return Consolle;
-}
-
-void
-ConsolleClear(void)
-{
-   edje_object_part_text_set(Consolle, "line1", "");
-   edje_object_part_text_set(Consolle, "line2", "");
-   edje_object_part_text_set(Consolle, "line3", "");
-   edje_object_part_text_set(Consolle, "line4", "");
-   edje_object_part_text_set(Consolle, "line5", "");
-   
-   while(stack)
-   {
-      evas_stringshare_del(evas_list_data(stack));
-      stack = evas_list_remove_list(stack, stack);
-   }
-   consolle_count = 0;
-}
-void
-ConsolleLog(char *text)
-{
-   //printf("LOG: %s\n", text);
-   
-   stack = evas_list_prepend(stack, evas_stringshare_add(text));
-   
-   while (evas_list_count(stack) > 5)
-   {
-      evas_stringshare_del(evas_list_data(evas_list_last(stack)));
-      stack = evas_list_remove_list(stack, evas_list_last(stack));
-   }
-
-   edje_object_part_text_set(Consolle, "line1", evas_list_nth(stack, 0));
-   edje_object_part_text_set(Consolle, "line2", evas_list_nth(stack, 1));
-   edje_object_part_text_set(Consolle, "line3", evas_list_nth(stack, 2));
-   edje_object_part_text_set(Consolle, "line4", evas_list_nth(stack, 3));
-   edje_object_part_text_set(Consolle, "line5", evas_list_nth(stack, 4));
-}
-
-Etk_Widget*
-create_signal_embed(void)
+static Etk_Widget*
+_create_signal_embed(void)
 {
    Etk_Widget *hbox;
    Etk_Widget *label;
@@ -117,101 +102,70 @@ create_signal_embed(void)
    etk_box_append(ETK_BOX(hbox), button, 0, ETK_BOX_NONE, 0);
    
    etk_signal_connect("active-item-changed", ETK_OBJECT(UI_SignalEmitEntry),
-                      ETK_CALLBACK(on_SignalEmitEntry_activated), NULL);
+                      ETK_CALLBACK(_consolle_combobox_entry_activated_cb), NULL);
    etk_signal_connect("active-item-changed", ETK_OBJECT(UI_SourceEmitEntry),
-                      ETK_CALLBACK(on_SignalEmitEntry_activated), NULL);
+                      ETK_CALLBACK(_consolle_combobox_entry_activated_cb), NULL);
    
    etk_signal_connect("clicked", ETK_OBJECT(button),
-                      ETK_CALLBACK(on_AllButton_click), (void*)EMIT_SIGNAL);
+                      ETK_CALLBACK(_consolle_button_click_cb), NULL);
    
    return hbox;
 }
 
-void
-PopulateSourceComboEntry(void)
+
+/***   Implementation   ***/
+Evas_Object *
+consolle_create(void)
 {
-   Evas_List *l;
-   char *image_name;
-   printf("Populate Program Source ComboEntry\n");
-    
-   //Stop signal propagation
-   etk_signal_block("active-item-changed", ETK_OBJECT(UI_SourceEntry),
-                  ETK_CALLBACK(on_SourceEntry_item_changed), NULL);
+   Etk_Widget *embed;
    
-   etk_combobox_entry_clear(ETK_COMBOBOX_ENTRY(UI_SourceEntry));
+   EV_Consolle = edje_object_add(ecore_evas_get(UI_ecore_MainWin));
+   edje_object_file_set(EV_Consolle, EdjeFile, "Consolle");
+   evas_object_show(EV_Consolle);
    
-   l = edje_edit_parts_list_get(edje_o);
-   while (l)
+   //Embed Signal Emit
+   embed = etk_embed_new(UI_evas);
+   etk_container_add(ETK_CONTAINER(embed), _create_signal_embed());
+   etk_embed_position_method_set(ETK_EMBED(embed), _embed_position_set,
+                                 UI_ecore_MainWin);
+   etk_widget_show_all(embed);
+   edje_object_part_swallow(EV_Consolle,"signal_swallow",
+                            etk_embed_object_get(ETK_EMBED(embed)));
+   return EV_Consolle;
+}
+
+void
+consolle_clear(void)
+{
+   edje_object_part_text_set(EV_Consolle, "line1", "");
+   edje_object_part_text_set(EV_Consolle, "line2", "");
+   edje_object_part_text_set(EV_Consolle, "line3", "");
+   edje_object_part_text_set(EV_Consolle, "line4", "");
+   edje_object_part_text_set(EV_Consolle, "line5", "");
+   
+   while(stack)
    {
-      image_name = GetPartTypeImage(edje_edit_part_type_get(edje_o, (char*)l->data));
-      etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(UI_SourceEntry),
-                  etk_image_new_from_edje(EdjeFile, image_name),
-                  (char *)l->data);
-      free(image_name);
-      
-      l = l->next;
+      evas_stringshare_del(evas_list_data(stack));
+      stack = evas_list_remove_list(stack, stack);
    }
-   edje_edit_string_list_free(l);
-   
-   //Renable  signal propagation
-   etk_signal_unblock("active-item-changed", ETK_OBJECT(UI_SourceEntry),
-                     ETK_CALLBACK(on_SourceEntry_item_changed), NULL);
+   consolle_count = 0;
 }
-
 void
-PopulateSignalComboEntry(void)
+consolle_log(char *text)
 {
-   printf("Populate Program Signal ComboEntry\n");
+   //printf("LOG: %s\n", text);
    
-   //Stop signal propagation
-   etk_signal_block("active-item-changed", ETK_OBJECT(UI_SignalEntry),
-                  ETK_CALLBACK(on_SignalEntry_item_changed), NULL);
+   stack = evas_list_prepend(stack, evas_stringshare_add(text));
    
-   etk_combobox_entry_clear(ETK_COMBOBOX_ENTRY(UI_SignalEntry));
-      
-   etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(UI_SignalEntry),
-            etk_image_new_from_edje(EdjeFile, "DESC.PNG"), "program,start");
-   etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(UI_SignalEntry),
-            etk_image_new_from_edje(EdjeFile, "DESC.PNG"), "program,stop");
-   etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(UI_SignalEntry),
-            etk_image_new_from_edje(EdjeFile, "DESC.PNG"), "load");
-   etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(UI_SignalEntry),
-            etk_image_new_from_edje(EdjeFile, "DESC.PNG"), "show");
-   etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(UI_SignalEntry),
-            etk_image_new_from_edje(EdjeFile, "DESC.PNG"), "hide");
-   etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(UI_SignalEntry),
-            etk_image_new_from_edje(EdjeFile, "DESC.PNG"), "resize");
-   etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(UI_SignalEntry),
-            etk_image_new_from_edje(EdjeFile, "DESC.PNG"), "mouse,in");
-   etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(UI_SignalEntry),
-            etk_image_new_from_edje(EdjeFile, "DESC.PNG"), "mouse,out");
-   etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(UI_SignalEntry),
-            etk_image_new_from_edje(EdjeFile, "DESC.PNG"), "mouse,move");
-   etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(UI_SignalEntry),
-            etk_image_new_from_edje(EdjeFile, "DESC.PNG"), "mouse,down,1");
-   etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(UI_SignalEntry),
-            etk_image_new_from_edje(EdjeFile, "DESC.PNG"), "mouse,up,1");
-   etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(UI_SignalEntry),
-            etk_image_new_from_edje(EdjeFile, "DESC.PNG"), "mouse,clicked,1");
-   
-   //Renable  signal propagation
-   etk_signal_unblock("active-item-changed", ETK_OBJECT(UI_SignalEntry),
-                     ETK_CALLBACK(on_SignalEntry_item_changed), NULL);
-}
+   while (evas_list_count(stack) > 5)
+   {
+      evas_stringshare_del(evas_list_data(evas_list_last(stack)));
+      stack = evas_list_remove_list(stack, evas_list_last(stack));
+   }
 
-
-Etk_Bool
-on_SignalEmitEntry_activated(Etk_Combobox_Entry *combo, void *data)
-{
-   Etk_Combobox_Entry_Item *item;
-   Etk_Widget *entry;
-   char *str;
-   
-   entry = etk_combobox_entry_entry_get(combo);
-   item = etk_combobox_entry_active_item_get(combo);
- 
-   str = etk_combobox_entry_item_field_get(item, 0);
-   etk_entry_text_set(ETK_ENTRY(entry), str);
-   
-   return ETK_TRUE;
+   edje_object_part_text_set(EV_Consolle, "line1", evas_list_nth(stack, 0));
+   edje_object_part_text_set(EV_Consolle, "line2", evas_list_nth(stack, 1));
+   edje_object_part_text_set(EV_Consolle, "line3", evas_list_nth(stack, 2));
+   edje_object_part_text_set(EV_Consolle, "line4", evas_list_nth(stack, 3));
+   edje_object_part_text_set(EV_Consolle, "line5", evas_list_nth(stack, 4));
 }

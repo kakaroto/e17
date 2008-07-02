@@ -401,6 +401,80 @@ UpdateProgFrame(void)
    etk_object_destroy(ETK_OBJECT(str));
 }
 
+
+void
+PopulateSourceComboEntry(void)
+{
+   Evas_List *l;
+   char *image_name;
+   printf("Populate Program Source ComboEntry\n");
+    
+   //Stop signal propagation
+   etk_signal_block("active-item-changed", ETK_OBJECT(UI_SourceEntry),
+                  ETK_CALLBACK(on_SourceEntry_item_changed), NULL);
+   
+   etk_combobox_entry_clear(ETK_COMBOBOX_ENTRY(UI_SourceEntry));
+   
+   l = edje_edit_parts_list_get(edje_o);
+   while (l)
+   {
+      image_name = GetPartTypeImage(edje_edit_part_type_get(edje_o, (char*)l->data));
+      etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(UI_SourceEntry),
+                  etk_image_new_from_edje(EdjeFile, image_name),
+                  (char *)l->data);
+      free(image_name);
+      
+      l = l->next;
+   }
+   edje_edit_string_list_free(l);
+   
+   //Renable  signal propagation
+   etk_signal_unblock("active-item-changed", ETK_OBJECT(UI_SourceEntry),
+                     ETK_CALLBACK(on_SourceEntry_item_changed), NULL);
+}
+
+void
+PopulateSignalComboEntry(void)
+{
+   printf("Populate Program Signal ComboEntry\n");
+   
+   //Stop signal propagation
+   etk_signal_block("active-item-changed", ETK_OBJECT(UI_SignalEntry),
+                  ETK_CALLBACK(on_SignalEntry_item_changed), NULL);
+   
+   etk_combobox_entry_clear(ETK_COMBOBOX_ENTRY(UI_SignalEntry));
+      
+   etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(UI_SignalEntry),
+            etk_image_new_from_edje(EdjeFile, "DESC.PNG"), "program,start");
+   etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(UI_SignalEntry),
+            etk_image_new_from_edje(EdjeFile, "DESC.PNG"), "program,stop");
+   etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(UI_SignalEntry),
+            etk_image_new_from_edje(EdjeFile, "DESC.PNG"), "load");
+   etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(UI_SignalEntry),
+            etk_image_new_from_edje(EdjeFile, "DESC.PNG"), "show");
+   etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(UI_SignalEntry),
+            etk_image_new_from_edje(EdjeFile, "DESC.PNG"), "hide");
+   etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(UI_SignalEntry),
+            etk_image_new_from_edje(EdjeFile, "DESC.PNG"), "resize");
+   etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(UI_SignalEntry),
+            etk_image_new_from_edje(EdjeFile, "DESC.PNG"), "mouse,in");
+   etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(UI_SignalEntry),
+            etk_image_new_from_edje(EdjeFile, "DESC.PNG"), "mouse,out");
+   etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(UI_SignalEntry),
+            etk_image_new_from_edje(EdjeFile, "DESC.PNG"), "mouse,move");
+   etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(UI_SignalEntry),
+            etk_image_new_from_edje(EdjeFile, "DESC.PNG"), "mouse,down,1");
+   etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(UI_SignalEntry),
+            etk_image_new_from_edje(EdjeFile, "DESC.PNG"), "mouse,up,1");
+   etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(UI_SignalEntry),
+            etk_image_new_from_edje(EdjeFile, "DESC.PNG"), "mouse,clicked,1");
+   
+   //Renable  signal propagation
+   etk_signal_unblock("active-item-changed", ETK_OBJECT(UI_SignalEntry),
+                     ETK_CALLBACK(on_SignalEntry_item_changed), NULL);
+}
+
+
 Etk_Bool
 on_ActionComboBox_changed(Etk_Combobox *combobox, void *data)
 {
