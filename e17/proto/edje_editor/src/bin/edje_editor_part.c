@@ -71,7 +71,7 @@ create_part_frame(void)
    
    
    etk_signal_connect("text-changed", ETK_OBJECT(UI_PartNameEntry),
-         ETK_CALLBACK(on_NamesEntry_text_changed), NULL);   
+         ETK_CALLBACK(_group_NamesEntry_text_changed_cb), NULL);   
    etk_signal_connect("key-down", ETK_OBJECT(UI_PartNameEntry),
          ETK_CALLBACK(on_PartNameEntry_key_down), NULL);
    etk_signal_connect("mouse-click", ETK_OBJECT(UI_PartNameEntryImage),
@@ -92,7 +92,7 @@ UpdatePartFrame(void)
 {
    //Stop signal propagation
    etk_signal_block("text-changed",ETK_OBJECT(UI_PartNameEntry),
-                    on_NamesEntry_text_changed, NULL);
+                    _group_NamesEntry_text_changed_cb, NULL);
    etk_signal_block("toggled",ETK_OBJECT(UI_PartEventsCheck),
                     on_PartEventsCheck_toggled, NULL);
    etk_signal_block("toggled",ETK_OBJECT(UI_PartEventsRepeatCheck),
@@ -176,7 +176,7 @@ UpdatePartFrame(void)
    
    //ReEnable Signal Propagation
    etk_signal_unblock("text-changed",ETK_OBJECT(UI_PartNameEntry),
-                      on_NamesEntry_text_changed, NULL);
+                      _group_NamesEntry_text_changed_cb, NULL);
    etk_signal_unblock("toggled",ETK_OBJECT(UI_PartEventsCheck),
                       on_PartEventsCheck_toggled, NULL);
    etk_signal_unblock("toggled",ETK_OBJECT(UI_PartEventsRepeatCheck),

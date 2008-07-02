@@ -165,7 +165,7 @@ create_main_window(void)
 
    //GroupEmbed
    UI_GroupEmbed = etk_embed_new(UI_evas);
-   etk_container_add(ETK_CONTAINER(UI_GroupEmbed), create_group_frame());
+   etk_container_add(ETK_CONTAINER(UI_GroupEmbed), group_frame_create());
    etk_embed_position_method_set(ETK_EMBED(UI_GroupEmbed),
                                  _embed_position_set, UI_ecore_MainWin);
    etk_widget_show_all(UI_GroupEmbed);

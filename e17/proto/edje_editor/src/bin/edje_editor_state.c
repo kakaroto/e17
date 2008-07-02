@@ -151,7 +151,7 @@ create_description_frame(void)
    etk_signal_connect("mouse-click", ETK_OBJECT(UI_StateEntryImage),
                       ETK_CALLBACK(on_StateEntryImage_mouse_clicked), NULL);
    etk_signal_connect("text-changed", ETK_OBJECT(UI_StateEntry),
-                      ETK_CALLBACK(on_NamesEntry_text_changed), NULL);
+                      ETK_CALLBACK(_group_NamesEntry_text_changed_cb), NULL);
    
    etk_signal_connect("value-changed", ETK_OBJECT(UI_AspectMinSpinner),
                       ETK_CALLBACK(on_AspectSpinner_value_changed), NULL);
@@ -181,7 +181,7 @@ UpdateDescriptionFrame(void)
 {
   //Stop signal propagation
    etk_signal_block("text-changed", ETK_OBJECT(UI_StateEntry),
-                    on_NamesEntry_text_changed, NULL);
+                    _group_NamesEntry_text_changed_cb, NULL);
    etk_signal_block("value-changed", ETK_OBJECT(UI_AspectMinSpinner),
                     ETK_CALLBACK(on_AspectSpinner_value_changed), NULL);
    etk_signal_block("value-changed", ETK_OBJECT(UI_AspectMaxSpinner),
@@ -244,7 +244,7 @@ UpdateDescriptionFrame(void)
 
    //ReEnable Signal Propagation
    etk_signal_unblock("text-changed", ETK_OBJECT(UI_StateEntry),
-                      on_NamesEntry_text_changed, NULL);
+                      _group_NamesEntry_text_changed_cb, NULL);
    etk_signal_unblock("value-changed", ETK_OBJECT(UI_AspectMinSpinner),
                       ETK_CALLBACK(on_AspectSpinner_value_changed), NULL);
    etk_signal_unblock("value-changed", ETK_OBJECT(UI_AspectMaxSpinner),

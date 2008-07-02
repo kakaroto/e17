@@ -213,7 +213,7 @@ create_program_frame(void)
          ETK_CALLBACK(on_ActionComboBox_changed), NULL);
    
    etk_signal_connect("text-changed", ETK_OBJECT(UI_ProgramEntry),
-         ETK_CALLBACK(on_NamesEntry_text_changed), NULL);   
+         ETK_CALLBACK(_group_NamesEntry_text_changed_cb), NULL);   
    etk_signal_connect("key-down", ETK_OBJECT(UI_ProgramEntry),
          ETK_CALLBACK(on_ProgramEntry_key_down), NULL);
    etk_signal_connect("mouse-click", ETK_OBJECT(UI_ProgramEntryImage),
@@ -264,7 +264,7 @@ UpdateProgFrame(void)
    
    //Stop signal propagation
    etk_signal_block("text-changed", ETK_OBJECT(UI_ProgramEntry),
-         ETK_CALLBACK(on_NamesEntry_text_changed), NULL);
+         ETK_CALLBACK(_group_NamesEntry_text_changed_cb), NULL);
    etk_signal_block("text-changed",
          ETK_OBJECT(etk_combobox_entry_entry_get(ETK_COMBOBOX_ENTRY(UI_SourceEntry))),
          ETK_CALLBACK(on_SourceEntry_text_changed), UI_SourceEntry);
@@ -371,7 +371,7 @@ UpdateProgFrame(void)
    
    //Reenable signal propagation
    etk_signal_unblock("text-changed", ETK_OBJECT(UI_ProgramEntry),
-         ETK_CALLBACK(on_NamesEntry_text_changed), NULL);
+         ETK_CALLBACK(_group_NamesEntry_text_changed_cb), NULL);
    etk_signal_unblock("text-changed",
          ETK_OBJECT(etk_combobox_entry_entry_get(ETK_COMBOBOX_ENTRY(UI_SourceEntry))),
          ETK_CALLBACK(on_SourceEntry_text_changed), UI_SourceEntry);

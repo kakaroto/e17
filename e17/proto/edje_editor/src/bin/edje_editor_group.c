@@ -5,8 +5,9 @@
 #include "main.h"
 
 
+/***   Implementation   ***/
 Etk_Widget*
-create_group_frame(void)
+group_frame_create(void)
 {
    Etk_Widget *label;
    Etk_Widget *hbox, *vbox;
@@ -73,45 +74,45 @@ create_group_frame(void)
 
    
    etk_signal_connect("text-changed", ETK_OBJECT(UI_GroupNameEntry),
-         ETK_CALLBACK(on_NamesEntry_text_changed), NULL);   
+         ETK_CALLBACK(_group_NamesEntry_text_changed_cb), NULL);   
    etk_signal_connect("key-down", ETK_OBJECT(UI_GroupNameEntry),
-         ETK_CALLBACK(on_GroupNameEntry_key_down), NULL);
+         ETK_CALLBACK(_group_NameEntry_key_down_cb), NULL);
    etk_signal_connect("mouse-click", ETK_OBJECT(UI_GroupNameEntryImage),
-                      ETK_CALLBACK(on_GroupNameEntryImage_mouse_clicked), NULL);
+                      ETK_CALLBACK(_group_NameEntryImage_clicked_cb), NULL);
    
    etk_signal_connect("value-changed", ETK_OBJECT(UI_GroupMinWSpinner),
-                      ETK_CALLBACK(on_GroupSpinner_value_changed),
+                      ETK_CALLBACK(_group_spinners_value_changed_cb),
                       (void *)MINW_SPINNER);
    etk_signal_connect("value-changed", ETK_OBJECT(UI_GroupMinHSpinner),
-                      ETK_CALLBACK(on_GroupSpinner_value_changed),
+                      ETK_CALLBACK(_group_spinners_value_changed_cb),
                       (void *)MINH_SPINNER);
    etk_signal_connect("value-changed", ETK_OBJECT(UI_GroupMaxWSpinner),
-                      ETK_CALLBACK(on_GroupSpinner_value_changed),
+                      ETK_CALLBACK(_group_spinners_value_changed_cb),
                       (void *)MAXW_SPINNER);
    etk_signal_connect("value-changed", ETK_OBJECT(UI_GroupMaxHSpinner),
-                      ETK_CALLBACK(on_GroupSpinner_value_changed),
+                      ETK_CALLBACK(_group_spinners_value_changed_cb),
                      (void *)MAXH_SPINNER);
 
    return vbox;
 }
 
 void
-UpdateGroupFrame(void)
+group_frame_update(void)
 {
    //Stop signal propagation
    etk_signal_block("text-changed", ETK_OBJECT(UI_GroupNameEntry),
-                    on_NamesEntry_text_changed, NULL);
+                    _group_NamesEntry_text_changed_cb, NULL);
    etk_signal_block("value-changed", ETK_OBJECT(UI_GroupMinWSpinner),
-                    ETK_CALLBACK(on_GroupSpinner_value_changed),
+                    ETK_CALLBACK(_group_spinners_value_changed_cb),
                     (void *)MINW_SPINNER);
    etk_signal_block("value-changed", ETK_OBJECT(UI_GroupMinHSpinner),
-                    ETK_CALLBACK(on_GroupSpinner_value_changed),
+                    ETK_CALLBACK(_group_spinners_value_changed_cb),
                     (void *)MINH_SPINNER);
    etk_signal_block("value-changed", ETK_OBJECT(UI_GroupMaxWSpinner),
-                    ETK_CALLBACK(on_GroupSpinner_value_changed),
+                    ETK_CALLBACK(_group_spinners_value_changed_cb),
                     (void *)MAXW_SPINNER);
    etk_signal_block("value-changed", ETK_OBJECT(UI_GroupMaxHSpinner),
-                    ETK_CALLBACK(on_GroupSpinner_value_changed),
+                    ETK_CALLBACK(_group_spinners_value_changed_cb),
                     (void *)MAXH_SPINNER);
 
    if (etk_string_length_get(Cur.group))
@@ -133,25 +134,26 @@ UpdateGroupFrame(void)
 
    //ReEnable Signal Propagation
    etk_signal_unblock("text-changed", ETK_OBJECT(UI_GroupNameEntry),
-                      on_NamesEntry_text_changed, NULL);
+                      _group_NamesEntry_text_changed_cb, NULL);
    etk_signal_unblock("value-changed", ETK_OBJECT(UI_GroupMinWSpinner),
-                      ETK_CALLBACK(on_GroupSpinner_value_changed),
+                      ETK_CALLBACK(_group_spinners_value_changed_cb),
                       (void *)MINW_SPINNER);
    etk_signal_unblock("value-changed", ETK_OBJECT(UI_GroupMinHSpinner),
-                      ETK_CALLBACK(on_GroupSpinner_value_changed),
+                      ETK_CALLBACK(_group_spinners_value_changed_cb),
                       (void *)MINH_SPINNER);
    etk_signal_unblock("value-changed", ETK_OBJECT(UI_GroupMaxWSpinner),
-                      ETK_CALLBACK(on_GroupSpinner_value_changed),
+                      ETK_CALLBACK(_group_spinners_value_changed_cb),
                       (void *)MAXW_SPINNER);
    etk_signal_unblock("value-changed", ETK_OBJECT(UI_GroupMaxHSpinner),
-                      ETK_CALLBACK(on_GroupSpinner_value_changed),
+                      ETK_CALLBACK(_group_spinners_value_changed_cb),
                       (void *)MAXH_SPINNER);
 
 }
 
 
+/***   Callbacks   ***/
 Etk_Bool
-on_NamesEntry_text_changed(Etk_Object *object, void *data)
+_group_NamesEntry_text_changed_cb(Etk_Object *object, void *data)
 {
    //printf("Text Changed Signal on one of the Names Entry Emitted\n");
    etk_widget_show(ETK_WIDGET(ETK_ENTRY(object)->secondary_image));
@@ -159,7 +161,7 @@ on_NamesEntry_text_changed(Etk_Object *object, void *data)
 }
 
 Etk_Bool
-on_GroupSpinner_value_changed(Etk_Range *range, double value, void *data)
+_group_spinners_value_changed_cb(Etk_Range *range, double value, void *data)
 {
    printf("Group Spinners value changed signal EMIT\n");
    if (!etk_string_length_get(Cur.part)) return ETK_TRUE;
@@ -184,20 +186,21 @@ on_GroupSpinner_value_changed(Etk_Range *range, double value, void *data)
    }
    return ETK_TRUE;
 }
+
 Etk_Bool
-on_GroupNameEntry_key_down(Etk_Object *object, Etk_Event_Key_Down *event, void *data)
+_group_NameEntry_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data)
 {
    //printf("PRESSED %s\n", event->keyname);
    
    if (!strcmp(event->keyname, "Return"))
-      on_GroupNameEntryImage_mouse_clicked(
+      _group_NameEntryImage_clicked_cb(
                                  ETK_OBJECT(ETK_ENTRY(object)->secondary_image),
                                  NULL);
    return ETK_TRUE;
 }
 
 Etk_Bool
-on_GroupNameEntryImage_mouse_clicked(Etk_Object *object, void *data)
+_group_NameEntryImage_clicked_cb(Etk_Object *object, void *data)
 {
    const char *name;
    

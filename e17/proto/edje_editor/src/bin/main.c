@@ -166,7 +166,7 @@ ChangeGroup(char *group)
    PopulateSourceComboEntry();
    PopulateSignalComboEntry();
    
-   UpdateGroupFrame();
+   group_frame_update();
    UpdatePartFrame();
    
    //update FakeWin title

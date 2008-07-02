@@ -2,7 +2,6 @@
 #define _EDJE_EDITOR_GROUP_H_
 
 
-/* group frame objects */
 Etk_Widget *UI_GroupNameEntry;
 Etk_Widget *UI_GroupNameEntryImage;
 Etk_Widget *UI_GroupMinWSpinner;
@@ -12,12 +11,14 @@ Etk_Widget *UI_GroupMaxHSpinner;
 Etk_Widget *UI_CurrentGroupSizeLabel;
 
 
-Etk_Widget* create_group_frame(void);
-void UpdateGroupFrame(void);
-Etk_Bool on_NamesEntry_text_changed        (Etk_Object *object, void *data);
-Etk_Bool on_GroupSpinner_value_changed     (Etk_Range *range, double value, void *data);
-Etk_Bool on_GroupNameEntry_key_down        (Etk_Object *object, Etk_Event_Key_Down *event, void *data);
-Etk_Bool on_GroupNameEntryImage_mouse_clicked(Etk_Object *object, void *data);
+Etk_Widget* group_frame_create(void);
+void        group_frame_update(void);
+
+
+Etk_Bool _group_NamesEntry_text_changed_cb        (Etk_Object *object, void *data);
+Etk_Bool _group_spinners_value_changed_cb     (Etk_Range *range, double value, void *data);
+Etk_Bool _group_NameEntry_key_down_cb        (Etk_Object *object, Etk_Event_Key_Down *event, void *data);
+Etk_Bool _group_NameEntryImage_clicked_cb (Etk_Object *object, void *data);
 
 
 #endif
