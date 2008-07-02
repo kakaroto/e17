@@ -511,8 +511,7 @@ on_RelOffsetSpinner_value_changed(Etk_Range *range, double value, void *data)
                                     etk_range_value_get(range));
             break;
       }
-      ev_redraw();
-      //ev_draw_focus();
+      canvas_redraw();
    }
 
    return ETK_TRUE;
@@ -549,7 +548,7 @@ on_RelSpinner_value_changed(Etk_Range *range, double value, void *data)
                                     etk_range_value_get(range));
             break;
       }
-      ev_redraw();
+      canvas_redraw();
    }
    return ETK_TRUE;
 }
@@ -590,6 +589,6 @@ on_RelToComboBox_changed(Etk_Combobox *combobox, void *data)
    }
 
    edje_edit_part_selected_state_set(edje_o, Cur.part->string, Cur.state->string);  //this make edje redraw (need to update in lib)
-   ev_redraw();
+   canvas_redraw();
    return ETK_TRUE;
 }

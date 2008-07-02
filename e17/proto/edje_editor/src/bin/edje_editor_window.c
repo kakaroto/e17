@@ -145,7 +145,7 @@ create_main_window(void)
    evas_object_show(logo);
 
    //Create the evas objects needed by the canvas (fakewin, handlers)
-   prepare_canvas();
+   canvas_prepare();
 
    //ToolbarEmbed
    UI_ToolbarEmbed = etk_embed_new(UI_evas);

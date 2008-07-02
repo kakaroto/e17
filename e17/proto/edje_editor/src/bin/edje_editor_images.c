@@ -376,7 +376,7 @@ on_ImageAlphaSlider_value_changed(Etk_Object *object, double va, void *data)
    if (!etk_string_length_get(Cur.part)) return ETK_TRUE;
    edje_edit_state_color_set(edje_o, Cur.part->string, Cur.state->string,
                              -1, -1, -1, (int)va);
-   ev_redraw();
+   canvas_redraw();
 
    return ETK_TRUE;
 }
@@ -394,7 +394,7 @@ on_BorderSpinner_value_changed(Etk_Range *range, double value, void *data)
       (int)etk_range_value_get(ETK_RANGE(UI_BorderTopSpinner)),
       (int)etk_range_value_get(ETK_RANGE(UI_BorderBottomSpinner)));
 
-   ev_redraw();
+   canvas_redraw();
 
    return ETK_TRUE;
 }

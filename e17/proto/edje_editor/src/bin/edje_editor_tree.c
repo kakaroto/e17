@@ -338,7 +338,7 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
          break;
    }
 
-   ev_redraw();
+   canvas_redraw();
    return ETK_TRUE;
 }
 

@@ -554,7 +554,7 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
          }
          break;
    }
-   ev_redraw();
+   canvas_redraw();
    return ETK_TRUE;
 }
 

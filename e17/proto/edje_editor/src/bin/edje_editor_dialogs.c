@@ -257,6 +257,6 @@ on_ColorDialog_change(Etk_Object *object, void *data)
       break;
    }
 
-   ev_redraw();
+   canvas_redraw();
    return ETK_TRUE;
 }

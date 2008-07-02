@@ -304,7 +304,7 @@ on_EffectComboBox_changed(Etk_Combobox *combobox, void *data)
    edje_edit_part_effect_set(edje_o, Cur.part->string,
       (int)etk_combobox_item_data_get(etk_combobox_active_item_get(combobox)));
    
-   ev_redraw();
+   canvas_redraw();
 
    return ETK_TRUE;
 }
@@ -317,7 +317,7 @@ on_FontSizeSpinner_value_changed(Etk_Range *range, double value, void *data)
    edje_edit_state_text_size_set(edje_o, Cur.part->string, Cur.state->string,
                                  (int)etk_range_value_get(range));
 
-   ev_redraw();
+   canvas_redraw();
    return ETK_TRUE;
 }
 
@@ -329,7 +329,7 @@ on_TextEntry_text_changed(Etk_Object *object, void *data)
    edje_edit_state_text_set(edje_o, Cur.part->string, Cur.state->string,
                             etk_entry_text_get(ETK_ENTRY(object)));
 
-   ev_redraw();
+   canvas_redraw();
    return ETK_TRUE;
 }
 

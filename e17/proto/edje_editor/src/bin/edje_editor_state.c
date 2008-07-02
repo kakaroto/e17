@@ -362,7 +362,7 @@ on_StateMinMaxSpinner_value_changed(Etk_Range *range, double value, void *data)
    edje_edit_state_max_h_set(edje_o, Cur.part->string, Cur.state->string,
                            etk_range_value_get(ETK_RANGE(UI_StateMaxHSpinner)));
 
-   ev_redraw();
+   canvas_redraw();
    return ETK_TRUE;
 }
 
