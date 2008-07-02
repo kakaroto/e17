@@ -192,7 +192,7 @@ create_main_window(void)
 
    //RectEmbed
    UI_RectEmbed = etk_embed_new(UI_evas);
-   etk_container_add(ETK_CONTAINER(UI_RectEmbed), create_rectangle_frame(UI_evas));
+   etk_container_add(ETK_CONTAINER(UI_RectEmbed), rectangle_frame_create(UI_evas));
    etk_embed_position_method_set(ETK_EMBED(UI_RectEmbed),
                                  _embed_position_set, UI_ecore_MainWin);
    etk_widget_show_all(UI_RectEmbed);

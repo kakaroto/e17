@@ -4,8 +4,9 @@
 
 Evas_Object *RectColorObject;
 
-Etk_Widget* create_rectangle_frame(Evas *evas);
-void UpdateRectFrame(void);
+
+Etk_Widget* rectangle_frame_create (Evas *evas);
+void        rectangle_frame_update (void);
 
 
 #endif

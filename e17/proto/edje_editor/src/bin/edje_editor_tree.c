@@ -288,7 +288,7 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
          switch(edje_edit_part_type_get(edje_o, Cur.part->string))
          {
             case EDJE_PART_TYPE_RECTANGLE:
-               UpdateRectFrame();
+               rectangle_frame_update();
                edje_object_signal_emit(edje_ui,"rect_frame_show","edje_editor");
                edje_object_signal_emit(edje_ui,"image_frame_hide","edje_editor");
                edje_object_signal_emit(edje_ui,"text_frame_hide","edje_editor");

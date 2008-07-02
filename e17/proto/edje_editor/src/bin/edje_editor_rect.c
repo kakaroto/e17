@@ -5,13 +5,13 @@
 
 
 Etk_Widget*
-create_rectangle_frame(Evas *evas)
+rectangle_frame_create(Evas *evas)
 {
-   return create_a_color_button("Color",COLOR_OBJECT_RECT,100,30, evas);
+   return create_a_color_button("Color", COLOR_OBJECT_RECT, 100, 30, evas);
 }
 
 void
-UpdateRectFrame(void)
+rectangle_frame_update(void)
 {
    Etk_Color color;
 
@@ -32,5 +32,4 @@ UpdateRectFrame(void)
       etk_signal_unblock("color-changed", ETK_OBJECT(UI_ColorPicker),
                          ETK_CALLBACK(_dialog_colorpicker_change_cb), NULL);
    }
-
 }
