@@ -7,8 +7,6 @@
 #include <Etk.h>
 #include <Ecore_Str.h>
 
-#include "evas.h"
-#include "interface.h"
 #include "main.h"
 
 Evas_Object *EdjeTest_bg;

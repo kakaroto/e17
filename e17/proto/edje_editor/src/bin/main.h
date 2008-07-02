@@ -5,6 +5,21 @@
 #include <Ecore_Data.h>
 #include <Ecore_File.h>
 #include <Ecore_Evas.h>
+#include "edje_editor_images.h"
+#include "edje_editor_tree.h"
+#include "edje_editor_group.h"
+#include "edje_editor_part.h"
+#include "edje_editor_state.h"
+#include "edje_editor_position.h"
+#include "edje_editor_text.h"
+#include "edje_editor_rect.h"
+#include "edje_editor_program.h"
+#include "edje_editor_script.h"
+#include "edje_editor_toolbar.h"
+#include "edje_editor_canvas.h"
+#include "edje_editor_consolle.h"
+#include "edje_editor_dialogs.h"
+#include "edje_editor_window.h"
 
 /* DEFINES */
 #define FAKEWIN_BORDER_TOP    16
@@ -157,7 +172,7 @@ Evas_Object    *rel1X_align_guide;     //The 4 line (2 blu & 2 red) used for ali
 Evas_Object    *rel1Y_align_guide;     //
 Evas_Object    *rel2X_align_guide;     //
 Evas_Object    *rel2Y_align_guide;     //
-Evas_Object    *Consolle;              //The lower consolle panel
+
 Evas_List      *stack;                 //Stack for the consolle
 int            consolle_count;         //Counter for the consolle
 

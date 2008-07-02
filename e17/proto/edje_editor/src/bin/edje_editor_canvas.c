@@ -1,14 +1,8 @@
 #include "config.h"
 #include <Etk.h>
 #include <Edje.h>
-#include "main.h"
-#include "interface.h"
-#include "evas.h"
 #include <Edje_Edit.h>
-
-#define MAIN_LEFT 20
-#define MAIN_TOP 27
-
+#include "main.h"
 
 static Evas_Coord dx, dy, dx2, dy2;
 
