@@ -5,9 +5,9 @@
 #include "main.h"
 
 
-
+/***   Implementation   ***/
 Etk_Widget*
-create_toolbar(Etk_Toolbar_Orientation o)
+toolbar_create(Etk_Toolbar_Orientation o)
 {
    Etk_Widget *button;
    Etk_Widget *sep;
@@ -71,7 +71,8 @@ create_toolbar(Etk_Toolbar_Orientation o)
    image = etk_image_new_from_edje(EdjeFile,"RECT.PNG");
    etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
    etk_signal_connect("activated", ETK_OBJECT(menu_item),
-                     ETK_CALLBACK(on_AddMenu_item_activated), (void*)NEW_RECT);
+                      ETK_CALLBACK(_toolbar_add_menu_item_activated_cb),
+                      (void*)NEW_RECT);
    etk_menu_shell_append(ETK_MENU_SHELL(UI_AddMenu), ETK_MENU_ITEM(menu_item));
 
    //New Image
@@ -79,7 +80,8 @@ create_toolbar(Etk_Toolbar_Orientation o)
    image = etk_image_new_from_edje(EdjeFile,"IMAGE.PNG");
    etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
    etk_signal_connect("activated", ETK_OBJECT(menu_item),
-                     ETK_CALLBACK(on_AddMenu_item_activated),(void*) NEW_IMAGE);
+                      ETK_CALLBACK(_toolbar_add_menu_item_activated_cb),
+                      (void*) NEW_IMAGE);
    etk_menu_shell_append(ETK_MENU_SHELL(UI_AddMenu), ETK_MENU_ITEM(menu_item));
    
    //New Text
@@ -87,7 +89,8 @@ create_toolbar(Etk_Toolbar_Orientation o)
    image = etk_image_new_from_edje(EdjeFile,"TEXT.PNG");
    etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
    etk_signal_connect("activated", ETK_OBJECT(menu_item),
-                     ETK_CALLBACK(on_AddMenu_item_activated), (void*)NEW_TEXT);
+                      ETK_CALLBACK(_toolbar_add_menu_item_activated_cb),
+                      (void*)NEW_TEXT);
    etk_menu_shell_append(ETK_MENU_SHELL(UI_AddMenu), ETK_MENU_ITEM(menu_item));
    
    //New Swallow
@@ -95,7 +98,8 @@ create_toolbar(Etk_Toolbar_Orientation o)
    image = etk_image_new_from_edje(EdjeFile,"SWAL.PNG");
    etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
    etk_signal_connect("activated", ETK_OBJECT(menu_item),
-                     ETK_CALLBACK(on_AddMenu_item_activated), (void*)NEW_SWAL);
+                      ETK_CALLBACK(_toolbar_add_menu_item_activated_cb),
+                      (void*)NEW_SWAL);
    etk_menu_shell_append(ETK_MENU_SHELL(UI_AddMenu), ETK_MENU_ITEM(menu_item));
    
    //New GroupSwallow
@@ -103,7 +107,8 @@ create_toolbar(Etk_Toolbar_Orientation o)
    image = etk_image_new_from_edje(EdjeFile,"GROUP.PNG");
    etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
    etk_signal_connect("activated", ETK_OBJECT(menu_item),
-                     ETK_CALLBACK(on_AddMenu_item_activated), (void*)NEW_GROUPSWAL);
+                      ETK_CALLBACK(_toolbar_add_menu_item_activated_cb),
+                      (void*)NEW_GROUPSWAL);
    etk_menu_shell_append(ETK_MENU_SHELL(UI_AddMenu), ETK_MENU_ITEM(menu_item));
    
    //New Program
@@ -111,7 +116,8 @@ create_toolbar(Etk_Toolbar_Orientation o)
    image = etk_image_new_from_edje(EdjeFile,"PROG.PNG");
    etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
    etk_signal_connect("activated", ETK_OBJECT(menu_item),
-                     ETK_CALLBACK(on_AddMenu_item_activated), (void*)NEW_PROG);
+                      ETK_CALLBACK(_toolbar_add_menu_item_activated_cb),
+                      (void*)NEW_PROG);
    etk_menu_shell_append(ETK_MENU_SHELL(UI_AddMenu), ETK_MENU_ITEM(menu_item));
    
    //Separator
@@ -123,7 +129,8 @@ create_toolbar(Etk_Toolbar_Orientation o)
    image = etk_image_new_from_edje(EdjeFile,"DESC.PNG");
    etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(UI_AddStateButton), ETK_IMAGE(image));
    etk_signal_connect("activated", ETK_OBJECT(UI_AddStateButton),
-                     ETK_CALLBACK(on_AddMenu_item_activated), (void*)NEW_DESC);
+                      ETK_CALLBACK(_toolbar_add_menu_item_activated_cb),
+                      (void*)NEW_DESC);
    etk_menu_shell_append(ETK_MENU_SHELL(UI_AddMenu), ETK_MENU_ITEM(UI_AddStateButton));
 
    //New Group
@@ -131,7 +138,8 @@ create_toolbar(Etk_Toolbar_Orientation o)
    image = etk_image_new_from_edje(EdjeFile,"NONE.PNG");
    etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
    etk_signal_connect("activated", ETK_OBJECT(menu_item),
-                     ETK_CALLBACK(on_AddMenu_item_activated), (void*)NEW_GROUP);
+                      ETK_CALLBACK(_toolbar_add_menu_item_activated_cb),
+                      (void*)NEW_GROUP);
    etk_menu_shell_append(ETK_MENU_SHELL(UI_AddMenu), ETK_MENU_ITEM(menu_item));
 
    //RemoveButton
@@ -148,13 +156,15 @@ create_toolbar(Etk_Toolbar_Orientation o)
    image = etk_image_new_from_edje(EdjeFile,"DESC.PNG");
    etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(UI_RemoveStateButton), ETK_IMAGE(image));
    etk_signal_connect("activated", ETK_OBJECT(UI_RemoveStateButton),
-         ETK_CALLBACK(on_RemoveMenu_item_activated), (void*)REMOVE_DESCRIPTION);
+                      ETK_CALLBACK(_toolbar_remove_menu_item_activated_cb),
+                      (void*)REMOVE_DESCRIPTION);
    etk_menu_shell_append(ETK_MENU_SHELL(UI_RemoveMenu), ETK_MENU_ITEM(UI_RemoveStateButton));
 
    //part
    UI_RemovePartButton = etk_menu_item_image_new_with_label("Selected Part");
    etk_signal_connect("activated", ETK_OBJECT(UI_RemovePartButton),
-               ETK_CALLBACK(on_RemoveMenu_item_activated), (void*)REMOVE_PART);
+                      ETK_CALLBACK(_toolbar_remove_menu_item_activated_cb),
+                      (void*)REMOVE_PART);
    etk_menu_shell_append(ETK_MENU_SHELL(UI_RemoveMenu), ETK_MENU_ITEM(UI_RemovePartButton));
 
    //program 
@@ -162,7 +172,8 @@ create_toolbar(Etk_Toolbar_Orientation o)
    image = etk_image_new_from_edje(EdjeFile,"PROG.PNG");
    etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(UI_RemoveProgramButton), ETK_IMAGE(image));
    etk_signal_connect("activated", ETK_OBJECT(UI_RemoveProgramButton),
-               ETK_CALLBACK(on_RemoveMenu_item_activated), (void*)REMOVE_PROG);
+                      ETK_CALLBACK(_toolbar_remove_menu_item_activated_cb),
+                      (void*)REMOVE_PROG);
    etk_menu_shell_append(ETK_MENU_SHELL(UI_RemoveMenu), ETK_MENU_ITEM(UI_RemoveProgramButton));
     
    sep = etk_vseparator_new();
@@ -173,7 +184,8 @@ create_toolbar(Etk_Toolbar_Orientation o)
    image = etk_image_new_from_edje(EdjeFile,"NONE.PNG");
    etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
    etk_signal_connect("activated", ETK_OBJECT(menu_item),
-               ETK_CALLBACK(on_RemoveMenu_item_activated), (void*)REMOVE_GROUP);
+                      ETK_CALLBACK(_toolbar_remove_menu_item_activated_cb),
+                      (void*)REMOVE_GROUP);
    etk_menu_shell_append(ETK_MENU_SHELL(UI_RemoveMenu), ETK_MENU_ITEM(menu_item));
 
    //MoveUp Button
@@ -303,7 +315,7 @@ create_toolbar(Etk_Toolbar_Orientation o)
 }
 
 void
-TogglePlayButton(int set)
+toolbar_play_button_toggle(int set)
 {
    /* set    -1 = toggle   0 = pause   1 = play   */
    if (set == -1)
@@ -323,9 +335,10 @@ TogglePlayButton(int set)
    }
 }
 
+
 /* Add/Remove Buttons Callbacks */
 Etk_Bool
-on_AddMenu_item_activated(Etk_Object *object, void *data)
+_toolbar_add_menu_item_activated_cb(Etk_Object *object, void *data)
 {
    printf("Item Activated Signal on AddMenu EMITTED\n");
    Etk_Tree_Row *row;
@@ -559,7 +572,7 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
 }
 
 Etk_Bool
-on_RemoveMenu_item_activated(Etk_Object *object, void *data)
+_toolbar_remove_menu_item_activated_cb(Etk_Object *object, void *data)
 {
    Etk_Tree_Row *row, *next;
    printf("Item Activated Signal on RemoveMenu EMITTED\n");

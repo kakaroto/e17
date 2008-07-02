@@ -18,11 +18,11 @@ Etk_Widget *UI_RemovePartButton;
 Etk_Widget *UI_RemoveProgramButton;
 
 
-Etk_Widget* create_toolbar(Etk_Toolbar_Orientation o);
-void TogglePlayButton(int set);
+Etk_Widget* toolbar_create             (Etk_Toolbar_Orientation o);
+void        toolbar_play_button_toggle (int set);
 
-Etk_Bool on_AddMenu_item_activated    (Etk_Object *object, void *data);
-Etk_Bool on_RemoveMenu_item_activated (Etk_Object *object, void *data);
+Etk_Bool _toolbar_add_menu_item_activated_cb    (Etk_Object *object, void *data);
+Etk_Bool _toolbar_remove_menu_item_activated_cb (Etk_Object *object, void *data);
 
 
 

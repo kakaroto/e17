@@ -149,7 +149,8 @@ create_main_window(void)
 
    //ToolbarEmbed
    UI_ToolbarEmbed = etk_embed_new(UI_evas);
-   etk_container_add(ETK_CONTAINER(UI_ToolbarEmbed), create_toolbar(ETK_TOOLBAR_HORIZ));
+   etk_container_add(ETK_CONTAINER(UI_ToolbarEmbed),
+                     toolbar_create(ETK_TOOLBAR_HORIZ));
    etk_embed_position_method_set(ETK_EMBED(UI_ToolbarEmbed),
                                  _embed_position_set, UI_ecore_MainWin);
    etk_widget_show_all(UI_ToolbarEmbed);
@@ -498,7 +499,7 @@ on_AllButton_click(Etk_Button *button, void *data)
       ecore_evas_fullscreen_set(UI_ecore_MainWin, Cur.fullscreen);
       break;
    case TOOLBAR_PLAY:
-      TogglePlayButton(-1);
+      toolbar_play_button_toggle(-1);
       break;
    case TOOLBAR_DEBUG:
       //DebugInfo(FALSE);

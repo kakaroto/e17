@@ -134,7 +134,7 @@ ChangeGroup(char *group)
    if (Cur.group->string && !strcmp(group, Cur.group->string)) return;
    printf("Change to group: %s\n", group);
 
-   TogglePlayButton(1);
+   toolbar_play_button_toggle(1);
    
    if (etk_string_length_get(Cur.group))
       edje_edit_save(edje_o);
