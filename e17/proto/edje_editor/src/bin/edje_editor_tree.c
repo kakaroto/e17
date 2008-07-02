@@ -333,7 +333,7 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
          edje_object_signal_emit(edje_ui,"script_frame_show_small","edje_editor");
       
          UpdateScriptFrame();
-         UpdateProgFrame();
+         program_frame_update();
         // PopulateSourceComboBox();
          break;
    }

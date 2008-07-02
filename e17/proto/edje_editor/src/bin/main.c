@@ -163,8 +163,8 @@ ChangeGroup(char *group)
    
    PopulateTree();
    position_comboboxes_populate();
-   PopulateSourceComboEntry();
-   PopulateSignalComboEntry();
+   program_source_combo_populate();
+   program_signal_combo_populate();
    
    group_frame_update();
    part_frame_update();

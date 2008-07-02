@@ -228,7 +228,7 @@ create_main_window(void)
 
    //ProgramEmbed
    UI_ProgramEmbed = etk_embed_new(UI_evas);
-   etk_container_add(ETK_CONTAINER(UI_ProgramEmbed), create_program_frame());
+   etk_container_add(ETK_CONTAINER(UI_ProgramEmbed), program_frame_create());
    etk_embed_position_method_set(ETK_EMBED(UI_ProgramEmbed),
                                  _embed_position_set, UI_ecore_MainWin);
    etk_widget_show_all(UI_ProgramEmbed);

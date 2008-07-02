@@ -358,7 +358,7 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
          etk_tree_row_select(row);
          etk_tree_row_unfold(row);
          position_comboboxes_populate();
-         PopulateSourceComboEntry();
+         program_source_combo_populate();
          break;
       
       case NEW_IMAGE:
@@ -394,7 +394,7 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
          etk_tree_row_select(row);
          etk_tree_row_unfold(row);
          position_comboboxes_populate();
-         PopulateSourceComboEntry();
+         program_source_combo_populate();
          break;
       
       case NEW_TEXT:
@@ -432,7 +432,7 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
          etk_tree_row_select(row);
          etk_tree_row_unfold(row);
          position_comboboxes_populate();
-         PopulateSourceComboEntry();
+         program_source_combo_populate();
          break;
       case NEW_SWAL:
          if (!etk_string_length_get(Cur.group))
@@ -455,7 +455,7 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
          etk_tree_row_select(row);
          etk_tree_row_unfold(row);
          position_comboboxes_populate();
-         PopulateSourceComboEntry();
+         program_source_combo_populate();
          break;
       case NEW_GROUPSWAL:
          if (!etk_string_length_get(Cur.group))
@@ -478,7 +478,7 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
          etk_tree_row_select(row);
          etk_tree_row_unfold(row);
          position_comboboxes_populate();
-         PopulateSourceComboEntry();
+         program_source_combo_populate();
 
          break;
       case NEW_DESC:
@@ -616,7 +616,7 @@ on_RemoveMenu_item_activated(Etk_Object *object, void *data)
          }
          
          position_comboboxes_populate();
-         PopulateSourceComboEntry();
+         program_source_combo_populate();
          //ev_redraw();
          break;
       

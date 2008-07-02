@@ -316,7 +316,7 @@ _part_NameEntryImage_clicked_cb(Etk_Object *object, void *data)
    
    /* Recreate rel combobox */
    position_comboboxes_populate();
-   PopulateSourceComboEntry();
+   program_source_combo_populate();
    
    /* Hide the image */
    etk_widget_hide(ETK_WIDGET(UI_PartNameEntryImage));
