@@ -237,7 +237,7 @@ create_main_window(void)
 
    //ScriptEmbed
    UI_ScriptEmbed = etk_embed_new(UI_evas);
-   etk_container_add(ETK_CONTAINER(UI_ScriptEmbed), create_script_frame());
+   etk_container_add(ETK_CONTAINER(UI_ScriptEmbed), script_frame_create());
    etk_embed_position_method_set(ETK_EMBED(UI_ScriptEmbed),
                                  _embed_position_set, UI_ecore_MainWin);
    etk_widget_show_all(UI_ScriptEmbed);

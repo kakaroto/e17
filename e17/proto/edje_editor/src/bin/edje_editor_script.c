@@ -5,11 +5,11 @@
 
 
 Etk_Widget*
-create_script_frame(void)
+script_frame_create(void)
 {
    Etk_Widget *sv;
    Etk_Widget *vbox;
-   
+
    //vbox
    vbox = etk_vbox_new(ETK_FALSE, 0);
 
@@ -30,17 +30,16 @@ create_script_frame(void)
 
    etk_signal_connect("clicked", ETK_OBJECT(UI_ScriptSaveButton),
             ETK_CALLBACK(on_AllButton_click), (void*)SAVE_SCRIPT);
- 
+
    return vbox;
 }
 
 void
-UpdateScriptFrame(void)
+script_frame_update(void)
 {
    if (etk_string_length_get(Cur.group))
    {
       edje_edit_script_get(edje_o);
       //printf("Update group script: %s\n",edje_edit_script_get(edje_o));
-      
    }
 }
