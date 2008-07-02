@@ -315,7 +315,7 @@ _part_NameEntryImage_clicked_cb(Etk_Object *object, void *data)
    Parts_Hash = evas_hash_add(Parts_Hash, name, row);
    
    /* Recreate rel combobox */
-   PopulateRelComboBoxes();
+   position_comboboxes_populate();
    PopulateSourceComboEntry();
    
    /* Hide the image */

@@ -162,7 +162,7 @@ ChangeGroup(char *group)
    Cur.prog = etk_string_clear(Cur.prog);
    
    PopulateTree();
-   PopulateRelComboBoxes();
+   position_comboboxes_populate();
    PopulateSourceComboEntry();
    PopulateSignalComboEntry();
    

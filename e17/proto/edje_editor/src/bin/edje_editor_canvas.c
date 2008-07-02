@@ -55,7 +55,7 @@ _canvas_drag_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
       edje_edit_state_rel1_relative_y_set(edje_o, Cur.part->string,
                   Cur.state->string,(float)(mouse_y - parenty)/(float)parenth);
       
-      UpdatePositionFrame();
+      position_frame_update();
    }
    // Move Rel2 Point
    if ((int)data == DRAG_REL2)
@@ -74,7 +74,7 @@ _canvas_drag_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
       edje_edit_state_rel2_relative_y_set(edje_o, Cur.part->string,
                   Cur.state->string, (float)(mouse_y - parenty)/(float)parenth);
 
-      UpdatePositionFrame();
+      position_frame_update();
    }
    // Move Move Handler
    if ((int)data == DRAG_MOVE)
@@ -106,7 +106,7 @@ _canvas_drag_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
                         Cur.part->string, Cur.state->string,
                         (float)(mouse_y - parenty - dy + dy2)/(float)parenth);
 
-      UpdatePositionFrame();
+      position_frame_update();
    }
    
    canvas_redraw();

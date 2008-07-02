@@ -282,8 +282,8 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
          edje_edit_part_selected_state_set(edje_o, Cur.part->string, Cur.state->string);  
          
          UpdateDescriptionFrame();
-         UpdatePositionFrame();
-         UpdateComboPositionFrame();
+         position_frame_update();
+         position_comboboxes_update();
        
          switch(edje_edit_part_type_get(edje_o, Cur.part->string))
          {

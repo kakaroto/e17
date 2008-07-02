@@ -357,7 +357,7 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
          row = AddPartToTree(name, NULL);
          etk_tree_row_select(row);
          etk_tree_row_unfold(row);
-         PopulateRelComboBoxes();
+         position_comboboxes_populate();
          PopulateSourceComboEntry();
          break;
       
@@ -393,7 +393,7 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
          
          etk_tree_row_select(row);
          etk_tree_row_unfold(row);
-         PopulateRelComboBoxes();
+         position_comboboxes_populate();
          PopulateSourceComboEntry();
          break;
       
@@ -431,7 +431,7 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
       
          etk_tree_row_select(row);
          etk_tree_row_unfold(row);
-         PopulateRelComboBoxes();
+         position_comboboxes_populate();
          PopulateSourceComboEntry();
          break;
       case NEW_SWAL:
@@ -454,7 +454,7 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
          row = AddPartToTree(name, NULL);
          etk_tree_row_select(row);
          etk_tree_row_unfold(row);
-         PopulateRelComboBoxes();
+         position_comboboxes_populate();
          PopulateSourceComboEntry();
          break;
       case NEW_GROUPSWAL:
@@ -477,7 +477,7 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
          row = AddPartToTree(name, NULL);
          etk_tree_row_select(row);
          etk_tree_row_unfold(row);
-         PopulateRelComboBoxes();
+         position_comboboxes_populate();
          PopulateSourceComboEntry();
 
          break;
@@ -615,7 +615,7 @@ on_RemoveMenu_item_activated(Etk_Object *object, void *data)
             Cur.state = etk_string_clear(Cur.state);
          }
          
-         PopulateRelComboBoxes();
+         position_comboboxes_populate();
          PopulateSourceComboEntry();
          //ev_redraw();
          break;

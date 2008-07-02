@@ -219,7 +219,7 @@ create_main_window(void)
 
    //PositionEmbed
    UI_PositionEmbed = etk_embed_new(UI_evas);
-   etk_container_add(ETK_CONTAINER(UI_PositionEmbed), create_position_frame());
+   etk_container_add(ETK_CONTAINER(UI_PositionEmbed), position_frame_create());
    etk_embed_position_method_set(ETK_EMBED(UI_PositionEmbed),
                                  _embed_position_set, UI_ecore_MainWin);
    etk_widget_show_all(UI_PositionEmbed);

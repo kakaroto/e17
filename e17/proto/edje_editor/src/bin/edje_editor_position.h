@@ -16,15 +16,16 @@ Etk_Widget *UI_Rel1ToYComboBox;
 Etk_Widget *UI_Rel2ToXComboBox;
 Etk_Widget *UI_Rel2ToYComboBox;
 
-Etk_Widget* create_position_frame(void);
-void PopulateRelComboBoxes(void);
-void UpdatePositionFrame(void);
-void UpdateComboPositionFrame(void);
+
+Etk_Widget* position_frame_create(void);
+void        position_frame_update(void);
+void        position_comboboxes_populate(void);
+void        position_comboboxes_update(void);
 
 
-Etk_Bool on_RelOffsetSpinner_value_changed (Etk_Range *range, double value, void *data);
-Etk_Bool on_RelSpinner_value_changed       (Etk_Range *range, double value, void *data);
-Etk_Bool on_RelToComboBox_changed          (Etk_Combobox *combobox, void *data);
+Etk_Bool _position_RelOffsetSpinners_value_changed_cb (Etk_Range *range, double value, void *data);
+Etk_Bool _position_RelSpinners_value_changed_cb       (Etk_Range *range, double value, void *data);
+Etk_Bool _position_RelToComboBoxes_changed_cb         (Etk_Combobox *combobox, void *data);
 
 
 #endif
