@@ -29,7 +29,7 @@ script_frame_create(void)
                   ETK_BOX_START, ETK_BOX_NONE, 0);
 
    etk_signal_connect("clicked", ETK_OBJECT(UI_ScriptSaveButton),
-            ETK_CALLBACK(on_AllButton_click), (void*)SAVE_SCRIPT);
+            ETK_CALLBACK(_window_all_button_click_cb), (void*)SAVE_SCRIPT);
 
    return vbox;
 }

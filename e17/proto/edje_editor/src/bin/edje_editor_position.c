@@ -362,7 +362,7 @@ position_comboboxes_populate(void)
       {
          //printf("-- %s\n", (char *)l->data);
          type = edje_edit_part_type_get(edje_o,(char *)l->data);
-         image_name = GetPartTypeImage(type);
+         image_name = part_type_image_get(type);
          
          etk_combobox_item_append(ETK_COMBOBOX(UI_Rel1ToXComboBox),
                                   etk_image_new_from_edje(EdjeFile, image_name),

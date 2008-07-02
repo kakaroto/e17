@@ -126,15 +126,15 @@ text_frame_create(Evas *evas)
    etk_box_append(ETK_BOX(vbox), hbox, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
    //Color buttons
-   etk_box_append(ETK_BOX(hbox), create_a_color_button("Text",COLOR_OBJECT_TEXT,30,30, evas),
+   etk_box_append(ETK_BOX(hbox), window_color_button_create("Text",COLOR_OBJECT_TEXT,30,30, evas),
                   ETK_BOX_START, ETK_BOX_EXPAND, 0);
-   etk_box_append(ETK_BOX(hbox), create_a_color_button("Shadow",COLOR_OBJECT_SHADOW,30,30, evas),
+   etk_box_append(ETK_BOX(hbox), window_color_button_create("Shadow",COLOR_OBJECT_SHADOW,30,30, evas),
                   ETK_BOX_START, ETK_BOX_EXPAND, 0);
-   etk_box_append(ETK_BOX(hbox), create_a_color_button("Outline",COLOR_OBJECT_OUTLINE,30,30, evas),
+   etk_box_append(ETK_BOX(hbox), window_color_button_create("Outline",COLOR_OBJECT_OUTLINE,30,30, evas),
                   ETK_BOX_START, ETK_BOX_EXPAND, 0);
 
    etk_signal_connect("clicked", ETK_OBJECT(UI_FontAddButton),
-                      ETK_CALLBACK(on_AllButton_click),
+                      ETK_CALLBACK(_window_all_button_click_cb),
                       (void*)TOOLBAR_FONT_FILE_ADD);
    etk_signal_connect("item-activated", ETK_OBJECT(UI_FontComboBox),
                       ETK_CALLBACK(_text_FontComboBox_item_activated_cb), NULL);

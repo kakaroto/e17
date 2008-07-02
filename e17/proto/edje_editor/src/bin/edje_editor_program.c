@@ -36,7 +36,7 @@ program_frame_create(void)
    etk_table_attach_default(ETK_TABLE(table),UI_RunProgButton, 3, 3, 0, 0);
    
    etk_signal_connect("clicked", ETK_OBJECT(UI_RunProgButton),
-            ETK_CALLBACK(on_AllButton_click), (void*)RUN_PROG);
+            ETK_CALLBACK(_window_all_button_click_cb), (void*)RUN_PROG);
    
    //UI_SourceEntry
    label = etk_label_new("<b>Source</b>");
@@ -414,7 +414,7 @@ program_source_combo_populate(void)
    l = edje_edit_parts_list_get(edje_o);
    while (l)
    {
-      image_name = GetPartTypeImage(edje_edit_part_type_get(edje_o, (char*)l->data));
+      image_name = part_type_image_get(edje_edit_part_type_get(edje_o, (char*)l->data));
       etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(UI_SourceEntry),
                   etk_image_new_from_edje(EdjeFile, image_name),
                   (char *)l->data);

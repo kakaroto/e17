@@ -1,12 +1,11 @@
 #ifndef _EDJE_EDITOR_INTERFACE_H_
 #define _EDJE_EDITOR_INTERFACE_H_
 
-#include "main.h"
 
-
-Evas *UI_evas;
-/* main window objects */
-Ecore_Evas *UI_ecore_MainWin;
+/* main windows objects */
+Evas        *UI_evas;
+Ecore_Evas  *UI_ecore_MainWin;
+Evas_Object *edje_ui;
 
 
 /* etk_embed objects */
@@ -23,27 +22,19 @@ Etk_Widget *UI_ImageEmbed;
 Etk_Widget *UI_ToolbarEmbed;
 
 
-Evas_Object *edje_ui;
+void        window_main_create         (void);
+Etk_Widget* window_color_button_create (char* label_text, int color_button_enum,int w,int h, Evas *evas);
+void        window_embed_position_set  (void *position_data, int *x, int *y);
 
+void     _window_delete_cb           (Ecore_Evas *ee);
+void     _window_resize_cb           (Ecore_Evas *ecore_evas);
 
-void create_main_window(void);
+void     _window_edit_obj_signal_cb  (void *data, Evas_Object *o, const char *sig, const char *src);
+void     _window_edit_obj_click      (void *data, Evas *e, Evas_Object *obj, void *event_info);
 
-void _embed_position_set(void *position_data, int *x, int *y);
-char* GetPartTypeImage(int part_type);
-Etk_Widget* create_a_color_button(char* label_text, int color_button_enum,int w,int h, Evas *evas);
+Etk_Bool _window_all_button_click_cb (Etk_Button *button, void *data);
+void     _window_logo_key_press      (void *data, Evas *e, Evas_Object *obj, void *event_info);
+void     _window_color_canvas_click  (void *data, Evas *e, Evas_Object *obj, void *event_info);
 
-
-/* Called when the window is destroyed */
-//Etk_Bool etk_main_quit_cb      (void *data);
-void     ecore_delete_cb       (Ecore_Evas *ee);
-void     ecore_resize_callback (Ecore_Evas *ecore_evas);
-
-Etk_Bool on_canvas_geometry_changed        (Etk_Object *canvas, const char *property_name, void *data);
-void     on_ColorCanvas_click              (void *data, Evas *e, Evas_Object *obj, void *event_info);
-Etk_Bool on_AllButton_click                (Etk_Button *button, void *data);
-void     on_Mainwin_key_press              (void *data, Evas *e, Evas_Object *obj, void *event_info);
-void     on_Editing_click                  (void *data, Evas *e, Evas_Object *obj, void *event_info);
-
-void signal_cb(void *data, Evas_Object *o, const char *sig, const char *src);
 
 #endif

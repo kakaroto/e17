@@ -13,8 +13,10 @@ Etk_Widget *UI_PartSourceComboBox;
 Etk_Widget *UI_PartSourceLabel;
 
 
-Etk_Widget*  part_frame_create  (void);
-void         part_frame_update  (void);
+Etk_Widget*  part_frame_create   (void);
+void         part_frame_update   (void);
+char*        part_type_image_get (int part_type);
+
 
 Etk_Bool _part_EventsCheck_toggled_cb           (Etk_Object *object, void *data);
 Etk_Bool _part_EventsRepeatCheck_toggled_cb     (Etk_Object *object, void *data);

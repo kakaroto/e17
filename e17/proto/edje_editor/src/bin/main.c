@@ -349,7 +349,7 @@ main(int argc, char **argv)
    //printf("%f\n", val);
    
    //Create the etk window and all the widgets
-   create_main_window();
+   window_main_create();
    
    //Open a file from command line
    if (argc == 2)

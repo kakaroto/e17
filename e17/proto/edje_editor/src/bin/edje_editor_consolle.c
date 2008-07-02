@@ -126,7 +126,7 @@ consolle_create(void)
    //Embed Signal Emit
    embed = etk_embed_new(UI_evas);
    etk_container_add(ETK_CONTAINER(embed), _create_signal_embed());
-   etk_embed_position_method_set(ETK_EMBED(embed), _embed_position_set,
+   etk_embed_position_method_set(ETK_EMBED(embed), window_embed_position_set,
                                  UI_ecore_MainWin);
    etk_widget_show_all(embed);
    edje_object_part_swallow(EV_Consolle,"signal_swallow",

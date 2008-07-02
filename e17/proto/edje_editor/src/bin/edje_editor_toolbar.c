@@ -24,27 +24,31 @@ toolbar_create(Etk_Toolbar_Orientation o)
    button = etk_tool_button_new_from_stock(ETK_STOCK_DOCUMENT_NEW);
    etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), button, ETK_BOX_START);
    etk_signal_connect("clicked", ETK_OBJECT(button),
-                     ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_NEW);
+                      ETK_CALLBACK(_window_all_button_click_cb),
+                      (void*)TOOLBAR_NEW);
 
    //OpenButton
    button = etk_tool_button_new_from_stock(ETK_STOCK_DOCUMENT_OPEN);
    etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), button, ETK_BOX_START);
    etk_signal_connect("clicked", ETK_OBJECT(button),
-                     ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_OPEN);
+                      ETK_CALLBACK(_window_all_button_click_cb),
+                      (void*)TOOLBAR_OPEN);
 
    //SaveButton
    button = etk_tool_button_new_from_stock(ETK_STOCK_DOCUMENT_SAVE);
    etk_object_properties_set(ETK_OBJECT(button),"label","Save",NULL);
    etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), button, ETK_BOX_START);
    etk_signal_connect("clicked", ETK_OBJECT(button),
-                     ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_SAVE);
+                      ETK_CALLBACK(_window_all_button_click_cb),
+                      (void*)TOOLBAR_SAVE);
    
    //SaveEDJButton
    button = etk_tool_button_new_from_stock(ETK_STOCK_DOCUMENT_SAVE_AS);
    etk_object_properties_set(ETK_OBJECT(button),"label","Save as",NULL);
    etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), button, ETK_BOX_START);
    etk_signal_connect("clicked", ETK_OBJECT(button),
-                     ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_SAVE_EDJ);
+                      ETK_CALLBACK(_window_all_button_click_cb),
+                      (void*)TOOLBAR_SAVE_EDJ);
 
    //SaveEDCButton
  /*  button = etk_tool_button_new_from_stock(ETK_STOCK_DOCUMENT_SAVE_AS);
@@ -60,7 +64,8 @@ toolbar_create(Etk_Toolbar_Orientation o)
    //AddButton
    button = etk_tool_button_new_from_stock(ETK_STOCK_LIST_ADD);
    etk_signal_connect("clicked", ETK_OBJECT(button),
-                        ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_ADD);
+                      ETK_CALLBACK(_window_all_button_click_cb),
+                      (void*)TOOLBAR_ADD);
    etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), button, ETK_BOX_START);
 
    //AddMenu
@@ -145,7 +150,8 @@ toolbar_create(Etk_Toolbar_Orientation o)
    //RemoveButton
    button = etk_tool_button_new_from_stock(ETK_STOCK_LIST_REMOVE);
    etk_signal_connect("clicked", ETK_OBJECT(button),
-                     ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_REMOVE);
+                      ETK_CALLBACK(_window_all_button_click_cb),
+                      (void*)TOOLBAR_REMOVE);
    etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), button, ETK_BOX_START);
 
    //RemoveMenu
@@ -192,14 +198,16 @@ toolbar_create(Etk_Toolbar_Orientation o)
    button = etk_tool_button_new_from_stock( ETK_STOCK_GO_UP);
    etk_object_properties_set(ETK_OBJECT(button),"label","Lower",NULL);
    etk_signal_connect("clicked", ETK_OBJECT(button),
-                     ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_MOVE_UP);
+                      ETK_CALLBACK(_window_all_button_click_cb),
+                      (void*)TOOLBAR_MOVE_UP);
    etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), button, ETK_BOX_START);
 
    //MoveDown Button
    button = etk_tool_button_new_from_stock( ETK_STOCK_GO_DOWN);
    etk_object_properties_set(ETK_OBJECT(button),"label","Raise",NULL);
    etk_signal_connect("clicked", ETK_OBJECT(button),
-                  ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_MOVE_DOWN);
+                      ETK_CALLBACK(_window_all_button_click_cb),
+                      (void*)TOOLBAR_MOVE_DOWN);
    etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), button, ETK_BOX_START);
 
    sep = etk_vseparator_new();
@@ -209,7 +217,8 @@ toolbar_create(Etk_Toolbar_Orientation o)
    button = etk_tool_button_new_from_stock( ETK_STOCK_IMAGE_X_GENERIC);
    etk_object_properties_set(ETK_OBJECT(button),"label","Images",NULL);
    etk_signal_connect("clicked", ETK_OBJECT(button),
-                  ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_IMAGE_BROWSER);
+                      ETK_CALLBACK(_window_all_button_click_cb),
+                      (void*)TOOLBAR_IMAGE_BROWSER);
    etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), button, ETK_BOX_START);
 
 #if DEBUG_MODE
@@ -217,7 +226,8 @@ toolbar_create(Etk_Toolbar_Orientation o)
    button = etk_tool_button_new_from_stock( ETK_STOCK_PREFERENCES_DESKTOP_FONT);
    etk_object_properties_set(ETK_OBJECT(button),"label","Fonts",NULL);
    etk_signal_connect("clicked", ETK_OBJECT(button),
-                  ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_FONT_BROWSER);
+                      ETK_CALLBACK(_window_all_button_click_cb),
+                      (void*)TOOLBAR_FONT_BROWSER);
    etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), button, ETK_BOX_START);
 #endif
    
@@ -228,7 +238,8 @@ toolbar_create(Etk_Toolbar_Orientation o)
    button = etk_tool_button_new_from_stock(ETK_STOCK_PREFERENCES_SYSTEM);
    etk_object_properties_set(ETK_OBJECT(button),"label","Options",NULL);
    etk_signal_connect("clicked", ETK_OBJECT(button),
-                     ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_OPTIONS);
+                      ETK_CALLBACK(_window_all_button_click_cb),
+                      (void*)TOOLBAR_OPTIONS);
    etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), button, ETK_BOX_START);
 
    //OptionsMenu
@@ -239,7 +250,8 @@ toolbar_create(Etk_Toolbar_Orientation o)
    image = etk_image_new_from_edje(EdjeFile,"BG1_I.PNG");
    etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
    etk_signal_connect("activated", ETK_OBJECT(menu_item),
-         ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_OPTION_BG1);
+                      ETK_CALLBACK(_window_all_button_click_cb),
+                      (void*)TOOLBAR_OPTION_BG1);
    etk_menu_shell_append(ETK_MENU_SHELL(UI_OptionsMenu), ETK_MENU_ITEM(menu_item));
 
    //set bg2
@@ -247,7 +259,8 @@ toolbar_create(Etk_Toolbar_Orientation o)
    image = etk_image_new_from_edje(EdjeFile,"BG2_I.PNG");
    etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
    etk_signal_connect("activated", ETK_OBJECT(menu_item),
-               ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_OPTION_BG2);
+                      ETK_CALLBACK(_window_all_button_click_cb),
+                      (void*)TOOLBAR_OPTION_BG2);
    etk_menu_shell_append(ETK_MENU_SHELL(UI_OptionsMenu), ETK_MENU_ITEM(menu_item));
 
    //set bg3
@@ -255,7 +268,8 @@ toolbar_create(Etk_Toolbar_Orientation o)
    image = etk_image_new_from_edje(EdjeFile,"BG3_I.PNG");
    etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
    etk_signal_connect("activated", ETK_OBJECT(menu_item),
-               ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_OPTION_BG3);
+                      ETK_CALLBACK(_window_all_button_click_cb),
+                      (void*)TOOLBAR_OPTION_BG3);
    etk_menu_shell_append(ETK_MENU_SHELL(UI_OptionsMenu), ETK_MENU_ITEM(menu_item));
 
    //set bg4
@@ -263,7 +277,8 @@ toolbar_create(Etk_Toolbar_Orientation o)
    image = etk_image_new_from_edje(EdjeFile,"BG4_I.PNG");
    etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
    etk_signal_connect("activated", ETK_OBJECT(menu_item),
-               ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_OPTION_BG4);
+                      ETK_CALLBACK(_window_all_button_click_cb),
+                      (void*)TOOLBAR_OPTION_BG4);
    etk_menu_shell_append(ETK_MENU_SHELL(UI_OptionsMenu), ETK_MENU_ITEM(menu_item));
    
    //Separator
@@ -275,7 +290,8 @@ toolbar_create(Etk_Toolbar_Orientation o)
    image = etk_image_new_from_stock(ETK_STOCK_VIDEO_DISPLAY, ETK_STOCK_SMALL);
    etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
    etk_signal_connect("activated", ETK_OBJECT(menu_item),
-               ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_OPTION_FULLSCREEN);
+                      ETK_CALLBACK(_window_all_button_click_cb),
+                      (void*)TOOLBAR_OPTION_FULLSCREEN);
    etk_menu_shell_append(ETK_MENU_SHELL(UI_OptionsMenu), ETK_MENU_ITEM(menu_item));
   
    sep = etk_vseparator_new();
@@ -289,7 +305,8 @@ toolbar_create(Etk_Toolbar_Orientation o)
    etk_object_properties_set(ETK_OBJECT(UI_PlayButton),"label","Pause Edje",NULL);
    etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), UI_PlayButton, ETK_BOX_START);
    etk_signal_connect("clicked", ETK_OBJECT(UI_PlayButton),
-                     ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_PLAY);
+                      ETK_CALLBACK(_window_all_button_click_cb),
+                      (void*)TOOLBAR_PLAY);
    
 #if DEBUG_MODE
    //Separator
@@ -309,7 +326,8 @@ toolbar_create(Etk_Toolbar_Orientation o)
    etk_object_properties_set(ETK_OBJECT(button),"label","Quit",NULL);
    etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), button, ETK_BOX_START);
    etk_signal_connect("clicked", ETK_OBJECT(button),
-                     ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_QUIT);
+                      ETK_CALLBACK(_window_all_button_click_cb),
+                      (void*)TOOLBAR_QUIT);
    
    return UI_Toolbar;
 }

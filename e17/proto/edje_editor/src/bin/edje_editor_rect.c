@@ -7,7 +7,7 @@
 Etk_Widget*
 rectangle_frame_create(Evas *evas)
 {
-   return create_a_color_button("Color", COLOR_OBJECT_RECT, 100, 30, evas);
+   return window_color_button_create("Color", COLOR_OBJECT_RECT, 100, 30, evas);
 }
 
 void
