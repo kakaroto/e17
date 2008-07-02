@@ -264,7 +264,7 @@ LoadEDJ(char *file)
    Parts_Hash = NULL;
     
    PopulateGroupsComboBox();
-   PopulateFontsComboBox();
+   text_font_combo_populate();
    
     
     

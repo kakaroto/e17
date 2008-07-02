@@ -201,7 +201,7 @@ create_main_window(void)
 
    //TextEmbed
    UI_TextEmbed = etk_embed_new(UI_evas);
-   etk_container_add(ETK_CONTAINER(UI_TextEmbed), create_text_frame(UI_evas));
+   etk_container_add(ETK_CONTAINER(UI_TextEmbed), text_frame_create(UI_evas));
    etk_embed_position_method_set(ETK_EMBED(UI_TextEmbed),
                                  _embed_position_set, UI_ecore_MainWin);
    etk_widget_show_all(UI_TextEmbed);

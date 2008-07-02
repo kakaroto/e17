@@ -142,7 +142,7 @@ _dialog_filechooser_response_cb(Etk_Dialog *dialog, int response_id, void *data)
                dialog_alert_show("ERROR: Can't import font file.");
                break;
             }
-            PopulateFontsComboBox();
+            text_font_combo_populate();
             etk_combobox_active_item_set(ETK_COMBOBOX(UI_FontComboBox),
                   etk_combobox_last_item_get(ETK_COMBOBOX(UI_FontComboBox)));
          break;

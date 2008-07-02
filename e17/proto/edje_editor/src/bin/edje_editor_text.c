@@ -5,8 +5,9 @@
 #include "main.h"
 
 
+/***   Implementation   ***/
 Etk_Widget*
-create_text_frame(Evas *evas)
+text_frame_create(Evas *evas)
 {
    Etk_Widget *vbox;
    Etk_Widget *hbox;
@@ -133,32 +134,35 @@ create_text_frame(Evas *evas)
                   ETK_BOX_START, ETK_BOX_EXPAND, 0);
 
    etk_signal_connect("clicked", ETK_OBJECT(UI_FontAddButton),
-                      ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_FONT_FILE_ADD);
+                      ETK_CALLBACK(on_AllButton_click),
+                      (void*)TOOLBAR_FONT_FILE_ADD);
    etk_signal_connect("item-activated", ETK_OBJECT(UI_FontComboBox),
-                      ETK_CALLBACK(on_FontComboBox_item_activated), NULL);
+                      ETK_CALLBACK(_text_FontComboBox_item_activated_cb), NULL);
    etk_signal_connect("active-item-changed", ETK_OBJECT(UI_EffectComboBox),
-                      ETK_CALLBACK(on_EffectComboBox_changed), NULL);
+                      ETK_CALLBACK(_text_EffectComboBox_changed_cb), NULL);
    etk_signal_connect("value-changed", ETK_OBJECT(UI_FontSizeSpinner),
-                      ETK_CALLBACK(on_FontSizeSpinner_value_changed), NULL);
+                      ETK_CALLBACK(_text_FontSizeSpinner_value_changed_cb), NULL);
    etk_signal_connect("text-changed", ETK_OBJECT(UI_TextEntry),
-                      ETK_CALLBACK(on_TextEntry_text_changed), NULL);
+                      ETK_CALLBACK(_text_Entry_text_changed_cb), NULL);
    etk_signal_connect("value-changed", ETK_OBJECT(UI_FontAlignVSpinner),
-                      ETK_CALLBACK(on_FontAlignSpinner_value_changed), (void*)TEXT_ALIGNV_SPINNER);
+                      ETK_CALLBACK(_text_FontAlignSpinner_value_changed_cb),
+                      (void*)TEXT_ALIGNV_SPINNER);
    etk_signal_connect("value-changed", ETK_OBJECT(UI_FontAlignHSpinner),
-                      ETK_CALLBACK(on_FontAlignSpinner_value_changed), (void*)TEXT_ALIGNH_SPINNER);
+                      ETK_CALLBACK(_text_FontAlignSpinner_value_changed_cb),
+                      (void*)TEXT_ALIGNH_SPINNER);
     
    return vbox;
 }
 
-
 void 
-PopulateFontsComboBox(void)
+text_font_combo_populate(void)
 {
    Evas_List *l;
    Etk_Combobox_Item *ComboItem;
 
    //Stop signal propagation
-   etk_signal_disconnect("item-activated", ETK_OBJECT(UI_FontComboBox), ETK_CALLBACK(on_FontComboBox_item_activated), NULL);
+   etk_signal_disconnect("item-activated", ETK_OBJECT(UI_FontComboBox),
+                         ETK_CALLBACK(_text_FontComboBox_item_activated_cb), NULL);
 
    printf("Populate Fonts Combo\n");
 
@@ -176,12 +180,13 @@ PopulateFontsComboBox(void)
    edje_edit_string_list_free(fonts);
 
    //Renable  signal propagation
-   etk_signal_connect("item-activated", ETK_OBJECT(UI_FontComboBox), ETK_CALLBACK(on_FontComboBox_item_activated), NULL);
+   etk_signal_connect("item-activated", ETK_OBJECT(UI_FontComboBox),
+                      ETK_CALLBACK(_text_FontComboBox_item_activated_cb), NULL);
 
 }
 
 void
-UpdateTextFrame(void)
+text_frame_update(void)
 {
    int eff_num = 0;
    //int alpha;
@@ -198,13 +203,13 @@ UpdateTextFrame(void)
 
    //Stop signal propagation
    etk_signal_block("text-changed", ETK_OBJECT(UI_TextEntry),
-                    on_TextEntry_text_changed, NULL);
+                    _text_Entry_text_changed_cb, NULL);
    etk_signal_block("item-activated", ETK_OBJECT(UI_FontComboBox),
-                    ETK_CALLBACK(on_FontComboBox_item_activated), NULL);
+                    ETK_CALLBACK(_text_FontComboBox_item_activated_cb), NULL);
    etk_signal_block("value-changed", ETK_OBJECT(UI_FontAlignHSpinner),
-                    ETK_CALLBACK(on_FontAlignSpinner_value_changed), NULL);
+                    ETK_CALLBACK(_text_FontAlignSpinner_value_changed_cb), NULL);
    etk_signal_block("value-changed", ETK_OBJECT(UI_FontAlignVSpinner),
-                    ETK_CALLBACK(on_FontAlignSpinner_value_changed), NULL);
+                    ETK_CALLBACK(_text_FontAlignSpinner_value_changed_cb), NULL);
    
  
    //Set Text Text in Cur.eps
@@ -270,17 +275,19 @@ UpdateTextFrame(void)
 
    //Renable  signal propagation
    etk_signal_unblock("text-changed", ETK_OBJECT(UI_TextEntry),
-                      ETK_CALLBACK(on_TextEntry_text_changed), NULL);
+                      ETK_CALLBACK(_text_Entry_text_changed_cb), NULL);
    etk_signal_unblock("item-activated", ETK_OBJECT(UI_FontComboBox),
-                      ETK_CALLBACK(on_FontComboBox_item_activated), NULL);
+                      ETK_CALLBACK(_text_FontComboBox_item_activated_cb), NULL);
    etk_signal_unblock("value-changed", ETK_OBJECT(UI_FontAlignHSpinner),
-                      ETK_CALLBACK(on_FontAlignSpinner_value_changed), NULL);
+                      ETK_CALLBACK(_text_FontAlignSpinner_value_changed_cb), NULL);
    etk_signal_unblock("value-changed", ETK_OBJECT(UI_FontAlignVSpinner),
-                      ETK_CALLBACK(on_FontAlignSpinner_value_changed), NULL);
+                      ETK_CALLBACK(_text_FontAlignSpinner_value_changed_cb), NULL);
 }
 
+
+/***   Callbacks   ***/
 Etk_Bool
-on_FontComboBox_item_activated(Etk_Combobox *combobox, Etk_Combobox_Item *item, void *data)
+_text_FontComboBox_item_activated_cb(Etk_Combobox *combobox, Etk_Combobox_Item *item, void *data)
 {
    printf("Changed Signal on FontComboBox EMITTED \n");
 
@@ -295,9 +302,8 @@ on_FontComboBox_item_activated(Etk_Combobox *combobox, Etk_Combobox_Item *item, 
    return ETK_TRUE;
 }
 
-
 Etk_Bool
-on_EffectComboBox_changed(Etk_Combobox *combobox, void *data)
+_text_EffectComboBox_changed_cb(Etk_Combobox *combobox, void *data)
 {
    if (!etk_string_length_get(Cur.part)) return ETK_TRUE;
    
@@ -310,7 +316,7 @@ on_EffectComboBox_changed(Etk_Combobox *combobox, void *data)
 }
 
 Etk_Bool
-on_FontSizeSpinner_value_changed(Etk_Range *range, double value, void *data)
+_text_FontSizeSpinner_value_changed_cb(Etk_Range *range, double value, void *data)
 {
    printf("Value Changed Signal on FontSizeSpinner EMITTED (value: %d)\n",(int)etk_range_value_get(range));
 
@@ -323,7 +329,7 @@ on_FontSizeSpinner_value_changed(Etk_Range *range, double value, void *data)
 
 
 Etk_Bool
-on_TextEntry_text_changed(Etk_Object *object, void *data)
+_text_Entry_text_changed_cb(Etk_Object *object, void *data)
 {
    printf("Text Changed Signal on TextEntry EMITTED (value %s)\n",etk_entry_text_get(ETK_ENTRY(object)));
    edje_edit_state_text_set(edje_o, Cur.part->string, Cur.state->string,
@@ -334,7 +340,7 @@ on_TextEntry_text_changed(Etk_Object *object, void *data)
 }
 
 Etk_Bool
-on_FontAlignSpinner_value_changed(Etk_Range *range, double value, void *data)
+_text_FontAlignSpinner_value_changed_cb(Etk_Range *range, double value, void *data)
 {
    printf("Value Changed Signal on AlignSpinner (h or v, text or part) EMITTED (value: %.2f)\n",etk_range_value_get(range));
 

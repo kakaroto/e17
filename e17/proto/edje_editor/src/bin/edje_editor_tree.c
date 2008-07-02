@@ -300,7 +300,7 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
                edje_object_signal_emit(edje_ui,"text_frame_hide","edje_editor");
                break;
             case EDJE_PART_TYPE_TEXT:
-               UpdateTextFrame();
+               text_frame_update();
                edje_object_signal_emit(edje_ui,"text_frame_show","edje_editor");
                edje_object_signal_emit(edje_ui,"image_frame_hide","edje_editor");
                edje_object_signal_emit(edje_ui,"rect_frame_hide","edje_editor");

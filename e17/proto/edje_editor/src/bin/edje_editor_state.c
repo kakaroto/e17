@@ -168,10 +168,10 @@ state_frame_create(void)
    etk_signal_connect("value-changed", ETK_OBJECT(UI_StateMaxHSpinner),
                       ETK_CALLBACK(_state_MinMaxSpinner_value_changed_cb), NULL);
    etk_signal_connect("value-changed", ETK_OBJECT(UI_StateAlignVSpinner),
-                      ETK_CALLBACK(on_FontAlignSpinner_value_changed),
+                      ETK_CALLBACK(_text_FontAlignSpinner_value_changed_cb),
                       (void*)STATE_ALIGNV_SPINNER);
    etk_signal_connect("value-changed", ETK_OBJECT(UI_StateAlignHSpinner),
-                      ETK_CALLBACK(on_FontAlignSpinner_value_changed),
+                      ETK_CALLBACK(_text_FontAlignSpinner_value_changed_cb),
                       (void*)STATE_ALIGNH_SPINNER);
    return vbox;
 }
@@ -197,10 +197,10 @@ state_frame_update(void)
    etk_signal_block("value-changed", ETK_OBJECT(UI_StateMaxHSpinner),
                     ETK_CALLBACK(_state_MinMaxSpinner_value_changed_cb), NULL);
    etk_signal_block("value-changed", ETK_OBJECT(UI_StateAlignVSpinner),
-                    ETK_CALLBACK(on_FontAlignSpinner_value_changed),
+                    ETK_CALLBACK(_text_FontAlignSpinner_value_changed_cb),
                     (void*)STATE_ALIGNV_SPINNER);
    etk_signal_block("value-changed", ETK_OBJECT(UI_StateAlignHSpinner),
-                    ETK_CALLBACK(on_FontAlignSpinner_value_changed),
+                    ETK_CALLBACK(_text_FontAlignSpinner_value_changed_cb),
                     (void*)STATE_ALIGNH_SPINNER);
 
    if (etk_string_length_get(Cur.state))
@@ -260,10 +260,10 @@ state_frame_update(void)
    etk_signal_unblock("value-changed", ETK_OBJECT(UI_StateMaxHSpinner),
                       ETK_CALLBACK(_state_MinMaxSpinner_value_changed_cb), NULL);
    etk_signal_unblock("value-changed", ETK_OBJECT(UI_StateAlignVSpinner),
-                      ETK_CALLBACK(on_FontAlignSpinner_value_changed),
+                      ETK_CALLBACK(_text_FontAlignSpinner_value_changed_cb),
                       (void*)STATE_ALIGNV_SPINNER);
    etk_signal_unblock("value-changed", ETK_OBJECT(UI_StateAlignHSpinner),
-                      ETK_CALLBACK(on_FontAlignSpinner_value_changed),
+                      ETK_CALLBACK(_text_FontAlignSpinner_value_changed_cb),
                       (void*)STATE_ALIGNH_SPINNER);
 
 }
