@@ -183,7 +183,7 @@ create_main_window(void)
 
    //DescriptionEmbed
    UI_DescriptionEmbed = etk_embed_new(UI_evas);
-   etk_container_add(ETK_CONTAINER(UI_DescriptionEmbed), create_description_frame());
+   etk_container_add(ETK_CONTAINER(UI_DescriptionEmbed), state_frame_create());
    etk_embed_position_method_set(ETK_EMBED(UI_DescriptionEmbed),
                                  _embed_position_set, UI_ecore_MainWin);
    etk_widget_show_all(UI_DescriptionEmbed);

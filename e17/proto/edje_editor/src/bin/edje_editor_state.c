@@ -5,9 +5,9 @@
 #include "main.h"
 
 
-
+/***   Implementation   ***/
 Etk_Widget*
-create_description_frame(void)
+state_frame_create(void)
 {
    Etk_Widget *vbox;
    Etk_Widget *hbox;
@@ -147,26 +147,26 @@ create_description_frame(void)
     
    
    etk_signal_connect("key-down", ETK_OBJECT(UI_StateEntry),
-                      ETK_CALLBACK(on_StateEntry_key_down), NULL);
+                      ETK_CALLBACK(_state_Entry_key_down_cb), NULL);
    etk_signal_connect("mouse-click", ETK_OBJECT(UI_StateEntryImage),
-                      ETK_CALLBACK(on_StateEntryImage_mouse_clicked), NULL);
+                      ETK_CALLBACK(_state_EntryImage_clicked_cb), NULL);
    etk_signal_connect("text-changed", ETK_OBJECT(UI_StateEntry),
                       ETK_CALLBACK(_group_NamesEntry_text_changed_cb), NULL);
    
    etk_signal_connect("value-changed", ETK_OBJECT(UI_AspectMinSpinner),
-                      ETK_CALLBACK(on_AspectSpinner_value_changed), NULL);
+                      ETK_CALLBACK(_state_AspectSpinner_value_changed_cb), NULL);
    etk_signal_connect("value-changed", ETK_OBJECT(UI_AspectMaxSpinner),
-                      ETK_CALLBACK(on_AspectSpinner_value_changed), NULL);
+                      ETK_CALLBACK(_state_AspectSpinner_value_changed_cb), NULL);
    etk_signal_connect("active-item-changed", ETK_OBJECT(UI_AspectComboBox),
-                      ETK_CALLBACK(on_AspectComboBox_changed), NULL);
+                      ETK_CALLBACK(_state_AspectComboBox_changed_cb), NULL);
    etk_signal_connect("value-changed", ETK_OBJECT(UI_StateMinWSpinner),
-                      ETK_CALLBACK(on_StateMinMaxSpinner_value_changed), NULL);
+                      ETK_CALLBACK(_state_MinMaxSpinner_value_changed_cb), NULL);
    etk_signal_connect("value-changed", ETK_OBJECT(UI_StateMinHSpinner),
-                      ETK_CALLBACK(on_StateMinMaxSpinner_value_changed), NULL);
+                      ETK_CALLBACK(_state_MinMaxSpinner_value_changed_cb), NULL);
    etk_signal_connect("value-changed", ETK_OBJECT(UI_StateMaxWSpinner),
-                      ETK_CALLBACK(on_StateMinMaxSpinner_value_changed), NULL);
+                      ETK_CALLBACK(_state_MinMaxSpinner_value_changed_cb), NULL);
    etk_signal_connect("value-changed", ETK_OBJECT(UI_StateMaxHSpinner),
-                      ETK_CALLBACK(on_StateMinMaxSpinner_value_changed), NULL);
+                      ETK_CALLBACK(_state_MinMaxSpinner_value_changed_cb), NULL);
    etk_signal_connect("value-changed", ETK_OBJECT(UI_StateAlignVSpinner),
                       ETK_CALLBACK(on_FontAlignSpinner_value_changed),
                       (void*)STATE_ALIGNV_SPINNER);
@@ -177,25 +177,25 @@ create_description_frame(void)
 }
 
 void
-UpdateDescriptionFrame(void)
+state_frame_update(void)
 {
   //Stop signal propagation
    etk_signal_block("text-changed", ETK_OBJECT(UI_StateEntry),
                     _group_NamesEntry_text_changed_cb, NULL);
    etk_signal_block("value-changed", ETK_OBJECT(UI_AspectMinSpinner),
-                    ETK_CALLBACK(on_AspectSpinner_value_changed), NULL);
+                    ETK_CALLBACK(_state_AspectSpinner_value_changed_cb), NULL);
    etk_signal_block("value-changed", ETK_OBJECT(UI_AspectMaxSpinner),
-                    ETK_CALLBACK(on_AspectSpinner_value_changed), NULL);
+                    ETK_CALLBACK(_state_AspectSpinner_value_changed_cb), NULL);
    etk_signal_block("active-item-changed", ETK_OBJECT(UI_AspectComboBox),
-                    ETK_CALLBACK(on_AspectComboBox_changed), NULL);
+                    ETK_CALLBACK(_state_AspectComboBox_changed_cb), NULL);
    etk_signal_block("value-changed", ETK_OBJECT(UI_StateMinWSpinner),
-                    ETK_CALLBACK(on_StateMinMaxSpinner_value_changed), NULL);
+                    ETK_CALLBACK(_state_MinMaxSpinner_value_changed_cb), NULL);
    etk_signal_block("value-changed", ETK_OBJECT(UI_StateMinHSpinner),
-                    ETK_CALLBACK(on_StateMinMaxSpinner_value_changed), NULL);
+                    ETK_CALLBACK(_state_MinMaxSpinner_value_changed_cb), NULL);
    etk_signal_block("value-changed", ETK_OBJECT(UI_StateMaxWSpinner),
-                    ETK_CALLBACK(on_StateMinMaxSpinner_value_changed), NULL);
+                    ETK_CALLBACK(_state_MinMaxSpinner_value_changed_cb), NULL);
    etk_signal_block("value-changed", ETK_OBJECT(UI_StateMaxHSpinner),
-                    ETK_CALLBACK(on_StateMinMaxSpinner_value_changed), NULL);
+                    ETK_CALLBACK(_state_MinMaxSpinner_value_changed_cb), NULL);
    etk_signal_block("value-changed", ETK_OBJECT(UI_StateAlignVSpinner),
                     ETK_CALLBACK(on_FontAlignSpinner_value_changed),
                     (void*)STATE_ALIGNV_SPINNER);
@@ -246,19 +246,19 @@ UpdateDescriptionFrame(void)
    etk_signal_unblock("text-changed", ETK_OBJECT(UI_StateEntry),
                       _group_NamesEntry_text_changed_cb, NULL);
    etk_signal_unblock("value-changed", ETK_OBJECT(UI_AspectMinSpinner),
-                      ETK_CALLBACK(on_AspectSpinner_value_changed), NULL);
+                      ETK_CALLBACK(_state_AspectSpinner_value_changed_cb), NULL);
    etk_signal_unblock("value-changed", ETK_OBJECT(UI_AspectMaxSpinner),
-                      ETK_CALLBACK(on_AspectSpinner_value_changed), NULL);
+                      ETK_CALLBACK(_state_AspectSpinner_value_changed_cb), NULL);
    etk_signal_unblock("active-item-changed", ETK_OBJECT(UI_AspectComboBox),
-                      ETK_CALLBACK(on_AspectComboBox_changed), NULL);
+                      ETK_CALLBACK(_state_AspectComboBox_changed_cb), NULL);
    etk_signal_unblock("value-changed", ETK_OBJECT(UI_StateMinWSpinner),
-                      ETK_CALLBACK(on_StateMinMaxSpinner_value_changed), NULL);
+                      ETK_CALLBACK(_state_MinMaxSpinner_value_changed_cb), NULL);
    etk_signal_unblock("value-changed", ETK_OBJECT(UI_StateMinHSpinner),
-                      ETK_CALLBACK(on_StateMinMaxSpinner_value_changed), NULL);
+                      ETK_CALLBACK(_state_MinMaxSpinner_value_changed_cb), NULL);
    etk_signal_unblock("value-changed", ETK_OBJECT(UI_StateMaxWSpinner),
-                      ETK_CALLBACK(on_StateMinMaxSpinner_value_changed), NULL);
+                      ETK_CALLBACK(_state_MinMaxSpinner_value_changed_cb), NULL);
    etk_signal_unblock("value-changed", ETK_OBJECT(UI_StateMaxHSpinner),
-                      ETK_CALLBACK(on_StateMinMaxSpinner_value_changed), NULL);
+                      ETK_CALLBACK(_state_MinMaxSpinner_value_changed_cb), NULL);
    etk_signal_unblock("value-changed", ETK_OBJECT(UI_StateAlignVSpinner),
                       ETK_CALLBACK(on_FontAlignSpinner_value_changed),
                       (void*)STATE_ALIGNV_SPINNER);
@@ -268,8 +268,10 @@ UpdateDescriptionFrame(void)
 
 }
 
+
+/***   Callbacks   ***/
 Etk_Bool
-on_StateEntry_key_down(Etk_Object *object, Etk_Event_Key_Down *event, void *data)
+_state_Entry_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data)
 {
    printf("PRESSED %s\n", event->keyname);
    if (!strcmp("default 0.00", Cur.state->string))
@@ -279,14 +281,13 @@ on_StateEntry_key_down(Etk_Object *object, Etk_Event_Key_Down *event, void *data
    }
    
    if (!strcmp(event->keyname, "Return"))
-      on_StateEntryImage_mouse_clicked(
-                                 ETK_OBJECT(ETK_ENTRY(object)->secondary_image),
-                                 NULL);
+      _state_EntryImage_clicked_cb(ETK_OBJECT(ETK_ENTRY(object)->secondary_image),
+                                   NULL);
    return ETK_TRUE;
 }
 
 Etk_Bool
-on_StateEntryImage_mouse_clicked(Etk_Object *object, void *data)
+_state_EntryImage_clicked_cb(Etk_Object *object, void *data)
 {
    const char *name;
    
@@ -328,7 +329,7 @@ on_StateEntryImage_mouse_clicked(Etk_Object *object, void *data)
 }
 
 Etk_Bool
-on_AspectSpinner_value_changed(Etk_Range *range, double value, void *data)
+_state_AspectSpinner_value_changed_cb(Etk_Range *range, double value, void *data)
 {
    printf("Value Changed Signal on AspectMinSpinner EMITTED\n");
    edje_edit_state_aspect_min_set(edje_o, Cur.part->string, Cur.state->string,
@@ -339,7 +340,7 @@ on_AspectSpinner_value_changed(Etk_Range *range, double value, void *data)
 }
 
 Etk_Bool
-on_AspectComboBox_changed(Etk_Combobox *combobox, void *data)
+_state_AspectComboBox_changed_cb(Etk_Combobox *combobox, void *data)
 {
    printf("Active Item Changed Signal on AspectComboBox EMITTED\n");
    int pref;
@@ -349,7 +350,7 @@ on_AspectComboBox_changed(Etk_Combobox *combobox, void *data)
 }
 
 Etk_Bool
-on_StateMinMaxSpinner_value_changed(Etk_Range *range, double value, void *data)
+_state_MinMaxSpinner_value_changed_cb(Etk_Range *range, double value, void *data)
 {
    printf("Active Item Changed Signal on MinMaxSpinners EMITTED\n");
 
