@@ -222,11 +222,16 @@ PopulateRelComboBoxes(void)
    
    printf("Populate 4 Rel Comboboxs\n");
    //Stop signal propagation
-   etk_signal_block("active-item-changed", ETK_OBJECT(UI_Rel1ToXComboBox), ETK_CALLBACK(on_RelToComboBox_changed), (void *)REL1X_SPINNER);
-   etk_signal_block("active-item-changed", ETK_OBJECT(UI_Rel1ToYComboBox), ETK_CALLBACK(on_RelToComboBox_changed), (void *)REL1Y_SPINNER);
-   etk_signal_block("active-item-changed", ETK_OBJECT(UI_Rel2ToXComboBox), ETK_CALLBACK(on_RelToComboBox_changed), (void *)REL2X_SPINNER);
-   etk_signal_block("active-item-changed", ETK_OBJECT(UI_Rel2ToYComboBox), ETK_CALLBACK(on_RelToComboBox_changed), (void *)REL2Y_SPINNER);
-   etk_signal_block("item-activated", ETK_OBJECT(UI_CliptoComboBox), ETK_CALLBACK(on_CliptoComboBox_item_activated), NULL);
+   etk_signal_block("active-item-changed", ETK_OBJECT(UI_Rel1ToXComboBox),
+                    ETK_CALLBACK(on_RelToComboBox_changed), (void *)REL1X_SPINNER);
+   etk_signal_block("active-item-changed", ETK_OBJECT(UI_Rel1ToYComboBox),
+                    ETK_CALLBACK(on_RelToComboBox_changed), (void *)REL1Y_SPINNER);
+   etk_signal_block("active-item-changed", ETK_OBJECT(UI_Rel2ToXComboBox),
+                    ETK_CALLBACK(on_RelToComboBox_changed), (void *)REL2X_SPINNER);
+   etk_signal_block("active-item-changed", ETK_OBJECT(UI_Rel2ToYComboBox),
+                    ETK_CALLBACK(on_RelToComboBox_changed), (void *)REL2Y_SPINNER);
+   etk_signal_block("item-activated", ETK_OBJECT(UI_CliptoComboBox),
+                    ETK_CALLBACK(_part_CliptoComboBox_item_activated_cb), NULL);
 
 
    etk_combobox_clear(ETK_COMBOBOX(UI_Rel1ToXComboBox));
@@ -287,11 +292,16 @@ PopulateRelComboBoxes(void)
    }
 
    //Reenable signal propagation
-   etk_signal_unblock("active-item-changed", ETK_OBJECT(UI_Rel1ToXComboBox), ETK_CALLBACK(on_RelToComboBox_changed), (void *)REL1X_SPINNER);
-   etk_signal_unblock("active-item-changed", ETK_OBJECT(UI_Rel1ToYComboBox), ETK_CALLBACK(on_RelToComboBox_changed), (void *)REL1Y_SPINNER);
-   etk_signal_unblock("active-item-changed", ETK_OBJECT(UI_Rel2ToXComboBox), ETK_CALLBACK(on_RelToComboBox_changed), (void *)REL2X_SPINNER);
-   etk_signal_unblock("active-item-changed", ETK_OBJECT(UI_Rel2ToYComboBox), ETK_CALLBACK(on_RelToComboBox_changed), (void *)REL2Y_SPINNER);
-   etk_signal_unblock("item-activated", ETK_OBJECT(UI_CliptoComboBox), ETK_CALLBACK(on_CliptoComboBox_item_activated), NULL);
+   etk_signal_unblock("active-item-changed", ETK_OBJECT(UI_Rel1ToXComboBox),
+                      ETK_CALLBACK(on_RelToComboBox_changed), (void *)REL1X_SPINNER);
+   etk_signal_unblock("active-item-changed", ETK_OBJECT(UI_Rel1ToYComboBox),
+                      ETK_CALLBACK(on_RelToComboBox_changed), (void *)REL1Y_SPINNER);
+   etk_signal_unblock("active-item-changed", ETK_OBJECT(UI_Rel2ToXComboBox),
+                      ETK_CALLBACK(on_RelToComboBox_changed), (void *)REL2X_SPINNER);
+   etk_signal_unblock("active-item-changed", ETK_OBJECT(UI_Rel2ToYComboBox),
+                      ETK_CALLBACK(on_RelToComboBox_changed), (void *)REL2Y_SPINNER);
+   etk_signal_unblock("item-activated", ETK_OBJECT(UI_CliptoComboBox),
+                      ETK_CALLBACK(_part_CliptoComboBox_item_activated_cb), NULL);
 }
 
 

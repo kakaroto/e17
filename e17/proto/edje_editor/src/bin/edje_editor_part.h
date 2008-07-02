@@ -2,7 +2,6 @@
 #define _EDJE_EDITOR_PART_H_
 
 
-
 /* part frame objects */
 Etk_Widget *UI_PartNameEntry;
 Etk_Widget *UI_PartNameEntryImage;
@@ -14,15 +13,15 @@ Etk_Widget *UI_PartSourceComboBox;
 Etk_Widget *UI_PartSourceLabel;
 
 
-Etk_Widget *create_part_frame(void);
-void UpdatePartFrame(void);
+Etk_Widget*  part_frame_create  (void);
+void         part_frame_update  (void);
 
-Etk_Bool on_PartEventsCheck_toggled        (Etk_Object *object, void *data);
-Etk_Bool on_PartEventsRepeatCheck_toggled  (Etk_Object *object, void *data);
-Etk_Bool on_CliptoComboBox_item_activated  (Etk_Combobox *combobox, Etk_Combobox_Item *item, void *data);
-Etk_Bool on_PartSourceComboBox_item_activated(Etk_Combobox *combobox, Etk_Combobox_Item *item, void *data);
-Etk_Bool on_PartNameEntry_key_down         (Etk_Object *object, Etk_Event_Key_Down *event, void *data);
-Etk_Bool on_PartNameEntryImage_mouse_clicked(Etk_Object *object, void *data);
+Etk_Bool _part_EventsCheck_toggled_cb           (Etk_Object *object, void *data);
+Etk_Bool _part_EventsRepeatCheck_toggled_cb     (Etk_Object *object, void *data);
+Etk_Bool _part_CliptoComboBox_item_activated_cb (Etk_Combobox *combobox, Etk_Combobox_Item *item, void *data);
+Etk_Bool _part_SourceComboBox_item_activated_cb (Etk_Combobox *combobox, Etk_Combobox_Item *item, void *data);
+Etk_Bool _part_NameEntry_key_down_cb            (Etk_Object *object, Etk_Event_Key_Down *event, void *data);
+Etk_Bool _part_NameEntryImage_clicked_cb        (Etk_Object *object, void *data);
 
 
 

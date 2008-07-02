@@ -167,7 +167,7 @@ ChangeGroup(char *group)
    PopulateSignalComboEntry();
    
    group_frame_update();
-   UpdatePartFrame();
+   part_frame_update();
    
    //update FakeWin title
    edje_object_part_text_set(EV_fakewin, "title", group);

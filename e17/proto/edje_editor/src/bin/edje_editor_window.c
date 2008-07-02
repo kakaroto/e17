@@ -174,7 +174,7 @@ create_main_window(void)
 
    //PartEmbed
    UI_PartEmbed = etk_embed_new(UI_evas);
-   etk_container_add(ETK_CONTAINER(UI_PartEmbed), create_part_frame());
+   etk_container_add(ETK_CONTAINER(UI_PartEmbed), part_frame_create());
    etk_embed_position_method_set(ETK_EMBED(UI_PartEmbed),
                                  _embed_position_set, UI_ecore_MainWin);
    etk_widget_show_all(UI_PartEmbed);

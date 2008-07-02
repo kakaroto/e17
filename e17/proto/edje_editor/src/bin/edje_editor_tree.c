@@ -108,7 +108,7 @@ PopulateGroupsComboBox(void)
    etk_signal_block("item-activated",ETK_OBJECT(UI_GroupsComboBox),
                     on_GroupsComboBox_activated, NULL);
    etk_signal_block("item-activated",ETK_OBJECT(UI_PartSourceComboBox),
-                    on_PartSourceComboBox_item_activated, NULL);
+                    _part_SourceComboBox_item_activated_cb, NULL);
    
    //Clear the combos
    etk_combobox_clear(ETK_COMBOBOX(UI_GroupsComboBox));
@@ -128,7 +128,7 @@ PopulateGroupsComboBox(void)
    etk_signal_unblock("item-activated",ETK_OBJECT(UI_GroupsComboBox),
                       on_GroupsComboBox_activated, NULL);
    etk_signal_unblock("item-activated",ETK_OBJECT(UI_PartSourceComboBox),
-                      on_PartSourceComboBox_item_activated, NULL);
+                      _part_SourceComboBox_item_activated_cb, NULL);
    
    //Select the first group and load it
    etk_combobox_active_item_set(ETK_COMBOBOX(UI_GroupsComboBox),
@@ -270,7 +270,7 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
          edje_object_signal_emit(edje_ui,"part_frame_show","edje_editor");
          edje_object_signal_emit(edje_ui,"script_frame_hide","edje_editor");
          
-         UpdatePartFrame();
+         part_frame_update();
          break;
 
       case ROW_DESC:

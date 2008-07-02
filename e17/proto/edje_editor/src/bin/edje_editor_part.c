@@ -4,9 +4,9 @@
 #include <Edje_Edit.h>
 #include "main.h"
 
-
+/***   Implementation   ***/
 Etk_Widget*
-create_part_frame(void)
+part_frame_create(void)
 {
    Etk_Widget *table;
    Etk_Widget *label;
@@ -73,34 +73,34 @@ create_part_frame(void)
    etk_signal_connect("text-changed", ETK_OBJECT(UI_PartNameEntry),
          ETK_CALLBACK(_group_NamesEntry_text_changed_cb), NULL);   
    etk_signal_connect("key-down", ETK_OBJECT(UI_PartNameEntry),
-         ETK_CALLBACK(on_PartNameEntry_key_down), NULL);
+         ETK_CALLBACK(_part_NameEntry_key_down_cb), NULL);
    etk_signal_connect("mouse-click", ETK_OBJECT(UI_PartNameEntryImage),
-                      ETK_CALLBACK(on_PartNameEntryImage_mouse_clicked), NULL);
+                      ETK_CALLBACK(_part_NameEntryImage_clicked_cb), NULL);
    etk_signal_connect("toggled", ETK_OBJECT(UI_PartEventsCheck),
-                      ETK_CALLBACK(on_PartEventsCheck_toggled), NULL);
+                      ETK_CALLBACK(_part_EventsCheck_toggled_cb), NULL);
    etk_signal_connect("toggled", ETK_OBJECT(UI_PartEventsRepeatCheck),
-                      ETK_CALLBACK(on_PartEventsRepeatCheck_toggled), NULL);
+                      ETK_CALLBACK(_part_EventsRepeatCheck_toggled_cb), NULL);
    etk_signal_connect("item-activated", ETK_OBJECT(UI_CliptoComboBox),
-                     ETK_CALLBACK(on_CliptoComboBox_item_activated), NULL);
+                     ETK_CALLBACK(_part_CliptoComboBox_item_activated_cb), NULL);
    etk_signal_connect("item-activated", ETK_OBJECT(UI_PartSourceComboBox),
-                      ETK_CALLBACK(on_PartSourceComboBox_item_activated), NULL);
+                      ETK_CALLBACK(_part_SourceComboBox_item_activated_cb), NULL);
    return table;
 }
 
 void
-UpdatePartFrame(void)
+part_frame_update(void)
 {
    //Stop signal propagation
    etk_signal_block("text-changed",ETK_OBJECT(UI_PartNameEntry),
                     _group_NamesEntry_text_changed_cb, NULL);
    etk_signal_block("toggled",ETK_OBJECT(UI_PartEventsCheck),
-                    on_PartEventsCheck_toggled, NULL);
+                    _part_EventsCheck_toggled_cb, NULL);
    etk_signal_block("toggled",ETK_OBJECT(UI_PartEventsRepeatCheck),
-                    on_PartEventsRepeatCheck_toggled, NULL);
+                    _part_EventsRepeatCheck_toggled_cb, NULL);
    etk_signal_block("item-activated", ETK_OBJECT(UI_CliptoComboBox),
-                    ETK_CALLBACK(on_CliptoComboBox_item_activated), NULL);
+                    ETK_CALLBACK(_part_CliptoComboBox_item_activated_cb), NULL);
    etk_signal_block("item-activated", ETK_OBJECT(UI_PartSourceComboBox),
-                    ETK_CALLBACK(on_PartSourceComboBox_item_activated), NULL);
+                    ETK_CALLBACK(_part_SourceComboBox_item_activated_cb), NULL);
 
    if (etk_string_length_get(Cur.part))
    {
@@ -178,19 +178,20 @@ UpdatePartFrame(void)
    etk_signal_unblock("text-changed",ETK_OBJECT(UI_PartNameEntry),
                       _group_NamesEntry_text_changed_cb, NULL);
    etk_signal_unblock("toggled",ETK_OBJECT(UI_PartEventsCheck),
-                      on_PartEventsCheck_toggled, NULL);
+                      _part_EventsCheck_toggled_cb, NULL);
    etk_signal_unblock("toggled",ETK_OBJECT(UI_PartEventsRepeatCheck),
-                      on_PartEventsRepeatCheck_toggled, NULL);
+                      _part_EventsRepeatCheck_toggled_cb, NULL);
    etk_signal_unblock("item-activated", ETK_OBJECT(UI_CliptoComboBox),
-                      ETK_CALLBACK(on_CliptoComboBox_item_activated), NULL);
+                      ETK_CALLBACK(_part_CliptoComboBox_item_activated_cb), NULL);
    etk_signal_unblock("item-activated", ETK_OBJECT(UI_PartSourceComboBox),
-                      ETK_CALLBACK(on_PartSourceComboBox_item_activated), NULL);
-
+                      ETK_CALLBACK(_part_SourceComboBox_item_activated_cb), NULL);
 
 }
 
+
+/***   Callbacks   ***/
 Etk_Bool
-on_PartEventsCheck_toggled(Etk_Object *object, void *data)
+_part_EventsCheck_toggled_cb(Etk_Object *object, void *data)
 {
    printf("Toggled Signal on EventsCheck EMITTED\n");
    if (etk_string_length_get(Cur.part))
@@ -202,7 +203,7 @@ on_PartEventsCheck_toggled(Etk_Object *object, void *data)
 }
 
 Etk_Bool
-on_PartEventsRepeatCheck_toggled(Etk_Object *object, void *data)
+_part_EventsRepeatCheck_toggled_cb(Etk_Object *object, void *data)
 {
    printf("Toggled Signal on EventsRepeatCheck EMITTED\n");
    if (etk_string_length_get(Cur.part))
@@ -214,7 +215,7 @@ on_PartEventsRepeatCheck_toggled(Etk_Object *object, void *data)
 }
 
 Etk_Bool
-on_CliptoComboBox_item_activated(Etk_Combobox *combobox, Etk_Combobox_Item *item, void *data)
+_part_CliptoComboBox_item_activated_cb(Etk_Combobox *combobox, Etk_Combobox_Item *item, void *data)
 {
    char *to;
    printf("Item Activated Signal on CliptoCombobox EMITTED\n");
@@ -230,7 +231,7 @@ on_CliptoComboBox_item_activated(Etk_Combobox *combobox, Etk_Combobox_Item *item
 }
 
 Etk_Bool
-on_PartSourceComboBox_item_activated(Etk_Combobox *combobox, Etk_Combobox_Item *item, void *data)
+_part_SourceComboBox_item_activated_cb(Etk_Combobox *combobox, Etk_Combobox_Item *item, void *data)
 {
    char *gr;
    printf("Item Activated Signal on PartSourceCombobox EMITTED\n");
@@ -252,19 +253,21 @@ on_PartSourceComboBox_item_activated(Etk_Combobox *combobox, Etk_Combobox_Item *
    
    return ETK_TRUE;
 }
+
 Etk_Bool
-on_PartNameEntry_key_down(Etk_Object *object, Etk_Event_Key_Down *event, void *data)
+_part_NameEntry_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data)
 {
    printf("PRESSED %s\n", event->keyname);
    
    if (!strcmp(event->keyname, "Return"))
-      on_PartNameEntryImage_mouse_clicked(
+      _part_NameEntryImage_clicked_cb(
                                  ETK_OBJECT(ETK_ENTRY(object)->secondary_image),
                                  NULL);
    return ETK_TRUE;
 }
+
 Etk_Bool
-on_PartNameEntryImage_mouse_clicked(Etk_Object *object, void *data)
+_part_NameEntryImage_clicked_cb(Etk_Object *object, void *data)
 {
    const char *name;
    char *image_name;
