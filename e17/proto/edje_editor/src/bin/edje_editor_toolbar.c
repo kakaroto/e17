@@ -367,7 +367,7 @@ _toolbar_add_menu_item_activated_cb(Etk_Object *object, void *data)
             break;
          }
          
-         row = AddPartToTree(name, NULL);
+         row = tree_part_add(name, NULL);
          etk_tree_row_select(row);
          etk_tree_row_unfold(row);
          position_comboboxes_populate();
@@ -392,7 +392,7 @@ _toolbar_add_menu_item_activated_cb(Etk_Object *object, void *data)
             break;
          }
          //TODO generate a unique new name
-         row = AddPartToTree(name, NULL);
+         row = tree_part_add(name, NULL);
          
          
          Evas_List *images;
@@ -427,7 +427,7 @@ _toolbar_add_menu_item_activated_cb(Etk_Object *object, void *data)
             dialog_alert_show("Can't create part.");
             break;
          }
-         row = AddPartToTree(name, NULL);
+         row = tree_part_add(name, NULL);
          
          char *font;
          item = etk_combobox_first_item_get(ETK_COMBOBOX(UI_FontComboBox));
@@ -464,7 +464,7 @@ _toolbar_add_menu_item_activated_cb(Etk_Object *object, void *data)
             dialog_alert_show("Can't create part.");
             break;
          }
-         row = AddPartToTree(name, NULL);
+         row = tree_part_add(name, NULL);
          etk_tree_row_select(row);
          etk_tree_row_unfold(row);
          position_comboboxes_populate();
@@ -487,7 +487,7 @@ _toolbar_add_menu_item_activated_cb(Etk_Object *object, void *data)
             dialog_alert_show("Can't create part.");
             break;
          }
-         row = AddPartToTree(name, NULL);
+         row = tree_part_add(name, NULL);
          etk_tree_row_select(row);
          etk_tree_row_unfold(row);
          position_comboboxes_populate();
@@ -521,7 +521,7 @@ _toolbar_add_menu_item_activated_cb(Etk_Object *object, void *data)
          edje_edit_state_text_size_set(edje_o, Cur.part->string, name2, 16);
       
          //Add state to tree
-         row = AddStateToTree(Cur.part->string, name2);
+         row = tree_state_add(Cur.part->string, name2);
          etk_tree_row_select(row);
          etk_tree_row_unfold(evas_hash_find(Parts_Hash,Cur.part->string));
          break;
@@ -543,7 +543,7 @@ _toolbar_add_menu_item_activated_cb(Etk_Object *object, void *data)
             dialog_alert_show("ERROR: can't add program");
             break;
          }
-         row = AddProgramToTree(name);
+         row = tree_program_add(name);
          etk_tree_row_select(row);
          etk_tree_row_scroll_to(row, ETK_FALSE);
          break;
@@ -557,7 +557,7 @@ _toolbar_add_menu_item_activated_cb(Etk_Object *object, void *data)
       
          if (edje_edit_group_add(edje_o, name))
          {
-            PopulateGroupsComboBox();
+            tree_combobox_populate();
             etk_combobox_active_item_set(ETK_COMBOBOX(UI_GroupsComboBox),
                etk_combobox_last_item_get(ETK_COMBOBOX(UI_GroupsComboBox)));
          }

@@ -12,21 +12,22 @@
 #define COL_TYPE   etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), TREE_COL_TYPE)
 #define COL_PARENT etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), TREE_COL_PARENT)
 
+
 Etk_Widget *UI_PartsTree;
 Etk_Widget *UI_GroupsComboBox;
 
-Etk_Widget* create_tree(void);
-void PopulateTree(void);
-void PopulateGroupsComboBox(void);
-Etk_Tree_Row *AddPartToTree(const char *part_name, Etk_Tree_Row *after);
-Etk_Tree_Row *AddStateToTree(const char *part_name, const char *state_name);
-Etk_Tree_Row *AddProgramToTree(const char* prog);
+
+Etk_Widget*   tree_create            (void);
+void          tree_populate          (void);
+void          tree_combobox_populate (void);
+Etk_Tree_Row* tree_part_add          (const char *part_name, Etk_Tree_Row *after);
+Etk_Tree_Row* tree_state_add         (const char *part_name, const char *state_name);
+Etk_Tree_Row* tree_program_add       (const char* prog);
 
 
-
-Etk_Bool on_GroupsComboBox_activated(Etk_Combobox *combobox, Etk_Combobox_Item *item, void *data);
-Etk_Bool on_PartsTree_row_selected         (Etk_Object *object, Etk_Tree_Row *row, void *data);
-Etk_Bool on_PartsTree_click                (Etk_Tree *tree, Etk_Tree_Row *row, Etk_Event_Mouse_Up *event, void *data);
+Etk_Bool _tree_combobox_activated_cb (Etk_Combobox *combobox, Etk_Combobox_Item *item, void *data);
+Etk_Bool _tree_row_selected_cb       (Etk_Object *object, Etk_Tree_Row *row, void *data);
+Etk_Bool _tree_click_cb              (Etk_Tree *tree, Etk_Tree_Row *row, Etk_Event_Mouse_Up *event, void *data);
 
 
 #endif

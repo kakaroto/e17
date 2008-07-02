@@ -2,24 +2,22 @@
 #include <Edje.h>
 #include <Edje_Edit.h>
 #include "main.h"
-//#include "callbacks.h"
-//#include "interface.h"
 
 
-
-
+/***   Implementation   ***/
 Etk_Widget*
-create_tree(void)
+tree_create(void)
 {
    //UI_GroupsComboBox
    UI_GroupsComboBox = etk_combobox_new();
    etk_combobox_items_height_set(ETK_COMBOBOX(UI_GroupsComboBox), 18);
-   etk_combobox_column_add(ETK_COMBOBOX(UI_GroupsComboBox), ETK_COMBOBOX_LABEL, 30, ETK_COMBOBOX_NONE, 0.0);
+   etk_combobox_column_add(ETK_COMBOBOX(UI_GroupsComboBox), ETK_COMBOBOX_LABEL,
+                           30, ETK_COMBOBOX_NONE, 0.0);
    etk_combobox_build(ETK_COMBOBOX(UI_GroupsComboBox));
-   
+
    etk_signal_connect("item-activated", ETK_OBJECT(UI_GroupsComboBox),
-                      ETK_CALLBACK(on_GroupsComboBox_activated), NULL);
-   
+                      ETK_CALLBACK(_tree_combobox_activated_cb), NULL);
+
    //UI_PartsTree
    Etk_Tree_Col *col;
    UI_PartsTree = etk_tree_new();
@@ -54,25 +52,25 @@ create_tree(void)
    etk_tree_build(ETK_TREE(UI_PartsTree));
 
    etk_signal_connect("row-selected", ETK_OBJECT(UI_PartsTree),
-                      ETK_CALLBACK(on_PartsTree_row_selected), NULL);
+                      ETK_CALLBACK(_tree_row_selected_cb), NULL);
    etk_signal_connect("row-clicked", ETK_OBJECT(UI_PartsTree),
-                      ETK_CALLBACK(on_PartsTree_click), NULL);
-   
+                      ETK_CALLBACK(_tree_click_cb), NULL);
+
    //vbox
    Etk_Widget *vbox;
    vbox = etk_vbox_new(ETK_FALSE, 0);
    etk_box_append(ETK_BOX(vbox), UI_GroupsComboBox, ETK_BOX_START, ETK_BOX_NONE, 0);
    etk_box_append(ETK_BOX(vbox), UI_PartsTree, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
-   
+
    return vbox;
 }
 
 void 
-PopulateTree(void)
+tree_populate(void)
 {
    Evas_List *parts, *pp;
    Evas_List *progs;
-   
+
    etk_tree_freeze(ETK_TREE(UI_PartsTree));
    etk_tree_clear(ETK_TREE(UI_PartsTree));
         
@@ -80,33 +78,31 @@ PopulateTree(void)
    while(pp)
    {
       printf("  P: %s\n", (char*)pp->data);
-      AddPartToTree((char*)pp->data, NULL);
+      tree_part_add((char*)pp->data, NULL);
       pp = pp->next;
    }
    edje_edit_string_list_free(parts);
-   
+
    progs = pp = edje_edit_programs_list_get(edje_o);
    while(pp)
    {
-      AddProgramToTree((char*)pp->data);
+      tree_program_add((char*)pp->data);
       pp = pp->next;
    }
    edje_edit_string_list_free(progs);
-   
+
    etk_tree_row_select(etk_tree_first_row_get (ETK_TREE(UI_PartsTree)));
    etk_tree_thaw(ETK_TREE(UI_PartsTree));
-   
 }
 
-
 void
-PopulateGroupsComboBox(void)
+tree_combobox_populate(void)
 {
    Evas_List *groups, *l;
    
    //Stop signal propagation
    etk_signal_block("item-activated",ETK_OBJECT(UI_GroupsComboBox),
-                    on_GroupsComboBox_activated, NULL);
+                    _tree_combobox_activated_cb, NULL);
    etk_signal_block("item-activated",ETK_OBJECT(UI_PartSourceComboBox),
                     _part_SourceComboBox_item_activated_cb, NULL);
    
@@ -126,7 +122,7 @@ PopulateGroupsComboBox(void)
     
    //Renable  signal propagation
    etk_signal_unblock("item-activated",ETK_OBJECT(UI_GroupsComboBox),
-                      on_GroupsComboBox_activated, NULL);
+                      _tree_combobox_activated_cb, NULL);
    etk_signal_unblock("item-activated",ETK_OBJECT(UI_PartSourceComboBox),
                       _part_SourceComboBox_item_activated_cb, NULL);
    
@@ -135,9 +131,8 @@ PopulateGroupsComboBox(void)
       etk_combobox_first_item_get(ETK_COMBOBOX(UI_GroupsComboBox)));
 }
 
-
 Etk_Tree_Row *
-AddPartToTree(const char *part_name, Etk_Tree_Row *after)
+tree_part_add(const char *part_name, Etk_Tree_Row *after)
 {
    /* If after=0 then append to the tree (but before programs)
       If after=1 then prepend to the tree
@@ -194,7 +189,7 @@ AddPartToTree(const char *part_name, Etk_Tree_Row *after)
    states = sp = edje_edit_part_states_list_get(edje_o, part_name);
    while(sp)
    {
-      AddStateToTree(part_name, (char*)sp->data);
+      tree_state_add(part_name, (char*)sp->data);
       sp = sp->next;
    }
    edje_edit_string_list_free(states);
@@ -204,7 +199,7 @@ AddPartToTree(const char *part_name, Etk_Tree_Row *after)
 }
 
 Etk_Tree_Row *
-AddStateToTree(const char *part_name, const char *state_name)
+tree_state_add(const char *part_name, const char *state_name)
 {
    Etk_Tree_Row *row;
 
@@ -221,7 +216,7 @@ AddStateToTree(const char *part_name, const char *state_name)
 }
 
 Etk_Tree_Row *
-AddProgramToTree(const char* prog)
+tree_program_add(const char* prog)
 {
    Etk_Tree_Row *row = NULL;
 
@@ -235,9 +230,10 @@ AddProgramToTree(const char* prog)
    return row;
 }
 
-/* Tree callbacks */
+
+/***   Tree callbacks   ***/
 Etk_Bool
-on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
+_tree_row_selected_cb(Etk_Object *object, Etk_Tree_Row *row, void *data)
 {
    int row_type=0;
    char *name;
@@ -279,7 +275,8 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
          Cur.tween = etk_string_clear(Cur.tween);
          Cur.prog = etk_string_clear(Cur.prog);
        
-         edje_edit_part_selected_state_set(edje_o, Cur.part->string, Cur.state->string);  
+         edje_edit_part_selected_state_set(edje_o, Cur.part->string,
+                                           Cur.state->string);  
          
          state_frame_update();
          position_frame_update();
@@ -342,9 +339,19 @@ on_PartsTree_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
    return ETK_TRUE;
 }
 
-/* Group combobox callback */
 Etk_Bool
-on_GroupsComboBox_activated(Etk_Combobox *combobox, Etk_Combobox_Item *item, void *data)
+_tree_click_cb(Etk_Tree *tree, Etk_Tree_Row *row, Etk_Event_Mouse_Up *event, void *data)
+{
+   if ((event->flags == ETK_MOUSE_DOUBLE_CLICK) && etk_string_length_get(Cur.prog))
+      edje_edit_program_run(edje_o, Cur.prog->string);
+   
+   return ETK_TRUE;
+}
+
+
+/***   Group combobox callback   ***/
+Etk_Bool
+_tree_combobox_activated_cb(Etk_Combobox *combobox, Etk_Combobox_Item *item, void *data)
 {
    char *gr;
    gr = etk_combobox_item_field_get(item,0);
@@ -354,11 +361,3 @@ on_GroupsComboBox_activated(Etk_Combobox *combobox, Etk_Combobox_Item *item, voi
    return ETK_TRUE;
 }
 
-Etk_Bool
-on_PartsTree_click(Etk_Tree *tree, Etk_Tree_Row *row, Etk_Event_Mouse_Up *event, void *data)
-{
-   if ((event->flags == ETK_MOUSE_DOUBLE_CLICK) && etk_string_length_get(Cur.prog))
-      edje_edit_program_run(edje_o, Cur.prog->string);
-   
-   return ETK_TRUE;
-}

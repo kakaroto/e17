@@ -159,7 +159,7 @@ create_main_window(void)
 
    //TreeEmbed
    UI_PartsTreeEmbed = etk_embed_new(UI_evas);
-   etk_container_add(ETK_CONTAINER(UI_PartsTreeEmbed), create_tree());
+   etk_container_add(ETK_CONTAINER(UI_PartsTreeEmbed), tree_create());
    etk_embed_position_method_set(ETK_EMBED(UI_PartsTreeEmbed),
                                  _embed_position_set, UI_ecore_MainWin);
    etk_widget_show_all(UI_PartsTreeEmbed);
@@ -390,9 +390,9 @@ on_AllButton_click(Etk_Button *button, void *data)
       etk_tree_row_delete(row);
       
       if (prev)
-         row = AddPartToTree(Cur.part->string, prev);
+         row = tree_part_add(Cur.part->string, prev);
       else
-         row = AddPartToTree(Cur.part->string, (void*)1);
+         row = tree_part_add(Cur.part->string, (void*)1);
       etk_tree_row_select(row);
       //Reload the edje if needed
       if (edje_edit_part_type_get(edje_o, Cur.part->string) == EDJE_PART_TYPE_GROUP)
@@ -414,7 +414,7 @@ on_AllButton_click(Etk_Button *button, void *data)
       
       Parts_Hash = evas_hash_del(Parts_Hash, NULL, row);
       etk_tree_row_delete(row);
-      row = AddPartToTree(Cur.part->string, next);
+      row = tree_part_add(Cur.part->string, next);
       etk_tree_row_select(row);
       //Reload the edje if needed
       if (edje_edit_part_type_get(edje_o, Cur.part->string) == EDJE_PART_TYPE_GROUP)

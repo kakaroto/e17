@@ -161,7 +161,7 @@ ChangeGroup(char *group)
    Cur.tween = etk_string_clear(Cur.tween);
    Cur.prog = etk_string_clear(Cur.prog);
    
-   PopulateTree();
+   tree_populate();
    position_comboboxes_populate();
    program_source_combo_populate();
    program_signal_combo_populate();
@@ -263,7 +263,7 @@ LoadEDJ(char *file)
    Cur.tween   = etk_string_clear(Cur.tween);
    Parts_Hash = NULL;
     
-   PopulateGroupsComboBox();
+   tree_combobox_populate();
    text_font_combo_populate();
    
     

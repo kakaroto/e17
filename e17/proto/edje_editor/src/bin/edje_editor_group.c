@@ -226,10 +226,10 @@ _group_NameEntryImage_clicked_cb(Etk_Object *object, void *data)
    Etk_Combobox_Item *item;
    item = etk_combobox_active_item_get(ETK_COMBOBOX(UI_GroupsComboBox));
    etk_signal_block("item-activated",ETK_OBJECT(UI_GroupsComboBox),
-                    on_GroupsComboBox_activated, NULL);
+                    _tree_combobox_activated_cb, NULL);
    etk_combobox_item_fields_set(item, name);
    etk_signal_unblock("item-activated",ETK_OBJECT(UI_GroupsComboBox),
-                      on_GroupsComboBox_activated, NULL);
+                      _tree_combobox_activated_cb, NULL);
     
    //Update FakeWin title
    edje_object_part_text_set(EV_fakewin, "title", name);
