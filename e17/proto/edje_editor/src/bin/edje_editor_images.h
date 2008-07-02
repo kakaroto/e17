@@ -1,6 +1,7 @@
 #ifndef _EDJE_EDITOR_IMAGES_H_
 #define _EDJE_EDITOR_IMAGES_H_
 
+
 /* image frame objects */
 Etk_Widget *UI_ImageTweenList;
 Etk_Widget *UI_ImageNameLabel;
@@ -22,21 +23,20 @@ Etk_Widget *UI_ImageBrowserWin;
 Etk_Widget *UI_ImageBrowserSizeLabel;
 
 
-Etk_Widget* create_image_frame(void);
-void PopulateTweenList(void);
-void UpdateImageFrame(void);
-void ShowImageBrowser(int UpdateCurrent);
+Etk_Widget* image_frame_create       (void);
+void        image_frame_update       (void);
+void        image_tweenlist_populate (void);
 
-Etk_Bool on_ImageAlphaSlider_value_changed (Etk_Object *object, double value, void *data);
-Etk_Bool on_ImageComboBox_item_activated   (Etk_Combobox *combobox, Etk_Combobox_Item *item, void *data);
-Etk_Bool on_ImageTweenList_row_selected    (Etk_Object *object, Etk_Tree_Row *row, void *data);
-Etk_Bool on_BorderSpinner_value_changed    (Etk_Range *range, double value, void *data);
+Etk_Widget* image_browser_create     (void);
+void        image_browser_populate   (void);
+void        image_browser_show       (int UpdateCurrent);
+void        image_browser_update     (void);
 
-Etk_Widget* create_image_browser(void);
-void PopulateImageBrowser(void);
-void UpdateImageBrowser(void);
-Etk_Bool on_ImageBrowserIconbox_selected(Etk_Iconbox *iconbox, Etk_Iconbox_Icon *icon, void *data);
 
+Etk_Bool _image_AlphaSlider_value_changed_cb     (Etk_Object *object, double value, void *data);
+Etk_Bool _image_TweenList_row_selected_cb        (Etk_Object *object, Etk_Tree_Row *row, void *data);
+Etk_Bool _image_border_spinners_value_changed_cb (Etk_Range *range, double value, void *data);
+Etk_Bool _image_browser_iconbox_selected_cb      (Etk_Iconbox *iconbox, Etk_Iconbox_Icon *icon, void *data);
 
 
 #endif

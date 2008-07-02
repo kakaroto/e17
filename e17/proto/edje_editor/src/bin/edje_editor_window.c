@@ -210,7 +210,7 @@ create_main_window(void)
 
    //ImageEmbed
    UI_ImageEmbed = etk_embed_new(UI_evas);
-   etk_container_add(ETK_CONTAINER(UI_ImageEmbed), create_image_frame());
+   etk_container_add(ETK_CONTAINER(UI_ImageEmbed), image_frame_create());
    etk_embed_position_method_set(ETK_EMBED(UI_ImageEmbed),
                                  _embed_position_set, UI_ecore_MainWin);
    etk_widget_show_all(UI_ImageEmbed);
@@ -258,7 +258,7 @@ create_main_window(void)
    UI_ColorWin = dialog_colorpicker_create();
 
    //Image Browser
-   create_image_browser();
+   image_browser_create();
 
    //Create the main edje object to edit
    edje_o = edje_object_add(UI_evas);
@@ -420,13 +420,13 @@ on_AllButton_click(Etk_Button *button, void *data)
          ReloadEdje();
       break;
    case IMAGE_BROWSER_SHOW:
-      ShowImageBrowser(1);
+      image_browser_show(1);
       break;
    case IMAGE_BROWSER_CLOSE:
       etk_widget_hide(ETK_WIDGET(UI_ImageBrowserWin));
       break;
    case TOOLBAR_IMAGE_BROWSER:
-      ShowImageBrowser(0);
+      image_browser_show(0);
       break;
    case TOOLBAR_FONT_BROWSER:
       dialog_alert_show("Font Browser");
@@ -446,7 +446,7 @@ on_AllButton_click(Etk_Button *button, void *data)
       if (icons)
       {
          evas_list_free(icons);
-         PopulateTweenList();
+         image_tweenlist_populate();
          row = etk_tree_last_row_get(ETK_TREE(UI_ImageTweenList));
          etk_tree_row_select(row);
          etk_tree_row_scroll_to(row, ETK_FALSE);

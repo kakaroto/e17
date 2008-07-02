@@ -117,7 +117,7 @@ _dialog_filechooser_response_cb(Etk_Dialog *dialog, int response_id, void *data)
                dialog_alert_show("ERROR: Can't import image file.");
                break;
             }
-            PopulateImageBrowser();
+            image_browser_populate();
             
             Etk_Range *range;
             double upper;

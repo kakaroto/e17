@@ -4,8 +4,9 @@
 #include "main.h"
 
 
+/***   Implementation   ***/
 Etk_Widget*
-create_image_frame(void)
+image_frame_create(void)
 {
    Etk_Widget *label;
    Etk_Widget *table;
@@ -119,80 +120,61 @@ create_image_frame(void)
    etk_table_attach_default(ETK_TABLE(table),UI_BorderBottomSpinner, 4, 4, 4, 4);
 
    etk_signal_connect("row-selected", ETK_OBJECT(UI_ImageTweenList),
-            ETK_CALLBACK(on_ImageTweenList_row_selected), NULL);
+            ETK_CALLBACK(_image_TweenList_row_selected_cb), NULL);
    etk_signal_connect("clicked", ETK_OBJECT(UI_ImageAddButton),
             ETK_CALLBACK(on_AllButton_click), (void*)IMAGE_BROWSER_SHOW);
    etk_signal_connect("value-changed", ETK_OBJECT(UI_ImageAlphaSlider),
-            ETK_CALLBACK(on_ImageAlphaSlider_value_changed), NULL);
+            ETK_CALLBACK(_image_AlphaSlider_value_changed_cb), NULL);
    etk_signal_connect("value-changed", ETK_OBJECT(UI_BorderLeftSpinner),
-            ETK_CALLBACK(on_BorderSpinner_value_changed), (void *)BORDER_LEFT);
+                      ETK_CALLBACK(_image_border_spinners_value_changed_cb),
+                      (void *)BORDER_LEFT);
    etk_signal_connect("value-changed", ETK_OBJECT(UI_BorderRightSpinner),
-            ETK_CALLBACK(on_BorderSpinner_value_changed), (void *)BORDER_RIGHT);
+                      ETK_CALLBACK(_image_border_spinners_value_changed_cb),
+                      (void *)BORDER_RIGHT);
    etk_signal_connect("value-changed", ETK_OBJECT(UI_BorderTopSpinner),
-            ETK_CALLBACK(on_BorderSpinner_value_changed), (void *)BORDER_TOP);
+                      ETK_CALLBACK(_image_border_spinners_value_changed_cb),
+                      (void *)BORDER_TOP);
    etk_signal_connect("value-changed", ETK_OBJECT(UI_BorderBottomSpinner),
-            ETK_CALLBACK(on_BorderSpinner_value_changed), (void *)BORDER_BOTTOM);
+                      ETK_CALLBACK(_image_border_spinners_value_changed_cb),
+                      (void *)BORDER_BOTTOM);
 
    return table;
 }
 
-
 void
-PopulateTweenList(void)
-{
-   Evas_List *tweens, *l;
-   Etk_Tree_Col *col;
-   
-   if (!etk_string_length_get(Cur.state)) return;
-   if (!etk_string_length_get(Cur.part)) return;
-   
-   col = etk_tree_nth_col_get(ETK_TREE(UI_ImageTweenList), 0);
-   
-   etk_tree_clear(ETK_TREE(UI_ImageTweenList));
-   
-   tweens = l = edje_edit_state_tweens_list_get(edje_o, Cur.part->string, Cur.state->string);
-   while (l)
-   {
-      //printf("RET: %s (id: %d)\n", l->data, edje_edit_image_id_get(edje_o, l->data));
-      //snprintf(buf, sizeof(buf), "images/%d", edje_edit_image_id_get(edje_o, l->data)); TODO: find a way to append image directly from the edje file.
-      etk_tree_row_append(ETK_TREE(UI_ImageTweenList), NULL,
-                          col, NULL, NULL, l->data,
-                          NULL);
-      l = l->next;
-   }
-   edje_edit_string_list_free(tweens);
-}
-
-void
-UpdateImageFrame(void)
+image_frame_update(void)
 {
    //Etk_Combobox_Item *item = NULL;
    const char *im;
     
    //Stop signal propagation
    etk_signal_block("value-changed",ETK_OBJECT(UI_BorderLeftSpinner),
-                    ETK_CALLBACK(on_BorderSpinner_value_changed), (void*)BORDER_LEFT);
+                    ETK_CALLBACK(_image_border_spinners_value_changed_cb),
+                    (void*)BORDER_LEFT);
    etk_signal_block("value-changed",ETK_OBJECT(UI_BorderRightSpinner),
-                    ETK_CALLBACK(on_BorderSpinner_value_changed), (void*)BORDER_RIGHT);
+                    ETK_CALLBACK(_image_border_spinners_value_changed_cb),
+                    (void*)BORDER_RIGHT);
    etk_signal_block("value-changed",ETK_OBJECT(UI_BorderTopSpinner),
-                    ETK_CALLBACK(on_BorderSpinner_value_changed), (void*)BORDER_TOP);
+                    ETK_CALLBACK(_image_border_spinners_value_changed_cb),
+                    (void*)BORDER_TOP);
    etk_signal_block("value-changed",ETK_OBJECT(UI_BorderBottomSpinner),
-                    ETK_CALLBACK(on_BorderSpinner_value_changed), (void*)BORDER_BOTTOM);
+                    ETK_CALLBACK(_image_border_spinners_value_changed_cb),
+                    (void*)BORDER_BOTTOM);
    etk_signal_block("value-changed",ETK_OBJECT(UI_ImageAlphaSlider),
-                    ETK_CALLBACK(on_ImageAlphaSlider_value_changed), NULL);
+                    ETK_CALLBACK(_image_AlphaSlider_value_changed_cb), NULL);
    etk_signal_block("icon-selected", ETK_OBJECT(UI_ImageBrowserIconbox),
-                    ETK_CALLBACK(on_ImageBrowserIconbox_selected), NULL);
+                    ETK_CALLBACK(_image_browser_iconbox_selected_cb), NULL);
    
    if (!etk_string_length_get(Cur.state)) return;
    if (!etk_string_length_get(Cur.part)) return;
    
-   PopulateTweenList();
+   image_tweenlist_populate();
    etk_widget_disabled_set(UI_DeleteTweenButton, TRUE);
    etk_widget_disabled_set(UI_MoveDownTweenButton, TRUE);
    etk_widget_disabled_set(UI_MoveUpTweenButton, TRUE);
 
    /* Update Image Browser */
-   UpdateImageBrowser();
+   image_browser_update();
    
    //Set the images label for normal image
    im = edje_edit_state_image_get(edje_o, Cur.part->string, Cur.state->string);
@@ -220,22 +202,52 @@ UpdateImageFrame(void)
    
    //ReEnable Signal Propagation
    etk_signal_unblock("value-changed", ETK_OBJECT(UI_BorderLeftSpinner),
-                      on_BorderSpinner_value_changed, (void*)BORDER_LEFT);
+                      _image_border_spinners_value_changed_cb,
+                      (void*)BORDER_LEFT);
    etk_signal_unblock("value-changed", ETK_OBJECT(UI_BorderRightSpinner),
-                      on_BorderSpinner_value_changed, (void*)BORDER_RIGHT);
+                      _image_border_spinners_value_changed_cb,
+                      (void*)BORDER_RIGHT);
    etk_signal_unblock("value-changed", ETK_OBJECT(UI_BorderTopSpinner),
-                      on_BorderSpinner_value_changed, (void*)BORDER_TOP);
+                      _image_border_spinners_value_changed_cb,
+                      (void*)BORDER_TOP);
    etk_signal_unblock("value-changed", ETK_OBJECT(UI_BorderBottomSpinner),
-                      on_BorderSpinner_value_changed, (void*)BORDER_BOTTOM);
+                      _image_border_spinners_value_changed_cb,
+                      (void*)BORDER_BOTTOM);
    etk_signal_unblock("value-changed", ETK_OBJECT(UI_ImageAlphaSlider),
-                      on_ImageAlphaSlider_value_changed, NULL);
+                      _image_AlphaSlider_value_changed_cb, NULL);
    etk_signal_unblock("icon-selected", ETK_OBJECT(UI_ImageBrowserIconbox),
-                    ETK_CALLBACK(on_ImageBrowserIconbox_selected), NULL);
+                    ETK_CALLBACK(_image_browser_iconbox_selected_cb), NULL);
 
 }
 
+void
+image_tweenlist_populate(void)
+{
+   Evas_List *tweens, *l;
+   Etk_Tree_Col *col;
+   
+   if (!etk_string_length_get(Cur.state)) return;
+   if (!etk_string_length_get(Cur.part)) return;
+   
+   col = etk_tree_nth_col_get(ETK_TREE(UI_ImageTweenList), 0);
+   
+   etk_tree_clear(ETK_TREE(UI_ImageTweenList));
+   
+   tweens = l = edje_edit_state_tweens_list_get(edje_o, Cur.part->string, Cur.state->string);
+   while (l)
+   {
+      //printf("RET: %s (id: %d)\n", l->data, edje_edit_image_id_get(edje_o, l->data));
+      //snprintf(buf, sizeof(buf), "images/%d", edje_edit_image_id_get(edje_o, l->data)); TODO: find a way to append image directly from the edje file.
+      etk_tree_row_append(ETK_TREE(UI_ImageTweenList), NULL,
+                          col, NULL, NULL, l->data,
+                          NULL);
+      l = l->next;
+   }
+   edje_edit_string_list_free(tweens);
+}
+
 Etk_Widget*
-create_image_browser(void)
+image_browser_create(void)
 {
    Etk_Widget *hbox, *vbox, *vbox2;
    Etk_Widget *button;
@@ -257,7 +269,7 @@ create_image_browser(void)
    //ImageBrowserIconbox
    UI_ImageBrowserIconbox = etk_iconbox_new();
    etk_signal_connect("icon-selected", ETK_OBJECT(UI_ImageBrowserIconbox),
-                      ETK_CALLBACK(on_ImageBrowserIconbox_selected), NULL);
+                      ETK_CALLBACK(_image_browser_iconbox_selected_cb), NULL);
    etk_box_append(ETK_BOX(hbox), UI_ImageBrowserIconbox, 0, ETK_BOX_EXPAND_FILL, 0);
    
    vbox = etk_vbox_new(ETK_FALSE, 0);
@@ -324,84 +336,7 @@ create_image_browser(void)
 }
 
 void
-ShowImageBrowser(int UpdateCurrent)
-{
-   ImageBroserUpdate = UpdateCurrent;
-   PopulateImageBrowser();
-   UpdateImageBrowser();
-   etk_widget_show_all(UI_ImageBrowserWin);
-}
-
-/* Image Frame Callbacks */
-Etk_Bool
-on_ImageComboBox_item_activated(Etk_Combobox *combobox, Etk_Combobox_Item *item, void *data)
-{
-   printf("Changed signal on Image Combo EMITTED\n");
-   
-   char *im;
-   if (!etk_string_length_get(Cur.state)) return ETK_TRUE;
-   if (!etk_string_length_get(Cur.part)) return ETK_TRUE;
-   
-   im = etk_combobox_item_field_get(item, 1);
-   edje_edit_state_image_set(edje_o, Cur.part->string, Cur.state->string, im);
-
-   return ETK_TRUE;
-}
-
-Etk_Bool
-on_ImageTweenList_row_selected(Etk_Object *object, Etk_Tree_Row *row, void *data)
-{
-   Etk_Tree_Col *col;
-   char *selected = NULL;
-   printf("Row selected signal on ImageTweenList EMITTED\n");
-   
-   col = etk_tree_nth_col_get(ETK_TREE(UI_ImageTweenList), 0);
-   etk_tree_row_fields_get(row, col, NULL, NULL, &selected, NULL);
-   if (!selected) return ETK_TRUE;
-   
-   Cur.tween = etk_string_set(Cur.tween, selected);
-   etk_widget_disabled_set(UI_DeleteTweenButton, FALSE);
-  // etk_widget_disabled_set(UI_MoveDownTweenButton, FALSE);
-  // etk_widget_disabled_set(UI_MoveUpTweenButton, FALSE);
-   
-   return ETK_TRUE;
-}
-
-Etk_Bool
-on_ImageAlphaSlider_value_changed(Etk_Object *object, double va, void *data)
-{
-   printf("ImageSlieder value_changed signale EMIT: %.2f\n",va);
-
-   if (!etk_string_length_get(Cur.state)) return ETK_TRUE;
-   if (!etk_string_length_get(Cur.part)) return ETK_TRUE;
-   edje_edit_state_color_set(edje_o, Cur.part->string, Cur.state->string,
-                             -1, -1, -1, (int)va);
-   canvas_redraw();
-
-   return ETK_TRUE;
-}
-
-Etk_Bool
-on_BorderSpinner_value_changed(Etk_Range *range, double value, void *data)
-{
-   printf("Value Changed signal on BorderSpinner EMITTED (value: %f)\n",etk_range_value_get(range));
-
-   if (!etk_string_length_get(Cur.state)) return ETK_TRUE;
-   if (!etk_string_length_get(Cur.part)) return ETK_TRUE;
-   edje_edit_state_image_border_set(edje_o, Cur.part->string, Cur.state->string,
-      (int)etk_range_value_get(ETK_RANGE(UI_BorderLeftSpinner)),
-      (int)etk_range_value_get(ETK_RANGE(UI_BorderRightSpinner)),
-      (int)etk_range_value_get(ETK_RANGE(UI_BorderTopSpinner)),
-      (int)etk_range_value_get(ETK_RANGE(UI_BorderBottomSpinner)));
-
-   canvas_redraw();
-
-   return ETK_TRUE;
-}
-/*******************/
-
-void
-PopulateImageBrowser(void)
+image_browser_populate(void)
 {
    Evas_List *l, *images;
    char buf[4096];
@@ -422,7 +357,16 @@ PopulateImageBrowser(void)
 }
 
 void
-UpdateImageBrowser(void)
+image_browser_show(int UpdateCurrent)
+{
+   ImageBroserUpdate = UpdateCurrent;
+   image_browser_populate();
+   image_browser_update();
+   etk_widget_show_all(UI_ImageBrowserWin);
+}
+
+void
+image_browser_update(void)
 {
    const char *pi;
    char buf[4096];
@@ -461,9 +405,62 @@ UpdateImageBrowser(void)
    }
 
 }
-/* Image Browser callbacks */
+
+
+/* Image Frame Callbacks */
 Etk_Bool
-on_ImageBrowserIconbox_selected(Etk_Iconbox *iconbox, Etk_Iconbox_Icon *icon, void *data)
+_image_TweenList_row_selected_cb(Etk_Object *object, Etk_Tree_Row *row, void *data)
+{
+   Etk_Tree_Col *col;
+   char *selected = NULL;
+   printf("Row selected signal on ImageTweenList EMITTED\n");
+   
+   col = etk_tree_nth_col_get(ETK_TREE(UI_ImageTweenList), 0);
+   etk_tree_row_fields_get(row, col, NULL, NULL, &selected, NULL);
+   if (!selected) return ETK_TRUE;
+   
+   Cur.tween = etk_string_set(Cur.tween, selected);
+   etk_widget_disabled_set(UI_DeleteTweenButton, FALSE);
+  // etk_widget_disabled_set(UI_MoveDownTweenButton, FALSE);
+  // etk_widget_disabled_set(UI_MoveUpTweenButton, FALSE);
+   
+   return ETK_TRUE;
+}
+
+Etk_Bool
+_image_AlphaSlider_value_changed_cb(Etk_Object *object, double va, void *data)
+{
+   printf("ImageSlieder value_changed signale EMIT: %.2f\n",va);
+
+   if (!etk_string_length_get(Cur.state)) return ETK_TRUE;
+   if (!etk_string_length_get(Cur.part)) return ETK_TRUE;
+   edje_edit_state_color_set(edje_o, Cur.part->string, Cur.state->string,
+                             -1, -1, -1, (int)va);
+   canvas_redraw();
+
+   return ETK_TRUE;
+}
+
+Etk_Bool
+_image_border_spinners_value_changed_cb(Etk_Range *range, double value, void *data)
+{
+   printf("Value Changed signal on BorderSpinner EMITTED (value: %f)\n",etk_range_value_get(range));
+
+   if (!etk_string_length_get(Cur.state)) return ETK_TRUE;
+   if (!etk_string_length_get(Cur.part)) return ETK_TRUE;
+   edje_edit_state_image_border_set(edje_o, Cur.part->string, Cur.state->string,
+      (int)etk_range_value_get(ETK_RANGE(UI_BorderLeftSpinner)),
+      (int)etk_range_value_get(ETK_RANGE(UI_BorderRightSpinner)),
+      (int)etk_range_value_get(ETK_RANGE(UI_BorderTopSpinner)),
+      (int)etk_range_value_get(ETK_RANGE(UI_BorderBottomSpinner)));
+
+   canvas_redraw();
+
+   return ETK_TRUE;
+}
+/* Image Browser Callbacks */
+Etk_Bool
+_image_browser_iconbox_selected_cb(Etk_Iconbox *iconbox, Etk_Iconbox_Icon *icon, void *data)
 {
    const char *image;
    image = etk_iconbox_icon_label_get(icon);
@@ -473,7 +470,7 @@ on_ImageBrowserIconbox_selected(Etk_Iconbox *iconbox, Etk_Iconbox_Icon *icon, vo
      {
         edje_edit_state_image_set(edje_o, Cur.part->string, Cur.state->string, image);
      }
-   UpdateImageFrame();
+   image_frame_update();
 
    return ETK_TRUE;
 }
