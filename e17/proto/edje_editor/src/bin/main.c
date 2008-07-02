@@ -149,7 +149,7 @@ ChangeGroup(char *group)
    
    if (!edje_object_file_set(edje_o, Cur.edj_temp_name->string, group))
    {
-      ShowAlert("Error loading group");
+      dialog_alert_show("Error loading group");
       return;
    }
    evas_object_show(edje_o);
@@ -205,17 +205,17 @@ LoadEDJ(char *file)
    realp = ecore_file_realpath(file);
    if (!ecore_file_exists(realp))
    {
-      ShowAlert("<b>ERROR:</b><br>File not exists.");
+      dialog_alert_show("<b>ERROR:</b><br>File not exists.");
       return 0;
    }
    if (!ecore_file_can_read(realp))
    {
-      ShowAlert("<b>ERROR</b>:<br>Can't read file.");
+      dialog_alert_show("<b>ERROR</b>:<br>Can't read file.");
       return 0;
    }
    if (!ecore_str_has_suffix(realp, ".edj"))  //TODO: better check
    {
-      ShowAlert("<b>ERROR</b>:<br>File is not an edje file.");
+      dialog_alert_show("<b>ERROR</b>:<br>File is not an edje file.");
       return 0;
    }
    
@@ -240,7 +240,7 @@ LoadEDJ(char *file)
     
    if (!ecore_file_cp(realp, Cur.edj_temp_name->string))
    {
-      ShowAlert("<b>ERROR</b>:<br>Can't copy to temp file.");
+      dialog_alert_show("<b>ERROR</b>:<br>Can't copy to temp file.");
       return 0;
    }
         
@@ -271,7 +271,7 @@ LoadEDJ(char *file)
    //Delete old temp file
    if (old_temp && !ecore_file_unlink(old_temp))
    {
-      ShowAlert("<b>ERROR</b>:<br>Can't remove temp file.");
+      dialog_alert_show("<b>ERROR</b>:<br>Can't remove temp file.");
       return 0;
    }
    if (old_temp) free(old_temp);

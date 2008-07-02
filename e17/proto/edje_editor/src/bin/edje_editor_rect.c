@@ -21,7 +21,7 @@ UpdateRectFrame(void)
                                 &color.r, &color.g, &color.b, &color.a);
 
       etk_signal_block("color-changed", ETK_OBJECT(UI_ColorPicker),
-                       ETK_CALLBACK(on_ColorDialog_change), NULL);
+                       ETK_CALLBACK(_dialog_colorpicker_change_cb), NULL);
 
       //Set ColorPicker
       etk_colorpicker_current_color_set (ETK_COLORPICKER(UI_ColorPicker), color);
@@ -30,7 +30,7 @@ UpdateRectFrame(void)
       evas_object_color_set(RectColorObject,color.r,color.g,color.b,color.a);
 
       etk_signal_unblock("color-changed", ETK_OBJECT(UI_ColorPicker),
-                         ETK_CALLBACK(on_ColorDialog_change), NULL);
+                         ETK_CALLBACK(_dialog_colorpicker_change_cb), NULL);
    }
 
 }

@@ -274,7 +274,7 @@ on_StateEntry_key_down(Etk_Object *object, Etk_Event_Key_Down *event, void *data
    printf("PRESSED %s\n", event->keyname);
    if (!strcmp("default 0.00", Cur.state->string))
    {
-      ShowAlert("You can't rename default 0.0");
+      dialog_alert_show("You can't rename default 0.0");
       return ETK_TRUE;
    }
    
@@ -319,10 +319,10 @@ on_StateEntryImage_mouse_clicked(Etk_Object *object, void *data)
          etk_widget_hide(ETK_WIDGET(UI_StateEntryImage));
       }
       else
-         ShowAlert("<b>Wrong name format</b><br>Name must be in the form:<br>\"default 0.00\"");
+         dialog_alert_show("<b>Wrong name format</b><br>Name must be in the form:<br>\"default 0.00\"");
    }
    else
-      ShowAlert("You can't rename default 0.0");
+      dialog_alert_show("You can't rename default 0.0");
 
    return ETK_TRUE;
 }

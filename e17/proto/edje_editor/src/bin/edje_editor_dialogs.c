@@ -3,45 +3,26 @@
 #include <Edje_Edit.h>
 #include "main.h"
 
-//#include "callbacks.h"
 
-
-
-
-void
-ShowAlert(char* text)
-{
-   etk_message_dialog_text_set(ETK_MESSAGE_DIALOG(UI_AlertDialog), text);
-   etk_widget_show_all(UI_AlertDialog);
-}
-
+/***   FileChooser Dialog   ***/
 Etk_Widget*
-create_alert_dialog(void)
-{
-   UI_AlertDialog = etk_message_dialog_new (ETK_MESSAGE_DIALOG_INFO,
-                                       ETK_MESSAGE_DIALOG_OK, "Hallo world!");
-   etk_widget_size_request_set(UI_AlertDialog, 240, 100);
-   etk_signal_connect("delete-event", ETK_OBJECT(UI_AlertDialog),
-                      ETK_CALLBACK(etk_window_hide_on_delete), NULL);
-   etk_signal_connect("response", ETK_OBJECT(UI_AlertDialog),
-                      ETK_CALLBACK(on_AlertDialog_response), NULL);
-   return UI_AlertDialog;
-}
-
-Etk_Widget*
-create_filechooser_dialog(void)
+dialog_filechooser_create(void)
 {
    //Dialog
    UI_FileChooserDialog = etk_dialog_new();
-   etk_object_properties_set (ETK_OBJECT(UI_FileChooserDialog), "action-area-homogeneous",ETK_FALSE,NULL);
-   etk_signal_connect("delete-event", ETK_OBJECT(UI_FileChooserDialog), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
-   etk_signal_connect("response", ETK_OBJECT(UI_FileChooserDialog), ETK_CALLBACK(on_FileChooserDialog_response), NULL);
+   etk_object_properties_set (ETK_OBJECT(UI_FileChooserDialog),
+                              "action-area-homogeneous", ETK_FALSE, NULL);
+   etk_signal_connect("delete-event", ETK_OBJECT(UI_FileChooserDialog),
+                      ETK_CALLBACK(etk_window_hide_on_delete), NULL);
+   etk_signal_connect("response", ETK_OBJECT(UI_FileChooserDialog),
+                      ETK_CALLBACK(_dialog_filechooser_response_cb), NULL);
 
    //Filechooser
    UI_FileChooser = etk_filechooser_widget_new();
    etk_dialog_pack_in_main_area(ETK_DIALOG(UI_FileChooserDialog), UI_FileChooser,
       ETK_BOX_START, ETK_BOX_EXPAND_FILL,0);
-   etk_signal_connect("selected", ETK_OBJECT(UI_FileChooser), ETK_CALLBACK(on_FileChooser_selected), NULL);
+   etk_signal_connect("selected", ETK_OBJECT(UI_FileChooser),
+                      ETK_CALLBACK(_dialog_filechooser_selected_cb), NULL);
 
    etk_dialog_button_add_from_stock(ETK_DIALOG(UI_FileChooserDialog),
       ETK_STOCK_DIALOG_CANCEL, ETK_RESPONSE_CANCEL );
@@ -54,7 +35,7 @@ create_filechooser_dialog(void)
 }
 
 void
-ShowFilechooser(int FileChooserType)
+dialog_filechooser_show(int FileChooserType)
 {
    etk_widget_show_all(UI_FileChooserDialog);
    
@@ -93,7 +74,7 @@ ShowFilechooser(int FileChooserType)
 
 
 Etk_Bool
-on_FileChooserDialog_response(Etk_Dialog *dialog, int response_id, void *data)
+_dialog_filechooser_response_cb(Etk_Dialog *dialog, int response_id, void *data)
 {
    char cmd[4096];
 
@@ -116,7 +97,7 @@ on_FileChooserDialog_response(Etk_Dialog *dialog, int response_id, void *data)
             edje_edit_save(edje_o);
             if(!ecore_file_cp(Cur.edj_temp_name->string, cmd))
             {
-               ShowAlert("<b>ERROR:<\b><br>Can't write file");
+               dialog_alert_show("<b>ERROR:<\b><br>Can't write file");
             }
             else
             {
@@ -125,7 +106,7 @@ on_FileChooserDialog_response(Etk_Dialog *dialog, int response_id, void *data)
             }
          break;
          case FILECHOOSER_SAVE_EDC:
-              ShowAlert("Not yet implemented.");
+              dialog_alert_show("Not yet implemented.");
          break;
          case FILECHOOSER_IMAGE:
             snprintf(cmd, 4096, "%s/%s", 
@@ -133,7 +114,7 @@ on_FileChooserDialog_response(Etk_Dialog *dialog, int response_id, void *data)
                etk_filechooser_widget_selected_file_get(ETK_FILECHOOSER_WIDGET(UI_FileChooser)));
             if (!edje_edit_image_add(edje_o, cmd))
             {
-               ShowAlert("ERROR: Can't import image file.");
+               dialog_alert_show("ERROR: Can't import image file.");
                break;
             }
             PopulateImageBrowser();
@@ -158,7 +139,7 @@ on_FileChooserDialog_response(Etk_Dialog *dialog, int response_id, void *data)
                etk_filechooser_widget_selected_file_get(ETK_FILECHOOSER_WIDGET(UI_FileChooser)));
             if (!edje_edit_font_add(edje_o, cmd))
             {
-               ShowAlert("ERROR: Can't import font file.");
+               dialog_alert_show("ERROR: Can't import font file.");
                break;
             }
             PopulateFontsComboBox();
@@ -177,24 +158,21 @@ on_FileChooserDialog_response(Etk_Dialog *dialog, int response_id, void *data)
 }
 
 Etk_Bool
-on_FileChooser_selected(Etk_Filechooser_Widget *filechooser)
+_dialog_filechooser_selected_cb(Etk_Filechooser_Widget *filechooser)
 {
    printf("*** FILECHOOSER SELECTD ON *** \n");
-   on_FileChooserDialog_response(ETK_DIALOG(UI_FileChooserDialog), ETK_RESPONSE_OK, NULL);
+   _dialog_filechooser_response_cb(ETK_DIALOG(UI_FileChooserDialog),
+                                   ETK_RESPONSE_OK, NULL);
    return ETK_TRUE;
 }
 
 
 
-Etk_Bool
-on_AlertDialog_response(Etk_Dialog *dialog, int response_id, void *data)
-{
-   etk_widget_hide(ETK_WIDGET(dialog));
-   return ETK_TRUE;
-}
 
+
+/***   Color Picker Dialog   ***/
 Etk_Widget *
-create_colorpicker(void)
+dialog_colorpicker_create(void)
 {
    UI_ColorWin = etk_window_new();
    etk_signal_connect("delete-event", ETK_OBJECT(UI_ColorWin),
@@ -203,12 +181,12 @@ create_colorpicker(void)
    etk_colorpicker_use_alpha_set (ETK_COLORPICKER(UI_ColorPicker), TRUE);
    etk_container_add(ETK_CONTAINER(UI_ColorWin), UI_ColorPicker);
    etk_signal_connect("color-changed", ETK_OBJECT(UI_ColorPicker),
-                        ETK_CALLBACK(on_ColorDialog_change), NULL);
+                        ETK_CALLBACK(_dialog_colorpicker_change_cb), NULL);
    return UI_ColorWin;
 }
 
 Etk_Bool
-on_ColorDialog_change(Etk_Object *object, void *data)
+_dialog_colorpicker_change_cb(Etk_Object *object, void *data)
 {
   // printf("ColorChangeSignal on ColorDialog EMITTED\n");
    Etk_Color color;
@@ -260,3 +238,25 @@ on_ColorDialog_change(Etk_Object *object, void *data)
    canvas_redraw();
    return ETK_TRUE;
 }
+
+/***   Alert Dialog   ***/
+Etk_Widget*
+dialog_alert_create(void)
+{
+   UI_AlertDialog = etk_message_dialog_new (ETK_MESSAGE_DIALOG_INFO,
+                                       ETK_MESSAGE_DIALOG_OK, "Hallo world!");
+   etk_widget_size_request_set(UI_AlertDialog, 240, 100);
+   etk_signal_connect("delete-event", ETK_OBJECT(UI_AlertDialog),
+                      ETK_CALLBACK(etk_window_hide_on_delete), NULL);
+   etk_signal_connect("response", ETK_OBJECT(UI_AlertDialog),
+                      ETK_CALLBACK(etk_window_hide_on_delete), NULL);
+   return UI_AlertDialog;
+}
+
+void
+dialog_alert_show(char* text)
+{
+   etk_message_dialog_text_set(ETK_MESSAGE_DIALOG(UI_AlertDialog), text);
+   etk_widget_show_all(UI_AlertDialog);
+}
+

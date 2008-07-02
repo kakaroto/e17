@@ -339,7 +339,7 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
        case NEW_RECT:
          if (!etk_string_length_get(Cur.group))
          {
-            ShowAlert("You must first select a group.");
+            dialog_alert_show("You must first select a group.");
             break;
          }
          //generate a unique new name
@@ -350,7 +350,7 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
          
          if (!edje_edit_part_add(edje_o, name, EDJE_PART_TYPE_RECTANGLE))
          {
-            ShowAlert("Can't create part.");
+            dialog_alert_show("Can't create part.");
             break;
          }
          
@@ -364,7 +364,7 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
       case NEW_IMAGE:
          if (!etk_string_length_get(Cur.group))
          {
-            ShowAlert("You must first select a group.");
+            dialog_alert_show("You must first select a group.");
             break;
          }
          //generate a unique new name
@@ -375,7 +375,7 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
       
          if (!edje_edit_part_add(edje_o, name, EDJE_PART_TYPE_IMAGE))
          {
-            ShowAlert("Can't create part.");
+            dialog_alert_show("Can't create part.");
             break;
          }
          //TODO generate a unique new name
@@ -400,7 +400,7 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
       case NEW_TEXT:
          if (!etk_string_length_get(Cur.group))
          {
-            ShowAlert("You must first select a group.");
+            dialog_alert_show("You must first select a group.");
             break;
          }
          //generate a unique new name
@@ -411,7 +411,7 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
          
          if (!edje_edit_part_add(edje_o, name, EDJE_PART_TYPE_TEXT))
          {
-            ShowAlert("Can't create part.");
+            dialog_alert_show("Can't create part.");
             break;
          }
          row = AddPartToTree(name, NULL);
@@ -437,7 +437,7 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
       case NEW_SWAL:
          if (!etk_string_length_get(Cur.group))
          {
-            ShowAlert("You must first select a group.");
+            dialog_alert_show("You must first select a group.");
             break;
          }
          //generate a unique new name
@@ -448,7 +448,7 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
          
          if (!edje_edit_part_add(edje_o, name, EDJE_PART_TYPE_SWALLOW))
          {
-            ShowAlert("Can't create part.");
+            dialog_alert_show("Can't create part.");
             break;
          }
          row = AddPartToTree(name, NULL);
@@ -460,7 +460,7 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
       case NEW_GROUPSWAL:
          if (!etk_string_length_get(Cur.group))
          {
-            ShowAlert("You must first select a group.");
+            dialog_alert_show("You must first select a group.");
             break;
          }
          //generate a unique new name
@@ -471,7 +471,7 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
          
          if (!edje_edit_part_add(edje_o, name, EDJE_PART_TYPE_GROUP))
          {
-            ShowAlert("Can't create part.");
+            dialog_alert_show("Can't create part.");
             break;
          }
          row = AddPartToTree(name, NULL);
@@ -484,7 +484,7 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
       case NEW_DESC:
          if (!etk_string_length_get(Cur.part))
          {
-            ShowAlert("You must first select a part.");
+            dialog_alert_show("You must first select a part.");
             break;
          }
          
@@ -516,7 +516,7 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
       case NEW_PROG:
          if (!etk_string_length_get(Cur.group))
          {
-            ShowAlert("You must first select a group.");
+            dialog_alert_show("You must first select a group.");
             break;
          }
          //generate a unique new name
@@ -527,7 +527,7 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
       
          if (!edje_edit_program_add(edje_o, name))
          {
-            ShowAlert("ERROR: can't add program");
+            dialog_alert_show("ERROR: can't add program");
             break;
          }
          row = AddProgramToTree(name);
@@ -550,7 +550,7 @@ on_AddMenu_item_activated(Etk_Object *object, void *data)
          }
          else
          {
-            ShowAlert("Can't create group.");
+            dialog_alert_show("Can't create group.");
          }
          break;
    }
@@ -569,12 +569,12 @@ on_RemoveMenu_item_activated(Etk_Object *object, void *data)
       case REMOVE_DESCRIPTION:
          if (!etk_string_length_get(Cur.state))
          {
-            ShowAlert("No part state selected");
+            dialog_alert_show("No part state selected");
             break;
          }
          if (!strcmp(Cur.state->string,"default 0.00"))
          {
-            ShowAlert("You can't remove default 0.0");
+            dialog_alert_show("You can't remove default 0.0");
             break;
          }
          edje_edit_state_del(edje_o, Cur.part->string, Cur.state->string);
@@ -591,12 +591,12 @@ on_RemoveMenu_item_activated(Etk_Object *object, void *data)
       case REMOVE_PART:
          if (!etk_string_length_get(Cur.part))
          {
-            ShowAlert("No part selected");
+            dialog_alert_show("No part selected");
             break;
          }
          if (!edje_edit_part_del(edje_o, Cur.part->string))
          {
-            ShowAlert("Can't delete part");
+            dialog_alert_show("Can't delete part");
             break;
          }
          
@@ -623,7 +623,7 @@ on_RemoveMenu_item_activated(Etk_Object *object, void *data)
       case REMOVE_GROUP:
          if (!edje_edit_group_del(edje_o))
          {
-            ShowAlert("Can't delete group");
+            dialog_alert_show("Can't delete group");
             break;
          }
          Etk_Combobox_Item *item, *nitem;
@@ -640,11 +640,11 @@ on_RemoveMenu_item_activated(Etk_Object *object, void *data)
       case REMOVE_PROG:
          if (!etk_string_length_get(Cur.prog))
          {
-            ShowAlert("You must first select a program");
+            dialog_alert_show("You must first select a program");
          }
          if (!edje_edit_program_del(edje_o, Cur.prog->string))
          {
-            ShowAlert("Can't delete program");
+            dialog_alert_show("Can't delete program");
             break;
          }
          row = etk_tree_selected_row_get(ETK_TREE(UI_PartsTree));

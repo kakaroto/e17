@@ -239,7 +239,7 @@ on_PartSourceComboBox_item_activated(Etk_Combobox *combobox, Etk_Combobox_Item *
    
    if (!strcmp(gr, Cur.group->string))
    {
-      ShowAlert("A group can't contain itself");
+      dialog_alert_show("A group can't contain itself");
       return ETK_TRUE;
    }
    
@@ -286,7 +286,7 @@ on_PartNameEntryImage_mouse_clicked(Etk_Object *object, void *data)
    /* change the name in edje */
    if (!edje_edit_part_name_set(edje_o, Cur.part->string, name))
    {
-      ShowAlert("Can't set part name.<br>Another name with this name exist? ");
+      dialog_alert_show("Can't set part name.<br>Another name with this name exist? ");
       return ETK_TRUE;
    }
    

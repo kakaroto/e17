@@ -249,13 +249,13 @@ create_main_window(void)
    EV_Consolle = consolle_create();
    
    //Filechooser
-   UI_FileChooserDialog = create_filechooser_dialog();
+   UI_FileChooserDialog = dialog_filechooser_create();
 
    //Alert Dialog
-   UI_AlertDialog = create_alert_dialog();
+   UI_AlertDialog = dialog_alert_create();
    
    //ColorPicker
-   UI_ColorWin = create_colorpicker();
+   UI_ColorWin = dialog_colorpicker_create();
 
    //Image Browser
    create_image_browser();
@@ -328,26 +328,26 @@ on_AllButton_click(Etk_Button *button, void *data)
       system("edje_editor &");
       break;
    case TOOLBAR_OPEN:
-      ShowFilechooser(FILECHOOSER_OPEN);
+      dialog_filechooser_show(FILECHOOSER_OPEN);
       break;
    case TOOLBAR_SAVE:
       if (!etk_string_length_get(Cur.edj_file_name))
       {
-         ShowFilechooser(FILECHOOSER_SAVE_EDJ);
+         dialog_filechooser_show(FILECHOOSER_SAVE_EDJ);
          break;
       }
 
       edje_edit_save(edje_o);
       if (!ecore_file_cp(Cur.edj_temp_name->string, Cur.edj_file_name->string))
       {
-         ShowAlert("<b>ERROR:<\b><br>Can't write file");
+         dialog_alert_show("<b>ERROR:<\b><br>Can't write file");
       }
       break;
    case TOOLBAR_SAVE_EDC:
-      ShowAlert("Not yet reimplemented ;)");
+      dialog_alert_show("Not yet reimplemented ;)");
       break;
    case TOOLBAR_SAVE_EDJ:
-      ShowFilechooser(FILECHOOSER_SAVE_EDJ);
+      dialog_filechooser_show(FILECHOOSER_SAVE_EDJ);
       break;
    case TOOLBAR_ADD:
       if (!etk_string_length_get(Cur.part))
@@ -374,7 +374,7 @@ on_AllButton_click(Etk_Button *button, void *data)
    case TOOLBAR_MOVE_UP: //Lower
       if (!etk_string_length_get(Cur.part))
       {
-         ShowAlert("You must select a part to lower");
+         dialog_alert_show("You must select a part to lower");
          break;
       }
       if (!edje_edit_part_restack_below(edje_o, Cur.part->string))
@@ -401,7 +401,7 @@ on_AllButton_click(Etk_Button *button, void *data)
    case TOOLBAR_MOVE_DOWN: //Raise
       if (!etk_string_length_get(Cur.part))
       {
-         ShowAlert("You must select a part to lower");
+         dialog_alert_show("You must select a part to lower");
          break;
       }
       if (!edje_edit_part_restack_above(edje_o, Cur.part->string))
@@ -429,13 +429,13 @@ on_AllButton_click(Etk_Button *button, void *data)
       ShowImageBrowser(0);
       break;
    case TOOLBAR_FONT_BROWSER:
-      ShowAlert("Font Browser");
+      dialog_alert_show("Font Browser");
       break;
    case TOOLBAR_IMAGE_FILE_ADD:
-      ShowFilechooser(FILECHOOSER_IMAGE);
+      dialog_filechooser_show(FILECHOOSER_IMAGE);
       break;
    case TOOLBAR_FONT_FILE_ADD:
-      ShowFilechooser(FILECHOOSER_FONT);
+      dialog_filechooser_show(FILECHOOSER_FONT);
       break;
    case IMAGE_TWEEN_ADD:
       icons = etk_iconbox_icon_get_selected(ETK_ICONBOX(UI_ImageBrowserIconbox));
@@ -453,7 +453,7 @@ on_AllButton_click(Etk_Button *button, void *data)
       }
       else
       {
-         ShowAlert("You must choose an image to add from the Image Browser");
+         dialog_alert_show("You must choose an image to add from the Image Browser");
       }
       break;
    case IMAGE_TWEEN_DELETE:
@@ -508,10 +508,10 @@ on_AllButton_click(Etk_Button *button, void *data)
       edje_edit_print_internal_status(edje_o);
       break;
    case IMAGE_TWEEN_UP:
-      ShowAlert("Up not yet implemented.");
+      dialog_alert_show("Up not yet implemented.");
       break;
    case IMAGE_TWEEN_DOWN:
-      ShowAlert("Down not yet implemented.");
+      dialog_alert_show("Down not yet implemented.");
       break;
    case RUN_PROG:
       if (etk_string_length_get(Cur.prog))
@@ -520,7 +520,7 @@ on_AllButton_click(Etk_Button *button, void *data)
    case SAVE_SCRIPT:
       text = etk_textblock_text_get(ETK_TEXT_VIEW(UI_ScriptBox)->textblock,
                                     ETK_TRUE);
-      ShowAlert("Script not yet implemented.");
+      dialog_alert_show("Script not yet implemented.");
       etk_object_destroy(ETK_OBJECT(text));
       break;
    default:
@@ -589,31 +589,37 @@ on_ColorCanvas_click(void *data, Evas *e, Evas_Object *obj, void *event_info)
    if (UI_ColorWin) etk_widget_show_all(UI_ColorWin);
    current_color_object = (int)data;
 
-   etk_signal_block("color-changed", ETK_OBJECT(UI_ColorPicker), ETK_CALLBACK(on_ColorDialog_change), NULL);
+   etk_signal_block("color-changed", ETK_OBJECT(UI_ColorPicker),
+                    ETK_CALLBACK(_dialog_colorpicker_change_cb), NULL);
    switch (current_color_object)
    {
       case COLOR_OBJECT_RECT:
          etk_window_title_set(ETK_WINDOW(UI_ColorWin), "Rectangle color");
-         edje_edit_state_color_get(edje_o, Cur.part->string, Cur.state->string, &c.r,&c.g,&c.b,&c.a);
+         edje_edit_state_color_get(edje_o, Cur.part->string, Cur.state->string,
+                                   &c.r,&c.g,&c.b,&c.a);
          etk_colorpicker_current_color_set(ETK_COLORPICKER(UI_ColorPicker), c);
          break;
       case COLOR_OBJECT_TEXT:
          etk_window_title_set(ETK_WINDOW(UI_ColorWin), "Text color");
-         edje_edit_state_color_get(edje_o, Cur.part->string, Cur.state->string, &c.r,&c.g,&c.b,&c.a);
+         edje_edit_state_color_get(edje_o, Cur.part->string, Cur.state->string,
+                                   &c.r,&c.g,&c.b,&c.a);
          etk_colorpicker_current_color_set(ETK_COLORPICKER(UI_ColorPicker), c);
          break;
       case COLOR_OBJECT_SHADOW:
          etk_window_title_set(ETK_WINDOW(UI_ColorWin), "Shadow color");
-         edje_edit_state_color3_get(edje_o, Cur.part->string, Cur.state->string, &c.r,&c.g,&c.b,&c.a);
+         edje_edit_state_color3_get(edje_o, Cur.part->string, Cur.state->string,
+                                    &c.r,&c.g,&c.b,&c.a);
          etk_colorpicker_current_color_set(ETK_COLORPICKER(UI_ColorPicker), c);
          break;
       case COLOR_OBJECT_OUTLINE:
          etk_window_title_set(ETK_WINDOW(UI_ColorWin), "Outline color");
-         edje_edit_state_color2_get(edje_o, Cur.part->string, Cur.state->string, &c.r,&c.g,&c.b,&c.a);
+         edje_edit_state_color2_get(edje_o, Cur.part->string, Cur.state->string,
+                                    &c.r,&c.g,&c.b,&c.a);
          etk_colorpicker_current_color_set(ETK_COLORPICKER(UI_ColorPicker), c);
          break;
    }
-   etk_signal_unblock("color-changed", ETK_OBJECT(UI_ColorPicker), ETK_CALLBACK(on_ColorDialog_change), NULL);
+   etk_signal_unblock("color-changed", ETK_OBJECT(UI_ColorPicker),
+                      ETK_CALLBACK(_dialog_colorpicker_change_cb), NULL);
 }
 
 

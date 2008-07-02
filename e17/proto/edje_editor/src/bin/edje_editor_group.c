@@ -215,7 +215,7 @@ on_GroupNameEntryImage_mouse_clicked(Etk_Object *object, void *data)
    
    if (!edje_edit_group_name_set(edje_o, name))
    {
-      ShowAlert("Can't rename group.<br>Another group with this name exist?");
+      dialog_alert_show("Can't rename group.<br>Another group with this name exist?");
       return ETK_TRUE;
    }
    

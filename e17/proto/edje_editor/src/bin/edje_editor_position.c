@@ -564,7 +564,7 @@ on_RelToComboBox_changed(Etk_Combobox *combobox, void *data)
     
    if (parent && (strcmp(parent,Cur.part->string) == 0))
    {
-      ShowAlert("A state can't rel to itself.");
+      dialog_alert_show("A state can't rel to itself.");
       return ETK_TRUE;
    }
    

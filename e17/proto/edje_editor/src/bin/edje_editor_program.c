@@ -618,7 +618,7 @@ on_ProgramEntryImage_mouse_clicked(Etk_Object *object, void *data)
       etk_widget_hide(ETK_WIDGET(UI_ProgramEntryImage));
    }
    else
-      ShowAlert("Can't rename program.<br>Another program with this name just exist?");
+      dialog_alert_show("Can't rename program.<br>Another program with this name just exist?");
    
    return ETK_TRUE;
 }
