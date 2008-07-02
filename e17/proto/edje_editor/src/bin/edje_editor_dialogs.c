@@ -87,7 +87,7 @@ _dialog_filechooser_response_cb(Etk_Dialog *dialog, int response_id, void *data)
             snprintf(cmd,4096,"%s/%s",
             etk_filechooser_widget_current_folder_get(ETK_FILECHOOSER_WIDGET(UI_FileChooser)),
             etk_filechooser_widget_selected_file_get(ETK_FILECHOOSER_WIDGET(UI_FileChooser)));
-            LoadEDJ(cmd);
+            load_edje(cmd);
          break;
          case FILECHOOSER_SAVE_EDJ:
             printf("SAVE EDJ\n");

@@ -356,7 +356,7 @@ _tree_combobox_activated_cb(Etk_Combobox *combobox, Etk_Combobox_Item *item, voi
    char *gr;
    gr = etk_combobox_item_field_get(item,0);
    //printf("Group combo activated: %s\n",gr);
-   ChangeGroup(gr);
+   change_group(gr);
    
    return ETK_TRUE;
 }

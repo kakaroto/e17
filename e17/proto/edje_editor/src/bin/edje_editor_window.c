@@ -376,7 +376,7 @@ _window_all_button_click_cb(Etk_Button *button, void *data)
       etk_tree_row_select(row);
       //Reload the edje if needed
       if (edje_edit_part_type_get(edje_o, Cur.part->string) == EDJE_PART_TYPE_GROUP)
-         ReloadEdje();
+         reload_edje();
       break;
    
    case TOOLBAR_MOVE_DOWN: //Raise
@@ -398,7 +398,7 @@ _window_all_button_click_cb(Etk_Button *button, void *data)
       etk_tree_row_select(row);
       //Reload the edje if needed
       if (edje_edit_part_type_get(edje_o, Cur.part->string) == EDJE_PART_TYPE_GROUP)
-         ReloadEdje();
+         reload_edje();
       break;
    case IMAGE_BROWSER_SHOW:
       image_browser_show(1);
@@ -482,7 +482,7 @@ _window_all_button_click_cb(Etk_Button *button, void *data)
       toolbar_play_button_toggle(-1);
       break;
    case TOOLBAR_DEBUG:
-      //DebugInfo(FALSE);
+      //print_debug_info(FALSE);
       //ChangeGroup("New group");
       //edje_edit_group_add(edje_o, "dai cazzo");
       //on_AddMenu_item_activated(NULL, NEW_RECT);

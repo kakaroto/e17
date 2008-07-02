@@ -317,7 +317,8 @@ toolbar_create(Etk_Toolbar_Orientation o)
    button = etk_tool_button_new_from_stock(ETK_STOCK_DOCUMENT_PROPERTIES);
    etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), button, ETK_BOX_START);
    etk_signal_connect("clicked", ETK_OBJECT(button),
-                        ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_DEBUG);
+                      ETK_CALLBACK(_window_all_button_click_cb),
+                      (void*)TOOLBAR_DEBUG);
    etk_object_properties_set(ETK_OBJECT(button),"label","Debug",NULL);
 #endif
    

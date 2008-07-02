@@ -22,10 +22,10 @@
 #include "edje_editor_window.h"
 
 /* DEFINES */
-#define FAKEWIN_BORDER_TOP    16
-#define FAKEWIN_BORDER_LEFT   7
-#define FAKEWIN_BORDER_RIGHT  4
-#define FAKEWIN_BORDER_BOTTOM 4
+//#define FAKEWIN_BORDER_TOP    16
+//#define FAKEWIN_BORDER_LEFT   7
+//#define FAKEWIN_BORDER_RIGHT  4
+//#define FAKEWIN_BORDER_BOTTOM 4
 
 #define USE_GL_ENGINE 0
 #define DEBUG_MODE 0
@@ -35,19 +35,6 @@
 #else
    #define TREE_WIDTH 265
 #endif
-
-#undef FREE
-#define FREE(val) \
-{ \
-  free(val); val = NULL; \
-}
-
-#undef IF_FREE
-#define IF_FREE(val) \
-{ \
-  if (val) FREE(val) \
-  val = NULL; \
-}
 
 //All the enum used are declared here
 enum various
@@ -147,7 +134,7 @@ struct Current_State
    Etk_String *edj_file_name;
    Etk_String *edj_temp_name;
    
-   int fullscreen;            //The current main window state   
+   int fullscreen;            //The current main window state
 }Cur;
 
 /* GLOBALS */
@@ -158,15 +145,11 @@ Evas_Object    *edje_o;                //The edje object we are editing
 Evas_Hash      *Parts_Hash;            //Associate part names with Etk_Tree_Row*
 
 
-
-Evas_List      *stack;                 //Stack for the consolle
-int            consolle_count;         //Counter for the consolle
-
 /* FUNCTION PROTOTYPES*/
-void DebugInfo(int full);
-int LoadEDJ(char *file);
-void ChangeGroup(char *group);
-void ReloadEdje(void);
+void print_debug_info (int full);
+void change_group     (char *group);
+int  load_edje        (char *file);
+void reload_edje      (void);
 
 
 //This define is copied from edje_private.h (find a way to export it)
@@ -215,4 +198,4 @@ void ReloadEdje(void);
 #define EDJE_ASPECT_PREFER_HORIZONTAL 2
 #define EDJE_ASPECT_PREFER_BOTH       3
 
-#endif // INCLUSION_GUARD
+#endif

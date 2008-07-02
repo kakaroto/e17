@@ -275,7 +275,7 @@ _part_SourceComboBox_item_activated_cb(Etk_Combobox *combobox, Etk_Combobox_Item
    else
       edje_edit_part_source_set(edje_o, Cur.part->string, NULL);
    
-   ReloadEdje();
+   reload_edje();
    
    return ETK_TRUE;
 }

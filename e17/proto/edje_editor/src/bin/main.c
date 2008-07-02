@@ -1,4 +1,3 @@
-#include "config.h"
 #include <string.h>
 #include <errno.h>
 #include <locale.h>
@@ -6,66 +5,25 @@
 #include <Edje_Edit.h>
 #include <Etk.h>
 #include <Ecore_Str.h>
-
+#include "config.h"
 #include "main.h"
 
 Evas_Object *EdjeTest_bg;
 Evas_Object *EdjeTest_edje;
 
+/***   Test MiniApp   ***/
 void
-on_test_win_resize(Ecore_Evas * ee)
+_test_win_resize_cb(Ecore_Evas * ee)
 {
-	int w, h;
-	
-	evas_output_size_get(ecore_evas_get(ee), &w, &h);
-	printf("RESIZE: %d - %d\n", w,h);
- 
-	//evas_object_move(preview, barwidth, 0);
-	evas_object_resize(EdjeTest_bg, w , h );
-	evas_object_resize(EdjeTest_edje, w , h );
-}
+   int w, h;
 
-Evas_Bool
-_DebugInfo_helper(Evas_Hash *hash, const char *key, void *data, void *fdata)
-{
-   printf("Key: '%s' [%d]\n", key, (int)data);
-   return TRUE;
+   evas_output_size_get(ecore_evas_get(ee), &w, &h);
+   evas_object_resize(EdjeTest_bg, w , h );
+   evas_object_resize(EdjeTest_edje, w , h );
 }
 
 void
-DebugInfo(int full)
-{
-   printf("\n\n ********************* D E B U G ***************************\n");
-   printf(" ** open file name: %s\n",Cur.edj_file_name->string);
-   printf(" ** temp file name: %s\n",Cur.edj_temp_name->string);
-   printf(" ** edje_editor.edj: %s\n",EdjeFile);
-   if (etk_string_length_get(Cur.group))
-      printf(" ** Cur group: %s\n",Cur.group->string);
-   else
-      printf(" ** Cur group: (NULL)\n");
-   if (etk_string_length_get(Cur.part))
-      printf(" ** Cur part: %s\n",Cur.part->string);
-   else
-      printf(" ** Cur part: (NULL)\n");
-   if (etk_string_length_get(Cur.state))
-      printf(" ** Cur state: %s\n",Cur.state->string);
-   else
-      printf(" ** Cur state: (NULL)\n");
-   if (etk_string_length_get(Cur.prog))
-      printf(" ** Cur program: %s\n",Cur.prog->string);
-   else
-      printf(" ** Cur program: (NULL)\n");
-   if (etk_string_length_get(Cur.tween))
-      printf(" ** Cur tween: %s\n",Cur.tween->string);
-   else
-      printf(" ** Cur tween: (NULL)\n");
-   printf(" *********************** Parts_Hash *****************************\n");
-   evas_hash_foreach(Parts_Hash, _DebugInfo_helper, NULL);
-   printf(" *********************** E N D *****************************\n\n");
-}
-
-void
-TestEdjeGroup(char *File,char *Group)
+test_edje_group(char *File,char *Group)
 {
    Ecore_Evas  *ee;
    Evas        *evas;
@@ -77,7 +35,7 @@ TestEdjeGroup(char *File,char *Group)
    ecore_evas_init();
    ee = ecore_evas_software_x11_new(NULL, 0,  0, 0, 0, 0);
    ecore_evas_title_set(ee, "Edje Test Application");
-   ecore_evas_callback_resize_set(ee, on_test_win_resize);
+   ecore_evas_callback_resize_set(ee, _test_win_resize_cb);
    edje_init();
    evas = ecore_evas_get(ee);
    
@@ -110,8 +68,50 @@ TestEdjeGroup(char *File,char *Group)
    
    ecore_main_loop_begin();
 }
+
+/***   Debug Info   ***/
+Evas_Bool
+_debug_info_helper(Evas_Hash *hash, const char *key, void *data, void *fdata)
+{
+   printf("Key: '%s' [%d]\n", key, (int)data);
+   return TRUE;
+}
+
 void
-PrintUsage(void)
+print_debug_info(int full)
+{
+   printf("\n\n ********************* D E B U G ***************************\n");
+   printf(" ** open file name: %s\n",Cur.edj_file_name->string);
+   printf(" ** temp file name: %s\n",Cur.edj_temp_name->string);
+   printf(" ** edje_editor.edj: %s\n",EdjeFile);
+   if (etk_string_length_get(Cur.group))
+      printf(" ** Cur group: %s\n",Cur.group->string);
+   else
+      printf(" ** Cur group: (NULL)\n");
+   if (etk_string_length_get(Cur.part))
+      printf(" ** Cur part: %s\n",Cur.part->string);
+   else
+      printf(" ** Cur part: (NULL)\n");
+   if (etk_string_length_get(Cur.state))
+      printf(" ** Cur state: %s\n",Cur.state->string);
+   else
+      printf(" ** Cur state: (NULL)\n");
+   if (etk_string_length_get(Cur.prog))
+      printf(" ** Cur program: %s\n",Cur.prog->string);
+   else
+      printf(" ** Cur program: (NULL)\n");
+   if (etk_string_length_get(Cur.tween))
+      printf(" ** Cur tween: %s\n",Cur.tween->string);
+   else
+      printf(" ** Cur tween: (NULL)\n");
+   printf(" *********************** Parts_Hash *****************************\n");
+   evas_hash_foreach(Parts_Hash, _debug_info_helper, NULL);
+   printf(" *********************** E N D *****************************\n\n");
+}
+
+/***   Implementation   ***/
+void
+print_usage(void)
 {
    printf("\nUsage:\n");
    printf(" edje_editor [EDC | EDJ] [IMAGE_DIR] [FONT_DIR]\n");
@@ -127,7 +127,7 @@ PrintUsage(void)
 }
 
 void
-ChangeGroup(char *group)
+change_group(char *group)
 {
    if (!group) return;
 
@@ -174,7 +174,8 @@ ChangeGroup(char *group)
    
 }
 
-void ReloadEdje(void)
+void 
+reload_edje(void)
 {
    if (!etk_string_length_get(Cur.group)) return;
    if (!etk_string_length_get(Cur.edj_temp_name)) return;
@@ -184,11 +185,10 @@ void ReloadEdje(void)
    edje_edit_save(edje_o);
    edje_object_file_set(edje_o, EdjeFile, "IMAGE.PNG");
    edje_object_file_set(edje_o, Cur.edj_temp_name->string, Cur.group->string);
-   
 }
 
 int
-LoadEDJ(char *file)
+load_edje(char *file)
 {
    unsigned char new_file = 0;
    char *realp = NULL;
@@ -302,7 +302,7 @@ main(int argc, char **argv)
            (0 == strcmp(argv[1],"--help")) ||
            (0 == strcmp(argv[1],"--usage")) )
       {
-         PrintUsage();
+         print_usage();
          return 1;
       }
    }
@@ -312,10 +312,10 @@ main(int argc, char **argv)
    {
       if (argc < 4)
       {
-         PrintUsage();
+         print_usage();
          return 1;
       }
-      TestEdjeGroup(argv[2],argv[3]);
+      test_edje_group(argv[2],argv[3]);
       return 0;
    }
    
@@ -355,15 +355,15 @@ main(int argc, char **argv)
    if (argc == 2)
    {
       printf("Opening edje file: '%s'\n",argv[1]);
-      LoadEDJ(argv[1]);
+      load_edje(argv[1]);
    }
    else
    //Open blank.edj
    {
-      LoadEDJ(NULL);
+      load_edje(NULL);
    }
    
-   //DebugInfo(FALSE);
+   //print_debug_info(FALSE);
    
    //Show main window
    ecore_evas_show(UI_ecore_MainWin);
