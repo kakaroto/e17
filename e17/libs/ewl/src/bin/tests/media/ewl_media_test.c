@@ -281,10 +281,10 @@ create_media_window(Ewl_Media_Module_Type type)
 
         {
                 Ewl_Media_Test_Control controls [] = {
-                        { EWL_STOCK_PLAY, play_cb },
-                        { EWL_STOCK_STOP, stop_cb },
-                        { EWL_STOCK_REWIND, rew_cb },
-                        { EWL_STOCK_FASTFORWARD, ff_cb },
+                        { EWL_STOCK_MEDIA_PLAY, play_cb },
+                        { EWL_STOCK_MEDIA_STOP, stop_cb },
+                        { EWL_STOCK_MEDIA_REWIND, rew_cb },
+                        { EWL_STOCK_MEDIA_FASTFORWARD, ff_cb },
                         { EWL_STOCK_OPEN, open_cb },
                         { EWL_STOCK_NONE, NULL }
                 };

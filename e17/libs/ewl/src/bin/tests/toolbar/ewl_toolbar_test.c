@@ -49,7 +49,7 @@ create_test(Ewl_Container *box)
 
         o = ewl_icon_simple_new();
         ewl_container_child_append(EWL_CONTAINER(o2), o);
-        ewl_stock_type_set(EWL_STOCK(o), EWL_STOCK_STOP);
+        ewl_stock_type_set(EWL_STOCK(o), EWL_STOCK_MEDIA_STOP);
         ewl_widget_show(o);
 
         o = ewl_icon_simple_new();
