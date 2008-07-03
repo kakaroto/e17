@@ -13,14 +13,16 @@ static Evas_List         *_notification_box_find          (E_Notification_Urgenc
 /* Notification box icons protos */
 static Notification_Box_Icon *_notification_box_icon_new         (Notification_Box *b, 
                                                                   E_Notification *n, 
-                                                                  E_Border *bd);
+                                                                  E_Border *bd,
+                                                                  unsigned int id);
 static void                   _notification_box_icon_free        (Notification_Box_Icon *ic);
 static void                   _notification_box_icon_fill        (Notification_Box_Icon *ic, 
                                                                   E_Notification *n);
 static void                   _notification_box_icon_fill_label  (Notification_Box_Icon *ic);
 static void                   _notification_box_icon_empty       (Notification_Box_Icon *ic);
 static Notification_Box_Icon *_notification_box_icon_find        (Notification_Box *b, 
-                                                                  E_Border *bd);
+                                                                  E_Border *bd,
+                                                                  unsigned int n_id);
 static void                   _notification_box_icon_signal_emit (Notification_Box_Icon *ic, 
                                                                   char *sig, 
                                                                   char *src);
@@ -66,8 +68,8 @@ static void  _notification_box_cb_menu_configuration   (void *data,
 
 int 
 notification_box_notify(E_Notification *n, 
-                        unsigned int replaces_id __UNUSED__, 
-                        unsigned int id __UNUSED__)
+                        unsigned int replaces_id, 
+                        unsigned int id)
 {
   Evas_List *l, *n_box;
   E_Border *bd;
@@ -81,19 +83,20 @@ notification_box_notify(E_Notification *n,
       Notification_Box_Icon *ic = NULL;
 
       b = l->data;
-      if (bd)
-        ic = _notification_box_icon_find(b, bd);
+      if (bd || replaces_id)
+        ic = _notification_box_icon_find(b, bd, replaces_id);
       if (ic) 
         {
           e_notification_unref(ic->notif);
           e_notification_ref(n);
           ic->notif = n;
+          ic->n_id = id;
           _notification_box_icon_empty(ic);
           _notification_box_icon_fill(ic, n);
         }
       else
         {
-          ic = _notification_box_icon_new(b, n, bd);
+          ic = _notification_box_icon_new(b, n, bd, id);
           if (!ic) continue;
           b->icons = evas_list_append(b->icons, ic);
           e_box_pack_end(b->o_box, ic->o_holder);
@@ -275,7 +278,7 @@ int notification_box_cb_border_remove(void *data __UNUSED__,
       if (!(inst = l->data)) continue;
       b = inst->n_box;
 
-      ic = _notification_box_icon_find(b, ev->border);
+      ic = _notification_box_icon_find(b, ev->border, 0);
       if (!ic) continue;
       b->icons = evas_list_remove(b->icons, ic);
       _notification_box_icon_free(ic);
@@ -333,7 +336,7 @@ _notification_box_evas_set(Notification_Box *b, Evas *evas)
       ic = l->data;
       if (!ic) continue;
 
-      new_ic = _notification_box_icon_new(b, ic->notif, ic->border);
+      new_ic = _notification_box_icon_new(b, ic->notif, ic->border, ic->n_id);
       _notification_box_icon_free(ic);
       new_icons = evas_list_append(new_icons, new_ic);
 
@@ -441,7 +444,7 @@ _notification_box_find(E_Notification_Urgency urgency)
 }
 
 static Notification_Box_Icon *
-_notification_box_icon_new(Notification_Box *b, E_Notification *n, E_Border *bd)
+_notification_box_icon_new(Notification_Box *b, E_Notification *n, E_Border *bd, unsigned int id)
 {
   Notification_Box_Icon *ic;
 
@@ -450,6 +453,7 @@ _notification_box_icon_new(Notification_Box *b, E_Notification *n, E_Border *bd)
   e_notification_ref(n);
   ic->label = e_notification_app_name_get(n);
   ic->n_box = b;
+  ic->n_id = id;
   ic->border = bd;
   ic->notif = n;
   ic->o_holder = edje_object_add(evas_object_evas_get(b->o_box));
@@ -575,7 +579,7 @@ _notification_box_icon_empty(Notification_Box_Icon *ic)
 }
 
 static Notification_Box_Icon *
-_notification_box_icon_find(Notification_Box *b, E_Border *bd)
+_notification_box_icon_find(Notification_Box *b, E_Border *bd, unsigned int n_id)
 {
   Evas_List *l;
 
@@ -584,7 +588,7 @@ _notification_box_icon_find(Notification_Box *b, E_Border *bd)
       Notification_Box_Icon *ic;
 
       if (!(ic = l->data)) continue;
-      if (ic->border == bd)
+      if (ic->border == bd || ic->n_id == n_id)
         return ic;
     }
 

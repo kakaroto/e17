@@ -13,13 +13,14 @@ struct _Notification_Box
 struct _Notification_Box_Icon
 {
   Notification_Box *n_box;
-  const char     *label;
-  Evas_Object    *o_holder;
-  Evas_Object    *o_icon;
-  Evas_Object    *o_holder2;
-  Evas_Object    *o_icon2;
-  E_Border       *border;
-  E_Notification *notif;
+  unsigned int      n_id;
+  const char       *label;
+  Evas_Object      *o_holder;
+  Evas_Object      *o_icon;
+  Evas_Object      *o_holder2;
+  Evas_Object      *o_icon2;
+  E_Border         *border;
+  E_Notification   *notif;
 
   int             popup;
   Ecore_Timer    *mouse_in_timer;
