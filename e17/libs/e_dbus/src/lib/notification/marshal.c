@@ -36,7 +36,7 @@ e_notify_marshal_dict_byte(DBusMessageIter *iter, const char *key, char value)
 
   if (!key || !value) return;
 
-  dbus_message_iter_open_container(iter, DBUS_TYPE_DICT_ENTRY, "sv", &entry);
+  dbus_message_iter_open_container(iter, DBUS_TYPE_DICT_ENTRY, NULL, &entry);
   dbus_message_iter_append_basic(&entry, DBUS_TYPE_STRING, &key);
   dbus_message_iter_open_container(&entry, DBUS_TYPE_VARIANT, "y", &variant);
   dbus_message_iter_append_basic(&variant, DBUS_TYPE_BYTE, &value);
