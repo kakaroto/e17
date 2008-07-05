@@ -53,8 +53,8 @@ struct Ewl_Overlay
         Ewl_Container   container; /**< Inherits from the Ewl_Container class */
 };
 
-Ewl_Widget         *ewl_overlay_new(void);
-int                  ewl_overlay_init(Ewl_Overlay *win);
+Ewl_Widget      *ewl_overlay_new(void);
+int              ewl_overlay_init(Ewl_Overlay *win);
 
 /*
  * Internally used callbacks, override at your own risk.

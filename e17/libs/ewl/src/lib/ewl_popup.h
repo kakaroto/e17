@@ -55,17 +55,17 @@ struct Ewl_Popup
         int moving:1;                /**< if the popup is currently moving */
 };
 
-Ewl_Widget          *ewl_popup_new(void);
-int                  ewl_popup_init(Ewl_Popup *p);
-void                  ewl_popup_type_set(Ewl_Popup *p, Ewl_Popup_Type type);
+Ewl_Widget      *ewl_popup_new(void);
+int              ewl_popup_init(Ewl_Popup *p);
+void             ewl_popup_type_set(Ewl_Popup *p, Ewl_Popup_Type type);
 Ewl_Popup_Type   ewl_popup_type_get(Ewl_Popup *p);
-void                  ewl_popup_follow_set(Ewl_Popup *p, Ewl_Widget *w);
-Ewl_Widget        *ewl_popup_follow_get(Ewl_Popup *p);
-void                  ewl_popup_fit_to_follow_set(Ewl_Popup *p, int fit);
-int                  ewl_popup_fit_to_follow_get(Ewl_Popup *p);
+void             ewl_popup_follow_set(Ewl_Popup *p, Ewl_Widget *w);
+Ewl_Widget      *ewl_popup_follow_get(Ewl_Popup *p);
+void             ewl_popup_fit_to_follow_set(Ewl_Popup *p, int fit);
+int              ewl_popup_fit_to_follow_get(Ewl_Popup *p);
 
-void                  ewl_popup_mouse_position_set(Ewl_Popup *p, int x, int y);
-void                 ewl_popup_offset_set(Ewl_Popup *p, int x, int y);
+void             ewl_popup_mouse_position_set(Ewl_Popup *p, int x, int y);
+void             ewl_popup_offset_set(Ewl_Popup *p, int x, int y);
 
 /*
  * Internal, override at your own risk

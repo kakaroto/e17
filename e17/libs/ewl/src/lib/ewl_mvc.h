@@ -134,61 +134,66 @@ struct Ewl_MVC
         unsigned char dirty:1;                /**< Is the data dirty */
 };
 
-int                 ewl_mvc_init(Ewl_MVC *mvc);
+int                      ewl_mvc_init(Ewl_MVC *mvc);
 
-void                 ewl_mvc_view_set(Ewl_MVC *mvc, const Ewl_View *view);
-const Ewl_View         *ewl_mvc_view_get(Ewl_MVC *mvc);
+void                     ewl_mvc_view_set(Ewl_MVC *mvc, const Ewl_View *view);
+const Ewl_View          *ewl_mvc_view_get(Ewl_MVC *mvc);
 
-void                 ewl_mvc_model_set(Ewl_MVC *mvc, const Ewl_Model *model);
-const Ewl_Model        *ewl_mvc_model_get(Ewl_MVC *mvc);
+void                     ewl_mvc_model_set(Ewl_MVC *mvc, const Ewl_Model *model);
+const Ewl_Model         *ewl_mvc_model_get(Ewl_MVC *mvc);
 
-void                 ewl_mvc_data_set(Ewl_MVC *mvc, void *data);
-void                 *ewl_mvc_data_get(Ewl_MVC *mvc);
+void                     ewl_mvc_data_set(Ewl_MVC *mvc, void *data);
+void                    *ewl_mvc_data_get(Ewl_MVC *mvc);
 
-void                 ewl_mvc_dirty_set(Ewl_MVC *mvc, unsigned int dirty);
-unsigned int         ewl_mvc_dirty_get(Ewl_MVC *mvc);
+void                     ewl_mvc_dirty_set(Ewl_MVC *mvc, unsigned int dirty);
+unsigned int             ewl_mvc_dirty_get(Ewl_MVC *mvc);
 
-void                 ewl_mvc_selection_mode_set(Ewl_MVC *mvc,
+void                     ewl_mvc_selection_mode_set(Ewl_MVC *mvc,
                                         Ewl_Selection_Mode mode);
-Ewl_Selection_Mode ewl_mvc_selection_mode_get(Ewl_MVC *mvc);
+Ewl_Selection_Mode       ewl_mvc_selection_mode_get(Ewl_MVC *mvc);
 
-void                 ewl_mvc_selected_clear(Ewl_MVC *mvc);
+void                     ewl_mvc_selected_clear(Ewl_MVC *mvc);
 
-void                 ewl_mvc_selected_list_set(Ewl_MVC *mvc, Ecore_List *list);
-Ecore_List        *ewl_mvc_selected_list_get(Ewl_MVC *mvc);
+void                     ewl_mvc_selected_list_set(Ewl_MVC *mvc,
+                                        Ecore_List *list);
+Ecore_List              *ewl_mvc_selected_list_get(Ewl_MVC *mvc);
 
-void                 ewl_mvc_selected_range_add(Ewl_MVC *mvc, 
+void                     ewl_mvc_selected_range_add(Ewl_MVC *mvc, 
                                         const Ewl_Model * model,
-                                                void *data,
-                                                unsigned int srow,
-                                                unsigned int scolumn,
-                                                unsigned int erow,
-                                                unsigned int ecolumn);
+                                        void *data, unsigned int srow,
+                                        unsigned int scolumn,
+                                        unsigned int erow,
+                                        unsigned int ecolumn);
 
-void                 ewl_mvc_selected_set(Ewl_MVC *mvc, const Ewl_Model *model,
+void                     ewl_mvc_selected_set(Ewl_MVC *mvc,
+                                        const Ewl_Model *model,
                                         void *data, unsigned int row,
                                         unsigned int column);
-void                 ewl_mvc_selected_add(Ewl_MVC *mvc, const Ewl_Model *model,
+void                     ewl_mvc_selected_add(Ewl_MVC *mvc,
+                                        const Ewl_Model *model,
                                         void *data, unsigned int row,
                                         unsigned int column);
-Ewl_Selection_Idx *ewl_mvc_selected_get(Ewl_MVC *mvc);
-void                 ewl_mvc_selected_rm(Ewl_MVC *mvc, void *data, unsigned int row,
+Ewl_Selection_Idx       *ewl_mvc_selected_get(Ewl_MVC *mvc);
+void                     ewl_mvc_selected_rm(Ewl_MVC *mvc, void *data,
+                                        unsigned int row,
                                         unsigned int column);
 
-unsigned int         ewl_mvc_selected_count_get(Ewl_MVC *mvc);
-unsigned int         ewl_mvc_selected_is(Ewl_MVC *mvc, void *data, unsigned int row,
+unsigned int             ewl_mvc_selected_count_get(Ewl_MVC *mvc);
+unsigned int             ewl_mvc_selected_is(Ewl_MVC *mvc, void *data,
+                                        unsigned int row,
                                         unsigned int column);
 
-Ewl_Selection        *ewl_mvc_selection_index_new(const Ewl_Model *model, void *data,
-                                                        unsigned int row,
-                                                        unsigned int column);
-Ewl_Selection        *ewl_mvc_selection_range_new(const Ewl_Model *model, void *data,
-                                                unsigned int srow,
-                                                unsigned int scolumn,
-                                                unsigned int erow,
-                                                unsigned int ecolumn);
+Ewl_Selection           *ewl_mvc_selection_index_new(const Ewl_Model *model,
+                                        void *data,
+                                        unsigned int row,
+                                        unsigned int column);
+Ewl_Selection           *ewl_mvc_selection_range_new(const Ewl_Model *model,
+                                        void *data, unsigned int srow,
+                                        unsigned int scolumn,
+                                        unsigned int erow,
+                                        unsigned int ecolumn);
 
-void                  ewl_mvc_highlight(Ewl_MVC *mvc, Ewl_Container *c,
+void                     ewl_mvc_highlight(Ewl_MVC *mvc, Ewl_Container *c,
                                         Ewl_Widget *(*widget)(Ewl_MVC *mvc,
                                                 void *data, unsigned int row,
                                                 unsigned int column));

@@ -84,29 +84,34 @@ struct Ewl_Colorpicker
         unsigned int updating:1;        /**< Are we currently updating the widget */
 };
 
-Ewl_Widget         *ewl_colorpicker_new(void);
-int                 ewl_colorpicker_init(Ewl_Colorpicker *cp);
+Ewl_Widget              *ewl_colorpicker_new(void);
+int                      ewl_colorpicker_init(Ewl_Colorpicker *cp);
 
-void                 ewl_colorpicker_has_alpha_set(Ewl_Colorpicker *cp, unsigned int alpha);
-unsigned int         ewl_colorpicker_has_alpha_get(Ewl_Colorpicker *cp);
+void                     ewl_colorpicker_has_alpha_set(Ewl_Colorpicker *cp,
+                                        unsigned int alpha);
+unsigned int             ewl_colorpicker_has_alpha_get(Ewl_Colorpicker *cp);
 
-void                 ewl_colorpicker_alpha_set(Ewl_Colorpicker *cp, unsigned int alpha);
-unsigned int         ewl_colorpicker_alpha_get(Ewl_Colorpicker *cp);
+void                     ewl_colorpicker_alpha_set(Ewl_Colorpicker *cp,
+                                        unsigned int alpha);
+unsigned int             ewl_colorpicker_alpha_get(Ewl_Colorpicker *cp);
 
-void                 ewl_colorpicker_current_rgb_set(Ewl_Colorpicker *cp, unsigned int r,
-                                                        unsigned int g, unsigned int b);
-void                 ewl_colorpicker_current_rgb_get(Ewl_Colorpicker *cp, unsigned int *r,
-                                                        unsigned int *g, unsigned int *b);
+void                     ewl_colorpicker_current_rgb_set(Ewl_Colorpicker *cp,
+                                        unsigned int r, unsigned int g,
+                                        unsigned int b);
+void                     ewl_colorpicker_current_rgb_get(Ewl_Colorpicker *cp,
+                                        unsigned int *r, unsigned int *g,
+                                        unsigned int *b);
 
-void                 ewl_colorpicker_previous_rgba_set(Ewl_Colorpicker *cp, unsigned int r,
-                                                        unsigned int g, unsigned int b,
-                                                        unsigned int a);
-void                 ewl_colorpicker_previous_rgba_get(Ewl_Colorpicker *cp, unsigned int *r,
-                                                        unsigned int *g, unsigned int *b,
-                                                        unsigned int *a);
+void                     ewl_colorpicker_previous_rgba_set(Ewl_Colorpicker *cp,
+                                        unsigned int r, unsigned int g,
+                                        unsigned int b, unsigned int a);
+void                     ewl_colorpicker_previous_rgba_get(Ewl_Colorpicker *cp,
+                                        unsigned int *r, unsigned int *g,
+                                        unsigned int *b, unsigned int *a);
 
-void                 ewl_colorpicker_color_mode_set(Ewl_Colorpicker *cp, Ewl_Color_Mode type);
-Ewl_Color_Mode         ewl_colorpicker_color_mode_get(Ewl_Colorpicker *cp);
+void                     ewl_colorpicker_color_mode_set(Ewl_Colorpicker *cp,
+                                        Ewl_Color_Mode type);
+Ewl_Color_Mode           ewl_colorpicker_color_mode_get(Ewl_Colorpicker *cp);
 
  /*
   * * internally used callbacks, override at your own risk.

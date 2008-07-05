@@ -62,44 +62,44 @@ struct Ewl_Icon
         unsigned char thumbnailing:1;   /**< Should the image be thumbnailed?*/
 };
 
-Ewl_Widget        *ewl_icon_new(void);
+Ewl_Widget      *ewl_icon_new(void);
 Ewl_Widget      *ewl_icon_simple_new(void);
-int                 ewl_icon_init(Ewl_Icon *icon);
+int              ewl_icon_init(Ewl_Icon *icon);
 
-void                 ewl_icon_type_set(Ewl_Icon *icon, Ewl_Icon_Type type);
-Ewl_Icon_Type         ewl_icon_type_get(Ewl_Icon *icon);
+void             ewl_icon_type_set(Ewl_Icon *icon, Ewl_Icon_Type type);
+Ewl_Icon_Type    ewl_icon_type_get(Ewl_Icon *icon);
 
 void             ewl_icon_part_hide(Ewl_Icon *icon, Ewl_Icon_Part part);
 
-void                 ewl_icon_image_set(Ewl_Icon *icon, const char *file,
+void             ewl_icon_image_set(Ewl_Icon *icon, const char *file,
                                                 const char *key);
-const char         *ewl_icon_image_file_get(Ewl_Icon *icon);
+const char      *ewl_icon_image_file_get(Ewl_Icon *icon);
 
 void             ewl_icon_thumbnailing_set(Ewl_Icon *icon, unsigned int thumb);
 unsigned int     ewl_icon_thumbnailing_get(Ewl_Icon *icon);
 
-void                 ewl_icon_constrain_set(Ewl_Icon *icon, unsigned int val);
-unsigned int         ewl_icon_constrain_get(Ewl_Icon *icon);
+void             ewl_icon_constrain_set(Ewl_Icon *icon, unsigned int val);
+unsigned int     ewl_icon_constrain_get(Ewl_Icon *icon);
 
-void                 ewl_icon_alt_text_set(Ewl_Icon *icon, const char *txt);
-const char        *ewl_icon_alt_text_get(Ewl_Icon *icon);
+void             ewl_icon_alt_text_set(Ewl_Icon *icon, const char *txt);
+const char      *ewl_icon_alt_text_get(Ewl_Icon *icon);
 
-void                 ewl_icon_label_set(Ewl_Icon *icon, const char *label);
-const char        *ewl_icon_label_get(Ewl_Icon *icon);
+void             ewl_icon_label_set(Ewl_Icon *icon, const char *label);
+const char      *ewl_icon_label_get(Ewl_Icon *icon);
 
-void                 ewl_icon_editable_set(Ewl_Icon *icon, unsigned int e);
-unsigned int         ewl_icon_editable_get(Ewl_Icon *icon);
+void             ewl_icon_editable_set(Ewl_Icon *icon, unsigned int e);
+unsigned int     ewl_icon_editable_get(Ewl_Icon *icon);
 
-void                 ewl_icon_label_compressed_set(Ewl_Icon *icon,
+void             ewl_icon_label_compressed_set(Ewl_Icon *icon,
                                                 unsigned int compress);
-unsigned int         ewl_icon_label_compressed_get(Ewl_Icon *icon);
+unsigned int     ewl_icon_label_compressed_get(Ewl_Icon *icon);
 
 void             ewl_icon_label_complex_set(Ewl_Icon *icon,
                                                 unsigned int complex_label);
 unsigned int     ewl_icon_label_complex_get(Ewl_Icon *icon);
 
-void                 ewl_icon_extended_data_set(Ewl_Icon *icon, Ewl_Widget *ext);
-Ewl_Widget        *ewl_icon_extended_data_get(Ewl_Icon *icon);
+void             ewl_icon_extended_data_set(Ewl_Icon *icon, Ewl_Widget *ext);
+Ewl_Widget      *ewl_icon_extended_data_get(Ewl_Icon *icon);
 
 /*
  * Internal stuff

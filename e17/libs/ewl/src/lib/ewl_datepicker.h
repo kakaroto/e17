@@ -56,8 +56,8 @@ struct Ewl_Datepicker
 
 };
 
-Ewl_Widget        *ewl_datepicker_new(void);
-int                 ewl_datepicker_init(Ewl_Datepicker* datepicker);
+Ewl_Widget      *ewl_datepicker_new(void);
+int              ewl_datepicker_init(Ewl_Datepicker* datepicker);
 
 /*
  * Internally used callbacks, override at your risk

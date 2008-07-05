@@ -73,50 +73,56 @@ struct Ewl_Window
 extern unsigned int EWL_CALLBACK_EXPOSE; /**< Triggered when the window needs redrawing */
 extern unsigned int EWL_CALLBACK_DELETE_WINDOW; /**< The window is being closed */
 
-Ewl_Widget         *ewl_window_new(void);
-int                  ewl_window_init(Ewl_Window *win);
-Ewl_Window         *ewl_window_window_find(void *window);
-void                  ewl_window_title_set(Ewl_Window *win, const char *title);
-const char         *ewl_window_title_get(Ewl_Window *win);
-void                  ewl_window_name_set(Ewl_Window *win, const char *name);
-const char         *ewl_window_name_get(Ewl_Window *win);
-void                  ewl_window_class_set(Ewl_Window *win, const char *classname);
-const char        *ewl_window_class_get(Ewl_Window *win);
-void                  ewl_window_borderless_set(Ewl_Window *win, unsigned int border);
-unsigned int          ewl_window_borderless_get(Ewl_Window *win);
-void                  ewl_window_dialog_set(Ewl_Window *win, int dialog);
-int                  ewl_window_dialog_get(Ewl_Window *win);
-void                  ewl_window_fullscreen_set(Ewl_Window *win,
+Ewl_Widget              *ewl_window_new(void);
+int                      ewl_window_init(Ewl_Window *win);
+Ewl_Window              *ewl_window_window_find(void *window);
+void                     ewl_window_title_set(Ewl_Window *win,
+                                        const char *title);
+const char              *ewl_window_title_get(Ewl_Window *win);
+void                     ewl_window_name_set(Ewl_Window *win, const char *name);
+const char              *ewl_window_name_get(Ewl_Window *win);
+void                     ewl_window_class_set(Ewl_Window *win,
+                                        const char *classname);
+const char              *ewl_window_class_get(Ewl_Window *win);
+void                     ewl_window_borderless_set(Ewl_Window *win,
+                                        unsigned int border);
+unsigned int             ewl_window_borderless_get(Ewl_Window *win);
+void                     ewl_window_dialog_set(Ewl_Window *win, int dialog);
+int                      ewl_window_dialog_get(Ewl_Window *win);
+void                     ewl_window_fullscreen_set(Ewl_Window *win,
                                         unsigned int fullscreen);
-unsigned int          ewl_window_fullscreen_get(Ewl_Window *win);
-void                  ewl_window_skip_taskbar_set(Ewl_Window *win,
+unsigned int             ewl_window_fullscreen_get(Ewl_Window *win);
+void                     ewl_window_skip_taskbar_set(Ewl_Window *win,
                                         unsigned int skip);
-unsigned int          ewl_window_skip_taskbar_get(Ewl_Window *win);
-void                  ewl_window_skip_pager_set(Ewl_Window *win,
+unsigned int             ewl_window_skip_taskbar_get(Ewl_Window *win);
+void                     ewl_window_skip_pager_set(Ewl_Window *win,
                                         unsigned int skip);
-unsigned int          ewl_window_skip_pager_get(Ewl_Window *win);
-void                 ewl_window_attention_demand(Ewl_Window *win);
-void                 ewl_window_urgent_set(Ewl_Window *win, unsigned int urgent);
-unsigned int          ewl_window_urgent_get(Ewl_Window *win);
-void                  ewl_window_move(Ewl_Window *win, int x, int y);
-void                  ewl_window_raise(Ewl_Window *win);
-void                  ewl_window_lower(Ewl_Window *win);
-void                  ewl_window_transient_for(Ewl_Window *win, Ewl_Window *forwin);
-void                  ewl_window_transient_for_foreign(Ewl_Window *win,
-                                                    Ewl_Embed_Window *forwin);
-void                  ewl_window_leader_set(Ewl_Window *win, Ewl_Window *leader);
-void                  ewl_window_leader_foreign_set(Ewl_Window *win,
-                                                    Ewl_Embed_Window *leader);
-Ewl_Window        *ewl_window_leader_get(Ewl_Window *win);
-Ewl_Embed_Window *ewl_window_leader_foreign_get(Ewl_Window *win);
-int                 ewl_window_modal_get(Ewl_Window *win);
-void                 ewl_window_modal_set(Ewl_Window *win, int modal);
-void                  ewl_window_keyboard_grab_set(Ewl_Window *win, int grab);
-int                  ewl_window_keyboard_grab_get(Ewl_Window *win);
-void                  ewl_window_pointer_grab_set(Ewl_Window *win, int grab);
-int                  ewl_window_pointer_grab_get(Ewl_Window *win);
-void                  ewl_window_override_set(Ewl_Window *win, int override);
-int                  ewl_window_override_get(Ewl_Window *win);
+unsigned int             ewl_window_skip_pager_get(Ewl_Window *win);
+void                     ewl_window_attention_demand(Ewl_Window *win);
+void                     ewl_window_urgent_set(Ewl_Window *win,
+                                        unsigned int urgent);
+unsigned int             ewl_window_urgent_get(Ewl_Window *win);
+void                     ewl_window_move(Ewl_Window *win, int x, int y);
+void                     ewl_window_raise(Ewl_Window *win);
+void                     ewl_window_lower(Ewl_Window *win);
+void                     ewl_window_transient_for(Ewl_Window *win,
+                                        Ewl_Window *forwin);
+void                     ewl_window_transient_for_foreign(Ewl_Window *win,
+                                        Ewl_Embed_Window *forwin);
+void                     ewl_window_leader_set(Ewl_Window *win,
+                                        Ewl_Window *leader);
+void                     ewl_window_leader_foreign_set(Ewl_Window *win,
+                                        Ewl_Embed_Window *leader);
+Ewl_Window              *ewl_window_leader_get(Ewl_Window *win);
+Ewl_Embed_Window        *ewl_window_leader_foreign_get(Ewl_Window *win);
+int                      ewl_window_modal_get(Ewl_Window *win);
+void                     ewl_window_modal_set(Ewl_Window *win, int modal);
+void                     ewl_window_keyboard_grab_set(Ewl_Window *win, int grab);
+int                      ewl_window_keyboard_grab_get(Ewl_Window *win);
+void                     ewl_window_pointer_grab_set(Ewl_Window *win, int grab);
+int                      ewl_window_pointer_grab_get(Ewl_Window *win);
+void                     ewl_window_override_set(Ewl_Window *win, int override);
+int                      ewl_window_override_get(Ewl_Window *win);
 
 /*
  * Internally used callbacks, override at your own risk.

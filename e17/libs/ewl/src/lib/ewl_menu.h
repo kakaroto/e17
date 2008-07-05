@@ -71,12 +71,12 @@ struct Ewl_Menu_Info
         void (*cb)(Ewl_Widget *w, void *ev, void *data); /**< The menu item callback */
 };
 
-Ewl_Widget        *ewl_menu_new(void);
-int                 ewl_menu_init(Ewl_Menu *menu);
+Ewl_Widget      *ewl_menu_new(void);
+int              ewl_menu_init(Ewl_Menu *menu);
 
-void                 ewl_menu_from_info(Ewl_Menu *menu, Ewl_Menu_Info *info);
+void             ewl_menu_from_info(Ewl_Menu *menu, Ewl_Menu_Info *info);
 
-void                 ewl_menu_collapse(Ewl_Menu *menu);
+void             ewl_menu_collapse(Ewl_Menu *menu);
 
 /*
  * Internally used callbacks, override at your own risk.

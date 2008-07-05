@@ -77,12 +77,12 @@ void                 ewl_text_fmt_node_delete(Ewl_Text_Fmt *fmt,
                                         unsigned int char_len);
 unsigned int         ewl_text_fmt_node_count_get(Ewl_Text_Fmt *fmt);
 
-Ewl_Text_Fmt_Node *ewl_text_fmt_get(Ewl_Text_Fmt *fmt, unsigned int char_idx);
-Ewl_Text_Fmt_Node *ewl_text_fmt_get_last(Ewl_Text_Fmt *fmt);
-Ewl_Text_Fmt_Node *ewl_text_fmt_get_first(Ewl_Text_Fmt *fmt);
-Ewl_Text_Fmt_Node *ewl_text_fmt_get_current(Ewl_Text_Fmt *fmt);
+Ewl_Text_Fmt_Node   *ewl_text_fmt_get(Ewl_Text_Fmt *fmt, unsigned int char_idx);
+Ewl_Text_Fmt_Node   *ewl_text_fmt_get_last(Ewl_Text_Fmt *fmt);
+Ewl_Text_Fmt_Node   *ewl_text_fmt_get_first(Ewl_Text_Fmt *fmt);
+Ewl_Text_Fmt_Node   *ewl_text_fmt_get_current(Ewl_Text_Fmt *fmt);
 
-void                  ewl_text_fmt_goto(Ewl_Text_Fmt *fmt, unsigned int idx);
+void                 ewl_text_fmt_goto(Ewl_Text_Fmt *fmt, unsigned int idx);
 
 void                 ewl_text_fmt_apply(Ewl_Text_Fmt *fmt, unsigned int context_mask,
                                         Ewl_Text_Context *change,
@@ -92,7 +92,7 @@ void                 ewl_text_fmt_apply(Ewl_Text_Fmt *fmt, unsigned int context_
 void                 ewl_text_fmt_char_to_byte(Ewl_Text_Fmt *fmt,
                                 unsigned int char_idx, unsigned int char_len,
                                 unsigned int *byte_idx, unsigned int *byte_len);
-void                  ewl_text_fmt_byte_to_char(Ewl_Text_Fmt *fmt,
+void                 ewl_text_fmt_byte_to_char(Ewl_Text_Fmt *fmt,
                                 unsigned int byte_idx, unsigned int byte_len,
                                 unsigned int *char_idx, unsigned int *char_len);
 
@@ -103,7 +103,7 @@ void                 ewl_text_fmt_walk(Ewl_Text_Fmt *fmt,
 void                 ewl_text_fmt_dump(Ewl_Text_Fmt *fmt);
 
 
-Ewl_Text_Fmt_Node *ewl_text_fmt_node_new(Ewl_Text_Context *tx,
+Ewl_Text_Fmt_Node   *ewl_text_fmt_node_new(Ewl_Text_Context *tx,
                                         unsigned int char_len,
                                                unsigned int byte_len);
 /**

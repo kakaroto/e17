@@ -59,24 +59,24 @@ struct Ewl_Freebox
         unsigned short sorted;                    /**< Is the box sorted */
 };
 
-Ewl_Widget                *ewl_vfreebox_new(void);
-Ewl_Widget                *ewl_hfreebox_new(void);
-Ewl_Widget                *ewl_freebox_new(void);
-int                          ewl_freebox_init(Ewl_Freebox *fb);
+Ewl_Widget              *ewl_vfreebox_new(void);
+Ewl_Widget              *ewl_hfreebox_new(void);
+Ewl_Widget              *ewl_freebox_new(void);
+int                      ewl_freebox_init(Ewl_Freebox *fb);
 
-void                         ewl_freebox_orientation_set(Ewl_Freebox *fb,
+void                     ewl_freebox_orientation_set(Ewl_Freebox *fb,
                                         Ewl_Orientation orientation);
-Ewl_Orientation                 ewl_freebox_orientation_get(Ewl_Freebox *fb);
+Ewl_Orientation          ewl_freebox_orientation_get(Ewl_Freebox *fb);
 
-void                         ewl_freebox_layout_type_set(Ewl_Freebox *fb,
+void                     ewl_freebox_layout_type_set(Ewl_Freebox *fb,
                                         Ewl_Freebox_Layout_Type type);
 Ewl_Freebox_Layout_Type  ewl_freebox_layout_type_get(Ewl_Freebox *fb);
 
-void                         ewl_freebox_comparator_set(Ewl_Freebox *fb,
+void                     ewl_freebox_comparator_set(Ewl_Freebox *fb,
                                         Ewl_Freebox_Comparator cmp);
-Ewl_Freebox_Comparator         ewl_freebox_comparator_get(Ewl_Freebox *fb);
+Ewl_Freebox_Comparator   ewl_freebox_comparator_get(Ewl_Freebox *fb);
 
-void                         ewl_freebox_resort(Ewl_Freebox *fb);
+void                     ewl_freebox_resort(Ewl_Freebox *fb);
 
 /*
  * Internal callbacks, override at your risk

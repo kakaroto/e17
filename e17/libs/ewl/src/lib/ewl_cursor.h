@@ -52,8 +52,8 @@ struct Ewl_Cursor
         int handle;                /**< Engine id for generated cursor */
 };
 
-Ewl_Widget         *ewl_cursor_new(void);
-int                  ewl_cursor_init(Ewl_Cursor *c);
+Ewl_Widget      *ewl_cursor_new(void);
+int              ewl_cursor_init(Ewl_Cursor *c);
 
 /**
  * @}

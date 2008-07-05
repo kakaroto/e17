@@ -55,49 +55,49 @@ struct Ewl_Filedialog
         Ewl_Widget *menu;        /**< The menu */
 };
 
-Ewl_Widget         *ewl_filedialog_multiselect_new(void);
-Ewl_Widget         *ewl_filedialog_new(void);
-int                 ewl_filedialog_init(Ewl_Filedialog *fd);
+Ewl_Widget              *ewl_filedialog_multiselect_new(void);
+Ewl_Widget              *ewl_filedialog_new(void);
+int                      ewl_filedialog_init(Ewl_Filedialog *fd);
 
-void                 ewl_filedialog_list_view_set(Ewl_Filedialog *fd,
+void                     ewl_filedialog_list_view_set(Ewl_Filedialog *fd,
                                                 Ewl_Filelist_View view);
-Ewl_Filelist_View *ewl_filedialog_list_view_get(Ewl_Filedialog *fd);
+Ewl_Filelist_View       *ewl_filedialog_list_view_get(Ewl_Filedialog *fd);
 
-void                 ewl_filedialog_directory_set(Ewl_Filedialog *fd,
+void                     ewl_filedialog_directory_set(Ewl_Filedialog *fd,
                                                 const char *dir);
-const char        *ewl_filedialog_directory_get(Ewl_Filedialog *fd);
+const char               *ewl_filedialog_directory_get(Ewl_Filedialog *fd);
 
-void                 ewl_filedialog_multiselect_set(Ewl_Filedialog *fd,
+void                     ewl_filedialog_multiselect_set(Ewl_Filedialog *fd,
                                                 unsigned int ms);
-unsigned int         ewl_filedialog_multiselect_get(Ewl_Filedialog *fd);
+unsigned int             ewl_filedialog_multiselect_get(Ewl_Filedialog *fd);
 
-void                 ewl_filedialog_show_dot_files_set(Ewl_Filedialog *fd,
+void                     ewl_filedialog_show_dot_files_set(Ewl_Filedialog *fd,
                                                 unsigned int dot);
-unsigned int         ewl_filedialog_show_dot_files_get(Ewl_Filedialog *fd);
+unsigned int             ewl_filedialog_show_dot_files_get(Ewl_Filedialog *fd);
 
-void                 ewl_filedialog_show_favorites_set(Ewl_Filedialog *fd,
+void                     ewl_filedialog_show_favorites_set(Ewl_Filedialog *fd,
                                                 unsigned int show);
-unsigned int         ewl_filedialog_show_favorites_get(Ewl_Filedialog *fd);
+unsigned int             ewl_filedialog_show_favorites_get(Ewl_Filedialog *fd);
 
-void                 ewl_filedialog_selected_file_set(Ewl_Filedialog *fd,
+void                     ewl_filedialog_selected_file_set(Ewl_Filedialog *fd,
                                                 const char *file);
-char                *ewl_filedialog_selected_file_get(Ewl_Filedialog *fd);
+char                    *ewl_filedialog_selected_file_get(Ewl_Filedialog *fd);
 
-void                 ewl_filedialog_selected_files_set(Ewl_Filedialog *fd,
+void                     ewl_filedialog_selected_files_set(Ewl_Filedialog *fd,
                                                 Ecore_List *files);
-Ecore_List        *ewl_filedialog_selected_files_get(Ewl_Filedialog *fd);
+Ecore_List              *ewl_filedialog_selected_files_get(Ewl_Filedialog *fd);
 
-void                 ewl_filedialog_filter_add(Ewl_Filedialog *fd,
+void                     ewl_filedialog_filter_add(Ewl_Filedialog *fd,
                                                 const char *name,
                                                 const char *filter,
                                                 Ecore_List *mime_types);
-void                ewl_filedialog_save_as_set(Ewl_Filedialog *fd,
+void                     ewl_filedialog_save_as_set(Ewl_Filedialog *fd,
                                                 unsigned int t);
-unsigned int        ewl_filedialog_save_as_get(Ewl_Filedialog *fd);
-void                ewl_filedialog_return_directories_set(Ewl_Filedialog *fd,
+unsigned int             ewl_filedialog_save_as_get(Ewl_Filedialog *fd);
+void                     ewl_filedialog_return_directories_set(Ewl_Filedialog *fd,
                                                 unsigned int t);
-unsigned int        ewl_filedialog_return_directories_get(Ewl_Filedialog *fd);
-Ewl_Widget     *ewl_filedialog_save_as_new(void);
+unsigned int             ewl_filedialog_return_directories_get(Ewl_Filedialog *fd);
+Ewl_Widget              *ewl_filedialog_save_as_new(void);
 
 /*
  * Internally used callbacks, override at your own risk.

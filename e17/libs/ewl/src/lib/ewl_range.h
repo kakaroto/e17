@@ -55,28 +55,28 @@ struct Ewl_Range
         unsigned int unknown_range:1; /**< Unknown range */
 };
 
-int                ewl_range_init(Ewl_Range *r);
+int              ewl_range_init(Ewl_Range *r);
 
-void                ewl_range_value_set(Ewl_Range *r, double v);
-double                ewl_range_value_get(Ewl_Range *r);
+void             ewl_range_value_set(Ewl_Range *r, double v);
+double           ewl_range_value_get(Ewl_Range *r);
 
-void                ewl_range_minimum_value_set(Ewl_Range *r, double minv);
-double                ewl_range_minimum_value_get(Ewl_Range *r);
+void             ewl_range_minimum_value_set(Ewl_Range *r, double minv);
+double           ewl_range_minimum_value_get(Ewl_Range *r);
 
-void                ewl_range_maximum_value_set(Ewl_Range *r, double maxv);
-double                ewl_range_maximum_value_get(Ewl_Range *r);
+void             ewl_range_maximum_value_set(Ewl_Range *r, double maxv);
+double           ewl_range_maximum_value_get(Ewl_Range *r);
 
-void                ewl_range_step_set(Ewl_Range *r, double step);
-double                ewl_range_step_get(Ewl_Range *r);
+void             ewl_range_step_set(Ewl_Range *r, double step);
+double           ewl_range_step_get(Ewl_Range *r);
 
-void                ewl_range_unknown_set(Ewl_Range *r, unsigned int unknown);
-unsigned int        ewl_range_unknown_get(Ewl_Range *r);
+void             ewl_range_unknown_set(Ewl_Range *r, unsigned int unknown);
+unsigned int     ewl_range_unknown_get(Ewl_Range *r);
 
-void                ewl_range_invert_set(Ewl_Range *r, unsigned int invert);
-unsigned int        ewl_range_invert_get(Ewl_Range *r);
+void             ewl_range_invert_set(Ewl_Range *r, unsigned int invert);
+unsigned int     ewl_range_invert_get(Ewl_Range *r);
 
-void                 ewl_range_decrease(Ewl_Range *r);
-void                 ewl_range_increase(Ewl_Range *r);
+void             ewl_range_decrease(Ewl_Range *r);
+void             ewl_range_increase(Ewl_Range *r);
 
 /**
  * @}

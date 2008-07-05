@@ -63,11 +63,11 @@ struct Ewl_Spinner
         Ecore_Timer *timer;         /**< Timer for tracking mouse button held down */
 };
 
-Ewl_Widget         *ewl_spinner_new(void);
-int                  ewl_spinner_init(Ewl_Spinner *s);
+Ewl_Widget      *ewl_spinner_new(void);
+int              ewl_spinner_init(Ewl_Spinner *s);
 
-void                  ewl_spinner_digits_set(Ewl_Spinner *s, unsigned char digits);
-unsigned char          ewl_spinner_digits_get(Ewl_Spinner *s);
+void             ewl_spinner_digits_set(Ewl_Spinner *s, unsigned char digits);
+unsigned char    ewl_spinner_digits_get(Ewl_Spinner *s);
 
 /*
  * Internally used callbacks, override at your own risk.

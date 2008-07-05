@@ -10,27 +10,27 @@
  * @{
  */
 
-int                  ewl_theme_init(void);
-void                  ewl_theme_shutdown(void);
+int              ewl_theme_init(void);
+void             ewl_theme_shutdown(void);
 
-int                  ewl_theme_widget_init(Ewl_Widget *w);
-void                  ewl_theme_widget_shutdown(Ewl_Widget *w);
+int              ewl_theme_widget_init(Ewl_Widget *w);
+void             ewl_theme_widget_shutdown(Ewl_Widget *w);
 
-const char         *ewl_theme_path_get(void);
-int                 ewl_theme_theme_set(const char *theme);
+const char      *ewl_theme_path_get(void);
+int              ewl_theme_theme_set(const char *theme);
 
-Ecore_List         *ewl_theme_font_path_get(void);
-void                   ewl_theme_font_path_add(char *path);
+Ecore_List      *ewl_theme_font_path_get(void);
+void             ewl_theme_font_path_add(char *path);
 
-char                 *ewl_theme_image_get(Ewl_Widget *w, char *k);
+char            *ewl_theme_image_get(Ewl_Widget *w, char *k);
 
-void                 ewl_theme_data_reset(Ewl_Widget *w);
+void             ewl_theme_data_reset(Ewl_Widget *w);
 
-const char         *ewl_theme_data_str_get(Ewl_Widget *w, char *k);
-void                  ewl_theme_data_str_set(Ewl_Widget *w, char *k, char *v);
+const char      *ewl_theme_data_str_get(Ewl_Widget *w, char *k);
+void             ewl_theme_data_str_set(Ewl_Widget *w, char *k, char *v);
 
-int                  ewl_theme_data_int_get(Ewl_Widget *w, char *k);
-void                  ewl_theme_data_int_set(Ewl_Widget *w, char *k, int v);
+int              ewl_theme_data_int_get(Ewl_Widget *w, char *k);
+void             ewl_theme_data_int_set(Ewl_Widget *w, char *k, int v);
 
 /**
  * @internal

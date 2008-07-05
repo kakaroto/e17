@@ -124,60 +124,64 @@ struct Ewl_Tree
 /*
  * Tree view/controller manipulation
  */
-Ewl_Widget         *ewl_tree_new(void);
-int                  ewl_tree_init(Ewl_Tree *tree);
+Ewl_Widget              *ewl_tree_new(void);
+int                      ewl_tree_init(Ewl_Tree *tree);
 
-void                 ewl_tree_column_count_set(Ewl_Tree *tree,
-                                                unsigned int count);
-unsigned int         ewl_tree_column_count_get(Ewl_Tree *tree);
-void                 ewl_tree_column_fixed_size_set(Ewl_Tree *tree, 
+void                     ewl_tree_column_count_set(Ewl_Tree *tree,
+                                        unsigned int count);
+unsigned int             ewl_tree_column_count_get(Ewl_Tree *tree);
+void                     ewl_tree_column_fixed_size_set(Ewl_Tree *tree, 
                                         unsigned int col, unsigned int fixed);
-unsigned int         ewl_tree_column_fixed_size_get(Ewl_Tree *tree, 
+unsigned int             ewl_tree_column_fixed_size_get(Ewl_Tree *tree, 
                                         unsigned int col);
-void                 ewl_tree_column_initial_size_set(Ewl_Tree *tree, 
+void                     ewl_tree_column_initial_size_set(Ewl_Tree *tree, 
                                         unsigned int col, int size);
-int                 ewl_tree_column_initial_size_get(Ewl_Tree *tree, 
+int                      ewl_tree_column_initial_size_get(Ewl_Tree *tree, 
                                         unsigned int col);
 
-void                 ewl_tree_headers_visible_set(Ewl_Tree *tree,
-                                               unsigned char visible);
-unsigned int         ewl_tree_headers_visible_get(Ewl_Tree *tree);
+void                     ewl_tree_headers_visible_set(Ewl_Tree *tree,
+                                        unsigned char visible);
+unsigned int             ewl_tree_headers_visible_get(Ewl_Tree *tree);
 
-void                 ewl_tree_content_view_set(Ewl_Tree *tree, const Ewl_View *view);
-Ewl_View        *ewl_tree_content_view_get(Ewl_Tree *tree);
+void                     ewl_tree_content_view_set(Ewl_Tree *tree,
+                                        const Ewl_View *view);
+Ewl_View                *ewl_tree_content_view_get(Ewl_Tree *tree);
 
-Ewl_Tree_Selection_Type ewl_tree_selection_type_get(Ewl_Tree *tree);
-void                  ewl_tree_selection_type_set(Ewl_Tree *tree,
-                                                Ewl_Tree_Selection_Type type);
+Ewl_Tree_Selection_Type  ewl_tree_selection_type_get(Ewl_Tree *tree);
+void                     ewl_tree_selection_type_set(Ewl_Tree *tree,
+                                        Ewl_Tree_Selection_Type type);
 
-void                 ewl_tree_fixed_rows_set(Ewl_Tree *tree, unsigned int fixed);
-unsigned int         ewl_tree_fixed_rows_get(Ewl_Tree *tree);
+void                     ewl_tree_fixed_rows_set(Ewl_Tree *tree,
+                                        unsigned int fixed);
+unsigned int             ewl_tree_fixed_rows_get(Ewl_Tree *tree);
 
-void                 ewl_tree_alternate_row_colors_set(Ewl_Tree *tree,
-                                                unsigned char alternate);
-unsigned int         ewl_tree_alternate_row_colors_get(Ewl_Tree *tree);
+void                     ewl_tree_alternate_row_colors_set(Ewl_Tree *tree,
+                                        unsigned char alternate);
+unsigned int             ewl_tree_alternate_row_colors_get(Ewl_Tree *tree);
 
-Ewl_Widget        *ewl_tree_content_widget_get(Ewl_Tree *tree);
+Ewl_Widget              *ewl_tree_content_widget_get(Ewl_Tree *tree);
 
-void                 ewl_tree_row_expand(Ewl_Tree *tree, void *data,
-                                                unsigned int row);
-void                 ewl_tree_row_collapse(Ewl_Tree *tree, void *data,
-                                                unsigned int row);
+void                     ewl_tree_row_expand(Ewl_Tree *tree, void *data,
+                                        unsigned int row);
+void                     ewl_tree_row_collapse(Ewl_Tree *tree, void *data,
+                                        unsigned int row);
 
-unsigned int         ewl_tree_row_expanded_is(Ewl_Tree *tree, void *data,
-                                                unsigned int row);
+unsigned int             ewl_tree_row_expanded_is(Ewl_Tree *tree, void *data,
+                                        unsigned int row);
 
-void                 ewl_tree_kinetic_scrolling_set(Ewl_Tree *tree,
-                                                Ewl_Kinetic_Scroll type);
-Ewl_Kinetic_Scroll ewl_tree_kinetic_scrolling_get(Ewl_Tree *tree);
-void                 ewl_tree_kinetic_max_velocity_set(Ewl_Tree *tree, double v);
-double                 ewl_tree_kinetic_max_velocity_get(Ewl_Tree *tree);
-void                 ewl_tree_kinetic_min_velocity_set(Ewl_Tree *tree, double v);
-double                 ewl_tree_kinetic_min_velocity_get(Ewl_Tree *tree);
-void                 ewl_tree_kinetic_dampen_set(Ewl_Tree *tree, double d);
-double                 ewl_tree_kinetic_dampen_get(Ewl_Tree *tree);
-void                 ewl_tree_kinetic_fps_set(Ewl_Tree *tree, int fps); 
-int                 ewl_tree_kinetic_fps_get(Ewl_Tree *tree);
+void                     ewl_tree_kinetic_scrolling_set(Ewl_Tree *tree,
+                                        Ewl_Kinetic_Scroll type);
+Ewl_Kinetic_Scroll       ewl_tree_kinetic_scrolling_get(Ewl_Tree *tree);
+void                     ewl_tree_kinetic_max_velocity_set(Ewl_Tree *tree,
+                                        double v);
+double                   ewl_tree_kinetic_max_velocity_get(Ewl_Tree *tree);
+void                     ewl_tree_kinetic_min_velocity_set(Ewl_Tree *tree,
+                                        double v);
+double                   ewl_tree_kinetic_min_velocity_get(Ewl_Tree *tree);
+void                     ewl_tree_kinetic_dampen_set(Ewl_Tree *tree, double d);
+double                   ewl_tree_kinetic_dampen_get(Ewl_Tree *tree);
+void                     ewl_tree_kinetic_fps_set(Ewl_Tree *tree, int fps); 
+int                      ewl_tree_kinetic_fps_get(Ewl_Tree *tree);
 
 /*
  * Internal stuff.

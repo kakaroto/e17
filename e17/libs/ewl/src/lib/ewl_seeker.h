@@ -62,16 +62,16 @@ struct Ewl_Seeker
         double start_time; /**< Time the timer was started */
 };
 
-Ewl_Widget         *ewl_seeker_new(void);
-Ewl_Widget         *ewl_hseeker_new(void);
-Ewl_Widget          *ewl_vseeker_new(void);
-int                  ewl_seeker_init(Ewl_Seeker *s);
+Ewl_Widget      *ewl_seeker_new(void);
+Ewl_Widget      *ewl_hseeker_new(void);
+Ewl_Widget      *ewl_vseeker_new(void);
+int              ewl_seeker_init(Ewl_Seeker *s);
 
-void                  ewl_seeker_orientation_set(Ewl_Seeker *s, Ewl_Orientation o);
+void             ewl_seeker_orientation_set(Ewl_Seeker *s, Ewl_Orientation o);
 Ewl_Orientation  ewl_seeker_orientation_get(Ewl_Seeker *s);
 
-void                  ewl_seeker_autohide_set(Ewl_Seeker *s, int v);
-int                  ewl_seeker_autohide_get(Ewl_Seeker *s);
+void             ewl_seeker_autohide_set(Ewl_Seeker *s, int v);
+int              ewl_seeker_autohide_get(Ewl_Seeker *s);
 
 /*
  * Internally used callbacks, override at your own risk.

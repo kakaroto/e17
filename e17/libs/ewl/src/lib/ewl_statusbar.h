@@ -58,22 +58,22 @@ struct Ewl_Statusbar
         Ewl_Widget                *current;        /**< The currently displayed status */
 };
 
-Ewl_Widget        *ewl_statusbar_new(void);
-int                 ewl_statusbar_init(Ewl_Statusbar *sb);
+Ewl_Widget      *ewl_statusbar_new(void);
+int              ewl_statusbar_init(Ewl_Statusbar *sb);
 
-void                 ewl_statusbar_left_hide(Ewl_Statusbar *sb);
-void                 ewl_statusbar_left_show(Ewl_Statusbar *sb);
-void                 ewl_statusbar_right_hide(Ewl_Statusbar *sb);
-void                 ewl_statusbar_right_show(Ewl_Statusbar *sb);
+void             ewl_statusbar_left_hide(Ewl_Statusbar *sb);
+void             ewl_statusbar_left_show(Ewl_Statusbar *sb);
+void             ewl_statusbar_right_hide(Ewl_Statusbar *sb);
+void             ewl_statusbar_right_show(Ewl_Statusbar *sb);
 
-void                 ewl_statusbar_active_set(Ewl_Statusbar *sb, Ewl_Position pos);
-void                 ewl_statusbar_left_append(Ewl_Statusbar *sb, Ewl_Widget *w);
-void                 ewl_statusbar_left_prepend(Ewl_Statusbar *sb, Ewl_Widget *w);
-void                 ewl_statusbar_right_append(Ewl_Statusbar *sb, Ewl_Widget *w);
-void                 ewl_statusbar_right_prepend(Ewl_Statusbar *sb, Ewl_Widget *w);
+void             ewl_statusbar_active_set(Ewl_Statusbar *sb, Ewl_Position pos);
+void             ewl_statusbar_left_append(Ewl_Statusbar *sb, Ewl_Widget *w);
+void             ewl_statusbar_left_prepend(Ewl_Statusbar *sb, Ewl_Widget *w);
+void             ewl_statusbar_right_append(Ewl_Statusbar *sb, Ewl_Widget *w);
+void             ewl_statusbar_right_prepend(Ewl_Statusbar *sb, Ewl_Widget *w);
 
-void                 ewl_statusbar_push(Ewl_Statusbar *sb, char *txt);
-void                 ewl_statusbar_pop(Ewl_Statusbar *sb);
+void             ewl_statusbar_push(Ewl_Statusbar *sb, char *txt);
+void             ewl_statusbar_pop(Ewl_Statusbar *sb);
 
 /*
  * Internal functions

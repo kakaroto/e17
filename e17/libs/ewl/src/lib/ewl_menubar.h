@@ -69,18 +69,21 @@ struct Ewl_Menubar_Info
         Ewl_Menu_Info *menu;        /**< The menu items */
 };
 
-Ewl_Widget         *ewl_menubar_new(void);
-Ewl_Widget        *ewl_hmenubar_new(void);
-Ewl_Widget        *ewl_vmenubar_new(void);
+Ewl_Widget              *ewl_menubar_new(void);
+Ewl_Widget              *ewl_hmenubar_new(void);
+Ewl_Widget              *ewl_vmenubar_new(void);
 
-int                     ewl_menubar_init(Ewl_Menubar *mb);
+int                      ewl_menubar_init(Ewl_Menubar *mb);
 
-void                 ewl_menubar_from_info(Ewl_Menubar *mb, Ewl_Menubar_Info *info);
+void                     ewl_menubar_from_info(Ewl_Menubar *mb,
+                                        Ewl_Menubar_Info *info);
 
-void                 ewl_menubar_orientation_set(Ewl_Menubar *mb, Ewl_Orientation o);
-Ewl_Orientation         ewl_menubar_orientation_get(Ewl_Menubar *mb);
+void                     ewl_menubar_orientation_set(Ewl_Menubar *mb,
+                                        Ewl_Orientation o);
+Ewl_Orientation          ewl_menubar_orientation_get(Ewl_Menubar *mb);
 
-void                ewl_menubar_cb_child_add(Ewl_Container *c, Ewl_Widget *w);
+void                     ewl_menubar_cb_child_add(Ewl_Container *c,
+                                        Ewl_Widget *w);
 
 /**
   * @}

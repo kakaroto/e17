@@ -107,72 +107,75 @@ struct Ewl_Container
         Ewl_Container_Iterator iterator; /**< Function to find next child */
 };
 
-int                  ewl_container_init(Ewl_Container *container);
+int              ewl_container_init(Ewl_Container *container);
 
-void                  ewl_container_add_notify_set(Ewl_Container *container,
+void             ewl_container_add_notify_set(Ewl_Container *container,
                                                 Ewl_Child_Add add);
-void                  ewl_container_remove_notify_set(Ewl_Container *container,
+void             ewl_container_remove_notify_set(Ewl_Container *container,
                                                 Ewl_Child_Remove remove);
-void                  ewl_container_resize_notify_set(Ewl_Container *container,
+void             ewl_container_resize_notify_set(Ewl_Container *container,
                                                 Ewl_Child_Resize resize);
-void                  ewl_container_show_notify_set(Ewl_Container *container,
+void             ewl_container_show_notify_set(Ewl_Container *container,
                                                 Ewl_Child_Show show);
-void                  ewl_container_hide_notify_set(Ewl_Container *container,
+void             ewl_container_hide_notify_set(Ewl_Container *container,
                                                 Ewl_Child_Hide show);
 
-void                  ewl_container_child_append(Ewl_Container *parent,
-                                                   Ewl_Widget *child);
-void                   ewl_container_child_prepend(Ewl_Container *parent,
+void             ewl_container_child_append(Ewl_Container *parent,
                                                 Ewl_Widget *child);
-void                  ewl_container_child_insert(Ewl_Container *parent,
-                                                Ewl_Widget *child, int index);
-void                 ewl_container_child_insert_internal(Ewl_Container *parent,
-                                                Ewl_Widget *child, int index);
-void                  ewl_container_child_remove(Ewl_Container *parent,
+void             ewl_container_child_prepend(Ewl_Container *parent,
                                                 Ewl_Widget *child);
-void                  ewl_container_child_resize(Ewl_Widget *w, int size,
+void             ewl_container_child_insert(Ewl_Container *parent,
+                                                Ewl_Widget *child, int index);
+void             ewl_container_child_insert_internal(Ewl_Container *parent,
+                                                Ewl_Widget *child, int index);
+void             ewl_container_child_remove(Ewl_Container *parent,
+                                                Ewl_Widget *child);
+void             ewl_container_child_resize(Ewl_Widget *w, int size,
                                                 Ewl_Orientation o);
-Ewl_Widget         *ewl_container_child_get(Ewl_Container *parent, int index);
-Ewl_Widget         *ewl_container_child_internal_get(Ewl_Container *parent, int index);
-int                 ewl_container_child_index_get(Ewl_Container *parent,
-                                                        Ewl_Widget *child);
-int                  ewl_container_child_index_internal_get(Ewl_Container *parent,
-                                                        Ewl_Widget *child);
-void                  ewl_container_child_iterate_begin(Ewl_Container *c);
-Ewl_Widget         *ewl_container_child_next(Ewl_Container *c);
-void                  ewl_container_child_iterator_set(Ewl_Container *c,
-                                                 Ewl_Container_Iterator i);
-int                  ewl_container_child_count_get(Ewl_Container *c);
-int                  ewl_container_child_count_internal_get(Ewl_Container *c);
-int                 ewl_container_child_count_visible_get(Ewl_Container *c);
-void                 ewl_container_children_show(Ewl_Container *c);
-void                  ewl_container_destroy(Ewl_Container *c);
-void                  ewl_container_reset(Ewl_Container *c);
-void                  ewl_container_callback_notify(Ewl_Container *c,
+Ewl_Widget      *ewl_container_child_get(Ewl_Container *parent, int index);
+Ewl_Widget      *ewl_container_child_internal_get(Ewl_Container *parent,
+                                                int index);
+int              ewl_container_child_index_get(Ewl_Container *parent,
+                                                Ewl_Widget *child);
+int              ewl_container_child_index_internal_get(Ewl_Container *parent,
+                                                Ewl_Widget *child);
+void             ewl_container_child_iterate_begin(Ewl_Container *c);
+Ewl_Widget      *ewl_container_child_next(Ewl_Container *c);
+void             ewl_container_child_iterator_set(Ewl_Container *c,
+                                                Ewl_Container_Iterator i);
+int              ewl_container_child_count_get(Ewl_Container *c);
+int              ewl_container_child_count_internal_get(Ewl_Container *c);
+int              ewl_container_child_count_visible_get(Ewl_Container *c);
+void             ewl_container_children_show(Ewl_Container *c);
+void             ewl_container_destroy(Ewl_Container *c);
+void             ewl_container_reset(Ewl_Container *c);
+void             ewl_container_callback_notify(Ewl_Container *c,
                                                 unsigned int t);
-void                  ewl_container_callback_nonotify(Ewl_Container *c,
+void             ewl_container_callback_nonotify(Ewl_Container *c,
                                                 unsigned int t);
-void                  ewl_container_callback_intercept(Ewl_Container *c,
+void             ewl_container_callback_intercept(Ewl_Container *c,
                                                 unsigned int t);
-void                  ewl_container_callback_nointercept(Ewl_Container *c,
+void             ewl_container_callback_nointercept(Ewl_Container *c,
                                                 unsigned int t);
-Ewl_Widget         *ewl_container_child_at_get(Ewl_Container *widget,
-                                                        int x, int y);
-Ewl_Widget         *ewl_container_child_at_recursive_get(Ewl_Container *widget,
-                                                        int x, int y);
-void                  ewl_container_largest_prefer(Ewl_Container *c,
+Ewl_Widget      *ewl_container_child_at_get(Ewl_Container *widget,
+                                                int x, int y);
+Ewl_Widget      *ewl_container_child_at_recursive_get(Ewl_Container *widget,
+                                                int x, int y);
+void             ewl_container_largest_prefer(Ewl_Container *c,
                                                 Ewl_Orientation o);
-void                  ewl_container_sum_prefer(Ewl_Container *c, Ewl_Orientation o);
+void             ewl_container_sum_prefer(Ewl_Container *c,
+                                                Ewl_Orientation o);
 
-void                  ewl_container_child_add_call(Ewl_Container *c, Ewl_Widget *w);
-void                  ewl_container_child_remove_call(Ewl_Container *c, Ewl_Widget *w,
-                                                                int idx);
-void                  ewl_container_child_show_call(Ewl_Container *c, Ewl_Widget *w);
-void                  ewl_container_child_hide_call(Ewl_Container *c, Ewl_Widget *w);
+void             ewl_container_child_add_call(Ewl_Container *c, Ewl_Widget *w);
+void             ewl_container_child_remove_call(Ewl_Container *c,
+                                                Ewl_Widget *w, int idx);
+void             ewl_container_child_show_call(Ewl_Container *c, Ewl_Widget *w);
+void             ewl_container_child_hide_call(Ewl_Container *c, Ewl_Widget *w);
 
-Ewl_Container         *ewl_container_end_redirect_get(Ewl_Container *c);
-Ewl_Container         *ewl_container_redirect_get(Ewl_Container *c);
-void                  ewl_container_redirect_set(Ewl_Container *c, Ewl_Container *rc);
+Ewl_Container   *ewl_container_end_redirect_get(Ewl_Container *c);
+Ewl_Container   *ewl_container_redirect_get(Ewl_Container *c);
+void             ewl_container_redirect_set(Ewl_Container *c,
+                                                Ewl_Container *rc);
 
 /*
  * Internally used callbacks, override at your own risk.

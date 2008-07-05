@@ -74,52 +74,52 @@ struct Ewl_Filepicker
 
 };
 
-Ewl_Widget        *ewl_filepicker_new(void);
-int                 ewl_filepicker_init(Ewl_Filepicker *fp);
+Ewl_Widget              *ewl_filepicker_new(void);
+int                      ewl_filepicker_init(Ewl_Filepicker *fp);
 
-void                 ewl_filepicker_directory_set(Ewl_Filepicker *fp,
-                                                        const char *dir);
-const char        *ewl_filepicker_directory_get(Ewl_Filepicker *fp);
+void                     ewl_filepicker_directory_set(Ewl_Filepicker *fp,
+                                                const char *dir);
+const char              *ewl_filepicker_directory_get(Ewl_Filepicker *fp);
 
-void                 ewl_filepicker_filter_set(Ewl_Filepicker *fp,
+void                     ewl_filepicker_filter_set(Ewl_Filepicker *fp,
                                                 Ewl_Filelist_Filter *filter);
-Ewl_Filelist_Filter        *ewl_filepicker_filter_get(Ewl_Filepicker *fp);
+Ewl_Filelist_Filter     *ewl_filepicker_filter_get(Ewl_Filepicker *fp);
 
-void                 ewl_filepicker_multiselect_set(Ewl_Filepicker *fp,
-                                                        unsigned int ms);
-unsigned int         ewl_filepicker_multiselect_get(Ewl_Filepicker *fp);
+void                     ewl_filepicker_multiselect_set(Ewl_Filepicker *fp,
+                                                unsigned int ms);
+unsigned int             ewl_filepicker_multiselect_get(Ewl_Filepicker *fp);
 
-void                 ewl_filepicker_show_dot_files_set(Ewl_Filepicker *fp,
-                                                        unsigned int dot);
-unsigned int         ewl_filepicker_show_dot_files_get(Ewl_Filepicker *fp);
+void                     ewl_filepicker_show_dot_files_set(Ewl_Filepicker *fp,
+                                                unsigned int dot);
+unsigned int             ewl_filepicker_show_dot_files_get(Ewl_Filepicker *fp);
 
-void                 ewl_filepicker_selected_file_set(Ewl_Filepicker *fp,
-                                                        const char *file);
-char                *ewl_filepicker_selected_file_get(Ewl_Filepicker *fp);
+void                     ewl_filepicker_selected_file_set(Ewl_Filepicker *fp,
+                                                const char *file);
+char                    *ewl_filepicker_selected_file_get(Ewl_Filepicker *fp);
 
-void                  ewl_filepicker_selected_files_set(Ewl_Filepicker *fp,
-                                                        Ecore_List *files);
-Ecore_List        *ewl_filepicker_selected_files_get(Ewl_Filepicker *fp);
+void                     ewl_filepicker_selected_files_set(Ewl_Filepicker *fp,
+                                                Ecore_List *files);
+Ecore_List              *ewl_filepicker_selected_files_get(Ewl_Filepicker *fp);
 
-void                 ewl_filepicker_show_favorites_set(Ewl_Filepicker *fp,
+void                     ewl_filepicker_show_favorites_set(Ewl_Filepicker *fp,
                                                 unsigned int show);
-unsigned int         ewl_filepicker_show_favorites_get(Ewl_Filepicker *fp);
+unsigned int             ewl_filepicker_show_favorites_get(Ewl_Filepicker *fp);
 
-void                 ewl_filepicker_list_view_set(Ewl_Filepicker *fp,
-                                                        Ewl_Filelist_View view);
-Ewl_Filelist_View *ewl_filepicker_list_view_get(Ewl_Filepicker *fp);
+void                     ewl_filepicker_list_view_set(Ewl_Filepicker *fp,
+                                                Ewl_Filelist_View view);
+Ewl_Filelist_View       *ewl_filepicker_list_view_get(Ewl_Filepicker *fp);
 
-Ewl_Filelist_Filter        *ewl_filepicker_filter_add(Ewl_Filepicker *fp,
+Ewl_Filelist_Filter     *ewl_filepicker_filter_add(Ewl_Filepicker *fp,
                                                 const char *name,
                                                 const char *extension,
                                                 Ecore_List *mime_types);
-void                ewl_filepicker_save_as_set(Ewl_Filepicker *fp,
+void                     ewl_filepicker_save_as_set(Ewl_Filepicker *fp,
                                                 unsigned int t);
-unsigned int        ewl_filepicker_save_as_get(Ewl_Filepicker *fp);
-void                ewl_filepicker_return_directories_set(Ewl_Filepicker *fp,
+unsigned int             ewl_filepicker_save_as_get(Ewl_Filepicker *fp);
+void                     ewl_filepicker_return_directories_set(Ewl_Filepicker *fp,
                                                 unsigned int t);
-unsigned int        ewl_filepicker_return_directories_get(Ewl_Filepicker *fp);
-Ewl_Widget     *ewl_filepicker_save_as_new(void);
+unsigned int             ewl_filepicker_return_directories_get(Ewl_Filepicker *fp);
+Ewl_Widget              *ewl_filepicker_save_as_new(void);
 /**
  * @}
  */

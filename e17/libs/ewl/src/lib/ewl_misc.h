@@ -16,20 +16,20 @@
  */
 typedef void (*Ewl_Shutdown_Hook)(void);
 
-int          ewl_init(int *argc, char **argv);
-void          ewl_print_help(void);
-int          ewl_shutdown(void);
-void          ewl_main(void);
+int      ewl_init(int *argc, char **argv);
+void     ewl_print_help(void);
+int      ewl_shutdown(void);
+void     ewl_main(void);
 void     ewl_main_iterate(void);
-void          ewl_main_quit(void);
-void          ewl_configure_request(Ewl_Widget *w);
-void          ewl_realize_request(Ewl_Widget *w);
-void          ewl_realize_cancel_request(Ewl_Widget *w);
-void          ewl_destroy_request(Ewl_Widget *w);
-void          ewl_canvas_destroy(void *evas);
-void           ewl_canvas_object_destroy(void *obj);
-void           ewl_debug_indent_print(int mod_dir);
-void          ewl_shutdown_add(Ewl_Shutdown_Hook hook);
+void     ewl_main_quit(void);
+void     ewl_configure_request(Ewl_Widget *w);
+void     ewl_realize_request(Ewl_Widget *w);
+void     ewl_realize_cancel_request(Ewl_Widget *w);
+void     ewl_destroy_request(Ewl_Widget *w);
+void     ewl_canvas_destroy(void *evas);
+void     ewl_canvas_object_destroy(void *obj);
+void     ewl_debug_indent_print(int mod_dir);
+void     ewl_shutdown_add(Ewl_Shutdown_Hook hook);
 
 /*
  * Internal stuff

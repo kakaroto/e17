@@ -151,80 +151,79 @@ struct Ewl_Engine
 
 extern Ecore_Path_Group *ewl_engines_path;
 
-int                  ewl_engines_init(void);
-void                  ewl_engines_shutdown(void);
+int              ewl_engines_init(void);
+void             ewl_engines_shutdown(void);
 
-Ecore_List        *ewl_engine_names_get(void);
+Ecore_List      *ewl_engine_names_get(void);
 
-Ewl_Engine        *ewl_engine_new(const char *name,
+Ewl_Engine      *ewl_engine_new(const char *name,
                                 int *argc, char ** argv);
 
-void                 ewl_engine_event_handlers_init(void);
-void                 ewl_engine_event_handlers_shutdown(void);
+void             ewl_engine_event_handlers_init(void);
+void             ewl_engine_event_handlers_shutdown(void);
 
-void                 ewl_engine_engine_shutdown(Ewl_Window *win);
+void             ewl_engine_engine_shutdown(Ewl_Window *win);
 
-void                 ewl_engine_window_new(Ewl_Window *win);
-void                 ewl_engine_window_destroy(Ewl_Window *win);
+void             ewl_engine_window_new(Ewl_Window *win);
+void             ewl_engine_window_destroy(Ewl_Window *win);
 
-void                 ewl_engine_window_move(Ewl_Window *win);
-void                 ewl_engine_window_resize(Ewl_Window *win);
-void                 ewl_engine_window_min_max_size_set(Ewl_Window *win);
-void                 ewl_engine_window_show(Ewl_Window *win);
-void                 ewl_engine_window_hide(Ewl_Window *win);
+void             ewl_engine_window_move(Ewl_Window *win);
+void             ewl_engine_window_resize(Ewl_Window *win);
+void             ewl_engine_window_min_max_size_set(Ewl_Window *win);
+void             ewl_engine_window_show(Ewl_Window *win);
+void             ewl_engine_window_hide(Ewl_Window *win);
 
-void                 ewl_engine_window_title_set(Ewl_Window *win);
-void                 ewl_engine_window_name_class_set(Ewl_Window *win);
+void             ewl_engine_window_title_set(Ewl_Window *win);
+void             ewl_engine_window_name_class_set(Ewl_Window *win);
 
-void                 ewl_engine_window_borderless_set(Ewl_Window *win);
-void                 ewl_engine_window_dialog_set(Ewl_Window *win);
-void                 ewl_engine_window_states_set(Ewl_Window *win);
-void                 ewl_engine_window_hints_set(Ewl_Window *win);
-void                 ewl_engine_window_transient_for(Ewl_Window *win);
-void                 ewl_engine_window_leader_set(Ewl_Window *win);
+void             ewl_engine_window_borderless_set(Ewl_Window *win);
+void             ewl_engine_window_dialog_set(Ewl_Window *win);
+void             ewl_engine_window_states_set(Ewl_Window *win);
+void             ewl_engine_window_hints_set(Ewl_Window *win);
+void             ewl_engine_window_transient_for(Ewl_Window *win);
+void             ewl_engine_window_leader_set(Ewl_Window *win);
 
-void                 ewl_engine_window_raise(Ewl_Window *win);
-void                 ewl_engine_window_lower(Ewl_Window *win);
+void             ewl_engine_window_raise(Ewl_Window *win);
+void             ewl_engine_window_lower(Ewl_Window *win);
 
-int                 ewl_engine_keyboard_grab(Ewl_Window *win);
-void                 ewl_engine_keyboard_ungrab(Ewl_Window *win);
-int                  ewl_engine_pointer_grab(Ewl_Window *win);
-void                  ewl_engine_pointer_ungrab(Ewl_Window *win);
+int              ewl_engine_keyboard_grab(Ewl_Window *win);
+void             ewl_engine_keyboard_ungrab(Ewl_Window *win);
+int              ewl_engine_pointer_grab(Ewl_Window *win);
+void             ewl_engine_pointer_ungrab(Ewl_Window *win);
 
-void                 ewl_engine_window_geometry_get(Ewl_Window *win, int root,
+void             ewl_engine_window_geometry_get(Ewl_Window *win, int root,
                                                 int *width, int *height);
-void                 ewl_engine_embed_selection_text_set(Ewl_Embed *emb,
-                                                        const char *txt);
-void                 ewl_engine_embed_dnd_aware_set(Ewl_Embed *embed);
-void                  ewl_engine_embed_dnd_drag_types_set(Ewl_Embed *embed,
-                                                        char **types,
-                                                        unsigned int num);
-void                  ewl_engine_embed_dnd_drag_start(Ewl_Embed *embed);
-void                  ewl_engine_embed_dnd_drag_drop(Ewl_Embed *embed);
+void             ewl_engine_embed_selection_text_set(Ewl_Embed *emb,
+                                                const char *txt);
+void             ewl_engine_embed_dnd_aware_set(Ewl_Embed *embed);
+void             ewl_engine_embed_dnd_drag_types_set(Ewl_Embed *embed,
+                                                char **types,
+                                                unsigned int num);
+void             ewl_engine_embed_dnd_drag_start(Ewl_Embed *embed);
+void             ewl_engine_embed_dnd_drag_drop(Ewl_Embed *embed);
 int              ewl_engine_embed_dnd_drag_data_send(Ewl_Embed *embed,
-                                                        void *handle,
-                                                        void *data,
-                                                        int size);
-void                 ewl_engine_desktop_size_get(Ewl_Embed *embed, int *w, int *h);
+                                                void *handle, void *data,
+                                                int size);
+void             ewl_engine_desktop_size_get(Ewl_Embed *embed, int *w, int *h);
 
-void                 ewl_engine_canvas_setup(Ewl_Window *win, int debug);
-void                 ewl_engine_canvas_output_set(Ewl_Embed *emb, int x, int y,
+void             ewl_engine_canvas_setup(Ewl_Window *win, int debug);
+void             ewl_engine_canvas_output_set(Ewl_Embed *emb, int x, int y,
                                                 int width, int height);
-void                 ewl_engine_canvas_render(Ewl_Embed *embed);
-void                 ewl_engine_canvas_freeze(Ewl_Embed *embed);
-void                 ewl_engine_canvas_thaw(Ewl_Embed *embed);
-void                 ewl_engine_canvas_damage_add(Ewl_Embed *embed, int x, int y,
-                                                                int w, int h);
+void             ewl_engine_canvas_render(Ewl_Embed *embed);
+void             ewl_engine_canvas_freeze(Ewl_Embed *embed);
+void             ewl_engine_canvas_thaw(Ewl_Embed *embed);
+void             ewl_engine_canvas_damage_add(Ewl_Embed *embed, int x, int y,
+                                                int w, int h);
 
-void                 ewl_engine_theme_freeze(Ewl_Embed *embed);
-void                 ewl_engine_theme_thaw(Ewl_Embed *embed);
-char                *ewl_engine_theme_data_get(Ewl_Widget *w, char *key);
+void             ewl_engine_theme_freeze(Ewl_Embed *embed);
+void             ewl_engine_theme_thaw(Ewl_Embed *embed);
+char            *ewl_engine_theme_data_get(Ewl_Widget *w, char *key);
 
-int                  ewl_engine_pointer_data_new(Ewl_Embed *embed,
+int              ewl_engine_pointer_data_new(Ewl_Embed *embed,
                                                 unsigned int *data, int w, int h);
-void                 ewl_engine_pointer_free(Ewl_Embed *embed, int pointer);
-void                 ewl_engine_pointer_set(Ewl_Embed *embed, int pointer);
-int                  ewl_engine_pointer_get(Ewl_Embed *embed);
+void             ewl_engine_pointer_free(Ewl_Embed *embed, int pointer);
+void             ewl_engine_pointer_set(Ewl_Embed *embed, int pointer);
+int              ewl_engine_pointer_get(Ewl_Embed *embed);
 
 /**
  * Internal engine hook typedefs, you only need these if you're writing an

@@ -50,10 +50,10 @@ struct Ewl_Tree_View
         Ewl_Tree *parent;        /**< The tree parent */
 };
 
-int ewl_tree_view_init(Ewl_Tree_View *v);
+int              ewl_tree_view_init(Ewl_Tree_View *v);
 
-void ewl_tree_view_tree_set(Ewl_Tree_View *v, Ewl_Tree *t);
-Ewl_Tree *ewl_tree_view_tree_get(Ewl_Tree_View *v);
+void             ewl_tree_view_tree_set(Ewl_Tree_View *v, Ewl_Tree *t);
+Ewl_Tree        *ewl_tree_view_tree_get(Ewl_Tree_View *v);
 
 /**
  * @}

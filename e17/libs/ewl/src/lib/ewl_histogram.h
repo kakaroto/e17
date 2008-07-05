@@ -52,23 +52,23 @@ struct Ewl_Histogram
         Ewl_Histogram_Channel channel; /**< Channel of data for graphing */
 };
 
-Ewl_Widget         *ewl_histogram_new(void);
-int                  ewl_histogram_init(Ewl_Histogram *histogram);
+Ewl_Widget              *ewl_histogram_new(void);
+int                      ewl_histogram_init(Ewl_Histogram *histogram);
 
-void                  ewl_histogram_color_set(Ewl_Histogram *histogram,
-                                                unsigned int r, unsigned int g,
-                                                unsigned int b, unsigned int a);
-void                  ewl_histogram_color_get(Ewl_Histogram *histogram,
-                                                unsigned int *r, unsigned int *g,
-                                                unsigned int *b, unsigned int *a);
+void                     ewl_histogram_color_set(Ewl_Histogram *histogram,
+                                        unsigned int r, unsigned int g,
+                                        unsigned int b, unsigned int a);
+void                     ewl_histogram_color_get(Ewl_Histogram *histogram,
+                                        unsigned int *r, unsigned int *g,
+                                        unsigned int *b, unsigned int *a);
 
-void                  ewl_histogram_image_set(Ewl_Histogram *histogram,
-                                                Ewl_Image *image);
-Ewl_Image         *ewl_histogram_image_get(Ewl_Histogram *histogram);
+void                     ewl_histogram_image_set(Ewl_Histogram *histogram,
+                                        Ewl_Image *image);
+Ewl_Image               *ewl_histogram_image_get(Ewl_Histogram *histogram);
 
-void                  ewl_histogram_channel_set(Ewl_Histogram *histogram,
-                                                Ewl_Histogram_Channel channel);
-Ewl_Histogram_Channel ewl_histogram_channel_get(Ewl_Histogram *histogram);
+void                     ewl_histogram_channel_set(Ewl_Histogram *histogram,
+                                        Ewl_Histogram_Channel channel);
+Ewl_Histogram_Channel    ewl_histogram_channel_get(Ewl_Histogram *histogram);
 
 /*
  * Internally used callbacks, override at your own risk

@@ -95,87 +95,85 @@ struct Ewl_Embed
         Ewl_Widget *dnd_last_position;        /**< The last dnd position */
 };
 
-Ewl_Widget         *ewl_embed_new(void);
-int                  ewl_embed_init(Ewl_Embed *emb);
-int                  ewl_embed_engine_name_set(Ewl_Embed *embed, const char *engine);
-const char         *ewl_embed_engine_name_get(Ewl_Embed *embed);
-void                  ewl_embed_shutdown(void);
-void                *ewl_embed_canvas_set(Ewl_Embed *emb, void *canvas,
+Ewl_Widget      *ewl_embed_new(void);
+int              ewl_embed_init(Ewl_Embed *emb);
+int              ewl_embed_engine_name_set(Ewl_Embed *embed, const char *engine);
+const char      *ewl_embed_engine_name_get(Ewl_Embed *embed);
+void             ewl_embed_shutdown(void);
+void            *ewl_embed_canvas_set(Ewl_Embed *emb, void *canvas,
                                         Ewl_Embed_Window *canvas_window);
 
-void                  ewl_embed_focus_set(Ewl_Embed *embed, int f);
-int                  ewl_embed_focus_get(Ewl_Embed *embed);
+void             ewl_embed_focus_set(Ewl_Embed *embed, int f);
+int              ewl_embed_focus_get(Ewl_Embed *embed);
 
-void                 ewl_embed_active_set(Ewl_Embed *embed, unsigned int act);
-Ewl_Embed         *ewl_embed_active_embed_get(void);
+void             ewl_embed_active_set(Ewl_Embed *embed, unsigned int act);
+Ewl_Embed       *ewl_embed_active_embed_get(void);
 
-void                 ewl_embed_last_mouse_position_get(int *x, int *y);
+void             ewl_embed_last_mouse_position_get(int *x, int *y);
 
-void                  ewl_embed_key_down_feed(Ewl_Embed *embed, const char *keyname,
+void             ewl_embed_key_down_feed(Ewl_Embed *embed, const char *keyname,
                                         unsigned int modifiers);
-void                  ewl_embed_key_up_feed(Ewl_Embed *embed, const char *keyname,
+void             ewl_embed_key_up_feed(Ewl_Embed *embed, const char *keyname,
                                         unsigned int modifiers);
-void                  ewl_embed_mouse_down_feed(Ewl_Embed *embed, int b, int clicks,
-                                          int x, int y, unsigned int modifiers);
-void                  ewl_embed_mouse_up_feed(Ewl_Embed *embed, int b, int x,
+void             ewl_embed_mouse_down_feed(Ewl_Embed *embed, int b, int clicks,
+                                        int x, int y, unsigned int modifiers);
+void             ewl_embed_mouse_up_feed(Ewl_Embed *embed, int b, int x,
                                         int y, unsigned int modifiers);
-void                  ewl_embed_mouse_move_feed(Ewl_Embed *embed, int x, int y,
-                                          unsigned int modifiers);
+void             ewl_embed_mouse_move_feed(Ewl_Embed *embed, int x, int y,
+                                        unsigned int modifiers);
 
-const char         *ewl_embed_dnd_position_feed(Ewl_Embed *embed, int x, int y,
-                                                int *, int *, int *, int *);
-const char         *ewl_embed_dnd_drop_feed(Ewl_Embed* embed, int x, int y,
-                                                        int internal);
-void                 ewl_embed_dnd_data_received_feed(Ewl_Embed* embed, char *type,
-                                                        void *data,
-                                                        unsigned int len,
-                                                        unsigned int format);
-void                 ewl_embed_dnd_data_request_feed(Ewl_Embed* embed, void *handle,
-                                                                char *type);
+const char      *ewl_embed_dnd_position_feed(Ewl_Embed *embed, int x, int y,
+                                        int *, int *, int *, int *);
+const char      *ewl_embed_dnd_drop_feed(Ewl_Embed* embed, int x, int y,
+                                        int internal);
+void             ewl_embed_dnd_data_received_feed(Ewl_Embed* embed, char *type,
+                                        void *data, unsigned int len,
+                                        unsigned int format);
+void             ewl_embed_dnd_data_request_feed(Ewl_Embed* embed, void *handle,                                        char *type);
 
-void                  ewl_embed_mouse_out_feed(Ewl_Embed *embed, int x, int y,
-                                         unsigned int modifiers);
-void                  ewl_embed_mouse_wheel_feed(Ewl_Embed *embed, int x, int y,
-                                           int z, int dir, unsigned int mods);
+void             ewl_embed_mouse_out_feed(Ewl_Embed *embed, int x, int y,
+                                        unsigned int modifiers);
+void             ewl_embed_mouse_wheel_feed(Ewl_Embed *embed, int x, int y,
+                                        int z, int dir, unsigned int mods);
 
-void                  ewl_embed_font_path_add(char *path);
-Ewl_Embed          *ewl_embed_canvas_window_find(Ewl_Embed_Window *win);
-Ewl_Embed         *ewl_embed_widget_find(Ewl_Widget *w);
-void                   ewl_embed_object_cache(Ewl_Embed *e, void *obj);
-void                *ewl_embed_object_request(Ewl_Embed *e, char *type);
+void             ewl_embed_font_path_add(char *path);
+Ewl_Embed       *ewl_embed_canvas_window_find(Ewl_Embed_Window *win);
+Ewl_Embed       *ewl_embed_widget_find(Ewl_Widget *w);
+void             ewl_embed_object_cache(Ewl_Embed *e, void *obj);
+void            *ewl_embed_object_request(Ewl_Embed *e, char *type);
 
-void                  ewl_embed_tab_order_append(Ewl_Embed *e, Ewl_Widget *w);
-void                 ewl_embed_tab_order_prepend(Ewl_Embed *e, Ewl_Widget *w);
-void                 ewl_embed_tab_order_insert(Ewl_Embed *e, Ewl_Widget *w,
-                                           unsigned int idx);
-void                 ewl_embed_tab_order_insert_before(Ewl_Embed *e, Ewl_Widget *w,
-                                                 Ewl_Widget *before);
-void                 ewl_embed_tab_order_insert_after(Ewl_Embed *e, Ewl_Widget *w,
-                                                 Ewl_Widget *after);
-void                  ewl_embed_tab_order_remove(Ewl_Embed *e, Ewl_Widget *w);
-void                  ewl_embed_tab_order_next(Ewl_Embed *e);
-void                 ewl_embed_tab_order_previous(Ewl_Embed *e);
+void             ewl_embed_tab_order_append(Ewl_Embed *e, Ewl_Widget *w);
+void             ewl_embed_tab_order_prepend(Ewl_Embed *e, Ewl_Widget *w);
+void             ewl_embed_tab_order_insert(Ewl_Embed *e, Ewl_Widget *w,
+                                        unsigned int idx);
+void             ewl_embed_tab_order_insert_before(Ewl_Embed *e, Ewl_Widget *w,
+                                        Ewl_Widget *before);
+void             ewl_embed_tab_order_insert_after(Ewl_Embed *e, Ewl_Widget *w,
+                                        Ewl_Widget *after);
+void             ewl_embed_tab_order_remove(Ewl_Embed *e, Ewl_Widget *w);
+void             ewl_embed_tab_order_next(Ewl_Embed *e);
+void             ewl_embed_tab_order_previous(Ewl_Embed *e);
 
-void                 ewl_embed_focused_widget_set(Ewl_Embed *e, Ewl_Widget *w);
-Ewl_Widget         *ewl_embed_focused_widget_get(Ewl_Embed *e);
-void                 ewl_embed_info_widgets_cleanup(Ewl_Embed *e, Ewl_Widget *w);
+void             ewl_embed_focused_widget_set(Ewl_Embed *e, Ewl_Widget *w);
+Ewl_Widget      *ewl_embed_focused_widget_get(Ewl_Embed *e);
+void             ewl_embed_info_widgets_cleanup(Ewl_Embed *e, Ewl_Widget *w);
 
-void                  ewl_embed_coord_to_screen(Ewl_Embed *e, int xx, int yy,
-                                          int *x, int *y);
+void             ewl_embed_coord_to_screen(Ewl_Embed *e, int xx, int yy,
+                                        int *x, int *y);
 
-void                 ewl_embed_mouse_cursor_set(Ewl_Widget *w);
-void                  ewl_embed_position_get(Ewl_Embed *e, int *x, int *y);
-void                  ewl_embed_window_position_get(Ewl_Embed *e, int *x, int *y);
-void                  ewl_embed_desktop_size_get(Ewl_Embed *e, int *w, int *y);
-void                  ewl_embed_freeze(Ewl_Embed *e);
-void                  ewl_embed_thaw(Ewl_Embed *e);
+void             ewl_embed_mouse_cursor_set(Ewl_Widget *w);
+void             ewl_embed_position_get(Ewl_Embed *e, int *x, int *y);
+void             ewl_embed_window_position_get(Ewl_Embed *e, int *x, int *y);
+void             ewl_embed_desktop_size_get(Ewl_Embed *e, int *w, int *y);
+void             ewl_embed_freeze(Ewl_Embed *e);
+void             ewl_embed_thaw(Ewl_Embed *e);
 
-void                  ewl_embed_dnd_aware_set(Ewl_Embed *embed);
-void                  ewl_embed_dnd_aware_remove(Ewl_Embed *embed);
+void             ewl_embed_dnd_aware_set(Ewl_Embed *embed);
+void             ewl_embed_dnd_aware_remove(Ewl_Embed *embed);
 
-void                  ewl_embed_selection_text_set(Ewl_Embed *emb, const char *txt);
+void             ewl_embed_selection_text_set(Ewl_Embed *emb, const char *txt);
 
-void                  ewl_embed_cache_cleanup(Ewl_Embed *emb);
+void             ewl_embed_cache_cleanup(Ewl_Embed *emb);
 
 /*
  * Internally used callbacks, override at your own risk.

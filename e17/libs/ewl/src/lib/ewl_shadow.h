@@ -54,8 +54,8 @@ struct Ewl_Shadow
         Ewl_Box box;       /**< Inherit from Ewl_Box */
 };
 
-Ewl_Widget        *ewl_shadow_new(void);
-int                  ewl_shadow_init(Ewl_Shadow *s);
+Ewl_Widget      *ewl_shadow_new(void);
+int              ewl_shadow_init(Ewl_Shadow *s);
 
 /**
  * @}

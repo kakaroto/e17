@@ -50,12 +50,11 @@ struct Ewl_Expansion
         int expandable; /**< Indicates if this node is expandable or not */
 };
 
-Ewl_Widget         *ewl_expansion_new(void);
-int                  ewl_expansion_init(Ewl_Expansion *c);
+Ewl_Widget      *ewl_expansion_new(void);
+int              ewl_expansion_init(Ewl_Expansion *c);
 
-int                  ewl_expansion_is_expandable(Ewl_Expansion *c);
-void                  ewl_expansion_expandable_set(Ewl_Expansion *c,
-                                                int expandable);
+int              ewl_expansion_is_expandable(Ewl_Expansion *c);
+void             ewl_expansion_expandable_set(Ewl_Expansion *c, int expandable);
 /*
  * Internally used callbacks.
  */

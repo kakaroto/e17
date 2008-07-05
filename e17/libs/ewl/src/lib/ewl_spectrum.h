@@ -68,24 +68,26 @@ struct Ewl_Spectrum
         unsigned int dirty:1;                /**< The flag to queue redraw */
 };
 
-Ewl_Widget        *ewl_spectrum_new(void);
-int                 ewl_spectrum_init(Ewl_Spectrum *sp);
+Ewl_Widget              *ewl_spectrum_new(void);
+int                      ewl_spectrum_init(Ewl_Spectrum *sp);
 
-void                  ewl_spectrum_type_set(Ewl_Spectrum *sp, Ewl_Spectrum_Type type);
-Ewl_Spectrum_Type ewl_spectrum_type_get(Ewl_Spectrum *sp);
+void                     ewl_spectrum_type_set(Ewl_Spectrum *sp,
+                                        Ewl_Spectrum_Type type);
+Ewl_Spectrum_Type        ewl_spectrum_type_get(Ewl_Spectrum *sp);
 
-void                 ewl_spectrum_mode_set(Ewl_Spectrum *sp, Ewl_Color_Mode mode);
-Ewl_Color_Mode         ewl_spectrum_mode_get(Ewl_Spectrum *sp);
+void                     ewl_spectrum_mode_set(Ewl_Spectrum *sp,
+                                        Ewl_Color_Mode mode);
+Ewl_Color_Mode           ewl_spectrum_mode_get(Ewl_Spectrum *sp);
 
-void                 ewl_spectrum_rgb_set(Ewl_Spectrum *sp, unsigned int r,
+void                     ewl_spectrum_rgb_set(Ewl_Spectrum *sp, unsigned int r,
                                         unsigned int g, unsigned int b);
-void                 ewl_spectrum_rgb_get(Ewl_Spectrum *sp, unsigned int *r,
+void                     ewl_spectrum_rgb_get(Ewl_Spectrum *sp, unsigned int *r,
                                         unsigned int *g, unsigned int *b);
 
-void                 ewl_spectrum_hsv_set(Ewl_Spectrum *sp, double h,
-                                                double s, double v);
-void                 ewl_spectrum_hsv_get(Ewl_Spectrum *sp, double *h,
-                                                double *s, double *v);
+void                     ewl_spectrum_hsv_set(Ewl_Spectrum *sp, double h,
+                                        double s, double v);
+void                     ewl_spectrum_hsv_get(Ewl_Spectrum *sp, double *h,
+                                        double *s, double *v);
 
 /*
  * Internally used callbacks, override at your own risk.

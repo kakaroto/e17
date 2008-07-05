@@ -54,8 +54,8 @@ struct Ewl_Menu_Item
         Ewl_Widget *inmenu;         /**< Set if inside a menu */
 };
 
-Ewl_Widget        *ewl_menu_item_new(void);
-int                 ewl_menu_item_init(Ewl_Menu_Item *menu);
+Ewl_Widget      *ewl_menu_item_new(void);
+int              ewl_menu_item_init(Ewl_Menu_Item *menu);
 
 /**
  * @}
