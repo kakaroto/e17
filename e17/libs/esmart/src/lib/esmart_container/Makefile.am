@@ -1,7 +1,7 @@
 
 MAINTAINERCLEANFILES = Makefile.in
 
-SUBDIRS = layout
+SUBDIRS = . layout
 
 AM_CPPFLAGS = \
 -I$(top_srcdir)/src/lib/esmart_container \
