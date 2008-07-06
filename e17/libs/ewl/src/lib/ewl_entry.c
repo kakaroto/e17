@@ -389,16 +389,28 @@ ewl_entry_cb_key_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
                 DRETURN(DLEVEL_STABLE);
 
         if (!strcmp(event->keyname, "Left"))
+        {
+                ewl_entry_selection_clear(e);
                 ewl_entry_cursor_move_left(e);
+        }
 
         else if (!strcmp(event->keyname, "Right"))
+        {
+                ewl_entry_selection_clear(e);
                 ewl_entry_cursor_move_right(e);
+        }
 
         else if (!strcmp(event->keyname, "Up"))
+        {
+                ewl_entry_selection_clear(e);
                 ewl_entry_cursor_move_up(e);
+        }
 
         else if (!strcmp(event->keyname, "Down"))
+        {
+                ewl_entry_selection_clear(e);
                 ewl_entry_cursor_move_down(e);
+        }
 
         else if (!strcmp(event->keyname, "BackSpace"))
         {
@@ -550,11 +562,18 @@ void
 ewl_entry_cb_mouse_move(Ewl_Widget *w, void *ev __UNUSED__,
                                         void *data __UNUSED__)
 {
+        Ewl_Event_Mouse *event;
+        unsigned int idx = 0;
+
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(w);
         DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-        /* XXX do we leave the cursor at the start? or move to the end? */
+        event = ev;
+        idx = ewl_text_coord_index_map(EWL_TEXT(w), event->x, event->y);
+        ewl_entry_cursor_position_set(EWL_ENTRY_CURSOR(EWL_ENTRY(w)->cursor),
+                        idx);
+        ewl_widget_configure(w);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
