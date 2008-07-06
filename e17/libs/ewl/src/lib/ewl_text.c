@@ -3471,6 +3471,13 @@ ewl_text_cb_mouse_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
         
         sel = EWL_TEXT_TRIGGER(t->selection);
 
+        /* Move the selection widget to wherever the mouse was clicked,
+         * as this way we are always marked onscreen, and receive configuration
+         * callbacks
+         */
+        ewl_object_position_request(EWL_OBJECT(t->selection), event->x,
+                                event->y);
+
         char_idx = ewl_text_coord_index_map(EWL_TEXT(w), event->x, event->y);
         modifiers = ewl_ev_modifiers_get();
         if (modifiers & EWL_KEY_MODIFIER_SHIFT)
