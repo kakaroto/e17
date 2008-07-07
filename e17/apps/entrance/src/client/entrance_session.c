@@ -370,8 +370,11 @@ entrance_session_setup_user_session(Entrance_Session * e)
       entrance_ipc_request_xauth(homedir, e->auth->pw->pw_uid,
                                  e->auth->pw->pw_gid);
    else
-      /* No daemon available, assume no xauth */
-      ecore_main_loop_quit();
+     {
+	syslog(LOG_INFO, "Cannot send xauth reqest to entranced");
+	/* No daemon available, assume no xauth */
+	ecore_main_loop_quit();
+     }
 }
 
 /**

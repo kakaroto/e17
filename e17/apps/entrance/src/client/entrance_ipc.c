@@ -59,17 +59,20 @@ _entrance_ipc_server_data(void *data, int type, void *event)
 
       if (e->major == E_XAUTH_ACK)
       {
+	 syslog(LOG_INFO, "_entrance_ipc_server_data = E_XAUTH_ACK");
          printf("_entrance_ipc_server_data: Xauthority write success\n");
          ecore_main_loop_quit();
       }
       else if (e->major == E_XAUTH_NAK)
       {
+	 syslog(LOG_INFO, "_entrance_ipc_server_data = E_XAUTH_NACK");
          printf("_entrance_ipc_server_data: Xauthority write failure!\n");
          /* For now we'll attempt to start the user session regardless */
          ecore_main_loop_quit();
       }
       else
       {
+	 syslog(LOG_INFO, "_entrance_ipc_server_data = ???");
          printf("_entrance_ipc_server_data: Invalid message received\n");
       }
    }
