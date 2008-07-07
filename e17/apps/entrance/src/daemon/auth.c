@@ -38,17 +38,17 @@ entranced_cookie_new(char *cookie)
    entranced_md5_update(ctx, (unsigned char *) &pid, sizeof(pid));
 
 
-   if ((fd = open("/dev/random", O_RDONLY | O_NONBLOCK)) < 0)
+   if ((fd = open(ENTRANCE_RANDOM, O_RDONLY | O_NONBLOCK)) < 0)
    {
       entranced_debug
-         ("Cookie generation failed: could not open /dev/random\n");
+         ("Cookie generation failed: could not open " ENTRANCE_RANDOM "\n");
       return 0;
    }
 
    if ((r = read(fd, buf, sizeof(buf))) <= 0)
    {
       entranced_debug
-         ("Cookie generation failed: could not read /dev/random\n");
+         ("Cookie generation failed: could not read " ENTRANCE_RANDOM "\n");
       return 0;
    }
 

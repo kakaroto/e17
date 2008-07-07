@@ -51,7 +51,7 @@ dnl Set path to X_BINARIES in config.h
 dnl# FIXME:  Use AC_PATH_PROG macro here.
 xbin=""
 AC_ARG_WITH(xbin,
-	AC_HELP_STRING([--with-xbin=DIR],[Directory where X binaries are installed]),
+	AC_HELP_STRING([--with-xbin=DIR], [Directory where X binaries are installed]),
             [
                 xbin="$withval"
             ], [
@@ -94,7 +94,7 @@ AC_CHECK_LIB(c, clearenv, [
 
 have_pam=no
 AC_ARG_ENABLE(pam,
-	AC_HELP_STRING([--enable-pam],[enable PAM support @<:@default=detect@:>@]),
+	AC_HELP_STRING([--enable-pam], [enable PAM support @<:@default=detect@:>@]),
 	[want_pam=$enableval],
 	[want_pam=auto]
 )
@@ -113,6 +113,11 @@ have_crypt=no
 AC_CHECK_LIB(crypt, crypt, [
 	LIBS="$LIBS -lcrypt"
 	have_crypt=yes])
+if test "x$have_crypt" != "xyes" ; then
+	AC_CHECK_LIB(crypto, crypt, [
+		LIBS="$LIBS -lcrypto"
+		have_crypt=yes])
+fi
 AC_CHECK_HEADERS(crypt.h)
 
 have_shadow=no
@@ -135,7 +140,7 @@ if test "x${have_pam}" != "xyes"; then
 fi
 
 AC_ARG_WITH(auth_mode,
-    AC_HELP_STRING([--with-auth-mode=AUTHMODE],[Specify the default authentication mode (pam or shadow)]),
+    AC_HELP_STRING([--with-auth-mode=AUTHMODE], [Specify the default authentication mode (pam or shadow)]),
     [
      if test "x$withval" = "xshadow"; then
          auth_mode=2
@@ -147,7 +152,7 @@ AC_SUBST(auth_mode)
 
 AC_MSG_CHECKING([for pam configuration source])
 AC_ARG_WITH(pam-config,
-	AC_HELP_STRING([--with-pam-config=SRC],[Specify PAM config source (entrance, gdm, xdm, etc. or "auto")]),
+	AC_HELP_STRING([--with-pam-config=SRC], [Specify PAM config source (entrance, gdm, xdm, etc. or "auto")]),
             [
                 if test "x$have_pam" = "yes"; then
                     AC_MSG_RESULT([N/A, pam disabled])
@@ -186,7 +191,7 @@ if test ! -x "$xsession" ; then
 fi
 
 AC_ARG_WITH(xsession,
-	AC_HELP_STRING([--with-xsession=PATH],[Specify the location of system Xsession file]),
+	AC_HELP_STRING([--with-xsession=PATH], [Specify the location of system Xsession file]),
 	[
 	    if test "x$withval" != "xno" ; then
 		xsession=$withval
@@ -208,7 +213,7 @@ if test ! -d "$sessions" ; then
 fi
 
 AC_ARG_WITH(sessions,
-			AC_HELP_STRING([--with-sessions=PATH],[Specify the location of sessions .desktop files]),
+	AC_HELP_STRING([--with-sessions=PATH], [Specify the location of sessions .desktop files]),
 	[
 	    if test "x$withval" != "xno" ; then
 		sessions=$withval
@@ -223,6 +228,24 @@ fi
 AC_DEFINE_UNQUOTED(ENTRANCE_SESSIONS_DIR, "$sessions", [Sessions .desktop directory])
 AC_SUBST(sessions)
 
+# what random generator we are using
+random=/dev/random
+if test ! -c "$random" ; then
+    random=/dev/srandom
+fi
+
+AC_ARG_WITH(random,
+	AC_HELP_STRING([--with-random=PATH], [Specify the location of the random device]),
+	[
+	    if test "x$withval" != "xno" ; then
+		random=$withval
+	    fi
+	]
+)
+
+AC_DEFINE_UNQUOTED(ENTRANCE_RANDOM, "$random", [random generator])
+AC_SUBST(random)
+
 
 AC_PATH_XTRA
 
@@ -230,18 +253,18 @@ EDJE_DEF=""
 AC_SUBST(EDJE_DEF)
 
 AC_ARG_WITH(edje-cc,
-	AC_HELP_STRING([--with-edje-cc=PATH],[Specify a specific path to edje_cc]),
+	AC_HELP_STRING([--with-edje-cc=PATH], [Specify a specific path to edje_cc]),
 [
   v=$withval;
   edje_cc=$v
   echo "  Enlightenment edje_cc explicitly set to "$edje_cc;
-],[
+], [
   edje_cc=$(pkg-config --variable=prefix edje)/bin/edje_cc
 ])
 AC_SUBST(edje_cc)
 
 AC_MSG_CHECKING([for virtual console for X startup])
-AC_ARG_WITH(vt, AC_HELP_STRING([--with-vt=NUM],[Specify on which virtual console to start X (default 7)]),
+AC_ARG_WITH(vt, AC_HELP_STRING([--with-vt=NUM], [Specify on which virtual console to start X (default 7)]),
             [
                 if (test $withval -ge 0) >/dev/null 2>&1; then
                     AC_MSG_RESULT([$withval])
@@ -300,8 +323,9 @@ echo "Support for crypt authentication .... $have_crypt"
 echo "Support for shadow authentication ... $have_shadow"
 echo "Support for PAM authentication ...... $have_pam"
 echo "XSession file to use ................ $xsession "
-echo "Sessions dir to use ................ $sessions "
+echo "Sessions dir to use ................. $sessions "
 echo "X binaries prefix  .................. $xbin"
+echo "Random generator  ................... $random"
 echo
 echo "Now type 'make' (gmake on some systems) to compile $PACKAGE"
 echo

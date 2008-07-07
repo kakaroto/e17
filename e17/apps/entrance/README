@@ -62,7 +62,7 @@ PAM is recommended for authentication. If you are compiling for a system
 that does not have PAM support, configure should automatically set your
 config settings appropriately so that crypt/shadow authentication is used
 instead. If you wish to manually set the authentication method, edit the
-/entrance/auth entry in the config db (1 for PAM, 2 for crypt/shadow).
+/entrance/auth entry in the config db (0 for crypt, 1 for PAM, 2 for shadow).
 
 You may specify a custom background Edje file for Entrance by modifying
 the "/entrance/background" key in your Entrance config. Entrance can load
