@@ -20,29 +20,23 @@
 #if HAVE_EVAS_SOFTWARE_X11
 #include "engine_software_x11.h"
 #endif
-#if HAVE_EVAS_OPENGL_GLEW
-#include "engine_gl_glew.h"
+#if HAVE_EVAS_XRENDER_X11
+#include "engine_xrender_x11.h"
 #endif
 #if HAVE_EVAS_OPENGL_X11
 #include "engine_gl_x11.h"
 #endif
-#if HAVE_EVAS_XRENDER_X11
-#include "engine_xrender_x11.h"
-#endif
-#if HAVE_EVAS_SOFTWARE_16_X11
-#include "engine_software_16_x11.h"
+#if HAVE_EVAS_SOFTWARE_XCB
+#include "engine_software_xcb.h"
 #endif
 #if HAVE_EVAS_SOFTWARE_DDRAW
 #include "engine_software_ddraw.h"
 #endif
-#if HAVE_EVAS_SOFTWARE_16_DDRAW
-#include "engine_software_16_ddraw.h"
-#endif
 #if HAVE_EVAS_DIRECT3D
 #include "engine_direct3d.h"
 #endif
-#if HAVE_EVAS_SOFTWARE_16_WINCE
-#include "engine_software_16_wince.h"
+#if HAVE_EVAS_OPENGL_GLEW
+#include "engine_gl_glew.h"
 #endif
 #if HAVE_EVAS_SOFTWARE_SDL
 #include "engine_software_sdl.h"
@@ -52,6 +46,15 @@
 #endif
 #if HAVE_EVAS_DIRECTFB
 #include "engine_directfb.h"
+#endif
+#if HAVE_EVAS_SOFTWARE_16_X11
+#include "engine_software_16_x11.h"
+#endif
+#if HAVE_EVAS_SOFTWARE_16_DDRAW
+#include "engine_software_16_ddraw.h"
+#endif
+#if HAVE_EVAS_SOFTWARE_16_WINCE
+#include "engine_software_16_wince.h"
 #endif
 
 #include "ui.h"

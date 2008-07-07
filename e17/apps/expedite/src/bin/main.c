@@ -1186,41 +1186,33 @@ _engine_args(int argc, char **argv)
    if (engine_software_x11_args(argc, argv))
      loop_func = engine_software_x11_loop;
 #endif
-#if HAVE_EVAS_OPENGL_GLEW
-   if (engine_gl_glew_args(argc, argv))
-     loop_func = engine_gl_glew_loop;
+#if HAVE_EVAS_XRENDER_X11
+   if (engine_xrender_x11_args(argc, argv))
+     loop_func = engine_xrender_x11_loop;
 #endif
 #if HAVE_EVAS_OPENGL_X11
    if (engine_gl_x11_args(argc, argv))
      loop_func = engine_gl_x11_loop;
 #endif
-#if HAVE_EVAS_XRENDER_X11
-   if (engine_xrender_x11_args(argc, argv))
-     loop_func = engine_xrender_x11_loop;
-#endif
-#if HAVE_EVAS_SOFTWARE_16_X11
-   if (engine_software_16_x11_args(argc, argv))
-     loop_func = engine_software_16_x11_loop;
+#if HAVE_EVAS_SOFTWARE_XCB
+   if (engine_software_xcb_args(argc, argv))
+     loop_func = engine_software_xcb_loop;
 #endif
 #if HAVE_EVAS_SOFTWARE_DDRAW
    if (engine_software_ddraw_args(argc, argv))
      loop_func = engine_software_ddraw_loop;
 #endif
-#if HAVE_EVAS_SOFTWARE_16_DDRAW
-   if (engine_software_16_ddraw_args(argc, argv))
-     loop_func = engine_software_16_ddraw_loop;
-#endif
-#if HAVE_EVAS_SOFTWARE_SDL
-   if (engine_software_sdl_args(argc, argv))
-     loop_func = engine_software_sdl_loop;
-#endif
 #if HAVE_EVAS_DIRECT3D
    if (engine_direct3d_args(argc, argv))
      loop_func = engine_direct3d_loop;
 #endif
-#if HAVE_EVAS_SOFTWARE_16_WINCE
-   if (engine_software_16_wince_args(argc, argv))
-     loop_func = engine_software_16_wince_loop;
+#if HAVE_EVAS_OPENGL_GLEW
+   if (engine_gl_glew_args(argc, argv))
+     loop_func = engine_gl_glew_loop;
+#endif
+#if HAVE_EVAS_SOFTWARE_SDL
+   if (engine_software_sdl_args(argc, argv))
+     loop_func = engine_software_sdl_loop;
 #endif
 #if HAVE_EVAS_FB
    if (engine_fb_args(argc, argv))
@@ -1229,6 +1221,18 @@ _engine_args(int argc, char **argv)
 #if HAVE_EVAS_DIRECTFB
    if (engine_directfb_args(argc, argv))
      loop_func = engine_directfb_loop;
+#endif
+#if HAVE_EVAS_SOFTWARE_16_X11
+   if (engine_software_16_x11_args(argc, argv))
+     loop_func = engine_software_16_x11_loop;
+#endif
+#if HAVE_EVAS_SOFTWARE_16_DDRAW
+   if (engine_software_16_ddraw_args(argc, argv))
+     loop_func = engine_software_16_ddraw_loop;
+#endif
+#if HAVE_EVAS_SOFTWARE_16_WINCE
+   if (engine_software_16_wince_args(argc, argv))
+     loop_func = engine_software_16_wince_loop;
 #endif
    if ((!loop_func) || (!profile_ok))
      {
@@ -1249,29 +1253,20 @@ _engine_args(int argc, char **argv)
 #if HAVE_EVAS_XRENDER_X11
 	       	" xr"
 #endif
-#if HAVE_EVAS_OPENGL_GLEW
-	       	" gl-glew"
-#endif
 #if HAVE_EVAS_OPENGL_X11
 	       	" gl"
 #endif
-#if HAVE_EVAS_SOFTWARE_16_X11
-	       	" x11-16"
+#if HAVE_EVAS_SOFTWARE_XCB
+	       	" xcb"
 #endif
 #if HAVE_EVAS_SOFTWARE_DDRAW
 	       	" ddraw"
 #endif
-#if HAVE_EVAS_SOFTWARE_16_DDRAW
-	       	" ddraw-16"
-#endif
 #if HAVE_EVAS_DIRECT3D
 	       	" direct3d"
 #endif
-#if HAVE_EVAS_SOFTWARE_16_WINCE
-               " wince"
-               " wince-fb"
-               " wince-gapi"
-               " wince-ddraw"
+#if HAVE_EVAS_OPENGL_GLEW
+	       	" gl-glew"
 #endif
 #if HAVE_EVAS_SOFTWARE_SDL
                " sdl sdl-16"
@@ -1281,6 +1276,18 @@ _engine_args(int argc, char **argv)
 #endif
 #if HAVE_EVAS_DIRECTFB
 	       	" directfb"
+#endif
+#if HAVE_EVAS_SOFTWARE_16_X11
+	       	" x11-16"
+#endif
+#if HAVE_EVAS_SOFTWARE_16_DDRAW
+	       	" ddraw-16"
+#endif
+#if HAVE_EVAS_SOFTWARE_16_WINCE
+               " wince"
+               " wince-fb"
+               " wince-gapi"
+               " wince-ddraw"
 #endif
 		"\n"
 		"Where PROFILE can be one of:\n"

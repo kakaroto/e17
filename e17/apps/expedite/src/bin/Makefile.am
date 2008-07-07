@@ -9,7 +9,8 @@ AM_CPPFLAGS = \
 @EVAS_CFLAGS@ \
 @x_cflags@ \
 @SDL_CFLAGS@ \
-@DIRECTFB_CFLAGS@
+@DIRECTFB_CFLAGS@ \
+@XCB_CFLAGS@
 
 bin_PROGRAMS = expedite
 
@@ -58,7 +59,7 @@ image_blend_occlude3_very_many.c \
 poly_blend.c
 
 expedite_CFLAGS = @WIN32_CFLAGS@
-expedite_LDADD = @EVAS_LIBS@ @SDL_LIBS@ @x_libs@ @ddraw_libs@ @ddraw_16_libs@ @d3d_libs@ @wince_16_libs@ @glew_libs@ @DIRECTFB_LIBS@ -lm
+expedite_LDADD = @EVAS_LIBS@ @SDL_LIBS@ @x_libs@ @ddraw_libs@ @ddraw_16_libs@ @d3d_libs@ @wince_16_libs@ @glew_libs@ @DIRECTFB_LIBS@ @XCB_LIBS@ -lm
 expedite_LDFLAGS = @lt_enable_auto_import@
 
 if BUILD_SOFTWARE_X11
@@ -66,24 +67,19 @@ expedite_SOURCES += \
 engine_software_x11.c engine_software_x11.h
 endif
 
-if BUILD_OPENGL_X11
-expedite_SOURCES += \
-engine_gl_x11.c engine_gl_x11.h
-endif
-
-if BUILD_SOFTWARE_16_X11
-expedite_SOURCES += \
-engine_software_16_x11.c engine_software_16_x11.h
-endif
-
 if BUILD_XRENDER_X11
 expedite_SOURCES += \
 engine_xrender_x11.c engine_xrender_x11.h
 endif
 
-if BUILD_OPENGL_GLEW
+if BUILD_OPENGL_X11
 expedite_SOURCES += \
-engine_gl_glew.c engine_gl_glew.h
+engine_gl_x11.c engine_gl_x11.h
+endif
+
+if BUILD_SOFTWARE_XCB
+expedite_SOURCES += \
+engine_software_xcb.c engine_software_xcb.h
 endif
 
 if BUILD_SOFTWARE_DDRAW
@@ -91,19 +87,14 @@ expedite_SOURCES += \
 engine_software_ddraw.cpp engine_software_ddraw.h
 endif
 
-if BUILD_SOFTWARE_16_DDRAW
-expedite_SOURCES += \
-engine_software_16_ddraw.cpp engine_software_16_ddraw.h
-endif
-
 if BUILD_DIRECT3D
 expedite_SOURCES += \
 engine_direct3d.cpp engine_direct3d.h
 endif
 
-if BUILD_SOFTWARE_16_WINCE
+if BUILD_OPENGL_GLEW
 expedite_SOURCES += \
-engine_software_16_wince.c engine_software_16_wince.h
+engine_gl_glew.c engine_gl_glew.h
 endif
 
 if BUILD_SOFTWARE_SDL
@@ -119,5 +110,20 @@ endif
 if BUILD_DIRECTFB
 expedite_SOURCES += \
 engine_directfb.c engine_directfb.h
+endif
+
+if BUILD_SOFTWARE_16_X11
+expedite_SOURCES += \
+engine_software_16_x11.c engine_software_16_x11.h
+endif
+
+if BUILD_SOFTWARE_16_DDRAW
+expedite_SOURCES += \
+engine_software_16_ddraw.cpp engine_software_16_ddraw.h
+endif
+
+if BUILD_SOFTWARE_16_WINCE
+expedite_SOURCES += \
+engine_software_16_wince.c engine_software_16_wince.h
 endif
 
