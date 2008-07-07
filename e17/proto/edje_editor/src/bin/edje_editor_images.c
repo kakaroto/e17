@@ -18,16 +18,16 @@ image_frame_create(void)
    //AddImageButton
    UI_ImageAddButton = etk_button_new_from_stock(ETK_STOCK_IMAGE_X_GENERIC);
    etk_object_properties_set(ETK_OBJECT(UI_ImageAddButton), "label", "Choose Image", NULL);
-   etk_table_attach_default(ETK_TABLE(table),UI_ImageAddButton, 0, 1, 0, 0);
+   etk_table_attach_default(ETK_TABLE(table), UI_ImageAddButton, 0, 1, 0, 0);
    
    //ImageName
    UI_ImageNameLabel = etk_label_new("none");
    etk_object_properties_set(ETK_OBJECT(UI_ImageNameLabel), "xalign", 0.5, NULL);
-   etk_table_attach_default(ETK_TABLE(table),UI_ImageNameLabel, 2, 4, 0, 0);
+   etk_table_attach_default(ETK_TABLE(table), UI_ImageNameLabel, 2, 4, 0, 0);
 
    //ImageTweenVBox
    UI_ImageTweenVBox = etk_vbox_new(ETK_TRUE, 0);
-   etk_table_attach_default(ETK_TABLE(table),UI_ImageTweenVBox, 0, 0, 1, 1);
+   etk_table_attach_default(ETK_TABLE(table), UI_ImageTweenVBox, 0, 0, 1, 1);
    
    //AddTweenButton
    UI_AddTweenButton = etk_button_new_from_stock(ETK_STOCK_LIST_ADD);
@@ -96,7 +96,7 @@ image_frame_create(void)
    etk_table_attach_default(ETK_TABLE(table),label, 4, 4, 3, 3);
 
    label = etk_label_new("Border");
-   //etk_object_properties_set(ETK_OBJECT(label), "xalign",0.5,NULL);
+   //etk_object_properties_set(ETK_OBJECT(label), "xalign", 0.5, NULL);
    etk_table_attach_default(ETK_TABLE(table),label, 0, 0, 4, 4);
 
    //UI_BorderLeftSpinner
@@ -306,15 +306,12 @@ image_browser_create(void)
    etk_container_add(ETK_CONTAINER(frame), vbox2);
    
    label = etk_label_new("<b>name:</b>");
-   etk_object_properties_set(ETK_OBJECT(label), "xalign", 0, NULL);
    etk_box_append(ETK_BOX(vbox2), label, 0, ETK_BOX_NONE, 0);
    
    label = etk_label_new("Unknow");
-   etk_object_properties_set(ETK_OBJECT(label), "xalign", 0, NULL);
    etk_box_append(ETK_BOX(vbox2), label, 0, ETK_BOX_NONE, 0);
    
    label = etk_label_new(" ");
-   etk_object_properties_set(ETK_OBJECT(label), "xalign", 0, NULL);
    etk_box_append(ETK_BOX(vbox2), label, 0, ETK_BOX_NONE, 0);
    
    UI_ImageBrowserSizeLabel = etk_label_new("<b>size:</b> Unknow");
@@ -322,7 +319,6 @@ image_browser_create(void)
    etk_box_append(ETK_BOX(vbox2), UI_ImageBrowserSizeLabel, 0, ETK_BOX_NONE, 0);
    
    label = etk_label_new("<b>comp:</b> Unknow");
-   etk_object_properties_set(ETK_OBJECT(label), "xalign", 0, NULL);
    etk_box_append(ETK_BOX(vbox2), label, 0, ETK_BOX_NONE, 0);
    
    //CloseButton
