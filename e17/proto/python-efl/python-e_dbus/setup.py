@@ -58,6 +58,4 @@ setup(name="python-e_dbus",
       keywords="d-bus python integration ecore mainloop",
       ext_modules=[e_dbus_module],
       zip_safe=False,
-      cmdclass={'build_ext': evas_build_ext,
-                'install_headers': evas_install_headers},
       )
