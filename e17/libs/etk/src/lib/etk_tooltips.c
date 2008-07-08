@@ -23,7 +23,7 @@
  * @{
  */
 
-static Evas_Bool _etk_tooltips_hash_free(Evas_Hash *hash, const char *key, void *data, void *fdata);
+static Evas_Bool _etk_tooltips_hash_free(const Evas_Hash *hash, const char *key, void *data, void *fdata);
 static Etk_Bool _etk_tooltips_mouse_in_cb(Etk_Object *object, Etk_Event_Mouse_In *event, void *data);
 static Etk_Bool _etk_tooltips_mouse_out_cb(Etk_Object *object, Etk_Event_Mouse_Out *event, void *data);
 static Etk_Bool _etk_tooltips_mouse_move_cb(Etk_Object *object, Etk_Event_Mouse_Move *event, void *data);
@@ -367,9 +367,8 @@ static Etk_Bool _etk_tooltips_widget_unrealized_cb(Etk_Object *object, void *dat
 }
 
 /* free hash items */
-static Evas_Bool _etk_tooltips_hash_free(Evas_Hash *hash, const char *key, void *data, void *fdata)
+static Evas_Bool _etk_tooltips_hash_free(const Evas_Hash *hash, const char *key, void *data, void *fdata)
 {
-   hash = evas_hash_del(hash, key, data);
    if(data)
      free(data);
    return 1;

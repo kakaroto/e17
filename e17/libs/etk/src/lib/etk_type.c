@@ -19,9 +19,9 @@
  */
 
 static void _etk_type_free(Etk_Type *type);
-static Evas_Bool _etk_type_free_cb(Evas_Hash *hash, const char *key, void *data, void *fdata);
-static Evas_Bool _etk_type_property_free_cb(Evas_Hash *hash, const char *key, void *data, void *fdata);
-static Evas_Bool _etk_type_property_add_to_list(Evas_Hash *hash, const char *key, void *data, void *fdata);
+static Evas_Bool _etk_type_free_cb(const Evas_Hash *hash, const char *key, void *data, void *fdata);
+static Evas_Bool _etk_type_property_free_cb(const Evas_Hash *hash, const char *key, void *data, void *fdata);
+static Evas_Bool _etk_type_property_add_to_list(const Evas_Hash *hash, const char *key, void *data, void *fdata);
 
 static Evas_Hash *_etk_type_types_hash = NULL;
 
@@ -418,21 +418,21 @@ static void _etk_type_free(Etk_Type *type)
 }
 
 /* Used by etk_type_shutdown() */
-static Evas_Bool _etk_type_free_cb(Evas_Hash *hash, const char *key, void *data, void *fdata)
+static Evas_Bool _etk_type_free_cb(const Evas_Hash *hash, const char *key, void *data, void *fdata)
 {
    _etk_type_free(data);
    return 1;
 }
 
 /* Used by _etk_type_free() */
-static Evas_Bool _etk_type_property_free_cb(Evas_Hash *hash, const char *key, void *data, void *fdata)
+static Evas_Bool _etk_type_property_free_cb(const Evas_Hash *hash, const char *key, void *data, void *fdata)
 {
    etk_property_delete(data);
    return 1;
 }
 
 /* Used by etk_type_property_list() */
-static Evas_Bool _etk_type_property_add_to_list(Evas_Hash *hash, const char *key, void *data, void *fdata)
+static Evas_Bool _etk_type_property_add_to_list(const Evas_Hash *hash, const char *key, void *data, void *fdata)
 {
    Evas_List **properties;
 
