@@ -723,7 +723,7 @@ static Etk_Bool _etk_scrolled_view_mouse_down(Etk_Object *object, Etk_Event_Mous
       drag->down_position = drag->position = event->widget;
       drag->bar_position.x = hscrollbar_range->value;
       drag->bar_position.y = vscrollbar_range->value;
-      etk_viewport_hold_events_set(scrolled_view->viewport, ETK_FALSE);
+      etk_viewport_hold_events_set(ETK_VIEWPORT(scrolled_view->viewport), ETK_FALSE);
    }
    return ETK_FALSE;
 }
@@ -766,7 +766,7 @@ static Etk_Bool _etk_scrolled_view_mouse_move(Etk_Object *object, Etk_Event_Mous
 	    (event->cur.widget.y - drag->down_position.y))) >
 	  (15 * 15))
       {
-	 etk_viewport_hold_events_set(scrolled_view->viewport, ETK_TRUE);
+	 etk_viewport_hold_events_set(ETK_VIEWPORT(scrolled_view->viewport), ETK_TRUE);
       }
       if (drag->bar_pressed == ETK_FALSE) 
       {
@@ -801,7 +801,7 @@ static Etk_Bool _etk_scrolled_view_mouse_up(Etk_Object *object, Etk_Event_Mouse_
    if (!(scrolled_view = ETK_SCROLLED_VIEW(object)))
       return ETK_FALSE;
 
-   etk_viewport_hold_events_set(scrolled_view->viewport, ETK_FALSE);
+   etk_viewport_hold_events_set(ETK_VIEWPORT(scrolled_view->viewport), ETK_FALSE);
    
    if (!drag->dragable) 
       return ETK_FALSE;
