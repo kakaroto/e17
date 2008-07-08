@@ -27,7 +27,7 @@ void etk_test_scrolled_view_window_create(void *data)
    etk_widget_size_request_set(win, 180, 180);
 
    scrolled_view = etk_scrolled_view_new();
-   etk_scrolled_view_dragable_set(scrolled_view, 1);
+   etk_scrolled_view_dragable_set(ETK_SCROLLED_VIEW(scrolled_view), 1);
    etk_container_add(ETK_CONTAINER(win), scrolled_view);
 
    canvas = etk_canvas_new();

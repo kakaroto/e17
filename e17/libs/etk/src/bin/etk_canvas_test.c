@@ -38,7 +38,7 @@ static void _etk_test_canvas_progress_bars_create(int x, int y)
    etk_signal_connect_swapped_by_code(ETK_OBJECT_DESTROYED_SIGNAL, ETK_OBJECT(pbar), ETK_CALLBACK(ecore_timer_del), _etk_test_canvas_timer);
    etk_signal_connect_swapped_by_code(ETK_OBJECT_DESTROYED_SIGNAL, ETK_OBJECT(pbar2), ETK_CALLBACK(ecore_timer_del), _etk_test_canvas_timer2);
 
-	 etk_canvas_put(ETK_CANVAS(canvas), vbox, x, y);
+   etk_canvas_put(ETK_CANVAS(canvas), vbox, x, y);
 }
 
 /* Updates the first progress bar */
@@ -104,11 +104,11 @@ void etk_test_canvas_window_create(void *data)
    etk_signal_connect_swapped_by_code(ETK_BUTTON_CLICKED_SIGNAL, ETK_OBJECT(button), ETK_CALLBACK(_etk_test_canvas_object_add), canvas);
    etk_box_append(ETK_BOX(vbox), button, ETK_BOX_START, ETK_BOX_NONE, 0);
 
-	 /* add some progess bars to the canvas */
-	 for (i = 0; i < 3; i++)
-	 {
-	 		_etk_test_canvas_progress_bars_create(50 + 50 * i, 50 + 50 * i);
-	 }
+   /* add some progess bars to the canvas */
+   for (i = 0; i < 3; i++)
+   {
+      _etk_test_canvas_progress_bars_create(50 + 50 * i, 50 + 50 * i);
+   }
 
    etk_widget_show_all(win);
 }
@@ -116,10 +116,10 @@ void etk_test_canvas_window_create(void *data)
 /* Adds a rectangle object to the canvas */
 static void _etk_test_canvas_object_add(void *data)
 {
-   Etk_Fixed *canvas;
+   Etk_Canvas *canvas;
    Evas *evas;
    Evas_Object *object;
-	 Etk_Widget *etk_evas_object;
+   Etk_Widget *etk_evas_object;
    int x, y;
    int cw, ch;
 
@@ -137,7 +137,7 @@ static void _etk_test_canvas_object_add(void *data)
       int r, g, b, a;
 
       object = evas_object_rectangle_add(evas);
-            w = ETK_MAX(abs(rand() % (cw - x)), 10);
+      w = ETK_MAX(abs(rand() % (cw - x)), 10);
       h = ETK_MAX(abs(rand() % (ch - y)), 10);
       evas_object_resize(object, w, h);
 
@@ -159,9 +159,9 @@ static void _etk_test_canvas_object_add(void *data)
       evas_object_image_fill_set(object, 0, 0, 48, 48);
       evas_object_resize(object, 48, 48);
       etk_evas_object = etk_evas_object_new();
-			etk_evas_object_set_object(ETK_EVAS_OBJECT(etk_evas_object), object);
+      etk_evas_object_set_object(ETK_EVAS_OBJECT(etk_evas_object), object);
    }
 
    etk_canvas_put(canvas, etk_evas_object, x, y);
-	 etk_widget_show_all(etk_evas_object);
+   etk_widget_show_all(etk_evas_object);
 }
