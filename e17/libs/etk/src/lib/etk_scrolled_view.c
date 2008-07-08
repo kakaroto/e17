@@ -324,6 +324,8 @@ static void _etk_scrolled_view_constructor(Etk_Scrolled_View *scrolled_view)
    if (!scrolled_view)
       return;
 
+   scrolled_view->viewport = NULL;
+   
    scrolled_view->hpolicy = ETK_POLICY_AUTO;
    scrolled_view->vpolicy = ETK_POLICY_AUTO;
 
