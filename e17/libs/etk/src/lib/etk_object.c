@@ -35,9 +35,9 @@ static void _etk_object_property_set(Etk_Object *object, int property_id, Etk_Pr
 static void _etk_object_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 
 static void _etk_object_free(Etk_Object *object);
-static Evas_Bool _etk_object_notification_callbacks_clean_cb(Evas_Hash *hash, const char *key, void *data, void *fdata);
-static Evas_Bool _etk_object_notification_callbacks_free_cb(Evas_Hash *hash, const char *key, void *data, void *fdata);
-static Evas_Bool _etk_object_data_free_cb(Evas_Hash *hash, const char *key, void *data, void *fdata);
+static Evas_Bool _etk_object_notification_callbacks_clean_cb(const Evas_Hash *hash, const char *key, void *data, void *fdata);
+static Evas_Bool _etk_object_notification_callbacks_free_cb(const Evas_Hash *hash, const char *key, void *data, void *fdata);
+static Evas_Bool _etk_object_data_free_cb(const Evas_Hash *hash, const char *key, void *data, void *fdata);
 
 static Etk_Object *_etk_object_objects = NULL;
 static Etk_Object *_etk_object_last_object = NULL;
@@ -799,7 +799,7 @@ static void _etk_object_free(Etk_Object *object)
 }
 
 /* Removes the notification-callbacks marked as "deleted" from the list (called by etk_object_notify()) */
-static Evas_Bool _etk_object_notification_callbacks_clean_cb(Evas_Hash *hash, const char *key, void *data, void *fdata)
+static Evas_Bool _etk_object_notification_callbacks_clean_cb(const Evas_Hash *hash, const char *key, void *data, void *fdata)
 {
    Evas_List *l, *next;
    Evas_List **callbacks;
@@ -824,7 +824,7 @@ static Evas_Bool _etk_object_notification_callbacks_clean_cb(Evas_Hash *hash, co
 }
 
 /* Frees a list of notification callbacks (called by _etk_object_destructor()) */
-static Evas_Bool _etk_object_notification_callbacks_free_cb(Evas_Hash *hash, const char *key, void *data, void *fdata)
+static Evas_Bool _etk_object_notification_callbacks_free_cb(const Evas_Hash *hash, const char *key, void *data, void *fdata)
 {
    Evas_List **list;
 
@@ -842,7 +842,7 @@ static Evas_Bool _etk_object_notification_callbacks_free_cb(Evas_Hash *hash, con
 }
 
 /* Frees data from the data hash of the object */
-static Evas_Bool _etk_object_data_free_cb(Evas_Hash *hash, const char *key, void *data, void *fdata)
+static Evas_Bool _etk_object_data_free_cb(const Evas_Hash *hash, const char *key, void *data, void *fdata)
 {
    Etk_Object_Data *object_data;
 
