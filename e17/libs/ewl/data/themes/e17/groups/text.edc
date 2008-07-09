@@ -14,6 +14,7 @@ group
 	{
 		item: "inset" 2;
 		item: "inset/left" 6;
+		item: "pad" 1;
 	}
 
 	parts 
