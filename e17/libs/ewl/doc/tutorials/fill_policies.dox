@@ -1,14 +1,21 @@
 /**
  * @page fill_policies Fill Policies
 
-As widgets are packed together their fill policies kick in and 
-adjust the widget sizes as needed to make everything fit. The fill 
-policies of Ewl can be a bit confusing for the first time user, hell, 
-I still have problems at times.
+Ewl is a container-based widget library, this means that the container will
+care to place its children. As point of reference the preferred size of the
+child is used. In the case (and these cases are not rare) that the container
+has more free space or less free space to distribute the fill policies of the 
+children kick in and adjust the widget sizes as needed to make everything fit.
+Thus you can give the container hints if the child is stick to its preferred
+size or if it can grow and/or shrink. The fill policies of Ewl can be a bit 
+confusing for the first time user. But once you understood the concept, 
+it gives you the power to arrange the widget as you like without being a worry
+to the underlying calculations, which are fortunately done by the container.
 
 @section fill_users Using the fill policy
 
 The basis for how fill policies fit together is shown the following image.
+@todo Update this image
 
 @image html object_sizing.png
 
@@ -18,29 +25,55 @@ There are three sizes to any widget:
   - maximum size
 
 As the name implies the widget wants to be set to its 
-@e preferred size whenever possible. If the fill policy allows, the 
-widget can also shrink or grow within the bounds of its @e minimum and 
-@e maximum sizes.
+@e preferred size whenever possible. If the fill policy allows, the widget can
+also shrink or grow within the bounds of its @e minimum and @e maximum sizes.
 
-@verbatim
-    Fill Policy       | Effect  
-----------------------------------------------------------------
-EWL_FLAG_FILL_NONE    | Do not fill or shrink in any direction
-EWL_FLAG_FILL_VSHRINK | Vertically shrink
-EWL_FLAG_FILL_HSHRINK | Horizontally shrink
-EWL_FLAG_FILL_SHRINK  | Shrink both horizontally and vertically
-EWL_FLAG_FILL_VFILL   | Vertically fill
-EWL_FLAG_FILL_HFILL   | Horizontally fill
-EWL_FLAG_FILL_FILL    | Fill both horizontally and vertically
-EWL_FLAG_FILL_ALL     | Shrink or fill as needed
-@endverbatim
+@par @c EWL_FLAG_FILL_NONE
+        Do not fill or shrink in any direction
+@par @c EWL_FLAG_FILL_VSHRINKABLE
+        Vertically shrinkable
+@par @c EWL_FLAG_FILL_HSHRINKABLE
+        Horizontally shrinkable
+@par @c EWL_FLAG_FILL_SHRINKABLE
+        Shrinkable both horizontally and vertically
+@par @c EWL_FLAG_FILL_VSHRINK
+        Vertically shrink
+@par @c EWL_FLAG_FILL_HSHRINK
+        Horizontally shrink
+@par @c EWL_FLAG_FILL_SHRINK
+        Shrink both horizontally and vertically
+@par @c EWL_FLAG_FILL_VFILL
+        Vertically fill
+@par @c EWL_FLAG_FILL_HFILL
+        Horizontally fill
+@par @c EWL_FLAG_FILL_FILL
+        Fill both horizontally and vertically
+@par @c EWL_FLAG_FILL_ALL
+        Shrink or fill as needed
+
+You can combine any combination of fill policies with a binary OR. For example
+@c EWL_FLAG_FILL_VSHRINK | @c EWL_FLAG_FILL_HSHRINK is the same like
+@c EWL_FLAG_FILL_SHRINK.
+
+@subsection shrink_or_shrinkable The difference between shrink and shrinkable
+But what is the difference between the 'shrink' and the 'shrinkable' fill policy?
+The 'shrink' fill policy is used if the widget really wants to be shrunk, i.e.
+it prefers its minimum size over its actual set preferred size. Hence the
+container will only consider the minimum size of the child  to calculate the 
+preferred size. This fill policy is useful in cases, where you do not really
+want that the widget is shown in its full size. For example you do not want
+to show all items in a scrollpane, because if you'd want that you wouldn't use
+a scrollpane. So for a vertical scrollpane you can use @c VSHRINK, for example.
+The scrollpane will not show the whole list of the items, but it will make the
+scrollpane width enough, therefor each child fits into it and you don't need
+a horizontal scrollbar.
 
 @section fill_guide Guidelines for container authors
 
 As you have seen in the previous section fill policies and the three different
 sizes are very closely connected. As a container author you have to set them
 to proper values in particular for the preferred size. Of course you do not
-have to overwrite them if you are inheriting this feature from the parent
+have to overwrite them if you are inheriting this feature from the parent 
 widget, as long it fits your needs. 
 
 @note The following guidelines are only commendations and not strict rules.
@@ -55,12 +88,13 @@ the user of the container.
 @subsection fill_guide_pref The preferred size
 Every child of the container should be visible if the container has the size of
 its preferred size. Your container should respect the fill policy of the 
-children, so if a child is set to SHRINK the user don't want it necessarily
-to be drawn in its full preferred size. For the calculation of the preferred
+children, so if a child is set to SHRINK the user doesn't want it to be drawn 
+in its full preferred size. For the calculation of the preferred
 size, it is advisable to use, what is returned from 
-ewl_object_minimum_size_get(). If the child is not set to shrink the return 
-value is the same like the return value of ewl_object_preferred_size_get(), 
-but if the child is set to shrink it will return the minimum size.
+ewl_object_preferred_size_get(). If the child is set to shrink the returned 
+value is the minimum size, for any other fill policy it will return the
+actual preferred size, i.e. what was set with @c 
+ewl_object_preferred_inner_size_set() plus the inset and padding values.
 
 @subsection fill_guide_max The maximum size
 You do not need to set this value. By default it is set to a very big number
