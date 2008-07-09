@@ -27,6 +27,7 @@ static int position_test_set_get(char *buf, int len);
 static int position_size_test_set_get(char *buf, int len);
 static int preferred_inner_size_test_set_get(char *buf, int len);
 static int preferred_size_test_set_get(char *buf, int len);
+static int preferred_size_test_get(char *buf, int len);
 static int minimum_size_test_set_get(char *buf, int len);
 static int maximum_size_test_set_get(char *buf, int len);
 static int minimum_size_test_set_request(char *buf, int len);
@@ -50,6 +51,7 @@ static Ewl_Unit_Test object_unit_tests[] = {
                 {"position size set/get", position_size_test_set_get, NULL, -1, 0},
                 {"preferred inner size set/get", preferred_inner_size_test_set_get, NULL, -1, 0},
                 {"preferred size set/get", preferred_size_test_set_get, NULL, -1, 0},
+                {"preferred size get", preferred_size_test_get, NULL, -1, 0},
                 {"minimum size set/get", minimum_size_test_set_get, NULL, -1, 0},
                 {"maximum size set/get", maximum_size_test_set_get, NULL, -1, 0},
                 {"minimum size set/request", minimum_size_test_set_request, NULL, -1, 0},
@@ -459,6 +461,97 @@ preferred_size_test_set_get(char *buf, int len)
                         width, height);
 
         ewl_widget_destroy(w);
+
+        return ret;
+}
+
+/*
+ * Set different sizes (minimum, maximum, preferred) and fill policies
+ * and test if it returns the right size
+ */
+static int
+preferred_size_test_get(char *buf, int len)
+{
+        Ewl_Object *o;
+        int width, height;
+        int ret = 0;
+        const int small_w = 13;
+        const int medium_w = 20;
+        const int large_w = 30;
+        const int small_h = 7;
+        const int medium_h = 30;
+        const int large_h = 32;
+
+        o = EWL_OBJECT(ewl_widget_new());
+
+        ewl_object_preferred_inner_size_set(o, medium_w, medium_h);
+
+        ewl_object_preferred_size_get(o, &width, &height);
+        if (width != medium_w && height != medium_h)
+        {
+                LOG_FAILURE(buf, len,
+                                "Preferred size differs from the set value"
+                                "set: %dx%d get: %dx%d", 
+                                medium_w, medium_h, width, height);
+                goto DONE;
+        }
+        
+        /* now set a minimum size that is larger then the preferred size */
+        ewl_object_minimum_size_set(o, large_w, large_h);
+        ewl_object_preferred_size_get(o, &width, &height);
+        if (width != large_w || height != large_h)
+        {
+                LOG_FAILURE(buf, len,
+                                "Preferred size differs from the minimum size"
+                                "expect: %dx%d get: %dx%d", 
+                                large_w, large_h, width, height);
+                goto DONE;
+        }
+        /* reset the minimum size */
+        ewl_object_minimum_size_set(o, 0, 0);
+
+        /* set a maximum size that is smaller then the preferred size */
+        ewl_object_maximum_size_set(o, small_w, small_h);
+        ewl_object_preferred_size_get(o, &width, &height);
+        if (width != small_w || height != small_h)
+        {
+                LOG_FAILURE(buf, len,
+                                "Preferred size differs from the maximum size"
+                                "expect: %dx%d get: %dx%d", 
+                                small_w, small_h, width, height);
+                goto DONE;
+        }
+        /* reset the minimum size */
+        ewl_object_maximum_size_set(o, 0, 0);
+
+        /* set a smaller minimum size, but set the fill policy to shrink */
+        ewl_object_minimum_size_set(o, small_w, small_h);
+        ewl_object_fill_policy_set(o, EWL_FLAG_FILL_SHRINK);
+        ewl_object_preferred_size_get(o, &width, &height);
+        if (width != small_w || height != small_h)
+        {
+                LOG_FAILURE(buf, len,
+                                "Preferred size differs from the minimum size"
+                                "expect: %dx%d get: %dx%d", 
+                                small_w, small_h, width, height);
+                goto DONE;
+        }
+
+        /* do the same but this time with a larger minimum size */
+        ewl_object_minimum_size_set(o, large_w, large_h);
+        ewl_object_preferred_size_get(o, &width, &height);
+        if (width != large_w || height != large_h)
+        {
+                LOG_FAILURE(buf, len,
+                                "Preferred size differs from the minimum size"
+                                "expect: %dx%d get: %dx%d", 
+                                large_w, large_h, width, height);
+                goto DONE;
+        }
+
+        ret = 1;
+DONE:
+        ewl_widget_destroy(EWL_WIDGET(o));
 
         return ret;
 }
