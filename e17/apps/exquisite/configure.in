@@ -104,10 +104,7 @@ PKG_CHECK_MODULES([EDJE], edje)
 PKG_CHECK_MODULES([ECORE], [
    ecore-con
    ecore-evas
-   ecore-ipc
-   ecore-job
-   ecore-txt
-   ecore-file])
+   ecore-ipc])
 
 AC_ARG_WITH(edje-cc,
 [  --with-edje-cc=PATH              specify a specific path to edje_cc],
