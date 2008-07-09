@@ -283,7 +283,7 @@ ewl_entry_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(w);
-        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DCHECK_TYPE(w, EWL_ENTRY_TYPE);
 
         e = EWL_ENTRY(w);
         if (!e->editable)
@@ -326,7 +326,7 @@ ewl_entry_cb_focus_in(Ewl_Widget *w, void *ev __UNUSED__,
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(w);
-        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DCHECK_TYPE(w, EWL_ENTRY_TYPE);
 
         entry = EWL_ENTRY(w);
         if (entry->editable && !VISIBLE(entry->cursor))
@@ -351,7 +351,7 @@ ewl_entry_cb_focus_out(Ewl_Widget *w, void *ev __UNUSED__,
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(w);
-        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DCHECK_TYPE(w, EWL_ENTRY_TYPE);
 
         entry = EWL_ENTRY(w);
         if (entry->editable && VISIBLE(entry->cursor))
@@ -376,7 +376,7 @@ ewl_entry_cb_key_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(w);
-        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DCHECK_TYPE(w, EWL_ENTRY_TYPE);
 
         event = ev;
         e = EWL_ENTRY(w);
@@ -468,7 +468,7 @@ ewl_entry_cb_mouse_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(w);
-        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DCHECK_TYPE(w, EWL_ENTRY_TYPE);
 
         event = ev;
         e = EWL_ENTRY(w);
@@ -500,7 +500,7 @@ ewl_entry_cb_mouse_up(Ewl_Widget *w, void *ev __UNUSED__,
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(w);
-        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DCHECK_TYPE(w, EWL_ENTRY_TYPE);
 
         e = EWL_ENTRY(w);
 
@@ -523,7 +523,7 @@ ewl_entry_cb_disable(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(w);
-        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DCHECK_TYPE(w, EWL_ENTRY_TYPE);
 
         ewl_entry_editable_set(EWL_ENTRY(w), FALSE);
 
@@ -543,7 +543,7 @@ ewl_entry_cb_enable(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(w);
-        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DCHECK_TYPE(w, EWL_ENTRY_TYPE);
 
         ewl_entry_editable_set(EWL_ENTRY(w), TRUE);
 
@@ -567,7 +567,7 @@ ewl_entry_cb_mouse_move(Ewl_Widget *w, void *ev __UNUSED__,
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(w);
-        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DCHECK_TYPE(w, EWL_ENTRY_TYPE);
 
         event = ev;
         idx = ewl_text_coord_index_map(EWL_TEXT(w), event->x, event->y);
@@ -595,7 +595,7 @@ ewl_entry_cb_dnd_position(Ewl_Widget *w, void *ev, void *data __UNUSED__)
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(w);
         DCHECK_PARAM_PTR(ev);
-        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DCHECK_TYPE(w, EWL_ENTRY_TYPE);
 
         event = ev;
         txt = EWL_TEXT(w);
@@ -627,7 +627,7 @@ ewl_entry_cb_dnd_data(Ewl_Widget *w, void *ev, void *data __UNUSED__)
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(w);
         DCHECK_PARAM_PTR(ev);
-        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DCHECK_TYPE(w, EWL_ENTRY_TYPE);
 
         event = ev;
         txt = EWL_TEXT(w);
