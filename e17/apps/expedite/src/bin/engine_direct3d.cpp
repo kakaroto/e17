@@ -221,6 +221,12 @@ engine_direct3d_args(int argc, char **argv)
    if (!window)
      goto unregister_class;
 
+   /* make the window non resizable */
+   style = GetWindowLong(window, GWL_STYLE);
+   style &= ~WS_THICKFRAME;
+   if (!SetWindowLong(window, GWL_STYLE, style))
+     goto unregister_class;
+
    dc = GetDC(NULL);
    if (!dc)
      goto destroy_window;

@@ -188,7 +188,8 @@ engine_gl_glew_args(int argc, char **argv)
      }
    if (!ok) return 0;
 
-   hinstance = GetModuleHandle(0);
+   hinstance = GetModuleHandle(NULL);
+   if (!instance) return 0;
 
    wc.style = 0;
    wc.lpfnWndProc = MainWndProc;
@@ -201,7 +202,8 @@ engine_gl_glew_args(int argc, char **argv)
    wc.lpszMenuName =  NULL;
    wc.lpszClassName = "Evas_Gl_Glew_Test";
 
-   if(!RegisterClass(&wc)) return EXIT_FAILURE;
+   if(!RegisterClass(&wc))
+     goto free_library;
 
    rect.left = 0;
    rect.top = 0;
@@ -216,24 +218,41 @@ engine_gl_glew_args(int argc, char **argv)
                            CW_USEDEFAULT, CW_USEDEFAULT,
                            rect.right - rect.left, rect.bottom - rect.top,
                            NULL, NULL, hinstance, NULL);
-   if (!window) return 0;
+   if (!window)
+     goto unregister_class;
 
-   ShowWindow(window, SW_SHOWDEFAULT);
-   UpdateWindow(window);
+   /* make the window non resizable */
+   style = GetWindowLong(window, GWL_STYLE);
+   style &= ~WS_THICKFRAME;
+   if (!SetWindowLong(window, GWL_STYLE, style))
+     goto unregister_class;
 
    evas_output_method_set(evas, evas_render_method_lookup("gl_glew"));
    einfo = (Evas_Engine_Info_GL_Glew *)evas_engine_info_get(evas);
    if (!einfo)
      {
         printf("Evas does not support the GL Glew Engine\n");
-        return 0;
+        goto destroy_window;
      }
 
    einfo->info.window = window;
    einfo->info.depth = depth;
    evas_engine_info_set(evas, (Evas_Engine_Info *) einfo);
 
+   /* the second parameter is ignored, as it's the first call of ShowWindow */
+   ShowWindow(window, SW_SHOWDEFAULT);
+   UpdateWindow(window);
+
    return 1;
+
+ destroy_window:
+   DestroyWindow(window);
+ unregister_class:
+   UnregisterClass("Evas_Gl_Glew_Test", instance);
+ free_library:
+   FreeLibrary(instance);
+
+   return 0;
 }
 
 void

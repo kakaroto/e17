@@ -262,7 +262,7 @@ engine_software_16_ddraw_args(int argc, char **argv)
 {
    WNDCLASS                            wc;
    RECT                                rect;
-   HINSTANCE                           hinstance;
+   HINSTANCE                           instance;
    LPDIRECTDRAW                        object;
    LPDIRECTDRAWSURFACE                 surface_primary;
    LPDIRECTDRAWSURFACE                 surface_back;
@@ -284,20 +284,22 @@ engine_software_16_ddraw_args(int argc, char **argv)
      }
    if (!ok) return 0;
 
-   hinstance = GetModuleHandle(0);
+   instance = GetModuleHandle(NULL);
+   if (!instance) return 0;
 
    wc.style = CS_HREDRAW | CS_VREDRAW;
    wc.lpfnWndProc = MainWndProc;
    wc.cbClsExtra = 0;
    wc.cbWndExtra = 0;
-   wc.hInstance = hinstance;
+   wc.hInstance = instance;
    wc.hIcon = LoadIcon (NULL, IDI_APPLICATION);
    wc.hCursor = LoadCursor (NULL, IDC_ARROW);
    wc.hbrBackground = (HBRUSH)(1 + COLOR_BTNFACE);
    wc.lpszMenuName =  NULL;
    wc.lpszClassName = "Evas_Software_16_DDraw_Test";
 
-   if(!RegisterClass(&wc)) return EXIT_FAILURE;
+   if(!RegisterClass(&wc))
+     goto free_library;
 
    style = WS_OVERLAPPEDWINDOW | WS_SIZEBOX;
    exstyle = 0;
@@ -314,8 +316,15 @@ engine_software_16_ddraw_args(int argc, char **argv)
                            style,
                            CW_USEDEFAULT, CW_USEDEFAULT,
                            rect.right - rect.left, rect.bottom - rect.top,
-                           NULL, NULL, hinstance, NULL);
-   if (!window) return EXIT_FAILURE;
+                           NULL, NULL, instance, NULL);
+   if (!window)
+     goto unregister_class;
+
+   /* make the window non resizable */
+   style = GetWindowLong(window, GWL_STYLE);
+   style &= ~WS_THICKFRAME;
+   if (!SetWindowLong(window, GWL_STYLE, style))
+     goto unregister_class;
 
    if (!_directdraw_init(window, win_w, win_h,
                          &object,
@@ -323,14 +332,15 @@ engine_software_16_ddraw_args(int argc, char **argv)
                          &surface_back,
                          &surface_source,
                          &depth))
-     return EXIT_FAILURE;
+        goto destroy_window;
 
    evas_output_method_set(evas, evas_render_method_lookup("software_16_ddraw"));
    einfo = (Evas_Engine_Info_Software_16_DDraw *)evas_engine_info_get(evas);
    if (!einfo)
      {
-       fprintf(stderr, "Evas does not support the 16 bits Software DirectDraw Engine\n");
-        return EXIT_FAILURE;
+        fprintf(stderr, "Evas does not support the 16 bits Software DirectDraw Engine\n");
+        /* should shutdown ddraw  */
+        goto destroy_window;
      }
 
    einfo->info.window = window;
@@ -347,6 +357,15 @@ engine_software_16_ddraw_args(int argc, char **argv)
    UpdateWindow(window);
 
    return 1;
+
+ destroy_window:
+   DestroyWindow(window);
+ unregister_class:
+   UnregisterClass("Evas_Software_16_DDraw_Test", instance);
+ free_library:
+   FreeLibrary(instance);
+
+   return 0;
 }
 
 void
