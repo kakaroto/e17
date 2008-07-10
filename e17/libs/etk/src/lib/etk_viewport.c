@@ -216,7 +216,7 @@ static void _etk_viewport_mouse_up_cb(void *data, Evas *e, Evas_Object *obj, voi
 static void _etk_viewport_mouse_move_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    Etk_Viewport *viewport;
-   Evas_Event_Mouse_Down *event;
+   Evas_Event_Mouse_Move *event;
    
    if (!(viewport = ETK_VIEWPORT(data)) || !(event = event_info))
       return;

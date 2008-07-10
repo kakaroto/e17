@@ -333,6 +333,7 @@ static void _etk_scrolled_view_constructor(Etk_Scrolled_View *scrolled_view)
    scrolled_view->drag.bar_pressed = ETK_FALSE;
    scrolled_view->drag.dragable    = ETK_FALSE;
    scrolled_view->drag.bouncy      = ETK_TRUE;
+   scrolled_view->drag.damping_magic = ETK_SCROLLED_VIEW_DRAG_DAMPING_MAGIC;
 
    // FIXME This can be put in etk_config (Make whole system be configured)
    etk_scrolled_view_drag_sample_interval_set(scrolled_view, ETK_SCROLLED_VIEW_DRAG_SAMPLE_INTERVAL_MAGIC);
@@ -596,6 +597,7 @@ static int _etk_scrolled_view_motive_bounce(void *data)
    double delta_V;
    double delta_x;
    double delta_y;
+   
    if (!scrolled_view) 
       return 0;
    drag = &scrolled_view->drag;
@@ -606,7 +608,7 @@ static int _etk_scrolled_view_motive_bounce(void *data)
    delta_time = ecore_time_get() - drag->timestamp;
    delta_V = delta_time * (drag->damping_magic + abs(drag->Vx)+ abs(drag->Vy)) / 2;
    delta_time = delta_time < 0.01 ? 0.01 : delta_time;
-
+   
    if (drag->Vx < delta_V && drag->Vx > -delta_V) 
    {
       delta_x = 0;
@@ -715,13 +717,18 @@ static Etk_Bool _etk_scrolled_view_mouse_down(Etk_Object *object, Etk_Event_Mous
 
    if (!drag->mouse_down && event->button) 
    {
+      int i;
+      
       vscrollbar_range = ETK_RANGE(scrolled_view->vscrollbar);
       hscrollbar_range = ETK_RANGE(scrolled_view->hscrollbar);
       drag->mouse_down = ETK_TRUE;
+      for (i = 0; i < 5; i++) drag->prev_position_timestamp[i] = 0.0;
       drag->timestamp = ecore_time_get(); 
       drag->old_timestamp = 0.0;
       drag->Vx = 0;
       drag->Vy = 0;
+      drag->position.x = -1;
+      drag->position.y = -1;
       drag->down_position = drag->position = event->widget;
       drag->bar_position.x = hscrollbar_range->value;
       drag->bar_position.y = vscrollbar_range->value;
@@ -736,9 +743,10 @@ static Etk_Bool _etk_scrolled_view_mouse_move(Etk_Object *object, Etk_Event_Mous
    Etk_Scrolled_View *scrolled_view;
    Etk_Range *vscrollbar_range;
    Etk_Range *hscrollbar_range;
-   double delta_time;
+   double delta_time, t;
    struct Etk_Scrolled_View_Mouse_Drag *drag = (struct Etk_Scrolled_View_Mouse_Drag *) data;
-
+   int i;
+   
    if (!(scrolled_view = ETK_SCROLLED_VIEW(object)))
       return ETK_FALSE;
 
@@ -760,6 +768,9 @@ static Etk_Bool _etk_scrolled_view_mouse_move(Etk_Object *object, Etk_Event_Mous
 
    if (drag->scroll_flag) 
    {
+      if ((drag->position.x == event->cur.widget.x) &&
+	  (drag->position.y == event->cur.widget.y))
+	return ETK_TRUE;
       /* if we have dragged beyond 15 pixels from the down point, in any
        * direction, set on hold flag */
       if ((((event->cur.widget.x - drag->down_position.x) *
@@ -775,12 +786,23 @@ static Etk_Bool _etk_scrolled_view_mouse_move(Etk_Object *object, Etk_Event_Mous
          etk_range_value_set(vscrollbar_range, vscrollbar_range->value - (event->cur.widget.y - drag->position.y));
          etk_range_value_set(hscrollbar_range, hscrollbar_range->value - (event->cur.widget.x - drag->position.x));
       }
+      t = ecore_time_get();
+      /* record the last 5 mouse moves and timestamps */
+      for (i = 5; i >= 1; i--)
+	{
+	   drag->prev_position[i] = drag->prev_position[i - 1];
+	   drag->prev_position_timestamp[i] = drag->prev_position_timestamp[i - 1];
+	}
+      drag->prev_position_timestamp[0] = drag->position_timestamp;
+      drag->prev_position[0] = drag->position;
+      
+      drag->position_timestamp = t;
       drag->position = event->cur.widget;
       delta_time = ecore_time_get() - drag->timestamp;
       // in case delta_time is zero
       delta_time = delta_time == 0.0f ? drag->sample_magic : delta_time;
 
-      if (delta_time > drag->sample_magic || drag->old_timestamp == 0) 
+      if ((delta_time > drag->sample_magic) || (drag->old_timestamp == 0.0)) 
       {
          drag->old_timestamp = drag->timestamp;
          drag->timestamp = ecore_time_get();
@@ -821,8 +843,41 @@ static Etk_Bool _etk_scrolled_view_mouse_up(Etk_Object *object, Etk_Event_Mouse_
 
    if (drag->scroll_flag) 
    {
-      drag->timestamp = ecore_time_get();
       int max_speed = ETK_SCROLLED_VIEW_DRAG_DAMPING_MAGIC*5;
+      int i, idelt;
+      double tlast, tdelt;
+      Etk_Position lastpos;
+      
+      drag->old_timestamp = drag->timestamp;
+      drag->timestamp = ecore_time_get();
+      
+      /* now check to see the final mouse move was not > 4 times the time
+       * between other moves (like a stop at the end - an aberration),
+       * and check to see over the past 5 moves or 0.2 seconds - whichever
+       * is "less", what the total movement is - if its more than 20
+       * pixels - then have momentum */
+      tlast = drag->position_timestamp - 0.2;
+      lastpos = drag->position;
+      
+      tdelt = drag->position_timestamp;
+      idelt = 0;
+      for (i = 0; i < 5; i++)
+	{
+	   if (drag->prev_position_timestamp[i] >= tlast)
+	     {
+		lastpos = drag->prev_position[i];
+		tdelt = drag->prev_position_timestamp[i];
+		idelt++;
+	     }
+	}
+      if (idelt < 1)
+	return ETK_FALSE;
+      if ((tdelt / idelt) * 4 < (drag->position_timestamp - drag->prev_position_timestamp[0]))
+	return ETK_FALSE;
+      if ((((drag->position.x - lastpos.x) * (drag->position.x - lastpos.x)) +
+	   ((drag->position.y - lastpos.y) * (drag->position.y - lastpos.y)))
+	  <= (20 * 20))
+	return ETK_FALSE;
       drag->Vx = drag->Vx > 0 ?  
          drag->Vx > max_speed ?  max_speed : drag->Vx : 
          drag->Vx < -max_speed ? -max_speed : drag->Vx;
@@ -830,7 +885,7 @@ static Etk_Bool _etk_scrolled_view_mouse_up(Etk_Object *object, Etk_Event_Mouse_
          drag->Vy > max_speed ?  max_speed : drag->Vy : 
          drag->Vy < -max_speed ? -max_speed : drag->Vy;
 
-      ecore_animator_add(&_etk_scrolled_view_motive_bounce, scrolled_view);
+      ecore_animator_add(_etk_scrolled_view_motive_bounce, scrolled_view);
       return ETK_TRUE;
    }
    return ETK_FALSE;

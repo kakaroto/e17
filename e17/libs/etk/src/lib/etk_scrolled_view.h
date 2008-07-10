@@ -39,8 +39,11 @@ typedef enum
 struct Etk_Scrolled_View_Mouse_Drag 
 {
    Etk_Position position;
+   Etk_Position prev_position[5];
    Etk_Position down_position;
    Etk_Position bar_position;
+   double position_timestamp;
+   double prev_position_timestamp[5];
    double sample_magic;
    double timestamp;
    double old_timestamp;
