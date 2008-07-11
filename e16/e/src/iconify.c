@@ -298,13 +298,13 @@ IconboxesEwinIconify(EWin * ewin)
 {
    Container          *ct;
 
-   SoundPlay("SOUND_ICONIFY");
-
    ct = SelectIconboxForEwin(ewin);
    if (!ct)
       return;
 
-   if (ct->anim_mode && !ewin->state.showingdesk)
+   SoundPlay("SOUND_ICONIFY");
+
+   if (EoIsShown(ewin) && ct->anim_mode && !ewin->state.showingdesk)
       IB_Animate(ct, 1, ewin);
 
    IconboxObjEwinAdd(ct, ewin);
@@ -315,11 +315,11 @@ IconboxesEwinDeIconify(EWin * ewin)
 {
    Container          *ct;
 
-   SoundPlay("SOUND_DEICONIFY");
-
    ct = SelectIconboxForEwin(ewin);
    if (!ct)
       return;
+
+   SoundPlay("SOUND_DEICONIFY");
 
    if (ct->anim_mode && !ewin->state.showingdesk)
       IB_Animate(ct, 0, ewin);
