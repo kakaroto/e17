@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-06-28 21:01+0200\n"
+"POT-Creation-Date: 2008-07-11 21:43+0200\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Adam Kisiel <kisiel@if.pw.edu.pl>\n"
 "Language-Team: Polshi <pl@li.org>\n"
@@ -1133,12 +1133,12 @@ msgstr ""
 "Spowodowanie b³êdu szyny jest bardzo ma³o prawodpodobne przy\n"
 "dobrze dzia³aj±cym sprzêcie\n"
 
-#: src/hints.c:601
+#: src/hints.c:600
 #, fuzzy
 msgid "Selection Error!"
 msgstr "B³±d sekcji TextClass"
 
-#: src/hints.c:601
+#: src/hints.c:600
 #, c-format
 msgid "Could not acquire selection: %s"
 msgstr ""

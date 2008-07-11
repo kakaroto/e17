@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-06-28 21:01+0200\n"
+"POT-Creation-Date: 2008-07-11 21:43+0200\n"
 "PO-Revision-Date: 2005-06-14 23:39+0100\n"
 "Last-Translator: jacinto calvo sintes <netman2@seriousman.org>\n"
 "Language-Team: \n"
@@ -1155,12 +1155,12 @@ msgstr ""
 "Es muy poco usual causar errores en el Bus en equipos que\n"
 "están en estado operacional.\n"
 
-#: src/hints.c:601
+#: src/hints.c:600
 #, fuzzy
 msgid "Selection Error!"
 msgstr "Error en Actionclass!"
 
-#: src/hints.c:601
+#: src/hints.c:600
 #, c-format
 msgid "Could not acquire selection: %s"
 msgstr ""

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: e16-0.16.8.13-0.01-fr\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-06-28 21:01+0200\n"
+"POT-Creation-Date: 2008-07-11 21:43+0200\n"
 "PO-Revision-Date: 2008-03-19 13:55+0100\n"
 "Last-Translator: Tristan D. <trinine@free.fr>\n"
 "Language-Team: French\n"
@@ -1138,11 +1138,11 @@ msgstr ""
 "système d'exploitation. Ce type d'erreur est très rare sur du matériel\n"
 "fonctionnant correctement.\n"
 
-#: src/hints.c:601
+#: src/hints.c:600
 msgid "Selection Error!"
 msgstr "Erreur de sélection !"
 
-#: src/hints.c:601
+#: src/hints.c:600
 #, c-format
 msgid "Could not acquire selection: %s"
 msgstr "Impossible de faire la sélection : %s"

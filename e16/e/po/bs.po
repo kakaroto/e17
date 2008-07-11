@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bosnian\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-06-28 21:01+0200\n"
+"POT-Creation-Date: 2008-07-11 21:43+0200\n"
 "PO-Revision-Date: 2004-08-26 00:52+0200\n"
 "Last-Translator: Kemal Šanjta <gomez@lugzdk.ba>\n"
 "Language-Team: Bosnian <lokal@linux.org.ba>\n"
@@ -1147,12 +1147,12 @@ msgstr ""
 "Nije uop�e uobiīajno da se Bus greŷke javljaju na upotrebljivom\n"
 "hardveru.\n"
 
-#: src/hints.c:601
+#: src/hints.c:600
 #, fuzzy
 msgid "Selection Error!"
 msgstr "TextClass greŷka!"
 
-#: src/hints.c:601
+#: src/hints.c:600
 #, c-format
 msgid "Could not acquire selection: %s"
 msgstr ""

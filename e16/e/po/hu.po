@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-06-28 21:01+0200\n"
+"POT-Creation-Date: 2008-07-11 21:43+0200\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: György Horák <dyuri@horak.hu>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
@@ -1109,12 +1109,12 @@ msgid ""
 "hardware.\n"
 msgstr ""
 
-#: src/hints.c:601
+#: src/hints.c:600
 #, fuzzy
 msgid "Selection Error!"
 msgstr "ActionClass hiba!"
 
-#: src/hints.c:601
+#: src/hints.c:600
 #, c-format
 msgid "Could not acquire selection: %s"
 msgstr ""

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-06-28 21:01+0200\n"
+"POT-Creation-Date: 2008-07-11 21:43+0200\n"
 "PO-Revision-Date: 2000-07-30 22:39+0200\n"
 "Last-Translator: Fatih Demir <kabalak@gmx.net>\n"
 "Language-Team: Turkish <tr@li.org>\n"
@@ -1139,12 +1139,12 @@ msgstr ""
 "Çalýþan bir donatýmda yuvalama hatalarýnýn oluþmasý\n"
 "enderdir .\n"
 
-#: src/hints.c:601
+#: src/hints.c:600
 #, fuzzy
 msgid "Selection Error!"
 msgstr "TextClass hatasý!"
 
-#: src/hints.c:601
+#: src/hints.c:600
 #, c-format
 msgid "Could not acquire selection: %s"
 msgstr ""
