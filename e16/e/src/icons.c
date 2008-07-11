@@ -24,6 +24,7 @@
 #include "E.h"
 #include "eimage.h"
 #include "ewins.h"
+#include "iclass.h"
 #include "icons.h"
 #include "windowmatch.h"
 #include "xwin.h"
@@ -66,30 +67,12 @@ NetwmIconFindBestSize(unsigned int *val, unsigned int len, int size)
    return k;
 }
 
-static EImage      *
-IB_SnapEWin(EWin * ewin, int size)
+static void
+IB_IconGetSize(int ww, int hh, int size, int scale, int *pw, int *ph)
 {
-   /* Make snapshot of window */
-   int                 w, h, ww, hh, scale;
-   EImage             *im;
-   Drawable            draw;
-
-   if (!EoIsShown(ewin))
-      return NULL;
-
-   ww = EoGetW(ewin);
-   hh = EoGetH(ewin);
-   if (ww <= 0 || hh <= 0)
-      return NULL;
-
-   if (ewin->state.shaded)
-      EwinInstantUnShade(ewin);
-   EwinRaise(ewin);
+   int                 w, h;
 
    w = h = size;
-
-   /* Oversample for nicer snapshots */
-   scale = 4;
    w *= scale;
    h *= scale;
 
@@ -106,6 +89,33 @@ IB_SnapEWin(EWin * ewin, int size)
 	w = ww;
 	h = hh;
      }
+
+   *pw = w;
+   *ph = h;
+}
+
+static EImage      *
+IB_SnapEWin(EWin * ewin, int size)
+{
+   /* Make snapshot of window */
+   int                 w, h, ww, hh;
+   EImage             *im;
+   Drawable            draw;
+
+   if (!EoIsShown(ewin))
+      return NULL;
+
+   ww = EoGetW(ewin);
+   hh = EoGetH(ewin);
+   if (ww <= 0 || hh <= 0)
+      return NULL;
+
+   if (ewin->state.shaded)
+      EwinInstantUnShade(ewin);
+   EwinRaise(ewin);
+
+   /* Oversample for nicer snapshots */
+   IB_IconGetSize(ww, hh, size, 4, &w, &h);
 
    draw = EoGetPixmap(ewin);
    if (draw != None)
@@ -185,14 +195,42 @@ IB_GetEIcon(EWin * ewin)
    return im;
 }
 
+static EImage      *
+IB_GetFallbackIcon(EWin * ewin, int size)
+{
+   int                 w, h, ww, hh;
+   ImageClass         *ic;
+   EImage             *im;
+
+   ww = EoGetW(ewin);
+   hh = EoGetH(ewin);
+   if (ww <= 0)
+      ww = 1;
+   if (hh <= 0)
+      hh = 1;
+
+   IB_IconGetSize(ww, hh, size, 1, &w, &h);
+
+   ic = ImageclassFind("ICONBOX_HORIZONTAL", 1);
+   im = ImageclassGetImageBlended(ic, EoGetWin(ewin), w, h, 0, 0,
+				  STATE_NORMAL, ST_SOLID);
+
+   return im;
+}
+
 #define N_MODES 5
-#define N_TYPES 3
+#define N_TYPES 4
 static const char   ewin_icon_modes[N_MODES][N_TYPES] = {
-   {EWIN_ICON_TYPE_SNAP, EWIN_ICON_TYPE_APP, EWIN_ICON_TYPE_IMG},
-   {EWIN_ICON_TYPE_APP, EWIN_ICON_TYPE_IMG, EWIN_ICON_TYPE_SNAP},
-   {EWIN_ICON_TYPE_IMG, EWIN_ICON_TYPE_SNAP, EWIN_ICON_TYPE_APP},
-   {EWIN_ICON_TYPE_IMG, EWIN_ICON_TYPE_APP, EWIN_ICON_TYPE_NONE},
-   {EWIN_ICON_TYPE_APP, EWIN_ICON_TYPE_IMG, EWIN_ICON_TYPE_NONE},
+   {EWIN_ICON_TYPE_SNAP, EWIN_ICON_TYPE_APP, EWIN_ICON_TYPE_IMG,
+    EWIN_ICON_TYPE_FB},
+   {EWIN_ICON_TYPE_APP, EWIN_ICON_TYPE_IMG, EWIN_ICON_TYPE_SNAP,
+    EWIN_ICON_TYPE_FB},
+   {EWIN_ICON_TYPE_IMG, EWIN_ICON_TYPE_SNAP, EWIN_ICON_TYPE_APP,
+    EWIN_ICON_TYPE_FB},
+   {EWIN_ICON_TYPE_IMG, EWIN_ICON_TYPE_APP, EWIN_ICON_TYPE_NONE,
+    EWIN_ICON_TYPE_NONE},
+   {EWIN_ICON_TYPE_APP, EWIN_ICON_TYPE_IMG, EWIN_ICON_TYPE_NONE,
+    EWIN_ICON_TYPE_NONE},
 };
 
 EImage             *
@@ -207,8 +245,6 @@ EwinIconImageGet(EWin * ewin, int size, int mode)
    for (i = 0; i < N_TYPES; i++)
      {
 	type = ewin_icon_modes[mode][i];
-	if (type >= N_TYPES)
-	   continue;
 
 	switch (type)
 	  {
@@ -225,6 +261,10 @@ EwinIconImageGet(EWin * ewin, int size, int mode)
 
 	  case EWIN_ICON_TYPE_IMG:
 	     im = IB_GetEIcon(ewin);
+	     break;
+
+	  case EWIN_ICON_TYPE_FB:
+	     im = IB_GetFallbackIcon(ewin, size);
 	     break;
 	  }
 	if (im)

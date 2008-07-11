@@ -25,13 +25,13 @@
 #define _ICONS_H_
 
 #include "eimage.h"
+#include "ewins.h"
 
-typedef enum {
-   EWIN_ICON_TYPE_APP,
-   EWIN_ICON_TYPE_IMG,
-   EWIN_ICON_TYPE_SNAP,
-   EWIN_ICON_TYPE_NONE,
-} ewin_icon_e;
+#define EWIN_ICON_TYPE_NONE     0
+#define EWIN_ICON_TYPE_APP      1
+#define EWIN_ICON_TYPE_IMG      2
+#define EWIN_ICON_TYPE_SNAP     3
+#define EWIN_ICON_TYPE_FB       4
 
 EImage             *EwinIconImageGet(EWin * ewin, int size, int mode);
 
