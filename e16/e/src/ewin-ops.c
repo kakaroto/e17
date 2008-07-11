@@ -119,32 +119,6 @@ EwinOpFind(const char *op)
    return NULL;
 }
 
-#if 0				/* Unused */
-void
-EwinFixPosition(EWin * ewin)
-{
-   int                 x, y;
-
-   if (!EwinIsMapped(ewin))
-      return;
-
-   x = EoGetX(ewin);
-   if ((x + ewin->border->border.left + 1) > WinGetW(VROOT))
-      x = WinGetW(VROOT) - ewin->border->border.left - 1;
-   else if ((x + EoGetW(ewin) - ewin->border->border.right - 1) < 0)
-      x = 0 - EoGetW(ewin) + ewin->border->border.right + 1;
-
-   y = EoGetY(ewin);
-   if ((y + ewin->border->border.top + 1) > WinGetH(VROOT))
-      y = WinGetH(VROOT) - ewin->border->border.top - 1;
-   else if ((y + EoGetH(ewin) - ewin->border->border.bottom - 1) < 0)
-      y = 0 - EoGetH(ewin) + ewin->border->border.bottom + 1;
-
-   if (x != EoGetX(ewin) || y != EoGetY(ewin))
-      EwinMove(ewin, x, y);
-}
-#endif
-
 static void
 EwinDetermineArea(EWin * ewin)
 {
