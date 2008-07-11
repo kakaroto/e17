@@ -75,7 +75,6 @@ struct _ewin {
    struct {
       Win                 win;
       int                 x, y, w, h, bw;
-      int                 grav;
       Colormap            cmap;
       long                event_mask;
    } client;
@@ -349,8 +348,8 @@ EWin               *GetEwinPointerInClient(void);
 EWin               *GetFocusEwin(void);
 EWin               *GetContextEwin(void);
 void                SetContextEwin(EWin * ewin);
-void                EwinGetPosition(const EWin * ewin, int x, int y, int bw,
-				    int grav, int *px, int *py);
+void                EwinGetPosition(const EWin * ewin, int x, int y, int grav,
+				    int *px, int *py);
 void                EwinUpdateShapeInfo(EWin * ewin);
 void                EwinPropagateShapes(EWin * ewin);
 void                EwinStateUpdate(EWin * ewin);

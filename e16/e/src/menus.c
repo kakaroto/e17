@@ -204,10 +204,10 @@ _MenuEwinInit(EWin * ewin)
    ewin->props.skip_winlist = 1;
    ewin->props.ignorearrange = 1;
    EwinInhSetWM(ewin, focus, 1);
-   ewin->client.grav = StaticGravity;
 
    ICCCM_SetSizeConstraints(ewin, m->w, m->h, m->w, m->h, 0, 0, 1, 1,
 			    0.0, 65535.0);
+   ewin->icccm.grav = StaticGravity;
 
    EoSetLayer(ewin, 12);
    ewin->ewmh.opacity = OpacityFromPercent(Conf.opacity.menus);

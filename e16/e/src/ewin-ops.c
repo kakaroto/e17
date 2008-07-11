@@ -445,7 +445,7 @@ EwinMoveResize(EWin * ewin, int x, int y, int w, int h)
 void
 EwinMoveResizeWithGravity(EWin * ewin, int x, int y, int w, int h, int grav)
 {
-   EwinGetPosition(ewin, x, y, ewin->client.bw, grav, &x, &y);
+   EwinGetPosition(ewin, x, y, grav, &x, &y);
    doEwinMoveResize(ewin, NULL, x, y, w, h, MRF_MOVE | MRF_RESIZE);
 }
 

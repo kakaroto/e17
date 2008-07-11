@@ -1445,7 +1445,6 @@ SnapshotEwinApply(EWin * ewin)
 	ewin->state.placed = 1;
 	ewin->client.x = sn->x;
 	ewin->client.y = sn->y;
-	ewin->client.grav = NorthWestGravity;
 #if 0				/* No, do later in EwinDetermineArea() */
 	ewin->area_x = sn->area_x;
 	ewin->area_y = sn->area_y;
@@ -1456,8 +1455,6 @@ SnapshotEwinApply(EWin * ewin)
 	     ewin->client.x += ((sn->area_x - ax) * WinGetW(VROOT));
 	     ewin->client.y += ((sn->area_y - ay) * WinGetH(VROOT));
 	  }
-	EMoveResizeWindow(EwinGetClientWin(ewin), ewin->client.x,
-			  ewin->client.y, ewin->client.w, ewin->client.h);
      }
 
    if (use_flags & SNAP_USE_LAYER)

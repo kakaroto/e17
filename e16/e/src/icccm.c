@@ -256,8 +256,6 @@ ICCCM_SetSizeConstraints(EWin * ewin, unsigned int wmin, unsigned int hmin,
 
    ewin->props.no_resize_h = (wmin == wmax);
    ewin->props.no_resize_v = (hmin == hmax);
-
-   ewin->icccm.grav = NorthWestGravity;
 }
 
 void
@@ -407,12 +405,6 @@ ICCCM_GetGeoms(EWin * ewin)
 	  {
 	     if ((hint.flags & USPosition) || ((hint.flags & PPosition)))
 	       {
-		  if (hint.flags & PWinGravity)
-		     ewin->icccm.grav = hint.win_gravity;
-		  else
-		     ewin->icccm.grav = NorthWestGravity;
-		  ewin->client.grav = ewin->icccm.grav;
-
 		  if ((hint.flags & PPosition) && (!EoIsSticky(ewin)))
 		    {
 		       Desk               *dsk;
@@ -523,6 +515,11 @@ ICCCM_GetGeoms(EWin * ewin)
 	   ewin->icccm.width_max = ewin->icccm.base_w;
 	if (ewin->icccm.height_max < ewin->icccm.base_h)
 	   ewin->icccm.height_max = ewin->icccm.base_h;
+
+	if (hint.flags & PWinGravity)
+	   ewin->icccm.grav = hint.win_gravity;
+	else
+	   ewin->icccm.grav = NorthWestGravity;
      }
 
    ewin->props.no_resize_h = (ewin->icccm.width_min == ewin->icccm.width_max);

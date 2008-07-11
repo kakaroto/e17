@@ -429,7 +429,6 @@ EHintsGetInfo(EWin * ewin)
       return;
 
    ewin->state.identified = 1;
-   ewin->client.grav = StaticGravity;
    ewin->state.placed = 1;
 
    if (num < 2)

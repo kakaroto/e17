@@ -154,7 +154,6 @@ EwinGetAttributes(EWin * ewin, Win win, Window xwin)
    ewin->client.h = ewin->save_max.h = ewin->save_fs.h = xwa.height;
    ewin->client.bw = xwa.border_width;
    ewin->client.cmap = xwa.colormap;
-   ewin->client.grav = NorthWestGravity;
 
    if (EDebug(EDBUG_TYPE_SNAPS))
       Eprintf("Snap get attr  %#lx: %4d+%4d %4dx%4d: %s\n",
@@ -297,9 +296,11 @@ static void
 EwinSetGeometry(EWin * ewin)
 {
    int                 x, y, l, r, t, b;
+   int                 grav;
 
-   EwinGetPosition(ewin, ewin->client.x, ewin->client.y, ewin->client.bw,
-		   ewin->client.grav, &x, &y);
+   grav = (ewin->state.identified) ? StaticGravity : ewin->icccm.grav;
+
+   EwinGetPosition(ewin, ewin->client.x, ewin->client.y, grav, &x, &y);
 
    l = ewin->border->border.left;
    r = ewin->border->border.right;
@@ -310,8 +311,6 @@ EwinSetGeometry(EWin * ewin)
    ewin->client.y = y + t;
 
    EoMoveResize(ewin, x, y, ewin->client.w + l + r, ewin->client.h + t + b);
-
-   ewin->client.grav = NorthWestGravity;
 }
 
 static void
@@ -539,29 +538,32 @@ SetContextEwin(EWin * ewin)
  * Derive frame window position from client window and border properties
  */
 void
-EwinGetPosition(const EWin * ewin, int x, int y, int bw, int grav,
-		int *px, int *py)
+EwinGetPosition(const EWin * ewin, int x, int y, int grav, int *px, int *py)
 {
-   int                 bd_lr, bd_tb;
+   int                 bw, bd_lr, bd_tb;
 
+   bw = ewin->client.bw;
    bd_lr = ewin->border->border.left + ewin->border->border.right;
    bd_tb = ewin->border->border.top + ewin->border->border.bottom;
+
+   if (grav == 0)
+      grav = ewin->icccm.grav;
 
    switch (grav)
      {
      case NorthWestGravity:
-     case SouthWestGravity:
      case WestGravity:
+     case SouthWestGravity:
 	x -= bw;
-	break;
-     case NorthEastGravity:
-     case EastGravity:
-     case SouthEastGravity:
-	x -= bd_lr;
 	break;
      case NorthGravity:
      case CenterGravity:
      case SouthGravity:
+	x -= bd_lr / 2;
+	break;
+     case NorthEastGravity:
+     case EastGravity:
+     case SouthEastGravity:
 	x -= bd_lr - bw;
 	break;
      case StaticGravity:
@@ -581,7 +583,7 @@ EwinGetPosition(const EWin * ewin, int x, int y, int bw, int grav,
      case WestGravity:
      case CenterGravity:
      case EastGravity:
-	y -= bd_tb;
+	y -= bd_tb / 2;
 	break;
      case SouthWestGravity:
      case SouthGravity:
@@ -1268,8 +1270,7 @@ EwinEventConfigureRequest(EWin * ewin, XEvent * ev)
 	if (ev->xconfigurerequest.value_mask & (CWX | CWY))
 	  {
 	     /* Correct position taking gravity into account */
-	     EwinGetPosition(ewin, x, y, ewin->client.bw, ewin->client.grav,
-			     &x, &y);
+	     EwinGetPosition(ewin, x, y, 0, &x, &y);
 	  }
 
 	Mode.move.check = 0;	/* Don't restrict client requests */

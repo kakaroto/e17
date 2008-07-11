@@ -998,9 +998,7 @@ EWMH_ProcessClientClientMessage(EWin * ewin, XClientMessageEvent * ev)
 	int                 flags, grav, x, y, w, h;
 
 	flags = ev->data.l[0];
-	grav = flags & 0xf;
-	if (grav == 0)
-	   grav = ewin->client.grav;
+	grav = flags & 0xf;	/* 0 means use client gravity */
 	x = (flags & 0x0100) ? ev->data.l[1] : EoGetX(ewin);
 	y = (flags & 0x0200) ? ev->data.l[2] : EoGetY(ewin);
 	w = (flags & 0x0400) ? ev->data.l[3] : ewin->client.w;
