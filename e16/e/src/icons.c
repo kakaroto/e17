@@ -74,7 +74,7 @@ IB_SnapEWin(EWin * ewin, int size)
    EImage             *im;
    Drawable            draw;
 
-   if (!EwinIsMapped(ewin))
+   if (!EoIsShown(ewin))
       return NULL;
 
    ww = EoGetW(ewin);
