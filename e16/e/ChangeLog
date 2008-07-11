@@ -4786,3 +4786,20 @@ Remove dialog slider border window (not used in any theme).
 Only one maximisation function. 
 Correctly place/size apps requesting _NET_WM_STATE_MAXIMIZED_...
 
+
+-------------------------------------------------------------------------------
+
+Fri Jul 11 22:12:11 CEST 2008
+(Kim)
+
+--- 0.16.8.14 0.04 ---
+Fix potential crash if iconv_open fails.
+Issue warnings for unavailable encoding conversions.
+No need to convert between utf8 and utf8.
+Remove colormodifier stuff (this has afaict never worked in e16).
+Fix bad test for window being mapped during iconification (fall back to
+ app icon if app is initially iconified).
+Provide iconbox icon fallback if normal methods fail.
+Don't show iconbox animation if app is initially iconified.
+Play iconify sound only for selected iconbox.
+Fix various gravity issues.
