@@ -313,7 +313,7 @@ _text_EffectComboBox_changed_cb(Etk_Combobox *combobox, void *data)
    if (!etk_string_length_get(Cur.part)) return ETK_TRUE;
 
    edje_edit_part_effect_set(edje_o, Cur.part->string,
-      (int)etk_combobox_item_data_get(etk_combobox_active_item_get(combobox)));
+      (int)(long)etk_combobox_item_data_get(etk_combobox_active_item_get(combobox)));
 
    canvas_redraw();
 
@@ -352,16 +352,16 @@ _text_FontAlignSpinner_value_changed_cb(Etk_Range *range, double value, void *da
    if (!etk_string_length_get(Cur.part)) return ETK_TRUE;
    if (!etk_string_length_get(Cur.state)) return ETK_TRUE;
    
-   if ((int)data == TEXT_ALIGNH_SPINNER)
+   if ((int)(long)data == TEXT_ALIGNH_SPINNER)
       edje_edit_state_text_align_x_set(edje_o, Cur.part->string, Cur.state->string,
                                        (double)etk_range_value_get(range));
-   if ((int)data == TEXT_ALIGNV_SPINNER)
+   if ((int)(long)data == TEXT_ALIGNV_SPINNER)
       edje_edit_state_text_align_y_set(edje_o, Cur.part->string, Cur.state->string,
                                        (double)etk_range_value_get(range));
-   if ((int)data == STATE_ALIGNH_SPINNER)
+   if ((int)(long)data == STATE_ALIGNH_SPINNER)
       edje_edit_state_align_x_set(edje_o, Cur.part->string, Cur.state->string,
                                   (double)etk_range_value_get(range));
-   if ((int)data == STATE_ALIGNV_SPINNER)
+   if ((int)(long)data == STATE_ALIGNV_SPINNER)
       edje_edit_state_align_y_set(edje_o, Cur.part->string, Cur.state->string,
                                   (double)etk_range_value_get(range));
 

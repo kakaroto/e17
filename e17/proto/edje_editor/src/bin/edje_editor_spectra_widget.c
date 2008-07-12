@@ -159,11 +159,11 @@ spectra_widget_color_add(Etk_Widget *spectra, int r, int g, int b, int a, int d)
    image = etk_image_new_from_edje(EdjeFile, "COLOR.PNG");
    etk_widget_color_set(image, r, g, b, 255);
    etk_object_data_set(ETK_OBJECT(image), "spectra", spectra);
-   etk_object_data_set(ETK_OBJECT(image), "color_r", (void*)r);
-   etk_object_data_set(ETK_OBJECT(image), "color_g", (void*)g);
-   etk_object_data_set(ETK_OBJECT(image), "color_b", (void*)b);
-   etk_object_data_set(ETK_OBJECT(image), "color_a", (void*)a);
-   etk_object_data_set(ETK_OBJECT(image), "color_d", (void*)d);
+   etk_object_data_set(ETK_OBJECT(image), "color_r", (void*)(long)r);
+   etk_object_data_set(ETK_OBJECT(image), "color_g", (void*)(long)g);
+   etk_object_data_set(ETK_OBJECT(image), "color_b", (void*)(long)b);
+   etk_object_data_set(ETK_OBJECT(image), "color_a", (void*)(long)a);
+   etk_object_data_set(ETK_OBJECT(image), "color_d", (void*)(long)d);
    etk_object_data_set(ETK_OBJECT(image), "arrow_o", arrow);
    etk_signal_connect("mouse-down", ETK_OBJECT(image),
                       ETK_CALLBACK(_spectra_widget_color_mouse_down_cb), canvas);
@@ -237,11 +237,11 @@ spectra_widget_color_get(Etk_Widget *spectra, int color_num, int *r, int *g, int
    image = evas_list_nth(images, color_num);
    if (!image) return;
 
-   *r = (int)etk_object_data_get(ETK_OBJECT(image), "color_r");
-   *g = (int)etk_object_data_get(ETK_OBJECT(image), "color_g");
-   *b = (int)etk_object_data_get(ETK_OBJECT(image), "color_b");
-   *a = (int)etk_object_data_get(ETK_OBJECT(image), "color_a");
-   *d = (int)etk_object_data_get(ETK_OBJECT(image), "color_d");
+   *r = (int)(long)etk_object_data_get(ETK_OBJECT(image), "color_r");
+   *g = (int)(long)etk_object_data_get(ETK_OBJECT(image), "color_g");
+   *b = (int)(long)etk_object_data_get(ETK_OBJECT(image), "color_b");
+   *a = (int)(long)etk_object_data_get(ETK_OBJECT(image), "color_a");
+   *d = (int)(long)etk_object_data_get(ETK_OBJECT(image), "color_d");
 }
 
 /* internals */
@@ -266,7 +266,7 @@ _spectra_widget_gradient_draw(Etk_Widget *spectra)
    {
       Etk_Widget *image;
       image = l->data;
-      total += (int)etk_object_data_get(ETK_OBJECT(image), "color_d");
+      total += (int)(long)etk_object_data_get(ETK_OBJECT(image), "color_d");
    }
 
    rapporto = (float)canvas_w / (float)total;
@@ -281,11 +281,11 @@ _spectra_widget_gradient_draw(Etk_Widget *spectra)
 
       image = l->data;
 
-      r = (int)etk_object_data_get(ETK_OBJECT(image), "color_r");
-      g = (int)etk_object_data_get(ETK_OBJECT(image), "color_g");
-      b = (int)etk_object_data_get(ETK_OBJECT(image), "color_b");
-      a = (int)etk_object_data_get(ETK_OBJECT(image), "color_a");
-      d = (int)etk_object_data_get(ETK_OBJECT(image), "color_d");
+      r = (int)(long)etk_object_data_get(ETK_OBJECT(image), "color_r");
+      g = (int)(long)etk_object_data_get(ETK_OBJECT(image), "color_g");
+      b = (int)(long)etk_object_data_get(ETK_OBJECT(image), "color_b");
+      a = (int)(long)etk_object_data_get(ETK_OBJECT(image), "color_a");
+      d = (int)(long)etk_object_data_get(ETK_OBJECT(image), "color_d");
       arrow = etk_object_data_get(ETK_OBJECT(image), "arrow_o");
 
       evas_object_gradient_color_stop_add(gradient, r, g, b, a, d);
@@ -359,10 +359,10 @@ _spectra_widget_color_mouse_down_cb(Etk_Widget *widget, Etk_Event_Mouse_Down *ev
 
    etk_object_data_set(ETK_OBJECT(colorp), "current_image_o", widget);
 
-   r = (int)etk_object_data_get(ETK_OBJECT(widget), "color_r");
-   g = (int)etk_object_data_get(ETK_OBJECT(widget), "color_g");
-   b = (int)etk_object_data_get(ETK_OBJECT(widget), "color_b");
-   a = (int)etk_object_data_get(ETK_OBJECT(widget), "color_a");
+   r = (int)(long)etk_object_data_get(ETK_OBJECT(widget), "color_r");
+   g = (int)(long)etk_object_data_get(ETK_OBJECT(widget), "color_g");
+   b = (int)(long)etk_object_data_get(ETK_OBJECT(widget), "color_b");
+   a = (int)(long)etk_object_data_get(ETK_OBJECT(widget), "color_a");
 
    _spectra_widget_colorpicker_color_set(spectra, r, g, b, a);
    //etk_widget_disabled_set(colorp, ETK_FALSE);
@@ -428,9 +428,9 @@ _spectra_widget_arrow_mouse_move_cb(Etk_Widget *widget, Etk_Event_Mouse_Move *ev
       etk_canvas_child_position_get(ETK_CANVAS(canvas), point, &px, &py);
 
       if (images->next)
-         etk_object_data_set(ETK_OBJECT(image), "color_d", (void*)px - total);
+         etk_object_data_set(ETK_OBJECT(image), "color_d", ((void*)(long)(px - total)));
       else
-         etk_object_data_set(ETK_OBJECT(image), "color_d", (void*)canvas_w - total);
+         etk_object_data_set(ETK_OBJECT(image), "color_d", ((void*)(long)(canvas_w - total)));
 
       total = px;
       images = images->next;
@@ -451,10 +451,10 @@ _spectra_widget_colorpicker_change_cb(Etk_Colorpicker *colorpicker, void *data)
    if (!image) return ETK_TRUE;
 
    col = etk_colorpicker_current_color_get(colorpicker);
-   etk_object_data_set(ETK_OBJECT(image), "color_r", (void*)col.r);
-   etk_object_data_set(ETK_OBJECT(image), "color_g", (void*)col.g);
-   etk_object_data_set(ETK_OBJECT(image), "color_b", (void*)col.b);
-   etk_object_data_set(ETK_OBJECT(image), "color_a", (void*)col.a);
+   etk_object_data_set(ETK_OBJECT(image), "color_r", (void*)(long)col.r);
+   etk_object_data_set(ETK_OBJECT(image), "color_g", (void*)(long)col.g);
+   etk_object_data_set(ETK_OBJECT(image), "color_b", (void*)(long)col.b);
+   etk_object_data_set(ETK_OBJECT(image), "color_a", (void*)(long)col.a);
 
    etk_widget_color_set(image, col.r, col.g, col.b, 255);
 
@@ -483,10 +483,10 @@ _spectra_widget_add_button_click_cb(Etk_Button *button, void *data)
       images = evas_list_last(images);
       image = images->data;
 
-      r = (int)etk_object_data_get(ETK_OBJECT(image), "color_r");
-      g = (int)etk_object_data_get(ETK_OBJECT(image), "color_g");
-      b = (int)etk_object_data_get(ETK_OBJECT(image), "color_b");
-      d = (int)etk_object_data_get(ETK_OBJECT(image), "color_d");
+      r = (int)(long)etk_object_data_get(ETK_OBJECT(image), "color_r");
+      g = (int)(long)etk_object_data_get(ETK_OBJECT(image), "color_g");
+      b = (int)(long)etk_object_data_get(ETK_OBJECT(image), "color_b");
+      d = (int)(long)etk_object_data_get(ETK_OBJECT(image), "color_d");
       spectra_widget_color_add(data, g, b, r, 255, d);
    }
    else

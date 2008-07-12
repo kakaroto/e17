@@ -71,9 +71,9 @@ test_edje_group(char *File,char *Group)
 
 /***   Debug Info   ***/
 Evas_Bool
-_debug_info_helper(Evas_Hash *hash, const char *key, void *data, void *fdata)
+_debug_info_helper(const Evas_Hash *hash, const char *key, void *data, void *fdata)
 {
-   printf("Key: '%s' [%d]\n", key, (int)data);
+   printf("Key: '%s' [%d]\n", key, (int)(long)data);
    return TRUE;
 }
 

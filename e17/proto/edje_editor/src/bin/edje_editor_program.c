@@ -478,7 +478,7 @@ _program_ActionComboBox_changed_cb(Etk_Combobox *combobox, void *data)
    if (!etk_string_length_get(Cur.prog)) return ETK_TRUE;
 
    //Get the new action from the combo data
-   action = (int)etk_combobox_item_data_get(
+   action = (int)(long)etk_combobox_item_data_get(
                etk_combobox_active_item_get(combobox));
 
    edje_edit_program_action_set(edje_o, Cur.prog->string, action);
@@ -755,7 +755,7 @@ _program_TransitionComboBox_changed_cb(Etk_Combobox *combobox, void *data)
    printf("Changed Signal on TransitionComboBox Emitted\n");
 
    //get the transition from the combo data
-   trans = (int)etk_combobox_item_data_get(etk_combobox_active_item_get(combobox));
+   trans = (int)(long)etk_combobox_item_data_get(etk_combobox_active_item_get(combobox));
    edje_edit_program_transition_set(edje_o, Cur.prog->string, trans);
 
    return ETK_TRUE;

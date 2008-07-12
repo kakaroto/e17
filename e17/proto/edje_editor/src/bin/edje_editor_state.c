@@ -342,7 +342,7 @@ _state_AspectComboBox_changed_cb(Etk_Combobox *combobox, void *data)
 {
    printf("Active Item Changed Signal on AspectComboBox EMITTED\n");
    int pref;
-   pref = (int)etk_combobox_item_data_get(etk_combobox_active_item_get (combobox));
+   pref = (int)(long)etk_combobox_item_data_get(etk_combobox_active_item_get (combobox));
    edje_edit_state_aspect_pref_set(edje_o, Cur.part->string, Cur.state->string, pref);
    return ETK_TRUE;
 }

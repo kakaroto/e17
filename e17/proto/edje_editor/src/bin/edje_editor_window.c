@@ -227,7 +227,7 @@ window_color_button_create(char* label_text, int color_button_enum,int w,int h, 
    etk_widget_show_all(etk_evas_object);
    evas_object_event_callback_add(rect, EVAS_CALLBACK_MOUSE_DOWN,
                                   _window_color_canvas_click,
-                                  (void*)color_button_enum);
+                                  (void*)(long)color_button_enum);
    etk_container_add(ETK_CONTAINER(shadow), etk_evas_object);
    etk_widget_size_request_set(etk_evas_object, w, h);
    switch (color_button_enum)
@@ -324,7 +324,7 @@ _window_all_button_click_cb(Etk_Button *button, void *data)
    Etk_Tree_Row *row, *next, *prev;
    Evas_List *icons, *l;
 
-   switch ((int)data)
+   switch ((int)(long)data)
       {
    case TOOLBAR_NEW:
       system("edje_editor &");
@@ -574,7 +574,7 @@ _window_color_canvas_click(void *data, Evas *e, Evas_Object *obj, void *event_in
    Etk_Color c;
    printf("Clik Signal on ColorCanvas Emitted\n");
    if (UI_ColorWin) etk_widget_show_all(UI_ColorWin);
-   current_color_object = (int)data;
+   current_color_object = (int)(long)data;
 
    etk_signal_block("color-changed", ETK_OBJECT(UI_ColorPicker),
                     ETK_CALLBACK(_dialog_colorpicker_change_cb), NULL);

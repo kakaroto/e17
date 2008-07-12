@@ -13,7 +13,7 @@ _gradient_RelSpinners_value_changed_cb(Etk_Range *range, double value, void *dat
    if (!etk_string_length_get(Cur.state) || !etk_string_length_get(Cur.part))
       return ETK_TRUE;
 
-   switch ((int)data)
+   switch ((int)(long)data)
    {
       case REL1X_SPINNER:
          edje_edit_state_gradient_rel1_relative_x_set(edje_o, 
@@ -235,7 +235,8 @@ gradient_frame_create(void)
 void
 gradient_frame_update(void)
 {
-   char *type, *p;
+   const char *type;
+   char *p;
    int i;
    Etk_Combobox_Item *item;
 

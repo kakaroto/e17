@@ -162,14 +162,14 @@ tree_part_add(const char *part_name, Etk_Tree_Row *after)
 
    /* Add the row in the right position */
    buf = part_type_image_get(edje_edit_part_type_get(edje_o, part_name));
-   if ((int)after > 1)
+   if ((int)(long)after > 1)
       row = etk_tree_row_insert(ETK_TREE(UI_PartsTree),
                                 NULL,
                                 after,
                                 COL_NAME, EdjeFile, buf, part_name,
                                 COL_TYPE, ROW_PART,
                                 NULL);
-   else if ((int)after == 1)
+   else if ((int)(long)after == 1)
       row = etk_tree_row_prepend(ETK_TREE(UI_PartsTree),
                                 NULL,
                                 COL_NAME, EdjeFile, buf, part_name,

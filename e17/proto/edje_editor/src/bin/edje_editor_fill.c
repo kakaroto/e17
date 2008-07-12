@@ -222,7 +222,7 @@ _fill_spinners_value_changed_cb(Etk_Range *range, double value, void *data)
    if (!etk_string_length_get(Cur.state) || !etk_string_length_get(Cur.part))
       return ETK_TRUE;
 
-   switch ((int)data)
+   switch ((int)(long)data)
    {
       case REL1X_SPINNER:
          edje_edit_state_fill_size_relative_x_set(edje_o, 
@@ -258,7 +258,7 @@ _fill_size_spinners_value_changed_cb(Etk_Range *range, double value, void *data)
    if (!etk_string_length_get(Cur.state) || !etk_string_length_get(Cur.part))
       return ETK_TRUE;
 
-   switch ((int)data)
+   switch ((int)(long)data)
    {
       case REL1X_SPINNER:
          edje_edit_state_fill_origin_relative_x_set(edje_o, 

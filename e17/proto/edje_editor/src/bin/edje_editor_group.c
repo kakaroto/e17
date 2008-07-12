@@ -164,7 +164,7 @@ _group_spinners_value_changed_cb(Etk_Range *range, double value, void *data)
 {
    printf("Group Spinners value changed signal EMIT\n");
    if (!etk_string_length_get(Cur.part)) return ETK_TRUE;
-   switch ((int)data)
+   switch ((int)(long)data)
    {
       case MINW_SPINNER:
          edje_edit_group_min_w_set(edje_o,

@@ -524,7 +524,7 @@ _position_RelOffsetSpinners_value_changed_cb(Etk_Range *range, double value, voi
 
    if (etk_string_length_get(Cur.state) && etk_string_length_get(Cur.part))
    {
-      switch ((int)data)
+      switch ((int)(long)data)
       {
          case REL1X_SPINNER:
             edje_edit_state_rel1_offset_x_set(edje_o, 
@@ -559,7 +559,7 @@ _position_RelSpinners_value_changed_cb(Etk_Range *range, double value, void *dat
 
    if (etk_string_length_get(Cur.state) && etk_string_length_get(Cur.part))
    {
-      switch ((int)data)
+      switch ((int)(long)data)
       {
          case REL1X_SPINNER:
             edje_edit_state_rel1_relative_x_set(edje_o, 
@@ -602,7 +602,7 @@ _position_RelToComboBoxes_changed_cb(Etk_Combobox *combobox, void *data)
       return ETK_TRUE;
    }
 
-   switch ((int)data)
+   switch ((int)(long)data)
    {
       case REL1X_SPINNER:
          edje_edit_state_rel1_to_x_set(edje_o, Cur.part->string,

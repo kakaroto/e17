@@ -385,7 +385,7 @@ _toolbar_add_menu_item_activated_cb(Etk_Object *object, void *data)
    char name[32];
    char name2[32];
 
-   switch ((int)data)
+   switch ((int)(long)data)
    {
        case NEW_RECT:
          if (!etk_string_length_get(Cur.group))
@@ -636,7 +636,7 @@ _toolbar_remove_menu_item_activated_cb(Etk_Object *object, void *data)
    Etk_Tree_Row *row, *next;
    printf("Item Activated Signal on RemoveMenu EMITTED\n");
 
-   switch ((int)data)
+   switch ((int)(long)data)
    {
       case REMOVE_DESCRIPTION:
          if (!etk_string_length_get(Cur.state))

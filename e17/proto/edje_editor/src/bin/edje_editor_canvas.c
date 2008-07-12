@@ -21,7 +21,7 @@ _canvas_drag_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
    Evas_Coord mouse_x, mouse_y;
 
    // MoveBox
-   if ((int)data == DRAG_MOVEBOX)
+   if ((int)(long)data == DRAG_MOVEBOX)
    {
       evas_pointer_output_xy_get(ecore_evas_get(UI_ecore_MainWin),
                                  &mouse_x, &mouse_y);
@@ -29,7 +29,7 @@ _canvas_drag_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
    }
 
    // Resize fake win
-   if ((int)data == DRAG_MINIARROW)
+   if ((int)(long)data == DRAG_MINIARROW)
    {
       edje_object_part_geometry_get(EV_fakewin,"miniarrow", &x, &y, NULL, NULL);
       if (x < 0) x = 0;
@@ -38,7 +38,7 @@ _canvas_drag_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
    }
 
    // Move Rel1 Point
-   if ((int)data == DRAG_REL1)
+   if ((int)(long)data == DRAG_REL1)
    {
       evas_pointer_output_xy_get(ecore_evas_get(UI_ecore_MainWin),
                                  &mouse_x, &mouse_y);
@@ -58,7 +58,7 @@ _canvas_drag_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
       position_frame_update();
    }
    // Move Rel2 Point
-   if ((int)data == DRAG_REL2)
+   if ((int)(long)data == DRAG_REL2)
    {
       evas_pointer_output_xy_get(ecore_evas_get(UI_ecore_MainWin), 
                                  &mouse_x, &mouse_y);
@@ -77,7 +77,7 @@ _canvas_drag_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
       position_frame_update();
    }
    // Move Move Handler
-   if ((int)data == DRAG_MOVE)
+   if ((int)(long)data == DRAG_MOVE)
    {
       evas_pointer_output_xy_get(ecore_evas_get(UI_ecore_MainWin), 
                                  &mouse_x, &mouse_y);
@@ -109,9 +109,9 @@ _canvas_drag_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
       position_frame_update();
    }
    // Move First Gradient Point Handler
-   if ((int)data == DRAG_GRAD_1 || (int)data == DRAG_GRAD_2 )
+   if ((int)(long)data == DRAG_GRAD_1 || (int)(long)data == DRAG_GRAD_2 )
    {
-      char *type;
+      const char *type;
       evas_pointer_output_xy_get(ecore_evas_get(UI_ecore_MainWin), 
                                  &mouse_x, &mouse_y);
       evas_object_geometry_get(EV_focus_handler, &parentx, &parenty,
@@ -119,7 +119,7 @@ _canvas_drag_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
       type = edje_edit_state_gradient_type_get(edje_o, Cur.part->string,
                                                Cur.state->string);
       //printf("GELLA %d %d %d %d [%f] [m %d %d]\n", fhx, fhy, fhw, fhh, (float)(mouse_x - fhx)/(float)fhx, mouse_x, mouse_y);
-      if ((int)data == DRAG_GRAD_1)
+      if ((int)(long)data == DRAG_GRAD_1)
       {
          if (edje_edit_state_gradient_use_fill_get(edje_o, Cur.part->string,
                                                    Cur.state->string))
@@ -172,7 +172,7 @@ _canvas_drag_start_cb(void *data, Evas_Object *o, const char *em, const char *sr
    Evas_Coord x, y, mx, my;
    printf("Start Drag\n");
 
-   if ((int)data == DRAG_REL1)
+   if ((int)(long)data == DRAG_REL1)
    {
       evas_object_event_callback_add(EV_rel1_handler, EVAS_CALLBACK_MOUSE_MOVE,
                                     _canvas_drag_cb,(void*)DRAG_REL1);
@@ -181,7 +181,7 @@ _canvas_drag_start_cb(void *data, Evas_Object *o, const char *em, const char *sr
       evas_object_show(EV_rel1Y_align_guide);
       evas_object_raise(EV_rel1Y_align_guide);
    }
-   if ((int)data == DRAG_REL2)
+   if ((int)(long)data == DRAG_REL2)
    {
       evas_object_event_callback_add(EV_rel2_handler, EVAS_CALLBACK_MOUSE_MOVE,
                                     _canvas_drag_cb,(void*)DRAG_REL2);
@@ -190,7 +190,7 @@ _canvas_drag_start_cb(void *data, Evas_Object *o, const char *em, const char *sr
       evas_object_show(EV_rel2Y_align_guide);
       evas_object_raise(EV_rel2Y_align_guide);
    }
-   if ((int)data == DRAG_MOVE)
+   if ((int)(long)data == DRAG_MOVE)
    {
       evas_object_event_callback_add(EV_move_handler, EVAS_CALLBACK_MOUSE_MOVE,
                                     _canvas_drag_cb,(void*)DRAG_MOVE);
@@ -211,7 +211,7 @@ _canvas_drag_start_cb(void *data, Evas_Object *o, const char *em, const char *sr
       evas_object_raise(EV_rel2Y_align_guide);
    }
 
-   if ((int)data == DRAG_MOVEBOX)
+   if ((int)(long)data == DRAG_MOVEBOX)
    {
       evas_object_event_callback_add(EV_movebox, EVAS_CALLBACK_MOUSE_MOVE,
                                      _canvas_drag_cb, (void*)DRAG_MOVEBOX);
@@ -221,7 +221,7 @@ _canvas_drag_start_cb(void *data, Evas_Object *o, const char *em, const char *sr
       dy = my - y;
    }
 
-   if ((int)data == DRAG_GRAD_1)
+   if ((int)(long)data == DRAG_GRAD_1)
    {
       evas_object_event_callback_add(EV_grad1_handler, EVAS_CALLBACK_MOUSE_MOVE,
                                      _canvas_drag_cb, (void*)DRAG_GRAD_1);
@@ -230,7 +230,7 @@ _canvas_drag_start_cb(void *data, Evas_Object *o, const char *em, const char *sr
       dx = mx - x;
       dy = my - y;
    }
-   if ((int)data == DRAG_GRAD_2)
+   if ((int)(long)data == DRAG_GRAD_2)
    {
       evas_object_event_callback_add(EV_grad2_handler, EVAS_CALLBACK_MOUSE_MOVE,
                                      _canvas_drag_cb, data);
@@ -246,7 +246,7 @@ void
 _canvas_drag_end_cb(void *data, Evas_Object *o, const char *emission, const char *source)
 {
    //printf("End Drag\n");
-   if ((int)data == DRAG_REL1)
+   if ((int)(long)data == DRAG_REL1)
    {
       evas_object_event_callback_del(EV_rel1_handler,EVAS_CALLBACK_MOUSE_MOVE,
                                      _canvas_drag_cb);
@@ -255,7 +255,7 @@ _canvas_drag_end_cb(void *data, Evas_Object *o, const char *emission, const char
       evas_object_line_xy_set(EV_rel1X_align_guide, 0, 0, 0, 0);
       evas_object_line_xy_set(EV_rel1Y_align_guide, 0, 0, 0, 0);
    }
-   if ((int)data == DRAG_REL2)
+   if ((int)(long)data == DRAG_REL2)
    {
       evas_object_event_callback_del(EV_rel2_handler,EVAS_CALLBACK_MOUSE_MOVE,
                                      _canvas_drag_cb);
@@ -264,7 +264,7 @@ _canvas_drag_end_cb(void *data, Evas_Object *o, const char *emission, const char
       evas_object_line_xy_set(EV_rel2X_align_guide, 0, 0, 0, 0);
       evas_object_line_xy_set(EV_rel2Y_align_guide, 0, 0, 0, 0);
    }
-   if ((int)data == DRAG_MOVE)
+   if ((int)(long)data == DRAG_MOVE)
    {
       evas_object_event_callback_del(EV_move_handler,EVAS_CALLBACK_MOUSE_MOVE,
                                      _canvas_drag_cb);
@@ -277,16 +277,16 @@ _canvas_drag_end_cb(void *data, Evas_Object *o, const char *emission, const char
       evas_object_line_xy_set(EV_rel2X_align_guide, 0, 0, 0, 0);
       evas_object_line_xy_set(EV_rel2Y_align_guide, 0, 0, 0, 0);
    }
-   if ((int)data == DRAG_MOVEBOX)
+   if ((int)(long)data == DRAG_MOVEBOX)
       evas_object_event_callback_del(EV_movebox,EVAS_CALLBACK_MOUSE_MOVE,
                                      _canvas_drag_cb);
-   if ((int)data == DRAG_GRAD_1)
+   if ((int)(long)data == DRAG_GRAD_1)
       evas_object_event_callback_del(EV_grad1_handler,EVAS_CALLBACK_MOUSE_MOVE,
                                      _canvas_drag_cb);
-   if ((int)data == DRAG_GRAD_2)
+   if ((int)(long)data == DRAG_GRAD_2)
       evas_object_event_callback_del(EV_grad2_handler,EVAS_CALLBACK_MOUSE_MOVE,
                                      _canvas_drag_cb);
-   if ((int)data == DRAG_MINIARROW)
+   if ((int)(long)data == DRAG_MINIARROW)
    {
       int fw,fh;  //Fakewin geometry
       evas_object_geometry_get(EV_fakewin,NULL,NULL,&fw,&fh);
