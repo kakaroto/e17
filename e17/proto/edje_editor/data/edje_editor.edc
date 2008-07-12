@@ -129,6 +129,8 @@ images {
    image: "lbl_pos.png" LOSSY 95;
    image: "lbl_prog.png" LOSSY 95;
    image: "lbl_script.png" LOSSY 95;
+   image: "lbl_grad.png" LOSSY 95;
+   image: "lbl_fill.png" LOSSY 95;
    image: "image.png" LOSSY 95;
    image: "rect.png" LOSSY 95;
    image: "text.png" LOSSY 95;
@@ -150,6 +152,11 @@ images {
    image: "e17.png" LOSSY 95;
    image: "miniarrow.png" LOSSY 95;
    image: "gimp.png" LOSSY 95;
+   image: "grad.png" LOSSY 95;
+   image: "grad_h.png" LOSSY 95;
+   image: "spectra_arrow.png" LOSSY 95;
+   image: "spectra_color.png" LOSSY 95;
+   image: "spectra_icon.png" LOSSY 95;
 }
 
 fonts {
@@ -273,7 +280,7 @@ collections {
          part{
             name: "StaticImage";
             type: IMAGE;
-            mouse_events: 0;
+            mouse_events: 1;
             description{
                state: "default" 0.0;
                rel1 {relative: 0.0 0.0; offset: 0 0;}
@@ -297,6 +304,80 @@ collections {
                rel1 {relative: 0.0 0.0; offset: 0 0;}
                rel2 {relative: 0.0 0.0; offset: 15 15;}
                image {normal: "e17.png";}
+            }
+         }
+      }
+   }
+   group{
+      name: "GRAD.PNG";
+      min: 15 16;
+      max: 15 16;
+      parts{
+         part{
+            name: "StaticImage";
+            type: IMAGE;
+            mouse_events: 0;
+            description{
+               state: "default" 0.0;
+               rel1 {relative: 0.0 0.0; offset: 0 0;}
+               rel2 {relative: 0.0 0.0; offset: 15 16;}
+               image {normal: "grad.png";}
+            }
+         }
+      }
+   }
+   group{
+      name: "SPECTRA.PNG";
+      min: 22 20;
+      max: 22 20;
+      parts{
+         part{
+            name: "StaticImage";
+            type: IMAGE;
+            mouse_events: 0;
+            description{
+               state: "default" 0.0;
+               rel1 {relative: 0.0 0.0; offset: 0 0;}
+               rel2 {relative: 0.0 0.0; offset: 22 20;}
+               image {normal: "spectra_icon.png";}
+            }
+         }
+      }
+   }
+   group{
+      name: "ARROW.PNG";
+      min: 13 13;
+      max: 13 13;
+      parts{
+         part{
+            name: "StaticImage";
+            type: IMAGE;
+            mouse_events: 1;
+            description{
+               state: "default" 0.0;
+               rel1 {relative: 0.0 0.0; offset: 0 0;}
+               rel2 {relative: 0.0 0.0; offset: 13 13;}
+               image {normal: "spectra_arrow.png";}
+           
+            }
+         }
+      }
+   }
+   group{
+      name: "COLOR.PNG";
+      min: 13 13;
+      max: 13 13;
+      parts{
+         part{
+            name: "StaticImage";
+            type: IMAGE;
+            mouse_events: 1;
+            description{
+               state: "default" 0.0;
+               rel1 {relative: 0.0 0.0; offset: 0 0;}
+               rel2 {relative: 0.0 0.0; offset: 13 13;}
+               image {normal: "spectra_color.png";}
+           
             }
          }
       }
@@ -463,7 +544,9 @@ collections {
          FRAME("rect", 120, 77, "lbl_rect.png", 14, 72, "description_frame")
          FRAME("text", 250, 160, "lbl_text.png", 14, 36, "rect_frame")
          FRAME("image", 250, 230, "lbl_image.png", 14, 46, "text_frame")
-         FRAME("position", 250, 130, "lbl_pos.png", 14, 60, "image_frame")
+         FRAME("gradient", 250, 130, "lbl_grad.png", 14, 67, "image_frame")
+         FRAME("fill", 250, 45, "lbl_fill.png", 14, 30, "gradient_frame")
+         FRAME("position", 250, 130, "lbl_pos.png", 14, 60, "fill_frame")
          FRAME("program", 250, 250, "lbl_prog.png", 14, 60, "position_frame")
          FRAME("script", 250, 250, "lbl_script.png", 14, 45, "program_frame")
       }
@@ -474,6 +557,8 @@ collections {
          FRAME_PROG("rect");
          FRAME_PROG("text");
          FRAME_PROG("image");
+         FRAME_PROG("gradient");
+         FRAME_PROG("fill");
          FRAME_PROG("position");
          FRAME_PROG("program");
          FRAME_PROG("script");
@@ -689,6 +774,37 @@ collections {
          }
       }
    }
+   group{
+      name: "GradH";
+      parts{
+         part{
+            name: "circle";
+            type: IMAGE;
+            description {
+               state: "default" 0.0;
+               visible: 1;
+               rel1 {relative: 0.0 0.0; offset: -7 -7;}
+               rel2 {relative: 0.0 0.0; offset: 8 8;}
+               image {normal: "grad_h.png";}
+            }
+         }
+      }
+      programs{
+         program{
+            name: "StartDrag";
+            signal: "mouse,down,1";
+            source: "circle";
+            action: SIGNAL_EMIT "START_DRAG" "GradH";
+         }
+         program{
+            name: "EndDrag";
+            signal: "mouse,up,1";
+            source: "circle";
+            action: SIGNAL_EMIT "END_DRAG" "GradH";
+         }
+      }
+   }
+
    /************************************************************/
    /*  FakeWin                                                 */
    /************************************************************/

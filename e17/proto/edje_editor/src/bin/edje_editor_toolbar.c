@@ -36,7 +36,7 @@ toolbar_create(Etk_Toolbar_Orientation o)
 
    //SaveButton
    button = etk_tool_button_new_from_stock(ETK_STOCK_DOCUMENT_SAVE);
-   etk_object_properties_set(ETK_OBJECT(button),"label","Save",NULL);
+   etk_object_properties_set(ETK_OBJECT(button), "label", "Save", NULL);
    etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), button, ETK_BOX_START);
    etk_signal_connect("clicked", ETK_OBJECT(button),
                       ETK_CALLBACK(_window_all_button_click_cb),
@@ -44,7 +44,7 @@ toolbar_create(Etk_Toolbar_Orientation o)
    
    //SaveEDJButton
    button = etk_tool_button_new_from_stock(ETK_STOCK_DOCUMENT_SAVE_AS);
-   etk_object_properties_set(ETK_OBJECT(button),"label","Save as",NULL);
+   etk_object_properties_set(ETK_OBJECT(button), "label", "Save as", NULL);
    etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), button, ETK_BOX_START);
    etk_signal_connect("clicked", ETK_OBJECT(button),
                       ETK_CALLBACK(_window_all_button_click_cb),
@@ -52,7 +52,7 @@ toolbar_create(Etk_Toolbar_Orientation o)
 
    //SaveEDCButton
  /*  button = etk_tool_button_new_from_stock(ETK_STOCK_DOCUMENT_SAVE_AS);
-   etk_object_properties_set(ETK_OBJECT(button),"label","Export edc",NULL);
+   etk_object_properties_set(ETK_OBJECT(button), "label", "Export edc", NULL);
    etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), button, ETK_BOX_START);
    etk_signal_connect("clicked", ETK_OBJECT(button),
                      ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_SAVE_EDC);
@@ -87,6 +87,15 @@ toolbar_create(Etk_Toolbar_Orientation o)
    etk_signal_connect("activated", ETK_OBJECT(menu_item),
                       ETK_CALLBACK(_toolbar_add_menu_item_activated_cb),
                       (void*) NEW_IMAGE);
+   etk_menu_shell_append(ETK_MENU_SHELL(UI_AddMenu), ETK_MENU_ITEM(menu_item));
+   
+   //New Gradient
+   menu_item = etk_menu_item_image_new_with_label("Gradient");
+   image = etk_image_new_from_edje(EdjeFile,"GRAD.PNG");
+   etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
+   etk_signal_connect("activated", ETK_OBJECT(menu_item),
+                      ETK_CALLBACK(_toolbar_add_menu_item_activated_cb),
+                      (void*) NEW_GRADIENT);
    etk_menu_shell_append(ETK_MENU_SHELL(UI_AddMenu), ETK_MENU_ITEM(menu_item));
    
    //New Text
@@ -187,7 +196,7 @@ toolbar_create(Etk_Toolbar_Orientation o)
 
    //group
    menu_item = etk_menu_item_image_new_with_label("Current Group");
-   image = etk_image_new_from_edje(EdjeFile,"NONE.PNG");
+   image = etk_image_new_from_edje(EdjeFile, "NONE.PNG");
    etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
    etk_signal_connect("activated", ETK_OBJECT(menu_item),
                       ETK_CALLBACK(_toolbar_remove_menu_item_activated_cb),
@@ -196,7 +205,7 @@ toolbar_create(Etk_Toolbar_Orientation o)
 
    //MoveUp Button
    button = etk_tool_button_new_from_stock( ETK_STOCK_GO_UP);
-   etk_object_properties_set(ETK_OBJECT(button),"label","Lower",NULL);
+   etk_object_properties_set(ETK_OBJECT(button), "label", "Lower", NULL);
    etk_signal_connect("clicked", ETK_OBJECT(button),
                       ETK_CALLBACK(_window_all_button_click_cb),
                       (void*)TOOLBAR_MOVE_UP);
@@ -204,7 +213,7 @@ toolbar_create(Etk_Toolbar_Orientation o)
 
    //MoveDown Button
    button = etk_tool_button_new_from_stock( ETK_STOCK_GO_DOWN);
-   etk_object_properties_set(ETK_OBJECT(button),"label","Raise",NULL);
+   etk_object_properties_set(ETK_OBJECT(button), "label", "Raise", NULL);
    etk_signal_connect("clicked", ETK_OBJECT(button),
                       ETK_CALLBACK(_window_all_button_click_cb),
                       (void*)TOOLBAR_MOVE_DOWN);
@@ -215,16 +224,26 @@ toolbar_create(Etk_Toolbar_Orientation o)
 
    //Images Browser Button
    button = etk_tool_button_new_from_stock( ETK_STOCK_IMAGE_X_GENERIC);
-   etk_object_properties_set(ETK_OBJECT(button),"label","Images",NULL);
+   etk_object_properties_set(ETK_OBJECT(button), "label", "Images", NULL);
    etk_signal_connect("clicked", ETK_OBJECT(button),
                       ETK_CALLBACK(_window_all_button_click_cb),
                       (void*)TOOLBAR_IMAGE_BROWSER);
    etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), button, ETK_BOX_START);
 
+   //Spectrum Button
+   button = etk_tool_button_new_with_label("Spectrum");
+   image = etk_image_new_from_edje(EdjeFile, "SPECTRA.PNG");
+   etk_widget_size_request_set(image, 22, 22);
+   etk_button_image_set(ETK_BUTTON(button), ETK_IMAGE(image));
+   etk_signal_connect("clicked", ETK_OBJECT(button),
+                      ETK_CALLBACK(_window_all_button_click_cb),
+                      (void*)TOOLBAR_SPECTRUM);
+   etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), button, ETK_BOX_START);
+   
 #if DEBUG_MODE
    //Font Browser Button
    button = etk_tool_button_new_from_stock( ETK_STOCK_PREFERENCES_DESKTOP_FONT);
-   etk_object_properties_set(ETK_OBJECT(button),"label","Fonts",NULL);
+   etk_object_properties_set(ETK_OBJECT(button), "label", "Fonts", NULL);
    etk_signal_connect("clicked", ETK_OBJECT(button),
                       ETK_CALLBACK(_window_all_button_click_cb),
                       (void*)TOOLBAR_FONT_BROWSER);
@@ -236,7 +255,7 @@ toolbar_create(Etk_Toolbar_Orientation o)
    
    //OptionsButton
    button = etk_tool_button_new_from_stock(ETK_STOCK_PREFERENCES_SYSTEM);
-   etk_object_properties_set(ETK_OBJECT(button),"label","Options",NULL);
+   etk_object_properties_set(ETK_OBJECT(button), "label", "Options", NULL);
    etk_signal_connect("clicked", ETK_OBJECT(button),
                       ETK_CALLBACK(_window_all_button_click_cb),
                       (void*)TOOLBAR_OPTIONS);
@@ -302,7 +321,7 @@ toolbar_create(Etk_Toolbar_Orientation o)
    UI_PauseImage = etk_image_new_from_stock(ETK_STOCK_MEDIA_PLAYBACK_PAUSE, ETK_STOCK_MEDIUM);
    UI_PlayButton = etk_tool_button_new();
    etk_button_image_set (ETK_BUTTON(UI_PlayButton), ETK_IMAGE(UI_PauseImage));
-   etk_object_properties_set(ETK_OBJECT(UI_PlayButton),"label","Pause Edje",NULL);
+   etk_object_properties_set(ETK_OBJECT(UI_PlayButton), "label", "Pause Edje", NULL);
    etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), UI_PlayButton, ETK_BOX_START);
    etk_signal_connect("clicked", ETK_OBJECT(UI_PlayButton),
                       ETK_CALLBACK(_window_all_button_click_cb),
@@ -319,12 +338,12 @@ toolbar_create(Etk_Toolbar_Orientation o)
    etk_signal_connect("clicked", ETK_OBJECT(button),
                       ETK_CALLBACK(_window_all_button_click_cb),
                       (void*)TOOLBAR_DEBUG);
-   etk_object_properties_set(ETK_OBJECT(button),"label","Debug",NULL);
+   etk_object_properties_set(ETK_OBJECT(button), "label", "Debug", NULL);
 #endif
    
    //QuitButton
    button = etk_tool_button_new_from_stock(ETK_STOCK_SYSTEM_LOG_OUT);
-   etk_object_properties_set(ETK_OBJECT(button),"label","Quit",NULL);
+   etk_object_properties_set(ETK_OBJECT(button), "label", "Quit", NULL);
    etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), button, ETK_BOX_START);
    etk_signal_connect("clicked", ETK_OBJECT(button),
                       ETK_CALLBACK(_window_all_button_click_cb),
@@ -344,13 +363,13 @@ toolbar_play_button_toggle(int set)
    {
       edje_object_play_set(edje_o, 0);
       etk_button_image_set(ETK_BUTTON(UI_PlayButton), ETK_IMAGE(UI_PlayImage));
-      etk_object_properties_set(ETK_OBJECT(UI_PlayButton),"label","Play Edje",NULL);
+      etk_object_properties_set(ETK_OBJECT(UI_PlayButton), "label", "Play Edje", NULL);
    }
    else if (set == 1)
    {
       edje_object_play_set(edje_o, 1);
       etk_button_image_set(ETK_BUTTON(UI_PlayButton), ETK_IMAGE(UI_PauseImage));
-      etk_object_properties_set(ETK_OBJECT(UI_PlayButton),"label","Pause Edje",NULL);
+      etk_object_properties_set(ETK_OBJECT(UI_PlayButton), "label", "Pause Edje", NULL);
    }
 }
 
@@ -410,9 +429,7 @@ _toolbar_add_menu_item_activated_cb(Etk_Object *object, void *data)
             dialog_alert_show("Can't create part.");
             break;
          }
-         //TODO generate a unique new name
          row = tree_part_add(name, NULL);
-         
          
          Evas_List *images;
          images = edje_edit_images_list_get(edje_o);
@@ -428,7 +445,30 @@ _toolbar_add_menu_item_activated_cb(Etk_Object *object, void *data)
          position_comboboxes_populate();
          program_source_combo_populate();
          break;
+      case NEW_GRADIENT:
+         if (!etk_string_length_get(Cur.group))
+         {
+            dialog_alert_show("You must first select a group.");
+            break;
+         }
+         //generate a unique new name
+         snprintf(name, sizeof(name), "New gradient");
+         i = 2;
+         while (edje_edit_part_exist(edje_o, name))
+            snprintf(name, sizeof(name), "New gradient %d", i++);
       
+         if (!edje_edit_part_add(edje_o, name, EDJE_PART_TYPE_GRADIENT))
+         {
+            dialog_alert_show("Can't create gradient.");
+            break;
+         }
+          row = tree_part_add(name, NULL);
+         
+         etk_tree_row_select(row);
+         etk_tree_row_unfold(row);
+         position_comboboxes_populate();
+         program_source_combo_populate();
+         break;
       case NEW_TEXT:
          if (!etk_string_length_get(Cur.group))
          {

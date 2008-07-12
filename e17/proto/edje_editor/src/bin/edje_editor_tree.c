@@ -260,6 +260,8 @@ _tree_row_selected_cb(Etk_Object *object, Etk_Tree_Row *row, void *data)
          edje_object_signal_emit(edje_ui,"position_frame_hide","edje_editor");
          edje_object_signal_emit(edje_ui,"rect_frame_hide","edje_editor");
          edje_object_signal_emit(edje_ui,"image_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"gradient_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"fill_frame_hide","edje_editor");
          edje_object_signal_emit(edje_ui,"text_frame_hide","edje_editor");
          edje_object_signal_emit(edje_ui,"group_frame_show","edje_editor");
          edje_object_signal_emit(edje_ui,"program_frame_hide","edje_editor");
@@ -287,20 +289,37 @@ _tree_row_selected_cb(Etk_Object *object, Etk_Tree_Row *row, void *data)
             case EDJE_PART_TYPE_RECTANGLE:
                rectangle_frame_update();
                edje_object_signal_emit(edje_ui,"rect_frame_show","edje_editor");
+               edje_object_signal_emit(edje_ui,"fill_frame_hide","edje_editor");
                edje_object_signal_emit(edje_ui,"image_frame_hide","edje_editor");
                edje_object_signal_emit(edje_ui,"text_frame_hide","edje_editor");
+               edje_object_signal_emit(edje_ui,"gradient_frame_hide","edje_editor");
                break;
             case EDJE_PART_TYPE_IMAGE:
                image_frame_update();
+               fill_frame_update();
                edje_object_signal_emit(edje_ui,"image_frame_show","edje_editor");
+               edje_object_signal_emit(edje_ui,"fill_frame_show","edje_editor");
                edje_object_signal_emit(edje_ui,"rect_frame_hide","edje_editor");
                edje_object_signal_emit(edje_ui,"text_frame_hide","edje_editor");
+               edje_object_signal_emit(edje_ui,"gradient_frame_hide","edje_editor");
+               break;
+            case EDJE_PART_TYPE_GRADIENT:
+               gradient_frame_update();
+               fill_frame_update();
+               printf("GRAD\n");
+               edje_object_signal_emit(edje_ui,"gradient_frame_show","edje_editor");
+               edje_object_signal_emit(edje_ui,"fill_frame_show","edje_editor");
+               edje_object_signal_emit(edje_ui,"rect_frame_hide","edje_editor");
+               edje_object_signal_emit(edje_ui,"text_frame_hide","edje_editor");
+               edje_object_signal_emit(edje_ui,"image_frame_hide","edje_editor");
                break;
             case EDJE_PART_TYPE_TEXT:
                text_frame_update();
                edje_object_signal_emit(edje_ui,"text_frame_show","edje_editor");
+               edje_object_signal_emit(edje_ui,"fill_frame_hide","edje_editor");
                edje_object_signal_emit(edje_ui,"image_frame_hide","edje_editor");
                edje_object_signal_emit(edje_ui,"rect_frame_hide","edje_editor");
+               edje_object_signal_emit(edje_ui,"gradient_frame_hide","edje_editor");
                break;
          }
          
@@ -322,9 +341,12 @@ _tree_row_selected_cb(Etk_Object *object, Etk_Tree_Row *row, void *data)
          edje_object_signal_emit(edje_ui,"position_frame_hide","edje_editor");
          edje_object_signal_emit(edje_ui,"rect_frame_hide","edje_editor");
          edje_object_signal_emit(edje_ui,"image_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"gradient_frame_hide","edje_editor");
+         edje_object_signal_emit(edje_ui,"fill_frame_hide","edje_editor");
          edje_object_signal_emit(edje_ui,"text_frame_hide","edje_editor");
          edje_object_signal_emit(edje_ui,"group_frame_show","edje_editor");
          edje_object_signal_emit(edje_ui,"part_frame_hide","edje_editor");
+         
          
          edje_object_signal_emit(edje_ui,"program_frame_show","edje_editor");
          edje_object_signal_emit(edje_ui,"script_frame_show_small","edje_editor");

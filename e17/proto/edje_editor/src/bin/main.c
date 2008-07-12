@@ -265,6 +265,7 @@ load_edje(char *file)
     
    tree_combobox_populate();
    text_font_combo_populate();
+   gradient_spectra_combo_populate();
    
     
     
@@ -340,6 +341,7 @@ main(int argc, char **argv)
    Cur.state = etk_string_new("");
    Cur.prog = etk_string_new("");
    Cur.tween = etk_string_new("");
+   Cur.spectra = etk_string_new("");
    
    
    setlocale(LC_NUMERIC,"C");

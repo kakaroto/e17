@@ -46,7 +46,7 @@ group_frame_create(void)
    etk_box_append(ETK_BOX(hbox),UI_GroupMinWSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    label = etk_label_new("x");
-   etk_object_properties_set(ETK_OBJECT(label), "xalign",0.5,NULL);
+   etk_object_properties_set(ETK_OBJECT(label), "xalign", 0.5, NULL);
    etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    //UI_GroupMinHSpinner
@@ -55,7 +55,7 @@ group_frame_create(void)
    etk_box_append(ETK_BOX(hbox),UI_GroupMinHSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    label = etk_label_new("max");
-   etk_object_properties_set(ETK_OBJECT(label), "xalign",1.0,NULL);
+   etk_object_properties_set(ETK_OBJECT(label), "xalign", 1.0, NULL);
    etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
    //UI_GroupMaxWSpinner
@@ -64,7 +64,7 @@ group_frame_create(void)
    etk_box_append(ETK_BOX(hbox),UI_GroupMaxWSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    label = etk_label_new("x");
-   etk_object_properties_set(ETK_OBJECT(label), "xalign",0.5,NULL);
+   etk_object_properties_set(ETK_OBJECT(label), "xalign", 0.5, NULL);
    etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    //UI_GroupMaxHspinner

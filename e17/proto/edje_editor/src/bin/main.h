@@ -20,13 +20,12 @@
 #include "edje_editor_consolle.h"
 #include "edje_editor_dialogs.h"
 #include "edje_editor_window.h"
+#include "edje_editor_gradient.h"
+#include "edje_editor_fill.h"
+#include "edje_editor_spectra.h"
+#include "edje_editor_spectra_widget.h"
 
 /* DEFINES */
-//#define FAKEWIN_BORDER_TOP    16
-//#define FAKEWIN_BORDER_LEFT   7
-//#define FAKEWIN_BORDER_RIGHT  4
-//#define FAKEWIN_BORDER_BOTTOM 4
-
 #define USE_GL_ENGINE 0
 #define DEBUG_MODE 0
 
@@ -58,6 +57,7 @@ enum various
    TOOLBAR_MOVE_UP,
    TOOLBAR_MOVE_DOWN,
    TOOLBAR_IMAGE_BROWSER,
+   TOOLBAR_SPECTRUM,
    IMAGE_BROWSER_SHOW,
    IMAGE_BROWSER_CLOSE,
    TOOLBAR_FONT_BROWSER,
@@ -74,6 +74,7 @@ enum various
    COLOR_OBJECT_SHADOW,
    COLOR_OBJECT_OUTLINE,
    NEW_IMAGE,
+   NEW_GRADIENT,
    NEW_RECT,
    NEW_TEXT,
    NEW_SWAL,
@@ -89,6 +90,10 @@ enum various
    REL1Y_SPINNER,
    REL2X_SPINNER,
    REL2Y_SPINNER,
+   REL1XO_SPINNER,
+   REL1YO_SPINNER,
+   REL2XO_SPINNER,
+   REL2YO_SPINNER,
    MINW_SPINNER,
    MAXW_SPINNER,
    MINH_SPINNER,
@@ -110,11 +115,15 @@ enum various
    DRAG_REL2,
    DRAG_MOVE,
    DRAG_MOVEBOX,
+   DRAG_GRAD_1,
+   DRAG_GRAD_2,
    REL_COMBO_INTERFACE,
    IMAGE_TWEEN_UP,
    IMAGE_TWEEN_DOWN,
    IMAGE_TWEEN_ADD,
    IMAGE_TWEEN_DELETE,
+   SPECTRA_ADD,
+   SPECTRA_DELETE,
    SAVE_SCRIPT,
    RUN_PROG
 };
@@ -129,7 +138,8 @@ struct Current_State
    Etk_String *part;          //The current selected part name
    Etk_String *state;         //The current selected state name
    Etk_String *prog;          //The current selected prog name
-   Etk_String *tween;         //The current selected tween name
+   Etk_String *tween;         //The current selected tween name in the image frame
+   Etk_String *spectra;       //The current selected spectra in the spectra editor
    
    Etk_String *edj_file_name;
    Etk_String *edj_temp_name;
@@ -197,5 +207,9 @@ void reload_edje      (void);
 #define EDJE_ASPECT_PREFER_VERTICAL   1
 #define EDJE_ASPECT_PREFER_HORIZONTAL 2
 #define EDJE_ASPECT_PREFER_BOTH       3
+
+#define EDJE_GRADIENT_TYPE_LINEAR 0
+#define EDJE_GRADIENT_TYPE_RADIAL 1
+
 
 #endif

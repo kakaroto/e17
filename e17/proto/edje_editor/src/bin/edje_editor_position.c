@@ -40,7 +40,7 @@ position_frame_create(void)
    // etk_notebook_page_append(ETK_NOTEBOOK(notebook), "Advanced", vbox);
 
    label = etk_label_new("<color=#FF0000><b>First_Point</b></>");
-   etk_object_properties_set(ETK_OBJECT(label), "xalign",0.5,NULL);
+   etk_object_properties_set(ETK_OBJECT(label), "xalign", 0.5, NULL);
    etk_box_append(ETK_BOX(vbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
    //hbox
@@ -65,7 +65,7 @@ position_frame_create(void)
    etk_box_append(ETK_BOX(hbox),UI_Rel1XOffsetSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    label = etk_label_new("<color=#FF0000>to</>");
-   etk_object_properties_set(ETK_OBJECT(label), "xalign",1.0,NULL);
+   etk_object_properties_set(ETK_OBJECT(label), "xalign", 1.0, NULL);
    etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
    //Rel1ToXCombobox
@@ -99,7 +99,7 @@ position_frame_create(void)
    etk_box_append(ETK_BOX(hbox), UI_Rel1YOffsetSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    label = etk_label_new("<color=#FF0000>to</> ");
-   etk_object_properties_set(ETK_OBJECT(label), "xalign",1.0,NULL);
+   etk_object_properties_set(ETK_OBJECT(label), "xalign", 1.0, NULL);
    etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
    //Rel1ToYCombobox
@@ -112,7 +112,7 @@ position_frame_create(void)
    etk_box_append(ETK_BOX(hbox), UI_Rel1ToYComboBox, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
    label = etk_label_new("<color=#0000FF><b>Second_Point</b></>");
-   etk_object_properties_set(ETK_OBJECT(label), "xalign",0.5,NULL);
+   etk_object_properties_set(ETK_OBJECT(label), "xalign", 0.5, NULL);
    etk_box_append(ETK_BOX(vbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
    //hbox
@@ -137,7 +137,7 @@ position_frame_create(void)
    etk_box_append(ETK_BOX(hbox), UI_Rel2XOffsetSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    label = etk_label_new("<color=#0000FF>to</>");
-   etk_object_properties_set(ETK_OBJECT(label), "xalign",1.0,NULL);
+   etk_object_properties_set(ETK_OBJECT(label), "xalign", 1.0, NULL);
    etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
    //Rel2ToXCombobox
@@ -171,7 +171,7 @@ position_frame_create(void)
    etk_box_append(ETK_BOX(hbox), UI_Rel2YOffsetSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    label = etk_label_new("<color=#0000FF>to</> ");
-   etk_object_properties_set(ETK_OBJECT(label), "xalign",1.0,NULL);
+   etk_object_properties_set(ETK_OBJECT(label), "xalign", 1.0, NULL);
    etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
    //Rel1ToYCombobox

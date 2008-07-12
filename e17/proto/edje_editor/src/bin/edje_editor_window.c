@@ -33,24 +33,6 @@ window_main_create(void)
    etk_tooltips_init();
    etk_tooltips_enable();
 
-   //Logo (keygrabber)
-   Evas_Object *logo;
-   logo = edje_object_add(UI_evas);
-   edje_object_file_set(logo, EdjeFile, "Logo");
-   evas_object_event_callback_add(logo, EVAS_CALLBACK_KEY_DOWN,
-                                  _window_logo_key_press, NULL);
-   Evas_Modifier_Mask mask;
-   mask = evas_key_modifier_mask_get(UI_evas, "Control");
-   evas_object_key_grab(logo, "q", mask, 0, 0); // quit
-   evas_object_key_grab(logo, "f", mask, 0, 0); // fullscreen
-   evas_object_key_grab(logo, "s", mask, 0, 0); // save
-   evas_object_key_grab(logo, "c", mask, 0, 0); // copy selection (TODO)
-   evas_object_key_grab(logo, "v", mask, 0, 0); // paste selection (TODO)
-   evas_object_key_grab(logo, "x", mask, 0, 0); // cut selection (TODO)
-   evas_object_key_grab(logo, "d", mask, 0, 0); // duplicate selection (TODO)
-   evas_object_key_grab(logo, "n", mask, 0, 0); // new object (TODO)
-   evas_object_show(logo);
-
    //Create the evas objects needed by the canvas (fakewin, handlers)
    canvas_prepare();
 
@@ -125,6 +107,24 @@ window_main_create(void)
    edje_object_part_swallow(edje_ui,"image_frame_swallow",
                             etk_embed_object_get(ETK_EMBED(UI_ImageEmbed)));
 
+   //GradientEmbed
+   UI_GradientEmbed = etk_embed_new(UI_evas);
+   etk_container_add(ETK_CONTAINER(UI_GradientEmbed), gradient_frame_create());
+   etk_embed_position_method_set(ETK_EMBED(UI_GradientEmbed),
+                                 window_embed_position_set, UI_ecore_MainWin);
+   etk_widget_show_all(UI_GradientEmbed);
+   edje_object_part_swallow(edje_ui,"gradient_frame_swallow",
+                            etk_embed_object_get(ETK_EMBED(UI_GradientEmbed)));
+
+   //FillEmbed
+   UI_FillEmbed = etk_embed_new(UI_evas);
+   etk_container_add(ETK_CONTAINER(UI_FillEmbed), fill_frame_create());
+   etk_embed_position_method_set(ETK_EMBED(UI_FillEmbed),
+                                 window_embed_position_set, UI_ecore_MainWin);
+   etk_widget_show_all(UI_FillEmbed);
+   edje_object_part_swallow(edje_ui,"fill_frame_swallow",
+                            etk_embed_object_get(ETK_EMBED(UI_FillEmbed)));
+   
    //PositionEmbed
    UI_PositionEmbed = etk_embed_new(UI_evas);
    etk_container_add(ETK_CONTAINER(UI_PositionEmbed), position_frame_create());
@@ -153,6 +153,24 @@ window_main_create(void)
                             etk_embed_object_get(ETK_EMBED(UI_ScriptEmbed)));
 
 
+   //Logo (keygrabber)
+   Evas_Object *logo;
+   logo = edje_object_add(UI_evas);
+   edje_object_file_set(logo, EdjeFile, "Logo");
+   evas_object_event_callback_add(logo, EVAS_CALLBACK_KEY_DOWN,
+                                  _window_logo_key_press, NULL);
+   Evas_Modifier_Mask mask;
+   mask = evas_key_modifier_mask_get(UI_evas, "Control");
+   evas_object_key_grab(logo, "q", mask, 0, 0); // quit
+   evas_object_key_grab(logo, "f", mask, 0, 0); // fullscreen
+   evas_object_key_grab(logo, "s", mask, 0, 0); // save
+   evas_object_key_grab(logo, "c", mask, 0, 0); // copy selection (TODO)
+   evas_object_key_grab(logo, "v", mask, 0, 0); // paste selection (TODO)
+   evas_object_key_grab(logo, "x", mask, 0, 0); // cut selection (TODO)
+   evas_object_key_grab(logo, "d", mask, 0, 0); // duplicate selection (TODO)
+   evas_object_key_grab(logo, "n", mask, 0, 0); // new object (TODO)
+   evas_object_show(logo);
+   
    //Consolle
    EV_Consolle = consolle_create();
    
@@ -167,6 +185,9 @@ window_main_create(void)
 
    //Image Browser
    image_browser_create();
+   
+   //Spetrum window
+   spectra_window_create();
 
    //Create the main edje object to edit
    edje_o = edje_object_add(UI_evas);
@@ -408,6 +429,9 @@ _window_all_button_click_cb(Etk_Button *button, void *data)
       break;
    case TOOLBAR_IMAGE_BROWSER:
       image_browser_show(0);
+      break;
+   case TOOLBAR_SPECTRUM:
+      spectra_window_show();
       break;
    case TOOLBAR_FONT_BROWSER:
       dialog_alert_show("Font Browser");

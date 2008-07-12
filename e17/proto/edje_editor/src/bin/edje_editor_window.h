@@ -19,6 +19,8 @@ Etk_Widget *UI_PositionEmbed;
 Etk_Widget *UI_ProgramEmbed;
 Etk_Widget *UI_ScriptEmbed;
 Etk_Widget *UI_ImageEmbed;
+Etk_Widget *UI_GradientEmbed;
+Etk_Widget *UI_FillEmbed;
 Etk_Widget *UI_ToolbarEmbed;
 
 

@@ -10,8 +10,8 @@ dialog_filechooser_create(void)
 {
    //Dialog
    UI_FileChooserDialog = etk_dialog_new();
-   etk_object_properties_set (ETK_OBJECT(UI_FileChooserDialog),
-                              "action-area-homogeneous", ETK_FALSE, NULL);
+   etk_object_properties_set(ETK_OBJECT(UI_FileChooserDialog),
+                             "action-area-homogeneous", ETK_FALSE, NULL);
    etk_signal_connect("delete-event", ETK_OBJECT(UI_FileChooserDialog),
                       ETK_CALLBACK(etk_window_hide_on_delete), NULL);
    etk_signal_connect("response", ETK_OBJECT(UI_FileChooserDialog),

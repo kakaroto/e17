@@ -108,6 +108,58 @@ _canvas_drag_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
 
       position_frame_update();
    }
+   // Move First Gradient Point Handler
+   if ((int)data == DRAG_GRAD_1 || (int)data == DRAG_GRAD_2 )
+   {
+      char *type;
+      evas_pointer_output_xy_get(ecore_evas_get(UI_ecore_MainWin), 
+                                 &mouse_x, &mouse_y);
+      evas_object_geometry_get(EV_focus_handler, &parentx, &parenty,
+                               &parentw, &parenth);
+      type = edje_edit_state_gradient_type_get(edje_o, Cur.part->string,
+                                               Cur.state->string);
+      //printf("GELLA %d %d %d %d [%f] [m %d %d]\n", fhx, fhy, fhw, fhh, (float)(mouse_x - fhx)/(float)fhx, mouse_x, mouse_y);
+      if ((int)data == DRAG_GRAD_1)
+      {
+         if (edje_edit_state_gradient_use_fill_get(edje_o, Cur.part->string,
+                                                   Cur.state->string))
+         {//Update fill origin
+            edje_edit_state_fill_origin_relative_x_set(edje_o, Cur.part->string,
+             Cur.state->string, (float)(mouse_x - parentx - dx)/(float)parentw);
+            edje_edit_state_fill_origin_relative_y_set(edje_o, Cur.part->string,
+             Cur.state->string, (float)(mouse_y - parenty - dy)/(float)parenth);
+         }
+         else
+         {//Update gradient rel
+            edje_edit_state_gradient_rel1_relative_x_set(edje_o, Cur.part->string,
+             Cur.state->string, (float)(mouse_x - parentx - dx)/(float)parentw);
+            edje_edit_state_gradient_rel1_relative_y_set(edje_o, Cur.part->string,
+             Cur.state->string, (float)(mouse_y - parenty - dy)/(float)parenth);
+         }
+      }
+      else
+      {
+         if (edje_edit_state_gradient_use_fill_get(edje_o, Cur.part->string,
+                                                   Cur.state->string))
+         {//Update fill origin
+            edje_edit_state_fill_size_relative_x_set(edje_o, Cur.part->string,
+               Cur.state->string, (float)(mouse_x - parentx - dx)/(float)parentw);
+            edje_edit_state_fill_size_relative_y_set(edje_o, Cur.part->string,
+               Cur.state->string, (float)(mouse_y - parenty - dy)/(float)parenth);
+         }
+         else
+         {//Update gradient rel
+            edje_edit_state_gradient_rel2_relative_x_set(edje_o, Cur.part->string,
+               Cur.state->string, (float)(mouse_x - parentx - dx)/(float)parentw);
+            edje_edit_state_gradient_rel2_relative_y_set(edje_o, Cur.part->string,
+               Cur.state->string, (float)(mouse_y - parenty - dy)/(float)parenth);
+         }
+         
+      }
+      gradient_frame_update();
+      fill_frame_update();
+      edje_edit_string_free(type);
+   }
    
    canvas_redraw();
 
@@ -119,7 +171,7 @@ void
 _canvas_drag_start_cb(void *data, Evas_Object *o, const char *em, const char *src)
 {
    Evas_Coord x, y, mx, my;
-   //printf("Start Drag\n");
+   printf("Start Drag\n");
 
    if ((int)data == DRAG_REL1)
    {
@@ -170,6 +222,25 @@ _canvas_drag_start_cb(void *data, Evas_Object *o, const char *em, const char *sr
       dy = my - y;
    }
    
+   if ((int)data == DRAG_GRAD_1)
+   {
+      evas_object_event_callback_add(EV_grad1_handler, EVAS_CALLBACK_MOUSE_MOVE,
+                                     _canvas_drag_cb, (void*)DRAG_GRAD_1);
+      evas_object_geometry_get(EV_grad1_handler, &x, &y, NULL, NULL);
+      evas_pointer_output_xy_get(ecore_evas_get(UI_ecore_MainWin), &mx, &my);
+      dx = mx - x;
+      dy = my - y;
+   }
+   if ((int)data == DRAG_GRAD_2)
+   {
+      evas_object_event_callback_add(EV_grad2_handler, EVAS_CALLBACK_MOUSE_MOVE,
+                                     _canvas_drag_cb, data);
+      evas_object_geometry_get(EV_grad2_handler, &x, &y, NULL, NULL);
+      evas_pointer_output_xy_get(ecore_evas_get(UI_ecore_MainWin), &mx, &my);
+      dx = mx - x;
+      dy = my - y;
+   }
+   canvas_redraw();
 }
 
 void
@@ -209,6 +280,12 @@ _canvas_drag_end_cb(void *data, Evas_Object *o, const char *emission, const char
    }
    if ((int)data == DRAG_MOVEBOX)
       evas_object_event_callback_del(EV_movebox,EVAS_CALLBACK_MOUSE_MOVE,
+                                     _canvas_drag_cb);
+   if ((int)data == DRAG_GRAD_1)
+      evas_object_event_callback_del(EV_grad1_handler,EVAS_CALLBACK_MOUSE_MOVE,
+                                     _canvas_drag_cb);
+   if ((int)data == DRAG_GRAD_2)
+      evas_object_event_callback_del(EV_grad2_handler,EVAS_CALLBACK_MOUSE_MOVE,
                                      _canvas_drag_cb);
    if ((int)data == DRAG_MINIARROW)
    {
@@ -379,6 +456,77 @@ _canvas_draw_focus(void)
       evas_object_line_xy_set(EV_rel2X_align_guide, px + 2, 0, px + 2, 2000); //TODO FIX 2000
       evas_object_line_xy_set(EV_rel2Y_align_guide, 0, py + 2, 2000, py + 2); //TODO FIX 2000
       
+      //Place the gradient handler
+      if (edje_edit_part_type_get(edje_o, Cur.part->string) == EDJE_PART_TYPE_GRADIENT)
+      {
+         double gx, gy, gox, goy;
+         const char *type;
+         int p1x,p1y,p2x,p2y;
+         edje_object_part_geometry_get(edje_o, Cur.part->string, &ParentX, &ParentY, &ParentW, &ParentH);
+         type = edje_edit_state_gradient_type_get(edje_o, Cur.part->string,
+                                                  Cur.state->string);
+         
+         //First point
+         if (edje_edit_state_gradient_use_fill_get(edje_o, Cur.part->string,
+                                                   Cur.state->string))
+         {
+            gx = edje_edit_state_fill_origin_relative_x_get(edje_o, Cur.part->string, Cur.state->string);
+            gy = edje_edit_state_fill_origin_relative_y_get(edje_o, Cur.part->string, Cur.state->string);
+            gox = edje_edit_state_fill_origin_offset_x_get(edje_o, Cur.part->string, Cur.state->string);
+            goy = edje_edit_state_fill_origin_offset_y_get(edje_o, Cur.part->string, Cur.state->string);
+         }
+         else
+         {
+            gx = edje_edit_state_gradient_rel1_relative_x_get(edje_o, Cur.part->string, Cur.state->string);
+            gy = edje_edit_state_gradient_rel1_relative_y_get(edje_o, Cur.part->string, Cur.state->string);
+            gox = edje_edit_state_gradient_rel1_offset_x_get(edje_o, Cur.part->string, Cur.state->string);
+            goy = edje_edit_state_gradient_rel1_offset_y_get(edje_o, Cur.part->string, Cur.state->string);
+         }
+         p1x = ParentX + fx + (pw * gx) + gox;
+         p1y = ParentY + fy + (ph * gy) + goy;
+         evas_object_move(EV_grad1_handler, p1x, p1y);
+         
+         //Second point
+         if (edje_edit_state_gradient_use_fill_get(edje_o, Cur.part->string,
+                                                   Cur.state->string))
+         {
+            gx = edje_edit_state_fill_size_relative_x_get(edje_o, Cur.part->string, Cur.state->string);
+            gy = edje_edit_state_fill_size_relative_y_get(edje_o, Cur.part->string, Cur.state->string);
+            gox = edje_edit_state_fill_size_offset_x_get(edje_o, Cur.part->string, Cur.state->string);
+            goy = edje_edit_state_fill_size_offset_y_get(edje_o, Cur.part->string, Cur.state->string);
+         }
+         else
+         {
+            gx = edje_edit_state_gradient_rel2_relative_x_get(edje_o, Cur.part->string, Cur.state->string);
+            gy = edje_edit_state_gradient_rel2_relative_y_get(edje_o, Cur.part->string, Cur.state->string);
+            gox = edje_edit_state_gradient_rel2_offset_x_get(edje_o, Cur.part->string, Cur.state->string);
+            goy = edje_edit_state_gradient_rel2_offset_y_get(edje_o, Cur.part->string, Cur.state->string);
+         }
+         p2x = ParentX + fx + (pw * gx) + gox;
+         p2y = ParentY + fy + (ph * gy) + goy;
+         evas_object_move(EV_grad2_handler, p2x, p2y);
+         
+         //Line
+         evas_object_line_xy_set(EV_gradient_line, p1x, p1y, p2x, p2y);
+         
+         
+         evas_object_show(EV_gradient_line);
+         evas_object_raise(EV_gradient_line);
+         evas_object_show(EV_grad1_handler);
+         evas_object_raise(EV_grad1_handler);
+         evas_object_show(EV_grad2_handler);
+         evas_object_raise(EV_grad2_handler);
+         
+         edje_edit_string_free(type);
+
+      }
+      else
+      {
+         evas_object_hide(EV_gradient_line);
+         evas_object_hide(EV_grad1_handler);
+         evas_object_hide(EV_grad2_handler);
+      }
+      
       evas_object_raise(EV_rel1X_parent_handler);
       evas_object_show(EV_rel1X_parent_handler);
       evas_object_raise(EV_rel1Y_parent_handler);
@@ -402,6 +550,9 @@ _canvas_draw_focus(void)
       evas_object_hide(EV_rel1_handler);
       evas_object_hide(EV_rel2_handler);
       evas_object_hide(EV_move_handler);
+      evas_object_hide(EV_gradient_line);
+      evas_object_hide(EV_grad1_handler);
+      evas_object_hide(EV_grad2_handler);
    }
 }
 
@@ -475,6 +626,24 @@ canvas_prepare(void)
    edje_object_signal_callback_add(EV_move_handler, "END_DRAG", "MoveH",
                                    _canvas_drag_end_cb, (void*)DRAG_MOVE);
 
+   //Create two Gradient handlers
+   EV_grad1_handler = edje_object_add(ecore_evas_get(UI_ecore_MainWin));
+   edje_object_file_set(EV_grad1_handler, EdjeFile, "GradH");
+   edje_object_signal_callback_add(EV_grad1_handler, "START_DRAG", "GradH",
+                                   _canvas_drag_start_cb, (void*)DRAG_GRAD_1);
+   edje_object_signal_callback_add(EV_grad1_handler, "END_DRAG", "GradH",
+                                   _canvas_drag_end_cb, (void*)DRAG_GRAD_1);
+   
+   EV_grad2_handler = edje_object_add(ecore_evas_get(UI_ecore_MainWin));
+   edje_object_file_set(EV_grad2_handler, EdjeFile, "GradH");
+   edje_object_signal_callback_add(EV_grad2_handler, "START_DRAG", "GradH",
+                                   _canvas_drag_start_cb, (void*)DRAG_GRAD_2);
+   edje_object_signal_callback_add(EV_grad2_handler, "END_DRAG", "GradH",
+                                   _canvas_drag_end_cb, (void*)DRAG_GRAD_2);
+   //Create Gradient line
+   EV_gradient_line = evas_object_line_add(ecore_evas_get(UI_ecore_MainWin));
+   evas_object_color_set(EV_gradient_line, 42, 42, 42, 200);
+   
    //Create Parent Handlers
    EV_rel1X_parent_handler = evas_object_line_add(ecore_evas_get(UI_ecore_MainWin));
    evas_object_color_set(EV_rel1X_parent_handler, 255, 0, 0, 200);
@@ -564,4 +733,7 @@ canvas_redraw(void)
    evas_object_hide(EV_rel2_handler);
    evas_object_hide(EV_move_handler);
    evas_object_hide(EV_focus_handler);
+   evas_object_hide(EV_gradient_line);
+   evas_object_hide(EV_grad1_handler);
+   evas_object_hide(EV_grad2_handler);
 }

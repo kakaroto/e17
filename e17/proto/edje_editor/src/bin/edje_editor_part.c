@@ -204,12 +204,13 @@ part_type_image_get(int part_type)
    
    switch (part_type)
    {
-      case EDJE_PART_TYPE_IMAGE:     strcpy(buf,"IMAGE.PNG"); break;
-      case EDJE_PART_TYPE_TEXT:      strcpy(buf,"TEXT.PNG");  break;
-      case EDJE_PART_TYPE_RECTANGLE: strcpy(buf,"RECT.PNG");  break;
-      case EDJE_PART_TYPE_SWALLOW:   strcpy(buf,"SWAL.PNG");  break;
-      case EDJE_PART_TYPE_GROUP:     strcpy(buf,"GROUP.PNG");  break;
-      default:                       strcpy(buf,"NONE.PNG");  break;
+      case EDJE_PART_TYPE_IMAGE:     strcpy(buf, "IMAGE.PNG"); break;
+      case EDJE_PART_TYPE_GRADIENT:  strcpy(buf, "GRAD.PNG"); break;
+      case EDJE_PART_TYPE_TEXT:      strcpy(buf, "TEXT.PNG"); break;
+      case EDJE_PART_TYPE_RECTANGLE: strcpy(buf, "RECT.PNG"); break;
+      case EDJE_PART_TYPE_SWALLOW:   strcpy(buf, "SWAL.PNG"); break;
+      case EDJE_PART_TYPE_GROUP:     strcpy(buf, "GROUP.PNG"); break;
+      default:                       strcpy(buf, "NONE.PNG"); break;
    }
    ret = strdup(buf);
    printf("IMAGE: %s\n",ret);

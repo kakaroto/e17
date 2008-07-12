@@ -47,7 +47,7 @@ state_frame_create(void)
    etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
    label = etk_label_new("min:");
-   etk_object_properties_set(ETK_OBJECT(label), "xalign",1.0,NULL);
+   etk_object_properties_set(ETK_OBJECT(label), "xalign", 1.0, NULL);
    etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    //UI_AspectMinSpinner
@@ -57,7 +57,7 @@ state_frame_create(void)
    etk_box_append(ETK_BOX(hbox),UI_AspectMinSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    label = etk_label_new("max:");
-   etk_object_properties_set(ETK_OBJECT(label), "xalign",1.0,NULL);
+   etk_object_properties_set(ETK_OBJECT(label), "xalign", 1.0, NULL);
    etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    //UI_AspectMaxSpinner
@@ -97,7 +97,7 @@ state_frame_create(void)
    etk_box_append(ETK_BOX(hbox),UI_StateMinWSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    label = etk_label_new("x");
-   etk_object_properties_set(ETK_OBJECT(label), "xalign",0.5,NULL);
+   etk_object_properties_set(ETK_OBJECT(label), "xalign", 0.5, NULL);
    etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    //UI_StateMinHSpinner
@@ -106,7 +106,7 @@ state_frame_create(void)
    etk_box_append(ETK_BOX(hbox),UI_StateMinHSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    label = etk_label_new("max");
-   etk_object_properties_set(ETK_OBJECT(label), "xalign",1.0,NULL);
+   etk_object_properties_set(ETK_OBJECT(label), "xalign", 1.0, NULL);
    etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
    //UI_StateMaxWSpinner
@@ -115,7 +115,7 @@ state_frame_create(void)
    etk_box_append(ETK_BOX(hbox),UI_StateMaxWSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    label = etk_label_new("x");
-   etk_object_properties_set(ETK_OBJECT(label), "xalign",0.5,NULL);
+   etk_object_properties_set(ETK_OBJECT(label), "xalign", 0.5, NULL);
    etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    //UI_StateMaxHspinner

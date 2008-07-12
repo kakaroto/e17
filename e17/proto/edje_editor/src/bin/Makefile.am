@@ -27,6 +27,10 @@ edje_editor_canvas.h \
 edje_editor_consolle.h \
 edje_editor_dialogs.h \
 edje_editor_window.h \
+edje_editor_gradient.h \
+edje_editor_fill.h \
+edje_editor_spectra.h \
+edje_editor_spectra_widget.h \
 main.h
 
 
@@ -46,6 +50,10 @@ edje_editor_canvas.c \
 edje_editor_consolle.c \
 edje_editor_dialogs.c \
 edje_editor_window.c \
+edje_editor_gradient.c \
+edje_editor_fill.c \
+edje_editor_spectra.c \
+edje_editor_spectra_widget.c \
 main.c \
 $(edje_editor_INCLUDES)
 
