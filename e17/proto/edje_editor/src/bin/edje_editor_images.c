@@ -32,34 +32,34 @@ image_frame_create(void)
    //AddTweenButton
    UI_AddTweenButton = etk_button_new_from_stock(ETK_STOCK_LIST_ADD);
    etk_button_style_set(ETK_BUTTON(UI_AddTweenButton), ETK_BUTTON_ICON);
-   etk_signal_connect("clicked", ETK_OBJECT(UI_AddTweenButton), 
+   etk_signal_connect("clicked", ETK_OBJECT(UI_AddTweenButton),
       ETK_CALLBACK(_window_all_button_click_cb), (void*)IMAGE_TWEEN_ADD);
-   etk_box_append(ETK_BOX(UI_ImageTweenVBox), UI_AddTweenButton, 
+   etk_box_append(ETK_BOX(UI_ImageTweenVBox), UI_AddTweenButton,
                      ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
    
    //DeleteTweenButton
    UI_DeleteTweenButton = etk_button_new_from_stock(ETK_STOCK_LIST_REMOVE);
    etk_button_style_set(ETK_BUTTON(UI_DeleteTweenButton), ETK_BUTTON_ICON);
-   etk_signal_connect("clicked", ETK_OBJECT(UI_DeleteTweenButton), 
+   etk_signal_connect("clicked", ETK_OBJECT(UI_DeleteTweenButton),
       ETK_CALLBACK(_window_all_button_click_cb), (void*)IMAGE_TWEEN_DELETE);
-   etk_box_append(ETK_BOX(UI_ImageTweenVBox), UI_DeleteTweenButton, 
-                     ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+   etk_box_append(ETK_BOX(UI_ImageTweenVBox), UI_DeleteTweenButton,
+                  ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
    
    //MoveUpTweenButton
    UI_MoveUpTweenButton = etk_button_new_from_stock(ETK_STOCK_GO_UP);
    etk_button_style_set(ETK_BUTTON(UI_MoveUpTweenButton),  ETK_BUTTON_ICON);
-   etk_signal_connect("clicked", ETK_OBJECT(UI_MoveUpTweenButton), 
+   etk_signal_connect("clicked", ETK_OBJECT(UI_MoveUpTweenButton),
       ETK_CALLBACK(_window_all_button_click_cb), (void*)IMAGE_TWEEN_UP);
    etk_box_append(ETK_BOX(UI_ImageTweenVBox), UI_MoveUpTweenButton, 
-                     ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+                  ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
    
    //MoveDownTweenButton
    UI_MoveDownTweenButton = etk_button_new_from_stock(ETK_STOCK_GO_DOWN);
    etk_button_style_set(ETK_BUTTON(UI_MoveDownTweenButton),  ETK_BUTTON_ICON);
-   etk_signal_connect("clicked", ETK_OBJECT(UI_MoveDownTweenButton), 
+   etk_signal_connect("clicked", ETK_OBJECT(UI_MoveDownTweenButton),
       ETK_CALLBACK(_window_all_button_click_cb), (void*)IMAGE_TWEEN_DOWN);
-   etk_box_append(ETK_BOX(UI_ImageTweenVBox), UI_MoveDownTweenButton, 
-                     ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+   etk_box_append(ETK_BOX(UI_ImageTweenVBox), UI_MoveDownTweenButton,
+                  ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
    //ImageTweenList
    UI_ImageTweenList = etk_tree_new();
@@ -270,10 +270,11 @@ image_browser_create(void)
    UI_ImageBrowserIconbox = etk_iconbox_new();
    etk_signal_connect("icon-selected", ETK_OBJECT(UI_ImageBrowserIconbox),
                       ETK_CALLBACK(_image_browser_iconbox_selected_cb), NULL);
-   etk_box_append(ETK_BOX(hbox), UI_ImageBrowserIconbox, 0, ETK_BOX_EXPAND_FILL, 0);
+   etk_box_append(ETK_BOX(hbox), UI_ImageBrowserIconbox,
+                  ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
    
    vbox = etk_vbox_new(ETK_FALSE, 0);
-   etk_box_append (ETK_BOX(hbox), vbox, 0, ETK_BOX_NONE, 5);
+   etk_box_append (ETK_BOX(hbox), vbox, ETK_BOX_START, ETK_BOX_NONE, 5);
    
    //AddImageButton
    button = etk_button_new_from_stock(ETK_STOCK_DOCUMENT_OPEN);
@@ -281,14 +282,14 @@ image_browser_create(void)
    etk_button_style_set(ETK_BUTTON(button), ETK_BUTTON_BOTH_VERT);
    etk_signal_connect("clicked", ETK_OBJECT(button),
             ETK_CALLBACK(_window_all_button_click_cb), (void*)TOOLBAR_IMAGE_FILE_ADD);
-   etk_box_append(ETK_BOX(vbox), button, 0, ETK_BOX_NONE, 0);
+   etk_box_append(ETK_BOX(vbox), button, ETK_BOX_START, ETK_BOX_NONE, 0);
    
    //DeleteImageButton
    button = etk_button_new_from_stock(ETK_STOCK_EDIT_DELETE);
    etk_object_properties_set(ETK_OBJECT(button), "label","Remove image",NULL);
    etk_button_style_set(ETK_BUTTON(button), ETK_BUTTON_BOTH_VERT);
    etk_widget_disabled_set(button, 1);
-   etk_box_append(ETK_BOX(vbox), button, 0, ETK_BOX_NONE, 0);
+   etk_box_append(ETK_BOX(vbox), button, ETK_BOX_START, ETK_BOX_NONE, 0);
    
    //EditImageButton
    button = etk_button_new_with_label("Edit Image");
@@ -296,30 +297,31 @@ image_browser_create(void)
    etk_button_image_set(ETK_BUTTON(button), ETK_IMAGE(image));
    etk_button_style_set(ETK_BUTTON(button), ETK_BUTTON_BOTH_VERT);
    etk_widget_disabled_set(button, 1);
-   etk_box_append(ETK_BOX(vbox), button, 0, ETK_BOX_NONE, 0);
+   etk_box_append(ETK_BOX(vbox), button, ETK_BOX_START, ETK_BOX_NONE, 0);
    
    //ImageInfo
    frame = etk_frame_new("Image Info");
-   etk_box_append(ETK_BOX(vbox), frame, 0, ETK_BOX_EXPAND_FILL, 10);
+   etk_box_append(ETK_BOX(vbox), frame, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 10);
    
    vbox2 = etk_vbox_new(ETK_FALSE, 0);
    etk_container_add(ETK_CONTAINER(frame), vbox2);
    
    label = etk_label_new("<b>name:</b>");
-   etk_box_append(ETK_BOX(vbox2), label, 0, ETK_BOX_NONE, 0);
+   etk_box_append(ETK_BOX(vbox2), label, ETK_BOX_START, ETK_BOX_NONE, 0);
    
    label = etk_label_new("Unknow");
-   etk_box_append(ETK_BOX(vbox2), label, 0, ETK_BOX_NONE, 0);
+   etk_box_append(ETK_BOX(vbox2), label, ETK_BOX_START, ETK_BOX_NONE, 0);
    
    label = etk_label_new(" ");
-   etk_box_append(ETK_BOX(vbox2), label, 0, ETK_BOX_NONE, 0);
+   etk_box_append(ETK_BOX(vbox2), label, ETK_BOX_START, ETK_BOX_NONE, 0);
    
    UI_ImageBrowserSizeLabel = etk_label_new("<b>size:</b> Unknow");
    etk_object_properties_set(ETK_OBJECT(UI_ImageBrowserSizeLabel), "xalign", 0, NULL);
-   etk_box_append(ETK_BOX(vbox2), UI_ImageBrowserSizeLabel, 0, ETK_BOX_NONE, 0);
+   etk_box_append(ETK_BOX(vbox2), UI_ImageBrowserSizeLabel,
+                  ETK_BOX_START, ETK_BOX_NONE, 0);
    
    label = etk_label_new("<b>comp:</b> Unknow");
-   etk_box_append(ETK_BOX(vbox2), label, 0, ETK_BOX_NONE, 0);
+   etk_box_append(ETK_BOX(vbox2), label, ETK_BOX_START, ETK_BOX_NONE, 0);
    
    //CloseButton
    button = etk_button_new_from_stock(ETK_STOCK_DIALOG_CLOSE);

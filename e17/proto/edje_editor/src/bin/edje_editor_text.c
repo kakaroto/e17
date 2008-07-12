@@ -126,11 +126,17 @@ text_frame_create(Evas *evas)
    etk_box_append(ETK_BOX(vbox), hbox, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
    //Color buttons
-   etk_box_append(ETK_BOX(hbox), window_color_button_create("Text",COLOR_OBJECT_TEXT,30,30, evas),
+   etk_box_append(ETK_BOX(hbox),
+                  window_color_button_create("Text",
+                                             COLOR_OBJECT_TEXT, 30, 30, evas),
                   ETK_BOX_START, ETK_BOX_EXPAND, 0);
-   etk_box_append(ETK_BOX(hbox), window_color_button_create("Shadow",COLOR_OBJECT_SHADOW,30,30, evas),
+   etk_box_append(ETK_BOX(hbox),
+                  window_color_button_create("Shadow",
+                                             COLOR_OBJECT_SHADOW, 30, 30, evas),
                   ETK_BOX_START, ETK_BOX_EXPAND, 0);
-   etk_box_append(ETK_BOX(hbox), window_color_button_create("Outline",COLOR_OBJECT_OUTLINE,30,30, evas),
+   etk_box_append(ETK_BOX(hbox),
+                  window_color_button_create("Outline",
+                                             COLOR_OBJECT_OUTLINE, 30, 30, evas),
                   ETK_BOX_START, ETK_BOX_EXPAND, 0);
 
    etk_signal_connect("clicked", ETK_OBJECT(UI_FontAddButton),

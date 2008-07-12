@@ -53,8 +53,8 @@ position_frame_create(void)
    //Rel1XSpinner
    UI_Rel1XSpinner = etk_spinner_new(-100.0, 100.0, 0.0, 0.01, 0.1);
    etk_spinner_digits_set(ETK_SPINNER(UI_Rel1XSpinner), 2);
-   etk_widget_size_request_set(UI_Rel1XSpinner,45, 20);
-   etk_box_append(ETK_BOX(hbox),UI_Rel1XSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
+   etk_widget_size_request_set(UI_Rel1XSpinner, 45, 20);
+   etk_box_append(ETK_BOX(hbox), UI_Rel1XSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    label = etk_label_new("<color=#FF0000>+</>");
    etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
@@ -62,7 +62,7 @@ position_frame_create(void)
    //Rel1XOffsetEntry
    UI_Rel1XOffsetSpinner =  etk_spinner_new(-2000, 2000, 0, 1, 10);
    etk_widget_size_request_set(UI_Rel1XOffsetSpinner, 45, 20);
-   etk_box_append(ETK_BOX(hbox),UI_Rel1XOffsetSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
+   etk_box_append(ETK_BOX(hbox), UI_Rel1XOffsetSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    label = etk_label_new("<color=#FF0000>to</>");
    etk_object_properties_set(ETK_OBJECT(label), "xalign", 1.0, NULL);

@@ -78,7 +78,7 @@ _create_signal_embed(void)
    
    //UI_SignalEmitEntry
    label = etk_label_new("<b>Signal</b>");
-   etk_box_append(ETK_BOX(hbox), label, 0, ETK_BOX_NONE, 0);
+   etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
    UI_SignalEmitEntry = etk_combobox_entry_new();
    etk_combobox_entry_items_height_set(ETK_COMBOBOX_ENTRY(UI_SignalEmitEntry), 18);
    etk_combobox_entry_column_add(ETK_COMBOBOX_ENTRY(UI_SignalEmitEntry),
@@ -88,18 +88,18 @@ _create_signal_embed(void)
    
    //UI_SourceEmitEntry
    label = etk_label_new("<b>Source</b>");
-   etk_box_append(ETK_BOX(hbox), label, 0, ETK_BOX_NONE, 0);
+   etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
    UI_SourceEmitEntry = etk_combobox_entry_new();
    etk_combobox_entry_items_height_set(ETK_COMBOBOX_ENTRY(UI_SourceEmitEntry), 18);
    etk_combobox_entry_column_add(ETK_COMBOBOX_ENTRY(UI_SourceEmitEntry),
                   ETK_COMBOBOX_ENTRY_LABEL, 75, ETK_COMBOBOX_ENTRY_EXPAND, 0.0);
    etk_combobox_entry_build(ETK_COMBOBOX_ENTRY(UI_SourceEmitEntry));
-   etk_box_append(ETK_BOX(hbox), UI_SourceEmitEntry, 0, ETK_BOX_NONE, 0);
+   etk_box_append(ETK_BOX(hbox), UI_SourceEmitEntry, ETK_BOX_START, ETK_BOX_NONE, 0);
    
    //button
    button = etk_button_new_from_stock(ETK_STOCK_DIALOG_OK);
    etk_object_properties_set(ETK_OBJECT(button), "label", "Emit", NULL);
-   etk_box_append(ETK_BOX(hbox), button, 0, ETK_BOX_NONE, 0);
+   etk_box_append(ETK_BOX(hbox), button, ETK_BOX_START, ETK_BOX_NONE, 0);
    
    etk_signal_connect("active-item-changed", ETK_OBJECT(UI_SignalEmitEntry),
                       ETK_CALLBACK(_consolle_combobox_entry_activated_cb), NULL);

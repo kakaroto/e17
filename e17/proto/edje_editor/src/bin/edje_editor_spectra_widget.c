@@ -65,7 +65,7 @@ spectra_widget_new(Evas *evas)
    etk_button_style_set(ETK_BUTTON(button), ETK_BUTTON_ICON);
    etk_signal_connect("clicked", ETK_OBJECT(button), 
                       ETK_CALLBACK(_spectra_widget_add_button_click_cb), vbox);
-   etk_box_append(ETK_BOX(hbox), button, 0, ETK_BOX_START, 0);
+   etk_box_append(ETK_BOX(hbox), button, ETK_BOX_START, ETK_BOX_START, 0);
    
    //DelStopButton
    button = etk_button_new_from_stock(ETK_STOCK_LIST_REMOVE);

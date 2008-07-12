@@ -134,7 +134,7 @@ gradient_frame_create(void)
    //UI_GradientRel1XOffsetSpinner
    UI_GradientRel1XOffsetSpinner = etk_spinner_new(-2000, 2000, 0, 1, 10);
    etk_widget_size_request_set(UI_GradientRel1XOffsetSpinner, 45, 20);
-   etk_box_append(ETK_BOX(hbox),UI_GradientRel1XOffsetSpinner,
+   etk_box_append(ETK_BOX(hbox), UI_GradientRel1XOffsetSpinner,
                   ETK_BOX_START, ETK_BOX_NONE, 0);
 
    label = etk_label_new("<b>  Y </b>");
@@ -177,7 +177,7 @@ gradient_frame_create(void)
    //UI_GradientRel2XOffsetSpinner
    UI_GradientRel2XOffsetSpinner = etk_spinner_new(-2000, 2000, 0, 1, 10);
    etk_widget_size_request_set(UI_GradientRel2XOffsetSpinner, 45, 20);
-   etk_box_append(ETK_BOX(hbox),UI_GradientRel2XOffsetSpinner,
+   etk_box_append(ETK_BOX(hbox), UI_GradientRel2XOffsetSpinner,
                   ETK_BOX_START, ETK_BOX_NONE, 0);
 
    label = etk_label_new("<b>  Y </b>");

@@ -33,7 +33,7 @@ spectra_window_create(void)
    
    //vbox
    vbox = etk_vbox_new(ETK_FALSE, 0);
-   etk_box_append(ETK_BOX(hbox), vbox, 0, ETK_BOX_NONE, 0);
+   etk_box_append(ETK_BOX(hbox), vbox, ETK_BOX_START, ETK_BOX_NONE, 0);
    
    //UI_SpectrumList
    UI_SpectrumList = etk_tree_new();
@@ -44,7 +44,7 @@ spectra_window_create(void)
    etk_tree_col_model_add(col, etk_tree_model_image_new());
    etk_tree_col_model_add(col, etk_tree_model_text_new());
    etk_tree_build(ETK_TREE(UI_SpectrumList));
-   etk_box_append(ETK_BOX(vbox), UI_SpectrumList, 0, ETK_BOX_EXPAND_FILL, 0);
+   etk_box_append(ETK_BOX(vbox), UI_SpectrumList, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
    etk_signal_connect("row-selected", ETK_OBJECT(UI_SpectrumList),
                       ETK_CALLBACK(_spectra_list_row_selected_cb), NULL);
    
@@ -57,18 +57,18 @@ spectra_window_create(void)
    etk_button_style_set(ETK_BUTTON(button), ETK_BUTTON_ICON);
    etk_signal_connect("clicked", ETK_OBJECT(button), 
                       ETK_CALLBACK(_spectra_add_button_click_cb), NULL);
-   etk_box_append(ETK_BOX(hbox2), button, 0, ETK_BOX_EXPAND_FILL, 0);
+   etk_box_append(ETK_BOX(hbox2), button, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
    
    //DelSpectraButton
    button = etk_button_new_from_stock(ETK_STOCK_LIST_REMOVE);
    etk_button_style_set(ETK_BUTTON(button), ETK_BUTTON_ICON);
    etk_signal_connect("clicked", ETK_OBJECT(button), 
                       ETK_CALLBACK(_spectra_del_button_click_cb), NULL);
-   etk_box_append(ETK_BOX(hbox2), button, 0, ETK_BOX_EXPAND_FILL, 0);
+   etk_box_append(ETK_BOX(hbox2), button, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
    
    //vbox
    vbox = etk_vbox_new(ETK_FALSE, 0);
-   etk_box_append(ETK_BOX(hbox), vbox, 0, ETK_BOX_EXPAND_FILL, 0);
+   etk_box_append(ETK_BOX(hbox), vbox, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
    
    //UI_SpectraWidget
    UI_SpectraWidget = spectra_widget_new(etk_widget_toplevel_evas_get(UI_SpectrumWin));

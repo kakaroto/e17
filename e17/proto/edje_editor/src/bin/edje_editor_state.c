@@ -54,7 +54,7 @@ state_frame_create(void)
    UI_AspectMinSpinner = etk_spinner_new(0.0, 100.0, 0.0, 0.1, 1.0);
    etk_spinner_digits_set(ETK_SPINNER(UI_AspectMinSpinner), 1);
    etk_widget_size_request_set(UI_AspectMinSpinner,45, 20);
-   etk_box_append(ETK_BOX(hbox),UI_AspectMinSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
+   etk_box_append(ETK_BOX(hbox), UI_AspectMinSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    label = etk_label_new("max:");
    etk_object_properties_set(ETK_OBJECT(label), "xalign", 1.0, NULL);
@@ -63,14 +63,14 @@ state_frame_create(void)
    //UI_AspectMaxSpinner
    UI_AspectMaxSpinner = etk_spinner_new(0.0, 100.0, 0.0, 0.1, 1.0);
    etk_spinner_digits_set(ETK_SPINNER(UI_AspectMaxSpinner), 1);
-   etk_widget_size_request_set(UI_AspectMaxSpinner,45, 20);
-   etk_box_append(ETK_BOX(hbox),UI_AspectMaxSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
+   etk_widget_size_request_set(UI_AspectMaxSpinner, 45, 20);
+   etk_box_append(ETK_BOX(hbox), UI_AspectMaxSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    //UI_AspectCombo
    UI_AspectComboBox = etk_combobox_new();
    etk_combobox_column_add(ETK_COMBOBOX(UI_AspectComboBox), ETK_COMBOBOX_LABEL, 30, ETK_COMBOBOX_NONE, 0.0);
    etk_combobox_build(ETK_COMBOBOX(UI_AspectComboBox));
-   etk_box_append(ETK_BOX(hbox),UI_AspectComboBox, ETK_BOX_START, ETK_BOX_NONE, 0);
+   etk_box_append(ETK_BOX(hbox), UI_AspectComboBox, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_AspectComboBox), "None");
    etk_combobox_item_data_set(ComboItem, (void*)EDJE_ASPECT_PREFER_NONE);
@@ -94,34 +94,34 @@ state_frame_create(void)
    //UI_StateMinWSpinner
    UI_StateMinWSpinner = etk_spinner_new(0, 2000, 0, 1, 10);
    etk_widget_size_request_set(UI_StateMinWSpinner, 45, 20);
-   etk_box_append(ETK_BOX(hbox),UI_StateMinWSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
+   etk_box_append(ETK_BOX(hbox), UI_StateMinWSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    label = etk_label_new("x");
    etk_object_properties_set(ETK_OBJECT(label), "xalign", 0.5, NULL);
    etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    //UI_StateMinHSpinner
-   UI_StateMinHSpinner =  etk_spinner_new(0, 2000, 0, 1, 10);
+   UI_StateMinHSpinner = etk_spinner_new(0, 2000, 0, 1, 10);
    etk_widget_size_request_set(UI_StateMinHSpinner, 45, 20);
-   etk_box_append(ETK_BOX(hbox),UI_StateMinHSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
+   etk_box_append(ETK_BOX(hbox), UI_StateMinHSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    label = etk_label_new("max");
    etk_object_properties_set(ETK_OBJECT(label), "xalign", 1.0, NULL);
    etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
    //UI_StateMaxWSpinner
-   UI_StateMaxWSpinner =  etk_spinner_new(0, 2000, 0, 1, 10);
+   UI_StateMaxWSpinner = etk_spinner_new(0, 2000, 0, 1, 10);
    etk_widget_size_request_set(UI_StateMaxWSpinner, 45, 20);
-   etk_box_append(ETK_BOX(hbox),UI_StateMaxWSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
+   etk_box_append(ETK_BOX(hbox), UI_StateMaxWSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    label = etk_label_new("x");
    etk_object_properties_set(ETK_OBJECT(label), "xalign", 0.5, NULL);
    etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    //UI_StateMaxHspinner
-   UI_StateMaxHSpinner =  etk_spinner_new(0, 2000, 0, 1, 10);
+   UI_StateMaxHSpinner = etk_spinner_new(0, 2000, 0, 1, 10);
    etk_widget_size_request_set(UI_StateMaxHSpinner, 45, 20);
-   etk_box_append(ETK_BOX(hbox),UI_StateMaxHSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
+   etk_box_append(ETK_BOX(hbox), UI_StateMaxHSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    //hbox
    hbox = etk_hbox_new(ETK_FALSE, 0);
@@ -129,21 +129,21 @@ state_frame_create(void)
    
    //UI_StateAlignHSpinner
    label = etk_label_new("Align");
-   etk_box_append(ETK_BOX(hbox),label, ETK_BOX_START, ETK_BOX_NONE, 0);
+   etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
     
-   UI_StateAlignHSpinner =  etk_spinner_new(0, 1, 0, 0.01, 0.1);
+   UI_StateAlignHSpinner = etk_spinner_new(0, 1, 0, 0.01, 0.1);
    etk_spinner_digits_set(ETK_SPINNER(UI_StateAlignHSpinner), 2);
    etk_widget_size_request_set(UI_StateAlignHSpinner, 45, 20);
-   etk_box_append(ETK_BOX(hbox),UI_StateAlignHSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
+   etk_box_append(ETK_BOX(hbox), UI_StateAlignHSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
    
    //UI_StateAlignVSpinner
    label = etk_label_new("V Align");
-   etk_box_append(ETK_BOX(hbox),label, ETK_BOX_START, ETK_BOX_NONE, 0);
+   etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
    
-   UI_StateAlignVSpinner =  etk_spinner_new(0, 1, 0, 0.01, 0.1);
+   UI_StateAlignVSpinner = etk_spinner_new(0, 1, 0, 0.01, 0.1);
    etk_spinner_digits_set(ETK_SPINNER(UI_StateAlignVSpinner), 2);
    etk_widget_size_request_set(UI_StateAlignVSpinner, 45, 20);
-   etk_box_append(ETK_BOX(hbox),UI_StateAlignVSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
+   etk_box_append(ETK_BOX(hbox), UI_StateAlignVSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
     
    
    etk_signal_connect("key-down", ETK_OBJECT(UI_StateEntry),

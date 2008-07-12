@@ -33,7 +33,7 @@ fill_frame_create(void)
    //UI_FillOffsetXSpinner
    UI_FillOffsetXSpinner = etk_spinner_new(-2000, 2000, 0, 1, 10);
    etk_widget_size_request_set(UI_FillOffsetXSpinner, 45, 20);
-   etk_box_append(ETK_BOX(hbox),UI_FillOffsetXSpinner,
+   etk_box_append(ETK_BOX(hbox), UI_FillOffsetXSpinner,
                   ETK_BOX_START, ETK_BOX_NONE, 0);
 
    label = etk_label_new("<b>  Y </b>");
@@ -76,7 +76,7 @@ fill_frame_create(void)
    //UI_FillSizeOffsetXSpinner
    UI_FillSizeOffsetXSpinner = etk_spinner_new(-2000, 2000, 0, 1, 10);
    etk_widget_size_request_set(UI_FillSizeOffsetXSpinner, 45, 20);
-   etk_box_append(ETK_BOX(hbox),UI_FillSizeOffsetXSpinner,
+   etk_box_append(ETK_BOX(hbox), UI_FillSizeOffsetXSpinner,
                   ETK_BOX_START, ETK_BOX_NONE, 0);
 
    label = etk_label_new("<b>  Y </b>");

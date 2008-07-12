@@ -43,7 +43,7 @@ group_frame_create(void)
    //UI_GroupMinWSpinner
    UI_GroupMinWSpinner = etk_spinner_new(0, 2000, 0, 1, 10);
    etk_widget_size_request_set(UI_GroupMinWSpinner, 45, 20);
-   etk_box_append(ETK_BOX(hbox),UI_GroupMinWSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
+   etk_box_append(ETK_BOX(hbox), UI_GroupMinWSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    label = etk_label_new("x");
    etk_object_properties_set(ETK_OBJECT(label), "xalign", 0.5, NULL);
@@ -52,7 +52,7 @@ group_frame_create(void)
    //UI_GroupMinHSpinner
    UI_GroupMinHSpinner = etk_spinner_new(0, 2000, 0, 1, 10);
    etk_widget_size_request_set(UI_GroupMinHSpinner, 45, 20);
-   etk_box_append(ETK_BOX(hbox),UI_GroupMinHSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
+   etk_box_append(ETK_BOX(hbox), UI_GroupMinHSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    label = etk_label_new("max");
    etk_object_properties_set(ETK_OBJECT(label), "xalign", 1.0, NULL);
@@ -61,7 +61,7 @@ group_frame_create(void)
    //UI_GroupMaxWSpinner
    UI_GroupMaxWSpinner =  etk_spinner_new(0, 2000, 0, 1, 10);
    etk_widget_size_request_set(UI_GroupMaxWSpinner, 45, 20);
-   etk_box_append(ETK_BOX(hbox),UI_GroupMaxWSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
+   etk_box_append(ETK_BOX(hbox), UI_GroupMaxWSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    label = etk_label_new("x");
    etk_object_properties_set(ETK_OBJECT(label), "xalign", 0.5, NULL);
@@ -70,7 +70,7 @@ group_frame_create(void)
    //UI_GroupMaxHspinner
    UI_GroupMaxHSpinner = etk_spinner_new(0, 2000, 0, 1, 10);
    etk_widget_size_request_set(UI_GroupMaxHSpinner, 45, 20);
-   etk_box_append(ETK_BOX(hbox),UI_GroupMaxHSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
+   etk_box_append(ETK_BOX(hbox), UI_GroupMaxHSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    
    etk_signal_connect("text-changed", ETK_OBJECT(UI_GroupNameEntry),
