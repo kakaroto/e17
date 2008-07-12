@@ -15,6 +15,6 @@ libesmart_text_entry_la_SOURCES = \
 esmart_text_entry.c \
 Esmart_Text_Entry.h
 
-libesmart_text_entry_la_LDFLAGS = -version-info @version_info@
+libesmart_text_entry_la_LDFLAGS = -no-undefined -version-info @version_info@
 libesmart_text_entry_la_LIBADD = @TEXT_ENTRY_LIBS@
 

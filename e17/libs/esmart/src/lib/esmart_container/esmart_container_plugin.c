@@ -1,12 +1,17 @@
 /* plugin code taken from eplayer and modified */
 
-#include <Evas.h>
-#include <config.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include <stdlib.h>
-#include <ltdl.h>
 #include <stdio.h>
 #include <string.h>
 #include <limits.h>
+#include <ltdl.h>
+
+#include <Ecore.h>
+
 #include "Esmart_Container.h"
 #include "esmart_container_private.h"
 
@@ -20,7 +25,11 @@ static char *_find_plugin(const char *dir, const char *name)
     return NULL;
 
   for (l = files; l; l = l->next) {
+#ifdef _WIN32
+    sscanf((char *)l->data, "%127[^.].dll", tmp);
+#else
     sscanf((char *)l->data, "%127[^.].so", tmp);
+#endif /* ! _WIN32 */
 
     if (!strcasecmp(name, tmp)) {
       ret = strdup(l->data);
@@ -59,7 +68,11 @@ _container_layout_plugin_new(const char *name)
 
   memset(p, 0, sizeof(Container_Layout_Plugin));
 
-  snprintf(path, sizeof(path), "%s/%s.so", CONTAINER_PLUGIN_DIR, name); 
+#ifdef _WIN32
+  snprintf(path, sizeof(path), "%s/%s.dll", CONTAINER_PLUGIN_DIR, name);
+#else
+  snprintf(path, sizeof(path), "%s/%s.so", CONTAINER_PLUGIN_DIR, name);
+#endif /* ! _WIN32 */
 
   if ((numerr = lt_dlinit()))
   {

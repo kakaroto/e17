@@ -23,5 +23,5 @@ esmart_container_private.h \
 esmart_container_smart.c \
 esmart_container_util.c
 
-libesmart_container_la_LDFLAGS = -version-info @version_info@
-libesmart_container_la_LIBADD = -lltdl -lm @CONTAINER_LIBS@
+libesmart_container_la_LDFLAGS = -no-undefined -version-info @version_info@
+libesmart_container_la_LIBADD = @CONTAINER_LIBS@ -lltdl -lm

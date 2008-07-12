@@ -1,15 +1,22 @@
 #ifndef ESMART_CONTAINER_H
 #define ESMART_CONTAINER_H
 
+#include <Evas.h>
+
 #ifdef EAPI
-#undef EAPI
+# undef EAPI
 #endif
-#ifdef WIN32
-# ifdef BUILDING_DLL
-#  define EAPI __declspec(dllexport)
+
+#ifdef _WIN32
+# ifdef EFL_ESMART_CONTAINER_BUILD
+#  ifdef DLL_EXPORT
+#   define EAPI __declspec(dllexport)
+#  else
+#   define EAPI
+#  endif /* ! DLL_EXPORT */
 # else
 #  define EAPI __declspec(dllimport)
-# endif
+# endif /* ! EFL_ESMART_CONTAINER_BUILD */
 #else
 # ifdef __GNUC__
 #  if __GNUC__ >= 4
@@ -21,8 +28,6 @@
 #  define EAPI
 # endif
 #endif
-
-#include <Evas.h>
 
 /*****
  Todo:

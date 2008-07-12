@@ -26,45 +26,41 @@ SNAP=`echo $PACKAGE_VERSION | awk -F. '{printf("%s", $4);}'`
 version_info=`expr $VMAJ + $VMIN`":$VMIC:$VMIN"
 AC_SUBST(version_info)
 
-
-dnl Set PACKAGE_DATA_DIR in config.h.
-if test "x${prefix}" = "xNONE"; then
-  AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${ac_default_prefix}/share/${PACKAGE}", [Shared Data Directory])
-else
-  AC_DEFINE_UNQUOTED(PACKAGE_DATA_DIR, "${prefix}/share/${PACKAGE}", [Shared Data Directory])
-fi
-
-if test "x${prefix}" = "xNONE"; then
-  container_plugin_dir=${ac_default_prefix}/lib/${PACKAGE}/layout
-  AC_DEFINE_UNQUOTED(PREFIX, "${ac_default_prefix}", [Installation Prefix])
-else
-  AC_DEFINE_UNQUOTED(PREFIX, "${prefix}", [Installation Prefix])
-  container_plugin_dir=${prefix}/lib/${PACKAGE}/layout
-fi
-
-AC_DEFINE_UNQUOTED(CONTAINER_PLUGIN_DIR, "${container_plugin_dir}", [Container Plugin Directory])
+case "$host_os" in
+    mingw*)
+        dnl needed for correct definition of EAPI
+        AC_DEFINE(EFL_ESMART_CONTAINER_BUILD, 1, [Define to mention that esmart container is built])
+        AC_DEFINE(EFL_ESMART_TEXT_ENTRY_BUILD, 1, [Define to mention that esmart text entry is built])
+        ;;
+esac
 
 # evas is required by all of the modules anyway :)
 requirements="evas"
-PKG_CHECK_MODULES(CONTAINER, [evas >= 0.9.9])
+PKG_CHECK_MODULES(CONTAINER, [evas >= 0.9.9 ecore >= 0.9.9 ecore-evas >= 0.9.9])
 
 AC_CHECK_HEADER(ltdl.h, have_esmart_container=yes, have_esmart_container=no)
 
 PKG_CHECK_MODULES(DRAGGIES, [
     evas >= 0.9.9
+    ecore-x >= 0.9.9
     ecore-evas >= 0.9.9
   ], [
     have_esmart_draggies=yes
     requirements="$requirements ecore-evas"
+  ], [
+    have_esmart_draggies=no
   ]
 )
 
 PKG_CHECK_MODULES(RESIZE, [
     evas >= 0.9.9
+    ecore-x >= 0.9.9
     ecore-evas >= 0.9.9
   ], [
     have_esmart_resize=yes
     requirements="$requirements ecore-evas"
+  ], [
+    have_esmart_resize=no
   ]
 )
 
@@ -96,7 +92,7 @@ PKG_CHECK_MODULES(TEXT_ENTRY, [
     evas >= 0.9.9
     ecore >= 0.9.9
     ecore-evas >= 0.9.9
-    edje >= 0.5.0
+    edje >= 0.9.9
   ], [
     have_esmart_text_entry=yes
     requirements="$requirements edje"

@@ -1,4 +1,14 @@
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <stdlib.h>
+#include <string.h>
+#include <dirent.h>
 #include <sys/stat.h>
+
+#include <Ecore.h>
+
 #include "Esmart_Container.h"
 #include "esmart_container_private.h"
 

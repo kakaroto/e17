@@ -2,12 +2,16 @@
  * vim:ts=8:sw=3
  */
 
-#include <stdio.h>
-#include <string.h>
-#include <Ecore.h>
-#include <Edje.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include <stdlib.h>
 #include <limits.h>
+
+#include <Ecore.h>
+#include <Edje.h>
+
 #include "Esmart_Text_Entry.h"
 
 struct _Esmart_Text_Entry
