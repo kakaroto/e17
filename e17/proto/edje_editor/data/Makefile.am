@@ -21,12 +21,19 @@ EXTRA_DIST = edje_editor.edc \
              images/lbl_rect.png \
              images/lbl_script.png \
              images/lbl_text.png \
+             images/lbl_grad.png \
+             images/lbl_fill.png \
              images/logo.png \
              images/image.png \
              images/rect.png \
              images/text.png \
+             images/grad.png \
+             images/grad_h.png \
              images/swallow.png \
              images/swallow2.png \
+             images/spectra_arrow.png \
+             images/spectra_icon.png \
+             images/spectra_color.png \
              images/group.png \
              images/desc.png \
              images/e17.png \
