@@ -401,7 +401,7 @@ doEwinMoveResize(EWin * ewin, Desk * dsk, int x, int y, int w, int h, int flags)
    if (Mode.op_source == OPSRC_USER)
       EwinSetPlacementGravity(ewin, x, y);
 
-   if (ewin->ops && ewin->ops->MoveResize)
+   if ((flags & (MRF_MOVE | MRF_RESIZE)) && ewin->ops && ewin->ops->MoveResize)
       ewin->ops->MoveResize(ewin, resize);
 
    if (Mode.mode == MODE_NONE)
