@@ -206,12 +206,6 @@ group
 group
 {
 	name: "ewl/entry/selection";
-	data
-	{
-		item: "pad/top" 4;
-		item: "pad/bottom" 4;
-	}
-	
 	parts
 	{
 		part
