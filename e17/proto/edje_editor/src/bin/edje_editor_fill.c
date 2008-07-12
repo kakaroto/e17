@@ -10,13 +10,13 @@ fill_frame_create(void)
 {
    Etk_Widget *vbox, *hbox;
    Etk_Widget *label;
-   
+
    vbox = etk_vbox_new(ETK_FALSE, 0);
-   
+
    //hbox (origin)
    hbox = etk_hbox_new(ETK_FALSE, 0);
    etk_box_append(ETK_BOX(vbox), hbox, ETK_BOX_START, ETK_BOX_NONE, 0);
-   
+
    label = etk_label_new("<b>Origin X </b>");
    etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
@@ -54,12 +54,12 @@ fill_frame_create(void)
    etk_widget_size_request_set(UI_FillOffsetYSpinner, 45, 20);
    etk_box_append(ETK_BOX(hbox), UI_FillOffsetYSpinner,
                   ETK_BOX_START, ETK_BOX_NONE, 0);
-   
-   
+
+
    //hbox (size)
    hbox = etk_hbox_new(ETK_FALSE, 0);
    etk_box_append(ETK_BOX(vbox), hbox, ETK_BOX_START, ETK_BOX_NONE, 0);
-   
+
    label = etk_label_new("<b>Size    X  </b>");
    etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
@@ -97,8 +97,8 @@ fill_frame_create(void)
    etk_widget_size_request_set(UI_FillSizeOffsetYSpinner, 45, 20);
    etk_box_append(ETK_BOX(hbox), UI_FillSizeOffsetYSpinner,
                   ETK_BOX_START, ETK_BOX_NONE, 0);
-   
-   
+
+
    etk_signal_connect("value-changed", ETK_OBJECT(UI_FillRelXSpinner),
                       ETK_CALLBACK(_fill_spinners_value_changed_cb),
                       (void *)REL1X_SPINNER);
@@ -125,7 +125,6 @@ fill_frame_create(void)
                       ETK_CALLBACK(_fill_size_spinners_value_changed_cb),
                       (void *)REL1YO_SPINNER);
 
-   
    return vbox;
 }
 void
@@ -133,7 +132,7 @@ fill_frame_update(void)
 {
    if (!etk_string_length_get(Cur.part)) return;
    if (!etk_string_length_get(Cur.state)) return;
-   
+
    //Block Signal
    etk_signal_block("value-changed", ETK_OBJECT(UI_FillRelXSpinner),
                     ETK_CALLBACK(_fill_spinners_value_changed_cb),
@@ -159,7 +158,7 @@ fill_frame_update(void)
    etk_signal_block("value-changed", ETK_OBJECT(UI_FillSizeOffsetYSpinner),
                     ETK_CALLBACK(_fill_size_spinners_value_changed_cb),
                     (void *)REL1YO_SPINNER);
-   
+
    //Update origin spinners
    etk_range_value_set(ETK_RANGE(UI_FillRelXSpinner),
       edje_edit_state_fill_origin_relative_x_get(edje_o, Cur.part->string,
@@ -173,7 +172,7 @@ fill_frame_update(void)
    etk_range_value_set(ETK_RANGE(UI_FillOffsetYSpinner),
       edje_edit_state_fill_origin_offset_y_get(edje_o, Cur.part->string,
                                                Cur.state->string));
-   
+
    //Update size spinners
    etk_range_value_set(ETK_RANGE(UI_FillSizeRelXSpinner),
       edje_edit_state_fill_size_relative_x_get(edje_o, Cur.part->string,
@@ -187,7 +186,7 @@ fill_frame_update(void)
    etk_range_value_set(ETK_RANGE(UI_FillSizeOffsetYSpinner),
       edje_edit_state_fill_size_offset_y_get(edje_o, Cur.part->string,
                                                Cur.state->string));
-   
+
    //UnBlock Signals
    etk_signal_unblock("value-changed", ETK_OBJECT(UI_FillRelXSpinner),
                       ETK_CALLBACK(_fill_spinners_value_changed_cb),
@@ -215,7 +214,6 @@ fill_frame_update(void)
                       (void *)REL1YO_SPINNER);
 }
 
-
 Etk_Bool
 _fill_spinners_value_changed_cb(Etk_Range *range, double value, void *data)
 {
@@ -223,7 +221,7 @@ _fill_spinners_value_changed_cb(Etk_Range *range, double value, void *data)
 
    if (!etk_string_length_get(Cur.state) || !etk_string_length_get(Cur.part))
       return ETK_TRUE;
-   
+
    switch ((int)data)
    {
       case REL1X_SPINNER:
@@ -259,7 +257,7 @@ _fill_size_spinners_value_changed_cb(Etk_Range *range, double value, void *data)
 
    if (!etk_string_length_get(Cur.state) || !etk_string_length_get(Cur.part))
       return ETK_TRUE;
-   
+
    switch ((int)data)
    {
       case REL1X_SPINNER:

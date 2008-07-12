@@ -32,7 +32,7 @@ group_frame_create(void)
    //CurrentSizeLabel
    UI_CurrentGroupSizeLabel = etk_label_new("Current size: 0 x 0");
    etk_box_append(ETK_BOX(vbox), UI_CurrentGroupSizeLabel, ETK_BOX_START, ETK_BOX_NONE, 0);
-   
+
    //hbox
    hbox = etk_hbox_new(ETK_FALSE, 0);
    etk_box_append(ETK_BOX(vbox), hbox, ETK_BOX_START, ETK_BOX_NONE, 0);
@@ -79,7 +79,7 @@ group_frame_create(void)
          ETK_CALLBACK(_group_NameEntry_key_down_cb), NULL);
    etk_signal_connect("mouse-click", ETK_OBJECT(UI_GroupNameEntryImage),
                       ETK_CALLBACK(_group_NameEntryImage_clicked_cb), NULL);
-   
+
    etk_signal_connect("value-changed", ETK_OBJECT(UI_GroupMinWSpinner),
                       ETK_CALLBACK(_group_spinners_value_changed_cb),
                       (void *)MINW_SPINNER);
@@ -120,7 +120,7 @@ group_frame_update(void)
       //Update name
       etk_entry_text_set(ETK_ENTRY(UI_GroupNameEntry),Cur.group->string);
       etk_widget_hide(ETK_WIDGET(UI_GroupNameEntryImage));
-   
+
       //Update min e max spinners
       etk_range_value_set(ETK_RANGE(UI_GroupMinWSpinner),
                           (float)edje_edit_group_min_w_get(edje_o));
@@ -147,7 +147,6 @@ group_frame_update(void)
    etk_signal_unblock("value-changed", ETK_OBJECT(UI_GroupMaxHSpinner),
                       ETK_CALLBACK(_group_spinners_value_changed_cb),
                       (void *)MAXH_SPINNER);
-
 }
 
 
@@ -191,7 +190,7 @@ Etk_Bool
 _group_NameEntry_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data)
 {
    //printf("PRESSED %s\n", event->keyname);
-   
+
    if (!strcmp(event->keyname, "Return"))
       _group_NameEntryImage_clicked_cb(
                                  ETK_OBJECT(ETK_ENTRY(object)->secondary_image),
@@ -203,25 +202,24 @@ Etk_Bool
 _group_NameEntryImage_clicked_cb(Etk_Object *object, void *data)
 {
    const char *name;
-   
+
    printf("Mouse Click Signal on GroupNameEntryImage Emitted\n");
-   
+
    name = etk_entry_text_get(ETK_ENTRY(UI_GroupNameEntry));
-   
    if (!name || !etk_string_length_get(Cur.group)) return ETK_TRUE;
-   
+
    if (!strcmp(name, Cur.group->string))
    {
       etk_widget_hide(ETK_WIDGET(UI_GroupNameEntryImage));
       return ETK_TRUE;
    }
-   
+
    if (!edje_edit_group_name_set(edje_o, name))
    {
       dialog_alert_show("Can't rename group.<br>Another group with this name exist?");
       return ETK_TRUE;
    }
-   
+
    //Update Group Combobox
    Etk_Combobox_Item *item;
    item = etk_combobox_active_item_get(ETK_COMBOBOX(UI_GroupsComboBox));
@@ -230,12 +228,12 @@ _group_NameEntryImage_clicked_cb(Etk_Object *object, void *data)
    etk_combobox_item_fields_set(item, name);
    etk_signal_unblock("item-activated",ETK_OBJECT(UI_GroupsComboBox),
                       _tree_combobox_activated_cb, NULL);
-    
+
    //Update FakeWin title
    edje_object_part_text_set(EV_fakewin, "title", name);
-   
+
    /* Hide the entry image */
    etk_widget_hide(ETK_WIDGET(UI_GroupNameEntryImage));
-   
+
    return ETK_TRUE;
 }

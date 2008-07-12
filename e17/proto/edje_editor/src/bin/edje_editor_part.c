@@ -27,7 +27,7 @@ part_frame_create(void)
    etk_entry_image_set(ETK_ENTRY(UI_PartNameEntry), ETK_ENTRY_IMAGE_SECONDARY,
                        ETK_IMAGE(UI_PartNameEntryImage));
    etk_table_attach_default(ETK_TABLE(table),UI_PartNameEntry, 1, 1, 0, 0);
-   
+
    //UI_CliptoComboBox
    label = etk_label_new("<b>Clip to</b>");
    etk_table_attach(ETK_TABLE(table), label, 0, 0, 1, 1,ETK_TABLE_NONE,0,0);
@@ -39,7 +39,7 @@ part_frame_create(void)
                            ETK_COMBOBOX_LABEL, 75, ETK_COMBOBOX_NONE, 0.0);
    etk_combobox_build(ETK_COMBOBOX(UI_CliptoComboBox));
    etk_table_attach_default(ETK_TABLE(table), UI_CliptoComboBox, 1, 1, 1, 1);
-   
+
    //events frame
    frame = etk_frame_new("Mouse events");
    etk_table_attach(ETK_TABLE(table), frame, 0, 1, 2, 2, 
@@ -48,17 +48,17 @@ part_frame_create(void)
    hbox = etk_hbox_new(ETK_FALSE, 0);
    etk_widget_padding_set(hbox, 10, 0, 0, 0);
    etk_container_add(ETK_CONTAINER(frame), hbox); 
-   
+
    //PartEventsCheck
    UI_PartEventsCheck = etk_check_button_new_with_label("Accept</b>");
    etk_box_append(ETK_BOX(hbox), UI_PartEventsCheck,
                   ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
-   
+
    //PartEventRepeatCheck
    UI_PartEventsRepeatCheck = etk_check_button_new_with_label("Repeat</b>");
    etk_box_append(ETK_BOX(hbox), UI_PartEventsRepeatCheck,
                   ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
-   
+
    //UI_PartSourceComboBox
    UI_PartSourceLabel = etk_label_new("<b>Source</b>");
    etk_table_attach(ETK_TABLE(table), UI_PartSourceLabel,
@@ -69,9 +69,8 @@ part_frame_create(void)
                            ETK_COMBOBOX_LABEL, 75, ETK_COMBOBOX_NONE, 0.0);
    etk_combobox_build(ETK_COMBOBOX(UI_PartSourceComboBox));
    etk_table_attach_default(ETK_TABLE(table), UI_PartSourceComboBox, 1, 1, 3, 3);
-   
-   
-   
+
+
    etk_signal_connect("text-changed", ETK_OBJECT(UI_PartNameEntry),
          ETK_CALLBACK(_group_NamesEntry_text_changed_cb), NULL);   
    etk_signal_connect("key-down", ETK_OBJECT(UI_PartNameEntry),
@@ -108,21 +107,21 @@ part_frame_update(void)
    {
       etk_entry_text_set(ETK_ENTRY(UI_PartNameEntry), Cur.part->string);
       etk_widget_hide(ETK_WIDGET(UI_PartNameEntryImage));
-      
+
       etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(UI_PartEventsCheck),
                      edje_edit_part_mouse_events_get(edje_o, Cur.part->string));
       etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(UI_PartEventsRepeatCheck),
                      edje_edit_part_repeat_events_get(edje_o, Cur.part->string));
 
-   
+
       /* Update clip_to combobox */
       Etk_Combobox_Item *item = NULL;
       const char *clipto;
       int i;
       char *p;
-      
+
       clipto = edje_edit_part_clip_to_get(edje_o, Cur.part->string);
-         
+
       if (clipto)
       {
          //Loop for all the item in the Combobox
@@ -139,12 +138,12 @@ part_frame_update(void)
          etk_combobox_active_item_set(ETK_COMBOBOX(UI_CliptoComboBox),
                etk_combobox_first_item_get(ETK_COMBOBOX(UI_CliptoComboBox)));
       edje_edit_string_free(clipto);
-      
-      
+
+
       /* Update PartSource combobox */
       const char *source;
       source = edje_edit_part_source_get(edje_o, Cur.part->string);
-         
+
       if (source)
       {
          //Loop for all the item in the Combobox
@@ -160,7 +159,7 @@ part_frame_update(void)
       else
          etk_combobox_active_item_set(ETK_COMBOBOX(UI_PartSourceComboBox),
                etk_combobox_first_item_get(ETK_COMBOBOX(UI_PartSourceComboBox)));
-      
+
       edje_edit_string_free(source);
    }
    
@@ -175,7 +174,7 @@ part_frame_update(void)
       etk_widget_hide(UI_PartSourceComboBox);
       etk_widget_hide(UI_PartSourceLabel);
    }
-   
+
    //ReEnable Signal Propagation
    etk_signal_unblock("text-changed",ETK_OBJECT(UI_PartNameEntry),
                       _group_NamesEntry_text_changed_cb, NULL);
@@ -187,9 +186,7 @@ part_frame_update(void)
                       ETK_CALLBACK(_part_CliptoComboBox_item_activated_cb), NULL);
    etk_signal_unblock("item-activated", ETK_OBJECT(UI_PartSourceComboBox),
                       ETK_CALLBACK(_part_SourceComboBox_item_activated_cb), NULL);
-
 }
-
 
 char*
 part_type_image_get(int part_type)
@@ -198,10 +195,10 @@ part_type_image_get(int part_type)
     * correspond to the given EDJE_PART_TYPE.
     * Remember to free the returned string.
     */
-   
+
    static char buf[20];
    char *ret;
-   
+
    switch (part_type)
    {
       case EDJE_PART_TYPE_IMAGE:     strcpy(buf, "IMAGE.PNG"); break;
@@ -252,8 +249,7 @@ _part_CliptoComboBox_item_activated_cb(Etk_Combobox *combobox, Etk_Combobox_Item
       edje_edit_part_clip_to_set(edje_o, Cur.part->string, to);
    else
       edje_edit_part_clip_to_set(edje_o, Cur.part->string, NULL);
-   
-   
+
    return ETK_TRUE;
 }
 
@@ -262,22 +258,21 @@ _part_SourceComboBox_item_activated_cb(Etk_Combobox *combobox, Etk_Combobox_Item
 {
    char *gr;
    printf("Item Activated Signal on PartSourceCombobox EMITTED\n");
-   
+
    gr = etk_combobox_item_field_get(item,0);
-   
+
    if (!strcmp(gr, Cur.group->string))
    {
       dialog_alert_show("A group can't contain itself");
       return ETK_TRUE;
    }
-   
+
    if (strcmp(gr, "None"))
       edje_edit_part_source_set(edje_o, Cur.part->string, gr);
    else
       edje_edit_part_source_set(edje_o, Cur.part->string, NULL);
-   
+
    reload_edje();
-   
    return ETK_TRUE;
 }
 
@@ -285,7 +280,7 @@ Etk_Bool
 _part_NameEntry_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data)
 {
    printf("PRESSED %s\n", event->keyname);
-   
+
    if (!strcmp(event->keyname, "Return"))
       _part_NameEntryImage_clicked_cb(
                                  ETK_OBJECT(ETK_ENTRY(object)->secondary_image),
@@ -300,55 +295,54 @@ _part_NameEntryImage_clicked_cb(Etk_Object *object, void *data)
    char *image_name;
    Etk_Tree_Row *row;
    Etk_Tree_Row *child;
-   
+
    printf("Mouse Click Signal on PartNameEntryImage Emitted\n");
-   
+
    name = etk_entry_text_get(ETK_ENTRY(UI_PartNameEntry));
-   
+
    if (!name || !etk_string_length_get(Cur.part)) return ETK_TRUE;
-   
+
    if (!strcmp(name, Cur.part->string))
    {
       etk_widget_hide(ETK_WIDGET(UI_PartNameEntryImage));
       return ETK_TRUE;
    }
-   
+
    /* change the name in edje */
    if (!edje_edit_part_name_set(edje_o, Cur.part->string, name))
    {
       dialog_alert_show("Can't set part name.<br>Another name with this name exist? ");
       return ETK_TRUE;
    }
-   
+
    /* Set new Current name */
    Cur.part = etk_string_set(Cur.part, name);
-   
+
    //Update PartTree
    row = etk_tree_selected_row_get(ETK_TREE(UI_PartsTree));
    image_name = part_type_image_get(edje_edit_part_type_get(edje_o, Cur.part->string));
    etk_tree_row_fields_set(row,TRUE,
                            COL_NAME, EdjeFile, image_name, name, NULL);
    free(image_name);
-   
-   
+
+
    /* Update hidden colon on every child */
    child = etk_tree_row_first_child_get(row);
    etk_tree_row_fields_set(child, TRUE, COL_PARENT, name, NULL);
    while ((child = etk_tree_row_next_get(child)))
       etk_tree_row_fields_set(child, TRUE, COL_PARENT, name, NULL);
-    
+
    /* Update Parts_Hash */
    Parts_Hash = evas_hash_del(Parts_Hash, Cur.part->string, NULL);
    Parts_Hash = evas_hash_add(Parts_Hash, name, row);
-   
+
    /* Recreate rel combobox */
    position_comboboxes_populate();
    program_source_combo_populate();
-   
+
    /* Hide the image */
    etk_widget_hide(ETK_WIDGET(UI_PartNameEntryImage));
 
-   
    return ETK_TRUE;
 }
 

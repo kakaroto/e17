@@ -13,13 +13,13 @@ toolbar_create(Etk_Toolbar_Orientation o)
    Etk_Widget *sep;
    Etk_Widget *menu_item;
    Etk_Widget *image;
-   
+
    //ToolBar
    UI_Toolbar = etk_toolbar_new();
    etk_toolbar_orientation_set(ETK_TOOLBAR(UI_Toolbar), o);
    //etk_object_properties_set(ETK_OBJECT(UI_Toolbar),"theme-group","etk/iconbox/label");
    //etk_theme_edje_object_set(Evas_Object *object, const char *file, const char *group, const char *parent_group)
-   
+
    //NewButton
    button = etk_tool_button_new_from_stock(ETK_STOCK_DOCUMENT_NEW);
    etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), button, ETK_BOX_START);
@@ -41,7 +41,7 @@ toolbar_create(Etk_Toolbar_Orientation o)
    etk_signal_connect("clicked", ETK_OBJECT(button),
                       ETK_CALLBACK(_window_all_button_click_cb),
                       (void*)TOOLBAR_SAVE);
-   
+
    //SaveEDJButton
    button = etk_tool_button_new_from_stock(ETK_STOCK_DOCUMENT_SAVE_AS);
    etk_object_properties_set(ETK_OBJECT(button), "label", "Save as", NULL);
@@ -56,7 +56,7 @@ toolbar_create(Etk_Toolbar_Orientation o)
    etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), button, ETK_BOX_START);
    etk_signal_connect("clicked", ETK_OBJECT(button),
                      ETK_CALLBACK(on_AllButton_click), (void*)TOOLBAR_SAVE_EDC);
-   */ 
+   */
 
    sep = etk_vseparator_new();
    etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), sep, ETK_BOX_START);
@@ -88,7 +88,7 @@ toolbar_create(Etk_Toolbar_Orientation o)
                       ETK_CALLBACK(_toolbar_add_menu_item_activated_cb),
                       (void*) NEW_IMAGE);
    etk_menu_shell_append(ETK_MENU_SHELL(UI_AddMenu), ETK_MENU_ITEM(menu_item));
-   
+
    //New Gradient
    menu_item = etk_menu_item_image_new_with_label("Gradient");
    image = etk_image_new_from_edje(EdjeFile,"GRAD.PNG");
@@ -97,7 +97,7 @@ toolbar_create(Etk_Toolbar_Orientation o)
                       ETK_CALLBACK(_toolbar_add_menu_item_activated_cb),
                       (void*) NEW_GRADIENT);
    etk_menu_shell_append(ETK_MENU_SHELL(UI_AddMenu), ETK_MENU_ITEM(menu_item));
-   
+
    //New Text
    menu_item = etk_menu_item_image_new_with_label("Text");
    image = etk_image_new_from_edje(EdjeFile,"TEXT.PNG");
@@ -106,7 +106,7 @@ toolbar_create(Etk_Toolbar_Orientation o)
                       ETK_CALLBACK(_toolbar_add_menu_item_activated_cb),
                       (void*)NEW_TEXT);
    etk_menu_shell_append(ETK_MENU_SHELL(UI_AddMenu), ETK_MENU_ITEM(menu_item));
-   
+
    //New Swallow
    menu_item = etk_menu_item_image_new_with_label("Swallow");
    image = etk_image_new_from_edje(EdjeFile,"SWAL.PNG");
@@ -115,7 +115,7 @@ toolbar_create(Etk_Toolbar_Orientation o)
                       ETK_CALLBACK(_toolbar_add_menu_item_activated_cb),
                       (void*)NEW_SWAL);
    etk_menu_shell_append(ETK_MENU_SHELL(UI_AddMenu), ETK_MENU_ITEM(menu_item));
-   
+
    //New GroupSwallow
    menu_item = etk_menu_item_image_new_with_label("Group swallow");
    image = etk_image_new_from_edje(EdjeFile,"GROUP.PNG");
@@ -124,7 +124,7 @@ toolbar_create(Etk_Toolbar_Orientation o)
                       ETK_CALLBACK(_toolbar_add_menu_item_activated_cb),
                       (void*)NEW_GROUPSWAL);
    etk_menu_shell_append(ETK_MENU_SHELL(UI_AddMenu), ETK_MENU_ITEM(menu_item));
-   
+
    //New Program
    menu_item = etk_menu_item_image_new_with_label("Program");
    image = etk_image_new_from_edje(EdjeFile,"PROG.PNG");
@@ -133,7 +133,7 @@ toolbar_create(Etk_Toolbar_Orientation o)
                       ETK_CALLBACK(_toolbar_add_menu_item_activated_cb),
                       (void*)NEW_PROG);
    etk_menu_shell_append(ETK_MENU_SHELL(UI_AddMenu), ETK_MENU_ITEM(menu_item));
-   
+
    //Separator
    menu_item = etk_menu_item_separator_new();
    etk_menu_shell_append(ETK_MENU_SHELL(UI_AddMenu), ETK_MENU_ITEM(menu_item));
@@ -239,7 +239,7 @@ toolbar_create(Etk_Toolbar_Orientation o)
                       ETK_CALLBACK(_window_all_button_click_cb),
                       (void*)TOOLBAR_SPECTRUM);
    etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), button, ETK_BOX_START);
-   
+
 #if DEBUG_MODE
    //Font Browser Button
    button = etk_tool_button_new_from_stock( ETK_STOCK_PREFERENCES_DESKTOP_FONT);
@@ -249,10 +249,10 @@ toolbar_create(Etk_Toolbar_Orientation o)
                       (void*)TOOLBAR_FONT_BROWSER);
    etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), button, ETK_BOX_START);
 #endif
-   
+
    sep = etk_vseparator_new();
    etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), sep, ETK_BOX_START);
-   
+
    //OptionsButton
    button = etk_tool_button_new_from_stock(ETK_STOCK_PREFERENCES_SYSTEM);
    etk_object_properties_set(ETK_OBJECT(button), "label", "Options", NULL);
@@ -312,7 +312,7 @@ toolbar_create(Etk_Toolbar_Orientation o)
                       ETK_CALLBACK(_window_all_button_click_cb),
                       (void*)TOOLBAR_OPTION_FULLSCREEN);
    etk_menu_shell_append(ETK_MENU_SHELL(UI_OptionsMenu), ETK_MENU_ITEM(menu_item));
-  
+
    sep = etk_vseparator_new();
    etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), sep, ETK_BOX_START);
 
@@ -326,12 +326,12 @@ toolbar_create(Etk_Toolbar_Orientation o)
    etk_signal_connect("clicked", ETK_OBJECT(UI_PlayButton),
                       ETK_CALLBACK(_window_all_button_click_cb),
                       (void*)TOOLBAR_PLAY);
-   
+
 #if DEBUG_MODE
    //Separator
    sep = etk_vseparator_new();
    etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), sep, ETK_BOX_START);
-   
+
    //DebugButton
    button = etk_tool_button_new_from_stock(ETK_STOCK_DOCUMENT_PROPERTIES);
    etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), button, ETK_BOX_START);
@@ -340,7 +340,7 @@ toolbar_create(Etk_Toolbar_Orientation o)
                       (void*)TOOLBAR_DEBUG);
    etk_object_properties_set(ETK_OBJECT(button), "label", "Debug", NULL);
 #endif
-   
+
    //QuitButton
    button = etk_tool_button_new_from_stock(ETK_STOCK_SYSTEM_LOG_OUT);
    etk_object_properties_set(ETK_OBJECT(button), "label", "Quit", NULL);
@@ -348,7 +348,7 @@ toolbar_create(Etk_Toolbar_Orientation o)
    etk_signal_connect("clicked", ETK_OBJECT(button),
                       ETK_CALLBACK(_window_all_button_click_cb),
                       (void*)TOOLBAR_QUIT);
-   
+
    return UI_Toolbar;
 }
 
@@ -358,7 +358,7 @@ toolbar_play_button_toggle(int set)
    /* set    -1 = toggle   0 = pause   1 = play   */
    if (set == -1)
       set = !edje_object_play_get(edje_o);
-   
+
    if (set == 0)
    {
       edje_object_play_set(edje_o, 0);
@@ -384,7 +384,7 @@ _toolbar_add_menu_item_activated_cb(Etk_Object *object, void *data)
    int i;
    char name[32];
    char name2[32];
-   
+
    switch ((int)data)
    {
        case NEW_RECT:
@@ -404,14 +404,14 @@ _toolbar_add_menu_item_activated_cb(Etk_Object *object, void *data)
             dialog_alert_show("Can't create part.");
             break;
          }
-         
+
          row = tree_part_add(name, NULL);
          etk_tree_row_select(row);
          etk_tree_row_unfold(row);
          position_comboboxes_populate();
          program_source_combo_populate();
          break;
-      
+
       case NEW_IMAGE:
          if (!etk_string_length_get(Cur.group))
          {
@@ -423,14 +423,14 @@ _toolbar_add_menu_item_activated_cb(Etk_Object *object, void *data)
          i = 2;
          while (edje_edit_part_exist(edje_o, name))
             snprintf(name, sizeof(name), "New image %d", i++);
-      
+
          if (!edje_edit_part_add(edje_o, name, EDJE_PART_TYPE_IMAGE))
          {
             dialog_alert_show("Can't create part.");
             break;
          }
          row = tree_part_add(name, NULL);
-         
+
          Evas_List *images;
          images = edje_edit_images_list_get(edje_o);
          if (images)
@@ -439,7 +439,7 @@ _toolbar_add_menu_item_activated_cb(Etk_Object *object, void *data)
                edje_edit_state_image_set(edje_o, name,
                                          "default 0.00", images->data);
          }
-         
+
          etk_tree_row_select(row);
          etk_tree_row_unfold(row);
          position_comboboxes_populate();
@@ -456,14 +456,14 @@ _toolbar_add_menu_item_activated_cb(Etk_Object *object, void *data)
          i = 2;
          while (edje_edit_part_exist(edje_o, name))
             snprintf(name, sizeof(name), "New gradient %d", i++);
-      
+
          if (!edje_edit_part_add(edje_o, name, EDJE_PART_TYPE_GRADIENT))
          {
             dialog_alert_show("Can't create gradient.");
             break;
          }
           row = tree_part_add(name, NULL);
-         
+
          etk_tree_row_select(row);
          etk_tree_row_unfold(row);
          position_comboboxes_populate();
@@ -480,14 +480,14 @@ _toolbar_add_menu_item_activated_cb(Etk_Object *object, void *data)
          i = 2;
          while (edje_edit_part_exist(edje_o, name))
             snprintf(name, sizeof(name), "New text %d", i++);
-         
+
          if (!edje_edit_part_add(edje_o, name, EDJE_PART_TYPE_TEXT))
          {
             dialog_alert_show("Can't create part.");
             break;
          }
          row = tree_part_add(name, NULL);
-         
+
          char *font;
          item = etk_combobox_first_item_get(ETK_COMBOBOX(UI_FontComboBox));
          if (item)
@@ -500,7 +500,7 @@ _toolbar_add_menu_item_activated_cb(Etk_Object *object, void *data)
          edje_edit_state_text_set(edje_o, name, "default 0.00",
                                   "Something to say !");
          edje_edit_part_effect_set(edje_o, name, EDJE_TEXT_EFFECT_GLOW);
-      
+
          etk_tree_row_select(row);
          etk_tree_row_unfold(row);
          position_comboboxes_populate();
@@ -517,7 +517,7 @@ _toolbar_add_menu_item_activated_cb(Etk_Object *object, void *data)
          i = 2;
          while (edje_edit_part_exist(edje_o, name))
             snprintf(name, sizeof(name), "New swallow %d", i++);
-         
+
          if (!edje_edit_part_add(edje_o, name, EDJE_PART_TYPE_SWALLOW))
          {
             dialog_alert_show("Can't create part.");
@@ -540,7 +540,7 @@ _toolbar_add_menu_item_activated_cb(Etk_Object *object, void *data)
          i = 2;
          while (edje_edit_part_exist(edje_o, name))
             snprintf(name, sizeof(name), "New group swallow %d", i++);
-         
+
          if (!edje_edit_part_add(edje_o, name, EDJE_PART_TYPE_GROUP))
          {
             dialog_alert_show("Can't create part.");
@@ -559,7 +559,7 @@ _toolbar_add_menu_item_activated_cb(Etk_Object *object, void *data)
             dialog_alert_show("You must first select a part.");
             break;
          }
-         
+
          //Generate a unique name
          snprintf(name, sizeof(name), "state");
          snprintf(name2, sizeof(name2), "state 0.00");
@@ -569,22 +569,22 @@ _toolbar_add_menu_item_activated_cb(Etk_Object *object, void *data)
             snprintf(name, sizeof(name), "state%d", i++);
             snprintf(name2, sizeof(name2), "%s 0.00", name);
          }
-         
+
          //Create state
          edje_edit_state_add(edje_o, Cur.part->string, name);
-         
+
          edje_edit_state_rel1_relative_x_set(edje_o,Cur.part->string,name2,0.1);
          edje_edit_state_rel1_relative_y_set(edje_o,Cur.part->string,name2,0.1);
          edje_edit_state_rel2_relative_x_set(edje_o,Cur.part->string,name2,0.9);
          edje_edit_state_rel2_relative_y_set(edje_o,Cur.part->string,name2,0.9);
          edje_edit_state_text_size_set(edje_o, Cur.part->string, name2, 16);
-      
+
          //Add state to tree
          row = tree_state_add(Cur.part->string, name2);
          etk_tree_row_select(row);
          etk_tree_row_unfold(evas_hash_find(Parts_Hash,Cur.part->string));
          break;
-      
+
       case NEW_PROG:
          if (!etk_string_length_get(Cur.group))
          {
@@ -596,7 +596,7 @@ _toolbar_add_menu_item_activated_cb(Etk_Object *object, void *data)
          i = 2;
          while (edje_edit_program_exist(edje_o, name))
             snprintf(name, sizeof(name), "New program %d", i++);
-      
+
          if (!edje_edit_program_add(edje_o, name))
          {
             dialog_alert_show("ERROR: can't add program");
@@ -606,14 +606,14 @@ _toolbar_add_menu_item_activated_cb(Etk_Object *object, void *data)
          etk_tree_row_select(row);
          etk_tree_row_scroll_to(row, ETK_FALSE);
          break;
-      
+
       case NEW_GROUP:
          //generate a unique new name
          snprintf(name, sizeof(name), "New group");
          i = 2;
          while (edje_edit_group_exist(edje_o, name))
             snprintf(name, sizeof(name), "New group %d", i++);
-      
+
          if (edje_edit_group_add(edje_o, name))
          {
             tree_combobox_populate();
@@ -650,7 +650,7 @@ _toolbar_remove_menu_item_activated_cb(Etk_Object *object, void *data)
             break;
          }
          edje_edit_state_del(edje_o, Cur.part->string, Cur.state->string);
-         
+
          // Select next row (if no exist select prev); and delete current.
          row = etk_tree_selected_row_get(ETK_TREE(UI_PartsTree));
          next = etk_tree_row_next_get(row);
@@ -658,7 +658,7 @@ _toolbar_remove_menu_item_activated_cb(Etk_Object *object, void *data)
             next = etk_tree_row_prev_get(row);
          etk_tree_row_select(next);
          etk_tree_row_delete(row);
-      
+
          break;
       case REMOVE_PART:
          if (!etk_string_length_get(Cur.part))
@@ -671,10 +671,10 @@ _toolbar_remove_menu_item_activated_cb(Etk_Object *object, void *data)
             dialog_alert_show("Can't delete part");
             break;
          }
-         
+
          row = evas_hash_find(Parts_Hash, Cur.part->string);
          Parts_Hash = evas_hash_del(Parts_Hash, Cur.part->string, NULL);
-         
+
          next = etk_tree_row_next_get(row);
          if (!next) 
             next = etk_tree_row_prev_get(row);
@@ -686,12 +686,12 @@ _toolbar_remove_menu_item_activated_cb(Etk_Object *object, void *data)
             Cur.part = etk_string_clear(Cur.part);
             Cur.state = etk_string_clear(Cur.state);
          }
-         
+
          position_comboboxes_populate();
          program_source_combo_populate();
          //ev_redraw();
          break;
-      
+
       case REMOVE_GROUP:
          if (!edje_edit_group_del(edje_o))
          {
@@ -700,15 +700,15 @@ _toolbar_remove_menu_item_activated_cb(Etk_Object *object, void *data)
          }
          Etk_Combobox_Item *item, *nitem;
          item = etk_combobox_active_item_get(ETK_COMBOBOX(UI_GroupsComboBox));
-         
+
          nitem = etk_combobox_item_next_get(item);
          if (!nitem)
             nitem = etk_combobox_item_prev_get(item);
-         
+
          etk_combobox_active_item_set(ETK_COMBOBOX(UI_GroupsComboBox), nitem);
          etk_combobox_item_remove(item);
          break;
-      
+
       case REMOVE_PROG:
          if (!etk_string_length_get(Cur.prog))
          {

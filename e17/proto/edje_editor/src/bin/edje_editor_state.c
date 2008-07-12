@@ -130,29 +130,29 @@ state_frame_create(void)
    //UI_StateAlignHSpinner
    label = etk_label_new("Align");
    etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
-    
+
    UI_StateAlignHSpinner = etk_spinner_new(0, 1, 0, 0.01, 0.1);
    etk_spinner_digits_set(ETK_SPINNER(UI_StateAlignHSpinner), 2);
    etk_widget_size_request_set(UI_StateAlignHSpinner, 45, 20);
    etk_box_append(ETK_BOX(hbox), UI_StateAlignHSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
-   
+
    //UI_StateAlignVSpinner
    label = etk_label_new("V Align");
    etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
-   
+
    UI_StateAlignVSpinner = etk_spinner_new(0, 1, 0, 0.01, 0.1);
    etk_spinner_digits_set(ETK_SPINNER(UI_StateAlignVSpinner), 2);
    etk_widget_size_request_set(UI_StateAlignVSpinner, 45, 20);
    etk_box_append(ETK_BOX(hbox), UI_StateAlignVSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
-    
-   
+
+
    etk_signal_connect("key-down", ETK_OBJECT(UI_StateEntry),
                       ETK_CALLBACK(_state_Entry_key_down_cb), NULL);
    etk_signal_connect("mouse-click", ETK_OBJECT(UI_StateEntryImage),
                       ETK_CALLBACK(_state_EntryImage_clicked_cb), NULL);
    etk_signal_connect("text-changed", ETK_OBJECT(UI_StateEntry),
                       ETK_CALLBACK(_group_NamesEntry_text_changed_cb), NULL);
-   
+
    etk_signal_connect("value-changed", ETK_OBJECT(UI_AspectMinSpinner),
                       ETK_CALLBACK(_state_AspectSpinner_value_changed_cb), NULL);
    etk_signal_connect("value-changed", ETK_OBJECT(UI_AspectMaxSpinner),
@@ -212,18 +212,18 @@ state_frame_update(void)
          etk_widget_disabled_set(ETK_WIDGET(UI_StateEntry), ETK_TRUE);
       else
          etk_widget_disabled_set(ETK_WIDGET(UI_StateEntry), ETK_FALSE);
-      
+
       //Set aspect min & max
       etk_range_value_set(ETK_RANGE(UI_AspectMinSpinner),
          edje_edit_state_aspect_min_get(edje_o, Cur.part->string, Cur.state->string));
       etk_range_value_set(ETK_RANGE(UI_AspectMaxSpinner),
          edje_edit_state_aspect_max_get(edje_o, Cur.part->string, Cur.state->string));
-      
+
       //Set aspect pref Combo
       etk_combobox_active_item_set(ETK_COMBOBOX(UI_AspectComboBox),
          etk_combobox_nth_item_get(ETK_COMBOBOX(UI_AspectComboBox), 
             edje_edit_state_aspect_pref_get(edje_o, Cur.part->string, Cur.state->string)));
-      
+
       //Set min e max size
       etk_range_value_set(ETK_RANGE(UI_StateMinWSpinner),
          edje_edit_state_min_w_get(edje_o, Cur.part->string, Cur.state->string));
@@ -233,8 +233,7 @@ state_frame_update(void)
          edje_edit_state_max_w_get(edje_o, Cur.part->string, Cur.state->string));
       etk_range_value_set(ETK_RANGE(UI_StateMaxHSpinner),
          edje_edit_state_max_h_get(edje_o, Cur.part->string, Cur.state->string));
-      
-      
+
       //Set description align & valign
       etk_range_value_set(ETK_RANGE(UI_StateAlignHSpinner),
          edje_edit_state_align_x_get(edje_o, Cur.part->string, Cur.state->string));
@@ -265,7 +264,6 @@ state_frame_update(void)
    etk_signal_unblock("value-changed", ETK_OBJECT(UI_StateAlignHSpinner),
                       ETK_CALLBACK(_text_FontAlignSpinner_value_changed_cb),
                       (void*)STATE_ALIGNH_SPINNER);
-
 }
 
 
@@ -279,7 +277,7 @@ _state_Entry_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *da
       dialog_alert_show("You can't rename default 0.0");
       return ETK_TRUE;
    }
-   
+
    if (!strcmp(event->keyname, "Return"))
       _state_EntryImage_clicked_cb(ETK_OBJECT(ETK_ENTRY(object)->secondary_image),
                                    NULL);
@@ -290,19 +288,19 @@ Etk_Bool
 _state_EntryImage_clicked_cb(Etk_Object *object, void *data)
 {
    const char *name;
-   
+
    printf("Mouse Click Signal on StateEntryImage Emitted\n");
-   
+
    name = etk_entry_text_get(ETK_ENTRY(UI_StateEntry));
-   
+
    if (!name || !etk_string_length_get(Cur.state)) return ETK_TRUE;
-   
+
    if (!strcmp(name, Cur.state->string))
    {
       etk_widget_hide(ETK_WIDGET(UI_StateEntryImage));
       return ETK_TRUE;
    }
-   
+
    /* Change state name */
    if (strcmp("default 0.00", Cur.state->string))
    {

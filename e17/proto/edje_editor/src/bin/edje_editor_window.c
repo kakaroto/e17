@@ -124,7 +124,7 @@ window_main_create(void)
    etk_widget_show_all(UI_FillEmbed);
    edje_object_part_swallow(edje_ui,"fill_frame_swallow",
                             etk_embed_object_get(ETK_EMBED(UI_FillEmbed)));
-   
+
    //PositionEmbed
    UI_PositionEmbed = etk_embed_new(UI_evas);
    etk_container_add(ETK_CONTAINER(UI_PositionEmbed), position_frame_create());
@@ -170,22 +170,22 @@ window_main_create(void)
    evas_object_key_grab(logo, "d", mask, 0, 0); // duplicate selection (TODO)
    evas_object_key_grab(logo, "n", mask, 0, 0); // new object (TODO)
    evas_object_show(logo);
-   
+
    //Consolle
    EV_Consolle = consolle_create();
-   
+
    //Filechooser
    UI_FileChooserDialog = dialog_filechooser_create();
 
    //Alert Dialog
    UI_AlertDialog = dialog_alert_create();
-   
+
    //ColorPicker
    UI_ColorWin = dialog_colorpicker_create();
 
    //Image Browser
    image_browser_create();
-   
+
    //Spetrum window
    spectra_window_create();
 
@@ -274,18 +274,18 @@ _window_resize_cb(Ecore_Evas *ecore_evas)
 {
    Evas_Object *embed_object;
    int win_w, win_h;
-   
+
    //Get window size
    ecore_evas_geometry_get(UI_ecore_MainWin, NULL, NULL, &win_w, &win_h);
-   
+
    //Resize main edje interface
    evas_object_resize(edje_ui, win_w, win_h);
-   
+
    //Resize tree
    embed_object = etk_embed_object_get(ETK_EMBED(UI_PartsTreeEmbed));
    evas_object_move(embed_object, 0, 55);
    evas_object_resize(embed_object, TREE_WIDTH, win_h - 55);
-   
+
    //Resize Consolle
    evas_object_move(EV_Consolle, TREE_WIDTH + 5, win_h - 105);
    evas_object_resize(EV_Consolle, win_w - TREE_WIDTH - 10, 75);
@@ -296,7 +296,7 @@ _window_edit_obj_signal_cb(void *data, Evas_Object *o, const char *sig, const ch
 {
    /* Catch all the signal from the editing edje object */
    char buf[1024];
-   
+
    consolle_count++;
    snprintf(buf, sizeof(buf), "[%d]  SIGNAL = '%s'     SOURCE = '%s'",
             consolle_count, sig, src);
@@ -307,9 +307,9 @@ void
 _window_edit_obj_click(void *data, Evas *e, Evas_Object *obj, void *event_info)
 {
    int x, y;
-   
+
    evas_pointer_output_xy_get(e, &x, &y);
-   
+
    //o2 = evas_object_top_at_pointer_get(e);
    //Evas_List *l =	evas_objects_at_xy_get (e, ev->canvas.x, ev->canvas.y, 1, 1);
    //printf("CLIK %x [%d %d] num: %d\n", obj, ev->canvas.x, ev->canvas.y, evas_list_count(l));
@@ -381,15 +381,15 @@ _window_all_button_click_cb(Etk_Button *button, void *data)
       }
       if (!edje_edit_part_restack_below(edje_o, Cur.part->string))
          break;
-      
+
       row = evas_hash_find(Parts_Hash, Cur.part->string);
       prev = etk_tree_row_prev_get(row);
       if (!prev) break;
       prev = etk_tree_row_prev_get(prev);
-      
+
       Parts_Hash = evas_hash_del(Parts_Hash, NULL, row);
       etk_tree_row_delete(row);
-      
+
       if (prev)
          row = tree_part_add(Cur.part->string, prev);
       else
@@ -399,7 +399,7 @@ _window_all_button_click_cb(Etk_Button *button, void *data)
       if (edje_edit_part_type_get(edje_o, Cur.part->string) == EDJE_PART_TYPE_GROUP)
          reload_edje();
       break;
-   
+
    case TOOLBAR_MOVE_DOWN: //Raise
       if (!etk_string_length_get(Cur.part))
       {
@@ -408,11 +408,11 @@ _window_all_button_click_cb(Etk_Button *button, void *data)
       }
       if (!edje_edit_part_restack_above(edje_o, Cur.part->string))
          break;
-      
+
       row = evas_hash_find(Parts_Hash, Cur.part->string);
       next = etk_tree_row_next_get(row);
       if (!next) break;
-      
+
       Parts_Hash = evas_hash_del(Parts_Hash, NULL, row);
       etk_tree_row_delete(row);
       row = tree_part_add(Cur.part->string, next);
@@ -545,16 +545,15 @@ _window_logo_key_press(void *data, Evas *e, Evas_Object *obj, void *event_info)
    printf("   key: %s\n", ev->key);
    printf("   string: %s\n", ev->string);
    printf("   compose: %s\n", ev->compose);
-	
-   
+
    /* NOTE: To add new bindings you must add a keygrab for the key
       you want in create_main_window(). And remember to update the README */
-   
+
    /* quit */
    if (!strcmp(ev->key, "q") &&
        evas_key_modifier_is_set(ev->modifiers, "Control"))
       etk_main_quit();
-   
+
    /* fullscreen */
    else if (!strcmp(ev->key, "f") &&
             evas_key_modifier_is_set(ev->modifiers, "Control"))

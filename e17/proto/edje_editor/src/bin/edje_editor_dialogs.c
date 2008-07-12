@@ -38,7 +38,7 @@ void
 dialog_filechooser_show(int FileChooserType)
 {
    etk_widget_show_all(UI_FileChooserDialog);
-   
+
    FileChooserOperation = FileChooserType;
    switch(FileChooserType){
       case FILECHOOSER_OPEN:
@@ -118,20 +118,20 @@ _dialog_filechooser_response_cb(Etk_Dialog *dialog, int response_id, void *data)
                break;
             }
             image_browser_populate();
-            
+
             Etk_Range *range;
             double upper;
             range = etk_scrolled_view_vscrollbar_get(
                     etk_iconbox_scrolled_view_get(ETK_ICONBOX(UI_ImageBrowserIconbox)));
             etk_range_range_get(range, NULL, &upper);
             etk_range_value_set(range, upper);
-            
+
             Etk_Iconbox_Icon *icon;
             icon = etk_iconbox_icon_get_by_label(ETK_ICONBOX(UI_ImageBrowserIconbox),
                                  etk_filechooser_widget_selected_file_get(
                                  ETK_FILECHOOSER_WIDGET(UI_FileChooser)));
             etk_iconbox_icon_select(icon);
-            
+
             break;
          case FILECHOOSER_FONT:
             snprintf(cmd, 4096, "%s/%s", 
@@ -165,9 +165,6 @@ _dialog_filechooser_selected_cb(Etk_Filechooser_Widget *filechooser)
                                    ETK_RESPONSE_OK, NULL);
    return ETK_TRUE;
 }
-
-
-
 
 
 /***   Color Picker Dialog   ***/
@@ -208,30 +205,27 @@ _dialog_colorpicker_change_cb(Etk_Object *object, void *data)
    premuled = color;
    evas_color_argb_premul(premuled.a,&premuled.r,&premuled.g,&premuled.b);
 
-   switch (current_color_object){
+   switch (current_color_object)
+   {
     case COLOR_OBJECT_RECT:
       evas_object_color_set(RectColorObject,premuled.r,premuled.g,premuled.b,premuled.a);
       edje_edit_state_color_set(edje_o, Cur.part->string, Cur.state->string,
                                 premuled.r,premuled.g,premuled.b,premuled.a);
-
       break;
     case COLOR_OBJECT_TEXT:
       evas_object_color_set(TextColorObject,premuled.r,premuled.g,premuled.b,premuled.a);
       edje_edit_state_color_set(edje_o, Cur.part->string, Cur.state->string,
                                 premuled.r,premuled.g,premuled.b,premuled.a);
-
       break;
     case COLOR_OBJECT_SHADOW:
       evas_object_color_set(ShadowColorObject,premuled.r,premuled.g,premuled.b,premuled.a);
       edje_edit_state_color3_set(edje_o, Cur.part->string, Cur.state->string,
                                 premuled.r,premuled.g,premuled.b,premuled.a);
-
       break;
     case COLOR_OBJECT_OUTLINE:
       evas_object_color_set(OutlineColorObject,premuled.r,premuled.g,premuled.b,premuled.a);
       edje_edit_state_color2_set(edje_o, Cur.part->string, Cur.state->string,
                                 premuled.r,premuled.g,premuled.b,premuled.a);
-
       break;
    }
 

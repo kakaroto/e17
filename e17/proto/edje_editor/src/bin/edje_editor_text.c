@@ -62,32 +62,32 @@ text_frame_create(Evas *evas)
    //FontAlignHSpinner
    label = etk_label_new("Align");
    etk_table_attach_default(ETK_TABLE(table),label,0,0, 2,2);
-    
+
    UI_FontAlignHSpinner = etk_spinner_new(0, 1, 0, 0.01, 0.1);
    etk_spinner_digits_set(ETK_SPINNER(UI_FontAlignHSpinner), 2);
    etk_widget_size_request_set(UI_FontAlignHSpinner, 45, 20);
    etk_table_attach_default(ETK_TABLE(table),UI_FontAlignHSpinner, 1, 1, 2,2);
-   
+
    //FontAlignVSpinner
    label = etk_label_new("V Align");
    etk_table_attach_default(ETK_TABLE(table),label, 2, 2, 2,2);
-   
+
    UI_FontAlignVSpinner =  etk_spinner_new (0, 1, 0, 0.01, 0.1);
    etk_spinner_digits_set(ETK_SPINNER(UI_FontAlignVSpinner), 2);
    etk_widget_size_request_set(UI_FontAlignVSpinner, 45, 20);
    etk_table_attach_default(ETK_TABLE(table),UI_FontAlignVSpinner, 3, 4, 2,2);
-   
+
    //PartEffectComboBox
    label = etk_label_new("Effect");
    etk_table_attach_default(ETK_TABLE(table),label, 0, 0, 3,3);
-   
+
    UI_EffectComboBox = etk_combobox_new();
    etk_combobox_column_add(ETK_COMBOBOX(UI_EffectComboBox), 
       ETK_COMBOBOX_IMAGE, 24, ETK_COMBOBOX_NONE, 0.0);
    etk_combobox_column_add(ETK_COMBOBOX(UI_EffectComboBox),
       ETK_COMBOBOX_LABEL, 75, ETK_COMBOBOX_NONE, 0.0);
    etk_combobox_build(ETK_COMBOBOX(UI_EffectComboBox));
-   
+
    ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_EffectComboBox),
       etk_image_new_from_edje(EdjeFile,"NONE.PNG"), "Plain");
    etk_combobox_item_data_set(ComboItem, (void*)EDJE_TEXT_EFFECT_PLAIN);
@@ -118,7 +118,7 @@ text_frame_create(Evas *evas)
    ComboItem = etk_combobox_item_append(ETK_COMBOBOX(UI_EffectComboBox),
       etk_image_new_from_edje(EdjeFile,"NONE.PNG"), "Glow");
    etk_combobox_item_data_set(ComboItem, (void*)EDJE_TEXT_EFFECT_GLOW);
-   
+
    etk_table_attach_default(ETK_TABLE(table),UI_EffectComboBox,1,4,3,3);
 
    //hbox
@@ -156,7 +156,7 @@ text_frame_create(Evas *evas)
    etk_signal_connect("value-changed", ETK_OBJECT(UI_FontAlignHSpinner),
                       ETK_CALLBACK(_text_FontAlignSpinner_value_changed_cb),
                       (void*)TEXT_ALIGNH_SPINNER);
-    
+
    return vbox;
 }
 
@@ -204,7 +204,7 @@ text_frame_update(void)
 
    if (!etk_string_length_get(Cur.state)) return;
    if (!etk_string_length_get(Cur.part)) return;
-   
+
    printf("Update Text Frame: %s\n",Cur.state->string);
 
    //Stop signal propagation
@@ -216,8 +216,7 @@ text_frame_update(void)
                     ETK_CALLBACK(_text_FontAlignSpinner_value_changed_cb), NULL);
    etk_signal_block("value-changed", ETK_OBJECT(UI_FontAlignVSpinner),
                     ETK_CALLBACK(_text_FontAlignSpinner_value_changed_cb), NULL);
-   
- 
+
    //Set Text Text in Cur.eps
    t = edje_edit_state_text_get(edje_o,Cur.part->string,Cur.state->string);
    printf("TEXT: %s\n",t);
@@ -227,7 +226,7 @@ text_frame_update(void)
    //Set the font size spinner
    etk_range_value_set(ETK_RANGE(UI_FontSizeSpinner), 
       (float)edje_edit_state_text_size_get(edje_o, Cur.part->string, Cur.state->string));
-   
+
    //Set the font align spinners
    etk_range_value_set(ETK_RANGE(UI_FontAlignHSpinner),
                         edje_edit_state_text_align_x_get(edje_o,
@@ -237,7 +236,7 @@ text_frame_update(void)
                         edje_edit_state_text_align_y_get(edje_o,
                                                          Cur.part->string,
                                                          Cur.state->string));
-   
+
    //Set the font combobox
    font = edje_edit_state_font_get(edje_o, Cur.part->string, Cur.state->string);
    if (font)
@@ -260,17 +259,17 @@ text_frame_update(void)
    else
       etk_combobox_active_item_set(ETK_COMBOBOX(UI_FontComboBox),
                   etk_combobox_first_item_get(ETK_COMBOBOX(UI_FontComboBox)));//TODO change all combobox like this one
-   
+
    edje_edit_string_free(font);
 
    //Set Effect ComboBox
    eff_num = edje_edit_part_effect_get(edje_o, Cur.part->string);
    eff_num--;
    if (eff_num < 0) eff_num = 0;
-   
+
    etk_combobox_active_item_set(ETK_COMBOBOX(UI_EffectComboBox),
       etk_combobox_nth_item_get(ETK_COMBOBOX(UI_EffectComboBox), eff_num));
-   
+
    //Set Text color Rects
    edje_edit_state_color_get(edje_o, Cur.part->string, Cur.state->string,&r,&g,&b,NULL);
    evas_object_color_set(TextColorObject, r, g, b, 255);
@@ -300,11 +299,11 @@ _text_FontComboBox_item_activated_cb(Etk_Combobox *combobox, Etk_Combobox_Item *
    char *font;
    if (!etk_string_length_get(Cur.part)) return ETK_TRUE;
    if (!etk_string_length_get(Cur.state)) return ETK_TRUE;
-   
+
    font = etk_combobox_item_field_get(item, 1);
-   
+
    edje_edit_state_font_set(edje_o, Cur.part->string, Cur.state->string, font);
-   
+
    return ETK_TRUE;
 }
 
@@ -312,10 +311,10 @@ Etk_Bool
 _text_EffectComboBox_changed_cb(Etk_Combobox *combobox, void *data)
 {
    if (!etk_string_length_get(Cur.part)) return ETK_TRUE;
-   
+
    edje_edit_part_effect_set(edje_o, Cur.part->string,
       (int)etk_combobox_item_data_get(etk_combobox_active_item_get(combobox)));
-   
+
    canvas_redraw();
 
    return ETK_TRUE;

@@ -267,7 +267,7 @@ position_frame_update(void)
       edje_edit_state_rel2_relative_x_get(edje_o, Cur.part->string,Cur.state->string));
    etk_range_value_set(ETK_RANGE(UI_Rel2YSpinner),
       edje_edit_state_rel2_relative_y_get(edje_o, Cur.part->string,Cur.state->string));
-   
+
    etk_range_value_set(ETK_RANGE(UI_Rel1XOffsetSpinner),
          edje_edit_state_rel1_offset_x_get(edje_o, Cur.part->string,Cur.state->string));
    etk_range_value_set(ETK_RANGE(UI_Rel1YOffsetSpinner),
@@ -309,7 +309,7 @@ position_comboboxes_populate(void)
 {
    Evas_List *l;
    char *image_name;
-   
+
    printf("Populate 4 Rel Comboboxs\n");
    //Stop signal propagation
    etk_signal_block("active-item-changed", ETK_OBJECT(UI_Rel1ToXComboBox),
@@ -326,7 +326,6 @@ position_comboboxes_populate(void)
                     (void *)REL2Y_SPINNER);
    etk_signal_block("item-activated", ETK_OBJECT(UI_CliptoComboBox),
                     ETK_CALLBACK(_part_CliptoComboBox_item_activated_cb), NULL);
-
 
    etk_combobox_clear(ETK_COMBOBOX(UI_Rel1ToXComboBox));
    etk_combobox_clear(ETK_COMBOBOX(UI_Rel1ToYComboBox));
@@ -352,18 +351,18 @@ position_comboboxes_populate(void)
       etk_combobox_item_append(ETK_COMBOBOX(UI_CliptoComboBox), 
                                etk_image_new_from_edje(EdjeFile,"NONE.PNG"),
                                "None");
-   
+
       // Add all the part to all the 4 combobox
       Evas_List *parts;
       int type;
-      
+
       parts = l = edje_edit_parts_list_get(edje_o);
       while (l)
       {
          //printf("-- %s\n", (char *)l->data);
          type = edje_edit_part_type_get(edje_o,(char *)l->data);
          image_name = part_type_image_get(type);
-         
+
          etk_combobox_item_append(ETK_COMBOBOX(UI_Rel1ToXComboBox),
                                   etk_image_new_from_edje(EdjeFile, image_name),
                                   (char *)l->data);
@@ -408,9 +407,9 @@ position_comboboxes_update(void)
 {
    int i=0;
    Etk_Combobox_Item *item = NULL;
-   
+
    printf("SETTING COMBOS\n");
-   
+
    //Stop signal propagation
    etk_signal_block("active-item-changed", ETK_OBJECT(UI_Rel1ToXComboBox),
                     ETK_CALLBACK(_position_RelToComboBoxes_changed_cb),
@@ -429,7 +428,7 @@ position_comboboxes_update(void)
    if (!etk_string_length_get(Cur.state)) return;
    const char *rel;
    char *p;
-   
+
    //If rel1_to_x is know set the combobox
    if ((rel = edje_edit_state_rel1_to_x_get(edje_o, Cur.part->string, Cur.state->string)))
    {
@@ -465,7 +464,7 @@ position_comboboxes_update(void)
    else
       etk_combobox_active_item_set(ETK_COMBOBOX(UI_Rel1ToYComboBox), 
             etk_combobox_nth_item_get(ETK_COMBOBOX(UI_Rel1ToYComboBox),0));
-   
+
    //If rel2_to_x is know set the combobox
    if ((rel = edje_edit_state_rel2_to_x_get(edje_o, Cur.part->string, Cur.state->string)))
    {
@@ -483,7 +482,7 @@ position_comboboxes_update(void)
    else
       etk_combobox_active_item_set(ETK_COMBOBOX(UI_Rel2ToXComboBox), 
             etk_combobox_nth_item_get(ETK_COMBOBOX(UI_Rel2ToXComboBox),0));
-   
+
    //If rel2_to_y is know set the combobox
    if ((rel = edje_edit_state_rel2_to_y_get(edje_o, Cur.part->string, Cur.state->string)))
    {
@@ -501,7 +500,7 @@ position_comboboxes_update(void)
    else
       etk_combobox_active_item_set(ETK_COMBOBOX(UI_Rel2ToYComboBox), 
             etk_combobox_nth_item_get(ETK_COMBOBOX(UI_Rel2ToYComboBox),0));
-   
+
    //Reenable signal propagation
    etk_signal_unblock("active-item-changed", ETK_OBJECT(UI_Rel1ToXComboBox),
                       ETK_CALLBACK(_position_RelToComboBoxes_changed_cb),
@@ -515,7 +514,6 @@ position_comboboxes_update(void)
    etk_signal_unblock("active-item-changed", ETK_OBJECT(UI_Rel2ToYComboBox),
                       ETK_CALLBACK(_position_RelToComboBoxes_changed_cb),
                       (void*)REL2Y_SPINNER);
-
 }
 
 /***   Callbacks   ***/
@@ -551,7 +549,6 @@ _position_RelOffsetSpinners_value_changed_cb(Etk_Range *range, double value, voi
       }
       canvas_redraw();
    }
-
    return ETK_TRUE;
 }
 
@@ -573,7 +570,6 @@ _position_RelSpinners_value_changed_cb(Etk_Range *range, double value, void *dat
             edje_edit_state_rel1_relative_y_set(edje_o, 
                                     Cur.part->string, Cur.state->string,
                                     etk_range_value_get(range));
-           
             break;
          case REL2X_SPINNER:
             edje_edit_state_rel2_relative_x_set(edje_o, 
@@ -596,16 +592,16 @@ _position_RelToComboBoxes_changed_cb(Etk_Combobox *combobox, void *data)
 {
    char *parent;
    parent = etk_combobox_item_field_get(etk_combobox_active_item_get(combobox), 1);
-   
+
    if (strcmp(parent,"Interface") == 0)
         parent = NULL;
-    
+
    if (parent && (strcmp(parent,Cur.part->string) == 0))
    {
       dialog_alert_show("A state can't rel to itself.");
       return ETK_TRUE;
    }
-   
+
    switch ((int)data)
    {
       case REL1X_SPINNER:
