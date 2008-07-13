@@ -118,7 +118,7 @@ consolle_create(void)
 {
    Etk_Widget *embed;
 
-   EV_Consolle = edje_object_add(ecore_evas_get(UI_ecore_MainWin));
+   EV_Consolle = edje_object_add(UI_evas);
    edje_object_file_set(EV_Consolle, EdjeFile, "Consolle");
    evas_object_show(EV_Consolle);
 
