@@ -205,6 +205,9 @@ _spectra_add_button_click_cb(Etk_Button *button, void *data)
    row = etk_tree_last_row_get(ETK_TREE(UI_SpectrumList));
    etk_tree_row_select(row);
    etk_tree_row_scroll_to(row, ETK_FALSE);
+   
+   gradient_spectra_combo_populate();
+   gradient_frame_update();
 
    return ETK_TRUE;
 }
@@ -216,6 +219,8 @@ _spectra_del_button_click_cb(Etk_Button *button, void *data)
 
    edje_edit_spectra_del(edje_o, Cur.spectra->string);
    spectra_window_populate();
+   gradient_spectra_combo_populate();
+   gradient_frame_update();
 
    return ETK_TRUE;
 }

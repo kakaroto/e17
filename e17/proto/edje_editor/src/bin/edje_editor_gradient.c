@@ -224,6 +224,7 @@ gradient_frame_create(void)
    etk_signal_connect("value-changed", ETK_OBJECT(UI_GradientRel2YOffsetSpinner),
                       ETK_CALLBACK(_gradient_RelSpinners_value_changed_cb),
                       (void *)REL2YO_SPINNER);
+
    etk_signal_connect("item-activated", ETK_OBJECT(UI_GradientTypeComboBox),
                      ETK_CALLBACK(_gradient_type_combo_activated_cb), NULL);
    etk_signal_connect("item-activated", ETK_OBJECT(UI_GradientSpectraComboBox),
@@ -359,16 +360,25 @@ gradient_spectra_combo_populate(void)
    Etk_Combobox_Item *item;
    Evas_List *spectrums, *l;
 
+   //Block signal propagation
+   etk_signal_block("item-activated", ETK_OBJECT(UI_GradientSpectraComboBox),
+                    ETK_CALLBACK(_gradient_spectra_combo_activated_cb), NULL);
+   
+   etk_combobox_clear(ETK_COMBOBOX(UI_GradientSpectraComboBox));
+   
    spectrums = l = edje_edit_spectrum_list_get(edje_o);
-
    while(l)
    {
       item = etk_combobox_item_append(ETK_COMBOBOX(UI_GradientSpectraComboBox),
                   etk_image_new_from_edje(EdjeFile,"SPECTRA.PNG"), (char*)l->data);
       l = l->next;
    }
-
    edje_edit_string_list_free(spectrums);
+   
+   //Reenable signal propagation
+   etk_signal_unblock("item-activated", ETK_OBJECT(UI_GradientSpectraComboBox),
+                    ETK_CALLBACK(_gradient_spectra_combo_activated_cb), NULL);
+   
 }
 
 Etk_Bool
