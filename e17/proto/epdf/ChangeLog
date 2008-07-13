@@ -1,3 +1,24 @@
+2008-07-13  Vincent Torri  <doursse at users dot sf dot net>
+
+	* src/lib/epdf_page.cpp:
+	fix test, as page->page can be equal to 0
+
+	* src/lib/ewl_pdf.c:
+	fix tests and doc
+
+	* src/lib/etk_pdf.c:
+	formatting
+
+	* src/lib/epdf_page.h:
+	* src/lib/esmart_pdf.c:
+	fix doc
+
+	* src/bin/epdf_ewl_test.c:
+	destroy an ecore_list, not a widget
+
+	* src/plugins/epsilon/epsilon_thumbnailer.c:
+	move some header files
+
 2008-05-25  Vincent Torri  <doursse at users dot sf dot net>
 
 	* src/plugins/epsilon/epsilon_thumbnailer.c:
