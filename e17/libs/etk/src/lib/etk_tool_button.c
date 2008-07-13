@@ -147,3 +147,40 @@ static void _etk_tool_toggle_button_constructor(Etk_Tool_Toggle_Button *tool_tog
    if (!tool_toggle_button)
       return;
 }
+
+/** @} */
+
+/**************************
+ *
+ * Documentation
+ *
+ **************************/
+
+/**
+ * @addtogroup Etk_Tool_Button
+ *
+ * @image html widgets/tool_button.png
+ *
+ * \par Object Hierarchy:
+ * - Etk_Object
+ *   - Etk_Widget
+ *     - Etk_Container
+ *       - Etk_Bin
+ *         - Etk_Button
+ *           - Etk_Tool_Button
+ */
+
+/**
+ * @addtogroup Etk_Tool_Toggle_Button
+ *
+ * @image html widgets/tool_toggle_button.png
+ *
+ * \par Object Hierarchy:
+ * - Etk_Object
+ *   - Etk_Widget
+ *     - Etk_Container
+ *       - Etk_Bin
+ *         - Etk_Button
+ *           - Etk_Toggle_Button
+ *             - Etk_Tool_Toggle_Button
+ */

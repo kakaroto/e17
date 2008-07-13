@@ -23,7 +23,7 @@
 #define ETK_IS_TOOL_ITEM(obj) \
    (ETK_IS_TOOL_BUTTON(obj) || ETK_IS_TOOL_TOGGLE_BUTTON(obj))
 
-enum Etk_Window_Property_Id
+enum Etk_Toolbar_Property_Id
 {
    ETK_TOOLBAR_ORIENTATION_PROPERTY,
    ETK_TOOLBAR_STYLE_PROPERTY,
@@ -492,3 +492,38 @@ static Etk_Bool _etk_toolbar_child_removed_cb(Etk_Object *object, Etk_Widget *ch
 }
 
 /** @} */
+
+/**************************
+ *
+ * Documentation
+ *
+ **************************/
+
+/**
+ * @addtogroup Etk_Toolbar
+ *
+ * @image html widgets/toolbar.png
+ * Some toolbar description here
+ *
+ * \par Object Hierarchy:
+ * - Etk_Object
+ *   - Etk_Widget
+ *     - Etk_Container
+ *       - Etk_Toolbar
+ *
+ * \par Properties:
+ * @prop_name "orientation": The orientation of the toolbar, can be ETK_TOOLBAR_HORIZ or ETK_TOOLBAR_VERT.
+ * @prop_type Integer (Etk_Toolbar_Orientation)
+ * @prop_rw
+ * @prop_val ETK_TOOLBAR_HORIZ
+ * \par
+ * @prop_name "style": The buttons look in the toolbar, can be one of ETK_BUTTON_ICON, ETK_BUTTON_TEXT, ETK_BUTTON_BOTH_HORIZ or ETK_BUTTON_BOTH_VERT.
+ * @prop_type Integer (Etk_Button_Style)
+ * @prop_rw
+ * @prop_val ETK_TOOLBAR_BOTH_VERT
+ * \par
+ * @prop_name "stock-size":  The size of the stock-icons used by buttons.
+ * @prop_type Integer (Etk_Stock_Size)
+ * @prop_rw
+ * @prop_val ETK_STOCK_MEDIUM
+ */
