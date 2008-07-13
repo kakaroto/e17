@@ -54,10 +54,10 @@ typedef enum
 /** @brief Indicates how a widget of a combobox-column should fill and expand */
 typedef enum
 {
-   ETK_COMBOBOX_NONE = 0,                       /* TODOC */
-   ETK_COMBOBOX_EXPAND = 1 << 0,
-   ETK_COMBOBOX_FILL = 1 << 1,
-   ETK_COMBOBOX_EXPAND_FILL = ETK_COMBOBOX_EXPAND | ETK_COMBOBOX_FILL
+   ETK_COMBOBOX_NONE = 0,         /**< Don't resize the item */
+   ETK_COMBOBOX_EXPAND = 1 << 0,  /**< Expand the item in it's container*/
+   ETK_COMBOBOX_FILL = 1 << 1,    /**< Expand the item to fill the available space */
+   ETK_COMBOBOX_EXPAND_FILL = ETK_COMBOBOX_EXPAND | ETK_COMBOBOX_FILL /**< Expand the item and fill the available space*/
 } Etk_Combobox_Fill_Policy;
 
 
