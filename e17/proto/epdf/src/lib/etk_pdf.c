@@ -237,13 +237,13 @@ void etk_pdf_scale_set(Etk_Pdf *pdf, double hscale, double vscale)
  */
 void etk_pdf_scale_get(Etk_Pdf *pdf, double *hscale, double *vscale)
 {
-  if (!pdf) {
-     if (hscale) *hscale = 1.0;
-     if (vscale) *vscale = 1.0;
-     return;
-  }
+   if (!pdf) {
+      if (hscale) *hscale = 1.0;
+      if (vscale) *vscale = 1.0;
+      return;
+   }
 
-  epdf_page_scale_get(pdf->pdf_page, hscale, vscale);
+   epdf_page_scale_get(pdf->pdf_page, hscale, vscale);
 }
 
 /**
@@ -254,15 +254,15 @@ void etk_pdf_scale_get(Etk_Pdf *pdf, double *hscale, double *vscale)
 void
 etk_pdf_page_next(Etk_Pdf *pdf)
 {
-  int page;
+   int page;
 
-  if (!pdf)
-    return;
+   if (!pdf)
+      return;
 
-  page = epdf_page_page_get(pdf->pdf_page);
-  if (page < (epdf_document_page_count_get(pdf->pdf_document) - 1))
-    page++;
-  etk_pdf_page_set(pdf, page);
+   page = epdf_page_page_get(pdf->pdf_page);
+   if (page < (epdf_document_page_count_get(pdf->pdf_document) - 1))
+      page++;
+   etk_pdf_page_set(pdf, page);
 }
 
 /**
@@ -273,15 +273,15 @@ etk_pdf_page_next(Etk_Pdf *pdf)
 void
 etk_pdf_page_previous(Etk_Pdf *pdf)
 {
-  int page;
+   int page;
 
-  if (!pdf)
-    return;
+   if (!pdf)
+      return;
 
-  page = epdf_page_page_get(pdf->pdf_page);
-  if (page > 0)
-    page--;
-  etk_pdf_page_set(pdf, page);
+   page = epdf_page_page_get(pdf->pdf_page);
+   if (page > 0)
+      page--;
+   etk_pdf_page_set(pdf, page);
 }
 
 void
