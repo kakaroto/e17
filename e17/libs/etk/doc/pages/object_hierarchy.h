@@ -6,16 +6,21 @@
  *   - Etk_Tree_Col
  *   - Etk_Widget
  *     - Etk_Canvas
+ *     - Etk_Evas_Object
  *     - Etk_Colorpicker
  *     - Etk_Combobox
  *     - Etk_Combobox_Item
+ *     - Etk_Combobox_Entry
+ *     - Etk_Combobox_Entry_Item
  *     - Etk_Container
  *       - Etk_Bin
  *         - Etk_Alignment
  *         - Etk_Button
+ *           - Etk_Tool_Button
  *           - Etk_Toggle_Button
  *             - Etk_Check_Button
  *               - Etk_Radio_Button
+ *             - Etk_Tool_Toggle_Button
  *         - Etk_Frame
  *         - Etk_Scrolled_View
  *         - Etk_Toplevel
@@ -25,6 +30,8 @@
  *               - Etk_Message_Dialog
  *             - Etk_Popup_Window
  *         - Etk_Viewport
+ *         - Etk_Mdi_Window
+ *         - Etk_Shadow
  *       - Etk_Box
  *         - Etk_HBox
  *         - Etk_VBox
@@ -33,8 +40,10 @@
  *         - Etk_HPaned
  *         - Etk_VPaned
  *       - Etk_Table
+ *       - Etk_Toolbar
+ *       - Etk_Mdi_Area
  *     - Etk_Entry
- *     - Etk_Filechooser
+ *     - Etk_Filechooser_Widget
  *     - Etk_Iconbox
  *     - Etk_Image
  *     - Etk_Label
@@ -48,6 +57,7 @@
  *       - Etk_Slider
  *         - Etk_HSlider
  *         - Etk_VSlider
+ *       - Etk_Spinner
  *     - Etk_Separator
  *       - Etk_HSeparator
  *       - Etk_VSeparator
