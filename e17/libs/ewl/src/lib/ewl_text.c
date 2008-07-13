@@ -831,6 +831,8 @@ ewl_text_selectable_set(Ewl_Text *t, unsigned int selectable)
                                                 ewl_text_cb_mouse_down, NULL);
                 ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_MOUSE_UP,
                                                 ewl_text_cb_mouse_up, NULL);
+                ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_KEY_DOWN,
+                                                ewl_text_cb_key_down, NULL);
         }
         else
         {
@@ -838,6 +840,8 @@ ewl_text_selectable_set(Ewl_Text *t, unsigned int selectable)
                                                 ewl_text_cb_mouse_down);
                 ewl_callback_del(EWL_WIDGET(t), EWL_CALLBACK_MOUSE_UP,
                                                 ewl_text_cb_mouse_up);
+                ewl_callback_del(EWL_WIDGET(t), EWL_CALLBACK_KEY_DOWN,
+                                                ewl_text_cb_key_down);
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -3479,6 +3483,7 @@ ewl_text_cb_mouse_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
                                 event->y);
 
         char_idx = ewl_text_coord_index_map(EWL_TEXT(w), event->x, event->y);
+        ewl_text_cursor_position_set(t, char_idx);
         modifiers = ewl_ev_modifiers_get();
         if (modifiers & EWL_KEY_MODIFIER_SHIFT)
         {
@@ -3515,6 +3520,8 @@ ewl_text_cb_mouse_up(Ewl_Widget *w, void *ev, void *data __UNUSED__)
         Ewl_Text *t;
         Ewl_Event_Mouse *event;
         unsigned int modifiers;
+        unsigned int char_idx = 0;
+
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(w);
@@ -3527,16 +3534,13 @@ ewl_text_cb_mouse_up(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 
         t->in_select = FALSE;
         ewl_callback_del(w, EWL_CALLBACK_MOUSE_MOVE, ewl_text_cb_mouse_move);
+        char_idx = ewl_text_coord_index_map(t, event->x, event->y);
+        ewl_text_cursor_position_set(t, char_idx);
 
         modifiers = ewl_ev_modifiers_get();
         if (modifiers & EWL_KEY_MODIFIER_SHIFT)
-        {
-                unsigned int char_idx = 0;
-
-                char_idx = ewl_text_coord_index_map(EWL_TEXT(w), event->x, event->y);
                 ewl_text_selection_select_to(EWL_TEXT_TRIGGER(t->selection),
                                 char_idx);
-        }
         ewl_text_trigger_position(t, EWL_TEXT_TRIGGER(t->selection));
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -3571,6 +3575,76 @@ ewl_text_cb_mouse_move(Ewl_Widget *w, void *ev, void *data __UNUSED__)
                 ewl_text_selection_select_to(EWL_TEXT_TRIGGER(t->selection), char_idx);
                 ewl_text_trigger_position(t, EWL_TEXT_TRIGGER(t->selection));
         }
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+void
+ewl_text_cb_key_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
+{
+        Ewl_Text *t;
+        Ewl_Event_Key *event;
+        Ewl_Text_Trigger *sel;
+        unsigned int pos = 0;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_TEXT_TYPE);
+
+        t = EWL_TEXT(w);
+        event = ev;
+
+        if ((!event->keyname) || (!event->keyname[0]))
+                DRETURN(DLEVEL_STABLE);
+
+        if ((!(event->modifiers & EWL_KEY_MODIFIER_SHIFT)) ||
+                        (event->keyname[1] == '\0'))
+                DRETURN(DLEVEL_STABLE);
+
+        if (!t->selection)
+        {
+                t->selection = ewl_text_selection_new(t);
+
+                /* This can happen after key/mouse actions, so default to
+                 * wherever the cursor is at this point, not 0
+                 */
+                ewl_text_trigger_base_set(EWL_TEXT_TRIGGER(t->selection), 
+                                ewl_text_cursor_position_get(t));
+
+                /* Same problem as mouse_down... place it inside the
+                 * text widget */
+                ewl_object_position_request(EWL_OBJECT(t->selection),
+                                CURRENT_X(w) + 1, CURRENT_Y(w) + 1);
+        }
+
+        sel = EWL_TEXT_TRIGGER(t->selection);
+
+        if (!strcmp(event->keyname, "Left"))
+        {
+                pos = t->cursor_position;
+                if (pos > 0) pos--;
+        }
+        
+        else if (!strcmp(event->keyname, "Right"))
+        {
+                pos = t->cursor_position;
+                if (pos < t->length.chars) pos++;
+        }
+
+        else if (!strcmp(event->keyname, "Up"))
+                pos = ewl_text_cursor_position_line_up_get(t);
+
+        else if (!strcmp(event->keyname, "Down"))
+                pos = ewl_text_cursor_position_line_down_get(t);
+        else
+                DRETURN(DLEVEL_STABLE);
+
+        /* Resize the selection */
+
+        ewl_text_selection_select_to(sel, pos);
+        ewl_text_trigger_position(t, sel);
+        ewl_text_cursor_position_set(t, pos);
+        ewl_widget_configure(w);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

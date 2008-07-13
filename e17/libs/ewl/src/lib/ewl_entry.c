@@ -373,6 +373,7 @@ ewl_entry_cb_key_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 {
         Ewl_Event_Key *event;
         Ewl_Entry *e;
+        Ewl_Text_Trigger *sel;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(w);
@@ -380,35 +381,44 @@ ewl_entry_cb_key_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 
         event = ev;
         e = EWL_ENTRY(w);
+        sel = EWL_TEXT_TRIGGER(EWL_TEXT(w)->selection);
 
         /* reset the cursor blink */
         ewl_widget_state_set(EWL_WIDGET(e->cursor), "noblink",
                                 EWL_STATE_PERSISTENT);
 
-        if (!event->keyname)
+        if ((!event->keyname) || (!event->keyname[0]))
+                DRETURN(DLEVEL_STABLE);
+
+        /* If we are holding shift and key pressed isn't a character,
+         * then this is a selection event
+         */
+        if ((event->modifiers & EWL_KEY_MODIFIER_SHIFT) &&
+                        ((event->keyname[1] != '\0') &&
+                        (event->keyname[0] >= 0)))
                 DRETURN(DLEVEL_STABLE);
 
         if (!strcmp(event->keyname, "Left"))
         {
-                ewl_entry_selection_clear(e);
+                if (sel) ewl_text_trigger_length_set(sel, 0);
                 ewl_entry_cursor_move_left(e);
         }
 
         else if (!strcmp(event->keyname, "Right"))
         {
-                ewl_entry_selection_clear(e);
+                if (sel) ewl_text_trigger_length_set(sel, 0);
                 ewl_entry_cursor_move_right(e);
         }
 
         else if (!strcmp(event->keyname, "Up"))
         {
-                ewl_entry_selection_clear(e);
+                if (sel) ewl_text_trigger_length_set(sel, 0);
                 ewl_entry_cursor_move_up(e);
         }
 
         else if (!strcmp(event->keyname, "Down"))
         {
-                ewl_entry_selection_clear(e);
+                if (sel) ewl_text_trigger_length_set(sel, 0);
                 ewl_entry_cursor_move_down(e);
         }
 
@@ -447,6 +457,11 @@ ewl_entry_cb_key_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
                                 ewl_entry_cursor_position_get(
                                         EWL_ENTRY_CURSOR(e->cursor)));
         }
+
+        if (sel)
+                ewl_text_trigger_base_set(sel,
+                                ewl_entry_cursor_position_get(
+                                        EWL_ENTRY_CURSOR(e->cursor)));
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
