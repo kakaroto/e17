@@ -1,6 +1,269 @@
 images {
 }
 
+spectra {
+   spectrum{
+      name: "Abstract 1";
+      color: 65 76 254 255 292;
+      color: 14 209 159 255 26;
+      color: 141 89 249 255 23;
+      color: 255 15 240 255 18;
+      color: 255 254 10 255 18;
+   }
+   spectrum{
+      name: "Abstract 2";
+      color: 255 1 14 255 237;
+      color: 234 114 251 255 102;
+      color: 30 83 149 255 52;
+      color: 15 255 141 255 29;
+      color: 247 233 143 255 47;
+      color: 243 121 255 255 31;
+      color: 60 49 255 255 13;
+   }
+   spectrum{
+      name: "Abstract 3";
+      color: 7 110 20 255 50;
+      color: 250 182 109 255 197;
+      color: 29 63 166 255 120;
+      color: 251 255 115 255 103;
+      color: 84 215 252 255 20;
+      color: 5 252 20 255 21;
+   }
+   spectrum{
+      name: "Aneurism";
+      color: 0 0 0 0 111;
+      color: 73 1 96 200 64;
+      color: 173 0 9 255 32;
+      color: 73 1 96 200 85;
+      color: 0 0 0 0 85;
+   }
+   spectrum{
+      name: "Blue Green";
+      color: 0 123 255 255 1;
+      color: 71 224 255 255 2;
+      color: 0 255 162  255 1;
+   }
+   spectrum{
+      name: "Browns";
+      color: 141 91 49 255 1;
+      color: 187 117 42 255 1;
+      color: 140 84 6 255 1;
+      color: 199 116 6 255 1;
+      color: 178 85 56 255 1;
+      color: 174 123 88 255 1;
+      color: 195 145 120 255 1;
+      color: 151 103 86 255 1;
+      color: 190 138 98 255 1;
+      color: 173 133 93 255 1;
+      color: 141 91 50 255 1;
+   }
+   spectrum{
+      name: "Burning Paper";
+      color: 255 255 255 255 485;
+      color: 255 255 255 255 123;
+      color: 0 0 0  255 48;
+      color: 223 83 45  255 56;
+      color: 255 255 0  255 67;
+      color: 226 131 5  255 72;
+      color: 186 34 37  255 65;
+   }
+   spectrum{
+      name: "Burning Trasparency";
+      color: 255 255 255 0 485;
+      color: 255 255 255 0 123;
+      color: 0 0 0  255 48;
+      color: 223 83 45  255 56;
+      color: 255 255 0  255 67;
+      color: 226 131 5  255 72;
+      color: 186 34 37  0 65;
+   }
+   spectrum{
+      name: "Caribbean Blue";
+      color: 0 33 149 255 373;
+      color: 50 209 185 255 159;
+      color: 254 252 219 255 107;
+      color: 0 110 0 255 258;
+   }
+   spectrum{
+      name: "CD Half";
+      color: 209 209 209 255 42;
+      color: 225 225 225 255 56;
+      color: 253 253 253 255 63;
+      color: 209 209 209 255 214;
+      color: 209 209 209 255 62;
+      color: 230 254 4 255 87;
+      color: 3 224 251 255 44;
+      color: 99 254 229 255 43;
+      color: 209 209 209 255 122;
+      color: 225 225 225 255 205;
+   }
+   spectrum{
+      name: "Coffee";
+      color: 0 0 0 0 17;
+      color: 77 59 42 255 1;
+   }
+   spectrum{
+      name: "Deep Sea";
+      color: 0 3 43 255 511;
+      color: 46 99 158 255 160;
+      color: 0 247 247 255 123;
+   }
+   spectrum{
+      name: "Four Bars";
+      color:  0 0 0 255 1;
+      color:  255 255 255 255 1;
+      color:  0 0 0 255 1;
+      color:  255 255 255 255 1;
+      color:  0 0 0 255 1;
+      color:  255 255 255 255 1;
+      color:  0 0 0 255 1;
+      color:  255 255 255 255 1;
+      color:  0 0 0 255 1;
+   }
+   spectrum{
+      name: "French Flag Smooth";
+      color: 1 1 255 255 1;
+      color: 255 255 255 255 1;
+      color: 255 1 1 255 1;
+   }
+   spectrum{
+      name: "Full Saturation Spectrum";
+      color: 255 0 0 255 1;
+      color: 255 255 0 255 1;
+      color: 0 255 0 255 1;
+      color: 0 255 255 255 1;
+      color: 0 0 255 255 1;
+      color: 255 0 255 255 1;
+      color: 255 0 0 255 1;
+   }
+   spectrum{
+      name: "Golden";
+      color: 36 40 3 255 94;
+      color: 134 105 22 255 90;
+      color: 165 139 41 255 46;
+      color: 205 183 75 255 51;
+      color: 235 219 102 255 50;
+      color: 244 235 112 255 103;
+      color: 209 189 75 255 44;
+      color: 187 156 51 255 42;
+      color: 168 142 42 255 38;
+      color: 201 173 68 255 62;
+      color: 218 202 86 255 62;
+      color: 208 187 73 255 62;
+      color: 187 156 51 255 61;
+      color: 138 109 26 255 62;
+      color: 35 40 3 255 65;
+   }
+   spectrum{
+      name: "Greens";
+      color: 37 100 34 255 1;
+      color: 51 77 35 255 1;
+      color: 104 156 70 255 1;
+      color: 83 116 29 255 1;
+      color: 26 36 22 255 1;
+      color: 60 62 48 255 1;
+      color: 70 55 52 255 1;
+      color: 110 170 83 255 1;
+      color: 93 106 86 255 1;
+      color: 25 67 1 255 1;
+   }
+   spectrum{
+      name: "Horizon";
+      color: 13 92 146 255 589;
+      color: 255 255 255 255 39;
+      color: 66 31 9 255 27;
+      color: 255 207 140 255 28;
+      color: 255 207 140 255 175;
+      color: 90 42 15 255 37;
+      color: 248 138 54 255 33;
+   }
+   spectrum{
+      name: "Incandescent";
+      color: 0 0 0 255 349;
+      color: 187 0 0 255 215; 
+      color: 255 139 50 255 195;
+      color: 248 249 23 255 96;
+      color: 249 247 212 255 70;
+   }
+   spectrum{
+      name: "Neon Cyan";
+      color: 0 255 242 0 611;
+      color: 0 255 242 0 58;
+      color: 2 255 233 200 46;
+      color: 210 255 251 200 45;
+      color: 2 255 233 200 46;
+      color: 0 255 242 0 33;
+      color: 0 255 242 0 99;
+   }
+   spectrum{
+      name: "Neon Green";
+      color: 0 255 0 0 611;
+      color: 0 255 0 0 58;
+      color: 0 255 0 200 46;
+      color: 205 255 199 200 45;
+      color: 0 255 0 200 46;
+      color: 0 255 0 0 33;
+      color: 0 255 0 0 99;
+   }
+   spectrum{
+      name: "Neon Yellow";
+      color: 255 242 0 0 611;
+      color: 255 242 0 0 58;
+      color: 255 242 0 200 46;
+      color: 254 255 207 200 45;
+      color: 255 242 0 200 46;
+      color: 255 242 0 0 33;
+      color: 255 242 0 0 99;
+   }
+   spectrum{
+      name: "Pastel Rainbow";
+      color: 255 192 191 255 1;
+      color: 255 254 191 255 1;
+      color: 191 255 199 255 1;
+      color: 191 255 254 255 1;
+      color: 191 197 255 255 1;
+      color: 255 191 255 255 1;
+      color: 255 191 191 255 1;
+   }
+   spectrum{
+      name: "Pastels";
+      color: 245 224 177 255 80;
+      color: 245 189 237 255 61;
+      color: 194 207 246 255 56;
+      color: 184 162 171 255 27;
+      color: 171 186 248 255 86;
+      color: 243 248 223 255 62;
+      color: 249 163 184 255 62;
+      color: 102 116 125 255 62;
+      color: 250 204 201 255 62;
+      color: 172 129 186 255 62;
+      color: 252 221 204 255 62;
+      color: 206 122 218 255 62;
+      color: 254 223 175 255 62;
+      color: 254 234 243 255 62;
+      color: 255 191 221 255 62;
+   }
+   spectrum{
+      name: "Tropical Colors";
+      color: 9 41 4 255 85;
+      color: 4 82 1 255 72;
+      color: 48 145 21 255 88;
+      color: 234 191 49 255 64;
+      color: 242 61 34 255 156;
+      color: 135 81 64 255 129;
+      color: 121 76 255 255 123;
+      color: 164 252 244 255 90;
+      color: 104 222 71 255 81;
+      color: 93 131 3 255 46;
+   }
+   spectrum{
+      name: "Yellow Orange";
+      color: 255 227 0 255 1;
+      color: 255 136 0 255 1;
+      color: 230 109 29 255 1;
+   }
+}
+
 collections {
    group{
       name: "The first group";
