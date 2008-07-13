@@ -373,7 +373,7 @@ esmart_pdf_render (Evas_Object *obj)
 }
 
 /**
- * Return the poppler document of a smart pdf object
+ * @brief Return the poppler document of a smart pdf object
  *
  * @param obj The Evas object
  * @return The poppler document of the pdf (NULL on failure)
@@ -392,7 +392,7 @@ esmart_pdf_pdf_document_get (Evas_Object *obj)
 }
 
 /**
- * Return the current poppler page of a smart pdf object
+ * @brief Return the current poppler page of a smart pdf object
  *
  * @param obj The Evas object
  * @return The current poppler page of the pdf (NULL on failure)

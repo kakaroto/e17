@@ -101,12 +101,12 @@ void epdf_page_render_slice (Epdf_Page   *page,
 void epdf_page_page_set (Epdf_Page *page, int p);
 
 /**
- * @brief Return the page number
+ * @brief Return the current page number
  *
  * @param page The page
- * @return The page number
+ * @return The current page number
  *
- * Return page number of the page @p page
+ * Return the current number of the page @p page
  */
 int epdf_page_page_get (const Epdf_Page *page);
 
