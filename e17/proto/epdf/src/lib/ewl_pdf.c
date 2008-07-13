@@ -122,12 +122,12 @@ ewl_pdf_file_set(Ewl_Pdf *pdf, const char *filename)
 
         w = EWL_WIDGET(pdf);
 
+        if (!filename || (filename[0] == '\0'))
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
+
         if (pdf->filename != filename) {
                 IF_FREE(pdf->filename);
         }
-
-        if (!filename || (filename[0] == '\0'))
-                DRETURN_INT(FALSE, DLEVEL_STABLE);
 
         if (pdf->pdf_index) {
                 epdf_index_delete(pdf->pdf_index);
@@ -323,7 +323,7 @@ ewl_pdf_orientation_get(Ewl_Pdf *pdf)
  * @return Returns no value.
  * @brief Set the scale of the document
  *
- * Sets the horizontal scale @p hscale ans the vertical scale @p vscale
+ * Sets the horizontal scale @p hscale and the vertical scale @p vscale
  * of the document @p pdf
  */
 void
@@ -355,7 +355,7 @@ ewl_pdf_scale_set(Ewl_Pdf *pdf, double hscale, double vscale)
  * @param hscale: horizontal scale of the current page
  * @param vscale: vertical scale of the current page
  * @return Returns  no value.
- * @brief get the horizontal scale @p hscale ans the vertical scale
+ * @brief get the horizontal scale @p hscale and the vertical scale
  * @p vscale of the document @p pdf. If @p pdf is NULL, their values are 1.0
  */
 void
@@ -726,6 +726,8 @@ ewl_pdf_reveal_cb(Ewl_Widget *w,
 
         pdf = EWL_PDF(w);
         emb = ewl_embed_widget_find(w);
+        if (!emb)
+                DRETURN(DLEVEL_STABLE);
 
         if (!pdf->image)
           pdf->image = ewl_embed_object_request(emb, "pdf");
