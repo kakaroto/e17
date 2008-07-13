@@ -1,4 +1,3 @@
-/** @file etk_dvi.h */
 #ifndef _ETK_DVI_H_
 #define _ETK_DVI_H_
 
@@ -52,7 +51,7 @@ typedef struct _Etk_Dvi Etk_Dvi;
 
 /**
  * @struct _Etk_Dvi
- * Inherits from Etk_Widget and extends to provide a dvi widget
+ * @brief Inherits from Etk_Widget and extends to provide a dvi widget
  */
 struct _Etk_Dvi
 {
@@ -62,15 +61,11 @@ struct _Etk_Dvi
 
    Evas_Object          *dvi_object;     /**< The evas object for the image */
    char                 *filename;       /**< The file name */
-   int                   page;           /**< The page number */
 
    Edvi_Device          *dvi_device;     /**< The Edvi device */
    Edvi_Property        *dvi_property;   /**< The Edvi property */
    Edvi_Document        *dvi_document;   /**< The Edvi document */
    Edvi_Page            *dvi_page;       /**< The Edvi current page */
-   Edvi_Page_Orientation orientation;    /**< The orientation */
-   double                hscale;         /**< The horizontal scale */
-   double                vscale;         /**< The vertical scale */
 };
 
 Etk_Type             *etk_dvi_type_get();
@@ -87,8 +82,8 @@ void                  etk_dvi_size_get (Etk_Dvi *dvi, int *width, int *height);
 void                  etk_dvi_orientation_set (Etk_Dvi *dvi, Edvi_Page_Orientation o);
 Edvi_Page_Orientation etk_dvi_orientation_get (Etk_Dvi *dvi);
 
-void                  etk_dvi_scale_set (Etk_Dvi *dvi, double hscale, double vscale);
-void                  etk_dvi_scale_get (Etk_Dvi *dvi, double *hscale, double *vscale);
+void                  etk_dvi_mag_set (Etk_Dvi *dvi, double mag);
+double                etk_dvi_mag_get (Etk_Dvi *dvi);
 void                  etk_dvi_page_next (Etk_Dvi *dvi);
 void                  etk_dvi_page_previous (Etk_Dvi *dvi);
 

@@ -1,3 +1,64 @@
+2008-07-13  Vincent Torri  <doursse at users dot sf dot net>
+
+	* configure.in:
+	fix autoconf warnings
+
+	* Makefile.am:
+	more files in maintainer rule
+
+	* edvi.pc.in:
+	fix cflags
+
+	* src/bin/edvi_esmart_test.c: (main):
+	* src/bin/edvi_evas_test.c: (main):
+	* src/bin/edvi_ewl_test.c: (main), (_change_page_cb):
+	* src/bin/ewl_test_dvi.c: (dvi_load):
+	* src/lib/Edvi.h:
+	* src/lib/edvi_document.c: (edvi_document_new):
+	* src/lib/edvi_document.h:
+	* src/lib/edvi_enum.h:
+	* src/lib/edvi_main.h:
+	* src/lib/edvi_page.c: (_edvi_format_string_get), (edvi_page_new),
+	(edvi_page_render), (edvi_page_page_set), (edvi_page_page_get),
+	(edvi_page_size_get), (edvi_page_mag_get), (edvi_page_format_set),
+	(edvi_page_format_get), (edvi_page_orientation_get):
+	* src/lib/edvi_page.h:
+	* src/lib/edvi_private.h:
+	* src/lib/esmart_dvi.c: (esmart_dvi_init), (esmart_dvi_file_set),
+	(esmart_dvi_page_set), (esmart_dvi_page_get),
+	(esmart_dvi_size_get), (esmart_dvi_orientation_set),
+	(esmart_dvi_orientation_get), (esmart_dvi_mag_set),
+	(esmart_dvi_mag_get), (esmart_dvi_page_next),
+	(esmart_dvi_page_previous), (esmart_dvi_render),
+	(esmart_dvi_dvi_document_get), (esmart_dvi_dvi_page_get),
+	(_smart_clip_unset):
+	* src/lib/esmart_dvi.h:
+	* src/lib/etk_dvi.c: (etk_dvi_file_set), (etk_dvi_page_set),
+	(etk_dvi_page_get), (etk_dvi_size_get), (etk_dvi_orientation_set),
+	(etk_dvi_mag_set), (etk_dvi_mag_get), (etk_dvi_page_next),
+	(etk_dvi_page_previous), (etk_dvi_dvi_document_get),
+	(etk_dvi_dvi_page_get), (_etk_dvi_constructor),
+	(_etk_dvi_destructor), (_etk_dvi_realize_cb),
+	(_etk_dvi_unrealize_cb), (_etk_dvi_load):
+	* src/lib/etk_dvi.h:
+	* src/lib/ewl_dvi.c: (ewl_dvi_new), (ewl_dvi_init),
+	(ewl_dvi_file_set), (ewl_dvi_file_get), (ewl_dvi_page_set),
+	(ewl_dvi_page_get), (ewl_dvi_dvi_size_get),
+	(ewl_dvi_orientation_set), (ewl_dvi_orientation_get),
+	(ewl_dvi_mag_set), (ewl_dvi_mag_get), (ewl_dvi_page_next),
+	(ewl_dvi_page_previous), (ewl_dvi_dvi_document_get),
+	(ewl_dvi_dvi_page_get), (ewl_dvi_reveal_cb), (ewl_dvi_obscure_cb),
+	(ewl_dvi_configure_cb), (ewl_dvi_destroy_cb):
+	* src/lib/ewl_dvi.h:
+	updates to fit Epdf API
+
+	* src/plugins/epsilon/epsilon_thumbnailer.c:
+	(epsilon_generate_thumb):
+	update to the newest Epsilon API
+
+	* src/plugins/ewl/ewl_dvi.c: (create_test):
+	use ewl_model_ecore_list_instance instead of ewl_model_ecore_list_get
+
 2008-04-17  Vincent Torri  <doursse at users dot sf dot net>
 
 	* src/bin/edvi_ewl_test.c: (main):

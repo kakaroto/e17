@@ -33,31 +33,31 @@ typedef enum
 
 
 /**
- * @enum Edvi_Page_Size
- * @brief Page sizes.
+ * @enum Edvi_Page_Format
+ * @brief Page formats.
  *
  * @ingroup Edvi_Enum
  */
 typedef enum
 {
-  EDVI_PAGE_SIZE_A1,      /**< A1 size */
-  EDVI_PAGE_SIZE_A2,      /**< A2 size */
-  EDVI_PAGE_SIZE_A3,      /**< A3 size */
-  EDVI_PAGE_SIZE_A4,      /**< A4 size */
-  EDVI_PAGE_SIZE_A5,      /**< A5 size */
-  EDVI_PAGE_SIZE_A6,      /**< A6 size */
-  EDVI_PAGE_SIZE_A7,      /**< A7 size */
-  EDVI_PAGE_SIZE_B1,      /**< B1 size */
-  EDVI_PAGE_SIZE_B2,      /**< B2 size */
-  EDVI_PAGE_SIZE_B3,      /**< B3 size */
-  EDVI_PAGE_SIZE_B4,      /**< B4 size */
-  EDVI_PAGE_SIZE_B5,      /**< B5 size */
-  EDVI_PAGE_SIZE_B6,      /**< B6 size */
-  EDVI_PAGE_SIZE_B7,      /**< B7 size */
-  EDVI_PAGE_SIZE_LETTER,  /**< Letter size */
-  EDVI_PAGE_SIZE_US,      /**< US size */
-  EDVI_PAGE_SIZE_LEGAL    /**< Legal size */
-} Edvi_Page_Size;
+  EDVI_PAGE_FORMAT_A1,      /**< A1 format */
+  EDVI_PAGE_FORMAT_A2,      /**< A2 format */
+  EDVI_PAGE_FORMAT_A3,      /**< A3 format */
+  EDVI_PAGE_FORMAT_A4,      /**< A4 format */
+  EDVI_PAGE_FORMAT_A5,      /**< A5 format */
+  EDVI_PAGE_FORMAT_A6,      /**< A6 format */
+  EDVI_PAGE_FORMAT_A7,      /**< A7 format */
+  EDVI_PAGE_FORMAT_B1,      /**< B1 format */
+  EDVI_PAGE_FORMAT_B2,      /**< B2 format */
+  EDVI_PAGE_FORMAT_B3,      /**< B3 format */
+  EDVI_PAGE_FORMAT_B4,      /**< B4 format */
+  EDVI_PAGE_FORMAT_B5,      /**< B5 format */
+  EDVI_PAGE_FORMAT_B6,      /**< B6 format */
+  EDVI_PAGE_FORMAT_B7,      /**< B7 format */
+  EDVI_PAGE_FORMAT_LETTER,  /**< Letter format */
+  EDVI_PAGE_FORMAT_US,      /**< US format */
+  EDVI_PAGE_FORMAT_LEGAL    /**< Legal format */
+} Edvi_Page_Format;
 
 
 /**

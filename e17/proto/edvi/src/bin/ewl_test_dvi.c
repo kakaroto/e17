@@ -201,7 +201,7 @@ dvi_load (const char *filename)
                           EWL_CALLBACK_DESTROY,
                           EWL_CALLBACK_FUNCTION (_row_data_free_cb),
                           NULL);
-  }  
+  }
 }
 
 static void

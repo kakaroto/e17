@@ -58,6 +58,8 @@ main (int argc, char * argv[])
   Evas_Object   *o;
   char          *param_kpathsea_mode  = "cx";
   int            page_number;
+  int            width;
+  int            height;
 
   if (argc < 3) {
     printf ("\nUsage: %s file.dvi page_number\n\n", argv[0]);
@@ -89,24 +91,30 @@ main (int argc, char * argv[])
   }
 
   sscanf (argv[2], "%d", &page_number);
-  page = edvi_page_new (document, page_number);
+  page = edvi_page_new (document);
   if (!page) {
     goto free_document;
   }
+  edvi_page_page_set (page, page_number);
+  edvi_page_size_get (page, &width, &height);
 
-  /* evas stuff */
-  if (!evas_init()) {
-    goto free_page;
-  }
   if (!ecore_init()) {
-    goto shutdown_evas;
+    goto free_page;
   }
 
   if (!ecore_evas_init()) {
     goto shutdown_ecore;
   }
 
-  ee = ecore_evas_software_x11_new (NULL, 0,  0, 0, 600, 850);
+  ee = ecore_evas_software_x11_new (NULL, 0,  0, 0, width, height);
+  /* these tests can be improved... */
+  if (!ee) {
+    printf ("Can not find Software X11 engine. Trying DirectDraw engine...\n");
+    ee = ecore_evas_software_ddraw_new (NULL,  0, 0, width, height);
+    if (!ee) {
+      goto shutdown_ecore_evas;
+    }
+  }
   ecore_event_handler_add (ECORE_EVENT_SIGNAL_EXIT, app_signal_exit, NULL);
   ecore_evas_callback_delete_request_set (ee, app_delete_request);
   ecore_evas_title_set (ee, "Evas Dvi Test");
@@ -118,11 +126,9 @@ main (int argc, char * argv[])
 
   o = evas_object_image_add (evas);
   evas_object_move (o, 0, 0);
-  evas_object_image_size_set (o, edvi_page_width_get (page), edvi_page_height_get (page));
   _evas_object_bg_set (o, 255, 255, 255);
   edvi_page_render (page, device, o);
   evas_object_show (o);
-  ecore_evas_resize (ee, edvi_page_width_get (page), edvi_page_height_get (page));
 
   ecore_main_loop_begin ();
 
@@ -137,10 +143,10 @@ main (int argc, char * argv[])
 
   return EXIT_SUCCESS;
 
+ shutdown_ecore_evas:
+  ecore_evas_shutdown ();
  shutdown_ecore:
   ecore_shutdown ();
- shutdown_evas:
-  evas_shutdown ();
  free_page:
   edvi_page_delete (page);
  free_document:

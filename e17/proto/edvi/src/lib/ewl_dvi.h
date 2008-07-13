@@ -6,7 +6,9 @@
 
 /**
  * @file ewl_dvi.h
+ *
  * @defgroup Ewl_Dvi Ewl Dvi
+ *
  * @brief A DVI display Widget for the Ewl toolkit
  *
  * Provides a widget for displaying DVI files in an Ewl widget.
@@ -59,43 +61,45 @@ typedef struct Ewl_Dvi Ewl_Dvi;
 
 /**
  * @struct Ewl_Dvi
- * Inherits from Ewl_Widget and extends to provide a dvi widget
+ * @brief Inherits from Ewl_Widget and extends to provide a dvi widget
  */
 struct Ewl_Dvi
 {
 	Ewl_Widget            widget;         /**< Inherit from Ewl_Widget */
+
 	void                 *image;          /**< The evas object for the image */
 	char                 *filename;       /**< The file name */
-	int                   ow;             /**< The original image width */
-	int                   oh;             /**< The original image height */
-	int                   page;           /**< The page number */
+        int                   dirty;
 
 	Edvi_Device          *dvi_device;     /**< The Edvi device */
 	Edvi_Property        *dvi_property;   /**< The Edvi property */
 	Edvi_Document        *dvi_document;   /**< The Edvi document */
 	Edvi_Page            *dvi_page;       /**< The Edvi current page */
-	Edvi_Page_Orientation orientation;    /**< The orientation */
-	double                hscale;         /**< The horizontal scale */
-	double                vscale;         /**< The vertical scale */
 
 };
 
 Ewl_Widget           *ewl_dvi_new(void);
 int                   ewl_dvi_init(Ewl_Dvi *dvi);
-void                  ewl_dvi_file_set(Ewl_Dvi *dvi, const char *filename);
+
+int                   ewl_dvi_file_set(Ewl_Dvi *dvi, const char *filename);
+const char           *ewl_dvi_file_get(Ewl_Dvi *dvi);
+
 void                  ewl_dvi_page_set(Ewl_Dvi *dvi, int page);
 int                   ewl_dvi_page_get(Ewl_Dvi *dvi);
-const Edvi_Document  *ewl_dvi_dvi_document_get (Ewl_Dvi *dvi);
-const Edvi_Page      *ewl_dvi_dvi_page_get (Ewl_Dvi *dvi);
+
 void                  ewl_dvi_size_get (Ewl_Dvi *dvi, int *width, int *height);
 
 void                  ewl_dvi_orientation_set (Ewl_Dvi *dvi, Edvi_Page_Orientation o);
 Edvi_Page_Orientation ewl_dvi_orientation_get (Ewl_Dvi *dvi);
 
-void                  ewl_dvi_scale_set (Ewl_Dvi *dvi, double hscale, double vscale);
-void                  ewl_dvi_scale_get (Ewl_Dvi *dvi, double *hscale, double *vscale);
+void                  ewl_dvi_mag_set (Ewl_Dvi *dvi, double mag);
+double                ewl_dvi_scale_get (Ewl_Dvi *dvi);
+
 void                  ewl_dvi_page_next (Ewl_Dvi *dvi);
 void                  ewl_dvi_page_previous (Ewl_Dvi *dvi);
+
+const Edvi_Document  *ewl_dvi_dvi_document_get (Ewl_Dvi *dvi);
+const Edvi_Page      *ewl_dvi_dvi_page_get (Ewl_Dvi *dvi);
 
 /*
  * Internally used callbacks, override at your own risk.
@@ -110,4 +114,4 @@ void ewl_dvi_destroy_cb(Ewl_Widget *w, void *ev_data, void *user_data );
  */
 
 
-#endif				/* __EWL_DVI_H__ */
+#endif /* __EWL_DVI_H__ */

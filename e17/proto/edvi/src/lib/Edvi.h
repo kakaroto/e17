@@ -42,7 +42,7 @@
 /**
  * @file Edvi.h
  * @defgroup Edvi  Edvi
- * @brief A Dvi library that renders Dvi documents
+ * @brief A Dvi library that renders DVI documents
  *
  * The Edvi library provides a set of functions to manage DVI documents.
  * It wraps the functions of the DVIlib library in a C API and uses
@@ -83,7 +83,7 @@
  *   // manage error here
  * }
  *
- * page = edvi_page_new (document, page_number);
+ * page = edvi_page_new (document);
  * if (!page) {
  *   // manage error here
  * }
@@ -93,7 +93,8 @@
  * edvi_page_render (page, device, o);
  * evas_object_show (o);
  *
- * edvi_page_delete (document);
+ * evas_object_del (o);
+ * edvi_page_delete (page);
  * edvi_document_delete (document);
  * edvi_property_delete (property);
  * edvi_device_delete (device);

@@ -77,7 +77,7 @@ Etk_Widget *etk_dvi_new()
 
 /**
  * @brief Loads the dvi from a file
- * @param dvi an dvi
+ * @param dvi a dvi
  * @param filename the name of the file to load
  */
 void etk_dvi_file_set(Etk_Dvi *dvi, const char *filename)
@@ -94,15 +94,18 @@ void etk_dvi_file_set(Etk_Dvi *dvi, const char *filename)
    if (dvi->dvi_document)
       edvi_document_delete (dvi->dvi_document);
 
+   if (dvi->dvi_page)
+      edvi_page_delete(dvi->dvi_page);
+
    dvi->dvi_document = edvi_document_new (dvi->filename, dvi->dvi_device, dvi->dvi_property);
-   dvi->page = 0;
+   dvi->dvi_page = edvi_page_new(dvi->dvi_document);
 
    _etk_dvi_load(dvi);
 }
 
 /**
  * @brief Gets the name of the file used for the dvi
- * @param dvi an dvi
+ * @param dvi a dvi
  * @return Returns the name of the file use for the dvi (NULL on failure)
  */
 const char *etk_dvi_file_get(Etk_Dvi *dvi)
@@ -114,7 +117,7 @@ const char *etk_dvi_file_get(Etk_Dvi *dvi)
 
 /**
  * @brief Set a page number
- * @param dvi: the dvi to change page
+ * @param dvi: the dvi to change the page
  * @param page: the page number
  */
 void etk_dvi_page_set(Etk_Dvi *dvi, int page)
@@ -122,16 +125,16 @@ void etk_dvi_page_set(Etk_Dvi *dvi, int page)
    if (!dvi ||
        !dvi->dvi_document ||
        (page >= edvi_document_page_count_get (dvi->dvi_document)) ||
-       (page == dvi->page))
+       (page == edvi_page_page_get(dvi->dvi_page)))
       return;
 
-   dvi->page = page;
+   edvi_page_page_set(dvi->dvi_page, page);
    _etk_dvi_load (dvi);
 }
 
 /**
  * @brief Get the page number
- * @param dvi: the dvi to change page
+ * @param dvi: the dvi to get the page
  * @return Returns the page number
  */
 int etk_dvi_page_get(Etk_Dvi *dvi)
@@ -139,7 +142,128 @@ int etk_dvi_page_get(Etk_Dvi *dvi)
    if (!dvi)
       return 0;
 
-   return dvi->page;
+   return edvi_page_page_get(dvi->dvi_page);
+}
+
+/**
+ * @brief Gets the native size of the dvi
+ * @param dvi an dvi
+ * @param width the location where to set the native width of the dvi
+ * @param height the location where to set the native height of the dvi
+ */
+void etk_dvi_size_get(Etk_Dvi *dvi, int *width, int *height)
+{
+   if (!dvi)
+   {
+      if (width) *width = 0;
+      if (height) *height = 0;
+   }
+
+   edvi_page_size_get (dvi->dvi_page, width, height);
+
+   evas_object_image_size_get(dvi->dvi_object, width, height);
+}
+
+/**
+ * @param dvi: the dvi to change the orientation
+ * @param o: the orientation
+ * @return Returns no value.
+ * @brief Set an orientation of the document
+ *
+ * Sets an orientation @p o of the document
+ */
+void etk_dvi_orientation_set (Etk_Dvi *dvi, Edvi_Page_Orientation o)
+{
+   if (!dvi || !dvi->dvi_page)
+      return;
+
+   edvi_page_orientation_set(dvi->dvi_page, o);
+   _etk_dvi_load (dvi);
+}
+
+/**
+ * @param dvi: the dvi widget to get the orientation of
+ * @return Returns the orientation of the document.
+ * @brief get the orientation of the document @p dvi. If @p dvi
+ * is NULL, return EDVI_PAGE_ORIENTATION_PORTRAIT
+ */
+Edvi_Page_Orientation etk_dvi_orientation_get (Etk_Dvi *dvi)
+{
+   if (!dvi || !dvi->dvi_page)
+      return EDVI_PAGE_ORIENTATION_PORTRAIT;
+
+   return edvi_page_orientation_get (dvi->dvi_page);
+}
+
+/**
+ * @param dvi: the dvi to change the magnification
+ * @param mag: the magnification
+ * @return Returns no value.
+ * @brief Set the magnification of the document
+ *
+ * Sets the magnification @p mag of the document @p dvi
+ */
+void etk_dvi_mag_set (Etk_Dvi *dvi, double mag)
+{
+   if (!dvi)
+      return;
+
+   edvi_page_mag_set(dvi->dvi_page, mag);
+   _etk_dvi_load (dvi);
+}
+
+/**
+ * @param dvi: the dvi widget to get the orientation of
+ * @param hscale: horizontal scale of the current page
+ * @param vscale: vertical scale of the current page
+ * @return Returns  no value.
+ * @brief get the horizontal scale @p hscale and the vertical scale
+ * @p vscale of the document @p dvi. If @p dvi is NULL, their values are 1.0
+ */
+double etk_dvi_mag_get (Etk_Dvi *dvi)
+{
+   if (!dvi)
+      return 1.0;
+
+   return edvi_page_mag_get(dvi->dvi_page);
+}
+
+/**
+ * @param dvi: the dvi widget
+ * @return Returns  no value.
+ * @brief go to the next page and render it
+ */
+void
+etk_dvi_page_next (Etk_Dvi *dvi)
+{
+   int page;
+
+   if (!dvi)
+      return;
+
+   page = edvi_page_page_get(dvi->dvi_page);
+   if (page < (edvi_document_page_count_get(dvi->dvi_document) - 1))
+      page++;
+   etk_dvi_page_set (dvi, page);
+}
+
+/**
+ * @param dvi: the dvi widget
+ * @return Returns  no value.
+ * @brief go to the previous page and render it
+ */
+void
+etk_dvi_page_previous (Etk_Dvi *dvi)
+{
+   int page;
+
+   if (!dvi)
+      return;
+
+   page = edvi_page_page_get(dvi->dvi_page);
+   if (page > 0)
+      page--;
+   etk_dvi_page_set(dvi, page);
 }
 
 /**
@@ -168,148 +292,6 @@ const Edvi_Page *etk_dvi_dvi_page_get (Etk_Dvi *dvi)
    return dvi->dvi_page;
 }
 
-/**
- * @brief Gets the native size of the dvi
- * @param dvi an dvi
- * @param width the location where to set the native width of the dvi
- * @param height the location where to set the native height of the dvi
- */
-void etk_dvi_size_get(Etk_Dvi *dvi, int *width, int *height)
-{
-   if (!dvi)
-   {
-      if (width)
-	 *width = 0;
-      if (height)
-	 *height = 0;
-   }
-   else {
-      if (width)
-	 *width = edvi_page_width_get (dvi->dvi_page);
-      if (height)
-	 *height = edvi_page_height_get (dvi->dvi_page);
-   }
-      evas_object_image_size_get(dvi->dvi_object, width, height);
-}
-
-/**
- * @param dvi: the dvi to change the orientation
- * @param o: the orientation
- * @return Returns no value.
- * @brief Set an orientation of the document
- *
- * Sets an orientation @p o of the document
- */
-void etk_dvi_orientation_set (Etk_Dvi *dvi, Edvi_Page_Orientation o)
-{
-   if (!dvi || !dvi->dvi_page || (dvi->orientation == o))
-      return;
-
-   dvi->orientation = o;
-   _etk_dvi_load (dvi);
-}
-
-/**
- * @param dvi: the dvi widget to get the orientation of
- * @return Returns the orientation of the document.
- * @brief get the orientation of the document @p dvi. If @p dvi
- * is NULL, return EDVI_PAGE_ORIENTATION_PORTRAIT
- */
-Edvi_Page_Orientation etk_dvi_orientation_get (Etk_Dvi *dvi)
-{
-   if (!dvi || !dvi->dvi_page)
-      return EDVI_PAGE_ORIENTATION_PORTRAIT;
-
-   return edvi_page_orientation_get (dvi->dvi_page);
-}
-
-/**
- * @param dvi: the dvi to change the scale
- * @param hscale: the horizontal scale
- * @param vscale: the vertical scale
- * @return Returns no value.
- * @brief Set the scale of the document
- *
- * Sets the horizontal scale @p hscale ans the vertical scale @p vscale
- * of the document @p dvi
- */
-void etk_dvi_scale_set (Etk_Dvi *dvi, double hscale, double vscale)
-{
-   if (!dvi)
-      return;
-
-   if (hscale != dvi->hscale)
-     dvi->hscale = hscale;
-
-   if (vscale != dvi->vscale)
-     dvi->vscale = vscale;
-   _etk_dvi_load (dvi);
-}
-
-/**
- * @param dvi: the dvi widget to get the orientation of
- * @param hscale: horizontal scale of the current page
- * @param vscale: vertical scale of the current page
- * @return Returns  no value.
- * @brief get the horizontal scale @p hscale ans the vertical scale
- * @p vscale of the document @p dvi. If @p dvi is NULL, their values are 1.0
- */
-void etk_dvi_scale_get (Etk_Dvi *dvi, double *hscale, double *vscale)
-{
-  if (!dvi) {
-     if (hscale)
-        *hscale = 1.0;
-
-     if (vscale)
-        *vscale = 1.0;
-  }
-  else {
-     if (hscale)
-        *hscale = dvi->hscale;
-
-      if (vscale)
-         *vscale = dvi->vscale;
-  }
-}
-
-/**
- * @param dvi: the dvi widget
- * @return Returns  no value.
- * @brief go to the next page and render it
- */
-void
-etk_dvi_page_next (Etk_Dvi *dvi)
-{
-  int page;
-
-  if (!dvi)
-    return;
-
-  page = dvi->page + 1;
-  if (page >= edvi_document_page_count_get(dvi->dvi_document))
-    page = edvi_document_page_count_get(dvi->dvi_document) - 1;
-  etk_dvi_page_set (dvi, page);
-}
-
-/**
- * @param dvi: the dvi widget
- * @return Returns  no value.
- * @brief go to the previous page and render it
- */
-void
-etk_dvi_page_previous (Etk_Dvi *dvi)
-{
-  int page;
-
-  if (!dvi)
-    return;
-
-  page = dvi->page - 1;
-  if (page < 0)
-    page = 0;
-  etk_dvi_page_set (dvi, page);
-}
-
 /**************************
  *
  * Etk specific functions
@@ -326,17 +308,12 @@ static void _etk_dvi_constructor(Etk_Dvi *dvi)
 
    dvi->dvi_object = NULL;
    dvi->filename = NULL;
-   dvi->page = -1;
 
    dvi->dvi_device = edvi_device_new (edvi_dpi_get(), edvi_dpi_get());
    dvi->dvi_property = edvi_property_new();
    edvi_property_property_set (dvi->dvi_property, EDVI_PROPERTY_DELAYED_FONT_OPEN);
    dvi->dvi_document = NULL;
    dvi->dvi_page = NULL;
-
-   dvi->orientation = EDVI_PAGE_ORIENTATION_PORTRAIT;
-   dvi->hscale = 1.0;
-   dvi->vscale = 1.0;
 
    widget->size_request = _etk_dvi_size_request;
    widget->size_allocate = _etk_dvi_size_allocate;
@@ -358,8 +335,8 @@ static void _etk_dvi_destructor(Etk_Dvi *dvi)
    free(dvi->filename);
    edvi_page_delete (dvi->dvi_page);
    edvi_document_delete (dvi->dvi_document);
-  edvi_property_delete (dvi->dvi_property);
-  edvi_device_delete (dvi->dvi_device);
+   edvi_property_delete (dvi->dvi_property);
+   edvi_device_delete (dvi->dvi_device);
 }
 
 /* Sets the property whose id is "property_id" to the value "value" */
@@ -465,7 +442,7 @@ static Etk_Bool _etk_dvi_realize_cb(Etk_Object *object, void *data __UNUSED__)
 /*    Evas_Object *o; */
 
    if (!(dvi = ETK_DVI(object)) || !(evas = etk_widget_toplevel_evas_get(ETK_WIDGET(dvi))))
-      return ETK_TRUE;
+      return ETK_FALSE;
 
 /*    o = evas_object_rectangle_add(evas); */
 /*    evas_object_color_set(o, 255, 255, 0, 128); */
@@ -481,7 +458,8 @@ static Etk_Bool _etk_dvi_unrealize_cb(Etk_Object *object, void *data __UNUSED__)
    Etk_Dvi *dvi;
 
    if (!(dvi = ETK_DVI(object)))
-      return ETK_TRUE;
+      return ETK_FALSE;
+
    dvi->dvi_object = NULL;
    return ETK_TRUE;
 }
@@ -515,18 +493,15 @@ static void _etk_dvi_load(Etk_Dvi *dvi)
 	 dvi->dvi_object = evas_object_image_add(evas);
 	 etk_widget_member_object_add(widget, dvi->dvi_object);
       }
-      if (dvi->dvi_page)
-	 edvi_page_delete (dvi->dvi_page);
       if (dvi->dvi_object)
       {
          unsigned int *m;
          int           w;
          int           h;
 
-	 dvi->dvi_page = edvi_page_new (dvi->dvi_document, dvi->page);
+	 dvi->dvi_page = edvi_page_new (dvi->dvi_document);
 
-         w = edvi_page_width_get (dvi->dvi_page);
-         h = edvi_page_height_get (dvi->dvi_page);
+         edvi_page_size_get (dvi->dvi_page, &w, &h);
          evas_object_image_size_set (dvi->dvi_object, w, h);
          evas_object_image_fill_set (dvi->dvi_object, 0, 0, w, h);
          m = (unsigned int *)evas_object_image_data_get (dvi->dvi_object, 1);

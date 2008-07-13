@@ -1,6 +1,8 @@
-#include <stdlib.h>
-
+#ifdef HAVE_CONFIG_H
 #include "config.h"
+#endif /* HAVE_CONFIG_H */
+
+#include <stdlib.h>
 
 #ifdef HAVE_DVILIB_2_9
 #  include <libdvi29.h>
@@ -21,7 +23,7 @@ edvi_document_new (const char    *filename,
 
   if (!filename || !device || !property)
     return NULL;
-  
+
   document = (Edvi_Document *)malloc (sizeof (Edvi_Document));
   if (!document)
     return NULL;

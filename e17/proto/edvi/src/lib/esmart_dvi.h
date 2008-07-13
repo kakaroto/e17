@@ -7,7 +7,9 @@
 
 /**
  * @file ewl_dvi.h
+ *
  * @defgroup Esmart_Dvi Esmart Dvi
+ *
  * @brief An Evas smart object to display DVI document
  *
  * Provides a smart object for displaying DVI files in an Evas object.
@@ -60,31 +62,37 @@ struct _Smart_Dvi
 {
   Evas_Object          *obj;            /**< The Evas object */
   char                 *filename;       /**< The file name */
-  int                   page;           /**< The page number */
 
   Edvi_Device          *dvi_device;     /**< The Edvi device */
   Edvi_Property        *dvi_property;   /**< The Edvi property */
   Edvi_Document        *dvi_document;   /**< The Edvi document */
   Edvi_Page            *dvi_page;       /**< The Edvi current page */
-  Edvi_Page_Orientation orientation;    /**< The orientation */
-  double                hscale;         /**< The horizontal scale */
-  double                vscale;         /**< The vertical scale */
 };
 
 Evas_Object          *esmart_dvi_add (Evas *evas);
 Evas_Bool             esmart_dvi_init (Evas_Object *obj);
+
 void                  esmart_dvi_file_set (Evas_Object *obj, const char *filename);
 const char           *esmart_dvi_file_get (Evas_Object *obj);
+
 void                  esmart_dvi_page_set (Evas_Object *obj, int page);
-const Edvi_Document  *esmart_dvi_dvi_document_get (Evas_Object *obj);
-const Edvi_Page      *esmart_dvi_dvi_page_get (Evas_Object *obj);
+int                   esmart_dvi_page_get (Evas_Object *obj);
+
+void                  esmart_dvi_size_get (Evas_Object *obj, int *width, int *height);
+
 void                  esmart_dvi_orientation_set (Evas_Object *obj, Edvi_Page_Orientation o);
 Edvi_Page_Orientation esmart_dvi_orientation_get (Evas_Object *obj);
 
-void                  esmart_dvi_scale_set (Evas_Object *obj, double hscale, double vscale);
-void                  esmart_dvi_scale_get (Evas_Object *obj, double *hscale, double *vscale);
+void                  esmart_dvi_mag_set (Evas_Object *obj, double mag);
+double                esmart_dvi_mag_get (Evas_Object *obj);
+
 void                  esmart_dvi_page_next (Evas_Object *obj);
 void                  esmart_dvi_page_previous (Evas_Object *obj);
+
+void                  esmart_dvi_render (Evas_Object *obj);
+
+const Edvi_Document  *esmart_dvi_dvi_document_get (Evas_Object *obj);
+const Edvi_Page      *esmart_dvi_dvi_page_get (Evas_Object *obj);
 
 /**
  * @}

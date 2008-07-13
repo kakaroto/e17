@@ -8,7 +8,7 @@
  * @brief Functions that manage initialization, shutdown, and other miscellaneous functions
  * @ingroup Edvi
  *
- * Functions that manage DVI pages
+ * Functions that manage initialisations of Edvi
  */
 
 

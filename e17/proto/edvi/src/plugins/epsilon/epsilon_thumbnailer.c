@@ -1,60 +1,15 @@
 #include <stdlib.h>
+#include <string.h>
 
-#include <Evas.h>
 #include <Ecore_Evas.h>
 #include <Epsilon.h>
 #include <Epsilon_Plugin.h>
 #include <Edvi.h>
 
-Imlib_Image
-epsilon_thumb_imlib_standardize ()
-{
-   Imlib_Image dst = NULL;
-   int         dw;
-   int         dh;
-   int         sw;
-   int         sh;
-   int         s = 128;
-
-   sw = imlib_image_get_width ();
-   sh = imlib_image_get_height ();
-
-   if (sw > sh)
-     {
-        dw = s;
-	dh = (s * sh) / sw;
-     }
-   else
-     {
-        dh = s;
-	dw = (s * sw) / sh;
-     }
-
-   imlib_context_set_cliprect (0, 0, dw, dh);
-
-   if ((dst = imlib_create_cropped_scaled_image (0, 0, sw, sh, dw, dh)))
-     {
-        imlib_context_set_image (dst);
-	imlib_context_set_anti_alias (1);
-	imlib_image_set_has_alpha (1);
-     }
-
-   return dst;
-}
-
-int
-clip (int val)
-{
-   if (val < 0)
-     return 0;
-
-   return (val > 255) ? 255 : val;
-}
-
-Imlib_Image
+Epsilon_Image *
 epsilon_generate_thumb (Epsilon * e)
 {
-   Imlib_Image    img = NULL;
+   Epsilon_Image *dst = NULL;
    Ecore_Evas    *ee;
    Evas          *evas;
    Evas_Object   *o;
@@ -62,6 +17,8 @@ epsilon_generate_thumb (Epsilon * e)
    Edvi_Property *property;
    Edvi_Document *document;
    Edvi_Page     *page;
+   int            width;
+   int            height;
    const int     *pixels;
    char          *param_kpathsea_mode  = "cx";
 
@@ -83,21 +40,33 @@ epsilon_generate_thumb (Epsilon * e)
    document = edvi_document_new (e->src, device, property);
    if (!document)
      goto no_document;
-   page = edvi_page_new (document, 1);
-   ee = ecore_evas_buffer_new(64,64);
+   page = edvi_page_new (document);
+   if (!page)
+     goto no_page;
+   edvi_page_page_set (page, 0);
+   edvi_page_size_get (page, &width, &height);
+
+   ee = ecore_evas_buffer_new(width, height);
    evas = ecore_evas_get(ee);
+
    o = evas_object_image_add (evas);
    evas_object_move (o, 0, 0);
    edvi_page_render (page, device, o);
    evas_object_show (o);
-   ecore_evas_resize (ee, edvi_page_width_get (page), edvi_page_height_get (page));
+
+   dst = calloc(1, sizeof(Epsilon_Image));
+   if (!dst)
+     goto no_dst;
+
+   dst->w = width;
+   dst->h = height;
+   dst->alpha = 1;
+   dst->data = malloc(dst->w * dst->h * sizeof(int));
+   if (!dst->data)
+     goto no_dst_data;
 
    pixels = ecore_evas_buffer_pixels_get (ee);
-   img = imlib_create_image_using_data (edvi_page_width_get (page),
-					edvi_page_height_get (page),
-					(DATA32 *)pixels);
-
-   imlib_context_set_image(img);
+   memcpy(dst->data, pixels, dst->w * dst->h * sizeof(int));
 
    edvi_page_delete (page);
    edvi_document_delete (document);
@@ -105,8 +74,21 @@ epsilon_generate_thumb (Epsilon * e)
    edvi_device_delete (device);
    edvi_shutdown ();
 
-   return img;
+   ecore_evas_free(ee);
+   edvi_page_delete (page);
+   edvi_document_delete (document);
+   edvi_property_delete (property);
+   edvi_device_delete (device);
+   edvi_shutdown ();
 
+   return dst;
+
+ no_dst_data:
+   free(dst);
+ no_dst:
+   edvi_page_delete (page);
+ no_page:
+   edvi_document_delete (document);
  no_document:
    edvi_property_delete (property);
  no_property:

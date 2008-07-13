@@ -8,4 +8,4 @@ Description: Enlightenment Foundations Library based dvi renderer, based on DVIl
 Requires: @requirements@
 Version: @PACKAGE_VERSION@
 Libs: -L${libdir} -ledvi
-Cflags: -I${includedir}
+Cflags: -I${includedir}/edvi

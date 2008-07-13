@@ -102,7 +102,7 @@ create_test (Ewl_Container *box)
   str_data = ecore_list_new();
   ecore_list_free_cb_set (str_data, free);
 
-  model = ewl_model_ecore_list_get();
+  model = ewl_model_ecore_list_instance();
   view = ewl_label_view_get();
 
   list = ewl_list_new ();

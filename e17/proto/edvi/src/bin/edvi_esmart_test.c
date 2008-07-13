@@ -80,6 +80,7 @@ main (int argc, char *argv[])
 
   esmart_dvi_file_set (o, argv[1]);
   esmart_dvi_page_set (o, page_number);
+  esmart_dvi_render (o);
   evas_object_move (o, 0, 0);
   evas_object_show (o);
 

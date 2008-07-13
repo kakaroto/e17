@@ -50,13 +50,10 @@ main (int argc, char *argv[])
 
   /* We open the dvi file */
   dvi = ewl_dvi_new ();
-  ewl_dvi_file_set (EWL_DVI (dvi), argv[1]);
-  document = ewl_dvi_dvi_document_get (EWL_DVI (dvi));
-  if (!document) {
-    printf ("The file %s can't be opened\n", argv[1]);
+  if (!ewl_dvi_file_set (EWL_DVI (dvi), argv[1])) {
+    printf ("Can not load the document %s\nExiting...", argv[1]);
     ecore_list_destroy (str_data);
-    ewl_main_quit ();
-    edvi_shutdown ();
+    ewl_main_quit();
     return EXIT_FAILURE;
   }
 
@@ -74,6 +71,7 @@ main (int argc, char *argv[])
   ewl_container_child_append (EWL_CONTAINER (hbox), sp);
   ewl_widget_show (sp);
 
+  document = ewl_dvi_dvi_document_get (EWL_DVI (dvi));
   page_count = edvi_document_page_count_get (document);
   for (i = 0; i < page_count; i++) {
     char row_text[64];
@@ -98,7 +96,7 @@ main (int argc, char *argv[])
   ewl_container_child_append (EWL_CONTAINER (sp), list);
   ewl_widget_show (list);
 
-  ewl_dvi_scale_set (EWL_DVI (dvi), 0.5, 0.5);
+  ewl_dvi_mag_set (EWL_DVI (dvi), 0.5);
   ewl_container_child_append (EWL_CONTAINER (hbox), dvi);
   ewl_widget_show (dvi);
 
@@ -138,6 +136,6 @@ _change_page_cb (Ewl_Widget *widget, void *ev_data __UNUSED__, void *user_data)
   dvi = EWL_DVI (user_data);
   if (idx->row != (unsigned int)ewl_dvi_page_get (dvi)) {
     ewl_dvi_page_set (dvi, idx->row);
-    ewl_callback_call (EWL_WIDGET (dvi), EWL_CALLBACK_REVEAL);
+    ewl_widget_configure(EWL_WIDGET(dvi));
   }
 }

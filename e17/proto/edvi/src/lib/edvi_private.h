@@ -36,7 +36,7 @@ struct _Edvi_Page
   int                   shrink;
   double                offset_x;
   double                offset_y;
-  Edvi_Page_Size        size;
+  Edvi_Page_Format      format;
   Edvi_Page_Orientation orientation;
 };
 
