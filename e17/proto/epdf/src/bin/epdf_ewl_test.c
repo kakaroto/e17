@@ -150,7 +150,7 @@ main (int argc, char *argv[])
   pdf = ewl_pdf_new ();
   if (!ewl_pdf_file_set (EWL_PDF (pdf), argv[1])) {
     printf ("Can not load the document %s\nExiting...", argv[1]);
-    ecore_list_destroy (list);
+    ecore_list_destroy (str_data);
     ewl_main_quit();
     return EXIT_FAILURE;
   }
