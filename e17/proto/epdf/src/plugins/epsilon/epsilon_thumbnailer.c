@@ -1,9 +1,10 @@
+#include <stdlib.h>
+#include <string.h>
+
 #include <Ecore_Evas.h>
 #include <Epsilon.h>
 #include <Epsilon_Plugin.h>
 #include <Epdf.h>
-#include <stdlib.h>
-#include <string.h>
 
 Epsilon_Image *
 epsilon_generate_thumb (Epsilon * e)
