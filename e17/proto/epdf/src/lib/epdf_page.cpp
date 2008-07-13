@@ -388,7 +388,7 @@ epdf_page_size_get (const Epdf_Page *page, int *width, int *height)
   int w = 0;
   int h = 0;
 
-  if (page && page->page) {
+  if (page) {
     rotate = page->page->getRotate ();
     if (rotate == 90 || rotate == 270) {
       w = (int)page->page->getMediaHeight ();
