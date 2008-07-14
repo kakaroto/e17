@@ -78,7 +78,13 @@ main (int argc, char *argv[])
     return EXIT_FAILURE;
   }
 
-  esmart_dvi_file_set (o, argv[1]);
+  if (!esmart_dvi_file_set (o, argv[1])) {
+    evas_object_del (o);
+    ecore_evas_shutdown ();
+    ecore_shutdown ();
+    return EXIT_FAILURE;
+  }
+
   esmart_dvi_page_set (o, page_number);
   esmart_dvi_render (o);
   evas_object_move (o, 0, 0);

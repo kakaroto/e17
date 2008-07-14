@@ -72,7 +72,7 @@ struct _Smart_Dvi
 Evas_Object          *esmart_dvi_add (Evas *evas);
 Evas_Bool             esmart_dvi_init (Evas_Object *obj);
 
-void                  esmart_dvi_file_set (Evas_Object *obj, const char *filename);
+int                   esmart_dvi_file_set (Evas_Object *obj, const char *filename);
 const char           *esmart_dvi_file_get (Evas_Object *obj);
 
 void                  esmart_dvi_page_set (Evas_Object *obj, int page);

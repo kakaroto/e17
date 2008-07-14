@@ -117,29 +117,47 @@ esmart_dvi_init (Evas_Object *obj)
  * @param obj The Evas object
  * @param filename: The file name
  *
- * Set the file name of the smart dvi object @p obj
+ * Set the file name of the smart dvi object @p obj. If the current
+ * filename and @p filename are the same, nothing is done and 1 is
+ * returned. If @p filename is @c NULL or empty, 0 is returned. If
+ * @p filename is a valid PDF document, 1 is returned, otherwise 0
+ * is returned.
  */
-void
+int
 esmart_dvi_file_set (Evas_Object *obj, const char *filename)
 {
   Smart_Dvi *sp;
 
-  E_SMART_OBJ_GET (sp, obj, E_OBJ_NAME);
+  E_SMART_OBJ_GET_RETURN (sp, obj, E_OBJ_NAME, 0);
 
   if ((filename) &&
       (sp->filename) &&
-      (!strcmp (filename, sp->filename))) return;
+      (!strcmp (filename, sp->filename))) return 1;
 
   if ((filename) && (filename[0] != 0))
     {
+      if (sp->filename) free (sp->filename);
       sp->filename = strdup (filename);
+
+      if (sp->dvi_page)
+        edvi_page_delete (sp->dvi_page);
+      sp->dvi_page = NULL;
 
       if (sp->dvi_document)
         edvi_document_delete (sp->dvi_document);
 
-      sp->dvi_document = edvi_document_new (sp->filename, sp->dvi_device, sp->dvi_property);
+      sp->dvi_document = edvi_document_new (sp->filename,
+                                            sp->dvi_device,
+                                            sp->dvi_property);
+      if (!sp->dvi_document)
+        return 0;
+
       sp->dvi_page = edvi_page_new (sp->dvi_document);
+
+      return 1;
     }
+
+  return 0;
 }
 
 /**
