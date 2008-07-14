@@ -406,7 +406,7 @@ ee_window_new(Ewl_Window *win)
                                 ewl_object_current_h_get(EWL_OBJECT(win)));
 
         ecore_x_icccm_protocol_set(xwin, ECORE_X_WM_PROTOCOL_DELETE_REQUEST, 1);
-        win->window = (void *)xwin;
+        win->window = INT_TO_PTRINT(xwin);
 
         if (win->flags & EWL_WINDOW_BORDERLESS)
                 ee_window_borderless_set(win);
@@ -422,8 +422,8 @@ ee_window_destroy(Ewl_Window *win)
         DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
         ee_window_hide(win);
-        ecore_x_window_del((Ecore_X_Window)(EWL_EMBED(win)->canvas_window));
-        ecore_x_window_del((Ecore_X_Window)(win->window));
+        ecore_x_window_del(PTRINT_TO_INT(EWL_EMBED(win)->canvas_window));
+        ecore_x_window_del(PTRINT_TO_INT(win->window));
 
         EWL_EMBED(win)->canvas_window = NULL;
         win->window = NULL;
@@ -438,7 +438,7 @@ ee_window_move(Ewl_Window *win)
         DCHECK_PARAM_PTR(win);
         DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
-        ecore_x_window_move((Ecore_X_Window)win->window,
+        ecore_x_window_move(PTRINT_TO_INT(win->window),
                                         EWL_EMBED(win)->x,
                                         EWL_EMBED(win)->y);
 
@@ -457,11 +457,12 @@ ee_window_resize(Ewl_Window *win)
         width = ewl_object_current_w_get(EWL_OBJECT(win));
         height = ewl_object_current_h_get(EWL_OBJECT(win));
 
-        ecore_x_window_resize((Ecore_X_Window)win->window, width, height);
+        ecore_x_window_resize(PTRINT_TO_INT(win->window), width, height);
 
         if (EWL_EMBED(win)->canvas_window != win->window)
-                ecore_x_window_resize((Ecore_X_Window)EWL_EMBED(win)->canvas_window,
-                                                width, height);
+                ecore_x_window_resize(
+                                PTRINT_TO_INT(EWL_EMBED(win)->canvas_window),
+                                width, height);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -473,7 +474,7 @@ ee_window_min_max_size_set(Ewl_Window *win)
         DCHECK_PARAM_PTR(win);
         DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
-        ecore_x_icccm_size_pos_hints_set((Ecore_X_Window)win->window,
+        ecore_x_icccm_size_pos_hints_set(PTRINT_TO_INT(win->window),
                                         0, ECORE_X_GRAVITY_NW,
                                         ewl_object_minimum_w_get(EWL_OBJECT(win)),
                                         ewl_object_minimum_h_get(EWL_OBJECT(win)),
@@ -493,8 +494,8 @@ ee_window_show(Ewl_Window *win)
         DCHECK_PARAM_PTR(win);
         DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
-        ecore_x_window_show((Ecore_X_Window)win->window);
-        ecore_x_window_show((Ecore_X_Window)EWL_EMBED(win)->canvas_window);
+        ecore_x_window_show(PTRINT_TO_INT(win->window));
+        ecore_x_window_show(PTRINT_TO_INT(EWL_EMBED(win)->canvas_window));
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -506,8 +507,8 @@ ee_window_hide(Ewl_Window *win)
         DCHECK_PARAM_PTR(win);
         DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
-        ecore_x_window_hide((Ecore_X_Window)EWL_EMBED(win)->canvas_window);
-        ecore_x_window_hide((Ecore_X_Window)EWL_WINDOW(win)->window);
+        ecore_x_window_hide(PTRINT_TO_INT(EWL_EMBED(win)->canvas_window));
+        ecore_x_window_hide(PTRINT_TO_INT(EWL_WINDOW(win)->window));
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -522,8 +523,8 @@ ee_window_title_set(Ewl_Window *win)
         DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
         title = win->title ? win->title : "";
-        ecore_x_icccm_title_set((Ecore_X_Window)win->window, title);
-        ecore_x_netwm_name_set((Ecore_X_Window)win->window, title);
+        ecore_x_icccm_title_set(PTRINT_TO_INT(win->window), title);
+        ecore_x_netwm_name_set(PTRINT_TO_INT(win->window), title);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -535,7 +536,7 @@ ee_window_name_class_set(Ewl_Window *win)
         DCHECK_PARAM_PTR(win);
         DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
-        ecore_x_icccm_name_class_set((Ecore_X_Window)win->window, win->name,
+        ecore_x_icccm_name_class_set(PTRINT_TO_INT(win->window), win->name,
                                 (win->classname ? win->classname : win->name));
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -548,7 +549,7 @@ ee_window_borderless_set(Ewl_Window *win)
         DCHECK_PARAM_PTR(win);
         DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
-        ecore_x_mwm_borderless_set((Ecore_X_Window)win->window,
+        ecore_x_mwm_borderless_set(PTRINT_TO_INT(win->window),
                                 (!!(win->flags & EWL_WINDOW_BORDERLESS)));
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -561,7 +562,7 @@ ee_window_dialog_set(Ewl_Window *win)
         DCHECK_PARAM_PTR(win);
         DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
-        ecore_x_netwm_window_type_set((Ecore_X_Window)win->window,
+        ecore_x_netwm_window_type_set(PTRINT_TO_INT(win->window),
                         ((!!(win->flags & EWL_WINDOW_DIALOG)) ?
                                         ECORE_X_WINDOW_TYPE_DIALOG :
                                         ECORE_X_WINDOW_TYPE_NORMAL));
@@ -605,7 +606,7 @@ ee_window_state_handle(Ewl_Window *win, int states,
         if (states & ewl_flag)
         {
                 state = (!!(win->flags & ewl_flag));
-                ecore_x_netwm_state_request_send((Ecore_X_Window)win->window,
+                ecore_x_netwm_state_request_send(PTRINT_TO_INT(win->window),
                         0, ecore_flag, ECORE_X_WINDOW_STATE_UNKNOWN, state);
         }
 
@@ -663,7 +664,7 @@ ee_window_states_set_helper(Ewl_Window *win)
         if (!!(win->flags & EWL_WINDOW_MODAL))
                 states[count++] = ECORE_X_WINDOW_STATE_MODAL;
 
-        ecore_x_netwm_window_state_set((Ecore_X_Window)win->window, states, count);
+        ecore_x_netwm_window_state_set(PTRINT_TO_INT(win->window), states, count);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -688,13 +689,13 @@ ee_window_hints_set(Ewl_Window *win)
         if (win->flags & EWL_WINDOW_URGENT)
                 urgent = TRUE;
 
-        ecore_x_icccm_hints_set((Ecore_X_Window) win->window,
+        ecore_x_icccm_hints_set(PTRINT_TO_INT(win->window),
                                 1, // accepts focus
                                 0, // initial states
                                 0, // icon pixmap
                                 0, // icon mask
                                 0, // icon window
-                                (Ecore_X_Window) win_group, // window group
+                                PTRINT_TO_INT(win_group), // window group
                                 urgent); // is urgent
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -708,13 +709,13 @@ ee_window_transient_for(Ewl_Window *win)
         DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
         if (win->flags & EWL_WINDOW_TRANSIENT)
-                ecore_x_icccm_transient_for_set((Ecore_X_Window)win->window,
-                                (Ecore_X_Window)win->transient.ewl->window);
+                ecore_x_icccm_transient_for_set(PTRINT_TO_INT(win->window),
+                                PTRINT_TO_INT(win->transient.ewl->window));
         else if (win->flags & EWL_WINDOW_TRANSIENT_FOREIGN)
-                ecore_x_icccm_transient_for_set((Ecore_X_Window)win->window,
-                                        (Ecore_X_Window)win->transient.foreign);
+                ecore_x_icccm_transient_for_set(PTRINT_TO_INT(win->window),
+                                        PTRINT_TO_INT(win->transient.foreign));
         else
-                ecore_x_icccm_transient_for_unset((Ecore_X_Window)win->window);
+                ecore_x_icccm_transient_for_unset(PTRINT_TO_INT(win->window));
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -737,8 +738,8 @@ ee_window_leader_set(Ewl_Window *win)
                  * sets itself to the leader */
                 leader = win->window;
 
-        ecore_x_icccm_client_leader_set((Ecore_X_Window)win->window,
-                                        (Ecore_X_Window)leader);
+        ecore_x_icccm_client_leader_set(PTRINT_TO_INT(win->window),
+                                        PTRINT_TO_INT(leader));
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -750,7 +751,7 @@ ee_window_raise(Ewl_Window *win)
         DCHECK_PARAM_PTR(win);
         DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
-        ecore_x_window_raise((Ecore_X_Window)win->window);
+        ecore_x_window_raise(PTRINT_TO_INT(win->window));
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -762,7 +763,7 @@ ee_window_lower(Ewl_Window *win)
         DCHECK_PARAM_PTR(win);
         DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
-        ecore_x_window_lower((Ecore_X_Window)win->window);
+        ecore_x_window_lower(PTRINT_TO_INT(win->window));
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -778,7 +779,7 @@ ee_keyboard_grab(Ewl_Window *win)
 
         if ((!!(win->flags & EWL_WINDOW_GRAB_KEYBOARD)))
         {
-                ret = ecore_x_keyboard_grab((Ecore_X_Window)win->window);
+                ret = ecore_x_keyboard_grab(PTRINT_TO_INT(win->window));
                 ee_current_key_grab_window = win;
         }
         else if (ee_current_key_grab_window == win)
@@ -814,7 +815,7 @@ ee_pointer_grab(Ewl_Window *win)
 
         if ((!!(win->flags & EWL_WINDOW_GRAB_POINTER)))
         {
-                ret = ecore_x_pointer_grab((Ecore_X_Window)win->window);
+                ret = ecore_x_pointer_grab(PTRINT_TO_INT(win->window));
                 ee_current_pointer_grab_window = win;
         }
         else if (ee_current_pointer_grab_window == win)
@@ -849,7 +850,7 @@ ee_window_selection_text_set(Ewl_Embed *emb, const char *txt)
 
         if (txt)
                 ecore_x_selection_primary_set(
-                                (Ecore_X_Window)emb->canvas_window,
+                                PTRINT_TO_INT(emb->canvas_window),
                                 (unsigned char *)txt, strlen(txt) + 1);
         else
                 ecore_x_selection_primary_clear();
@@ -862,7 +863,7 @@ ee_window_geometry_set(Ewl_Window *win, int *width, int *height)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
 
-        ecore_x_window_geometry_get((win ? (Ecore_X_Window)win->window : (Ecore_X_Window)0),
+        ecore_x_window_geometry_get((win ? PTRINT_TO_INT(win->window) : (Ecore_X_Window)0),
                                                         NULL, NULL, width, height);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -875,7 +876,7 @@ ee_dnd_aware_set(Ewl_Embed *embed)
         DCHECK_PARAM_PTR(embed);
         DCHECK_TYPE(embed, EWL_EMBED_TYPE);
 
-        ecore_x_dnd_aware_set((Ecore_X_Window)embed->canvas_window, TRUE);
+        ecore_x_dnd_aware_set(PTRINT_TO_INT(embed->canvas_window), TRUE);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -899,9 +900,9 @@ ee_dnd_drag_types_set(Ewl_Embed *embed, const char **types, unsigned int num)
         DCHECK_PARAM_PTR(embed);
         DCHECK_TYPE(embed, EWL_EMBED_TYPE);
 
-        ecore_x_dnd_aware_set((Ecore_X_Window)embed->canvas_window,
+        ecore_x_dnd_aware_set(PTRINT_TO_INT(embed->canvas_window),
                               (num > 0 ? 1 : 0));
-        ecore_x_dnd_types_set((Ecore_X_Window)embed->canvas_window, (char **)types, num);
+        ecore_x_dnd_types_set(PTRINT_TO_INT(embed->canvas_window), (char **)types, num);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -913,7 +914,7 @@ ee_dnd_drag_begin(Ewl_Embed *embed)
         DCHECK_PARAM_PTR(embed);
         DCHECK_TYPE(embed, EWL_EMBED_TYPE);
 
-        ecore_x_dnd_begin((Ecore_X_Window)embed->canvas_window, NULL, 0);
+        ecore_x_dnd_begin(PTRINT_TO_INT(embed->canvas_window), NULL, 0);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -955,7 +956,7 @@ ee_pointer_data_new(Ewl_Embed *embed, int *data, int w, int h)
         DCHECK_PARAM_PTR_RET(embed, 0);
         DCHECK_TYPE_RET(embed, EWL_EMBED_TYPE, 0);
 
-        DRETURN_INT(ecore_x_cursor_new((Ecore_X_Window)embed->canvas_window,
+        DRETURN_INT(ecore_x_cursor_new(PTRINT_TO_INT(embed->canvas_window),
                                 data, w, h, 0, 0), DLEVEL_STABLE);
 }
 
@@ -998,7 +999,7 @@ ee_pointer_set(Ewl_Embed *embed, int pointer)
                 cur = pointer;
         else
                 cur = ecore_x_cursor_shape_get(pointer);
-        ecore_x_window_cursor_set((Ecore_X_Window)embed->canvas_window, cur);
+        ecore_x_window_cursor_set(PTRINT_TO_INT(embed->canvas_window), cur);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -1018,7 +1019,7 @@ ewl_ev_x_window_expose(void *data __UNUSED__, int type __UNUSED__, void *e)
 
         ev = e;
 
-        window = ewl_window_window_find((void *)ev->win);
+        window = ewl_window_window_find(INT_TO_PTRINT(ev->win));
         if (!window)
                 DRETURN_INT(TRUE, DLEVEL_STABLE);
 
@@ -1049,7 +1050,7 @@ ewl_ev_x_window_configure(void *data __UNUSED__, int type __UNUSED__, void *e)
 
         ev = e;
 
-        embed = ewl_embed_canvas_window_find((void *)ev->win);
+        embed = ewl_embed_canvas_window_find(INT_TO_PTRINT(ev->win));
         if (!embed)
                 DRETURN_INT(TRUE, DLEVEL_STABLE);
 
@@ -1066,7 +1067,7 @@ ewl_ev_x_window_configure(void *data __UNUSED__, int type __UNUSED__, void *e)
                 config = 1;
         }
 
-        window = ewl_window_window_find((void *)ev->win);
+        window = ewl_window_window_find(INT_TO_PTRINT(ev->win));
         /*
          * we can finish when the embed is not a window
          */
@@ -1111,7 +1112,7 @@ ewl_ev_x_window_delete(void *data __UNUSED__, int type __UNUSED__, void *e)
 
         ev = e;
 
-        window = ewl_window_window_find((void *)ev->win);
+        window = ewl_window_window_find(INT_TO_PTRINT(ev->win));
         if (!window)
                 DRETURN_INT(TRUE, DLEVEL_STABLE);
 
@@ -1130,7 +1131,7 @@ ewl_ev_x_key_down(void *data __UNUSED__, int type __UNUSED__, void *e)
         DENTER_FUNCTION(DLEVEL_STABLE);
 
         ev = e;
-        window = ewl_window_window_find((void *)ev->win);
+        window = ewl_window_window_find(INT_TO_PTRINT(ev->win));
 
         if (!window)
                 DRETURN_INT(TRUE, DLEVEL_STABLE);
@@ -1172,7 +1173,7 @@ ewl_ev_x_key_up(void *data __UNUSED__, int type __UNUSED__, void *e)
 
         ev = e;
 
-        window = ewl_window_window_find((void *)ev->win);
+        window = ewl_window_window_find(INT_TO_PTRINT(ev->win));
         if (!window)
                 DRETURN_INT(TRUE, DLEVEL_STABLE);
 
@@ -1214,7 +1215,7 @@ ewl_ev_x_mouse_down(void *data __UNUSED__, int type __UNUSED__, void *e)
 
         ev = e;
 
-        window = ewl_window_window_find((void *)ev->win);
+        window = ewl_window_window_find(INT_TO_PTRINT(ev->win));
         if (!window)
                 DRETURN_INT(TRUE, DLEVEL_STABLE);
 
@@ -1241,7 +1242,7 @@ ewl_ev_x_mouse_up(void *data __UNUSED__, int type __UNUSED__, void *e)
 
         ev = e;
 
-        window = ewl_window_window_find((void *)ev->win);
+        window = ewl_window_window_find(INT_TO_PTRINT(ev->win));
         if (!window)
                 DRETURN_INT(TRUE, DLEVEL_STABLE);
 
@@ -1264,7 +1265,7 @@ ewl_ev_x_mouse_move(void *data __UNUSED__, int type __UNUSED__, void *e)
 
         ev = e;
 
-        window = ewl_window_window_find((void *)ev->win);
+        window = ewl_window_window_find(INT_TO_PTRINT(ev->win));
         if (!window)
                 DRETURN_INT(TRUE, DLEVEL_STABLE);
 
@@ -1284,7 +1285,7 @@ ewl_ev_x_mouse_out(void *data __UNUSED__, int type __UNUSED__, void *e)
 
         DENTER_FUNCTION(DLEVEL_STABLE);
 
-        window = ewl_window_window_find((void *)ev->win);
+        window = ewl_window_window_find(INT_TO_PTRINT(ev->win));
         if (!window)
                 DRETURN_INT(TRUE, DLEVEL_STABLE);
 
@@ -1304,7 +1305,7 @@ ewl_ev_x_mouse_wheel(void *data __UNUSED__, int type __UNUSED__, void *e)
 
         DENTER_FUNCTION(DLEVEL_STABLE);
 
-        window = ewl_window_window_find((void *)ev->win);
+        window = ewl_window_window_find(INT_TO_PTRINT(ev->win));
         if (!window)
                 DRETURN_INT(TRUE, DLEVEL_STABLE);
 
@@ -1324,7 +1325,7 @@ ewl_ev_x_focus_in(void *data __UNUSED__, int type __UNUSED__, void *e)
 
         DENTER_FUNCTION(DLEVEL_STABLE);
 
-        window = ewl_window_window_find((void *)ev->win);
+        window = ewl_window_window_find(INT_TO_PTRINT(ev->win));
         if (!window)
                 DRETURN_INT(TRUE, DLEVEL_STABLE);
 
@@ -1341,7 +1342,7 @@ ewl_ev_x_focus_out(void *data __UNUSED__, int type __UNUSED__, void *e)
 
         DENTER_FUNCTION(DLEVEL_STABLE);
 
-        window = ewl_window_window_find((void *)ev->win);
+        window = ewl_window_window_find(INT_TO_PTRINT(ev->win));
         if (!window)
                 DRETURN_INT(TRUE, DLEVEL_STABLE);
 
@@ -1369,7 +1370,7 @@ ewl_ev_x_data_received(void *data __UNUSED__, int type __UNUSED__, void *e)
                 Ewl_Embed *embed;
                 Ecore_X_Selection_Data *data = ev->data;
 
-                embed = ewl_embed_canvas_window_find((void *)ev->win);
+                embed = ewl_embed_canvas_window_find(INT_TO_PTRINT(ev->win));
                 if (embed)
                 {
                         if (data->content == ECORE_X_SELECTION_CONTENT_FILES)
@@ -1431,7 +1432,7 @@ ewl_ev_x_data_request(void *data __UNUSED__, int type __UNUSED__, void *e)
                 Ewl_Embed *embed;
                 char *atom;
 
-                embed = ewl_embed_canvas_window_find((void *)ev->owner);
+                embed = ewl_embed_canvas_window_find(INT_TO_PTRINT(ev->owner));
                 atom = XGetAtomName(ecore_x_display_get(), ev->target);
                 ewl_embed_dnd_data_request_feed(embed, ev, atom);
                 XFree(atom);
@@ -1455,7 +1456,7 @@ ewl_ev_dnd_position(void *data __UNUSED__, int type __UNUSED__, void *e)
 
         ev = e;
 
-        window = ewl_window_window_find((void *)ev->win);
+        window = ewl_window_window_find(INT_TO_PTRINT(ev->win));
         if (window) {
                 Ewl_Embed *embed;
 
@@ -1466,7 +1467,7 @@ ewl_ev_dnd_position(void *data __UNUSED__, int type __UNUSED__, void *e)
                 /*
                  * Look for the child here
                  */
-                embed = ewl_embed_canvas_window_find((void *)ev->win);
+                embed = ewl_embed_canvas_window_find(INT_TO_PTRINT(ev->win));
                 if (embed) {
                         /* First see if we need to send an 'enter'
                          * to the widget */
@@ -1506,7 +1507,7 @@ ewl_ev_dnd_enter(void *data __UNUSED__, int type __UNUSED__, void *e)
 
         ev = e;
 
-        embed = ewl_embed_canvas_window_find((void *)ev->win);
+        embed = ewl_embed_canvas_window_find(INT_TO_PTRINT(ev->win));
         if (embed) {
                 embed->dnd_types.num_types = ev->num_types;
                 embed->dnd_types.types = malloc(sizeof(char*) * ev->num_types);
@@ -1529,7 +1530,7 @@ ewl_ev_dnd_leave(void *data __UNUSED__, int type __UNUSED__, void *e)
 
         ev = e;
 
-        embed = ewl_embed_canvas_window_find((void *)ev->win);
+        embed = ewl_embed_canvas_window_find(INT_TO_PTRINT(ev->win));
         if (embed) {
                 if (embed->dnd_types.num_types > 0) {
                         for (i = 0; i < embed->dnd_types.num_types; i++)
@@ -1556,14 +1557,14 @@ ewl_ev_dnd_drop(void *data __UNUSED__, int type __UNUSED__, void *e)
 
         ev = e;
 
-        embed = ewl_embed_canvas_window_find((void *)ev->win);
+        embed = ewl_embed_canvas_window_find(INT_TO_PTRINT(ev->win));
         if (embed) {
                 int x, y, wx, wy;
                 const char *type;
 
                 ewl_embed_window_position_get(embed, &wx, &wy);
 
-                if (ev->source == (Ecore_X_Window)embed->canvas_window)
+                if (ev->source == PTRINT_TO_INT(embed->canvas_window))
                         internal = 1;
 
                 x = ev->position.x - wx;
