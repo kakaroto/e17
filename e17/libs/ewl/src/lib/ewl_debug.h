@@ -14,6 +14,7 @@
 void ewl_print_warning(void);
 void ewl_segv(void);
 void ewl_backtrace(void);
+int  ewl_cast_pointer_to_integer(void *ptr);
 
 /**
  * The Ewl_Config_Cache structure

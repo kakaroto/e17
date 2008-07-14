@@ -136,6 +136,26 @@ ewl_backtrace(void)
 }
 
 /**
+ * @param ptr: the pointer to cast
+ * @return The integer value of the pointer
+ *
+ * This function casts a pointer into an integer. If there should be an
+ * information lost, i.e. the content of the pointer does not fit into
+ * an integer, it will print a runtime warning.
+ */
+int
+ewl_cast_pointer_to_integer(void *ptr)
+{
+        DENTER_FUNCTION(DLEVEL_STABLE);
+
+        if (sizeof(int) != sizeof(void *) 
+                        && (((unsigned long) ptr) & 0xffffffff) != 0)
+                DWARNING("Information lost while casting a pointer to an int");
+
+        DRETURN_INT((int)((long int)ptr), DLEVEL_STABLE);
+}
+
+/**
  * @param argc: the argc passed into the main function
  * @param argv: the argv passed into the main function
  * @return Returns 1 or greater on success, 0 otherwise.

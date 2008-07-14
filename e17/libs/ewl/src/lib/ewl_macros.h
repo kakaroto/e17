@@ -115,6 +115,24 @@
 #endif
 
 /**
+ * @def PTRINT_TO_INT(x)
+ * Does a cast from a pointer to the type int, if debug is enabled at 
+ * compile-time it will add a runtime check if any information get lost.
+ */
+#ifdef EWL_ENABLE_DEBUG
+# define PTRINT_TO_INT(x) ewl_cast_pointer_to_integer(x)
+#else
+# define PTRINT_TO_INT(x) ((int)((long int)(x)))
+#endif
+
+/**
+ * @def PRTINT_TO_INT(x)
+ * Does a cast from a pointer to the type int, if debug is enabled at 
+ * compile-time it will add a runtime check if any information get lost.
+ */
+#define INT_TO_PTRINT(x) ((void *)((long int)(x)))
+
+/**
  * @}
  */
 
