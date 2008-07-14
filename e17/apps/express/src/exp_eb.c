@@ -3,6 +3,7 @@
  */
 
 #include <stdio.h>
+#include <limits.h>
 #include <string.h>
 
 #include "exp_eb.h"
