@@ -127,3 +127,24 @@ group
 	}
 }
 
+group
+{
+	name: "ewl/icondialog/box";
+	
+	data
+	{
+		item: "inset" 16;
+		item: "inset/bottom" 0;
+	}
+}
+
+group
+{
+	name: "ewl/icondialog/icon";
+	
+	data
+	{
+		item: "pad/right" 16;
+	}
+}
+

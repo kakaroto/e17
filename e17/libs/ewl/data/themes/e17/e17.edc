@@ -162,6 +162,12 @@ data
 	item: "/dialog/group" "ewl/dialog";
 	item: "/dialog/vbox/hseparator/group" "ewl/spacer";
 	item: "/dialog/vbox/actionarea/group" "ewl/dialog/actionarea";
+	item: "/icondialog/group" "ewl/dialog";
+	item: "/icondialog/vbox/hseparator/group" "ewl/spacer";
+	item: "/icondialog/vbox/actionarea/group" "ewl/dialog/actionarea";
+	item: "/icondialog/vbox/hbox/group" "ewl/icondialog/box";
+	item: "/icondialog/vbox/hbox/image/group" "ewl/icondialog/icon";
+	item: "/icondialog/icon_size" 64;
 
 	/* default values */
 	item: "/entry/color/a" 255;
