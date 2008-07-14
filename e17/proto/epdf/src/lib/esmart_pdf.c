@@ -115,33 +115,50 @@ esmart_pdf_init (Evas_Object *obj)
  * @param obj The Evas object
  * @param filename: The file name
  *
- * Set the file name of the smart pdf object @p obj
+ * Set the file name of the smart pdf object @p obj. If the current
+ * filename and @p filename are the same, nothing is done and 1 is
+ * returned. If @p filename is @c NULL or empty, 0 is returned. If
+ * @p filename is a valid PDF document, 1 is returned, otherwise 0
+ * is returned.
  */
-void
+int
 esmart_pdf_file_set (Evas_Object *obj, const char *filename)
 {
   Smart_Pdf *sp;
 
-  E_SMART_OBJ_GET (sp, obj, E_OBJ_NAME);
+  E_SMART_OBJ_GET_RETURN (sp, obj, E_OBJ_NAME, 0);
 
   if ((filename) &&
       (sp->filename) &&
-      (!strcmp (filename, sp->filename))) return;
+      (!strcmp (filename, sp->filename))) return 1;
 
   if ((filename) && (filename[0] != 0))
     {
+      if (sp->filename) free (sp->filename);
       sp->filename = strdup (filename);
+
+      if (sp->pdf_index)
+        epdf_index_delete (sp->pdf_index);
+      sp->pdf_index = NULL;
+
+      if (sp->pdf_page)
+        epdf_page_delete (sp->pdf_page);
+      sp->pdf_page = NULL;
 
       if (sp->pdf_document)
         epdf_document_delete (sp->pdf_document);
 
-      if (sp->pdf_index)
-        epdf_index_delete (sp->pdf_index);
-
       sp->pdf_document = epdf_document_new (sp->filename);
+      if (!sp->pdf_document)
+        return 0;
+
       sp->pdf_page = epdf_page_new (sp->pdf_document);
       sp->pdf_index = epdf_index_new (sp->pdf_document);
+
+      return 1;
     }
+
+  return 0;
 }
 
 /**

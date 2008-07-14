@@ -1,3 +1,12 @@
+2008-07-14  Vincent Torri  <doursse at users dot sf dot net>
+
+	* src/bin/epdf_esmart_test.c: (main):
+	* src/lib/esmart_pdf.c: (esmart_pdf_file_set):
+	* src/lib/esmart_pdf.h:
+	esmart_pdf_file_set() returns a value hat indicates success
+	or failure. Fix a leak when this function is called several
+	times. Doc and test updated.
+
 2008-07-13  Vincent Torri  <doursse at users dot sf dot net>
 
 	* src/lib/epdf_page.cpp:

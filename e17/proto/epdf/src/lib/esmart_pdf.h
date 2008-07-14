@@ -72,7 +72,7 @@ struct _Smart_Pdf
 Evas_Object          *esmart_pdf_add (Evas *evas);
 Evas_Bool             esmart_pdf_init (Evas_Object *obj);
 
-void                  esmart_pdf_file_set (Evas_Object *obj, const char *filename);
+int                   esmart_pdf_file_set (Evas_Object *obj, const char *filename);
 const char           *esmart_pdf_file_get (Evas_Object *obj);
 
 void                  esmart_pdf_page_set (Evas_Object *obj, int page);
