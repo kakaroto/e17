@@ -123,6 +123,9 @@ struct Etk_Combobox_Entry
 
    int items_height;
    Etk_Bool built:1;
+   
+   int autosearch_enable;
+   int autosearch_column;
 };
 
 
@@ -174,6 +177,9 @@ Etk_Bool etk_combobox_entry_is_popped_up(Etk_Combobox_Entry *combobox_entry);
 void etk_combobox_entry_pop_up(Etk_Combobox_Entry *combobox_entry);
 void etk_combobox_entry_pop_down(Etk_Combobox_Entry *combobox_entry);
 void etk_combobox_entry_popup_feed(Etk_Combobox_Entry *combobox_entry, Etk_Window *window);
+
+void etk_combobox_entry_autosearch_enable_set(Etk_Combobox_Entry *combobox_entry, int enable);
+void etk_combobox_entry_autosearch_column_set(Etk_Combobox_Entry *combobox_entry, int col_num);
 
 /** @} */
 

@@ -13,6 +13,7 @@
 static Etk_Bool _active_item_changed_cb(Etk_Object *object, void *data);
 static void _etk_combobox_entry_populate(Etk_Combobox_Entry *combobox_entry, char *dir);
 static Etk_Bool _etk_combobox_entry_active_item_changed_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_combobox_entry_autosearch_active_item_changed_cb(Etk_Object *object, void *data);
 static Etk_Bool _etk_combobox_entry_text_changed_cb(Etk_Object *object, void *data);
 static char **str_split(char **str, char *delim);
 
@@ -101,11 +102,12 @@ void etk_test_combobox_window_create(void *data)
    etk_box_append(ETK_BOX(vbox), frame, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    combobox = etk_combobox_entry_new_default();
+   etk_combobox_entry_autosearch_enable_set(ETK_COMBOBOX_ENTRY(combobox), ETK_TRUE);
 
    for (i = 0; _keywords[i]; i++)
      etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(combobox), _keywords[i], NULL);
 
-   etk_signal_connect_by_code(ETK_ENTRY_TEXT_CHANGED_SIGNAL, ETK_OBJECT(etk_combobox_entry_entry_get(ETK_COMBOBOX_ENTRY(combobox))), ETK_CALLBACK(_etk_combobox_entry_text_changed_cb), combobox);
+   etk_signal_connect_by_code(ETK_COMBOBOX_ENTRY_ACTIVE_ITEM_CHANGED_SIGNAL, ETK_OBJECT(combobox), ETK_CALLBACK(_etk_combobox_entry_autosearch_active_item_changed_cb), NULL);
    etk_container_add(ETK_CONTAINER(frame), combobox);
 
    /*******************
@@ -277,68 +279,19 @@ static Etk_Bool _etk_combobox_entry_active_item_changed_cb(Etk_Object *object, v
    return ETK_TRUE;
 }
 
-static Etk_Bool _etk_combobox_entry_text_changed_cb(Etk_Object *object, void *data)
+static Etk_Bool _etk_combobox_entry_autosearch_active_item_changed_cb(Etk_Object *object, void *data)
 {
-   Etk_Combobox_Entry *combobox;
-   Etk_Entry *entry;
-   char *search_str = NULL;
-   const char *entry_text = NULL;
-   char **words = NULL;
-   int i;
+   Etk_Combobox_Entry *combobox_entry;
+   Etk_Combobox_Entry_Item *active_item = NULL;
+   const char *field;
 
-   if (!(combobox = ETK_COMBOBOX_ENTRY(data)) || !(entry = ETK_ENTRY(object)))
+   if (!(combobox_entry = ETK_COMBOBOX_ENTRY(object)) || !(active_item = etk_combobox_entry_active_item_get(combobox_entry)))
       return ETK_TRUE;
 
-   if (!etk_combobox_entry_is_popped_up(combobox))
-     {
-	etk_combobox_entry_pop_up(combobox);
-	etk_popup_window_focused_window_set(ETK_POPUP_WINDOW(win));
-     }
+   field = etk_combobox_entry_item_field_get(active_item, 0);
+   etk_entry_text_set(ETK_ENTRY(combobox_entry->entry), field);
 
-   entry_text = etk_entry_text_get(entry);
-   if (!entry_text)
-     return ETK_TRUE;
-
-   search_str = strdup(entry_text);
-   words = str_split(&search_str, " ");
-
-   etk_combobox_entry_clear(combobox);
-   etk_combobox_entry_pop_down(combobox);
-   for (i = 0; _keywords[i]; i++)
-     {
-	int j;
-
-	for (j = 0; words[j]; j++)
-	  {
-	     if (!strcasestr(_keywords[i], words[j]))
-	       goto brk;
-	  }
-	etk_combobox_entry_item_append(combobox, _keywords[i], NULL);
-brk:
-	continue;
-     }
-   etk_combobox_entry_pop_up(combobox);
-   etk_popup_window_focused_window_set(ETK_POPUP_WINDOW(win));
-   if (words)
-      free(words);
    return ETK_TRUE;
 }
 
-static char **str_split(char **str, char *delim)
-{
-   char **tok;
-   int  i = 0;
-   char *t;
 
-   tok = calloc(2048, sizeof(char*));
-   tok[i] = strtok(*str, delim);
-   i++;
-   while((t = strtok(NULL, delim)))
-     {
-	tok[i] = t;
-	i++;
-     }
-   tok[i] = NULL;
-
-   return tok;
-}

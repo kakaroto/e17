@@ -57,12 +57,14 @@ static Etk_Bool _etk_combobox_entry_disabled_cb(Etk_Widget *widget, void *data);
 static Etk_Bool _etk_combobox_entry_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
 static Etk_Bool _etk_combobox_entry_hbox_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data);
 static Etk_Bool _etk_combobox_entry_button_toggled_cb(Etk_Object *object, void *data);
+static Etk_Bool _etk_combobox_entry_button_pressed_cb(Etk_Object *object, void *data);
 static Etk_Bool _etk_combobox_entry_entry_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
 static Etk_Bool _etk_combobox_entry_window_popped_down_cb(Etk_Object *object, void *data);
 static Etk_Bool _etk_combobox_entry_window_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data);
 static Etk_Bool _etk_combobox_entry_item_entered_cb(Etk_Object *object, void *data);
 static Etk_Bool _etk_combobox_entry_item_left_cb(Etk_Object *object, void *data);
 static Etk_Bool _etk_combobox_entry_item_mouse_up_cb(Etk_Object *object, Etk_Event_Mouse_Up *event, void *data);
+static Etk_Bool _etk_combobox_entry_entry_text_changed_cb(Etk_Object *object, void *data);
 
 static void _etk_combobox_entry_selected_item_set(Etk_Combobox_Entry *combobox_entry, Etk_Combobox_Entry_Item *item);
 static void _etk_combobox_entry_item_cells_render(Etk_Combobox_Entry *combobox_entry, Etk_Widget **cells, Etk_Geometry geometry, Etk_Bool ignore_other);
@@ -939,6 +941,39 @@ void etk_combobox_entry_pop_down(Etk_Combobox_Entry *combobox_entry)
    etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(combobox_entry->button), ETK_FALSE);
 }
 
+/**
+ * @brief Enable or disable autosearch on the combobox entry.
+ * When a combo_Entry is set as searchable typing in the entry will show the popup
+ * window with a filtered set of option.
+ * @param combobox_entry a combobox_entry
+ * @param enable ETK_TRUE = enable, ETK_FALSE = disable
+ */
+void etk_combobox_entry_autosearch_enable_set(Etk_Combobox_Entry *combobox_entry, int enable)
+{
+   if (!combobox_entry)
+      return;
+   
+   if (enable)
+      etk_signal_connect_by_code(ETK_ENTRY_TEXT_CHANGED_SIGNAL, ETK_OBJECT(combobox_entry->entry), ETK_CALLBACK(_etk_combobox_entry_entry_text_changed_cb), combobox_entry);
+   else
+      etk_signal_disconnect_by_code(ETK_ENTRY_TEXT_CHANGED_SIGNAL, ETK_OBJECT(combobox_entry->entry), ETK_CALLBACK(_etk_combobox_entry_entry_text_changed_cb), combobox_entry);      
+   
+   combobox_entry->autosearch_enable = enable ? ETK_TRUE : ETK_FALSE;
+}
+
+/**
+ * @brief Set the colum number to use for the search, must be a string column.
+ * @param combobox_entry a combobox_entry
+ * @param col_num the string column to use for searching
+ */
+void etk_combobox_entry_autosearch_column_set(Etk_Combobox_Entry *combobox_entry, int col_num)
+{
+   if (!combobox_entry)
+      return;
+   
+   combobox_entry->autosearch_column = col_num;
+}
+
 /**************************
  *
  * Etk specific functions
@@ -988,11 +1023,14 @@ static void _etk_combobox_entry_constructor(Etk_Combobox_Entry *combobox_entry)
    combobox_entry->active_item = NULL;
    combobox_entry->items_height = DEFAULT_ITEM_HEIGHT;
    combobox_entry->built = ETK_FALSE;
+   combobox_entry->autosearch_column = 0;
+   combobox_entry->autosearch_enable = 0;
 
    ETK_WIDGET(combobox_entry)->size_request = _etk_combobox_entry_size_request;
    ETK_WIDGET(combobox_entry)->size_allocate = _etk_combobox_entry_size_allocate;
 
    etk_signal_connect_by_code(ETK_TOGGLE_BUTTON_TOGGLED_SIGNAL, ETK_OBJECT(combobox_entry->button), ETK_CALLBACK(_etk_combobox_entry_button_toggled_cb), combobox_entry);
+   etk_signal_connect_by_code(ETK_BUTTON_PRESSED_SIGNAL, ETK_OBJECT(combobox_entry->button), ETK_CALLBACK(_etk_combobox_entry_button_pressed_cb), combobox_entry);
    etk_signal_connect_by_code(ETK_WIDGET_MOUSE_UP_SIGNAL, ETK_OBJECT(combobox_entry->hbox), ETK_CALLBACK(_etk_combobox_entry_hbox_mouse_up_cb), combobox_entry);
    etk_signal_connect_by_code(ETK_POPUP_WINDOW_POPPED_DOWN_SIGNAL, ETK_OBJECT(combobox_entry->window), ETK_CALLBACK(_etk_combobox_entry_window_popped_down_cb), combobox_entry);
    etk_signal_connect_by_code(ETK_WIDGET_KEY_DOWN_SIGNAL, ETK_OBJECT(combobox_entry->window), ETK_CALLBACK(_etk_combobox_entry_window_key_down_cb), combobox_entry);
@@ -1330,6 +1368,24 @@ static Etk_Bool _etk_combobox_entry_button_toggled_cb(Etk_Object *object, void *
    return ETK_TRUE;
 }
 
+/* Called when the combobox_entry button is pressed */
+static Etk_Bool _etk_combobox_entry_button_pressed_cb(Etk_Object *object, void *data)
+{
+   Etk_Combobox_Entry *combobox_entry;
+   Etk_Combobox_Entry_Item *item;
+
+   if (!(combobox_entry = ETK_COMBOBOX_ENTRY(data)))
+      return ETK_TRUE;
+
+   if (!combobox_entry->autosearch_enable)
+      return ETK_TRUE;
+   
+   for (item = combobox_entry->first_item; item; item = item->next)
+      etk_widget_show(ETK_WIDGET(item));
+
+   return ETK_TRUE;
+}
+
 /* Called when a key is pressed on the combobox_entry's entry widget */
 static Etk_Bool _etk_combobox_entry_entry_key_down_cb(Etk_Object *object, Etk_Event_Key_Down *event, void *data)
 {
@@ -1350,6 +1406,10 @@ static Etk_Bool _etk_combobox_entry_entry_key_down_cb(Etk_Object *object, Etk_Ev
          _etk_combobox_entry_selected_item_set(combobox_entry, combobox_entry->first_item);
       else
          _etk_combobox_entry_selected_item_set(combobox_entry, combobox_entry->selected_item->next);
+
+      while (combobox_entry->selected_item &&
+             !etk_widget_is_visible(ETK_WIDGET(combobox_entry->selected_item)))
+         _etk_combobox_entry_selected_item_set(combobox_entry, combobox_entry->selected_item->next);
    }
    else if (strcmp(event->keyname, "Up") == 0)
    {
@@ -1362,6 +1422,10 @@ static Etk_Bool _etk_combobox_entry_entry_key_down_cb(Etk_Object *object, Etk_Ev
       if (!combobox_entry->selected_item || !combobox_entry->selected_item->next)
          _etk_combobox_entry_selected_item_set(combobox_entry, combobox_entry->last_item);
       else
+         _etk_combobox_entry_selected_item_set(combobox_entry, combobox_entry->selected_item->prev);
+
+      while (combobox_entry->selected_item &&
+             !etk_widget_is_visible(ETK_WIDGET(combobox_entry->selected_item)))
          _etk_combobox_entry_selected_item_set(combobox_entry, combobox_entry->selected_item->prev);
    }
    else if (strcmp(event->keyname, "Return") == 0 || strcmp(event->keyname, "KP_Enter") == 0)
@@ -1408,15 +1472,23 @@ static Etk_Bool _etk_combobox_entry_window_key_down_cb(Etk_Object *object, Etk_E
          _etk_combobox_entry_selected_item_set(combobox_entry, combobox_entry->first_item);
       else
          _etk_combobox_entry_selected_item_set(combobox_entry, combobox_entry->selected_item->next);
+
+      while (combobox_entry->selected_item &&
+             !etk_widget_is_visible(ETK_WIDGET(combobox_entry->selected_item)))
+         _etk_combobox_entry_selected_item_set(combobox_entry, combobox_entry->selected_item->next);
    }
    else if (strcmp(event->keyname, "Up") == 0)
    {
       if (!combobox_entry->first_item)
          return ETK_TRUE;
 
-      if (!combobox_entry->selected_item || !combobox_entry->selected_item->next)
+      if (!combobox_entry->selected_item || !combobox_entry->selected_item->prev)
          _etk_combobox_entry_selected_item_set(combobox_entry, combobox_entry->last_item);
       else
+         _etk_combobox_entry_selected_item_set(combobox_entry, combobox_entry->selected_item->prev);
+
+      while (combobox_entry->selected_item &&
+             !etk_widget_is_visible(ETK_WIDGET(combobox_entry->selected_item)))
          _etk_combobox_entry_selected_item_set(combobox_entry, combobox_entry->selected_item->prev);
    }
    else if (strcmp(event->keyname, "Return") == 0 || strcmp(event->keyname, "space") == 0
@@ -1431,7 +1503,9 @@ static Etk_Bool _etk_combobox_entry_window_key_down_cb(Etk_Object *object, Etk_E
    }
    else if (strcmp(event->keyname, "Escape") == 0)
       etk_popup_window_popdown(combobox_entry->window);
-
+   else
+      etk_signal_emit(ETK_WIDGET_KEY_DOWN_SIGNAL, ETK_OBJECT(combobox_entry->entry), event, data);
+   
    return ETK_TRUE;
 }
 
@@ -1474,6 +1548,44 @@ static Etk_Bool _etk_combobox_entry_item_mouse_up_cb(Etk_Object *object, Etk_Eve
    if (event->button == 1)
       etk_popup_window_popdown(item->combobox_entry->window);
 
+   return ETK_TRUE;
+}
+
+/* Called when the text in the entry change (used for autosearch) */
+static Etk_Bool _etk_combobox_entry_entry_text_changed_cb(Etk_Object *object, void *data)
+{
+   Etk_Entry *entry;
+   Etk_Combobox_Entry *combobox_entry;
+   Etk_Combobox_Entry_Item *item;
+   const char *entry_text = NULL;
+
+   if (!(entry = ETK_ENTRY(object)))
+      return ETK_TRUE;
+
+   if (!(combobox_entry = ETK_COMBOBOX_ENTRY(data)))
+      return ETK_TRUE;
+
+   if (!etk_combobox_entry_is_popped_up(combobox_entry))
+      etk_combobox_entry_pop_up(combobox_entry);
+
+   entry_text = etk_entry_text_get(entry);
+   if (!entry_text)
+     return ETK_TRUE;
+
+   etk_combobox_entry_pop_down(combobox_entry);
+   
+   for (item = combobox_entry->first_item; item; item = item->next)
+   {
+      const char* item_field;
+
+      item_field = etk_combobox_entry_item_field_get(item, combobox_entry->autosearch_column);
+      if (strcasestr(item_field, entry_text))
+         etk_widget_show(ETK_WIDGET(item));
+      else
+         etk_widget_hide(ETK_WIDGET(item));
+   }
+
+   etk_combobox_entry_pop_up(combobox_entry);
    return ETK_TRUE;
 }
 
