@@ -1572,6 +1572,8 @@ static Etk_Bool _etk_combobox_entry_entry_text_changed_cb(Etk_Object *object, vo
    if (!entry_text)
      return ETK_TRUE;
 
+   /* TODO FIXME We pop_down / pop_up the window to make it's size
+      recalculate. We MUST find a better way*/
    etk_combobox_entry_pop_down(combobox_entry);
    
    for (item = combobox_entry->first_item; item; item = item->next)
