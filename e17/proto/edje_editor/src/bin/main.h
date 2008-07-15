@@ -209,8 +209,5 @@ void reload_edje      (void);
 #define EDJE_ASPECT_PREFER_HORIZONTAL 2
 #define EDJE_ASPECT_PREFER_BOTH       3
 
-#define EDJE_GRADIENT_TYPE_LINEAR 0
-#define EDJE_GRADIENT_TYPE_RADIAL 1
-
 
 #endif

@@ -383,6 +383,8 @@ _gradient_type_combo_activated_cb(Etk_Combobox *combobox, Etk_Combobox_Item *ite
    printf("SET %s\n", type);
    edje_edit_state_gradient_type_set(edje_o, Cur.part->string, Cur.state->string, type);
 
+   canvas_redraw();
+   
    return ETK_TRUE;
 }
 Etk_Bool

@@ -107,12 +107,9 @@ _canvas_drag_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
    // Move First Gradient Point Handler
    if ((int)(long)data == DRAG_GRAD_1 || (int)(long)data == DRAG_GRAD_2 )
    {
-      const char *type;
       evas_pointer_output_xy_get(UI_evas, &mouse_x, &mouse_y);
       evas_object_geometry_get(EV_focus_handler, &parentx, &parenty,
                                &parentw, &parenth);
-      type = edje_edit_state_gradient_type_get(edje_o, Cur.part->string,
-                                               Cur.state->string);
       //printf("GELLA %d %d %d %d [%f] [m %d %d]\n", fhx, fhy, fhw, fhh, (float)(mouse_x - fhx)/(float)fhx, mouse_x, mouse_y);
       if ((int)(long)data == DRAG_GRAD_1)
       {
@@ -152,7 +149,6 @@ _canvas_drag_cb(void *data, Evas *e, Evas_Object *obj, void *event_info)
       }
       gradient_frame_update();
       fill_frame_update();
-      edje_edit_string_free(type);
    }
 
    canvas_redraw();

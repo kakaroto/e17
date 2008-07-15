@@ -387,7 +387,7 @@ _toolbar_add_menu_item_activated_cb(Etk_Object *object, void *data)
 
    switch ((int)(long)data)
    {
-       case NEW_RECT:
+      case NEW_RECT:
          if (!etk_string_length_get(Cur.group))
          {
             dialog_alert_show("You must first select a group.");
@@ -574,11 +574,14 @@ _toolbar_add_menu_item_activated_cb(Etk_Object *object, void *data)
          //Create state
          edje_edit_state_add(edje_o, Cur.part->string, name);
 
-         edje_edit_state_rel1_relative_x_set(edje_o,Cur.part->string,name2,0.1);
-         edje_edit_state_rel1_relative_y_set(edje_o,Cur.part->string,name2,0.1);
-         edje_edit_state_rel2_relative_x_set(edje_o,Cur.part->string,name2,0.9);
-         edje_edit_state_rel2_relative_y_set(edje_o,Cur.part->string,name2,0.9);
+         edje_edit_state_rel1_relative_x_set(edje_o, Cur.part->string,name2, 0.1);
+         edje_edit_state_rel1_relative_y_set(edje_o, Cur.part->string,name2, 0.1);
+         edje_edit_state_rel2_relative_x_set(edje_o, Cur.part->string,name2, 0.9);
+         edje_edit_state_rel2_relative_y_set(edje_o, Cur.part->string,name2, 0.9);
          edje_edit_state_text_size_set(edje_o, Cur.part->string, name2, 16);
+
+         if (edje_edit_part_type_get(edje_o, Cur.part->string) == EDJE_PART_TYPE_GRADIENT)
+            edje_edit_state_gradient_type_set(edje_o, Cur.part->string, name2, "linear");
 
          //Add state to tree
          row = tree_state_add(Cur.part->string, name2);
