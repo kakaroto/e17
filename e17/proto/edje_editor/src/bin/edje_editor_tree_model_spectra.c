@@ -147,7 +147,8 @@ static Etk_Bool _spectra_render(Etk_Tree_Model *model, Etk_Tree_Row *row, Etk_Ge
       {
          int r, g, b, a, d;
          edje_edit_spectra_stop_color_get(edje_o, spectra_data->spectra, i, &r, &g, &b, &a, &d);
-         evas_object_gradient_color_stop_add(cell_objects[0], r, g, b, a, d);
+         evas_object_gradient_color_stop_add(cell_objects[0], r, g, b, 255, d);
+         evas_object_gradient_alpha_stop_add(cell_objects[0], a, d);
       }
    }
 

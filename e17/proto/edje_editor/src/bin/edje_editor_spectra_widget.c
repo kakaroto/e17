@@ -288,7 +288,8 @@ _spectra_widget_gradient_draw(Etk_Widget *spectra)
       d = (int)(long)etk_object_data_get(ETK_OBJECT(image), "color_d");
       arrow = etk_object_data_get(ETK_OBJECT(image), "arrow_o");
 
-      evas_object_gradient_color_stop_add(gradient, r, g, b, a, d);
+      evas_object_gradient_color_stop_add(gradient, r, g, b, 255, d);
+      evas_object_gradient_alpha_stop_add(gradient, a, d);
       dtot += d;
 
       //Draw image
