@@ -1,0 +1,53 @@
+dnl Process this file with autoconf to produce a configure script.
+
+# get rid of that stupid cache mechanism
+rm -f config.cache
+
+AC_INIT(skel, 0.0.1, devilhorns@devilhorns.us)
+AC_PREREQ(2.52)
+AC_CONFIG_SRCDIR(configure.in)
+AC_CANONICAL_BUILD
+AC_CANONICAL_HOST
+AC_ISC_POSIX
+
+AM_INIT_AUTOMAKE(1.8)
+AM_CONFIG_HEADER(config.h)
+
+AC_PROG_CC
+AM_PROG_CC_STDC
+AC_HEADER_STDC
+AC_C_CONST
+AC_C___ATTRIBUTE__
+
+define([AC_LIBTOOL_LANG_CXX_CONFIG], [:])dnl
+define([AC_LIBTOOL_LANG_F77_CONFIG], [:])dnl
+AC_PROG_LIBTOOL
+
+#AM_GNU_GETTEXT([external])
+#AM_GNU_GETTEXT_VERSION(0.14)
+
+MODULE_ARCH="$host_os-$host_cpu"
+AC_SUBST(MODULE_ARCH)
+AC_DEFINE_UNQUOTED(MODULE_ARCH, "$MODULE_ARCH", "Module architecture")
+
+AC_PATH_PROG(EDJE_CC, "edje_cc", "", $PATH)
+
+AC_PATH_PROG(E_CONFIG, "enlightenment-config", "", $PATH)
+e_cflags=`$E_CONFIG --cflags`
+e_libs=`$E_CONFIG --libs`
+e_modules=`$E_CONFIG --module-dir`
+AC_SUBST(e_cflags)
+AC_SUBST(e_libs)
+
+datadir="${e_modules}/${PACKAGE}"    
+AC_ARG_ENABLE(homedir-install,
+  AS_HELP_STRING([--enable-homedir-install], [Install module in homedir]),
+  [ datadir="${HOME}/.e/e/modules/${PACKAGE}" ]
+)
+
+AC_OUTPUT([
+Makefile
+src/Makefile
+module.desktop
+], [
+])

@@ -1,0 +1,9 @@
+
+[Desktop Entry]
+Type=Link
+Name=Skel
+Icon=e-module-skel
+Comment=<hilight>Skeleton Module Gadget:</hilight><br>Not meant for users. Basis for building new ones</hilight><br>.
+
+#Several different types available here. NEED TO DOC THESE.
+X-Enlightenment-ModuleType=system
