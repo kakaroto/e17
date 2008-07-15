@@ -144,6 +144,7 @@ images
    image: "forward.png" COMP;
    image: "refresh.png" COMP;
    image: "up.png" COMP;
+   image: "favorites.png" COMP;
 }
 
 collections 
@@ -198,4 +199,5 @@ collections
    BTN("forward")
    BTN("refresh")
    BTN("up")
+   BTN("favorites")
 }

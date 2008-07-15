@@ -6,7 +6,7 @@ struct _Instance
 {
    E_Gadcon_Client *gcc;
    Evas_Object *o_base, *o_list;
-   Evas_Object *o_back, *o_up, *o_forward, *o_refresh;
+   Evas_Object *o_back, *o_up, *o_forward, *o_refresh, *o_favorites;
    E_Toolbar *tbar;
 
    Ecore_List *history;
@@ -35,6 +35,9 @@ static void             _cb_up_click      (void *data, Evas_Object *obj,
 static void             _cb_refresh_click (void *data, Evas_Object *obj, 
 					   const char *emission, 
 					   const char *source);
+static void             _cb_favorites_click (void *data, Evas_Object *obj, 
+                                             const char *emission, 
+                                             const char *source);
 static void             _cb_changed       (void *data, Evas_Object *obj, 
 					   void *event_info);
 static void             _cb_dir_changed   (void *data, Evas_Object *obj, 
@@ -93,6 +96,15 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    evas_object_show(inst->o_forward);
    e_widget_list_object_append(inst->o_list, inst->o_forward, 1, 1, 0.5);
 
+   inst->o_up = edje_object_add(gc->evas);
+   if (!e_theme_edje_object_set(inst->o_up, "base/theme/modules/efm_nav", 
+				"modules/efm_nav/up"))
+     edje_object_file_set(inst->o_up, buf, "modules/efm_nav/up");
+   edje_object_signal_callback_add(inst->o_up, "e,action,click", "", 
+				   _cb_up_click, inst);
+   evas_object_show(inst->o_up);
+   e_widget_list_object_append(inst->o_list, inst->o_up, 1, 1, 0.5);
+
    inst->o_refresh = edje_object_add(gc->evas);
    if (!e_theme_edje_object_set(inst->o_refresh, "base/theme/modules/efm_nav", 
 				"modules/efm_nav/refresh"))
@@ -102,15 +114,14 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    evas_object_show(inst->o_refresh);
    e_widget_list_object_append(inst->o_list, inst->o_refresh, 1, 1, 0.5);
 
-
-   inst->o_up = edje_object_add(gc->evas);
-   if (!e_theme_edje_object_set(inst->o_up, "base/theme/modules/efm_nav", 
-				"modules/efm_nav/up"))
-     edje_object_file_set(inst->o_up, buf, "modules/efm_nav/up");
-   edje_object_signal_callback_add(inst->o_up, "e,action,click", "", 
-				   _cb_up_click, inst);
-   evas_object_show(inst->o_up);
-   e_widget_list_object_append(inst->o_list, inst->o_up, 1, 1, 0.5);
+   inst->o_favorites = edje_object_add(gc->evas);
+   if (!e_theme_edje_object_set(inst->o_favorites, "base/theme/modules/efm_nav", 
+				"modules/efm_nav/favorites"))
+     edje_object_file_set(inst->o_favorites, buf, "modules/efm_nav/favorites");
+   edje_object_signal_callback_add(inst->o_favorites, "e,action,click", "", 
+				   _cb_favorites_click, inst);
+   evas_object_show(inst->o_favorites);
+   e_widget_list_object_append(inst->o_list, inst->o_favorites, 1, 1, 0.5);
 
    /* add the hooks to get signals from efm */
    evas_object_smart_callback_add(inst->o_base, "changed", 
@@ -143,10 +154,12 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    if (!inst) return;
    instances = evas_list_remove(instances, inst);
    if (inst->history) ecore_list_destroy(inst->history);
+   if (inst->o_favorites) evas_object_del(inst->o_favorites);
    if (inst->o_back) evas_object_del(inst->o_back);
    if (inst->o_up) evas_object_del(inst->o_up);
    if (inst->o_forward) evas_object_del(inst->o_forward);
    if (inst->o_refresh) evas_object_del(inst->o_refresh);
+   if (inst->o_favorites) evas_object_del(inst->o_favorites);
    if (inst->o_list) evas_object_del(inst->o_list);
    if (inst->o_base) evas_object_del(inst->o_base);
    E_FREE(inst);
@@ -341,6 +354,19 @@ _cb_up_click(void *data, Evas_Object *obj, const char *emission, const char *sou
    else 
      edje_object_signal_emit(inst->o_up, "e,state,disabled", "e");
    edje_object_message_signal_process(inst->o_up);
+}
+
+static void 
+_cb_favorites_click(void *data, Evas_Object *obj, const char *emission, const char *source) 
+{
+   Instance *inst;
+   Evas_Object *o_fm;
+
+   inst = data;
+   if ((!inst) || (!inst->tbar)) return;
+   o_fm = e_toolbar_fm2_get(inst->tbar);
+   if (!o_fm) return;
+   e_fm2_path_set(o_fm, "favorites", "/");
 }
 
 static void 
