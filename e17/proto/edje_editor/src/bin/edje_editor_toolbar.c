@@ -91,7 +91,7 @@ toolbar_create(Etk_Toolbar_Orientation o)
 
    //New Gradient
    menu_item = etk_menu_item_image_new_with_label("Gradient");
-   image = etk_image_new_from_edje(EdjeFile,"GRAD.PNG");
+   image = etk_image_new_from_edje(EdjeFile,"GRAD_LINEAR.PNG");
    etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
    etk_signal_connect("activated", ETK_OBJECT(menu_item),
                       ETK_CALLBACK(_toolbar_add_menu_item_activated_cb),
@@ -462,7 +462,8 @@ _toolbar_add_menu_item_activated_cb(Etk_Object *object, void *data)
             dialog_alert_show("Can't create gradient.");
             break;
          }
-          row = tree_part_add(name, NULL);
+         edje_edit_state_gradient_type_set(edje_o, name, "default 0.00", "linear");
+         row = tree_part_add(name, NULL);
 
          etk_tree_row_select(row);
          etk_tree_row_unfold(row);

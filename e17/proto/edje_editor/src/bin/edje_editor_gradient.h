@@ -5,6 +5,7 @@
 
 Etk_Widget *UI_GradientTypeComboBox;
 Etk_Widget *UI_GradientSpectraComboBox;
+Etk_Widget *UI_GradientAlphaSlider;
 Etk_Widget *UI_GradientRel1XSpinner;
 Etk_Widget *UI_GradientRel1XOffsetSpinner;
 Etk_Widget *UI_GradientRel1YSpinner;
@@ -21,5 +22,6 @@ void        gradient_spectra_combo_populate(void);
 
 Etk_Bool _gradient_type_combo_activated_cb(Etk_Combobox *combobox, Etk_Combobox_Item *item, void *data);
 Etk_Bool _gradient_spectra_combo_activated_cb(Etk_Combobox *combobox, Etk_Combobox_Item *item, void *data);
+Etk_Bool _gradient_RelSpinners_value_changed_cb(Etk_Range *range, double value, void *data);
 
 #endif

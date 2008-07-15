@@ -9,7 +9,6 @@ EXTRA_DIST = edje_editor.edc \
              images/bg2_i.png \
              images/bg3.png \
              images/bg4.png \
-             images/frame.png \
              images/frame_bg.png \
              images/frame_bg_label.png \
              images/lbl_group.png \
@@ -27,8 +26,12 @@ EXTRA_DIST = edje_editor.edc \
              images/image.png \
              images/rect.png \
              images/text.png \
-             images/grad.png \
              images/grad_h.png \
+             images/grad_linear.png \
+             images/grad_radial.png \
+             images/grad_rectangular.png \
+             images/grad_angular.png \
+             images/grad_sinusoidal.png \
              images/swallow.png \
              images/swallow2.png \
              images/spectra_arrow.png \
@@ -39,10 +42,6 @@ EXTRA_DIST = edje_editor.edc \
              images/e17.png \
              images/none.png \
              images/focus.png \
-             images/arrow_u.png \
-             images/arrow_d.png \
-             images/arrow_l.png \
-             images/arrow_r.png \
              images/fakewin.png \
              images/rel1.png \
              images/rel2.png \

@@ -30,7 +30,7 @@ make
 sudo make install
 
 
-Running 
+Running
 =======================================
 Usage: 
    edje_editor [EDJ]
@@ -40,13 +40,17 @@ Example:
    edje_editor default.edj    #Open the given edje file
 
 Testing Edje file:
- edje_editor -t file.edj "group_name"
+   edje_editor -t file.edj group_name  #In this mode just a simple window is
+                                          created and the group "group_name" is 
+                                          loaded from "file.edj"
 
-Shortcuts 
+
+Shortcuts
 =======================================
 Ctrl-F      Fullscreen
 Ctrl-S      Save
 Ctrl-Q      Quit
+
 
 Troubleshooting
 =======================================

@@ -1,6 +1,10 @@
 images {
 }
 
+fonts {
+   font: "vera.ttf" "vera";
+}
+
 spectra {
    spectrum{
       name: "Abstract 1";

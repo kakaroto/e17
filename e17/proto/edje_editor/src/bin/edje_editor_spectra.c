@@ -4,7 +4,7 @@
 #include <Edje_Edit.h>
 #include "main.h"
 
-
+/**  Implementation **/
 void
 spectra_window_show(void)
 {
@@ -24,7 +24,7 @@ spectra_window_create(void)
    etk_window_title_set(ETK_WINDOW(UI_SpectrumWin), "Spectrum Editor");
    etk_window_resize(ETK_WINDOW(UI_SpectrumWin), 590, 310);
    etk_signal_connect("delete-event", ETK_OBJECT(UI_SpectrumWin),
-                      ETK_CALLBACK(etk_window_hide_on_delete), NULL);
+                      ETK_CALLBACK(_spectra_window_hide_cb), NULL);
    etk_container_border_width_set(ETK_CONTAINER(UI_SpectrumWin), 5);
 
    //hbox
@@ -39,9 +39,12 @@ spectra_window_create(void)
    UI_SpectrumList = etk_tree_new();
    etk_tree_mode_set(ETK_TREE(UI_SpectrumList), ETK_TREE_MODE_LIST);
    etk_widget_size_request_set(UI_SpectrumList, 200, 200);
-   etk_tree_headers_visible_set(ETK_TREE(UI_SpectrumList), TRUE);
-   col = etk_tree_col_new(ETK_TREE(UI_SpectrumList), "Spectrum", 130, 0.0);
-   etk_tree_col_model_add(col, etk_tree_model_image_new());
+   etk_tree_headers_visible_set(ETK_TREE(UI_SpectrumList), ETK_FALSE);
+   etk_tree_column_separators_visible_set(ETK_TREE(UI_SpectrumList), ETK_FALSE);
+   etk_tree_alternating_row_colors_set(ETK_TREE(UI_SpectrumList), ETK_FALSE);
+   col = etk_tree_col_new(ETK_TREE(UI_SpectrumList), "img", 55, 0.0);
+   etk_tree_col_model_add(col, etk_tree_model_spectra_new());
+   col = etk_tree_col_new(ETK_TREE(UI_SpectrumList), "name", 120, 0.0);
    etk_tree_col_model_add(col, etk_tree_model_text_new());
    etk_tree_build(ETK_TREE(UI_SpectrumList));
    etk_box_append(ETK_BOX(vbox), UI_SpectrumList, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
@@ -81,18 +84,20 @@ void
 spectra_window_populate(void)
 {
    Evas_List *spectrum, *l;
-   Etk_Tree_Col *col;
+   Etk_Tree_Col *col1, *col2;
    Etk_Tree_Row *row;
    char *name;
 
-   col = etk_tree_nth_col_get(ETK_TREE(UI_SpectrumList), 0);
+   col1 = etk_tree_nth_col_get(ETK_TREE(UI_SpectrumList), 0);
+   col2 = etk_tree_nth_col_get(ETK_TREE(UI_SpectrumList), 1);
 
    etk_tree_clear(ETK_TREE(UI_SpectrumList));
 
    spectrum = edje_edit_spectrum_list_get(edje_o);
    for (l = spectrum; l; l = l->next)
       etk_tree_row_append(ETK_TREE(UI_SpectrumList), NULL,
-                          col, EdjeFile, "SPECTRA.PNG", l->data,
+                          col1, l->data,
+                          col2, l->data,
                           NULL);
 
    edje_edit_string_list_free(spectrum);
@@ -103,8 +108,39 @@ spectra_window_populate(void)
    etk_tree_row_scroll_to(row, ETK_FALSE);
 
    //Set Current
-   etk_tree_row_fields_get(row, col, NULL, NULL, &name, NULL);
+   etk_tree_row_fields_get(row, col2, &name, NULL);
    etk_string_set(Cur.spectra, name);
+}
+
+Etk_Widget *
+spectra_thumb_create(Etk_Widget *parent, const char *spectra)
+{
+   Evas_Object *gradient;
+   Etk_Widget *widget;
+   int w = 40;
+   int h = 10;
+   int i;
+
+   gradient = evas_object_gradient_add(etk_widget_toplevel_evas_get(parent));
+   evas_object_gradient_type_set(gradient, "linear", NULL);
+   evas_object_gradient_fill_angle_set(gradient, 90);
+   evas_object_resize(gradient, w, h);
+   evas_object_gradient_fill_set(gradient, 0, 0, h, w);
+
+   for (i = 0; i < edje_edit_spectra_stop_num_get(edje_o, spectra); i++)
+   {
+      int r, g, b, a, d;
+      edje_edit_spectra_stop_color_get(edje_o, spectra, i, &r, &g, &b, &a, &d);
+      evas_object_gradient_color_stop_add(gradient, r, g, b, a, d);
+   }
+   
+   evas_object_show(gradient);
+   
+   widget = etk_evas_object_new_from_object(gradient);
+   etk_signal_connect("destroyed", ETK_OBJECT(widget),
+                     ETK_CALLBACK(_spectra_thumb_destroy), gradient);
+   
+   return widget;
 }
 
 void //TODO this should be done as a new Etk_Event with a callback
@@ -134,7 +170,7 @@ void //TODO this should be done as a new Etk_Event with a callback
 spectra_window_gradient_name_changed(Etk_Widget *spectra)
 {
    Etk_Tree_Row * row;
-   Etk_Tree_Col *col;
+   Etk_Tree_Col *col1, *col2;
    const char* name;
 
    if (!etk_string_length_get(Cur.spectra)) return;
@@ -146,21 +182,34 @@ spectra_window_gradient_name_changed(Etk_Widget *spectra)
    etk_string_set(Cur.spectra, name);
 
    //Set the new name in the tree
-   col = etk_tree_nth_col_get(ETK_TREE(UI_SpectrumList), 0);
+   col1 = etk_tree_nth_col_get(ETK_TREE(UI_SpectrumList), 0);
+   col2 = etk_tree_nth_col_get(ETK_TREE(UI_SpectrumList), 1);
    row = etk_tree_selected_row_get(ETK_TREE(UI_SpectrumList));
    etk_tree_row_fields_set(row, ETK_FALSE,
-                           col, EdjeFile, "GRAD.PNG", name, NULL);
+                           col1, EdjeFile,
+                           col2, name,
+                           NULL);
+}
+
+/**  Callbacks **/
+Etk_Bool
+_spectra_window_hide_cb(Etk_Object *window,void *data)
+{
+   etk_widget_hide(UI_SpectrumWin);
+   gradient_spectra_combo_populate();
+   gradient_frame_update();
+   return ETK_FALSE;
 }
 
 Etk_Bool
 _spectra_list_row_selected_cb(Etk_Tree *tree, Etk_Tree_Row *row, void *data)
 {
-   Etk_Tree_Col *col;
+   Etk_Tree_Col *col2;
    const char *name;
    int i, num;
 
-   col = etk_tree_nth_col_get(ETK_TREE(UI_SpectrumList), 0);
-   etk_tree_row_fields_get(row, col, NULL, NULL, &name, NULL);
+   col2 = etk_tree_nth_col_get(ETK_TREE(UI_SpectrumList), 1);
+   etk_tree_row_fields_get(row, col2, &name, NULL);
 
    if (!name) return ETK_TRUE;
 
@@ -225,4 +274,11 @@ _spectra_del_button_click_cb(Etk_Button *button, void *data)
    return ETK_TRUE;
 }
 
-
+Etk_Bool
+_spectra_thumb_destroy(Etk_Object *object, void *data)
+{
+   if (!object || !data) return ETK_TRUE;
+   printf("DESTROY\n");
+   evas_object_del(data);
+   return ETK_TRUE;
+}

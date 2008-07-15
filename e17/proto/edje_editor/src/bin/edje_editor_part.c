@@ -189,29 +189,26 @@ part_frame_update(void)
 }
 
 char*
-part_type_image_get(int part_type)
+part_type_image_get(const char *part)
 {
    /* Get the name of the group in edje_editor.edj that
     * correspond to the given EDJE_PART_TYPE.
     * Remember to free the returned string.
     */
-
    static char buf[20];
-   char *ret;
-
-   switch (part_type)
+   
+   switch (edje_edit_part_type_get(edje_o, part))
    {
       case EDJE_PART_TYPE_IMAGE:     strcpy(buf, "IMAGE.PNG"); break;
-      case EDJE_PART_TYPE_GRADIENT:  strcpy(buf, "GRAD.PNG"); break;
+      case EDJE_PART_TYPE_GRADIENT:  strcpy(buf, "GRAD_LINEAR.PNG"); break;
       case EDJE_PART_TYPE_TEXT:      strcpy(buf, "TEXT.PNG"); break;
       case EDJE_PART_TYPE_RECTANGLE: strcpy(buf, "RECT.PNG"); break;
       case EDJE_PART_TYPE_SWALLOW:   strcpy(buf, "SWAL.PNG"); break;
       case EDJE_PART_TYPE_GROUP:     strcpy(buf, "GROUP.PNG"); break;
       default:                       strcpy(buf, "NONE.PNG"); break;
    }
-   ret = strdup(buf);
-   printf("IMAGE: %s\n",ret);
-   return ret;
+   
+   return strdup(buf);
 }
 /***   Callbacks   ***/
 Etk_Bool
@@ -320,7 +317,7 @@ _part_NameEntryImage_clicked_cb(Etk_Object *object, void *data)
 
    //Update PartTree
    row = etk_tree_selected_row_get(ETK_TREE(UI_PartsTree));
-   image_name = part_type_image_get(edje_edit_part_type_get(edje_o, Cur.part->string));
+   image_name = part_type_image_get(Cur.part->string);
    etk_tree_row_fields_set(row,TRUE,
                            COL_NAME, EdjeFile, image_name, name, NULL);
    free(image_name);

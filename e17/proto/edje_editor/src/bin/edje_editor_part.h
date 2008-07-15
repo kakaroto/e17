@@ -15,7 +15,7 @@ Etk_Widget *UI_PartSourceLabel;
 
 Etk_Widget*  part_frame_create   (void);
 void         part_frame_update   (void);
-char*        part_type_image_get (int part_type);
+char*        part_type_image_get (const char *part);
 
 
 Etk_Bool _part_EventsCheck_toggled_cb           (Etk_Object *object, void *data);

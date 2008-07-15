@@ -24,6 +24,7 @@
 #include "edje_editor_fill.h"
 #include "edje_editor_spectra.h"
 #include "edje_editor_spectra_widget.h"
+#include "edje_editor_tree_model_spectra.h"
 
 /* DEFINES */
 #define USE_GL_ENGINE 0

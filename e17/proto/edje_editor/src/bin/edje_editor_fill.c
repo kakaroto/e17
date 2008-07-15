@@ -13,54 +13,12 @@ fill_frame_create(void)
 
    vbox = etk_vbox_new(ETK_FALSE, 0);
 
-   //hbox (origin)
-   hbox = etk_hbox_new(ETK_FALSE, 0);
-   etk_box_append(ETK_BOX(vbox), hbox, ETK_BOX_START, ETK_BOX_NONE, 0);
-
-   label = etk_label_new("<b>Origin X </b>");
-   etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
-
-   //UI_FillRelXSpinner
-   UI_FillRelXSpinner = etk_spinner_new(-100.0, 100.0, 0.0, 0.01, 0.1);
-   etk_spinner_digits_set(ETK_SPINNER(UI_FillRelXSpinner), 2);
-   etk_widget_size_request_set(UI_FillRelXSpinner, 45, 20);
-   etk_box_append(ETK_BOX(hbox), UI_FillRelXSpinner,
-                  ETK_BOX_START, ETK_BOX_NONE, 0);
-
-   label = etk_label_new("+");
-   etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
-
-   //UI_FillOffsetXSpinner
-   UI_FillOffsetXSpinner = etk_spinner_new(-2000, 2000, 0, 1, 10);
-   etk_widget_size_request_set(UI_FillOffsetXSpinner, 45, 20);
-   etk_box_append(ETK_BOX(hbox), UI_FillOffsetXSpinner,
-                  ETK_BOX_START, ETK_BOX_NONE, 0);
-
-   label = etk_label_new("<b>  Y </b>");
-   etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
-
-   //UI_FillRelYSpinner
-   UI_FillRelYSpinner = etk_spinner_new(-100.0, 100.0, 0.0, 0.01, 0.1);
-   etk_spinner_digits_set(ETK_SPINNER(UI_FillRelYSpinner), 2);
-   etk_widget_size_request_set(UI_FillRelYSpinner, 45, 20);
-   etk_box_append(ETK_BOX(hbox), UI_FillRelYSpinner,
-                  ETK_BOX_START, ETK_BOX_NONE, 0);
-
-   label = etk_label_new("+");
-   etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
-
-   //UI_FillOffsetYSpinner
-   UI_FillOffsetYSpinner = etk_spinner_new(-2000, 2000, 0, 1, 10);
-   etk_widget_size_request_set(UI_FillOffsetYSpinner, 45, 20);
-   etk_box_append(ETK_BOX(hbox), UI_FillOffsetYSpinner,
-                  ETK_BOX_START, ETK_BOX_NONE, 0);
-
-
+   
    //hbox (size)
    hbox = etk_hbox_new(ETK_FALSE, 0);
    etk_box_append(ETK_BOX(vbox), hbox, ETK_BOX_START, ETK_BOX_NONE, 0);
 
-   label = etk_label_new("<b>Size    X  </b>");
+   label = etk_label_new("<b>Origin X </b>");
    etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
    //UI_FillSizeRelXSpinner
@@ -99,6 +57,49 @@ fill_frame_create(void)
                   ETK_BOX_START, ETK_BOX_NONE, 0);
 
 
+   //hbox (origin)
+   hbox = etk_hbox_new(ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(vbox), hbox, ETK_BOX_START, ETK_BOX_NONE, 0);
+
+   label = etk_label_new("<b>Size    X  </b>");
+   etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+
+   //UI_FillRelXSpinner
+   UI_FillRelXSpinner = etk_spinner_new(-100.0, 100.0, 0.0, 0.01, 0.1);
+   etk_spinner_digits_set(ETK_SPINNER(UI_FillRelXSpinner), 2);
+   etk_widget_size_request_set(UI_FillRelXSpinner, 45, 20);
+   etk_box_append(ETK_BOX(hbox), UI_FillRelXSpinner,
+                  ETK_BOX_START, ETK_BOX_NONE, 0);
+
+   label = etk_label_new("+");
+   etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
+
+   //UI_FillOffsetXSpinner
+   UI_FillOffsetXSpinner = etk_spinner_new(-2000, 2000, 0, 1, 10);
+   etk_widget_size_request_set(UI_FillOffsetXSpinner, 45, 20);
+   etk_box_append(ETK_BOX(hbox), UI_FillOffsetXSpinner,
+                  ETK_BOX_START, ETK_BOX_NONE, 0);
+
+   label = etk_label_new("<b>  Y </b>");
+   etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+
+   //UI_FillRelYSpinner
+   UI_FillRelYSpinner = etk_spinner_new(-100.0, 100.0, 0.0, 0.01, 0.1);
+   etk_spinner_digits_set(ETK_SPINNER(UI_FillRelYSpinner), 2);
+   etk_widget_size_request_set(UI_FillRelYSpinner, 45, 20);
+   etk_box_append(ETK_BOX(hbox), UI_FillRelYSpinner,
+                  ETK_BOX_START, ETK_BOX_NONE, 0);
+
+   label = etk_label_new("+");
+   etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
+
+   //UI_FillOffsetYSpinner
+   UI_FillOffsetYSpinner = etk_spinner_new(-2000, 2000, 0, 1, 10);
+   etk_widget_size_request_set(UI_FillOffsetYSpinner, 45, 20);
+   etk_box_append(ETK_BOX(hbox), UI_FillOffsetYSpinner,
+                  ETK_BOX_START, ETK_BOX_NONE, 0);
+
+   
    etk_signal_connect("value-changed", ETK_OBJECT(UI_FillRelXSpinner),
                       ETK_CALLBACK(_fill_spinners_value_changed_cb),
                       (void *)REL1X_SPINNER);

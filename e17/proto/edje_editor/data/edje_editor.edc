@@ -117,7 +117,6 @@ images {
    image: "bg3.png" LOSSY 95;
    image: "bg4.png" LOSSY 95;
    image: "logo.png" LOSSY 95;
-   image: "frame.png" LOSSY 95;
    image: "frame_bg.png" LOSSY 95;
    image: "frame_bg_label.png" LOSSY 95;
    image: "lbl_group.png" LOSSY 95;
@@ -141,10 +140,6 @@ images {
    image: "e17.png" LOSSY 95;
    image: "none.png" LOSSY 95;
    image: "focus.png" LOSSY 95;
-   image: "arrow_u.png" LOSSY 95;
-   image: "arrow_d.png" LOSSY 95;
-   image: "arrow_l.png" LOSSY 95;
-   image: "arrow_r.png" LOSSY 95;
    image: "fakewin.png" LOSSY 95;
    image: "rel1.png" LOSSY 95;
    image: "rel2.png" LOSSY 95;
@@ -152,11 +147,15 @@ images {
    image: "e17.png" LOSSY 95;
    image: "miniarrow.png" LOSSY 95;
    image: "gimp.png" LOSSY 95;
-   image: "grad.png" LOSSY 95;
    image: "grad_h.png" LOSSY 95;
    image: "spectra_arrow.png" LOSSY 95;
    image: "spectra_color.png" LOSSY 95;
    image: "spectra_icon.png" LOSSY 95;
+   image: "grad_linear.png" LOSSY 95;
+   image: "grad_radial.png" LOSSY 95;
+   image: "grad_rectangular.png" LOSSY 95;
+   image: "grad_angular.png" LOSSY 95;
+   image: "grad_sinusoidal.png" LOSSY 95;
 }
 
 fonts {
@@ -309,24 +308,6 @@ collections {
       }
    }
    group{
-      name: "GRAD.PNG";
-      min: 15 16;
-      max: 15 16;
-      parts{
-         part{
-            name: "StaticImage";
-            type: IMAGE;
-            mouse_events: 0;
-            description{
-               state: "default" 0.0;
-               rel1 {relative: 0.0 0.0; offset: 0 0;}
-               rel2 {relative: 0.0 0.0; offset: 15 16;}
-               image {normal: "grad.png";}
-            }
-         }
-      }
-   }
-   group{
       name: "SPECTRA.PNG";
       min: 22 20;
       max: 22 20;
@@ -472,6 +453,97 @@ collections {
          }
       }
    }
+   group{
+      name: "GRAD_LINEAR.PNG";
+      min: 15 15;
+      max: 100 100;
+      parts{
+         part{
+            name: "StaticImage";
+            type: IMAGE;
+            mouse_events: 0;
+            description{
+               state: "default" 0.0;
+               rel1 {relative: 0.0 0.0; offset: 0 0;}
+               rel2 {relative: 1.0 1.0; offset: 0 0;}
+               image {normal: "grad_linear.png";}
+            }
+         }
+      }
+   }
+   group{
+      name: "GRAD_RADIAL.PNG";
+      min: 15 15;
+      max: 100 100;
+      parts{
+         part{
+            name: "StaticImage";
+            type: IMAGE;
+            mouse_events: 0;
+            description{
+               state: "default" 0.0;
+               rel1 {relative: 0.0 0.0; offset: 0 0;}
+               rel2 {relative: 1.0 1.0; offset: 0 0;}
+               image {normal: "grad_radial.png";}
+            }
+         }
+      }
+   }
+   group{
+      name: "GRAD_RECTANGULAR.PNG";
+      min: 15 15;
+      max: 100 100;
+      parts{
+         part{
+            name: "StaticImage";
+            type: IMAGE;
+            mouse_events: 0;
+            description{
+               state: "default" 0.0;
+               rel1 {relative: 0.0 0.0; offset: 0 0;}
+               rel2 {relative: 1.0 1.0; offset: 0 0;}
+               image {normal: "grad_rectangular.png";}
+            }
+         }
+      }
+   }
+   group{
+      name: "GRAD_ANGULAR.PNG";
+      min: 15 15;
+      max: 100 100;
+      parts{
+         part{
+            name: "StaticImage";
+            type: IMAGE;
+            mouse_events: 0;
+            description{
+               state: "default" 0.0;
+               rel1 {relative: 0.0 0.0; offset: 0 0;}
+               rel2 {relative: 1.0 1.0; offset: 0 0;}
+               image {normal: "grad_angular.png";}
+            }
+         }
+      }
+   }
+   group{
+      name: "GRAD_SINUSOIDAL.PNG";
+      min: 15 15;
+      max: 100 100;
+      parts{
+         part{
+            name: "StaticImage";
+            type: IMAGE;
+            mouse_events: 0;
+            description{
+               state: "default" 0.0;
+               rel1 {relative: 0.0 0.0; offset: 0 0;}
+               rel2 {relative: 1.0 1.0; offset: 0 0;}
+               image {normal: "grad_sinusoidal.png";}
+            }
+         }
+      }
+   }
+
    /************************************************************/
    /*  MainUI
    /************************************************************/
@@ -544,7 +616,7 @@ collections {
          FRAME("rect", 120, 77, "lbl_rect.png", 14, 72, "description_frame")
          FRAME("text", 250, 160, "lbl_text.png", 14, 36, "rect_frame")
          FRAME("image", 250, 230, "lbl_image.png", 14, 46, "text_frame")
-         FRAME("gradient", 250, 130, "lbl_grad.png", 14, 67, "image_frame")
+         FRAME("gradient", 250, 135, "lbl_grad.png", 14, 67, "image_frame")
          FRAME("fill", 250, 45, "lbl_fill.png", 14, 30, "gradient_frame")
          FRAME("position", 250, 130, "lbl_pos.png", 14, 60, "fill_frame")
          FRAME("program", 250, 250, "lbl_prog.png", 14, 60, "position_frame")

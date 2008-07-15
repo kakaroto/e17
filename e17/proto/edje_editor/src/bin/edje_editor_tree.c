@@ -1,3 +1,4 @@
+#include <string.h>
 #include <Etk.h>
 #include <Edje.h>
 #include <Edje_Edit.h>
@@ -9,14 +10,12 @@ Etk_Widget*
 tree_create(void)
 {
    //UI_GroupsComboBox
-   UI_GroupsComboBox = etk_combobox_new();
-   etk_combobox_items_height_set(ETK_COMBOBOX(UI_GroupsComboBox), 18);
-   etk_combobox_column_add(ETK_COMBOBOX(UI_GroupsComboBox), ETK_COMBOBOX_LABEL,
-                           30, ETK_COMBOBOX_NONE, 0.0);
-   etk_combobox_build(ETK_COMBOBOX(UI_GroupsComboBox));
-
-   etk_signal_connect("item-activated", ETK_OBJECT(UI_GroupsComboBox),
-                      ETK_CALLBACK(_tree_combobox_activated_cb), NULL);
+   UI_GroupsComboBox = etk_combobox_entry_new_default();
+   etk_combobox_entry_items_height_set(ETK_COMBOBOX_ENTRY(UI_GroupsComboBox), 18);
+   etk_combobox_entry_autosearch_enable_set(ETK_COMBOBOX_ENTRY(UI_GroupsComboBox), ETK_TRUE);
+  
+   etk_signal_connect("active-item-changed", ETK_OBJECT(UI_GroupsComboBox),
+                      ETK_CALLBACK(_tree_combobox_active_item_changed_cb), NULL);
 
    //UI_PartsTree
    Etk_Tree_Col *col;
@@ -101,13 +100,15 @@ tree_combobox_populate(void)
    Evas_List *groups, *l;
 
    //Stop signal propagation
-   etk_signal_block("item-activated",ETK_OBJECT(UI_GroupsComboBox),
-                    _tree_combobox_activated_cb, NULL);
+   etk_signal_block("active-item-changed", ETK_OBJECT(UI_GroupsComboBox),
+                    ETK_CALLBACK(_tree_combobox_active_item_changed_cb), NULL);
    etk_signal_block("item-activated",ETK_OBJECT(UI_PartSourceComboBox),
                     _part_SourceComboBox_item_activated_cb, NULL);
+   etk_combobox_entry_autosearch_enable_set(ETK_COMBOBOX_ENTRY(UI_GroupsComboBox),
+                                            ETK_FALSE);
 
    //Clear the combos
-   etk_combobox_clear(ETK_COMBOBOX(UI_GroupsComboBox));
+   etk_combobox_entry_clear(ETK_COMBOBOX_ENTRY(UI_GroupsComboBox));
    etk_combobox_clear(ETK_COMBOBOX(UI_PartSourceComboBox));
    etk_combobox_item_append(ETK_COMBOBOX(UI_PartSourceComboBox), "None");
 
@@ -115,20 +116,24 @@ tree_combobox_populate(void)
    groups = edje_file_collection_list(Cur.edj_temp_name->string);
    for(l = groups; l; l = l->next)
    {
-      etk_combobox_item_append(ETK_COMBOBOX(UI_GroupsComboBox), (char*)l->data);
+      etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(UI_GroupsComboBox),
+                                     (char*)l->data, NULL);
       etk_combobox_item_append(ETK_COMBOBOX(UI_PartSourceComboBox), (char*)l->data);
    }
    edje_file_collection_list_free(groups);
 
    //Renable  signal propagation
-   etk_signal_unblock("item-activated",ETK_OBJECT(UI_GroupsComboBox),
-                      _tree_combobox_activated_cb, NULL);
    etk_signal_unblock("item-activated",ETK_OBJECT(UI_PartSourceComboBox),
                       _part_SourceComboBox_item_activated_cb, NULL);
-
+   etk_signal_unblock("active-item-changed", ETK_OBJECT(UI_GroupsComboBox),
+                      ETK_CALLBACK(_tree_combobox_active_item_changed_cb), NULL);
+   
    //Select the first group and load it
-   etk_combobox_active_item_set(ETK_COMBOBOX(UI_GroupsComboBox),
-      etk_combobox_first_item_get(ETK_COMBOBOX(UI_GroupsComboBox)));
+   etk_combobox_entry_active_item_set(ETK_COMBOBOX_ENTRY(UI_GroupsComboBox),
+      etk_combobox_entry_first_item_get(ETK_COMBOBOX_ENTRY(UI_GroupsComboBox)));
+   
+   etk_combobox_entry_autosearch_enable_set(ETK_COMBOBOX_ENTRY(UI_GroupsComboBox),
+                                            ETK_TRUE);
 }
 
 Etk_Tree_Row *
@@ -161,7 +166,7 @@ tree_part_add(const char *part_name, Etk_Tree_Row *after)
    }
 
    /* Add the row in the right position */
-   buf = part_type_image_get(edje_edit_part_type_get(edje_o, part_name));
+   buf = part_type_image_get(part_name);
    if ((int)(long)after > 1)
       row = etk_tree_row_insert(ETK_TREE(UI_PartsTree),
                                 NULL,
@@ -372,13 +377,17 @@ _tree_click_cb(Etk_Tree *tree, Etk_Tree_Row *row, Etk_Event_Mouse_Up *event, voi
 
 /***   Group combobox callback   ***/
 Etk_Bool
-_tree_combobox_activated_cb(Etk_Combobox *combobox, Etk_Combobox_Item *item, void *data)
+_tree_combobox_active_item_changed_cb(Etk_Combobox_Entry *combobox_entry, void *data)
 {
    char *gr;
-   gr = etk_combobox_item_field_get(item,0);
-   //printf("Group combo activated: %s\n",gr);
+   Etk_Combobox_Entry_Item *item;
+   
+   item = etk_combobox_entry_active_item_get(combobox_entry);
+   gr = etk_combobox_entry_item_field_get(item, 0);
+   printf("Group combo activated: %s\n",gr);
    change_group(gr);
+   
+   etk_entry_text_set(ETK_ENTRY(etk_combobox_entry_entry_get(ETK_COMBOBOX_ENTRY(UI_GroupsComboBox))), gr);
 
    return ETK_TRUE;
 }
-

@@ -25,9 +25,8 @@ Etk_Tree_Row* tree_state_add         (const char *part_name, const char *state_n
 Etk_Tree_Row* tree_program_add       (const char* prog);
 
 
-Etk_Bool _tree_combobox_activated_cb (Etk_Combobox *combobox, Etk_Combobox_Item *item, void *data);
-Etk_Bool _tree_row_selected_cb       (Etk_Object *object, Etk_Tree_Row *row, void *data);
-Etk_Bool _tree_click_cb              (Etk_Tree *tree, Etk_Tree_Row *row, Etk_Event_Mouse_Up *event, void *data);
-
+Etk_Bool _tree_row_selected_cb                 (Etk_Object *object, Etk_Tree_Row *row, void *data);
+Etk_Bool _tree_click_cb                        (Etk_Tree *tree, Etk_Tree_Row *row, Etk_Event_Mouse_Up *event, void *data);
+Etk_Bool _tree_combobox_active_item_changed_cb (Etk_Combobox_Entry *combobox_entry, void *data);
 
 #endif

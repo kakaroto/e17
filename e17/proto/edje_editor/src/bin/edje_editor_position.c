@@ -354,14 +354,12 @@ position_comboboxes_populate(void)
 
       // Add all the part to all the 4 combobox
       Evas_List *parts;
-      int type;
 
       parts = l = edje_edit_parts_list_get(edje_o);
       while (l)
       {
          //printf("-- %s\n", (char *)l->data);
-         type = edje_edit_part_type_get(edje_o,(char *)l->data);
-         image_name = part_type_image_get(type);
+         image_name = part_type_image_get((char *)l->data);
 
          etk_combobox_item_append(ETK_COMBOBOX(UI_Rel1ToXComboBox),
                                   etk_image_new_from_edje(EdjeFile, image_name),
