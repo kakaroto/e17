@@ -15,20 +15,15 @@
 #include "esmart_container_private.h"
 
 /* smart object handlers */
-void _container_add(Evas_Object *obj);
-void _container_del(Evas_Object *obj);
-void _container_layer_set(Evas_Object *obj, int l);
-void _container_raise(Evas_Object *obj);
-void _container_lower(Evas_Object *obj);
-void _container_stack_above(Evas_Object *obj, Evas_Object *above);
-void _container_stack_below(Evas_Object *obj, Evas_Object *below);
-void _container_move(Evas_Object *obj, Evas_Coord x, Evas_Coord y);
-void _container_resize(Evas_Object *obj, Evas_Coord w, Evas_Coord h);
-void _container_show(Evas_Object *obj);
-void _container_hide(Evas_Object *obj);
-void _container_color_set(Evas_Object *obj, int r, int g, int b, int a);
-void _container_clip_set(Evas_Object *obj, Evas_Object *clip);
-void _container_clip_unset(Evas_Object *obj);
+static void _container_add(Evas_Object *obj);
+static void _container_del(Evas_Object *obj);
+static void _container_move(Evas_Object *obj, Evas_Coord x, Evas_Coord y);
+static void _container_resize(Evas_Object *obj, Evas_Coord w, Evas_Coord h);
+static void _container_show(Evas_Object *obj);
+static void _container_hide(Evas_Object *obj);
+static void _container_color_set(Evas_Object *obj, int r, int g, int b, int a);
+static void _container_clip_set(Evas_Object *obj, Evas_Object *clip);
+static void _container_clip_unset(Evas_Object *obj);
 
 Evas_Smart *_container_smart_get();
 
@@ -85,7 +80,7 @@ _container_smart_get()
   return smart; 
 }
 
-void
+static void
 _container_add(Evas_Object *obj)
 {
   Container *data;
@@ -119,7 +114,7 @@ _container_add(Evas_Object *obj)
 }
 
 
-void
+static void
 _container_del(Evas_Object *obj)
 {
   Container *data;
@@ -136,109 +131,7 @@ _container_del(Evas_Object *obj)
   free(data);
 }
 
-void
-_container_layer_set(Evas_Object *obj, int layer)
-{
-  Container *data;
-  Evas_List *l;
-  
-  data = evas_object_smart_data_get(obj);
-
-  for (l = data->elements; l; l = l->next)
-  {
-    Container_Element *el = l->data;
-
-    evas_object_layer_set(el->obj, layer);
-    evas_object_layer_set(el->grabber, layer);
-  }
-   
-  evas_object_layer_set(data->clipper, layer);
-  evas_object_layer_set(data->grabber, layer);
-  
-}
-
-void
-_container_raise(Evas_Object *obj)
-{
-  Container *data;
-  Evas_List *l;
-  
-  data = evas_object_smart_data_get(obj);
-
-  for (l = data->elements; l; l = l->next)
-  {
-    Container_Element *el = l->data;
-
-    evas_object_raise(el->obj);
-    evas_object_raise(el->grabber);
-  }
-
-  evas_object_raise(data->clipper);
-  evas_object_raise(data->grabber);
-}
-
-void
-_container_lower(Evas_Object *obj)
-{
-  Container *data;
-  Evas_List *l;
-  
-  data = evas_object_smart_data_get(obj);
-
-  for (l = data->elements; l; l = l->next)
-  {
-    Container_Element *el = l->data;
-
-    evas_object_lower(el->obj);
-    evas_object_lower(el->grabber);
-  }
-  
-  evas_object_lower(data->clipper);
-  evas_object_lower(data->grabber);
-}
-
-void
-_container_stack_above(Evas_Object *obj, Evas_Object *above)
-{
-  Container *data;
-  Evas_List *l;
-  
-  data = evas_object_smart_data_get(obj);
-
-  evas_object_stack_above(data->grabber, above);
-  evas_object_stack_above(data->clipper, above);
-
-  for (l = data->elements; l; l = l->next)
-  {
-    Container_Element *el = l->data;
-
-    evas_object_stack_above(el->grabber, above);
-    evas_object_stack_above(el->obj, above);
-  }
-  
-}
-
-void
-_container_stack_below(Evas_Object *obj, Evas_Object *below)
-{
-  Container *data;
-  Evas_List *l;
-  
-  data = evas_object_smart_data_get(obj);
-
-  for (l = data->elements; l; l = l->next)
-  {
-    Container_Element *el = l->data;
-
-    evas_object_stack_below(el->obj, below);
-    evas_object_stack_below(el->grabber, below);
-  }
-  
-  evas_object_stack_below(data->clipper, below);
-  evas_object_stack_below(data->grabber, below);
-}
-
-void
+static void
 _container_move(Evas_Object *obj, Evas_Coord x, Evas_Coord y)
 {
   Container *data;
@@ -256,7 +149,7 @@ _container_move(Evas_Object *obj, Evas_Coord x, Evas_Coord y)
   _container_elements_fix(data);
 }
 
-void
+static void
 _container_resize(Evas_Object *obj, Evas_Coord w, Evas_Coord h)
 {
   Container *data;
@@ -280,7 +173,7 @@ _container_resize(Evas_Object *obj, Evas_Coord w, Evas_Coord h)
   data->changed = 1;
 }
 
-void
+static void
 _container_show(Evas_Object *obj)
 {
   Container *data;
@@ -291,7 +184,7 @@ _container_show(Evas_Object *obj)
   evas_object_show(data->grabber);
 }
 
-void
+static void
 _container_hide(Evas_Object *obj)
 {
   Container *data;
@@ -303,7 +196,7 @@ _container_hide(Evas_Object *obj)
 }
 
 
-void
+static void
 _container_color_set(Evas_Object *obj, int r, int g, int b, int a)
 {
   Container *data;
@@ -314,7 +207,7 @@ _container_color_set(Evas_Object *obj, int r, int g, int b, int a)
   data->clipper_orig_alpha = a;
 }
 
-void
+static void
 _container_clip_set(Evas_Object *obj, Evas_Object *clip)
 {
   Container *data;
@@ -325,7 +218,7 @@ _container_clip_set(Evas_Object *obj, Evas_Object *clip)
   evas_object_clip_set(data->grabber, clip);
 }
 
-void
+static void
 _container_clip_unset(Evas_Object *obj)
 {
   Container *data;

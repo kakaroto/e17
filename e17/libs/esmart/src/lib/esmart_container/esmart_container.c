@@ -18,7 +18,7 @@
 #include "Esmart_Container.h"
 #include "esmart_container_private.h"
 
-int _container_scroll_timer(void *data);
+//static int _container_scroll_timer(void *data);
 
 /*** external API ***/
 
@@ -671,11 +671,11 @@ _cb_element_move(void *data, Evas *e, Evas_Object *obj, void *event_info)
   }
 }
 
-
-int
+/* XXX Can we remove this? */
+#if 0
+static int
 _container_scroll_timer(void *data)
 {
-//  Scroll_Data *sd = data;
   Container *cont = data;
   double dt, dx, size, pad, max_scroll;
  
@@ -698,3 +698,5 @@ _container_scroll_timer(void *data)
   _container_elements_fix(cont);
   return 1;
 }
+#endif
+
