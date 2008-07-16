@@ -1,3 +1,10 @@
+2008-07-16  Vincent Torri  <doursse at users dot sf dot net>
+
+	* configure.in:
+	* src/bin/Makefile.am:
+	* src/plugines/ewl/Makefile.am:
+	Make ewl and etk binaries optional
+
 2008-07-14  Vincent Torri  <doursse at users dot sf dot net>
 
 	* src/bin/edvi_esmart_test.c: (main):

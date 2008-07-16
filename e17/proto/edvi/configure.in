@@ -64,41 +64,81 @@ PKG_CHECK_MODULES(EDVI, evas >= ${evas_version} ecore >= ${ecore_version})
 EDVI_CFLAGS="${EDVI_CFLAGS} ${DVILIB2_CFLAGS}"
 EDVI_LIBS="${EDVI_LIBS} ${DVILIB2_LIBS}"
 
+PKG_CHECK_MODULES(ECORE_EVAS,
+   [ ecore-evas >= ${ecore_version} ]
+)
+
 requirements="evas ecore"
 
-PKG_CHECK_MODULES(EWL,
-   ewl >= 0.5,
-  [
-   have_ewl="yes"
-   requirements="$requirements ewl"
-   EWL_TEST_LIBS_DIR="`$PKG_CONFIG --variable=testsdir ewl`"
-   EWL_TEST_SOURCE_DIR="`$PKG_CONFIG --variable=testssrcdir ewl`"
-   AC_SUBST(EWL_TEST_LIBS_DIR)
-   AC_SUBST(EWL_TEST_SOURCE_DIR)
-  ],
-  [
-   have_ewl="no"
+dnl Ewl
+AC_ARG_ENABLE(ewl,
+  AC_HELP_STRING(
+    [--enable-ewl],
+    [enable ewl widget. [[default=enabled]]]
+  ), [
+    have_ewl=$enableval
+  ], [
+    have_ewl="yes"
   ]
 )
+AC_MSG_CHECKING(whether using Ewl)
+AC_MSG_RESULT($have_ewl)
+
+if test "x$have_ewl" = "xyes"; then
+   PKG_CHECK_MODULES(EWL,
+      ewl >= 0.5,
+     [
+      have_ewl="yes"
+      requirements="$requirements ewl"
+      EWL_TEST_LIBS_DIR="`$PKG_CONFIG --variable=testsdir ewl`"
+      EWL_TEST_SOURCE_DIR="`$PKG_CONFIG --variable=testssrcdir ewl`"
+      AC_SUBST(EWL_TEST_LIBS_DIR)
+      AC_SUBST(EWL_TEST_SOURCE_DIR)
+     ],
+     [
+      have_ewl="no"
+     ]
+   )
+else
+   have_ewl="no"
+fi
 AM_CONDITIONAL(BUILD_EDVI_EWL, test "x${have_ewl}" = "xyes")
 
-PKG_CHECK_MODULES(ETK,
-   etk >= 0.1,
-  [
-   have_etk="yes"
-   requirements="$requirements etk"
-  ],
-  [
-   have_etk="no"
+dnl Etk
+AC_ARG_ENABLE(etk,
+  AC_HELP_STRING(
+    [--enable-etk],
+    [enable etk widget. [[default=enabled]]]
+  ), [
+    have_etk=$enableval
+  ], [
+    have_etk="yes"
   ]
 )
+AC_MSG_CHECKING(whether using Etk)
+AC_MSG_RESULT($have_etk)
+
+if test "x$have_etk" = "xyes"; then
+   PKG_CHECK_MODULES(ETK,
+      etk >= 0.1,
+     [
+      have_etk="yes"
+      requirements="$requirements etk"
+     ],
+     [
+      have_etk="no"
+     ]
+   )
+else
+   have_etk="no"
+fi
 AM_CONDITIONAL(BUILD_EDVI_ETK, test "x${have_etk}" = "xyes")
 
 PKG_CHECK_MODULES(EPSILON,
-   imlib2 >= 1.4 epsilon >= 0.3,
+   epsilon >= 0.3,
   [
    have_epsilon="yes"
-   requirements="$requirements epsilon imlib2"
+   requirements="$requirements epsilon"
    EPSILON_PLUGINS_DIR="`$PKG_CONFIG --variable=pluginsdir epsilon`"
    AC_SUBST(EPSILON_PLUGINS_DIR)
   ],
