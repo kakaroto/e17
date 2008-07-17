@@ -1,3 +1,4 @@
+#define _GNU_SOURCE
 #include <string.h>
 #include <Etk.h>
 #include <Edje.h>
@@ -12,7 +13,7 @@ tree_create(void)
    //UI_GroupsComboBox
    UI_GroupsComboBox = etk_combobox_entry_new_default();
    etk_combobox_entry_items_height_set(ETK_COMBOBOX_ENTRY(UI_GroupsComboBox), 18);
-   etk_combobox_entry_autosearch_enable_set(ETK_COMBOBOX_ENTRY(UI_GroupsComboBox), ETK_TRUE);
+   etk_combobox_entry_autosearch_set(ETK_COMBOBOX_ENTRY(UI_GroupsComboBox), GROUP_COMBO_AUTOSEARCH_COL, strcasestr);
   
    etk_signal_connect("active-item-changed", ETK_OBJECT(UI_GroupsComboBox),
                       ETK_CALLBACK(_tree_combobox_active_item_changed_cb), NULL);
@@ -104,8 +105,7 @@ tree_combobox_populate(void)
                     ETK_CALLBACK(_tree_combobox_active_item_changed_cb), NULL);
    etk_signal_block("item-activated",ETK_OBJECT(UI_PartSourceComboBox),
                     _part_SourceComboBox_item_activated_cb, NULL);
-   etk_combobox_entry_autosearch_enable_set(ETK_COMBOBOX_ENTRY(UI_GroupsComboBox),
-                                            ETK_FALSE);
+   etk_combobox_entry_autosearch_set(ETK_COMBOBOX_ENTRY(UI_GroupsComboBox), -1, NULL);
 
    //Clear the combos
    etk_combobox_entry_clear(ETK_COMBOBOX_ENTRY(UI_GroupsComboBox));
@@ -132,8 +132,8 @@ tree_combobox_populate(void)
    etk_combobox_entry_active_item_set(ETK_COMBOBOX_ENTRY(UI_GroupsComboBox),
       etk_combobox_entry_first_item_get(ETK_COMBOBOX_ENTRY(UI_GroupsComboBox)));
    
-   etk_combobox_entry_autosearch_enable_set(ETK_COMBOBOX_ENTRY(UI_GroupsComboBox),
-                                            ETK_TRUE);
+   etk_combobox_entry_autosearch_set(ETK_COMBOBOX_ENTRY(UI_GroupsComboBox),
+                                     GROUP_COMBO_AUTOSEARCH_COL, NULL);
 }
 
 Etk_Tree_Row *

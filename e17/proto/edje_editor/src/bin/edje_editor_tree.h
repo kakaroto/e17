@@ -12,6 +12,8 @@
 #define COL_TYPE   etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), TREE_COL_TYPE)
 #define COL_PARENT etk_tree_nth_col_get(ETK_TREE(UI_PartsTree), TREE_COL_PARENT)
 
+#define GROUP_COMBO_AUTOSEARCH_COL 0
+
 
 Etk_Widget *UI_PartsTree;
 Etk_Widget *UI_GroupsComboBox;

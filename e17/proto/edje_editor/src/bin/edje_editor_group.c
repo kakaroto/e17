@@ -225,15 +225,15 @@ _group_NameEntryImage_clicked_cb(Etk_Object *object, void *data)
    item = etk_combobox_entry_active_item_get(ETK_COMBOBOX_ENTRY(UI_GroupsComboBox));
    etk_signal_block("active-item-changed", ETK_OBJECT(UI_GroupsComboBox),
                     ETK_CALLBACK(_tree_combobox_active_item_changed_cb), NULL);
-   etk_combobox_entry_autosearch_enable_set(ETK_COMBOBOX_ENTRY(UI_GroupsComboBox),
-                                            ETK_FALSE);
+   etk_combobox_entry_autosearch_set(ETK_COMBOBOX_ENTRY(UI_GroupsComboBox), -1, NULL);
+
    etk_combobox_entry_item_fields_set(item, name);
    etk_entry_text_set(ETK_ENTRY(etk_combobox_entry_entry_get(ETK_COMBOBOX_ENTRY(UI_GroupsComboBox))), name);
 
    etk_signal_unblock("active-item-changed", ETK_OBJECT(UI_GroupsComboBox),
                       ETK_CALLBACK(_tree_combobox_active_item_changed_cb), NULL);
-   etk_combobox_entry_autosearch_enable_set(ETK_COMBOBOX_ENTRY(UI_GroupsComboBox),
-                                            ETK_TRUE);
+   etk_combobox_entry_autosearch_set(ETK_COMBOBOX_ENTRY(UI_GroupsComboBox),
+                                     GROUP_COMBO_AUTOSEARCH_COL, NULL);
    //Update FakeWin title
    edje_object_part_text_set(EV_fakewin, "title", name);
 
