@@ -232,6 +232,8 @@ engine_software_16_wince_args(int argc, char **argv)
      }
 
    einfo->info.window = window;
+   einfo->info.width = win_w;
+   einfo->info.height = win_h;
    einfo->info.backend = backend;
    einfo->info.rotation = 0;
    evas_engine_info_set(evas, (Evas_Engine_Info *)einfo);
