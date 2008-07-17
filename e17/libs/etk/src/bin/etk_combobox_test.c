@@ -14,8 +14,6 @@ static Etk_Bool _active_item_changed_cb(Etk_Object *object, void *data);
 static void _etk_combobox_entry_populate(Etk_Combobox_Entry *combobox_entry, char *dir);
 static Etk_Bool _etk_combobox_entry_active_item_changed_cb(Etk_Object *object, void *data);
 static Etk_Bool _etk_combobox_entry_autosearch_active_item_changed_cb(Etk_Object *object, void *data);
-static Etk_Bool _etk_combobox_entry_text_changed_cb(Etk_Object *object, void *data);
-static char **str_split(char **str, char *delim);
 
 static char *cur_dir = NULL;
 static Etk_Widget *win = NULL;
@@ -102,7 +100,7 @@ void etk_test_combobox_window_create(void *data)
    etk_box_append(ETK_BOX(vbox), frame, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    combobox = etk_combobox_entry_new_default();
-   etk_combobox_entry_autosearch_enable_set(ETK_COMBOBOX_ENTRY(combobox), ETK_TRUE);
+   etk_combobox_entry_autosearch_set(ETK_COMBOBOX_ENTRY(combobox), 0, strcasestr);
 
    for (i = 0; _keywords[i]; i++)
      etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(combobox), _keywords[i], NULL);

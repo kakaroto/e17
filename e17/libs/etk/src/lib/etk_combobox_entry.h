@@ -122,10 +122,12 @@ struct Etk_Combobox_Entry
    Etk_Widget *hbox;
 
    int items_height;
-   Etk_Bool built:1;
-   
-   int autosearch_enable;
+
    int autosearch_column;
+   char* (*search_function)(const char *s1, const char *s2);
+   Etk_Bool autosearch_enable:1;
+
+   Etk_Bool built:1;
 };
 
 
@@ -178,8 +180,7 @@ void etk_combobox_entry_pop_up(Etk_Combobox_Entry *combobox_entry);
 void etk_combobox_entry_pop_down(Etk_Combobox_Entry *combobox_entry);
 void etk_combobox_entry_popup_feed(Etk_Combobox_Entry *combobox_entry, Etk_Window *window);
 
-void etk_combobox_entry_autosearch_enable_set(Etk_Combobox_Entry *combobox_entry, int enable);
-void etk_combobox_entry_autosearch_column_set(Etk_Combobox_Entry *combobox_entry, int col_num);
+void etk_combobox_entry_autosearch_set(Etk_Combobox_Entry *combobox_entry, int col_num, char* (*search_function)(const char *s1, const char *s2));
 
 /** @} */
 

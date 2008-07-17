@@ -942,36 +942,54 @@ void etk_combobox_entry_pop_down(Etk_Combobox_Entry *combobox_entry)
 }
 
 /**
- * @brief Enable or disable autosearch on the combobox entry.
+ * @brief Set autosearch params on the combobox entry, or disable autosearch.
  * When a combo_Entry is set as searchable typing in the entry will show the popup
- * window with a filtered set of option.
+ * window with a filtered set of options.
+ * Setting col_num to < 0 will disable autosearch.
  * @param combobox_entry a combobox_entry
- * @param enable ETK_TRUE = enable, ETK_FALSE = disable
+ * @param col a column number to use for searching, must be a string column. Or NULL to disable autosearch
  */
-void etk_combobox_entry_autosearch_enable_set(Etk_Combobox_Entry *combobox_entry, int enable)
+void etk_combobox_entry_autosearch_set(Etk_Combobox_Entry *combobox_entry, int col_num, char* (*search_function)(const char *s1, const char *s2))
 {
    if (!combobox_entry)
       return;
-   
-   if (enable)
-      etk_signal_connect_by_code(ETK_ENTRY_TEXT_CHANGED_SIGNAL, ETK_OBJECT(combobox_entry->entry), ETK_CALLBACK(_etk_combobox_entry_entry_text_changed_cb), combobox_entry);
-   else
-      etk_signal_disconnect_by_code(ETK_ENTRY_TEXT_CHANGED_SIGNAL, ETK_OBJECT(combobox_entry->entry), ETK_CALLBACK(_etk_combobox_entry_entry_text_changed_cb), combobox_entry);      
-   
-   combobox_entry->autosearch_enable = enable ? ETK_TRUE : ETK_FALSE;
-}
 
-/**
- * @brief Set the colum number to use for the search, must be a string column.
- * @param combobox_entry a combobox_entry
- * @param col_num the string column to use for searching
- */
-void etk_combobox_entry_autosearch_column_set(Etk_Combobox_Entry *combobox_entry, int col_num)
-{
-   if (!combobox_entry)
+   if (!combobox_entry->built)
+   {
+      ETK_WARNING("Unable to set autosearch to the combobox_entry because the combobox_entry isn't built yet");
       return;
+   }
+
+   if (col_num < 0)
+   {
+      etk_signal_disconnect_by_code(ETK_ENTRY_TEXT_CHANGED_SIGNAL, ETK_OBJECT(combobox_entry->entry), ETK_CALLBACK(_etk_combobox_entry_entry_text_changed_cb), combobox_entry);
+      combobox_entry->autosearch_enable = ETK_FALSE;
+      return;
+   }
+
+   if (col_num > combobox_entry->num_cols - 1)
+   {
+      ETK_WARNING("Unable to set autosearch to the combobox_entry because the given column isn't valid");
+      return;
+   }
    
+   if (combobox_entry->cols[col_num]->type != ETK_COMBOBOX_ENTRY_LABEL)
+   {
+      ETK_WARNING("Unable to set autosearch to the combobox_entry because the given column isn't a label column");
+      return;
+   }
+   
+       
    combobox_entry->autosearch_column = col_num;
+
+   if (!combobox_entry->autosearch_enable)
+   {
+      etk_signal_connect_by_code(ETK_ENTRY_TEXT_CHANGED_SIGNAL, ETK_OBJECT(combobox_entry->entry), ETK_CALLBACK(_etk_combobox_entry_entry_text_changed_cb), combobox_entry);
+      combobox_entry->autosearch_enable = ETK_TRUE;
+   }
+
+   if (search_function)
+      combobox_entry->search_function = search_function;
 }
 
 /**************************
@@ -1025,6 +1043,7 @@ static void _etk_combobox_entry_constructor(Etk_Combobox_Entry *combobox_entry)
    combobox_entry->built = ETK_FALSE;
    combobox_entry->autosearch_column = 0;
    combobox_entry->autosearch_enable = 0;
+   combobox_entry->search_function = strstr;
 
    ETK_WIDGET(combobox_entry)->size_request = _etk_combobox_entry_size_request;
    ETK_WIDGET(combobox_entry)->size_allocate = _etk_combobox_entry_size_allocate;
@@ -1581,7 +1600,7 @@ static Etk_Bool _etk_combobox_entry_entry_text_changed_cb(Etk_Object *object, vo
       const char* item_field;
 
       item_field = etk_combobox_entry_item_field_get(item, combobox_entry->autosearch_column);
-      if (strcasestr(item_field, entry_text))
+      if (combobox_entry->search_function(item_field, entry_text))
          etk_widget_show(ETK_WIDGET(item));
       else
          etk_widget_hide(ETK_WIDGET(item));
