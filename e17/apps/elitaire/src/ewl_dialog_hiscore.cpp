@@ -112,7 +112,8 @@ void ewl_frontend_dialog_highscore_add(Eli_App * eap, float points, pointsType t
     username = getpwuid(geteuid())->pw_name;
 
     /* Setup and show the name window */
-    win = ewl_dialog_new();
+    win = ewl_icondialog_new();
+    ewl_icondialog_icon_set(EWL_ICONDIALOG(win), EWL_ICON_DIALOG_QUESTION);
     ewl_dialog_action_position_set(EWL_DIALOG(win), EWL_POSITION_BOTTOM);
     ewl_window_title_set(EWL_WINDOW(win), _("Name"));
     ewl_window_name_set(EWL_WINDOW(win), "Elitaire Name");
@@ -153,7 +154,6 @@ void ewl_frontend_dialog_highscore_add(Eli_App * eap, float points, pointsType t
     ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_FILL);
     ewl_text_align_set(EWL_TEXT(o), EWL_FLAG_ALIGN_CENTER);
     ewl_widget_focus_send(o);
-    ewl_object_padding_set(EWL_OBJECT(o), 15, 15, 2, 15);
     ewl_callback_append(EWL_WIDGET(o), EWL_CALLBACK_KEY_DOWN, 
                         _highscore_key_down_cb, wh);
     ewl_text_all_select(EWL_TEXT(o));

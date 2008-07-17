@@ -12,9 +12,9 @@ void ewl_frontend_dialog_about_open(Eli_App * eap)
     Ewl_Widget * win;
     Ewl_Widget * o;
     char text[2000];
-
+    
     /* Setup and show the about window */
-    win = ewl_dialog_new();
+    win = ewl_icondialog_new();
     ewl_dialog_action_position_set(EWL_DIALOG(win), EWL_POSITION_BOTTOM);
     ewl_window_title_set(EWL_WINDOW(win), _("About"));
     ewl_window_name_set(EWL_WINDOW(win), "Elitaire About");
@@ -53,7 +53,6 @@ void ewl_frontend_dialog_about_open(Eli_App * eap)
     ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_NONE);
     ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_CENTER);
 
-    ewl_object_padding_set(EWL_OBJECT(o), 15, 15, 15, 15);
     ewl_widget_show(o);
 
 }
