@@ -725,8 +725,8 @@ ewl_callback_hash(const void *key)
 
         cb = EWL_CALLBACK(key);
 
-        DRETURN_INT((unsigned int) (cb->func) ^
-                    (unsigned int) (cb->user_data), DLEVEL_STABLE);
+        DRETURN_INT(ecore_direct_hash(cb->func) 
+                        ^ ecore_direct_hash(cb->user_data), DLEVEL_STABLE);
 }
 
 /*
