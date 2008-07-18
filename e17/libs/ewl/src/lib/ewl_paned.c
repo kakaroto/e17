@@ -1197,7 +1197,7 @@ ewl_paned_grabber_cb_mouse_down(Ewl_Widget *w, void *ev,
         
         ewl_callback_append(w, EWL_CALLBACK_MOUSE_MOVE,
                                 ewl_paned_grabber_cb_mouse_move,
-                                (void *) ds);
+                                INT_TO_INTPTR(ds));
         ewl_widget_state_set(w, "selected", EWL_STATE_PERSISTENT);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -1242,7 +1242,7 @@ ewl_paned_grabber_cb_mouse_move(Ewl_Widget *w, void *ev, void *data)
         e = ev;
         p = EWL_PANED(w->parent);
         c = EWL_CONTAINER(p);
-        mouse_offset = (int) data;
+        mouse_offset = INTPTR_TO_INT(data);
 
         if (ewl_paned_orientation_get(p) == EWL_ORIENTATION_HORIZONTAL)
         {

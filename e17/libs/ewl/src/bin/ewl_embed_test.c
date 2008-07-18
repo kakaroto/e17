@@ -118,7 +118,7 @@ main(int argc, char **argv)
         emb = ewl_embed_new();
         ewl_object_fill_policy_set(EWL_OBJECT(emb), EWL_FLAG_FILL_ALL);
         eo = ewl_embed_canvas_set(EWL_EMBED(emb), evas,
-                          (void *) ecore_evas_software_x11_window_get(ee));
+                          (void *)(long)ecore_evas_software_x11_window_get(ee));
         ewl_embed_focus_set(EWL_EMBED(emb), TRUE);
         ewl_widget_show(emb);
 
@@ -180,7 +180,7 @@ main(int argc, char **argv)
         emb = ewl_embed_new();
         ewl_object_fill_policy_set(EWL_OBJECT(emb), EWL_FLAG_FILL_ALL);
         eo = ewl_embed_canvas_set(EWL_EMBED(emb), evas,
-                          (void *) ecore_evas_software_x11_window_get(ee));
+                          (void *)(long)ecore_evas_software_x11_window_get(ee));
         ewl_widget_show(emb);
 
         /*
@@ -221,7 +221,7 @@ main(int argc, char **argv)
         emb = ewl_embed_new();
         ewl_object_fill_policy_set(EWL_OBJECT(emb), EWL_FLAG_FILL_ALL);
         eo = ewl_embed_canvas_set(EWL_EMBED(emb), evas,
-                          (void *) ecore_evas_software_x11_window_get(ee));
+                          (void *)(long)ecore_evas_software_x11_window_get(ee));
         ewl_embed_focus_set(EWL_EMBED(emb), TRUE);
         ewl_widget_show(emb);
 

@@ -80,13 +80,13 @@ struct Ewl_Attach_Dnd
  */
 #define ewl_attach_mouse_cursor_set(w, cursor) \
         ewl_attach_other_set(EWL_WIDGET(w), EWL_ATTACH_TYPE_MOUSE_CURSOR, \
-                        INT_TO_INTPTR(cursor))
+                        (void *)(long int)(cursor))
 /**
  * @def ewl_attach_mouse_cursor_get(w)
  * Convenience method to get the widget's cursor attachment
  */
 #define ewl_attach_mouse_cursor_get(w) \
-        INTPTR_TO_INT(ewl_attach_get(EWL_WIDGET(w), \
+        ((int)(long int) ewl_attach_get(EWL_WIDGET(w), \
                         EWL_ATTACH_TYPE_MOUSE_CURSOR))
 
 /**
