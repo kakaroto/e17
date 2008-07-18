@@ -419,6 +419,47 @@ esmart_container_elements_orig_length_get(Evas_Object *container)
   return length;
 }
 
+EAPI void
+esmart_container_clip_elements_set(Evas_Object *container, unsigned char val)
+{
+   Container *cont;
+   Evas_List *l;
+
+   cont = _container_fetch(container);
+   if (val)
+      evas_object_show(cont->clipper);
+   else
+      evas_object_hide(cont->clipper);
+   cont->clip_elements = val;
+
+   if (val)
+   { /* Clip all elements */
+      for (l = cont->elements; l; l = l->next)
+      {
+         Container_Element *el = l->data;
+
+         evas_object_clip_set(el->obj, cont->clipper);
+      }
+   }
+   else
+   { /* Unclip all elements */
+      for (l = cont->elements; l; l = l->next)
+      {
+         Container_Element *el = l->data;
+
+         evas_object_clip_unset(el->obj);
+      }
+   }
+}
+
+EAPI unsigned char
+esmart_container_clip_elements_get(Evas_Object *container)
+{
+   Container *cont;
+
+   cont = _container_fetch(container);
+   return cont->clip_elements;
+}
 
 /**************** internal  functions *******************/
 
@@ -435,7 +476,7 @@ _container_element_new(Container *cont, Evas_Object *obj)
   el->obj = obj;
   evas_object_data_set(obj, "Container_Element", el); 
   evas_object_show(obj);
- 
+
   evas_object_geometry_get(obj, NULL, NULL, &w, &h);
   el->orig_w = w;
   el->orig_h = h;
@@ -444,9 +485,12 @@ _container_element_new(Container *cont, Evas_Object *obj)
   evas_object_repeat_events_set(el->grabber, 1);
   evas_object_color_set(el->grabber, 0, 0, 0, 0);
   evas_object_show(el->grabber);
-  
+
   el->container = cont;
-  evas_object_clip_set(el->obj, cont->clipper);
+
+  if (cont->clip_elements || !evas_object_visible_get(cont->obj))
+     evas_object_clip_set(el->obj, cont->clipper);
+
   evas_object_clip_set(el->grabber, cont->clipper);
 /*
   evas_object_layer_set(el->obj, evas_object_layer_get(cont->obj));
@@ -456,6 +500,7 @@ _container_element_new(Container *cont, Evas_Object *obj)
   evas_object_stack_above(el->obj, cont->obj);
 */
   evas_object_smart_member_add(el->obj, cont->obj);
+  
   evas_object_smart_member_add(el->grabber, cont->obj);
 
   evas_object_event_callback_add(el->grabber, EVAS_CALLBACK_MOUSE_DOWN, _cb_element_down, el);

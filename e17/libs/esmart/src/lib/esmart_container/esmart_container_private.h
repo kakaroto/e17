@@ -48,6 +48,9 @@ struct _Container
   void *data_order_change;
 
   unsigned char changed : 1;
+
+  unsigned char clip_elements : 1; /* decide wether to clip elements to container 
+                                      or not */
 };
 
 struct _Container_Element

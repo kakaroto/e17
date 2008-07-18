@@ -147,6 +147,18 @@ EAPI double esmart_container_elements_orig_length_get(Evas_Object *container);
 
 EAPI int esmart_container_layout_plugin_set(Evas_Object *container, const char *name);
 
+/*! \brief Set that container should clip elements
+ * @param container Object
+ * @param val Boolean value: 1 to clip elements (default), 0 to not
+ */
+EAPI void esmart_container_clip_elements_set(Evas_Object *container, 
+                                             unsigned char val);
+
+/*! \brief Checks that container clips elements or not
+ * @param container Object
+ * @return Boolean value: 1 if clip elements, 0 if not
+ */
+EAPI unsigned char esmart_container_clip_elements_get(Evas_Object *container);
 
 #ifdef __cplusplus
 }

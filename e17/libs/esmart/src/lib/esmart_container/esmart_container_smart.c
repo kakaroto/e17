@@ -177,22 +177,44 @@ static void
 _container_show(Evas_Object *obj)
 {
   Container *data;
+  Evas_List *l;
   
   data = evas_object_smart_data_get(obj);
 
   evas_object_show(data->clipper);
   evas_object_show(data->grabber);
+  
+  /* This is needed because clipping is optional */
+  if (!data->clip_elements)
+  {
+    for (l = data->elements; l; l = l->next)
+    {
+      Container_Element *el = l->data;
+
+      evas_object_clip_unset(el->obj);
+    }
+  }
 }
 
 static void
 _container_hide(Evas_Object *obj)
 {
   Container *data;
+  Evas_List *l;
   
   data = evas_object_smart_data_get(obj);
 
   evas_object_hide(data->clipper);
   evas_object_hide(data->grabber);
+  
+  /* This is needed because clipping is optional, but we use it anyway when 
+   * hiding */
+  for (l = data->elements; l; l = l->next)
+  {
+    Container_Element *el = l->data;
+
+    evas_object_clip_set(el->obj, data->clipper);
+  }
 }
 
 
