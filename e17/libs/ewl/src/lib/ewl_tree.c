@@ -726,7 +726,7 @@ ewl_tree_cb_column_sort(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 
         /* update our sort information and call the sort function, skipping
          * over SORT_NONE */
-        tree->sort.column = (unsigned int)data;
+        tree->sort.column = INTPTR_TO_INT(data);
         tree->sort.direction = ((tree->sort.direction + 1) % EWL_SORT_DIRECTION_MAX);
         if (!tree->sort.direction) tree->sort.direction ++;
 
@@ -779,7 +779,7 @@ ewl_tree_header_build(Ewl_Tree *tree, Ewl_Container *box,
 
                 ewl_callback_append(EWL_WIDGET(box), EWL_CALLBACK_CLICKED,
                                         ewl_tree_cb_column_sort,
-                                        (unsigned int *)column);
+                                        INT_TO_INTPTR(column));
 
                 c = ewl_button_new();
                 ewl_container_child_append(box, c);

@@ -108,7 +108,7 @@ ee_canvas_setup(Ewl_Window *win, int debug)
         glinfo->info.colormap = glinfo->func.best_colormap_get(
                                 glinfo->info.display,
                                 DefaultScreen(glinfo->info.display));
-        glinfo->info.drawable = (Ecore_X_Window)win->window;
+        glinfo->info.drawable = INTPTR_TO_INT(win->window);
         glinfo->info.depth = glinfo->func.best_depth_get(
                                 glinfo->info.display,
                                 DefaultScreen(glinfo->info.display));

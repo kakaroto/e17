@@ -1720,9 +1720,9 @@ ewl_embed_mouse_cursor_set(Ewl_Widget *w)
                 pointer = argb->handle;
         }
 
-        if (!pointer) {
-                       if (!(pointer = (int)ewl_attach_get(w,
-                                        EWL_ATTACH_TYPE_MOUSE_CURSOR)))
+        if (!pointer) 
+        {
+                if (!(pointer = ewl_attach_mouse_cursor_get(w)))
                         pointer = EWL_MOUSE_CURSOR_LEFT_PTR;
         }
         ewl_engine_pointer_set(embed, pointer);

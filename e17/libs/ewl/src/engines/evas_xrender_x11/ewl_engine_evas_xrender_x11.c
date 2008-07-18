@@ -108,7 +108,7 @@ ee_canvas_setup(Ewl_Window *win, int debug __UNUSED__)
         sinfo->info.display = ecore_x_display_get();
         sinfo->info.visual = DefaultVisual(sinfo->info.display,
                                 DefaultScreen(sinfo->info.display));
-        sinfo->info.drawable = (Ecore_X_Window)win->window;
+        sinfo->info.drawable = INTPTR_TO_INT(win->window);
 
         evas_engine_info_set(evas, info);
 

@@ -109,7 +109,7 @@ ee_canvas_setup(Ewl_Window *win, int debug)
                                 DefaultScreen(sinfo->info.display));
         sinfo->info.colormap = DefaultColormap(sinfo->info.display,
                                 DefaultScreen(sinfo->info.display));
-        sinfo->info.drawable = (Ecore_X_Window)win->window;
+        sinfo->info.drawable = INTPTR_TO_INT(win->window);
         sinfo->info.depth = DefaultDepth(sinfo->info.display,
                                 DefaultScreen(sinfo->info.display));
         sinfo->info.rotation = 0;

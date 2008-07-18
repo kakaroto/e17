@@ -804,7 +804,7 @@ ewl_text_obscure_get(Ewl_Text *t)
         DCHECK_PARAM_PTR_RET(t, 0);
         DCHECK_TYPE_RET(t, EWL_TEXT_TYPE, 0);
 
-        DRETURN_INT(t->obscure, DLEVEL_STABLE);
+        DRETURN_PTR(t->obscure, DLEVEL_STABLE);
 }
 
 /**

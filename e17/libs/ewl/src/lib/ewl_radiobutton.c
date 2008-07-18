@@ -92,7 +92,7 @@ ewl_radiobutton_value_get(Ewl_Radiobutton *rb)
         DCHECK_PARAM_PTR_RET(rb, 0);
         DCHECK_TYPE_RET(rb, EWL_RADIOBUTTON_TYPE, 0);
 
-        DRETURN_INT(rb->value, DLEVEL_STABLE);
+        DRETURN_PTR(rb->value, DLEVEL_STABLE);
 }
 
 /**
