@@ -146,10 +146,12 @@ ewl_backtrace(void)
 int
 ewl_cast_pointer_to_integer(void *ptr)
 {
+        const unsigned int imask = ~0;
+        const unsigned long int mask = ~((unsigned long int) imask);
+
         DENTER_FUNCTION(DLEVEL_STABLE);
 
-        if (sizeof(int) != sizeof(void *) 
-                        && (((unsigned long) ptr) & 0xffffffff) != 0)
+        if (((unsigned long) ptr) & mask)
                 DWARNING("Information lost while casting a pointer to an int");
 
         DRETURN_INT((int)((long int)ptr), DLEVEL_STABLE);
