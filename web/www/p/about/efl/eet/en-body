@@ -7,7 +7,7 @@
 	file and random-access retrieve the data very efficiently, encode and decode
 	image data and any other kind of data. Files are compact and efficient as well as
 	being portable between platforms (e.g. take a file written on a 32-bit x86 system
-	and move it to a 64-bit PPC system and it will "just work"). Eet is potable
+	and move it to a 64-bit PPC system and it will "just work"). Eet is portable
 	between many architectures and operating systems and can function on embedded
 	systems all the way up to multi-CPU server farms.</p>
 	
