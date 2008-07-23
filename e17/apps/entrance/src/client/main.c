@@ -934,7 +934,7 @@ setup_ecore_evas(int wx, int wy, int ww, int wh, int fullscreen)
    switch (session->config->engine)
    {
      case 1:
-        if (ecore_evas_engine_type_supported_get(ECORE_EVAS_ENGINE_GL_X11))
+        if (ecore_evas_engine_type_supported_get(ECORE_EVAS_ENGINE_OPENGL_X11))
         {
            e = ecore_evas_gl_x11_new(NULL, 0, wx, wy, ww, wh);
            break;
