@@ -719,7 +719,7 @@ ewl_paned_pane_info_setup(Ewl_Paned *p, Ewl_Paned_Pane_Info *panes,
                 }
                 else
                 {
-                        panes->size = layout->minimum_size(EWL_OBJECT(child));
+                        panes->size = layout->preferred_size(EWL_OBJECT(child));
                         (*resizable)++;
                         panes->fixed = FALSE;
                 }
