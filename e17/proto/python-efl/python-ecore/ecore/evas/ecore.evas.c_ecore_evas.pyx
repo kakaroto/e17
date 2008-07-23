@@ -15,11 +15,11 @@ def shutdown():
 cdef char *engines[7]
 engines[<int>ECORE_EVAS_ENGINE_SOFTWARE_X11] = "software_x11"
 engines[<int>ECORE_EVAS_ENGINE_SOFTWARE_FB] = "software_fb"
-engines[<int>ECORE_EVAS_ENGINE_GL_X11] = "gl_x11"
+engines[<int>ECORE_EVAS_ENGINE_OPENGL_X11] = "gl_x11"
 engines[<int>ECORE_EVAS_ENGINE_SOFTWARE_BUFFER] = "software_buffer"
 engines[<int>ECORE_EVAS_ENGINE_XRENDER_X11] = "xrender_x11"
 engines[<int>ECORE_EVAS_ENGINE_DIRECTFB] = "directfb"
-engines[<int>ECORE_EVAS_ENGINE_SOFTWARE_X11_16] = "software_x11_16"
+engines[<int>ECORE_EVAS_ENGINE_SOFTWARE_16_X11] = "software_x11_16"
 cdef int engines_len
 engines_len = 7
 
