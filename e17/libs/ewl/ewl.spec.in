@@ -11,9 +11,9 @@ Source: ftp://ftp.enlightenment.org/enlightenment/%{name}-%{version}.tar.gz
 Packager: %{?_packager:%{_packager}}%{!?_packager:Michael Jennings <mej@eterm.org>}
 Vendor: %{?_vendorinfo:%{_vendorinfo}}%{!?_vendorinfo:The Enlightenment Project (http://www.enlightenment.org/)}
 Distribution: %{?_distribution:%{_distribution}}%{!?_distribution:%{_vendor}}
-#BuildSuggests: xorg-x11-devel
-BuildRequires: libjpeg-devel XFree86-devel
-BuildRequires: edb-devel embryo-devel eet-devel ecore-devel
+#BuildSuggests: xorg-x11-devel, XFree86-devel, libX11-devel
+BuildRequires: libjpeg-devel
+BuildRequires: embryo-devel eet-devel ecore-devel
 BuildRequires: evas-devel edje-devel emotion-devel edje-bin
 Requires: ecore evas edje embryo eet
 BuildRoot: %{_tmppath}/%{name}-%{version}-root
@@ -25,7 +25,7 @@ EWL is a widget library which uses the E Foundation Libraries (EFL).
 Summary: EWL headers and development libraries.
 Group: Development/Libraries
 Requires: %{name} = %{version}
-Requires: libjpeg-devel XFree86-devel
+Requires: libjpeg-devel
 Requires: embryo-devel eet-devel ecore-devel
 Requires: evas-devel edje-devel emotion-devel
 

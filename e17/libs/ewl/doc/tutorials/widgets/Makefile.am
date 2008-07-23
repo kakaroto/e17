@@ -57,3 +57,4 @@ ewl_window.dox
 tutorialdir = $(pkgdatadir)/tutorials/
 tutorial_DATA = $(FILES)
 
+EXTRA_DIST = $(FILES)

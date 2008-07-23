@@ -17,3 +17,4 @@ widget_packing.dox
 tutorialdir = $(pkgdatadir)/tutorials/
 tutorial_DATA = $(FILES)
 
+EXTRA_DIST = $(FILES)
