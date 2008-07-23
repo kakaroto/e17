@@ -21,15 +21,15 @@ int main( int argc, const char **argv )
         cerr << "Usage: " << argv[0] << "<video file>" << endl;
         return 1;
     }
-
     /* Create the main window, a window with an embedded canvas */
     EcoreEvasWindowSoftwareX11* mw = new EcoreEvasWindowSoftwareX11( WIDTH, HEIGHT );
     EvasCanvas* evas = mw->canvas();
     evas->appendFontPath( PACKAGE_DATA_DIR "/fonts" );
 
-    /* Add some objects to the canvas */
-    EvasEmotion* emotion = new EvasEmotion( 0, 0, 320, 240, argv[1], evas );
+    /* Create EvasEmotion object using xine engine */
+    EvasEmotion* emotion = new EvasEmotion( 0, 0, 320, 240, argv[1], "xine", evas );
     emotion->setSmoothScale( 1 );
+	
     emotion->setPlay( true );
     emotion->show();
 
