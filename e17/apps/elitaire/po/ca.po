@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: elitaire\n"
 "Report-Msgid-Bugs-To: peter.wehrfritz@web.de\n"
-"POT-Creation-Date: 2008-01-22 18:36+0100\n"
+"POT-Creation-Date: 2008-07-23 12:25+0200\n"
 "PO-Revision-Date: 2008-06-16 18:14+0100\n"
 "Last-Translator: Marc Furtià i Puig <marc.furtia@gmail.com>\n"
 "Language-Team: catalan <marc.furtia@gmail.com>\n"
@@ -12,15 +12,13 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 "X-Poedit-Language: Catalan\n"
 
-#: src/edje_frontend_game.cpp:61
-#: src/edje_frontend_gui.cpp:701
+#: src/edje_frontend_game.cpp:61 src/edje_frontend_gui.cpp:701
 #: src/edje_frontend_gui.cpp:755
 #, c-format
 msgid "Elitaire Error in %s: missing element_value part!\n"
 msgstr "Error d'Elitaire  a  %s : Perdut\n"
 
-#: src/edje_frontend_game.cpp:68
-#: src/edje_frontend_gui.cpp:708
+#: src/edje_frontend_game.cpp:68 src/edje_frontend_gui.cpp:708
 #: src/edje_frontend_gui.cpp:762
 #, c-format
 msgid "Elitaire Error in %s: missing element group!\n"
@@ -65,23 +63,19 @@ msgstr "Temes"
 msgid "Cards"
 msgstr "Cartes"
 
-#: src/edje_frontend_menu.cpp:23
-#: src/edje_frontend_menu.cpp:55
+#: src/edje_frontend_menu.cpp:23 src/edje_frontend_menu.cpp:55
 msgid "CONTEXT|Undo"
 msgstr "CONTEXT|Desfès"
 
-#: src/edje_frontend_menu.cpp:24
-#: src/edje_frontend_menu.cpp:59
+#: src/edje_frontend_menu.cpp:24 src/edje_frontend_menu.cpp:59
 msgid "CONTEXT|Highscore"
 msgstr "CONTEXT|Màximes puntuacions"
 
-#: src/edje_frontend_menu.cpp:25
-#: src/edje_frontend_menu.cpp:61
+#: src/edje_frontend_menu.cpp:25 src/edje_frontend_menu.cpp:61
 msgid "CONTEXT|Preferences"
 msgstr "CONTEXT|Preferencies"
 
-#: src/edje_frontend_menu.cpp:26
-#: src/edje_frontend_menu.cpp:63
+#: src/edje_frontend_menu.cpp:26 src/edje_frontend_menu.cpp:63
 msgid "CONTEXT|About"
 msgstr "CONTEXT|Sobre"
 
@@ -99,14 +93,12 @@ msgstr "Error d'Elitaire : No trobat el fitxer de tema %s!\n"
 msgid "Elitaire Error: No cards file in %s!\n"
 msgstr "Error d'Elitaire : No s'ha trobat el fitxer de cartes a %s!\n"
 
-#: src/elitaire_card.cpp:48
-#: src/elitaire_card.cpp:219
+#: src/elitaire_card.cpp:48 src/elitaire_card.cpp:219
 #, c-format
 msgid "Elitaire Error: Card %s is missed!\n"
 msgstr "Error d'Elitaire: La carta %s està perduda!\n"
 
-#: src/elitaire_card.cpp:53
-#: src/elitaire_card.cpp:224
+#: src/elitaire_card.cpp:53 src/elitaire_card.cpp:224
 #, c-format
 msgid "Elitaire Error: The bg pic is missed!\n"
 msgstr "Error d'Elitaire: L'imatge de fons està perduda!\n"
@@ -163,13 +155,11 @@ msgstr "Configuració"
 msgid "Graphic"
 msgstr "Grafic"
 
-#: src/ewl_dialog_config.cpp:93
-#: src/ewl_dialog_config.cpp:286
+#: src/ewl_dialog_config.cpp:93 src/ewl_dialog_config.cpp:286
 msgid "animated movements"
 msgstr "Moviments animats"
 
-#: src/ewl_dialog_config.cpp:102
-#: src/ewl_dialog_config.cpp:289
+#: src/ewl_dialog_config.cpp:102 src/ewl_dialog_config.cpp:289
 msgid "shadows"
 msgstr "ombres "
 
@@ -185,13 +175,11 @@ msgstr "Proporció d'estructura"
 msgid "Laziness"
 msgstr "Ganduleria "
 
-#: src/ewl_dialog_config.cpp:187
-#: src/ewl_dialog_config.cpp:301
+#: src/ewl_dialog_config.cpp:187 src/ewl_dialog_config.cpp:301
 msgid "normal mode"
 msgstr "mode normal "
 
-#: src/ewl_dialog_config.cpp:195
-#: src/ewl_dialog_config.cpp:298
+#: src/ewl_dialog_config.cpp:195 src/ewl_dialog_config.cpp:298
 msgid "lazy mode"
 msgstr "Mode gandul"
 
@@ -203,13 +191,11 @@ msgstr "Motor de Renderització"
 msgid "Changes only affect after new start"
 msgstr "Elscanvis només afectaran després de reiniciar"
 
-#: src/ewl_dialog_config.cpp:226
-#: src/ewl_dialog_config.cpp:292
+#: src/ewl_dialog_config.cpp:226 src/ewl_dialog_config.cpp:292
 msgid "Software"
 msgstr "Programari"
 
-#: src/ewl_dialog_config.cpp:234
-#: src/ewl_dialog_config.cpp:295
+#: src/ewl_dialog_config.cpp:234 src/ewl_dialog_config.cpp:295
 msgid "OpenGL (testing)"
 msgstr "OpenGL(testing)"
 
@@ -222,11 +208,11 @@ msgstr "Error d'Elitaire : No s'ha pogut desar la Configuració.\n"
 msgid "Highscore"
 msgstr "Màximes puntuacions"
 
-#: src/ewl_dialog_hiscore.cpp:117
+#: src/ewl_dialog_hiscore.cpp:118
 msgid "Name"
 msgstr "Nom"
 
-#: src/ewl_dialog_hiscore.cpp:143
+#: src/ewl_dialog_hiscore.cpp:144
 msgid "Please insert your name"
 msgstr "Si us plau, posa el teu nom"
 
@@ -266,4 +252,3 @@ msgstr "Error d'Elitaire: no es pot inicialitzar la configuració d'Ecore\n"
 #, c-format
 msgid "Elitaire Error: Cannot init Ewl\n"
 msgstr "Error d'Elitaire: no s'ha pogut inicialitzar Ewl\n"
-

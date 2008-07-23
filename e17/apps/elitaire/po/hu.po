@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: elitaire\n"
 "Report-Msgid-Bugs-To: peter.wehrfritz@web.de\n"
-"POT-Creation-Date: 2008-01-22 18:36+0100\n"
+"POT-Creation-Date: 2008-07-23 12:25+0200\n"
 "PO-Revision-Date: 2008-02-02 18:38+0100\n"
 "Last-Translator: Lisovszki  <lisovszki@gmail.com>\n"
 "Language-Team: hungarian <hu@li.org>\n"
@@ -213,11 +213,11 @@ msgstr "Elitaire hiba: nem tudtam elmenteni a beállítást.\n"
 msgid "Highscore"
 msgstr "Eredmények"
 
-#: src/ewl_dialog_hiscore.cpp:117
+#: src/ewl_dialog_hiscore.cpp:118
 msgid "Name"
 msgstr "Név"
 
-#: src/ewl_dialog_hiscore.cpp:143
+#: src/ewl_dialog_hiscore.cpp:144
 msgid "Please insert your name"
 msgstr "Kérlek add meg a neved"
 
@@ -257,4 +257,3 @@ msgstr "Elitaire hiba: nem tudom azonosítani az Ecore konfigurációt\n"
 #, c-format
 msgid "Elitaire Error: Cannot init Ewl\n"
 msgstr "Elitaire hiba: nem tudom azonosítani az Ewl-t\n"
-

@@ -112,7 +112,7 @@ static void _eli_edje_frontend_ee_init(Eli_App * eap, Eli_Edje_Frontend * eef)
     Ecore_Evas * ee;
 
     if (ecore_config_boolean_get("/graphic/gl")
-        && ecore_evas_engine_type_supported_get(ECORE_EVAS_ENGINE_GL_X11)) {
+        && ecore_evas_engine_type_supported_get(ECORE_EVAS_ENGINE_OPENGL_X11)) {
         ee = ecore_evas_gl_x11_new(NULL, 0, 0, 0, 0, 0);
         eap->main_win = (void *) ecore_evas_gl_x11_window_get(ee);
     }
