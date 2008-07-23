@@ -527,7 +527,7 @@ void EvasObject::registerCallbacks()
 void EvasObject::dispatcher( void *data, Evas *evas, Evas_Object *evas_object, void *event_info )
 {
     EvasObject* object = static_cast<EvasObject*>( evas_object_data_get( evas_object, "obj_c++" ) );
-    int type = reinterpret_cast<int>(data);
+    long type = reinterpret_cast<long>(data);
 
     switch ( type )
     {
