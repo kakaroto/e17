@@ -357,8 +357,9 @@ ec_theme_page_setup(Ewl_Notebook *n)
                 ret = ec_themes_get(rep, list, v);
                 if (ret >= 0)
                         sel = ret;
+
+                closedir(rep);
         }
-        closedir(rep);
 
         if (sel >= 0)
                 ewl_mvc_selected_set(EWL_MVC(o), NULL, list, sel, 0);
