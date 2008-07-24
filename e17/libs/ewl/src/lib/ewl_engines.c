@@ -1550,6 +1550,14 @@ ewl_engine_hook_get(Ewl_Embed *embed, Ewl_Engine_Hook_Type type, int hook)
         DCHECK_TYPE_RET(embed, EWL_EMBED_TYPE, NULL);
 
         caller = EWL_ENGINE(embed->engine);
+
+        /* bail if we don't have a valid engine */
+        if (!caller)
+        {
+                DWARNING("Calling ewl_engine_hook_get without a valid engine.");
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
+        }
+
         hooks = ewl_engine_hooks_get(caller, type);
         if ((!hooks || !hooks[hook]) && caller->dependancies)
         {
