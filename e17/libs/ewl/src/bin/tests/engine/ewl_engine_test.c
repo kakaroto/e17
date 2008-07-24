@@ -197,7 +197,7 @@ create_unit_test_window(void)
         Ewl_Widget *window;
 
         window = ewl_window_new();
-        ewl_embed_engine_name_set(EWL_EMBED(window), "ewl_engine_test");
+        ewl_embed_engine_name_set(EWL_EMBED(window), "evas_buffer");
         ewl_widget_show(window);
 
         return window;
@@ -215,7 +215,7 @@ engine_test_set_get(char *buf, int len)
         window = create_unit_test_window();
         engine_name = ewl_embed_engine_name_get(EWL_EMBED(window));
 
-        if (strcmp(engine_name, "ewl_engine_test"))
+        if (strcmp(engine_name, "evas_buffer"))
                 LOG_FAILURE(buf, len, "engine name doesn't match");
         else
                 ret = 1;
