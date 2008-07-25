@@ -12,16 +12,24 @@ def init():
 def shutdown():
     return ecore_evas_shutdown()
 
-cdef char *engines[7]
-engines[<int>ECORE_EVAS_ENGINE_SOFTWARE_X11] = "software_x11"
-engines[<int>ECORE_EVAS_ENGINE_SOFTWARE_FB] = "software_fb"
-engines[<int>ECORE_EVAS_ENGINE_OPENGL_X11] = "gl_x11"
+cdef char *engines[15]
 engines[<int>ECORE_EVAS_ENGINE_SOFTWARE_BUFFER] = "software_buffer"
+engines[<int>ECORE_EVAS_ENGINE_SOFTWARE_X11] = "software_x11"
 engines[<int>ECORE_EVAS_ENGINE_XRENDER_X11] = "xrender_x11"
+engines[<int>ECORE_EVAS_ENGINE_OPENGL_X11] = "gl_x11"
+engines[<int>ECORE_EVAS_ENGINE_SOFTWARE_XCB] = "software_xcb"
+engines[<int>ECORE_EVAS_ENGINE_XRENDER_XCB] = "xrender_xcb"
+engines[<int>ECORE_EVAS_ENGINE_SOFTWARE_DDRAW] = "software_ddraw"
+engines[<int>ECORE_EVAS_ENGINE_DIRECT3D] = "direct3d"
+engines[<int>ECORE_EVAS_ENGINE_OPENGL_GLEW] = "gl_glew"
+engines[<int>ECORE_EVAS_ENGINE_SDL] = "sdl"
 engines[<int>ECORE_EVAS_ENGINE_DIRECTFB] = "directfb"
+engines[<int>ECORE_EVAS_ENGINE_SOFTWARE_FB] = "software_fb"
 engines[<int>ECORE_EVAS_ENGINE_SOFTWARE_16_X11] = "software_x11_16"
+engines[<int>ECORE_EVAS_ENGINE_SOFTWARE_16_DDRAW] = "software_ddraw_16"
+engines[<int>ECORE_EVAS_ENGINE_SOFTWARE_16_WINCE] = "software_wince_16"
 cdef int engines_len
-engines_len = 7
+engines_len = sizeof(engines)/sizeof(engines[0])
 
 
 def engine_type_from_name(char *method):

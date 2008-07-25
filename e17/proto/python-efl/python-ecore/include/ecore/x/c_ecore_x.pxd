@@ -1309,7 +1309,9 @@ cdef extern from "Ecore_X.h":
     void ecore_x_dpms_timeout_suspend_set(unsigned int new_timeout)
     void ecore_x_dpms_timeout_off_set(unsigned int new_timeout)
 
+    void ecore_x_e_virtual_keyboard_state_set(Ecore_X_Window win, Ecore_X_Virtual_Keyboard_State state)
 
+    
 cimport ecore.c_ecore
 
 
