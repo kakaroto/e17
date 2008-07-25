@@ -2,6 +2,7 @@
 #include "Ewl_Test.h"
 #include "ewl_test_private.h"
 #include "ewl_button.h"
+#include "ewl_paned.h"
 #include "ewl_label.h"
 
 #include <stdio.h>
@@ -36,16 +37,26 @@ test_info(Ewl_Test *test)
 static int
 create_test(Ewl_Container *box)
 {
-        Ewl_Widget *body, *o2, *o;
+        Ewl_Widget *body, *o2, *o, *p;
 
         body = ewl_vbox_new();
         ewl_container_child_append(EWL_CONTAINER(box), body);
         ewl_widget_show(body);
 
+        p = ewl_hpaned_new();
+        ewl_container_child_append(EWL_CONTAINER(body), p);
+        ewl_widget_show(p);
+
         o = ewl_label_new();
-        ewl_container_child_append(EWL_CONTAINER(body), o);
+        ewl_container_child_append(EWL_CONTAINER(p), o);
         ewl_object_alignment_set(EWL_OBJECT(o), EWL_FLAG_ALIGN_CENTER);
-        ewl_label_text_set(EWL_LABEL(o), "First label");
+        ewl_label_text_set(EWL_LABEL(o), "A non-shrinkable, centered  label");
+        ewl_widget_show(o);
+
+        o = ewl_label_new();
+        ewl_container_child_prepend(EWL_CONTAINER(p), o);
+        ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_HSHRINKABLE);
+        ewl_label_text_set(EWL_LABEL(o), "Shrinkable label");
         ewl_widget_show(o);
 
         o2 = ewl_button_new();
@@ -61,9 +72,9 @@ void
 cb_click(Ewl_Widget *w __UNUSED__, void *e __UNUSED__, void *data)
 {
         if ((counter % 2) == 0)
-                ewl_label_text_set(EWL_LABEL(data), "Second Label");
+                ewl_label_text_set(EWL_LABEL(data), "Still Shrinkable label");
         else
-                ewl_label_text_set(EWL_LABEL(data), "First label");
+                ewl_label_text_set(EWL_LABEL(data), "Shrinkable label");
 
         counter ++;
 }
