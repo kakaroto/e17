@@ -470,20 +470,29 @@ ee_window_resize(Ewl_Window *win)
 static void
 ee_window_min_max_size_set(Ewl_Window *win)
 {
+        int min_w, min_h, max_w, max_h;
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(win);
         DCHECK_TYPE(win, EWL_WINDOW_TYPE);
 
+        min_w = ewl_object_minimum_w_get(EWL_OBJECT(win));
+        min_h = ewl_object_minimum_h_get(EWL_OBJECT(win));
+        max_w = ewl_object_maximum_w_get(EWL_OBJECT(win));
+        max_h = ewl_object_maximum_h_get(EWL_OBJECT(win));
+
+        if (min_w > max_w)
+                min_w = max_w;
+        if (min_h > max_h)
+                min_h = max_h;
+        
         ecore_x_icccm_size_pos_hints_set(INTPTR_TO_INT(win->window),
                                         0, ECORE_X_GRAVITY_NW,
-                                        ewl_object_minimum_w_get(EWL_OBJECT(win)),
-                                        ewl_object_minimum_h_get(EWL_OBJECT(win)),
-                                        ewl_object_maximum_w_get(EWL_OBJECT(win)),
-                                        ewl_object_maximum_h_get(EWL_OBJECT(win)),
+                                        min_w, min_h,
+                                        max_w, max_h,
                                         0, 0, /* base */
                                         0, 0, /* step */
                                         0, 0); /* aspect */
-
+        
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
@@ -1091,8 +1100,7 @@ ewl_ev_x_window_configure(void *data __UNUSED__, int type __UNUSED__, void *e)
                  * (As long as it doesn't break initial size.)
                  */
                 if (ev->from_wm) window->flags |= EWL_WINDOW_USER_CONFIGURE;
-                ewl_object_geometry_request(EWL_OBJECT(window), 0, 0, ev->w,
-                                                                        ev->h);
+                ewl_object_size_request(EWL_OBJECT(window), ev->w, ev->h);
         }
 
         DRETURN_INT(TRUE, DLEVEL_STABLE);
