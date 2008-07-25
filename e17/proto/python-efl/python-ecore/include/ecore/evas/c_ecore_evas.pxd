@@ -10,7 +10,7 @@ cdef extern from "Ecore_Evas.h":
     #
     ctypedef enum Ecore_Evas_Engine_Type:
         ECORE_EVAS_ENGINE_SOFTWARE_BUFFER
-      	ECORE_EVAS_ENGINE_SOFTWARE_X11
+        ECORE_EVAS_ENGINE_SOFTWARE_X11
         ECORE_EVAS_ENGINE_XRENDER_X11
         ECORE_EVAS_ENGINE_OPENGL_X11
         ECORE_EVAS_ENGINE_SOFTWARE_XCB
