@@ -1309,7 +1309,7 @@ cdef extern from "Ecore_X.h":
     void ecore_x_dpms_timeout_suspend_set(unsigned int new_timeout)
     void ecore_x_dpms_timeout_off_set(unsigned int new_timeout)
 
-    ctypedef enum Ecore_X_Virtual_Keyboard_State
+    ctypedef enum Ecore_X_Virtual_Keyboard_State:
     	ECORE_X_VIRTUAL_KEYBOARD_STATE_UNKNOWN
         ECORE_X_VIRTUAL_KEYBOARD_STATE_OFF
         ECORE_X_VIRTUAL_KEYBOARD_STATE_ON
