@@ -1,0 +1,12 @@
+Login:        cmarcelo
+IRC Nick:     cmarcelo
+Cloak:        developer/cmarcelo
+Name:         Caio Marcelo de Oliveira Filho
+Location:     Recife, Brazil
+E-Mail:       -cmarcelo@gmail.com
+WWW:
+Managing:
+Contributing: Etk, Python-EFL, Python-Etk
+Group:        Core, Libraries
+Platform:     Fedora (Linux)
+GeoData:      -8.117842 -34.902191

@@ -1,0 +1,10 @@
+Login:    davemds
+IRC Nick: davemds
+Name:     Davide Andreoli
+Location: Milano, Italy
+E-Mail:   dave@gurumeditation.it
+WWW:      http://www.gurumeditation.it/
+Managing: edje_editor
+Contributing: Engrave, Etk
+Platform: Linux
+GeoData:  45.4447 9.159 

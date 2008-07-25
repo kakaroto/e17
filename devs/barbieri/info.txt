@@ -1,0 +1,13 @@
+Login:        barbieri
+IRC Nick:     k-s
+Cloak:        developer/k-s
+Name:         Gustavo Sverzut Barbieri
+Location:     Paulinia, Brazil
+E-Mail:       -barbieri@gmail.com
+WWW:          http://www.gustavobarbieri.com.br/
+Managing:     Python-efl
+Contributing: Evas, Ecore, Edje
+Group:        Core, Libraries
+Platform:     Fedora (Linux), Maemo (Linux)
+GeoData:      -22.77338 -47.14352
+

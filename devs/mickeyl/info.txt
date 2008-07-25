@@ -1,0 +1,11 @@
+Login:        mickeyl
+IRC Nick:     mickeyl
+Name:         Michael Lauer
+Location:     Frankfurt/Main, Germany
+GeoData:      50.095222 8.687455
+E-Mail:       mlauer@vanille-media.de
+WWW:          http://www.vanille-media.de
+Managing:     eflpp
+Contributing: ecore-fb
+Group:        Libraries, Applications
+Platform:     FIC Neo1973, Sharp Zaurus, HP iPaq

@@ -1,0 +1,7 @@
+Login:    vapier
+IRC Nick: SpanKY / vapier
+Name:     Mike Frysinger
+Location: Holden, MA, USA
+E-Mail:   vapier@gentoo.org
+WWW:      http://wh0rd.org/
+Managing: packaging / minor general touchups in source / autotools help

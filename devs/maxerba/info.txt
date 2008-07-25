@@ -1,0 +1,8 @@
+Login:    maxerba
+IRC Nick: maxerba
+Name:     Massimo Maiurana
+Location: Ragusa, Sicily, Italy
+E-Mail:   maiurana@gmail.com
+WWW:      http://massimo.solira.org
+Managing: Italian translations
+GeoData:  36.9089 14.7136

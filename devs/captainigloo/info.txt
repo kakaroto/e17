@@ -1,0 +1,10 @@
+Login:        captainigloo
+IRC Nick:     captainigloo
+Name:         Nicolas Aguirre
+Location:     Toulouse, France
+E-Mail:       aguirre.nicolas@gmail.com
+WWW:          http://www.digital-corner.org
+Managing:     Enna
+Group:	      Applications
+Platform:     Linux
+GeoData:      43.598816 1.436257

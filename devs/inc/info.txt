@@ -1,0 +1,8 @@
+Login:    inc
+IRC Nick: Inc
+Cloak:    developer/inc
+Name:     Ian Caldwell
+Location: Carlsbad, Ca
+E-Mail:   inc@inc-omplete.org
+WWW:      http://inc-omplete.org
+Managing: Misc e17, server stuff and misc web

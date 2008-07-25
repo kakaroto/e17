@@ -1,0 +1,8 @@
+Login:    andreas
+IRC Nick: audifahrer
+Name:     Andreas Volz
+Location: Adelsdorf, Germany
+E-Mail:   linux@brachttal.net
+WWW:      ?
+Managing: e16menuedit2
+GeoData:  49.682002 10.878665

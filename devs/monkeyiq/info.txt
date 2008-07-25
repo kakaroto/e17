@@ -1,0 +1,7 @@
+Login:    monkeyiq
+IRC Nick: monkeyiq
+Name:     Ben Martin
+Location: Qld, Australia
+E-Mail:   monkeyiq@users.sf.net
+WWW:      http://monkeyiq.blogspot.com/
+Managing: gevas

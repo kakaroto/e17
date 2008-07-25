@@ -1,0 +1,11 @@
+Login:        nash
+IRC Nick:     nas
+Name:         Brett Nash
+Location:     Sydney, Australia
+E-Mail:       nash@nash.id.au
+WWW:          http://www.nash.id.au
+Managing:     Nothing much
+Contributing: evas, ecore
+Group:        Applications, Libraries
+Platform:     Debian (Linux)
+GeoData:      -34.069582 150.830569

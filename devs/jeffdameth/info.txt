@@ -1,0 +1,12 @@
+Login:          jeffdameth
+IRC Nick:       jeffdameth
+Name:           Hannes  Janetzek
+Location:       Bremen, Germany
+E-Mail:         -hannes.janetzek@gmail.com
+WWW:            
+Managing:
+Contributing:   E17, e_modules
+Group:          ?
+Platform:       GNU/Linux 
+GeoData:	53.067142 8.787724
+

@@ -1,0 +1,10 @@
+Login:        ulisses
+IRC Nick:     Ryback_
+Cloak:        developer/Ryback_
+Name:         Ulisses Furquim
+Location:     Recife, Brazil
+E-Mail:       -ulissesf@gmail.com
+WWW:          http://ulissesf.wordpress.com/
+Managing:     Python-efl
+Contributing: Evas, E_DBus
+Group:        Core, Libraries

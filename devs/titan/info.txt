@@ -1,0 +1,11 @@
+Login:		titan
+IRC Nick:	okra
+Name:		Stephen Houston
+Location:	Mississippi, USA
+E-Mail:		-unixtitan@gmail.com
+WWW:		http://www.ecoding.org
+Managing:	Ephoto
+Contributing:	E, Ephoto, Ewl
+Group: 		Core, Applications, Libraries
+Platform:	Mac OS X, Solaris 10, Linux
+GeoData:	32.470378 -90.085144

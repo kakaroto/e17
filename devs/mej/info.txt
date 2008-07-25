@@ -1,0 +1,7 @@
+Login:    mej
+IRC Nick: KainX
+Name:     Michael Jennings
+Location: Louisville, KY, USA
+E-Mail:   mej@kainx.org
+WWW:      http://www.kainx.org/
+Managing: Eterm

@@ -1,0 +1,9 @@
+Login:        turran
+IRC Nick:     turran
+Name:         Jorge Luis Zapata Muga
+Location:     Sant Cugat, Barcelona, Spain
+E-Mail:       jorgeluis.zapata@gmail.com
+WWW:          http://www.turran.org
+Managing:     ecore_dbus (Deprecated), extrackt, ecore_directfb, enesim, ecore_li
+Contributing: evas, ecore_fb 
+Platform:     Gentoo (Linux)

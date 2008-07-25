@@ -1,0 +1,7 @@
+Login:    kwo
+IRC Nick: kwo
+Name:     Kim Woelders
+Location: Farum, Denmark
+E-Mail:   kim@woelders.dk
+WWW:      ?
+Managing: e16

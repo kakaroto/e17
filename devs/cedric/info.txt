@@ -1,0 +1,12 @@
+Login:		cedric
+IRC Nick:	cedric
+Cloak:          developer/cedric
+Name:		Cedric BAIL
+Location:	Paris, France
+E-Mail:		cedric.bail@free.fr
+WWW:		none
+Managing:	eet
+Contributing:	eet, evas, ecore, edje, expedite
+Group:		Core, Libraries, Applications
+Platform:	Ubuntu (Linux), Buildroot (Linux)
+GeoData:	48.834519 2.290574

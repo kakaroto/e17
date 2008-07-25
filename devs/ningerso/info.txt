@@ -1,0 +1,8 @@
+Login:    ningerso
+IRC Nick: RbdPngn
+Cloak:    developer/RbdPngn
+Name:     Nathan Ingersoll
+Location: Superior, WI USA
+E-Mail:   ningerso@gmail.com
+WWW:      http://ningerso.edevelop.org/
+Managing: EWL, ecore_data

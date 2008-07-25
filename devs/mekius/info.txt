@@ -1,0 +1,12 @@
+Login:        mekius
+IRC Nick:     mekius
+Cloak:        developer/mekius
+Name:         Nicholas Hughart
+Location:     Belvidere, IL, USA
+Email:        mekius@mekius.net
+WWW:          http://www.mekius.net
+Managing:     empower
+Contributing: efreet,e17,website
+Group:        ?
+Platform:     ArchLinux
+GeoData:      42.2517 -88.8319
