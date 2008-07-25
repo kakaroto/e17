@@ -896,6 +896,14 @@ ewl_widget_appearance_part_text_apply(Ewl_Widget *w, const char *part, const cha
 
         ewl_object_preferred_inner_size_set(EWL_OBJECT(w), (int)nw, (int)nh);
 
+        /* XXX: this is a work-around to let edje show the ... for a
+         * trucated text, if we changed the text.
+         *
+         * remove this lines, when the bug is fixed in edje!
+         */
+        evas_object_resize(w->theme_object, 0, 0);
+        evas_object_resize(w->theme_object, CURRENT_W(w), CURRENT_H(w));
+
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
