@@ -1,6 +1,6 @@
 <table class='main'>
  <tr>
-  <td class='main'>
+  <td class='main' colspan=3>
    <div class="main">
     <h1>Download Enlightenment DR16</h1>
     <p>There are a few different ways to get Enlightenment depending on your
@@ -83,21 +83,31 @@
     section for more information.</p>
 
     <hr>
-    
+  </td>
+ </tr>
+ <tr>
+  <td class='main'>
+   <div class="main">
     <p><h2>Releases</h2></p>
     <p>The latest releases of Packages can be found here:</p>
     <p><a href="http://download.enlightenment.org/releases">Releases</a></p>
-    
-    <hr>
-    
-    <p><h2>Asparagus</h2>(Snapshots)</p>
+   </div>
+  </td>
+
+  <td class='main'>
+   <div class="main">
+    <p><h2>CVS / SVN &amp; Asparagus</h2>(Snapshots)</p>
     <p><?php img("aspara.png", "Asparagus");?></p>
+    <p><?php a("contribute", "CVS");?> information is here. Currently we have
+    no SVN servers available.</p>
     <p>Snapshot releases are available from
     <a href="http://download.enlightenment.org/snapshots">download.enlightenment.org/snapshots</a>.</p>
     <p><a href="http://download.enlightenment.org/snapshots/LATEST">Latest Snapshots</a></p>
+   </div>
+  </td>
 
-    <hr>
-    
+  <td class='main'>
+   <div class="main">
     <p><h2>Packages</h2></p>
     <p>Unoffical packages are availble for several platforms including:
     Debian, <a href="http://ubuntuforums.org/showthread.php?t=97199&highlight=E17+cvs">Ubuntu</a>,
@@ -109,7 +119,6 @@
     <p>There are no guarentees if these packages will work as expected. If you experience
     any problems with DR17 or the EFL using the packages, please first refer to the
     packagers, not to the Enlightenment team.</p>
-    
    </div>
   </td>
  </tr>
