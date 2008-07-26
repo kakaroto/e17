@@ -11,6 +11,7 @@
 
 static int create_test(Ewl_Container *win);
 
+static int constructor_test(char *buf, int len);
 static int label_test_set_get(char *buf, int len);
 static int image_null_test_get(char *buf, int len);
 static int image_null_test_set_get(char *buf, int len);
@@ -25,6 +26,7 @@ static int image_alignment_test_set_get(char *buf, int len);
 static int image_fill_policy_test_set_get(char *buf, int len);
 
 static Ewl_Unit_Test button_unit_tests[] = {
+                {"constructor", constructor_test, NULL, -1, 0},
                 {"label set/get", label_test_set_get, NULL, -1, 0},
                 {"image null get", image_null_test_get, NULL, -1, 0},
                 {"image null set/get", image_null_test_set_get, NULL, -1, 0},
@@ -191,6 +193,44 @@ create_test(Ewl_Container *box)
 
         return 1;
 }
+
+static int
+constructor_test(char *buf, int len)
+{
+        Ewl_Widget *button;
+        int ret = 0;
+
+        button = ewl_button_new();
+
+        if (!EWL_BUTTON_IS(button))
+        {
+                LOG_FAILURE(buf, len, "returned button is not of the type"
+                                " button");
+                goto DONE;
+        }
+        if (!!strcmp(ewl_widget_appearance_get(button), EWL_BUTTON_TYPE))
+        {
+                LOG_FAILURE(buf, len, "button has wrong appearance");
+                goto DONE;
+        }
+        if (!ewl_stock_type_get(EWL_STOCK(button)) == EWL_STOCK_NONE)
+        {
+                LOG_FAILURE(buf, len, "button has a stock type set");
+                goto DONE;
+        }
+        if (!ewl_widget_focusable_get(button))
+        {
+                LOG_FAILURE(buf, len, "button is not focusable");
+                goto DONE;
+        }
+
+        ret = 1;
+DONE:
+        ewl_widget_destroy(button);
+
+        return ret;
+}
+
 
 static int
 label_test_set_get(char *buf, int len)

@@ -18,13 +18,14 @@ static void border_change_alignment(Ewl_Widget *w, void *ev, void *data);
 static void border_change_position(Ewl_Widget *w, void *ev, void *data);
 static void checkbutton_cb(Ewl_Widget *w, void *ev, void *data);
 
-static int border_is_test(char *buf, int len);
+/* unit tests */
+static int constructor_test(char *buf, int len);
 static int label_set_get_test(char *buf, int len);
 static int label_position_set_get_test(char *buf, int len);
 static int label_alignment_set_get_test(char *buf, int len);
 
 static Ewl_Unit_Test border_unit_tests[] = {
-                {"Border is", border_is_test, NULL, -1, 0},
+                {"constructor", constructor_test, NULL, -1, 0},
                 {"Border label set/get", label_set_get_test, NULL, -1, 0},
                 {"Border label position set/get", label_position_set_get_test, NULL, -1, 0},
                 {"Border label alignment set/get", label_alignment_set_get_test, NULL, -1, 0},
@@ -244,18 +245,40 @@ checkbutton_cb(Ewl_Widget *w, void *ev __UNUSED__, void *data)
         }
 }
 
-static int border_is_test(char *buf, int len)
+static int
+constructor_test(char *buf, int len)
 {
-        Ewl_Widget *border;
+        Ewl_Widget *b;
         int ret = 0;
 
-        border = ewl_border_new();
-        if (ewl_widget_type_is(border, EWL_BORDER_TYPE))
-                ret = 1;
-        else
-                LOG_FAILURE(buf, len, "border type doesn't match");
+        b = ewl_border_new();
 
-        ewl_widget_destroy(border);
+        if (!EWL_BORDER_IS(b))
+        {
+                LOG_FAILURE(buf, len, "returned border widget  is not of the"
+                               " type border");
+                goto DONE;
+        }
+        if (!!strcmp(ewl_widget_appearance_get(b), EWL_BORDER_TYPE))
+        {
+                LOG_FAILURE(buf, len, "border has wrong appearance");
+                goto DONE;
+        }
+        if (!ewl_border_label_position_get(EWL_BORDER(b)) == EWL_POSITION_TOP)
+        {
+                LOG_FAILURE(buf, len, "the label position of the border "
+                                "is wrong");
+                goto DONE;
+        }
+        if (ewl_widget_focusable_get(b))
+        {
+                LOG_FAILURE(buf, len, "border widget is focusable");
+                goto DONE;
+        }
+
+        ret = 1;
+DONE:
+        ewl_widget_destroy(b);
 
         return ret;
 }
