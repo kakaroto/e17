@@ -16,3 +16,8 @@ cdef class BaseX11(EcoreEvas):
         x_cursor = ecore_x_cursor_shape_get(shape)
         x_win = self.window
         ecore_x_window_cursor_set(x_win, x_cursor)
+
+    def x_window_virtual_keyboard_state_set(self, int type):
+        cdef Ecore_X_Window x_win
+        x_win = self.window
+        ecore_x_e_virtual_keyboard_state_set(x_win, type)
