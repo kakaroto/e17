@@ -25,6 +25,7 @@
 #endif
 #define THUMB_SIZE_NORMAL 128
 #define THUMB_SIZE_LARGE 256
+#define THUMB_SIZE_CUSTOM 0
 #define THUMB_SIZE_FAIL -1
 #include "exiftags/exif.h"
 
@@ -38,9 +39,11 @@
 
 static char *PATH_DIR_LARGE = NULL;
 static char *PATH_DIR_NORMAL = NULL;
+static char *PATH_DIR_CUSTOM = NULL;
 static char *PATH_DIR_FAIL = NULL;
 static unsigned LEN_DIR_LARGE = 0;
 static unsigned LEN_DIR_NORMAL = 0;
+static unsigned LEN_DIR_CUSTOM = 0;
 static unsigned LEN_DIR_FAIL = 0;
 
 
@@ -446,6 +449,11 @@ _epsilon_file_name(unsigned thumb_size, const char *hash, const char *ext, char 
 	dir = PATH_DIR_NORMAL;
 	dir_len = LEN_DIR_NORMAL;
      }
+   else if (thumb_size == THUMB_SIZE_CUSTOM)
+     {
+	dir = PATH_DIR_CUSTOM;
+	dir_len = LEN_DIR_CUSTOM;
+     }
    else
      {
 	dir = PATH_DIR_FAIL;
@@ -474,7 +482,7 @@ _epsilon_exists_ext_int(unsigned thumb_size, const char *hash, const char *ext, 
 static int
 _epsilon_exists_ext(Epsilon *e, const char *ext, char *path, int path_size, time_t *mtime)
 {
-   if (_epsilon_exists_ext_int(e->tw, e->hash, ext, path, path_size, mtime))
+   if (_epsilon_exists_ext_int(e->tsize, e->hash, ext, path, path_size, mtime))
      return 1;
 
    return _epsilon_exists_ext_int(THUMB_SIZE_FAIL, e->hash, ext, path, path_size, mtime);
@@ -601,9 +609,12 @@ epsilon_generate (Epsilon * e)
 	evas_object_image_data_update_add(im, 0, 0, iw, ih);
 	if ((iw > 0) && (ih > 0))
 	  {
-	     ww = e->tw;
-	     hh = (e->tw * ih) / iw;
-	     if (hh > e->th)
+	     if ((iw > ih && e->tw > 0) || e->th <= 0)
+	       {
+		  ww = e->tw;
+		  hh = (e->tw * ih) / iw;
+	       }
+	     else
 	       {
 		  hh = e->th;
 		  ww = (e->th * iw) / ih;
@@ -647,9 +658,12 @@ epsilon_generate (Epsilon * e)
 	alpha = evas_object_image_alpha_get(im);
 	if ((iw > 0) && (ih > 0))
 	  {
-	     ww = e->tw;
-	     hh = (e->tw * ih) / iw;
-	     if (hh > e->th)
+	     if ((iw > ih && e->tw > 0) || e->th <= 0)
+	       {
+		  ww = e->tw;
+		  hh = (e->tw * ih) / iw;
+	       }
+	     else
 	       {
 		  hh = e->th;
 		  ww = (e->th * iw) / ih;
@@ -667,7 +681,7 @@ epsilon_generate (Epsilon * e)
 	if (data)
 	  {
 	     snprintf(buf, sizeof(buf), "file://%s", e->src);
-	     _epsilon_file_name(e->tw, e->hash, "png", buf2, sizeof(buf2));
+	     _epsilon_file_name(e->tsize, e->hash, "png", buf2, sizeof(buf2));
 	     /* this is wrong - but hey! good enough? */
 	     if (ext) snprintf(buf3, sizeof(buf3), "image/%s", ext);
 	     else snprintf(buf3, sizeof(buf3), "image/png");
@@ -707,14 +721,41 @@ epsilon_thumb_size(Epsilon *e, Epsilon_Thumb_Size size)
       case EPSILON_THUMB_NORMAL:
 	e->tw = THUMB_SIZE_NORMAL;
 	e->th = THUMB_SIZE_NORMAL;
+	e->tsize = THUMB_SIZE_NORMAL;
 	break;
       case EPSILON_THUMB_LARGE:
 	e->tw = THUMB_SIZE_LARGE;
 	e->th = THUMB_SIZE_LARGE;
+	e->tsize = THUMB_SIZE_LARGE;
 	break;
-     }   
+     }
 }
 
+void
+epsilon_custom_thumb_size (Epsilon * e, int w, int h, const char *dir)
+{
+  char buf[PATH_MAX];
+  int base_len;
+  char *home;
+
+  if (e && (w > 0 || h > 0))
+    {
+      e->tw = w;
+      e->th = h;
+      e->tsize = THUMB_SIZE_CUSTOM;
+
+      home = getenv("HOME");
+      base_len = snprintf(buf, sizeof(buf), "%s/.thumbnails/", home);
+      strncpy(buf + base_len, dir, PATH_MAX - base_len);
+
+      if (PATH_DIR_CUSTOM)
+        free(PATH_DIR_CUSTOM);
+
+      PATH_DIR_CUSTOM = strdup(buf);
+      LEN_DIR_CUSTOM = strlen(buf);
+      ecore_file_mkpath(PATH_DIR_CUSTOM);
+    }
+}
 
 #ifdef HAVE_PNG_H
 static FILE *

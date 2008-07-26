@@ -42,6 +42,7 @@ struct _Epsilon
   char *key;
   int w, h;
   int tw, th;
+  int tsize;
 };
 typedef struct _Epsilon Epsilon;
 
@@ -94,6 +95,11 @@ EAPI int epsilon_generate (Epsilon * e);
  * set output thumb size
  */
 EAPI void epsilon_thumb_size(Epsilon *e, Epsilon_Thumb_Size size);
+
+/*
+ * set a custom thumb size
+ */
+EAPI void epsilon_custom_thumb_size(Epsilon *e, int w, int h, const char *dir);
 
 /*
  * get the meta information associated with the epsilon
