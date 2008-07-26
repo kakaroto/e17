@@ -4,10 +4,10 @@
 <title><?php echo $title; ?></title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
 <link rel="stylesheet" type="text/css" href="style.css"/>
-<link rel="icon" href="favicon.ico" type="image/x-icon"/>
-<link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
-<link rel="icon" href="favicon.ico" type="image/ico"/>
-<link rel="shortcut icon" href="favicon.ico" type="image/ico"/>
+<link rel="icon" href="favicon.png" type="image/x-icon"/>
+<link rel="shortcut icon" href="favicon.png" type="image/x-icon"/>
+<link rel="icon" href="favicon.png" type="image/ico"/>
+<link rel="shortcut icon" href="favicon.png" type="image/ico"/>
 <style type="text/css"><!--img {behavior: url("png.htc");}--></style>
 <script src="bgsleight.js" type="text/javascript"></script>
 </head>
