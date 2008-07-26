@@ -202,7 +202,7 @@ ewl_box_orientation_set(Ewl_Box * b, Ewl_Orientation o)
 {
         Ewl_Container *c;
         Ewl_Widget *child;
-        char *appearance;
+        const char *appearance;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(b);
@@ -223,14 +223,12 @@ ewl_box_orientation_set(Ewl_Box * b, Ewl_Orientation o)
          * menubar */
         appearance = ewl_widget_appearance_get(EWL_WIDGET(b));
         if ((b->orientation == EWL_ORIENTATION_HORIZONTAL)
-                        && (!strcmp(appearance,        "vbox")))
+                        && (!strcmp(appearance, "vbox")))
                 ewl_widget_appearance_set(EWL_WIDGET(b), "hbox");
 
         else if ((b->orientation == EWL_ORIENTATION_VERTICAL)
                         && (!strcmp(appearance, "hbox")))
                 ewl_widget_appearance_set(EWL_WIDGET(b), "vbox");
-
-        IF_FREE(appearance);
 
         /* we need to reset the preferred size of the box after chaning the
          * orientation. We'll cheat by calling ewl_box_child_show_cb foreach

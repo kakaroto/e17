@@ -644,14 +644,14 @@ ewl_widget_appearance_set(Ewl_Widget *w, const char *appearance)
  * failure.
  * @brief Retrieve the appearance key of the widget
  */
-char *
+const char *
 ewl_widget_appearance_get(Ewl_Widget *w)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR_RET(w, NULL);
         DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, NULL);
 
-        DRETURN_PTR((w->appearance ? strdup(w->appearance) : NULL), DLEVEL_STABLE);
+        DRETURN_PTR(w->appearance, DLEVEL_STABLE);
 }
 
 /**
