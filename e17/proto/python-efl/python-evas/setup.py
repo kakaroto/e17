@@ -72,6 +72,7 @@ headers = ['evas/evas.c_evas.h',
            'include/evas/python_evas_utils.h',
            'include/evas/c_evas.pxd',
            'include/evas/python.pxd',
+           'include/evas/__init__.py',
            ]
 
 
