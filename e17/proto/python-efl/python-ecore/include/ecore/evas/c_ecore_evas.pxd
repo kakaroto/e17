@@ -177,9 +177,11 @@ cdef extern from "Ecore_Evas.h":
 
 cdef extern from "Ecore_X.h":
     ctypedef unsigned int Ecore_X_Cursor
+    ctypedef unsigned int Ecore_X_Virtual_Keyboard_State
 
     cdef void ecore_x_window_cursor_set(Ecore_X_Window win, Ecore_X_Cursor c)
     Ecore_X_Cursor ecore_x_cursor_shape_get(int shape)
+    cdef void ecore_x_e_virtual_keyboard_state_set(Ecore_X_Window win, Ecore_X_Virtual_Keyboard_State state)
 
 
 cdef class EcoreEvas:
