@@ -165,6 +165,7 @@ ewl_colorpicker_init(Ewl_Colorpicker *cp)
         ewl_container_child_append(EWL_CONTAINER(hbox), o);
         ewl_spectrum_type_set(EWL_SPECTRUM(o), EWL_SPECTRUM_TYPE_VERTICAL);
         ewl_spectrum_rgb_set(EWL_SPECTRUM(o), r, g, b);
+        /* XXX this shouldn't be hard coded */
         ewl_object_minimum_size_set(EWL_OBJECT(o), 15, 150);
         ewl_object_maximum_size_set(EWL_OBJECT(o), 15, EWL_OBJECT_MAX_SIZE);
         ewl_object_padding_set(EWL_OBJECT(o), 2, 2, 2, 2);
