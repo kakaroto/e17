@@ -35,6 +35,14 @@ static Ewl_Widget *combo_test_editable_cb_widget_fetch(void *data,
                                                         unsigned int row,
                                                         unsigned int col);
 
+/* unit tests */
+static int constructor_test(char *buf, int len);
+
+static Ewl_Unit_Test combo_unit_tests[] = {
+                {"constructor", constructor_test, NULL, -1, 0},
+                {NULL, NULL, NULL, -1, 0}
+        };
+
 void
 test_info(Ewl_Test *test)
 {
@@ -45,6 +53,7 @@ test_info(Ewl_Test *test)
         test->filename = __FILE__;
         test->func = create_test;
         test->type = EWL_TEST_TYPE_MISC;
+        test->unit_tests = combo_unit_tests;
 }
 
 static int
@@ -349,5 +358,32 @@ combo_cb_entry_changed(Ewl_Widget *w, void *ev __UNUSED__,
                                         void *data __UNUSED__)
 {
         printf("value changed to (%s)\n", ewl_text_text_get(EWL_TEXT(w)));
+}
+
+static int
+constructor_test(char *buf, int len)
+{
+        Ewl_Widget *c;
+        int ret = 0;
+
+        c = ewl_combo_new();
+
+        if (!EWL_COMBO_IS(c))
+        {
+                LOG_FAILURE(buf, len, "returned widget is not of the type "
+                                EWL_COMBO_TYPE);
+                goto DONE;
+        }
+        if (!!strcmp(ewl_widget_appearance_get(c), EWL_COMBO_TYPE))
+        {
+                LOG_FAILURE(buf, len, "combo has a wrong appearance");
+                goto DONE;
+        }
+
+        ret = 1;
+DONE:
+        ewl_widget_destroy(c);
+
+        return ret;
 }
 

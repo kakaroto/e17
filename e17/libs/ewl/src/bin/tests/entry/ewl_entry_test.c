@@ -7,10 +7,19 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 static Ewl_Widget *entry[3];
 
 static int create_test(Ewl_Container *box);
+
+/* unit tests */
+static int constructor_test(char *buf, int len);
+
+static Ewl_Unit_Test entry_unit_tests[] = {
+                {"constructor", constructor_test, NULL, -1, 0},
+                {NULL, NULL, NULL, -1, 0}
+        };
 
 void
 test_info(Ewl_Test *test)
@@ -21,6 +30,7 @@ test_info(Ewl_Test *test)
         test->filename = __FILE__;
         test->func = create_test;
         test->type = EWL_TEST_TYPE_SIMPLE;
+        test->unit_tests = entry_unit_tests;
 }
 
 static void
@@ -131,4 +141,41 @@ create_test(Ewl_Container *box)
         return 1;
 }
 
+static int
+constructor_test(char *buf, int len)
+{
+        Ewl_Widget *e;
+        int ret = 0;
+
+        e = ewl_entry_new();
+
+        if (!EWL_ENTRY_IS(e))
+        {
+                LOG_FAILURE(buf, len, "returned widget is not of the type"
+                                " " EWL_ENTRY_TYPE);
+                goto DONE;
+        }
+        if (ewl_object_fill_policy_get(EWL_OBJECT(e)) != (EWL_FLAG_FILL_HSHRINK
+                                | EWL_FLAG_FILL_HFILL))
+        {
+                LOG_FAILURE(buf, len, "default fill policy is wrong");
+                goto DONE;
+        }
+        if (!!strcmp(ewl_widget_appearance_get(e), EWL_ENTRY_TYPE))
+        {
+                LOG_FAILURE(buf, len, "appearance is not " EWL_ENTRY_TYPE);
+                goto DONE;
+        }
+        if (!ewl_widget_focusable_get(e))
+        {
+                LOG_FAILURE(buf, len, "entry is not focusable");
+                goto DONE;
+        }
+
+        ret = 1;
+DONE:
+        ewl_widget_destroy(e);
+
+        return ret;
+}
 
