@@ -84,7 +84,7 @@ taglib_cflags=`$TAGLIB_CONFIG --cflags`
 AC_SUBST(taglib_libs)
 AC_SUBST(taglib_cflags)
 
-AC_CHECK_HEADER(taglib/tag_c.h)
+AC_CHECK_HEADER(taglib/tag_c.h,,AC_MSG_ERROR([cannot find headers for libtagc]))
 
 PKG_CHECK_MODULES(ECLAIR, [
   libxml-2.0
