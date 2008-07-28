@@ -165,8 +165,7 @@ fi
 AC_SUBST(taglib_libs)
 AC_SUBST(taglib_cflags)
 AM_CONDITIONAL(HAVE_TAGLIB, test $msg_taglib = yes)
-AC_CHECK_HEADER(taglib/tag_c.h)
-
+AC_CHECK_HEADER(taglib/tag_c.h,,AC_MSG_ERROR([cannot find headers for libtagc]))
 
 
 dnl ###################
