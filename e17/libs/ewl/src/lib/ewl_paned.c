@@ -516,7 +516,7 @@ ewl_paned_cb_child_hide(Ewl_Container *c, Ewl_Widget *w)
 }
 
 /**
- * @param w: The paned to work with
+ * @param p: The paned to work with
  * @param pane_num: The number of visible panes
  * @return Returns no value
  * @brief The arrange the child widgets

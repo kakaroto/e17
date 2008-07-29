@@ -748,7 +748,7 @@ ewl_text_text_delete(Ewl_Text *t, unsigned int char_len)
 }
 
 /**
- * @param e: the text to set the obscuring character
+ * @param t: the text to set the obscuring character
  * @param o: the character to obscure the password characters. This need to be
  *           a string, because UTF-8 characters can be longer then one byte.
  *           If it is not a valid UTF-8 character it will fallback to an

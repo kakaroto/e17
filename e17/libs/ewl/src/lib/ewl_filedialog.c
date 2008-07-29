@@ -581,7 +581,7 @@ ewl_filedialog_cb_show_favorites(Ewl_Widget *w __UNUSED__,
 
 /**
  * @param fd: The filedialog to work with
- * @t: Non-zero to set the filedialog to a save type
+ * @param t: Non-zero to set the filedialog to a save type
  * @return Returns no value
  * @brief Sets the type of the filedialog
  */
@@ -630,7 +630,7 @@ ewl_filedialog_return_directories_set(Ewl_Filedialog *fd, unsigned int t)
 }
 
 /**
- * @param fp: The filedialog to work with
+ * @param fd: The filedialog to work with
  * @return Returns non-zero if the filedialog can return directories
  * @brief Gets the filedialog's policy on returning directories
  */

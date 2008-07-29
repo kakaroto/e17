@@ -37,7 +37,7 @@
 typedef struct Ewl_Freebox_MVC Ewl_Freebox_MVC;
 
 /**
- * @breif Inherits from EWL_MVC and extends to provide a free layout widget
+ * @brief Inherits from EWL_MVC and extends to provide a free layout widget
  */
 struct Ewl_Freebox_MVC
 {

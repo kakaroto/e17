@@ -244,6 +244,7 @@ ewl_tree_column_count_set(Ewl_Tree *tree, unsigned int count)
 /**
  * @param tree: The tree to work with
  * @param col: The number of the column to change the fixed size flag
+ * @param fixed: The fixed size flag to set
  * @return Returns no value
  * @brief Set the fixed size flag of the give column
  */
@@ -300,6 +301,7 @@ ewl_tree_column_fixed_size_get(Ewl_Tree *tree, unsigned int col)
 /**
  * @param tree: The tree to work with
  * @param col: The number of the column to change the initial size
+ * @param size: The initial column size to set
  * @return Returns no value
  * @brief Set the initial size of the give column
  */

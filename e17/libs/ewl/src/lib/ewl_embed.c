@@ -74,7 +74,7 @@ ewl_embed_new(void)
 }
 
 /**
- * @param w: the embed to be initialized to default values and callbacks
+ * @param emb: the embed to be initialized to default values and callbacks
  * @return Returns TRUE or FALSE depending on if initialization succeeds.
  * @brief initialize a embed to default values and callbacks
  *

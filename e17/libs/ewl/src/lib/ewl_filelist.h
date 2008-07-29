@@ -31,23 +31,23 @@
  * @{
  */
  
- /**
- *  * @def EWL_FILELIST_FILTER_TYPE
- *   * The type name
- *    **/
+/**
+ * @def EWL_FILELIST_FILTER_TYPE
+ * The type name
+ */
 #define EWL_FILELIST_FILTER_TYPE "filelist_filter"
 
 typedef struct Ewl_Filelist_Filter Ewl_Filelist_Filter;
 
 /**
- *  * @def EWL_FILELIST_FILTER(ff)
- *   * Typecasts a pointer to an Ewl_Filelist_Filter
- *    **/
+ * @def EWL_FILELIST_FILTER(ff)
+ * Typecasts a pointer to an Ewl_Filelist_Filter
+ */
 #define EWL_FILELIST_FILTER(ff), ((Ewl_Filelist_Filter *)ff)
 
 /**
- *  * @brief The data structure for Ewl_Filelist_Filter
- *   **/
+ * @brief The data structure for Ewl_Filelist_Filter
+ */
 struct Ewl_Filelist_Filter
 {
                 char *name;
@@ -135,22 +135,22 @@ struct Ewl_Filelist_File
 };
 
 /**
- *  * @def EWL_FILELIST_DIRECTORY_TYPE
- *   * The type name
- *    */
+ * @def EWL_FILELIST_DIRECTORY_TYPE
+ * The type name
+ */
 #define EWL_FILELIST_DIRECTORY_TYPE "filelist_directory"
 
 typedef struct Ewl_Filelist_Directory Ewl_Filelist_Directory;
 
 /**
- *  * @def EWL_FILELIST_DIRECTORY(fl)
- *   * Typecasts a pointer to an Ewl_Filelist_Directory pointer
- *    */
+ * @def EWL_FILELIST_DIRECTORY(fl)
+ * Typecasts a pointer to an Ewl_Filelist_Directory pointer
+ */
 #define EWL_FILELIST_DIRECTORY(fl) ((Ewl_Filelist_Directory *)fl)
 
 /**
- *  * @brief The data structure for Ewl_Filelist_Directory
- *   */
+ * @brief The data structure for Ewl_Filelist_Directory
+ */
 struct Ewl_Filelist_Directory
 {
         const char *name;
