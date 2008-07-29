@@ -153,15 +153,15 @@ ewl_engine_new(const char *name, int *argc, char ** argv)
         plugin = ecore_plugin_load(ewl_engines_path, name, INTERFACE_CURRENT);
         if (!plugin)
         {
-                DWARNING("Unable to open engine %s.", name);
+                fprintf(stderr, "Unable to open engine %s.\n", name);
                 DRETURN_PTR(NULL, DLEVEL_STABLE);
         }
 
         dependancies = ecore_plugin_symbol_get(plugin, "ewl_engine_dependancies");
         if (!dependancies)
         {
-                DWARNING("Unable to find ewl_engine_dependancies for "
-                                "the %s engine.", name);
+                fprintf(stderr, "Unable to find ewl_engine_dependancies for "
+                                "the %s engine.\n", name);
                 DRETURN_PTR(NULL, DLEVEL_STABLE);
         }
 
@@ -196,7 +196,7 @@ ewl_engine_new(const char *name, int *argc, char ** argv)
         create_engine = ecore_plugin_symbol_get(plugin, "ewl_engine_create");
         if (!create_engine)
         {
-                DWARNING("Unable to find ewl_engine_create for the %s engine.", name);
+                fprintf(stderr, "Unable to find ewl_engine_create for the %s engine.\n", name);
                 DRETURN_PTR(NULL, DLEVEL_STABLE);
         }
 
