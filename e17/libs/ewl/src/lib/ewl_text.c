@@ -3231,15 +3231,21 @@ ewl_text_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
         t = EWL_TEXT(w);
         if (t->textblock)
         {
+                Ewl_Widget *child;
+
                 ewl_text_size(t);
                 if (t->dirty) ewl_text_display(t);
 
                 ewl_text_triggers_place(t);
 
-                /* re-configure the selection to make sure it resizes
-                 * if needed */
-                if (t->selection)
-                        ewl_widget_configure(EWL_WIDGET(t->selection));
+                /*
+                 * configure all children. We actually only need to configure
+                 * the area parts, but it doesn't hurt if we call the configure
+                 * call for the trigger, too
+                 */
+                ecore_dlist_first_goto(EWL_CONTAINER(t)->children);
+                while ((child = ecore_dlist_next(EWL_CONTAINER(t)->children)))
+                        ewl_widget_configure(child);
         }
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
@@ -3474,13 +3480,6 @@ ewl_text_cb_mouse_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
                 t->selection = ewl_text_selection_new(t);
         
         sel = EWL_TEXT_TRIGGER(t->selection);
-
-        /* Move the selection widget to wherever the mouse was clicked,
-         * as this way we are always marked onscreen, and receive configuration
-         * callbacks
-         */
-        ewl_object_position_request(EWL_OBJECT(t->selection), event->x,
-                                event->y);
 
         char_idx = ewl_text_coord_index_map(EWL_TEXT(w), event->x, event->y);
         ewl_text_cursor_position_set(t, char_idx);

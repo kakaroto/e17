@@ -108,8 +108,6 @@ ewl_text_trigger_init(Ewl_Text_Trigger *trigger, Ewl_Text_Trigger_Type type)
 
         ewl_callback_prepend(EWL_WIDGET(trigger), EWL_CALLBACK_DESTROY,
                                         ewl_text_trigger_cb_destroy, NULL);
-        ewl_callback_append(EWL_WIDGET(trigger), EWL_CALLBACK_CONFIGURE,
-                                        ewl_text_trigger_cb_configure, NULL);
         ewl_callback_append(EWL_WIDGET(trigger), EWL_CALLBACK_SHOW,
                                         ewl_text_trigger_cb_show, NULL);
         ewl_callback_append(EWL_WIDGET(trigger), EWL_CALLBACK_HIDE,
@@ -326,35 +324,6 @@ ewl_text_trigger_areas_cleanup(Ewl_Text_Trigger *trig)
                 while ((area = ecore_list_first_remove(trig->areas)))
                         ewl_text_trigger_area_cache(trig->text_parent, area);
         }
-
-        DLEAVE_FUNCTION(DLEVEL_STABLE);
-}
-
-/**
- * @param w: The trigger to work with
- * @param ev: UNUSED
- * @param data: UNUSED
- * @return Returns no value
- * @brief Configures the areas associated with @a trig
- */
-void
-ewl_text_trigger_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
-                                                void *data __UNUSED__)
-{
-        Ewl_Text_Trigger *trig;
-        Ewl_Text_Trigger_Area *area;
-
-        DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR(w);
-        DCHECK_TYPE(w, EWL_TEXT_TRIGGER_TYPE);
-
-        trig = EWL_TEXT_TRIGGER(w);
-
-        if (!trig->areas) DRETURN(DLEVEL_STABLE);
-
-        ecore_list_first_goto(trig->areas);
-        while ((area = ecore_list_next(trig->areas)))
-                ewl_widget_configure(EWL_WIDGET(area));
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

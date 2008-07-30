@@ -83,7 +83,6 @@ void                     ewl_text_trigger_areas_cleanup(Ewl_Text_Trigger *trig);
  */
 void ewl_text_trigger_cb_show(Ewl_Widget *w, void *ev, void *data);
 void ewl_text_trigger_cb_hide(Ewl_Widget *w, void *ev, void *data);
-void ewl_text_trigger_cb_configure(Ewl_Widget *w, void *ev, void *data);
 void ewl_text_trigger_cb_unrealize(Ewl_Widget *w, void *ev, void *data);
 
 /**
