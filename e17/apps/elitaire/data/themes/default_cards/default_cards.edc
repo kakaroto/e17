@@ -1,6 +1,6 @@
-#define CARD(_number) \
+#define GROUP(_type, _number) \
 group {\
-	name: _number;\
+	name: "elitaire/"_type"/"_number;\
 	min: 39 61;\
 	max: 158 246;\
 \
@@ -47,6 +47,9 @@ group {\
 		}\
 	}\
 }
+
+#define CARD(_number) GROUP("card", _number)
+#define STACK(_number) GROUP("stack", _number)
 
 images {
 	image: "00.png" LOSSY 95;
@@ -102,8 +105,8 @@ images {
 	image: "50.png" LOSSY 95;
 	image: "51.png" LOSSY 95;
 	image: "bg.png" LOSSY 95;
-	image: "ALL.png" LOSSY 95;
-	image: "LAST.png" LOSSY 95;
+	image: "all.png" LOSSY 95;
+	image: "last.png" LOSSY 95;
 	image: "shadow.png" LOSSY 95;
 	image: "hint_hilite.png" LOSSY 95;
 }
@@ -162,8 +165,8 @@ collections {
 	CARD("50")
 	CARD("51")
 	CARD("bg")
-	CARD("ALL")
-	CARD("LAST")
 	CARD("shadow")
+	STACK("all")
+	STACK("last")
 }
 
