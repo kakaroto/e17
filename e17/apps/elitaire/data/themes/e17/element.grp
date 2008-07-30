@@ -1,5 +1,5 @@
 group {
-   name: "element";
+   name: "elitaire/element";
    min: 40 22;
    
    parts {

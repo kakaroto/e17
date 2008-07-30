@@ -1,5 +1,5 @@
 group {
-	name: "main";
+	name: "elitaire/main";
 	min: 330 310;
 	
 	data {

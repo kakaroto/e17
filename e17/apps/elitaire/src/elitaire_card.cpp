@@ -28,13 +28,14 @@ Evas_Object * elitaire_card_new(Elitaire * eli, playingCard * pcard)
 {
     Evas_Object * card;
     Elitaire_Card * data = NULL;
-    char buffer[3];
+    char buffer[128];
 
     card = evas_object_smart_add(eli->evas, _elitaire_card_smart_get());
     data = (Elitaire_Card *) evas_object_smart_data_get(card);
 
     if (data) {
-        itoa(pcard->getName(), buffer, 2);
+        snprintf(buffer, sizeof(buffer), "elitaire/card/%02d", 
+                                                            pcard->getName());
         data->image = edje_object_add(eli->evas);
         evas_object_smart_member_add(data->image, card);
         data->pcard = pcard;
@@ -49,7 +50,8 @@ Evas_Object * elitaire_card_new(Elitaire * eli, playingCard * pcard)
                         buffer);
         }
         else {
-            if (!edje_object_file_set(data->image, eli->file, "bg"))
+            if (!edje_object_file_set(data->image, eli->file, 
+                                                        "elitaire/card/bg"))
                 fprintf(stderr, _("Elitaire Error: The bg pic is missed!\n"));
         }
     }
@@ -200,7 +202,7 @@ void elitaire_card_chain_make(Evas_Object * card)
 void elitaire_card_reinit(Evas_Object * card)
 {
     Elitaire_Card * data = NULL;
-    char buffer[3];
+    char buffer[128];
 
     data = (Elitaire_Card *) evas_object_smart_data_get(card);
 
@@ -214,13 +216,15 @@ void elitaire_card_reinit(Evas_Object * card)
         new_image = edje_object_add(data->eli->evas);
 
         if (data->pcard->isVisible()) {
-            itoa(data->pcard->getName(), buffer, 2);
+            snprintf(buffer, sizeof(buffer), "elitaire/card/%02d", 
+                                                        data->pcard->getName());
             if (!edje_object_file_set(new_image, data->eli->file, buffer))
                 fprintf(stderr, _("Elitaire Error: Card %s is missed!\n"),
                         buffer);
         }
         else {
-            if (!edje_object_file_set(new_image, data->eli->file, "bg"))
+            if (!edje_object_file_set(new_image, data->eli->file, 
+                                                        "elitaire/card/bg"))
                 fprintf(stderr, _("Elitaire Error: The bg pic is missed!\n"));
         }
 

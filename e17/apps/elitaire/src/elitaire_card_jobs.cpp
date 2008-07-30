@@ -390,7 +390,7 @@ _elitaire_card_shadow_on(Evas_Object * card)
             
         data->shadow = edje_object_add(data->eli->evas);
         evas_object_smart_member_add(data->shadow, card);
-        if (!edje_object_file_set(data->shadow, data->eli->file, "shadow"))
+        if (!edje_object_file_set(data->shadow, data->eli->file, "elitaire/card/shadow"))
             fprintf(stderr, _("Elitaire Error: The shadow pic is missed!\n"));
 
         n = elitaire_card_chain_length_calc(card);

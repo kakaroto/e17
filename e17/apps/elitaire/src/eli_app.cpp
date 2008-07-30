@@ -216,7 +216,7 @@ int eli_app_frontend_init(Eli_App * eap, const char * frontend)
     
     if (!strcmp(frontend, "edje")) {
         eli_frontend_edje_init(eap, eap->frontend);
-	eli_frontend_ewl_dialogs_init(eap);
+        eli_frontend_ewl_dialogs_init(eap);
     }
     else return false;
 
@@ -230,12 +230,12 @@ int eli_app_config_init(Eli_App * eap)
 
     /* THEME */
     ecore_config_theme_default("/theme/gui", "e17");
-    ecore_config_theme_preview_group_set("/theme/gui", "main");
+    ecore_config_theme_preview_group_set("/theme/gui", "elitaire/main");
     ecore_config_listen("theme", "/theme/gui", _eli_app_config_listen_cb, 
                                      THEME, eap);
     /* CARDS */
     ecore_config_theme_default("/theme/cards", "default_cards");
-    ecore_config_theme_preview_group_set("/theme/cards", "01");
+    ecore_config_theme_preview_group_set("/theme/cards", "elitaire/01");
     ecore_config_listen("cards", "/theme/cards", _eli_app_config_listen_cb,
                                      CARDS, eap);
     /* VELOCITY */
@@ -333,10 +333,10 @@ int eli_app_theme_init(Eli_App * eap)
         file = ecore_config_theme_with_path_from_name_get(name);
 
         /* selecting the gui theme */
-        if (edje_file_group_exists(file, "main"))
+        if (edje_file_group_exists(file, "elitaire/main"))
             ecore_list_append(gui, name);
         /* selecting the card theme */
-        if (edje_file_group_exists(file, "01"))
+        if (edje_file_group_exists(file, "elitaire/card/01"))
             ecore_list_append(cards, name);
 
         free(file);

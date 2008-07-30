@@ -184,7 +184,7 @@ void _eli_edje_frontend_gui_make(Eli_App * eap)
     gui_theme =
         ecore_config_theme_with_path_from_name_get(eap->theme.gui.current);
 
-    if (edje_object_file_set(eef->gui, gui_theme, "main")) {
+    if (edje_object_file_set(eef->gui, gui_theme, "elitaire/main")) {
         evas_object_move(eef->gui, 0, 0);
         evas_object_repeat_events_set(eef->gui, 1);
         edje_object_size_min_get(eef->gui, &w, &h);
@@ -678,7 +678,7 @@ static void _eli_edje_frontend_theme_container_fill(Eli_App * eap,
 
         item = edje_object_add(eef->evas);
 
-        if (edje_object_file_set(item, file, "element")) {
+        if (edje_object_file_set(item, file, "elitaire/element")) {
             Evas_Coord w, h;
 
             edje_object_size_min_get(item, NULL, &h);
@@ -732,7 +732,7 @@ static void _eli_edje_frontend_cards_container_fill(Eli_App * eap,
         Evas_Object * item;
 
         item = edje_object_add(evas_object_evas_get(container));
-        if (edje_object_file_set(item, file, "element")) {
+        if (edje_object_file_set(item, file, "elitaire/element")) {
             Evas_Coord w, h;
 
             edje_object_size_min_get(item, NULL, &h);

@@ -38,7 +38,7 @@ void _eli_edje_frontend_menu_container_fill(Eli_App * eap,
 
         item = edje_object_add(evas_object_evas_get(container));
 
-        if (edje_object_file_set(item, file, "element")) {
+        if (edje_object_file_set(item, file, "elitaire/element")) {
             Evas_Coord w, h;
 
             edje_object_size_min_get(item, NULL, &h);

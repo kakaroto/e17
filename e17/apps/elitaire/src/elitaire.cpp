@@ -190,7 +190,7 @@ int elitaire_object_file_set(Evas_Object * elitaire, const char * file)
     /* get the maximal and minimal size of the cards via edje */
     /* I expect that every card in the game has the same size */
     card = edje_object_add(eli->evas);
-    if (!edje_object_file_set(card, eli->file, "00")) return 0;
+    if (!edje_object_file_set(card, eli->file, "elitaire/card/00")) return 0;
         
     edje_object_size_max_get(card, &eli->card_max_w, &eli->card_max_h);
     edje_object_size_min_get(card, &eli->card_min_w, &eli->card_min_h);
@@ -239,7 +239,7 @@ int elitaire_object_file_set(Evas_Object * elitaire, const char * file)
         case LAST:
             eli->stacks[number] = edje_object_add(eli->evas);
             evas_object_smart_member_add(eli->stacks[number], elitaire);
-            edje_object_file_set(eli->stacks[number], eli->file, "LAST");
+            edje_object_file_set(eli->stacks[number], eli->file, "elitaire/stack/last");
             evas_object_event_callback_add(eli->stacks[number],
                                            EVAS_CALLBACK_MOUSE_UP,
                                            _elitaire_stack_mouse_up_cb, eli);
@@ -251,7 +251,7 @@ int elitaire_object_file_set(Evas_Object * elitaire, const char * file)
         case ALL:
             eli->stacks[number] = edje_object_add(eli->evas);
             evas_object_smart_member_add(eli->stacks[number], elitaire);
-            edje_object_file_set(eli->stacks[number], eli->file, "ALL");
+            edje_object_file_set(eli->stacks[number], eli->file, "elitaire/stack/all");
             evas_object_event_callback_add(eli->stacks[number],
                                            EVAS_CALLBACK_MOUSE_UP,
                                            _elitaire_stack_mouse_up_cb, eli);
@@ -656,24 +656,6 @@ Evas_Bool elitaire_object_wait_for_end_of_jobs(Evas_Object * elitaire,
         }
     }
     return false;
-}
-
-/* this function convert an integer val int to an char array buf 
- * it use the base=10 , be carful, it doesn"t  alloc any memory 
- * so the buf array should have 
- * (length+1) elements */
-
-char * itoa(int val, char * buf, int length)
-{
-
-    buf[length--] = 0;
-
-    do {
-        buf[length--] = "0123456789"[val % 10];
-        val /= 10;
-    } while (length + 1);
-    
-    return buf;
 }
 
 /**********
