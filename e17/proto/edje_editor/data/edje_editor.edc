@@ -115,7 +115,9 @@ images {
    image: "bg2.png" LOSSY 95;
    image: "bg2_i.png" LOSSY 95;
    image: "bg3.png" LOSSY 95;
-   image: "bg4.png" LOSSY 95;
+   image: "fopa100.png" LOSSY 95;
+   image: "fopa50.png" LOSSY 95;
+   image: "fopa25.png" LOSSY 95;
    image: "logo.png" LOSSY 95;
    image: "frame_bg.png" LOSSY 95;
    image: "frame_bg_label.png" LOSSY 95;
@@ -161,6 +163,14 @@ images {
 fonts {
    font: "vera.ttf" "vera.ttf";
 }
+
+color_classes {
+   color_class {
+      name:  "cc_background";
+      color:  255 255 255 255;
+   }
+}
+
 
 collections {
    group{
@@ -418,23 +428,60 @@ collections {
       }
    }
    group{
-      name: "BG4_I.PNG";
-      min: 15 15;
-      max: 15 15;
+      name: "FOPA100.PNG";
+      min: 20 20;
+      max: 20 20;
       parts{
          part{
             name: "StaticImage";
-            type: RECT;
+            type: IMAGE;
             mouse_events: 0;
             description{
                state: "default" 0.0;
-               color: 0 0 0 255;
                rel1 {relative: 0.0 0.0; offset: 0 0;}
-               rel2 {relative: 0.0 0.0; offset: 15 15;}
+               rel2 {relative: 0.0 0.0; offset: 20 20;}
+               image {normal: "fopa100.png";}
             }
          }
       }
    }
+   group{
+      name: "FOPA50.PNG";
+      min: 20 20;
+      max: 20 20;
+      parts{
+         part{
+            name: "StaticImage";
+            type: IMAGE;
+            mouse_events: 0;
+            description{
+               state: "default" 0.0;
+               rel1 {relative: 0.0 0.0; offset: 0 0;}
+               rel2 {relative: 0.0 0.0; offset: 20 20;}
+               image {normal: "fopa50.png";}
+            }
+         }
+      }
+   }
+   group{
+      name: "FOPA25.PNG";
+      min: 20 20;
+      max: 20 20;
+      parts{
+         part{
+            name: "StaticImage";
+            type: IMAGE;
+            mouse_events: 0;
+            description{
+               state: "default" 0.0;
+               rel1 {relative: 0.0 0.0; offset: 0 0;}
+               rel2 {relative: 0.0 0.0; offset: 20 20;}
+               image {normal: "fopa25.png";}
+            }
+         }
+      }
+   }
+
    group{
       name: "GIMP.PNG";
       min: 20 20;
@@ -561,6 +608,7 @@ collections {
                rel1 {relative: 0.0 0.0; offset: 0 0;}
                rel2 {relative: 1.0 1.0; offset: 0 0;}
                image {normal: "bg1.png";}
+               color_class: "cc_background";
                fill { size {relative: 0.0 0.0; offset: 240 240;} }
             }
             description {
@@ -568,6 +616,7 @@ collections {
                rel1 {relative: 0.0 0.0; offset: 0 0;}
                rel2 {relative: 1.0 1.0; offset: 0 0;}
                image {normal: "bg2.png";}
+               color_class: "cc_background";
                fill { size {relative: 0.0 0.0; offset: 80 80;} }
             }
             description {
@@ -575,13 +624,7 @@ collections {
                rel1 {relative: 0.0 0.0; offset: 0 0;}
                rel2 {relative: 1.0 1.0; offset: 0 0;}
                image {normal: "bg3.png";}
-               fill { size {relative: 0.0 0.0; offset: 16 16;} }
-            }
-            description {
-               state: "default" 0.3;
-               rel1 {relative: 0.0 0.0; offset: 0 0;}
-               rel2 {relative: 1.0 1.0; offset: 0 0;}
-               image {normal: "bg4.png";}
+               color_class: "cc_background";
                fill { size {relative: 0.0 0.0; offset: 16 16;} }
             }
          }

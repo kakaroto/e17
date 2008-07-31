@@ -265,7 +265,8 @@ toolbar_create(Etk_Toolbar_Orientation o)
    UI_OptionsMenu = etk_menu_new();
 
    //set bg1
-   menu_item = etk_menu_item_image_new_with_label("White squared background");
+   //menu_item = etk_menu_item_radio_new_with_label_from_widget("White squared background", 0);
+   menu_item = etk_menu_item_image_new_with_label("Squared background");
    image = etk_image_new_from_edje(EdjeFile,"BG1_I.PNG");
    etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
    etk_signal_connect("activated", ETK_OBJECT(menu_item),
@@ -274,7 +275,7 @@ toolbar_create(Etk_Toolbar_Orientation o)
    etk_menu_shell_append(ETK_MENU_SHELL(UI_OptionsMenu), ETK_MENU_ITEM(menu_item));
 
    //set bg2
-   menu_item = etk_menu_item_image_new_with_label("Gray squared background");
+   menu_item = etk_menu_item_image_new_with_label("Checkerboard background");
    image = etk_image_new_from_edje(EdjeFile,"BG2_I.PNG");
    etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
    etk_signal_connect("activated", ETK_OBJECT(menu_item),
@@ -283,7 +284,7 @@ toolbar_create(Etk_Toolbar_Orientation o)
    etk_menu_shell_append(ETK_MENU_SHELL(UI_OptionsMenu), ETK_MENU_ITEM(menu_item));
 
    //set bg3
-   menu_item = etk_menu_item_image_new_with_label("White background");
+   menu_item = etk_menu_item_image_new_with_label("Clean background");
    image = etk_image_new_from_edje(EdjeFile,"BG3_I.PNG");
    etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
    etk_signal_connect("activated", ETK_OBJECT(menu_item),
@@ -291,13 +292,45 @@ toolbar_create(Etk_Toolbar_Orientation o)
                       (void*)TOOLBAR_OPTION_BG3);
    etk_menu_shell_append(ETK_MENU_SHELL(UI_OptionsMenu), ETK_MENU_ITEM(menu_item));
 
-   //set bg4
-   menu_item = etk_menu_item_image_new_with_label("Black background");
-   image = etk_image_new_from_edje(EdjeFile,"BG4_I.PNG");
+   //set bg color
+   menu_item = etk_menu_item_image_new_with_label("Background color...");
+   image = etk_image_new_from_stock(ETK_STOCK_APPLICATIONS_GRAPHICS,
+                                    ETK_STOCK_SMALL);
    etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
    etk_signal_connect("activated", ETK_OBJECT(menu_item),
                       ETK_CALLBACK(_window_all_button_click_cb),
-                      (void*)TOOLBAR_OPTION_BG4);
+                      (void*)TOOLBAR_OPTION_BGC);
+   etk_menu_shell_append(ETK_MENU_SHELL(UI_OptionsMenu), ETK_MENU_ITEM(menu_item));
+   
+   //Separator
+   menu_item = etk_menu_item_separator_new();
+   etk_menu_shell_append(ETK_MENU_SHELL(UI_OptionsMenu), ETK_MENU_ITEM(menu_item));
+
+   //set handler 100 %
+   menu_item = etk_menu_item_image_new_with_label("Focus opacity 100%");
+   image = etk_image_new_from_edje(EdjeFile,"FOPA100.PNG");
+   etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
+   etk_signal_connect("activated", ETK_OBJECT(menu_item),
+                      ETK_CALLBACK(_window_all_button_click_cb),
+                      (void*)TOOLBAR_OPTION_FOPA100);
+   etk_menu_shell_append(ETK_MENU_SHELL(UI_OptionsMenu), ETK_MENU_ITEM(menu_item));
+   
+   //set handler 50 %
+   menu_item = etk_menu_item_image_new_with_label("Focus opacity 50%");
+   image = etk_image_new_from_edje(EdjeFile,"FOPA50.PNG");
+   etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
+   etk_signal_connect("activated", ETK_OBJECT(menu_item),
+                      ETK_CALLBACK(_window_all_button_click_cb),
+                      (void*)TOOLBAR_OPTION_FOPA50);
+   etk_menu_shell_append(ETK_MENU_SHELL(UI_OptionsMenu), ETK_MENU_ITEM(menu_item));
+   
+   //set handler 25 %
+   menu_item = etk_menu_item_image_new_with_label("Focus opacity 25%");
+   image = etk_image_new_from_edje(EdjeFile,"FOPA25.PNG");
+   etk_menu_item_image_set(ETK_MENU_ITEM_IMAGE(menu_item), ETK_IMAGE(image));
+   etk_signal_connect("activated", ETK_OBJECT(menu_item),
+                      ETK_CALLBACK(_window_all_button_click_cb),
+                      (void*)TOOLBAR_OPTION_FOPA25);
    etk_menu_shell_append(ETK_MENU_SHELL(UI_OptionsMenu), ETK_MENU_ITEM(menu_item));
    
    //Separator

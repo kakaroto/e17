@@ -227,6 +227,11 @@ _dialog_colorpicker_change_cb(Etk_Object *object, void *data)
       edje_edit_state_color2_set(edje_o, Cur.part->string, Cur.state->string,
                                 premuled.r,premuled.g,premuled.b,premuled.a);
       break;
+    case COLOR_OBJECT_BG:
+      edje_object_color_class_set(edje_ui, "cc_background",
+                                  color.r, color.g, color.b, 255,
+                                  0, 0, 0, 255, 0, 0, 0, 255);
+      break;
    }
 
    canvas_redraw();

@@ -495,8 +495,26 @@ _window_all_button_click_cb(Etk_Button *button, void *data)
    case TOOLBAR_OPTION_BG3:
       edje_object_signal_emit(edje_ui,"set_bg3","edje_editor");
       break;
-   case TOOLBAR_OPTION_BG4:
-      edje_object_signal_emit(edje_ui,"set_bg4","edje_editor");
+   case TOOLBAR_OPTION_BGC:
+      current_color_object = COLOR_OBJECT_BG;
+      etk_window_title_set(ETK_WINDOW(UI_ColorWin), "Interface Background Color");
+      //etk_colorpicker_current_color_set(ETK_COLORPICKER(UI_ColorPicker), c); //TODO get current class color values
+      if (UI_ColorWin) etk_widget_show_all(UI_ColorWin);
+      break;
+   case TOOLBAR_OPTION_FOPA100:
+      evas_object_color_set(EV_rel1_handler, 255,255, 255, 255);
+      evas_object_color_set(EV_rel2_handler, 255, 255, 255, 255);
+      evas_object_color_set(EV_focus_handler, 255, 255, 255, 255);
+      break;
+   case TOOLBAR_OPTION_FOPA50:
+      evas_object_color_set(EV_rel1_handler, 128,128, 128, 128);
+      evas_object_color_set(EV_rel2_handler, 128, 128, 128, 128);
+      evas_object_color_set(EV_focus_handler, 128, 128, 128, 128);
+      break;
+   case TOOLBAR_OPTION_FOPA25:
+      evas_object_color_set(EV_rel1_handler, 64,64, 64, 64);
+      evas_object_color_set(EV_rel2_handler, 64, 64, 64, 64);
+      evas_object_color_set(EV_focus_handler, 64, 64, 64, 64);
       break;
    case TOOLBAR_OPTION_FULLSCREEN:
       Cur.fullscreen = !Cur.fullscreen;
