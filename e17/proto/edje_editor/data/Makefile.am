@@ -8,6 +8,9 @@ EXTRA_DIST = edje_editor.edc \
              images/bg2.png \
              images/bg2_i.png \
              images/bg3.png \
+             images/fopa100.png \
+             images/fopa50.png \
+             images/fopa25.png \
              images/frame_bg.png \
              images/frame_bg_label.png \
              images/lbl_group.png \
