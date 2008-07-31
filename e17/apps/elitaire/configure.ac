@@ -62,7 +62,7 @@ else
 fi
 
 # NLS stuff
-ALL_LINGUAS = "de";
+ALL_LINGUAS = "de it";
 AC_SUBST(ALL_LINGUAS)
 
 AM_GNU_GETTEXT([external])
@@ -96,6 +96,7 @@ AC_SUBST(scores_user)
 AC_CONFIG_FILES([Makefile 
                  po/Makefile.in 
                  data/Makefile
+                 doc/Makefile
                  data/themes/Makefile
                  data/themes/default_cards/Makefile
                  data/themes/default_cards/images/Makefile
