@@ -51,6 +51,13 @@ group {\
 #define CARD(_number) GROUP("card", _number)
 #define STACK(_number) GROUP("stack", _number)
 
+data {
+	item: "theme/name"     "Cardpics";
+	item: "theme/version"  "0.1";
+	item: "theme/author"   "Guillaume Weexsteen, Peter Wehrfritz";
+	item: "theme/license"  "GPL";
+}
+
 images {
 	image: "00.png" LOSSY 95;
 	image: "01.png" LOSSY 95;

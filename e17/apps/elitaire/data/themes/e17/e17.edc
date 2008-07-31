@@ -448,6 +448,12 @@ fonts{
 images {
 	#include"images/images.inc"
 }
+data {
+	item: "theme/name"     "Bling";
+	item: "theme/version"  "0.1";
+	item: "theme/author"   "Peter Wehrfritz";
+	item: "theme/license"  "BSD";
+}
 
 collections {
 	#include"main.grp"
