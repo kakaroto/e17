@@ -448,12 +448,12 @@ ewl_entry_cb_key_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
                                 ewl_entry_cursor_position_get(EWL_ENTRY_CURSOR(e->cursor)));
                 }
         }
-        else if (!(event->modifiers & EWL_KEY_MODIFIER_CTRL))
+        else if (!(event->modifiers & EWL_KEY_MODIFIER_CTRL)
+                        && ((strlen(event->keyname) == 1) 
+                                || (*event->keyname < 0)))
         {
                 ewl_entry_selection_clear(e);
-
-                if ((strlen(event->keyname) == 1) || (*event->keyname < 0))
-                        ewl_text_text_insert(EWL_TEXT(e), event->keyname,
+                ewl_text_text_insert(EWL_TEXT(e), event->keyname,
                                 ewl_entry_cursor_position_get(
                                         EWL_ENTRY_CURSOR(e->cursor)));
         }
