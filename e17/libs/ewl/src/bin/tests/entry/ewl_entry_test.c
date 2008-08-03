@@ -67,12 +67,19 @@ set_entry_text(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
         ewl_text_text_set(EWL_TEXT(entry[2]), "Not more than 30 characters");
 }
 
+static void
+select_entry_text(Ewl_Widget *w __UNUSED__, void *ev_data __UNUSED__,
+                                        void *user_data __UNUSED__)
+{
+        ewl_text_all_select(EWL_TEXT(entry[0]));
+        ewl_widget_focus_send(entry[0]);
+}
+
 static int
 create_test(Ewl_Container *box)
 {
         Ewl_Widget *entry_box;
         Ewl_Widget *button_hbox, *o;
-        Ewl_Widget *button[2];
 
         /*
          * Create the main box for holding the widgets
@@ -114,28 +121,25 @@ create_test(Ewl_Container *box)
         ewl_box_spacing_set(EWL_BOX(button_hbox), 5);
         ewl_widget_show(button_hbox);
 
-        button[0] = ewl_button_new();
-        ewl_button_label_set(EWL_BUTTON(button[0]), "Fetch text");
-        ewl_container_child_append(EWL_CONTAINER(button_hbox), button[0]);
-        ewl_callback_append(button[0], EWL_CALLBACK_CLICKED,
-                                fetch_entry_text, NULL);
-        ewl_widget_show(button[0]);
-
-        button[1] = ewl_button_new();
-        ewl_button_label_set(EWL_BUTTON(button[1]), "Set Text");
-        ewl_container_child_append(EWL_CONTAINER(button_hbox), button[1]);
-        ewl_callback_append(button[1], EWL_CALLBACK_CLICKED,
-                                set_entry_text, NULL);
-        ewl_widget_show(button[1]);
-
-        o = ewl_label_new();
-        ewl_label_text_set(EWL_LABEL(o), "Text insert \"\"");
+        o = ewl_button_new();
+        ewl_button_label_set(EWL_BUTTON(o), "Fetch text");
         ewl_container_child_append(EWL_CONTAINER(button_hbox), o);
+        ewl_callback_append(o, EWL_CALLBACK_CLICKED,
+                                fetch_entry_text, NULL);
         ewl_widget_show(o);
 
-        o = ewl_text_new();
-        ewl_text_text_set(EWL_TEXT(o), "");
+        o = ewl_button_new();
+        ewl_button_label_set(EWL_BUTTON(o), "Set Text");
         ewl_container_child_append(EWL_CONTAINER(button_hbox), o);
+        ewl_callback_append(o, EWL_CALLBACK_CLICKED,
+                                set_entry_text, NULL);
+        ewl_widget_show(o);
+
+        o = ewl_button_new();
+        ewl_button_label_set(EWL_BUTTON(o), "Select All");
+        ewl_container_child_append(EWL_CONTAINER(button_hbox), o);
+        ewl_callback_append(o, EWL_CALLBACK_CLICKED,
+                                select_entry_text, NULL);
         ewl_widget_show(o);
 
         return 1;
