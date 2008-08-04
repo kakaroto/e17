@@ -30,6 +30,8 @@ static int appearance_test_set_get(char *buf, int len);
 static int appearance_path_test_set_get(char *buf, int len);
 static int inheritance_test_set_get(char *buf, int len);
 static int internal_test_set_get(char *buf, int len);
+static int unmanaged_test_set_get(char *buf, int len);
+static int toplayered_test_set_get(char *buf, int len);
 static int clipped_test_set_get(char *buf, int len);
 static int data_test_set_get(char *buf, int len);
 static int data_test_set_remove(char *buf, int len);
@@ -68,6 +70,8 @@ static Ewl_Unit_Test widget_unit_tests[] = {
                 {"widget appearance path set/get", appearance_path_test_set_get, NULL, -1, 0},
                 {"widget inheritance set/get", inheritance_test_set_get, NULL, -1, 0},
                 {"widget internal set/get", internal_test_set_get, NULL, -1, 0},
+                {"widget unmanaged set/get", unmanaged_test_set_get, NULL, -1, 0},
+                {"widget layer top set/get", toplayered_test_set_get, NULL, -1, 0},
                 {"widget clipped set/get", clipped_test_set_get, NULL, -1, 0},
                 {"widget data set/get", data_test_set_get, NULL, -1, 0},
                 {"widget data set/remove", data_test_set_remove, NULL, -1, 0},
@@ -301,6 +305,68 @@ internal_test_set_get(char *buf, int len)
         }
         else
                 LOG_FAILURE(buf, len, "internal set after widget_init");
+
+        return ret;
+}
+
+/*
+ * Verify that the unmanaged flag on a widget is set properly after changing
+ * between states.
+ */
+static int
+unmanaged_test_set_get(char *buf, int len)
+{
+        Ewl_Widget *w;
+        int ret = 0;
+
+        w = calloc(1, sizeof(Ewl_Widget));
+        ewl_widget_init(w);
+
+        if (!ewl_widget_unmanaged_is(w)) {
+                ewl_widget_unmanaged_set(w, TRUE);
+                if (ewl_widget_unmanaged_is(w)) {
+                        ewl_widget_unmanaged_set(w, FALSE);
+                        if (ewl_widget_unmanaged_is(w))
+                                LOG_FAILURE(buf, len, "unmanaged flag not FALSE");
+                        else
+                                ret = 1;
+                }
+                else
+                        LOG_FAILURE(buf, len, "unmanaged flag not TRUE");
+        }
+        else
+                LOG_FAILURE(buf, len, "unmanaged set after widget_init");
+
+        return ret;
+}
+
+/*
+ * Verify that the toplayered flag on a widget is set properly after changing
+ * between states.
+ */
+static int
+toplayered_test_set_get(char *buf, int len)
+{
+        Ewl_Widget *w;
+        int ret = 0;
+
+        w = calloc(1, sizeof(Ewl_Widget));
+        ewl_widget_init(w);
+
+        if (!ewl_widget_layer_top_get(w)) {
+                ewl_widget_layer_top_set(w, TRUE);
+                if (ewl_widget_layer_top_get(w)) {
+                        ewl_widget_layer_top_set(w, FALSE);
+                        if (ewl_widget_layer_top_get(w))
+                                LOG_FAILURE(buf, len, "toplayered flag not FALSE");
+                        else
+                                ret = 1;
+                }
+                else
+                        LOG_FAILURE(buf, len, "toplayered flag not TRUE");
+        }
+        else
+                LOG_FAILURE(buf, len, "toplayered set after widget_init");
 
         return ret;
 }
@@ -1059,11 +1125,18 @@ widget_disable_test(char *buf, int len)
         int ret = 0;
 
         w = ewl_widget_new();
-        ewl_widget_disable(w);
+
         if (!DISABLED(w))
-                LOG_FAILURE(buf, len, "Widget not disabled aftering calling disable");
+        {
+                ewl_widget_disable(w);
+                if (!DISABLED(w))
+                        LOG_FAILURE(buf, len, "Widget not disabled aftering "
+                                        "calling disable");
+                else
+                        ret = 1;
+        }
         else
-                ret = 1;
+                LOG_FAILURE(buf, len, "New created widget is disabled");
 
         ewl_widget_destroy(w);
         return ret;

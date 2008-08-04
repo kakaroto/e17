@@ -159,36 +159,38 @@ enum Ewl_Widget_Flags
         /*
          * Behavior modifying properties.
          */
-        EWL_FLAG_PROPERTY_RECURSIVE       = 0x10,  /**< Widget is recursive */
-        EWL_FLAG_PROPERTY_TOPLEVEL        = 0x20,  /**< Widget is a top level widget */
-        EWL_FLAG_PROPERTY_INTERNAL        = 0x40,  /**< Widget is internal */
-        EWL_FLAG_PROPERTY_BLOCK_TAB_FOCUS = 0x80,  /**< Widget will block tab focus changes */
-        EWL_FLAG_PROPERTY_FOCUSABLE       = 0x100, /**< Widget is focusable */
-        EWL_FLAG_PROPERTY_IN_TAB_LIST     = 0x200, /**< Widget is in the tab order */
-        EWL_FLAG_PROPERTY_DND_TARGET      = 0x400, /**< Widget is DND aware */
-        EWL_FLAG_PROPERTY_DND_SOURCE      = 0x800, /**< Widget is dragable */
+        EWL_FLAG_PROPERTY_RECURSIVE       = 0x10,   /**< Widget is recursive */
+        EWL_FLAG_PROPERTY_TOPLEVEL        = 0x20,   /**< Widget is a top level widget */
+        EWL_FLAG_PROPERTY_INTERNAL        = 0x40,   /**< Widget is internal */
+        EWL_FLAG_PROPERTY_UNMANAGED       = 0x80,   /**< Widget is unmanaged */
+        EWL_FLAG_PROPERTY_BLOCK_TAB_FOCUS = 0x100,  /**< Widget will block tab focus changes */
+        EWL_FLAG_PROPERTY_FOCUSABLE       = 0x200,  /**< Widget is focusable */
+        EWL_FLAG_PROPERTY_IN_TAB_LIST     = 0x400,  /**< Widget is in the tab order */
+        EWL_FLAG_PROPERTY_DND_TARGET      = 0x800,  /**< Widget is DND aware */
+        EWL_FLAG_PROPERTY_DND_SOURCE      = 0x1000, /**< Widget is dragable */
+        EWL_FLAG_PROPERTY_TOPLAYERED      = 0x2000, /**< Widget is toplayered */
 
         /*
          * Flags to indicate queues this object is on.
          */
-        EWL_FLAG_QUEUED_SCHEDULED_CONFIGURE = 0x1000,  /**< Configure scheduled */
-        EWL_FLAG_QUEUED_SCHEDULED_REVEAL    = 0x2000,  /**< Reveal scheduled */
-        EWL_FLAG_QUEUED_SCHEDULED_DESTROY   = 0x4000,  /**< Delete scheduled */
+        EWL_FLAG_QUEUED_SCHEDULED_CONFIGURE = 0x4000,  /**< Configure scheduled */
+        EWL_FLAG_QUEUED_SCHEDULED_REVEAL    = 0x8000,  /**< Reveal scheduled */
+        EWL_FLAG_QUEUED_SCHEDULED_DESTROY   = 0x10000, /**< Delete scheduled */
 
-        EWL_FLAG_QUEUED_PROCESS_CONFIGURE   = 0x8000,  /**< Configure in progress */
-        EWL_FLAG_QUEUED_PROCESS_REVEAL      = 0x10000, /**< Reveal in progress */
-        EWL_FLAG_QUEUED_PROCESS_DESTROY     = 0x20000, /**< Delete in progress */
+        EWL_FLAG_QUEUED_PROCESS_CONFIGURE   = 0x20000, /**< Configure in progress */
+        EWL_FLAG_QUEUED_PROCESS_REVEAL      = 0x40000, /**< Reveal in progress */
+        EWL_FLAG_QUEUED_PROCESS_DESTROY     = 0x80000, /**< Delete in progress */
 
         /*
          * The state enum specifies the current state of a widget, ie. has it
          * been clicked, does it have the keyboard focus, etc.
          */
         EWL_FLAG_STATE_NORMAL   = 0,         /**< Widget state normal */
-        EWL_FLAG_STATE_MOUSE_IN = 0x40000,   /**< Mouse is in the widget */
-        EWL_FLAG_STATE_PRESSED  = 0x80000,   /**< Widget is pressed */
-        EWL_FLAG_STATE_FOCUSED  = 0x100000,  /**< Widget has focus */
-        EWL_FLAG_STATE_DISABLED = 0x200000,  /**< Widget is disabled */
-        EWL_FLAG_STATE_DND      = 0x400000,  /**< Widget is engaged in DND */
+        EWL_FLAG_STATE_MOUSE_IN = 0x100000,  /**< Mouse is in the widget */
+        EWL_FLAG_STATE_PRESSED  = 0x200000,  /**< Widget is pressed */
+        EWL_FLAG_STATE_FOCUSED  = 0x400000,  /**< Widget has focus */
+        EWL_FLAG_STATE_DISABLED = 0x800000,  /**< Widget is disabled */
+        EWL_FLAG_STATE_DND      = 0x1000000, /**< Widget is engaged in DND */
 };
 
 
@@ -204,11 +206,16 @@ enum Ewl_Widget_Flags
  * @def EWL_FLAGS_PROPERTY_MASK
  * The property mask
  */
-#define EWL_FLAGS_PROPERTY_MASK (EWL_FLAG_PROPERTY_RECURSIVE | \
-                EWL_FLAG_PROPERTY_TOPLEVEL | EWL_FLAG_PROPERTY_INTERNAL | \
-                EWL_FLAG_PROPERTY_BLOCK_TAB_FOCUS | EWL_FLAG_PROPERTY_FOCUSABLE | \
-                EWL_FLAG_PROPERTY_DND_TARGET | EWL_FLAG_PROPERTY_DND_SOURCE | \
-                EWL_FLAG_PROPERTY_IN_TAB_LIST)
+#define EWL_FLAGS_PROPERTY_MASK (EWL_FLAG_PROPERTY_RECURSIVE \
+                | EWL_FLAG_PROPERTY_TOPLEVEL \
+                | EWL_FLAG_PROPERTY_INTERNAL \
+                | EWL_FLAG_PROPERTY_UNMANAGED \
+                | EWL_FLAG_PROPERTY_BLOCK_TAB_FOCUS \
+                | EWL_FLAG_PROPERTY_FOCUSABLE \
+                | EWL_FLAG_PROPERTY_DND_TARGET \
+                | EWL_FLAG_PROPERTY_DND_SOURCE  \
+                | EWL_FLAG_PROPERTY_IN_TAB_LIST \
+                | EWL_FLAG_PROPERTY_TOPLAYERED)
 
 /**
  * @def EWL_FLAGS_QUEUED_MASK

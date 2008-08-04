@@ -1197,10 +1197,15 @@ ewl_widget_layer_top_set(Ewl_Widget *w, int top)
         DCHECK_PARAM_PTR(w);
         DCHECK_TYPE(w, EWL_WIDGET_TYPE);
 
-        if (w->toplayered == top)
+        if (!!TOPLAYERED(w) == !!top)
                 DRETURN(DLEVEL_STABLE);
 
-        w->toplayered = top;
+        if (top)
+                ewl_widget_flags_add(w, EWL_FLAG_PROPERTY_TOPLAYERED,
+                                        EWL_FLAGS_PROPERTY_MASK);
+        else
+                ewl_widget_flags_remove(w, EWL_FLAG_PROPERTY_TOPLAYERED,
+                                        EWL_FLAGS_PROPERTY_MASK);
 
         if (REALIZED(w)) {
                 ewl_widget_layer_stack_add(w);
@@ -1223,7 +1228,7 @@ ewl_widget_layer_top_get(Ewl_Widget *w)
         DCHECK_PARAM_PTR_RET(w, FALSE);
         DCHECK_TYPE_RET(w, EWL_WIDGET_TYPE, 0);
 
-        DRETURN_INT(w->toplayered, DLEVEL_STABLE);
+        DRETURN_INT(TOPLAYERED(w), DLEVEL_STABLE);
 }
 
 /**
@@ -1642,7 +1647,13 @@ ewl_widget_unmanaged_set(Ewl_Widget *w, unsigned int val)
                                 "of a widget that has already a parent!\n");
                 DRETURN(DLEVEL_STABLE);
         }
-        w->unmanaged = !!val;
+        
+        if (val)
+                ewl_widget_flags_add(w, EWL_FLAG_PROPERTY_UNMANAGED,
+                                        EWL_FLAGS_PROPERTY_MASK);
+        else
+                ewl_widget_flags_remove(w, EWL_FLAG_PROPERTY_UNMANAGED,
+                                        EWL_FLAGS_PROPERTY_MASK);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
@@ -2129,7 +2140,7 @@ ewl_widget_layer_stack_add(Ewl_Widget *w)
         if (w->parent && !REVEALED(w->parent))
                 DRETURN(DLEVEL_STABLE);
 
-        if (w->parent && !w->toplayered)
+        if (w->parent && !TOPLAYERED(w))
                 smart_parent = w->parent->smart_object;
         else {
                 Ewl_Embed *emb;
@@ -2166,7 +2177,7 @@ ewl_widget_layer_update(Ewl_Widget *w)
                 DRETURN(DLEVEL_STABLE);
 
         /* check first if the widget should be on the top */
-        if (w->toplayered)
+        if (TOPLAYERED(w))
         {
                 evas_object_raise(w->smart_object);
                 DRETURN(DLEVEL_STABLE);

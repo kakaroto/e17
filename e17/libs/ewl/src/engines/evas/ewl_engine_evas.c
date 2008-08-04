@@ -227,7 +227,7 @@ ee_canvas_stack_add(Ewl_Widget *w)
                 DRETURN(DLEVEL_STABLE);
 
 
-        if (w->parent && !w->toplayered)
+        if (w->parent && !TOPLAYERED(w))
                 smart_parent = w->parent->smart_object;
         else {
                 Ewl_Embed *emb;
@@ -264,7 +264,7 @@ ee_canvas_layer_update(Ewl_Widget *w)
                 DRETURN(DLEVEL_STABLE);
 
         /* check first if the widget should be on the top */
-        if (w->toplayered)
+        if (TOPLAYERED(w))
         {
                 evas_object_raise(w->smart_object);
                 DRETURN(DLEVEL_STABLE);

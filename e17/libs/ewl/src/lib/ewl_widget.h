@@ -154,14 +154,9 @@ struct Ewl_Widget
         const char *inheritance;  /**< Inheritance of path widget */
         int layer;                /**< the layer relative to the parent */
 
-        Ecore_Hash *theme;                 /**< Overriding theme settings */
-        Ewl_Pair_List theme_text;        /**< Overriding text in theme */
-        unsigned int flags;       /**< the widget flags */
-        
-        unsigned char toplayered:1;        /**< Indicates if the widget should
-                                        be on the top of the layer stack */
-        unsigned char unmanaged:1;
-
+        Ecore_Hash *theme;          /**< Overriding theme settings */
+        Ewl_Pair_List theme_text;   /**< Overriding text in theme */
+        unsigned int flags;         /**< the widget flags */
 };
 
 Ewl_Widget      *ewl_widget_new(void);
@@ -505,7 +500,8 @@ void             ewl_widget_flags_remove(Ewl_Widget *o, unsigned int flags,
 
 
 
-#define UNMANAGED(w) (((const Ewl_Widget *)(w))->unmanaged)
+#define UNMANAGED(w) (EWL_WIDGET(w)->flags & EWL_FLAG_PROPERTY_UNMANAGED)
+#define TOPLAYERED(w) (EWL_WIDGET(w)->flags & EWL_FLAG_PROPERTY_TOPLAYERED)
 
 /*
  * Internally used callbacks, override at your own risk.
