@@ -108,6 +108,16 @@ void eli_app_gui_del(Eli_App * eap)
     eap->frontend->gui_del(eap);
 }
 
+void eli_app_theme_change(Eli_App * eap, const char * theme)
+{
+    eli_app_gui_del(eap);
+    if (eap->theme.gui.current)
+        free(eap->theme.gui.current);
+
+    eap->theme.gui.current = strdup(theme);
+    eli_app_gui_make(eap);
+}
+
 /*
  * game stuff
  */

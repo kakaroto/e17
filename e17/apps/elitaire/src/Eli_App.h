@@ -83,6 +83,7 @@ void         eli_app_state_set(Eli_App * eap, Eli_State state);
 
 void         eli_app_gui_make(Eli_App * eap);
 void         eli_app_gui_del(Eli_App * eap);
+void         eli_app_theme_change(Eli_App * eap, const char * theme);
 
 void         eli_app_game_new(Eli_App * eap, const char * game);
 void         eli_app_game_end(Eli_App * eap);

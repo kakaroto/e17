@@ -318,8 +318,7 @@ void _eli_edje_frontend_config_changed(Eli_App * eap, const int tag)
             char * theme;
 
             if ((theme = ecore_config_theme_get("/theme/gui"))) {
-                /* FIXME: shouldn't we do here some thing? */
-                //eli_app_theme_change(eap, theme);
+                eli_app_theme_change(eap, theme);
                 edje_object_signal_emit(eef->gui, "theme,selected", "elitaire");
                 free(theme);
             }
