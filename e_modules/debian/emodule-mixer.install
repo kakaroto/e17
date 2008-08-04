@@ -1,4 +1,0 @@
-debian/tmp/usr/lib/enlightenment/modules/mixer/*.desktop
-debian/tmp/usr/lib/enlightenment/modules/mixer/*.edj
-debian/tmp/usr/lib/enlightenment/modules/mixer/*/*.so
-debian/tmp/usr/lib/enlightenment/modules/mixer/locale/*
