@@ -311,8 +311,8 @@ float_overwrite(char *buf, int len)
                 float v = rand();
                 float v_r;
 
-                ewl_config_int_set(conf, "test key", v, EWL_STATE_TRANSIENT);
-                v_r = ewl_config_int_get(conf, "test key");
+                ewl_config_float_set(conf, "test key", v, EWL_STATE_TRANSIENT);
+                v_r = ewl_config_float_get(conf, "test key");
 
                 if (v_r != v) {
                         LOG_FAILURE(buf, len, "The returned float is different"
