@@ -32,6 +32,7 @@ static int inheritance_test_set_get(char *buf, int len);
 static int internal_test_set_get(char *buf, int len);
 static int unmanaged_test_set_get(char *buf, int len);
 static int toplayered_test_set_get(char *buf, int len);
+static int layer_priority_test_set_get(char *buf, int len);
 static int clipped_test_set_get(char *buf, int len);
 static int data_test_set_get(char *buf, int len);
 static int data_test_set_remove(char *buf, int len);
@@ -72,6 +73,7 @@ static Ewl_Unit_Test widget_unit_tests[] = {
                 {"widget internal set/get", internal_test_set_get, NULL, -1, 0},
                 {"widget unmanaged set/get", unmanaged_test_set_get, NULL, -1, 0},
                 {"widget layer top set/get", toplayered_test_set_get, NULL, -1, 0},
+                {"widget layer priority set/get", layer_priority_test_set_get, NULL, -1, 0},
                 {"widget clipped set/get", clipped_test_set_get, NULL, -1, 0},
                 {"widget data set/get", data_test_set_get, NULL, -1, 0},
                 {"widget data set/remove", data_test_set_remove, NULL, -1, 0},
@@ -370,6 +372,41 @@ toplayered_test_set_get(char *buf, int len)
 
         return ret;
 }
+
+/*
+ * Verify that the layer priortiy of a widget is set properly after changing
+ * it.
+ */
+static int
+layer_priority_test_set_get(char *buf, int len)
+{
+        Ewl_Widget *w;
+        int ret = 0;
+
+        w = ewl_widget_new();
+
+        if (ewl_widget_layer_priority_get(w) == 0)
+        {
+                ewl_widget_layer_priority_set(w, 10);
+                if (ewl_widget_layer_priority_get(w) == 10)
+                {
+                        ewl_widget_layer_priority_set(w, -20);
+                        if (ewl_widget_layer_priority_get(w) == -20)
+                                ret = 1;
+                        else
+                                LOG_FAILURE(buf, len, "layer priority is not"
+                                                " -20");
+                }
+                else
+                        LOG_FAILURE(buf, len, "layer priority is not 10");
+        }
+        else
+                LOG_FAILURE(buf, len, "layer priority is unequal zero "
+                                        "after widget_init");
+
+        return ret;
+}
+
 
 /*
  * Verify that the clipped flag on a widget is set properly after changing
