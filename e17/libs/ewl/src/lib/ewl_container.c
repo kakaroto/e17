@@ -13,6 +13,33 @@ static void ewl_container_child_insert_helper(Ewl_Container *pc,
 static int ewl_container_child_count_get_helper(Ewl_Container *c, int skip);
 
 /**
+ * @return Returns a newly allocated container on success, NULL on failure.
+ * @brief Allocate a new container.
+ *
+ * Do not use this function unless you know what you are doing! It is only
+ * intended to easily create custom container. It doesn't manage the children.
+ */
+Ewl_Widget *
+ewl_container_new(void)
+{
+        Ewl_Container *c;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+
+        c = NEW(Ewl_Container, 1);
+        if (!c)
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
+
+        if (!ewl_container_init(c)) {
+                FREE(c);
+                c = NULL;
+        }
+
+        DRETURN_PTR(EWL_WIDGET(c), DLEVEL_STABLE);
+}
+
+
+/**
  * @param c: the container to initialize
  * @return Returns TRUE on success, otherwise FALSE.
  * @brief Initialize a containers default fields and callbacks
