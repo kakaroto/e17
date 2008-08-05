@@ -161,6 +161,7 @@ int main(int argc, char *argv[])
       fprintf(stderr, "Could not init Etk. Exiting...\n");
       return 1;
    };
+   etk_tooltips_enable();
    _main_window_create();
    etk_main();
    etk_shutdown();

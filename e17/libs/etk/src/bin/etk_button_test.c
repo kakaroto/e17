@@ -41,17 +41,21 @@ void etk_test_button_window_create(void *data)
    etk_container_add(ETK_CONTAINER(frame), vbox);
 
    button = etk_button_new_with_label("Normal button");
+   etk_tooltips_tip_set(button, "A normal button");
    etk_box_append(ETK_BOX(vbox), button, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    button = etk_button_new_with_label("Button with an image");
+   etk_tooltips_tip_set(button, "A button with an image inside");
    image = etk_image_new_from_file(PACKAGE_DATA_DIR "/images/right_arrow.png", NULL);
    etk_button_image_set(ETK_BUTTON(button), ETK_IMAGE(image));
    etk_box_append(ETK_BOX(vbox), button, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    button = etk_button_new();
+   etk_tooltips_tip_set(button, "A mute button");
    etk_box_append(ETK_BOX(vbox), button, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    button = etk_button_new_with_label("Disabled button");
+   etk_tooltips_tip_set(button, "A disabled button");
    etk_widget_disabled_set(button, ETK_TRUE);
    etk_box_append(ETK_BOX(vbox), button, ETK_BOX_START, ETK_BOX_NONE, 0);
 
@@ -65,9 +69,11 @@ void etk_test_button_window_create(void *data)
    etk_container_add(ETK_CONTAINER(frame), vbox);
 
    button = etk_toggle_button_new_with_label("Toggle button");
+   etk_tooltips_tip_set(button, "An on/off button");
    etk_box_append(ETK_BOX(vbox), button, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    button = etk_toggle_button_new();
+   etk_tooltips_tip_set(button, "A mute toggle");
    etk_box_append(ETK_BOX(vbox), button, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    button = etk_toggle_button_new_with_label("Disabled toggle button 1");
@@ -89,6 +95,7 @@ void etk_test_button_window_create(void *data)
    etk_container_add(ETK_CONTAINER(frame), vbox);
 
    button = etk_check_button_new_with_label("Check button");
+   etk_tooltips_tip_set(button, "A Checkbox button");
    etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(button), ETK_TRUE);
    etk_box_append(ETK_BOX(vbox), button, ETK_BOX_START, ETK_BOX_NONE, 0);
 
