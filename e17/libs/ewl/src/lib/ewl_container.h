@@ -107,6 +107,7 @@ struct Ewl_Container
         Ewl_Container_Iterator iterator; /**< Function to find next child */
 };
 
+Ewl_Widget      *ewl_container_new(void);
 int              ewl_container_init(Ewl_Container *container);
 
 void             ewl_container_add_notify_set(Ewl_Container *container,
