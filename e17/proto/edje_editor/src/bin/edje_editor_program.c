@@ -27,7 +27,7 @@ program_frame_create(void)
                        ETK_IMAGE(UI_ProgramEntryImage));
    etk_table_attach_default(ETK_TABLE(table),UI_ProgramEntry, 1, 2, 0, 0);
 
-   //ScriptSaveButton
+   //UI_RunProgButton
    UI_RunProgButton = etk_button_new_from_stock(ETK_STOCK_MEDIA_PLAYBACK_START);
    etk_object_properties_set(ETK_OBJECT(UI_RunProgButton),
                               "label","Run",NULL);

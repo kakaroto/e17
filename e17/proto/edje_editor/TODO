@@ -15,6 +15,6 @@ EDITOR:
 * Make the visible checkbox work (should the visibility apply to the EDC also? not only in the editor?)
 * Duplicate objects (copy/cut/paste??)
 * Fix strange alpha premul on text with effect
-* Add CheckBox(radio) in Options Menu
+* Add CheckBox(radio) in Options Menu - tryied, but I have to remove the image :(
 * The spectra window can grow in size but then you can't 'resmall' it.
 * draggies
