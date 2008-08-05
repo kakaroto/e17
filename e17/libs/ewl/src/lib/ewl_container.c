@@ -734,7 +734,7 @@ ewl_container_child_at_get(Ewl_Container *widget, int x, int y)
                             INSET_RIGHT(child)) >= x
                     && (CURRENT_Y(child) + CURRENT_H(child) +
                             INSET_BOTTOM(child)) >= y) {
-                        if (child->toplayered) {
+                        if (TOPLAYERED(child)) {
                                 found = child;
                                 break;
                         }
