@@ -651,7 +651,8 @@ ewl_image_thumbnail_get(Ewl_Image *i)
 
 #ifdef BUILD_EPSILON_SUPPORT
 static void
-ewl_image_thumbnail_cb_value_changed(Ewl_Widget *w, void *ev, void *data)
+ewl_image_thumbnail_cb_value_changed(Ewl_Widget *w, void *ev __UNUSED__
+                                        , void *data)
 {
         Ewl_Widget *thumb;
         Ewl_Widget *image;

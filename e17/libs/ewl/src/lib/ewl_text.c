@@ -3034,7 +3034,7 @@ ewl_text_cb_format(Ewl_Text_Fmt_Node *node, Ewl_Text *t, unsigned int byte_idx)
         {
                 char *otxt, *ptr;
                 size_t len;
-                int i;
+                size_t i;
 
                 len = strlen(t->obscure);
                 otxt = alloca(len * node->char_len + 1);

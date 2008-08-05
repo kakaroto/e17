@@ -14,7 +14,7 @@ static void ewl_filelist_view_cb_dnd_data_request(Ewl_Widget *w,
 
 static void
 ewl_filelist_view_cb_dnd_data_request(Ewl_Widget *w, void *event,
-                        void *data__UNUSED__)
+                        void *data __UNUSED__)
 {
         char buf[PATH_MAX + 8], *file, *uri;
         int len = 0;

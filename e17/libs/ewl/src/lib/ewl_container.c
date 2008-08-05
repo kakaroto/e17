@@ -1659,7 +1659,8 @@ ewl_container_cb_unrealize(Ewl_Widget *w, void *ev_data __UNUSED__,
  * @brief A callback to be used for container widgets such as scrollpane, box
  */
 void
-ewl_container_cb_container_focus_out(Ewl_Widget *w, void *ev_data, void *user_data)
+ewl_container_cb_container_focus_out(Ewl_Widget *w, void *ev_data, 
+                                        void *user_data __UNUSED__)
 {
         Ewl_Widget *focus_in = NULL;
 
@@ -1686,7 +1687,8 @@ ewl_container_cb_container_focus_out(Ewl_Widget *w, void *ev_data, void *user_da
  * @brief A callback to be used with end widgets such as buttons, etc
  */
 void
-ewl_container_cb_widget_focus_out(Ewl_Widget *w, void *ev_data, void *user_data)
+ewl_container_cb_widget_focus_out(Ewl_Widget *w, void *ev_data __UNUSED__, 
+                                        void *user_data __UNUSED__)
 {
         Ewl_Container *c;
 
@@ -1716,7 +1718,8 @@ ewl_container_cb_widget_focus_out(Ewl_Widget *w, void *ev_data, void *user_data)
  * @brief A callback to be used with end widgets
  */
 void
-ewl_container_cb_widget_focus_in(Ewl_Widget *w, void *ev_data, void *user_data)
+ewl_container_cb_widget_focus_in(Ewl_Widget *w, void *ev_data __UNUSED__, 
+                                 void *user_data __UNUSED__)
 {
         Ewl_Container *c;
 

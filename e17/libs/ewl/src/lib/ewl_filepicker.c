@@ -1171,7 +1171,7 @@ ewl_filepicker_filter_free_cb(Ewl_Filelist_Filter *filter)
 }
 
 static void
-ewl_filepicker_cb_dir_new(Ewl_Widget *w, void *ev,
+ewl_filepicker_cb_dir_new(Ewl_Widget *w, void *ev __UNUSED__,
                                                 void *data)
 {
         Ewl_Widget *d;
@@ -1238,7 +1238,7 @@ ewl_filepicker_cb_dir_new(Ewl_Widget *w, void *ev,
 }
 
 static void
-ewl_filepicker_cb_dialog_delete(Ewl_Widget *w, void *ev,
+ewl_filepicker_cb_dialog_delete(Ewl_Widget *w, void *ev __UNUSED__,
                                                 void *data)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
@@ -1253,7 +1253,7 @@ ewl_filepicker_cb_dialog_delete(Ewl_Widget *w, void *ev,
 }
 
 static void
-ewl_filepicker_cb_dialog_response(Ewl_Widget *w, void *ev,
+ewl_filepicker_cb_dialog_response(Ewl_Widget *w, void *ev __UNUSED__,
                                                 void *data)
 {
         Ewl_Filepicker_Dialog *resp;

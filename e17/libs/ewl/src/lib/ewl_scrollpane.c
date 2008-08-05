@@ -1054,7 +1054,8 @@ ewl_scrollpane_cb_mouse_move_normal(Ewl_Widget *w, void *ev, void *data)
  * @brief The mouse move callback for kinetic scrolling
  */
 static void
-ewl_scrollpane_cb_mouse_move_embedded(Ewl_Widget *w, void *ev, void *data)
+ewl_scrollpane_cb_mouse_move_embedded(Ewl_Widget *w __UNUSED__, void *ev, 
+                                        void *data)
 {
         Ewl_Scrollpane *s;
         Ewl_Event_Mouse *mm;
@@ -1097,7 +1098,8 @@ ewl_scrollpane_cb_mouse_move_embedded(Ewl_Widget *w, void *ev, void *data)
  * @brief The mouse up callback for kinetic scrolling
  */
 static void
-ewl_scrollpane_cb_mouse_up_normal(Ewl_Widget *w, void *ev, void *data)
+ewl_scrollpane_cb_mouse_up_normal(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
+                                         void *data)
 {
         Ewl_Scrollpane *s;
         
@@ -1119,7 +1121,8 @@ ewl_scrollpane_cb_mouse_up_normal(Ewl_Widget *w, void *ev, void *data)
  * @brief The mouse up callback for kinetic scrolling
  */
 static void
-ewl_scrollpane_cb_mouse_up_embedded(Ewl_Widget *w, void *ev, void *data)
+ewl_scrollpane_cb_mouse_up_embedded(Ewl_Widget *w __UNUSED__, 
+                                        void *ev __UNUSED__, void *data)
 {
         Ewl_Scrollpane *s;
         Ewl_Event_Mouse *mm;
@@ -1505,7 +1508,8 @@ ewl_scrollpane_kinetic_fps_get(Ewl_Scrollpane *s)
  * @brief Frees data from the scrollpane
  */
 void
-ewl_scrollpane_cb_destroy(Ewl_Widget *w, void *ev, void *data)
+ewl_scrollpane_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__,
+                                void *data __UNUSED__)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(w);

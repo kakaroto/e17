@@ -217,7 +217,7 @@ ewl_tree_alternate_row_colors_get(Ewl_Tree *tree)
 void
 ewl_tree_column_count_set(Ewl_Tree *tree, unsigned int count)
 {
-        int i;
+        unsigned int i;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(tree);
