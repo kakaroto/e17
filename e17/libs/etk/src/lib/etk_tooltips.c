@@ -84,7 +84,7 @@ void etk_tooltips_shutdown()
  */
 void etk_tooltips_enable()
 {
-   //_etk_tooltips_enabled = ETK_TRUE;
+   _etk_tooltips_enabled = ETK_TRUE;
 }
 
 /**
@@ -200,7 +200,7 @@ void etk_tooltips_pop_up(Etk_Widget *widget)
    Etk_Toplevel *toplevel;
    Evas *evas;
    int pt_x, pt_y;
-   int win_x, win_y;
+   int win_x, win_w;
 
    if(!ETK_IS_OBJECT(widget))
      return;
@@ -225,15 +225,10 @@ void etk_tooltips_pop_up(Etk_Widget *widget)
 
    etk_label_set(ETK_LABEL(_etk_tooltips_label), text);
 
-   evas = etk_widget_toplevel_evas_get(widget);
-   evas_pointer_canvas_xy_get(evas, &pt_x, &pt_y);
-   toplevel = etk_widget_toplevel_parent_get(widget);
-   etk_window_geometry_get(ETK_WINDOW(toplevel), &win_x, &win_y, NULL, NULL);
-   x = pt_x + win_x;
-   y = pt_y + win_y;
+   etk_engine_mouse_position_get(&x, &y);
 
    /* TODO: if tooltip window is outside screen, fix its place */
-   etk_window_move(ETK_WINDOW(_etk_tooltips_window), x + 5, y + 5);
+   etk_window_move(ETK_WINDOW(_etk_tooltips_window), x - 10, y + 20);
    etk_widget_show_all(_etk_tooltips_window);
    free(key);
 
