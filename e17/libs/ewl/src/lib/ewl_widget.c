@@ -3115,9 +3115,16 @@ ewl_widget_cb_mouse_up(Ewl_Widget *w, void *ev_data,
                 x = e->base.x - (CURRENT_X(w) - INSET_LEFT(w));
                 y = e->base.y - (CURRENT_Y(w) - INSET_TOP(w));
                 if ((x > 0) && (x < CURRENT_W(w) + INSET_HORIZONTAL(w)) &&
-                                (y > 0) && (y < CURRENT_H(w) + INSET_VERTICAL(w))) {
+                                (y > 0) && (y < CURRENT_H(w) + INSET_VERTICAL(w)))
+                {
+                        Ewl_Event_Mouse_Down send;
+                        send.base = e->base;
+                        send.button = e->button;
+                        send.clicks = 1;
+
                         ewl_callback_call_with_event_data(w,
-                                        EWL_CALLBACK_CLICKED, ev_data);
+                                        EWL_CALLBACK_CLICKED, &send);
+
                 }
                 else
                         ewl_embed_mouse_move_feed(ewl_embed_widget_find(w),
