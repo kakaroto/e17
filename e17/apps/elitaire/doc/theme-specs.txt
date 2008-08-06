@@ -125,6 +125,21 @@ signals elitaire is listen to.
 "elitaire_cards_box_label"
 	Elitaire will set this part to a translation of "Cards".
 
+* read data values *
+
+There are some data values that you can define that a read by elitaire. All
+this values are optional.
+
+"borderless"
+	You can set the main window to borderless if the value is "1", else
+	it will have a border.
+"shaped"
+	This will cause the window to be shaped if you set it to "1", else
+	it will not be shaped.
+"offset/left" "offset/right" "offset/top" "offset/bottom"
+	These define the offset values of the cards to the card field. This is
+	usefull because the cards are clipped to the size of the card field.	
+
 * Signals emitted by elitaire *
 
 "win,on"
