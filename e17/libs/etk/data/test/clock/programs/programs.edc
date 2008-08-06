@@ -1,4 +1,3 @@
-
 program { name: "start_update_timer"; signal: "load"; source: "";
 	script {
             resync_seconds(0);
