@@ -25,7 +25,11 @@
 #define _UTIL_H_
 
 #include "config.h"
+
 #include <stdarg.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #define INT2PTR(i) ((void*)(long)(i))
 #define PTR2INT(p) ((int)(long)(p))
@@ -55,8 +59,14 @@
 #define USE_LIBC_STRNDUP 1	/* Use libc strndup if present */
 #endif
 
+#ifndef HAVE_STRCASESTR
+#define strcasestr(haystack, needle) strstr(haystack, needle)
+#endif
+#ifndef HAVE_STRCASECMP
+#define strcasecmp(s1, s2) strcmp(s1, s2)
+#endif
+
 /* memory.c */
-#include <stdlib.h>
 #define Ecalloc     calloc
 #define Emalloc     malloc
 #define Erealloc    realloc

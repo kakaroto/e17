@@ -140,7 +140,7 @@ if test "x$enable_sm" = "xyes"; then
   AC_SUBST(SM_LIBS)
 fi
 if test "x$enable_sm" = "xyes"; then
-  AC_DEFINE(HAVE_SM, 1, [Session management support])
+  AC_DEFINE(USE_SM, 1, [Session management support])
 fi
 
 AC_ARG_ENABLE(pango,
@@ -177,7 +177,7 @@ if test "x$enable_glx" = "xyes"; then
   AC_CHECK_HEADERS(GL/gl.h GL/glu.h GL/glx.h, , AC_MSG_ERROR([Cannot find GLX headers]))
   AC_CHECK_LIB(GL, glXCreateNewContext,
     [
-      AC_DEFINE(HAVE_GLX, 1, [GLX support])
+      AC_DEFINE(USE_GLX, 1, [GLX support])
       GLX_LIBS="-lGL -lGLU"
     ],[
       AC_MSG_ERROR([Cannot find GLX libraries])
@@ -223,7 +223,7 @@ AC_ARG_ENABLE(xsync,
   enable_xsync=yes)
 if test "x$enable_xsync" = "xyes"; then
   AC_CHECK_LIB(Xext, XSyncQueryExtension,
-    AC_DEFINE(HAVE_XSYNC, 1, [SYNC support]),
+    AC_DEFINE(USE_XSYNC, 1, [SYNC support]),
     enable_xsync=no
     AC_MSG_WARN([Sync support was requested but not found]),
     -lX11)
@@ -234,7 +234,7 @@ AC_ARG_ENABLE(xscrnsaver,
   enable_xscrnsaver=no)
 if test "x$enable_xscrnsaver" = "xyes"; then
   AC_CHECK_LIB(Xss, XScreenSaverQueryExtension,
-    AC_DEFINE(HAVE_XSCREENSAVER, 1, [ScreenSaver support])
+    AC_DEFINE(USE_XSCREENSAVER, 1, [ScreenSaver support])
     E_X_LIBS="-lXss $E_X_LIBS",
     enable_xscrnsaver=no
     AC_MSG_WARN([ScreenSaver support was requested but not found]),
@@ -246,7 +246,7 @@ AC_ARG_ENABLE(xrandr,
   enable_xrandr=yes)
 if test "x$enable_xrandr" = "xyes"; then
   AC_CHECK_LIB(Xrandr, XRRQueryExtension,
-    AC_DEFINE(HAVE_XRANDR, 1, [RandR support])
+    AC_DEFINE(USE_XRANDR, 1, [RandR support])
     E_X_LIBS="-lXrandr -lXrender $E_X_LIBS",
     enable_xrandr=no
     AC_MSG_WARN([RandR support was requested but not found]),
@@ -260,7 +260,7 @@ AC_ARG_ENABLE(composite,
   enable_composite=yes)
 if test "x$enable_composite" = "xyes"; then
   AC_CHECK_LIB(Xcomposite, XCompositeQueryExtension,
-    AC_DEFINE(HAVE_COMPOSITE, 1, [Composite support])
+    AC_DEFINE(USE_COMPOSITE, 1, [Composite support])
     E_X_LIBS="-lXcomposite -lXdamage -lXfixes -lXrender $E_X_LIBS",
     enable_composite=no,
     -lXext -lX11)
@@ -336,6 +336,15 @@ if test "x$GCC" = "xyes"; then
     CFLAGS="$CFLAGS -Wmissing-prototypes -Wmissing-declarations -Wstrict-prototypes"
   fi
 fi
+
+AC_DEFINE(_GNU_SOURCE, 1, [Enable extensions])
+
+AC_DEFINE(USE_EXT_INIT_WIN,          1, [Use external init window during restart])
+
+AC_DEFINE(ENABLE_DESKRAY,            0, [Enable deskrays (not functional)])
+
+AC_DEFINE(ENABLE_TRANSPARENCY,       1, [Enable pseudotransparency])
+AC_DEFINE(ENABLE_THEME_TRANSPARENCY, 1, [Enable adjusting theme element pseudotransparency])
 
 AC_SUBST(E_X_LIBS)
 

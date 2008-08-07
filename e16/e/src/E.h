@@ -24,9 +24,6 @@
  * IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
-#ifndef _GNU_SOURCE
-#define _GNU_SOURCE
-#endif
 #include "config.h"
 
 #include "alert.h"
@@ -35,42 +32,9 @@
 #include "sound.h"
 #include "util.h"
 
-#define USE_EXT_INIT_WIN 1
-
 #include <X11/X.h>
 
-#ifdef HAVE_SM
-#define USE_SM 1
-#endif
-
-#ifdef HAVE_XSYNC
-#define USE_XSYNC 1
-#endif
-
-#ifdef HAVE_XSCREENSAVER
-#define USE_XSCREENSAVER 1	/* Experimental */
-#endif
-
-#ifdef HAVE_XRANDR
-#ifdef HAVE_X11_EXTENSIONS_XRANDR_H
-#define USE_XRANDR 1
-#endif
-#endif
-
-#ifdef HAVE_COMPOSITE
-#define USE_COMPOSITE 1
-#endif
-
-#ifdef HAVE_GLX
-#define USE_GLX 1
-#endif
-
 #include "xtypes.h"
-
-#define ENABLE_DESKRAY         0	/* Not functional */
-
-#define ENABLE_TRANSPARENCY 1
-#define ENABLE_THEME_TRANSPARENCY 1
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -78,13 +42,6 @@
 #include <string.h>
 #include <sys/types.h>
 #include <unistd.h>
-
-#ifndef HAVE_STRCASESTR
-# define strcasestr(haystack, needle) strstr(haystack, needle)
-#endif
-#ifndef HAVE_STRCASECMP
-# define strcasecmp(s1, s2) strcmp(s1, s2)
-#endif
 
 #define FILEPATH_LEN_MAX 4096
 
