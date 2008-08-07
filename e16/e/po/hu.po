@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-07-11 21:43+0200\n"
+"POT-Creation-Date: 2008-08-07 23:58+0200\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: György Horák <dyuri@horak.hu>\n"
 "Language-Team: Hungarian <hu@li.org>\n"
@@ -410,120 +410,120 @@ msgstr ""
 msgid "Enlightenment Starting..."
 msgstr "Az Enlightenment indítása..."
 
-#: src/container.c:1211
+#: src/container.c:1207
 #, fuzzy
 msgid "Settings..."
 msgstr "Fókusz beállításai"
 
-#: src/container.c:1215 src/dialog.c:860 src/pager.c:1015 config/strings.c:30
+#: src/container.c:1211 src/dialog.c:858 src/pager.c:1013 config/strings.c:30
 #: config/strings.c:132
 msgid "Close"
 msgstr "Bezár"
 
-#: src/container.c:1220 config/strings.c:83
+#: src/container.c:1216 config/strings.c:83
 msgid "Create New Iconbox"
 msgstr "Új ikondoboz létrehozása"
 
-#: src/container.c:1516 src/container.c:1589
+#: src/container.c:1512 src/container.c:1585
 #, fuzzy, c-format
 msgid "Icon size: %2d"
 msgstr "Ikonok mérete"
 
-#: src/container.c:1553
+#: src/container.c:1549
 msgid "Transparent background"
 msgstr "Átlátszó háttér"
 
-#: src/container.c:1557
+#: src/container.c:1553
 #, fuzzy
 msgid "Hide inner border"
 msgstr "Csoport mutatása/elrejtése"
 
-#: src/container.c:1561
+#: src/container.c:1557
 msgid "Draw base image behind Icons"
 msgstr "Háttér kirajzolása az ikonok mögé"
 
-#: src/container.c:1565
+#: src/container.c:1561
 msgid "Hide scrollbar when not needed"
 msgstr "Gördítõsáv elrejtése, amikor nem szükséges"
 
-#: src/container.c:1569
+#: src/container.c:1565
 msgid "Automatically resize to fit Icons"
 msgstr "Automatikus átméretezés, hogy az ikonok elférjenek"
 
-#: src/container.c:1576
+#: src/container.c:1572
 msgid "Alignment of anchoring when automatically resizing:"
 msgstr "Újrarendezõdés automatikus átméretezésnél:"
 
-#: src/container.c:1607
+#: src/container.c:1603
 msgid "Orientation:"
 msgstr "Irány:"
 
-#: src/container.c:1612
+#: src/container.c:1608
 msgid "Scrollbar side:"
 msgstr "Gördítõsáv helye:"
 
-#: src/container.c:1617
+#: src/container.c:1613
 msgid "Scrollbar arrows:"
 msgstr "Nyíl a gördítõsávon:"
 
-#: src/container.c:1620
+#: src/container.c:1616
 msgid "Horizontal"
 msgstr "Vízszintes"
 
-#: src/container.c:1625
+#: src/container.c:1621
 msgid "Left / Top"
 msgstr "Bal / Fent"
 
-#: src/container.c:1630
+#: src/container.c:1626
 msgid "Start"
 msgstr "Elején"
 
-#: src/container.c:1635
+#: src/container.c:1631
 msgid "Vertical"
 msgstr "Függõleges"
 
-#: src/container.c:1641
+#: src/container.c:1637
 msgid "Right / Bottom"
 msgstr "Jobb / Lent"
 
-#: src/container.c:1647
+#: src/container.c:1643
 msgid "Both ends"
 msgstr "Mindkét végén"
 
-#: src/container.c:1655
+#: src/container.c:1651
 msgid "End"
 msgstr "Végén"
 
-#: src/container.c:1663 src/focus.c:841
+#: src/container.c:1659 src/focus.c:825
 msgid "None"
 msgstr "Nincs"
 
-#: src/container.c:1673
+#: src/container.c:1669
 msgid "Show icon names"
 msgstr "Ikonnevek megjelenítése"
 
-#: src/container.c:1677
+#: src/container.c:1673
 msgid "Animate when iconifying to this Iconbox"
 msgstr "Animálás kicsinyítésnél"
 
-#: src/container.c:1687
+#: src/container.c:1683
 msgid "Icon image display policy (if one operation fails, try the next):"
 msgstr ""
 "Ikonmegjelenítés rendje (ha az egyik nem sikerül, megpróbálja a következõt):"
 
-#: src/container.c:1692
+#: src/container.c:1688
 msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
 msgstr "Miniatúra, Program ikon, Enlightenment ikon"
 
-#: src/container.c:1699
+#: src/container.c:1695
 msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
 msgstr "Program ikon, Enlightenment ikon, Miniatúra"
 
-#: src/container.c:1704
+#: src/container.c:1700
 msgid "Use Enlightenment Icon, Snapshot Window"
 msgstr "Enlightenment ikon, Miniatúra"
 
-#: src/container.c:1717
+#: src/container.c:1713
 msgid ""
 "Enlightenment Iconbox\n"
 "Settings Dialog\n"
@@ -622,11 +622,11 @@ msgstr "Fent"
 msgid "Bottom"
 msgstr "Lent"
 
-#: src/desktops.c:2373 src/pager.c:1925 src/pager.c:1950 src/pager.c:1975
+#: src/desktops.c:2373 src/pager.c:1923 src/pager.c:1948 src/pager.c:1973
 msgid "Left"
 msgstr "Bal"
 
-#: src/desktops.c:2379 src/pager.c:1937 src/pager.c:1962 src/pager.c:1987
+#: src/desktops.c:2379 src/pager.c:1935 src/pager.c:1960 src/pager.c:1985
 msgid "Right"
 msgstr "Jobb"
 
@@ -708,16 +708,16 @@ msgstr ""
 "Enlightenment virtuális asztalok\n"
 "beállításai\n"
 
-#: src/dialog.c:848 src/dialog.c:2037 src/dialog.c:2068 src/events.c:86
+#: src/dialog.c:846 src/dialog.c:2035 src/dialog.c:2066 src/events.c:86
 #: src/setup.c:157 src/sound.c:203
 msgid "OK"
 msgstr "OK"
 
-#: src/dialog.c:853
+#: src/dialog.c:851
 msgid "Apply"
 msgstr "Alkalmaz"
 
-#: src/dialog.c:2068
+#: src/dialog.c:2066
 msgid "Attention !!!"
 msgstr "Figyelem !!!"
 
@@ -753,106 +753,106 @@ msgstr ""
 "\n"
 "Kilépek.\n"
 
-#: src/focus.c:713
+#: src/focus.c:697
 msgid "Focus follows pointer"
 msgstr "A fókusz követi az egérmutatót"
 
-#: src/focus.c:719
+#: src/focus.c:703
 msgid "Focus follows pointer sloppily"
 msgstr "A fókusz lazán követi az egérmutatót"
 
-#: src/focus.c:725
+#: src/focus.c:709
 msgid "Focus follows mouse clicks"
 msgstr "A fókusz követi az egérkattintást"
 
-#: src/focus.c:735
+#: src/focus.c:719
 msgid "Clicking in a window always raises it"
 msgstr "Az ablakok mindig felülre kerülnek egérkattintásnál"
 
-#: src/focus.c:743
+#: src/focus.c:727
 msgid "All new windows first get the focus"
 msgstr "Az új ablakok fókuszt kapnak"
 
-#: src/focus.c:748
+#: src/focus.c:732
 msgid "Only new dialog windows get the focus"
 msgstr "Csak az új ablakok kapnak fókuszt"
 
-#: src/focus.c:755
+#: src/focus.c:739
 msgid "Only new dialogs whose owner is focused get the focus"
 msgstr ""
 
-#: src/focus.c:760
+#: src/focus.c:744
 #, fuzzy
 msgid "Raise windows while switching focus"
 msgstr "Ablakváltás közben fókusz"
 
-#: src/focus.c:766
+#: src/focus.c:750
 #, fuzzy
 msgid "Send mouse pointer to window while switching focus"
 msgstr "Az egérmutató az ablak fölé kerül fókuszváltásnál"
 
-#: src/focus.c:772
+#: src/focus.c:756
 #, fuzzy
 msgid "Always send mouse pointer to window on focus switch"
 msgstr "Az egérmutató az ablak fölé kerül fókuszváltásnál"
 
-#: src/focus.c:780
+#: src/focus.c:764
 msgid "Display and use focus list"
 msgstr "Fókuszlista megjelenítése és használata"
 
-#: src/focus.c:785
+#: src/focus.c:769
 msgid "Include sticky windows in focus list"
 msgstr "Ragadós ablakok bevétele a fókusz listába"
 
-#: src/focus.c:790
+#: src/focus.c:774
 msgid "Include shaded windows in focus list"
 msgstr "Árnyékolt ablakok bevétele a fókusz listába"
 
-#: src/focus.c:795
+#: src/focus.c:779
 msgid "Include iconified windows in focus list"
 msgstr "Ikonizált ablakok bevétele a fókusz listába"
 
-#: src/focus.c:800
+#: src/focus.c:784
 #, fuzzy
 msgid "Include windows on other desks in focus list"
 msgstr "Árnyékolt ablakok bevétele a fókusz listába"
 
-#: src/focus.c:805
+#: src/focus.c:789
 msgid "Focus windows while switching"
 msgstr "Ablakváltás közben fókusz"
 
-#: src/focus.c:810
+#: src/focus.c:794
 msgid "Raise windows after focus switch"
 msgstr "Az ablak felülre kerül fókuszváltás után"
 
-#: src/focus.c:815
+#: src/focus.c:799
 msgid "Send mouse pointer to window after focus switch"
 msgstr "Az egérmutató az ablak fölé kerül fókuszváltás után"
 
-#: src/focus.c:825
+#: src/focus.c:809
 #, fuzzy
 msgid "Focuslist image display policy (if one operation fails, try the next):"
 msgstr ""
 "Ikonmegjelenítés rendje (ha az egyik nem sikerül, megpróbálja a következõt):"
 
-#: src/focus.c:829
+#: src/focus.c:813
 msgid "First E Icon, then App Icon"
 msgstr ""
 
-#: src/focus.c:835
+#: src/focus.c:819
 msgid "First App Icon, then E Icon"
 msgstr ""
 
-#: src/focus.c:849
+#: src/focus.c:833
 #, fuzzy
 msgid "Focus"
 msgstr "Nem kap fókuszt"
 
-#: src/focus.c:850
+#: src/focus.c:834
 msgid "Focus Settings"
 msgstr "Fókusz beállításai"
 
-#: src/focus.c:853
+#: src/focus.c:837
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog\n"
@@ -1229,7 +1229,7 @@ msgid ""
 "correctly.\n"
 msgstr ""
 
-#: src/magwin.c:463
+#: src/magwin.c:462
 msgid "Magnifier"
 msgstr ""
 
@@ -1271,29 +1271,29 @@ msgstr "Csoport kicsinyítése"
 msgid "Group %i"
 msgstr "%i. csoport"
 
-#: src/menus.c:2059
+#: src/menus.c:2061
 msgid "Animated display of menus"
 msgstr "Menük animálása"
 
-#: src/menus.c:2064
+#: src/menus.c:2066
 msgid "Always pop up menus on screen"
 msgstr "A menük mindig a képben jelennek meg"
 
-#: src/menus.c:2069
+#: src/menus.c:2071
 msgid "Warp pointer after moving menus"
 msgstr "Menük mozgásával együtt az egérmutató is mozog"
 
-#: src/menus.c:2075
+#: src/menus.c:2077
 #, fuzzy
 msgid "Menus"
 msgstr "Menük:"
 
-#: src/menus.c:2076
+#: src/menus.c:2078
 #, fuzzy
 msgid "Menu Settings"
 msgstr "Vegyes beállítások"
 
-#: src/menus.c:2079
+#: src/menus.c:2081
 #, fuzzy
 msgid ""
 "Enlightenment Menu\n"
@@ -1364,125 +1364,125 @@ msgstr ""
 "Enlightenment részletes átlátszóság\n"
 "beállítások\n"
 
-#: src/pager.c:1008 config/strings.c:49 config/strings.c:131
+#: src/pager.c:1006 config/strings.c:49 config/strings.c:131
 msgid "Window Options"
 msgstr "Ablak beállításai"
 
-#: src/pager.c:1011 config/strings.c:51 config/strings.c:134
+#: src/pager.c:1009 config/strings.c:51 config/strings.c:134
 msgid "Iconify"
 msgstr "Kicsinyít"
 
-#: src/pager.c:1019 config/strings.c:133
+#: src/pager.c:1017 config/strings.c:133
 msgid "Annihilate"
 msgstr "Megsemmisít"
 
-#: src/pager.c:1023
+#: src/pager.c:1021
 msgid "Stick / Unstick"
 msgstr "Rögzít"
 
-#: src/pager.c:1032
+#: src/pager.c:1030
 msgid "Desktop Options"
 msgstr "Asztal beállításai"
 
-#: src/pager.c:1034
+#: src/pager.c:1032
 msgid "Pager Settings..."
 msgstr "Pager beállításai..."
 
-#: src/pager.c:1039
+#: src/pager.c:1037
 msgid "Snapshotting Off"
 msgstr "Miniatúra ki"
 
-#: src/pager.c:1043
+#: src/pager.c:1041
 msgid "High Quality Off"
 msgstr "Jó minõség ki"
 
-#: src/pager.c:1045
+#: src/pager.c:1043
 msgid "High Quality On"
 msgstr "Jó minõség be"
 
-#: src/pager.c:1050
+#: src/pager.c:1048
 msgid "Snapshotting On"
 msgstr "Miniatúra be"
 
-#: src/pager.c:1054
+#: src/pager.c:1052
 msgid "Zoom Off"
 msgstr ""
 
-#: src/pager.c:1056
+#: src/pager.c:1054
 msgid "Zoom On"
 msgstr ""
 
-#: src/pager.c:1814 src/pager.c:1905
+#: src/pager.c:1812 src/pager.c:1903
 msgid "Pager scanning speed:"
 msgstr "Pager frissítési sebessége:"
 
-#: src/pager.c:1815 src/pager.c:1906
+#: src/pager.c:1813 src/pager.c:1904
 msgid "lines per second"
 msgstr "sor másodpercenként"
 
-#: src/pager.c:1844
+#: src/pager.c:1842
 msgid "Enable pager display"
 msgstr "Lapozó megjelenítése"
 
-#: src/pager.c:1854
+#: src/pager.c:1852
 msgid "Pager Mode:"
 msgstr ""
 
-#: src/pager.c:1858
+#: src/pager.c:1856
 #, fuzzy
 msgid "Simple"
 msgstr "Körhullámok"
 
-#: src/pager.c:1864
+#: src/pager.c:1862
 msgid "Make miniature snapshots of the screen"
 msgstr "Miniatúrák használata"
 
-#: src/pager.c:1871
+#: src/pager.c:1869
 msgid "Live Update"
 msgstr ""
 
-#: src/pager.c:1882
+#: src/pager.c:1880
 msgid "Smooth high quality snapshots in snapshot mode"
 msgstr "Jó minõségû miniatúrák használata"
 
-#: src/pager.c:1887
+#: src/pager.c:1885
 msgid "Zoom in on pager windows when mouse is over them"
 msgstr "Ablak kinagyítása, amikor az egérmutató fölötte van"
 
-#: src/pager.c:1893
+#: src/pager.c:1891
 msgid "Pop up window title when mouse is over the window"
 msgstr "Ablak nevének megjelenítése, amikor az egérmutató fölötte van"
 
-#: src/pager.c:1898
+#: src/pager.c:1896
 msgid "Continuously scan screen to update pager"
 msgstr "Pager állandó frissítése"
 
-#: src/pager.c:1921
+#: src/pager.c:1919
 msgid "Mouse button to select and drag windows:"
 msgstr "Egérgomb az ablakok kiválasztásához:"
 
-#: src/pager.c:1931 src/pager.c:1956 src/pager.c:1981
+#: src/pager.c:1929 src/pager.c:1954 src/pager.c:1979
 msgid "Middle"
 msgstr "Középsõ"
 
-#: src/pager.c:1946
+#: src/pager.c:1944
 msgid "Mouse button to select desktops:"
 msgstr "Egérgomb az asztalok kiválasztásához:"
 
-#: src/pager.c:1971
+#: src/pager.c:1969
 msgid "Mouse button to display pager menu:"
 msgstr "Egérgomb a pager menü megjelenítéséhez"
 
-#: src/pager.c:1995
+#: src/pager.c:1993
 #, fuzzy
 msgid "Pagers"
 msgstr "Lapozó beállításai"
 
-#: src/pager.c:1996
+#: src/pager.c:1994
 msgid "Pager Settings"
 msgstr "Lapozó beállításai"
 
-#: src/pager.c:1999
+#: src/pager.c:1997
 msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog\n"

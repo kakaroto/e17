@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-07-11 21:43+0200\n"
+"POT-Creation-Date: 2008-08-07 23:58+0200\n"
 "PO-Revision-Date: 2000-03-29 21:12+0200\n"
 "Last-Translator: Matthias Warkus <mawa@iname.com>\n"
 "Language-Team: Enlightenment l10n <e-develop@enlightenment.org>\n"
@@ -470,7 +470,7 @@ msgid "Enlightenment Starting..."
 msgstr "Enlightenment startet..."
 
 # src/settings.c:393
-#: src/container.c:1211
+#: src/container.c:1207
 #, fuzzy
 msgid "Settings..."
 msgstr "Fokus-Einstellungen"
@@ -481,140 +481,140 @@ msgstr "Fokus-Einstellungen"
 # src/settings.c:1524 src/settings.c:1612 src/settings.c:2014
 # src/settings.c:3407 src/settings.c:3752 src/settings.c:4050
 # src/settings.c:4188
-#: src/container.c:1215 src/dialog.c:860 src/pager.c:1015 config/strings.c:30
+#: src/container.c:1211 src/dialog.c:858 src/pager.c:1013 config/strings.c:30
 #: config/strings.c:132
 msgid "Close"
 msgstr "Schließen"
 
 # src/iconify.c:2432
-#: src/container.c:1220 config/strings.c:83
+#: src/container.c:1216 config/strings.c:83
 msgid "Create New Iconbox"
 msgstr "Neue Iconbox erzeugen"
 
 # src/settings.c:3643
-#: src/container.c:1516 src/container.c:1589
+#: src/container.c:1512 src/container.c:1585
 #, fuzzy, c-format
 msgid "Icon size: %2d"
 msgstr "Icongröße"
 
 # src/settings.c:3530
-#: src/container.c:1553
+#: src/container.c:1549
 msgid "Transparent background"
 msgstr "Transparenter Hintergrund"
 
 # src/menus.c:2027
-#: src/container.c:1557
+#: src/container.c:1553
 #, fuzzy
 msgid "Hide inner border"
 msgstr "Diese Gruppe zeigen/verbergen"
 
 # src/settings.c:3551
-#: src/container.c:1561
+#: src/container.c:1557
 msgid "Draw base image behind Icons"
 msgstr "Hintergrundfliese hinter Icons zeichnen"
 
 # src/settings.c:3558
-#: src/container.c:1565
+#: src/container.c:1561
 msgid "Hide scrollbar when not needed"
 msgstr "Rollbalken verbergen, wenn nicht benötigt"
 
 # src/settings.c:3565
-#: src/container.c:1569
+#: src/container.c:1565
 msgid "Automatically resize to fit Icons"
 msgstr "Größe automatisch auf Icons anpassen"
 
 # src/settings.c:3583
-#: src/container.c:1576
+#: src/container.c:1572
 msgid "Alignment of anchoring when automatically resizing:"
 msgstr "Ausrichtung der Verankerung bei automatischer Größenänderung:"
 
 # src/settings.c:3666
-#: src/container.c:1607
+#: src/container.c:1603
 msgid "Orientation:"
 msgstr "Ausrichtung:"
 
 # src/settings.c:3672
-#: src/container.c:1612
+#: src/container.c:1608
 msgid "Scrollbar side:"
 msgstr "Seite des Rollbalkens:"
 
 # src/settings.c:3678
-#: src/container.c:1617
+#: src/container.c:1613
 msgid "Scrollbar arrows:"
 msgstr "Pfeile des Rollbalkens:"
 
 # src/settings.c:3683
-#: src/container.c:1620
+#: src/container.c:1616
 msgid "Horizontal"
 msgstr "Waagerecht"
 
 # src/settings.c:3690
-#: src/container.c:1625
+#: src/container.c:1621
 msgid "Left / Top"
 msgstr "Links / Oben"
 
 # src/settings.c:3697
-#: src/container.c:1630
+#: src/container.c:1626
 msgid "Start"
 msgstr "Anfang"
 
 # src/settings.c:3704
-#: src/container.c:1635
+#: src/container.c:1631
 msgid "Vertical"
 msgstr "Vertikal"
 
 # src/settings.c:3712
-#: src/container.c:1641
+#: src/container.c:1637
 msgid "Right / Bottom"
 msgstr "Rechts / Unten"
 
 # src/settings.c:3720
-#: src/container.c:1647
+#: src/container.c:1643
 msgid "Both ends"
 msgstr "Beide Enden"
 
 # src/settings.c:3730
-#: src/container.c:1655
+#: src/container.c:1651
 msgid "End"
 msgstr "Ende"
 
 # src/settings.c:3740
-#: src/container.c:1663 src/focus.c:841
+#: src/container.c:1659 src/focus.c:825
 msgid "None"
 msgstr "-/-"
 
 # src/settings.c:3544
-#: src/container.c:1673
+#: src/container.c:1669
 msgid "Show icon names"
 msgstr "Iconnamen anzeigen"
 
 # src/settings.c:3573
-#: src/container.c:1677
+#: src/container.c:1673
 msgid "Animate when iconifying to this Iconbox"
 msgstr "Beim Verkleinern in diese Iconbox animieren"
 
 # src/settings.c:3605
-#: src/container.c:1687
+#: src/container.c:1683
 msgid "Icon image display policy (if one operation fails, try the next):"
 msgstr "Anzeigemethode für Icons (wenn eine Aktion fehlschlägt, die nächste):"
 
 # src/settings.c:3612
-#: src/container.c:1692
+#: src/container.c:1688
 msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
 msgstr "Fensterschnappschüsse, Anwendungsicon, Enlightenments eigenes Icon"
 
 # src/settings.c:3621
-#: src/container.c:1699
+#: src/container.c:1695
 msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
 msgstr "Anwendungsicon, Enlightenments eigenes Icon, Fensterschnappschuss"
 
 # src/settings.c:3629
-#: src/container.c:1704
+#: src/container.c:1700
 msgid "Use Enlightenment Icon, Snapshot Window"
 msgstr "Enlightenments eigenes Icon, Fensterschnappschuss"
 
 # src/main.c:89
-#: src/container.c:1717
+#: src/container.c:1713
 msgid ""
 "Enlightenment Iconbox\n"
 "Settings Dialog\n"
@@ -731,13 +731,13 @@ msgstr "Unten"
 
 # src/settings.c:218 src/settings.c:250 src/settings.c:282
 # src/settings.c:1896
-#: src/desktops.c:2373 src/pager.c:1925 src/pager.c:1950 src/pager.c:1975
+#: src/desktops.c:2373 src/pager.c:1923 src/pager.c:1948 src/pager.c:1973
 msgid "Left"
 msgstr "Links"
 
 # src/settings.c:234 src/settings.c:266 src/settings.c:298
 # src/settings.c:1903
-#: src/desktops.c:2379 src/pager.c:1937 src/pager.c:1962 src/pager.c:1987
+#: src/desktops.c:2379 src/pager.c:1935 src/pager.c:1960 src/pager.c:1985
 msgid "Right"
 msgstr "Rechts"
 
@@ -835,7 +835,7 @@ msgstr ""
 # src/settings.c:1460 src/settings.c:1522 src/settings.c:1610
 # src/settings.c:2012 src/settings.c:3405 src/settings.c:3750
 # src/settings.c:4048 src/settings.c:4186 src/snaps.c:547 src/sound.c:262
-#: src/dialog.c:848 src/dialog.c:2037 src/dialog.c:2068 src/events.c:86
+#: src/dialog.c:846 src/dialog.c:2035 src/dialog.c:2066 src/events.c:86
 #: src/setup.c:157 src/sound.c:203
 msgid "OK"
 msgstr "OK"
@@ -845,12 +845,12 @@ msgstr "OK"
 # src/settings.c:1461 src/settings.c:1523 src/settings.c:1611
 # src/settings.c:2013 src/settings.c:3406 src/settings.c:3751
 # src/settings.c:4049 src/settings.c:4187 src/snaps.c:548
-#: src/dialog.c:853
+#: src/dialog.c:851
 msgid "Apply"
 msgstr "Übernehmen"
 
 # src/dialog.c:304
-#: src/dialog.c:2068
+#: src/dialog.c:2066
 msgid "Attention !!!"
 msgstr "Achtung!"
 
@@ -889,126 +889,126 @@ msgstr ""
 "Breche ab.\n"
 
 # src/settings.c:417
-#: src/focus.c:713
+#: src/focus.c:697
 msgid "Focus follows pointer"
 msgstr "Fokus folgt Zeiger"
 
 # src/settings.c:425
-#: src/focus.c:719
+#: src/focus.c:703
 msgid "Focus follows pointer sloppily"
 msgstr "Fokus folgt Zeiger in Fenster"
 
 # src/settings.c:433
-#: src/focus.c:725
+#: src/focus.c:709
 msgid "Focus follows mouse clicks"
 msgstr "Fokus folgt Mausklicks"
 
 # src/settings.c:448
-#: src/focus.c:735
+#: src/focus.c:719
 msgid "Clicking in a window always raises it"
 msgstr "Klicken in ein Fenster hebt es immer an"
 
 # src/settings.c:462
-#: src/focus.c:743
+#: src/focus.c:727
 msgid "All new windows first get the focus"
 msgstr "Alle neuen Fenster erhalten sofort den Fokus"
 
 # src/settings.c:470
-#: src/focus.c:748
+#: src/focus.c:732
 msgid "Only new dialog windows get the focus"
 msgstr "Nur neue Dialogfenster erhalten den Fokus"
 
 # src/settings.c:480
-#: src/focus.c:755
+#: src/focus.c:739
 msgid "Only new dialogs whose owner is focused get the focus"
 msgstr "Nur neue Dialogfenster mit fokussiertem Eigner erhalten den Fokus"
 
 # src/settings.c:546
-#: src/focus.c:760
+#: src/focus.c:744
 #, fuzzy
 msgid "Raise windows while switching focus"
 msgstr "Fenster beim Umschalten fokussieren"
 
 # src/settings.c:498
-#: src/focus.c:766
+#: src/focus.c:750
 #, fuzzy
 msgid "Send mouse pointer to window while switching focus"
 msgstr "Mauszeiger bei Fokuserhalt in Fenster schicken"
 
 # src/settings.c:498
-#: src/focus.c:772
+#: src/focus.c:756
 #, fuzzy
 msgid "Always send mouse pointer to window on focus switch"
 msgstr "Mauszeiger bei Fokuserhalt in Fenster schicken"
 
 # src/settings.c:513
-#: src/focus.c:780
+#: src/focus.c:764
 msgid "Display and use focus list"
 msgstr "Fokusliste anzeigen und benutzen"
 
 # src/settings.c:521
-#: src/focus.c:785
+#: src/focus.c:769
 msgid "Include sticky windows in focus list"
 msgstr "Klebrige Fenster in Fokusliste erwähnen"
 
 # src/settings.c:529
-#: src/focus.c:790
+#: src/focus.c:774
 msgid "Include shaded windows in focus list"
 msgstr "Aufgerollte Fenster in Fokusliste erwähnen"
 
 # src/settings.c:538
-#: src/focus.c:795
+#: src/focus.c:779
 msgid "Include iconified windows in focus list"
 msgstr "Minimierte Fenster in Fokusliste erwähnen"
 
 # src/settings.c:529
-#: src/focus.c:800
+#: src/focus.c:784
 #, fuzzy
 msgid "Include windows on other desks in focus list"
 msgstr "Aufgerollte Fenster in Fokusliste erwähnen"
 
 # src/settings.c:546
-#: src/focus.c:805
+#: src/focus.c:789
 msgid "Focus windows while switching"
 msgstr "Fenster beim Umschalten fokussieren"
 
 # src/settings.c:554
-#: src/focus.c:810
+#: src/focus.c:794
 msgid "Raise windows after focus switch"
 msgstr "Fenster nach Fokuserhalt anheben"
 
 # src/settings.c:564
-#: src/focus.c:815
+#: src/focus.c:799
 msgid "Send mouse pointer to window after focus switch"
 msgstr "Mauszeiger nach Fokuserhalt in Fenster schicken"
 
 # src/settings.c:3605
-#: src/focus.c:825
+#: src/focus.c:809
 #, fuzzy
 msgid "Focuslist image display policy (if one operation fails, try the next):"
 msgstr "Anzeigemethode für Icons (wenn eine Aktion fehlschlägt, die nächste):"
 
-#: src/focus.c:829
+#: src/focus.c:813
 msgid "First E Icon, then App Icon"
 msgstr ""
 
-#: src/focus.c:835
+#: src/focus.c:819
 msgid "First App Icon, then E Icon"
 msgstr ""
 
 # src/snaps.c:494
-#: src/focus.c:849
+#: src/focus.c:833
 #, fuzzy
 msgid "Focus"
 msgstr "Nie Fokus geben"
 
 # src/settings.c:393
-#: src/focus.c:850
+#: src/focus.c:834
 msgid "Focus Settings"
 msgstr "Fokus-Einstellungen"
 
 # src/main.c:89
-#: src/focus.c:853
+#: src/focus.c:837
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog\n"
@@ -1487,7 +1487,7 @@ msgstr ""
 "Bitte beheben Sie dieses Problem und sorgen Sie dafür, dass dox\n"
 "korrekt installiert ist.\n"
 
-#: src/magwin.c:463
+#: src/magwin.c:462
 msgid "Magnifier"
 msgstr ""
 
@@ -1538,34 +1538,34 @@ msgid "Group %i"
 msgstr "Gruppe %i"
 
 # src/settings.c:1795
-#: src/menus.c:2059
+#: src/menus.c:2061
 msgid "Animated display of menus"
 msgstr "Animierte Menüdarstellung"
 
 # src/settings.c:1810
-#: src/menus.c:2064
+#: src/menus.c:2066
 msgid "Always pop up menus on screen"
 msgstr "Menüs immer auf dem Bildschirm erscheinen lassen"
 
 # src/settings.c:1826
-#: src/menus.c:2069
+#: src/menus.c:2071
 msgid "Warp pointer after moving menus"
 msgstr "Zeiger verschieben, wenn Menüs bewegt werden"
 
 # src/snaps.c:437
-#: src/menus.c:2075
+#: src/menus.c:2077
 #, fuzzy
 msgid "Menus"
 msgstr "Rahmenstil"
 
 # src/settings.c:393
-#: src/menus.c:2076
+#: src/menus.c:2078
 #, fuzzy
 msgid "Menu Settings"
 msgstr "Verschiedene Einstellungen"
 
 # src/main.c:89
-#: src/menus.c:2079
+#: src/menus.c:2081
 #, fuzzy
 msgid ""
 "Enlightenment Menu\n"
@@ -1648,149 +1648,149 @@ msgstr ""
 "Einstellungsdialog\n"
 
 # src/pager.c:1268
-#: src/pager.c:1008 config/strings.c:49 config/strings.c:131
+#: src/pager.c:1006 config/strings.c:49 config/strings.c:131
 msgid "Window Options"
 msgstr "Fensteroptionen"
 
 # src/pager.c:1274
-#: src/pager.c:1011 config/strings.c:51 config/strings.c:134
+#: src/pager.c:1009 config/strings.c:51 config/strings.c:134
 msgid "Iconify"
 msgstr "Minimieren"
 
 # src/pager.c:1280
-#: src/pager.c:1019 config/strings.c:133
+#: src/pager.c:1017 config/strings.c:133
 msgid "Annihilate"
 msgstr "Zerstören"
 
 # src/pager.c:1283
-#: src/pager.c:1023
+#: src/pager.c:1021
 msgid "Stick / Unstick"
 msgstr "Ankleben / Ablösen"
 
 # src/pager.c:1295
-#: src/pager.c:1032
+#: src/pager.c:1030
 msgid "Desktop Options"
 msgstr "Desktopoptionen"
 
 # src/pager.c:1301
-#: src/pager.c:1034
+#: src/pager.c:1032
 msgid "Pager Settings..."
 msgstr "Pager-Einstellungen..."
 
 # src/pager.c:1311
-#: src/pager.c:1039
+#: src/pager.c:1037
 msgid "Snapshotting Off"
 msgstr "Schnappschüsse aus"
 
 # src/pager.c:1323
-#: src/pager.c:1043
+#: src/pager.c:1041
 msgid "High Quality Off"
 msgstr "Hohe Qualität aus"
 
 # src/pager.c:1318
-#: src/pager.c:1045
+#: src/pager.c:1043
 msgid "High Quality On"
 msgstr "Hohe Qualität ein"
 
 # src/pager.c:1306
-#: src/pager.c:1050
+#: src/pager.c:1048
 msgid "Snapshotting On"
 msgstr "Schnappschüsse ein"
 
-#: src/pager.c:1054
+#: src/pager.c:1052
 msgid "Zoom Off"
 msgstr ""
 
-#: src/pager.c:1056
+#: src/pager.c:1054
 msgid "Zoom On"
 msgstr ""
 
 # src/settings.c:87 src/settings.c:192
-#: src/pager.c:1814 src/pager.c:1905
+#: src/pager.c:1812 src/pager.c:1903
 msgid "Pager scanning speed:"
 msgstr "Pager-Abtastgeschwindigkeit:"
 
 # src/settings.c:88 src/settings.c:193
-#: src/pager.c:1815 src/pager.c:1906
+#: src/pager.c:1813 src/pager.c:1904
 msgid "lines per second"
 msgstr "Zeilen pro Sekunde"
 
 # src/settings.c:135
-#: src/pager.c:1844
+#: src/pager.c:1842
 msgid "Enable pager display"
 msgstr "Pager anzeigen"
 
-#: src/pager.c:1854
+#: src/pager.c:1852
 msgid "Pager Mode:"
 msgstr ""
 
-#: src/pager.c:1858
+#: src/pager.c:1856
 #, fuzzy
 msgid "Simple"
 msgstr "Beispiel"
 
 # src/settings.c:144
-#: src/pager.c:1864
+#: src/pager.c:1862
 msgid "Make miniature snapshots of the screen"
 msgstr "Miniatur-Schnappschüsse des Bildschirms machen"
 
-#: src/pager.c:1871
+#: src/pager.c:1869
 msgid "Live Update"
 msgstr ""
 
 # src/settings.c:154
-#: src/pager.c:1882
+#: src/pager.c:1880
 msgid "Smooth high quality snapshots in snapshot mode"
 msgstr "Weiche, hochwertige Schnappschüsse im Schnappschussmodus"
 
 # src/settings.c:164
-#: src/pager.c:1887
+#: src/pager.c:1885
 msgid "Zoom in on pager windows when mouse is over them"
 msgstr "Auf Pager-Fenster einzoomen, wenn Maus darüber ist"
 
 # src/settings.c:174
-#: src/pager.c:1893
+#: src/pager.c:1891
 msgid "Pop up window title when mouse is over the window"
 msgstr "Fenstertitel anzeigen, wenn Maus über Fenster ist"
 
 # src/settings.c:183
-#: src/pager.c:1898
+#: src/pager.c:1896
 msgid "Continuously scan screen to update pager"
 msgstr "Ständig den Bildschirm abtasten, um Pager zu aktualisieren"
 
 # src/settings.c:212
-#: src/pager.c:1921
+#: src/pager.c:1919
 msgid "Mouse button to select and drag windows:"
 msgstr "Mausknopf zum Auswählen und Ziehen von Fenstern:"
 
 # src/settings.c:226 src/settings.c:258 src/settings.c:290
-#: src/pager.c:1931 src/pager.c:1956 src/pager.c:1981
+#: src/pager.c:1929 src/pager.c:1954 src/pager.c:1979
 msgid "Middle"
 msgstr "Mitte"
 
 # src/settings.c:244
-#: src/pager.c:1946
+#: src/pager.c:1944
 msgid "Mouse button to select desktops:"
 msgstr "Mausknopf zum Auswählen von Desktops:"
 
 # src/settings.c:276
-#: src/pager.c:1971
+#: src/pager.c:1969
 msgid "Mouse button to display pager menu:"
 msgstr "Mausknopf zum Anzeigen des Pager-Menüs:"
 
 # src/settings.c:126
-#: src/pager.c:1995
+#: src/pager.c:1993
 #, fuzzy
 msgid "Pagers"
 msgstr "Pager-Einstellungen"
 
 # src/settings.c:126
-#: src/pager.c:1996
+#: src/pager.c:1994
 msgid "Pager Settings"
 msgstr "Pager-Einstellungen"
 
 # src/main.c:89
-#: src/pager.c:1999
+#: src/pager.c:1997
 msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog\n"

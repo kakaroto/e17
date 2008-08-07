@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bosnian\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-07-11 21:43+0200\n"
+"POT-Creation-Date: 2008-08-07 23:58+0200\n"
 "PO-Revision-Date: 2004-08-26 00:52+0200\n"
 "Last-Translator: Kemal Šanjta <gomez@lugzdk.ba>\n"
 "Language-Team: Bosnian <lokal@linux.org.ba>\n"
@@ -418,119 +418,119 @@ msgstr ""
 msgid "Enlightenment Starting..."
 msgstr "Enlightenment se pokre�e..."
 
-#: src/container.c:1211
+#: src/container.c:1207
 #, fuzzy
 msgid "Settings..."
 msgstr "Osobine usmjeravanja"
 
-#: src/container.c:1215 src/dialog.c:860 src/pager.c:1015 config/strings.c:30
+#: src/container.c:1211 src/dialog.c:858 src/pager.c:1013 config/strings.c:30
 #: config/strings.c:132
 msgid "Close"
 msgstr "Zatvori"
 
-#: src/container.c:1220 config/strings.c:83
+#: src/container.c:1216 config/strings.c:83
 msgid "Create New Iconbox"
 msgstr "Napravi novi Iconbox"
 
-#: src/container.c:1516 src/container.c:1589
+#: src/container.c:1512 src/container.c:1585
 #, fuzzy, c-format
 msgid "Icon size: %2d"
 msgstr "Veliīina ikone"
 
-#: src/container.c:1553
+#: src/container.c:1549
 msgid "Transparent background"
 msgstr "Providna pozadina"
 
-#: src/container.c:1557
+#: src/container.c:1553
 #, fuzzy
 msgid "Hide inner border"
 msgstr "Pokaŵi/Sakrij ovu grupu"
 
-#: src/container.c:1561
+#: src/container.c:1557
 msgid "Draw base image behind Icons"
 msgstr "Nacrtaj osnovnu sliku ispod ikona"
 
-#: src/container.c:1565
+#: src/container.c:1561
 msgid "Hide scrollbar when not needed"
 msgstr "Sakrij traku za listanje kada nije potrebna"
 
-#: src/container.c:1569
+#: src/container.c:1565
 msgid "Automatically resize to fit Icons"
 msgstr "Automatski promjeni veliīini radi podeŷavanja ikona"
 
-#: src/container.c:1576
+#: src/container.c:1572
 msgid "Alignment of anchoring when automatically resizing:"
 msgstr "Poravnanje uīvrŷ�ivanja prilikom automatske promjene veliīine:"
 
-#: src/container.c:1607
+#: src/container.c:1603
 msgid "Orientation:"
 msgstr "Orjentacija:"
 
-#: src/container.c:1612
+#: src/container.c:1608
 msgid "Scrollbar side:"
 msgstr "Veliīine trake za listanje:"
 
-#: src/container.c:1617
+#: src/container.c:1613
 msgid "Scrollbar arrows:"
 msgstr "Strelice trake za listanje:"
 
-#: src/container.c:1620
+#: src/container.c:1616
 msgid "Horizontal"
 msgstr "Horizontalno"
 
-#: src/container.c:1625
+#: src/container.c:1621
 msgid "Left / Top"
 msgstr "Lijevo / Vrh"
 
-#: src/container.c:1630
+#: src/container.c:1626
 msgid "Start"
 msgstr "Poīetak"
 
-#: src/container.c:1635
+#: src/container.c:1631
 msgid "Vertical"
 msgstr "Vertikalno"
 
-#: src/container.c:1641
+#: src/container.c:1637
 msgid "Right / Bottom"
 msgstr "Desno / Dno"
 
-#: src/container.c:1647
+#: src/container.c:1643
 msgid "Both ends"
 msgstr "Oba kraja"
 
-#: src/container.c:1655
+#: src/container.c:1651
 msgid "End"
 msgstr "Kraj"
 
-#: src/container.c:1663 src/focus.c:841
+#: src/container.c:1659 src/focus.c:825
 msgid "None"
 msgstr "Niŷta"
 
-#: src/container.c:1673
+#: src/container.c:1669
 msgid "Show icon names"
 msgstr "Poka�i imena ikona"
 
-#: src/container.c:1677
+#: src/container.c:1673
 msgid "Animate when iconifying to this Iconbox"
 msgstr "Pokreni prilikom ikonificiranja ovog Iconbox-a"
 
-#: src/container.c:1687
+#: src/container.c:1683
 msgid "Icon image display policy (if one operation fails, try the next):"
 msgstr "Pravila prikaza slike ikone (ako jedna ne uspije, probajte sljede�u):"
 
-#: src/container.c:1692
+#: src/container.c:1688
 msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
 msgstr "Slikaj prozore, koristi ikonu apliacije, koristi Enlightenment ikonu"
 
-#: src/container.c:1699
+#: src/container.c:1695
 msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
 msgstr "Koristi ikonu aplikacije, koristi Enlightenment ikonu, Slikaj prozor"
 
-#: src/container.c:1704
+#: src/container.c:1700
 msgid "Use Enlightenment Icon, Snapshot Window"
 msgstr "Koristi Enlightenment ikonu, Slikaj prozor"
 
-#: src/container.c:1717
+#: src/container.c:1713
 msgid ""
 "Enlightenment Iconbox\n"
 "Settings Dialog\n"
@@ -631,11 +631,11 @@ msgstr "Vrh"
 msgid "Bottom"
 msgstr "Dno"
 
-#: src/desktops.c:2373 src/pager.c:1925 src/pager.c:1950 src/pager.c:1975
+#: src/desktops.c:2373 src/pager.c:1923 src/pager.c:1948 src/pager.c:1973
 msgid "Left"
 msgstr "Lijevo"
 
-#: src/desktops.c:2379 src/pager.c:1937 src/pager.c:1962 src/pager.c:1987
+#: src/desktops.c:2379 src/pager.c:1935 src/pager.c:1960 src/pager.c:1985
 msgid "Right"
 msgstr "Desno"
 
@@ -717,16 +717,16 @@ msgstr ""
 "Enlightenment Virtual Desktop\n"
 "Dijalog osobina\n"
 
-#: src/dialog.c:848 src/dialog.c:2037 src/dialog.c:2068 src/events.c:86
+#: src/dialog.c:846 src/dialog.c:2035 src/dialog.c:2066 src/events.c:86
 #: src/setup.c:157 src/sound.c:203
 msgid "OK"
 msgstr "Uredu"
 
-#: src/dialog.c:853
+#: src/dialog.c:851
 msgid "Apply"
 msgstr "Izvrŷi"
 
-#: src/dialog.c:2068
+#: src/dialog.c:2066
 msgid "Attention !!!"
 msgstr "Paŵnja !!!"
 
@@ -762,105 +762,105 @@ msgstr ""
 "\n"
 "Izlazim.\n"
 
-#: src/focus.c:713
+#: src/focus.c:697
 msgid "Focus follows pointer"
 msgstr "Usmjeravanje prati usmjeriva?"
 
-#: src/focus.c:719
+#: src/focus.c:703
 msgid "Focus follows pointer sloppily"
 msgstr "Usmjerenje prati usmjeriva�"
 
-#: src/focus.c:725
+#: src/focus.c:709
 msgid "Focus follows mouse clicks"
 msgstr "Usmjeravanje prati klikanje miŷa"
 
-#: src/focus.c:735
+#: src/focus.c:719
 msgid "Clicking in a window always raises it"
 msgstr "Klikanje na prozor uvijek ga podstakinje"
 
-#: src/focus.c:743
+#: src/focus.c:727
 msgid "All new windows first get the focus"
 msgstr "Svi novi prozori prvo dobijaju usmjeravanje"
 
-#: src/focus.c:748
+#: src/focus.c:732
 msgid "Only new dialog windows get the focus"
 msgstr "Sam novi dijalog prozori dobivaju usjeravanje"
 
-#: src/focus.c:755
+#: src/focus.c:739
 msgid "Only new dialogs whose owner is focused get the focus"
 msgstr "Samo novi dijalozi īiji je vlasnik usmjeren dobivaju usmjeravanje"
 
-#: src/focus.c:760
+#: src/focus.c:744
 #, fuzzy
 msgid "Raise windows while switching focus"
 msgstr "Usmjeravanje prozora prilikom prebacivanja"
 
-#: src/focus.c:766
+#: src/focus.c:750
 #, fuzzy
 msgid "Send mouse pointer to window while switching focus"
 msgstr "Poŷalji miŷ pokaziva� na prozor na prekida�u sumjerivanja"
 
-#: src/focus.c:772
+#: src/focus.c:756
 #, fuzzy
 msgid "Always send mouse pointer to window on focus switch"
 msgstr "Poŷalji miŷ pokaziva� na prozor na prekida�u sumjerivanja"
 
-#: src/focus.c:780
+#: src/focus.c:764
 msgid "Display and use focus list"
 msgstr "Prikaŵi i koristi listu usmjeravanja"
 
-#: src/focus.c:785
+#: src/focus.c:769
 msgid "Include sticky windows in focus list"
 msgstr "Ukljuīi listu ljepljivih prozora u listi usmjeravanja"
 
-#: src/focus.c:790
+#: src/focus.c:774
 msgid "Include shaded windows in focus list"
 msgstr "Ukljuīi osjenīene prozore u listi usmjeravanja"
 
-#: src/focus.c:795
+#: src/focus.c:779
 msgid "Include iconified windows in focus list"
 msgstr "Ukljuīi ikonificirane prozore u listi usmjeravanja"
 
-#: src/focus.c:800
+#: src/focus.c:784
 #, fuzzy
 msgid "Include windows on other desks in focus list"
 msgstr "Ukljuīi osjenīene prozore u listi usmjeravanja"
 
-#: src/focus.c:805
+#: src/focus.c:789
 msgid "Focus windows while switching"
 msgstr "Usmjeravanje prozora prilikom prebacivanja"
 
-#: src/focus.c:810
+#: src/focus.c:794
 msgid "Raise windows after focus switch"
 msgstr "Pove�an je prozora nakon paljenja/gaŷenja usjeriva�a"
 
-#: src/focus.c:815
+#: src/focus.c:799
 msgid "Send mouse pointer to window after focus switch"
 msgstr "Poŷalji miŷ pokaziva� na prozor nakon ŷto se usjeriva� ugasi/upali"
 
-#: src/focus.c:825
+#: src/focus.c:809
 #, fuzzy
 msgid "Focuslist image display policy (if one operation fails, try the next):"
 msgstr "Pravila prikaza slike ikone (ako jedna ne uspije, probajte sljede�u):"
 
-#: src/focus.c:829
+#: src/focus.c:813
 msgid "First E Icon, then App Icon"
 msgstr ""
 
-#: src/focus.c:835
+#: src/focus.c:819
 msgid "First App Icon, then E Icon"
 msgstr ""
 
-#: src/focus.c:849
+#: src/focus.c:833
 #, fuzzy
 msgid "Focus"
 msgstr "Nikad ne usmjeravaj"
 
-#: src/focus.c:850
+#: src/focus.c:834
 msgid "Focus Settings"
 msgstr "Osobine usmjeravanja"
 
-#: src/focus.c:853
+#: src/focus.c:837
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog\n"
@@ -1286,7 +1286,7 @@ msgstr ""
 "Molim popravite ovu situaciju i budite sigurni da je instaliran\n"
 "ispravno.\n"
 
-#: src/magwin.c:463
+#: src/magwin.c:462
 msgid "Magnifier"
 msgstr ""
 
@@ -1328,29 +1328,29 @@ msgstr "Ikonificiraj ovu grupu"
 msgid "Group %i"
 msgstr "Grupa %i"
 
-#: src/menus.c:2059
+#: src/menus.c:2061
 msgid "Animated display of menus"
 msgstr "Animirani prikazi menija"
 
-#: src/menus.c:2064
+#: src/menus.c:2066
 msgid "Always pop up menus on screen"
 msgstr "Uvijek pop up meniji na ekranu"
 
-#: src/menus.c:2069
+#: src/menus.c:2071
 msgid "Warp pointer after moving menus"
 msgstr "Uvi pokaziva� nakon premjeŷtanja izbornika"
 
-#: src/menus.c:2075
+#: src/menus.c:2077
 #, fuzzy
 msgid "Menus"
 msgstr "Izbornici:"
 
-#: src/menus.c:2076
+#: src/menus.c:2078
 #, fuzzy
 msgid "Menu Settings"
 msgstr "Razne osobine"
 
-#: src/menus.c:2079
+#: src/menus.c:2081
 #, fuzzy
 msgid ""
 "Enlightenment Menu\n"
@@ -1420,125 +1420,125 @@ msgstr ""
 "Enlightenment Izabrana providnost\n"
 "dijalog osobina\n"
 
-#: src/pager.c:1008 config/strings.c:49 config/strings.c:131
+#: src/pager.c:1006 config/strings.c:49 config/strings.c:131
 msgid "Window Options"
 msgstr "Opcije prozora"
 
-#: src/pager.c:1011 config/strings.c:51 config/strings.c:134
+#: src/pager.c:1009 config/strings.c:51 config/strings.c:134
 msgid "Iconify"
 msgstr "Ikonificiraj"
 
-#: src/pager.c:1019 config/strings.c:133
+#: src/pager.c:1017 config/strings.c:133
 msgid "Annihilate"
 msgstr "Uniŷtiti"
 
-#: src/pager.c:1023
+#: src/pager.c:1021
 msgid "Stick / Unstick"
 msgstr "Zalijepi / Odlijepi"
 
-#: src/pager.c:1032
+#: src/pager.c:1030
 msgid "Desktop Options"
 msgstr "Opcije Desktopa"
 
-#: src/pager.c:1034
+#: src/pager.c:1032
 msgid "Pager Settings..."
 msgstr "Osobine Pejdŵera..."
 
-#: src/pager.c:1039
+#: src/pager.c:1037
 msgid "Snapshotting Off"
 msgstr "Slikanje Iskluīeno"
 
-#: src/pager.c:1043
+#: src/pager.c:1041
 msgid "High Quality Off"
 msgstr "Visoki kvalitet Iskljuīen"
 
-#: src/pager.c:1045
+#: src/pager.c:1043
 msgid "High Quality On"
 msgstr "Visoki kvalitet Ukljuīen"
 
-#: src/pager.c:1050
+#: src/pager.c:1048
 msgid "Snapshotting On"
 msgstr "Slikanje Ukljuīeno"
 
-#: src/pager.c:1054
+#: src/pager.c:1052
 msgid "Zoom Off"
 msgstr ""
 
-#: src/pager.c:1056
+#: src/pager.c:1054
 msgid "Zoom On"
 msgstr ""
 
-#: src/pager.c:1814 src/pager.c:1905
+#: src/pager.c:1812 src/pager.c:1903
 msgid "Pager scanning speed:"
 msgstr "Brzina skeniranja pejdŵera:"
 
-#: src/pager.c:1815 src/pager.c:1906
+#: src/pager.c:1813 src/pager.c:1904
 msgid "lines per second"
 msgstr "linija po sekundi"
 
-#: src/pager.c:1844
+#: src/pager.c:1842
 msgid "Enable pager display"
 msgstr "Omogu�i prikaz pejdŵera"
 
-#: src/pager.c:1854
+#: src/pager.c:1852
 msgid "Pager Mode:"
 msgstr ""
 
-#: src/pager.c:1858
+#: src/pager.c:1856
 #, fuzzy
 msgid "Simple"
 msgstr "Talasi"
 
-#: src/pager.c:1864
+#: src/pager.c:1862
 msgid "Make miniature snapshots of the screen"
 msgstr "Napravi male slike ekrana"
 
-#: src/pager.c:1871
+#: src/pager.c:1869
 msgid "Live Update"
 msgstr ""
 
-#: src/pager.c:1882
+#: src/pager.c:1880
 msgid "Smooth high quality snapshots in snapshot mode"
 msgstr "Visoko kvalitetne glatke slike u modu za slikanje"
 
-#: src/pager.c:1887
+#: src/pager.c:1885
 msgid "Zoom in on pager windows when mouse is over them"
 msgstr "Uve�aj prozore pejdŵera kada je miŷ iznad njih"
 
-#: src/pager.c:1893
+#: src/pager.c:1891
 msgid "Pop up window title when mouse is over the window"
 msgstr "Pop up naslov prozora kada je miŷ iznad prozora"
 
-#: src/pager.c:1898
+#: src/pager.c:1896
 msgid "Continuously scan screen to update pager"
 msgstr "Neprestalno sekinraj ekran radi nadogradnje pejdŵera"
 
-#: src/pager.c:1921
+#: src/pager.c:1919
 msgid "Mouse button to select and drag windows:"
 msgstr "Dugme miŷa za izbor i povla�enje prozora:"
 
-#: src/pager.c:1931 src/pager.c:1956 src/pager.c:1981
+#: src/pager.c:1929 src/pager.c:1954 src/pager.c:1979
 msgid "Middle"
 msgstr "Sredina"
 
-#: src/pager.c:1946
+#: src/pager.c:1944
 msgid "Mouse button to select desktops:"
 msgstr "Dugme miŷa za izbor desktopa:"
 
-#: src/pager.c:1971
+#: src/pager.c:1969
 msgid "Mouse button to display pager menu:"
 msgstr "Dugme miŷa za prikaz izbornika pejdŵera:"
 
-#: src/pager.c:1995
+#: src/pager.c:1993
 #, fuzzy
 msgid "Pagers"
 msgstr "Osobine pejdŵera..."
 
-#: src/pager.c:1996
+#: src/pager.c:1994
 msgid "Pager Settings"
 msgstr "Osobine pejdŵera..."
 
-#: src/pager.c:1999
+#: src/pager.c:1997
 msgid ""
 "Enlightenment Desktop & Area\n"
 "Pager Settings Dialog\n"
