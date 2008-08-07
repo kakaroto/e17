@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2004-2007 Kim Woelders
+ * Copyright (C) 2004-2008 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -38,6 +38,7 @@ struct _eobjlist {
    int                 nwins;
    EObj              **list;
    char                layered;
+   char                type;
 };
 
 static int          EobjListRaise(EobjList * ewl, EObj * eo, int test);
@@ -271,9 +272,9 @@ EobjListTypeCount(const EobjList * ewl, int type)
 /*
  * The global object/client lists
  */
-static EobjList     EwinListStack = { "Stack", 0, 0, NULL, 1 };
-static EobjList     EwinListFocus = { "Focus", 0, 0, NULL, 0 };
-static EobjList     EwinListOrder = { "Order", 0, 0, NULL, 0 };
+static EobjList     EwinListStack = { "Stack", 0, 0, NULL, 1, 0 };
+static EobjList     EwinListFocus = { "Focus", 0, 0, NULL, 0, 1 };
+static EobjList     EwinListOrder = { "Order", 0, 0, NULL, 0, 2 };
 
 static EObj        *const *
 EobjListGet(EobjList * ewl, int *num)
