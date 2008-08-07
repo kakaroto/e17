@@ -42,8 +42,8 @@ static char         click_pending_update_grabs = 0;
 static int          focus_pending_why = 0;
 static EWin        *focus_pending_ewin = NULL;
 static EWin        *focus_pending_new = NULL;
+static EWin        *focus_pending_raise = NULL;
 static Timer       *focus_timer_autoraise = NULL;
-static Timer       *focus_timer_reverse = NULL;
 
 void
 FocusEnable(int on)
@@ -153,64 +153,50 @@ AutoraiseTimeout(void *data)
    return 0;
 }
 
-static int
-ReverseTimeout(void *data)
+static void
+FocusRaisePending(void)
 {
-   EWin               *ewin = (EWin *) data;
+   EWin               *ewin = focus_pending_raise;
+   unsigned int        mask;
+
+   /* The focusing cycle ends when no more modifiers are depressed */
+   mask = 0;
+   EQueryPointer(NULL, NULL, NULL, NULL, &mask);
+   if ((mask & Mode.masks.mod_key_mask) != 0)
+      return;
 
    if (EwinFindByPtr(ewin))	/* May be gone */
       EwinListFocusRaise(ewin);
 
-   focus_timer_reverse = NULL;
-   return 0;
+   GrabKeyboardRelease();
+
+   focus_pending_raise = NULL;
 }
 
 static void
-FocusGetNextEwin(void)
+FocusPrevEwin(void)
 {
    EWin               *const *lst;
    EWin               *ewin;
-   int                 i, num;
+   int                 i, j, num;
 
    lst = EwinListFocusGet(&num);
    if (num <= 1)
       return;
 
-   ewin = NULL;
-   for (i = num - 1; i >= 0; i--)
+   for (j = 0; j < num; j++)
      {
-	if (!FocusEwinValid(lst[i], 1, 0, 0) || lst[i]->props.skip_focuslist)
-	   continue;
-	ewin = lst[i];
-	break;
+	if (lst[j] == Mode.focuswin)
+	   break;
      }
-
-   if (ewin)
-      FocusToEWin(ewin, FOCUS_NEXT);
-}
-
-static void
-FocusGetPrevEwin(void)
-{
-   EWin               *const *lst;
-   EWin               *ewin;
-   int                 i, num;
-
-   lst = EwinListFocusGet(&num);
-   if (num <= 1)
-      return;
-
-   ewin = NULL;
    for (i = 1; i < num; i++)
      {
-	if (!FocusEwinValid(lst[i], 1, 0, 0) || lst[i]->props.skip_focuslist)
+	ewin = lst[(j + i) % num];
+	if (!FocusEwinValid(ewin, 1, 0, 0) || ewin->props.skip_focuslist)
 	   continue;
-	ewin = lst[i];
+	FocusToEWin(ewin, FOCUS_PREV);
 	break;
      }
-
-   if (ewin)
-      FocusToEWin(ewin, FOCUS_PREV);
 }
 
 static void
@@ -408,18 +394,18 @@ doFocusToEwin(EWin * ewin, int why)
    if (do_warp)
       EwinWarpTo(ewin);
 
-   TIMER_DEL(focus_timer_reverse);
    switch (why)
      {
      case FOCUS_PREV:
-	TIMER_ADD(focus_timer_reverse, 0.5, ReverseTimeout, ewin);
+     case FOCUS_NEXT:
+	GrabKeyboardSet(VROOT);	/* Causes idler to be called on KeyRelease */
+	focus_pending_raise = ewin;
 	break;
      case FOCUS_DESK_ENTER:
 	if (Conf.focus.mode == MODE_FOCUS_CLICK)
 	   break;
      default:
      case FOCUS_INIT:
-     case FOCUS_NEXT:
 	EwinListFocusRaise(ewin);
 	break;
      }
@@ -531,8 +517,6 @@ FocusInit(void)
    /* Start focusing windows */
    FocusEnable(1);
 
-   focus_pending_why = 0;
-   focus_pending_ewin = focus_pending_new = NULL;
    FocusToEWin(NULL, FOCUS_INIT);
    FocusSet();
 
@@ -873,6 +857,8 @@ _FocusIdler(void *data __UNUSED__)
       FocusSet();
    if (click_pending_update_grabs)
       doClickGrabsUpdate();
+   if (focus_pending_raise)
+      FocusRaisePending();
 }
 
 static void
@@ -979,14 +965,14 @@ FocusIpc(const char *params)
 	if (Conf.warplist.enable)
 	   WarpFocus(1);
 	else
-	   FocusGetNextEwin();
+	   FocusPrevEwin();
      }
    else if (!strncmp(cmd, "prev", 2))
      {
 	if (Conf.warplist.enable)
 	   WarpFocus(-1);
 	else
-	   FocusGetPrevEwin();
+	   FocusPrevEwin();
      }
 }
 
