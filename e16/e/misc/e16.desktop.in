@@ -3,5 +3,5 @@ Encoding=UTF-8
 Type=XSession
 Name=E16
 Comment=This session starts the Enlightenment (e16) window manager
-Exec=e16
+Exec=@pkgdatadir@/misc/starte16
 Icon=@pkgdatadir@/misc/e16.png

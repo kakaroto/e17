@@ -3,5 +3,5 @@ Encoding=UTF-8
 Type=XSession
 Name=E16-KDE
 Comment=This session starts KDE using enlightenment (e16) as window manager
-Exec=e16-kde
+Exec=@pkgdatadir@/misc/starte16-kde
 Icon=@pkgdatadir@/misc/e16.png

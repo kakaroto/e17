@@ -1,10 +1,14 @@
 #!/bin/sh
-case "$1" in
-gnome|GNOME)
+
+s=$1
+test -z "$s" && s=$0
+
+case "$s" in
+*gnome|GNOME)
 	export WINDOW_MANAGER=e16
 	exec gnome-session
 	;;
-kde|KDE)
+*kde|KDE)
 	export KDEWM=e16
 	exec startkde
 	;;
