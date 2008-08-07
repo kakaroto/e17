@@ -5,8 +5,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Tclock module (e17)\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-22 23:36+0200\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2008-08-07 09:16-0500\n"
 "PO-Revision-Date: 2008-01-23 01:50+0200\n"
 "Last-Translator: Jani väyrynen <janivayrynen@gmail.com>\n"
 "Language-Team: Finnish <janivayrynen@gmail.com>\n"
@@ -14,35 +14,35 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_config.c:44
+#: e_mod_config.c:45
 msgid "Tclock Configuration"
 msgstr "T-kellon asetukset"
 
-#: e_mod_config.c:91
+#: e_mod_config.c:94
 msgid "Top"
 msgstr "Ylärivi"
 
-#: e_mod_config.c:93
+#: e_mod_config.c:96
 msgid "Show Top Line"
 msgstr "Näytä ylärivi"
 
-#: e_mod_config.c:101 e_mod_config.c:115 e_mod_config.c:126
+#: e_mod_config.c:104 e_mod_config.c:118 e_mod_config.c:132
 msgid "Consult strftime(3) for format syntax"
 msgstr "Katso strftime(3) oikealle aikaformaatille"
 
-#: e_mod_config.c:105
+#: e_mod_config.c:108
 msgid "Bottom"
 msgstr "Alarivi"
 
-#: e_mod_config.c:107
+#: e_mod_config.c:110
 msgid "Show Bottom Line"
 msgstr "Näytä alarivi"
 
-#: e_mod_config.c:119
+#: e_mod_config.c:122
 msgid "Tool Tip"
 msgstr "Työkaluvihje"
 
-#: e_mod_config.c:120
+#: e_mod_config.c:124
 msgid "Show Tooltip"
 msgstr "Näytä työkaluvihje"
 

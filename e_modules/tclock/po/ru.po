@@ -2,13 +2,13 @@
 # This file is put in the public domain.
 # Danny Moshnakov <admin@moshnakov.org>, 2006.
 # , fuzzy
-# 
-# 
+#
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: tclock 0.1\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-14 22:40+0100\n"
+"POT-Creation-Date: 2008-08-07 09:16-0500\n"
 "PO-Revision-Date: 2006-05-21 03:51+0300\n"
 "Last-Translator: Danny Moshnakov <admin@moshnakov.org>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -16,36 +16,45 @@ msgstr ""
 "Content-Type: text/plain; charset=koi8-r\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: e_mod_config.c:42
+#: e_mod_config.c:45
 msgid "Tclock Configuration"
 msgstr "Конфигурация Tclock"
 
-#: e_mod_config.c:86
+#: e_mod_config.c:94
 msgid "Top"
 msgstr ""
 
-#: e_mod_config.c:88
+#: e_mod_config.c:96
 #, fuzzy
 msgid "Show Top Line"
 msgstr "Показывать Время"
 
-#: e_mod_config.c:96 e_mod_config.c:110
+#: e_mod_config.c:104 e_mod_config.c:118 e_mod_config.c:132
 msgid "Consult strftime(3) for format syntax"
 msgstr "Смотрите strftime(3) для синтакса формата"
 
-#: e_mod_config.c:100
+#: e_mod_config.c:108
 msgid "Bottom"
 msgstr ""
 
-#: e_mod_config.c:102
+#: e_mod_config.c:110
 msgid "Show Bottom Line"
 msgstr ""
 
-#: e_mod_main.c:128
+#: e_mod_config.c:122
+msgid "Tool Tip"
+msgstr ""
+
+#: e_mod_config.c:124
+#, fuzzy
+msgid "Show Tooltip"
+msgstr "Показывать Время"
+
+#: e_mod_main.c:141
 msgid "TClock"
 msgstr "TClock"
 
-#: e_mod_main.c:173
+#: e_mod_main.c:186
 msgid "Configuration"
 msgstr "Конфигурация"
 
