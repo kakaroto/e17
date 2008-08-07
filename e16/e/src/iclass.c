@@ -659,20 +659,6 @@ ImageclassGetImage(ImageClass * ic, int active, int sticky, int state)
    return im;
 }
 
-void
-ImageclassApplySimple(ImageClass * ic, Win win, Drawable draw, int state,
-		      int x, int y, int w, int h)
-{
-   EImage             *im;
-
-   im = ImageclassGetImage(ic, 0, 0, state);
-   if (!im)
-      return;
-
-   EImageRenderOnDrawable(im, win, draw, 0, x, y, w, h);
-   EImageFree(im);
-}
-
 #ifdef ENABLE_TRANSPARENCY
 static int
 pt_type_to_flags(int image_type)
@@ -1210,6 +1196,20 @@ ImageclassApplyCopy(ImageClass * ic, Win win, int w, int h,
 	EXFreeGC(gc);
 	/* FIXME - No text */
      }
+}
+
+void
+ImageclassApplySimple(ImageClass * ic, Win win, Drawable draw, int state,
+		      int x, int y, int w, int h)
+{
+   EImage             *im;
+
+   im = ImageclassGetImage(ic, 0, 0, state);
+   if (!im)
+      return;
+
+   EImageRenderOnDrawable(im, win, draw, 0, x, y, w, h);
+   EImageFree(im);
 }
 
 static ImageClass  *
