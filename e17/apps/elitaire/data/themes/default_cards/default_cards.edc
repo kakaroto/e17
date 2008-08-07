@@ -1,3 +1,9 @@
+/* Note: Although this theme is liceneed under the GPL license because of the
+   images which I am using, you can consider this file as public domain (of 
+   course only this file and not the pics!). Feel free to use it as base for 
+   your own theme.
+*/
+
 #define GROUP(_type, _number) \
 group {\
 	name: "elitaire/"_type"/"_number;\
