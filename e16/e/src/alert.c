@@ -241,11 +241,6 @@ ShowAlert(const char *title,
      }
  CN:
 
-   wid = DisplayWidth(dd, DefaultScreen(dd));
-   hih = DisplayHeight(dd, DefaultScreen(dd));
-   w = (wid - 600) / 2;
-   h = (hih - 440) / 2;
-
    if (colorful)
       att.background_pixel = cols[1];
    else
@@ -317,20 +312,23 @@ ShowAlert(const char *title,
    XGrabServer(dd);
    XSync(dd, False);
 
-   for (i = 40; i < 600; i += 40)
+   wid = DisplayWidth(dd, DefaultScreen(dd));
+   hih = DisplayHeight(dd, DefaultScreen(dd));
+   ww = (wid >= 600) ? 600 : (wid / 40) * 40;
+   hh = (hih >= 440) ? 440 : (hih / 40) * 40;
+
+   for (i = 40; i < ww; i += 40)
      {
-	ww = i;
-	hh = (i * 440) / 600;
-	x = (wid - ww) >> 1;
-	y = (hih - hh) >> 1;
-	XMoveResizeWindow(dd, win, x, y, ww, hh);
-	DRAW_BOX_OUT(dd, gc, win, 0, 0, ww, hh);
+	w = i;
+	h = (i * hh) / ww;
+	x = (wid - w) >> 1;
+	y = (hih - h) >> 1;
+	XMoveResizeWindow(dd, win, x, y, w, h);
+	DRAW_BOX_OUT(dd, gc, win, 0, 0, w, h);
 	XSync(dd, False);
      }
-   ww = 600;
-   hh = 440;
-   x = (wid - 600) >> 1;
-   y = (hih - 440) >> 1;
+   x = (wid - ww) >> 1;
+   y = (hih - hh) >> 1;
    XMoveResizeWindow(dd, win, x, y, ww, hh);
    XUngrabServer(dd);
    XSync(dd, False);
@@ -353,24 +351,26 @@ ShowAlert(const char *title,
      }
    mh += 10;
 
+   w = (wid - ww) / 2;
+   h = (hih - hh) / 2;
    if (str1 && sscanf(str1, "%s", line) > 0)
      {
-	w = 5 + (((580 - mh) * 0) / 4);
-	XMoveResizeWindow(dd, b1, w, 440 - 15 - fh, mh + 10, fh + 10);
+	w = 5 + (((ww - 20 - mh) * 0) / 4);
+	XMoveResizeWindow(dd, b1, w, hh - 15 - fh, mh + 10, fh + 10);
 	XSelectInput(dd, b1,
 		     ButtonPressMask | ButtonReleaseMask | ExposureMask);
      }
    if (str2 && sscanf(str2, "%s", line) > 0)
      {
-	w = 5 + (((580 - mh) * 1) / 2);
-	XMoveResizeWindow(dd, b2, w, 440 - 15 - fh, mh + 10, fh + 10);
+	w = 5 + (((ww - 20 - mh) * 1) / 2);
+	XMoveResizeWindow(dd, b2, w, hh - 15 - fh, mh + 10, fh + 10);
 	XSelectInput(dd, b2,
 		     ButtonPressMask | ButtonReleaseMask | ExposureMask);
      }
    if (str3 && sscanf(str3, "%s", line) > 0)
      {
-	w = 5 + (((580 - mh) * 2) / 2);
-	XMoveResizeWindow(dd, b3, w, 440 - 15 - fh, mh + 10, fh + 10);
+	w = 5 + (((ww - 20 - mh) * 2) / 2);
+	XMoveResizeWindow(dd, b3, w, hh - 15 - fh, mh + 10, fh + 10);
 	XSelectInput(dd, b3,
 		     ButtonPressMask | ButtonReleaseMask | ExposureMask);
      }
@@ -459,11 +459,11 @@ ShowAlert(const char *title,
 	     ExTextExtents(xfs, title, strlen(title), &rect1, &rect2);
 	     w = rect2.width;
 
-	     DRAW_HEADER(dd, gc, win, (600 - w) / 2, 5 - rect2.y, title);
+	     DRAW_HEADER(dd, gc, win, (ww - w) / 2, 5 - rect2.y, title);
 	     DRAW_BOX_OUT(dd, gc, win, 0, 0, ww, fh + 10);
 	     DRAW_BOX_OUT(dd, gc, win, 0, fh + 10 - 1, ww,
 			  hh - fh - fh - 30 + 2);
-	     DRAW_BOX_OUT(dd, gc, win, 0, 440 - fh - 20, ww, fh + 20);
+	     DRAW_BOX_OUT(dd, gc, win, 0, hh - fh - 20, ww, fh + 20);
 	     i = 0;
 	     j = 0;
 	     k = fh + 10;
@@ -482,30 +482,30 @@ ShowAlert(const char *title,
 	       {
 		  ExTextExtents(xfs, str1, strlen(str1), &rect1, &rect2);
 		  h = rect2.width;
-		  w = 3 + (((580 - mh) * 0) / 4);
+		  w = 3 + (((ww - 20 - mh) * 0) / 4);
 		  DRAW_HEADER(dd, gc, b1, 5 + (mh - h) / 2, 5 - rect2.y, str1);
 		  DRAW_BOX_OUT(dd, gc, b1, 0, 0, mh + 10, fh + 10);
-		  DRAW_THIN_BOX_IN(dd, gc, win, w, 440 - 17 - fh, mh + 14,
+		  DRAW_THIN_BOX_IN(dd, gc, win, w, hh - 17 - fh, mh + 14,
 				   fh + 14);
 	       }
 	     if (str2 && sscanf(str2, "%s", line) > 0)
 	       {
 		  ExTextExtents(xfs, str2, strlen(str2), &rect1, &rect2);
 		  h = rect2.width;
-		  w = 3 + (((580 - mh) * 1) / 2);
+		  w = 3 + (((ww - 20 - mh) * 1) / 2);
 		  DRAW_HEADER(dd, gc, b2, 5 + (mh - h) / 2, 5 - rect2.y, str2);
 		  DRAW_BOX_OUT(dd, gc, b2, 0, 0, mh + 10, fh + 10);
-		  DRAW_THIN_BOX_IN(dd, gc, win, w, 440 - 17 - fh, mh + 14,
+		  DRAW_THIN_BOX_IN(dd, gc, win, w, hh - 17 - fh, mh + 14,
 				   fh + 14);
 	       }
 	     if (str3 && sscanf(str3, "%s", line) > 0)
 	       {
 		  ExTextExtents(xfs, str3, strlen(str3), &rect1, &rect2);
 		  h = rect2.width;
-		  w = 3 + (((580 - mh) * 2) / 2);
+		  w = 3 + (((ww - 20 - mh) * 2) / 2);
 		  DRAW_HEADER(dd, gc, b3, 5 + (mh - h) / 2, 5 - rect2.y, str3);
 		  DRAW_BOX_OUT(dd, gc, b3, 0, 0, mh + 10, fh + 10);
-		  DRAW_THIN_BOX_IN(dd, gc, win, w, 440 - 17 - fh, mh + 14,
+		  DRAW_THIN_BOX_IN(dd, gc, win, w, hh - 17 - fh, mh + 14,
 				   fh + 14);
 	       }
 	     XSync(dd, False);
