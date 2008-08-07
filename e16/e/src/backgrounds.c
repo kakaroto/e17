@@ -1674,7 +1674,7 @@ BG_RedrawView(void)
    pmap = EGetWindowBackgroundPixmap(win);
    gc = EXCreateGC(pmap, 0, NULL);
 
-   ic_button = ImageclassFind("DIALOG_BUTTON", 0);
+   ic_button = ImageclassFind("DIALOG_BUTTON", 1);
 
    XSetForeground(disp, gc, Dpy.pixel_black);
    XFillRectangle(disp, pmap, gc, 0, 0, w, h);

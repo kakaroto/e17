@@ -326,7 +326,7 @@ PagerEwinUpdateMini(Pager * p, EWin * ewin)
      {
 	ImageClass         *ic;
 
-	ic = ImageclassFind("PAGER_WIN", 0);
+	ic = ImageclassFind("PAGER_WIN", 1);
 	ImageclassApplySimple(ic, p->win, ewin->mini_pmm.pmap,
 			      STATE_NORMAL, 0, 0, w, h);
 	Dprintf("Use Iclass, pmap=%#lx\n", ewin->mini_pmm.pmap);
@@ -594,7 +594,7 @@ PagerUpdateBg(Pager * p)
 	return;
      }
 
-   ic = ImageclassFind("PAGER_BACKGROUND", 0);
+   ic = ImageclassFind("PAGER_BACKGROUND", 1);
    if (ic)
      {
 	ImageclassApplySimple(ic, p->win, pmap, STATE_NORMAL,
