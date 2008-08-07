@@ -3,6 +3,7 @@
 # queries sizes of your enlightenment cache                                  #
 #
 # Copyright (C) 1999-2007 Carsten Haitzler, Geoff Harrison and various contributors
+# Copyright (C) 2008 Kim Woelders
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to
@@ -24,39 +25,36 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ##############################################################################
 
-PATH=$PATH:$EBIN:$EROOT/scripts
+PATH=$PATH:$EBIN
 export PATH
 
-if [ $# -lt 1 ]; then
+case "x$1" in
+xall)
+  dir=""
+  txt="Your caches are using"
+  ;;
+
+xbgsel)
+  dir=bgsel
+  txt="Your background selector cache is using"
+  ;;
+
+xconfig)
+  dir=cfg
+  txt="Your config file cache is using"
+  ;;
+
+xpager)
+  dir=pager
+  txt="Your pager background cache is using"
+  ;;
+
+*)
   echo "usage:"
-  echo "    "$0" [ all | pager | bgsel | config ]"
+  echo "    "$0" [ all | bgsel | config | pager ]"
   exit
-fi
+  ;;
+esac
 
-if [ $1 = "all" ]; then
-  VAL=`du -s $ECACHEDIR/cached/pager $ECACHEDIR/cached/bgsel $ECACHEDIR/cached/cfg | awk '{printf("%s ", $1);}'`
-  TOT=0
-  for I in $VAL; do
-    let TOT=$(($TOT + $I));
-  done
-  eesh -e "dialog_ok Your caches are using $TOT Kb of disk space."
-  exit
-fi
-
-if [ $1 = "pager" ]; then
-  VAL=`du -s $ECACHEDIR/cached/pager | awk '{printf("%s", $1);}'`
-  eesh -e "dialog_ok Your pager background cache is using $VAL Kb of disk space."
-  exit
-fi
-
-if [ $1 = "config" ]; then
-  VAL=`du -s $ECACHEDIR/cached/cfg | awk '{printf("%s", $1);}'`
-  eesh -e "dialog_ok Your config file cache is using $VAL Kb of disk space."
-  exit
-fi
-
-if [ $1 = "bgsel" ]; then
-  VAL=`du -s $ECACHEDIR/cached/bgsel | awk '{printf("%s", $1);}'`
-  eesh -e "dialog_ok Your background selector cache is using $VAL Kb of disk space."
-  exit
-fi
+val=`du -s $ECACHEDIR/cached/$dir | awk '{printf("%s", $1);}'`
+eesh -e "dialog_ok $txt $val Kb of disk space."

@@ -3,6 +3,7 @@
 # cleans up parts of your enlightenment cache                                #
 #
 # Copyright (C) 1999-2007 Carsten Haitzler, Geoff Harrison and various contributors
+# Copyright (C) 2008 Kim Woelders
 # 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to
@@ -24,39 +25,36 @@
 # CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 ##############################################################################
 
-PATH=$PATH:$EBIN:$EROOT/scripts
+PATH=$PATH:$EBIN
 export PATH
 
-if [ $# -lt 1 ]; then
+case "x$1" in
+xall)
+  dir="*"
+  txt="All caches"
+  ;;
+
+xbgsel)
+  dir=bgsel
+  txt="Background selector cache"
+  ;;
+
+xconfig)
+  dir=cfg
+  txt="Config file cache"
+  ;;
+
+xpager)
+  dir=pager
+  txt="Pager background cache"
+  ;;
+
+*)
   echo "usage:"
-  echo "    "$0" [ all | pager | bgsel | config ]"
+  echo "    "$0" [ all | bgsel | config | pager ]"
   exit
-fi
+  ;;
+esac
 
-if [ $1 = "all" ]; then
-  rm -rf $ECACHEDIR/cached/*/* >/dev/null 2>&1
-  rm -rf $ECACHEDIR/cached/*/.* >/dev/null 2>&1
-  eesh -e "dialog_ok All caches purged."
-  exit
-fi
-
-if [ $1 = "pager" ]; then
-  rm -rf $ECACHEDIR/cached/pager/* >/dev/null 2>&1
-  rm -rf $ECACHEDIR/cached/pager/.* >/dev/null 2>&1
-  eesh -e "dialog_ok Pager background cache purged."
-  exit
-fi
-
-if [ $1 = "config" ]; then
-  rm -rf $ECACHEDIR/cached/cfg/* >/dev/null 2>&1
-  rm -rf $ECACHEDIR/cached/cfg/.* >/dev/null 2>&1
-  eesh -e "dialog_ok Config file cache purged."
-  exit
-fi
-
-if [ $1 = "bgsel" ]; then
-  rm -rf $ECACHEDIR/cached/bgsel/* >/dev/null 2>&1
-  rm -rf $ECACHEDIR/cached/bgsel/.* >/dev/null 2>&1
-  eesh -e "dialog_ok Background selector cache purged."
-  exit
-fi
+rm -rf $ECACHEDIR/cached/$dir/* $ECACHEDIR/cached/$dir/.* >/dev/null 2>&1
+eesh -e "dialog_ok $txt purged."
