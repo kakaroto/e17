@@ -219,7 +219,7 @@ ClickGrabsSet(EWin * ewin)
    int                 set = 0;
 
    if ((Conf.focus.clickraises && !EwinListStackIsRaised(ewin)) ||
-       (!ewin->state.active && FocusEwinValid(ewin, 0, 1, 0)))
+       (!ewin->state.active && !ewin->state.inhibit_focus))
       set = 1;
 
    if (set)
