@@ -1488,14 +1488,14 @@ EwinHide(EWin * ewin)
    if (!EwinIsInternal(ewin) || ewin->state.iconified)
       return;
 
-   if (ewin->ops && ewin->ops->Close)
-      ewin->ops->Close(ewin);
-
    if (EwinGetClientWin(ewin))
      {
 	ESelectInput(EwinGetClientWin(ewin), NoEventMask);
 	XShapeSelectInput(disp, EwinGetClientXwin(ewin), NoEventMask);
      }
+
+   if (ewin->ops && ewin->ops->Close)
+      ewin->ops->Close(ewin);
 
    EwinDestroy(ewin);
 }

@@ -256,7 +256,8 @@ EventCallbackRegister(Win win, int type __UNUSED__, EventCallbackFunc * func,
    if (!win)
       return;
 #if 0
-   Eprintf("EventCallbackRegister: %p %#lx\n", win, win->xwin);
+   Eprintf("EventCallbackRegister: %p %#lx: func=%p prm=%p\n", win, win->xwin,
+	   func, prm);
 #endif
 
    win->cbl.num++;
@@ -277,7 +278,8 @@ EventCallbackUnregister(Win win, int type __UNUSED__,
    if (!win)
       return;
 #if 0
-   Eprintf("EventCallbackUnregister: %p %#lx\n", win, win->xwin);
+   Eprintf("EventCallbackUnregister: %p %#lx: func=%p prm=%p\n", win, win->xwin,
+	   func, prm);
 #endif
 
    ecl = &win->cbl;

@@ -385,7 +385,6 @@ static void
 _MagEwinClose(EWin * ewin)
 {
    MagwinDestroy((MagWindow *) ewin->data);
-   ewin->client.win = NULL;
    ewin->data = NULL;
    MagWin = NULL;
 }

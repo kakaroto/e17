@@ -158,7 +158,6 @@ PagerDestroy(Pager * p)
 
    PagerScanCancel(p);
    Efree(p->name);
-   EDestroyWindow(p->win);
    PagerHiwinHide();
    if (p->bgpmap != None)
       EFreePixmap(p->bgpmap);
@@ -679,7 +678,6 @@ static void
 _PagerEwinClose(EWin * ewin)
 {
    PagerDestroy((Pager *) ewin->data);
-   ewin->client.win = NULL;
    ewin->data = NULL;
 }
 

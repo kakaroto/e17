@@ -174,9 +174,6 @@ ContainerDestroy(Container * ct, int exiting)
    ct->ops->Exit(ct, exiting);
 
    Efree(ct->name);
-
-   EDestroyWindow(ct->win);
-
    Efree(ct->objs);
 
    Efree(ct);
@@ -286,7 +283,6 @@ static void
 _ContainerEwinClose(EWin * ewin)
 {
    ContainerDestroy((Container *) ewin->data, 0);
-   ewin->client.win = NULL;
    ewin->data = NULL;
 }
 
@@ -1759,7 +1755,7 @@ ContainersConfigLoad(void)
 	  case CONFIG_CLASSNAME:	/* __NAME %s */
 	     ct = ContainerFind(s2);
 	     if (ct)
-		ContainerDestroy(ct, 0);
+		EwinHide(ct->ewin);
 	     ct = ContainerCreate(s2);
 	     break;
 	  case TEXT_ORIENTATION:	/* __ORIENTATION [ __HORIZONTAL | __VERTICAL ] */

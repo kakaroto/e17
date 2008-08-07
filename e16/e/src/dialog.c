@@ -260,7 +260,6 @@ DialogDestroy(Dialog * d)
    TextclassFree(d->tclass);
 
    FreePmapMask(&(d->pmm_bg));
-   EDestroyWindow(d->win);
 
    Efree(d);
 }
@@ -497,7 +496,6 @@ static void
 _DialogEwinClose(EWin * ewin)
 {
    DialogDestroy((Dialog *) ewin->data);
-   ewin->client.win = NULL;
    ewin->data = NULL;
 }
 

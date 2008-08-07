@@ -237,7 +237,9 @@ _MenuEwinMoveResize(EWin * ewin, int resize __UNUSED__)
 static void
 _MenuEwinClose(EWin * ewin)
 {
-   if ((Menu *) (ewin->data) == Mode_menus.active)
+   Menu               *m = (Menu *) ewin->data;
+
+   if (m == Mode_menus.active)
      {
 	GrabKeyboardRelease();
 	Mode_menus.active = NULL;
