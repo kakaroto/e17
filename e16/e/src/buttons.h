@@ -33,7 +33,7 @@ typedef void        (ButtonCbFunc) (EObj * eo, XEvent * ev, ActionClass * ac);
 /* buttons.c */
 Button             *ButtonCreate(const char *name, int id, const char *iclass,
 				 const char *aclass, const char *tclass,
-				 const char *label, char ontop, int flags,
+				 const char *label, int ontop, int flags,
 				 int minw, int maxw, int minh, int maxh, int xo,
 				 int yo, int xa, int xr, int ya, int yr,
 				 int xsr, int xsa, int ysr, int ysa, char simg,

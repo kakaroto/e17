@@ -114,7 +114,7 @@ ButtonIsInternal(const Button * b)
 Button             *
 ButtonCreate(const char *name, int id, const char *iclass,
 	     const char *aclass, const char *tclass, const char *label,
-	     char ontop, int flags, int minw, int maxw, int minh, int maxh,
+	     int ontop, int flags, int minw, int maxw, int minh, int maxh,
 	     int xo, int yo, int xa, int xr, int ya, int yr, int xsr, int xsa,
 	     int ysr, int ysa, char simg, int desk, char sticky)
 {
@@ -662,7 +662,7 @@ ButtonsConfigLoad(FILE * fs)
    char                iclass[64], aclass[64], tclass[64];
    Button             *bt = NULL;
    Button             *pbt = NULL;
-   char                ontop = 0;
+   int                 ontop = 0;
    int                 flags = 0, minw = 1, maxw = 99999, minh = 1;
    int                 maxh = 99999, xo = 0, yo = 0, xa = 0;
    int                 xr = 0, ya = 0, yr = 0;
