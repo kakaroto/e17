@@ -41,6 +41,7 @@ extern"C" {
 #include <ewl_floater.h>
 #include <ewl_dialog.h>
 #include <ewl_icondialog.h>
+#include <ewl_message.h>
 #include <ewl_popup.h>
 
 #include <ewl_text.h>

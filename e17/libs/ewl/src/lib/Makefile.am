@@ -64,6 +64,7 @@ EWLHEADERS = \
 	ewl_menu.h \
 	ewl_menubar.h \
 	ewl_menu_item.h \
+	ewl_message.h \
 	ewl_misc.h \
 	ewl_model.h \
 	ewl_mvc.h \
@@ -147,6 +148,7 @@ EWLSOURCES= \
 	ewl_menu.c \
 	ewl_menubar.c \
 	ewl_menu_item.c \
+	ewl_message.c \
 	ewl_misc.c \
 	ewl_model.c \
 	ewl_mvc.c \
