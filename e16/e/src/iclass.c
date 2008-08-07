@@ -896,8 +896,14 @@ ImagestateMakePmapMask(ImageState * is, Win win, PmapMask * pmm,
      }
 }
 
+#define LINE(x1, y1, x2, y2) \
+   XDrawLine(disp, win, gc, x + x1, y + y1, x + x2, y + y2)
+#define RECT(x, y, w, h) \
+	XDrawRectangle(disp, win, gc, x, y, w, h);
+
 static void
-ImagestateDrawBevel(ImageState * is, Drawable win, GC gc, int w, int h)
+ImagestateDrawBevel(ImageState * is, Drawable win, GC gc,
+		    int x, int y, int w, int h)
 {
    ImagestateColorsAlloc(is);
 
@@ -905,91 +911,107 @@ ImagestateDrawBevel(ImageState * is, Drawable win, GC gc, int w, int h)
      {
      case BEVEL_AMIGA:
 	XSetForeground(disp, gc, is->hihi.pixel);
-	XDrawLine(disp, win, gc, 0, 0, w - 2, 0);
-	XDrawLine(disp, win, gc, 0, 0, 0, h - 2);
+	LINE(0, 0, w - 2, 0);
+	LINE(0, 0, 0, h - 2);
 	XSetForeground(disp, gc, is->lolo.pixel);
-	XDrawLine(disp, win, gc, 1, h - 1, w - 1, h - 1);
-	XDrawLine(disp, win, gc, w - 1, 1, w - 1, h - 1);
+	LINE(1, h - 1, w - 1, h - 1);
+	LINE(w - 1, 1, w - 1, h - 1);
 	break;
      case BEVEL_MOTIF:
 	XSetForeground(disp, gc, is->hi.pixel);
-	XDrawLine(disp, win, gc, 0, 0, w - 1, 0);
-	XDrawLine(disp, win, gc, 0, 0, 0, h - 1);
-	XDrawLine(disp, win, gc, 1, 1, w - 2, 1);
-	XDrawLine(disp, win, gc, 1, 1, 1, h - 2);
+	LINE(0, 0, w - 1, 0);
+	LINE(0, 0, 0, h - 1);
+	LINE(1, 1, w - 2, 1);
+	LINE(1, 1, 1, h - 2);
 	XSetForeground(disp, gc, is->lo.pixel);
-	XDrawLine(disp, win, gc, 0, h - 1, w - 1, h - 1);
-	XDrawLine(disp, win, gc, w - 1, 1, w - 1, h - 1);
-	XDrawLine(disp, win, gc, 1, h - 2, w - 2, h - 2);
-	XDrawLine(disp, win, gc, w - 2, 2, w - 2, h - 2);
+	LINE(0, h - 1, w - 1, h - 1);
+	LINE(w - 1, 1, w - 1, h - 1);
+	LINE(1, h - 2, w - 2, h - 2);
+	LINE(w - 2, 2, w - 2, h - 2);
 	break;
      case BEVEL_NEXT:
 	XSetForeground(disp, gc, is->hihi.pixel);
-	XDrawLine(disp, win, gc, 0, 0, w - 1, 0);
-	XDrawLine(disp, win, gc, 0, 0, 0, h - 1);
+	LINE(0, 0, w - 1, 0);
+	LINE(0, 0, 0, h - 1);
 	XSetForeground(disp, gc, is->hi.pixel);
-	XDrawLine(disp, win, gc, 1, 1, w - 2, 1);
-	XDrawLine(disp, win, gc, 1, 1, 1, h - 2);
+	LINE(1, 1, w - 2, 1);
+	LINE(1, 1, 1, h - 2);
 	XSetForeground(disp, gc, is->lolo.pixel);
-	XDrawLine(disp, win, gc, 1, h - 1, w - 1, h - 1);
-	XDrawLine(disp, win, gc, w - 1, 1, w - 1, h - 1);
+	LINE(1, h - 1, w - 1, h - 1);
+	LINE(w - 1, 1, w - 1, h - 1);
 	XSetForeground(disp, gc, is->lo.pixel);
-	XDrawLine(disp, win, gc, 2, h - 2, w - 2, h - 2);
-	XDrawLine(disp, win, gc, w - 2, 2, w - 2, h - 2);
+	LINE(2, h - 2, w - 2, h - 2);
+	LINE(w - 2, 2, w - 2, h - 2);
 	break;
      case BEVEL_DOUBLE:
 	XSetForeground(disp, gc, is->hi.pixel);
-	XDrawLine(disp, win, gc, 0, 0, w - 2, 0);
-	XDrawLine(disp, win, gc, 0, 0, 0, h - 2);
+	LINE(0, 0, w - 2, 0);
+	LINE(0, 0, 0, h - 2);
 	XSetForeground(disp, gc, is->lo.pixel);
-	XDrawLine(disp, win, gc, 1, 1, w - 3, 1);
-	XDrawLine(disp, win, gc, 1, 1, 1, h - 3);
+	LINE(1, 1, w - 3, 1);
+	LINE(1, 1, 1, h - 3);
 	XSetForeground(disp, gc, is->lo.pixel);
-	XDrawLine(disp, win, gc, 1, h - 1, w - 1, h - 1);
-	XDrawLine(disp, win, gc, w - 1, 1, w - 1, h - 1);
+	LINE(1, h - 1, w - 1, h - 1);
+	LINE(w - 1, 1, w - 1, h - 1);
 	XSetForeground(disp, gc, is->hi.pixel);
-	XDrawLine(disp, win, gc, 2, h - 2, w - 2, h - 2);
-	XDrawLine(disp, win, gc, w - 2, 2, w - 2, h - 2);
+	LINE(2, h - 2, w - 2, h - 2);
+	LINE(w - 2, 2, w - 2, h - 2);
 	break;
      case BEVEL_WIDEDOUBLE:
 	XSetForeground(disp, gc, is->hihi.pixel);
-	XDrawLine(disp, win, gc, 0, 0, w - 1, 0);
-	XDrawLine(disp, win, gc, 0, 0, 0, h - 1);
+	LINE(0, 0, w - 1, 0);
+	LINE(0, 0, 0, h - 1);
 	XSetForeground(disp, gc, is->hi.pixel);
-	XDrawLine(disp, win, gc, 1, 1, w - 2, 1);
-	XDrawLine(disp, win, gc, 1, 1, 1, h - 2);
-	XDrawLine(disp, win, gc, 3, h - 4, w - 4, h - 4);
-	XDrawLine(disp, win, gc, w - 4, 3, w - 4, h - 4);
+	LINE(1, 1, w - 2, 1);
+	LINE(1, 1, 1, h - 2);
+	LINE(3, h - 4, w - 4, h - 4);
+	LINE(w - 4, 3, w - 4, h - 4);
 	XSetForeground(disp, gc, is->lolo.pixel);
-	XDrawLine(disp, win, gc, 1, h - 1, w - 1, h - 1);
-	XDrawLine(disp, win, gc, w - 1, 1, w - 1, h - 1);
+	LINE(1, h - 1, w - 1, h - 1);
+	LINE(w - 1, 1, w - 1, h - 1);
 	XSetForeground(disp, gc, is->lo.pixel);
-	XDrawLine(disp, win, gc, 2, h - 2, w - 2, h - 2);
-	XDrawLine(disp, win, gc, w - 2, 2, w - 2, h - 2);
-	XDrawLine(disp, win, gc, 3, 3, w - 4, 3);
-	XDrawLine(disp, win, gc, 3, 3, 3, h - 4);
+	LINE(2, h - 2, w - 2, h - 2);
+	LINE(w - 2, 2, w - 2, h - 2);
+	LINE(3, 3, w - 4, 3);
+	LINE(3, 3, 3, h - 4);
 	break;
      case BEVEL_THINPOINT:
 	XSetForeground(disp, gc, is->hi.pixel);
-	XDrawLine(disp, win, gc, 0, 0, w - 2, 0);
-	XDrawLine(disp, win, gc, 0, 0, 0, h - 2);
+	LINE(0, 0, w - 2, 0);
+	LINE(0, 0, 0, h - 2);
 	XSetForeground(disp, gc, is->lo.pixel);
-	XDrawLine(disp, win, gc, 1, h - 1, w - 1, h - 1);
-	XDrawLine(disp, win, gc, w - 1, 1, w - 1, h - 1);
+	LINE(1, h - 1, w - 1, h - 1);
+	LINE(w - 1, 1, w - 1, h - 1);
 	XSetForeground(disp, gc, is->hihi.pixel);
-	XDrawLine(disp, win, gc, 0, 0, 1, 0);
-	XDrawLine(disp, win, gc, 0, 0, 0, 1);
+	LINE(0, 0, 1, 0);
+	LINE(0, 0, 0, 1);
 	XSetForeground(disp, gc, is->lolo.pixel);
-	XDrawLine(disp, win, gc, w - 2, h - 1, w - 1, h - 1);
-	XDrawLine(disp, win, gc, w - 1, h - 2, w - 1, h - 1);
+	LINE(w - 2, h - 1, w - 1, h - 1);
+	LINE(w - 1, h - 2, w - 1, h - 1);
 	break;
      case BEVEL_THICKPOINT:
 	XSetForeground(disp, gc, is->hi.pixel);
-	XDrawRectangle(disp, win, gc, 0, 0, w - 1, h - 1);
+	RECT(x, y, w - 1, h - 1);
 	break;
      default:
 	break;
      }
+}
+
+static void
+ImagestateDrawNoImg(ImageState * is, Drawable draw, int x, int y, int w, int h)
+{
+   GC                  gc;
+
+   ImagestateColorsAlloc(is);
+
+   gc = EXCreateGC(draw, 0, NULL);
+   XSetFillStyle(disp, gc, FillSolid);
+   XSetForeground(disp, gc, is->bg.pixel);
+   XFillRectangle(disp, draw, gc, x, y, w, h);
+   if (is->bevelstyle != BEVEL_NONE)
+      ImagestateDrawBevel(is, draw, gc, x, y, w, h);
+   EXFreeGC(gc);
 }
 
 void
@@ -1086,7 +1108,7 @@ ITApply(Win win, ImageClass * ic, ImageState * is,
 	     XSetForeground(disp, gc, is->bg.pixel);
 	     XFillRectangle(disp, pmap, gc, 0, 0, w, h);
 	     if (is->bevelstyle != BEVEL_NONE)
-		ImagestateDrawBevel(is, pmap, gc, w, h);
+		ImagestateDrawBevel(is, pmap, gc, 0, 0, w, h);
 	     if (ts && text)
 		TextstateTextDraw(ts, win, pmap, text, 0, 0, w, h,
 				  &(ic->padding), 0,
@@ -1173,27 +1195,14 @@ ImageclassApplyCopy(ImageClass * ic, Win win, int w, int h,
      }
    else
      {
-	GC                  gc;
-	Pixmap              pmap;
-
-	ImagestateColorsAlloc(is);
-
 	if (pmm->pmap)
 	   Eprintf("ImageclassApplyCopy: Hmm... pmm->pmap already set\n");
 
-	pmap = ECreatePixmap(win, w, h, 0);
 	pmm->type = 0;
-	pmm->pmap = pmap;
+	pmm->pmap = ECreatePixmap(win, w, h, 0);
 	pmm->mask = 0;
 
-	gc = EXCreateGC(pmap, 0, NULL);
-	/* bg color */
-	XSetForeground(disp, gc, is->bg.pixel);
-	XFillRectangle(disp, pmap, gc, 0, 0, w, h);
-	/* if there is a bevel to draw, draw it */
-	if (is->bevelstyle != BEVEL_NONE)
-	   ImagestateDrawBevel(is, pmap, gc, w, h);
-	EXFreeGC(gc);
+	ImagestateDrawNoImg(is, pmm->pmap, 0, 0, w, h);
 	/* FIXME - No text */
      }
 }
@@ -1204,12 +1213,25 @@ ImageclassApplySimple(ImageClass * ic, Win win, Drawable draw, int state,
 {
    EImage             *im;
 
-   im = ImageclassGetImage(ic, 0, 0, state);
-   if (!im)
+   if (!ic)
       return;
 
-   EImageRenderOnDrawable(im, win, draw, 0, x, y, w, h);
-   EImageFree(im);
+   im = ImageclassGetImage(ic, 0, 0, state);
+   if (im)
+     {
+	EImageRenderOnDrawable(im, win, draw, 0, x, y, w, h);
+	EImageFree(im);
+     }
+   else
+     {
+	ImageState         *is;
+
+	is = ImageclassGetImageState(ic, state, 0, 0);
+	if (!is)
+	   return;
+
+	ImagestateDrawNoImg(is, draw, x, y, w, h);
+     }
 }
 
 static ImageClass  *
