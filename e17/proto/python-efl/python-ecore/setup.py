@@ -135,7 +135,7 @@ class ecore_build_ext(build_ext):
 
 setup(name='python-ecore',
       version='0.3.0',
-      license='BSD',
+      license='LGPL',
       author='Gustavo Sverzut Barbieri',
       author_email='barbieri@gmail.com',
       url='http://www.enlightenment.org/',

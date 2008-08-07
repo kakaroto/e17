@@ -134,7 +134,7 @@ class evas_install_headers(install_headers):
 
 setup(name='python-evas',
       version='0.2.2',
-      license='BSD',
+      license='LGPL',
       author='Gustavo Sverzut Barbieri',
       author_email='barbieri@gmail.com',
       url='http://www.enlightenment.org/',

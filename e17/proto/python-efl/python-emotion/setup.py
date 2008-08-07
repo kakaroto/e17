@@ -87,7 +87,7 @@ class emotion_build_ext(build_ext):
 
 setup(name='python-emotion',
       version='0.2.1',
-      license='BSD',
+      license='LGPL',
       author='Gustavo Sverzut Barbieri',
       author_email='barbieri@gmail.com',
       url='http://www.enlightenment.org/',

@@ -50,7 +50,7 @@ e_dbus_module = Extension("e_dbus",
 
 setup(name="python-e_dbus",
       version="0.1.1",
-      license="BSD",
+      license="LGPL",
       author="Ulisses Furquim",
       author_email="ulisses.silva@openbossa.org",
       url="http://www.enlightenment.org/",
