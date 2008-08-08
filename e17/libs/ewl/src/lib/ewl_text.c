@@ -3673,6 +3673,7 @@ ewl_text_selection_new(Ewl_Text *t)
 static void
 ewl_text_selection_select_to(Ewl_Text_Trigger *s, unsigned int char_idx)
 {
+        Ewl_Text *t;
         unsigned int start_pos;
         unsigned int base;
         char *txt;
@@ -3681,6 +3682,7 @@ ewl_text_selection_select_to(Ewl_Text_Trigger *s, unsigned int char_idx)
         DCHECK_PARAM_PTR(s);
         DCHECK_TYPE(s, EWL_TEXT_TRIGGER_TYPE);
 
+        t = EWL_TEXT(s->text_parent);
         base = ewl_text_trigger_base_get(s);
         start_pos = ewl_text_trigger_start_pos_get(s);
 
@@ -3695,13 +3697,30 @@ ewl_text_selection_select_to(Ewl_Text_Trigger *s, unsigned int char_idx)
                 ewl_text_trigger_length_set(s, char_idx - base);
         }
 
+        if (t->obscure)
+        {
+                char *ptr;
+                unsigned int obs_len, len, i;
+
+                len = ewl_text_trigger_length_get(s);
+                obs_len = strlen(t->obscure);
+                txt = ptr = malloc((obs_len * len) + 1);
+                for(i = 0; i < len; i++)
+                {
+                        memcpy(ptr, t->obscure, obs_len);
+                        ptr += obs_len;
+                }
+                *ptr = '\0';
+        }
+        else
+                txt = ewl_text_selection_text_get(t);
+
         /* set the clipboard text */
-        txt = ewl_text_selection_text_get(EWL_TEXT(s->text_parent));
         if (txt)
         {
                 Ewl_Embed *emb;
 
-                emb = ewl_embed_widget_find(EWL_WIDGET(s->text_parent));
+                emb = ewl_embed_widget_find(EWL_WIDGET(t));
                 ewl_embed_selection_text_set(emb, txt);
                 FREE(txt);
         }
