@@ -1,0 +1,26 @@
+images {
+   image: "vgrad_light.png" COMP;
+}
+collections {
+   group {
+      name: "e/desktop/background";
+      parts {
+	 part {
+	    name: "background_image";
+	    description {
+	       state: "default" 0.0;
+	       image {
+		  normal: "vgrad_light.png";
+	       }
+	       fill {
+		  smooth: 0;
+		  size {
+		     relative: 0 1.0;
+		     offset:   36 0;
+		  }
+	       }
+	    }
+	 }
+      }
+   }
+}

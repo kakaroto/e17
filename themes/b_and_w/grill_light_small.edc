@@ -1,0 +1,42 @@
+images {
+   image: "vgrad_light.png" COMP;
+   image: "grill_light_small_pattern.png" COMP;
+}
+collections {
+   group {
+      name: "e/desktop/background";
+      parts {
+	 part {
+	    name: "background_image";
+	    description {
+	       state: "default" 0.0;
+	       image {
+		  normal: "vgrad_light.png";
+	       }
+	       fill {
+		  smooth: 0;
+		  size {
+		     relative: 0 1.0;
+		     offset:   36 0;
+		  }
+	       }
+	    }
+	 }
+	 part {
+	    name: "grill";
+	    description {
+	       state: "default" 0.0;
+	       image {
+		  normal: "grill_light_small_pattern.png";
+	       }
+	       fill {
+		  size {
+		     relative: 0 0;
+		     offset:   144 144;
+		  }
+	       }
+	    }
+	 }
+      }
+   }
+}
