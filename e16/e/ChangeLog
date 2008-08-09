@@ -4803,3 +4803,22 @@ Provide iconbox icon fallback if normal methods fail.
 Don't show iconbox animation if app is initially iconified.
 Play iconify sound only for selected iconbox.
 Fix various gravity issues.
+
+-------------------------------------------------------------------------------
+
+Sat Aug  9 14:51:26 CEST 2008
+(Kim)
+
+--- 0.16.8.14 ---
+Call move/resize function only if moving/resizing.
+Move config options to config.h.
+Cleanups around closing internal windows.
+Limit alert box size to screen size.
+Fix button stacking bug when char is unsigned.
+Use fallback imageclass a couple of places.
+Fix ImageclassApplySimple for imageclasses without image.
+Fix focusing new windows when using click-to-focus and all_new_windows_get_focus = 0.
+Make cache_clear/query all actually clear/query all caches (img was missing).
+Attempt to fix session (.desktop) stuff on various distros.
+Attempt to improve focus switching when not using focus list.
+
