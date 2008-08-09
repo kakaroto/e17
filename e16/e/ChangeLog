@@ -4822,3 +4822,12 @@ Make cache_clear/query all actually clear/query all caches (img was missing).
 Attempt to fix session (.desktop) stuff on various distros.
 Attempt to improve focus switching when not using focus list.
 
+
+-------------------------------------------------------------------------------
+
+Sat Aug  9 15:17:44 CEST 2008
+(Kim)
+
+--- 0.16.8.14 ---
+Fix config item size.
+
