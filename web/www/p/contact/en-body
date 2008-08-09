@@ -36,6 +36,11 @@ subscription details into the form.
 <td class='tab2'><a href="http://sourceforge.net/mailarchive/forum.php?forum_name=enlightenment-cvs">SourceForge</a>, <a href="http://marc.theaimsgroup.com/?l=enlightenment-cvs&r=1&w=2">MARC</a></td>
 <td class='tab2'>Get email notification of all CVS updates.</td>
 </tr>
+<tr>     
+<td class='tab2'><a href="http://lists.sourceforge.net/lists/listinfo/enlightenment-svn">Enlightenment SVN Commit List</a></td>
+<td class='tab2'><a href="http://sourceforge.net/mailarchive/forum.php?forum_name=enlightenment-svn">SourceForge</a></td>
+<td class='tab2'>Get email notification of all subversion updates.</td>
+</tr>
 <tr>
 <td class='tab1'><a href="http://lists.sourceforge.net/lists/listinfo/enlightenment-intl">Enlightenment Internationalisation List</a></td>
 <td class='tab1'><a href="http://sourceforge.net/mailarchive/forum.php?forum_name=enlightenment-intl">SourceForge</a></td>
