@@ -1,3 +1,7 @@
+#ifdef HAVE_CONFIG_H
+  #include <config.h>
+#endif
+
 #include "eflpp_ecore_window.h"
 #include <errno.h>
 #include <assert.h>
@@ -35,7 +39,7 @@ ECORE_EVAS_CALLBACK( callback_post_render_dispatcher, postRenderEvent )
 EcoreEvasWindow::EcoreEvasWindow()
                 :Trackable( "EcoreEvasWindow" )
 {
-  ecore_evas_init ();
+    ecore_evas_init ();
 }
 
 
@@ -414,7 +418,14 @@ EcoreEvasWindowSoftwareX11::EcoreEvasWindowSoftwareX11( int width, int height, c
 
 EcoreEvasWindowSoftwareX11::~EcoreEvasWindowSoftwareX11()
 {
+}
+
+EcoreXWindow *EcoreEvasWindowSoftwareX11::getXWindow()
+{
+    Ecore_X_Window exw = ecore_evas_software_x11_window_get( _ee );
+    EcoreXWindow *exwin = new EcoreXWindow( exw );
   
+    return exwin;
 }
 
 EcoreEvasWindowGLX11::EcoreEvasWindowGLX11( int width, int height, const char* display )

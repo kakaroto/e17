@@ -3,3 +3,4 @@
 * callback handling needs more thinking
 * much more :/
 * wrap evas_color_* functions (e.g. evas_color_argb_premul)
+* move all #include <config.h> from *.h to *.cpp

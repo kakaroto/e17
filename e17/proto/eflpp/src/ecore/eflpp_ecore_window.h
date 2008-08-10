@@ -1,11 +1,8 @@
 #ifndef ECORE_WINDOW_H
 #define ECORE_WINDOW_H
 
-#ifdef HAVE_CONFIG_H
-  #include <config.h>
-#endif
-
 #include <eflpp_ecore.h>
+#include <eflpp_ecore_x_window.h>
 #include <Ecore_Evas.h>
 
 //===============================================================================================
@@ -13,13 +10,15 @@
 //===============================================================================================
 
 namespace efl {
+  
+class EcoreXWindow; // TODO: why is forward declaration needed?
 
 // TODO: Test for supported backends?
 class EcoreEvasWindow : public Trackable
 {
   public:
     enum Event { Resize, Move, Show, Hide, DeleteRequest, Destroy,
-                    FocusIn, FocusOut, MouseIn, MouseOut, PreRender, PostRender };
+                 FocusIn, FocusOut, MouseIn, MouseOut, PreRender, PostRender };
   
     enum EngineType
     {
@@ -36,7 +35,7 @@ class EcoreEvasWindow : public Trackable
   public:
     virtual ~EcoreEvasWindow();
 
-    EvasCanvas* canvas() const { return _canvas; };
+    EvasCanvas *canvas() const { return _canvas; };
 
     /* Events */
     void setEventEnabled( Event, bool );
@@ -129,8 +128,8 @@ class EcoreEvasWindow : public Trackable
     int isSticky() const;
 
   protected:
-    EvasCanvas* _canvas;
-    Ecore_Evas* _ee;
+    EvasCanvas *_canvas;
+    Ecore_Evas *_ee;
 
     EcoreEvasWindow();
     static EcoreEvasWindow* objectLink( Ecore_Evas* );
@@ -146,6 +145,8 @@ class EcoreEvasWindowSoftwareX11 : public EcoreEvasWindow
     EcoreEvasWindowSoftwareX11( int width, int height, const char* display = 0 );
     virtual ~EcoreEvasWindowSoftwareX11();
   
+    EcoreXWindow *getXWindow();
+    
   private:
     EcoreEvasWindowSoftwareX11();
     bool operator=( const EcoreEvasWindowSoftwareX11& );

@@ -184,11 +184,15 @@ bool CalibrationRectangle::handleShow()
                             &calibration_event_filter_end, this );
     position = TopLeft;
     moveCrossHair();
+  
+    return true;
 }
 
 bool CalibrationRectangle::handleMouseUp( const EvasMouseUpEvent& e )
 {
     nextPoint( e.data->canvas.x, e.data->canvas.y );
+  
+    return true;
 }
 
 void CalibrationRectangle::nextPoint( int x, int y )
@@ -401,6 +405,8 @@ bool CalibrationAnimator::tick()
             _o->setColor( c.r(), c.g(), c.b(), newx );
             return true;
     }
+  
+  return true;
 }
 
 void CalibrationRectangle::timerEvent()
