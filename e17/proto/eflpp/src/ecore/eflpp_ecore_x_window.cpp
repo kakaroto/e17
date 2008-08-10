@@ -27,6 +27,8 @@ void EcoreXWindow::setNetWMWindowType( EcoreXWindowType type )
 
 //void EcoreXWindow::getNetWMWindowTypePrefetch()
 //void EcoreXWindow::getNetWMWindowTypeFetch ()
+//EAPI void                ecore_x_netwm_window_type_get_prefetch(Ecore_X_Window window);
+//EAPI void                ecore_x_netwm_window_type_get_fetch(void);
     
 bool EcoreXWindow::getNetWMWindowType( EcoreXWindowType &outType )
 {

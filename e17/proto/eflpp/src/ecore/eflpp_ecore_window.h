@@ -52,10 +52,10 @@ class EcoreEvasWindow : public Trackable
     virtual void preRenderEvent();
     virtual void postRenderEvent();
 
-   /**
-    * @returns a boolean specifying whether the window should be closed upon a delete request or not.
-    * The default implementation returns true.
-    **/
+   /*!
+    * \return A boolean specifying whether the window should be closed upon a delete request or not.
+    *         The default implementation returns true.
+    */
     virtual bool canClose() const;
   
     static bool isEngineTypeSupported (EngineType et);
@@ -145,6 +145,12 @@ class EcoreEvasWindowSoftwareX11 : public EcoreEvasWindow
     EcoreEvasWindowSoftwareX11( int width, int height, const char* display = 0 );
     virtual ~EcoreEvasWindowSoftwareX11();
   
+    /*!
+     * \brief Gets a pointer to the X window. The returned pointer needs to be
+     *        deleted if you don't need it any longer.
+     *
+     * \return The EcoreXWindow.
+     */
     EcoreXWindow *getXWindow();
     
   private:
@@ -158,6 +164,14 @@ class EcoreEvasWindowGLX11 : public EcoreEvasWindow
   public:
     EcoreEvasWindowGLX11( int width, int height, const char* display = 0 );
     virtual ~EcoreEvasWindowGLX11();
+    
+    /*!
+     * \brief Gets a pointer to the X window. The returned pointer needs to be
+     *        deleted if you don't need it any longer.
+     *
+     * \return The EcoreXWindow.
+     */
+    EcoreXWindow *getXWindow();
   
   private:
     EcoreEvasWindowGLX11();
@@ -170,6 +184,14 @@ class EcoreEvasWindowXRenderX11 : public EcoreEvasWindow
   public:
     EcoreEvasWindowXRenderX11( int width, int height, const char* display = 0 );
     virtual ~EcoreEvasWindowXRenderX11();
+    
+    /*!
+     * \brief Gets a pointer to the X window. The returned pointer needs to be
+     *        deleted if you don't need it any longer.
+     *
+     * \return The EcoreXWindow.
+     */
+    EcoreXWindow *getXWindow();
   
   private:
     EcoreEvasWindowXRenderX11();
@@ -183,7 +205,7 @@ class EcoreEvasWindowFB : public EcoreEvasWindow
     EcoreEvasWindowFB( int width, int height, const char* display = 0, int rotation = 0 );
     virtual ~EcoreEvasWindowFB();
 
-    // TODO: Test for supported backends?
+    EcoreXWindow *getXWindow();
   
   private:
     EcoreEvasWindowFB();

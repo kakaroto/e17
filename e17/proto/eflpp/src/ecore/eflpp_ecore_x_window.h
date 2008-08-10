@@ -8,8 +8,8 @@
 // EcoreXWindow
 //===============================================================================================
 
-/*
- * TODO: This is an initial wrapper for Ecore_X. The current code is untested.
+/*!
+ * This is an initial wrapper for Ecore_X.
  */
 
 namespace efl {
@@ -39,12 +39,6 @@ class EcoreXWindow //: public Trackable
     //void getNetWMWindowTypePrefetch();
     //void getNetWMWindowTypeFetc ();
     bool getNetWMWindowType( EcoreXWindowType &outType );
-    
-    /*EAPI void                ecore_x_netwm_window_type_set(Ecore_X_Window win, Ecore_X_Window_Type type);
-EAPI void                ecore_x_netwm_window_type_get_prefetch(Ecore_X_Window window);
-EAPI void                ecore_x_netwm_window_type_get_fetch(void);
-EAPI int                 ecore_x_netwm_window_type_get(Ecore_X_Window win, Ecore_X_Window_Type *type);
-    */
     
   protected:
 

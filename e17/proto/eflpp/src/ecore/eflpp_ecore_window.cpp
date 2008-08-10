@@ -460,6 +460,14 @@ EcoreEvasWindowGLX11::~EcoreEvasWindowGLX11()
   
 }
 
+EcoreXWindow *EcoreEvasWindowGLX11::getXWindow()
+{
+    Ecore_X_Window exw = ecore_evas_gl_x11_window_get( _ee );
+    EcoreXWindow *exwin = new EcoreXWindow( exw );
+  
+    return exwin;
+}
+
 EcoreEvasWindowXRenderX11::EcoreEvasWindowXRenderX11( int width, int height, const char* display )
                 :EcoreEvasWindow()
 {    
@@ -490,6 +498,14 @@ EcoreEvasWindowXRenderX11::EcoreEvasWindowXRenderX11( int width, int height, con
 EcoreEvasWindowXRenderX11::~EcoreEvasWindowXRenderX11()
 {
   
+}
+
+EcoreXWindow *EcoreEvasWindowXRenderX11::getXWindow()
+{
+    Ecore_X_Window exw = ecore_evas_xrender_x11_window_get( _ee );
+    EcoreXWindow *exwin = new EcoreXWindow( exw );
+  
+    return exwin;
 }
 
 // TODO: Possible without #ifdef stuff?
