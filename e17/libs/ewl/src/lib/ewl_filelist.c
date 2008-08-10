@@ -293,7 +293,7 @@ ewl_filelist_directory_set(Ewl_Filelist *fl, const char *dir)
 /**
  * @param fl: The filelist to work with
  * @return Returns no value
- * @brief Refreshes the filelist when the directory shown is know to have
+ * @brief Refreshes the filelist when the directory shown is known to have
  * changed
  */
 void
