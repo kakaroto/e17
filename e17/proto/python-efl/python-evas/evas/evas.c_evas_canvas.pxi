@@ -106,9 +106,9 @@ cdef public class Canvas [object PyEvasCanvas, type PyEvasCanvas_Type]:
 
     def __repr__(self):
         w, h = self.size_get()
-        return ("%s(0x%x, refcount=%d, Evas_Object=0x%x, size=(%d, %d), "
+        return ("%s(%#x, refcount=%d, Evas_Object=%#x, size=(%d, %d), "
                 "method=%r)") % \
-               (self.__class__.__name__, <unsigned long>self,
+               (self.__class__.__name__, <unsigned long><void *>self,
                 PY_REFCOUNT(self), <unsigned long>self.obj,
                 w, h, self.output_method_get())
 

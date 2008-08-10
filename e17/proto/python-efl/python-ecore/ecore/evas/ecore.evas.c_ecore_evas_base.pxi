@@ -234,8 +234,8 @@ cdef class EcoreEvas:
         return "%s(Evas=%s)" % (self.__class__.__name__, self.evas)
 
     def __repr__(self):
-        return "%s(0x%x, refcount=%d, Ecore_Evas=0x%x, Evas=%r)" % \
-               (self.__class__.__name__, <unsigned long>self,
+        return "%s(%#x, refcount=%d, Ecore_Evas=%#x, Evas=%r)" % \
+               (self.__class__.__name__, <unsigned long><void *>self,
                 PY_REFCOUNT(self), <unsigned long>self.obj,
                 self.evas)
 

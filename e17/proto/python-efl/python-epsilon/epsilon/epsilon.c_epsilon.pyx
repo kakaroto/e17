@@ -58,9 +58,9 @@ cdef class Epsilon:
                 self.thumb_size, self.resolution)
 
     def __repr__(self):
-        return ("%s(0x%x, path=%r, key=%s, thumb_file=%r, thumb_size=%r, "
+        return ("%s(%#x, path=%r, key=%s, thumb_file=%r, thumb_size=%r, "
                 "resolution=%r, Epsilon=%#x, refcount=%d)") % \
-               (self.__class__.__name__, <unsigned long>self,
+               (self.__class__.__name__, <unsigned long><void *>self,
                 self.file, self.key, self.thumb_file,
                 self.thumb_size, self.resolution,
                 <unsigned long>self.obj, PY_REFCOUNT(self))

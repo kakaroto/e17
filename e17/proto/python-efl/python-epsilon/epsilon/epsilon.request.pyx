@@ -70,9 +70,9 @@ cdef class Request:
                 self.request_id, self.status)
 
     def __repr__(self):
-        return ("%s(0x%x, path=%r, dest=%r, size=%r, request_id=%r, status=%r, "
+        return ("%s(%#x, path=%r, dest=%r, size=%r, request_id=%r, status=%r, "
                 "Epsilon_Request=%#x, refcount=%d)") % \
-               (self.__class__.__name__, <unsigned long>self,
+               (self.__class__.__name__, <unsigned long><void *>self,
                 self.path, self.dest, self.size, self.request_id, self.status,
                 <unsigned long>self.obj, PY_REFCOUNT(self))
 

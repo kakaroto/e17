@@ -70,9 +70,9 @@ cdef class IdleExiter:
                (self.__class__.__name__, self.func, self.args, self.kargs)
 
     def __repr__(self):
-        return ("%s(0x%x, func=%s, args=%s, kargs=%s, Ecore_Idle_Exiter=0x%x, "
+        return ("%s(%#x, func=%s, args=%s, kargs=%s, Ecore_Idle_Exiter=%#x, "
                 "refcount=%d)") % \
-               (self.__class__.__name__, <unsigned long>self,
+               (self.__class__.__name__, <unsigned long><void *>self,
                 self.func, self.args, self.kargs,
                 <unsigned long>self.obj, PY_REFCOUNT(self))
 

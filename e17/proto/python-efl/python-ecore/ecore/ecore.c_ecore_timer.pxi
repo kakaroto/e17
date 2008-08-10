@@ -73,10 +73,10 @@ cdef class Timer:
                 self.func, self.args, self.kargs)
 
     def __repr__(self):
-        return ("%s(0x%x, interval=%f, func=%s, args=%s, kargs=%s, "
-                "Ecore_Timer=0x%x, refcount=%d)") % \
-               (self.__class__.__name__, <unsigned long>self, self._interval,
-                self.func, self.args, self.kargs,
+        return ("%s(%#x, interval=%f, func=%s, args=%s, kargs=%s, "
+                "Ecore_Timer=%#x, refcount=%d)") % \
+               (self.__class__.__name__, <unsigned long><void *>self,
+                self._interval, self.func, self.args, self.kargs,
                 <unsigned long>self.obj, PY_REFCOUNT(self))
 
     def __dealloc__(self):

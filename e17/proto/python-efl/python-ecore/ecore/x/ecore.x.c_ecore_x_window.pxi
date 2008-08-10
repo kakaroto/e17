@@ -77,7 +77,7 @@ cdef class Window:
         ecore_x_window_geometry_get(self.xid, &x, &y, &w, &h)
         parent = ecore_x_window_parent_get(self.xid)
         return "%s(%#x, xid=%#x, parent=%#x, x=%d, y=%d, w=%d, h=%d)" % \
-               (self.__class__.__name__, <unsigned long>self,
+               (self.__class__.__name__, <unsigned long><void *>self,
                 self.xid, parent, x, y, w, h)
 
     def __richcmp__(self, other, int op):

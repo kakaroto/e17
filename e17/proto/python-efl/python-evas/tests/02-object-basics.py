@@ -99,6 +99,14 @@ class ObjectBasics(unittest.TestCase):
         o2 = self.canvas.object_name_find("Test 123")
         self.assertEqual(o1, o2)
 
+    def testStr(self):
+        o = evas.Rectangle(self.canvas)
+        self.assertEqual(isinstance(str(o), str), True)
+
+    def testRepr(self):
+        o = evas.Rectangle(self.canvas)
+        self.assertEqual(isinstance(repr(o), str), True)
+
 
 
 class ObjectProperties(unittest.TestCase):

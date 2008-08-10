@@ -72,9 +72,9 @@ cdef class IdleEnterer:
                (self.__class__.__name__, self.func, self.args, self.kargs)
 
     def __repr__(self):
-        return ("%s(0x%x, func=%s, args=%s, kargs=%s, "
-                "Ecore_Idle_Enterer=0x%x, refcount=%d)") % \
-               (self.__class__.__name__, <unsigned long>self,
+        return ("%s(%#x, func=%s, args=%s, kargs=%s, "
+                "Ecore_Idle_Enterer=%#x, refcount=%d)") % \
+               (self.__class__.__name__, <unsigned long><void *>self,
                 self.func, self.args, self.kargs,
                 <unsigned long>self.obj, PY_REFCOUNT(self))
 

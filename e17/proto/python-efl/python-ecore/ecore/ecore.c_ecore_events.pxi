@@ -113,7 +113,7 @@ cdef class EventHandler:
     def __repr__(self):
         return ("%s(%#x, type=%d, func=%s, args=%s, kargs=%s, event_cls=%s, "
                 "Ecore_Event_Handler=%#x, refcount=%d)") % \
-               (self.__class__.__name__, <unsigned long>self,
+               (self.__class__.__name__, <unsigned long><void *>self,
                 self.type, self.func, self.args, self.kargs, self.event_cls,
                 <unsigned long>self.obj, PY_REFCOUNT(self))
 

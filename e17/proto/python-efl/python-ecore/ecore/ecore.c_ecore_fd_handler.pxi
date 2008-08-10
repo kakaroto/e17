@@ -118,9 +118,9 @@ cdef class FdHandler:
         else:
             fd = self.fd_get()
             flags = flags2str(self.active_get(7))
-        return ("%s(0x%x, func=%s, args=%s, kargs=%s, fd=%s, flags=[%s], "
-                "Ecore_Fd_Handler=0x%x, refcount=%d)") % \
-               (self.__class__.__name__, <unsigned long>self,
+        return ("%s(%#x, func=%s, args=%s, kargs=%s, fd=%s, flags=[%s], "
+                "Ecore_Fd_Handler=%#x, refcount=%d)") % \
+               (self.__class__.__name__, <unsigned long><void *>self,
                 self.func, self.args, self.kargs, fd, flags,
                 <unsigned long>self.obj, PY_REFCOUNT(self))
 

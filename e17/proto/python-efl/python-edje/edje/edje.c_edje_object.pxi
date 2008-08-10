@@ -192,10 +192,10 @@ cdef public class Edje(evas.c_evas.Object) [object PyEdje, type PyEdje_Type]:
         r, g, b, a = self.color_get()
         file, group = self.file_get()
         clip = bool(self.clip_get() is not None)
-        return ("%s(0x%x, type=%r, refcount=%d, Evas_Object=0x%x, name=%r, "
+        return ("%s(%#x, type=%r, refcount=%d, Evas_Object=%#x, name=%r, "
                 "file=%r, group=%r, geometry=(%d, %d, %d, %d), "
                 "color=(%d, %d, %d, %d), layer=%s, clip=%r, visible=%s)") % \
-               (self.__class__.__name__, <unsigned long>self,
+               (self.__class__.__name__, <unsigned long><void *>self,
                 self.type_get(), PY_REFCOUNT(self), <unsigned long>self.obj,
                 self.name_get(), file, group, x, y, w, h, r, g, b, a,
                 self.layer_get(), clip, self.visible_get())

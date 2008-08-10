@@ -16,6 +16,8 @@ class CanvasConstructor(unittest.TestCase):
         self.assertEqual(c.output_method_get(), evas.render_method_lookup(m))
         self.assertEqual(c.size_get(), s)
         self.assertEqual(c.viewport_get(), v)
+        self.assertEqual(isinstance(str(c), str), True)
+        self.assertEqual(isinstance(repr(c), str), True)
 
 
 class CanvasMethods(unittest.TestCase):
