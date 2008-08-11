@@ -73,14 +73,13 @@ void                     ewl_text_trigger_length_set(Ewl_Text_Trigger *t,
                                                 unsigned int char_len);
 unsigned int             ewl_text_trigger_length_get(Ewl_Text_Trigger *t);
 
-void                     ewl_text_trigger_area_add(Ewl_Text *t,
-                                                Ewl_Text_Trigger *cur,
-                                                int x, int y, int w, int h);
-void                     ewl_text_trigger_areas_cleanup(Ewl_Text_Trigger *trig);
-
 /*
  * Internal stuff
  */
+void ewl_text_trigger_area_add(Ewl_Text *t, Ewl_Text_Trigger *cur,
+                                                int x, int y, int w, int h);
+void ewl_text_trigger_areas_cleanup(Ewl_Text_Trigger *trig);
+
 void ewl_text_trigger_cb_show(Ewl_Widget *w, void *ev, void *data);
 void ewl_text_trigger_cb_hide(Ewl_Widget *w, void *ev, void *data);
 void ewl_text_trigger_cb_unrealize(Ewl_Widget *w, void *ev, void *data);
