@@ -13,6 +13,8 @@ static int ewl_filelist_model_data_name_sort(Ewl_Filelist_File *file1,
                                 Ewl_Filelist_File *file2);
 static int ewl_filelist_model_data_size_sort(Ewl_Filelist_File *file1,
                                 Ewl_Filelist_File *file2);
+static int ewl_filelist_model_data_modified_sort(Ewl_Filelist_File *file1,
+                                Ewl_Filelist_File *file2);
 static void free_file(Ewl_Filelist_File *file);
 void ewl_filelist_model_filter(Ewl_Filelist_Directory *dir);
 static unsigned int ewl_filelist_model_filter_main
@@ -130,7 +132,8 @@ ewl_filelist_model_column_sortable(void *data __UNUSED__,
                                         unsigned int column)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
-        DRETURN_INT(((column == 0) || (column == 1)), DLEVEL_STABLE);
+        DRETURN_INT(((column == 0) || (column == 1) ||
+				(column == 5)), DLEVEL_STABLE);
 }
 
 /**
@@ -267,6 +270,34 @@ ewl_filelist_model_data_sort(void *data, unsigned int column,
                                 ECORE_SORT_MAX);
                 }
         }
+        else if (column == 5)
+        {
+                if (sort == EWL_SORT_DIRECTION_ASCENDING)
+                {
+                        ecore_list_sort(fld->dirs,
+                                ECORE_COMPARE_CB
+                                (ewl_filelist_model_data_modified_sort),
+                                ECORE_SORT_MIN);
+
+                        ecore_list_sort(fld->files,
+                                ECORE_COMPARE_CB
+                                (ewl_filelist_model_data_modified_sort),
+                                ECORE_SORT_MIN);
+                }
+                
+                else if (sort == EWL_SORT_DIRECTION_DESCENDING)
+                {
+                        ecore_list_sort(fld->dirs,
+                                ECORE_COMPARE_CB
+                                (ewl_filelist_model_data_modified_sort),
+                                ECORE_SORT_MAX);
+
+                        ecore_list_sort(fld->files,
+                                ECORE_COMPARE_CB
+                                (ewl_filelist_model_data_modified_sort),
+                                ECORE_SORT_MAX);
+                }
+        }
 
         /* Put .. entry back in */
         if (root)
@@ -304,6 +335,28 @@ ewl_filelist_model_data_size_sort(Ewl_Filelist_File *file1,
         if (file1->size > file2->size)
                 ret = 1;
         else if (file1->size < file2->size)
+                ret = -1;
+        else ret = 0;
+
+        DRETURN_INT(ret, DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ */
+static int
+ewl_filelist_model_data_modified_sort(Ewl_Filelist_File *file1,
+                                      Ewl_Filelist_File *file2)
+{
+        int ret;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(file1, 0);
+        DCHECK_PARAM_PTR_RET(file2, 0);
+
+        if (file1->modtime > file2->modtime)
+                ret = 1;
+        else if (file1->modtime < file2->modtime)
                 ret = -1;
         else ret = 0;
 
