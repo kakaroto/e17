@@ -8768,6 +8768,134 @@ collections { /* begin the collection of edje groups that are in this file */
 // FIXME: DO
 
 /////////////////////////////////////////////////////////////////////////////
+   /*** CONFIGURATION PANEL ***/
+// FIXME: DO
+   group { name: "e/widgets/configure/main";
+      images {
+	 image: "dia_grad.png" COMP;
+	 image: "dia_topshad.png" COMP;
+	 image: "dia_botshad.png" COMP;
+	 image: "menu_sep.png" COMP;
+      }
+      parts {
+	 part { name: "base";
+	    mouse_events:  0;
+	    description { state: "default" 0.0;
+	       image.normal: "dia_grad.png";
+	       fill {
+		  smooth: 0;
+		  size {
+		     relative: 0.0 1.0;
+		     offset: 64 0;
+		  }
+	       }
+	    }
+	 }
+	 part { name: "shadow";
+	    mouse_events:  0;
+	    description { state: "default" 0.0;
+	       rel2.relative: 1.0 0.0;
+	       rel2.offset: -1 31;
+	       image.normal: "dia_topshad.png";
+	       fill {
+		  smooth: 0;
+		  size {
+		     relative: 0.0 1.0;
+		     offset: 64 0;
+		  }
+	       }
+	    }
+	 }
+	 part { name: "shadow2";
+	    mouse_events:  0;
+	    description { state: "default" 0.0;
+	       rel1.relative: 0.0 1.0;
+	       rel1.offset: 0 -4;
+	       image.normal: "dia_botshad.png";
+	       fill {
+		  smooth: 0;
+		  size {
+		     relative: 0.0 1.0;
+		     offset: 64 0;
+		  }
+	       }
+	    }
+	 }
+         part {	 
+	    name: "e.text.title"; /*** NOTE: Remove this part? ***/
+	    type: TEXT;		  /* The title is in the window  */
+	    effect: SOFT_SHADOW;  /* title anyway.               */
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       align: 0.5 0.0;
+	       rel1.offset: 0 5;
+	       rel2.relative: 1.0 0.0;
+	       rel2.offset:   -1  24;
+	       color: 255 255 255 255;
+	       color3: 0 0 0 32;
+	       text { text: "";
+                  font: "Sans:style=Bold,Edje-Vera-Bold";
+		  size: 18;
+		  min:  1 1;
+		  align: 0.5 0.5;
+		  text_class: "configure";
+	       }
+	    }
+	 }
+	 part { name: "separator";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       min: 16 2;
+	       rel1 {
+		  relative: 0.0  1.0;
+		  offset:   4    -1;
+		  to_y:     "e.swallow.content";
+	       }
+	       rel2 {
+		  relative: 1.0  1.0;
+		  offset:   -5   0;
+		  to_y:     "e.swallow.content";
+	       }
+	       image {
+		  normal: "menu_sep.png";
+		  border: 2 2 0 0;
+	       }
+	       fill.smooth: 0;
+	    }
+	 }
+	 part {
+	    name:          "e.swallow.content";
+	    type:          SWALLOW;
+	    description { state: "default" 0.0;
+	       align: 0.5 0.5;
+	       min: 320 200;
+	       rel1 {
+		  relative: 0.0 1.0;
+		  offset: 24 5;
+		  to_y: "e.text.title";
+	       }
+	       rel2.offset:   -25 -35;
+	    }
+	 }
+	 part {
+	    name: "e.swallow.button";
+	    type: SWALLOW;
+	    description { state: "default" 0.0;
+	       align: 0.5 1.0;
+	       fixed: 1 1;
+	       rel1 {
+		  to_y: "e.swallow.content";
+		  relative: 0.5 1.0;
+		  offset:   0   2;
+	       }
+	       rel2.relative: 0.5 1.0;
+	       rel2.offset:   0  -2;
+	    }
+	 }
+      }
+   }
+
+/////////////////////////////////////////////////////////////////////////////
    /*** MOVE/RESIZE BOX ***/
 // FIXME: DO
 
