@@ -537,7 +537,7 @@ ewl_text_context_hash_cmp(const void *ctx1, const void *ctx2)
 
         DENTER_FUNCTION(DLEVEL_STABLE);
 
-#define KEY_BUILD(c) (c.r | c.g | c.b | c.a)
+#define KEY_BUILD(c) ((c.r << 24) | (c.g << 16) | (c.b << 8) | c.a)
 #define KEY_COMPARE(k1, k2) if (k1 > k2) goto CTX1_LARGER; else if (k2 > k1) goto CTX2_LARGER;
 
         KEY_COMPARE(ecore_str_compare(tx1->font, tx2->font), 0);
