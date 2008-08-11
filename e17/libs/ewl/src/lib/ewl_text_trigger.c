@@ -53,6 +53,8 @@ static void ewl_text_trigger_area_cb_mouse_up(Ewl_Widget *w, void *ev,
                                                 void *data);
 static void ewl_text_trigger_area_cb_mouse_down(Ewl_Widget *w, void *ev,
                                                 void *data);
+static void ewl_text_trigger_area_cb_clicked(Ewl_Widget *w, void *ev,
+                                                void *data);
 
 /**
  * @param type: The type of trigger to create
@@ -295,6 +297,8 @@ ewl_text_trigger_area_add(Ewl_Text *t, Ewl_Text_Trigger *cur,
         ewl_text_trigger_area_type_set(EWL_TEXT_TRIGGER_AREA(area), cur->type);
         ewl_object_geometry_request(EWL_OBJECT(area), x, y, w, h);
         EWL_TEXT_TRIGGER_AREA(area)->trigger = cur;
+        /* attach the pointer of the trigger to the area */
+        ewl_attach_mouse_cursor_set(area, ewl_attach_mouse_cursor_get(cur));
 
         ewl_widget_show(area);
 
@@ -465,6 +469,8 @@ ewl_text_trigger_area_init(Ewl_Text_Trigger_Area *area)
                         ewl_text_trigger_area_cb_mouse_down, NULL);
         ewl_callback_append(w, EWL_CALLBACK_MOUSE_UP,
                         ewl_text_trigger_area_cb_mouse_up, NULL);
+        ewl_callback_append(w, EWL_CALLBACK_CLICKED,
+                        ewl_text_trigger_area_cb_clicked, NULL);
 
         DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -646,4 +652,31 @@ ewl_text_trigger_area_cb_mouse_down(Ewl_Widget *w, void *ev,
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
+
+/**
+ * @internal
+ * @param w: the area
+ * @param ev: The event data
+ * @param data: UNUSED
+ * @return Returns no value
+ * @brief The trigger clicked callback
+ */
+void
+ewl_text_trigger_area_cb_clicked(Ewl_Widget *w, void *ev,
+                                        void *data __UNUSED__)
+{
+        Ewl_Text_Trigger_Area *a;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_TEXT_TRIGGER_AREA_TYPE);
+
+        a = EWL_TEXT_TRIGGER_AREA(w);
+        if (a->trigger)
+                ewl_callback_call_with_event_data(EWL_WIDGET(a->trigger),
+                                                EWL_CALLBACK_CLICKED, ev);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
 

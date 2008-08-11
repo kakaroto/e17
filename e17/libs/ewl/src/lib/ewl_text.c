@@ -4139,14 +4139,14 @@ ewl_text_trigger_add(Ewl_Text *t, Ewl_Text_Trigger *trigger)
         {
                 if (trigger->char_pos < cur->char_pos)
                 {
-                        if ((trigger->char_pos + trigger->char_len) < cur->char_pos)
-                                break;
+                        if ((trigger->char_pos + trigger->char_len) <= cur->char_pos)
+                                continue;
 
                         DWARNING("Overlapping triggers are not allowed.");
                         DRETURN(DLEVEL_STABLE);
                 }
 
-                if ((trigger->char_pos > (cur->char_pos + cur->char_len)))
+                if ((trigger->char_pos >= (cur->char_pos + cur->char_len)))
                         continue;
 
                 if ((trigger->char_pos >= cur->char_pos)
