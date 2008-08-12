@@ -8763,6 +8763,51 @@ collections { /* begin the collection of edje groups that are in this file */
    /*** SYSTEM ***/
 // FIXME: DO
 
+   group {
+      name: "e/sys/logout";
+      alias: "e/sys/halt";
+      alias: "e/sys/reboot";
+      alias: "e/sys/suspend";
+      alias: "e/sys/hibernate";
+      data.item: "borderless" "1";
+      styles {
+	 style {
+	    name: "sys_style";
+	    base: "font=Sans,Edje-Vera font_size=10 text_class=tb_plain align=center color=#000 style=shadow shadow_color=#ffffff80 wrap=word";
+	    tag:  "br" "\n";
+	    tag:  "hilight" "+ font=Sans:style=Bold,Edje-Vera-Bold text_class=tb_light";
+	 }
+      }
+      parts {
+	 part {
+	    name:          "base";
+	    mouse_events:  0;
+	    description {
+	       state:    "default" 0.0;
+	       image.normal: "menu_bg.png";
+	    }
+	 }
+	 part {
+	    name:          "e.textblock.message";
+	    type:          TEXTBLOCK;
+	    mouse_events:  0;
+	    description {
+	       state:    "default" 0.0;
+	       rel1 {
+		  offset: 8 8;
+	       }
+	       rel2 {
+		  offset: -9 -9;
+	       }
+	       text {
+		  style:    "sys_style";
+		  min:      1 1;
+	       }
+	    }
+	 }
+      }
+   }
+
 /////////////////////////////////////////////////////////////////////////////
    /*** ABOUT E ***/
 // FIXME: DO
