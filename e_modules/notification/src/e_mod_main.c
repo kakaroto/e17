@@ -262,6 +262,15 @@ e_modapi_init(E_Module *m)
 
    /* set up the notification daemon */
    d = e_notification_daemon_add("e_notification_module", "Enlightenment");
+   if (!d)
+     {
+	_notification_cfg_free(notification_cfg);
+	notification_cfg = NULL;
+	e_util_dialog_show(D_("Error During DBus Init!"),
+			   D_("Error during DBus init! Please check if "
+			      "dbus is correctly installed and running."));
+	return NULL;
+     }
    notification_cfg->daemon = d;
    notification_cfg->default_timeout = 5.0;
    e_notification_daemon_data_set(d, notification_cfg);
