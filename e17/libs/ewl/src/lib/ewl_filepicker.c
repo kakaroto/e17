@@ -13,6 +13,7 @@
 #include "ewl_toolbar.h"
 #include "ewl_icon_theme.h"
 #include "ewl_scrollpane.h"
+#include "ewl_grid.h"
 #include "ewl_macros.h"
 #include "ewl_private.h"
 #include "ewl_debug.h"
@@ -100,7 +101,7 @@ ewl_filepicker_new(void)
 int
 ewl_filepicker_init(Ewl_Filepicker *fp)
 {
-        Ewl_Widget *o, *box;
+        Ewl_Widget *o, *box, *grid;
         const char *path;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
@@ -188,18 +189,18 @@ ewl_filepicker_init(Ewl_Filepicker *fp)
                                 fp);
         ewl_widget_show(fp->file_list);
 
-        o = ewl_hbox_new();
-        ewl_container_child_append(EWL_CONTAINER(fp), o);
-        ewl_widget_show(o);
-
-        box = ewl_vbox_new();
-        ewl_container_child_append(EWL_CONTAINER(o), box);
-        ewl_object_fill_policy_set(EWL_OBJECT(o),
+        grid = ewl_grid_new();
+        ewl_container_child_append(EWL_CONTAINER(fp), grid);
+        ewl_grid_dimensions_set(EWL_GRID(grid), 2, 2);
+        ewl_grid_column_preferred_w_use(EWL_GRID(grid), 1);
+        ewl_object_fill_policy_set(EWL_OBJECT(grid),
                         EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINKABLE);
-        ewl_widget_show(box);
+        ewl_widget_show(grid);
 
         fp->file_entry = ewl_entry_new();
-        ewl_container_child_append(EWL_CONTAINER(box), fp->file_entry);
+        ewl_container_child_append(EWL_CONTAINER(grid), fp->file_entry);
+        ewl_grid_child_position_set(EWL_GRID(grid), fp->file_entry, 0, 0, 0, 0);
+        ewl_grid_hhomogeneous_set(EWL_GRID(grid), FALSE);
         ewl_widget_show(fp->file_entry);
 
         fp->filters = ecore_list_new();
@@ -217,37 +218,32 @@ ewl_filepicker_init(Ewl_Filepicker *fp)
                                 ewl_filepicker_cb_type_header);
 
         fp->mvc_filters.combo = ewl_combo_new();
-        ewl_mvc_model_set(EWL_MVC(fp->mvc_filters.combo),
-                                fp->mvc_filters.model);
-        ewl_mvc_view_set(EWL_MVC(fp->mvc_filters.combo),
-                                fp->mvc_filters.view);
+        ewl_mvc_model_set(EWL_MVC(fp->mvc_filters.combo), fp->mvc_filters.model);
+        ewl_mvc_view_set(EWL_MVC(fp->mvc_filters.combo), fp->mvc_filters.view);
         ewl_mvc_data_set(EWL_MVC(fp->mvc_filters.combo), fp);
         ewl_combo_editable_set(EWL_COMBO(fp->mvc_filters.combo), TRUE);
-        ewl_callback_append(fp->mvc_filters.combo,
-                                EWL_CALLBACK_VALUE_CHANGED,
+        ewl_callback_append(fp->mvc_filters.combo, EWL_CALLBACK_VALUE_CHANGED,
                                 ewl_filepicker_cb_type_change, fp);
-        ewl_container_child_append(EWL_CONTAINER(box),
-                                fp->mvc_filters.combo);
+        ewl_container_child_append(EWL_CONTAINER(grid), fp->mvc_filters.combo);
+        ewl_grid_child_position_set(EWL_GRID(grid), fp->mvc_filters.combo,
+                                0, 0, 1, 1);
         ewl_object_fill_policy_set(EWL_OBJECT(fp->mvc_filters.combo),
                                 EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINKABLE);
         ewl_widget_show(fp->mvc_filters.combo);
 
-        box = ewl_vbox_new();
-        ewl_container_child_append(EWL_CONTAINER(o), box);
-        ewl_object_fill_policy_set(EWL_OBJECT(box), EWL_FLAG_FILL_SHRINKABLE);
-        ewl_widget_show(box);
-
         fp->ret_button = ewl_button_new();
-        ewl_container_child_append(EWL_CONTAINER(box), fp->ret_button);
+        ewl_container_child_append(EWL_CONTAINER(grid), fp->ret_button);
+        ewl_grid_child_position_set(EWL_GRID(grid), fp->ret_button, 1, 1, 0, 0);
         ewl_stock_type_set(EWL_STOCK(fp->ret_button), EWL_STOCK_OPEN);
         ewl_callback_append(fp->ret_button, EWL_CALLBACK_CLICKED,
                                 ewl_filepicker_cb_button_clicked, fp);
         ewl_object_fill_policy_set(EWL_OBJECT(fp->ret_button),
-                                EWL_FLAG_FILL_HFILL | EWL_FLAG_FILL_VSHRINKABLE);
+                                                EWL_FLAG_FILL_SHRINKABLE);
         ewl_widget_show(fp->ret_button);
 
         o = ewl_button_new();
-        ewl_container_child_append(EWL_CONTAINER(box), o);
+        ewl_container_child_append(EWL_CONTAINER(grid), o);
+        ewl_grid_child_position_set(EWL_GRID(grid), o, 1, 1, 1, 1);
         ewl_stock_type_set(EWL_STOCK(o), EWL_STOCK_CANCEL);
         ewl_callback_append(o, EWL_CALLBACK_CLICKED,
                                 ewl_filepicker_cb_button_clicked, fp);
