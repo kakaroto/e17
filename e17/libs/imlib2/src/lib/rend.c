@@ -235,6 +235,21 @@ __imlib_generic_render(DATA32 * src, int jump, int w, int h, int dx, int dy,
      }
 }
 
+static Display     *disp = NULL;
+static GC           gc = NULL;
+static GC           gcm = NULL;
+static int          last_depth = 0;
+
+void
+__imlib_RenderDisconnect(Display * d)
+{
+   if (d != disp)
+      return;
+   disp = NULL;
+   gc = gcm = NULL;
+   last_depth = 0;
+}
+
 void
 __imlib_RenderImage(Display * d, ImlibImage * im,
                     Drawable w, Drawable m,
@@ -248,10 +263,6 @@ __imlib_RenderImage(Display * d, ImlibImage * im,
    Context            *ct;
    DATA32             *buf = NULL, *pointer = NULL, *back = NULL;
    int                 y, h, hh, jump;
-   static Display     *disp = NULL;
-   static int          last_depth = 0;
-   static GC           gc = 0;
-   static GC           gcm = 0;
    XGCValues           gcv;
    ImlibScaleInfo     *scaleinfo = NULL;
    int                 psx, psy, psw, psh;

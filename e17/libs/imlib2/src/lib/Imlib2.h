@@ -131,6 +131,7 @@ extern "C"
 /* context setting */
 # ifndef X_DISPLAY_MISSING
    EAPI void imlib_context_set_display(Display * display);
+   EAPI void imlib_context_disconnect_display(void);
    EAPI void imlib_context_set_visual(Visual * visual);
    EAPI void imlib_context_set_colormap(Colormap colormap);
    EAPI void imlib_context_set_drawable(Drawable drawable);

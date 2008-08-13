@@ -314,8 +314,8 @@ imlib_context_get_cliprect(int *x, int *y, int *w, int *h)
 }
 
 #ifdef BUILD_X11
-/** 
- * @param display Current display to bu used.
+/**
+ * @param display Current display to be used.
  *
  * Sets the current X display to be used for rendering of images to
  * drawables. You do not need to set this if you do not intend to
@@ -343,6 +343,22 @@ imlib_context_get_display(void)
 {
    CHECK_CONTEXT(ctx);
    return ctx->display;
+}
+
+/**
+ * Tell Imlib2 that the current display connection has been closed.
+ *
+ * Call when (and only when) you close a display connection but continue
+ * using Imlib2 on a different connection.
+ */
+EAPI void
+imlib_context_disconnect_display(void)
+{
+   CHECK_CONTEXT(ctx);
+   if (!ctx->display)
+      return;
+   __imlib_RenderDisconnect(ctx->display);
+   ctx->display = NULL;
 }
 
 /**

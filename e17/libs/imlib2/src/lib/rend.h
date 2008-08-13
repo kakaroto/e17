@@ -7,6 +7,9 @@ __hidden DATA32
 __imlib_RenderGetPixel(Display *d, Drawable w, Visual *v, Colormap cm, int depth, DATA8 r, DATA8 g, DATA8 b);
 
 __hidden void
+__imlib_RenderDisconnect(Display *d);
+
+__hidden void
 __imlib_RenderImage(Display *d, ImlibImage *im,
 		    Drawable w, Drawable m,
 		    Visual *v, Colormap cm, int depth,
