@@ -8759,15 +8759,26 @@ collections { /* begin the collection of edje groups that are in this file */
 
 /////////////////////////////////////////////////////////////////////////////
    /*** SYSTEM ***/
-// FIXME: DO
+// FIXME: DO && WORK IN PROGRESS
 
-   group {
-      name: "e/sys/logout";
+   group { name: "e/sys/logout";
       alias: "e/sys/halt";
       alias: "e/sys/reboot";
       alias: "e/sys/suspend";
       alias: "e/sys/hibernate";
-      data.item: "borderless" "1";
+      images {
+	 image: "menu_bg.png" COMP;
+	 image: "logo_white.png" COMP;
+	 image: "busy-1.png" COMP;
+	 image: "busy-2.png" COMP;
+	 image: "busy-3.png" COMP;
+	 image: "busy-4.png" COMP;
+	 image: "busy-5.png" COMP;
+	 image: "busy-6.png" COMP;
+	 image: "busy-7.png" COMP;
+	 image: "busy-8.png" COMP;
+	 image: "busy-9.png" COMP;
+      }
       styles {
 	 style {
 	    name: "sys_style";
@@ -8777,31 +8788,80 @@ collections { /* begin the collection of edje groups that are in this file */
 	 }
       }
       parts {
-	 part {
-	    name:          "base";
+	 part { name:          "base";
 	    mouse_events:  0;
-	    description {
-	       state:    "default" 0.0;
+	    description { state:    "default" 0.0;
 	       image.normal: "menu_bg.png";
 	    }
 	 }
-	 part {
-	    name:          "e.textblock.message";
-	    type:          TEXTBLOCK;
+	 part { name: "busy";
+	    mouse_events:  0;
+	    description { state: "default" 0.0;
+	       min: 32 32;
+	       max: 32 32;
+	       aspect: 1.0 1.0;
+	       align: 0.5 0.0;
+	       aspect_preference: BOTH;
+	       rel1 {
+		  to_y:     "logo";
+		  relative: 0.0 1.0;
+		  offset:   0 1;
+	       }
+               rel2 {
+		  to_y:     "e.textblock.message";
+		  relative: 1.0 0.0;
+		  offset:   -1 1;
+	       }
+	       image {
+		  normal: "busy-9.png";
+		  tween:  "busy-1.png";
+		  tween:  "busy-2.png";
+		  tween:  "busy-3.png";
+		  tween:  "busy-4.png";
+		  tween:  "busy-5.png";
+		  tween:  "busy-6.png";
+		  tween:  "busy-7.png";
+		  tween:  "busy-8.png";
+	       }
+	    }
+	 }
+	 part { name: "logo";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       min: 196 285;
+	       max: 196 285;
+	       rel1.relative: 0.25 0.1;
+	       rel2.relative: 0.75 0.6;
+	       image.normal: "logo_white.png";
+	    }
+	    description { state: "done" 0.0;
+	       inherit: "default" 0.0;
+	       color: 255 255 255 0;
+	    }
+	 }
+	 part { name: "e.textblock.message";
+	    type: TEXTBLOCK;
 	    mouse_events:  0;
 	    description {
-	       state:    "default" 0.0;
-	       rel1 {
-		  offset: 8 8;
-	       }
-	       rel2 {
-		  offset: -9 -9;
-	       }
+	       state: "default" 0.0;
+	       rel1.relative: 0.0 0.8;
+	       rel1.offset: 8 8;
+	       rel2.offset: -9 -9;
 	       text {
 		  style:    "sys_style";
 		  min:      1 1;
 	       }
 	    }
+	 }
+      }
+      programs {
+	 program { name: "busy_anim";
+	    signal: "show";
+	    source: "";
+	    action: STATE_SET "default" 0.0;
+	    transition: LINEAR 0.3333;
+	    target: "busy";
+	    after:  "busy_anim";
 	 }
       }
    }
@@ -10016,8 +10076,6 @@ collections { /* begin the collection of edje groups that are in this file */
 	 image: "sb_barv2.png" COMP;
 	 image: "sb_runnerh.png" COMP;
 	 image: "sb_runnerv.png" COMP;
-	 image: "sb_hdrag_thumb.png" COMP;
-	 image: "sb_vdrag_thumb.png" COMP;
       }
       parts {
 	 part { name: "bg";
@@ -10188,24 +10246,38 @@ collections { /* begin the collection of edje groups that are in this file */
 		  to: "sb_vbar_base";
 	       }
 	       image {
-		  normal: "sb_barv1.png";
-		  border: 5 5 5 5;
+		  normal: "bt_base2.png";
+		  border: 7 7 7 7;
 	       }
 	    }
 	    description { state: "clicked" 0.0;
 	       inherit: "default" 0.0;
-	       image.normal: "sb_barv2.png";
+	       image.normal: "bt_base1.png";
 	    }
 	 }
-	 part { name: "vbar_bar_thumb";
+	 part { name: "sb_vbar_over1";
 	    clip_to: "sb_vbar";
 	    mouse_events: 0;
 	    description { state: "default" 0.0;
-	       max: 8 8;
-	       min: 8 8;
+	       rel1.to: "e.dragable.vbar";
+	       rel2.relative: 1.0 0.5;
+	       rel2.to: "e.dragable.vbar";
+	       image {
+		  normal: "bt_hilight.png";
+		  border: 7 7 7 0;
+	       }
+	    }
+	 }
+	 part { name: "sb_vbar_over2";
+	    clip_to: "sb_vbar";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
 	       rel1.to: "e.dragable.vbar";
 	       rel2.to: "e.dragable.vbar";
-	       image.normal: "sb_vdrag_thumb.png";
+	       image {
+		  normal: "bt_shine.png";
+		  border: 7 7 7 7;
+	       }
 	    }
 	 }
 	 part { name: "sb_vbar_a1";
@@ -10376,24 +10448,38 @@ collections { /* begin the collection of edje groups that are in this file */
 		  to: "sb_hbar_base";
 	       }
 	       image {
-		  normal: "sb_barh1.png";
-		  border: 5 5 5 5;
+		  normal: "bt_base2.png";
+		  border: 7 7 7 7;
 	       }
 	    }
 	    description { state: "clicked" 0.0;
 	       inherit: "default" 0.0;
-	       image.normal: "sb_barh2.png";
+	       image.normal: "bt_base1.png";
 	    }
 	 }
-	 part { name: "hbar_bar_thumb";
+	 part { name: "sb_hbar_over1";
 	    clip_to: "sb_hbar";
 	    mouse_events: 0;
 	    description { state: "default" 0.0;
-	       max: 8 8;
-	       min: 8 8;
+	       rel1.to: "e.dragable.hbar";
+	       rel2.relative: 1.0 0.5;
+	       rel2.to: "e.dragable.hbar";
+	       image {
+		  normal: "bt_hilight.png";
+		  border: 7 7 7 0;
+	       }
+	    }
+	 }
+	 part { name: "sb_hbar_over2";
+	    clip_to: "sb_hbar";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
 	       rel1.to: "e.dragable.hbar";
 	       rel2.to: "e.dragable.hbar";
-	       image.normal: "sb_hdrag_thumb.png";
+	       image {
+		  normal: "bt_shine.png";
+		  border: 7 7 7 7;
+	       }
 	    }
 	 }
 	 part { name: "sb_hbar_a1";
