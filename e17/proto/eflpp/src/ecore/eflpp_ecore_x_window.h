@@ -40,6 +40,10 @@ class EcoreXWindow //: public Trackable
     //void getNetWMWindowTypeFetc ();
     bool getNetWMWindowType( EcoreXWindowType &outType );
     
+    // TODO: not sure where to put DPMS and all other functions
+    static bool getDPMSEnabled ();
+    static void setDPMSEnabled (bool enabled);
+    
   protected:
 
   private:

@@ -39,4 +39,14 @@ bool EcoreXWindow::getNetWMWindowType( EcoreXWindowType &outType )
     return ret;
 }
 
+bool EcoreXWindow::getDPMSEnabled ()
+{
+  return ecore_x_dpms_enabled_get ();
+}
+
+void EcoreXWindow::setDPMSEnabled (bool enabled)
+{
+  ecore_x_dpms_enabled_set (enabled);
+}
+
 } // end namespace efl
