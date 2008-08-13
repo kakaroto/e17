@@ -66,6 +66,10 @@ struct _Tiling_Info
     * to be stored individually for each desk, the one in Tiling_Config is only
     * the default */
    double big_perc;
+
+   /* When sending a border to another desktop, it has to be updated as soon
+    * as the user switches to it. This is stored in the following flag. */
+   int need_rearrange;
 };
 
 EAPI extern E_Module_Api e_modapi;

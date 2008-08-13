@@ -5,7 +5,7 @@
 #include "trivials.h"
 #include <stdarg.h>
 
-#define DEBUG
+#define TILING_DEBUG
 
 void
 change_window_border(E_Border *bd, char *bordername)
@@ -44,11 +44,11 @@ recursively_set_disabled(Evas_Object *obj, int disabled)
 void
 DBG(const char *fmt, ...)
 {
-#ifdef DEBUG
+#ifdef TILING_DEBUG
    va_list ap;
    va_start(ap, fmt);
    char buf[4096];
-   snprintf(buf, 4096, "DEBUG: %s", fmt);
+   snprintf(buf, 4096, "TILING_DEBUG: %s", fmt);
    vprintf(buf, ap);
    va_end(ap);
 #endif

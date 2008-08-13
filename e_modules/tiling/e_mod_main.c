@@ -10,8 +10,8 @@
 #include "e_shelf.h"
 #include <math.h>
 
-/* Use DEBUG-define to toggle displaying lots of debugmessages */
-#define DEBUG
+/* Use TILING_DEBUG-define to toggle displaying lots of debugmessages */
+#define TILING_DEBUG
 
 /***************************************************************************/
 /* actual module specifics */
@@ -161,14 +161,14 @@ layout_for_desk(E_Desk *desk)
    return tiling_config->tiling_mode;
 }
 
-#ifdef DEBUG
+#ifdef TILING_DEBUG
 static void
 print_borderlist()
 {
    if (!tinfo) return;
    Evas_List *l;
    int wc = 0;
-   printf("\n\nDEBUG: Tiling-Borderlist for \"%s\":\n", desk_hash_key(tinfo->desk));
+   printf("\n\nTILING_DEBUG: Tiling-Borderlist for \"%s\":\n", desk_hash_key(tinfo->desk));
    for (l = tinfo->client_list; l; l = l->next, wc++)
      {
 	E_Border *lbd = l->data;
@@ -178,7 +178,7 @@ print_borderlist()
 	if (tinfo->mainbd == lbd)
 	  printf("this is tinfo->mainbd!\n");
      }
-   printf("DEBUG: End of Borderlist\n\n");
+   printf("TILING_DEBUG: End of Borderlist\n\n");
 }
 #endif
 
@@ -306,8 +306,8 @@ rearrange_windows(E_Border *bd, int remove_bd)
 	else return;
      }
 
-#ifdef DEBUG
-   printf("DEBUG: rearrange_windows()\n");
+#ifdef TILING_DEBUG
+   printf("TILING_DEBUG: rearrange_windows()\n");
    print_borderlist();
 #endif
 
@@ -384,7 +384,7 @@ rearrange_windows(E_Border *bd, int remove_bd)
 	     DBG("maximizing the window\n");
 	     e_border_move(lbd, lbd->zone->x + offset_left, lbd->zone->y + offset_top);
 	     e_border_unmaximize(lbd, E_MAXIMIZE_BOTH);
-	     e_border_maximize(lbd, E_MAXIMIZE_FILL | E_MAXIMIZE_BOTH);
+	     e_border_maximize(lbd, E_MAXIMIZE_EXPAND | E_MAXIMIZE_BOTH);
 	     tinfo->single_win = lbd;
 	     return;
 	  }
@@ -569,22 +569,26 @@ rearrange_windows(E_Border *bd, int remove_bd)
    DBG("rearrange done\n\n");
 }
 
-static void
+static Tiling_Info *
 _initialize_tinfo(E_Desk *desk)
 {
    Evas_List *l;
+   Tiling_Info *res;
 
-   tinfo = E_NEW(Tiling_Info, 1);
-   tinfo->mainbd_width = -1;
-   tinfo->desk = desk;
-   tinfo->big_perc = tiling_config->big_perc;
-   info_hash = evas_hash_add(info_hash, desk_hash_key(desk), tinfo);
+   res = E_NEW(Tiling_Info, 1);
+   res->mainbd_width = -1;
+   res->desk = desk;
+   res->big_perc = tiling_config->big_perc;
+   res->need_rearrange = 0;
+   info_hash = evas_hash_add(info_hash, desk_hash_key(desk), res);
 
    EVAS_LIST_FOREACH(e_border_client_list())
      {
 	if (lbd->desk == desk)
-	  tinfo->client_list = evas_list_append(tinfo->client_list, lbd);
+	  res->client_list = evas_list_append(res->client_list, lbd);
      } LOOP_END
+
+   return res;
 }
 
 static void
@@ -610,12 +614,23 @@ _desk_show(E_Desk *desk)
 	 * indirectly calls the POST_EVAL) for each window on that desk but only
 	 * for the focused, we need to get all borders on that desk. */
 	DBG("need new info for %s\n", desk->name);
-	_initialize_tinfo(desk);
+	tinfo = _initialize_tinfo(desk);
      }
-#ifdef DEBUG
-   printf("DEBUG: desk show. %s\n", desk->name);
+   else
+     {
+	if (tinfo->need_rearrange)
+	  {
+	     DBG("need_rearrange\n");
+	     E_Border *first;
+	     if ((first = get_first_window(NULL, desk)))
+	       rearrange_windows(first, 0);
+	     tinfo->need_rearrange = 0;
+	  }
+     }
+#ifdef TILING_DEBUG
+   printf("TILING_DEBUG: desk show. %s\n", desk->name);
    print_borderlist();
-   printf("DEBUG: desk show done\n");
+   printf("TILING_DEBUG: desk show done\n");
 #endif
 }
 
@@ -762,15 +777,17 @@ _e_module_tiling_cb_hook(void *data, E_Border *bd)
            case TILE_BIGMAIN:
               /* Only the mainbd-window is resizable */
               if (bd != tinfo->mainbd || tinfo->mainbd_width == -1) break;
+	      /* Don't take the size of a maximized window */
+	      if (bd->maximized) break;
               /* If the difference is too small, do nothing */
 	      if (between(tinfo->mainbd_width, (bd->w - 2), (bd->w + 2))) break;
-#ifdef DEBUG
-              printf("DEBUG: trying to change the tinfo->mainbd width to %d (it should be: %d), big_perc atm is %f\n", bd->w, tinfo->mainbd_width, tinfo->big_perc);
+#ifdef TILING_DEBUG
+              printf("TILING_DEBUG: trying to change the tinfo->mainbd width to %d (it should be: %d), big_perc atm is %f\n", bd->w, tinfo->mainbd_width, tinfo->big_perc);
 #endif
               /* x is the factor which is caused by shelves */
               double x = tinfo->mainbd_width / tinfo->big_perc / bd->desk->zone->w;
-#ifdef DEBUG
-              printf("DEBUG: x = %f -> big_perc = %f\n", x, bd->w / x / bd->desk->zone->w);
+#ifdef TILING_DEBUG
+              printf("TILING_DEBUG: x = %f -> big_perc = %f\n", x, bd->w / x / bd->desk->zone->w);
 #endif
               tinfo->big_perc = bd->w / x / bd->desk->zone->w;
               break;
@@ -809,6 +826,7 @@ _e_module_tiling_hide_hook(void *data, int type, void *event)
 		   _tinfo->client_list = evas_list_remove(_tinfo->client_list, ev->border);
 	      }
 	 }
+
    return 1;
 }
 
@@ -835,9 +853,25 @@ _clear_bd_from_info_hash(const Evas_Hash *hash, const char *key, void *data, voi
 {
    Tiling_Info *ti = data;
    E_Event_Border_Desk_Set *ev = fdata;
-   if (!ev || !ti || (ti->desk == ev->desk)) return 1;
+   if (!ev || !ti) return 1;
+   if (ti->desk == ev->desk)
+     {
+	ti->need_rearrange = 1;
+	DBG("set need_rearrange=1\n");
+	return 1;
+     }
    if (evas_list_find(ti->client_list, ev->border) == ev->border)
-     ti->client_list = evas_list_remove(ti->client_list, ev->border);
+     {
+	ti->client_list = evas_list_remove(ti->client_list, ev->border);
+	if (ti->desk == get_current_desk())
+	  {
+	     E_Border *first;
+	     if ((first = get_first_window(NULL, ti->desk)))
+	       rearrange_windows(first, 0);
+	  }
+     }
+   if (ti->mainbd == ev->border)
+     ti->mainbd = get_first_window(NULL, ti->desk);
    if (evas_list_find(ti->floating_windows, ev->border) == ev->border)
      ti->floating_windows = evas_list_remove(ti->floating_windows, ev->border);
    return 1;
@@ -846,11 +880,20 @@ _clear_bd_from_info_hash(const Evas_Hash *hash, const char *key, void *data, voi
 static int
 _e_module_tiling_desk_set(void *data, int type, void *event)
 {
-   /* We use this event to ensure that desk changes are done correctly because
+   /* We use this event to ensure that border desk changes are done correctly because
     * a user can move the window to another desk (and events are fired) involving
     * zone changes or not (depends on the mouse position) */
    E_Event_Border_Desk_Set *ev = event;
+   Tiling_Info *_tinfo = evas_hash_find(info_hash, desk_hash_key(ev->desk));
+   if (!_tinfo)
+     {
+	DBG("create new info for %s\n", ev->desk->name);
+	_tinfo = _initialize_tinfo(ev->desk);
+     }
+
    evas_hash_foreach(info_hash, _clear_bd_from_info_hash, ev);
+   DBG("desk set\n");
+
    return 1;
 }
 
@@ -867,6 +910,7 @@ _e_module_tiling_mouse_move(void *data, int type, void *event)
 	current_zone = desk->zone;
 	_desk_show(desk);
      }
+
    return 1;
 }
 
@@ -1011,7 +1055,7 @@ e_modapi_init(E_Module *m)
 
    E_Desk *desk = get_current_desk();
    current_zone = desk->zone;
-   _initialize_tinfo(desk);
+   tinfo = _initialize_tinfo(desk);
 
    return m;
 }
