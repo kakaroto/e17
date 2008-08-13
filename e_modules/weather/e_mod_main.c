@@ -57,7 +57,9 @@ struct
 {
    const char *host;
    int port;
-} proxy; 
+} proxy = {
+   NULL, 0
+}; 
 
 /* Module Function Protos */
 static void _weather_cb_mouse_down (void *data, Evas * e, Evas_Object * obj,
@@ -442,31 +444,36 @@ _weather_free (Weather * w)
 static void
 _weather_get_proxy (void)
 {
-  char env[128];
+  char *env;
 
-  snprintf (env, sizeof (env), "%s", getenv ("http_proxy"));
-  if (!env[0]) snprintf (env, sizeof (env), "%s", getenv ("HTTP_PROXY"));
+  env = getenv ("http_proxy");
+  if ((!env) || (!*env)) env = getenv ("HTTP_PROXY");
+  if ((!env) || (!*env)) return;
   if (strncmp (env, "http://", 7)) return;
 
   char *host = NULL;
   char *p;
   int port = 0;
 
+  env = strdup(env);
   host = strchr (env, ':');
   host += 3;
   p = strchr (host, ':');
   if (p)
-	{
-	  *p = 0;
-	  p++;
-	  if (sscanf (p, "%d", &port) != 1)
-	    port = 0;
-	}
+    {
+      *p = 0;
+      p++;
+      if (sscanf (p, "%d", &port) != 1)
+          port = 0;
+    }
+  // FIXME: A proxy doesn't necessarily need a port
   if ((host) && (port))
-	{
-	  proxy.host = evas_stringshare_add (host);
-	  proxy.port = port;
-	}
+    {
+      if (proxy.host) evas_stringshare_del(proxy.host);
+      proxy.host = evas_stringshare_add (host);
+      proxy.port = port;
+    }
+  free(env);
 }
 
 static int
