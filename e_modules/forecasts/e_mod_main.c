@@ -102,7 +102,9 @@ struct
 {
    const char *host;
    int port;
-} proxy;
+} proxy = {
+   NULL, 0
+};
 
 /* Module Function Protos */
 static void _forecasts_cb_mouse_down(void *data, Evas * e, Evas_Object * obj,
@@ -512,16 +514,17 @@ _forecasts_free(Forecasts * w)
 static void
 _forecasts_get_proxy(void)
 {
-   char env[128];
+   char *env;
    char *host = NULL;
    char *p;
    int port = 0;
 
-   snprintf(env, sizeof(env), "%s", getenv("http_proxy"));
-   if (!env[0])
-     snprintf(env, sizeof(env), "%s", getenv("HTTP_PROXY"));
-   if (strncmp(env, "http://", 7)) return;
+   env = getenv ("http_proxy");
+   if ((!env) || (!*env)) env = getenv ("HTTP_PROXY");
+   if ((!env) || (!*env)) return;
+   if (strncmp (env, "http://", 7)) return;
 
+   env = strdup(env);
    host = strchr(env, ':');
    host += 3;
    p = strchr(host, ':');
@@ -534,9 +537,11 @@ _forecasts_get_proxy(void)
      }
    if ((host) && (port))
      {
+	if (proxy.host) evas_stringshare_del(proxy.host);
 	proxy.host = evas_stringshare_add(host);
 	proxy.port = port;
      }
+   free(env);
 }
 
 static int
@@ -948,6 +953,8 @@ _forecasts_popup_content_create(Instance *inst)
    char buf[4096];
    int row = 0, i;
    int w, h;
+
+   if (!inst->location) return;
 
    inst->popup = e_gadcon_popup_new(inst->gcc, _forecasts_popup_resize);
 
