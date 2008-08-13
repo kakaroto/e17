@@ -159,7 +159,4 @@ extern "C" {
 }
 #endif
 
-#define DEBUG_LVL 0
-#define DEBUG(lvl, ...) if (lvl <= DEBUG_LVL) printf(__VA_ARGS__)
-
 #endif

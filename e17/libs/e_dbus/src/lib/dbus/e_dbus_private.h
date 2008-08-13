@@ -4,6 +4,9 @@
 #include "dbus/dbus.h"
 #include "Ecore_Data.h"
 
+#define DEBUG_LVL 0
+#define DEBUG(lvl, ...) if (lvl <= DEBUG_LVL) printf(__VA_ARGS__)
+
 struct E_DBus_Connection
 {
   DBusBusType shared_type;
