@@ -154,7 +154,7 @@ load(ImlibImage * im, ImlibProgressFunction progress, char progress_granularity,
    count = 0;
    line = malloc(lsz);
    if (!line)
-     return NULL;
+     return 0;
 
    backslash = 0;
    memset(lookup, 0, sizeof(lookup));
