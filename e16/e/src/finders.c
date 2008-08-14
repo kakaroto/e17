@@ -25,6 +25,7 @@
 #include "borders.h"
 #include "ewins.h"
 #include "groups.h"
+#include "util.h"
 #include <ctype.h>
 #include <string.h>
 
@@ -173,7 +174,7 @@ EwinsFindByExpr(const char *match, int *pnum, int *pflags)
 	     name = EwinGetIcccmName(ewin);
 	     if (!name)
 		continue;
-	     if (!strcasestr(name, match))
+	     if (!Estrcasestr(name, match))
 		continue;
 	  }
 	nfound++;

@@ -53,7 +53,7 @@ EModuleFind(const char *name)
    for (i = 0; i < n_modules; i++)
      {
 	pm = p_modules[i];
-	if (!strncasecmp(name, pm->name, 4) ||
+	if (!strncmp(name, pm->name, 4) ||
 	    (pm->nick && !strcmp(name, pm->nick)))
 	   return pm;
      }

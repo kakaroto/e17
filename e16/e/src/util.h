@@ -59,11 +59,15 @@
 #define USE_LIBC_STRNDUP 1	/* Use libc strndup if present */
 #endif
 
-#ifndef HAVE_STRCASESTR
-#define strcasestr(haystack, needle) strstr(haystack, needle)
+#ifdef HAVE_STRCASECMP
+#define Estrcasecmp(s1, s2) strcasecmp(s1, s2)
+#else
+int                 Estrcasecmp(const char *s1, const char *s2);
 #endif
-#ifndef HAVE_STRCASECMP
-#define strcasecmp(s1, s2) strcmp(s1, s2)
+#ifdef HAVE_STRCASESTR
+#define Estrcasestr(haystack, needle) strcasestr(haystack, needle)
+#else
+const char         *Estrcasestr(const char *haystack, const char *needle);
 #endif
 
 /* memory.c */

@@ -94,6 +94,7 @@ e16_SOURCES = \
 	sound.c			sound.h			\
 	stacking.c		\
 	startup.c		\
+	string.c		\
 	systray.c		\
 	tclass.c		tclass.h		\
 	text.c			\

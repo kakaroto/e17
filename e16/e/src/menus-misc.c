@@ -851,7 +851,7 @@ _ext_is_imagetype(const char *ext)
    int                 i;
 
    for (i = 0; exts[i]; i++)
-      if (!strcasecmp(exts[i], ext))
+      if (!Estrcasecmp(exts[i], ext))
 	 return 1;
 
    return 0;

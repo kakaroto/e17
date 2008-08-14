@@ -386,9 +386,9 @@ LangInit(void)
 		enc_loc, enc_int, MB_CUR_MAX);
      }
 
-   if (!strcasecmp(enc_loc, "utf8") || !strcasecmp(enc_loc, "utf-8"))
+   if (!Estrcasecmp(enc_loc, "utf8") || !Estrcasecmp(enc_loc, "utf-8"))
       Mode.locale.utf8_loc = 1;
-   if (!strcasecmp(enc_int, "utf8") || !strcasecmp(enc_int, "utf-8"))
+   if (!Estrcasecmp(enc_int, "utf8") || !Estrcasecmp(enc_int, "utf-8"))
       Mode.locale.utf8_int = 1;
 
 #if HAVE_ICONV
