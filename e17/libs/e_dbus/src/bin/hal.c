@@ -620,7 +620,7 @@ device_view_device_set(Ewl_Icon *icon, Device *dev)
   if (icon_name)
   {
     //printf("find icon path: %s\n", icon_name);
-    path = efreet_icon_path_find("Tango", icon_name, "32x32");
+    path = efreet_icon_path_find("Tango", icon_name, 32);
     //printf("found: %s\n", path);
     if (path)
     {
