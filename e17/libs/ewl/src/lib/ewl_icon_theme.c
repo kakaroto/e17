@@ -12,7 +12,7 @@ static Ecore_Hash *ewl_icon_theme_cache = NULL;
 static Ecore_Hash *ewl_icon_fallback_theme_cache = NULL;
 static void ewl_icon_theme_cb_free(void *data);
 static const char *ewl_icon_theme_icon_path_get_helper(const char *icon,
-                                        const char *size, const char *theme,
+                                        unsigned int size, const char *theme,
                                         const char *key, Ecore_Hash *cache);
 
 /**
@@ -99,7 +99,6 @@ ewl_icon_theme_icon_path_get(const char *icon, int size)
 {
         const char *ret;
         const char *icon_theme;
-        char icon_size[16];
         char key[256];
 
         DENTER_FUNCTION(DLEVEL_STABLE);
@@ -120,13 +119,12 @@ ewl_icon_theme_icon_path_get(const char *icon, int size)
                 size = ewl_config_int_get(ewl_config,
                                         EWL_CONFIG_THEME_ICON_SIZE);
 
-        snprintf(icon_size, sizeof(icon_size), "%dx%d", size, size);
-        snprintf(key, sizeof(key), "%s@%s", icon, icon_size);
-        ret = ewl_icon_theme_icon_path_get_helper(icon, icon_size, icon_theme,
+        snprintf(key, sizeof(key), "%s@%d", icon, size);
+        ret = ewl_icon_theme_icon_path_get_helper(icon, size, icon_theme,
                                                 key, ewl_icon_theme_cache);
 
         if (ret == EWL_THEME_KEY_NOMATCH)
-                ret = ewl_icon_theme_icon_path_get_helper(icon, icon_size, "EWL",
+                ret = ewl_icon_theme_icon_path_get_helper(icon, size, "EWL",
                                         key, ewl_icon_fallback_theme_cache);
 
         if (ret == EWL_THEME_KEY_NOMATCH)
@@ -136,7 +134,7 @@ ewl_icon_theme_icon_path_get(const char *icon, int size)
 }
 
 static const char *
-ewl_icon_theme_icon_path_get_helper(const char *icon, const char *size,
+ewl_icon_theme_icon_path_get_helper(const char *icon, unsigned int size,
                                         const char *theme, const char *key,
                                         Ecore_Hash *cache)
 {
