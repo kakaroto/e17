@@ -10061,19 +10061,18 @@ collections { /* begin the collection of edje groups that are in this file */
       images {
 	 image: "ibar_bg_v.png" COMP;
 	 image: "ibar_over_v.png" COMP;
-	 image: "sb_btd1.png" COMP;
-	 image: "sb_btd2.png" COMP;
-	 image: "sb_btu1.png" COMP;
-	 image: "sb_btu2.png" COMP;
-	 image: "sb_btl1.png" COMP;
-	 image: "sb_btl2.png" COMP;
-	 image: "sb_btr1.png" COMP;
-	 image: "sb_btr2.png" COMP;
-	 image: "sb_btu1.png" COMP;
 	 image: "sb_barh1.png" COMP;
 	 image: "sb_barh2.png" COMP;
 	 image: "sb_barv1.png" COMP;
 	 image: "sb_barv2.png" COMP;
+	 image: "arrow_left.png" COMP;
+	 image: "arrow_right.png" COMP;
+	 image: "arrow_up.png" COMP;
+	 image: "arrow_down.png" COMP;
+	 image: "bt_sm_base1.png" COMP;
+	 image: "bt_sm_base2.png" COMP;
+	 image: "bt_sm_shine.png" COMP;
+	 image: "bt_sm_hilight.png" COMP;
 	 image: "sb_runnerh.png" COMP;
 	 image: "sb_runnerv.png" COMP;
       }
@@ -10280,13 +10279,13 @@ collections { /* begin the collection of edje groups that are in this file */
 	       }
 	    }
 	 }
+	 
 	 part { name: "sb_vbar_a1";
-	    type: IMAGE;
-	    mouse_events: 1;
 	    clip_to: "sb_vbar";
+	    mouse_events: 1;
 	    description { state: "default" 0.0;
+	       min: 18 18;
 	       align: 0.5 0.0;
-	       aspect: 1.0 1.0;
 	       aspect_preference: HORIZONTAL;
 	       rel1 {
 		  to: "sb_vbar";
@@ -10299,19 +10298,60 @@ collections { /* begin the collection of edje groups that are in this file */
 		  offset:   -1   0;
 	       }
 	       image {
-		  normal: "sb_btu1.png";
+		  normal: "bt_sm_base2.png";
+		  border: 5 5 5 5;
 	       }
 	    }
 	    description { state: "clicked" 0.0;
 	       inherit: "default" 0.0;
-	       image.normal: "sb_btu2.png";
+	       image {
+		  normal: "bt_sm_base1.png";
+		  border: 5 5 5 5;
+	       }
 	    }
 	 }
-	 part { name: "sb_vbar_a2";
+	 part { name: "sb_vbar_a1_arrow";
 	    type: IMAGE;
-	    mouse_events: 1;
+	    mouse_events: 0;
 	    clip_to: "sb_vbar";
 	    description { state: "default" 0.0;
+	       max: 10 10;
+	       rel1.to: "sb_vbar_a1";
+	       rel2.to: "sb_vbar_a1";
+	       image.normal: "arrow_up.png";
+	    }
+	 }
+	 part { name: "sb_vbar_a1_over1";
+	    clip_to: "sb_vbar";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       rel1.to: "sb_vbar_a1";
+	       rel2.to: "sb_vbar_a1";
+	       rel2.relative: 1.0 0.5;
+	       image {
+		  normal: "bt_sm_hilight.png";
+		  border: 5 5 5 0;
+	       }
+	    }
+	 }
+	 part { name: "sb_vbar_a1_over2";
+	    clip_to: "sb_vbar";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       rel1.to: "sb_vbar_a1";
+	       rel2.to: "sb_vbar_a1";
+	       image {
+		  normal: "bt_sm_shine.png";
+		  border: 5 5 5 5;
+	       }
+	    }
+	 }
+
+	 part { name: "sb_vbar_a2";
+	    clip_to: "sb_vbar";
+	    mouse_events: 1;
+	    description { state: "default" 0.0;
+	       min: 18 18;
 	       align: 0.5 1.0;
 	       aspect: 1.0 1.0;
 	       aspect_preference: HORIZONTAL;
@@ -10325,13 +10365,56 @@ collections { /* begin the collection of edje groups that are in this file */
 		  relative: 1.0  1.0;
 		  offset:   -1   -1;
 	       }
-	       image.normal: "sb_btd1.png";
+	       image {
+		  normal: "bt_sm_base2.png";
+		  border: 5 5 5 5;
+	       }
 	    }
 	    description { state: "clicked" 0.0;
 	       inherit: "default" 0.0;
-	       image.normal: "sb_btd2.png";
+	       image {
+		  normal: "bt_sm_base1.png";
+		  border: 5 5 5 5;
+	       }
 	    }
 	 }
+	 part { name: "sb_vbar_a2_arrow";
+	    type: IMAGE;
+	    mouse_events: 0;
+	    clip_to: "sb_vbar";
+	    description { state: "default" 0.0;
+	       max: 10 10;
+	       rel1.to: "sb_vbar_a2";
+	       rel2.to: "sb_vbar_a2";
+	       image.normal: "arrow_down.png";
+	    }
+	 }
+	 part { name: "sb_vbar_a2_over1";
+	    clip_to: "sb_vbar";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       rel1.to: "sb_vbar_a2";
+	       rel2.to: "sb_vbar_a2";
+	       rel2.relative: 1.0 0.5;
+	       image {
+		  normal: "bt_sm_hilight.png";
+		  border: 5 5 5 0;
+	       }
+	    }
+	 }
+	 part { name: "sb_vbar_a2_over2";
+	    clip_to: "sb_vbar";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       rel1.to: "sb_vbar_a2";
+	       rel2.to: "sb_vbar_a2";
+	       image {
+		  normal: "bt_sm_shine.png";
+		  border: 5 5 5 5;
+	       }
+	    }
+	 }
+
 	 part { name: "sb_hbar";
 	    type: RECT;
 	    mouse_events: 0;
@@ -10482,11 +10565,12 @@ collections { /* begin the collection of edje groups that are in this file */
 	       }
 	    }
 	 }
+
 	 part { name: "sb_hbar_a1";
-	    type: IMAGE;
-	    mouse_events: 1;
 	    clip_to: "sb_hbar";
+	    mouse_events: 1;
 	    description { state: "default" 0.0;
+	       min: 18 18;
 	       align: 0.0 0.5;
 	       aspect: 1.0 1.0;
 	       aspect_preference: VERTICAL;
@@ -10500,18 +10584,61 @@ collections { /* begin the collection of edje groups that are in this file */
 		  relative: 0.0  1.0;
 		  offset:   0   -1;
 	       }
-	       image.normal: "sb_btl1.png";
+	       image {
+		  normal: "bt_sm_base2.png";
+		  border: 5 5 5 5;
+	       }
 	    }
 	    description { state: "clicked" 0.0;
 	       inherit: "default" 0.0;
-	       image.normal: "sb_btl2.png";
+	       image {
+		  normal: "bt_sm_base1.png";
+		  border: 5 5 5 5;
+	       }
 	    }
 	 }
-	 part { name: "sb_hbar_a2";
+	 part { name: "sb_hbar_a1_arrow";
 	    type: IMAGE;
-	    mouse_events: 1;
+	    mouse_events: 0;
 	    clip_to: "sb_hbar";
 	    description { state: "default" 0.0;
+	       max: 10 10;
+	       rel1.to: "sb_hbar_a1";
+	       rel2.to: "sb_hbar_a1";
+	       image.normal: "arrow_left.png";
+	    }
+	 }
+	 part { name: "sb_hbar_a1_over1";
+	    clip_to: "sb_hbar";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       rel1.to: "sb_hbar_a1";
+	       rel2.to: "sb_hbar_a1";
+	       rel2.relative: 1.0 0.5;
+	       image {
+		  normal: "bt_sm_hilight.png";
+		  border: 5 5 5 0;
+	       }
+	    }
+	 }
+	 part { name: "sb_hbar_a1_over2";
+	    clip_to: "sb_hbar";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       rel1.to: "sb_hbar_a1";
+	       rel2.to: "sb_hbar_a1";
+	       image {
+		  normal: "bt_sm_shine.png";
+		  border: 5 5 5 5;
+	       }
+	    }
+	 }
+
+	 part { name: "sb_hbar_a2";
+	    clip_to: "sb_hbar";
+	    mouse_events: 1;
+	    description { state: "default" 0.0;
+	       min: 18 18;
 	       align: 1.0 0.5;
 	       aspect: 1.0 1.0;
 	       aspect_preference: VERTICAL;
@@ -10525,11 +10652,53 @@ collections { /* begin the collection of edje groups that are in this file */
 		  relative: 1.0  1.0;
 		  offset:   -1   -1;
 	       }
-	       image.normal: "sb_btr1.png";
+	       image {
+		  normal: "bt_sm_base2.png";
+		  border: 5 5 5 5;
+	       }
 	    }
 	    description { state: "clicked" 0.0;
 	       inherit: "default" 0.0;
-	       image.normal: "sb_btr2.png";
+	       image {
+		  normal: "bt_sm_base1.png";
+		  border: 5 5 5 5;
+	       }
+	    }
+	 }
+	 part { name: "sb_hbar_a2_arrow";
+	    type: IMAGE;
+	    mouse_events: 0;
+	    clip_to: "sb_hbar";
+	    description { state: "default" 0.0;
+	       max: 10 10;
+	       rel1.to: "sb_hbar_a2";
+	       rel2.to: "sb_hbar_a2";
+	       image.normal: "arrow_right.png";
+	    }
+	 }
+	 part { name: "sb_hbar_a2_over1";
+	    clip_to: "sb_hbar";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       rel1.to: "sb_hbar_a2";
+	       rel2.to: "sb_hbar_a2";
+	       rel2.relative: 1.0 0.5;
+	       image {
+		  normal: "bt_sm_hilight.png";
+		  border: 5 5 5 0;
+	       }
+	    }
+	 }
+	 part { name: "sb_hbar_a2_over2";
+	    clip_to: "sb_hbar";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       rel1.to: "sb_hbar_a2";
+	       rel2.to: "sb_hbar_a2";
+	       image {
+		  normal: "bt_sm_shine.png";
+		  border: 5 5 5 5;
+	       }
 	    }
 	 }
       }
