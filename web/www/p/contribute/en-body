@@ -5,69 +5,19 @@ We are always looking for people to work on code, do translations, write
 documentation, help new users, answer forum questions or verify bugs. If
 this kind of thing peaks your interest keep reading.</p>
 
-<p>All of the Enlightenment development happens out of the CVS repositories.
-You can browse the repository through the <a href="http://enlightenment.org/viewvc">ViewVC</a> interface.
+<p>All of the Enlightenment development happens out of the SVN repository.
+You can browse the repository through the
+<a href="http://trac.enlightenment.org/e/browser/trunk">Trac</a> interface.
 You can work off of the snapshots but you'll always be behind the current
-set of patches and fixes that are in CVS. Any bugs being report should be
-done against the latest CVS revisions.</p>
+set of patches and fixes that are in SVN. Any bugs being report should be
+done against the latest SVN revisions.</p>
 
-<p>Anonymous checkouts of any CVS module can be done with the following command:
- <pre>
-  cvs -z3 -d :pserver:anonymous@anoncvs.enlightenment.org:/var/cvs/e co <b>MODULE</b>
- </pre>
-</p>
-
-<p>There are several modules in CVS - each for different purposes. Below is a
-description of these modules and their uses:</p>
-
-<p>
- <center>
-  <table class='tab'>
-   <tr>
-    <th class='tab'>MODULE</th>
-    <th class='tab'>DESCRIPTION</th>
-   </tr>
-   <tr>
-    <td class='tab1'>e17</td>
-    <td class='tab1'>This is where all the code for E17 and its libraries lives</td>
-   </tr>
-   <tr>
-    <td class='tab2'>e16</td>
-    <td class='tab2'>This is where e16's code lives</td>
-   </tr>
-   <tr>
-    <td class='tab1'>misc</td>
-    <td class='tab1'>This contains miscellaneous tools and programs</td>
-   </tr>
-   <tr>
-    <td class='tab2'>web</td>
-    <td class='tab2'>This is where this website is stored</td>
-   </tr>
-   <tr>
-    <td class='tab1'>devs</td>
-    <td class='tab1'>This is information on all developers and this governs their CVS access</td>
-   </tr>
-   <tr>
-    <td class='tab2'>eterm</td>
-    <td class='tab2'>This is the Eterm repository</td>
-   </tr>
-  </table>
- </center>
-</p>
-
-<p>If you're granted access to the developer CVS repository you'll use a different mechanism to
-checkout the source code. Once you've provided your SSH key and your account is setup you'll do the following:</p>
-
-<p>
- <pre>
-  export CVS_RSH=ssh
-  cvs -z3 -d <b>USERNAME</b>@cvs.enlightenment.org:/cvs/e co <b>MODULE</b>
- </pre>
-</p>
+<p>Please see <a href=http://svn.enlightenment.org>svn.enlightenment.org</a>
+for more information on how to use SVN.</p>
 
 <p>For more information about the different EFL libraries please consult the
-<a href="http://wiki.enlightenment.org">wiki</a> and <a
-href="http://docs.enlightenment.org">documentation</a>. Any bugs identified,
-or features desired, can be entered into the <a
-href="http://bugs.enlightenment.org">Enlightenment Bugzilla</a>.</p>
+<a href="http://wiki.enlightenment.org">wiki</a> and
+<a href="http://docs.enlightenment.org">documentation</a>. Any bugs
+identified, or features desired, can be entered into the
+<a href="http://trac.enlightenment.org/e">Tracker</a>.</p>
 
