@@ -1,8 +1,0 @@
-[Desktop Entry]
-Type=Link
-Name=Echo
-Name[hu]=Visszhang
-Icon=e-module-echo
-Comment=<hilight>Echo Gadget</hilight><br><br>A module to provide a mixer for changing volume.
-Comment[hu]=<hilight>Visszhang modul</hilight><br><br>Egy hangkeverő, hangerőszabályzó modul.
-Comment[it]=<hilight>Modulo Echo</hilight><br><br>Un modulo che fornisce un mixer per il controllo del volume.

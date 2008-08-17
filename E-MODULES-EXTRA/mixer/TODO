@@ -1,1 +1,0 @@
-Add hooks for volume_change and mute_change to the mixer_system API.
