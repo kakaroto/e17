@@ -3,11 +3,11 @@
 REQUIREMENTS
 ============
 
- * Epsilon >= 0.3.0.011
- * Ecore >= 0.9.9.041 (indirect, Epsilon dependency)
+ * Epsilon >= 0.3.0.012
+ * Ecore >= 0.9.9.043 (indirect, Epsilon dependency)
  * Python-Evas
  * Python-Ecore
- * Cython >= 0.9.6.8
+ * Cython >= 0.9.8
  * Python >= 2.4
  * Python-setuptools >= 0.6_rc3
 

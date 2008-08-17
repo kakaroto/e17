@@ -3,9 +3,9 @@
 REQUIREMENTS
 ============
 
- * Evas >= 0.9.9.040
- * Ecore >= 0.9.9.040
- * Cython >= 0.9.6.8
+ * Evas >= 0.9.9.043
+ * Ecore >= 0.9.9.043
+ * Cython >= 0.9.8
  * Python-Evas
  * Python >= 2.4
  * Python-setuptools >= 0.6_rc3

@@ -63,7 +63,7 @@ evasmodule = Extension('evas.c_evas',
                                 'include/evas/c_evas.pxd',
                                 'include/evas/python.pxd',
                                 ],
-                       **pkgconfig('"evas >= 0.9.9.042"')
+                       **pkgconfig('"evas >= 0.9.9.043"')
                        )
 
 
@@ -133,7 +133,7 @@ class evas_install_headers(install_headers):
 
 
 setup(name='python-evas',
-      version='0.2.2',
+      version='0.3.0',
       license='LGPL',
       author='Gustavo Sverzut Barbieri',
       author_email='barbieri@gmail.com',
