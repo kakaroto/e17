@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include "eli_statistics.h"
 #include "eli_hiscore.h"
+#include "ewl_help_reader.h"
 
 static int sig_exit_cb(void * data, int ev_type, void * ev);
 
@@ -54,6 +55,7 @@ int main(int argc, char ** argv)
     /* Init Highscore and Statistics */
     eli_highscore_init("elitaire");
     eli_statistics_init("elitaire");
+    help_reader_init(PACKAGE_DATA_DIR"/doc/");
 
     /* Init the main app */
     eap = eli_app_new();
@@ -66,6 +68,7 @@ int main(int argc, char ** argv)
 
     eli_app_del(eap);
     /* shutdown all */
+    help_reader_shutdown();
     eli_statistics_shutdown();
     eli_highscore_shutdown();
     ewl_shutdown();

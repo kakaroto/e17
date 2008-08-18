@@ -49,7 +49,12 @@ elitaire_SOURCES = \
   eli_hiscore.c\
   \
   eli_statistics.h\
-  eli_statistics.c
+  eli_statistics.c\
+  \
+  eli_help_reader.h\
+  eli_help_reader.c\
+  ewl_help_reader.h\
+  ewl_help_reader.c
 
 elitaire_LDFLAGS = @ELITAIRE_LIBS@
 

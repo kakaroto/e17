@@ -1,0 +1,296 @@
+{\title Elitaire Theme Specification}
+{\h[1]	Writing a theme for Elitaire}
+{\p
+	I assume that you already have some knowledge and experiences with 
+	edje or better said with writing edc-files. If you are not familiar 
+	with edc-files, please, read an introduction about them first.
+}
+{\p
+	There are two different kinds of themes: card deck and gui themes. I 
+	will handle theme here independently, although they can be out into a 
+	single edj-files. Nevertheless I want to encourage you to use two 
+	different files, if they are not really designed to form an unit.
+}
+{\p
+	There are two places elitaire looks to find the themes, the system wide
+	 path is {\em $PREFIX/share/elitaire/themes/} and for personal files it
+	 is {\em ~/.e/apps/elitaire/themes/}.
+}
+
+{\h[2] The card deck}
+{\p
+	The card deck provides edje groups for the cards, the stacks and the 
+	card's shadow.
+}
+{\h[3] The cards}
+{\p
+	The name of the cards start with {\em "elitaire/card/"}
+	followed by a 2-digit number. The count starts with the ace of clubs 
+	({\em 00}), followed by two of clubs ({\em 01}), ..., up to the king 
+	of clubs ({\em 12}).
+	Same for the other suits:
+{\noip}
+	{\em hearts} (starting with 13), {\em spades} (starting with 26) and 
+	{\em diamonds}	(starting with 39).
+}
+{\p
+	Here is a table to look up the number for certain cards, the group 
+	name of a 7 of spades has then the name {\em "elitaire/card/32"}.
+}
+{\noip}
+{\pre
+        | clubs  | hearts | spades | diamonds
+--------+--------+--------+--------+----------
+ Ace    |   00   |   13   |   26   |   39
+ 2      |   01   |   14   |   27   |   40
+ 3      |   02   |   15   |   28   |   41
+ 4      |   03   |   16   |   29   |   42
+ 5      |   04   |   17   |   30   |   43
+ 6      |   05   |   18   |   31   |   44
+ 7      |   06   |   19   |   32   |   45
+ 8      |   07   |   20   |   33   |   46
+ 9      |   08   |   21   |   34   |   47
+ 10     |   09   |   22   |   35   |   48
+ Jack   |   10   |   23   |   36   |   49
+ Queen  |   11   |   24   |   37   |   50
+ King   |   12   |   25   |   38   |   51
+--------+--------+--------+--------+----------
+}
+{\noip}
+{\p
+	There are two signals that are send to the cards {\em "hint,on"} and 
+	{\em "hint,off"}. You can then highlight the card in any way you want.
+}
+{\p
+	Besides the front pictures of the cards there are also 
+	{\em "elitaire/card/bg"}, the backside of the cards, and 
+	{\em "elitaire/card/shadow"} used as the shadow for the cards if it is 
+	enabled. Note, that to both groups {\em "hint,on"} and {\em "hint,off"}
+	 is never called.
+}
+{\h[3] The stacks}
+{\p
+	There are two groups for the stacks {\em "elitaire/stack/all"} and 
+	{\em "elitaire/stack/last"}. {\em "last"} is used for stacks, where 
+	only the card on the top is visible, while they is hiding the other 
+	cards. {\em "all"} is used as stack base for stacks, where the cards 
+	are arranged in a top-down sequence.
+}
+
+{\h[2] The gui theme}
+{\p
+	The gui theme consists of two groups {\em "elitaire/main"} and 
+	{\em "elitaire/element"}. The main group has many swallow and text 
+	parts you can or have to provide.
+{\p
+	There is also a bunch of signals of elitaire send to the main part and 
+	some signals elitaire is listen to.
+}
+
+{\h[3] Swallow Parts}
+
+{\noip {\st "elitaire_context_menu"}}
+{\p
+	This swallow part is used for the event rectangle of the context
+	menu. If the user right clicks on it the context menu will be opened.
+}
+{\noip {\st "elitaire_drag"}}
+{\p
+	This swallow part is used for the event rectangle to move the entirely
+	window. You probably only want to use it if you have borderless theme.
+}
+{\noip {\st "elitaire_resize_left"}}
+{\p
+	This swallow part is used for the event rectangle to resize the window
+	in the left direction. Only use this if your the is a borderless theme.
+}
+{\noip {\st "elitaire_resize_right"}}
+{\p
+	{\em see above}
+}
+{\noip {\st "elitaire_resize_top"}}
+{\p
+	{\em see above}
+}
+{\noip {\st "elitaire_resize_bottom"}}
+{\p
+	{\em see above}
+}
+{\noip {\st "elitaire_resize_left_top"}}
+{\p
+	{\em see above}
+}
+{\noip {\st "elitaire_resize_right_top"}}
+{\p
+	{\em see above}
+}
+{\noip {\st "elitaire_resize_left_bottom"}}
+{\p
+	{\em see above}
+}
+{\noip {\st "elitaire_resize_right_bottom"}}
+{\p
+	{\em see above}
+}
+{\noip {\st "elitaire_cards_box"}}
+{\p
+	The part to swallow the box to hold the different card deck names, so
+	that the user can select them. Elitaire doesn't set a minimum size for
+	it so it is up to you. (This will maybe changed in the future.) The
+	box is scrollable, see more about that in the signal section.
+}
+{\noip {\st "elitaire_theme_box"}}
+{\p
+	The same like the card box, but for the gui themes.
+}
+{\noip {\st "elitaire_new_box"}}
+{\p
+	The same like the card box, but to start a new game variant.
+}
+{\noip {\st "elitaire_card_field"}}
+{\p
+	The field where the actual card area is swallowed to. You must provide
+	this part :-).
+}
+
+{\h[3] Text Parts}
+
+{\noip {\st "elitaire_win_text"}}
+{\p
+	In this text part something like {\em "You lost"}, {\em "You win"}
+	or {\em "Game Over"}. Don't make this part too small, because the 
+	translated labels can actually be longer.
+}
+{\noip {\st "elitaire_points"}}
+{\p
+	This is the text field where the current points number stands.
+}
+{\noip {\st "elitaire_new_box_label"}}
+{\p
+	Elitaire will set this part to a translation of {\em "Games"}.
+}
+{\noip {\st "elitaire_theme_box_label"}}
+{\p
+	Elitaire will set this part to a translation of {\em "Themes"}.
+}
+{\noip {\st "elitaire_cards_box_label"}}
+{\p
+	Elitaire will set this part to a translation of {\em "Cards"}.
+}
+
+{\h[3] Read data values}
+{\p
+	There are some data values that you can define that a read by 
+	elitaire. All this values are optional.
+}
+{\noip}
+{\noip {\st "borderless"}}
+{\p
+	You can set the main window to borderless if the value is {\em "1"}, 
+	else it will have a border.
+}
+{\noip {\st "shaped"}}
+{\p
+	This will cause the window to be shaped if you set it to {\em "1"}, 
+	else it will not be shaped.
+}
+{\noip {\st "offset/left" "offset/right" "offset/top" "offset/bottom"}}
+{\p
+	These define the offset values of the cards to the card field. This is
+	usefull because the cards are clipped to the size of the card field.	
+}
+{\h[3] Signals emitted by elitaire}
+
+{\noip {\st "win,on"}}
+{\p
+	The signal to show the {\em "elitaire_win_text"}
+}
+{\noip {\st "win,off"}}
+{\p
+	The signal to hide the {\em "elitaire_win_text"}
+}
+{\noip {\st "game,selected"}}
+{\p
+	This signal is emitted if the user has selected a game from the list.
+	This is useful if you want to collapse a menu or something.
+}
+{\noip {\st "theme,selected"}}
+{\p
+	This signal is emitted if the user has selected a theme from the list.
+	This is useful if you want to collapse a menu or something.
+}
+{\noip {\st "cards,selected"}}
+{\p
+	This signal is emitted if the user has selected a card from the list.
+	This is useful if you want to collapse a menu or something.
+}
+{\noip}
+{\p
+	In some cases elitaire sends signals that are appointed for elitaire 
+	itself.But of course you can use them too if you want to. You find 
+	more about them in the next section: {\em "new_game"}, {\em "undo"},
+	{\em "restart"}
+}
+{\h[3] Signals received by elitaire}
+{\noip {\st "quit"}}
+{\p
+	This requests elitaire to quit the application.
+}
+{\noip {\st "undo"}}
+{\p
+	Undo the last move.
+}
+{\noip {\st "restart"}}
+{\p
+	Restart the current game.
+}
+{\noip {\st "new_game"}}
+{\p
+	Start a new game. 
+}
+{\noip {\st "hints"}}
+{\p
+	Show/hide the hints.
+}
+{\noip}
+{\p
+	There are also a bunch of signals to scroll through the 3 different 
+	list (games, cards, themes). They all must have set the source to
+	{\em "elitaire_new_box"}, {\em "elitaire_cards_box"} or 
+	{\em "elitaire_theme_box"}.
+}
+{\noip}
+{\noip {\st "scroll,left"}}
+{\p
+	Performs a move to top.
+}
+{\noip {\st "scroll,right"}}
+{\p
+	Performs a move to buttom.
+}
+{\noip {\st "scroll,left,start"}}
+{\p
+	As you can figure it is hard to scroll with the above step functions,
+	hence there is also this signal that will start a timer that performs
+	the scrolling for.
+}
+{\noip {\st "scroll,right,start"}}
+{\p
+	{\em see above}
+}
+{\noip {\st "scroll,stop"}}
+{\p
+	When the user release the button or when ever you want to stop the
+	scrolling, use this signal. As you can see the direction doesn't 
+	matter. It will stop the scrolling in both directions.
+}
+{\noip}
+{\p
+	Finally there is also the {\st "elitaire/element"} group it is for the 
+	menu items put into the boxes. To show the game name it needs the a 
+	text part named {\em "elitaire_element_value"}. When the user has 
+	selected this element you need to emit a signal {\em "item_selected"} 
+	where the source has also to be {\em "item_selected"}.
+}
+{\noip}
+{\noip If you find a mistake or a missing part, please let it me know.}

@@ -1,0 +1,22 @@
+{\title Key Bindings}
+{\h The key bindings}
+{\p
+	Although you cannot play elitaire without a mouse, there are some
+	key bindings that could be useful for you.
+}
+{\noip {\st F2}}
+{\p
+	Start a new game
+}
+{\noip {\st Ctrl-z}}
+{\p
+	Undo the last move
+}
+{\noip {\st Ctrl-r}}
+{\p
+	Restart the current game
+}
+{\noip {\st Ctrl-n}}
+{\p
+	Start a new game
+}

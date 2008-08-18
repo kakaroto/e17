@@ -2,6 +2,7 @@
 #include <Ewl.h>
 #include "ewl_context_menu.h"
 #include "edje_frontend.h"
+#include "ewl_help_reader.h"
 
 #define ELI_ICON(icon) ewl_icon_theme_icon_path_get(EWL_ICON_ ## icon, EWL_ICON_SIZE_SMALL)
 
@@ -24,6 +25,7 @@ Ewl_Widget * eli_edje_frontend_conmenu_new(Eli_App * eap)
     _add_item(sgettext(N_("CONTEXT|Highscore")), NULL, menu, eap);
     _add_item(sgettext(N_("CONTEXT|Preferences")), ELI_ICON(PREFERENCES_OTHER), menu, eap);
     _add_item(sgettext(N_("CONTEXT|About")), ELI_ICON(HELP_ABOUT), menu, eap);
+    _add_item(sgettext(N_("CONTEXT|Help")), ELI_ICON(HELP_CONTENTS), menu, eap);
     
     return EWL_WIDGET(menu);
 }
@@ -62,6 +64,8 @@ static void _item_select_cb(Ewl_Widget * w, void * ev_data, void * user_data)
         eli_app_config_open(eap);
     else if (!strcmp(text, sgettext(N_("CONTEXT|About"))))
         eli_app_about_open(eap);
+    else if (!strcmp(text, sgettext(N_("CONTEXT|Help"))))
+        help_reader_page_set("index");
 }
 
 static Ewl_Widget * _new_menu(Eli_App * eap)

@@ -1,0 +1,18 @@
+{\title Elitaire Help: Main Page}
+{\h Elitaire Help}
+
+{\p
+	Elitaire is an efl-based solitaire card game. There are various 
+	variants like freecell, thougthful klondike, vegas, spider, golf, 
+	Baker's Dozen and of course klondike. It makes statistics about lost 
+	and won games. It has a highscore and unlimited undo history.
+}
+{\noip}
+{\noip
+	Topics:
+	{\noip}
+	{\p {\a[general-rules] General Rules}}
+	{\p {\a[rules] The rules of the different variants}}
+	{\p {\a[key-bindings] The key bindings}}
+	{\p {\a[theme-specs] The theme specs}}
+}
