@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: elitaire\n"
 "Report-Msgid-Bugs-To: peter.wehrfritz@web.de\n"
-"POT-Creation-Date: 2008-07-23 12:25+0200\n"
+"POT-Creation-Date: 2008-08-18 13:46-0300\n"
 "PO-Revision-Date: 2008-02-02 18:38+0100\n"
 "Last-Translator: Lisovszki  <lisovszki@gmail.com>\n"
 "Language-Team: hungarian <hu@li.org>\n"
@@ -88,22 +88,22 @@ msgstr "ÖSSZEFÜGGÉSEK|Névjegy"
 msgid "CONTEXT|New"
 msgstr "ÖSSZEFÜGGÉSEK|Új"
 
-#: src/eli_app.cpp:280
+#: src/eli_app.cpp:290
 #, c-format
 msgid "Elitaire Error: No theme file in %s!\n"
 msgstr "Elitaire hiba: nem találtam téma fájlt itt: %s!\n"
 
-#: src/eli_app.cpp:296
+#: src/eli_app.cpp:306
 #, c-format
 msgid "Elitaire Error: No cards file in %s!\n"
 msgstr "Elitaire hiba: Nem találtam kártya fájlt itt: %s!\n"
 
-#: src/elitaire_card.cpp:48 src/elitaire_card.cpp:219
+#: src/elitaire_card.cpp:49 src/elitaire_card.cpp:222
 #, c-format
 msgid "Elitaire Error: Card %s is missed!\n"
 msgstr "Elitaire hiba: %s kártya hiányzik!\n"
 
-#: src/elitaire_card.cpp:53 src/elitaire_card.cpp:224
+#: src/elitaire_card.cpp:55 src/elitaire_card.cpp:228
 #, c-format
 msgid "Elitaire Error: The bg pic is missed!\n"
 msgstr "Elitaire hiba: hiányzik a háttérkép!\n"

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: elitaire 0.0.4\n"
 "Report-Msgid-Bugs-To: peter.wehrfritz@web.de\n"
-"POT-Creation-Date: 2008-07-23 12:25+0200\n"
+"POT-Creation-Date: 2008-08-18 13:46-0300\n"
 "PO-Revision-Date: 2008-03-02 19:38+0100\n"
 "Last-Translator: Massimo Maiurana <maiurana@gmail.com>\n"
 "Language-Team: none\n"
@@ -85,22 +85,22 @@ msgstr "Informazioni"
 msgid "CONTEXT|New"
 msgstr "Nuovo"
 
-#: src/eli_app.cpp:280
+#: src/eli_app.cpp:290
 #, c-format
 msgid "Elitaire Error: No theme file in %s!\n"
 msgstr "Errore di Elitaire: nessun file di tema in %s!\n"
 
-#: src/eli_app.cpp:296
+#: src/eli_app.cpp:306
 #, c-format
 msgid "Elitaire Error: No cards file in %s!\n"
 msgstr "Errore di Elitaire: nessun file di carte in %s!\n"
 
-#: src/elitaire_card.cpp:48 src/elitaire_card.cpp:219
+#: src/elitaire_card.cpp:49 src/elitaire_card.cpp:222
 #, c-format
 msgid "Elitaire Error: Card %s is missed!\n"
 msgstr "Errore di Elitaire: carta %s persa!\n"
 
-#: src/elitaire_card.cpp:53 src/elitaire_card.cpp:224
+#: src/elitaire_card.cpp:55 src/elitaire_card.cpp:228
 #, c-format
 msgid "Elitaire Error: The bg pic is missed!\n"
 msgstr "Errore di Elitaire: immagine sfondo persa!\n"
