@@ -10732,6 +10732,8 @@ collections { /* begin the collection of edje groups that are in this file */
    }
 
    group { name: "e/widgets/ilist";
+      data.item: "stacking" "above";
+      data.item: "selectraise" "on"; 
       images {
          image: "bt_sm_base1.png" COMP;
 	 image: "bt_sm_shine.png" COMP;
@@ -10932,6 +10934,8 @@ collections { /* begin the collection of edje groups that are in this file */
    }
    
    group { name: "e/widgets/ilist_odd";
+      data.item: "stacking" "below";
+      data.item: "selectraise" "on"; 
       images {
          image: "bt_sm_base1.png" COMP;
 	 image: "bt_sm_shine.png" COMP;
@@ -11106,9 +11110,8 @@ collections { /* begin the collection of edje groups that are in this file */
 	 }
       }
    }
-   group {
-      
-      name: "e/widgets/ilist_header";
+   group { name: "e/widgets/ilist_header";
+      data.item: "stacking" "below";
       images {
 	 image: "vgrad_dark.png" COMP;
 	 image: "grill_dark_tiny_pattern.png" COMP;
