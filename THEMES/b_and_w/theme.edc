@@ -1,3 +1,33 @@
+// TODO (immediate other than finish)
+// frame
+// preview
+// fileman (list mode)
+// slider
+// 
+// fileman (icon mode etc.)
+// tlist
+// label
+// textblock
+// entry
+// about
+// theme_about
+// resize
+// move
+// slider
+// slidesel
+// exebuf
+// toolbar
+// transition
+// deskpreview
+// color_well
+// cslider
+// fontpreview
+// gadman
+// spectrum
+// sys ?? (done?)
+// wizard (just placeholder and basics - wizard code not complete)
+
+
 /*
  * So how do themes work? 
  * 
