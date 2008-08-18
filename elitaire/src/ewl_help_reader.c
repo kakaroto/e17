@@ -427,8 +427,6 @@ help_reader_text_cb_append(void *data, const char *text,
     {
         Ewl_Widget * trig;
 
-        printf("%d %d\n", t_pos, t_len);
-
         trig = ewl_text_trigger_new(EWL_TEXT_TRIGGER_TYPE_TRIGGER);
         ewl_attach_mouse_cursor_set(trig, EWL_MOUSE_CURSOR_HAND2);
         ewl_text_trigger_start_pos_set(EWL_TEXT_TRIGGER(trig), t_pos);

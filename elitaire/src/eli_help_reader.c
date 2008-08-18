@@ -193,7 +193,7 @@ eli_help_reader_type_get(FILE * file, char * buffer, size_t len,
     if (ret != '\\') 
     {
         *type = ELI_HELP_READER_NODE_UNKNOWN;
-        printf("\nbrace with out \\\n");
+        fprintf(stderr, "help reader: brace with out \\\n");
         return ret;
     }
 
@@ -227,7 +227,7 @@ eli_help_reader_type_get(FILE * file, char * buffer, size_t len,
         *type = ELI_HELP_READER_NODE_TITLE;
     else
     {
-        printf("<Didn't find a type for: [%s]>", buffer);
+        fprintf(stderr, "help reader: Didn't find a type for: [%s]", buffer);
         *type = ELI_HELP_READER_NODE_UNKNOWN;
     }
 

@@ -138,7 +138,6 @@ void elitaire_card_hint_highlight_show(Evas_Object * card)
 {
     Elitaire_Card * data;
 
-    printf("card show hilite");
     data = (Elitaire_Card *) evas_object_smart_data_get(card);
     if (!data) return;
         
