@@ -77,9 +77,9 @@
     <hr>
 
     <h1>Download Enlightenment DR17 and the EFL</h1>
-    <p>While DR17 and the EFL are primarily available from CVS there are a few,
+    <p>While DR17 and the EFL are primarily available from SVN there are a few,
     unofficial, packages for various distros along with snapshot tarballs.
-    If you wish to use CVS please see the <?php a('contribute', "contributing");?>
+    If you wish to use SVN please see the <?php a('contribute', "contributing");?>
     section for more information.</p>
 
     <hr>
@@ -96,9 +96,9 @@
 
   <td class='main'>
    <div class="main">
-    <p><h2>CVS / SVN &amp; Asparagus</h2>(Snapshots)</p>
+    <p><h2>SVN &amp; Asparagus</h2>(Snapshots)</p>
     <p><?php img("aspara.png", "Asparagus");?></p>
-    <p><?php a("contribute", "CVS");?> information is here. Currently we have
+    <p><?php a("contribute", "SVN");?> information is here. Currently we have
     no SVN servers available.</p>
     <p>Snapshot releases are available from
     <a href="http://download.enlightenment.org/snapshots">download.enlightenment.org/snapshots</a>.</p>

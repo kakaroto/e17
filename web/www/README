@@ -18,7 +18,7 @@ How this works.
    data such as images inlined or thumbnailed. all images you wish to have
    thumbnails of should also have a file in dir called .t.$filename where
    filename is the file name of the image. this will be used bu the thm()
-   function. You will need to create the thumbnail by hand and add to cvs
+   function. You will need to create the thumbnail by hand and add to SVN
    currently.
 7. Any page can contain sub-pages. if there is a file "subs" this lists, line
    by line the sub dirs in order from left-to-right. each sub-page contains
@@ -29,7 +29,7 @@ How this works.
    expects a $lang.png file in i/ to exist for that lang. these 2 files display
    flags for languages on the left and right of the title area.
 9. u.php is a special page - just load it to set the "update" flag - this will
-   let the page updater know that it needs to update the pages from CVS. nu.php
+   let the page updater know that it needs to update the pages from SVN. nu.php
    clears the flag - used once update is finished or can be used to just clear
    the flag. it's simple and works - not incredibly secure, but also not
    incredibly bad either.

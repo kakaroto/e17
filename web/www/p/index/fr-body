@@ -40,7 +40,7 @@ under development with a <b>TODO</b> list that is being worked on for release.
 The base libraries it depends on
 <?php a("about/libs", "EFL (Enlightenment Foundation Libraries)");?> are
 very mature and stable. There are other applications that use these too. E17
-itself is primarily available via CVS.
+itself is primarily available via SVN.
 </p><p>
 But despite this, the stable release of
 <?php a("about/e16", "Enlightenment (the 0.16 series)");?> is still alive
@@ -79,9 +79,6 @@ more useful face to the world of our development efforts.
 <center>
 <table class='main'>
 <tr>
-<td class='main'><div class="main">
-<a href='http://enlightenment.org/viewvc/'>Web&nbsp;CVS</a>
-</td>
 <td class='main'><div class="main">
 <a href='http://www.get-e.org'>Get-E.org</a>
 </td>
