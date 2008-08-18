@@ -10242,7 +10242,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       }
 	       image {
 		  normal: "bt_sm_base2.png";
-		  border: 7 7 7 7;
+		  border: 6 6 6 6;
 	       }
 	    }
 	    description { state: "clicked" 0.0;
@@ -10259,7 +10259,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       rel2.to: "e.dragable.vbar";
 	       image {
 		  normal: "bt_sm_hilight.png";
-		  border: 7 7 7 0;
+		  border: 6 6 6 0;
 	       }
 	    }
 	 }
@@ -10271,7 +10271,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       rel2.to: "e.dragable.vbar";
 	       image {
 		  normal: "bt_sm_shine.png";
-		  border: 7 7 7 0;
+		  border: 6 6 6 0;
 	       }
 	    }
 	 }
@@ -10470,7 +10470,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       }
 	       image {
 		  normal: "bt_sm_base2.png";
-		  border: 7 7 7 7;
+		  border: 6 6 6 6;
 	       }
 	    }
 	    description { state: "clicked" 0.0;
@@ -10487,7 +10487,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       rel2.to: "e.dragable.hbar";
 	       image {
 		  normal: "bt_sm_hilight.png";
-		  border: 7 7 7 0;
+		  border: 6 6 6 0;
 	       }
 	    }
 	 }
@@ -10499,7 +10499,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       rel2.to: "e.dragable.hbar";
 	       image {
 		  normal: "bt_sm_shine.png";
-		  border: 7 7 7 0;
+		  border: 6 6 6 0;
 	       }
 	    }
 	 }
@@ -10733,17 +10733,45 @@ collections { /* begin the collection of edje groups that are in this file */
 
    group { name: "e/widgets/ilist";
       images {
-	 image: "menu_sel_fg.png" COMP;
-	 image: "menu_sel_bg.png" COMP;
+         image: "bt_sm_base1.png" COMP;
+	 image: "bt_sm_shine.png" COMP;
+	 image: "bt_sm_hilight.png" COMP;
+	 image: "ilist_1.png" COMP;
+	 image: "ilist_item_shadow.png" COMP;
       }
       parts {
 	 part {
-	    name: "base";
-	    type: RECT;
+	    name: "base_sh";
 	    mouse_events: 0;
 	    description {
 	       state: "default" 0.0;
-	       color: 255 255 255 255;
+	       aspect: 6.4 6.4;
+	       aspect_preference: HORIZONTAL;
+	       align: 0.0 0.0;
+	       rel1 {
+		  to: "base";
+		  relative: 0.0 1.0;
+		  offset: 0 0;
+	       }
+	       rel2 {
+		  to: "base";
+		  relative: 1.0 1.0;
+		  offset: -1 0;
+	       }
+	       image {
+		  normal: "ilist_item_shadow.png";
+	       }
+	    }
+	 }
+	 part {
+	    name: "base";
+	    mouse_events: 0;
+	    description {
+	       state: "default" 0.0;
+	       image {
+		  normal: "ilist_1.png";
+		  border: 2 2 2 2;
+	       }
 	    }
 	 }
 	 part { name: "bg";
@@ -10753,15 +10781,15 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color: 255 255 255 0;
 	       rel1 {
 		  relative: 0.0 0.0;
-		  offset: -5 -3;
+		  offset: -5 -5;
 	       }
 	       rel2 {
 		  relative: 1.0 1.0;
-		  offset: 4 5;
+		  offset: 4 4;
 	       }
 	       image {
-		  normal: "menu_sel_bg.png";
-		  border: 8 8 5 9;
+		  normal: "bt_sm_base1.png";
+		  border: 6 6 6 6;
 	       }
 	    }
 	    description { state: "selected" 0.0;
@@ -10770,11 +10798,11 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color: 255 255 255 255;
 	       rel1 {
 		  relative: 0.0 0.0;
-		  offset: -2 0;
+		  offset: -2 -2;
 	       }
 	       rel2 {
 		  relative: 1.0 1.0;
-		  offset: 1 2;
+		  offset: 1 1;
 	       }
 	    }
 	 }
@@ -10831,7 +10859,26 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color_class: "ilist_item";
 	    }
 	 }
-	 part { name: "fg";
+         part { name: "fg1";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       visible: 0;
+	       color: 255 255 255 0;
+	       rel1.to: "bg";
+	       rel2.relative: 1.0 0.5;
+	       rel2.to: "bg";
+	       image {
+		  normal: "bt_sm_hilight.png";
+		  border: 6 6 6 0;
+	       }
+	    }
+	    description { state: "selected" 0.0;
+	       inherit: "default" 0.0;
+	       visible: 1;
+	       color: 255 255 255 255;
+	    }
+	 }
+	 part { name: "fg2";
 	    mouse_events: 0;
 	    description { state: "default" 0.0;
 	       visible: 0;
@@ -10839,8 +10886,8 @@ collections { /* begin the collection of edje groups that are in this file */
 	       rel1.to: "bg";
 	       rel2.to: "bg";
 	       image {
-		  normal: "menu_sel_fg.png";
-		  border: 8 8 5 9;
+		  normal: "bt_sm_shine.png";
+		  border: 6 6 6 0;
 	       }
 	    }
 	    description { state: "selected" 0.0;
@@ -10865,7 +10912,8 @@ collections { /* begin the collection of edje groups that are in this file */
 	    source:  "e";
 	    action:  STATE_SET "selected" 0.0;
 	    target:  "bg";
-	    target:  "fg";
+	    target:  "fg1";
+	    target:  "fg2";
 	    target:  "e.text.label";
 	    transition: LINEAR 0.2;
 	 }
@@ -10875,7 +10923,8 @@ collections { /* begin the collection of edje groups that are in this file */
 	    source:  "e";
 	    action:  STATE_SET "default" 0.0;
 	    target:  "bg";
-	    target:  "fg";
+	    target:  "fg1";
+	    target:  "fg2";
 	    target:  "e.text.label";
 	    transition: LINEAR 0.1;
 	 }
@@ -10884,17 +10933,21 @@ collections { /* begin the collection of edje groups that are in this file */
    
    group { name: "e/widgets/ilist_odd";
       images {
-	 image: "menu_sel_fg.png" COMP;
-	 image: "menu_sel_bg.png" COMP;
+         image: "bt_sm_base1.png" COMP;
+	 image: "bt_sm_shine.png" COMP;
+	 image: "bt_sm_hilight.png" COMP;
+	 image: "ilist_2.png" COMP;
       }
       parts {
 	 part {
 	    name: "base";
-	    type: RECT;
 	    mouse_events: 0;
 	    description {
 	       state: "default" 0.0;
-	       color: 239 239 239 255;
+	       image {
+		  normal: "ilist_2.png";
+		  border: 2 2 2 2;
+	       }
 	    }
 	 }
 	 part { name: "bg";
@@ -10904,15 +10957,15 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color: 255 255 255 0;
 	       rel1 {
 		  relative: 0.0 0.0;
-		  offset: -5 -3;
+		  offset: -5 -5;
 	       }
 	       rel2 {
 		  relative: 1.0 1.0;
-		  offset: 4 5;
+		  offset: 4 4;
 	       }
 	       image {
-		  normal: "menu_sel_bg.png";
-		  border: 8 8 5 9;
+		  normal: "bt_sm_base1.png";
+		  border: 6 6 6 6;
 	       }
 	    }
 	    description { state: "selected" 0.0;
@@ -10921,11 +10974,11 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color: 255 255 255 255;
 	       rel1 {
 		  relative: 0.0 0.0;
-		  offset: -2 0;
+		  offset: -2 -2;
 	       }
 	       rel2 {
 		  relative: 1.0 1.0;
-		  offset: 1 2;
+		  offset: 1 1;
 	       }
 	    }
 	 }
@@ -10982,7 +11035,26 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color_class: "ilist_item";
 	    }
 	 }
-	 part { name: "fg";
+         part { name: "fg1";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       visible: 0;
+	       color: 255 255 255 0;
+	       rel1.to: "bg";
+	       rel2.relative: 1.0 0.5;
+	       rel2.to: "bg";
+	       image {
+		  normal: "bt_sm_hilight.png";
+		  border: 6 6 6 0;
+	       }
+	    }
+	    description { state: "selected" 0.0;
+	       inherit: "default" 0.0;
+	       visible: 1;
+	       color: 255 255 255 255;
+	    }
+	 }
+	 part { name: "fg2";
 	    mouse_events: 0;
 	    description { state: "default" 0.0;
 	       visible: 0;
@@ -10990,8 +11062,8 @@ collections { /* begin the collection of edje groups that are in this file */
 	       rel1.to: "bg";
 	       rel2.to: "bg";
 	       image {
-		  normal: "menu_sel_fg.png";
-		  border: 8 8 5 9;
+		  normal: "bt_sm_shine.png";
+		  border: 6 6 6 0;
 	       }
 	    }
 	    description { state: "selected" 0.0;
@@ -11016,7 +11088,8 @@ collections { /* begin the collection of edje groups that are in this file */
 	    source:  "e";
 	    action:  STATE_SET "selected" 0.0;
 	    target:  "bg";
-	    target:  "fg";
+	    target:  "fg1";
+	    target:  "fg2";
 	    target:  "e.text.label";
 	    transition: LINEAR 0.2;
 	 }
@@ -11026,25 +11099,43 @@ collections { /* begin the collection of edje groups that are in this file */
 	    source:  "e";
 	    action:  STATE_SET "default" 0.0;
 	    target:  "bg";
-	    target:  "fg";
+	    target:  "fg1";
+	    target:  "fg2";
 	    target:  "e.text.label";
 	    transition: LINEAR 0.1;
 	 }
       }
    }
    group {
+      
       name: "e/widgets/ilist_header";
-      images.image: "bt_dis_base.png" COMP;
+      images {
+	 image: "vgrad_dark.png" COMP;
+	 image: "grill_dark_tiny_pattern.png" COMP;
+      }
       parts {
-	 part {
-	    name: "base";
+	 part { name: "base";
 	    mouse_events: 0;
-	    description {
-	       state: "default" 0.0;
-	       color: 128 128 128 255;
-	       image {
-		  normal: "bt_dis_base.png";
-		  border: 3 3 3 3;
+	    description { state: "default" 0.0;
+	       image.normal: "vgrad_dark.png";
+	       fill {
+		  smooth: 0;
+		  size {
+		     relative: 0 1.0;
+		     offset: 36 0;
+		  }
+	       }
+	    }
+	 }
+	 part { name: "grill";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+               image.normal: "grill_dark_tiny_pattern.png";
+	       fill {
+		  size {
+		     relative: 0 0;
+		     offset: 144 144;
+		  }
 	       }
 	    }
 	 }
@@ -11080,14 +11171,14 @@ collections { /* begin the collection of edje groups that are in this file */
 	       rel1.to_x: "e.swallow.icon";
 	       rel2.offset:   -5 -5;
 	       color: 255 255 255 255;
-	       color3: 0 0 0 64;
+	       color3: 0 0 0 32;
 	       color_class: "ilist_header";	    
 	       text {
 		  text:     "Item Label";
 		  font:     "Sans:style=Bold,Edje-Vera-Bold";
-		  size:     16;
+		  size:     20;
 		  min:      1 1;
-		  align:    0.0 0.5;
+		  align:    0.5 0.5;
 		  text_class: "ilist_header";
 	       }
 	    }
