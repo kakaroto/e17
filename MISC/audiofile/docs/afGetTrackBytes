@@ -1,3 +1,0 @@
-afGetTrackBytes returns the total number of bytes of raw audio
-data (i.e., prior to decompression) in track.  This is useful for
-determining raw file seek points, etc.
