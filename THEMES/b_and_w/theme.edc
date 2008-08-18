@@ -8296,7 +8296,11 @@ collections { /* begin the collection of edje groups that are in this file */
 
 /////////////////////////////////////////////////////////////////////////////
    /*** MOD: WINLIST ***/
-// FIXME: REVIEW THIS SECTION
+
+// FIXME: Issues - Text isnt positioning correctly with long titles
+//		 - Missing window icon
+//	         - Missing window text
+
    group { name: "e/widgets/winlist/main";
       images {
 	 image: "menu_bg.png" COMP;
@@ -8597,6 +8601,10 @@ collections { /* begin the collection of edje groups that are in this file */
 
 /////////////////////////////////////////////////////////////////////////////
    /*** MOD: MIXER ***/
+
+// FIXME: Add code for making sound circles fade between states.
+// FIXME: Review
+
    group { name: "e/modules/mixer/main";
       images {
 	 image: "mixer.png" COMP;
@@ -9134,7 +9142,6 @@ collections { /* begin the collection of edje groups that are in this file */
 
 /////////////////////////////////////////////////////////////////////////////
    /*** MOVE/RESIZE BOX ***/
-// FIXME: DO
 
    group { name: "e/widgets/border/default/move";
       images.image: "menu_bg.png";
@@ -10055,7 +10062,8 @@ collections { /* begin the collection of edje groups that are in this file */
       }
    }
 
- /*** FIXME: Review scrollframe ***/
+// FIXME: Review scrollframe
+// FIXME: Vertical bar hilight? Looks weird.
 
    group { name: "e/widgets/scrollframe";
       images {
@@ -10186,6 +10194,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    description { state: "default" 0.0;
 	       max: 2 99999;
 	       rel1.to:       "sb_vbar_base";
+	       rel1.offset:   1 0;
 	       rel2.to:       "sb_vbar_base";
 	       image {
 		  normal: "sb_runnerv.png";
@@ -10235,7 +10244,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       confine: "sb_vbar_base";
 	    }
 	    description { state: "default" 0.0;
-	       min: 16 32;
+	       min: 17 32;
 	       rel1 {
 		  relative: 0.5  0.5;
 		  offset:   0    0;
@@ -10247,13 +10256,13 @@ collections { /* begin the collection of edje groups that are in this file */
 		  to: "sb_vbar_base";
 	       }
 	       image {
-		  normal: "bt_base2.png";
+		  normal: "bt_sm_base2.png";
 		  border: 7 7 7 7;
 	       }
 	    }
 	    description { state: "clicked" 0.0;
 	       inherit: "default" 0.0;
-	       image.normal: "bt_base1.png";
+	       image.normal: "bt_sm_base1.png";
 	    }
 	 }
 	 part { name: "sb_vbar_over1";
@@ -10264,7 +10273,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       rel2.relative: 1.0 0.5;
 	       rel2.to: "e.dragable.vbar";
 	       image {
-		  normal: "bt_hilight.png";
+		  normal: "bt_sm_hilight.png";
 		  border: 7 7 7 0;
 	       }
 	    }
@@ -10276,8 +10285,8 @@ collections { /* begin the collection of edje groups that are in this file */
 	       rel1.to: "e.dragable.vbar";
 	       rel2.to: "e.dragable.vbar";
 	       image {
-		  normal: "bt_shine.png";
-		  border: 7 7 7 7;
+		  normal: "bt_sm_shine.png";
+		  border: 7 7 7 0;
 	       }
 	    }
 	 }
@@ -10286,7 +10295,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    clip_to: "sb_vbar";
 	    mouse_events: 1;
 	    description { state: "default" 0.0;
-	       min: 18 18;
+	       min: 17 17;
 	       align: 0.5 0.0;
 	       aspect_preference: HORIZONTAL;
 	       rel1 {
@@ -10317,7 +10326,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    mouse_events: 0;
 	    clip_to: "sb_vbar";
 	    description { state: "default" 0.0;
-	       max: 10 10;
+	       max: 9 9;
 	       rel1.to: "sb_vbar_a1";
 	       rel2.to: "sb_vbar_a1";
 	       image.normal: "arrow_up.png";
@@ -10344,7 +10353,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       rel2.to: "sb_vbar_a1";
 	       image {
 		  normal: "bt_sm_shine.png";
-		  border: 5 5 5 5;
+		  border: 7 7 7 0;
 	       }
 	    }
 	 }
@@ -10353,7 +10362,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    clip_to: "sb_vbar";
 	    mouse_events: 1;
 	    description { state: "default" 0.0;
-	       min: 18 18;
+	       min: 17 17;
 	       align: 0.5 1.0;
 	       aspect: 1.0 1.0;
 	       aspect_preference: HORIZONTAL;
@@ -10385,7 +10394,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    mouse_events: 0;
 	    clip_to: "sb_vbar";
 	    description { state: "default" 0.0;
-	       max: 10 10;
+	       max: 9 9;
 	       rel1.to: "sb_vbar_a2";
 	       rel2.to: "sb_vbar_a2";
 	       image.normal: "arrow_down.png";
@@ -10412,7 +10421,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       rel2.to: "sb_vbar_a2";
 	       image {
 		  normal: "bt_sm_shine.png";
-		  border: 5 5 5 5;
+		  border: 7 7 7 0;
 	       }
 	    }
 	 }
@@ -10421,7 +10430,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    type: RECT;
 	    mouse_events: 0;
 	    description { state: "default" 0.0;
-	       min: 16 16;
+	       min: 17 17;
 	       align: 0.0 1.0;
 	       rel1 {
 		  to: "bg";
@@ -10463,7 +10472,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       }
 	       rel2 {
 		  relative: 0.0  1.0;
-		  offset:   1   0;
+		  offset:   1   -1;
 		  to:       "sb_hbar_a2";
 	       }
 	    }
@@ -10474,6 +10483,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    description { state: "default" 0.0;
 	       max: 99999 2;
 	       rel1.to:       "sb_hbar_base";
+	       rel1.offset:   0 1;
 	       rel2.to:       "sb_hbar_base";
 	       image {
 		  normal: "sb_runnerh.png";
@@ -10523,7 +10533,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       confine: "sb_hbar_base";
 	    }
 	    description { state: "default" 0.0;
-	       min: 32 16;
+	       min: 32 17;
 	       rel1 {
 		  relative: 0.5  0.5;
 		  offset:   0    0;
@@ -10535,13 +10545,13 @@ collections { /* begin the collection of edje groups that are in this file */
 		  to: "sb_hbar_base";
 	       }
 	       image {
-		  normal: "bt_base2.png";
+		  normal: "bt_sm_base2.png";
 		  border: 7 7 7 7;
 	       }
 	    }
 	    description { state: "clicked" 0.0;
 	       inherit: "default" 0.0;
-	       image.normal: "bt_base1.png";
+	       image.normal: "bt_sm_base1.png";
 	    }
 	 }
 	 part { name: "sb_hbar_over1";
@@ -10552,7 +10562,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       rel2.relative: 1.0 0.5;
 	       rel2.to: "e.dragable.hbar";
 	       image {
-		  normal: "bt_hilight.png";
+		  normal: "bt_sm_hilight.png";
 		  border: 7 7 7 0;
 	       }
 	    }
@@ -10564,8 +10574,8 @@ collections { /* begin the collection of edje groups that are in this file */
 	       rel1.to: "e.dragable.hbar";
 	       rel2.to: "e.dragable.hbar";
 	       image {
-		  normal: "bt_shine.png";
-		  border: 7 7 7 7;
+		  normal: "bt_sm_shine.png";
+		  border: 7 7 7 0;
 	       }
 	    }
 	 }
@@ -10574,7 +10584,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    clip_to: "sb_hbar";
 	    mouse_events: 1;
 	    description { state: "default" 0.0;
-	       min: 18 18;
+	       min: 17 17;
 	       align: 0.0 0.5;
 	       aspect: 1.0 1.0;
 	       aspect_preference: VERTICAL;
@@ -10606,7 +10616,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    mouse_events: 0;
 	    clip_to: "sb_hbar";
 	    description { state: "default" 0.0;
-	       max: 10 10;
+	       max: 9 9;
 	       rel1.to: "sb_hbar_a1";
 	       rel2.to: "sb_hbar_a1";
 	       image.normal: "arrow_left.png";
@@ -10633,7 +10643,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       rel2.to: "sb_hbar_a1";
 	       image {
 		  normal: "bt_sm_shine.png";
-		  border: 5 5 5 5;
+		  border: 7 7 7 0;
 	       }
 	    }
 	 }
@@ -10642,7 +10652,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    clip_to: "sb_hbar";
 	    mouse_events: 1;
 	    description { state: "default" 0.0;
-	       min: 18 18;
+	       min: 17 17;
 	       align: 1.0 0.5;
 	       aspect: 1.0 1.0;
 	       aspect_preference: VERTICAL;
@@ -10674,7 +10684,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    mouse_events: 0;
 	    clip_to: "sb_hbar";
 	    description { state: "default" 0.0;
-	       max: 10 10;
+	       max: 9 9;
 	       rel1.to: "sb_hbar_a2";
 	       rel2.to: "sb_hbar_a2";
 	       image.normal: "arrow_right.png";
@@ -10701,7 +10711,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       rel2.to: "sb_hbar_a2";
 	       image {
 		  normal: "bt_sm_shine.png";
-		  border: 5 5 5 5;
+		  border: 7 7 7 0;
 	       }
 	    }
 	 }
@@ -11173,25 +11183,24 @@ collections { /* begin the collection of edje groups that are in this file */
 	    }
 	 }
 
-//    ***UNUSED AND REMOVED ***
-// 	 part {
-// 	    name:          "e.swallow.icon";
-// 	    type:          SWALLOW;
-// 	    description {
-// 	       state:    "default" 0.0;
-// 	       align:    0.0 0.5;
-// 	       aspect:   1.0 1.0;
-// 	       aspect_preference: VERTICAL;
-// 	       rel1 {
-// 		  relative: 0.0  0.0;
-// 		  offset:   4    4;
-// 	       }
-// 	       rel2 {
-// 		  relative: 0.0  1.0;
-// 		  offset:   4   -5;
-// 	       }
-// 	    }
-// 	 }
+	 part {
+	    name:          "e.swallow.icon";
+	    type:          SWALLOW;
+	    description {
+	       state:    "default" 0.0;
+	       align:    0.0 0.5;
+	       aspect:   1.0 1.0;
+	       aspect_preference: VERTICAL;
+	       rel1 {
+		  relative: 0.0  0.0;
+		  offset:   4    4;
+	       }
+	       rel2 {
+		  relative: 0.0  1.0;
+		  offset:   4   -5;
+	       }
+	    }
+	 }
 
 	 part {
 	    name:           "e.text.label";
@@ -11201,10 +11210,11 @@ collections { /* begin the collection of edje groups that are in this file */
 	    description {
 	       state: "default" 0.0;
 	       min:      16 16;
-	       rel1.offset:   16 4;
+	       rel1.offset:   4 4;
+	       rel1.to_x: "e.swallow.icon";
 	       rel2.offset:   -5 -5;
 	       color: 255 255 255 255;
-	       color2: 0 0 0 64;
+	       color3: 0 0 0 64;
 	       color_class: "ilist_header";	    
 	       text {
 		  text:     "Item Label";
