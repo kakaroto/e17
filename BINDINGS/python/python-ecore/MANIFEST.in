@@ -4,3 +4,8 @@ recursive-include examples *.py
 recursive-include include *.pxd
 include ez_setup.py gen-doc-api.sh
 include AUTHORS COPYING-PLAIN COPYING README
+include ecore/ecore.c_ecore.[ch]
+include ecore/imf/ecore.imf.c_ecore_imf.c
+include ecore/x/ecore.x.screensaver.c
+include ecore/x/ecore.x.c_ecore_x.c
+include ecore/evas/ecore.evas.c_ecore_evas.c

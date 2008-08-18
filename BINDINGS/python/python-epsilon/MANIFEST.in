@@ -3,3 +3,5 @@ recursive-include examples *.py
 recursive-include include *.pxd
 include ez_setup.py
 include AUTHORS COPYING-PLAIN COPYING README
+include epsilon/epsilon.c_epsilon.c
+include epsilon/epsilon.request.c

@@ -3,3 +3,4 @@ recursive-include tests *.py *.edc *.edj
 recursive-include include *.pxd
 include ez_setup.py gen-doc-api.sh
 include AUTHORS COPYING-PLAIN COPYING README
+include edje/edje.c_edje.[ch]

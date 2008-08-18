@@ -3,3 +3,4 @@ recursive-include examples *.py
 recursive-include include *.pxd
 include ez_setup.py
 include AUTHORS COPYING-PLAIN COPYING README
+include emotion/emotion.c_emotion.c

@@ -2,5 +2,5 @@ recursive-include evas *.pyx *.pxi *.py *.h
 recursive-include tests *.py *.png
 recursive-include include *.pxd *.h
 include ez_setup.py gen-doc-api.sh
-prune evas/evas.c_evas.pxi
+include evas/evas.c_evas.[ch]
 include AUTHORS COPYING-PLAIN COPYING README
