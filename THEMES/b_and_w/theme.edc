@@ -10067,8 +10067,7 @@ collections { /* begin the collection of edje groups that are in this file */
 
    group { name: "e/widgets/scrollframe";
       images {
-	 image: "ibar_bg_v.png" COMP;
-	 image: "ibar_over_v.png" COMP;
+	 image: "shelf_inset.png" COMP;
 	 image: "sb_barh1.png" COMP;
 	 image: "sb_barh2.png" COMP;
 	 image: "sb_barv1.png" COMP;
@@ -10085,14 +10084,12 @@ collections { /* begin the collection of edje groups that are in this file */
 	 image: "sb_runnerv.png" COMP;
       }
       parts {
-	 part { name: "bg";
-	    mouse_events:  0;
+         part { name: "bg";
+	    type: RECT;
 	    description { state: "default" 0.0;
-	       image {
-		  normal: "ibar_bg_v.png";
-		  border: 7 7 7 7;
-	       }
-	       fill.smooth : 0;
+	       rel1.offset: 1 1;
+	       rel2.offset: -2 -2;
+	       color: 255 255 255 255;
 	    }
 	 }
 	 part { name: "clipper";
@@ -10101,11 +10098,11 @@ collections { /* begin the collection of edje groups that are in this file */
 	    description { state: "default" 0.0;
 	       rel1 {
 		  to: "bg";
-		  offset: 4 4;
+		  offset: 1 1;
 	       }
 	       rel2 {
 		  to: "bg";
-		  offset: -5  -5;
+		  offset: -2  -2;
 	       }
 	    }
 	 }
@@ -10114,7 +10111,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    type: SWALLOW;
 	    description {
 	       state: "default" 0.0;
-	       rel1.offset: 4 4;
+	       rel1.offset: 1 1;
 	       rel2 {
 		  relative: 0.0  0.0;
 		  offset:   -1   -1;
@@ -10129,8 +10126,8 @@ collections { /* begin the collection of edje groups that are in this file */
 	       rel1.to: "bg";
 	       rel2.to: "bg";
 	       image {
-		  normal: "ibar_over_v.png";
-		  border: 13 13 13 13;
+		  normal: "shelf_inset.png";
+		  border: 7 7 7 7;
 		  middle: 0;
 	       }
 	       fill.smooth : 0;
@@ -10145,12 +10142,12 @@ collections { /* begin the collection of edje groups that are in this file */
 	       rel1 {
 		  to: "bg";
 		  relative: 1.0 0.0;
-		  offset:   -5 4;
+		  offset:   -2 1;
 	       }
 	       rel2 {
 		  to: "bg";
 		  relative: 1.0 0.0;
-		  offset:   -5 -1;
+		  offset:   -2 -1;
 		  to_y:     "sb_hbar";
 	       }
 	    }	
@@ -10160,12 +10157,12 @@ collections { /* begin the collection of edje groups that are in this file */
 	       rel1 {
 		  to: "bg";
 		  relative: 1.0 0.0;
-		  offset:   -4 4;
+		  offset:   -1 0;
 	       }
 	       rel2 {
 		  to: "bg";
 		  relative: 1.0 0.0;
-		  offset:   -4 -1;
+		  offset:   -1 -1;
 		  to_y:     "sb_hbar";
 	       }
 	    }
@@ -10435,12 +10432,12 @@ collections { /* begin the collection of edje groups that are in this file */
 	       rel1 {
 		  to: "bg";
 		  relative: 0.0 1.0;
-		  offset:   4 -5;
+		  offset:   1 -2;
 	       }
 	       rel2 {
 		  to: "bg";
 		  relative: 0.0 1.0;
-		  offset:   -1 -5;
+		  offset:   -1 -2;
 		  to_x:     "sb_vbar";
 	       }
 	    }
@@ -10449,12 +10446,12 @@ collections { /* begin the collection of edje groups that are in this file */
 	       rel1 {
 		  to: "bg";
 		  relative: 0.0  1.0;
-		  offset:   0    -4;
+		  offset:   0    -1;
 	       }
 	       rel2 {
 		  to: "bg";
 		  relative: 0.0  1.0;
-		  offset:   -1   -4;
+		  offset:   -1   -1;
 		  to_x:     "sb_vbar";
 	       }
 	    }
