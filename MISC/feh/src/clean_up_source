@@ -1,4 +1,0 @@
-#!/bin/bash
-indent *.[ch]
-rm -f *~
-rm -f core
