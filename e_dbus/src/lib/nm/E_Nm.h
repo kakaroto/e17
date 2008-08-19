@@ -25,16 +25,16 @@
 # endif
 #endif
 
-typedef enum E_NM_Device_Cap _E_NM_Device_Cap;
-enum _E_NM_Device_Cap
+typedef enum E_NM_Device_Cap E_NM_Device_Cap;
+enum E_NM_Device_Cap
 {
   E_NM_DEVICE_CAP_NONE = 0x0,
   E_NM_DEVICE_CAP_NM_SUPPORTED = 0x1,
   E_NM_DEVICE_CAP_CARRIER_DETECT = 0x2
 };
 
-typedef enum E_NM_Device_State _E_NM_Device_State;
-enum _E_NM_Device_State
+typedef enum E_NM_Device_State E_NM_Device_State;
+enum E_NM_Device_State
 {
   E_NM_DEVICE_STATE_UNKNOWN = 0,
   E_NM_DEVICE_STATE_DOWN = 1,
@@ -57,15 +57,15 @@ typedef struct E_NM_Context E_NM_Context;
 typedef struct E_NM_Device E_NM_Device;
 struct E_NM_Device
 {
-  char *udi; /* object_path */
-  char *interface;
-  char *driver;
-  uint capabilities;
-  int  ip4address;
-  uint state;
-  char *ip4config; /* object_path */
-  int  carrier;
-  uint type;
+  char              *udi; /* object_path */
+  char              *interface;
+  char              *driver;
+  E_NM_Device_Cap    capabilities;
+  int                ip4address;
+  E_NM_Device_State  state;
+  char              *ip4config; /* object_path */
+  unsigned char      managed;
+  unsigned int       device_type;
 };
 
 typedef struct E_NM_Device_Wireless E_NM_Device_Wireless;
