@@ -25,6 +25,29 @@
 # endif
 #endif
 
+typedef enum E_NM_Device_Cap _E_NM_Device_Cap;
+enum _E_NM_Device_Cap
+{
+  E_NM_DEVICE_CAP_NONE = 0x0,
+  E_NM_DEVICE_CAP_NM_SUPPORTED = 0x1,
+  E_NM_DEVICE_CAP_CARRIER_DETECT = 0x2
+};
+
+typedef enum E_NM_Device_State _E_NM_Device_State;
+enum _E_NM_Device_State
+{
+  E_NM_DEVICE_STATE_UNKNOWN = 0,
+  E_NM_DEVICE_STATE_DOWN = 1,
+  E_NM_DEVICE_STATE_DISCONNECTED = 2,
+  E_NM_DEVICE_STATE_PREPARE = 3,
+  E_NM_DEVICE_STATE_CONFIG = 4,
+  E_NM_DEVICE_STATE_NEED_AUTH = 5,
+  E_NM_DEVICE_STATE_IP_CONFIG = 6,
+  E_NM_DEVICE_STATE_ACTIVATED = 7,
+  E_NM_DEVICE_STATE_FAILED = 8,
+  E_NM_DEVICE_STATE_CANCELLED = 9
+};
+
 typedef struct E_NM_Context E_NM_Context;
 
 /**
