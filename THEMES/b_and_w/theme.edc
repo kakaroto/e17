@@ -11,8 +11,8 @@
 // entry
 // about
 // theme_about
-// resize
-// move
+// resize (done - review)
+// move (done - review)
 // slider
 // slidesel
 // exebuf
@@ -8799,6 +8799,7 @@ collections { /* begin the collection of edje groups that are in this file */
 // FIXME: REVIEW
 // FIXME: Window position is weird?
 // FIXME: Make popup borderless?
+// FIXME: Use a bg that is shared by borderless widgets eg. move/resize
 
    group { name: "e/sys/logout";
       alias: "e/sys/halt";
@@ -9177,6 +9178,8 @@ collections { /* begin the collection of edje groups that are in this file */
 /////////////////////////////////////////////////////////////////////////////
    /*** MOVE/RESIZE BOX ***/
 
+// FIXME: Use a bg that is shared by borderless widgets (not just use menu_bg)
+
    group { name: "e/widgets/border/default/move";
       images.image: "menu_bg.png";
       parts {
@@ -9198,7 +9201,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       rel1.offset: 4 4;
 	       rel2.offset: -5 -5;
 	       color: 0 0 0 255;
-	       color3: 255 255 255 128;
+	       color3: 255 255 255 64;
 	       color_class: "move_text";
 	       text { text: "X Y";
 		  font: "Sans,Edje-Vera";
@@ -9233,7 +9236,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       rel1.offset: 4 4;
 	       rel2.offset: -5 -5;
 	       color: 0 0 0 255;
-	       color3: 255 255 255 128;
+	       color3: 255 255 255 64;
 	       color_class: "resize_text";
 	       text { text: "WxH";
 		  font: "Sans,Edje-Vera";
@@ -10764,6 +10767,13 @@ collections { /* begin the collection of edje groups that are in this file */
 	 }
       }
    }
+
+// FIXME: Make the e.swallow.icon draw a correctly sized
+//	  box even when there isnt an icon there. This fixes
+//	  the size of ilist items without icons so they 
+//	  are regular. Is this a fixme for ilist.c?
+
+// FIXME: ilist stacking and raising isnt working quite right.
 
    group { name: "e/widgets/ilist";
       data.item: "stacking" "above";
