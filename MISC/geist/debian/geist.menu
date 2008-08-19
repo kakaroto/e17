@@ -1,2 +1,0 @@
-?package(geist):needs="x11" section="Apps/Graphics"\
-   title="geist" command="/usr/bin/geist"

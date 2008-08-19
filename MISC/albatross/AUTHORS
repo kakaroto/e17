@@ -1,9 +1,0 @@
-Tom Gilbert <tom@linuxbrit.co.uk> Principle author.
-
-Till Adam <Till_Adam@bigfoot.com> Object properties code, multiple interface
-                                  tweaks. Font style editor GUI, selection
-                                  rect code. Lots of misc additions.
-
-Dave J: Makefile.am fix for libXML.
-
-Nolan:  Opacity support for images
