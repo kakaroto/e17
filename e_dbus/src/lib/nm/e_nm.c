@@ -29,7 +29,7 @@ e_nm_free(E_NM_Context *ctx)
 }
 
 static void
-cb_signal_manager_state_change(void *data, DBusMessage *msg)
+cb_signal_manager_state_changed(void *data, DBusMessage *msg)
 {
   E_NM_Context *ctx;
   dbus_uint32_t state;
@@ -45,8 +45,8 @@ cb_signal_manager_state_change(void *data, DBusMessage *msg)
     return;
   }
 
-  if (ctx->cb_manager_state_change)
-    ctx->cb_manager_state_change(ctx->data_manager_state_change, (int)state);
+  if (ctx->cb_manager_state_changed)
+    ctx->cb_manager_state_changed(ctx->data_manager_state_changed, (int)state);
 }
 
 static void
@@ -93,12 +93,12 @@ cb_signal_manager_device_removed(void *data, DBusMessage *msg)
 
 
 EAPI void
-e_nm_callback_manager_state_change_set(E_NM_Context *ctx, E_NM_Cb_Manager_State_Change cb_func, void *user_data)
+e_nm_callback_manager_state_changed_set(E_NM_Context *ctx, E_NM_Cb_Manager_State_Changed cb_func, void *user_data)
 {
-  ctx->cb_manager_state_change = cb_func;
-  ctx->data_manager_state_change = user_data;
+  ctx->cb_manager_state_changed = cb_func;
+  ctx->data_manager_state_changed = user_data;
 
-  e_dbus_signal_handler_add(ctx->conn, E_NM_SERVICE, E_NM_PATH_NETWORK_MANAGER, E_NM_INTERFACE_NETWORK_MANAGER, "StateChange", cb_signal_manager_state_change, ctx);
+  e_dbus_signal_handler_add(ctx->conn, E_NM_SERVICE, E_NM_PATH_NETWORK_MANAGER, E_NM_INTERFACE_NETWORK_MANAGER, "StateChanged", cb_signal_manager_state_changed, ctx);
 }
 
 EAPI void

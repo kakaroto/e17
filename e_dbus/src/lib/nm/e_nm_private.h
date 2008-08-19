@@ -22,8 +22,8 @@ struct E_NM_Context
 {
   E_DBus_Connection *conn;
 
-  E_NM_Cb_Manager_State_Change cb_manager_state_change;
-  void *data_manager_state_change;
+  E_NM_Cb_Manager_State_Changed cb_manager_state_changed;
+  void *data_manager_state_changed;
 
   E_NM_Cb_Manager_Device_Added cb_manager_device_added;
   void *data_manager_device_added;
