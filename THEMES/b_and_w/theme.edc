@@ -24,7 +24,6 @@
 // fontpreview
 // gadman
 // spectrum
-// sys ?? (done?)
 // wizard (just placeholder and basics - wizard code not complete)
 
 
@@ -8797,7 +8796,9 @@ collections { /* begin the collection of edje groups that are in this file */
 
 /////////////////////////////////////////////////////////////////////////////
    /*** SYSTEM ***/
-// FIXME: DO && WORK IN PROGRESS
+// FIXME: REVIEW
+// FIXME: Window position is weird?
+// FIXME: Make popup borderless?
 
    group { name: "e/sys/logout";
       alias: "e/sys/halt";
@@ -8820,7 +8821,7 @@ collections { /* begin the collection of edje groups that are in this file */
       styles {
 	 style {
 	    name: "sys_style";
-	    base: "font=Sans,Edje-Vera font_size=10 text_class=tb_plain align=center color=#000 style=shadow shadow_color=#ffffff80 wrap=word";
+	    base: "font=font=Sans:style=Bold,Edje-Vera-Bold font_size=12 text_class=tb_plain align=center valign=center color=#fff style=soft_shadow shadow_color=#0000001f wrap=word";
 	    tag:  "br" "\n";
 	    tag:  "hilight" "+ font=Sans:style=Bold,Edje-Vera-Bold text_class=tb_light";
 	 }
@@ -8829,6 +8830,8 @@ collections { /* begin the collection of edje groups that are in this file */
 	 part { name:          "base";
 	    mouse_events:  0;
 	    description { state:    "default" 0.0;
+      	       min: 250 250;
+               max: 250 250;
 	       image.normal: "menu_bg.png";
 	    }
 	 }
@@ -8846,8 +8849,7 @@ collections { /* begin the collection of edje groups that are in this file */
 		  offset:   0 1;
 	       }
                rel2 {
-		  to_y:     "e.textblock.message";
-		  relative: 1.0 0.0;
+		  relative: 1.0 1.0;
 		  offset:   -1 1;
 	       }
 	       image {
@@ -8866,10 +8868,9 @@ collections { /* begin the collection of edje groups that are in this file */
 	 part { name: "logo";
 	    mouse_events: 0;
 	    description { state: "default" 0.0;
-	       min: 196 285;
-	       max: 196 285;
-	       rel1.relative: 0.25 0.1;
-	       rel2.relative: 0.75 0.6;
+	       min: 89 130;
+	       max: 89 130;
+	       align: 0.5 0.0;
 	       image.normal: "logo_white.png";
 	    }
 	    description { state: "done" 0.0;
@@ -8882,8 +8883,11 @@ collections { /* begin the collection of edje groups that are in this file */
 	    mouse_events:  0;
 	    description {
 	       state: "default" 0.0;
-	       rel1.relative: 0.0 0.8;
-	       rel1.offset: 8 8;
+	       rel1 {
+		  offset: 8 8;
+		  relative: 0.0 1.0;
+		  to_y: "busy";
+	       }
 	       rel2.offset: -9 -9;
 	       text {
 		  style:    "sys_style";
