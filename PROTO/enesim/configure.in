@@ -146,7 +146,6 @@ src/tool/Makefile
 src/lib/Makefile
 src/lib/rasterizer/Makefile
 src/lib/renderer/Makefile
-src/lib/converter/Makefile
 src/lib/drawer/Makefile
 src/lib/util/Makefile
 src/lib/vector/Makefile
