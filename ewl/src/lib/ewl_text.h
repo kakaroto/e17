@@ -70,40 +70,41 @@ struct Ewl_Text
         Ewl_Container container;  /**< Inherit from Ewl_Container */
         void *textblock;          /**< The Evas_Object_Textblock */
 
-        char *text;                  /**< The text itself */
+        char *text;               /**< The text itself */
         char *obscure;            /**< The utf8 character to be displayed
                                        instead of the real text */
         struct
         {
-                unsigned int chars;         /**< Number of characters in the text */
-                unsigned int bytes;         /**< Number of bytes in the text */
-                unsigned int max_chars; /**< Maximal number of characters in the text */
-        } length;                         /**< Different text lengths */
+                unsigned int chars;     /**< Number of characters in the text */
+                unsigned int bytes;     /**< Number of bytes in the text */
+                unsigned int max_chars; /**< Maximal number of characters in 
+                                                the text */
+        } length;                 /**< Different text lengths */
 
-        unsigned int total_size;         /**< The total size we've alloc'd for text */
-        unsigned int cursor_position;         /**< The cursor position */
+        unsigned int total_size;  /**< The total size we've alloc'd for text */
+        unsigned int cursor_position;   /**< The cursor position */
 
         struct
         {
-                void *nodes;        /**< The formatting nodes */
-                void *tx;        /**< The current formatting context */
-        } formatting;                  /**< Holds the formatting information */
+                void *nodes;      /**< The formatting nodes */
+                void *tx;         /**< The current formatting context */
+        } formatting;             /**< Holds the formatting information */
 
-        Ecore_List *triggers;            /**< The list of triggers */
+        Ecore_List *triggers;     /**< The list of triggers */
         Ecore_List *areas_cache;  /**< unused areas */
-        Ewl_Widget *selection;          /**< The current selection */
+        Ewl_Widget *selection;    /**< The current selection */
 
         struct
         {
-                int x;                         /**< X offset for layout */
-                int y;                         /**< Y offset for layout */
-        } offset;                        /**< Layout offset values */
+                int x;            /**< X offset for layout */
+                int y;            /**< Y offset for layout */
+        } offset;                 /**< Layout offset values */
 
-        unsigned char delete_count;          /**< Number of deletes */
-        unsigned char in_select;          /**< Are we in select mode? */
+        unsigned char delete_count;     /**< Number of deletes */
+        unsigned char in_select;        /**< Are we in select mode? */
 
-        unsigned char selectable;          /**< Is the text selectable? */
-        unsigned char dirty;                    /**< Does the text need layout? */
+        unsigned char selectable;       /**< Is the text selectable? */
+        unsigned char dirty;            /**< Does the text need layout? */
 };
 
 Ewl_Widget      *ewl_text_new(void);
