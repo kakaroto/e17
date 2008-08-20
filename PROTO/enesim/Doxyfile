@@ -1,7 +1,7 @@
 PROJECT_NAME           = Enesim
 PROJECT_NUMBER         =
 OUTPUT_DIRECTORY       = doc
-INPUT                  = ./src/lib
+INPUT                  = ./src/
 IMAGE_PATH             = doc/img
 OUTPUT_LANGUAGE        = English
 GENERATE_HTML          = YES

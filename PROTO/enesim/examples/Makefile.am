@@ -1,25 +1,24 @@
 MAINTAINERCLEANFILES = Makefile.in
 
-EXTRA_DIST =
-
-INCLUDES	= \
+AM_CPPFLAGS = \
 -I. \
--I$(top_srcdir) \
--I$(top_srcdir)/src/lib \
--I$(top_srcdir)/src/lib/util \
-@EDATA_CFLAGS@ \
-@PNG_CFLAGS@
+-I$(top_srcdir)/src/include \
+-DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\" \
+@ENESIM_CFLAGS@ \
+@EXAMPLE_CFLAGS@
 
-bin_PROGRAMS = enesim_test
+if BUILD_EXAMPLE
 
-enesim_test_DEPENDENCIES = $(top_builddir)/src/lib/libenesim.la
+bin_PROGRAMS = enesim_bench
 
-enesim_test_SOURCES = \
-png.c \
-surface.c \
-enesim_test.c
-
-enesim_test_LDADD = \
+enesim_bench_DEPENDENCIES = $(top_builddir)/src/lib/libenesim.la
+enesim_bench_LDADD = \
 $(top_builddir)/src/lib/libenesim.la \
-@EDATA_LIBS@ \
-@PNG_LIBS@
+@ENESIM_LIBS@ \
+@EXAMPLE_LIBS@
+
+enesim_bench_SOURCES = \
+enesim_bench.c \
+image.c
+
+endif

@@ -1,5 +1,21 @@
-#include <stdlib.h>
-
+/* ENESIM - Direct Rendering Library
+ * Copyright (C) 2007-2008 Jorge Luis Zapata
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library.
+ * If not, see <http://www.gnu.org/licenses/>.
+ */
+#include "enesim_common.h"
 #include "Enesim.h"
 #include "enesim_private.h"
 #include "enesim_vector.h"
@@ -13,8 +29,8 @@ static void _alloc_cb(void *data)
 	Enesim_Component_Reader *r;
 	Enesim_Component *c = data;
 	
-	edata_list_first_goto(c->readers);
-	while ((r = edata_list_next(c->readers)))
+	eina_list_first_goto(c->readers);
+	while ((r = eina_list_next(c->readers)))
 	{
 		enesim_reader_reference_update(r);
 	}
@@ -31,7 +47,7 @@ Enesim_Component * enesim_component_new(int num_vertices)
 	Enesim_Component *c;
 
 	c = calloc(1, sizeof(Enesim_Component));
-	c->readers = edata_list_new();
+	c->readers = eina_list_new();
 	c->path = enesim_container_new(c, num_vertices);
 	/* ABSTRACT THIS */
 	c->path->alloc_cb = _alloc_cb;
@@ -49,8 +65,8 @@ void enesim_component_notify(Enesim_Component *c)
 	if (c->has_changed) return;
 	
 	c->has_changed = 1;
-	edata_list_first_goto(c->readers);
-	while ((r = edata_list_next(c->readers)))
+	eina_list_first_goto(c->readers);
+	while ((r = eina_list_next(c->readers)))
 	{
 		enesim_reader_notify(r);
 	}

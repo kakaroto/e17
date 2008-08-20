@@ -1,0 +1,64 @@
+IDEA
+====
+The idea is to build an automatic drawing functions generator for different
+pixel formats based on a description. The current enesim code has something
+similar but too ugly if we add more funtions, render operations, pixel formats
+etc. Why not create a generator for such a thing?
+
+Format Description
+==================
+Format
+{
+	# a plane where the pixels are stored
+	Plane
+	{
+		# colors with its offset, length
+		Red: 0,5
+		Green: 5,6
+		Blue: 11,5
+		# Put the type that stores this?
+		# what about 888 (24 bits)?
+		# in that case we should use char * and increment by 3?
+		# maybe put the data container and the increment?
+		Type: uint16
+	}
+	Plane
+	{
+		Alpha: 0,8
+		Type: uint8
+	}
+	Name: rgb565a8p
+	# Is the format premultiplied? (true/false)
+	Premul: true
+}
+
+Function format
+===============
+Every function generated will be of the form:
+sname_cpu_dname_tx_rop_x_y
+
+sname: is the Format Description's name
+dname: is the destination format's name
+cpu: for now only c
+tx: r0, r90, r180, r270, affine, identity
+rop: Can be any of the Enesim's rops (blend, fill, etc, etc)
+x: upscale, downscale, noscale
+y: upscale, downscale, noscale
+
+Function parameters
+===================
+This parameters are common for every draw operation:
+Enesim_Surface *ss: source surface
+Enesim_Rectangle *srect: source rect
+Enesim_Surface *ds: destination surface
+Enesim_Rectangle *drect: destination rect
+
+Specific parameters:
+enesim_16p16_t *t: transformation matrix
+TYPE mul_color: for blend_mul rop
+
+Functions every pixel format should implement
+=============================================
+static inline void * name_plane0_get(Enesim_Surface *s)
+static inline void * name_planeN_get(Enesim_Surface *s)
+

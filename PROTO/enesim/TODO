@@ -1,0 +1,4 @@
++ Right now the drawer functions are defined for every case (from/to format)
+we should benchmark the speed decrease in case we use function pointers for that
++ What to do with the rectangle/fixed/extender "classes", place them into eina?
++ Port every type to stdint.h types
