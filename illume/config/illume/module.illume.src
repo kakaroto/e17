@@ -13,6 +13,6 @@ group "Illume_Cfg" struct {
   value "sliding.kbd.duration" int: 1000;
   value "sliding.busywin.duration" int: 1000;
   value "sliding.layout.duration" int: 0;
-  value "kbd.use_internal" int: 0
+  value "kbd.use_internal" int: 1;
   value "kbd.dict" string: "English_(US).dic";
 }
