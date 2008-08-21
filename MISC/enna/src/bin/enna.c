@@ -157,7 +157,7 @@ _enna_init(int run_gl)
 
 
 
-   if (!strcmp(enna_config->engine, "gl") && ecore_evas_engine_type_supported_get(ECORE_EVAS_ENGINE_GL_X11))
+   if (!strcmp(enna_config->engine, "gl") && ecore_evas_engine_type_supported_get(ECORE_EVAS_ENGINE_OPENGL_X11))
      {
 	dbg("Load GL engine\n");
 	enna->ee = ecore_evas_gl_x11_new(NULL, 0, 0, 0, 64, 64);
@@ -167,7 +167,7 @@ _enna_init(int run_gl)
 	dbg("Load XRENDER engine\n");
 	enna->ee = ecore_evas_xrender_x11_new(NULL, 0, 0, 0, 64, 64);
      }
-   else if (!strcmp(enna_config->engine, "x11_16") && ecore_evas_engine_type_supported_get(ECORE_EVAS_ENGINE_SOFTWARE_X11_16))
+   else if (!strcmp(enna_config->engine, "x11_16") && ecore_evas_engine_type_supported_get(ECORE_EVAS_ENGINE_SOFTWARE_16_X11))
      {
 	dbg("Load X11_16 engine\n");
 	enna->ee = ecore_evas_software_x11_16_new(NULL, 0, 0, 0, 64, 64);
