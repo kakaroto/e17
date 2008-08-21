@@ -1,41 +1,91 @@
 #define COMP LOSSY 100
 
-images{	
+images{
 }
 
 fonts{
- font:"Vera.ttf" "Vera";
- font:"VeraBd.ttf" "VeraBold";
+   font:"content.ttf" "content";
+   font:"content_bold.ttf" "content_bd";
 }
 
 collections
 {
-#include "enna_background.edc"
-	
-   /* Modules */
-#include "enna_module_music.edc"
-#include "enna_module_video.edc"
-#include "enna_module_photo.edc"
-#include "enna_module_playlist.edc"
-#include "enna_mainmenu.edc"
+#include "background.edc"
+#include "mainmenu.edc"
+#include "content.edc"
+#include "music.edc"
+#include "video.edc"
+#include "photo.edc"
+#include "icons.edc"
+#include "list.edc"
+#include "scrollframe.edc"
+#include "location.edc"
+#include "mediaplayer.edc"
+#include "video_info.edc"
 
-   /* Effects */
-#include "enna_blooper.edc"
-#include "enna_switcher.edc"
-#include "enna_dream.edc"
+   group {
+      name: "enna";
+      min: 800 480;
+      parts {
 
-   /* Widgets */
-#include "enna_icons.edc"
-#include "enna_list.edc"
-#include "enna_filemanager.edc"
-#include "enna_cdda.edc"
-#include "enna_miniplayer.edc"
-#include "enna_menuitem.edc"
+         part {
+            name: "enna.swallow.background";
+            type: SWALLOW;
+            mouse_events : 0;
+            description{
+               state: "default" 0.0;
+               color:  255 255 255 255;
+               rel1{relative: 0 0;};
+               rel2{relative: 1 1;};
+            }
+         }
+         part {
+            name: "enna.swallow.module";
+            type: SWALLOW;
+            clip_to: "enna.clip.module";
+            mouse_events : 1;
+            description{
+               state: "default" 0.0;
+               color:  255 255 255 255;
+               rel1{relative: 0 0;offset: 0 62;};
+               rel2{relative: 1 1;};
+            }
+         }
+         part {
+            name: "enna.swallow.mainmenu";
+            clip_to: "enna.clip.mainmenu";
+            type: SWALLOW;
+            description{
+               state: "default" 0.0;
+               color: 255 255 255 255;
+               rel1{relative: 0 0;to: "enna.clip.mainmenu";};
+               rel2{relative: 1 1;to: "enna.clip.mainmenu";};
+            }
+         }
+         part {
+            name: "enna.clip.module";
+            type: RECT;
+            mouse_events : 0;
+            description{
+               state: "default" 0.0;
+               visible: 1;
+               color: 255 255 255 255;
+               rel1{relative: 0 0;};
+               rel2{relative: 1 1;};
+            }
+         }
+         part {
+            name: "enna.clip.mainmenu";
+            type: RECT;
+            mouse_events : 0;
+            description{
+               state: "default" 0.0;
+               visible: 1;
+               color: 255 255 255 255;
+               rel1{relative: 0 0;};
+               rel2{relative: 1 1;};
+            }
+         }
 
-   /* Fullscreen objects */
-#include "enna_music_player.edc"
-#include "enna_slideshow.edc"
-#include "enna_video_player.edc"
-#include "enna_mediaplayer.edc"
-#include "enna_popup.edc"
-}
+      }
+

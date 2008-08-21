@@ -1,0 +1,58 @@
+images {
+ image: "menubar_background.png" COMP;
+ image: "menubar_shadow.png" COMP;
+
+}
+group {
+ name: "enna/widget/menubar";
+ min: 32 32;
+   parts {
+      part {
+      name: "enna.clip.menubar";
+      type: "RECT";
+         description {
+         color: 255 255 255 255;
+         state: "default" 0.0;
+         }
+      }
+      part {
+      name: "shadow";
+
+      clip_to: "enna.clip.menubar";
+         description {
+         state: "default" 0.0;
+         color: 255 255 255 255;
+            rel1 {relative: 0 0.9;};
+            rel2 {relative: 1 1;};
+            image {
+            normal: "menubar_shadow.png";
+            }
+         }
+      }
+      part {
+      name: "bg";
+      clip_to: "enna.clip.menubar";
+      repeat_events: 1;
+         description {
+         state: "default" 0.0;
+            rel1 {relative: 0 0;};
+            rel2 {relative: 1 0.9;};
+            image {
+            normal: "menubar_background.png";
+            }
+         }
+      }
+      part {
+      name: "enna.swallow.menubar";
+      type: SWALLOW;
+      clip_to: "enna.clip.menubar";
+      repeat_events: 1;
+         description {
+         state: "default" 0.0;
+            rel1 {relative: 0 0;to: "bg";};
+            rel2 {relative: 1 1;to: "bg";};
+         }
+      }
+   }
+}
+

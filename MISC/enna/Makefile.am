@@ -1,9 +1,9 @@
 ## Process this file with automake to produce Makefile.in
 ## Created by Anjuta
 
-SUBDIRS = src po data
+SUBDIRS = src data
 
-EXTRA_DIST = config.rpath  $(ennadoc_DATA)
+EXTRA_DIST = $(ennadoc_DATA)
 
 # Copy all the spec files. Of cource, only one is actually used.
 dist-hook:
@@ -14,4 +14,4 @@ dist-hook:
 	done
 
 
-ACLOCAL_AMFLAGS = -I m4
+ACLOCAL_AMFLAGS =

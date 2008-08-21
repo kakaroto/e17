@@ -1,0 +1,689 @@
+images {
+   image: "menu_sel_bg.png" COMP;
+   image: "menu_sel_fg.png" COMP;
+   image: "letter_bg.png" COMP;
+}
+
+group {
+   name: "enna/list/item";
+
+   parts {
+
+      part { name: "bg";
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            visible: 0;
+            color: 255 255 255 0;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: -5 -3;
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: 4 5;
+            }
+            image {
+               normal: "menu_sel_bg.png";
+               border: 8 8 5 9;
+            }
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            color: 255 255 255 128;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: -2 0;
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: 1 2;
+            }
+         }
+      }
+
+
+      part {
+	 name:          "enna.swallow.icon";
+	 type:          SWALLOW;
+         mouse_events: 0;
+	 description {
+	    state:    "default" 0.0;
+	    align:    0.0 0.5;
+	    aspect:   1.0 1.0;
+	    aspect_preference: VERTICAL;
+            //	    fixed:    1 1;
+	    rel1 {
+	       relative: 0.0  0.0;
+	       offset:   4    5;
+	    }
+	    rel2 {
+	       relative: 0.0  1.0;
+	       offset:   4   -19;
+	    }
+	 }
+      }
+      part {
+	 name:           "enna.text.label";
+	 type:           TEXT;
+	 mouse_events:   0;
+	 description {
+	    state: "default" 0.0;
+	    rel1 {
+	       to_x:     "enna.swallow.icon";
+	       relative: 1.2  0.0;
+	       offset:   4 4;
+	    }
+	    rel2 {
+	       relative: 1.2  1.0;
+	       offset:   -5  -19;
+	    }
+            color: 200 200 200 200;
+            color3: 128 128 128 200;
+            align: 0 0.5;
+	    text {
+               text:     "Item Label";
+               font:     "content";
+               size:     25;
+               //min: 1 1;
+               max: 1 1;;
+            }
+	 }
+      }
+      part { name: "fg";
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            visible: 0;
+            color: 255 255 255 0;
+            rel1.to: "bg";
+            rel2.to: "bg";
+            image {
+               normal: "menu_sel_fg.png";
+               border: 15 31 15 31;
+            }
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            color: 255 255 255 50;
+         }
+      }
+      part {
+	 name:           "event";
+	 type:           RECT;
+         mouse_events: 1;
+
+	 description {
+	    state: "default" 0.0;
+	    color: 0 0 0 0;
+	 }
+      }
+   }
+   programs {
+
+      program { name: "sel";
+         signal: "enna,state,selected";
+         source: "enna";
+         action: STATE_SET "selected" 0.0;
+         transition: LINEAR 0.2;
+         target: "bg";
+         target: "fg";
+      }
+      program { name: "unsel";
+         signal: "enna,state,unselected";
+         source: "enna";
+         action: STATE_SET "default" 0.0;
+         transition: LINEAR 0.1;
+         target: "bg";
+         target: "fg";
+      }
+   }
+}
+
+group {
+   name: "enna/list/item_odd";
+   min: 32 100;
+
+   parts {
+
+      part { name: "bg";
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            visible: 0;
+            color: 255 255 255 0;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: -5 -3;
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: 4 5;
+            }
+            image {
+               normal: "menu_sel_bg.png";
+               border: 8 8 5 9;
+            }
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            color: 255 255 255 255;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: -2 0;
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: 1 2;
+            }
+         }
+      }
+
+      part {
+	 name:          "enna.swallow.icon";
+	 type:          SWALLOW;
+	 description {
+	    state:    "default" 0.0;
+	    align:    0.0 0.5;
+	    aspect:   1.0 1.0;
+	    aspect_preference: VERTICAL;
+            //	    fixed:    1 1;
+	    rel1 {
+	       relative: 0.0  0.0;
+	       offset:   4    4;
+	    }
+	    rel2 {
+	       relative: 0.0  1.0;
+	       offset:   4   -5;
+	    }
+	 }
+      }
+      part {
+	 name:           "enna.text.label";
+	 type:           TEXT;
+	 mouse_events:   0;
+	 description {
+	    state: "default" 0.0;
+	    min:      16 16;
+	    rel1 {
+	       to_x:     "enna.swallow.icon";
+	       relative: 1.0  0.0;
+	       offset:   4 4;
+	    }
+	    rel2 {
+	       relative: 1.0  1.0;
+	       offset:   -5 -5;
+	    }
+            color: 255 255 255 200;
+            color3: 128 128 128 200;
+
+	    color_class: "ilist_item";
+	    text {
+               text:     "Item Label";
+               font:     "content";
+               fit: 0 1;
+               size:     30;
+               align:    0 0.5;
+               text_class: "list_label";
+            }
+	 }
+      }
+      part { name: "fg";
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            visible: 0;
+            color: 255 255 255 0;
+            rel1.to: "bg";
+            rel2.to: "bg";
+            image {
+               normal: "menu_sel_fg.png";
+               border: 15 31 15 31;
+            }
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            color: 255 255 255 255;
+         }
+      }
+      part {
+	 name:           "event";
+	 type:           RECT;
+	 description {
+	    state: "default" 0.0;
+	    color: 0 0 0 0;
+	 }
+      }
+   }
+   programs {
+
+      program { name: "sel";
+         signal: "enna,state,selected";
+         source: "enna";
+         action: STATE_SET "selected" 0.0;
+         transition: LINEAR 0.2;
+         target: "bg";
+         target: "fg";
+      }
+      program { name: "unsel";
+         signal: "enna,state,unselected";
+         source: "enna";
+         action: STATE_SET "default" 0.0;
+         transition: LINEAR 0.1;
+         target: "bg";
+         target: "fg";
+      }
+   }
+}
+
+group {
+   name: "enna/list/item_full";
+   min: 32 150;
+   parts {
+
+      part { name: "bg";
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            visible: 0;
+            color: 255 255 255 0;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: -5 -3;
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: 4 5;
+            }
+            image {
+               normal: "menu_sel_bg.png";
+               border: 8 8 5 9;
+            }
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            color: 255 255 255 128;
+            rel1 {
+               relative: 0.0 0.0;
+               offset: -2 0;
+            }
+            rel2 {
+               relative: 1.0 1.0;
+               offset: 1 2;
+            }
+         }
+      }
+
+
+      part {
+	 name:          "enna.swallow.icon";
+	 type:          SWALLOW;
+         mouse_events: 0;
+	 description {
+	    state:    "default" 0.0;
+	    align:    0.0 0.5;
+	    aspect:   1.0 1.0;
+	    aspect_preference: VERTICAL;
+            //	    fixed:    1 1;
+	    rel1 {
+	       relative: 0.0  0.0;
+	       offset:   4    4;
+	    }
+	    rel2 {
+	       relative: 0.0  1.0;
+	       offset:   4   -5;
+	    }
+	 }
+      }
+      part {
+	 name:           "enna.text.info";
+	 type:           TEXT;
+	 mouse_events:   0;
+	 description {
+	    state: "default" 0.0;
+	    rel1 {
+	       to_x:     "enna.swallow.icon";
+	       relative: 1.0  0.15;
+	       offset:   5 0;
+	    }
+	    rel2 {
+	       relative: 1.0  0.30;
+	       offset:   -5 0;
+	    }
+            color: 180 180 180 255;
+            color3: 128 128 128 200;
+            align: 0 0.5;
+	    text {
+               text:     "Playing Now";
+               font:     "content";
+               size:     25;
+               //min: 1 1;
+               max: 1 1;;
+            }
+	 }
+      }
+      part {
+	 name:           "line";
+	 type:           RECT;
+	 mouse_events:   0;
+	 description {
+	    state: "default" 0.0;
+            color: 180 180 180 255;
+	    rel1 {
+	       to_x:     "enna.swallow.icon";
+	       relative: 1.0  0.35;
+	       offset:   4 0;
+	    }
+	    rel2 {
+	       relative: 1.0  0.35;
+	       offset:   -5 0;
+	    }
+
+	 }
+      }
+      part {
+	 name:           "enna.text.title";
+	 type:           TEXT;
+	 mouse_events:   0;
+	 description {
+	    state: "default" 0.0;
+	    rel1 {
+	       to_x:     "enna.swallow.icon";
+	       relative: 1.0  0.40;
+	       offset:   5 0;
+	    }
+	    rel2 {
+	       relative: 1.0  0.55;
+	       offset:   -5 0;
+	    }
+            color: 200 200 200 255;
+            color3: 128 128 128 200;
+            align: 0 0.5;
+	    text {
+               text:     "Feel Good Inc.";
+               font:     "content_bd";
+               size:     25;
+               //min: 1 1;
+               max: 1 1;;
+            }
+	 }
+      }
+      part {
+	 name:           "enna.text.album";
+	 type:           TEXT;
+	 mouse_events:   0;
+	 description {
+	    state: "default" 0.0;
+	    rel1 {
+	       to_x:     "enna.swallow.icon";
+	       relative: 1.0  0.55;
+	       offset:   5 0;
+	    }
+	    rel2 {
+	       relative: 1.0  0.70;
+	       offset:   -5 0;
+	    }
+            color: 180 180 180 255;
+            color3: 128 128 128 200;
+            align: 0 0.5;
+	    text {
+               text:     "Daemon Days";
+               font:     "content";
+               size:     20;
+               //min: 1 1;
+               max: 1 1;;
+            }
+	 }
+      }
+      part {
+	 name:           "enna.text.artist";
+	 type:           TEXT;
+	 mouse_events:   0;
+	 description {
+	    state: "default" 0.0;
+	    rel1 {
+	       to_x:     "enna.swallow.icon";
+	       relative: 1.0  0.70;
+	       offset:   5 0;
+	    }
+	    rel2 {
+	       relative: 1.0  0.85;
+	       offset:   -5 0;
+	    }
+            color: 180 180 180 255;
+            color3: 128 128 128 200;
+            align: 0 0.5;
+	    text {
+               text:     "Gorillaz";
+               font:     "content";
+               size:     20;
+               //min: 1 1;
+               max: 1 1;;
+            }
+	 }
+      }
+      part { name: "fg";
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            visible: 0;
+            color: 255 255 255 0;
+            rel1.to: "bg";
+            rel2.to: "bg";
+            image {
+               normal: "menu_sel_fg.png";
+               border: 15 31 15 31;
+            }
+         }
+         description { state: "selected" 0.0;
+            inherit: "default" 0.0;
+            visible: 1;
+            color: 255 255 255 50;
+         }
+      }
+      part {
+	 name:           "event";
+	 type:           RECT;
+         mouse_events: 1;
+
+	 description {
+	    state: "default" 0.0;
+	    color: 0 0 0 0;
+	 }
+      }
+   }
+   programs {
+
+      program { name: "sel";
+         signal: "enna,state,selected";
+         source: "enna";
+         action: STATE_SET "selected" 0.0;
+         transition: LINEAR 0.2;
+         target: "bg";
+         target: "fg";
+      }
+      program { name: "unsel";
+         signal: "enna,state,unselected";
+         source: "enna";
+         action: STATE_SET "default" 0.0;
+         transition: LINEAR 0.1;
+         target: "bg";
+         target: "fg";
+      }
+   }
+}
+
+group {
+   name: "enna/list";
+
+   parts {
+
+      part {
+         name: "enna.swallow.content";
+         type: "SWALLOW";
+         clip_to: "enna.clip.list";
+         description {
+            state: "default" 0.0;
+            color: 255 255 255 255;
+            rel1.to: "enna.clip.list";
+            rel2.to: "enna.clip.list";
+         }
+      }
+      part {
+         name: "enna.clip.list";
+         type: "RECT";
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            color: 255 255 255 255;
+            rel1 {relative: 0 0;}
+            rel2 {relative: 1 1;};
+         }
+         description {
+            state: "left" 0.0;
+            color: 255 255 255 0;
+            rel1 {relative: -2 0;}
+            rel2 {relative: -1  1;};
+         }
+         description {
+            state: "right" 0.0;
+            color: 255 255 255 0;
+            rel1{relative: 1 0;}
+            rel2 {relative: 2 1;};
+         }
+      }
+      part {
+         name : "enna.clip.letter";
+         type: RECT;
+         mouse_events: 0;
+          description {
+             state: "default" 0.0;
+             color: 0 0 0 0;
+             visible: 1;
+             aspect_preference: BOTH;
+             aspect: 1 1;
+             rel1 {relative: 0.5 0.5;}
+             rel2 {relative: 0.5 0.5;};
+         }
+         description {
+            state: "show" 0.0;
+            visible: 1;
+            aspect_preference: BOTH;
+            aspect: 1 1;
+            color: 255 255 255 255;
+            rel1 {relative: 0.35 0.35;}
+            rel2 {relative: 0.65  0.65;};
+         }
+      }
+      part { name: "letter_bg";
+         mouse_events: 0;
+         description { state: "default" 0.0;
+            visible: 1;
+            color: 255 255 255 50;
+            rel1.relative: 0 0;
+            rel1.to: "enna.clip.letter";
+            rel2.relative: 1 1;
+            rel2.to: "enna.clip.letter";
+            image {
+               normal: "letter_bg.png";
+               border: 22 22 22 22;
+            }
+         }
+
+      }
+      part {
+	 name:           "enna.text.letter";
+	 type:           TEXT;
+         clip_to: "enna.clip.letter";
+	 mouse_events:   0;
+	 description {
+	    state: "default" 0.0;
+	    rel1 {
+               relative: 0 0;
+               to: "enna.clip.letter";
+               offset: 22 22;
+	    }
+	    rel2 {
+	       relative: 1 1;
+	       to: "enna.clip.letter";
+               offset: -23 -23;
+	    }
+            color: 200 200 200 200;
+            color3: 128 128 128 200;
+            align: 0.5 0.5;
+	    text {
+               text:     "Item Label";
+               font:     "content";
+               size:     50;
+               fit: 0 1;
+               min: 0 0;
+               max: 0 0;
+            }
+	 }
+      }
+
+   }
+   programs{
+      program {
+         name: "list,left,now";
+         signal: "list,left,now";
+         source:  "enna";
+         action:  STATE_SET "left" 0.0;
+         target: "enna.clip.list";
+      }
+      program {
+         name: "list,right,now";
+         signal: "list,right,now";
+         source:  "enna";
+         action:  STATE_SET "right" 0.0;
+         target: "enna.clip.list";
+      }
+      program {
+         name: "list,right";
+         signal: "list,right";
+         source:  "enna";
+         action:  STATE_SET "right" 0.0;
+         transition: "ACCELERATE" 0.3;
+         target: "enna.clip.list";
+         after: "transition,end";
+      }
+      program {
+         name: "list,left";
+         signal: "list,left";
+         source:  "enna";
+         action:  STATE_SET "left" 0.0;
+         transition: "ACCELERATE" 0.3;
+         target: "enna.clip.list";
+         after: "transition,end";
+      }
+      program {
+         name: "list,default";
+         signal: "list,default";
+         source:  "enna";
+         action:  STATE_SET "default" 0.0;
+         transition: "ACCELERATE" 0.3;
+         target: "enna.clip.list";
+      }
+      program {
+         name: "transition,end";
+         action: SIGNAL_EMIT "list,transition,end" "edje";
+      }
+
+     program {
+         name: "letter,show";
+         signal: "letter,show";
+         source:  "enna";
+         action:  STATE_SET "show" 0.0;
+         transition: "ACCELERATE" 0.3;
+         target: "enna.clip.letter";
+      }
+      program {
+         name: "letter,hide";
+         signal: "letter,hide";
+         source:  "enna";
+         action:  STATE_SET "default" 0.0;
+         transition: "ACCELERATE" 0.3;
+         target: "enna.clip.letter";
+      }
+   }
+}
+

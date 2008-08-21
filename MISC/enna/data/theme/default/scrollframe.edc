@@ -1,0 +1,251 @@
+images{
+   image: "vbar.png" COMP;
+}
+
+group {
+   name: "e/widgets/scrollframe";
+   parts {
+      part
+      {
+         name: "clip";
+         type: RECT;
+	 mouse_events: 0;
+         description
+         {
+            state: "default" 0.0;
+            visible: 1;
+            color: 255 255 255 255;
+         }
+         description
+         {
+            state: "visible" 0.0;
+            visible: 1;
+            color: 255 255 255 255;
+         }
+      }
+      part
+      {
+         name: "bg";
+         type: RECT;
+	 mouse_events: 0;
+         description
+         {
+            state: "default" 0.0;
+            visible: 1;
+            color: 10 10 10 0;
+         }
+         description
+         {
+            state: "visible" 0.0;
+            visible: 1;
+            color: 255 255 255 255;
+         }
+      }
+      part
+      {
+         name: "e.swallow.content";
+         type: SWALLOW;
+         clip_to: "clip";
+         description
+         {
+            state: "default" 0.0;
+            visible: 1;
+            color: 255 255 255 255;
+            rel1
+            {
+               relative: 0 0;
+               //offset: 15 0;
+            }
+            rel2
+            {
+               relative: 1 1;
+               //offset: -15 0;
+            }
+         }
+      }
+
+
+      part
+      {
+         name: "vbar";
+         clip_to: "clip";
+	 mouse_events: 0;
+         type: RECT;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            color: 255 255 255 0;
+            rel1
+            {
+               relative: 1 0;
+               offset: -10 0;
+            }
+            rel2
+            {
+               relative: 1 1;
+               offset: 0 0;
+            }
+         }
+         description {
+            state: "visible" 0.0;
+            visible: 1;
+            color: 255 255 255 255;
+            rel1
+            {
+               relative: 1 0;
+               offset: -10 0;
+            }
+            rel2
+            {
+               relative: 1 1;
+               offset: 0 0;
+            }
+         }
+      }
+      part
+      {
+         name: "vbar2";
+         type: RECT;
+         clip_to: "clip";
+	 mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            visible: 0;
+            color: 255 255 255 0;
+            rel1
+            {
+               relative: 1 0;
+               offset: -10 0;
+            }
+            rel2
+            {
+               relative: 1 1;
+               offset: 0 0;
+            }
+         }
+         description {
+            state: "visible" 0.0;
+            visible: 1;
+            color: 255 255 255 255;
+            rel1
+            {
+               relative: 1 0;
+               offset: -10 0;
+            }
+            rel2
+            {
+               relative: 1 1;
+               offset: 0 0;
+            }
+         }
+      }
+      part
+      {
+         name: "vbar_bg";
+         type: RECT;
+         clip_to: vbar;
+	 mouse_events: 0;
+         description {
+            state: default 0.0;
+            visible: 1;
+            color: 0 0 0 128;
+            rel1
+            {
+               relative: 0 0;
+               to: "vbar";
+            }
+            rel2
+            {
+               relative: 1 1;
+               to: "vbar";
+
+            }
+
+         }
+      }
+      part {
+	 name: "e.dragable.vbar";
+	 clip_to: "vbar2";
+         dragable {
+	    x: 0 0 0;
+	    y: 1 1 1;
+	    confine: "vbar";
+         }
+         description {
+	    state: "default" 0.0;
+            //min: 16 16;
+            rel1 {
+	       relative: 0.5  0.5;
+	       offset:   0    0;
+	       to: "vbar";
+            }
+            rel2 {
+	       relative: 0.5  0.5;
+	       offset:   0    0;
+	       to: "vbar";
+            }
+            image {
+	       normal: "vbar.png";
+               //border: 1 1 1 1;
+            }
+         }
+
+      }
+
+   }
+   programs {
+      program {
+         name: "vbar_show";
+         signal: "e,action,show,vbar";
+         source: "e";
+         action:  STATE_SET "visible" 0.0;
+         transition: ACCELERATE 0.1;
+         target: "vbar";
+         after: "vdrag_show";
+      }
+      program {
+         name: "vdrag_show";
+         action:  STATE_SET "visible" 0.0;
+         transition: ACCELERATE 0.1;
+         target: "vbar2";
+      }
+
+      program {
+         name: "vbar_hide";
+         signal: "e,action,hide,vbar";
+         source: "e";
+         action:  STATE_SET "default" 0.0;
+         transition: DECELERATE 0.5;
+         target: "vbar2";
+         after: "vdrag_hide";
+      }
+      program {
+         name: "vdrag_hide";
+         action:  STATE_SET "default" 0.0;
+         transition: DECELERATE 0.5;
+         target: "vbar";
+      }
+
+
+      program {
+         name: "focus_in";
+         signal: "e,state,focused";
+         source: "e";
+         action: STATE_SET "visible" 0.0;
+         transition: DECELERATE 0.2;
+         target: "clip";
+      }
+      program {
+         name: "focus_out";
+         signal: "e,state,unfocused";
+         source: "e";
+         action: STATE_SET "default" 0.0;
+         transition: ACCELERATE 0.5;
+         target: "clip";
+      }
+
+
+   }
+}
+
+

@@ -1,49 +1,55 @@
-#ifndef ENNA_CONFIG_H
-#define ENNA_CONFIG_H
+#ifndef _ENNA_CONFIG_H_
+#define _ENNA_CONFIG_H_
 
-#include <Ecore.h>
-#include <Ecore_Data.h>
-#include <Ecore_File.h>
-#include <Evas.h>
-#include "enna.h"
+
 typedef struct _Enna_Config Enna_Config;
+typedef struct _Enna_Config_Data Enna_Config_Data;
 
-struct conf_pair
-{
-   char               *key;
-   char               *value;
-   struct conf_pair   *next_pair;
-};
+typedef enum _ENNA_CONFIG_TYPE ENNA_CONFIG_TYPE;
 
-struct conf_section
-{
-   char               *section_name;
-   struct conf_pair   *values;
-   struct conf_section *next_section;
+typedef struct _Config_Pair Config_Pair;
+
+
+
+enum _ENNA_CONFIG_TYPE{
+  ENNA_CONFIG_STRING,
+  ENNA_CONFIG_STRING_LIST,
+  ENNA_CONFIG_INT
 };
 
 struct _Enna_Config
 {
-   char               *theme;
-   Evas_List          *music_extensions;
-   Evas_List          *video_extensions;
-   Evas_List          *photo_extensions;
-   Evas_List          *radio_extensions;
-   struct conf_section *sections;
+   /* Theme */
+   const char                    *theme;
+   const char                    *theme_file;
+   int                            fullscreen;
+   const char                    *engine;
+   const char                    *backend;
+   /* Module Music */
+   Evas_List                     *music_local_root_directories;
+   Evas_List                     *music_filters;
+   Evas_List                     *video_filters;
+   Evas_List                     *photo_filters;
 };
 
-EAPI void           enna_config_init(char *config_filename, char *theme_name);
+struct _Enna_Config_Data
+{
+   char *section;
+   Evas_List *pair;
+};
 
-EAPI char          *enna_config_theme_get(void);
-EAPI void           enna_config_theme_set(char *theme_name);
-EAPI Evas_List     *enna_config_theme_available_get(void);
+struct _Config_Pair
+{
+   char *key;
+   char *value;
+};
 
-EAPI Evas_List     *enna_config_extensions_get(char *type);
-EAPI void           enna_config_extensions_set(char *type, Evas_List * ext);
+EAPI Enna_Config           *enna_config;
 
-EAPI char          *enna_config_get_conf_value(char *section_name,
-					       char *key_name);
-
-#define enna_config_get_conf_value_or_default(section_name, key_name, def) (enna_config_get_conf_value(section_name, key_name) ? enna_config_get_conf_value(section_name, key_name) : def)
-
+EAPI const char       *enna_config_theme_get(void);
+EAPI const char       *enna_config_theme_file_get(const char *s);
+EAPI void              enna_config_value_store(void *var, char *section, ENNA_CONFIG_TYPE type, Config_Pair *pair);
+EAPI Enna_Config_Data *enna_config_module_pair_get(const char *module_name);
+EAPI void              enna_config_init(void);
+EAPI void              enna_config_shutdown(void);
 #endif

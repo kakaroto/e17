@@ -1,0 +1,39 @@
+images {
+ image: "background.png" COMP;
+ image: "circle_shade.png" COMP;
+
+}
+group {
+ name: "enna/background";
+ min: 800 480;
+   parts {
+      part{
+      name: "bg";
+         description {
+         state: "default" 0.0;
+         image.normal: "background.png";
+            fill {
+            smooth: 0;
+               size {
+               relative: 0 0;
+               offset: 32 32;
+               }
+            }
+         }
+      }
+      part {
+      name: "shade";
+      mouse_events:  0;
+         description {
+         state: "default" 0.0;
+         image.normal: "circle_shade.png";
+         fill.smooth: 0;
+         }
+      }
+
+
+
+
+   }
+
+}

@@ -1,0 +1,2 @@
+SUBDIRS = localfiles lms shoutcast
+

@@ -1,111 +1,24 @@
-Enna 0.2.0
+Enna 0.3.0
 
-If you find a bug, please send me an email at aguirre.nicolas@gmail.com
-If you want help improving enna, you can too. Just send me a e-mail. Read the TODO file for a list of improvements. Enjoy free software ;)
+Enna is a mediacenter based on EFL.
+It try to be simple to use, fast, modular.
+Version 0.3.0 is a new version rewrite from scratch.
 
-You can configure enna with a simple file located in $HOME/.enna/enna.cfg
+Core dependecies :
 
-you can find LightMediaScanner here : 
-http://lms.garage.maemo.org/
+* Eet 1.0.0
+* Evas
+* Ecore
+* Edje
 
-This file looks like this : 
+Modules dependecies (optionnal):
 
---- begin of file ---
+* Emotion
+* Libplayer (can be found on geexbox server : http://libplayer.geexbox.org/)
+* LightMediaScanner (can be found here : http://lms.garage.maemo.org/)
+* Lirc (http://www.lirc.org/)
 
-[tv_module]
-used=0
+This program is in eavy developement and you can of course participate
 
-[video_module]
-base_path=path_to_your_videos
-used=1
-
-[music_module]
-base_path=path_to_your_musics
-used=1
-
-[photo_module]
-base_path=path_to_your_photos
-used=1
-
-[playlist_module]
-base_path=path_to_your_playlists
-used=1
-
-[theme]
-name=default
-
-[keyboard]
-Back=BackSpace
-Exit=q
-Pause=p
-FastForward=Next
-Rewind=Prior
-Stop=s
-Mute=m
-Down=Down
-Up=Up
-Right=Right
-Left=Left
-Aspect=a
-Language=l
-FullScreen=f
-AddToPlaylist=KP_Delete
-Select=Return
-
---- end of file -------
-[module section]
-
-used=[0/1]
-you can enable or disable one module with this option
-
-[theme] section
-name=[default]
-
-default = default theme
-
-[keyboard] section
-you can change keybindings with this options. The name after = is the ecore event keyname
-
-------------------------
-
-Default keyboard mapping : 
-If you don't have specified [keyboard] section in your enna.cfg file, 
-you can find below the default mapping
-
-Name           | Key Name      | Enna Event
---------------------------------------------------------             
-Back			| BackSpace 	| enna_event_escape	
-Exit            	| q 		| enna_event_exit
-Play            	| o             | enna_event_play	
-Pause           | p 		| enna_event_pause
-FastForward | Next          | enna_event_fastforward
-Rewind          | Prior         | enna_event_rewind
-Stop            | s 		| enna_event_stop
-Mute            | m 		| enna_event_mute
-Down            | Down          | enna_event_down
-Up 		| Up 		| enna_event_up
-Right           | Right 	| enna_event_right
-Left            | Left          | enna_event_left
-Aspect          | a 		| enna_event_aspect
-Language 	| l 		| enna_event_language
-FullScreen 	| f 		| enna_event_fullscreen
-AddToPlaylist   | KP_Delete	| enna_event_addtopl
-Select          | Return	| enna_event_enter
-Next            | b     	| enna_event_next
-Prev            | n 	        | enna_event_prev
---------------------------------------------------------
-
-You can build your .lircrc file with the name event as in this example
-
-example : 
- 
-      
-begin
-	prog   = enna
-	button = prev
-	config = FastForward
-end
-
-have fun
-
+Have fun,
 Nico

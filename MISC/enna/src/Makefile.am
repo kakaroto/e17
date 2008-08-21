@@ -1,2 +1,2 @@
-SUBDIRS = bin
-
+MAINTAINERCLEANFILES = Makefile.in
+SUBDIRS = bin modules

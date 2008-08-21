@@ -1,0 +1,32 @@
+[enna]
+#0,1
+fullscreen=0
+
+#/home/user/theme.edj for specific file or just 'default' if theme is
+#located at /usr/share/enna/theme/default.edj
+theme=default
+
+#x11,xrender,gl,x11_16
+engine=x11
+
+#libplayer,emotion\n
+backend=libplayer
+
+music_ext=ogg,mp3,flac,wav,wma
+video_ext=avi,mkv,ogg,mpg,mpeg,wmv
+photo_ext=jpg,jpeg,png
+
+[localfiles]
+path_music=file:///path/to/Music,Music,icon_hd
+path_music=file:///path/to/server/Medias/Music,Server,icon_network
+path_video=file:///path/to/Videos,Videos,icon_hd
+path_video=file:///path/to/server/Medias/Videos,Server,icon_network
+path_photo=file:///path/to/Photos,Photos,icon_hd
+path_photo=file:///path/to/server/Medias/Photos,Server,icon_network
+
+[lms]
+path=file:///path/to/Music
+path=file:///path/to/server/Medias/Music
+parser=mp3,ogg,flac,rm,dummy
+slave_timeout=1000
+commit_interval=100
