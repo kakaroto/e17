@@ -66,7 +66,7 @@ e_slipshelf_new(E_Zone *zone, const char *themedir)
    Evas_Coord mw, mh, vx, vy, vw, vh, w, h;
    int x, y;
    Evas_Object *o;
-     
+
    ess = E_OBJECT_ALLOC(E_Slipshelf, E_SLIPSHELF_TYPE, _e_slipshelf_free);
    if (!ess) return NULL;
    

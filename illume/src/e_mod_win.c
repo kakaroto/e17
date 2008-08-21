@@ -57,7 +57,7 @@ static Evas_Object *fm = NULL;
 static Evas_List *desks = NULL;
 static Evas_List *handlers = NULL;
 static Evas_List *sels = NULL;
-static E_Slipwin *slipwin = NULL;
+//static E_Slipwin *slipwin = NULL;
 static Ecore_Timer *defer = NULL;
 static E_Kbd *vkbd = NULL;
 static E_Kbd_Int *vkbd_int = NULL;
@@ -92,8 +92,8 @@ _e_mod_win_init(E_Module *m)
    e_slipshelf_border_del_callback_set(slipshelf, _cb_slipshelf_del, NULL);
    e_slipshelf_border_home_callback_set(slipshelf, _cb_slipshelf_home2, NULL);
    
-   slipwin = e_slipwin_new(zone, e_module_dir_get(m));
-   e_slipwin_border_select_callback_set(slipwin, _cb_slipwin_select, NULL);
+//   slipwin = e_slipwin_new(zone, e_module_dir_get(m));
+//   e_slipwin_border_select_callback_set(slipwin, _cb_slipwin_select, NULL);
    
    vkbd = e_kbd_new(zone, 
 		    e_module_dir_get(m), 
@@ -159,8 +159,8 @@ _e_mod_win_shutdown(void)
    if (fm) evas_object_del(fm);
    e_object_del(E_OBJECT(slipshelf));
    slipshelf = NULL;
-   e_object_del(E_OBJECT(slipwin));
-   slipwin = NULL;
+//   e_object_del(E_OBJECT(slipwin));
+//   slipwin = NULL;
 }
 
 static Ecore_Exe           *_kbd_exe = NULL;
@@ -615,7 +615,7 @@ static void
 _cb_slipshelf_apps(const void *data, E_Slipshelf *ess, E_Slipshelf_Action action)
 {
    if (!_have_borders()) return;
-   e_slipwin_show(slipwin);
+//   e_slipwin_show(slipwin);
 }
 
 static void
@@ -625,11 +625,11 @@ _cb_slipshelf_keyboard(const void *data, E_Slipshelf *ess, E_Slipshelf_Action ac
    else e_kbd_show(vkbd);
 }
 
-static void
-_cb_slipwin_select(const void *data, E_Slipwin *esw, E_Border *bd)
-{
-   if (bd) _e_mod_layout_border_show(bd);
-}
+//static void
+//_cb_slipwin_select(const void *data, E_Slipwin *esw, E_Border *bd)
+//{
+//   if (bd) _e_mod_layout_border_show(bd);
+//}
 
 static void
 _cb_slipshelf_select(const void *data, E_Slipshelf *ess, E_Border *bd)

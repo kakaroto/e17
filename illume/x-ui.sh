@@ -3,6 +3,7 @@
 # This is a quick and dirty script to 
 
 Xephyr :1 -noreset -ac -br -dpi 283 -screen 480x640x16 &
+#Xephyr :1 -noreset -ac -br -dpi 283 -screen 640x480x16 &
 #Xephyr :1 -noreset -ac -br -dpi 283 -screen 480x640 &
 #Xephyr :1 -noreset -ac -br -dpi 186 -screen 272x480 &
 #Xephyr :1 -noreset -ac -br -dpi 141 -screen 240x320 &
