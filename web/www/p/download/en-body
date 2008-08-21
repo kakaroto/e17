@@ -98,8 +98,7 @@
    <div class="main">
     <p><h2>SVN &amp; Asparagus</h2>(Snapshots)</p>
     <p><?php img("aspara.png", "Asparagus");?></p>
-    <p><?php a("contribute", "SVN");?> information is here. Currently we have
-    no SVN servers available.</p>
+    <p><?php a("contribute", "SVN");?> information is here.</p>
     <p>Snapshot releases are available from
     <a href="http://download.enlightenment.org/snapshots">download.enlightenment.org/snapshots</a>.</p>
     <p><a href="http://download.enlightenment.org/snapshots/LATEST">Latest Snapshots</a></p>
