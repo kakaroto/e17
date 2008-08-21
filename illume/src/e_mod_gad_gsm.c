@@ -1,4 +1,25 @@
 #include <e.h>
+/* for complex link stuff */
+#include "config.h"
+#include <Ecore.h>
+#include <E_DBus.h>
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+
+static E_DBus_Connection *conn = NULL;
+static E_DBus_Connection *conn_system = NULL;
+static E_DBus_Signal_Handler *changed_h = NULL;
+static E_DBus_Signal_Handler *changed_fso_h = NULL;
+static E_DBus_Signal_Handler *operatorch_h = NULL;
+static E_DBus_Signal_Handler *operatorch_fso_h = NULL;
+static E_DBus_Signal_Handler *namech_h = NULL;
+static E_DBus_Signal_Handler *namech_system_h = NULL;
+
+static Ecore_Timer *try_again_timer = NULL;
+static int success = 0;
 
 /***************************************************************************/
 typedef struct _Instance Instance;
@@ -7,9 +28,6 @@ struct _Instance
 {
    E_Gadcon_Client *gcc;
    Evas_Object *obj;
-   Ecore_Exe *gsmget_exe;
-   Ecore_Event_Handler *gsmget_data_handler;
-   Ecore_Event_Handler *gsmget_del_handler;
    int strength;
    char *operator;
 };
@@ -37,10 +55,27 @@ static E_Module *mod = NULL;
 /**/
 /***************************************************************************/
 
-static void _gsmget_spawn(Instance *inst);
-static void _gsmget_kill(Instance *inst);
-static int _gsmget_cb_exe_data(void *data, int type, void *event);
-static int _gsmget_cb_exe_del(void *data, int type, void *event);
+static int try_again(void *data);
+static void *signal_unmarhsall(DBusMessage *msg, DBusError *err);
+static void *operator_unmarhsall(DBusMessage *msg, DBusError *err);
+static void signal_callback(void *data, void *ret, DBusError *err);
+static void operator_callback(void *data, void *ret, DBusError *err);
+static void signal_result_free(void *data);
+static void operator_result_free(void *data);
+static void get_signal(void *data);
+static void get_operator(void *data);
+static void signal_changed(void *data, DBusMessage *msg);
+static void operator_changed(void *data, DBusMessage *msg);
+static void name_changed(void *data, DBusMessage *msg);
+
+static int
+try_again(void *data)
+{
+   get_signal(data);
+   get_operator(data);
+   try_again_timer = 0;
+   return 0;
+}
 
 /* called from the module core */
 void
@@ -99,7 +134,55 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    
    inst->strength = -1;
    inst->operator = NULL;
-   _gsmget_spawn(inst);
+   
+   int sleeptime = 8;
+
+   ecore_init();
+   ecore_string_init();
+   e_dbus_init();
+   
+   conn = e_dbus_bus_get(DBUS_BUS_SESSION);
+   conn_system = e_dbus_bus_get(DBUS_BUS_SYSTEM);
+  
+   namech_h = e_dbus_signal_handler_add(conn,
+					"org.freedesktop.DBus",
+					"/org/freedesktop/DBus",
+					"org.freedesktop.DBus",
+					"NameOwnerChanged",
+					name_changed, inst);
+   namech_system_h = e_dbus_signal_handler_add(conn_system,
+					       "org.freedesktop.DBus",
+					       "/org/freedesktop/DBus",
+					       "org.freedesktop.DBus",
+					       "NameOwnerChanged",
+					       name_changed, inst);
+   changed_h = e_dbus_signal_handler_add(conn,
+					 "org.openmoko.qtopia.Phonestatus",
+					 "/Status",
+					 "org.openmoko.qtopia.Phonestatus",
+					 "signalStrengthChanged",
+					 signal_changed, inst);
+   operatorch_h = e_dbus_signal_handler_add(conn,
+					    "org.openmoko.qtopia.Phonestatus",
+					    "/Status",
+					    "org.openmoko.qtopia.Phonestatus",
+					    "networkOperatorChanged",
+					    operator_changed, inst);
+   changed_fso_h = e_dbus_signal_handler_add(conn_system,
+					     "org.freesmartphone.ogsmd",
+					     "/org/freesmartphone/GSM/Device",
+					     "org.freesmartphone.GSM.Network",
+					     "SignalStrength",
+					     signal_changed, inst);
+   operatorch_fso_h = e_dbus_signal_handler_add(conn,
+						"org.freesmartphone.ogsmd",
+						"/org/freesmartphone/GSM/Device",
+						"org.freesmartphone.GSM.Network",
+						"networkOperatorChanged",
+						operator_changed, inst);
+   
+   get_signal(inst);
+   get_operator(inst);
    
    return gcc;
 }
@@ -109,8 +192,13 @@ _gc_shutdown(E_Gadcon_Client *gcc)
 {
    Instance *inst;
    
+   if (conn) e_dbus_connection_close(conn);
+   if (conn_system) e_dbus_connection_close(conn_system);
+   e_dbus_shutdown();
+   ecore_string_shutdown();
+   ecore_shutdown();
+   
    inst = gcc->data;
-   _gsmget_kill(inst);
    evas_object_del(inst->obj);
    free(inst);
 }
@@ -163,76 +251,13 @@ _gc_id_new(void)
 }
 
 static void
-_gsmget_spawn(Instance *inst)
+update_operator(char *op, void *data)
 {
-   char buf[4096];
-   
-   if (inst->gsmget_exe) return;
-   snprintf(buf, sizeof(buf),
-	             "%s/%s/gsmget %i",
-	             e_module_dir_get(mod), MODULE_ARCH,
-	    8);
-   inst->gsmget_exe = ecore_exe_pipe_run(buf,
-					 ECORE_EXE_PIPE_READ |
-					 ECORE_EXE_PIPE_READ_LINE_BUFFERED |
-					 ECORE_EXE_NOT_LEADER,
-					 inst);
-   inst->gsmget_data_handler =
-     ecore_event_handler_add(ECORE_EXE_EVENT_DATA, _gsmget_cb_exe_data,
-			     inst);
-   inst->gsmget_del_handler =
-     ecore_event_handler_add(ECORE_EXE_EVENT_DEL,
-			     _gsmget_cb_exe_del,
-			     inst);
-   
-}
-
-static void
-_gsmget_kill(Instance *inst)
-{
-   if (!inst->gsmget_exe) return;
-   ecore_exe_terminate(inst->gsmget_exe);
-   ecore_exe_free(inst->gsmget_exe);
-   inst->gsmget_exe = NULL;
-   ecore_event_handler_del(inst->gsmget_data_handler);
-   inst->gsmget_data_handler = NULL;
-   ecore_event_handler_del(inst->gsmget_del_handler);
-   inst->gsmget_del_handler = NULL;
-}
-
-static int
-_gsmget_cb_exe_data(void *data, int type, void *event)
-{
-   Ecore_Exe_Event_Data *ev;
-   Instance *inst;
-   int pstrength;
+   Instance *inst = data;
    char *poperator;
    
-   inst = data;
-   ev = event;
-   if (ev->exe != inst->gsmget_exe) return 1;
-   pstrength = inst->strength;
    poperator = inst->operator;
-   if ((ev->lines) && (ev->lines[0].line))
-     {
-	int i;
-	
-	for (i = 0; ev->lines[i].line; i++)
-	  {
-	     if (!strcmp(ev->lines[i].line, "ERROR"))
-	       inst->strength = -999;
-	     else if (ev->lines[i].line[0] == 'S')
-	       inst->strength = atoi(ev->lines[i].line + 1);
-	     else if (ev->lines[i].line[0] == 'O')
-	       {
-		  if (!((poperator) && (!strcmp(poperator, ev->lines[i].line + 1))))
-		    {
-		       inst->operator = malloc(strlen(ev->lines[i].line)/* + 1 *//* don't need this because of the extra O at the front */);
-		       strcpy(inst->operator, ev->lines[i].line + 1);
-		    }
-	       }
-	  }
-     }
+   strcpy(inst->operator, op);
    
    if (inst->operator != poperator)
      {
@@ -243,6 +268,16 @@ _gsmget_cb_exe_data(void *data, int type, void *event)
      }
    if ((poperator) && (inst->operator != poperator))
      free(poperator);
+}
+
+static void
+update_signal(int signal, void *data)
+{
+   Instance *inst = data;
+   int pstrength;
+   
+   pstrength = inst->strength;
+   inst->strength = signal;
 
    if (inst->strength != pstrength)
      {
@@ -259,18 +294,281 @@ _gsmget_cb_exe_data(void *data, int type, void *event)
 	else if ((pstrength >= 0) && (inst->strength == -1))
 	  edje_object_signal_emit(inst->obj, "e,state,passive", "e");
      }
-   return 0;
 }
 
-static int 
-_gsmget_cb_exe_del(void *data, int type, void *event)
+
+static void *
+signal_unmarhsall(DBusMessage *msg, DBusError *err)
 {
-   Ecore_Exe_Event_Del *ev;
-   Instance *inst;
-  
-   inst = data;
-   ev = event;
-   if (ev->exe != inst->gsmget_exe) return 1;
-   inst->gsmget_exe = NULL;
-   return 1;
+   dbus_int32_t str = -1;
+   
+   if (dbus_message_get_args(msg, NULL, DBUS_TYPE_INT32, &str, DBUS_TYPE_INVALID))
+     {
+	int *str_ret;
+	
+	str_ret = malloc(sizeof(int));
+	if (str_ret)
+	  {
+	     *str_ret = str;
+	     return str_ret;
+	  }
+     }
+   return NULL;
+}
+
+static void *
+operator_unmarhsall(DBusMessage *msg, DBusError *err)
+{
+   const char *str;
+
+   if (dbus_message_get_args(msg, NULL, DBUS_TYPE_STRING, &str, DBUS_TYPE_INVALID))
+     {
+	char *str_ret;
+	
+	str_ret = malloc(strlen(str)+1);
+	if (str_ret)
+	  {
+	     strcpy(str_ret, str);
+	     return str_ret;
+	  }
+     }
+   return NULL;
+}
+
+static void
+signal_callback(void *data, void *ret, DBusError *err)
+{
+   if (ret)
+     {
+	if (!success)
+	  {
+	     if (changed_h)
+	       {
+		  e_dbus_signal_handler_del(conn, changed_h);
+		  changed_h = e_dbus_signal_handler_add(conn,
+							"org.openmoko.qtopia.Phonestatus",
+							"/Status",
+							"org.openmoko.qtopia.Phonestatus",
+							"signalStrengthChanged",
+							signal_changed, data);
+	       }
+	     else if (changed_fso_h)
+	       {
+		  e_dbus_signal_handler_del(conn_system, changed_fso_h);
+		  changed_fso_h = e_dbus_signal_handler_add(conn_system,
+							    "org.freesmartphone.ogsmd",
+							    "/org/freesmartphone/GSM/Device",
+							    "org.freesmartphone.GSM.Network",
+							    "SignalStrength",
+							    signal_changed, data);
+	       }
+	     success = 1;
+	  }
+	int *str_ret;
+	str_ret = ret;
+	update_signal(*str_ret, data);
+     }
+   else
+     {
+	success = 0;
+	if (try_again_timer) ecore_timer_del(try_again_timer);
+	try_again_timer = ecore_timer_add(1.0, try_again, data);
+     }
+}
+
+static void
+operator_callback(void *data, void *ret, DBusError *err)
+{
+   if (ret)
+     {
+	if (!success)
+	  {
+	     if (operatorch_h)
+	       {
+		  e_dbus_signal_handler_del(conn, operatorch_h);
+		  operatorch_h = e_dbus_signal_handler_add(conn,
+							   "org.openmoko.qtopia.Phonestatus",
+							   "/Status",
+							   "org.openmoko.qtopia.Phonestatus",
+							   "networkOperatorChanged",
+							   operator_changed, data);
+	       }
+	     else if (operatorch_fso_h)
+	       {
+		  e_dbus_signal_handler_del(conn_system, operatorch_h);
+		  operatorch_h = e_dbus_signal_handler_add(conn,
+							   "org.freesmartphone.ogsmd",
+							   "/org/freesmartphone/GSM/Device",
+							   "org.freesmartphone.GSM.Network",
+							   "networkOperatorChanged",
+							   operator_changed, data);
+	       }
+	     success = 1;
+	  }
+	update_operator(ret, data);
+     }
+   else
+     {
+	success = 0;
+	if (try_again_timer) ecore_timer_del(try_again_timer);
+	try_again_timer = ecore_timer_add(1.0, try_again, data);
+     }
+}
+
+static void
+signal_result_free(void *data)
+{
+   free(data);
+}
+
+static void
+operator_result_free(void *data)
+{
+   free(data);
+}
+
+static void
+get_signal(void *data)
+{
+   DBusMessage *msg, *msg2;
+   
+   if (!conn) return;
+   msg = dbus_message_new_method_call("org.openmoko.qtopia.Phonestatus",
+				      "/Status",
+				      "org.openmoko.qtopia.Phonestatus",
+				      "signalStrength");
+   if (!conn_system) return;
+   msg2 = dbus_message_new_method_call("org.freesmartphone.ogsmd",
+				       "/org/freesmartphone/GSM/Device",
+				       "org.freesmartphone.GSM.Network",
+				       "GetSignalStrength");
+   if (!msg || !msg2) return;
+   e_dbus_method_call_send(conn, msg,
+			   signal_unmarhsall,
+			   signal_callback,
+			   signal_result_free, -1, data);
+   e_dbus_method_call_send(conn_system, msg2,
+			   signal_unmarhsall,
+			   signal_callback,
+			   signal_result_free, -1, data);
+   dbus_message_unref(msg);
+   dbus_message_unref(msg2);
+}
+
+static void
+get_operator(void *data)
+{
+   DBusMessage *msg, *msg2;
+   
+   if (!conn) return;
+   msg = dbus_message_new_method_call("org.openmoko.qtopia.Phonestatus",
+				      "/Status",
+				      "org.openmoko.qtopia.Phonestatus",
+				      "networkOperator");
+   if (!conn_system) return;
+   msg2 = dbus_message_new_method_call("org.freesmartphone.ogsmd",
+				       "/org/freesmartphone/GSM/Device",
+				       "org.freesmartphone.GSM.Network",
+				       "networkOperator");
+   if (!msg || !msg2) return;
+   e_dbus_method_call_send(conn, msg,
+			   operator_unmarhsall,
+			   operator_callback,
+			   operator_result_free, -1, data);
+   e_dbus_method_call_send(conn_system, msg2,
+			   operator_unmarhsall,
+			   operator_callback,
+			   operator_result_free, -1, data);
+   dbus_message_unref(msg);
+   dbus_message_unref(msg2);
+}
+
+static void
+signal_changed(void *data, DBusMessage *msg)
+{
+   DBusError err;
+   dbus_int32_t str = -1;
+   
+   dbus_error_init(&err);
+   if (!dbus_message_get_args(msg, &err, DBUS_TYPE_INT32, &str, DBUS_TYPE_INVALID))
+     return;
+   update_signal(str, data);
+}
+
+static void
+operator_changed(void *data, DBusMessage *msg)
+{
+   DBusError err;
+   char *str;
+   
+   dbus_error_init(&err);
+   if (!dbus_message_get_args(msg, &err, DBUS_TYPE_STRING, &str, DBUS_TYPE_INVALID))
+     return;
+   update_operator(str, data);
+}
+
+static void
+name_changed(void *data, DBusMessage *msg)
+{
+   DBusError err;
+   const char *s1, *s2, *s3;
+   
+   dbus_error_init(&err);
+   if (!dbus_message_get_args(msg, &err,
+			      DBUS_TYPE_STRING, &s1,
+			      DBUS_TYPE_STRING, &s2,
+			      DBUS_TYPE_STRING, &s3,
+			      DBUS_TYPE_INVALID))
+     return;
+   if (!strcmp(s1, "org.openmoko.qtopia.Phonestatus"))
+     {
+	if (changed_h)
+	  {
+	     e_dbus_signal_handler_del(conn, changed_h);
+	     changed_h = e_dbus_signal_handler_add(conn,
+						   "org.openmoko.qtopia.Phonestatus",
+						   "/Status",
+						   "org.openmoko.qtopia.Phonestatus",
+						   "signalStrengthChanged",
+						   signal_changed, data);
+	     get_signal(data);
+	  }
+	if (operatorch_h)
+	  {
+	     e_dbus_signal_handler_del(conn, operatorch_h);
+	     operatorch_h = e_dbus_signal_handler_add(conn,
+						      "org.openmoko.qtopia.Phonestatus",
+						      "/Status",
+						      "org.openmoko.qtopia.Phonestatus",
+						      "networkOperatorChanged",
+						      operator_changed, data);
+	     get_operator(data);
+	  }
+     }
+   else if (!strcmp(s1, "org.freesmartphone.ogsmd"))
+     {
+	if (changed_fso_h)
+	  {
+	     e_dbus_signal_handler_del(conn_system, changed_fso_h);
+	     changed_fso_h = e_dbus_signal_handler_add(conn_system,
+						       "org.freesmartphone.ogsmd",
+						       "/org/freesmartphone/GSM/Device",
+						       "org.freesmartphone.GSM.Network",
+						       "SignalStrength",
+						       signal_changed, data);
+	     get_signal(data);
+	  }
+	if (operatorch_fso_h)
+	  {
+	     e_dbus_signal_handler_del(conn_system, operatorch_h);
+	     operatorch_h = e_dbus_signal_handler_add(conn,
+						      "org.freesmartphone.ogsmd",
+						      "/org/freesmartphone/GSM/Device",
+						      "org.freesmartphone.GSM.Network",
+						      "networkOperatorChanged",
+						      operator_changed, data);
+	     get_operator(data);
+	  }
+     }
+   return;
 }

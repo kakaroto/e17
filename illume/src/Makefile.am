@@ -63,9 +63,3 @@ wifigetdir = $(pkgdir)
 wifiget_PROGRAMS        = wifiget
 wifiget_SOURCES         = wifiget.c
 wifiget_LDFLAGS         = 
-
-gsmgetdir = $(pkgdir)
-
-gsmget_PROGRAMS        = gsmget
-gsmget_SOURCES         = gsmget.c
-gsmget_LDFLAGS         = @ECORE_LIBS@ @E_DBUS_LIBS@
