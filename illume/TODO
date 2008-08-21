@@ -1,0 +1,21 @@
+--- Things To Do --- (in no particular order)
+* config panel entries for lots of illume features:
+*  wallpaper
+*  theme
+*  cache
+* e: modules config dialog - make replaceable by a module
+* e: battery config dialog - allow config entries to be hidden
+* kbd: add language hints per kbd layout
+* kbd: clean up code
+* slipwin need to be an option
+* need to also include quick-launch for this list (for non-active windows)
+* need to make a QVGA (240x320) setup
+* need to make a WVGA (800x480) setup
+* need to make a WQVGA (480x320) setup
+* need to make a WQVGA (240x432) setup
+* need to make a WQVGA (272x480) setup
+* need to fix touchscreen to be less sensitive and more accurate
+* launcher needs to be able to show and hide to get clean desktop
+* on launcher hide need to optionally show desktop gadgets like clock etc.
+* need to offer easy rotate (via external input or on-screen) as well as resolution change
+
