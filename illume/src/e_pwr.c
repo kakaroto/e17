@@ -68,24 +68,27 @@ _system_req_state(const char *state)
    DBusMessage *msg;
    
    if (!conn) printf("@@ NO SYSTEM DBUS FOR OMPOWER\n");
-   msg = dbus_message_new_method_call("org.openmoko.Power",
-				      "/",
-				      "org.openmoko.Power.Core",
-				      "RequestResourceState");
-   if (msg)
+   else
      {
-	DBusMessageIter iter;
-	const char *str;
-	
-	dbus_message_iter_init_append(msg, &iter);
-	str = "cpu";
-	dbus_message_iter_append_basic(&iter, DBUS_TYPE_STRING, &str);
-	str = "illume";
-	dbus_message_iter_append_basic(&iter, DBUS_TYPE_STRING, &str);
-	str = state;
-	dbus_message_iter_append_basic(&iter, DBUS_TYPE_STRING, &str);
-	e_dbus_method_call_send(conn, msg, NULL, NULL, NULL, -1, NULL);
-	dbus_message_unref(msg);
+	msg = dbus_message_new_method_call("org.openmoko.Power",
+					   "/",
+					   "org.openmoko.Power.Core",
+					   "RequestResourceState");
+	if (msg)
+	  {
+	     DBusMessageIter iter;
+	     const char *str;
+	     
+	     dbus_message_iter_init_append(msg, &iter);
+	     str = "cpu";
+	     dbus_message_iter_append_basic(&iter, DBUS_TYPE_STRING, &str);
+	     str = "illume";
+	     dbus_message_iter_append_basic(&iter, DBUS_TYPE_STRING, &str);
+	     str = state;
+	     dbus_message_iter_append_basic(&iter, DBUS_TYPE_STRING, &str);
+	     e_dbus_method_call_send(conn, msg, NULL, NULL, NULL, -1, NULL);
+	     dbus_message_unref(msg);
+	  }
      }
 }
 
@@ -95,7 +98,7 @@ _system_unreq_state(void)
    DBusMessage *msg;
    
    if (!conn) printf("@@ NO SYSTEM DBUS FOR OMPOWER\n");
-   if (conn)
+   else
      {
 	msg = dbus_message_new_method_call("org.openmoko.Power",
 					   "/",
@@ -115,8 +118,6 @@ _system_unreq_state(void)
 	     dbus_message_unref(msg);
 	  }
      }
-   else
-     printf("@@ NO SYSTEM DBUS FOR OMPOWER\n");
 }
 
 /* internal calls */
