@@ -3,6 +3,8 @@
 rm -rf autom4te.cache
 rm -f aclocal.m4 ltmain.sh
 
+mkdir m4
+
 touch README
 
 echo "Running autopoint..." ; autopoint -f || :
