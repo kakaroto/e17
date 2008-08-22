@@ -1,12 +1,20 @@
 --- Things To Do --- (in no particular order)
+* vkbd keyboard doesnt resize down in size )start in 640x480 then change to
+  480x640 for example - kbd runs off the left)
+* kbd doesnt pop down popup menus when hidden all the time
+* kbd shift key on default too close to chars
+* kbd need more padding around words in matches list
+* kbd matches list words need bigger hit area
+* kbd needs drag for backspace/next word etc. to be shorter
+* kbd: add language hints per kbd layout
 * config panel entries for lots of illume features:
 *  wallpaper
 *  theme
 *  cache
 * e: modules config dialog - make replaceable by a module
 * e: battery config dialog - allow config entries to be hidden
-* kbd: add language hints per kbd layout
-* kbd: clean up code
+* e: need ability to have  system default profile done cleanly
+* e: need to be able to merge in new config from system config (profile)
 * slipwin need to be an option
 * need to also include quick-launch for this list (for non-active windows)
 * need to make a QVGA (240x320) setup
