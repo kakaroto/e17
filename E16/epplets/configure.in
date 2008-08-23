@@ -21,15 +21,6 @@ fi
 AC_PROG_CC
 AC_PROG_CPP
 
-dnl# These must be run after AC_PROG_CC but before any other macros that use
-dnl# the C compiler
-AC_AIX
-AC_ISC_POSIX
-AC_MINIX
-
-dnl# At least make the attempt to support CygWin32
-AC_CYGWIN
-
 define([AC_LIBTOOL_LANG_CXX_CONFIG], [:])dnl
 define([AC_LIBTOOL_LANG_F77_CONFIG], [:])dnl
 define([AC_LIBTOOL_LANG_GCJ_CONFIG], [:])dnl
@@ -46,9 +37,6 @@ AM_SANITY_CHECK
 dnl# Most people don't want the developer-only clutter
 AM_MAINTAINER_MODE
 
-dnl# If it's there, what the hell?
-AM_WITH_DMALLOC
-
 dnl# Look for needed programs
 AC_CHECK_PROG(RM, rm, rm, true)
 AC_CHECK_PROG(CP, cp, cp, false)
@@ -57,7 +45,6 @@ AC_CHECK_PROG(TAR, tar, tar, tar)
 AC_CHECK_PROG(MKDIR, mkdir, mkdir, false)
 AC_CHECK_PROG(AR, ar, ar, false)
 AC_CHECK_PROG(MV, mv, mv, true)
-AC_LN_S
 
 AC_C_CONST
 AC_C_INLINE
