@@ -164,21 +164,53 @@ EAPI Enesim_Drawer_Point enesim_drawer_point_pixel_get(Enesim_Rop rop, Enesim_Su
 /* Span functions */
 
 /**
- * Do we need to pass the length here?
+ * Returns a function that will draw a span of pixels using the raster
+ * operation rop for a surface format dfmt with color color
  */
-EAPI Enesim_Drawer_Span enesim_drawer_span_color_get(Enesim_Rop rop, Enesim_Surface_Format dfmt, unsigned int color)
+EAPI Enesim_Drawer_Span enesim_drawer_span_color_get(Enesim_Rop rop, Enesim_Surface_Format dfmt, Enesim_Color color)
 {
 	/* TODO check if the color is opaque */
 	return drawer[dfmt]->sp_color[rop];
 }
-
 /**
- * 
+ * Returns a function that will draw a span of pixels using the raster
+ * operation rop for a surface format dfmt with alpha values from the mask
+ * and multiplying with color color
+ */
+EAPI Enesim_Drawer_Span enesim_drawer_span_mask_color_get(Enesim_Rop rop, Enesim_Surface_Format dfmt, Enesim_Surface_Format sfmt)
+{
+	/* TODO check if the color is opaque */
+	/* TODO add sfmt argument */
+	return drawer[dfmt]->sp_mask_color[rop][COLOR_OPAQUE];
+}
+/**
+ * Returns a function that will draw a span of pixels using the raster
+ * operation rop for a surface format dfmt with pixels of format sfmt
  */
 EAPI Enesim_Drawer_Span enesim_drawer_span_pixel_get(Enesim_Rop rop, Enesim_Surface_Format dfmt, Enesim_Surface_Format sfmt)
 {
-	/* TODO check if the color is opaque */
 	return drawer[dfmt]->sp_pixel[rop][sfmt];
 }
+/**
+ * Returns a function that will draw a span of pixels using the raster
+ * operation rop for a surface format dfmt with pixels of format sfmt
+ * multypling with color color
+ */
+EAPI Enesim_Drawer_Span enesim_drawer_span_pixel_color_get(Enesim_Rop rop, Enesim_Surface_Format dfmt, Enesim_Surface_Format sfmt)
+{
+	/* FIXME if the surface is alpha only, use the mask_color */
+	/* TODO check if the color is opaque */
+	return drawer[dfmt]->sp_pixel_color[rop][sfmt][COLOR_OPAQUE];
+}
+/**
+ * Returns a function that will draw a span of pixels using the raster
+ * operation rop for a surface format dfmt with alpha values from the mask
+ * and multiplying with the pixel values from sfmt
+ * @param
+ * @param
+ */
+EAPI Enesim_Drawer_Span enesim_drawer_span_pixel_mask_get(Enesim_Rop rop, Enesim_Surface_Format dfmt, Enesim_Surface_Format sfmt)
+{
+	return drawer[dfmt]->sp_pixel_mask[rop][sfmt];
+}
 
-//EAPI Enesim_Drawer_Color enesim_drawer_pt_color_get(Enesim_Rop rop)

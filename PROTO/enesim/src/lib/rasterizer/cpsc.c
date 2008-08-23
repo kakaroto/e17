@@ -45,7 +45,7 @@ typedef struct _Cpsc_Edge
 
 typedef struct _Cpsc
 {
-	Eina_Array	*a;
+	Eina_Lalloc	*a;
 	Enesim_Rasterizer *r;
 	Cpsc_Vertex 	*vertices;
 	int 		num_vertices;

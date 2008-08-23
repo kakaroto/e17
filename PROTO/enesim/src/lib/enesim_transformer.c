@@ -136,14 +136,17 @@ static void transformer_identity_no_no(Enesim_Transformation *t, Enesim_Surface 
 	Enesim_Drawer_Span spfnc;
 	int h;
 	
+	/* TODO, pixel or pixel_color */
+	spfnc = enesim_drawer_span_pixel_get(t->rop, ds->format, ss->format);
+	if (!spfnc)
+		return;
+	
 	enesim_surface_data_get(ss, &sdata);
 	enesim_surface_data_get(ds, &ddata);
 	enesim_surface_data_increment(&sdata, ss->format, (srect->y * ss->w) + srect->x);
 	enesim_surface_data_increment(&ddata, ds->format, (drect->y * ds->w) + drect->x);
 	h = drect->h;
 	
-	/* TODO, pixel or pixel_color */
-	spfnc = enesim_drawer_span_pixel_get(t->rop, ds->format, ss->format);
 	while (h--)
 	{
 		spfnc(&ddata, drect->w, &sdata, /* mul_color */0, NULL);
@@ -159,14 +162,18 @@ static void transformer_affine_no_no(Enesim_Transformation *t, Enesim_Surface *s
 	Eina_F16p16 sx, sy;
 	Enesim_Drawer_Point ptfnc;
 	int h;
-	
+
+	/* force an alpha color, return if we dont have a point function */
+	ptfnc = enesim_drawer_point_color_get(t->rop, ds->format, 0x55555555);
+	if (!ptfnc)
+		return;
 	sx = eina_f16p16_mul(t->matrix_fixed[MATRIX_XX], drect->x) + eina_f16p16_mul(t->matrix_fixed[MATRIX_XY], drect->y) + t->matrix_fixed[MATRIX_XZ];
 	sy = eina_f16p16_mul(t->matrix_fixed[MATRIX_YX], drect->x) + eina_f16p16_mul(t->matrix_fixed[MATRIX_YY], drect->y) + t->matrix_fixed[MATRIX_YZ];
 	
 	enesim_surface_data_get(ds, &ddata);
 	enesim_surface_data_get(ss, &sdata);
 	enesim_surface_data_increment(&ddata, ds->format, (drect->y * ds->w) + drect->x);
-	
+
 	h = drect->h;
 	while (h--)
 	{
@@ -196,7 +203,6 @@ static void transformer_affine_no_no(Enesim_Transformation *t, Enesim_Surface *s
 				/* use 2x2 convolution kernel to interpolate */
 				enesim_surface_data_increment(&sdata2, ss->format, (siy * ss->w) + six);
 				argb = convolution2x2(&sdata2, ss->format, sxx, syy, ss->w, ss->h);
-				ptfnc = enesim_drawer_point_color_get(t->rop, ds->format, argb);
 				ptfnc(&ddata2, NULL, argb, NULL);
 			}
 			enesim_surface_data_increment(&ddata2, ds->format, 1);
@@ -284,7 +290,6 @@ EAPI void enesim_transformation_matrix_rotate(float *t, float rad)
 	float c = cos(rad);
 	float s = sin(rad);
 	
-	printf("%f %f\n", c, s);
 	t[MATRIX_XX] = c;
 	t[MATRIX_XY] = -s;
 	t[MATRIX_XZ] = 0;
@@ -345,7 +350,18 @@ EAPI void enesim_transformation_set(Enesim_Transformation *t, float *tx)
 	/* TODO the type should on the fixed or on the float */
 	_transformation_to_fixed(t->matrix, t->matrix_fixed);
 	t->type = _transformation_get(t->matrix);
-	printf("Transformation type = %d\n", t->type);
+}
+/**
+ * 
+ */
+EAPI void enesim_transformation_get(Enesim_Transformation *t, float *tx)
+{
+	int i;
+
+	for (i = 0; i < MATRIX_SIZE; i++)
+	{
+		tx[i] = t->matrix[i];
+	}
 }
 /**
  * 
@@ -427,7 +443,6 @@ EAPI Eina_Bool enesim_transformation_apply(Enesim_Transformation *t,
 		//ENESIM_ERROR(ENESIM_ERROR_TRANSFORMATION_NOT_SUPPORTED);
 		return EINA_FALSE;
 	}
-	printf("%p\n", tfunc);
 	tfunc(t, s, sr, d, dr);
 	return EINA_TRUE;
 }

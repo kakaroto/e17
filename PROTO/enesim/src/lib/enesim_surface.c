@@ -156,12 +156,11 @@ enesim_surface_convert(Enesim_Surface *s, Enesim_Surface *d)
 	
 	if ((s->w != d->w) || (s->h != d->h))
 	{
-		printf("scaling %d %d (%f) %d %d (%f)\n", d->w, s->w, (float)d->w/s->w, d->h, s->h, (float)d->h/s->h);
+		//printf("scaling %d %d (%f) %d %d (%f)\n", d->w, s->w, (float)d->w/s->w, d->h, s->h, (float)d->h/s->h);
 		enesim_transformation_matrix_scale(matrix, d->w / s->w, d->h / s->h);
 	}
 	else
 	{
-		printf("identity\n");
 		enesim_transformation_matrix_identity(matrix);	
 	}
 	/* TODO call the correct convert function based on the src
