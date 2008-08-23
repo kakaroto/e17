@@ -117,21 +117,21 @@ typedef struct Ewl_MVC Ewl_MVC;
  */
 struct Ewl_MVC
 {
-        Ewl_Box box;                /**< Inherit from Ewl_Box */
+        Ewl_Box box;                                    /**< Inherit from Ewl_Box */
 
-        void *data;                /**< The mvc data */
-        const Ewl_View *view;        /**< The view for the mvc */
-        const Ewl_Model *model;        /**< The model for the mvc */
+        void *data;                                     /**< The mvc data */
+        const Ewl_View *view;                           /**< The view for the mvc */
+        const Ewl_Model *model;                         /**< The model for the mvc */
 
         struct {
-                void (*view_change)(Ewl_MVC *mvc);         /**< View change callback */
-                void (*selected_change)(Ewl_MVC *mvc);        /**< Selected change callback */
-        } cb;                        /**< Callbacks to the inheriting widgets */
+                void (*view_change)(Ewl_MVC *mvc);      /**< View change callback */
+                void (*selected_change)(Ewl_MVC *mvc);  /**< Selected change callback */
+        } cb;                                           /**< Callbacks to the inheriting widgets */
 
-        Ecore_List *selected;                /**< The selected cells */
+        Ecore_List *selected;                           /**< The selected cells */
 
-        Ewl_Selection_Mode selection_mode;        /**< The widget selection mode*/
-        unsigned char dirty:1;                /**< Is the data dirty */
+        Ewl_Selection_Mode selection_mode;              /**< The widget selection mode*/
+        unsigned char dirty:1;                          /**< Is the data dirty */
 };
 
 int                      ewl_mvc_init(Ewl_MVC *mvc);
