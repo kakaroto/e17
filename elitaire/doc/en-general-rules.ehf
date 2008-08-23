@@ -3,12 +3,12 @@
 {\p
 	All games have some things in common. The aim is to bring all cards
 	to the piles. A french card deck is used. The order is always Ace, 2, 
-	3, etc., upto 10, Jack, Queen, King.
+	3, etc., up to 10, Jack, Queen, King.
 }
 {\p
-	You can move the cards, of course only if the rules allow it, by 
+	Provided that the game rules allow it, one can move a card by 
 	dragging the card with the left mouse button. If a card is covered by
 	another card you can show it by clicking it with the middle mouse
 	button. To move a card directly to the pile, right click on it.
-	Depending on the rules you can also move a whole stack of cards.
+	Depending on the rules, you may also move a whole stack of cards.
 }

@@ -2,19 +2,21 @@
 {\h[1]	Writing a theme for Elitaire}
 {\p
 	I assume that you already have some knowledge and experiences with 
-	edje or better said with writing edc-files. If you are not familiar 
-	with edc-files, please, read an introduction about them first.
+	edje and with writing edc-files. If you are not familiar 
+	with edc-files, please, read an introduction pertaining to them first.
 }
 {\p
-	There are two different kinds of themes: card deck and gui themes. I 
-	will handle theme here independently, although they can be out into a 
-	single edj-files. Nevertheless I want to encourage you to use two 
-	different files, if they are not really designed to form an unit.
+	There are two separate parts in an Elitaire theme: the card deck and 
+	the gui themes. I will handle each part here independently, although 
+	they can be combined into a single edj-file. Nevertheless,
+	I want to encourage you to use two different files if they are 
+	not really designed to form an unit.
 }
 {\p
-	There are two places elitaire looks to find the themes, the system wide
-	 path is {\em $PREFIX/share/elitaire/themes/} and for personal files it
-	 is {\em ~/.e/apps/elitaire/themes/}.
+	There are two places elitaire looks to find the themes. First, the 
+	system wide path is {\em $PREFIX/share/elitaire/themes/}. 
+	Elitaire will search for user themes in 
+	{\em ~/.e/apps/elitaire/themes/}.
 }
 
 {\h[2] The card deck}
@@ -65,14 +67,14 @@
 	Besides the front pictures of the cards there are also 
 	{\em "elitaire/card/bg"}, the backside of the cards, and 
 	{\em "elitaire/card/shadow"} used as the shadow for the cards if it is 
-	enabled. Note, that to both groups {\em "hint,on"} and {\em "hint,off"}
-	 is never called.
+	enabled. Note that in both groups the signals {\em "hint,on"} and 
+	{\em "hint,off"} are never called.
 }
 {\h[3] The stacks}
 {\p
-	There are two groups for the stacks {\em "elitaire/stack/all"} and 
+	There are two groups for the stacks: {\em "elitaire/stack/all"} and 
 	{\em "elitaire/stack/last"}. {\em "last"} is used for stacks, where 
-	only the card on the top is visible, while they is hiding the other 
+	only the card on the top is visible, while they are hiding the other 
 	cards. {\em "all"} is used as stack base for stacks, where the cards 
 	are arranged in a top-down sequence.
 }
@@ -81,10 +83,10 @@
 {\p
 	The gui theme consists of two groups {\em "elitaire/main"} and 
 	{\em "elitaire/element"}. The main group has many swallow and text 
-	parts you can or have to provide.
+	parts the themer should provide.
 {\p
-	There is also a bunch of signals of elitaire send to the main part and 
-	some signals elitaire is listen to.
+	There are also a bunch of signals that Elitaire will send to the 
+	main part, as well as some signals elitaire will listen to.
 }
 
 {\h[3] Swallow Parts}
@@ -102,7 +104,7 @@
 {\noip {\st "elitaire_resize_left"}}
 {\p
 	This swallow part is used for the event rectangle to resize the window
-	in the left direction. Only use this if your the is a borderless theme.
+	in the left direction. Only use this if creating a borderless theme.
 }
 {\noip {\st "elitaire_resize_right"}}
 {\p
@@ -136,16 +138,16 @@
 {\p
 	The part to swallow the box to hold the different card deck names, so
 	that the user can select them. Elitaire doesn't set a minimum size for
-	it so it is up to you. (This will maybe changed in the future.) The
+	it so it is up to you (This will maybe changed in the future). The
 	box is scrollable, see more about that in the signal section.
 }
 {\noip {\st "elitaire_theme_box"}}
 {\p
-	The same like the card box, but for the gui themes.
+	The same as the card box, but for the gui themes.
 }
 {\noip {\st "elitaire_new_box"}}
 {\p
-	The same like the card box, but to start a new game variant.
+	The same as the card box, but to start a new game variant.
 }
 {\noip {\st "elitaire_card_field"}}
 {\p
@@ -157,13 +159,14 @@
 
 {\noip {\st "elitaire_win_text"}}
 {\p
-	In this text part something like {\em "You lost"}, {\em "You win"}
-	or {\em "Game Over"}. Don't make this part too small, because the 
-	translated labels can actually be longer.
+	This text part will show the game result (something like 
+	{\em "You lost"}, {\em "You win"} or {\em "Game Over"}). 
+	Don't make this part too small, because the translated labels 
+	can actually be longer.
 }
 {\noip {\st "elitaire_points"}}
 {\p
-	This is the text field where the current points number stands.
+	The text field where the current points number is shown.
 }
 {\noip {\st "elitaire_new_box_label"}}
 {\p
@@ -180,24 +183,24 @@
 
 {\h[3] Read data values}
 {\p
-	There are some data values that you can define that a read by 
-	elitaire. All this values are optional.
+	Here are some data values that you can define that customize 
+	Elitaire. All of these values are optional.
 }
 {\noip}
 {\noip {\st "borderless"}}
 {\p
 	You can set the main window to borderless if the value is {\em "1"}, 
-	else it will have a border.
+	otherwise it will have a border.
 }
 {\noip {\st "shaped"}}
 {\p
-	This will cause the window to be shaped if you set it to {\em "1"}, 
-	else it will not be shaped.
+	This value will cause the window to be shaped if you set it to 
+	{\em "1"}, otherwise it will not be shaped.
 }
 {\noip {\st "offset/left" "offset/right" "offset/top" "offset/bottom"}}
 {\p
 	These define the offset values of the cards to the card field. This is
-	usefull because the cards are clipped to the size of the card field.	
+	useful because the cards are clipped to the size of the card field.	
 }
 {\h[3] Signals emitted by elitaire}
 
@@ -226,15 +229,15 @@
 }
 {\noip}
 {\p
-	In some cases elitaire sends signals that are appointed for elitaire 
-	itself.But of course you can use them too if you want to. You find 
+	In some cases Elitaire emits signals that are appointed for Elitaire 
+	itself, although you can use them too if you want to. You can find 
 	more about them in the next section: {\em "new_game"}, {\em "undo"},
 	{\em "restart"}
 }
 {\h[3] Signals received by elitaire}
 {\noip {\st "quit"}}
 {\p
-	This requests elitaire to quit the application.
+	This requests Elitaire to quit the application.
 }
 {\noip {\st "undo"}}
 {\p
@@ -272,7 +275,7 @@
 {\p
 	As you can figure it is hard to scroll with the above step functions,
 	hence there is also this signal that will start a timer that performs
-	the scrolling for.
+	the actual scrolling.
 }
 {\noip {\st "scroll,right,start"}}
 {\p
@@ -286,11 +289,11 @@
 }
 {\noip}
 {\p
-	Finally there is also the {\st "elitaire/element"} group it is for the 
-	menu items put into the boxes. To show the game name it needs the a 
-	text part named {\em "elitaire_element_value"}. When the user has 
-	selected this element you need to emit a signal {\em "item_selected"} 
-	where the source has also to be {\em "item_selected"}.
+	Finally there is also the {\st "elitaire/element"} group, which is 
+	required for the menu items put into the boxes. To show the game 
+	name it needs the a text part named {\em "elitaire_element_value"}. 
+	When the user has selected this element you need to emit a signal 
+	{\em "item_selected"}, where the source is also {\em "item_selected"}.
 }
 {\noip}
 {\noip If you find a mistake or a missing part, please let it me know.}
