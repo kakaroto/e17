@@ -1,4 +1,3 @@
-# $Id$
 
 if BUILD_SNPRINTF
 SRCS_SNPRINTF = snprintf.c

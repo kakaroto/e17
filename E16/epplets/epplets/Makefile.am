@@ -1,4 +1,3 @@
-# $Id$
 
 edatadir = $(datadir)/e16
 

@@ -225,7 +225,6 @@ AC_OUTPUT([
 Makefile
 api/Makefile
 epplets/Makefile
-debian/Makefile
 api/epplet.h
 epplets.spec
 ])

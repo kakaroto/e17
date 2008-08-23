@@ -1,8 +1,7 @@
-# $Id$
 
 AUTOMAKE_OPTIONS = foreign
 
-SUBDIRS = api epplets debian
+SUBDIRS = api epplets
 
 EXTRA_DIST = autogen.sh epplets.spec
 
