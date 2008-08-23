@@ -1,9 +1,0 @@
-Thanks to Tom Gilbert <gilbertt@btinternet.com>
-we finally have something halfway working in here.
-
-to build: just type "make"
-you need to run enlightenment for this sucker to work.
-it won't make install, just copy the binary someplace useful for you.
-(same as e16keyedit)
-
-- Mandrake

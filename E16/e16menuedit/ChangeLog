@@ -1,9 +1,0 @@
-Sun May 21 02:02:08 2000  Tom Gilbert  <gilbertt@btinternet.com>
-
-	* Sort rows on column click.
-
-Tue Apr 18 17:59:56 PDT 2000
-(Mandrake)
-
-Patch from mazeone (mazeone@widgetworks.com) adds a browse button for the exec
-option, and fixes a bug where the browse button on the icon was broken.                            
