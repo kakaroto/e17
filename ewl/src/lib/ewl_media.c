@@ -267,7 +267,7 @@ ewl_media_length_time_get(Ewl_Media *m, int *h, int *min, double *s)
 void
 ewl_media_play_set(Ewl_Media *m, int p)
 {
-        DENTER_FUNCTION(DLEVEL_STABLE)
+        DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(m);
         DCHECK_TYPE(m, EWL_MEDIA_TYPE);
 
@@ -290,7 +290,7 @@ ewl_media_seekable_get(Ewl_Media *m)
 {
         int seekable = 0;
 
-        DENTER_FUNCTION(DLEVEL_STABLE)
+        DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR_RET(m, 0);
         DCHECK_TYPE_RET(m, EWL_MEDIA_TYPE, 0);
 
@@ -312,7 +312,7 @@ ewl_media_position_get(Ewl_Media *m)
 {
         double p = 0.0;
 
-        DENTER_FUNCTION(DLEVEL_STABLE)
+        DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR_RET(m, 0);
         DCHECK_TYPE_RET(m, EWL_MEDIA_TYPE, 0);
 
@@ -364,7 +364,7 @@ ewl_media_position_time_get(Ewl_Media *m, int *h, int *min, double *s)
 void
 ewl_media_position_set(Ewl_Media *m, double p)
 {
-        DENTER_FUNCTION(DLEVEL_STABLE)
+        DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(m);
         DCHECK_TYPE(m, EWL_MEDIA_TYPE);
 
@@ -392,7 +392,7 @@ ewl_media_position_set(Ewl_Media *m, double p)
 int
 ewl_media_audio_mute_get(Ewl_Media *m)
 {
-        DENTER_FUNCTION(DLEVEL_STABLE)
+        DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR_RET(m, 0);
         DCHECK_TYPE_RET(m, EWL_MEDIA_TYPE, 0);
 
@@ -408,7 +408,7 @@ ewl_media_audio_mute_get(Ewl_Media *m)
 void
 ewl_media_audio_mute_set(Ewl_Media *m, int mute)
 {
-        DENTER_FUNCTION(DLEVEL_STABLE)
+        DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(m);
         DCHECK_TYPE(m, EWL_MEDIA_TYPE);
 
@@ -433,7 +433,7 @@ ewl_media_audio_mute_set(Ewl_Media *m, int mute)
 double
 ewl_media_audio_volume_get(Ewl_Media *m)
 {
-        DENTER_FUNCTION(DLEVEL_STABLE)
+        DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR_RET(m, 0);
         DCHECK_TYPE_RET(m, EWL_MEDIA_TYPE, 0.0);
 
@@ -449,7 +449,7 @@ ewl_media_audio_volume_get(Ewl_Media *m)
 void
 ewl_media_audio_volume_set(Ewl_Media *m, double v)
 {
-        DENTER_FUNCTION(DLEVEL_STABLE)
+        DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(m);
         DCHECK_TYPE(m, EWL_MEDIA_TYPE);
 
