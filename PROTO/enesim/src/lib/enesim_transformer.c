@@ -167,8 +167,12 @@ static void transformer_affine_no_no(Enesim_Transformation *t, Enesim_Surface *s
 	ptfnc = enesim_drawer_point_color_get(t->rop, ds->format, 0x55555555);
 	if (!ptfnc)
 		return;
-	sx = eina_f16p16_mul(t->matrix_fixed[MATRIX_XX], drect->x) + eina_f16p16_mul(t->matrix_fixed[MATRIX_XY], drect->y) + t->matrix_fixed[MATRIX_XZ];
-	sy = eina_f16p16_mul(t->matrix_fixed[MATRIX_YX], drect->x) + eina_f16p16_mul(t->matrix_fixed[MATRIX_YY], drect->y) + t->matrix_fixed[MATRIX_YZ];
+	sx = eina_f16p16_mul(t->matrix_fixed[MATRIX_XX], drect->x) + 
+		eina_f16p16_mul(t->matrix_fixed[MATRIX_XY], drect->y) +
+		t->matrix_fixed[MATRIX_XZ];
+	sy = eina_f16p16_mul(t->matrix_fixed[MATRIX_YX], drect->x) +
+		eina_f16p16_mul(t->matrix_fixed[MATRIX_YY], drect->y) +
+		t->matrix_fixed[MATRIX_YZ];
 	
 	enesim_surface_data_get(ds, &ddata);
 	enesim_surface_data_get(ss, &sdata);
@@ -218,12 +222,86 @@ static void transformer_affine_no_no(Enesim_Transformation *t, Enesim_Surface *s
 static void transformer_projective_no_no(Enesim_Transformation *t, Enesim_Surface *ss,
 		Eina_Rectangle *srect, Enesim_Surface *ds, Eina_Rectangle *drect)
 {
+	Enesim_Surface_Data sdata, ddata;
+	Eina_F16p16 sx, sy, sz;
+	Enesim_Drawer_Point ptfnc;
+	int h;
+
+	/* force an alpha color, return if we dont have a point function */
+	ptfnc = enesim_drawer_point_color_get(t->rop, ds->format, 0x55555555);
+	if (!ptfnc)
+		return;
 	
+	sx = eina_f16p16_mul(t->matrix_fixed[MATRIX_XX], drect->x) + 
+			eina_f16p16_mul(t->matrix_fixed[MATRIX_XY], drect->y) +
+			t->matrix_fixed[MATRIX_XZ];
+	sy = eina_f16p16_mul(t->matrix_fixed[MATRIX_YX], drect->x) +
+			eina_f16p16_mul(t->matrix_fixed[MATRIX_YY], drect->y) +
+			t->matrix_fixed[MATRIX_YZ];
+	sz = eina_f16p16_mul(t->matrix_fixed[MATRIX_ZX], drect->x) +
+			eina_f16p16_mul(t->matrix_fixed[MATRIX_ZY], drect->y) +
+			t->matrix_fixed[MATRIX_ZZ];
+	
+	enesim_surface_data_get(ss, &sdata);
+	enesim_surface_data_get(ds, &ddata);
+	enesim_surface_data_increment(&sdata, ss->format, (srect->y * ss->w) + srect->x);
+	enesim_surface_data_increment(&ddata, ds->format, (drect->y * ds->w) + drect->x);
+	
+	h = drect->h;
+	while (h--)
+	{
+		Enesim_Surface_Data ddata2;
+		Eina_F16p16 sxx, syy, szz;
+		int w;
+			
+		ddata2 = ddata;
+		sxx = sx;
+		syy = sy;
+		szz = sz;
+
+		w = drect->w;
+		while (w--)
+		{
+			int six, siy;
+			Enesim_Surface_Data sdata2;
+			Eina_F16p16 sxxx, syyy;
+						
+			sdata2 = sdata;
+			/* TODO set the destination to zero? */
+			if (!szz)
+				goto iterate;
+				
+			sxxx = ((((long long int)sxx) << 16) / szz); // + x origin
+			syyy = ((((long long int)syy) << 16) / szz); // + y origin
+			six = eina_f16p16_int_to(sxxx);
+			siy = eina_f16p16_int_to(syyy);
+			/* check that we are inside the source rectangle */
+			if ((eina_rectangle_xcoord_inside(srect, six)) && (eina_rectangle_ycoord_inside(srect, siy)))
+			{
+				unsigned int argb;
+							
+				/* use 2x2 convolution kernel to interpolate */
+				enesim_surface_data_increment(&sdata2, ss->format, (siy * ss->w) + six);
+				argb = convolution2x2(&sdata2, ss->format, sxxx, syyy, ss->w, ss->h);
+				ptfnc(&ddata2, NULL, argb, NULL);
+			}
+iterate:
+			enesim_surface_data_increment(&ddata2, ds->format, 1);
+			sxx += t->matrix_fixed[MATRIX_XX];
+			syy += t->matrix_fixed[MATRIX_YX];
+			szz += t->matrix_fixed[MATRIX_ZX];
+		}
+		enesim_surface_data_increment(&ddata, ds->format, ds->w);
+		sx += t->matrix_fixed[MATRIX_XY];
+		sy += t->matrix_fixed[MATRIX_YY];
+		sz += t->matrix_fixed[MATRIX_ZY];
+	}
 }
 
 static Enesim_Transformer_Func _functions[ENESIM_TRANSFORMATIONS] = {
 		[ENESIM_TRANSFORMATION_AFFINE] = &transformer_affine_no_no,
 		[ENESIM_TRANSFORMATION_IDENTITY] = &transformer_identity_no_no,
+		[ENESIM_TRANSFORMATION_PROJECTIVE] = &transformer_projective_no_no,
 };
 
 /*============================================================================*

@@ -6,8 +6,8 @@
 #include <math.h>
 
 /**
- * TODO add command line argument for input surface format
- * TODO add command line argument for raster operation
+ * TODO
+ * make the gradient functions draw pattern boxes
  */
 
 #include "Eina.h"
@@ -113,6 +113,7 @@ void test_gradient(Enesim_Surface *s)
 	Enesim_Surface_Format sfmt;
 	int i;
 	Enesim_Color color;
+	int skip = 0;
 
 	enesim_surface_data_get(s, &sdata);
 	sfmt = enesim_surface_format_get(s);
@@ -124,10 +125,25 @@ void test_gradient(Enesim_Surface *s)
 	}
 	for (i = 0; i < opt_height; i++)
 	{
+		int j;
+		Enesim_Surface_Data sdata_tmp;
 		unsigned char col = ((opt_height - 1) - i) >> opt_shift;
 
+		sdata_tmp = sdata;
 		enesim_color_get(&color, col, col, 0, col);
-		dspan(&sdata, opt_width, NULL, color, NULL);
+#if 1
+		if (!((i + 1) % 16))
+			skip = (skip + 1) % 2;
+		if (skip)
+			enesim_surface_data_increment(&sdata_tmp, sfmt, 16);
+		for (j = 0; j < opt_width; j += 32)
+		{
+			dspan(&sdata_tmp, 16, NULL, color, NULL);
+			enesim_surface_data_increment(&sdata_tmp, sfmt, 32);
+		}
+#else
+		dspan(&sdata_tmp, opt_width, NULL, color, NULL);
+#endif
 		enesim_surface_data_increment(&sdata, sfmt, opt_width);
 	}
 	surface_save(s, "gradient.png");
@@ -420,6 +436,7 @@ void transformer_bench(void)
 {
 	float matrix[9], tmp[9];
 	Enesim_Transformation *tx;
+	float angle, ca, sa;
 
 	printf("*********************\n");
 	printf("* Transformer Bench *\n");
@@ -446,7 +463,22 @@ void transformer_bench(void)
 	printf("Affine\n");
 	transformer_go(tx);
 	/* projective */
-	
+	//enesim_transformation_matrix_identity(matrix);
+	angle = (40 * M_PI) / 180.0;
+	sa = sin(angle);
+	ca = cos(angle);
+	matrix[MATRIX_XX] = 1;
+	matrix[MATRIX_XY] = 0;
+	matrix[MATRIX_XZ] = 0;
+	matrix[MATRIX_YX] = 0;
+	matrix[MATRIX_YY] = ca;
+	matrix[MATRIX_YZ] = 0;
+	matrix[MATRIX_ZX] = -sa / opt_width;
+	matrix[MATRIX_ZY] = 0;
+	matrix[MATRIX_ZZ] = ca;
+	enesim_transformation_set(tx, matrix);
+	printf("Projective\n");
+	transformer_go(tx);
 }
 /******************************************************************************
  *                      Rasterizer benchmark functions                        *
