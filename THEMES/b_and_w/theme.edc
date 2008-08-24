@@ -1,6 +1,6 @@
 // TODO (immediate other than finish)
 // frame
-// preview
+// preview (done)
 // fileman (list mode)
 // slider
 // 
@@ -18,8 +18,8 @@
 // exebuf
 // toolbar
 // transition
-// deskpreview
-// color_well
+// deskpreview (done)
+// color_well (done)
 // cslider
 // fontpreview
 // gadman
@@ -11668,7 +11668,156 @@ collections { /* begin the collection of edje groups that are in this file */
       }
    }   
       
+   group { name: "e/widgets/preview";
+      parts {
+	 part { name: "clip";
+	    type: RECT;
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       rel1.to: "e.swallow.content";
+	       rel2.to: "e.swallow.content";
+	    }
+	 }
+	 part { name: "e.swallow.content";
+	    clip_to: "clip";
+	    type: SWALLOW;
+	    description { state: "default" 0.0;
+	       rel1.offset: 1 0;
+	       rel2.offset: -2 -1;
+	    }
+	 }
+	 part { name:          "border";
+	    mouse_events:  0;
+	    description { state:    "default" 0.0;
+	       rel1 {
+		  to:  "e.swallow.content";
+		  offset: -1 -1;
+	       }
+	       rel2 {
+		  to:  "e.swallow.content";
+		  offset: 0 0;
+	       }
+	       image {
+		  normal: "shelf_inset.png";
+		  border: 7 7 7 7;
+	       }
+	    }
+	 }
+      }
+   }
 
+   group { name: "e/widgets/deskpreview/desk";
+      parts {
+	 part { name: "clip";
+	    type: RECT;
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       rel1.to: "e.swallow.content";
+	       rel2.to: "e.swallow.content";
+	    }
+	 }
+	 part { name: "e.swallow.content";
+	    clip_to: "clip";
+	    type: SWALLOW;
+	    description { state: "default" 0.0;
+	       rel1.offset: 1 0;
+	       rel2.offset: -2 -1;
+	    }
+	 }
+	 part { name:          "border";
+	    mouse_events:  0;
+	    description { state:    "default" 0.0;
+	       rel1 {
+		  to:  "e.swallow.content";
+		  offset: -1 -1;
+	       }
+	       rel2 {
+		  to:  "e.swallow.content";
+		  offset: 0 0;
+	       }
+	       image {
+		  normal: "shelf_inset.png";
+		  border: 7 7 7 7;
+	       }
+	    }
+	 }
+	 part { name: "e.event.menu";
+	    type: RECT;
+	    description { state: "default" 0.0;
+	      color: 0 0 0 0;
+	    }
+	 }
+      }
+   }
+
+   group { name: "e/widgets/color_well";
+     alias:  "e/widgets/gradpreview";
+     parts {
+	 part { name:  "content_clip";
+	    type:  RECT;
+	    mouse_events:  0;
+	    description {
+	       state:    "default" 0.0;
+	       rel1.to:       "e.swallow.content";
+	       rel2.to:       "e.swallow.content";
+	       color: 255 255 255 255;
+	    }
+	 }
+	 part { name:  "e.swallow.content";
+	    type:  SWALLOW;
+	    clip_to:  "content_clip";
+	    description {
+	       state:    "default" 0.0;
+	       rel1.offset:   4    4;
+	       rel2.offset:   -5    -5;
+	    }
+	 }
+	 part { name:          "border";
+	    mouse_events:  1;
+	    description { state:    "default" 0.0;
+	       rel1 {
+		  to:  "e.swallow.content";
+		  offset: -1 -1;
+	       }
+	       rel2 {
+		  to:  "e.swallow.content";
+		  offset: 0 0;
+	       }
+	       image {
+		  normal: "shelf_inset.png";
+		  border: 7 7 7 7;
+	       }
+	    }
+	 }
+     }
+      programs {
+	 program { name: "send_click";
+	    signal: "mouse,clicked,1";
+	    source: "border";
+	    action: SIGNAL_EMIT "e,action,click" "";
+	 }
+
+// FIXME: Is this used? The 'disabled' state from the old
+//             theme was 'inherit: default' and nothing else.
+/*
+	 program {
+	     name: "disable";
+	     signal: "e,state,disabled";
+	     source: "e";
+	     action: STATE_SET "disabled" 0.0;
+	     target: "overlay";
+	 }
+	 program {
+	     name: "enable";
+	     signal: "e,state,enabled";
+	     source: "e";
+	     action: STATE_SET "default" 0.0;
+	     target: "overlay";
+	 }
+*/
+      }
+   }
+   
 /////////////////////////////////////////////////////////////////////////////
    /*** ICONS ***/
 // FIXME: DO
