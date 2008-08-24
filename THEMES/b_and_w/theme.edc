@@ -8,7 +8,7 @@
 // tlist
 // label
 // textblock
-// entry
+// entry (done)
 // about
 // theme_about
 // resize (done - review)
@@ -20,10 +20,10 @@
 // transition
 // deskpreview (done)
 // color_well (done)
-// cslider
+// cslider (done)
 // fontpreview
 // gadman
-// spectrum
+// spectrum (done)
 // wizard (just placeholder and basics - wizard code not complete)
 
 
@@ -11756,20 +11756,18 @@ collections { /* begin the collection of edje groups that are in this file */
 	 part { name:  "content_clip";
 	    type:  RECT;
 	    mouse_events:  0;
-	    description {
-	       state:    "default" 0.0;
-	       rel1.to:       "e.swallow.content";
-	       rel2.to:       "e.swallow.content";
+	    description { state:    "default" 0.0;
+	       rel1.to:  "e.swallow.content";
+	       rel2.to:  "e.swallow.content";
 	       color: 255 255 255 255;
 	    }
 	 }
 	 part { name:  "e.swallow.content";
 	    type:  SWALLOW;
 	    clip_to:  "content_clip";
-	    description {
-	       state:    "default" 0.0;
-	       rel1.offset:   4    4;
-	       rel2.offset:   -5    -5;
+	    description { state:    "default" 0.0;
+	       rel1.offset:   4  4;
+	       rel2.offset:   -5  -5;
 	    }
 	 }
 	 part { name:          "border";
@@ -11818,6 +11816,194 @@ collections { /* begin the collection of edje groups that are in this file */
       }
    }
    
+   group {
+      name: "e/widgets/spectrum";
+      parts {
+	 part { name:  "content_clip";
+	    type:  RECT;
+	    mouse_events:  0;
+	    description { state:    "default" 0.0;
+	       rel1.to:  "e.swallow.content";
+	       rel2.to:  "e.swallow.content";
+	       color: 255 255 255 255;
+	    }
+	 }
+	 part { name:  "e.swallow.content";
+	    type:  SWALLOW;
+	    clip_to:  "content_clip";
+	    description { state:    "default" 0.0;
+	       rel1.offset:   4  4;
+	       rel2.offset:   -5  -5;
+	    }
+	 }
+	 part { name:          "border";
+	    mouse_events:  1;
+	    description { state:    "default" 0.0;
+	       rel1 {
+		  to:  "e.swallow.content";
+		  offset: -1 -1;
+	       }
+	       rel2 {
+		  to:  "e.swallow.content";
+		  offset: 0 0;
+	       }
+	       image {
+		  normal: "shelf_inset.png";
+		  border: 7 7 7 7;
+	       }
+	    }
+	 }
+	 part { name: "e.dragable.cursor";
+	    type: RECT;
+	    dragable {
+	       confine: "e.swallow.content";
+	       x: 1 1 0;
+	       y: 1 1 0;
+	    }
+	    description { state: "default" 0.0;
+	       min: 1 1;
+	       max: 1 1;
+	       fixed: 1 1;
+	       visible: 0;
+	       rel1 {
+		  to: "e.swallow.content";
+		  relative: 0.5 0.5;
+		  offset: 0 0;
+	       }
+	       rel2 {
+		  to: "e.swallow.content";
+		  relative: 0.5 0.5;
+		  offset: 0 0;
+	       }
+	    }
+	 }
+	 part { name: "cursor_x";
+	    type: RECT;
+	    description { state: "default" 0.0;
+	       rel1 {
+		  to_x: "e.dragable.cursor";
+		  to_y: "e.swallow.content";
+	       }
+	       rel2 {
+		  to_x: "e.dragable.cursor";
+		  to_y: "e.swallow.content";
+	       }
+	       color: 255 255 255 150;
+	    }
+	 }
+	 part { name: "cursor_y";
+	    type: RECT;
+	    description { state: "default" 0.0;
+	       rel1 {
+		  to_x: "e.swallow.content";
+		  to_y: "e.dragable.cursor";
+	       }
+	       rel2 {
+		  to_x: "e.swallow.content";
+		  to_y: "e.dragable.cursor";
+	       }
+	       color: 255 255 255 150;
+	    }
+	 }
+      }
+   }
+
+   group {
+      name: "e/widgets/cslider";
+      parts {
+	 part { name:  "content_clip";
+	    type:  RECT;
+	    mouse_events:  0;
+	    description { state:    "default" 0.0;
+	       rel1.to:  "e.swallow.content";
+	       rel2.to:  "e.swallow.content";
+	       color: 255 255 255 255;
+	    }
+	 }
+	 part { name:  "e.swallow.content";
+	    type:  SWALLOW;
+	    clip_to:  "content_clip";
+	    description { state:    "default" 0.0;
+	       min: 50 20;
+	       rel1.offset:   4    4;
+	       rel2.offset:   -5    -5;
+	    }
+	    description { state: "vertical" 0.0;
+	       inherit: "default" 0.0;
+	       min: 20 50;
+	    }
+	 }
+	 part { name: "border";
+	    mouse_events:  1;
+	    description { state:    "default" 0.0;
+	       rel1 {
+		  to:  "e.swallow.content";
+		  offset: -1 -1;
+	       }
+	       rel2 {
+		  to:  "e.swallow.content";
+		  offset: 0 0;
+	       }
+	       image {
+		  normal: "shelf_inset.png";
+		  border: 7 7 7 7;
+	       }
+	    }
+	 }
+	 part { name: "e.dragable.cursor";
+	    type: RECT;
+	    clip_to:       "content_clip";
+	    dragable {
+	       confine: "e.swallow.content";
+	       x: 1 1 0;
+	       y: -1 1 0;
+	    }
+	    description { state: "default" 0.0;
+	       min: 1 24;
+	       max: 1 9999;
+	       fixed: 1 1;
+	       rel1 {
+		  to: "e.swallow.content";
+		  relative: 0.5 0.0;
+		  offset: 0 0;
+	       }
+	       rel2 {
+		  to: "e.swallow.content";
+		  relative: 0.5 1.0;
+		  offset: 0 -1;
+	       }
+	       color: 255 255 255 150;
+	    }
+	    description { state: "vertical" 0.0;
+	       min: 24 1;
+	       max: 9999 1;
+	       fixed: 1 1;
+	       rel1 {
+		  to: "e.swallow.content";
+		  relative: 0.0 0.5 ;
+		  offset: 0 0;
+	       }
+	       rel2 {
+		  to: "e.swallow.content";
+		  relative: 1.0 0.5;
+		  offset: -1 0;
+	       }
+	       color: 255 255 255 150;
+	    }
+	 }
+      }
+      programs {
+	 program { name: "go_vertical";
+	    signal: "e,state,direction,v";
+	    source: "e";
+	    action: STATE_SET "vertical" 0.0;
+	    target: "e.dragable.cursor";
+	    target: "e.swallow.content";
+	 } 
+      }
+   }
+
+
 /////////////////////////////////////////////////////////////////////////////
    /*** ICONS ***/
 // FIXME: DO
