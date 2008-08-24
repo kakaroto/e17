@@ -44,27 +44,27 @@ extern Ewl_Config_Cache ewl_config_cache; /**< system debug data */
 #define DEBUGGING(lvl) (ewl_config_cache.enable && (ewl_config_cache.level >= (lvl)))
 
 #define DENTER_FUNCTION(lvl) \
-{ \
+do { \
         if (DEBUGGING(lvl)) \
           { \
                 ewl_debug_indent_print(1); \
                 fprintf(stderr, "--> %f - %s:%i\tEntering %s();\n", \
                         ecore_time_get(), __FILE__, __LINE__, __func__); \
           } \
-}
+} while (0)
 
 #define DLEAVE_FUNCTION(lvl) \
-{ \
+do { \
         if (DEBUGGING(lvl)) \
           { \
                 ewl_debug_indent_print(-1); \
                 fprintf(stderr, "<--  %f - %s:%i\tLeaving  %s();\n", \
                         ecore_time_get(), __FILE__, __LINE__, __func__); \
           } \
-}
+} while (0)
 
 #define DRETURN(lvl) \
-{ \
+do { \
         DLEAVE_FUNCTION(lvl); \
         if (DEBUGGING(lvl)) \
           { \
@@ -73,10 +73,10 @@ extern Ewl_Config_Cache ewl_config_cache; /**< system debug data */
                         ecore_time_get(), __FILE__, __LINE__, __func__); \
           } \
         return; \
-}
+} while (0)
 
 #define DRETURN_PTR(ptr, lvl) \
-{ \
+do { \
         DLEAVE_FUNCTION(lvl); \
         if (DEBUGGING(lvl)) \
           { \
@@ -85,10 +85,10 @@ extern Ewl_Config_Cache ewl_config_cache; /**< system debug data */
                         ecore_time_get(), __FILE__, __LINE__, (void *) (ptr), __func__); \
           } \
         return (void *)(ptr); \
-}
+} while (0)
 
 #define DRETURN_FLOAT(num, lvl) \
-{ \
+do { \
         DLEAVE_FUNCTION(lvl); \
         if (DEBUGGING(lvl)) \
           { \
@@ -97,10 +97,10 @@ extern Ewl_Config_Cache ewl_config_cache; /**< system debug data */
                         ecore_time_get(), __FILE__, __LINE__, (float) (num), __func__); \
           } \
         return num; \
-}
+} while (0)
 
 #define DRETURN_INT(num, lvl) \
-{ \
+do { \
         DLEAVE_FUNCTION(lvl); \
         if (DEBUGGING(lvl)) \
           { \
@@ -109,10 +109,10 @@ extern Ewl_Config_Cache ewl_config_cache; /**< system debug data */
                         ecore_time_get(), __FILE__, __LINE__, (int) (num), __func__); \
           } \
         return num; \
-}
+} while (0)
 
 #define DWARNING(fmt, args...) \
-{ \
+do { \
         ewl_print_warning(); \
         fprintf(stderr, "\tIn function:\n\n" \
                         "\t%s();\n\n", __func__); \
@@ -120,10 +120,10 @@ extern Ewl_Config_Cache ewl_config_cache; /**< system debug data */
         fprintf(stderr, "\n"); \
         ewl_backtrace(); \
         ewl_segv(); \
-}
+} while (0)
 
 #define DCHECK_PARAM_PTR(ptr) \
-{ \
+do { \
         if (!(ptr)) \
           { \
                 ewl_print_warning(); \
@@ -137,10 +137,10 @@ extern Ewl_Config_Cache ewl_config_cache; /**< system debug data */
                 ewl_segv(); \
                 return; \
           } \
-}
+} while (0)
 
 #define DCHECK_PARAM_PTR_RET(ptr, ret) \
-{ \
+do { \
         if (!(ptr)) \
           { \
                 ewl_print_warning(); \
@@ -154,10 +154,10 @@ extern Ewl_Config_Cache ewl_config_cache; /**< system debug data */
                 ewl_segv(); \
                 return ret; \
           } \
-}
+} while (0)
 
 #define DCHECK_TYPE(ptr, type) \
-{ \
+do { \
         if (ptr && !ewl_widget_type_is(EWL_WIDGET(ptr), type)) \
         { \
                 ewl_print_warning(); \
@@ -175,10 +175,10 @@ extern Ewl_Config_Cache ewl_config_cache; /**< system debug data */
                 ewl_segv(); \
                 return; \
         } \
-}
+} while (0)
 
 #define DCHECK_TYPE_RET(ptr, type, ret) \
-{ \
+do { \
         if (ptr && !ewl_widget_type_is(EWL_WIDGET(ptr), type)) \
         { \
                 ewl_print_warning(); \
@@ -196,7 +196,7 @@ extern Ewl_Config_Cache ewl_config_cache; /**< system debug data */
                 ewl_segv(); \
                 return ret; \
         } \
-}
+} while (0)
 
 #else
 
@@ -208,28 +208,28 @@ extern Ewl_Config_Cache ewl_config_cache; /**< system debug data */
 #define DRETURN_INT(num, lvl) return num
 #define DWARNING(fmt, args...) {}
 #define DCHECK_PARAM_PTR(ptr) \
-{ \
+do { \
         if (!(ptr)) { \
                 return; \
         } \
-}
+} while (0)
 #define DCHECK_PARAM_PTR_RET(ptr, ret) \
-{ \
+do { \
         if (!(ptr)) { \
                 return ret; \
         } \
-}
+} while (0)
 #define DCHECK_TYPE(ptr, type) {}
 #define DCHECK_TYPE_RET(ptr, type, ret) {}
 #endif
 
 #define DERROR(fmt) \
-{ \
+do { \
         ewl_print_warning(); \
         fprintf(stderr, "\tIn function:\n\n" \
                         "\t%s();\n\n", __func__); \
         fprintf(stderr, fmt); \
-}
+} while (0)
 
 #endif
 

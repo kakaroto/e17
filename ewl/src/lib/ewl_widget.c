@@ -2310,7 +2310,7 @@ ewl_widget_free(Ewl_Widget *w)
         ewl_theme_widget_shutdown(w);
 
         IF_RELEASE(w->appearance);
-        IF_RELEASE(w->inheritance)
+        IF_RELEASE(w->inheritance);
         IF_RELEASE(w->theme_state);
 
         if (w->theme_text.list) {

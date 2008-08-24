@@ -251,9 +251,7 @@ ewl_scrollpane_kinetic_scrolling_set(Ewl_Scrollpane *s, Ewl_Kinetic_Scroll type)
                                 ewl_scrollpane_cb_mouse_move_embedded);
         }
         if (s->kinfo)
-        {
-                IF_FREE(s->kinfo->extra)
-        }
+                IF_FREE(s->kinfo->extra);
         else
         {
                 s->kinfo = NEW(Ewl_Scrollpane_Scroll_Info_Base, 1);

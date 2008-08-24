@@ -22,13 +22,7 @@
  * Reallocates memory pointed to by @a dat to @a num elements of sizeof(@a
  * type).
  */
-#define REALLOC(dat, type, num) \
-{ \
-        if (dat) \
-          { \
-                dat = realloc(dat, sizeof(type) * num); \
-          } \
-}
+#define REALLOC(dat, type, num) dat = realloc(dat, sizeof(type) * (num))
 
 #undef FREE
 /**
@@ -36,9 +30,9 @@
  * Free the data pointed to by @a dat and it to NULL.
  */
 #define FREE(dat) \
-{ \
+do { \
         free(dat); dat = NULL; \
-}
+} while (0)
 
 
 #undef IF_FREE
@@ -47,9 +41,9 @@
  * If @a dat is non-NULL, free @a dat and assign it to NULL.
  */
 #define IF_FREE(dat) \
-{ \
+do { \
         if (dat) FREE(dat); \
-}
+} while (0)
 
 #undef IF_FREE_LIST
 /**
@@ -57,12 +51,12 @@
  * If @a list is non-NULL, free @a list and set it NULL.
  */
 #define IF_FREE_LIST(list) \
-{ \
+do { \
         if (list) { \
                 ecore_list_destroy(list); \
                 list = NULL; \
         } \
-}
+} while (0)
 
 #undef IF_FREE_HASH
 /**
@@ -70,12 +64,12 @@
  * If @a hash is non-NULL, free @a hash and set it NULL.
  */
 #define IF_FREE_HASH(hash) \
-{ \
+do { \
         if (hash) { \
                 ecore_hash_destroy(hash); \
                 hash = NULL; \
         } \
-}
+} while (0)
 
 #undef IF_RELEASE
 /**
@@ -83,12 +77,12 @@
  * If @a item is non-NULL, ecore_string_release @a item and set it NULL.
  */
 #define IF_RELEASE(item) \
-{ \
+do { \
         if (item) { \
                 ecore_string_release(item); \
                 item = NULL; \
         } \
-}
+} while (0)
 
 #undef ZERO
 /**

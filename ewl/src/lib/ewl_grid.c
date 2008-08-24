@@ -989,8 +989,8 @@ ewl_grid_cb_destroy(Ewl_Widget *w, void *ev_data __UNUSED__,
         g = EWL_GRID(w);
 
         IF_FREE(g->map);
-        IF_FREE(g->col_size)
-        IF_FREE(g->row_size)
+        IF_FREE(g->col_size);
+        IF_FREE(g->row_size);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
