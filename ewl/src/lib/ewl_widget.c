@@ -983,8 +983,7 @@ ewl_widget_appearance_part_text_set(Ewl_Widget *w, const char *part, const char 
                                 w->theme_text.list[0] = old;
                         }
                         else {
-                                w->theme_text.list = realloc(w->theme_text.list,
-                                                sizeof(Ewl_Pair) *
+                                REALLOC(w->theme_text.list, Ewl_Pair,
                                                 w->theme_text.len);
                         }
                         w->theme_text.list[w->theme_text.len - 1] = match;

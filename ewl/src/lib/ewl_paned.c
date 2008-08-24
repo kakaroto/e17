@@ -965,8 +965,8 @@ ewl_paned_size_info_add(Ewl_Paned *p, Ewl_Widget *w)
                 DRETURN_PTR(info, DLEVEL_STABLE);
 
         /* ok we don't have found one first we have to resize our array */
-        p->info = realloc(p->info, (p->info_size + 1) 
-                                * sizeof(Ewl_Paned_Size_Info));
+        REALLOC(p->info, Ewl_Paned_Size_Info, p->info_size + 1);
+
         /* now we need to find the position for the new info item */
         for (i = 0; i < p->info_size; i++)
         {
@@ -1029,7 +1029,7 @@ ewl_paned_size_info_del(Ewl_Paned *p, Ewl_Widget *w)
         
         memmove(info, info + 1, (p->info_size - (info - p->info) - 1) 
                                 * sizeof(Ewl_Paned_Size_Info));
-        p->info = realloc(p->info, --p->info_size);
+        REALLOC(p->info, Ewl_Paned_Size_Info, --p->info_size);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

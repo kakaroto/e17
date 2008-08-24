@@ -151,8 +151,7 @@ ewl_callback_rm(Ewl_Widget *w, unsigned int t, unsigned int pos)
 
         w->callbacks[place].len  -= 1;
         w->callbacks[place].list[EWL_CALLBACK_LEN(w, place)] = NULL;
-        w->callbacks[place].list = realloc(w->callbacks[place].list,
-                                        w->callbacks[place].len * sizeof(void *));
+        REALLOC(w->callbacks[place].list, void *, w->callbacks[place].len);
 
         if (pos < EWL_CALLBACK_POS(w, place))
                 EWL_CALLBACK_POS(w, place)--;
@@ -203,8 +202,7 @@ ewl_callback_insert(Ewl_Widget *w, unsigned int t,
                 EWL_CALLBACK_SET_NODIRECT(w, t);
         }
 
-        w->callbacks[place].list = realloc(w->callbacks[place].list,
-                                        w->callbacks[place].len * sizeof(void *));
+        REALLOC(w->callbacks[place].list, void *, w->callbacks[place].len);
 
         /* if old is set this was a direct so we can just set 0, 1 and be
          * done with it */

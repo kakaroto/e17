@@ -14,7 +14,7 @@
  * @def NEW(type, num)
  * Allocates memory of @a num elements of sizeof(@a type).
  */
-#define NEW(type, num) calloc(num, sizeof(type));
+#define NEW(type, num) calloc(num, sizeof(type))
 
 #undef REALLOC
 /**

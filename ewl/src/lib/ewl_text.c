@@ -784,7 +784,7 @@ ewl_text_text_insert_private(Ewl_Text *t, const char *txt,
                 extend = ((new_byte_len + 1) / EWL_TEXT_EXTEND_VAL);
                 extend = (extend + 1) * EWL_TEXT_EXTEND_VAL;
 
-                t->text = realloc(t->text, extend * sizeof(char));
+                REALLOC(t->text, char, extend);
                 t->total_size = extend;
         }
 
