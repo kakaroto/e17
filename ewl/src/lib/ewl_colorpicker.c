@@ -100,7 +100,7 @@ ewl_colorpicker_new(void)
 int
 ewl_colorpicker_init(Ewl_Colorpicker *cp)
 {
-        Ewl_Widget *vbox, *hbox, *o, *prev = NULL;
+        Ewl_Widget *vbox, *hbox, *o, *grid, *prev = NULL;
         unsigned int r, g, b;
         double h, s, v;
         int i;
@@ -230,18 +230,19 @@ ewl_colorpicker_init(Ewl_Colorpicker *cp)
         /* do the spinner side */
         vbox = ewl_vbox_new();
         ewl_widget_internal_set(vbox, TRUE);
+        ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_NONE);
+        ewl_object_alignment_set(EWL_OBJECT(vbox), EWL_FLAG_ALIGN_TOP);
         ewl_container_child_append(EWL_CONTAINER(cp), vbox);
-        ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_SHRINKABLE);
         ewl_widget_show(vbox);
+
+        grid = ewl_grid_new();
+        ewl_grid_dimensions_set(EWL_GRID(grid), 2, 6);
+        ewl_container_child_append(EWL_CONTAINER(vbox), grid);
+        ewl_widget_show(grid);
 
         /* setup the spinners and radiobuttons */
         for (i = 0; modes[i].name != NULL; i++)
         {
-                hbox = ewl_hbox_new();
-                ewl_widget_internal_set(hbox, TRUE);
-                ewl_container_child_append(EWL_CONTAINER(vbox), hbox);
-                ewl_widget_show(hbox);
-
                 o = ewl_colorpicker_radiobutton_new();
                 ewl_widget_internal_set(o, TRUE);
                 ewl_button_label_set(EWL_BUTTON(o), modes[i].name);
@@ -250,7 +251,7 @@ ewl_colorpicker_init(Ewl_Colorpicker *cp)
                 else
                         ewl_checkbutton_checked_set(EWL_CHECKBUTTON(o), FALSE);
 
-                ewl_container_child_append(EWL_CONTAINER(hbox), o);
+                ewl_container_child_append(EWL_CONTAINER(grid), o);
                 ewl_colorpicker_radiobutton_mode_set(EWL_COLORPICKER_RADIOBUTTON(o),
                                                                         modes[i].mode);
                 if (prev)
@@ -262,7 +263,7 @@ ewl_colorpicker_init(Ewl_Colorpicker *cp)
 
                 o = ewl_colorpicker_spinner_new();
                 ewl_widget_internal_set(o, TRUE);
-                ewl_container_child_append(EWL_CONTAINER(hbox), o);
+                ewl_container_child_append(EWL_CONTAINER(grid), o);
                 ewl_range_minimum_value_set(EWL_RANGE(o), 0);
                 ewl_range_maximum_value_set(EWL_RANGE(o), modes[i].max);
 

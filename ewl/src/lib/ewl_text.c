@@ -35,6 +35,7 @@ static int ewl_text_char_utf8_is(const char *c);
 
 static void ewl_text_size(Ewl_Text *t);
 static void ewl_text_display(Ewl_Text *t);
+static void ewl_text_minmax_size_update(Ewl_Text *t);
 static void ewl_text_cb_format(Ewl_Text_Fmt_Node *node, Ewl_Text *t,
                                                 unsigned int byte_idx);
 static void ewl_text_plaintext_parse(Evas_Object *tb, char *txt);
@@ -119,6 +120,8 @@ ewl_text_init(Ewl_Text *t)
                                         ewl_text_cb_configure, NULL);
         ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_REVEAL,
                                         ewl_text_cb_reveal, NULL);
+        ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_REALIZE,
+                                        ewl_text_cb_realize, NULL);
         ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_OBSCURE,
                                         ewl_text_cb_obscure, NULL);
         ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_SHOW,
@@ -206,6 +209,155 @@ ewl_text_length_maximum_get(Ewl_Text *t)
         DCHECK_TYPE_RET(t, EWL_TEXT_TYPE, 0);
 
         DRETURN_INT(t->length.max_chars, DLEVEL_STABLE);
+}
+
+/**
+ * @param t: The Ewl_Text to set the minimum size string
+ * @param string: The string to set define the minimum size
+ * @return Returns no value
+ * @brief Set a minimum size based on a given string
+ *
+ * The text widget will set its minimum size to be wide enough to show the
+ * given string. It will use the default context, for font and size.
+ */
+void
+ewl_text_minimum_size_string_set(Ewl_Text *t, const char *string)
+{
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(t);
+        DCHECK_TYPE(t, EWL_TEXT_TYPE);
+
+        IF_RELEASE(t->min.size_string);
+
+        if (!string)
+                DRETURN(DLEVEL_STABLE);
+
+        t->min.size_string = ecore_string_instance(string);
+        if (REALIZED(t))
+                ewl_text_minmax_size_update(t);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param t: The Ewl_Text to get the minimum size string from
+ * @return Returns the string which defines the minimum size
+ * @brief Retrieve the minimum size string
+ */
+const char *
+ewl_text_minimum_size_string_get(Ewl_Text *t)
+{
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(t, NULL);
+        DCHECK_TYPE_RET(t, EWL_TEXT_TYPE, NULL);
+
+        DRETURN_PTR(t->min.size_string, DLEVEL_STABLE);
+}
+
+/**
+ * @param t: The Ewl_Text to set the maximum size string
+ * @param string: The string to set define the maximum size
+ * @return Returns no value
+ * @brief Set a maximum size based on a given string
+ *
+ * The text widget will set its maximum size to be not wider then to show the
+ * given string. It will use the default context, for font and size.
+ */
+void
+ewl_text_maximum_size_string_set(Ewl_Text *t, const char *string)
+{
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(t);
+        DCHECK_TYPE(t, EWL_TEXT_TYPE);
+
+        IF_RELEASE(t->max.size_string);
+
+        if (!string)
+                DRETURN(DLEVEL_STABLE);
+
+        t->max.size_string = ecore_string_instance(string);
+        if (REALIZED(t))
+                ewl_text_minmax_size_update(t);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param t: The Ewl_Text to get the maximum size string from
+ * @return Returns the string which defines the maximum size
+ * @brief Retrieve the maximum size string
+ */
+const char *
+ewl_text_maximum_size_string_get(Ewl_Text *t)
+{
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(t, NULL);
+        DCHECK_TYPE_RET(t, EWL_TEXT_TYPE, NULL);
+
+        DRETURN_PTR(t->max.size_string, DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ */
+static void
+ewl_text_minmax_size_update(Ewl_Text *t)
+{
+        Ewl_Text_Context *tx;
+        Ewl_Embed *emb;
+        Evas *evas;
+        Evas_Imaging_Font *fn;
+        int width;
+        char font[EWL_TEXT_FONT_LENGHT_MAX];
+        const char *source;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(t);
+        DCHECK_TYPE(t, EWL_TEXT_TYPE);
+        
+        emb = ewl_embed_widget_find(EWL_WIDGET(t));
+        if (!emb)
+        {
+                DWARNING("Did not find a parent embed widget");
+                DRETURN(DLEVEL_STABLE);
+        }
+
+        evas = emb->canvas;
+        if (!evas)
+        {
+                DWARNING("Did not find a canvas");
+                DRETURN(DLEVEL_STABLE);
+        }
+
+        tx = ewl_text_context_default_create(t);
+        if (tx->font_source)
+        {
+                source = tx->font_source;
+                ecore_strlcpy(font, tx->font, sizeof(font));
+        }
+        else
+        {
+                source = ewl_theme_path_get();
+                snprintf(font, sizeof(font), "fonts/%s", tx->font);
+        }
+
+        fn = evas_imaging_font_load(source, font, tx->size);
+        if (t->min.size_string)
+        {
+                evas_imaging_font_string_size_query(fn, t->min.size_string, 
+                                                                &width, NULL);
+                ewl_object_minimum_w_set(EWL_OBJECT(t), width);
+        }
+        if (t->max.size_string)
+        {
+                evas_imaging_font_string_size_query(fn, t->max.size_string, 
+                                                                &width, NULL);
+                ewl_object_maximum_w_set(EWL_OBJECT(t), width);
+        }
+        evas_imaging_font_free(fn);
+        ewl_text_context_release(tx);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
 /**
@@ -3335,6 +3487,31 @@ ewl_text_cb_reveal(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
  * @param ev: UNUSED
  * @param data: UNUSED
  * @return Returns no value
+ * @brief The realize callback
+ */
+void
+ewl_text_cb_realize(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
+{
+        Ewl_Text *t;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_TEXT_TYPE);
+
+        t = EWL_TEXT(w);
+
+        if (t->min.size_string || t->max.size_string)
+                ewl_text_minmax_size_update(t);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * @param w: The widget to work with
+ * @param ev: UNUSED
+ * @param data: UNUSED
+ * @return Returns no value
  * @brief The obscure callback
  */
 void
@@ -3446,6 +3623,8 @@ ewl_text_cb_destroy(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
         t->formatting.tx = NULL;
 
         IF_FREE(t->text);
+        IF_RELEASE(t->min.size_string);
+        IF_RELEASE(t->max.size_string);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

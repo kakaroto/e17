@@ -1,4 +1,8 @@
 /* vim: set sw=8 ts=8 sts=8 expandtab: */
+#include <Ecore_Str.h>
+#include <math.h>
+#include <langinfo.h>
+
 #include "ewl_base.h"
 #include "ewl_spinner.h"
 #include "ewl_box.h"
@@ -83,7 +87,7 @@ ewl_spinner_init(Ewl_Spinner *s)
         ewl_text_text_set(EWL_TEXT(s->entry), "0");
         ewl_container_child_append(EWL_CONTAINER(s), s->entry);
         ewl_object_fill_policy_set(EWL_OBJECT(s->entry), EWL_FLAG_FILL_HFILL |
-                                   EWL_FLAG_FILL_HSHRINKABLE);
+                                   EWL_FLAG_FILL_HSHRINK);
         ewl_object_alignment_set(EWL_OBJECT(s->entry), EWL_FLAG_ALIGN_LEFT);
 
         ewl_widget_internal_set(EWL_WIDGET(s->entry), TRUE);
@@ -192,12 +196,65 @@ ewl_spinner_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
                                 void *user_data __UNUSED__)
 {
         Ewl_Spinner *s;
+        Ewl_Range *r;
+        char buffer[128];
+        char *ptr = buffer;
+        int digits;
+        int min_digits;
+        int max_digits;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(w);
-        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+        DCHECK_TYPE(w, EWL_SPINNER_TYPE);
 
         s = EWL_SPINNER(w);
+        r = EWL_RANGE(w);
+        /*
+         * Set the minimum size for the entry
+         */
+        /* first we must generate the string */
+        min_digits = floor(log10(r->min_val)) + 1.0;
+        max_digits = floor(log10(r->max_val)) + 1.0;
+        digits = MAX(min_digits, max_digits);
+        if (digits >= sizeof(buffer))
+                digits = sizeof(buffer) - 1;
+        memset(ptr, '9', digits);
+        ptr += digits;
+        if (s->digits)
+        {
+                if (ptr - buffer < sizeof(buffer) - 1)
+                        ptr += ecore_strlcpy(ptr, nl_langinfo(RADIXCHAR),
+                                        sizeof(buffer) - (ptr - buffer));
+
+                if (ptr - buffer < sizeof(buffer) - 1)
+                {
+                        digits = s->digits;
+                        if (digits >= sizeof(buffer) - (ptr - buffer))
+                                digits = sizeof(buffer) - (ptr - buffer);
+                        memset(ptr, '9', digits);
+                        ptr += digits;
+                }
+        }
+        /* since the order doesn't matter we are appending the minus sign
+         * at the end */
+        if (ptr - buffer < sizeof(buffer) - 1
+                        && (r->min_val < 0 || r->max_val < 0))
+        {
+                *ptr = '-';
+                ptr++;
+        }
+        /* and append a character so that we have enough space for the cursor */
+        if (ptr - buffer < sizeof(buffer) - 1)
+        {
+                *ptr = 'W';
+                ptr++;
+        }
+
+        *ptr = '\0';
+        /* now we can apply it */
+        ewl_text_minimum_size_string_set(EWL_TEXT(s->entry), buffer);
+
+        /* and update the entry text */
         ewl_spinner_entry_update(s);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);

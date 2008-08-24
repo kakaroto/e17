@@ -8,6 +8,7 @@
  *
  * @{
  */
+#define EWL_TEXT_FONT_LENGHT_MAX 128 /**< the maximum length of a font name */
 
 /**
  * A context node for formatting information

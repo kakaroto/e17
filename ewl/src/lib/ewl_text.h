@@ -86,6 +86,12 @@ struct Ewl_Text
 
         struct
         {
+                const char *size_string;  /**< The strings defining the 
+                                                minimum and maximum size */
+        } min, max;
+
+        struct
+        {
                 void *nodes;      /**< The formatting nodes */
                 void *tx;         /**< The current formatting context */
         } formatting;             /**< Holds the formatting information */
@@ -114,6 +120,13 @@ unsigned int     ewl_text_length_get(Ewl_Text *t);
 void             ewl_text_length_maximum_set(Ewl_Text *t,
                                         unsigned int char_num);
 unsigned int     ewl_text_length_maximum_get(Ewl_Text *t);
+
+void             ewl_text_minimum_size_string_set(Ewl_Text *t, 
+                                                        const char *string);
+const char      *ewl_text_minimum_size_string_get(Ewl_Text *t);
+void             ewl_text_maximum_size_string_set(Ewl_Text *t, 
+                                                        const char *string);
+const char      *ewl_text_maximum_size_string_get(Ewl_Text *t);
 
 void             ewl_text_offsets_set(Ewl_Text *t, int x, int y);
 void             ewl_text_offsets_get(Ewl_Text *t, int *x, int *y);
@@ -298,6 +311,7 @@ char            *ewl_text_text_next_char(const char *text, unsigned int *idx);
 
 void ewl_text_cb_configure(Ewl_Widget *w, void *ev, void *data);
 void ewl_text_cb_reveal(Ewl_Widget *w, void *ev, void *data);
+void ewl_text_cb_realize(Ewl_Widget *w, void *ev, void *data);
 void ewl_text_cb_obscure(Ewl_Widget *w, void *ev, void *data);
 void ewl_text_cb_show(Ewl_Widget *w, void *ev, void *data);
 void ewl_text_cb_hide(Ewl_Widget *w, void *ev, void *data);

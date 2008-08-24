@@ -425,8 +425,8 @@ ewl_text_context_format_string_create(Ewl_Text_Context *ctx)
                 fmt[pos].val = (char *)ewl_theme_path_get();
                 fmt[pos++].free = FALSE;
 
-                t = NEW(char, 128);
-                snprintf(t, 128, "fonts/%s", ctx->font);
+                t = NEW(char, EWL_TEXT_FONT_LENGHT_MAX);
+                snprintf(t, EWL_TEXT_FONT_LENGHT_MAX, "fonts/%s", ctx->font);
         }
 
         fmt[pos].key = "font";
