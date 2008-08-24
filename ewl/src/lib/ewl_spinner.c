@@ -183,6 +183,28 @@ ewl_spinner_digits_get(Ewl_Spinner *s)
         DRETURN_INT(s->digits, DLEVEL_STABLE);
 }
 
+static int
+ewl_spinner_digits_calc(double val)
+{
+        int dig;
+        double av;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+
+        av = abs(val);
+
+        if (av < 10.0)
+                DRETURN_INT(1, DLEVEL_STABLE);
+        else if (av < 100.0)
+                DRETURN_INT(2, DLEVEL_STABLE);
+        else if (av < 1000.0)
+                DRETURN_INT(3, DLEVEL_STABLE);
+
+        dig = floor(log10(av)) + 1.0;
+
+        DRETURN_INT(dig, DLEVEL_STABLE);
+}
+
 /**
  * @internal
  * @param w: The widget to work with
@@ -213,28 +235,18 @@ ewl_spinner_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
          * Set the minimum size for the entry
          */
         /* first we must generate the string */
-        min_digits = floor(log10(r->min_val)) + 1.0;
-        max_digits = floor(log10(r->max_val)) + 1.0;
+        min_digits = ewl_spinner_digits_calc(r->min_val);
+        max_digits = ewl_spinner_digits_calc(r->max_val);
         digits = MAX(min_digits, max_digits);
+        digits += s->digits;
         if (digits >= sizeof(buffer))
                 digits = sizeof(buffer) - 1;
         memset(ptr, '9', digits);
         ptr += digits;
-        if (s->digits)
-        {
-                if (ptr - buffer < sizeof(buffer) - 1)
-                        ptr += ecore_strlcpy(ptr, nl_langinfo(RADIXCHAR),
+        if (s->digits && (ptr - buffer < sizeof(buffer) - 1))
+                ptr += ecore_strlcpy(ptr, nl_langinfo(RADIXCHAR),
                                         sizeof(buffer) - (ptr - buffer));
 
-                if (ptr - buffer < sizeof(buffer) - 1)
-                {
-                        digits = s->digits;
-                        if (digits >= sizeof(buffer) - (ptr - buffer))
-                                digits = sizeof(buffer) - (ptr - buffer);
-                        memset(ptr, '9', digits);
-                        ptr += digits;
-                }
-        }
         /* since the order doesn't matter we are appending the minus sign
          * at the end */
         if (ptr - buffer < sizeof(buffer) - 1
