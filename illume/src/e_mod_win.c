@@ -840,7 +840,7 @@ _apps_populate(void)
 			      icon = strdup(subentry->icon);
 			    else
 			      icon = efreet_icon_path_find(e_config->icon_theme,
-							   subentry->icon, "512x512");
+							   subentry->icon, 512);
 			 }
 		       if (subentry->name) label = strdup(subentry->name);
 		       if (desktop)
@@ -850,11 +850,11 @@ _apps_populate(void)
 			    
 			    if ((!icon) && (desktop->icon))
 			      icon = efreet_icon_path_find(e_config->icon_theme,
-							   desktop->icon, "512x512");
+							   desktop->icon, 512);
 			 }
 		  
 		       if (!icon) icon = efreet_icon_path_find(e_config->icon_theme,
-							  "hires.jpg", "512x512");
+							  "hires.jpg", 512);
 		       if (!icon) icon = strdup("DEFAULT");
 		       if (!label) label = strdup("???");
 		       
