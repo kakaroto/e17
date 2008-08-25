@@ -111,6 +111,7 @@ Makefile
 src/Makefile
 config/Makefile
 config/illume/Makefile
+config/asu/Makefile
 ],[])
 
 #po/Makefile
