@@ -1,7 +1,7 @@
 EDJE_CC = edje_cc
 EDJE_FLAGS = # -v
 
-b_and_w.edj: theme.edc
+b_and_w.edj: theme.edc *.edc *.png *.ttf
 	$(EDJE_CC) $(EDJE_FLAGS) $< $@
 
 .PHONY: all install clean
