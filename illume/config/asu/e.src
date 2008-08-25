@@ -468,7 +468,7 @@ group "E_Config" struct {
   value "border_raise_on_mouse_action" int: 1;
   value "border_raise_on_focus" int: 1;
   value "desk_flip_wrap" int: 0;
-  value "icon_theme" string: "openmoko-standard";
+  value "icon_theme" string: "hicolor";
   value "desk_flip_animate_mode" int: 0;
   value "desk_flip_animate_interpolation" int: 0;
   value "desk_flip_animate_time" double: 0.2000000000000000111022302;
