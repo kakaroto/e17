@@ -143,44 +143,49 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    
    conn = e_dbus_bus_get(DBUS_BUS_SESSION);
    conn_system = e_dbus_bus_get(DBUS_BUS_SYSTEM);
-  
-   namech_h = e_dbus_signal_handler_add(conn,
-					"org.freedesktop.DBus",
-					"/org/freedesktop/DBus",
-					"org.freedesktop.DBus",
-					"NameOwnerChanged",
-					name_changed, inst);
-   namech_system_h = e_dbus_signal_handler_add(conn_system,
-					       "org.freedesktop.DBus",
-					       "/org/freedesktop/DBus",
-					       "org.freedesktop.DBus",
-					       "NameOwnerChanged",
-					       name_changed, inst);
-   changed_h = e_dbus_signal_handler_add(conn,
-					 "org.openmoko.qtopia.Phonestatus",
-					 "/Status",
-					 "org.openmoko.qtopia.Phonestatus",
-					 "signalStrengthChanged",
-					 signal_changed, inst);
-   operatorch_h = e_dbus_signal_handler_add(conn,
-					    "org.openmoko.qtopia.Phonestatus",
-					    "/Status",
-					    "org.openmoko.qtopia.Phonestatus",
-					    "networkOperatorChanged",
-					    operator_changed, inst);
-   changed_fso_h = e_dbus_signal_handler_add(conn_system,
-					     "org.freesmartphone.ogsmd",
-					     "/org/freesmartphone/GSM/Device",
-					     "org.freesmartphone.GSM.Network",
-					     "SignalStrength",
-					     signal_changed, inst);
-   operatorch_fso_h = e_dbus_signal_handler_add(conn,
-						"org.freesmartphone.ogsmd",
-						"/org/freesmartphone/GSM/Device",
-						"org.freesmartphone.GSM.Network",
-						"networkOperatorChanged",
-						operator_changed, inst);
-   
+
+   if (conn)
+     {
+	namech_h = e_dbus_signal_handler_add(conn,
+					     "org.freedesktop.DBus",
+					     "/org/freedesktop/DBus",
+					     "org.freedesktop.DBus",
+					     "NameOwnerChanged",
+					     name_changed, inst);
+	changed_h = e_dbus_signal_handler_add(conn,
+					      "org.openmoko.qtopia.Phonestatus",
+					      "/Status",
+					      "org.openmoko.qtopia.Phonestatus",
+					      "signalStrengthChanged",
+					      signal_changed, inst);
+	operatorch_h = e_dbus_signal_handler_add(conn,
+						 "org.openmoko.qtopia.Phonestatus",
+						 "/Status",
+						 "org.openmoko.qtopia.Phonestatus",
+						 "networkOperatorChanged",
+						 operator_changed, inst);
+     }
+   if (conn_system)
+     {
+	namech_system_h = e_dbus_signal_handler_add(conn_system,
+						    "org.freedesktop.DBus",
+						    "/org/freedesktop/DBus",
+						    "org.freedesktop.DBus",
+						    "NameOwnerChanged",
+						    name_changed, inst);
+	changed_fso_h = e_dbus_signal_handler_add(conn_system,
+						  "org.freesmartphone.ogsmd",
+						  "/org/freesmartphone/GSM/Device",
+						  "org.freesmartphone.GSM.Network",
+						  "SignalStrength",
+						  signal_changed, inst);
+	operatorch_fso_h = e_dbus_signal_handler_add(conn,
+						     "org.freesmartphone.ogsmd",
+						     "/org/freesmartphone/GSM/Device",
+						     "org.freesmartphone.GSM.Network",
+						     "networkOperatorChanged",
+						     operator_changed, inst);
+     }
    get_signal(inst);
    get_operator(inst);
    
@@ -344,23 +349,29 @@ signal_callback(void *data, void *ret, DBusError *err)
 	  {
 	     if (changed_h)
 	       {
-		  e_dbus_signal_handler_del(conn, changed_h);
-		  changed_h = e_dbus_signal_handler_add(conn,
-							"org.openmoko.qtopia.Phonestatus",
-							"/Status",
-							"org.openmoko.qtopia.Phonestatus",
-							"signalStrengthChanged",
-							signal_changed, data);
+		  if (conn)
+		    {
+		       e_dbus_signal_handler_del(conn, changed_h);
+		       changed_h = e_dbus_signal_handler_add(conn,
+							     "org.openmoko.qtopia.Phonestatus",
+							     "/Status",
+							     "org.openmoko.qtopia.Phonestatus",
+							     "signalStrengthChanged",
+							     signal_changed, data);
+		    }
 	       }
 	     else if (changed_fso_h)
 	       {
-		  e_dbus_signal_handler_del(conn_system, changed_fso_h);
-		  changed_fso_h = e_dbus_signal_handler_add(conn_system,
-							    "org.freesmartphone.ogsmd",
-							    "/org/freesmartphone/GSM/Device",
-							    "org.freesmartphone.GSM.Network",
-							    "SignalStrength",
-							    signal_changed, data);
+		  if (conn_system)
+		    {
+		       e_dbus_signal_handler_del(conn_system, changed_fso_h);
+		       changed_fso_h = e_dbus_signal_handler_add(conn_system,
+								 "org.freesmartphone.ogsmd",
+								 "/org/freesmartphone/GSM/Device",
+								 "org.freesmartphone.GSM.Network",
+								 "SignalStrength",
+								 signal_changed, data);
+		    }
 	       }
 	     success = 1;
 	  }
@@ -385,23 +396,29 @@ operator_callback(void *data, void *ret, DBusError *err)
 	  {
 	     if (operatorch_h)
 	       {
-		  e_dbus_signal_handler_del(conn, operatorch_h);
-		  operatorch_h = e_dbus_signal_handler_add(conn,
-							   "org.openmoko.qtopia.Phonestatus",
-							   "/Status",
-							   "org.openmoko.qtopia.Phonestatus",
-							   "networkOperatorChanged",
-							   operator_changed, data);
+		  if (conn)
+		    {
+		       e_dbus_signal_handler_del(conn, operatorch_h);
+		       operatorch_h = e_dbus_signal_handler_add(conn,
+								"org.openmoko.qtopia.Phonestatus",
+								"/Status",
+								"org.openmoko.qtopia.Phonestatus",
+								"networkOperatorChanged",
+								operator_changed, data);
+		    }
 	       }
 	     else if (operatorch_fso_h)
 	       {
-		  e_dbus_signal_handler_del(conn_system, operatorch_h);
-		  operatorch_h = e_dbus_signal_handler_add(conn,
-							   "org.freesmartphone.ogsmd",
-							   "/org/freesmartphone/GSM/Device",
-							   "org.freesmartphone.GSM.Network",
-							   "networkOperatorChanged",
-							   operator_changed, data);
+		  if (conn_system)
+		    {
+		       e_dbus_signal_handler_del(conn_system, operatorch_h);
+		       operatorch_h = e_dbus_signal_handler_add(conn_system,
+								"org.freesmartphone.ogsmd",
+								"/org/freesmartphone/GSM/Device",
+								"org.freesmartphone.GSM.Network",
+								"networkOperatorChanged",
+								operator_changed, data);
+		    }
 	       }
 	     success = 1;
 	  }
@@ -430,29 +447,38 @@ operator_result_free(void *data)
 static void
 get_signal(void *data)
 {
-   DBusMessage *msg, *msg2;
+   DBusMessage *msg;
    
-   if (!conn) return;
-   msg = dbus_message_new_method_call("org.openmoko.qtopia.Phonestatus",
-				      "/Status",
-				      "org.openmoko.qtopia.Phonestatus",
-				      "signalStrength");
-   if (!conn_system) return;
-   msg2 = dbus_message_new_method_call("org.freesmartphone.ogsmd",
-				       "/org/freesmartphone/GSM/Device",
-				       "org.freesmartphone.GSM.Network",
-				       "GetSignalStrength");
-   if (!msg || !msg2) return;
-   e_dbus_method_call_send(conn, msg,
-			   signal_unmarhsall,
-			   signal_callback,
-			   signal_result_free, -1, data);
-   e_dbus_method_call_send(conn_system, msg2,
-			   signal_unmarhsall,
-			   signal_callback,
-			   signal_result_free, -1, data);
-   dbus_message_unref(msg);
-   dbus_message_unref(msg2);
+   if (conn)
+     {
+	msg = dbus_message_new_method_call("org.openmoko.qtopia.Phonestatus",
+					   "/Status",
+					   "org.openmoko.qtopia.Phonestatus",
+					   "signalStrength");
+	if (msg)
+	  {
+	     e_dbus_method_call_send(conn, msg,
+				     signal_unmarhsall,
+				     signal_callback,
+				     signal_result_free, -1, data);
+	     dbus_message_unref(msg);
+	  }
+     }
+   if (conn_system)
+     {
+	msg = dbus_message_new_method_call("org.freesmartphone.ogsmd",
+					   "/org/freesmartphone/GSM/Device",
+					   "org.freesmartphone.GSM.Network",
+					   "GetSignalStrength");
+	if (msg)
+	  {
+	     e_dbus_method_call_send(conn_system, msg,
+				     signal_unmarhsall,
+				     signal_callback,
+				     signal_result_free, -1, data);
+	     dbus_message_unref(msg);
+	  }
+     }
 }
 
 static void
@@ -460,27 +486,36 @@ get_operator(void *data)
 {
    DBusMessage *msg, *msg2;
    
-   if (!conn) return;
-   msg = dbus_message_new_method_call("org.openmoko.qtopia.Phonestatus",
-				      "/Status",
-				      "org.openmoko.qtopia.Phonestatus",
-				      "networkOperator");
-   if (!conn_system) return;
-   msg2 = dbus_message_new_method_call("org.freesmartphone.ogsmd",
-				       "/org/freesmartphone/GSM/Device",
-				       "org.freesmartphone.GSM.Network",
-				       "networkOperator");
-   if (!msg || !msg2) return;
-   e_dbus_method_call_send(conn, msg,
-			   operator_unmarhsall,
-			   operator_callback,
-			   operator_result_free, -1, data);
-   e_dbus_method_call_send(conn_system, msg2,
-			   operator_unmarhsall,
-			   operator_callback,
-			   operator_result_free, -1, data);
-   dbus_message_unref(msg);
-   dbus_message_unref(msg2);
+   if (conn)
+     {
+	msg = dbus_message_new_method_call("org.openmoko.qtopia.Phonestatus",
+					   "/Status",
+					   "org.openmoko.qtopia.Phonestatus",
+					   "networkOperator");
+	if (msg)
+	  {
+	     e_dbus_method_call_send(conn, msg,
+				     operator_unmarhsall,
+				     operator_callback,
+				     operator_result_free, -1, data);
+	     dbus_message_unref(msg);
+	  }
+     }
+   if (conn_system)
+     {
+	msg = dbus_message_new_method_call("org.freesmartphone.ogsmd",
+					   "/org/freesmartphone/GSM/Device",
+					   "org.freesmartphone.GSM.Network",
+					   "networkOperator");
+	if (msg)
+	  {
+	     e_dbus_method_call_send(conn_system, msg,
+				     operator_unmarhsall,
+				     operator_callback,
+				     operator_result_free, -1, data);
+	     dbus_message_unref(msg);
+	  }
+     }
 }
 
 static void
@@ -524,50 +559,62 @@ name_changed(void *data, DBusMessage *msg)
      {
 	if (changed_h)
 	  {
-	     e_dbus_signal_handler_del(conn, changed_h);
-	     changed_h = e_dbus_signal_handler_add(conn,
-						   "org.openmoko.qtopia.Phonestatus",
-						   "/Status",
-						   "org.openmoko.qtopia.Phonestatus",
-						   "signalStrengthChanged",
-						   signal_changed, data);
-	     get_signal(data);
+	     if (conn)
+	       {
+		  e_dbus_signal_handler_del(conn, changed_h);
+		  changed_h = e_dbus_signal_handler_add(conn,
+							"org.openmoko.qtopia.Phonestatus",
+							"/Status",
+							"org.openmoko.qtopia.Phonestatus",
+							"signalStrengthChanged",
+							signal_changed, data);
+		  get_signal(data);
+	       }
 	  }
 	if (operatorch_h)
 	  {
-	     e_dbus_signal_handler_del(conn, operatorch_h);
-	     operatorch_h = e_dbus_signal_handler_add(conn,
-						      "org.openmoko.qtopia.Phonestatus",
-						      "/Status",
-						      "org.openmoko.qtopia.Phonestatus",
-						      "networkOperatorChanged",
-						      operator_changed, data);
-	     get_operator(data);
+	     if (conn)
+	       {
+		  e_dbus_signal_handler_del(conn, operatorch_h);
+		  operatorch_h = e_dbus_signal_handler_add(conn,
+							   "org.openmoko.qtopia.Phonestatus",
+							   "/Status",
+							   "org.openmoko.qtopia.Phonestatus",
+							   "networkOperatorChanged",
+							   operator_changed, data);
+		  get_operator(data);
+	       }
 	  }
      }
    else if (!strcmp(s1, "org.freesmartphone.ogsmd"))
      {
 	if (changed_fso_h)
 	  {
-	     e_dbus_signal_handler_del(conn_system, changed_fso_h);
-	     changed_fso_h = e_dbus_signal_handler_add(conn_system,
-						       "org.freesmartphone.ogsmd",
-						       "/org/freesmartphone/GSM/Device",
-						       "org.freesmartphone.GSM.Network",
-						       "SignalStrength",
-						       signal_changed, data);
-	     get_signal(data);
+	     if (conn_system)
+	       {
+		  e_dbus_signal_handler_del(conn_system, changed_fso_h);
+		  changed_fso_h = e_dbus_signal_handler_add(conn_system,
+							    "org.freesmartphone.ogsmd",
+							    "/org/freesmartphone/GSM/Device",
+							    "org.freesmartphone.GSM.Network",
+							    "SignalStrength",
+							    signal_changed, data);
+		  get_signal(data);
+	       }
 	  }
 	if (operatorch_fso_h)
 	  {
-	     e_dbus_signal_handler_del(conn_system, operatorch_h);
-	     operatorch_h = e_dbus_signal_handler_add(conn,
-						      "org.freesmartphone.ogsmd",
-						      "/org/freesmartphone/GSM/Device",
-						      "org.freesmartphone.GSM.Network",
-						      "networkOperatorChanged",
-						      operator_changed, data);
-	     get_operator(data);
+	     if (conn_system)
+	       {
+		  e_dbus_signal_handler_del(conn_system, operatorch_h);
+		  operatorch_h = e_dbus_signal_handler_add(conn,
+							   "org.freesmartphone.ogsmd",
+							   "/org/freesmartphone/GSM/Device",
+							   "org.freesmartphone.GSM.Network",
+							   "networkOperatorChanged",
+							   operator_changed, data);
+		  get_operator(data);
+	       }
 	  }
      }
    return;
