@@ -263,8 +263,7 @@ update_operator(char *op, void *data)
    char *poper;
    
    poper = inst->oper;
-   if ((poper) && (op) && (!strcmp(op, poper)))
-     return;
+   if ((poper) && (op) && (!strcmp(op, poper))) return;
    if (op) inst->oper = strdup(op);
    else inst->oper = NULL;
    if (((op) && (!poper)) || ((!op) && (poper)))
