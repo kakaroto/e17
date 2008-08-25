@@ -29,7 +29,7 @@ struct _Instance
    E_Gadcon_Client *gcc;
    Evas_Object *obj;
    int strength;
-   char *operator;
+   char *oper;
 };
 
 /***************************************************************************/
@@ -133,7 +133,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    e_gadcon_client_util_menu_attach(gcc);
    
    inst->strength = -1;
-   inst->operator = NULL;
+   inst->oper = NULL;
    
    int sleeptime = 8;
 
@@ -205,6 +205,7 @@ _gc_shutdown(E_Gadcon_Client *gcc)
    
    inst = gcc->data;
    evas_object_del(inst->obj);
+   if (inst->oper) free(inst->oper);
    free(inst);
 }
 
@@ -259,20 +260,24 @@ static void
 update_operator(char *op, void *data)
 {
    Instance *inst = data;
-   char *poperator;
+   char *poper;
    
-   poperator = inst->operator;
-   strcpy(inst->operator, op);
+   poper = inst->oper;
+   if ((poper) && (op) && (!strcmp(op, poper)))
+     return;
+   if (op) inst->oper = strdup(op);
+   else inst->oper = NULL;
+   if (((op) && (!poper)) || ((!op) && (poper)))
    
-   if (inst->operator != poperator)
+   if (inst->oper != poper)
      {
 	Edje_Message_String msg;
 	
-	msg.str = inst->operator;
+	if (inst->oper) msg.str = inst->oper;
+	else msg.str = "";
 	edje_object_message_send(inst->obj, EDJE_MESSAGE_STRING, 1, &msg);
      }
-   if ((poperator) && (inst->operator != poperator))
-     free(poperator);
+   if (poper) free(poper);
 }
 
 static void
