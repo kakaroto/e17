@@ -179,7 +179,7 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 						  "org.freesmartphone.GSM.Network",
 						  "SignalStrength",
 						  signal_changed, inst);
-	operatorch_fso_h = e_dbus_signal_handler_add(conn,
+	operatorch_fso_h = e_dbus_signal_handler_add(conn_system,
 						     "org.freesmartphone.ogsmd",
 						     "/org/freesmartphone/GSM/Device",
 						     "org.freesmartphone.GSM.Network",
@@ -607,7 +607,7 @@ name_changed(void *data, DBusMessage *msg)
 	     if (conn_system)
 	       {
 		  e_dbus_signal_handler_del(conn_system, operatorch_h);
-		  operatorch_h = e_dbus_signal_handler_add(conn,
+		  operatorch_h = e_dbus_signal_handler_add(conn_system,
 							   "org.freesmartphone.ogsmd",
 							   "/org/freesmartphone/GSM/Device",
 							   "org.freesmartphone.GSM.Network",
