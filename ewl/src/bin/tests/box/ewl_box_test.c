@@ -5,20 +5,14 @@
 #include "ewl_button.h"
 #include <stdio.h>
 
+extern Ewl_Unit_Test box_unit_tests[];
+
 static int create_test(Ewl_Container *box);
+
 static void toggle_child_vertical_align(Ewl_Widget *w, void *ev, void *data);
 static void toggle_child_horizontal_align(Ewl_Widget *w, void *ev, void *data);
 static void toggle_child_shrink(Ewl_Widget *w, void *ev, void *data);
 static void toggle_child_fill(Ewl_Widget *w, void *ev, void *data);
-
-/* unit tests */
-static int constructor_test(char *buf, int len);
-
-static Ewl_Unit_Test box_unit_tests[] = {
-                {"constructor", constructor_test, NULL, -1, 0},
-                {NULL, NULL, NULL, -1, 0}
-        };
-
 
 void
 test_info(Ewl_Test *test)
@@ -33,7 +27,7 @@ test_info(Ewl_Test *test)
         test->unit_tests = box_unit_tests;
 }
 
-static int
+int
 create_test(Ewl_Container *box)
 {
         Ewl_Widget *vbox[2], *hbox[3];
@@ -334,36 +328,5 @@ toggle_child_vertical_align(Ewl_Widget *w, void *ev __UNUSED__,
 
         ewl_button_label_set(EWL_BUTTON(w), l);
         ewl_object_alignment_set(EWL_OBJECT(w), a);
-}
-
-static int
-constructor_test(char *buf, int len)
-{
-        Ewl_Widget *b;
-        int ret = 0;
-
-        b = ewl_box_new();
-
-        if (!EWL_BOX_IS(b))
-        {
-                LOG_FAILURE(buf, len, "returned box is not of the type box");
-                goto DONE;
-        }
-        if (!ewl_box_orientation_get(EWL_BOX(b)) == EWL_ORIENTATION_HORIZONTAL)
-        {
-                LOG_FAILURE(buf, len, "button has a stock type set");
-                goto DONE;
-        }
-        if (ewl_widget_focusable_get(b))
-        {
-                LOG_FAILURE(buf, len, "box is not focusable");
-                goto DONE;
-        }
-
-        ret = 1;
-DONE:
-        ewl_widget_destroy(b);
-
-        return ret;
 }
 

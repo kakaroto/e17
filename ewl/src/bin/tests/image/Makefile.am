@@ -19,11 +19,12 @@ pkgdir = $(libdir)/ewl/tests
 
 pkg_LTLIBRARIES = ewl_image_test.la
 
-ewl_image_test_la_SOURCES = ewl_image_test.c
+ewl_image_test_la_SOURCES = ewl_image_test.c \
+			    ewl_image_unit_test.c
 ewl_image_test_la_LIBADD = $(top_builddir)/src/lib/libewl.la @ECORE_LIBS@
 ewl_image_test_la_LDFLAGS = -module @lt_no_undefined@ -avoid-version
 
-FILES = $(ewl_image_test_la_SOURCES)
+FILES = ewl_image_test.c
 
 exampledir = $(pkgdatadir)/examples/
 example_DATA = $(FILES)

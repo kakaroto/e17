@@ -17,11 +17,12 @@ pkgdir = $(libdir)/ewl/tests
 
 pkg_LTLIBRARIES = ewl_paned_test.la
 
-ewl_paned_test_la_SOURCES = ewl_paned_test.c
+ewl_paned_test_la_SOURCES = ewl_paned_test.c \
+			    ewl_paned_unit_test.c
 ewl_paned_test_la_LIBADD = $(top_builddir)/src/lib/libewl.la
 ewl_paned_test_la_LDFLAGS = -module @lt_no_undefined@ -avoid-version
 
-FILES = $(ewl_paned_test_la_SOURCES)
+FILES = ewl_paned_test.c
 
 exampledir = $(pkgdatadir)/examples/
 example_DATA = $(FILES)

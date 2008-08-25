@@ -7,19 +7,12 @@
 #include <string.h>
 #include <stdio.h>
 
+extern Ewl_Unit_Test colordialog_unit_tests[];
+
 static int create_test(Ewl_Container *win);
 static void colordialog_cb_launch(Ewl_Widget *w, void *ev, void *data);
 static void colordialog_cb_value_changed(Ewl_Widget *w, void *ev,
                                                         void *data);
-
-/* unit tests */
-static int constructor_test(char *buf, int len);
-
-static Ewl_Unit_Test colordialog_unit_tests[] = {
-                {"constructor", constructor_test, NULL, -1, 0},
-                {NULL, NULL, NULL, -1, 0}
-        };
-
 
 void
 test_info(Ewl_Test *test)
@@ -91,46 +84,3 @@ colordialog_cb_launch(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
                                 colordialog_cb_value_changed, NULL);
         ewl_widget_show(o);
 }
-
-static int
-constructor_test(char *buf, int len)
-{
-        Ewl_Widget *c;
-        int ret = 0;
-
-        c = ewl_colordialog_new();
-
-        if (!EWL_COLORDIALOG_IS(c))
-        {
-                LOG_FAILURE(buf, len, "returned color dialog is not of the type"
-                                " " EWL_COLORDIALOG_TYPE);
-                goto DONE;
-        }
-        if (!!strcmp(ewl_window_title_get(EWL_WINDOW(c)), "Ewl Colordialog"))
-        {
-                LOG_FAILURE(buf, len, "window title is not Ewl Colordialog");
-                goto DONE;
-        }
-        if (!!strcmp(ewl_window_name_get(EWL_WINDOW(c)), "Ewl Colordialog"))
-        {
-                LOG_FAILURE(buf, len, "window name is not Ewl Colordialog");
-                goto DONE;
-        }
-        if (!!strcmp(ewl_window_title_get(EWL_WINDOW(c)), "Ewl Colordialog"))
-        {
-                LOG_FAILURE(buf, len, "window group is not Ewl Colordialog");
-                goto DONE;
-        }
-        if (!ewl_colordialog_has_alpha_get(EWL_COLORDIALOG(c)))
-        {
-                LOG_FAILURE(buf, len, "colordialog has no alpha channel");
-                goto DONE;
-        }
-
-        ret = 1;
-DONE:
-        ewl_widget_destroy(c);
-
-        return ret;
-}
-

@@ -17,11 +17,12 @@ pkgdir = $(libdir)/ewl/tests
 
 pkg_LTLIBRARIES = ewl_text_format_test.la
 
-ewl_text_format_test_la_SOURCES = ewl_text_format_test.c
+ewl_text_format_test_la_SOURCES = ewl_text_format_test.c \
+				  ewl_text_format_unit_test.c
 ewl_text_format_test_la_LIBADD = $(top_builddir)/src/lib/libewl.la @ECORE_LIBS@
 ewl_text_format_test_la_LDFLAGS = -module @lt_no_undefined@ -avoid-version
 
-FILES = $(ewl_text_format_test_la_SOURCES)
+FILES = ewl_text_format_test.c
 
 exampledir = $(pkgdatadir)/examples/
 example_DATA = $(FILES)

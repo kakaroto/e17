@@ -12,16 +12,7 @@ static int counter = 0;
 static int create_test(Ewl_Container *win);
 static void cb_click(Ewl_Widget *w, void *ev, void *data);
 
-static int label_null_test_get(char *buf, int len);
-static int label_null_test_set_get(char *buf, int len);
-static int label_test_set_get(char *buf, int len);
-
-static Ewl_Unit_Test label_unit_tests[] = {
-                {"label null get", label_null_test_get, NULL, -1, 0},
-                {"label null set/get", label_null_test_set_get, NULL, -1, 0},
-                {"label set/get", label_test_set_get, NULL, -1, 0},
-                {NULL, NULL, NULL, -1, 0}
-        };
+extern Ewl_Unit_Test label_unit_tests[];
 
 void
 test_info(Ewl_Test *test)
@@ -77,67 +68,4 @@ cb_click(Ewl_Widget *w __UNUSED__, void *e __UNUSED__, void *data)
                 ewl_label_text_set(EWL_LABEL(data), "Shrinkable label");
 
         counter ++;
-}
-
-static int
-label_null_test_get(char *buf, int len)
-{
-        Ewl_Widget *label;
-        int ret = 0;
-
-        label = ewl_label_new();
-
-        if (ewl_label_text_get(EWL_LABEL(label)))
-                LOG_FAILURE(buf, len, "text_get not NULL");
-        else
-                ret = 1;
-
-        ewl_widget_destroy(label);
-
-        return ret;
-}
-
-static int
-label_null_test_set_get(char *buf, int len)
-{
-        Ewl_Widget *label;
-        const char *val;
-        int ret = 0;
-
-        label = ewl_label_new();
-
-        ewl_label_text_set(EWL_LABEL(label), "some text");
-        ewl_label_text_set(EWL_LABEL(label), NULL);
-
-        val = ewl_label_text_get(EWL_LABEL(label));
-        if (val)
-                LOG_FAILURE(buf, len, "text_set_get %s instead of NULL", val);
-        else
-                ret = 1;
-
-        ewl_widget_destroy(label);
-
-        return ret;
-}
-
-static int
-label_test_set_get(char *buf, int len)
-{
-        Ewl_Widget *label;
-        const char *val;
-        int ret = 0;
-
-        label = ewl_label_new();
-
-        ewl_label_text_set(EWL_LABEL(label), "some text");
-
-        val = ewl_label_text_get(EWL_LABEL(label));
-        if (strcmp(val, "some text"))
-                LOG_FAILURE(buf, len, "%s is not 'some text'", val);
-        else
-                ret = 1;
-
-        ewl_widget_destroy(label);
-
-        return ret;
 }

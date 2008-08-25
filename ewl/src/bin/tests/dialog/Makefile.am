@@ -17,11 +17,12 @@ pkgdir = $(libdir)/ewl/tests
 
 pkg_LTLIBRARIES = ewl_dialog_test.la
 
-ewl_dialog_test_la_SOURCES = ewl_dialog_test.c
+ewl_dialog_test_la_SOURCES = ewl_dialog_test.c \
+			     ewl_dialog_unit_test.c
 ewl_dialog_test_la_LIBADD = $(top_builddir)/src/lib/libewl.la
 ewl_dialog_test_la_LDFLAGS = -module @lt_no_undefined@ -avoid-version
 
-FILES = $(ewl_dialog_test_la_SOURCES)
+FILES = ewl_dialog_test.c
 
 exampledir = $(pkgdatadir)/examples/
 example_DATA = $(FILES)

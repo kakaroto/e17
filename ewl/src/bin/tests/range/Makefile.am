@@ -16,11 +16,12 @@ pkgdir = $(libdir)/ewl/tests
 
 pkg_LTLIBRARIES = ewl_range_test.la
 
-ewl_range_test_la_SOURCES = ewl_range_test.c
+ewl_range_test_la_SOURCES = ewl_range_test.c \
+			    ewl_range_unit_test.c
 ewl_range_test_la_LIBADD = $(top_builddir)/src/lib/libewl.la
 ewl_range_test_la_LDFLAGS = -module @lt_no_undefined@ -avoid-version
 
-FILES = $(ewl_range_test_la_SOURCES)
+FILES = ewl_range_test.c
 
 exampledir = $(pkgdatadir)/examples/
 example_DATA = $(FILES)
