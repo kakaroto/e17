@@ -1,10 +1,4 @@
 --- Things To Do --- (in no particular order)
-* vkbd keyboard doesnt resize down in size )start in 640x480 then change to
-  480x640 for example - kbd runs off the left)
-* kbd doesnt pop down popup menus when hidden all the time
-* kbd shift key on default too close to chars
-* kbd need more padding around words in matches list
-* kbd matches list words need bigger hit area
 * kbd needs drag for backspace/next word etc. to be shorter
 * kbd: add language hints per kbd layout
 * config panel entries for lots of illume features:

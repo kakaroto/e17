@@ -91,7 +91,7 @@ key 65 25  10  10
 key 75 25  10  10
   normal   m "m"
   shift    M "M"
-key 95 25  10  10
+key 105 25 10  10
   normal   shift.png
   is_shift
 

@@ -8,6 +8,8 @@
 #include <E_Hal.h>
 #endif
 
+static void _e_kbd_layout_send(E_Kbd *kbd);
+
 static Evas_List *handlers = NULL;
 static Evas_List *kbds = NULL;
 static Ecore_X_Atom atom_mb_im_invoker_command = 0;
@@ -58,15 +60,9 @@ _e_kbd_border_show(E_Kbd *kbd, E_Border *bd)
    if (!bd) return;
    e_border_uniconify(bd);
    if (kbd->fullscreen)
-     {
-	printf("layer 250!\n");
-	e_border_layer_set(kbd->border, 250);
-     }
+     e_border_layer_set(kbd->border, 250);
    else
-     {
-	printf("layer 100!\n");
-	e_border_layer_set(kbd->border, 100);
-     }
+     e_border_layer_set(kbd->border, 100);
    e_border_show(bd);
    e_border_raise(bd);
 }
@@ -106,6 +102,7 @@ _e_kbd_cb_animate(void *data)
 	     kbd->actually_visible = kbd->visible;
 	  }
 	_e_kbd_apply_all_job_queue();
+	_e_kbd_layout_send(kbd);
 	return 0;
      }
    return 1;
@@ -153,6 +150,7 @@ _e_kbd_hide(E_Kbd *kbd)
 	_e_kbd_border_hide(kbd->border);
 	kbd->actually_visible = kbd->visible;
 	_e_kbd_apply_all_job_queue();
+	_e_kbd_layout_send(kbd);
      }
    else
      _e_kbd_slide(kbd, 0, (double)illume_cfg->sliding.kbd.duration / 1000.0);
@@ -180,17 +178,14 @@ _e_kbd_border_adopt(E_Kbd *kbd, E_Border *bd)
 {
    kbd->border = bd;
    if (kbd->fullscreen)
-     {
-	printf("layer 250!\n");
-	e_border_layer_set(kbd->border, 250);
-     }
+     e_border_layer_set(kbd->border, 250);
    else
-     {
-	printf("layer 100!\n");
-	e_border_layer_set(kbd->border, 100);
-     }
+     e_border_layer_set(kbd->border, 100);
    if (!kbd->actually_visible)
-     e_border_fx_offset(kbd->border, 0, kbd->border->h);
+     {
+	e_border_fx_offset(kbd->border, 0, kbd->border->h);
+	_e_kbd_layout_send(kbd);
+     }
    kbd->h = kbd->border->h;
 }
 
@@ -268,7 +263,7 @@ _e_kbd_all_show(void)
 }
 
 static void
-_e_kbd_all_layout_set(E_Kbd_Lauyout layout)
+_e_kbd_all_layout_set(E_Kbd_Layout layout)
 {
    Evas_List *l;
    
@@ -648,6 +643,30 @@ _e_kbd_cb_border_hook_end(void *data, E_Border *bd)
      _e_kbd_border_hide(bd);
 }
 
+static void
+_e_kbd_layout_send(E_Kbd *kbd)
+{
+   Ecore_X_Virtual_Keyboard_State type;
+
+   if ((kbd->actually_visible) && (!kbd->disabled))
+     {
+	type = ECORE_X_VIRTUAL_KEYBOARD_STATE_ON;
+	if (kbd->layout == E_KBD_LAYOUT_DEFAULT) type = ECORE_X_VIRTUAL_KEYBOARD_STATE_ON;
+	else if (kbd->layout == E_KBD_LAYOUT_ALPHA) type = ECORE_X_VIRTUAL_KEYBOARD_STATE_ALPHA;
+	else if (kbd->layout == E_KBD_LAYOUT_NUMERIC) type = ECORE_X_VIRTUAL_KEYBOARD_STATE_NUMERIC;
+	else if (kbd->layout == E_KBD_LAYOUT_PIN) type = ECORE_X_VIRTUAL_KEYBOARD_STATE_PIN;
+	else if (kbd->layout == E_KBD_LAYOUT_PHONE_NUMBER) type = ECORE_X_VIRTUAL_KEYBOARD_STATE_PHONE_NUMBER;
+	else if (kbd->layout == E_KBD_LAYOUT_HEX) type = ECORE_X_VIRTUAL_KEYBOARD_STATE_HEX;
+	else if (kbd->layout == E_KBD_LAYOUT_TERMINAL) type = ECORE_X_VIRTUAL_KEYBOARD_STATE_TERMINAL;
+	else if (kbd->layout == E_KBD_LAYOUT_PASSWORD) type = ECORE_X_VIRTUAL_KEYBOARD_STATE_PASSWORD;
+	else if (kbd->layout == E_KBD_LAYOUT_NONE) type = ECORE_X_VIRTUAL_KEYBOARD_STATE_OFF;
+     }
+   else
+     type = ECORE_X_VIRTUAL_KEYBOARD_STATE_OFF;
+   if (kbd->border)
+     ecore_x_e_virtual_keyboard_state_send(kbd->border->client.win, type);
+}
+
 #ifdef HAVE_EDBUS
 // NOTES:
 // 
@@ -1017,6 +1036,7 @@ e_kbd_new(E_Zone *zone, const char *themedir, const char *syskbds, const char *s
    kbd = E_OBJECT_ALLOC(E_Kbd, E_KBD_TYPE, _e_kbd_free);
    if (!kbd) return NULL;
    kbds = evas_list_append(kbds, kbd);
+   kbd->layout = ECORE_X_VIRTUAL_KEYBOARD_STATE_ON;
    return kbd;
 }
 
@@ -1052,6 +1072,7 @@ e_kbd_show(E_Kbd *kbd)
    kbd->visible = 1;
    if (kbd->disabled) return;
    kbd->actually_visible = kbd->visible;
+   _e_kbd_layout_send(kbd);
    if (illume_cfg->sliding.kbd.duration <= 0)
      {
 	if (kbd->border)
@@ -1074,22 +1095,10 @@ e_kbd_show(E_Kbd *kbd)
 }
 
 EAPI void
-e_kbd_layout_set(E_Kbd *kbd, E_Kbd_Lauyout layout)
+e_kbd_layout_set(E_Kbd *kbd, E_Kbd_Layout layout)
 {
-   Ecore_X_Virtual_Keyboard_State type;
-   
-   type = ECORE_X_VIRTUAL_KEYBOARD_STATE_ON;
-   if (layout == E_KBD_LAYOUT_DEFAULT) type = ECORE_X_VIRTUAL_KEYBOARD_STATE_ON;
-   else if (layout == E_KBD_LAYOUT_ALPHA) type = ECORE_X_VIRTUAL_KEYBOARD_STATE_ALPHA;
-   else if (layout == E_KBD_LAYOUT_NUMERIC) type = ECORE_X_VIRTUAL_KEYBOARD_STATE_NUMERIC;
-   else if (layout == E_KBD_LAYOUT_PIN) type = ECORE_X_VIRTUAL_KEYBOARD_STATE_PIN;
-   else if (layout == E_KBD_LAYOUT_PHONE_NUMBER) type = ECORE_X_VIRTUAL_KEYBOARD_STATE_PHONE_NUMBER;
-   else if (layout == E_KBD_LAYOUT_HEX) type = ECORE_X_VIRTUAL_KEYBOARD_STATE_HEX;
-   else if (layout == E_KBD_LAYOUT_TERMINAL) type = ECORE_X_VIRTUAL_KEYBOARD_STATE_TERMINAL;
-   else if (layout == E_KBD_LAYOUT_PASSWORD) type = ECORE_X_VIRTUAL_KEYBOARD_STATE_PASSWORD;
-   else if (layout == E_KBD_LAYOUT_NONE) type = ECORE_X_VIRTUAL_KEYBOARD_STATE_OFF;
-   if (kbd->border)
-     ecore_x_e_virtual_keyboard_state_send(kbd->border->client.win, type);
+   kbd->layout = layout;
+   _e_kbd_layout_send(kbd);
 }
 
 EAPI void
@@ -1145,15 +1154,9 @@ e_kbd_fullscreen_set(E_Zone *zone, int fullscreen)
 	  {
 	     kbd->fullscreen = fullscreen;
 	     if (kbd->fullscreen)
-	       {
-		  printf("layer 250!\n");
-		  e_border_layer_set(kbd->border, 250);
-	       }
+	       e_border_layer_set(kbd->border, 250);
 	     else
-	       {
-		  printf("layer 100!\n");
-		  e_border_layer_set(kbd->border, 100);
-	       }
+	       e_border_layer_set(kbd->border, 100);
 	  }
      }
 }

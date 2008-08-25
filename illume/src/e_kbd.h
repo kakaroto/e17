@@ -5,7 +5,7 @@ typedef struct _E_Kbd E_Kbd;
 
 #define E_KBD_TYPE 0xE1b0988
 
-typedef enum _E_Kbd_Lauyout
+typedef enum _E_Kbd_Layout
 {
    E_KBD_LAYOUT_NONE,
    E_KBD_LAYOUT_DEFAULT,
@@ -16,7 +16,7 @@ typedef enum _E_Kbd_Lauyout
    E_KBD_LAYOUT_HEX,
    E_KBD_LAYOUT_TERMINAL,
    E_KBD_LAYOUT_PASSWORD
-} E_Kbd_Lauyout;
+} E_Kbd_Layout;
 
 struct _E_Kbd
 {
@@ -26,6 +26,7 @@ struct _E_Kbd
    Ecore_Timer         *delay_hide;
    Ecore_Animator      *animator;
    Evas_List           *waiting_borders;
+   E_Kbd_Layout         layout;
    double               start, len;
 
    int                  h;
@@ -44,7 +45,7 @@ EAPI E_Kbd *e_kbd_new(E_Zone *zone, const char *themedir, const char *syskbds, c
 EAPI void e_kbd_enable(E_Kbd *kbd);
 EAPI void e_kbd_disable(E_Kbd *kbd);
 EAPI void e_kbd_show(E_Kbd *kbd);
-EAPI void e_kbd_layout_set(E_Kbd *kbd, E_Kbd_Lauyout layout);
+EAPI void e_kbd_layout_set(E_Kbd *kbd, E_Kbd_Layout layout);
 EAPI void e_kbd_hide(E_Kbd *kbd);
 EAPI void e_kbd_safe_app_region_get(E_Zone *zone, int *x, int *y, int *w, int *h);
 EAPI void e_kbd_fullscreen_set(E_Zone *zone, int fullscreen);

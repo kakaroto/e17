@@ -93,7 +93,6 @@ e_winilist_add(Evas *e)
    evas_object_event_callback_add(d->o_frame, EVAS_CALLBACK_DEL, _cb_object_del, NULL);
    evas_object_event_callback_add(d->o_frame, EVAS_CALLBACK_RESIZE, _cb_object_resize, NULL);
    
-   printf("refill1\n");
    _refill(d);
    
    return d->o_frame;
@@ -129,7 +128,6 @@ e_winilist_special_append(Evas_Object *obj, Evas_Object *icon, const char *label
 	s->data2 = data2;
 	d->special.changed = 1;
      }
-   printf("refill2\n");
    _refill(d);
 }
 
@@ -152,7 +150,6 @@ e_winilist_special_prepend(Evas_Object *obj, Evas_Object *icon, const char *labe
 	s->data2 = data2;
 	d->special.changed = 1;
      }
-   printf("refill3\n");
    _refill(d);
 }
 
@@ -165,7 +162,6 @@ e_winilist_optimial_size_get(Evas_Object *obj, Evas_Coord *w, Evas_Coord *h)
    if (h) *h = 0;
    d = evas_object_data_get(obj, "..[winilist]");
    if (!d) return;
-   printf("OPT: %ix%i\n", d->optimal_size.w, d->optimal_size.h);
    if (w) *w = d->optimal_size.w;
    if (h) *h = d->optimal_size.h;
 }
@@ -179,10 +175,8 @@ _cb_item_sel(void *data, void *data2)
    Data *d;
    
    d = data;
-   printf("d = %p\n", d);
    if (d->select.func)
      {
-	printf("d->select.func = %p\n", d->select.func);
 	d->select.func(d->select.data, data2);
      }
 }
@@ -193,10 +187,8 @@ _cb_special_sel(void *data, void *data2)
    Special *s;
    
    s = data;
-   printf("s = %p\n", s);
    if (s->func)
      {
-	printf("s->func = %p\n", s->func);
 	s->func(s->data1, s->data2);
      }
 }
@@ -348,7 +340,6 @@ _refill(Data *d)
 	  changed = 1;
 	if (!changed) return;
      }
-   printf("-------REFILL\n");
    d->special.changed = 0;
    while (d->borders)
      {
@@ -420,7 +411,6 @@ _cb_border_add(void *data, int ev_type, void *event)
    E_Event_Border_Add *ev;
    
    ev = event;
-   printf("refill4\n");
      {
 	Evas_List *l;
 	
@@ -435,7 +425,6 @@ _cb_border_remove(void *data, int ev_type, void *event)
    E_Event_Border_Remove *ev;
    
    ev = event;
-   printf("refill5\n");
      {
 	Evas_List *l;
 	
@@ -450,7 +439,6 @@ _cb_border_show(void *data, int ev_type, void *event)
    E_Event_Border_Show *ev;
    
    ev = event;
-   printf("refill6\n");
      {
 	Evas_List *l;
 	
@@ -465,7 +453,6 @@ _cb_border_hide(void *data, int ev_type, void *event)
    E_Event_Border_Hide *ev;
    
    ev = event;
-   printf("refill7\n");
      {
 	Evas_List *l;
 	
@@ -480,7 +467,6 @@ _cb_border_property(void *data, int ev_type, void *event)
    E_Event_Border_Property *ev;
    
    ev = event;
-   printf("refill8\n");
    /* FIXME: should really be optimal on what properties warrant a refill */
      {
 	Evas_List *l;

@@ -15,6 +15,7 @@ enum {
 static Evas_Object *_theme_obj_new(Evas *e, const char *custom_dir, const char *group);
 
 static void _e_kbd_int_layout_next(E_Kbd_Int *ki);
+static void _e_kbd_int_zoomkey_down(E_Kbd_Int *ki);
 static void _e_kbd_int_matches_update(E_Kbd_Int *ki);
 static void _e_kbd_int_dictlist_down(E_Kbd_Int *ki);
 static void _e_kbd_int_matchlist_down(E_Kbd_Int *ki);
@@ -27,6 +28,10 @@ _e_kbd_int_cb_resize(E_Win *win)
    
    ki = win->data;
    evas_object_resize(ki->base_obj, ki->win->w, ki->win->h);
+   _e_kbd_int_zoomkey_down(ki);
+   _e_kbd_int_dictlist_down(ki);
+   _e_kbd_int_matchlist_down(ki);
+   _e_kbd_int_layoutlist_down(ki);
 }
 
 static const char *
@@ -255,7 +260,7 @@ _e_kbd_int_matches_add(E_Kbd_Int *ki, const char *str, int num)
    if (mw < 32) mw = 32;
    if (num & 0x1) e_box_pack_start(ki->box_obj, o);
    else e_box_pack_end(ki->box_obj, o);
-   e_box_pack_options_set(o, 1, 1, 1, 1, 0.5, 0.5, mw, mh, mw, mh);
+   e_box_pack_options_set(o, 1, 1, 1, 1, 0.5, 0.5, mw, mh, 9999, 9999);
    if (num == 0)
      edje_object_signal_emit(o, "e,state,selected", "e");
    edje_object_signal_callback_add(o, "e,action,do,select", "",
@@ -970,7 +975,7 @@ _e_kbd_int_layout_build(E_Kbd_Int *ki)
    evas_object_resize(ki->base_obj, ki->win->w, ki->win->h);
    evas_object_geometry_get(ki->layout_obj, NULL, NULL, &lw, &lh);
    lh = (ki->layout.h * lw) / ki->layout.w;
-   edje_extern_object_min_size_set(ki->layout_obj, lw, lh);
+   edje_extern_object_min_size_set(ki->layout_obj, 0, lh);
    edje_object_part_swallow(ki->base_obj, "e.swallow.content", ki->layout_obj);
 
    for (l = ki->layout.keys; l; l = l->next)
@@ -1253,7 +1258,7 @@ _e_kbd_int_cb_client_message(void *data, int type, void *event)
        (ev->message_type == ECORE_X_ATOM_E_VIRTUAL_KEYBOARD_STATE))
      {
 	E_Kbd_Int_Layout *kil;
-	
+
 	if (ev->data.l[0] == ECORE_X_ATOM_E_VIRTUAL_KEYBOARD_OFF)
 	  {
 	     _e_kbd_int_zoomkey_down(ki);
@@ -1811,8 +1816,8 @@ e_kbd_int_new(const char *themedir, const char *syskbds, const char *sysdicts)
    evas_object_move(ki->base_obj, 0, 0);
    evas_object_resize(ki->base_obj, mw, mh);
    evas_object_show(ki->base_obj);
-   e_win_size_min_set(ki->win, mw, mh);
-   e_win_resize(ki->win, mw, mh);
+   e_win_size_min_set(ki->win, 48, mh);
+   e_win_resize(ki->win, 48, mh);
    ecore_x_e_virtual_keyboard_set(ki->win->evas_win, 1);
    
    ki->client_message_handler = ecore_event_handler_add
