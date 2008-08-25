@@ -8797,7 +8797,6 @@ collections { /* begin the collection of edje groups that are in this file */
 /////////////////////////////////////////////////////////////////////////////
    /*** SYSTEM ***/
 // FIXME: REVIEW
-// FIXME: Window position is weird?
 // FIXME: Make popup borderless?
 // FIXME: Use a bg that is shared by borderless widgets eg. move/resize
 
@@ -8833,7 +8832,10 @@ collections { /* begin the collection of edje groups that are in this file */
 	    description { state:    "default" 0.0;
       	       min: 250 250;
                max: 250 250;
-	       image.normal: "menu_bg.png";
+	       image {
+		  normal: "menu_bg.png";
+		  border: 2 2 2 2;
+	       }
 	    }
 	 }
 	 part { name: "busy";
@@ -8919,7 +8921,6 @@ collections { /* begin the collection of edje groups that are in this file */
 
 /////////////////////////////////////////////////////////////////////////////
    /*** DIALOG ***/
-// FIXME: DO
    group { name: "e/widgets/dialog/main";
       images {
 	 image: "dia_grad.png" COMP;
@@ -9074,7 +9075,7 @@ collections { /* begin the collection of edje groups that are in this file */
 
 /////////////////////////////////////////////////////////////////////////////
    /*** CONFIGURATION PANEL ***/
-// FIXME: REVIEW
+   
    group { name: "e/widgets/configure/main";
       images {
 	 image: "dia_grad.png" COMP;
@@ -9177,8 +9178,6 @@ collections { /* begin the collection of edje groups that are in this file */
 
 /////////////////////////////////////////////////////////////////////////////
    /*** MOVE/RESIZE BOX ***/
-
-// FIXME: Use a bg that is shared by borderless widgets (not just use menu_bg)
 
    group { name: "e/widgets/border/default/move";
       images.image: "menu_bg.png";
@@ -10098,9 +10097,6 @@ collections { /* begin the collection of edje groups that are in this file */
 	 }
       }
    }
-
-// FIXME: Review scrollframe
-// FIXME: Vertical bar hilight? Looks weird.
 
    group { name: "e/widgets/scrollframe";
       images {
