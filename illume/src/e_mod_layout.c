@@ -179,6 +179,7 @@ _e_mod_layout_border_show(E_Border *bd)
    e_border_uniconify(bd);
    e_border_show(bd);
    e_border_raise(bd);
+   e_border_focus_set(bd, 1, 1);
 }
 
 void
