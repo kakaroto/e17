@@ -29,8 +29,7 @@ test_info(Ewl_Test *test)
 static int
 create_test(Ewl_Container *box)
 {
-        Ewl_Widget *o;
-        Ewl_Text_Trigger *trigger;
+        Ewl_Widget *o, *trigger;
         int len;
 
         o = ewl_text_new();
@@ -74,23 +73,26 @@ create_test(Ewl_Container *box)
         ewl_text_text_insert(EWL_TEXT(o), "The fourth bunch of text\n", 31); /* 25 */
 
         printf("Creating trigger [115]\n");
-        trigger = EWL_TEXT_TRIGGER(ewl_text_trigger_new(EWL_TEXT_TRIGGER_TYPE_TRIGGER));
-        ewl_text_trigger_start_pos_set(trigger, ewl_text_length_get(EWL_TEXT(o)));
+        trigger = ewl_text_trigger_new(EWL_TEXT_TRIGGER_TYPE_TRIGGER);
+        ewl_text_trigger_start_pos_set(EWL_TEXT_TRIGGER(trigger), 
+                                        ewl_text_length_get(EWL_TEXT(o)));
         ewl_text_cursor_position_set(EWL_TEXT(o), ewl_text_length_get(EWL_TEXT(o)));
         ewl_text_styles_set(EWL_TEXT(o), EWL_TEXT_STYLE_NONE);
         ewl_text_text_append(EWL_TEXT(o), "This is the link."); /* 17 */
 
         len = ewl_text_cursor_position_get(EWL_TEXT(o)) -
-                        ewl_text_trigger_start_pos_get(trigger);
-        ewl_text_trigger_length_set(trigger, len);
+                        ewl_text_trigger_start_pos_get(
+                                                EWL_TEXT_TRIGGER(trigger));
+        ewl_text_trigger_length_set(EWL_TEXT_TRIGGER(trigger), len);
 
-        ewl_container_child_append(EWL_CONTAINER(o), EWL_WIDGET(trigger));
-        ewl_callback_append(EWL_WIDGET(trigger), EWL_CALLBACK_MOUSE_UP,
-                        trigger_cb, "You clicked the trigger, have a cookie.");
-        ewl_callback_append(EWL_WIDGET(trigger), EWL_CALLBACK_MOUSE_IN,
-                        trigger_cb_mouse_in, NULL);
-        ewl_callback_append(EWL_WIDGET(trigger), EWL_CALLBACK_MOUSE_OUT,
+        ewl_container_child_append(EWL_CONTAINER(o), trigger);
+        ewl_callback_append(trigger, EWL_CALLBACK_MOUSE_UP, trigger_cb, 
+                        "You clicked the trigger, have a cookie.");
+        ewl_callback_append(trigger, EWL_CALLBACK_MOUSE_IN, trigger_cb_mouse_in,
+                        NULL);
+        ewl_callback_append(trigger, EWL_CALLBACK_MOUSE_OUT,
                         trigger_cb_mouse_out, NULL);
+        ewl_attach_mouse_cursor_set(trigger, EWL_MOUSE_CURSOR_HAND2);
 
         printf("Inserting 'The fifth bunch of text\\n' [139]\n");
         ewl_text_text_insert(EWL_TEXT(o), "The fifth bunch of text\n", 0); /* 24 */
@@ -126,22 +128,25 @@ create_test(Ewl_Container *box)
         ewl_text_text_append(EWL_TEXT(o), "Once more with feeling. "); /* 24 */
 
         printf("Trigger\n");
-        trigger = EWL_TEXT_TRIGGER(ewl_text_trigger_new(EWL_TEXT_TRIGGER_TYPE_TRIGGER));
-        ewl_text_trigger_start_pos_set(trigger, ewl_text_length_get(EWL_TEXT(o)));
+        trigger = ewl_text_trigger_new(EWL_TEXT_TRIGGER_TYPE_TRIGGER);
+        ewl_text_trigger_start_pos_set(EWL_TEXT_TRIGGER(trigger),
+                                        ewl_text_length_get(EWL_TEXT(o)));
 
         printf("Appending 'This is the multi\\n\\nline link.' [226]\n");
         ewl_text_text_append(EWL_TEXT(o), "This is the multi\n\nline link."); /* 29 */
         len = ewl_text_cursor_position_get(EWL_TEXT(o)) -
-                        ewl_text_trigger_start_pos_get(trigger);
-        ewl_text_trigger_length_set(trigger, len);
+                        ewl_text_trigger_start_pos_get(
+                                        EWL_TEXT_TRIGGER(trigger));
+        ewl_text_trigger_length_set(EWL_TEXT_TRIGGER(trigger), len);
 
-        ewl_container_child_append(EWL_CONTAINER(o), EWL_WIDGET(trigger));
-        ewl_callback_append(EWL_WIDGET(trigger), EWL_CALLBACK_MOUSE_UP,
-                        trigger_cb, "You clicked the multi-line trigger, have a coke.");
-        ewl_callback_append(EWL_WIDGET(trigger), EWL_CALLBACK_MOUSE_IN,
-                        trigger_cb_mouse_in, NULL);
-        ewl_callback_append(EWL_WIDGET(trigger), EWL_CALLBACK_MOUSE_OUT,
+        ewl_container_child_append(EWL_CONTAINER(o), trigger);
+        ewl_callback_append(trigger, EWL_CALLBACK_MOUSE_UP, trigger_cb,
+                        "You clicked the multi-line trigger, have a coke.");
+        ewl_callback_append(trigger, EWL_CALLBACK_MOUSE_IN, trigger_cb_mouse_in,
+                        NULL);
+        ewl_callback_append(trigger, EWL_CALLBACK_MOUSE_OUT,
                         trigger_cb_mouse_out, NULL);
+        ewl_attach_mouse_cursor_set(trigger, EWL_MOUSE_CURSOR_HAND2);
 
         printf("Colour set\n");
         ewl_text_color_set(EWL_TEXT(o), 255, 0, 255, 255);
