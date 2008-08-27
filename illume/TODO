@@ -1,10 +1,14 @@
 --- Things To Do --- (in no particular order)
+* kbd config needs a fuzz multiplier
+* kbd needs config to be able to turn off auto-kbd popup
 * kbd needs drag for backspace/next word etc. to be shorter
 * kbd: add language hints per kbd layout
 * config panel entries for lots of illume features:
 *  wallpaper
 *  theme
 *  cache
+* need to probably bypass x screensaver for blanking and do it manually
+* need a way to disable suspend based on power status (eg when plugged in)
 * e: modules config dialog - make replaceable by a module
 * e: battery config dialog - allow config entries to be hidden
 * e: need ability to have  system default profile done cleanly
