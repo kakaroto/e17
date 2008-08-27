@@ -1,7 +1,13 @@
 // TODO (immediate other than finish)
 // 
+// label (done - review)
+// fontpreview (done - review)
 // slider (done - review)
-// entry (done - review)
+// entry (done - review) - Text select works oddly. Select a single letter like W to
+// see this odd behavior. Doesnt seem to offset correctly.
+//
+// note: make these (and menu) use a common image with a logical name. 
+// sys (done - review)
 // resize (done - review)
 // move (done - review)
 // 
@@ -10,7 +16,6 @@
 // fileman (list mode)
 // fileman (icon mode etc.)
 // tlist
-// label
 // textblock
 // about
 // theme_about
@@ -18,7 +23,6 @@
 // exebuf
 // toolbar
 // transition
-// fontpreview
 // gadman control
 // gadman popup
 // gadman full_bg
@@ -11586,7 +11590,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color_class: "entry_text";
 	       text {
 		  text: "";
-		  font: "Edje-Vera";
+		  font: "Sans,Edje-Vera";
 		  size: 10;
 		  min: 1 1;
 		  align: 0.0 0.0;
@@ -12094,7 +12098,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       visible:  0;
 	    }
 	    description { state: "active" 0.0;
-	       align: 0.5 0.5;
+	       align: 0.5 1.0;
 	       fixed: 1 1;
 	       rel1 {
 		  relative: 0.0  1.0;
@@ -12107,7 +12111,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color: 0 0 0 255;
 	       color_class: "slider_text";
 	       text { text:     "0.0";
-		  font:     "Edje-Vera";
+		  font:     "Sans,Edje-Vera";
 		  size:     10;
 		  min:      1 1;
 		  align:    0.5 0.5;
@@ -12346,20 +12350,20 @@ collections { /* begin the collection of edje groups that are in this file */
 	       visible:  0;
 	    }
 	    description { state: "active" 0.0;
-	       align: 0.5 0.5;
+	       align: 1.0 0.5;
 	       fixed: 1 0;	    
 	       rel1 {
 		  relative: 1.0  0.0;
-		  offset:   -12   7;
+		  offset:   -8   7;
 	       }
 	       rel2 {
 		  relative: 1.0  1.0;
-		  offset:   -12 -8;
+		  offset:   -8 -8;
 	       }
 	       color: 0 0 0 255;
 	       color_class: "slider_text";
 	       text { text:  "0.0";
-		  font:     "Edje-Vera";
+		  font:     "Sans,Edje-Vera";
 		  size:     10;
 		  min:      1 1;
 		  align:    0.5 0.5;
@@ -12579,6 +12583,56 @@ collections { /* begin the collection of edje groups that are in this file */
       }
    }
 
+   group { name: "e/widgets/label";
+      parts {
+	 part { name: "e.text.label";
+	    type: TEXT;
+	    mouse_events:   0;
+	    description { state: "default" 0.0;
+	       rel1 {
+		  relative: 0.0 0.0;
+		  offset: 2 2;
+	       }
+	       rel2 {
+		  relative: 1.0 1.0;
+		  offset: -3 -3;
+	       }
+	       color: 0 0 0 128;
+	       color_class: "label_text";
+	       text {
+		  font: "Sans:style=Bold,Edje-Vera-Bold";
+		  size: 10;
+		  min: 1 1;
+		  align: 0.0 0.5;
+		  text_class: "label";
+	       }
+	    }
+	 }
+      }
+   }
+
+   group { name: "e/widgets/fontpreview";
+      parts {
+	 part { name: "e.fontpreview.text";
+	    type: TEXT;
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       color: 0 0 0 255;
+	       color_class: "entry_text";
+	       rel1.offset: 6 6;
+	       rel2.offset: -7 -7;
+	       text {
+		  text: "The quick brown fox jumped over YA MUM!";
+		  font: "Sans,Edje-Vera";
+		  size: 10;
+		  min: 1 1;
+		  align: 0.5 0.5;
+		  text_class: "_e_font_preview";
+	       }
+	    }
+	 }
+      }
+   }
 
 /////////////////////////////////////////////////////////////////////////////
    /*** ICONS ***/
