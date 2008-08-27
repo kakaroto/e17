@@ -1,31 +1,37 @@
 // TODO (immediate other than finish)
-// frame
-// preview (done)
-// fileman (list mode)
-// slider (done - review)
 // 
+// slider (done - review)
+// entry (done - review)
+// resize (done - review)
+// move (done - review)
+// 
+// winlist (has bugs - needs work)
+// fileman (list mode)
 // fileman (icon mode etc.)
 // tlist
 // label
 // textblock
-// entry (done)
 // about
 // theme_about
-// resize (done - review)
-// move (done - review)
-// slider (done - review)
-// slidesel
+// slidesel (i know. no examples of this around).
 // exebuf
 // toolbar
 // transition
-// deskpreview (done)
-// color_well (done)
-// cslider (done)
 // fontpreview
-// gadman
-// spectrum (done)
+// gadman control
+// gadman popup
+// gadman full_bg
+// gadman frame
+// desklock
+// error
+// fontpreivew
+// icons (lots of them! lets also find all the missing ones in e and
+//        at least put a placeholder in the theme for them with "fixme"
+//        in the image - but atleast a .edc entry and filename and make
+//        sure the code uses a unique icon for its purposes)
 // wizard (just placeholder and basics - wizard code not complete)
 
+// notes: code. allow sys (shutdown, reboot etc.) to indicated borderless
 
 /*
  * So how do themes work? 
