@@ -966,63 +966,54 @@ test_custom_callback_clear(char *buf, int len)
 }
 
 static void
-base_callback(Ewl_Widget *w, void *event, void *data)
+base_callback(Ewl_Widget *w, void *event __UNUSED__, void *data __UNUSED__)
 {
         ewl_widget_data_set(w, w, (void *)(long)1);
-        event = data = NULL;
         return;
 }
 
 static void
-differing_callback(Ewl_Widget *w, void *event, void *data)
+differing_callback(Ewl_Widget *w, void *event __UNUSED__, void *data __UNUSED__)
 {
         ewl_widget_data_set(w, w, (void *)(long)2);
-        event = data = NULL;
         return;
 }
 
 static void
-append_callback(Ewl_Widget *w, void *event, void *data)
+append_callback(Ewl_Widget *w, void *event __UNUSED__, void *data __UNUSED__)
 {
         ewl_callback_append(w, EWL_CALLBACK_CONFIGURE, base_callback, NULL);
-
-        event = data = NULL;
         return;
 }
 
 static void
-prepend_callback(Ewl_Widget *w, void *event, void *data)
+prepend_callback(Ewl_Widget *w, void *event __UNUSED__, void *data __UNUSED__)
 {
         ewl_callback_prepend(w, EWL_CALLBACK_CONFIGURE, base_callback, NULL);
-
-        event = data = NULL;
         return;
 }
 
 static void
-insert_after_callback(Ewl_Widget *w, void *event, void *data)
+insert_after_callback(Ewl_Widget *w, void *event __UNUSED__,
+                        void *data __UNUSED__)
 {
         ewl_callback_insert_after(w, EWL_CALLBACK_CONFIGURE, base_callback,
                         NULL, insert_after_callback, NULL);
-
-        event = data = NULL;
         return;
 }
 
 static void
-insert_before_callback(Ewl_Widget *w, void *event, void *data)
+insert_before_callback(Ewl_Widget *w, void *event __UNUSED__,
+                                void *data __UNUSED__)
 {
         ewl_callback_insert_after(w, EWL_CALLBACK_CONFIGURE, base_callback,
                         NULL, differing_callback, NULL);
-
-        event = data = NULL;
         return;
 }
 
 static void
-delete_callback(Ewl_Widget *w, void *event, void *data)
+delete_callback(Ewl_Widget *w, void *event __UNUSED__, void *data __UNUSED__)
 {
         ewl_callback_del(w, EWL_CALLBACK_CONFIGURE, base_callback);
-        event = data = NULL;
         return;
 }
