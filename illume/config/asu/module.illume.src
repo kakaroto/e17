@@ -1,5 +1,5 @@
 group "Illume_Cfg" struct {
-  value "config_version" int: 1;
+  value "config_version" int: 2;
   value "launcher.mode" int: 1;
   value "launcher.icon_size" int: 120;
   value "launcher.single_click" int: 1;
