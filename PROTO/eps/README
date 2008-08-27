@@ -1,0 +1,6 @@
+The Eps library renders Postscript file by using
+the library libspectre (which can be downloaded from
+its home page: http://libspectre.freedesktop.org/wiki/)
+
+To build the documentation, just run 'doxygen' in
+the top level dir.
