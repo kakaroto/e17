@@ -1,0 +1,12 @@
+Login:        slackd00d
+IRC Nick:     slackd00d
+Cloak:        developer/slackd00d
+Name:         Jason Edson
+Location:     Renton, WA
+E-Mail:       jason@oceighty.com
+WWW:          http://www.oceighty.com/
+Contributing: e
+Group:        Core
+Platform:     Debian (Linux)
+
+
