@@ -1,4 +1,4 @@
-#!/bin/zsh
+#!/bin/sh
 
 # This is a quick and dirty script to 
 
