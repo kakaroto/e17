@@ -1,0 +1,9 @@
+Login:        ptomaine
+IRC Nick:     ptomaine
+Cloak:        developer/ptomaine
+Name:         Fedor Gusev
+Location:     Moscow, Russia
+Email:        gusevfe@gmail.com
+Contributing: enlightenment
+Platform:     Linux
+GeoData:      55.864981 37.60603
