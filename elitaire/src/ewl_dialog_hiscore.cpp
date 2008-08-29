@@ -28,8 +28,9 @@ static void * highscore_data_fetch(void * data, unsigned int row,
 		                                  unsigned int col);
 static unsigned int highscore_data_count(void * data);
 static Ewl_Widget * highscore_widget_fetch(void * data, unsigned int row,
-							unsigned int col);
-static Ewl_Widget * highscore_header_fetch(void *data, unsigned int column);
+							unsigned int col, void * prd);
+static Ewl_Widget * highscore_header_fetch(void * data, unsigned int column,
+                                            void * prd);
 /*
  * External API
  */
@@ -151,8 +152,6 @@ void ewl_frontend_dialog_highscore_add(Eli_App * eap, float points, pointsType t
     o = ewl_entry_new();
     ewl_text_text_set(EWL_TEXT(o), username);
     ewl_container_child_append(EWL_CONTAINER(vbox), o);
-    ewl_object_fill_policy_set(EWL_OBJECT(o), EWL_FLAG_FILL_FILL);
-    ewl_text_align_set(EWL_TEXT(o), EWL_FLAG_ALIGN_CENTER);
     ewl_widget_focus_send(o);
     ewl_callback_append(EWL_WIDGET(o), EWL_CALLBACK_KEY_DOWN, 
                         _highscore_key_down_cb, wh);
@@ -352,7 +351,7 @@ static unsigned int highscore_data_count(void * data)
 }
 
 static Ewl_Widget * highscore_widget_fetch(void * data, unsigned int row, 
-                                                 unsigned int col)
+                                                 unsigned int col, void *prd)
 {
     Ewl_Widget *w;
     Eli_Highscore_Entry *e;
@@ -383,7 +382,8 @@ static Ewl_Widget * highscore_widget_fetch(void * data, unsigned int row,
     return w;
 }
 
-static Ewl_Widget * highscore_header_fetch(void *data , unsigned int column)
+static Ewl_Widget * highscore_header_fetch(void *data , unsigned int column,
+                                            void *pr)
 {
     Ewl_Widget *l;
 
