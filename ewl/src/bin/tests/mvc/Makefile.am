@@ -17,11 +17,11 @@ pkgdir = $(libdir)/ewl/tests
 
 pkg_LTLIBRARIES = ewl_mvc_test.la
 
-ewl_mvc_test_la_SOURCES = ewl_mvc_test.c
+ewl_mvc_test_la_SOURCES = ewl_mvc_test.c ewl_mvc_unit_test.c
 ewl_mvc_test_la_LIBADD = $(top_builddir)/src/lib/libewl.la @ECORE_LIBS@
 ewl_mvc_test_la_LDFLAGS = -module @lt_no_undefined@ -avoid-version
 
-FILES = $(ewl_mvc_test_la_SOURCES)
+FILES = ewl_mvc_test.c
 
 exampledir = $(pkgdatadir)/examples/
 example_DATA = $(FILES)
