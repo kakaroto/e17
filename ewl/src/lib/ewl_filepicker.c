@@ -56,14 +56,16 @@ static void ewl_filepicker_cb_dialog_delete(Ewl_Widget *w, void *ev,
 static void *ewl_filepicker_cb_type_fetch(void *data, unsigned int row,
                                                 unsigned int col);
 static unsigned int ewl_filepicker_cb_type_count(void *data);
-static Ewl_Widget *ewl_filepicker_cb_type_header(void *data, unsigned int col);
+static Ewl_Widget *ewl_filepicker_cb_type_header(void *data, unsigned int col,
+                                                        void *pr_data);
 
 static void *ewl_filepicker_cb_path_fetch(void *data, unsigned int row,
                                                 unsigned int col);
 static unsigned int ewl_filepicker_cb_path_count(void *data);
 
 static Ewl_Widget *ewl_filepicker_cb_path_header(void *data, 
-                                                        unsigned int col);
+                                                        unsigned int col,
+                                                        void *pr_data);
 
 static void ewl_filepicker_filter_free_cb(Ewl_Filelist_Filter *filter);
 static void ewl_filepicker_type_change(Ewl_Filepicker *fp);
@@ -919,7 +921,8 @@ ewl_filepicker_cb_type_count(void *data)
 }
 
 static Ewl_Widget *
-ewl_filepicker_cb_type_header(void *data, unsigned int col)
+ewl_filepicker_cb_type_header(void *data, unsigned int col,
+                                void *pr_data __UNUSED__)
 {
         Ewl_Filepicker *fp;
         Ewl_Filelist_Filter *filter;
@@ -969,7 +972,8 @@ ewl_filepicker_cb_path_count(void *data)
 }
 
 static Ewl_Widget *
-ewl_filepicker_cb_path_header(void *data, unsigned int col __UNUSED__)
+ewl_filepicker_cb_path_header(void *data, unsigned int col __UNUSED__,
+                                void *pr_data __UNUSED__)
 {
         Ewl_Filepicker *fp;
         Ewl_Widget *entry;

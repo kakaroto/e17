@@ -25,8 +25,10 @@ static void ewl_freebox_mvc_test_data_append(Ecore_List *d);
 
 static void                 *ewl_freebox_mvc_test_data_setup();
 static Ewl_Widget           *ewl_freebox_mvc_test_widget_fetch(void *data, 
-                                                               unsigned int row, 
-                                                               unsigned int col);
+                                                               unsigned int row,
+                                                               unsigned int col,
+							       void *pr_data
+							       );
 static void                 *ewl_freebox_mvc_test_data_fetch(void *data, 
                                                              unsigned int row, 
                                                              unsigned int column);
@@ -119,7 +121,8 @@ ewl_freebox_mvc_test_data_setup(void)
 
 static Ewl_Widget *
 ewl_freebox_mvc_test_widget_fetch(void *data, unsigned int row __UNUSED__,
-                                              unsigned int col __UNUSED__)
+                                              unsigned int col __UNUSED__,
+					      void *pr_data __UNUSED__)
 {
         Ewl_Widget *w;
         Freebox_MVC_Test_Row_Data *d;

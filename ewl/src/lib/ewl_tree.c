@@ -392,7 +392,7 @@ ewl_tree_content_view_set(Ewl_Tree *tree, const Ewl_View *view)
         /* destroy the old view, create a new one and redisplay the tree */
         if (tree->rows) ewl_widget_destroy(tree->rows);
 
-        tree->rows = view->fetch(NULL, 0, 0);
+        tree->rows = view->fetch(NULL, 0, 0, NULL);
         ewl_tree_view_tree_set(EWL_TREE_VIEW(tree->rows), tree);
         ewl_container_child_append(EWL_CONTAINER(tree), tree->rows);
         ewl_widget_show(tree->rows);
@@ -764,9 +764,10 @@ ewl_tree_header_build(Ewl_Tree *tree, Ewl_Container *box,
 
         if (model->header)
                 c = view->header_fetch(model->header(mvc_data, column),
-                                        column);
+                                        column, EWL_MVC(tree)->private_data);
         else
-                c = view->header_fetch(NULL, column);
+                c = view->header_fetch(NULL, column, 
+                                        EWL_MVC(tree)->private_data);
 
         /* XXX is this really a good idea to override the user's flags ? */
         ewl_object_fill_policy_set(EWL_OBJECT(c),
@@ -808,7 +809,7 @@ static void
 ewl_tree_column_build(Ewl_Row *row, const Ewl_Model *model, 
                                 const Ewl_View *view,
                                 void *mvc_data, unsigned int r,
-                                unsigned int c, Ewl_Widget *node)
+                                unsigned int c, void *pr_data, Ewl_Widget *node)
 {
         Ewl_Widget *cell;
         Ewl_Widget *child;
@@ -835,7 +836,7 @@ ewl_tree_column_build(Ewl_Row *row, const Ewl_Model *model,
                 ewl_label_text_set(EWL_LABEL(child), " ");
         }
         else
-                child = view->fetch(val, r, c);
+                child = view->fetch(val, r, c, pr_data);
 
         ewl_container_child_append(EWL_CONTAINER(cell), child);
         ewl_widget_show(child);
@@ -906,12 +907,14 @@ ewl_tree_build_tree_rows(Ewl_Tree *tree, const Ewl_Model *model,
 {
         unsigned int i = 0, row_count = 0;
         unsigned int column;
+        void *pr_data;
 
         DCHECK_PARAM_PTR(tree);
         DCHECK_TYPE(tree, EWL_TREE_TYPE);
         DCHECK_PARAM_PTR(parent);
         DCHECK_TYPE(parent, EWL_CONTAINER_TYPE);
 
+        pr_data = ewl_mvc_private_data_get(EWL_MVC(tree));
         row_count = model->count(data);
         if (row_count == 0) DRETURN(DLEVEL_STABLE);
 
@@ -960,7 +963,7 @@ ewl_tree_build_tree_rows(Ewl_Tree *tree, const Ewl_Model *model,
                 /* do the current branch */
                 for (column = 0; column < tree->columns; column++)
                         ewl_tree_column_build(EWL_ROW(row), model, view,
-                                                data, i, column, node);
+                                                data, i, column, pr_data, node);
 
                 /* check if this is an expansion point */
                 if (model->expansion.is && model->expansion.is(data, i))

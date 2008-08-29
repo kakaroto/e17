@@ -147,6 +147,7 @@ ewl_freebox_mvc_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
         const Ewl_View *view;
         void *mvc_data;
         unsigned int i, count;
+        void *pr_data;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(w);
@@ -157,6 +158,7 @@ ewl_freebox_mvc_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
         model = ewl_mvc_model_get(EWL_MVC(fb_mvc));
         view = ewl_mvc_view_get(EWL_MVC(fb_mvc));
         mvc_data = ewl_mvc_data_get(EWL_MVC(fb_mvc));
+        pr_data = ewl_mvc_private_data_get(EWL_MVC(fb_mvc));
 
         if ((!ewl_mvc_dirty_get(EWL_MVC(fb_mvc))) 
                         || !model || !view || !mvc_data)
@@ -175,7 +177,7 @@ ewl_freebox_mvc_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
                                     ewl_freebox_mvc_cb_item_clicked, fb_mvc);
                 ewl_widget_show(cell);
 
-                o = view->fetch(model->fetch(mvc_data, i, 0), i, 0);
+                o = view->fetch(model->fetch(mvc_data, i, 0), i, 0, pr_data);
                 ewl_widget_show(o);
 
                 ewl_container_child_append(EWL_CONTAINER(cell), o);

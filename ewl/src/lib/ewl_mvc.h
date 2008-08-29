@@ -122,6 +122,8 @@ struct Ewl_MVC
         void *data;                                     /**< The mvc data */
         const Ewl_View *view;                           /**< The view for the mvc */
         const Ewl_Model *model;                         /**< The model for the mvc */
+        
+        void *private_data;                /**< The private data */
 
         struct {
                 void (*view_change)(Ewl_MVC *mvc);      /**< View change callback */
@@ -147,6 +149,9 @@ void                    *ewl_mvc_data_get(Ewl_MVC *mvc);
 
 void                     ewl_mvc_dirty_set(Ewl_MVC *mvc, unsigned int dirty);
 unsigned int             ewl_mvc_dirty_get(Ewl_MVC *mvc);
+
+void                     ewl_mvc_private_data_set(Ewl_MVC *mvc, void *data);
+void                    *ewl_mvc_private_data_get(Ewl_MVC *mvc);
 
 void                     ewl_mvc_selection_mode_set(Ewl_MVC *mvc,
                                         Ewl_Selection_Mode mode);

@@ -98,7 +98,8 @@ static void *ewl_test_cb_expansion_fetch(void *data, unsigned int row,
                                                         unsigned int column);
 static void ewl_test_cb_test_selected(Ewl_Widget *w, void *ev, void *data);
 
-static Ewl_Widget *cb_unit_test_header_fetch(void *data, unsigned int column);
+static Ewl_Widget *cb_unit_test_header_fetch(void *data, unsigned int column,
+                                                void *pr_data);
 static void *cb_unit_test_header_data_fetch(void *data, unsigned int column);
 static void *cb_unit_test_fetch(void *data, unsigned int row, unsigned int column);
 static unsigned int cb_unit_test_count(void *data);
@@ -1326,7 +1327,8 @@ cb_unit_test_header_data_fetch(void *data __UNUSED__, unsigned int column)
 }
 
 static Ewl_Widget *
-cb_unit_test_header_fetch(void *data, unsigned int column __UNUSED__)
+cb_unit_test_header_fetch(void *data, unsigned int column __UNUSED__,
+                                void *pr_data __UNUSED__)
 {
         Ewl_Widget *label;
 

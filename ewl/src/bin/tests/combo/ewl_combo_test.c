@@ -21,7 +21,8 @@ typedef struct
 static void *combo_test_data_setup(void);
 static int create_test(Ewl_Container *win);
 static void combo_value_changed(Ewl_Widget *w, void *ev, void *data);
-static Ewl_Widget *combo_test_data_header_fetch(void *data, unsigned int col);
+static Ewl_Widget *combo_test_data_header_fetch(void *data, unsigned int col,
+                                                void *pr_data);
 static void *combo_test_data_fetch(void *data, unsigned int row,
                                                 unsigned int col);
 static unsigned int combo_test_data_count_get(void *data);
@@ -30,10 +31,12 @@ static void combo_cb_clear(Ewl_Widget *w, void *ev, void *data);
 static void combo_cb_entry_changed(Ewl_Widget *w, void *ev, void *data);
 
 static Ewl_Widget *combo_test_editable_cb_header_fetch(void *data,
-                                                        unsigned int col);
+                                                        unsigned int col,
+                                                        void *pr_data);
 static Ewl_Widget *combo_test_editable_cb_widget_fetch(void *data,
                                                         unsigned int row,
-                                                        unsigned int col);
+                                                        unsigned int col,
+                                                        void *pr_data);
 
 /* unit tests */
 static int constructor_test(char *buf, int len);
@@ -195,7 +198,8 @@ combo_test_data_setup(void)
 }
 
 static Ewl_Widget *
-combo_test_data_header_fetch(void *data __UNUSED__, unsigned int col __UNUSED__)
+combo_test_data_header_fetch(void *data __UNUSED__, unsigned int col __UNUSED__,
+                                void *pr_data __UNUSED__)
 {
         Ewl_Widget *header;
 
@@ -289,7 +293,8 @@ combo_cb_clear(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
 }
 
 static Ewl_Widget *
-combo_test_editable_cb_header_fetch(void *data, unsigned int col __UNUSED__)
+combo_test_editable_cb_header_fetch(void *data, unsigned int col __UNUSED__,
+                                        void *pr_data __UNUSED__)
 {
         Ewl_Combo_Test_Data *d;
         Ewl_Widget *w, *o, *o2;
@@ -330,7 +335,8 @@ combo_test_editable_cb_header_fetch(void *data, unsigned int col __UNUSED__)
 
 static Ewl_Widget *
 combo_test_editable_cb_widget_fetch(void *data, unsigned int row __UNUSED__,
-                                                unsigned int col __UNUSED__)
+                                                unsigned int col __UNUSED__,
+                                                void *pr_data __UNUSED__)
 {
         Ewl_Widget *w;
         Ewl_Widget *o;

@@ -232,6 +232,39 @@ ewl_mvc_dirty_get(Ewl_MVC *mvc)
 }
 
 /**
+ * @param mvc: The MVC to work with
+ * @param data: The private data to set on the MVC
+ * @return Returns no value
+ * @brief Sets the given data @a data into the MVC widget @a mvc
+ */
+void
+ewl_mvc_private_data_set(Ewl_MVC *mvc, void *data)
+{
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(mvc);
+        DCHECK_TYPE(mvc, EWL_MVC_TYPE);
+
+        mvc->private_data = data;
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param mvc: The MVC to work with
+ * @return Returns the data set onto the MVC widget
+ * @brief Retrieves the data set into the MVC widget
+ */
+void *
+ewl_mvc_private_data_get(Ewl_MVC *mvc)
+{
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(mvc, NULL);
+        DCHECK_TYPE_RET(mvc, EWL_MVC_TYPE, NULL);
+
+        DRETURN_PTR(mvc->private_data, DLEVEL_STABLE);
+}
+
+/**
  * @param mvc: The MVC widget to use
  * @param mode: The selection mode to set
  * @return Returns no value

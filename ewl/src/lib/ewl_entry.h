@@ -76,7 +76,6 @@ void             ewl_entry_editable_set(Ewl_Entry *e, unsigned int editable);
 unsigned int     ewl_entry_editable_get(Ewl_Entry *e);
 
 unsigned int     ewl_entry_selection_clear(Ewl_Entry *e);
-Ewl_View        *ewl_entry_view_get(void);
 
 /*
  * Internal stuff

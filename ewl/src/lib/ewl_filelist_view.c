@@ -89,7 +89,8 @@ ewl_filelist_view_cb_dnd_data_request(Ewl_Widget *w, void *event,
 }
 
 Ewl_Widget *ewl_filelist_view_widget_fetch(void *data,
-                        unsigned int row __UNUSED__, unsigned int column)
+                        unsigned int row __UNUSED__, unsigned int column,
+                        void *pr_data __UNUSED__)
 {
         Ewl_Widget *ret;
         const char *img = NULL, *stock, *filename;
@@ -139,7 +140,8 @@ Ewl_Widget *ewl_filelist_view_widget_fetch(void *data,
 }
 
 Ewl_Widget *ewl_filelist_view_header_fetch(void *data __UNUSED__,
-                                                unsigned int column)
+                                                unsigned int column,
+                                                void *pr_data __UNUSED__)
 {
         Ewl_Widget *l;
         char *t;

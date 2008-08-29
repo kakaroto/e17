@@ -13,11 +13,6 @@ static const Ewl_Stock_Funcs const stock_funcs = {
         NULL
 };
 
-static Ewl_Widget *ewl_button_view_cb_widget_fetch(void *data, unsigned int row,
-                                                        unsigned int col);
-static Ewl_Widget *ewl_button_view_cb_header_fetch(void *data,
-                                                        unsigned int col);
-
 /**
  * @return Returns NULL on failure, a pointer to a new button on success
  * @brief Allocate and initialize a new button
@@ -90,51 +85,6 @@ ewl_button_init(Ewl_Button *b)
                                 ewl_container_cb_widget_focus_out, NULL);
 
         DRETURN_INT(TRUE, DLEVEL_STABLE);
-}
-
-/**
- * @return Returns a view that can be used to display Ewl_Button widgets
- * @brief Creates and returns a view to be used by Ewl_Button widgets
- */
-Ewl_View *
-ewl_button_view_get(void)
-{
-        Ewl_View *view;
-
-        DENTER_FUNCTION(DLEVEL_STABLE);
-
-        view = ewl_view_new();
-        ewl_view_widget_fetch_set(view, ewl_button_view_cb_widget_fetch);
-        ewl_view_header_fetch_set(view, ewl_button_view_cb_header_fetch);
-
-        DRETURN_PTR(view, DLEVEL_STABLE);
-}
-
-static Ewl_Widget *
-ewl_button_view_cb_widget_fetch(void *data, unsigned int row __UNUSED__,
-                                unsigned int col __UNUSED__)
-{
-        Ewl_Widget *button;
-
-        DENTER_FUNCTION(DLEVEL_STABLE);
-
-        button = ewl_label_new();
-        ewl_button_label_set(EWL_BUTTON(button), data);
-
-        DRETURN_PTR(button, DLEVEL_STABLE);
-}
-
-static Ewl_Widget *
-ewl_button_view_cb_header_fetch(void *data, unsigned int col __UNUSED__)
-{
-        Ewl_Widget *button;
-
-        DENTER_FUNCTION(DLEVEL_STABLE);
-
-        button = ewl_button_new();
-        ewl_button_label_set(EWL_BUTTON(button), data);
-
-        DRETURN_PTR(button, DLEVEL_STABLE);
 }
 
 /**

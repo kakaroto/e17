@@ -37,9 +37,11 @@ struct Tree_Test_Data
 static int create_test(Ewl_Container *win);
 static void *tree_test_data_setup(void);
 static Ewl_Widget *tree_test_cb_widget_fetch(void *data, unsigned int row,
-                                                unsigned int column);
+                                                unsigned int column,
+                                                void *pr_data);
 static void *tree_test_cb_header_data_fetch(void *data, unsigned int column);
-static Ewl_Widget *tree_test_cb_header_fetch(void *data, unsigned int column);
+static Ewl_Widget *tree_test_cb_header_fetch(void *data, unsigned int column,
+                                                void *pr_data);
 static void *tree_test_data_fetch(void *data, unsigned int row,
                                                 unsigned int column);
 static int tree_test_column_sortable(void *data, unsigned int column);
@@ -247,7 +249,8 @@ tree_test_data_setup(void)
 
 static Ewl_Widget *
 tree_test_cb_widget_fetch(void *data, unsigned int row __UNUSED__,
-                                        unsigned int column)
+                                        unsigned int column,
+                                        void *pr_data __UNUSED__)
 {
         Ewl_Widget *w = NULL;
 
@@ -289,7 +292,8 @@ tree_test_cb_header_data_fetch(void *data __UNUSED__, unsigned int column)
 }
 
 static Ewl_Widget *
-tree_test_cb_header_fetch(void *data, unsigned int column __UNUSED__)
+tree_test_cb_header_fetch(void *data, unsigned int column __UNUSED__,
+                                void *pr_data __UNUSED__)
 {
         Ewl_Widget *l;
 

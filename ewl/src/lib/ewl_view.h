@@ -21,7 +21,8 @@
  * A typedef to shorten the definition of the view_widget_fetch callbacks.
  */
 typedef Ewl_Widget *(*Ewl_View_Widget_Fetch)(void *data, unsigned int row,
-                                                unsigned int col);
+                                             unsigned int col, 
+                                             void *private_data);
 
 /**
  * @def EWL_VIEW_HEADER_GET(f)
@@ -32,7 +33,8 @@ typedef Ewl_Widget *(*Ewl_View_Widget_Fetch)(void *data, unsigned int row,
 /**
  * A typedef to shorten the definition of the view_header_fetch callbacks.
  */
-typedef Ewl_Widget *(*Ewl_View_Header_Fetch)(void *data, unsigned int column);
+typedef Ewl_Widget *(*Ewl_View_Header_Fetch)(void *data, unsigned int column,
+                                             void *private_data);
 
 /**
  * @def EWL_VIEW(view)

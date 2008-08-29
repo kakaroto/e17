@@ -7,12 +7,6 @@
 #include "ewl_private.h"
 #include "ewl_debug.h"
 
-static Ewl_Widget *ewl_checkbutton_view_cb_widget_fetch(void *data,
-                                                        unsigned int row,
-                                                        unsigned int col);
-static Ewl_Widget *ewl_checkbutton_view_cb_header_fetch(void *data,
-                                                        unsigned int col);
-
 /**
  * @return Returns the newly allocated checkbutton on success, NULL on failure.
  * @brief Allocate and initialize a new check button
@@ -189,50 +183,4 @@ ewl_checkbutton_cb_clicked(Ewl_Widget *w, void *ev_data __UNUSED__,
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
-
-/**
- * @return Returns a view that can be used to display Ewl_Checkbutton widgets
- * @brief Creates and returns a view to be used by Ewl_Checkbutton widgets
- */
-Ewl_View *
-ewl_checkbutton_view_get(void)
-{
-        Ewl_View *view;
-
-        DENTER_FUNCTION(DLEVEL_STABLE);
-
-        view = ewl_view_new();
-        ewl_view_widget_fetch_set(view, ewl_checkbutton_view_cb_widget_fetch);
-        ewl_view_header_fetch_set(view, ewl_checkbutton_view_cb_header_fetch);
-
-        DRETURN_PTR(view, DLEVEL_STABLE);
-}
-
-static Ewl_Widget *
-ewl_checkbutton_view_cb_widget_fetch(void *data, unsigned int row __UNUSED__,
-                                                unsigned int col __UNUSED__)
-{
-        Ewl_Widget *check;
-
-        DENTER_FUNCTION(DLEVEL_STABLE);
-
-        check = ewl_checkbutton_new();
-        ewl_button_label_set(EWL_BUTTON(check), data);
-
-        DRETURN_PTR(check, DLEVEL_STABLE);
-}
-
-static Ewl_Widget *
-ewl_checkbutton_view_cb_header_fetch(void *data, unsigned int col __UNUSED__)
-{
-        Ewl_Widget *check;
-
-        DENTER_FUNCTION(DLEVEL_STABLE);
-
-        check = ewl_checkbutton_new();
-        ewl_button_label_set(EWL_BUTTON(check), data);
-
-        DRETURN_PTR(check, DLEVEL_STABLE);
-}
-
 

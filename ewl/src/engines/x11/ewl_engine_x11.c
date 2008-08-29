@@ -1062,7 +1062,6 @@ ewl_ev_x_window_configure(void *data __UNUSED__, int type __UNUSED__, void *e)
         embed = ewl_embed_canvas_window_find(INT_TO_INTPTR(ev->win));
         if (!embed)
                 DRETURN_INT(TRUE, DLEVEL_STABLE);
-
         /*
          * Save coords and queue a configure event if the window is moved.
          */

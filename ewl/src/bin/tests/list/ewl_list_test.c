@@ -31,7 +31,8 @@ static void list_cb_value_changed(Ewl_Widget *w, void *ev, void *data);
 static void list_cb_multi_value_changed(Ewl_Widget *w, void *ev, void *data);
 
 static Ewl_Widget *list_test_cb_widget_fetch(void *data, unsigned int row,
-                                                unsigned int col);
+                                                unsigned int col,
+                                                void *pr_data);
 static void *list_test_data_fetch(void *data, unsigned int row,
                                                 unsigned int column);
 static unsigned int list_test_data_count_get(void *data);
@@ -159,7 +160,8 @@ list_test_data_setup(void)
 
 static Ewl_Widget *
 list_test_cb_widget_fetch(void *data, unsigned int row __UNUSED__,
-                                        unsigned int col __UNUSED__)
+                                        unsigned int col __UNUSED__,
+                                        void *pr_data __UNUSED__)
 {
         Ewl_Widget *w;
         List_Test_Row_Data *d;

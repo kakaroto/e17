@@ -74,6 +74,7 @@ ewl_list_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
         const Ewl_Model *model;
         const Ewl_View *view;
         void *mvc_data;
+        void *pr_data;
         int i;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
@@ -85,6 +86,7 @@ ewl_list_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
         model = ewl_mvc_model_get(EWL_MVC(list));
         view = ewl_mvc_view_get(EWL_MVC(list));
         mvc_data = ewl_mvc_data_get(EWL_MVC(list));
+        pr_data = ewl_mvc_private_data_get(EWL_MVC(list));
 
         /* if either the list isn't dirty or some of the MVC controls have
          * not been set on the list just leave this up to the box to handle */
@@ -105,7 +107,7 @@ ewl_list_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
                                 ewl_list_cb_item_clicked, list);
                 ewl_widget_show(cell);
 
-                o = view->fetch(model->fetch(mvc_data, i, 0), i, 0);
+                o = view->fetch(model->fetch(mvc_data, i, 0), i, 0, pr_data);
                 ewl_widget_show(o);
 
                 ewl_container_child_append(EWL_CONTAINER(cell), o);

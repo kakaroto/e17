@@ -65,7 +65,6 @@ int               ewl_checkbutton_is_checked(Ewl_Checkbutton *cb);
 
 void              ewl_checkbutton_label_position_set(Ewl_Checkbutton *cb,
                                                            Ewl_Position p);
-Ewl_View         *ewl_checkbutton_view_get(void);
 
 /*
  * Internally used callbacks, override at your own risk

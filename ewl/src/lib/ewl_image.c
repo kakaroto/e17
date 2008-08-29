@@ -24,9 +24,11 @@ static void ewl_image_thumbnail_cb_destroy(Ewl_Widget *w, void *ev, void *data);
 static void ewl_image_rotate_180(Ewl_Image *img);
 static void ewl_image_rotate_90(Ewl_Image *img, int cc);
 
-static Ewl_Widget *ewl_image_view_cb_header_fetch(void *data, unsigned int col);
+static Ewl_Widget *ewl_image_view_cb_header_fetch(void *data, unsigned int col,
+                                                        void *pr_data);
 static Ewl_Widget *ewl_image_view_cb_widget_fetch(void *data, unsigned int row,
-                                                        unsigned int col);
+                                                        unsigned int col,
+                                                        void *pr_data);
 
 /**
  * @return Returns a pointer to a new image widget on success, NULL on failure.
@@ -74,7 +76,8 @@ ewl_image_view_get(void)
 
 static Ewl_Widget *
 ewl_image_view_cb_widget_fetch(void *data, unsigned int row __UNUSED__,
-                                                unsigned int col __UNUSED__)
+                                                unsigned int col __UNUSED__,
+                                                void *pr_data __UNUSED__)
 {
         Ewl_Widget *image;
 
@@ -87,7 +90,8 @@ ewl_image_view_cb_widget_fetch(void *data, unsigned int row __UNUSED__,
 }
 
 static Ewl_Widget *
-ewl_image_view_cb_header_fetch(void *data, unsigned int col __UNUSED__)
+ewl_image_view_cb_header_fetch(void *data, unsigned int col __UNUSED__,
+                                void *pr_data)
 {
         Ewl_Widget *image;
 

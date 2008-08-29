@@ -7,7 +7,8 @@
 
 static Ewl_Widget *ewl_tree_view_plain_cb_widget_fetch(void *data,
                                                         unsigned int row,
-                                                        unsigned int col);
+                                                        unsigned int col,
+                                                        void *pr_data);
 
 static Ewl_View *ewl_tree_view_plain_view = NULL;
 
@@ -33,7 +34,8 @@ ewl_tree_view_plain_get(void)
 static Ewl_Widget *
 ewl_tree_view_plain_cb_widget_fetch(void *data __UNUSED__,
                                         unsigned int row __UNUSED__,
-                                        unsigned int col __UNUSED__)
+                                        unsigned int col __UNUSED__,
+                                        void *pr_data)
 {
         Ewl_Widget *plain;
 
