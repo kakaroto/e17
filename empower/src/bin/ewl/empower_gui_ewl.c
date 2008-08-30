@@ -38,7 +38,7 @@ void setup_window()
 
   vbox = ewl_vbox_new();
   ewl_container_child_append(EWL_CONTAINER(hbox), vbox);
-  ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_VSHRINK | EWL_FLAG_FILL_HFILL);
+  ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_VFILL | EWL_FLAG_FILL_HFILL);
   ewl_box_homogeneous_set(EWL_OBJECT(vbox), 1);
   ewl_widget_show(vbox);
 
