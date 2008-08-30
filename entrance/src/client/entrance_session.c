@@ -450,6 +450,8 @@ entrance_session_start_user_session(Entrance_Session * e)
 #ifdef HAVE_PAM
    if (e->config->auth == ENTRANCE_USE_PAM)
    {
+      char **pamenv, **envitem;
+
       /* Tell PAM that session has begun */
       if (pam_open_session(e->auth->pam.handle, 0) != PAM_SUCCESS)
       {
@@ -461,6 +463,18 @@ entrance_session_start_user_session(Entrance_Session * e)
             return;
          }
       }
+
+      if ((pamenv = pam_getenvlist(e->auth->pam.handle)) != NULL)
+      {
+	for (envitem = pamenv; *envitem; envitem++)
+	{
+	  putenv(*envitem);
+	  free(*envitem);
+	}
+
+	free(pamenv);
+     }
+
       syslog(LOG_INFO, "Opened PAM session. %s : %s.", e->auth->pw->pw_name,
              e->display);
    }
