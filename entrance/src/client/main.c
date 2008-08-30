@@ -135,6 +135,23 @@ window_del_cb(Ecore_Evas * ee)
    ecore_main_loop_quit();
 }
 
+static void
+resize_object_on_screen(Evas_Object *o, int s, int screens, int w, int h)
+{
+   if (screens > 1)
+   {
+      int sx, sy, sw, sh;
+
+      ecore_x_xinerama_screen_geometry_get(s, &sx, &sy, &sw, &sh);
+      evas_object_move(o, sx, sy);
+      evas_object_resize(o, sw, sh);
+   }
+   else
+   {
+      evas_object_resize(o, w, h);
+   }
+}
+
 /**
  * handle when the ecore_evas needs to be resized
  * @param ee - The Ecore_Evas we're resizing 
@@ -142,15 +159,14 @@ window_del_cb(Ecore_Evas * ee)
 static void
 window_resize_cb(Ecore_Evas * ee)
 {
-   Evas_Object *o = NULL;
+   Evas_Object *o = NULL, *ui = NULL;
    int w, h;
    int screens, i;
    char buf[50];
 
    ecore_evas_geometry_get(ee, NULL, NULL, &w, &h);
 
-   if ((o = evas_object_name_find(ecore_evas_get(ee), "ui")))
-      evas_object_resize(o, w, h);
+   ui = evas_object_name_find(ecore_evas_get(ee), "ui");
 
    screens = ecore_x_xinerama_screen_count_get();
    if (!screens)
@@ -159,20 +175,9 @@ window_resize_cb(Ecore_Evas * ee)
    {
       snprintf(buf, sizeof(buf), "background%d", i);
       if ((o = evas_object_name_find(ecore_evas_get(ee), buf)))
-      {
-         if (screens > 1)
-         {
-            int sx, sy, sw, sh;
-
-            ecore_x_xinerama_screen_geometry_get(i, &sx, &sy, &sw, &sh);
-            evas_object_move(o, sx, sy);
-            evas_object_resize(o, sw, sh);
-         }
-         else
-         {
-            evas_object_resize(o, w, h);
-         }
-      }
+	 resize_object_on_screen(o, i, screens, w, h);
+      if ((i == session->current_screen) && (ui != NULL))
+	 resize_object_on_screen(ui, i, screens, w, h);
    }
 }
 
