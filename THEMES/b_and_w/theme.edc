@@ -8344,8 +8344,7 @@ collections { /* begin the collection of edje groups that are in this file */
 /////////////////////////////////////////////////////////////////////////////
    /*** MOD: WINLIST ***/
 
-// FIXME: Issues - Text isnt positioning correctly with long titles
-//		 - Missing window icon
+// FIXME:	 - Missing window icon
 //	         - Missing window text
 
    group { name: "e/widgets/winlist/main";
@@ -8493,39 +8492,6 @@ collections { /* begin the collection of edje groups that are in this file */
 	       }
 	    }
 	 }
-	 part { name:           "e.text.label";
-	    type:           TEXT;
-	    effect:         SHADOW;
-	    mouse_events:   0;
-	    description { state: "default" 0.0;
-	       rel1 {
-		  relative: 1.0 0.0;
-		  offset: 1 3;
-		  to_x: "e.swallow.icon";
-	       }
-	       rel2 {
-		  relative: 0.0 1.0;
-		  offset: -2 -4;
-		  to_x: "type";
-	       }
-	       color: 0 0 0 255;
-	       color3: 0 0 0 0;
-	       color_class: "winlist_item";
-	       text {
-		  font: "Sans,Edje-Vera";
-		  size: 10;
-		  min:  0 1;
-		  align: 0.0 0.5;
-		  text_class: "winlist_title";
-	       }
-	    }
-	    description { state: "selected" 0.0;
-	       inherit: "default" 0.0;
-	       color: 255 255 255 255;
-	       color3: 0 0 0 64;
-	       color_class: "winlist_item";
-	    }
-	 }
 	 part { name: "fg";
 	    mouse_events: 0;
 	    description { state: "default" 0.0;
@@ -8548,33 +8514,31 @@ collections { /* begin the collection of edje groups that are in this file */
 	    type: SWALLOW;
 	    description { state: "default" 0.0;
 	       aspect: 1.0 1.0;
-	       align: 0.0 0.5;
 	       aspect_preference: VERTICAL;
+	       align: 0.0 0.5;
 	       rel1 {
 		  relative: 0.0 0.0;
 		  offset:   3   2;
 	       }
 	       rel2 {
 		  relative: 0.0 1.0;
-		  offset:   3   -2;
+		  offset:   3   0;
 		  to_y: "e.text.label";
 	       }
 	    }
 	 }
 	 part { name: "type";
 	    description { state: "default" 0.0;
-	       aspect: 1.0 1.0;
-	       align: 1.0 0.5;
-	       aspect_preference: VERTICAL;
 	       min: 23 24;
 	       max: 23 24;
+	       align: 1.0 0.5;
 	       rel1 {
 		  relative: 1.0 0.0;
-		  offset:   -4  1;
+		  offset:   -4  2;
 	       }
 	       rel2 {
 		  relative: 1.0 1.0;
-		  offset:   -4  -2;
+		  offset:   -4  1;
 		  to_y: "e.text.label";
 	       }
 	       image.normal: "pager_window.png";
@@ -8590,6 +8554,38 @@ collections { /* begin the collection of edje groups that are in this file */
 	    description { state: "shaded" 0.0;
 	       inherit: "default" 0.0;
 	       image.normal: "pager_window_shaded.png";
+	    }
+	 }
+	 part { name:           "e.text.label";
+	    type:           TEXT;
+	    effect:         SHADOW;
+	    mouse_events:   0;
+	    description { state: "default" 0.0;
+	       rel1 {
+		  relative: 1.0 0.0;
+		  offset: 3 3;
+		  to_x: "e.swallow.icon";
+	       }
+	       rel2 {
+		  relative: 0.0 1.0;
+		  offset: -4 -4;
+		  to_x: "type";
+	       }
+	       color: 0 0 0 255;
+	       color3: 0 0 0 0;
+	       color_class: "winlist_item";
+	       text {
+		  font: "Sans,Edje-Vera";
+		  size: 10;
+		  min:  0 1;
+		  align: 0.0 0.5;
+		  text_class: "winlist_title";
+	       }
+	    }
+	    description { state: "selected" 0.0;
+	       inherit: "default" 0.0;
+	       color: 255 255 255 255;
+	       color3: 0 0 0 64;
 	    }
 	 }
 	 part { name: "e.event.winlist.item";
