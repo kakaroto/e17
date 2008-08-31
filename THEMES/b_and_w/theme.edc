@@ -3,6 +3,7 @@
 // label (done - review)
 // fontpreview (done - review)
 // slider (done - review)
+// winlist (done - review )
 // entry (done - review) - Text select works oddly. Select a single letter like W to
 // see this odd behavior. Doesnt seem to offset correctly.
 //
@@ -12,7 +13,6 @@
 // move (done - review)
 // 
 // battery popup (should this just use textblock for text and have a set layout?)
-// winlist (done - review: seperator between title and list?)
 // fileman (list mode)
 // fileman (icon mode etc.)
 // tlist
@@ -8394,14 +8394,35 @@ collections { /* begin the collection of edje groups that are in this file */
 	       fixed: 1 1;
 	       rel1 {
 		  relative: 0.0 1.0;
-		  offset:   1     8;
+		  offset:   1     6;
 		  to_y: "title_back";
 	       }
 	       rel2 {
 		  relative: 1.0 1.0;
-		  offset:   -2    8;
+		  offset:   -2    6;
 		  to_y: "title_back";
 	       }
+	    }
+	 }
+	 part { name: "separator";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       min: 16 2;
+	       rel1 {
+		  offset: 16 2;
+		  relative: 0.0 1.0;
+		  to_y: "e.text.label";
+	       }
+	       rel2 {
+		  offset: -17 4;
+		  relative: 1.0 1.0;
+		  to_y: "e.text.label";
+	       }
+	       image {
+		  normal: "menu_sep.png";
+		  border: 2 2 0 0;
+	       }
+	       fill.smooth: 0;
 	    }
 	 }
 	 part { name: "e.swallow.list";
