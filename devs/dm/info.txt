@@ -1,0 +1,11 @@
+Login:        dm
+IRC Nick:     n/a
+Name:         Dzmitry Mazouka
+Location:     Minsk, Belarus
+E-Mail:       -mazovka@bk.ru
+WWW:          sionix.pbwiki.com
+Managing:     eet, evas, embryo, ecore, edje, e, emotion, rage, imlib2, imlib2_loaders, entice, edb, epeg, expedite, exquisite, evil
+Contributing: efreet, evas, ecore, evil
+Group:        Core, Applications, Libraries
+Platform:     Windows XP (Win32)
+GeoData:      53.852527 27.555084

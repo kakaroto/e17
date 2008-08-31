@@ -1,0 +1,11 @@
+Login:		sevcsik
+IRC Nick:	sevcsik
+Name: 		Sevcsik András
+Location:	Budapest, Hungary
+E-mail:		-sevcsik@gmail.com
+WWW:		http://sevcsik.blogspot.com
+Managing:	eyesight
+Contributing:	-
+Group:		-
+Platform:	Ubuntu (Linux), Windows Vista, Series60 (Symbian)
+GeoData:	47.414883 19.135469
