@@ -12646,10 +12646,10 @@ collections { /* begin the collection of edje groups that are in this file */
 		  relative: 1.0 1.0;
 		  offset: -3 -3;
 	       }
-	       color: 0 0 0 128;
+	       color: 0 0 0 255;
 	       color_class: "label_text";
 	       text {
-		  font: "Sans:style=Bold,Edje-Vera-Bold";
+		  font: "Sans,Edje-Vera";
 		  size: 10;
 		  min: 1 1;
 		  align: 0.0 0.5;
