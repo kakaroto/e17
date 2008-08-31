@@ -81,18 +81,19 @@ static Enna_Metadata *_class_metadata_get(void)
    Enna_Metadata *m;
    const char *track;
 
-   m = calloc(1, sizeof(Enna_Metadata));
-   m->uri = emotion_object_file_get(mod->o_emotion);
-   m->title = emotion_object_meta_info_get(mod->o_emotion, EMOTION_META_INFO_TRACK_TITLE);
-   m->album= emotion_object_meta_info_get(mod->o_emotion, EMOTION_META_INFO_TRACK_ALBUM);
-   m->artist = emotion_object_meta_info_get(mod->o_emotion, EMOTION_META_INFO_TRACK_ARTIST);
-   m->genre = emotion_object_meta_info_get(mod->o_emotion, EMOTION_META_INFO_TRACK_GENRE);
-   m->year =  emotion_object_meta_info_get(mod->o_emotion, EMOTION_META_INFO_TRACK_YEAR);
-   m->comment = emotion_object_meta_info_get(mod->o_emotion, EMOTION_META_INFO_TRACK_COMMENT);
-   m->discid = emotion_object_meta_info_get(mod->o_emotion, EMOTION_META_INFO_TRACK_DISC_ID);
+   m = enna_metadata_new();
+
+   m->uri = strdup(emotion_object_file_get(mod->o_emotion));
+   m->title = strdup(emotion_object_meta_info_get(mod->o_emotion, EMOTION_META_INFO_TRACK_TITLE));
+   m->music->album= strdup(emotion_object_meta_info_get(mod->o_emotion, EMOTION_META_INFO_TRACK_ALBUM));
+   m->music->artist = strdup(emotion_object_meta_info_get(mod->o_emotion, EMOTION_META_INFO_TRACK_ARTIST));
+   m->music->genre = strdup(emotion_object_meta_info_get(mod->o_emotion, EMOTION_META_INFO_TRACK_GENRE));
+   m->music->year =  strdup(emotion_object_meta_info_get(mod->o_emotion, EMOTION_META_INFO_TRACK_YEAR));
+   m->music->comment = strdup(emotion_object_meta_info_get(mod->o_emotion, EMOTION_META_INFO_TRACK_COMMENT));
+   m->music->discid = strdup(emotion_object_meta_info_get(mod->o_emotion, EMOTION_META_INFO_TRACK_DISC_ID));
 
    track = emotion_object_meta_info_get(mod->o_emotion, EMOTION_META_INFO_TRACK_COUNT);
-   m->track = track ? atoi(track) : 0;
+   m->music->track = track ? atoi(track) : 0;
    return m;
 
 }

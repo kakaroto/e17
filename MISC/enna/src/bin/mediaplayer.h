@@ -14,23 +14,6 @@ typedef enum {
 
 
 typedef struct _Enna_Class_MediaplayerBackend Enna_Class_MediaplayerBackend;
-typedef struct _Enna_Metadata Enna_Metadata;
-
-struct _Enna_Metadata
-{
-   const char *uri;
-   const char *title;
-   const char *artist;
-   const char *album;
-   const char *year;
-   const char *genre;
-   const char *comment;
-   const char *discid;
-   int         track;
-   int         size;
-   int         rating;
-   int         play_count;
-};
 
 struct _Enna_Class_MediaplayerBackend
 {

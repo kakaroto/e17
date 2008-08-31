@@ -3,22 +3,6 @@
 
 #include "enna.h"
 
-typedef struct _Enna_Metadata Enna_Metadata;
-
-struct _Enna_Metadata
-{
-  char               *uri;
-  char               *title;
-  char               *album;
-  char               *artist;
-  char               *genre;
-  int                 size;
-  int                 track_nb;
-  int                 rating;
-  int                 play_count;
-};
-
-
 EAPI void enna_scanner_init(void);
 EAPI void enna_scanner_shutdown(void);
 

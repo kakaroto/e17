@@ -1,8 +1,42 @@
 
 [Priority 10]
 
+ * Photo Module
+      -> More transitions effects
+      -> Add next/prev/pause/stop control and increase/decrease time
+   between 2 pictures.
+      -> Add State info with OSD
+      -> fullscreen mode
+      -> Preload previous and next pictures
+      -> hide photo after transition : add program in edje to send signal
+   when transition is finished.
+
+ * Video module (based on music one)
+      -> Add video support to emotion backend
+      -> change libplayer video size when resizing enna main window.
+      -> insert libplayer/emotion preview video in video_info.
+      -> Polish video_info UI
+
+ * Add Simple Widgets
+      -> Checkbox
+      -> Slider
+      -> TextBox
+      -> Buttons
+
+ * Bugs
+     -> Segfault when exiting enna !!!!!!! Memory corruption, hard to
+   find :/
+     -> Remove item when location bar is clicked
+
+[Priority 9]
+
+ * Add more complicated Widgets
+      -> Virtual Keyboard (See Calaos or Illume for virtual keyboard
+   integration)
+      -> Grid View
+      -> WallView see Piclens effect (www.piclens.com) and Hisham work (http://hisham.cc/pages/frisk/)
+
  * Configuration
-      -> Read config from file (text file)
       -> Save config to file
 
  * Configuration Module
@@ -11,37 +45,17 @@
       -> Add Main menu item for configuration
       -> Create GUI for config from registred modules
 
- * Add Simple Widgets
-      -> Checkbox
-      -> Slider
-      -> TextBox
-      -> Buttons
-
- * Input modules
-      -> LIRC module
-
-[Priority 9]
-
- * Video module (based on music one)
-      -> Modify local_files module to handle video files type.
-      -> Add video support to emotion backend
-      -> Add video support to libplayer backend
-
- * Add more complicated Widgets
-      -> Virtual Keyboard (See Calaos or Illume for virtual keyboard
-   integration)
-      -> Grid View
-
 [Priority 8]
 
   * Playlist
   * Radio Web
-  * Photo module
-
 
 [Priority 0]
 
   * Smooth selection in list (scroll animated)
-  * Remove item when location bar is clicked
+  * Lastfm plugin
+  * youtube plugin
+  * Deezer plugin
+  * Theme Documentation
 
 

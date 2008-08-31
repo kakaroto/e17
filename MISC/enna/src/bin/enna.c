@@ -35,6 +35,16 @@
 #include "enna.h"
 #include "enna_inc.h"
 
+/* Ecore_Evas API update portability fixes */
+/*
+#ifndef ECORE_EVAS_ENGINE_OPENGL_X11
+#define ECORE_EVAS_ENGINE_OPENGL_X11 ECORE_EVAS_ENGINE_GL_X11
+#endif
+
+#ifndef ECORE_EVAS_ENGINE_SOFTWARE_16_X11
+#define ECORE_EVAS_ENGINE_SOFTWARE_16_X11 ECORE_EVAS_ENGINE_SOFTWARE_X11_16
+#endif
+*/
 /* Global Variable Enna *enna*/
 Enna *enna;
 
@@ -161,26 +171,36 @@ _enna_init(int run_gl)
      {
 	dbg("Load GL engine\n");
 	enna->ee = ecore_evas_gl_x11_new(NULL, 0, 0, 0, 64, 64);
+	if (enna->ee)
+	  enna->ee_winid = ecore_evas_gl_x11_window_get (enna->ee);
      }
    else if (!strcmp(enna_config->engine, "xrender") && ecore_evas_engine_type_supported_get(ECORE_EVAS_ENGINE_XRENDER_X11))
      {
 	dbg("Load XRENDER engine\n");
 	enna->ee = ecore_evas_xrender_x11_new(NULL, 0, 0, 0, 64, 64);
+	if (enna->ee)
+	  enna->ee_winid = ecore_evas_xrender_x11_window_get (enna->ee);
      }
    else if (!strcmp(enna_config->engine, "x11_16") && ecore_evas_engine_type_supported_get(ECORE_EVAS_ENGINE_SOFTWARE_16_X11))
      {
 	dbg("Load X11_16 engine\n");
 	enna->ee = ecore_evas_software_x11_16_new(NULL, 0, 0, 0, 64, 64);
+	if (enna->ee)
+	  enna->ee_winid = ecore_evas_software_x11_16_window_get (enna->ee);
      }
    else if (!strcmp(enna_config->engine, "x11") && ecore_evas_engine_type_supported_get(ECORE_EVAS_ENGINE_SOFTWARE_X11))
      {
 	dbg("Load X11 engine\n");
 	enna->ee = ecore_evas_software_x11_new(NULL, 0, 0, 0, 64, 64);
+	if (enna->ee)
+	  enna->ee_winid = ecore_evas_software_x11_window_get (enna->ee);
      }
    else if (ecore_evas_engine_type_supported_get(ECORE_EVAS_ENGINE_SOFTWARE_X11))
      {
 	dbg("Specified \'%s\' engine not found, use X11 software default engine\n", enna_config->engine);
 	enna->ee = ecore_evas_software_x11_new(NULL, 0, 0, 0, 64, 64);
+	if (enna->ee)
+	  enna->ee_winid = ecore_evas_software_x11_window_get (enna->ee);
      }
    else
      {

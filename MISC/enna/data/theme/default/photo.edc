@@ -63,7 +63,7 @@
           }
        }
        part {
-          name: "enna.swallow.mediaplayer";
+          name: "enna.swallow.slideshow";
           type: SWALLOW;
           mouse_events : 1;
           clip_to: "enna.clip.module";
@@ -117,20 +117,20 @@
           target: "enna.swallow.location";
        }
        program {
-          name: "mediaplayer,show";
-          signal: "mediaplayer,show";
+          name: "slideshow,show";
+          signal: "slideshow,show";
           source:  "enna";
           action:  STATE_SET "show" 0.0;
           transition: SINUSOIDAL 0.5;
-          target: "enna.swallow.mediaplayer";
+          target: "enna.swallow.slideshow";
        }
        program {
-          name: "mediaplayer,hide";
-          signal: "mediaplayer,hide";
+          name: "slideshow,hide";
+          signal: "slideshow,hide";
           source:  "enna";
           action:  STATE_SET "default" 0.0;
           transition: SINUSOIDAL 0.5;
-          target: "enna.swallow.mediaplayer";
+          target: "enna.swallow.slideshow";
        }
     }
  }

@@ -131,10 +131,10 @@ enna_smart_player_metadata_set(Evas_Object *obj, Enna_Metadata *metadata)
 
    if (!metadata) return;
    if (metadata->title) edje_object_part_text_set(sd->o_edje, "enna.text.title", metadata->title);
-   if (metadata->album) edje_object_part_text_set(sd->o_edje, "enna.text.album", metadata->album);
-   if (metadata->artist) edje_object_part_text_set(sd->o_edje, "enna.text.artist", metadata->artist);
+   if (metadata->music->album) edje_object_part_text_set(sd->o_edje, "enna.text.album", metadata->music->album);
+   if (metadata->music->artist) edje_object_part_text_set(sd->o_edje, "enna.text.artist", metadata->music->artist);
 
-   cover_file = enna_cover_album_get(metadata->artist, metadata->album, metadata->uri);
+   cover_file = enna_cover_album_get(metadata->music->artist, metadata->music->album, metadata->uri);
    if (cover_file)
      {
 	/* FIXME : add edje cb at end of cover transition to switch properly covers*/
@@ -150,6 +150,7 @@ enna_smart_player_metadata_set(Evas_Object *obj, Enna_Metadata *metadata)
 	edje_object_signal_emit(sd->o_edje, "cover,hide", "enna");
        	evas_object_del(sd->o_cover);
      }
+   enna_metadata_free(metadata);
 
 }
 

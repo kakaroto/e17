@@ -1,0 +1,380 @@
+images
+{
+    image: "transition_vswipe_gap.png" COMP;
+}
+
+group {
+   name: "transitions";
+   parts {
+      part {
+      name: "bg";
+      type: RECT;
+         description {
+            state: "default" 0.0;
+	    color: 0 0 0 255;
+         }
+      }
+      part {
+      name: "enna.swallow.transition";
+      type: SWALLOW;
+         description {
+            state: "default" 0.0;
+	    color: 255 255 255 255;
+         }
+      }
+   }
+}
+
+group {
+   name: "transitions/crossfade";
+   parts {
+      part {
+         name:          "slide.1";
+         type:          SWALLOW;
+         clip_to:       "bg1_clip";
+         mouse_events:  1;
+         description {
+            state: "default" 0.0;
+         }
+      }
+      part {
+         name:          "slide.2";
+         type:          SWALLOW;
+         clip_to:       "bg2_clip";
+         mouse_events:  1;
+         description {
+            state: "default" 0.0;
+         }
+      }
+      part {
+         name:          "bg1_clip";
+         type:          RECT;
+         mouse_events:  0;
+         description {
+            state: "default" 0.0;
+            visible: 1;
+            color: 255 255 255 255;
+         }
+         description {
+            state: "shown" 0.0;
+            inherit: "default" 0.0;
+            visible: 0;
+            color: 255 255 255 0;
+         }
+      }
+      part {
+         name:          "bg2_clip";
+         type:          RECT;
+         mouse_events:  0;
+         description {
+            state: "default" 0.0;
+            color: 255 255 255 0;
+            visible: 0;
+         }
+         description {
+            state: "shown" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 255;
+            visible: 1;
+         }
+      }
+   }
+   programs {
+      program {
+         name:    "hide_bg1";
+         action:  STATE_SET "shown" 0.0;
+         transition: SINUSOIDAL 1.0;
+         target:  "bg1_clip";
+      }
+      program {
+         name:    "show_bg2";
+         action:  STATE_SET "shown" 0.0;
+         transition: SINUSOIDAL 1.0;
+         target:  "bg2_clip";
+         after:   "done";
+      }
+      program {
+         name:    "show2";
+         signal:  "show,2";
+         source:  "enna";
+         after:   "hide_bg1";
+         after:   "show_bg2";
+      }
+      program {
+         name:    "reset";
+	 signal:  "reset";
+	 source:  "enna";
+	 action:  STATE_SET "default" 0.0;
+	 target:  "bg1_clip";
+	 target:  "bg2_clip";
+      }
+      program {
+         name:    "done";
+         action:  SIGNAL_EMIT "done" "";
+      }
+   }
+}
+
+group {
+   name: "transitions/vswipe";
+   parts {
+      part {
+         name:          "slide.1";
+         type:          SWALLOW;
+         clip_to:       "bg1_clip";
+         mouse_events:  0;
+         description {
+            state: "default" 0.0;
+         }
+      }
+      part {
+         name:          "slide.2";
+         type:          SWALLOW;
+         clip_to:       "bg2_clip";
+         mouse_events:  0;
+         description {
+            state: "default" 0.0;
+         }
+      }
+      part {
+         name:          "bg1_clip";
+         type:          RECT;
+         mouse_events:  0;
+         description {
+            rel1 {
+               relative: 0.0  0.0;
+               offset:   0    -32;
+            }
+            rel2 {
+               relative: 1.0  1.0;
+               offset:   -1   31;
+            }
+            state: "default" 0.0;
+         }
+         description {
+            state: "done" 0.0;
+            inherit: "default" 0.0;
+            rel1 {
+               relative: 0.0  1.0;
+               offset:   0    31;
+            }
+            rel2 {
+               relative: 1.0  1.0;
+               offset:   -1   31;
+            }
+         }
+      }
+      part {
+         name:          "bg2_clip";
+         type:          RECT;
+         mouse_events:  0;
+         description {
+            state: "default" 0.0;
+            rel1 {
+               relative: 0.0  0.0;
+               offset:   0    -32;
+            }
+            rel2 {
+               relative: 1.0  0.0;
+               offset:   -1   -32;
+            }
+         }
+         description {
+            state: "done" 0.0;
+            inherit: "default" 0.0;
+            rel1 {
+               relative: 0.0  0.0;
+               offset:   0    -32;
+            }
+            rel2 {
+               relative: 1.0  1.0;
+               offset:   -1   31;
+            }
+         }
+      }
+      part {
+         name: "swipe_gap";
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            min: 0 32;
+            max: 99999 32;
+            rel1 {
+               to: "bg1_clip";
+               relative: 0.0  0.0;
+               offset:   0    0;
+            }
+            rel2 {
+               to: "bg1_clip";
+               relative: 1.0  0.0;
+               offset:   -1   0;
+            }
+            image {
+               normal: "transition_vswipe_gap.png";
+            }
+         }
+      }
+      part {
+         name: "swipe_gap2";
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            min: 0 32;
+            max: 99999 32;
+            rel1 {
+               to: "bg2_clip";
+               relative: 0.0  0.0;
+               offset:   0    0;
+            }
+            rel2 {
+               to: "bg2_clip";
+               relative: 1.0  0.0;
+               offset:   -1   0;
+            }
+            image {
+               normal: "transition_vswipe_gap.png";
+            }
+         }
+      }
+   }
+   programs {
+      program {
+         name:    "go";
+         action:  STATE_SET "done" 0.0;
+         transition: SINUSOIDAL 1.0;
+         target:  "bg1_clip";
+         target:  "bg2_clip";
+         after:   "done";
+      }
+      program {
+         name:    "go2";
+         action:  STATE_SET "default" 0.0;
+         transition: SINUSOIDAL 1.0;
+         target:  "bg1_clip";
+         target:  "bg2_clip";
+         after:   "done";
+      }
+      program {
+         name:    "show1";
+         signal:  "show,1";
+         source:  "enna";
+         after:   "go2";
+      }
+      program {
+         name:    "show2";
+         signal:  "show,2";
+         source:  "enna";
+         after:   "go";
+      }
+      program {
+         name:    "reset";
+	 signal:  "reset";
+         source:  "enna";
+	 action:  STATE_SET "default" 0.0;
+         target:  "bg1_clip";
+         target:  "bg2_clip";
+      }
+      program {
+         name:    "done";
+         action:  SIGNAL_EMIT "done" "";
+      }
+   }
+}
+
+group {
+   name: "transitions/hslide";
+   parts {
+      part {
+         name:          "slide.2";
+         type:          SWALLOW;
+         clip_to:       "bg2_clip";
+         mouse_events:  1;
+         description {
+            state: "default" 0.0;
+         }
+      }
+      part {
+         name:          "slide.1";
+         type:          SWALLOW;
+         clip_to:       "bg1_clip";
+         mouse_events:  1;
+         description {
+            state: "default" 0.0;
+            rel1.to: "bg1_clip";
+            rel2.to: "bg1_clip";
+         }
+      }
+      part {
+         name:          "bg2_clip";
+         type:          RECT;
+         mouse_events:  0;
+         description {
+            state: "default" 0.0;
+            color: 0 0 0 0;
+            visible: 0;
+         }
+         description {
+            state: "visible" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 255;
+            visible: 1;
+         }
+      }
+      part {
+         name:          "bg1_clip";
+         type:          RECT;
+         mouse_events:  0;
+         description {
+            state: "default" 0.0;
+         }
+         description {
+            state: "visible" 0.0;
+            inherit: "default" 0.0;
+            rel1 {
+               relative: 1.0  0.0;
+               offset:   0    0;
+            }
+            rel2 {
+               to: "bg2_clip";
+               relative: 1.0  1.0;
+               offset:   1366  -1;
+            }
+         }
+      }
+   }
+   programs {
+      program {
+         name:    "animate_bg2";
+         action:  STATE_SET "visible" 0.0;
+         transition: SINUSOIDAL 1.0;
+         target:  "bg2_clip";
+         after:   "done";
+      }
+      program {
+         name:    "animate_bg1";
+         action:  STATE_SET "visible" 0.0;
+         transition: DECELERATE 1.0;
+         target:  "bg1_clip";
+      }
+      program {
+         name:    "show1";
+         signal:  "show,2";
+         source:  "enna";
+         after:   "animate_bg2";
+         after:   "animate_bg1";
+      }
+      program {
+         name:    "reset";
+	 signal:  "reset";
+         source:  "enna";
+	 action:  STATE_SET "default" 0.0;
+         target:  "bg1_clip";
+         target:  "bg2_clip";
+      }
+      program {
+         name:    "done";
+         action:  SIGNAL_EMIT "done" "";
+      }
+   }
+}
+

@@ -4,7 +4,9 @@ images {
    image: "progress_bar.png" COMP;
    image: "progress_bar_content.png" COMP;
    image: "progress_bar_drag.png" COMP;
+   image: "text_border.png" COMP;
 }
+
 
 group {
    name: "video_info";
@@ -18,6 +20,17 @@ group {
             visible: 1;
          }
       }
+      part {
+      name: "text_border";
+      mouse_events:  0;
+         description {
+         state: "default" 0.0;
+	 rel1.relative: 0.45 0;
+	 rel2.relative: 1.0 1.0;
+         image.normal: "text_border.png";
+	 image.border: 10 10 10 10;
+         }
+      }
         part {
 	 name:           "enna.text.title";
          clip_to: "enna.clip.player";
@@ -26,12 +39,14 @@ group {
 	 description {
 	    state: "default" 0.0;
 	    rel1 {
-               relative: 0.6  0.4;
+               relative: 0  0.05;
+	       to: "text_border";
 	    }
 	    rel2 {
-	       relative: 1.0  0.6;
+	       relative: 1.0  0.15;
+	       to: "text_border";
 	    }
-            color: 200 200 200 255;
+            color: 200 200 200 200;
             color3: 128 128 128 200;
             align: 0.5 0.5;
 	    text {
@@ -46,6 +61,339 @@ group {
       }
 
       part {
+         name: "title_underline";
+         type: RECT;
+         description {
+            state: "default" 0.0;
+            color : 255 255 255 128;
+            visible: 1;
+	     rel1 {
+               relative: 0.1  0.15;
+	       to: "text_border";
+	    }
+	    rel2 {
+	       relative: 0.9  0.15;
+	       to: "text_border";
+	       offset: 0 0;
+	    }
+         }
+      }
+       part {
+	 name:           "enna.text.size";
+         clip_to:        "enna.clip.player";
+	 type:           TEXT;
+	 mouse_events:   0;
+	 description {
+	    state: "default" 0.0;
+	    rel1 {
+               relative: 0  0.25;
+	       to: "text_border";
+	    }
+	    rel2 {
+	       relative: 1.0  0.30;
+	       to: "text_border";
+	    }
+            color: 200 200 200 128;
+            color3: 128 128 128 128;
+            align: 0.5 0.5;
+	    text {
+               text:     "Size";
+               font:     "content_bd";
+               size:     10;
+               fit: 1 1;
+               min: 1 0;
+               //max: 1 1;;
+            }
+	 }
+      }
+       part {
+	 name:           "enna.text.length";
+         clip_to:        "enna.clip.player";
+	 type:           TEXT;
+	 mouse_events:   0;
+	 description {
+	    state: "default" 0.0;
+	    rel1 {
+               relative: 0  0.30;
+	       to: "text_border";
+	    }
+	    rel2 {
+	       relative: 1.0  0.35;
+	       to: "text_border";
+	    }
+            color: 200 200 200 128;
+            color3: 128 128 128 128;
+            align: 0.5 0.5;
+	    text {
+               text:     "Length";
+               font:     "content_bd";
+               size:     10;
+               fit: 1 1;
+               min: 1 0;
+               //max: 1 1;;
+            }
+	 }
+      }
+      part {
+         name: "title_underline2";
+         type: RECT;
+         description {
+            state: "default" 0.0;
+            color : 255 255 255 128;
+            visible: 1;
+	     rel1 {
+               relative: 0.1  0.40;
+	       to: "text_border";
+	    }
+	    rel2 {
+	       relative: 0.9  0.40;
+	       to: "text_border";
+	       offset: 0 0;
+	    }
+         }
+      }
+
+/*****************************************************************************/
+/*			Video Stream Infos                                   */
+/*****************************************************************************/
+
+       part {
+	 name:           "enna.text.video";
+         clip_to:        "enna.clip.player";
+	 type:           TEXT;
+	 mouse_events:   0;
+	 description {
+	    state: "default" 0.0;
+	    rel1 {
+               relative: 0  0.45;
+	       to: "text_border";
+	    }
+	    rel2 {
+	       relative: 0.5  0.50;
+	       to: "text_border";
+	    }
+            color: 200 200 200 200;
+            color3: 128 128 128 200;
+            align: 0.5 0.5;
+	    text {
+               text:     "Video Stream";
+               font:     "content_bd";
+               size:     10;
+               fit: 1 1;
+               min: 1 0;
+               //max: 1 1;;
+            }
+	 }
+      }
+
+       part {
+	 name:           "enna.text.videocodec";
+         clip_to:        "enna.clip.player";
+	 type:           TEXT;
+	 mouse_events:   0;
+	 description {
+	    state: "default" 0.0;
+	    rel1 {
+               relative: 0  0.50;
+	       to: "text_border";
+	    }
+	    rel2 {
+	       relative: 0.5  0.55;
+	       to: "text_border";
+	    }
+            color: 200 200 200 128;
+            color3: 128 128 128 128;
+	    text {
+               text:     "Codec";
+               font:     "content_bd";
+               size:     10;
+               fit: 1 1;
+               min: 1 0;
+               //max: 1 1;;
+            }
+	 }
+      }
+
+       part {
+	 name:           "enna.text.videosize";
+         clip_to:        "enna.clip.player";
+	 type:           TEXT;
+	 mouse_events:   0;
+	 description {
+	    state: "default" 0.0;
+	    rel1 {
+               relative: 0  0.55;
+	       to: "text_border";
+	    }
+	    rel2 {
+	       relative: 0.5  0.60;
+	       to: "text_border";
+	    }
+            color: 200 200 200 128;
+            color3: 128 128 128 128;
+	    text {
+               text:     "Size";
+               font:     "content_bd";
+               size:     10;
+               fit: 1 1;
+               min: 1 0;
+               //max: 1 1;;
+            }
+	 }
+      }
+
+       part {
+	 name:           "enna.text.framerate";
+         clip_to:        "enna.clip.player";
+	 type:           TEXT;
+	 mouse_events:   0;
+	 description {
+	    state: "default" 0.0;
+	    rel1 {
+               relative: 0  0.60;
+	       to: "text_border";
+	    }
+	    rel2 {
+	       relative: 0.5  0.65;
+	       to: "text_border";
+	    }
+            color: 200 200 200 128;
+            color3: 128 128 128 128;
+	    text {
+               text:     "Framerate";
+               font:     "content_bd";
+               size:     10;
+               fit: 1 1;
+               min: 1 0;
+               //max: 1 1;;
+            }
+	 }
+      }
+
+/*****************************************************************************/
+/*			Audio Stream Infos                                   */
+/*****************************************************************************/
+
+       part {
+	 name:           "enna.text.audio";
+         clip_to:        "enna.clip.player";
+	 type:           TEXT;
+	 mouse_events:   0;
+	 description {
+	    state: "default" 0.0;
+	    rel1 {
+               relative: 0.5  0.45;
+	       to: "text_border";
+	    }
+	    rel2 {
+	       relative: 1.0  0.50;
+	       to: "text_border";
+	    }
+            color: 200 200 200 200;
+            color3: 128 128 128 200;
+	    align: 0.5 0.5;
+	    text {
+               text:     "Audio Stream";
+               font:     "content_bd";
+               size:     10;
+               fit: 1 1;
+               min: 1 0;
+               //max: 1 1;;
+            }
+	 }
+      }
+
+
+      part {
+	 name:           "enna.text.audiocodec";
+         clip_to:        "enna.clip.player";
+	 type:           TEXT;
+	 mouse_events:   0;
+	 description {
+	    state: "default" 0.0;
+	    rel1 {
+               relative: 0.5  0.50;
+	       to: "text_border";
+	    }
+	    rel2 {
+	       relative: 1.0  0.55;
+	       to: "text_border";
+	    }
+            color: 200 200 200 128;
+            color3: 128 128 128 128;
+	    text {
+               text:     "Codec";
+               font:     "content_bd";
+               size:     10;
+               fit: 1 1;
+               min: 1 0;
+               //max: 1 1;;
+            }
+	 }
+      }
+
+       part {
+	 name:           "enna.text.bitrate";
+         clip_to:        "enna.clip.player";
+	 type:           TEXT;
+	 mouse_events:   0;
+	 description {
+	    state: "default" 0.0;
+	    rel1 {
+               relative: 0.5  0.55;
+	       to: "text_border";
+	    }
+	    rel2 {
+	       relative: 1.0  0.60;
+	       to: "text_border";
+	    }
+            color: 200 200 200 128;
+            color3: 128 128 128 128;
+	    text {
+               text:     "Bitrate";
+               font:     "content_bd";
+               size:     10;
+               fit: 1 1;
+               min: 1 0;
+               //max: 1 1;;
+            }
+	 }
+      }
+
+       part {
+	 name:           "enna.text.samplerate";
+         clip_to:        "enna.clip.player";
+	 type:           TEXT;
+	 mouse_events:   0;
+	 description {
+	    state: "default" 0.0;
+	    rel1 {
+               relative: 0.5  0.60;
+	       to: "text_border";
+	    }
+	    rel2 {
+	       relative: 1.0  0.65;
+	       to: "text_border";
+	    }
+            color: 200 200 200 128;
+            color3: 128 128 128 128;
+	    text {
+               text:     "Samplerate";
+               font:     "content_bd";
+               size:     10;
+               fit: 1 1;
+               min: 1 0;
+               //max: 1 1;;
+            }
+	 }
+      }
+
+/*****************************************************************************/
+/*			Movie Cover                                          */
+/*****************************************************************************/
+
+
+      part {
          name: "enna.clip.cover";
          clip_to: "enna.clip.player";
          type: RECT;
@@ -56,11 +404,11 @@ group {
             //aspect: 3.0 4.0;
             //aspect_preference: VERTICAL;
             rel1{
-               relative: 0.1 0.1;
+               relative: 0 0.1;
 
             }
             rel2{
-               relative: 0.5 0.9;
+               relative: 0.40 0.9;
             }
          }
          description {

@@ -43,7 +43,6 @@ enum _VIDEO_STATE
      Evas_Object *o_location;
      Evas_Object *o_mediaplayer;
      Enna_Class_Vfs *vfs;
-     Ecore_Timer *timer;
      Enna_Module *em;
      VIDEO_STATE state;
      Ecore_Timer *timer_show_mediaplayer;
@@ -222,7 +221,10 @@ _activate()
 static void
 _seek_video(double value)
 {
-   double pos,len,seek;
+   double pos  = 0.0;
+   double len  = 0.0;
+   double seek = 0.0;
+
    pos = enna_mediaplayer_position_get();
    len = enna_mediaplayer_length_get();
    if (len)
@@ -324,26 +326,6 @@ _list_transition_core(Evas_List *files, unsigned char direction)
 	     item = enna_listitem_add(mod->em->evas);
 	     enna_listitem_create_simple(item, icon, cat->label);
 	     enna_list_append(o_list, item, _browse, NULL, cat, NULL);
-	  }
-	if (mod->o_mediaplayer)
-	  {
-	     Evas_Object *item;
-	     Enna_Metadata *metadata;
-	     Evas_Object *cover = NULL;
-	     const char *cover_file;
-
-	     metadata = enna_mediaplayer_metadata_get();
-	     item = enna_listitem_add(mod->em->evas);
-
-	     cover_file = enna_cover_album_get(metadata->artist, metadata->album, metadata->uri);
-	     if (cover_file)
-	       {
-		  cover = enna_image_add(mod->em->evas);
-		  enna_image_file_set(cover, cover_file);
-	       }
-
-	     enna_listitem_create_full(item, cover, "Playing Now :", metadata->title, metadata->album, metadata->artist);
-	     enna_list_append(o_list, item, NULL, NULL, NULL, NULL);
 	  }
 
 	mod->vfs = NULL;
@@ -487,23 +469,10 @@ _browse(void *data, void *data2)
 
 
 
-static int _update_position_timer(void *data)
-{
-
-   double pos;
-   double length;
-
-   length = enna_mediaplayer_length_get();
-   pos = enna_mediaplayer_position_get();
-
-   enna_smart_player_position_set(mod->o_mediaplayer, pos, length);
-   return 1;
-}
-
-
 static void _create_mediaplayer_gui()
 {
    Evas_Object *o;
+   Enna_Metadata *m;
 
    mod->state = VIDEO_INFO_VIEW;
 
@@ -516,9 +485,9 @@ static void _create_mediaplayer_gui()
    edje_object_part_swallow(mod->o_edje, "enna.swallow.mediaplayer", o);
    evas_object_show(o);
    mod->o_mediaplayer = o;
-   mod->timer = ecore_timer_add(1, _update_position_timer, NULL);
 
-   enna_smart_player_metadata_set(mod->o_mediaplayer, enna_mediaplayer_metadata_get());
+   m = enna_mediaplayer_metadata_get();
+   enna_smart_player_metadata_set(mod->o_mediaplayer, m);
 
    edje_object_signal_emit(mod->o_edje, "mediaplayer,show", "enna");
    edje_object_signal_emit(mod->o_edje, "list,hide", "enna");
@@ -570,27 +539,6 @@ static void _create_gui()
 	enna_listitem_create_simple(item, icon, cat->label);
 	enna_list_append(o, item,  _browse, NULL, cat, NULL);
      }
-   /* FIXME we must test play state instead of object here */
-   if (mod->o_mediaplayer)
-     {
-	Evas_Object *item;
-	Enna_Metadata *metadata;
-	Evas_Object *cover = NULL;
-	const char *cover_file;
-
-	metadata = enna_mediaplayer_metadata_get();
-	item = enna_listitem_add(mod->em->evas);
-
-	cover_file = enna_cover_album_get(metadata->artist, metadata->album, metadata->uri);
-	if (cover_file)
-	  {
-	     cover = enna_image_add(mod->em->evas);
-	     enna_image_file_set(cover, cover_file);
-	  }
-
-	enna_listitem_create_full(item, cover, "Playing Now :", metadata->title, metadata->album, metadata->artist);
-	enna_list_append(o, item, NULL, NULL, NULL, NULL);
-     }
 
    enna_list_thaw(o);
    mod->vfs = NULL;
@@ -636,8 +584,6 @@ em_shutdown(Enna_Module *em)
    evas_object_del(mod->o_location);
    if (mod->timer_show_mediaplayer)
     ecore_timer_del(mod->timer_show_mediaplayer);
-   if (mod->timer)
-     ecore_timer_del(mod->timer);
    evas_object_del(mod->o_mediaplayer);
    if (mod->vfs && mod->vfs->func.class_shutdown)
      {

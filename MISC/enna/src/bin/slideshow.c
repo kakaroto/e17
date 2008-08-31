@@ -1,8 +1,8 @@
 /*
- * smart_mediaplayer.c
+ * slideshow.c
  * Copyright (C) Nicolas Aguirre 2006,2007,2008 <aguirre.nicolas@gmail.com>
  *
- * smart_mediaplayer.c is free software copyrighted by Nicolas Aguirre.
+ * slideshow.c is free software copyrighted by Nicolas Aguirre.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -16,7 +16,7 @@
  *    contributor may be used to endorse or promote products derived
  *    from this software without specific prior written permission.
  *
- * smart_mediaplayer.c IS PROVIDED BY Nicolas Aguirre ``AS IS'' AND ANY EXPRESS
+ * slideshow.c IS PROVIDED BY Nicolas Aguirre ``AS IS'' AND ANY EXPRESS
  * OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED.  IN NO EVENT SHALL Nicolas Aguirre OR ANY OTHER CONTRIBUTORS
@@ -31,9 +31,9 @@
 
 /* derived from e_icon */
 
-#include "smart_player.h"
+#include "slideshow.h"
 
-#define SMART_NAME "smart_player"
+#define SMART_NAME "slideshow"
 
 #define API_ENTRY \
    E_Smart_Data *sd; \
@@ -49,20 +49,34 @@
       return;
 
 
+#define NB_TRANSITIONS_MAX 3.0
+
+#define STOP 0
+#define PLAY 1
+#define PAUSE 2
+
 typedef struct _E_Smart_Data E_Smart_Data;
 
 struct _E_Smart_Data
 {
    Evas_Coord          x, y, w, h;
    Evas_Object        *o_edje;
-   Evas_Object        *o_cover;
-   Evas_Object        *o_cover_old;
-   Evas_Object        *o_fs;
+   Evas_Object        *o_transition;
+   Evas_Object        *obj;
+   Evas_List          *playlist;
+   unsigned int        playlist_id;
+   Ecore_Timer        *timer;
+   Evas_Object        *old_slide;
+   Evas_Object        *slide;
+   unsigned char       state;
 };
 
 /* local subsystem functions */
-static void         _enna_mediaplayer_smart_reconfigure(E_Smart_Data * sd);
-static void         _enna_mediaplayer_smart_init(void);
+static void         _enna_slideshow_smart_reconfigure(E_Smart_Data * sd);
+static void         _enna_slideshow_smart_init(void);
+static void         _random_transition(E_Smart_Data *sd);
+static void         _edje_cb(void *data, Evas_Object *obj, const char *emission, const char *source);
+static void         _switch_images(E_Smart_Data * sd, Evas_Object * new_slide);
 static void         _e_smart_add(Evas_Object * obj);
 static void         _e_smart_del(Evas_Object * obj);
 static void         _e_smart_move(Evas_Object * obj, Evas_Coord x,
@@ -81,93 +95,183 @@ static Evas_Smart  *_e_smart = NULL;
 
 /* externally accessible functions */
 EAPI Evas_Object   *
-enna_smart_player_add(Evas * evas)
+enna_slideshow_add(Evas * evas)
 {
-   _enna_mediaplayer_smart_init();
+   _enna_slideshow_smart_init();
    return evas_object_smart_add(evas, _e_smart);
+}
+
+EAPI void
+enna_slideshow_image_append(Evas_Object *obj, const char *filename)
+{
+   Evas_Object *o;
+   Evas_Coord w,h;
+
+   API_ENTRY return;
+
+   if (!filename) return;
+
+   o = enna_image_add(evas_object_evas_get(obj));
+   printf("append : %s\n", filename);
+   enna_image_file_set(o, filename+7);
+   enna_image_size_get(o, &w, &h);
+   enna_image_load_size_set(o, w, h);
+
+   sd->playlist = evas_list_append(sd->playlist, o);
+
+}
+
+EAPI int
+enna_slideshow_next(Evas_Object * obj)
+{
+   Evas_Object *o;
+
+   API_ENTRY return 0;
+
+   if (sd->old_slide) return 1;
+
+   sd->playlist_id++;
+   o = evas_list_nth(sd->playlist, sd->playlist_id);
+
+   if (o)
+     {
+	_switch_images(sd, o);
+	return 1;
+     }
+   else
+     {
+	sd->playlist_id--;
+	return 0;
+     }
+   return 0;
+}
+
+EAPI int
+enna_slideshow_prev(Evas_Object * obj)
+{
+   Evas_Object *o;
+
+   API_ENTRY return 0;
+
+   if (sd->old_slide) return 1;
+
+   sd->playlist_id--;
+   o = evas_list_nth(sd->playlist, sd->playlist_id);
+
+   if (o)
+     {
+	if (sd->state == PLAY)
+	  {
+	     sd->state = PAUSE;
+	     ecore_timer_del(sd->timer);
+	     sd->timer = NULL;
+	  }
+	_switch_images(sd,  o);
+	return 1;
+     }
+   else
+     {
+	sd->playlist_id++;
+	return 0;
+     }
+   return 0;
 }
 
 
 EAPI void
-enna_smart_player_metadata_set(Evas_Object *obj, Enna_Metadata *metadata)
+enna_slideshow_play(Evas_Object * obj)
 {
-   char *cover_file = NULL;
-   char buf[4096];
+   Evas_Object        *o;
 
-   API_ENTRY;
+   API_ENTRY return;
 
-   printf("metadata set\n");
-
-   if (!metadata) return;
-   if (metadata->uri) edje_object_part_text_set(sd->o_edje, "enna.text.title", ecore_file_file_get(metadata->uri));
-
-   snprintf(buf, sizeof(buf), "Size : %.2f MB",metadata->size / 1024.0 / 1024.0);
-   edje_object_part_text_set(sd->o_edje, "enna.text.size", buf);
-
-   snprintf(buf, sizeof(buf), "Length: %.2f sec",metadata->length / 1000.0);
-   edje_object_part_text_set(sd->o_edje, "enna.text.length", buf);
-
-   snprintf(buf, sizeof(buf), "Codec : %s",metadata->video->codec);
-   edje_object_part_text_set(sd->o_edje, "enna.text.videocodec", buf);
-
-   snprintf(buf, sizeof(buf), "Size : %dx%d",metadata->video->width, metadata->video->height);
-   edje_object_part_text_set(sd->o_edje, "enna.text.videosize", buf);
-
-   snprintf(buf, sizeof(buf), "Framerate : %.2f",metadata->video->framerate);
-   edje_object_part_text_set(sd->o_edje, "enna.text.framerate", buf);
-
-   snprintf(buf, sizeof(buf), "Codec : %s",metadata->music->codec);
-   edje_object_part_text_set(sd->o_edje, "enna.text.audiocodec", buf);
-
-   snprintf(buf, sizeof(buf), "Bitrate : %i kbps",metadata->music->bitrate / 1000);
-   edje_object_part_text_set(sd->o_edje, "enna.text.bitrate", buf);
-
-   snprintf(buf, sizeof(buf), "Samplerate : %i Hz", metadata->music->samplerate);
-   edje_object_part_text_set(sd->o_edje, "enna.text.samplerate", buf);
-   /*
-   printf(" Size : %.2f MB\n", metadata->size / 1024.0 / 1024.0);
-   printf(" Length: %.2f sec\n", metadata->length / 1000.0);
-   printf(" Video Codec: %s\n", metadata->video->codec);
-   printf(" Video Bitrate: %i kbps\n", metadata->video->bitrate / 1000);
-   printf(" Video Width: %i\n", metadata->video->width);
-   printf(" Video Height: %i\n", metadata->video->height);
-   printf(" Video Channels: %i\n", metadata->video->channels);
-   printf(" Video Streams: %i\n", metadata->video->streams);
-   printf(" Video Framerate: %.2f\n", metadata->video->framerate);
-   printf(" Audio Codec: %s\n", metadata->music->codec);
-   printf(" Audio Bitrate: %i kbps\n", metadata->music->bitrate / 1000);
-   printf(" Audio Channels: %i\n", metadata->music->channels);
-   printf(" Audio Sample Rate: %i Hz\n", metadata->music->samplerate);
-   */
-
-   cover_file = enna_cover_video_get(metadata->uri);
-   if (cover_file)
+   if (!sd->timer)
      {
-	printf("cover filename : %s\n", cover_file);
-	/* FIXME : add edje cb at end of cover transition to switch properly covers*/
-	sd->o_cover_old = sd->o_cover;
-	sd->o_cover = enna_image_add(evas_object_evas_get(sd->o_edje));
-	evas_object_show(sd->o_cover);
-	enna_image_load_size_set(sd->o_cover, 300,300);
-	enna_image_file_set(sd->o_cover, cover_file);
-	edje_object_part_swallow(sd->o_edje, "enna.swallow.cover", sd->o_cover);
-	edje_object_signal_emit(sd->o_edje, "cover,show", "enna");
-	evas_object_del(sd->o_cover_old);
+	/* Play */
+	sd->state = PLAY;
+	o = evas_list_nth(sd->playlist, sd->playlist_id);
+	_switch_images(sd, o);
+	sd->timer = ecore_timer_add(4, enna_slideshow_next, sd->obj);
      }
    else
      {
-	edje_object_signal_emit(sd->o_edje, "cover,hide", "enna");
-       	evas_object_del(sd->o_cover);
+
+	/* Pause */
+	sd->state = PAUSE;
+	ecore_timer_del(sd->timer);
+	sd->timer = NULL;
      }
 
-
-
-   enna_metadata_free(metadata);
 }
 
 /* local subsystem globals */
+
 static void
-_enna_mediaplayer_smart_reconfigure(E_Smart_Data * sd)
+_random_transition(E_Smart_Data *sd)
+{
+   unsigned int n;
+
+   if (!sd) return;
+
+   n = 1 + (int) ( 3.0 * rand() / ( RAND_MAX + 1.0 ));
+   if (sd->o_transition) evas_object_del(sd->o_transition);
+   sd->o_transition = edje_object_add(evas_object_evas_get(sd->obj));
+   printf("Transition n°%d\n", n);
+   switch(n)
+     {
+      case 1:
+	 edje_object_file_set(sd->o_transition, enna_config_theme_get(), "transitions/crossfade");
+	 break;
+      case 2:
+	 edje_object_file_set(sd->o_transition, enna_config_theme_get(), "transitions/vswipe");
+	 break;
+      case 3:
+	 edje_object_file_set(sd->o_transition, enna_config_theme_get(), "transitions/hslide");
+	 break;
+      default:
+	 break;
+     }
+   edje_object_part_swallow(sd->o_edje, "enna.swallow.transition", sd->o_transition);
+   edje_object_signal_callback_add(sd->o_transition, "*", "*", _edje_cb, sd);
+}
+
+static void
+_edje_cb(void *data, Evas_Object *obj, const char *emission, const char *source)
+{
+
+
+   E_Smart_Data *sd = (E_Smart_Data*)data;
+
+   if (!strcmp(emission,"done"))
+     {
+	edje_object_part_unswallow(sd->o_transition, sd->old_slide);
+	evas_object_hide(sd->old_slide);
+	sd->old_slide = NULL;
+     }
+}
+
+
+static void
+_switch_images(E_Smart_Data * sd, Evas_Object * new_slide)
+{
+
+   if (!sd || !new_slide || !sd->o_transition)
+     return;
+
+   _random_transition(sd);
+
+   edje_object_part_unswallow(sd->o_transition, sd->slide);
+   edje_object_part_unswallow(sd->o_transition, sd->old_slide);
+   sd->old_slide = sd->slide;
+   sd->slide = new_slide;
+   edje_object_signal_emit(sd->o_transition, "reset", "enna");
+   edje_object_part_swallow(sd->o_transition, "slide.1", sd->old_slide);
+   edje_object_part_swallow(sd->o_transition, "slide.2", sd->slide);
+   edje_object_signal_emit(sd->o_transition, "show,2", "enna");
+}
+
+static void
+_enna_slideshow_smart_reconfigure(E_Smart_Data * sd)
 {
    Evas_Coord          x, y, w, h;
 
@@ -182,7 +286,7 @@ _enna_mediaplayer_smart_reconfigure(E_Smart_Data * sd)
 }
 
 static void
-_enna_mediaplayer_smart_init(void)
+_enna_slideshow_smart_init(void)
 {
    if (_e_smart)
       return;
@@ -211,29 +315,47 @@ _e_smart_add(Evas_Object * obj)
    sd = calloc(1, sizeof(E_Smart_Data));
    if (!sd)
       return;
+
+   srand(time(NULL));
+
    sd->o_edje = edje_object_add(evas_object_evas_get(obj));
-   edje_object_file_set(sd->o_edje, enna_config_theme_get(), "video_info");
+   edje_object_file_set(sd->o_edje, enna_config_theme_get(), "transitions");
    sd->x = 0;
    sd->y = 0;
    sd->w = 0;
+
+   sd->obj = obj;
 
    sd->h = 0;
    evas_object_smart_member_add(sd->o_edje, obj);
    evas_object_smart_data_set(obj, sd);
 
-   edje_object_part_swallow(sd->o_edje, "enna.swallow.cover", enna_mediaplayer_video_obj_get());
-   edje_object_signal_emit(sd->o_edje, "cover,show", "enna");
+
+   sd->playlist = NULL;
+   sd->playlist_id = 0;
+   sd->timer = NULL;
+   sd->old_slide = NULL;
+   sd->slide = NULL;
+   sd->state = STOP;
+   sd->o_transition = NULL;
+   _random_transition(sd);
 }
 
 static void
 _e_smart_del(Evas_Object * obj)
 {
    E_Smart_Data       *sd;
+   Evas_List *l;
 
    sd = evas_object_smart_data_get(obj);
    if (!sd)
       return;
+
+   for (l = sd->playlist; l; l = l->next)
+     evas_object_del(l->data);
+
    evas_object_del(sd->o_edje);
+   ecore_timer_del(sd->timer);
    free(sd);
 }
 
@@ -249,7 +371,7 @@ _e_smart_move(Evas_Object * obj, Evas_Coord x, Evas_Coord y)
       return;
    sd->x = x;
    sd->y = y;
-   _enna_mediaplayer_smart_reconfigure(sd);
+   _enna_slideshow_smart_reconfigure(sd);
 }
 
 static void
@@ -264,7 +386,7 @@ _e_smart_resize(Evas_Object * obj, Evas_Coord w, Evas_Coord h)
       return;
    sd->w = w;
    sd->h = h;
-   _enna_mediaplayer_smart_reconfigure(sd);
+   _enna_slideshow_smart_reconfigure(sd);
 }
 
 static void

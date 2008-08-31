@@ -87,6 +87,7 @@ struct _Enna
 {
    char               *home;        /**< Home directory ie $HOME/.enna. */
    Ecore_Evas         *ee;          /**< Ecore_Evas. */
+   Ecore_X_Window      ee_winid;    /**< Ecore_Evas WindowID */
    Evas               *evas;        /**< Main enna evas.  */
    Evas_Object        *o_background;/**< Background object, it handles key down. */
    Evas_Object        *o_edje;      /**< Main edje. */

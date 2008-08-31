@@ -299,14 +299,14 @@ _list_transition_core(Evas_List *files, unsigned char direction)
 	     metadata = enna_mediaplayer_metadata_get();
 	     item = enna_listitem_add(mod->em->evas);
 
-	     cover_file = enna_cover_album_get(metadata->artist, metadata->album, metadata->uri);
+	     cover_file = enna_cover_album_get(metadata->music->artist, metadata->music->album, metadata->uri);
 	     if (cover_file)
 	       {
 		  cover = enna_image_add(mod->em->evas);
 		  enna_image_file_set(cover, cover_file);
 	       }
 
-	     enna_listitem_create_full(item, cover, "Playing Now :", metadata->title, metadata->album, metadata->artist);
+	     enna_listitem_create_full(item, cover, "Playing Now :", metadata->title, metadata->music->album, metadata->music->artist);
 	     enna_list_append(o_list, item, NULL, NULL, NULL, NULL);
 	  }
 
@@ -569,14 +569,14 @@ static void _create_gui()
 	metadata = enna_mediaplayer_metadata_get();
 	item = enna_listitem_add(mod->em->evas);
 
-	cover_file = enna_cover_album_get(metadata->artist, metadata->album, metadata->uri);
+	cover_file = enna_cover_album_get(metadata->music->artist, metadata->music->album, metadata->uri);
 	if (cover_file)
 	  {
 	     cover = enna_image_add(mod->em->evas);
 	     enna_image_file_set(cover, cover_file);
 	  }
 
-	enna_listitem_create_full(item, cover, "Playing Now :", metadata->title, metadata->album, metadata->artist);
+	enna_listitem_create_full(item, cover, "Playing Now :", metadata->title, metadata->music->album, metadata->music->artist);
 	enna_list_append(o, item, NULL, NULL, NULL, NULL);
      }
 

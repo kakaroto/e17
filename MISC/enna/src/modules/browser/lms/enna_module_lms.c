@@ -592,12 +592,11 @@ _audio_tracks_of_album_list_get(const char *artist, const char *album)
 
    while ( sqlite3_step ( stmt ) == SQLITE_ROW )
      {
-	Enna_Metadata *m;
-	m = malloc(sizeof(Enna_Metadata));
+	Enna_Metadata *m = enna_metadata_new();
 
 	m->title  = strdup((char*)sqlite3_column_text(stmt,0));
 	m->uri    = strdup((char*)sqlite3_column_text(stmt,1));
-	m->track  = sqlite3_column_int(stmt,2);
+	m->music->track  = sqlite3_column_int(stmt,2);
 	if (m)
 	  tracks = evas_list_append(tracks, m);
 
@@ -758,7 +757,7 @@ static Evas_List *_class_browse_up(const char *path)
 		  Evas_List *l2 = NULL;
 		  Enna_Vfs_File *filename;
                   char *icon_file = NULL;
-                  
+
 		  snprintf(uri, sizeof(uri), "%s/%s", path, (char*)l->data);
 
 		  album = uri;
@@ -804,11 +803,11 @@ static Evas_List *_class_browse_up(const char *path)
 
 		  m = l->data;
 		  snprintf(uri, sizeof(uri), "file://%s", m->uri);
-		  snprintf(tmp, sizeof(tmp), "%02d - %s", m->track, m->title);
+		  snprintf(tmp, sizeof(tmp), "%02d - %s", m->music->track, m->title);
                   file = enna_vfs_create_file (uri, tmp,
                                                "icon/song", NULL);
 		  entries = evas_list_append(entries, file);
-		  free(m);
+		  enna_metadata_free(m);
 
 	       }
 	     return evas_list_sort(entries, evas_list_count(entries), _sort_cb);

@@ -10,11 +10,22 @@ static void           _browse(void *data, void *data2);
 static void           _browse_down();
 static void           _activate();
 
+typedef enum _PHOTO_STATE PHOTO_STATE;
+enum _PHOTO_STATE
+{
+  LIST_VIEW,
+  SLIDESHOW_VIEW,
+  DEFAULT_VIEW,
+};
+
+
 typedef struct _Enna_Module_Photo {
   Evas *e;
   Evas_Object *o_edje;
   Evas_Object *o_list;
   Evas_Object *o_location;
+  Evas_Object *o_slideshow;
+  PHOTO_STATE  state;
   Enna_Class_Vfs *vfs;
   Enna_Module *em;
   char *prev_selected;
@@ -200,6 +211,25 @@ _browse_down()
      }
 }
 
+static void _create_slideshow_gui()
+{
+   Evas_Object *o;
+
+   mod->state = SLIDESHOW_VIEW;
+
+   if (mod->o_slideshow)
+     evas_object_del(mod->o_slideshow);
+
+   o = enna_slideshow_add(mod->em->evas);
+   edje_object_part_swallow(enna->o_edje, "enna.swallow.fullsceen", o);
+   evas_object_show(o);
+   mod->o_slideshow = o;
+
+   //edje_object_signal_emit(mod->o_edje, "slideshow,show", "enna");
+   edje_object_signal_emit(mod->o_edje, "list,hide", "enna");
+
+}
+
 static void
 _browse(void *data, void *data2)
 {
@@ -241,8 +271,8 @@ _browse(void *data, void *data2)
 	     prev_uri = strdup(prev_vfs->uri);
 	     files = vfs->func.class_browse_up(prev_uri);
 	     ENNA_FREE(prev_uri);
-	     enna_mediaplayer_playlist_clear();
-	     enna_mediaplayer_stop();
+
+	     _create_slideshow_gui();
 	     for (l = files; l; l = l->next)
 	       {
 		  Enna_Vfs_File *f;
@@ -250,15 +280,11 @@ _browse(void *data, void *data2)
 
 		  if (!f->is_directory)
 		    {
-		       enna_mediaplayer_uri_append(f->uri);
-		       if (!strcmp(f->uri, file->uri))
-			 {
-			    enna_mediaplayer_select_nth(i);
-			    enna_mediaplayer_play();
-			 }
+		       enna_slideshow_image_append(mod->o_slideshow, f->uri);
 		       i++;
 		    }
 	       }
+	     enna_slideshow_play(mod->o_slideshow);
 	     return;
 	  }
 
@@ -284,7 +310,7 @@ _create_gui (void)
    edje_object_file_set(o, enna_config_theme_get(), "module/photo");
    mod->o_edje = o;
    mod->prev_selected = NULL;
-
+   mod->state = LIST_VIEW;
    /* Create List */
    o = enna_list_add(mod->em->evas);
    oe = enna_list_edje_object_get(o);
@@ -344,7 +370,7 @@ _class_show (int dummy)
 {
   edje_object_signal_emit(mod->o_edje, "module,show", "enna");
   edje_object_signal_emit (mod->o_edje, "list,show", "enna");
-  edje_object_signal_emit (mod->o_edje, "mediaplayer,hide", "enna");
+  edje_object_signal_emit (mod->o_edje, "slideshow,hide", "enna");
 }
 
 static void
@@ -359,19 +385,50 @@ _class_event (void *event_info)
   Ecore_X_Event_Key_Down *ev = event_info;
   enna_key_t key = enna_get_key (ev);
 
-  switch (key)
-  {
-  case ENNA_KEY_LEFT:
-  case ENNA_KEY_CANCEL:
-    _browse_down ();
-    break;
-  case ENNA_KEY_RIGHT:
-  case ENNA_KEY_OK:
-    _activate ();
-    break;
-  default:
-    enna_list_event_key_down (mod->o_list, event_info);
-  }
+  switch (mod->state)
+    {
+     case LIST_VIEW:
+	switch (key)
+	  {
+	   case ENNA_KEY_LEFT:
+	   case ENNA_KEY_CANCEL:
+	      _browse_down ();
+	      break;
+	   case ENNA_KEY_RIGHT:
+	   case ENNA_KEY_OK:
+	      _activate ();
+	      break;
+	   default:
+	      enna_list_event_key_down (mod->o_list, event_info);
+	  }
+	break;
+     case SLIDESHOW_VIEW:
+	switch (key)
+	  {
+	   case ENNA_KEY_CANCEL:
+	      evas_object_del(mod->o_slideshow);
+	      mod->state = LIST_VIEW;
+	      edje_object_signal_emit(mod->o_edje, "list,show", "enna");
+	      break;
+	   case ENNA_KEY_RIGHT:
+	      enna_slideshow_next(mod->o_slideshow);
+	      break;
+	   case ENNA_KEY_LEFT:
+	      enna_slideshow_prev(mod->o_slideshow);
+	      break;
+	   case ENNA_KEY_OK:
+	      enna_slideshow_play(mod->o_slideshow);
+
+	      break;
+	   default:
+	      enna_list_event_key_down (mod->o_list, event_info);
+	  }
+	break;
+     default:
+	break;
+    }
+
+
 }
 
 static Enna_Class_Activity class = {
