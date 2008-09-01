@@ -65,7 +65,7 @@ href="http://bugs.enlightenment.org">Enlightenment Bugzilla</a>.</p>
 <h2>People</h2>
 
 <?php
-$devspath = "/var/www/web/web/www/devs"; 
+$devspath = "/var/www/web/devs"; 
 
 //Exclude accounts that aren't actually devs
 $exclude = array('ewww');
