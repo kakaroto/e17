@@ -41,6 +41,11 @@ subscription details into the form.
 <td class='tab1'><a href="http://sourceforge.net/mailarchive/forum.php?forum_name=enlightenment-intl">SourceForge</a></td>
 <td class='tab1'>Mailling list for l10n and i18n. Send your translations of E to this list. </td>
 </tr>
+<tr>
+<td class='tab2'><a href="http://lists.sourceforge.net/lists/listinfo/enlightenment-bugs">Enlightenment Bug Traker Notification</a></td>
+<td class='tab2'><a href="http://sourceforge.net/mailarchive/forum.php?forum_name=enlightenment-bugs">SourceForge</a></td>
+<td class='tab2'>Receive notification for all bugs committed to Trac.</td>
+</tr>
 </table>
 </center>
   
