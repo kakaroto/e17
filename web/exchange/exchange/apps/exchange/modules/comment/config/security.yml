@@ -1,0 +1,15 @@
+create:
+  is_secure: on
+  credentials: user
+
+edit:
+  is_secure: on
+  credentials: user
+
+update:
+  is_secure: on
+  credentials: user
+
+all:
+  is_secure:   off
+  

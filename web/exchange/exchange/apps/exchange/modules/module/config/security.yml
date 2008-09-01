@@ -1,0 +1,31 @@
+approve:
+  is_secure: on
+  credentials: admin
+
+create:
+  is_secure: on
+  credentials: user
+
+edit:
+  is_secure: on
+  credentials: user
+
+delete:
+  is_secure: on
+  credentials: user
+  
+showcase:
+  is_secure: on
+  credentials: admin
+
+remove:
+  is_secure: on
+  credentials: user
+
+update:
+  is_secure: on
+  credentials: user
+
+all:
+  is_secure:   off
+  

@@ -1,0 +1,8 @@
+# default values
+all:
+  copyright: Copyright &copy; Enlightenment.org
+  edje_list_path: /opt/enlightenment/bin/edje_list
+  name: Exchange
+  rss_desc: Exchange RSS Feed
+  url: http://exchange.enlightenment.org
+  webmaster_email: webmaster@enlightenment.org

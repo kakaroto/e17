@@ -1,0 +1,1 @@
+You voted <?php echo round($my_rating, 2) ?>. New Rating: <?php echo round($rating, 2) ?> out of 5

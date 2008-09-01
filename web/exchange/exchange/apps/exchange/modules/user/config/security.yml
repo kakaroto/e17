@@ -1,0 +1,11 @@
+delete:
+  is_secure: on
+  credentials: user
+
+remove:
+  is_secure: on
+  credentials: user
+
+all:
+  is_secure:   off
+  

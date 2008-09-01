@@ -1,0 +1,56 @@
+.rabidRating .wrapper {	
+	cursor: pointer;
+	background: #ccc;
+}
+
+.rabidRating .wrapper {
+	overflow: hidden;
+}
+
+.rabidRating span,.rabidRating .wrapper {
+	display: block;
+	width: 85px;
+	height: 17px;
+}
+
+.rabidRating span {
+	position: relative;
+	top: 0;
+	left: 0;
+	text-indent: -999em;
+}
+
+.rabidRating .ratingStars {
+	display: block;
+	background: url('/images/rating2.png') no-repeat center;
+}
+
+.rabidRating .ratingStars2 {
+	background: url('/images/rating.png') no-repeat center;
+}
+
+.rabidRating .ratingFill {
+	background-color: #000000;
+}
+
+.rabidRating .ratingVoted {
+	cursor: default;
+	background-color: #ff0000;
+}
+
+.rabidRating .ratingActive {
+	background-color: #ff6c00;
+}
+
+.rabidRating .ratingText {
+	color: #000;
+}
+
+.rabidRating .ratingText.ratingError {
+	color: #f00;	
+}
+
+.rabidRating .ratingText.loading {
+	background: url('/images/ajax-loading.gif') no-repeat;
+	text-indent: -999em;
+}

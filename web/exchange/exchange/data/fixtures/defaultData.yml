@@ -1,0 +1,7 @@
+User:
+  User_1:
+    name: exchange
+    password: 5c731c8c4ee0f43b4b605d534f888603
+    email: exchange@enlightenment.org
+    role: 3
+    active: 1

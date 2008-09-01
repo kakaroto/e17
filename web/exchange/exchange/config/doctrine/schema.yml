@@ -1,0 +1,266 @@
+Application:
+  columns:
+    id:
+      type: integer(4)
+      primary: true
+      autoincrement: true
+    name:
+      type: string(255)
+    description:
+      type: string
+    source_url:
+      type: string
+    downloads:
+      type: integer(4)
+    rating:
+      type: float
+    showcase:
+      type: boolean
+    approved:
+      type: boolean
+    user_id:
+      type: integer(4)
+    created_at:
+      type: timestamp
+    updated_at:
+      type: timestamp
+  relations:
+    User:
+      foreignAlias: Applications
+
+ApplicationThemeGroup:
+  columns:
+    id:
+      type: integer(4)
+      primary: true
+      autoincrement: true
+    name:
+      type: string(255)
+    application_id:
+      type: integer(4)
+    theme_group_id:
+      type: integer(4)
+    created_at:
+      type: timestamp
+    updated_at:
+      type: timestamp
+  relations:
+    Application:
+      foreignAlias: ApplicationThemeGroups
+    ThemeGroup:
+      foreignAlias: ApplicationThemeGroups
+      
+Comment:
+  columns:
+    id:
+      type: integer(4)
+      primary: true
+      autoincrement: true
+    comment:
+      type: string
+    application_id:
+      type: integer(4)
+    madule_id:
+      type: integer(4)
+    theme_id:
+      type: integer(4)
+    user_id:
+      type: integer(4)
+    created_at:
+      type: timestamp
+    updated_at:
+      type: timestamp
+  relations:
+    Application:
+      foreignAlias: Comments
+    Madule:
+      foreignAlias: Comments
+    Theme:
+      foreignAlias: Comments
+    User:
+      foreignAlias: Comments
+
+Madule:
+  columns:
+    id:
+      type: integer(4)
+      primary: true
+      autoincrement: true
+    name:
+      type: string(255)
+    description:
+      type: string
+    source_url:
+      type: string
+    downloads:
+      type: integer(4)
+    rating:
+      type: float
+    showcase:
+      type: boolean
+    approved:
+      type: boolean
+    application_id:
+      type: integer(4)
+    user_id:
+      type: integer(4)
+    created_at:
+      type: timestamp
+    updated_at:
+      type: timestamp
+  relations:
+    User:
+      foreignAlias: Madules
+    Application:
+      foreignAlias: Madules
+
+MaduleThemeGroup:
+  columns:
+    id:
+      type: integer(4)
+      primary: true
+      autoincrement: true
+    name:
+      type: string(255)
+    madule_id:
+      type: integer(4)
+    theme_group_id:
+      type: integer(4)
+    created_at:
+      type: timestamp
+    updated_at:
+      type: timestamp
+  relations:
+    Madule:
+      foreignAlias: MaduleThemeGroups
+    ThemeGroup:
+      foreignAlias: MaduleThemeGroups
+      
+Rating:
+  columns:
+    id:
+      type: integer(4)
+      primary: true
+      autoincrement: true
+    value:
+      type: integer(4)
+    application_id:
+      type: integer(4)
+    madule_id:
+      type: integer(4)
+    theme_id:
+      type: integer(4)
+    user_id:
+      type: integer(4)
+    user_id:
+      type: integer(4)
+  relations:
+    Application:
+      foreignAlias: Ratings
+    Madule:
+      foreignAlias: Ratings
+    Theme:
+      foreignAlias: Ratings
+    User:
+      foreignAlias: Ratings
+      
+Theme:
+  columns:
+    id:
+      type: integer(4)
+      primary: true
+      autoincrement: true
+    name:
+      type: string(255)
+    author:
+      type: string(255)
+    license:
+      type: string(255)
+    version:
+      type: string(255)
+    description:
+      type: string
+    file_name:
+      type: string(255)
+    downloads:
+      type: integer(4)
+    rating:
+      type: float
+    showcase:
+      type: boolean
+    approved:
+      type: boolean
+    user_id:
+      type: integer(4)
+    created_at:
+      type: timestamp
+    updated_at:
+      type: timestamp
+  relations:
+    User:
+      foreignAlias: Themes
+      
+ThemeGroup:
+  columns:
+    id:
+      type: integer(4)
+      primary: true
+      autoincrement: true
+    name:
+      type: string(255)
+    title:
+      type: string(255)
+    known:
+      type: boolean
+    created_at:
+      type: timestamp
+    updated_at:
+      type: timestamp
+
+ThemeThemeGroup:
+  columns:
+    id:
+      type: integer(4)
+      primary: true
+      autoincrement: true
+    name:
+      type: string(255)
+    theme_id:
+      type: integer(4)
+    theme_group_id:
+      type: integer(4)
+    created_at:
+      type: timestamp
+    updated_at:
+      type: timestamp
+  relations:
+    Theme:
+      foreignAlias: ThemeThemeGroups
+    ThemeGroup:
+      foreignAlias: ThemeThemeGroups
+
+User:
+  columns:
+    id:
+      type: integer(4)
+      primary: true
+      autoincrement: true
+    name:
+      type: string(255)
+    email:
+      type: string(255)
+    password:
+      type: string(255)
+    role:
+      type: integer(4)
+    hash:
+      type: string(50)
+    api_key:
+      type: string(50)
+    active:
+      type: boolean
+    created_at:
+      type: timestamp
+    updated_at:
+      type: timestamp
+      

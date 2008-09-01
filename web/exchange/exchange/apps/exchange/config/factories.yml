@@ -1,0 +1,42 @@
+prod:
+  logger:
+    class:   sfNoLogger
+    param:
+      level:   err
+      loggers: ~
+cli:
+  controller:
+    class: sfConsoleController
+  request:
+    class: sfConsoleRequest
+  response:
+    class: sfConsoleResponse
+
+test:
+  storage:
+    class: sfSessionTestStorage
+
+all:
+  controller:
+    class: sfFrontWebController
+
+  request:
+   class: sfWebRequest
+
+  response:
+    class: sfWebResponse
+
+  user:
+    class: myUser
+
+  storage:
+    class: sfSessionStorage
+    param:
+      session_name: exchange
+
+#  view_cache:
+#    class: sfFileCache
+#    param:
+#      automatic_cleaning_factor: 0
+#      prefix:                    %SF_APP_DIR%
+#      cache_dir:                %SF_TEMPLATE_CACHE_DIR%

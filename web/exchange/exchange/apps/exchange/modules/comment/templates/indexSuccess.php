@@ -1,0 +1,3 @@
+<?php slot('title') ?>Comments<?php if ($object): ?> for <?php echo $object->getName() ?><?php endif; ?> <?php if ($user): ?> by <?php echo $user->getName() ?><?php endif; ?><?php end_slot() ?>
+<h1>Comments<?php if ($object): ?> for <?php echo $object->getName() ?><?php endif; ?> <?php if ($user): ?> by <?php echo $user->getName() ?><?php endif; ?></h1>
+<?php include_component('comment', 'table') ?>

@@ -1,0 +1,10 @@
+#all:
+#  propel:
+#    class:          sfPropelDatabase
+#    param:
+#      dsn:          mysql://root@localhost/dbname
+all:
+  connection_name:
+    class:          sfDoctrineDatabase
+    param:
+      dsn:          mysql://exchange:exchange@localhost/exchange

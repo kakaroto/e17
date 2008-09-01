@@ -1,0 +1,43 @@
+create:
+  url: /:module/create
+  param: { action: update }
+  
+delete:
+  url: /:module/delete/:id
+  param: { action: remove }
+  
+edit:
+  url: /:module/edit/:id
+  param: { action: update }
+
+show:
+  url: /:module/show/:id
+  param: { action: read }
+
+get:
+  url: /:module/get/:id
+  param: { action: download }
+
+rss:
+  url: /rss/:object/*
+  param: { module: api, action: list, rss: true }
+  
+sitemap:
+  url: /sitemap
+  param: { module: home, action: sitemap }
+
+# default rules
+homepage:
+  url:   /
+  param: { module: home, action: index }
+
+default_symfony:
+  url:   /symfony/:action/*
+  param: { module: home }
+
+default_index:
+  url:   /:module
+  param: { action: index }
+
+default:
+  url:   /:module/:action/*

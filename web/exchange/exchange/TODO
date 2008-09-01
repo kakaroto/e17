@@ -1,0 +1,8 @@
+ - Filter by multiple theme groups (This is already done, however, there needs to be a way to allow administrators to put this into the menu)
+ - Applications need a "supports modules" checkbox. Only apps that have this enabled should show up in the edit modules screen.
+ - Add Rating to the API
+ - Add "theme_showcase", "application_showcase" & "module_showcase" cookies. These should be booleans that determine whether to show the showcase on the frontpage or to show all items. New visitors should be shown the showcased themes by default, but returning visitors should be able to switch and see all themes on the frontpage.
+ - Automatically generate screenshots for every part. See edje_smart_thumb. Need a way to automatically generate screenshots for every part of the theme. This way, people can get a full view of the theme before downloading it instead of just viewing a screenshot.
+ - A way to change the owner of an item.
+ - When the new e.org website goes online, exchange needs to be modified to match it.
+

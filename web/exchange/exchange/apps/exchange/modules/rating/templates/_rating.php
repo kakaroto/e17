@@ -1,0 +1,1 @@
+<div class="rabidRating" id="rabidRating-<?php echo $object_id ?>-<?php echo round($rating, 2) ?>_5"><div class="wrapper"><span class="ratingFill" style="width:<?php echo $rating * 100 / 5 ?>%;"><span class="ratingStars <?php if($odd): ?>ratingStars2<?php endif; ?>"></span></span></div><div class="ratingText"></div></div>

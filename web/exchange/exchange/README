@@ -1,0 +1,39 @@
+Exchange is the web application that runs exchange.enlightenment.org
+
+For Administrators:
+-------------------
+Administrators are expected to test and approve themes, apps & modules.
+Administrators are also responsible for moderating comments and building a positive atmosphere for the community.
+Administrators should test themes to make sure they are bugfree and do not cause problems when in use. However, administrators should not disapprove themes simply because they look bad.
+
+For Developers:
+---------------
+Exchange is built on top of the symfony (1.1) framework for PHP.
+I recommend going through some of the documentation here http://www.symfony-project.org/doc/1_1/
+At least the first two chapters of the book.
+Exchange also uses PHPDoctrine instead of symfony's default ORM.
+http://www.phpdoctrine.org/
+
+If you are working on developing Exchange, it is recommended that you have a copy of the web application running on your local machine.
+For this you will need a LAMP stack (Linux, Apache, Mysql & PHP)
+You must download symfony 1.1 and setup a database for exchange.
+Edit config/databases.yml and configure your webserver to point to web/index.php
+
+To push changes to the actual website, login to the server
+cd /var/www/exchange
+sudo ./sync.sh
+
+If there are any css/js changes, copy them:
+cp exchange/web/css/* html/css/
+cp exchange/web/js/* html/js/
+
+Remember: Always backup the database and the /var/www/exchange/html/ folder before performing any updates.
+
+If you are making changes to the database schema, you need to edit config/doctrine/schema.yml and create a migration.
+symfony doctrine:generate-migration
+
+On the production server, run:
+symfony doctrine:migrate exchange
+to migrate the production database.
+
+

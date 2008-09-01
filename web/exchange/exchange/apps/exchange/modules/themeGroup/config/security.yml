@@ -1,0 +1,10 @@
+read:
+  is_secure:   off
+
+index:
+  is_secure:   off
+
+all:
+  is_secure: on
+  credentials: admin
+  
