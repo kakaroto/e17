@@ -1,9 +1,10 @@
 // TODO (immediate other than finish)
 // 
-// label (done - review)
-// fontpreview (done - review)
-// slider (done - review)
+// label (done)
+// fontpreview (done)
+// slider (done)
 // winlist (done - review )
+// transition (done - review) - Could possibly have some day light and moon light photos.
 // entry (done - review) - Text select works oddly. Select a single letter like W to
 // see this odd behavior. Doesnt seem to offset correctly.
 //
@@ -22,7 +23,6 @@
 // slidesel (i know. no examples of this around).
 // exebuf
 // toolbar
-// transition
 // gadman control
 // gadman popup
 // gadman full_bg (note: performance issues on scaling and
@@ -9336,8 +9336,165 @@ collections { /* begin the collection of edje groups that are in this file */
 
 /////////////////////////////////////////////////////////////////////////////
    /*** TRANSITIONS ***/
-// NOTE: can be same as current default
-// FIXME: DO
+
+   images {
+      image: "transition1.png" COMP;
+      image: "transition2.png" COMP;
+   }
+   
+   group { name: "e/transpreview/0";
+      parts {
+	 part { name: "bg";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       aspect: 1.33333 1.33333;
+	       aspect_preference: NONE;
+	       image.normal: "transition1.png";
+	    }
+	 }
+      }
+   }
+
+   group { name: "e/transpreview/1";
+      parts {
+	 part { name: "bg";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       aspect: 1.33333 1.33333;
+	       aspect_preference: NONE;
+	       image.normal: "transition2.png";
+	    }
+	 }
+      }
+   }
+
+   group { name: "e/transitions/crossfade";
+      parts {
+	 part { name:	"e.swallow.bg.old";
+	    type:	SWALLOW;
+	    description { state: "default" 0.0;
+	    }
+	 }
+	 part { name:	"e.swallow.bg.new";
+	    type:	SWALLOW;
+	    clip_to:	"bg_new_clip";
+	    description { state: "default" 0.0;
+	    }
+	 }
+	 part { name:	"bg_new_clip";
+	    type:	RECT;
+	    mouse_events:  0;
+	    description { state: "default" 0.0;
+	       color: 255 255 255 0;
+	    }
+	    description { state: "done" 0.0;
+	       inherit: "default" 0.0;
+	       color: 255 255 255 255;
+	    }
+	 }
+      }
+      programs {
+	 program { name:	"go";
+	    signal:  "e,action,start";
+	    source:  "e";
+	    action:  STATE_SET "done" 0.0;
+	    transition: SINUSOIDAL 1.0;
+	    target:  "bg_new_clip";
+	    after:   "go2";
+	 }
+	 program { name:    "go2";
+	    action:  SIGNAL_EMIT "e,state,done" "";
+	 }
+      }
+   }
+
+   group { name: "e/transitions/vswipe";
+      images.image: "transition_vswipe.png" COMP;
+      parts {
+	 part { name:	"e.swallow.bg.old";
+	    type:	SWALLOW;
+	    clip_to:	"bg_prev_clip";
+	    description { state: "default" 0.0;
+	    }
+	 }
+	 part { name:	"e.swallow.bg.new";
+	    type:	SWALLOW;
+	    clip_to:	"bg_new_clip";
+	    description { state: "default" 0.0;
+	    }
+	 }
+	 part { name:	"bg_prev_clip";
+	    type:	RECT;
+	    mouse_events:  0;
+	    description { state: "default" 0.0;
+	       rel1.offset:   0   -32;
+	       rel2.offset:  -1    31;
+	    }
+	    description { state: "done" 0.0;
+	       inherit: "default" 0.0;
+	       rel1 {
+		  relative: 0.0  1.0;
+		  offset:   0    31;
+	       }
+	       rel2 {
+		  relative: 1.0  1.0;
+		  offset:   -1   31;
+	       }
+	    }
+	 }
+	 part { name:	"bg_new_clip";
+	    type:	RECT;
+	    mouse_events:  0;
+	    description { state: "default" 0.0;
+	       rel1 {
+		  relative: 0.0  0.0;
+		  offset:   0    -32;
+	       }
+	       rel2 {
+		  relative: 1.0  0.0;
+		  offset:   -1   -32;
+	       }
+	    }
+	    description {
+	       state: "done" 0.0;
+	       rel1.offset:   0   -32;
+	       rel2.offset:  -1    31;
+	    }
+	 }
+	 part { name: "swipe_gap";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       min: 0 64;
+	       max: 99999 64;
+	       rel1 {
+		  to: "bg_prev_clip";
+		  relative: 0.0  0.0;
+		  offset:   0    0;
+	       }
+	       rel2 {
+		  to: "bg_prev_clip";
+		  relative: 1.0  0.0;
+		  offset:   -1   0;
+	       }
+	       image.normal: "transition_vswipe.png";
+	    }
+	 }
+      }
+      programs {
+	 program { name:    "go";
+	    signal:  "e,action,start";
+	    source:  "e";
+	    action:  STATE_SET "done" 0.0;
+	    transition: SINUSOIDAL 1.0;
+	    target:  "bg_new_clip";
+	    target:  "bg_prev_clip";
+	    after:   "go2";
+	 }
+	 program { name:    "go2";
+	    action:  SIGNAL_EMIT "e,state,done" "";
+	 }
+      }
+   }
 
 /////////////////////////////////////////////////////////////////////////////
    /*** WIDGETS ***/
