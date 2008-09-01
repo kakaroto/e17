@@ -35,7 +35,7 @@ static Ewl_Widget *
 ewl_tree_view_plain_cb_widget_fetch(void *data __UNUSED__,
                                         unsigned int row __UNUSED__,
                                         unsigned int col __UNUSED__,
-                                        void *pr_data)
+                                        void *pr_data __UNUSED__)
 {
         Ewl_Widget *plain;
 

@@ -183,7 +183,7 @@ ewl_spinner_digits_get(Ewl_Spinner *s)
         DRETURN_INT(s->digits, DLEVEL_STABLE);
 }
 
-static int
+static unsigned int
 ewl_spinner_digits_calc(double val)
 {
         int dig;
@@ -221,9 +221,8 @@ ewl_spinner_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
         Ewl_Range *r;
         char buffer[128];
         char *ptr = buffer;
-        int digits;
-        int min_digits;
-        int max_digits;
+        unsigned int digits;
+        unsigned int min_digits, max_digits;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(w);
@@ -243,20 +242,20 @@ ewl_spinner_cb_realize(Ewl_Widget *w, void *ev_data __UNUSED__,
                 digits = sizeof(buffer) - 1;
         memset(ptr, '9', digits);
         ptr += digits;
-        if (s->digits && (ptr - buffer < sizeof(buffer) - 1))
+        if (s->digits && ((size_t)(ptr - buffer) < sizeof(buffer) - 1))
                 ptr += ecore_strlcpy(ptr, nl_langinfo(RADIXCHAR),
                                         sizeof(buffer) - (ptr - buffer));
 
         /* since the order doesn't matter we are appending the minus sign
          * at the end */
-        if (ptr - buffer < sizeof(buffer) - 1
-                        && (r->min_val < 0 || r->max_val < 0))
+        if ((size_t)(ptr - buffer) < sizeof(buffer) - 1
+                        && (r->min_val < 0.0 || r->max_val < 0.0))
         {
                 *ptr = '-';
                 ptr++;
         }
         /* and append a character so that we have enough space for the cursor */
-        if (ptr - buffer < sizeof(buffer) - 1)
+        if ((size_t)(ptr - buffer) < sizeof(buffer) - 1)
         {
                 *ptr = 'W';
                 ptr++;

@@ -91,7 +91,7 @@ ewl_image_view_cb_widget_fetch(void *data, unsigned int row __UNUSED__,
 
 static Ewl_Widget *
 ewl_image_view_cb_header_fetch(void *data, unsigned int col __UNUSED__,
-                                void *pr_data)
+                                void *pr_data __UNUSED__)
 {
         Ewl_Widget *image;
 
