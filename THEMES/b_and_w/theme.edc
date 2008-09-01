@@ -4,6 +4,7 @@
 // fontpreview (done)
 // slider (done)
 // winlist (done - review )
+// textblock (make a new 'urgent' tag for things like battery popup)
 // transition (done - review) - Could possibly have some day light and moon light photos.
 // entry (done - review) - Text select works oddly. Select a single letter like W to
 // see this odd behavior. Doesnt seem to offset correctly.
@@ -17,7 +18,6 @@
 // fileman (list mode)
 // fileman (icon mode etc.)
 // tlist
-// textblock (make a new 'urgent' tag for things like battery popup)
 // about
 // theme_about
 // slidesel (i know. no examples of this around).
@@ -32,7 +32,6 @@
 // desklock (note: make the widgets compatible with any background
 //		   as this is a feature of the desklock to change wallpaper.)
 // error (is this even used?)
-// fontpreivew
 // ibar
 // ibox
 // icons (lots of them! lets also find all the missing ones in e and
@@ -8902,7 +8901,7 @@ collections { /* begin the collection of edje groups that are in this file */
       styles {
 	 style {
 	    name: "sys_style";
-	    base: "font=font=Sans:style=Bold,Edje-Vera-Bold font_size=12 text_class=tb_plain align=center valign=center color=#fff style=soft_shadow shadow_color=#0000001f wrap=word";
+	    base: "font=Sans:style=Bold,Edje-Vera-Bold font_size=12 text_class=tb_plain align=center valign=center color=#fff style=soft_shadow shadow_color=#0000001f wrap=word";
 	    tag:  "br" "\n";
 	    tag:  "hilight" "+ font=Sans:style=Bold,Edje-Vera-Bold text_class=tb_light";
 	 }
@@ -12855,6 +12854,33 @@ collections { /* begin the collection of edje groups that are in this file */
 		  min: 1 1;
 		  align: 0.5 0.5;
 		  text_class: "_e_font_preview";
+	       }
+	    }
+	 }
+      }
+   }
+
+   group { name: "e/widgets/textblock";
+      styles {
+	 style { name: "textblock_style";
+	    base: "font=Sans,Edje-Vera font_size=10 align=left color=#000 style=shadow shadow_color=#ffffff80 wrap=word";
+	    tag:  "title" "+ font=Sans:style=Bold,Edje-Vera-Bold  font_size=12 style=soft_shadow color=#fff shadow_color=#00000021";
+	    tag:  "/title" "-";
+	    tag:  "hilight" "+ font=Sans:style=Bold,Edje-Vera-Bold style=glow color=#fff glow2_color=#333 glow_color=#b01010";
+	    tag:  "b" "+ font=Sans:style=Bold,Edje-Vera-Bold";
+	    tag:  "br" "\n";
+	 }
+      }
+      parts {
+	 part { name:	"e.textblock.text";
+	    type:	TEXTBLOCK;
+	    mouse_events:  0;
+	    description { state: "default" 0.0;
+	       rel1.offset: 4 4;
+	       rel2.offset: -5 -5;
+	       text {
+		  style:    "textblock_style";
+		  min:      1 1;
 	       }
 	    }
 	 }
