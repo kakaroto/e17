@@ -75,7 +75,7 @@ ewl_list_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
         const Ewl_View *view;
         void *mvc_data;
         void *pr_data;
-        int i;
+        unsigned int i, count;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(w);
@@ -94,9 +94,12 @@ ewl_list_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
                         || !model || !view || !mvc_data)
                 DRETURN(DLEVEL_STABLE);
 
+        /* get the number of rows */
+        count = model->count(mvc_data);
+
         /* create all the widgets and pack into the container */
         ewl_container_reset(EWL_CONTAINER(list));
-        for (i = 0; i < (int)model->count(mvc_data); i++)
+        for (i = 0; i < count; i++)
         {
                 Ewl_Widget *o, *cell;
 
