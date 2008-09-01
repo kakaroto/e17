@@ -1,7 +1,7 @@
 Enna 0.3.0
 
 Enna is a mediacenter based on EFL.
-It try to be simple to use, fast, modular.
+It trys to be simple to use, fast and modular.
 Version 0.3.0 is a new version rewrite from scratch.
 
 Core dependecies :
@@ -11,14 +11,14 @@ Core dependecies :
 * Ecore
 * Edje
 
-Modules dependecies (optionnal):
+Module dependecies (optional):
 
 * Emotion
 * Libplayer (can be found on geexbox server : http://libplayer.geexbox.org/)
 * LightMediaScanner (can be found here : http://lms.garage.maemo.org/)
 * Lirc (http://www.lirc.org/)
 
-This program is in eavy developement and you can of course participate
+This program is in heavy developement and you can of course participate
 
 Have fun,
 Nico
