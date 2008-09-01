@@ -1,6 +1,6 @@
 <?php
 //******* SET THIS TO YOUR e/devs DIRECTORY  ********
-$cvs_dir="/var/www/web/web/www/devs";
+$cvs_dir="/var/www/web/devs";
 //***************************************************
 if (!is_dir($cvs_dir))
 { 
