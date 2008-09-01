@@ -163,10 +163,10 @@ ewl_freebox_mvc_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
         if ((!ewl_mvc_dirty_get(EWL_MVC(fb_mvc))) 
                         || !model || !view || !mvc_data)
                 DRETURN(DLEVEL_STABLE);
-        
+
         ewl_container_reset(EWL_CONTAINER(fb_mvc));
-	 count = (unsigned int)model->count(mvc_data);
-	 for (i = 0; i < count; i++)
+        count = model->count(mvc_data);
+        for (i = 0; i < count; i++)
         {
                 Ewl_Widget *o, *cell;
 
