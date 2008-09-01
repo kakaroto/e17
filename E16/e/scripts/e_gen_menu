@@ -94,6 +94,7 @@ $DoIconv = `which iconv`;
 @UserAppsMenu = (
 	"t:User Application List",
 	"x:Eterm:Eterm",
+	"x:Terminal:Terminal",
 	"x:XTerm:xterm",
 	"x:rxvt:rxvt",
 	"x:urxvt:urxvt",
