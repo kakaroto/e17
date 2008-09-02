@@ -336,7 +336,7 @@ _cb_up_click(void *data, Evas_Object *obj, const char *emission, const char *sou
 {
    Instance *inst;
    Evas_Object *o_fm;
-   char *t, *p;
+   char *p, *t;
 
    inst = data;
    if ((!inst) || (!inst->tbar)) return;
@@ -344,16 +344,19 @@ _cb_up_click(void *data, Evas_Object *obj, const char *emission, const char *sou
    if (!o_fm) return;
    t = strdup(e_fm2_real_path_get(o_fm));
    p = strrchr(t, '/');
-   if (p) 
+   if (p)
      {
-	*p = 0;
-	if (strlen(t) <= 0) t = "/";
-	e_fm2_path_set(o_fm, NULL, t);
-	edje_object_signal_emit(inst->o_up, "e,state,enabled", "e");
+        *p = 0;
+        p = t;
+        if (p[0] == 0) p = "/";
+        e_fm2_path_set(o_fm, NULL, p);
+        edje_object_signal_emit(inst->o_up, "e,state,enabled", "e");
      }
    else 
      edje_object_signal_emit(inst->o_up, "e,state,disabled", "e");
    edje_object_message_signal_process(inst->o_up);
+   
+   free(t);
 }
 
 static void 
@@ -394,8 +397,13 @@ _cb_dir_changed(void *data, Evas_Object *obj, void *event_info)
    if (!path) return;
    if (!inst->ignore_dir) 
      {
-	ecore_list_prepend(inst->history, strdup(path));
-	ecore_list_first_goto(inst->history);
+        const char *t;
+        t = ecore_list_first(inst->history);
+        if(!t || strcmp(t, path))
+          {
+             ecore_list_prepend(inst->history, strdup(path));
+             ecore_list_first_goto(inst->history);
+          }
      }
    inst->ignore_dir = 0;
 
