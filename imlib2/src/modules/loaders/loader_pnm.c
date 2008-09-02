@@ -348,7 +348,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                          for (x = 0; x < w; x++)
                            {
                               *ptr2 =
-                                  0xff000000 | (((ptr[0] * 255) / v) << 16) |
+                                  0xff000000 | (((iptr[0] * 255) / v) << 16) |
                                   (((iptr[1] * 255) / v) << 8) | ((iptr[2] *
                                                                    255) / v);
                               ptr2++;
