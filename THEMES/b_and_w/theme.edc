@@ -1,9 +1,5 @@
 // TODO (immediate other than finish)
 // 
-// label (done)
-// fontpreview (done)
-// slider (done)
-// winlist (done - review )
 // textblock (make a new 'urgent' tag for things like battery popup)
 // transition (done - review) - Could possibly have some day light and moon light photos.
 // entry (done - review) - Text select works oddly. Select a single letter like W to
@@ -11,8 +7,6 @@
 //
 // note: make these (and menu) use a common image with a logical name. 
 // sys (done - review)
-// resize (done - review)
-// move (done - review)
 // 
 // battery popup (should this just use textblock for text and have a set layout?)
 // fileman (list mode)
@@ -31,7 +25,7 @@
 // gadman frame
 // desklock (note: make the widgets compatible with any background
 //		   as this is a feature of the desklock to change wallpaper.)
-// error (is this even used?)
+// error (is this even used? - yes it is!)
 // ibar
 // ibox
 // icons (lots of them! lets also find all the missing ones in e and
@@ -9260,12 +9254,14 @@ collections { /* begin the collection of edje groups that are in this file */
    /*** MOVE/RESIZE BOX ***/
 
    group { name: "e/widgets/border/default/move";
-      images.image: "menu_bg.png";
+      images {
+	 image: "menu_bg.png" COMP;
+	 image: "move.png" COMP;
+      }
       parts {
 	 part { name: "base";
 	    mouse_events:  0;
 	    description { state: "default" 0.0;
-	       align: 0.5 0.0;
 	       image {
 		  normal: "menu_bg.png";
 		  border: 2 2 2 2;
@@ -9273,11 +9269,25 @@ collections { /* begin the collection of edje groups that are in this file */
 	       fill.smooth: 0;
 	    }
 	 }
+	 part { name: "icon";
+	    mouse_events:  0;
+	    description { state: "default" 0.0;
+	       align: 0.0 0.5;
+	       min: 21 21;
+	       max: 21 21;
+	       rel1.offset: 2 2;
+	       rel2.relative: 0.0 1.0;	
+	       rel2.offset: 2 -3;
+	       image.normal: "move.png";
+	    }
+	 }
 	 part { name: "e.text.label";
 	    type: TEXT;
 	    effect: SHADOW;
 	    description { state: "default" 0.0;
-	       rel1.offset: 4 4;
+	       rel1.to_x: "icon";
+	       rel1.offset: 2 4;
+	       rel1.relative: 1.0 0.0;
 	       rel2.offset: -5 -5;
 	       color: 0 0 0 255;
 	       color3: 255 255 255 64;
@@ -9295,7 +9305,10 @@ collections { /* begin the collection of edje groups that are in this file */
    }
 
    group { name: "e/widgets/border/default/resize";
-      images.image: "menu_bg.png";
+      images {
+	 image: "menu_bg.png" COMP;
+	 image: "resize.png" COMP;
+      }
       parts {
 	 part { name: "base";
 	    mouse_events:  0;
@@ -9308,11 +9321,25 @@ collections { /* begin the collection of edje groups that are in this file */
 	       fill.smooth: 0;
 	    }
 	 }
+	 part { name: "icon";
+	    mouse_events:  0;
+	    description { state: "default" 0.0;
+	       align: 0.0 0.5;
+	       min: 21 21;
+	       max: 21 21;
+	       rel1.offset: 2 2;
+	       rel2.relative: 0.0 1.0;	
+	       rel2.offset: 2 -3;
+	       image.normal: "resize.png";
+	    }
+	 }
 	 part { name: "e.text.label";
 	    type: TEXT;
 	    effect: SHADOW;
 	    description { state: "default" 0.0;
-	       rel1.offset: 4 4;
+	       rel1.to_x: "icon";
+	       rel1.offset: 2 4;
+	       rel1.relative: 1.0 0.0;
 	       rel2.offset: -5 -5;
 	       color: 0 0 0 255;
 	       color3: 255 255 255 64;
@@ -12285,7 +12312,9 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color: 255 255 255 255;
 	       visible: 0;
 	       rel1.to: "label";
+	       rel1.offset: 1 1;
 	       rel2.to: "label";
+	       rel2.offset: -2 -2;
 	    }
 	    description { state:  "active" 0.0;
 	       inherit: "default" 0.0;
@@ -12299,14 +12328,13 @@ collections { /* begin the collection of edje groups that are in this file */
 	       visible:  0;
 	    }
 	    description { state:  "active" 0.0;
-	       min: 20 0;
 	       rel1 {
 		  to:  "e.text.label";
 		  offset:  -4  -2;
 	       }
 	       rel2 {
 		  to:  "e.text.label";
-		  offset:  2  1;
+		  offset:  3  1;
 	       }
 	       image {
 		  normal: "shelf_inset.png";
@@ -12537,7 +12565,9 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color: 255 255 255 255;
 	       visible: 0;
 	       rel1.to: "label";
+	       rel1.offset: 1 1;
 	       rel2.to: "label";
+	       rel2.offset: -2 -2;
 	    }
 	    description { state:  "active" 0.0;
 	       inherit: "default" 0.0;
