@@ -1,0 +1,57 @@
+program
+{
+   name: "eyesight/main_window/controls/docker_show";
+   signal: "mouse,in";
+   source: "eyesight/main_window/controls/docker_watcher";
+   action: STATE_SET "shown" 0.0;
+   target: "eyesight/main_window/controls/toolbar1_sw";
+   transition: ACCELERATE 0.3;
+}
+
+program
+{
+   name: "eyesight/main_window/controls/docker_show_button_hide";
+   signal: "mouse,in";
+   source: "eyesight/main_window/controls/docker_watcher";
+   action: STATE_SET "hidden" 0.0;
+   target: "eyesight/main_window/controls/docker_show_button";
+   transition: ACCELERATE 0.3;
+}
+
+program
+{
+   name: "eyesight/main_window/controls/docker_show_watcher_thicken";
+   signal: "mouse,in";
+   source: "eyesight/main_window/controls/docker_watcher";
+   action: STATE_SET "thick" 0.0;
+   target: "eyesight/main_window/controls/docker_watcher";
+}
+
+program
+{
+   name: "eyesight/main_window/controls/docker_watcher_shrink";
+   signal: "mouse,out";
+   source: "eyesight/main_window/controls/docker_watcher";
+   action: STATE_SET "default" 0.0;
+   target: "eyesight/main_window/controls/docker_watcher";
+}
+
+program
+{
+   name: "eyesight/main_window/controls/docker_show_button_show";
+   signal: "mouse,out";
+   source: "eyesight/main_window/controls/docker_watcher";
+   action: STATE_SET "default" 0.0;
+   target: "eyesight/main_window/controls/docker_show_button";
+   transition: ACCELERATE 0.3;
+}
+
+program
+{
+   name: "eyesight/main_window/controls/docker_hide";
+   signal: "mouse,out";
+   source: "eyesight/main_window/controls/docker_watcher";
+   action: STATE_SET "default" 0.0;
+   target: "eyesight/main_window/controls/toolbar1_sw";
+   transition: ACCELERATE 0.3;
+}

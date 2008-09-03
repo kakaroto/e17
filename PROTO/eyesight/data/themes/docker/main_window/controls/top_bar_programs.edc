@@ -1,0 +1,70 @@
+program
+{
+   name: "top_bar_hide";
+   signal: "mouse,out";
+   source: "eyesight/main_window/controls/top_bar";
+   script
+   {
+      if(get_int(top_bar_locked) == 0)
+      {
+         run_program(PROGRAM:"top_bar_hide_anim");
+      }
+   }
+}
+
+program
+{
+   name: "top_bar_hide_anim";
+   action: STATE_SET default 0.0;
+   target: "eyesight/main_window/controls/top_bar";
+   transition: ACCELERATE 0.3;
+}
+
+program
+{
+   name: "top_bar_show";
+   signal: "mouse,in";
+   source: "eyesight/main_window/controls/toolbar2_watcher";
+   script
+   {
+      if(get_int(top_bar_locked) == 0)
+      {
+         run_program(PROGRAM:"top_bar_show_anim");
+      }
+   }
+}
+
+program
+{
+   name: "top_bar_show_anim";
+   action: STATE_SET shown 0.0;
+   target: "eyesight/main_window/controls/top_bar";
+   transition: ACCELERATE 0.3;
+}
+
+program
+{
+   name: "top_bar_lock";
+   signal: "top_bar_lock";
+   source: "t2_drawer@eyesight/toolbar2_drawer";
+   script
+   {
+      set_int(top_bar_locked, 1);
+      set_state(PART:"eyesight/text/toolbar2_show_button_text", "locked", 
+                0.0);
+   }
+}
+program
+{
+   name: "top_bar_unlock";
+   signal: "top_bar_unlock";
+   source: "t2_drawer@eyesight/toolbar2_drawer";
+   script
+   {
+      set_int(top_bar_locked, 0);
+      set_state(PART:"eyesight/text/toolbar2_show_button_text", "default", 
+                0.0);
+   }
+}
+
+// FIXME: part naming is a mess!

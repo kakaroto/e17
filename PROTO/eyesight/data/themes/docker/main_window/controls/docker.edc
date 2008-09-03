@@ -1,0 +1,136 @@
+part
+{
+   name: "eyesight/main_window/controls/docker";
+   type: IMAGE;
+   mouse_events: 1;
+   repeat_events: 1;
+   description
+   {
+      state: "default" 0.0;
+      rel1
+      {
+         relative: 0.0 0.0;
+         to: "eyesight/main_window/controls/toolbar1_sw";
+         offset:  -50 20;
+      }
+      rel2
+      {
+         relative: 1.0 1.0;
+         to: "eyesight/main_window/controls/toolbar1_sw";
+         offset: 50 10;
+      }
+      image
+      {
+         normal: "img/docker.png";
+         border: 50 50 0 0;
+      }
+   }
+}
+
+part
+{
+   name: "eyesight/main_window/controls/docker_watcher";
+   type: RECT;
+   mouse_events: 1;
+   repeat_events: 1;
+   description
+   {
+      state: "default" 0.0;
+      color: 0 0 0 0;
+      rel1
+      {
+         relative: 0.0 1.0;
+         offset: 0 -50;
+      }
+      rel2
+      {
+         relative: 1.0 1.0;
+         offset: 0 0;
+      }
+   }
+   description
+   {
+      state: "thick" 0.0;
+      inherit: "default" 0.0;
+      rel1
+      {
+         relative: 0.0 1.0;
+         offset: 0 -100;
+      }
+      rel2
+      {
+         relative: 1.0 1.0;
+         offset: 0 0;
+      }
+   }
+}
+
+part
+{
+   name: "eyesight/main_window/controls/docker_show_button";
+   type: IMAGE;
+   mouse_events: 0;
+   description
+   {
+      state: "default" 0.0;
+      rel1
+      {
+         relative: 0.0 1.0;
+         offset: 20 -10;
+      }
+      rel2
+      {
+         relative: 0.0 1.0;
+         offset: 100 0;
+      }
+      image
+      {
+         normal, "img/show_button_bg_down.png";
+         border: 23 23 0 0;
+      }
+   }
+   description
+   {
+      state: "hidden" 0.0;
+      inherit: "default" 0.0;
+      rel1
+      {
+         offset: 20 0;
+      }
+      rel2
+      {
+         offset: 100 10;
+      }
+   }
+}
+
+part
+{
+   name: "eyesight/text/toolbar1_show_button_text";
+   type: TEXT;
+   mouse_events: 0;
+   description
+   {
+      state: "default" 0.0;
+      color: 255 255 255 255;
+      rel1
+      {
+         relative: 0.0 0.0;
+         to: "eyesight/main_window/controls/docker_show_button";
+         offset: 10 0;
+      }
+      rel2
+      {
+         relative: 1.0 1.0;
+         to: "eyesight/main_window/controls/docker_show_button";
+         offset: -10 0;
+      }
+      text
+      {
+         font: "Normal";
+         size: 8;
+         align: 0.5 0.5;
+         text: "▾ controls ▾";
+      }
+   }
+}

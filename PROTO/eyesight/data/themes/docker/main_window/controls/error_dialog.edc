@@ -1,0 +1,172 @@
+part
+{
+   name: "eyesight/main_window/controls/error_dialog_bg";
+   type: IMAGE;
+   mouse_events: 1;
+   repeat_events: 1;
+   description
+   {
+      state: "default" 0.0;
+      color: 255 255 255 0;
+                visible: 0;
+      rel1
+      {
+         relative: 0.0 0.0;
+         offset: 100 100;
+      }
+      rel2
+      {
+         relative: 1.0 1.0;
+         offset: -100 -100;
+      }
+      image
+      {
+         normal: "img/dialog_bg.png";
+         border: 34 34 34 34;
+      }
+   }
+   description
+   {
+      state: "shown" 0.0;
+      inherit: "default" 0.0;
+      color: 255 255 255 255;
+                visible: 1;
+   }
+}
+part
+{
+   name: "eyesight/main_window/controls/error_dialog_text";
+   type: TEXTBLOCK;
+   mouse_events: 0;
+   description
+   {
+      state: "default" 0.0;
+      color: 255 255 255 0;
+      rel1
+      {
+         relative: 0.0 0.0;
+         to: eyesight/main_window/controls/error_dialog_bg;
+         offset: 20 20;
+      }
+      rel2
+      {
+         relative: 1.0 1.0;
+         to: eyesight/main_window/controls/error_dialog_bg;
+         offset: -72 -20;
+      }
+      text
+      {
+         text: "SAMPLE ERROR TEXT - If you see this, you found bug :)";
+         style: "error";
+      }
+   }
+   description
+   {
+      state: "shown" 0.0;
+      inherit: "default" 0.0;
+      color: 255 255 255 255;
+   }
+}
+part
+{
+   name: "eyesight/main_window/controls/error_dialog_icon";
+   type: IMAGE;
+   mouse_events: 0;
+   description
+   {
+      state: "default" 0.0;
+      color: 255 255 255 0;
+      rel1
+      {
+         relative: 1.0 0.0;
+         to: eyesight/main_window/controls/error_dialog_bg;
+         offset: -30 38;
+      }
+      rel2
+      {
+         relative: 1.0 0.0;
+         to: eyesight/main_window/controls/error_dialog_bg;
+         offset: -38 30;
+      }
+      image
+      {
+         normal: "img/error.png";
+      }
+   }
+   description
+   {
+      state: "normal" 0.0;
+      inherit: "default" 0.0;
+      color: 255 255 255 255;
+      rel1
+      {
+         relative: 1.0 0.0;
+         to: eyesight/main_window/controls/error_dialog_bg;
+         offset: -60 8;
+      }
+      rel2
+      {
+         relative: 1.0 0.0;
+         to: eyesight/main_window/controls/error_dialog_bg;
+         offset: -8 60;
+      }
+   }
+   description
+   {
+      state: "bigger" 0.0;
+      inherit: "default" 0.0;
+      color: 255 255 255 255;
+      rel1
+      {
+         relative: 1.0 0.0;
+         to: eyesight/main_window/controls/error_dialog_bg;
+         offset: -75 -7;
+      }
+      rel2
+      {
+         relative: 1.0 0.0;
+         to: eyesight/main_window/controls/error_dialog_bg;
+         offset: 7 75;
+      }
+   }
+}
+part
+{
+   name: "eyesight/main_window/controls/error_dialog_close_button";
+   type: TEXT;
+   mouse_events: 1;
+   repeat_events: 1;
+   effect: SOFT_OUTLINE;
+   description
+   {
+      state: "default" 0.0;
+      color: 255 255 255 0;
+      color2: 0 0 0 0;
+      rel1
+      {
+         relative: 1.0 1.0;
+         to: eyesight/main_window/controls/error_dialog_bg;
+         offset: -40 -40;
+      }
+      rel2
+      {
+         relative: 1.0 1.0;
+         to: eyesight/main_window/controls/error_dialog_bg;
+         offset: -20 -20;
+      }
+      text
+      {
+         align: 0.5 0.5;
+         font: "VeraBd";
+         size: 20;
+         text: "×";
+      }
+   }
+   description
+   {
+      state: "shown" 0.0;
+      inherit: "default" 0.0;
+      color: 255 255 255 255;
+      color2: 255 255 255 100;
+   }
+}

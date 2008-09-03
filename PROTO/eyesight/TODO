@@ -1,0 +1,16 @@
+   // TODO: conf.c: Optimize to use one loop during argument parsing
+   // TODO: error.c: Resize dialog to fit text
+   // TODO: main.c: Cache next file in list
+   // TODO: plugin.c: get path group from config file  
+   // TODO: plugin.c: getenv("HOME"): Windows compatibility?
+   // TODO: pdf/animations.c: decelerating movement
+   // TODO: pdf/pdf.c: i18n
+   // TODO: pdf/pdf.c: Add more scaling options
+   // TODO: pdf.c: Free resize_cb_data somewhere
+// TODO: toolbar.c: localize tooltips
+   // TODO: pdf.c: resize toolbar to fit icons
+   // TODO: pdf.c: get toolbar direction from theme
+   // TODO: pdf.c: get toolbar direction from theme
+   // TODO: toolbar.c: prevent starting multiple animations at multiple clicks on navigation
+   // TODO: pdf/toolbar.c: change icon to view-restore when fullscreen
+   // FIXME: pdf.c: EPDF api refresh to use return val of file_set

@@ -1,0 +1,155 @@
+part
+{
+   name: "eyesight/main_window/controls/nav_img";
+   type: IMAGE;
+   mouse_events: 0;
+   description
+   {
+      state: "default" 0.0;
+      color: 255 255 255 255;
+      rel1
+      {
+         relative: 0.5 0.5;
+         to: "eyesight/main_window/controls/top_bar";
+         offset: -75 -25;
+      }
+      rel2
+      {
+         relative: 0.5 0.5;
+         to: "eyesight/main_window/controls/top_bar";
+         offset: 75 25;
+      }
+      image
+      {
+         normal: "img/nav.png";
+      }
+      fill
+      {
+         smooth: 0;
+      }
+   }
+   description
+   {
+      state: "hidden" 0.0;
+      inherit: "default" 0.0;
+      color: 255 255 255 0;
+   }
+}
+
+part
+{
+   name: "eyesight/main_window/controls/nav_img_next";
+   type: IMAGE;
+   mouse_events: 0;
+   description
+   {
+      state: "default" 0.0;
+      color: 255 255 255 0;
+      rel1
+      {
+         relative: 0.0 0.0;
+         to: "eyesight/main_window/controls/nav_img";
+      }
+      rel2
+      {
+         relative: 1.0 1.0;
+         to: "eyesight/main_window/controls/nav_img";
+      }
+      image
+      {
+        normal: "img/nav_next.png";
+      }
+      fill
+      {
+         smooth: 0;
+      }
+   }
+   description
+   {
+      state: "visible" 0.0;
+      inherit: "default" 0.0;
+      color: 255 255 255 255;
+   }
+}
+
+part
+{
+   name: "eyesight/main_window/controls/nav_img_prev";
+   type: IMAGE;
+   mouse_events: 0;
+   description
+   {
+      state: "default" 0.0;
+      color: 255 255 255 0;
+      rel1
+      {
+         relative: 0.0 0.0;
+         to: "eyesight/main_window/controls/nav_img";
+      }
+      rel2
+      {
+         relative: 1.0 1.0;
+         to: "eyesight/main_window/controls/nav_img";
+      }
+      image
+      {
+        normal: "img/nav_prev.png";
+      }
+   }
+   description
+   {
+      state: "visible" 0.0;
+      inherit: "default" 0.0;
+      color: 255 255 255 255;
+   }
+}
+
+part
+{
+   name: "eyesight/main_window/controls/nav_next_handle";
+   type: RECT;
+   mouse_events: 1;
+   repeat_events: 1;
+   description
+   {
+      state: "default" 0.0;
+      color: 255 255 255 0;
+      rel1
+      {
+         relative: 0.5 0.5;
+         to: "eyesight/main_window/controls/nav_img";
+         offset: 0 -25;
+      }
+      rel2
+      {
+         relative: 0.5 0.5;
+         to: "eyesight/main_window/controls/nav_img";
+         offset: 75 25;
+      }
+   }
+}
+
+part
+{
+   name: "eyesight/main_window/controls/nav_prev_handle";
+   type: RECT;
+   mouse_events: 1;
+   repeat_events: 1;
+   description
+   {
+      state: "default" 0.0;
+      color: 255 255 255 0;
+      rel1
+      {
+         relative: 0.5 0.5;
+         to: "eyesight/main_window/controls/nav_img";
+         offset: -75 -25;
+      }
+      rel2
+      {
+         relative: 0.5 0.5;
+         to: "eyesight/main_window/controls/nav_img";
+         offset: 0 25;
+      }
+   }
+}

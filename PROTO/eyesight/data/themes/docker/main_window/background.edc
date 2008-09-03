@@ -1,0 +1,9 @@
+group
+{
+   name: "eyesight/main_window/background";
+   min: 640 480;
+   parts
+   {
+      #include "background/background_grad.edc"
+   }
+}

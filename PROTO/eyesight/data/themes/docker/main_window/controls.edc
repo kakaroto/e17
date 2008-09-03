@@ -1,0 +1,45 @@
+group
+{
+   name: "eyesight/main_window/controls";
+   min: 640 480;
+   script
+   {
+      public top_bar_locked = 1;
+      public toggle_top_bar_lock()
+      {
+         if (get_int(top_bar_locked) == 1)
+         {
+            set_int(top_bar_locked, 0);
+            set_state(PART:"eyesight/text/toolbar2_show_button_text", "default",
+                      0.0);
+         }
+         else
+         {
+            set_int(top_bar_locked, 1);
+            set_state(PART:"eyesight/text/toolbar2_show_button_text", "locked",
+                      0.0);
+         }
+      }
+   }
+   parts
+   {
+   #include "controls/error_dialog.edc"
+   #include "controls/top_bar.edc"
+   #include "controls/docker.edc"
+   #include "controls/toolbar1_sw.edc"
+   #include "controls/toolbar2_sw.edc"
+   #include "controls/toolbar3_sw.edc"
+   // Built-in buttons
+   #include "controls/nav.edc"
+   #include "controls/toolbar3.edc"
+   }
+
+   programs
+   {
+   #include "controls/error_dialog_programs.edc"
+   #include "controls/nav_programs.edc"
+   #include "controls/toolbar1_programs.edc"
+   #include "controls/top_bar_programs.edc"
+   #include "controls/toolbar3_programs.edc"
+   }
+}

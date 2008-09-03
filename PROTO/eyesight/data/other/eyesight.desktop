@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Eyesight
+Description=Document viewer
+Comment=Document viewer
+Exec=eyesight %F
+Terminal=false
+Type=Application
+Icon=eyesight
+Categories=ENLIGHTENMENT;Application;Graphics
+Encoding=UTF-8
+MimeType=application/pdf;

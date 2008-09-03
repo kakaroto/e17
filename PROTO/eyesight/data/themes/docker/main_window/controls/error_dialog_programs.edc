@@ -1,0 +1,48 @@
+program
+{
+	name: "eyesight/main_window/controls/error_show";
+	signal: "error_show";
+	source: "eyesight";
+	action: STATE_SET "shown" 0.0;
+	target: "eyesight/main_window/controls/error_dialog_bg";
+	target: "eyesight/main_window/controls/error_dialog_text";
+	target: "eyesight/main_window/controls/error_dialog_close_button";
+	transition: LINEAR 0.5;
+}
+program
+{
+	name: "eyesight/main_window/controls/error_icon_grow";
+	signal: "error_show";
+	source: "eyesight";
+	action: STATE_SET "bigger" 0.0;
+	target: "eyesight/main_window/controls/error_dialog_icon";
+	transition: DECELERATE 0.3;
+	after: "eyesight/main_window/controls/error_icon_normal";
+}
+program
+{
+	name: "eyesight/main_window/controls/error_icon_normal";
+	action: STATE_SET "normal" 0.0;
+	target: "eyesight/main_window/controls/error_dialog_icon";
+	transition: ACCELERATE 0.2;
+}
+program
+{
+	name: "eyesight/main_window/controls/error_hide";
+	signal: "mouse,clicked,1";
+	source: "eyesight/main_window/controls/error_dialog_close_button";
+	action: STATE_SET "default" 0.0;
+	target: "eyesight/main_window/controls/error_dialog_bg";
+	target: "eyesight/main_window/controls/error_dialog_text";
+	target: "eyesight/main_window/controls/error_dialog_icon";
+	transition: LINEAR 0.5;
+	after: "eyesight/main_window/controls/error_close_button_hide";
+}
+program
+{
+	name: "eyesight/main_window/controls/error_close_button_hide";
+	action: STATE_SET "default" 0.0;
+	target: "eyesight/main_window/controls/error_dialog_close_button";
+	transition: LINEAR 0.5;
+}
+

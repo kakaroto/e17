@@ -1,0 +1,7 @@
+src/bin/main.c
+src/bin/conf.c
+src/bin/error.c
+src/bin/main_window.c
+src/bin/plugin.c
+src/bin/error.h
+

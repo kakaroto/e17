@@ -1,0 +1,14 @@
+group
+{
+	name: "main_window";
+	min: 640 480;
+	parts
+	{
+		#include "background.edc"
+		#include "error_dialog.edc"
+	}
+	programs
+	{
+		#include "error_dialog_programs.edc"
+	}
+}

@@ -1,0 +1,69 @@
+program
+{
+   name: "eyesight/main_window/controls/nav_img_hide";
+   signal: "mouse,in";
+   source: "eyesight/main_window/controls/nav_*_handle";
+   action: STATE_SET "hidden" 0.0;
+   target: "eyesight/main_window/controls/nav_img";
+   transition: LINEAR 0.5;
+}
+program
+{
+   name: "eyesight/main_window/controls/nav_img_next_show";
+   signal: "mouse,in";
+   source: "eyesight/main_window/controls/nav_next_handle";
+   action: STATE_SET "visible" 0.0;
+   target: "eyesight/main_window/controls/nav_img_next";
+   transition: LINEAR 0.5;
+}
+program
+{
+   name: "eyesight/main_window/controls/nav_img_prev_show";
+   signal: "mouse,in";
+   source: "eyesight/main_window/controls/nav_prev_handle";
+   action: STATE_SET "visible" 0.0;
+   target: "eyesight/main_window/controls/nav_img_prev";
+   transition: LINEAR 0.5;
+}                                    
+program
+{
+   name: "eyesight/main_window/controls/nav_img_show";
+   signal: "mouse,out";
+   source: "eyesight/main_window/controls/nav_*_handle";
+   action: STATE_SET "default" 0.0;
+   target: "eyesight/main_window/controls/nav_img";
+   transition: LINEAR 0.5;
+}
+program
+{
+   name: "eyesight/main_window/controls/nav_img_next_hide";
+   signal: "mouse,out";
+   source: "eyesight/main_window/controls/nav_next_handle";
+   action: STATE_SET "default" 0.0;
+   target: "eyesight/main_window/controls/nav_img_next";
+   transition: LINEAR 0.5;
+}
+program
+{
+   name: "eyesight/main_window/controls/nav_img_prev_hide";
+   signal: "mouse,out";
+   source: "eyesight/main_window/controls/nav_prev_handle";
+   action: STATE_SET "default" 0.0;
+   target: "eyesight/main_window/controls/nav_img_prev";
+   transition: LINEAR 0.5;
+}
+program
+{
+   name: "eyesight/main_window/controls/nav_next_clicked";
+   signal: "mouse,clicked,1";
+   source: "eyesight/main_window/controls/nav_next_handle";
+   action: SIGNAL_EMIT "nav_next_clicked" "";
+}
+
+program
+{
+   name: "eyesight/main_window/controls/nav_prev_clicked";
+   signal: "mouse,clicked,1";
+   source: "eyesight/main_window/controls/nav_prev_handle";
+   action: SIGNAL_EMIT "nav_prev_clicked" "";
+}

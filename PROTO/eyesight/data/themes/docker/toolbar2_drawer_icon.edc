@@ -1,0 +1,105 @@
+group
+{
+   name: "eyesight/toolbar2_drawer_icon";
+   min: 24 24;
+   max: 24 24;
+   parts
+   {
+      part
+      {
+         name: "icon";
+         type: SWALLOW;
+         mouse_events: 1;
+         repeat_events: 1;
+         description
+         {
+            state: "default" 0.0;
+            color: 100 255 0 200;
+            rel1
+            {
+               relative: 0.0 0.0;
+            }
+            rel2
+            {
+               relative: 1.0 1.0;
+            }
+         }
+         description
+         {
+            state: "mouseover" 0.0;
+            inherit: "default" 0.0;
+            rel1
+            {
+               relative: 0.0 0.0;
+               offset: -10 -10;  
+            }
+            rel2
+            {
+               relative: 1.0 1.0;
+               offset: 10 10;
+            }
+         }
+      }
+      part
+      {
+         name: "tooltip";
+         type: TEXT;
+         effect: SOFT_SHADOW;
+         mouse_events: 0;
+         description
+         {
+            state: "default" 0.0;
+            color: 255 255 255 255;
+            color3: 0 0 0 100;
+            rel1
+            {
+               relative: 0.0 0.5;
+               to: "icon";
+               offset: -300 -20;
+            }
+            rel2
+            {
+               relative: 0.0 0.5;
+               to: "icon";
+               offset: -10 20;
+            }
+            text
+            {
+               font: "Normal";
+               size: 12;
+               text: "Tooltip sample";
+               align: 1.0 0.5;
+            }
+         }
+      }
+   }
+   programs
+   {
+      program
+      {
+         name: "mousein";
+         signal: "mouse,in";
+         source: "icon";
+         action: STATE_SET "mouseover" 0.0;
+         target: "icon";
+         transition: DECELERATE 0.2;
+      }
+      program
+      {
+         name: "mouseout";
+         signal: "mouse,out";
+         source: "icon";
+         action: STATE_SET "default" 0.0;
+         target: "icon";
+         transition: DECELERATE 0.2;
+      }
+      program
+      {
+         name: "clicked";
+         signal: "mouse,clicked,1";
+         source: "icon";
+         action: SIGNAL_EMIT "clicked" "drawer_icon";
+         //after: "clicked_shrink";
+      }
+   }
+}

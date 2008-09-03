@@ -1,0 +1,3 @@
+((cat src/bin/*.c src/plugins/pdf/*.c |grep TODO) \
+&& (cat src/bin/*.c src/plugins/pdf/*.c |grep FIXME )) \
+> TODO

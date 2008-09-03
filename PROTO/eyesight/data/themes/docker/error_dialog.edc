@@ -1,0 +1,177 @@
+group
+{
+	name:	"eyesight/error_dialog";
+	min: 70 78;
+	parts
+	{
+		part
+		{
+			name: "error_dialog_bg";
+			type: IMAGE;
+			mouse_events: 1;
+			description
+			{
+				state: "default" 0.0;
+				color: 255 255 255 0;
+				rel1
+				{
+					relative: 0.0 0.0;
+				}
+				rel2
+				{
+					relative: 1.0 1.0;
+				}
+				image
+				{
+					normal: "img/dialog_bg.png";
+					border: 34 34 34 34;
+				}
+			}
+			description
+			{
+				state: "shown" 0.0;
+				color: 255 255 255 255;
+				rel1
+				{
+					relative: 0.0 0.0;
+				}
+				rel2
+				{
+					relative: 1.0 1.0;
+				}
+				image
+				{
+					normal: "img/dialog_bg.png";
+					border: 34 34 34 34;
+				}
+			}
+		}
+		part
+		{
+			name: "eyesight/error_dialog_text";
+			type: TEXTBLOCK;
+			description
+			{
+				state: "default" 0.0;
+				color: 255 255 255 0;
+				rel1
+				{
+					relative: 0.0 0.0;
+					offset: 20 20;
+				}
+				rel2
+				{
+					relative: 1.0 1.0;
+					offset: -72 -20;
+				}
+				text
+				{
+					text: "During startup, the following errors occured: <br><i>- Couldn't open szar as theme file. Check that the file exists and it's compatible with this Eyesight version!";
+					style: "error";
+				}
+			}
+			description
+			{
+				state: "shown" 0.0;
+				color: 255 255 255 255;
+				inherit: "default" 0.0;
+			}
+		}
+		part
+		{
+			name: "eyesight/error_dialog_icon";
+			type: IMAGE;
+			mouse_events: 0;
+			description
+			{
+				state: "default" 0.0;
+				color: 255 255 255 0;
+				rel1
+				{
+					relative: 1.0 0.0;
+					to: error_dialog_bg;
+					offset: -34 34;
+				}
+				rel2
+				{
+					relative: 1.0 0.0;
+					to: error_dialog_bg;
+					offset: -34 34;
+				}
+				image
+				{
+					normal: "img/error.png";
+				}
+			}			
+			description
+			{
+				state: "bigger" 0.0;
+				rel1
+				{
+					relative: 1.0 0.0;
+					to: error_dialog_bg;
+					offset: -72 4;
+				}
+				rel2
+				{
+					relative: 1.0 0.0;
+					to: error_dialog_bg;
+					offset: -4 72;
+				}
+				image
+				{
+					normal: "img/error.png";
+				}
+			}
+			description
+			{
+				state: "normal" 0.0;
+				rel1
+				{
+					relative: 1.0 0.0;
+					to: error_dialog_bg;
+					offset: -68 8;
+				}
+				rel2
+				{
+					relative: 1.0 0.0;
+					to: error_dialog_bg;
+					offset: -8 68;
+				}
+				image
+				{
+					normal: "img/error.png";
+				}
+			}
+		}
+	}
+	programs
+	{
+		program
+		{
+			name: "error_show";
+			signal: "error_show";
+			source: "eyesight";
+			action: STATE_SET "shown" 0.0;
+			target: "error_dialog_bg";
+			target: "error_dialog_text";
+		}
+		program
+		{
+			name: "error_icon_grow";
+			signal: "error_show";
+			source: "eyesight";
+			action: STATE_SET "bigger" 0.0;
+			target: "error_dialog_icon";
+			transition: LINEAR 0.5;
+			after: "error_icon_normal";
+		}
+		program
+		{
+			name: "error_icon_normal";
+			action: STATE_SET "normal" 0.0;
+			target: "error_dialog_icon";
+			transition: LINEAR 0.1;
+		}
+	}
+}

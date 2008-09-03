@@ -1,0 +1,107 @@
+/* Docker theme for Eyesight */
+
+data
+{
+   item: "author" "Sevcsik András";
+   item: "contact" "sevcsik@gmail.com";
+   item: "version" "0.1";
+   item: "date" "Not yet released :)";
+
+   item: "icon_theme" "oxygen";
+   item: "icon_size" "128";
+   item: "top_margin" "15";
+   item: "bottom_margin" "15";
+   item: "left_margin" "15";
+   item: "right_margin" "15";
+
+   /* Toolbar 1 options */
+   item: "t1_direction" "horizontal";
+   item: "t1_drawer_direction" "up";
+   item: "t1_drawer_spacing" "20";
+   item: "t1_spacing" "20";
+
+   /* Toolbar 2 options */
+   item: "t2_direction" "horizontal";
+   item: "t2_drawer_direction" "down";
+   item: "t2_drawer_spacing" "20";
+   item: "t2_spacing" "20";
+}
+
+
+images
+{
+   image: "img/docker.png" COMP;
+   image: "img/border_trans.png" COMP;
+   image: "img/error.png" COMP;
+   image: "img/dialog_bg.png" COMP;
+   image: "img/border_opaque.png" COMP;
+   image: "img/open.png" COMP;
+   image: "img/config.png" COMP;
+   image: "img/nav.png" COMP;
+   image: "img/nav_next.png" COMP;
+   image: "img/nav_prev.png" COMP;
+   image: "img/show_button_bg.png" COMP;
+   image: "img/show_button_bg_down.png" COMP;
+   image: "img/text_entry_bg.png" COMP;
+   image: "go-up.png" COMP;
+   image: "go-down.png" COMP;
+   image: "view-fullscreen.png" COMP;
+   image: "view-restore.png" COMP;
+   image: "application-exit.png" COMP;
+   image: "fit-image-in-window-horizontal.png" COMP;
+   image: "fit-image-in-window-vertical.png" COMP;
+   image: "zoom-best-fit.png" COMP;
+   image: "zoom-in.png" COMP;
+   image: "zoom-original.png" COMP;
+   image: "zoom-out.png" COMP;
+   image: "zoom.png" COMP;
+}
+
+fonts
+{
+   font: "DejaVuSans.ttf" "Normal";
+   font: "DejaVuSans-Bold.ttf" "Bold";
+   font: "DejaVuSans-Oblique.ttf" "Italic";
+   font: "DejaVuSans-BoldOblique.ttf" "BoldItalic";
+}
+
+spectra
+{
+   spectrum
+   {
+      name: "eyesight/main_window/background/black_to_grey";
+      color: 100 100 100 255 0;
+      color: 0 0 0 255 0;
+   }
+   spectrum
+   {
+      name: "eyesight/main_window/controls/black_to_trans";
+      color: 0 0 0 30 0;
+      color: 0 0 0 200 0;
+   }
+}
+
+styles
+{
+   style
+   {
+      name: "error";
+      base: "font=VeraBd font_size=10 color=#FFFFFFFF wrap=word valign=middle";
+      tag: "br" "+ \n";
+      tag: "i" "+ \t";
+   }
+}
+
+collections
+{
+   #include "main_window/background.edc"
+   #include "main_window/controls.edc"
+   #include "border_trans.edc"
+   #include "border_opaque.edc"
+   #include "toolbar1_icon.edc"
+   #include "toolbar2_icon.edc"
+   #include "toolbar2_drawer.edc"
+   #include "toolbar2_drawer_icon.edc"
+   #include "icons.edc"
+   #include "text_entry.edc"
+}

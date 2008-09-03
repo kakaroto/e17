@@ -1,0 +1,132 @@
+part
+{
+   name: "eyesight/main_window/controls/top_bar";
+   type: GRADIENT;
+   mouse_events: 1;
+   description
+   {
+      state: "default" 0.0;
+      rel1
+      {
+      relative: 0.0 0.0;
+      offset: 0 -71;
+      }
+      rel2
+      {
+      relative: 1.0 0.0;
+      offset: 0 -1;
+      }
+      gradient
+      {
+      spectrum: "eyesight/main_window/controls/black_to_trans";
+      }
+   }
+   description
+   {
+      state: "shown" 0.0;
+      inherit: "default" 0.0;
+      rel1
+      {
+         relative: 0.0 0.0;
+         offset: 0 0;
+      }
+      rel2
+      {
+         relative: 1.0 0.0;
+         offset: 0 70;
+      }
+   }
+}
+
+part
+{
+   name: "eyesight/main_window/controls/toolbar2_show_button";
+   type: IMAGE;
+   mouse_events: 1;
+   repeat_events: 1;
+   description
+   {
+      state: "default" 0.0;
+      rel1
+      {
+         relative: 1.0 1.0;
+         to: "eyesight/main_window/controls/top_bar";
+         offset: -100 0;
+      }
+      rel2
+      {
+         relative: 1.0 1.0;
+         to: "eyesight/main_window/controls/top_bar";
+         offset: -20 10;
+      }
+      image
+      {
+         normal: "img/show_button_bg.png";
+         border: 23 23 0 0;
+      }
+   }
+}
+
+part
+{
+   name: "eyesight/text/toolbar2_show_button_text";
+   type: TEXT;
+   mouse_events: 1;
+   repeat_events: 1;
+   description
+   {
+      state: "default" 0.0;
+      color: 255 255 255 255;
+      rel1
+      {
+         relative: 0.0 0.0;
+         to: "eyesight/main_window/controls/toolbar2_show_button";
+         offset: 10 0;
+      }
+      rel2
+      {
+         relative: 1.0 1.0;
+         to: "eyesight/main_window/controls/toolbar2_show_button";
+         offset: -10 0;
+      }
+      text
+      {
+         font: "Normal";
+         size: 8;
+         align: 0.5 0.5;
+         text: "▴ controls ▴";
+      }
+   }
+   description
+   {
+      state: "locked" 0.0;
+      inherit: "default" 0.0;
+      text
+      {
+         text: "controls";
+      }
+   }
+}
+
+part
+{
+   name: "eyesight/main_window/controls/toolbar2_watcher";
+   type: RECT;
+   mouse_events: 1;
+   repeat_events: 1;
+   description
+   {
+      state: "default" 0.0;
+      color: 0 0 0 0;
+      rel1
+      {
+         relative: 0.0 0.0;
+         offset: 0 0;
+      }
+      rel2
+      {
+         relative: 1.0 0.0;
+         offset: 0 50;
+      }
+   }
+}

@@ -1,0 +1,61 @@
+group
+{
+   name: "text_entry";
+   parts
+   {
+      part
+      {
+         name: "background";
+         type: IMAGE;
+         repeat_events: 1;
+         description
+         {
+            state: "default" 0.0;
+            rel1
+            {
+               relative: 0.0 0.5;
+               offset: 0 -18;
+            }
+            rel2
+            {
+               relative: 1.0 0.5;
+               offset: 0 18;
+            }
+            image
+            {
+               normal: "img/text_entry_bg.png";
+               border: 15 15 0 0;
+            }
+         } 
+      }
+      part
+      {
+         name: "text";
+         type: TEXT;
+         effect: SOFT_SHADOW;
+         repeat_events: 1;
+         description
+         {
+            state: "default" 0.0;
+            color: 255 255 255 255;
+            color2: 0 0 0 125;
+            rel1
+            {
+               relative: 0.0 0.5;
+               offset: 0 -14;
+            }
+            rel2
+            {
+               relative: 1.0 0.5;
+               offset: 0 14;
+            }
+            text
+            {
+               text: "00/00";
+               font: "Bold";
+               size: 12;
+            }
+         }
+      }
+   }
+}

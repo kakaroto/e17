@@ -1,0 +1,280 @@
+group
+{
+   name: "eyesight/toolbar2_drawer";
+   min: 45 45;
+   max: 45 45;
+   script
+   {
+      public visible = 0;
+   }
+   parts
+   {
+      part
+      {
+         name: "icon";
+         type: SWALLOW;
+         mouse_events: 1;
+         repeat_events: 1;
+         description
+         {
+            state: "default" 0.0;
+            rel1
+            {
+               relative: 0.0 0.0;
+            }
+            rel2
+            {
+               relative: 1.0 1.0;
+            }
+         }
+         description
+         {
+            state: "mouseover" 0.0;
+            inherit: "default" 0.0;
+            rel1
+            {
+               relative: 0.0 0.0;
+               offset: -10 -10;  
+            }
+            rel2
+            {
+               relative: 1.0 1.0;
+               offset: 10 10;
+            }
+         }
+      }
+      part
+      {
+         name: "value";
+         type: TEXT;
+         mouse_events: 1;
+         repeat_events: 1;
+         effect: SOFT_SHADOW;
+         description
+         {
+            state: "default" 0.0;
+            color: 255 255 255 255;
+            color3: 0 0 0 100;
+            rel1
+            {
+               relative: 0.0 1.0;
+               to: "icon";
+               offset: 0 -10;
+            }
+            rel2
+            {
+               relative: 1.0 1.0;
+               to: "icon";
+               offset: 0 0;
+            }
+            text
+            {
+               font: "Normal";
+               size: 10;
+               align: 0.0 1.0;
+               text: "100%";
+            }
+         }
+      }
+      part
+      {
+         name: "tooltip";
+         type: TEXT;
+         effect: SOFT_SHADOW;
+         description
+         {
+            state: "default" 0.0;
+            color: 255 255 255 0;
+            color3: 0 0 0 0;
+            rel1
+            {
+               relative: 0.0 1.0;
+               offset: -250 40;
+            }
+            rel2
+            {
+               relative: 1.0 1.0;
+               offset: -50 20;
+            }
+            text
+            {
+               font: "BoldItalic";
+               size: 15;
+               text: "Tooltip sample";
+               align: 1.0 0.5;
+            }
+         }
+         description
+         {
+            state: "mouseover" 0.0;
+            inherit: "default" 0.0;
+            color: 255 255 255 255;
+            color3: 0 0 0 255;
+            rel1
+            {
+               relative: 0.0 1.0;
+               offset: -200 40;
+            }
+            rel2
+            {
+               relative: 1.0 1.0;
+               offset: 0 20;
+            }
+         }
+         description
+         {
+            state: "hidden_right" 0.0;
+            inherit: "default" 0.0;
+            rel1
+            {
+               relative: 0.0 1.0;
+               offset: -150 40;
+            }
+            rel2
+            {
+               relative: 1.0 1.0;
+               offset: 50 20;
+            }
+         }
+      }
+      part
+      {
+         name: "drawer_sw";
+         type: SWALLOW;
+         mouse_events: 1;
+         repeat_events: 1;
+         description
+         {
+            state: "default" 0.0;
+            visible: 0;
+            rel1
+            {
+               relative: 0.5 0.0;
+               offset: -12 -440;
+            }
+            rel2
+            {
+               relative: 0.5 0.0;
+               offset: 12 -50;
+            }
+         }
+         description
+         {
+            state: "opened" 0.0;
+            visible: 1;
+            rel1
+            {
+               relative: 0.5 1.0;
+               offset: -12 20;
+            }
+            rel2
+            {
+               relative: 0.5 1.0;
+               offset: 12 410;
+            }
+         }
+      }
+   }
+   programs
+   {
+      program
+      {
+         name: "icon_mousein";
+         signal: "mouse,in";
+         source: "icon";
+         action: STATE_SET "mouseover" 0.0;
+         target: "icon";
+         transition: DECELERATE 0.2;
+      }
+      program
+      {
+         name: "icon_mouseout";
+         signal: "mouse,out";
+         source: "icon";
+         action: STATE_SET "default" 0.0;
+         target: "icon";
+         transition: ACCELERATE 0.2;
+      }
+      program
+      {
+         name: "icon_clicked_shrink";
+         action: STATE_SET "default" 0.0;
+         target: "icon";
+         transition: ACCELERATE 0.2;
+         after: "icon_clicked_grow";
+      }
+      program
+      {
+         name: "icon_clicked_grow";
+         action: STATE_SET "mouseover" 0.0;
+         target: "icon";
+         transition: DECELERATE 0.2;
+      }
+      program
+      {
+         name: "tooltip_reset";
+         action: STATE_SET "default" 0.0;
+         target: "tooltip";
+         after: "tooltip_show";
+         signal: "mouse,in";
+         source: "icon";
+      }
+      program
+      {
+         name: "tooltip_show";
+         action: STATE_SET "mouseover" 0.0;
+         target: "tooltip";
+         transition: DECELERATE 1.0;
+         after: "tooltip_hide";
+      }
+      program
+      {
+         name: "tooltip_hide";
+         action: STATE_SET "hidden_right" 0.0;
+         target: "tooltip";
+         transition: ACCELERATE 1.0;
+      }
+      program
+      {
+         name: "drawer_toggle";
+         signal: "mouse,clicked,1";
+         source: "icon";
+         script
+         {
+            if (get_int(visible) == 1)
+            {
+               emit("top_bar_unlock", "t2_drawer");
+               run_program(PROGRAM:"drawer_hide");
+               set_int(visible, 0);
+            }
+            else
+            {
+               emit("top_bar_lock", "t2_drawer");
+               run_program(PROGRAM:"drawer_show");
+               set_int(visible, 1);
+            }
+         }
+         after: "signal_emit_clicked";
+      }
+      program
+      {
+         name: "signal_emit_clicked";
+         action: SIGNAL_EMIT "clicked" "icon";
+         after: "icon_clicked_shrink";
+      }
+      program
+      {
+         name: "drawer_show";
+         action: STATE_SET "opened" 0.0;
+         target: "drawer_sw";
+         transition: DECELERATE 0.5;
+      }
+      program
+      {
+         name: "drawer_hide";
+         action: STATE_SET "default" 0.0;
+         target: "drawer_sw";
+         transition: DECELERATE 0.5;
+      }
+   }
+}

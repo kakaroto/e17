@@ -1,0 +1,93 @@
+dnl Process this file with autoconf to produce a configure script.
+
+# get rid of that stupid cache mechanism
+rm -f config.cache
+
+AC_INIT(eyesight, 0.0.1.001, enlightenment-devel@lists.sourceforge.net)
+AC_PREREQ(2.52)
+AC_CONFIG_SRCDIR(configure.in)
+AM_CONFIG_HEADER(config.h)
+AM_INIT_AUTOMAKE(1.6 dist-bzip2)
+
+AC_C_BIGENDIAN
+AC_ISC_POSIX
+AC_PROG_CC
+AM_PROG_CC_STDC
+AC_HEADER_STDC
+AC_C_CONST
+
+AC_LIBTOOL_WIN32_DLL
+define([AC_LIBTOOL_LANG_CXX_CONFIG], [:])dnl
+define([AC_LIBTOOL_LANG_F77_CONFIG], [:])dnl
+AM_PROG_LIBTOOL
+
+AC_CHECK_LIB(dl, dlopen, dlopen_libs=-ldl)
+AC_CHECK_LIB(intl, libintl_gettext, intl_libs=-lintl)
+AC_SUBST(dlopen_libs)
+AC_SUBST(intl_libs)
+
+PKG_CHECK_MODULES([EYESIGHT],
+		  [evas
+		  ecore
+		  ecore-evas
+		  edje
+        efreet])
+        
+PKG_CHECK_MODULES([EPDF], 
+        [epdf 
+        esmart_container
+        esmart_text_entry
+        ], [HAVE_EPDF=true], [HAVE_EPDF=false])
+AM_CONDITIONAL(HAVE_EPDF, $HAVE_EPDF)
+
+PKG_CHECK_MODULES([EDVI],
+        [edvi
+        esmart_container
+        esmart_text_entry
+        ], [HAVE_EDVI=true], [HAVE_EDVI=false])
+AM_CONDITIONAL(HAVE_EDVI, $HAVE_EDVI)
+
+PKG_CHECK_MODULES([EPS],
+        [eps
+        esmart_container
+        esmart_text_entry
+        ], [HAVE_EPS=true], [HAVE_EPS=false])
+AM_CONDITIONAL(HAVE_EPS, $HAVE_EPS)
+
+AC_OUTPUT([
+Makefile
+src/Makefile
+src/bin/Makefile
+src/plugins/Makefile
+src/plugins/document/Makefile
+data/Makefile
+data/other/Makefile
+data/themes/Makefile
+data/themes/docker/Makefile
+])
+
+echo
+echo
+echo
+echo "------------------------------------------------------------------------"
+echo "$PACKAGE $VERSION"
+echo "------------------------------------------------------------------------"
+echo
+echo "Configuration Options Summary:"
+echo
+echo "  Compilation..........: make"
+echo
+echo "  Installation.........: make install"
+echo
+echo "    prefix.............: $prefix"
+echo
+echo "Plugins:"
+echo
+echo "    PDF plugin.........: $HAVE_EPDF"
+echo
+echo "    DVI plugin.........: $HAVE_EDVI"
+echo
+echo "    PostScript plugin..: $HAVE_EPS"
+echo
+
+

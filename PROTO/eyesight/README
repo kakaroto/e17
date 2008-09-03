@@ -1,0 +1,10 @@
+Document viewer for Enlightenment
+
+Usage:
+
+	eyesight [SWITCH] [FILE 1] [FILE 2] [...]
+	
+	Available switches:
+	-t<theme file>		Sets theme EDJ file to use. Falls back to default theme on
+							error.
+

@@ -1,0 +1,72 @@
+program
+{
+   name: "exit_icon_mousein";
+   signal: "mouse,in";
+   source: "eyesight/controls/exit_icon";
+   action: STATE_SET "mouseover" 0.0;
+   target: "eyesight/controls/exit_icon";
+   transition: DECELERATE 0.2;
+}
+program
+{
+   name: "exit_icon_mouseout";
+   signal: "mouse,out";
+   source: "eyesight/controls/exit_icon";
+   action: STATE_SET "default" 0.0;
+   target: "eyesight/controls/exit_icon";
+   transition: ACCELERATE 0.2;
+}
+program
+{
+   name: "exit_icon_clicked_signal_emit";
+   signal: "mouse,clicked,1";
+   source: "eyesight/controls/exit_icon";
+   action: SIGNAL_EMIT "clicked" "toolbar2_icon";
+   after: "exit_icon_clicked_shrink";
+}
+program
+{
+   name: "exit_icon_clicked_shrink";
+   action: STATE_SET "default" 0.0;
+   target: "eyesight/controls/exit_icon";
+   transition: ACCELERATE 0.2;
+   after: "exit_icon_clicked_grow";
+}
+program
+{
+   name: "exit_icon_clicked_grow";
+   action: STATE_SET "mouseover" 0.0;
+   target: "eyesight/controls/exit_icon";
+   transition: DECELERATE 0.2;
+   after: "exit";
+}
+program
+{
+   name: "exit_tooltip_reset";
+   action: STATE_SET "default" 0.0;
+   target: "eyesight/controls/exit_icon_tooltip";
+   after: "exit_tooltip_show";
+   signal: "mouse,in";
+   source: "eyesight/controls/exit_icon";
+}
+program
+{
+   name: "exit_tooltip_show";
+   action: STATE_SET "mouseover" 0.0;
+   target: "eyesight/controls/exit_icon_tooltip";
+   transition: DECELERATE 1.0;
+   after: "exit_tooltip_hide";
+}
+program
+{
+   name: "exit_tooltip_hide";
+   action: STATE_SET "hidden_right" 0.0;
+   target: "eyesight/controls/exit_icon_tooltip";
+   transition: ACCELERATE 1.0;
+}
+
+program
+{
+   name: "exit";
+   action: SIGNAL_EMIT "clicked" "exit_button";
+}
