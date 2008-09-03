@@ -126,7 +126,7 @@ elm_win_new(void)
    if (!win->ee)
      {
 	printf("ELEMENTARY: Error. Cannot create window.\n");
-	ein->del(win);
+	win->del(ELM_OBJ(win));
 	return NULL;
      }
    win->type = ELM_WIN_BASIC;
