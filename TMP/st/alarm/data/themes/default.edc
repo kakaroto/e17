@@ -18,7 +18,7 @@ collections {
 	       fill.size.offset: 264 264;
 	    }
 	 }
-	 part { name: "ello.swallow.contents";
+	 part { name: "alarm.swallow.contents";
 	    type: SWALLOW;
 	    description { state: "default" 0.0;
 	       rel1.offset:  10 10;
