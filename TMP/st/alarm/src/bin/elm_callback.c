@@ -23,8 +23,11 @@ _elm_callback_call(Elm_Obj *obj, Elm_Callback_Type type, void *info)
 	Elm_Callback *cb;
 	
 	cb = l->data;
+	if (cb->delete_me) continue;
 	if (cb->type == type)
 	  {
+	     // FIXME: fi callback deletes cb or obj or a parent obj... what
+	     // then?
 	     if (cb->func) cb->func(cb->data, obj, type, info);
 	     if (cb->callbacks) _elm_callback_call(cb, type, info);
 	  }
