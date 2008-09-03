@@ -154,6 +154,9 @@ extern "C" {
    void (*title_set) (Elm_Win *win, const char *title); \
    void (*show)      (Elm_Win *win); \
    void (*hide)      (Elm_Win *win)
+
+// cover methods & state for:
+// type, fullscreen, icon, activate, shaped, alpha, borderless, iconified
 #define Elm_Win_Class_All Elm_Win_Class_Methods; \
    Elm_Win_Type  type; \
    const char   *name; \

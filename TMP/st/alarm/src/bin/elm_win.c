@@ -47,10 +47,13 @@ _elm_win_hide(Elm_Win *win)
 static void
 _elm_win_del(Elm_Obj *obj)
 {
-   ecore_evas_hide(((Elm_Win *)obj)->ee);
-   ecore_evas_free(((Elm_Win *)obj)->ee);
-   evas_stringshare_del(((Elm_Win *)obj)->title);
-   evas_stringshare_del(((Elm_Win *)obj)->name);
+   if (((Elm_Win *)obj)->ee)
+     {
+	ecore_evas_hide(((Elm_Win *)obj)->ee);
+	ecore_evas_free(((Elm_Win *)obj)->ee);
+	evas_stringshare_del(((Elm_Win *)obj)->title);
+	evas_stringshare_del(((Elm_Win *)obj)->name);
+     }
    if (((Elm_Win *)obj)->deferred_resize_job)
      ecore_job_del(((Elm_Win *)obj)->deferred_resize_job);
    ((Elm_Obj_Class *)(((Elm_Win_Class *)(obj->clas))->parent))->del(obj);
@@ -99,12 +102,6 @@ elm_win_new(void)
    win->show = _elm_win_show;
    win->hide = _elm_win_hide;
    
-   win->type = ELM_WIN_BASIC;
-   win->name = evas_stringshare_add("default"); 
-   win->title = evas_stringshare_add("Elementary Window");
-
-   // FIXME: create real window
-   
    switch (_elm_engine)
      {
       case ELM_SOFTWARE_X11:
@@ -128,9 +125,14 @@ elm_win_new(void)
      }
    if (!win->ee)
      {
-	// FIXME: dont return - clean up and unwind and return NULL
-	return win;
+	printf("ELEMENTARY: Error. Cannot create window.\n");
+	ein->del(win);
+	return NULL;
      }
+   win->type = ELM_WIN_BASIC;
+   win->name = evas_stringshare_add("default"); 
+   win->title = evas_stringshare_add("Elementary Window");
+
    win->evas = ecore_evas_get(win->ee);
    ecore_evas_title_set(win->ee, win->title);
    ecore_evas_name_class_set(win->ee, win->name, _elm_appname);
