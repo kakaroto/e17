@@ -1,4 +1,8 @@
-#include "main.h"
+#include <Elementary.h>
+
+/* This is a test app (that is also functional) to test the api and serve
+ * as an example
+ */
 
 int
 main(int argc, char **argv)
@@ -16,5 +20,6 @@ main(int argc, char **argv)
    elm_run(); /* and run the program now  and handle all events etc. */
    
    elm_shutdown(); /* clean up and shut down */
+
    return 0;
 }

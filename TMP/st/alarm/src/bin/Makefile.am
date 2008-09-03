@@ -16,7 +16,6 @@ bin_PROGRAMS = alarm
 
 alarm_SOURCES = \
 main.c \
-main.h \
 $(elementary_SOURCES)
 
 alarm_LDADD = @my_libs@ @EVAS_LIBS@ @ECORE_LIBS@ @EDJE_LIBS@
