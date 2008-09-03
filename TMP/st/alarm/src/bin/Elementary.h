@@ -67,6 +67,15 @@ extern "C" {
 #endif
    
    /* Types here */
+   typedef enum _Elm_Callback_Type
+     {
+	ELM_CALLBACK_DEL,
+	  ELM_CALLBACK_CHILD_ADD,
+	  ELM_CALLBACK_CHILD_DEL,
+	  ELM_CALLBACK_DEL_REQ,
+	  ELM_CALLBACK_RESIZE
+     } Elm_Callback_Type;
+   
    typedef enum _Elm_Win_Type
      {
 	ELM_WIN_BASIC,
@@ -74,76 +83,100 @@ extern "C" {
 	  ELM_WIN_SCROLLABLE
      } Elm_Win_Type;
    
-   typedef enum _Elm_Callback_Type
-     {
-	ELM_CALLBACK_DEL,
-	  ELM_CALLBACK_CHILD_ADD,
-	  ELM_CALLBACK_CHILD_DEL
-     } Elm_Callback_Type;
    
-   typedef struct _Elm_Obj      Elm_Obj;
-   typedef struct _Elm_Callback Elm_Callback;
-   typedef struct _Elm_Win      Elm_Win;
+   typedef struct _Elm_Obj_Class       Elm_Obj_Class;
+   typedef struct _Elm_Obj             Elm_Obj;
+   typedef struct _Elm_Callback        Elm_Callback;
+   typedef struct _Elm_Win_Class       Elm_Win_Class;
+   typedef struct _Elm_Win             Elm_Win;
    
    typedef void (*Elm_Callback_Func) (void *data, Elm_Obj *obj, Elm_Callback_Type type, void *info);
    
    /* API calls here */
 
-   // FIXME: need a way to store previous call and chain method calls.
-   // 
+/**************************************************************************/   
    /* General calls */
    EAPI void elm_init(int argc, char **argv);
    EAPI void elm_shutdown(void);
    EAPI void elm_run(void);
    EAPI void elm_exit(void);
-   
+
+/**************************************************************************/   
    /* Generic Elm Object */
-#define Elm_Obj_Class \
+#define Elm_Obj_Class_Methods \
    void (*del)                        (Elm_Obj *obj); \
    void (*ref)                        (Elm_Obj *obj); \
    void (*unref)                      (Elm_Obj *obj); \
-   Elm_Callback *(*callback_add)      (Elm_Obj *obj, Elm_Callback_Type type, Elm_Callback cb, void *data); \
-   void (*child_add)                  (Elm_Obj *obj, Elm_Obj *child); \
-   \
-   int           refs; \
-   Elm_Obj      *parent; \
-   Evas_List    *children; \
-   Evas_List    *callbacks; \
-   unsigned char delete_me : 1
+   Elm_Callback *(*callback_add)      (Elm_Obj *obj, Elm_Callback_Type type, Elm_Callback_Func func, void *data); \
+   void (*child_add)                  (Elm_Obj *obj, Elm_Obj *child)
+#define Elm_Obj_Class_All Elm_Obj_Class_Methods; \
+   void          *clas; /* parent class fo those that inherit */ \
+   Elm_Obj       *parent; \
+   Evas_List     *children; \
+   Evas_List     *callbacks; \
+   int            refs; \
+   unsigned char  delete_me : 1
    
+   struct _Elm_Obj_Class
+     {
+	void *parent;
+	Elm_Obj_Class_Methods;
+     };
    struct _Elm_Obj
      {
-	Elm_Obj_Class;
+	Elm_Obj_Class_All;
      };
 #define ELM_OBJ(o) ((Elm_Obj *)o)   
    
+/**************************************************************************/   
+   /* Callback Object */
+#define Elm_Callback_Class_Methods
+#define Elm_Callback_Class_All Elm_Callback_Class_Methods; \
+   Elm_Callback_Class_Methods; \
+   Elm_Callback_Type  type; \
+   Elm_Callback_Func  func; \
+   void              *data;
+   struct _Elm_Callback_Class
+     {
+	void *parent;
+	Elm_Callback_Class_Methods;
+     };
    struct _Elm_Callback
      {
-	Elm_Obj_Class;
-	
-	Elm_Callback_Type  type;
-	Elm_Callback_Func  func;
-	void              *data;
+	Elm_Obj_Class_All;
+	Elm_Callback_Class_All;
      };
+
+/**************************************************************************/   
+   /* Window Object */
+#define Elm_Win_Class_Methods \
+   void (*name_set)  (Elm_Win *win, const char *name); \
+   void (*title_set) (Elm_Win *win, const char *title); \
+   void (*show)      (Elm_Win *win); \
+   void (*hide)      (Elm_Win *win)
+#define Elm_Win_Class_All Elm_Win_Class_Methods; \
+   Elm_Win_Type  type; \
+   const char   *name; \
+   const char   *title; \
+   int           w, h; \
+   unsigned char autodel;
    
    /* Object specific ones */
    EAPI Elm_Win *elm_win_new(void);
+   struct _Elm_Win_Class
+     {
+	void *parent;
+	Elm_Win_Class_Methods;
+     };
    struct _Elm_Win
      {
-	Elm_Obj_Class;
-	
-	void (*name_set)  (Elm_Win *win, const char *name);
-	void (*title_set) (Elm_Win *win, const char *title);
-	void (*show)      (Elm_Win *win);
-	void (*hide)      (Elm_Win *win);
-	
-	Elm_Win_Type  type;
-	const char   *name;
-	const char   *title;
+	Elm_Obj_Class_All;
+	Elm_Win_Class_All;
 	
 	// FIXME: private - hide
 	Ecore_Evas *ee;
 	Evas       *evas;
+	Ecore_Job  *deferred_resize_job;
      };
    
 #ifdef __cplusplus

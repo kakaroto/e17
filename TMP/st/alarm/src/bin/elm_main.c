@@ -2,6 +2,7 @@
 #include "elm_priv.h"
 
 Elm_Engine _elm_engine = ELM_SOFTWARE_X11;
+char *_elm_appname = NULL;
 
 static int
 _elm_signal_exit(void *data, int ev_type, void *ev)
@@ -24,11 +25,14 @@ elm_init(int argc, char **argv)
    ecore_evas_init(); // FIXME: check errors
    
    ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, _elm_signal_exit, NULL);
+   
+   _elm_appname = strdup(ecore_file_file_get(argv[0]));
 }
 
 EAPI void
 elm_shutdown(void)
 {
+   free(_elm_appname);
    ecore_evas_shutdown();
    edje_shutdown();
    evas_shutdown();

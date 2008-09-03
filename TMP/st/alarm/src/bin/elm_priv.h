@@ -17,5 +17,9 @@ Elm_Callback *_elm_callback_new(void);
 void _elm_callback_call(Elm_Obj *obj, Elm_Callback_Type, void *info);
 
 extern Elm_Engine _elm_engine;
+extern char *_elm_appname;
 
+extern Elm_Obj_Class _elm_obj_class;
+extern Elm_Win_Class _elm_win_class;
+  
 #endif

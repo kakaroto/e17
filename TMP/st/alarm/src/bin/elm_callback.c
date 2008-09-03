@@ -16,4 +16,17 @@ _elm_callback_call(Elm_Obj *obj, Elm_Callback_Type type, void *info)
 {
    // FIXME: call - safely. keep bitmask as to if a callback type is there
    // or not for efficiency
+   Evas_List *l;
+   
+   for (l = obj->callbacks; l; l = l->next)
+     {
+	Elm_Callback *cb;
+	
+	cb = l->data;
+	if (cb->type == type)
+	  {
+	     if (cb->func) cb->func(cb->data, obj, type, info);
+	     if (cb->callbacks) _elm_callback_call(cb, type, info);
+	  }
+     }
 }

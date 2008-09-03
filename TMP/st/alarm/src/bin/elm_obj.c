@@ -1,6 +1,33 @@
 #include <Elementary.h>
 #include "elm_priv.h"
 
+static void _elm_obj_del(Elm_Obj *obj);
+static void _elm_obj_ref(Elm_Obj *obj);
+static void _elm_obj_unref(Elm_Obj *obj);
+static Elm_Callback *_elm_obj_callback_add(Elm_Obj *obj, Elm_Callback_Type type, Elm_Callback_Func func, void *data);
+static void _elm_obj_child_add(Elm_Obj *obj, Elm_Obj *child);
+
+Elm_Obj_Class _elm_obj_class =
+{
+   NULL, /* parent */
+   _elm_obj_del,
+     _elm_obj_ref,
+     _elm_obj_unref,
+     _elm_obj_callback_add,
+     _elm_obj_child_add
+};
+
+static void
+_elm_obj_del(Elm_Obj *obj)
+{
+   if (!obj->delete_me)
+     {
+	obj->delete_me = 1;
+	_elm_callback_call(obj, ELM_CALLBACK_DEL, NULL);
+     }
+   _elm_obj_unref(obj);
+}
+
 static void
 _elm_obj_ref(Elm_Obj *obj)
 {
@@ -35,17 +62,6 @@ _elm_obj_unref(Elm_Obj *obj)
    free(obj);
 }
 
-static void
-_elm_obj_del(Elm_Obj *obj)
-{
-   if (!obj->delete_me)
-     {
-	obj->delete_me = 1;
-	_elm_callback_call(obj, ELM_CALLBACK_DEL, NULL);
-     }
-   _elm_obj_unref(obj);
-}
-
 static Elm_Callback *
 _elm_obj_callback_add(Elm_Obj *obj, Elm_Callback_Type type, Elm_Callback_Func func, void *data)
 {
@@ -75,5 +91,6 @@ _elm_obj_init(Elm_Obj *obj)
    obj->unref = _elm_obj_unref;
    obj->callback_add = _elm_obj_callback_add;
    obj->child_add = _elm_obj_child_add;
+   obj->clas = &_elm_obj_class;
    obj->refs = 1;
 }
