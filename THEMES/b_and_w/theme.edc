@@ -1,14 +1,14 @@
 // TODO (immediate other than finish)
 // 
-// textblock (make a new 'urgent' tag for things like battery popup)
+// textblock (done - review)
 // transition (done - review) - Could possibly have some day light and moon light photos.
 // entry (done - review) - Text select works oddly. Select a single letter like W to
 // see this odd behavior. Doesnt seem to offset correctly.
+// battery popup (done - review - see 'code' for notes)
 //
 // note: make these (and menu) use a common image with a logical name. 
-// sys (done - review)
+// sys (done - review - see 'code' for notes)
 // 
-// battery popup (should this just use textblock for text and have a set layout?)
 // fileman (list mode)
 // fileman (icon mode etc.)
 // tlist
@@ -35,7 +35,8 @@
 //	  so that 'artists' can understand and use it.)
 // wizard (just placeholder and basics - wizard code not complete)
 
-// notes: code. allow sys (shutdown, reboot etc.) to indicated borderless
+// Code: - allow sys (shutdown, reboot etc.) to indicated borderless
+//	     - make battery module text translatable and set by E, not in the theme.	
 
 /*
  * So how do themes work? 
@@ -7416,6 +7417,72 @@ collections { /* begin the collection of edje groups that are in this file */
 	 }
       }
    }
+   
+   group { name: "e/modules/battery/popup";
+      max:  420 96;
+      min:  240 64;
+      parts {
+	 part { name: "battery";
+	    type: SWALLOW;
+	    mouse_events: 1;
+	    repeat_events: 1;
+	    description { state: "default" 0.0;
+	       min: 1 1;
+	       max: 120 120;
+	       rel1.relative: 0.0 0.0;
+	       rel2.relative: 0.25 1.0;
+	       color: 255 255 255 255;
+	    }
+	 }
+	 part { name: "text";
+	    type: TEXT;
+	    effect: SOFT_SHADOW;
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       rel1 {
+		  relative: 1.0 0.5;
+		  to_x:battery;
+		  offset: 0 -12;
+	       }
+	       rel2 {
+		  relative: 1.0 0.5;
+		  offset: 0 -12;
+	       }
+	       text { text: "Your battery is low!";
+		  font: "Sans:style=Bold,Edje-Vera-Bold";
+		  size: 10;
+		  min: 1 1;
+		  align: 0.5 1.0;
+		  text_class: "module_large";
+	       }
+	    }
+	 }
+	 part { name: "text2";
+	    type: TEXT;
+	    effect: SOFT_SHADOW;
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       rel1 {
+		  relative: 1.0 0.5;
+		  to_x: battery;
+		  offset: 5 12;
+	       }
+	       rel2 {
+		  relative: 1.0 0.5;
+		  offset: 0 12;
+	       }
+	       text { text: "AC power is recommended.";
+		  font: "Sans:style=Bold,Edje-Vera-Bold";
+		  size: 10;
+		  min: 1 1;
+		  align: 0.5 1.0;
+		  text_class: "module_large";
+	       }
+	    }
+	 }
+      }
+   }
+   
 /////////////////////////////////////////////////////////////////////////////
    /*** MOD: TEMPERATURE ***/
    group { name: "e/modules/temperature/main";
@@ -9141,10 +9208,6 @@ collections { /* begin the collection of edje groups that are in this file */
 	 }
       }
    }
-
-/////////////////////////////////////////////////////////////////////////////
-   /*** ERROR DIALOG ***/
-// FIXME: DO
 
 /////////////////////////////////////////////////////////////////////////////
    /*** CONFIGURATION PANEL ***/
@@ -11031,8 +11094,8 @@ collections { /* begin the collection of edje groups that are in this file */
 //	  box even when there isnt an icon there. This fixes
 //	  the size of ilist items without icons so they 
 //	  are regular. Is this a fixme for ilist.c?
-
-// FIXME: ilist stacking and raising isnt working quite right.
+// FIXME: Mekius reported that the shading isnt perfect.
+//	      But he is a bit of a perfectionist :D I do agree tho. (Toma)
 
    group { name: "e/widgets/ilist";
       data.item: "stacking" "above";
@@ -12013,6 +12076,10 @@ collections { /* begin the collection of edje groups that are in this file */
 	       rel2.to:  "e.swallow.content";
 	       color: 255 255 255 255;
 	    }
+	    description { state:    "disabled" 0.0;
+	       inherit:  "default" 0.0;
+	       color: 255 255 255 0;
+	    }
 	 }
 	 part { name:  "e.swallow.content";
 	    type:  SWALLOW;
@@ -12048,25 +12115,18 @@ collections { /* begin the collection of edje groups that are in this file */
 	    source: "border";
 	    action: SIGNAL_EMIT "e,action,click" "";
 	 }
-
-// FIXME: Is this used? The 'disabled' state from the old
-//             theme was 'inherit: default' and nothing else.
-/*
-	 program {
-	     name: "disable";
+	 program { name: "disable";
 	     signal: "e,state,disabled";
 	     source: "e";
 	     action: STATE_SET "disabled" 0.0;
-	     target: "overlay";
+	     target: "content_clip";
 	 }
-	 program {
-	     name: "enable";
+	 program { name: "enable";
 	     signal: "e,state,enabled";
 	     source: "e";
 	     action: STATE_SET "default" 0.0;
-	     target: "overlay";
+	     target: "content_clip";
 	 }
-*/
       }
    }
    
@@ -12261,8 +12321,7 @@ collections { /* begin the collection of edje groups that are in this file */
       }
    }
 
-// FIXME: Better graphics.
-// FIXME: Wallpaper scale. % sign messes with the alignment?
+// FIXME: Virtual Desktops. Horizontal Slider weird when >10
 
    group { name: "e/widgets/slider_vertical";
       images {
@@ -12894,8 +12953,8 @@ collections { /* begin the collection of edje groups that are in this file */
 	 style { name: "textblock_style";
 	    base: "font=Sans,Edje-Vera font_size=10 align=left color=#000 style=shadow shadow_color=#ffffff80 wrap=word";
 	    tag:  "title" "+ font=Sans:style=Bold,Edje-Vera-Bold  font_size=12 style=soft_shadow color=#fff shadow_color=#00000021";
-	    tag:  "/title" "-";
-	    tag:  "hilight" "+ font=Sans:style=Bold,Edje-Vera-Bold style=glow color=#fff glow2_color=#333 glow_color=#b01010";
+	    tag:  "hilight" "+ font=Sans:style=Bold,Edje-Vera-Bold style=glow color=#fff glow2_color=#333333be glow_color=#0000005a";
+	    tag:  "urgent" "+ font=Sans:style=Bold,Edje-Vera-Bold style=glow color=#fff glow2_color=#333 glow_color=#b01010";
 	    tag:  "b" "+ font=Sans:style=Bold,Edje-Vera-Bold";
 	    tag:  "br" "\n";
 	 }
