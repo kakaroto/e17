@@ -1,0 +1,9 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Alarm
+Comment=Alarm Clock
+Exec=alarm
+Icon=alarm
+Terminal=false
+Type=Application
+Categories=Application;Utilities;
