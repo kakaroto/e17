@@ -19,7 +19,15 @@ static E_DBus_Signal_Handler *namech_h = NULL;
 static E_DBus_Signal_Handler *namech_system_h = NULL;
 
 static Ecore_Timer *try_again_timer = NULL;
-static int success = 0;
+
+typedef enum _Phone_Sys
+{
+   PH_SYS_UNKNOWN,
+   PH_SYS_QTOPIA,
+   PH_SYS_FSO
+} Phone_Sys;
+
+static Phone_Sys detected_system = PH_SYS_UNKNOWN;
 
 /***************************************************************************/
 typedef struct _Instance Instance;
@@ -58,8 +66,10 @@ static E_Module *mod = NULL;
 static int try_again(void *data);
 static void *signal_unmarhsall(DBusMessage *msg, DBusError *err);
 static void *operator_unmarhsall(DBusMessage *msg, DBusError *err);
-static void signal_callback(void *data, void *ret, DBusError *err);
-static void operator_callback(void *data, void *ret, DBusError *err);
+static void signal_callback_qtopia(void *data, void *ret, DBusError *err);
+static void signal_callback_fso(void *data, void *ret, DBusError *err);
+static void operator_callback_qtopia(void *data, void *ret, DBusError *err);
+static void operator_callback_fso(void *data, void *ret, DBusError *err);
 static void signal_result_free(void *data);
 static void operator_result_free(void *data);
 static void get_signal(void *data);
@@ -73,7 +83,7 @@ try_again(void *data)
 {
    get_signal(data);
    get_operator(data);
-   try_again_timer = 0;
+   try_again_timer = NULL;
    return 0;
 }
 
@@ -266,8 +276,6 @@ update_operator(char *op, void *data)
    if ((poper) && (op) && (!strcmp(op, poper))) return;
    if (op) inst->oper = strdup(op);
    else inst->oper = NULL;
-   if (((op) && (!poper)) || ((!op) && (poper)))
-   
    if (inst->oper != poper)
      {
 	Edje_Message_String msg;
@@ -280,13 +288,13 @@ update_operator(char *op, void *data)
 }
 
 static void
-update_signal(int signal, void *data)
+update_signal(int sig, void *data)
 {
    Instance *inst = data;
    int pstrength;
    
    pstrength = inst->strength;
-   inst->strength = signal;
+   inst->strength = sig;
 
    if (inst->strength != pstrength)
      {
@@ -309,17 +317,17 @@ update_signal(int signal, void *data)
 static void *
 signal_unmarhsall(DBusMessage *msg, DBusError *err)
 {
-   dbus_int32_t str = -1;
+   dbus_int32_t val = -1;
    
-   if (dbus_message_get_args(msg, NULL, DBUS_TYPE_INT32, &str, DBUS_TYPE_INVALID))
+   if (dbus_message_get_args(msg, NULL, DBUS_TYPE_INT32, &val, DBUS_TYPE_INVALID))
      {
-	int *str_ret;
+	int *val_ret;
 	
-	str_ret = malloc(sizeof(int));
-	if (str_ret)
+	val_ret = malloc(sizeof(int));
+	if (val_ret)
 	  {
-	     *str_ret = str;
-	     return str_ret;
+	     *val_ret = val;
+	     return val_ret;
 	  }
      }
    return NULL;
@@ -345,92 +353,110 @@ operator_unmarhsall(DBusMessage *msg, DBusError *err)
 }
 
 static void
-signal_callback(void *data, void *ret, DBusError *err)
+signal_callback_qtopia(void *data, void *ret, DBusError *err)
 {
    if (ret)
      {
-	if (!success)
+	int *val_ret;
+	
+	if ((detected_system == PH_SYS_UNKNOWN) && (changed_h) && (conn))
 	  {
-	     if (changed_h)
-	       {
-		  if (conn)
-		    {
-		       e_dbus_signal_handler_del(conn, changed_h);
-		       changed_h = e_dbus_signal_handler_add(conn,
-							     "org.openmoko.qtopia.Phonestatus",
-							     "/Status",
-							     "org.openmoko.qtopia.Phonestatus",
-							     "signalStrengthChanged",
-							     signal_changed, data);
-		    }
-	       }
-	     else if (changed_fso_h)
-	       {
-		  if (conn_system)
-		    {
-		       e_dbus_signal_handler_del(conn_system, changed_fso_h);
-		       changed_fso_h = e_dbus_signal_handler_add(conn_system,
-								 "org.freesmartphone.ogsmd",
-								 "/org/freesmartphone/GSM/Device",
-								 "org.freesmartphone.GSM.Network",
-								 "SignalStrength",
-								 signal_changed, data);
-		    }
-	       }
-	     success = 1;
+	     e_dbus_signal_handler_del(conn, changed_h);
+	     changed_h = e_dbus_signal_handler_add(conn,
+						   "org.openmoko.qtopia.Phonestatus",
+						   "/Status",
+						   "org.openmoko.qtopia.Phonestatus",
+						   "signalStrengthChanged",
+						   signal_changed, data);
+	     detected_system = PH_SYS_QTOPIA;
 	  }
-	int *str_ret;
-	str_ret = ret;
-	update_signal(*str_ret, data);
+	val_ret = ret;
+	update_signal(*val_ret, data);
      }
    else
      {
-	success = 0;
+	detected_system = PH_SYS_UNKNOWN;
 	if (try_again_timer) ecore_timer_del(try_again_timer);
 	try_again_timer = ecore_timer_add(1.0, try_again, data);
      }
 }
 
 static void
-operator_callback(void *data, void *ret, DBusError *err)
+signal_callback_fso(void *data, void *ret, DBusError *err)
 {
    if (ret)
      {
-	if (!success)
+	int *val_ret;
+	
+	if ((detected_system == PH_SYS_UNKNOWN) && (changed_fso_h) && (conn_system))
 	  {
-	     if (operatorch_h)
-	       {
-		  if (conn)
-		    {
-		       e_dbus_signal_handler_del(conn, operatorch_h);
-		       operatorch_h = e_dbus_signal_handler_add(conn,
-								"org.openmoko.qtopia.Phonestatus",
-								"/Status",
-								"org.openmoko.qtopia.Phonestatus",
-								"networkOperatorChanged",
-								operator_changed, data);
-		    }
-	       }
-	     else if (operatorch_fso_h)
-	       {
-		  if (conn_system)
-		    {
-		       e_dbus_signal_handler_del(conn_system, operatorch_h);
-		       operatorch_h = e_dbus_signal_handler_add(conn_system,
-								"org.freesmartphone.ogsmd",
-								"/org/freesmartphone/GSM/Device",
-								"org.freesmartphone.GSM.Network",
-								"networkOperatorChanged",
-								operator_changed, data);
-		    }
-	       }
-	     success = 1;
+	     e_dbus_signal_handler_del(conn_system, changed_fso_h);
+	     changed_fso_h = e_dbus_signal_handler_add(conn_system,
+						       "org.freesmartphone.ogsmd",
+						       "/org/freesmartphone/GSM/Device",
+						       "org.freesmartphone.GSM.Network",
+						       "SignalStrength",
+						       signal_changed, data);
+	     detected_system = PH_SYS_FSO;
+	  }
+	val_ret = ret;
+	update_signal(*val_ret, data);
+     }
+   else
+     {
+	detected_system = PH_SYS_UNKNOWN;
+	if (try_again_timer) ecore_timer_del(try_again_timer);
+	try_again_timer = ecore_timer_add(1.0, try_again, data);
+     }
+}
+
+static void
+operator_callback_qtopia(void *data, void *ret, DBusError *err)
+{
+   if (ret)
+     {
+	if ((detected_system == PH_SYS_UNKNOWN) && (operatorch_h) && (conn))
+	  {
+	     e_dbus_signal_handler_del(conn, operatorch_h);
+	     operatorch_h = e_dbus_signal_handler_add(conn,
+						      "org.openmoko.qtopia.Phonestatus",
+						      "/Status",
+						      "org.openmoko.qtopia.Phonestatus",
+						      "networkOperatorChanged",
+						      operator_changed, data);
+	     detected_system = PH_SYS_QTOPIA;
 	  }
 	update_operator(ret, data);
      }
    else
      {
-	success = 0;
+	detected_system = PH_SYS_UNKNOWN;
+	if (try_again_timer) ecore_timer_del(try_again_timer);
+	try_again_timer = ecore_timer_add(1.0, try_again, data);
+     }
+}
+
+static void
+operator_callback_fso(void *data, void *ret, DBusError *err)
+{
+   if (ret)
+     {
+	if ((detected_system == PH_SYS_UNKNOWN) && (operatorch_fso_h) && (conn_system))
+	  {
+	     e_dbus_signal_handler_del(conn_system, operatorch_fso_h);
+	     operatorch_fso_h = e_dbus_signal_handler_add(conn_system,
+							  "org.freesmartphone.ogsmd",
+							  "/org/freesmartphone/GSM/Device",
+							  "org.freesmartphone.GSM.Network",
+							  "networkOperatorChanged",
+							  operator_changed, data);
+	     detected_system = PH_SYS_FSO;
+	  }
+	update_operator(ret, data);
+     }
+   else
+     {
+	detected_system = PH_SYS_UNKNOWN;
 	if (try_again_timer) ecore_timer_del(try_again_timer);
 	try_again_timer = ecore_timer_add(1.0, try_again, data);
      }
@@ -453,7 +479,7 @@ get_signal(void *data)
 {
    DBusMessage *msg;
    
-   if (conn)
+   if (((detected_system = PH_SYS_UNKNOWN) || (detected_system = PH_SYS_QTOPIA)) && (conn))
      {
 	msg = dbus_message_new_method_call("org.openmoko.qtopia.Phonestatus",
 					   "/Status",
@@ -463,12 +489,12 @@ get_signal(void *data)
 	  {
 	     e_dbus_method_call_send(conn, msg,
 				     signal_unmarhsall,
-				     signal_callback,
+				     signal_callback_qtopia,
 				     signal_result_free, -1, data);
 	     dbus_message_unref(msg);
 	  }
      }
-   if (conn_system)
+   if (((detected_system = PH_SYS_UNKNOWN) || (detected_system = PH_SYS_FSO)) && (conn_system))
      {
 	msg = dbus_message_new_method_call("org.freesmartphone.ogsmd",
 					   "/org/freesmartphone/GSM/Device",
@@ -478,7 +504,7 @@ get_signal(void *data)
 	  {
 	     e_dbus_method_call_send(conn_system, msg,
 				     signal_unmarhsall,
-				     signal_callback,
+				     signal_callback_fso,
 				     signal_result_free, -1, data);
 	     dbus_message_unref(msg);
 	  }
@@ -490,7 +516,7 @@ get_operator(void *data)
 {
    DBusMessage *msg, *msg2;
    
-   if (conn)
+   if (((detected_system = PH_SYS_UNKNOWN) || (detected_system = PH_SYS_QTOPIA)) && (conn))
      {
 	msg = dbus_message_new_method_call("org.openmoko.qtopia.Phonestatus",
 					   "/Status",
@@ -500,12 +526,12 @@ get_operator(void *data)
 	  {
 	     e_dbus_method_call_send(conn, msg,
 				     operator_unmarhsall,
-				     operator_callback,
+				     operator_callback_qtopia,
 				     operator_result_free, -1, data);
 	     dbus_message_unref(msg);
 	  }
      }
-   if (conn_system)
+   if (((detected_system = PH_SYS_UNKNOWN) || (detected_system = PH_SYS_FSO)) && (conn_system))
      {
 	msg = dbus_message_new_method_call("org.freesmartphone.ogsmd",
 					   "/org/freesmartphone/GSM/Device",
@@ -515,7 +541,7 @@ get_operator(void *data)
 	  {
 	     e_dbus_method_call_send(conn_system, msg,
 				     operator_unmarhsall,
-				     operator_callback,
+				     operator_callback_fso,
 				     operator_result_free, -1, data);
 	     dbus_message_unref(msg);
 	  }
@@ -526,19 +552,19 @@ static void
 signal_changed(void *data, DBusMessage *msg)
 {
    DBusError err;
-   dbus_int32_t str = -1;
+   dbus_int32_t val = -1;
    
    dbus_error_init(&err);
-   if (!dbus_message_get_args(msg, &err, DBUS_TYPE_INT32, &str, DBUS_TYPE_INVALID))
+   if (!dbus_message_get_args(msg, &err, DBUS_TYPE_INT32, &val, DBUS_TYPE_INVALID))
      return;
-   update_signal(str, data);
+   update_signal(val, data);
 }
 
 static void
 operator_changed(void *data, DBusMessage *msg)
 {
    DBusError err;
-   char *str;
+   char *str = NULL;
    
    dbus_error_init(&err);
    if (!dbus_message_get_args(msg, &err, DBUS_TYPE_STRING, &str, DBUS_TYPE_INVALID))
@@ -559,66 +585,54 @@ name_changed(void *data, DBusMessage *msg)
 			      DBUS_TYPE_STRING, &s3,
 			      DBUS_TYPE_INVALID))
      return;
-   if (!strcmp(s1, "org.openmoko.qtopia.Phonestatus"))
+   if ((!strcmp(s1, "org.openmoko.qtopia.Phonestatus")) && (conn))
      {
 	if (changed_h)
 	  {
-	     if (conn)
-	       {
-		  e_dbus_signal_handler_del(conn, changed_h);
-		  changed_h = e_dbus_signal_handler_add(conn,
-							"org.openmoko.qtopia.Phonestatus",
-							"/Status",
-							"org.openmoko.qtopia.Phonestatus",
-							"signalStrengthChanged",
-							signal_changed, data);
-		  get_signal(data);
-	       }
+	     e_dbus_signal_handler_del(conn, changed_h);
+	     changed_h = e_dbus_signal_handler_add(conn,
+						   "org.openmoko.qtopia.Phonestatus",
+						   "/Status",
+						   "org.openmoko.qtopia.Phonestatus",
+						   "signalStrengthChanged",
+						   signal_changed, data);
+	     get_signal(data);
 	  }
 	if (operatorch_h)
 	  {
-	     if (conn)
-	       {
-		  e_dbus_signal_handler_del(conn, operatorch_h);
-		  operatorch_h = e_dbus_signal_handler_add(conn,
-							   "org.openmoko.qtopia.Phonestatus",
-							   "/Status",
-							   "org.openmoko.qtopia.Phonestatus",
-							   "networkOperatorChanged",
-							   operator_changed, data);
-		  get_operator(data);
-	       }
+	     e_dbus_signal_handler_del(conn, operatorch_h);
+	     operatorch_h = e_dbus_signal_handler_add(conn,
+						      "org.openmoko.qtopia.Phonestatus",
+						      "/Status",
+						      "org.openmoko.qtopia.Phonestatus",
+						      "networkOperatorChanged",
+						      operator_changed, data);
+	     get_operator(data);
 	  }
      }
-   else if (!strcmp(s1, "org.freesmartphone.ogsmd"))
+   else if ((!strcmp(s1, "org.freesmartphone.ogsmd")) && (conn_system))
      {
-	if (changed_fso_h)
+	if (changed_fso_h) 
 	  {
-	     if (conn_system)
-	       {
-		  e_dbus_signal_handler_del(conn_system, changed_fso_h);
-		  changed_fso_h = e_dbus_signal_handler_add(conn_system,
-							    "org.freesmartphone.ogsmd",
-							    "/org/freesmartphone/GSM/Device",
-							    "org.freesmartphone.GSM.Network",
-							    "SignalStrength",
-							    signal_changed, data);
-		  get_signal(data);
-	       }
+	     e_dbus_signal_handler_del(conn_system, changed_fso_h);
+	     changed_fso_h = e_dbus_signal_handler_add(conn_system,
+						       "org.freesmartphone.ogsmd",
+						       "/org/freesmartphone/GSM/Device",
+						       "org.freesmartphone.GSM.Network",
+						       "SignalStrength",
+						       signal_changed, data);
+	     get_signal(data);
 	  }
 	if (operatorch_fso_h)
 	  {
-	     if (conn_system)
-	       {
-		  e_dbus_signal_handler_del(conn_system, operatorch_h);
-		  operatorch_h = e_dbus_signal_handler_add(conn_system,
-							   "org.freesmartphone.ogsmd",
-							   "/org/freesmartphone/GSM/Device",
-							   "org.freesmartphone.GSM.Network",
-							   "networkOperatorChanged",
-							   operator_changed, data);
-		  get_operator(data);
-	       }
+	     e_dbus_signal_handler_del(conn_system, operatorch_h);
+	     operatorch_h = e_dbus_signal_handler_add(conn_system,
+						      "org.freesmartphone.ogsmd",
+						      "/org/freesmartphone/GSM/Device",
+						      "org.freesmartphone.GSM.Network",
+						      "networkOperatorChanged",
+						      operator_changed, data);
+	     get_operator(data);
 	  }
      }
    return;
