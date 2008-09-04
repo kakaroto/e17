@@ -18,7 +18,8 @@ void _elm_obj_nest_pop(void);
 int _elm_obj_del_defer(Elm_Obj *obj);
 Elm_Cb *_elm_cb_new(void);
 void _elm_cb_call(Elm_Obj *obj, Elm_Cb_Type, void *info);
-
+int _elm_theme_set(Evas_Object *o, const char *clas, const char *group);
+    
 extern Elm_Engine _elm_engine;
 extern char *_elm_appname;
 

@@ -99,7 +99,10 @@ _elm_win_resize_job(Elm_Win *win)
 {
    win->deferred_resize_job = NULL;
    ecore_evas_geometry_get(win->ee, NULL, NULL, &(win->w), &(win->h));
+   evas_object_resize(win->background, win->w, win->h);
+   _elm_obj_nest_push();
    _elm_cb_call(ELM_OBJ(win), ELM_CB_RESIZE, NULL);
+   _elm_obj_nest_pop();
 }
 
 static void
@@ -175,6 +178,11 @@ elm_win_new(void)
    evas_font_cache_set(win->evas, 512 * 1024);
    evas_font_path_append(win->evas, "fonts");
    edje_frametime_set(1.0 / 30.0);
+   
+   win->background = edje_object_add(win->evas);
+   _elm_theme_set(win->background, "win", "win/bg");
+   evas_object_resize(win->background, 100, 100);
+   evas_object_show(win->background);
    
    return win;
 }

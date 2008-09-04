@@ -8,7 +8,7 @@ images {
 }
 
 collections {
-   group { name: "background";
+   group { name: "win/bg";
       parts {
 	 part { name: "base";
 	    mouse_events: 0;
@@ -18,7 +18,7 @@ collections {
 	       fill.size.offset: 264 264;
 	    }
 	 }
-	 part { name: "alarm.swallow.contents";
+	 part { name: "elm.swallow.contents";
 	    type: SWALLOW;
 	    description { state: "default" 0.0;
 	       rel1.offset:  10 10;

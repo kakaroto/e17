@@ -191,6 +191,7 @@ extern "C" {
 	Evas           *evas; /* private */
 	Ecore_X_Window  xwin; /* private */
 	Ecore_Job      *deferred_resize_job; /* private */
+	Evas_Object    *background; /* private */
      };
    
 #ifdef __cplusplus

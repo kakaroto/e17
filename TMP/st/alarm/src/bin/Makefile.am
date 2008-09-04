@@ -10,7 +10,8 @@ elm_priv.h \
 elm_main.c \
 elm_obj.c \
 elm_callback.c \
-elm_win.c
+elm_win.c \
+elm_theme.c
 
 bin_PROGRAMS = alarm
 
