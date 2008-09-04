@@ -45,6 +45,30 @@ _elm_win_hide(Elm_Win *win)
 }
 
 static void
+_elm_win_type_set(Elm_Win *win, Elm_Callback_Type type)
+{
+   if (win->win_type == type) return;
+   win->win_type = type;
+   switch (win->win_type)
+     {
+      case ELM_WIN_BASIC:
+	if (win->xwin) ecore_x_netwm_window_type_set(win->xwin, ECORE_X_WINDOW_TYPE_NORMAL);
+	// FIXME: if child object is a scroll region, then put its child back
+	break;
+      case ELM_WIN_DIALOG_BASIC:
+	if (win->xwin) ecore_x_netwm_window_type_set(win->xwin, ECORE_X_WINDOW_TYPE_DIALOG);
+	// FIXME: if child object is a scroll region, then put its child back
+	break;
+      case ELM_WIN_SCROLLABLE:
+	if (win->xwin) ecore_x_netwm_window_type_set(win->xwin, ECORE_X_WINDOW_TYPE_NORMAL);
+	// FIXME: take child object and put into scroll region
+	break;
+      default:
+	break;
+     }
+}
+
+static void
 _elm_win_del(Elm_Obj *obj)
 {
    if (((Elm_Win *)obj)->ee)
@@ -94,7 +118,8 @@ elm_win_new(void)
    
    _elm_obj_init(ELM_OBJ(win));
    win->clas = &_elm_win_class;
-
+   win->type = ELM_OBJ_WIN;
+   
    win->del = _elm_win_del;
    
    win->name_set = _elm_win_name_set;
@@ -106,6 +131,7 @@ elm_win_new(void)
      {
       case ELM_SOFTWARE_X11:
 	win->ee = ecore_evas_software_x11_new(NULL, 0, 0, 0, 100, 100);
+	if (win->ee) win->xwin = ecore_evas_software_x11_window_get(win->ee);
 	break;
       case ELM_SOFTWARE_FB:
 	win->ee = ecore_evas_fb_new(NULL, 0, 100, 100);
@@ -113,12 +139,15 @@ elm_win_new(void)
 	break;
       case ELM_SOFTWARE_16_X11:
 	win->ee = ecore_evas_software_x11_16_new(NULL, 0, 0, 0, 100, 100);
+	if (win->ee) win->xwin = ecore_evas_software_x11_16_window_get(win->ee);
 	break;
       case ELM_XRENDER_X11:
 	win->ee = ecore_evas_xrender_x11_new(NULL, 0, 0, 0, 100, 100);
+	if (win->ee) win->xwin = ecore_evas_xrender_x11_window_get(win->ee);
 	break;
       case ELM_OPENGL_X11:
 	win->ee = ecore_evas_gl_x11_new(NULL, 0, 0, 0, 100, 100);
+	if (win->ee) win->xwin = ecore_evas_gl_x11_window_get(win->ee);
 	break;
       default:
 	break;

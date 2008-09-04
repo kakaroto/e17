@@ -16,8 +16,6 @@
  * 
  */
 
-// FIXME: this should become the simple widget/toolkit main header.
-
 // FIXME: install elementary config.h for use later
 #include "config.h"
 
@@ -67,6 +65,13 @@ extern "C" {
 #endif
    
    /* Types here */
+   typedef enum _Elm_Obj_Type
+     {
+	ELM_OBJ_OBJ,
+	ELM_OBJ_CALLBACK,
+	ELM_OBJ_WIN
+     } Elm_Obj_Type;
+   
    typedef enum _Elm_Callback_Type
      {
 	ELM_CALLBACK_DEL,
@@ -82,7 +87,6 @@ extern "C" {
 	  ELM_WIN_DIALOG_BASIC,
 	  ELM_WIN_SCROLLABLE
      } Elm_Win_Type;
-   
    
    typedef struct _Elm_Obj_Class       Elm_Obj_Class;
    typedef struct _Elm_Obj             Elm_Obj;
@@ -110,6 +114,7 @@ extern "C" {
    Elm_Callback *(*callback_add)      (Elm_Obj *obj, Elm_Callback_Type type, Elm_Callback_Func func, void *data); \
    void (*child_add)                  (Elm_Obj *obj, Elm_Obj *child)
 #define Elm_Obj_Class_All Elm_Obj_Class_Methods; \
+   Elm_Obj_Type   type; \
    void          *clas; /* parent class fo those that inherit */ \
    Elm_Obj       *parent; \
    Evas_List     *children; \
@@ -133,7 +138,7 @@ extern "C" {
 #define Elm_Callback_Class_Methods
 #define Elm_Callback_Class_All Elm_Callback_Class_Methods; \
    Elm_Callback_Class_Methods; \
-   Elm_Callback_Type  type; \
+   Elm_Callback_Type  cb_type; \
    Elm_Callback_Func  func; \
    void              *data;
    struct _Elm_Callback_Class
@@ -158,7 +163,7 @@ extern "C" {
 // cover methods & state for:
 // type, fullscreen, icon, activate, shaped, alpha, borderless, iconified
 #define Elm_Win_Class_All Elm_Win_Class_Methods; \
-   Elm_Win_Type  type; \
+   Elm_Win_Type  win_type; \
    const char   *name; \
    const char   *title; \
    int           w, h; \
@@ -176,10 +181,10 @@ extern "C" {
 	Elm_Obj_Class_All;
 	Elm_Win_Class_All;
 	
-	// FIXME: private - hide
-	Ecore_Evas *ee;
-	Evas       *evas;
-	Ecore_Job  *deferred_resize_job;
+	Ecore_Evas     *ee; /* private */
+	Evas           *evas; /* private */
+	Ecore_X_Window  xwin; /* private */
+	Ecore_Job      *deferred_resize_job; /* private */
      };
    
 #ifdef __cplusplus

@@ -91,6 +91,7 @@ _elm_obj_init(Elm_Obj *obj)
    obj->unref = _elm_obj_unref;
    obj->callback_add = _elm_obj_callback_add;
    obj->child_add = _elm_obj_child_add;
+   obj->type = ELM_OBJ_OBJ;
    obj->clas = &_elm_obj_class;
    obj->refs = 1;
 }
