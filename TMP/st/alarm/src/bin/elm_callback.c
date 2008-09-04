@@ -1,36 +1,50 @@
 #include <Elementary.h>
 #include "elm_priv.h"
 
-Elm_Callback *
-_elm_callback_new(void)
+static void
+_elm_cb_del(Elm_Obj *obj)
 {
-   Elm_Callback *cb;
+   if (_elm_obj_del_defer(obj)) return;
+   if (obj->parent) /* callbacks are special children */
+     {
+	obj->parent->cbs = evas_list_remove(obj->parent->cbs, obj);
+	obj->parent = NULL;
+     }
+   /* chain the original object type  - we keep the basic object class */
+   ((Elm_Obj_Class *)(obj->clas))->del(obj);
+}
+    
+Elm_Cb *
+_elm_cb_new(void)
+{
+   Elm_Cb *cb;
    
-   cb = ELM_NEW(Elm_Callback);
+   cb = ELM_NEW(Elm_Cb);
    _elm_obj_init(ELM_OBJ(cb));
-   cb->type = ELM_OBJ_CALLBACK;
+   cb->type = ELM_OBJ_CB;
+
+   cb->del = _elm_cb_del;
+
    return cb;
 }
 
 void
-_elm_callback_call(Elm_Obj *obj, Elm_Callback_Type type, void *info)
+_elm_cb_call(Elm_Obj *obj, Elm_Cb_Type type, void *info)
 {
-   // FIXME: call - safely. keep bitmask as to if a callback type is there
-   // or not for efficiency
    Evas_List *l;
    
-   for (l = obj->callbacks; l; l = l->next)
+   _elm_obj_nest_push();
+   for (l = obj->cbs; l; l = l->next)
      {
-	Elm_Callback *cb;
+	Elm_Cb *cb;
 	
 	cb = l->data;
 	if (cb->delete_me) continue;
 	if (cb->cb_type == type)
 	  {
-	     // FIXME: fi callback deletes cb or obj or a parent obj... what
-	     // then?
 	     if (cb->func) cb->func(cb->data, obj, type, info);
-	     if (cb->callbacks) _elm_callback_call(cb, type, info);
+	     if (cb->cbs) _elm_cb_call(cb, type, info);
 	  }
      }
+   _elm_obj_nest_pop();
 }

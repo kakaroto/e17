@@ -13,8 +13,11 @@ typedef enum _Elm_Engine
 #define ELM_NEW(t) calloc(1, sizeof(t))
 
 void _elm_obj_init(Elm_Obj *obj);
-Elm_Callback *_elm_callback_new(void);
-void _elm_callback_call(Elm_Obj *obj, Elm_Callback_Type, void *info);
+void _elm_obj_nest_push(void);
+void _elm_obj_nest_pop(void);
+int _elm_obj_del_defer(Elm_Obj *obj);
+Elm_Cb *_elm_cb_new(void);
+void _elm_cb_call(Elm_Obj *obj, Elm_Cb_Type, void *info);
 
 extern Elm_Engine _elm_engine;
 extern char *_elm_appname;

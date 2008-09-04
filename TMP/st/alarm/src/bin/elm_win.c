@@ -45,7 +45,7 @@ _elm_win_hide(Elm_Win *win)
 }
 
 static void
-_elm_win_type_set(Elm_Win *win, Elm_Callback_Type type)
+_elm_win_type_set(Elm_Win *win, Elm_Win_Type type)
 {
    if (win->win_type == type) return;
    win->win_type = type;
@@ -71,9 +71,9 @@ _elm_win_type_set(Elm_Win *win, Elm_Callback_Type type)
 static void
 _elm_win_del(Elm_Obj *obj)
 {
+   if (_elm_obj_del_defer(obj)) return;
    if (((Elm_Win *)obj)->ee)
      {
-	ecore_evas_hide(((Elm_Win *)obj)->ee);
 	ecore_evas_free(((Elm_Win *)obj)->ee);
 	evas_stringshare_del(((Elm_Win *)obj)->title);
 	evas_stringshare_del(((Elm_Win *)obj)->name);
@@ -88,8 +88,10 @@ _elm_win_delete_request(Ecore_Evas *ee)
 {
    Elm_Win *win = ecore_evas_data_get(ee, "__Elm");
    if (!win) return;
-   _elm_callback_call(ELM_OBJ(win), ELM_CALLBACK_DEL_REQ, NULL);
+   _elm_obj_nest_push();
+   _elm_cb_call(ELM_OBJ(win), ELM_CB_DEL_REQ, NULL);
    if (win->autodel) win->del(ELM_OBJ(win));
+   _elm_obj_nest_pop();
 }
 
 static void
@@ -97,7 +99,7 @@ _elm_win_resize_job(Elm_Win *win)
 {
    win->deferred_resize_job = NULL;
    ecore_evas_geometry_get(win->ee, NULL, NULL, &(win->w), &(win->h));
-   _elm_callback_call(ELM_OBJ(win), ELM_CALLBACK_RESIZE, NULL);
+   _elm_cb_call(ELM_OBJ(win), ELM_CB_RESIZE, NULL);
 }
 
 static void

@@ -5,14 +5,14 @@
  */
 
 static void
-on_win_resize(void *data, Elm_Win *win, Elm_Callback_Type type, void *info)
+on_win_resize(void *data, Elm_Win *win, Elm_Cb_Type type, void *info)
 {
    /* window is resized */
    printf("resize to: %ix%i\n", win->w, win->h);
 }
 
 static void
-on_win_del_req(void *data, Elm_Win *win, Elm_Callback_Type type, void *info)
+on_win_del_req(void *data, Elm_Win *win, Elm_Cb_Type type, void *info)
 {
    /* because autodel is on - after this callback the window will be deleted */
    /* but to be explicit - exit the app when window is closed */
@@ -37,9 +37,9 @@ main(int argc, char **argv)
 		      * this means the del+req handler has to delete it. by
 		      * default it is on */
    /* add a callback that is called when the user tries to close the window */
-   win->callback_add(win, ELM_CALLBACK_DEL_REQ, on_win_del_req, NULL);
+   win->cb_add(win, ELM_CB_DEL_REQ, on_win_del_req, NULL);
    /* add a callback that gets called when the window is resized */
-   win->callback_add(win, ELM_CALLBACK_RESIZE, on_win_resize, NULL);
+   win->cb_add(win, ELM_CB_RESIZE, on_win_resize, NULL);
    
    win->show(win); /* show the window */
    

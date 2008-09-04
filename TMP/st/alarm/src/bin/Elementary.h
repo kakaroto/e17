@@ -68,18 +68,18 @@ extern "C" {
    typedef enum _Elm_Obj_Type
      {
 	ELM_OBJ_OBJ,
-	ELM_OBJ_CALLBACK,
+	ELM_OBJ_CB,
 	ELM_OBJ_WIN
      } Elm_Obj_Type;
    
-   typedef enum _Elm_Callback_Type
+   typedef enum _Elm_Cb_Type
      {
-	ELM_CALLBACK_DEL,
-	  ELM_CALLBACK_CHILD_ADD,
-	  ELM_CALLBACK_CHILD_DEL,
-	  ELM_CALLBACK_DEL_REQ,
-	  ELM_CALLBACK_RESIZE
-     } Elm_Callback_Type;
+	ELM_CB_DEL,
+	  ELM_CB_CHILD_ADD,
+	  ELM_CB_CHILD_DEL,
+	  ELM_CB_DEL_REQ,
+	  ELM_CB_RESIZE
+     } Elm_Cb_Type;
    
    typedef enum _Elm_Win_Type
      {
@@ -90,11 +90,11 @@ extern "C" {
    
    typedef struct _Elm_Obj_Class       Elm_Obj_Class;
    typedef struct _Elm_Obj             Elm_Obj;
-   typedef struct _Elm_Callback        Elm_Callback;
+   typedef struct _Elm_Cb        Elm_Cb;
    typedef struct _Elm_Win_Class       Elm_Win_Class;
    typedef struct _Elm_Win             Elm_Win;
    
-   typedef void (*Elm_Callback_Func) (void *data, Elm_Obj *obj, Elm_Callback_Type type, void *info);
+   typedef void (*Elm_Cb_Func) (void *data, Elm_Obj *obj, Elm_Cb_Type type, void *info);
    
    /* API calls here */
 
@@ -111,16 +111,17 @@ extern "C" {
    void (*del)                        (Elm_Obj *obj); \
    void (*ref)                        (Elm_Obj *obj); \
    void (*unref)                      (Elm_Obj *obj); \
-   Elm_Callback *(*callback_add)      (Elm_Obj *obj, Elm_Callback_Type type, Elm_Callback_Func func, void *data); \
+   Elm_Cb *(*cb_add)                  (Elm_Obj *obj, Elm_Cb_Type type, Elm_Cb_Func func, void *data); \
    void (*child_add)                  (Elm_Obj *obj, Elm_Obj *child)
 #define Elm_Obj_Class_All Elm_Obj_Class_Methods; \
    Elm_Obj_Type   type; \
    void          *clas; /* parent class fo those that inherit */ \
    Elm_Obj       *parent; \
    Evas_List     *children; \
-   Evas_List     *callbacks; \
+   Evas_List     *cbs; \
    int            refs; \
-   unsigned char  delete_me : 1
+   unsigned char  delete_me : 1; \
+   unsigned char  delete_deferred : 1
    
    struct _Elm_Obj_Class
      {
@@ -135,21 +136,21 @@ extern "C" {
    
 /**************************************************************************/   
    /* Callback Object */
-#define Elm_Callback_Class_Methods
-#define Elm_Callback_Class_All Elm_Callback_Class_Methods; \
-   Elm_Callback_Class_Methods; \
-   Elm_Callback_Type  cb_type; \
-   Elm_Callback_Func  func; \
+#define Elm_Cb_Class_Methods
+#define Elm_Cb_Class_All Elm_Cb_Class_Methods; \
+   Elm_Cb_Class_Methods; \
+   Elm_Cb_Type  cb_type; \
+   Elm_Cb_Func  func; \
    void              *data;
-   struct _Elm_Callback_Class
+   struct _Elm_Cb_Class
      {
 	void *parent;
-	Elm_Callback_Class_Methods;
+	Elm_Cb_Class_Methods;
      };
-   struct _Elm_Callback
+   struct _Elm_Cb
      {
 	Elm_Obj_Class_All;
-	Elm_Callback_Class_All;
+	Elm_Cb_Class_All;
      };
 
 /**************************************************************************/   
