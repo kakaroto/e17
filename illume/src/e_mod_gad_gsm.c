@@ -479,7 +479,7 @@ get_signal(void *data)
 {
    DBusMessage *msg;
    
-   if (((detected_system = PH_SYS_UNKNOWN) || (detected_system = PH_SYS_QTOPIA)) && (conn))
+   if (((detected_system == PH_SYS_UNKNOWN) || (detected_system == PH_SYS_QTOPIA)) && (conn))
      {
 	msg = dbus_message_new_method_call("org.openmoko.qtopia.Phonestatus",
 					   "/Status",
@@ -494,7 +494,7 @@ get_signal(void *data)
 	     dbus_message_unref(msg);
 	  }
      }
-   if (((detected_system = PH_SYS_UNKNOWN) || (detected_system = PH_SYS_FSO)) && (conn_system))
+   if (((detected_system == PH_SYS_UNKNOWN) || (detected_system == PH_SYS_FSO)) && (conn_system))
      {
 	msg = dbus_message_new_method_call("org.freesmartphone.ogsmd",
 					   "/org/freesmartphone/GSM/Device",
@@ -516,7 +516,7 @@ get_operator(void *data)
 {
    DBusMessage *msg, *msg2;
    
-   if (((detected_system = PH_SYS_UNKNOWN) || (detected_system = PH_SYS_QTOPIA)) && (conn))
+   if (((detected_system == PH_SYS_UNKNOWN) || (detected_system == PH_SYS_QTOPIA)) && (conn))
      {
 	msg = dbus_message_new_method_call("org.openmoko.qtopia.Phonestatus",
 					   "/Status",
@@ -531,7 +531,7 @@ get_operator(void *data)
 	     dbus_message_unref(msg);
 	  }
      }
-   if (((detected_system = PH_SYS_UNKNOWN) || (detected_system = PH_SYS_FSO)) && (conn_system))
+   if (((detected_system == PH_SYS_UNKNOWN) || (detected_system == PH_SYS_FSO)) && (conn_system))
      {
 	msg = dbus_message_new_method_call("org.freesmartphone.ogsmd",
 					   "/org/freesmartphone/GSM/Device",
