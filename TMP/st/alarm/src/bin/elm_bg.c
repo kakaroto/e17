@@ -22,7 +22,6 @@ _elm_bg_custom_resize(void *data, Evas *a, Evas_Object *obj, void *event_info)
    evas_object_image_size_get(obj, &iw, &ih);
 
    if ((iw < 1) || (ih < 1)) return;
-   
    w = ow;
    h = (ih * w) / iw;
    if (h < oh)
@@ -32,8 +31,6 @@ _elm_bg_custom_resize(void *data, Evas *a, Evas_Object *obj, void *event_info)
      }
    x = (ow - w) / 2;
    y = (oh - h) / 2;
-
-   printf("fill %i %i %i %i into %ix%i\n", x, y, w, h, ow, oh);
    evas_object_image_fill_set(obj, x, y, w, h);
 }
 

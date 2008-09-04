@@ -52,8 +52,12 @@ main(int argc, char **argv)
     * you insist... */
    char buf[PATH_MAX];
    snprintf(buf, sizeof(buf), "%s/images/sample_01.jpg", PACKAGE_DATA_DIR);
-   bg->file_set(bg, buf, NULL);
-   bg->show(bg);
+   bg->file_set(bg, buf, NULL); /* set the bg - the NULL is for special
+				 * files that contain multiple images
+				 * inside 1 file. not normally used but
+				 * might be if you have archive files with
+				 * multiple images in them */
+   bg->show(bg); /* show the bg */
    
    win->show(win); /* show the window */
    
