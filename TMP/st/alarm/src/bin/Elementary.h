@@ -77,6 +77,8 @@ extern "C" {
 	ELM_CB_DEL,
 	  ELM_CB_CHILD_ADD,
 	  ELM_CB_CHILD_DEL,
+	  ELM_CB_UNPARENT,
+	  ELM_CB_PARENT,
 	  ELM_CB_DEL_REQ,
 	  ELM_CB_RESIZE
      } Elm_Cb_Type;
@@ -112,7 +114,8 @@ extern "C" {
    void (*ref)                        (Elm_Obj *obj); \
    void (*unref)                      (Elm_Obj *obj); \
    Elm_Cb *(*cb_add)                  (Elm_Obj *obj, Elm_Cb_Type type, Elm_Cb_Func func, void *data); \
-   void (*child_add)                  (Elm_Obj *obj, Elm_Obj *child)
+   void (*child_add)                  (Elm_Obj *obj, Elm_Obj *child); \
+   void (*unparent)                   (Elm_Obj *obj)
 #define Elm_Obj_Class_All Elm_Obj_Class_Methods; \
    Elm_Obj_Type   type; \
    void          *clas; /* parent class fo those that inherit */ \
@@ -161,8 +164,10 @@ extern "C" {
    void (*show)      (Elm_Win *win); \
    void (*hide)      (Elm_Win *win)
 
+// FIXME:   
 // cover methods & state for:
-// type, fullscreen, icon, activate, shaped, alpha, borderless, iconified
+// type, fullscreen, icon, activate, shaped, alpha, borderless, iconified,
+// setting parent window (for dialogs)
 #define Elm_Win_Class_All Elm_Win_Class_Methods; \
    Elm_Win_Type  win_type; \
    const char   *name; \

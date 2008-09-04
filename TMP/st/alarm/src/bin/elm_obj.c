@@ -79,8 +79,27 @@ _elm_obj_child_add(Elm_Obj *obj, Elm_Obj *child)
 {
    obj->children = evas_list_append(obj->children, child);
    child->parent = obj;
+   _elm_obj_nest_push();
    _elm_cb_call(obj, ELM_CB_CHILD_DEL, child);
+   _elm_cb_call(child, ELM_CB_PARENT, NULL);
+   _elm_obj_nest_pop();
 }
+
+static void
+_elm_obj_unparent(Elm_Obj *obj)
+{
+   Elm_Obj *parent;
+   
+   parent = obj->parent;
+   obj->parent = NULL;
+   // FIXME: what if we are walking the children when we unparent?
+   parent->children = evas_list_remove(parent->children, obj);
+   _elm_obj_nest_push();
+   _elm_cb_call(parent, ELM_CB_CHILD_DEL, obj);
+   _elm_cb_call(obj, ELM_CB_UNPARENT, NULL);
+   _elm_obj_nest_pop();
+}
+
 
 void
 _elm_obj_init(Elm_Obj *obj)
@@ -90,6 +109,7 @@ _elm_obj_init(Elm_Obj *obj)
    obj->unref = _elm_obj_unref;
    obj->cb_add = _elm_obj_cb_add;
    obj->child_add = _elm_obj_child_add;
+   obj->unparent = _elm_obj_unparent;
    obj->type = ELM_OBJ_OBJ;
    obj->clas = &_elm_obj_class;
    obj->refs = 1;
