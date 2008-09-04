@@ -9638,8 +9638,6 @@ collections { /* begin the collection of edje groups that are in this file */
       }
    }
 
-// do: e/fileman/default/list/fixed
-// do: e/fileman/default/list_odd/fixed
 // do: e/fileman/default/icon/fixed
 // do: e/fileman/default/icon/variable
    group { name: "e/fileman/default/list/variable";
@@ -11489,10 +11487,6 @@ collections { /* begin the collection of edje groups that are in this file */
 	 }
       }
    }
-
-/////////////////////////////////////////////////////////////////////////////
-   /*** FWIN ***/
-// FIXME: DO
 
 /////////////////////////////////////////////////////////////////////////////
    /*** SYSTEM ***/
