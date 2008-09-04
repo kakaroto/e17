@@ -1,4 +1,4 @@
-// TODO (immediate other than finish)
+// TODO: Items that need some revision
 // 
 // textblock (done - review)
 // transition (done - review) - Could possibly have some day light and moon light photos.
@@ -7,36 +7,37 @@
 // battery popup (done - review - see 'code' for notes)
 //
 // note: make these (and menu) use a common image with a logical name. 
-// sys (done - review - see 'code' for notes)
+// sys (done - review - see 'code' for notes), Move, Resize
 // 
-// fileman (list mode)
-// fileman (icon mode etc.)
+// TODO: Working order
+// desklock (note: make the widgets compatible with any background
+//		   as this is a feature of the desklock to change wallpaper.)
 // tlist
-// about
-// theme_about
 // slidesel (i know. no examples of this around).
 // exebuf
-// toolbar
+// ibar
+// ibox
 // gadman control
 // gadman popup
+// gadman frame
 // gadman full_bg (note: performance issues on scaling and
 //			     animation for large screens. Make sure this 
 //			     is simple.)
-// gadman frame
-// desklock (note: make the widgets compatible with any background
-//		   as this is a feature of the desklock to change wallpaper.)
-// ibar
-// ibox
+// toolbar
+// fileman (list mode)
+// fileman (icon mode etc.)
+// wizard (just placeholder and basics - wizard code not complete)
 // icons (lots of them! lets also find all the missing ones in e and
 //        at least put a placeholder in the theme for them with "fixme"
 //        in the image - but atleast a .edc entry and filename and make
 //        sure the code uses a unique icon for its purposes)
 //	  (Also, use #define and include a short guide on how it works
 //	  so that 'artists' can understand and use it.)
-// wizard (just placeholder and basics - wizard code not complete)
+// about
+// theme_about
 
-// Code: - allow sys (shutdown, reboot etc.) to indicated borderless
-//	     - make battery module text translatable and set by E, not in the theme.	
+// TODO Code: - allow sys (shutdown, reboot etc.) to indicated borderless
+//            - make battery module text translatable and set by E, not in the theme.	
 
 /*
  * So how do themes work? 
