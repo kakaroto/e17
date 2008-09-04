@@ -5,15 +5,14 @@ static void _elm_win_name_set(Elm_Win *win, const char *name);
 static void _elm_win_title_set(Elm_Win *win, const char *title);
 static void _elm_win_show(Elm_Win *win);
 static void _elm_win_hide(Elm_Win *win);
-static void _elm_win_del(Elm_Obj *obj);
+static void _elm_win_del(Elm_Win *win);
 
 Elm_Win_Class _elm_win_class =
 {
    &_elm_obj_class, /* parent */
-   _elm_win_name_set,
-     _elm_win_title_set,
-     _elm_win_show,
-     _elm_win_hide
+     ELM_OBJ_WIN,
+     _elm_win_name_set,
+     _elm_win_title_set
 };
 
 static void
@@ -69,18 +68,46 @@ _elm_win_type_set(Elm_Win *win, Elm_Win_Type type)
 }
 
 static void
-_elm_win_del(Elm_Obj *obj)
+_elm_win_geom_set(Elm_Win *win, int x, int y, int w, int h)
 {
-   if (_elm_obj_del_defer(obj)) return;
-   if (((Elm_Win *)obj)->ee)
+   if ((win->w != w) || (win->h != h) || (win->x != x) || (win->y != y))
      {
-	ecore_evas_free(((Elm_Win *)obj)->ee);
-	evas_stringshare_del(((Elm_Win *)obj)->title);
-	evas_stringshare_del(((Elm_Win *)obj)->name);
+	win->x = x;
+	win->y = y;
+	win->w = w;
+	win->h = h;
+	ecore_evas_move_resize(win->ee, win->x, win->y, win->w, win->h);
      }
-   if (((Elm_Win *)obj)->deferred_resize_job)
-     ecore_job_del(((Elm_Win *)obj)->deferred_resize_job);
-   ((Elm_Obj_Class *)(((Elm_Win_Class *)(obj->clas))->parent))->del(obj);
+}
+    
+static void
+_elm_win_size_alloc(Elm_Win *win, int w, int h)
+{
+   /* this should never be called */
+}
+
+static void
+_elm_win_size_req(Elm_Win *win, Elm_Widget *child, int w, int h)
+{
+   if ((w == win->w) && (h == win->h)) return;
+   ecore_evas_resize(win->ee, w, h);
+   // FIXME: child has asked for a size allocation. resize window if needed?
+   // and adjust min (and max) sizes
+}
+
+static void
+_elm_win_del(Elm_Win *win)
+{
+   if (_elm_obj_del_defer(ELM_OBJ(win))) return;
+   if (win->ee)
+     {
+	ecore_evas_free(win->ee);
+	evas_stringshare_del(win->title);
+	evas_stringshare_del(win->name);
+     }
+   if (win->deferred_resize_job)
+     ecore_job_del(win->deferred_resize_job);
+   ((Elm_Obj_Class *)(((Elm_Win_Class *)(win->clas))->parent))->del(ELM_OBJ(win));
 }
 
 static void
@@ -97,10 +124,21 @@ _elm_win_delete_request(Ecore_Evas *ee)
 static void
 _elm_win_resize_job(Elm_Win *win)
 {
+   Evas_List *l;
+   int w, h;
+   
    win->deferred_resize_job = NULL;
-   ecore_evas_geometry_get(win->ee, NULL, NULL, &(win->w), &(win->h));
-   evas_object_resize(win->background, win->w, win->h);
+   ecore_evas_geometry_get(win->ee, NULL, NULL, &w, &h);
+   if ((win->w == w) && (win->h == h)) return;
+   win->w = w;
+   win->h = h;
+   /* resize all immediate children if they are widgets or sub-classes */
    _elm_obj_nest_push();
+   for (l = win->children; l; l = l->next)
+     {
+	if (((Elm_Obj *)(l->data))->hastype(l->data, ELM_OBJ_WIDGET))
+	  ((Elm_Widget *)(l->data))->geom_set(l->data, 0, 0, win->w, win->h);
+     }
    _elm_cb_call(ELM_OBJ(win), ELM_CB_RESIZE, NULL);
    _elm_obj_nest_pop();
 }
@@ -126,32 +164,36 @@ elm_win_new(void)
    win->type = ELM_OBJ_WIN;
    
    win->del = _elm_win_del;
+
+   win->geom_set = _elm_win_geom_set;
+   win->show = _elm_win_show;
+   win->hide = _elm_win_hide;
+   win->size_alloc = _elm_win_size_alloc;
+   win->size_req = _elm_win_size_req;
    
    win->name_set = _elm_win_name_set;
    win->title_set = _elm_win_title_set;
-   win->show = _elm_win_show;
-   win->hide = _elm_win_hide;
    
    switch (_elm_engine)
      {
       case ELM_SOFTWARE_X11:
-	win->ee = ecore_evas_software_x11_new(NULL, 0, 0, 0, 100, 100);
+	win->ee = ecore_evas_software_x11_new(NULL, 0, 0, 0, 1, 1);
 	if (win->ee) win->xwin = ecore_evas_software_x11_window_get(win->ee);
 	break;
       case ELM_SOFTWARE_FB:
-	win->ee = ecore_evas_fb_new(NULL, 0, 100, 100);
+	win->ee = ecore_evas_fb_new(NULL, 0, 1, 1);
         ecore_evas_fullscreen_set(win->ee, 1);
 	break;
       case ELM_SOFTWARE_16_X11:
-	win->ee = ecore_evas_software_x11_16_new(NULL, 0, 0, 0, 100, 100);
+	win->ee = ecore_evas_software_x11_16_new(NULL, 0, 0, 0, 1, 1);
 	if (win->ee) win->xwin = ecore_evas_software_x11_16_window_get(win->ee);
 	break;
       case ELM_XRENDER_X11:
-	win->ee = ecore_evas_xrender_x11_new(NULL, 0, 0, 0, 100, 100);
+	win->ee = ecore_evas_xrender_x11_new(NULL, 0, 0, 0, 1, 1);
 	if (win->ee) win->xwin = ecore_evas_xrender_x11_window_get(win->ee);
 	break;
       case ELM_OPENGL_X11:
-	win->ee = ecore_evas_gl_x11_new(NULL, 0, 0, 0, 100, 100);
+	win->ee = ecore_evas_gl_x11_new(NULL, 0, 0, 0, 1, 1);
 	if (win->ee) win->xwin = ecore_evas_gl_x11_window_get(win->ee);
 	break;
       default:
@@ -178,11 +220,6 @@ elm_win_new(void)
    evas_font_cache_set(win->evas, 512 * 1024);
    evas_font_path_append(win->evas, "fonts");
    edje_frametime_set(1.0 / 30.0);
-   
-   win->background = edje_object_add(win->evas);
-   _elm_theme_set(win->background, "win", "win/bg");
-   evas_object_resize(win->background, 100, 100);
-   evas_object_show(win->background);
-   
+
    return win;
 }

@@ -23,6 +23,7 @@ int
 main(int argc, char **argv)
 {
    Elm_Win *win;
+   Elm_Bg *bg;
 
    /* init Elementary (all Elementary calls begin with elm_ and all data
     * types, enums and macros will be Elm_ and ELM_ etc.) */
@@ -40,6 +41,19 @@ main(int argc, char **argv)
    win->cb_add(win, ELM_CB_DEL_REQ, on_win_del_req, NULL);
    /* add a callback that gets called when the window is resized */
    win->cb_add(win, ELM_CB_RESIZE, on_win_resize, NULL);
+
+   /* our window needs a baground, so ask for one - it will be set with a
+    * default bg */
+   bg = elm_bg_new(win);
+
+   /* this is a test - shows how to have your own custom wallpaper in
+    * your app - don't use this unless you have a very good reason! there
+    * is a default and all apps look nicer sharing the default, but if
+    * you insist... */
+   char buf[PATH_MAX];
+   snprintf(buf, sizeof(buf), "%s/images/sample_01.jpg", PACKAGE_DATA_DIR);
+   bg->file_set(bg, buf, NULL);
+   bg->show(bg);
    
    win->show(win); /* show the window */
    

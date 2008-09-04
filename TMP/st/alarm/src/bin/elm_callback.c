@@ -1,17 +1,24 @@
 #include <Elementary.h>
 #include "elm_priv.h"
 
-static void
-_elm_cb_del(Elm_Obj *obj)
+Elm_Cb_Class _elm_cb_class =
 {
-   if (_elm_obj_del_defer(obj)) return;
-   if (obj->parent) /* callbacks are special children */
+   &_elm_obj_class,
+     ELM_OBJ_CB
+};
+
+
+
+static void
+_elm_cb_del(Elm_Cb *cb)
+{
+   if (_elm_obj_del_defer(ELM_OBJ(cb))) return;
+   if (cb->parent) /* callbacks are special children */
      {
-	obj->parent->cbs = evas_list_remove(obj->parent->cbs, obj);
-	obj->parent = NULL;
+	cb->parent->cbs = evas_list_remove(cb->parent->cbs, cb);
+	cb->parent = NULL;
      }
-   /* chain the original object type  - we keep the basic object class */
-   ((Elm_Obj_Class *)(obj->clas))->del(obj);
+   ((Elm_Obj_Class *)(((Elm_Cb_Class *)(cb->clas))->parent))->del(ELM_OBJ(cb));
 }
     
 Elm_Cb *
@@ -21,6 +28,7 @@ _elm_cb_new(void)
    
    cb = ELM_NEW(Elm_Cb);
    _elm_obj_init(ELM_OBJ(cb));
+   cb->clas = &_elm_cb_class;
    cb->type = ELM_OBJ_CB;
 
    cb->del = _elm_cb_del;

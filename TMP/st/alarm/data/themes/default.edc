@@ -18,6 +18,11 @@ collections {
 	       fill.size.offset: 264 264;
 	    }
 	 }
+	 part { name: "elm.swallow.background";
+	    type: SWALLOW;
+	    description { state: "default" 0.0;
+	    }
+	 }
 	 part { name: "elm.swallow.contents";
 	    type: SWALLOW;
 	    description { state: "default" 0.0;

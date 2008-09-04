@@ -67,14 +67,16 @@ extern "C" {
    /* Types here */
    typedef enum _Elm_Obj_Type
      {
-	ELM_OBJ_OBJ,
-	ELM_OBJ_CB,
-	ELM_OBJ_WIN
+	  ELM_OBJ_OBJ,
+	  ELM_OBJ_CB,	
+	  ELM_OBJ_WIDGET,
+	  ELM_OBJ_WIN,
+	  ELM_OBJ_BG
      } Elm_Obj_Type;
    
    typedef enum _Elm_Cb_Type
      {
-	ELM_CB_DEL,
+	  ELM_CB_DEL,
 	  ELM_CB_CHILD_ADD,
 	  ELM_CB_CHILD_DEL,
 	  ELM_CB_UNPARENT,
@@ -92,9 +94,14 @@ extern "C" {
    
    typedef struct _Elm_Obj_Class       Elm_Obj_Class;
    typedef struct _Elm_Obj             Elm_Obj;
-   typedef struct _Elm_Cb        Elm_Cb;
+   typedef struct _Elm_Cb_Class        Elm_Cb_Class;
+   typedef struct _Elm_Cb              Elm_Cb;
    typedef struct _Elm_Win_Class       Elm_Win_Class;
    typedef struct _Elm_Win             Elm_Win;
+   typedef struct _Elm_Widget_Class    Elm_Widget_Class;
+   typedef struct _Elm_Widget          Elm_Widget;
+   typedef struct _Elm_Bg_Class        Elm_Bg_Class;
+   typedef struct _Elm_Bg              Elm_Bg;
    
    typedef void (*Elm_Cb_Func) (void *data, Elm_Obj *obj, Elm_Cb_Type type, void *info);
    
@@ -115,10 +122,11 @@ extern "C" {
    void (*unref)                      (Elm_Obj *obj); \
    Elm_Cb *(*cb_add)                  (Elm_Obj *obj, Elm_Cb_Type type, Elm_Cb_Func func, void *data); \
    void (*child_add)                  (Elm_Obj *obj, Elm_Obj *child); \
-   void (*unparent)                   (Elm_Obj *obj)
+   void (*unparent)                   (Elm_Obj *obj); \
+   int  (*hastype)                    (Elm_Obj *obj, Elm_Obj_Type type)
 #define Elm_Obj_Class_All Elm_Obj_Class_Methods; \
    Elm_Obj_Type   type; \
-   void          *clas; /* parent class fo those that inherit */ \
+   void          *clas; /* the obj class and parent classes */ \
    Elm_Obj       *parent; \
    Evas_List     *children; \
    Evas_List     *cbs; \
@@ -129,6 +137,7 @@ extern "C" {
    struct _Elm_Obj_Class
      {
 	void *parent;
+        Elm_Obj_Type type;
 	Elm_Obj_Class_Methods;
      };
    struct _Elm_Obj
@@ -140,7 +149,7 @@ extern "C" {
 /**************************************************************************/   
    /* Callback Object */
 #define Elm_Cb_Class_Methods
-#define Elm_Cb_Class_All Elm_Cb_Class_Methods; \
+#define Elm_Cb_Class_All Elm_Obj_Class_All; Elm_Cb_Class_Methods; \
    Elm_Cb_Class_Methods; \
    Elm_Cb_Type  cb_type; \
    Elm_Cb_Func  func; \
@@ -148,54 +157,103 @@ extern "C" {
    struct _Elm_Cb_Class
      {
 	void *parent;
+	Elm_Obj_Type type;
 	Elm_Cb_Class_Methods;
      };
    struct _Elm_Cb
      {
-	Elm_Obj_Class_All;
 	Elm_Cb_Class_All;
      };
 
 /**************************************************************************/   
-   /* Window Object */
-#define Elm_Win_Class_Methods \
-   void (*name_set)  (Elm_Win *win, const char *name); \
-   void (*title_set) (Elm_Win *win, const char *title); \
-   void (*show)      (Elm_Win *win); \
-   void (*hide)      (Elm_Win *win)
-
+   /* Widget Object */
+#define Elm_Widget_Class_Methods \
+   void (*geom_set)   (Elm_Widget *wid, int x, int y, int w, int h); \
+   void (*show)       (Elm_Widget *wid); \
+   void (*hide)       (Elm_Widget *wid); \
+   void (*size_alloc) (Elm_Widget *wid, int w, int h); \
+   void (*size_req)   (Elm_Widget *wid, Elm_Widget *child, int w, int h)
+   
 // FIXME:   
-// cover methods & state for:
-// type, fullscreen, icon, activate, shaped, alpha, borderless, iconified,
-// setting parent window (for dialogs)
-#define Elm_Win_Class_All Elm_Win_Class_Methods; \
-   Elm_Win_Type  win_type; \
-   const char   *name; \
-   const char   *title; \
-   int           w, h; \
-   unsigned char autodel;
+#define Elm_Widget_Class_All Elm_Obj_Class_All; Elm_Widget_Class_Methods; \
+   int x, y, w, h; \
+   struct { int w, h; } req; \
+   Evas_Object *base
    
    /* Object specific ones */
-   EAPI Elm_Win *elm_win_new(void);
-   struct _Elm_Win_Class
+   struct _Elm_Widget_Class
      {
 	void *parent;
-	Elm_Win_Class_Methods;
+	Elm_Obj_Type type;
+	Elm_Widget_Class_Methods;
      };
-   struct _Elm_Win
+   struct _Elm_Widget
      {
-	Elm_Obj_Class_All;
-	Elm_Win_Class_All;
-	
-	Ecore_Evas     *ee; /* private */
-	Evas           *evas; /* private */
-	Ecore_X_Window  xwin; /* private */
-	Ecore_Job      *deferred_resize_job; /* private */
-	Evas_Object    *background; /* private */
+	Elm_Widget_Class_All;
      };
    
 #ifdef __cplusplus
 }
 #endif
 
+/**************************************************************************/   
+   /* Window Object */
+#define Elm_Win_Class_Methods \
+   void (*name_set)  (Elm_Win *win, const char *name); \
+   void (*title_set) (Elm_Win *win, const char *title); \
+// FIXME:   
+// cover methods & state for:
+// type, fullscreen, icon, activate, shaped, alpha, borderless, iconified,
+// setting parent window (for dialogs)
+#define Elm_Win_Class_All Elm_Widget_Class_All; Elm_Win_Class_Methods; \
+   Elm_Win_Type  win_type; \
+   const char   *name; \
+   const char   *title; \
+   unsigned char autodel : 1
+   
+   /* Object specific ones */
+   EAPI Elm_Win *elm_win_new(void);
+   struct _Elm_Win_Class
+     {
+	void *parent;
+	Elm_Obj_Type type;
+	Elm_Win_Class_Methods;
+     };
+   struct _Elm_Win
+     {
+	Elm_Win_Class_All;
+	
+	Ecore_Evas     *ee; /* private */
+	Evas           *evas; /* private */
+	Ecore_X_Window  xwin; /* private */
+	Ecore_Job      *deferred_resize_job; /* private */
+     };
+   
+/**************************************************************************/   
+   /* Background Object */
+#define Elm_Bg_Class_Methods \
+   void (*file_set)  (Elm_Bg *bg, const char *file, const char *group);
+// FIXME:   
+// cover methods & state for:
+// type, fullscreen, icon, activate, shaped, alpha, borderless, iconified,
+// setting parent window (for dialogs)
+#define Elm_Bg_Class_All Elm_Widget_Class_All; Elm_Bg_Class_Methods; \
+   const char *file; \
+   const char *group
+   
+   /* Object specific ones */
+   EAPI Elm_Bg *elm_bg_new(Elm_Win *win);
+   struct _Elm_Bg_Class
+     {
+	void *parent;
+	Elm_Obj_Type type;
+	Elm_Bg_Class_Methods;
+     };
+   struct _Elm_Bg
+     {
+	Elm_Bg_Class_All;
+	
+	Evas_Object *custom_bg;
+     };
+   
 #endif

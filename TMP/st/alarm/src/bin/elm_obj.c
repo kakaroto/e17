@@ -6,15 +6,18 @@ static void _elm_obj_ref(Elm_Obj *obj);
 static void _elm_obj_unref(Elm_Obj *obj);
 static Elm_Cb *_elm_obj_cb_add(Elm_Obj *obj, Elm_Cb_Type type, Elm_Cb_Func func, void *data);
 static void _elm_obj_child_add(Elm_Obj *obj, Elm_Obj *child);
+static int _elm_obj_hastype(Elm_Obj *obj, Elm_Obj_Type type);
 
 Elm_Obj_Class _elm_obj_class =
 {
-   NULL, /* parent */
-   _elm_obj_del,
+   NULL, /* parent */ 
+     ELM_OBJ_OBJ,
+     _elm_obj_del,
      _elm_obj_ref,
      _elm_obj_unref,
      _elm_obj_cb_add,
-     _elm_obj_child_add
+     _elm_obj_child_add,
+     
 };
 
 static int        deferred_nest = 0;
@@ -77,7 +80,7 @@ _elm_obj_cb_add(Elm_Obj *obj, Elm_Cb_Type type, Elm_Cb_Func func, void *data)
 static void
 _elm_obj_child_add(Elm_Obj *obj, Elm_Obj *child)
 {
-   obj->children = evas_list_append(obj->children, child);
+   obj->children = evas_list_prepend(obj->children, child);
    child->parent = obj;
    _elm_obj_nest_push();
    _elm_cb_call(obj, ELM_CB_CHILD_DEL, child);
@@ -100,6 +103,21 @@ _elm_obj_unparent(Elm_Obj *obj)
    _elm_obj_nest_pop();
 }
 
+static int
+_elm_obj_class_hastype(Elm_Obj_Class *clas, Elm_Obj_Type type)
+{
+   if (clas->type == type) return 1;
+   if (!clas->parent) return NULL;
+   return _elm_obj_class_hastype(clas->parent, type);
+}
+
+static int
+_elm_obj_hastype(Elm_Obj *obj, Elm_Obj_Type type)
+{
+   if (obj->type == type) return 1;
+   if (obj->clas) return _elm_obj_class_hastype(obj->clas, type);
+   return 0;
+}
 
 void
 _elm_obj_init(Elm_Obj *obj)
@@ -110,6 +128,7 @@ _elm_obj_init(Elm_Obj *obj)
    obj->cb_add = _elm_obj_cb_add;
    obj->child_add = _elm_obj_child_add;
    obj->unparent = _elm_obj_unparent;
+   obj->hastype = _elm_obj_hastype;
    obj->type = ELM_OBJ_OBJ;
    obj->clas = &_elm_obj_class;
    obj->refs = 1;

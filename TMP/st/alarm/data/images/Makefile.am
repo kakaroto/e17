@@ -2,4 +2,5 @@ AUTOMAKE_OPTIONS     = 1.4 foreign
 MAINTAINERCLEANFILES = Makefile.in
 
 filesdir = $(datadir)/alarm/images
-files_DATA = 
+files_DATA = \
+sample_01.jpg

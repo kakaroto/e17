@@ -11,7 +11,9 @@ elm_main.c \
 elm_obj.c \
 elm_callback.c \
 elm_win.c \
-elm_theme.c
+elm_theme.c \
+elm_widget.c \
+elm_bg.c
 
 bin_PROGRAMS = alarm
 
