@@ -200,8 +200,8 @@ The piece of interest is the <literal>action: SIGNAL_EMIT "foo"
 <title>Compilation</title>
 <screen>
 zero@oberon [edje_cb] -&gt; edje_cc default.edc
-zero@oberon [edje_cb] -&gt; gcc -o cb main.c `ecore-config --cflags --libs` \
-        `edje-config --cflags --libs`
+zero@oberon [edje_cb] -&gt; gcc -o cb main.c \
+	`pkg-config --cflags --libs ecore edje`
 </screen>
 </example>
 

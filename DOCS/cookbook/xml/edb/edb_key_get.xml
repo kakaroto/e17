@@ -60,7 +60,7 @@ file itself instead of a db object.
 <title>Compiling</title>
 <screen>
 zero@oberon [edb] -&gt; gcc -o edb edb_ex.c \
-	`edb-config --cflags --libs`
+	`pkg-config --cflags --libs edb`
 </screen>
 </example>
 Executing the program should produce a listing of all the keys in the 

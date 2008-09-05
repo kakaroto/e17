@@ -93,7 +93,7 @@ Compiling the example is as simple as:
 <example>
 <title>Compilation</title>
 <screen>
-gcc -Wall -o etimer etimer.c `ecore-config --cflags --libs`
+gcc -Wall -o etimer etimer.c `pkg-config --cflags --libs ecore`
 </screen>
 </example>
 If you run the program you should see a series of '1's and '2's on the screen

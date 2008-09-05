@@ -187,7 +187,7 @@ Each of these parameters corresponds to the parameter given in the initial
 <title>Compilation</title>
 <screen>
 zero@oberon [ecore_config] -&gt; gcc -o ecfg ecfg_listener.c \
-    `ecore-config --cflags --libs`
+    `pkg-config --cflags --libs ecore ecore-config`
 </screen>
 </example>
 If you execute the program you will see the default values printed back to

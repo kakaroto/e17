@@ -334,10 +334,10 @@ CC = gcc
 all: server client
 
 server: server.c
-    $(CC) -o server server.c `ecore-config --cflags --libs`
+    $(CC) -o server server.c `pkg-config --cflags --libs ecore`
     
 client: client.c
-    $(CC) -o client client.c `ecore-config --cflags --libs`
+    $(CC) -o client client.c `pkg-config --cflags --libs ecore`
 
 clean:
     rm server client
@@ -345,7 +345,7 @@ clean:
 </example>
 <para>
 As with other ecore apps, it is very easy to compile an Ecore_Ipc app. As long as your
-Ecore was compiled with Ecore_Ipc, simply invoking the 'ecore-config --cflags --libs' command
+Ecore was compiled with Ecore_Ipc, simply invoking the 'pkg-config --cflags --libs ecore' command
 will add all of the required library paths and linker information.
 </para>
 

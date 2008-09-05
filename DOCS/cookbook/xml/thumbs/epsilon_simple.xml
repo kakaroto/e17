@@ -58,7 +58,7 @@ It can be compiled in the following way:
 
 <example>
 <programlisting>
-gcc `epsilon-config --libs --cflags` epsilon-simple.c -o epsilon-simple
+gcc `pkg-config --libs --cflags epsilon` epsilon-simple.c -o epsilon-simple
 </programlisting>
 </example>
 

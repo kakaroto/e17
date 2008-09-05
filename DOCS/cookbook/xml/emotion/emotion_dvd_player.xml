@@ -28,7 +28,7 @@ All code in this and the next recipie can be compiled using:
 <example>
 <title>Compiling</title>
 <screen>
-$ gcc player.c -o player `emotion-config --cflags --libs`
+$ gcc player.c -o player `pkg-config --cflags --libs emotion evas ecore ecore_evas`
 </screen>
 </example>
 </para>
@@ -37,6 +37,7 @@ $ gcc player.c -o player `emotion-config --cflags --libs`
 <example>
 <title>DVD player in 55 lines of code</title>
 <programlisting>
+#include &lt;stdlib.h&gt;
 #include &lt;Evas.h&gt;
 #include &lt;Ecore.h&gt;
 #include &lt;Ecore_Evas.h&gt;

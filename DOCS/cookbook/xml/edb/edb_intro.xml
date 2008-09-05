@@ -141,7 +141,7 @@ out to disk.
 <title>Compiling</title>
 <screen>
 zero@oberon [edb] -&gt; gcc -o edb edb_ex.c \
-	`edb-config --cflags --libs`
+	`pkg-config --cflags --libs edb`
 </screen>
 </example>
 If you execute the program you should see the values written out to the

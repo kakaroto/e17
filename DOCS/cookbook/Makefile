@@ -26,15 +26,15 @@ PREFIX = /usr/share/sgml/docbook
 
 ### Location of the 'Format Objects' XSL 
 # OpenSolaris & Gentoo DB FO
-FO_XSL = $(PREFIX)/xsl-stylesheets/fo/docbook.xsl
+#FO_XSL = $(PREFIX)/xsl-stylesheets/fo/docbook.xsl
 # Ubuntu
-#FO_XSL = $(PREFIX)/stylesheet/xsl/nwalsh/fo/docbook.xsl
+FO_XSL = $(PREFIX)/stylesheet/xsl/nwalsh/fo/docbook.xsl
 
 ### Location of the HTML XSL
 # OpenSolaris & Gentoo DB HTML
-HTML_XSL = $(PREFIX)/xsl-stylesheets/html/docbook.xsl
+#HTML_XSL = $(PREFIX)/xsl-stylesheets/html/docbook.xsl
 # Ubuntu
-#HTML_XSL = $(PREFIX)/stylesheet/xsl/nwalsh/html/docbook.xsl 
+HTML_XSL = $(PREFIX)/stylesheet/xsl/nwalsh/html/docbook.xsl 
 
 ### XSL Arguments: the fop argeument will make FOP play nice, and the 9x7 format is for tech page size.
 #FO_ARGS = --stringparam page.height 9in --stringparam page.width 7in --stringparam fop.extensions 1 --stringparam draft.mode no 

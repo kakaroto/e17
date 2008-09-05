@@ -79,18 +79,22 @@
 
  <!-- Chapters Go Here -->
  &intro;
- &imlib_recipes;
  &evas_recipes;
  &ecore_recipes;
  &edb_eet_recipes;
  &esmart_recipes;
  &thumbs_recipes;
+<!-- etox is dead
  &etox_recipes;
+-->
  &edje_recipes;
  &edje_edc_recipes;
  &ewl_recipes;
+<!-- evoak is dead
  &evoak_recipes;
+-->
  &emotion_recipies;
+ &imlib_recipes;
 </book>
 
 

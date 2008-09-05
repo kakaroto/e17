@@ -126,7 +126,7 @@ And thats it. You can compile as below and everything should work.
 
 <example>
 <screen>
-zero@oberon [ecore_event] -&gt; gcc -o ev main.c `ecore-config --cflags --libs`
+zero@oberon [ecore_event] -&gt; gcc -o ev main.c `pkg-config --cflags --libs ecore`
 </screen>
 </example>
 

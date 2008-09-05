@@ -711,12 +711,12 @@ in the correct direction with the call to ewl_scrollpane_[hv]scrollbar_value_set
 <title>Compilation</title>
 <screen>
 zero@oberon [ewl_intro] -&lt; gcc -Wall -o ewl_text main.c \
- `ewl-config --cflags --libs`
+ `pkg-config --cflags --libs ewl`
 
 </screen>
 </example>
 <para>
-Compiling an ewl app is as simple as calling ewl-config and getting the --cflags and 
+Compiling an ewl app is as simple as calling pkg-config  ewl and getting the --cflags and 
 --libs.
 </para>
 

@@ -254,9 +254,8 @@ the window so it is up to date.
 <example>
 <title>Simple makefile</title>
 <programlisting>
-CFLAGS = `ecore-config --cflags` `evas-config --cflags` `esmart-config --cflags`
-LIBS = `ecore-config --libs` `evas-config --libs` `esmart-config --libs` \
-            -lesmart_trans_x11
+CFLAGS = `pkg-config --cflags ecore evas esmart esmart_trans_x11`
+LIBS = `pkg-config --libs ecore evas esmart esmart_trans_x11`
 
 all:
     gcc -o trans_example trans_example.c $(CFLAGS) $(LIBS)

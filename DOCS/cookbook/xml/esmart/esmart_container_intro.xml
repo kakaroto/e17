@@ -834,10 +834,8 @@ could be used.
 <example>
 <title>Makefile</title>
 <programlisting>
-CFLAGS = `ecore-config --cflags` `evas-config --cflags` \
-		`esmart-config --cflags` `edje-config --cflags`
-LIBS = `ecore-config --libs` `evas-config --libs` `esmart-config --libs` \
-            `edje-config --libs` -lesmart_container
+CFLAGS = `pkg-config --cflags ecore evas esmart edje esmart_container`
+LIBS = `pkg-config --libs ecore evas esmart edje esmart_container`
 
 container_ex: container/container_ex.c
         gcc -o container/container_ex container/container_ex.c $(CFLAGS) $(LIBS)
