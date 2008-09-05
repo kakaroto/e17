@@ -16002,7 +16002,6 @@ collections { /* begin the collection of edje groups that are in this file */
       }
    }
    
-// FIXME: Reposition E logo above the text and input box?
 // FIXME: Make the rel2 of the passwd border relative to the
 //        e.password.text so that long passwords can be typed.
    
@@ -16025,16 +16024,15 @@ collections { /* begin the collection of edje groups that are in this file */
 	    effect: SOFT_SHADOW;
 	    description { state: "default" 0.0;
 	       fixed: 0 1;
-	       align: 0.0 0.5;
 	       rel1 {
-		  relative: 1.0 0.0;
-		  offset: 8 3;
-		  to: "logo";
+		  relative: 0.0 1.0;
+		  offset: 0 8;
+		  to_y: "logo";
 	       }
 	       rel2 {
-		  relative: 1.0 0.3;
-		  offset: 0 0;
-		  to: "logo";
+		  relative: 1.0 1.0;
+		  offset: -1 8;
+		  to_y: "logo";
 	       }
 	       color: 255 255 255 255;
 	       color3: 0 0 0 64;
@@ -16042,7 +16040,7 @@ collections { /* begin the collection of edje groups that are in this file */
 		  text: "Enter Password";
 		  font: "Sans:style=Bold,Edje-Vera-Bold";
 		  size: 10;
-		  align: 0.0 0.5;
+		  align: 0.5 0.5;
 		  min: 1 1;
 		  text_class: "desklock_title";		  
 	       }
@@ -16092,11 +16090,11 @@ collections { /* begin the collection of edje groups that are in this file */
 	    description { state: "default" 0.0;
 	       visible: 1;
 	       rel1 {
-		  offset: 10 3;
+		  offset: 6 3;
 		  to: "passwd_border";
 	       }
 	       rel2 {
-		  offset: -17 -4;
+		  offset: -7 -4;
 		  to: "passwd_border";
 	       }
 	    }
@@ -16155,12 +16153,14 @@ collections { /* begin the collection of edje groups that are in this file */
 	    clip_to: "error_clip";
 	    description { state: "default" 0.0;
 	       rel1 {
-		  relative: 1.0 0.35;
-		  to: "logo";
+		  relative: 0.5 1.0;
+		  offset: -80 2;
+		  to_y: "e.text.title";
 	       }
 	       rel2 {
-		  relative: 5.0 0.8;
-		  to: "logo";
+		  relative: 0.5 1.0;
+		  offset: 79 20;
+		  to_y: "e.text.title";
 	       }
 	       image {
 		  normal: "shelf_inset.png";
