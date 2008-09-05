@@ -6669,7 +6669,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    description { state: "default" 0.0;
 	       rel1.to: "clip";
 	       rel2.to: "clip";
-	       color: 0 0 0 32;
+	       color: 0 0 0 0;
 	       color_class: "module_label";
 	       text {
 		  font: "Sans:style=Bold,Edje-Vera-Bold";
@@ -6677,6 +6677,10 @@ collections { /* begin the collection of edje groups that are in this file */
 		  align: 0.5 0.5;
 		  text_class: "module_small";
 	       }
+	    }
+	    description { state: "active" 0.0;
+	       inherit: "default" 0.0;
+	       color: 0 0 0 128;
 	    }
 	 }
 	 part { name: "over";
@@ -6725,6 +6729,13 @@ collections { /* begin the collection of edje groups that are in this file */
 	       inherit: "default" 0.0;
 	       visible: 1;
 	       color: 255 255 255 255;
+	    }
+	 }
+	 part { name: "mouse_over";
+	    mouse_events: 1;
+	    type: RECT;
+	    description { state: "default" 0.0;
+	       color: 0 0 0 0;
 	    }
 	 }
       }
@@ -6778,6 +6789,21 @@ collections { /* begin the collection of edje groups that are in this file */
 	 program { name: "ndrg2";
 	    action: STATE_SET "default" 0.0;
             target: "zoom";
+	 }
+	 
+	 program { name: "name_show";
+	    signal: "mouse,in";
+	    source: "mouse_over";
+	    action: STATE_SET "active" 0.0;
+	    transition: SINUSOIDAL 0.1;
+            target: "e.text.label";
+	 }
+	 program { name: "name_hide";
+	    signal: "mouse,out";
+	    source: "mouse_over";
+	    action: STATE_SET "default" 0.0;
+	    transition: SINUSOIDAL 0.2;
+            target: "e.text.label";
 	 }
 // don't have any states/anim for urgent windows on a desktop
 //	 program { name: "xx";
@@ -16080,7 +16106,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    }
 	    description { state: "invalid" 0.0;
 	       inherit: "default" 0.0;
-	       color: 255 128 128 255;
+	       color: 255 128 128 255;	/*FIXME: Document how this works */
 	    }
 	 }
 	 part { name: "passwd_entry_clip";
