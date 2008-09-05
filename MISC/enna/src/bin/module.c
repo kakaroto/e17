@@ -14,14 +14,24 @@ static Ecore_Path_Group *path_group = NULL;
 EAPI int
 enna_module_init(void)
 {
-  if (!path_group)
-    {
-      path_group = ecore_path_group_new();
-      ecore_path_group_add(path_group, PACKAGE_LIB_DIR"/enna/modules/");
-      return 0;
-    }
+   if (!path_group)
+     {
+	Ecore_List *l;
+	char *p;
+	path_group = ecore_path_group_new();
 
-  return -1;
+	ecore_path_group_add(path_group, PACKAGE_LIB_DIR"/enna/modules/");
+	dbg("Plugin Directory : %s\n", PACKAGE_LIB_DIR"/enna/modules/");
+	l = ecore_plugin_available_get(path_group);
+	ecore_list_first_goto(l);
+	dbg("Plugin available :\n");
+	while ((p = ecore_list_next(l)))
+	  {
+	     dbg("\t * %s\n", p);
+	  }
+	return 0;
+     }
+   return -1;
 }
 
 /**
@@ -32,55 +42,55 @@ enna_module_init(void)
 EAPI int
 enna_module_shutdown(void)
 {
-    Evas_List *l;
+   Evas_List *l;
 
-    for (l = _enna_modules; l; l = evas_list_remove(l, l->data))
-        {
-            Enna_Module *m;
-            m = l->data;
-            if (m->enabled)
-                {
-                    if (m->func.shutdown)
-                        m->func.shutdown(m);
-                    m->enabled = 0;
-                }
-            ecore_plugin_unload(m->plugin);
-	    free(m);
-        }
+   for (l = _enna_modules; l; l = evas_list_remove(l, l->data))
+     {
+	Enna_Module *m;
+	m = l->data;
 
 
-    if (path_group)
-        {
-            ecore_path_group_del(path_group);
-            path_group = NULL;
-        }
+	if (m->enabled)
+	  {
+	     printf("disable m->name : %s\n", m->name);
+	     enna_module_disable(m);
+	  }
+	ecore_plugin_unload(m->plugin);
+	free(m);
+     }
 
-    return 0;
+
+   if (path_group)
+     {
+	ecore_path_group_del(path_group);
+	path_group = NULL;
+     }
+   return 0;
 }
 
 EAPI int
 enna_module_enable(Enna_Module *m)
 {
-  if (!m) return -1;
-  if(m->enabled) return 0;
-  if (m->func.init)
-    m->func.init(m);
-  m->enabled = 1;
-  return 0;
+   if (!m) return -1;
+   if(m->enabled) return 0;
+   if (m->func.init)
+     m->func.init(m);
+   m->enabled = 1;
+   return 0;
 }
 
 EAPI int
 enna_module_disable(Enna_Module *m)
 {
-    if (!m ) return -1;
-    if (!m->enabled) return 0;
-    if (m->func.shutdown)
-        {
-            m->func.shutdown(m);
-            m->enabled = 0;
-            return 0;
-        }
-    return -1;
+   if (!m ) return -1;
+   if (!m->enabled) return 0;
+   if (m->func.shutdown)
+     {
+	m->func.shutdown(m);
+	m->enabled = 0;
+	return 0;
+     }
+   return -1;
 }
 
 /**
@@ -92,49 +102,49 @@ enna_module_disable(Enna_Module *m)
 EAPI Enna_Module *
 enna_module_open(const char *name, Evas *evas)
 {
-    char module_name[4096];
-    Ecore_Plugin *plugin;
-    Enna_Module *m;
+   char module_name[4096];
+   Ecore_Plugin *plugin;
+   Enna_Module *m;
 
-    if (!name || !evas) return NULL;
-    m = malloc(sizeof(Enna_Module));
+   if (!name || !evas) return NULL;
+
+   m = calloc(1,sizeof(Enna_Module));
 
 
-    if (!path_group)
-        {
-            dbg("Error : enna Module should be Init before call this function\n");
-            return NULL;
-        }
+   if (!path_group)
+     {
+	dbg("Error : enna Module should be Init before call this function\n");
+	return NULL;
+     }
 
-    snprintf(module_name, sizeof(module_name), "enna_module_%s", name);
-    dbg("Try to load %s\n", module_name);
-    plugin = ecore_plugin_load(path_group, module_name, NULL);
+   snprintf(module_name, sizeof(module_name), "enna_module_%s", name);
+   dbg("Try to load %s\n", module_name);
+   plugin = ecore_plugin_load(path_group, module_name, NULL);
+   if (plugin)
+     {
+	m->api = ecore_plugin_symbol_get(plugin, "module_api");
+	if (!m->api || m->api->version != ENNA_MODULE_VERSION )
+	  {
+	     /* FIXME: popup error message */
+	     /* Module version doesn't match enna version */
+	     dbg("Error : Bad module version, unload %s module\n", m->api->name);
+	     ecore_plugin_unload(plugin);
+	     return NULL;
+	  }
+	m->func.init = ecore_plugin_symbol_get(plugin, "module_init");
+	m->func.shutdown = ecore_plugin_symbol_get(plugin, "module_shutdown");
+	m->name = m->api->name;
+	dbg("Module \'%s\' loaded succesfully\n", m->api->name);
+	m->enabled = 0;
+	m->plugin = plugin;
+	m->evas = evas;
+	_enna_modules = evas_list_append(_enna_modules, m);
+	return m;
+     }
+   else
+     dbg("Unable to load module %s\n", name);
 
-    if (plugin)
-        {
-            m->api = ecore_plugin_symbol_get(plugin, "module_api");
-            if (!m->api || m->api->version != ENNA_MODULE_VERSION )
-                {
-                    /* FIXME: popup error message */
-                    /* Module version doesn't match enna version */
-                    dbg("Error : Bad module version, unload %s module\n", m->api->name);
-                    ecore_plugin_unload(plugin);
-                    return NULL;
-                }
-            m->func.init = ecore_plugin_symbol_get(plugin, "module_init");
-            m->func.shutdown = ecore_plugin_symbol_get(plugin, "module_shutdown");
-            m->name = m->api->name;
-            dbg("Module \'%s\' loaded succesfully\n", m->api->name);
-            m->enabled = 0;
-            m->plugin = plugin;
-            m->evas = evas;
-            _enna_modules = evas_list_append(_enna_modules, m);
-            return m;
-        }
-    else
-        dbg("Unable to load module %s\n", name);
-
-    return NULL;
+   return NULL;
 }
 
 

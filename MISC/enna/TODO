@@ -30,6 +30,10 @@
 
 [Priority 9]
 
+ * Popup Window
+      -> Create Popup window Smart object
+      -> Add a popup window when no media is found
+
  * Add more complicated Widgets
       -> Virtual Keyboard (See Calaos or Illume for virtual keyboard
    integration)

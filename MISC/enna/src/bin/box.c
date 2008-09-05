@@ -57,13 +57,11 @@ struct _E_Smart_Data
    struct
    {
       Evas_Coord          w, h;
-   }
-   min                , max;
+   }min, max;
    struct
    {
       double              x, y;
-   }
-   align;
+   }align;
 };
 
 struct _E_Box_Item
@@ -76,13 +74,11 @@ struct _E_Box_Item
    struct
    {
       Evas_Coord          w, h;
-   }
-   min                , max;
+   }min, max;
    struct
    {
       double              x, y;
-   }
-   align;
+   }align;
    Evas_Object        *obj;
 };
 

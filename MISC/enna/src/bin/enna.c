@@ -225,8 +225,8 @@ _enna_init(int run_gl)
 
    evas_data_attach_set(enna->evas, enna);
 
-   ecore_evas_show(enna->ee);
    _create_gui();
+   ecore_evas_show(enna->ee);
    enna_input_init();
    return 1;
 }
@@ -317,10 +317,10 @@ _enna_shutdown()
    enna_config_shutdown();
    enna_module_shutdown();
    enna_mediaplayer_shutdown();
-   edje_shutdown();
    evas_object_del(enna->o_background);
    evas_object_del(enna->o_edje);
    evas_object_del(enna->o_mainmenu);
+   edje_shutdown();
    ecore_evas_shutdown();
    ecore_file_shutdown();
    ecore_shutdown();
@@ -413,7 +413,7 @@ main(int arc, char **arv)
    /* Must be called first */
    enna_config_init();
 
-   enna = malloc(sizeof(Enna));
+   enna = calloc(1, sizeof(Enna));
 
    if (!_enna_init(run_gl))
      return 0;

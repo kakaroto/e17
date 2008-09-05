@@ -43,7 +43,7 @@ static unsigned char _uri_has_extension(const char *uri, int type)
 
    if (!filters)
      return 0;
-   
+
    for (l = filters; l; l = l->next)
    {
      const char *ext = l->data;
@@ -288,7 +288,7 @@ static void __class_init(const char *name, Class_Private_Data **priv,
 
    data = calloc(1, sizeof(Class_Private_Data));
    *priv = data;
-   
+
    enna_vfs_append(name, caps, class);
    data->prev_uri = NULL;
 

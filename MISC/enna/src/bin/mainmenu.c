@@ -107,6 +107,7 @@ enna_mainmenu_append(Evas_Object *obj, Evas_Object *icon, const char *label,
 {
    E_Smart_Item *si;
    Evas_Coord mw = 0, mh = 0;
+   const char *tmp;
 
    API_ENTRY return;
 
@@ -137,6 +138,14 @@ enna_mainmenu_append(Evas_Object *obj, Evas_Object *icon, const char *label,
    edje_object_size_min_calc(si->o_base, &mw, &mh);
    edje_object_size_min_get(si->o_base, &mw, &mh);
    enna_box_pack_end(sd->o_box, si->o_base);
+
+   tmp = edje_object_data_get(si->o_base, "height");
+   if (tmp)
+     mh = atoi(tmp);
+   tmp = edje_object_data_get(si->o_base, "width");
+   if (tmp)
+     mw = atoi(tmp);
+
    enna_box_pack_options_set(si->o_base, 1, 1,	/* fill */
 			     1, 1,	/* expand */
 			     0.5, 0.5,	/* align */
@@ -379,7 +388,8 @@ _e_smart_add(Evas_Object * obj)
    E_Smart_Data       *sd;
    Evas_Object        *o;
    Evas               *e;
-
+   unsigned int orientation = 1;
+   char *tmp = NULL;
    sd = calloc(1, sizeof(E_Smart_Data));
    if (!sd)
      return;
@@ -400,8 +410,16 @@ _e_smart_add(Evas_Object * obj)
    sd->o_edje = o;
    evas_object_show(o);
 
+   /* Get Orientation from edje/
+    * 1 => Horizontal
+    * 0 => Vertical
+    */
+   tmp = edje_object_data_get(sd->o_edje, "orientation");
+   if (tmp)
+     orientation = atoi(tmp);
+
    o = enna_box_add(e);
-   enna_box_orientation_set(o, 1);
+   enna_box_orientation_set(o, orientation);
    enna_box_homogenous_set(o, 1);
    enna_box_align_set(o, 0.5, 0.5);
    sd->o_box = o;

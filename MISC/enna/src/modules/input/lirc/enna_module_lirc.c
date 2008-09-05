@@ -9,22 +9,23 @@ static void           _class_event_cb_set(void (*event_cb)(void *data, char *eve
 static int            em_init(Enna_Module *em);
 static int            em_shutdown(Enna_Module *em);
 
-typedef struct _Enna_Module_Video Enna_Module_Video;
+typedef struct _Enna_Module_Lirc Enna_Module_Lirc;
 
 
 
-struct _Enna_Module_Video
+struct _Enna_Module_Lirc
 {
    Evas *e;
    Enna_Module *em;
    int fd;
+   Ecore_Fd_Handler *fd_handler;
    const char *config_filename;
    struct lirc_config *lirc_config;
    void (*event_cb)(void *data, char *event);
    void *event_cb_data;
 };
 
-static Enna_Module_Video *mod;
+static Enna_Module_Lirc *mod;
 
 EAPI Enna_Module_Api module_api =
 {
@@ -81,15 +82,15 @@ static void _class_init(int dummy)
      {
 	lirc_deinit();
 	dbg("could not find Lirc config file\n");
+	return;
      }
 
-   mod->fd = fd;
    mod->config_filename = evas_stringshare_add(cfg_file);
    mod->lirc_config = config;
    fcntl(fd, F_SETFL, O_NONBLOCK);
    fcntl(fd, F_SETFD, FD_CLOEXEC);
 
-   ecore_main_fd_handler_add(fd, ECORE_FD_READ, _lirc_code_received, NULL, NULL, NULL);
+   mod->fd_handler = ecore_main_fd_handler_add(fd, ECORE_FD_READ, _lirc_code_received, NULL, NULL, NULL);
 }
 
 static void
@@ -101,7 +102,17 @@ _class_event_cb_set(void (*event_cb)(void *data, char *event), void *data)
 
 static void _class_shutdown(int dummy)
 {
-    printf("class LIRC INPUT shutdown\n");
+
+
+   if (mod->fd_handler)
+     {
+
+	lirc_freeconfig(mod->lirc_config);
+	printf("class LIRC INPUT shutdown\n");
+	evas_stringshare_del(mod->config_filename);
+	ecore_main_fd_handler_del(mod->fd_handler);
+	lirc_deinit();
+     }
 }
 
 
@@ -111,7 +122,7 @@ static int
 em_init(Enna_Module *em)
 {
 
-    mod = calloc(1, sizeof(Enna_Module_Video));
+    mod = calloc(1, sizeof(Enna_Module_Lirc));
     mod->em = em;
     em->mod = mod;
 
@@ -124,10 +135,6 @@ em_init(Enna_Module *em)
 static int
 em_shutdown(Enna_Module *em)
 {
-
-    Enna_Module_Video *mod;
-
-    mod = em->mod;
 
     return 1;
 }

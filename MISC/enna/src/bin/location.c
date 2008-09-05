@@ -281,7 +281,13 @@ _e_smart_del(Evas_Object * obj)
    sd = evas_object_smart_data_get(obj);
    if (!sd)
      return;
-   evas_object_del(sd->o_box);
+
+   /*
+    * FIXME if sd->o_box is deleting
+    * Segv in enna ?!!
+    */
+
+   /*evas_object_del(sd->o_box);*/
    evas_object_del(sd->o_scroll);
    free(sd);
 }

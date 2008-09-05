@@ -298,8 +298,8 @@ enna_list_selected_geometry_get(Evas_Object *obj, Evas_Coord *x, Evas_Coord *y, 
    if (sd->selected < 0) return;
    if (!(si = evas_list_nth(sd->items, sd->selected))) return;
    evas_object_geometry_get(si->o_base, x, y, w, h);
-   *x -= sd->x;
-   *y -= sd->y;
+   if (x) *x -= sd->x;
+   if (y) *y -= sd->y;
 }
 
 EAPI int
@@ -667,7 +667,7 @@ list_jump_to_ascii (E_Smart_Data *sd, char k)
 {
   Evas_List *l;
   int i = 0;
-     
+
   l = sd->items;
   while (l)
   {
@@ -679,13 +679,13 @@ list_jump_to_ascii (E_Smart_Data *sd, char k)
     file = (Enna_Vfs_File *) item->data2;
     if (!file)
       continue;
-    
+
     if (tolower (file->label[0]) == k)
       break;
     l = l->next;
     i++;
   }
-  
+
   if (i != evas_list_count (sd->items))
     list_item_select (sd, i);
 }
@@ -713,9 +713,9 @@ list_get_alpha_from_digit (E_Smart_Data *sd, char key)
 
   letter[0] = list_get_letter_from_key (key);
   letter[1] = '\0';
-  
+
   sd->letter_mode = 1;
-  
+
   if (!sd->letter_mode)
   {
     sd->letter_event_nbr = 0;
@@ -735,7 +735,7 @@ list_get_alpha_from_digit (E_Smart_Data *sd, char key)
       sd->letter_event_nbr = 0;
       sd->letter_key = key;
     }
-            
+
     letter[0] += sd->letter_event_nbr;
   }
 
@@ -815,6 +815,6 @@ _e_smart_event_key_down(E_Smart_Data *sd, void *event_info)
      }
      break;
    }
-   
+
    sd->on_hold = 0;
 }
