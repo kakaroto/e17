@@ -55,18 +55,19 @@ engine_directfb_args(int argc, char **argv)
    DFBCHECK(_dfb->CreateInputEventBuffer(_dfb, DICAPS_ALL, DFB_FALSE, &_input_event));
 
    memset(&desc, 0, sizeof(DFBWindowDescription));
-   desc.flags = (DWDESC_POSX | DWDESC_POSY | DWDESC_WIDTH | DWDESC_HEIGHT | DWDESC_CAPS);
+   desc.flags = (DWDESC_POSX | DWDESC_POSY | DWDESC_WIDTH | DWDESC_HEIGHT | DWDESC_PIXELFORMAT);
    desc.posx = 0;
    desc.posy = 0;
    desc.width = win_w;
    desc.height = win_h;
-   desc.caps = DWCAPS_ALPHACHANNEL;
+   desc.pixelformat = DSPF_ARGB;
 
    DFBCHECK(_layer->CreateWindow(_layer, &desc, &_dfb_window));
    DFBCHECK(_dfb_window->AttachEventBuffer(_dfb_window, _window_event));
    DFBCHECK(_dfb_window->SetOptions(_dfb_window, DWOP_NONE));
    DFBCHECK(_dfb_window->SetOpacity(_dfb_window, 0xFF));
    DFBCHECK(_dfb_window->GetSurface(_dfb_window, &_dfb_surface));
+   DFBCHECK(_dfb_surface->SetPorterDuff(_dfb_surface, DSPD_SRC_OVER));
 
    einfo->info.dfb = _dfb;
    einfo->info.surface = _dfb_surface;
