@@ -1,8 +1,8 @@
 #include <Elementary.h>
 #include "elm_priv.h"
 
-Elm_Engine _elm_engine = ELM_SOFTWARE_X11;
 char *_elm_appname = NULL;
+Elm_Config *_elm_config = NULL;
 
 static int
 _elm_signal_exit(void *data, int ev_type, void *ev)
@@ -27,11 +27,20 @@ elm_init(int argc, char **argv)
    ecore_event_handler_add(ECORE_EVENT_SIGNAL_EXIT, _elm_signal_exit, NULL);
    
    _elm_appname = strdup(ecore_file_file_get(argv[0]));
+
+   // FIXME: actually load config
+   _elm_config = ELM_NEW(Elm_Config);
+   _elm_config->engine = ELM_SOFTWARE_X11;
+   _elm_config->thumbscroll_enable = 1;
+   _elm_config->thumbscroll_threshhold = 48;
+   _elm_config->thumbscroll_momentum_threshhold = 100.0;
+   _elm_config->thumbscroll_friction = 1.0;
 }
 
 EAPI void
 elm_shutdown(void)
 {
+   free(_elm_config);
    free(_elm_appname);
    ecore_evas_shutdown();
    edje_shutdown();

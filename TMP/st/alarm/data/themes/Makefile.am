@@ -9,9 +9,9 @@ files_DATA = default.edj
 
 EXTRA_DIST = \
 default.edc \
-Vera.ttf \
-bg-pattern.png \
-bg-shadow.png
+dia_grad.png \
+dia_topshad.png \
+dia_botshad.png
 
 default.edj: Makefile $(EXTRA_DIST)
 	$(EDJE_CC) $(EDJE_FLAGS) \

@@ -71,7 +71,8 @@ extern "C" {
 	  ELM_OBJ_CB,	
 	  ELM_OBJ_WIDGET,
 	  ELM_OBJ_WIN,
-	  ELM_OBJ_BG
+	  ELM_OBJ_BG,
+	  ELM_OBJ_SCROLLER
      } Elm_Obj_Type;
    
    typedef enum _Elm_Cb_Type
@@ -102,6 +103,8 @@ extern "C" {
    typedef struct _Elm_Widget          Elm_Widget;
    typedef struct _Elm_Bg_Class        Elm_Bg_Class;
    typedef struct _Elm_Bg              Elm_Bg;
+   typedef struct _Elm_Scroller_Class  Elm_Scroller_Class;
+   typedef struct _Elm_Scroller        Elm_Scroller;
    
    typedef void (*Elm_Cb_Func) (void *data, Elm_Obj *obj, Elm_Cb_Type type, void *info);
    
@@ -172,7 +175,9 @@ extern "C" {
    void (*show)       (Elm_Widget *wid); \
    void (*hide)       (Elm_Widget *wid); \
    void (*size_alloc) (Elm_Widget *wid, int w, int h); \
-   void (*size_req)   (Elm_Widget *wid, Elm_Widget *child, int w, int h)
+   void (*size_req)   (Elm_Widget *wid, Elm_Widget *child, int w, int h); \
+   void (*above)      (Elm_Widget *wid, Elm_Widget *above); \
+   void (*below)      (Elm_Widget *wid, Elm_Widget *below)
    
 // FIXME:   
 #define Elm_Widget_Class_All Elm_Obj_Class_All; Elm_Widget_Class_Methods; \
@@ -233,10 +238,6 @@ extern "C" {
    /* Background Object */
 #define Elm_Bg_Class_Methods \
    void (*file_set)  (Elm_Bg *bg, const char *file, const char *group);
-// FIXME:   
-// cover methods & state for:
-// type, fullscreen, icon, activate, shaped, alpha, borderless, iconified,
-// setting parent window (for dialogs)
 #define Elm_Bg_Class_All Elm_Widget_Class_All; Elm_Bg_Class_Methods; \
    const char *file; \
    const char *group
@@ -254,6 +255,29 @@ extern "C" {
 	Elm_Bg_Class_All;
 	
 	Evas_Object *custom_bg;
+     };
+   
+/**************************************************************************/   
+   /* Scroller (scrollframe/scrolledview) Object */
+#define Elm_Scroller_Class_Methods \
+   void (*file_set)  (Elm_Scroller *scroller, const char *file, const char *group);
+#define Elm_Scroller_Class_All Elm_Widget_Class_All; Elm_Scroller_Class_Methods; \
+   const char *file; \
+   const char *group
+   
+   /* Object specific ones */
+   EAPI Elm_Scroller *elm_scroller_new(Elm_Win *win);
+   struct _Elm_Scroller_Class
+     {
+	void *parent;
+	Elm_Obj_Type type;
+	Elm_Scroller_Class_Methods;
+     };
+   struct _Elm_Scroller
+     {
+	Elm_Scroller_Class_All;
+	
+	Evas_Object *scroller_pan;
      };
    
 #endif

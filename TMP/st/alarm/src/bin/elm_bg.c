@@ -84,7 +84,7 @@ elm_bg_new(Elm_Win *win)
    bg->file_set = _elm_bg_file_set;
 
    bg->base = edje_object_add(win->evas);
-   _elm_theme_set(bg->base, "win", "win/bg");
+   _elm_theme_set(bg->base, "bg", "bg");
    win->child_add(win, bg);
    ((Elm_Widget *)(bg->parent))->size_req(bg->parent, bg, 100, 100);
    return bg;

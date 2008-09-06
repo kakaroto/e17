@@ -24,6 +24,8 @@ main(int argc, char **argv)
 {
    Elm_Win *win;
    Elm_Bg *bg;
+   Elm_Scroller *scroller;
+   Elm_Bg *bg2;
 
    /* init Elementary (all Elementary calls begin with elm_ and all data
     * types, enums and macros will be Elm_ and ELM_ etc.) */
@@ -45,7 +47,7 @@ main(int argc, char **argv)
    /* our window needs a baground, so ask for one - it will be set with a
     * default bg */
    bg = elm_bg_new(win);
-
+#if 0   
    /* this is a test - shows how to have your own custom wallpaper in
     * your app - don't use this unless you have a very good reason! there
     * is a default and all apps look nicer sharing the default, but if
@@ -57,7 +59,23 @@ main(int argc, char **argv)
 				 * inside 1 file. not normally used but
 				 * might be if you have archive files with
 				 * multiple images in them */
+#endif   
    bg->show(bg); /* show the bg */
+
+   scroller = elm_scroller_new(win);
+   scroller->show(scroller);
+   
+   bg2 = elm_bg_new(win);
+   char buf[PATH_MAX];
+   snprintf(buf, sizeof(buf), "%s/images/sample_01.jpg", PACKAGE_DATA_DIR);
+   bg2->file_set(bg2, buf, NULL); /* set the bg - the NULL is for special
+				   * files that contain multiple images
+				   * inside 1 file. not normally used but
+				   * might be if you have archive files with
+				   * multiple images in them */
+   bg2->geom_set(bg2, 0, 0, 500, 500);
+   scroller->child_add(scroller, bg2);
+   bg2->show(bg2);
    
    win->show(win); /* show the window */
    

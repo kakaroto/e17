@@ -13,7 +13,13 @@ elm_callback.c \
 elm_win.c \
 elm_theme.c \
 elm_widget.c \
-elm_bg.c
+elm_bg.c \
+elm_scroller.c \
+\
+els_pan.c \
+els_pan.h \
+els_scroller.c \
+els_scroller.h
 
 bin_PROGRAMS = alarm
 

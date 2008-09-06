@@ -174,7 +174,7 @@ elm_win_new(void)
    win->name_set = _elm_win_name_set;
    win->title_set = _elm_win_title_set;
    
-   switch (_elm_engine)
+   switch (_elm_config->engine)
      {
       case ELM_SOFTWARE_X11:
 	win->ee = ecore_evas_software_x11_new(NULL, 0, 0, 0, 1, 1);

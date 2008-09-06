@@ -7,6 +7,8 @@ static void _elm_widget_hide(Elm_Widget *wid);
 static void _elm_widget_size_alloc(Elm_Widget *wid, int w, int h);
 static void _elm_widget_size_req(Elm_Widget *wid, Elm_Widget *child, int w, int h);
 static void _elm_widget_del(Elm_Widget *wid);
+static void _elm_widget_above(Elm_Widget *wid, Elm_Widget *above);
+static void _elm_widget_below(Elm_Widget *wid, Elm_Widget *below);
     
 Elm_Widget_Class _elm_widget_class =
 {
@@ -16,7 +18,9 @@ Elm_Widget_Class _elm_widget_class =
      _elm_widget_show,
      _elm_widget_hide,
      _elm_widget_size_alloc,
-     _elm_widget_size_req
+     _elm_widget_size_req,
+     _elm_widget_above,
+     _elm_widget_below
 };
 
 static void
@@ -67,6 +71,20 @@ _elm_widget_size_req(Elm_Widget *wid, Elm_Widget *child, int w, int h)
 }
 
 static void
+_elm_widget_above(Elm_Widget *wid, Elm_Widget *above)
+{
+   if (above) evas_object_stack_above(wid->base, above->base);
+   else evas_object_raise(wid->base);
+}
+
+static void
+_elm_widget_below(Elm_Widget *wid, Elm_Widget *below)
+{
+   if (below) evas_object_stack_below(wid->base, below->base);
+   else evas_object_lower(wid->base);
+}
+
+static void
 _elm_widget_del(Elm_Widget *wid)
 {    
    if (_elm_obj_del_defer(ELM_OBJ(wid))) return;
@@ -90,4 +108,6 @@ _elm_widget_init(Elm_Widget *wid)
    wid->hide = _elm_widget_hide;
    wid->size_alloc = _elm_widget_size_alloc;
    wid->size_req = _elm_widget_size_req;
+   wid->above = _elm_widget_above;
+   wid->below = _elm_widget_below;
 }

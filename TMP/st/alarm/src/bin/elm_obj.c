@@ -80,10 +80,11 @@ _elm_obj_cb_add(Elm_Obj *obj, Elm_Cb_Type type, Elm_Cb_Func func, void *data)
 static void
 _elm_obj_child_add(Elm_Obj *obj, Elm_Obj *child)
 {
+   if (child->parent) child->unparent(child);
    obj->children = evas_list_prepend(obj->children, child);
    child->parent = obj;
    _elm_obj_nest_push();
-   _elm_cb_call(obj, ELM_CB_CHILD_DEL, child);
+   _elm_cb_call(obj, ELM_CB_CHILD_ADD, child);
    _elm_cb_call(child, ELM_CB_PARENT, NULL);
    _elm_obj_nest_pop();
 }
@@ -107,7 +108,7 @@ static int
 _elm_obj_class_hastype(Elm_Obj_Class *clas, Elm_Obj_Type type)
 {
    if (clas->type == type) return 1;
-   if (!clas->parent) return NULL;
+   if (!clas->parent) return 0;
    return _elm_obj_class_hastype(clas->parent, type);
 }
 
