@@ -44,14 +44,6 @@ Description: E17 module which minimizes all windows
  An E17 module which minimizes all windows in order to show the
  desktop.
  
-Package: emodule-echo
-Architecture: any
-Depends: ${shlibs:Depends}, e17 (>= 0.16.999)
-Provides: emodule0-echo
-Description: E17 sound volume module
- An E17 module which allows the user to adjust the volume of the sound
- system.
-
 Package: emodule-efm-nav
 Architecture: any
 Depends: ${shlibs:Depends}, e17 (>= 0.16.999)
@@ -292,7 +284,7 @@ Description: An E17 WLAN monitor module
 
 Package: emodules-all
 Architecture: any
-Depends: e17 (>= 0.16.999), emodule-alarm, emodule-bling, emodule-calendar, emodule-cpu, emodule-deskshow, emodule-echo, emodule-efm-nav, emodule-efm-path, emodule-emu, emodule-execwatch, emodule-flame, emodule-forecasts, emodule-iiirk, emodule-language, emodule-mail, emodule-mem, emodule-moon, emodule-mpdule, emodule-net, emodule-news, emodule-notification, emodule-penguins, emodule-photo, emodule-rain, emodule-screenshot, emodule-slideshow, emodule-snow, emodule-taskbar, emodule-tclock, emodule-tiling, emodule-uptime, emodule-weather, emodule-winselector, emodule-wlan
+Depends: e17 (>= 0.16.999), emodule-alarm, emodule-bling, emodule-calendar, emodule-cpu, emodule-deskshow, emodule-efm-nav, emodule-efm-path, emodule-emu, emodule-execwatch, emodule-flame, emodule-forecasts, emodule-iiirk, emodule-language, emodule-mail, emodule-mem, emodule-moon, emodule-mpdule, emodule-net, emodule-news, emodule-notification, emodule-penguins, emodule-photo, emodule-rain, emodule-screenshot, emodule-slideshow, emodule-snow, emodule-taskbar, emodule-tclock, emodule-tiling, emodule-uptime, emodule-weather, emodule-winselector, emodule-wlan
 Provides: emodules0-all, e17-modules
 Description: A dummy package for installing all modules for E17
  This package will install all available modules.
