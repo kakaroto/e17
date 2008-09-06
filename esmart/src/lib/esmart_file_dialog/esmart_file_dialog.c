@@ -88,13 +88,6 @@ static Evas_Smart *_esmart_file_dialog_object_smart_get (void);
 static Evas_Object *esmart_file_dialog_object_new (Evas * evas);
 static void _esmart_file_dialog_object_add (Evas_Object * o);
 static void _esmart_file_dialog_object_del (Evas_Object * o);
-static void _esmart_file_dialog_object_layer_set (Evas_Object * o, int l);
-static void _esmart_file_dialog_object_raise (Evas_Object * o);
-static void _esmart_file_dialog_object_lower (Evas_Object * o);
-static void _esmart_file_dialog_object_stack_above (Evas_Object * o,
-						    Evas_Object * above);
-static void _esmart_file_dialog_object_stack_below (Evas_Object * o,
-						    Evas_Object * below);
 static void _esmart_file_dialog_object_move (Evas_Object * o, Evas_Coord x,
 					     Evas_Coord y);
 static void _esmart_file_dialog_object_resize (Evas_Object * o, Evas_Coord w,
@@ -686,24 +679,23 @@ static Evas_Smart *
 _esmart_file_dialog_object_smart_get (void)
 {
   static Evas_Smart *smart = NULL;
-  if (smart)
-    return (smart);
+  static const Evas_Smart_Class sc = {
+      "esmart_file_dialog_object",
+      EVAS_SMART_CLASS_VERSION,
+      _esmart_file_dialog_object_add,
+      _esmart_file_dialog_object_del,
+      _esmart_file_dialog_object_move,
+      _esmart_file_dialog_object_resize,
+      _esmart_file_dialog_object_show,
+      _esmart_file_dialog_object_hide,
+      _esmart_file_dialog_object_color_set,
+      _esmart_file_dialog_object_clip_set,
+      _esmart_file_dialog_object_clip_unset,
+      NULL
+  };
 
-  smart = evas_smart_new ("esmart_file_dialog_object",
-			  _esmart_file_dialog_object_add,
-			  _esmart_file_dialog_object_del,
-			  _esmart_file_dialog_object_layer_set,
-			  _esmart_file_dialog_object_raise,
-			  _esmart_file_dialog_object_lower,
-			  _esmart_file_dialog_object_stack_above,
-			  _esmart_file_dialog_object_stack_below,
-			  _esmart_file_dialog_object_move,
-			  _esmart_file_dialog_object_resize,
-			  _esmart_file_dialog_object_show,
-			  _esmart_file_dialog_object_hide,
-			  _esmart_file_dialog_object_color_set,
-			  _esmart_file_dialog_object_clip_set,
-			  _esmart_file_dialog_object_clip_unset, NULL);
+  if (!smart)
+    smart = evas_smart_class_new(&sc);
 
   return smart;
 }
@@ -731,65 +723,6 @@ _esmart_file_dialog_object_del (Evas_Object * o)
   if ((data = evas_object_smart_data_get (o)))
     {
       free (data);
-    }
-}
-
-void
-_esmart_file_dialog_object_layer_set (Evas_Object * o, int l)
-{
-  Esmart_File_Dialog *data;
-
-  if ((data = evas_object_smart_data_get (o)))
-    {
-      evas_object_layer_set (data->clip, l);
-    }
-}
-
-void
-_esmart_file_dialog_object_raise (Evas_Object * o)
-{
-  Esmart_File_Dialog *data;
-
-  data = evas_object_smart_data_get (o);
-
-  if ((data = evas_object_smart_data_get (o)))
-    {
-      evas_object_raise (data->clip);
-    }
-}
-
-void
-_esmart_file_dialog_object_lower (Evas_Object * o)
-{
-  Esmart_File_Dialog *data;
-
-  if ((data = evas_object_smart_data_get (o)))
-    {
-      evas_object_lower (data->clip);
-    }
-}
-
-void
-_esmart_file_dialog_object_stack_above (Evas_Object * o, Evas_Object * above)
-{
-  Esmart_File_Dialog *data;
-
-  data = evas_object_smart_data_get (o);
-
-  if ((data = evas_object_smart_data_get (o)))
-    {
-      evas_object_stack_above (data->clip, above);
-    }
-}
-
-void
-_esmart_file_dialog_object_stack_below (Evas_Object * o, Evas_Object * below)
-{
-  Esmart_File_Dialog *data;
-
-  if ((data = evas_object_smart_data_get (o)))
-    {
-      evas_object_stack_below (data->clip, below);
     }
 }
 

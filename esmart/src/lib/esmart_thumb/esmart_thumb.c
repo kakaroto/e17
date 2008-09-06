@@ -25,15 +25,10 @@ static void _e_thumb_add (Evas_Object * o);
 static void _e_thumb_del (Evas_Object * o);
 static void _e_thumb_show (Evas_Object * o);
 static void _e_thumb_hide (Evas_Object * o);
-static void _e_thumb_raise (Evas_Object * o);
-static void _e_thumb_lower (Evas_Object * o);
 static void _e_thumb_clip_unset (Evas_Object * o);
-static void _e_thumb_layer_set (Evas_Object * o, int layer);
 static void _e_thumb_move (Evas_Object * o, Evas_Coord x, Evas_Coord y);
 static void _e_thumb_resize (Evas_Object * o, Evas_Coord w, Evas_Coord h);
 static void _e_thumb_clip_set (Evas_Object * o, Evas_Object * clip);
-static void _e_thumb_stack_above (Evas_Object * o, Evas_Object * above);
-static void _e_thumb_stack_below (Evas_Object * o, Evas_Object * below);
 static void _e_thumb_color_set (Evas_Object * o, int r, int g, int b, int a);
 
 EAPI Evas_Object *
@@ -48,20 +43,22 @@ esmart_thumb_new (Evas * evas, const char *file)
 
       if (!s)
 	{
-	  s = evas_smart_new ("Esmart_Thumb",
-			      _e_thumb_add,
-			      _e_thumb_del,
-			      _e_thumb_layer_set,
-			      _e_thumb_raise,
-			      _e_thumb_lower,
-			      _e_thumb_stack_above,
-			      _e_thumb_stack_below,
-			      _e_thumb_move,
-			      _e_thumb_resize,
-			      _e_thumb_show,
-			      _e_thumb_hide,
-			      _e_thumb_color_set,
-			      _e_thumb_clip_set, _e_thumb_clip_unset, NULL);
+          static const Evas_Smart_Class sc = {
+              "Esmart_Thumb",
+              EVAS_SMART_CLASS_VERSION,
+              _e_thumb_add,
+              _e_thumb_del,
+              _e_thumb_move,
+              _e_thumb_resize,
+              _e_thumb_show,
+              _e_thumb_hide,
+              _e_thumb_color_set,
+              _e_thumb_clip_set,
+              _e_thumb_clip_unset,
+              NULL,
+              NULL
+          };
+          s = evas_smart_class_new(&sc);
 	}
       result = evas_object_smart_add (evas, s);
 
@@ -445,96 +442,6 @@ _e_thumb_del (Evas_Object * o)
 	  if (e->info)
 	    epsilon_info_free (e->info);
 	  free (e);
-	}
-    }
-}
-
-/**
- * _e_thumb_set - used when setting the thumbnail's layer
- * @o - Our Smart Evas Object
- */
-static void
-_e_thumb_layer_set (Evas_Object * o, int layer)
-{
-  if (o)
-    {
-      Esmart_Thumb *e = NULL;
-      if ((e = (Esmart_Thumb *) evas_object_smart_data_get (o)))
-	{
-	  if (e->image)
-	    evas_object_layer_set (e->image, layer);
-	}
-    }
-}
-
-/**
- * _e_thumb_raise - send the thumbnail a "raise" request
- * @o - Our Smart Evas Object
- */
-static void
-_e_thumb_raise (Evas_Object * o)
-{
-  if (o)
-    {
-      Esmart_Thumb *e = NULL;
-      if ((e = (Esmart_Thumb *) evas_object_smart_data_get (o)))
-	{
-	  evas_object_raise (e->image);
-	}
-    }
-}
-
-/**
- * _e_thumb_raise - send the thumbnail a "lower" request
- * @o - Our Smart Evas Object
- */
-static void
-_e_thumb_lower (Evas_Object * o)
-{
-  if (o)
-    {
-      Esmart_Thumb *e = NULL;
-      if ((e = (Esmart_Thumb *) evas_object_smart_data_get (o)))
-	{
-	  evas_object_lower (e->image);
-	}
-    }
-}
-
-/**
- * _e_thumb_stack_above - used when placing the object above
- * another object in the same layer
- * @o - Our Smart Evas Object
- * @below - the object we want above
- */
-static void
-_e_thumb_stack_above (Evas_Object * o, Evas_Object * above)
-{
-  if (o)
-    {
-      Esmart_Thumb *e = NULL;
-      if ((e = (Esmart_Thumb *) evas_object_smart_data_get (o)))
-	{
-	  evas_object_stack_above (e->image, above);
-	}
-    }
-}
-
-/**
- * _e_thumb_stack_below - used when placing this object below
- * another object in the same layer
- * @o - Our Smart Evas Object
- * @below - the object we want below
- */
-static void
-_e_thumb_stack_below (Evas_Object * o, Evas_Object * below)
-{
-  if (o)
-    {
-      Esmart_Thumb *e = NULL;
-      if ((e = (Esmart_Thumb *) evas_object_smart_data_get (o)))
-	{
-	  evas_object_stack_below (e->image, below);
 	}
     }
 }

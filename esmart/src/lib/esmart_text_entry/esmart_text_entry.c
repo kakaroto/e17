@@ -333,47 +333,6 @@ esmart_text_entry_del (Evas_Object * o)
   free (e);
 }
 static void
-esmart_text_entry_layer_set (Evas_Object * o, int l)
-{
-  Esmart_Text_Entry *e = NULL;
-
-  e = evas_object_smart_data_get (o);
-  evas_object_layer_set (e->base, l);
-}
-static void
-esmart_text_entry_raise (Evas_Object * o)
-{
-  Esmart_Text_Entry *e = NULL;
-
-  e = evas_object_smart_data_get (o);
-  evas_object_raise (e->base);
-}
-static void
-esmart_text_entry_lower (Evas_Object * o)
-{
-  Esmart_Text_Entry *e = NULL;
-
-  e = evas_object_smart_data_get (o);
-  evas_object_lower (e->base);
-}
-static void
-esmart_text_entry_stack_above (Evas_Object * o, Evas_Object * above)
-{
-  Esmart_Text_Entry *e = NULL;
-
-  e = evas_object_smart_data_get (o);
-  evas_object_stack_above (e->base, above);
-
-}
-static void
-esmart_text_entry_stack_below (Evas_Object * o, Evas_Object * below)
-{
-  Esmart_Text_Entry *e = NULL;
-
-  e = evas_object_smart_data_get (o);
-  evas_object_stack_below (e->base, below);
-}
-static void
 esmart_text_entry_move (Evas_Object * o, Evas_Coord x, Evas_Coord y)
 {
   Esmart_Text_Entry *e = NULL;
@@ -434,16 +393,23 @@ static Evas_Smart *
 esmart_text_entry_smart_get (void)
 {
   static Evas_Smart *s = NULL;
+  static const Evas_Smart_Class sc = {
+      "Text Entry",
+      EVAS_SMART_CLASS_VERSION,
+      esmart_text_entry_add,
+      esmart_text_entry_del,
+      esmart_text_entry_move,
+      esmart_text_entry_resize,
+      esmart_text_entry_show,
+      esmart_text_entry_hide,
+      esmart_text_entry_color_set,
+      esmart_text_entry_clip_set,
+      esmart_text_entry_clip_unset,
+      NULL
+  };
 
   if (!s)
-    s = evas_smart_new ("Text Entry", esmart_text_entry_add,
-		    esmart_text_entry_del, esmart_text_entry_layer_set,
-		    esmart_text_entry_raise, esmart_text_entry_lower,
-		    esmart_text_entry_stack_above,
-		    esmart_text_entry_stack_below, esmart_text_entry_move,
-		    esmart_text_entry_resize, esmart_text_entry_show,
-		    esmart_text_entry_hide, esmart_text_entry_color_set,
-		    esmart_text_entry_clip_set, esmart_text_entry_clip_unset,
-		    NULL);
-  return (s);
+    s = evas_smart_class_new(&sc);
+
+  return s;
 }
