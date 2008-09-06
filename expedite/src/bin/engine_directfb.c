@@ -10,6 +10,9 @@ static DFBResult _err;
 static IDirectFBWindow *_dfb_window;
 static IDirectFBSurface *_dfb_surface;
 
+#define DBG(...)  do {} while (0)
+//#define DBG(...) fprintf(stderr, __VA_ARGS__)
+
 #define DFBCHECK(x...) \
      {                                                                 \
           _err = x;                                                    \
@@ -67,7 +70,6 @@ engine_directfb_args(int argc, char **argv)
 
    einfo->info.dfb = _dfb;
    einfo->info.surface = _dfb_surface;
-   einfo->info.flags = DSDRAW_BLEND;
    evas_engine_info_set(evas, (Evas_Engine_Info *) einfo);
 
    return 1;
@@ -126,40 +128,40 @@ key_string(DFBInputDeviceKeySymbol sym)
 static void
 engine_directfb_event_window(const DFBWindowEvent *ev)
 {
-   fprintf(stderr, "===> Window Event (type=%#10x, window=%d) <===\n",
-	   ev->type, ev->window_id);
+   DBG("===> Window Event (type=%#10x, window=%d) <===\n",
+       ev->type, ev->window_id);
 
    if (ev->type & DWET_POSITION)
      {
-	fprintf(stderr, "\tDWET_POSITION %d, %d\n", ev->x, ev->y);
+	DBG("\tDWET_POSITION %d, %d\n", ev->x, ev->y);
      }
 
    if (ev->type & DWET_SIZE)
      {
-	fprintf(stderr, "\tDWET_SIZE %dx%d\n", ev->w, ev->h);
+	DBG("\tDWET_SIZE %dx%d\n", ev->w, ev->h);
 	evas_output_size_set(evas, ev->w, ev->h);
      }
 
    if (ev->type & DWET_CLOSE)
      {
-	fprintf(stderr, "\tDWET_CLOSE\n");
+	DBG("\tDWET_CLOSE\n");
 	engine_directfb_quit();
      }
 
    if (ev->type & DWET_DESTROYED)
      {
-	fprintf(stderr, "\tDWET_DESTROYED\n");
+	DBG("\tDWET_DESTROYED\n");
 	engine_directfb_quit();
      }
 
    if (ev->type & DWET_GOTFOCUS)
      {
-	fprintf(stderr, "\tDWET_GOTFOCUS\n");
+	DBG("\tDWET_GOTFOCUS\n");
      }
 
    if (ev->type & DWET_LOSTFOCUS)
      {
-	fprintf(stderr, "\tDWET_LOSTFOCUS\n");
+	DBG("\tDWET_LOSTFOCUS\n");
      }
 
    if (ev->type & DWET_KEYDOWN)
@@ -167,7 +169,7 @@ engine_directfb_event_window(const DFBWindowEvent *ev)
 	const char *k;
 
 	k = key_string(ev->key_symbol);
-	fprintf(stderr, "\tDWET_KEYDOWN key_symbol=%s\n", k);
+	DBG("\tDWET_KEYDOWN key_symbol=%s\n", k);
 
 	if (k)
 	  evas_event_feed_key_down(evas, k, k, NULL, NULL, 0, NULL);
@@ -178,7 +180,7 @@ engine_directfb_event_window(const DFBWindowEvent *ev)
 	const char *k;
 
 	k = key_string(ev->key_symbol);
-	fprintf(stderr, "\tDWET_KEYUP key_symbol=%s\n", k);
+	DBG("\tDWET_KEYUP key_symbol=%s\n", k);
 
 	if (k)
 	  evas_event_feed_key_up(evas, k, k, NULL, NULL, 0, NULL);
@@ -186,51 +188,53 @@ engine_directfb_event_window(const DFBWindowEvent *ev)
 
    if (ev->type & DWET_BUTTONDOWN)
      {
-	fprintf(stderr, "\tDWET_BUTTONDOWN pos=(%d, %d) cur_pos=(%d, %d) "
-		"button=%#x buttons=%#x\n",
-		ev->x, ev->y, ev->cx, ev->cy, ev->button, ev->buttons);
+	DBG("\tDWET_BUTTONDOWN pos=(%d, %d) cur_pos=(%d, %d) "
+	    "button=%#x buttons=%#x\n",
+	    ev->x, ev->y, ev->cx, ev->cy, ev->button, ev->buttons);
 	evas_event_feed_mouse_move(evas, ev->cx, ev->cy, 0, NULL);
 	evas_event_feed_mouse_down(evas, ev->button, EVAS_BUTTON_NONE, 0, NULL);
      }
 
    if (ev->type & DWET_BUTTONUP)
      {
-	fprintf(stderr, "\tDWET_BUTTONUP pos=(%d, %d) cur_pos=(%d, %d) "
-		"button=%#x buttons=%#x\n",
-		ev->x, ev->y, ev->cx, ev->cy, ev->button, ev->buttons);
+	DBG("\tDWET_BUTTONUP pos=(%d, %d) cur_pos=(%d, %d) "
+	    "button=%#x buttons=%#x\n",
+	    ev->x, ev->y, ev->cx, ev->cy, ev->button, ev->buttons);
 	evas_event_feed_mouse_move(evas, ev->cx, ev->cy, 0, NULL);
 	evas_event_feed_mouse_up(evas, ev->button, EVAS_BUTTON_NONE, 0, NULL);
      }
 
    if (ev->type & DWET_MOTION)
      {
-	fprintf(stderr, "\tDWET_MOTION pos=(%d, %d) cur_pos=(%d, %d) "
-		"buttons=%#x\n",
-		ev->x, ev->y, ev->cx, ev->cy, ev->buttons);
+	DBG("\tDWET_MOTION pos=(%d, %d) cur_pos=(%d, %d) buttons=%#x\n",
+	    ev->x, ev->y, ev->cx, ev->cy, ev->buttons);
+	/* Mouse Motion Compression [tm] */
+	_layer->GetCursorPosition( _layer, (int*)&ev->x, (int*)&ev->y );
+
 	evas_event_feed_mouse_move(evas, ev->x, ev->y, 0, NULL);
      }
 
    if (ev->type & DWET_LEAVE)
      {
-	fprintf(stderr, "\tDWET_LEAVE pos=(%d, %d) cur_pos=(%d, %d)\n",
-		ev->x, ev->y, ev->cx, ev->cy);
+	DBG("\tDWET_LEAVE pos=(%d, %d) cur_pos=(%d, %d)\n",
+	    ev->x, ev->y, ev->cx, ev->cy);
 	evas_event_feed_mouse_out(evas, 0, NULL);
      }
 
    if (ev->type & DWET_ENTER)
      {
-	fprintf(stderr, "\tDWET_ENTER pos=(%d, %d) cur_pos=(%d, %d)\n",
-		ev->x, ev->y, ev->cx, ev->cy);
+	DBG("\tDWET_ENTER pos=(%d, %d) cur_pos=(%d, %d)\n",
+	    ev->x, ev->y, ev->cx, ev->cy);
 	evas_event_feed_mouse_in(evas, 0, NULL);
      }
 
    if (ev->type & DWET_WHEEL)
      {
-	fprintf(stderr, "\tDWET_WHEEL step=%d\n", ev->step);
+	DBG("\tDWET_WHEEL step=%d\n", ev->step);
      }
 
 
-   fprintf(stderr, "\n");
+   DBG("\n");
 }
 
 void
@@ -241,23 +245,23 @@ engine_directfb_loop(void)
    while ((_input_event->GetEvent(_input_event, &ev) == DFB_OK) ||
 	  (_window_event->GetEvent(_window_event, &ev) == DFB_OK))
      {
-	fprintf(stderr, "got dfb input event %d\n", ev.clazz);
+	DBG("got dfb input event %d\n", ev.clazz);
 	switch (ev.clazz)
 	  {
 	   case DFEC_NONE:
-	      fprintf(stderr, "No event?\n");
+	      DBG("No event?\n");
 	      break;
 	   case DFEC_INPUT:
-	      fprintf(stderr, "Input\n");
+	      DBG("Input\n");
 	      break;
 	   case DFEC_WINDOW:
 	      engine_directfb_event_window((const DFBWindowEvent *)&ev);
 	      break;
 	   case DFEC_USER:
-	      fprintf(stderr, "User\n");
+	      DBG("User\n");
 	      break;
 	   case DFEC_UNIVERSAL:
-	      fprintf(stderr, "Universal\n");
+	      DBG("Universal\n");
 	      break;
 	  }
      }
