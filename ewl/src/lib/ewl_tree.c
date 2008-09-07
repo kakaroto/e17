@@ -745,6 +745,7 @@ ewl_tree_header_build(Ewl_Tree *tree, Ewl_Container *box,
                         void *mvc_data, unsigned int column)
 {
         Ewl_Widget *c;
+        void *pr_data;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(tree);
@@ -762,12 +763,12 @@ ewl_tree_header_build(Ewl_Tree *tree, Ewl_Container *box,
                 DRETURN(DLEVEL_STABLE);
         }
 
+        pr_data = ewl_mvc_private_data_get(EWL_MVC(tree));
         if (model->header)
                 c = view->header_fetch(model->header(mvc_data, column),
-                                        column, EWL_MVC(tree)->private_data);
+                                        column, pr_data);
         else
-                c = view->header_fetch(NULL, column, 
-                                        EWL_MVC(tree)->private_data);
+                c = view->header_fetch(NULL, column, pr_data);
 
         /* XXX is this really a good idea to override the user's flags ? */
         ewl_object_fill_policy_set(EWL_OBJECT(c),
