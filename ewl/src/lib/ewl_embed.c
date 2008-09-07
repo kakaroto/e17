@@ -270,7 +270,7 @@ ewl_embed_focus_set(Ewl_Embed *embed, int f)
         DCHECK_PARAM_PTR(embed);
         DCHECK_TYPE(embed, EWL_EMBED_TYPE);
 
-        embed->focus = f;
+        embed->focus = !!f;
         if (embed->smart)
                 evas_object_focus_set(embed->smart, f);
 
@@ -2094,6 +2094,52 @@ ewl_embed_selection_text_set(Ewl_Embed *emb, const char *txt)
         ewl_engine_embed_selection_text_set(emb, txt);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param embed: the embed to inidicate if it is rendered by ewl
+ * @param f: boolean to determine if the embed is rendered by ewl or not
+ * @return Returns no value.
+ * @brief Sets the boolean flag in the embed to determine if the embed is
+ *      rendered by ewl
+ * 
+ * If the flag is set to true, ewl_engine_canvas_render() is called by ewl
+ * for this embed during the render phase, other wise the embed or another
+ * infrastructure has to render the canvas itself. For example a plain
+ * ewl_embed (what you get with ewl_embed_new()) with the evas backend will
+ * have this flag set to @c FALSE by default, because the evas_render() call
+ * is done by ecore_evas. For a ewl_window, however, the flag is set to
+ * @c TRUE by default, so ewl will call the canvas render function.
+ *
+ * Use this function only if you really know what you are doing. The default
+ * setting should work fine in anycase.
+ */
+void
+ewl_embed_render_set(Ewl_Embed *embed, unsigned int f)
+{
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(embed);
+        DCHECK_TYPE(embed, EWL_EMBED_TYPE);
+
+        embed->render = !!f;
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @param embed: the embed
+ * @return Returns a boolean indicating if the embed is rendered by ewl
+ * @brief Retrieve the boolean value that indicates if the emebd is rendered 
+ *      by ewl.
+ */
+unsigned int
+ewl_embed_render_get(Ewl_Embed *embed)
+{
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(embed, FALSE);
+        DCHECK_TYPE_RET(embed, EWL_EMBED_TYPE, FALSE);
+
+        DRETURN_INT(embed->render, DLEVEL_STABLE);
 }
 
 /**

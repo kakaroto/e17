@@ -89,10 +89,15 @@ struct Ewl_Embed
         int y; /**< Screen relative vertical position of window */
 
         int dnd_count;        /**< DND aware widget count */
-        int focus;         /**< Indicates if it receives focus */
 
         Ewl_Dnd_Types dnd_types;        /**< The dnd type */
         Ewl_Widget *dnd_last_position;        /**< The last dnd position */
+
+        unsigned char focus:1;         /**< Indicates if it receives focus */
+        unsigned char render:1;        /**< Indicates if the embed needs
+                                            to be rendered by ewl, or if
+                                            it is done elsewhere, by
+                                            ecore_evas for example */
 };
 
 Ewl_Widget      *ewl_embed_new(void);
@@ -172,6 +177,9 @@ void             ewl_embed_dnd_aware_set(Ewl_Embed *embed);
 void             ewl_embed_dnd_aware_remove(Ewl_Embed *embed);
 
 void             ewl_embed_selection_text_set(Ewl_Embed *emb, const char *txt);
+
+void             ewl_embed_render_set(Ewl_Embed *emb, unsigned int render);
+unsigned int     ewl_embed_render_get(Ewl_Embed *emb);
 
 void             ewl_embed_cache_cleanup(Ewl_Embed *emb);
 

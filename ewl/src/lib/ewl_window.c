@@ -53,6 +53,7 @@ ewl_window_init(Ewl_Window *w)
         ewl_widget_appearance_set(EWL_WIDGET(w), EWL_WINDOW_TYPE);
         ewl_widget_inherit(EWL_WIDGET(w), EWL_WINDOW_TYPE);
         ewl_object_fill_policy_set(EWL_OBJECT(w), EWL_FLAG_FILL_FILL);
+        ewl_embed_render_set(EWL_EMBED(w), TRUE);
 
         ewl_callback_prepend(EWL_WIDGET(w), EWL_CALLBACK_REALIZE,
                              ewl_window_cb_realize, NULL);
