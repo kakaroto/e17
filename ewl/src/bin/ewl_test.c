@@ -40,7 +40,7 @@ static char *ewl_test_about_body =
                 "The EWL Test application serves two purposes. "
                 "The first is to allow us to test the different "
                 "components of EWL as we develop them.\n\n"
-                "The second is to allow deveopers to view "
+                "The second is to allow developers to view "
                 "tutorials and source listings for the different "
                 "widgets in the system.\n\n"
                 "If you develop your own EWL widget you can add "
