@@ -76,11 +76,13 @@ static void get_signal(void *data);
 static void get_operator(void *data);
 static void signal_changed(void *data, DBusMessage *msg);
 static void operator_changed(void *data, DBusMessage *msg);
+static void fso_operator_changed(void *data, DBusMessage *msg);
 static void name_changed(void *data, DBusMessage *msg);
 
 static int
 try_again(void *data)
 {
+   printf("GSM-gadget: Try again called\n");
    get_signal(data);
    get_operator(data);
    try_again_timer = NULL;
@@ -145,8 +147,6 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
    inst->strength = -1;
    inst->oper = NULL;
    
-   int sleeptime = 8;
-
    ecore_init();
    ecore_string_init();
    e_dbus_init();
@@ -193,8 +193,8 @@ _gc_init(E_Gadcon *gc, const char *name, const char *id, const char *style)
 						     "org.freesmartphone.ogsmd",
 						     "/org/freesmartphone/GSM/Device",
 						     "org.freesmartphone.GSM.Network",
-						     "networkOperatorChanged",
-						     operator_changed, inst);
+						     "Status",
+						     fso_operator_changed, inst);
      }
    get_signal(inst);
    get_operator(inst);
@@ -352,9 +352,57 @@ operator_unmarhsall(DBusMessage *msg, DBusError *err)
    return NULL;
 }
 
+static void *
+_fso_operator_unmarhsall(DBusMessage *msg)
+{
+   /* We care only about the provider name right now. All the other status
+    * informations get ingnored for the gadget for now */
+   const char *provider, *name, *reg_stat;
+   DBusMessageIter iter, a_iter, s_iter, v_iter;
+   char *str_ret;
+   
+   if (!dbus_message_has_signature(msg, "a{sv}")) return NULL;
+   
+   dbus_message_iter_init(msg, &iter);
+   dbus_message_iter_recurse(&iter, &a_iter);
+   while (dbus_message_iter_get_arg_type(&a_iter) != DBUS_TYPE_INVALID)
+     {
+	dbus_message_iter_recurse(&a_iter, &s_iter);
+	dbus_message_iter_get_basic(&s_iter, &name);
+	
+	if (strcmp(name, "registration") == 0)
+	  {
+	     dbus_message_iter_next(&s_iter);
+	     dbus_message_iter_recurse(&s_iter, &v_iter);
+	     dbus_message_iter_get_basic(&v_iter, &reg_stat);
+	  }
+	if (strcmp(name, "provider") == 0)
+	  {
+	     dbus_message_iter_next(&s_iter);
+	     dbus_message_iter_recurse(&s_iter, &v_iter);
+	     dbus_message_iter_get_basic(&v_iter, &provider);
+	  }
+	dbus_message_iter_next(&a_iter);
+     }
+   
+   if (strcmp(reg_stat, "unregistered") == 0) provider = "No Service";
+   else if (strcmp(reg_stat, "busy") == 0) provider = "Searching...";
+   else if (strcmp(reg_stat, "denied") == 0) provider = "SOS only";
+   
+   str_ret = strdup(provider);
+   return NULL;
+}
+
+static void *
+fso_operator_unmarhsall(DBusMessage *msg, DBusError *err)
+{
+   return _fso_operator_unmarhsall(msg);
+}
+
 static void
 signal_callback_qtopia(void *data, void *ret, DBusError *err)
 {
+   printf("GSM-gadget: Qtopia signal callback called\n");
    if (ret)
      {
 	int *val_ret;
@@ -375,6 +423,7 @@ signal_callback_qtopia(void *data, void *ret, DBusError *err)
      }
    else
      {
+	printf("GSM-gadget: Qtopia signal callback  else part called\n");
 	detected_system = PH_SYS_UNKNOWN;
 	if (try_again_timer) ecore_timer_del(try_again_timer);
 	try_again_timer = ecore_timer_add(1.0, try_again, data);
@@ -384,6 +433,7 @@ signal_callback_qtopia(void *data, void *ret, DBusError *err)
 static void
 signal_callback_fso(void *data, void *ret, DBusError *err)
 {
+   printf("GSM-gadget: FSO signal callback called\n");
    if (ret)
      {
 	int *val_ret;
@@ -404,6 +454,7 @@ signal_callback_fso(void *data, void *ret, DBusError *err)
      }
    else
      {
+	printf("GSM-gadget: FSO signal callback else part called\n");
 	detected_system = PH_SYS_UNKNOWN;
 	if (try_again_timer) ecore_timer_del(try_again_timer);
 	try_again_timer = ecore_timer_add(1.0, try_again, data);
@@ -413,6 +464,7 @@ signal_callback_fso(void *data, void *ret, DBusError *err)
 static void
 operator_callback_qtopia(void *data, void *ret, DBusError *err)
 {
+   printf("GSM-gadget: Qtopia operator callback called\n");
    if (ret)
      {
 	if ((detected_system == PH_SYS_UNKNOWN) && (operatorch_h) && (conn))
@@ -430,6 +482,7 @@ operator_callback_qtopia(void *data, void *ret, DBusError *err)
      }
    else
      {
+	printf("GSM-gadget: Qtopia operator callback else part called\n");
 	detected_system = PH_SYS_UNKNOWN;
 	if (try_again_timer) ecore_timer_del(try_again_timer);
 	try_again_timer = ecore_timer_add(1.0, try_again, data);
@@ -439,6 +492,7 @@ operator_callback_qtopia(void *data, void *ret, DBusError *err)
 static void
 operator_callback_fso(void *data, void *ret, DBusError *err)
 {
+   printf("GSM-gadget: FSO operator callback called\n");
    if (ret)
      {
 	if ((detected_system == PH_SYS_UNKNOWN) && (operatorch_fso_h) && (conn_system))
@@ -448,14 +502,15 @@ operator_callback_fso(void *data, void *ret, DBusError *err)
 							  "org.freesmartphone.ogsmd",
 							  "/org/freesmartphone/GSM/Device",
 							  "org.freesmartphone.GSM.Network",
-							  "networkOperatorChanged",
-							  operator_changed, data);
+							  "Status",
+							  fso_operator_changed, data);
 	     detected_system = PH_SYS_FSO;
 	  }
 	update_operator(ret, data);
      }
    else
      {
+	printf("GSM-gadget: FSO operator callback else part called\n");
 	detected_system = PH_SYS_UNKNOWN;
 	if (try_again_timer) ecore_timer_del(try_again_timer);
 	try_again_timer = ecore_timer_add(1.0, try_again, data);
@@ -479,6 +534,7 @@ get_signal(void *data)
 {
    DBusMessage *msg;
    
+   printf("GSM-gadget: Get signal called\n");
    if (((detected_system == PH_SYS_UNKNOWN) || (detected_system == PH_SYS_QTOPIA)) && (conn))
      {
 	msg = dbus_message_new_method_call("org.openmoko.qtopia.Phonestatus",
@@ -514,8 +570,9 @@ get_signal(void *data)
 static void
 get_operator(void *data)
 {
-   DBusMessage *msg, *msg2;
-   
+   DBusMessage *msg;
+
+   printf("GSM-gadget: Get operator called\n");
    if (((detected_system == PH_SYS_UNKNOWN) || (detected_system == PH_SYS_QTOPIA)) && (conn))
      {
 	msg = dbus_message_new_method_call("org.openmoko.qtopia.Phonestatus",
@@ -536,11 +593,11 @@ get_operator(void *data)
 	msg = dbus_message_new_method_call("org.freesmartphone.ogsmd",
 					   "/org/freesmartphone/GSM/Device",
 					   "org.freesmartphone.GSM.Network",
-					   "networkOperator");
+					   "GetStatus");
 	if (msg)
 	  {
 	     e_dbus_method_call_send(conn_system, msg,
-				     operator_unmarhsall,
+				     fso_operator_unmarhsall,
 				     operator_callback_fso,
 				     operator_result_free, -1, data);
 	     dbus_message_unref(msg);
@@ -573,6 +630,14 @@ operator_changed(void *data, DBusMessage *msg)
 }
 
 static void
+fso_operator_changed(void *data, DBusMessage *msg)
+{
+   char *provider;
+   provider = _fso_operator_unmarhsall(msg);
+   update_operator(provider, data);
+}
+
+static void
 name_changed(void *data, DBusMessage *msg)
 {
    DBusError err;
@@ -587,6 +652,7 @@ name_changed(void *data, DBusMessage *msg)
      return;
    if ((!strcmp(s1, "org.openmoko.qtopia.Phonestatus")) && (conn))
      {
+	printf("GSM-gadget: Qtopia name owner changed\n");
 	if (changed_h)
 	  {
 	     e_dbus_signal_handler_del(conn, changed_h);
@@ -612,6 +678,7 @@ name_changed(void *data, DBusMessage *msg)
      }
    else if ((!strcmp(s1, "org.freesmartphone.ogsmd")) && (conn_system))
      {
+	printf("GSM-gadget: FSO name owner changed\n");
 	if (changed_fso_h) 
 	  {
 	     e_dbus_signal_handler_del(conn_system, changed_fso_h);
@@ -625,13 +692,13 @@ name_changed(void *data, DBusMessage *msg)
 	  }
 	if (operatorch_fso_h)
 	  {
-	     e_dbus_signal_handler_del(conn_system, operatorch_h);
-	     operatorch_h = e_dbus_signal_handler_add(conn_system,
-						      "org.freesmartphone.ogsmd",
-						      "/org/freesmartphone/GSM/Device",
-						      "org.freesmartphone.GSM.Network",
-						      "networkOperatorChanged",
-						      operator_changed, data);
+	     e_dbus_signal_handler_del(conn_system, operatorch_fso_h);
+	     operatorch_fso_h = e_dbus_signal_handler_add(conn_system,
+							  "org.freesmartphone.ogsmd",
+							  "/org/freesmartphone/GSM/Device",
+							  "org.freesmartphone.GSM.Network",
+							  "Status",
+							  fso_operator_changed, data);
 	     get_operator(data);
 	  }
      }
