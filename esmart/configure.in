@@ -112,6 +112,23 @@ PKG_CHECK_MODULES(FILE_DIALOG, [
   ]
 )
 
+PKG_CHECK_MODULES(CAIRO, [
+    cairo >= 1.6.4
+    evas >= 0.9.9
+  ], [
+    PKG_CHECK_MODULES(CAIRO_TEST, [
+        cairo >= 1.6.4
+        evas >= 0.9.9
+        ecore-evas >= 0.9.9
+        ecore >= 0.9.9
+      ])
+    have_esmart_cairo=yes
+    requirements="$requirements cairo"
+  ], [
+    have_esmart_cairo=no
+  ]
+)
+
 dnl Check for edce_cc
 EDJE_DEF=""
 AC_SUBST(EDJE_DEF)
@@ -138,6 +155,7 @@ AM_CONDITIONAL(BUILD_ESMART_TEXT_ENTRY, test $have_esmart_text_entry = yes)
 AM_CONDITIONAL(BUILD_ESMART_TEXTAREA, test $have_esmart_textarea = yes)
 AM_CONDITIONAL(BUILD_ESMART_THUMB, test $have_esmart_thumb = yes)
 AM_CONDITIONAL(BUILD_ESMART_TRANS_X11, test $have_esmart_trans_x11 = yes)
+AM_CONDITIONAL(BUILD_ESMART_CAIRO, test $have_esmart_cairo = yes)
 
 AM_CONDITIONAL(BUILD_TEST_APP, test $have_esmart_container = yes -a $have_esmart_thumb = yes)
 
@@ -170,6 +188,7 @@ src/lib/esmart_thumb/Makefile
 src/lib/esmart_trans_x11/Makefile
 src/lib/esmart_draggies/Makefile
 src/lib/esmart_resize/Makefile
+src/lib/esmart_cairo/Makefile
 src/bin/Makefile
 data/Makefile
 data/images/Makefile
@@ -194,6 +213,7 @@ echo "  Text Entry..............: $have_esmart_text_entry"
 echo "  Text Area...............: $have_esmart_textarea"
 echo "  Thumb...................: $have_esmart_thumb"
 echo "  Trans X11...............: $have_esmart_trans_x11"
+echo "  Cairo...................: $have_esmart_cairo"
 echo
 echo "------------------------------------------------------------------------"
 echo
