@@ -1098,6 +1098,7 @@ tutorial_parse(char *str)
 
                                 ewl_text_text_append(tutorial, start);
                                 ewl_text_color_set(tutorial, 0, 0, 0, 255);
+                                ewl_text_font_set(tutorial, NULL);
                                 in_codeblock = 0;
 
                                 end += 8;
