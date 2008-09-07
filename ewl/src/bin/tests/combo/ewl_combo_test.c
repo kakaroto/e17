@@ -192,14 +192,22 @@ combo_test_data_setup(void)
 }
 
 static Ewl_Widget *
-combo_test_data_header_fetch(void *data __UNUSED__, unsigned int col __UNUSED__,
+combo_test_data_header_fetch(void *data, unsigned int col __UNUSED__,
                                 void *pr_data __UNUSED__)
 {
         Ewl_Widget *header;
+        const char *path = data;
 
-        header = ewl_label_new();
-        ewl_label_text_set(EWL_LABEL(header), "Select Image");
-        ewl_widget_show(header);
+        if (!data)
+        {
+                header = ewl_label_new();
+                ewl_label_text_set(EWL_LABEL(header), "Select Image");
+        }
+        else
+        {
+                header = ewl_image_new();
+                ewl_image_file_path_set(EWL_IMAGE(header), path);
+        }
 
         return header;
 }
@@ -290,34 +298,28 @@ static Ewl_Widget *
 combo_test_editable_cb_header_fetch(void *data, unsigned int col __UNUSED__,
                                         void *pr_data __UNUSED__)
 {
-        Ewl_Combo_Test_Data *d;
+        const char *path;
         Ewl_Widget *w, *o, *o2;
-        Ewl_Selection_Idx *idx;
-        char *val;
 
-        d = data;
-        w = ewl_widget_name_find("combo_custom");
-        idx = ewl_mvc_selected_get(EWL_MVC(w));
+        path = data;
 
         w = ewl_hbox_new();
         ewl_object_alignment_set(EWL_OBJECT(w), EWL_FLAG_ALIGN_LEFT);
-        val = "Please select an option.";
-        o = ewl_entry_new();
         
-        if (idx)
+        o = ewl_entry_new();
+        if (path)
         {
-                val = strrchr(d->data[idx->row], '/');
-                ewl_text_text_set(EWL_TEXT(o),
-                                (val ? val + 1 : d->data[idx->row]));
+                const char *val;
+                val = strrchr(path, '/');
+                ewl_text_text_set(EWL_TEXT(o), (val ? val + 1 : path));
                 
                 o2 = ewl_image_new();
-                ewl_image_file_path_set(EWL_IMAGE(o2), d->data[idx->row]);
+                ewl_image_file_path_set(EWL_IMAGE(o2), path);
                 ewl_container_child_append(EWL_CONTAINER(w), o2);
                 ewl_widget_show(o2);
         }
-
         else
-                ewl_text_text_set(EWL_TEXT(o), val);
+                ewl_text_text_set(EWL_TEXT(o), "Please select an option.");
 
         ewl_container_child_append(EWL_CONTAINER(w), o);
         ewl_callback_append(o, EWL_CALLBACK_VALUE_CHANGED,

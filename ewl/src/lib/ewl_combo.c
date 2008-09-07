@@ -343,29 +343,27 @@ ewl_combo_cb_selected_change(Ewl_MVC *mvc)
                 model = idx->sel.model;
                 mvc_data = idx->sel.data;
 
-                if (combo->editable)
-                {
-                        /* Give the row selected in the column parameter,
-                         * ewl_filepicker needs this to display proper filter
-                         */
-
-                        item = view->header_fetch(ewl_mvc_data_get(mvc), 
-                                        idx->row, pr_data);
-                }
-
-                else
-                {
-                
-                
-                        item = view->fetch(model->fetch(mvc_data, idx->row, 0),
-                                idx->row, 0, pr_data);
-                }
+                item = view->header_fetch(
+                                        model->fetch(mvc_data, idx->row, 0),
+                                        0, pr_data);
 
                 FREE(idx);
         }
 
-        else if (view && view->header_fetch)
-                item = view->header_fetch(ewl_mvc_data_get(mvc), 0, pr_data);
+        else
+        {
+                const Ewl_Model *model;
+                void *mvc_data;
+
+                model = ewl_mvc_model_get(mvc);
+                mvc_data = ewl_mvc_data_get(mvc);
+
+                if (model->header)
+                        item = view->header_fetch(model->header(mvc_data, 0),
+                                                        0, pr_data);
+                else
+                        item = view->header_fetch(NULL, 0, pr_data);
+        }
 
         if (item)
         {
