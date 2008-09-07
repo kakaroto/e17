@@ -71,10 +71,10 @@ _elm_bg_del(Elm_Bg *bg)
 static void
 _elm_bg_size_alloc(Elm_Widget *wid, int w, int h)
 {
-   if (w < 100) w = 100;
-   if (h < 100) h = 100;
-   if (w > 400) w = 400;
-   if (h > 400) h = 400;
+   if (w < 300) w = 300;
+   if (h < 300) h = 300;
+   if (w > 800) w = 800;
+   if (h > 800) h = 800;
    wid->req.w = w;
    wid->req.h = h;
 }
