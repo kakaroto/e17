@@ -64,6 +64,7 @@ static int ewl_test_compare(Ewl_Test *test1, Ewl_Test *test2);
 static void ewl_test_print_tests(void);
 static void ewl_test_stderr_enable(void);
 static void ewl_test_stderr_disable(void);
+static void ewl_test_string_replace(char *string, char replace, char with);
 
 static void run_test_boxed(Ewl_Test *t);
 static void run_unit_test_boxed(Ewl_Test *t);
@@ -131,14 +132,18 @@ main(int argc, char **argv)
         /* check for any flags before ewl_init to avoid opening the display */
         for (i = 0; i < argc; i++)
         {
-                if (!strncmp(argv[i], "-list", 5))
+                if (!strcmp(argv[i], "-list"))
                 {
                         ewl_test_print_tests();
+                        if (tests)
+                                ecore_list_destroy(tests);
+                        if (tests_path_group)
+                                ecore_path_group_del(tests_path_group);
                         exit(0);
                 }
-                else if (!strncmp(argv[i], "-h", 2) ||
-                                !strncmp(argv[i], "-help", 5) ||
-                                !strncmp(argv[i], "--help", 6))
+                else if (!strcmp(argv[i], "-h") ||
+                                !strcmp(argv[i], "-help") ||
+                                !strcmp(argv[i], "--help"))
                 {
                         printf("Usage: %s [options] [test name]\n"
                                         "\t-all\tRun tests for all widgets\n"
@@ -151,15 +156,15 @@ main(int argc, char **argv)
                                         argv[0]);
                         exit(0);
                 }
-                else if (!strncmp(argv[i], "-profile", 8))
+                else if (!strcmp(argv[i], "-profile"))
                         profile_tests = 1;
-                else if (!strncmp(argv[i], "-p", 2))
+                else if (!strcmp(argv[i], "-p"))
                         hide_passed = 1;
-                else if (!strncmp(argv[i], "-d", 2))
+                else if (!strcmp(argv[i], "-d"))
                         show_debug = 1;
-                else if (!strncmp(argv[i], "-all", 4))
+                else if (!strcmp(argv[i], "-all"))
                         all_tests = 1;
-                else if (!strncmp(argv[i], "-unit", 5))
+                else if (!strcmp(argv[i], "-unit"))
                 {
                         unit_test = 1;
                         setenv("EWL_ENGINE_NAME", "evas_buffer", 1);
@@ -182,15 +187,19 @@ main(int argc, char **argv)
         if (profile_tests) start_time = ecore_time_get();
 
         /* check for any flags */
-        for (i = 0; i < argc || all_tests; i++)
+        for (i = 1; i < argc || all_tests; i++)
         {
+                char buffer[128];
                 Ewl_Test *t;
+
+                ecore_strlcpy(buffer, argv[i], sizeof(buffer));
+                ewl_test_string_replace(buffer, '_', ' ');
 
                 /* see if this thing was a test to run */
                 ecore_list_first_goto(tests);
                 while ((t = ecore_list_next(tests)))
                 {
-                        if (all_tests || !strcasecmp(argv[i], t->name))
+                        if (all_tests || !strcasecmp(buffer, t->name))
                         {
                                 if (unit_test)
                                         ret = run_unit_tests(t);
@@ -281,6 +290,14 @@ ewl_test_stderr_enable(void)
         saved_stderr = -1;
 }
 
+static void
+ewl_test_string_replace(char *string, char replace, char with)
+{
+        char *found = string;
+        while ((found = strchr(found, replace)))
+                *found = with;
+}
+
 static int
 ewl_test_cb_unit_test_timer(void *data)
 {
@@ -349,10 +366,18 @@ ewl_test_print_tests(void)
 {
         Ewl_Test *t;
 
-        printf("Ewl_Test Test List:\n");
+        printf("Ewl_Test Test List:\n"); 
+        
+        if (!tests)
+                ewl_test_setup_tests();
+        if (!tests)
+                return;
+
         ecore_list_first_goto(tests);
         while ((t = ecore_list_next(tests)))
                 printf("  %s\n", t->name);
+        printf("\n");
+
 }
 
 static void
