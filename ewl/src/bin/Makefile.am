@@ -13,7 +13,7 @@ AM_CPPFLAGS			=	-I$(top_srcdir)/src/lib -I$(top_builddir)/src/lib -DPACKAGE_DATA
 bin_PROGRAMS			=	$(EWLTESTPROGRAMS)
 
 ewl_test_DEPENDENCIES		=	$(top_builddir)/src/lib/libewl.la
-ewl_test_SOURCES		=	Ewl_Test.h ewl_test_private.h main.c
+ewl_test_SOURCES		=	Ewl_Test.h ewl_test_private.h ewl_test.c
 
 ewl_test_LDADD			=	$(top_builddir)/src/lib/libewl.la @EMOTION_LIBS@ @EPSILON_LIBS@ @EDJE_LIBS@ @ECORE_LIBS@ @EVAS_LIBS@
 
