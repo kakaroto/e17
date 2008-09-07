@@ -73,7 +73,7 @@ main(int argc, char **argv)
 				   * inside 1 file. not normally used but
 				   * might be if you have archive files with
 				   * multiple images in them */
-   bg2->geom_set(bg2, 0, 0, 500, 500);
+   bg2->geom_set(bg2, bg2->x, bg2->y, 500, 500);
    scroller->child_add(scroller, bg2);
    bg2->show(bg2);
    

@@ -37,6 +37,9 @@ _elm_widget_geom_set(Elm_Widget *wid, int x, int y, int w, int h)
 	wid->w = w;
 	wid->h = h;
 	evas_object_resize(wid->base, wid->w, wid->h);
+	_elm_obj_nest_push();
+	_elm_cb_call(ELM_OBJ(wid), ELM_CB_RESIZE, NULL);
+	_elm_obj_nest_pop();
      }
 }
 

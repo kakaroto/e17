@@ -68,6 +68,17 @@ _elm_bg_del(Elm_Bg *bg)
    ((Elm_Obj_Class *)(((Elm_Bg_Class *)(bg->clas))->parent))->del(ELM_OBJ(bg));
 }
 
+static void
+_elm_bg_size_alloc(Elm_Widget *wid, int w, int h)
+{
+   if (w < 100) w = 100;
+   if (h < 100) h = 100;
+   if (w > 400) w = 400;
+   if (h > 400) h = 400;
+   wid->req.w = w;
+   wid->req.h = h;
+}
+
 EAPI Elm_Bg *
 elm_bg_new(Elm_Win *win)
 {
@@ -80,6 +91,8 @@ elm_bg_new(Elm_Win *win)
    bg->type = ELM_OBJ_BG;
 
    bg->del = _elm_bg_del;
+   
+   bg->size_alloc = _elm_bg_size_alloc;
    
    bg->file_set = _elm_bg_file_set;
 
