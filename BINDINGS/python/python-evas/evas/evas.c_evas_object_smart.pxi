@@ -63,6 +63,10 @@ cdef void _smart_object_delete(Evas_Object *o) with gil:
         del obj.clip_unset
     except AttributeError, e:
         pass
+    try:
+        del obj.calculate
+    except AttributeError, e:
+        pass
 
     obj._smart_callbacks = None
     obj._m_delete = None
@@ -73,6 +77,7 @@ cdef void _smart_object_delete(Evas_Object *o) with gil:
     obj._m_color_set = None
     obj._m_clip_set = None
     obj._m_clip_unset = None
+    obj._m_calculate = None
 
 
 cdef void _smart_object_move(Evas_Object *o,
@@ -150,6 +155,16 @@ cdef void _smart_object_clip_unset(Evas_Object *o) with gil:
             traceback.print_exc()
 
 
+cdef void _smart_object_calculate(Evas_Object *o) with gil:
+    cdef SmartObject obj
+    obj = <SmartObject>evas_object_data_get(o, "python-evas")
+    if obj._m_calculate is not None:
+        try:
+            obj._m_calculate(obj)
+        except Exception, e:
+            traceback.print_exc()
+
+
 cdef void _smart_callback(void *data,
                           Evas_Object *o, void *event_info) with gil:
     cdef SmartObject obj
@@ -189,6 +204,7 @@ cdef long _smart_object_class_new(char *name) except 0:
     cls_def.color_set = _smart_object_color_set
     cls_def.clip_set = _smart_object_clip_set
     cls_def.clip_unset = _smart_object_clip_unset
+    cls_def.calculate = _smart_object_calculate
     cls_def.data = NULL
 
     cls = evas_smart_class_new(cls_def);
@@ -212,6 +228,16 @@ class EvasSmartObjectMeta(EvasObjectMeta):
 cdef object _smart_class_get_impl_method(object cls, char *name):
     meth = getattr(cls, name)
     orig = getattr(Object, name)
+    if meth is orig:
+        return None
+    else:
+        return meth
+
+
+cdef object _smart_class_get_impl_method_cls(object cls, object parent_cls,
+                                             char *name):
+    meth = getattr(cls, name)
+    orig = getattr(parent_cls, name)
     if meth is orig:
         return None
     else:
@@ -256,6 +282,9 @@ cdef public class SmartObject(Object) [object PyEvasSmartObject,
        I{No default implementation.}
      - L{clip_unset()}: called in order to unlimit object's visible area.
        I{No default implementation.}
+     - L{calculate()}: called before object is used for rendering and it is
+       marked as dirty/changed with L{changed()}. I{Default implementation
+       does nothing.}
 
     @note: You should never instantiate the SmartObject base class directly,
        but inherit and implement methods, then instantiate this new subclass.
@@ -272,7 +301,7 @@ cdef public class SmartObject(Object) [object PyEvasSmartObject,
        members
     @group Factories: Rectangle, Line, Image, FilledImage, Gradient,
        Polygon, Text
-    @group Default implementations: delete, move
+    @group Default implementations: delete, move, calculate
     @group Missing implementations: resize, show, hide, color_set,
        clip_set, clip_unset
     @group Event system: callback_add, callback_del, callback_call
@@ -306,6 +335,11 @@ cdef public class SmartObject(Object) [object PyEvasSmartObject,
         self._m_clip_unset = _smart_class_get_impl_method(cls, "clip_unset")
         if self._m_clip_unset is not None:
             self.clip_unset = python.PyMethod_New(Object.clip_unset, self, cls)
+        self._m_calculate = _smart_class_get_impl_method_cls(
+            cls, SmartObject, "calculate")
+        if self._m_calculate is not None:
+            self.calculate = python.PyMethod_New(
+                SmartObject.calculate, self, cls)
 
     def __dealloc__(self):
         self._smart_callbacks = None
@@ -489,6 +523,58 @@ cdef public class SmartObject(Object) [object PyEvasSmartObject,
         "Virtual method clip_unset() of SmartObject"
         print "%s.clip_unset() not implemented." % self.__class__.__name__
 
+    def calculate(self):
+        "Request object to recalculate it's internal state."
+        evas_object_smart_calculate(self.obj)
+
+    def changed(self):
+        """Mark object as changed, so it's L{calculate()} will be called.
+
+        If an object is changed and it provides a calculate() method,
+        it will be called from L{Evas.render()}, what we call pre-render
+        calculate.
+
+        This can be used to postpone heavy calculations until you need to
+        display the object, example: layout calculations.
+        """
+        evas_object_smart_changed(self.obj)
+
+    def need_recalculate_set(self, unsigned int value):
+        """Set need_recalculate flag.
+
+        Set the need_recalculate flag of given smart object.
+
+        If this flag is set then calculate() callback (method) of the
+        given smart object will be called, if one is provided, during
+        render phase usually evas_render(). After this step, this flag
+        will be automatically unset.
+
+        If no calculate() is provided, this flag will be left unchanged.
+
+        @note just setting this flag will not make scene dirty and
+        evas_render() will have no effect. To do that, use
+        evas_object_smart_changed(), that will automatically call this
+        function with 1 as parameter.
+
+        """
+        evas_object_smart_need_recalculate_set(self.obj, value)
+
+    def need_recalculate_get(self):
+        """Get the current value of need_recalculate flag.
+
+        @note this flag will be unset during the render phase, after
+        calculate() is called if one is provided.  If no calculate()
+        is provided, then the flag will be left unchanged after render
+        phase.
+        """
+        return evas_object_smart_need_recalculate_get(self.obj)
+
+    property need_recalculate:
+        def __set__(self, value):
+            self.need_recalculate_set(value)
+
+        def __get__(self):
+            self.need_recalculate_get()
 
     # Factory
     def Rectangle(self, **kargs):
@@ -571,7 +657,7 @@ cdef public class ClippedSmartObject(SmartObject) \
 
     @group Children manipulation: member_add, member_del
     @group Default implementations: delete, move, show, hide, color_set,
-       clip_set, clip_unset
+       clip_set, clip_unset, calculate
     @ivar clipper: the internal object used for clipping. You shouldn't
        mess with it.
     """

@@ -232,6 +232,7 @@ ewl_embed_canvas_set(Ewl_Embed *emb, void *canvas, Ewl_Embed_Window *canvas_wind
                         NULL,
                         ewl_embed_smart_cb_clip_set,
                         ewl_embed_smart_cb_clip_unset,
+                        NULL,
                         NULL
                 };
                 embedded_smart = evas_smart_class_new(&sc);

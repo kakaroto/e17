@@ -938,6 +938,7 @@ static Evas_Object *_etk_colorpicker_picker_object_add(Evas *evas, Etk_Colorpick
          NULL,
          _etk_colorpicker_picker_smart_clip_set,
          _etk_colorpicker_picker_smart_clip_unset,
+         NULL,
          NULL
       };
       _etk_colorpicker_picker_smart = evas_smart_class_new(&sc);
