@@ -359,7 +359,6 @@ _fso_operator_unmarhsall(DBusMessage *msg)
     * informations get ingnored for the gadget for now */
    const char *provider, *name, *reg_stat;
    DBusMessageIter iter, a_iter, s_iter, v_iter;
-   char *str_ret;
    
    if (!dbus_message_has_signature(msg, "a{sv}")) return NULL;
    
@@ -389,8 +388,7 @@ _fso_operator_unmarhsall(DBusMessage *msg)
    else if (strcmp(reg_stat, "busy") == 0) provider = "Searching...";
    else if (strcmp(reg_stat, "denied") == 0) provider = "SOS only";
    
-   str_ret = strdup(provider);
-   return NULL;
+   return strdup(provider);
 }
 
 static void *
