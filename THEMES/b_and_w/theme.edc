@@ -5,7 +5,7 @@
 // battery popup (done - review - see 'code' for notes)
 // fileman (list mode)
 // desklock (done - review - see 'code' for notes)
-// exebuf (In progress - review)
+// exebuf (done - review)
 //
 // note: make these (and menu) use a common image with a logical name. 
 // sys (done - review - see 'code' for notes), Move, Resize
@@ -8793,16 +8793,6 @@ collections { /* begin the collection of edje groups that are in this file */
 /////////////////////////////////////////////////////////////////////////////
    /*** MOD: EXEBUF ***/
    
-   // FIXME: Work In Progress. Just a basic concept.
-   /* Needs:
-	 - Positioning work around icon and text
-	 - Formatting.
-      Concept:
-	 - Sort of a 'Make-you-own-menu item' look
-	 - Should move down (with a transition) when browsing the history
-	    (like in Milky)
-   */
-   
    group { name: "e/widgets/exebuf/main";
       parts {
 	 part { name: "base";
@@ -8815,43 +8805,37 @@ collections { /* begin the collection of edje groups that are in this file */
 	       fill.smooth: 0;
 	    }
 	 }
-	 part {
-	    name: "eap_bg";
+	 part { name: "eap_bg";
 	    type: RECT;
-	    description {
-	       state: "default" 0.0;
-	       color: 255 255 255 255;
+	    description { state: "default" 0.0;
 	       rel1 {
 		  to: "e.swallow.eap_list";
-		  offset: -3 -3;
+		  offset: -1 -1;
 	       }
 	       rel2 {
 		  to: "e.swallow.eap_list";
-		  offset: 2  2;
+		  offset: 0  0;
 	       }
+	       color: 255 255 255 255;
 	    }
 	 }
-	 part {
-	    name: "e.swallow.eap_list";
+	 part { name: "e.swallow.eap_list";
 	    type: SWALLOW;
 	    clip_to: "eap_list_clip";
-	    description {
-	       state: "default" 0.0;
+	    description { state: "default" 0.0;
 	       min: 32 64;
 	       align: 0.5 0.0;
-	       rel1.offset:   12  12;
+	       rel1.offset:  12  12;
 	       rel2 {
-		  offset:   -13  -12;
+		  offset:   -13  -13;
 		  relative: 1.0 0.0;
 		  to_y: "bg";
 	       }
 	    }
 	 }
-	 part {
-	    name: "eap_list_clip";
+	 part { name: "eap_list_clip";
 	    type: RECT;
-	    description {
-	       state: "default" 0.0;
+	    description { state: "default" 0.0;
 	       color: 255 255 255 255;
 	       rel1.to_y: "e.swallow.eap_list";
 	       rel2.to_y: "e.swallow.eap_list";
@@ -8876,28 +8860,24 @@ collections { /* begin the collection of edje groups that are in this file */
 	       fill.smooth : 0;
 	    }
 	 }
-	 part {
-	    name: "exe_bg";
+	 part { name: "exe_bg";
 	    type: RECT;
-	    description {
-	       state: "default" 0.0;
-	       color: 255 255 255 255;
+	    description { state: "default" 0.0;
 	       rel1 {
 		  to: "e.swallow.exe_list";
-		  offset: -3 -3;
+		  offset: -1 -1;
 	       }
 	       rel2 {
 		  to: "e.swallow.exe_list";
-		  offset: 2  2;
+		  offset: 0  0;
 	       }
+	       color: 255 255 255 255;
 	    }
 	 }
-	 part {
-	    name: "e.swallow.exe_list";
+	 part { name: "e.swallow.exe_list";
 	    type: SWALLOW;
 	    clip_to: "exe_list_clip";
-	    description {
-	       state: "default" 0.0;
+	    description { state: "default" 0.0;
 	       min: 32 64;
 	       align: 0.5 1.0;
 	       rel1 {
@@ -8905,17 +8885,12 @@ collections { /* begin the collection of edje groups that are in this file */
 		  offset:   12  12;
 		  to_y: "bg";
 	       }
-	       rel2 {
-		  relative: 1.0 1.0;
-		  offset:   -13  -13;
-	       }
+	       rel2.offset:   -13  -13;
 	    }
 	 }
-	 part {
-	    name: "exe_list_clip";
+	 part { name: "exe_list_clip";
 	    type: RECT;
-	    description {
-	       state: "default" 0.0;
+	    description { state: "default" 0.0;
 	       color: 255 255 255 255;
 	       rel1.to_y: "e.swallow.exe_list";
 	       rel2.to_y: "e.swallow.exe_list";
@@ -8943,8 +8918,8 @@ collections { /* begin the collection of edje groups that are in this file */
 	 part { name: "bg";
 	    mouse_events: 0;
 	    description { state: "default" 0.0;
-	       min: 0 48;
-	       max: 99999 48;
+	       min: 0 42;
+	       max: 99999 42;
 	       rel1.offset: 20 0;
 	       rel2.offset: -21 -1;
 	       image {
@@ -8953,23 +8928,21 @@ collections { /* begin the collection of edje groups that are in this file */
 	       }
 	    }
 	 }
-	 part {
-	    name: "e.text.label";
+	 part { name: "e.text.label";
 	    type: TEXT;
 	    effect: SHADOW;
-	    description {
-	       state: "default" 0.0;
+	    description { state: "default" 0.0;
 	       fixed: 0 1;
 	       align: 0.0 0.5;
 	       rel1 {
 		  relative: 1.0 0.5;
-		  offset:   2   0;
+		  offset:   4   0;
 		  to_x:     "e.swallow.icons";
 	       }
 	       rel2 {
 		  relative: 1.0 0.5;
-		  offset:   -4  0;
-		  to_x:     "bg";
+		  offset:   4  0;
+		  to_x:     "e.swallow.icons";
 	       }
 	       color: 255 255 255 255;
 	       color3: 0 0 0 64;
@@ -8978,47 +8951,41 @@ collections { /* begin the collection of edje groups that are in this file */
 		  size: 16;
 		  align: 0.0 0.5;
 		  min: 1 1;
-// FIXME:	  elipsis: 1.0;
 		  text_class: "exebuf_command";
 	       }
 	    }
 	 }
-	 part {
-	    name:          "cursor";
-	    type:	RECT;
+	 part { name:  "cursor";
+	    type:  RECT;
 	    mouse_events:  0;
-	    description {
-	       state:    "default" 0.0;
+	    description { state: "default" 0.0;
 	       min: 1 18;
 	       max: 1 18;
 	       align: 0.0 0.5;
 	       fixed: 1 1;
 	       rel1 {
 		  relative: 1.0  0.0;
-		  offset:   3    0;
+		  offset:   1    0;
 		  to: "e.text.label";
 	       }
 	       rel2 {
 		  relative: 1.0  1.0;
-		  offset:   3    -1;
+		  offset:   1    -1;
 		  to: "e.text.label";
 	       }
 	       color: 255 255 255 220;
 	    }
-	    description {
-	       state:    "faded" 0.0;
+	    description { state:    "faded" 0.0;
 	       inherit:  "default" 0.0;
 	       color:    255 255 255 0;
 	    }
 	 }
-	 part {
-	    name: "e.swallow.icons";
+	 part { name: "e.swallow.icons";
 	    type: SWALLOW;
-	    description {
-	       state: "default" 0.0;
-	       aspect: 1.0 1.0;
+	    description { state: "default" 0.0;
+	       min: 32 32;
+	       max: 32 32;
 	       align: 0.0 0.5;
-	       aspect_preference: VERTICAL;
 	       rel1 {
 		  offset:  6  4; 
 		  to: "bg";
@@ -9042,21 +9009,19 @@ collections { /* begin the collection of edje groups that are in this file */
 	 }
       }
       programs {
-	 program {
-	    name:    "blink1";
+	 program { name: "blink_off";
 	    signal:  "show";
 	    source:  "";
 	    action:  STATE_SET "faded" 0.0;
 	    transition: SINUSOIDAL 0.5;
 	    target:  "cursor";
-	    after:   "blink2";
+	    after:   "blink_on";
 	 }
-	 program {
-	    name:    "blink2";
+	 program { name: "blink_on";
 	    action:  STATE_SET "default" 0.0;
-	    transition: SINUSOIDAL 0.5;
+	    transition: SINUSOIDAL 0.25;
 	    target:  "cursor";
-	    after:   "blink1";
+	    after:   "blink_off";
 	 }
       }
    }
