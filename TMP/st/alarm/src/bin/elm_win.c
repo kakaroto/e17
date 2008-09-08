@@ -219,6 +219,9 @@ elm_win_new(void)
    evas_image_cache_set(win->evas, 4096 * 1024);
    evas_font_cache_set(win->evas, 512 * 1024);
    evas_font_path_append(win->evas, "fonts");
+//   evas_font_hinting_set(win->evas, EVAS_FONT_HINTING_NONE);
+//   evas_font_hinting_set(win->evas, EVAS_FONT_HINTING_AUTO);
+   evas_font_hinting_set(win->evas, EVAS_FONT_HINTING_BYTECODE);
    edje_frametime_set(1.0 / 30.0);
 
    return win;

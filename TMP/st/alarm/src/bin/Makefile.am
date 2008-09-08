@@ -15,6 +15,7 @@ elm_theme.c \
 elm_widget.c \
 elm_bg.c \
 elm_scroller.c \
+elm_label.c \
 \
 els_pan.c \
 els_pan.h \

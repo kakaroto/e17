@@ -72,7 +72,8 @@ extern "C" {
 	  ELM_OBJ_WIDGET,
 	  ELM_OBJ_WIN,
 	  ELM_OBJ_BG,
-	  ELM_OBJ_SCROLLER
+	  ELM_OBJ_SCROLLER,
+	  ELM_OBJ_LABEL
      } Elm_Obj_Type;
    
    typedef enum _Elm_Cb_Type
@@ -105,6 +106,8 @@ extern "C" {
    typedef struct _Elm_Bg              Elm_Bg;
    typedef struct _Elm_Scroller_Class  Elm_Scroller_Class;
    typedef struct _Elm_Scroller        Elm_Scroller;
+   typedef struct _Elm_Label_Class     Elm_Label_Class;
+   typedef struct _Elm_Label           Elm_Label;
    
    typedef void (*Elm_Cb_Func) (void *data, Elm_Obj *obj, Elm_Cb_Type type, void *info);
    
@@ -278,6 +281,27 @@ extern "C" {
 	Elm_Scroller_Class_All;
 	
 	Evas_Object *scroller_pan;
+     };
+   
+/**************************************************************************/   
+   /* Label Object */
+#define Elm_Label_Class_Methods \
+   void (*text_set)  (Elm_Label *lb, const char *text);
+#define Elm_Label_Class_All Elm_Widget_Class_All; Elm_Label_Class_Methods; \
+   const char *text; \
+   int tw, th
+   
+   /* Object specific ones */
+   EAPI Elm_Label *elm_label_new(Elm_Win *win);
+   struct _Elm_Label_Class
+     {
+	void *parent;
+	Elm_Obj_Type type;
+	Elm_Label_Class_Methods;
+     };
+   struct _Elm_Label
+     {
+	Elm_Label_Class_All;
      };
    
 #endif

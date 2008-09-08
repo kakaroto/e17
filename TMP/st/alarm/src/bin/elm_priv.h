@@ -46,5 +46,6 @@ extern Elm_Win_Class _elm_win_class;
 extern Elm_Widget_Class _elm_widget_class;
 extern Elm_Bg_Class _elm_bg_class;
 extern Elm_Scroller_Class _elm_scroller_class;
+extern Elm_Label_Class _elm_label_class;
   
 #endif
