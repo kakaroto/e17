@@ -113,4 +113,15 @@ _elm_widget_init(Elm_Widget *wid)
    wid->size_req = _elm_widget_size_req;
    wid->above = _elm_widget_above;
    wid->below = _elm_widget_below;
+   
+   wid->expand = 1;
+   wid->fill = 1;
+}
+
+EAPI void
+elm_widget_sizing_update(Elm_Widget *wid)
+{
+   wid->size_alloc(wid, 0, 0);
+   if (!wid->parent) return;
+   ((Elm_Widget *)(wid->parent))->size_req(wid->parent, wid, wid->w, wid->h);
 }

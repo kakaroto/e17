@@ -22,6 +22,7 @@ _elm_label_text_set(Elm_Label *lb, const char *text)
 	lb->tw = mw;
 	lb->th = mh;
 	((Elm_Widget *)(lb->parent))->size_req(lb->parent, lb, lb->tw, lb->th);
+	lb->geom_set(lb, lb->x, lb->y, lb->tw, lb->th);
      }
 }
 
@@ -50,6 +51,5 @@ elm_label_new(Elm_Win *win)
    lb->base = edje_object_add(win->evas);
    _elm_theme_set(lb->base, "label", "label");
    win->child_add(win, lb);
-   ((Elm_Widget *)(lb->parent))->size_req(lb->parent, lb, 100, 100);
    return lb;
 }

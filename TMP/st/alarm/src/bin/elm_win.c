@@ -58,10 +58,6 @@ _elm_win_type_set(Elm_Win *win, Elm_Win_Type type)
 	if (win->xwin) ecore_x_netwm_window_type_set(win->xwin, ECORE_X_WINDOW_TYPE_DIALOG);
 	// FIXME: if child object is a scroll region, then put its child back
 	break;
-      case ELM_WIN_SCROLLABLE:
-	if (win->xwin) ecore_x_netwm_window_type_set(win->xwin, ECORE_X_WINDOW_TYPE_NORMAL);
-	// FIXME: take child object and put into scroll region
-	break;
       default:
 	break;
      }
@@ -89,10 +85,11 @@ _elm_win_size_alloc(Elm_Win *win, int w, int h)
 static void
 _elm_win_size_req(Elm_Win *win, Elm_Widget *child, int w, int h)
 {
+   ecore_evas_size_min_set(win->ee, w, h);
+   if (!child->expand) ecore_evas_size_max_set(win->ee, w, h);
+   else ecore_evas_size_max_set(win->ee, 0, 0);
    if ((w == win->w) && (h == win->h)) return;
    ecore_evas_resize(win->ee, w, h);
-   // FIXME: child has asked for a size allocation. resize window if needed?
-   // and adjust min (and max) sizes
 }
 
 static void
@@ -221,7 +218,7 @@ elm_win_new(void)
    evas_font_path_append(win->evas, "fonts");
 //   evas_font_hinting_set(win->evas, EVAS_FONT_HINTING_NONE);
 //   evas_font_hinting_set(win->evas, EVAS_FONT_HINTING_AUTO);
-   evas_font_hinting_set(win->evas, EVAS_FONT_HINTING_BYTECODE);
+//   evas_font_hinting_set(win->evas, EVAS_FONT_HINTING_BYTECODE);
    edje_frametime_set(1.0 / 30.0);
 
    return win;

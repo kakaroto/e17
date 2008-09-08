@@ -90,8 +90,7 @@ extern "C" {
    typedef enum _Elm_Win_Type
      {
 	ELM_WIN_BASIC,
-	  ELM_WIN_DIALOG_BASIC,
-	  ELM_WIN_SCROLLABLE
+	  ELM_WIN_DIALOG_BASIC
      } Elm_Win_Type;
    
    typedef struct _Elm_Obj_Class       Elm_Obj_Class;
@@ -186,9 +185,12 @@ extern "C" {
 #define Elm_Widget_Class_All Elm_Obj_Class_All; Elm_Widget_Class_Methods; \
    int x, y, w, h; \
    struct { int w, h; } req; \
-   Evas_Object *base
+   Evas_Object *base; \
+   unsigned char expand : 1; \
+   unsigned char fill : 1
    
    /* Object specific ones */
+   EAPI void elm_widget_sizing_update(Elm_Widget *wid);
    struct _Elm_Widget_Class
      {
 	void *parent;

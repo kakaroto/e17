@@ -63,9 +63,11 @@ main(int argc, char **argv)
 #endif   
    bg->show(bg); /* show the bg */
 
+#if 0   
    scroller = elm_scroller_new(win);
    scroller->show(scroller);
-
+#endif
+   
 #if 0   
    bg2 = elm_bg_new(win); /* create a test bg for scrolling */
    char buf[PATH_MAX];
@@ -81,7 +83,7 @@ main(int argc, char **argv)
 #endif
    
    label = elm_label_new(win);
-   scroller->child_add(scroller, label);
+//   scroller->child_add(scroller, label);
    label->text_set(label, 
 		   "Hello world<br>"
 		   "<br>"
@@ -156,6 +158,8 @@ main(int argc, char **argv)
 		   "plutôt naïve Louÿs rêva crapaüter Íosa Úrmhac Óighe pór Éava Ádhaim<br>"
 		   );
    label->show(label);
+   label->expand = 1;
+   elm_widget_sizing_update(label);
    
    win->show(win); /* show the window */
    
