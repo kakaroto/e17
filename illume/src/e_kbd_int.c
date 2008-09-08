@@ -970,12 +970,12 @@ _e_kbd_int_layout_build(E_Kbd_Int *ki)
    
    evas_event_freeze(ki->win->evas);
    e_layout_virtual_size_set(ki->layout_obj, ki->layout.w, ki->layout.h);
-   edje_extern_object_min_size_set(ki->layout_obj, ki->layout.w, ki->layout.h);
+   edje_extern_object_aspect_set(ki->layout_obj, EDJE_ASPECT_CONTROL_BOTH, ki->layout.w, ki->layout.h);
    edje_object_part_swallow(ki->base_obj, "e.swallow.content", ki->layout_obj);
    evas_object_resize(ki->base_obj, ki->win->w, ki->win->h);
-   evas_object_geometry_get(ki->layout_obj, NULL, NULL, &lw, &lh);
+   edje_object_part_geometry_get(ki->base_obj, "e.swallow.content", NULL, NULL, &lw, &lh);
    lh = (ki->layout.h * lw) / ki->layout.w;
-   edje_extern_object_min_size_set(ki->layout_obj, 0, lh);
+   edje_extern_object_min_size_set(ki->layout_obj, lw, lh);
    edje_object_part_swallow(ki->base_obj, "e.swallow.content", ki->layout_obj);
 
    for (l = ki->layout.keys; l; l = l->next)

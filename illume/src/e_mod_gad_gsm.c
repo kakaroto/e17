@@ -82,7 +82,7 @@ static void name_changed(void *data, DBusMessage *msg);
 static int
 try_again(void *data)
 {
-   printf("GSM-gadget: Try again called\n");
+//   printf("GSM-gadget: Try again called\n");
    get_signal(data);
    get_operator(data);
    try_again_timer = NULL;
@@ -400,7 +400,7 @@ fso_operator_unmarhsall(DBusMessage *msg, DBusError *err)
 static void
 signal_callback_qtopia(void *data, void *ret, DBusError *err)
 {
-   printf("GSM-gadget: Qtopia signal callback called\n");
+//   printf("GSM-gadget: Qtopia signal callback called\n");
    if (ret)
      {
 	int *val_ret;
@@ -421,7 +421,7 @@ signal_callback_qtopia(void *data, void *ret, DBusError *err)
      }
    else
      {
-	printf("GSM-gadget: Qtopia signal callback  else part called\n");
+//	printf("GSM-gadget: Qtopia signal callback  else part called\n");
 	detected_system = PH_SYS_UNKNOWN;
 	if (try_again_timer) ecore_timer_del(try_again_timer);
 	try_again_timer = ecore_timer_add(1.0, try_again, data);
@@ -431,7 +431,7 @@ signal_callback_qtopia(void *data, void *ret, DBusError *err)
 static void
 signal_callback_fso(void *data, void *ret, DBusError *err)
 {
-   printf("GSM-gadget: FSO signal callback called\n");
+//   printf("GSM-gadget: FSO signal callback called\n");
    if (ret)
      {
 	int *val_ret;
@@ -452,7 +452,7 @@ signal_callback_fso(void *data, void *ret, DBusError *err)
      }
    else
      {
-	printf("GSM-gadget: FSO signal callback else part called\n");
+//	printf("GSM-gadget: FSO signal callback else part called\n");
 	detected_system = PH_SYS_UNKNOWN;
 	if (try_again_timer) ecore_timer_del(try_again_timer);
 	try_again_timer = ecore_timer_add(1.0, try_again, data);
@@ -462,7 +462,7 @@ signal_callback_fso(void *data, void *ret, DBusError *err)
 static void
 operator_callback_qtopia(void *data, void *ret, DBusError *err)
 {
-   printf("GSM-gadget: Qtopia operator callback called\n");
+//   printf("GSM-gadget: Qtopia operator callback called\n");
    if (ret)
      {
 	if ((detected_system == PH_SYS_UNKNOWN) && (operatorch_h) && (conn))
@@ -480,7 +480,7 @@ operator_callback_qtopia(void *data, void *ret, DBusError *err)
      }
    else
      {
-	printf("GSM-gadget: Qtopia operator callback else part called\n");
+//	printf("GSM-gadget: Qtopia operator callback else part called\n");
 	detected_system = PH_SYS_UNKNOWN;
 	if (try_again_timer) ecore_timer_del(try_again_timer);
 	try_again_timer = ecore_timer_add(1.0, try_again, data);
@@ -490,7 +490,7 @@ operator_callback_qtopia(void *data, void *ret, DBusError *err)
 static void
 operator_callback_fso(void *data, void *ret, DBusError *err)
 {
-   printf("GSM-gadget: FSO operator callback called\n");
+//   printf("GSM-gadget: FSO operator callback called\n");
    if (ret)
      {
 	if ((detected_system == PH_SYS_UNKNOWN) && (operatorch_fso_h) && (conn_system))
@@ -508,7 +508,7 @@ operator_callback_fso(void *data, void *ret, DBusError *err)
      }
    else
      {
-	printf("GSM-gadget: FSO operator callback else part called\n");
+//	printf("GSM-gadget: FSO operator callback else part called\n");
 	detected_system = PH_SYS_UNKNOWN;
 	if (try_again_timer) ecore_timer_del(try_again_timer);
 	try_again_timer = ecore_timer_add(1.0, try_again, data);
@@ -532,7 +532,7 @@ get_signal(void *data)
 {
    DBusMessage *msg;
    
-   printf("GSM-gadget: Get signal called\n");
+//   printf("GSM-gadget: Get signal called\n");
    if (((detected_system == PH_SYS_UNKNOWN) || (detected_system == PH_SYS_QTOPIA)) && (conn))
      {
 	msg = dbus_message_new_method_call("org.openmoko.qtopia.Phonestatus",
@@ -570,7 +570,7 @@ get_operator(void *data)
 {
    DBusMessage *msg;
 
-   printf("GSM-gadget: Get operator called\n");
+//   printf("GSM-gadget: Get operator called\n");
    if (((detected_system == PH_SYS_UNKNOWN) || (detected_system == PH_SYS_QTOPIA)) && (conn))
      {
 	msg = dbus_message_new_method_call("org.openmoko.qtopia.Phonestatus",
@@ -650,7 +650,7 @@ name_changed(void *data, DBusMessage *msg)
      return;
    if ((!strcmp(s1, "org.openmoko.qtopia.Phonestatus")) && (conn))
      {
-	printf("GSM-gadget: Qtopia name owner changed\n");
+//	printf("GSM-gadget: Qtopia name owner changed\n");
 	if (changed_h)
 	  {
 	     e_dbus_signal_handler_del(conn, changed_h);
@@ -676,7 +676,7 @@ name_changed(void *data, DBusMessage *msg)
      }
    else if ((!strcmp(s1, "org.freesmartphone.ogsmd")) && (conn_system))
      {
-	printf("GSM-gadget: FSO name owner changed\n");
+//	printf("GSM-gadget: FSO name owner changed\n");
 	if (changed_fso_h) 
 	  {
 	     e_dbus_signal_handler_del(conn_system, changed_fso_h);
