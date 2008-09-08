@@ -2297,6 +2297,9 @@ static void _etk_tree_headers_size_allocate(Etk_Tree *tree, Etk_Geometry geometr
          }
       }
 
+      if (!first_visible_col || !last_visible_col)
+          return;
+
       header_geometry.y = header_bar_geometry.y;
       header_geometry.h = header_bar_geometry.h;
 
