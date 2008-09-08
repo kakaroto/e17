@@ -55,13 +55,15 @@ typedef struct _Cpsc
 /*============================================================================*
  *                                  Local                                     * 
  *============================================================================*/
-static void _a_alloc(Cpsc *c, int num)
+static Eina_Bool _a_alloc(Cpsc *c, int num)
 {
 	c->vertices = realloc(c->vertices, num * sizeof(Cpsc));
+	return EINA_TRUE;
 }
 
 static void _a_free(Cpsc *c)
 {
+	printf("free called\n");
 	free(c->vertices);
 }
 

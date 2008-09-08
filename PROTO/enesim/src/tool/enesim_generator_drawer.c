@@ -198,7 +198,18 @@ static void span_prototype_end(Format *f)
 {
 	fprintf(fout, "}\n");
 }
-
+/* TODO
+ * span functions for contiguous data type should be splitted in something
+ * similar to:
+ * for (len = len / contiguous)
+ * {
+ * 	span_draw()
+ * }
+ * for (len = len % contiguous)
+ * {
+ * 	point_draw()
+ * }
+ */
 static void span_functions(Format *f, const char *rop)
 {
 	int i = 0;

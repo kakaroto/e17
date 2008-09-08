@@ -46,15 +46,17 @@ typedef enum
 
 struct _Enesim_Transformation
 {
-	float matrix[MATRIX_SIZE];
-	Eina_F16p16 matrix_fixed[MATRIX_SIZE];
-	Enesim_Transformation_Type type;
-	int quality; // TODO fix this
-	/* TODO also add the case were the src surface uses borders */
-	Enesim_Rop rop;
 #ifdef DEBUG
 	Enesim_Magic magic;
 #endif
+	float matrix[MATRIX_SIZE];
+	Eina_F16p16 matrix_fixed[MATRIX_SIZE];
+	Enesim_Transformation_Type type;
+	float ox;
+	float oy;
+	int quality; // TODO fix this
+	/* TODO also add the case were the src surface uses borders */
+	Enesim_Rop rop;
 };
 
 /* identity[quality][xscale][yscale]

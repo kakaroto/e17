@@ -49,14 +49,19 @@ static void _transformation_to_fixed(float *t, Eina_F16p16 *td)
 	td[8] = eina_f16p16_float_from(t[8]);
 }
 
+static void _matrix_debug(float *m)
+{
+	printf("XX = %f XY = %f XZ = %f\n", m[MATRIX_XX], m[MATRIX_XY], m[MATRIX_XZ]);
+	printf("YX = %f YY = %f YZ = %f\n", m[MATRIX_YX], m[MATRIX_YY], m[MATRIX_YZ]);
+	printf("ZX = %f ZY = %f ZZ = %f\n", m[MATRIX_ZX], m[MATRIX_ZY], m[MATRIX_ZZ]);
+}
+
 static void _transformation_debug(Enesim_Transformation *t)
 {
 	
 	printf("Transformation with rop = %d\n", t->rop);
 	printf("Floating point matrix\n");
-	printf("XX = %f XY = %f XZ = %f\n", t->matrix[MATRIX_XX], t->matrix[MATRIX_XY], t->matrix[MATRIX_XZ]);
-	printf("YX = %f YY = %f YZ = %f\n", t->matrix[MATRIX_YX], t->matrix[MATRIX_YY], t->matrix[MATRIX_YZ]);
-	printf("ZX = %f ZY = %f ZZ = %f\n", t->matrix[MATRIX_ZX], t->matrix[MATRIX_ZY], t->matrix[MATRIX_ZZ]);
+	_matrix_debug(t->matrix);
 	printf("Fixed point matrix (16p16 format)\n");
 	printf("XX = %u XY = %u XZ = %u\n", t->matrix_fixed[MATRIX_XX], t->matrix_fixed[MATRIX_XY], t->matrix_fixed[MATRIX_XZ]);
 	printf("YX = %u YY = %u YZ = %u\n", t->matrix_fixed[MATRIX_YX], t->matrix_fixed[MATRIX_YY], t->matrix_fixed[MATRIX_YZ]);
@@ -310,30 +315,130 @@ static Enesim_Transformer_Func _functions[ENESIM_TRANSFORMATIONS] = {
 /**
  * 
  */
-EAPI void enesim_transformation_matrix_compose(float *st, float *dt)
+EAPI void enesim_matrix_point_transform(float *m, float x, float y, float *xr, float *yr)
 {
-	int i;
-	float tmp[MATRIX_SIZE];
-	
-	tmp[MATRIX_XX] = (st[MATRIX_XX] * dt[MATRIX_XX]) + (st[MATRIX_XY] * dt[MATRIX_YX]) + (st[MATRIX_XZ] * dt[MATRIX_ZX]);
-	tmp[MATRIX_XY] = (st[MATRIX_XX] * dt[MATRIX_XY]) + (st[MATRIX_XY] * dt[MATRIX_YY]) + (st[MATRIX_XZ] * dt[MATRIX_ZY]);
-	tmp[MATRIX_XZ] = (st[MATRIX_XX] * dt[MATRIX_XZ]) + (st[MATRIX_XY] * dt[MATRIX_YZ]) + (st[MATRIX_XZ] * dt[MATRIX_ZZ]);
-	
-	tmp[MATRIX_YX] = (st[MATRIX_YX] * dt[MATRIX_XX]) + (st[MATRIX_YY] * dt[MATRIX_YX]) + (st[MATRIX_YZ] * dt[MATRIX_ZX]);
-	tmp[MATRIX_YY] = (st[MATRIX_YX] * dt[MATRIX_XY]) + (st[MATRIX_YY] * dt[MATRIX_YY]) + (st[MATRIX_YZ] * dt[MATRIX_ZY]);
-	tmp[MATRIX_YZ] = (st[MATRIX_YX] * dt[MATRIX_XZ]) + (st[MATRIX_YY] * dt[MATRIX_YZ]) + (st[MATRIX_YZ] * dt[MATRIX_ZZ]);
-
-	tmp[MATRIX_ZX] = (st[MATRIX_ZX] * dt[MATRIX_XX]) + (st[MATRIX_ZY] * dt[MATRIX_YX]) + (st[MATRIX_ZZ] * dt[MATRIX_ZX]);
-	tmp[MATRIX_ZY] = (st[MATRIX_ZX] * dt[MATRIX_XY]) + (st[MATRIX_ZY] * dt[MATRIX_YY]) + (st[MATRIX_ZZ] * dt[MATRIX_ZY]);
-	tmp[MATRIX_ZZ] = (st[MATRIX_ZX] * dt[MATRIX_XZ]) + (st[MATRIX_ZY] * dt[MATRIX_YZ]) + (st[MATRIX_ZZ] * dt[MATRIX_ZZ]);
-
-	for (i = 0; i < MATRIX_SIZE; i++)
-		st[i] = tmp[i];
+	_matrix_debug(m);
+	if (!m[MATRIX_ZX] && !m[MATRIX_ZY])
+	{
+		if (xr)
+			*xr = (x * m[MATRIX_XX] + y * m[MATRIX_XY] + m[MATRIX_XZ]);
+		if (yr)
+			*yr = (x * m[MATRIX_YX] + y * m[MATRIX_YY] + m[MATRIX_YZ]);
+	}
+	else
+	{
+		if (xr)
+			*xr = (x * m[MATRIX_XX] + y * m[MATRIX_XY] + m[MATRIX_XZ]) /
+				(x * m[MATRIX_ZX] + y * m[MATRIX_ZY] + 1);
+		if (yr)
+			*yr = (x * m[MATRIX_YX] + y * m[MATRIX_YY] + m[MATRIX_YZ]) /
+				(x * m[MATRIX_ZX] + y * m[MATRIX_ZY] + 1);
+	}
 }
 /**
  * 
  */
-EAPI void enesim_transformation_matrix_translate(float *t, float tx, float ty)
+EAPI void enesim_matrix_adjoint(float *m, float *a)
+{
+	float a11, a12, a13, a21, a22, a23, a31, a32, a33;
+	
+	/* cofactor */
+	a11 = (m[MATRIX_YY] * m[MATRIX_ZZ]) - (m[MATRIX_YZ] * m[MATRIX_ZY]);
+	a12 = -1 * ((m[MATRIX_YX] * m[MATRIX_ZZ]) - (m[MATRIX_YZ] * m[MATRIX_ZX]));
+	a13 = (m[MATRIX_YX] * m[MATRIX_ZY]) - (m[MATRIX_YY] * m[MATRIX_ZX]);
+	
+	a21 = -1 * ((m[MATRIX_XY] * m[MATRIX_ZZ]) - (m[MATRIX_XZ] * m[MATRIX_ZY]));
+	a22 = (m[MATRIX_XX] * m[MATRIX_ZZ]) - (m[MATRIX_XZ] * m[MATRIX_ZX]);
+	a23 = -1 * ((m[MATRIX_XX] * m[MATRIX_ZY]) - (m[MATRIX_XY] * m[MATRIX_ZX]));
+	
+	a31 = (m[MATRIX_XY] * m[MATRIX_YZ]) - (m[MATRIX_XZ] * m[MATRIX_YY]);
+	a32 = -1 * ((m[MATRIX_XX] * m[MATRIX_YZ]) - (m[MATRIX_XZ] * m[MATRIX_YX]));
+	a33 = (m[MATRIX_XX] * m[MATRIX_YY]) - (m[MATRIX_XY] * m[MATRIX_YX]);
+	/* transpose */
+	a[MATRIX_XX] = a11;
+	a[MATRIX_XY] = a21;
+	a[MATRIX_XZ] = a31;
+	
+	a[MATRIX_YX] = a12;
+	a[MATRIX_YY] = a22;
+	a[MATRIX_YZ] = a32;
+	
+	a[MATRIX_ZX] = a13;
+	a[MATRIX_ZY] = a23;
+	a[MATRIX_ZZ] = a33;
+	
+}
+/**
+ * 
+ */
+EAPI float enesim_matrix_determinant(float *m)
+{
+	float det;
+	
+	det = m[MATRIX_XX] * ((m[MATRIX_YY] * m[MATRIX_ZZ]) - (m[MATRIX_YZ] * m[MATRIX_ZY]));
+	det -= m[MATRIX_XY] * ((m[MATRIX_YX] * m[MATRIX_ZZ]) - (m[MATRIX_YZ] * m[MATRIX_ZX]));
+	det += m[MATRIX_XZ] * ((m[MATRIX_YX] * m[MATRIX_ZY]) - (m[MATRIX_YY] * m[MATRIX_ZX]));
+	
+	return det;
+}
+/**
+ * 
+ */
+EAPI void enesim_matrix_divide(float *m, float scalar)
+{
+	m[MATRIX_XX] /= scalar;
+	m[MATRIX_XY] /= scalar;
+	m[MATRIX_XZ] /= scalar;
+	
+	m[MATRIX_YX] /= scalar;
+	m[MATRIX_YY] /= scalar;
+	m[MATRIX_YZ] /= scalar;
+	
+	m[MATRIX_ZX] /= scalar;
+	m[MATRIX_ZY] /= scalar;
+	m[MATRIX_ZZ] /= scalar;
+}
+/**
+ * 
+ */
+EAPI void enesim_matrix_inverse(float *m, float *m2)
+{
+	float scalar;
+	
+	/* determinant */
+	scalar = enesim_matrix_determinant(m);
+	/* do its adjoint */
+	enesim_matrix_adjoint(m, m2);
+	/* divide */
+	enesim_matrix_divide(m2, scalar);
+}
+/**
+ * 
+ */
+EAPI void enesim_matrix_compose(float *m1, float *m2, float *dst)
+{
+	int i;
+	float tmp[MATRIX_SIZE];
+	
+	tmp[MATRIX_XX] = (m1[MATRIX_XX] * m2[MATRIX_XX]) + (m1[MATRIX_XY] * m2[MATRIX_YX]) + (m1[MATRIX_XZ] * m2[MATRIX_ZX]);
+	tmp[MATRIX_XY] = (m1[MATRIX_XX] * m2[MATRIX_XY]) + (m1[MATRIX_XY] * m2[MATRIX_YY]) + (m1[MATRIX_XZ] * m2[MATRIX_ZY]);
+	tmp[MATRIX_XZ] = (m1[MATRIX_XX] * m2[MATRIX_XZ]) + (m1[MATRIX_XY] * m2[MATRIX_YZ]) + (m1[MATRIX_XZ] * m2[MATRIX_ZZ]);
+	
+	tmp[MATRIX_YX] = (m1[MATRIX_YX] * m2[MATRIX_XX]) + (m1[MATRIX_YY] * m2[MATRIX_YX]) + (m1[MATRIX_YZ] * m2[MATRIX_ZX]);
+	tmp[MATRIX_YY] = (m1[MATRIX_YX] * m2[MATRIX_XY]) + (m1[MATRIX_YY] * m2[MATRIX_YY]) + (m1[MATRIX_YZ] * m2[MATRIX_ZY]);
+	tmp[MATRIX_YZ] = (m1[MATRIX_YX] * m2[MATRIX_XZ]) + (m1[MATRIX_YY] * m2[MATRIX_YZ]) + (m1[MATRIX_YZ] * m2[MATRIX_ZZ]);
+
+	tmp[MATRIX_ZX] = (m1[MATRIX_ZX] * m2[MATRIX_XX]) + (m1[MATRIX_ZY] * m2[MATRIX_YX]) + (m1[MATRIX_ZZ] * m2[MATRIX_ZX]);
+	tmp[MATRIX_ZY] = (m1[MATRIX_ZX] * m2[MATRIX_XY]) + (m1[MATRIX_ZY] * m2[MATRIX_YY]) + (m1[MATRIX_ZZ] * m2[MATRIX_ZY]);
+	tmp[MATRIX_ZZ] = (m1[MATRIX_ZX] * m2[MATRIX_XZ]) + (m1[MATRIX_ZY] * m2[MATRIX_YZ]) + (m1[MATRIX_ZZ] * m2[MATRIX_ZZ]);
+
+	for (i = 0; i < MATRIX_SIZE; i++)
+		dst[i] = tmp[i];
+}
+/**
+ * 
+ */
+EAPI void enesim_matrix_translate(float *t, float tx, float ty)
 {
 	t[MATRIX_XX] = 1;
 	t[MATRIX_XY] = 0;
@@ -348,7 +453,7 @@ EAPI void enesim_transformation_matrix_translate(float *t, float tx, float ty)
 /**
  * 
  */
-EAPI void enesim_transformation_matrix_scale(float *t, float sx, float sy)
+EAPI void enesim_matrix_scale(float *t, float sx, float sy)
 {
 	t[MATRIX_XX] = sx;
 	t[MATRIX_XY] = 0;
@@ -363,7 +468,7 @@ EAPI void enesim_transformation_matrix_scale(float *t, float sx, float sy)
 /**
  * 
  */
-EAPI void enesim_transformation_matrix_rotate(float *t, float rad)
+EAPI void enesim_matrix_rotate(float *t, float rad)
 {
 	float c = cos(rad);
 	float s = sin(rad);
@@ -381,7 +486,7 @@ EAPI void enesim_transformation_matrix_rotate(float *t, float rad)
 /**
  * 
  */
-EAPI void enesim_transformation_matrix_identity(float *t)
+EAPI void enesim_matrix_identity(float *t)
 {
 	t[MATRIX_XX] = 1;
 	t[MATRIX_XY] = 0;
@@ -392,6 +497,134 @@ EAPI void enesim_transformation_matrix_identity(float *t)
 	t[MATRIX_ZX] = 0;
 	t[MATRIX_ZY] = 0;
 	t[MATRIX_ZZ] = 1;
+}
+/**
+ * 
+ */
+EAPI void enesim_quad_rectangle_from(float *q,
+		Eina_Rectangle *r)
+{
+	q[0] = r->x;
+	q[1] = r->y;
+	q[2] = r->x + r->w;
+	q[3] = r->y;
+	q[4] = r->x + r->w;
+	q[5] = r->y + r->h;
+	q[6] = r->x;
+	q[7] = r->y + r->h;
+}
+/**
+ * 
+ */
+EAPI void enesim_quad_coords_from(float *q, float x1,
+		float y1, float x2, float y2, float x3, float y3, float x4,
+		float y4)
+{
+	q[0] = x1;
+	q[1] = y1;
+	q[2] = x2;
+	q[3] = y2;
+	q[4] = x3;
+	q[5] = y3;
+	q[6] = x4;
+	q[7] = y4;
+}
+
+static inline quad_dump(float *q)
+{
+	printf("Q = %f %f, %f %f, %f %f, %f %f\n", q[0], q[1], q[2], q[3], q[4], q[5], q[6], q[7], q[8]);
+}
+
+/**
+ * 
+ */
+EAPI Eina_Bool enesim_matrix_square_quad_to(float *m,
+		float *q)
+{
+	float ex = q[0] - q[2] + q[4] - q[6]; // x0 - x1 + x2 - x3
+	float ey = q[1] - q[3] + q[5] - q[7]; // y0 - y1 + y2 - y3 
+	
+	/* paralellogram */
+	if (!ex && !ey)
+	{
+		/* create the affine matrix */
+		m[MATRIX_XX] = q[2] - q[0];
+		m[MATRIX_XY] = q[4] - q[2];
+		m[MATRIX_XZ] = q[0];
+		
+		m[MATRIX_YX] = q[3] - q[1];
+		m[MATRIX_YY] = q[5] - q[3];
+		m[MATRIX_YZ] = q[1];
+		
+		m[MATRIX_ZX] = 0;
+		m[MATRIX_ZY] = 0;
+		m[MATRIX_ZZ] = 1;
+		
+		return EINA_TRUE;
+	}
+	else
+	{
+		float dx1 = q[2] - q[4]; // x1 - x2
+		float dx2 = q[6] - q[4]; // x3 - x2
+		float dy1 = q[3] - q[5]; // y1 - y2
+		float dy2 = q[7] - q[5]; // y3 - y2
+		float den = (dx1 * dy2) - (dx2 * dy1);
+		
+		if (!den)
+			return EINA_FALSE;
+		
+		m[MATRIX_ZX] = ((ex * dy2) - (dx2 * ey)) / den;
+		m[MATRIX_ZY] = ((dx1 * ey) - (ex * dy1)) / den;
+		m[MATRIX_ZZ] = 1;
+		m[MATRIX_XX] = q[2] - q[0] + (m[MATRIX_ZX] * q[2]);
+		m[MATRIX_XY] = q[6] - q[0] + (m[MATRIX_ZY] * q[6]);
+		m[MATRIX_XZ] = q[0];
+		m[MATRIX_YX] = q[3] - q[1] + (m[MATRIX_ZX] * q[3]);
+		m[MATRIX_YY] = q[7] - q[1] + (m[MATRIX_ZY] * q[7]);
+		m[MATRIX_YZ] = q[1];
+
+		return EINA_TRUE;
+	}
+}
+
+/**
+ * 
+ */
+EAPI Eina_Bool enesim_matrix_quad_square_to(float *m,
+		float *q)
+{
+	float tmp[9];
+	
+	/* compute square to quad */
+	if (!enesim_matrix_square_quad_to(tmp, q))
+		return EINA_FALSE;
+
+	enesim_matrix_inverse(tmp, m);
+	/* make the projective matrix always have 1 on zz */
+	if (m[MATRIX_ZZ] != 1)
+	{
+		enesim_matrix_divide(m, m[MATRIX_ZZ]);
+	}
+	
+	return EINA_TRUE;
+}
+
+/**
+ * Creates a projective matrix that maps a quadrangle to a quadrangle
+ */
+EAPI Eina_Bool enesim_matrix_quad_quad_to(float *m,
+		float *src, float *dst)
+{
+	float tmp[9];
+	
+	/* TODO check that both are actually quadrangles */
+	if (!enesim_matrix_quad_square_to(m, src))
+		return EINA_FALSE;
+	if (!enesim_matrix_square_quad_to(tmp, dst))
+		return EINA_FALSE;
+	enesim_matrix_compose(tmp, m, m);
+	
+	return EINA_TRUE;
 }
 /**
  * 
@@ -523,4 +756,20 @@ EAPI Eina_Bool enesim_transformation_apply(Enesim_Transformation *t,
 	}
 	tfunc(t, s, sr, d, dr);
 	return EINA_TRUE;
+}
+/**
+ * 
+ */
+EAPI void enesim_transformation_origin_set(Enesim_Transformation *t, float ox, float oy)
+{
+	t->ox = ox;
+	t->oy = oy;
+}
+/**
+ * 
+ */
+EAPI void enesim_transformation_origin_get(Enesim_Transformation *t, float *ox, float *oy)
+{
+	if (ox) *ox = t->ox;
+	if (oy) *oy = t->oy;
 }

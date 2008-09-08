@@ -79,30 +79,13 @@ double get_time(void)
 void surface_save(Enesim_Surface *s, const char *name)
 {
 	Enesim_Surface *img;
-
-	img = enesim_surface_new(ENESIM_SURFACE_ARGB8888_UNPRE, opt_width, opt_height);
+	int w, h;
+	
+	enesim_surface_size_get(s, &w, &h);
+	img = enesim_surface_new(ENESIM_SURFACE_ARGB8888_UNPRE, w, h);
 	//printf("Saving image %s\n", name);
 	enesim_surface_convert(s, img);
 	image_save(img, name, 0);
-	#if 0
-		{
-			int i = 0;
-			int j = 0;
-			Enesim_Surface_Data sdata;
-
-			printf("name = %s\n", name);
-			enesim_surface_data_get(img, &sdata);
-			for (j = 0; j < height / 2; j++)
-			{
-				printf("%d: ", j);
-				/*for (i = 0; i < width; i++)*/
-				{
-					printf("%08x ", *(sdata.argb8888_unpre.plane0 + (width * j) + i));
-				}
-				printf("\n");
-			}
-		}
-	#endif
 	enesim_surface_delete(img);
 }
 
@@ -174,6 +157,45 @@ void test_gradient2(Enesim_Surface *s)
 		enesim_surface_data_increment(&sdata, sfmt, opt_width);
 	}
 	surface_save(s, "gradient2.png");
+}
+
+Enesim_Surface * test_pattern(int w)
+{
+	Enesim_Surface *s;
+	Enesim_Drawer_Span spfnc;
+	Enesim_Color color;
+	Enesim_Surface_Data sdata;
+	int i;
+	int spaces = w / 2;
+	
+	enesim_color_get(&color, 0xff, 0xff, 0xff, 0);
+	spfnc = enesim_drawer_span_color_get(ENESIM_FILL, opt_fmt, color);
+	if (!spfnc)
+		return NULL;
+	s = enesim_surface_new(opt_fmt, w, w);
+	
+	/* draw the pattern */
+	enesim_surface_data_get(s, &sdata);
+	enesim_surface_data_increment(&sdata, opt_fmt, spaces);
+	for (i = 0; i < w / 2; i++)
+	{
+		int len = i * 2 +1;
+		
+		spfnc(&sdata, len, NULL, color, NULL);
+		enesim_surface_data_increment(&sdata, opt_fmt, len + spaces + --spaces);
+	}
+	spfnc(&sdata, w, NULL, color, NULL);
+	enesim_surface_data_increment(&sdata, opt_fmt, w + 1);
+	spaces = 1;
+	for (i = 0; i < w / 2; i++)
+	{
+		int len = (w - 1) - (i * 2 +1);
+		
+		spfnc(&sdata, len, NULL, color, NULL);
+		enesim_surface_data_increment(&sdata, opt_fmt, len + spaces + ++spaces);
+	}
+	surface_save(s, "pattern.png");
+	return s;
 }
 
 void test_finish(const char *name, Enesim_Rop rop, Enesim_Surface *dst,
@@ -435,6 +457,7 @@ void transformer_go(Enesim_Transformation *tx)
 void transformer_bench(void)
 {
 	float matrix[9], tmp[9];
+	float q1[8], q2[8];
 	Enesim_Transformation *tx;
 	float angle, ca, sa;
 
@@ -446,24 +469,25 @@ void transformer_bench(void)
 	enesim_transformation_rop_set(tx, opt_rop);
 	
 	/* identity matrix */
-	enesim_transformation_matrix_identity(matrix);
+	enesim_matrix_identity(matrix);
 	enesim_transformation_set(tx, matrix);
 	printf("Identity\n");
 	transformer_go(tx);
 	/* affine matrix */
 	/* do a scale, rotate and translate */
-	enesim_transformation_matrix_translate(matrix, opt_width/2, opt_height/2);
-	enesim_transformation_matrix_scale(tmp, 2, 2);
-	enesim_transformation_matrix_compose(matrix, tmp);
-	enesim_transformation_matrix_rotate(tmp, M_PI/4);
-	enesim_transformation_matrix_compose(matrix, tmp);
-	enesim_transformation_matrix_translate(tmp, -opt_width/2, -opt_height/2);
-	enesim_transformation_matrix_compose(matrix, tmp);
+	enesim_matrix_translate(matrix, opt_width/2, opt_height/2);
+	enesim_matrix_scale(tmp, 2, 2);
+	enesim_matrix_compose(matrix, tmp, matrix);
+	enesim_matrix_rotate(tmp, M_PI/4);
+	enesim_matrix_compose(matrix, tmp, matrix);
+	enesim_matrix_translate(tmp, -opt_width/2, -opt_height/2);
+	enesim_matrix_compose(matrix, tmp, matrix);
 	enesim_transformation_set(tx, matrix);
 	printf("Affine\n");
 	transformer_go(tx);
 	/* projective */
-	//enesim_transformation_matrix_identity(matrix);
+	//enesim_matrix_identity(matrix);
+#if 0
 	angle = (40 * M_PI) / 180.0;
 	sa = sin(angle);
 	ca = cos(angle);
@@ -479,6 +503,53 @@ void transformer_bench(void)
 	enesim_transformation_set(tx, matrix);
 	printf("Projective\n");
 	transformer_go(tx);
+#endif
+	
+
+	enesim_quad_coords_from(q1, 0, 0, opt_width, 0, opt_width, opt_height, 0, opt_height);
+	enesim_quad_coords_from(q2, 0, 100, 180, 0, 250, 180, 190, 240);
+	//enesim_quad_coords_from(q2, 50, 50, 190, 10, 195, 140, 50, 240);
+	enesim_matrix_quad_quad_to(matrix, q2, q1);
+	enesim_transformation_set(tx, matrix);
+	printf("Projective\n");
+	transformer_go(tx);
+}
+void matrix_bench(void)
+{
+	float q1[8], q2[8], m[9], m2[9];
+	float x, y, xr, yr;
+
+	enesim_quad_coords_from(q1, 0, 0, opt_width, 0, opt_width, opt_height, 0, opt_height);
+	enesim_quad_coords_from(q2, 0, 100, 180, 0, 250, 180, 190, 240);
+			
+	/* transforming from a square to a quad */
+	printf("square to quad\n");
+	enesim_matrix_square_quad_to(m, q2);
+	x = 0;
+	y = 1;
+	enesim_matrix_point_transform(m, x, y, &xr, &yr);
+	printf("x = %f x' = %f, y = %f y' = %f\n", x, xr, y, yr);
+	/* scale */
+	printf("scale\n");
+	enesim_matrix_scale(m2, opt_width, opt_height);
+	x = 0;
+	y = 1;
+	enesim_matrix_point_transform(m2, x, y, &xr, &yr);
+	printf("x = %f x' = %f, y = %f y' = %f\n", x, xr, y, yr);
+	/* quad to square */
+	printf("quad to square\n");
+	enesim_matrix_quad_square_to(m, q2);
+	x = q2[2];
+	y = q2[3];
+	enesim_matrix_point_transform(m, x, y, &xr, &yr);
+	printf("x = %f x' = %f, y = %f y' = %f\n", x, xr, y, yr);
+	/* quad to square */
+	printf("quad to quad\n");
+	enesim_matrix_quad_quad_to(m, q1, q2);
+	x = q1[4];
+	y = q1[5];
+	enesim_matrix_point_transform(m, x, y, &xr, &yr);
+	printf("x = %f x' = %f, y = %f y' = %f\n", x, xr, y, yr);	
 }
 /******************************************************************************
  *                      Rasterizer benchmark functions                        *
@@ -515,7 +586,6 @@ void rasterizer_bench(void)
 	/* Test every rasterizer */
 	eina_rectangle_coords_from(&rect, 0, 0, MAX_X, MAX_Y);
 	rs = enesim_rasterizer_cpsc_new(rect);
-	//rs = enesim_rasterizer_kiia_new(ENESIM_RASTERIZER_KIIA_COUNT_8, rect);
 	for (i = 0; i < POINTS_NUM; i++)
 	{
 		enesim_rasterizer_vertex_add(rs, points[i].x, points[i].y);
@@ -528,10 +598,66 @@ void rasterizer_bench(void)
 	end = get_time();
 	printf("CPSC [%3.3f sec]\n", end - start);
 	enesim_rasterizer_delete(rs);
-
+#if 0
+	rs = enesim_rasterizer_kiia_new(ENESIM_RASTERIZER_KIIA_COUNT_8, rect);
+	for (i = 0; i < POINTS_NUM; i++)
+	{
+		enesim_rasterizer_vertex_add(rs, points[i].x, points[i].y);
+	}
+	start = get_time();
+	for (t = 0; t < opt_times; t++)
+	{
+		enesim_rasterizer_generate(rs, rasterizer_callback, NULL);
+	}
+	end = get_time();
+	printf("KIIA8 [%3.3f sec]\n", end - start);
+	enesim_rasterizer_delete(rs);
+#endif
 #undef POINTS_NUM
 #undef MAX_X
 #undef MAX_Y
+}
+
+/******************************************************************************
+ *                        Renderer benchmark functions                        *
+ ******************************************************************************/
+void renderer_bench(void)
+{
+	Enesim_Renderer *r;
+	Enesim_Surface *src;
+	Enesim_Surface *dst;
+	Enesim_Scanline_Alias sl;
+	int i;
+	double start, end;
+	int t;
+	
+	printf("******************\n");
+	printf("* Renderer Bench *\n");
+	printf("******************\n");
+	/* surface renderer */
+	src = test_pattern(25);
+	dst = enesim_surface_new(opt_fmt, opt_width, opt_height);
+	r = enesim_renderer_surface_new();
+	enesim_renderer_rop_set(r, opt_rop);
+	enesim_renderer_surface_mode_set(r, ENESIM_SURFACE_REPEAT_Y | ENESIM_SURFACE_REPEAT_X);  
+	enesim_renderer_surface_dst_area_set(r, 0, 0, opt_width, opt_height);
+	enesim_renderer_surface_src_area_set(r, 0, 0, 25, 25);
+	enesim_renderer_surface_surface_set(r, src);
+	start = get_time();
+	for (t = 0; t < opt_times; t++)
+	{
+		for (i = 0; i < opt_height; i++)
+		{
+			sl.x = 0;
+			sl.y = i;
+			sl.w = opt_width;
+			enesim_renderer_draw(r, ENESIM_SCANLINE_ALIAS, &sl, dst);
+		}
+	}
+	end = get_time();
+	printf("Surface Renderer [%3.3f sec]\n", end - start);
+	test_finish("renderer_surface", opt_rop, dst, NULL, NULL);
+	/* color renderer */
 }
 
 void help(void)
@@ -637,7 +763,12 @@ ok:
 	enesim_init();
 	drawer_bench();
 	transformer_bench();
-	//rasterizer_bench();
+	rasterizer_bench();
+	renderer_bench();
 	enesim_shutdown();
+	/* this bench should be on test
+	 * matrix_bench();
+	 */
+
 	return 0;
 }

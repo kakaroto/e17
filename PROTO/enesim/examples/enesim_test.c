@@ -120,10 +120,10 @@ static void test3(void)
 	enesim_transformation_apply(tx, src, &srect, dst, &drect);
 	rectangle_draw(&drect, dst, 0x55888888, ENESIM_BLEND);
 	/* affine matrix */
-	enesim_transformation_matrix_scale(m1, 1.4, 0.9);
-	enesim_transformation_matrix_scale(m2, -20, -20);
-	enesim_transformation_matrix_compose(m1, m2);
-	enesim_transformation_matrix_rotate(m2, PI/4);
+	enesim_matrix_scale(m1, 1.4, 0.9);
+	enesim_matrix_scale(m2, -20, -20);
+	enesim_matrix_compose(m1, m2);
+	enesim_matrix_rotate(m2, PI/4);
 	enesim_transformation_set(tx, m2);
 	drect.x = 200;
 	drect.y = 300;

@@ -66,6 +66,7 @@ uint8_t *plane1)
 	*plane1 = alpha;
 }
 
+/* TODO This are point only functions, we should do span functions too */
 static inline void rgb565_b1a3_blend(uint16_t *dplane0, uint8_t *dplane1, int dpixel_plane1, uint16_t splane0, uint8_t splane1)
 {
 	uint8_t alpha;
@@ -86,6 +87,7 @@ static inline void rgb565_b1a3_fill(uint16_t *dplane0, uint8_t *dplane1, int dpi
 {
 	rgb565_fill(dplane0, splane0);
 	/* TODO handle the pixel_plane var */
+	//*dplane1 = (*dplane1 & ~(dpixel_plane1 << 4)) | (splane1 << 4);
 	*dplane1 = splane1;
 }
 

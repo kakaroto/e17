@@ -22,6 +22,9 @@
  * @defgroup Enesim_Renderer_Group Renderer
  * TODO
  * remove the fill prefix, all of the renderers fill! :)
+ * TODO the renderer API can have a way to retrieve specific scanline renderer
+ * function, instead of doing a switch on every draw function
+ *
  * @{
  */
 typedef struct _Enesim_Renderer Enesim_Renderer; /**< Renderer Handler */
