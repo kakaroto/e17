@@ -19,24 +19,17 @@ on_win_del_req(void *data, Elm_Win *win, Elm_Cb_Type type, void *info)
    elm_exit();
 }
 
-int
-main(int argc, char **argv)
+static void
+win_bg_simple(void)
 {
    Elm_Win *win;
    Elm_Bg *bg;
-   Elm_Scroller *scroller;
-   Elm_Bg *bg2;
-   Elm_Label *label;
-
-   /* init Elementary (all Elementary calls begin with elm_ and all data
-    * types, enums and macros will be Elm_ and ELM_ etc.) */
-   elm_init(argc, argv);
 
    win = elm_win_new(); /* create a window */
-   win->name_set(win, "main"); /* set the window name - used by window 
-				* manager. make it uniqie for windows within 
-				* this application */
-   win->title_set(win, "Alarm"); /* set the title */
+   win->name_set(win, "win_simple"); /* set the window name - used by window 
+				      * manager. make it uniqie for windows
+				      * with in this application */
+   win->title_set(win, "Simple Window with default Bg"); /* set the title */
    win->autodel = 0; /* dont auto delete the window if someone closes it.
 		      * this means the del+req handler has to delete it. by
 		      * default it is on */
@@ -48,7 +41,27 @@ main(int argc, char **argv)
    /* our window needs a baground, so ask for one - it will be set with a
     * default bg */
    bg = elm_bg_new(win);
-#if 0   
+   bg->show(bg); /* show the bg */
+   
+   win->size_req(win, NULL, 240, 320); /* request that the window is 240x240 
+					* no min/max size enforced */
+   win->show(win); /* show the window */
+}
+
+static void
+win_bg_image(void)
+{
+   Elm_Win *win;
+   Elm_Bg *bg;
+
+   win = elm_win_new();
+   win->name_set(win, "win_bg");
+   win->title_set(win, "Simple Window with and image Bg");
+   win->autodel = 0;
+   win->cb_add(win, ELM_CB_DEL_REQ, on_win_del_req, NULL);
+   win->cb_add(win, ELM_CB_RESIZE, on_win_resize, NULL);
+
+   bg = elm_bg_new(win);
    /* this is a test - shows how to have your own custom wallpaper in
     * your app - don't use this unless you have a very good reason! there
     * is a default and all apps look nicer sharing the default, but if
@@ -60,30 +73,33 @@ main(int argc, char **argv)
 				 * inside 1 file. not normally used but
 				 * might be if you have archive files with
 				 * multiple images in them */
-#endif   
-   bg->show(bg); /* show the bg */
+   bg->show(bg);
 
-#if 0   
-   scroller = elm_scroller_new(win);
-   scroller->show(scroller);
-#endif
+   win->size_req(win, NULL, 240, 240);
+   win->show(win);
+}
+
+static void
+win_scrollable_label(void)
+{
+   Elm_Win *win;
+   Elm_Bg *bg;
+   Elm_Scroller *scroller;
+   Elm_Label *label;
+
+   win = elm_win_new();
+   win->name_set(win, "win_bg");
+   win->title_set(win, "Simple Window with scroller and label inside");
+   win->autodel = 0;
+   win->cb_add(win, ELM_CB_DEL_REQ, on_win_del_req, NULL);
+   win->cb_add(win, ELM_CB_RESIZE, on_win_resize, NULL);
+
+   bg = elm_bg_new(win);
+   bg->show(bg);
    
-#if 0   
-   bg2 = elm_bg_new(win); /* create a test bg for scrolling */
-   char buf[PATH_MAX];
-   snprintf(buf, sizeof(buf), "%s/images/sample_01.jpg", PACKAGE_DATA_DIR);
-   bg2->file_set(bg2, buf, NULL); /* set the bg - the NULL is for special
-				   * files that contain multiple images
-				   * inside 1 file. not normally used but
-				   * might be if you have archive files with
-				   * multiple images in them */
-   bg2->geom_set(bg2, bg2->x, bg2->y, 500, 500);
-   scroller->child_add(scroller, bg2);
-   bg2->show(bg2);
-#endif
+   scroller = elm_scroller_new(win);
    
    label = elm_label_new(win);
-//   scroller->child_add(scroller, label);
    label->text_set(label, 
 		   "Hello world<br>"
 		   "<br>"
@@ -157,11 +173,198 @@ main(int argc, char **argv)
 		   "Heizölrückstoßabdämpfung fløde pingüino kilómetros cœur déçu l'âme<br>"
 		   "plutôt naïve Louÿs rêva crapaüter Íosa Úrmhac Óighe pór Éava Ádhaim<br>"
 		   );
+   scroller->child_add(scroller, label);
    label->show(label);
-   label->expand = 1;
-   elm_widget_sizing_update(label);
+   scroller->show(scroller);
+
+   win->size_req(win, NULL, 240, 480);
+   win->show(win);
+}
+
+static void
+win_label_determines_min_size(void)
+{
+   Elm_Win *win;
+   Elm_Bg *bg;
+   Elm_Label *label;
+
+   win = elm_win_new();
+   win->name_set(win, "win_bg");
+   win->title_set(win, "Simple Window with label setting minimum size");
+   win->autodel = 0;
+   win->cb_add(win, ELM_CB_DEL_REQ, on_win_del_req, NULL);
+   win->cb_add(win, ELM_CB_RESIZE, on_win_resize, NULL);
+
+   bg = elm_bg_new(win);
+   bg->expand_x = 0; /* allows the window to grow in the y axis because */
+   bg->expand_y = 1; /* its only child can expand in y */
+   bg->show(bg);
    
-   win->show(win); /* show the window */
+   label = elm_label_new(win);
+   label->text_set(label, 
+		   "Hello world<br>"
+		   "<br>"
+		   "I am a label. I come here to temonstrate how to put<br>"
+		   "text into a label, with newlines, even markup to test<br>"
+		   "things like <b>bold text</b> where markup can be custom<br>"
+		   "and extensible, defined by the theme's textbloxk style<br>"
+		   "for the label.<br>"
+		   "<br>"
+		   "Note that the markup is html-like and things like newline<br>"
+		   "chars and tab chars like stdout text are not valid text<br>"
+		   "markup mechanisms. Use markup tags instead.<br>"
+		   );
+   label->show(label);
+   label->expand_x = 0; /* allows the window to grow in the y axis because */
+   label->expand_y = 1; /* its only child can expand in y */
+   /* why do i change expand on both bg and label? both are children of the
+    * window widget and thus both affect the window sizing. if any expands
+    * in an axis then window expanding is allowed always */
+   elm_widget_sizing_update(label); /* make sure that the lable knows about its
+				     * sizing changes like expand above */
+   win->show(win);
+}
+
+static void
+win_box_vert_of_labels(void)
+{
+   Elm_Win *win;
+   Elm_Bg *bg;
+   Elm_Box *box;
+   Elm_Label *label;
+
+   win = elm_win_new();
+   win->name_set(win, "win_bg");
+   win->title_set(win, "Simple Window with label setting minimum size");
+   win->autodel = 0;
+   win->cb_add(win, ELM_CB_DEL_REQ, on_win_del_req, NULL);
+   win->cb_add(win, ELM_CB_RESIZE, on_win_resize, NULL);
+
+   bg = elm_bg_new(win);
+   bg->expand_x = 1;
+   bg->expand_y = 1;
+   bg->show(bg);
+   
+   box = elm_box_new(win);
+   box->expand_x = 1;
+   box->expand_y = 1;
+   
+   label = elm_label_new(win);
+   label->text_set(label, "Expand X/Y 0/0, Fill X/Y 0/0, Align: 0.5 0.5");
+   box->pack_end(box, label);
+   label->show(label);
+   label->align_x = 0.5;
+   label->align_y = 0.5;
+   label->expand_x = 0;
+   label->expand_y = 0;
+   label->fill_x = 0;
+   label->fill_y = 0;
+   elm_widget_sizing_update(label);
+
+   label = elm_label_new(win);
+   label->text_set(label, "Expand X/Y 1/1, Fill X/Y 0/0, Align: 0.5 0.5");
+   box->pack_end(box, label);
+   label->show(label);
+   label->align_x = 0.5;
+   label->align_y = 0.5;
+   label->expand_x = 1;
+   label->expand_y = 1;
+   label->fill_x = 0;
+   label->fill_y = 0;
+   elm_widget_sizing_update(label);
+
+   label = elm_label_new(win);
+   label->text_set(label, "Expand X/Y 1/1, Fill X/Y 1/1, Align: 0.5 0.5");
+   box->pack_end(box, label);
+   label->show(label);
+   label->align_x = 0.5;
+   label->align_y = 0.5;
+   label->expand_x = 1;
+   label->expand_y = 1;
+   label->fill_x = 1;
+   label->fill_y = 1;
+   elm_widget_sizing_update(label);
+
+   label = elm_label_new(win);
+   label->text_set(label, "Expand X/Y 0/0, Fill X/Y 1/1, Align: 0.5 0.5");
+   box->pack_end(box, label);
+   label->show(label);
+   label->align_x = 0.5;
+   label->align_y = 0.5;
+   label->expand_x = 0;
+   label->expand_y = 0;
+   label->fill_x = 1;
+   label->fill_y = 1;
+   elm_widget_sizing_update(label);
+
+   label = elm_label_new(win);
+   label->text_set(label, "Expand X/Y 0/0, Fill X/Y 1/1, Align: 0.0 0.5");
+   box->pack_end(box, label);
+   label->show(label);
+   label->align_x = 0.0;
+   label->align_y = 0.5;
+   label->expand_x = 0;
+   label->expand_y = 0;
+   label->fill_x = 1;
+   label->fill_y = 1;
+   elm_widget_sizing_update(label);
+
+   label = elm_label_new(win);
+   label->text_set(label, "Expand X/Y 0/0, Fill X/Y 1/1, Align: 1.0 0.5");
+   box->pack_end(box, label);
+   label->show(label);
+   label->align_x = 1.0;
+   label->align_y = 0.5;
+   label->expand_x = 0;
+   label->expand_y = 0;
+   label->fill_x = 1;
+   label->fill_y = 1;
+   elm_widget_sizing_update(label);
+
+   label = elm_label_new(win);
+   label->text_set(label, "Expand X/Y 0/0, Fill X/Y 1/1, Align: 0.5 0.0");
+   box->pack_end(box, label);
+   label->show(label);
+   label->align_x = 0.5;
+   label->align_y = 0.0;
+   label->expand_x = 0;
+   label->expand_y = 0;
+   label->fill_x = 1;
+   label->fill_y = 1;
+   elm_widget_sizing_update(label);
+
+   label = elm_label_new(win);
+   label->text_set(label, "Expand X/Y 0/0, Fill X/Y 1/1, Align: 0.5 1.0");
+   box->pack_end(box, label);
+   label->show(label);
+   label->align_x = 0.5;
+   label->align_y = 1.0;
+   label->expand_x = 0;
+   label->expand_y = 0;
+   label->fill_x = 1;
+   label->fill_y = 1;
+   elm_widget_sizing_update(label);
+
+   elm_widget_sizing_update(box);
+   box->show(box);
+   
+   win->size_req(win, NULL, 200, 120);
+   win->show(win);
+}
+
+int
+main(int argc, char **argv)
+{
+   /* init Elementary (all Elementary calls begin with elm_ and all data
+    * types, enums and macros will be Elm_ and ELM_ etc.) */
+   elm_init(argc, argv);
+
+   /* setup some windows with test widgets in them */
+   win_bg_simple();
+   win_bg_image();
+   win_scrollable_label();
+   win_label_determines_min_size();
+   win_box_vert_of_labels();
    
    elm_run(); /* and run the program now  and handle all events etc. */
    

@@ -50,6 +50,7 @@ elm_label_new(Elm_Win *win)
 
    lb->base = edje_object_add(win->evas);
    _elm_theme_set(lb->base, "label", "label");
+   _elm_widget_post_init(lb);
    win->child_add(win, lb);
    return lb;
 }

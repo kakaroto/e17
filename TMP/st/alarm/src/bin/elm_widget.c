@@ -113,9 +113,19 @@ _elm_widget_init(Elm_Widget *wid)
    wid->size_req = _elm_widget_size_req;
    wid->above = _elm_widget_above;
    wid->below = _elm_widget_below;
-   
-   wid->expand = 1;
-   wid->fill = 1;
+
+   wid->align_x = 0.5;
+   wid->align_y = 0.5;
+   wid->expand_x = 1;
+   wid->expand_y = 1;
+   wid->fill_x = 1;
+   wid->fill_y = 1;
+}
+
+void
+_elm_widget_post_init(Elm_Widget *wid)
+{
+   if (wid->base) evas_object_data_set(wid->base, "__Elm", wid);
 }
 
 EAPI void

@@ -90,11 +90,10 @@ elm_scroller_new(Elm_Win *win)
    sc->geom_set = _elm_scroller_geom_set;
 
    sc->base = elm_smart_scroller_add(win->evas);
-//   elm_smart_scroller_policy_set(sc->base, ELM_SMART_SCROLLER_POLICY_ON, ELM_SMART_SCROLLER_POLICY_ON);
    
    sc->cb_add(sc, ELM_CB_CHILD_ADD, _elm_on_child_add, NULL);
    sc->cb_add(sc, ELM_CB_CHILD_DEL, _elm_on_child_del, NULL);
+   _elm_widget_post_init(sc);
    win->child_add(win, sc);
-   ((Elm_Widget *)(sc->parent))->size_req(sc->parent, sc, 100, 100);
    return sc;
 }

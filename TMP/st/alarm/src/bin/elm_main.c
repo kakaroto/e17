@@ -32,7 +32,7 @@ elm_init(int argc, char **argv)
    _elm_config = ELM_NEW(Elm_Config);
    _elm_config->engine = ELM_SOFTWARE_X11;
    _elm_config->thumbscroll_enable = 1;
-   _elm_config->thumbscroll_threshhold = 48;
+   _elm_config->thumbscroll_threshhold = 24;
    _elm_config->thumbscroll_momentum_threshhold = 100.0;
    _elm_config->thumbscroll_friction = 1.0;
 }

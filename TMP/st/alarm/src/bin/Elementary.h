@@ -73,7 +73,8 @@ extern "C" {
 	  ELM_OBJ_WIN,
 	  ELM_OBJ_BG,
 	  ELM_OBJ_SCROLLER,
-	  ELM_OBJ_LABEL
+	  ELM_OBJ_LABEL,
+	  ELM_OBJ_BOX
      } Elm_Obj_Type;
    
    typedef enum _Elm_Cb_Type
@@ -107,6 +108,8 @@ extern "C" {
    typedef struct _Elm_Scroller        Elm_Scroller;
    typedef struct _Elm_Label_Class     Elm_Label_Class;
    typedef struct _Elm_Label           Elm_Label;
+   typedef struct _Elm_Box_Class       Elm_Box_Class;
+   typedef struct _Elm_Box             Elm_Box;
    
    typedef void (*Elm_Cb_Func) (void *data, Elm_Obj *obj, Elm_Cb_Type type, void *info);
    
@@ -186,10 +189,14 @@ extern "C" {
    int x, y, w, h; \
    struct { int w, h; } req; \
    Evas_Object *base; \
-   unsigned char expand : 1; \
-   unsigned char fill : 1
+   double align_x, align_y; \
+   unsigned char expand_x : 1; \
+   unsigned char expand_y : 1; \
+   unsigned char fill_x : 1; \
+   unsigned char fill_y : 1
    
    /* Object specific ones */
+   // FIXME: should this be a function or widget method call?
    EAPI void elm_widget_sizing_update(Elm_Widget *wid);
    struct _Elm_Widget_Class
      {
@@ -210,7 +217,7 @@ extern "C" {
    /* Window Object */
 #define Elm_Win_Class_Methods \
    void (*name_set)  (Elm_Win *win, const char *name); \
-   void (*title_set) (Elm_Win *win, const char *title); \
+   void (*title_set) (Elm_Win *win, const char *title)
 // FIXME:   
 // cover methods & state for:
 // type, fullscreen, icon, activate, shaped, alpha, borderless, iconified,
@@ -237,6 +244,7 @@ extern "C" {
 	Evas           *evas; /* private */
 	Ecore_X_Window  xwin; /* private */
 	Ecore_Job      *deferred_resize_job; /* private */
+	Ecore_Job      *deferred_child_eval_job; /* private */
      };
    
 /**************************************************************************/   
@@ -288,7 +296,7 @@ extern "C" {
 /**************************************************************************/   
    /* Label Object */
 #define Elm_Label_Class_Methods \
-   void (*text_set)  (Elm_Label *lb, const char *text);
+   void (*text_set)  (Elm_Label *lb, const char *text)
 #define Elm_Label_Class_All Elm_Widget_Class_All; Elm_Label_Class_Methods; \
    const char *text; \
    int tw, th
@@ -304,6 +312,32 @@ extern "C" {
    struct _Elm_Label
      {
 	Elm_Label_Class_All;
+     };
+   
+/**************************************************************************/   
+   /* Box Object */
+#define Elm_Box_Class_Methods \
+   void (*layout_update)  (Elm_Box *lb); \
+   void (*pack_start)     (Elm_Box *lb, Elm_Widget *wid); \
+   void (*pack_end)       (Elm_Box *lb, Elm_Widget *wid); \
+   void (*pack_before)    (Elm_Box *lb, Elm_Widget *wid, Elm_Widget *wid_before); \
+   void (*pack_after)     (Elm_Box *lb, Elm_Widget *wid, Elm_Widget *wid_after);
+
+#define Elm_Box_Class_All Elm_Widget_Class_All; Elm_Box_Class_Methods; \
+   unsigned char horizontal : 1; \
+   unsigned char homogenous : 1
+   
+   /* Object specific ones */
+   EAPI Elm_Box *elm_box_new(Elm_Win *win);
+   struct _Elm_Box_Class
+     {
+	void *parent;
+	Elm_Obj_Type type;
+	Elm_Box_Class_Methods;
+     };
+   struct _Elm_Box
+     {
+	Elm_Box_Class_All;
      };
    
 #endif

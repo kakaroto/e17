@@ -3,6 +3,7 @@
 
 #include "els_pan.h"
 #include "els_scroller.h"
+#include "els_box.h"
 
 // FIXME: totally disorganised. clean this up!
 
@@ -36,6 +37,7 @@ Elm_Cb *_elm_cb_new(void);
 void _elm_cb_call(Elm_Obj *obj, Elm_Cb_Type, void *info);
 int _elm_theme_set(Evas_Object *o, const char *clas, const char *group);
 void _elm_widget_init(Elm_Widget *wid);
+void _elm_widget_post_init(Elm_Widget *wid);
     
 extern char *_elm_appname;
 
@@ -47,5 +49,6 @@ extern Elm_Widget_Class _elm_widget_class;
 extern Elm_Bg_Class _elm_bg_class;
 extern Elm_Scroller_Class _elm_scroller_class;
 extern Elm_Label_Class _elm_label_class;
+extern Elm_Box_Class _elm_box_class;
   
 #endif

@@ -16,11 +16,14 @@ elm_widget.c \
 elm_bg.c \
 elm_scroller.c \
 elm_label.c \
+elm_box.c \
 \
 els_pan.c \
 els_pan.h \
 els_scroller.c \
-els_scroller.h
+els_scroller.h \
+els_box.c \
+els_box.h
 
 bin_PROGRAMS = alarm
 

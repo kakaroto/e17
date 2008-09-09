@@ -16,6 +16,53 @@ Elm_Win_Class _elm_win_class =
 };
 
 static void
+_elm_child_eval_job(Elm_Win *win)
+{
+   Evas_List *l;
+   int w, h;
+   int expand_x, expand_y;
+   
+   _elm_obj_nest_push();
+   w = h = 0;
+   expand_x = expand_y = 0;
+   for (l = win->children; l; l = l->next)
+     {
+	if (((Elm_Obj *)(l->data))->hastype(l->data, ELM_OBJ_WIDGET))
+	  {
+	     if (((Elm_Widget *)(l->data))->w > w) w = ((Elm_Widget *)(l->data))->w;
+	     if (((Elm_Widget *)(l->data))->h > h) h = ((Elm_Widget *)(l->data))->h;
+	     if (((Elm_Widget *)(l->data))->expand_x) expand_x = 1;
+	     if (((Elm_Widget *)(l->data))->expand_y) expand_y = 1;
+	  }
+     }
+   ecore_evas_size_min_set(win->ee, w, h);
+   if ((!expand_x) && (!expand_y)) ecore_evas_size_max_set(win->ee, w, h);
+   else if (!expand_x) ecore_evas_size_max_set(win->ee, w, 32727);
+   else if (!expand_y) ecore_evas_size_max_set(win->ee, 32767, h);
+   else ecore_evas_size_max_set(win->ee, 0, 0);
+   if (w < win->w) w = win->w;
+   if (h < win->h) h = win->h;
+   if ((w > win->w) || (h > win->h)) ecore_evas_resize(win->ee, w, h);
+   _elm_obj_nest_pop();
+}
+
+static void
+_elm_on_child_add(void *data, Elm_Win *win, Elm_Cb_Type type, Elm_Obj *obj)
+{
+   if (!(obj->hastype(obj, ELM_OBJ_WIDGET))) return;
+   if (win->deferred_child_eval_job) ecore_job_del(win->deferred_child_eval_job);
+   win->deferred_child_eval_job = ecore_job_add(_elm_child_eval_job, win);
+}
+
+static void
+_elm_on_child_del(void *data, Elm_Win *win, Elm_Cb_Type type, Elm_Obj *obj)
+{
+   if (!(obj->hastype(obj, ELM_OBJ_WIDGET))) return;
+   if (win->deferred_child_eval_job) ecore_job_del(win->deferred_child_eval_job);
+   win->deferred_child_eval_job = ecore_job_add(_elm_child_eval_job, win);
+}
+
+static void
 _elm_win_name_set(Elm_Win *win, const char *name)
 {
    if (win->name) evas_stringshare_del(win->name);
@@ -85,13 +132,28 @@ _elm_win_size_alloc(Elm_Win *win, int w, int h)
 static void
 _elm_win_size_req(Elm_Win *win, Elm_Widget *child, int w, int h)
 {
-   ecore_evas_size_min_set(win->ee, w, h);
-   if (!child->expand) ecore_evas_size_max_set(win->ee, w, h);
-   else ecore_evas_size_max_set(win->ee, 0, 0);
-   if ((w == win->w) && (h == win->h)) return;
-   ecore_evas_resize(win->ee, w, h);
+   if (child)
+     {
+	if (win->deferred_child_eval_job) ecore_job_del(win->deferred_child_eval_job);
+	win->deferred_child_eval_job = ecore_job_add(_elm_child_eval_job, win);
+     }
+   else
+     {
+	if ((w == win->w) && (h == win->h)) return;
+	ecore_evas_resize(win->ee, w, h);
+     }
 }
 
+static void
+_elm_win_above(Elm_Win *win, Elm_Widget *above)
+{
+}
+
+static void
+_elm_win_below(Elm_Win *win, Elm_Widget *below)
+{
+}
+    
 static void
 _elm_win_del(Elm_Win *win)
 {
@@ -104,8 +166,12 @@ _elm_win_del(Elm_Win *win)
      }
    if (win->deferred_resize_job)
      ecore_job_del(win->deferred_resize_job);
+   if (win->deferred_child_eval_job)
+     ecore_job_del(win->deferred_child_eval_job);
    ((Elm_Obj_Class *)(((Elm_Win_Class *)(win->clas))->parent))->del(ELM_OBJ(win));
 }
+
+
 
 static void
 _elm_win_delete_request(Ecore_Evas *ee)
@@ -167,6 +233,8 @@ elm_win_new(void)
    win->hide = _elm_win_hide;
    win->size_alloc = _elm_win_size_alloc;
    win->size_req = _elm_win_size_req;
+   win->above = _elm_win_above;
+   win->below = _elm_win_below;
    
    win->name_set = _elm_win_name_set;
    win->title_set = _elm_win_title_set;
@@ -221,5 +289,8 @@ elm_win_new(void)
 //   evas_font_hinting_set(win->evas, EVAS_FONT_HINTING_BYTECODE);
    edje_frametime_set(1.0 / 30.0);
 
+   win->cb_add(win, ELM_CB_CHILD_ADD, _elm_on_child_add, NULL);
+   win->cb_add(win, ELM_CB_CHILD_DEL, _elm_on_child_del, NULL);
+   
    return win;
 }
