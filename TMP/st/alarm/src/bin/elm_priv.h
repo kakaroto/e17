@@ -25,6 +25,7 @@ struct _Elm_Config
    int thumbscroll_threshhold;
    double thumbscroll_momentum_threshhold;
    double thumbscroll_friction;
+   double scale;
 };
 
 #define ELM_NEW(t) calloc(1, sizeof(t))

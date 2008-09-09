@@ -288,6 +288,7 @@ elm_win_new(void)
 //   evas_font_hinting_set(win->evas, EVAS_FONT_HINTING_AUTO);
 //   evas_font_hinting_set(win->evas, EVAS_FONT_HINTING_BYTECODE);
    edje_frametime_set(1.0 / 30.0);
+   edje_scale_set(_elm_config->scale);
 
    win->cb_add(win, ELM_CB_CHILD_ADD, _elm_on_child_add, NULL);
    win->cb_add(win, ELM_CB_CHILD_DEL, _elm_on_child_del, NULL);
