@@ -158,8 +158,6 @@ main(int argc, char **argv)
         double              t1;
 
         XFlush(disp);
-        while (XPending(disp))
-          {
              XNextEvent(disp, &ev);
              switch (ev.type)
                {
@@ -350,8 +348,6 @@ main(int argc, char **argv)
                        timeout = 0;
                     }
                }
-
-          }
      }
    return 0;
 }
