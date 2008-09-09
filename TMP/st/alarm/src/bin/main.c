@@ -352,6 +352,60 @@ win_box_vert_of_labels(void)
    win->show(win);
 }
 
+static void
+win_scrollable_box_vert_of_labels(void)
+{
+   Elm_Win *win;
+   Elm_Bg *bg;
+   Elm_Scroller *scroller;
+   Elm_Box *box;
+   Elm_Label *label;
+   int i;
+
+   win = elm_win_new();
+   win->name_set(win, "win_bg");
+   win->title_set(win, "Simple Window with scroller and label inside");
+   win->autodel = 0;
+   win->cb_add(win, ELM_CB_DEL_REQ, on_win_del_req, NULL);
+   win->cb_add(win, ELM_CB_RESIZE, on_win_resize, NULL);
+
+   bg = elm_bg_new(win);
+   bg->expand_x = 1;
+   bg->expand_y = 1;
+   bg->show(bg);
+   
+   scroller = elm_scroller_new(win);
+
+   box = elm_box_new(win);
+   box->expand_x = 1;
+   box->expand_y = 1;
+
+   for (i = 0; i < 40; i++)
+     {
+	char buf[4096];
+	
+	snprintf(buf, sizeof(buf), "This is a Label in a box, #%i", i);
+	label = elm_label_new(win);
+	label->text_set(label, buf);
+	box->pack_end(box, label);
+	label->show(label);
+	label->expand_x = 0;
+	label->expand_y = 0;
+	elm_widget_sizing_update(label);
+	label->show(label);
+     }
+
+   scroller->child_add(scroller, box);
+   
+   elm_widget_sizing_update(box);
+   box->show(box);
+   
+   scroller->show(scroller);
+
+   win->size_req(win, NULL, 240, 240);
+   win->show(win);
+}
+
 int
 main(int argc, char **argv)
 {
@@ -365,6 +419,7 @@ main(int argc, char **argv)
    win_scrollable_label();
    win_label_determines_min_size();
    win_box_vert_of_labels();
+   win_scrollable_box_vert_of_labels();
    
    elm_run(); /* and run the program now  and handle all events etc. */
    
