@@ -99,7 +99,7 @@ load(ImlibImage * im, ImlibProgressFunction progress, char progress_granularity,
 
    int                 pc, c, i, j, k, w, h, ncolors, cpp, comment, transp,
        quote, context, len, done, r, g, b, backslash;
-   char               *line, s[256], tok[128], col[256];
+   char               *line, s[256], tok[256], col[256];
    int                 lsz = 256;
    struct _cmap {
       unsigned char       str[6];
