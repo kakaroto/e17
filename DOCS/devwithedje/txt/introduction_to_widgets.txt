@@ -20,7 +20,7 @@ widget will register callbacks for its own functions that deal with events in
 the primitive objects that conform it.
 
 ..  image:: img/graphical_application_components_widget.png
-    :width: 85%
+    :scale: 85
     :align: center
 
 In order to be possible for the rest of the application to interact effectively

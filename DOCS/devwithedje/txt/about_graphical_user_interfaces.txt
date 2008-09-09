@@ -17,11 +17,11 @@ the appropriate moment. This gate guardian is known as the Event loop (or main
 loop).
 
 ..  image:: img/graphical_application_components.png
-    :width: 85%
+    :scale: 85
     :align: center
 
 The functions that form a event driven application (with a GUI) can be split
-among two groups. The first group is know as the backend, these functions deal 
+among two groups. The first group is known as the backend, these functions deal 
 with the actual purpose of the application, crunching numbers, decoding media 
 files and so on. The second group is known as the frontend, the prupose of 
 these functions is to present the results from the backend to their human
@@ -30,7 +30,7 @@ overlords and to receive orders from them.
 Between the backend and the frontend is where the Event loop lives, its mission 
 is to connect both ends of the application. Not only between them but also with
 their environment. The Event loop mantains a list of signals to look out for 
-and functions related to them. When a signal is received, the Event loop look
+and functions related to them. When a signal is received, the Event loop looks
 it up in a list and executes the corresponding function or functions.
 
 For the application to work, the Event loop needs to be aware of events in the 

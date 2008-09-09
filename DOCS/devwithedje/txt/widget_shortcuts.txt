@@ -1,0 +1,40 @@
+Creating custom widgets even with the facilities Edje provides can become a 
+very complex task with more advanced widgets. Thankfully for us a working 
+widget library for those specially-hard widgets already exists. Altought the
+goal of the Enlightened Widget Library are not exactly in synch with the goals
+of plain Edje application development, hard work has been done by the EWL 
+developers to make including their widgets in a plain Edje interface possible.
+
+But before we go into further implementation details it might be a good idea to 
+quote the introduction to the Ewl API reference:
+    
+    The Enlightened Widget Library (Ewl) is a high level toolkit providing all 
+    of the widgets you'll need to create your application. Ewl is built on the 
+    Enlightenment Foundataion Libraries and makes heavy use of the provided 
+    technologies. The goal of Ewl is to abstract the use of these backends and 
+    to present an easy to use object model to the end programmer. The expansive
+    object oriented style API provides tools to easily extend widgets and 
+    containers for new situations.
+
+    Overall, Ewl is similar in design and functionality to other common 
+    toolkits such as GTK+ and QT. The APIs differ, but the overall concepts and
+    ideas are similar. If you are familiar with these other toolkits getting 
+    into Ewl should be relatively simple.
+
+Simply put, the goal of the Ewl developers is to abstract Edje as on of many
+rendering backends. This is not a bad thing on its own, but for developers 
+wanting to use Edje capabilities to the max the Ewl can become limiting. Great 
+care is taken by the Ewl developers to not limit theme designers and this has
+resulted in a library that does *not* limit the themer more often than it does.
+
+In any case, the Enlightened Widget Library provides an special type of 
+container know as the "embed" container. Widgets included in this container can
+be swallowed into a SWALLOW part in a common Edje interface. Once the widget
+has been included its appereance can be altered in a per-theme basis in order
+for the widget to fit the rest of the application as cleanly as possible.
+
+You might not want to use Ewl to create simple interface objects like buttons
+and check boxes. But it can become an invaluable time saver for complex widgets
+like trees and file management dialogs. A great resource to learn how to
+include Ewl widgets into an Edje interface is the source code ewl_embed_test.c 
+which is logically divided and toroughly commented.

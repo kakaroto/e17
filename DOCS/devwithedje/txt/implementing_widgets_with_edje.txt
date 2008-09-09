@@ -1,0 +1,61 @@
+Edje is a great tool for widget creation, it provides many shortcuts, it frees
+the designer and the developer from eachother, it abstracts interface code
+from application code even inside the widgets!. But even Edje has it's own 
+shortcommings. There are two approaches to Edje based widget creation. The 
+first requires the developer to manipulate the primitive objects of the group 
+while the second requires to create a new type of Evas object using one or more
+groups.
+
+Do you remember the reason why the Evas Smart Objects were created?, it was 
+because managing multiple primitive objects from the application would become 
+harder as the complexity of the assembled object grew. This same reason makes 
+the second approach to Edje widget creation to prevail over the other. Let's 
+look at the following example, this is the *wrong* approach to widget creation. 
+These functions are used to implement a simple viewport used to display a given
+object::
+
+    Evas_Bool
+    widget_viewport_set(Evas_Object *self)
+    {
+        if(!edje_object_part_exists(self, "rect.clipper"))
+            return FALSE;
+        return TRUE;
+    }
+
+    void
+    widget_viewport_view(Evas_Object *self, Evas_Object *item)
+    {
+        Evas_Object *clipper;
+        Evas_Coord x,y;
+        clipper = edje_object_part_object_get(self, "rect.clipper");
+        evas_object_geometry_get(clipper, &x, &y, NULL, NULL);
+        evas_object_move(item, x, y);
+        evas_object_clip_set(item, clipper);
+        evas_object_data_set(self, "item", item);
+    } 
+
+The "clipper" object is a RECT part that translates to an Evas rectangle on 
+runtime. The object to view is clipped to this rectangle. Evas will force
+the clipped object to render inside the area represented by the clipper. Unlike
+swallowing, clipping wouldn't force a size recalculation of the clipped object.
+It simply cuts the extra pixels, the clipped object can resize and move at 
+will.
+
+But why is this approach wrong?. Even when this widget is really simple
+its creation was not free of problems. When I clipped a object to the viewport the 
+clipped object was rendered at the top covering all other parts, even in the
+cases the part was over the clipped object. Since the clipper was an internal
+Edje object it was not possible for me to solve the problem without recurring
+to the Edje_Edit library, which can't be used as a method of interaction with
+the interface without pretty much erase the reason we are using Edje over other
+libraries in the first time.
+
+An alternative approach exists that leaves the freedom of the designer intact
+while easing fine grined administration of the elements of a widget. The 
+solution is to implement widgets themselves as Smart Objects. Split their 
+components into groups based on your needs of interaction with them and let the
+designer free to implement these groups as he sees fit. There are some cases
+where the developer needs to interact with a given part and for them functions
+like ``edje_object_part_text_set`` which sets the contents of a given text part
+or ``edje_object_part_drag_value_get`` which gets the position of a drag-able
+object relatively to the size of the part is confined.

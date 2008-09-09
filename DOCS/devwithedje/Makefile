@@ -9,12 +9,12 @@ html:
 	rst2html.py --cloak-email-addresses --stylesheet=$(FILE).css  $(FILE).txt $(FILE).html
 	
 latex: 
-	rst2latex.py --use-latex-toc --documentclass=book --documentoptions=12pt,a4paper --stylesheet=$(FILE).sty $(FILE).txt $(FILE).tex
+	rst2latex.py --use-latex-toc --documentclass=book --documentoptions=12pt,a4paper --stylesheet=$(FILE).tex.sty $(FILE).txt $(FILE).tex
  
 pdf:
 	make latex
 	pdflatex $(FILE).tex
-	pdflatex $(FILE).tex #the second run is required for internal references
+	pdflatex $(FILE).tex #the second run is required to get the internal references right
 
 install:
 	cp -f $(FILE).html pre-rendered

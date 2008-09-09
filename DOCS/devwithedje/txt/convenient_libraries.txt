@@ -25,7 +25,7 @@ At the beginning of its life, the Ecore library was used as a Event loop and
 loop management is still one of the modules that composes Ecore.
 
 ..  image:: img/required_libraries.png
-    :width: 85%
+    :scale: 85
     :align: center
 
 Today, Ecore encompasses a long list of modules properly namespaced and 

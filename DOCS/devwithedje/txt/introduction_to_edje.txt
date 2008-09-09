@@ -3,7 +3,7 @@ Reference. After all, I cannot expect to give Edje a better introduction than
 its creator:
 
     Edje is a complex graphical design and layout library. [..]
-              
+
     [..] Edje should serve all the purposes of creating visual elements 
     (borders of windows, scrollbars, etc.) and allow the designer the ability 
     to animate, layout and control the look and feel of any program using Edje 
@@ -39,7 +39,7 @@ be submitted by the designer to the developer. Layout changes were only
 slightly less difficult than behavior changes. The idea of working on the 
 interface objects and their composition in a live environment, like a web 
 developer does, was pretty much unthinkable.
-      
+
 This is where the Edje library fits in, it liberates the designer and the 
 developer from eachother. The artists uses the Edje Data Collection language to
 manipulate primitive objects. EDC is in some ways comparable to Cascading Style
@@ -48,9 +48,9 @@ the developer only has to include the resulting object and setup the callbacks
 (by the main loop) to the backend functions.
 
 ..  image:: img/workflow.png
-    :width: 85%
+    :scale: 85
     :align: center
-    
+
 Except for the usage of nested blocks, the sintax of an EDC file is similar to 
 CSS. What really sets them appart is that with EDC the designer it's free to 
 create and layout design elements as he sees fit. With CSS the designer is 

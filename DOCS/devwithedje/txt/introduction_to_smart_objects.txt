@@ -1,0 +1,75 @@
+
+::
+
+    typedef struct _Smart_Data Smart_Data;
+
+    struct _Smart_Data
+    {
+        Evas_Coord    x, y, w, h;
+        Evas_Object   *self;
+        Evas_Object   *clipper;
+        Evas_Object   *item;
+    };
+
+    #define SMART_DATA_GET(obj) Smart_Data *sd; \
+                                sd = evas_object_smart_data_get(obj); \
+                                if (!sd) return;
+    ...
+
+    Evas_Object *
+    viewport_add(Evas *evas)
+    {
+        _viewport_smart_init();
+        return evas_object_smart_add(evas, _viewport_smart);
+    }
+
+    void
+    viewport_proportion_get(Evas_Object *self, double *w, double *h)
+    {
+        SMART_DATA_GET(self);
+        ...
+    }
+
+    void
+    viewport_view_move(Evas_Object *self, double x, double y)
+    {
+        SMART_DATA_GET(self);
+        ...
+    }
+
+    void
+    viewport_view(Evas_Object *self, Evas_Object *target)
+    {
+        SMART_DATA_GET(self);
+        ...
+    }
+
+::
+
+    static void
+    _viewport_smart_add(Evas_Object *self)
+    {
+        Smart_Data *sd;
+        sd = calloc(1, sizeof(Smart_Data));
+        if (!sd) return;
+        sd->self = self;
+        sd->x = 0;
+        sd->y = 0;
+        sd->w = 0;
+        sd->h = 0;
+        sd->clip = evas_object_rectangle_add(evas_object_evas_get(self));
+        evas_object_smart_data_set(self, sd);
+    }
+
+::
+
+    void
+    viewport_view(Evas_Object *self, Evas_Object *target)
+    {
+        SMART_DATA_GET(self);
+
+        sd->item = target;
+        evas_object_move(sd->item,sd->x,sd->y);
+        evas_object_clip_set(sd->item,sd->clip);
+        evas_object_show(sd->item);
+    }
