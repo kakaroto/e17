@@ -3,7 +3,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
+<meta name="generator" content="Docutils 0.4: http://docutils.sourceforge.net/" />
 <title>Application development with Edje</title>
 <meta name="author" content="Andres Blanc" />
 <meta name="date" content="2008/04/03" />
@@ -48,14 +48,14 @@ fieldset
 <tr><th class="docinfo-name">Author:</th>
 <td>Andres Blanc</td></tr>
 <tr><th class="docinfo-name">Contact:</th>
-<td><a class="first last reference external" href="mailto:andresblanc&#37;&#52;&#48;gmail&#46;com">andresblanc<span>&#64;</span>gmail<span>&#46;</span>com</a></td></tr>
+<td><a class="first last reference" href="mailto:andresblanc&#37;&#52;&#48;gmail&#46;com">andresblanc<span>&#64;</span>gmail<span>&#46;</span>com</a></td></tr>
 <tr><th class="docinfo-name">Version:</th>
 <td>1.0</td></tr>
 <tr><th class="docinfo-name">Date:</th>
 <td>2008/04/03</td></tr>
 <tr><th class="docinfo-name">Copyright:</th>
 <td>This book is distributed under the terms of the &quot;Attribution&quot;
-Creative Commons license. See: <a class="reference external" href="http://creativecommons.org/licenses/by/3.0/">http://creativecommons.org/licenses/by/3.0/</a>.</td></tr>
+Creative Commons license. See: <a class="reference" href="http://creativecommons.org/licenses/by/3.0/">http://creativecommons.org/licenses/by/3.0/</a>.</td></tr>
 </tbody>
 </table>
 <div class="abstract topic">
@@ -66,110 +66,110 @@ with each of them. It covers Edje, Ecore, Evas and EWL. This book
 is intended to cover all the concepts needed by a novice programmer
 to create a full blown Edje based application.</p>
 </div>
-<div class="contents topic" id="contents">
-<p class="topic-title first">Contents</p>
+<div class="contents topic">
+<p class="topic-title first"><a id="contents" name="contents">Contents</a></p>
 <ul class="simple">
-<li><a class="reference internal" href="#book-overview" id="id1">Book overview</a></li>
-<li><a class="reference internal" href="#about-graphical-user-interfaces" id="id2">About Graphical User Interfaces</a><ul>
-<li><a class="reference internal" href="#decomposing-the-frontend" id="id3">Decomposing the frontend</a></li>
-<li><a class="reference internal" href="#introduction-to-edje" id="id4">Introduction to Edje</a></li>
-<li><a class="reference internal" href="#the-foundations" id="id5">The foundations</a></li>
-<li><a class="reference internal" href="#convenient-libraries" id="id6">Convenient libraries</a></li>
+<li><a class="reference" href="#book-overview" id="id1" name="id1">Book overview</a></li>
+<li><a class="reference" href="#about-graphical-user-interfaces" id="id2" name="id2">About Graphical User Interfaces</a><ul>
+<li><a class="reference" href="#decomposing-the-frontend" id="id3" name="id3">Decomposing the frontend</a></li>
+<li><a class="reference" href="#introduction-to-edje" id="id4" name="id4">Introduction to Edje</a></li>
+<li><a class="reference" href="#the-foundations" id="id5" name="id5">The foundations</a></li>
+<li><a class="reference" href="#convenient-libraries" id="id6" name="id6">Convenient libraries</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#the-foundations-in-practice" id="id7">The foundations in practice</a><ul>
-<li><a class="reference internal" href="#working-with-the-canvas" id="id8">Working with the canvas</a></li>
-<li><a class="reference internal" href="#interacting-with-the-objects" id="id9">Interacting with the objects</a></li>
-<li><a class="reference internal" href="#building-a-framework" id="id10">Building a framework</a><ul>
-<li><a class="reference internal" href="#simpler-library-intialization" id="id11">Simpler library intialization</a></li>
-<li><a class="reference internal" href="#simpler-window-setup" id="id12">Simpler window setup</a></li>
-<li><a class="reference internal" href="#simpler-theme-management" id="id13">Simpler theme management</a></li>
+<li><a class="reference" href="#the-foundations-in-practice" id="id7" name="id7">The foundations in practice</a><ul>
+<li><a class="reference" href="#working-with-the-canvas" id="id8" name="id8">Working with the canvas</a></li>
+<li><a class="reference" href="#interacting-with-the-objects" id="id9" name="id9">Interacting with the objects</a></li>
+<li><a class="reference" href="#building-a-framework" id="id10" name="id10">Building a framework</a><ul>
+<li><a class="reference" href="#simpler-library-intialization" id="id11" name="id11">Simpler library intialization</a></li>
+<li><a class="reference" href="#simpler-window-setup" id="id12" name="id12">Simpler window setup</a></li>
+<li><a class="reference" href="#simpler-theme-management" id="id13" name="id13">Simpler theme management</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a class="reference internal" href="#introduction-to-widgets" id="id14">Introduction to widgets</a><ul>
-<li><a class="reference internal" href="#widgets-with-edje" id="id15">Widgets with Edje</a></li>
-<li><a class="reference internal" href="#the-ewl-as-a-shortcut" id="id16">The Ewl as a shortcut</a></li>
-<li><a class="reference internal" href="#implementing-widgets-with-edje" id="id17">Implementing widgets with Edje</a><ul>
-<li><a class="reference internal" href="#introduction-to-smart-objects" id="id18">Introduction to Smart Objects</a></li>
-<li><a class="reference internal" href="#the-foundations-of-a-smart-object" id="id19">The foundations of a Smart Object</a></li>
+<li><a class="reference" href="#introduction-to-widgets" id="id14" name="id14">Introduction to widgets</a><ul>
+<li><a class="reference" href="#widgets-with-edje" id="id15" name="id15">Widgets with Edje</a></li>
+<li><a class="reference" href="#the-ewl-as-a-shortcut" id="id16" name="id16">The Ewl as a shortcut</a></li>
+<li><a class="reference" href="#implementing-widgets-with-edje" id="id17" name="id17">Implementing widgets with Edje</a><ul>
+<li><a class="reference" href="#introduction-to-smart-objects" id="id18" name="id18">Introduction to Smart Objects</a></li>
+<li><a class="reference" href="#the-foundations-of-a-smart-object" id="id19" name="id19">The foundations of a Smart Object</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#laying-out-widgets" id="id20">Laying out widgets</a></li>
-<li><a class="reference internal" href="#creating-list-based-widgets" id="id21">Creating list based widgets</a></li>
+<li><a class="reference" href="#laying-out-widgets" id="id20" name="id20">Laying out widgets</a></li>
+<li><a class="reference" href="#creating-list-based-widgets" id="id21" name="id21">Creating list based widgets</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#widgets-by-example" id="id22">Widgets by Example</a><ul>
-<li><a class="reference internal" href="#the-text-entry" id="id23">The text entry</a></li>
-<li><a class="reference internal" href="#the-combox" id="id24">The combox</a></li>
-<li><a class="reference internal" href="#the-kinetic-list" id="id25">The kinetic list</a></li>
-<li><a class="reference internal" href="#the-media-viewport" id="id26">The media viewport</a></li>
-<li><a class="reference internal" href="#flexible-toolbars" id="id27">Flexible toolbars</a></li>
+<li><a class="reference" href="#widgets-by-example" id="id22" name="id22">Widgets by Example</a><ul>
+<li><a class="reference" href="#the-text-entry" id="id23" name="id23">The text entry</a></li>
+<li><a class="reference" href="#the-combox" id="id24" name="id24">The combox</a></li>
+<li><a class="reference" href="#the-kinetic-list" id="id25" name="id25">The kinetic list</a></li>
+<li><a class="reference" href="#the-media-viewport" id="id26" name="id26">The media viewport</a></li>
+<li><a class="reference" href="#flexible-toolbars" id="id27" name="id27">Flexible toolbars</a></li>
 </ul>
 </li>
 </ul>
 </div>
-<div class="section" id="book-overview">
-<h1><a class="toc-backref" href="#id1">Book overview</a></h1>
+<div class="section">
+<h1><a class="toc-backref" href="#id1" id="book-overview" name="book-overview">Book overview</a></h1>
 <ul>
-<li><p class="first"><a class="reference internal" href="#about-graphical-user-interfaces">About Graphical User Interfaces</a>.
+<li><p class="first"><a class="reference" href="#about-graphical-user-interfaces">About Graphical User Interfaces</a>.
 If we look through the code of some of the many open source applications
 available, we can find most of them share a common structure. This chapter
 introduces the reader to said structure, to the concept of an Event loop and
 how does it deal with the interaction between form and function.</p>
 <ul class="simple">
-<li><a class="reference internal" href="#decomposing-the-frontend">Decomposing the frontend</a>.
+<li><a class="reference" href="#decomposing-the-frontend">Decomposing the frontend</a>.
 There are different approaches to the creation of Graphical User Interfaces,
 some provide flexibility while others shorter development time. In the end, the
 rest of the application will have to go through the same mechanism to deal
 with the interface.</li>
-<li><a class="reference internal" href="#introduction-to-edje">Introduction to Edje</a>.
+<li><a class="reference" href="#introduction-to-edje">Introduction to Edje</a>.
 Edje is a compromise between flexibility and development time. Comparing it to
 a plain canvas or a fully featured toolkit can show us how it fits in the
 middle ground and provides advantages for designers and developers alike.</li>
-<li><a class="reference internal" href="#the-foundations">The foundations</a>.
+<li><a class="reference" href="#the-foundations">The foundations</a>.
 Edje allows low level control of the interface without forcing the developer
 through a low level API. The interface objects are implemented as Evas objects,
 but through a completely new language friendly to designers and independent
 from the application code.</li>
-<li><a class="reference internal" href="#convenient-libraries">Convenient libraries</a>
+<li><a class="reference" href="#convenient-libraries">Convenient libraries</a>
 To load an Edje interface the application needs to setup an Evas canvas first.
 This would look as a burden for the developer, dealing with issues specific to
 the underlying system. Thankfully Evas is supported by an additional library
 that resolve most of these issues, Ecore.</li>
 </ul>
 </li>
-<li><p class="first"><a class="reference internal" href="#the-foundations-in-practice">The foundations in practice</a>.
+<li><p class="first"><a class="reference" href="#the-foundations-in-practice">The foundations in practice</a>.
 Practical examples of the Englighenment Foundation Libraries required for a
 common Edje application.</p>
 <ul>
-<li><p class="first"><a class="reference internal" href="#working-with-the-canvas">Working with the canvas</a>.
+<li><p class="first"><a class="reference" href="#working-with-the-canvas">Working with the canvas</a>.
 Including new Edje objects inside the previously setup canvas can be explained
 with this simple example.</p>
 </li>
-<li><p class="first"><a class="reference internal" href="#interacting-with-the-objects">Interacting with the objects</a>.
+<li><p class="first"><a class="reference" href="#interacting-with-the-objects">Interacting with the objects</a>.
 There are different channels for the application to interact with the
 interface. For the sake of brevity I will include an example of each one to
 serve as an introduction for the practical examples to come in the next
 chapters.</p>
 </li>
-<li><p class="first"><a class="reference internal" href="#building-a-framework">Building a framework</a>.
+<li><p class="first"><a class="reference" href="#building-a-framework">Building a framework</a>.
 Hopefully the reader's mind won't be filled already with preconceptions about
 this subject. In any case, only the foundations of what could be used to
 form a complex framework are going to be reviewed in this chapter.</p>
 <blockquote>
 <ul class="simple">
-<li><a class="reference internal" href="#simpler-library-intialization">Simpler library intialization</a>.
+<li><a class="reference" href="#simpler-library-intialization">Simpler library intialization</a>.
 We have seen why and how to initialize the necessary EFL libraries. This
 chapter introduces the implementation of a convenience function to do it in one
 call along with control and intialization of configuration and theme files.</li>
-<li><a class="reference internal" href="#simpler-window-setup">Simpler window setup</a>.
+<li><a class="reference" href="#simpler-window-setup">Simpler window setup</a>.
 Altought setting up a window is not a complex task there is no reason for not
 using a standarized method that automates some aspects of window creation. Some
 other aspects are left for the designer to manipulate, the end result is less
 code which often means less bugs.</li>
-<li><a class="reference internal" href="#simpler-theme-management">Simpler theme management</a>.
+<li><a class="reference" href="#simpler-theme-management">Simpler theme management</a>.
 The EFL are programmed in a incredible flexible way and they cover many uses
 and platforms. The functions explained in this section makes some assumptions
 about the programmer's intentions. If they match with yours, using them can
@@ -179,62 +179,62 @@ mean simpler application code, less development time and less bugs.</li>
 </li>
 </ul>
 </li>
-<li><p class="first"><a class="reference internal" href="#introduction-to-widgets">Introduction to widgets</a>.
+<li><p class="first"><a class="reference" href="#introduction-to-widgets">Introduction to widgets</a>.
 Interfaces need to resolve two problems, presenting information to users and
 taking orders from them. The past chapters presented enough information to
 solve the first. In the following chapters we will review the second.</p>
 <ul class="simple">
-<li><a class="reference internal" href="#widgets-with-edje">Widgets with Edje</a>.
+<li><a class="reference" href="#widgets-with-edje">Widgets with Edje</a>.
 Since this is a book about Edje it might be a good idea to detail the way Edje
 simplifies custom widget creation by reviewing the list of tasks presented in
 the previous chapter and how Edje helps with each task.</li>
-<li><a class="reference internal" href="#the-ewl-as-a-shortcut">The Ewl as a shortcut</a>.
+<li><a class="reference" href="#the-ewl-as-a-shortcut">The Ewl as a shortcut</a>.
 The Enlightened Widget Library is a piece of software older than Edje itself.
 But almost as soon as Edje was made aviable the library developers started
 using it as their theme engine. Since widget's from this library can be
 included as another Edje object we can use it as a shortcut for the most
 complex widgets.</li>
-<li><a class="reference internal" href="#implementing-widgets-with-edje">Implementing widgets with Edje</a>.
+<li><a class="reference" href="#implementing-widgets-with-edje">Implementing widgets with Edje</a>.
 It is possible to fully implement widgets using the Edje library alone. But
 this approach grows more unmanageable as the widget becomes more complex. In
 this chapter we will review a simple widget, written using Edje alone and a
 more complex widget that shares the same foundations with Edje objects.<ul>
-<li><a class="reference internal" href="#introduction-to-smart-objects">Introduction to Smart Objects</a>.
+<li><a class="reference" href="#introduction-to-smart-objects">Introduction to Smart Objects</a>.
 We have seen Smart Objects in the previous chapters and we know they are used
 to implement Edje objects. In this chapters we will analyze the surface code
 of a Smart Object based widget, the minimap.</li>
-<li><a class="reference internal" href="#the-foundations-of-a-smart-object">The foundations of a Smart Object</a>.
+<li><a class="reference" href="#the-foundations-of-a-smart-object">The foundations of a Smart Object</a>.
 If you felt that basing Edje widgets in Smart Objects seems simple enough, I
 hope that impression does not fade away because of the amount of code presented
 in this chapter. Altought at a first look it might seem complex creating an
 Smart Object is quite simple and logical.</li>
 </ul>
 </li>
-<li><a class="reference internal" href="#laying-out-widgets">Laying out widgets</a>.
+<li><a class="reference" href="#laying-out-widgets">Laying out widgets</a>.
 TODO.</li>
-<li><a class="reference internal" href="#creating-list-based-widgets">Creating list based widgets</a>.
+<li><a class="reference" href="#creating-list-based-widgets">Creating list based widgets</a>.
 TODO.</li>
 </ul>
 </li>
-<li><p class="first"><a class="reference internal" href="#widgets-by-example">Widgets by Example</a>.
+<li><p class="first"><a class="reference" href="#widgets-by-example">Widgets by Example</a>.
 TODO,</p>
 <ul class="simple">
-<li><a class="reference internal" href="#the-text-entry">The text entry</a>.
+<li><a class="reference" href="#the-text-entry">The text entry</a>.
 TODO</li>
-<li><a class="reference internal" href="#the-combox">The combox</a>.
+<li><a class="reference" href="#the-combox">The combox</a>.
 TODO.</li>
-<li><a class="reference internal" href="#the-kinetic-list">The kinetic list</a>.
+<li><a class="reference" href="#the-kinetic-list">The kinetic list</a>.
 TODO.</li>
-<li><a class="reference internal" href="#the-media-viewport">The media viewport</a>.
+<li><a class="reference" href="#the-media-viewport">The media viewport</a>.
 TODO.</li>
-<li><a class="reference internal" href="#flexible-toolbars">Flexible toolbars</a>.
+<li><a class="reference" href="#flexible-toolbars">Flexible toolbars</a>.
 TODO.</li>
 </ul>
 </li>
 </ul>
 </div>
-<div class="section" id="about-graphical-user-interfaces">
-<h1><a class="toc-backref" href="#id2">About Graphical User Interfaces</a></h1>
+<div class="section">
+<h1><a class="toc-backref" href="#id2" id="about-graphical-user-interfaces" name="about-graphical-user-interfaces">About Graphical User Interfaces</a></h1>
 <p>So... you want to create a GUI application? I assume so since you choosed this
 book as instructive, or at least bathroom, material. You could google &quot;GUI&quot; and
 &quot;library&quot; to feel overwhelmed by the large number of development libraries
@@ -250,9 +250,9 @@ known as event (or signal) driven execution. Event driven applications are
 persistent and depend on a gate guardian to call the appropriate functions in
 the appropriate moment. This gate guardian is known as the Event loop (or main
 loop).</p>
-<div align="center" class="align-center"><img alt="img/graphical_application_components.png" class="align-center" src="img/graphical_application_components.png" style="width: 85%;" /></div>
+<div align="center" class="align-center"><img alt="img/graphical_application_components.png" class="align-center" src="img/graphical_application_components.png" style="width: 1813.05px; height: 1360.0px;" /></div>
 <p>The functions that form a event driven application (with a GUI) can be split
-among two groups. The first group is know as the backend, these functions deal
+among two groups. The first group is known as the backend, these functions deal
 with the actual purpose of the application, crunching numbers, decoding media
 files and so on. The second group is known as the frontend, the prupose of
 these functions is to present the results from the backend to their human
@@ -260,15 +260,15 @@ overlords and to receive orders from them.</p>
 <p>Between the backend and the frontend is where the Event loop lives, its mission
 is to connect both ends of the application. Not only between them but also with
 their environment. The Event loop mantains a list of signals to look out for
-and functions related to them. When a signal is received, the Event loop look
+and functions related to them. When a signal is received, the Event loop looks
 it up in a list and executes the corresponding function or functions.</p>
 <p>For the application to work, the Event loop needs to be aware of events in the
 interface, thus it is  usually provided by the same library that provides the
 GUI elements. It also needs to be aware of events in the system where the
 application is running. Even when the concept is simple, creating a portable
 and properly abstracted event loop is no simple task.</p>
-<div class="section" id="decomposing-the-frontend">
-<h2><a class="toc-backref" href="#id3">Decomposing the frontend</a></h2>
+<div class="section">
+<h2><a class="toc-backref" href="#id3" id="decomposing-the-frontend" name="decomposing-the-frontend">Decomposing the frontend</a></h2>
 <p>There are many libraries that aid creation of a GUI. From a plain canvas
 consisting of primitive design objects, like a line or a rectangle, to complex
 layout schemes and predefined interface elements, the latter known as &quot;toolkit&quot;
@@ -297,8 +297,8 @@ as we will find out further ahead in this book, these examples only represent
 opposite extremes and there is an alternative approach that sits quite
 comfortably in the middle. Edje.</p>
 </div>
-<div class="section" id="introduction-to-edje">
-<h2><a class="toc-backref" href="#id4">Introduction to Edje</a></h2>
+<div class="section">
+<h2><a class="toc-backref" href="#id4" id="introduction-to-edje" name="introduction-to-edje">Introduction to Edje</a></h2>
 <p>Allow me to begin this chapter with a quote from the introduction of Edje's API
 Reference. After all, I cannot expect to give Edje a better introduction than
 its creator:</p>
@@ -343,7 +343,7 @@ manipulate primitive objects. EDC is in some ways comparable to Cascading Style
 Sheets but its free of the framework that markup imposes. From the other side,
 the developer only has to include the resulting object and setup the callbacks
 (by the main loop) to the backend functions.</p>
-<div align="center" class="align-center"><img alt="img/workflow.png" class="align-center" src="img/workflow.png" style="width: 85%;" /></div>
+<div align="center" class="align-center"><img alt="img/workflow.png" class="align-center" src="img/workflow.png" style="width: 1813.05px; height: 1360.0px;" /></div>
 <p>Except for the usage of nested blocks, the sintax of an EDC file is similar to
 CSS. What really sets them appart is that with EDC the designer it's free to
 create and layout design elements as he sees fit. With CSS the designer is
@@ -363,8 +363,8 @@ yet remain almost as simple as including a predefined object from a toolkit. Of
 course Edje has shortcomings of its own and we will explore them in this book
 as well.</p>
 </div>
-<div class="section" id="the-foundations">
-<h2><a class="toc-backref" href="#id5">The foundations</a></h2>
+<div class="section">
+<h2><a class="toc-backref" href="#id5" id="the-foundations" name="the-foundations">The foundations</a></h2>
 <p>From a developer's point of view, we cannot expect to understand how Edje works
 without going through a brief introduction about the Evas first. Luckily for
 this writer, an excellent introduction to Evas has already been written in the
@@ -413,8 +413,8 @@ the file.</p>
 they can share with other primitive and smart objects. Without an Evas canvas
 there is no Edje theme.</p>
 </div>
-<div class="section" id="convenient-libraries">
-<h2><a class="toc-backref" href="#id6">Convenient libraries</a></h2>
+<div class="section">
+<h2><a class="toc-backref" href="#id6" id="convenient-libraries" name="convenient-libraries">Convenient libraries</a></h2>
 <p>The normal process to get a canvas up and running can be bothersome. Evas
 supports multiple rendering engines, like the software, xrender and opengl
 flavors of X11 and framebuffer devices. But before any rendering can be done
@@ -438,7 +438,7 @@ machine, and makes it very robust and easy to follow.</p>
 </blockquote>
 <p>At the beginning of its life, the Ecore library was used as a Event loop and
 loop management is still one of the modules that composes Ecore.</p>
-<div align="center" class="align-center"><img alt="img/required_libraries.png" class="align-center" src="img/required_libraries.png" style="width: 85%;" /></div>
+<div align="center" class="align-center"><img alt="img/required_libraries.png" class="align-center" src="img/required_libraries.png" style="width: 1756.95px; height: 1306.45px;" /></div>
 <p>Today, Ecore encompasses a long list of modules properly namespaced and
 prefixed with &quot;Ecore_&quot;. From what we have seen in the previous chapters, there
 are two modules that jump right out of the list. The first Ecore_Evas and
@@ -452,8 +452,8 @@ sometimes unique) attributes. It trivializes initialization to a couple of
 lines and multiple engine support to an application reload.</p>
 </div>
 </div>
-<div class="section" id="the-foundations-in-practice">
-<h1><a class="toc-backref" href="#id7">The foundations in practice</a></h1>
+<div class="section">
+<h1><a class="toc-backref" href="#id7" id="the-foundations-in-practice" name="the-foundations-in-practice">The foundations in practice</a></h1>
 <p>By pointing out that the Enlightenment Foundation Libraries are designed in a
 Object Oriented manner I wish not to raise the wrath of OO purists but to
 simplify the reader's mental image of how the EFL C Application Programming
@@ -558,8 +558,8 @@ down any library we initiated:</p>
 }
 ...
 </pre>
-<div class="section" id="working-with-the-canvas">
-<h2><a class="toc-backref" href="#id8">Working with the canvas</a></h2>
+<div class="section">
+<h2><a class="toc-backref" href="#id8" id="working-with-the-canvas" name="working-with-the-canvas">Working with the canvas</a></h2>
 <p>Now that we know how to setup the enviroment to display the Edje objects we
 will review how to include and interact with the objects themselves. The
 following code is platform independent and can be merged with the example code
@@ -609,8 +609,8 @@ size of the object to those values.</p>
 <p>Before the end, we resize the canvas to the same values the object has with
 ecore_evas_resize and (finally) instruct Evas to show the object.</p>
 </div>
-<div class="section" id="interacting-with-the-objects">
-<h2><a class="toc-backref" href="#id9">Interacting with the objects</a></h2>
+<div class="section">
+<h2><a class="toc-backref" href="#id9" id="interacting-with-the-objects" name="interacting-with-the-objects">Interacting with the objects</a></h2>
 <p>To understand how to interact with Edje or any other Evas based object we need
 to review the basics of how the main loop manager handles events. Ecore
 maintains a list of pointers to functions to be called when a signal of a given
@@ -702,8 +702,8 @@ will be called when the signal &quot;mouse,move&quot; is emitted by any object i
 interface. Edje string matching supports wildcards for both the name and source
 of the signal.</p>
 </div>
-<div class="section" id="building-a-framework">
-<h2><a class="toc-backref" href="#id10">Building a framework</a></h2>
+<div class="section">
+<h2><a class="toc-backref" href="#id10" id="building-a-framework" name="building-a-framework">Building a framework</a></h2>
 <p>Hopefully the reader has not been introduced to the concept of software
 frameworks by web based monsters like Ruby on Rails. Personally I think RoR is
 great and my point is that a framework does not necessarily mean large software
@@ -829,8 +829,8 @@ been left out of the book. The complete, commented sources for this framework
 and the &quot;Plain Edje Viewer&quot; application can be found in the CVS repository of
 the Enlightenment proyect under <tt class="docutils literal"><span class="pre">e17/docs/devwithedje/src</span></tt>. Rest assured the
 omitted functions wont add much to your knowledege about Edje.</p>
-<div class="section" id="simpler-library-intialization">
-<h3><a class="toc-backref" href="#id11">Simpler library intialization</a></h3>
+<div class="section">
+<h3><a class="toc-backref" href="#id11" id="simpler-library-intialization" name="simpler-library-intialization">Simpler library intialization</a></h3>
 <p>We have seen initialization functions previously in this chapter and other that
 an increased level of verbosity there is nothing special about the use we have
 give them here:</p>
@@ -896,8 +896,8 @@ to load a configuration file from a custom location.</p>
 theme file can be found somewhere. Finding at least one theme file is pretty
 much mandatory for any Edje based application.</p>
 </div>
-<div class="section" id="simpler-window-setup">
-<h3><a class="toc-backref" href="#id12">Simpler window setup</a></h3>
+<div class="section">
+<h3><a class="toc-backref" href="#id12" id="simpler-window-setup" name="simpler-window-setup">Simpler window setup</a></h3>
 <p>Setting up a window isn't complex by itself, but why would we manually setup
 these properties, copy and paste these big blocks of code and manually
 replace the parameters for them to adjust to our new application when we can
@@ -1007,8 +1007,8 @@ situations. The function, <tt class="docutils literal"><span class="pre">_close_
 any window without a parent, the framework assumes you will only create one
 parentless window per application.</p>
 </div>
-<div class="section" id="simpler-theme-management">
-<h3><a class="toc-backref" href="#id13">Simpler theme management</a></h3>
+<div class="section">
+<h3><a class="toc-backref" href="#id13" id="simpler-theme-management" name="simpler-theme-management">Simpler theme management</a></h3>
 <p>In the previous section we have seen how to create a window based on parameters
 lifted from a given Edje object refered to as the layout object. If you take
 a look you will see that the layout object was aquired differently than the
@@ -1102,8 +1102,8 @@ source in Enlightenment's CVS server exactly for this prupose.</p>
 </div>
 </div>
 </div>
-<div class="section" id="introduction-to-widgets">
-<h1><a class="toc-backref" href="#id14">Introduction to widgets</a></h1>
+<div class="section">
+<h1><a class="toc-backref" href="#id14" id="introduction-to-widgets" name="introduction-to-widgets">Introduction to widgets</a></h1>
 <p>Graphical User Interfaces do not only to display information, they convey
 information. Interface elements have a meaning of their own and this meaning
 alters the user's perception on the information displayed, for better or for
@@ -1122,7 +1122,7 @@ interact with their environment, thus they need to be familiar with the Event
 loop managing the application. As we would do with a plain interface, the
 widget will register callbacks for its own functions that deal with events in
 the primitive objects that conform it.</p>
-<div align="center" class="align-center"><img alt="img/graphical_application_components_widget.png" class="align-center" src="img/graphical_application_components_widget.png" style="width: 85%;" /></div>
+<div align="center" class="align-center"><img alt="img/graphical_application_components_widget.png" class="align-center" src="img/graphical_application_components_widget.png" style="width: 1761.2px; height: 1307.3px;" /></div>
 <p>In order to be possible for the rest of the application to interact effectively
 with a widget it has to provide the Event loop with new signal types
 representing abstracted version of its interface signals. It basically
@@ -1139,8 +1139,8 @@ to program functions to:</p>
 </ul>
 <p>Depending on the complexity of the widgets, the amount of functions represented
 by the last item can become quite large.</p>
-<div class="section" id="widgets-with-edje">
-<h2><a class="toc-backref" href="#id15">Widgets with Edje</a></h2>
+<div class="section">
+<h2><a class="toc-backref" href="#id15" id="widgets-with-edje" name="widgets-with-edje">Widgets with Edje</a></h2>
 <p>We have seen there are roughly 5 kinds of functions that have to be implemented
 in order to create a widget from scratch. Although the way groups are split
 might not seem to correspond with the amount of work each one might entail, the
@@ -1201,8 +1201,8 @@ would have to call functions that gray out the background and text. With Edje
 the developer just emits the signal &quot;DISABLED&quot; to the button and lets the
 designer implement this however he wants.</p>
 </div>
-<div class="section" id="the-ewl-as-a-shortcut">
-<h2><a class="toc-backref" href="#id16">The Ewl as a shortcut</a></h2>
+<div class="section">
+<h2><a class="toc-backref" href="#id16" id="the-ewl-as-a-shortcut" name="the-ewl-as-a-shortcut">The Ewl as a shortcut</a></h2>
 <p>Creating custom widgets even with the facilities Edje provides can become a
 very complex task with more advanced widgets. Thankfully for us a working
 widget library for those specially-hard widgets already exists. Altought the
@@ -1240,40 +1240,44 @@ like trees and file management dialogs. A great resource to learn how to
 include Ewl widgets into an Edje interface is the source code ewl_embed_test.c
 which is logically divided and toroughly commented.</p>
 </div>
-<div class="section" id="implementing-widgets-with-edje">
-<h2><a class="toc-backref" href="#id17">Implementing widgets with Edje</a></h2>
-<div class="section" id="introduction-to-smart-objects">
-<h3><a class="toc-backref" href="#id18">Introduction to Smart Objects</a></h3>
+<div class="section">
+<h2><a class="toc-backref" href="#id17" id="implementing-widgets-with-edje" name="implementing-widgets-with-edje">Implementing widgets with Edje</a></h2>
+<div class="section">
+<h3><a class="toc-backref" href="#id18" id="introduction-to-smart-objects" name="introduction-to-smart-objects">Introduction to Smart Objects</a></h3>
 </div>
-<div class="section" id="the-foundations-of-a-smart-object">
-<h3><a class="toc-backref" href="#id19">The foundations of a Smart Object</a></h3>
-</div>
-</div>
-<div class="section" id="laying-out-widgets">
-<h2><a class="toc-backref" href="#id20">Laying out widgets</a></h2>
-</div>
-<div class="section" id="creating-list-based-widgets">
-<h2><a class="toc-backref" href="#id21">Creating list based widgets</a></h2>
+<div class="section">
+<h3><a class="toc-backref" href="#id19" id="the-foundations-of-a-smart-object" name="the-foundations-of-a-smart-object">The foundations of a Smart Object</a></h3>
 </div>
 </div>
-<div class="section" id="widgets-by-example">
-<h1><a class="toc-backref" href="#id22">Widgets by Example</a></h1>
-<div class="section" id="the-text-entry">
-<h2><a class="toc-backref" href="#id23">The text entry</a></h2>
+<div class="section">
+<h2><a class="toc-backref" href="#id20" id="laying-out-widgets" name="laying-out-widgets">Laying out widgets</a></h2>
 </div>
-<div class="section" id="the-combox">
-<h2><a class="toc-backref" href="#id24">The combox</a></h2>
-</div>
-<div class="section" id="the-kinetic-list">
-<h2><a class="toc-backref" href="#id25">The kinetic list</a></h2>
-</div>
-<div class="section" id="the-media-viewport">
-<h2><a class="toc-backref" href="#id26">The media viewport</a></h2>
-</div>
-<div class="section" id="flexible-toolbars">
-<h2><a class="toc-backref" href="#id27">Flexible toolbars</a></h2>
+<div class="section">
+<h2><a class="toc-backref" href="#id21" id="creating-list-based-widgets" name="creating-list-based-widgets">Creating list based widgets</a></h2>
 </div>
 </div>
+<div class="section">
+<h1><a class="toc-backref" href="#id22" id="widgets-by-example" name="widgets-by-example">Widgets by Example</a></h1>
+<div class="section">
+<h2><a class="toc-backref" href="#id23" id="the-text-entry" name="the-text-entry">The text entry</a></h2>
+</div>
+<div class="section">
+<h2><a class="toc-backref" href="#id24" id="the-combox" name="the-combox">The combox</a></h2>
+</div>
+<div class="section">
+<h2><a class="toc-backref" href="#id25" id="the-kinetic-list" name="the-kinetic-list">The kinetic list</a></h2>
+</div>
+<div class="section">
+<h2><a class="toc-backref" href="#id26" id="the-media-viewport" name="the-media-viewport">The media viewport</a></h2>
+</div>
+<div class="section">
+<h2><a class="toc-backref" href="#id27" id="flexible-toolbars" name="flexible-toolbars">Flexible toolbars</a></h2>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+This will be at the top of every page.
 </div>
 </body>
 </html>
