@@ -824,7 +824,11 @@ ewl_widget_parent_set(Ewl_Widget *w, Ewl_Widget *p)
                 tmp = tmp->parent;
         }
 
-        /* set the parent to NULL before doing the child remove */
+        /* 
+         * set the parent to NULL before doing the child remove, because
+         * ewl_container_child_remove() will call this function if there
+         * is still a parent set
+        */
         w->parent = NULL;
 
         /*
@@ -840,7 +844,7 @@ ewl_widget_parent_set(Ewl_Widget *w, Ewl_Widget *p)
          */
         w->parent = p;
 
-        ewl_callback_call_with_event_data(w, EWL_CALLBACK_REPARENT, p);
+        ewl_widget_reparent(w);
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

@@ -399,8 +399,11 @@ ewl_container_child_remove(Ewl_Container *pc, Ewl_Widget *child)
                 DRETURN(DLEVEL_STABLE);
         }
 
-        if (!pc->children)
+        if (!pc->children) {
+                DWARNING("The container %p (%s) doesn't have a children list",
+                                pc, ewl_widget_appearance_get(EWL_WIDGET(pc)));
                 DRETURN(DLEVEL_STABLE);
+        }
 
         /*
          * Traverse the list to the child.
@@ -410,8 +413,13 @@ ewl_container_child_remove(Ewl_Container *pc, Ewl_Widget *child)
         /*
          * If the child isn't found, then this isn't it's parent.
          */
-        if (!temp)
+        if (!temp) {
+                DWARNING("The container %p (%s) is not a parent of the widget "
+                                "%p (%s)!",
+                                pc, ewl_widget_appearance_get(EWL_WIDGET(pc)),
+                                child, ewl_widget_appearance_get(child));
                 DRETURN(DLEVEL_STABLE);
+        }
 
         /* get the index of the widget we are removing */
         idx = ecore_dlist_index(pc->children);
