@@ -616,8 +616,10 @@ _e_kbd_int_zoomkey_update(E_Kbd_Int *ki)
 	if (ki->zoomkey.pressed)
 	  {
 	     ki->zoomkey.pressed->pressed = 1;
+	     e_layout_child_raise(ki->zoomkey.pressed->obj);
 	     edje_object_signal_emit(ki->zoomkey.pressed->zoom_obj,
 				     "e,state,pressed", "e");
+	     e_layout_child_raise(ki->zoomkey.pressed->obj);
 	     edje_object_signal_emit(ki->zoomkey.pressed->obj,
 				     "e,state,pressed", "e");
 	  }
@@ -683,6 +685,7 @@ _e_kbd_int_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event_i
    if (ky)
      {
 	ky->pressed = 1;
+	e_layout_child_raise(ky->obj);
 	edje_object_signal_emit(ky->obj, "e,state,pressed", "e");
      }
 }
