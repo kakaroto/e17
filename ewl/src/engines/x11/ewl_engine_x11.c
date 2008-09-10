@@ -1368,11 +1368,8 @@ ewl_ev_x_data_received(void *data __UNUSED__, int type __UNUSED__, void *e)
 
         ev = e;
 
-        /* Handle everything *except* XDND selection */
-        if (ev->selection != ECORE_X_SELECTION_XDND)
-                printf("Paste event received\n");
-
-        else
+        /* Handle XDND selection */
+        if (ev->selection == ECORE_X_SELECTION_XDND)
         {
                 Ewl_Embed *embed;
                 Ecore_X_Selection_Data *data = ev->data;
@@ -1408,6 +1405,10 @@ ewl_ev_x_data_received(void *data __UNUSED__, int type __UNUSED__, void *e)
 
                 ecore_x_dnd_send_finished();
         }
+        /* Handle everything *except* XDND selection */
+        else
+                printf("Paste event received\n");
+
 
         DRETURN_INT(TRUE, DLEVEL_STABLE);
 }
@@ -1422,19 +1423,8 @@ ewl_ev_x_data_request(void *data __UNUSED__, int type __UNUSED__, void *e)
 
         ev = e;
 
-        /* Handle everything *except* XDND selection */
-        if (ev->selection != ECORE_X_ATOM_SELECTION_XDND)
-        {
-                char *rec, *dnd;
-
-                rec = XGetAtomName(ecore_x_display_get(), ev->selection);
-                dnd = XGetAtomName(ecore_x_display_get(), ECORE_X_ATOM_SELECTION_XDND);
-                printf("Data request event received: %s not %s\n", rec, dnd);
-                XFree(rec);
-                XFree(dnd);
-        }
-
-        else if (ev->selection == ECORE_X_ATOM_SELECTION_XDND)
+        /* Handle XDND selection */
+        if (ev->selection == ECORE_X_ATOM_SELECTION_XDND)
         {
                 Ewl_Embed *embed;
                 char *atom;
@@ -1443,6 +1433,18 @@ ewl_ev_x_data_request(void *data __UNUSED__, int type __UNUSED__, void *e)
                 atom = XGetAtomName(ecore_x_display_get(), ev->target);
                 ewl_embed_dnd_data_request_feed(embed, ev, atom);
                 XFree(atom);
+        }
+        /* Handle everything *except* XDND selection */
+        else
+        {
+                char *rec, *dnd;
+
+                rec = XGetAtomName(ecore_x_display_get(), ev->selection);
+                dnd = XGetAtomName(ecore_x_display_get(),
+                                                ECORE_X_ATOM_SELECTION_XDND);
+                printf("Data request event received: %s not %s\n", rec, dnd);
+                XFree(rec);
+                XFree(dnd);
         }
 
         DRETURN_INT(TRUE, DLEVEL_STABLE);
