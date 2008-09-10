@@ -8804,144 +8804,144 @@ collections { /* begin the collection of edje groups that are in this file */
 	 
       // LEFT ARROW
 	 program { name: "left1_1";
-	    action: STATE_SET "1";
+	    action: STATE_SET "1" 0.0;
 	    target: "left_arrow1";
 	    transition: LINEAR 0.3;
 	    after: "left1_2";
 	 }
 	 program { name: "left1_2";
-	    action: STATE_SET "2";
+	    action: STATE_SET "2" 0.0;
 	    target: "left_arrow1";
 	    transition: LINEAR 0.3;
 	    after: "left1_r";
 	 }
 	 program { name: "left1_r";
-	    action: STATE_SET "default";
+	    action: STATE_SET "default" 0.0;
 	    target: "left_arrow1";
 	    after: "left1_1";
 	 }
 	 program { name: "left2_1";
-	    action: STATE_SET "1";
+	    action: STATE_SET "1" 0.0;
 	    target: "left_arrow2";
 	    transition: LINEAR 0.3;
 	    after: "left2_2";
 	 }
 	 program { name: "left2_2";
-	    action: STATE_SET "2";
+	    action: STATE_SET "2" 0.0;
 	    target: "left_arrow2";
 	    transition: LINEAR 0.3;
 	    after: "left2_r";
 	 }
 	 program { name: "left2_r";
-	    action: STATE_SET "default";
+	    action: STATE_SET "default" 0.0;
 	    target: "left_arrow2";
 	    after: "left2_1";
 	 }
 	 
       // RIGHT ARROW
 	 program { name: "right1_1";
-	    action: STATE_SET "1";
+	    action: STATE_SET "1" 0.0;
 	    target: "right_arrow1";
 	    transition: LINEAR 0.3;
 	    after: "right1_2";
 	 }
 	 program { name: "right1_2";
-	    action: STATE_SET "2";
+	    action: STATE_SET "2" 0.0;
 	    target: "right_arrow1";
 	    transition: LINEAR 0.3;
 	    after: "right1_r";
 	 }
 	 program { name: "right1_r";
-	    action: STATE_SET "default";
+	    action: STATE_SET "default" 0.0;
 	    target: "right_arrow1";
 	    after: "right1_1";
 	 }
 	 program { name: "right2_1";
-	    action: STATE_SET "1";
+	    action: STATE_SET "1" 0.0;
 	    target: "right_arrow2";
 	    transition: LINEAR 0.3;
 	    after: "right2_2";
 	 }
 	 program { name: "right2_2";
-	    action: STATE_SET "2";
+	    action: STATE_SET "2" 0.0;
 	    target: "right_arrow2";
 	    transition: LINEAR 0.3;
 	    after: "right2_r";
 	 }
 	 program { name: "right2_r";
-	    action: STATE_SET "default";
+	    action: STATE_SET "default" 0.0;
 	    target: "right_arrow2";
 	    after: "right2_1";
 	 }
 	 
       // TOP ARROW
 	 program { name: "top1_1";
-	    action: STATE_SET "1";
+	    action: STATE_SET "1" 0.0;
 	    target: "top_arrow1";
 	    transition: LINEAR 0.3;
 	    after: "top1_2";
 	 }
 	 program { name: "top1_2";
-	    action: STATE_SET "2";
+	    action: STATE_SET "2" 0.0;
 	    target: "top_arrow1";
 	    transition: LINEAR 0.3;
 	    after: "top1_r";
 	 }
 	 program { name: "top1_r";
-	    action: STATE_SET "default";
+	    action: STATE_SET "default" 0.0;
 	    target: "top_arrow1";
 	    after: "top1_1";
 	 }
 	 program { name: "top2_1";
-	    action: STATE_SET "1";
+	    action: STATE_SET "1" 0.0;
 	    target: "top_arrow2";
 	    transition: LINEAR 0.3;
 	    after: "top2_2";
 	 }
 	 program { name: "top2_2";
-	    action: STATE_SET "2";
+	    action: STATE_SET "2" 0.0;
 	    target: "top_arrow2";
 	    transition: LINEAR 0.3;
 	    after: "top2_r";
 	 }
 	 program { name: "top2_r";
-	    action: STATE_SET "default";
+	    action: STATE_SET "default" 0.0;
 	    target: "top_arrow2";
 	    after: "top2_1";
 	 }
 	 
       // BOTTOM ARROW
 	 program { name: "bottom1_1";
-	    action: STATE_SET "1";
+	    action: STATE_SET "1" 0.0;
 	    target: "bottom_arrow1";
 	    transition: LINEAR 0.3;
 	    after: "bottom1_2";
 	 }
 	 program { name: "bottom1_2";
-	    action: STATE_SET "2";
+	    action: STATE_SET "2" 0.0;
 	    target: "bottom_arrow1";
 	    transition: LINEAR 0.3;
 	    after: "bottom1_r";
 	 }
 	 program { name: "bottom1_r";
-	    action: STATE_SET "default";
+	    action: STATE_SET "default" 0.0;
 	    target: "bottom_arrow1";
 	    after: "bottom1_1";
 	 }
 	 program { name: "bottom2_1";
-	    action: STATE_SET "1";
+	    action: STATE_SET "1" 0.0;
 	    target: "bottom_arrow2";
 	    transition: LINEAR 0.3;
 	    after: "bottom2_2";
 	 }
 	 program { name: "bottom2_2";
-	    action: STATE_SET "2";
+	    action: STATE_SET "2" 0.0;
 	    target: "bottom_arrow2";
 	    transition: LINEAR 0.3;
 	    after: "bottom2_r";
 	 }
 	 program { name: "bottom2_r";
-	    action: STATE_SET "default";
+	    action: STATE_SET "default" 0.0;
 	    target: "bottom_arrow2";
 	    after: "bottom2_1";
 	 }
