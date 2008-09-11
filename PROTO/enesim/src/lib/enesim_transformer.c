@@ -30,10 +30,13 @@ static Enesim_Transformation_Type _transformation_get(Enesim_Matrix *m)
 	            return ENESIM_TRANSFORMATION_PROJECTIVE;
 	else
 	{
+		/* FIXME, once the identity handles the origin use the AFFINE;
 		if ((MATRIX_XX(m) == 1) && (MATRIX_XY(m) == 0) && (MATRIX_XZ(m) == 0) &&
 				(MATRIX_YX(m) == 0) && (MATRIX_YY(m) == 1) && (MATRIX_YZ(m) == 0))
+			
 			return ENESIM_TRANSFORMATION_IDENTITY;
 		else
+		*/
 			return ENESIM_TRANSFORMATION_AFFINE;
 	}
 }
@@ -116,7 +119,9 @@ static unsigned int convolution2x2(Enesim_Surface_Data *data,
 		p0 = interp_256(ay, p2, p0);
 	return p0;
 }
-
+/* TODO
+ * handle the origin
+ */
 static void transformer_identity_no_no(Enesim_Transformation *t, Enesim_Surface *ss,
 		Eina_Rectangle *srect, Enesim_Surface *ds, Eina_Rectangle *drect)
 {
@@ -159,6 +164,8 @@ static void transformer_affine_no_no(Enesim_Transformation *t, Enesim_Surface *s
 		return;
 	
 	enesim_matrix_fixed_values_get(t->matrix, &a, &b, &c, &d, &e, &f, &g, &h, &i);
+	c += eina_f16p16_float_from(t->ox);
+	f += eina_f16p16_float_from(t->oy);
 	sx = eina_f16p16_mul(a, drect->x) + eina_f16p16_mul(b, drect->y) + c;
 	sy = eina_f16p16_mul(d, drect->x) + eina_f16p16_mul(e, drect->y) + f;
 	
@@ -213,7 +220,7 @@ static void transformer_projective_no_no(Enesim_Transformation *t, Enesim_Surfac
 	Enesim_Surface_Data sdata, ddata;
 	Eina_F16p16 sx, sy, sz;
 	Enesim_Drawer_Point ptfnc;
-	Eina_F16p16 a, b, c, d, e, f, g, h, i;
+	Eina_F16p16 a, b, c, d, e, f, g, h, i, ox, oy;
 
 	int hlen;
 
@@ -226,6 +233,8 @@ static void transformer_projective_no_no(Enesim_Transformation *t, Enesim_Surfac
 	sx = eina_f16p16_mul(a, drect->x) + eina_f16p16_mul(b, drect->y) + c;
 	sy = eina_f16p16_mul(d, drect->x) + eina_f16p16_mul(e, drect->y) + f;
 	sz = eina_f16p16_mul(g, drect->x) + eina_f16p16_mul(h, drect->y) + i;
+	ox = eina_f16p16_float_from(t->ox);
+	oy = eina_f16p16_float_from(t->oy);
 	
 	enesim_surface_data_get(ss, &sdata);
 	enesim_surface_data_get(ds, &ddata);
@@ -256,8 +265,8 @@ static void transformer_projective_no_no(Enesim_Transformation *t, Enesim_Surfac
 			if (!szz)
 				goto iterate;
 				
-			sxxx = ((((long long int)sxx) << 16) / szz); // + x origin
-			syyy = ((((long long int)syy) << 16) / szz); // + y origin
+			sxxx = ((((long long int)sxx) << 16) / szz) + ox;
+			syyy = ((((long long int)syy) << 16) / szz) + oy;
 			six = eina_f16p16_int_to(sxxx);
 			siy = eina_f16p16_int_to(syyy);
 			/* check that we are inside the source rectangle */

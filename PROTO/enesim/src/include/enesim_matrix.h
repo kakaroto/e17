@@ -28,11 +28,16 @@ EAPI void enesim_matrix_divide(Enesim_Matrix *m, float scalar);
 EAPI void enesim_matrix_inverse(Enesim_Matrix *m, Enesim_Matrix *m2);
 EAPI void enesim_matrix_adjoint(Enesim_Matrix *m, Enesim_Matrix *a);
 EAPI void enesim_matrix_point_transform(Enesim_Matrix *m, float x, float y, float *xr, float *yr);
+EAPI Eina_Bool enesim_matrix_quad_quad_to(Enesim_Matrix *m, Enesim_Quad *src, Enesim_Quad *dst);
 EAPI Eina_Bool enesim_matrix_square_quad_to(Enesim_Matrix *m, Enesim_Quad *q);
 EAPI Eina_Bool enesim_matrix_quad_square_to(Enesim_Matrix *m, Enesim_Quad *q);
 EAPI Enesim_Quad * enesim_quad_new(void);
 EAPI void enesim_quad_free(Enesim_Quad *q);
-EAPI void enesim_quad_coords_from(Enesim_Quad *q, float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4);
+EAPI void enesim_quad_coords_set(Enesim_Quad *q, float x1, float y1, float x2,
+		float y2, float x3, float y3, float x4, float y4);
+EAPI void enesim_quad_coords_get(Enesim_Quad *q, float *x1, float *y1, 
+		float *x2, float *y2, float *x3, float *y3, float *x4,
+		float *y4);
 
 
 #endif /*ENESIM_MATRIX_H_*/

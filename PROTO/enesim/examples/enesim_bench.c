@@ -495,8 +495,8 @@ void transformer_bench(void)
 	/* projective */	
 	q1 = enesim_quad_new();
 	q2 = enesim_quad_new();
-	enesim_quad_coords_from(q1, 0, 0, opt_width, 0, opt_width, opt_height, 0, opt_height);
-	enesim_quad_coords_from(q2, 0, 100, 180, 0, 250, 180, 190, 240);
+	enesim_quad_coords_set(q1, 0, 0, opt_width, 0, opt_width, opt_height, 0, opt_height);
+	enesim_quad_coords_set(q2, 0, 100, 180, 0, 250, 180, 190, 240);
 	//enesim_quad_coords_from(q2, 50, 50, 190, 10, 195, 140, 50, 240);
 	enesim_matrix_quad_quad_to(matrix, q2, q1);
 	enesim_transformation_matrix_set(tx, matrix);
@@ -519,8 +519,8 @@ void matrix_bench(void)
 	q1 = enesim_quad_new();
 	q2 = enesim_quad_new();
 	
-	enesim_quad_coords_from(q1, 0, 0, opt_width, 0, opt_width, opt_height, 0, opt_height);
-	enesim_quad_coords_from(q2, 0, 100, 180, 0, 250, 180, 190, 240);
+	enesim_quad_coords_set(q1, 0, 0, opt_width, 0, opt_width, opt_height, 0, opt_height);
+	enesim_quad_coords_set(q2, 0, 100, 180, 0, 250, 180, 190, 240);
 			
 	/* transforming from a square to a quad */
 	printf("square to quad\n");
