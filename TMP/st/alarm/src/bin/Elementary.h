@@ -365,7 +365,6 @@ extern "C" {
      };
    
 // FIXME: widgets -
-// table
 // button
 // check
 // radio
