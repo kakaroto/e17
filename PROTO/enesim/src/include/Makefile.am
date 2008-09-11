@@ -48,6 +48,7 @@ ENESIM_UTILHEADERS = \
 enesim_converter.h \
 enesim_drawer.h \
 enesim_main.h \
+enesim_matrix.h \
 enesim_rasterizer.h \
 enesim_surface.h \
 enesim_transformer.h \

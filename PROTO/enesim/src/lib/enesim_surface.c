@@ -142,7 +142,7 @@ EAPI void
 enesim_surface_convert(Enesim_Surface *s, Enesim_Surface *d)
 {
 	Enesim_Transformation *tx;
-	float matrix[9];
+	Enesim_Matrix *matrix;
 	Eina_Rectangle sr, dr;
 	
 	
@@ -153,6 +153,7 @@ enesim_surface_convert(Enesim_Surface *s, Enesim_Surface *d)
 	
 	
 	tx = enesim_transformation_new();
+	matrix = enesim_matrix_new();
 	
 	if ((s->w != d->w) || (s->h != d->h))
 	{
@@ -167,11 +168,13 @@ enesim_surface_convert(Enesim_Surface *s, Enesim_Surface *d)
 	 * and dst format, the src and dst flags, etc
 	 */
 	
-	enesim_transformation_set(tx, matrix);
+	enesim_transformation_matrix_set(tx, matrix);
 	enesim_transformation_rop_set(tx, ENESIM_FILL);
 	eina_rectangle_coords_from(&sr, 0, 0, s->w, s->h);
 	eina_rectangle_coords_from(&dr, 0, 0, d->w, d->h);
 	enesim_transformation_apply(tx, s, &sr, d, &dr);
+	
+	enesim_matrix_free(matrix);
 }
 /**
  * To be documented

@@ -15,6 +15,7 @@ libenesim_la_SOURCES = \
 enesim_main.c \
 enesim_converter.c \
 enesim_drawer.c \
+enesim_matrix.c \
 enesim_rasterizer.c \
 enesim_renderer.c \
 enesim_surface.c \

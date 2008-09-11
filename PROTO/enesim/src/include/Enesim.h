@@ -61,6 +61,7 @@ extern "C" {
 #include "enesim_main.h"
 #include "enesim_surface.h"
 #include "enesim_drawer.h"
+#include "enesim_matrix.h"
 #include "enesim_renderer.h"
 #include "enesim_converter.h"
 #include "enesim_rasterizer.h"

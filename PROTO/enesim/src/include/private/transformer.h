@@ -18,17 +18,6 @@
 #ifndef TRANSFORMER_H_
 #define TRANSFORMER_H_
 
-#define MATRIX_XX 0
-#define MATRIX_XY 1
-#define MATRIX_XZ 2
-#define MATRIX_YX 3
-#define MATRIX_YY 4
-#define MATRIX_YZ 5
-#define MATRIX_ZX 6
-#define MATRIX_ZY 7
-#define MATRIX_ZZ 8
-#define MATRIX_SIZE 9
-
 typedef enum
 {
 	ENESIM_TRANSFORMATION_IDENTITY,
@@ -49,9 +38,7 @@ struct _Enesim_Transformation
 #ifdef DEBUG
 	Enesim_Magic magic;
 #endif
-	float matrix[MATRIX_SIZE];
-	Eina_F16p16 matrix_fixed[MATRIX_SIZE];
-	Enesim_Transformation_Type type;
+	Enesim_Matrix *matrix;
 	float ox;
 	float oy;
 	int quality; // TODO fix this

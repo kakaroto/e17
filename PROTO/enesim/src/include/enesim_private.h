@@ -126,6 +126,7 @@ static inline int enesim_hline_cut(int x, int *w, int *rx, int *rw, int cx)
 // #include "extender_float.h"
 #include "private/curve.h"
 #include "private/drawer.h"
+#include "private/matrix.h"
 #include "private/rasterizer.h"
 #include "private/renderer.h"
 #include "private/surface.h"
