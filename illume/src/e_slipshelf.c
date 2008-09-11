@@ -136,7 +136,8 @@ e_slipshelf_new(E_Zone *zone, const char *themedir)
    edje_object_size_min_calc(ess->base_obj, &mw, &mh);
    
    evas_object_resize(ess->base_obj, mw, mh);
-   evas_object_geometry_get(ess->vis_obj, &vx, &vy, &vw, &vh);
+   edje_object_part_geometry_get(ess->base_obj, "e.swallow.visible", &vx, &vy, &vw, &vh);
+//   evas_object_geometry_get(ess->vis_obj, &vx, &vy, &vw, &vh);
 
    evas_object_del(ess->swallow1_obj);
    ess->gadcon_extra = e_gadcon_swallowed_new("slipshelf_extra", 0, ess->base_obj, "e.swallow.extra");
@@ -733,7 +734,8 @@ _e_slipshelf_applist_update(E_Slipshelf *ess)
    evas_object_resize(ess->base_obj, smw, smh);
    edje_object_calc_force(ess->base_obj);
    edje_object_calc_force(ess->control_obj);
-   evas_object_geometry_get(ess->control_obj, &vx, &vy, &vw, &vh);
+   edje_object_part_geometry_get(ess->base_obj, "e.swallow.controls", &vx, &vy, &vw, &vh);
+//   evas_object_geometry_get(ess->control_obj, &vx, &vy, &vw, &vh);
    ess->control.w = vw;
    ess->control.h = vh;
    printf("control size: %i %i\n", vw, vh);
@@ -742,7 +744,8 @@ _e_slipshelf_applist_update(E_Slipshelf *ess)
 			    ess->control_obj);
    edje_object_calc_force(ess->base_obj);
    edje_object_calc_force(ess->control_obj);
-   evas_object_geometry_get(ess->vis_obj, &vx, &vy, &vw, &vh);
+   edje_object_part_geometry_get(ess->base_obj, "e.swallow.visible", &vx, &vy, &vw, &vh);
+//   evas_object_geometry_get(ess->vis_obj, &vx, &vy, &vw, &vh);
    
    printf("v... = %i %i %ix%i\n", vx, vy, vw, vh);
    ess->hidden = vy;
@@ -1018,7 +1021,8 @@ _e_slipshelf_cb_gadcon_min_size_request(void *data, E_Gadcon *gc, Evas_Coord w, 
    edje_object_size_min_calc(ess->base_obj, &mw, &mh);
    
    evas_object_resize(ess->base_obj, mw, mh);
-   evas_object_geometry_get(ess->vis_obj, &vx, &vy, &vw, &vh);
+   edje_object_part_geometry_get(ess->base_obj, "e.swallow.visible", &vx, &vy, &vw, &vh);
+//   evas_object_geometry_get(ess->vis_obj, &vx, &vy, &vw, &vh);
    ess->hidden = vy;
    x = ess->zone->x;
    y = ess->zone->y - ess->hidden;
