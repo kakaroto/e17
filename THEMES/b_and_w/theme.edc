@@ -8713,7 +8713,6 @@ collections { /* begin the collection of edje groups that are in this file */
       }
    }
 
-/*
    group { name: "e/modules/ibox/drop_overlay";
       alias: "e/modules/ibar/drop_overlay";
       images {
@@ -8725,80 +8724,173 @@ collections { /* begin the collection of edje groups that are in this file */
       parts {
 	 part { name: "left_arrow1";
 	    description { state: "default" 0.0;
+	       aspect: 1.0 1.0;
+	       aspect_preference: VERTICAL;
+	       rel1.relative: -1.0 0.5;
+	       rel2.relative: -1.0 0.5;
+	       image.normal: "bd_resize_r.png";
 	    }
 	    description { state: "1" 0.0;
+	       inherit: "default" 0.0;
+	       rel1.relative: -0.8 0.2;
+	       rel2.relative: -0.7 0.8;	       
 	    }
 	    description { state: "2" 0.0;
+	       inherit: "default" 0.0;
+	       rel1.relative: 0.2 0.5;
+	       rel2.relative: 0.2 0.5;	
 	    }
 	 }
 	 part { name: "left_arrow2";
 	    description { state: "default" 0.0;
+	       aspect: 1.0 1.0;
+	       aspect_preference: VERTICAL;
+	       rel1.relative: -1.0 0.5;
+	       rel2.relative: -1.0 0.5;
+	       image.normal: "bd_resize_r.png";
 	    }
 	    description { state: "1" 0.0;
+	       inherit: "default" 0.0;
+	       rel1.relative: -0.8 0.2;
+	       rel2.relative: -0.7 0.8;	       
 	    }
 	    description { state: "2" 0.0;
+	       inherit: "default" 0.0;
+	       rel1.relative: 0.2 0.5;
+	       rel2.relative: 0.2 0.5;	
 	    }
 	 }
 	 part { name: "right_arrow1";
 	    description { state: "default" 0.0;
+	       aspect: 1.0 1.0;
+	       aspect_preference: VERTICAL;
+	       rel1.relative: 2.0 0.5;
+	       rel2.relative: 2.0 0.5;
+	       image.normal: "bd_resize_l.png";
 	    }
 	    description { state: "1" 0.0;
+	       inherit: "default" 0.0;
+	       rel1.relative: 1.8 0.2;
+	       rel2.relative: 1.7 0.8;
 	    }
 	    description { state: "2" 0.0;
+	       inherit: "default" 0.0;
+	       rel1.relative: 0.8 0.5;
+	       rel2.relative: 0.8 0.5;
 	    }
 	 }
 	 part { name: "right_arrow2";
 	    description { state: "default" 0.0;
+	       aspect: 1.0 1.0;
+	       aspect_preference: VERTICAL;
+	       rel1.relative: 2.0 0.5;
+	       rel2.relative: 2.0 0.5;
+	       image.normal: "bd_resize_l.png";
 	    }
 	    description { state: "1" 0.0;
+	       inherit: "default" 0.0;
+	       rel1.relative: 1.8 0.2;
+	       rel2.relative: 1.7 0.8;
 	    }
 	    description { state: "2" 0.0;
+	       inherit: "default" 0.0;
+	       rel1.relative: 0.8 0.5;
+	       rel2.relative: 0.8 0.5;
 	    }
 	 }
 	 part { name: "top_arrow1";
 	    description { state: "default" 0.0;
+	       aspect: 1.0 1.0;
+	       aspect_preference: HORIZONTAL;
+	       rel1.relative: 0.5 -1.0;
+	       rel2.relative: 0.5 -1.0;
+	       image.normal: "bd_resize_b.png";
 	    }
 	    description { state: "1" 0.0;
+	       inherit: "default" 0.0;
+	       rel1.relative: 0.2 -0.8;
+	       rel2.relative: 0.8 -0.7;
 	    }
 	    description { state: "2" 0.0;
+	       inherit: "default" 0.0;
+	       rel1.relative: 0.5 0.2;
+	       rel2.relative: 0.5 0.2;
 	    }
 	 }
 	 part { name: "top_arrow2";
 	    description { state: "default" 0.0;
+	       aspect: 1.0 1.0;
+	       aspect_preference: HORIZONTAL;
+	       rel1.relative: 0.5 -1.0;
+	       rel2.relative: 0.5 -1.0;
+	       image.normal: "bd_resize_b.png";
 	    }
 	    description { state: "1" 0.0;
+	       inherit: "default" 0.0;
+	       rel1.relative: 0.2 -0.8;
+	       rel2.relative: 0.8 -0.7;
 	    }
 	    description { state: "2" 0.0;
+	       inherit: "default" 0.0;
+	       rel1.relative: 0.5 0.2;
+	       rel2.relative: 0.5 0.2;
 	    }
 	 }
 	 part { name: "bottom_arrow1";
 	    description { state: "default" 0.0;
+	       aspect: 1.0 1.0;
+	       aspect_preference: HORIZONTAL;
+	       rel1.relative: 0.5 2.0;
+	       rel2.relative: 0.5 2.0;
+	       image.normal: "bd_resize_t.png";
 	    }
 	    description { state: "1" 0.0;
+	       inherit: "default" 0.0;
+	       rel1.relative: 0.2 1.7;
+	       rel2.relative: 0.8 1.8;
 	    }
 	    description { state: "2" 0.0;
+	       inherit: "default" 0.0;
+	       rel1.relative: 0.5 0.8;
+	       rel2.relative: 0.5 0.8;
 	    }
 	 }
 	 part { name: "bottom_arrow2";
 	    description { state: "default" 0.0;
+	       aspect: 1.0 1.0;
+	       aspect_preference: HORIZONTAL;
+	       rel1.relative: 0.5 2.0;
+	       rel2.relative: 0.5 2.0;
+	       image.normal: "bd_resize_t.png";
 	    }
 	    description { state: "1" 0.0;
+	       inherit: "default" 0.0;
+	       rel1.relative: 0.2 1.7;
+	       rel2.relative: 0.8 1.8;
 	    }
 	    description { state: "2" 0.0;
+	       inherit: "default" 0.0;
+	       rel1.relative: 0.5 0.8;
+	       rel2.relative: 0.5 0.8;
 	    }
 	 }
       }
       programs {
-	 program { name: "start";
+	 program { name: "start1";
 	    signal: "show";
 	    source: "";
 	    after: "left1_1";
-	    after: "left2_1";
 	    after: "right1_1";
-	    after: "right2_1";
 	    after: "top1_1";
-	    after: "top2_1";
 	    after: "bottom1_1";
+	 }
+	 program { name: "start2";
+	    signal: "show";
+	    source: "";
+	    in: 0.4 0.0;
+	    after: "left2_1";
+	    after: "right2_1";
+	    after: "top2_1";
 	    after: "bottom2_1";
 	 }
 	 
@@ -8806,13 +8898,13 @@ collections { /* begin the collection of edje groups that are in this file */
 	 program { name: "left1_1";
 	    action: STATE_SET "1" 0.0;
 	    target: "left_arrow1";
-	    transition: LINEAR 0.3;
+	    transition: LINEAR 0.4;
 	    after: "left1_2";
 	 }
 	 program { name: "left1_2";
 	    action: STATE_SET "2" 0.0;
 	    target: "left_arrow1";
-	    transition: LINEAR 0.3;
+	    transition: LINEAR 0.4;
 	    after: "left1_r";
 	 }
 	 program { name: "left1_r";
@@ -8823,13 +8915,13 @@ collections { /* begin the collection of edje groups that are in this file */
 	 program { name: "left2_1";
 	    action: STATE_SET "1" 0.0;
 	    target: "left_arrow2";
-	    transition: LINEAR 0.3;
+	    transition: LINEAR 0.4;
 	    after: "left2_2";
 	 }
 	 program { name: "left2_2";
 	    action: STATE_SET "2" 0.0;
 	    target: "left_arrow2";
-	    transition: LINEAR 0.3;
+	    transition: LINEAR 0.4;
 	    after: "left2_r";
 	 }
 	 program { name: "left2_r";
@@ -8842,13 +8934,13 @@ collections { /* begin the collection of edje groups that are in this file */
 	 program { name: "right1_1";
 	    action: STATE_SET "1" 0.0;
 	    target: "right_arrow1";
-	    transition: LINEAR 0.3;
+	    transition: LINEAR 0.4;
 	    after: "right1_2";
 	 }
 	 program { name: "right1_2";
 	    action: STATE_SET "2" 0.0;
 	    target: "right_arrow1";
-	    transition: LINEAR 0.3;
+	    transition: LINEAR 0.4;
 	    after: "right1_r";
 	 }
 	 program { name: "right1_r";
@@ -8859,13 +8951,13 @@ collections { /* begin the collection of edje groups that are in this file */
 	 program { name: "right2_1";
 	    action: STATE_SET "1" 0.0;
 	    target: "right_arrow2";
-	    transition: LINEAR 0.3;
+	    transition: LINEAR 0.4;
 	    after: "right2_2";
 	 }
 	 program { name: "right2_2";
 	    action: STATE_SET "2" 0.0;
 	    target: "right_arrow2";
-	    transition: LINEAR 0.3;
+	    transition: LINEAR 0.4;
 	    after: "right2_r";
 	 }
 	 program { name: "right2_r";
@@ -8878,13 +8970,13 @@ collections { /* begin the collection of edje groups that are in this file */
 	 program { name: "top1_1";
 	    action: STATE_SET "1" 0.0;
 	    target: "top_arrow1";
-	    transition: LINEAR 0.3;
+	    transition: LINEAR 0.4;
 	    after: "top1_2";
 	 }
 	 program { name: "top1_2";
 	    action: STATE_SET "2" 0.0;
 	    target: "top_arrow1";
-	    transition: LINEAR 0.3;
+	    transition: LINEAR 0.4;
 	    after: "top1_r";
 	 }
 	 program { name: "top1_r";
@@ -8895,13 +8987,13 @@ collections { /* begin the collection of edje groups that are in this file */
 	 program { name: "top2_1";
 	    action: STATE_SET "1" 0.0;
 	    target: "top_arrow2";
-	    transition: LINEAR 0.3;
+	    transition: LINEAR 0.4;
 	    after: "top2_2";
 	 }
 	 program { name: "top2_2";
 	    action: STATE_SET "2" 0.0;
 	    target: "top_arrow2";
-	    transition: LINEAR 0.3;
+	    transition: LINEAR 0.4;
 	    after: "top2_r";
 	 }
 	 program { name: "top2_r";
@@ -8914,13 +9006,13 @@ collections { /* begin the collection of edje groups that are in this file */
 	 program { name: "bottom1_1";
 	    action: STATE_SET "1" 0.0;
 	    target: "bottom_arrow1";
-	    transition: LINEAR 0.3;
+	    transition: LINEAR 0.4;
 	    after: "bottom1_2";
 	 }
 	 program { name: "bottom1_2";
 	    action: STATE_SET "2" 0.0;
 	    target: "bottom_arrow1";
-	    transition: LINEAR 0.3;
+	    transition: LINEAR 0.4;
 	    after: "bottom1_r";
 	 }
 	 program { name: "bottom1_r";
@@ -8931,13 +9023,13 @@ collections { /* begin the collection of edje groups that are in this file */
 	 program { name: "bottom2_1";
 	    action: STATE_SET "1" 0.0;
 	    target: "bottom_arrow2";
-	    transition: LINEAR 0.3;
+	    transition: LINEAR 0.4;
 	    after: "bottom2_2";
 	 }
 	 program { name: "bottom2_2";
 	    action: STATE_SET "2" 0.0;
 	    target: "bottom_arrow2";
-	    transition: LINEAR 0.3;
+	    transition: LINEAR 0.4;
 	    after: "bottom2_r";
 	 }
 	 program { name: "bottom2_r";
@@ -8947,7 +9039,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 }
       }
    }
-*/
+   
 /////////////////////////////////////////////////////////////////////////////
    /*** MOD: WINLIST ***/
 
