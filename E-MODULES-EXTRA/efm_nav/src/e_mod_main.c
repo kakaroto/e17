@@ -328,6 +328,8 @@ _cb_refresh_click(void *data, Evas_Object *obj, const char *emission, const char
    if ((!inst) || (!inst->tbar)) return;
    o_fm = e_toolbar_fm2_get(inst->tbar);
    if (!o_fm) return;
+   // Don't destroy forward history when refreshing
+   inst->ignore_dir = 1;
    e_fm2_path_set(o_fm, NULL, e_fm2_real_path_get(o_fm));
 }
 
@@ -350,7 +352,7 @@ _cb_up_click(void *data, Evas_Object *obj, const char *emission, const char *sou
         p = t;
         if (p[0] == 0) p = "/";
         e_fm2_path_set(o_fm, NULL, p);
-        edje_object_signal_emit(inst->o_up, "e,state,enabled", "e");
+        //edje_object_signal_emit(inst->o_up, "e,state,enabled", "e");
      }
    else 
      edje_object_signal_emit(inst->o_up, "e,state,disabled", "e");
@@ -398,14 +400,28 @@ _cb_dir_changed(void *data, Evas_Object *obj, void *event_info)
    if (!inst->ignore_dir) 
      {
         const char *t;
-        t = ecore_list_first(inst->history);
+        t = ecore_list_current(inst->history);
         if(!t || strcmp(t, path))
           {
+	     if (t)
+	       {
+		  int i, current;
+		  current = ecore_list_index(inst->history);
+		  ecore_list_first_goto(inst->history);
+		  for(i = 0; i < current; i++)
+			  ecore_list_remove_destroy(inst->history);
+	       }
              ecore_list_prepend(inst->history, strdup(path));
              ecore_list_first_goto(inst->history);
           }
      }
    inst->ignore_dir = 0;
+
+   if (!strcmp(path, "/"))
+	 edje_object_signal_emit(inst->o_up, "e,state,disabled", "e");
+   else
+	 edje_object_signal_emit(inst->o_up, "e,state,enabled", "e");
+   edje_object_message_signal_process(inst->o_up);
 
    count = ecore_list_count(inst->history);
    i = ecore_list_index(inst->history);
@@ -420,7 +436,10 @@ _cb_dir_changed(void *data, Evas_Object *obj, void *event_info)
      }
    else 
      {
-	edje_object_signal_emit(inst->o_back, "e,state,enabled", "e");
+	if (i == (count - 1))
+	  edje_object_signal_emit(inst->o_back, "e,state,disabled", "e");
+	else
+	  edje_object_signal_emit(inst->o_back, "e,state,enabled", "e");
 	edje_object_message_signal_process(inst->o_back);
 	if (i == 0) 
 	  edje_object_signal_emit(inst->o_forward, "e,state,disabled", "e");

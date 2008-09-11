@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: it\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2007-11-24 21:56+0100\n"
+"POT-Creation-Date: 2008-09-01 22:32-0500\n"
 "PO-Revision-Date: 2008-02-02 20:23+0100\n"
 "Last-Translator: Lisovszki  <lisovszki@gmail.com>\n"
 "Language-Team: hungarian <hu@li.org>\n"
@@ -18,7 +18,6 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
-#: src/e_mod_main.c:169
+#: src/e_mod_main.c:193
 msgid "EFM Navigation"
 msgstr "EFM navigáció"
-
