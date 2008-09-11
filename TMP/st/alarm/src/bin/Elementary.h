@@ -74,7 +74,8 @@ extern "C" {
 	  ELM_OBJ_BG,
 	  ELM_OBJ_SCROLLER,
 	  ELM_OBJ_LABEL,
-	  ELM_OBJ_BOX
+	  ELM_OBJ_BOX,
+	  ELM_OBJ_TABLE
      } Elm_Obj_Type;
    
    typedef enum _Elm_Cb_Type
@@ -110,6 +111,8 @@ extern "C" {
    typedef struct _Elm_Label           Elm_Label;
    typedef struct _Elm_Box_Class       Elm_Box_Class;
    typedef struct _Elm_Box             Elm_Box;
+   typedef struct _Elm_Table_Class     Elm_Table_Class;
+   typedef struct _Elm_Table           Elm_Table;
    
    typedef void (*Elm_Cb_Func) (void *data, Elm_Obj *obj, Elm_Cb_Type type, void *info);
    
@@ -317,11 +320,11 @@ extern "C" {
 /**************************************************************************/   
    /* Box Object */
 #define Elm_Box_Class_Methods \
-   void (*layout_update)  (Elm_Box *lb); \
-   void (*pack_start)     (Elm_Box *lb, Elm_Widget *wid); \
-   void (*pack_end)       (Elm_Box *lb, Elm_Widget *wid); \
-   void (*pack_before)    (Elm_Box *lb, Elm_Widget *wid, Elm_Widget *wid_before); \
-   void (*pack_after)     (Elm_Box *lb, Elm_Widget *wid, Elm_Widget *wid_after);
+   void (*layout_update)  (Elm_Box *bx); \
+   void (*pack_start)     (Elm_Box *bx, Elm_Widget *wid); \
+   void (*pack_end)       (Elm_Box *bx, Elm_Widget *wid); \
+   void (*pack_before)    (Elm_Box *bx, Elm_Widget *wid, Elm_Widget *wid_before); \
+   void (*pack_after)     (Elm_Box *bx, Elm_Widget *wid, Elm_Widget *wid_after);
 
 #define Elm_Box_Class_All Elm_Widget_Class_All; Elm_Box_Class_Methods; \
    unsigned char horizontal : 1; \
@@ -340,4 +343,32 @@ extern "C" {
 	Elm_Box_Class_All;
      };
    
+/**************************************************************************/   
+   /* Table Object */
+#define Elm_Table_Class_Methods \
+   void (*layout_update)  (Elm_Table *tb); \
+   void (*pack)           (Elm_Table *tb, Elm_Widget *wid, int x, int y, int w, int h)
+#define Elm_Table_Class_All Elm_Widget_Class_All; Elm_Table_Class_Methods; \
+   unsigned char homogenous : 1
+   
+   /* Object specific ones */
+   EAPI Elm_Table *elm_table_new(Elm_Win *win);
+   struct _Elm_Table_Class
+     {
+	void *parent;
+	Elm_Obj_Type type;
+	Elm_Table_Class_Methods;
+     };
+   struct _Elm_Table
+     {
+	Elm_Table_Class_All;
+     };
+   
+// FIXME: widgets -
+// table
+// button
+// check
+// radio
+// clock
+
 #endif

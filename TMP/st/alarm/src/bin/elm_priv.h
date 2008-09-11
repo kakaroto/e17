@@ -4,6 +4,7 @@
 #include "els_pan.h"
 #include "els_scroller.h"
 #include "els_box.h"
+#include "els_table.h"
 
 // FIXME: totally disorganised. clean this up!
 
@@ -51,5 +52,6 @@ extern Elm_Bg_Class _elm_bg_class;
 extern Elm_Scroller_Class _elm_scroller_class;
 extern Elm_Label_Class _elm_label_class;
 extern Elm_Box_Class _elm_box_class;
+extern Elm_Table_Class _elm_table_class;
   
 #endif
