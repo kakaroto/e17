@@ -26,6 +26,7 @@
 typedef struct _Enesim_Transformation Enesim_Transformation;
 
 EAPI Enesim_Transformation * enesim_transformation_new(void);
+EAPI void enesim_transformation_delete(Enesim_Transformation *t);
 EAPI void enesim_transformation_matrix_set(Enesim_Transformation *t, Enesim_Matrix *m);
 EAPI void enesim_transformation_matrix_get(Enesim_Transformation *t, Enesim_Matrix *m);
 EAPI void enesim_transformation_rop_set(Enesim_Transformation *t, Enesim_Rop rop);

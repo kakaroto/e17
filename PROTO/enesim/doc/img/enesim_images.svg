@@ -2,7 +2,7 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 <svg
    xmlns:dc="http://purl.org/dc/elements/1.1/"
-   xmlns:cc="http://web.resource.org/cc/"
+   xmlns:cc="http://creativecommons.org/ns#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
@@ -12,7 +12,7 @@
    height="1052.3622"
    id="svg7419"
    sodipodi:version="0.32"
-   inkscape:version="0.45.1"
+   inkscape:version="0.46"
    sodipodi:docbase="/home/jl/version/svn/code.google.com/efl-research/enesim/doc/img"
    sodipodi:docname="enesim_images.svg"
    inkscape:output_extension="org.inkscape.output.svg.inkscape"
@@ -22,6 +22,13 @@
    inkscape:export-ydpi="67">
   <defs
      id="defs7421">
+    <inkscape:perspective
+       sodipodi:type="inkscape:persp3d"
+       inkscape:vp_x="0 : 526.18109 : 1"
+       inkscape:vp_y="0 : 1000 : 0"
+       inkscape:vp_z="1024 : 526.18109 : 1"
+       inkscape:persp3d-origin="512 : 350.78739 : 1"
+       id="perspective2858" />
     <marker
        inkscape:stockid="Dot_l"
        orient="auto"
@@ -112,17 +119,18 @@
      inkscape:pageshadow="2"
      inkscape:zoom="0.98994949"
      inkscape:cx="559.2412"
-     inkscape:cy="618.84286"
+     inkscape:cy="495.29459"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      inkscape:window-width="1217"
      inkscape:window-height="808"
-     inkscape:window-x="28"
-     inkscape:window-y="22"
+     inkscape:window-x="32"
+     inkscape:window-y="45"
      width="1024px"
      height="1052.3622px"
      showguides="true"
-     inkscape:guide-bbox="true" />
+     inkscape:guide-bbox="true"
+     showgrid="false" />
   <metadata
      id="metadata7424">
     <rdf:RDF>
@@ -139,15 +147,15 @@
      inkscape:groupmode="layer"
      id="layer1">
     <rect
-       style="opacity:1;color:#000000;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:2.75633192;stroke-linecap:butt;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       style="opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:2.84072018;stroke-linecap:butt;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
        id="rect19271"
-       width="910"
-       height="260"
-       x="78.360542"
-       y="424.35699"
+       width="686.67194"
+       height="365.98163"
+       x="78.402733"
+       y="424.39917"
        inkscape:export-xdpi="67"
        inkscape:export-ydpi="67"
-       inkscape:export-filename="/home/jl/version/svn/code.google.com/efl-research/enesim/doc/img/raster.png" />
+       inkscape:export-filename="/home/jl/code/efl/svn/trunk/PROTO/enesim/doc/img/raster.png" />
     <rect
        style="opacity:1;color:#000000;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:2.75633192;stroke-linecap:butt;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
        id="rect18300"
@@ -681,8 +689,8 @@
        id="rect7427"
        width="116.75047"
        height="39.001926"
-       x="111.05792"
-       y="535.7926"
+       x="126.21021"
+       y="560.03625"
        inkscape:export-filename="/home/jl/version/svn/code.google.com/efl-research/enesim/doc/img/raster.png"
        inkscape:export-xdpi="67.003448"
        inkscape:export-ydpi="67.003448" />
@@ -691,8 +699,8 @@
        id="rect7429"
        width="116.75047"
        height="39.001926"
-       x="111.05791"
-       y="490.10468"
+       x="126.2102"
+       y="514.34833"
        inkscape:export-filename="/home/jl/version/svn/code.google.com/efl-research/enesim/doc/img/raster.png"
        inkscape:export-xdpi="67.003448"
        inkscape:export-ydpi="67.003448" />
@@ -701,14 +709,14 @@
        id="rect7431"
        width="116.75047"
        height="39.001926"
-       x="111.05791"
-       y="442.63376"
+       x="126.2102"
+       y="466.87741"
        inkscape:export-filename="/home/jl/version/svn/code.google.com/efl-research/enesim/doc/img/raster.png"
        inkscape:export-xdpi="67.003448"
        inkscape:export-ydpi="67.003448" />
     <path
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:1.99999989, 3.99999978;stroke-dashoffset:0;stroke-opacity:1"
-       d="M 98.715727,485.75877 L 239.9282,485.75877"
+       d="M 113.86802,510.00244 L 255.08049,510.00244"
        id="path8414"
        inkscape:export-filename="/home/jl/version/svn/code.google.com/efl-research/enesim/doc/img/raster.png"
        inkscape:export-xdpi="67.003448"
@@ -718,8 +726,8 @@
        id="rect11524"
        width="116.75047"
        height="39.001926"
-       x="111.61387"
-       y="581.48065"
+       x="126.76616"
+       y="605.7243"
        inkscape:export-filename="/home/jl/version/svn/code.google.com/efl-research/enesim/doc/img/raster.png"
        inkscape:export-xdpi="67.003448"
        inkscape:export-ydpi="67.003448" />
@@ -734,20 +742,20 @@
        inkscape:export-xdpi="75.019997"
        inkscape:export-ydpi="75.019997" />
     <rect
-       style="opacity:1;color:#000000;fill:#ff7b00;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:4;stroke-linecap:butt;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       style="opacity:1;fill:#ff7b00;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:4;stroke-linecap:butt;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
        id="rect2439"
        width="116.75047"
        height="39.001926"
-       x="110.94673"
-       y="627.94861"
+       x="126.09901"
+       y="652.19226"
        inkscape:export-filename="/home/jl/version/svn/code.google.com/efl-research/enesim/doc/img/raster.png"
        inkscape:export-xdpi="67.003448"
        inkscape:export-ydpi="67.003448" />
     <text
        xml:space="preserve"
        style="font-size:15.58374023px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:100%;writing-mode:lr-tb;text-anchor:middle;opacity:0.6;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-       x="172.31575"
-       y="459.09518"
+       x="187.4846"
+       y="483.31238"
        id="text2383"
        sodipodi:linespacing="100%"
        inkscape:export-filename="/home/jl/version/svn/code.google.com/efl-research/enesim/doc/img/raster.png"
@@ -756,12 +764,12 @@
        transform="scale(0.9989084,1.0010928)"><tspan
          sodipodi:role="line"
          id="tspan2385"
-         x="172.31575"
-         y="459.09518">Vector</tspan><tspan
+         x="187.4846"
+         y="483.31238">Vector</tspan><tspan
          sodipodi:role="line"
          id="tspan2387"
-         x="172.31575"
-         y="474.67892">data source</tspan></text>
+         x="187.4846"
+         y="498.89612">data source</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:15.58374023px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-indent:0;text-align:center;text-decoration:none;line-height:125%;letter-spacing:normal;word-spacing:normal;text-transform:none;direction:ltr;block-progression:tb;writing-mode:lr-tb;text-anchor:middle;opacity:1;color:#000000;fill:#000000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate;font-family:Bitstream Vera Sans"
@@ -844,8 +852,8 @@
     <text
        xml:space="preserve"
        style="font-size:15.58374023px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-       x="130.72781"
-       y="512.59723"
+       x="145.89667"
+       y="536.81445"
        id="text2391"
        sodipodi:linespacing="125%"
        inkscape:export-filename="/home/jl/version/svn/code.google.com/efl-research/enesim/doc/img/raster.png"
@@ -854,13 +862,13 @@
        transform="scale(0.9989084,1.0010928)"><tspan
          sodipodi:role="line"
          id="tspan2393"
-         x="130.72781"
-         y="512.59723">Rasterizer</tspan></text>
+         x="145.89667"
+         y="536.81445">Rasterizer</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:15.58374023px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-       x="137.97388"
-       y="560.26044"
+       x="153.14273"
+       y="584.47766"
        id="text2395"
        sodipodi:linespacing="125%"
        inkscape:export-filename="/home/jl/version/svn/code.google.com/efl-research/enesim/doc/img/raster.png"
@@ -869,13 +877,13 @@
        transform="scale(0.9989084,1.0010928)"><tspan
          sodipodi:role="line"
          id="tspan2397"
-         x="137.97388"
-         y="560.26044">Scanline</tspan></text>
+         x="153.14273"
+         y="584.47766">Scanline</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:15.58374023px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-       x="135.6736"
-       y="603.56091"
+       x="150.84245"
+       y="627.77814"
        id="text2401"
        sodipodi:linespacing="125%"
        inkscape:export-filename="/home/jl/version/svn/code.google.com/efl-research/enesim/doc/img/raster.png"
@@ -884,13 +892,13 @@
        transform="scale(0.9989084,1.0010928)"><tspan
          sodipodi:role="line"
          id="tspan2403"
-         x="135.6736"
-         y="603.56091">Renderer</tspan></text>
+         x="150.84245"
+         y="627.77814">Renderer</tspan></text>
     <text
        xml:space="preserve"
        style="font-size:15.58374023px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-       x="138.12247"
-       y="649.97815"
+       x="153.29132"
+       y="674.19537"
        id="text2435"
        sodipodi:linespacing="125%"
        inkscape:export-filename="/home/jl/version/svn/code.google.com/efl-research/enesim/doc/img/raster.png"
@@ -899,21 +907,21 @@
        transform="scale(0.9989084,1.0010928)"><tspan
          sodipodi:role="line"
          id="tspan2437"
-         x="138.12247"
-         y="649.97815">Surface</tspan></text>
+         x="153.29132"
+         y="674.19537">Surface</tspan></text>
     <rect
        style="opacity:0.6;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
        id="rect2267"
        width="120"
        height="120"
-       x="788.22198"
-       y="492.03732"
+       x="334.66348"
+       y="613.25562"
        inkscape:export-filename="/home/jl/version/svn/code.google.com/efl-research/enesim/doc/img/raster.png"
        inkscape:export-xdpi="67.003448"
        inkscape:export-ydpi="67.003448" />
     <path
-       style="opacity:1;color:#000000;fill:#ffff00;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
-       d="M 847.21048,521.3984 L 808.29355,560.31533 L 890.11104,574.1048 L 847.21048,521.3984 z "
+       style="opacity:1;fill:#ffff00;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       d="M 393.65199,642.61671 L 354.73506,681.53364 L 436.55255,695.32311 L 393.65199,642.61671 z"
        id="path2265"
        inkscape:export-filename="/home/jl/version/svn/code.google.com/efl-research/enesim/doc/img/raster.png"
        inkscape:export-xdpi="67.003448"
@@ -1674,16 +1682,16 @@
     <text
        xml:space="preserve"
        style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-       x="847.32758"
-       y="633.04749"
+       x="393.76907"
+       y="754.26581"
        id="text18273"
        sodipodi:linespacing="125%"
        inkscape:export-filename="/home/jl/version/svn/code.google.com/efl-research/enesim/doc/img/raster.png"
        inkscape:export-xdpi="67.003448"
        inkscape:export-ydpi="67.003448"><tspan
          sodipodi:role="line"
-         x="847.32758"
-         y="633.04749"
+         x="393.76907"
+         y="754.26581"
          id="tspan18277">Surface</tspan></text>
     <text
        xml:space="preserve"
@@ -1709,16 +1717,94 @@
     <text
        xml:space="preserve"
        style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
-       x="845.42151"
-       y="583.07428"
+       x="391.86301"
+       y="704.2926"
        id="text18296"
        sodipodi:linespacing="125%"
        inkscape:export-filename="/home/jl/version/svn/code.google.com/efl-research/enesim/doc/img/raster.png"
        inkscape:export-xdpi="67.003448"
        inkscape:export-ydpi="67.003448"><tspan
          sodipodi:role="line"
-         x="845.42151"
-         y="583.07428"
+         x="391.86301"
+         y="704.2926"
          id="tspan18298">Renderer</tspan></text>
+    <rect
+       style="opacity:1;fill:#ff7b00;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:4;stroke-linecap:butt;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       id="rect2860"
+       width="116.75047"
+       height="39.001926"
+       x="126.48269"
+       y="700.521"
+       inkscape:export-filename="/home/jl/version/svn/code.google.com/efl-research/enesim/doc/img/raster.png"
+       inkscape:export-xdpi="67.003448"
+       inkscape:export-ydpi="67.003448" />
+    <text
+       xml:space="preserve"
+       style="font-size:15.58374023px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="137.65791"
+       y="722.47144"
+       id="text2862"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/jl/version/svn/code.google.com/efl-research/enesim/doc/img/raster.png"
+       inkscape:export-xdpi="67.003448"
+       inkscape:export-ydpi="67.003448"
+       transform="scale(0.9989084,1.0010928)"><tspan
+         sodipodi:role="line"
+         id="tspan2864"
+         x="137.65791"
+         y="722.47144">Transformer</tspan></text>
+    <rect
+       style="opacity:0.6;fill:#ffffff;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect2866"
+       width="120"
+       height="120"
+       x="582.45703"
+       y="615.58679"
+       inkscape:export-filename="/home/jl/version/svn/code.google.com/efl-research/enesim/doc/img/raster.png"
+       inkscape:export-xdpi="67.003448"
+       inkscape:export-ydpi="67.003448" />
+    <path
+       style="opacity:1;fill:#ffff00;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+       d="M 655.044,647.55776 L 601.79075,661.45549 L 665.40616,714.7221 L 655.044,647.55776 z"
+       id="path2868"
+       inkscape:export-filename="/home/jl/version/svn/code.google.com/efl-research/enesim/doc/img/raster.png"
+       inkscape:export-xdpi="67.003448"
+       inkscape:export-ydpi="67.003448" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="641.56262"
+       y="756.59692"
+       id="text2870"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/jl/version/svn/code.google.com/efl-research/enesim/doc/img/raster.png"
+       inkscape:export-xdpi="67.003448"
+       inkscape:export-ydpi="67.003448"><tspan
+         sodipodi:role="line"
+         x="641.56262"
+         y="756.59692"
+         id="tspan2872">Surface</tspan></text>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;marker-end:url(#Arrow1Mend);stroke-miterlimit:4;stroke-dasharray:1, 1;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 497.69603,672.62317 L 542.01149,671.3643"
+       id="path2878"
+       sodipodi:nodetypes="cc"
+       inkscape:export-filename="/home/jl/version/svn/code.google.com/efl-research/enesim/doc/img/raster.png"
+       inkscape:export-xdpi="67.003448"
+       inkscape:export-ydpi="67.003448" />
+    <text
+       xml:space="preserve"
+       style="font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:center;line-height:125%;writing-mode:lr-tb;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;font-family:Bitstream Vera Sans"
+       x="523.20319"
+       y="692.21136"
+       id="text2880"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/home/jl/version/svn/code.google.com/efl-research/enesim/doc/img/raster.png"
+       inkscape:export-xdpi="67.003448"
+       inkscape:export-ydpi="67.003448"><tspan
+         sodipodi:role="line"
+         x="523.20319"
+         y="692.21136"
+         id="tspan2882">Transformer</tspan></text>
   </g>
 </svg>

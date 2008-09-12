@@ -136,7 +136,7 @@
        y="635.95166"
        id="text3246"
        sodipodi:linespacing="125%"
-       inkscape:export-filename="/home/jl/code/efl-research/trunk/enesim/doc/img/path3260.png"
+       inkscape:export-filename="/home/jl/code/efl/svn/trunk/PROTO/enesim/doc/img/enesim.png"
        inkscape:export-xdpi="171.91"
        inkscape:export-ydpi="171.91"><tspan
          sodipodi:role="line"
@@ -151,7 +151,7 @@
        id="text3250"
        sodipodi:linespacing="125%"
        transform="scale(1.1182727,0.8942363)"
-       inkscape:export-filename="/home/jl/code/efl-research/trunk/enesim/doc/img/path3260.png"
+       inkscape:export-filename="/home/jl/code/efl/svn/trunk/PROTO/enesim/doc/img/enesim.png"
        inkscape:export-xdpi="171.91"
        inkscape:export-ydpi="171.91"><tspan
          sodipodi:role="line"
@@ -166,7 +166,7 @@
        id="text3254"
        sodipodi:linespacing="125%"
        transform="scale(1.1870095,0.8424532)"
-       inkscape:export-filename="/home/jl/code/efl-research/trunk/enesim/doc/img/path3260.png"
+       inkscape:export-filename="/home/jl/code/efl/svn/trunk/PROTO/enesim/doc/img/enesim.png"
        inkscape:export-xdpi="171.91"
        inkscape:export-ydpi="171.91"><tspan
          sodipodi:role="line"
@@ -177,7 +177,7 @@
        style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
        d="M 62.124382,641.2301 L 139.40105,641.2301"
        id="path3258"
-       inkscape:export-filename="/home/jl/code/efl-research/trunk/enesim/doc/img/path3260.png"
+       inkscape:export-filename="/home/jl/code/efl/svn/trunk/PROTO/enesim/doc/img/enesim.png"
        inkscape:export-xdpi="171.91"
        inkscape:export-ydpi="171.91" />
     <path
@@ -185,7 +185,8 @@
        d="M 61.871844,656.88746 L 139.14852,656.88746"
        id="path3260"
        inkscape:export-xdpi="171.91"
-       inkscape:export-ydpi="171.91" />
+       inkscape:export-ydpi="171.91"
+       inkscape:export-filename="/home/jl/code/efl/svn/trunk/PROTO/enesim/doc/img/enesim.png" />
     <path
        style="fill:#ff0000;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:3;stroke-linecap:butt;stroke-linejoin:round;marker:none;marker-start:none;marker-mid:none;marker-end:none;stroke-miterlimit:4;stroke-dashoffset:0;stroke-opacity:1;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
        d="M 219.34328,584.54477 C 212.65202,584.54477 207.21828,589.97855 207.21828,596.66977 C 207.21828,603.36104 212.65202,608.79475 219.34328,608.79477 C 226.03453,608.79477 231.46828,603.36106 231.46828,596.66977 C 231.46828,589.97853 226.03453,584.54479 219.34328,584.54477 z M 221.56203,589.60727 C 224.60833,589.60727 226.28078,591.05729 226.28078,593.85727 L 226.28078,601.76352 L 226.87453,602.20102 L 228.78078,602.35727 L 228.78078,603.35727 L 221.09328,603.35727 L 221.09328,602.35727 L 222.78078,602.20102 L 223.37453,601.76352 L 223.37453,594.32602 C 223.37453,592.28202 222.43438,591.451 219.84328,591.45102 C 218.7228,591.45102 217.41142,591.77249 215.90578,592.38852 L 215.90578,601.76352 L 216.49953,602.20102 L 218.18703,602.35727 L 218.18703,603.35727 L 210.53078,603.35727 L 210.53078,602.35727 L 212.40578,602.20102 L 212.99953,601.76352 L 212.99953,591.60727 L 210.53078,591.60727 L 210.53078,590.76352 L 214.59328,589.73227 L 215.90578,589.73227 L 215.90578,591.29477 C 218.25178,590.25877 220.05639,589.60728 221.56203,589.60727 z"

@@ -20,9 +20,21 @@
 
 /**
  * @mainpage Enesim
+ * @image html enesim.png
  * @section intro Introduction
- * @image html raster.png 
- * Enesim is a library that ...
+ * Enesim is a direct rendering graphics library, in the sense that it does not
+ * have a state. The implementation is software based only, but it has a very
+ * flexible design: all the steps of the rendering process have been abstracted
+ * allowing applications to only use the functionality for the drawing
+ * operations they may need, not forcing on how or what to draw.
+ * @image html raster.png
+ * Features:
+ *  - Multiple Rasterizers, with and without anti-alias.
+ *  - Multiple Scanline types.
+ *  - Point and Span based Drawers.
+ *  - Multiple raster operations.
+ *  - Multiple Surface formats, even multiple plane surface formats.
+ *  - Projective and affine Transformers.
  * 
  * @file
  * @brief Enesim API

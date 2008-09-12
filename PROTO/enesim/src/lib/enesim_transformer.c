@@ -317,6 +317,14 @@ EAPI Enesim_Transformation * enesim_transformation_new(void)
 /**
  * 
  */
+EAPI void enesim_transformation_delete(Enesim_Transformation *t)
+{
+	enesim_matrix_free(t->matrix);
+	free(t);
+}
+/**
+ * 
+ */
 EAPI void enesim_transformation_matrix_set(Enesim_Transformation *t, Enesim_Matrix *m)
 {
 	float a, b, c, d, e, f, g, h, i;
