@@ -95,7 +95,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
         im->w = w = cinfo.output_width;
         im->h = h = cinfo.output_height;
 
-        if ((cinfo.rec_outbuf_height > 16) ||
+        if ((cinfo.rec_outbuf_height > 16) || (cinfo.output_components <= 0) ||
             (w < 1) || (h < 1) || (w > 8192) || (h > 8192))
           {
              im->w = im->h = 0;
@@ -103,7 +103,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
              fclose(f);
              return 0;
           }
-        data = malloc(w * 16 * 3);
+        data = malloc(w * 16 * cinfo.output_components);
         if (!data)
           {
              im->w = im->h = 0;
@@ -123,10 +123,10 @@ load(ImlibImage * im, ImlibProgressFunction progress,
           }
         count = 0;
         prevy = 0;
-        if (cinfo.output_components == 3)
+        if (cinfo.output_components > 1)
           {
              for (i = 0; i < cinfo.rec_outbuf_height; i++)
-                line[i] = data + (i * w * 3);
+                line[i] = data + (i * w * cinfo.output_components);
              for (l = 0; l < h; l += cinfo.rec_outbuf_height)
                {
                   jpeg_read_scanlines(&cinfo, line, cinfo.rec_outbuf_height);
@@ -142,7 +142,7 @@ load(ImlibImage * im, ImlibProgressFunction progress,
                                 (0xff000000) | ((ptr[0]) << 16) | ((ptr[1]) <<
                                                                    8) |
                                 (ptr[2]);
-                            ptr += 3;
+                            ptr += cinfo.output_components;
                             ptr2++;
                          }
                     }
