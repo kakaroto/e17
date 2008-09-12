@@ -1,0 +1,109 @@
+images {
+image: "imagenes/globo.png" COMP;
+image: "imagenes/fox1.png" COMP;
+image: "imagenes/fox2.png" COMP;
+image: "imagenes/fox3.png" COMP;
+image: "imagenes/fox4.png" COMP;
+image: "imagenes/fox5.png" COMP;
+image: "imagenes/fox6.png" COMP;
+image: "imagenes/fox7.png" COMP;
+image: "imagenes/fox8.png" COMP;
+image: "imagenes/fox9.png" COMP;
+image: "imagenes/fox10.png" COMP;
+image: "imagenes/fox11.png" COMP;
+}
+
+#define firefox(relative_part) \
+part \
+{\
+    name: "globo";\
+    type: IMAGE;\
+    mouse_events: 0;\
+    description\
+    {\
+        state: "default" 0.0;\
+        aspect: 1.00 1.00;\
+        aspect_preference: BOTH; \
+        color: 255 255 255 255;\
+        rel1\
+        {\
+            relative: 0.00 0.00;\
+            offset: 0 0;\
+            to: relative_part; \
+        }\
+        rel2\
+        {\
+            relative: 1.00 1.00;\
+            offset: -1 -1;\
+            to: relative_part; \
+        }\
+        image\
+        {\
+            normal: "imagenes/globo.png";\
+        }\
+    }\
+}\
+part\
+{\
+    name: "fox_vueltas";\
+    type: IMAGE;\
+    mouse_events: 0;\
+    description\
+    {\
+        state: "default" 0.0;\
+        aspect: 1.00 1.00;\
+        color: 255 255 255 255;\
+        aspect_preference: BOTH;\
+        rel1\
+        {\
+            relative: 0.0 0.0;\
+            offset: 0.0 0.0;\
+            to: relative_part; \
+        }\
+        rel2\
+        {\
+            relative: 1.0 1.0;\
+            offset: -1 -1;\
+            to: relative_part; \
+        }\
+        image\
+        {\
+            normal: "imagenes/fox1.png";\
+            tween: "imagenes/fox2.png";\
+            tween: "imagenes/fox3.png";\
+            tween: "imagenes/fox4.png";\
+            tween: "imagenes/fox5.png";\
+            tween: "imagenes/fox6.png";\
+            tween: "imagenes/fox7.png";\
+            tween: "imagenes/fox8.png";\
+            tween: "imagenes/fox9.png";\
+            tween: "imagenes/fox10.png";\
+            tween: "imagenes/fox11.png";\
+            tween: "imagenes/fox1.png";\
+        }\
+    }\
+}\
+\
+programs\
+{\
+    program\
+    {\
+        name: "globo";\
+        signal: "show";\
+        action: STATE_SET "default" 0.0;\
+        target: "globo";\
+        transition: LINEAR 0.0;\
+        in: 0.0 0.0;\
+        after: "movingFox";\
+    }\
+    program\
+    {\
+        name: "movingFox";\
+        action: STATE_SET "default" 0.0;\
+        target: "fox_vueltas";\
+        transition: DECELERATE 2;\
+        in: 3.8 0.0;\
+        after: "movingFox";\
+    }\
+}
+

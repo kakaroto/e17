@@ -1,0 +1,363 @@
+#define slideshow_slide(id_slide,rel11,rel12,rel21,rel22,rel11_2,rel12_2,rel21_2,rel22_2,rel11_3,rel12_3,rel21_3,rel22_3) \
+part                            \
+{                               \
+    name :"slideshow/base/"id_slide;        \
+    type: RECT;                 \
+    mouse_events: 0;            \
+    description                 \
+    {                           \
+        state: "default" 0.0;   \
+        visible: 0;             \
+        rel1                    \
+        {                       \
+            relative: rel11 rel12;  \
+            to: "slideshow/background";\
+        }                       \
+        rel2                    \
+        {                       \
+            relative: rel21 rel22;  \
+            to: "slideshow/background";\
+        }                       \
+    }                           \
+    description                 \
+    {                           \
+        state: "next" 0.0;      \
+        inherit: "default" 0.0; \
+        rel1                    \
+        {                       \
+            relative: rel11_2 rel12_2;  \
+            to: "slideshow/background";\
+        }                       \
+        rel2                    \
+        {                       \
+            relative: rel21_2 rel22_2;  \
+            to: "slideshow/background";\
+        }                       \
+    }                           \
+    description                 \
+    {                           \
+        state: "previous" 0.0;  \
+        inherit: "default" 0.0; \
+        rel1                    \
+        {                       \
+            relative: rel11_3 rel12_3;  \
+            to: "slideshow/background";\
+        }                       \
+        rel2                    \
+        {                       \
+            relative: rel21_3 rel22_3;  \
+            to: "slideshow/background";\
+        }                       \
+    }                           \
+    description                 \
+    {                           \
+        state: "hide" 0.0;      \
+        inherit: "default" 0.0; \
+        visible: 0;             \
+    }                           \
+}                               \
+part                            \
+{                               \
+    name :"slideshow/shadow/"id_slide;  \
+    type: IMAGE;                \
+    mouse_events: 0;            \
+    description                 \
+    {                           \
+        state: "default" 0.0;   \
+        visible: 1;             \
+        image                   \
+        {                       \
+            normal: "expose_shadow.png";   \
+        }                           \
+        fill                        \
+        {                           \
+            origin                  \
+            {                       \
+                relative: 0.0 0.0;  \
+            }                       \
+            size                    \
+            {                       \
+                relative: 1.0 1.0;  \
+            }                       \
+        }                       \
+        rel1                    \
+        {                       \
+            relative: 0.1 0.1;\
+            to: "slideshow/base/"id_slide; \
+        }                       \
+        rel2                    \
+        {                       \
+            relative: 0.95 0.95;\
+            to: "slideshow/base/"id_slide; \
+        }                       \
+    }                           \
+    description                 \
+    {                           \
+        state: "hide" 0.0;      \
+        inherit: "default" 0.0; \
+        visible: 0;             \
+    }                           \
+}                               \
+part                            \
+{                               \
+    name :"slideshow/border/"id_slide;  \
+    type: RECT;                 \
+    mouse_events: 0;            \
+    description                 \
+    {                           \
+        state: "default" 0.0;   \
+        visible: 1;             \
+        color: 0 0 0 255;       \
+        rel1                    \
+        {                       \
+            relative: 0.0 0.0;  \
+            to: "slideshow/shadow/"id_slide; \
+        }                       \
+        rel2                    \
+        {                       \
+            relative: 0.95 0.95;\
+            to: "slideshow/shadow/"id_slide; \
+        }                       \
+    }                           \
+    description                 \
+    {                           \
+        state: "hide" 0.0;      \
+        inherit: "default" 0.0; \
+        visible: 0;             \
+    }                           \
+}                               \
+part                            \
+{                               \
+    name: "slideshow/swallow/"id_slide;  \
+    type: SWALLOW;              \
+    mouse_events: 1;            \
+    description                 \
+    {                           \
+        state: "default" 0.0;   \
+        visible: 1;             \
+        rel1                    \
+        {                       \
+            relative: 0.0 0.0;  \
+            offset: 1 1;        \
+            to: "slideshow/shadow/"id_slide; \
+        }                       \
+        rel2                    \
+        {                       \
+            relative: 0.95 0.95;\
+            offset: -2 -2;      \
+            to: "slideshow/shadow/"id_slide; \
+        }                       \
+    }                           \
+}                               \
+program                                     \
+{                                           \
+    name: "slideshow_slide_hide_"id_slide;  \
+    source: "eyelight";                     \
+    signal: "slideshow,slide,hide,"id_slide;\
+    action: STATE_SET "hide" 0.0;           \
+    target: "slideshow/shadow/"id_slide;    \
+    target: "slideshow/border/"id_slide;    \
+}                                           \
+program                                     \
+{                                           \
+    name: "slideshow_slide_show_"id_slide;  \
+    source: "eyelight";                     \
+    signal: "slideshow,slide,show,"id_slide;\
+    action: STATE_SET "default" 0.0;        \
+    target: "slideshow/shadow/"id_slide;    \
+    target: "slideshow/border/"id_slide;    \
+}
+
+
+#define slideshow()                     \
+group                                   \
+{                                       \
+    name: "slideshow/main";             \
+    data                                \
+    {                                   \
+        item: nb_slides 7;              \
+    }                                   \
+    parts                               \
+    {                                   \
+        part                            \
+        {                               \
+            name: "slideshow/background"; \
+            type: RECT;                 \
+            mouse_events: 0;            \
+            description                 \
+            {                           \
+                state: "default" 0.0;   \
+                visible: 1;             \
+                color: 0 0 0 150;       \
+                rel1                    \
+                {                       \
+                    relative: 0.0 1.0;  \
+                }                       \
+                rel2                    \
+                {                       \
+                    relative: 1.0 1.2;  \
+                }                       \
+            }                           \
+            description                 \
+            {                           \
+                state: "show" 0.0;      \
+                inherit: "default" 0.0; \
+                rel1                    \
+                {                       \
+                    relative: 0.0 0.8;  \
+                }                       \
+                rel2                    \
+                {                       \
+                    relative: 1.0 1.0;  \
+                }                       \
+            }                           \
+        }                               \
+        part                            \
+        {                               \
+            name: "slideshow/border";   \
+            type: RECT;                 \
+            mouse_events: 0;            \
+            description                 \
+            {                           \
+                state: "default" 0.0;   \
+                visible: 1;             \
+                color: 0 0 0 255;       \
+                rel1                    \
+                {                       \
+                    relative: 0.0 0.0;  \
+                    to: "slideshow/background";\
+                }                       \
+                rel2                    \
+                {                       \
+                    relative: 1.0 0.0;  \
+                    offset: 0 1;       \
+                    to: "slideshow/background";\
+                }                       \
+            }                           \
+        }                               \
+        part                            \
+        {                               \
+            name :"slideshow/selection";\
+            type: IMAGE;                \
+            mouse_events: 0;            \
+            description                 \
+            {                           \
+                state: "default" 0.0;   \
+                visible: 1;             \
+                image                   \
+                {                       \
+                    normal: "expose_selection.png";   \
+                }                           \
+                fill                        \
+                {                           \
+                    origin                  \
+                    {                       \
+                        relative: 0.0 0.0;  \
+                    }                       \
+                    size                    \
+                    {                       \
+                        relative: 1.0 1.0;  \
+                    }                       \
+                }                       \
+                rel1                    \
+                {                       \
+                    relative: 0.4 0.0;  \
+                    to: "slideshow/background";\
+                }                       \
+                rel2                    \
+                {                       \
+                    relative: 0.6 1.0;  \
+                    to: "slideshow/background";\
+                }                       \
+            }                           \
+        }                               \
+        slideshow_slide(1,-0.2,0.0,0.0,1.0,  -0.4,0.0,-0.2,1.0  ,0.0,0.0,0.2,1.0); \
+        slideshow_slide(2,0.0,0.0,0.2,1.0,  -0.2,0.0,0.0,1.0  ,0.2,0.0,0.4,1.0); \
+        slideshow_slide(3,0.2,0.0,0.4,1.0,  0.0,0.0,0.2,1.0  ,0.4,0.0,0.6,1.0); \
+        slideshow_slide(4,0.4,0.0,0.6,1.0,  0.2,0.0,0.4,1.0  ,0.6,0.0,0.8,1.0); \
+        slideshow_slide(5,0.6,0.0,0.8,1.0,  0.4,0.0,0.6,1.0  ,0.8,0.0,1.0,1.0); \
+        slideshow_slide(6,0.8,0.0,1.0,1.0,  0.6,0.0,0.8,1.0  ,1.0,0.0,1.2,1.0); \
+        slideshow_slide(7,1.0,0.0,1.2,1.0,  0.8,0.0,1.0,1.0  ,1.2,0.0,1.4,1.0); \
+    }                                   \
+    program                             \
+    {                                   \
+        name: "slideshow_init";         \
+        source: "eyelight";             \
+        signal: "slideshow,init";       \
+        action: STATE_SET "default" 0.0; \
+        target: "slideshow/base/1";     \
+        target: "slideshow/base/2";     \
+        target: "slideshow/base/3";     \
+        target: "slideshow/base/4";     \
+        target: "slideshow/base/5";     \
+        target: "slideshow/base/6";     \
+        target: "slideshow/base/7";     \
+    }                                   \
+    program                             \
+    {                                   \
+        name: "slideshow_stop";         \
+        source: "eyelight";             \
+        signal: "slideshow,stop";       \
+        action: ACTION_STOP;            \
+        target: "slideshow_next";       \
+        target: "slideshow_next_end";   \
+        target: "slideshow_previous";   \
+        target: "slideshow_previous_end";\
+    }                                   \
+    program                             \
+    {                                   \
+        name: "slideshow_next";         \
+        source: "eyelight";             \
+        signal: "slideshow,next";       \
+        action: STATE_SET "next" 0.0;   \
+        target: "slideshow/base/1";     \
+        target: "slideshow/base/2";     \
+        target: "slideshow/base/3";     \
+        target: "slideshow/base/4";     \
+        target: "slideshow/base/5";     \
+        target: "slideshow/base/6";     \
+        target: "slideshow/base/7";     \
+        transition: LINEAR 0.5;         \
+        after: "slideshow_next_end";    \
+    }                                   \
+    program                             \
+    {                                   \
+        name: "slideshow_next_end";     \
+        source: "eyelight";             \
+        signal: "slideshow,next,end,1"; \
+        action: SIGNAL_EMIT "slideshow,next,end" "eyelight"; \
+    }                                   \
+    program                             \
+    {                                   \
+        name: "slideshow_previous";     \
+        source: "eyelight";             \
+        signal: "slideshow,previous";   \
+        action: STATE_SET "previous" 0.0; \
+        target: "slideshow/base/"1;     \
+        target: "slideshow/base/"2;     \
+        target: "slideshow/base/"3;     \
+        target: "slideshow/base/"4;     \
+        target: "slideshow/base/"5;     \
+        target: "slideshow/base/"6;     \
+        target: "slideshow/base/"7;     \
+        transition: LINEAR 0.5;         \
+        after: "slideshow_previous_end";\
+    }                                   \
+    program                             \
+    {                                   \
+        name: "slideshow_previous_end"; \
+        source: "eyelight";             \
+        signal: "slideshow,previous,end,1"; \
+        action: SIGNAL_EMIT "slideshow,previous,end" "eyelight"; \
+    }                                   \
+    program                             \
+    {                                   \
+        name: "slideshow_show";   \
+        source: "eyelight";             \
+        signal: "show";                 \
+        action: STATE_SET "show" 0.0;   \
+        target: "slideshow/background";\
+        transition: LINEAR 0.5;         \
+    }                                   \
+}
+

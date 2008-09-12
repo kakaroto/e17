@@ -1,0 +1,229 @@
+
+//theme's macro
+#define default_area(is_visible)  \
+custom_area("title",0.18,0.10,0.97,0.22,is_visible)\
+custom_area("subtitle",0.55,0.20,0.99,0.27,is_visible)\
+custom_area("header_image",0.05,0.1,0.17,0.20,is_visible)\
+custom_area("foot_image",0.9,0.9,0.99,0.99,is_visible)\
+custom_area("foot_text",0.05,0.96,0.9,1.0,is_visible)
+//
+
+
+#define custom_area(area_name,rel11,rel12,rel21,rel22,is_visible)  \
+part                            \
+{                               \
+    name: "area_"area_name;     \
+    type: RECT;                 \
+    mouse_events:0;             \
+    description                 \
+    {                           \
+        state: "default" 0.0;   \
+        visible: is_visible;    \
+        align: 0.0 0.0;         \
+        color: 255 255 255 50; \
+        rel1                    \
+        {                       \
+            relative: rel11 rel12;\
+            to: "slide";        \
+        }                       \
+        rel2                    \
+        {                       \
+            relative: rel21 rel22;\
+            to: "slide";        \
+        }                       \
+    }                           \
+}                               \
+part                            \
+{                               \
+    name: "area_"area_name"_border";   \
+    type: IMAGE;                \
+    mouse_events:0;             \
+    description                 \
+    {                           \
+        state: "default" 0.0;   \
+        visible: is_visible;    \
+        align: 0.0 0.0;         \
+        color: 255 255 255 150; \
+        rel1                    \
+        {                       \
+            relative: rel11 rel12;\
+            to: "slide";        \
+            offset: -2 -2;      \
+        }                       \
+        rel2                    \
+        {                       \
+            relative: rel21 rel22;\
+            to: "slide";        \
+            offset: +2 +2;      \
+        }                       \
+        image                   \
+        {                       \
+            normal: "black.png";\
+            middle: 0;          \
+            border: 1 1 1 1;    \
+        }                       \
+    }                           \
+}                               \
+part                            \
+{                               \
+    name: "area_"area_name"_name";     \
+    type: TEXT;                 \
+    mouse_events:0;             \
+    effect: SOFT_OUTLINE;       \
+    description                 \
+    {                           \
+        state: "default" 0.0;   \
+        visible: is_visible;    \
+        align: 0.0 0.0;         \
+        color: 0 0 0 255;       \
+        color2: 255 0 0 40;     \
+        rel1                    \
+        {                       \
+            relative: rel11 rel12;\
+            to: "slide";        \
+            offset: -3 -3;      \
+        }                       \
+        rel2                    \
+        {                       \
+            relative: rel21 rel22;\
+            to: "slide";        \
+            offset: +3 +3;      \
+        }                       \
+        text                    \
+        {                       \
+            font: "DejaVuSans";       \
+            size: 16 ;          \
+            text: area_name;    \
+            align: 1.0 0.0;     \
+        }                       \
+    }                           \
+}                               \
+part                            \
+{                               \
+    name: "area_item_"area_name"_-1";\
+    type: RECT;                 \
+    mouse_events:0;             \
+    description                 \
+    {                           \
+        state: "default" 0.0;   \
+        visible: 0;             \
+        rel1                    \
+        {                       \
+            relative: 0 0;      \
+            to: "area_"area_name;\
+        }                       \
+        rel2                    \
+        {                       \
+            relative: 0 0;      \
+            to: "area_"area_name;\
+        }                       \
+    }                           \
+}
+
+#define use_layout_blank(is_visible) \
+default_area(is_visible)
+
+//layout title, define a list of area
+#define use_layout_title(is_visible)                    \
+custom_area("title",0.05,0.4,0.99,0.52,is_visible)      \
+custom_area("subtitle",0.05,0.5,0.99,0.6,is_visible)  \
+custom_area("header_image",0.05,0.1,0.99,0.35,is_visible)\
+custom_area("foot_image",0.9,0.9,0.99,0.99,is_visible)\
+custom_area("foot_text",0.05,0.96,0.9,1.0,is_visible)\
+custom_area("bottom",0.11,0.62,0.94,0.94,is_visible)
+
+//layout with 1 big area
+#define use_layout_1_area(is_visible) \
+default_area(is_visible)              \
+custom_area("center",0.11,0.27,0.9,0.9,is_visible)
+
+//layout with 3 areas
+#define use_layout_1_line_2_columns(is_visible) \
+default_area(is_visible)              \
+custom_area("top",0.11,0.27,0.9,0.55,is_visible)\
+custom_area("left",0.11,0.56,0.5,0.9,is_visible)\
+custom_area("right",0.51,0.56,0.9,0.9,is_visible)
+
+
+
+//layout with 3 areas
+#define use_layout_1_small_line_2_columns(is_visible) \
+default_area(is_visible)              \
+custom_area("top",0.11,0.27,0.9,0.40,is_visible)\
+custom_area("left",0.11,0.40,0.5,0.9,is_visible)\
+custom_area("right",0.51,0.40,0.9,0.9,is_visible)
+
+//layout with 3 areas
+#define use_layout_2_columns_1_line(is_visible) \
+default_area(is_visible)                    \
+custom_area("bottom",0.11,0.56,0.9,0.9,is_visible)\
+custom_area("left",0.11,0.27,0.5,0.55,is_visible)\
+custom_area("right",0.51,0.27,0.9,0.55,is_visible)
+
+//layout with 3 areas
+#define use_layout_2_columns_1_small_line(is_visible) \
+default_area(is_visible)                    \
+custom_area("bottom",0.11,0.71,0.9,0.9,is_visible)\
+custom_area("left",0.11,0.27,0.5,0.70,is_visible)\
+custom_area("right",0.51,0.27,0.9,0.70,is_visible)
+
+//layout with 4 areas
+#define use_layout_4_areas(is_visible) \
+default_area(is_visible)                    \
+custom_area("top_right",0.51,0.27,0.9,0.55,is_visible)\
+custom_area("top_left",0.11,0.27,0.5,0.55,is_visible)\
+custom_area("bottom_right",0.51,0.56,0.9,0.9,is_visible)\
+custom_area("bottom_left",0.11,0.56,0.5,0.9,is_visible)
+
+
+//layout with 6 areas
+#define use_layout_6_areas(is_visible) \
+default_area(is_visible)                    \
+custom_area("top_right",0.51,0.27,0.9,0.48,is_visible)\
+custom_area("top_left",0.11,0.27,0.5,0.48,is_visible)\
+custom_area("middle_right",0.51,0.49,0.9,0.68,is_visible)\
+custom_area("middle_left",0.11,0.49,0.5,0.68,is_visible) \
+custom_area("bottom_right",0.51,0.69,0.9,0.9,is_visible)\
+custom_area("bottom_left",0.11,0.69,0.5,0.9,is_visible)
+
+//layout with 2 columns
+#define use_layout_2_columns(is_visible)    \
+default_area(is_visible)    \
+custom_area("left",0.06,0.27,0.5,0.9,is_visible)\
+custom_area("right",0.51,0.27,0.9,0.9,is_visible)
+
+//layout with 2 columns
+#define use_layout_2_columns_right(is_visible)    \
+default_area(is_visible)    \
+custom_area("left",0.06,0.27,0.29,0.9,is_visible)\
+custom_area("right",0.30,0.27,0.9,0.9,is_visible)
+
+//layout with 2 columns
+#define use_layout_2_columns_left(is_visible)    \
+default_area(is_visible)    \
+custom_area("left",0.06,0.27,0.7,0.9,is_visible)\
+custom_area("right",0.71,0.27,0.9,0.9,is_visible)
+
+
+
+//layout with 2 lines
+#define use_layout_2_lines(is_visible)    \
+default_area(is_visible)                  \
+custom_area("top",0.1,0.27,0.9,0.55,is_visible)   \
+custom_area("bottom",0.1,0.56,0.9,0.9,is_visible)
+
+
+//layout with 2 lines
+#define use_layout_2_lines_top(is_visible)    \
+default_area(is_visible)                  \
+custom_area("top",0.1,0.27,0.9,0.75,is_visible)   \
+custom_area("bottom",0.1,0.76,0.9,0.9,is_visible)
+
+
+//layout with 2 lines
+#define use_layout_2_lines_bottom(is_visible)    \
+default_area(is_visible)                  \
+custom_area("top",0.1,0.27,0.9,0.41,is_visible)   \
+custom_area("bottom",0.1,0.42,0.9,0.9,is_visible)
+
+

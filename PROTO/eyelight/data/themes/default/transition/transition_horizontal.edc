@@ -1,0 +1,91 @@
+#define program_transition_horizontal()         \
+       program                                             \
+        {                                                   \
+            name: "horizontal_current_next";               \
+            source: "eyelight";                               \
+            signal: "horizontal,current,next";             \
+            action: STATE_SET "state_0.0_0.0" 0.0;                \
+            after: "horizontal_current_next_end";          \
+            target: "slide";                                \
+            transition: LINEAR 0.0;                         \
+            after: "program_vague_hide";                    \
+        }                                                   \
+        program                                             \
+        {                                                   \
+            name: "horizontal_current_next_end";           \
+            source: "eyelight";                               \
+            signal: "horizontal,current,next,end";         \
+            action: STATE_SET "state_-1.0_0.0" 0.0;         \
+            target: "slide";                                \
+            transition: LINEAR 0.7;                         \
+            after: "end_transition";                        \
+        }                                                   \
+                                                            \
+        program                                             \
+        {                                                   \
+            name: "horizontal_next_next";                  \
+            source: "eyelight";                               \
+            signal: "horizontal,next,next";                \
+            action: STATE_SET "state_1.0_0.0" 0.0;          \
+            after: "horizontal_next_next_end";             \
+            target: "slide";                                \
+            transition: LINEAR 0.0;                         \
+            after: "program_vague_hide";                    \
+        }                                                   \
+        program                                             \
+        {                                                   \
+            name: "horizontal_next_next_end";              \
+            source: "eyelight";                               \
+            signal: "horizontal,next,next,end";            \
+            action: STATE_SET "state_0.0_0.0" 0.0;                \
+            target: "slide";                                \
+            transition: LINEAR 0.7;                         \
+            after: "end_transition";                        \
+        }                                                   \
+                                                            \
+                                                            \
+        program                                             \
+        {                                                   \
+            name: "horizontal_current_previous";           \
+            source: "eyelight";                               \
+            signal: "horizontal,current,previous";         \
+            action: STATE_SET "state_0.0_0.0" 0.0;                \
+            after: "horizontal_current_previous_end";      \
+            target: "slide";                                \
+            transition: LINEAR 0.0;                         \
+            after: "program_vague_hide";                    \
+        }                                                   \
+        program                                             \
+        {                                                   \
+            name: "horizontal_current_previous_end";       \
+            source: "eyelight";                               \
+            signal: "horizontal,current,previous,end";     \
+            action: STATE_SET "state_1.0_0.0" 0.0;          \
+            target: "slide";                                \
+            transition: LINEAR 0.7;                         \
+            after: "end_transition";                        \
+        }                                                   \
+                                                            \
+                                                            \
+        program                                             \
+        {                                                   \
+            name: "horizontal_previous_previous";          \
+            source: "eyelight";                               \
+            signal: "horizontal,previous,previous";        \
+            action: STATE_SET "state_-1.0_0.0" 0.0;         \
+            after: "horizontal_previous_previous_end";     \
+            target: "slide";                                \
+            transition: LINEAR 0.0;                         \
+            after: "program_vague_hide";                    \
+        }                                                   \
+        program                                             \
+        {                                                   \
+            name: "horizontal_previous_previous_end";      \
+            source: "eyelight";                               \
+            signal: "horizontal,previous,previous,end";    \
+            action: STATE_SET "state_0.0_0.0" 0.0;                \
+            target: "slide";                                \
+            transition: LINEAR 0.7;                         \
+            after: "end_transition";                        \
+        }
+

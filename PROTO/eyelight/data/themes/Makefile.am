@@ -1,0 +1,2 @@
+filesdir = $(pkgdatadir)
+SUBDIRS = default

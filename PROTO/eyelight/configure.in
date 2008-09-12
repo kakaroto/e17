@@ -1,0 +1,56 @@
+# get rid of that stupid cache mechanism
+rm -f config.cache
+
+AC_INIT(configure.in)
+AC_CANONICAL_TARGET
+AC_CANONICAL_BUILD
+AC_CANONICAL_HOST
+
+AM_INIT_AUTOMAKE(eyelight, 0.1)
+AM_CONFIG_HEADER(config.h)
+
+AC_PROG_CC
+AM_PROG_CC_STDC
+AC_HEADER_STDC
+AC_C_CONST
+AM_PROG_CC_C_O
+
+AM_PROG_LIBTOOL
+
+requirements="ecore ecore-evas ecore-file evas edje"
+
+
+AC_SUBST(version_info)
+AC_SUBST(requirements)
+
+PKG_PROG_PKG_CONFIG
+
+PKG_CHECK_MODULES(EYELIGHT, [
+                        ecore >= 0.9.9.037,
+                        ecore-evas >= 0.9.9.038,
+                        ecore-file >= 0.9.9,
+                        evas >= 0.9.9.40,
+                        edje >= 0.5
+                        ])
+# required libs / cflags
+eyelight_libs=$EYELIGHT_LIBS
+eyelight_cflags=$EYELIGHT_CFLAGS
+AC_SUBST(eyelight_libs)
+AC_SUBST(eyelight_cflags)
+
+
+
+AC_OUTPUT([
+Makefile
+eyelight.pc
+src/Makefile
+src/lib/Makefile
+src/bin/Makefile
+data/Makefile
+data/viewer/Makefile
+data/themes/Makefile
+data/themes/default/Makefile
+data/themes/default/transition/Makefile
+data/themes/default/fonts/Makefile
+])
+

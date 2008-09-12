@@ -1,0 +1,78 @@
+
+
+
+
+#include "transition_horizontal.edc"
+#include "transition_vertical.edc"
+#include "transition_fade.edc"
+#include "transition_fade_content.edc"
+
+#define program_list() \
+    program_transition_fade() \
+    program_transition_horizontal() \
+    program_transition_vertical() \
+    program_transition_fade_content() \
+    program                                             \
+        {                                                   \
+            name: "end_transition";                         \
+            source: "eyelight";                               \
+            signal: "end,transition";                       \
+            action: SIGNAL_EMIT "transition,end" "eyelight";\
+        }                                                   \
+                                                            \
+                                                            \
+        program                                             \
+        {                                                   \
+            name: "show";                                   \
+            source: "eyelight";                               \
+            signal: "show";                                 \
+            action: STATE_SET "state_0.0_0.0" 0.0;                \
+            target: "slide";                                \
+            after: "hide_fade";                             \
+        }                                                   \
+        program                                             \
+        {                                                   \
+            name: "hide_fade";                              \
+            source: "eyelight";                               \
+            signal: "shown,fade";                           \
+            action: STATE_SET "default" 0.0;                \
+            target: "fade";                                 \
+            after: "end_transition";                        \
+        }                                                   \
+        program                                             \
+        {                                                   \
+            name: "hide";                                   \
+            source: "eyelight";                               \
+            signal: "hide";                                 \
+            action: STATE_SET "state_0.0_1.0" 0.0;         \
+            target: "slide";                                \
+            after: "hide_fade";                             \
+        }                                                   \
+                                                            \
+                                                            \
+        program                                             \
+        {                                                   \
+            name: "stop_transition";                        \
+            source: "eyelight";                             \
+            signal: "stop,transitions";                     \
+            action: ACTION_STOP;                            \
+            target: "horizontal_current_next";              \
+            target: "horizontal_current_next_end";          \
+            target: "horizontal_next_next";                 \
+            target: "horizontal_current_next_end";          \
+            target: "vertical_current_next";                \
+            target: "vertical_next_next_end";               \
+            target: "vertical_previous_previous";           \
+            target: "vertical_current_previous_end";        \
+            target: "fade_current_next";                    \
+            target: "fade_current_next_1";                  \
+            target: "fade_current_next_2";                  \
+            target: "fade_current_next_3";                  \
+            target: "fade_current_next_4";                  \
+            target: "fade_next_next_1";                     \
+            target: "fade_next_next_2";                     \
+            target: "fade_current_previous";                \
+            target: "fade_previous_previous";               \
+        }
+
+

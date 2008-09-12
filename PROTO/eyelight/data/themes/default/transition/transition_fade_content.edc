@@ -1,0 +1,86 @@
+#define program_transition_fade_content()               \
+                                                           \
+        program                                             \
+        {                                                   \
+            /*move the slide inside the window*/            \
+            name: "fade_content_current_next";                      \
+            source: "eyelight";                             \
+            signal: "fade_content,current,next";                    \
+            action: STATE_SET "state_0.0_0.0" 0.0;          \
+            after: "fade_content_current_next_2";                   \
+            target: "slide";                                \
+            transition: LINEAR 0.0;                         \
+            after: "program_vague_hide";                    \
+        }                                                   \
+        program                                             \
+        {                                                   \
+            /* launch the effect*/                          \
+            name: "fade_content_current_next_2";                    \
+            source: "eyelight";                             \
+            signal: "fade_content,current,next,2";                  \
+            action: STATE_SET "not_visible" 0.0;            \
+            target: "slide";                                \
+            transition: LINEAR 0.5;                         \
+            after: "fade_content_current_next_3";                   \
+        }                                                   \
+        program                                             \
+        {                                                   \
+            /*move the slide outside the window*/           \
+            name: "fade_content_current_next_3";                    \
+            source: "eyelight";                             \
+            signal: "fade_content,current,next,3";                  \
+            action: STATE_SET "state_-1.0_0.0" 0.0;         \
+            target: "slide";                                \
+            transition: LINEAR 0.0;                         \
+        }                                                   \
+        program                                             \
+        {                                                   \
+        /* pause */                                         \
+            name: "fade_content_next_next";                         \
+            source: "eyelight";                             \
+            signal: "fade_content,next,next";                       \
+            action: STATE_SET "state_1.0_1.0" 0.0;          \
+            after: "fade_content_next_next_2";                      \
+            target: "slide";                                \
+            transition: LINEAR 0.5;                         \
+            after: "program_vague_hide";                    \
+        }                                                   \
+        program                                             \
+        {                                                   \
+            /*move the slide inside the window*/            \
+            name: "fade_content_next_next_2";                       \
+            source: "eyelight";                             \
+            signal: "fade_content,next,next,2";                     \
+            action: STATE_SET "not_visible" 0.0;            \
+            after: "fade_content_next_next_3";                      \
+            target: "slide";                                \
+            transition: LINEAR 0.0;                         \
+        }                                                   \
+        program                                             \
+        {                                                   \
+            /*launch the effect*/                           \
+            name: "fade_content_next_next_3";                       \
+            source: "eyelight";                             \
+            signal: "fade_content,next,next,3";                     \
+            action: STATE_SET "state_0.0_0.0" 0.0;          \
+            target: "slide";                                \
+            transition: LINEAR 0.5;                         \
+            after: "end_transition";                        \
+        }                                                   \
+                                                            \
+        program                                             \
+        {                                                   \
+            name: "fade_content_current_previous";                  \
+            source: "eyelight";                               \
+            signal: "fade_content,current,previous";                \
+            after: "fade_content_current_next";                     \
+        }                                                   \
+        program                                             \
+        {                                                   \
+            name: "fade_content_previous_previous";                 \
+            source: "eyelight";                               \
+            signal: "fade_content,previous,previous";               \
+            after: "fade_content_next_next";                        \
+        }
+
+

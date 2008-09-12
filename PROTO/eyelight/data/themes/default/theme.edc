@@ -1,0 +1,1340 @@
+#include "transition/transition.edc"
+#include "expose.edc"
+#include "gotoslide.edc"
+#include "slideshow.edc"
+#include "layout.edc"
+#include "tableofcontents.edc"
+
+//theme's macro
+#define tag_list() \
+tag: "big" "+ font_size=35 text_class=tag_big ";\
+tag: "small" "+ font_size=15 text_class=tag_small ";\
+tag: "u" "+ style=underline underline_color=#00ff00ff underline2_color=#00ff00ff";\
+tag: "b" "+ font=DejaVuSans_Bold ";\
+tag: "i" "+ font=DejaVuSans_Oblique ";\
+tag: "strike" "+ style=strikethrough strikethrough_color=#000000ff";\
+tag: "outline" "+ style=soft_outline outline_color=#dea909 color=#d8e0e3";\
+tag: "shadow" "+ style=soft_shadow shadow_color=#2c272799";\
+tag: "outline_shadow" "+ style=outline_soft_shadow shadow_color=#2c272799 outline_color=#dea909  color=#c4d8e0";\
+tag: "c" "+ align=middle";\
+tag: "l" "+ align=left";\
+tag: "r" "+ align=right";
+
+#define slide_description(x1,y1)        \
+description                             \
+{                                       \
+    state: "state_"x1"_"y1 0.0;         \
+    visible: 1;                         \
+    color: 255 255 255 255;             \
+    rel1                                \
+    {                                   \
+        relative: x1 y1;                \
+    }                                   \
+    rel2                                \
+    {                                   \
+        relative: (x1+1.0) (y1+1.0);    \
+    }                                   \
+}
+
+#define program_area_item(area,iditem,id,idnext,desc,speed)  \
+program                                         \
+{                                               \
+    name: "program_area_item_"area"_"iditem"_"id;   \
+    source: "eyelight";                           \
+    signal: "transition,end,"id;                \
+    action: STATE_SET desc 0.0;                 \
+    target: "image_area_item_"area"_"iditem;    \
+    transition: LINEAR speed;                     \
+    after: "program_area_item_"area"_"iditem"_"idnext;  \
+}
+
+
+
+//theme's macro
+
+#define vague(image_file,rel1_1,rel1_2,rel2_1,rel2_2,offx,offy)   \
+part                                \
+{                                   \
+    name: image_file;               \
+    type: IMAGE;                    \
+    mouse_events:0;                 \
+    description                     \
+    {                               \
+        state: "default" 0.0;       \
+        visible:0;                  \
+        color: 163 185 194 255;     \
+        image                       \
+        {                           \
+            normal: image_file;     \
+        }                           \
+    }                               \
+    description                     \
+    {                               \
+        state: "end" 0.0;           \
+        inherit: "default" 0.0;     \
+        visible:1;                  \
+        rel1                        \
+        {                           \
+            relative: rel2_1 rel2_2;\
+            to: "slide";            \
+            offset: -offx -offy;    \
+        }                           \
+        rel2                        \
+        {                           \
+            relative: rel2_1 rel2_2;\
+            to: "slide";            \
+            offset: offx offy;      \
+        }                           \
+    }                               \
+    description                     \
+    {                               \
+        state: "start" 0.0;         \
+        inherit: "default" 0.0;     \
+        visible: 1;                 \
+        rel1                        \
+        {                           \
+            relative: rel1_1 rel1_2;\
+            to: "slide";            \
+            offset: -offx -offy;    \
+        }                           \
+        rel2                        \
+        {                           \
+            relative: rel1_1 rel1_2;\
+            to: "slide";            \
+            offset: offx offy;      \
+        }                           \
+    }                               \
+}
+
+
+#define add_border(relative_part,border_size)   \
+part                                                \
+{                                                   \
+    name: relative_part"_border_left";              \
+    type: RECT;                                     \
+    mouse_events:0;                                 \
+    clip_to: "slide";                               \
+    description                                     \
+    {                                               \
+        state: "default" 0.0;                       \
+        visible: 1;                                 \
+        color: 0 0 0 255;                           \
+        rel1                                        \
+        {                                           \
+            relative: 0.0 0.0;                      \
+            to: relative_part;                      \
+            offset: -border_size -border_size;      \
+        }                                           \
+        rel2                                        \
+        {                                           \
+            relative: 0.0 1.0;                      \
+            offset: -1 (border_size-1);             \
+            to: relative_part;                      \
+        }                                           \
+    }                                               \
+}                                                   \
+part                                                \
+{                                                   \
+    name: relative_part"_border_right";             \
+    type: RECT;                                     \
+    mouse_events:0;                                 \
+    clip_to: "slide";                               \
+    description                                     \
+    {                                               \
+        state: "default" 0.0;                       \
+        visible: 1;                                 \
+        color: 0 0 0 255;                           \
+        rel1                                        \
+        {                                           \
+            relative: 1.0 0.0;                      \
+            to: relative_part;                      \
+            offset: 0 -border_size;                 \
+        }                                           \
+        rel2                                        \
+        {                                           \
+            relative: 1.0 1.0;                      \
+            offset: (border_size-1) (border_size-1);\
+            to: relative_part;                      \
+        }                                           \
+    }                                               \
+}                                                   \
+part                                                \
+{                                                   \
+    name: relative_part"_border_top";               \
+    type: RECT;                                     \
+    mouse_events:0;                                 \
+    clip_to: "slide";                               \
+    description                                     \
+    {                                               \
+        state: "default" 0.0;                       \
+        visible: 1;                                 \
+        color: 0 0 0 255;                           \
+        rel1                                        \
+        {                                           \
+            relative: 0.0 0.0;                      \
+            to: relative_part;                      \
+            offset: -border_size -border_size;      \
+        }                                           \
+        rel2                                        \
+        {                                           \
+            relative: 1.0 0.0;                      \
+            offset: (border_size-1) -1;             \
+            to: relative_part;                      \
+        }                                           \
+    }                                               \
+}                                                   \
+part                                                \
+{                                                   \
+    name: relative_part"_border_bottom";            \
+    type: RECT;                                     \
+    mouse_events:0;                                 \
+    clip_to: "slide";                               \
+    description                                     \
+    {                                               \
+        state: "default" 0.0;                       \
+        visible: 1;                                 \
+        color: 0 0 0 255;                           \
+        rel1                                        \
+        {                                           \
+            relative: 0.0 1.0;                      \
+            to: relative_part;                      \
+            offset: -border_size 0;                 \
+        }                                           \
+        rel2                                        \
+        {                                           \
+            relative: 1.0 1.0;                      \
+            offset: (border_size-1) (border_size-1);  \
+            to: relative_part;                      \
+        }                                           \
+    }                                               \
+}
+
+
+
+
+fonts
+{
+    font:"fonts/DejaVuSans-Bold.ttf" "DejaVuSans_Bold";
+    font:"fonts/DejaVuSans.ttf" "DejaVuSans";
+    font:"fonts/DejaVuSans-Oblique.ttf" "DejaVuSans_Oblique";
+}
+
+images
+{
+    image: "item_00.png" COMP;
+    image: "item_01.png" COMP;
+    image: "item_02.png" COMP;
+    image: "item_03.png" COMP;
+    image: "expose_shadow.png" COMP;
+    image: "expose_selection.png" COMP;
+    image: "tableofcontents_selection.png" COMP;
+    image: "expose_previous.png" COMP;
+    image: "expose_next.png" COMP;
+    image: "black.png" COMP;
+    image: "vague_1.png" COMP;
+    image: "vague_2.png" COMP;
+    image: "vague_3.png" COMP;
+    image: "vague_4.png" COMP;
+}
+
+styles
+{
+    style
+    {
+        name: "itemStyle";
+        base: "font=DejaVuSans font_size=25 text_class=item align=top valign=center color=#000  wrap=word";
+        tag: "numbering" "+ style=soft_outline outline_color=#7fa3ed color=#d8e0e3";
+        tag_list();
+    }
+    style
+    {
+        name: "titleStyle";
+        base: "font=DejaVuSans_Bold font_size=50 text_class=title align=center valign=bottom wrap=word style=soft_shadow shadow_color=#dea909 color=#000000";
+        tag_list();
+    }
+    style
+    {
+        name: "subtitleStyle";
+        base: "font=DejaVuSans font_size=20 text_class=subtitle align=left valign=bottom color=#000  wrap=word style=soft_outline outline_color=#a1c2e8";
+        tag_list();
+    }
+    style
+    {
+        name: "footStyle";
+        base: "+ font=DejaVuSans font_size=18 text_class=foot align=center valign=bottom color=#000  wrap=word ";
+        tag_list();
+    }
+}
+
+
+data
+{
+    item: text_class_1 "tag_small";
+    item: tag_small_size "15";
+
+    item: text_class_2 "tag_big";
+    item: tag_big_size "35";
+
+    item: text_class_3 "title";
+    item: title_font "fonts/DejaVuSans_Bold";
+    item: title_size 50;
+
+    item: text_class_4 "subtitle";
+    item: subtitle_font "fonts/DejaVuSans";
+    item: subtitle_size 20;
+
+    item: text_class_5 "foot";
+    item: foot_font "fonts/DejaVuSans_Bold";
+    item: foot_size 18;
+
+    item: text_class_6 "item";
+    item: item_size 25;
+    item: item_font "fonts/DejaVuSans";
+
+    item: text_class_7 "tableofcontents";
+    item: tableofcontents_font "DejaVuSans_Bold";
+    item: tableofcontents_size 18;
+}
+
+//first function called in a slide
+#define pre_fct()                   \
+part                                \
+{                                   \
+    name: "slide";                  \
+    type: RECT;                     \
+    mouse_events: 0;                \
+    description                     \
+    {                               \
+        state: "default" 0.0;       \
+        visible: 1;                 \
+        rel1                        \
+        {                           \
+            relative: 1.0 1.0;      \
+        }                           \
+        rel2                        \
+        {                           \
+            relative: 2.0 2.0;      \
+        }                           \
+    }                               \
+    description                             \
+    {                                       \
+        state: "not_visible" 0.0;           \
+        visible: 1;                         \
+        color: 255 255 255 0;               \
+        rel1                                \
+        {                                   \
+            relative: 0 0;                  \
+        }                                   \
+        rel2                                \
+        {                                   \
+            relative: 1.0 1.0;              \
+        }                                   \
+    }                                       \
+    slide_description(0.0,0.0);     \
+    slide_description(-1.0,0.0);    \
+    slide_description(0.0,1.0);     \
+    slide_description(1.0,0.0);     \
+    slide_description(0.0,-1.0);    \
+}                                   \
+part                                \
+{                                   \
+    name: "background";             \
+    type: RECT;                     \
+    mouse_events:0;                 \
+    description                     \
+    {                               \
+        state: "default" 0.0;       \
+        visible:1;                  \
+        color: 197 216 224 255;     \
+        rel1                        \
+        {                           \
+            relative: 0.0 0.0;      \
+            to: "slide";            \
+        }                           \
+        rel2                        \
+        {                           \
+            relative: 1.0 1.0;      \
+            to: "slide";            \
+        }                           \
+    }                               \
+}                                   \
+part                                \
+{                                   \
+    name: "body_border";            \
+    type: RECT;                     \
+    mouse_events:0;                 \
+    description                     \
+    {                               \
+        state: "default" 0.0;       \
+        visible:1;                  \
+        color: 163 185 194 255;     \
+        rel1                        \
+        {                           \
+            relative: 0.05 0.05;    \
+            offset: -1 -1;          \
+            to: "slide";            \
+        }                           \
+        rel2                        \
+        {                           \
+            relative: 0.95 0.95;    \
+            to: "slide";            \
+            offset: 1 1;            \
+        }                           \
+    }                               \
+}                                   \
+part                                \
+{                                   \
+    name: "body";                   \
+    type: RECT;                     \
+    mouse_events:0;                 \
+    description                     \
+    {                               \
+        state: "default" 0.0;       \
+        visible:1;                  \
+        color: 197 216 224 255;     \
+        rel1                        \
+        {                           \
+            relative: 0.05 0.05;    \
+            to: "slide";            \
+        }                           \
+        rel2                        \
+        {                           \
+            relative: 0.95 0.95;    \
+            to: "slide";            \
+        }                           \
+    }                               \
+}                                   \
+vague("vague_1.png",0.05,0.05,0.95,0.05,7,3);\
+vague("vague_2.png",0.95,0.05,0.95,0.95,3,7);\
+vague("vague_3.png",0.95,0.95,0.05,0.95,7,3);\
+vague("vague_4.png",0.05,0.95,0.05,0.05,3,7);\
+program                             \
+{                                   \
+    name: "program_vague_hide";     \
+    source: "eyelight";             \
+    signal: "vague,hide";           \
+    action: STATE_SET "default" 0.0;\
+    target: "vague_1.png";          \
+    target: "vague_2.png";          \
+    target: "vague_3.png";          \
+    target: "vague_4.png";          \
+}                                   \
+program                             \
+{                                   \
+    name: "program_vague_1";        \
+    source: "eyelight";             \
+    signal: "transition,end";       \
+    action: STATE_SET "start" 0.0;  \
+    target: "vague_1.png";          \
+    target: "vague_2.png";          \
+    target: "vague_3.png";          \
+    target: "vague_4.png";          \
+    transition: LINEAR 0.0;         \
+    after: "program_vague_1_2";     \
+}                                   \
+program                             \
+{                                   \
+    name: "program_vague_1_2";      \
+    source: "eyelight";             \
+    signal: "transition,end,2";     \
+    action: STATE_SET "end" 0.0;    \
+    target: "vague_1.png";          \
+    target: "vague_2.png";          \
+    target: "vague_3.png";          \
+    target: "vague_4.png";          \
+    transition: LINEAR 0.7;         \
+    after: "program_vague_1_3";     \
+}                                   \
+program                             \
+{                                   \
+    name: "program_vague_1_3";      \
+    source: "eyelight";             \
+    signal: "transition,end,2";     \
+    action: STATE_SET "default" 0.0;\
+    target: "vague_1.png";          \
+    target: "vague_2.png";          \
+    target: "vague_3.png";          \
+    target: "vague_4.png";          \
+    transition: LINEAR 0.0;         \
+}
+
+
+//last function called in a slide
+#define post_fct()              \
+part                            \
+{                               \
+    name: "fade";               \
+    type: RECT;                 \
+    mouse_events: 0;            \
+    clip_to: "slide";                               \
+    description                 \
+    {                           \
+        state: "default" 0.0;   \
+        color: 0 0 0 0;         \
+        rel1                    \
+        {                       \
+            relative: 0.0 0.0;  \
+            to: "slide";        \
+        }                       \
+        rel2                    \
+        {                       \
+            relative: 1.0 1.0;  \
+            to: "slide";        \
+        }                       \
+    }                           \
+    description                 \
+    {                           \
+        state: "visible" 0.0;   \
+        color: 0 0 0 255;       \
+        rel1                    \
+        {                       \
+            relative: 0.0 0.0;  \
+            to: "slide";        \
+        }                       \
+        rel2                    \
+        {                       \
+            relative: 1.0 1.0;  \
+            to: "slide";        \
+        }                       \
+    }                           \
+}
+
+
+//define the title of the slide
+#define set_title(content_title)    \
+part                                \
+{                                   \
+    name : "title";                 \
+    type: TEXTBLOCK;                \
+    mouse_events: 0;                \
+    clip_to: "slide";                               \
+    description                     \
+    {                               \
+        state: "default" 0.0;       \
+        rel1                        \
+        {                           \
+            relative: 0.0 0.0;      \
+            to: "area_title";       \
+        }                           \
+        rel2                        \
+        {                           \
+            relative: 1.0 1.0;      \
+            to: "area_title";       \
+        }                           \
+        text                        \
+        {                           \
+            text: content_title;    \
+            style: "titleStyle";    \
+        }                           \
+    }                               \
+}
+
+//define the subtitle of the slide
+#define set_subtitle(content_title) \
+part                                \
+{                                   \
+    name : "subtitle";              \
+    type: TEXTBLOCK;                \
+    mouse_events: 0;                \
+    clip_to: "slide";                               \
+    description                     \
+    {                               \
+        state: "default" 0.0;       \
+        rel1                        \
+        {                           \
+            relative: 0.0 0.0;      \
+            to: "area_subtitle";    \
+        }                           \
+        rel2                        \
+        {                           \
+            relative: 1.0 1.0;      \
+            to: "area_subtitle";    \
+        }                           \
+        text                        \
+        {                           \
+            text: content_title;    \
+            style: "subtitleStyle"; \
+        }                           \
+    }                               \
+}
+
+
+
+//define an image for the header
+#define set_header_image(content_image)     \
+part                                \
+{                                   \
+    name: "header_image";           \
+    type: IMAGE;                    \
+    mouse_events:0;                 \
+    clip_to: "slide";                               \
+    description                     \
+    {                               \
+        state: "default" 0.0;       \
+        visible: 1;                 \
+        aspect_preference: BOTH;    \
+        aspect: 1 1;                \
+        rel1                        \
+        {                           \
+            relative: 0.0 0.0;     \
+            to: "area_header_image";\
+        }                           \
+        rel2                        \
+        {                           \
+            relative: 1.0 1.0;     \
+            to: "area_header_image";\
+        }                           \
+        image                       \
+        {                           \
+            normal: content_image;  \
+        }                           \
+    }                               \
+}
+
+
+//define the text of the footer
+#define set_foot_text(content_text) \
+part                                \
+{                                   \
+    name: "textFoot";               \
+    type: TEXTBLOCK;                \
+    mouse_events:0;                 \
+    clip_to: "slide";                               \
+    description                     \
+    {                               \
+        state: "default" 0.0;       \
+        rel1                        \
+        {                           \
+            relative: 0.0 0.0;      \
+            to: "area_foot_text";   \
+        }                           \
+        rel2                        \
+        {                           \
+            relative: 1.0 1.0;      \
+            to: "area_foot_text";   \
+        }                           \
+        text                        \
+        {                           \
+            text: content_text;     \
+            style: "footStyle";     \
+        }                           \
+    }                               \
+}
+
+//define an image for the footer
+#define set_foot_image(content_image) \
+part                                \
+{                                   \
+    name: "foot_image";             \
+    type: IMAGE;                    \
+    mouse_events:0;                 \
+    clip_to: "slide";                               \
+    description                     \
+    {                               \
+        state: "default" 0.0;       \
+        visible: 1;                 \
+        aspect_preference: BOTH;    \
+        aspect: 1 1;                \
+        rel1                        \
+        {                           \
+            relative: 0.0 0.0;      \
+            to: "area_foot_image";  \
+        }                           \
+        rel2                        \
+        {                           \
+            relative: 1.0 1.0;      \
+            to: "area_foot_image";  \
+        }                           \
+        image                       \
+        {                           \
+            normal: content_image;  \
+        }                           \
+    }                               \
+}
+
+
+
+//add a text item in a vertical area
+#define add_item_text_vbox(area,id_prev,id,nb_items,depth,content_text)\
+part                                            \
+{                                               \
+    name: "area_item_"area"_"id;                \
+    type: TEXTBLOCK;                            \
+    mouse_events: 0;                            \
+    clip_to: "slide";                               \
+    description                                 \
+    {                                           \
+        state: "default" 0.0;                   \
+        visible: 1;                             \
+        align: 0.1 0.1;                         \
+        rel1                                    \
+        {                                       \
+            relative: (0.0+(depth*0.04)) 1.0;   \
+            to_y: "area_item_"area"_"id_prev;   \
+            to_x: "area_"area;                  \
+            offset: 55 20;                       \
+        }                                       \
+        rel2                                    \
+        {                                       \
+            relative: 1.0 1.0;                  \
+            to_y: "area_item_"area"_"id_prev;   \
+            to_x: "area_"area;                  \
+        }                                       \
+        text                                    \
+        {                                       \
+            text: content_text;                 \
+            style: "itemStyle";                 \
+            min: 0 1;                           \
+        }                                       \
+    }                                           \
+}                                               \
+part                                            \
+{                                               \
+    name: "image_area_item_"area"_"id;          \
+    type: IMAGE;                                \
+    mouse_events: 0;                            \
+    clip_to: "slide";                           \
+    description                                 \
+    {                                           \
+        aspect_preference: BOTH;                \
+        aspect: 1 1;                            \
+        state: "default" 0.0;                   \
+        rel1                                    \
+        {                                       \
+            relative: 0.0 0.0;                  \
+            to: "area_item_"area"_"id;          \
+            offset: -55 8;                      \
+        }                                       \
+        rel2                                    \
+        {                                       \
+            relative: 0.0 0.0;                  \
+            to: "area_item_"area"_"id;          \
+            offset: 24 32;                      \
+        }                                       \
+        image                                   \
+        {                                       \
+            normal: "item_00.png";              \
+        }                                       \
+    }                                           \
+    description                                 \
+    {                                           \
+        state: "01" 0.0;                        \
+        inherit: "default" 0.0;                 \
+        image                                   \
+        {                                       \
+            normal: "item_01.png";              \
+        }                                       \
+    }                                           \
+    description                                 \
+    {                                           \
+        state: "02" 0.0;                        \
+        inherit: "default" 0.0;                 \
+        image                                   \
+        {                                       \
+            normal: "item_02.png";              \
+        }                                       \
+    }                                           \
+    description                                 \
+    {                                           \
+        state: "03" 0.0;                        \
+        inherit: "default" 0.0;                 \
+        image                                   \
+        {                                       \
+            normal: "item_03.png";              \
+        }                                       \
+    }                                           \
+}                                               \
+program                                         \
+{                                               \
+    name: "program_area_item_"area"_"id;        \
+    source: "eyelight";                         \
+    signal: "transition,end";                   \
+    action: STATE_SET "default" 0.0;            \
+    target: "image_area_item_"area"_"id;        \
+    transition: LINEAR 0.1;                     \
+    after: "program_area_item_"area"_"id"_1";   \
+}                                               \
+program_area_item(area,id,1,2,"01",0.1)               \
+program_area_item(area,id,2,3,"02",0.1)               \
+program_area_item(area,id,3,4,"03",0.1)               \
+program_area_item(area,id,4,5,"02",0.1)               \
+program_area_item(area,id,5,6,"01",0.1)               \
+program                                         \
+{                                               \
+    name: "program_area_item_"area"_"id"_6";    \
+    source: "eyelight";                         \
+    signal: "transition,end,6";                 \
+    action: STATE_SET "default" 0.0;            \
+    target: "image_area_item_"area"_"id;        \
+    transition: LINEAR 0.1;                     \
+}
+
+//add a text item in a horizontal area
+#define add_item_text_hbox(area,id_prev,id,nb_items,depth,content_text)\
+part                                            \
+{                                               \
+    name: "area_item_"area"_"id;                \
+    type: TEXTBLOCK;                            \
+    mouse_events: 0;                            \
+    clip_to: "slide";                           \
+    description                                 \
+    {                                           \
+        state: "default" 0.0;                   \
+        visible: 1;                             \
+        align: 0.1 0.1;                         \
+        rel1                                    \
+        {                                       \
+            relative: id*(1/nb_items) 0.0;      \
+            to: "area_"area;                    \
+            offset: 55 0;                       \
+        }                                       \
+        rel2                                    \
+        {                                       \
+            relative: (id+1)*(1/nb_items) 1.0;  \
+            to: "area_"area;                     \
+        }                                       \
+        text                                    \
+        {                                       \
+            text: content_text;                 \
+            style: "itemStyle";                 \
+        }                                       \
+    }                                           \
+}                                               \
+part                                            \
+{                                               \
+    name: "image_area_item_"area"_"id;          \
+    type: IMAGE;                                \
+    mouse_events: 0;                            \
+    clip_to: "slide";                           \
+    description                                 \
+    {                                           \
+        state: "default" 0.0;                   \
+        aspect_preference: BOTH;                \
+        aspect: 1 1;                            \
+        rel1                                    \
+        {                                       \
+            relative: 0.0 0.0;                  \
+            to: "area_item_"area"_"id;          \
+            offset: -55 8;                      \
+        }                                       \
+        rel2                                    \
+        {                                       \
+            relative: 0.0 0.0;                  \
+            to: "area_item_"area"_"id;          \
+            offset: 24 32;                      \
+        }                                       \
+        image                                   \
+        {                                       \
+            normal: "item_00.png";              \
+        }                                       \
+    }                                           \
+    description                                 \
+    {                                           \
+        state: "01" 0.0;                        \
+        inherit: "default" 0.0;                 \
+        image                                   \
+        {                                       \
+            normal: "item_01.png";              \
+        }                                       \
+    }                                           \
+    description                                 \
+    {                                           \
+        state: "02" 0.0;                        \
+        inherit: "default" 0.0;                 \
+        image                                   \
+        {                                       \
+            normal: "item_02.png";              \
+        }                                       \
+    }                                           \
+    description                                 \
+    {                                           \
+        state: "03" 0.0;                        \
+        inherit: "default" 0.0;                 \
+        image                                   \
+        {                                       \
+            normal: "item_03.png";              \
+        }                                       \
+    }                                           \
+}                                               \
+program                                         \
+{                                               \
+    name: "program_area_item_"area"_"id;        \
+    source: "eyelight";                           \
+    signal: "transition,end";                   \
+    action: STATE_SET "default" 0.0;            \
+    target: "image_area_item_"area"_"id;        \
+    transition: LINEAR 0.1;                    \
+    after: "program_area_item_"area"_"id"_1";   \
+}                                               \
+program_area_item(area,id,1,2,"01",0.1)               \
+program_area_item(area,id,2,3,"02",0.1)               \
+program_area_item(area,id,3,4,"03",0.1)               \
+program_area_item(area,id,4,5,"02",0.1)               \
+program_area_item(area,id,5,6,"01",0.1)               \
+program                                         \
+{                                               \
+    name: "program_area_item_"area"_"id"_6";    \
+    source: "eyelight";                           \
+    signal: "transition,end,6";                 \
+    action: STATE_SET "default" 0.0;            \
+    target: "image_area_item_"area"_"id;        \
+    transition: LINEAR 0.1;                    \
+}
+
+
+//item with a normal enumeration
+#define add_item_text_normal_vbox(area,id_prev,id,nb_items,depth,content_text,enum_id)\
+part                                            \
+{                                               \
+    name: "area_item_"area"_"id;                \
+    type: TEXTBLOCK;                            \
+    mouse_events: 0;                            \
+    clip_to: "slide";                               \
+    description                                 \
+    {                                           \
+        state: "default" 0.0;                   \
+        visible: 1;                             \
+        align: 0.1 0.1;                         \
+        rel1                                    \
+        {                                       \
+            relative: (0.0+(depth*0.04)) 1.0;   \
+            to_y: "area_item_"area"_"id_prev;   \
+            to_x: "area_"area;                  \
+            offset: 0 20;                       \
+        }                                       \
+        rel2                                    \
+        {                                       \
+            relative: 1.0 1.0;                  \
+            to_y: "area_item_"area"_"id_prev;   \
+            to_x: "area_"area;                  \
+        }                                       \
+        text                                    \
+        {                                       \
+            text: "<numbering>"enum_id")</numbering> "content_text;\
+            style: "itemStyle";                 \
+            min: 0 1;                           \
+        }                                       \
+    }                                           \
+}
+
+#define add_item_text_normal_hbox(area,id_prev,id,nb_items,depth,content_text,enum_id)\
+part                                            \
+{                                               \
+    name: "area_item_"area"_"id;                \
+    type: TEXTBLOCK;                            \
+    mouse_events: 0;                            \
+    clip_to: "slide";                               \
+    description                                 \
+    {                                           \
+        state: "default" 0.0;                   \
+        visible: 1;                             \
+        align: 0.1 0.1;                         \
+        rel1                                    \
+        {                                       \
+            relative: id*(1/nb_items) 0.0;      \
+            to: "area_"area;                    \
+            offset: 32 0;                       \
+        }                                       \
+        rel2                                    \
+        {                                       \
+            relative: (id+1)*(1/nb_items) 1.0;  \
+            to: "area_"area;                    \
+        }                                       \
+        text                                    \
+        {                                       \
+            text: "<numbering>"enum_id")</numbering> "content_text;\
+            style: "itemStyle";                 \
+            min: 1 1;                           \
+        }                                       \
+    }                                           \
+}                                               \
+
+
+//item with a roman enumeration
+#define add_item_text_roman_vbox(area,id_prev,id,nb_items,depth,content_text,enum_id)\
+    add_item_text_normal_vbox(area,id_prev,id,nb_items,depth,content_text,enum_id);
+
+#define add_item_text_roman_hbox(area,id_prev,id,nb_items,depth,content_text,enum_id) \
+    add_item_text_normal_hbox(area,id_prev,id,nb_items,depth,content_text,enum_id);
+
+//add a text in a vertical area
+#define add_text_vbox(area,id_prev,id,nb_items,content_text)\
+part                                            \
+{                                               \
+    name: "area_item_"area"_"id;                \
+    type: TEXTBLOCK;                            \
+    mouse_events: 0;                            \
+    clip_to: "slide";                               \
+    description                                 \
+    {                                           \
+        state: "default" 0.0;                   \
+        visible: 1;                             \
+        align: 0.1 0.1;                         \
+        rel1                                    \
+        {                                       \
+            relative: 0.0 1.0;                  \
+            to_x: "area_"area;                  \
+            to_y: "area_item_"area"_"id_prev;   \
+            offset: 0 20;                       \
+        }                                       \
+        rel2                                    \
+        {                                       \
+            relative: 1.0 1.0;                  \
+            to_x: "area_"area;                  \
+            to_y: "area_item_"area"_"id_prev;   \
+        }                                       \
+        text                                    \
+        {                                       \
+            text: content_text;                 \
+            style: "itemStyle";                 \
+            min: 0 1;                           \
+        }                                       \
+    }                                           \
+}
+
+
+//add a text in a vertical area
+#define add_text_hbox(area,id_prev,id,nb_items,content_text)\
+part                                            \
+{                                               \
+    name: "area_item_"area"_"id;                \
+    type: TEXTBLOCK;                            \
+    mouse_events: 0;                            \
+    clip_to: "slide";                               \
+    description                                 \
+    {                                           \
+        state: "default" 0.0;                   \
+        visible: 1;                             \
+        align: 0.1 0.1;                         \
+        rel1                                    \
+        {                                       \
+            relative: id*(1/nb_items) 0.0;  \
+            to: "area_"area;                     \
+            offset: 0 0;                       \
+        }                                       \
+        rel2                                    \
+        {                                       \
+            relative: (id+1)*(1/nb_items) 1.0;  \
+            to: "area_"area;                     \
+        }                                       \
+        text                                    \
+        {                                       \
+            text: content_text;                 \
+            style: "itemStyle";                 \
+        }                                       \
+    }                                           \
+}                                               \
+
+
+
+//add an edc file in a vertical area
+#define add_edc_vbox(area,id_prev,id,nb_items,content_edc_fct)\
+part                                            \
+{                                               \
+    name: "area_item_"area"_"id;                \
+    type: RECT;                                 \
+    mouse_events: 0;                            \
+    clip_to: "slide";                           \
+    description                                 \
+    {                                           \
+        state: "default" 0.0;                   \
+        visible: 0;                             \
+        align: 0.1 0.1;                         \
+        rel1                                    \
+        {                                       \
+            relative: 0.0 1.0;                  \
+            to_y: "area_item_"area"_"id_prev;   \
+            to_x: "area_"area;                  \
+            offset: 0 20;                       \
+        }                                       \
+        rel2                                    \
+        {                                       \
+            relative: 1.0 1.0;                  \
+            to: "area_"area;                    \
+        }                                       \
+    }                                           \
+}                                               \
+content_edc_fct("area_item_"area"_"id);
+
+//add an edc file in a horyzontal area
+#define add_edc_hbox(area,id_prev,id,nb_items,content_edc_fct)\
+part                                            \
+{                                               \
+    name: "area_item_"area"_"id;                \
+    type: RECT;                                 \
+    mouse_events: 0;                            \
+    clip_to: "slide";                           \
+    description                                 \
+    {                                           \
+        state: "default" 0.0;                   \
+        visible: 0;                             \
+        align: 0.1 0.1;                         \
+        rel1                                    \
+        {                                       \
+            relative: id*(1/nb_items) 0.0;      \
+            to: "area_"area;                    \
+        }                                       \
+        rel2                                    \
+        {                                       \
+            relative: (id+1)*(1/nb_items) 1.0;  \
+            to: "area_"area;                    \
+        }                                       \
+    }                                           \
+}                                               \
+content_edc_fct("area_item_"area"_"id);
+
+
+//add an edc file in a vertical area
+#define add_edc_relative_vbox(area,id_prev,id,nb_items,content_edc_fct,rel_w,rel_h)\
+part                                            \
+{                                               \
+    name: "area_item_"area"_"id;                \
+    type: RECT;                                 \
+    mouse_events: 0;                            \
+    clip_to: "slide";                           \
+    description                                 \
+    {                                           \
+        state: "default" 0.0;                   \
+        visible: 0;                             \
+        align: 0.1 0.1;                         \
+        rel1                                    \
+        {                                       \
+            relative: 0.0 1.0;                  \
+            to_y: "area_item_"area"_"id_prev;   \
+            to_x: "area_"area;                  \
+            offset: 0 20;                       \
+        }                                       \
+        rel2                                    \
+        {                                       \
+            relative: rel_w rel_h;              \
+            to: "area_"area;                    \
+        }                                       \
+    }                                           \
+}                                               \
+content_edc_fct("area_item_"area"_"id);
+
+//add an edc file in a horyzontal area
+#define add_edc_relative_hbox(area,id_prev,id,nb_items,content_edc_fct,rel_w,rel_h)\
+part                                            \
+{                                               \
+    name: "area_item_"area"_"id;                \
+    type: RECT;                                 \
+    mouse_events: 0;                            \
+    clip_to: "slide";                           \
+    description                                 \
+    {                                           \
+        state: "default" 0.0;                   \
+        visible: 0;                             \
+        align: 0.1 0.1;                         \
+        rel1                                    \
+        {                                       \
+            relative: id*(1/nb_items) 0.0;      \
+            to: "area_"area;                    \
+        }                                       \
+        rel2                                    \
+        {                                       \
+            relative: id*(1/nb_items)+rel_w 0.0+rel_h;\
+            to: "area_"area;                    \
+        }                                       \
+    }                                           \
+}                                               \
+content_edc_fct("area_item_"area"_"id);
+
+
+
+//add an image in a vertical area
+#define add_image_vbox(area,id_prev,id,nb_items,content_image,border_size)  \
+add_border("area_item_"area"_"id,border_size);      \
+part                                                \
+{                                                   \
+    name: "area_item_"area"_"id;                    \
+    type: IMAGE;                                    \
+    mouse_events:0;                                 \
+    clip_to: "slide";                               \
+    description                                     \
+    {                                               \
+        state: "default" 0.0;                       \
+        visible: 1;                                 \
+        rel1                                        \
+        {                                           \
+            relative: 0.0 1.0;                      \
+            to_y: "area_item_"area"_"id_prev;       \
+            to_x: "area_"area;                      \
+            offset: 0 20;                           \
+        }                                           \
+        rel2                                        \
+        {                                           \
+            relative: 1.0 1.0;                      \
+            to: "area_"area;                        \
+        }                                           \
+        image                                       \
+        {                                           \
+            normal: content_image;                  \
+        }                                           \
+    }                                               \
+}
+
+//add an image in a horyzontal area
+#define add_image_hbox(area,id_prev,id,nb_items,content_image,border_size)  \
+add_border("area_item_"area"_"id,border_size);      \
+part                                                \
+{                                                   \
+    name: "area_item_"area"_"id;                    \
+    type: IMAGE;                                    \
+    mouse_events:0;                                 \
+    clip_to: "slide";                               \
+    description                                     \
+    {                                               \
+        state: "default" 0.0;                       \
+        visible: 1;                                 \
+        rel1                                        \
+        {                                           \
+            relative: id*(1/nb_items) 0.0;          \
+            to: "area_"area;                         \
+        }                                           \
+        rel2                                        \
+        {                                           \
+            relative: (id+1)*(1/nb_items) 1.0;      \
+            to: "area_"area;                         \
+        }                                           \
+        image                                       \
+        {                                           \
+            normal: content_image;                  \
+        }                                           \
+    }                                               \
+}                                                   \
+
+
+//add an image in a vertical area
+#define add_image_size_vbox(area,id_prev,id,nb_items,content_image,size_w,size_h,border_size)  \
+add_border("area_item_"area"_"id,border_size);      \
+part                                                \
+{                                                   \
+    name: "area_item_"area"_"id;                    \
+    type: IMAGE;                                    \
+    mouse_events:0;                                 \
+    clip_to: "slide";                               \
+    description                                     \
+    {                                               \
+        state: "default" 0.0;                       \
+        visible: 1;                                 \
+        rel1                                        \
+        {                                           \
+            relative: 0.0 1.0;                      \
+            to_y: "area_item_"area"_"id_prev;       \
+            to_x: "area_"area;                      \
+            offset: 0 20;                           \
+        }                                           \
+        rel2                                        \
+        {                                           \
+            relative: 0.0 1.0;                      \
+            offset: size_w 20+size_h;               \
+            to_y: "area_item_"area"_"id_prev;       \
+            to_x: "area_"area;                      \
+        }                                           \
+        image                                       \
+        {                                           \
+            normal: content_image;                  \
+        }                                           \
+    }                                               \
+}
+
+
+
+//add an image in a horyzontal area
+#define add_image_size_hbox(area,id_prev,id,nb_items,content_image,size_w, size_h, border_size)  \
+add_border("area_item_"area"_"id,border_size);      \
+part                                                \
+{                                                   \
+    name: "area_item_"area"_"id;                    \
+    type: IMAGE;                                    \
+    mouse_events:0;                                 \
+    clip_to: "slide";                               \
+    description                                     \
+    {                                               \
+        state: "default" 0.0;                       \
+        visible: 1;                                 \
+        rel1                                        \
+        {                                           \
+            relative: id*(1/nb_items) 0.0;          \
+            to: "area_"area;                        \
+        }                                           \
+        rel2                                        \
+        {                                           \
+            relative: id*(1/nb_items) 0.0;          \
+            offset: size_w size_h;                  \
+            to: "area_"area;                        \
+        }                                           \
+        image                                       \
+        {                                           \
+            normal: content_image;                  \
+        }                                           \
+    }                                               \
+}                                                   \
+
+
+//add an image in a vertical area
+#define add_image_relative_vbox(area,id_prev,id,nb_items,content_image,rel_w,rel_h,border_size)  \
+add_border("area_item_"area"_"id,border_size);      \
+part                                                \
+{                                                   \
+    name: "area_item_"area"_"id;                    \
+    type: IMAGE;                                    \
+    mouse_events:0;                                 \
+    clip_to: "slide";                               \
+    description                                     \
+    {                                               \
+        state: "default" 0.0;                       \
+        visible: 1;                                 \
+        rel1                                        \
+        {                                           \
+            relative: 0.0 1.0;                      \
+            to_y: "area_item_"area"_"id_prev;       \
+            to_x: "area_"area;                      \
+            offset: 0 20;                           \
+        }                                           \
+        rel2                                        \
+        {                                           \
+            relative: 0.0+rel_w rel_h;              \
+            to: "area_"area;                        \
+        }                                           \
+        image                                       \
+        {                                           \
+            normal: content_image;                  \
+        }                                           \
+    }                                               \
+}
+
+
+
+//add an image in a horyzontal area
+#define add_image_relative_hbox(area,id_prev,id,nb_items,content_image,rel_w, rel_h, border_size)  \
+add_border("area_item_"area"_"id,border_size);      \
+part                                                \
+{                                                   \
+    name: "area_item_"area"_"id;                    \
+    type: IMAGE;                                    \
+    mouse_events:0;                                 \
+    clip_to: "slide";                               \
+    description                                     \
+    {                                               \
+        state: "default" 0.0;                       \
+        visible: 1;                                 \
+        rel1                                        \
+        {                                           \
+            relative: id*(1/nb_items) 0.0;          \
+            to: "area_"area;                        \
+        }                                           \
+        rel2                                        \
+        {                                           \
+            relative: (id*(1/nb_items)+rel_w) (0.0+rel_h);\
+            to: "area_"area;                        \
+        }                                           \
+        image                                       \
+        {                                           \
+            normal: content_image;                  \
+        }                                           \
+    }                                               \
+}                                                   \
+
+
