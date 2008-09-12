@@ -53,5 +53,6 @@ extern Elm_Scroller_Class _elm_scroller_class;
 extern Elm_Label_Class _elm_label_class;
 extern Elm_Box_Class _elm_box_class;
 extern Elm_Table_Class _elm_table_class;
+extern Elm_Button_Class _elm_button_class;
   
 #endif

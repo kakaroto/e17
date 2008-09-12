@@ -382,7 +382,7 @@ collections {
       }
       parts {      
 	 part { name: "button_image";
-	    mouse_events: 1;
+	    mouse_events: 0;
 	    description { state: "default" 0.0;
 	       image {
 		  normal: "bt_base2.png";
@@ -397,8 +397,8 @@ collections {
 	 part { name: "elm.swallow.contents";
 	    type: SWALLOW;
 	    description { state: "default" 0.0;
-	       rel1.offset: 3 3;
-	       rel2.offset: -4 -4;
+	       rel1.offset: 8 8;
+	       rel2.offset: -9 -9;
 	    }
 	 }
          part {	  name: "over1";
@@ -412,7 +412,7 @@ collections {
 	    }
 	 }
 	 part { name: "over2";
-	    mouse_events: 0;
+	    mouse_events: 1;
 	    description { state: "default" 0.0;
 	       image {
 		  normal: "bt_shine.png";
@@ -425,22 +425,22 @@ collections {
 	 program {
 	    name:   "button_click";
 	    signal: "mouse,down,1";
-	    source: "button_image";
+	    source: "over2";
 	    action: STATE_SET "clicked" 0.0;
 	    target: "button_image";
 	 }
 	 program {
 	    name:   "button_unclick";
 	    signal: "mouse,up,1";
-	    source: "button_image";
+	    source: "over2";
 	    action: STATE_SET "default" 0.0;
 	    target: "button_image";
 	 }
 	 program {
 	    name:   "button_unclick2";
 	    signal: "mouse,clicked,1";
-	    source: "button_image";
-	    action: SIGNAL_EMIT "e,action,click" "";
+	    source: "over2";
+	    action: SIGNAL_EMIT "elm,action,click" "";
 	 }
       }
    }

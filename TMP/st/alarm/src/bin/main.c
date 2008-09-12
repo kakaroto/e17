@@ -484,6 +484,115 @@ win_table_of_labels(void)
    win->show(win);
 }
 
+static void
+on_button_activate(void *data, Elm_Button *bt, Elm_Cb_Type type, void *info)
+{
+   printf("Button %p activate\n", bt);
+}
+
+static void
+win_table_of_buttons(void)
+{
+   Elm_Win *win;
+   Elm_Bg *bg;
+   Elm_Table *table;
+   Elm_Label *label;
+   Elm_Button *button;
+
+   win = elm_win_new();
+   win->name_set(win, "win_bg");
+   win->title_set(win, "Simple Window with table + buttons setting minimum size");
+   win->autodel = 0;
+   win->cb_add(win, ELM_CB_DEL_REQ, on_win_del_req, NULL);
+   win->cb_add(win, ELM_CB_RESIZE, on_win_resize, NULL);
+
+   bg = elm_bg_new(win);
+   bg->expand_x = 1;
+   bg->expand_y = 1;
+   bg->show(bg);
+   
+   table = elm_table_new(win);
+   table->expand_x = 1;
+   table->expand_y = 1;
+
+   button = elm_button_new(win);
+   label = elm_label_new(win);
+   label->text_set(label, "Button 1");
+   label->show(label);
+   button->child_add(button, label);
+   table->pack(table, button, 0, 0, 1, 1);
+   button->fill_x = 0;
+   button->fill_y = 0;
+   button->show(button);
+   elm_widget_sizing_update(button);
+   button->cb_add(button, ELM_CB_ACTIVATED, on_button_activate, NULL);
+
+   button = elm_button_new(win);
+   label = elm_label_new(win);
+   label->text_set(label, "Button 2");
+   label->show(label);
+   button->child_add(button, label);
+   table->pack(table, button, 1, 0, 1, 1);
+   button->fill_x = 0;
+   button->fill_y = 0;
+   button->show(button);
+   elm_widget_sizing_update(button);
+   button->cb_add(button, ELM_CB_ACTIVATED, on_button_activate, NULL);
+
+   button = elm_button_new(win);
+   label = elm_label_new(win);
+   label->text_set(label, "Button 3");
+   label->show(label);
+   button->child_add(button, label);
+   table->pack(table, button, 2, 0, 1, 1);
+   button->fill_x = 0;
+   button->fill_y = 0;
+   button->show(button);
+   elm_widget_sizing_update(button);
+   button->cb_add(button, ELM_CB_ACTIVATED, on_button_activate, NULL);
+
+   button = elm_button_new(win);
+   label = elm_label_new(win);
+   label->text_set(label, "Button 4");
+   label->show(label);
+   button->child_add(button, label);
+   table->pack(table, button, 0, 1, 1, 1);
+   button->fill_x = 1;
+   button->fill_y = 0;
+   button->show(button);
+   elm_widget_sizing_update(button);
+   button->cb_add(button, ELM_CB_ACTIVATED, on_button_activate, NULL);
+
+   button = elm_button_new(win);
+   label = elm_label_new(win);
+   label->text_set(label, "Button 5");
+   label->show(label);
+   button->child_add(button, label);
+   table->pack(table, button, 1, 1, 2, 1);
+   button->fill_x = 1;
+   button->fill_y = 1;
+   button->show(button);
+   elm_widget_sizing_update(button);
+   button->cb_add(button, ELM_CB_ACTIVATED, on_button_activate, NULL);
+
+   button = elm_button_new(win);
+   label = elm_label_new(win);
+   label->text_set(label, "Button 6");
+   label->show(label);
+   button->child_add(button, label);
+   table->pack(table, button, 0, 2, 3, 1);
+   button->fill_x = 1;
+   button->fill_y = 1;
+   button->show(button);
+   elm_widget_sizing_update(button);
+   button->cb_add(button, ELM_CB_ACTIVATED, on_button_activate, NULL);
+
+   elm_widget_sizing_update(table);
+   table->show(table);
+   
+   win->show(win);
+}
+
 int
 main(int argc, char **argv)
 {
@@ -499,6 +608,7 @@ main(int argc, char **argv)
    win_box_vert_of_labels();
    win_scrollable_box_vert_of_labels();
    win_table_of_labels();
+   win_table_of_buttons();
    
    elm_run(); /* and run the program now  and handle all events etc. */
    

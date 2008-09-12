@@ -75,7 +75,8 @@ extern "C" {
 	  ELM_OBJ_SCROLLER,
 	  ELM_OBJ_LABEL,
 	  ELM_OBJ_BOX,
-	  ELM_OBJ_TABLE
+	  ELM_OBJ_TABLE,
+	  ELM_OBJ_BUTTON
      } Elm_Obj_Type;
    
    typedef enum _Elm_Cb_Type
@@ -86,7 +87,9 @@ extern "C" {
 	  ELM_CB_UNPARENT,
 	  ELM_CB_PARENT,
 	  ELM_CB_DEL_REQ,
-	  ELM_CB_RESIZE
+	  ELM_CB_RESIZE,
+	  ELM_CB_CHANGED,
+	  ELM_CB_ACTIVATED
      } Elm_Cb_Type;
    
    typedef enum _Elm_Win_Type
@@ -113,6 +116,8 @@ extern "C" {
    typedef struct _Elm_Box             Elm_Box;
    typedef struct _Elm_Table_Class     Elm_Table_Class;
    typedef struct _Elm_Table           Elm_Table;
+   typedef struct _Elm_Button_Class    Elm_Button_Class;
+   typedef struct _Elm_Button          Elm_Button;
    
    typedef void (*Elm_Cb_Func) (void *data, Elm_Obj *obj, Elm_Cb_Type type, void *info);
    
@@ -362,6 +367,25 @@ extern "C" {
    struct _Elm_Table
      {
 	Elm_Table_Class_All;
+     };
+   
+/**************************************************************************/   
+   /* Button Object */
+#define Elm_Button_Class_Methods
+#define Elm_Button_Class_All Elm_Widget_Class_All; Elm_Button_Class_Methods; \
+   int minw, minh
+   
+   /* Object specific ones */
+   EAPI Elm_Button *elm_button_new(Elm_Win *win);
+   struct _Elm_Button_Class
+     {
+	void *parent;
+	Elm_Obj_Type type;
+	Elm_Button_Class_Methods;
+     };
+   struct _Elm_Button
+     {
+	Elm_Button_Class_All;
      };
    
 // FIXME: widgets -

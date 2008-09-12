@@ -18,6 +18,7 @@ elm_scroller.c \
 elm_label.c \
 elm_box.c \
 elm_table.c \
+elm_button.c \
 \
 els_pan.c \
 els_pan.h \
