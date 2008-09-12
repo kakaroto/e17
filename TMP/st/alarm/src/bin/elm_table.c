@@ -7,7 +7,7 @@ static void _elm_table_pack(Elm_Table *tb, Elm_Widget *wid, int x, int y, int w,
 Elm_Table_Class _elm_table_class =
 {
    &_elm_widget_class,
-     ELM_OBJ_SCROLLER,
+     ELM_OBJ_TABLE,
      _elm_table_layout_update,
      _elm_table_pack,
 };

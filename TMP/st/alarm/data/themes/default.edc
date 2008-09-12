@@ -371,4 +371,77 @@ collections {
 	 }
       }
    }
+
+///////////////////////////////////////////////////////////////////////////////
+   group { name: "button";
+      images {
+	 image: "bt_base1.png" COMP;
+	 image: "bt_base2.png" COMP;
+	 image: "bt_hilight.png" COMP;
+	 image: "bt_shine.png" COMP;
+      }
+      parts {      
+	 part { name: "button_image";
+	    mouse_events: 1;
+	    description { state: "default" 0.0;
+	       image {
+		  normal: "bt_base2.png";
+		  border: 7 7 7 7;
+	       }
+	    }
+	    description { state: "clicked" 0.0;
+	       inherit: "default" 0.0;
+	       image.normal: "bt_base1.png";
+	    }
+	 }
+	 part { name: "elm.swallow.contents";
+	    type: SWALLOW;
+	    description { state: "default" 0.0;
+	       rel1.offset: 3 3;
+	       rel2.offset: -4 -4;
+	    }
+	 }
+         part {	  name: "over1";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       rel2.relative: 1.0 0.5;
+	       image {
+		  normal: "bt_hilight.png";
+		  border: 7 7 7 0;
+	       }
+	    }
+	 }
+	 part { name: "over2";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       image {
+		  normal: "bt_shine.png";
+		  border: 7 7 7 7;
+	       }
+	    }
+	 }
+      }
+      programs {
+	 program {
+	    name:   "button_click";
+	    signal: "mouse,down,1";
+	    source: "button_image";
+	    action: STATE_SET "clicked" 0.0;
+	    target: "button_image";
+	 }
+	 program {
+	    name:   "button_unclick";
+	    signal: "mouse,up,1";
+	    source: "button_image";
+	    action: STATE_SET "default" 0.0;
+	    target: "button_image";
+	 }
+	 program {
+	    name:   "button_unclick2";
+	    signal: "mouse,clicked,1";
+	    source: "button_image";
+	    action: SIGNAL_EMIT "e,action,click" "";
+	 }
+      }
+   }
 }
