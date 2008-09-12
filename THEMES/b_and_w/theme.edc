@@ -1,25 +1,22 @@
 // TODO: Items that need some revision
-// 
-// textblock (done - review)
+// gadman popup (done)
+// gadman frame (done -review)
+// gadman full_bg (done - review)
 // battery popup (done - review - see 'code' for notes)
-// fileman (list mode)
 // desklock (done - review - see 'code' for notes)
-// exebuf (done - review)
+// fileman (list mode)
 // ibar - ibox (Merged with alias... see FIXME for bugs.)
 //
-// note: make these (and menu) use a common image with a logical name. 
-// sys (done - review - see 'code' for notes), Move, Resize, Exebuf, Winlist
+// TODO: Image names change for better comprehension
+//  menu_bg.png -> white_fade.png ???
+//  shelf_inset.png -> inset_sunk.png ???
+//  shelf_alt_inset -> inset_raised.png ???
 //
 // TODO: Working order
+// gadman control
 // tlist (needs code to be the same as ilist with raising)
 // fileman (icon mode etc.)
 // slidesel (i know. no examples of this around).
-// gadman control
-// gadman popup
-// gadman frame
-// gadman full_bg (note: performance issues on scaling and
-//			     animation for large screens. Make sure this 
-//			     is simple.)
 // toolbar
 // wizard (just placeholder and basics - wizard code not complete)
 // icons (lots of them! lets also find all the missing ones in e and
@@ -218,7 +215,7 @@ collections { /* begin the collection of edje groups that are in this file */
 				       * rest is relative to the whole object
 				       * (because its not specified) */
 	       }
-	       image { /* defin e the image to use */
+	       image { /* define the image to use */
 		  normal: "bd_top.png"; /* the image */
 		  border: 2 2 2 2; /* border scaling attributes. this is the
 				    * number of pixels NOT to scale on the
@@ -7032,7 +7029,6 @@ collections { /* begin the collection of edje groups that are in this file */
 
 /////////////////////////////////////////////////////////////////////////////
    /*** MOD: BATTERY ***/
-// NOTE: can be same as current default, but images need to change
    group { name: "e/modules/battery/main";
       images {
 	 image: "bat_content1.png" COMP;
@@ -8470,7 +8466,6 @@ collections { /* begin the collection of edje groups that are in this file */
       }
    }
 
-// FIXME: Urgent doesnt seem to work. Doesnt work in bling either. (Only tested with xchat)
 // FIXME: Use urgent effect from Pager.
 
    group { name: "e/modules/ibox/icon_overlay";
@@ -9776,7 +9771,6 @@ collections { /* begin the collection of edje groups that are in this file */
    /*** MOD: MIXER ***/
 
 // FIXME: Add code for making sound circles fade between states.
-// FIXME: Review
 
    group { name: "e/modules/mixer/main";
       images {
@@ -12890,10 +12884,7 @@ collections { /* begin the collection of edje groups that are in this file */
 
 /////////////////////////////////////////////////////////////////////////////
    /*** SYSTEM ***/
-// FIXME: REVIEW
-// FIXME: Make popup borderless?
-// FIXME: Use a bg that is shared by borderless widgets eg. move/resize
-
+   
    group { name: "e/sys/logout";
       alias: "e/sys/halt";
       alias: "e/sys/reboot";
@@ -16916,6 +16907,9 @@ collections { /* begin the collection of edje groups that are in this file */
 	 }
       }
    }
+   
+/////////////////////////////////////////////////////////////////////////////
+   /*** MOD: DESKLOCK ***/
 
    group { name: "e/desklock/background";
       images {
@@ -16948,7 +16942,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 }
       }
    }
-   
+
    group { name: "e/desklock/login_box";
       images {
 	 image: "logo_white_128.png" COMP;
@@ -17159,6 +17153,167 @@ collections { /* begin the collection of edje groups that are in this file */
 	    action: STATE_SET "default" 0.0;
 	    target: "error_clip";
 	    transition: DECELERATE 1.5;
+	 }
+      }
+   }
+   
+/////////////////////////////////////////////////////////////////////////////
+   /*** GADMAN ***/
+
+   group { name: "e/gadman/popup";
+      images.image: "menu_bg.png" COMP;
+      parts {
+	 part { name: "base";
+	    mouse_events:  0;
+	    description { state: "default" 0.0;
+	       image {
+		  normal: "menu_bg.png";
+		  border: 2 2 2 2;
+	       }
+	       fill.smooth: 0;
+	    }
+	 }
+	 part { name: "e.swallow.content";
+	    type: SWALLOW;
+	    description { state: "default" 0.0;
+	       rel1.offset: 3 3;
+	       rel2.offset: -4 -4;
+	    }
+	 }
+      }
+   }
+   
+   group { name: "e/gadman/full_bg";
+      parts {
+	 part{ name: "bg";
+	    type: RECT;
+	    mouse_events:  1;
+	    description { state: "default" 0.0;
+	       color: 0 0 0 128;
+	    }
+	    description { state: "hidden" 0.0;
+	       color: 0 0 0 0;
+	    }
+	 }
+      }
+      programs {
+	 program { name: "hide";
+	    signal:  "e,state,visibility,hide";
+	    source:  "e";
+	    action:  STATE_SET "hidden" 0.0;
+	    transition:  LINEAR 0.2;
+	    target:  "bg";
+	 }
+	 program { name: "show";
+	    signal:  "e,state,visibility,show";
+	    source:  "e";
+	    action:  STATE_SET "default" 0.0;
+	    transition:  LINEAR 0.2;
+	    target:  "bg";
+	 }
+      }
+   }
+   
+   group { name: "e/gadman/frame";
+      images.image: "shelf_alt_inset.png" COMP;
+      parts {
+	 part{ name: "bg_clip";
+	    type: RECT;
+	    mouse_events:  0;
+	    description { state: "default" 0.0;
+	       rel1.to: "overlay";
+	       rel2.to: "overlay";
+	       color: 255 255 255 255;
+	    }
+	    description { state: "plain" 0.0;
+	       rel1.relative: 0.0 0.0;
+	       rel2.relative: 0.0 0.0;
+	       color: 255 255 255 255;
+	    }
+	 }
+	 part { name: "items_clip";
+	    type: RECT;
+	    mouse_events:  0;
+	    description { state: "default" 0.0;
+	       rel1 {
+		  to: "overlay";
+		  offset: 4  4;
+	       }
+	       rel2 {
+		  to: "overlay";
+		  offset: -5  -5;
+	       }
+	       color: 255 255 255 255;
+	    }
+	    description { state: "hidden" 0.0;
+	       inherit: "default" 0.0;
+	       color: 255 255 255 0;
+	    }
+	 }
+	 part { name: "e.swallow.content";
+	    type: SWALLOW;
+	    clip_to: "items_clip";
+	    description { state: "default" 0.0;
+	       rel1.offset: 4  4;
+	       rel2.offset: -5  -5;
+	       color: 255 255 255 255;
+	    }
+	    description { state: "hidden" 0.0;
+	       rel1.relative: 0.5 0.5;
+	       rel2.relative: 0.5 0.5;
+	       color: 255 255 255 0;
+	    }
+	 }
+	 part { name: "overlay";
+	    mouse_events:  0;
+	    clip_to: "bg_clip";
+	    description { state: "default" 0.0;
+	       image {
+		  normal: "shelf_alt_inset.png";
+		  border: 7 7 7 7;
+		  middle: 0;
+	       }
+	       fill.smooth: 0;
+	       color: 255 255 255 255;
+	    }
+	    description { state: "hidden" 0.0;
+	       inherit: "default" 0.0;
+	       rel1.relative: 0.5 0.5;
+	       rel2.relative: 0.5 0.5;
+	       color: 255 255 255 0;
+	    }
+	 }
+      }
+      programs {
+	 program { name: "inset";
+	    signal:  "e,state,visibility,inset";
+	    source:  "e";
+	    action:  STATE_SET "default" 0.0;
+	    target:  "bg_clip";
+	 }
+	 program { name: "plain";
+	    signal:  "e,state,visibility,plain";
+	    source:  "e";
+	    action:  STATE_SET "plain" 0.0;
+	    target:  "bg_clip";
+	 }
+	 program { name: "hide";
+	    signal:  "e,state,visibility,hide";
+	    source:  "e";
+	    action:  STATE_SET "hidden" 0.0;
+	    transition:  ACCELERATE 0.4;
+	    target:  "items_clip";
+	    target:  "overlay";
+	    target:  "e.swallow.content";
+	 }
+	 program { name: "show";
+	    signal:  "e,state,visibility,show";
+	    source:  "e";
+	    action:  STATE_SET "default" 0.0;
+	    transition:  DECELERATE 0.4;
+	    target:  "items_clip";
+	    target:  "overlay";
+	    target:  "e.swallow.content";
 	 }
       }
    }
