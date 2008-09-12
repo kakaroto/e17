@@ -1,0 +1,12 @@
+Login:		watchwolf
+IRC Nick:	watchwolf
+Cloak:          developer/watchwolf
+Name:		Jonathan Atton
+Location:	Nancy, France
+E-Mail:		jonathan.atton@gmail.com
+WWW:		http://watchwolf.fr
+Managing:	eyelight
+Contributing:	eyelight
+Group:		Applications
+Platform:	Ubuntu (Linux)
+GeoData:	48.693227 6.217232
