@@ -173,8 +173,12 @@ FocusRaisePending(void)
    focus_pending_raise = NULL;
 }
 
+/*
+ * dir > 0: Focus previously focused window
+ * else   : Focus least recently focused window
+ */
 static void
-FocusPrevEwin(void)
+FocusCycleEwin(int dir)
 {
    EWin               *const *lst;
    EWin               *ewin;
@@ -184,6 +188,8 @@ FocusPrevEwin(void)
    if (num <= 1)
       return;
 
+   dir = (dir > 0) ? 1 : -1;
+
    for (j = 0; j < num; j++)
      {
 	if (lst[j] == Mode.focuswin)
@@ -191,7 +197,7 @@ FocusPrevEwin(void)
      }
    for (i = 1; i < num; i++)
      {
-	ewin = lst[(j + i) % num];
+	ewin = lst[(j + i * dir + num) % num];
 	if (!FocusEwinValid(ewin, 1, 0, 0) || ewin->props.skip_focuslist)
 	   continue;
 	FocusToEWin(ewin, FOCUS_PREV);
@@ -962,17 +968,19 @@ FocusIpc(const char *params)
      }
    else if (!strncmp(cmd, "next", 2))
      {
+	/* Focus previously focused window */
 	if (Conf.warplist.enable)
 	   WarpFocus(1);
 	else
-	   FocusPrevEwin();
+	   FocusCycleEwin(1);
      }
    else if (!strncmp(cmd, "prev", 2))
      {
+	/* Focus least recently focused window */
 	if (Conf.warplist.enable)
 	   WarpFocus(-1);
 	else
-	   FocusPrevEwin();
+	   FocusCycleEwin(-1);
      }
 }
 
