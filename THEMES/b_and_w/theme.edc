@@ -34,6 +34,7 @@
 //            - Theme Preview selector. Doesnt reszie well. See wallpaper for correct behaviour.
 //	      - ilist e.swallow.icon should use e_ilist_icon_size_set to make a dummy box 
 //		to compensate when there is no icon there.
+//	      - Fix ibox urgent / icon_overlay problem
 
 /*
  * So how do themes work? 
@@ -8467,6 +8468,7 @@ collections { /* begin the collection of edje groups that are in this file */
    }
 
 // FIXME: Use urgent effect from Pager.
+// FIXME: Something fishy is going on here. When Urgent is set, the icon_overlay vanishes. Happens in bling too.
 
    group { name: "e/modules/ibox/icon_overlay";
       alias: "e/modules/ibar/icon_overlay";
@@ -8530,6 +8532,33 @@ collections { /* begin the collection of edje groups that are in this file */
 	    description { state: "default" 0.0;
 	       rel1.to: "background";
 	       rel2.to: "background";
+	    }
+	 }
+	 part { name: "urgent";
+	    description { state: "default" 0.0;
+	       visible: 0;
+	       rel1.to: "base";
+	       rel2.to: "base";
+	       image.normal: "exclam.png";
+	       color: 255 255 255 0;
+	    }
+	    description { state: "visible" 0.0;
+	       inherit: "default" 0.0;
+	       visible: 1;
+	       color: 255 255 255 255;
+	    }
+	    description { state: "hidden" 0.0;
+	       inherit: "default" 0.0;
+	       visible: 1;
+	       rel1 {
+		  relative: -0.5  -0.5;
+		  to: "base";
+	       }
+	       rel2 {
+		  relative: 1.5  1.5;
+		  to: "base";
+	       }
+	       color: 255 255 255 0;
 	    }
 	 }
 	 part { name: "e.text.label";
@@ -8633,12 +8662,14 @@ collections { /* begin the collection of edje groups that are in this file */
 	 program { name: "go_urgent";
 	    action:  STATE_SET "visible" 0.0;
 	    target:  "background";
+	    target:  "urgent";
 	    after:   "go_urgent2";
 	 }
 	 program { name: "go_urgent2";
 	    action:  STATE_SET "hidden" 0.0;
 	    transition: LINEAR 0.5;
 	    target:  "background";
+	    target:  "urgent";
 	    after:   "go_urgent";
 	 }
 	 program { name: "unset_urgent";
@@ -8660,6 +8691,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    action:  STATE_SET "default" 0.0;
 	    transition: SINUSOIDAL 0.3;
 	    target:  "background";
+	    target:  "urgent";
 	 }
 	 program { name: "exec_exec";
 	    signal:  "e,action,exec";
