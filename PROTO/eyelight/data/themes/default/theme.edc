@@ -758,7 +758,7 @@ part                                            \
         }                                       \
     }                                           \
 }                                               \
-program_resize("area_item_"area"_"id_str,0,20,0,0); \
+program_resize("area_item_"area"_"id_str,50,20,0,0); \
 program_resize("image_area_item_"area"_"id_str,-55,8,24,32);
 
 //add a text item in a horizontal area
