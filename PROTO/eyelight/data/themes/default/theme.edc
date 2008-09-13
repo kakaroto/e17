@@ -537,7 +537,7 @@ part                                \
         }                           \
         text                        \
         {                           \
-            text: content_title;    \
+            text: "<c>"content_title"</c>";    \
             style: "titleStyle";    \
         }                           \
     }                               \
@@ -566,7 +566,7 @@ part                                \
         }                           \
         text                        \
         {                           \
-            text: content_title;    \
+            text: "<c>"content_title"</c>";    \
             style: "subtitleStyle"; \
         }                           \
     }                               \

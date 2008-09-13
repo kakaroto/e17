@@ -7,8 +7,8 @@ layout: 2_columns_left;
 foot_text :"Watchwolf , watchwolf@watchwolf.fr";
 foot_image: "wolf.png";
 header_image: "logo.png";
-title: "<c>Eyelight: a presentation tools</c>";
-subtitle: "<c>When edje meets a presentation</c>";
+title: "Eyelight: a presentation tools";
+subtitle: "When edje meets a presentation";
 
 transition: fade_content;
 
