@@ -1019,7 +1019,8 @@ EventShow(const XEvent * ev)
 #if USE_COMPOSITE
 #define de ((XDamageNotifyEvent *)ev)
      case EX_EVENT_DAMAGE_NOTIFY:
-	Eprintf("%s %d+%d %dx%d\n", buf,
+	Eprintf("%s level=%d more=%x %d+%d %dx%d\n", buf,
+		de->level, de->more,
 		de->area.x, de->area.y, de->area.width, de->area.height);
 	break;
 #undef de
