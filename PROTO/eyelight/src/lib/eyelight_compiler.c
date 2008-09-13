@@ -189,12 +189,12 @@ void eyelight_compile_block_item(Eyelight_Compiler* compiler,FILE* output, Eyeli
                 && node->name == EYELIGHT_NAME_TEXT)
         {
             if(!numbering)
-                fprintf(output,"add_item_text_%s(\"%s\",%d,%d,%d,%d,\"%s\");\n"
-                        ,layout,area,item_number-1,item_number,number_item,depth
+                fprintf(output,"add_item_text_%s(\"%s\",%d,%d,\"%d\",%d,%d,\"%s\");\n"
+                        ,layout,area,item_number-1,item_number,number_item,number_item,depth
                         ,eyelight_retrieve_value_of_prop(node,0));
             else if(strcmp(numbering,"normal")==0)
-                fprintf(output,"add_item_text_%s_%s(\"%s\",%d,%d,%d,%d,\"%s\",%d);\n"
-                        ,numbering,layout,area,item_number-1,item_number
+                fprintf(output,"add_item_text_%s_%s(\"%s\",%d,%d,\"%d\",%d,%d,\"%s\",%d);\n"
+                        ,numbering,layout,area,item_number-1,item_number,item_number
                         ,number_item,depth
                         ,eyelight_retrieve_value_of_prop(node,0)
                         ,numbering_id);
@@ -203,8 +203,8 @@ void eyelight_compile_block_item(Eyelight_Compiler* compiler,FILE* output, Eyeli
                 char dec[EYELIGHT_BUFLEN], roman[EYELIGHT_BUFLEN];
                 snprintf(dec,EYELIGHT_BUFLEN,"%d",numbering_id);
                 eyelight_decimal_to_roman(dec,roman);
-                fprintf(output,"add_item_text_%s_%s(\"%s\",%d,%d,%d,%d,\"%s\",%s);\n"
-                        ,numbering,layout,area,item_number-1,item_number
+                fprintf(output,"add_item_text_%s_%s(\"%s\",%d,%d,\"%d\",%d,%d,\"%s\",%s);\n"
+                        ,numbering,layout,area,item_number-1,item_number,item_number
                         ,number_item,depth
                         ,eyelight_retrieve_value_of_prop(node,0)
                         ,roman);
@@ -242,16 +242,16 @@ void eyelight_compile_block_image(Eyelight_Compiler* compiler,FILE* output, Eyel
         {
             char* rel_w = eyelight_retrieve_value_of_prop(node_relative,0);
             char* rel_h = eyelight_retrieve_value_of_prop(node_relative,1);
-            fprintf(output,"add_image_relative_%s(\"%s\",%d,%d,%d,\"%s\",%s, %s,%s);\n",
-                    layout,area,item_number-1,item_number,number_item,image,rel_w,rel_h,border);
+            fprintf(output,"add_image_relative_%s(\"%s\",%d,%d,\"%d\",%d,\"%s\",%s, %s,%s);\n",
+                    layout,area,item_number-1,item_number,item_number,number_item,image,rel_w,rel_h,border);
         }
 
         else if(node_size)
         {
             char* size_w = eyelight_retrieve_value_of_prop(node_size,0);
             char* size_h = eyelight_retrieve_value_of_prop(node_size,1);
-            fprintf(output,"add_image_size_%s(\"%s\",%d,%d,%d,\"%s\",%s, %s,%s);\n",
-                    layout,area,item_number-1,item_number,number_item,image,size_w,size_h,border);
+            fprintf(output,"add_image_size_%s(\"%s\",%d,%d,\"%d\",%d,\"%s\",%s, %s,%s);\n",
+                    layout,area,item_number-1,item_number,item_number,number_item,image,size_w,size_h,border);
         }
         else if(node_scale)
         {
@@ -278,14 +278,14 @@ void eyelight_compile_block_image(Eyelight_Compiler* compiler,FILE* output, Eyel
             int w,h;
             evas_object_image_size_get(img,&w,&h);
             evas_free(e);
-            fprintf(output,"add_image_size_%s(\"%s\",%d,%d,%d,\"%s\",%f, %f,%s);\n",
-                    layout,area,item_number-1,item_number,number_item,image
+            fprintf(output,"add_image_size_%s(\"%s\",%d,%d,\"%d\",%d,\"%s\",%f, %f,%s);\n",
+                    layout,area,item_number-1,item_number,item_number,number_item,image
                     ,w*scale_w_d,h*scale_h_d,border);
         }
         else
         {
-            fprintf(output,"add_image_%s(\"%s\",%d,%d,%d,\"%s\",%s);\n",
-                    layout,area,item_number-1,item_number,number_item,image,border);
+            fprintf(output,"add_image_%s(\"%s\",%d,%d,\"%d\",%d,\"%s\",%s);\n",
+                    layout,area,item_number-1,item_number,item_number,number_item,image,border);
         }
         eyelight_image_add(compiler,image);
     }
@@ -305,14 +305,14 @@ void eyelight_compile_block_edc(Eyelight_Compiler* compiler,FILE* output, Eyelig
     {
         char* macro = eyelight_retrieve_value_of_prop(node_macro,0);
         if(!node_rel)
-            fprintf(output,"add_edc_%s(\"%s\",%d,%d,%d,%s);\n",layout,area,item_number-1,
-                    item_number,number_item,macro);
+            fprintf(output,"add_edc_%s(\"%s\",%d,%d,\"%d\",%d,%s);\n",layout,area,item_number-1,
+                    item_number,item_number,number_item,macro);
         else
         {
             char* rel_w = eyelight_retrieve_value_of_prop(node_rel,0);
             char* rel_h = eyelight_retrieve_value_of_prop(node_rel,1);
-            fprintf(output,"add_edc_relative_%s(\"%s\",%d,%d,%d,%s,%s,%s);\n",layout,area,item_number-1,
-                    item_number,number_item,macro,
+            fprintf(output,"add_edc_relative_%s(\"%s\",%d,%d,\"%d\",%d,%s,%s,%s);\n",layout,area,item_number-1,
+                    item_number,item_number,number_item,macro,
                     rel_w,rel_h);
         }
     }
@@ -361,12 +361,12 @@ int eyelight_compile_block_items(Eyelight_Compiler* compiler,FILE* output, Eyeli
                 {
                     case EYELIGHT_NAME_TEXT:
                         if(!numbering)
-                            fprintf(output,"add_item_text_%s(\"%s\",%d,%d,%d,%d,\"%s\");\n"
-                                    ,layout,area,item_number-1,item_number,number_item,depth
+                            fprintf(output,"add_item_text_%s(\"%s\",%d,%d,\"%d\",%d,%d,\"%s\");\n"
+                                    ,layout,area,item_number-1,item_number,item_number,number_item,depth
                                     ,eyelight_retrieve_value_of_prop(node,0));
                         else if(strcmp(numbering,"normal")==0)
-                            fprintf(output,"add_item_text_%s_%s(\"%s\",%d,%d,%d,%d,\"%s\",%d);\n"
-                                    ,numbering,layout,area,item_number-1,item_number
+                            fprintf(output,"add_item_text_%s_%s(\"%s\",%d,%d,\"%d\",%d,%d,\"%s\",%d);\n"
+                                    ,numbering,layout,area,item_number-1,item_number,item_number
                                     ,number_item,depth
                                     ,eyelight_retrieve_value_of_prop(node,0)
                                     ,numbering_id);
@@ -375,8 +375,8 @@ int eyelight_compile_block_items(Eyelight_Compiler* compiler,FILE* output, Eyeli
                             char dec[EYELIGHT_BUFLEN], roman[EYELIGHT_BUFLEN];
                             snprintf(dec,EYELIGHT_BUFLEN,"%d",numbering_id);
                             eyelight_decimal_to_roman(dec,roman);
-                            fprintf(output,"add_item_text_%s_%s(\"%s\",%d,%d,%d,%d,\"%s\",%s);\n"
-                                    ,numbering,layout,area,item_number-1,item_number
+                            fprintf(output,"add_item_text_%s_%s(\"%s\",%d,%d,\"%d\",%d,%d,\"%s\",%s);\n"
+                                    ,numbering,layout,area,item_number-1,item_number,item_number
                                     ,number_item,depth
                                     ,eyelight_retrieve_value_of_prop(node,0)
                                     ,roman);
@@ -453,12 +453,12 @@ void eyelight_compile_block_area(Eyelight_Compiler* compiler,FILE* output, Eyeli
                 switch(node->name)
                 {
                     case EYELIGHT_NAME_TEXT:
-                        fprintf(output,"add_text_%s(\"%s\",%d,%d,%d,\"%s\");\n",layout,area,item_number-1,item_number,number_item,eyelight_retrieve_value_of_prop(node,0));
+                        fprintf(output,"add_text_%s(\"%s\",%d,%d,\"%d\",%d,\"%s\");\n",layout,area,item_number-1,item_number,item_number,number_item,eyelight_retrieve_value_of_prop(node,0));
                         item_number++;
                         break;
                     case EYELIGHT_NAME_IMAGE:
                         value = eyelight_retrieve_value_of_prop(node,0);
-                        fprintf(output,"add_image_%s(\"%s\",%d,%d,%d,\"%s\",0)\n",layout,area,item_number-1,item_number,number_item,value);
+                        fprintf(output,"add_image_%s(\"%s\",%d,%d,\"%d\",%d,\"%s\",0)\n",layout,area,item_number-1,item_number,item_number,number_item,value);
                         eyelight_image_add(compiler,value);
                         item_number++;
                         break;

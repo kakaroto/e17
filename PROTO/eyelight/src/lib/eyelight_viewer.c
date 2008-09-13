@@ -289,7 +289,10 @@ void eyelight_viewer_resize_screen(Eyelight_Viewer*pres, Evas_Coord w, Evas_Coor
     for(i=0;i<pres->size;i++)
     {
         if(pres->slides[i])
+        {
             evas_object_resize(pres->slides[i], w, h);
+            edje_object_signal_emit(pres->slides[i],"resize","eyelight");
+        }
     }
     switch(pres->state)
     {
@@ -308,6 +311,7 @@ void eyelight_viewer_resize_screen(Eyelight_Viewer*pres, Evas_Coord w, Evas_Coor
         default: break;
     }
     eyelight_viewer_font_size_update(pres);
+
 }
 
 /*
@@ -416,6 +420,7 @@ Evas_Object* eyelight_viewer_slide_get(Eyelight_Viewer*pres,int pos)
                 break;
             default: break;
         }
+        edje_object_signal_emit(pres->slides[pos],"resize","eyelight");
     }
     return pres->slides[pos];
 }
@@ -573,11 +578,6 @@ void eyelight_viewer_font_size_update(Eyelight_Viewer* pres)
     scale_w = w/(double)pres->default_size_w;
     scale_h = h/(double)pres->default_size_h;
     scale = (scale_w+scale_h)/2.0;
-
-    /*for(i=0;i<pres->size;i++)
-        if(pres->slides[i])
-            evas_object_scale_set(pres->slides[i],scale);
-*/
 
     ecore_list_first_goto(pres->text_class);
     Eyelight_Text_Class* class;

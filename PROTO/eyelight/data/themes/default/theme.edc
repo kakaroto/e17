@@ -36,23 +36,41 @@ description                             \
     }                                   \
 }
 
-#define program_area_item(area,iditem,id,idnext,desc,speed)  \
-program                                         \
-{                                               \
-    name: "program_area_item_"area"_"iditem"_"id;   \
-    source: "eyelight";                           \
-    signal: "transition,end,"id;                \
-    action: STATE_SET desc 0.0;                 \
-    target: "image_area_item_"area"_"iditem;    \
-    transition: LINEAR speed;                     \
-    after: "program_area_item_"area"_"iditem"_"idnext;  \
+
+//theme's macro
+#define program_resize(part_name,default_rel1_off_x, default_rel1_off_y, default_rel2_off_x, default_rel2_off_y) \
+program                                                                 \
+{                                                                       \
+    name: part_name;                                                    \
+    source: "eyelight";                                                 \
+    signal: "resize";                                                   \
+    script                                                              \
+    {                                                                   \
+        new x,y,w,h;                                                    \
+        new off_x,off_y;                                                \
+        new Float:def_rel1_offset_x = default_rel1_off_x;               \
+        new Float:def_rel1_offset_y = default_rel1_off_y;               \
+	new Float:def_rel2_offset_x = default_rel2_off_x;               \
+        new Float:def_rel2_offset_y = default_rel2_off_y;               \
+                                                                        \
+        get_geometry(PART:"slide", x, y, w, h);                         \
+        new Float:scale = ((w/1024.0) + (h/768.0)) / 2.0;               \
+                                                                        \
+        custom_state(PART:part_name, "default", 0.0);                   \
+        off_x = round(def_rel1_offset_x * scale);                       \
+        off_y = round(def_rel1_offset_y * scale);                       \
+        set_state_val(PART:part_name, STATE_REL1_OFFSET, off_x, off_y); \
+                                                                        \
+        off_x = round(def_rel2_offset_x * scale);                       \
+        off_y = round(def_rel2_offset_y * scale);                       \
+        set_state_val(PART:part_name, STATE_REL2_OFFSET, off_x, off_y); \
+                                                                        \
+        set_state(PART:part_name, "custom", 0.0);                       \
+        }                                                               \
 }
 
 
-
-//theme's macro
-
-#define vague(image_file,rel1_1,rel1_2,rel2_1,rel2_2,offx,offy)   \
+#define vague(image_file,rel1_1_1,rel1_1_2,rel1_2_1,rel1_2_2,rel2_1_1,rel2_1_2,rel2_2_1,rel2_2_2)   \
 part                                \
 {                                   \
     name: image_file;               \
@@ -70,38 +88,34 @@ part                                \
     }                               \
     description                     \
     {                               \
-        state: "end" 0.0;           \
+        state: "start" 0.0;           \
         inherit: "default" 0.0;     \
         visible:1;                  \
         rel1                        \
         {                           \
-            relative: rel2_1 rel2_2;\
+            relative: rel1_1_1 rel1_1_2;\
             to: "slide";            \
-            offset: -offx -offy;    \
         }                           \
         rel2                        \
         {                           \
-            relative: rel2_1 rel2_2;\
+            relative: rel1_2_1 rel1_2_2;\
             to: "slide";            \
-            offset: offx offy;      \
         }                           \
     }                               \
     description                     \
     {                               \
-        state: "start" 0.0;         \
+        state: "end" 0.0;         \
         inherit: "default" 0.0;     \
         visible: 1;                 \
         rel1                        \
         {                           \
-            relative: rel1_1 rel1_2;\
+            relative: rel2_1_1 rel2_1_2;\
             to: "slide";            \
-            offset: -offx -offy;    \
         }                           \
         rel2                        \
         {                           \
-            relative: rel1_1 rel1_2;\
+            relative: rel2_2_1 rel2_2_2;\
             to: "slide";            \
-            offset: offx offy;      \
         }                           \
     }                               \
 }
@@ -297,7 +311,7 @@ data
 }
 
 //first function called in a slide
-#define pre_fct()                   \
+#define pre_fct()                                       \
 part                                \
 {                                   \
     name: "slide";                  \
@@ -404,10 +418,10 @@ part                                \
         }                           \
     }                               \
 }                                   \
-vague("vague_1.png",0.05,0.05,0.95,0.05,7,3);\
-vague("vague_2.png",0.95,0.05,0.95,0.95,3,7);\
-vague("vague_3.png",0.95,0.95,0.05,0.95,7,3);\
-vague("vague_4.png",0.05,0.95,0.05,0.05,3,7);\
+vague("vague_1.png",0.045,0.045,0.045+12/1024,0.045+6/768, 0.945,0.045,0.945+12/1024,0.045+6/768);\
+vague("vague_2.png",0.947,0.045,0.947+6/1024,0.045+12/768, 0.947,0.945,0.947+6/1024,0.945+12/768);\
+vague("vague_3.png",0.945,0.945,0.95+12/1024,0.95+6/768, 0.045,0.95,0.045+12/1024,0.95+6/768);\
+vague("vague_4.png",0.047,0.945,0.047+6/1024,0.945+12/768, 0.047,0.045,0.047+6/1024,0.045+12/768);\
 program                             \
 {                                   \
     name: "program_vague_hide";     \
@@ -655,7 +669,7 @@ part                                \
 
 
 //add a text item in a vertical area
-#define add_item_text_vbox(area,id_prev,id,nb_items,depth,content_text)\
+#define add_item_text_vbox(area,id_prev,id,id_str,nb_items,depth,content_text)\
 part                                            \
 {                                               \
     name: "area_item_"area"_"id;                \
@@ -744,33 +758,11 @@ part                                            \
         }                                       \
     }                                           \
 }                                               \
-program                                         \
-{                                               \
-    name: "program_area_item_"area"_"id;        \
-    source: "eyelight";                         \
-    signal: "transition,end";                   \
-    action: STATE_SET "default" 0.0;            \
-    target: "image_area_item_"area"_"id;        \
-    transition: LINEAR 0.1;                     \
-    after: "program_area_item_"area"_"id"_1";   \
-}                                               \
-program_area_item(area,id,1,2,"01",0.1)               \
-program_area_item(area,id,2,3,"02",0.1)               \
-program_area_item(area,id,3,4,"03",0.1)               \
-program_area_item(area,id,4,5,"02",0.1)               \
-program_area_item(area,id,5,6,"01",0.1)               \
-program                                         \
-{                                               \
-    name: "program_area_item_"area"_"id"_6";    \
-    source: "eyelight";                         \
-    signal: "transition,end,6";                 \
-    action: STATE_SET "default" 0.0;            \
-    target: "image_area_item_"area"_"id;        \
-    transition: LINEAR 0.1;                     \
-}
+program_resize("area_item_"area"_"id_str,0,20,0,0); \
+program_resize("image_area_item_"area"_"id_str,-55,8,24,32);
 
 //add a text item in a horizontal area
-#define add_item_text_hbox(area,id_prev,id,nb_items,depth,content_text)\
+#define add_item_text_hbox(area,id_prev,id,id_str,nb_items,depth,content_text)\
 part                                            \
 {                                               \
     name: "area_item_"area"_"id;                \
@@ -856,34 +848,10 @@ part                                            \
         }                                       \
     }                                           \
 }                                               \
-program                                         \
-{                                               \
-    name: "program_area_item_"area"_"id;        \
-    source: "eyelight";                           \
-    signal: "transition,end";                   \
-    action: STATE_SET "default" 0.0;            \
-    target: "image_area_item_"area"_"id;        \
-    transition: LINEAR 0.1;                    \
-    after: "program_area_item_"area"_"id"_1";   \
-}                                               \
-program_area_item(area,id,1,2,"01",0.1)               \
-program_area_item(area,id,2,3,"02",0.1)               \
-program_area_item(area,id,3,4,"03",0.1)               \
-program_area_item(area,id,4,5,"02",0.1)               \
-program_area_item(area,id,5,6,"01",0.1)               \
-program                                         \
-{                                               \
-    name: "program_area_item_"area"_"id"_6";    \
-    source: "eyelight";                           \
-    signal: "transition,end,6";                 \
-    action: STATE_SET "default" 0.0;            \
-    target: "image_area_item_"area"_"id;        \
-    transition: LINEAR 0.1;                    \
-}
 
 
 //item with a normal enumeration
-#define add_item_text_normal_vbox(area,id_prev,id,nb_items,depth,content_text,enum_id)\
+#define add_item_text_normal_vbox(area,id_prev,id,id_str,nb_items,depth,content_text,enum_id)\
 part                                            \
 {                                               \
     name: "area_item_"area"_"id;                \
@@ -915,9 +883,10 @@ part                                            \
             min: 0 1;                           \
         }                                       \
     }                                           \
-}
+}                                               \
+program_resize("area_item_"area"_"id_str,0,20,0,0);
 
-#define add_item_text_normal_hbox(area,id_prev,id,nb_items,depth,content_text,enum_id)\
+#define add_item_text_normal_hbox(area,id_prev,id,id_str,nb_items,depth,content_text,enum_id)\
 part                                            \
 {                                               \
     name: "area_item_"area"_"id;                \
@@ -933,7 +902,6 @@ part                                            \
         {                                       \
             relative: id*(1/nb_items) 0.0;      \
             to: "area_"area;                    \
-            offset: 32 0;                       \
         }                                       \
         rel2                                    \
         {                                       \
@@ -951,14 +919,14 @@ part                                            \
 
 
 //item with a roman enumeration
-#define add_item_text_roman_vbox(area,id_prev,id,nb_items,depth,content_text,enum_id)\
-    add_item_text_normal_vbox(area,id_prev,id,nb_items,depth,content_text,enum_id);
+#define add_item_text_roman_vbox(area,id_prev,id,id_str,nb_items,depth,content_text,enum_id)\
+    add_item_text_normal_vbox(area,id_prev,id,id_str,nb_items,depth,content_text,enum_id);
 
 #define add_item_text_roman_hbox(area,id_prev,id,nb_items,depth,content_text,enum_id) \
-    add_item_text_normal_hbox(area,id_prev,id,nb_items,depth,content_text,enum_id);
+    add_item_text_normal_hbox(area,id_prev,id,id_str,nb_items,depth,content_text,enum_id);
 
 //add a text in a vertical area
-#define add_text_vbox(area,id_prev,id,nb_items,content_text)\
+#define add_text_vbox(area,id_prev,id,id_str,nb_items,content_text)\
 part                                            \
 {                                               \
     name: "area_item_"area"_"id;                \
@@ -990,11 +958,11 @@ part                                            \
             min: 0 1;                           \
         }                                       \
     }                                           \
-}
-
+}                                               \
+program_resize("area_item_"area"_"id_str,0,20,0,0);
 
 //add a text in a vertical area
-#define add_text_hbox(area,id_prev,id,nb_items,content_text)\
+#define add_text_hbox(area,id_prev,id,id_str,nb_items,content_text)\
 part                                            \
 {                                               \
     name: "area_item_"area"_"id;                \
@@ -1028,7 +996,7 @@ part                                            \
 
 
 //add an edc file in a vertical area
-#define add_edc_vbox(area,id_prev,id,nb_items,content_edc_fct)\
+#define add_edc_vbox(area,id_prev,id,id_str,nb_items,content_edc_fct)\
 part                                            \
 {                                               \
     name: "area_item_"area"_"id;                \
@@ -1054,10 +1022,12 @@ part                                            \
         }                                       \
     }                                           \
 }                                               \
-content_edc_fct("area_item_"area"_"id);
+content_edc_fct("area_item_"area"_"id);         \
+program_resize("area_item_"area"_"id_str,0,20,0,0);
+
 
 //add an edc file in a horyzontal area
-#define add_edc_hbox(area,id_prev,id,nb_items,content_edc_fct)\
+#define add_edc_hbox(area,id_prev,id,id_str,nb_items,content_edc_fct)\
 part                                            \
 {                                               \
     name: "area_item_"area"_"id;                \
@@ -1085,7 +1055,7 @@ content_edc_fct("area_item_"area"_"id);
 
 
 //add an edc file in a vertical area
-#define add_edc_relative_vbox(area,id_prev,id,nb_items,content_edc_fct,rel_w,rel_h)\
+#define add_edc_relative_vbox(area,id_prev,id,id_str,nb_items,content_edc_fct,rel_w,rel_h)\
 part                                            \
 {                                               \
     name: "area_item_"area"_"id;                \
@@ -1111,10 +1081,11 @@ part                                            \
         }                                       \
     }                                           \
 }                                               \
-content_edc_fct("area_item_"area"_"id);
+content_edc_fct("area_item_"area"_"id) ;        \
+program_resize("area_item_"area"_"id_str,0,20,0,0);
 
 //add an edc file in a horyzontal area
-#define add_edc_relative_hbox(area,id_prev,id,nb_items,content_edc_fct,rel_w,rel_h)\
+#define add_edc_relative_hbox(area,id_prev,id,id_str,nb_items,content_edc_fct,rel_w,rel_h)\
 part                                            \
 {                                               \
     name: "area_item_"area"_"id;                \
@@ -1143,7 +1114,7 @@ content_edc_fct("area_item_"area"_"id);
 
 
 //add an image in a vertical area
-#define add_image_vbox(area,id_prev,id,nb_items,content_image,border_size)  \
+#define add_image_vbox(area,id_prev,id,id_str,nb_items,content_image,border_size)  \
 add_border("area_item_"area"_"id,border_size);      \
 part                                                \
 {                                                   \
@@ -1172,10 +1143,11 @@ part                                                \
             normal: content_image;                  \
         }                                           \
     }                                               \
-}
+}                                                   \
+program_resize("area_item_"area"_"id_str,0,20,0,0);
 
 //add an image in a horyzontal area
-#define add_image_hbox(area,id_prev,id,nb_items,content_image,border_size)  \
+#define add_image_hbox(area,id_prev,id,id_str,nb_items,content_image,border_size)  \
 add_border("area_item_"area"_"id,border_size);      \
 part                                                \
 {                                                   \
@@ -1206,7 +1178,7 @@ part                                                \
 
 
 //add an image in a vertical area
-#define add_image_size_vbox(area,id_prev,id,nb_items,content_image,size_w,size_h,border_size)  \
+#define add_image_size_vbox(area,id_prev,id,id_str,nb_items,content_image,size_w,size_h,border_size)  \
 add_border("area_item_"area"_"id,border_size);      \
 part                                                \
 {                                                   \
@@ -1237,12 +1209,13 @@ part                                                \
             normal: content_image;                  \
         }                                           \
     }                                               \
-}
+}                                                   \
+program_resize("area_item_"area"_"id_str,0,20,0,0);
 
 
 
 //add an image in a horyzontal area
-#define add_image_size_hbox(area,id_prev,id,nb_items,content_image,size_w, size_h, border_size)  \
+#define add_image_size_hbox(area,id_prev,id,id_str,nb_items,content_image,size_w, size_h, border_size)  \
 add_border("area_item_"area"_"id,border_size);      \
 part                                                \
 {                                                   \
@@ -1274,7 +1247,7 @@ part                                                \
 
 
 //add an image in a vertical area
-#define add_image_relative_vbox(area,id_prev,id,nb_items,content_image,rel_w,rel_h,border_size)  \
+#define add_image_relative_vbox(area,id_prev,id,id_str,nb_items,content_image,rel_w,rel_h,border_size)  \
 add_border("area_item_"area"_"id,border_size);      \
 part                                                \
 {                                                   \
@@ -1303,12 +1276,13 @@ part                                                \
             normal: content_image;                  \
         }                                           \
     }                                               \
-}
+}                                                   \
+program_resize("area_item_"area"_"id_str,0,20,0,0);
 
 
 
 //add an image in a horyzontal area
-#define add_image_relative_hbox(area,id_prev,id,nb_items,content_image,rel_w, rel_h, border_size)  \
+#define add_image_relative_hbox(area,id_prev,id,id_str,nb_items,content_image,rel_w, rel_h, border_size)  \
 add_border("area_item_"area"_"id,border_size);      \
 part                                                \
 {                                                   \
