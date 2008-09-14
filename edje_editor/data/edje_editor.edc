@@ -175,6 +175,7 @@ images {
    image: "grad_rectangular.png" LOSSY 95;
    image: "grad_angular.png" LOSSY 95;
    image: "grad_sinusoidal.png" LOSSY 95;
+   image: "data_icon.png" LOSSY 95;
 }
 
 fonts {
@@ -348,6 +349,24 @@ collections {
                rel1 {relative: 0.0 0.0; offset: 0 0;}
                rel2 {relative: 0.0 0.0; offset: 22 20;}
                image {normal: "spectra_icon.png";}
+            }
+         }
+      }
+   }
+   group{
+      name: "DATA.PNG";
+      min: 22 20;
+      max: 22 20;
+      parts{
+         part{
+            name: "StaticImage";
+            type: IMAGE;
+            mouse_events: 0;
+            description{
+               state: "default" 0.0;
+               rel1 {relative: 0.0 0.0; offset: 0 0;}
+               rel2 {relative: 0.0 0.0; offset: 22 20;}
+               image {normal: "data_icon.png";}
             }
          }
       }

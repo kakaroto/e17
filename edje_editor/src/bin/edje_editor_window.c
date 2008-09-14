@@ -205,6 +205,9 @@ window_main_create(void)
 
    //Spetrum window
    spectra_window_create();
+   
+   //Data window
+   data_window_create();
 
    //Create the main edje object to edit
    edje_o = edje_object_add(UI_evas);
@@ -449,6 +452,9 @@ _window_all_button_click_cb(Etk_Button *button, void *data)
       break;
    case TOOLBAR_SPECTRUM:
       spectra_window_show();
+      break;
+   case TOOLBAR_DATA:
+      data_window_show();
       break;
    case TOOLBAR_FONT_BROWSER:
       dialog_alert_show("Font Browser");

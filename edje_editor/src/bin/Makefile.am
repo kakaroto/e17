@@ -32,6 +32,7 @@ edje_editor_fill.h \
 edje_editor_spectra.h \
 edje_editor_spectra_widget.h \
 edje_editor_tree_model_spectra.h \
+edje_editor_data.h \
 main.h
 
 
@@ -56,6 +57,7 @@ edje_editor_fill.c \
 edje_editor_spectra.c \
 edje_editor_spectra_widget.c \
 edje_editor_tree_model_spectra.c \
+edje_editor_data.c \
 main.c \
 $(edje_editor_INCLUDES)
 

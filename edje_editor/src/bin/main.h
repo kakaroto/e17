@@ -42,6 +42,7 @@
 #include "edje_editor_spectra.h"
 #include "edje_editor_spectra_widget.h"
 #include "edje_editor_tree_model_spectra.h"
+#include "edje_editor_data.h"
 
 /* DEFINES */
 #define USE_GL_ENGINE 0
@@ -76,6 +77,7 @@ enum various
    TOOLBAR_MOVE_DOWN,
    TOOLBAR_IMAGE_BROWSER,
    TOOLBAR_SPECTRUM,
+   TOOLBAR_DATA,
    IMAGE_BROWSER_SHOW,
    IMAGE_BROWSER_CLOSE,
    TOOLBAR_FONT_BROWSER,

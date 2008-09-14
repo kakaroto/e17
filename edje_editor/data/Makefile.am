@@ -50,6 +50,7 @@ EXTRA_DIST = edje_editor.edc \
              images/move.png \
              images/miniarrow.png \
              images/gimp.png \
+             images/data_icon.png \
              edje_editor.png
 
 SUBDIRS = fonts
