@@ -419,8 +419,8 @@ int main(int argc, char*argv[])
         //    ee = ecore_evas_fws_buffer_window(NULL, 0, 0, 720, 576, 0);
         if(strcmp(argv[engine], "sdl")==0)
             ee = ecore_evas_sdl_new(NULL, 1024, 768, 0, 0, 0, 0);
-        //else if(strcmp(argv[engine], "sdl16")==0)
-        //    ee = ecore_evas_sdl16_new(NULL, 720, 576, 0, 0, 0, 0);
+        else if(strcmp(argv[engine], "sdl16")==0)
+            ee = ecore_evas_sdl16_new(NULL, 720, 576, 0, 0, 0, 0);
         else if(strcmp(argv[engine],"x11")==0)
             ee = ecore_evas_software_x11_new (NULL, 0,  0, 0, 1024, 768);
         else if(strcmp(argv[engine],"gl")==0)

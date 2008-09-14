@@ -1,0 +1,13 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+datarootdir=@datarootdir@
+datadir=@datadir@
+
+Name: exalt_dbus
+Description: bridge between an application and exaltd.
+Requires: @requirements@
+Version: @VERSION@
+Libs: -L${libdir} -lexalt_dbus
+Cflags: -I${includedir} -I${includedir}/exalt_dbus

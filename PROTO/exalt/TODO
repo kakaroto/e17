@@ -1,0 +1,11 @@
+######## daemon - lib_dbus
+
+Rewritethe dbus API:
+- an asynchronous API
+- add different call (not only read/write) to get something more into respectable
+
+
+####### libexalt
+
+- rewrite the communication with wpa_supplicant: send information to the wpa_supplicant daemon instead of writing a configuration file
+- rewrite the scan method: detect the encryption mode

@@ -1,0 +1,13 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+datarootdir=@datarootdir@
+datadir=@datadir@
+
+Name: exalt
+Description: Exalt network toolkit.
+Requires: @requirements@
+Version: @VERSION@
+Libs: -L${libdir} -lexalt
+Cflags: -I${includedir} -I${includedir}/exalt
