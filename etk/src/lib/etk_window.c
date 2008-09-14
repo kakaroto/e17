@@ -787,7 +787,7 @@ static Etk_Bool _etk_window_size_requested_cb(Etk_Object *object, Etk_Size *requ
    if (!(window = ETK_WINDOW(object)) || !requested_size)
       return ETK_TRUE;
 
-   if (requested_size->w >= 0 && requested_size->h >= 0)
+   if (requested_size->w > 0 && requested_size->h > 0)
    {
       etk_engine_window_size_min_set(window, requested_size->w, requested_size->h);
 
