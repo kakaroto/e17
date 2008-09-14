@@ -9334,12 +9334,12 @@ collections { /* begin the collection of edje groups that are in this file */
 	       max: 23 24;
 	       align: 1.0 0.5;
 	       rel1 {
-		  relative: 1.0 0.0;
-		  offset:   -4  1;
+		  relative: 1.0 0.5;
+		  offset:   -23  -12;
 	       }
 	       rel2 {
-		  relative: 1.0 1.0;
-		  offset:   -4  -1;
+		  relative: 1.0 0.5;
+		  offset:   -1  11;
 		  to_y: "e.text.label";
 	       }
 	       image.normal: "pager_window.png";
