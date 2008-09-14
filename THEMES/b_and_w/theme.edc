@@ -1,7 +1,8 @@
 // TODO: Items that need some revision
 // gadman popup (done)
-// gadman frame (done -review)
+// gadman frame (done - review)
 // gadman full_bg (done - review)
+// gadman control (in progress - See FIXME)
 // battery popup (done - review - see 'code' for notes)
 // desklock (done - review - see 'code' for notes)
 // fileman (list mode)
@@ -13,7 +14,6 @@
 //  shelf_alt_inset -> inset_raised.png ???
 //
 // TODO: Working order
-// gadman control
 // tlist (needs code to be the same as ilist with raising)
 // fileman (icon mode etc.)
 // slidesel (i know. no examples of this around).
@@ -37,8 +37,11 @@
 //	      - Fix ibox urgent / icon_overlay problem
 //
 // TODO: Icons (redo)
+// Border buttons. Revise and resuse most. Mini-button has to go.
 // System buttons (restart,logout,hibernate, etc etc)
 // Window icons (pager, window remembers, etc etc)
+// Wallpaper
+// Icon theme?
 // E icon
 // Extensions
 // Mixer
@@ -17360,7 +17363,321 @@ collections { /* begin the collection of edje groups that are in this file */
 	 }
       }
    }
+   
+   group { name: "e/gadman/control";
+      images {
+	 image: "gadman_frame.png" COMP;
+	 image: "slider.png" COMP;
+	 image: "slider_clicked.png" COMP;
+      }
+      parts {
+	 part { name: "hclip";
+	    mouse_events:  0;
+	    type: RECT;
+	    description { state: "default" 0.0;
+	       visible: 1;
+	       rel1.offset:   -80    -80;
+	       rel2.offset:   79   79;
+	    }
+	    description { state: "disabled" 0.0;
+	       inherit: "default" 0.0;
+	       visible : 0;
+	    }
+	 }
+	 part { name: "vclip";
+	    mouse_events:  0;
+	    type: RECT;
+	    description { state: "default" 0.0;
+	       visible: 1;
+	       rel1.offset:   -80    -80;
+	       rel2.offset:   79   79;
+	    }
+	    description { state: "disabled" 0.0;
+	       inherit: "default" 0.0;
+	       visible : 0;
+	    }
+	 }
+	 part { name: "overlay";
+	    mouse_events:  1;
+	    description { state: "default" 0.0;
+	       rel1.offset:   4    4;
+	       rel2.offset:   -5   -5;
+	       image.normal: "gadman_frame.png";
+	       fill {
+		  size {
+		     relative: 0 0;
+		     offset: 24 24;
+		  }
+	       }
+	    }
+	 }
+	 part { name: "h1";
+	    mouse_events:  1;
+	    clip_to: "hclip";
+	    description { state: "default" 0.0;
+	       align: 1.0 0.5;
+	       min: 18 18;
+	       max: 18 18;
+	       rel1 {
+		  relative: 0.0  0.0;
+		  offset:   -5   0;
+	       }
+	       rel2 {
+		  relative: 0.0  1.0;
+		  offset:   -5   -1;
+	       }
+	       image.normal: "slider.png";
+	    }
+	    description { state: "clicked" 0.0;
+	       inherit: "default" 0.0;
+	       image.normal: "slider_clicked.png";
+	    }
+	 }
+	 part { name: "h2";
+	    mouse_events:  1;
+	    clip_to: "hclip";
+	    description { state: "default" 0.0;
+	       align: 0.0 0.5;
+	       min: 18 18;
+	       max: 18 18;
+	       rel1 {
+		  relative: 1.0  0.0;
+		  offset:   4    0;
+	       }
+	       rel2 {
+		  relative: 1.0  1.0;
+		  offset:   0    -1;
+	       }
+	       image.normal: "slider.png";
+	    }
+	    description { state: "clicked" 0.0;
+	       inherit: "default" 0.0;
+	       image.normal: "slider_clicked.png";
+	    }
+	 }
+	 part { name: "v1";
+	    mouse_events:  1;
+	    clip_to: "vclip";
+	    description { state: "default" 0.0;
+	       align: 0.5 1.0;
+	       min: 18 18;
+	       max: 18 18;
+	       rel1 {
+		  relative: 0.0  0.0;
+		  offset:   0    -5;
+	       }
+	       rel2 {
+		  relative: 1.0  0.0;
+		  offset:   -1   -5;
+	       }
+	       image.normal: "slider.png";
+	    }
+	    description { state: "clicked" 0.0;
+	       inherit: "default" 0.0;
+	       image.normal: "slider_clicked.png";
+	    }
+	 }
+	 part { name: "v2";
+	    mouse_events:  1;
+	    clip_to: "vclip";
+	    description { state: "default" 0.0;
+	       align: 0.5 0.0;
+	       min: 18 18;
+	       max: 18 18;
+	       rel1 {
+		  relative: 0.0  1.0;
+		  offset:   0    5;
+	       }
+	       rel2 {
+		  relative: 1.0  1.0;
+		  offset:   -1   5;
+	       }
+	       image.normal: "slider.png";
+	    }
+	    description { state: "clicked" 0.0;
+	       inherit: "default" 0.0;
+	       image.normal: "slider_clicked.png";
+	    }
+	 }
+      }
+      programs {
+	 program { name: "api_hsize_on";
+	    signal:  "e,state,hsize,on";
+	    source:  "e";
+	    action:  STATE_SET "default" 0.0;
+	    target:  "hclip";
+	 }
+	 program { name: "api_hsize_off";
+	    signal:  "e,state,hsize,off";
+	    source:  "e";
+	    action:  STATE_SET "disabled" 0.0;
+	    target:  "hclip";
+	 }
+	 program { name: "api_vsize_on";
+	    signal:  "e,state,vsize,on";
+	    source:  "e";
+	    action:  STATE_SET "default" 0.0;
+	    target:  "vclip";
+	 }
+	 program { name: "api_vsize_off";
+	    signal:  "e,state,vsize,off";
+	    source:  "e";
+	    action:  STATE_SET "disabled" 0.0;
+	    target:  "vclip";
+	 }
+   /*      
+	 program {
+	    name:    "api_move_on";
+	    signal:  "e,state,move,on";
+	    source:  "e";
+	 }
+	 program {
+	    name:    "api_move_off";
+	    signal:  "e,state,move,off";
+	    source:  "e";
+	 }
+	 program {
+	    name:    "api_active";
+	    signal:  "e,state,focused";
+	    source:  "e";
+	 }
+	 program {
+	    name:    "api_inactive";
+	    signal:  "e,state,unfocused";
+	    source:  "e";
+	 }
+   */      
+	 program { name: "mv_down";
+	    signal:  "mouse,down,1";
+	    source:  "overlay";
+	    action:  SIGNAL_EMIT "e,action,move,start" "";
+	 }
+	 program { name: "mv_up";
+	    signal:  "mouse,up,1";
+	    source:  "overlay";
+	    action:  SIGNAL_EMIT "e,action,move,stop" "";
+	 }
+	 program { name: "mv_move";
+	    signal:  "mouse,move";
+	    source:  "overlay";
+	    action:  SIGNAL_EMIT "e,action,move,go" "";
+	 }
+	 
+	 program { name: "h1_down1";
+	    signal:  "mouse,down,1";
+	    source:  "h1";
+	    action:  STATE_SET "clicked" 0.0;
+	    target:  "h1";
+	 }
+	 program { name: "h1_up1";
+	    signal:  "mouse,up,1";
+	    source:  "h1";
+	    action:  STATE_SET "default" 0.0;
+	    target:  "h1";
+	 }
+	 program { name: "h1_down2";
+	    signal:  "mouse,down,1";
+	    source:  "h1";
+	    action:  SIGNAL_EMIT "e,action,resize,left,start" "";
+	 }
+	 program { name: "h1_up2";
+	    signal:  "mouse,up,1";
+	    source:  "h1";
+	    action:  SIGNAL_EMIT "e,action,resize,left,stop" "";
+	 }
+	 program { name: "h1_move";
+	    signal:  "mouse,move";
+	    source:  "h1";
+	    action:  SIGNAL_EMIT "e,action,resize,left,go" "";
+	 }
 
+      
+	 program { name: "h2_down1";
+	    signal:  "mouse,down,1";
+	    source:  "h2";
+	    action:  STATE_SET "clicked" 0.0;
+	    target:  "h2";
+	 }
+	 program { name: "h2_up1";
+	    signal:  "mouse,up,1";
+	    source:  "h2";
+	    action:  STATE_SET "default" 0.0;
+	    target:  "h2";
+	 }
+	 program { name: "h2_down2";
+	    signal:  "mouse,down,1";
+	    source:  "h2";
+	    action:  SIGNAL_EMIT "e,action,resize,right,start" "";
+	 }
+	 program { name: "h2_up2";
+	    signal:  "mouse,up,1";
+	    source:  "h2";
+	    action:  SIGNAL_EMIT "e,action,resize,right,stop" "";
+	 }
+	 program { name: "h2_move";
+	    signal:  "mouse,move";
+	    source:  "h2";
+	    action:  SIGNAL_EMIT "e,action,resize,right,go" "";
+	 }
+	 
+	 program { name: "v1_down1";
+	    signal:  "mouse,down,1";
+	    source:  "v1";
+	    action:  STATE_SET "clicked" 0.0;
+	    target:  "v1";
+	 }
+	 program { name: "v1_up1";
+	    signal:  "mouse,up,1";
+	    source:  "v1";
+	    action:  STATE_SET "default" 0.0;
+	    target:  "v1";
+	 }
+	 program { name: "v1_down2";
+	    signal:  "mouse,down,1";
+	    source:  "v1";
+	    action:  SIGNAL_EMIT "e,action,resize,up,start" "";
+	 }
+	 program { name: "v1_up2";
+	    signal:  "mouse,up,1";
+	    source:  "v1";
+	    action:  SIGNAL_EMIT "e,action,resize,up,stop" "";
+	 }
+	 program { name: "v1_move";
+	    signal:  "mouse,move";
+	    source:  "v1";
+	    action:  SIGNAL_EMIT "e,action,resize,up,go" "";
+	 }
+      
+	 program { name: "v2_down1";
+	    signal:  "mouse,down,1";
+	    source:  "v2";
+	    action:  STATE_SET "clicked" 0.0;
+	    target:  "v2";
+	 }
+	 program { name: "v2_up1";
+	    signal:  "mouse,up,1";
+	    source:  "v2";
+	    action:  STATE_SET "default" 0.0;
+	    target:  "v2";
+	 }
+	 program { name: "v2_down2";
+	    signal:  "mouse,down,1";
+	    source:  "v2";
+	    action:  SIGNAL_EMIT "e,action,resize,down,start" "";
+	 }
+	 program { name: "v2_up2";
+	    signal:  "mouse,up,1";
+	    source:  "v2";
+	    action:  SIGNAL_EMIT "e,action,resize,down,stop" "";
+	 }
+	 program { name: "v2_move";
+	    signal:  "mouse,move";
+	    source:  "v2";
+	    action:  SIGNAL_EMIT "e,action,resize,down,go" "";
+	 }
+      }
+   }
+   
 /////////////////////////////////////////////////////////////////////////////
    /*** ICONS ***/
 // FIXME: DO
