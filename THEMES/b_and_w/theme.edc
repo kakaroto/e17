@@ -41,7 +41,9 @@
 // System buttons (restart,logout,hibernate, etc etc)
 // Window icons (pager, window remembers, etc etc)
 // Wallpaper
-// Icon theme?
+// Icon theme icon?
+// Interactions
+// Dialogs
 // E icon
 // Extensions
 // Mixer
@@ -17367,6 +17369,7 @@ collections { /* begin the collection of edje groups that are in this file */
    group { name: "e/gadman/control";
       images {
 	 image: "gadman_frame.png" COMP;
+	 image: "shelf_alt_inset.png" COMP;
 	 image: "slider.png" COMP;
 	 image: "slider_clicked.png" COMP;
       }
@@ -17400,8 +17403,8 @@ collections { /* begin the collection of edje groups that are in this file */
 	 part { name: "overlay";
 	    mouse_events:  1;
 	    description { state: "default" 0.0;
-	       rel1.offset:   4    4;
-	       rel2.offset:   -5   -5;
+	       rel1.offset:   1    1;
+	       rel2.offset:   -2   -2;
 	       image.normal: "gadman_frame.png";
 	       fill {
 		  size {
@@ -17499,6 +17502,27 @@ collections { /* begin the collection of edje groups that are in this file */
 	       image.normal: "slider_clicked.png";
 	    }
 	 }
+	 part { name: "border";
+	    mouse_events:  1;
+	    repeat_events:  1;
+	    description { state: "default" 0.0;
+	       rel1 {
+		  to: "overlay";
+		  offset:   -4 -4;
+	       }
+	       rel2 {
+		  to: "overlay";
+		  offset:   3   3;
+	       }
+	       image {
+		  normal: "shelf_alt_inset.png";
+		  border: 7 7 7 7;
+		  middle: 0;
+	       }
+	       fill.smooth: 0;
+	    }
+	 }
+
       }
       programs {
 	 program { name: "api_hsize_on";
