@@ -70,8 +70,12 @@ _elm_table_size_req(Elm_Table *tb, Elm_Widget *child, int w, int h)
 static void
 _elm_on_child_del(void *data, Elm_Table *tb, Elm_Cb_Type type, Elm_Obj *obj)
 {
+   Evas_Coord mw, mh;
+   
    if (!(obj->hastype(obj, ELM_OBJ_WIDGET))) return;
    _els_smart_table_unpack(((Elm_Widget *)(obj))->base);
+   ((Elm_Widget *)(tb->parent))->size_req(tb->parent, tb, mw, mh);
+   tb->geom_set(tb, tb->x, tb->y, mw, mh);
 }
 
 EAPI Elm_Table *
@@ -80,8 +84,8 @@ elm_table_new(Elm_Win *win)
    Elm_Table *tb;
    
    tb = ELM_NEW(Elm_Table);
-   _elm_widget_init(tb);
    
+   _elm_widget_init(tb);
    tb->clas = &_elm_table_class;
    tb->type = ELM_OBJ_TABLE;
    

@@ -132,7 +132,14 @@ _elm_signal_clicked(void *data, Evas_Object *obj, const char *emission, const ch
    
    _elm_button_activate(bt);
 }
-    
+
+static void
+_elm_button_del(Elm_Button *bt)
+{
+   if (bt->text) evas_stringshare_del(bt->text);
+   ((Elm_Obj_Class *)(((Elm_Button_Class *)(bt->clas))->parent))->del(ELM_OBJ(bt));
+}
+
 EAPI Elm_Button *
 elm_button_new(Elm_Win *win)
 {
@@ -143,7 +150,9 @@ elm_button_new(Elm_Win *win)
    _elm_widget_init(bt);
    bt->clas = &_elm_button_class;
    bt->type = ELM_OBJ_BUTTON;
-
+   
+   bt->del = _elm_button_del;
+   
    bt->size_alloc = _elm_button_size_alloc;
    bt->size_req = _elm_button_size_req;
    

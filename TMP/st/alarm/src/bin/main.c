@@ -495,8 +495,10 @@ win_table_of_buttons(void)
 {
    Elm_Win *win;
    Elm_Bg *bg;
+   Elm_Icon *icon;
    Elm_Table *table;
    Elm_Button *button;
+   char buf[PATH_MAX];
 
    win = elm_win_new();
    win->name_set(win, "win_bg");
@@ -551,7 +553,11 @@ win_table_of_buttons(void)
    button->cb_add(button, ELM_CB_ACTIVATED, on_button_activate, NULL);
 
    button = elm_button_new(win);
-   button->text_set(button, "Button 5");
+   icon = elm_icon_new(win);
+   snprintf(buf, sizeof(buf), "%s/images/logo.png", PACKAGE_DATA_DIR);
+   icon->file_set(icon, buf, NULL);
+   icon->layout_update(icon);
+   button->child_add(button, icon);
    table->pack(table, button, 1, 1, 2, 1);
    button->fill_x = 1;
    button->fill_y = 1;
@@ -561,11 +567,10 @@ win_table_of_buttons(void)
 
    button = elm_button_new(win);
    button->text_set(button, "Button 6");
-   bg = elm_bg_new(win);
-   char buf[PATH_MAX];
-   snprintf(buf, sizeof(buf), "%s/images/sample_01.jpg", PACKAGE_DATA_DIR);
-   bg->file_set(bg, buf, NULL);
-   button->child_add(button, bg);
+   icon = elm_icon_new(win);
+   snprintf(buf, sizeof(buf), "%s/images/logo.png", PACKAGE_DATA_DIR);
+   icon->file_set(icon, buf, NULL);
+   button->child_add(button, icon);
    table->pack(table, button, 0, 2, 3, 1);
    button->fill_x = 1;
    button->fill_y = 1;

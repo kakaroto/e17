@@ -76,8 +76,23 @@ extern "C" {
 	  ELM_OBJ_LABEL,
 	  ELM_OBJ_BOX,
 	  ELM_OBJ_TABLE,
-	  ELM_OBJ_BUTTON
-     } Elm_Obj_Type;
+	  ELM_OBJ_BUTTON,
+	  ELM_OBJ_ICON
+//	  ELM_OBJ_TOGGLE, // FIXME: do
+//	  ELM_OBJ_CHECK, // FIXME: do
+//	  ELM_OBJ_RADIO, // FIXME: do
+//	  ELM_OBJ_CLOCK, // FIXME: do
+//	  ELM_OBJ_SPIN, // FIXME: do
+//	  ELM_OBJ_SLIDER, // FIXME: do
+//	  ELM_OBJ_ENTRY, // FIXME: do
+//	  ELM_OBJ_EDITOR, // FIXME: do
+//	  ELM_OBJ_LISTITEM, // FIXME: do
+// 	  ELM_OBJ_BUSY, // FIXME: do
+//	  // FIXME: list more widgets to do here like:
+//	  // CONTACT, SELECTOR, FILES, PREVIEW, SIGNALINFO, CALLINFO,
+//	  // CELLEDIT (csv - maybe later xls or some other cell format),
+//	  // COLORSEL, ... 
+    } Elm_Obj_Type;
    
    typedef enum _Elm_Cb_Type
      {
@@ -118,6 +133,8 @@ extern "C" {
    typedef struct _Elm_Table           Elm_Table;
    typedef struct _Elm_Button_Class    Elm_Button_Class;
    typedef struct _Elm_Button          Elm_Button;
+   typedef struct _Elm_Icon_Class      Elm_Icon_Class;
+   typedef struct _Elm_Icon            Elm_Icon;
    
    typedef void (*Elm_Cb_Func) (void *data, Elm_Obj *obj, Elm_Cb_Type type, void *info);
    
@@ -390,10 +407,31 @@ extern "C" {
 	Elm_Button_Class_All;
      };
    
-// FIXME: widgets -
-// button
-// check
-// radio
-// clock
+/**************************************************************************/   
+   /* Icon Object */
+#define Elm_Icon_Class_Methods \
+   void (*file_set)  (Elm_Icon *icon, const char *file, const char *group); \
+   void (*layout_update)  (Elm_Icon *icon)
+#define Elm_Icon_Class_All Elm_Widget_Class_All; Elm_Icon_Class_Methods; \
+   unsigned char scale_up : 1; \
+   unsigned char scale_down : 1; \
+   unsigned char fill_outside : 1; \
+   unsigned char smooth : 1; \
+   unsigned char no_scale : 1; \
+   const char *file; \
+   const char *group
+   
+   /* Object specific ones */
+   EAPI Elm_Icon *elm_icon_new(Elm_Win *win);
+   struct _Elm_Icon_Class
+     {
+	void *parent;
+	Elm_Obj_Type type;
+	Elm_Icon_Class_Methods;
+     };
+   struct _Elm_Icon
+     {
+	Elm_Icon_Class_All;
+     };
 
 #endif

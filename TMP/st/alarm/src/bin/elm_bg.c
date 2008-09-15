@@ -45,6 +45,12 @@ _elm_bg_file_set(Elm_Bg *bg, const char *file, const char *group)
 	bg->custom_bg = NULL;
      }
    if (!file) return;
+   if (bg->file) evas_stringshare_del(bg->file);
+   if (file) bg->file = evas_stringshare_add(file);
+   else bg->file = NULL;
+   if (bg->group) evas_stringshare_del(bg->group);
+   if (group) bg->group = evas_stringshare_add(group);
+   else bg->group = NULL;
    if (((p = strrchr(file, '.'))) && (!strcasecmp(p, ".edj")))
      {
 	bg->custom_bg = edje_object_add(evas_object_evas_get(bg->base));
@@ -65,6 +71,8 @@ static void
 _elm_bg_del(Elm_Bg *bg)
 {
    if (bg->custom_bg) evas_object_del(bg->custom_bg);
+   if (bg->group) evas_stringshare_del(bg->group);
+   if (bg->file) evas_stringshare_del(bg->file);
    ((Elm_Obj_Class *)(((Elm_Bg_Class *)(bg->clas))->parent))->del(ELM_OBJ(bg));
 }
 
@@ -87,6 +95,5 @@ elm_bg_new(Elm_Win *win)
    _elm_theme_set(bg->base, "bg", "bg");
    _elm_widget_post_init(bg);
    win->child_add(win, bg);
-//   ((Elm_Widget *)(bg->parent))->size_req(bg->parent, bg, 100, 100);
    return bg;
 }

@@ -15,6 +15,9 @@ _elm_label_text_set(Elm_Label *lb, const char *text)
 {
    Evas_Coord mw, mh;
    
+   if (lb->text) evas_stringshare_del(lb->text);
+   if (text) lb->text = evas_stringshare_add(text);
+   else lb->text = NULL;
    edje_object_part_text_set(lb->base, "elm.text", text);
    edje_object_size_min_calc(lb->base, &mw, &mh);
    if ((lb->minw != mw) || (lb->minh != mh))
@@ -33,6 +36,13 @@ _elm_label_size_alloc(Elm_Label *lb, int w, int h)
    lb->req.h = lb->minh;
 }
 
+static void
+_elm_label_del(Elm_Label *lb)
+{
+   if (lb->text) evas_stringshare_del(lb->text);
+   ((Elm_Obj_Class *)(((Elm_Label_Class *)(lb->clas))->parent))->del(ELM_OBJ(lb));
+}
+
 EAPI Elm_Label *
 elm_label_new(Elm_Win *win)
 {
@@ -43,6 +53,8 @@ elm_label_new(Elm_Win *win)
    _elm_widget_init(lb);
    lb->clas = &_elm_label_class;
    lb->type = ELM_OBJ_LABEL;
+   
+   lb->del = _elm_label_del;
 
    lb->size_alloc = _elm_label_size_alloc;
    

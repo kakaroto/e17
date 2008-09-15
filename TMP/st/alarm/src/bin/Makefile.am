@@ -19,6 +19,7 @@ elm_label.c \
 elm_box.c \
 elm_table.c \
 elm_button.c \
+elm_icon.c \
 \
 els_pan.c \
 els_pan.h \
@@ -27,7 +28,9 @@ els_scroller.h \
 els_box.c \
 els_box.h \
 els_table.c \
-els_table.h
+els_table.h \
+els_icon.c \
+els_icon.h
 
 bin_PROGRAMS = alarm
 
