@@ -1,11 +1,40 @@
 #include <Elementary.h>
 #include "elm_priv.h"
 
+static void _elm_button_text_set(Elm_Button *bt, const char *text);
+
 Elm_Button_Class _elm_button_class =
 {
    &_elm_widget_class,
      ELM_OBJ_BUTTON,
+     _elm_button_text_set
 };
+
+static void
+_elm_button_text_set(Elm_Button *bt, const char *text)
+{
+   Evas_Coord mw, mh;
+
+   if (text)
+     {
+	edje_object_signal_emit(bt->base, "elm,state,text,visible", "elm");
+	edje_object_message_signal_process(bt->base);
+     }
+   else
+     {
+	edje_object_signal_emit(bt->base, "elm,state,text,hidden", "elm");
+	edje_object_message_signal_process(bt->base);
+     }
+   edje_object_part_text_set(bt->base, "elm.text", text);
+   edje_object_size_min_calc(bt->base, &mw, &mh);
+   if ((bt->minw != mw) || (bt->minh != mh))
+     {
+	bt->minw = mw;
+	bt->minh = mh;
+	((Elm_Widget *)(bt->parent))->size_req(bt->parent, bt, bt->minw, bt->minh);
+	bt->geom_set(bt, bt->x, bt->y, bt->minw, bt->minh);
+     }
+}
 
 static void
 _elm_button_size_alloc(Elm_Button *bt, int w, int h)
@@ -56,6 +85,8 @@ _elm_on_child_add(void *data, Elm_Button *bt, Elm_Cb_Type type, Elm_Obj *obj)
    Evas_Coord mw, mh;
    
    if (!(obj->hastype(obj, ELM_OBJ_WIDGET))) return;
+   edje_object_signal_emit(bt->base, "elm,state,icon,visible", "elm");
+   edje_object_message_signal_process(bt->base);
    ((Elm_Widget *)(obj))->size_alloc(obj, 0, 0);
    ((Elm_Widget *)(obj))->geom_set(obj,
 				   ((Elm_Widget *)(obj))->x,
@@ -82,6 +113,8 @@ _elm_on_child_del(void *data, Elm_Button *bt, Elm_Cb_Type type, Elm_Obj *obj)
 {
    if (!(obj->hastype(obj, ELM_OBJ_WIDGET))) return;
    // FIXME: allow for removal of child - size down
+   edje_object_signal_emit(bt->base, "elm,state,icon,hidden", "elm");
+   edje_object_message_signal_process(bt->base);
 }
 
 static void
@@ -113,6 +146,8 @@ elm_button_new(Elm_Win *win)
 
    bt->size_alloc = _elm_button_size_alloc;
    bt->size_req = _elm_button_size_req;
+   
+   bt->text_set = _elm_button_text_set;
    
    bt->base = edje_object_add(win->evas);
    _elm_theme_set(bt->base, "button", "button");

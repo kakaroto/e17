@@ -17,20 +17,20 @@ _elm_label_text_set(Elm_Label *lb, const char *text)
    
    edje_object_part_text_set(lb->base, "elm.text", text);
    edje_object_size_min_calc(lb->base, &mw, &mh);
-   if ((lb->tw != mw) || (lb->th != mh))
+   if ((lb->minw != mw) || (lb->minh != mh))
      {
-	lb->tw = mw;
-	lb->th = mh;
-	((Elm_Widget *)(lb->parent))->size_req(lb->parent, lb, lb->tw, lb->th);
-	lb->geom_set(lb, lb->x, lb->y, lb->tw, lb->th);
+	lb->minw = mw;
+	lb->minh = mh;
+	((Elm_Widget *)(lb->parent))->size_req(lb->parent, lb, lb->minw, lb->minh);
+	lb->geom_set(lb, lb->x, lb->y, lb->minw, lb->minh);
      }
 }
 
 static void
 _elm_label_size_alloc(Elm_Label *lb, int w, int h)
 {
-   lb->req.w = lb->tw;
-   lb->req.h = lb->th;
+   lb->req.w = lb->minw;
+   lb->req.h = lb->minh;
 }
 
 EAPI Elm_Label *

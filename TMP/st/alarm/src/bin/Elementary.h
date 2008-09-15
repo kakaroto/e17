@@ -307,7 +307,7 @@ extern "C" {
    void (*text_set)  (Elm_Label *lb, const char *text)
 #define Elm_Label_Class_All Elm_Widget_Class_All; Elm_Label_Class_Methods; \
    const char *text; \
-   int tw, th
+  int minw, minh
    
    /* Object specific ones */
    EAPI Elm_Label *elm_label_new(Elm_Win *win);
@@ -371,8 +371,10 @@ extern "C" {
    
 /**************************************************************************/   
    /* Button Object */
-#define Elm_Button_Class_Methods
+#define Elm_Button_Class_Methods \
+   void (*text_set)  (Elm_Button *bt, const char *text)
 #define Elm_Button_Class_All Elm_Widget_Class_All; Elm_Button_Class_Methods; \
+   const char *text; \
    int minw, minh
    
    /* Object specific ones */

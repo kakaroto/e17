@@ -36,6 +36,17 @@ elm_init(int argc, char **argv)
    _elm_config->thumbscroll_momentum_threshhold = 100.0;
    _elm_config->thumbscroll_friction = 1.0;
    _elm_config->scale = 1.0;
+   
+     {
+	char *s;
+	double scale;
+	
+	s = getenv("E_SCALE");
+	if (s) scale = atof(s);
+	else scale = 1.0;
+	_elm_config->scale = scale;
+     }
+    
 }
 
 EAPI void

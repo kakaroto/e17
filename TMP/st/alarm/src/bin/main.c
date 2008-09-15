@@ -496,7 +496,6 @@ win_table_of_buttons(void)
    Elm_Win *win;
    Elm_Bg *bg;
    Elm_Table *table;
-   Elm_Label *label;
    Elm_Button *button;
 
    win = elm_win_new();
@@ -516,10 +515,7 @@ win_table_of_buttons(void)
    table->expand_y = 1;
 
    button = elm_button_new(win);
-   label = elm_label_new(win);
-   label->text_set(label, "Button 1");
-   label->show(label);
-   button->child_add(button, label);
+   button->text_set(button, "Button 1");
    table->pack(table, button, 0, 0, 1, 1);
    button->fill_x = 0;
    button->fill_y = 0;
@@ -528,10 +524,7 @@ win_table_of_buttons(void)
    button->cb_add(button, ELM_CB_ACTIVATED, on_button_activate, NULL);
 
    button = elm_button_new(win);
-   label = elm_label_new(win);
-   label->text_set(label, "Button 2");
-   label->show(label);
-   button->child_add(button, label);
+   button->text_set(button, "Button 2");
    table->pack(table, button, 1, 0, 1, 1);
    button->fill_x = 0;
    button->fill_y = 0;
@@ -540,10 +533,7 @@ win_table_of_buttons(void)
    button->cb_add(button, ELM_CB_ACTIVATED, on_button_activate, NULL);
 
    button = elm_button_new(win);
-   label = elm_label_new(win);
-   label->text_set(label, "Button 3");
-   label->show(label);
-   button->child_add(button, label);
+   button->text_set(button, "Button 3");
    table->pack(table, button, 2, 0, 1, 1);
    button->fill_x = 0;
    button->fill_y = 0;
@@ -552,10 +542,7 @@ win_table_of_buttons(void)
    button->cb_add(button, ELM_CB_ACTIVATED, on_button_activate, NULL);
 
    button = elm_button_new(win);
-   label = elm_label_new(win);
-   label->text_set(label, "Button 4");
-   label->show(label);
-   button->child_add(button, label);
+   button->text_set(button, "Button 4");
    table->pack(table, button, 0, 1, 1, 1);
    button->fill_x = 1;
    button->fill_y = 0;
@@ -564,10 +551,7 @@ win_table_of_buttons(void)
    button->cb_add(button, ELM_CB_ACTIVATED, on_button_activate, NULL);
 
    button = elm_button_new(win);
-   label = elm_label_new(win);
-   label->text_set(label, "Button 5");
-   label->show(label);
-   button->child_add(button, label);
+   button->text_set(button, "Button 5");
    table->pack(table, button, 1, 1, 2, 1);
    button->fill_x = 1;
    button->fill_y = 1;
@@ -576,10 +560,12 @@ win_table_of_buttons(void)
    button->cb_add(button, ELM_CB_ACTIVATED, on_button_activate, NULL);
 
    button = elm_button_new(win);
-   label = elm_label_new(win);
-   label->text_set(label, "Button 6");
-   label->show(label);
-   button->child_add(button, label);
+   button->text_set(button, "Button 6");
+   bg = elm_bg_new(win);
+   char buf[PATH_MAX];
+   snprintf(buf, sizeof(buf), "%s/images/sample_01.jpg", PACKAGE_DATA_DIR);
+   bg->file_set(bg, buf, NULL);
+   button->child_add(button, bg);
    table->pack(table, button, 0, 2, 3, 1);
    button->fill_x = 1;
    button->fill_y = 1;
