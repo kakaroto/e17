@@ -175,3 +175,18 @@ class VSeparator(c_etk.VSeparator):
 class HSeparator(c_etk.HSeparator):
     __metaclass__ = EtkMeta
     _etk_type = "Etk_HSeparator"
+
+
+class FilechooserWidget(c_etk.FilechooserWidget):
+    __metaclass__ = EtkMeta
+    _etk_type = "Etk_Filechooser_Widget"
+
+
+class CheckButton(c_etk.CheckButton):
+    __metaclass__ = EtkMeta
+    _etk_type = "Etk_Check_Button"
+
+
+class Spinner(c_etk.Spinner):
+    __metaclass__ = EtkMeta
+    _etk_type = "Etk_Spinner"
