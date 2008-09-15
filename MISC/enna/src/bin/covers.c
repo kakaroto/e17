@@ -29,201 +29,193 @@
  * ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-
-
 #include "enna.h"
 
 static Enna_Class_CoverPlugin *cover_class = NULL;
 
-EAPI int
-enna_cover_plugin_register (Enna_Class_CoverPlugin *class)
+EAPI int enna_cover_plugin_register(Enna_Class_CoverPlugin *class)
 {
-  if (!class)
-    return -1;
+    if (!class)
+        return -1;
 
-  cover_class = class;
+    cover_class = class;
 
-  return 0;
+    return 0;
 }
 
-EAPI char *enna_cover_album_get(const char *artist, const char *album, const char *filename)
+static char * cover_get_from_picture_file(const char *filename)
 {
+    const char *known_filenames[] =
+    { "cover", "front" };
 
-   const char *cover_names[] = {"cover.png",
-				    "cover.jpg",
-				    "front.png",
-				    "front.jpg"};
-   char tmp[4096];
-   char *cover_file = NULL;
-   int i;
-   char *md5;
+    const char *known_extensions[] =
+    { "jpg", "jpeg", "png" };
 
-//#if defined(BUILD_AMAZON_MODULE) && defined(BUILD_LIBXML2) && defined(BUILD_LIBCURL)
-   Enna_Module *em;
-//#endif
+    char *dir, *ret = NULL;
+    char cover[1024];
+    int i, j;
 
-   if (!artist || !album)
-     return NULL;
+    enna_log(ENNA_MSG_EVENT, NULL, "Trying to get cover from picture files");
 
-   memset (tmp, '\0', sizeof (tmp));
-   snprintf (tmp, sizeof (tmp), "%s %s", artist, album);
-   md5 = md5sum (tmp);
-   memset (tmp, '\0', sizeof (tmp));
-   snprintf (tmp, sizeof (tmp), "%s/.enna/covers/%s.png",
-             enna_util_user_home_get(), md5);
-   if (ecore_file_exists (tmp))
-   {
-     cover_file = strdup (tmp);
-     printf ("found : %s\n", cover_file);
-   }
-   free (md5);
+    if (!filename)
+        return NULL;
 
-   if (cover_file)
-     return cover_file;
+    dir = ecore_file_dir_get(filename);
+    if (!ecore_file_can_read(dir))
+        goto out;
 
-   memset (tmp, '\0', sizeof (tmp));
+    for (i = 0; i < ARRAY_NB_ELEMENTS(known_extensions); i++)
+    {
+        memset(cover, '\0', sizeof (cover));
+        snprintf(cover, sizeof (cover), "%s/%s.%s", dir, filename,
+                known_extensions[i]);
 
-   if (filename)
-     {
+        if (ecore_file_exists(cover))
+        {
+            ret = strdup(cover);
+            goto out;
+        }
 
-	const char *file_dir = ecore_file_dir_get(filename+7);
-	if (ecore_file_can_read(file_dir))
-	  {
-	     for(i = 0; i < 4; i++)
-	       {
-		  snprintf(tmp, sizeof(tmp), "%s/%s", file_dir, cover_names[i]);
-		  if (ecore_file_exists(tmp))
-		    {
-		       cover_file = strdup(tmp);
-		       printf("found : %s\n", cover_file);
-		       return cover_file;
-		    }
-	       }
-	     snprintf(tmp, sizeof(tmp), "%s/.enna/covers//%s-%s", enna_util_user_home_get(), artist, album);
-	     if (ecore_file_exists(tmp))
-	       {
-		  cover_file = strdup(tmp);
-		  printf("found : %s\n", cover_file);
-		  return cover_file;
-	       }
-	  }
+        for (j = 0; j < ARRAY_NB_ELEMENTS(known_filenames); j++)
+        {
+            memset(cover, '\0', sizeof (cover));
+            snprintf(cover, sizeof (cover), "%s/%s.%s", dir,
+                    known_filenames[j], known_extensions[i]);
 
-     }
-   else
-     {
-	/* Search only in home directory */
-	snprintf(tmp, sizeof(tmp), "%s/.enna/covers/%s-%s.png", enna_util_user_home_get(), artist, album);
-	if (ecore_file_exists(tmp))
-	  {
-	     cover_file = strdup(tmp);
-	     printf("cover art found : %s\n", cover_file);
-	     return cover_file;
-	  }
-     }
+            if (!ecore_file_exists(cover))
+                continue;
 
-//#if defined(BUILD_AMAZON_MODULE) && defined(BUILD_LIBXML2) && defined(BUILD_LIBCURL)
-   em = enna_module_open ("amazon", enna->evas);
-   enna_module_enable (em);
+            ret = strdup(cover);
+            goto out;
+        }
+    }
 
-   if (cover_class && cover_class->music_cover_get)
-    cover_file = cover_class->music_cover_get (artist, album);
-
-   enna_module_disable (em);
-   cover_class = NULL;
-
-   if (cover_file)
-     printf ("Amazon Cover File : %s\n", cover_file);
-
-   return cover_file;
-//#endif
-
-   return NULL;
-
+    out: free(dir);
+    return ret;
 }
 
-
-EAPI char *enna_cover_video_get(const char *filename)
+static char * cover_get_from_saved_file(char *keywords)
 {
+    char *md5;
+    char cover[1024];
 
-   const char *cover_names[] = {"cover.png",
-			        "cover.jpg",
-				"front.png",
-				"front.jpg"};
-   char tmp[4096];
-   char *cover_file = NULL;
-   int i;
-   char *md5;
-   char *file;
+    enna_log(ENNA_MSG_EVENT, NULL,
+            "Trying to get cover from previously saved cover file");
 
-//#if defined(BUILD_AMAZON_MODULE) && defined(BUILD_LIBXML2) && defined(BUILD_LIBCURL)
-   Enna_Module *em;
-//#endif
+    if (!keywords)
+        return NULL;
 
-   if (!filename)
-     return NULL;
+    md5 = md5sum(keywords);
+    memset(cover, '\0', sizeof (cover));
+    snprintf(cover, sizeof (cover), "%s/.enna/covers/%s.png",
+            enna_util_user_home_get(), md5);
+    free(md5);
 
-   char *p = NULL;
-   file = strdup(ecore_file_file_get(filename + 7));
-   p = strrchr(file, '.');
-   if (p) *p = '\0';
-   printf("file : %s\n", file);
+    if (!ecore_file_exists(cover))
+        return NULL;
 
-   memset (tmp, '\0', sizeof (tmp));
-   snprintf (tmp, sizeof (tmp), "%s", file);
-   md5 = md5sum (tmp);
-   memset (tmp, '\0', sizeof (tmp));
-   snprintf (tmp, sizeof (tmp), "%s/.enna/covers/%s.png",
-             enna_util_user_home_get(), md5);
-   if (ecore_file_exists (tmp))
-   {
-     cover_file = strdup (tmp);
-     printf ("found : %s\n", cover_file);
-   }
-   free (md5);
+    return strdup(cover);
+}
 
-   if (cover_file)
-     return cover_file;
+static char * cover_get_movie_keywords(const char *filename)
+{
+    char *it, *movie;
+    char *path = strdup(filename);
+    char *file = (char *) ecore_file_file_get(path);
 
-   memset (tmp, '\0', sizeof (tmp));
+    it = strrchr(file, '.');
+    if (it) /* remove suffix? */
+        *it = '\0';
 
-   if (filename)
-     {
+    movie = strdup(file);
+    free(path);
+    return movie;
+}
 
-	const char *file_dir = ecore_file_dir_get(filename+7);
-	if (ecore_file_can_read(file_dir))
-	  {
-	     for(i = 0; i < 4; i++)
-	       {
-		  snprintf(tmp, sizeof(tmp), "%s/%s", file_dir, cover_names[i]);
-		  if (ecore_file_exists(tmp))
-		    {
-		       cover_file = strdup(tmp);
-		       printf("found : %s\n", cover_file);
-		       return cover_file;
-		    }
-	       }
-	  }
+static char * cover_get_from_amazon(const char *artist, const char *album,
+        const char *filename)
+{
+    Enna_Module *em;
+    char *cover = NULL;
+    char tmp[1024];
 
-     }
+    em = enna_module_open("amazon", enna->evas);
+    enna_module_enable(em);
 
-   printf("Search for %s with amazon video\n",ecore_file_file_get(filename+7));
+    /* try to create cover directory storage first */
+    memset(tmp, '\0', sizeof (tmp));
+    snprintf(tmp, sizeof (tmp), "%s/.enna/covers", enna_util_user_home_get());
+    mkdir(tmp, 0755);
 
-//#if defined(BUILD_AMAZON_MODULE) && defined(BUILD_LIBXML2) && defined(BUILD_LIBCURL)
-   em = enna_module_open ("amazon", enna->evas);
-   enna_module_enable (em);
+    if (artist || album) /* i.e. "music" */
+    {
+        if (cover_class && cover_class->music_cover_get)
+            cover = cover_class->music_cover_get(artist, album);
+    }
+    else if (filename) /* i.e. movie */
+    {
+        if (cover_class && cover_class->movie_cover_get)
+        {
+            char *movie = cover_get_movie_keywords(filename);
+            cover = cover_class->movie_cover_get(movie);
+            free(movie);
+        }
+    }
 
-   if (cover_class && cover_class->movie_cover_get)
-     cover_file = cover_class->movie_cover_get (file);
+    enna_module_disable(em);
+    cover_class = NULL;
 
-   enna_module_disable (em);
-   cover_class = NULL;
+    return cover;
+}
 
-   if (cover_file)
-     printf ("Amazon Cover File : %s\n", cover_file);
+static char * enna_cover_get(const char *artist, const char *album,
+        const char *filename)
+{
+    char *cover = NULL;
+    char tmp[1024];
 
-   return cover_file;
-//#endif
+    memset(tmp, '\0', sizeof (tmp));
 
-   return NULL;
+    /* check for previously downloaded cover file */
+    if (artist && album)
+    {
+        snprintf(tmp, sizeof (tmp), "%s %s", artist, album);
+    }
+    else if (filename)
+    {
+        char *movie = cover_get_movie_keywords(filename);
+        snprintf(tmp, sizeof (tmp), "%s", movie);
+        free(movie);
+    }
 
+    cover = cover_get_from_saved_file(tmp);
+    if (cover)
+        goto cover_found;
+
+    /* check for known cover artwork filenames */
+    if (filename)
+    {
+        cover = cover_get_from_picture_file(filename);
+        if (cover)
+            goto cover_found;
+    }
+
+    /* check on Amazon.com */
+    cover = cover_get_from_amazon(artist, album, filename);
+
+    cover_found: if (cover)
+        enna_log(ENNA_MSG_INFO, NULL, "Using cover from: %s", cover);
+
+    return cover;
+}
+
+EAPI char * enna_cover_album_get(const char *artist, const char *album,
+        const char *filename)
+{
+    return enna_cover_get(artist, album, filename);
+}
+
+EAPI char * enna_cover_video_get(const char *filename)
+{
+    return enna_cover_get(NULL, NULL, filename);
 }

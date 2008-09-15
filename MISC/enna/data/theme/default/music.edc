@@ -70,14 +70,14 @@
           description {
              state: "default" 0.0;
              color: 255 255 255 255;
-             rel1 {relative: 0.1 -0.9;to: "enna.clip.module";}
-             rel2 {relative: 0.9 -0.1;to: "enna.clip.module";}
+             rel1 {relative: 0 -1;to: "enna.clip.module";}
+             rel2 {relative: 1  0;to: "enna.clip.module";}
           }
           description {
              state: "show" 0.0;
              color: 255 255 255 255;
-             rel1 {relative: 0.1 0.02;to: "enna.clip.module";}
-             rel2 {relative: 0.9 0.9;to: "enna.clip.module";}
+             rel1 {relative: 0  0;to: "enna.clip.module";}
+             rel2 {relative: 1  1;to: "enna.clip.module";}
           }
        }
     }

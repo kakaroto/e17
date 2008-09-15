@@ -33,105 +33,100 @@
 
 #include "content.h"
 
-
 Evas_Object *_content = NULL;
 
 typedef struct _Enna_Content_Element Enna_Content_Element;
 
 struct _Enna_Content_Element
 {
-   const char *name;
-   Evas_Object *content;
-   unsigned char selected : 1;
+    const char *name;
+    Evas_Object *content;
+    unsigned char selected : 1;
 };
 
 static Evas_List *_enna_contents = NULL;
 
 /* local subsystem functions */
 
-
-
 /* externally accessible functions */
 EAPI Evas_Object *
 enna_content_add(Evas *evas)
 {
-   Evas_Object *o;
+    Evas_Object *o;
 
-   o = edje_object_add(evas);
-   edje_object_file_set(o, enna_config_theme_get(), "content");
-   _content = o;
-   return o;
+    o = edje_object_add(evas);
+    edje_object_file_set(o, enna_config_theme_get(), "content");
+    _content = o;
+    return o;
 }
 
-EAPI int
-enna_content_append(const char *name, Evas_Object *content)
+EAPI int enna_content_append(const char *name, Evas_Object *content)
 {
-   Evas_List *l;
-   Enna_Content_Element *elem;
+    Evas_List *l;
+    Enna_Content_Element *elem;
 
-   if (!name || !content) return -1;
-   for (l = _enna_contents; l; l = l ->next)
-     {
-	Enna_Content_Element *e;
-	e = l->data;
-        if (!e) continue;
-	if (!strcmp(e->name, name))
-	  return -1;
-     }
-   elem = calloc(1, sizeof(Enna_Content_Element));
-   elem->name = evas_stringshare_add(name);
-   elem->content = content;
-   elem->selected = 0;
-   _enna_contents = evas_list_append(_enna_contents,elem);
-   return 0;
+    if (!name || !content)
+        return -1;
+    for (l = _enna_contents; l; l = l ->next)
+    {
+        Enna_Content_Element *e;
+        e = l->data;
+        if (!e)
+            continue;
+        if (!strcmp(e->name, name))
+            return -1;
+    }
+    elem = calloc(1, sizeof(Enna_Content_Element));
+    elem->name = evas_stringshare_add(name);
+    elem->content = content;
+    elem->selected = 0;
+    _enna_contents = evas_list_append(_enna_contents, elem);
+    return 0;
 }
 
-EAPI int
-enna_content_select(const char *name)
+EAPI int enna_content_select(const char *name)
 {
 
-   Evas_List *l;
-   Enna_Content_Element *new = NULL;
-   Enna_Content_Element *prev = NULL;
+    Evas_List *l;
+    Enna_Content_Element *new = NULL;
+    Enna_Content_Element *prev = NULL;
 
-   if (!name) return -1;
-   for (l = _enna_contents; l; l = l->next)
-     {
-	Enna_Content_Element *e;
-	e = l->data;
+    if (!name)
+        return -1;
+    for (l = _enna_contents; l; l = l->next)
+    {
+        Enna_Content_Element *e;
+        e = l->data;
 
         if (!e)
-          continue;
-        
-	if (!strcmp(name, e->name))
-	  {
-	     if (!e->selected)
-	       {
-		  new = e;
-		  e->selected = 1;
-	       }
-	  }
-	else if (e->selected)
-	  {
-	     prev = e;
-	     e->selected = 0;
-	  }
-     }
+            continue;
 
-   if (prev)
-     {
-	edje_object_part_unswallow(_content, prev->content);
-	enna_activity_hide(prev->name);
-     }
-   if (new)
-     {
-	edje_object_part_swallow(_content, "enna.swallow.content", new->content);
-	enna_activity_show(new->name);
-     }
+        if (!strcmp(name, e->name))
+        {
+            if (!e->selected)
+            {
+                new = e;
+                e->selected = 1;
+            }
+        }
+        else if (e->selected)
+        {
+            prev = e;
+            e->selected = 0;
+        }
+    }
 
-   return 0;
+    if (prev)
+    {
+        edje_object_part_unswallow(_content, prev->content);
+        enna_activity_hide(prev->name);
+    }
+    if (new)
+    {
+        edje_object_part_swallow(_content, "enna.swallow.content", new->content);
+        enna_activity_show(new->name);
+    }
+
+    return 0;
 }
-
-
-
 

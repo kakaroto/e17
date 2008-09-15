@@ -8,13 +8,13 @@
 typedef struct _Enna_Module Enna_Module;
 typedef struct _Enna_Module_Api Enna_Module_Api;
 
-
 struct _Enna_Module
 {
     const char *name;
-    struct {
-        void * (*init)        (Enna_Module *m);
-        int    (*shutdown)    (Enna_Module *m);
+    struct
+    {
+        void * (*init)(Enna_Module *m);
+        int (*shutdown)(Enna_Module *m);
     } func;
 
     Enna_Module_Api *api;
@@ -26,15 +26,14 @@ struct _Enna_Module
 
 struct _Enna_Module_Api
 {
-    int         version;
+    int version;
     const char *name;
 };
 
-
-EAPI int          enna_module_init(void);
-EAPI int          enna_module_shutdown(void);
+EAPI int enna_module_init(void);
+EAPI int enna_module_shutdown(void);
 EAPI Enna_Module *enna_module_open(const char *name, Evas *evas);
-EAPI int          enna_module_enable(Enna_Module *m);
-EAPI int          enna_module_disable(Enna_Module *m);
+EAPI int enna_module_enable(Enna_Module *m);
+EAPI int enna_module_disable(Enna_Module *m);
 
 #endif

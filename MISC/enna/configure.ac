@@ -233,11 +233,14 @@ src/modules/browser/Makefile
 src/modules/browser/localfiles/Makefile
 src/modules/browser/lms/Makefile
 src/modules/browser/shoutcast/Makefile
+src/modules/browser/netstreams/Makefile
 src/modules/backend/Makefile
 src/modules/backend/emotion/Makefile
 src/modules/backend/libplayer/Makefile
 src/modules/input/Makefile
 src/modules/input/lirc/Makefile
+src/modules/volumes/Makefile
+src/modules/volumes/polling/Makefile
 data/Makefile
 data/theme/Makefile
 data/theme/default/Makefile

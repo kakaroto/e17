@@ -3,6 +3,6 @@
 
 #include "enna.h"
 
-EAPI Evas_Object   *enna_SMARTNAME_add(Evas * evas);
+EAPI Evas_Object *enna_SMARTNAME_add(Evas * evas);
 
 #endif

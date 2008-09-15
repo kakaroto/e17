@@ -32,95 +32,89 @@
 #include "enna.h"
 #include "vfs.h"
 
-
-
 static Evas_List *_enna_vfs_music = NULL;
 static Evas_List *_enna_vfs_video = NULL;
 static Evas_List *_enna_vfs_photo = NULL;
 
 /* local subsystem functions */
 
-
-
 /* externally accessible functions */
-EAPI int
-enna_vfs_init(Evas *evas)
+EAPI int enna_vfs_init(Evas *evas)
 {
 
-   return 0;
+    return 0;
 }
 
-EAPI int
-enna_vfs_append(const char *name, unsigned char type, Enna_Class_Vfs *vfs)
+EAPI int enna_vfs_append(const char *name, unsigned char type,
+        Enna_Class_Vfs *vfs)
 {
-   if (!vfs) return -1;
+    if (!vfs)
+        return -1;
 
-   if ((type & ENNA_CAPS_MUSIC) == ENNA_CAPS_MUSIC)
-	_enna_vfs_music = evas_list_append(_enna_vfs_music, vfs);
+    if ((type & ENNA_CAPS_MUSIC) == ENNA_CAPS_MUSIC)
+        _enna_vfs_music = evas_list_append(_enna_vfs_music, vfs);
 
-   if ((type & ENNA_CAPS_VIDEO) == ENNA_CAPS_VIDEO)
-	_enna_vfs_video = evas_list_append(_enna_vfs_video, vfs);
+    if ((type & ENNA_CAPS_VIDEO) == ENNA_CAPS_VIDEO)
+        _enna_vfs_video = evas_list_append(_enna_vfs_video, vfs);
 
-   if ((type & ENNA_CAPS_PHOTO) == ENNA_CAPS_PHOTO)
-	_enna_vfs_photo = evas_list_append(_enna_vfs_photo, vfs);
+    if ((type & ENNA_CAPS_PHOTO) == ENNA_CAPS_PHOTO)
+        _enna_vfs_photo = evas_list_append(_enna_vfs_photo, vfs);
 
-   return 0;
+    return 0;
 }
 
 EAPI Evas_List *
 enna_vfs_get(ENNA_VFS_CAPS type)
 {
 
-  if (type == ENNA_CAPS_MUSIC)
+    if (type == ENNA_CAPS_MUSIC)
     return _enna_vfs_music;
-  else if (type == ENNA_CAPS_VIDEO)
+    else if (type == ENNA_CAPS_VIDEO)
     {
-       printf("return vfs video\n");
-       return _enna_vfs_video;
+        enna_log (ENNA_MSG_EVENT, NULL, "return vfs video");
+        return _enna_vfs_video;
     }
-  else if (type == ENNA_CAPS_PHOTO)
+    else if (type == ENNA_CAPS_PHOTO)
     return _enna_vfs_photo;
-  else
+    else
     return NULL;
 }
 
-static Enna_Vfs_File *
-enna_vfs_create_inode (char *uri, char *label,
-                       char *icon, char *icon_file, int dir)
+static Enna_Vfs_File * enna_vfs_create_inode(char *uri, char *label,
+        char *icon, char *icon_file, int dir)
 {
-  Enna_Vfs_File *f;
+    Enna_Vfs_File *f;
 
-  f = calloc (1, sizeof (Enna_Vfs_File));
-  f->uri = uri ? strdup (uri) : NULL;
-  f->label = label ? strdup (label) : NULL;
-  f->icon = icon ? strdup (icon) : NULL;
-  f->icon_file = icon_file ? strdup (icon_file) : NULL;
-  f->is_directory = dir;
+    f = calloc(1, sizeof(Enna_Vfs_File));
+    f->uri = uri ? strdup(uri) : NULL;
+    f->label = label ? strdup(label) : NULL;
+    f->icon = icon ? strdup(icon) : NULL;
+    f->icon_file = icon_file ? strdup(icon_file) : NULL;
+    f->is_directory = dir;
 
-  return f;
+    return f;
 }
 
-Enna_Vfs_File *
-enna_vfs_create_file (char *uri, char *label, char *icon, char *icon_file)
+Enna_Vfs_File * enna_vfs_create_file(char *uri, char *label, char *icon,
+        char *icon_file)
 {
-  return enna_vfs_create_inode (uri, label, icon, icon_file, 0);
+    return enna_vfs_create_inode(uri, label, icon, icon_file, 0);
 }
 
-Enna_Vfs_File *
-enna_vfs_create_directory (char *uri, char *label, char *icon, char *icon_file)
+Enna_Vfs_File * enna_vfs_create_directory(char *uri, char *label, char *icon,
+        char *icon_file)
 {
-  return enna_vfs_create_inode (uri, label, icon, icon_file, 1);
+    return enna_vfs_create_inode(uri, label, icon, icon_file, 1);
 }
 
-void
-enna_vfs_remove (Enna_Vfs_File *f)
+void enna_vfs_remove(Enna_Vfs_File *f)
 {
-  if (!f)
-    return;
+    if (!f)
+        return;
 
-  ENNA_FREE (f->uri);
-  ENNA_FREE (f->label);
-  ENNA_FREE (f->icon);
-  ENNA_FREE (f->icon_file);
-  ENNA_FREE (f);
+    ENNA_FREE(f->uri);
+    ENNA_FREE(f->label);
+    ENNA_FREE(f->icon);
+    ENNA_FREE(f->icon_file);
+    ENNA_FREE(f);
 }

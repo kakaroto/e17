@@ -6,4 +6,5 @@ video\
 photo\
 browser\
 backend\
-input
+input\
+volumes

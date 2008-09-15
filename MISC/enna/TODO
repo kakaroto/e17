@@ -10,12 +10,37 @@
       -> Preload previous and next pictures
       -> hide photo after transition : add program in edje to send signal
    when transition is finished.
+      -> Add a way to view photos without slideshow
+      -> Add start/stop slideshow key/button
+      -> Define slideshow effect/timeout in config file.
+
+ * Audio module
+      -> Add overlay menu in audio player with control buttons
+         (play/pause, prev/next, volume up/down)
+      -> Do not display empty metadata in audio player if none is found
+         in current stream: display filename instead.
+      -> Display a picture when no cover has been found.
+      -> Dinish shoutcast support so that non-local streams can be played back.
 
  * Video module (based on music one)
       -> Add video support to emotion backend
       -> change libplayer video size when resizing enna main window.
       -> insert libplayer/emotion preview video in video_info.
       -> Polish video_info UI
+      -> Display video file name in top instead of properties frame.
+      -> Add an amazon cover into video media player view
+         (left to properties frame)
+      -> Use a video snapshot of stream if no cover can be found.
+      -> Add prev/next buttons (left/right arrows?) to browse between
+         videos from current directory without coming back to selection menu.
+      -> Display video length in properties frame as hh:mm:ss
+         instead of just seconds.
+      -> Add a thumbnail of video in media player view when validated once.
+
+ * Covers
+      -> When amazon cover has been found, send a notification to
+         display it immediately.
+      -> Use a thread to retrieve cover from network.
 
  * Add Simple Widgets
       -> Checkbox
@@ -24,9 +49,16 @@
       -> Buttons
 
  * Bugs
-     -> Segfault when exiting enna !!!!!!! Memory corruption, hard to
-   find :/
      -> Remove item when location bar is clicked
+     -> When using 'back' in audio/video player, ui comes back to menu but
+        timer renders media player view again after a few seconds.
+     -> 4:3 videos are cropped when displayed on a 16:10 window.
+     -> Ensure media player works (do not segv) if
+        libplayer has no x11 support.
+     -> Segfault when location bar is hidden too fastly
+        (go in some subfolders -> hold Backspace key; will reproduce the bug)
+     -> Duplicated folder's name in location bar when a subfolder is opened
+        too fastly
 
 [Priority 9]
 
@@ -48,16 +80,21 @@
       -> Register config per module
       -> Add Main menu item for configuration
       -> Create GUI for config from registred modules
+      -> Add an option to enable/disable Internet usage
+
+ * Add framebuffer video out support
 
 [Priority 8]
 
   * Playlist
   * Radio Web
+  * Write custom media library plugin (lms equivalent) using libplayer
 
 [Priority 0]
 
   * Smooth selection in list (scroll animated)
   * Lastfm plugin
+  * FreeboxTV plugin (or better, generalize to M3UEXT playlist)
   * youtube plugin
   * Deezer plugin
   * Theme Documentation

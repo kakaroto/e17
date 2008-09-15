@@ -1,4 +1,7 @@
 [enna]
+#none,event,info,warning,error,critical
+verbosity=info
+
 #0,1
 fullscreen=0
 
@@ -9,12 +12,29 @@ theme=default
 #x11,xrender,gl,x11_16
 engine=x11
 
-#libplayer,emotion\n
+#libplayer,emotion
 backend=libplayer
 
 music_ext=ogg,mp3,flac,wav,wma
 video_ext=avi,mkv,ogg,mpg,mpeg,wmv
 photo_ext=jpg,jpeg,png
+
+[libplayer]
+# Values by default are 'mplayer' type, 'auto' video_out, 'auto' audio_out
+# and 'warning' verbosity. Change these parameters only if that is really
+# necessary.
+
+#gstreamer,mplayer,vlc,xine
+#type=
+
+#auto,x11,xv,gl,fb
+#video_out=
+
+#auto,alsa,oss
+#audio_out=
+
+#verbose,info,warning,error,critical,none
+#verbosity=
 
 [localfiles]
 path_music=file:///path/to/Music,Music,icon_hd
@@ -23,6 +43,9 @@ path_video=file:///path/to/Videos,Videos,icon_hd
 path_video=file:///path/to/server/Medias/Videos,Server,icon_network
 path_photo=file:///path/to/Photos,Photos,icon_hd
 path_photo=file:///path/to/server/Medias/Photos,Server,icon_network
+
+[netstreams]
+stream_video=http://mafreebox.freebox.fr/freeboxtv/playlist.m3u,FreeboxTV,icon_freeboxtv
 
 [lms]
 path=file:///path/to/Music

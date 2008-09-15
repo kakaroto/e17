@@ -8,6 +8,14 @@ fonts{
    font:"content_bold.ttf" "content_bd";
 }
 
+spectra {
+  spectrum {
+    name: "Reflect";
+    color: 255 255 255 50 1;
+    color: 255 255 255 10 1;
+  }
+}
+
 collections
 {
 #include "background.edc"

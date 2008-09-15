@@ -5,11 +5,13 @@ images {
    image: "progress_bar_content.png" COMP;
    image: "progress_bar_drag.png" COMP;
    image: "text_border.png" COMP;
+   image: "shadow.png" COMP;
 }
 
 
 group {
    name: "video_info";
+   min: 800 600;
    parts {
       part {
          name: "enna.clip.player";
@@ -21,17 +23,17 @@ group {
          }
       }
       part {
-      name: "text_border";
-      mouse_events:  0;
+         name: "text_border";
+         mouse_events:  0;
          description {
-         state: "default" 0.0;
-	 rel1.relative: 0.45 0;
-	 rel2.relative: 1.0 1.0;
-         image.normal: "text_border.png";
-	 image.border: 10 10 10 10;
+            state: "default" 0.0;
+            rel1.relative: 0.01 0.1;
+            rel2.relative: 0.99 0.99;
+            image.normal: "text_border.png";
+            image.border: 10 10 10 10;
          }
       }
-        part {
+      part {
 	 name:           "enna.text.title";
          clip_to: "enna.clip.player";
 	 type:           TEXT;
@@ -39,46 +41,164 @@ group {
 	 description {
 	    state: "default" 0.0;
 	    rel1 {
-               relative: 0  0.05;
-	       to: "text_border";
+               relative: 0.01  0;
 	    }
 	    rel2 {
-	       relative: 1.0  0.15;
-	       to: "text_border";
+	       relative: 0.99  0.1;
 	    }
             color: 200 200 200 200;
             color3: 128 128 128 200;
-            align: 0.5 0.5;
+
 	    text {
                text:     "Title";
                font:     "content_bd";
                size:     25;
+               align: 0.5 0.5;
                fit: 1 1;
                min: 1 0;
                //max: 1 1;;
             }
 	 }
       }
+      part
+      {
+         name: "shadow_info_bg";
+         type: IMAGE;
+         mouse_events:   0;
+         description
+         {
+            state: "default" 0.0;
+            rel1{
+               relative: 0 0;
+               to: "info_bg";
+            }
+            rel2
+            {
+               relative: 1 1;
+               to: "info_bg";
+               offset: 13 13;
+            }
+            image.normal: "shadow.png";
+            image.border: 14 14 14 14;
+         }
+      }
+      part
+      {
+         name: "info_bg";
+         type: RECT;
+         mouse_events:   0;
+         description
+         {
+            state: "defaqult" 0.0;
+            color: 0 0 0 255;
+            aspect: 1.33 1.33;
+            aspect_preference: BOTH;
+            rel1{
+               relative: 0.4 0;
+               to: "text_border";
+               offset: 20 20;
+            }
+            rel2
+            {
+               relative: 1 1;
+               to: "text_border";
+               offset: -20 -20;
+            }
 
+         }
+      }
+
+
+      /*****************************************************************************/
+      /*			Movie Cover                                          */
+      /*****************************************************************************/
+      part
+      {
+         name: "shadow_cover";
+         type: IMAGE;
+         mouse_events:   0;
+         description
+         {
+            state: "default" 0.0;
+            rel1{
+               relative: 0 0;
+               to: "cover_bg";
+            }
+            rel2
+            {
+               relative: 1 1;
+               to: "cover_bg";
+               offset: 13 13;
+            }
+            image.normal: "shadow.png";
+            image.border: 14 14 14 14;
+         }
+      }
       part {
-         name: "title_underline";
+         name: "cover_bg";
          type: RECT;
          description {
             state: "default" 0.0;
-            color : 255 255 255 128;
+            color: 0 0 0 255;
             visible: 1;
-	     rel1 {
-               relative: 0.1  0.15;
-	       to: "text_border";
-	    }
-	    rel2 {
-	       relative: 0.9  0.15;
-	       to: "text_border";
-	       offset: 0 0;
-	    }
+            aspect: 0.69 0.69;
+            aspect_preference: BOTH;
+            rel1 {
+               to: "text_border";
+               relative: 0 0;
+               offset: 20 20;
+
+            }
+            rel2 {
+               to_x: "info_bg";
+               to_y: "text_border";
+               relative: 0 1;
+               offset: 0 -20;
+            }
          }
       }
-       part {
+      part {
+         name: "enna.clip.cover";
+         clip_to: "enna.clip.player";
+         type: RECT;
+         description {
+            state: "default" 0.0;
+            color: 255 255 255 0;
+            visible: 0;
+            rel1{
+               relative: 0 0;
+               to: "cover_bg";
+            }
+            rel2{
+               relative: 1 1;
+               to: "cover_bg";
+            }
+         }
+         description {
+            state: "show" 0.0;
+            color : 255 255 255 255;
+            visible: 1;
+            inherit: "default" 0.0;
+         }
+      }
+
+      part {
+         name: "enna.swallow.cover";
+         type: SWALLOW;
+         mouse_events : 1;
+         //clip_to: "enna.clip.cover";
+         description {
+            state: "default" 0.0;
+            color: 255 255 255 255;
+            rel1 {relative: 0 0;to: "enna.clip.cover";}
+            rel2 {relative: 1 1;to: "enna.clip.cover";}
+         }
+      }
+
+
+
+
+      part {
 	 name:           "enna.text.size";
          clip_to:        "enna.clip.player";
 	 type:           TEXT;
@@ -87,11 +207,11 @@ group {
 	    state: "default" 0.0;
 	    rel1 {
                relative: 0  0.25;
-	       to: "text_border";
+	       to: "info_bg";
 	    }
 	    rel2 {
 	       relative: 1.0  0.30;
-	       to: "text_border";
+	       to: "info_bg";
 	    }
             color: 200 200 200 128;
             color3: 128 128 128 128;
@@ -106,7 +226,7 @@ group {
             }
 	 }
       }
-       part {
+      part {
 	 name:           "enna.text.length";
          clip_to:        "enna.clip.player";
 	 type:           TEXT;
@@ -115,11 +235,11 @@ group {
 	    state: "default" 0.0;
 	    rel1 {
                relative: 0  0.30;
-	       to: "text_border";
+	       to: "info_bg";
 	    }
 	    rel2 {
 	       relative: 1.0  0.35;
-	       to: "text_border";
+	       to: "info_bg";
 	    }
             color: 200 200 200 128;
             color3: 128 128 128 128;
@@ -141,23 +261,23 @@ group {
             state: "default" 0.0;
             color : 255 255 255 128;
             visible: 1;
-	     rel1 {
+            rel1 {
                relative: 0.1  0.40;
-	       to: "text_border";
+	       to: "info_bg";
 	    }
 	    rel2 {
 	       relative: 0.9  0.40;
-	       to: "text_border";
+	       to: "info_bg";
 	       offset: 0 0;
 	    }
          }
       }
 
-/*****************************************************************************/
-/*			Video Stream Infos                                   */
-/*****************************************************************************/
+      /*****************************************************************************/
+      /*			Video Stream Infos                                   */
+      /*****************************************************************************/
 
-       part {
+      part {
 	 name:           "enna.text.video";
          clip_to:        "enna.clip.player";
 	 type:           TEXT;
@@ -166,11 +286,11 @@ group {
 	    state: "default" 0.0;
 	    rel1 {
                relative: 0  0.45;
-	       to: "text_border";
+	       to: "info_bg";
 	    }
 	    rel2 {
 	       relative: 0.5  0.50;
-	       to: "text_border";
+	       to: "info_bg";
 	    }
             color: 200 200 200 200;
             color3: 128 128 128 200;
@@ -186,7 +306,7 @@ group {
 	 }
       }
 
-       part {
+      part {
 	 name:           "enna.text.videocodec";
          clip_to:        "enna.clip.player";
 	 type:           TEXT;
@@ -195,11 +315,11 @@ group {
 	    state: "default" 0.0;
 	    rel1 {
                relative: 0  0.50;
-	       to: "text_border";
+	       to: "info_bg";
 	    }
 	    rel2 {
 	       relative: 0.5  0.55;
-	       to: "text_border";
+	       to: "info_bg";
 	    }
             color: 200 200 200 128;
             color3: 128 128 128 128;
@@ -214,7 +334,7 @@ group {
 	 }
       }
 
-       part {
+      part {
 	 name:           "enna.text.videosize";
          clip_to:        "enna.clip.player";
 	 type:           TEXT;
@@ -223,11 +343,11 @@ group {
 	    state: "default" 0.0;
 	    rel1 {
                relative: 0  0.55;
-	       to: "text_border";
+	       to: "info_bg";
 	    }
 	    rel2 {
 	       relative: 0.5  0.60;
-	       to: "text_border";
+	       to: "info_bg";
 	    }
             color: 200 200 200 128;
             color3: 128 128 128 128;
@@ -242,7 +362,7 @@ group {
 	 }
       }
 
-       part {
+      part {
 	 name:           "enna.text.framerate";
          clip_to:        "enna.clip.player";
 	 type:           TEXT;
@@ -251,11 +371,11 @@ group {
 	    state: "default" 0.0;
 	    rel1 {
                relative: 0  0.60;
-	       to: "text_border";
+	       to: "info_bg";
 	    }
 	    rel2 {
 	       relative: 0.5  0.65;
-	       to: "text_border";
+	       to: "info_bg";
 	    }
             color: 200 200 200 128;
             color3: 128 128 128 128;
@@ -270,11 +390,11 @@ group {
 	 }
       }
 
-/*****************************************************************************/
-/*			Audio Stream Infos                                   */
-/*****************************************************************************/
+      /*****************************************************************************/
+      /*			Audio Stream Infos                                   */
+      /*****************************************************************************/
 
-       part {
+      part {
 	 name:           "enna.text.audio";
          clip_to:        "enna.clip.player";
 	 type:           TEXT;
@@ -283,11 +403,11 @@ group {
 	    state: "default" 0.0;
 	    rel1 {
                relative: 0.5  0.45;
-	       to: "text_border";
+	       to: "info_bg";
 	    }
 	    rel2 {
 	       relative: 1.0  0.50;
-	       to: "text_border";
+	       to: "info_bg";
 	    }
             color: 200 200 200 200;
             color3: 128 128 128 200;
@@ -313,11 +433,11 @@ group {
 	    state: "default" 0.0;
 	    rel1 {
                relative: 0.5  0.50;
-	       to: "text_border";
+	       to: "info_bg";
 	    }
 	    rel2 {
 	       relative: 1.0  0.55;
-	       to: "text_border";
+	       to: "info_bg";
 	    }
             color: 200 200 200 128;
             color3: 128 128 128 128;
@@ -332,7 +452,7 @@ group {
 	 }
       }
 
-       part {
+      part {
 	 name:           "enna.text.bitrate";
          clip_to:        "enna.clip.player";
 	 type:           TEXT;
@@ -341,11 +461,11 @@ group {
 	    state: "default" 0.0;
 	    rel1 {
                relative: 0.5  0.55;
-	       to: "text_border";
+	       to: "info_bg";
 	    }
 	    rel2 {
 	       relative: 1.0  0.60;
-	       to: "text_border";
+	       to: "info_bg";
 	    }
             color: 200 200 200 128;
             color3: 128 128 128 128;
@@ -360,7 +480,7 @@ group {
 	 }
       }
 
-       part {
+      part {
 	 name:           "enna.text.samplerate";
          clip_to:        "enna.clip.player";
 	 type:           TEXT;
@@ -369,11 +489,11 @@ group {
 	    state: "default" 0.0;
 	    rel1 {
                relative: 0.5  0.60;
-	       to: "text_border";
+	       to: "info_bg";
 	    }
 	    rel2 {
 	       relative: 1.0  0.65;
-	       to: "text_border";
+	       to: "info_bg";
 	    }
             color: 200 200 200 128;
             color3: 128 128 128 128;
@@ -388,50 +508,52 @@ group {
 	 }
       }
 
-/*****************************************************************************/
-/*			Movie Cover                                          */
-/*****************************************************************************/
-
-
-      part {
-         name: "enna.clip.cover";
-         clip_to: "enna.clip.player";
-         type: RECT;
-         description {
+      part
+      {
+         name: "reflect";
+         type: GRADIENT;
+         description
+         {
             state: "default" 0.0;
-            color: 255 255 255 0;
-            visible: 0;
-            //aspect: 3.0 4.0;
-            //aspect_preference: VERTICAL;
-            rel1{
-               relative: 0 0.1;
-
+            rel1.to: "info_bg";
+            rel1.relative: 0 0;
+            rel1.offset: 1 1;
+            rel2.to: "info_bg";
+            rel2.relative: 1 0.5;
+            rel2.offset: -2 -2;
+            gradient {
+               spectrum: "Reflect";
+               rel1.relative: 0.5 0;
+               rel1.offset: 0 0;
+               rel2.relative: 0.5 1;
+               rel2.offset: -1 0;
             }
-            rel2{
-               relative: 0.40 0.9;
-            }
-         }
-         description {
-            state: "show" 0.0;
-            color : 255 255 255 255;
-            visible: 1;
-            inherit: "default" 0.0;
          }
       }
 
-      part {
-         name: "enna.swallow.cover";
-         type: SWALLOW;
-         mouse_events : 1;
-         //clip_to: "enna.clip.cover";
-         description {
+      /*   part
+      {
+         name: "reflect_cover";
+         type: GRADIENT;
+         description
+         {
             state: "default" 0.0;
-            color: 255 255 255 255;
-            rel1 {relative: 0 0;to: "enna.clip.cover";}
-            rel2 {relative: 1 1;to: "enna.clip.cover";}
+            rel1.to: "cover_bg";
+            rel1.relative: 0 0;
+            rel1.offset: 1 1;
+            rel2.to: "cover_bg";
+            rel2.relative: 1 0.5;
+            rel2.offset: -2 -2;
+            gradient {
+               spectrum: "Reflect";
+               rel1.relative: 0.5 0;
+               rel1.offset: 0 0;
+               rel2.relative: 0.5 1;
+               rel2.offset: -1 0;
+            }
          }
       }
-
+      */
 
 
    }
