@@ -56,5 +56,6 @@ extern Elm_Box_Class _elm_box_class;
 extern Elm_Table_Class _elm_table_class;
 extern Elm_Button_Class _elm_button_class;
 extern Elm_Icon_Class _elm_icon_class;
+extern Elm_Toggle_Class _elm_toggle_class;
   
 #endif

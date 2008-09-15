@@ -77,8 +77,8 @@ extern "C" {
 	  ELM_OBJ_BOX,
 	  ELM_OBJ_TABLE,
 	  ELM_OBJ_BUTTON,
-	  ELM_OBJ_ICON
-//	  ELM_OBJ_TOGGLE, // FIXME: do
+	  ELM_OBJ_ICON,
+	  ELM_OBJ_TOGGLE // FIXME: do
 //	  ELM_OBJ_CHECK, // FIXME: do
 //	  ELM_OBJ_RADIO, // FIXME: do
 //	  ELM_OBJ_CLOCK, // FIXME: do
@@ -135,6 +135,8 @@ extern "C" {
    typedef struct _Elm_Button          Elm_Button;
    typedef struct _Elm_Icon_Class      Elm_Icon_Class;
    typedef struct _Elm_Icon            Elm_Icon;
+   typedef struct _Elm_Toggle_Class    Elm_Toggle_Class;
+   typedef struct _Elm_Toggle          Elm_Toggle;
    
    typedef void (*Elm_Cb_Func) (void *data, Elm_Obj *obj, Elm_Cb_Type type, void *info);
    
@@ -270,6 +272,7 @@ extern "C" {
 	Ecore_X_Window  xwin; /* private */
 	Ecore_Job      *deferred_resize_job; /* private */
 	Ecore_Job      *deferred_child_eval_job; /* private */
+	unsigned char   showme : 1; /* private */
      };
    
 /**************************************************************************/   
@@ -324,7 +327,7 @@ extern "C" {
    void (*text_set)  (Elm_Label *lb, const char *text)
 #define Elm_Label_Class_All Elm_Widget_Class_All; Elm_Label_Class_Methods; \
    const char *text; \
-  int minw, minh
+   int minw, minh
    
    /* Object specific ones */
    EAPI Elm_Label *elm_label_new(Elm_Win *win);
@@ -434,4 +437,27 @@ extern "C" {
 	Elm_Icon_Class_All;
      };
 
+/**************************************************************************/   
+   /* Toggle Object */
+#define Elm_Toggle_Class_Methods \
+   void (*text_set)  (Elm_Toggle *tg, const char *text)
+#define Elm_Toggle_Class_All Elm_Widget_Class_All; Elm_Toggle_Class_Methods; \
+   const char *text; \
+   int minw, minh; \
+   int toggle; \
+   int *toggle_ptr
+   
+   /* Object specific ones */
+   EAPI Elm_Toggle *elm_toggle_new(Elm_Win *win);
+   struct _Elm_Toggle_Class
+     {
+	void *parent;
+	Elm_Obj_Type type;
+	Elm_Toggle_Class_Methods;
+     };
+   struct _Elm_Toggle
+     {
+	Elm_Toggle_Class_All;
+     };
+   
 #endif

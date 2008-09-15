@@ -43,6 +43,11 @@ _elm_child_eval_job(Elm_Win *win)
    if (w < win->w) w = win->w;
    if (h < win->h) h = win->h;
    if ((w > win->w) || (h > win->h)) ecore_evas_resize(win->ee, w, h);
+   if (win->showme)
+     {
+	win->showme = 0;
+	ecore_evas_show(win->ee);
+     }
    _elm_obj_nest_pop();
 }
 
@@ -81,12 +86,16 @@ _elm_win_title_set(Elm_Win *win, const char *title)
 static void
 _elm_win_show(Elm_Win *win)
 {
-   ecore_evas_show(win->ee);
+   if (win->deferred_child_eval_job)
+     win->showme = 1;
+   else
+     ecore_evas_show(win->ee);
 }
 
 static void
 _elm_win_hide(Elm_Win *win)
 {
+   win->showme = 0;
    ecore_evas_hide(win->ee);
 }
 
