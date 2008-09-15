@@ -554,8 +554,9 @@ win_table_of_buttons(void)
 
    button = elm_button_new(win);
    icon = elm_icon_new(win);
-   snprintf(buf, sizeof(buf), "%s/images/logo.png", PACKAGE_DATA_DIR);
+   snprintf(buf, sizeof(buf), "%s/images/logo_small.png", PACKAGE_DATA_DIR);
    icon->file_set(icon, buf, NULL);
+   icon->scale_up = 0;
    icon->layout_update(icon);
    button->child_add(button, icon);
    table->pack(table, button, 1, 1, 2, 1);

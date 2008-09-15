@@ -4,4 +4,5 @@ MAINTAINERCLEANFILES = Makefile.in
 filesdir = $(datadir)/alarm/images
 files_DATA = \
 sample_01.jpg \
-logo.png
+logo.png \
+logo_small.png
