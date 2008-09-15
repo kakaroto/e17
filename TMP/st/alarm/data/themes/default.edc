@@ -79,8 +79,8 @@ collections {
          part { name: "bg";
 	    type: RECT;
 	    description { state: "default" 0.0;
-//	       rel1.offset: 1 1;
-//	       rel2.offset: -2 -2;
+	       rel1.offset: 1 1;
+	       rel2.offset: -2 -2;
 	       color: 255 255 255 0;
 	    }
 	 }
@@ -96,13 +96,15 @@ collections {
 	    clip_to: "clipper";
 	    type: SWALLOW;
 	    description { state: "default" 0.0;
+	       rel1.offset: 1 1;
+	       rel2.offset: -2 -2;
 	    }
 	 }
 	 part { name: "conf_over";
 	    mouse_events:  0;
 	    description { state: "default" 0.0;
-	       rel1.offset: -1 -1;
-	       rel2.offset: 0 0;
+	       rel1.offset: 0 0;
+	       rel2.offset: -1 -1;
 	       image {
 		  normal: "shelf_inset.png";
 		  border: 7 7 7 7;
@@ -509,23 +511,129 @@ collections {
 ///////////////////////////////////////////////////////////////////////////////
    group { name: "toggle";
       images {
-	 image: "bt_base1.png" COMP;
-	 image: "bt_base2.png" COMP;
-	 image: "bt_hilight.png" COMP;
-	 image: "bt_shine.png" COMP;
+         image: "shelf_inset.png" COMP;
       }
       parts {      
-	 part { name: "button_image";
+         part { name: "bg";
+	    type: RECT;
 	    mouse_events: 0;
 	    description { state: "default" 0.0;
-	       image {
-		  normal: "bt_base2.png";
-		  border: 7 7 7 7;
+	       rel1.offset: 1 1;
+	       rel1.to: "conf_over";
+	       rel2.offset: -2 -2;
+	       rel2.to: "conf_over";
+	       color: 255 255 255 255;
+	    }
+	 }
+         part { name: "clipper";
+	    type: RECT;
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       rel1.to: "bg";
+	       rel2.to: "bg";
+	       color: 255 255 255 255;
+	    }
+	 }
+         part { name: "button";
+	    type: RECT;
+	    scale: 1;
+	    clip_to: "clipper";
+	    mouse_events: 1;
+	    dragable {
+	       x: 1 1 0;
+	       y: 0 0 0;
+	       confine: "bg";
+	    }
+	    description { state: "default" 0.0;
+	       rel1.to: "bg";
+	       rel2.to: "bg";
+	       min: 24 24;
+	       max: 24 24;
+	       aspect: 1.0 1.0;
+	       aspect_preference: VERTICAL;
+	       color: 255 128 0 200;
+	    }
+	 }
+         part { name: "onrect";
+	    type: RECT;
+	    scale: 1;
+	    clip_to: "clipper";
+	    mouse_events: 1;
+	    description { state: "default" 0.0;
+	       rel1.to: "button";
+	       rel1.relative: -3.0 0.0;
+	       rel2.to: "button";
+	       rel2.relative: 0.0 1.0;
+	       color: 0 128 0 200;
+	    }
+	 }
+         part { name: "offrect";
+	    type: RECT;
+	    scale: 1;
+	    clip_to: "clipper";
+	    mouse_events: 1;
+	    description { state: "default" 0.0;
+	       rel1.to: "button";
+	       rel1.relative: 1.0 0.0;
+	       rel2.to: "button";
+	       rel2.relative: 4.0 1.0;
+	       color: 0 128 0 200;
+	    }
+	 }
+         part { name: "elm.offtext";
+	    type: TEXT;
+	    mouse_events:  0;
+	    scale: 1;
+	    clip_to: "clipper";
+	    description { state: "default" 0.0;
+	       rel1.to: "offrect";
+	       rel2.to: "offrect";
+	       color: 0 0 0 255;
+	       text {
+		  font:     "Sans,Edje-Vera";
+		  size:     10;
+		  min:      0 1;
+		  align:    0.5 0.5;
+		  text:     "OFF";
 	       }
 	    }
-	    description { state: "clicked" 0.0;
-	       inherit: "default" 0.0;
-	       image.normal: "bt_base1.png";
+	 }
+         part { name: "elm.ontext";
+	    type: TEXT;
+	    mouse_events:  0;
+	    scale: 1;
+	    clip_to: "clipper";
+	    description { state: "default" 0.0;
+	       rel1.to: "onrect";
+	       rel2.to: "onrect";
+	       color: 0 0 0 255;
+	       text {
+		  font:     "Sans,Edje-Vera";
+		  size:     10;
+		  min:      0 1;
+		  align:    0.5 0.5;
+		  text:     "ON";
+	       }
+	    }
+	 }
+	 part { name: "conf_over";
+	    mouse_events:  0;
+	    scale: 1;
+	    description { state: "default" 0.0;
+	       rel1.relative: 1.0 0.0;
+	       rel1.offset: -4 3;
+	       rel2.offset: -4 -4;
+	       align: 1.0 0.5;
+	       min: 96 24;
+	       max: 96 24;
+	       aspect: 4.0 4.0;
+	       aspect_preference: VERTICAL;
+	       image {
+		  normal: "shelf_inset.png";
+		  border: 7 7 7 7;
+		  middle: 0;
+	       }
+	       fill.smooth : 0;
 	    }
 	 }
 	 part { name: "elm.swallow.contents";
@@ -548,7 +656,6 @@ collections {
          part {
 	    name:          "elm.text";
 	    type:          TEXT;
-	    effect:        SOFT_SHADOW;
 	    mouse_events:  0;
 	    scale: 1;
 	    description { state: "default" 0.0;
@@ -556,9 +663,10 @@ collections {
 	       rel1.to_x: "elm.swallow.contents";
 	       rel1.relative: 1.0 0.0;
                rel1.offset: 0 8;
+	       rel2.to_x: "conf_over";
+	       rel2.relative: 0.0 1.0;
 	       rel2.offset: -9 -9;
-	       color: 224 224 224 255;
-	       color3: 0 0 0 64;
+	       color: 0 0 0 255;
 	       text {
 		  font:     "Sans,Edje-Vera";
 		  size:     10;
@@ -572,27 +680,9 @@ collections {
 	       text.min: 1 1;
 	    }
 	 }
-	 part {	  name: "over1";
-	    mouse_events: 0;
-	    description { state: "default" 0.0;
-	       rel2.relative: 1.0 0.5;
-	       image {
-		  normal: "bt_hilight.png";
-		  border: 7 7 7 0;
-	       }
-	    }
-	 }
-	 part { name: "over2";
-	    mouse_events: 1;
-	    description { state: "default" 0.0;
-	       image {
-		  normal: "bt_shine.png";
-		  border: 7 7 7 7;
-	       }
-	    }
-	 }
       }
       programs {
+/*	 
 	 program {
 	    name:   "button_click";
 	    signal: "mouse,down,1";
@@ -613,6 +703,7 @@ collections {
 	    source: "over2";
 	    action: SIGNAL_EMIT "elm,action,click" "";
 	 }
+ */
 	 program { name: "text_show";
 	    signal: "elm,state,text,visible";
 	    source: "elm";

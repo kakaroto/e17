@@ -585,6 +585,47 @@ win_table_of_buttons(void)
    win->show(win);
 }
 
+static void
+win_box_vert_of_toggles(void)
+{
+   Elm_Win *win;
+   Elm_Bg *bg;
+   Elm_Box *box;
+   Elm_Toggle *toggle;
+
+   win = elm_win_new();
+   win->name_set(win, "win_bg");
+   win->title_set(win, "Simple Window with box + labels setting minimum size");
+   win->autodel = 0;
+   win->cb_add(win, ELM_CB_DEL_REQ, on_win_del_req, NULL);
+   win->cb_add(win, ELM_CB_RESIZE, on_win_resize, NULL);
+
+   bg = elm_bg_new(win);
+   bg->expand_x = 1;
+   bg->expand_y = 1;
+   bg->show(bg);
+   
+   box = elm_box_new(win);
+
+   toggle = elm_toggle_new(win);
+   toggle->text_set(toggle, "Name of thing to toggle");
+   box->pack_end(box, toggle);
+   toggle->show(toggle);
+   toggle->align_x = 0.5;
+   toggle->align_y = 0.5;
+   toggle->expand_x = 0;
+   toggle->expand_y = 0;
+   toggle->fill_x = 0;
+   toggle->fill_y = 0;
+   elm_widget_sizing_update(toggle);
+
+   elm_widget_sizing_update(box);
+   box->show(box);
+   
+   win->size_req(win, NULL, 200, 120);
+   win->show(win);
+}
+
 int
 main(int argc, char **argv)
 {
@@ -601,6 +642,7 @@ main(int argc, char **argv)
    win_scrollable_box_vert_of_labels();
    win_table_of_labels();
    win_table_of_buttons();
+   win_box_vert_of_toggles();
    
    elm_run(); /* and run the program now  and handle all events etc. */
    

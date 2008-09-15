@@ -440,7 +440,8 @@ extern "C" {
 /**************************************************************************/   
    /* Toggle Object */
 #define Elm_Toggle_Class_Methods \
-   void (*text_set)  (Elm_Toggle *tg, const char *text)
+   void (*text_set)  (Elm_Toggle *tg, const char *text); \
+   void (*layout_update)  (Elm_Toggle *tg)
 #define Elm_Toggle_Class_All Elm_Widget_Class_All; Elm_Toggle_Class_Methods; \
    const char *text; \
    int minw, minh; \
