@@ -105,6 +105,9 @@ if test "x$have_software_xcb" = "xyes"; then
     [ have_software_xcb="no" ])
 fi
 AM_CONDITIONAL(BUILD_XCB, test "x$have_xcb" = "xyes")
+if test "x$have_xcb" = "xyes"; then
+  AC_DEFINE(BUILD_XCB, 1, [build xcb support])
+fi
 
 if test "x$have_software_sdl" = "xyes"; then
   PKG_CHECK_MODULES([SDL], sdl,

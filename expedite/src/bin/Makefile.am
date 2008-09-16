@@ -77,7 +77,7 @@ expedite_SOURCES += \
 engine_gl_x11.c engine_gl_x11.h
 endif
 
-if BUILD_SOFTWARE_XCB
+if BUILD_XCB
 expedite_SOURCES += \
 engine_software_xcb.c engine_software_xcb.h
 endif

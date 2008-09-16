@@ -1,5 +1,12 @@
 #include "main.h"
 
+typedef struct _Evas_Object_Image_Preload Evas_Object_Image_Preload;
+struct _Evas_Object_Image_Preload
+{
+   Evas_Object *obj;
+   const char *name;
+};
+
 Evas *evas = NULL;
 int win_w = 720, win_h = 420;
 
@@ -1040,6 +1047,17 @@ static const unsigned short r[65536] =
 7968, 2599, 8735, 29790, 6290, 30746, 32702, 4455, 16084, 13228, 29890, 28634, 5614, 3659, 22541, 13680, 13544, 6990, 4032, 29236, 23846, 12513, 28685, 12501, 1470, 25253, 25536, 8868, 10340, 1045, 27154, 18308, 3644, 3122, 15330, 9934, 1100, 15264, 14389, 17184, 28493, 11512, 13050, 1339, 15171, 2823, 15020, 28715, 9814, 19052, 25184, 892, 31565, 21101, 13394, 267, 13586, 6162, 9135, 23926, 7207, 3522, 9466, 10852
 };
 
+static Evas_Object_Image_Preload preloading[] = {
+  { NULL, "logo.png" },
+  { NULL, "image.png" },
+  { NULL, "bar.png" },
+  { NULL, "pan.png" },
+  { NULL, "frame.png" },
+  { NULL, "im1.png" },
+  { NULL, "im2.png" },
+  { NULL, "tp.png" }
+};
+
 void
 srnd(void)
 {
@@ -1194,7 +1212,7 @@ _engine_args(int argc, char **argv)
    if (engine_gl_x11_args(argc, argv))
      loop_func = engine_gl_x11_loop;
 #endif
-#if HAVE_EVAS_SOFTWARE_XCB
+#if BUILD_XCB
    if (engine_software_xcb_args(argc, argv))
      loop_func = engine_software_xcb_loop;
 #endif
@@ -1324,6 +1342,8 @@ _engine_args(int argc, char **argv)
 int
 main(int argc, char **argv)
 {
+   int i;
+
    evas_init();
    evas = evas_new();
 
@@ -1332,12 +1352,28 @@ main(int argc, char **argv)
 
    evas_font_hinting_set(evas, EVAS_FONT_HINTING_AUTO);
 
+   /* Preloading every image. */
+   for (i = 0; i < sizeof (preloading) / sizeof (Evas_Object_Image_Preload); ++i)
+     {
+	preloading[i].obj = evas_object_image_add(evas);
+	evas_object_image_file_set(preloading[i].obj, build_path(preloading[i].name), NULL);
+	evas_object_image_preload(preloading[i].obj, 0);
+     }
+
    while (_engine_go())
      {
 	ui_loop();
 	engine_loop();
 	evas_render(evas);
      }
+
+   /* Delete object, just to be clean. */
+   for (i = 0; i < sizeof (preloading) / sizeof (Evas_Object_Image_Preload); ++i)
+     {
+	evas_object_del(preloading[i].obj);
+	preloading[i].obj = NULL;
+     }
+
    evas_free(evas);
 
    evas_shutdown();
