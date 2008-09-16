@@ -189,6 +189,7 @@ Etk_Widget *
 dialog_colorpicker_create(void)
 {
    UI_ColorWin = etk_window_new();
+   etk_object_name_set(ETK_OBJECT(UI_ColorWin), "ColorDialog");
    etk_signal_connect("delete-event", ETK_OBJECT(UI_ColorWin),
                       ETK_CALLBACK(etk_window_hide_on_delete), NULL);
    UI_ColorPicker = etk_colorpicker_new();
