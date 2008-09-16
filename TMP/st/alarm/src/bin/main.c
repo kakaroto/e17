@@ -841,7 +841,7 @@ win_scrollable_box_vert_of_toggles_and_buttons(void)
    
    scroller->show(scroller);
 
-   win->size_req(win, NULL, 240, 240);
+   win->size_req(win, NULL, 400, 320);
    
    win->show(win);
 }

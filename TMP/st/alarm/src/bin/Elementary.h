@@ -79,10 +79,11 @@ extern "C" {
 	  ELM_OBJ_BUTTON,
 	  ELM_OBJ_ICON,
 	  ELM_OBJ_TOGGLE
-//	  ELM_OBJ_EXPANDER // FIXME: do
 //	  ELM_OBJ_CHECK, // FIXME: do
 //	  ELM_OBJ_RADIO, // FIXME: do
 //	  ELM_OBJ_CLOCK, // FIXME: do
+//        ELM_OBJ_FRAME	// FIXME: do  
+//	  ELM_OBJ_EXPANDER // FIXME: do (like a paned but slides open/closed
 //	  ELM_OBJ_SPIN, // FIXME: do
 //	  ELM_OBJ_SLIDER, // FIXME: do
 //	  ELM_OBJ_ENTRY, // FIXME: do
@@ -92,7 +93,12 @@ extern "C" {
 //	  // FIXME: list more widgets to do here like:
 //	  // CONTACT, SELECTOR, FILES, PREVIEW, SIGNALINFO, CALLINFO,
 //	  // CELLEDIT (csv - maybe later xls or some other cell format),
-//	  // COLORSEL, ... 
+//	  // COLORSEL, TACHO ... 
+//	  
+//	  wrap other basic ecore things:
+//	  ELM_OBJ_TIMER,
+//	  ELM_OBJ_ANIMATOR,
+//	  ELM_OBJ_JOB,
     } Elm_Obj_Type;
    
    typedef enum _Elm_Cb_Type
