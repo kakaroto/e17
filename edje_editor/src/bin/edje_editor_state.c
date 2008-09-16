@@ -162,6 +162,13 @@ state_frame_create(void)
    etk_widget_size_request_set(UI_StateAlignVSpinner, 45, 20);
    etk_box_append(ETK_BOX(hbox), UI_StateAlignVSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
 
+   //UI_StateVisibleCheck
+   label = etk_label_new("Visible");
+   etk_widget_padding_set(label, 20, 0, 0, 0);
+   etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
+   
+   UI_StateVisibleCheck = etk_check_button_new();
+   etk_box_append(ETK_BOX(hbox), UI_StateVisibleCheck, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    etk_signal_connect("key-down", ETK_OBJECT(UI_StateEntry),
                       ETK_CALLBACK(_state_Entry_key_down_cb), NULL);
@@ -190,6 +197,9 @@ state_frame_create(void)
    etk_signal_connect("value-changed", ETK_OBJECT(UI_StateAlignHSpinner),
                       ETK_CALLBACK(_text_FontAlignSpinner_value_changed_cb),
                       (void*)STATE_ALIGNH_SPINNER);
+   etk_signal_connect("toggled", ETK_OBJECT(UI_StateVisibleCheck),
+                      ETK_CALLBACK(_state_VisibleCheck_toggled_cb), NULL);
+
    return vbox;
 }
 
@@ -219,6 +229,8 @@ state_frame_update(void)
    etk_signal_block("value-changed", ETK_OBJECT(UI_StateAlignHSpinner),
                     ETK_CALLBACK(_text_FontAlignSpinner_value_changed_cb),
                     (void*)STATE_ALIGNH_SPINNER);
+   etk_signal_block("toggled", ETK_OBJECT(UI_StateVisibleCheck),
+                    ETK_CALLBACK(_state_VisibleCheck_toggled_cb), NULL);
 
    if (etk_string_length_get(Cur.state))
    {
@@ -256,6 +268,10 @@ state_frame_update(void)
          edje_edit_state_align_x_get(edje_o, Cur.part->string, Cur.state->string));
       etk_range_value_set(ETK_RANGE(UI_StateAlignVSpinner),
          edje_edit_state_align_y_get(edje_o, Cur.part->string, Cur.state->string));
+
+      //Set visible checkbox
+      etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(UI_StateVisibleCheck),
+         edje_edit_state_visible_get(edje_o, Cur.part->string, Cur.state->string));
    }
 
    //ReEnable Signal Propagation
@@ -281,6 +297,8 @@ state_frame_update(void)
    etk_signal_unblock("value-changed", ETK_OBJECT(UI_StateAlignHSpinner),
                       ETK_CALLBACK(_text_FontAlignSpinner_value_changed_cb),
                       (void*)STATE_ALIGNH_SPINNER);
+   etk_signal_unblock("toggled", ETK_OBJECT(UI_StateVisibleCheck),
+                      ETK_CALLBACK(_state_VisibleCheck_toggled_cb), NULL);
 }
 
 
@@ -382,3 +400,10 @@ _state_MinMaxSpinner_value_changed_cb(Etk_Range *range, double value, void *data
    return ETK_TRUE;
 }
 
+Etk_Bool
+_state_VisibleCheck_toggled_cb(Etk_Toggle_Button *button, void *data)
+{
+   edje_edit_state_visible_set(edje_o, Cur.part->string, Cur.state->string,
+                               etk_toggle_button_active_get(button));
+   return ETK_TRUE;
+}
