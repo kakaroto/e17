@@ -529,8 +529,8 @@ collections {
 	       rel1.offset: -4 3;
 	       rel2.offset: -4 -4;
 	       align: 1.0 0.5;
-	       min: 96 24;
-	       max: 96 24;
+	       min: 64 16;
+	       max: 64 16;
 	       aspect: 4.0 4.0;
 	       aspect_preference: VERTICAL;
 	       color: 255 255 255 255;
@@ -548,7 +548,7 @@ collections {
          part { name: "button";
 	    type: RECT;
 	    scale: 1;
-//	    clip_to: "clipper";
+	    clip_to: "clipper";
 	    mouse_events: 1;
 	    dragable {
 	       x: 1 1 0;
@@ -559,8 +559,8 @@ collections {
 	       fixed: 1 1;
 	       rel1.to: "bg";
 	       rel2.to: "bg";
-	       min: 24 24;
-	       max: 24 24;
+	       min: 16 16;
+	       max: 16 16;
 	       aspect: 1.0 1.0;
 	       aspect_preference: VERTICAL;
 	       color: 0 0 0 0;
