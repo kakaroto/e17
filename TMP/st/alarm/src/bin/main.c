@@ -53,6 +53,7 @@ win_bg_image(void)
 {
    Elm_Win *win;
    Elm_Bg *bg;
+   char buf[PATH_MAX];
 
    win = elm_win_new();
    win->name_set(win, "win_bg");
@@ -66,7 +67,6 @@ win_bg_image(void)
     * your app - don't use this unless you have a very good reason! there
     * is a default and all apps look nicer sharing the default, but if
     * you insist... */
-   char buf[PATH_MAX];
    snprintf(buf, sizeof(buf), "%s/images/sample_01.jpg", PACKAGE_DATA_DIR);
    bg->file_set(bg, buf, NULL); /* set the bg - the NULL is for special
 				 * files that contain multiple images
@@ -348,7 +348,6 @@ win_box_vert_of_labels(void)
    elm_widget_sizing_update(box);
    box->show(box);
    
-   win->size_req(win, NULL, 200, 120);
    win->show(win);
 }
 
@@ -382,7 +381,7 @@ win_scrollable_box_vert_of_labels(void)
 
    for (i = 0; i < 40; i++)
      {
-	char buf[4096];
+	char buf[200];
 	
 	snprintf(buf, sizeof(buf), "This is a Label in a box, #%i", i);
 	label = elm_label_new(win);
@@ -586,12 +585,20 @@ win_table_of_buttons(void)
 }
 
 static void
+on_toggle_changed(void *data, Elm_Toggle *tg, Elm_Cb_Type type, void *info)
+{
+   printf("toggle: %i\n", tg->state);
+}
+
+static void
 win_box_vert_of_toggles(void)
 {
    Elm_Win *win;
    Elm_Bg *bg;
    Elm_Box *box;
    Elm_Toggle *toggle;
+   Elm_Icon *icon;
+   char buf[PATH_MAX];
 
    win = elm_win_new();
    win->name_set(win, "win_bg");
@@ -608,21 +615,77 @@ win_box_vert_of_toggles(void)
    box = elm_box_new(win);
 
    toggle = elm_toggle_new(win);
-   toggle->text_set(toggle, "Name of thing to toggle");
+   toggle->text_set(toggle, "Label ON/OFF");
+   toggle->state = 1;
+   toggle->layout_update(toggle);
+   toggle->cb_add(toggle, ELM_CB_CHANGED, on_toggle_changed, NULL);
    box->pack_end(box, toggle);
    toggle->show(toggle);
    toggle->align_x = 0.5;
    toggle->align_y = 0.5;
-   toggle->expand_x = 0;
+   toggle->expand_x = 1;
    toggle->expand_y = 0;
-   toggle->fill_x = 0;
+   toggle->fill_x = 1;
+   toggle->fill_y = 0;
+   elm_widget_sizing_update(toggle);
+
+   toggle = elm_toggle_new(win);
+   toggle->text_set(toggle, "Icon + Label ON/OFF");
+   icon = elm_icon_new(win);
+   snprintf(buf, sizeof(buf), "%s/images/logo.png", PACKAGE_DATA_DIR);
+   icon->file_set(icon, buf, NULL);
+   toggle->child_add(toggle, icon);
+   toggle->state = 1;
+   toggle->layout_update(toggle);
+   toggle->cb_add(toggle, ELM_CB_CHANGED, on_toggle_changed, NULL);
+   box->pack_end(box, toggle);
+   toggle->show(toggle);
+   toggle->align_x = 0.5;
+   toggle->align_y = 0.5;
+   toggle->expand_x = 1;
+   toggle->expand_y = 0;
+   toggle->fill_x = 1;
+   toggle->fill_y = 0;
+   elm_widget_sizing_update(toggle);
+
+   toggle = elm_toggle_new(win);
+   toggle->text_set(toggle, NULL);
+   icon = elm_icon_new(win);
+   snprintf(buf, sizeof(buf), "%s/images/logo.png", PACKAGE_DATA_DIR);
+   icon->file_set(icon, buf, NULL);
+   toggle->child_add(toggle, icon);
+   toggle->state = 1;
+   toggle->layout_update(toggle);
+   toggle->cb_add(toggle, ELM_CB_CHANGED, on_toggle_changed, NULL);
+   box->pack_end(box, toggle);
+   toggle->show(toggle);
+   toggle->align_x = 0.5;
+   toggle->align_y = 0.5;
+   toggle->expand_x = 1;
+   toggle->expand_y = 0;
+   toggle->fill_x = 1;
+   toggle->fill_y = 0;
+   elm_widget_sizing_update(toggle);
+
+   toggle = elm_toggle_new(win);
+   toggle->text_set(toggle, "Label Yes/No");
+   toggle->states_text_set(toggle, "Yes", "No");
+   toggle->state = 1;
+   toggle->layout_update(toggle);
+   toggle->cb_add(toggle, ELM_CB_CHANGED, on_toggle_changed, NULL);
+   box->pack_end(box, toggle);
+   toggle->show(toggle);
+   toggle->align_x = 0.5;
+   toggle->align_y = 0.5;
+   toggle->expand_x = 1;
+   toggle->expand_y = 0;
+   toggle->fill_x = 1;
    toggle->fill_y = 0;
    elm_widget_sizing_update(toggle);
 
    elm_widget_sizing_update(box);
    box->show(box);
    
-   win->size_req(win, NULL, 200, 120);
    win->show(win);
 }
 

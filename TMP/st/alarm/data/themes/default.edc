@@ -1,4 +1,5 @@
 collections {
+
 ///////////////////////////////////////////////////////////////////////////////
    group { name: "bg";
       images {
@@ -347,6 +348,7 @@ collections {
 	 }
       }
    }
+   
 ///////////////////////////////////////////////////////////////////////////////
    group { name: "label";
       styles
@@ -512,16 +514,25 @@ collections {
    group { name: "toggle";
       images {
          image: "shelf_inset.png" COMP;
+	 image: "bt_basew.png" COMP;
+	 image: "bt_bases.png" COMP;
+	 image: "bt_hilightw.png" COMP;
+	 image: "tog_base.png" COMP;
       }
       parts {      
          part { name: "bg";
 	    type: RECT;
 	    mouse_events: 0;
+	    scale: 1;
 	    description { state: "default" 0.0;
-	       rel1.offset: 1 1;
-	       rel1.to: "conf_over";
-	       rel2.offset: -2 -2;
-	       rel2.to: "conf_over";
+	       rel1.relative: 1.0 0.0;
+	       rel1.offset: -4 3;
+	       rel2.offset: -4 -4;
+	       align: 1.0 0.5;
+	       min: 96 24;
+	       max: 96 24;
+	       aspect: 4.0 4.0;
+	       aspect_preference: VERTICAL;
 	       color: 255 255 255 255;
 	    }
 	 }
@@ -537,7 +548,7 @@ collections {
          part { name: "button";
 	    type: RECT;
 	    scale: 1;
-	    clip_to: "clipper";
+//	    clip_to: "clipper";
 	    mouse_events: 1;
 	    dragable {
 	       x: 1 1 0;
@@ -545,13 +556,14 @@ collections {
 	       confine: "bg";
 	    }
 	    description { state: "default" 0.0;
+	       fixed: 1 1;
 	       rel1.to: "bg";
 	       rel2.to: "bg";
 	       min: 24 24;
 	       max: 24 24;
 	       aspect: 1.0 1.0;
 	       aspect_preference: VERTICAL;
-	       color: 255 128 0 200;
+	       color: 0 0 0 0;
 	    }
 	 }
          part { name: "onrect";
@@ -564,7 +576,7 @@ collections {
 	       rel1.relative: -3.0 0.0;
 	       rel2.to: "button";
 	       rel2.relative: 0.0 1.0;
-	       color: 0 128 0 200;
+	       color: 0 0 0 0;
 	    }
 	 }
          part { name: "offrect";
@@ -577,7 +589,16 @@ collections {
 	       rel1.relative: 1.0 0.0;
 	       rel2.to: "button";
 	       rel2.relative: 4.0 1.0;
-	       color: 0 128 0 200;
+	       color: 0 0 0 0;
+	    }
+	 }
+	 part { name: "togbase";
+	    mouse_events:  0;
+	    clip_to: "clipper";
+	    description { state: "default" 0.0;
+	       rel1.to: "onrect";
+	       rel2.to: "offrect";
+	       image.normal: "tog_base.png";
 	    }
 	 }
          part { name: "elm.offtext";
@@ -618,22 +639,59 @@ collections {
 	 }
 	 part { name: "conf_over";
 	    mouse_events:  0;
-	    scale: 1;
 	    description { state: "default" 0.0;
-	       rel1.relative: 1.0 0.0;
-	       rel1.offset: -4 3;
-	       rel2.offset: -4 -4;
-	       align: 1.0 0.5;
-	       min: 96 24;
-	       max: 96 24;
-	       aspect: 4.0 4.0;
-	       aspect_preference: VERTICAL;
+	       rel1.offset: -1 -1;
+	       rel1.to: "bg";
+	       rel2.offset: 0 0;
+	       rel2.to: "bg";
 	       image {
 		  normal: "shelf_inset.png";
 		  border: 7 7 7 7;
 		  middle: 0;
 	       }
 	       fill.smooth : 0;
+	    }
+	 }
+	 part { name: "button0";
+	    mouse_events:  0;
+	    clip_to: "clipper";
+	    description { state: "default" 0.0;
+	       rel1.to: "button2";
+	       rel1.offset: -4 -4;
+	       rel2.to: "button2";
+	       rel2.offset: 3 3;
+	       image {
+		  normal: "bt_bases.png";
+		  border: 11 11 11 11;
+	       }
+	       color: 255 255 255 128;
+	    }
+	 }
+	 part { name: "button2";
+	    mouse_events:  0;
+	    clip_to: "clipper";
+	    description { state: "default" 0.0;
+	       rel1.to: "button";
+	       rel1.offset: -2 -2;
+	       rel2.to: "button";
+	       rel2.offset: 1 1;
+	       image {
+		  normal: "bt_basew.png";
+		  border: 7 7 7 7;
+	       }
+	    }
+	 }
+	 part { name: "button3";
+	    mouse_events:  0;
+	    clip_to: "clipper";
+	    description { state: "default" 0.0;
+	       rel1.to: "button2";
+	       rel2.to: "button2";
+               rel2.relative: 1.0 0.5;
+	       image {
+                  normal: "bt_hilightw.png";
+		  border: 4 4 4 0;
+	       }
 	    }
 	 }
 	 part { name: "elm.swallow.contents";
@@ -663,7 +721,7 @@ collections {
 	       rel1.to_x: "elm.swallow.contents";
 	       rel1.relative: 1.0 0.0;
                rel1.offset: 0 8;
-	       rel2.to_x: "conf_over";
+	       rel2.to_x: "bg";
 	       rel2.relative: 0.0 1.0;
 	       rel2.offset: -9 -9;
 	       color: 0 0 0 255;
@@ -671,7 +729,7 @@ collections {
 		  font:     "Sans,Edje-Vera";
 		  size:     10;
 		  min:      0 0;
-		  align:    0.5 0.5;
+		  align:    0.0 0.5;
 	       }
 	    }
 	    description { state: "visible" 0.0;
@@ -682,6 +740,38 @@ collections {
 	 }
       }
       programs {
+	 program { name:   "drag_end";
+	    signal: "mouse,up,1";
+	    source: "button";
+	    script {
+	       new Float:dx, Float:dy;
+	       get_drag(PART:"button", dx, dy);
+	       if (dx > 0.5)
+		 {
+		    set_drag(PART:"button", 100.0, 0.0);
+		    emit("elm,action,toggle,on", "");
+		 }
+	       else
+		 {
+		    set_drag(PART:"button", 0.0, 0.0);
+		    emit("elm,action,toggle,off", "");
+		 }
+	    }
+	 }
+	 program { name: "toggle_on";
+	    signal: "elm,state,toggle,on";
+	    source: "elm";
+	    script {
+	       set_drag(PART:"button", 100.0, 0.0);
+	    }
+	 }
+	 program { name: "toggle_off";
+	    signal: "elm,state,toggle,off";
+	    source: "elm";
+	    script {
+	       set_drag(PART:"button", 0.0, 0.0);
+	    }
+	 }
 /*	 
 	 program {
 	    name:   "button_click";

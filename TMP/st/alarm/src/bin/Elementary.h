@@ -78,7 +78,7 @@ extern "C" {
 	  ELM_OBJ_TABLE,
 	  ELM_OBJ_BUTTON,
 	  ELM_OBJ_ICON,
-	  ELM_OBJ_TOGGLE // FIXME: do
+	  ELM_OBJ_TOGGLE
 //	  ELM_OBJ_CHECK, // FIXME: do
 //	  ELM_OBJ_RADIO, // FIXME: do
 //	  ELM_OBJ_CLOCK, // FIXME: do
@@ -441,12 +441,13 @@ extern "C" {
    /* Toggle Object */
 #define Elm_Toggle_Class_Methods \
    void (*text_set)  (Elm_Toggle *tg, const char *text); \
-   void (*layout_update)  (Elm_Toggle *tg)
+   void (*layout_update)  (Elm_Toggle *tg); \
+   void (*states_text_set) (Elm_Toggle *tg, const char *ontext, const char *offtext)
 #define Elm_Toggle_Class_All Elm_Widget_Class_All; Elm_Toggle_Class_Methods; \
    const char *text; \
    int minw, minh; \
-   int toggle; \
-   int *toggle_ptr
+   int state; \
+   int *state_ptr
    
    /* Object specific ones */
    EAPI Elm_Toggle *elm_toggle_new(Elm_Win *win);

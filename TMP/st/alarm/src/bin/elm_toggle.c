@@ -2,12 +2,16 @@
 #include "elm_priv.h"
 
 static void _elm_toggle_text_set(Elm_Toggle *tg, const char *text);
+static void _elm_toggle_layout_update(Elm_Toggle *tg);
+static void _elm_toggle_states_text_set(Elm_Toggle *tg, const char *ontext, const char *offtext);
 
 Elm_Toggle_Class _elm_toggle_class =
 {
    &_elm_widget_class,
      ELM_OBJ_TOGGLE,
-     _elm_toggle_text_set
+     _elm_toggle_text_set,
+     _elm_toggle_layout_update,
+     _elm_toggle_states_text_set
 };
 
 static void
@@ -34,6 +38,23 @@ _elm_toggle_text_set(Elm_Toggle *tg, const char *text)
 	((Elm_Widget *)(tg->parent))->size_req(tg->parent, tg, tg->minw, tg->minh);
 	tg->geom_set(tg, tg->x, tg->y, tg->minw, tg->minh);
      }
+}
+
+static void
+_elm_toggle_states_text_set(Elm_Toggle *tg, const char *ontext, const char *offtext)
+{
+   edje_object_part_text_set(tg->base, "elm.ontext", ontext);
+   edje_object_part_text_set(tg->base, "elm.offtext", offtext);
+}
+
+static void
+_elm_toggle_layout_update(Elm_Toggle *tg)
+{
+   if (tg->state_ptr) tg->state = *(tg->state_ptr);
+   if (tg->state)
+     edje_object_signal_emit(tg->base, "elm,state,toggle,on", "elm");
+   else
+     edje_object_signal_emit(tg->base, "elm,state,toggle,off", "elm");
 }
 
 static void
@@ -120,7 +141,7 @@ _elm_on_child_del(void *data, Elm_Toggle *tg, Elm_Cb_Type type, Elm_Obj *obj)
 static void
 _elm_toggle_activate(Elm_Toggle *tg)
 {
-   if (tg->toggle_ptr) *(tg->toggle_ptr) = tg->toggle;
+   if (tg->state_ptr) *(tg->state_ptr) = tg->state;
    _elm_obj_nest_push();
    _elm_cb_call(ELM_OBJ(tg), ELM_CB_CHANGED, NULL);
    _elm_obj_nest_pop();
@@ -131,7 +152,8 @@ _elm_signal_toggle_on(void *data, Evas_Object *obj, const char *emission, const 
 {
    Elm_Toggle *tg = data;
 
-   tg->toggle = 1;
+   if (tg->state) return;
+   tg->state = 1;
    _elm_toggle_activate(tg);
 }
 
@@ -140,7 +162,8 @@ _elm_signal_toggle_off(void *data, Evas_Object *obj, const char *emission, const
 {
    Elm_Toggle *tg = data;
    
-   tg->toggle = 0;
+   if (!tg->state) return;
+   tg->state = 0;
    _elm_toggle_activate(tg);
 }
 
@@ -168,9 +191,13 @@ elm_toggle_new(Elm_Win *win)
    tg->size_req = _elm_toggle_size_req;
    
    tg->text_set = _elm_toggle_text_set;
+   tg->layout_update = _elm_toggle_layout_update;
+   tg->states_text_set = _elm_toggle_states_text_set;
    
    tg->base = edje_object_add(win->evas);
    _elm_theme_set(tg->base, "toggle", "toggle");
+   edje_object_part_text_set(tg->base, "elm.ontext", "ON");
+   edje_object_part_text_set(tg->base, "elm.offtext", "OFF");
    edje_object_signal_callback_add(tg->base, "elm,action,toggle,on", "",
 				   _elm_signal_toggle_on, tg);
    edje_object_signal_callback_add(tg->base, "elm,action,toggle,off", "",
