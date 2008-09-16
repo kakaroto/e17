@@ -79,6 +79,7 @@ extern "C" {
 	  ELM_OBJ_BUTTON,
 	  ELM_OBJ_ICON,
 	  ELM_OBJ_TOGGLE
+//	  ELM_OBJ_EXPANDER // FIXME: do
 //	  ELM_OBJ_CHECK, // FIXME: do
 //	  ELM_OBJ_RADIO, // FIXME: do
 //	  ELM_OBJ_CLOCK, // FIXME: do
@@ -211,7 +212,6 @@ extern "C" {
    void (*above)      (Elm_Widget *wid, Elm_Widget *above); \
    void (*below)      (Elm_Widget *wid, Elm_Widget *below)
    
-// FIXME:   
 #define Elm_Widget_Class_All Elm_Obj_Class_All; Elm_Widget_Class_Methods; \
    int x, y, w, h; \
    struct { int w, h; } req; \

@@ -602,17 +602,19 @@ win_box_vert_of_toggles(void)
 
    win = elm_win_new();
    win->name_set(win, "win_bg");
-   win->title_set(win, "Simple Window with box + labels setting minimum size");
+   win->title_set(win, "Simple Window with box + toggles setting min size");
    win->autodel = 0;
    win->cb_add(win, ELM_CB_DEL_REQ, on_win_del_req, NULL);
    win->cb_add(win, ELM_CB_RESIZE, on_win_resize, NULL);
 
    bg = elm_bg_new(win);
-   bg->expand_x = 1;
-   bg->expand_y = 1;
+   bg->expand_x = 0;
+   bg->expand_y = 0;
    bg->show(bg);
    
    box = elm_box_new(win);
+   box->expand_x = 0;
+   box->expand_y = 0;
 
    toggle = elm_toggle_new(win);
    toggle->text_set(toggle, "Label ON/OFF");
@@ -621,11 +623,7 @@ win_box_vert_of_toggles(void)
    toggle->cb_add(toggle, ELM_CB_CHANGED, on_toggle_changed, NULL);
    box->pack_end(box, toggle);
    toggle->show(toggle);
-   toggle->align_x = 0.5;
-   toggle->align_y = 0.5;
-   toggle->expand_x = 1;
    toggle->expand_y = 0;
-   toggle->fill_x = 1;
    toggle->fill_y = 0;
    elm_widget_sizing_update(toggle);
 
@@ -640,11 +638,7 @@ win_box_vert_of_toggles(void)
    toggle->cb_add(toggle, ELM_CB_CHANGED, on_toggle_changed, NULL);
    box->pack_end(box, toggle);
    toggle->show(toggle);
-   toggle->align_x = 0.5;
-   toggle->align_y = 0.5;
-   toggle->expand_x = 1;
    toggle->expand_y = 0;
-   toggle->fill_x = 1;
    toggle->fill_y = 0;
    elm_widget_sizing_update(toggle);
 
@@ -659,11 +653,7 @@ win_box_vert_of_toggles(void)
    toggle->cb_add(toggle, ELM_CB_CHANGED, on_toggle_changed, NULL);
    box->pack_end(box, toggle);
    toggle->show(toggle);
-   toggle->align_x = 0.5;
-   toggle->align_y = 0.5;
-   toggle->expand_x = 1;
    toggle->expand_y = 0;
-   toggle->fill_x = 1;
    toggle->fill_y = 0;
    elm_widget_sizing_update(toggle);
 
@@ -675,16 +665,183 @@ win_box_vert_of_toggles(void)
    toggle->cb_add(toggle, ELM_CB_CHANGED, on_toggle_changed, NULL);
    box->pack_end(box, toggle);
    toggle->show(toggle);
-   toggle->align_x = 0.5;
-   toggle->align_y = 0.5;
-   toggle->expand_x = 1;
    toggle->expand_y = 0;
-   toggle->fill_x = 1;
    toggle->fill_y = 0;
    elm_widget_sizing_update(toggle);
 
    elm_widget_sizing_update(box);
    box->show(box);
+   
+   win->show(win);
+}
+
+static void
+win_scrollable_box_vert_of_toggles_and_buttons(void)
+{
+   Elm_Win *win;
+   Elm_Bg *bg;
+   Elm_Box *box;
+   Elm_Scroller *scroller;
+   Elm_Toggle *toggle;
+   Elm_Icon *icon;
+   Elm_Button *button;
+   Elm_Label *label;
+   char buf[PATH_MAX];
+
+   win = elm_win_new();
+   win->name_set(win, "win_bg");
+   win->title_set(win, "Simple Window with scroller + box + toggles + buttons");
+   win->autodel = 0;
+   win->cb_add(win, ELM_CB_DEL_REQ, on_win_del_req, NULL);
+   win->cb_add(win, ELM_CB_RESIZE, on_win_resize, NULL);
+
+   bg = elm_bg_new(win);
+   bg->expand_x = 1;
+   bg->expand_y = 1;
+   bg->show(bg);
+   
+   scroller = elm_scroller_new(win);
+
+   box = elm_box_new(win);
+
+   toggle = elm_toggle_new(win);
+   toggle->text_set(toggle, "Label ON/OFF");
+   toggle->state = 1;
+   toggle->layout_update(toggle);
+   toggle->cb_add(toggle, ELM_CB_CHANGED, on_toggle_changed, NULL);
+   box->pack_end(box, toggle);
+   toggle->show(toggle);
+   toggle->expand_y = 0;
+   toggle->fill_y = 0;
+   elm_widget_sizing_update(toggle);
+
+   toggle = elm_toggle_new(win);
+   toggle->text_set(toggle, "Icon + Label ON/OFF");
+   icon = elm_icon_new(win);
+   snprintf(buf, sizeof(buf), "%s/images/logo.png", PACKAGE_DATA_DIR);
+   icon->file_set(icon, buf, NULL);
+   toggle->child_add(toggle, icon);
+   toggle->state = 1;
+   toggle->layout_update(toggle);
+   toggle->cb_add(toggle, ELM_CB_CHANGED, on_toggle_changed, NULL);
+   box->pack_end(box, toggle);
+   toggle->show(toggle);
+   toggle->expand_y = 0;
+   toggle->fill_y = 0;
+   elm_widget_sizing_update(toggle);
+
+   toggle = elm_toggle_new(win);
+   toggle->text_set(toggle, NULL);
+   icon = elm_icon_new(win);
+   snprintf(buf, sizeof(buf), "%s/images/logo.png", PACKAGE_DATA_DIR);
+   icon->file_set(icon, buf, NULL);
+   toggle->child_add(toggle, icon);
+   toggle->state = 1;
+   toggle->layout_update(toggle);
+   toggle->cb_add(toggle, ELM_CB_CHANGED, on_toggle_changed, NULL);
+   box->pack_end(box, toggle);
+   toggle->show(toggle);
+   toggle->expand_y = 0;
+   toggle->fill_y = 0;
+   elm_widget_sizing_update(toggle);
+
+   toggle = elm_toggle_new(win);
+   toggle->text_set(toggle, "Label Yes/No");
+   toggle->states_text_set(toggle, "Yes", "No");
+   toggle->state = 1;
+   toggle->layout_update(toggle);
+   toggle->cb_add(toggle, ELM_CB_CHANGED, on_toggle_changed, NULL);
+   box->pack_end(box, toggle);
+   toggle->show(toggle);
+   toggle->expand_y = 0;
+   toggle->fill_y = 0;
+   elm_widget_sizing_update(toggle);
+
+   toggle = elm_toggle_new(win);
+   toggle->text_set(toggle, "Toggle ");
+   toggle->states_text_set(toggle, "Up", "Down");
+   toggle->cb_add(toggle, ELM_CB_CHANGED, on_toggle_changed, NULL);
+   box->pack_end(box, toggle);
+   toggle->show(toggle);
+   toggle->expand_y = 0;
+   toggle->fill_y = 0;
+   elm_widget_sizing_update(toggle);
+
+   toggle = elm_toggle_new(win);
+   toggle->text_set(toggle, "Toggle ");
+   toggle->states_text_set(toggle, "In", "Out");
+   toggle->cb_add(toggle, ELM_CB_CHANGED, on_toggle_changed, NULL);
+   box->pack_end(box, toggle);
+   toggle->show(toggle);
+   toggle->expand_y = 0;
+   toggle->fill_y = 0;
+   elm_widget_sizing_update(toggle);
+
+   toggle = elm_toggle_new(win);
+   toggle->text_set(toggle, "Toggle ");
+   toggle->states_text_set(toggle, "Up", "Down");
+   toggle->cb_add(toggle, ELM_CB_CHANGED, on_toggle_changed, NULL);
+   box->pack_end(box, toggle);
+   toggle->show(toggle);
+   toggle->expand_y = 0;
+   toggle->fill_y = 0;
+   elm_widget_sizing_update(toggle);
+
+   label = elm_label_new(win);
+   label->text_set(label, 
+		   "Hello world<br>"
+		   "<br>"
+		   "I am a label. I come here to temonstrate how to put<br>"
+		   "text into a label, with newlines, even markup to test<br>"
+		   "things like <b>bold text</b> where markup can be custom<br>"
+		   "and extensible, defined by the theme's textbloxk style<br>"
+		   "for the label.<br>"
+		   "<br>"
+		   "Note that the markup is html-like and things like newline<br>"
+		   "chars and tab chars like stdout text are not valid text<br>"
+		   "markup mechanisms. Use markup tags instead.<br>"
+		   );
+   box->pack_end(box, label);
+   label->expand_y = 0;
+   label->fill_y = 0;
+   elm_widget_sizing_update(label);
+   label->show(label);
+   
+   button = elm_button_new(win);
+   button->text_set(button, "Button 1");
+   box->pack_end(box, button);
+   button->expand_y = 0;
+   button->fill_y = 0;
+   button->show(button);
+   elm_widget_sizing_update(button);
+   button->cb_add(button, ELM_CB_ACTIVATED, on_button_activate, NULL);
+   
+   button = elm_button_new(win);
+   button->text_set(button, "Button 2");
+   box->pack_end(box, button);
+   button->expand_y = 0;
+   button->fill_y = 0;
+   button->show(button);
+   elm_widget_sizing_update(button);
+   button->cb_add(button, ELM_CB_ACTIVATED, on_button_activate, NULL);
+   
+   button = elm_button_new(win);
+   button->text_set(button, "Button 3");
+   box->pack_end(box, button);
+   button->expand_y = 0;
+   button->fill_y = 0;
+   button->show(button);
+   elm_widget_sizing_update(button);
+   button->cb_add(button, ELM_CB_ACTIVATED, on_button_activate, NULL);
+   
+   scroller->child_add(scroller, box);
+   
+   elm_widget_sizing_update(box);
+   box->show(box);
+   
+   scroller->show(scroller);
+
+   win->size_req(win, NULL, 240, 240);
    
    win->show(win);
 }
@@ -706,6 +863,7 @@ main(int argc, char **argv)
    win_table_of_labels();
    win_table_of_buttons();
    win_box_vert_of_toggles();
+   win_scrollable_box_vert_of_toggles_and_buttons();
    
    elm_run(); /* and run the program now  and handle all events etc. */
    
