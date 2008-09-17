@@ -15,7 +15,7 @@
    sodipodi:version="0.32"
    inkscape:version="0.46"
    version="1.0"
-   inkscape:export-filename="/home/toma/gadman_top.png"
+   inkscape:export-filename="/home/toma/gadman_right.png"
    inkscape:export-xdpi="108"
    inkscape:export-ydpi="108"
    sodipodi:docname="gadman_arrows.svg"
@@ -77,13 +77,13 @@
     <radialGradient
        inkscape:collect="always"
        xlink:href="#linearGradient3191"
-       id="radialGradient3517"
+       id="radialGradient3442"
        gradientUnits="userSpaceOnUse"
-       gradientTransform="matrix(-1.2284095,0.8445313,-3.6666663,-5.3333337,40.080303,47.95521)"
-       cx="4"
-       cy="8.5"
-       fx="4"
-       fy="8.5"
+       gradientTransform="matrix(-1.333334,0.9999994,-3.8832954,-5.1777319,42.381349,45.730721)"
+       cx="3.6400013"
+       cy="8.3763933"
+       fx="3.6400013"
+       fy="8.3763933"
        r="3" />
   </defs>
   <sodipodi:namedview
@@ -96,16 +96,16 @@
      objecttolerance="10"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="15.84"
-     inkscape:cx="4.5220408"
-     inkscape:cy="10.402626"
+     inkscape:zoom="22.401143"
+     inkscape:cx="4.5485154"
+     inkscape:cy="10.124133"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:window-width="886"
      inkscape:window-height="757"
-     inkscape:window-x="26"
-     inkscape:window-y="133">
+     inkscape:window-x="401"
+     inkscape:window-y="182">
     <inkscape:grid
        type="xygrid"
        id="grid2383"
@@ -129,11 +129,11 @@
      id="layer1">
     <path
        style="opacity:0.48250002;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter3493)"
-       d="M 2,2 L 8,10 L 2,18 C 4.0020906,12.788005 3.9261795,7.4500715 2,2 z"
+       d="M 2,3 L 8,11 L 2,19 C 4.0020906,13.788005 3.9261795,8.4500715 2,3 z"
        id="path3223"
        sodipodi:nodetypes="cccc" />
     <path
-       style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="fill:#505050;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.50000000000000000;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="M 2,2 L 8,10 L 2,18 C 4.0020906,12.788005 3.9261795,7.4500715 2,2 z"
        id="path2385"
        sodipodi:nodetypes="cccc" />
@@ -143,7 +143,7 @@
        d="M 2,2 L 8,10 L 2,18 C 4.0020906,12.788005 3.9261795,7.4500715 2,2 z"
        style="opacity:0.54583333;fill:url(#radialGradient3197);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.5;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" />
     <path
-       style="opacity:0.67916667;fill:url(#radialGradient3517);fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.1;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="opacity:0.95833332999999998;fill:url(#radialGradient3442);fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:0.10000000000000001;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="M 2,2 L 8,10 L 2,18 C 4.0020906,12.788005 3.9261795,7.4500715 2,2 z"
        id="path3199"
        sodipodi:nodetypes="cccc" />
