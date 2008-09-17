@@ -262,7 +262,7 @@ _e_cfg_power_ui(E_Config_Dialog *cfd, Evas *e, E_Config_Dialog_Data *cfdata)
    Evas_Object *o, *frame;
    E_Radio_Group *rg;
    Evas_Object *list, *sf;
-/*
+
    list = e_widget_list_add(e, 0, 0);
    
    frame = e_widget_framelist_add(e, "Blank Time", 0);
@@ -313,61 +313,10 @@ _e_cfg_power_ui(E_Config_Dialog *cfd, Evas *e, E_Config_Dialog_Data *cfdata)
    o = e_widget_radio_add(e, "Off", 0, rg);
    e_widget_framelist_object_append(frame, o);
    evas_object_smart_callback_add(o, "changed", _e_cfg_power_change, NULL);
+   e_widget_list_object_append(list, frame, 1, 1, 0.0); // fill, expand, align
 
-   o = e_widget_radio_add(e, "Off", 0, rg);
-   e_widget_framelist_object_append(frame, o);
-   evas_object_smart_callback_add(o, "changed", _e_cfg_power_change, NULL);
-   o = e_widget_radio_add(e, "Off", 0, rg);
-   e_widget_framelist_object_append(frame, o);
-   evas_object_smart_callback_add(o, "changed", _e_cfg_power_change, NULL);
-   o = e_widget_radio_add(e, "Off", 0, rg);
-   e_widget_framelist_object_append(frame, o);
-   evas_object_smart_callback_add(o, "changed", _e_cfg_power_change, NULL);
-   o = e_widget_radio_add(e, "Off", 0, rg);
-   e_widget_framelist_object_append(frame, o);
-   evas_object_smart_callback_add(o, "changed", _e_cfg_power_change, NULL);
-   o = e_widget_radio_add(e, "Off", 0, rg);
-   e_widget_framelist_object_append(frame, o);
-   evas_object_smart_callback_add(o, "changed", _e_cfg_power_change, NULL);
-   o = e_widget_radio_add(e, "X", 0, rg);
-   e_widget_framelist_object_append(frame, o);
-   evas_object_smart_callback_add(o, "changed", _e_cfg_power_change, NULL);
-   o = e_widget_radio_add(e, "X", 0, rg);
-   e_widget_framelist_object_append(frame, o);
-   evas_object_smart_callback_add(o, "changed", _e_cfg_power_change, NULL);
-   o = e_widget_radio_add(e, "X", 0, rg);
-   e_widget_framelist_object_append(frame, o);
-   evas_object_smart_callback_add(o, "changed", _e_cfg_power_change, NULL);
-   o = e_widget_radio_add(e, "X", 0, rg);
-   e_widget_framelist_object_append(frame, o);
-   evas_object_smart_callback_add(o, "changed", _e_cfg_power_change, NULL);
-   o = e_widget_radio_add(e, "X", 0, rg);
-   e_widget_framelist_object_append(frame, o);
-   evas_object_smart_callback_add(o, "changed", _e_cfg_power_change, NULL);
-   o = e_widget_radio_add(e, "X", 0, rg);
-   e_widget_framelist_object_append(frame, o);
-   evas_object_smart_callback_add(o, "changed", _e_cfg_power_change, NULL);
-   o = e_widget_radio_add(e, "X", 0, rg);
-   e_widget_framelist_object_append(frame, o);
-   evas_object_smart_callback_add(o, "changed", _e_cfg_power_change, NULL);
-   o = e_widget_radio_add(e, "X", 0, rg);
-   e_widget_framelist_object_append(frame, o);
-   evas_object_smart_callback_add(o, "changed", _e_cfg_power_change, NULL);
- */
-   //   e_widget_list_object_append(list, frame, 1, 1, 0.0); // fill, expand, align
-
-   o = e_widget_button_add(e, "This is a very long wide button with a massive label to see if it scrolls", NULL, 
-			   NULL, NULL, NULL);
-   evas_object_resize(o, 800, 200);
-/*   
-   o = e_icon_add(e);
-   e_icon_file_set(o, "/home/raster/scroll.png");
-   evas_object_resize(o, 800, 800);
-   evas_object_show(o);
- */
-   
-   printf("--------- FRAME IS %p\n", o);
-   sf = e_widget_scrollframe_simple_add(e, o);
+   e_widget_min_size_resize(list);
+   sf = e_widget_scrollframe_simple_add(e, list);
    return sf;
 }
 
