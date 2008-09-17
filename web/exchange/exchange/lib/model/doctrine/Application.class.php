@@ -52,7 +52,7 @@ class Application extends BaseApplication
 			|| stripos($url, 'e_modules')===0
 			|| stripos($url, 'eterm')===0
 			|| stripos($url, 'misc')===0)
-			return '/home/cvs/path/'.urlencode(str_replace('/', '|', $url));
+			return '/home/snv/path/'.urlencode(str_replace('/', '|', $url));
 		return $url;
 	}
 	

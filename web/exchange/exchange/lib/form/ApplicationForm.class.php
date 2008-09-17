@@ -19,7 +19,7 @@ class ApplicationForm extends sfForm
 		));
 		$this->widgetSchema->setHelps(array(
 			'description' => '<a href="/home/wikiSyntax" target=_blank>Syntax</a>',
-			'source_url' => 'If this application is in CVS, just enter the path to the CVS module',
+			'source_url' => 'If this application is in SVN, just enter the path to the SVN module',
 		));
 		$this->widgetSchema->setNameFormat('application[%s]');
 		

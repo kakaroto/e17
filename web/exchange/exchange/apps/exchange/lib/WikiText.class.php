@@ -67,7 +67,7 @@ class WikiText {
     'tables' => array ('#^\{\|(.*?)(?:^\|\+(.*?))?(^(?:((?R))|.)*?)^\|}#msi', 'table_callback'),
     'external_links' => array ("/(\[)?((http\:\/\/|https\:\/\/|ftp\:\/\/|gopher\:\/\/|news\:\/\/)[\w|\d|\.|_|\-]+[A-Za-z0-9\/?=&%~_\-\.\:#;',]*)(?(1)([ ]+[^\]]+)?\])/i", 'url_callback'),
     'email' => array ('/(\[)?mailto:([\w|\d|\.|_|\-]+@[\w|\d|\.|_|-]+)(?(1)\])/i', 'email_callback'),
-    'cvs' => array ('/(\[)?cvs:([^\||^\]|^\[]+)(?(1)\])/i', 'cvs_callback'),
+    'svn' => array ('/(\[)?svn:([^\||^\]|^\[]+)(?(1)\])/i', 'cvs_callback'),
     'theme' => array ('/(\[)?theme:([^\]|^\[]+)(?(1)\])/i', 'theme_callback'),
     'module' => array ('/(\[)?module:([^\]|^\[]+)(?(1)\])/i', 'module_callback'),
     'app' => array ('/(\[)?app:([^\]|^\[]+)(?(1)\])/i', 'app_callback'),
@@ -614,13 +614,13 @@ class WikiText {
   
 
   /**
-   * The callback function for cvs links
+   * The callback function for svn links
    */     
   private function cvs_callback($matches) {
     $whole = $matches[0];
     $addr = $matches[2];
     $addr2 = urlencode(str_replace('/', '|', $addr));
-    $ret = "<a href=\"/home/cvs/path/{$addr2}\">CVS: $addr</a>";
+    $ret = "<a href=\"/home/svn/path/{$addr2}\">SVN: $addr</a>";
     
     return $ret;
   }
