@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-08-07 23:58+0200\n"
+"POT-Creation-Date: 2008-09-17 21:49+0200\n"
 "PO-Revision-Date: 2000-03-29 21:12+0200\n"
 "Last-Translator: Matthias Warkus <mawa@iname.com>\n"
 "Language-Team: Enlightenment l10n <e-develop@enlightenment.org>\n"
@@ -26,17 +26,9 @@ msgstr "Über Enlightenment %s"
 msgid ""
 "Welcome to the %s version\n"
 "of the Enlightenment window manager.\n"
-"Enlightenment is still under development, but\n"
-"we have tried to iron out all the bugs that\n"
-"we can find. If you find a bug in the software,\n"
-"please do not hesitate to send in a bug report.\n"
-"See \"Help\" for information on joining the\n"
-"mailing list.\n"
-"\n"
-"This code was last updated on:\n"
-"%s\n"
-"\n"
-"Good luck. We hope you enjoy the software.\n"
+"If you find a bug, please do not\n"
+"hesitate to send in a bug report.\n"
+"We hope you enjoy the software.\n"
 "\n"
 "The Rasterman - raster@rasterman.com\n"
 "Mandrake - mandrake@mandrake.net\n"
@@ -579,7 +571,7 @@ msgid "End"
 msgstr "Ende"
 
 # src/settings.c:3740
-#: src/container.c:1659 src/focus.c:825
+#: src/container.c:1659 src/focus.c:831
 msgid "None"
 msgstr "-/-"
 
@@ -889,126 +881,126 @@ msgstr ""
 "Breche ab.\n"
 
 # src/settings.c:417
-#: src/focus.c:697
+#: src/focus.c:703
 msgid "Focus follows pointer"
 msgstr "Fokus folgt Zeiger"
 
 # src/settings.c:425
-#: src/focus.c:703
+#: src/focus.c:709
 msgid "Focus follows pointer sloppily"
 msgstr "Fokus folgt Zeiger in Fenster"
 
 # src/settings.c:433
-#: src/focus.c:709
+#: src/focus.c:715
 msgid "Focus follows mouse clicks"
 msgstr "Fokus folgt Mausklicks"
 
 # src/settings.c:448
-#: src/focus.c:719
+#: src/focus.c:725
 msgid "Clicking in a window always raises it"
 msgstr "Klicken in ein Fenster hebt es immer an"
 
 # src/settings.c:462
-#: src/focus.c:727
+#: src/focus.c:733
 msgid "All new windows first get the focus"
 msgstr "Alle neuen Fenster erhalten sofort den Fokus"
 
 # src/settings.c:470
-#: src/focus.c:732
+#: src/focus.c:738
 msgid "Only new dialog windows get the focus"
 msgstr "Nur neue Dialogfenster erhalten den Fokus"
 
 # src/settings.c:480
-#: src/focus.c:739
+#: src/focus.c:745
 msgid "Only new dialogs whose owner is focused get the focus"
 msgstr "Nur neue Dialogfenster mit fokussiertem Eigner erhalten den Fokus"
 
 # src/settings.c:546
-#: src/focus.c:744
+#: src/focus.c:750
 #, fuzzy
 msgid "Raise windows while switching focus"
 msgstr "Fenster beim Umschalten fokussieren"
 
 # src/settings.c:498
-#: src/focus.c:750
+#: src/focus.c:756
 #, fuzzy
 msgid "Send mouse pointer to window while switching focus"
 msgstr "Mauszeiger bei Fokuserhalt in Fenster schicken"
 
 # src/settings.c:498
-#: src/focus.c:756
+#: src/focus.c:762
 #, fuzzy
 msgid "Always send mouse pointer to window on focus switch"
 msgstr "Mauszeiger bei Fokuserhalt in Fenster schicken"
 
 # src/settings.c:513
-#: src/focus.c:764
+#: src/focus.c:770
 msgid "Display and use focus list"
 msgstr "Fokusliste anzeigen und benutzen"
 
 # src/settings.c:521
-#: src/focus.c:769
+#: src/focus.c:775
 msgid "Include sticky windows in focus list"
 msgstr "Klebrige Fenster in Fokusliste erwähnen"
 
 # src/settings.c:529
-#: src/focus.c:774
+#: src/focus.c:780
 msgid "Include shaded windows in focus list"
 msgstr "Aufgerollte Fenster in Fokusliste erwähnen"
 
 # src/settings.c:538
-#: src/focus.c:779
+#: src/focus.c:785
 msgid "Include iconified windows in focus list"
 msgstr "Minimierte Fenster in Fokusliste erwähnen"
 
 # src/settings.c:529
-#: src/focus.c:784
+#: src/focus.c:790
 #, fuzzy
 msgid "Include windows on other desks in focus list"
 msgstr "Aufgerollte Fenster in Fokusliste erwähnen"
 
 # src/settings.c:546
-#: src/focus.c:789
+#: src/focus.c:795
 msgid "Focus windows while switching"
 msgstr "Fenster beim Umschalten fokussieren"
 
 # src/settings.c:554
-#: src/focus.c:794
+#: src/focus.c:800
 msgid "Raise windows after focus switch"
 msgstr "Fenster nach Fokuserhalt anheben"
 
 # src/settings.c:564
-#: src/focus.c:799
+#: src/focus.c:805
 msgid "Send mouse pointer to window after focus switch"
 msgstr "Mauszeiger nach Fokuserhalt in Fenster schicken"
 
 # src/settings.c:3605
-#: src/focus.c:809
+#: src/focus.c:815
 #, fuzzy
 msgid "Focuslist image display policy (if one operation fails, try the next):"
 msgstr "Anzeigemethode für Icons (wenn eine Aktion fehlschlägt, die nächste):"
 
-#: src/focus.c:813
+#: src/focus.c:819
 msgid "First E Icon, then App Icon"
 msgstr ""
 
-#: src/focus.c:819
+#: src/focus.c:825
 msgid "First App Icon, then E Icon"
 msgstr ""
 
 # src/snaps.c:494
-#: src/focus.c:833
+#: src/focus.c:839
 #, fuzzy
 msgid "Focus"
 msgstr "Nie Fokus geben"
 
 # src/settings.c:393
-#: src/focus.c:834
+#: src/focus.c:840
 msgid "Focus Settings"
 msgstr "Fokus-Einstellungen"
 
 # src/main.c:89
-#: src/focus.c:837
+#: src/focus.c:843
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog\n"
@@ -1357,43 +1349,33 @@ msgstr "Iconbox-Optionen"
 msgid "Iconbox Settings"
 msgstr "Iconbox-Einstellungen"
 
-#: src/ipc.c:193 src/ipc.c:1427 src/ipc.c:1434
+#: src/ipc.c:193 src/ipc.c:1426 src/ipc.c:1433
 msgid "Message"
 msgstr "Mitteilung"
 
-# src/ipc.c:4890
-#: src/ipc.c:958
-#, c-format
-msgid ""
-"Enlightenment Version : %s\n"
-"code is current to    : %s\n"
-msgstr ""
-"Enlightenment-Version: %s\n"
-"Code aktuell bis     : %s\n"
-
-#: src/ipc.c:1427 src/ipc.c:1434
+#: src/ipc.c:1426 src/ipc.c:1433
 #, c-format
 msgid "e16 was built without %s support"
 msgstr ""
 
 # src/settings.c:1591
-#: src/ipc.c:1428
+#: src/ipc.c:1427
 #, fuzzy
 msgid "composite"
 msgstr "Klänge verwenden"
 
-#: src/ipc.c:1435
+#: src/ipc.c:1434
 msgid "sound"
 msgstr ""
 
 # src/ipc.c:4737
-#: src/ipc.c:1769
+#: src/ipc.c:1768
 #, fuzzy
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Hilfe zu Enlightenment-IPC-Befehlen"
 
 # src/ipc.c:4743
-#: src/ipc.c:1773
+#: src/ipc.c:1772
 #, fuzzy
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
@@ -1405,30 +1387,30 @@ msgstr ""
 "\n"
 
 # src/ipc.c:4741 src/ipc.c:4780
-#: src/ipc.c:1775 src/ipc.c:1795 src/ipc.c:1807
+#: src/ipc.c:1774 src/ipc.c:1794 src/ipc.c:1806
 #, fuzzy
 msgid "Commands currently available:\n"
 msgstr ""
 "\n"
 "Momentan verfügbare Befehle:\n"
 
-#: src/ipc.c:1793
+#: src/ipc.c:1792
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 
 # src/ipc.c:4781
-#: src/ipc.c:1794
+#: src/ipc.c:1793
 #, fuzzy
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "\"help <befehl>\" gibt eine nähere Beschreibung\n"
 
 # src/ipc.c:4783
-#: src/ipc.c:1796 src/ipc.c:1808
+#: src/ipc.c:1795 src/ipc.c:1807
 #, fuzzy
 msgid "         <command>     : <description>\n"
 msgstr "<befehl> : <beschreibung>\n"
 
-#: src/main.c:578
+#: src/main.c:576
 #, c-format
 msgid ""
 "%s must be a directory in which you have\n"
@@ -1436,7 +1418,7 @@ msgid ""
 msgstr ""
 
 # src/misc.c:61
-#: src/main.c:688
+#: src/main.c:686
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1466,7 +1448,7 @@ msgstr ""
 "beim Installieren von Enlightenment.\n"
 
 # src/misc.c:77
-#: src/main.c:702
+#: src/main.c:700
 #, fuzzy, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -3352,6 +3334,14 @@ msgstr ""
 #: config/strings.c:198
 msgid "Epplets"
 msgstr ""
+
+# src/ipc.c:4890
+#~ msgid ""
+#~ "Enlightenment Version : %s\n"
+#~ "code is current to    : %s\n"
+#~ msgstr ""
+#~ "Enlightenment-Version: %s\n"
+#~ "Code aktuell bis     : %s\n"
 
 # src/settings.c:1600
 #~ msgid ""

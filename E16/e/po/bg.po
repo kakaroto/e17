@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.7\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-08-07 23:58+0200\n"
+"POT-Creation-Date: 2008-09-17 21:49+0200\n"
 "PO-Revision-Date: 2004-09-14 20:43-0300\n"
 "Last-Translator: Viktor Kojouharov\n"
 "Language-Team: Bulgarian\n"
@@ -20,21 +20,13 @@ msgid "About Enlightenment %s"
 msgstr "За Enlightenment %s"
 
 #: src/about.c:43
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "Welcome to the %s version\n"
 "of the Enlightenment window manager.\n"
-"Enlightenment is still under development, but\n"
-"we have tried to iron out all the bugs that\n"
-"we can find. If you find a bug in the software,\n"
-"please do not hesitate to send in a bug report.\n"
-"See \"Help\" for information on joining the\n"
-"mailing list.\n"
-"\n"
-"This code was last updated on:\n"
-"%s\n"
-"\n"
-"Good luck. We hope you enjoy the software.\n"
+"If you find a bug, please do not\n"
+"hesitate to send in a bug report.\n"
+"We hope you enjoy the software.\n"
 "\n"
 "The Rasterman - raster@rasterman.com\n"
 "Mandrake - mandrake@mandrake.net\n"
@@ -496,7 +488,7 @@ msgstr "В 2-та края"
 msgid "End"
 msgstr "В края"
 
-#: src/container.c:1659 src/focus.c:825
+#: src/container.c:1659 src/focus.c:831
 msgid "None"
 msgstr "Никъде"
 
@@ -757,106 +749,106 @@ msgstr ""
 "\n"
 "Излиза се.\n"
 
-#: src/focus.c:697
+#: src/focus.c:703
 msgid "Focus follows pointer"
 msgstr "Фокусът следи показалеца"
 
-#: src/focus.c:703
+#: src/focus.c:709
 msgid "Focus follows pointer sloppily"
 msgstr "Фокусът следи показалеца небрежно"
 
-#: src/focus.c:709
+#: src/focus.c:715
 msgid "Focus follows mouse clicks"
 msgstr "Фокусът следи щраквания на мишката"
 
-#: src/focus.c:719
+#: src/focus.c:725
 msgid "Clicking in a window always raises it"
 msgstr "Щракване върху прозорец винаги го вдига"
 
-#: src/focus.c:727
+#: src/focus.c:733
 msgid "All new windows first get the focus"
 msgstr "Всички нови прозорци първи взимат фокуса"
 
-#: src/focus.c:732
+#: src/focus.c:738
 msgid "Only new dialog windows get the focus"
 msgstr "Само нови диалогови прозорци взимат фокуса"
 
-#: src/focus.c:739
+#: src/focus.c:745
 msgid "Only new dialogs whose owner is focused get the focus"
 msgstr "Само нови диалози чиито притежатели са фокусирани получават фокуса"
 
-#: src/focus.c:744
+#: src/focus.c:750
 #, fuzzy
 msgid "Raise windows while switching focus"
 msgstr "Фокусирай прозореца докато сменяте"
 
-#: src/focus.c:750
+#: src/focus.c:756
 #, fuzzy
 msgid "Send mouse pointer to window while switching focus"
 msgstr "Показалецът на мишката се праща при прозореца като се смени фокуса"
 
-#: src/focus.c:756
+#: src/focus.c:762
 #, fuzzy
 msgid "Always send mouse pointer to window on focus switch"
 msgstr "Показалецът на мишката се праща при прозореца като се смени фокуса"
 
-#: src/focus.c:764
+#: src/focus.c:770
 msgid "Display and use focus list"
 msgstr "Показвай и използвай списъкът за фокус"
 
-#: src/focus.c:769
+#: src/focus.c:775
 msgid "Include sticky windows in focus list"
 msgstr "Включвай залепени прозорци в списъкът за фокус"
 
-#: src/focus.c:774
+#: src/focus.c:780
 msgid "Include shaded windows in focus list"
 msgstr "Включвай навити прозорци в списъкът за фокус"
 
-#: src/focus.c:779
+#: src/focus.c:785
 msgid "Include iconified windows in focus list"
 msgstr "Включвай скрити прозорци в списъкът за фокус"
 
-#: src/focus.c:784
+#: src/focus.c:790
 #, fuzzy
 msgid "Include windows on other desks in focus list"
 msgstr "Включвай навити прозорци в списъкът за фокус"
 
-#: src/focus.c:789
+#: src/focus.c:795
 msgid "Focus windows while switching"
 msgstr "Фокусирай прозореца докато сменяте"
 
-#: src/focus.c:794
+#: src/focus.c:800
 msgid "Raise windows after focus switch"
 msgstr "Вдигай прозореца след смяната на фокус"
 
-#: src/focus.c:799
+#: src/focus.c:805
 msgid "Send mouse pointer to window after focus switch"
 msgstr "Показалецът на мишката се праща при прозореца след смяна на фокуса"
 
-#: src/focus.c:809
+#: src/focus.c:815
 msgid "Focuslist image display policy (if one operation fails, try the next):"
 msgstr ""
 "Поведение на картините във Фокусната листа\n"
 "(ако едната операция се провали, да се пробва със следващата):"
 
-#: src/focus.c:813
+#: src/focus.c:819
 msgid "First E Icon, then App Icon"
 msgstr "Първо Е икони, после икони на програмата"
 
-#: src/focus.c:819
+#: src/focus.c:825
 msgid "First App Icon, then E Icon"
 msgstr "Първо икони на програмата, после Е икони"
 
-#: src/focus.c:833
+#: src/focus.c:839
 #, fuzzy
 msgid "Focus"
 msgstr "Никога не фокусирай"
 
-#: src/focus.c:834
+#: src/focus.c:840
 msgid "Focus Settings"
 msgstr "Настройки за фокуса"
 
-#: src/focus.c:837
+#: src/focus.c:843
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog\n"
@@ -1165,39 +1157,30 @@ msgstr "Опции за Iconbox"
 msgid "Iconbox Settings"
 msgstr "Настройки за Iconbox"
 
-#: src/ipc.c:193 src/ipc.c:1427 src/ipc.c:1434
+#: src/ipc.c:193 src/ipc.c:1426 src/ipc.c:1433
 msgid "Message"
 msgstr "Съобщение"
 
-#: src/ipc.c:958
-#, c-format
-msgid ""
-"Enlightenment Version : %s\n"
-"code is current to    : %s\n"
-msgstr ""
-"Версия на Enlightenment : %s\n"
-"Кода е текущ на         : %s\n"
-
-#: src/ipc.c:1427 src/ipc.c:1434
+#: src/ipc.c:1426 src/ipc.c:1433
 #, c-format
 msgid "e16 was built without %s support"
 msgstr ""
 
-#: src/ipc.c:1428
+#: src/ipc.c:1427
 #, fuzzy
 msgid "composite"
 msgstr "Включи Композитора"
 
-#: src/ipc.c:1435
+#: src/ipc.c:1434
 #, fuzzy
 msgid "sound"
 msgstr "Звук"
 
-#: src/ipc.c:1769
+#: src/ipc.c:1768
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Помощ за командите на Enlightenment IPC\n"
 
-#: src/ipc.c:1773
+#: src/ipc.c:1772
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
 "Use \"help <command>\" for an individual description\n"
@@ -1207,30 +1190,30 @@ msgstr ""
 "\"help <команда>\": описание за дадена команда\n"
 "\n"
 
-#: src/ipc.c:1775 src/ipc.c:1795 src/ipc.c:1807
+#: src/ipc.c:1774 src/ipc.c:1794 src/ipc.c:1806
 msgid "Commands currently available:\n"
 msgstr "Достъпни команди:\n"
 
-#: src/ipc.c:1793
+#: src/ipc.c:1792
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr "\"help full\": пълно описания за всяка команда\n"
 
-#: src/ipc.c:1794
+#: src/ipc.c:1793
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "\"help <команда>\": описание за дадена команда\n"
 
-#: src/ipc.c:1796 src/ipc.c:1808
+#: src/ipc.c:1795 src/ipc.c:1807
 msgid "         <command>     : <description>\n"
 msgstr "<команда> : <описание>\n"
 
-#: src/main.c:578
+#: src/main.c:576
 #, c-format
 msgid ""
 "%s must be a directory in which you have\n"
 "read, write, and execute permission.\n"
 msgstr ""
 
-#: src/main.c:688
+#: src/main.c:686
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1259,7 +1242,7 @@ msgstr ""
 "създадени пакети, някой ръчно е изтрил програмата или е имало\n"
 "грешка при инсталирането на Enlightenment.\n"
 
-#: src/main.c:702
+#: src/main.c:700
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -2893,6 +2876,13 @@ msgstr ""
 #, fuzzy
 msgid "Epplets"
 msgstr "Вълнение"
+
+#~ msgid ""
+#~ "Enlightenment Version : %s\n"
+#~ "code is current to    : %s\n"
+#~ msgstr ""
+#~ "Версия на Enlightenment : %s\n"
+#~ "Кода е текущ на         : %s\n"
 
 #~ msgid ""
 #~ "Audio not available since EsounD was not\n"

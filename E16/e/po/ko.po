@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.17.1\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-08-07 23:58+0200\n"
+"POT-Creation-Date: 2008-09-17 21:49+0200\n"
 "PO-Revision-Date: 2004-08-29 01:02:30+0900\n"
 "Last-Translator: Michael Kim <lavnrose@e.sarang.net>\n"
 "Language-Team: Korean <translation-team-ko@lists.sourceforge.net>\n"
@@ -20,21 +20,13 @@ msgid "About Enlightenment %s"
 msgstr "인라이튼먼트 %s에 대하여"
 
 #: src/about.c:43
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "Welcome to the %s version\n"
 "of the Enlightenment window manager.\n"
-"Enlightenment is still under development, but\n"
-"we have tried to iron out all the bugs that\n"
-"we can find. If you find a bug in the software,\n"
-"please do not hesitate to send in a bug report.\n"
-"See \"Help\" for information on joining the\n"
-"mailing list.\n"
-"\n"
-"This code was last updated on:\n"
-"%s\n"
-"\n"
-"Good luck. We hope you enjoy the software.\n"
+"If you find a bug, please do not\n"
+"hesitate to send in a bug report.\n"
+"We hope you enjoy the software.\n"
 "\n"
 "The Rasterman - raster@rasterman.com\n"
 "Mandrake - mandrake@mandrake.net\n"
@@ -500,7 +492,7 @@ msgstr "양쪽 끝"
 msgid "End"
 msgstr "끝"
 
-#: src/container.c:1659 src/focus.c:825
+#: src/container.c:1659 src/focus.c:831
 msgid "None"
 msgstr "없음"
 
@@ -760,105 +752,105 @@ msgstr ""
 "\n"
 "종료.\n"
 
-#: src/focus.c:697
+#: src/focus.c:703
 msgid "Focus follows pointer"
 msgstr "포커스가 포인터 따라감"
 
-#: src/focus.c:703
+#: src/focus.c:709
 msgid "Focus follows pointer sloppily"
 msgstr "포커스가 포인터를 적당히 따라감"
 
-#: src/focus.c:709
+#: src/focus.c:715
 msgid "Focus follows mouse clicks"
 msgstr "포커스가 마우스 클릭을 따라감"
 
-#: src/focus.c:719
+#: src/focus.c:725
 msgid "Clicking in a window always raises it"
 msgstr "창안에서 클릭하면 항상 창을 위로 올림"
 
-#: src/focus.c:727
+#: src/focus.c:733
 msgid "All new windows first get the focus"
 msgstr "모든 새로운 창이 먼저 포커스를 가짐"
 
-#: src/focus.c:732
+#: src/focus.c:738
 msgid "Only new dialog windows get the focus"
 msgstr "오직 새로운 대화상자 창만 포커스 가짐"
 
-#: src/focus.c:739
+#: src/focus.c:745
 msgid "Only new dialogs whose owner is focused get the focus"
 msgstr "오직 포커스를 가진 창의 새로운 대화상자만 포커스 가짐"
 
-#: src/focus.c:744
+#: src/focus.c:750
 #, fuzzy
 msgid "Raise windows while switching focus"
 msgstr "바꾸는 동안에 창 포커스"
 
-#: src/focus.c:750
+#: src/focus.c:756
 #, fuzzy
 msgid "Send mouse pointer to window while switching focus"
 msgstr "포커스가 바뀔 때 마우스 포인터를 그 창으로 보냄"
 
-#: src/focus.c:756
+#: src/focus.c:762
 #, fuzzy
 msgid "Always send mouse pointer to window on focus switch"
 msgstr "포커스가 바뀔 때 마우스 포인터를 그 창으로 보냄"
 
-#: src/focus.c:764
+#: src/focus.c:770
 msgid "Display and use focus list"
 msgstr "포커스 목록을 표시하고 사용"
 
-#: src/focus.c:769
+#: src/focus.c:775
 msgid "Include sticky windows in focus list"
 msgstr "포커스 목록에 스틱키 창 포함"
 
-#: src/focus.c:774
+#: src/focus.c:780
 msgid "Include shaded windows in focus list"
 msgstr "포커스 목록에 음영 창 포함"
 
-#: src/focus.c:779
+#: src/focus.c:785
 msgid "Include iconified windows in focus list"
 msgstr "포커스 목록에 아이콘 창 포함"
 
-#: src/focus.c:784
+#: src/focus.c:790
 #, fuzzy
 msgid "Include windows on other desks in focus list"
 msgstr "포커스 목록에 음영 창 포함"
 
-#: src/focus.c:789
+#: src/focus.c:795
 msgid "Focus windows while switching"
 msgstr "바꾸는 동안에 창 포커스"
 
-#: src/focus.c:794
+#: src/focus.c:800
 msgid "Raise windows after focus switch"
 msgstr "포커스가 바뀐 후에 창 올리기"
 
-#: src/focus.c:799
+#: src/focus.c:805
 msgid "Send mouse pointer to window after focus switch"
 msgstr "포커스가 바뀐 후 마우스 포인터를 그 창으로 보냄"
 
-#: src/focus.c:809
+#: src/focus.c:815
 #, fuzzy
 msgid "Focuslist image display policy (if one operation fails, try the next):"
 msgstr "아이콘 이미지 표시 정책 (한 동작 실패시 다음 시도):"
 
-#: src/focus.c:813
+#: src/focus.c:819
 msgid "First E Icon, then App Icon"
 msgstr ""
 
-#: src/focus.c:819
+#: src/focus.c:825
 msgid "First App Icon, then E Icon"
 msgstr ""
 
-#: src/focus.c:833
+#: src/focus.c:839
 #, fuzzy
 msgid "Focus"
 msgstr "포커스 갖지않음"
 
-#: src/focus.c:834
+#: src/focus.c:840
 msgid "Focus Settings"
 msgstr "포커스 설정"
 
-#: src/focus.c:837
+#: src/focus.c:843
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog\n"
@@ -1161,39 +1153,30 @@ msgstr "아이콘상자 옵션"
 msgid "Iconbox Settings"
 msgstr "아이콘상자 설정"
 
-#: src/ipc.c:193 src/ipc.c:1427 src/ipc.c:1434
+#: src/ipc.c:193 src/ipc.c:1426 src/ipc.c:1433
 msgid "Message"
 msgstr "메시지"
 
-#: src/ipc.c:958
-#, c-format
-msgid ""
-"Enlightenment Version : %s\n"
-"code is current to    : %s\n"
-msgstr ""
-"인라이튼먼트 버전 : %s\n"
-"현재의 코드       : %s\n"
-
-#: src/ipc.c:1427 src/ipc.c:1434
+#: src/ipc.c:1426 src/ipc.c:1433
 #, c-format
 msgid "e16 was built without %s support"
 msgstr ""
 
-#: src/ipc.c:1428
+#: src/ipc.c:1427
 #, fuzzy
 msgid "composite"
 msgstr "사운드 사용"
 
-#: src/ipc.c:1435
+#: src/ipc.c:1434
 msgid "sound"
 msgstr ""
 
-#: src/ipc.c:1769
+#: src/ipc.c:1768
 #, fuzzy
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "인라이튼먼트 IPC 명령 도움말"
 
-#: src/ipc.c:1773
+#: src/ipc.c:1772
 #, fuzzy
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
@@ -1204,35 +1187,35 @@ msgstr ""
 "각각의 설명을 보시려면 \"help <명령>\"을 사용하십시오\n"
 "\n"
 
-#: src/ipc.c:1775 src/ipc.c:1795 src/ipc.c:1807
+#: src/ipc.c:1774 src/ipc.c:1794 src/ipc.c:1806
 #, fuzzy
 msgid "Commands currently available:\n"
 msgstr ""
 "\n"
 "현재 사용가능한 명령:\n"
 
-#: src/ipc.c:1793
+#: src/ipc.c:1792
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 
-#: src/ipc.c:1794
+#: src/ipc.c:1793
 #, fuzzy
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "각각의 설명을 보시려면 \"help <명령>\"을 사용하십시오\n"
 
-#: src/ipc.c:1796 src/ipc.c:1808
+#: src/ipc.c:1795 src/ipc.c:1807
 #, fuzzy
 msgid "         <command>     : <description>\n"
 msgstr "      <명령> : <설명>\n"
 
-#: src/main.c:578
+#: src/main.c:576
 #, c-format
 msgid ""
 "%s must be a directory in which you have\n"
 "read, write, and execute permission.\n"
 msgstr ""
 
-#: src/main.c:688
+#: src/main.c:686
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1261,7 +1244,7 @@ msgstr ""
 "손으로 프로그램을 지웠든 지 아니면 인라이튼먼트 인스톨이\n"
 "잘못된 것입니다.\n"
 
-#: src/main.c:702
+#: src/main.c:700
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -2914,6 +2897,13 @@ msgstr ""
 #, fuzzy
 msgid "Epplets"
 msgstr "잔물결"
+
+#~ msgid ""
+#~ "Enlightenment Version : %s\n"
+#~ "code is current to    : %s\n"
+#~ msgstr ""
+#~ "인라이튼먼트 버전 : %s\n"
+#~ "현재의 코드       : %s\n"
 
 #~ msgid ""
 #~ "Audio not available since EsounD was not\n"

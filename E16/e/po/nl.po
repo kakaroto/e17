@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-08-07 23:58+0200\n"
+"POT-Creation-Date: 2008-09-17 21:49+0200\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Dènis Riedijk <ried@si.tn.tudelft.nl>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -24,17 +24,9 @@ msgstr "Over Enlightenment %s"
 msgid ""
 "Welcome to the %s version\n"
 "of the Enlightenment window manager.\n"
-"Enlightenment is still under development, but\n"
-"we have tried to iron out all the bugs that\n"
-"we can find. If you find a bug in the software,\n"
-"please do not hesitate to send in a bug report.\n"
-"See \"Help\" for information on joining the\n"
-"mailing list.\n"
-"\n"
-"This code was last updated on:\n"
-"%s\n"
-"\n"
-"Good luck. We hope you enjoy the software.\n"
+"If you find a bug, please do not\n"
+"hesitate to send in a bug report.\n"
+"We hope you enjoy the software.\n"
 "\n"
 "The Rasterman - raster@rasterman.com\n"
 "Mandrake - mandrake@mandrake.net\n"
@@ -460,7 +452,7 @@ msgstr "Beide zijden"
 msgid "End"
 msgstr "Einde"
 
-#: src/container.c:1659 src/focus.c:825
+#: src/container.c:1659 src/focus.c:831
 msgid "None"
 msgstr "Geen"
 
@@ -707,106 +699,106 @@ msgid ""
 "Exiting.\n"
 msgstr ""
 
-#: src/focus.c:697
+#: src/focus.c:703
 msgid "Focus follows pointer"
 msgstr "Invoer volgt de muis"
 
-#: src/focus.c:703
+#: src/focus.c:709
 msgid "Focus follows pointer sloppily"
 msgstr "Invoer volgt de muis slordig"
 
-#: src/focus.c:709
+#: src/focus.c:715
 msgid "Focus follows mouse clicks"
 msgstr "Invoer volgt muis klikken"
 
-#: src/focus.c:719
+#: src/focus.c:725
 msgid "Clicking in a window always raises it"
 msgstr "Klikken in een venster brengt het altijd naar boven"
 
-#: src/focus.c:727
+#: src/focus.c:733
 msgid "All new windows first get the focus"
 msgstr "Alle niewe vensters krijgen de invoer"
 
-#: src/focus.c:732
+#: src/focus.c:738
 msgid "Only new dialog windows get the focus"
 msgstr "Alleen nieuwe dialoog vensters krijgen de invoer"
 
-#: src/focus.c:739
+#: src/focus.c:745
 msgid "Only new dialogs whose owner is focused get the focus"
 msgstr ""
 "Alleen nieuwe dialoog vensters waarvan de eigenaar de invoer heeft krijgen "
 "de invoer"
 
-#: src/focus.c:744
+#: src/focus.c:750
 #, fuzzy
 msgid "Raise windows while switching focus"
 msgstr "Breng vensters naar voren na een invoer wisseling"
 
-#: src/focus.c:750
+#: src/focus.c:756
 #, fuzzy
 msgid "Send mouse pointer to window while switching focus"
 msgstr "Stuur de muis naar het venster bij een invoer wisseling"
 
-#: src/focus.c:756
+#: src/focus.c:762
 #, fuzzy
 msgid "Always send mouse pointer to window on focus switch"
 msgstr "Stuur de muis naar het venster bij een invoer wisseling"
 
-#: src/focus.c:764
+#: src/focus.c:770
 msgid "Display and use focus list"
 msgstr "Toon en gebruik een venster lijst"
 
-#: src/focus.c:769
+#: src/focus.c:775
 msgid "Include sticky windows in focus list"
 msgstr ""
 
-#: src/focus.c:774
+#: src/focus.c:780
 msgid "Include shaded windows in focus list"
 msgstr ""
 
-#: src/focus.c:779
+#: src/focus.c:785
 msgid "Include iconified windows in focus list"
 msgstr ""
 
-#: src/focus.c:784
+#: src/focus.c:790
 #, fuzzy
 msgid "Include windows on other desks in focus list"
 msgstr "Plaats vensters met de hand"
 
-#: src/focus.c:789
+#: src/focus.c:795
 msgid "Focus windows while switching"
 msgstr ""
 
-#: src/focus.c:794
+#: src/focus.c:800
 msgid "Raise windows after focus switch"
 msgstr "Breng vensters naar voren na een invoer wisseling"
 
-#: src/focus.c:799
+#: src/focus.c:805
 msgid "Send mouse pointer to window after focus switch"
 msgstr "Stuur de muis naar het vester na een invoer wisseling"
 
-#: src/focus.c:809
+#: src/focus.c:815
 #, fuzzy
 msgid "Focuslist image display policy (if one operation fails, try the next):"
 msgstr "Icoon plaatje instellingen (als de ene niet gaat, probeer volgende):"
 
-#: src/focus.c:813
+#: src/focus.c:819
 msgid "First E Icon, then App Icon"
 msgstr ""
 
-#: src/focus.c:819
+#: src/focus.c:825
 msgid "First App Icon, then E Icon"
 msgstr ""
 
-#: src/focus.c:833
+#: src/focus.c:839
 msgid "Focus"
 msgstr ""
 
-#: src/focus.c:834
+#: src/focus.c:840
 msgid "Focus Settings"
 msgstr "Invoer instellingen"
 
-#: src/focus.c:837
+#: src/focus.c:843
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog\n"
@@ -1071,72 +1063,63 @@ msgstr "Icoonbox Opties"
 msgid "Iconbox Settings"
 msgstr "Icoonbox instellingen"
 
-#: src/ipc.c:193 src/ipc.c:1427 src/ipc.c:1434
+#: src/ipc.c:193 src/ipc.c:1426 src/ipc.c:1433
 msgid "Message"
 msgstr ""
 
-#: src/ipc.c:958
-#, c-format
-msgid ""
-"Enlightenment Version : %s\n"
-"code is current to    : %s\n"
-msgstr ""
-"Enlightenment Versie : %s\n"
-"code is van datum    : %s\n"
-
-#: src/ipc.c:1427 src/ipc.c:1434
+#: src/ipc.c:1426 src/ipc.c:1433
 #, c-format
 msgid "e16 was built without %s support"
 msgstr ""
 
-#: src/ipc.c:1428
+#: src/ipc.c:1427
 #, fuzzy
 msgid "composite"
 msgstr "Zet geluiden aan"
 
-#: src/ipc.c:1435
+#: src/ipc.c:1434
 msgid "sound"
 msgstr ""
 
-#: src/ipc.c:1769
+#: src/ipc.c:1768
 #, fuzzy
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Enlightenment Inter Process Commandos Hulp"
 
-#: src/ipc.c:1773
+#: src/ipc.c:1772
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
 "Use \"help <command>\" for an individual description\n"
 "\n"
 msgstr ""
 
-#: src/ipc.c:1775 src/ipc.c:1795 src/ipc.c:1807
+#: src/ipc.c:1774 src/ipc.c:1794 src/ipc.c:1806
 #, fuzzy
 msgid "Commands currently available:\n"
 msgstr ""
 "\n"
 "commandos die nu beschikbaar zijn:\n"
 
-#: src/ipc.c:1793
+#: src/ipc.c:1792
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 
-#: src/ipc.c:1794
+#: src/ipc.c:1793
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr ""
 
-#: src/ipc.c:1796 src/ipc.c:1808
+#: src/ipc.c:1795 src/ipc.c:1807
 msgid "         <command>     : <description>\n"
 msgstr ""
 
-#: src/main.c:578
+#: src/main.c:576
 #, c-format
 msgid ""
 "%s must be a directory in which you have\n"
 "read, write, and execute permission.\n"
 msgstr ""
 
-#: src/main.c:688
+#: src/main.c:686
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1153,7 +1136,7 @@ msgid ""
 "an error in installing Enlightenment.\n"
 msgstr ""
 
-#: src/main.c:702
+#: src/main.c:700
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -2737,6 +2720,13 @@ msgstr ""
 #: config/strings.c:198
 msgid "Epplets"
 msgstr ""
+
+#~ msgid ""
+#~ "Enlightenment Version : %s\n"
+#~ "code is current to    : %s\n"
+#~ msgstr ""
+#~ "Enlightenment Versie : %s\n"
+#~ "code is van datum    : %s\n"
 
 #~ msgid ""
 #~ "Audio not available since EsounD was not\n"

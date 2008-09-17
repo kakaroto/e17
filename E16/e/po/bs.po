@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: bosnian\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-08-07 23:58+0200\n"
+"POT-Creation-Date: 2008-09-17 21:49+0200\n"
 "PO-Revision-Date: 2004-08-26 00:52+0200\n"
 "Last-Translator: Kemal Å anjta <gomez@lugzdk.ba>\n"
 "Language-Team: Bosnian <lokal@linux.org.ba>\n"
@@ -23,21 +23,13 @@ msgid "About Enlightenment %s"
 msgstr "O Enlightenment-u %s"
 
 #: src/about.c:43
-#, c-format
+#, fuzzy, c-format
 msgid ""
 "Welcome to the %s version\n"
 "of the Enlightenment window manager.\n"
-"Enlightenment is still under development, but\n"
-"we have tried to iron out all the bugs that\n"
-"we can find. If you find a bug in the software,\n"
-"please do not hesitate to send in a bug report.\n"
-"See \"Help\" for information on joining the\n"
-"mailing list.\n"
-"\n"
-"This code was last updated on:\n"
-"%s\n"
-"\n"
-"Good luck. We hope you enjoy the software.\n"
+"If you find a bug, please do not\n"
+"hesitate to send in a bug report.\n"
+"We hope you enjoy the software.\n"
 "\n"
 "The Rasterman - raster@rasterman.com\n"
 "Mandrake - mandrake@mandrake.net\n"
@@ -502,7 +494,7 @@ msgstr "Oba kraja"
 msgid "End"
 msgstr "Kraj"
 
-#: src/container.c:1659 src/focus.c:825
+#: src/container.c:1659 src/focus.c:831
 msgid "None"
 msgstr "NiÅ·ta"
 
@@ -762,105 +754,105 @@ msgstr ""
 "\n"
 "Izlazim.\n"
 
-#: src/focus.c:697
+#: src/focus.c:703
 msgid "Focus follows pointer"
 msgstr "Usmjeravanje prati usmjeriva?"
 
-#: src/focus.c:703
+#: src/focus.c:709
 msgid "Focus follows pointer sloppily"
 msgstr "Usmjerenje prati usmjerivaÄ"
 
-#: src/focus.c:709
+#: src/focus.c:715
 msgid "Focus follows mouse clicks"
 msgstr "Usmjeravanje prati klikanje miÅ·a"
 
-#: src/focus.c:719
+#: src/focus.c:725
 msgid "Clicking in a window always raises it"
 msgstr "Klikanje na prozor uvijek ga podstakinje"
 
-#: src/focus.c:727
+#: src/focus.c:733
 msgid "All new windows first get the focus"
 msgstr "Svi novi prozori prvo dobijaju usmjeravanje"
 
-#: src/focus.c:732
+#: src/focus.c:738
 msgid "Only new dialog windows get the focus"
 msgstr "Sam novi dijalog prozori dobivaju usjeravanje"
 
-#: src/focus.c:739
+#: src/focus.c:745
 msgid "Only new dialogs whose owner is focused get the focus"
 msgstr "Samo novi dijalozi Ä«iji je vlasnik usmjeren dobivaju usmjeravanje"
 
-#: src/focus.c:744
+#: src/focus.c:750
 #, fuzzy
 msgid "Raise windows while switching focus"
 msgstr "Usmjeravanje prozora prilikom prebacivanja"
 
-#: src/focus.c:750
+#: src/focus.c:756
 #, fuzzy
 msgid "Send mouse pointer to window while switching focus"
 msgstr "PoÅ·alji miÅ· pokazivaÄ na prozor na prekidaÄu sumjerivanja"
 
-#: src/focus.c:756
+#: src/focus.c:762
 #, fuzzy
 msgid "Always send mouse pointer to window on focus switch"
 msgstr "PoÅ·alji miÅ· pokazivaÄ na prozor na prekidaÄu sumjerivanja"
 
-#: src/focus.c:764
+#: src/focus.c:770
 msgid "Display and use focus list"
 msgstr "PrikaÅµi i koristi listu usmjeravanja"
 
-#: src/focus.c:769
+#: src/focus.c:775
 msgid "Include sticky windows in focus list"
 msgstr "UkljuÄ«i listu ljepljivih prozora u listi usmjeravanja"
 
-#: src/focus.c:774
+#: src/focus.c:780
 msgid "Include shaded windows in focus list"
 msgstr "UkljuÄ«i osjenÄ«ene prozore u listi usmjeravanja"
 
-#: src/focus.c:779
+#: src/focus.c:785
 msgid "Include iconified windows in focus list"
 msgstr "UkljuÄ«i ikonificirane prozore u listi usmjeravanja"
 
-#: src/focus.c:784
+#: src/focus.c:790
 #, fuzzy
 msgid "Include windows on other desks in focus list"
 msgstr "UkljuÄ«i osjenÄ«ene prozore u listi usmjeravanja"
 
-#: src/focus.c:789
+#: src/focus.c:795
 msgid "Focus windows while switching"
 msgstr "Usmjeravanje prozora prilikom prebacivanja"
 
-#: src/focus.c:794
+#: src/focus.c:800
 msgid "Raise windows after focus switch"
 msgstr "PoveÄan je prozora nakon paljenja/gaÅ·enja usjerivaÄa"
 
-#: src/focus.c:799
+#: src/focus.c:805
 msgid "Send mouse pointer to window after focus switch"
 msgstr "PoÅ·alji miÅ· pokazivaÄ na prozor nakon Å·to se usjerivaÄ ugasi/upali"
 
-#: src/focus.c:809
+#: src/focus.c:815
 #, fuzzy
 msgid "Focuslist image display policy (if one operation fails, try the next):"
 msgstr "Pravila prikaza slike ikone (ako jedna ne uspije, probajte sljedeÄu):"
 
-#: src/focus.c:813
+#: src/focus.c:819
 msgid "First E Icon, then App Icon"
 msgstr ""
 
-#: src/focus.c:819
+#: src/focus.c:825
 msgid "First App Icon, then E Icon"
 msgstr ""
 
-#: src/focus.c:833
+#: src/focus.c:839
 #, fuzzy
 msgid "Focus"
 msgstr "Nikad ne usmjeravaj"
 
-#: src/focus.c:834
+#: src/focus.c:840
 msgid "Focus Settings"
 msgstr "Osobine usmjeravanja"
 
-#: src/focus.c:837
+#: src/focus.c:843
 msgid ""
 "Enlightenment Focus\n"
 "Settings Dialog\n"
@@ -1165,39 +1157,30 @@ msgstr "Iconbox opcije"
 msgid "Iconbox Settings"
 msgstr "Iconbox Osobine"
 
-#: src/ipc.c:193 src/ipc.c:1427 src/ipc.c:1434
+#: src/ipc.c:193 src/ipc.c:1426 src/ipc.c:1433
 msgid "Message"
 msgstr "Poruka"
 
-#: src/ipc.c:958
-#, c-format
-msgid ""
-"Enlightenment Version : %s\n"
-"code is current to    : %s\n"
-msgstr ""
-"Enlightenment verzija : %s\n"
-"kod je trenutno na    : %s\n"
-
-#: src/ipc.c:1427 src/ipc.c:1434
+#: src/ipc.c:1426 src/ipc.c:1433
 #, c-format
 msgid "e16 was built without %s support"
 msgstr ""
 
-#: src/ipc.c:1428
+#: src/ipc.c:1427
 #, fuzzy
 msgid "composite"
 msgstr "OmoguÄi zvukove"
 
-#: src/ipc.c:1435
+#: src/ipc.c:1434
 msgid "sound"
 msgstr ""
 
-#: src/ipc.c:1769
+#: src/ipc.c:1768
 #, fuzzy
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Enlightenment IPC Comande Pomo?"
 
-#: src/ipc.c:1773
+#: src/ipc.c:1772
 #, fuzzy
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
@@ -1208,35 +1191,35 @@ msgstr ""
 "koristite \"help <command>\" za pojedinaÄ«ni opis\n"
 "\n"
 
-#: src/ipc.c:1775 src/ipc.c:1795 src/ipc.c:1807
+#: src/ipc.c:1774 src/ipc.c:1794 src/ipc.c:1806
 #, fuzzy
 msgid "Commands currently available:\n"
 msgstr ""
 "\n"
 "trenutno dostupne komande:\n"
 
-#: src/ipc.c:1793
+#: src/ipc.c:1792
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 
-#: src/ipc.c:1794
+#: src/ipc.c:1793
 #, fuzzy
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "koristi \"help <command>\" za individualni opis\n"
 
-#: src/ipc.c:1796 src/ipc.c:1808
+#: src/ipc.c:1795 src/ipc.c:1807
 #, fuzzy
 msgid "         <command>     : <description>\n"
 msgstr "      <command>   : <description>\n"
 
-#: src/main.c:578
+#: src/main.c:576
 #, c-format
 msgid ""
 "%s must be a directory in which you have\n"
 "read, write, and execute permission.\n"
 msgstr ""
 
-#: src/main.c:688
+#: src/main.c:686
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1265,7 +1248,7 @@ msgstr ""
 "packages, someone manually deleting that program or perhaps\n"
 "an error in installing Enlightenment.\n"
 
-#: src/main.c:702
+#: src/main.c:700
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -2917,6 +2900,13 @@ msgstr ""
 #, fuzzy
 msgid "Epplets"
 msgstr "Talasi"
+
+#~ msgid ""
+#~ "Enlightenment Version : %s\n"
+#~ "code is current to    : %s\n"
+#~ msgstr ""
+#~ "Enlightenment verzija : %s\n"
+#~ "kod je trenutno na    : %s\n"
 
 #~ msgid ""
 #~ "Audio not available since EsounD was not\n"
