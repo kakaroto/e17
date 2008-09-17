@@ -750,17 +750,10 @@ RenderPage(Window win, int page_num, int w, int h)
 				    continue;
 				 for (j = k; j > 0 && link_link[j] != ')'; j--)
 				    ;
+				 link_link[j] = '\0';
+				 strcpy(wd, link_txt);
 				 if (j < k)
-				   {
-				      link_link[j] = '\0';
-				      strcpy(wd, link_txt);
-				      strcat(wd, link_link + j + 1);
-				   }
-				 else
-				   {
-				      link_link[k] = '\0';
-				      strcpy(wd, link_txt);
-				   }
+				    strcat(wd, link_link + j + 1);
 				 islink = 2;
 			      }
 			    else
