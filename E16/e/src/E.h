@@ -524,6 +524,5 @@ char              **ThemesList(int *num);
  */
 extern const char   e_wm_name[];
 extern const char   e_wm_version[];
-extern const char   e_wm_date[];
 __EXPORT__ extern EConf Conf;
 __EXPORT__ extern EMode Mode;

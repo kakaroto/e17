@@ -42,17 +42,12 @@ _DlgFillAbout(Dialog * d, DItem * table, void *data __UNUSED__)
    Esnprintf(buf, sizeof(buf),
 	     _("Welcome to the %s version\n"
 	       "of the Enlightenment window manager.\n"
-	       "Enlightenment is still under development, but\n"
-	       "we have tried to iron out all the bugs that\n"
-	       "we can find. If you find a bug in the software,\n"
-	       "please do not hesitate to send in a bug report.\n"
-	       "See \"Help\" for information on joining the\n"
-	       "mailing list.\n" "\n"
-	       "This code was last updated on:\n%s\n" "\n"
-	       "Good luck. We hope you enjoy the software.\n" "\n"
+	       "If you find a bug, please do not\n"
+	       "hesitate to send in a bug report.\n"
+	       "We hope you enjoy the software.\n" "\n"
 	       "The Rasterman - raster@rasterman.com\n"
 	       "Mandrake - mandrake@mandrake.net\n"
-	       "Kim Woelders - kim@woelders.dk\n"), e_wm_version, e_wm_date);
+	       "Kim Woelders - kim@woelders.dk\n"), e_wm_version);
    DialogItemSetText(di, buf);
 
    DialogBindKey(d, "Return", DialogCallbackClose, 0, NULL);

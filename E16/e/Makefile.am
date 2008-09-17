@@ -10,7 +10,6 @@ MAINTAINERCLEANFILES = aclocal.m4 config.* configure depcomp \
 SUBDIRS = dox eesh epp src lib config themes man scripts misc po
 
 EXTRA_DIST = \
-timestamp.h \
 sample-scripts/bouncingball.pl \
 sample-scripts/lcdmover.sh \
 sample-scripts/testroller.pl \

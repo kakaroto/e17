@@ -36,7 +36,6 @@
 #include "hints.h"
 #include "session.h"
 #include "snaps.h"
-#include "timestamp.h"
 #include "user.h"
 #include "xwin.h"
 #include <sys/utsname.h>
@@ -45,7 +44,6 @@
 
 const char          e_wm_name[] = "Enlightenment";
 const char          e_wm_version[] = VERSION;
-const char          e_wm_date[] = E_CHECKOUT_DATE;
 
 EConf               Conf;
 EMode               Mode;
@@ -192,7 +190,7 @@ main(int argc, char **argv)
 	     Mode.theme.path = Estrdup(eoptarg);
 	     break;
 	  case 'V':
-	     printf("%s %s - %s\n", e_wm_name, e_wm_version, e_wm_date);
+	     printf("%s %s\n", e_wm_name, e_wm_version);
 	     exit(0);
 	     break;
 	  case 'v':

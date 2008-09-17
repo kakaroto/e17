@@ -955,8 +955,7 @@ IPC_About(const char *params __UNUSED__)
 static void
 IPC_Version(const char *params __UNUSED__)
 {
-   IpcPrintf(_("Enlightenment Version : %s\n" "code is current to    : %s\n"),
-	     e_wm_version, e_wm_date);
+   IpcPrintf("%s %s\n", e_wm_name, e_wm_version);
 }
 
 static void
