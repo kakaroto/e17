@@ -1757,6 +1757,7 @@ e_kbd_int_new(const char *themedir, const char *syskbds, const char *sysdicts)
    const char *deflay;
    E_Zone *zone;
    E_Kbd_Int_Layout *kil;
+   Ecore_X_Window_State states[2];
    
    ki = E_NEW(E_Kbd_Int, 1);
    if (!ki) return NULL;
@@ -1764,6 +1765,9 @@ e_kbd_int_new(const char *themedir, const char *syskbds, const char *sysdicts)
    if (syskbds) ki->syskbds = evas_stringshare_add(syskbds);
    if (sysdicts) ki->sysdicts = evas_stringshare_add(sysdicts);
    ki->win = e_win_new(e_util_container_number_get(0));
+   states[0] = ECORE_X_WINDOW_STATE_SKIP_TASKBAR;
+   states[1] = ECORE_X_WINDOW_STATE_SKIP_PAGER;
+   ecore_x_netwm_window_state_set(ki->win->evas_win, states, 2);
    zone = e_util_container_zone_number_get(0, 0);
    e_win_no_remember_set(ki->win, 1);
    e_win_resize(ki->win, zone->w, zone->h);

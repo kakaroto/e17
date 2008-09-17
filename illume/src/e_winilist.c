@@ -47,6 +47,7 @@ static int _cb_border_remove(void *data, int ev_type, void *ev);
 static int _cb_border_show(void *data, int ev_type, void *ev);
 static int _cb_border_hide(void *data, int ev_type, void *ev);
 static int _cb_border_property(void *data, int ev_type, void *ev);
+static int _cb_desk_show(void *data, int ev_type, void *event);
 
 /* state */
 static Evas_List *handlers = NULL;
@@ -61,6 +62,7 @@ e_winilist_init(void)
    handlers = evas_list_append(handlers, ecore_event_handler_add(E_EVENT_BORDER_SHOW, _cb_border_show, NULL));
    handlers = evas_list_append(handlers, ecore_event_handler_add(E_EVENT_BORDER_HIDE, _cb_border_hide, NULL));
    handlers = evas_list_append(handlers, ecore_event_handler_add(E_EVENT_BORDER_PROPERTY, _cb_border_property, NULL));
+   handlers = evas_list_append(handlers, ecore_event_handler_add(E_EVENT_DESK_SHOW, _cb_desk_show, NULL));
    return 1;
 }
 
@@ -283,6 +285,7 @@ _refill(Data *d)
 	     Evas_List *tmp = NULL;
 	     
 	     changed = 0;
+	     printf("bd's....\n");
 	     for (l = borders; l; l = l->next)
 	       {
 		  E_Border *bd;
@@ -293,6 +296,10 @@ _refill(Data *d)
 		      (!bd->client.icccm.take_focus)) continue;
 		  if (bd->client.netwm.state.skip_taskbar) continue;
 		  if (bd->user_skip_winlist) continue;
+		  if ((!bd->sticky) && 
+		      (bd->desk != e_desk_current_get(bd->zone))) continue;
+		  printf("ADD bd=%p, bd->desk = %p, curdesk = %p\n",
+			 bd, bd->desk, e_desk_current_get(bd->zone));
 		  tmp = evas_list_append(tmp, bd);
 	       }
 	     if (!(tmp && d->borders))
@@ -373,6 +380,8 @@ _refill(Data *d)
 	    (!bd->client.icccm.take_focus)) continue;
 	if (bd->client.netwm.state.skip_taskbar) continue;
 	if (bd->user_skip_winlist) continue;
+	if ((!bd->sticky) && 
+	    (bd->desk != e_desk_current_get(bd->zone))) continue;
 	
 	title = "???";
 	if (bd->client.netwm.name) title = bd->client.netwm.name;
@@ -465,6 +474,21 @@ static int
 _cb_border_property(void *data, int ev_type, void *event)
 {
    E_Event_Border_Property *ev;
+   
+   ev = event;
+   /* FIXME: should really be optimal on what properties warrant a refill */
+     {
+	Evas_List *l;
+	
+	for (l = winilists; l; l = l->next) _refill(l->data);
+     }
+   return 1;
+}
+
+static int
+_cb_desk_show(void *data, int ev_type, void *event)
+{
+   E_Event_Desk_Show *ev;
    
    ev = event;
    /* FIXME: should really be optimal on what properties warrant a refill */

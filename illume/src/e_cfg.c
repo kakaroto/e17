@@ -245,17 +245,25 @@ _e_cfg_power_change(void *data, Evas_Object *obj, void *event_info) {
    _e_cfg_power_change_timer = ecore_timer_add(0.5, _e_cfg_power_change_timeout, data);
 }
 
-EAPI void
-e_cfg_power(E_Container *con, const char *params)
-{
-   Evas_Object *list, *o, *frame;
-   E_Radio_Group *rg;
-   Evas *e;
+static void *
+_e_cfg_power_create(E_Config_Dialog *cfd)
+{ // alloc cfd->cfdata
+   return NULL;
+}
 
-   list = _e_cfg_win_new("Power Settings", "power_settings",
-			 e_module_dir_get(mod), NULL, NULL);
-   
-   e = evas_object_evas_get(list);
+static void 
+_e_cfg_power_free(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
+{ // free cfd->cfdata
+}
+
+static Evas_Object *
+_e_cfg_power_ui(E_Config_Dialog *cfd, Evas *e, E_Config_Dialog_Data *cfdata)
+{
+   Evas_Object *o, *frame;
+   E_Radio_Group *rg;
+   Evas_Object *list, *sf;
+/*
+   list = e_widget_list_add(e, 0, 0);
    
    frame = e_widget_framelist_add(e, "Blank Time", 0);
    rg = e_widget_radio_group_new(&(e_config->screensaver_timeout));
@@ -284,7 +292,7 @@ e_cfg_power(E_Container *con, const char *params)
    e_widget_framelist_object_append(frame, o);
    evas_object_smart_callback_add(o, "changed", _e_cfg_power_change, NULL);
    e_widget_list_object_append(list, frame, 1, 1, 0.0); // fill, expand, align
-   
+
    frame = e_widget_framelist_add(e, "Suspend After Blank", 0);
    rg = e_widget_radio_group_new(&(illume_cfg->power.auto_suspend_delay));
    o = e_widget_radio_add(e, "1 Second", 1, rg);
@@ -305,9 +313,81 @@ e_cfg_power(E_Container *con, const char *params)
    o = e_widget_radio_add(e, "Off", 0, rg);
    e_widget_framelist_object_append(frame, o);
    evas_object_smart_callback_add(o, "changed", _e_cfg_power_change, NULL);
-   e_widget_list_object_append(list, frame, 1, 1, 0.0); // fill, expand, align
+
+   o = e_widget_radio_add(e, "Off", 0, rg);
+   e_widget_framelist_object_append(frame, o);
+   evas_object_smart_callback_add(o, "changed", _e_cfg_power_change, NULL);
+   o = e_widget_radio_add(e, "Off", 0, rg);
+   e_widget_framelist_object_append(frame, o);
+   evas_object_smart_callback_add(o, "changed", _e_cfg_power_change, NULL);
+   o = e_widget_radio_add(e, "Off", 0, rg);
+   e_widget_framelist_object_append(frame, o);
+   evas_object_smart_callback_add(o, "changed", _e_cfg_power_change, NULL);
+   o = e_widget_radio_add(e, "Off", 0, rg);
+   e_widget_framelist_object_append(frame, o);
+   evas_object_smart_callback_add(o, "changed", _e_cfg_power_change, NULL);
+   o = e_widget_radio_add(e, "Off", 0, rg);
+   e_widget_framelist_object_append(frame, o);
+   evas_object_smart_callback_add(o, "changed", _e_cfg_power_change, NULL);
+   o = e_widget_radio_add(e, "X", 0, rg);
+   e_widget_framelist_object_append(frame, o);
+   evas_object_smart_callback_add(o, "changed", _e_cfg_power_change, NULL);
+   o = e_widget_radio_add(e, "X", 0, rg);
+   e_widget_framelist_object_append(frame, o);
+   evas_object_smart_callback_add(o, "changed", _e_cfg_power_change, NULL);
+   o = e_widget_radio_add(e, "X", 0, rg);
+   e_widget_framelist_object_append(frame, o);
+   evas_object_smart_callback_add(o, "changed", _e_cfg_power_change, NULL);
+   o = e_widget_radio_add(e, "X", 0, rg);
+   e_widget_framelist_object_append(frame, o);
+   evas_object_smart_callback_add(o, "changed", _e_cfg_power_change, NULL);
+   o = e_widget_radio_add(e, "X", 0, rg);
+   e_widget_framelist_object_append(frame, o);
+   evas_object_smart_callback_add(o, "changed", _e_cfg_power_change, NULL);
+   o = e_widget_radio_add(e, "X", 0, rg);
+   e_widget_framelist_object_append(frame, o);
+   evas_object_smart_callback_add(o, "changed", _e_cfg_power_change, NULL);
+   o = e_widget_radio_add(e, "X", 0, rg);
+   e_widget_framelist_object_append(frame, o);
+   evas_object_smart_callback_add(o, "changed", _e_cfg_power_change, NULL);
+   o = e_widget_radio_add(e, "X", 0, rg);
+   e_widget_framelist_object_append(frame, o);
+   evas_object_smart_callback_add(o, "changed", _e_cfg_power_change, NULL);
+ */
+   //   e_widget_list_object_append(list, frame, 1, 1, 0.0); // fill, expand, align
+
+   o = e_widget_button_add(e, "This is a very long wide button with a massive label to see if it scrolls", NULL, 
+			   NULL, NULL, NULL);
+   evas_object_resize(o, 800, 200);
+/*   
+   o = e_icon_add(e);
+   e_icon_file_set(o, "/home/raster/scroll.png");
+   evas_object_resize(o, 800, 800);
+   evas_object_show(o);
+ */
    
-   _e_cfg_win_complete(list);
+   printf("--------- FRAME IS %p\n", o);
+   sf = e_widget_scrollframe_simple_add(e, o);
+   return sf;
+}
+
+EAPI void
+e_cfg_power(E_Container *con, const char *params)
+{
+   E_Config_Dialog *cfd;
+   E_Config_Dialog_View *v = NULL;
+   
+   if (e_config_dialog_find("E", "_config_illume_power_settings")) return;
+   v = E_NEW(E_Config_Dialog_View, 1);
+   v->create_cfdata        = _e_cfg_power_create;
+   v->free_cfdata          = _e_cfg_power_free;
+   v->basic.create_widgets = _e_cfg_power_ui;
+   v->basic_only           = 1;
+   v->normal_win           = 1;
+   cfd = e_config_dialog_new(con, "Power Settings",
+			     "E", "_config_illume_power_settings",
+			     "enlightenment/power_settings", 0, v, NULL);
+   e_dialog_resizable_set(cfd->dia, 1);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -963,11 +1043,10 @@ _e_cfg_win_new(const char *title, const char *name, const char *themedir, void (
 		      "e/modules/illume/config/dialog");
    edje_object_part_text_set(o, "e.text.label", "OK");
    edje_object_signal_callback_add(o, "e,action,do,ok", "", _cb_signal_ok, win);
-   evas_object_move(o, 0, 0);
    evas_object_show(o);
    d->o = o;
    
-   ol = e_widget_list_add(evas_object_evas_get(o), 0, 0);
+   ol = e_widget_list_add(e_win_evas_get(win), 0, 0);
    d->o_l = ol;
    
    evas_object_data_set(ol, "win", win);
@@ -988,7 +1067,7 @@ _e_cfg_win_complete(Evas_Object *ol)
 
    e_widget_min_size_get(ol, &mw, &mh);
    evas_object_resize(ol, mw, mh);
-   
+
    sf = e_widget_scrollframe_simple_add(evas_object_evas_get(ol), ol);
    edje_object_part_swallow(d->o, "e.swallow.content", sf);
    d->o_sf = sf;
@@ -997,6 +1076,7 @@ _e_cfg_win_complete(Evas_Object *ol)
 
    e_widget_focus_set(ol, 1);
    evas_object_focus_set(ol, 1);
+
 }
 
 static void

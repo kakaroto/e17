@@ -176,6 +176,7 @@ void
 _e_mod_layout_border_show(E_Border *bd)
 {
    _e_mod_layout_effect_slide_in(bd, (double)illume_cfg->sliding.layout.duration / 1000.0, POST_NONE);
+   e_desk_show(bd->desk);
    e_border_uniconify(bd);
    e_border_show(bd);
    e_border_raise(bd);
@@ -476,20 +477,23 @@ _e_mod_layout_post_border_assign(E_Border *bd, int not_new)
 //	if (ww > (bd->client.icccm.min_w + bd->client_inset.l + bd->client_inset.r))
 //	  ww = bd->client.icccm.min_w + bd->client_inset.l + bd->client_inset.r;
 	bd->w = ww;
+	if (bd->client.h < bd->client.icccm.min_h)
+	  bd->h = bd->client.icccm.min_h + 
+	  bd->client_inset.t + bd->client_inset.b;
 	if (bd->h > wh) bd->h = wh;
 	bd->client.w = bd->w - bd->client_inset.l - bd->client_inset.r;
 	bd->client.h = bd->h - bd->client_inset.t - bd->client_inset.b;
 	bd->changes.size = 1;
-	if (bd->client.icccm.max_w < bd->client.w)
-	  bd->client.icccm.max_w = bd->client.w;
-	if (bd->client.icccm.base_w > bd->client.w)
-	  bd->client.icccm.base_w = bd->client.w;
-	if (bd->client.icccm.base_h > (wh - bd->client_inset.t - bd->client_inset.b))
-	  bd->client.icccm.base_h = wh - bd->client_inset.t - bd->client_inset.b;
-	if (bd->client.icccm.min_w > bd->client.w)
-	  bd->client.icccm.min_w = bd->client.w;
-	if (bd->client.icccm.min_h > (wh - bd->client_inset.t - bd->client_inset.b))
-	  bd->client.icccm.min_h = wh - bd->client_inset.t - bd->client_inset.b;
+//	if (bd->client.icccm.max_w < bd->client.w)
+//	  bd->client.icccm.max_w = bd->client.w;
+//	if (bd->client.icccm.base_w > bd->client.w)
+//	  bd->client.icccm.base_w = bd->client.w;
+//	if (bd->client.icccm.base_h > (wh - bd->client_inset.t - bd->client_inset.b))
+//	  bd->client.icccm.base_h = wh - bd->client_inset.t - bd->client_inset.b;
+//	if (bd->client.icccm.min_w > bd->client.w)
+//	  bd->client.icccm.min_w = bd->client.w;
+//	if (bd->client.icccm.min_h > (wh - bd->client_inset.t - bd->client_inset.b))
+//	  bd->client.icccm.min_h = wh - bd->client_inset.t - bd->client_inset.b;
 	if (bd->new_client)
 	  {
 	     _e_mod_layout_effect_slide_in(bd, (double)illume_cfg->sliding.layout.duration / 1000.0, POST_NONE);
@@ -558,8 +562,11 @@ _e_mod_layout_post_border_assign(E_Border *bd, int not_new)
 	  {
 	     bd->client.e.state.centered = 0;
 	     printf("  ... centered dialog\n");
-	     bd->x = wx + ((ww - bd->w) / 2);
-	     bd->y = wy + ((wh - bd->h) / 2);
+	     if (bd->new_client)
+	       {
+		  bd->x = wx + ((ww - bd->w) / 2);
+		  bd->y = wy + ((wh - bd->h) / 2);
+	       }
 	     if ((pbx != bd->x) || (pby != bd->y)  ||
 		 (pbw != bd->w) || (pbh != bd->h))
 	       {
@@ -587,7 +594,7 @@ _e_mod_layout_post_border_assign(E_Border *bd, int not_new)
 	bd->lock_border = 1;
 	
 	bd->lock_client_location = 1;
-	bd->lock_client_size = 1;
+//	bd->lock_client_size = 1;
 	bd->lock_client_desk = 1;
 	bd->lock_client_sticky = 1;
 	bd->lock_client_shade = 1;
@@ -595,8 +602,8 @@ _e_mod_layout_post_border_assign(E_Border *bd, int not_new)
 	
 	bd->lock_user_location = 1;
 	bd->lock_user_size = 1;
-	bd->lock_user_desk = 1;
-	bd->lock_user_sticky = 1;
+//	bd->lock_user_desk = 1;
+//	bd->lock_user_sticky = 1;
 	bd->lock_user_shade = 1;
 	bd->lock_user_maximize = 1;
      }
@@ -678,10 +685,10 @@ _e_mod_layout_post_border_assign(E_Border *bd, int not_new)
 	bd->lock_user_location = 1;
 	bd->lock_user_size = 1;
 //	bd->lock_user_stacking = 1;
-	bd->lock_user_desk = 1;
+//	bd->lock_user_desk = 1;
 	bd->lock_user_sticky = 1;
-	bd->lock_user_shade = 1;
-	bd->lock_user_maximize = 1;
+//	bd->lock_user_shade = 1;
+//	bd->lock_user_maximize = 1;
 	
 	bd->client.icccm.base_w = 1;
 	bd->client.icccm.base_h = 1;

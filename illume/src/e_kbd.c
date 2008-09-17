@@ -177,6 +177,7 @@ static void
 _e_kbd_border_adopt(E_Kbd *kbd, E_Border *bd)
 {
    kbd->border = bd;
+   bd->sticky = 1;
    if (kbd->fullscreen)
      e_border_layer_set(kbd->border, 250);
    else

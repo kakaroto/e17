@@ -741,6 +741,7 @@ _apps_fm_config(Evas_Object *o)
    fmc.selection.single = 1;
    fmc.selection.windows_modifiers = 0;
    e_fm2_config_set(o, &fmc);
+   e_fm2_custom_theme_content_set(o, "desktop");
 }
 
 static void
