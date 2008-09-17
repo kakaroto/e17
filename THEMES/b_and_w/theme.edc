@@ -17365,13 +17365,11 @@ collections { /* begin the collection of edje groups that are in this file */
 	 }
       }
    }
-   
-   // FIXME: Needs its own images. Border resize arrows suck for
-   // different coloured backgrounds.
+
    group { name: "e/gadman/control";
       images {
 	 image: "gadman_frame.png" COMP;
-	 image: "shelf_alt_inset.png" COMP;
+	 image: "gadman_border.png" COMP;
 	 image: "gadman_top.png" COMP;
 	 image: "gadman_bottom.png" COMP;
 	 image: "gadman_left.png" COMP;
@@ -17383,8 +17381,8 @@ collections { /* begin the collection of edje groups that are in this file */
 	    type: RECT;
 	    description { state: "default" 0.0;
 	       visible: 1;
-	       rel1.offset: -80 -80;
-	       rel2.offset: 79 79;
+	       rel1.offset: -85 -85;
+	       rel2.offset: 74 74;
 	    }
 	    description { state: "disabled" 0.0;
 	       inherit: "default" 0.0;
@@ -17396,8 +17394,8 @@ collections { /* begin the collection of edje groups that are in this file */
 	    type: RECT;
 	    description { state: "default" 0.0;
 	       visible: 1;
-	       rel1.offset: -80 -80;
-	       rel2.offset: 79 79;
+	       rel1.offset: -85 -85;
+	       rel2.offset: 84 84;
 	    }
 	    description { state: "disabled" 0.0;
 	       inherit: "default" 0.0;
@@ -17407,6 +17405,8 @@ collections { /* begin the collection of edje groups that are in this file */
 	 part { name: "overlay";
 	    mouse_events:  1;
 	    description { state: "default" 0.0;
+	       rel1 { to: "border"; offset: 4 4; }
+	       rel2 { to: "border"; offset: -5 -5; }
 	       image.normal: "gadman_frame.png";
 	       fill.size.relative: 0 0;
 	       fill.size.offset: 24 24;
@@ -17569,7 +17569,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    clip_to: "vclip";
 	    description { state: "default" 0.0;
 	       rel2.relative: 1.0 0.0;
-	       rel2.offset: -1 15;
+	       rel2.offset: -1 9;
 	    }
 	 }
 	 part { name: "v2";
@@ -17577,7 +17577,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    clip_to: "vclip";
 	    description { state: "default" 0.0;
 	       rel1.relative: 0.0 1.0;
-	       rel1.offset: 0 -14;
+	       rel1.offset: 0 -8;
 	    }
 	 }
 	 part { name: "h1";
@@ -17585,7 +17585,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    clip_to: "hclip";
 	    description { state: "default" 0.0;
 	       rel2.relative: 0.0 1.0;
-	       rel2.offset: 15 -1;
+	       rel2.offset: 9 -1;
 	    }
 	 }
 	 part { name: "h2";
@@ -17593,18 +17593,16 @@ collections { /* begin the collection of edje groups that are in this file */
 	    clip_to: "hclip";
 	    description { state: "default" 0.0;
 	       rel1.relative: 1.0 0.0;
-	       rel1.offset: -14 0;
+	       rel1.offset: -8 0;
 	    }
 	 }
 	 part { name: "border";
 	    mouse_events:  1;
 	    repeat_events:  1;
 	    description { state: "default" 0.0;
-	       rel1 { to: "overlay"; offset: -4 -4; }
-	       rel2 { to: "overlay"; offset: 3 3; }
 	       image {
-		  normal: "shelf_alt_inset.png";
-		  border: 7 7 7 7;
+		  normal: "gadman_border.png";
+		  border: 10 10 10 10;
 		  middle: 0;
 	       }
 	       fill.smooth: 0;
