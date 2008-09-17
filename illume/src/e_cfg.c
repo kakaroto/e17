@@ -493,10 +493,10 @@ e_cfg_slipshelf(E_Container *con, const char *params)
    o = e_widget_radio_add(e, "(48)", 48, rg);
    e_widget_framelist_object_append(frame, o);
    evas_object_smart_callback_add(o, "changed", _e_cfg_slipshelf_change, NULL);
-   o = e_widget_radio_add(e, "(50)", 42, rg);
+   o = e_widget_radio_add(e, "(50)", 50, rg);
    e_widget_framelist_object_append(frame, o);
    evas_object_smart_callback_add(o, "changed", _e_cfg_slipshelf_change, NULL);
-   o = e_widget_radio_add(e, "(50)", 50, rg);
+   o = e_widget_radio_add(e, "(52)", 52, rg);
    e_widget_framelist_object_append(frame, o);
    evas_object_smart_callback_add(o, "changed", _e_cfg_slipshelf_change, NULL);
    o = e_widget_radio_add(e, "(56) Medium", 56, rg);
