@@ -48,6 +48,14 @@ EImageInit(void)
    imlib_context_set_dither(1);
 }
 
+void
+EImageExit(int quit __UNUSED__)
+{
+#if HAVE_IMLIB_CONTEXT_DISCONNECT_DISPLAY
+   imlib_context_disconnect_display();
+#endif
+}
+
 int
 EImageSetCacheSize(int size)
 {

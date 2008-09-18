@@ -130,6 +130,10 @@ AC_CHECK_LIB(Imlib2, imlib_context_set_mask_alpha_threshold,
   AC_DEFINE(HAVE_IMLIB_CONTEXT_SET_MASK_ALPHA_THRESHOLD, 1,
             [Imlib2 has imlib_context_set_mask_alpha_threshold]),,
   $IMLIB2_LIBS)
+AC_CHECK_LIB(Imlib2, imlib_context_disconnect_display,
+  AC_DEFINE(HAVE_IMLIB_CONTEXT_DISCONNECT_DISPLAY, 1,
+            [Imlib2 has imlib_context_disconnect_display]),,
+  $IMLIB2_LIBS)
 
 AC_ARG_ENABLE(sm,
   [  --enable-sm             compile with session management support @<:@default=yes@:>@],,

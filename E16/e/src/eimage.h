@@ -39,6 +39,7 @@ typedef struct {
 #define EIMAGE_ISCALE           0x0f00	/* Intermediate scaling */
 
 void                EImageInit(void);
+void                EImageExit(int quit);
 int                 EImageSetCacheSize(int size);
 
 EImage             *EImageCreate(int w, int h);

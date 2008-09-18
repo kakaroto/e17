@@ -200,8 +200,8 @@ ExtInitWinCreate(void)
 
    SignalsRestore();
 
+   EImageExit(0);
    EDisplayDisconnect();
-   /* on solairs connection stays up - close */
 
    ExtInitWinMain();
 
