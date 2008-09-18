@@ -21,6 +21,7 @@ cdef object _smart_classes
 _smart_classes = list()
 
 import traceback
+import types
 
 cdef void _smart_object_delete(Evas_Object *o) with gil:
     cdef SmartObject obj
@@ -31,42 +32,51 @@ cdef void _smart_object_delete(Evas_Object *o) with gil:
     except Exception, e:
         traceback.print_exc()
 
-    try:
-        del obj.delete
-    except AttributeError, e:
-        pass
-    try:
-        del obj.move
-    except AttributeError, e:
-        pass
-    try:
-        del obj.resize
-    except AttributeError, e:
-        pass
-    try:
-        del obj.show
-    except AttributeError, e:
-        pass
-    try:
-        del obj.hide
-    except AttributeError, e:
-        pass
-    try:
-        del obj.color_set
-    except AttributeError, e:
-        pass
-    try:
-        del obj.clip_set
-    except AttributeError, e:
-        pass
-    try:
-        del obj.clip_unset
-    except AttributeError, e:
-        pass
-    try:
-        del obj.calculate
-    except AttributeError, e:
-        pass
+    if type(obj.delete) is types.MethodType:
+        try:
+            del obj.delete
+        except AttributeError, e:
+            pass
+    if type(obj.move) is types.MethodType:
+        try:
+            del obj.move
+        except AttributeError, e:
+            pass
+    if type(obj.resize) is types.MethodType:
+        try:
+            del obj.resize
+        except AttributeError, e:
+            pass
+    if type(obj.show) is types.MethodType:
+        try:
+            del obj.show
+        except AttributeError, e:
+            pass
+    if type(obj.hide) is types.MethodType:
+        try:
+            del obj.hide
+        except AttributeError, e:
+            pass
+    if type(obj.color_set) is types.MethodType:
+        try:
+            del obj.color_set
+        except AttributeError, e:
+            pass
+    if type(obj.clip_set) is types.MethodType:
+        try:
+            del obj.clip_set
+        except AttributeError, e:
+            pass
+    if type(obj.clip_unset) is types.MethodType:
+        try:
+            del obj.clip_unset
+        except AttributeError, e:
+            pass
+    if type(obj.calculate) is types.MethodType:
+        try:
+            del obj.calculate
+        except AttributeError, e:
+            pass
 
     obj._smart_callbacks = None
     obj._m_delete = None
