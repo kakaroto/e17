@@ -88,16 +88,19 @@ _elm_clock_time_update(Elm_Clock *ck)
 	ck->cur.sec = ck->sec;
      }
    
-   if (ampm != ck->cur.ampm)
+   if (ck->am_pm)
      {
-	int d1, d2, dc1, dc2;
-	
-	if (ck->cur.ampm != ampm)
+	if (ampm != ck->cur.ampm)
 	  {
-	     msg.val = ampm;
-	     edje_object_message_send(ck->ampm, EDJE_MESSAGE_INT, 1, &msg);
+	     int d1, d2, dc1, dc2;
+	     
+	     if (ck->cur.ampm != ampm)
+	       {
+		  msg.val = ampm;
+		  edje_object_message_send(ck->ampm, EDJE_MESSAGE_INT, 1, &msg);
+	       }
+	     ck->cur.ampm = ampm;
 	  }
-	ck->cur.ampm = ampm;
      }
 }
 
@@ -160,7 +163,7 @@ _elm_clock_ticker(Elm_Clock *ck)
    time_t          tt;
    
    gettimeofday(&timev, NULL);
-   t = (double)(1000 - timev.tv_usec) / 1000.0;
+   t = ((double)(1000000 - timev.tv_usec)) / 1000000.0;
    ck->ticker = ecore_timer_add(t, _elm_clock_ticker, ck);
    tt = (time_t)(timev.tv_sec);
    tzset();
@@ -195,7 +198,13 @@ elm_clock_new(Elm_Win *win)
    
    ck->seconds = 1;
    ck->am_pm = 1;
-   
+
+   ck->cur.hrs = -1;
+   ck->cur.min = -1;
+   ck->cur.sec = -1;
+   ck->cur.ampm = -1;
+   ck->cur.seconds = -1;
+     
    ck->base = edje_object_add(win->evas);
    _elm_theme_set(ck->base, "clock", "clock");
    

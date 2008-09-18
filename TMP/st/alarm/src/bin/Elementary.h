@@ -496,7 +496,9 @@ extern "C" {
 	Evas_Object *ampm;
 	Ecore_Timer *ticker;
 	struct {
-	   int hrs, min, sec, ampm;
+	   int hrs, min, sec;
+	   char ampm;
+	   char seconds;
 	} cur;
      };
    
