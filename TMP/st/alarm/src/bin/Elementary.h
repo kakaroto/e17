@@ -83,6 +83,8 @@ extern "C" {
 //	  ELM_OBJ_CHECK, // FIXME: do
 //	  ELM_OBJ_RADIO, // FIXME: do
 //        ELM_OBJ_FRAME	// FIXME: do  
+//        ELM_OBJ_PAD, // FIXME: do
+//        ELM_OBJ_SEP, // FIXME: do	  
 //	  ELM_OBJ_EXPANDER // FIXME: do (like a paned but slides open/closed
 //	  ELM_OBJ_SPIN, // FIXME: do
 //	  ELM_OBJ_SLIDER, // FIXME: do
