@@ -1606,7 +1606,7 @@ collections {
    }
    
 ///////////////////////////////////////////////////////////////////////////////
-   group { name: "clock";
+   group { name: "clock/all";
       parts {
 	 part { name: "d0";
 	    type: SWALLOW;
@@ -1698,21 +1698,204 @@ collections {
 	    }
 	 }
       }
-      programs {
-/*	 
-	 program { name: "seconds_show";
-	    signal: "elm,state,secons,visible";
-	    source: "elm";
-	    action:  STATE_SET "default" 0.0;
-	    target: "elm.swallow.contents";
+   }
+
+///////////////////////////////////////////////////////////////////////////////
+   group { name: "clock/seconds";
+      parts {
+	 part { name: "d0";
+	    type: SWALLOW;
+	    description { state: "default" 0.0;
+	       rel1.relative: 0.000000000 0.0;
+	       rel2.relative: 0.142857143 1.0;
+	    }
 	 }
-	 program { name: "seconds_hide";
-	    signal: "elm,state,secons,hidden";
-	    source: "elm";
-	    action:  STATE_SET "default" 0.0;
-	    target: "elm.swallow.contents";
+	 part { name: "d1";
+	    type: SWALLOW;
+	    description { state: "default" 0.0;
+	       rel1.relative: 0.142857143 0.0;
+	       rel2.relative: 0.285714286 1.0;
+	    }
+	 }
+	 part { name: "c0";
+	    type: SWALLOW;
+	    type: TEXT;
+	    mouse_events:  0;
+	    scale: 1;
+	    description { state: "default" 0.0;
+	       rel1.relative: 0.285714286 0.0;
+	       rel2.relative: 0.357142857 1.0;
+	       color: 0 0 0 255;
+	       text {
+		  font:     "Sans,Edje-Vera";
+		  text:     ":";
+		  size:     20;
+		  min:      1 1;
+		  align:    0.5 0.5;
+	       }
+	    }
+	 }
+	 part { name: "d2";
+	    type: SWALLOW;
+	    description { state: "default" 0.0;
+	       rel1.relative: 0.357142857 0.0;
+	       rel2.relative: 0.500000000 1.0;
+	    }
+	 }
+	 part { name: "d3";
+	    type: SWALLOW;
+	    description { state: "default" 0.0;
+	       rel1.relative: 0.500000000 0.0;
+	       rel2.relative: 0.642857143 1.0;
+	    }
+	 }
+	 // (if seconds)
+	 part { name: "c1";
+	    type: SWALLOW;
+	    type: TEXT;
+	    mouse_events:  0;
+	    scale: 1;
+	    description { state: "default" 0.0;
+	       rel1.relative: 0.642857143 0.0;
+	       rel2.relative: 0.714285714 1.0;
+	       color: 0 0 0 255;
+	       text {
+		  font:     "Sans,Edje-Vera";
+		  text:     ":";
+		  size:     20;
+		  min:      1 1;
+		  align:    0.5 0.5;
+	       }
+	    }
+	 }
+	 // (if seconds)
+	 part { name: "d4";
+	    type: SWALLOW;
+	    description { state: "default" 0.0;
+	       rel1.relative: 0.714285714 0.0;
+	       rel2.relative: 0.857142857 1.0;
+	    }
+	 }
+	 // (if seconds)
+	 part { name: "d5";
+	    type: SWALLOW;
+	    description { state: "default" 0.0;
+	       rel1.relative: 0.857142857 0.0;
+	       rel2.relative: 1.000000000 1.0;
+	    }
 	 }
       }
- */
+   }
+
+///////////////////////////////////////////////////////////////////////////////
+   group { name: "clock/am_pm";
+      parts {
+	 part { name: "d0";
+	    type: SWALLOW;
+	    description { state: "default" 0.0;
+	       rel1.relative: 0.000000000 0.0;
+	       rel2.relative: 0.181818182 1.0;
+	    }
+	 }
+	 part { name: "d1";
+	    type: SWALLOW;
+	    description { state: "default" 0.0;
+	       rel1.relative: 0.181818182 0.0;
+	       rel2.relative: 0.363636364 1.0;
+	    }
+	 }
+	 part { name: "c0";
+	    type: SWALLOW;
+	    type: TEXT;
+	    mouse_events:  0;
+	    scale: 1;
+	    description { state: "default" 0.0;
+	       rel1.relative: 0.363636364 0.0;
+	       rel2.relative: 0.454545455 1.0;
+	       color: 0 0 0 255;
+	       text {
+		  font:     "Sans,Edje-Vera";
+		  text:     ":";
+		  size:     20;
+		  min:      1 1;
+		  align:    0.5 0.5;
+	       }
+	    }
+	 }
+	 part { name: "d2";
+	    type: SWALLOW;
+	    description { state: "default" 0.0;
+	       rel1.relative: 0.454545455 0.0;
+	       rel2.relative: 0.636363636 1.0;
+	    }
+	 }
+	 part { name: "d3";
+	    type: SWALLOW;
+	    description { state: "default" 0.0;
+	       rel1.relative: 0.636363636 0.0;
+	       rel2.relative: 0.818181818 1.0;
+	    }
+	 }
+	 // (if am_pm)
+	 part { name: "ampm";
+	    type: SWALLOW;
+	    description { state: "default" 0.0;
+	       rel1.relative: 0.818181818 0.0;
+	       rel2.relative: 1.0 1.0;
+	    }
+	 }
+      }
+   }
+
+///////////////////////////////////////////////////////////////////////////////
+   group { name: "clock";
+      parts {
+	 part { name: "d0";
+	    type: SWALLOW;
+	    description { state: "default" 0.0;
+	       rel1.relative: 0.000000000 0.0;
+	       rel2.relative: 0.222222222 1.0;
+	    }
+	 }
+	 part { name: "d1";
+	    type: SWALLOW;
+	    description { state: "default" 0.0;
+	       rel1.relative: 0.222222222 0.0;
+	       rel2.relative: 0.444444444 1.0;
+	    }
+	 }
+	 part { name: "c0";
+	    type: SWALLOW;
+	    type: TEXT;
+	    mouse_events:  0;
+	    scale: 1;
+	    description { state: "default" 0.0;
+	       rel1.relative: 0.444444444 0.0;
+	       rel2.relative: 0.555555556 1.0;
+	       color: 0 0 0 255;
+	       text {
+		  font:     "Sans,Edje-Vera";
+		  text:     ":";
+		  size:     20;
+		  min:      1 1;
+		  align:    0.5 0.5;
+	       }
+	    }
+	 }
+	 part { name: "d2";
+	    type: SWALLOW;
+	    description { state: "default" 0.0;
+	       rel1.relative: 0.555555556 0.0;
+	       rel2.relative: 0.777777778 1.0;
+	    }
+	 }
+	 part { name: "d3";
+	    type: SWALLOW;
+	    description { state: "default" 0.0;
+	       rel1.relative: 0.777777778 0.0;
+	       rel2.relative: 1.000000000 1.0;
+	    }
+	 }
+      }
    }
 }

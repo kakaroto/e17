@@ -16,6 +16,60 @@ _elm_clock_time_update(Elm_Clock *ck)
    Edje_Message_Int msg;
    int ampm = 0;
 
+   if ((ck->cur.seconds != ck->seconds) || (ck->cur.am_pm != ck->am_pm))
+     {
+	int i;
+	Evas_Coord mw, mh;
+
+	for (i = 0; i < 6; i++)
+	  {
+	     if (ck->digit[i]) evas_object_del(ck->digit[i]);
+	  }
+	if (ck->ampm) evas_object_del(ck->ampm);
+	
+	if ((ck->seconds) && (ck->am_pm))
+	  _elm_theme_set(ck->base, "clock", "clock/all");
+	else if (ck->seconds)
+	  _elm_theme_set(ck->base, "clock", "clock/seconds");
+	else if (ck->am_pm)
+	  _elm_theme_set(ck->base, "clock", "clock/am_pm");
+	else
+	  _elm_theme_set(ck->base, "clock", "clock");
+	
+	for (i = 0; i < 6; i++)
+	  {
+	     char buf[16];
+
+	     if ((!ck->seconds) && (i >= 4)) break;
+	     ck->digit[i] = edje_object_add(evas_object_evas_get(ck->base));
+	     _elm_theme_set(ck->digit[i], "clock", "flipdigit");
+	     edje_object_size_min_calc(ck->digit[i], &mw, &mh);
+	     edje_extern_object_min_size_set(ck->digit[i], mw, mh);
+	     snprintf(buf, sizeof(buf), "d%i", i);
+	     edje_object_part_swallow(ck->base , buf, ck->digit[i]);
+	     evas_object_show(ck->digit[i]);
+	  }
+	if (ck->am_pm)
+	  {
+	     ck->ampm = edje_object_add(evas_object_evas_get(ck->base));
+	     _elm_theme_set(ck->ampm, "clock", "flipampm");
+	     edje_object_size_min_calc(ck->ampm, &mw, &mh);
+	     edje_extern_object_min_size_set(ck->ampm, mw, mh);
+	     edje_object_part_swallow(ck->base , "ampm", ck->ampm);
+	     evas_object_show(ck->ampm);
+	  }
+	
+	edje_object_size_min_calc(ck->base, &mw, &mh);
+	ck->minw = mw;
+	ck->minh = mh;
+
+	ck->cur.hrs = 0;
+	ck->cur.min = 0;
+	ck->cur.sec = 0;
+	ck->cur.ampm = -1;
+	ck->cur.seconds = ck->seconds;
+	ck->cur.am_pm = ck->am_pm;
+     }
    if (ck->hrs != ck->cur.hrs)
      {
 	int hrs;
@@ -67,26 +121,31 @@ _elm_clock_time_update(Elm_Clock *ck)
 	  }
 	ck->cur.min = ck->min;
      }
-   if (ck->sec != ck->cur.sec)
+   if (ck->seconds)
      {
-	int d1, d2, dc1, dc2;
-	
-	d1 = ck->sec / 10;
-	d2 = ck->sec % 10;
-	dc1 = ck->cur.sec / 10;
-	dc2 = ck->cur.sec % 10;
-	if (d1 != dc1)
+	if (ck->sec != ck->cur.sec)
 	  {
-	     msg.val = d1;
-	     edje_object_message_send(ck->digit[4], EDJE_MESSAGE_INT, 1, &msg);
+	     int d1, d2, dc1, dc2;
+	     
+	     d1 = ck->sec / 10;
+	     d2 = ck->sec % 10;
+	     dc1 = ck->cur.sec / 10;
+	     dc2 = ck->cur.sec % 10;
+	     if (d1 != dc1)
+	       {
+		  msg.val = d1;
+		  edje_object_message_send(ck->digit[4], EDJE_MESSAGE_INT, 1, &msg);
+	       }
+	     if (d2 != dc2)
+	       {
+		  msg.val = d2;
+		  edje_object_message_send(ck->digit[5], EDJE_MESSAGE_INT, 1, &msg);
+	       }
+	     ck->cur.sec = ck->sec;
 	  }
-	if (d2 != dc2)
-	  {
-	     msg.val = d2;
-	     edje_object_message_send(ck->digit[5], EDJE_MESSAGE_INT, 1, &msg);
-	  }
-	ck->cur.sec = ck->sec;
      }
+   else
+     ck->cur.sec = -1; 
    
    if (ck->am_pm)
      {
@@ -102,6 +161,8 @@ _elm_clock_time_update(Elm_Clock *ck)
 	     ck->cur.ampm = ampm;
 	  }
      }
+   else
+     ck->cur.ampm = -1;
 }
 
 static void
@@ -148,8 +209,11 @@ _elm_clock_del(Elm_Clock *ck)
 {
    int i;
    
-   for (i = 0; i < 6; i++) evas_object_del(ck->digit[i]);
-   evas_object_del(ck->ampm);
+   for (i = 0; i < 6; i++)
+     {
+	if (ck->digit[i]) evas_object_del(ck->digit[i]);
+     }
+   if (ck->ampm) evas_object_del(ck->ampm);
    ecore_timer_del(ck->ticker);
    ((Elm_Obj_Class *)(((Elm_Clock_Class *)(ck->clas))->parent))->del(ELM_OBJ(ck));
 }
@@ -199,40 +263,14 @@ elm_clock_new(Elm_Win *win)
    ck->seconds = 1;
    ck->am_pm = 1;
 
-   ck->cur.hrs = -1;
-   ck->cur.min = -1;
-   ck->cur.sec = -1;
+   ck->cur.hrs = 0;
+   ck->cur.min = 0;
+   ck->cur.sec = 0;
    ck->cur.ampm = -1;
    ck->cur.seconds = -1;
+   ck->cur.am_pm = -1;
      
    ck->base = edje_object_add(win->evas);
-   _elm_theme_set(ck->base, "clock", "clock");
-   
-   int i;
-   Evas_Coord mw, mh;
-   
-   for (i = 0; i < 6; i++)
-     {
-	char buf[16];
-	
-	ck->digit[i] = edje_object_add(win->evas);
-	_elm_theme_set(ck->digit[i], "clock", "flipdigit");
-	edje_object_size_min_calc(ck->digit[i], &mw, &mh);
-	edje_extern_object_min_size_set(ck->digit[i], mw, mh);
-	snprintf(buf, sizeof(buf), "d%i", i);
-	edje_object_part_swallow(ck->base , buf, ck->digit[i]);
-	evas_object_show(ck->digit[i]);
-     }
-   ck->ampm = edje_object_add(win->evas);
-   _elm_theme_set(ck->ampm, "clock", "flipampm");
-   edje_object_size_min_calc(ck->ampm, &mw, &mh);
-   edje_extern_object_min_size_set(ck->ampm, mw, mh);
-   edje_object_part_swallow(ck->base , "ampm", ck->ampm);
-   evas_object_show(ck->ampm);
-   
-   edje_object_size_min_calc(ck->base, &mw, &mh);
-   ck->minw = mw;
-   ck->minh = mh;
 
    _elm_clock_ticker(ck);
    

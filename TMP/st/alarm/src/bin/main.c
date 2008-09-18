@@ -885,9 +885,41 @@ win_box_vert_of_clock_and_toggles(void)
    elm_widget_sizing_update(toggle);
 
    cloc = elm_clock_new(win);
+   cloc->expand_x = 0;
+   cloc->fill_x = 0;
    box->pack_end(box, cloc);
-   cloc->show(cloc);
    elm_widget_sizing_update(cloc);
+   cloc->show(cloc);
+   
+   cloc = elm_clock_new(win);
+   cloc->am_pm = 0;
+   cloc->seconds = 1;
+   cloc->time_update(cloc);
+   cloc->expand_x = 0;
+   cloc->fill_x = 0;
+   box->pack_end(box, cloc);
+   elm_widget_sizing_update(cloc);
+   cloc->show(cloc);
+   
+   cloc = elm_clock_new(win);
+   cloc->am_pm = 0;
+   cloc->seconds = 0;
+   cloc->time_update(cloc);
+   cloc->expand_x = 0;
+   cloc->fill_x = 0;
+   box->pack_end(box, cloc);
+   elm_widget_sizing_update(cloc);
+   cloc->show(cloc);
+   
+   cloc = elm_clock_new(win);
+   cloc->am_pm = 1;
+   cloc->seconds = 0;
+   cloc->time_update(cloc);
+   cloc->expand_x = 0;
+   cloc->fill_x = 0;
+   box->pack_end(box, cloc);
+   elm_widget_sizing_update(cloc);
+   cloc->show(cloc);
    
    elm_widget_sizing_update(box);
    box->show(box);

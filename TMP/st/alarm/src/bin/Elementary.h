@@ -499,6 +499,7 @@ extern "C" {
 	   int hrs, min, sec;
 	   char ampm;
 	   char seconds;
+	   char am_pm;
 	} cur;
      };
    
