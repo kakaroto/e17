@@ -78,10 +78,10 @@ extern "C" {
 	  ELM_OBJ_TABLE,
 	  ELM_OBJ_BUTTON,
 	  ELM_OBJ_ICON,
-	  ELM_OBJ_TOGGLE
+	  ELM_OBJ_TOGGLE,
+	  ELM_OBJ_CLOCK
 //	  ELM_OBJ_CHECK, // FIXME: do
 //	  ELM_OBJ_RADIO, // FIXME: do
-//	  ELM_OBJ_CLOCK, // FIXME: do
 //        ELM_OBJ_FRAME	// FIXME: do  
 //	  ELM_OBJ_EXPANDER // FIXME: do (like a paned but slides open/closed
 //	  ELM_OBJ_SPIN, // FIXME: do
@@ -144,6 +144,8 @@ extern "C" {
    typedef struct _Elm_Icon            Elm_Icon;
    typedef struct _Elm_Toggle_Class    Elm_Toggle_Class;
    typedef struct _Elm_Toggle          Elm_Toggle;
+   typedef struct _Elm_Clock_Class     Elm_Clock_Class;
+   typedef struct _Elm_Clock           Elm_Clock;
    
    typedef void (*Elm_Cb_Func) (void *data, Elm_Obj *obj, Elm_Cb_Type type, void *info);
    
@@ -466,6 +468,36 @@ extern "C" {
    struct _Elm_Toggle
      {
 	Elm_Toggle_Class_All;
+     };
+   
+/**************************************************************************/   
+   /* Clock Object */
+#define Elm_Clock_Class_Methods \
+   void (*time_update) (Elm_Clock *ck)
+#define Elm_Clock_Class_All Elm_Widget_Class_All; Elm_Clock_Class_Methods; \
+   int hrs, min, sec; \
+   int minw, minh; \
+   unsigned char seconds : 1; \
+   unsigned char am_pm : 1
+   
+   /* Object specific ones */
+   EAPI Elm_Clock *elm_clock_new(Elm_Win *win);
+   struct _Elm_Clock_Class
+     {
+	void *parent;
+	Elm_Obj_Type type;
+	Elm_Clock_Class_Methods;
+     };
+   struct _Elm_Clock
+     {
+	Elm_Clock_Class_All;
+	
+	Evas_Object *digit[6];
+	Evas_Object *ampm;
+	Ecore_Timer *ticker;
+	struct {
+	   int hrs, min, sec, ampm;
+	} cur;
      };
    
 #endif

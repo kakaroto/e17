@@ -846,6 +846,55 @@ win_scrollable_box_vert_of_toggles_and_buttons(void)
    win->show(win);
 }
 
+static void
+win_box_vert_of_clock_and_toggles(void)
+{
+   Elm_Win *win;
+   Elm_Bg *bg;
+   Elm_Box *box;
+   Elm_Toggle *toggle;
+   Elm_Clock *cloc;
+   char buf[PATH_MAX];
+
+   win = elm_win_new();
+   win->name_set(win, "win_bg");
+   win->title_set(win, "Simple Window with box + toggles setting min size");
+   win->autodel = 0;
+   win->cb_add(win, ELM_CB_DEL_REQ, on_win_del_req, NULL);
+   win->cb_add(win, ELM_CB_RESIZE, on_win_resize, NULL);
+
+   bg = elm_bg_new(win);
+   bg->expand_x = 0;
+   bg->expand_y = 0;
+   bg->show(bg);
+   
+   box = elm_box_new(win);
+   box->expand_x = 0;
+   box->expand_y = 0;
+
+   toggle = elm_toggle_new(win);
+   toggle->text_set(toggle, "Alarm");
+   toggle->states_text_set(toggle, "ON", "OFF");
+   toggle->state = 0;
+   toggle->layout_update(toggle);
+   toggle->cb_add(toggle, ELM_CB_CHANGED, on_toggle_changed, NULL);
+   box->pack_end(box, toggle);
+   toggle->show(toggle);
+   toggle->expand_y = 0;
+   toggle->fill_y = 0;
+   elm_widget_sizing_update(toggle);
+
+   cloc = elm_clock_new(win);
+   box->pack_end(box, cloc);
+   cloc->show(cloc);
+   elm_widget_sizing_update(cloc);
+   
+   elm_widget_sizing_update(box);
+   box->show(box);
+   
+   win->show(win);
+}
+
 int
 main(int argc, char **argv)
 {
@@ -864,6 +913,7 @@ main(int argc, char **argv)
    win_table_of_buttons();
    win_box_vert_of_toggles();
    win_scrollable_box_vert_of_toggles_and_buttons();
+   win_box_vert_of_clock_and_toggles();
    
    elm_run(); /* and run the program now  and handle all events etc. */
    
