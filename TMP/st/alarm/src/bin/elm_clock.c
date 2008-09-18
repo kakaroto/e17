@@ -10,22 +10,125 @@ Elm_Clock_Class _elm_clock_class =
      _elm_clock_time_update
 };
 
+
+static void
+_elm_clock_val_up(void *data, Evas_Object *obj, const char *emission, const char *source)
+{
+   Elm_Clock *ck = data;
+
+   if (!ck->edit) return;
+   if (obj == ck->digit[0])
+     {
+	ck->hrs = ck->hrs + 10;
+	if (ck->hrs >= 24) ck->hrs -= 24;
+     }
+   if (obj == ck->digit[1])
+     {
+	ck->hrs = ck->hrs + 1;
+	if (ck->hrs >= 24) ck->hrs -= 24;
+     }
+   if (obj == ck->digit[2])
+     {
+	ck->min = ck->min + 10;
+	if (ck->min >= 60) ck->min -= 60;
+     }
+   if (obj == ck->digit[3])
+     {
+	ck->min = ck->min + 1;
+	if (ck->min >= 60) ck->min -= 60;
+     }
+   if (obj == ck->digit[4])
+     {
+	ck->sec = ck->sec + 10;
+	if (ck->sec >= 60) ck->sec -= 60;
+     }
+   if (obj == ck->digit[5])
+     {
+	ck->sec = ck->sec + 1;
+	if (ck->sec >= 60) ck->sec -= 60;
+     }
+   if (obj == ck->ampm)
+     {
+	ck->hrs = ck->hrs + 12;
+	if (ck->hrs > 23) ck->hrs -= 24;
+     }
+   ck->time_update(ck);
+   _elm_obj_nest_push();
+   _elm_cb_call(ELM_OBJ(ck), ELM_CB_CHANGED, NULL);
+   _elm_obj_nest_pop();
+}
+
+static void
+_elm_clock_val_down(void *data, Evas_Object *obj, const char *emission, const char *source)
+{
+   Elm_Clock *ck = data;
+   if (!ck->edit) return;
+   if (obj == ck->digit[0])
+     {
+	ck->hrs = ck->hrs - 10;
+	if (ck->hrs < 0) ck->hrs += 24;
+     }
+   if (obj == ck->digit[1])
+     {
+	ck->hrs = ck->hrs - 1;
+	if (ck->hrs < 0) ck->hrs += 24;
+     }
+   if (obj == ck->digit[2])
+     {
+	ck->min = ck->min - 10;
+	if (ck->min < 0) ck->min += 60;
+     }
+   if (obj == ck->digit[3])
+     {
+	ck->min = ck->min - 1;
+	if (ck->min < 0) ck->min += 60;
+     }
+   if (obj == ck->digit[4])
+     {
+	ck->sec = ck->sec - 10;
+	if (ck->sec < 0) ck->sec += 60;
+     }
+   if (obj == ck->digit[5])
+     {
+	ck->sec = ck->sec - 1;
+	if (ck->sec < 0) ck->sec += 60;
+     }
+   if (obj == ck->ampm)
+     {
+	ck->hrs = ck->hrs - 12;
+	if (ck->hrs < 0) ck->hrs += 24;
+     }
+   ck->time_update(ck);
+   _elm_obj_nest_push();
+   _elm_cb_call(ELM_OBJ(ck), ELM_CB_CHANGED, NULL);
+   _elm_obj_nest_pop();
+}
+
 static void
 _elm_clock_time_update(Elm_Clock *ck)
 {
    Edje_Message_Int msg;
    int ampm = 0;
 
-   if ((ck->cur.seconds != ck->seconds) || (ck->cur.am_pm != ck->am_pm))
+   if ((ck->cur.seconds != ck->seconds) || (ck->cur.am_pm != ck->am_pm) ||
+       (ck->cur.edit != ck->edit))
      {
 	int i;
 	Evas_Coord mw, mh;
 
 	for (i = 0; i < 6; i++)
 	  {
-	     if (ck->digit[i]) evas_object_del(ck->digit[i]);
+	     if (ck->digit[i])
+	       {
+		  evas_object_del(ck->digit[i]);
+		  ck->digit[i] = NULL;
+	       }
 	  }
-	if (ck->ampm) evas_object_del(ck->ampm);
+	if (ck->ampm)
+	  {
+	     evas_object_del(ck->ampm);
+	     ck->ampm = NULL;
+	  }
 	
 	if ((ck->seconds) && (ck->am_pm))
 	  _elm_theme_set(ck->base, "clock", "clock/all");
@@ -43,6 +146,15 @@ _elm_clock_time_update(Elm_Clock *ck)
 	     if ((!ck->seconds) && (i >= 4)) break;
 	     ck->digit[i] = edje_object_add(evas_object_evas_get(ck->base));
 	     _elm_theme_set(ck->digit[i], "clock", "flipdigit");
+	     if (ck->edit)
+	       {
+		  printf("edit on\n");
+		  edje_object_signal_emit(ck->digit[i], "elm,state,edit,on", "elm");
+	       }
+	     edje_object_signal_callback_add(ck->digit[i], "elm,action,up", "",
+					     _elm_clock_val_up, ck);
+	     edje_object_signal_callback_add(ck->digit[i], "elm,action,down", "",
+					     _elm_clock_val_down, ck);
 	     edje_object_size_min_calc(ck->digit[i], &mw, &mh);
 	     edje_extern_object_min_size_set(ck->digit[i], mw, mh);
 	     snprintf(buf, sizeof(buf), "d%i", i);
@@ -53,6 +165,12 @@ _elm_clock_time_update(Elm_Clock *ck)
 	  {
 	     ck->ampm = edje_object_add(evas_object_evas_get(ck->base));
 	     _elm_theme_set(ck->ampm, "clock", "flipampm");
+	     if (ck->edit)
+	       edje_object_signal_emit(ck->ampm, "elm,state,edit,on", "elm");
+	     edje_object_signal_callback_add(ck->ampm, "elm,action,up", "",
+					     _elm_clock_val_up, ck);
+	     edje_object_signal_callback_add(ck->ampm, "elm,action,down", "",
+					     _elm_clock_val_down, ck);
 	     edje_object_size_min_calc(ck->ampm, &mw, &mh);
 	     edje_extern_object_min_size_set(ck->ampm, mw, mh);
 	     edje_object_part_swallow(ck->base , "ampm", ck->ampm);
@@ -69,6 +187,7 @@ _elm_clock_time_update(Elm_Clock *ck)
 	ck->cur.ampm = -1;
 	ck->cur.seconds = ck->seconds;
 	ck->cur.am_pm = ck->am_pm;
+	ck->cur.edit = ck->edit;
      }
    if (ck->hrs != ck->cur.hrs)
      {
@@ -197,14 +316,6 @@ _elm_clock_activate(Elm_Clock *ck)
 }
 
 static void
-_elm_signal_clicked(void *data, Evas_Object *obj, const char *emission, const char *source)
-{
-   Elm_Clock *ck = data;
-   
-   _elm_clock_activate(ck);
-}
-
-static void
 _elm_clock_del(Elm_Clock *ck)
 {
    int i;
@@ -214,7 +325,7 @@ _elm_clock_del(Elm_Clock *ck)
 	if (ck->digit[i]) evas_object_del(ck->digit[i]);
      }
    if (ck->ampm) evas_object_del(ck->ampm);
-   ecore_timer_del(ck->ticker);
+   if (ck->ticker) ecore_timer_del(ck->ticker);
    ((Elm_Obj_Class *)(((Elm_Clock_Class *)(ck->clas))->parent))->del(ELM_OBJ(ck));
 }
 
@@ -225,20 +336,25 @@ _elm_clock_ticker(Elm_Clock *ck)
    struct timeval  timev;
    struct tm      *tm;
    time_t          tt;
-   
+
    gettimeofday(&timev, NULL);
    t = ((double)(1000000 - timev.tv_usec)) / 1000000.0;
    ck->ticker = ecore_timer_add(t, _elm_clock_ticker, ck);
-   tt = (time_t)(timev.tv_sec);
-   tzset();
-   tm = localtime(&tt);
-   if (tm)
+   if (!ck->edit)
      {
-	ck->hrs = tm->tm_hour;
-	ck->min = tm->tm_min;
-	ck->sec = tm->tm_sec;
-	ck->time_update(ck);
+	tt = (time_t)(timev.tv_sec);
+	tzset();
+	tm = localtime(&tt);
+	if (tm)
+	  {
+	     ck->hrs = tm->tm_hour;
+	     ck->min = tm->tm_min;
+	     ck->sec = tm->tm_sec;
+	     ck->time_update(ck);
+	  }
      }
+   else
+     ck->time_update(ck);
    return 0;
 }
 
@@ -269,13 +385,12 @@ elm_clock_new(Elm_Win *win)
    ck->cur.ampm = -1;
    ck->cur.seconds = -1;
    ck->cur.am_pm = -1;
+   ck->cur.edit = -1;
      
    ck->base = edje_object_add(win->evas);
 
    _elm_clock_ticker(ck);
    
-//   edje_object_signal_callback_add(ck->base, "elm,action,click", "",
-//				   _elm_signal_clicked, ck);
    _elm_widget_post_init(ck);
    win->child_add(win, ck);
    return ck;

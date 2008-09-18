@@ -478,7 +478,8 @@ extern "C" {
    int hrs, min, sec; \
    int minw, minh; \
    unsigned char seconds : 1; \
-   unsigned char am_pm : 1
+   unsigned char am_pm : 1; \
+   unsigned char edit : 1
    
    /* Object specific ones */
    EAPI Elm_Clock *elm_clock_new(Elm_Win *win);
@@ -500,6 +501,7 @@ extern "C" {
 	   char ampm;
 	   char seconds;
 	   char am_pm;
+	   char edit;
 	} cur;
      };
    

@@ -847,6 +847,12 @@ win_scrollable_box_vert_of_toggles_and_buttons(void)
 }
 
 static void
+on_clock_changed(void *data, Elm_Clock *cloc, Elm_Cb_Type type, void *info)
+{
+   printf("clock: %i:%i:%i\n", cloc->hrs, cloc->min, cloc->sec);
+}
+
+static void
 win_box_vert_of_clock_and_toggles(void)
 {
    Elm_Win *win;
@@ -884,6 +890,19 @@ win_box_vert_of_clock_and_toggles(void)
    toggle->fill_y = 0;
    elm_widget_sizing_update(toggle);
 
+   cloc = elm_clock_new(win);
+   cloc->expand_x = 0;
+   cloc->fill_x = 0;
+   cloc->edit = 1;
+   cloc->hrs = 6;
+   cloc->min = 54;
+   cloc->sec = 32;
+   cloc->time_update(cloc);
+   cloc->cb_add(cloc, ELM_CB_CHANGED, on_clock_changed, NULL);
+   box->pack_end(box, cloc);
+   elm_widget_sizing_update(cloc);
+   cloc->show(cloc);
+   
    cloc = elm_clock_new(win);
    cloc->expand_x = 0;
    cloc->fill_x = 0;

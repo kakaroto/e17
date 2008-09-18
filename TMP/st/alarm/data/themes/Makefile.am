@@ -10,8 +10,6 @@ files_DATA = default.edj
 EXTRA_DIST = \
 default.edc \
 arrow_down.png \
-arrow_left.png \
-arrow_right.png \
 arrow_up.png \
 bt_base1.png \
 bt_base2.png \
