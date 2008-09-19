@@ -620,7 +620,7 @@ class WikiText {
     $whole = $matches[0];
     $addr = $matches[2];
     $addr2 = urlencode(str_replace('/', '|', $addr));
-    $ret = "<a href=\"/home/svn/path/{$addr2}\">SVN: $addr</a>";
+    $ret = "<a href=\"/home/cvs/path/{$addr2}\">SVN: $addr</a>";
     
     return $ret;
   }
