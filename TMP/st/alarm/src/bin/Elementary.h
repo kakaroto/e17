@@ -79,13 +79,13 @@ extern "C" {
 	  ELM_OBJ_BUTTON,
 	  ELM_OBJ_ICON,
 	  ELM_OBJ_TOGGLE,
-	  ELM_OBJ_CLOCK
+	  ELM_OBJ_CLOCK,
+	  ELM_OBJ_FRAME,
+	  ELM_OBJ_PAD
 //	  ELM_OBJ_CHECK, // FIXME: do
 //	  ELM_OBJ_RADIO, // FIXME: do
-//        ELM_OBJ_FRAME	// FIXME: do  
-//        ELM_OBJ_PAD, // FIXME: do
-//        ELM_OBJ_SEP, // FIXME: do	  
-//	  ELM_OBJ_EXPANDER // FIXME: do (like a paned but slides open/closed
+//        ELM_OBJ_SEP, // FIXME: do (separator horiz or vert)
+//	  ELM_OBJ_EXPANDER // FIXME: do (like a paned but slides open/closed)
 //	  ELM_OBJ_SPIN, // FIXME: do
 //	  ELM_OBJ_SLIDER, // FIXME: do
 //	  ELM_OBJ_ENTRY, // FIXME: do
@@ -148,6 +148,10 @@ extern "C" {
    typedef struct _Elm_Toggle          Elm_Toggle;
    typedef struct _Elm_Clock_Class     Elm_Clock_Class;
    typedef struct _Elm_Clock           Elm_Clock;
+   typedef struct _Elm_Frame_Class     Elm_Frame_Class;
+   typedef struct _Elm_Frame           Elm_Frame;
+   typedef struct _Elm_Pad_Class       Elm_Pad_Class;
+   typedef struct _Elm_Pad             Elm_Pad;
    
    typedef void (*Elm_Cb_Func) (void *data, Elm_Obj *obj, Elm_Cb_Type type, void *info);
    
@@ -505,6 +509,46 @@ extern "C" {
 	   char am_pm;
 	   char edit;
 	} cur;
+     };
+   
+/**************************************************************************/   
+   /* Frame Object */
+#define Elm_Frame_Class_Methods \
+   void (*text_set)  (Elm_Frame *fr, const char *text)
+#define Elm_Frame_Class_All Elm_Widget_Class_All; Elm_Frame_Class_Methods; \
+   const char *text; \
+   int minw, minh
+   
+   /* Object specific ones */
+   EAPI Elm_Frame *elm_frame_new(Elm_Win *win);
+   struct _Elm_Frame_Class
+     {
+	void *parent;
+	Elm_Obj_Type type;
+	Elm_Frame_Class_Methods;
+     };
+   struct _Elm_Frame
+     {
+	Elm_Frame_Class_All;
+     };
+   
+/**************************************************************************/   
+   /* Pad Object */
+#define Elm_Pad_Class_Methods
+#define Elm_Pad_Class_All Elm_Widget_Class_All; Elm_Pad_Class_Methods; \
+   int minw, minh
+   
+   /* Object specific ones */
+   EAPI Elm_Pad *elm_pad_new(Elm_Win *win);
+   struct _Elm_Pad_Class
+     {
+	void *parent;
+	Elm_Obj_Type type;
+	Elm_Pad_Class_Methods;
+     };
+   struct _Elm_Pad
+     {
+	Elm_Pad_Class_All;
      };
    
 #endif

@@ -860,6 +860,8 @@ win_box_vert_of_clock_and_toggles(void)
    Elm_Box *box;
    Elm_Toggle *toggle;
    Elm_Clock *cloc;
+   Elm_Pad *pad;
+   Elm_Frame *frame;
    char buf[PATH_MAX];
 
    win = elm_win_new();
@@ -874,7 +876,26 @@ win_box_vert_of_clock_and_toggles(void)
    bg->expand_y = 0;
    bg->show(bg);
    
+   pad = elm_pad_new(win);
+   pad->expand_x = 0;
+   pad->expand_y = 0;
+   pad->show(pad);
+
+   frame = elm_frame_new(win);
+   pad->child_add(pad, frame);
+   frame->text_set(frame, "Time");
+   frame->expand_x = 0;
+   frame->expand_y = 0;
+   frame->show(frame);
+
+   pad = elm_pad_new(win);
+   frame->child_add(frame, pad);
+   pad->expand_x = 0;
+   pad->expand_y = 0;
+   pad->show(pad);
+
    box = elm_box_new(win);
+   pad->child_add(pad, box);
    box->expand_x = 0;
    box->expand_y = 0;
 
@@ -942,7 +963,7 @@ win_box_vert_of_clock_and_toggles(void)
    
    elm_widget_sizing_update(box);
    box->show(box);
-   
+
    win->show(win);
 }
 

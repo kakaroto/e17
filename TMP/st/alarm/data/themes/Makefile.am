@@ -25,6 +25,8 @@ bt_sm_shine.png \
 dia_botshad.png \
 dia_grad.png \
 dia_topshad.png \
+frame_1.png \
+frame_2.png \
 flip_0b.png \
 flip_0t.png \
 flip_1b.png \

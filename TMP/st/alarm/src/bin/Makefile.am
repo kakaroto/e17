@@ -22,6 +22,8 @@ elm_button.c \
 elm_icon.c \
 elm_toggle.c \
 elm_clock.c \
+elm_frame.c \
+elm_pad.c \
 \
 els_pan.c \
 els_pan.h \

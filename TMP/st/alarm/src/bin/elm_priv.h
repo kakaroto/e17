@@ -58,5 +58,7 @@ extern Elm_Button_Class _elm_button_class;
 extern Elm_Icon_Class _elm_icon_class;
 extern Elm_Toggle_Class _elm_toggle_class;
 extern Elm_Clock_Class _elm_clock_class;
+extern Elm_Frame_Class _elm_frame_class;
+extern Elm_Pad_Class _elm_pad_class;
   
 #endif
