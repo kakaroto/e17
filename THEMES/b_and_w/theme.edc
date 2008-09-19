@@ -2,16 +2,11 @@
 // gadman popup (done)
 // gadman frame (done - review)
 // gadman full_bg (done - review)
-// gadman control (in progress - See FIXME - API Break coming soon to a theme near you!)
+// gadman control (done - review)
 // battery popup (done - review - see 'code' for notes)
 // desklock (done - review - see 'code' for notes)
 // fileman (list mode)
-// ibar - ibox (Merged with alias... see FIXME for bugs.)
-//
-// TODO: Image names change for better comprehension
-//  menu_bg.png -> white_fade.png ???
-//  shelf_inset.png -> inset_sunk.png ???
-//  shelf_alt_inset -> inset_raised.png ???
+// ibar - ibox (done - Merged with alias... see FIXME for bugs.)
 //
 // TODO: Working order
 // tlist (needs code to be the same as ilist with raising)
@@ -5282,7 +5277,7 @@ collections { /* begin the collection of edje groups that are in this file */
     * laid out in a vertical list from top to bottom */
    group { name: "e/widgets/menu/default/background";
       images {
-	 image: "menu_bg.png" COMP;
+	 image: "base_bg.png" COMP;
 	 image: "bd_top_hilight.png" COMP;
 	 image: "bd_title_bg.png" COMP;
 	 image: "bd_title_over.png" COMP;
@@ -5293,7 +5288,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    description { state: "default" 0.0;
 	       align: 0.5 0.0;
 	       image {
-		  normal: "menu_bg.png";
+		  normal: "base_bg.png";
 		  border: 2 2 2 2;
 	       }
 	       fill.smooth: 0; /* note - a shortcut for avoiding doing
@@ -5472,7 +5467,7 @@ collections { /* begin the collection of edje groups that are in this file */
        * look for submenu holding items. here this is identical to to the
        * normal menu item, thus we are making use of the alias directive that
        * gives a group the ability to go by manu names */
-      alias: "e/widgets/menu/default/submenu_bg";
+      alias: "e/widgets/menu/default/subbase_bg";
       images {
 	 image: "menu_sel_bg.png" COMP;
 	 image: "menu_sel_fg.png" COMP;
@@ -5877,13 +5872,13 @@ collections { /* begin the collection of edje groups that are in this file */
 //	 item: "instant_delay" "3.0";
       }
       images {
-	 image: "menu_bg.png" COMP;
+	 image: "base_bg.png" COMP;
       }
       parts {
 	 part { name: "base";
 	    mouse_events: 0;
 	    description { state: "default" 0.0;
-	       image.normal: "menu_bg.png";
+	       image.normal: "base_bg.png";
 	       image.border: 2 2 2 2;
 	       fill.smooth: 0;
 	    }
@@ -5981,7 +5976,7 @@ collections { /* begin the collection of edje groups that are in this file */
     * shelf style as implied in the group name */
    group { name: "e/shelf/default/inset";
       images {
-	 image: "shelf_inset.png" COMP;
+	 image: "inset_sunk.png" COMP;
       }
       parts {
 	 part { name: "base";
@@ -6025,7 +6020,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    description { state: "default" 0.0;
 	       rel1.offset: 1 1;
 	       rel2.offset: -2 -2;
-	       image.normal: "shelf_inset.png";
+	       image.normal: "inset_sunk.png";
 	       image.middle: 0; /* here we say the "middle" part of the image
 				 * between the borders is not filled - it's
 				 * empty, so don't draw it - ignore it */
@@ -6136,7 +6131,7 @@ collections { /* begin the collection of edje groups that are in this file */
    }
    group { name: "e/shelf/invisible/inset";
       images {
-	 image: "shelf_inset_dark.png" COMP;
+	 image: "inset_sunk_dark.png" COMP;
       }
       parts {
 	 part { name: "base";
@@ -6180,7 +6175,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    description { state: "default" 0.0;
 	       rel1.offset: 1 1;
 	       rel2.offset: -2 -2;
-	       image.normal: "shelf_inset_dark.png";
+	       image.normal: "inset_sunk_dark.png";
 	       image.middle: 0;
 	       image.border: 7 7 7 7;
 	       fill.smooth: 0;
@@ -6327,7 +6322,7 @@ collections { /* begin the collection of edje groups that are in this file */
    }
    group { name: "e/shelf/alternate/inset";
       images {
-	 image: "shelf_alt_inset.png" COMP;
+	 image: "inset_raised.png" COMP;
       }
       parts {
 	 part { name: "base";
@@ -6371,7 +6366,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    description { state: "default" 0.0;
 	       rel1.offset: -1 -1;
 	       rel2.offset: 0 0;
-	       image.normal: "shelf_alt_inset.png";
+	       image.normal: "inset_raised.png";
 	       image.middle: 0;
 	       image.border: 7 7 7 7;
 	       fill.smooth: 0;
@@ -6460,7 +6455,7 @@ collections { /* begin the collection of edje groups that are in this file */
    /*** MOD: PAGER ***/
    group { name: "e/modules/pager/popup";
       images {
-	 image: "menu_bg.png" COMP;
+	 image: "base_bg.png" COMP;
 	 image: "bd_top_hilight.png" COMP;
 	 image: "bd_title_bg.png" COMP;
 	 image: "bd_title_over.png";
@@ -6470,7 +6465,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    mouse_events:  0;
 	    description { state: "default" 0.0;
 	       image {
-		  normal: "menu_bg.png";
+		  normal: "base_bg.png";
 		  border: 2 2 2 2;
 	       }
 	       fill.smooth: 0;
@@ -8741,13 +8736,13 @@ collections { /* begin the collection of edje groups that are in this file */
    
    group { name: "e/modules/ibox/drop";
       alias: "e/modules/ibar/drop";
-      images.image: "shelf_alt_inset.png" COMP;
+      images.image: "inset_raised.png" COMP;
       parts {
 	 part { name: "bg";
 	    mouse_events:  0;
 	    description { state: "default" 0.0;
 	       image {
-		  normal: "shelf_alt_inset.png";
+		  normal: "inset_raised.png";
 		  border: 7 7 7 7;
 		  middle: 0;
 	       }
@@ -8759,10 +8754,10 @@ collections { /* begin the collection of edje groups that are in this file */
    group { name: "e/modules/ibox/drop_overlay";
       alias: "e/modules/ibar/drop_overlay";
       images {
-	 image: "bd_resize_l.png" COMP;
-	 image: "bd_resize_r.png" COMP;
-	 image: "bd_resize_t.png" COMP;
-	 image: "bd_resize_b.png" COMP;
+	 image: "gadman_top.png" COMP;
+	 image: "gadman_bottom.png" COMP;
+	 image: "gadman_left.png" COMP;
+	 image: "gadman_right.png" COMP;
       }
       parts {
 	 part { name: "left_arrow1";
@@ -8771,7 +8766,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       aspect_preference: VERTICAL;
 	       rel1.relative: -1.0 0.5;
 	       rel2.relative: -1.0 0.5;
-	       image.normal: "bd_resize_r.png";
+	       image.normal: "gadman_right.png";
 	    }
 	    description { state: "1" 0.0;
 	       inherit: "default" 0.0;
@@ -8790,7 +8785,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       aspect_preference: VERTICAL;
 	       rel1.relative: -1.0 0.5;
 	       rel2.relative: -1.0 0.5;
-	       image.normal: "bd_resize_r.png";
+	       image.normal: "gadman_right.png";
 	    }
 	    description { state: "1" 0.0;
 	       inherit: "default" 0.0;
@@ -8809,7 +8804,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       aspect_preference: VERTICAL;
 	       rel1.relative: 2.0 0.5;
 	       rel2.relative: 2.0 0.5;
-	       image.normal: "bd_resize_l.png";
+	       image.normal: "gadman_left.png";
 	    }
 	    description { state: "1" 0.0;
 	       inherit: "default" 0.0;
@@ -8828,7 +8823,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       aspect_preference: VERTICAL;
 	       rel1.relative: 2.0 0.5;
 	       rel2.relative: 2.0 0.5;
-	       image.normal: "bd_resize_l.png";
+	       image.normal: "gadman_left.png";
 	    }
 	    description { state: "1" 0.0;
 	       inherit: "default" 0.0;
@@ -8847,7 +8842,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       aspect_preference: HORIZONTAL;
 	       rel1.relative: 0.5 -1.0;
 	       rel2.relative: 0.5 -1.0;
-	       image.normal: "bd_resize_b.png";
+	       image.normal: "gadman_bottom.png";
 	    }
 	    description { state: "1" 0.0;
 	       inherit: "default" 0.0;
@@ -8866,7 +8861,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       aspect_preference: HORIZONTAL;
 	       rel1.relative: 0.5 -1.0;
 	       rel2.relative: 0.5 -1.0;
-	       image.normal: "bd_resize_b.png";
+	       image.normal: "gadman_bottom.png";
 	    }
 	    description { state: "1" 0.0;
 	       inherit: "default" 0.0;
@@ -8885,7 +8880,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       aspect_preference: HORIZONTAL;
 	       rel1.relative: 0.5 2.0;
 	       rel2.relative: 0.5 2.0;
-	       image.normal: "bd_resize_t.png";
+	       image.normal: "gadman_top.png";
 	    }
 	    description { state: "1" 0.0;
 	       inherit: "default" 0.0;
@@ -8904,7 +8899,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       aspect_preference: HORIZONTAL;
 	       rel1.relative: 0.5 2.0;
 	       rel2.relative: 0.5 2.0;
-	       image.normal: "bd_resize_t.png";
+	       image.normal: "gadman_top.png";
 	    }
 	    description { state: "1" 0.0;
 	       inherit: "default" 0.0;
@@ -9088,7 +9083,7 @@ collections { /* begin the collection of edje groups that are in this file */
 
    group { name: "e/widgets/winlist/main";
       images {
-	 image: "menu_bg.png" COMP;
+	 image: "base_bg.png" COMP;
 	 image: "bd_top_hilight.png" COMP;
 	 image: "bd_title_bg.png" COMP;
 	 image: "bd_title_over.png";
@@ -9098,7 +9093,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    mouse_events:  0;
 	    description { state: "default" 0.0;
 	       image {
-		  normal: "menu_bg.png";
+		  normal: "base_bg.png";
 		  border: 2 2 2 2;
 	       }
 	       fill.smooth: 0;
@@ -9456,7 +9451,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    mouse_events:  0;
 	    description { state: "default" 0.0;
 	       image {
-		  normal: "menu_bg.png";
+		  normal: "base_bg.png";
 		  border: 2 2 2 2;
 	       }
 	       fill.smooth: 0;
@@ -9510,7 +9505,7 @@ collections { /* begin the collection of edje groups that are in this file */
 		  to: "eap_bg";
 	       }
 	       image {
-		  normal: "shelf_inset.png";
+		  normal: "inset_sunk.png";
 		  border: 7 7 7 7;
 		  middle: 0;
 	       }
@@ -9565,7 +9560,7 @@ collections { /* begin the collection of edje groups that are in this file */
 		  to: "exe_bg";
 	       }
 	       image {
-		  normal: "shelf_inset.png";
+		  normal: "inset_sunk.png";
 		  border: 7 7 7 7;
 		  middle: 0;
 	       }
@@ -10035,7 +10030,7 @@ collections { /* begin the collection of edje groups that are in this file */
    }
    group { name: "e/fileman/default/scrollframe";
       images {
-	 image: "shelf_inset.png" COMP;
+	 image: "inset_sunk.png" COMP;
 	 image: "arrow_left.png" COMP;
 	 image: "arrow_right.png" COMP;
 	 image: "arrow_up.png" COMP;
@@ -10073,7 +10068,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       rel1.offset: -1 -1;
 	       rel2.offset: 0 0;
 	       image {
-		  normal: "shelf_inset.png";
+		  normal: "inset_sunk.png";
 		  border: 7 7 7 7;
 		  middle: 0;
 	       }
@@ -12939,7 +12934,7 @@ collections { /* begin the collection of edje groups that are in this file */
       alias: "e/sys/suspend";
       alias: "e/sys/hibernate";
       images {
-	 image: "menu_bg.png" COMP;
+	 image: "base_bg.png" COMP;
 	 image: "logo_white.png" COMP;
 	 image: "busy-1.png" COMP;
 	 image: "busy-2.png" COMP;
@@ -12966,7 +12961,7 @@ collections { /* begin the collection of edje groups that are in this file */
       	       min: 250 250;
                max: 250 250;
 	       image {
-		  normal: "menu_bg.png";
+		  normal: "base_bg.png";
 		  border: 2 2 2 2;
 	       }
 	    }
@@ -13310,7 +13305,7 @@ collections { /* begin the collection of edje groups that are in this file */
 
    group { name: "e/widgets/border/default/move";
       images {
-	 image: "menu_bg.png" COMP;
+	 image: "base_bg.png" COMP;
 	 image: "move.png" COMP;
       }
       parts {
@@ -13318,7 +13313,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    mouse_events:  0;
 	    description { state: "default" 0.0;
 	       image {
-		  normal: "menu_bg.png";
+		  normal: "base_bg.png";
 		  border: 2 2 2 2;
 	       }
 	       fill.smooth: 0;
@@ -13359,7 +13354,7 @@ collections { /* begin the collection of edje groups that are in this file */
 
    group { name: "e/widgets/border/default/resize";
       images {
-	 image: "menu_bg.png" COMP;
+	 image: "base_bg.png" COMP;
 	 image: "resize.png" COMP;
       }
       parts {
@@ -13368,7 +13363,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    description { state: "default" 0.0;
 	       align: 0.5 0.0;
 	       image {
-		  normal: "menu_bg.png";
+		  normal: "base_bg.png";
 		  border: 2 2 2 2;
 	       }
 	       fill.smooth: 0;
@@ -14415,7 +14410,7 @@ collections { /* begin the collection of edje groups that are in this file */
 
    group { name: "e/widgets/scrollframe";
       images {
-	 image: "shelf_inset.png" COMP;
+	 image: "inset_sunk.png" COMP;
 	 image: "arrow_left.png" COMP;
 	 image: "arrow_right.png" COMP;
 	 image: "arrow_up.png" COMP;
@@ -14462,7 +14457,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    mouse_events:  0;
 	    description { state: "default" 0.0;
 	       image {
-		  normal: "shelf_inset.png";
+		  normal: "inset_sunk.png";
 		  border: 7 7 7 7;
 		  middle: 0;
 	       }
@@ -15841,7 +15836,7 @@ collections { /* begin the collection of edje groups that are in this file */
 
    group { name: "e/widgets/entry";
       min: 12 12;
-      images.image: "shelf_inset.png" COMP;
+      images.image: "inset_sunk.png" COMP;
       parts {
 	 part { name: "base";
 	    type: RECT;
@@ -15867,7 +15862,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 part { name: "overlay";
 	    description { state: "default" 0.0;
 	       image {
-		  normal: "shelf_inset.png";
+		  normal: "inset_sunk.png";
 		  border: 7 7 7 7;
 		  middle: 0;
 	       }
@@ -15980,7 +15975,7 @@ collections { /* begin the collection of edje groups that are in this file */
    }   
       
    group { name: "e/widgets/preview";
-      images.image: "shelf_inset.png" COMP;
+      images.image: "inset_sunk.png" COMP;
       parts {
 	 part { name: "clip";
 	    type: RECT;
@@ -16002,7 +15997,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    mouse_events:  0;
 	    description { state:    "default" 0.0;
 	       image {
-		  normal: "shelf_inset.png";
+		  normal: "inset_sunk.png";
 		  border: 7 7 7 7;
 		  middle: 0;
 	       }
@@ -16013,7 +16008,7 @@ collections { /* begin the collection of edje groups that are in this file */
    }
 
    group { name: "e/widgets/deskpreview/desk";
-      images.image: "shelf_inset.png" COMP;
+      images.image: "inset_sunk.png" COMP;
       parts {
 	 part { name: "clip";
 	    type: RECT;
@@ -16035,7 +16030,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    mouse_events:  0;
 	    description { state:    "default" 0.0;
 	       image {
-		  normal: "shelf_inset.png";
+		  normal: "inset_sunk.png";
 		  border: 7 7 7 7;
 		  middle: 0;
 	       }
@@ -16053,7 +16048,7 @@ collections { /* begin the collection of edje groups that are in this file */
 
    group { name: "e/widgets/color_well";
       alias:  "e/widgets/gradpreview";
-      images.image: "shelf_inset.png" COMP;
+      images.image: "inset_sunk.png" COMP;
       parts {
 	 part { name:  "content_clip";
 	    type:  RECT;
@@ -16088,7 +16083,7 @@ collections { /* begin the collection of edje groups that are in this file */
 		  offset: 0 0;
 	       }
 	       image {
-		  normal: "shelf_inset.png";
+		  normal: "inset_sunk.png";
 		  border: 7 7 7 7;
 		  middle: 0;
 	       }
@@ -16118,7 +16113,7 @@ collections { /* begin the collection of edje groups that are in this file */
    }
    
    group { name: "e/widgets/spectrum";
-      images.image: "shelf_inset.png" COMP;
+      images.image: "inset_sunk.png" COMP;
       parts {
 	 part { name:  "content_clip";
 	    type:  RECT;
@@ -16149,7 +16144,7 @@ collections { /* begin the collection of edje groups that are in this file */
 		  offset: 0 0;
 	       }
 	       image {
-		  normal: "shelf_inset.png";
+		  normal: "inset_sunk.png";
 		  border: 7 7 7 7;
 		  middle: 0;
 	       }
@@ -16212,7 +16207,7 @@ collections { /* begin the collection of edje groups that are in this file */
    }
 
    group { name: "e/widgets/cslider";
-      images.image: "shelf_inset.png" COMP;
+      images.image: "inset_sunk.png" COMP;
       parts {
 	 part { name:  "content_clip";
 	    type:  RECT;
@@ -16248,7 +16243,7 @@ collections { /* begin the collection of edje groups that are in this file */
 		  offset: 0 0;
 	       }
 	       image {
-		  normal: "shelf_inset.png";
+		  normal: "inset_sunk.png";
 		  border: 7 7 7 7;
 		  middle: 0;
 	       }
@@ -16315,7 +16310,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 image: "slider.png" COMP;
 	 image: "slider_clicked.png" COMP;
 	 image: "sb_runnerh.png" COMP;
-	 image: "shelf_inset.png" COMP;
+	 image: "inset_sunk.png" COMP;
       }
       parts {
 	 part { name: "base";
@@ -16382,7 +16377,7 @@ collections { /* begin the collection of edje groups that are in this file */
 		  offset:  3  1;
 	       }
 	       image {
-		  normal: "shelf_inset.png";
+		  normal: "inset_sunk.png";
 		  border: 7 7 7 7;
 		  middle: 0;
 	       }
@@ -16568,7 +16563,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 image: "slider.png" COMP;
 	 image: "slider_clicked.png" COMP;
 	 image: "sb_runnerv.png" COMP;
-	 image: "shelf_inset.png" COMP;
+	 image: "inset_sunk.png" COMP;
       }
       parts {
 	 part { name: "base";
@@ -16636,7 +16631,7 @@ collections { /* begin the collection of edje groups that are in this file */
 		  offset:   2   1;
 	       }
 	       image {
-		  normal: "shelf_inset.png";
+		  normal: "inset_sunk.png";
 		  border: 7 7 7 7;
 		  middle: 0;
 	       }
@@ -16994,7 +16989,7 @@ collections { /* begin the collection of edje groups that are in this file */
    group { name: "e/desklock/login_box";
       images {
 	 image: "logo_white_128.png" COMP;
-	 image: "shelf_inset.png" COMP;
+	 image: "inset_sunk.png" COMP;
       }
       parts {
 	 part { name: "logo";
@@ -17150,7 +17145,7 @@ collections { /* begin the collection of edje groups that are in this file */
 		  to_y: "e.text.title";
 	       }
 	       image {
-		  normal: "shelf_inset.png";
+		  normal: "inset_sunk.png";
 		  middle: 0;
 		  border: 7 7 7 7;
 	       }
@@ -17209,13 +17204,13 @@ collections { /* begin the collection of edje groups that are in this file */
    /*** GADMAN ***/
 
    group { name: "e/gadman/popup";
-      images.image: "menu_bg.png" COMP;
+      images.image: "base_bg.png" COMP;
       parts {
 	 part { name: "base";
 	    mouse_events:  0;
 	    description { state: "default" 0.0;
 	       image {
-		  normal: "menu_bg.png";
+		  normal: "base_bg.png";
 		  border: 2 2 2 2;
 	       }
 	       fill.smooth: 0;
@@ -17263,7 +17258,7 @@ collections { /* begin the collection of edje groups that are in this file */
    }
    
    group { name: "e/gadman/frame";
-      images.image: "shelf_alt_inset.png" COMP;
+      images.image: "inset_raised.png" COMP;
       parts {
 	 part{ name: "bg_clip";
 	    type: RECT;
@@ -17317,7 +17312,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    clip_to: "bg_clip";
 	    description { state: "default" 0.0;
 	       image {
-		  normal: "shelf_alt_inset.png";
+		  normal: "inset_raised.png";
 		  border: 7 7 7 7;
 		  middle: 0;
 	       }
