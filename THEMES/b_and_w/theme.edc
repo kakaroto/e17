@@ -7415,6 +7415,14 @@ collections { /* begin the collection of edje groups that are in this file */
 	    target: "power_glow";
 	 }
          program {
+	    name: "discharge3";
+	    signal: "e,state,discharging";
+	    source: "e";
+	    action: ACTION_STOP;
+	    target: "charge3";
+	    target: "charge4";
+	 }
+         program {
 	    name: "unknown";
 	    signal: "e,state,unknown";
 	    source: "e";
