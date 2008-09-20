@@ -14,12 +14,6 @@
 // slidesel (i know. no examples of this around).
 // toolbar
 // wizard (just placeholder and basics - wizard code not complete)
-// icons (lots of them! lets also find all the missing ones in e and
-//        at least put a placeholder in the theme for them with "fixme"
-//        in the image - but atleast a .edc entry and filename and make
-//        sure the code uses a unique icon for its purposes)
-//	  (Also, use #define and include a short guide on how it works
-//	  so that 'artists' can understand and use it.)
 // about
 // theme_about
 //
@@ -31,21 +25,6 @@
 //		to compensate when there is no icon there.
 //	      - Fix ibox urgent / icon_overlay problem
 //
-// TODO: Icons (redo)
-// Border buttons. Revise and resuse most. Mini-button has to go.
-// System buttons (restart,logout,hibernate, etc etc)
-// Window icons (pager, window remembers, etc etc)
-// Wallpaper
-// Icon theme icon?
-// Interactions
-// Dialogs
-// E icon
-// Extensions
-// Mixer
-// Favorites
-// Menu Icons
-// Applications (different gear)
-// MISSING: Pager, Engine(new icon coming soon), New Application, Profiles
 
 /*
  * So how do themes work? 
@@ -18511,7 +18490,55 @@ collections { /* begin the collection of edje groups that are in this file */
    
 /////////////////////////////////////////////////////////////////////////////
    /*** ICONS ***/
-// FIXME: DO
+
+/*  FIXME: Create images then enable this section. Document 'define'.
+
+ Todo: Icons (redo)
+ MISSING: Pager, Engine(new icon coming soon), New Application, Profiles
+ Border buttons. Revise and resuse most. Mini-button has to go.
+ System buttons (restart,logout,hibernate, etc etc)
+ Window icons (pager, window remembers, etc etc)
+ Wallpaper
+ Icon theme icon?
+ Interactions
+ Dialogs
+ E icon
+ Extensions
+ Mixer
+ Favorites
+ Menu Icons
+ Applications (different gear)
+
+Idea: Use define to create icons. Only draw back I can see so far
+   is the gradient icons. But its easy enough to make a couple of those.
+   Also included in this section will be window icons and efm icons. Theyll
+   be here soon.
+
+#define ICON(NAME, FILE, SIZE)				\
+group { name: "e/icons/enlightenment/"NAME ; 	\
+   max:  SIZE SIZE;							\
+   parts { 									\
+      part { name: "icon";						\
+         mouse_events:  0;						\
+         description { state: "default" 0.0;			\
+            aspect: 1.0 1.0;						\
+            aspect_preference: BOTH;				\
+	    image.image: FILE COMP;				\
+            image.normal: FILE ;					\
+         }									\
+      }									\
+   }										\
+}
+
+ICON("reset","icon_reset.png",64)
+ICON("exit","icon_exit.png",64)
+ICON("halt","icon_halt.png",64)
+ICON("hibernate","icon_hibernate.png",64)
+ICON("logout","icon_logout.png",64)
+ICON("reboot","icon_reboot.png",64)
+ICON("suspend","icon_suspend.png",64)
+
+*/
 
 /////////////////////////////////////////////////////////////////////////////
    /*** MOD: WIZARD ***/
