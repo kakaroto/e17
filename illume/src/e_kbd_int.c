@@ -50,6 +50,8 @@ static E_Kbd_Int_Key *
 _e_kbd_int_at_coord_get(E_Kbd_Int *ki, Evas_Coord x, Evas_Coord y)
 {
    Evas_List *l;
+   Evas_Coord dist;
+   E_Kbd_Int_Key *closest_ky = NULL;
 
    for (l = ki->layout.keys; l; l = l->next)
      {
@@ -60,7 +62,23 @@ _e_kbd_int_at_coord_get(E_Kbd_Int *ki, Evas_Coord x, Evas_Coord y)
 	    (x < (ky->x + ky->w)) && (y < (ky->y + ky->h)))
 	  return ky;
      }
-   return NULL;
+   dist = 0x7fffffff;
+   for (l = ki->layout.keys; l; l = l->next)
+     {
+	E_Kbd_Int_Key *ky;  
+	Evas_Coord dx, dy;
+	
+	ky = l->data;
+	dx = x - (ky->x + (ky->w / 2));
+	dy = y - (ky->y + (ky->h / 2));
+	dx = (dx * dx) + (dy * dy);
+	if (dx < dist)
+	  {
+	     dist = dx;
+	     closest_ky = ky;
+	  }
+     }
+   return closest_ky;
 }
 
 static E_Kbd_Int_Key_State *
@@ -329,9 +347,12 @@ _e_kbd_int_key_press_handle(E_Kbd_Int *ki, Evas_Coord dx, Evas_Coord dy)
    E_Kbd_Int_Key *ky;
    E_Kbd_Int_Key_State *st;
    const char *out = NULL;
-   
+
    ky = _e_kbd_int_at_coord_get(ki, dx, dy);
-   if (!ky) return;
+   if (!ky)
+     {
+	return;
+     }
 
    if (ky->is_shift)
      {
