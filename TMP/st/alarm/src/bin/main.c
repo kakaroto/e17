@@ -67,7 +67,7 @@ win_bg_image(void)
     * your app - don't use this unless you have a very good reason! there
     * is a default and all apps look nicer sharing the default, but if
     * you insist... */
-   snprintf(buf, sizeof(buf), "%s/images/sample_01.jpg", PACKAGE_DATA_DIR);
+   snprintf(buf, sizeof(buf), "%s/images/plant_01.jpg", PACKAGE_DATA_DIR);
    bg->file_set(bg, buf, NULL); /* set the bg - the NULL is for special
 				 * files that contain multiple images
 				 * inside 1 file. not normally used but
@@ -872,6 +872,8 @@ win_box_vert_of_clock_and_toggles(void)
    win->cb_add(win, ELM_CB_RESIZE, on_win_resize, NULL);
 
    bg = elm_bg_new(win);
+   snprintf(buf, sizeof(buf), "%s/images/rock_01.jpg", PACKAGE_DATA_DIR);
+   bg->file_set(bg, buf, NULL);
    bg->expand_x = 0;
    bg->expand_y = 0;
    bg->show(bg);
