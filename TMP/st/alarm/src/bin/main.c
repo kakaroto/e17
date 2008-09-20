@@ -1,5 +1,7 @@
 #include <Elementary.h>
 
+// FIXME: we need a "run this at time X daemon"
+
 typedef struct 
 {
    int on;
@@ -16,38 +18,36 @@ static Alarm alm =
      1,  // repeat
      7,  // hours
      30, // minutes
+     //
+     0 // job # - 0 == no job
 };
 
 static void
-on_win_del_req(void *data, Elm_Win *win, Elm_Cb_Type type, void *info)
+load_alarm(void)
 {
-   elm_exit();
+   // FIXME: load config for alarm (time, repeat, on and job #)
 }
 
 static void
-on_clock_changed(void *data, Elm_Clock *cloc, Elm_Cb_Type type, void *info)
+save_alarm(void)
 {
-   alm.hours = cloc->hrs;
-   alm.minutes = cloc->min;
+   // FIXME: save alarm config (time, repeat, on and job #)
 }
 
 static void
-on_button_activate(void *data, Elm_Button *bt, Elm_Cb_Type type, void *info)
+clear_alarm(void)
 {
+   // FIXME: delete alarm (atrm alm.job)
+   if (alm.job == 0) return;
+}
+
+static void
+set_alarm(void)
+{
+   // FIXME: set alarm to go off
    FILE *f;
    char buf[1024];
-   Ecore_Exe *exe;
-   Ecore_Event_Handler *handler;
-   
-   // FIXME: actually set at job (or delete it)
-   printf("ALARM:\n"
-	  " on = %i\n"
-	  " repeat = %i\n"
-	  " hours = %i\n"
-	  " minutes = %i\n",
-	  alm.on, alm.repeat, alm.hours, alm.minutes);
-   // FIXME: delete the previous job
-   if (!alm.on) return;
+
    if (alm.repeat)
      snprintf(buf, sizeof(buf), 
 	      "echo 'alarm -activate -repeat' | at -q a %i:%02i",
@@ -68,6 +68,41 @@ on_button_activate(void *data, Elm_Button *bt, Elm_Cb_Type type, void *info)
 	pclose(f);
      }
    printf("job set for job # %i\n", alm.job);
+}
+
+static void
+on_win_del_req(void *data, Elm_Win *win, Elm_Cb_Type type, void *info)
+{
+   elm_exit();
+}
+
+static void
+on_clock_changed(void *data, Elm_Clock *cloc, Elm_Cb_Type type, void *info)
+{
+   alm.hours = cloc->hrs;
+   alm.minutes = cloc->min;
+}
+
+static void
+on_button_activate(void *data, Elm_Button *bt, Elm_Cb_Type type, void *info)
+{
+   
+   // FIXME: actually set at job (or delete it)
+   printf("ALARM:\n"
+	  " on = %i\n"
+	  " repeat = %i\n"
+	  " hours = %i\n"
+	  " minutes = %i\n",
+	  alm.on, alm.repeat, alm.hours, alm.minutes);
+   if (!alm.on)
+     {
+	clear_alarm();
+	save_alarm();
+	return;
+     }
+   clear_alarm();
+   set_alarm();
+   save_alarm();
 }
 
 static void
@@ -204,8 +239,30 @@ create_main_win(void)
 int
 main(int argc, char **argv)
 {
+   int i;
+   int activate = 0;
+   int repeat = 0;
+   
    elm_init(argc, argv);
-   create_main_win();
+   for (i = 1; i < argc; i++)
+     {
+	if (!strcmp(argv[i], "-activate")) activate = 1;
+	else if (!strcmp(argv[i], "-repeat")) repeat = 1;
+     }
+   load_alarm();
+   if (activate)
+     {
+	// FIXME: show different window with:
+	// * alarm label
+	// * current time 
+	// * snooze button
+	// * ok button (closes and sets for repeat, if repeat set)
+	// * play sound
+	// * set timer for cancel sound, and repeat
+	// * 
+     }
+   else
+     create_main_win();
    elm_run();
    elm_shutdown();
    return 0; 
