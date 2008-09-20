@@ -47,6 +47,9 @@
 #if HAVE_EVAS_DIRECTFB
 #include "engine_directfb.h"
 #endif
+#if HAVE_EVAS_QUARTZ
+#include "engine_quartz.h"
+#endif
 #if HAVE_EVAS_SOFTWARE_16_X11
 #include "engine_software_16_x11.h"
 #endif

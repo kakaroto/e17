@@ -1125,7 +1125,6 @@ build_path(const char *filename)
 int
 engine_abort(void)
 {
-   fprintf(stderr, "go: %i\n", go);
    go = 0;
    return go;
 }
@@ -1240,6 +1239,10 @@ _engine_args(int argc, char **argv)
    if (engine_directfb_args(argc, argv))
      loop_func = engine_directfb_loop;
 #endif
+#if HAVE_EVAS_QUARTZ
+   if (engine_quartz_args(argc, argv))
+     loop_func = engine_quartz_loop;
+#endif
 #if HAVE_EVAS_SOFTWARE_16_X11
    if (engine_software_16_x11_args(argc, argv))
      loop_func = engine_software_16_x11_loop;
@@ -1282,6 +1285,9 @@ _engine_args(int argc, char **argv)
 #endif
 #if HAVE_EVAS_DIRECT3D
 	       	" direct3d"
+#endif
+#if HAVE_EVAS_QUARTZ
+	       	" quartz"
 #endif
 #if HAVE_EVAS_OPENGL_GLEW
 	       	" gl-glew"

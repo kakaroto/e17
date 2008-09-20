@@ -13,6 +13,12 @@ AM_INIT_AUTOMAKE(1.6 dist-bzip2)
 AM_CONFIG_HEADER(config.h)
 
 AC_ISC_POSIX
+m4_ifdef([AC_PROG_OBJC],
+         [AC_PROG_OBJC],
+         [AC_CHECK_TOOL([OBJC], [gcc])
+          AC_SUBST([OBJC])
+          AC_SUBST([OBJCFLAGS])
+         ])
 AC_PROG_CXX
 AC_PROG_CC
 AM_PROG_CC_STDC
@@ -73,6 +79,9 @@ EXPEDITE_CHECK_ENGINE([fb], [Framebuffer], "yes")
 ### DIRECTFB
 EXPEDITE_CHECK_ENGINE([directfb], [DirectFB], "yes")
 
+### Quartz
+EXPEDITE_CHECK_ENGINE([quartz], [Quartz], "yes", [quartz_libs="-framework Cocoa -framework ApplicationServices"])
+
 ### Software 16bit X11
 EXPEDITE_CHECK_ENGINE([software-16-x11], [Software 16 bits X11], "yes")
 
@@ -123,6 +132,8 @@ if test "x$have_directfb" = "xyes"; then
 fi
 AM_CONDITIONAL(BUILD_DIRECTFB, test "x$have_directfb" = "xyes")
 
+AM_CONDITIONAL(BUILD_QUARTZ, test "x$have_quartz" = "xyes")
+
 AC_SUBST(x_cflags)
 AC_SUBST(x_libs)
 AC_SUBST(ddraw_libs)
@@ -130,6 +141,7 @@ AC_SUBST(ddraw_16_libs)
 AC_SUBST(d3d_libs)
 AC_SUBST(wince_16_libs)
 AC_SUBST(glew_libs)
+AC_SUBST(quartz_libs)
 
 AC_OUTPUT([
 Makefile
@@ -152,6 +164,7 @@ echo "    Open GL Glew.................: ${have_opengl_glew}"
 echo "    Software SDL.................: ${have_software_sdl}"
 echo "    FB...........................: ${have_fb}"
 echo "    DirectFB.....................: ${have_directfb}"
+echo "    Quartz.......................: ${have_quartz}"
 echo "    Software X11 16 bits.........: ${have_software_16_x11}"
 echo "    Software DirectDraw 16 bits..: ${have_software_16_ddraw}"
 echo "    Software WinCE 16 bits.......: ${have_software_16_wince}"

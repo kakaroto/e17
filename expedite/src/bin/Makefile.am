@@ -59,7 +59,7 @@ image_blend_occlude3_very_many.c \
 poly_blend.c
 
 expedite_CFLAGS = @WIN32_CFLAGS@
-expedite_LDADD = @EVAS_LIBS@ @SDL_LIBS@ @x_libs@ @ddraw_libs@ @ddraw_16_libs@ @d3d_libs@ @wince_16_libs@ @glew_libs@ @DIRECTFB_LIBS@ @XCB_LIBS@ -lm
+expedite_LDADD = @EVAS_LIBS@ @SDL_LIBS@ @x_libs@ @ddraw_libs@ @ddraw_16_libs@ @d3d_libs@ @wince_16_libs@ @glew_libs@ @DIRECTFB_LIBS@ @XCB_LIBS@ @quartz_libs@ -lm
 expedite_LDFLAGS = @lt_enable_auto_import@
 
 if BUILD_SOFTWARE_X11
@@ -112,6 +112,16 @@ expedite_SOURCES += \
 engine_directfb.c engine_directfb.h
 endif
 
+if BUILD_QUARTZ
+expedite_SOURCES += \
+engine_quartz.h
+
+### add to SOURCES one we know how to fix:
+# /usr/share/automake-1.9/am/depend2.am: am__fastdepOBJC does not appear in
+# AM_CONDITIONAL
+# engine_quartz.m 
+endif
+
 if BUILD_SOFTWARE_16_X11
 expedite_SOURCES += \
 engine_software_16_x11.c engine_software_16_x11.h
@@ -126,4 +136,3 @@ if BUILD_SOFTWARE_16_WINCE
 expedite_SOURCES += \
 engine_software_16_wince.c engine_software_16_wince.h
 endif
-
