@@ -36,7 +36,13 @@ els_table.h \
 els_icon.c \
 els_icon.h
 
-bin_PROGRAMS = alarm
+bin_PROGRAMS = alarm alarm_test
+
+alarm_test_SOURCES = \
+test.c \
+$(elementary_SOURCES)
+
+alarm_test_LDADD = @my_libs@ @EVAS_LIBS@ @ECORE_LIBS@ @EDJE_LIBS@
 
 alarm_SOURCES = \
 main.c \

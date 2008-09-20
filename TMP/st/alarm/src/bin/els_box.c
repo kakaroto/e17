@@ -452,10 +452,10 @@ _smart_reconfigure(Smart_Data *sd)
 		       ww = w;
 		       hh = (h / (Evas_Coord)count);
 		       ow = bi->min.w;
-		       if (bi->expand_w) ow = ww;
+		       if (bi->fill_w) ow = ww;
 		       if ((bi->max.w >= 0) && (bi->max.w < ow)) ow = bi->max.w;
 		       oh = bi->min.h;
-		       if (bi->expand_h) oh = hh;
+		       if (bi->fill_h) oh = hh;
 		       if ((bi->max.h >= 0) && (bi->max.h < oh)) oh = bi->max.h;
 		       evas_object_move(obj, 
 					xx + (Evas_Coord)(((double)(ww - ow)) * bi->align.x),
@@ -477,10 +477,10 @@ _smart_reconfigure(Smart_Data *sd)
 			    hh += oh;
 			 }
 		       ow = bi->min.w;
-		       if (bi->expand_w) ow = ww;
+		       if (bi->fill_w) ow = ww;
 		       if ((bi->max.w >= 0) && (bi->max.w < ow)) ow = bi->max.w;
 		       oh = bi->min.h;
-		       if (bi->expand_h) oh = hh;
+		       if (bi->fill_h) oh = hh;
 		       if ((bi->max.h >= 0) && (bi->max.h < oh)) oh = bi->max.h;
 		       evas_object_move(obj, 
 					xx + (Evas_Coord)(((double)(ww - ow)) * bi->align.x),
