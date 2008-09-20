@@ -7388,14 +7388,14 @@ collections { /* begin the collection of edje groups that are in this file */
          program {
 	    name: "charge3";
 	    action: STATE_SET "active2" 0.0;
-            transition: SINUSOIDAL 1.0;
+	    in: 1.0 0.0;
 	    target: "power_glow";
 	    after: "charge4";
 	 }
          program {
 	    name: "charge4";
 	    action: STATE_SET "active" 0.0;
-            transition: SINUSOIDAL 1.0;
+	    in: 1.0 0.0;
 	    target: "power_glow";
 	    after: "charge3";
 	 }
