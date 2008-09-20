@@ -63,7 +63,9 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-   
+
+// FIXME: need to be able to enable/disable widgets
+// FIXME: need to determine scale from dpi   
    /* Types here */
    typedef enum _Elm_Obj_Type
      {

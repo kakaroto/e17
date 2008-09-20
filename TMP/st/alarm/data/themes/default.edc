@@ -2038,8 +2038,24 @@ collections {
       images {
 	 image: "frame_1.png" COMP;
 	 image: "frame_2.png" COMP;
+         image: "dia_grad.png" COMP;
       }
       parts {
+         part { name: "base0";
+	    mouse_events:  0;	
+	    description { state: "default" 0.0;
+	       image.normal: "dia_grad.png";
+	       rel1.to: "over";
+	       rel2.to: "over";
+               fill {
+		  smooth: 0;
+		  size {
+		     relative: 0.0 1.0;
+                     offset: 64 0;
+		  }
+	       }
+	    }
+	 }
 	 part { name: "base";
 	    mouse_events:  0;
 	    description { state:    "default" 0.0;
