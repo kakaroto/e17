@@ -593,7 +593,9 @@ _forecasts_server_add(void *data, int type, void *event)
      degrees = 'c';
 
    snprintf(forecast, sizeof(forecast), "/forecastrss?p=%s&u=%c", inst->ci->code, degrees);
-   snprintf(buf, sizeof(buf), "GET http://%s%s HTTP/1.1\r\nHost: %s\r\n\r\n",
+   snprintf(buf, sizeof(buf), "GET http://%s%s HTTP/1.1\r\n"
+			      "Host: %s\r\n"
+			      "Connection: close\r\n\r\n",
 	    inst->ci->host, forecast, inst->ci->host);
    DEBUG("Server: %s", buf);
    ecore_con_server_send(inst->server, buf, strlen(buf));
