@@ -569,7 +569,7 @@ _e_kbd_int_zoomkey_up(E_Kbd_Int *ki)
 	ky->zoom_icon_obj = o2;
      }
    
-   edje_object_size_max_get(ki->zoomkey.base_obj, &vw, &vh);
+   edje_object_size_min_calc(ki->zoomkey.base_obj, &vw, &vh);
    
    e_slipshelf_safe_app_region_get(ki->win->border->zone, &sx, &sy, &sw, &sh);
    sh -= ki->win->h;
