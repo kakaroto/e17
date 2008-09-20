@@ -485,8 +485,9 @@ collections { /* begin the collection of edje groups that are in this file */
 	 }
 	 part { name: "e.text.title"; /* this is a text part - the black
 				       * text on the white title top image */
-	    type: TEXT;
+	    type: TEXT; /* allow this part to scale by a scale factor (dpi) */
 	    mouse_events: 0;
+	    scale: 1;
 	    description { state: "default" 0.0;
 	       visible: 1;
 	       align: 0.0 0.0; /* align top and left */
@@ -811,6 +812,7 @@ collections { /* begin the collection of edje groups that are in this file */
 				 * of another part */
 	    type: TEXT;
 	    mouse_events: 0;
+	    scale: 1;
 	    effect: SOFT_SHADOW; /* different style to before - because its
 				  * focused */
 	    description { state: "default" 0.0;
@@ -1666,6 +1668,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 part { name: "e.text.title";
 	    type: TEXT;
 	    mouse_events: 0;
+	    scale: 1;
 	    description { state: "default" 0.0;
 	       visible: 1;
 	       align: 0.0 0.0;
@@ -1944,6 +1947,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 part { name: "title2";
 	    type: TEXT;
 	    mouse_events: 0;
+	    scale: 1;
 	    effect: SOFT_SHADOW;
 	    description { state: "default" 0.0;
 	       visible: 0;
@@ -2719,6 +2723,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 part { name: "e.text.title";
 	    type: TEXT;
 	    mouse_events: 0;
+	    scale: 1;
 	    description { state: "default" 0.0;
 	       visible: 1;
 	       align: 0.0 0.0;
@@ -2997,6 +3002,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 part { name: "title2";
 	    type: TEXT;
 	    mouse_events: 0;
+	    scale: 1;
 	    effect: SOFT_SHADOW;
 	    description { state: "default" 0.0;
 	       visible: 0;
@@ -3591,6 +3597,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 part { name: "e.text.title";
 	    type: TEXT;
 	    mouse_events: 0;
+	    scale: 1;
 	    description { state: "default" 0.0;
 	       visible: 1;
 	       align: 0.0 0.0;
@@ -3767,6 +3774,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 part { name: "title2";
 	    type: TEXT;
 	    mouse_events: 0;
+	    scale: 1;
 	    effect: SOFT_SHADOW;
 	    description { state: "default" 0.0;
 	       visible: 0;
@@ -4488,6 +4496,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 part { name: "e.text.title";
 	    type: TEXT;
 	    mouse_events: 0;
+	    scale: 1;
 	    description { state: "default" 0.0;
 	       visible: 1;
 	       align: 0.0 0.0;
@@ -4664,6 +4673,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 part { name: "title2";
 	    type: TEXT;
 	    mouse_events: 0;
+	    scale: 1;
 	    effect: SOFT_SHADOW;
 	    description { state: "default" 0.0;
 	       visible: 0;
@@ -5346,6 +5356,7 @@ collections { /* begin the collection of edje groups that are in this file */
 				       * if there is any */
 	    type: TEXT;
 	    mouse_events: 0;
+	    scale: 1;
 	    effect: SOFT_SHADOW;
 	    description { state: "default" 0.0;
 	       fixed: 1 1;
@@ -5467,7 +5478,7 @@ collections { /* begin the collection of edje groups that are in this file */
        * look for submenu holding items. here this is identical to to the
        * normal menu item, thus we are making use of the alias directive that
        * gives a group the ability to go by manu names */
-      alias: "e/widgets/menu/default/subbase_bg";
+      alias: "e/widgets/menu/default/submenu_bg";
       images {
 	 image: "menu_sel_bg.png" COMP;
 	 image: "menu_sel_fg.png" COMP;
@@ -5583,6 +5594,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    type: TEXT;
 	    effect: SOFT_SHADOW;
             mouse_events: 0;
+	    scale: 1;
 	    description {
 	       state: "default" 0.0;
 	       rel1 {
@@ -5687,6 +5699,7 @@ collections { /* begin the collection of edje groups that are in this file */
       parts {
 	 part { name: "base";
 	    mouse_events: 0;
+	    scale: 1;
 	    description { state: "default" 0.0;
 	       min: 16 16;
 	       max: 16 16;
@@ -5771,6 +5784,7 @@ collections { /* begin the collection of edje groups that are in this file */
       parts {
 	 part { name: "base";
 	    mouse_events: 0;
+	    scale: 1;
 	    description { state: "default" 0.0;
 	       min: 16 16;
 	       max: 16 16;
@@ -6508,6 +6522,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 part { name: "e.text.label";
 	    type: TEXT;
 	    mouse_events: 0;
+	    scale: 1;
 	    effect: SOFT_SHADOW;
 	    description { state: "default" 0.0;
 	       fixed: 1 1;
@@ -6674,6 +6689,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 part { name: "e.text.label";
 	    type: TEXT;
 	    mouse_events: 0;
+	    scale: 1;
 	    description { state: "default" 0.0;
 	       rel1.to: "clip";
 	       rel2.to: "clip";
@@ -7472,6 +7488,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 part { name: "text";
 	    type: TEXT;
 	    mouse_events: 0;
+	    scale: 1;
 	    description { state: "default" 0.0;
 	       rel1 {
 		  relative: 1.0 0.5;
@@ -7495,6 +7512,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 part { name: "text2";
 	    type: TEXT;
 	    mouse_events: 0;
+	    scale: 1;
 	    description { state: "default" 0.0;
 	       rel1 {
 		  relative: 1.0 0.5;
@@ -9186,6 +9204,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    type: TEXT;
 	    effect: NONE;
 	    mouse_events: 0;
+	    scale: 1;
 	    description { state: "default" 0.0;
 	       align: 0.5 1.0;
 	       fixed: 0 1;
@@ -9215,6 +9234,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    type: TEXT;
 	    mouse_events: 0;
 	    effect: SOFT_SHADOW;
+	    scale: 1;
 	    description { state: "default" 0.0;
 	       fixed: 1 1;
 	       align: 0.5 0.0;
@@ -9361,6 +9381,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    type:           TEXT;
 	    effect:         SHADOW;
 	    mouse_events:   0;
+	    scale: 1;
 	    description { state: "default" 0.0;
 	       align: 0.0 0.5;
 	       rel1 {
@@ -9583,6 +9604,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 part { name: "e.text.label";
 	    type: TEXT;
 	    effect: SHADOW;
+	    scale: 1;
 	    description { state: "default" 0.0;
 	       fixed: 0 1;
 	       align: 0.0 0.5;
@@ -9704,6 +9726,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    type: TEXT;
 	    effect: SOFT_SHADOW;
             mouse_events: 0;
+	    scale: 1;
 	    description {
 	       state: "default" 0.0;
 	       rel1 { 
@@ -10078,8 +10101,9 @@ collections { /* begin the collection of edje groups that are in this file */
 	 part { name: "sb_vbar";
 	    type: RECT;
 	    mouse_events: 0;
+	    scale: 1;
 	    description { state: "default" 0.0;
-	       min: 16 16;
+	       min: 17 17;
 	       align: 1.0 0.0;
 	       rel1 {
 		  relative: 1.0 0.0;
@@ -10173,13 +10197,14 @@ collections { /* begin the collection of edje groups that are in this file */
 	 part { name: "e.dragable.vbar";
 	    clip_to: "sb_vbar";
 	    mouse_events: 1;
+	    scale: 1;
 	    dragable {
 	       x: 0 0 0;
 	       y: 1 1 0;
 	       confine: "sb_vbar_base";
 	    }
 	    description { state: "default" 0.0;
-	       min: 17 32;
+	       min: 17 17;
 	       rel1 {
 		  relative: 0.5  0.5;
 		  offset:   0    0;
@@ -10233,6 +10258,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    description { state: "default" 0.0;
 	       min: 17 17;
 	       align: 0.5 0.0;
+	       aspect: 1.0 1.0;
 	       aspect_preference: HORIZONTAL;
 	       color: 0 0 0 0;
 	       rel1 { to: "sb_vbar";
@@ -10303,6 +10329,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 part { name: "sb_hbar";
 	    type: RECT;
 	    mouse_events: 0;
+	    scale: 1;
 	    description { state: "default" 0.0;
 	       min: 17 17;
 	       align: 0.0 1.0;
@@ -10351,7 +10378,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    clip_to: "sb_hbar";
 	    mouse_events: 0;
 	    description { state: "default" 0.0;
-	       max: 99999 2;
+	       max: 99999 3;
 	       rel1.to:       "sb_hbar_base";
 	       rel1.offset:   0 1;
 	       rel2.to:       "sb_hbar_base";
@@ -10397,13 +10424,14 @@ collections { /* begin the collection of edje groups that are in this file */
 	 part { name: "e.dragable.hbar";
 	    clip_to: "sb_hbar";
 	    mouse_events: 1;
+	    scale: 1;
 	    dragable {
 	       x: 1 1 0;
 	       y: 0 0 0;
 	       confine: "sb_hbar_base";
 	    }
 	    description { state: "default" 0.0;
-	       min: 32 17;
+	       min: 17 17;
 	       rel1 {
 		  relative: 0.5  0.5;
 		  offset:   0    0;
@@ -10887,6 +10915,393 @@ collections { /* begin the collection of edje groups that are in this file */
 	    type: TEXT;
 	    effect: SOFT_SHADOW;
 	    mouse_events:  0;
+	    scale: 1;
+	    description { state: "default" 0.0;
+	       align: 0.5 1.0;
+	       fixed: 0 1;
+	       rel1 {
+		  relative: 0.0 1.0;
+		  offset:   2 -2;
+	       }
+	       rel2 {
+		  relative: 1.0 1.0;
+		  offset:   -3 -2;
+	       }
+	       color: 224 224 224 255;
+	       color3: 0 0 0 32;
+	       text {
+                  font: "Sans:style=Bold,Edje-Vera-Bold";
+		  size: 10;
+		  min: 1 1;
+		  align: 0.5 0.5;
+	       }
+	    }
+	    description { state: "selected" 0.0;
+	       inherit: "default" 0.0;
+	       color: 224 224 224 255;
+	       color3: 0 0 0 64;
+	    }
+	 }
+	 part { name: "fg1";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       visible: 0;
+	       color: 255 255 255 0;
+	       rel1.to: "bg";
+	       rel2.relative: 1.0 0.5;
+	       rel2.to: "bg";
+	       image {
+		  normal: "bt_sm_hilight.png";
+		  border: 6 6 6 0;
+	       }
+	    }
+	    description { state: "selected" 0.0;
+	       inherit: "default" 0.0;
+	       visible: 1;
+	       color: 255 255 255 255;
+	    }
+	 }
+	 part { name: "fg2";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       visible: 0;
+	       color: 255 255 255 0;
+	       rel1.to: "bg";
+	       rel2.to: "bg";
+	       image {
+		  normal: "bt_sm_shine.png";
+		  border: 6 6 6 0;
+	       }
+	    }
+	    description { state: "selected" 0.0;
+	       inherit: "default" 0.0;
+	       visible: 1;
+	       color: 255 255 255 255;
+	    }
+	 }
+	 part { name: "event";
+	    type: RECT;
+	    mouse_events: 1;
+	    description { state: "default" 0.0;
+	       color: 0 0 0 0;
+	    }
+	 }
+	 part { name: "dnd_action";
+	    type: IMAGE;
+	    mouse_events:  0;
+	    repeat_events: 0;
+	    description { state: "default" 0.0;
+	       color:      0 0 0 0;
+	    }
+	    description { state: "visible" 0.0;
+	       aspect: 1.0 1.0;
+	       aspect_preference: BOTH;
+	       align: 1.0 1.0;
+	       min: 24 24;
+	       rel1.relative: 0.75 0.0;
+	       rel2.relative: 1.0 1.0;
+	    }
+	    description { state: "copy" 0.0;
+	       inherit: "visible" 0.0;
+	       image.normal:  "e17_fileman_copy.png";
+	    }
+	    description { state: "ask" 0.0;
+	       inherit: "visible" 0.0;
+	       image.normal:  "e17_fileman_ask.png";
+	    }
+	    description { state: "move" 0.0;
+	       inherit: "visible" 0.0;
+	       image.normal:  "e17_fileman_move.png";
+	    }
+	 }
+      }
+      programs {
+	 program { name: "go_active";
+	    signal:  "e,state,selected";
+	    source:  "e";
+	    action:  STATE_SET "selected" 0.0;
+	    target:  "bg";
+	    target:  "fg1";
+	    target:  "fg2";
+	    target:  "e.text.label";
+	    transition: LINEAR 0.2;
+	 }
+	 program { name: "go_passive";
+	    signal:  "e,state,unselected";
+	    source:  "e";
+	    action:  STATE_SET "default" 0.0;
+	    target:  "bg";
+	    target:  "fg1";
+	    target:  "fg2";
+	    target:  "e.text.label";
+	    transition: LINEAR 0.1;
+	 }
+	 program { name: "ask";
+	    signal: "e,state,ask";
+	    source: "e";
+	    action: STATE_SET "ask" 0.0;
+	    target: "dnd_action";
+	 }
+	 program { name: "move";
+	    signal: "e,state,move";
+	    source: "e";
+	    action: STATE_SET "move" 0.0;
+	    target: "dnd_action";
+	 }
+	 program { name: "copy";
+	    signal: "e,state,copy";
+	    source: "e";
+	    action: STATE_SET "copy" 0.0;
+	    target: "dnd_action";
+	 }
+	 program { name: "thumb_gen";
+	    signal:  "e,action,thumb,gen";
+	    source:  "e";
+	    action:  STATE_SET "visible" 0.0;
+	    target:  "icon_box_shadow";
+	    target:  "icon_box";
+	    target:  "icon_box_bg";
+	    after:   "thumb_gen2";
+	 }
+	 program { name: "thumb_gen-";
+	    signal:  "e,action,thumb,gen,alpha";
+	    source:  "e";
+	    action:  STATE_SET "default" 0.0;
+	    target:  "icon_box_shadow";
+	    target:  "icon_box";
+	    target:  "icon_box_bg";
+	    after:   "thumb_gen2";
+	 }
+	 program { name: "thumb_gen2";
+	    action:  STATE_SET "min" 0.0;
+	    target:  "icon";
+	    after:   "thumb_gen3";
+	 }
+	 program { name: "thumb_gen3";
+	    action:  STATE_SET "max" 0.0;
+	    target:  "icon";
+	    transition: DECELERATE 0.2;
+	    after:   "thumb_gen4";
+	 }
+	 program { name: "thumb_gen4";
+	    action:  STATE_SET "default" 0.0;
+	    target:  "icon";
+	    transition: SINUSOIDAL 0.1;
+	    after:   "thumb_gen5";
+	 }
+	 program { name: "thumb_gen5";
+	    action:  STATE_SET "max2" 0.0;
+	    target:  "icon";
+	    transition: SINUSOIDAL 0.2;
+	    after:   "thumb_gen6";
+	 }
+	 program { name: "thumb_gen6";
+	    action:  STATE_SET "default" 0.0;
+	    target:  "icon";
+	    transition: SINUSOIDAL 0.3;
+	 }
+      }
+   }
+
+   group { name: "e/fileman/desktop/icon/fixed";
+      images {
+         image: "bt_sm_base1.png" COMP;
+	 image: "bt_sm_shine.png" COMP;
+	 image: "bt_sm_hilight.png" COMP;
+	 
+	 image: "e17_mini_button_shadow2.png" COMP;
+	 image: "e17_fileman_thumb_bg.png" COMP;
+	 image: "e17_fileman_copy.png" COMP;
+	 image: "e17_fileman_ask.png" COMP;
+	 image: "e17_fileman_move.png" COMP;
+      }
+      parts {
+	 part { name: "bg";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       visible: 0;
+	       color: 255 255 255 0;
+	       rel1 {
+		  relative: 0.0 0.0;
+		  offset: -5 -5;
+	       }
+	       rel2 {
+		  relative: 1.0 1.0;
+		  offset: 4 4;
+	       }
+	       image {
+		  normal: "bt_sm_base1.png";
+		  border: 6 6 6 6;
+	       }
+	    }
+	    description { state: "selected" 0.0;
+	       inherit: "default" 0.0;
+	       visible: 1;
+	       color: 255 255 255 255;
+	       rel1 {
+		  relative: 0.0 0.0;
+		  offset: -2 -2;
+	       }
+	       rel2 {
+		  relative: 1.0 1.0;
+		  offset: 1 1;
+	       }
+	    }
+	 }
+	 part {	name: "icon_box_shadow";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       visible: 0;
+	       rel1 {
+		  to: "icon_box";
+		  relative: 0.0 0.0;
+		  offset: -1 -1;
+	       }
+	       rel2 {
+		  to: "icon_box";
+		  relative: 1.0 1.0;
+		  offset: 2 2;
+	       }
+	       image {
+		  normal: "e17_mini_button_shadow2.png";
+		  border: 6 6 6 6;
+	       }
+	    }
+	    description { state: "visible" 0.0;
+	       inherit: "default" 0.0;
+	       visible: 1;
+	    }
+	 }
+	 part { name: "icon_box";
+	    type: RECT;
+	    mouse_events:  0;
+	    description { state: "default" 0.0;
+	       visible: 0;
+	       align: 0.5 0.5;
+	       rel1 {
+		  to: "e.swallow.icon";
+		  relative: 0.0 0.0;
+		  offset: -1 -1;
+	       }
+	       rel2 {
+		  to: "e.swallow.icon";
+		  relative: 1.0 1.0;
+		  offset: 0 0;
+	       }
+	       color: 0 0 0 64;
+	    }
+	    description { state: "visible" 0.0;
+	       inherit: "default" 0.0;
+	       visible: 1;
+	    }
+	 }
+	 part { name: "icon_box_bg";
+	    mouse_events:  0;
+	    description { state: "default" 0.0;
+	       visible: 0;
+	       rel1 {
+		  to: "icon_box";
+		  relative: 0.0 0.0;
+		  offset: 1 1;
+	       }
+	       rel2 {
+		  to: "icon_box";
+		  relative: 1.0 1.0;
+		  offset: -2 -2;
+	       }
+	       image.normal: "pager_base2.png";
+	       fill {
+		  smooth: 0;
+		  size {
+		     relative: 0 0;
+		     offset:   32 32;
+		  }
+	       }
+	    }
+	    description { state: "visible" 0.0;
+	       inherit: "default" 0.0;
+	       visible: 1;
+	    }
+	 }
+	 part { name: "icon0";
+	    type: RECT;
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       align: 0.5 0.5;
+	       aspect: 1.0 1.0;
+	       aspect_preference: VERTICAL;
+	       visible: 0;
+	       rel1 {
+		  relative: 0.0 0.0;
+		  offset: 2 2;
+	       }
+	       rel2 {
+		  to_y: "e.text.label";
+		  relative: 1.0 0.0;
+		  offset: -3 -1;
+	       }
+	       color: 0 0 0 0;
+	    }
+	 }
+	 part { name: "icon";
+	    type: RECT;
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       align: 0.5 0.5;
+	       aspect: 1.0 1.0;
+	       aspect_preference: BOTH;
+	       visible:  0;
+	       rel1.to: "icon0";
+	       rel2.to: "icon0";
+	       color: 0 0 0 0;
+	    }
+	    description { state: "min" 0.0;
+	       inherit: "default" 0.0;
+	       max: 0 0;
+	    }
+	    description { state: "max" 0.0;
+	       inherit: "default" 0.0;
+	       rel1 {
+		  to: "icon0";
+		  relative: 0.0  0.0;
+		  offset:   -4   -4;
+	       }
+	       rel2 {
+		  to: "icon0";
+		  relative: 1.0  1.0;
+		  offset:   3    3;
+	       }
+	    }
+	    description { state: "max2" 0.0;
+	       inherit:  "default" 0.0;
+	       rel1 {
+		  to: "icon0";
+		  relative: 0.0  0.0;
+		  offset:   -2   -2;
+	       }
+	       rel2 {
+		  to: "icon0";
+		  relative: 1.0  1.0;
+		  offset:   1    1;
+	       }
+	    }
+	 }
+	 part { name: "e.swallow.icon";
+	    type: SWALLOW;
+	    description { state: "default" 0.0;
+	       aspect: 1.0 1.0;
+	       aspect_preference: BOTH;
+	       align: 0.5 0.5;
+	       //          fixed:    1 1;
+	       rel1.to: "icon";
+	       rel2.to: "icon";
+	    }
+	 }
+	 part { name: "e.text.label";
+	    type: TEXT;
+	    effect: SOFT_SHADOW;
+	    mouse_events:  0;
+	    scale: 1;
 	    description { state: "default" 0.0;
 	       align: 0.5 1.0;
 	       fixed: 0 1;
@@ -11073,9 +11488,6 @@ collections { /* begin the collection of edje groups that are in this file */
 	 }
       }
    }
-// FIXME: do: e/fileman/default/icon/variable
-//   group { name: "e/fileman/default/icon/variable";
-//   }
 
    group { name: "e/fileman/default/list/variable";
       data.item: "stacking" "above";
@@ -11333,6 +11745,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    type:           TEXT;
 	    effect:         SOFT_SHADOW;
 	    mouse_events:   0;
+	    scale: 1;
 	    description {
 	       state: "default" 0.0;
 	       min:      16 16;
@@ -11795,6 +12208,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    type:           TEXT;
 	    effect:         SOFT_SHADOW;
 	    mouse_events:   0;
+	    scale: 1;
 	    description {
 	       state: "default" 0.0;
 	       min:      16 16;
@@ -12257,6 +12671,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    type:           TEXT;
 	    effect:         SOFT_SHADOW;
 	    mouse_events:   0;
+	    scale: 1;
 	    description {
 	       state: "default" 0.0;
 	       min:      16 16;
@@ -12719,6 +13134,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    type:           TEXT;
 	    effect:         SOFT_SHADOW;
 	    mouse_events:   0;
+	    scale: 1;
 	    description {
 	       state: "default" 0.0;
 	       min:      16 16;
@@ -13012,6 +13428,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 part { name: "e.textblock.message";
 	    type: TEXTBLOCK;
 	    mouse_events:  0;
+	    scale: 1;
 	    description {
 	       state: "default" 0.0;
 	       rel1 {
@@ -13185,6 +13602,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 part { name: "e.textblock.message";
 	    type: TEXTBLOCK;
 	    mouse_events: 0;
+	    scale: 1;
 	    description { state: "default" 0.0;
 	       rel1.offset: 4 4;
 	       rel2.offset: -5 -5;
@@ -13579,6 +13997,7 @@ collections { /* begin the collection of edje groups that are in this file */
       parts {
 	 part { name: "base";
 	    mouse_events: 0;
+	    scale: 1;
 	    description { state: "default" 0.0;
 	       min: 16 16;
 	       max: 16 16;
@@ -13634,6 +14053,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 part { name: "e.text.label";
 	    type: TEXT;
 	    mouse_events: 0;
+	    scale: 1;
 	    description { state: "default" 0.0;
 	       min:      16 16;
 	       rel1 {
@@ -13704,6 +14124,7 @@ collections { /* begin the collection of edje groups that are in this file */
       parts {
 	 part { name: "base";
 	    mouse_events: 0;
+	    scale: 1;
 	    description { state: "default" 0.0;
 	       min: 16 16;
 	       max: 16 16;
@@ -13801,6 +14222,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 part { name: "e.text.label";
 	    type: TEXT;
 	    mouse_events: 0;
+	    scale: 1;
 	    clip_to: "label_clip";
 	    description { state: "default" 0.0;
 	       min: 16 16;
@@ -13882,6 +14304,7 @@ collections { /* begin the collection of edje groups that are in this file */
       parts {
 	 part { name: "base";
 	    mouse_events: 0;
+	    scale: 1;
 	    description { state: "default" 0.0;
 	       min: 16 16;
 	       max: 16 16;
@@ -13937,6 +14360,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 part { name: "e.text.label";
 	    type: TEXT;
 	    mouse_events: 0;
+	    scale: 1;
 	    description { state: "default" 0.0;
 	       min:      16 16;
 	       rel1 {
@@ -14007,6 +14431,7 @@ collections { /* begin the collection of edje groups that are in this file */
       parts {
 	 part { name: "base";
 	    mouse_events: 0;
+	    scale: 1;
 	    description { state: "default" 0.0;
 	       min: 16 16;
 	       max: 16 16;
@@ -14104,6 +14529,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 part { name: "e.text.label";
 	    type: TEXT;
 	    mouse_events: 0;
+	    scale: 1;
 	    clip_to: "label_clip";
 	    description { state: "default" 0.0;
 	       min: 16 16;
@@ -14263,6 +14689,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    type:          TEXT;
 	    effect:        SOFT_SHADOW;
 	    mouse_events:  0;
+	    scale: 1;
 	    description {
 	       state:    "default" 0.0;
 	       rel1 {
@@ -14425,6 +14852,7 @@ collections { /* begin the collection of edje groups that are in this file */
       parts {
          part { name: "bg";
 	    type: RECT;
+	    mouse_events: 1;
 	    description { state: "default" 0.0;
 	       rel1.offset: 1 1;
 	       rel2.offset: -2 -2;
@@ -14444,7 +14872,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    type: SWALLOW;
 	    description {
 	       state: "default" 0.0;
-	       rel1.offset: 1 1;
+	       rel1.offset: 0 0;
 	       rel2 {
 		  relative: 0.0  0.0;
 		  offset:   -1   -1;
@@ -14453,6 +14881,16 @@ collections { /* begin the collection of edje groups that are in this file */
 	       }
 	    }
 	 }
+/*	 
+         part { name: "tst";
+	    type: RECT;
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       rel2.relative: 1.0 0.2;
+	       color: 0 0 255 128;
+	    }
+	 }
+ */
 	 part { name: "conf_over";
 	    mouse_events:  0;
 	    description { state: "default" 0.0;
@@ -14467,8 +14905,9 @@ collections { /* begin the collection of edje groups that are in this file */
 	 part { name: "sb_vbar";
 	    type: RECT;
 	    mouse_events: 0;
+	    scale: 1;
 	    description { state: "default" 0.0;
-	       min: 16 16;
+	       min: 17 17;
 	       align: 1.0 0.0;
 	       rel1 {
 		  to: "bg";
@@ -14566,13 +15005,14 @@ collections { /* begin the collection of edje groups that are in this file */
 	 part { name: "e.dragable.vbar";
 	    clip_to: "sb_vbar";
 	    mouse_events: 1;
+	    scale: 1;
 	    dragable {
 	       x: 0 0 0;
 	       y: 1 1 0;
 	       confine: "sb_vbar_base";
 	    }
 	    description { state: "default" 0.0;
-	       min: 17 32;
+	       min: 17 17;
 	       rel1 {
 		  relative: 0.5  0.5;
 		  offset:   0    0;
@@ -14626,6 +15066,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    description { state: "default" 0.0;
 	       min: 17 17;
 	       align: 0.5 0.0;
+	       aspect: 1.0 1.0;
 	       aspect_preference: HORIZONTAL;
 	       color: 0 0 0 0;
 	       rel1 { to: "sb_vbar";
@@ -14696,6 +15137,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 part { name: "sb_hbar";
 	    type: RECT;
 	    mouse_events: 0;
+	    scale: 1;
 	    description { state: "default" 0.0;
 	       min: 17 17;
 	       align: 0.0 1.0;
@@ -14794,13 +15236,14 @@ collections { /* begin the collection of edje groups that are in this file */
 	 part { name: "e.dragable.hbar";
 	    clip_to: "sb_hbar";
 	    mouse_events: 1;
+	    scale: 1;
 	    dragable {
 	       x: 1 1 0;
 	       y: 0 0 0;
 	       confine: "sb_hbar_base";
 	    }
 	    description { state: "default" 0.0;
-	       min: 32 17;
+	       min: 17 17;
 	       rel1 {
 		  relative: 0.5  0.5;
 		  offset:   0    0;
@@ -15174,6 +15617,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    type:           TEXT;
 	    effect:         SOFT_SHADOW;
 	    mouse_events:   0;
+	    scale: 1;
 	    description {
 	       state: "default" 0.0;
 	       min:      16 16;
@@ -15352,6 +15796,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    type:           TEXT;
 	    effect:         SOFT_SHADOW;
 	    mouse_events:   0;
+	    scale: 1;
 	    description {
 	       state: "default" 0.0;
 	       min:      16 16;
@@ -15554,6 +15999,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    type:           TEXT;
 	    effect:         SOFT_SHADOW;
 	    mouse_events:   0;
+	    scale: 1;
 	    description {
 	       state: "default" 0.0;
 	       min:      16 16;
@@ -15732,6 +16178,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    type:           TEXT;
 	    effect:         SOFT_SHADOW;
 	    mouse_events:   0;
+	    scale: 1;
 	    description {
 	       state: "default" 0.0;
 	       min:      16 16;
@@ -15877,6 +16324,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 part { name: "e.text.text";
 	    type: TEXT;
 	    mouse_events: 0;
+	    scale: 1;
 	    description { state: "default" 0.0;
 	       color: 0 0 0 255;
 	       color_class: "entry_text";
@@ -16841,6 +17289,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 part { name: "e.text.label";
 	    type: TEXT;
 	    mouse_events:   0;
+	    scale: 1;
 	    description { state: "default" 0.0;
 	       align: 0.0 0.0;
 	       fixed: 0 1;
@@ -16884,6 +17333,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 part { name: "e.text.label";
 	    type: TEXT;
 	    mouse_events:   0;
+	    scale: 1;
 	    description { state: "default" 0.0;
 	       rel1.offset: 2 2;
 	       rel2.offset: -3 -3;
@@ -16906,6 +17356,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 part { name: "e.fontpreview.text";
 	    type: TEXT;
 	    mouse_events: 0;
+	    scale: 1;
 	    description { state: "default" 0.0;
 	       color: 0 0 0 255;
 	       color_class: "entry_text";
@@ -16939,6 +17390,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 part { name:	"e.textblock.text";
 	    type:	TEXTBLOCK;
 	    mouse_events:  0;
+	    scale: 1;
 	    description { state: "default" 0.0;
 	       rel1.offset: 4 4;
 	       rel2.offset: -5 -5;
@@ -17004,6 +17456,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    name: "e.text.title";
 	    type: TEXT;
 	    effect: SOFT_SHADOW;
+	    scale: 1;
 	    description { state: "default" 0.0;
 	       fixed: 0 1;
 	       rel1 {
@@ -17084,6 +17537,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 part { name: "e.text.password";
 	    type: TEXT;
 	    clip_to: "passwd_entry_clip";
+	    scale: 1;
 	    description { state: "default" 0.0;
 	       fixed: 0 1;
 	       align: 0.0 0.5;
