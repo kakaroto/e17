@@ -86,16 +86,10 @@ set_alarm(void)
 {
    FILE *f;
    char buf[1024];
-   char *home, *display;
 
-   home = getenv("HOME");
-   if (!home) home = "/";
-   display = getenv("DISPLAY");
-   if (!display) display = ":0";
    snprintf(buf, sizeof(buf), 
-	    "echo 'HOME=\"%s\" DISPLAY=\"%s\" alarm -activate' | "
-	    "at %i:%02i 2> /tmp/alarm-at-out", 
-	    home, display, alm.hours, alm.minutes);
+	    "echo 'alarm -activate' | at %i:%02i 2> /tmp/alarm-at-out", 
+	    alm.hours, alm.minutes);
    system(buf);
    f = fopen("/tmp/alarm-at-out", "r");
    if (f)
