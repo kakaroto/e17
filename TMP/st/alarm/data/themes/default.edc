@@ -531,8 +531,8 @@ collections {
 	       rel1.offset: -4 3;
 	       rel2.offset: -4 -4;
 	       align: 1.0 0.5;
-	       min: 64 16;
-	       max: 64 16;
+	       min: 96 24;
+	       max: 96 24;
 	       aspect: 4.0 4.0;
 	       aspect_preference: VERTICAL;
 	       color: 255 255 255 255;
@@ -561,8 +561,8 @@ collections {
 	       fixed: 1 1;
 	       rel1.to: "bg";
 	       rel2.to: "bg";
-	       min: 16 16;
-	       max: 16 16;
+	       min: 24 24;
+	       max: 24 24;
 	       aspect: 1.0 1.0;
 	       aspect_preference: VERTICAL;
 	       color: 0 0 0 0;
@@ -1998,7 +1998,6 @@ collections {
 	    mouse_events: 0;
 	    scale: 1;
 	    description { state: "default" 0.0;
-	       fixed: 1 1;
 	       visible: 0;
 	       align: 0.0 0.0;
 	       min: 4 4;
@@ -2013,7 +2012,6 @@ collections {
 	    mouse_events: 0;
 	    scale: 1;
 	    description { state: "default" 0.0;
-	       fixed: 1 1;
 	       visible: 0;
 	       align: 1.0 1.0;
 	       min: 4 4;

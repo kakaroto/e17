@@ -1,5 +1,9 @@
 #include <Elementary.h>
 
+// FIXME: things that could be added:
+// * set alarm text message
+// * select alarm ring sound file
+
 // config - simple text file in $HOME/.alarm-config. save and load
 typedef struct 
 {
@@ -89,7 +93,8 @@ set_alarm(void)
    display = getenv("DISPLAY");
    if (!display) display = ":0";
    snprintf(buf, sizeof(buf), 
-	    "echo 'HOME=\"%s\" DISPLAY=\"%s\" alarm -activate' | at %i:%02i >& /tmp/alarm-at-out", 
+	    "echo 'HOME=\"%s\" DISPLAY=\"%s\" alarm -activate' | "
+	    "at %i:%02i 2> /tmp/alarm-at-out", 
 	    home, display, alm.hours, alm.minutes);
    system(buf);
    f = fopen("/tmp/alarm-at-out", "r");
@@ -104,12 +109,14 @@ set_alarm(void)
      }
 }
 
+// generic callback - delete any window (close button/remove) and it just exits
 static void
 on_win_del_req(void *data, Elm_Win *win, Elm_Cb_Type type, void *info)
 {
    elm_exit();
 }
 
+// if user changed the time in the clock-settings (editable) then record
 static void
 on_clock_changed(void *data, Elm_Clock *cloc, Elm_Cb_Type type, void *info)
 {
@@ -117,6 +124,7 @@ on_clock_changed(void *data, Elm_Clock *cloc, Elm_Cb_Type type, void *info)
    alm.minutes = cloc->min;
 }
 
+// press ok to save time and set up alarm
 static void
 on_button_activate(void *data, Elm_Button *bt, Elm_Cb_Type type, void *info)
 {
@@ -126,6 +134,7 @@ on_button_activate(void *data, Elm_Button *bt, Elm_Cb_Type type, void *info)
    elm_exit();
 }
 
+// alarm main window - setup
 static void
 create_main_win(void)
 {
