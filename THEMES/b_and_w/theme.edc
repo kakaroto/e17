@@ -24,6 +24,9 @@
 //	      - ilist e.swallow.icon should use e_ilist_icon_size_set to make a dummy box 
 //		to compensate when there is no icon there.
 //	      - Fix ibox urgent / icon_overlay problem
+//            - Advanced theme, Colours, Fonts, Language, Profiles Icons. 
+//		  Use a Check tick instead of the E logo. (Only fix when this theme is finished.)
+//	      - Mixer Icon needs to be fixed.
 //
 
 /*
@@ -18524,7 +18527,7 @@ Idea: Use define to create icons. Only draw back I can see so far
 */
 
 #define ICON(NAME, FILE, SIZE)				\
-group { name: "e/icons/enlightenment/"NAME ; 	        \
+group { name: "e/icons/"NAME ; 	        \
    max:  SIZE SIZE;				        \
    parts { 						\
       part { name: "icon";			        \
@@ -18540,12 +18543,24 @@ group { name: "e/icons/enlightenment/"NAME ; 	        \
 }
 
 // FIXME: Dummy Icons
+// Do we dare try to put an icon in for all the popup menu items too?
 
-ICON("pager","icon_dummy.png",64)
-ICON("engine","icon_dummy.png",64)
-ICON("add_application","icon_dummy.png",64)
-ICON("profiles","icon_dummy.png",64)
+ICON("enlightenment/check","icon_dummy.png",64) 		//This should be used in Advanced theme, Colours, Fonts, Language, Profiles
+						//selector instead of the E logo. (will break themes when changed)
 
+ICON("enlightenment/pager","icon_dummy.png",64)
+ICON("enlightenment/engine","icon_dummy.png",64)
+ICON("enlightenment/add_application","icon_dummy.png",64)
+ICON("enlightenment/profiles","icon_dummy.png",64)
+ICON("enlightenment/mixer","icon_dummy.png",64)			//Mixer Icon (Broken)
+ICON("enlightenment/picture","icon_dummy.png",64)		//Wallpaper selector
+ICON("enlightenment/gradient","icon_dummy.png",64)		//Wallpaper selector
+ICON("enlightenment/website","icon_dummy.png",64)		//Wallpaper selector
+ICON("enlightenment/swap","icon_dummy.png",64)			//Gradient selector 
+ICON("enlightenment/new","icon_dummy.png",64)			//Input Method Config (ADV) (Use widget/new or add?)
+ICON("widget/add","icon_dummy.png",64) 				//Shelf config
+ICON("widget/del","icon_dummy.png",64) 				//Shelf config
+ICON("widget/config","icon_dummy.png",64) 			//Shelf config
 
 /////////////////////////////////////////////////////////////////////////////
    /*** MOD: WIZARD ***/
