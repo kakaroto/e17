@@ -1998,6 +1998,7 @@ collections {
 	    mouse_events: 0;
 	    scale: 1;
 	    description { state: "default" 0.0;
+	       fixed: 1 1;
 	       visible: 0;
 	       align: 0.0 0.0;
 	       min: 4 4;
@@ -2012,6 +2013,7 @@ collections {
 	    mouse_events: 0;
 	    scale: 1;
 	    description { state: "default" 0.0;
+	       fixed: 1 1;
 	       visible: 0;
 	       align: 1.0 1.0;
 	       min: 4 4;

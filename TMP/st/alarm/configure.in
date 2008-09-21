@@ -104,5 +104,5 @@ data/Makefile
 data/themes/Makefile
 data/images/Makefile
 data/desktop/Makefile
-data/objects/Makefile
+data/sounds/Makefile
 ])

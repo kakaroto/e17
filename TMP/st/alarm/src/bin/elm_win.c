@@ -22,6 +22,7 @@ _elm_child_eval_job(Elm_Win *win)
    int w, h;
    int expand_x, expand_y;
    
+   win->deferred_child_eval_job = NULL;
    _elm_obj_nest_push();
    w = h = 0;
    expand_x = expand_y = 0;

@@ -148,6 +148,7 @@ _elm_obj_nest_pop(void)
    if (deferred_nest > 0) return;
    while (deferred_deletions)
      {
+	((Elm_Obj *)(deferred_deletions->data))->delete_deferred = 0;
 	((Elm_Obj *)(deferred_deletions->data))->del(ELM_OBJ(deferred_deletions->data));
 	deferred_deletions = evas_list_remove_list(deferred_deletions, deferred_deletions);
      }

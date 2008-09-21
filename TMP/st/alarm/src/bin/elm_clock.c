@@ -147,10 +147,7 @@ _elm_clock_time_update(Elm_Clock *ck)
 	     ck->digit[i] = edje_object_add(evas_object_evas_get(ck->base));
 	     _elm_theme_set(ck->digit[i], "clock", "flipdigit");
 	     if (ck->edit)
-	       {
-		  printf("edit on\n");
-		  edje_object_signal_emit(ck->digit[i], "elm,state,edit,on", "elm");
-	       }
+	       edje_object_signal_emit(ck->digit[i], "elm,state,edit,on", "elm");
 	     edje_object_signal_callback_add(ck->digit[i], "elm,action,up", "",
 					     _elm_clock_val_up, ck);
 	     edje_object_signal_callback_add(ck->digit[i], "elm,action,down", "",
