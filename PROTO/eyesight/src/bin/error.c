@@ -1,5 +1,6 @@
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #include <Evas.h>
 #include <Ecore_Evas.h>
