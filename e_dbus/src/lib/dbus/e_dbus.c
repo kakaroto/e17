@@ -541,6 +541,12 @@ e_dbus_connection_close(E_DBus_Connection *conn)
 
   dbus_connection_set_dispatch_status_function (conn->conn, NULL, NULL, NULL);
 
+  if (conn->idler)
+  {
+    ecore_idler_del(conn->idler);
+    conn->idler = NULL;
+  }
+
   dbus_connection_close(conn->conn);
   dbus_connection_unref(conn->conn);
 
