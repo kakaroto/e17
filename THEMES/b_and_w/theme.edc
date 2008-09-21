@@ -24,8 +24,6 @@
 //	      - ilist e.swallow.icon should use e_ilist_icon_size_set to make a dummy box 
 //		to compensate when there is no icon there.
 //	      - Fix ibox urgent / icon_overlay problem
-//            - Advanced theme, Colours, Fonts, Language, Profiles Icons. 
-//		  Use a Check tick instead of the E logo. (Only fix when this theme is finished.)
 //	      - Mixer Icon needs to be fixed.
 //
 
@@ -18542,11 +18540,11 @@ group { name: "e/icons/"NAME ; 	        \
    }							\
 }
 
+
+ICON("enlightenment/check","icon_check.png",64) 	
+
 // FIXME: Dummy Icons
 // Do we dare try to put an icon in for all the popup menu items too?
-
-ICON("enlightenment/check","icon_dummy.png",64) 		//This should be used in Advanced theme, Colours, Fonts, Language, Profiles
-						//selector instead of the E logo. (will break themes when changed)
 
 ICON("enlightenment/pager","icon_dummy.png",64)
 ICON("enlightenment/engine","icon_dummy.png",64)
