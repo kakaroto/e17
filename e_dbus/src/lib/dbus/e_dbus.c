@@ -187,6 +187,8 @@ e_dbus_connection_free(void *data)
 
   if (cd->conn_name) free(cd->conn_name);
 
+  if (cd->idler) ecore_idler_del(cd->idler);
+
   free(cd);
 }
 
@@ -540,12 +542,6 @@ e_dbus_connection_close(E_DBus_Connection *conn)
                                          NULL, NULL);
 
   dbus_connection_set_dispatch_status_function (conn->conn, NULL, NULL, NULL);
-
-  if (conn->idler)
-  {
-    ecore_idler_del(conn->idler);
-    conn->idler = NULL;
-  }
 
   dbus_connection_close(conn->conn);
   dbus_connection_unref(conn->conn);
