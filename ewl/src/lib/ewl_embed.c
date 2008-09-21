@@ -2324,6 +2324,7 @@ ewl_embed_evas_cb_mouse_down(void *data, Evas *e __UNUSED__,
 {
         Ewl_Embed *embed;
         Evas_Event_Mouse_Down *ev;
+        int clicks;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(data);
@@ -2331,7 +2332,20 @@ ewl_embed_evas_cb_mouse_down(void *data, Evas *e __UNUSED__,
 
         ev = event_info;
         embed = data;
-        ewl_embed_mouse_down_feed(embed, ev->button, 1, ev->canvas.x,
+
+        /* Proper number of clicks here */
+        if (ev->flags & EVAS_BUTTON_TRIPLE_CLICK)
+                clicks = 3;
+        else if (ev->flags & EVAS_BUTTON_DOUBLE_CLICK)
+                clicks = 2;
+        else
+                clicks = 1;
+
+        /* Apparently this only occurs when embedding widgets in an
+         * edje using program, so there shouldn't be any changes to normal
+         * use
+         */
+        ewl_embed_mouse_down_feed(embed, ev->button, clicks, ev->canvas.x,
                                   ev->canvas.y, ewl_ev_modifiers_get());
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
