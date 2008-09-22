@@ -47,11 +47,11 @@ class Madule extends BaseMadule
 	public function getSourceDisplayUrl()
 	{
 		$url = $this->getSourceUrl();
-		if (stripos($url, 'e16')===0 
-			|| stripos($url, 'e17')===0
-			|| stripos($url, 'e_modules')===0
+		if (stripos($url, 'E16')===0 
+			|| stripos($url, 'e')===0
+			|| stripos($url, 'E-MODULES-EXTRA')===0
 			|| stripos($url, 'eterm')===0
-			|| stripos($url, 'misc')===0)
+			|| stripos($url, 'MISC')===0)
 			return '/home/cvs/path/'.urlencode(str_replace('/', '|', $url));
 		return $url;
 	}
