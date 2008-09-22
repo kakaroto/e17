@@ -19,18 +19,18 @@
 // theme_about
 //
 // TODO Code: - allow sys (shutdown, reboot etc.) to indicated borderless
-//            - make battery module text translatable and set by E, not in the theme.	
+//            - make battery module text translatable and set by E, not in the theme.
 //            - desklock login_box doesnt centre correctly. looks like a code problem.
 //            - Theme Preview selector. Doesnt reszie well. See wallpaper for correct behaviour.
-//	      - ilist e.swallow.icon should use e_ilist_icon_size_set to make a dummy box 
+//	      - ilist e.swallow.icon should use e_ilist_icon_size_set to make a dummy box
 //		to compensate when there is no icon there.
 //	      - Fix ibox urgent / icon_overlay problem
 //	      - Mixer Icon needs to be fixed.
 //
 
 /*
- * So how do themes work? 
- * 
+ * So how do themes work?
+ *
  * Themes DECLARE objects (groups of parts) inside a 'collections' section.
  * Each of these groups are an element of a theme - much like an image in a
  * web page with <img src=blah.jpg>, but MUCH more powerful. They can scale
@@ -38,14 +38,14 @@
  * from the user (mouse for example) or other logical events (like being shown
  * or hidden, etc.) or synthetic signals from enlightenment itself indicating
  * some new state.
- * 
+ *
  * Each group is split into a parts section that contains all the elements
  * that make up that group, and how they are laid out. Each part can have
  * multiple states - described in description sections. There must always be
  * at least a default description of value 0.0. After this there may possibly
  * be a programs section. This defines behavior and how the group will react
  * to events/signals.
- * 
+ *
  * A theme is simply made up of a LOT of these. If a group is not provided in
  * the theme you are using, it will fall back to the default theme to get the
  * element. It is assumed the default theme is 100% complete and provides
@@ -100,7 +100,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       image.normal: "vgrad_dark.png";  /* use the vgrad_dark.png im */
 	       fill { /* now specify how the image is to fill the part */
 		  smooth: 0; /* set smooth swcaling off */
-		  size { 
+		  size {
 		     relative: 0 1.0; /* X and Y point relative to the part
 				       * as a whole for the size (dont scale
 				       * in X but scale 100% in Y */
@@ -135,7 +135,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 } */
       }
    }
-   
+
 /////////////////////////////////////////////////////////////////////////////
    /*** DEFAULT WINDOW BORDER ***/
    group { name: "e/widgets/border/default/border";
@@ -175,7 +175,7 @@ collections { /* begin the collection of edje groups that are in this file */
       }
       /* this would tell E that the border is not a solid rectanle, but is
        * shaped (has transparent sections) and so would follow a different
-       * code path for such borders. the default is not shaped, so this is 
+       * code path for such borders. the default is not shaped, so this is
        * not enabled here, but left commented out for illustration purposes */
 //      data.item: "shaped" "1";
       parts {
@@ -520,7 +520,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color: 0 0 0 0;
 	    }
 	 }
-	 
+
 	 part { name: "bt_close"; /* the close button shadow */
 	    mouse_events: 0;
 	    description { state: "default" 0.0;
@@ -546,7 +546,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       }
 	       image.normal: "bd_button_close_shadow.png";
 	    }
-	 }	 
+	 }
 	 part { name: "bt_max"; /* maximize button shadow */
 	    mouse_events: 0;
 	    description { state: "default" 0.0;
@@ -569,7 +569,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       }
 	       image.normal: "bd_button_max_shadow.png";
 	    }
-	 }	 
+	 }
 	 part { name: "bt_min"; /* minimize button shadow */
 	    mouse_events: 0;
 	    description { state: "default" 0.0;
@@ -593,7 +593,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       image.normal: "bd_button_min_shadow.png";
 	    }
 	 }
-	 
+
 	 part { name: "top_hilight"; /* an overlayed image to give the top of
 				      * a border a shiny look - very subtle */
 	    mouse_events: 0;
@@ -614,7 +614,7 @@ collections { /* begin the collection of edje groups that are in this file */
                fill.smooth: 0;
 	    }
 	 }
-	 
+
 	 part { name: "buttons_unfoc"; /* this is a rect part used to clip &
 					* thus control the visibility of a group
 					* of other parts (the images for the
@@ -732,7 +732,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       rel2.offset: -1 0;
 	    }
 	 }
-	 
+
 	 part { name: "title_base"; /* an invisible rect part/object used for
 				     * layout purposes */
 	    type: RECT;
@@ -778,7 +778,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       }
 	    }
 	 }
-	 
+
 	 part { name: "title2"; /* this is interesting. it's another text part
 				 * that also displays the title text, but
 				 * normally is not visible. it is only made
@@ -830,7 +830,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       visible: 1;
 	    }
 	 }
-	 
+
 	 part { name: "title_over";
 	    mouse_events:  0;
 	    description { state: "default" 0.0;
@@ -848,7 +848,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       visible: 1;
 	    }
 	 }
-	 
+
 	 part { name: "bottom_clip";
 	    type: RECT;
 	    description { state: "default" 0.0;
@@ -856,7 +856,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       rel2.to: "bottom";
 	       color: 255 255 255 255;
 	    }
-	 }	 
+	 }
 	 part { name: "resize_b";
 	    mouse_events:  0;
 	    clip_to: "bottom_clip";
@@ -889,8 +889,8 @@ collections { /* begin the collection of edje groups that are in this file */
 	       }
 	    }
 	 }
-	 
-	 
+
+
 	 part { name: "e.swallow.client"; /* this determines where the actual
 					   * client window will be placed in
 					   * the border design */
@@ -947,7 +947,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color: 0 0 0 0;
 	    }
 	 }
-	 
+
 	 part { name: "e.event.resize.t";
 	    type: RECT;
 	    description { state: "default" 0.0;
@@ -1057,7 +1057,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       visible: 0;
 	    }
 	 }
-	 
+
 	 part { name: "e.event.icon";
 	    type: RECT;
 	    description { state: "default" 0.0;
@@ -1135,7 +1135,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    target: "buttons_unfoc";
 	    target: "e.text.title";
 	 }
-	 
+
 	 program { name: "urgent"; /* this program is run when the border is
 				    * meant to display an "urgent" state
 				    * (the application has something
@@ -1257,7 +1257,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    target: "busy";
 	    after: "busy_anim";
 	 }
-	 
+
 // don't have states/anim for a generic iconify action
 //	 program { name: "xx";
 //	    signal: "e,action,iconify";
@@ -1294,7 +1294,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    target: "bottom";
 	    target: "e.swallow.client";
 	 }
-	 
+
 // don't have any animation or stat change to do at the start of shading
 //	 program { name: "xx";
 //	    signal: "e,state,shading";
@@ -1360,7 +1360,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    target: "resize_b_on2";
 	    target: "resize_b_on3";
 	 }
-	 
+
 	 program { name: "icon_down";
 	    signal: "mouse,down,*"; /* if any mouse button is pressed... */
 	    source: "e.event.icon";
@@ -1679,7 +1679,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color: 0 0 0 0;
 	    }
 	 }
-	 
+
 	 part { name: "bt_close";
 	    mouse_events: 0;
 	    description { state: "default" 0.0;
@@ -1702,7 +1702,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       }
 	       image.normal: "bd_button_close_shadow.png";
 	    }
-	 }	 
+	 }
 	 part { name: "bt_max";
 	    mouse_events: 0;
 	    description { state: "default" 0.0;
@@ -1725,7 +1725,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       }
 	       image.normal: "bd_button_max_shadow.png";
 	    }
-	 }	 
+	 }
 	 part { name: "bt_min";
 	    mouse_events: 0;
 	    description { state: "default" 0.0;
@@ -1749,7 +1749,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       image.normal: "bd_button_min_shadow.png";
 	    }
 	 }
-	 
+
 	 part { name: "top_hilight";
 	    mouse_events: 0;
 	    description { state: "default" 0.0;
@@ -1769,7 +1769,7 @@ collections { /* begin the collection of edje groups that are in this file */
                fill.smooth: 0;
 	    }
 	 }
-	 
+
 	 part { name: "buttons_unfoc";
 	    type: RECT;
 	    description { state: "default" 0.0;
@@ -1879,7 +1879,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       rel2.offset: -1 0;
 	    }
 	 }
-	 
+
 	 part { name: "title_base";
 	    type: RECT;
 	    mouse_events:  0;
@@ -1924,7 +1924,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       }
 	    }
 	 }
-	 
+
 	 part { name: "title2";
 	    type: TEXT;
 	    mouse_events: 0;
@@ -1962,7 +1962,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       visible: 1;
 	    }
 	 }
-	 
+
 	 part { name: "title_over";
 	    mouse_events:  0;
 	    description { state: "default" 0.0;
@@ -1980,7 +1980,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       visible: 1;
 	    }
 	 }
-	 
+
 	 part { name: "bottom_clip";
 	    type: RECT;
 	    description { state: "default" 0.0;
@@ -1988,7 +1988,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       rel2.to: "bottom";
 	       color: 255 255 255 255;
 	    }
-	 }	 
+	 }
 	 part { name: "resize_b";
 	    mouse_events:  0;
 	    clip_to: "bottom_clip";
@@ -2021,8 +2021,8 @@ collections { /* begin the collection of edje groups that are in this file */
 	       }
 	    }
 	 }
-	 
-	 
+
+
 	 part { name: "e.swallow.client";
 	    type: SWALLOW;
 	    description { state: "default" 0.0;
@@ -2068,7 +2068,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color: 0 0 0 0;
 	    }
 	 }
-	 
+
 	 part { name: "e.event.resize.t";
 	    type: RECT;
 	    description { state: "default" 0.0;
@@ -2178,7 +2178,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       visible: 0;
 	    }
 	 }
-	 
+
 	 part { name: "e.event.icon";
 	    type: RECT;
 	    description { state: "default" 0.0;
@@ -2240,7 +2240,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    target: "buttons_unfoc";
 	    target: "e.text.title";
 	 }
-	 
+
 	 program {
 	    name:    "urgent";
 	    signal:  "e,state,urgent";
@@ -2351,7 +2351,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    target: "busy";
             transition: ACCELERATE 0.5;
 	 }
-         program {	 
+         program {
 	    name: "busy_anim";
 	    signal:  "e,state,hung";
 	    source:  "e";
@@ -2376,7 +2376,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    target: "bottom";
 	    target: "e.swallow.client";
 	 }
-	 
+
 	 program {
 	    name: "shade_end";
 	    signal: "e,state,shaded";
@@ -2436,7 +2436,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    target: "resize_b_on2";
 	    target: "resize_b_on3";
 	 }
-	 
+
 	 program {
 	    name: "icon_down";
 	    signal: "mouse,down,*";
@@ -2734,7 +2734,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color: 0 0 0 0;
 	    }
 	 }
-	 
+
 	 part { name: "bt_close";
 	    mouse_events: 0;
 	    description { state: "default" 0.0;
@@ -2757,7 +2757,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       }
 	       image.normal: "bd_button_close_shadow.png";
 	    }
-	 }	 
+	 }
 	 part { name: "bt_max";
 	    mouse_events: 0;
 	    description { state: "default" 0.0;
@@ -2780,7 +2780,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       }
 	       image.normal: "bd_button_max_shadow.png";
 	    }
-	 }	 
+	 }
 	 part { name: "bt_min";
 	    mouse_events: 0;
 	    description { state: "default" 0.0;
@@ -2804,7 +2804,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       image.normal: "bd_button_min_shadow.png";
 	    }
 	 }
-	 
+
 	 part { name: "top_hilight";
 	    mouse_events: 0;
 	    description { state: "default" 0.0;
@@ -2824,7 +2824,7 @@ collections { /* begin the collection of edje groups that are in this file */
                fill.smooth: 0;
 	    }
 	 }
-	 
+
 	 part { name: "buttons_unfoc";
 	    type: RECT;
 	    description { state: "default" 0.0;
@@ -2934,7 +2934,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       rel2.offset: -1 0;
 	    }
 	 }
-	 
+
 	 part { name: "title_base";
 	    type: RECT;
 	    mouse_events:  0;
@@ -2979,7 +2979,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       }
 	    }
 	 }
-	 
+
 	 part { name: "title2";
 	    type: TEXT;
 	    mouse_events: 0;
@@ -3017,7 +3017,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       visible: 1;
 	    }
 	 }
-	 
+
 	 part { name: "title_over";
 	    mouse_events:  0;
 	    description { state: "default" 0.0;
@@ -3035,7 +3035,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       visible: 1;
 	    }
 	 }
-	 
+
 	 part { name: "e.swallow.client";
 	    type: SWALLOW;
 	    description { state: "default" 0.0;
@@ -3078,7 +3078,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color: 0 0 0 0;
 	    }
 	 }
-	 
+
 	 part { name: "e.event.icon";
 	    type: RECT;
 	    description { state: "default" 0.0;
@@ -3140,7 +3140,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    target: "buttons_unfoc";
 	    target: "e.text.title";
 	 }
-	 
+
 	 program {
 	    name:    "urgent";
 	    signal:  "e,state,urgent";
@@ -3251,7 +3251,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    target: "busy";
             transition: ACCELERATE 0.5;
 	 }
-         program {	 
+         program {
 	    name: "busy_anim";
 	    signal:  "e,state,hung";
 	    source:  "e";
@@ -3274,7 +3274,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    action: STATE_SET "default" 0.0;
 	    target: "e.swallow.client";
 	 }
-	 
+
 	 program {
 	    name: "shade_end";
 	    signal: "e,state,shaded";
@@ -3289,7 +3289,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    action: STATE_SET "default" 0.0;
 	    target: "e.swallow.client";
 	 }
-	 
+
 	 program {
 	    name: "icon_down";
 	    signal: "mouse,down,*";
@@ -3354,7 +3354,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 }
       }
    }
-   
+
    /*** DIALOG WINDOW BORDER ***/
    group { name: "e/widgets/border/dialog/border";
       images {
@@ -3608,7 +3608,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color: 0 0 0 0;
 	    }
 	 }
-	 
+
 	 part { name: "bt_close";
 	    mouse_events: 0;
 	    description { state: "default" 0.0;
@@ -3631,8 +3631,8 @@ collections { /* begin the collection of edje groups that are in this file */
 	       }
 	       image.normal: "bd_button_close_shadow.png";
 	    }
-	 }	 
-	 
+	 }
+
 	 part { name: "top_hilight";
 	    mouse_events: 0;
 	    description { state: "default" 0.0;
@@ -3652,7 +3652,7 @@ collections { /* begin the collection of edje groups that are in this file */
                fill.smooth: 0;
 	    }
 	 }
-	 
+
 	 part { name: "buttons_unfoc";
 	    type: RECT;
 	    description { state: "default" 0.0;
@@ -3706,7 +3706,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       rel2.offset: -1 0;
 	    }
 	 }
-	 
+
 	 part { name: "title_base";
 	    type: RECT;
 	    mouse_events:  0;
@@ -3751,7 +3751,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       }
 	    }
 	 }
-	 
+
 	 part { name: "title2";
 	    type: TEXT;
 	    mouse_events: 0;
@@ -3789,7 +3789,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       visible: 1;
 	    }
 	 }
-	 
+
 	 part { name: "title_over";
 	    mouse_events:  0;
 	    description { state: "default" 0.0;
@@ -3807,7 +3807,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       visible: 1;
 	    }
 	 }
-	 
+
 	 part { name: "bottom_clip";
 	    type: RECT;
 	    description { state: "default" 0.0;
@@ -3815,7 +3815,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       rel2.to: "bottom";
 	       color: 255 255 255 255;
 	    }
-	 }	 
+	 }
 	 part { name: "resize_b";
 	    mouse_events:  0;
 	    clip_to: "bottom_clip";
@@ -3848,8 +3848,8 @@ collections { /* begin the collection of edje groups that are in this file */
 	       }
 	    }
 	 }
-	 
-	 
+
+
 	 part { name: "e.swallow.client";
 	    type: SWALLOW;
 	    description { state: "default" 0.0;
@@ -3895,7 +3895,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color: 0 0 0 0;
 	    }
 	 }
-	 
+
 	 part { name: "e.event.resize.t";
 	    type: RECT;
 	    description { state: "default" 0.0;
@@ -4005,7 +4005,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       visible: 0;
 	    }
 	 }
-	 
+
 	 part { name: "e.event.icon";
 	    type: RECT;
 	    description { state: "default" 0.0;
@@ -4051,7 +4051,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    target: "buttons_unfoc";
 	    target: "e.text.title";
 	 }
-	 
+
 	 program {
 	    name:    "urgent";
 	    signal:  "e,state,urgent";
@@ -4162,7 +4162,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    target: "busy";
             transition: ACCELERATE 0.5;
 	 }
-         program {	 
+         program {
 	    name: "busy_anim";
 	    signal:  "e,state,hung";
 	    source:  "e";
@@ -4187,7 +4187,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    target: "bottom";
 	    target: "e.swallow.client";
 	 }
-	 
+
 	 program {
 	    name: "shade_end";
 	    signal: "e,state,shaded";
@@ -4247,7 +4247,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    target: "resize_b_on2";
 	    target: "resize_b_on3";
 	 }
-	 
+
 	 program {
 	    name: "icon_down";
 	    signal: "mouse,down,*";
@@ -4280,7 +4280,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 }
       }
    }
-   
+
    /*** NORESIZE DIALOG WINDOW BORDER ***/
    group { name: "e/widgets/border/noresize_dialog/border";
       images {
@@ -4507,7 +4507,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color: 0 0 0 0;
 	    }
 	 }
-	 
+
 	 part { name: "bt_close";
 	    mouse_events: 0;
 	    description { state: "default" 0.0;
@@ -4530,8 +4530,8 @@ collections { /* begin the collection of edje groups that are in this file */
 	       }
 	       image.normal: "bd_button_close_shadow.png";
 	    }
-	 }	 
-	 
+	 }
+
 	 part { name: "top_hilight";
 	    mouse_events: 0;
 	    description { state: "default" 0.0;
@@ -4551,7 +4551,7 @@ collections { /* begin the collection of edje groups that are in this file */
                fill.smooth: 0;
 	    }
 	 }
-	 
+
 	 part { name: "buttons_unfoc";
 	    type: RECT;
 	    description { state: "default" 0.0;
@@ -4605,7 +4605,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       rel2.offset: -1 0;
 	    }
 	 }
-	 
+
 	 part { name: "title_base";
 	    type: RECT;
 	    mouse_events:  0;
@@ -4650,7 +4650,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       }
 	    }
 	 }
-	 
+
 	 part { name: "title2";
 	    type: TEXT;
 	    mouse_events: 0;
@@ -4688,7 +4688,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       visible: 1;
 	    }
 	 }
-	 
+
 	 part { name: "title_over";
 	    mouse_events:  0;
 	    description { state: "default" 0.0;
@@ -4706,7 +4706,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       visible: 1;
 	    }
 	 }
-	 
+
 	 part { name: "e.swallow.client";
 	    type: SWALLOW;
 	    description { state: "default" 0.0;
@@ -4748,7 +4748,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color: 0 0 0 0;
 	    }
 	 }
-	 
+
 	 part { name: "e.event.icon";
 	    type: RECT;
 	    description { state: "default" 0.0;
@@ -4794,7 +4794,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    target: "buttons_unfoc";
 	    target: "e.text.title";
 	 }
-	 
+
 	 program {
 	    name:    "urgent";
 	    signal:  "e,state,urgent";
@@ -4905,7 +4905,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    target: "busy";
             transition: ACCELERATE 0.5;
 	 }
-         program {	 
+         program {
 	    name: "busy_anim";
 	    signal:  "e,state,hung";
 	    source:  "e";
@@ -4928,7 +4928,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    action: STATE_SET "default" 0.0;
 	    target: "e.swallow.client";
 	 }
-	 
+
 	 program {
 	    name: "shade_end";
 	    signal: "e,state,shaded";
@@ -4943,7 +4943,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    action: STATE_SET "default" 0.0;
 	    target: "e.swallow.client";
 	 }
-	 
+
 	 program {
 	    name: "icon_down";
 	    signal: "mouse,down,*";
@@ -4976,7 +4976,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 }
       }
    }
-   
+
   /*** BONUS BORDERS TO CHOOSE FROM ***/
   group { name: "e/widgets/border/pixel/border";
      parts {
@@ -5158,7 +5158,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 }
       }
       programs {
-         program { name: "mouse_down"; /* called every time e detects a mouse 
+         program { name: "mouse_down"; /* called every time e detects a mouse
 					* press */
 	    signal: "e,action,mouse,down";
 	    source: "e";
@@ -5200,24 +5200,24 @@ collections { /* begin the collection of edje groups that are in this file */
 	    target: "mouse_idle";
 	    target: "mouse_idle2";
 	 }
-// when mouse button is released. not used here	 
+// when mouse button is released. not used here
 //         program { name: "xx";
 //	    signal: "e,action,mouse,up";
 //	    source: "e";
 //	 }
-// when mouse button is moved. not used here	 
+// when mouse button is moved. not used here
 //         program { name: "xx";
 //	    signal: "e,action,mouse,move";
 //	    source: "e";
 //	 }
-// when mouse wheel is scrolled. not used here	 
+// when mouse wheel is scrolled. not used here
 //         program { name: "xx";
 //	    signal: "e,action,mouse,wheel";
 //	    source: "e";
 //	 }
       }
    }
-   
+
 /////////////////////////////////////////////////////////////////////////////
    /*** THE DEFAULT MOUSE CURSOR - MONOCHROME. REALLY BORING ***/
    /* This pointer is used if the Xserver does not support full ARGB color
@@ -5877,7 +5877,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       image.border: 2 2 2 2;
 	       fill.smooth: 0;
 	    }
-	 }     
+	 }
 	 part { name: "e.swallow.content";
 	    type: SWALLOW;
 	    description { state: "default" 0.0;
@@ -6191,7 +6191,7 @@ collections { /* begin the collection of edje groups that are in this file */
    }
 
    /* This is the alternate shelf. It provides a stylistic alternative to
-    * make the shelf more dynamic to your tastes and wallpaper. It is 
+    * make the shelf more dynamic to your tastes and wallpaper. It is
     * selected in the Shelf Configuration. More alternative shelfs can
     * be provided by using more group names. eg, "e/shelf/black/base" */
    group { name: "e/shelf/alternate/base";
@@ -6219,7 +6219,7 @@ collections { /* begin the collection of edje groups that are in this file */
 // 	       image.normal: "shelf_alt_bg_right.png";
 // 	       fill.smooth: 0;
 // 	    }
-	 }     
+	 }
 	 part { name: "e.swallow.content";
 	    type: SWALLOW;
 	    description { state: "default" 0.0;
@@ -6248,7 +6248,7 @@ collections { /* begin the collection of edje groups that are in this file */
 // 	       inherit: "default" 0.0;
 // 	       color: 255 255 255 0;
 // 	    }
-	 }     
+	 }
 	 part { name: "over";
 	    mouse_events: 0;
 	    description { state: "default" 0.0;
@@ -6269,7 +6269,7 @@ collections { /* begin the collection of edje groups that are in this file */
 // 	       image.middle: 0;
 // 	       fill.smooth: 0;
 // 	    }
-	 }     
+	 }
       }
       /* Because programs can not respond to 2 different types of signals,
        * the programs are split into individual programs that point towards
@@ -6796,7 +6796,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    action: STATE_SET "default" 0.0;
             target: "zoom";
 	 }
-	 
+
 	 program { name: "name_show";
 	    signal: "mouse,in";
 	    source: "mouse_over";
@@ -7060,17 +7060,17 @@ collections { /* begin the collection of edje groups that are in this file */
 	     new r;
 	     new g;
 	     new b;
-	     
+
 	     val = getfarg(2);
-	     
+
 	     if (val < 0.35)
 	       {
 		  new Float:val1;
 		  new Float:val2;
-		  
+
 		  val1 = val - 0.10;
 		  if (val1 < 0.0) val1 = 0.0;
-		  
+
 		  val2 = 0.125 - val1;
 		  if (val2 < 0.0) val2 = 0.0;
 		  val2 = val2 / 0.125;
@@ -7080,26 +7080,26 @@ collections { /* begin the collection of edje groups that are in this file */
 		  if (val2 > 0.125) val2 = 0.125;
 		  val2 = val2 / 0.125;
 		  g = round(val2 * 255.0, ROUND);
-		  
+
 		  b = 0;
 	       }
 	     else
 	       {
 		  r = 0; g = 255; b = 0;
 	       }
-	     
+
 	     custom_state(PART:"fill", "default", 0.0);
 	     set_state_val(PART:"fill", STATE_REL1, 0.0, 1.0 - val);
 	     set_state(PART:"fill", "custom", 0.0);
-	     
+
 	     custom_state(PART:"bfill1", "default", 0.0);
 	     custom_state(PART:"bfill2", "default", 0.0);
 	     custom_state(PART:"bfill3", "default", 0.0);
-	     
+
 	     set_state_val(PART:"bfill1", STATE_COLOR, r, g, b, 255);
 	     set_state_val(PART:"bfill2", STATE_COLOR, r, g, b, 255);
 	     set_state_val(PART:"bfill3", STATE_COLOR, r, g, b, 255);
-	     
+
 	     set_state(PART:"bfill1", "custom", 0.0);
 	     set_state(PART:"bfill2", "custom", 0.0);
 	     set_state(PART:"bfill3", "custom", 0.0);
@@ -7457,7 +7457,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 }
       }
    }
-   
+
    group { name: "e/modules/battery/popup";
       max:  420 96;
       min:  240 64;
@@ -7524,7 +7524,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 }
       }
    }
-   
+
 /////////////////////////////////////////////////////////////////////////////
    /*** MOD: TEMPERATURE ***/
    group { name: "e/modules/temperature/main";
@@ -7644,7 +7644,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color: 255 255 255 128;
 	    }
 	 }
-	 part {	 
+	 part {
 	    name:           "temp_clip";
 	    type:           RECT;
 	    clip_to:        "fade_clip";
@@ -7860,7 +7860,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 image: "cm-57.png" COMP;
 	 image: "cm-58.png" COMP;
 	 image: "cm-59.png" COMP;
-#ifdef CLOCK_SECONDS	 
+#ifdef CLOCK_SECONDS
 	 image: "cs-00.png" COMP;
 	 image: "cs-01.png" COMP;
 	 image: "cs-02.png" COMP;
@@ -7921,19 +7921,19 @@ collections { /* begin the collection of edje groups that are in this file */
 	 image: "cs-57.png" COMP;
 	 image: "cs-58.png" COMP;
 	 image: "cs-59.png" COMP;
-#endif	 
+#endif
       }
       min: 16 16;
       max:  128 128;
       script {
 	 public clock_cb(val) {
 	    new buf[11];
-	    new year, month, day, yearday, weekday, hour, minute;	    
+	    new year, month, day, yearday, weekday, hour, minute;
 	    new Float:second;
 	    new v;
-	    
+
 	    date(year, month, day, yearday, weekday, hour, minute, second);
-#ifdef CLOCK_SECONDS	 
+#ifdef CLOCK_SECONDS
 	    v = round(second);
 	    timer(1.0 - (second - v), "clock_cb", 1);
 	    buf[0] = 0;
@@ -7942,13 +7942,13 @@ collections { /* begin the collection of edje groups that are in this file */
 	    set_state(PART:"seconds", buf, 0.0);
 #else
 	    timer(60.0 - (second), "clock_cb", 1);
-#endif	    
+#endif
 	    v = minute;
 	    buf[0] = 0;
 	    if (v < 10) {snprintf(buf, 10, "0%i", v);}
 	    else        {snprintf(buf, 10, "%i", v);}
 	    set_state(PART:"minutes", buf, 0.0);
-	    
+
 	    v = ((hour % 12) * 5) + ((minute * 5) / 60);
 	    buf[0] = 0;
 	    if (v < 10) {snprintf(buf, 10, "0%i", v);}
@@ -7964,7 +7964,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       image.normal: "clock_base.png";
 	    }
 	 }
-#ifdef CLOCK_SECONDS	 
+#ifdef CLOCK_SECONDS
 	 part { name: "seconds";
 	    mouse_events: 0;
 	    description { state: "default" 0.0;
@@ -8032,7 +8032,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    description { state: "58" 0.0; inherit: "default" 0.0; image.normal: "cs-58.png";}
 	    description { state: "59" 0.0; inherit: "default" 0.0; image.normal: "cs-59.png";}
 	 }
-#endif	 
+#endif
 	 part { name: "minutes";
 	    mouse_events: 0;
 	    description { state: "default" 0.0;
@@ -8214,7 +8214,7 @@ collections { /* begin the collection of edje groups that are in this file */
       script {
 	 public available_frequencies;
 	 public available_governors;
-	 
+
        public message(Msg_Type:type, id, ...) {
 	  if ((type == MSG_INT_SET) && (id == 1)) {
 	     while (count(available_frequencies) > 0) {
@@ -8225,11 +8225,11 @@ collections { /* begin the collection of edje groups that are in this file */
 	     }
 	  } else if ((type == MSG_STRING_SET) && (id == 2)) {
 	     new text[100];
-	     
+
 	     while (count(available_governors) > 0) {
 		remove(available_governors, 0);
 	     }
-	     
+
 	     for (new i = 2; i < numargs(); i++) {
 		snprintf(text, 100, "%s", getarg(i));
 		append_str(available_governors, text);
@@ -8239,15 +8239,15 @@ collections { /* begin the collection of edje groups that are in this file */
 	     new use_buttons = getarg(3);
 	     new Float:freq, Float:min_freq, Float:max_freq;
 	     new text[100];
-	     
+
 	     freq = f;
 	     min_freq = fetch_int(available_frequencies, 0);
 	     max_freq = fetch_int(available_frequencies,
 				  count(available_frequencies) - 1);
-	     
+
 	     freq = (freq - min_freq) / (max_freq - min_freq);
 	     set_state(PART:"meter", "default", freq);
-	     
+
 	     if (f < 1000000) {
 		snprintf(text, 100, "%i", f / 1000);
 	     } else {
@@ -8255,7 +8255,7 @@ collections { /* begin the collection of edje groups that are in this file */
 			 (f % 1000000) / 100000);
 	     }
 	     set_text(PART:"readout", text);
-	     
+
 	     if (use_buttons == 0) {
 //		set_state(PART:"increase_button", "inactive", 0.0);
 //		set_state(PART:"decrease_button", "inactive", 0.0);
@@ -8353,7 +8353,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 }
       }
       programs {
-/*	 
+/*
 	 program {
 	    name: "next_governor";
 	    signal: "mouse,down,1";
@@ -8581,7 +8581,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 }
 	 part { name: "e.text.label";
 	    type: TEXT;
-	    effect: SOFT_SHADOW;                  
+	    effect: SOFT_SHADOW;
 	    mouse_events: 0;
 	    description { state: "default" 0.0;
 	       rel1 {
@@ -8740,7 +8740,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 }
       }
    }
-   
+
    group { name: "e/modules/ibox/drop";
       alias: "e/modules/ibar/drop";
       images.image: "inset_raised.png" COMP;
@@ -8778,12 +8778,12 @@ collections { /* begin the collection of edje groups that are in this file */
 	    description { state: "1" 0.0;
 	       inherit: "default" 0.0;
 	       rel1.relative: -0.8 0.2;
-	       rel2.relative: -0.7 0.8;	       
+	       rel2.relative: -0.7 0.8;
 	    }
 	    description { state: "2" 0.0;
 	       inherit: "default" 0.0;
 	       rel1.relative: 0.2 0.5;
-	       rel2.relative: 0.2 0.5;	
+	       rel2.relative: 0.2 0.5;
 	    }
 	 }
 	 part { name: "left_arrow2";
@@ -8797,12 +8797,12 @@ collections { /* begin the collection of edje groups that are in this file */
 	    description { state: "1" 0.0;
 	       inherit: "default" 0.0;
 	       rel1.relative: -0.8 0.2;
-	       rel2.relative: -0.7 0.8;	       
+	       rel2.relative: -0.7 0.8;
 	    }
 	    description { state: "2" 0.0;
 	       inherit: "default" 0.0;
 	       rel1.relative: 0.2 0.5;
-	       rel2.relative: 0.2 0.5;	
+	       rel2.relative: 0.2 0.5;
 	    }
 	 }
 	 part { name: "right_arrow1";
@@ -8938,7 +8938,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    after: "top2_1";
 	    after: "bottom2_1";
 	 }
-	 
+
       // LEFT ARROW
 	 program { name: "left1_1";
 	    action: STATE_SET "1" 0.0;
@@ -8974,7 +8974,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    target: "left_arrow2";
 	    after: "left2_1";
 	 }
-	 
+
       // RIGHT ARROW
 	 program { name: "right1_1";
 	    action: STATE_SET "1" 0.0;
@@ -9010,7 +9010,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    target: "right_arrow2";
 	    after: "right2_1";
 	 }
-	 
+
       // TOP ARROW
 	 program { name: "top1_1";
 	    action: STATE_SET "1" 0.0;
@@ -9046,7 +9046,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    target: "top_arrow2";
 	    after: "top2_1";
 	 }
-	 
+
       // BOTTOM ARROW
 	 program { name: "bottom1_1";
 	    action: STATE_SET "1" 0.0;
@@ -9084,7 +9084,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 }
       }
    }
-   
+
 /////////////////////////////////////////////////////////////////////////////
    /*** MOD: WINLIST ***/
 
@@ -9215,7 +9215,7 @@ collections { /* begin the collection of edje groups that are in this file */
 		  size: 10;
 		  min:  0 1;
 		  align: 0.5 1.0;
-		  text_class: "winlist_label";	       
+		  text_class: "winlist_label";
 	       }
 	    }
 	 }
@@ -9431,7 +9431,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    action:  STATE_SET "shaded" 0.0;
 	    target:  "type";
 	 }
-	 program { name: "sel"; 
+	 program { name: "sel";
 	    signal: "e,state,selected";
 	    source: "e";
 	    action: STATE_SET "selected" 0.0;
@@ -9451,10 +9451,10 @@ collections { /* begin the collection of edje groups that are in this file */
 	 }
       }
    }
-   
+
 /////////////////////////////////////////////////////////////////////////////
    /*** MOD: EXEBUF ***/
-   
+
    group { name: "e/widgets/exebuf/main";
       parts {
 	 part { name: "base";
@@ -9650,7 +9650,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       max: 32 32;
 	       align: 0.0 0.5;
 	       rel1 {
-		  offset:  6  4; 
+		  offset:  6  4;
 		  to: "bg";
 	       }
 	       rel2 {
@@ -9718,7 +9718,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    scale: 1;
 	    description {
 	       state: "default" 0.0;
-	       rel1 { 
+	       rel1 {
 		  offset: 2 1;
 		  relative: 1.0 0.0;
 		  to_x: "e.swallow.icons";
@@ -9843,16 +9843,16 @@ collections { /* begin the collection of edje groups that are in this file */
 	 public message(Msg_Type:type, id, ...) {
 	    if ((type == MSG_INT_SET) && (id == 0)) {
 	       new mute, left, right;
-   
+
 	       mute = getarg(2);
 	       left = getarg(3);
 	       right = getarg(4);
-   
+
 	       if (mute)
 		  run_program(PROGRAM:"mute");
 	       else
 		  run_program(PROGRAM:"unmute");
-   
+
 	       if (left <= 0)
 		  run_program(PROGRAM:"left_none");
 	       else if (left < 33)
@@ -9861,7 +9861,7 @@ collections { /* begin the collection of edje groups that are in this file */
 		  run_program(PROGRAM:"left_medium");
 	       else if (left >= 66)
 		  run_program(PROGRAM:"left_high");
-   
+
 	       if (right <= 0)
 		  run_program(PROGRAM:"right_none");
 	       else if (right < 33)
@@ -9964,7 +9964,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    transition: LINEAR 0.2;
 	    target: "mute";
 	 }
-   
+
 	 program { name: "left_none"; action: STATE_SET "default" 0.0; target: "left"; }
 	 program { name: "left_low"; action: STATE_SET "low" 0.0; target: "left"; }
 	 program { name: "left_medium"; action: STATE_SET "medium" 0.0; target: "left"; }
@@ -9974,7 +9974,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 program { name: "right_low"; action: STATE_SET "low" 0.0; target: "right"; }
 	 program { name: "right_medium"; action: STATE_SET "medium" 0.0; target: "right"; }
 	 program { name: "right_high"; action: STATE_SET "high" 0.0; target: "right"; }
-   
+
       }
    }
 
@@ -10103,7 +10103,7 @@ collections { /* begin the collection of edje groups that are in this file */
 		  offset:   -2 -1;
 		  to_y:     "sb_hbar";
 	       }
-	    }	
+	    }
 	    description { state: "hidden" 0.0;
 	       visible: 0;
 	       max: 0 99999;
@@ -10239,7 +10239,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       }
 	    }
 	 }
-	 
+
 	 part { name: "sb_vbar_a1";
 	    type: RECT;
 	    clip_to: "sb_vbar";
@@ -10545,7 +10545,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    }
 	 }
       }
-      programs {	 
+      programs {
 	 program { name: "sb_vbar_show";
 	    signal: "e,action,show,vbar";
 	    source: "e";
@@ -10711,7 +10711,7 @@ collections { /* begin the collection of edje groups that are in this file */
          image: "bt_sm_base1.png" COMP;
 	 image: "bt_sm_shine.png" COMP;
 	 image: "bt_sm_hilight.png" COMP;
-	 
+
 	 image: "e17_mini_button_shadow2.png" COMP;
 	 image: "e17_fileman_thumb_bg.png" COMP;
 	 image: "e17_fileman_copy.png" COMP;
@@ -11097,7 +11097,7 @@ collections { /* begin the collection of edje groups that are in this file */
          image: "bt_sm_base1.png" COMP;
 	 image: "bt_sm_shine.png" COMP;
 	 image: "bt_sm_hilight.png" COMP;
-	 
+
 	 image: "e17_mini_button_shadow2.png" COMP;
 	 image: "e17_fileman_thumb_bg.png" COMP;
 	 image: "e17_fileman_copy.png" COMP;
@@ -11480,14 +11480,14 @@ collections { /* begin the collection of edje groups that are in this file */
 
    group { name: "e/fileman/default/list/variable";
       data.item: "stacking" "above";
-      data.item: "selectraise" "on"; 
+      data.item: "selectraise" "on";
       images {
          image: "bt_sm_base1.png" COMP;
 	 image: "bt_sm_shine.png" COMP;
 	 image: "bt_sm_hilight.png" COMP;
 	 image: "ilist_1.png" COMP;
 	 image: "ilist_item_shadow.png" COMP;
-	 
+
 	 image: "e17_mini_button_shadow2.png" COMP;
 	 image: "e17_fileman_thumb_bg.png" COMP;
 	 image: "e17_fileman_copy.png" COMP;
@@ -11621,7 +11621,7 @@ collections { /* begin the collection of edje groups that are in this file */
 		  to: "icon_box";
 		  relative: 0.0 0.0;
 		  offset: 1 1;
-		  
+
 	       }
 	       rel2 {
 		  to: "icon_box";
@@ -11940,7 +11940,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 }
       }
    }
-   
+
    group { name: "e/fileman/default/list_odd/variable";
       data.item: "stacking" "below";
       data.item: "selectraise" "on";
@@ -11950,7 +11950,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 image: "bt_sm_hilight.png" COMP;
 	 image: "ilist_2.png" COMP;
 	 image: "ilist_item_shadow.png" COMP;
-	 
+
 	 image: "e17_mini_button_shadow2.png" COMP;
 	 image: "e17_fileman_thumb_bg.png" COMP;
 	 image: "e17_fileman_copy.png" COMP;
@@ -12084,7 +12084,7 @@ collections { /* begin the collection of edje groups that are in this file */
 		  to: "icon_box";
 		  relative: 0.0 0.0;
 		  offset: 1 1;
-		  
+
 	       }
 	       rel2 {
 		  to: "icon_box";
@@ -12406,14 +12406,14 @@ collections { /* begin the collection of edje groups that are in this file */
 
    group { name: "e/fileman/default/list/fixed";
       data.item: "stacking" "above";
-      data.item: "selectraise" "on"; 
+      data.item: "selectraise" "on";
       images {
          image: "bt_sm_base1.png" COMP;
 	 image: "bt_sm_shine.png" COMP;
 	 image: "bt_sm_hilight.png" COMP;
 	 image: "ilist_1.png" COMP;
 	 image: "ilist_item_shadow.png" COMP;
-	 
+
 	 image: "e17_mini_button_shadow2.png" COMP;
 	 image: "e17_fileman_thumb_bg.png" COMP;
 	 image: "e17_fileman_copy.png" COMP;
@@ -12547,7 +12547,7 @@ collections { /* begin the collection of edje groups that are in this file */
 		  to: "icon_box";
 		  relative: 0.0 0.0;
 		  offset: 1 1;
-		  
+
 	       }
 	       rel2 {
 		  to: "icon_box";
@@ -12866,7 +12866,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 }
       }
    }
-   
+
    group { name: "e/fileman/default/list_odd/fixed";
       data.item: "stacking" "below";
       data.item: "selectraise" "on";
@@ -12876,7 +12876,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 image: "bt_sm_hilight.png" COMP;
 	 image: "ilist_2.png" COMP;
 	 image: "ilist_item_shadow.png" COMP;
-	 
+
 	 image: "e17_mini_button_shadow2.png" COMP;
 	 image: "e17_fileman_thumb_bg.png" COMP;
 	 image: "e17_fileman_copy.png" COMP;
@@ -13010,7 +13010,7 @@ collections { /* begin the collection of edje groups that are in this file */
 		  to: "icon_box";
 		  relative: 0.0 0.0;
 		  offset: 1 1;
-		  
+
 	       }
 	       rel2 {
 		  to: "icon_box";
@@ -13332,7 +13332,7 @@ collections { /* begin the collection of edje groups that are in this file */
 
 /////////////////////////////////////////////////////////////////////////////
    /*** SYSTEM ***/
-   
+
    group { name: "e/sys/logout";
       alias: "e/sys/halt";
       alias: "e/sys/reboot";
@@ -13606,7 +13606,7 @@ collections { /* begin the collection of edje groups that are in this file */
 
 /////////////////////////////////////////////////////////////////////////////
    /*** CONFIGURATION PANEL ***/
-   
+
    group { name: "e/widgets/configure/main";
       images {
 	 image: "dia_grad.png" COMP;
@@ -13733,7 +13733,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       min: 21 21;
 	       max: 21 21;
 	       rel1.offset: 2 2;
-	       rel2.relative: 0.0 1.0;	
+	       rel2.relative: 0.0 1.0;
 	       rel2.offset: 2 -3;
 	       image.normal: "move.png";
 	    }
@@ -13783,7 +13783,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       min: 21 21;
 	       max: 21 21;
 	       rel1.offset: 2 2;
-	       rel2.relative: 0.0 1.0;	
+	       rel2.relative: 0.0 1.0;
 	       rel2.offset: 2 -3;
 	       image.normal: "resize.png";
 	    }
@@ -13820,7 +13820,7 @@ collections { /* begin the collection of edje groups that are in this file */
       image: "transition1.png" COMP;
       image: "transition2.png" COMP;
    }
-   
+
    group { name: "e/transpreview/0";
       parts {
 	 part { name: "bg";
@@ -14808,8 +14808,8 @@ collections { /* begin the collection of edje groups that are in this file */
 	    action: STATE_SET "disabled" 0.0;
 	    target: "button_image";
 	    target: "over1";
-	    target: "e.text.label"; 
-	    target: "disabler"; 
+	    target: "e.text.label";
+	    target: "disabler";
 	 }
 	 program {
 	    name: "enable";
@@ -14818,8 +14818,8 @@ collections { /* begin the collection of edje groups that are in this file */
 	    action: STATE_SET "default" 0.0;
 	    target: "button_image";
 	    target: "over1";
-	    target: "e.text.label"; 
-	    target: "disabler"; 
+	    target: "e.text.label";
+	    target: "disabler";
 	 }
       }
    }
@@ -14870,7 +14870,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       }
 	    }
 	 }
-/*	 
+/*
          part { name: "tst";
 	    type: RECT;
 	    mouse_events: 0;
@@ -14909,7 +14909,7 @@ collections { /* begin the collection of edje groups that are in this file */
 		  offset:   -2 -1;
 		  to_y:     "sb_hbar";
 	       }
-	    }	
+	    }
 	    description { state: "hidden" 0.0;
 	       visible: 0;
 	       max: 0 99999;
@@ -15047,7 +15047,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       }
 	    }
 	 }
-	 
+
 	 part { name: "sb_vbar_a1";
 	    type: RECT;
 	    clip_to: "sb_vbar";
@@ -15357,7 +15357,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    }
 	 }
       }
-      programs {	 
+      programs {
 	 program { name: "sb_vbar_show";
 	    signal: "e,action,show,vbar";
 	    source: "e";
@@ -15508,7 +15508,7 @@ collections { /* begin the collection of edje groups that are in this file */
 
    group { name: "e/widgets/ilist";
       data.item: "stacking" "above";
-      data.item: "selectraise" "on"; 
+      data.item: "selectraise" "on";
       images {
          image: "bt_sm_base1.png" COMP;
 	 image: "bt_sm_shine.png" COMP;
@@ -15708,10 +15708,10 @@ collections { /* begin the collection of edje groups that are in this file */
 	 }
       }
    }
-   
+
    group { name: "e/widgets/ilist_odd";
       data.item: "stacking" "below";
-      data.item: "selectraise" "on"; 
+      data.item: "selectraise" "on";
       images {
          image: "bt_sm_base1.png" COMP;
 	 image: "bt_sm_shine.png" COMP;
@@ -15890,7 +15890,7 @@ collections { /* begin the collection of edje groups that are in this file */
 
    group { name: "e/widgets/ilist_header";
       data.item: "stacking" "above";
-      data.item: "selectraise" "on"; 
+      data.item: "selectraise" "on";
       images {
          image: "bt_sm_base1.png" COMP;
 	 image: "bt_sm_shine.png" COMP;
@@ -16090,10 +16090,10 @@ collections { /* begin the collection of edje groups that are in this file */
 	 }
       }
    }
-   
+
    group { name: "e/widgets/ilist_header_odd";
       data.item: "stacking" "below";
-      data.item: "selectraise" "on"; 
+      data.item: "selectraise" "on";
       images {
          image: "bt_sm_base1.png" COMP;
 	 image: "bt_sm_shine.png" COMP;
@@ -16337,13 +16337,13 @@ collections { /* begin the collection of edje groups that are in this file */
 	       signal: "e,state,disabled";
 	       source: "e";
 	       action: STATE_SET "disabled" 0.0;
-	       target: "e.text.text"; 
+	       target: "e.text.text";
 	 }
 	 program { name: "enable";
 	       signal: "e,state,enabled";
 	       source: "e";
 	       action: STATE_SET "default" 0.0;
-	       target: "e.text.text"; 
+	       target: "e.text.text";
 	 }
       }
    }
@@ -16396,7 +16396,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 }
       }
    }
-   
+
    group { name: "e/widgets/entry/selection";
       data.item: "on_foreground" "1";
       parts {
@@ -16409,8 +16409,8 @@ collections { /* begin the collection of edje groups that are in this file */
 	    }
 	 }
       }
-   }   
-      
+   }
+
    group { name: "e/widgets/preview";
       images.image: "inset_sunk.png" COMP;
       parts {
@@ -16548,7 +16548,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 }
       }
    }
-   
+
    group { name: "e/widgets/spectrum";
       images.image: "inset_sunk.png" COMP;
       parts {
@@ -16736,7 +16736,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    action: STATE_SET "vertical" 0.0;
 	    target: "e.dragable.cursor";
 	    target: "e.swallow.content";
-	 } 
+	 }
       }
    }
 
@@ -16846,7 +16846,7 @@ collections { /* begin the collection of edje groups that are in this file */
 		  size:     10;
 		  min:      1 1;
 		  align:    0.5 0.5;
-		  text_class: "slider";	       
+		  text_class: "slider";
 	       }
 	    }
 	 }
@@ -16912,7 +16912,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 }
 	 part { name: "clip";
 	    type: RECT;
-	    description { state: "default" 0.0; 
+	    description { state: "default" 0.0;
 	       color: 255 255 255 255;
 	    }
 	    description { state: "disabled" 0.0;
@@ -16935,7 +16935,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    }
 	 }
       }
-      programs {	 
+      programs {
 	 program { name: "sld_p1_down";
 	    signal: "mouse,down,1";
 	    source: "sld_p1";
@@ -16994,7 +16994,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 }
       }
    }
-   
+
    group { name: "e/widgets/slider_horizontal";
       images {
 	 image: "slider.png" COMP;
@@ -17084,7 +17084,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    }
 	    description { state: "active" 0.0;
 	       align: 1.0 0.5;
-	       fixed: 1 0;	    
+	       fixed: 1 0;
 	       rel1 {
 		  relative: 1.0  0.0;
 		  offset:   -8   7;
@@ -17100,7 +17100,7 @@ collections { /* begin the collection of edje groups that are in this file */
 		  size:     10;
 		  min:      1 1;
 		  align:    0.5 0.5;
-		  text_class: "slider";	       
+		  text_class: "slider";
 	       }
 	    }
 	 }
@@ -17187,7 +17187,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    }
 	 }
       }
-      programs {	 
+      programs {
 	 program { name: "sld_p1_down";
 	    signal: "mouse,down,1";
 	    source: "sld_p1";
@@ -17407,7 +17407,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 }
       }
    }
-   
+
 /////////////////////////////////////////////////////////////////////////////
    /*** MOD: DESKLOCK ***/
 
@@ -17417,14 +17417,14 @@ collections { /* begin the collection of edje groups that are in this file */
 	 image: "grill_dark_tiny_pattern.png" COMP;
       }
       parts {
-	 part { name: "background_image"; 
-	    description { state: "default" 0.0; 
+	 part { name: "background_image";
+	    description { state: "default" 0.0;
 	       image.normal: "vgrad_dark.png";
 	       fill {
 		  smooth: 0;
-		  size { 
-		     relative: 0 1.0; 
-		     offset: 36 0; 
+		  size {
+		     relative: 0 1.0;
+		     offset: 36 0;
 		  }
 	       }
 	    }
@@ -17432,9 +17432,9 @@ collections { /* begin the collection of edje groups that are in this file */
 	 part { name: "grill";
 	    description { state: "default" 0.0;
 	       image.normal: "grill_dark_tiny_pattern.png";
-	       fill { 
+	       fill {
 		  size {
-		     relative: 0 0; 
+		     relative: 0 0;
 		     offset: 144 144;
 		  }
 	       }
@@ -17482,7 +17482,7 @@ collections { /* begin the collection of edje groups that are in this file */
 		  size: 10;
 		  align: 0.5 0.5;
 		  min: 1 1;
-		  text_class: "desklock_title";		  
+		  text_class: "desklock_title";
 	       }
 	    }
 	 }
@@ -17658,7 +17658,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 }
       }
    }
-   
+
 /////////////////////////////////////////////////////////////////////////////
    /*** GADMAN ***/
 
@@ -17684,7 +17684,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 }
       }
    }
-   
+
    group { name: "e/gadman/full_bg";
       parts {
 	 part{ name: "bg";
@@ -17715,7 +17715,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 }
       }
    }
-   
+
    group { name: "e/gadman/frame";
       images.image: "inset_raised.png" COMP;
       parts {
@@ -17877,12 +17877,12 @@ collections { /* begin the collection of edje groups that are in this file */
 	    description { state: "1" 0.0;
 	       inherit: "default" 0.0;
 	       rel1 { relative: 0.0 0.5; offset: -32 -12; }
-	       rel2 { relative: 0.0 0.5; offset: -18 11; }       
+	       rel2 { relative: 0.0 0.5; offset: -18 11; }
 	    }
 	    description { state: "2" 0.0;
 	       inherit: "default" 0.0;
 	       rel1 { relative: 0.0 0.5; offset: -24 -6; }
-	       rel2 { relative: 0.0 0.5; offset: -10 5; }  
+	       rel2 { relative: 0.0 0.5; offset: -10 5; }
 	    }
 	 }
 	 part { name: "left_arrow2";
@@ -17896,12 +17896,12 @@ collections { /* begin the collection of edje groups that are in this file */
 	    description { state: "1" 0.0;
 	       inherit: "default" 0.0;
 	       rel1 { relative: 0.0 0.5; offset: -32 -12; }
-	       rel2 { relative: 0.0 0.5; offset: -18 11; }       
+	       rel2 { relative: 0.0 0.5; offset: -18 11; }
 	    }
 	    description { state: "2" 0.0;
 	       inherit: "default" 0.0;
 	       rel1 { relative: 0.0 0.5; offset: -24 -6; }
-	       rel2 { relative: 0.0 0.5; offset: -10 5; }  
+	       rel2 { relative: 0.0 0.5; offset: -10 5; }
 	    }
 	 }
 	 part { name: "right_arrow1";
@@ -17915,12 +17915,12 @@ collections { /* begin the collection of edje groups that are in this file */
 	    description { state: "1" 0.0;
 	       inherit: "default" 0.0;
 	       rel1 { relative: 1.0 0.5; offset: 32 -12; }
-	       rel2 { relative: 1.0 0.5; offset: 18 11; }  
+	       rel2 { relative: 1.0 0.5; offset: 18 11; }
 	    }
 	    description { state: "2" 0.0;
 	       inherit: "default" 0.0;
 	       rel1 { relative: 1.0 0.5; offset: 24 -6; }
-	       rel2 { relative: 1.0 0.5; offset: 10 5; }  
+	       rel2 { relative: 1.0 0.5; offset: 10 5; }
 	    }
 	 }
 	 part { name: "right_arrow2";
@@ -17934,12 +17934,12 @@ collections { /* begin the collection of edje groups that are in this file */
 	    description { state: "1" 0.0;
 	       inherit: "default" 0.0;
 	       rel1 { relative: 1.0 0.5; offset: 32 -12; }
-	       rel2 { relative: 1.0 0.5; offset: 18 11; }  
+	       rel2 { relative: 1.0 0.5; offset: 18 11; }
 	    }
 	    description { state: "2" 0.0;
 	       inherit: "default" 0.0;
 	       rel1 { relative: 1.0 0.5; offset: 24 -6; }
-	       rel2 { relative: 1.0 0.5; offset: 10 5; }  
+	       rel2 { relative: 1.0 0.5; offset: 10 5; }
 	    }
 	 }
 	 part { name: "top_arrow1";
@@ -17953,12 +17953,12 @@ collections { /* begin the collection of edje groups that are in this file */
 	    description { state: "1" 0.0;
 	       inherit: "default" 0.0;
 	       rel1 { relative: 0.5 0.0; offset: -12 -32; }
-	       rel2 { relative: 0.5 0.0; offset: 11 -18; }  
+	       rel2 { relative: 0.5 0.0; offset: 11 -18; }
 	    }
 	    description { state: "2" 0.0;
 	       inherit: "default" 0.0;
 	       rel1 { relative: 0.5 0.0; offset: -6 -24; }
-	       rel2 { relative: 0.5 0.0; offset: 5 -9; }  
+	       rel2 { relative: 0.5 0.0; offset: 5 -9; }
 	    }
 	 }
 	 part { name: "top_arrow2";
@@ -17972,12 +17972,12 @@ collections { /* begin the collection of edje groups that are in this file */
 	    description { state: "1" 0.0;
 	       inherit: "default" 0.0;
 	       rel1 { relative: 0.5 0.0; offset: -12 -32; }
-	       rel2 { relative: 0.5 0.0; offset: 11 -18; }  
+	       rel2 { relative: 0.5 0.0; offset: 11 -18; }
 	    }
 	    description { state: "2" 0.0;
 	       inherit: "default" 0.0;
 	       rel1 { relative: 0.5 0.0; offset: -6 -24; }
-	       rel2 { relative: 0.5 0.0; offset: 5 -9; }  
+	       rel2 { relative: 0.5 0.0; offset: 5 -9; }
 	    }
 	 }
 	 part { name: "bottom_arrow1";
@@ -17991,12 +17991,12 @@ collections { /* begin the collection of edje groups that are in this file */
 	    description { state: "1" 0.0;
 	       inherit: "default" 0.0;
 	       rel1 { relative: 0.5 1.0; offset: -12 18; }
-	       rel2 { relative: 0.5 1.0; offset: 11 31; }  
+	       rel2 { relative: 0.5 1.0; offset: 11 31; }
 	    }
 	    description { state: "2" 0.0;
 	       inherit: "default" 0.0;
 	       rel1 { relative: 0.5 1.0; offset: -6 10; }
-	       rel2 { relative: 0.5 1.0; offset: 5 24; }  
+	       rel2 { relative: 0.5 1.0; offset: 5 24; }
 	    }
 	 }
 	 part { name: "bottom_arrow2";
@@ -18010,12 +18010,12 @@ collections { /* begin the collection of edje groups that are in this file */
 	    description { state: "1" 0.0;
 	       inherit: "default" 0.0;
 	       rel1 { relative: 0.5 1.0; offset: -12 18; }
-	       rel2 { relative: 0.5 1.0; offset: 11 31; }  
+	       rel2 { relative: 0.5 1.0; offset: 11 31; }
 	    }
 	    description { state: "2" 0.0;
 	       inherit: "default" 0.0;
 	       rel1 { relative: 0.5 1.0; offset: -6 10; }
-	       rel2 { relative: 0.5 1.0; offset: 5 24; }  
+	       rel2 { relative: 0.5 1.0; offset: 5 24; }
 	    }
 	 }
 	 part { name: "v1";
@@ -18088,7 +18088,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    action:  STATE_SET "disabled" 0.0;
 	    target:  "vclip";
 	 }
-   /*      
+   /*
 	 program {
 	    name:    "api_move_on";
 	    signal:  "e,state,move,on";
@@ -18109,8 +18109,8 @@ collections { /* begin the collection of edje groups that are in this file */
 	    signal:  "e,state,unfocused";
 	    source:  "e";
 	 }
-   */    
-   
+   */
+
       // MOVE PROGRAMS
 	 program { name: "mv_down";
 	    signal:  "mouse,down,1";
@@ -18235,7 +18235,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    source:  "v2";
 	    action:  SIGNAL_EMIT "e,action,resize,down,go" "";
 	 }
-	 
+
       // LEFT ARROW
 	 program { name: "start_left1";
 	    signal: "mouse,in";
@@ -18365,7 +18365,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    target: "right_arrow1";
 	    target: "right_arrow2";
 	 }
-	 
+
       // TOP ARROW
 	 program { name: "start_top1";
 	    signal: "mouse,in";
@@ -18430,7 +18430,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	    target: "top_arrow1";
 	    target: "top_arrow2";
 	 }
-	 
+
       // BOTTOM ARROW
 	 program { name: "start_bottom1";
 	    signal: "mouse,in";
@@ -18497,7 +18497,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 }
       }
    }
-   
+
 /////////////////////////////////////////////////////////////////////////////
    /*** ICONS ***/
 
@@ -18526,7 +18526,7 @@ Idea: Use define to create icons. Only draw back I can see so far
 */
 
 #define ICON(NAME, FILE, SIZE)				\
-group { name: "e/icons/"NAME ; 	        \
+group { name: "e/icons/"NAME ; 	        		\
    max:  SIZE SIZE;				        \
    parts { 						\
       part { name: "icon";			        \
@@ -18537,12 +18537,12 @@ group { name: "e/icons/"NAME ; 	        \
 	    image.image: FILE COMP;			\
             image.normal: FILE ;			\
          }						\
-      }						\
+      }							\
    }							\
 }
 
 
-ICON("enlightenment/check","icon_check.png",64) 	
+ICON("enlightenment/check","icon_check.png",64)
 
 // FIXME: Dummy Icons
 // Do we dare try to put an icon in for all the popup menu items too?
@@ -18555,7 +18555,7 @@ ICON("enlightenment/mixer","icon_dummy.png",64)			//Mixer Icon (Broken)
 ICON("enlightenment/picture","icon_dummy.png",64)		//Wallpaper selector
 ICON("enlightenment/gradient","icon_dummy.png",64)		//Wallpaper selector
 ICON("enlightenment/website","icon_dummy.png",64)		//Wallpaper selector
-ICON("enlightenment/swap","icon_dummy.png",64)			//Gradient selector 
+ICON("enlightenment/swap","icon_dummy.png",64)			//Gradient selector
 ICON("enlightenment/new","icon_dummy.png",64)			//Input Method Config (ADV) (Use widget/new or add?)
 
 ICON("widget/add","icon_dummy.png",64) 				//Shelf config
@@ -18563,10 +18563,10 @@ ICON("widget/del","icon_dummy.png",64) 				//Shelf config
 ICON("widget/config","icon_dummy.png",64) 			//Shelf config
 
 /* USABLE WIDGETS
-ICON("widget/up_arrow","icon_dummy.png",64) 
-ICON("widget/down_arrow","icon_dummy.png",64) 
+ICON("widget/up_arrow","icon_dummy.png",64)
+ICON("widget/down_arrow","icon_dummy.png",64)
 ICON("widget/up_dir","icon_dummy.png",64)
-ICON("widget/new_dialog","icon_dummy.png",64) 
+ICON("widget/new_dialog","icon_dummy.png",64)
 */
 
 /////////////////////////////////////////////////////////////////////////////
