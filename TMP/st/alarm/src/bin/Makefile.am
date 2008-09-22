@@ -2,7 +2,12 @@ AUTOMAKE_OPTIONS     = 1.4 foreign
 
 MAINTAINERCLEANFILES = Makefile.in
 
-INCLUDES = -I$(top_srcdir) -I$(top_srcdir)/src/bin @EVAS_CFLAGS@ @ECORE_CFLAGS@ @EDJE_CFLAGS@
+INCLUDES = \
+-I$(top_srcdir) \
+-I$(top_srcdir)/src/bin \
+-DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\" \
+@COMMON_CFLAGS@ \
+@ALARM_CFLAGS@
 
 elementary_SOURCES = \
 Elementary.h \
@@ -36,16 +41,23 @@ els_table.h \
 els_icon.c \
 els_icon.h
 
-bin_PROGRAMS = alarm alarm_test
+bin_PROGRAMS = \
+alarm \
+funeral \
+elementary_test
 
-alarm_test_SOURCES = \
-test.c \
-$(elementary_SOURCES)
+###---### Alarm clock main program - uses funeral
+alarm_SOURCES = $(elementary_SOURCES) \
+main.c
+alarm_LDADD = @my_libs@ @COMMON_LIBS@ @ALARM_LIBS@
 
-alarm_test_LDADD = @my_libs@ @EVAS_LIBS@ @ECORE_LIBS@ @EDJE_LIBS@
+###---### A time scheduler (like at) but talks dbus, uses rtc and has seconds
+funeral_SOURCES = \
+funeral_main.c
+funeral_LDADD = @my_libs@ @COMMON_LIBS@
 
-alarm_SOURCES = \
-main.c \
-$(elementary_SOURCES)
+###---### Just a widget test app
+elementary_test_SOURCES = $(elementary_SOURCES) \
+test.c
+elementary_test_LDADD = @my_libs@ @COMMON_LIBS@ @ALARM_LIBS@
 
-alarm_LDADD = @my_libs@ @EVAS_LIBS@ @ECORE_LIBS@ @EDJE_LIBS@
