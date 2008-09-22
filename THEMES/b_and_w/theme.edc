@@ -25,7 +25,6 @@
 //		to compensate when there is no icon there.
 //	      - Fix ibox urgent / icon_overlay problem
 //	      - Mixer Icon needs to be fixed.
-//	      - Fix the layout of Profiles config, so that 'Select' button is replaced by 'Ok, Apply, Close'
 //
 
 /*
@@ -18561,10 +18560,6 @@ ICON("enlightenment/new","icon_dummy.png",64)			//Input Method Config (ADV) (Use
 ICON("widget/add","icon_dummy.png",64) 				//Shelf config
 ICON("widget/del","icon_dummy.png",64) 				//Shelf config
 ICON("widget/config","icon_dummy.png",64) 			//Shelf config
-
-// FIXME: Only used in Profiles config. Fix the layout of Profiles. Add a 'OK, APPLY, CLOSE' set to it.
-//	When thats done, remove this.
-ICON("widget/select","icon_dummy.png",64)
 
 /* USABLE WIDGETS
 ICON("widget/up_arrow","icon_dummy.png",64) 
