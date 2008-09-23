@@ -116,11 +116,6 @@ main(void)
    app.surface = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, W/2, H/2);
    app.cairo = cairo_create(app.surface);
 
-   ecore_timer_add(1.0, on_timeout, &app);
-   on_timeout(&app);
-
-   ecore_timer_add(5.0, on_timeout_fill_change, &app);
-
    app.img_cairo = esmart_image_cairo_new_from_surface(app.e, app.surface);
    evas_object_resize(app.img_cairo, W, H);
    evas_object_show(app.img_cairo);
@@ -128,6 +123,11 @@ main(void)
    ecore_evas_show(app.ee);
    ecore_evas_data_set(app.ee, "app", &app);
    ecore_evas_callback_resize_set(app.ee, on_resize);
+
+   ecore_timer_add(1.0, on_timeout, &app);
+   ecore_timer_add(5.0, on_timeout_fill_change, &app);
+   on_timeout(&app);
+
    ecore_main_loop_begin();
 
    ecore_evas_shutdown();
