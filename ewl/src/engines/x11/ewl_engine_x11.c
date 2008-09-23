@@ -34,6 +34,7 @@ static int ewl_ev_dnd_position(void *data, int type, void *_ev);
 static int ewl_ev_dnd_enter(void *data, int type, void *_ev);
 static int ewl_ev_dnd_leave(void *data, int type, void *_ev);
 static int ewl_ev_dnd_drop(void *data, int type, void *_ev);
+static int ewl_ev_selection_clear(void *data, int type, void *_ev);
 
 static Ecore_Event_Handler *ee_expose_handler = NULL;
 static Ecore_Event_Handler *ee_configure_handler = NULL;
@@ -46,6 +47,7 @@ static Ecore_Event_Handler *ee_dnd_leave_handler = NULL;
 static Ecore_Event_Handler *ee_dnd_drop_handler = NULL;
 static Ecore_Event_Handler *ee_selection_notify_handler = NULL;
 static Ecore_Event_Handler *ee_selection_request_handler = NULL;
+static Ecore_Event_Handler *ee_selection_clear_handler = NULL;
 static Ecore_Event_Handler *ee_mouse_down_handler = NULL;
 static Ecore_Event_Handler *ee_mouse_up_handler = NULL;
 static Ecore_Event_Handler *ee_mouse_move_handler = NULL;
@@ -240,7 +242,9 @@ ee_init(Ewl_Engine *engine, int *argc, char ** argv)
         ee_selection_notify_handler = ecore_event_handler_add(
                                                 ECORE_X_EVENT_SELECTION_NOTIFY,
                                                 ewl_ev_x_data_received, NULL);
-
+        ee_selection_clear_handler = ecore_event_handler_add(
+                                                ECORE_X_EVENT_SELECTION_CLEAR,
+                                                ewl_ev_selection_clear, NULL);
         /*
          * Selection callbacks to allow for pasting.
          */
@@ -278,7 +282,9 @@ ee_init(Ewl_Engine *engine, int *argc, char ** argv)
                         || !ee_key_down_handler || !ee_key_up_handler
                         || !ee_dnd_position_handler || !ee_dnd_enter_handler
                         || !ee_dnd_leave_handler || !ee_dnd_drop_handler
-                        || !ee_selection_notify_handler || !ee_selection_request_handler
+                        || !ee_selection_notify_handler
+                        || !ee_selection_clear_handler
+                        || !ee_selection_request_handler
                         || !ee_mouse_down_handler
                         || !ee_mouse_up_handler || !ee_mouse_move_handler
                         || !ee_mouse_wheel_handler || !ee_mouse_out_handler
@@ -345,6 +351,10 @@ ee_shutdown(Ewl_Engine *engine)
         if (ee_selection_notify_handler)
                 ecore_event_handler_del(ee_selection_notify_handler);
         ee_selection_notify_handler = NULL;
+        
+        if (ee_selection_clear_handler)
+                ecore_event_handler_del(ee_selection_clear_handler);
+        ee_selection_clear_handler = NULL;
 
         if (ee_selection_request_handler)
                 ecore_event_handler_del(ee_selection_request_handler);
@@ -1409,6 +1419,23 @@ ewl_ev_x_data_received(void *data __UNUSED__, int type __UNUSED__, void *e)
         else
                 printf("Paste event received\n");
 
+
+        DRETURN_INT(TRUE, DLEVEL_STABLE);
+}
+
+static int
+ewl_ev_selection_clear(void *data __UNUSED__, int type __UNUSED__, void *e)
+{
+        Ecore_X_Event_Selection_Clear *ev;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR_RET(e, FALSE);
+
+        ev = e;
+
+        /* Handle primary selection */
+        if (ev->selection == ECORE_X_SELECTION_PRIMARY)
+                ewl_embed_selection_text_clear_feed();
 
         DRETURN_INT(TRUE, DLEVEL_STABLE);
 }

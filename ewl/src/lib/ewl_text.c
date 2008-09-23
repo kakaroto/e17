@@ -972,10 +972,10 @@ ewl_text_selectable_set(Ewl_Text *t, unsigned int selectable)
         DCHECK_PARAM_PTR(t);
         DCHECK_TYPE(t, EWL_TEXT_TYPE);
 
-        if (t->selectable == selectable)
+        if (t->selectable == !!selectable)
                 DRETURN(DLEVEL_STABLE);
 
-        t->selectable = selectable;
+        t->selectable = !!selectable;
 
         if (t->selectable)
         {
@@ -985,6 +985,9 @@ ewl_text_selectable_set(Ewl_Text *t, unsigned int selectable)
                                                 ewl_text_cb_mouse_up, NULL);
                 ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_KEY_DOWN,
                                                 ewl_text_cb_key_down, NULL);
+                ewl_callback_append(EWL_WIDGET(t), EWL_CALLBACK_SELECTION_CLEAR,
+                                                ewl_text_cb_selection_clear, 
+                                                NULL);
         }
         else
         {
@@ -3827,6 +3830,28 @@ ewl_text_cb_key_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
+void
+ewl_text_cb_selection_clear(Ewl_Widget *w, void *ev__UNUSED__, 
+                                void *data __UNUSED__)
+{
+        Ewl_Text *t;
+
+        DENTER_FUNCTION(DLEVEL_STABLE);
+        DCHECK_PARAM_PTR(w);
+        DCHECK_TYPE(w, EWL_TEXT_TYPE);
+
+        t = EWL_TEXT(w);
+
+        if (t->selection)
+        {
+                ewl_widget_destroy(t->selection);
+                t->selection = NULL;
+        }
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+
 /* create the selection */
 static Ewl_Widget *
 ewl_text_selection_new(Ewl_Text *t)
@@ -3894,13 +3919,13 @@ ewl_text_selection_select_to(Ewl_Text_Trigger *s, unsigned int char_idx)
         else
                 txt = ewl_text_selection_text_get(t);
 
-        /* set the clipboard text */
+        /* set the primary selection text */
         if (txt)
         {
                 Ewl_Embed *emb;
 
                 emb = ewl_embed_widget_find(EWL_WIDGET(t));
-                ewl_embed_selection_text_set(emb, txt);
+                ewl_embed_selection_text_set(emb, EWL_WIDGET(t), txt);
                 FREE(txt);
         }
 

@@ -14,6 +14,7 @@ extern unsigned int EWL_CALLBACK_DND_LEAVE;
 extern unsigned int EWL_CALLBACK_DND_DROP;
 extern unsigned int EWL_CALLBACK_DND_DATA_RECEIVED;
 extern unsigned int EWL_CALLBACK_DND_DATA_REQUEST;
+extern unsigned int EWL_CALLBACK_SELECTION_CLEAR;
 
 int              ewl_dnd_init(void);
 void             ewl_dnd_shutdown(void);

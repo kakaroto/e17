@@ -14,6 +14,10 @@ Ecore_List *ewl_embed_list = NULL;
 static Evas_Smart *embedded_smart = NULL;
 static Ewl_Embed *ewl_embed_active_embed = NULL;
 
+static Ewl_Widget *ewl_embed_primary_selection_widget = NULL;
+
+static void ewl_embed_selection_cb_destroy(Ewl_Widget *w, void *ev, void *data);
+
 static void ewl_embed_smart_cb_del(Evas_Object *obj);
 static void ewl_embed_smart_cb_move(Evas_Object *obj, Evas_Coord x,
                                     Evas_Coord y);
@@ -1130,6 +1134,30 @@ ewl_embed_dnd_data_request_feed(Ewl_Embed *embed, void *handle, char *type)
 }
 
 /**
+ * @return Returns no value.
+ * @brief Sends a selection clear event to the widget with the text selection
+ */
+void
+ewl_embed_selection_text_clear_feed(void)
+{
+        DENTER_FUNCTION(DLEVEL_STABLE);
+
+        /* if do not have a widget with selection we are done */
+        if (!ewl_embed_primary_selection_widget)
+                DRETURN(DLEVEL_STABLE);
+
+        ewl_callback_del(ewl_embed_primary_selection_widget,
+                                EWL_CALLBACK_DESTROY,
+                                ewl_embed_selection_cb_destroy);
+
+        ewl_callback_call(ewl_embed_primary_selection_widget,
+                                EWL_CALLBACK_SELECTION_CLEAR);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+
+/**
  * @param path: the font path to add to the embeds
  * @return Returns no value.
  * @brief Add a font path to all embeds after realized
@@ -2078,18 +2106,40 @@ ewl_embed_dnd_aware_remove(Ewl_Embed *embed)
 
 /**
  * @param emb: The embed to set the selection on
+ * @param w:   The widget holding the selection
  * @param txt: The text to set into the selection
  * @return Returns no value.
  *
- ' @brief This will set the given @a txt as the selection text on the window
- * or clear the text if @a txt is NULL
+ * @brief This will set the given @a txt as the primary selection text on the 
+ * window or clear the text if @a txt is NULL
  */
 void
-ewl_embed_selection_text_set(Ewl_Embed *emb, const char *txt)
+ewl_embed_selection_text_set(Ewl_Embed *emb, Ewl_Widget *w, const char *txt)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(emb);
+        DCHECK_PARAM_PTR(w);
         DCHECK_TYPE(emb, EWL_EMBED_TYPE);
+        DCHECK_TYPE(w, EWL_WIDGET_TYPE);
+
+        /* no matter what the new text is, we need to tell the previous widget
+         * that it no longer holds the selection */
+        if (ewl_embed_primary_selection_widget != w)
+        {
+                ewl_embed_selection_text_clear_feed();
+
+                if (txt)
+                {
+                        ewl_callback_prepend(w, EWL_CALLBACK_DESTROY,
+                                        ewl_embed_selection_cb_destroy, NULL);
+                        ewl_embed_primary_selection_widget = w;
+                }
+        }
+        else if (!txt)
+                /* We don't need to inform the widget because it was the
+                 * widget itsself that reported use that there is no selection
+                 */
+                ewl_embed_primary_selection_widget = NULL;
 
         ewl_engine_embed_selection_text_set(emb, txt);
 
@@ -2181,6 +2231,22 @@ ewl_embed_cache_cleanup(Ewl_Embed *emb)
                 IF_FREE_LIST(key_list);
         }
         IF_FREE_HASH(emb->obj_cache);
+
+        DLEAVE_FUNCTION(DLEVEL_STABLE);
+}
+
+/**
+ * @internal
+ * Remove the reference of the primary selection widget since it is now
+ * destroyed
+ */
+static void
+ewl_embed_selection_cb_destroy(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__,
+                                void *data __UNUSED__)
+{
+        DENTER_FUNCTION(DLEVEL_STABLE);
+
+        ewl_embed_primary_selection_widget = NULL;
 
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }

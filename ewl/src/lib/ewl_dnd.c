@@ -12,6 +12,7 @@ unsigned int EWL_CALLBACK_DND_LEAVE; /**< On exit of a widget **/
 unsigned int EWL_CALLBACK_DND_DROP; /**< Drop event **/
 unsigned int EWL_CALLBACK_DND_DATA_RECEIVED; /**< Data received event **/
 unsigned int EWL_CALLBACK_DND_DATA_REQUEST; /**< Data request event **/
+unsigned int EWL_CALLBACK_SELECTION_CLEAR; /**< Selection clear event **/
 
 static int ewl_dragging_current;
 static int ewl_dnd_status;
@@ -44,6 +45,7 @@ ewl_dnd_init(void)
         EWL_CALLBACK_DND_DROP = ewl_callback_type_add();
         EWL_CALLBACK_DND_DATA_RECEIVED = ewl_callback_type_add();
         EWL_CALLBACK_DND_DATA_REQUEST = ewl_callback_type_add();
+        EWL_CALLBACK_SELECTION_CLEAR = ewl_callback_type_add();
 
         ewl_dnd_provided_hash = ecore_hash_new(ecore_direct_hash,
                                                 ecore_direct_compare);

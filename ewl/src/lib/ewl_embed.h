@@ -140,6 +140,7 @@ void             ewl_embed_mouse_out_feed(Ewl_Embed *embed, int x, int y,
                                         unsigned int modifiers);
 void             ewl_embed_mouse_wheel_feed(Ewl_Embed *embed, int x, int y,
                                         int z, int dir, unsigned int mods);
+void             ewl_embed_selection_text_clear_feed(void);
 
 void             ewl_embed_font_path_add(char *path);
 Ewl_Embed       *ewl_embed_canvas_window_find(Ewl_Embed_Window *win);
@@ -176,7 +177,8 @@ void             ewl_embed_thaw(Ewl_Embed *e);
 void             ewl_embed_dnd_aware_set(Ewl_Embed *embed);
 void             ewl_embed_dnd_aware_remove(Ewl_Embed *embed);
 
-void             ewl_embed_selection_text_set(Ewl_Embed *emb, const char *txt);
+void             ewl_embed_selection_text_set(Ewl_Embed *emb, Ewl_Widget *w,
+                                                const char *txt);
 
 void             ewl_embed_render_set(Ewl_Embed *emb, unsigned int render);
 unsigned int     ewl_embed_render_get(Ewl_Embed *emb);
