@@ -9,9 +9,8 @@
 #include <time.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
+#include <sys/stat.h>
 #include <linux/rtc.h>
-
-#define QUEUE_DIR "/var/spool/funeral"
 
 #define SERVICE_NAME  "org.enlightenment.Funeral"
 #define SERVICE_PATH  "/"
@@ -23,10 +22,15 @@ static DBusMessage *request_method_Del(E_DBus_Object *obj, DBusMessage *msg);
 static void request_service(void *data, DBusMessage *msg, DBusError *err);
 
 static void job_load(void);
-static void job_save(void);
 static dbus_uint32_t *job_list(void);
 static dbus_uint32_t job_add(dbus_uint64_t time_at, dbus_uint32_t priority, const char *flags, const char *command);
 static void job_del(dbus_uint32_t id);
+
+static void rtc_clear(void);
+static void rtc_set(dbus_uint64_t time_at);
+
+static int timer_callback(void *data);
+static void timer_eval(void);
 
 //// DBUS stuff
 static E_DBus_Connection *conn = NULL;
@@ -50,7 +54,7 @@ request_method_List(E_DBus_Object *obj, DBusMessage *msg)
 	for (i = 0; ids[i] > 0; i++)
 	  {
 	     dbus_message_iter_open_container(&array, DBUS_TYPE_STRUCT, NULL, &item);
-	     dbus_message_iter_append_basic(&item, DBUS_TYPE_INT32, &(ids[i]));
+	     dbus_message_iter_append_basic(&item, DBUS_TYPE_UINT32, &(ids[i]));
 	     dbus_message_iter_close_container(&array, &item);
 	  }
 	free(ids);
@@ -80,11 +84,10 @@ request_method_Add(E_DBus_Object *obj, DBusMessage *msg)
    dbus_message_iter_get_basic(&iter, &command);
 
    id = job_add(time_at, priority, flags, command);
-   if (id > 0) job_save();
    
    reply = dbus_message_new_method_return(msg);
    dbus_message_iter_init_append(reply, &iter);
-   dbus_message_iter_append_basic(&iter, DBUS_TYPE_INT32, &id);
+   dbus_message_iter_append_basic(&iter, DBUS_TYPE_UINT32, &id);
    return reply;
 }
 
@@ -98,7 +101,6 @@ request_method_Del(E_DBus_Object *obj, DBusMessage *msg)
    dbus_message_iter_get_basic(&iter, &id);
    
    job_del(id);
-   job_save();
    
    return dbus_message_new_method_return(msg);
 }
@@ -123,8 +125,6 @@ request_service(void *data, DBusMessage *msg, DBusError *err)
    e_dbus_interface_method_add(iface, "Del", "u", "",
 			       request_method_Del);
    
-   // FIXME: dbus signals - emit when things go off?
-   
    e_dbus_object_interface_attach(obj, iface);
 
    job_load();
@@ -138,41 +138,200 @@ declare_interface(E_DBus_Connection *c)
 }
 
 //// JOB queue
+typedef struct _Job Job;
+
+struct _Job
+{
+   dbus_uint32_t id;
+   dbus_uint64_t time_at;
+   dbus_uint32_t priority;
+   char *flags;
+   Job *next;
+};
+
+static dbus_uint32_t job_max_id = 0;
+static Job *jobs = NULL;
+
 static void
 job_load(void)
 {
-   // FIXME: load job queue (QUEUE_DIR - files)
-}
-
-static void
-job_save(void)
-{
-   // FIXME: save job queue (write to QUEUE_DIR)
+   const char *home;
+   char buf[4096];
+   Ecore_List *files;
+   
+   home = getenv("HOME");
+   if (!home) home = "/";
+   snprintf(buf, sizeof(buf), "%s/.funeral/spool", home);
+   ecore_file_mkpath(buf);
+   files = ecore_file_ls(buf);
+   job_max_id = 0;
+   if (files)
+     {
+	char *file;
+	
+	ecore_list_first_goto(files);
+	while ((file = ecore_list_current(files)))
+	  {
+	     Job *j, *jj, *jp;
+	     char *newstr, *p;
+	     
+	     newstr = strdup(file);
+	     if (newstr)
+	       {
+		  p = newstr;
+		  while (*p)
+		    {
+		       if (*p == '_') *p = ' ';
+		       p++;
+		    }
+		  j = calloc(1, sizeof(Job));
+		  // filename "job_ID_TIME_PRI_FLAGS
+		  if (j)
+		    {
+		       char tmp[64];
+		       
+		       tmp[0] = 0;
+		       sscanf(newstr, "job %u %llx %u %60s",
+			      &(j->id), &(j->time_at),
+			      &(j->priority), tmp);
+		       j->flags = strdup(tmp);
+		       if (j->id > job_max_id) job_max_id = j->id;
+		       if (!jobs) jobs = j;
+		       else
+			 {
+			    for (jp = NULL, jj = jobs; 
+				 jj; 
+				 jp = jj, jj = jj->next)
+			      {
+				 if (jj->time_at > j->time_at)
+				   {
+				      if (jp) jp->next = j;
+				      else jobs = j;
+				      j->next = jj;
+				      break;
+				   }
+				 else if (!jj->next)
+				   {
+				      jj->next = j;
+				      break;
+				   }
+			      }
+			 }
+		    }
+		  free(newstr);
+	       }
+             ecore_list_next(files);
+	  }
+        ecore_list_destroy(files);
+     }
+   timer_eval();
 }
 
 static dbus_uint32_t *
 job_list(void)
 {
    dbus_uint32_t *ids;
+   Job *j;
+   int num = 0;
    
-   // FIXME: list job queue
-   ids = malloc(1 * sizeof(dbus_uint32_t));
-   ids[0] = 0;
+   for (j = jobs; j; j = j->next) num++;
+   ids = calloc(num + 1, sizeof(dbus_uint32_t));
+   for (num = 0, j = jobs; j; j = j->next, num++)
+     {
+	ids[num] = j->id;
+     }
+   ids[num] = 0;
    return ids;
 }
 
 static dbus_uint32_t
 job_add(dbus_uint64_t time_at, dbus_uint32_t priority, const char *flags, const char *command)
 {
-   // FIXME: add to queue
-   return 0;
+   const char *home;
+   char buf[4096];
+   dbus_uint32_t id;
+   FILE *f;
+   Job *j, *jj, *jp;
+   
+   home = getenv("HOME");
+   if (!home) home = "/";
+   snprintf(buf, sizeof(buf), "%s/.funeral/spool", home);
+   ecore_file_mkpath(buf);
+   j = calloc(1, sizeof(Job));
+   if (!j) return 0;
+   id = job_max_id + 1;
+   snprintf(buf, sizeof(buf), 
+	    "%s/.funeral/spool/job_%u_%016llx_%u_%s", 
+	    home, id, time_at, priority, flags);
+   f = fopen(buf, "w");
+   if (f)
+     {
+	fprintf(f, "%s\n", command);
+	fclose(f);
+	chmod(buf, S_IXUSR | S_IWUSR | S_IRUSR);
+     }
+   else
+     {
+	free(j);
+	return 0;
+     }
+   
+   j->id = id;
+   j->time_at = time_at;
+   j->priority = priority;
+   j->flags = strdup(flags);
+   for (jp = NULL, jj = jobs; 
+	jj; 
+	jp = jj, jj = jj->next)
+     {
+	if (jj->time_at > j->time_at)
+	  {
+	     if (jp) jp->next = j;
+	     else jobs = j;
+	     j->next = jj;
+	     break;
+	  }
+	else if (!jj->next)
+	  {
+	     jj->next = j;
+	     break;
+	  }
+     }
+   job_max_id = id;
+   timer_eval();
+   return id;
 }
 
 static void
 job_del(dbus_uint32_t id)
 {
-   // FIXME: del from queue
-   return;
+   const char *home;
+   char buf[4096];
+   FILE *f;
+   Job *jj, *jp;
+   
+   home = getenv("HOME");
+   if (!home) home = "/";
+   snprintf(buf, sizeof(buf), "%s/.funeral/spool", home);
+   ecore_file_mkpath(buf);
+   for (jp = NULL, jj = jobs; 
+	jj; 
+	jp = jj, jj = jj->next)
+     {
+	if (jj->id == id)
+	  {
+	     snprintf(buf, sizeof(buf), 
+		      "%s/.funeral/spool/job_%u_%016llx_%u_%s", 
+		      home, jj->id, jj->time_at, jj->priority, jj->flags);
+	     unlink(buf);
+	     if (jp) jp->next = jj->next;
+	     else jobs = jj->next;
+	     free(jj->flags);
+	     free(jj);
+	     break;
+	  }
+     }
+   timer_eval();
 }
 
 //// RTC settings
@@ -275,6 +434,64 @@ rtc_set(dbus_uint64_t time_at)
 }
 
 //// Timer/timeouts and updates to check for sysclock changes
+static Ecore_Timer *ticker = NULL;
+
+static int
+timer_setup(void *data)
+{
+   timer_eval();
+   return 0;
+}
+
+static int
+timer_callback(void *data)
+{
+   ticker = NULL;
+   timer_eval();
+   return 0;
+}
+
+static void
+timer_eval(void)
+{
+   double t, t_in;
+   
+   printf("timer_eval()\n");
+   if (!jobs)
+     {
+	printf("no jobs. clear\n");
+	rtc_clear();
+	if (ticker) ecore_timer_del(ticker);
+	ticker = NULL;
+	return;
+     }
+   
+   if (ticker) ecore_timer_del(ticker);
+   t = ecore_time_get();
+   t_in = 1.0 - (t - ((dbus_uint64_t)t));
+   printf("tick in %3.3f\n", t_in);
+   ticker = ecore_timer_add(t_in, timer_callback, NULL);
+   if (t >= jobs->time_at)
+     {
+	char buf[4096];
+	const char *home;
+	
+	home = getenv("HOME");
+	if (!home) home = "/";
+	snprintf(buf, sizeof(buf), 
+		 "%s/.funeral/spool/job_%u_%016llx_%u_%s", 
+		 home, jobs->id, jobs->time_at, jobs->priority, jobs->flags);
+	ecore_exe_run(buf, NULL);
+	printf("RUN: %u @ %llu\n", jobs->id, jobs->time_at - (dbus_uint64_t)t);
+	job_del(jobs->id);
+     }
+   else
+     {
+	printf("next job in %llu\n", jobs->time_at - (dbus_uint64_t)t);
+	rtc_set(jobs->time_at);
+	printf("rtc done\n");
+     }
+}
 
 /// Main code - init
 int
@@ -287,7 +504,7 @@ main(int argc, char **argv)
    ecore_app_args_set(argc, (const char **)argv);
    e_dbus_init();
    
-   c = e_dbus_bus_get(DBUS_BUS_SYSTEM);
+   c = e_dbus_bus_get(DBUS_BUS_SESSION);
    if (!c)
      {
 	fprintf(stderr, "ERROR: can't connect to system session\n");
@@ -295,6 +512,7 @@ main(int argc, char **argv)
      }
    
    declare_interface(c);
+   ecore_timer_add(1.0, timer_setup, NULL);
 
    ecore_main_loop_begin();
     
