@@ -18547,6 +18547,7 @@ ICON("enlightenment/check","icon_check.png",64)
 // FIXME: Dummy Icons
 // Do we dare try to put an icon in for all the popup menu items too?
 
+ICON("enlightenment/mixer","icon_dummy.png",64)
 ICON("enlightenment/pager","icon_dummy.png",64)
 ICON("enlightenment/engine","icon_dummy.png",64)
 ICON("enlightenment/add_application","icon_dummy.png",64)
