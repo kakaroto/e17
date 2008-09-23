@@ -25,7 +25,7 @@
 //	      - ilist e.swallow.icon should use e_ilist_icon_size_set to make a dummy box
 //		to compensate when there is no icon there.
 //	      - Fix ibox urgent / icon_overlay problem
-//	      - Mixer Icon needs to be fixed.
+//	      - Mixer config/app (click Mixer) window icon needs to be fixed.
 //
 
 /*
