@@ -23,8 +23,9 @@ void eyelight_compile_block_item(Eyelight_Compiler* compiler,FILE* output, Eyeli
 void eyelight_compile_block_image(Eyelight_Compiler* compiler,FILE* output, Eyelight_Node* current, char* area, char* layout, int item_number, int number_item);
 int eyelight_compile_block_items(Eyelight_Compiler* compiler,FILE* output, Eyelight_Node* current, char* area, char* layout, int item_number, int number_item, int depth, char* numbering, int numbering_id);
 void eyelight_compil_block_area(Eyelight_Compiler* compiler,FILE* output, Eyelight_Node* current);
-void eyelight_compile_block_slide(Eyelight_Compiler* compiler,FILE* output, Eyelight_Node* current, int slide_number);
+void eyelight_compile_block_slide(Eyelight_Compiler* compiler,FILE* output, Eyelight_Node* current, int slide_number, int nb_slides);
 void edc_file_list_load(Eyelight_Compiler* compiler, Eyelight_Node* current);
+int eyelight_nb_slides_get(Eyelight_Compiler* compiler);
 
 /*
  * @brief compile the properties transition, transition_next, transition_previous
@@ -471,7 +472,7 @@ void eyelight_compile_block_area(Eyelight_Compiler* compiler,FILE* output, Eyeli
 /*
  * @brief compile a block slide (area, title, subtitle ...)
  */
-void eyelight_compile_block_slide(Eyelight_Compiler* compiler,FILE* output, Eyelight_Node* current, int slide_number)
+void eyelight_compile_block_slide(Eyelight_Compiler* compiler,FILE* output, Eyelight_Node* current, int slide_number, int nb_slides)
 {
     Eyelight_Node * node;
     char* title =  NULL, *subtitle = NULL;
@@ -483,6 +484,7 @@ void eyelight_compile_block_slide(Eyelight_Compiler* compiler,FILE* output, Eyel
 
     fprintf(output,"parts\n{\n");
     fprintf(output,"pre_fct();\n");
+    fprintf(output,"set_slide_number(%d,%d);\n",slide_number,nb_slides);
 
     eyelight_compile_prop_slide(compiler,output, current, &title, &subtitle);
 
@@ -539,6 +541,7 @@ void eyelight_compile(Eyelight_Compiler* compiler,FILE* output)
     Eyelight_Node* node;
     int slide_number = 1;
     char* image,*edc_file;
+    int nb_slides;
 
     //first we list all the edc file we want include
     eyelight_edc_file_list_load(compiler,compiler->root);
@@ -551,6 +554,8 @@ void eyelight_compile(Eyelight_Compiler* compiler,FILE* output)
     fprintf(output, "gotoslide();\n");
     fprintf(output, "slideshow();\n");
     fprintf(output, "tableofcontents();\n\n");
+
+    nb_slides = eyelight_nb_slides_get(compiler);
 
     ecore_list_first_goto(compiler->root->l);
     while( (node = ecore_list_next(compiler->root->l)) )
@@ -612,7 +617,7 @@ void eyelight_compile(Eyelight_Compiler* compiler,FILE* output)
                 {
                     case EYELIGHT_NAME_SLIDE:
                         eyelight_compile_block_slide(compiler,output
-                                , node,slide_number);
+                                , node,slide_number,nb_slides);
                         slide_number++;
                         break;
                 }
@@ -630,4 +635,17 @@ void eyelight_compile(Eyelight_Compiler* compiler,FILE* output)
     fprintf(output,"}\n");
 }
 
+int eyelight_nb_slides_get(Eyelight_Compiler* compiler)
+{
+    Eyelight_Node* node;
+    int number = 0;
+
+    ecore_list_first_goto(compiler->root->l);
+    while( (node = ecore_list_next(compiler->root->l)) )
+    {
+        if(node->name==EYELIGHT_NAME_SLIDE)
+            number++;
+    }
+    return number;
+}
 

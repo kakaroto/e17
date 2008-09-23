@@ -5,7 +5,8 @@ custom_area("title",0.18,0.10,0.97,0.22,is_visible)\
 custom_area("subtitle",0.55,0.20,0.99,0.27,is_visible)\
 custom_area("header_image",0.05,0.1,0.17,0.20,is_visible)\
 custom_area("foot_image",0.9,0.9,0.99,0.99,is_visible)\
-custom_area("foot_text",0.05,0.96,0.9,1.0,is_visible)
+custom_area("foot_text",0.05,0.96,0.7,1.0,is_visible) \
+custom_area("slide_number",0.84,0.96,0.9,1.0,is_visible)
 //
 
 
@@ -129,8 +130,9 @@ custom_area("title",0.05,0.4,0.99,0.52,is_visible)      \
 custom_area("subtitle",0.05,0.5,0.99,0.6,is_visible)  \
 custom_area("header_image",0.05,0.1,0.99,0.35,is_visible)\
 custom_area("foot_image",0.9,0.9,0.99,0.99,is_visible)\
-custom_area("foot_text",0.05,0.96,0.9,1.0,is_visible)\
-custom_area("bottom",0.11,0.62,0.94,0.94,is_visible)
+custom_area("foot_text",0.05,0.96,0.7,1.0,is_visible)\
+custom_area("bottom",0.11,0.62,0.94,0.94,is_visible) \
+custom_area("slide_number",0.84,0.96,1.0,1.0,is_visible)
 
 //layout with 1 big area
 #define use_layout_1_area(is_visible) \

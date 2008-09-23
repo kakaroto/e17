@@ -462,3 +462,903 @@ slide
 }
 
 
+slide
+{
+    layout: title;
+    transition_next: fade_content;
+
+    area
+    {
+        name: bottom;
+        text: "Author: Atton Jonathan, alias Watchwolf";
+        text: "Writting during the Google Summer Of Code 2008";
+        text: "Mentor: Cedric Bail";
+        text: "For the Enlightenment project";
+    }
+}
+
+slide
+{
+    layout: blank;
+    title: "General presentation";
+    subtitle: "";
+    transition_next: "fade";
+    custom_area: "top" 0.1 0.27 0.9 0.6;
+    custom_area: "center" 0.1 0.6 0.9 0.85;
+    custom_area: "bottom" 0.1 0.85 0.9 0.95;
+    area
+    {
+        name: "top";
+        text: "With Eyelight we can create a presentation from a simple ASCII file and get a beautiful presentation.";
+        text: "Eyelight is based around the <outline>EFL (Enlightenment Foundation Libraries)</outline> (Ecore, Evas, Edje, EET ...)";
+    }
+    area
+    {
+        name: "center";
+        layout: "horizontal";
+        image
+        {
+            image: "images/screen_slide_title.png";
+            border: 1;
+            relative: 0.3 1.0;
+        }
+        image
+        {
+            image: "images/screen_expose.png";
+            border: 1;
+            relative: 0.3 1.0;
+        }
+        image
+        {
+            image: "images/screen_slideshow.png";
+            border: 1;
+            relative: 0.3 1.0;
+        }
+    }
+    area
+    {
+        name: "bottom";
+        text:"<small>Eyelight homepage: http://watchwolf.fr/wiki/doku.php?id=eyelight</small>";
+        text:"<small>Enlightenment homepage: http://enlightenment.org</small>";
+    }
+}
+
+slide
+{
+    layout: 2_lines_top;
+    title: "How it works";
+    subtitle: "";
+    transition_previous: "fade";
+    transition_next: "horizontal";
+    area
+    {
+        name: top;
+        items
+        {
+            numbering: normal;
+	    text: "The presentation is an <outline>elt</outline> file";
+            text: "The compiler converts this file into an <outline>edc</outline> file";
+            text: "With an edc theme file, the compiler create an <outline>edje</outline> file";
+            text: "Finally the viewer displays the presentation";
+        }
+    }
+
+    area
+    {
+        name: bottom;
+        layout: horizontal;
+
+        image
+        {
+            image: "diagram.png";
+            border: 1;
+        }
+    }
+}
+
+
+slide
+{
+    title: "Creating a presentation";
+    subtitle: "a beautifull presentation !";
+    transition_previous: "horizontal";
+    transition_next: vertical;
+    area
+    {
+        name:left;
+        layout: vertical;
+        items
+        {
+            numbering: roman;
+            text: "The presentation is an <outline>elt file</outline>";
+            text: "Theme and content are independent";
+            text: "Use some blocks and properties to construct your slide: ";
+            items
+            {
+                numbering: none;
+                text: "blocks slide, items, image ...";
+                text: "properties title, image, text ...";
+            }
+        }
+    }
+    area
+    {
+        name: right;
+        image
+        {
+            image: "code_presentation.png";
+            border: 1;
+        }
+    }
+}
+
+slide
+{
+    title: "Creating a theme";
+    subtitle: "";
+    transition_previous: vertical;
+    area
+    {
+        name: left;
+        items
+        {
+            numbering: normal;
+            text: "A theme is a list of macros/functions";
+            text: "Some macros are used to create a slide: ";
+            items
+            {
+                numbering: none;
+                text: "Set_title()";
+                text: "Add_item_text_vbox()";
+            }
+            text: "Use what you want inside a macro";
+            text: "Add your own macros, layouts, transitions ...";
+        }
+    }
+    area
+    {
+        name: right;
+        image: "code_theme.png";
+    }
+}
+
+foot_image: "wolf.png";
+title: "How to include an edc file";
+slide
+{
+    layout: 1_area;
+    subtitle: "with some animations";
+
+    area
+    {
+        name: center;
+        items
+        {
+            text: "Create an edc file with your animation.";
+            text: "All your file has to be in a macro with 1 argument:";
+            items
+            {
+                text: "this argument define a part";
+                text: "all your parts have to be relative to this argument";
+            }
+            text: "In the elt file defines A block 'edc' with 2 properties:";
+            items
+            {
+                text: "the property 'file' describes the path to your edc file";
+                text: "The property 'macro' defines the name of your macro";
+            }
+        }
+        text: "Result:";
+        edc
+        {
+            macro: firefox;
+            file: firefox.edc;
+        }
+    }
+}
+
+
+
+slide
+{
+    layout: 1_small_line_2_columns;
+    subtitle: "The source code";
+
+    area
+    {
+        name: top;
+        text: "And the source code of the presentation is in eyelight.elt";
+        text: "The source code of the firefox edc file is in firefox.edc";
+    }
+
+    area
+    {
+        name: left;
+        image: "code_block_edc.png";
+    }
+    area
+    {
+        name: right;
+        image: "code_firefox.png";
+    }
+}
+
+
+slide
+{
+    layout: 2_columns_right;
+    title: "The tag list ";
+    subtitle: "A presentation of the default tags";
+
+    area
+    {
+        name: left;
+        items
+        {
+            text: "no tag";
+            text: "small: <small>small text</small>";
+            text: "big: <big>big text</big>";
+            text: "b: <b>bold</b>";
+            text: "i: <i>italic</i>";
+            text: "u: <u>underline</u>";
+        }
+    }
+    area
+    {
+        name: right;
+        items
+        {
+            text: "strike: <strike>strike</strike>";
+            text: "outline: <outline>outline</outline>";
+            text: "shadow: <shadow>shadow</shadow>";
+            text: "outline_shadow: <outline_shadow>outline shadow</outline_shadow>";
+            text: "c: <c>center</c>";
+            text: "r: <r>right</r>";
+            text: "l: <l>left</l>";
+        }
+    }
+}
+
+
+
+slide
+{
+    layout: title;
+    title: "Layout title";
+}
+
+slide
+{
+    layout: 1_area;
+    title: "Layout 1_area";
+}
+
+slide
+{
+    layout: blank;
+    title: "Layout blank";
+}
+
+slide
+{
+    layout: 2_columns;
+    title: "Layout 2_columns";
+}
+
+slide
+{
+    layout: 2_columns_left;
+    title: "Layout 2_columns_left";
+}
+
+slide
+{
+    layout: 2_columns_right;
+    title: "Layout 2_columns_right";
+}
+
+slide
+{
+    layout: 2_lines;
+    title: "Layout 2_lines";
+}
+
+slide
+{
+    layout: 2_lines_top;
+    title: "Layout 2_lines_top";
+}
+
+slide
+{
+    layout: 2_lines_bottom;
+    title: "Layout 2_lines_bottom";
+}
+
+slide
+{
+    layout: 1_small_line_2_columns;
+    title: "Layout 1_small_line_2_columns";
+}
+
+slide
+{
+    layout: 1_line_2_columns;
+    title: "Layout 1_line_2_columns";
+}
+
+slide
+{
+    layout: 2_columns_1_line;
+    title: "Layout 2_columns_1_line";
+}
+
+slide
+{
+    layout: 2_columns_1_small_line;
+    title: "Layout 2_columns_1_small_line";
+}
+
+slide
+{
+    layout: 4_areas;
+    title: "Layout 4_areas";
+}
+slide
+{
+    layout: 6_areas;
+    title: "Layout 6_areas";
+}
+
+slide
+{
+    layout: blank;
+    title: "3 customs areas";
+    custom_area: "center" 0.4 0.4 0.6 0.6;
+    custom_area: "left" 0.3 0.2 0.35 0.7;
+    custom_area: "big" 0.10 0.24 0.87 0.87;
+    area
+    {
+        name:"center";
+        text:"hehe";
+    }
+    area
+    {
+        name: "left";
+        image: "wolf.png";
+    }
+    area
+    {
+        name: "big";
+        items
+        {
+            text: "very big!";
+            text: "haha";
+        }
+    }
+}
+
+
+
+slide
+{
+
+}
+
+slide
+{
+
+}
+
+slide
+{
+
+}
+
+slide
+{
+
+}
+
+slide
+{
+
+}
+slide
+{
+
+}
+
+slide
+{
+
+}
+slide
+{
+
+}
+slide
+{
+
+}
+
+slide
+{
+
+}
+
+slide
+{
+
+}
+
+slide
+{
+
+}
+
+slide
+{
+
+}
+
+slide
+{
+
+}
+slide
+{
+    title: "last slide !!!!!!!!!!!! :)";
+}
+
+
+slide
+{
+    layout: title;
+    transition_next: fade_content;
+
+    area
+    {
+        name: bottom;
+        text: "Author: Atton Jonathan, alias Watchwolf";
+        text: "Writting during the Google Summer Of Code 2008";
+        text: "Mentor: Cedric Bail";
+        text: "For the Enlightenment project";
+    }
+}
+
+slide
+{
+    layout: blank;
+    title: "General presentation";
+    subtitle: "";
+    transition_next: "fade";
+    custom_area: "top" 0.1 0.27 0.9 0.6;
+    custom_area: "center" 0.1 0.6 0.9 0.85;
+    custom_area: "bottom" 0.1 0.85 0.9 0.95;
+    area
+    {
+        name: "top";
+        text: "With Eyelight we can create a presentation from a simple ASCII file and get a beautiful presentation.";
+        text: "Eyelight is based around the <outline>EFL (Enlightenment Foundation Libraries)</outline> (Ecore, Evas, Edje, EET ...)";
+    }
+    area
+    {
+        name: "center";
+        layout: "horizontal";
+        image
+        {
+            image: "images/screen_slide_title.png";
+            border: 1;
+            relative: 0.3 1.0;
+        }
+        image
+        {
+            image: "images/screen_expose.png";
+            border: 1;
+            relative: 0.3 1.0;
+        }
+        image
+        {
+            image: "images/screen_slideshow.png";
+            border: 1;
+            relative: 0.3 1.0;
+        }
+    }
+    area
+    {
+        name: "bottom";
+        text:"<small>Eyelight homepage: http://watchwolf.fr/wiki/doku.php?id=eyelight</small>";
+        text:"<small>Enlightenment homepage: http://enlightenment.org</small>";
+    }
+}
+
+slide
+{
+    layout: 2_lines_top;
+    title: "How it works";
+    subtitle: "";
+    transition_previous: "fade";
+    transition_next: "horizontal";
+    area
+    {
+        name: top;
+        items
+        {
+            numbering: normal;
+	    text: "The presentation is an <outline>elt</outline> file";
+            text: "The compiler converts this file into an <outline>edc</outline> file";
+            text: "With an edc theme file, the compiler create an <outline>edje</outline> file";
+            text: "Finally the viewer displays the presentation";
+        }
+    }
+
+    area
+    {
+        name: bottom;
+        layout: horizontal;
+
+        image
+        {
+            image: "diagram.png";
+            border: 1;
+        }
+    }
+}
+
+
+slide
+{
+    title: "Creating a presentation";
+    subtitle: "a beautifull presentation !";
+    transition_previous: "horizontal";
+    transition_next: vertical;
+    area
+    {
+        name:left;
+        layout: vertical;
+        items
+        {
+            numbering: roman;
+            text: "The presentation is an <outline>elt file</outline>";
+            text: "Theme and content are independent";
+            text: "Use some blocks and properties to construct your slide: ";
+            items
+            {
+                numbering: none;
+                text: "blocks slide, items, image ...";
+                text: "properties title, image, text ...";
+            }
+        }
+    }
+    area
+    {
+        name: right;
+        image
+        {
+            image: "code_presentation.png";
+            border: 1;
+        }
+    }
+}
+
+slide
+{
+    title: "Creating a theme";
+    subtitle: "";
+    transition_previous: vertical;
+    area
+    {
+        name: left;
+        items
+        {
+            numbering: normal;
+            text: "A theme is a list of macros/functions";
+            text: "Some macros are used to create a slide: ";
+            items
+            {
+                numbering: none;
+                text: "Set_title()";
+                text: "Add_item_text_vbox()";
+            }
+            text: "Use what you want inside a macro";
+            text: "Add your own macros, layouts, transitions ...";
+        }
+    }
+    area
+    {
+        name: right;
+        image: "code_theme.png";
+    }
+}
+
+foot_image: "wolf.png";
+title: "How to include an edc file";
+slide
+{
+    layout: 1_area;
+    subtitle: "with some animations";
+
+    area
+    {
+        name: center;
+        items
+        {
+            text: "Create an edc file with your animation.";
+            text: "All your file has to be in a macro with 1 argument:";
+            items
+            {
+                text: "this argument define a part";
+                text: "all your parts have to be relative to this argument";
+            }
+            text: "In the elt file defines A block 'edc' with 2 properties:";
+            items
+            {
+                text: "the property 'file' describes the path to your edc file";
+                text: "The property 'macro' defines the name of your macro";
+            }
+        }
+        text: "Result:";
+        edc
+        {
+            macro: firefox;
+            file: firefox.edc;
+        }
+    }
+}
+
+
+
+slide
+{
+    layout: 1_small_line_2_columns;
+    subtitle: "The source code";
+
+    area
+    {
+        name: top;
+        text: "And the source code of the presentation is in eyelight.elt";
+        text: "The source code of the firefox edc file is in firefox.edc";
+    }
+
+    area
+    {
+        name: left;
+        image: "code_block_edc.png";
+    }
+    area
+    {
+        name: right;
+        image: "code_firefox.png";
+    }
+}
+
+
+slide
+{
+    layout: 2_columns_right;
+    title: "The tag list ";
+    subtitle: "A presentation of the default tags";
+
+    area
+    {
+        name: left;
+        items
+        {
+            text: "no tag";
+            text: "small: <small>small text</small>";
+            text: "big: <big>big text</big>";
+            text: "b: <b>bold</b>";
+            text: "i: <i>italic</i>";
+            text: "u: <u>underline</u>";
+        }
+    }
+    area
+    {
+        name: right;
+        items
+        {
+            text: "strike: <strike>strike</strike>";
+            text: "outline: <outline>outline</outline>";
+            text: "shadow: <shadow>shadow</shadow>";
+            text: "outline_shadow: <outline_shadow>outline shadow</outline_shadow>";
+            text: "c: <c>center</c>";
+            text: "r: <r>right</r>";
+            text: "l: <l>left</l>";
+        }
+    }
+}
+
+
+
+slide
+{
+    layout: title;
+    title: "Layout title";
+}
+
+slide
+{
+    layout: 1_area;
+    title: "Layout 1_area";
+}
+
+slide
+{
+    layout: blank;
+    title: "Layout blank";
+}
+
+slide
+{
+    layout: 2_columns;
+    title: "Layout 2_columns";
+}
+
+slide
+{
+    layout: 2_columns_left;
+    title: "Layout 2_columns_left";
+}
+
+slide
+{
+    layout: 2_columns_right;
+    title: "Layout 2_columns_right";
+}
+
+slide
+{
+    layout: 2_lines;
+    title: "Layout 2_lines";
+}
+
+slide
+{
+    layout: 2_lines_top;
+    title: "Layout 2_lines_top";
+}
+
+slide
+{
+    layout: 2_lines_bottom;
+    title: "Layout 2_lines_bottom";
+}
+
+slide
+{
+    layout: 1_small_line_2_columns;
+    title: "Layout 1_small_line_2_columns";
+}
+
+slide
+{
+    layout: 1_line_2_columns;
+    title: "Layout 1_line_2_columns";
+}
+
+slide
+{
+    layout: 2_columns_1_line;
+    title: "Layout 2_columns_1_line";
+}
+
+slide
+{
+    layout: 2_columns_1_small_line;
+    title: "Layout 2_columns_1_small_line";
+}
+
+slide
+{
+    layout: 4_areas;
+    title: "Layout 4_areas";
+}
+slide
+{
+    layout: 6_areas;
+    title: "Layout 6_areas";
+}
+
+slide
+{
+    layout: blank;
+    title: "3 customs areas";
+    custom_area: "center" 0.4 0.4 0.6 0.6;
+    custom_area: "left" 0.3 0.2 0.35 0.7;
+    custom_area: "big" 0.10 0.24 0.87 0.87;
+    area
+    {
+        name:"center";
+        text:"hehe";
+    }
+    area
+    {
+        name: "left";
+        image: "wolf.png";
+    }
+    area
+    {
+        name: "big";
+        items
+        {
+            text: "very big!";
+            text: "haha";
+        }
+    }
+}
+
+
+
+slide
+{
+
+}
+
+slide
+{
+
+}
+
+slide
+{
+
+}
+
+slide
+{
+
+}
+
+slide
+{
+
+}
+slide
+{
+
+}
+
+slide
+{
+
+}
+slide
+{
+
+}
+slide
+{
+
+}
+
+slide
+{
+
+}
+
+slide
+{
+
+}
+
+slide
+{
+
+}
+
+slide
+{
+
+}
+
+slide
+{
+
+}
+slide
+{
+    title: "last slide !!!!!!!!!!!! :)";
+}
+
+

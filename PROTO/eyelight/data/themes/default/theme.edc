@@ -278,6 +278,12 @@ styles
         base: "+ font=DejaVuSans font_size=18 text_class=foot align=center valign=bottom color=#000  wrap=word ";
         tag_list();
     }
+    style
+    {
+        name: "nbPagesStyle";
+        base: "+ font=DejaVuSans font_size=18 text_class=foot align=left valign=bottom color=#000  wrap=word ";
+        tag_list();
+    }
 }
 
 
@@ -511,6 +517,37 @@ part                            \
             to: "slide";        \
         }                       \
     }                           \
+}
+
+
+#define set_slide_number(slide_number,nb_slides)    \
+part                                \
+{                                   \
+    name : "slide_number";          \
+    type: TEXTBLOCK;                \
+    mouse_events: 0;                \
+    clip_to: "slide";               \
+    description                     \
+    {                               \
+        state: "default" 0.0;       \
+        align: 0.1 0.1;             \
+        rel1                        \
+        {                           \
+            relative: 0.0 0.0;      \
+            to: "area_slide_number";\
+        }                           \
+        rel2                        \
+        {                           \
+            relative: 1.0 1.0;      \
+            to: "area_slide_number";\
+        }                           \
+        text                        \
+        {                           \
+            text: slide_number"/"nb_slides; \
+            style: "nbPagesStyle";  \
+            min: 1 1;               \
+        }                           \
+    }                               \
 }
 
 
