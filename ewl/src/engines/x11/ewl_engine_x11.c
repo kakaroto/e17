@@ -36,25 +36,8 @@ static int ewl_ev_dnd_leave(void *data, int type, void *_ev);
 static int ewl_ev_dnd_drop(void *data, int type, void *_ev);
 static int ewl_ev_selection_clear(void *data, int type, void *_ev);
 
-static Ecore_Event_Handler *ee_expose_handler = NULL;
-static Ecore_Event_Handler *ee_configure_handler = NULL;
-static Ecore_Event_Handler *ee_delete_request_handler = NULL;
-static Ecore_Event_Handler *ee_key_down_handler = NULL;
-static Ecore_Event_Handler *ee_key_up_handler = NULL;
-static Ecore_Event_Handler *ee_dnd_position_handler = NULL;
-static Ecore_Event_Handler *ee_dnd_enter_handler = NULL;
-static Ecore_Event_Handler *ee_dnd_leave_handler = NULL;
-static Ecore_Event_Handler *ee_dnd_drop_handler = NULL;
-static Ecore_Event_Handler *ee_selection_notify_handler = NULL;
-static Ecore_Event_Handler *ee_selection_request_handler = NULL;
-static Ecore_Event_Handler *ee_selection_clear_handler = NULL;
-static Ecore_Event_Handler *ee_mouse_down_handler = NULL;
-static Ecore_Event_Handler *ee_mouse_up_handler = NULL;
-static Ecore_Event_Handler *ee_mouse_move_handler = NULL;
-static Ecore_Event_Handler *ee_mouse_wheel_handler = NULL;
-static Ecore_Event_Handler *ee_mouse_out_handler = NULL;
-static Ecore_Event_Handler *ee_focus_in_handler = NULL;
-static Ecore_Event_Handler *ee_focus_out_handler = NULL;
+#define EE_HANDLERS_NUM 19 
+static Ecore_Event_Handler **ee_handlers = NULL;
 
 static void ee_shutdown(Ewl_Engine *engine);
 static int ee_init(Ewl_Engine *engine, int *argc, char ** argv);
@@ -173,12 +156,43 @@ ee_init(Ewl_Engine *engine, int *argc, char ** argv)
         Ewl_Engine_Info *info;
         char *display = NULL;
         int i;
+        /*
+         * Because we are building this array before the ecore x events are
+         * set up, we need to store the reference, because the real values
+         * are 0 at this moment and will change after ecore_x_init() is called
+         */
+        const struct 
+        {
+                int *type;
+                int (*func) (void *data, int type, void *event);
+        } 
+        handler_info[EE_HANDLERS_NUM] = {
+                {&ECORE_X_EVENT_WINDOW_DAMAGE, ewl_ev_x_window_expose},
+                {&ECORE_X_EVENT_WINDOW_CONFIGURE, ewl_ev_x_window_configure},
+                {&ECORE_X_EVENT_WINDOW_DELETE_REQUEST, ewl_ev_x_window_delete},
+                {&ECORE_X_EVENT_KEY_DOWN, ewl_ev_x_key_down},
+                {&ECORE_X_EVENT_KEY_UP, ewl_ev_x_key_up},
+                {&ECORE_X_EVENT_XDND_POSITION, ewl_ev_dnd_position},
+                {&ECORE_X_EVENT_XDND_ENTER, ewl_ev_dnd_enter},
+                {&ECORE_X_EVENT_XDND_LEAVE, ewl_ev_dnd_leave},
+                {&ECORE_X_EVENT_XDND_DROP, ewl_ev_dnd_drop},
+                {&ECORE_X_EVENT_SELECTION_NOTIFY, ewl_ev_x_data_received},
+                {&ECORE_X_EVENT_SELECTION_CLEAR, ewl_ev_selection_clear},
+                {&ECORE_X_EVENT_SELECTION_REQUEST, ewl_ev_x_data_request},
+                {&ECORE_X_EVENT_MOUSE_BUTTON_DOWN, ewl_ev_x_mouse_down},
+                {&ECORE_X_EVENT_MOUSE_BUTTON_UP, ewl_ev_x_mouse_up},
+                {&ECORE_X_EVENT_MOUSE_MOVE, ewl_ev_x_mouse_move},
+                {&ECORE_X_EVENT_MOUSE_WHEEL, ewl_ev_x_mouse_wheel},
+                {&ECORE_X_EVENT_MOUSE_OUT, ewl_ev_x_mouse_out},
+                {&ECORE_X_EVENT_WINDOW_FOCUS_IN, ewl_ev_x_focus_in},
+                {&ECORE_X_EVENT_WINDOW_FOCUS_OUT, ewl_ev_x_focus_out}
+        };
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR_RET(engine, FALSE);
 
         /* If the event handlers are already setup don't do it again */
-        if (ee_expose_handler)
+        if (ee_handlers)
                 DRETURN_INT(TRUE, DLEVEL_STABLE);
 
         if (argc && argv)
@@ -200,100 +214,27 @@ ee_init(Ewl_Engine *engine, int *argc, char ** argv)
                 DRETURN_INT(FALSE, DLEVEL_STABLE);
         }
 
-        ee_expose_handler = ecore_event_handler_add(
-                                        ECORE_X_EVENT_WINDOW_DAMAGE,
-                                        ewl_ev_x_window_expose, NULL);
-        ee_configure_handler = ecore_event_handler_add(
-                                        ECORE_X_EVENT_WINDOW_CONFIGURE,
-                                        ewl_ev_x_window_configure, NULL);
-        ee_delete_request_handler = ecore_event_handler_add(
-                                        ECORE_X_EVENT_WINDOW_DELETE_REQUEST,
-                                        ewl_ev_x_window_delete, NULL);
-
-        /*
-         * Register dispatching functions for keyboard events.
-         */
-        ee_key_down_handler = ecore_event_handler_add(
-                                                ECORE_X_EVENT_KEY_DOWN,
-                                                ewl_ev_x_key_down, NULL);
-        ee_key_up_handler = ecore_event_handler_add(
-                                                ECORE_X_EVENT_KEY_UP,
-                                                ewl_ev_x_key_up, NULL);
-
-        /*
-         * Register dispatching functions for DND events
-         */
-        ee_dnd_position_handler = ecore_event_handler_add(
-                                                ECORE_X_EVENT_XDND_POSITION,
-                                                ewl_ev_dnd_position, NULL);
-        ee_dnd_enter_handler = ecore_event_handler_add(
-                                                ECORE_X_EVENT_XDND_ENTER,
-                                                ewl_ev_dnd_enter, NULL);
-        ee_dnd_leave_handler = ecore_event_handler_add(
-                                                ECORE_X_EVENT_XDND_LEAVE,
-                                                ewl_ev_dnd_leave, NULL);
-        ee_dnd_drop_handler = ecore_event_handler_add(
-                                                ECORE_X_EVENT_XDND_DROP,
-                                                ewl_ev_dnd_drop, NULL);
-
-        /*
-         * Selection callbacks to allow for data transfers.
-         */
-        ee_selection_notify_handler = ecore_event_handler_add(
-                                                ECORE_X_EVENT_SELECTION_NOTIFY,
-                                                ewl_ev_x_data_received, NULL);
-        ee_selection_clear_handler = ecore_event_handler_add(
-                                                ECORE_X_EVENT_SELECTION_CLEAR,
-                                                ewl_ev_selection_clear, NULL);
-        /*
-         * Selection callbacks to allow for pasting.
-         */
-        ee_selection_request_handler = ecore_event_handler_add(
-                                                ECORE_X_EVENT_SELECTION_REQUEST,
-                                                ewl_ev_x_data_request, NULL);
-
-        /*
-         * Finally, register dispatching functions for mouse events.
-         */
-        ee_mouse_down_handler = ecore_event_handler_add(
-                                                ECORE_X_EVENT_MOUSE_BUTTON_DOWN,
-                                                ewl_ev_x_mouse_down, NULL);
-        ee_mouse_up_handler = ecore_event_handler_add(
-                                                ECORE_X_EVENT_MOUSE_BUTTON_UP,
-                                                ewl_ev_x_mouse_up, NULL);
-        ee_mouse_move_handler = ecore_event_handler_add(
-                                                ECORE_X_EVENT_MOUSE_MOVE,
-                                                ewl_ev_x_mouse_move, NULL);
-        ee_mouse_wheel_handler = ecore_event_handler_add(
-                                                ECORE_X_EVENT_MOUSE_WHEEL,
-                                                ewl_ev_x_mouse_wheel, NULL);
-        ee_mouse_out_handler = ecore_event_handler_add(
-                                                ECORE_X_EVENT_MOUSE_OUT,
-                                                ewl_ev_x_mouse_out, NULL);
-        ee_focus_in_handler = ecore_event_handler_add(
-                                                ECORE_X_EVENT_WINDOW_FOCUS_IN,
-                                                ewl_ev_x_focus_in, NULL);
-        ee_focus_out_handler = ecore_event_handler_add(
-                                                ECORE_X_EVENT_WINDOW_FOCUS_OUT,
-                                                ewl_ev_x_focus_out, NULL);
-
-        if (!ee_expose_handler || !ee_configure_handler
-                        || !ee_delete_request_handler
-                        || !ee_key_down_handler || !ee_key_up_handler
-                        || !ee_dnd_position_handler || !ee_dnd_enter_handler
-                        || !ee_dnd_leave_handler || !ee_dnd_drop_handler
-                        || !ee_selection_notify_handler
-                        || !ee_selection_clear_handler
-                        || !ee_selection_request_handler
-                        || !ee_mouse_down_handler
-                        || !ee_mouse_up_handler || !ee_mouse_move_handler
-                        || !ee_mouse_wheel_handler || !ee_mouse_out_handler
-                        || !ee_focus_in_handler || !ee_focus_out_handler)
+        ee_handlers = NEW(Ecore_Event_Handler *, EE_HANDLERS_NUM);
+        if (!ee_handlers)
         {
-                ee_shutdown(EWL_ENGINE(engine));
-
-                fprintf(stderr, "Unable to create Ecore X event handlers.\n");
+                fprintf(stderr, "Unable to initialize the x11 engine.\n"
+                                "Out of memory!\n\n");
                 DRETURN_INT(FALSE, DLEVEL_STABLE);
+        }
+
+        for (i = 0; i < EE_HANDLERS_NUM; i++)
+        {
+                ee_handlers[i] = ecore_event_handler_add(
+                                                *(handler_info[i].type),
+                                                handler_info[i].func, NULL);
+                if (!ee_handlers[i])
+                {
+                        ee_shutdown(EWL_ENGINE(engine));
+
+                        fprintf(stderr, "Unable to create Ecore X event "
+                                        "handlers.\n");
+                        DRETURN_INT(FALSE, DLEVEL_STABLE);
+                }
         }
 
         info = NEW(Ewl_Engine_Info, 1);
@@ -312,81 +253,17 @@ ee_shutdown(Ewl_Engine *engine)
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(engine);
 
-        if (ee_expose_handler)
-                ecore_event_handler_del(ee_expose_handler);
-        ee_expose_handler = NULL;
+        if (ee_handlers)
+        {
+                int i;
 
-        if (ee_configure_handler)
-                ecore_event_handler_del(ee_configure_handler);
-        ee_configure_handler = NULL;
-
-        if (ee_delete_request_handler)
-                ecore_event_handler_del(ee_delete_request_handler);
-        ee_delete_request_handler = NULL;
-
-        if (ee_key_down_handler)
-                ecore_event_handler_del(ee_key_down_handler);
-        ee_key_down_handler = NULL;
-
-        if (ee_key_up_handler)
-                ecore_event_handler_del(ee_key_up_handler);
-        ee_key_up_handler = NULL;
-
-        if (ee_dnd_position_handler)
-                ecore_event_handler_del(ee_dnd_position_handler);
-        ee_dnd_position_handler = NULL;
-
-        if (ee_dnd_enter_handler)
-                ecore_event_handler_del(ee_dnd_enter_handler);
-        ee_dnd_enter_handler = NULL;
-
-        if (ee_dnd_leave_handler)
-                ecore_event_handler_del(ee_dnd_leave_handler);
-        ee_dnd_leave_handler = NULL;
-
-        if (ee_dnd_drop_handler)
-                ecore_event_handler_del(ee_dnd_drop_handler);
-        ee_dnd_drop_handler = NULL;
-
-        if (ee_selection_notify_handler)
-                ecore_event_handler_del(ee_selection_notify_handler);
-        ee_selection_notify_handler = NULL;
-        
-        if (ee_selection_clear_handler)
-                ecore_event_handler_del(ee_selection_clear_handler);
-        ee_selection_clear_handler = NULL;
-
-        if (ee_selection_request_handler)
-                ecore_event_handler_del(ee_selection_request_handler);
-        ee_selection_request_handler = NULL;
-
-        if (ee_mouse_down_handler)
-                ecore_event_handler_del(ee_mouse_down_handler);
-        ee_mouse_down_handler = NULL;
-
-        if (ee_mouse_up_handler)
-                ecore_event_handler_del(ee_mouse_up_handler);
-        ee_mouse_up_handler = NULL;
-
-        if (ee_mouse_move_handler)
-                ecore_event_handler_del(ee_mouse_move_handler);
-        ee_mouse_move_handler = NULL;
-
-        if (ee_mouse_wheel_handler)
-                ecore_event_handler_del(ee_mouse_wheel_handler);
-        ee_mouse_wheel_handler = NULL;
-
-        if (ee_mouse_out_handler)
-                ecore_event_handler_del(ee_mouse_out_handler);
-        ee_mouse_out_handler = NULL;
-
-        if (ee_focus_in_handler)
-                ecore_event_handler_del(ee_focus_in_handler);
-        ee_focus_in_handler = NULL;
-
-        if (ee_focus_out_handler)
-                ecore_event_handler_del(ee_focus_out_handler);
-        ee_focus_out_handler = NULL;
+                for (i = 0; i < EE_HANDLERS_NUM; i++)
+                {
+                        if (ee_handlers[i])
+                                ecore_event_handler_del(ee_handlers[i]);
+                }
+                FREE(ee_handlers);
+        }
 
         ecore_x_shutdown();
 
