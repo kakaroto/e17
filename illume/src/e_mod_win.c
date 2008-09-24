@@ -731,10 +731,10 @@ _apps_fm_config(Evas_Object *o)
    fmc.view.single_click = illume_cfg->launcher.single_click;
    fmc.view.no_subdir_jump = 1;
    fmc.icon.extension.show = 0;
-   fmc.icon.icon.w = illume_cfg->launcher.icon_size;
-   fmc.icon.icon.h = illume_cfg->launcher.icon_size;
-   fmc.icon.fixed.w = illume_cfg->launcher.icon_size;
-   fmc.icon.fixed.h = illume_cfg->launcher.icon_size;
+   fmc.icon.icon.w = illume_cfg->launcher.icon_size * e_scale / 2.0;
+   fmc.icon.icon.h = illume_cfg->launcher.icon_size * e_scale / 2.0;
+   fmc.icon.fixed.w = illume_cfg->launcher.icon_size * e_scale / 2.0;
+   fmc.icon.fixed.h = illume_cfg->launcher.icon_size * e_scale / 2.0;
    fmc.list.sort.no_case = 0;
    fmc.list.sort.dirs.first = 1;
    fmc.list.sort.dirs.last = 0;
@@ -886,8 +886,8 @@ _apps_populate(void)
 //		       e_box_pack_options_set(o, 1, 1, 0, 0, 0.5, 0.5, 
 //					      420, 215, 420, 215);
 		       e_box_pack_options_set(o, 1, 1, 0, 0, 0.5, 0.5, 
-					      sfw, illume_cfg->launcher.icon_size * 2, 
-					      sfw, illume_cfg->launcher.icon_size * 2);
+					      sfw, illume_cfg->launcher.icon_size * e_scale, 
+					      sfw, illume_cfg->launcher.icon_size * e_scale);
 		       evas_object_show(o);
 		       sels = evas_list_append(sels, o);
 		    }

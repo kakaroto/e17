@@ -306,7 +306,7 @@ _e_kbd_int_matches_update(E_Kbd_Int *ki)
 {
    const Evas_List *l, *matches;
    const char *actual;
-   Evas_Coord mw, mh;
+   Evas_Coord mw, mh, vw, vh;
    
    evas_event_freeze(ki->win->evas);
    e_box_freeze(ki->box_obj);
@@ -322,16 +322,25 @@ _e_kbd_int_matches_update(E_Kbd_Int *ki)
 	int i = 0;
 	
 	for (i = 0, l = matches; l; l = l->next, i++)
-	  _e_kbd_int_matches_add(ki, l->data, i);
-
-	actual = e_kbd_buf_actual_string_get(ki->kbuf);
-	if (actual)
 	  {
-	     for (l = matches; l; l = l->next)
+	     _e_kbd_int_matches_add(ki, l->data, i);
+	     e_box_min_size_get(ki->box_obj, &mw, &mh);
+	     edje_object_part_geometry_get(ki->base_obj, "e.swallow.label", 
+					   NULL, NULL, &vw, &vh);
+	     if (mw > vw) break;
+	  }
+
+	if (!l)
+	  {
+	     actual = e_kbd_buf_actual_string_get(ki->kbuf);
+	     if (actual)
 	       {
-		  if (!strcmp(l->data, actual)) break;
+		  for (l = matches; l; l = l->next)
+		    {
+		       if (!strcmp(l->data, actual)) break;
+		    }
+		  if (!l) _e_kbd_int_matches_add(ki, actual, i);
 	       }
-	     if (!l) _e_kbd_int_matches_add(ki, actual, i);
 	  }
      }
    e_box_thaw(ki->box_obj);

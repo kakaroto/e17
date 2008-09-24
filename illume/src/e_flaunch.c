@@ -238,7 +238,7 @@ e_flaunch_new(E_Zone *zone, const char *themedir)
    fl->themedir = evas_stringshare_add(themedir);
 
    // FIXME: height should become config
-   fl->height = 60;
+   fl->height = 30 * e_scale;
    
    o = e_box_add(fl->zone->container->bg_evas);
    e_box_orientation_set(o, 1);

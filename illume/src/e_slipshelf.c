@@ -83,8 +83,8 @@ e_slipshelf_new(E_Zone *zone, const char *themedir)
 			    ECORE_X_WINDOW_STACK_BELOW);
    e_popup_layer_set(ess->popup, 200);
 
-   ess->main_size = illume_cfg->slipshelf.main_gadget_size;
-   ess->extra_size = illume_cfg->slipshelf.extra_gagdet_size;
+   ess->main_size = illume_cfg->slipshelf.main_gadget_size * e_scale / 2.0;
+   ess->extra_size = illume_cfg->slipshelf.extra_gagdet_size * e_scale / 2.0;
    
    ess->base_obj = _theme_obj_new(ess->popup->evas,
 				  ess->themedir,
