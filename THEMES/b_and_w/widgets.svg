@@ -294,16 +294,17 @@
      objecttolerance="10"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="5.6"
-     inkscape:cx="2.3037813"
-     inkscape:cy="10.262733"
+     inkscape:zoom="11.2"
+     inkscape:cx="15.459931"
+     inkscape:cy="16.111122"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="true"
      inkscape:window-width="1021"
      inkscape:window-height="953"
-     inkscape:window-x="25"
-     inkscape:window-y="69">
+     inkscape:window-x="21"
+     inkscape:window-y="94"
+     showguides="true">
     <inkscape:grid
        type="xygrid"
        id="grid2385"
@@ -327,7 +328,7 @@
      id="layer1">
     <g
        id="g3322"
-       transform="translate(-28.41054,-34.345187)">
+       transform="matrix(0.7686782,0,0,0.7686782,-28.156431,-22.925109)">
       <path
          style="opacity:0.84070794;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:2.63000011;stroke-linejoin:bevel;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter3312)"
          d="M 13.53125,3 C 12.759685,3 12.125,3.6346846 12.125,4.40625 L 12.125,13.125 L 3.40625,13.125 C 2.6346847,13.125 2,13.759686 2,14.53125 L 2,19.59375 C 2,20.365315 2.6346846,21 3.40625,21 L 12.125,21 L 12.125,29.71875 C 12.125,30.490315 12.759686,31.125 13.53125,31.125 L 18.59375,31.125 C 19.365315,31.125 20,30.490314 20,29.71875 L 20,21 L 28.71875,21 C 29.490315,21 30.125,20.365314 30.125,19.59375 L 30.125,14.53125 C 30.125,13.759685 29.490314,13.125 28.71875,13.125 L 20,13.125 L 20,4.40625 C 20,3.6346847 19.365314,3 18.59375,3 L 13.53125,3 z"
@@ -355,7 +356,7 @@
     </g>
     <g
        id="g3558"
-       transform="translate(0,-53)">
+       transform="matrix(0.7777778,0,0,0.7777778,-11.555556,-43.111111)">
       <rect
          ry="1.2379707"
          y="13"
@@ -390,7 +391,8 @@
          ry="1.2379707" />
     </g>
     <g
-       id="g3811">
+       id="g3811"
+       transform="matrix(0.7155014,0,0,0.7155014,5.3086475,4.0949223)">
       <rect
          transform="matrix(1.0907258,0,0,0.9995905,-0.2444707,1.0107537)"
          style="opacity:0.48230088;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:1;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;filter:url(#filter3658)"
