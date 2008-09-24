@@ -14,7 +14,7 @@ group "E_Config" struct {
   value "font_cache" int: 512;
   value "edje_cache" int: 8;
   value "edje_collection_cache" int: 24;
-  value "zone_desks_x_count" int: 1;
+  value "zone_desks_x_count" int: 4;
   value "zone_desks_y_count" int: 1;
   value "use_virtual_roots" int: 0;
   value "show_desktop_icons" int: 0;
@@ -33,13 +33,6 @@ group "E_Config" struct {
   value "evas_engine_zone" int: 0;
   value "use_composite" int: 0;
   group "modules" list {
-    group "E_Config_Module" struct {
-      value "name" string: "battery";
-      value "enabled" uchar: 1;
-      value "delayed" uchar: 0;
-      value "priority" int: 0;
-    }
-  }
   group "modules" list {
     group "E_Config_Module" struct {
       value "name" string: "illume";
@@ -48,12 +41,139 @@ group "E_Config" struct {
       value "priority" int: 1;
     }
   }
+    group "E_Config_Module" struct {
+      value "name" string: "battery";
+      value "enabled" uchar: 1;
+      value "delayed" uchar: 1;
+      value "priority" int: 0;
+    }
+  }
+  group "modules" list {
+    group "E_Config_Module" struct {
+      value "name" string: "mixer";
+      value "enabled" uchar: 1;
+      value "delayed" uchar: 1;
+      value "priority" int: 0;
+    }
+  }
   group "modules" list {
     group "E_Config_Module" struct {
       value "name" string: "clock";
       value "enabled" uchar: 1;
-      value "delayed" uchar: 0;
+      value "delayed" uchar: 1;
       value "priority" int: 0;
+    }
+  }
+  group "modules" list {
+    group "E_Config_Module" struct {
+      value "name" string: "pager";
+      value "enabled" uchar: 1;
+      value "delayed" uchar: 1;
+      value "priority" int: 0;
+    }
+  }
+  group "modules" list {
+    group "E_Config_Module" struct {
+      value "name" string: "connman";
+      value "enabled" uchar: 1;
+      value "delayed" uchar: 1;
+      value "priority" int: 0;
+    }
+  }
+  group "modules" list {
+    group "E_Config_Module" struct {
+      value "name" string: "conf_display";
+      value "enabled" uchar: 1;
+      value "delayed" uchar: 1;
+      value "priority" int: 0;
+    }
+  }
+  group "modules" list {
+    group "E_Config_Module" struct {
+      value "name" string: "conf_profiles";
+      value "enabled" uchar: 1;
+      value "delayed" uchar: 1;
+      value "priority" int: 0;
+    }
+  }
+  group "modules" list {
+    group "E_Config_Module" struct {
+      value "name" string: "conf_performance";
+      value "enabled" uchar: 1;
+      value "delayed" uchar: 1;
+      value "priority" int: 0;
+    }
+  }
+  group "modules" list {
+    group "E_Config_Module" struct {
+      value "name" string: "conf_fonts";
+      value "enabled" uchar: 1;
+      value "delayed" uchar: 1;
+      value "priority" int: 0;
+    }
+  }
+  group "modules" list {
+    group "E_Config_Module" struct {
+      value "name" string: "conf_engine";
+      value "enabled" uchar: 1;
+      value "delayed" uchar: 1;
+      value "priority" int: 0;
+    }
+  }
+  group "modules" list {
+    group "E_Config_Module" struct {
+      value "name" string: "conf_startup";
+      value "enabled" uchar: 1;
+      value "delayed" uchar: 1;
+      value "priority" int: 0;
+    }
+  }
+  group "modules" list {
+    group "E_Config_Module" struct {
+      value "name" string: "conf_theme";
+      value "enabled" uchar: 1;
+      value "delayed" uchar: 1;
+      value "priority" int: 0;
+    }
+  }
+  group "modules" list {
+    group "E_Config_Module" struct {
+      value "name" string: "conf_wallpaper";
+      value "enabled" uchar: 1;
+      value "delayed" uchar: 1;
+      value "priority" int: 0;
+    }
+  }
+  group "modules" list {
+    group "E_Config_Module" struct {
+      value "name" string: "dropshadow";
+      value "enabled" uchar: 1;
+      value "delayed" uchar: 1;
+      value "priority" int: 0;
+    }
+  }
+  group "modules" list {
+    group "E_Config_Module" struct {
+      value "name" string: "conf_desks";
+      value "enabled" uchar: 1;
+      value "delayed" uchar: 1;
+      value "priority" int: 0;
+    }
+  }
+  group "modules" list {
+    group "E_Config_Module" struct {
+      value "name" string: "conf_scale";
+      value "enabled" uchar: 1;
+      value "delayed" uchar: 1;
+      value "priority" int: 0;
+    }
+  }
+  group "modules" list {
+    group "E_Config_Module" struct {
+      value "name" string: "gadman";
+      value "enabled" uchar: 1;
+      value "delayed" uchar: 1;
+      value "priority" int: -100;
     }
   }
   group "font_defaults" list {
@@ -255,9 +375,9 @@ group "E_Config" struct {
   value "gadget_resist" int: 32;
   value "winlist_warp_while_selecting" int: 1;
   value "winlist_warp_at_end" int: 1;
-  value "winlist_warp_speed" double: 0.1000000000000000055511151;
+  value "winlist_warp_speed" double: 0.1000000000000000000000000;
   value "winlist_scroll_animate" int: 1;
-  value "winlist_scroll_speed" double: 0.1000000000000000055511151;
+  value "winlist_scroll_speed" double: 0.1000000000000000000000000;
   value "winlist_list_show_iconified" int: 1;
   value "winlist_list_show_other_desk_iconified" int: 1;
   value "winlist_list_show_other_screen_iconified" int: 0;
@@ -293,7 +413,6 @@ group "E_Config" struct {
   value "focus_last_focused_per_desktop" int: 1;
   value "focus_revert_on_hide_or_close" int: 1;
   value "pointer_slide" int: 0;
-  value "show_cursor" int: 0;
   value "use_e_cursor" int: 1;
   value "cursor_size" int: 32;
   value "menu_autoscroll_margin" int: 0;
@@ -314,7 +433,7 @@ group "E_Config" struct {
   value "exebuf_max_eap_list" int: 20;
   value "exebuf_max_hist_list" int: 20;
   value "exebuf_scroll_animate" int: 1;
-  value "exebuf_scroll_speed" double: 0.1000000000000000055511151;
+  value "exebuf_scroll_speed" double: 0.1000000000000000000000000;
   value "exebuf_pos_align_x" double: 0.5000000000000000000000000;
   value "exebuf_pos_align_y" double: 0.5000000000000000000000000;
   value "exebuf_pos_size_w" double: 0.7500000000000000000000000;
@@ -446,6 +565,24 @@ group "E_Config" struct {
           value "resizable" uchar: 0;
         }
       }
+      group "clients" list {       
+	group "E_Config_Gadcon_Client" struct {
+	  value "name" string: "pager";
+	  value "id" string: "pager";
+	  value "geom.pos" int: 376;
+	  value "geom.size" int: 96;
+	  value "geom.res" int: 472;
+	  value "geom.pos_x" double: 0.0000000000000000000000000;
+	  value "geom.pos_y" double: 0.0000000000000000000000000;
+	  value "geom.size_w" double: 0.0000000000000000000000000;
+	  value "geom.size_h" double: 0.0000000000000000000000000;
+	  value "state_info.seq" int: 3;
+	  value "state_info.flags" int: 3;
+	  value "style" string: "inset";
+	  value "autoscroll" uchar: 0;
+	  value "resizable" uchar: 0;
+	}
+      }
     }
   }
   value "font_hinting" int: 0;
@@ -489,7 +626,7 @@ group "E_Config" struct {
   value "icon_theme" string: "openmoko-standard";
   value "desk_flip_animate_mode" int: 0;
   value "desk_flip_animate_interpolation" int: 0;
-  value "desk_flip_animate_time" double: 0.2000000000000000111022302;
+  value "desk_flip_animate_time" double: 0.2000000000000000000000000;
   value "wallpaper_import_last_dev" string: "~/";
   value "wallpaper_import_last_path" string: "/";
   value "wallpaper_grad_c1_r" int: 0;
@@ -557,7 +694,7 @@ group "E_Config" struct {
   value "thumbscroll_threshhold" int: 24;
   value "thumbscroll_momentum_threshhold" double: 100.0000000000000000000000000;
   value "thumbscroll_friction" double: 1.0000000000000000000000000;
-  value "hal_desktop" int: 1;
+  value "hal_desktop" int: 0;
   value "border_keyboard.timeout" double: 5.0000000000000000000000000;
   value "border_keyboard.move.dx" uchar: 5;
   value "border_keyboard.move.dy" uchar: 5;
