@@ -18557,16 +18557,17 @@ ICON("enlightenment/gradient","icon_dummy.png",64)		//Wallpaper selector
 ICON("enlightenment/website","icon_dummy.png",64)		//Wallpaper selector
 ICON("enlightenment/swap","icon_dummy.png",64)			//Gradient selector
 
-ICON("widget/new","icon_dummy.png",64)			//Input Method Config (ADV)
-ICON("widget/add","icon_dummy.png",64) 				//Shelf config
-ICON("widget/del","icon_dummy.png",64) 				//Shelf config
-ICON("widget/config","icon_dummy.png",64) 			//Shelf config
 
 /* USABLE WIDGETS
 ICON("widget/up_arrow","icon_dummy.png",64)
 ICON("widget/down_arrow","icon_dummy.png",64)
 ICON("widget/up_dir","icon_dummy.png",64)
 ICON("widget/new_dialog","icon_dummy.png",64)
+ICON("widget/new","icon_dummy.png",64)	
+ICON("widget/add","icon_dummy.png",64) 
+ICON("widget/add_fav","icon_dummy.png",64) 
+ICON("widget/del","icon_dummy.png",64) 
+ICON("widget/config","icon_dummy.png",64)
 */
 
 /////////////////////////////////////////////////////////////////////////////
