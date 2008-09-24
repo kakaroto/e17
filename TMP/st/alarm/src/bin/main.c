@@ -67,16 +67,13 @@ save_alarm(void)
    fclose(f);
 }
 
-// dealing with at/atd - this could be much better, but probably should be
-// wrapped in an api for queing things to happen long into the future even
-// if the phone may be off/suspended
 static void
 clear_alarm(void)
 {
    char buf[4096];
    
    if (alm.job == 0) return;
-   snprintf(buf, sizeof(buf), "atrm %i", alm.job);
+   snprintf(buf, sizeof(buf), "waker del %i", alm.job);
    system(buf);
    alm.job = 0;
 }
@@ -88,13 +85,13 @@ set_alarm(void)
    char buf[1024];
 
    snprintf(buf, sizeof(buf), 
-	    "echo 'alarm -activate' | at %i:%02i 2> /tmp/alarm-at-out", 
+	    "echo 'alarm -activate' | waker add %i:%02i:00 1 X > /tmp/alarm-waker-out", 
 	    alm.hours, alm.minutes);
    system(buf);
-   f = fopen("/tmp/alarm-at-out", "r");
+   f = fopen("/tmp/alarm-waker-out", "r");
    if (f)
      {
-	unlink("/tmp/alarm-at-out");
+	unlink("/tmp/alarm-waker-out");
 	while (fgets(buf, sizeof(buf), f))
 	  {
 	     if (!strncmp(buf, "job ", 4)) alm.job = atoi(buf + 4);

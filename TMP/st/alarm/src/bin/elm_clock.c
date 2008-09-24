@@ -196,10 +196,10 @@ _elm_clock_time_update(Elm_Clock *ck)
 	  {
 	     if (hrs >= 12)
 	       {
-		  if (hrs == 0) hrs = 12;
-		  else if (hrs > 12) hrs -= 12;
+		  if (hrs > 12) hrs -= 12;
 		  ampm = 1;
 	       }
+	     else if (hrs == 0) hrs = 12;
 	  }
 	d1 = hrs / 10;
 	d2 = hrs % 10;
@@ -265,6 +265,7 @@ _elm_clock_time_update(Elm_Clock *ck)
    
    if (ck->am_pm)
      {
+	if (ck->hrs >= 12) ampm = 1;
 	if (ampm != ck->cur.ampm)
 	  {
 	     int d1, d2, dc1, dc2;
@@ -350,8 +351,6 @@ _elm_clock_ticker(Elm_Clock *ck)
 	     ck->time_update(ck);
 	  }
      }
-   else
-     ck->time_update(ck);
    return 0;
 }
 

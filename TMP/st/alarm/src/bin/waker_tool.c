@@ -291,6 +291,11 @@ main(int argc, char **argv)
 	if (msg)
 	  e_dbus_method_call_send(conn, msg, list_unmarhsall, ret_cb, ret_free, -1, NULL);
      }
+   else
+     {
+	fprintf(stderr, "ERROR: unknown waker operation\n");
+	exit(-1);
+     }
    
    ecore_main_loop_begin();
    
