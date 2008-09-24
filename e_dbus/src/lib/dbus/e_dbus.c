@@ -217,8 +217,17 @@ cb_dispatch_status(DBusConnection *conn, DBusDispatchStatus new_status, void *da
 
   else if (new_status != DBUS_DISPATCH_DATA_REMAINS && cd->idler) 
   {
+    static int dummy_event = 0;
+
     ecore_idler_del(cd->idler);
     cd->idler = NULL;
+    /* post a dummy event to get the mainloop back to normal - this is
+     * needed because idlers are very special things that won't re-evaluate
+     * timers and other stuff while idelrs run - idle_exiters and enterers
+     * can do this safely, but not idlers. idelrs were meant to be used
+     * very sparingly for very special cases */
+    if (dummy_event == 0) dummy_event = ecore_event_type_new();
+    ecore_event_add(dummy_event, NULL, NULL, NULL);
   }
 }
 
