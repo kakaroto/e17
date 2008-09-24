@@ -1,3 +1,3 @@
 AUTOMAKE_OPTIONS     = 1.4 foreign
 MAINTAINERCLEANFILES = Makefile.in
-SUBDIRS              = themes images desktop sounds dbus
+SUBDIRS              = themes images desktop sounds

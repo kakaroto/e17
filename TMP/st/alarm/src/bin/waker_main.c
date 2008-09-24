@@ -12,7 +12,7 @@
 #include <sys/stat.h>
 #include <linux/rtc.h>
 
-#define SERVICE_NAME  "org.enlightenment.Funeral"
+#define SERVICE_NAME  "org.enlightenment.Waker"
 #define SERVICE_PATH  "/"
 #define SERVICE_IFACE "Core"
 
@@ -161,7 +161,7 @@ job_load(void)
    
    home = getenv("HOME");
    if (!home) home = "/";
-   snprintf(buf, sizeof(buf), "%s/.funeral/spool", home);
+   snprintf(buf, sizeof(buf), "%s/.waker/spool", home);
    ecore_file_mkpath(buf);
    files = ecore_file_ls(buf);
    job_max_id = 0;
@@ -255,13 +255,13 @@ job_add(dbus_uint64_t time_at, dbus_uint32_t priority, const char *flags, const 
    
    home = getenv("HOME");
    if (!home) home = "/";
-   snprintf(buf, sizeof(buf), "%s/.funeral/spool", home);
+   snprintf(buf, sizeof(buf), "%s/.waker/spool", home);
    ecore_file_mkpath(buf);
    j = calloc(1, sizeof(Job));
    if (!j) return 0;
    id = job_max_id + 1;
    snprintf(buf, sizeof(buf), 
-	    "%s/.funeral/spool/job_%u_%016llx_%u_%s", 
+	    "%s/.waker/spool/job_%u_%016llx_%u_%s", 
 	    home, id, time_at, priority, flags);
    f = fopen(buf, "w");
    if (f)
@@ -312,7 +312,7 @@ job_del(dbus_uint32_t id)
    
    home = getenv("HOME");
    if (!home) home = "/";
-   snprintf(buf, sizeof(buf), "%s/.funeral/spool", home);
+   snprintf(buf, sizeof(buf), "%s/.waker/spool", home);
    ecore_file_mkpath(buf);
    for (jp = NULL, jj = jobs; 
 	jj; 
@@ -321,7 +321,7 @@ job_del(dbus_uint32_t id)
 	if (jj->id == id)
 	  {
 	     snprintf(buf, sizeof(buf), 
-		      "%s/.funeral/spool/job_%u_%016llx_%u_%s", 
+		      "%s/.waker/spool/job_%u_%016llx_%u_%s", 
 		      home, jj->id, jj->time_at, jj->priority, jj->flags);
 	     unlink(buf);
 	     if (jp) jp->next = jj->next;
@@ -479,7 +479,7 @@ timer_eval(void)
 	home = getenv("HOME");
 	if (!home) home = "/";
 	snprintf(buf, sizeof(buf), 
-		 "%s/.funeral/spool/job_%u_%016llx_%u_%s", 
+		 "%s/.waker/spool/job_%u_%016llx_%u_%s", 
 		 home, jobs->id, jobs->time_at, jobs->priority, jobs->flags);
 	ecore_exe_run(buf, NULL);
 	printf("RUN: %u @ %llu\n", jobs->id, jobs->time_at - (dbus_uint64_t)t);
@@ -512,7 +512,6 @@ main(int argc, char **argv)
      }
    
    declare_interface(c);
-   ecore_timer_add(1.0, timer_setup, NULL);
 
    ecore_main_loop_begin();
     

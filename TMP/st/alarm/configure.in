@@ -44,5 +44,4 @@ data/themes/Makefile
 data/images/Makefile
 data/desktop/Makefile
 data/sounds/Makefile
-data/dbus/Makefile
 ])

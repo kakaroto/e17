@@ -43,18 +43,18 @@ els_icon.h
 
 bin_PROGRAMS = \
 alarm \
-funeral \
+waker \
 elementary_test
 
-###---### Alarm clock main program - uses funeral
+###---### Alarm clock main program - uses waker
 alarm_SOURCES = $(elementary_SOURCES) \
 main.c
 alarm_LDADD = @my_libs@ @COMMON_LIBS@ @ALARM_LIBS@
 
 ###---### A time scheduler (like at) but talks dbus, uses rtc and has seconds
-funeral_SOURCES = \
-funeral_main.c
-funeral_LDADD = @my_libs@ @COMMON_LIBS@
+waker_SOURCES = \
+waker_main.c
+waker_LDADD = @my_libs@ @COMMON_LIBS@
 
 ###---### Just a widget test app
 elementary_test_SOURCES = $(elementary_SOURCES) \
