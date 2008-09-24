@@ -510,7 +510,7 @@ timer_eval(void)
 	     break;
 	  }
      }
-   if ((next_at <= t) && (j))
+   if ((next_at > 0) && (next_at <= t) && (j))
      {
 	char buf[4096];
 	const char *home;

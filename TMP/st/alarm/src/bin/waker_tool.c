@@ -142,7 +142,7 @@ main(int argc, char **argv)
 	     tm.tm_wday = tm_now->tm_wday;
 	     tm.tm_isdst = tm_now->tm_isdst;
 	     t = mktime(&tm);
-	     if (t < t_now) t += (24 * 60 * 60);
+	     if (t <= t_now) t += (24 * 60 * 60);
 	  }
 	else
 	  {
