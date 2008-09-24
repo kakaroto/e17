@@ -280,21 +280,25 @@ job_add(dbus_uint64_t time_at, dbus_uint32_t priority, const char *flags, const 
    j->time_at = time_at;
    j->priority = priority;
    j->flags = strdup(flags);
-   for (jp = NULL, jj = jobs; 
-	jj; 
-	jp = jj, jj = jj->next)
+   if (!jobs) jobs = j;
+   else
      {
-	if (jj->time_at > j->time_at)
+	for (jp = NULL, jj = jobs; 
+	     jj; 
+	     jp = jj, jj = jj->next)
 	  {
-	     if (jp) jp->next = j;
-	     else jobs = j;
-	     j->next = jj;
-	     break;
-	  }
-	else if (!jj->next)
-	  {
-	     jj->next = j;
-	     break;
+	     if (jj->time_at > j->time_at)
+	       {
+		  if (jp) jp->next = j;
+		  else jobs = j;
+		  j->next = jj;
+		  break;
+	       }
+	     else if (!jj->next)
+	       {
+		  jj->next = j;
+		  break;
+	       }
 	  }
      }
    job_max_id = id;
@@ -331,6 +335,7 @@ job_del(dbus_uint32_t id)
 	     break;
 	  }
      }
+   if (!jobs) job_max_id = 0;
    timer_eval();
 }
 

@@ -114,6 +114,7 @@ main(int argc, char **argv)
 	char buf[4096];
 	char *flags;
 	char *command;
+	char *shell;
 	struct tm tm;
 	time_t t;
 	size_t num, size, alloc_size;
@@ -143,7 +144,9 @@ main(int argc, char **argv)
 	     fprintf(stderr, "ERROR: can't open tempfile\n");
 	     exit(-1);
 	  }
-	fprintf(tf, "#!/bin/sh\n");
+	shell = getenv("SHELL");
+	if (!shell) shell = "/bin/sh";
+	fprintf(tf, "#!%s\n", shell);
 	if (environ)
 	  {
 	     char **p;
