@@ -43,7 +43,7 @@ els_icon.h
 
 bin_PROGRAMS = \
 alarm \
-waker \
+wakerd waker \
 elementary_test
 
 ###---### Alarm clock main program - uses waker
@@ -52,8 +52,12 @@ main.c
 alarm_LDADD = @my_libs@ @COMMON_LIBS@ @ALARM_LIBS@
 
 ###---### A time scheduler (like at) but talks dbus, uses rtc and has seconds
-waker_SOURCES = \
+wakerd_SOURCES = \
 waker_main.c
+wakerd_LDADD = @my_libs@ @COMMON_LIBS@
+
+waker_SOURCES = \
+waker_tool.c
 waker_LDADD = @my_libs@ @COMMON_LIBS@
 
 ###---### Just a widget test app

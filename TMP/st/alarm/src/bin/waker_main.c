@@ -185,7 +185,7 @@ job_load(void)
 		       p++;
 		    }
 		  j = calloc(1, sizeof(Job));
-		  // filename "job_ID_TIME_PRI_FLAGS
+		  // filename job_ID_TIME_PRI_FLAGS
 		  if (j)
 		    {
 		       char tmp[64];
@@ -507,7 +507,7 @@ main(int argc, char **argv)
    c = e_dbus_bus_get(DBUS_BUS_SESSION);
    if (!c)
      {
-	fprintf(stderr, "ERROR: can't connect to system session\n");
+	fprintf(stderr, "ERROR: can't connect to session dbus\n");
 	exit(-1);
      }
    
