@@ -57,6 +57,9 @@ request_method_List(E_DBus_Object *obj, DBusMessage *msg)
 	     dbus_message_iter_append_basic(&item, DBUS_TYPE_UINT32, &(ids[i]));
 	     dbus_message_iter_close_container(&array, &item);
 	  }
+	dbus_message_iter_open_container(&array, DBUS_TYPE_STRUCT, NULL, &item);
+	dbus_message_iter_append_basic(&item, DBUS_TYPE_UINT32, &(ids[i]));
+	dbus_message_iter_close_container(&array, &item);
 	free(ids);
      }
    
@@ -146,6 +149,7 @@ struct _Job
    dbus_uint64_t time_at;
    dbus_uint32_t priority;
    char *flags;
+   Ecore_Exe *exe;
    Job *next;
 };
 
@@ -238,6 +242,7 @@ job_list(void)
    ids = calloc(num + 1, sizeof(dbus_uint32_t));
    for (num = 0, j = jobs; j; j = j->next, num++)
      {
+	printf("add %p->%i\n", j, j->id);
 	ids[num] = j->id;
      }
    ids[num] = 0;
@@ -456,10 +461,30 @@ timer_callback(void *data)
    return 0;
 }
 
+static int
+child_exit(void *data, int type, Ecore_Exe_Event_Del *event)
+{
+   if (event->exe)
+     {
+	Job *j;
+
+	j = ecore_exe_data_get(event->exe);
+	if (j)
+	  {
+	     j->exe = NULL;
+	     j = ecore_exe_data_get(event->exe);
+	     job_del(j->id);
+	  }
+     }
+   return 1;
+}
+
 static void
 timer_eval(void)
 {
    double t, t_in;
+   dbus_uint64_t next_at;
+   Job *j;
    
    printf("timer_eval()\n");
    if (!jobs)
@@ -476,7 +501,16 @@ timer_eval(void)
    t_in = 1.0 - (t - ((dbus_uint64_t)t));
    printf("tick in %3.3f\n", t_in);
    ticker = ecore_timer_add(t_in, timer_callback, NULL);
-   if (t >= jobs->time_at)
+   next_at = 0;
+   for (j = jobs; j; j = j->next)
+     {
+	if (!j->exe)
+	  {
+	     next_at = j->time_at;
+	     break;
+	  }
+     }
+   if ((next_at <= t) && (j))
      {
 	char buf[4096];
 	const char *home;
@@ -485,15 +519,14 @@ timer_eval(void)
 	if (!home) home = "/";
 	snprintf(buf, sizeof(buf), 
 		 "%s/.waker/spool/job_%u_%016llx_%u_%s", 
-		 home, jobs->id, jobs->time_at, jobs->priority, jobs->flags);
-	ecore_exe_run(buf, NULL);
-	printf("RUN: %u @ %llu\n", jobs->id, jobs->time_at - (dbus_uint64_t)t);
-	job_del(jobs->id);
+		 home, j->id, j->time_at, j->priority, j->flags);
+	j->exe = ecore_exe_run(buf, j);
+	printf("RUN: %u @ %llu\n", j->id, j->time_at - (dbus_uint64_t)t);
      }
-   else
+   else if (j)
      {
-	printf("next job in %llu\n", jobs->time_at - (dbus_uint64_t)t);
-	rtc_set(jobs->time_at);
+	printf("next job in %llu\n", next_at - (dbus_uint64_t)t);
+	rtc_set(next_at);
 	printf("rtc done\n");
      }
 }
@@ -515,7 +548,8 @@ main(int argc, char **argv)
 	fprintf(stderr, "ERROR: can't connect to session dbus\n");
 	exit(-1);
      }
-   
+
+   ecore_event_handler_add(ECORE_EXE_EVENT_DEL, child_exit, NULL);
    declare_interface(c);
 
    ecore_main_loop_begin();

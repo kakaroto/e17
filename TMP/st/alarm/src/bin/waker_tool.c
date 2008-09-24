@@ -49,9 +49,10 @@ list_unmarhsall(DBusMessage *msg, DBusError *err)
 	     dbus_message_iter_recurse(&array, &iter);
 	     do
 	       {
+		  val = 0;
 		  dbus_message_iter_recurse(&iter, &item);
 		  dbus_message_iter_get_basic(&item, &val);
-		  printf("%i\n", val);
+		  if (val > 0) printf("%i\n", val);
 	       }
 	     while (dbus_message_iter_next(&iter));
 	  }
@@ -84,7 +85,7 @@ main(int argc, char **argv)
 	       "  waker add TIMESPEC PRIORITY FLAGS\n"
 	       "\n"
 	       "JOB_ID is the number of the job returned from add or in\n"
-	       "list. TIMESPEC is YYYY-MM-DD HH:MM:SS\n"
+	       "list. TIMESPEC is YYYY-MM-DD HH:MM:SS or HH:MM:SS\n"
 	       "and FLAGS right now just should be 'X'\n"
 	       "\n"
 	       "add takes the command from standard input.\n");
@@ -115,8 +116,8 @@ main(int argc, char **argv)
 	char *flags;
 	char *command;
 	char *shell;
-	struct tm tm;
-	time_t t;
+	struct tm tm, *tm_now;
+	time_t t, t_now;
 	size_t num, size, alloc_size;
 	FILE *tf;
 	
@@ -125,12 +126,29 @@ main(int argc, char **argv)
 	     fprintf(stderr, "ERROR: not enough parameters\n");
 	     exit(-1);
 	  }
+	t_now = time(NULL);
+	tm_now = localtime(&t_now);
 	if (!strptime(argv[2], "%Y-%m-%d %H:%M:%S", &tm))
 	  {
-	     fprintf(stderr, "ERROR: can't parse TIMESPEC # %s\n", argv[2]);
-	     exit(-1);
+	     if (!strptime(argv[2], "%H:%M:%S", &tm))
+	       {
+		  fprintf(stderr, "ERROR: can't parse TIMESPEC # %s\n", argv[2]);
+		  exit(-1);
+	       }
+	     tm.tm_year = tm_now->tm_year;
+	     tm.tm_mon = tm_now->tm_mon;
+	     tm.tm_mday = tm_now->tm_mday;
+	     tm.tm_yday = tm_now->tm_yday;
+	     tm.tm_wday = tm_now->tm_wday;
+	     tm.tm_isdst = tm_now->tm_isdst;
+	     t = mktime(&tm);
+	     if (t < t_now) t += (24 * 60 * 60);
 	  }
-	t = mktime(&tm);
+	else
+	  {
+	     t = mktime(&tm);
+	     if (t < t_now) return;
+	  }
 	time_at = t;
 	if (sscanf(argv[3], "%u", &priority) != 1)
 	  {
