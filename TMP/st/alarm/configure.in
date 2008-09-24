@@ -24,9 +24,8 @@ PKG_CHECK_MODULES([COMMON], [
 PKG_CHECK_MODULES([ALARM], [
    eet
    evas
-   ecore-con
+   ecore-x
    ecore-evas
-   ecore-ipc
    ecore-job
    ecore-txt
    edje
