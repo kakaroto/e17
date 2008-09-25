@@ -117,11 +117,11 @@ collections {
 	       align: 1.0 1.0;
 	       rel1 {
 		  relative: 1.0 1.0;
-		  offset:   -5  -5;
+		  offset:   -2  -2;
 	       }
 	       rel2 {
 		  relative: 1.0 1.0;
-		  offset:   -5  -5;
+		  offset:   -2  -2;
 	       }
 	       color: 255 255 255 255;
 	       color3: 0 0 0 32;
@@ -279,17 +279,17 @@ collections {
 	       min: 32 32;
 	       max: 32 32;
 	       aspect: 1.0 1.0;
-	       align: 0.5 0.0;
+	       align: 0.5 1.0;
 	       aspect_preference: BOTH;
 	       rel1 {
-		  to_y:     "e.text.status";
-		  relative: 0.0 1.0;
-		  offset:   0 1;
+		  to_y:     "logo";
+		  relative: 0.0 0.0;
+		  offset:   0 -1;
 	       }
                rel2 {
-		  to_y:     "e.text.status";
-		  relative: 1.0 1.0;
-		  offset:   -1 1;
+		  to_y:     "logo";
+		  relative: 1.0 0.0;
+		  offset:   -1 -1;
 	       }
 	       image {
 		  normal: "busy-9.png";
