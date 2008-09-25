@@ -1,16 +1,32 @@
 EDJE_CC = edje_cc
 EDJE_FLAGS = # -v
 
-b_and_w.edj: theme.edc *.edc *.png *.ttf
-	$(EDJE_CC) $(EDJE_FLAGS) $< $@
+THEMES = b_and_w.edj illume.edj
+INITS = init.edj illume_init.edj
 
 .PHONY: all install clean
 
-all: b_and_w.edj
+all: $(THEMES) $(INITS)
+
+b_and_w.edj: theme.edc *.png *.ttf
+	$(EDJE_CC) $(EDJE_FLAGS) $< $@
+
+illume.edj: illume.edc theme.edc *.png *.ttf
+	$(EDJE_CC) $(EDJE_FLAGS) $< $@
+
+%.edj: %.edc *.png *.ttf
+	$(EDJE_CC) $(EDJE_FLAGS) $< $@
+
 
 install: all
-	rm -f ~/.e/e/themes/b_and_w.edj
-	cp b_and_w.edj ~/.e/e/themes/b_and_w.edj
+	for f in $(THEMES); do \
+		rm -f ~/.e/e/themes/$$f; \
+		cp $$f ~/.e/e/themes/$$f; \
+	done
+	for f in $(INITS); do \
+		rm -f ~/.e/e/init/$$f; \
+		cp $$f ~/.e/e/init/$$f; \
+	done
 
 clean:
-	rm -f b_and_w.edj
+	rm -f $(THEMES) $(INITS)
