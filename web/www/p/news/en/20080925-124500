@@ -1,0 +1,18 @@
+Eet 1.1.0 released
+Carsten Haitzler (Rasterman)
+raster@rasterman.com
+<p>
+Eet 1.1.0 has been released. This release includes the following changes from
+1.0.0: Fixes to data codecs (data descriptors). Fixes for non-existing files
+opened READ/WRITE and other miscellanouse bugs found. Speedups for decoding and
+lookups, make inline-image decode better on some platforms and add signed-eet
+file support as well as opening eet files from memory.
+</p><p>
+Please see the <?php a("about/efl/eet", "Eet");?> about page for download
+links and information.
+</p>
+
+<!-- cut -->
+
+<p>
+</p>

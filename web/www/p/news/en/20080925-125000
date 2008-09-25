@@ -1,0 +1,18 @@
+E17 + EFL Release Snapshot
+Carsten Haitzler (Rasterman)
+raster@rasterman.com
+<p>
+I did a new snapshot release of E17 + Core EFL. This includes Eet 1.1.0,
+Ecore 0.9.9.050, E_DBus 0.5.0.050, Edje 0.9.9.050, Efreet 0.5.0.050, Embryo
+0.9.9.050 and Enlightenment 0.16.999.050. Lots of improvements and fixes. Too
+many to count.
+</p><p>
+Please see
+<a href=http://download.enlightenment.org/snapshots/2008-09-25/>This Link</a>
+for the list of available files in this snapshot.
+</p>
+
+<!-- cut -->
+
+<p>
+</p>
