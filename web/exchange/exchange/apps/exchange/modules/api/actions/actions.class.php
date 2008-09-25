@@ -124,7 +124,7 @@ class apiActions extends exchangeActions
 											'(SELECT ag.theme_group_id FROM ApplicationThemeGroup ag where ag.application_id = ?))', array($application_id));
 			} elseif ($module_id) {
 				$q = $q->addWhere('t.id IN (SELECT ttg.theme_id from ThemeThemeGroup ttg where ttg.theme_group_id IN ' .
-											'(SELECT mg.theme_group_id FROM MaduleThemeGroups mg where mg.madule_id = ?))', array($module_id));
+											'(SELECT mg.theme_group_id FROM MaduleThemeGroup mg where mg.madule_id = ?))', array($module_id));
 			} elseif ($theme_group_id)
 				$q = $q->innerJoin('t.ThemeThemeGroups ttg')->addWhere('ttg.theme_group_id = ?', array($theme_group_id));
 			if ($user_id)
