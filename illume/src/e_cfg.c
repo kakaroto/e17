@@ -850,12 +850,10 @@ static int _e_cfg_keyboard_change_timeout(void *data) {
                   const char *dname;
 		  
 		  dname = ecore_file_file_get(desktop->orig_path);
-		  printf("?? %s | %i == %i\n", dname, nn, external_keyboard);
 		  if (nn == external_keyboard)
 		    {
 		       if (dname)
 			 illume_cfg->kbd.run_keyboard = evas_stringshare_add(dname);
-		       printf("desktop name %s\n", dname);
 		       break;
 		    }
 		  nn++;

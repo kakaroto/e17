@@ -777,7 +777,6 @@ _e_kbd_dbus_cb_dev_input_keyboard(void *user_data, void *reply_data, DBusError *
    ecore_list_first_goto(ret->strings);
    while ((device = ecore_list_next(ret->strings)))
      {
-	printf("KBD DEV IS: %s\n", device);
 	_e_kbd_dbus_keyboard_add(device);
 	_e_kbd_dbus_keyboard_eval();
      }
@@ -797,7 +796,6 @@ _e_kbd_dbus_cb_input_keyboard_is(void *user_data, void *reply_data, DBusError *e
    
    if (ret && ret->boolean)
      {
-	printf("KBD DEV ADD: %s\n", udi);
 	_e_kbd_dbus_keyboard_add(udi);
 	_e_kbd_dbus_keyboard_eval();
      }
@@ -816,7 +814,6 @@ _e_kbd_dbus_cb_dev_add(void *data, DBusMessage *msg)
    dbus_error_init(&err);
    dbus_message_get_args(msg, &err, DBUS_TYPE_STRING, &udi, DBUS_TYPE_INVALID);
    udi = strdup(udi);
-   printf("DEV ADD: %s\n", udi);
    ret = e_hal_device_query_capability(_e_kbd_dbus_conn, udi, "input.keyboard",
                                        _e_kbd_dbus_cb_input_keyboard_is, 
 				       strdup(udi));
@@ -830,7 +827,6 @@ _e_kbd_dbus_cb_dev_del(void *data, DBusMessage *msg)
    
    dbus_error_init(&err);
    dbus_message_get_args(msg, &err, DBUS_TYPE_STRING, &udi, DBUS_TYPE_INVALID);
-   printf("DEV DEL: %s\n", udi);
    _e_kbd_dbus_keyboard_del(udi);
    _e_kbd_dbus_keyboard_eval();
 }
@@ -846,7 +842,6 @@ _e_kbd_dbus_cb_cap_add(void *data, DBusMessage *msg)
                          &capability, DBUS_TYPE_INVALID);
    if (!strcmp(capability, "input.keyboard"))
      {
-        printf("KBD DEV ADD: %s\n", udi);
 	_e_kbd_dbus_keyboard_add(udi);
 	_e_kbd_dbus_keyboard_eval();
      }

@@ -28,7 +28,6 @@ e_kbd_send_string_press(const char *str, Kbd_Mod mod)
 EAPI void
 e_kbd_send_keysym_press(const char *key, Kbd_Mod mod)
 {
-   printf("SHEND \"%s\" %x\n", key, mod);
    if (mod & KBD_MOD_CTRL) ecore_x_test_fake_key_down("Control_L");
    if (mod & KBD_MOD_ALT) ecore_x_test_fake_key_down("Alt_L");
    if (mod & KBD_MOD_WIN) ecore_x_test_fake_key_down("Super_L");

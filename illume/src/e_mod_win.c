@@ -968,7 +968,6 @@ _cb_update_deferred(void *data)
    _apps_populate();
    e_mod_win_cfg_kbd_update();
    e_pwr_init_done();
-   printf("deferred desktops (apps) update done\n");
    defer = NULL;
    return 0;
 }

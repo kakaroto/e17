@@ -165,8 +165,6 @@ e_slipshelf_new(E_Zone *zone, const char *themedir)
    e_gadcon_zone_set(ess->gadcon, ess->zone);
    e_gadcon_ecore_evas_set(ess->gadcon, ess->popup->ecore_evas);
    
-   printf("### v... = %i %i %ix%i\n", vx, vy, vw, vh);
-   
    ess->hidden = vy;
    x = zone->x;
    y = zone->y - ess->hidden;
@@ -683,7 +681,6 @@ _e_slipshelf_applist_update(E_Slipshelf *ess)
    
 //   if (selnum >= 0) e_ilist_selected_set(ess->ilist_obj, selnum);
 
-   printf("-------------------\n");
    e_winilist_optimial_size_get(ess->scrollframe_obj, &sfmw, &sfmh);
 /*   
    e_scrollframe_child_viewport_size_get(ess->scrollframe_obj, &vw, &vh);
@@ -710,7 +707,6 @@ _e_slipshelf_applist_update(E_Slipshelf *ess)
    edje_object_part_swallow(ess->control_obj, "e.swallow.content",
 			    ess->scrollframe_obj);   
    edje_object_size_min_calc(ess->control_obj, &cmw, &cmh);
-   printf("control min %i %i\n", cmw, cmh);
 
    edje_extern_object_min_size_set(ess->control_obj, cmw, cmh);
    edje_object_part_swallow(ess->base_obj, "e.swallow.controls",
@@ -728,7 +724,6 @@ _e_slipshelf_applist_update(E_Slipshelf *ess)
    smw = ess->zone->w;
    if (smh > ess->zone->h) smh = ess->zone->h;
    
-   printf("min size: %i %i\n", smw, smh);
 //   smh = 400;
    
    evas_object_resize(ess->base_obj, smw, smh);
@@ -738,7 +733,6 @@ _e_slipshelf_applist_update(E_Slipshelf *ess)
 //   evas_object_geometry_get(ess->control_obj, &vx, &vy, &vw, &vh);
    ess->control.w = vw;
    ess->control.h = vh;
-   printf("control size: %i %i\n", vw, vh);
    edje_extern_object_min_size_set(ess->control_obj, ess->control.w, ess->control.h);
    edje_object_part_swallow(ess->base_obj, "e.swallow.controls",
 			    ess->control_obj);
@@ -747,11 +741,9 @@ _e_slipshelf_applist_update(E_Slipshelf *ess)
    edje_object_part_geometry_get(ess->base_obj, "e.swallow.visible", &vx, &vy, &vw, &vh);
 //   evas_object_geometry_get(ess->vis_obj, &vx, &vy, &vw, &vh);
    
-   printf("v... = %i %i %ix%i\n", vx, vy, vw, vh);
    ess->hidden = vy;
    x = ess->zone->x;
    y = ess->zone->y - ess->hidden + ess->adjust;
-   printf("hidden: %i\n", ess->hidden);
    e_popup_move_resize(ess->popup, x, y, smw, smh);
    evas_object_resize(ess->base_obj, ess->popup->w, ess->popup->h);
 }
@@ -859,7 +851,6 @@ _e_slipshelf_slide(E_Slipshelf *ess, int out, double len)
      }
    if (ess->out) ess->adjust_target = ess->hidden;
    else ess->adjust_target = 0;
-   printf("adjust_target = %i | asjust_start =  %i\n", ess->adjust_target, ess->adjust_start);
    if (len <= 0.0)
      {
 	_e_slipshelf_cb_animate(ess);
@@ -998,7 +989,6 @@ _e_slipshelf_cb_gadcon_min_size_request(void *data, E_Gadcon *gc, Evas_Coord w, 
    Evas_Coord x, y, mw, mh, vx, vy, vw, vh;
    
    ess = data;
-   printf("REQ MIN %ix%i\n", w, h);
    if (ess->animator) ecore_animator_del(ess->animator);
    ess->animator = NULL;
    ess->out = 0;
@@ -1038,7 +1028,6 @@ _e_slipshelf_cb_gadcon_size_request(void *data, E_Gadcon *gc, Evas_Coord w, Evas
    E_Slipshelf *ess;
    
    ess = data;
-   printf("REQ %ix%i\n", w, h);
    return;
 }
 

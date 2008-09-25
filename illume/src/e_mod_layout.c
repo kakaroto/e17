@@ -312,7 +312,6 @@ _e_mod_layout_cb_docwin_hide(void *data)
 {
    _dockwin_hide_timer = NULL;
    if (!dockwin) return 0;
-   printf("- dockwin\n");
    e_border_hide(dockwin, 2);
    return 0;
 }
@@ -322,7 +321,6 @@ _e_mod_layout_dockwin_show(void)
 {
 //   if (dockwin_use) return;
    dockwin_use = 1;
-   printf("+ dockwin\n");
    if (_dockwin_hide_timer)
      {
 	ecore_timer_del(_dockwin_hide_timer);
@@ -412,25 +410,6 @@ _e_mod_layout_post_border_assign(E_Border *bd, int not_new)
    if (bd->stolen) return;
    /* FIXME: make some modification based on policy */
    if ((bd->new_client) && (not_new)) return;
-   printf("----->\n");
-   if (bd->new_client)
-     {
-	printf("Window Prop [%p]:\n"
-	       "  Title:     [%s][%s]\n"
-	       "  Class:     %s::%s\n"
-	       "  Geometry:  %ix%i+%i+%i\n"
-	       "  New:       %i\n"
-	       "  Remember:  %p\n"
-	       "  NETWMType: %i\n"
-	       , bd
-	       , bd->client.icccm.title, bd->client.netwm.name
-	       , bd->client.icccm.name, bd->client.icccm.class
-	       , bd->w, bd->h, bd->x, bd->y
-	       , bd->new_client
-	       , bd->remember
-	       , bd->client.netwm.type
-	       );
-     }
    pbx = bd->x;
    pby = bd->y;
    pbw = bd->w;
@@ -442,7 +421,6 @@ _e_mod_layout_post_border_assign(E_Border *bd, int not_new)
    if ((bd->client.netwm.type == ECORE_X_WINDOW_TYPE_DOCK) ||
        (bd->client.qtopia.soft_menu))
      {
-	printf("dock...\n");
 	  {
 	     unsigned int area[4];
 	     
@@ -465,15 +443,10 @@ _e_mod_layout_post_border_assign(E_Border *bd, int not_new)
      }
    else if (isdialog)
      {
-	printf("dialog...\n");
 	if (dockwin)
 	  {
 	     wh -= dockwin->h;
 	  }
-	printf("min: %i %i | base: %i %i | size: %i %i\n",
-	       bd->client.icccm.min_w, bd->client.icccm.min_h,
-	       bd->client.icccm.base_w, bd->client.icccm.base_h,
-	       bd->w, bd->h);
 //	if (ww > (bd->client.icccm.min_w + bd->client_inset.l + bd->client_inset.r))
 //	  ww = bd->client.icccm.min_w + bd->client_inset.l + bd->client_inset.r;
 	bd->w = ww;
@@ -501,7 +474,6 @@ _e_mod_layout_post_border_assign(E_Border *bd, int not_new)
      }
    else
      {
-	printf("normal...\n");
 	if ((dockwin) && (dockwin->client.qtopia.soft_menu) && 
 	    (bd->client.qtopia.soft_menus))
 	  {
@@ -515,7 +487,6 @@ _e_mod_layout_post_border_assign(E_Border *bd, int not_new)
 
    if (bd == dockwin)
      {
-	printf("  ... dock win\n");
 	bd->x = 0;
 	bd->y = wy + wh - bd->h;
 	bd->w = ww;
@@ -561,7 +532,6 @@ _e_mod_layout_post_border_assign(E_Border *bd, int not_new)
 //	if (bd->new_client)
 	  {
 	     bd->client.e.state.centered = 0;
-	     printf("  ... centered dialog\n");
 	     if (bd->new_client)
 	       {
 		  bd->x = wx + ((ww - bd->w) / 2);
@@ -570,7 +540,6 @@ _e_mod_layout_post_border_assign(E_Border *bd, int not_new)
 	     if ((pbx != bd->x) || (pby != bd->y)  ||
 		 (pbw != bd->w) || (pbh != bd->h))
 	       {
-		  printf("@ %i %i | %ix%i\n", bd->x, bd->y, bd->w, bd->h);
 		  if (bd->internal_ecore_evas)
 		    ecore_evas_managed_move(bd->internal_ecore_evas,
 					    bd->x + bd->fx.x + bd->client_inset.l,
@@ -609,7 +578,6 @@ _e_mod_layout_post_border_assign(E_Border *bd, int not_new)
      }
    else
      {
-	printf("  ... normal\n");
 	bd->placed = 1;
 	if (bd->focused)
 	  {
@@ -699,7 +667,6 @@ _e_mod_layout_post_border_assign(E_Border *bd, int not_new)
 	bd->client.icccm.min_aspect = 0.0;
 	bd->client.icccm.max_aspect = 0.0;
      }
-   printf("<-----\n");
 }
 
 static void
@@ -740,7 +707,6 @@ _cb_event_border_remove(void *data, int type, void *event)
 	int wx = 0, wy = 0, ww = 0, wh = 0;
 	int wx2 = 0, wy2 = 0, ww2 = 0, wh2 = 0;
 	
-	printf("del dockwin\n");
 	dockwin = NULL;
 	dockwin_use = 0;
 	e_slipshelf_safe_app_region_get(ev->border->zone, &wx, &wy, &ww, &wh);
@@ -778,7 +744,6 @@ _cb_event_border_focus_in(void *data, int type, void *event)
    
    ev = event;
    if (ev->border->stolen) return 1;
-   printf("bd focus in %x\n", ev->border->client.win);
    bd = ev->border;
    if (bd != dockwin)
      {
@@ -793,8 +758,6 @@ _cb_event_border_focus_in(void *data, int type, void *event)
 	       _e_mod_layout_dockwin_hide();
 	  }
      }
-   else
-     printf("  is dockwin\n");
    return 1;
 }
 
@@ -806,7 +769,6 @@ _cb_event_border_focus_out(void *data, int type, void *event)
    
    ev = event;
    if (ev->border->stolen) return 1;
-   printf("bd focus out %x\n", ev->border->client.win);
    bd = ev->border;
    if (bd != dockwin)
      {
@@ -816,8 +778,6 @@ _cb_event_border_focus_out(void *data, int type, void *event)
 	       _e_mod_layout_dockwin_hide();
 	  }
      }
-   else
-     printf("  is dockwin\n");
    return 1;
 }
 

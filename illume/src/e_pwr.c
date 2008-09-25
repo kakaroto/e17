@@ -158,14 +158,12 @@ _cb_saver(void *data, int ev_type, void *ev)
 	     zone = e_util_container_zone_number_get(0, 0);
 	     if (zone)
 	       {
-		  printf("create coverwin\n");
 		  coverwin = ecore_x_window_input_new(zone->container->win,
 						      zone->x, zone->y,
 						      zone->w, zone->h);
 		  ecore_x_window_show(coverwin);
 	       }
 	  }
-	printf("-------SAVER!!!!!!\n");
 	if (suspend_timer)
 	  {
 	     ecore_timer_del(suspend_timer);
@@ -178,7 +176,6 @@ _cb_saver(void *data, int ev_type, void *ev)
      }
    else
      {
-	printf("-------WAKEUP!!!!!\n");
 	_system_unreq_state();
 	if (coverwin)
 	  {

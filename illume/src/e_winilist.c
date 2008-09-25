@@ -285,7 +285,6 @@ _refill(Data *d)
 	     Evas_List *tmp = NULL;
 	     
 	     changed = 0;
-	     printf("bd's....\n");
 	     for (l = borders; l; l = l->next)
 	       {
 		  E_Border *bd;
@@ -298,8 +297,6 @@ _refill(Data *d)
 		  if (bd->user_skip_winlist) continue;
 		  if ((!bd->sticky) && 
 		      (bd->desk != e_desk_current_get(bd->zone))) continue;
-		  printf("ADD bd=%p, bd->desk = %p, curdesk = %p\n",
-			 bd, bd->desk, e_desk_current_get(bd->zone));
 		  tmp = evas_list_append(tmp, bd);
 	       }
 	     if (!(tmp && d->borders))

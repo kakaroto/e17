@@ -153,18 +153,15 @@ e_slipwin_show(E_Slipwin *esw)
    e_ilist_thaw(o);
    
    e_ilist_min_size_get(o, &mw, &mh);
-   printf("MIN %i %i\n", mw, mh);
    
    evas_object_resize(o, mw, mh);
    e_scrollframe_child_set(esw->scrollframe_obj, o);
    
    e_scrollframe_child_viewport_size_get(esw->scrollframe_obj, &vw, &vh);
-   printf("VPT %i %i\n", vw, vh);
    evas_object_geometry_get(esw->scrollframe_obj, NULL, NULL, &w, &h);
    if (mw > vw) mw = mw + (w - vw);
    else if (mw < vw) evas_object_resize(o, vw, mh);
    
-   printf("MIN2 %i %i\n", mw, mh);
    if (selnum >= 0) e_ilist_selected_set(o, selnum);
 
    evas_object_show(o);

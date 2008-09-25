@@ -109,7 +109,6 @@ e_busywin_pop(E_Busywin *esw, E_Busywin_Handle *handle)
 {
    E_OBJECT_CHECK(esw);
    E_OBJECT_TYPE_CHECK(esw, E_BUSYWIN_TYPE);
-   printf("--------- POP %p\n", handle);
    if (!evas_list_find(esw->handles, handle)) return;
    esw->handles = evas_list_remove(esw->handles, handle);
    if (handle->message) evas_stringshare_del(handle->message);

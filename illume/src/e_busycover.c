@@ -91,7 +91,6 @@ e_busycover_pop(E_Busycover *esw, E_Busycover_Handle *handle)
 {
    E_OBJECT_CHECK(esw);
    E_OBJECT_TYPE_CHECK(esw, E_BUSYCOVER_TYPE);
-   printf("--------- POP %p\n", handle);
    if (!evas_list_find(esw->handles, handle)) return;
    esw->handles = evas_list_remove(esw->handles, handle);
    if (handle->message) evas_stringshare_del(handle->message);
