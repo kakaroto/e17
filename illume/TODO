@@ -1,4 +1,7 @@
 --- Things To Do --- (in no particular order)
+* flaunch needs to be an option
+* kbd: need to take a look at dict format to allow for fast-skip to next line
+  and supporitng multiple matches per input.
 * kbd: needs drag for backspace/next word etc. to be shorter (put into kbd
   layout as drag config)
 * kbd: config needs a fuzz multiplier
@@ -14,6 +17,7 @@
 * cfg: use e's config dialog framework for illume cfg stuff.
 * pwr: need to probably bypass x screensaver for blanking and do it manually
 * pwr: need a way to disable suspend based on power status (eg when plugged in)
+* e: need to be able to have e_widgets tell parents "stop auto scrolling"
 * e: shelf config init is slow 0.24839
 * e: splash init slowish 0.24299
 * e: msgbus init slowish 0.11744

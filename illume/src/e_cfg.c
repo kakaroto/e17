@@ -164,17 +164,24 @@ _e_cfg_launcher_change(void *data, Evas_Object *obj, void *event_info) {
    _e_cfg_launcher_change_timer = ecore_timer_add(0.5, _e_cfg_launcher_change_timeout, data);
 }
 
-EAPI void
-e_cfg_launcher(E_Container *con, const char *params)
-{
-   Evas_Object *list, *o, *frame;
-   E_Radio_Group *rg;
-   Evas *e;
+static void *
+_e_cfg_launcher_create(E_Config_Dialog *cfd)
+{ // alloc cfd->cfdata
+   return NULL;
+}
 
-   list = _e_cfg_win_new("Launcher Settings", "launcher_settings",
-			 e_module_dir_get(mod), NULL, NULL);
-   
-   e = evas_object_evas_get(list);
+static void 
+_e_cfg_launcher_free(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
+{ // free cfd->cfdata
+}
+
+static Evas_Object *
+_e_cfg_launcher_ui(E_Config_Dialog *cfd, Evas *e, E_Config_Dialog_Data *cfdata)
+{
+   Evas_Object *list, *sf, *o, *frame;
+   E_Radio_Group *rg;
+
+   list = e_widget_list_add(e, 0, 0);
    
    frame = e_widget_framelist_add(e, "Display Type", 0);
    rg = e_widget_radio_group_new(&(illume_cfg->launcher.mode));
@@ -211,7 +218,28 @@ e_cfg_launcher(E_Container *con, const char *params)
    evas_object_smart_callback_add(o, "changed", _e_cfg_launcher_change, NULL);
    e_widget_list_object_append(list, frame, 1, 1, 0.0); // fill, expand, align
    
-   _e_cfg_win_complete(list);
+   e_widget_min_size_resize(list);
+   sf = e_widget_scrollframe_simple_add(e, list);
+   return sf;
+}
+
+EAPI void
+e_cfg_launcher(E_Container *con, const char *params)
+{
+   E_Config_Dialog *cfd;
+   E_Config_Dialog_View *v = NULL;
+   
+   if (e_config_dialog_find("E", "_config_illume_launcher_settings")) return;
+   v = E_NEW(E_Config_Dialog_View, 1);
+   v->create_cfdata        = _e_cfg_launcher_create;
+   v->free_cfdata          = _e_cfg_launcher_free;
+   v->basic.create_widgets = _e_cfg_launcher_ui;
+   v->basic_only           = 1;
+   v->normal_win           = 1;
+   cfd = e_config_dialog_new(con, "Launcher Settings",
+			     "E", "_config_illume_launcher_settings",
+			     "enlightenment/launcher_settings", 0, v, NULL);
+   e_dialog_resizable_set(cfd->dia, 1);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -259,9 +287,8 @@ _e_cfg_power_free(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 static Evas_Object *
 _e_cfg_power_ui(E_Config_Dialog *cfd, Evas *e, E_Config_Dialog_Data *cfdata)
 {
-   Evas_Object *o, *frame;
+   Evas_Object *list, *sf, *o, *frame;
    E_Radio_Group *rg;
-   Evas_Object *list, *sf;
 
    list = e_widget_list_add(e, 0, 0);
    
