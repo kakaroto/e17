@@ -2,10 +2,10 @@
 
 import ecore, ecore.evas, sys, os
 
-if 'x11' in sys.argv:
-    ee = ecore.evas.SoftwareX11(w=800, h=480)
-else:
+if 'x11-16' in sys.argv:
     ee = ecore.evas.SoftwareX11_16(w=800, h=480)
+else:
+    ee = ecore.evas.SoftwareX11(w=800, h=480)
 
 canvas = ee.evas
 
