@@ -1,20 +1,9 @@
-/* inline fonts so just in case the system doesnt have any, we have something
- * to use */
-fonts {                            
-   font: "Vera.ttf"   "Edje-Vera";
-   font: "VeraBd.ttf" "Edje-Vera-Bold";
-}                                  
 /* images used */
 images {
    image: "vgrad_dark.png" COMP;
-   image: "vgrad_light.png" COMP;
-//   image: "circle_shade.png" COMP;
-//   image: "grill_dark_tiny_pattern.png" COMP;
    image: "logo_white.png" COMP;
    image: "init_check1.png" COMP;
    image: "init_check2.png" COMP;
-   image: "hshad_big1.png" COMP;
-   image: "hshad_big2.png" COMP;
    image: "busy-1.png" COMP;
    image: "busy-2.png" COMP;
    image: "busy-3.png" COMP;
@@ -55,35 +44,12 @@ collections {
 	       }
 	    }
 	 }
-/*	 
-	 part {
-	    name: "grill";
-	    description {
-	       state: "default" 0.0;
-	       image {
-		  normal: "grill_dark_tiny_pattern.png";
-	       }
-	       fill {
-		  size {
-		     relative: 0 0;
-		     offset:   144 144;
-		  }
-	       }
-	    }
-	 }
-         part { name: "shade";
-	    mouse_events:  0;
-	    description { state: "default" 0.0;
-	       image.normal: "circle_shade.png";
-	       fill.smooth: 0;
-	    }
-	 }
- */
          part {	 
 	    name: "e.text.title";
 	    type: TEXT;
 	    effect: SOFT_SHADOW;
 	    mouse_events: 0;
+	    scale: 1;
 	    description {
 	       state: "default" 0.0;
 	       align: 0.5 0.0;
@@ -101,7 +67,7 @@ collections {
 	       color3: 0 0 0 32;
 	       text {
 		  text: "Enlightenment";
-                  font: "Sans:style=Bold,Edje-Vera-Bold";
+                  font: "Sans:style=Bold";
 		  size: 20;
 		  min:  1 1;
 		  align: 0.5 0.5;
@@ -128,7 +94,7 @@ collections {
 	       color3: 0 0 0 32;
 	       text {
 		  text: "0.17.0";
-		  font: "Sans,Edje-Vera";
+		  font: "Sans";
 		  size: 8;
 		  min:  1 1;
 		  align: 0.0 0.0;
@@ -141,6 +107,7 @@ collections {
 	    type: TEXT;
 	    effect: SOFT_SHADOW;
 	    mouse_events: 0;
+	    scale: 1;
 	    description {
 	       state: "default" 0.0;
 	       align: 0.5 0.0;
@@ -158,7 +125,7 @@ collections {
 	       color3: 0 0 0 32;
 	       text {
 		  text: "Starting Enlightenment. Please wait.";
-		  font: "Sans:style=Bold,Edje-Vera-Bold";
+		  font: "Sans:style=Bold";
 		  size: 10;
 		  min:  1 1;
 		  align: 0.5 0.5;
@@ -171,6 +138,7 @@ collections {
 	    type: TEXT;
 	    effect: SOFT_SHADOW;
 	    mouse_events: 0;
+	    scale: 1;
 	    description {
 	       state: "default" 0.0;
 	       align: 0.0 0.0;
@@ -185,8 +153,8 @@ collections {
                color: 255 255 255 255;
 	       color3: 0 0 0 32;
 	       text {
-		  text: "Disable this splash screen in future.";
-		  font: "Sans,Edje-Vera";
+		  text: "Disable this splash screen";
+		  font: "Sans";
 		  size: 10;
 		  min:   1 1;
 		  align: 0.0 0.0;
@@ -197,6 +165,7 @@ collections {
          part {	 
 	    name: "disable_check";
 	    mouse_events: 0;
+	    scale: 1;
 	    description {
 	       state: "default" 0.0;
 	       min: 20 20;
@@ -329,143 +298,6 @@ collections {
 	       color: 255 255 255 0;
 	    }
 	 }
-	 
-	 part {
-	    name: "cover1_clip";
-	    type: RECT;
-	    description {
-	       state: "default" 0.0;
-	       rel1 {
-		  relative: 0.0 0.0;
-	       }
-	       rel2 {
-		  relative: 0.5 1.0;
-	       }
-	    }
-	    description {
-	       state: "done" 0.0;
-	       inherit: "default" 0.0;
-	       rel2 {
-		  relative: 0.0 1.0;
-	       }
-	    }
-	 }
-	 part {
-	    name: "cover2_clip";
-	    type: RECT;
-	    description {
-	       state: "default" 0.0;
-	       rel1 {
-		  relative: 0.5 0.0;
-	       }
-	       rel2 {
-		  relative: 1.0 1.0;
-	       }
-	    }
-	    description {
-	       state: "done" 0.0;
-	       inherit: "default" 0.0;
-	       rel1 {
-		  relative: 1.0 0.0;
-	       }
-	    }
-	 }
-	 
-         part {	 
-	    name: "cover1_shadow";
-	    description {
-	       state: "default" 0.0;
-	       image {
-		  normal: "hshad_big1.png";
-	       }
-	       rel1 {
-		  to: "cover1_clip";
-		  relative: 1.0 0.0;
-		  offset: 0 0;
-	       }
-	       rel2 {
-		  to: "cover1_clip";
-		  relative: 1.0 1.0;
-		  offset: 286 -1;
-	       }
-	       fill {
-		  smooth: 0;
-	       }
-	    }
-	    description {
-	       state: "done" 0.0;
-	       inherit: "default" 0.0;
-	       color: 255 255 255 0;
-	       rel2 {
-		  offset: 0 -1;
-	       }
-	    }
-	 }
-         part {	 
-	    name: "cover2_shadow";
-	    description {
-	       state: "default" 0.0;
-	       image {
-		  normal: "hshad_big2.png";
-	       }
-	       rel1 {
-		  to: "cover2_clip";
-		  relative: 0.0 0.0;
-		  offset: -287 0;
-	       }
-	       rel2 {
-		  to: "cover2_clip";
-		  relative: 0.0 1.0;
-		  offset: -1 -1;
-	       }
-	       fill {
-		  smooth: 0;
-	       }
-	    }
-	    description {
-	       state: "done" 0.0;
-	       inherit: "default" 0.0;
-	       color: 255 255 255 0;
-	       rel1 {
-		  offset: -1 0;
-	       }
-	    }
-	 }
-         part {	 
-	    name: "cover1";
-	    clip_to: "cover1_clip";
-	    description {
-	       state: "default" 0.0;
-	       image {
-		  normal: "vgrad_light.png";
-	       }
-	       fill {
-		  smooth: 0;
-		  size {
-		     relative: 0 1.0;
-		     offset:   36 0;
-		  }
-	       }
-	    }
-	 }
-         part {	 
-	    name: "cover2";
-	    clip_to: "cover2_clip";
-	    description {
-	       state: "default" 0.0;
-	       image {
-		  normal: "vgrad_light.png";
-	       }
-	       fill {
-		  smooth: 0;
-		  size {
-		     relative: 0 1.0;
-		     offset:   36 0;
-		  }
-	       }
-	    }
-	 }
-	 
       }
       programs {
 	 program {
@@ -478,18 +310,6 @@ collections {
 	    }
 	 }
 	 program {
-	    name: "appear";
-	    signal: "show";
-	    source: "";
-	    action: STATE_SET "done" 0.0;
-	    transition: DECELERATE 2.0;
-	    target: "cover1_clip";
-	    target: "cover2_clip";
-	    target: "cover1_shadow";
-	    target: "cover2_shadow";
-	    after: "ready";
-	 }
-	 program {
 	    name: "busy_anim";
 	    signal: "show";
 	    source: "";
@@ -499,7 +319,9 @@ collections {
 	    after:  "busy_anim";
 	 }
 	 program {
-	    name: "ready";
+	    name: "appear";
+	    signal: "show";
+	    source: "";
 	    script {
 	       new val;
 	       
@@ -595,30 +417,6 @@ collections {
 	       }
 	    }
 	 }
-/*	 
-	 part {
-	    name: "grill";
-	    description {
-	       state: "default" 0.0;
-	       image {
-		  normal: "grill_dark_tiny_pattern.png";
-	       }
-	       fill {
-		  size {
-		     relative: 0 0;
-		     offset:   144 144;
-		  }
-	       }
-	    }
-	 }
-         part { name: "shade";
-	    mouse_events:  0;
-	    description { state: "default" 0.0;
-	       image.normal: "circle_shade.png";
-	       fill.smooth: 0;
-	    }
-	 }
- */
       }
    }
 }

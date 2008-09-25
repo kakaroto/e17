@@ -251,7 +251,7 @@ collections {
 	       }
 	       color: 176 176 176 255;
 	       text {
-                  font: "Sans:style=Bold,Edje-Vera-Bold";
+                  font: "Sans:style=Bold";
 		  text: "qwerty";
 		  size: 8;
 		  min: 1 1;
@@ -630,7 +630,7 @@ collections {
 	       rel2.offset: -2 8;
 	       align: 0.5 0.0;
 	       text {
-                  font: "Sans,Edje-Vera";
+                  font: "Sans";
 		  size: 10;
 		  min: 0 1;
 	       }
@@ -860,7 +860,7 @@ collections {
 		  offset:   -4  -4;
 	       }
 	       text {
-                  font: "Sans,Edje-Vera"; 
+                  font: "Sans"; 
 		  size: 10;
 		  min: 1 1;
 	       }
@@ -1015,7 +1015,7 @@ collections {
 	       rel2.to: "e.swallow.content";
 	       color: 255 255 255 255;
 	       text {
-                  font: "Sans,Edje-Vera"; 
+                  font: "Sans"; 
 		  size: 10;
 		  min: 1 1;
 	       }
@@ -1167,7 +1167,7 @@ collections {
 	       rel2.to: "e.swallow.content";
 	       color: 255 255 255 255;
 	       text {
-                  font: "Sans,Edje-Vera"; 
+                  font: "Sans"; 
 		  size: 40;
 		  min: 1 1;
 	       }
@@ -1366,7 +1366,7 @@ collections {
 	       }
 	       color: 0 0 0 255;
 	       text {
-                  font: "Sans,Edje-Vera"; 
+                  font: "Sans"; 
 		  size: 24;
 		  min: 1 1;
 		  align: 0.5 1.0;
@@ -1499,7 +1499,7 @@ collections {
 	       align: 1.0 0.0;
 	       text {
 		  align: 1.0 0.0;
-                  font: "Sans:style=Bold,Edje-Vera-Bold";
+                  font: "Sans:style=Bold";
 		  size: 5;
 		  min: 1 1;
 	       }
@@ -1699,7 +1699,7 @@ collections {
 	       }
 	       color: 216 216 216 255;
 	       text {
-                  font: "Sans:style=Bold,Edje-Vera-Bold";
+                  font: "Sans:style=Bold";
 		  text: "Locked";
 		  size: 24;
 		  min: 1 1;
@@ -1734,7 +1734,7 @@ collections {
 	       rel2.relative: 1.0 0.0;
 	       color: 255 255 255 255;
 	       text {
-                  font: "Sans:style=Bold,Edje-Vera-Bold";
+                  font: "Sans:style=Bold";
 		  text: "+";
 		  size: 8;
 		  align: 1.0 0.0;
@@ -1754,7 +1754,7 @@ collections {
 	       rel2.relative: 1.0 1.0;
 	       color: 255 255 255 255;
 	       text {
-                  font: "Sans:style=Bold,Edje-Vera-Bold";
+                  font: "Sans:style=Bold";
 		  size: 8;
 		  align: 0.0 1.0;
 		  min: 0 1;
@@ -1792,7 +1792,7 @@ collections {
 	       color: 255 255 255 255;
 	       text {
 		  text: "*";
-                  font: "Sans,Edje-Vera"; 
+                  font: "Sans"; 
 		  size: 14;
 		  align: 0.0 1.0;
 	       }
@@ -2049,7 +2049,7 @@ collections {
 	       rel2.offset: 0 4;
 	       color: 255 255 255 255;
 	       text {
-                  font: "Sans:style=Bold,Edje-Vera-Bold";
+                  font: "Sans:style=Bold";
 		  text: "LOADING";
 		  size: 8;
 		  align: 0.5 0.0;

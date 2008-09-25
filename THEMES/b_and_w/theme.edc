@@ -494,7 +494,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color_class: "border_title"; /* give it a color class so people
 					     * can re-color it if they want */
 	       text {
-		  font: "Sans:style=Bold,Edje-Vera-Bold"; /* the font is now
+		  font: "Sans:style=Bold"; /* the font is now
 							   * complex. use the
 							   * system sans font
 							   * in a bold style,
@@ -818,7 +818,7 @@ collections { /* begin the collection of edje groups that are in this file */
 		  text_source: "e.text.title"; /* and here is the magic. tell
 						* the text to be sourced from
 						* another part */
-                  font: "Sans:style=Bold,Edje-Vera-Bold";
+                  font: "Sans:style=Bold";
 		  size: 10;
                   align: 0.0 0.0;
 		  min: 0 1;
@@ -1666,7 +1666,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color: 0 0 0 255;
 	       color_class: "border_title";
 	       text {
-		  font: "Sans:style=Bold,Edje-Vera-Bold";
+		  font: "Sans:style=Bold";
 		  size: 10;
 		  min: 0 1;
 		  align: 0.0 0.0;
@@ -1950,7 +1950,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color_class: "border_title";
 	       text {
 		  text_source: "e.text.title";
-                  font: "Sans:style=Bold,Edje-Vera-Bold";
+                  font: "Sans:style=Bold";
 		  size: 10;
                   align: 0.0 0.0;
 		  min: 0 1;
@@ -2721,7 +2721,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color: 0 0 0 255;
 	       color_class: "border_title";
 	       text {
-		  font: "Sans:style=Bold,Edje-Vera-Bold";
+		  font: "Sans:style=Bold";
 		  size: 10;
 		  min: 0 1;
 		  align: 0.0 0.0;
@@ -3005,7 +3005,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color_class: "border_title";
 	       text {
 		  text_source: "e.text.title";
-                  font: "Sans:style=Bold,Edje-Vera-Bold";
+                  font: "Sans:style=Bold";
 		  size: 10;
                   align: 0.0 0.0;
 		  min: 0 1;
@@ -3595,7 +3595,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color: 0 0 0 255;
 	       color_class: "border_title";
 	       text {
-		  font: "Sans:style=Bold,Edje-Vera-Bold";
+		  font: "Sans:style=Bold";
 		  size: 10;
 		  min: 0 1;
 		  align: 0.0 0.0;
@@ -3777,7 +3777,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color_class: "border_title";
 	       text {
 		  text_source: "e.text.title";
-                  font: "Sans:style=Bold,Edje-Vera-Bold";
+                  font: "Sans:style=Bold";
 		  size: 10;
                   align: 0.0 0.0;
 		  min: 0 1;
@@ -4494,7 +4494,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color: 0 0 0 255;
 	       color_class: "border_title";
 	       text {
-		  font: "Sans:style=Bold,Edje-Vera-Bold";
+		  font: "Sans:style=Bold";
 		  size: 10;
 		  min: 0 1;
 		  align: 0.0 0.0;
@@ -4676,7 +4676,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color_class: "border_title";
 	       text {
 		  text_source: "e.text.title";
-                  font: "Sans:style=Bold,Edje-Vera-Bold";
+                  font: "Sans:style=Bold";
 		  size: 10;
                   align: 0.0 0.0;
 		  min: 0 1;
@@ -5356,7 +5356,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color_class: "menu_title";
 	       text {
 		  text_source: "e.text.title";
-                  font: "Sans:style=Bold,Edje-Vera-Bold";
+                  font: "Sans:style=Bold";
 		  size: 10;
                   align: 0.5 0.0;
 		  min: 0 0;
@@ -5590,7 +5590,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color3: 0 0 0 0;
 	       color_class: "menu_item";
 	       text {
-		  font: "Sans,Edje-Vera";
+		  font: "Sans";
 		  size: 10;
 		  min: 1 1;
 		  align: 0.0 0.5;
@@ -6519,7 +6519,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color: 224 224 224 255;
 	       color3: 0 0 0 64;
 	       text {
-                  font: "Sans:style=Bold,Edje-Vera-Bold";
+                  font: "Sans:style=Bold";
 		  size: 10;
                   align: 0.5 0.0;
 		  min: 1 1;
@@ -6677,7 +6677,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color: 0 0 0 0;
 	       color_class: "module_label";
 	       text {
-		  font: "Sans:style=Bold,Edje-Vera-Bold";
+		  font: "Sans:style=Bold";
 		  size: 8;
 		  align: 0.5 0.5;
 		  text_class: "module_small";
@@ -7304,7 +7304,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color3: 0 0 0 0;
 	       color_class: "module_label";
 	       text {
-		  font: "Sans:style=Bold,Edje-Vera-Bold";
+		  font: "Sans:style=Bold";
 		  size: 8;
 		  min: 1 1;
 		  align: 0.5 0.0;
@@ -7337,7 +7337,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color3: 0 0 0 0;
 	       color_class: "module_label";
 	       text {
-		  font: "Sans:style=Bold,Edje-Vera-Bold";
+		  font: "Sans:style=Bold";
 		  size: 8;
 		  min: 1 1;
 		  align: 0.5 1.0;
@@ -7490,7 +7490,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       }
 	       color: 0 0 0 255;
 	       text { text: "Your battery is low!";
-		  font: "Sans:style=Bold,Edje-Vera-Bold";
+		  font: "Sans:style=Bold";
 		  size: 10;
 		  min: 1 1;
 		  align: 0.5 1.0;
@@ -7514,7 +7514,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       }
 	       color: 0 0 0 255;
 	       text { text: "AC power is recommended.";
-		  font: "Sans:style=Bold,Edje-Vera-Bold";
+		  font: "Sans:style=Bold";
 		  size: 10;
 		  min: 1 1;
 		  align: 0.5 1.0;
@@ -7617,7 +7617,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color3: 0 0 0 0;
 	       color_class: "module_label";
 	       text {
-		  font: "Sans:style=Bold,Edje-Vera-Bold";
+		  font: "Sans:style=Bold";
 		  size: 8;
 		  min: 1 1;
 		  align: 0.0 0.0;
@@ -8314,7 +8314,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color_class: "module_label";
 	       text {
 		  text: "??? Ghz";
-		  font: "Sans:style=Bold,Edje-Vera-Bold";
+		  font: "Sans:style=Bold";
 		  size: 6;
 		  align: 0.5 0.5;
 		  min: 1 1;
@@ -8596,7 +8596,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color3: 0 0 0 0;
 	       color_class: "module_label";
 	       text {
-		  font: "Sans:style=Bold,Edje-Vera-Bold";
+		  font: "Sans:style=Bold";
 		  size: 10;
 		  min:  1 1;
 		  align: 0.5 0.5;
@@ -9211,7 +9211,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color_class: "winlist_label";
 	       text {
 		  text: "Title goes here";
-		  font: "Sans:style=Bold,Edje-Vera-Bold";
+		  font: "Sans:style=Bold";
 		  size: 10;
 		  min:  0 1;
 		  align: 0.5 1.0;
@@ -9238,7 +9238,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color: 224 224 224 255;
 	       color3: 0 0 0 64;
 	       text {
-                  font: "Sans:style=Bold,Edje-Vera-Bold";
+                  font: "Sans:style=Bold";
 		  size: 10;
                   align: 0.5 0.0;
 		  min: 1 1;
@@ -9387,7 +9387,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color3: 0 0 0 0;
 	       color_class: "winlist_item";
 	       text {
-		  font: "Sans,Edje-Vera";
+		  font: "Sans";
 		  size: 10;
 		  min:  0 1;
 		  align: 0.0 0.5;
@@ -9610,7 +9610,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color: 255 255 255 255;
 	       color3: 0 0 0 64;
 	       text {
-		  font: "Sans:style=Bold,Edje-Vera-Bold";
+		  font: "Sans:style=Bold";
 		  size: 16;
 		  align: 0.0 0.5;
 		  min: 1 1;
@@ -9728,7 +9728,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color3: 0 0 0 0;
 	       color_class: "menu_item";
 	       text {
-		  font: "Sans,Edje-Vera";
+		  font: "Sans";
 		  size: 10;
 		  min: 1 1;
 		  align: 0.0 0.5;
@@ -10919,7 +10919,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color: 224 224 224 255;
 	       color3: 0 0 0 32;
 	       text {
-                  font: "Sans:style=Bold,Edje-Vera-Bold";
+                  font: "Sans:style=Bold";
 		  size: 10;
 		  min: 1 1;
 		  align: 0.5 0.5;
@@ -11305,7 +11305,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color: 224 224 224 255;
 	       color3: 0 0 0 32;
 	       text {
-                  font: "Sans:style=Bold,Edje-Vera-Bold";
+                  font: "Sans:style=Bold";
 		  size: 10;
 		  min: 0 1;
 		  align: 0.5 0.5;
@@ -11751,7 +11751,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color3: 0 0 0 0;
 	       color_class: "ilist_item";
 	       text {
-		  font: "Sans,Edje-Vera";
+		  font: "Sans";
 		  size: 10;
 		  min: 1 1;
 		  align: 0.0 0.5;
@@ -12214,7 +12214,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color3: 0 0 0 0;
 	       color_class: "ilist_item";
 	       text {
-		  font: "Sans,Edje-Vera";
+		  font: "Sans";
 		  size: 10;
 		  min: 1 1;
 		  align: 0.0 0.5;
@@ -12677,7 +12677,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color3: 0 0 0 0;
 	       color_class: "ilist_item";
 	       text {
-		  font: "Sans,Edje-Vera";
+		  font: "Sans";
 		  size: 10;
 		  min: 0 1;
 		  align: 0.0 0.5;
@@ -13140,7 +13140,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color3: 0 0 0 0;
 	       color_class: "ilist_item";
 	       text {
-		  font: "Sans,Edje-Vera";
+		  font: "Sans";
 		  size: 10;
 		  min: 0 1;
 		  align: 0.0 0.5;
@@ -13354,9 +13354,9 @@ collections { /* begin the collection of edje groups that are in this file */
       styles {
 	 style {
 	    name: "sys_style";
-	    base: "font=Sans:style=Bold,Edje-Vera-Bold font_size=12 text_class=tb_plain align=center valign=center color=#fff style=soft_shadow shadow_color=#0000001f wrap=word";
+	    base: "font=Sans:style=Bold font_size=12 text_class=tb_plain align=center valign=center color=#fff style=soft_shadow shadow_color=#0000001f wrap=word";
 	    tag:  "br" "\n";
-	    tag:  "hilight" "+ font=Sans:style=Bold,Edje-Vera-Bold text_class=tb_light";
+	    tag:  "hilight" "+ font=Sans:style=Bold text_class=tb_light";
 	 }
       }
       parts {
@@ -13582,9 +13582,9 @@ collections { /* begin the collection of edje groups that are in this file */
       styles {
 	 style {
 	    name: "dialog_style";
-	    base: "font=Sans,Edje-Vera font_size=10 text_class=tb_plain align=center color=#000 style=shadow shadow_color=#ffffff80 wrap=word";
+	    base: "font=Sans font_size=10 text_class=tb_plain align=center color=#000 style=shadow shadow_color=#ffffff80 wrap=word";
 	    tag:  "br" "\n";
-	    tag:  "hilight" "+ font=Sans:style=Bold,Edje-Vera-Bold text_class=tb_light";
+	    tag:  "hilight" "+ font=Sans:style=Bold text_class=tb_light";
 	 }
       }
       parts {
@@ -13748,7 +13748,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color: 0 0 0 255;
 	       color_class: "move_text";
 	       text { text: "X Y";
-		  font: "Sans,Edje-Vera";
+		  font: "Sans";
 		  size: 10;
 		  align: 0.5 0.5;
 		  min: 1 1;
@@ -13798,7 +13798,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color: 0 0 0 255;
 	       color_class: "resize_text";
 	       text { text: "WxH";
-		  font: "Sans,Edje-Vera";
+		  font: "Sans";
 		  size: 10;
 		  align: 0.5 0.5;
 		  min: 1 1;
@@ -14057,7 +14057,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color: 0 0 0 255;
 	       color_class: "check_text";
 	       text {
-		  font:     "Sans,Edje-Vera";
+		  font:     "Sans";
 		  size:     10;
 		  min:      1 1;
 		  align:    0.0 0.5;
@@ -14227,7 +14227,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color: 0 0 0 255;
 	       color_class: "check_text";
 	       text {
-		  font: "Sans,Edje-Vera";
+		  font: "Sans";
 		  size: 10;
 		  min: 1 1;
 		  align: 0.0 0.5;
@@ -14364,7 +14364,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color: 0 0 0 255;
 	       color_class: "radio_text";
 	       text {
-		  font:     "Sans,Edje-Vera";
+		  font:     "Sans";
 		  size:     10;
 		  min:      1 1;
 		  align:    0.0 0.5;
@@ -14534,7 +14534,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color: 0 0 0 255;
 	       color_class: "radio_text";
 	       text {
-		  font: "Sans,Edje-Vera";
+		  font: "Sans";
 		  size: 10;
 		  min: 1 1;
 		  align: 0.0 0.5;
@@ -14696,7 +14696,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color3: 0 0 0 64;
 	       color_class: "button_text";
 	       text {
-		  font:     "Sans,Edje-Vera";
+		  font:     "Sans";
 		  size:     10;
 		  min:      1 1;
 		  align:    0.5 0.5;
@@ -15623,7 +15623,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color3: 0 0 0 0;
 	       color_class: "ilist_item";
 	       text {
-		  font: "Sans,Edje-Vera";
+		  font: "Sans";
 		  size: 10;
 		  min: 1 1;
 		  align: 0.0 0.5;
@@ -15802,7 +15802,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color3: 0 0 0 0;
 	       color_class: "ilist_item";
 	       text {
-		  font: "Sans,Edje-Vera";
+		  font: "Sans";
 		  size: 10;
 		  min: 1 1;
 		  align: 0.0 0.5;
@@ -16005,7 +16005,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color3: 0 0 0 32;
 	       color_class: "ilist_item";
 	       text {
-                  font: "Sans:style=Bold,Edje-Vera-Bold";
+                  font: "Sans:style=Bold";
 		  size: 16;
 		  min: 1 1;
 		  align: 0.0 0.5;
@@ -16184,7 +16184,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color3: 0 0 0 32;
 	       color_class: "ilist_item";
 	       text {
-                  font: "Sans:style=Bold,Edje-Vera-Bold";
+                  font: "Sans:style=Bold";
 		  size: 16;
 		  min: 1 1;
 		  align: 0.0 0.5;
@@ -16319,7 +16319,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color_class: "entry_text";
 	       text {
 		  text: "";
-		  font: "Sans,Edje-Vera";
+		  font: "Sans";
 		  size: 10;
 		  min: 1 1;
 		  align: 0.0 0.0;
@@ -16842,7 +16842,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color: 0 0 0 255;
 	       color_class: "slider_text";
 	       text { text:     "0.0";
-		  font:     "Sans,Edje-Vera";
+		  font:     "Sans";
 		  size:     10;
 		  min:      1 1;
 		  align:    0.5 0.5;
@@ -17096,7 +17096,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color: 0 0 0 255;
 	       color_class: "slider_text";
 	       text { text:  "0.0";
-		  font:     "Sans,Edje-Vera";
+		  font:     "Sans";
 		  size:     10;
 		  min:      1 1;
 		  align:    0.5 0.5;
@@ -17308,7 +17308,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       }
 	       color: 0 0 0 64;
 	       text {
-		  font: "Sans:style=Bold,Edje-Vera-Bold";
+		  font: "Sans:style=Bold";
 		  size: 10;
 		  min: 1 1;
 		  max: 1 1;
@@ -17345,7 +17345,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color: 0 0 0 255;
 	       color_class: "label_text";
 	       text {
-		  font: "Sans,Edje-Vera";
+		  font: "Sans";
 		  size: 10;
 		  min: 1 1;
 		  align: 0.0 0.5;
@@ -17369,7 +17369,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       rel2.offset: -7 -7;
 	       text {
 		  text: "The quick brown fox jumped over YA MUM!";
-		  font: "Sans,Edje-Vera";
+		  font: "Sans";
 		  size: 10;
 		  min: 1 1;
 		  align: 0.5 0.5;
@@ -17383,11 +17383,11 @@ collections { /* begin the collection of edje groups that are in this file */
    group { name: "e/widgets/textblock";
       styles {
 	 style { name: "textblock_style";
-	    base: "font=Sans,Edje-Vera font_size=10 align=left color=#000 style=shadow shadow_color=#ffffff80 wrap=word";
-	    tag:  "title" "+ font=Sans:style=Bold,Edje-Vera-Bold  font_size=12 style=soft_shadow color=#fff shadow_color=#00000021";
-	    tag:  "hilight" "+ font=Sans:style=Bold,Edje-Vera-Bold style=glow color=#fff glow2_color=#333333be glow_color=#0000005a";
-	    tag:  "urgent" "+ font=Sans:style=Bold,Edje-Vera-Bold style=glow color=#fff glow2_color=#333 glow_color=#b01010";
-	    tag:  "b" "+ font=Sans:style=Bold,Edje-Vera-Bold";
+	    base: "font=Sans font_size=10 align=left color=#000 style=shadow shadow_color=#ffffff80 wrap=word";
+	    tag:  "title" "+ font=Sans:style=Bold  font_size=12 style=soft_shadow color=#fff shadow_color=#00000021";
+	    tag:  "hilight" "+ font=Sans:style=Bold style=glow color=#fff glow2_color=#333333be glow_color=#0000005a";
+	    tag:  "urgent" "+ font=Sans:style=Bold style=glow color=#fff glow2_color=#333 glow_color=#b01010";
+	    tag:  "b" "+ font=Sans:style=Bold";
 	    tag:  "br" "\n";
 	 }
       }
@@ -17478,7 +17478,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color3: 0 0 0 32;
 	       text {
 		  text: "Enter Password";
-		  font: "Sans:style=Bold,Edje-Vera-Bold";
+		  font: "Sans:style=Bold";
 		  size: 10;
 		  align: 0.5 0.5;
 		  min: 1 1;
@@ -17559,7 +17559,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       color: 0 0 0 255;
 	       text {
 		  text: "****";
-		  font: "Sans:style=Bold,Edje-Vera-Bold";
+		  font: "Sans:style=Bold";
 		  size: 16;
 		  align: 0.0 0.5;
 		  min: 1 1;
