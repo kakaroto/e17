@@ -1,8 +1,9 @@
 --- Things To Do --- (in no particular order)
-* kbd needs drag for backspace/next word etc. to be shorter (put into kbd
+* kbd: needs drag for backspace/next word etc. to be shorter (put into kbd
   layout as drag config)
-* kbd config needs a fuzz multiplier
-* kbd needs config to be able to turn off auto-kbd popup
+* kbd: config needs a fuzz multiplier
+* kbd: needs config to be able to turn off auto-kbd popup
+* kbd: be able to ignor ekeyboard type requested optionally
 * kbd: add language hints per kbd layout
 * kbd: add config to honor layout lang hints
 * kbd: allow kbd to be dragged around (bottom to top)
@@ -10,8 +11,6 @@
 * xevie: need to put into e and blast events
 * xevie: need to add audio config for mouse press/release events, drag etc.
 * xevie: need to be able to fake right mouse
-* dpi: need to set scale based on dpi + conifg
-* dpi: need to use scale value for shelf size, icon size etc.
 * 
 * config panel entries for lots of illume features:
 *  wallpaper

@@ -33,5 +33,5 @@ export DISPLAY=:1
 #xmodmap -e "keycode 237 = 0x1100060F"
 #xmodmap -e "keycode 238 = 0x11000610"
 #xmodmap -e "keycode 239 = 0x1008ff26"
-#unset E_RESTART E_START E_IPC_SOCKET E_START_TIME
+unset E_RESTART E_START E_IPC_SOCKET E_START_TIME
 enlightenment_start -profile illume
