@@ -84,11 +84,11 @@ collections {
 	       align: 1.0 1.0;
 	       rel1 {
 		  relative: 1.0 1.0;
-		  offset:   -5  -5;
+		  offset:   -2  -2;
 	       }
 	       rel2 {
 		  relative: 1.0 1.0;
-		  offset:   -5  -5;
+		  offset:   -2  -2;
 	       }
 	       color: 255 255 255 255;
 	       color3: 0 0 0 32;
