@@ -11,25 +11,21 @@
 * xevie: need to put into e and blast events
 * xevie: need to add audio config for mouse press/release events, drag etc.
 * xevie: need to be able to fake right mouse
-* 
-* config panel entries for lots of illume features:
-*  wallpaper
-*  theme
-*  cache
-* need to probably bypass x screensaver for blanking and do it manually
-* need a way to disable suspend based on power status (eg when plugged in)
+* cfg: use e's config dialog framework for illume cfg stuff.
+* pwr: need to probably bypass x screensaver for blanking and do it manually
+* pwr: need a way to disable suspend based on power status (eg when plugged in)
+* e: shelf config init is slow 0.24839
+* e: splash init slowish 0.24299
+* e: msgbus init slowish 0.11744
+* e: init properties slowish 0.07274
+* e: test file format support could become optional?
 * e: modules config dialog - make replaceable by a module
 * e: battery config dialog - allow config entries to be hidden
 * e: need ability to have  system default profile done cleanly
 * e: need to be able to merge in new config from system config (profile)
 * slipwin need to be an option
 * need to also include quick-launch for this list (for non-active windows)
-* need to make a QVGA (240x320) setup
-* need to make a WVGA (800x480) setup
-* need to make a WQVGA (480x320) setup
-* need to make a WQVGA (240x432) setup
-* need to make a WQVGA (272x480) setup
 * launcher needs to be able to show and hide to get clean desktop
 * on launcher hide need to optionally show desktop gadgets like clock etc.
-* need to offer easy rotate (via external input or on-screen) as well as resolution change
-
+* need to offer easy rotate (via external input or on-screen) as well as
+  resolution change
