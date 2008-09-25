@@ -344,7 +344,6 @@ _cb_item_open(void *data, Evas_Object *obj, const char *emission, const char *so
                               cx, cy, 1, 1,
                               E_MENU_POP_DIRECTION_DOWN, 
                               ecore_x_current_time_get());
-        e_util_container_fake_mouse_up_all_later(zone->container);
         break;
      }
 }

@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Notification module (e17)\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-03-02 01:36+0100\n"
+"POT-Creation-Date: 2008-09-22 18:30+1000\n"
 "PO-Revision-Date: 2008-01-23 01:50+0200\n"
 "Last-Translator: Jani väyrynen <janivayrynen@gmail.com>\n"
 "Language-Team: Finnish <janivayrynen@gmail.com>\n"
@@ -14,24 +14,24 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/e_mod_main.c:117
+#: src/e_mod_main.c:118
 #, fuzzy
 msgid "Notification Box"
 msgstr "Huomautus"
 
-#: src/e_mod_main.c:168
+#: src/e_mod_main.c:171
 msgid "Extensions"
 msgstr "Laajennukset"
 
-#: src/e_mod_main.c:170
+#: src/e_mod_main.c:173
 msgid "Notification"
 msgstr "Huomautus"
 
-#: src/e_mod_main.c:211 src/e_mod_main.c:229
+#: src/e_mod_main.c:216 src/e_mod_main.c:234
 msgid "Notification Configuration Updated"
 msgstr "Huomautuksen asetukset päivitetty"
 
-#: src/e_mod_main.c:212
+#: src/e_mod_main.c:217
 msgid ""
 "Notification Module Configuration data needed upgrading. Your old "
 "configuration<br> has been wiped and a new set of defaults initialized. "
@@ -50,7 +50,7 @@ msgstr ""
 "tilanteen<br>lisäämällä tarvittavat toiminnot. Voit asettaa "
 "asiat<br>uudelleen mieleiseksesi. Pahoittelut aiheutetusta vaivasta.<br>"
 
-#: src/e_mod_main.c:230
+#: src/e_mod_main.c:235
 msgid ""
 "Your Notification Module Configuration is NEWER than the Notification Module "
 "version. This is very<br>strange. This should not happen unless you "
@@ -65,6 +65,16 @@ msgstr ""
 "on käytössä<br>Huomautusmoduulin uudempi versio. Tämä on paha juttu, ja "
 "varotoimena<br>asetuksesi on nyt palautettu oletusarvoihin. Pahoittelut "
 "aiheutetusta vaivasta.<br>"
+
+#: src/e_mod_main.c:269
+msgid "Error During DBus Init!"
+msgstr ""
+
+#: src/e_mod_main.c:270
+msgid ""
+"Error during DBus init! Please check if dbus is correctly installed and "
+"running."
+msgstr ""
 
 #: src/e_mod_config.c:42
 msgid "Notification Configuration"
@@ -108,11 +118,22 @@ msgstr "%2.0f y"
 msgid "Direction"
 msgstr "Suunta"
 
-#: src/e_mod_config.c:119
-msgid "Gap size"
-msgstr "Raon koko"
+#: src/e_mod_config.c:108
+msgid "Direction in which popups will stack themselves : "
+msgstr ""
 
-#: src/e_mod_config.c:120
+#: src/e_mod_config.c:121
+msgid "Gap"
+msgstr ""
+
+#: src/e_mod_config.c:122
+msgid "Size of the gap between two popups : "
+msgstr ""
+
+#: src/e_mod_config.c:124
 #, c-format
 msgid "%2.0f pixels"
 msgstr "%2.0f pikseliä"
+
+#~ msgid "Gap size"
+#~ msgstr "Raon koko"

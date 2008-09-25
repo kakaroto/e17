@@ -263,7 +263,6 @@ _cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
    ecore_x_pointer_xy_get(zone->container->win, &x, &y);
    e_menu_activate_mouse(mn, zone, x, y, 1, 1, 
 			 E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
-   e_util_evas_fake_mouse_up_later(e, ev->button);
 }
 
 static void 

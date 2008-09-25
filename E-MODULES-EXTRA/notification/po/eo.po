@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: eo\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-04-05 18:03+0200\n"
+"POT-Creation-Date: 2008-09-22 18:30+1000\n"
 "PO-Revision-Date: 2008-04-17 22:22+0200\n"
 "Last-Translator:  <olivierweb@ifrance.com>\n"
 "Language-Team: Esperanto <translation-team-eo@lists.sourceforge.net>\n"
@@ -15,93 +15,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-
-#: src/e_mod_box.c:671 src/e_mod_box.c:820
-msgid "Configuration"
-msgstr "Agordo"
-
-#: src/e_mod_config.c:42
-msgid "Notification Configuration"
-msgstr "Agordo de la modulo Atentigo"
-
-#: src/e_mod_config.c:86 src/e_mod_config_item.c:91
-msgid "Urgency"
-msgstr "Urgxo"
-
-#: src/e_mod_config.c:87
-msgid "Levels of urgency to popup : "
-msgstr "Niveloj de urgxo sxprucfenestrendaj:"
-
-#: src/e_mod_config.c:89 src/e_mod_config_item.c:94
-msgid "low"
-msgstr "malalta"
-
-#: src/e_mod_config.c:91 src/e_mod_config_item.c:96
-msgid "normal"
-msgstr "normala"
-
-#: src/e_mod_config.c:93 src/e_mod_config_item.c:98
-msgid "critical"
-msgstr "kritika"
-
-#: src/e_mod_config.c:98
-msgid "Placement"
-msgstr "Posicio"
-
-#: src/e_mod_config.c:99
-#, c-format
-msgid "%2.0f x"
-msgstr "%2.0f x"
-
-#: src/e_mod_config.c:102
-#, c-format
-msgid "%2.0f y"
-msgstr "%2.0f y"
-
-#: src/e_mod_config.c:107
-msgid "Direction"
-msgstr "Direkto"
-
-#: src/e_mod_config.c:108
-msgid "Direction in which popups will stack themselves : "
-msgstr "Direkto en kiuj sxprucfenestroj stakigxos: "
-
-#: src/e_mod_config.c:121
-msgid "Gap"
-msgstr "Intervalo"
-
-#: src/e_mod_config.c:122
-msgid "Size of the gap between two popups : "
-msgstr "Intervalo inter du sxprucfenestroj:"
-
-#: src/e_mod_config.c:124
-#, c-format
-msgid "%2.0f pixels"
-msgstr "%2.0f rastrumeroj"
-
-#: src/e_mod_config_item.c:37
-msgid "Notification Box Configuration"
-msgstr "Agordo de la kesto de atentigo"
-
-#: src/e_mod_config_item.c:82
-msgid "General Settings"
-msgstr "Gxeneralaj agordoj"
-
-#: src/e_mod_config_item.c:83
-msgid "Show Icon Label"
-msgstr "Vidigi piktograman etikedon"
-
-#: src/e_mod_config_item.c:85
-msgid "Show the popup on mouse over"
-msgstr "Vidigi la sxprucfenestron (muso supre)"
-
-#: src/e_mod_config_item.c:87
-msgid "Focus the source window when clicking"
-msgstr "Fokusigi la fontan fenestron dum alklako"
-
-#: src/e_mod_config_item.c:92
-msgid "Levels of urgency to store : "
-msgstr "Niveloj de urgxo memorendaj:"
 
 #: src/e_mod_main.c:118
 msgid "Notification Box"
@@ -140,3 +53,92 @@ msgid ""
 "to<br>defaults. Sorry for the inconvenience.<br>"
 msgstr ""
 
+#: src/e_mod_main.c:269
+msgid "Error During DBus Init!"
+msgstr ""
+
+#: src/e_mod_main.c:270
+msgid ""
+"Error during DBus init! Please check if dbus is correctly installed and "
+"running."
+msgstr ""
+
+#: src/e_mod_config.c:42
+msgid "Notification Configuration"
+msgstr "Agordo de la modulo Atentigo"
+
+#: src/e_mod_config.c:86
+msgid "Urgency"
+msgstr "Urgxo"
+
+#: src/e_mod_config.c:87
+msgid "Levels of urgency to popup : "
+msgstr "Niveloj de urgxo sxprucfenestrendaj:"
+
+#: src/e_mod_config.c:89
+msgid "low"
+msgstr "malalta"
+
+#: src/e_mod_config.c:91
+msgid "normal"
+msgstr "normala"
+
+#: src/e_mod_config.c:93
+msgid "critical"
+msgstr "kritika"
+
+#: src/e_mod_config.c:98
+msgid "Placement"
+msgstr "Posicio"
+
+#: src/e_mod_config.c:99
+#, c-format
+msgid "%2.0f x"
+msgstr "%2.0f x"
+
+#: src/e_mod_config.c:102
+#, c-format
+msgid "%2.0f y"
+msgstr "%2.0f y"
+
+#: src/e_mod_config.c:107
+msgid "Direction"
+msgstr "Direkto"
+
+#: src/e_mod_config.c:108
+msgid "Direction in which popups will stack themselves : "
+msgstr "Direkto en kiuj sxprucfenestroj stakigxos: "
+
+#: src/e_mod_config.c:121
+msgid "Gap"
+msgstr "Intervalo"
+
+#: src/e_mod_config.c:122
+msgid "Size of the gap between two popups : "
+msgstr "Intervalo inter du sxprucfenestroj:"
+
+#: src/e_mod_config.c:124
+#, c-format
+msgid "%2.0f pixels"
+msgstr "%2.0f rastrumeroj"
+
+#~ msgid "Configuration"
+#~ msgstr "Agordo"
+
+#~ msgid "Notification Box Configuration"
+#~ msgstr "Agordo de la kesto de atentigo"
+
+#~ msgid "General Settings"
+#~ msgstr "Gxeneralaj agordoj"
+
+#~ msgid "Show Icon Label"
+#~ msgstr "Vidigi piktograman etikedon"
+
+#~ msgid "Show the popup on mouse over"
+#~ msgstr "Vidigi la sxprucfenestron (muso supre)"
+
+#~ msgid "Focus the source window when clicking"
+#~ msgstr "Fokusigi la fontan fenestron dum alklako"
+
+#~ msgid "Levels of urgency to store : "
+#~ msgstr "Niveloj de urgxo memorendaj:"

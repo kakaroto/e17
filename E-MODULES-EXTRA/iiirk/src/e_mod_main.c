@@ -375,7 +375,6 @@ _iiirk_cb_empty_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_in
 			      e_util_zone_current_get(e_manager_current_get()),
 			      cx + ev->output.x, cy + ev->output.y, 1, 1,
 			      E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
-	e_util_evas_fake_mouse_up_later(b->inst->gcc->gadcon->evas, ev->button);
      }
 }
 
@@ -793,8 +792,6 @@ _iiirk_cb_icon_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_inf
 			      e_util_zone_current_get(e_manager_current_get()),
 			      cx + ev->output.x, cy + ev->output.y, 1, 1,
 			      E_MENU_POP_DIRECTION_DOWN, ev->timestamp);
-	e_util_evas_fake_mouse_up_later(ic->iiirk->inst->gcc->gadcon->evas,
-					ev->button);
      }
 }
 
@@ -870,8 +867,6 @@ _iiirk_cb_icon_mouse_move(void *data, Evas *e, Evas_Object *obj, void *event_inf
 
 	     e_drag_resize(d, w, h);
 	     e_drag_start(d, ic->drag.x, ic->drag.y);
-	     e_util_evas_fake_mouse_up_later(ic->iiirk->inst->gcc->gadcon->evas,
-					     1);
 	     e_object_ref(E_OBJECT(ic->border));
 	     ic->iiirk->icons = evas_list_remove(ic->iiirk->icons, ic);
 	     if (ic->border->desktop) e_order_remove(ic->iiirk->apps, ic->border->desktop);

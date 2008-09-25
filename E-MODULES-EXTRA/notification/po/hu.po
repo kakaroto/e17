@@ -7,8 +7,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: fi\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-01-22 23:16+0200\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2008-09-22 18:30+1000\n"
 "PO-Revision-Date: 2008-02-02 22:29+0100\n"
 "Last-Translator: Lisovszki  <lisovszki@gmail.com>\n"
 "Language-Team: hungarian <hu@li.org>\n"
@@ -18,50 +18,24 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
-#: src/e_mod_config.c:40
-msgid "Notification Configuration"
-msgstr "Értesítés beállítása"
+#: src/e_mod_main.c:118
+#, fuzzy
+msgid "Notification Box"
+msgstr "Értesítés"
 
-#: src/e_mod_config.c:83
-msgid "Placement"
-msgstr "Elhelyezés"
-
-#: src/e_mod_config.c:84
-#, c-format
-msgid "%2.0f x"
-msgstr "%2.0f x"
-
-#: src/e_mod_config.c:87
-#, c-format
-msgid "%2.0f y"
-msgstr "%2.0f y"
-
-#: src/e_mod_config.c:92
-msgid "Direction"
-msgstr "Irány"
-
-#: src/e_mod_config.c:104
-msgid "Gap size"
-msgstr "Méret"
-
-#: src/e_mod_config.c:105
-#, c-format
-msgid "%2.0f pixels"
-msgstr "%2.0f pixel"
-
-#: src/e_mod_main.c:64
+#: src/e_mod_main.c:171
 msgid "Extensions"
 msgstr "Kiterjesztések"
 
-#: src/e_mod_main.c:66
+#: src/e_mod_main.c:173
 msgid "Notification"
 msgstr "Értesítés"
 
-#: src/e_mod_main.c:92 src/e_mod_main.c:110
+#: src/e_mod_main.c:216 src/e_mod_main.c:234
 msgid "Notification Configuration Updated"
 msgstr "Értesítés beállítás frissítve"
 
-#: src/e_mod_main.c:93
+#: src/e_mod_main.c:217
 msgid ""
 "Notification Module Configuration data needed upgrading. Your old "
 "configuration<br> has been wiped and a new set of defaults initialized. "
@@ -72,14 +46,13 @@ msgid ""
 "configure things now to your<br>liking. Sorry for the inconvenience.<br>"
 msgstr ""
 "A beállításokat tartalmazó állományok elavultak, ezért<br>újakat kellett "
-"készíteni. Minden eddigi beállítás törlõdött,<br>de ez a fejlesztés "
-"folyamán gyakran megesik majd. KÉRJÜK,<br>HOGY NE JELENTS HIBÁT! Annyi "
-"történt, hogy a használhatóság<br>érdekében az értesítés modulnak új adatokra "
-"van szüksége, és<br>ezek az elõzõ fájlokból hiányoztak. Mindent "
-"visszaállíthatsz,<br>ahogy neked tetszik. Az esetleges galibákért elnézést "
-"kérünk!<br>"
+"készíteni. Minden eddigi beállítás törlõdött,<br>de ez a fejlesztés folyamán "
+"gyakran megesik majd. KÉRJÜK,<br>HOGY NE JELENTS HIBÁT! Annyi történt, hogy "
+"a használhatóság<br>érdekében az értesítés modulnak új adatokra van "
+"szüksége, és<br>ezek az elõzõ fájlokból hiányoztak. Mindent visszaállíthatsz,"
+"<br>ahogy neked tetszik. Az esetleges galibákért elnézést kérünk!<br>"
 
-#: src/e_mod_main.c:111
+#: src/e_mod_main.c:235
 msgid ""
 "Your Notification Module Configuration is NEWER than the Notification Module "
 "version. This is very<br>strange. This should not happen unless you "
@@ -88,9 +61,80 @@ msgid ""
 "is bad and<br>as a precaution your configuration has been now restored "
 "to<br>defaults. Sorry for the inconvenience.<br>"
 msgstr ""
-"A beállításokat tartalmazó fájlok verziója újabb, mint<br>az értesítés modulé. "
-"Ennek nem kellene így lennie, hacsak nem<br>váltottál vissza egy elõzõ "
-"verzióra, vagy egy újabb verzión ké-<br>szült beállításokat át nem másoltad. "
-"Ez így nem túl jó, és figyelmez-<br>tetésként a beállítások visszaálltak az "
-"alapértelmezésre.<br>A galibákért elnézést kérünk!<br>"
+"A beállításokat tartalmazó fájlok verziója újabb, mint<br>az értesítés "
+"modulé. Ennek nem kellene így lennie, hacsak nem<br>váltottál vissza egy "
+"elõzõ verzióra, vagy egy újabb verzión ké-<br>szült beállításokat át nem "
+"másoltad. Ez így nem túl jó, és figyelmez-<br>tetésként a beállítások "
+"visszaálltak az alapértelmezésre.<br>A galibákért elnézést kérünk!<br>"
 
+#: src/e_mod_main.c:269
+msgid "Error During DBus Init!"
+msgstr ""
+
+#: src/e_mod_main.c:270
+msgid ""
+"Error during DBus init! Please check if dbus is correctly installed and "
+"running."
+msgstr ""
+
+#: src/e_mod_config.c:42
+msgid "Notification Configuration"
+msgstr "Értesítés beállítása"
+
+#: src/e_mod_config.c:86
+msgid "Urgency"
+msgstr ""
+
+#: src/e_mod_config.c:87
+msgid "Levels of urgency to popup : "
+msgstr ""
+
+#: src/e_mod_config.c:89
+msgid "low"
+msgstr ""
+
+#: src/e_mod_config.c:91
+msgid "normal"
+msgstr ""
+
+#: src/e_mod_config.c:93
+msgid "critical"
+msgstr ""
+
+#: src/e_mod_config.c:98
+msgid "Placement"
+msgstr "Elhelyezés"
+
+#: src/e_mod_config.c:99
+#, c-format
+msgid "%2.0f x"
+msgstr "%2.0f x"
+
+#: src/e_mod_config.c:102
+#, c-format
+msgid "%2.0f y"
+msgstr "%2.0f y"
+
+#: src/e_mod_config.c:107
+msgid "Direction"
+msgstr "Irány"
+
+#: src/e_mod_config.c:108
+msgid "Direction in which popups will stack themselves : "
+msgstr ""
+
+#: src/e_mod_config.c:121
+msgid "Gap"
+msgstr ""
+
+#: src/e_mod_config.c:122
+msgid "Size of the gap between two popups : "
+msgstr ""
+
+#: src/e_mod_config.c:124
+#, c-format
+msgid "%2.0f pixels"
+msgstr "%2.0f pixel"
+
+#~ msgid "Gap size"
+#~ msgstr "Méret"

@@ -817,7 +817,6 @@ _emu_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 //        e_menu_activate_mouse(emu_face->face->menu,
 //                              e_zone_current_get(emu_face->face->con), ev->output.x, ev->output.y, 1, 1, E_MENU_POP_DIRECTION_AUTO,
 //                              ev->timestamp);
-//        e_util_container_fake_mouse_up_all_later(emu_face->face->con);
 //     }
    /*else*/ if (ev->button == 1)
      {                          /* Left click default menu. */
@@ -885,7 +884,6 @@ _emu_face_cb_mouse_down(void *data, Evas *e, Evas_Object *obj, void *event_info)
 	       }
 //             e_menu_activate_mouse(menu->menu->menu, e_zone_current_get(emu_face->face->con), ev->output.x, ev->output.y, 1, 1, E_MENU_POP_DIRECTION_AUTO, ev->timestamp);
 	     e_menu_activate_mouse(menu->menu->menu, e_util_zone_current_get(e_manager_current_get()), x, y, w, h, dir, ev->timestamp);
-//             e_util_container_fake_mouse_up_all_later(emu_face->face->con);
 	     edje_object_signal_emit(emu_face->o_button, "active", "");
 	     evas_event_feed_mouse_up(emu_face->gcc->gadcon->evas, ev->button, EVAS_BUTTON_NONE, ev->timestamp, NULL);
           }
