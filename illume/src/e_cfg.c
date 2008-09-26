@@ -1037,17 +1037,6 @@ _e_cfg_keyboard_create(E_Config_Dialog *cfd)
 static void 
 _e_cfg_keyboard_free(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 { // free cfd->cfdata
-   while (gadits)
-     {
-	Gadit *gi;
-	
-	gi = gadits->data;
-	evas_stringshare_del(gi->name);
-	free(gi);
-	gadits = evas_list_remove_list(gadits, gadits);
-     }
-   e_object_unref(E_OBJECT(local_slipshelf));
-   local_slipshelf = NULL;
 }
 
 static Evas_Object *
