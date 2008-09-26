@@ -33,7 +33,6 @@ group "E_Config" struct {
   value "evas_engine_zone" int: 0;
   value "use_composite" int: 0;
   group "modules" list {
-  group "modules" list {
     group "E_Config_Module" struct {
       value "name" string: "illume";
       value "enabled" uchar: 1;
@@ -41,6 +40,7 @@ group "E_Config" struct {
       value "priority" int: 1;
     }
   }
+  group "modules" list {
     group "E_Config_Module" struct {
       value "name" string: "battery";
       value "enabled" uchar: 1;
