@@ -178,7 +178,7 @@ _e_cfg_launcher_free(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 static Evas_Object *
 _e_cfg_launcher_ui(E_Config_Dialog *cfd, Evas *e, E_Config_Dialog_Data *cfdata)
 {
-   Evas_Object *list, *sf, *o, *frame;
+   Evas_Object *list, *o, *frame;
    E_Radio_Group *rg;
 
    list = e_widget_list_add(e, 0, 0);
@@ -191,7 +191,7 @@ _e_cfg_launcher_ui(E_Config_Dialog *cfd, Evas *e, E_Config_Dialog_Data *cfdata)
    o = e_widget_radio_add(e, "Icons", 1, rg);
    e_widget_framelist_object_append(frame, o);
    evas_object_smart_callback_add(o, "changed", _e_cfg_launcher_change, NULL);
-   e_widget_list_object_append(list, frame, 1, 1, 0.0); // fill, expand, align
+   e_widget_list_object_append(list, frame, 1, 0, 0.0); // fill, expand, align
    
    frame = e_widget_framelist_add(e, "Icon Size", 0);
    rg = e_widget_radio_group_new(&(illume_cfg->launcher.icon_size));
@@ -210,17 +210,15 @@ _e_cfg_launcher_ui(E_Config_Dialog *cfd, Evas *e, E_Config_Dialog_Data *cfdata)
    o = e_widget_radio_add(e, "Massive", 240, rg);
    e_widget_framelist_object_append(frame, o);
    evas_object_smart_callback_add(o, "changed", _e_cfg_launcher_change, NULL);
-   e_widget_list_object_append(list, frame, 1, 1, 0.0); // fill, expand, align
+   e_widget_list_object_append(list, frame, 1, 0, 0.0); // fill, expand, align
    
    frame = e_widget_framelist_add(e, "Launch Action", 0);
    o = e_widget_check_add(e, "Single press", &(illume_cfg->launcher.single_click));
    e_widget_framelist_object_append(frame, o);
    evas_object_smart_callback_add(o, "changed", _e_cfg_launcher_change, NULL);
-   e_widget_list_object_append(list, frame, 1, 1, 0.0); // fill, expand, align
-   
-   e_widget_min_size_resize(list);
-   sf = e_widget_scrollframe_simple_add(e, list);
-   return sf;
+   e_widget_list_object_append(list, frame, 1, 0, 0.0); // fill, expand, align
+
+   return list;
 }
 
 EAPI void
@@ -236,6 +234,7 @@ e_cfg_launcher(E_Container *con, const char *params)
    v->basic.create_widgets = _e_cfg_launcher_ui;
    v->basic_only           = 1;
    v->normal_win           = 1;
+   v->scroll               = 1;
    cfd = e_config_dialog_new(con, "Launcher Settings",
 			     "E", "_config_illume_launcher_settings",
 			     "enlightenment/launcher_settings", 0, v, NULL);
@@ -287,7 +286,7 @@ _e_cfg_power_free(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 static Evas_Object *
 _e_cfg_power_ui(E_Config_Dialog *cfd, Evas *e, E_Config_Dialog_Data *cfdata)
 {
-   Evas_Object *list, *sf, *o, *frame;
+   Evas_Object *list, *o, *frame;
    E_Radio_Group *rg;
 
    list = e_widget_list_add(e, 0, 0);
@@ -318,7 +317,7 @@ _e_cfg_power_ui(E_Config_Dialog *cfd, Evas *e, E_Config_Dialog_Data *cfdata)
    o = e_widget_radio_add(e, "Off", 0, rg);
    e_widget_framelist_object_append(frame, o);
    evas_object_smart_callback_add(o, "changed", _e_cfg_power_change, NULL);
-   e_widget_list_object_append(list, frame, 1, 1, 0.0); // fill, expand, align
+   e_widget_list_object_append(list, frame, 1, 0, 0.0); // fill, expand, align
 
    frame = e_widget_framelist_add(e, "Suspend After Blank", 0);
    rg = e_widget_radio_group_new(&(illume_cfg->power.auto_suspend_delay));
@@ -340,11 +339,9 @@ _e_cfg_power_ui(E_Config_Dialog *cfd, Evas *e, E_Config_Dialog_Data *cfdata)
    o = e_widget_radio_add(e, "Off", 0, rg);
    e_widget_framelist_object_append(frame, o);
    evas_object_smart_callback_add(o, "changed", _e_cfg_power_change, NULL);
-   e_widget_list_object_append(list, frame, 1, 1, 0.0); // fill, expand, align
+   e_widget_list_object_append(list, frame, 1, 0, 0.0); // fill, expand, align
 
-   e_widget_min_size_resize(list);
-   sf = e_widget_scrollframe_simple_add(e, list);
-   return sf;
+   return list;
 }
 
 EAPI void
@@ -360,6 +357,7 @@ e_cfg_power(E_Container *con, const char *params)
    v->basic.create_widgets = _e_cfg_power_ui;
    v->basic_only           = 1;
    v->normal_win           = 1;
+   v->scroll               = 1;
    cfd = e_config_dialog_new(con, "Power Settings",
 			     "E", "_config_illume_power_settings",
 			     "enlightenment/power_settings", 0, v, NULL);
@@ -378,17 +376,24 @@ _e_cfg_animation_change(void *data, Evas_Object *obj, void *event_info) {
    _e_cfg_animation_change_timer = ecore_timer_add(0.5, _e_cfg_animation_change_timeout, data);
 }
 
-EAPI void
-e_cfg_animation(E_Container *con, const char *params)
+static void *
+_e_cfg_animation_create(E_Config_Dialog *cfd)
+{ // alloc cfd->cfdata
+   return NULL;
+}
+
+static void 
+_e_cfg_animation_free(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
+{ // free cfd->cfdata
+}
+
+static Evas_Object *
+_e_cfg_animation_ui(E_Config_Dialog *cfd, Evas *e, E_Config_Dialog_Data *cfdata)
 {
    Evas_Object *list, *o, *frame;
    E_Radio_Group *rg;
-   Evas *e;
 
-   list = _e_cfg_win_new("Animation Settings", "animation_settings",
-			 e_module_dir_get(mod), NULL, NULL);
-   
-   e = evas_object_evas_get(list);
+   list = e_widget_list_add(e, 0, 0);
    
    frame = e_widget_framelist_add(e, "Applications", 0);
    rg = e_widget_radio_group_new(&(illume_cfg->sliding.layout.duration));
@@ -407,7 +412,7 @@ e_cfg_animation(E_Container *con, const char *params)
    o = e_widget_radio_add(e, "Off", 0, rg);
    e_widget_framelist_object_append(frame, o);
    evas_object_smart_callback_add(o, "changed", _e_cfg_animation_change, NULL);
-   e_widget_list_object_append(list, frame, 1, 1, 0.0); // fill, expand, align
+   e_widget_list_object_append(list, frame, 1, 0, 0.0); // fill, expand, align
      
    frame = e_widget_framelist_add(e, "Top Shelf", 0);
    rg = e_widget_radio_group_new(&(illume_cfg->sliding.slipshelf.duration));
@@ -426,7 +431,7 @@ e_cfg_animation(E_Container *con, const char *params)
    o = e_widget_radio_add(e, "Off", 0, rg);
    e_widget_framelist_object_append(frame, o);
    evas_object_smart_callback_add(o, "changed", _e_cfg_animation_change, NULL);
-   e_widget_list_object_append(list, frame, 1, 1, 0.0); // fill, expand, align
+   e_widget_list_object_append(list, frame, 1, 0, 0.0); // fill, expand, align
      
    frame = e_widget_framelist_add(e, "Keyboard", 0);
    rg = e_widget_radio_group_new(&(illume_cfg->sliding.kbd.duration));
@@ -445,7 +450,7 @@ e_cfg_animation(E_Container *con, const char *params)
    o = e_widget_radio_add(e, "Off", 0, rg);
    e_widget_framelist_object_append(frame, o);
    evas_object_smart_callback_add(o, "changed", _e_cfg_animation_change, NULL);
-   e_widget_list_object_append(list, frame, 1, 1, 0.0); // fill, expand, align
+   e_widget_list_object_append(list, frame, 1, 0, 0.0); // fill, expand, align
      
    frame = e_widget_framelist_add(e, "Status", 0);
    rg = e_widget_radio_group_new(&(illume_cfg->sliding.busywin.duration));
@@ -464,9 +469,29 @@ e_cfg_animation(E_Container *con, const char *params)
    o = e_widget_radio_add(e, "Off", 0, rg);
    e_widget_framelist_object_append(frame, o);
    evas_object_smart_callback_add(o, "changed", _e_cfg_animation_change, NULL);
-   e_widget_list_object_append(list, frame, 1, 1, 0.0); // fill, expand, align
-     
-   _e_cfg_win_complete(list);
+   e_widget_list_object_append(list, frame, 1, 0, 0.0); // fill, expand, align
+
+   return list;
+}
+
+EAPI void
+e_cfg_animation(E_Container *con, const char *params)
+{
+   E_Config_Dialog *cfd;
+   E_Config_Dialog_View *v = NULL;
+   
+   if (e_config_dialog_find("E", "_config_illume_animation_settings")) return;
+   v = E_NEW(E_Config_Dialog_View, 1);
+   v->create_cfdata        = _e_cfg_animation_create;
+   v->free_cfdata          = _e_cfg_animation_free;
+   v->basic.create_widgets = _e_cfg_animation_ui;
+   v->basic_only           = 1;
+   v->normal_win           = 1;
+   v->scroll               = 1;
+   cfd = e_config_dialog_new(con, "Animation Settings",
+			     "E", "_config_illume_animation_settings",
+			     "enlightenment/animation_settings", 0, v, NULL);
+   e_dialog_resizable_set(cfd->dia, 1);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -482,18 +507,25 @@ _e_cfg_slipshelf_change(void *data, Evas_Object *obj, void *event_info) {
    _e_cfg_slipshelf_change_timer = ecore_timer_add(0.5, _e_cfg_slipshelf_change_timeout, data);
 }
 
-EAPI void
-e_cfg_slipshelf(E_Container *con, const char *params)
+static void *
+_e_cfg_slipshelf_create(E_Config_Dialog *cfd)
+{ // alloc cfd->cfdata
+   return NULL;
+}
+
+static void 
+_e_cfg_slipshelf_free(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
+{ // free cfd->cfdata
+}
+
+static Evas_Object *
+_e_cfg_slipshelf_ui(E_Config_Dialog *cfd, Evas *e, E_Config_Dialog_Data *cfdata)
 {
    Evas_Object *list, *o, *frame;
    E_Radio_Group *rg;
-   Evas *e;
 
-   list = _e_cfg_win_new("Top Shelf Settings", "slipshelf_settings",
-			 e_module_dir_get(mod), NULL, NULL);
-   
-   e = evas_object_evas_get(list);
-   
+   list = e_widget_list_add(e, 0, 0);
+
    frame = e_widget_framelist_add(e, "Visible Gadgets", 0);
    rg = e_widget_radio_group_new(&(illume_cfg->slipshelf.main_gadget_size));
    o = e_widget_radio_add(e, "(24) Tiny", 24, rg);
@@ -554,9 +586,29 @@ e_cfg_slipshelf(E_Container *con, const char *params)
    o = e_widget_radio_add(e, "Very Large", 48, rg);
    e_widget_framelist_object_append(frame, o);
    evas_object_smart_callback_add(o, "changed", _e_cfg_slipshelf_change, NULL);
-   e_widget_list_object_append(list, frame, 1, 1, 0.0); // fill, expand, align
+   e_widget_list_object_append(list, frame, 1, 0, 0.0); // fill, expand, align
    
-   _e_cfg_win_complete(list);
+   return list;
+}
+
+EAPI void
+e_cfg_slipshelf(E_Container *con, const char *params)
+{
+   E_Config_Dialog *cfd;
+   E_Config_Dialog_View *v = NULL;
+   
+   if (e_config_dialog_find("E", "_config_illume_slipshelf_settings")) return;
+   v = E_NEW(E_Config_Dialog_View, 1);
+   v->create_cfdata        = _e_cfg_slipshelf_create;
+   v->free_cfdata          = _e_cfg_slipshelf_free;
+   v->basic.create_widgets = _e_cfg_slipshelf_ui;
+   v->basic_only           = 1;
+   v->normal_win           = 1;
+   v->scroll               = 1;
+   cfd = e_config_dialog_new(con, "Top Shelf Settings",
+			     "E", "_config_illume_slipshelf_settings",
+			     "enlightenment/slipshelf_settings", 0, v, NULL);
+   e_dialog_resizable_set(cfd->dia, 1);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -581,17 +633,24 @@ _e_cfg_thumbscroll_change(void *data, Evas_Object *obj, void *event_info) {
    _e_cfg_thumbscroll_change_timer = ecore_timer_add(0.5, _e_cfg_thumbscroll_change_timeout, data);
 }
 
-EAPI void
-e_cfg_thumbscroll(E_Container *con, const char *params)
+static void *
+_e_cfg_thumbscroll_create(E_Config_Dialog *cfd)
+{ // alloc cfd->cfdata
+   return NULL;
+}
+
+static void 
+_e_cfg_thumbscroll_free(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
+{ // free cfd->cfdata
+}
+
+static Evas_Object *
+_e_cfg_thumbscroll_ui(E_Config_Dialog *cfd, Evas *e, E_Config_Dialog_Data *cfdata)
 {
    Evas_Object *list, *o, *frame;
    E_Radio_Group *rg;
-   Evas *e;
 
-   list = _e_cfg_win_new("Finger Scrolling", "thumbscroll_settings",
-			 e_module_dir_get(mod), NULL, NULL);
-   
-   e = evas_object_evas_get(list);
+   list = e_widget_list_add(e, 0, 0);
    
    frame = e_widget_framelist_add(e, "Drag Sensitivity", 0);
    rg = e_widget_radio_group_new(&(e_config->thumbscroll_threshhold));
@@ -616,9 +675,29 @@ e_cfg_thumbscroll(E_Container *con, const char *params)
    o = e_widget_radio_add(e, "Lowest", 48, rg);
    e_widget_framelist_object_append(frame, o);
    evas_object_smart_callback_add(o, "changed", _e_cfg_thumbscroll_change, NULL);
-   e_widget_list_object_append(list, frame, 1, 1, 0.0); // fill, expand, align
+   e_widget_list_object_append(list, frame, 1, 0, 0.0); // fill, expand, align
    
-   _e_cfg_win_complete(list);
+   return list;
+}
+
+EAPI void
+e_cfg_thumbscroll(E_Container *con, const char *params)
+{
+   E_Config_Dialog *cfd;
+   E_Config_Dialog_View *v = NULL;
+   
+   if (e_config_dialog_find("E", "_config_illume_thumbscroll_settings")) return;
+   v = E_NEW(E_Config_Dialog_View, 1);
+   v->create_cfdata        = _e_cfg_thumbscroll_create;
+   v->free_cfdata          = _e_cfg_thumbscroll_free;
+   v->basic.create_widgets = _e_cfg_thumbscroll_ui;
+   v->basic_only           = 1;
+   v->normal_win           = 1;
+   v->scroll               = 0;
+   cfd = e_config_dialog_new(con, "Finger Scrolling",
+			     "E", "_config_illume_thumbscroll_settings",
+			     "enlightenment/thumbscroll_settings", 0, v, NULL);
+   e_dialog_resizable_set(cfd->dia, 1);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -635,17 +714,24 @@ _e_cfg_fps_change(void *data, Evas_Object *obj, void *event_info) {
    _e_cfg_fps_change_timer = ecore_timer_add(0.5, _e_cfg_fps_change_timeout, data);
 }
 
-EAPI void
-e_cfg_fps(E_Container *con, const char *params)
+static void *
+_e_cfg_fps_create(E_Config_Dialog *cfd)
+{ // alloc cfd->cfdata
+   return NULL;
+}
+
+static void 
+_e_cfg_fps_free(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
+{ // free cfd->cfdata
+}
+
+static Evas_Object *
+_e_cfg_fps_ui(E_Config_Dialog *cfd, Evas *e, E_Config_Dialog_Data *cfdata)
 {
    Evas_Object *list, *o, *frame;
    E_Radio_Group *rg;
-   Evas *e;
 
-   list = _e_cfg_win_new("Framerate", "fps_settings",
-			 e_module_dir_get(mod), NULL, NULL);
-   
-   e = evas_object_evas_get(list);
+   list = e_widget_list_add(e, 0, 0);
    
    frame = e_widget_framelist_add(e, "Frames Per Second", 0);
    rg = e_widget_radio_group_new(&(illume_cfg->performance.fps));
@@ -673,9 +759,29 @@ e_cfg_fps(E_Container *con, const char *params)
    o = e_widget_radio_add(e, "60", 60, rg);
    e_widget_framelist_object_append(frame, o);
    evas_object_smart_callback_add(o, "changed", _e_cfg_fps_change, NULL);
-   e_widget_list_object_append(list, frame, 1, 1, 0.0); // fill, expand, align
+   e_widget_list_object_append(list, frame, 1, 0, 0.0); // fill, expand, align
    
-   _e_cfg_win_complete(list);
+   return list;
+}
+
+EAPI void
+e_cfg_fps(E_Container *con, const char *params)
+{
+   E_Config_Dialog *cfd;
+   E_Config_Dialog_View *v = NULL;
+   
+   if (e_config_dialog_find("E", "_config_illume_fps_settings")) return;
+   v = E_NEW(E_Config_Dialog_View, 1);
+   v->create_cfdata        = _e_cfg_fps_create;
+   v->free_cfdata          = _e_cfg_fps_free;
+   v->basic.create_widgets = _e_cfg_fps_ui;
+   v->basic_only           = 1;
+   v->normal_win           = 1;
+   v->scroll               = 0;
+   cfd = e_config_dialog_new(con, "Framerate",
+			     "E", "_config_illume_fps_settings",
+			     "enlightenment/fps_settings", 0, v, NULL);
+   e_dialog_resizable_set(cfd->dia, 1);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -737,25 +843,18 @@ _e_cfg_gadgets_change(void *data, Evas_Object *obj, void *event_info) {
    if (_e_cfg_gadgets_change_timer) ecore_timer_del(_e_cfg_gadgets_change_timer);
    _e_cfg_gadgets_change_timer = ecore_timer_add(0.5, _e_cfg_gadgets_change_timeout, data);
 }
-static void
-_e_cfg_gadgets_del(const void *data)
-{
-   e_object_unref(E_OBJECT(local_slipshelf));
-   local_slipshelf = NULL;
+
+static void *
+_e_cfg_gadgets_create(E_Config_Dialog *cfd)
+{ // alloc cfd->cfdata
+   local_slipshelf = slipshelf;
+   e_object_ref(E_OBJECT(local_slipshelf));
+   return NULL;
 }
 
-EAPI void
-e_cfg_gadgets(E_Container *con, const char *params)
-{
-   Evas_Object *list, *o, *frame;
-   Evas *e;
-   Evas_List *l, *l2, *l3;
-   
-   list = _e_cfg_win_new("Shelf Gadgets", "gadgets_settings",
-			 e_module_dir_get(mod), _e_cfg_gadgets_del, NULL);
-   
-   e = evas_object_evas_get(list);
-   
+static void 
+_e_cfg_gadgets_free(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
+{ // free cfd->cfdata
    while (gadits)
      {
 	Gadit *gi;
@@ -765,8 +864,18 @@ e_cfg_gadgets(E_Container *con, const char *params)
 	free(gi);
 	gadits = evas_list_remove_list(gadits, gadits);
      }
-   local_slipshelf = slipshelf;
-   e_object_ref(E_OBJECT(local_slipshelf));
+   e_object_unref(E_OBJECT(local_slipshelf));
+   local_slipshelf = NULL;
+}
+
+static Evas_Object *
+_e_cfg_gadgets_ui(E_Config_Dialog *cfd, Evas *e, E_Config_Dialog_Data *cfdata)
+{
+   Evas_Object *list, *o, *frame;
+   E_Radio_Group *rg;
+   Evas_List *l, *l2, *l3;
+
+   list = e_widget_list_add(e, 0, 0);
    
    frame = e_widget_framelist_add(e, "Visible Gadgets", 0);
    for (l = e_gadcon_provider_list(); l; l = l->next)
@@ -802,7 +911,7 @@ e_cfg_gadgets(E_Container *con, const char *params)
 	e_widget_framelist_object_append(frame, o);
 	evas_object_smart_callback_add(o, "changed", _e_cfg_gadgets_change, NULL);
      }
-   e_widget_list_object_append(list, frame, 1, 1, 0.0); // fill, expand, align
+   e_widget_list_object_append(list, frame, 1, 0, 0.0); // fill, expand, align
    
    frame = e_widget_framelist_add(e, "Hidden Gadgets", 0);
    for (l = e_gadcon_provider_list(); l; l = l->next)
@@ -838,9 +947,29 @@ e_cfg_gadgets(E_Container *con, const char *params)
 	e_widget_framelist_object_append(frame, o);
 	evas_object_smart_callback_add(o, "changed", _e_cfg_gadgets_change, NULL);
      }
-   e_widget_list_object_append(list, frame, 1, 1, 0.0); // fill, expand, align
+   e_widget_list_object_append(list, frame, 1, 0, 0.0); // fill, expand, align
+  
+   return list;
+}
 
-   _e_cfg_win_complete(list);
+EAPI void
+e_cfg_gadgets(E_Container *con, const char *params)
+{
+   E_Config_Dialog *cfd;
+   E_Config_Dialog_View *v = NULL;
+   
+   if (e_config_dialog_find("E", "_config_illume_gadgets_settings")) return;
+   v = E_NEW(E_Config_Dialog_View, 1);
+   v->create_cfdata        = _e_cfg_gadgets_create;
+   v->free_cfdata          = _e_cfg_gadgets_free;
+   v->basic.create_widgets = _e_cfg_gadgets_ui;
+   v->basic_only           = 1;
+   v->normal_win           = 1;
+   v->scroll               = 1;
+   cfd = e_config_dialog_new(con, "Top Shelf Gadgets",
+			     "E", "_config_illume_gadgets_settings",
+			     "enlightenment/gadgets_settings", 0, v, NULL);
+   e_dialog_resizable_set(cfd->dia, 1);
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -897,17 +1026,38 @@ _e_cfg_keyboard_change(void *data, Evas_Object *obj, void *event_info) {
    _e_cfg_keyboard_change_timer = ecore_timer_add(0.5, _e_cfg_keyboard_change_timeout, data);
 }
 
-EAPI void
-e_cfg_keyboard(E_Container *con, const char *params)
+static void *
+_e_cfg_keyboard_create(E_Config_Dialog *cfd)
+{ // alloc cfd->cfdata
+   local_slipshelf = slipshelf;
+   e_object_ref(E_OBJECT(local_slipshelf));
+   return NULL;
+}
+
+static void 
+_e_cfg_keyboard_free(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
+{ // free cfd->cfdata
+   while (gadits)
+     {
+	Gadit *gi;
+	
+	gi = gadits->data;
+	evas_stringshare_del(gi->name);
+	free(gi);
+	gadits = evas_list_remove_list(gadits, gadits);
+     }
+   e_object_unref(E_OBJECT(local_slipshelf));
+   local_slipshelf = NULL;
+}
+
+static Evas_Object *
+_e_cfg_keyboard_ui(E_Config_Dialog *cfd, Evas *e, E_Config_Dialog_Data *cfdata)
 {
    Evas_Object *list, *o, *frame;
    E_Radio_Group *rg;
-   Evas *e;
+   Evas_List *l, *l2, *l3;
 
-   list = _e_cfg_win_new("Keyboard Settings", "keyboard_settings",
-			 e_module_dir_get(mod), NULL, NULL);
-   
-   e = evas_object_evas_get(list);
+   list = e_widget_list_add(e, 0, 0);
    
    if (!illume_cfg->kbd.run_keyboard)
      {
@@ -976,9 +1126,29 @@ e_cfg_keyboard(E_Container *con, const char *params)
 	       }
 	  }
      }
-   e_widget_list_object_append(list, frame, 1, 1, 0.0); // fill, expand, align
+   e_widget_list_object_append(list, frame, 1, 0, 0.0); // fill, expand, align
    
-   _e_cfg_win_complete(list);
+   return list;
+}
+
+EAPI void
+e_cfg_keyboard(E_Container *con, const char *params)
+{
+   E_Config_Dialog *cfd;
+   E_Config_Dialog_View *v = NULL;
+   
+   if (e_config_dialog_find("E", "_config_illume_keyboard_settings")) return;
+   v = E_NEW(E_Config_Dialog_View, 1);
+   v->create_cfdata        = _e_cfg_keyboard_create;
+   v->free_cfdata          = _e_cfg_keyboard_free;
+   v->basic.create_widgets = _e_cfg_keyboard_ui;
+   v->basic_only           = 1;
+   v->normal_win           = 1;
+   v->scroll               = 1;
+   cfd = e_config_dialog_new(con, "Keyboard Settings",
+			     "E", "_config_illume_keyboard_settings",
+			     "enlightenment/keyboard_settings", 0, v, NULL);
+   e_dialog_resizable_set(cfd->dia, 1);
 }
 
 ///////////////////////////////////////////////////////////////////////////////

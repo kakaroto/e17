@@ -42,6 +42,13 @@ struct _Illume_Cfg
       int         use_internal;
       const char *run_keyboard;
       const char *dict;
+      double      fuzz_mul; // NEW
+      int         ignore_auto_kbd; // NEW
+      int         ignore_auto_type; // NEW
+      int         ignore_auto_lang; // NEW
+      int         ignore_hardware_keyboards; // NEW
+      int         force_no_dict; // NEW
+      const char *layout; // NEW
    } kbd;
 };
 
