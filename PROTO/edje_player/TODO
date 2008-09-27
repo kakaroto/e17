@@ -1,0 +1,5 @@
+- read window size from Edje file
+- load multible Edje in a session
+- display an optional resize handle for borderless windows
+- read options like alpha, border, start group etc. from Edje data
+
