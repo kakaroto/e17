@@ -1,0 +1,7 @@
+# -*- sh -*-
+# Xsession.d script for wakerd
+#
+#
+# This file is sourced by Xsession(5), not executed.
+
+wakerd &
