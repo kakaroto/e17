@@ -58,7 +58,7 @@ fi
 echo "Running libtoolize..."
 libtoolize --force --copy
 
-aclocalinclude="$ACLOCAL_FLAGS -I config"
+aclocalinclude="$ACLOCAL_FLAGS"
 echo "Running aclocal $aclocalinclude ..."
 aclocal $aclocalinclude
  
