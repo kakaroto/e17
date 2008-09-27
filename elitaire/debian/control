@@ -8,7 +8,7 @@ Homepage: http://www.enlightenment.org
 
 Package: elitaire
 Architecture: any
-Depends: ${shlibs:Depends}, libewl-engine-x11, libewl-engine-evas-software-x11
+Depends: ${shlibs:Depends}, libewl-engine-x11, libewl-engine-evas-software-x11, libewl-engine-evas
 Description: The enlightenment card game collection
  Elitaire is a solitaire card game based on the Enlightenment foundation
  libraries. Currently implemented variants are:
