@@ -327,7 +327,7 @@ job_del(dbus_uint32_t id)
 	jj; 
 	jp = jj, jj = jj->next)
      {
-	if (jj->id == id)
+	if ((jj->id == id) && (!jj->exe))
 	  {
 	     snprintf(buf, sizeof(buf), 
 		      "%s/.waker/spool/job_%u_%016llx_%u_%s", 
@@ -473,6 +473,7 @@ child_exit(void *data, int type, Ecore_Exe_Event_Del *event)
 	  {
 	     j->exe = NULL;
 	     j = ecore_exe_data_get(event->exe);
+	     j->exe = NULL;
 	     job_del(j->id);
 	  }
      }

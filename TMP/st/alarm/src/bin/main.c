@@ -73,6 +73,7 @@ clear_alarm(void)
    char buf[4096];
    
    if (alm.job == 0) return;
+   printf("@@@@@@@@@@ del %i\n", alm.job);
    snprintf(buf, sizeof(buf), "waker del %i", alm.job);
    system(buf);
    alm.job = 0;
@@ -91,13 +92,15 @@ set_alarm(void)
    f = fopen("/tmp/alarm-waker-out", "r");
    if (f)
      {
-	unlink("/tmp/alarm-waker-out");
 	while (fgets(buf, sizeof(buf), f))
 	  {
-	     if (!strncmp(buf, "job ", 4)) alm.job = atoi(buf + 4);
+	     printf("@@@@@ %s\n", buf);
+	     alm.job = atoi(buf);
 	  }
 	fclose(f);
+	unlink("/tmp/alarm-waker-out");
      }
+   printf("@@@@@@@@@@ set_alarm -> job = %i\n", alm.job);
 }
 
 // generic callback - delete any window (close button/remove) and it just exits
@@ -179,7 +182,31 @@ create_main_win(void)
    toggle->show(toggle);
 
    frame = elm_frame_new(win);
-   frame->text_set(frame, "Time");
+   frame->text_set(frame, "Current Time");
+   frame->expand_y = 0;
+   box->pack_end(box, frame);
+   elm_widget_sizing_update(frame);
+   frame->show(frame);
+   
+   subbox = elm_box_new(win);
+   subbox->expand_x = 0;
+   subbox->expand_y = 0;
+   frame->child_add(frame, subbox);
+   elm_widget_sizing_update(subbox);
+   subbox->show(subbox);
+
+   cloc = elm_clock_new(win);
+   cloc->expand_x = 0;
+   cloc->fill_x = 0;
+   cloc->edit = 0;
+   cloc->seconds = 1;
+   cloc->time_update(cloc);
+   subbox->pack_end(subbox, cloc);
+   elm_widget_sizing_update(cloc);
+   cloc->show(cloc);
+
+   frame = elm_frame_new(win);
+   frame->text_set(frame, "Alarm Time");
    frame->expand_y = 0;
    box->pack_end(box, frame);
    elm_widget_sizing_update(frame);
@@ -203,7 +230,6 @@ create_main_win(void)
    cloc->time_update(cloc);
    cloc->cb_add(cloc, ELM_CB_CHANGED, on_clock_changed, NULL);
    subbox->pack_end(subbox, cloc);
-   elm_widget_sizing_update(cloc);
    elm_widget_sizing_update(cloc);
    cloc->show(cloc);
    
