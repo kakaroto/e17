@@ -15,6 +15,7 @@
  *  along with Edje_editor.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include <string.h>
 #include <Etk.h>
 #include <Edje.h>
 #include <Edje_Edit.h>
@@ -116,7 +117,7 @@ data_window_create(void)
    etk_box_append(ETK_BOX(vbox3), label, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    UI_DataNameEntry = etk_entry_new();
-   etk_widget_disabled_set(UI_DataNameEntry, ETK_TRUE);
+   //etk_widget_disabled_set(UI_DataNameEntry, ETK_TRUE);
    etk_box_append(ETK_BOX(vbox3), UI_DataNameEntry,
                   ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
@@ -202,18 +203,25 @@ _data_list_row_selected_cb(Etk_Tree *tree, Etk_Tree_Row *row, void *data)
 Etk_Bool
 _data_apply_button_click_cb(Etk_Button *button, void *data)
 {
-   Etk_Tree_Col *col2;
+   Etk_Tree_Col *col1, *col2;
    Etk_Tree_Row *row;
-   const char *name, *value;
-   
-   name = etk_entry_text_get(ETK_ENTRY(UI_DataNameEntry));
-   value = etk_entry_text_get(ETK_ENTRY(UI_DataValueEntry));
-   edje_edit_data_value_set(edje_o, name, value);
+   const char *name, *value, *new_name, *new_value;
 
-   row = etk_tree_selected_row_get(ETK_TREE(UI_DataList));
+   col1 = etk_tree_nth_col_get(ETK_TREE(UI_DataList), 0);
    col2 = etk_tree_nth_col_get(ETK_TREE(UI_DataList), 1);
-   etk_tree_row_fields_set(row, ETK_FALSE, col2, value, NULL);
-   
+   row = etk_tree_selected_row_get(ETK_TREE(UI_DataList));
+   etk_tree_row_fields_get(row, col1, &name, col2, &value, NULL);
+
+   new_name = etk_entry_text_get(ETK_ENTRY(UI_DataNameEntry));
+   new_value = etk_entry_text_get(ETK_ENTRY(UI_DataValueEntry));
+
+   if (strcmp(value, new_value))
+     edje_edit_data_value_set(edje_o, name, new_value);
+
+   if (strcmp(name, new_name))
+     edje_edit_data_name_set(edje_o, name, new_name);
+
+   etk_tree_row_fields_set(row, ETK_FALSE, col1, new_name, col2, new_value, NULL);
    return ETK_TRUE;
 }
 
