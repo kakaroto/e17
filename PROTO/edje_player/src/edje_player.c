@@ -6,7 +6,6 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <assert.h>
-#include <popt.h>
 
 #include <Ecore.h>
 #include <Evas.h>
@@ -36,18 +35,7 @@ Evas *evas;
 Evas_Object *o_bg;
 Evas_Object *o_edje;
 
-enum
-{
-  ARG_GROUP = 1,
-  ARG_ENGINE,
-  ARG_BORDERLESS,
-  ARG_STICKY,
-  ARG_SHAPED,
-  ARG_ALPHA,
-  ARG_LIST_ENGINES,
-  ARG_LIST_GROUPS,
-  ARG_VERSION
-};
+struct option_pool_t option_pool;
 
 void resize_cb(Ecore_Evas *ee)
 {
@@ -80,7 +68,7 @@ int main(int argc, char **argv)
   int edje_h = 240;
   bool edje_load = false;
   
-  option_pool_constructor ();
+  option_pool_constructor (&option_pool);
   
   switch (argc)
   {
@@ -88,13 +76,25 @@ int main(int argc, char **argv)
       print_help (argv[0]);
       break;
     default:
-      parse_options (argc, argv);
+      option_pool_parse (&option_pool, argc, argv);
   }
 
   ecore_init();
   ecore_app_args_set(argc, (const char **)argv);
   ecore_evas_init();
   edje_init();
+  
+  if (option_pool.show_version)
+  {
+    show_version ();
+    exit (0);
+  }
+  
+  if (option_pool.list_engines)
+  {
+    list_engines ();
+    exit (0);
+  }
   
   ee = ecore_evas_new (option_pool.engine, 0, 0, edje_w, edje_h, NULL);
 
@@ -184,7 +184,7 @@ int main(int argc, char **argv)
   ecore_evas_shutdown();
   ecore_shutdown();
   
-  option_pool_destructor ();
+  option_pool_destructor (&option_pool);
 
   return 0;
 }
@@ -219,104 +219,6 @@ void list_groups (const char *edje_file)
   edje_file_collection_list_free (group_list);
 }
 
-void parse_options (int argc, char **argv)
-{
-  poptContext context;
-  int option;
-  char *option_group_tmp = NULL;
-  char *option_engine_tmp = NULL;
-  const char *option_leftover_tmp = NULL;
-
-  struct poptOption options[] =
-    {
-      {"group", 'g', POPT_ARG_STRING, &option_group_tmp, ARG_GROUP,
-        "The Edje group to display (default: 'main').",
-       NULL},
-      {"engine", 'e', POPT_ARG_STRING, &option_engine_tmp, ARG_ENGINE,
-       "The Evas engine type (use environment variable $ECORE_EVAS_ENGINE if not set).",
-       NULL},
-      {"borderless", 'b', POPT_ARG_NONE, NULL, ARG_BORDERLESS,
-       "Display window without border.",
-       NULL},
-      {"sticky", 's', POPT_ARG_NONE, NULL, ARG_STICKY,
-       "Display window sticky.",
-       NULL},
-      {"shaped", 'p', POPT_ARG_NONE, NULL, ARG_SHAPED,
-       "Display window shaped.",
-       NULL},
-      {"alpha", 'a', POPT_ARG_NONE, NULL, ARG_ALPHA,
-       "Display window with alpha channel (needs composite support!).",
-       NULL},
-      {"list-engines", 'l', POPT_ARG_NONE, NULL, ARG_LIST_ENGINES,
-       "List all available engines.",
-       NULL},
-      {"list-groups", 'r', POPT_ARG_NONE, NULL, ARG_LIST_GROUPS,
-       "List all available groups in the Edje file.",
-       NULL},
-      {"version", 'v', POPT_ARG_NONE, NULL, ARG_VERSION, "show version", NULL},
-      POPT_AUTOHELP {NULL, '\0', 0, NULL, 0}
-    };
-
-  context = poptGetContext ("popt1", argc, (const char **) argv, options, 0);
-
-  /* start option handling */
-  while ((option = poptGetNextOpt (context)) > 0)
-  {  
-    switch (option)
-    {
-    case ARG_GROUP:
-      option_pool.group = strdup (option_group_tmp);
-      break;
-    case ARG_ENGINE:
-      option_pool.engine = strdup (option_engine_tmp);
-      break;
-    case ARG_BORDERLESS:
-      option_pool.borderless = true;
-      break;
-    case ARG_STICKY:
-      option_pool.sticky = true;
-      break;
-    case ARG_SHAPED:
-      option_pool.shaped = true;
-      break;
-    case ARG_ALPHA:
-      option_pool.alpha = true;
-      break;
-    case ARG_LIST_ENGINES:
-      list_engines ();
-      exit (0);
-      break;
-    case ARG_LIST_GROUPS:
-      option_pool.list_groups_flag = true;
-      break;
-    case ARG_VERSION:
-      show_version ();
-      exit (0);
-      break;
-    }
-  }
-
-  if (!option_pool.group)
-  {
-    // set 'main' as default group if nothing else is set
-    option_pool.group = strdup ("main");
-  }
-  
-  option_leftover_tmp = poptGetArg (context);
-
-  if (option_leftover_tmp)
-  {
-    option_pool.file = strdup (option_leftover_tmp);
-  }
-  else
-  {
-    printf ("You need to give a .edj file on command line!\n");
-    exit (1);
-  }
-  
-  poptFreeContext (context);
-}
-
 void show_version ()
 {
   printf ("Package name: ");
@@ -324,27 +226,3 @@ void show_version ()
   printf ("Build information: ");
   printf ("%s %s\n", __DATE__, __TIME__);
 }
-
-/*char *e_strdup_printf (const char *format, ...)
-{
-  va_list ap;
-  char *target = NULL;
-  char tmp[1024];
-  
-  va_start (ap, format);
-
-  target strdup (
-    
-  vsprintf(target, format, ap);
-}*/
-
-/*void dbg_printf (const gchar *format, ...)
-{
-  va_list ap;
-
-  va_start (ap, format);
-
-  printf ("(%s, %d): ", __FILE__, __LINE__);
-  g_vprintf(format, ap);
-}*/
-

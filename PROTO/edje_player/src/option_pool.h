@@ -13,9 +13,12 @@ struct option_pool_t
   bool shaped;
   bool alpha;
   bool list_groups_flag;
-} option_pool;
+  bool list_engines;
+  bool show_version;
+};
 
-void option_pool_constructor ();
-void option_pool_destructor ();
+void option_pool_constructor (struct option_pool_t *option_pool);
+void option_pool_destructor (struct option_pool_t *option_pool);
+void option_pool_parse (struct option_pool_t *option_pool, int argc, char **argv);
 
 #endif // OPTION_POOL_H
