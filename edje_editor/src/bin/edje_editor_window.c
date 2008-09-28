@@ -208,6 +208,9 @@ window_main_create(void)
    
    //Data window
    data_window_create();
+   
+   //Color Classes window
+   colors_window_create();
 
    //Create the main edje object to edit
    edje_o = edje_object_add(UI_evas);
@@ -218,7 +221,7 @@ window_main_create(void)
 }
 
 Etk_Widget*
-window_color_button_create(char* label_text, int color_button_enum,int w,int h, Evas *evas)
+window_color_button_create(char* label_text, int color_button_enum, int w, int h, Evas *evas)
 {
    Etk_Widget *vbox;
    Etk_Widget *label;
@@ -227,14 +230,12 @@ window_color_button_create(char* label_text, int color_button_enum,int w,int h, 
    Etk_Widget *etk_evas_object;
 
    //vbox
-   vbox = etk_vbox_new(ETK_FALSE, 3);
+   vbox = etk_vbox_new(ETK_FALSE, 0);
 
    //shadow
    shadow = etk_shadow_new();
    etk_shadow_border_set(ETK_SHADOW(shadow), 0);
-   //etk_widget_size_request_set(shadow, 45, 45);
-   etk_shadow_shadow_set(ETK_SHADOW(shadow),ETK_SHADOW_OUTSIDE, ETK_SHADOW_ALL, 10, 2, 2, 200);
-   //etk_shadow_shadow_set(Etk_Shadow *shadow, Etk_Shadow_Type type, Etk_Shadow_Edges edges, int radius, int offset_x, int offset_y, int opacity);
+   etk_shadow_shadow_set(ETK_SHADOW(shadow), ETK_SHADOW_OUTSIDE, ETK_SHADOW_ALL, 10, 2, 2, 200);
    etk_box_append(ETK_BOX(vbox), shadow, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
    //Add the colored rectangle
@@ -263,6 +264,15 @@ window_color_button_create(char* label_text, int color_button_enum,int w,int h, 
          break;
       case COLOR_OBJECT_OUTLINE:
          OutlineColorObject = rect;
+         break;
+      case COLOR_OBJECT_CC1:
+         ColorClassC1 = rect;
+         break;
+      case COLOR_OBJECT_CC2:
+         ColorClassC2 = rect;
+         break;
+      case COLOR_OBJECT_CC3:
+         ColorClassC3 = rect;
          break;
    }
 
@@ -456,6 +466,9 @@ _window_all_button_click_cb(Etk_Button *button, void *data)
    case TOOLBAR_DATA:
       data_window_show();
       break;
+   case TOOLBAR_COLORS:
+      colors_window_show();
+      break;
    case TOOLBAR_FONT_BROWSER:
       dialog_alert_show("Font Browser");
       break;
@@ -643,6 +656,21 @@ _window_color_canvas_click(void *data, Evas *e, Evas_Object *obj, void *event_in
          etk_window_title_set(ETK_WINDOW(UI_ColorWin), "Outline color");
          edje_edit_state_color2_get(edje_o, Cur.part->string, Cur.state->string,
                                     &c.r,&c.g,&c.b,&c.a);
+         etk_colorpicker_current_color_set(ETK_COLORPICKER(UI_ColorPicker), c);
+         break;
+      case COLOR_OBJECT_CC1:
+         etk_window_title_set(ETK_WINDOW(UI_ColorWin), "Color Class: Standard Color");
+         evas_object_color_get(ColorClassC1, &c.r, &c.g, &c.b, &c.a);
+         etk_colorpicker_current_color_set(ETK_COLORPICKER(UI_ColorPicker), c);
+         break;
+      case COLOR_OBJECT_CC2:
+         etk_window_title_set(ETK_WINDOW(UI_ColorWin), "Color Class: Color 2");
+         evas_object_color_get(ColorClassC2, &c.r, &c.g, &c.b, &c.a);
+         etk_colorpicker_current_color_set(ETK_COLORPICKER(UI_ColorPicker), c);
+         break;
+      case COLOR_OBJECT_CC3:
+         etk_window_title_set(ETK_WINDOW(UI_ColorWin), "Color Class: Color 3");
+         evas_object_color_get(ColorClassC3, &c.r, &c.g, &c.b, &c.a);
          etk_colorpicker_current_color_set(ETK_COLORPICKER(UI_ColorPicker), c);
          break;
    }

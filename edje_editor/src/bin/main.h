@@ -43,6 +43,7 @@
 #include "edje_editor_spectra_widget.h"
 #include "edje_editor_tree_model_spectra.h"
 #include "edje_editor_data.h"
+#include "edje_editor_colors.h"
 
 /* DEFINES */
 #define USE_GL_ENGINE 0
@@ -78,6 +79,7 @@ enum various
    TOOLBAR_IMAGE_BROWSER,
    TOOLBAR_SPECTRUM,
    TOOLBAR_DATA,
+   TOOLBAR_COLORS,
    IMAGE_BROWSER_SHOW,
    IMAGE_BROWSER_CLOSE,
    TOOLBAR_FONT_BROWSER,
@@ -97,6 +99,9 @@ enum various
    COLOR_OBJECT_SHADOW,
    COLOR_OBJECT_OUTLINE,
    COLOR_OBJECT_BG,
+   COLOR_OBJECT_CC1,
+   COLOR_OBJECT_CC2,
+   COLOR_OBJECT_CC3,
    NEW_IMAGE,
    NEW_GRADIENT,
    NEW_RECT,

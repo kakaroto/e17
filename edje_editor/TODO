@@ -4,7 +4,7 @@ TODO edje_editor (not a complete list...only the first in my mind)
 EDJE:
 * Font and image can't be removed
 * Save back the updated edc source to the edje file
-* Embryo scripting
+* Embryo scripting (waiting for lua)
 * Use a value in the edje data field to store the editor version
   If no version information found alert the user
 * Edje draggies
@@ -12,9 +12,13 @@ EDJE:
 EDITOR:
 * Tooltips EVERYWERE  :)
 * Add more keybindings
+* Ctrl+drag change the offset instead of the relative value
 * Make the visible checkbox work (should the visibility apply to the EDC also? not only in the editor?)
+* Add the ability to change the part type
 * Duplicate objects (copy/cut/paste??)
+* UNDO (this is a HUGE task, maybe for edje_editor2)
 * Fix strange alpha premul on text with effect
 * Add CheckBox(radio) in Options Menu - tryied, but I have to remove the image :(
 * The spectra window can grow in size but then you can't 'resmall' it.
 * draggies
+

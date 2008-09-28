@@ -249,6 +249,14 @@ _dialog_colorpicker_change_cb(Etk_Object *object, void *data)
       edje_object_color_class_set(edje_ui, "cc_background",
                                   color.r, color.g, color.b, 255,
                                   0, 0, 0, 255, 0, 0, 0, 255);
+    case COLOR_OBJECT_CC1:
+      evas_object_color_set(ColorClassC1,premuled.r,premuled.g,premuled.b,premuled.a);
+      break;
+    case COLOR_OBJECT_CC2:
+      evas_object_color_set(ColorClassC2,premuled.r,premuled.g,premuled.b,premuled.a);
+      break;
+    case COLOR_OBJECT_CC3:
+      evas_object_color_set(ColorClassC3,premuled.r,premuled.g,premuled.b,premuled.a);
       break;
    }
 

@@ -267,6 +267,16 @@ toolbar_create(Etk_Toolbar_Orientation o)
                       (void*)TOOLBAR_DATA);
    etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), button, ETK_BOX_START);
 
+   //Color Classes Button
+   button = etk_tool_button_new_with_label("Colors");
+   image = etk_image_new_from_edje(EdjeFile, "COLORS.PNG");
+   etk_widget_size_request_set(image, 22, 22);
+   etk_button_image_set(ETK_BUTTON(button), ETK_IMAGE(image));
+   etk_signal_connect("clicked", ETK_OBJECT(button),
+                      ETK_CALLBACK(_window_all_button_click_cb),
+                      (void*)TOOLBAR_COLORS);
+   etk_toolbar_append(ETK_TOOLBAR(UI_Toolbar), button, ETK_BOX_START);
+
 #if DEBUG_MODE
    //Font Browser Button
    button = etk_tool_button_new_from_stock( ETK_STOCK_PREFERENCES_DESKTOP_FONT);
