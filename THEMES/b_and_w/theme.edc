@@ -18543,6 +18543,7 @@ group { name: "e/icons/"NAME ; 	        		\
 
 
 ICON("enlightenment/check","icon_check.png",64)
+ICON("enlightenment/swap","icon_swap.png",64)
 
 // FIXME: Dummy Icons
 // Do we dare try to put an icon in for all the popup menu items too?
@@ -18552,7 +18553,6 @@ ICON("enlightenment/add_application","icon_dummy.png",64)
 ICON("enlightenment/profiles","icon_dummy.png",64)
 ICON("enlightenment/scale","icon_dummy.png",64)
 ICON("enlightenment/website","icon_dummy.png",64)		//Wallpaper selector
-ICON("enlightenment/swap","icon_dummy.png",64)			//Gradient selector
 
 
 /* USABLE WIDGETS
