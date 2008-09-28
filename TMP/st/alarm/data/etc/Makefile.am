@@ -3,6 +3,6 @@ MAINTAINERCLEANFILES = Makefile.in
 
 filesdir = $(sysconfdir)/X11/Xsession.d
 files_DATA = \
-80-enlightenment-wakerd
+80x-enlightenment-wakerd
 
 EXTRA_DIST = $(files_DATA)
