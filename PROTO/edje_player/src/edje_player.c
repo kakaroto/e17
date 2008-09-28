@@ -27,6 +27,8 @@ void list_engines ();
 void list_groups (const char *edje_file);
 void parse_options (int argc, char **argv);
 void show_version ();
+void option_pool_from_data_block ();
+void string_to_bool (char *str, bool *value);
 
 // variables
 Ecore_Evas *ee;
@@ -94,7 +96,7 @@ int main(int argc, char **argv)
   {
     list_engines ();
     exit (0);
-  }
+  }  
   
   ee = ecore_evas_new (option_pool.engine, 0, 0, edje_w, edje_h, NULL);
 
@@ -114,8 +116,21 @@ int main(int argc, char **argv)
     list_groups (option_pool.file);
     exit (0);
   }
+  
+  evas = ecore_evas_get(ee);
+  evas_image_cache_set(evas, 8192 * 1024);
+  evas_font_cache_set(evas, 512 * 1024);
+  
+  option_pool_from_data_block ();
 
-  ecore_evas_title_set (ee, "Edje Player");
+  o_bg = evas_object_rectangle_add(evas);
+  evas_object_move(o_bg, 0, 0);
+  evas_object_resize(o_bg, edje_w, edje_h);
+  
+  if (option_pool.title)
+  {
+    ecore_evas_title_set (ee, option_pool.title);
+  }
 
   if (option_pool.borderless)
   {
@@ -147,21 +162,9 @@ int main(int argc, char **argv)
     evas_object_color_set(o_bg, 0, 0, 0, 255);
   }
   
-  evas = ecore_evas_get(ee);
-  evas_image_cache_set(evas, 8192 * 1024);
-  evas_font_cache_set(evas, 512 * 1024);
-
-  o_bg = evas_object_rectangle_add(evas);
-  evas_object_move(o_bg, 0, 0);
-  evas_object_resize(o_bg, edje_w, edje_h);
-  evas_object_color_set(o_bg, 0, 0, 0, 255);
+  o_edje = edje_object_add (evas);
   
   evas_object_focus_set(o_edje, 1);
-
-  evas_object_show(o_bg);
-  evas_object_show(o_edje);
-
-  o_edje = edje_object_add (evas);
   
   edje_load = edje_object_file_set(o_edje, option_pool.file, option_pool.group);
   if (!edje_load)
@@ -174,6 +177,7 @@ int main(int argc, char **argv)
   evas_object_resize(o_edje, edje_w, edje_h);
 
   evas_object_show(o_edje);
+  evas_object_show(o_bg);
 
   ecore_evas_callback_resize_set(ee, resize_cb);
   ecore_evas_show(ee);
@@ -187,6 +191,44 @@ int main(int argc, char **argv)
   option_pool_destructor (&option_pool);
 
   return 0;
+}
+
+void option_pool_from_data_block ()
+{
+  char *tmp_str = NULL;
+  
+  if (!option_pool.alpha)
+  {
+    tmp_str = edje_file_data_get (option_pool.file, "alpha");
+    string_to_bool (tmp_str, &option_pool.alpha);
+    free (tmp_str);
+  }
+  
+  if (!option_pool.borderless)
+  {
+    tmp_str = edje_file_data_get (option_pool.file, "borderless");
+    string_to_bool (tmp_str, &option_pool.borderless);
+    free (tmp_str);
+  }
+  
+  if (!option_pool.sticky)
+  {
+    tmp_str = edje_file_data_get (option_pool.file, "sticky");
+    string_to_bool (tmp_str, &option_pool.sticky);
+    free (tmp_str);
+  }
+  
+  if (!option_pool.shaped)
+  {
+    tmp_str = edje_file_data_get (option_pool.file, "shaped");
+    string_to_bool (tmp_str, &option_pool.shaped);
+    free (tmp_str);
+  }
+  
+  if (!option_pool.title)
+  {
+    option_pool.title = edje_file_data_get (option_pool.file, "title");
+  }
 }
 
 void list_engines ()
@@ -225,4 +267,21 @@ void show_version ()
   printf ("%s %s\n", PACKAGE, VERSION);
   printf ("Build information: ");
   printf ("%s %s\n", __DATE__, __TIME__);
+}
+
+void string_to_bool (char *str, bool *value)
+{
+  if (str)
+  {
+    if ((!strncmp (str, "FALSE", 5)) || (!strncmp (str, "false", 5)) || (!strncmp (str, "0", 2)))
+    {
+      *value = false;
+    }
+    else if ((!strncmp (str, "TRUE", 5)) || (!strncmp (str, "true", 5)) || (!strncmp (str, "1", 2)))
+    {
+      *value = true;
+    }
+  }
+  
+  value = NULL;
 }

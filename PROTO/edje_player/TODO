@@ -1,5 +1,11 @@
 - read window size from Edje file
+
 - load multible Edje in a session
+
 - display an optional resize handle for borderless windows
-- read options like alpha, border, start group etc. from Edje data
+
+- currently it's not possible to overwrite negative options if set in datablock
+  if set also on commandline (e.g. borderless=true is set in data block; then
+  it's not possible to activate borders with command line switch). Solution
+  would be to use -b <int> as command line switch.
 

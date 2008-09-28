@@ -11,6 +11,7 @@ enum
   ARG_STICKY,
   ARG_SHAPED,
   ARG_ALPHA,
+  ARG_TITLE,
   ARG_LIST_ENGINES,
   ARG_LIST_GROUPS,
   ARG_VERSION
@@ -21,6 +22,7 @@ void option_pool_constructor (struct option_pool_t *option_pool)
   option_pool->engine = NULL;
   option_pool->group = NULL;
   option_pool->file = NULL;
+  option_pool->title = NULL;
   option_pool->borderless = false;
   option_pool->sticky = false;
   option_pool->shaped = false;
@@ -34,6 +36,7 @@ void option_pool_destructor (struct option_pool_t *option_pool)
   free (option_pool->group);
   free (option_pool->file);
   free (option_pool->engine);
+  free (option_pool->title);
 }
 
 void option_pool_parse (struct option_pool_t *option_pool, int argc, char **argv)
@@ -42,6 +45,7 @@ void option_pool_parse (struct option_pool_t *option_pool, int argc, char **argv
   int option;
   char *option_group_tmp = NULL;
   char *option_engine_tmp = NULL;
+  char *option_title_tmp = NULL;
   const char *option_leftover_tmp = NULL;
 
   struct poptOption options[] =
@@ -63,6 +67,9 @@ void option_pool_parse (struct option_pool_t *option_pool, int argc, char **argv
        NULL},
       {"alpha", 'a', POPT_ARG_NONE, NULL, ARG_ALPHA,
        "Display window with alpha channel (needs composite support!).",
+       NULL},
+      {"title", 't', POPT_ARG_STRING, &option_title_tmp, ARG_TITLE,
+       "Define the window title string.",
        NULL},
       {"list-engines", 'l', POPT_ARG_NONE, NULL, ARG_LIST_ENGINES,
        "List all available engines.",
@@ -98,6 +105,9 @@ void option_pool_parse (struct option_pool_t *option_pool, int argc, char **argv
       break;
     case ARG_ALPHA:
       option_pool->alpha = true;
+      break;
+    case ARG_TITLE:
+      option_pool->title = strdup (option_title_tmp);
       break;
     case ARG_LIST_ENGINES:
       option_pool->list_engines = true;

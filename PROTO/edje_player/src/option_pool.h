@@ -8,6 +8,7 @@ struct option_pool_t
   char *engine;
   char *group;
   char *file;
+  char *title;
   bool borderless;
   bool sticky;
   bool shaped;

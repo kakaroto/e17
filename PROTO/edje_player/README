@@ -3,3 +3,18 @@ EdjePlayer is a application to play standalone Edje files.
 This is a perfect example for EdjePlayer:
 http://www.gurumeditation.it/blog/enlightenment/calculator/
 
+
+Allowed data block values
+--------------------------
+It's possible to set some values in the Edje file data block to control
+the behaviour of EdjePlayer. These values are supported until now:
+
+alpha: bool
+borderless: bool
+shaped: bool
+sticky: bool
+title: string
+
+Data type reference:
+--------------------
+bool: "TRUE", "true", "FALSE", "false", "0", "1"
