@@ -8,4 +8,4 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess \
                        ltconfig ltmain.sh missing mkinstalldirs depcomp \
                        stamp-h.in
 
-EXTRA_DIST = README AUTHORS COPYING COPYING-PLAIN
+EXTRA_DIST = README AUTHORS COPYING COPYING.LESSER
