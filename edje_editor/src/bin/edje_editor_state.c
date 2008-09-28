@@ -166,9 +166,20 @@ state_frame_create(void)
    label = etk_label_new("Visible");
    etk_widget_padding_set(label, 20, 0, 0, 0);
    etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
-   
+
    UI_StateVisibleCheck = etk_check_button_new();
    etk_box_append(ETK_BOX(hbox), UI_StateVisibleCheck, ETK_BOX_START, ETK_BOX_NONE, 0);
+
+   //hbox
+   hbox = etk_hbox_new(ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(vbox), hbox, ETK_BOX_START, ETK_BOX_NONE, 0);
+
+   //UI_StateCCEntry
+   label = etk_label_new("Color Class");
+   etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
+
+   UI_StateCCEntry = etk_entry_new();
+   etk_box_append(ETK_BOX(hbox), UI_StateCCEntry, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    etk_signal_connect("key-down", ETK_OBJECT(UI_StateEntry),
                       ETK_CALLBACK(_state_Entry_key_down_cb), NULL);
@@ -199,6 +210,8 @@ state_frame_create(void)
                       (void*)STATE_ALIGNH_SPINNER);
    etk_signal_connect("toggled", ETK_OBJECT(UI_StateVisibleCheck),
                       ETK_CALLBACK(_state_VisibleCheck_toggled_cb), NULL);
+   etk_signal_connect("text-changed", ETK_OBJECT(UI_StateCCEntry),
+                      ETK_CALLBACK(_state_CCEntry_text_changed_cb), NULL);
 
    return vbox;
 }
@@ -206,7 +219,9 @@ state_frame_create(void)
 void
 state_frame_update(void)
 {
-  //Stop signal propagation
+   const char* cc;
+   
+   //Stop signal propagation
    etk_signal_block("text-changed", ETK_OBJECT(UI_StateEntry),
                     _group_NamesEntry_text_changed_cb, NULL);
    etk_signal_block("value-changed", ETK_OBJECT(UI_AspectMinSpinner),
@@ -231,6 +246,8 @@ state_frame_update(void)
                     (void*)STATE_ALIGNH_SPINNER);
    etk_signal_block("toggled", ETK_OBJECT(UI_StateVisibleCheck),
                     ETK_CALLBACK(_state_VisibleCheck_toggled_cb), NULL);
+   etk_signal_block("text-changed", ETK_OBJECT(UI_StateCCEntry),
+                    ETK_CALLBACK(_state_CCEntry_text_changed_cb), NULL);
 
    if (etk_string_length_get(Cur.state))
    {
@@ -272,6 +289,11 @@ state_frame_update(void)
       //Set visible checkbox
       etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(UI_StateVisibleCheck),
          edje_edit_state_visible_get(edje_o, Cur.part->string, Cur.state->string));
+      
+      //Set Color Class Entry
+      cc = edje_edit_state_color_class_get(edje_o, Cur.part->string, Cur.state->string);
+      etk_entry_text_set(ETK_ENTRY(UI_StateCCEntry), cc);
+      edje_edit_string_free(cc);
    }
 
    //ReEnable Signal Propagation
@@ -299,6 +321,9 @@ state_frame_update(void)
                       (void*)STATE_ALIGNH_SPINNER);
    etk_signal_unblock("toggled", ETK_OBJECT(UI_StateVisibleCheck),
                       ETK_CALLBACK(_state_VisibleCheck_toggled_cb), NULL);
+   etk_signal_unblock("text-changed", ETK_OBJECT(UI_StateCCEntry),
+                      ETK_CALLBACK(_state_CCEntry_text_changed_cb), NULL);
+
 }
 
 
@@ -405,5 +430,13 @@ _state_VisibleCheck_toggled_cb(Etk_Toggle_Button *button, void *data)
 {
    edje_edit_state_visible_set(edje_o, Cur.part->string, Cur.state->string,
                                etk_toggle_button_active_get(button));
+   return ETK_TRUE;
+}
+Etk_Bool
+_state_CCEntry_text_changed_cb(Etk_Object *object, void *data)
+{
+   printf("Text Changed Signal on CC Entry Emitted\n");
+   edje_edit_state_color_class_set(edje_o, Cur.part->string, Cur.state->string,
+                                   etk_entry_text_get(ETK_ENTRY(UI_StateCCEntry)));
    return ETK_TRUE;
 }

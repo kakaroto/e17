@@ -240,7 +240,7 @@ window_color_button_create(char* label_text, int color_button_enum, int w, int h
 
    //Add the colored rectangle
    rect = evas_object_rectangle_add(evas);
-   evas_object_color_set(rect, 255,100,100,255);
+   evas_object_color_set(rect, 255, 255, 255, 255);
    evas_object_resize(rect, w, h);
    etk_evas_object = etk_evas_object_new();
    etk_evas_object_set_object(ETK_EVAS_OBJECT(etk_evas_object), rect);

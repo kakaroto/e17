@@ -710,7 +710,7 @@ collections {
          //EXAMPLE: FRAME (name, w, h, img_name, place_after)
          FRAME("group", 230, 70, "lbl_group.png", 14, 50, "frames_starter")
          FRAME("part", 230, 120, "lbl_part.png", 14, 35,"group_frame")
-         FRAME("description", 260, 85, "lbl_desc.png", 14, 42, "part_frame")
+         FRAME("description", 260, 110, "lbl_desc.png", 14, 42, "part_frame")
          FRAME("rect", 120, 77, "lbl_rect.png", 14, 72, "description_frame")
          FRAME("text", 250, 160, "lbl_text.png", 14, 36, "rect_frame")
          FRAME("image", 250, 230, "lbl_image.png", 14, 46, "text_frame")

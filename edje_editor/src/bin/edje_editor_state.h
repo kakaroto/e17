@@ -32,6 +32,7 @@ Etk_Widget *UI_StateMaxHSpinner;
 Etk_Widget *UI_StateAlignVSpinner;
 Etk_Widget *UI_StateAlignHSpinner;
 Etk_Widget *UI_StateVisibleCheck;
+Etk_Widget *UI_StateCCEntry;
 
 
 Etk_Widget* state_frame_create (void);
@@ -44,5 +45,5 @@ Etk_Bool _state_AspectSpinner_value_changed_cb (Etk_Range *range, double value, 
 Etk_Bool _state_AspectComboBox_changed_cb      (Etk_Combobox *combobox, void *data);
 Etk_Bool _state_MinMaxSpinner_value_changed_cb (Etk_Range *range, double value, void *data);
 Etk_Bool _state_VisibleCheck_toggled_cb        (Etk_Toggle_Button *button, void *data);
-
+Etk_Bool _state_CCEntry_text_changed_cb        (Etk_Object *object, void *data);
 #endif

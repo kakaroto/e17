@@ -79,8 +79,8 @@ colors_window_create(void)
    etk_tree_alternating_row_colors_set(ETK_TREE(UI_ColorsList), ETK_TRUE);
    col = etk_tree_col_new(ETK_TREE(UI_ColorsList), "Name", 100, 0.0);
    etk_tree_col_model_add(col, etk_tree_model_text_new());
-   col = etk_tree_col_new(ETK_TREE(UI_ColorsList), "Value", 120, 0.0);
-   etk_tree_col_model_add(col, etk_tree_model_text_new());
+   //~ col = etk_tree_col_new(ETK_TREE(UI_ColorsList), "Value", 120, 0.0);
+   //~ etk_tree_col_model_add(col, etk_tree_model_text_new());
    etk_tree_build(ETK_TREE(UI_ColorsList));
    etk_box_append(ETK_BOX(vbox2), UI_ColorsList, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
    etk_signal_connect("row-selected", ETK_OBJECT(UI_ColorsList),
@@ -153,10 +153,9 @@ void
 colors_window_populate(void)
 {
    Evas_List *l, *classes;
-   Etk_Tree_Col *col1, *col2;
+   Etk_Tree_Col *col1;
 
    col1 = etk_tree_nth_col_get(ETK_TREE(UI_ColorsList), 0);
-   col2 = etk_tree_nth_col_get(ETK_TREE(UI_ColorsList), 1);
 
    etk_tree_freeze(ETK_TREE(UI_ColorsList));
    etk_tree_clear(ETK_TREE(UI_ColorsList));
