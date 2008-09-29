@@ -32,7 +32,20 @@ collections {
 	       color: 255 255 255 255;
 	    }
 	 }
+	 part { name: "logoclip";
+	    type: RECT;
+	    description { state: "default" 0.0;
+	       visible: 0;
+	       color: 255 255 255 0;
+	    }
+	    description { state: "visible" 0.0;
+	       inherit: "default" 0.0;
+	       visible: 1;
+	       color: 255 255 255 255;
+	    }
+	 }
 	 part { name: "logoglow";
+	    clip_to: "logoclip";
 	    description { state: "default" 0.0;
 	       align: 0.5 0.5;
 	       rel1.to: "logo";
@@ -51,6 +64,7 @@ collections {
 	    }
 	 }
 	 part { name: "logo";
+	    clip_to: "logoclip";
 	    description { state: "default" 0.0;
 	       align: 0.5 0.774193548;
 	       rel1.relative: 0.272916667 0.315625;
@@ -59,11 +73,6 @@ collections {
 	       aspect_preference: BOTH;
 	       max: 121 217;
 	       image.normal: "exq-logo.png";
-	       color: 255 255 255 0;
-	    }
-	    description { state: "visible" 0.0;
-	       inherit: "default" 0.0;
-	       color: 255 255 255 255;
 	    }
 	 }
 	 part { name: "bar";
@@ -198,22 +207,23 @@ collections {
 	    source: "";
 	    in: 0.5 0.0;
 	    action: STATE_SET "visible" 0.0;
-            transition: DECELERATE 1.0;
+            transition: LINEAR 2.0;
 	    target: "light";
 	    after: "show2";
 	 }
 	 program { name: "show2";
 	    action: STATE_SET "visible" 0.0;
-            transition: DECELERATE 1.0;
-	    target: "logo";
+            transition: LINEAR 2.0;
+	    target: "logoclip";
 	    after: "show3";
 	 }
 	 program { name: "show3";
 	    action: STATE_SET "visible" 0.0;
-            transition: DECELERATE 1.0;
+            transition: LINEAR 2.0;
 	    target: "bar";
 	    after: "blink1";
 	 }
+	 
 	 program { name: "blink1";
 	    action: STATE_SET "visible" 0.0;
             transition: SINUSOIDAL 1.0;
@@ -237,7 +247,7 @@ collections {
 	 program { name: "title2";
 	    action: STATE_SET "visible" 0.0;
 	    target: "exquisite.title";
-	    transition: DECELERATE 1.0;
+	    transition: SINUSOIDAL 1.0;
 	 }
 
 	 program { name: "message1";
@@ -250,7 +260,7 @@ collections {
 	 program { name: "message2";
 	    action: STATE_SET "visible" 0.0;
 	    target: "exquisite.message";
-	    transition: DECELERATE 1.0;
+	    transition: SINUSOIDAL 1.0;
 	 }
 	 
 	 program { name: "pulsate1";
@@ -292,7 +302,7 @@ collections {
 	 program { name: "exit2";
 	    action: STATE_SET "default" 0.0;
 	    transition: ACCELERATE 0.5;
-	    target: "logo";
+	    target: "logoclip";
 	    target: "logoglow";
 	    target: "exquisite.title";
 	    target: "exquisite.message";
