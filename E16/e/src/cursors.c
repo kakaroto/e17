@@ -22,12 +22,15 @@
  * CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 #include "E.h"
-#include "X11/cursorfont.h"
 #include "conf.h"
 #include "cursors.h"
 #include "e16-ecore_list.h"
 #include "emodule.h"
 #include "xwin.h"
+#include <X11/cursorfont.h>
+#if HAVE_X11_EXTENSIONS_XRENDER_H
+#include <X11/extensions/Xrender.h>
+#endif
 
 struct _ecursor {
    char               *name;
@@ -38,13 +41,63 @@ struct _ecursor {
 
 static Ecore_List  *cursor_list = NULL;
 
+#define ColorToPixel(ec) (0xff000000 + (ec->red << 16) + (ec->green <<8) + ec->blue)
+
+static              Cursor
+ECreatePixmapCursor(Pixmap cpmap, Pixmap cmask, unsigned int w, unsigned int h,
+		    int xh, int yh, EColor * fg, EColor * bg)
+{
+   Cursor              curs;
+
+#if HAVE_X11_EXTENSIONS_XRENDER_H
+   /* Assuming we have XRenderCreateCursor (render >= 0.5) */
+   Pixmap              pmap;
+   XGCValues           gcv;
+   GC                  gc;
+   Picture             pict;
+   XRenderPictFormat  *pictfmt;
+
+   pictfmt = XRenderFindStandardFormat(disp, PictStandardARGB32);
+
+   pmap = XCreatePixmap(disp, WinGetXwin(VROOT), w, h, 32);
+
+   gcv.foreground = 0;
+   gc = EXCreateGC(pmap, GCForeground, &gcv);
+   XFillRectangle(disp, pmap, gc, 0, 0, w, h);
+   gcv.fill_style = FillOpaqueStippled;
+   gcv.stipple = cpmap;
+   gcv.clip_mask = cmask;
+   gcv.foreground = ColorToPixel(fg);
+   gcv.background = ColorToPixel(bg);
+   XChangeGC(disp, gc,
+	     GCForeground | GCBackground | GCFillStyle | GCStipple | GCClipMask,
+	     &gcv);
+   XFillRectangle(disp, pmap, gc, 0, 0, w, h);
+   EXFreeGC(gc);
+
+   pict = XRenderCreatePicture(disp, pmap, pictfmt, 0, 0);
+   curs = XRenderCreateCursor(disp, pict, xh, yh);
+
+   XFreePixmap(disp, pmap);
+   XRenderFreePicture(disp, pict);
+#else
+   XColor              fgxc, bgxc;
+
+   EAllocXColor(WinGetCmap(VROOT), &fgxc, fg);
+   EAllocXColor(WinGetCmap(VROOT), &bgxc, bg);
+
+   curs = XCreatePixmapCursor(disp, cpmap, cmask, &fgxc, &bgxc, xh, yh);
+   w = h = 0;
+#endif
+   return curs;
+}
+
 static ECursor     *
-ECursorCreate(const char *name, const char *image, int native_id, EColor * fg,
-	      EColor * bg)
+ECursorCreate(const char *name, const char *image, int native_id,
+	      EColor * fg, EColor * bg)
 {
    Cursor              curs;
    Pixmap              pmap, mask;
-   XColor              fgxc, bgxc;
    int                 xh, yh;
    unsigned int        w, h, ww, hh;
    char               *img, msk[FILEPATH_LEN_MAX];
@@ -70,13 +123,11 @@ ECursorCreate(const char *name, const char *image, int native_id, EColor * fg,
 	curs = None;
 	if ((w <= ww) && (h <= hh) && (pmap))
 	  {
-	     EAllocXColor(WinGetCmap(VROOT), &fgxc, fg);
-	     EAllocXColor(WinGetCmap(VROOT), &bgxc, bg);
 	     if (xh < 0 || xh >= (int)w)
 		xh = (int)w / 2;
 	     if (yh < 0 || yh >= (int)h)
 		yh = (int)h / 2;
-	     curs = XCreatePixmapCursor(disp, pmap, mask, &fgxc, &bgxc, xh, yh);
+	     curs = ECreatePixmapCursor(pmap, mask, w, h, xh, yh, fg, bg);
 	  }
 
 	if (!curs)
@@ -178,6 +229,9 @@ ECursorConfigLoad(FILE * fs)
    char                name[FILEPATH_LEN_MAX], *pname;
    char                file[FILEPATH_LEN_MAX], *pfile;
    int                 native_id = -1;
+
+   SET_COLOR(&clr, 0, 0, 0);
+   SET_COLOR(&clr2, 255, 255, 255);
 
    pname = pfile = NULL;
 
