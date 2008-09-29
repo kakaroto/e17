@@ -9,41 +9,6 @@ images {
 collections {
    group {
       name: "exquisite/theme";
-      
-      script {       
-         public shift_text() {
-           new x;
-           new y;
-           new x2;
-           
-           custom_state(PART:"textarea", "default", 0.0);
-           custom_state(PART:"statusarea", "default", 0.0);
-           
-           get_state_val(PART:"statusarea", STATE_REL1_OFFSET, x2, y);
-           get_state_val(PART:"textarea", STATE_REL1_OFFSET, x, y);
-           
-           y = y - 8;
-           
-           set_state_val(PART:"textarea", STATE_REL1_OFFSET, x, y);
-           set_state_val(PART:"statusarea", STATE_REL1_OFFSET, x2, y);
-           
-           set_state(PART:"textarea", "custom", 0.0);
-           set_state(PART:"statusarea", "custom", 0.0);
-         }
-         
-         public reset_text() {
-           new x;
-           new x2;
-           new y;
-           
-           get_state_val(PART:"textarea", STATE_REL1_OFFSET, x, y);
-           get_state_val(PART:"textarea", STATE_REL1_OFFSET, x2, y);
-           
-           set_state_val(PART:"textarea", STATE_REL1_OFFSET, x, 0);
-           set_state_val(PART:"textarea", STATE_REL1_OFFSET, x2, 0);
-         }
-      }
-      
       parts {
 	 part { name: "base";
 	    type: RECT;
