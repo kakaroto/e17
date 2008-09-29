@@ -252,6 +252,9 @@ main(int argc, char **argv)
    DbusInit();
 #endif
 
+   if (Mode.wm.window)
+      EMapWindow(VROOT);
+
    ModulesSignal(ESIGNAL_INIT, NULL);
 
    /* Load the theme */
@@ -267,9 +270,6 @@ main(int argc, char **argv)
    /* Kill the E process owning the "init window" */
    ExtInitWinKill();
 #endif
-
-   if (Mode.wm.window)
-      EMapWindow(VROOT);
 
    /* let's make sure we set this up and go to our desk anyways */
    DeskGoto(DesksGetCurrent());
