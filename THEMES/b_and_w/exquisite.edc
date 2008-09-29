@@ -294,6 +294,8 @@ collections {
 	    transition: ACCELERATE 0.5;
 	    target: "logo";
 	    target: "logoglow";
+	    target: "exquisite.title";
+	    target: "exquisite.message";
 	    after: "exit3";
 	 }
 	 program { name: "exit3";
