@@ -14,7 +14,6 @@
 * xevie: need to put into e and blast events
 * xevie: need to add audio config for mouse press/release events, drag etc.
 * xevie: need to be able to fake right mouse
-* cfg: use e's config dialog framework for illume cfg stuff.
 * pwr: need to probably bypass x screensaver for blanking and do it manually
 * pwr: need a way to disable suspend based on power status (eg when plugged in)
 * e: need to be able to have e_widgets tell parents "stop auto scrolling"
