@@ -1,0 +1,7 @@
+unset MAKEFLAGS CC CFLAGS PKG_CONFIG_PATH LD_LIBRARY_PATH LANG LANGUAGE
+unset LC_ALL LC_MESSAGES QUIET
+unalias make
+export OMDIR="$PWD"
+export BBPATH="${OMDIR}/build:${OMDIR}/org.openembedded.dev"
+export PYTHONPATH="${OMDIR}/bitbake/libbitbake"
+export PATH="${OMDIR}/bitbake/bin:${PATH}"

@@ -1,0 +1,25 @@
+From 66f5c8ca494a9c115adabba956dd1424bcd2e01c Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler <raster@openmoko.org>
+Date: Mon, 29 Sep 2008 15:34:13 +1000
+Subject: [PATCH] add proper dependency to gpe-sketchbook (depends on sqlite)
+
+---
+ packages/gpe-sketchbook/gpe-sketchbook_0.2.8.bb |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/packages/gpe-sketchbook/gpe-sketchbook_0.2.8.bb b/packages/gpe-sketchbook/gpe-sketchbook_0.2.8.bb
+index b487840..97b2893 100644
+--- a/packages/gpe-sketchbook/gpe-sketchbook_0.2.8.bb
++++ b/packages/gpe-sketchbook/gpe-sketchbook_0.2.8.bb
+@@ -3,7 +3,7 @@ PR = "r4"
+ 
+ inherit gpe pkgconfig
+ 
+-DEPENDS = "libgpewidget"
++DEPENDS = "libgpewidget sqlite"
+ SECTION = "gpe"
+ SECTION = "gpe"
+ PRIORITY = "optional"
+-- 
+1.5.4.3
+

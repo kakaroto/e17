@@ -1,0 +1,34 @@
+From d766d573eb1db88da05df391198eaed5205d14b0 Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler <raster@openmoko.org>
+Date: Mon, 29 Sep 2008 22:38:55 +1000
+Subject: [PATCH] update efl again to good working version
+
+---
+ conf/distro/include/sane-srcrevs.inc |    7 ++++++-
+ 1 files changed, 6 insertions(+), 1 deletions(-)
+
+diff --git a/conf/distro/include/sane-srcrevs.inc b/conf/distro/include/sane-srcrevs.inc
+index 874b740..acf145c 100644
+--- a/conf/distro/include/sane-srcrevs.inc
++++ b/conf/distro/include/sane-srcrevs.inc
+@@ -194,7 +194,7 @@ SRCREV_pn-zhone ?= "be3d72c6e5f5c0733df7064a616f8e39c1c12f2b"
+ # Enlightenment Foundation Libraries
+ # Caution: This is not alphabetically, but (roughly) dependency-sorted.
+ # Please leave it like that.
+-EFL_SRCREV ?= "36253"
++EFL_SRCREV ?= "36306"
+ SRCREV_pn-edb-native ?= "${EFL_SRCREV}"
+ SRCREV_pn-edb ?= "${EFL_SRCREV}"
+ SRCREV_pn-eet-native ?= "${EFL_SRCREV}"
+@@ -254,3 +254,8 @@ SRCREV_pn-exquisite ?= "${EFL_SRCREV}"
+ SRCREV_pn-rage ?= "${EFL_SRCREV}"
+ 
+ SRCREV_pn-illume ?= "${EFL_SRCREV}"
++SRCREV_pn-illume-theme-illume ?= "${EFL_SRCREV}"
++
++SRCREV_pn-exquisite-theme-illume ?= "${EFL_SRCREV}"
++
++SRCREV_pn-alarm ?= "${EFL_SRCREV}"
+-- 
+1.5.4.3
+
