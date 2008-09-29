@@ -41,9 +41,6 @@ StartupWindowsCreate(void)
    int                 x, y, bx, by, bw, bh;
    EObj               *eo;
 
-   if (!Conf.startup.animate)
-      return;
-
    /* Acting only as boolean? */
    if (BackgroundFind("STARTUP_BACKGROUND_SIDEWAYS"))
       bg_sideways = 1;

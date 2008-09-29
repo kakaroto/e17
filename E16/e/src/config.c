@@ -586,7 +586,7 @@ ThemeConfigLoad(void)
    for (i = 0; i < (int)(sizeof(config_files) / sizeof(char *)); i++)
 
      {
-	if (!Mode.wm.restart)
+	if (!Mode.wm.restart && Conf.startup.animate)
 	  {
 	     if (i == 2)
 		StartupWindowsCreate();
