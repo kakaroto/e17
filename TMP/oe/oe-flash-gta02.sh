@@ -10,4 +10,4 @@ echo "ROOTFS: $ROOTFS"
 sleep 5
 
 sudo dfu-util -a kernel -D $KERNEL
-sudo duf-util -a rootfs -D $KERNEL
+sudo duf-util -a rootfs -D $ROOTFS
