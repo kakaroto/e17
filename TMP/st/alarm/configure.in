@@ -15,33 +15,15 @@ AM_PROG_CC_STDC
 AC_HEADER_STDC
 AC_C_CONST
 
-PKG_CHECK_MODULES([COMMON], [
-   ecore
-   ecore-file
-   edbus
-   ])
-
 PKG_CHECK_MODULES([ALARM], [
-   eet
-   evas
-   ecore-x
-   ecore-evas
-   ecore-job
-   ecore-txt
-   edje
+   elementary
    ])
-
-my_libs="-lm"
-AC_SUBST(my_libs)
 
 AC_OUTPUT([
 Makefile
 src/Makefile
 src/bin/Makefile
 data/Makefile
-data/themes/Makefile
-data/images/Makefile
 data/desktop/Makefile
 data/sounds/Makefile
-data/etc/Makefile
 ])
