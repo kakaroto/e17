@@ -12,7 +12,7 @@ ln -sf org.openembedded.dev/packages                              packages
 ln -sf org.openembedded.dev/conf/distro/include/sane-srcrevs.inc  sane-srcrevs.inc
 ln -sf org.openembedded.dev/conf/distro/include/sane-srcdates.inc sane-srcdates.inc
 
-ln -s ../../my_packages org.openembedded.dev/packages/my_packages
+ln -sf ../../my_packages                                          org.openembedded.dev/packages/my_packages
 
 ./oe-patches.sh
 
