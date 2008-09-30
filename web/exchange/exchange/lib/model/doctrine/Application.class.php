@@ -78,6 +78,7 @@ class Application extends BaseApplication
 			$output .= '<url>'.htmlspecialchars($this->getSourceUrl()).'</url>';
 			$output .= '<thumbnail>'.htmlspecialchars(Tools::get('url').$this->getUrlPath().'smallthumb.png').'</thumbnail>';
 			$output .= '<screenshot>'.htmlspecialchars(Tools::get('url').$this->getUrlPath().'screenshot.png').'</screenshot>';
+			$output .= '<rating>'.$this->getRating().'</rating>';
 			$output .= '<user_id>'.$this->getUserId().'</user_id>';
 			$output .= '<created_at>'.$this->getCreatedAt().'</created_at>';
 			$output .= '<updated_at>'.$this->getUpdatedAt().'</updated_at>';
