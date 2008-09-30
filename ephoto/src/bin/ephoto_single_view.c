@@ -170,24 +170,35 @@ destroy(Ewl_Widget *w, void *event, void *data)
 static void 
 show_advanced(void)
 {
-	Ewl_Widget *fbox, *button;
+	Ewl_Widget *vbox, *fbox, *button;
 
 	em->ewin = add_window("Ephoto Advanced Image Tools!", 
-				240, 185, destroy, NULL);
+				230, 100, destroy, NULL);
+
+	vbox = add_box(em->ewin, EWL_ORIENTATION_VERTICAL, 1);
+	ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_ALL);
 
 	fbox = ewl_hfreebox_new();
 	ewl_object_alignment_set(EWL_OBJECT(fbox), EWL_FLAG_ALIGN_CENTER);
 	ewl_object_fill_policy_set(EWL_OBJECT(fbox), EWL_FLAG_FILL_ALL);
-	ewl_container_child_append(EWL_CONTAINER(em->ewin), fbox);
+	ewl_container_child_append(EWL_CONTAINER(vbox), fbox);
 	ewl_widget_show(fbox);
 
 	button = add_button(fbox, "Grayscale", NULL, image_grayscale, em->simage);
-		
+	ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_ALL);		
+	ewl_object_minimum_w_set(EWL_OBJECT(button), 75);
+
 	button = add_button(fbox, "Sepia", NULL, image_sepia, em->simage);
+	ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_ALL);
+	ewl_object_minimum_w_set(EWL_OBJECT(button), 75);
 
 	button = add_button(fbox, "Blur", NULL, image_blur, em->simage);
+	ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_ALL);
+	ewl_object_minimum_w_set(EWL_OBJECT(button), 75);
 
 	button = add_button(fbox, "Sharpen", NULL, image_sharpen, em->simage);
+	ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_ALL);
+	ewl_object_minimum_w_set(EWL_OBJECT(button), 75);
 
 	return;
 }
