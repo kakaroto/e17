@@ -16,7 +16,7 @@ void
 show_albums(Ewl_Widget *c)
 {
 	em->atree = add_atree(c);
-       	ewl_object_maximum_w_set(EWL_OBJECT(em->atree), 180);
+	ewl_object_maximum_w_set(EWL_OBJECT(em->atree), 180);
 
 	populate_albums(NULL, NULL, NULL);
 }
@@ -52,8 +52,9 @@ add_atree(Ewl_Widget *c)
 	ewl_mvc_selection_mode_set(EWL_MVC(tree), EWL_SELECTION_MODE_SINGLE);
 	ewl_object_fill_policy_set(EWL_OBJECT(tree), EWL_FLAG_FILL_FILL);
 	ewl_object_minimum_w_set(EWL_OBJECT(tree), 180);
-	ewl_container_child_prepend(EWL_CONTAINER(c), tree);
+	ewl_container_child_append(EWL_CONTAINER(c), tree);
 	ewl_widget_show(tree);
+	ewl_notebook_page_tab_text_set(EWL_NOTEBOOK(c), tree, "Albums");
 
 	return tree;
 }
@@ -125,7 +126,7 @@ rc_remove(Ewl_Widget *w, void *event, void *data)
 	Ewl_Widget *icon;
 
 	icon = data;
-	ephoto_db_delete_album(em->db, ewl_icon_label_get(EWL_ICON(icon)));
+	ephoto_db_delete_album(ewl_icon_label_get(EWL_ICON(icon)));
 	populate_albums(NULL, NULL, NULL);
 }
 
@@ -146,9 +147,7 @@ void
 populate_albums(Ewl_Widget *w, void *event, void *data)
 {
 	const char *album;
-	pthread_t album_worker;
-	int ret1;
-	
+		
 	album = NULL;
 
 	if (w)
@@ -160,16 +159,10 @@ populate_albums(Ewl_Widget *w, void *event, void *data)
 	if (!ecore_list_empty_is(em->albums))
 		ecore_list_destroy(em->albums);
 
-	em->albums = ecore_list_new();
-	
-	ret1 = pthread_create(&album_worker, NULL, get_albums_pre, NULL);
-	if (ret1)
-	{
-		printf("ERROR: Couldn't create thread!\n");
-		return;
-	}
-	pthread_join(album_worker, NULL);
-
+	em->albums = ecore_dlist_new();
+	em->albums = ephoto_db_list_albums();	
+	ecore_dlist_first_goto(em->albums);
+	ewl_mvc_data_set(EWL_MVC(em->atree), em->albums);
 	populate_images(NULL, NULL, NULL);
 
 	return;
@@ -178,41 +171,15 @@ populate_albums(Ewl_Widget *w, void *event, void *data)
 static void
 populate_images(Ewl_Widget *w, void *event, void *data)
 {
-	pthread_t image_worker;
-	int ret1;
-
 	if (!ecore_list_empty_is(em->images))
 		ecore_dlist_destroy(em->images);
 
 	em->images = ecore_dlist_new();
 	if (em->fbox) ewl_container_reset(EWL_CONTAINER(em->fbox));
-
-	ret1 = pthread_create(&image_worker, NULL, get_aimages_pre, NULL);
-	if (ret1)
-	{	printf("ERROR: Couldn't create thread!\n");
-		return;
-	}
-	pthread_join(image_worker, NULL);
-
+	em->images = ephoto_db_list_images(em->current_album);
+	ecore_dlist_first_goto(em->images);
 	ewl_mvc_data_set(EWL_MVC(em->fbox), em->images);
 
 	return;
-}
-
-void *
-get_albums_pre()
-{
-        em->albums = ephoto_db_list_albums(em->db);
-        ecore_dlist_first_goto(em->albums);
-        ewl_mvc_data_set(EWL_MVC(em->atree), em->albums);
-        pthread_exit(NULL);
-}
-
-void *
-get_aimages_pre()
-{
-        em->images = ephoto_db_list_images(em->db, em->current_album);
-        ecore_dlist_first_goto(em->images);
-        pthread_exit(NULL);
 }
 

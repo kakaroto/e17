@@ -33,7 +33,7 @@ set_image_file(Ewl_Widget *w, void *event, void *data)
 Ewl_Widget *
 add_single_view(Ewl_Widget *c)
 {
-	Ewl_Widget *ibox, *bhbox;
+	Ewl_Widget *ibox, *bhbox, *button;
 
 	em->ewin = NULL;
 
@@ -47,7 +47,7 @@ add_single_view(Ewl_Widget *c)
 	ewl_widget_show(ibox);
 
         em->simage = add_image(ibox, NULL, 0, NULL, NULL);
-        ewl_object_alignment_set(EWL_OBJECT(em->simage), 
+        ewl_object_alignment_set(EWL_OBJECT(em->simage),
 					EWL_FLAG_ALIGN_CENTER);
         ewl_object_fill_policy_set(EWL_OBJECT(em->simage), 
 					EWL_FLAG_FILL_SHRINK);
@@ -55,6 +55,12 @@ add_single_view(Ewl_Widget *c)
 	bhbox = add_box(em->single_vbox, EWL_ORIENTATION_HORIZONTAL, 5);
 	ewl_object_alignment_set(EWL_OBJECT(bhbox), EWL_FLAG_ALIGN_CENTER);
 	ewl_object_fill_policy_set(EWL_OBJECT(bhbox), EWL_FLAG_FILL_SHRINK);
+
+	button = add_button(bhbox, "Back", PACKAGE_DATA_DIR "/images/go-previous.png", 
+				show_normal_view, NULL);
+	ewl_button_image_size_set(EWL_BUTTON(button), 22, 22);
+        ewl_object_alignment_set(EWL_OBJECT(button), EWL_FLAG_ALIGN_LEFT);
+	ewl_object_fill_policy_set(EWL_OBJECT(button), EWL_FLAG_FILL_NONE);
 
 	add_standard_edit_tools(bhbox);
 

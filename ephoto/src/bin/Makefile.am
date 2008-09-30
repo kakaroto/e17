@@ -10,19 +10,21 @@ ephoto_SOURCES = ephoto.c \
 		 ephoto_database.c \
 		 ephoto_dialogs.c \
 		 ephoto_exif.c \
+		 ephoto_fsystem.c \
 		 ephoto_gui.c \
 		 ephoto_imaging.c \
 		 ephoto_import.c \
 		 ephoto_main.c \
 		 ephoto_nls.c \
 		 ephoto_normal_view.c \
+		 ephoto_simple.c \
 		 ephoto_single_view.c \
 		 ephoto_slideshow.c \
 		 ephoto_utils.c
 		     
-ephoto_CFLAGS = @EWL_CFLAGS@ @SQLITE_CFLAGS@ @EXIF_CFLAGS@ @EFREET_MIME_CFLAGS@ @EPSILON_CFLAGS@ -Wall
+ephoto_CFLAGS = @EWL_CFLAGS@ @EXIF_CFLAGS@ @EFREET_MIME_CFLAGS@ @EPSILON_CFLAGS@ -Wall
 
-ephoto_LDADD =  @EWL_LIBS@ @SQLITE_LIBS@ @EXIF_LIBS@ @EFREET_MIME_LIBS@ @EPSILON_LIBS@
+ephoto_LDADD =  @EWL_LIBS@ @EXIF_LIBS@ @EFREET_MIME_LIBS@ @EPSILON_LIBS@
 
 EXTRA_DIST = \
 	     ephoto.h

@@ -7,8 +7,10 @@
 
 #include "config.h"
 #include <Ecore.h>
+#include <Ecore_Evas.h>
 #include <Ecore_Data.h>
 #include <Ecore_File.h>
+#include <Edje.h>
 #include <Efreet_Mime.h>
 #include <Epsilon.h>
 #include <Evas.h>
@@ -16,9 +18,6 @@
 #include <libgen.h>
 #include <limits.h>
 #include <math.h>
-#include <pthread.h>
-#include <sched.h>
-#include <sqlite3.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -49,23 +48,18 @@
 void show_albums(Ewl_Widget *c);
 void populate_albums(Ewl_Widget *w, void *event, void *data);
 void show_add_album_dialog(Ewl_Widget *w, void *event, void *data);
-void *get_albums_pre();
-void *get_aimages_pre();
-void *create_athumb();
 
 /*ephoto_database.c*/
-sqlite3 *ephoto_db_init(void);
-void ephoto_db_add_album(sqlite3 *db, const char *name, 
+void ephoto_db_init(void);
+void ephoto_db_add_album(const char *name, 
 				const char *description);
-void ephoto_db_delete_album(sqlite3 *db, const char *name);
-Ecore_List *ephoto_db_list_albums(sqlite3 *db);
-void ephoto_db_add_image(sqlite3 *db, const char *album, 
-				const char *name, 
+void ephoto_db_delete_album(const char *name);
+Ecore_List *ephoto_db_list_albums();
+void ephoto_db_add_images(const char *album, 
+				Ecore_List *images);
+void ephoto_db_delete_image(const char *album, 
 				const char *path);
-void ephoto_db_delete_image(sqlite3 *db, const char *album, 
-				const char *path);
-Ecore_List *ephoto_db_list_images(sqlite3 *db, const char *album);
-void ephoto_db_close(sqlite3 *db);
+Ecore_List *ephoto_db_list_images(const char *album);
 
 /*ephoto_dialogs.c*/
 void about_dialog(Ewl_Widget *w, void *event, void *data);
@@ -80,9 +74,6 @@ void display_exif(Ewl_Widget *w, void *event, void *data);
 /*ephoto_fsystem.c*/
 void show_fsystem(Ewl_Widget *c);
 void populate_fsystem(Ewl_Widget *w, void *event, void *data);
-void *get_directories_pre();
-void *get_fimages_pre();
-void *create_fthumb();
 
 /*ephoto_gui.c*/
 Ewl_Widget *add_box(Ewl_Widget *c, Ewl_Orientation o, int spacing);
@@ -91,7 +82,7 @@ Ewl_Widget *add_button(Ewl_Widget *c, char *lbl, const char *img,
 				void *data);
 Ewl_Widget *add_entry(Ewl_Widget *c, char *txt, void *cb, 
 				void *data);
-Ewl_Widget *add_icon(Ewl_Widget *c, char *lbl, const char *img, 
+Ewl_Widget *add_icon(Ewl_Widget *c, const char *lbl, const char *img, 
 				int thumb, 
 				void *cb, 
 				void *data);
@@ -99,15 +90,15 @@ Ewl_Widget *add_image(Ewl_Widget *c,
 				const char *img, int thumb, 
 				void *cb, 
 				void *data);
-Ewl_Widget *add_label(Ewl_Widget *c, char *lbl);
+Ewl_Widget *add_label(Ewl_Widget *c, const char *lbl);
 Ewl_Widget *add_menubar(Ewl_Widget *c);
-Ewl_Widget *add_menu(Ewl_Widget *c, char *lbl);
-Ewl_Widget *add_menu_item(Ewl_Widget *c, char *lbl, 
+Ewl_Widget *add_menu(Ewl_Widget *c, const char *lbl);
+Ewl_Widget *add_menu_item(Ewl_Widget *c, const char *lbl, 
 				const char *img, 
 				void *cb, 
 				void *data);
 Ewl_Widget *add_text(Ewl_Widget *c, char *text);
-Ewl_Widget *add_window(char *title, int w, int h, void *cb, 
+Ewl_Widget *add_window(const char *title, int w, int h, void *cb, 
 				void *data);
 
 /*ephoto_imaging.c*/
@@ -137,6 +128,9 @@ Ewl_Widget *add_normal_view(Ewl_Widget *c);
 void freebox_image_clicked(Ewl_Widget *w, void *event, void *data);
 void show_normal_view(Ewl_Widget *w, void *event, void *data);
 
+/*ephoto_simple.c*/
+void show_ephoto_simple(const char *img);
+
 /*ephoto_single_view.c*/
 Ewl_Widget *add_single_view(Ewl_Widget *c);
 void show_single_view(Ewl_Widget *w, void *event, void *data);
@@ -159,7 +153,6 @@ struct _Ephoto_Main
 {
         char *current_album;
         char *current_directory;
-        Ecore_Hash *types;
         Ecore_List *albums;
 	Ecore_List *fsystem;
         Ecore_List *images;
@@ -169,13 +162,13 @@ struct _Ephoto_Main
         Ewl_Widget *fbox;
         Ewl_Widget *ftree;
 	Ewl_Widget *fthumb_size;
+	Ewl_Widget *info;
 	Ewl_Widget *scroll;
 	Ewl_Widget *simage;
         Ewl_Widget *single_vbox;
         Ewl_Widget *view;
         Ewl_Widget *view_box;
 	Ewl_Widget *win;
-        sqlite3 *db;
 };
 
 extern Ephoto_Main *em;

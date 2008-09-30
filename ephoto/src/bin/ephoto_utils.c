@@ -130,7 +130,7 @@ get_images(const char *directory)
                                         snprintf(path, PATH_MAX, "%s%s",
                                                  directory, file);
 				type = efreet_mime_type_get(strdup(path));
-				if ((ecore_hash_get(em->types, type)) == "image")
+				if (!strncmp(type, "image", 5))
 					ecore_dlist_append(files, strdup(path));
 			}
 		}

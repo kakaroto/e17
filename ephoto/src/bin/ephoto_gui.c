@@ -46,7 +46,7 @@ add_entry(Ewl_Widget *c, char *txt, void *cb, void *data)
 }
 
 Ewl_Widget *
-add_icon(Ewl_Widget *c, char *lbl, const char *img, int thumb, void *cb, void *data)
+add_icon(Ewl_Widget *c, const char *lbl, const char *img, int thumb, void *cb, void *data)
 {
 	Ewl_Widget *icon;
 	
@@ -101,7 +101,7 @@ add_image(Ewl_Widget *c, const char *img, int thumb, void *cb, void *data)
 }
 
 Ewl_Widget *
-add_label(Ewl_Widget *c, char *lbl)
+add_label(Ewl_Widget *c, const char *lbl)
 {
 	Ewl_Widget *label;
 
@@ -130,7 +130,7 @@ add_menubar(Ewl_Widget *c)
 }
 
 Ewl_Widget *
-add_menu(Ewl_Widget *c, char *lbl)
+add_menu(Ewl_Widget *c, const char *lbl)
 {
 	Ewl_Widget *menu;
 	
@@ -145,7 +145,7 @@ add_menu(Ewl_Widget *c, char *lbl)
 }
 
 Ewl_Widget *
-add_menu_item(Ewl_Widget *c, char *lbl, const char *img, void *cb, void *data)
+add_menu_item(Ewl_Widget *c, const char *lbl, const char *img, void *cb, void *data)
 {
 	Ewl_Widget *mi;
 
@@ -180,7 +180,7 @@ add_text(Ewl_Widget *c, char *txt)
 }
 
 Ewl_Widget *
-add_window(char *title, int w, int h, void *cb, void *data)
+add_window(const char *title, int w, int h, void *cb, void *data)
 {
 	Ewl_Widget *win;
 

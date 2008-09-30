@@ -7,11 +7,9 @@ static void
 destroy(Ewl_Widget *w, void *event, void *data)
 {
         ewl_widget_destroy(em->win);
-	ecore_hash_destroy(em->types);
 	ecore_list_destroy(em->albums);
 	ecore_list_destroy(em->fsystem);
 	ecore_dlist_destroy(em->images);
-	ephoto_db_close(em->db);
 	free(em->current_album);
 	free(em->current_directory);
 	free(em);
@@ -32,20 +30,13 @@ create_main(void)
         em->fsystem = ecore_list_new();
         em->images = ecore_dlist_new();
 
-        em->types = ecore_hash_new(ecore_str_hash, ecore_str_compare);
-        ecore_hash_set(em->types, "image/gif", "image");
-        ecore_hash_set(em->types, "image/jpeg", "image");
-        ecore_hash_set(em->types, "image/png", "image");
-        ecore_hash_set(em->types, "image/svg+xml", "image");
-        ecore_hash_set(em->types, "image/tiff", "image");
-
 	em->current_album = strdup("Complete Library");
-	em->db = ephoto_db_init();
+	ephoto_db_init();
 
 	getcwd(buf, PATH_MAX);
 	em->current_directory = strdup(buf);
 
-	em->win = add_window("Ephoto - Photo Management", 600, 400, destroy, NULL);
+	em->win = add_window("Ephoto - Photo Management", 800, 600, destroy, NULL);
 
 	vbox = add_box(em->win, EWL_ORIENTATION_VERTICAL, 5);
 	ewl_object_fill_policy_set(EWL_OBJECT(vbox), EWL_FLAG_FILL_ALL);

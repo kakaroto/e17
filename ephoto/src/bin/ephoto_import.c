@@ -42,13 +42,10 @@ import(Ewl_Widget *w, void *event, void *data)
 	if (!name)
 		return;
 	else
-		ephoto_db_add_album(em->db, name, desc);
+		ephoto_db_add_album(name, desc);
 
-	while (!ecore_list_empty_is(selected_images))
-	{
-		image = ecore_list_first_remove(selected_images);
-		ephoto_db_add_image(em->db, name, basename(image), image);
-	}
+	image = ecore_list_first_remove(selected_images);
+	ephoto_db_add_images(name, selected_images);
 
 	ewl_widget_destroy(win);
 	populate_albums(NULL, NULL, NULL);

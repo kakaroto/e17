@@ -67,17 +67,6 @@ dnl Set PACKAGE_SOURCE_DIR in config.h.
 packagesrcdir=`cd $srcdir && pwd`
 AC_DEFINE_UNQUOTED(PACKAGE_SOURCE_DIR, "${packagesrcdir}", [Source code directory])
 
-PKG_CHECK_MODULES([SQLITE], sqlite3,
-   [
-      have_sqlite3="Yes"
-   ],
-   [
-      have_sqlite3="No"
-      echo "Sqlite3 was not found by pkg-config!";
-      AC_MSG_ERROR([Ephoto needs sqlite3 to compile.])
-   ]
-)
-
 PKG_CHECK_MODULES([EXIF], libexif >= 0.6.13,
    [
       have_exif="Yes"
@@ -99,14 +88,25 @@ PKG_CHECK_MODULES([EVAS], evas,
    ]
 )
 
-PKG_CHECK_MODULES([ECORE], ecore-file,
+PKG_CHECK_MODULES([ECORE_FILE], ecore-file,
    [
-      have_ecore="Yes"
+      have_ecoref="Yes"
    ],
    [
-      have_ecore="No"
-      echo "Ecore was not found by pkg-config!";
-      AC_MSG_ERROR([Ephoto needs ecore to compile.])
+      have_ecoref="No"
+      echo "Ecore_File was not found by pkg-config!";
+      AC_MSG_ERROR([Ephoto needs ecore_file to compile.])
+   ]
+)
+
+PKG_CHECK_MODULES([ECORE_EVAS], ecore-evas,
+   [
+      have_ecoree="Yes"
+   ],
+   [
+      have_ecoree="No"
+      echo "Ecore_Evas was not found by pkg-config!";
+      AC_MSG_ERROR([Ephoto needs ecore_evas to compile.])
    ]
 )
 
@@ -187,13 +187,13 @@ echo
 echo "Configuration Options Summary:"
 echo
 echo "  Evas ............: $have_evas"
-echo "  Ecore ...........: $have_ecore"
+echo "  Ecore_File.......: $have_ecoref"
+echo "  Ecore_Evas.......: $have_ecoree"
 echo "  Edje ............: $have_edje"
 echo "  Efreet_Mime .....: $have_efreet_mime"
 echo "  Epsilon .........: $have_epsilon"
 echo "  Ewl .............: $have_ewl"
 echo "  Libexif .........: $have_exif"
-echo "  Sqlite3 .........: $have_sqlite3"
 echo
 echo "Installation Path.........: $prefix"
 echo

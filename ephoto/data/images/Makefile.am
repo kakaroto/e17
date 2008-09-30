@@ -14,6 +14,7 @@ FILES = add.png \
 	go-home.png \
 	go-down.png \
 	go-next.png \
+	go-previous.png \
 	image.png \
 	in.png \
 	list_view.png \

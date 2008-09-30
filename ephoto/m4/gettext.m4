@@ -138,7 +138,7 @@ changequote([,])dnl
 ], [])[extern int _nl_msg_cat_cntr;
 extern int *_nl_domain_bindings;],
             [bindtextdomain ("", "");
-return (int) gettext ("")]ifelse([$2], [need-ngettext], [ + (int) ngettext ("", "", 0)], [])[ + _nl_msg_cat_cntr + *_nl_domain_bindings],
+return (long) gettext ("")]ifelse([$2], [need-ngettext], [ + (long) ngettext ("", "", 0)], [])[ + _nl_msg_cat_cntr + *_nl_domain_bindings],
             gt_cv_func_gnugettext_libc=yes,
             gt_cv_func_gnugettext_libc=no)])
 
@@ -174,7 +174,7 @@ extern
 #endif
 const char *_nl_expand_alias ();],
               [bindtextdomain ("", "");
-return (int) gettext ("")]ifelse([$2], [need-ngettext], [ + (int) ngettext ("", "", 0)], [])[ + _nl_msg_cat_cntr + *_nl_expand_alias (0)],
+return (long) gettext ("")]ifelse([$2], [need-ngettext], [ + (long) ngettext ("", "", 0)], [])[ + _nl_msg_cat_cntr + *_nl_expand_alias (0)],
               gt_cv_func_gnugettext_libintl=yes,
               gt_cv_func_gnugettext_libintl=no)
             dnl Now see whether libintl exists and depends on libiconv.
@@ -195,7 +195,7 @@ extern
 #endif
 const char *_nl_expand_alias ();],
                 [bindtextdomain ("", "");
-return (int) gettext ("")]ifelse([$2], [need-ngettext], [ + (int) ngettext ("", "", 0)], [])[ + _nl_msg_cat_cntr + *_nl_expand_alias (0)],
+return (long) gettext ("")]ifelse([$2], [need-ngettext], [ + (long) ngettext ("", "", 0)], [])[ + _nl_msg_cat_cntr + *_nl_expand_alias (0)],
                [LIBINTL="$LIBINTL $LIBICONV"
                 LTLIBINTL="$LTLIBINTL $LTLIBICONV"
                 gt_cv_func_gnugettext_libintl=yes
