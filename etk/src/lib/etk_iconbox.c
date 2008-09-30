@@ -38,6 +38,7 @@
 #include "etk_scrolled_view.h"
 #include "etk_theme.h"
 #include "etk_utils.h"
+#include "etk_string.h"
 
 /**
  * @addtogroup Etk_Iconbox
@@ -85,6 +86,7 @@ typedef struct Etk_Iconbox_Grid
 typedef struct Etk_Iconbox_Icon_Object
 {
    Evas_Object *image;
+   Evas_Object *emblem;
    Etk_Widget *label;
    Etk_Bool use_edje;
 } Etk_Iconbox_Icon_Object;
@@ -190,6 +192,8 @@ Etk_Iconbox_Model *etk_iconbox_model_new(Etk_Iconbox *iconbox)
    model->icon_y = 0;
    model->icon_width = 48;
    model->icon_height = 48;
+   model->emblem_width = 22;
+   model->emblem_height = 22;
    model->icon_fill = ETK_FALSE;
    model->icon_keep_aspect = ETK_TRUE;
 
@@ -254,6 +258,30 @@ Etk_Iconbox_Model *etk_iconbox_current_model_get(Etk_Iconbox *iconbox)
    if (!iconbox)
       return NULL;
    return iconbox->current_model;
+}
+
+/**
+ * @brief Set the position of the icon's emblem
+ * @param iconbox an iconbox
+ * @param pos the position of the emblems
+ */
+void etk_iconbox_emblem_position_set(Etk_Iconbox *iconbox, Etk_Emblem_Position pos)
+{
+   if (!iconbox)
+      return;
+   iconbox->emblem_position = pos;
+}
+
+/**
+ * @brief Get the position of the icon's emblem
+ * @param iconbox an iconbox
+ * @return the position of the emblems
+ */
+Etk_Emblem_Position etk_iconbox_emblem_position_get(Etk_Iconbox *iconbox)
+{
+   if (!iconbox)
+      return -1;
+   return iconbox->emblem_position;
 }
 
 /**
@@ -467,6 +495,8 @@ Etk_Iconbox_Icon *etk_iconbox_append(Etk_Iconbox *iconbox, const char *filename,
    icon->next = NULL;
    icon->filename = filename ? strdup(filename) : NULL;
    icon->edje_group = edje_group ? strdup(edje_group) : NULL;
+   icon->emblem_filename = NULL;
+   icon->emblem_edje_group = NULL;
    icon->label = label ? strdup(label) : NULL;
    icon->data = NULL;
    icon->data_free_cb = NULL;
@@ -515,6 +545,8 @@ void etk_iconbox_icon_del(Etk_Iconbox_Icon *icon)
 
    free(icon->filename);
    free(icon->edje_group);
+   free(icon->emblem_filename);
+   free(icon->emblem_edje_group);
    free(icon->label);
 
    if (icon->data && icon->data_free_cb)
@@ -727,7 +759,7 @@ void etk_iconbox_icon_file_set(Etk_Iconbox_Icon *icon, const char *filename, con
 }
 
 /**
- * @brief Sets the file used by the icon's image
+ * @brief Gets the file used by the icon's image
  * @param icon an icon
  * @param filename a location where to store the filename of the icon's image
  * @param edje_group a location where to store the edje group of the icon's image
@@ -738,6 +770,63 @@ void etk_iconbox_icon_file_get(Etk_Iconbox_Icon *icon, const char **filename, co
       *filename = icon ? icon->filename : NULL;
    if (edje_group)
       *edje_group = icon ? icon->edje_group : NULL;
+}
+
+/**
+ * @brief Sets the emblem from the stock icons
+ * @param icon an icon
+ * @param stock_name the name of the stock image (ex."readonly", "system", "favorite", etc)
+ */
+void etk_iconbox_icon_emblem_set_from_stock(Etk_Iconbox_Icon *icon, const char *stock_name)
+{
+   Etk_String *key;
+
+   if (!icon || !stock_name)
+      return;
+
+   key = etk_string_new_printf("emblems/emblem-%s_22", stock_name);
+   etk_iconbox_icon_emblem_file_set(icon, etk_theme_icon_path_get(), key->string);
+   etk_object_destroy(ETK_OBJECT(key));
+}
+
+/**
+ * @brief Sets the file path of the emblem's image
+ * @param icon an icon
+ * @param filename the filename of the emblem's image
+ * @param edje_group the edje group of the emblem's image. It has to be set to NULL for a "normal" image
+ */
+void etk_iconbox_icon_emblem_file_set(Etk_Iconbox_Icon *icon, const char *filename, const char *edje_group)
+{
+   if (!icon)
+      return;
+
+   if (icon->emblem_filename != filename)
+   {
+      free(icon->emblem_filename);
+      icon->emblem_filename = filename ? strdup(filename) : NULL;
+   }
+   if (icon->emblem_edje_group != edje_group)
+   {
+      free(icon->emblem_edje_group);
+      icon->emblem_edje_group = edje_group ? strdup(edje_group) : NULL;
+   }
+
+   if (!icon->iconbox->frozen)
+      etk_widget_redraw_queue(icon->iconbox->grid);
+}
+
+/**
+ * @brief Gets the file used by the emblem's image
+ * @param icon an icon
+ * @param filename a location where to store the filename of the emblem's image
+ * @param edje_group a location where to store the edje group of the emblem's image
+ */
+void etk_iconbox_icon_emblem_file_get(Etk_Iconbox_Icon *icon, const char **filename, const char **edje_group)
+{
+   if (filename)
+      *filename = icon ? icon->emblem_filename : NULL;
+   if (edje_group)
+      *edje_group = icon ? icon->emblem_edje_group : NULL;
 }
 
 /**
@@ -938,6 +1027,7 @@ static void _etk_iconbox_constructor(Etk_Iconbox *iconbox)
    iconbox->current_model = NULL;
    etk_iconbox_current_model_set(iconbox, etk_iconbox_model_new(iconbox));
 
+   iconbox->emblem_position = ETK_ICONBOX_EMBLEM_POSITION_TL;
    iconbox->num_icons = 0;
    iconbox->first_icon = NULL;
    iconbox->last_icon = NULL;
@@ -1089,6 +1179,11 @@ static void _etk_iconbox_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geo
          evas_object_del(icon_object->image);
          icon_object->image = NULL;
       }
+      if (icon_object->emblem)
+      {
+         evas_object_del(icon_object->emblem);
+         icon_object->emblem = NULL;
+      }
    }
 
    /* Create or delete icon objects if necessary */
@@ -1141,6 +1236,7 @@ static void _etk_iconbox_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geo
    {
       icon_object = l->data;
       evas_object_hide(icon_object->image);
+      evas_object_hide(icon_object->emblem);
       etk_widget_hide(icon_object->label);
    }
 
@@ -1429,6 +1525,7 @@ static void _etk_iconbox_icon_object_add(Etk_Iconbox_Grid *grid)
 
    icon_object = malloc(sizeof(Etk_Iconbox_Icon_Object));
    icon_object->image = NULL;
+   icon_object->emblem = NULL;
    icon_object->use_edje = ETK_FALSE;
 
    icon_object->label = etk_label_new(NULL);
@@ -1459,6 +1556,8 @@ static void _etk_iconbox_icon_object_delete(Etk_Iconbox_Grid *grid)
          etk_cache_image_object_add(icon_object->image);*/
       evas_object_del(icon_object->image);
    }
+   if (icon_object->emblem)
+      evas_object_del(icon_object->emblem);
 
    etk_object_destroy(ETK_OBJECT(icon_object->label));
    free(icon_object);
@@ -1477,6 +1576,7 @@ static void _etk_iconbox_icon_draw(Etk_Iconbox_Icon *icon, Etk_Iconbox_Icon_Obje
    int icon_w, icon_h;
    float aspect_ratio;
    Etk_Geometry icon_geometry;
+   Etk_Geometry emblem_geometry;
 
    if (!icon || !icon_object || !model || !(iconbox = icon->iconbox) || !(grid = ETK_ICONBOX_GRID(iconbox->grid)))
       return;
@@ -1487,6 +1587,11 @@ static void _etk_iconbox_icon_draw(Etk_Iconbox_Icon *icon, Etk_Iconbox_Icon_Obje
    icon_object_geometry.y = y + model->ypadding;
    icon_object_geometry.w = model->width - 2 * model->xpadding;
    icon_object_geometry.h = model->height - 2 * model->ypadding;
+   
+   icon_geometry.x = 0;
+   icon_geometry.y = 0;
+   icon_geometry.w = 0;
+   icon_geometry.h = 0;
 
    /* Render the icon */
    if (icon->filename)
@@ -1500,7 +1605,7 @@ static void _etk_iconbox_icon_draw(Etk_Iconbox_Icon *icon, Etk_Iconbox_Icon_Obje
          }
          icon_object->use_edje = ETK_FALSE;
          evas_object_image_size_get(icon_object->image, &icon_w, &icon_h);
-	 evas_object_pass_events_set(icon_object->image, 1);
+         evas_object_pass_events_set(icon_object->image, 1);
       }
       else
       {
@@ -1566,6 +1671,80 @@ static void _etk_iconbox_icon_draw(Etk_Iconbox_Icon *icon, Etk_Iconbox_Icon_Obje
       evas_object_show(icon_object->image);
    }
 
+   /* Render the emblem */
+   if (icon->emblem_edje_group && edje_file_group_exists(icon->emblem_filename, icon->emblem_edje_group))
+   {
+      icon_object->emblem = edje_object_add(evas);
+      edje_object_file_set(icon_object->emblem, icon->emblem_filename, icon->emblem_edje_group);
+   }
+   else if (icon->emblem_filename)
+   {
+      icon_object->emblem = evas_object_image_add(evas);
+      evas_object_image_file_set(icon_object->emblem, icon->emblem_filename, icon->emblem_edje_group);
+   }
+   if (icon_object->emblem)
+   {
+      emblem_geometry.x = emblem_geometry.y = 0;
+      emblem_geometry.w = model->emblem_width;
+      emblem_geometry.h = model->emblem_height;
+      switch (iconbox->emblem_position)
+      {
+         case ETK_ICONBOX_EMBLEM_POSITION_FULL:
+            emblem_geometry.x = icon_geometry.x;
+            emblem_geometry.y = icon_geometry.y;
+            emblem_geometry.w = icon_geometry.w;
+            emblem_geometry.h = icon_geometry.h;
+            break;
+         case ETK_ICONBOX_EMBLEM_POSITION_CC:
+            emblem_geometry.x = icon_geometry.x + icon_geometry.w / 4;
+            emblem_geometry.y = icon_geometry.y + icon_geometry.h / 4;
+            break;
+         case ETK_ICONBOX_EMBLEM_POSITION_CL:
+            emblem_geometry.x = icon_geometry.x;
+            emblem_geometry.y = icon_geometry.y + icon_geometry.h / 4;
+            break;
+         case ETK_ICONBOX_EMBLEM_POSITION_CR:
+            emblem_geometry.x = icon_geometry.x + icon_geometry.w / 2;
+            emblem_geometry.y = icon_geometry.y + icon_geometry.h / 4;
+            break;
+         case ETK_ICONBOX_EMBLEM_POSITION_BL:
+            emblem_geometry.x = icon_geometry.x;
+            emblem_geometry.y = icon_geometry.y + icon_geometry.h / 2;
+            break;
+         case ETK_ICONBOX_EMBLEM_POSITION_BR:
+            emblem_geometry.x = icon_geometry.x + icon_geometry.w / 2;
+            emblem_geometry.y = icon_geometry.y + icon_geometry.h / 2;
+            break;
+         case ETK_ICONBOX_EMBLEM_POSITION_BC:
+            emblem_geometry.x = icon_geometry.x + icon_geometry.w / 4;
+            emblem_geometry.y = icon_geometry.y + icon_geometry.h / 2;
+            break;
+         case ETK_ICONBOX_EMBLEM_POSITION_TR:
+            emblem_geometry.x = icon_geometry.x + icon_geometry.w / 2;
+            emblem_geometry.y = icon_geometry.y;
+            break;
+         case ETK_ICONBOX_EMBLEM_POSITION_TL:
+            emblem_geometry.x = icon_geometry.x;
+            emblem_geometry.y = icon_geometry.y;
+            break;
+         case ETK_ICONBOX_EMBLEM_POSITION_TC:
+            emblem_geometry.x = icon_geometry.x + icon_geometry.w / 4;
+            emblem_geometry.y = icon_geometry.y;
+            break;
+        }
+      
+      if (!icon->emblem_edje_group)
+         evas_object_image_fill_set(icon_object->emblem, 0, 0, emblem_geometry.w, emblem_geometry.h);
+
+      if (grid->clip && clip)
+         evas_object_clip_set(icon_object->emblem, grid->clip);
+
+      evas_object_pass_events_set(icon_object->emblem, 1);
+      evas_object_move(icon_object->emblem, emblem_geometry.x, emblem_geometry.y);
+      evas_object_resize(icon_object->emblem, emblem_geometry.w, emblem_geometry.h);
+      evas_object_show(icon_object->emblem);
+   }
+   
    /* Render the label */
    label_geometry.x = icon_object_geometry.x + model->label_x;
    label_geometry.y = icon_object_geometry.y + model->label_y;
@@ -1701,7 +1880,9 @@ static int _etk_iconbox_grid_scroll_cb(void *data)
  * The model's settings can be changed with
  * etk_iconbox_model_geometry_set(), etk_iconbox_model_icon_geometry_set() and etk_iconbox_model_label_geometry_set(). @n @n
  * Once the model is defined, you can start adding and removing icons to the iconbox with etk_iconbox_append(),
- * etk_iconbox_icon_del() and etk_iconbox_clear().
+ * etk_iconbox_icon_del() and etk_iconbox_clear(). @n
+ * You can add an emblem to the icons using etk_iconbox_icon_emblem_file_set() or etk_iconbox_icon_emblem_set_from_stock().
+ * And you can change the position of the emblems with etk_iconbox_emblem_position_set() @n
  *
  * \par Object Hierarchy:
  * - Etk_Object

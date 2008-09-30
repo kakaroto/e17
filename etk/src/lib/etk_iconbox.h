@@ -33,7 +33,6 @@ extern "C" {
 
 /* TODO/FIXME list:
  * - Implement dnd
- * - Support emblems
  * - Support "vertically-filled" iconboxes
  * - Better documentation of model settings
  * - More insertion function (prepend, insert, ...)
@@ -60,7 +59,20 @@ extern int ETK_ICONBOX_ICON_UNSELECTED_SIGNAL;
 extern int ETK_ICONBOX_ALL_SELECTED_SIGNAL;
 extern int ETK_ICONBOX_ALL_UNSELECTED_SIGNAL;
 
-
+/** @brief The different positions of the emblems. Default is top-left corner*/
+typedef enum
+{
+   ETK_ICONBOX_EMBLEM_POSITION_TL,     /**< Emblem in the top-left corner */
+   ETK_ICONBOX_EMBLEM_POSITION_TR,     /**< Emblem in the top-right corner */
+   ETK_ICONBOX_EMBLEM_POSITION_TC,     /**< Emblem in the top at the center */
+   ETK_ICONBOX_EMBLEM_POSITION_BL,     /**< Emblem in the bottom-left corner */
+   ETK_ICONBOX_EMBLEM_POSITION_BR,     /**< Emblem in the bottom-right corner */
+   ETK_ICONBOX_EMBLEM_POSITION_BC,     /**< Emblem in the bottom at the center */
+   ETK_ICONBOX_EMBLEM_POSITION_CC,     /**< Emblem is in the middle of the icon */
+   ETK_ICONBOX_EMBLEM_POSITION_CL,     /**< Emblem is in the middle of the left side */
+   ETK_ICONBOX_EMBLEM_POSITION_CR,     /**< Emblem is in the middle of the right side */
+   ETK_ICONBOX_EMBLEM_POSITION_FULL    /**< Emblem take the same size/position of the icon */
+} Etk_Emblem_Position;
 
 /**
  * @brief Describes the model of an iconbox: it includes the position and the size of the cell, of the icon and
@@ -82,6 +94,8 @@ struct Etk_Iconbox_Model
    int icon_y;
    int icon_width;
    int icon_height;
+   int emblem_width;
+   int emblem_height;
 
    int label_x;
    int label_y;
@@ -108,6 +122,8 @@ struct Etk_Iconbox_Icon
 
    char *filename;
    char *edje_group;
+   char *emblem_filename;
+   char *emblem_edje_group;
    char *label;
 
    void *data;
@@ -132,6 +148,7 @@ struct Etk_Iconbox
 
    Evas_List *models;
    Etk_Iconbox_Model *current_model;
+   Etk_Emblem_Position emblem_position;
 
    int num_icons;
    Etk_Iconbox_Icon *first_icon;
@@ -149,6 +166,8 @@ Etk_Iconbox_Model *etk_iconbox_model_new(Etk_Iconbox *iconbox);
 void               etk_iconbox_model_free(Etk_Iconbox_Model *model);
 void               etk_iconbox_current_model_set(Etk_Iconbox *iconbox, Etk_Iconbox_Model *model);
 Etk_Iconbox_Model *etk_iconbox_current_model_get(Etk_Iconbox *iconbox);
+void               etk_iconbox_emblem_position_set(Etk_Iconbox *iconbox, Etk_Emblem_Position pos);
+Etk_Emblem_Position etk_iconbox_emblem_position_get(Etk_Iconbox *iconbox);
 
 void               etk_iconbox_model_geometry_set(Etk_Iconbox_Model *model, int width, int height, int xpadding, int ypadding);
 void               etk_iconbox_model_geometry_get(Etk_Iconbox_Model *model, int *width, int *height, int *xpadding, int *ypadding);
@@ -171,6 +190,9 @@ Etk_Iconbox_Icon  *etk_iconbox_icon_get_first_selected(Etk_Iconbox *iconbox);
 
 void               etk_iconbox_icon_file_set(Etk_Iconbox_Icon *icon, const char *filename, const char *edje_group);
 void               etk_iconbox_icon_file_get(Etk_Iconbox_Icon *icon, const char **filename, const char **edje_group);
+void               etk_iconbox_icon_emblem_set_from_stock(Etk_Iconbox_Icon *icon, const char *stock_name);
+void               etk_iconbox_icon_emblem_file_set(Etk_Iconbox_Icon *icon, const char *filename, const char *edje_group);
+void               etk_iconbox_icon_emblem_file_get(Etk_Iconbox_Icon *icon, const char **filename, const char **edje_group);
 void               etk_iconbox_icon_label_set(Etk_Iconbox_Icon *icon, const char *label);
 const char        *etk_iconbox_icon_label_get(Etk_Iconbox_Icon *icon);
 

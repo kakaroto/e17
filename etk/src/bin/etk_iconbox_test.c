@@ -54,11 +54,11 @@ static Etk_Test_Iconbox_Types _etk_test_iconbox_types[] =
 };
 static int _etk_test_iconbox_num_types = sizeof(_etk_test_iconbox_types) / sizeof (_etk_test_iconbox_types[0]);
 static Etk_String *_etk_test_iconbox_current_folder = NULL;
+static Etk_Widget *win = NULL;
 
 /* Creates the window for the iconbox test */
 void etk_test_iconbox_window_create(void *data)
 {
-   static Etk_Widget *win = NULL;
    Etk_Widget *iconbox;
 
    if (win)
@@ -73,6 +73,8 @@ void etk_test_iconbox_window_create(void *data)
    etk_signal_connect_by_code(ETK_WINDOW_DELETE_EVENT_SIGNAL, ETK_OBJECT(win), ETK_CALLBACK(etk_window_hide_on_delete), NULL);
 
    iconbox = etk_iconbox_new();
+   etk_iconbox_emblem_position_set(ETK_ICONBOX(iconbox), ETK_ICONBOX_EMBLEM_POSITION_TL);
+
    etk_container_add(ETK_CONTAINER(win), iconbox);
    etk_signal_connect_by_code(ETK_WIDGET_MOUSE_DOWN_SIGNAL, ETK_OBJECT(iconbox), ETK_CALLBACK(_etk_test_iconbox_mouse_down_cb), NULL);
 
@@ -86,6 +88,7 @@ static Etk_Bool _etk_test_iconbox_mouse_down_cb(Etk_Object *object, Etk_Event_Mo
    Etk_Iconbox *iconbox;
    Etk_Iconbox_Icon *icon;
    Etk_String *new_folder;
+   int pos;
 
    if (!(iconbox = ETK_ICONBOX(object)))
       return ETK_TRUE;
@@ -94,10 +97,30 @@ static Etk_Bool _etk_test_iconbox_mouse_down_cb(Etk_Object *object, Etk_Event_Mo
    if (!(icon = etk_iconbox_icon_get_at_xy(iconbox, event->canvas.x, event->canvas.y, ETK_FALSE, ETK_TRUE, ETK_TRUE)))
       return ETK_TRUE;
 
-   new_folder = etk_string_new_printf("%s/%s", etk_string_get(_etk_test_iconbox_current_folder),
-      etk_iconbox_icon_label_get(icon));
-   _etk_test_iconbox_folder_set(iconbox, etk_string_get(new_folder));
-   etk_object_destroy(ETK_OBJECT(new_folder));
+   if (strcmp(etk_iconbox_icon_label_get(icon), ".."))
+   {
+      if (!strcmp(etk_string_get(_etk_test_iconbox_current_folder), "/"))
+         new_folder = etk_string_new_printf("/%s", etk_iconbox_icon_label_get(icon));
+      else
+         new_folder = etk_string_new_printf("%s/%s", etk_string_get(_etk_test_iconbox_current_folder),
+                                            etk_iconbox_icon_label_get(icon));
+      _etk_test_iconbox_folder_set(iconbox, etk_string_get(new_folder));
+      etk_object_destroy(ETK_OBJECT(new_folder));
+   }
+   else
+   {
+      if ((pos = (int)(long)strrchr(etk_string_get(_etk_test_iconbox_current_folder), '/')))
+         pos -= (int)(long)etk_string_get(_etk_test_iconbox_current_folder);
+      if (pos > 0)
+      {
+         new_folder = etk_string_new_sized(etk_string_get(_etk_test_iconbox_current_folder), pos);
+         _etk_test_iconbox_folder_set(iconbox, etk_string_get(new_folder));
+         etk_object_destroy(ETK_OBJECT(new_folder));
+      }
+      else
+         _etk_test_iconbox_folder_set(iconbox, "/");
+   }
+   
    return ETK_TRUE;
 }
 
@@ -107,6 +130,7 @@ static void _etk_test_iconbox_folder_set(Etk_Iconbox *iconbox, const char *folde
    Ecore_List *files;
    char *filename;
    char file_path[PATH_MAX];
+   Etk_Iconbox_Icon *iicon;
 
    if (!iconbox)
       return;
@@ -129,7 +153,12 @@ static void _etk_test_iconbox_folder_set(Etk_Iconbox *iconbox, const char *folde
       if (!ecore_file_is_dir(file_path))
          continue;
 
-      etk_iconbox_append(iconbox, etk_theme_icon_path_get(), "places/folder_48", filename);
+      iicon = etk_iconbox_append(iconbox, etk_theme_icon_path_get(), "places/folder_48", filename);
+      
+      if (!ecore_file_can_read(file_path))
+         etk_iconbox_icon_emblem_set_from_stock(iicon, "unreadable");
+      else if (!ecore_file_can_write(file_path))
+         etk_iconbox_icon_emblem_set_from_stock(iicon, "readonly");
    }
 
    /* Then the files */
@@ -159,7 +188,13 @@ static void _etk_test_iconbox_folder_set(Etk_Iconbox *iconbox, const char *folde
          }
       }
 
-      etk_iconbox_append(iconbox, etk_theme_icon_path_get(), icon ? icon : "mimetypes/text-x-generic_48", filename);
+      iicon = etk_iconbox_append(iconbox, etk_theme_icon_path_get(), icon ? icon : "mimetypes/text-x-generic_48", filename);
+      if (!ecore_file_can_read(file_path))
+         etk_iconbox_icon_emblem_set_from_stock(iicon, "unreadable");
+      else if (!ecore_file_can_write(file_path))
+         etk_iconbox_icon_emblem_set_from_stock(iicon, "readonly");
+      else if (ecore_file_can_exec(file_path))
+         etk_iconbox_icon_emblem_set_from_stock(iicon, "system");
    }
 
    ecore_list_destroy(files);
@@ -167,4 +202,5 @@ static void _etk_test_iconbox_folder_set(Etk_Iconbox *iconbox, const char *folde
    if (!_etk_test_iconbox_current_folder)
       _etk_test_iconbox_current_folder = etk_string_new(NULL);
    etk_string_set(_etk_test_iconbox_current_folder, folder);
+   etk_window_title_set(ETK_WINDOW(win), folder);
 }
