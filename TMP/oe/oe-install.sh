@@ -6,19 +6,14 @@ git clone git://git.openembedded.net/org.openembedded.dev.git
 cd org.openembedded.dev
 git-checkout -b $USER
 cd ..
-ln -s ../../local.conf              build/conf/local.conf
-ln -s org.openembedded.dev/packages packages
-ln -s org.openembedded.dev/conf/distro/include/sane-srcrevs.inc sane-srcrevs.inc
-ln -s org.openembedded.dev/conf/distro/include/sane-srcdates.inc sane-srcdates.inc
+ln -sf ../../local.conf                                           build/conf/local.conf
+ln -sf org.openembedded.dev/packages                              packages
+ln -sf org.openembedded.dev/conf/distro/include/sane-srcrevs.inc  sane-srcrevs.inc
+ln -sf org.openembedded.dev/conf/distro/include/sane-srcdates.inc sane-srcdates.inc
 
-mkdir my_packages
 ln -s ../../my_packages org.openembedded.dev/packages/my_packages
 
-cd org.openembedded.dev
-for I in `/bin/ls ../patches/* | sort`; do
-  echo "PATCH: $I", $I
-  patch -p1 -t < $I
-cd ..
+./oe-patches.sh
 
 echo "========="
 echo "Please edit local.conf to specify your build paramaters and target"
