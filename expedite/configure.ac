@@ -1,0 +1,174 @@
+dnl Process this file with autoconf to produce a configure script.
+
+# get rid of that stupid cache mechanism
+rm -f config.cache
+
+AC_INIT(expedite, 0.6.0, enlightenment-devel@lists.sourceforge.net)
+AC_PREREQ(2.52)
+AC_CONFIG_SRCDIR(configure.ac)
+AC_CANONICAL_BUILD
+AC_CANONICAL_HOST
+
+AM_INIT_AUTOMAKE(1.6 dist-bzip2)
+AM_CONFIG_HEADER(config.h)
+
+AC_ISC_POSIX
+m4_ifdef([AC_PROG_OBJC],
+         [AC_PROG_OBJC],
+         [AC_CHECK_TOOL([OBJC], [gcc])
+          AC_SUBST([OBJC])
+          AC_SUBST([OBJCFLAGS])
+         ])
+AC_PROG_CXX
+AC_PROG_CC
+AM_PROG_CC_STDC
+AC_HEADER_STDC
+AC_C_CONST
+AM_PROG_CC_C_O
+
+WIN32_CFLAGS=""
+lt_enable_auto_import=""
+case "$host_os" in
+  cegcc)
+    WIN32_CFLAGS="-mwin32"
+    lt_enable_auto_import="-Wl,--enable-auto-import"
+    ;;
+esac
+AC_SUBST(WIN32_CFLAGS)
+AC_SUBST(lt_enable_auto_import)
+
+PKG_CHECK_MODULES([EVAS], evas)
+
+#######################################
+## Simple X11 build/link
+
+AC_ARG_ENABLE(simple-x11,
+  AC_HELP_STRING([--enable-simple-x11], [enable simple x11 linking]),
+  [ want_evas_simple_x11=$enableval ]
+)
+
+### Software X11
+EXPEDITE_CHECK_ENGINE([software-x11], [Software X11], "yes")
+
+### XRender X11
+EXPEDITE_CHECK_ENGINE([xrender-x11], [XRender X11], "yes")
+
+### OpenGL X11
+EXPEDITE_CHECK_ENGINE([opengl-x11], [OpenGL X11], "yes")
+
+### Software XCB
+EXPEDITE_CHECK_ENGINE([software-xcb], [Software XCB], "yes")
+
+# TODO: Check availability of libs
+### DirectDraw
+EXPEDITE_CHECK_ENGINE([software-ddraw], [Software DirectDraw], "yes", [ddraw_libs="-lddraw -ldxguid"])
+
+# TODO: Check availability of libs
+### Direct3D
+EXPEDITE_CHECK_ENGINE([direct3d], [Direct3D], "yes", [d3d_libs="-ld3d9 -ld3dx9d"])
+
+### OpenGL GLEW
+EXPEDITE_CHECK_ENGINE([opengl-glew], [OpenGL Glew], "yes", [glew_libs="-lglew32 -lgdi32"])
+
+### Software SDL
+EXPEDITE_CHECK_ENGINE([software-sdl], [Software SDL], "yes")
+
+### FB
+EXPEDITE_CHECK_ENGINE([fb], [Framebuffer], "yes")
+
+### DIRECTFB
+EXPEDITE_CHECK_ENGINE([directfb], [DirectFB], "yes")
+
+### Quartz
+EXPEDITE_CHECK_ENGINE([quartz], [Quartz], "yes", [quartz_libs="-framework Cocoa -framework ApplicationServices"])
+
+### Software 16bit X11
+EXPEDITE_CHECK_ENGINE([software-16-x11], [Software 16 bits X11], "yes")
+
+# TODO: Check availability of libs
+### 16bit DirectDraw
+EXPEDITE_CHECK_ENGINE([software-16-ddraw], [Software 16 bits DirectDraw], "yes", [ddraw_libs="-lddraw -ldxguid"])
+
+# TODO: Check availability of libs
+### 16bit WinCE
+EXPEDITE_CHECK_ENGINE([software-16-wince], [Software 16 bits WinCE], "yes", [wince_16_libs="-laygshell"])
+
+if test "x$have_software_x11" = "xyes" -o "x$have_software_16_x11" = "xyes" -o "x$have_xrender_x11" = "xyes" -o "x$have_opengl_x11" = "xyes"; then
+  AC_PATH_XTRA
+  AC_CHECK_HEADERS(X11/Xlib.h X11/Xutil.h,
+    [ have_x11="yes" ],
+    [ have_x11="no" ])
+  if test "x$want_evas_simple_x11" = "xyes"; then
+    x_libs="${x_libs} -lX11 -lXext"
+  else
+    x_dir=${x_dir:-/usr/X11R6}
+    x_cflags=${x_cflags:--I${x_includes:-$x_dir/include}}
+    x_libs="${x_libs:--L${x_libraries:-$x_dir/lib}} -lX11 -lXext"
+  fi
+fi
+AM_CONDITIONAL(BUILD_X11, test "x$have_x11" = "xyes")
+
+if test "x$have_software_xcb" = "xyes"; then
+  PKG_CHECK_MODULES([XCB], xcb xcb-keysyms,
+    [ have_software_xcb="yes" ],
+    [ have_software_xcb="no" ])
+fi
+AM_CONDITIONAL(BUILD_XCB, test "x$have_xcb" = "xyes")
+if test "x$have_xcb" = "xyes"; then
+  AC_DEFINE(BUILD_XCB, 1, [build xcb support])
+fi
+
+if test "x$have_software_sdl" = "xyes"; then
+  PKG_CHECK_MODULES([SDL], sdl,
+    [ have_sdl="yes" ],
+    [ have_sdl="no" ])
+fi
+AM_CONDITIONAL(BUILD_SDL, test "x$have_sdl" = "xyes")
+
+if test "x$have_directfb" = "xyes"; then
+  PKG_CHECK_MODULES([DIRECTFB], directfb,
+    [ have_directfb="yes" ],
+    [ have_directfb="no" ])
+fi
+AM_CONDITIONAL(BUILD_DIRECTFB, test "x$have_directfb" = "xyes")
+
+AM_CONDITIONAL(BUILD_QUARTZ, test "x$have_quartz" = "xyes")
+
+AC_SUBST(x_cflags)
+AC_SUBST(x_libs)
+AC_SUBST(ddraw_libs)
+AC_SUBST(ddraw_16_libs)
+AC_SUBST(d3d_libs)
+AC_SUBST(wince_16_libs)
+AC_SUBST(glew_libs)
+AC_SUBST(quartz_libs)
+
+AC_OUTPUT([
+Makefile
+src/Makefile
+src/bin/Makefile
+data/Makefile
+])
+
+echo
+echo "  $PACKAGE $VERSION"
+echo
+echo "  Engines:"
+echo "    Software X11.................: ${have_software_x11}"
+echo "    X Render X11.................: ${have_xrender_x11}"
+echo "    Open GL X11..................: ${have_opengl_x11}"
+echo "    Software XCB.................: ${have_software_xcb}"
+echo "    Software DirectDraw..........: ${have_software_ddraw}"
+echo "    Direct3D.....................: ${have_direct3d}"
+echo "    Open GL Glew.................: ${have_opengl_glew}"
+echo "    Software SDL.................: ${have_software_sdl}"
+echo "    FB...........................: ${have_fb}"
+echo "    DirectFB.....................: ${have_directfb}"
+echo "    Quartz.......................: ${have_quartz}"
+echo "    Software X11 16 bits.........: ${have_software_16_x11}"
+echo "    Software DirectDraw 16 bits..: ${have_software_16_ddraw}"
+echo "    Software WinCE 16 bits.......: ${have_software_16_wince}"
+echo
+echo "  Installation:"
+echo "    prefix.......................: ${prefix}"
+echo
