@@ -1,6 +1,18 @@
 This is a setup of my Openembedded Development environment for building whole
 system images for embedded devices. to begin, please run:
-  ./install.sh
+
+  ./oe-install.sh
 
 Over time more patches will go into the patches directory. Please apply them
 to org.openembedded.dev. install.sh will apply them initially.
+
+To see how to apply patches please look at oe-patch.sh. only apply new
+patches (there is nologic to mark which are applied currently).
+
+To build an image and package-set do:
+
+  ./oe-build.sh
+
+To reflash try:
+
+  ./oe-flash-gta02.sh
