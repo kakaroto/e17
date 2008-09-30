@@ -1,6 +1,6 @@
 dnl Process this file with autoconf to produce a configure script.
 
-AC_INIT(configure.in)
+AC_INIT(configure.ac)
 AM_INIT_AUTOMAKE(e16menuedit2, 0.0.3)
 AM_CONFIG_HEADER(config.h)
 AM_MAINTAINER_MODE
