@@ -1,15 +1,20 @@
 This is a setup of my Openembedded Development environment for building whole
 system images for embedded devices. to begin, please run:
 
+How do you get this tree?
+
+  cd ~/
+  svn co http://svn.enlightenment.org/svn/e/trunk/TMP/oe
+
+Now what?
+  
   ./oe-install.sh
 
-Over time more patches will go into the patches directory. Please apply them
-to org.openembedded.dev. oe-install.sh will apply them initially.
-
-To build an illume image and package-set do:
+Then I want my images and packages. Now what do i do?
 
   ./oe-build-illume.sh
 
+Images and packages will be in tmp.*/deploy/glibc/ and al sources in sources/
 To reflash a Freerunner try:
 
   ./oe-flash-gta02.sh

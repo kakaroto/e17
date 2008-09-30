@@ -9,5 +9,7 @@ echo "ROOTFS: $ROOTFS"
 
 sleep 5
 
-sudo dfu-util -a kernel -D $KERNEL
-sudo duf-util -a rootfs -D $ROOTFS
+DFU="tmp.openmoko.om-gta02/deploy/glibc/tools"
+
+sudo $DFU -a kernel -D $KERNEL
+sudo $DFU -a rootfs -D $ROOTFS
