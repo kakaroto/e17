@@ -1,6 +1,7 @@
 unset MAKEFLAGS CC CFLAGS PKG_CONFIG_PATH LD_LIBRARY_PATH LANG LANGUAGE
 unset LC_ALL LC_MESSAGES QUIET
 unalias make
+sudo ./scripts/mmap-0-fix.sh
 export OMDIR="$PWD"
 export BBPATH="${OMDIR}/build:${OMDIR}/org.openembedded.dev"
 export PYTHONPATH="${OMDIR}/bitbake/libbitbake"

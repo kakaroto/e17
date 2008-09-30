@@ -14,6 +14,12 @@ ln -s org.openembedded.dev/conf/distro/include/sane-srcdates.inc sane-srcdates.i
 mkdir my_packages
 ln -s ../../my_packages org.openembedded.dev/packages/my_packages
 
+cd org.openembedded.dev
+for I in `/bin/ls ../patches/* | sort`; do
+  echo "PATCH: $I", $I
+  patch -p1 -t < $I
+cd ..
+
 echo "========="
 echo "Please edit local.conf to specify your build paramaters and target"
 echo "Put any custom packages .bb files in my_packages"
