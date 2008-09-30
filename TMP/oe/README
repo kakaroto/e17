@@ -4,15 +4,12 @@ system images for embedded devices. to begin, please run:
   ./oe-install.sh
 
 Over time more patches will go into the patches directory. Please apply them
-to org.openembedded.dev. install.sh will apply them initially.
+to org.openembedded.dev. oe-install.sh will apply them initially.
 
-To see how to apply patches please look at oe-patch.sh. only apply new
-patches (there is nologic to mark which are applied currently).
+To build an illume image and package-set do:
 
-To build an image and package-set do:
+  ./oe-build-illume.sh
 
-  ./oe-build.sh
-
-To reflash try:
+To reflash a Freerunner try:
 
   ./oe-flash-gta02.sh
