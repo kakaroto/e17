@@ -1,7 +1,7 @@
-From d7a3663807c47970abafebe91342ad43b46bc35d Mon Sep 17 00:00:00 2001
+From 5e38d6030e5dc24992445d638aa6ccb6fa03acf2 Mon Sep 17 00:00:00 2001
 From: Carsten Haitzler <raster@openmoko.org>
-Date: Tue, 30 Sep 2008 14:14:12 +1000
-Subject: [PATCH] remove no cursor patch with latest svnrevs of e (included in upstream)
+Date: Tue, 30 Sep 2008 22:45:57 +1000
+Subject: [PATCH] disable no-cursor patch - will break e now that its upstream.
 
 ---
  packages/e17/e-wm_svn.bb |    3 +--
