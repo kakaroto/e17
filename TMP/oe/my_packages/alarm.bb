@@ -1,8 +1,9 @@
 DESCRIPTION = "An EFL based Alarm app"
 LICENSE = "GPL"
-DEPENDS = "evas ecore edje eet"
+DEPENDS = "elementary"
+RDEPENDS = "waker"
 PV = "0.0.0+svnr${SRCREV}"
-PR = "r0.10"
+PR = "r0.20"
 
 inherit e
 
@@ -11,10 +12,8 @@ S = "${WORKDIR}/alarm"
 
 PACKAGES="${PN}-dbg ${PN}"
 
-FILES_${PN}  = "${bindir}/* ${libdir}/lib*.so.* ${libdir}/${PN}"
+FILES_${PN} += "${bindir}/*"
 FILES_${PN} += "${datadir}/${PN}"
 FILES_${PN} += "${datadir}/icons/*"
 FILES_${PN} += "${datadir}/applications/*"
-FILES_${PN} += "${datadir}/sounds/*"
-FILES_${PN} += "${datadir}/images/*"
-FILES_${PN} += "/etc/X11/Xsession.d/80x-enlightenment-wakerd"
+FILES_${PN} += "${datadir}/${PN}/sounds/*"
