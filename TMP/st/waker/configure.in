@@ -1,0 +1,33 @@
+# get rid of that stupid cache mechanism
+rm -f config.cache
+
+AC_INIT(waker, 0.1.0.0, enlightenment-devel@lists.sourceforge.net)
+AC_PREREQ(2.52)
+AC_CONFIG_SRCDIR(configure.in)
+
+AM_INIT_AUTOMAKE(1.6 dist-bzip2)
+AM_CONFIG_HEADER(config.h)
+
+AC_C_BIGENDIAN
+AC_ISC_POSIX
+AC_PROG_CC
+AM_PROG_CC_STDC
+AC_HEADER_STDC
+AC_C_CONST
+
+PKG_CHECK_MODULES([COMMON], [
+   ecore
+   ecore-file
+   edbus
+   ])
+   
+my_libs=""
+AC_SUBST(my_libs)
+
+AC_OUTPUT([
+Makefile
+src/Makefile
+src/bin/Makefile
+data/Makefile
+data/etc/Makefile
+])

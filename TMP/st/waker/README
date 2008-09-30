@@ -1,0 +1,2 @@
+Waker Daemon intended to wake from suspend and run jobs at second-interval
+times as well as talk over dbus.
