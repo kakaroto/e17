@@ -88,7 +88,7 @@ static Etk_Bool _etk_test_iconbox_mouse_down_cb(Etk_Object *object, Etk_Event_Mo
    Etk_Iconbox *iconbox;
    Etk_Iconbox_Icon *icon;
    Etk_String *new_folder;
-   int pos;
+   char *parent;
 
    if (!(iconbox = ETK_ICONBOX(object)))
       return ETK_TRUE;
@@ -97,28 +97,21 @@ static Etk_Bool _etk_test_iconbox_mouse_down_cb(Etk_Object *object, Etk_Event_Mo
    if (!(icon = etk_iconbox_icon_get_at_xy(iconbox, event->canvas.x, event->canvas.y, ETK_FALSE, ETK_TRUE, ETK_TRUE)))
       return ETK_TRUE;
 
-   if (strcmp(etk_iconbox_icon_label_get(icon), ".."))
+   if (!strcmp(etk_iconbox_icon_label_get(icon), ".."))
    {
-      if (!strcmp(etk_string_get(_etk_test_iconbox_current_folder), "/"))
+      parent = ecore_file_dir_get(etk_string_get(_etk_test_iconbox_current_folder));
+      _etk_test_iconbox_folder_set(iconbox, parent);
+      free(parent);
+   }
+   else
+   {
+      if (etk_string_length_get(_etk_test_iconbox_current_folder) == 1)
          new_folder = etk_string_new_printf("/%s", etk_iconbox_icon_label_get(icon));
       else
          new_folder = etk_string_new_printf("%s/%s", etk_string_get(_etk_test_iconbox_current_folder),
                                             etk_iconbox_icon_label_get(icon));
       _etk_test_iconbox_folder_set(iconbox, etk_string_get(new_folder));
       etk_object_destroy(ETK_OBJECT(new_folder));
-   }
-   else
-   {
-      if ((pos = (int)(long)strrchr(etk_string_get(_etk_test_iconbox_current_folder), '/')))
-         pos -= (int)(long)etk_string_get(_etk_test_iconbox_current_folder);
-      if (pos > 0)
-      {
-         new_folder = etk_string_new_sized(etk_string_get(_etk_test_iconbox_current_folder), pos);
-         _etk_test_iconbox_folder_set(iconbox, etk_string_get(new_folder));
-         etk_object_destroy(ETK_OBJECT(new_folder));
-      }
-      else
-         _etk_test_iconbox_folder_set(iconbox, "/");
    }
    
    return ETK_TRUE;
