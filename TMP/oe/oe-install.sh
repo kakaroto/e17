@@ -3,6 +3,7 @@
 mkdir -p build/conf
 svn co svn://svn.berlios.de/bitbake/branches/bitbake-1.8/ bitbake
 git clone git://git.openembedded.net/org.openembedded.dev.git
+tar zcf org.openembedded.dev.orig.tar.gz org.openembedded.dev
 cd org.openembedded.dev
 git-checkout -b $USER
 cd ..
