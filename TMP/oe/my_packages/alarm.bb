@@ -3,7 +3,7 @@ LICENSE = "GPL"
 DEPENDS = "elementary"
 RDEPENDS = "waker"
 PV = "0.0.0+svnr${SRCREV}"
-PR = "r0.20"
+PR = "r0.21"
 
 inherit e
 
