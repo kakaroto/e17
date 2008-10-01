@@ -3026,44 +3026,48 @@ ewl_text_char_utf8_is(const char *c)
         DCHECK_PARAM_PTR_RET(c, FALSE);
 
         t = (unsigned const char *)c;
-        if (!t) DRETURN_INT(FALSE, DLEVEL_STABLE);
 
         /* check for ascii chars first */
         if (t[0] < 0x80) DRETURN_INT(TRUE, DLEVEL_STABLE);
 
+        /* the first byte will give use the length of the character, we 
+         * already checked if it is an ASCII, wrong lengths like 1 and 5
+         * are catched by the switch.
+         * So we only have to check if the following bytes are valid UTF-8
+         * trailing bytes. UTF-8 trailing bytes are the values between
+         * 0x80 and 0xBF, or in other words everthing that looks like this
+         * 0b10xxxxxx. Anding this with 0b11000000 (0xc0) must result in
+         * 0b10000000 (0x80) else it is not a legal UTF-8 trailing byte
+         * and thus not a valid utf8 character.
+         */ 
         switch (EWL_TEXT_CHAR_BYTE_LEN(t))
         {
-                case 2:        /* 2 byte */
-                        if ((t[1] & 0xc0) != 0x80)
+                case 4: 
+                        if ((*(++t) & 0xc0) != 0x80) 
                                 DRETURN_INT(FALSE, DLEVEL_STABLE);
-                        break;
-
-                case 3: /* 3 byte */
-                        if (((t[1] & 0xc0) != 0x80)
-                                        || ((t[2] & 0xc0) != 0x80))
+                        /* fall through */
+                case 3: 
+                        if ((*(++t) & 0xc0) != 0x80) 
                                 DRETURN_INT(FALSE, DLEVEL_STABLE);
-                        break;
-
-                case 4: /* 4 byte */
-                        if (((t[1] & 0xc0) != 0x80)
-                                        || ((t[2] & 0xc0) != 0x80)
-                                        || ((t[3] & 0xc0) != 0x80))
+                        /* fall through */
+                case 2: 
+                        if ((*(++t) & 0xc0) != 0x80) 
                                 DRETURN_INT(FALSE, DLEVEL_STABLE);
-                        break;
 
+                        DRETURN_INT(TRUE, DLEVEL_STABLE);
                 default:
-                        /* this is actually:
-                         * case 1:
-                         *         We already checked if it is a 7-bit ASCII character,
-                         *         so anything else with the length of 1 byte is not
-                         *         a valid utf8 character
-                         * case 5: case 6:
-                         *         Although a character sequences of the length 5 or 6
-                         *         is possible it is not a legal utf8 character */
-                        DRETURN_INT(FALSE, DLEVEL_STABLE);
+                /* this is actually:
+                 * case 1:
+                 *         We already checked if it is a 7-bit ASCII character,
+                 *         so anything else with the length of 1 byte is not
+                 *         a valid utf8 character
+                 * case 5: case 6:
+                 *         Although a character sequence of the length 5 or 6
+                 *         is possible it is not a legal utf8 character */
+                        break;
         }
 
-        DRETURN_INT(TRUE, DLEVEL_STABLE);
+        DRETURN_INT(FALSE, DLEVEL_STABLE);
 }
 
 /*
