@@ -222,6 +222,7 @@ Exalt_Wireless_Network* exalt_wireless_get_networkinfo_by_essid(Exalt_Wireless* 
     EXALT_ASSERT_RETURN(w!=NULL);
     EXALT_ASSERT_RETURN(essid!=NULL);
 
+/*  by bentejuy
     ecore_list_first_goto(w->networks);
     data = ecore_list_next(w->networks);
     while(data)
@@ -232,11 +233,18 @@ Exalt_Wireless_Network* exalt_wireless_get_networkinfo_by_essid(Exalt_Wireless* 
 
         data = ecore_list_next(w->networks);
     }
+*/
+    EXALT_ASSERT_RETURN(w->networks!=NULL);
+
+	for(data = ecore_list_first_goto(w->networks); data; ecore_list_next(w->networks))
+	{
+        wi = Exalt_Wireless_Network(data);
+
+        if(!strcmp(essid, exalt_wirelessnetwork_get_essid(wi)))
+        	return wi;
+	}
     return NULL;
 }
-
-
-
 
 /*
  * Scan functions

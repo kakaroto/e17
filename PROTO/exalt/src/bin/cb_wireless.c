@@ -52,6 +52,10 @@ DBusMessage * dbus_cb_wireless_scan_wait(E_DBus_Object *obj __UNUSED__, DBusMess
 
     exalt_wireless_scan_wait(eth);
     l = exalt_wireless_get_networks_list(w);
+
+    // by bentejuy
+    EXALT_ASSERT_RETURN(l!=NULL);
+
     ecore_list_first_goto(l);
 
     while( (data=ecore_list_next(l)))

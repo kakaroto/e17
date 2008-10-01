@@ -24,7 +24,7 @@
 #include <Ecore_Data.h>
 #include <Ecore_Data.h>
 #include <string.h>
-#include <libexalt.h>
+#include <exalt/libexalt.h>
 
 
 /**

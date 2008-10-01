@@ -29,8 +29,8 @@ DBusMessage * dbus_cb_wirelessnetwork_get_addr(E_DBus_Object *obj __UNUSED__, DB
 
     reply = dbus_message_new_method_return(msg);
 
-
     wi = dbus_get_wirelessnetwork(msg);
+
     EXALT_ASSERT_ADV(wi!=NULL,
             dbus_args_error_append(reply,
                 EXALT_DBUS_WIRELESS_NETWORK_ERROR_ID,

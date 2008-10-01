@@ -70,7 +70,7 @@ void exalt_regex_set_debug(Exalt_Regex *r, short debug)
 
 
 
-/*
+/**
  * @brief clear the current result
  * @param r the Exalt_Regex
  */

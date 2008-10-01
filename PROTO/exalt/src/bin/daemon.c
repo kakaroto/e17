@@ -23,68 +23,82 @@ int setup(E_DBus_Connection *conn)
     E_DBus_Object *obj;
     E_DBus_Interface *iface;
     e_dbus_request_name(conn, EXALTD_SERVICE , 0, NULL, NULL);
-    obj = e_dbus_object_add(conn, EXALTD_PATH, NULL);
-    iface = e_dbus_interface_new(EXALTD_INTERFACE_READ);
+
+/*
+I m working on this part
+Watchwolf.
+*/
+    //{
+        obj = e_dbus_object_add(conn, EXALTD_PATH, NULL);
+        iface = e_dbus_interface_new(EXALTD_INTERFACE_READ);
+
+        e_dbus_interface_method_add(iface, "IFACE_GET_IP", NULL, NULL, dbus_cb_eth_get_ip);
+        e_dbus_interface_method_add(iface, "IFACE_GET_NETMASK", NULL, NULL, dbus_cb_eth_get_netmask);
+        e_dbus_interface_method_add(iface, "IFACE_GET_GATEWAY", NULL, NULL, dbus_cb_eth_get_gateway);
+        e_dbus_interface_method_add(iface, "IFACE_GET_ETH_LIST", NULL, NULL, dbus_cb_eth_get_eth_list);
+        e_dbus_interface_method_add(iface, "IFACE_IS_WIRELESS", NULL, NULL, dbus_cb_eth_is_wireless);
+        e_dbus_interface_method_add(iface, "IFACE_IS_LINK", NULL, NULL, dbus_cb_eth_is_link);
+        e_dbus_interface_method_add(iface, "IFACE_IS_UP", NULL, NULL, dbus_cb_eth_is_up);
+        e_dbus_interface_method_add(iface, "IFACE_IS_DHCP", NULL, NULL, dbus_cb_eth_is_dhcp);
 
 
-    e_dbus_interface_method_add(iface, "IFACE_GET_IP", NULL, NULL, dbus_cb_eth_get_ip);
-    e_dbus_interface_method_add(iface, "IFACE_GET_NETMASK", NULL, NULL, dbus_cb_eth_get_netmask);
-    e_dbus_interface_method_add(iface, "IFACE_GET_GATEWAY", NULL, NULL, dbus_cb_eth_get_gateway);
-    e_dbus_interface_method_add(iface, "IFACE_GET_ETH_LIST", NULL, NULL, dbus_cb_eth_get_eth_list);
-    e_dbus_interface_method_add(iface, "IFACE_IS_WIRELESS", NULL, NULL, dbus_cb_eth_is_wireless);
-    e_dbus_interface_method_add(iface, "IFACE_IS_LINK", NULL, NULL, dbus_cb_eth_is_link);
-    e_dbus_interface_method_add(iface, "IFACE_IS_UP", NULL, NULL, dbus_cb_eth_is_up);
-    e_dbus_interface_method_add(iface, "IFACE_IS_DHCP", NULL, NULL, dbus_cb_eth_is_dhcp);
+        e_dbus_interface_method_add(iface, "IFACE_GET_ESSID", NULL, NULL, dbus_cb_wireless_get_essid);
+        e_dbus_interface_method_add(iface, "IFACE_SCAN_START", NULL, NULL, dbus_cb_wireless_scan_start);
+        e_dbus_interface_method_add(iface, "IFACE_SCAN_WAIT", NULL, NULL, dbus_cb_wireless_scan_wait);
+        e_dbus_interface_method_add(iface, "IFACE_GET_WPASUPPLICANT_DRIVER", NULL, NULL, dbus_cb_wireless_get_wpasupplicant_driver);
 
 
-    e_dbus_interface_method_add(iface, "IFACE_GET_ESSID", NULL, NULL, dbus_cb_wireless_get_essid);
-    e_dbus_interface_method_add(iface, "IFACE_SCAN_START", NULL, NULL, dbus_cb_wireless_scan_start);
-    e_dbus_interface_method_add(iface, "IFACE_SCAN_WAIT", NULL, NULL, dbus_cb_wireless_scan_wait);
-    e_dbus_interface_method_add(iface, "IFACE_GET_WPASUPPLICANT_DRIVER", NULL, NULL, dbus_cb_wireless_get_wpasupplicant_driver);
+        e_dbus_interface_method_add(iface, "NETWORK_GET_QUALITY", NULL, NULL, dbus_cb_wirelessnetwork_get_quality);
+        e_dbus_interface_method_add(iface, "NETWORK_GET_ADDR", NULL, NULL, dbus_cb_wirelessnetwork_get_addr);
+        e_dbus_interface_method_add(iface, "NETWORK_GET_PROTOCOL", NULL, NULL, dbus_cb_wirelessnetwork_get_protocol);
+        e_dbus_interface_method_add(iface, "NETWORK_GET_MODE", NULL, NULL, dbus_cb_wirelessnetwork_get_mode);
+        e_dbus_interface_method_add(iface, "NETWORK_GET_CHANNEL", NULL, NULL, dbus_cb_wirelessnetwork_get_channel);
+        e_dbus_interface_method_add(iface, "NETWORK_GET_BITRATES", NULL, NULL, dbus_cb_wirelessnetwork_get_bitrates);
+        e_dbus_interface_method_add(iface, "NETWORK_GET_ENCRYPTION", NULL, NULL, dbus_cb_wirelessnetwork_get_encryption);
+        e_dbus_interface_method_add(iface, "NETWORK_GET_SIGNALLVL", NULL, NULL, dbus_cb_wirelessnetwork_get_signallvl);
+        e_dbus_interface_method_add(iface, "NETWORK_GET_NOISELVL", NULL, NULL, dbus_cb_wirelessnetwork_get_noiselvl);
+
+        e_dbus_interface_method_add(iface, "NETWORK_GET_DEFAULT_CONN", NULL, NULL, dbus_cb_wirelessnetwork_get_default_conn);
+
+        e_dbus_interface_method_add(iface, "DNS_GET_LIST", NULL, NULL, dbus_cb_dns_get_list);
+
+        e_dbus_interface_method_add(iface, "BOOTPROCESS_IFACE_IS", NULL, NULL, dbus_cb_bootprocess_iface_is);
+        e_dbus_interface_method_add(iface, "BOOTPROCESS_TIMEOUT_GET", NULL, NULL, dbus_cb_bootprocess_timeout_get);
+
+        e_dbus_interface_method_add(iface, "IFACE_CMD_GET", NULL, NULL, dbus_cb_eth_get_cmd);
 
 
-    e_dbus_interface_method_add(iface, "NETWORK_GET_QUALITY", NULL, NULL, dbus_cb_wirelessnetwork_get_quality);
-    e_dbus_interface_method_add(iface, "NETWORK_GET_ADDR", NULL, NULL, dbus_cb_wirelessnetwork_get_addr);
-    e_dbus_interface_method_add(iface, "NETWORK_GET_PROTOCOL", NULL, NULL, dbus_cb_wirelessnetwork_get_protocol);
-    e_dbus_interface_method_add(iface, "NETWORK_GET_MODE", NULL, NULL, dbus_cb_wirelessnetwork_get_mode);
-    e_dbus_interface_method_add(iface, "NETWORK_GET_CHANNEL", NULL, NULL, dbus_cb_wirelessnetwork_get_channel);
-    e_dbus_interface_method_add(iface, "NETWORK_GET_BITRATES", NULL, NULL, dbus_cb_wirelessnetwork_get_bitrates);
-    e_dbus_interface_method_add(iface, "NETWORK_GET_ENCRYPTION", NULL, NULL, dbus_cb_wirelessnetwork_get_encryption);
-    e_dbus_interface_method_add(iface, "NETWORK_GET_SIGNALLVL", NULL, NULL, dbus_cb_wirelessnetwork_get_signallvl);
-    e_dbus_interface_method_add(iface, "NETWORK_GET_NOISELVL", NULL, NULL, dbus_cb_wirelessnetwork_get_noiselvl);
+        e_dbus_object_interface_attach(obj, iface);
 
-    e_dbus_interface_method_add(iface, "NETWORK_GET_DEFAULT_CONN", NULL, NULL, dbus_cb_wirelessnetwork_get_default_conn);
+        iface = e_dbus_interface_new(EXALTD_INTERFACE_WRITE);
+        e_dbus_interface_method_add(iface, "IFACE_UP", NULL, NULL, dbus_cb_eth_up);
+        e_dbus_interface_method_add(iface, "IFACE_DOWN", NULL, NULL, dbus_cb_eth_down);
 
-    e_dbus_interface_method_add(iface, "DNS_GET_LIST", NULL, NULL, dbus_cb_dns_get_list);
+        e_dbus_interface_method_add(iface, "IFACE_SET_WPASUPPLICANT_DRIVER", NULL, NULL, dbus_cb_wireless_set_wpasupplicant_driver);
 
-    e_dbus_interface_method_add(iface, "BOOTPROCESS_IFACE_IS", NULL, NULL, dbus_cb_bootprocess_iface_is);
-    e_dbus_interface_method_add(iface, "BOOTPROCESS_TIMEOUT_GET", NULL, NULL, dbus_cb_bootprocess_timeout_get);
+        e_dbus_interface_method_add(iface, "DNS_ADD", NULL, NULL, dbus_cb_dns_add);
+        e_dbus_interface_method_add(iface, "DNS_REPLACE", NULL, NULL, dbus_cb_dns_replace);
+        e_dbus_interface_method_add(iface, "DNS_DELETE", NULL, NULL, dbus_cb_dns_delete);
 
-    e_dbus_interface_method_add(iface, "IFACE_CMD_GET", NULL, NULL, dbus_cb_eth_get_cmd);
+        e_dbus_interface_method_add(iface, "IFACE_APPLY_CONN", NULL, NULL, dbus_cb_eth_apply_conn);
 
+        e_dbus_interface_method_add(iface, "BOOTPROCESS_IFACE_ADD", NULL, NULL, dbus_cb_bootprocess_iface_add);
+        e_dbus_interface_method_add(iface, "BOOTPROCESS_IFACE_REMOVE", NULL, NULL, dbus_cb_bootprocess_iface_remove);
+        e_dbus_interface_method_add(iface, "BOOTPROCESS_TIMEOUT_SET", NULL, NULL, dbus_cb_bootprocess_timeout_set);
+
+
+
+        e_dbus_object_interface_attach(obj, iface);
+    //}
+
+   /* obj = e_dbus_object_add(conn, "org/exalt/dns", NULL);
+
+    iface = e_dbus_interface_new("org.exalt.dns");
+    e_dbus_interface_method_add(iface, "list_get", NULL, NULL, dbus_cb_eth_get_ip);
 
     e_dbus_object_interface_attach(obj, iface);
 
-    iface = e_dbus_interface_new(EXALTD_INTERFACE_WRITE);
-    e_dbus_interface_method_add(iface, "IFACE_UP", NULL, NULL, dbus_cb_eth_up);
-    e_dbus_interface_method_add(iface, "IFACE_DOWN", NULL, NULL, dbus_cb_eth_down);
-
-    e_dbus_interface_method_add(iface, "IFACE_SET_WPASUPPLICANT_DRIVER", NULL, NULL, dbus_cb_wireless_set_wpasupplicant_driver);
-
-    e_dbus_interface_method_add(iface, "DNS_ADD", NULL, NULL, dbus_cb_dns_add);
-    e_dbus_interface_method_add(iface, "DNS_REPLACE", NULL, NULL, dbus_cb_dns_replace);
-    e_dbus_interface_method_add(iface, "DNS_DELETE", NULL, NULL, dbus_cb_dns_delete);
-
-    e_dbus_interface_method_add(iface, "IFACE_APPLY_CONN", NULL, NULL, dbus_cb_eth_apply_conn);
-
-    e_dbus_interface_method_add(iface, "BOOTPROCESS_IFACE_ADD", NULL, NULL, dbus_cb_bootprocess_iface_add);
-    e_dbus_interface_method_add(iface, "BOOTPROCESS_IFACE_REMOVE", NULL, NULL, dbus_cb_bootprocess_iface_remove);
-    e_dbus_interface_method_add(iface, "BOOTPROCESS_TIMEOUT_SET", NULL, NULL, dbus_cb_bootprocess_timeout_set);
-
-
-
-    e_dbus_object_interface_attach(obj, iface);
-
+*/
     return 1;
 }
 
@@ -167,7 +181,9 @@ int main(int argc, char** argv)
         {
             //start the timer for the timeout
             waiting_iface_timer = ecore_timer_add(waiting_iface_list->timeout, waiting_iface_stop, waiting_iface_list);
-            ecore_main_loop_begin();
+            ecore_main_loop_begin();  // <-- mal optimizado ?
+					// I need a ecore_loop for ecore_timer :)
+					// this part is very strange I know, maybe I ll rewrite it
 
             waiting_iface_list = NULL;
             waiting_iface_timer = NULL;
@@ -423,9 +439,13 @@ Exalt_Wireless_Network* dbus_get_wirelessnetwork(DBusMessage* msg)
         dbus_message_iter_get_basic(&args, &interface);
 
     //search the interface
+/*  bentejuy
     eth = exalt_eth_get_ethernet_byname(interface);
     if(!eth)
         return NULL;
+*/
+	if(!(eth = exalt_eth_get_ethernet_byname(interface)))
+		return NULL;
 
     dbus_message_iter_next(&args);
     if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
@@ -453,8 +473,11 @@ Exalt_Wireless_Network* get_wirelessnetwork(Exalt_Ethernet* eth, char* essid)
     w = exalt_eth_get_wireless(eth);
 
     l = exalt_wireless_get_networks_list(w);
-    ecore_list_first_goto(l);
 
+    // by bentejuy
+    EXALT_ASSERT_RETURN(l!=NULL);
+
+    ecore_list_first_goto(l);
     while( (data=ecore_list_next(l)))
     {
         wi = Exalt_Wireless_Network(data);
@@ -463,7 +486,6 @@ Exalt_Wireless_Network* get_wirelessnetwork(Exalt_Ethernet* eth, char* essid)
     }
     return NULL;
 }
-
 
 int dbus_args_error_append(DBusMessage *msg, int id_error, const char* error)
 {
@@ -474,11 +496,8 @@ int dbus_args_error_append(DBusMessage *msg, int id_error, const char* error)
     EXALT_ASSERT_RETURN(error!=NULL);
 
     dbus_message_iter_init_append(msg, &args);
-
     dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &err);
-
     dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &id_error);
-
     dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &error);
 
     return 1;
@@ -490,7 +509,6 @@ int dbus_args_valid_append(DBusMessage *msg)
     int err = EXALT_DBUS_VALID;
 
     dbus_message_iter_init_append(msg, &args);
-
     dbus_message_iter_append_basic(&args, DBUS_TYPE_INT32, &err);
 
     return 1;

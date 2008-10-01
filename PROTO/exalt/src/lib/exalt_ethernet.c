@@ -72,9 +72,12 @@ Exalt_Ethernet* exalt_eth_new(const char* name)
     struct iwreq wrq;
     Exalt_Ethernet* eth;
 
-    eth = (Exalt_Ethernet*)malloc((unsigned int)sizeof(Exalt_Ethernet));
+	// by bentejuy
+//  eth = (Exalt_Ethernet*)malloc((unsigned int)sizeof(Exalt_Ethernet));
+	eth = (Exalt_Ethernet*)calloc(1, sizeof(Exalt_Ethernet));
     EXALT_ASSERT_RETURN(eth!=NULL);
 
+/*
     eth->connection = NULL;
 
     eth->name = NULL;
@@ -88,12 +91,15 @@ Exalt_Ethernet* exalt_eth_new(const char* name)
     eth->_save_up = 0;
     eth->wireless = NULL;
     eth->dont_apply_after_up = NULL;
+*/
+    _exalt_eth_set_name(eth,name);
 
-    //test if the interface has a wireless extension
-    strncpy(wrq.ifr_name, exalt_eth_get_name(eth), sizeof(wrq.ifr_name));
-    if(exalt_ioctl(&wrq, SIOCGIWNAME))
-        eth->wireless = exalt_wireless_new(eth);
-    return eth;
+	//test if the interface has a wireless extension
+	strncpy(wrq.ifr_name, exalt_eth_get_name(eth), sizeof(wrq.ifr_name));
+	if(exalt_ioctl(&wrq, SIOCGIWNAME))
+		eth->wireless = exalt_wireless_new(eth);
+
+	return eth;
 }
 
 
@@ -168,7 +174,7 @@ void exalt_eth_up(Exalt_Ethernet* eth)
 
 /**
  * @brief up the interface "eth" but tell to the daemon "don't apply a connection",
- * sometimes we need upping an interface when we want apply a connection, this method avoid a infinite loop
+ * sometimes we need upping an interface when we want apply a connection, this method avoid an infinite loop
  * @param eth the interface
  */
 void exalt_eth_up_without_apply(Exalt_Ethernet* eth)
@@ -186,10 +192,10 @@ void exalt_eth_up_without_apply(Exalt_Ethernet* eth)
     if( !exalt_ioctl(&ifr, SIOCSIFFLAGS))
         return ;
 
-    eth->dont_apply_after_up =  time(NULL);
+    eth->dont_apply_after_up =  (int)time(NULL);
 }
 
-/*
+/**
  * @brief set the time in seconds when you up the interface
  * then the daemon will use this value to know if it will apply or not the connection when it will get the notification from the kernel
  * the daemon use a timeout of x secondes
@@ -203,7 +209,7 @@ void exalt_eth_set_dontapplyafterup(Exalt_Ethernet * eth, time_t t)
     eth->dont_apply_after_up = t;
 }
 
-/*
+/**
  * @brief see exalt_eth_set_dontapplyafterup
  * @param eth the interface
  * @return Returns the value
@@ -277,12 +283,13 @@ Exalt_Ethernet* exalt_eth_get_ethernet_bypos(int pos)
  */
 Exalt_Ethernet* exalt_eth_get_ethernet_byname(const char* name)
 {
-    void *data;
+//	void *data;
     Exalt_Ethernet* eth;
 
     EXALT_ASSERT_RETURN(name!=NULL);
-
     ecore_list_first_goto(exalt_eth_interfaces.ethernets);
+
+/*  by bentejuy
     data = ecore_list_next(exalt_eth_interfaces.ethernets);
     while(data)
     {
@@ -292,6 +299,12 @@ Exalt_Ethernet* exalt_eth_get_ethernet_byname(const char* name)
 
         data = ecore_list_next(exalt_eth_interfaces.ethernets);
     }
+*/
+    while((eth = ecore_list_next(exalt_eth_interfaces.ethernets)))
+    {
+        if(!strcmp(exalt_eth_get_name(eth),name))
+            return eth;
+	}
 
     return NULL;
 }
@@ -303,12 +316,13 @@ Exalt_Ethernet* exalt_eth_get_ethernet_byname(const char* name)
  */
 Exalt_Ethernet* exalt_eth_get_ethernet_byudi(const char* udi)
 {
-    void *data;
+//  void *data;
     Exalt_Ethernet* eth;
 
     EXALT_ASSERT_RETURN(udi!=NULL);
-
     ecore_list_first_goto(exalt_eth_interfaces.ethernets);
+
+/* by bentejuy
     data = ecore_list_next(exalt_eth_interfaces.ethernets);
     while(data)
     {
@@ -318,6 +332,12 @@ Exalt_Ethernet* exalt_eth_get_ethernet_byudi(const char* udi)
 
         data = ecore_list_next(exalt_eth_interfaces.ethernets);
     }
+*/
+    while((eth = ecore_list_next(exalt_eth_interfaces.ethernets)))
+   	{
+        if(!strcmp(exalt_eth_get_udi(eth),udi))
+        	return eth;
+	}
 
     return NULL;
 }
@@ -329,10 +349,12 @@ Exalt_Ethernet* exalt_eth_get_ethernet_byudi(const char* udi)
  */
 Exalt_Ethernet* exalt_eth_get_ethernet_byifindex(int ifindex)
 {
-    void *data;
+//  void *data;
     Exalt_Ethernet* eth;
 
     ecore_list_first_goto(exalt_eth_interfaces.ethernets);
+
+/* by bentejuy
     data = ecore_list_next(exalt_eth_interfaces.ethernets);
     while(data)
     {
@@ -342,6 +364,12 @@ Exalt_Ethernet* exalt_eth_get_ethernet_byifindex(int ifindex)
 
         data = ecore_list_next(exalt_eth_interfaces.ethernets);
     }
+*/
+    while((eth = ecore_list_next(exalt_eth_interfaces.ethernets)))
+   	{
+		if(ifindex == exalt_eth_get_ifindex(eth))
+	       	return eth;
+	}
 
     return NULL;
 }
@@ -1016,9 +1044,12 @@ int _exalt_eth_set_ifindex(Exalt_Ethernet* eth,int ifindex)
 int _exalt_eth_remove_udi(const char* udi)
 {
     Ecore_List* l = exalt_eth_interfaces.ethernets;
-    void* data;
+	Exalt_Ethernet* eth;
+//  void* data;
 
     ecore_list_first_goto(l);
+
+/*  by bentejuy
     data = ecore_list_next(l);
     while(data)
     {
@@ -1035,6 +1066,21 @@ int _exalt_eth_remove_udi(const char* udi)
         else
             data = ecore_list_next(l);
     }
+*/
+	while((eth = ecore_list_next(l)))
+	{
+        if(!strcmp(exalt_eth_get_udi(eth),udi))
+        {
+			if(exalt_eth_interfaces.eth_cb)
+				exalt_eth_interfaces.eth_cb(eth,EXALT_ETH_CB_ACTION_REMOVE,exalt_eth_interfaces.eth_cb_user_data);
+
+			if(ecore_list_goto(l, eth))
+				ecore_list_remove_destroy(l);
+
+			return 1;
+		}
+	}
+
     return -1;
 }
 

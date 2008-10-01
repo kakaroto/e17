@@ -108,12 +108,14 @@ void waiting_iface_free(Boot_Process_List** l)
  */
 int waiting_iface_is(const Boot_Process_List* l,const Exalt_Ethernet* eth)
 {
-    int find = 0;
+//  int find = 0;
     Evas_List *elt;
     Boot_Process_Elt *data;
 
     EXALT_ASSERT_RETURN(l!=NULL);
     EXALT_ASSERT_RETURN(eth!=NULL);
+
+/*  by bentejuy
 
     elt = l->l;
     while(!find && elt)
@@ -125,6 +127,18 @@ int waiting_iface_is(const Boot_Process_List* l,const Exalt_Ethernet* eth)
             elt = evas_list_next(elt);
     }
     return find;
+*/
+    EXALT_ASSERT_RETURN(l->l!=NULL);
+
+	for(elt = l->l; elt; elt = evas_list_next(elt))
+	{
+        if(!(data = evas_list_data(elt)))
+        	continue;
+
+        if(data->interface && !strcmp(exalt_eth_get_name(eth),data->interface))
+        	return 1;
+	}
+	return 0;
 }
 
 /*
@@ -139,6 +153,9 @@ void waiting_iface_done(Boot_Process_List* l,const Exalt_Ethernet* eth)
     Boot_Process_Elt *data;
 
     EXALT_ASSERT_RETURN_VOID(l!=NULL);
+    EXALT_ASSERT_RETURN_VOID(l->l!=NULL);
+
+/*  by bentejuy
 
     elt = l->l;
 
@@ -155,6 +172,18 @@ void waiting_iface_done(Boot_Process_List* l,const Exalt_Ethernet* eth)
         return ;
 
     l->l = evas_list_remove(l->l,evas_list_data(elt));
+*/
+	for(elt = l->l; elt; elt = evas_list_next(elt))
+	{
+        if(!(data = evas_list_data(elt)))
+        	continue;
+
+        if(data->interface && !strcmp(exalt_eth_get_name(eth),data->interface))
+        {
+			l->l = evas_list_remove(l->l,evas_list_data(elt));
+        	return;
+        }
+	}
 }
 
 /*
@@ -167,11 +196,14 @@ int waiting_iface_is_done(const Boot_Process_List* l)
 {
     Evas_List *elt;
     Boot_Process_Elt *data;
-    int find =  0;
+//  int find =  0;
 
     if(!l)
         return 1;
 
+	// by bentejuy
+    EXALT_ASSERT_RETURN(l->l!=NULL);
+/*
     elt = l->l;
 
     while(!find && elt)
@@ -184,6 +216,16 @@ int waiting_iface_is_done(const Boot_Process_List* l)
     }
 
     return !find;
+*/
+	for(elt = l->l; elt; elt = evas_list_next(elt))
+	{
+        if(!(data = evas_list_data(elt)))
+        	continue;
+
+        if(exalt_eth_get_ethernet_byname(data->interface))
+        	return 1;
+	}
+	return 0;
 }
 
 /*
