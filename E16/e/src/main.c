@@ -116,6 +116,9 @@ main(int argc, char **argv)
    str = getenv("EDEBUG_COREDUMP");
    if (str)
       Mode.wm.coredump = 1;
+   str = getenv("EDEBUG_EXIT");
+   if (str)
+      Mode.debug_exit = atoi(str);
 
    str = getenv("ECONFNAME");
    if (str)
@@ -259,6 +262,9 @@ main(int argc, char **argv)
 
    /* Load the theme */
    ThemeConfigLoad();
+
+   if (Mode.debug_exit)
+      return 0;
 
    /* Do initial configuration */
    ModulesSignal(ESIGNAL_CONFIGURE, NULL);

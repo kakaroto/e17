@@ -418,6 +418,7 @@ typedef struct {
    char                showing_desktop;
    Window              button_proxy_win;
    char                firsttime;
+   char                debug_exit;
 } EMode;
 
 /*
