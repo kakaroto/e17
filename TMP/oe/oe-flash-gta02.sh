@@ -1,6 +1,6 @@
 #!/bin/sh
 DISTRO="openmoko"
-MACHINE="gta02"
+MACHINE="om-gta02"
 KERNEL="./tmp.$DISTRO.$MACHINE/deploy/glibc/images/uImage-om-gta02-latest.bin"
 ROOTFS=`find ./tmp.$DISTRO.$MACHINE/deploy/glibc/images -name "*.jffs2*" | sort | tail -1`
 
