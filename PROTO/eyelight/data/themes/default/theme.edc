@@ -618,7 +618,7 @@ part                                \
     name: "header_image";           \
     type: IMAGE;                    \
     mouse_events:0;                 \
-    clip_to: "slide";                               \
+    clip_to: "slide";               \
     description                     \
     {                               \
         state: "default" 0.0;       \

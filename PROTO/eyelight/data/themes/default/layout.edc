@@ -128,7 +128,7 @@ default_area(is_visible)
 #define use_layout_title(is_visible)                    \
 custom_area("title",0.05,0.4,0.99,0.52,is_visible)      \
 custom_area("subtitle",0.05,0.5,0.99,0.6,is_visible)  \
-custom_area("header_image",0.05,0.1,0.99,0.35,is_visible)\
+custom_area("header_image",0.05,0.1,0.95,0.35,is_visible)\
 custom_area("foot_image",0.9,0.9,0.99,0.99,is_visible)\
 custom_area("foot_text",0.05,0.96,0.7,1.0,is_visible)\
 custom_area("bottom",0.11,0.62,0.94,0.94,is_visible) \
@@ -137,95 +137,95 @@ custom_area("slide_number",0.84,0.96,1.0,1.0,is_visible)
 //layout with 1 big area
 #define use_layout_1_area(is_visible) \
 default_area(is_visible)              \
-custom_area("center",0.11,0.27,0.9,0.9,is_visible)
+custom_area("center",0.11,0.24,0.9,0.94,is_visible)
 
 //layout with 3 areas
 #define use_layout_1_line_2_columns(is_visible) \
 default_area(is_visible)              \
-custom_area("top",0.11,0.27,0.9,0.55,is_visible)\
-custom_area("left",0.11,0.56,0.5,0.9,is_visible)\
-custom_area("right",0.51,0.56,0.9,0.9,is_visible)
+custom_area("top",0.11,0.24,0.9,0.55,is_visible)\
+custom_area("left",0.11,0.56,0.5,0.94,is_visible)\
+custom_area("right",0.51,0.56,0.9,0.94,is_visible)
 
 
 
 //layout with 3 areas
 #define use_layout_1_small_line_2_columns(is_visible) \
 default_area(is_visible)              \
-custom_area("top",0.11,0.27,0.9,0.40,is_visible)\
-custom_area("left",0.11,0.40,0.5,0.9,is_visible)\
-custom_area("right",0.51,0.40,0.9,0.9,is_visible)
+custom_area("top",0.11,0.24,0.9,0.40,is_visible)\
+custom_area("left",0.11,0.40,0.5,0.4,is_visible)\
+custom_area("right",0.51,0.40,0.9,0.4,is_visible)
 
 //layout with 3 areas
 #define use_layout_2_columns_1_line(is_visible) \
 default_area(is_visible)                    \
-custom_area("bottom",0.11,0.56,0.9,0.9,is_visible)\
-custom_area("left",0.11,0.27,0.5,0.55,is_visible)\
-custom_area("right",0.51,0.27,0.9,0.55,is_visible)
+custom_area("bottom",0.11,0.56,0.9,0.94,is_visible)\
+custom_area("left",0.11,0.24,0.5,0.55,is_visible)\
+custom_area("right",0.51,0.24,0.9,0.55,is_visible)
 
 //layout with 3 areas
 #define use_layout_2_columns_1_small_line(is_visible) \
 default_area(is_visible)                    \
-custom_area("bottom",0.11,0.71,0.9,0.9,is_visible)\
-custom_area("left",0.11,0.27,0.5,0.70,is_visible)\
-custom_area("right",0.51,0.27,0.9,0.70,is_visible)
+custom_area("bottom",0.11,0.71,0.9,0.4,is_visible)\
+custom_area("left",0.11,0.24,0.5,0.70,is_visible)\
+custom_area("right",0.51,0.24,0.9,0.70,is_visible)
 
 //layout with 4 areas
 #define use_layout_4_areas(is_visible) \
 default_area(is_visible)                    \
-custom_area("top_right",0.51,0.27,0.9,0.55,is_visible)\
-custom_area("top_left",0.11,0.27,0.5,0.55,is_visible)\
-custom_area("bottom_right",0.51,0.56,0.9,0.9,is_visible)\
-custom_area("bottom_left",0.11,0.56,0.5,0.9,is_visible)
+custom_area("top_right",0.51,0.24,0.9,0.55,is_visible)\
+custom_area("top_left",0.11,0.24,0.5,0.55,is_visible)\
+custom_area("bottom_right",0.51,0.56,0.9,0.94,is_visible)\
+custom_area("bottom_left",0.11,0.56,0.5,0.94,is_visible)
 
 
 //layout with 6 areas
 #define use_layout_6_areas(is_visible) \
 default_area(is_visible)                    \
-custom_area("top_right",0.51,0.27,0.9,0.48,is_visible)\
-custom_area("top_left",0.11,0.27,0.5,0.48,is_visible)\
+custom_area("top_right",0.51,0.24,0.9,0.48,is_visible)\
+custom_area("top_left",0.11,0.24,0.5,0.48,is_visible)\
 custom_area("middle_right",0.51,0.49,0.9,0.68,is_visible)\
 custom_area("middle_left",0.11,0.49,0.5,0.68,is_visible) \
-custom_area("bottom_right",0.51,0.69,0.9,0.9,is_visible)\
-custom_area("bottom_left",0.11,0.69,0.5,0.9,is_visible)
+custom_area("bottom_right",0.51,0.69,0.9,0.94,is_visible)\
+custom_area("bottom_left",0.11,0.69,0.5,0.94,is_visible)
 
 //layout with 2 columns
 #define use_layout_2_columns(is_visible)    \
 default_area(is_visible)    \
-custom_area("left",0.06,0.27,0.5,0.9,is_visible)\
-custom_area("right",0.51,0.27,0.9,0.9,is_visible)
+custom_area("left",0.06,0.24,0.5,0.94,is_visible)\
+custom_area("right",0.51,0.24,0.9,0.94,is_visible)
 
 //layout with 2 columns
 #define use_layout_2_columns_right(is_visible)    \
 default_area(is_visible)    \
-custom_area("left",0.06,0.27,0.29,0.9,is_visible)\
-custom_area("right",0.30,0.27,0.9,0.9,is_visible)
+custom_area("left",0.06,0.24,0.29,0.94,is_visible)\
+custom_area("right",0.30,0.24,0.9,0.94,is_visible)
 
 //layout with 2 columns
 #define use_layout_2_columns_left(is_visible)    \
 default_area(is_visible)    \
-custom_area("left",0.06,0.27,0.7,0.9,is_visible)\
-custom_area("right",0.71,0.27,0.9,0.9,is_visible)
+custom_area("left",0.06,0.24,0.7,0.94,is_visible)\
+custom_area("right",0.71,0.24,0.9,0.94,is_visible)
 
 
 
 //layout with 2 lines
 #define use_layout_2_lines(is_visible)    \
 default_area(is_visible)                  \
-custom_area("top",0.1,0.27,0.9,0.55,is_visible)   \
-custom_area("bottom",0.1,0.56,0.9,0.9,is_visible)
+custom_area("top",0.1,0.24,0.9,0.55,is_visible)   \
+custom_area("bottom",0.1,0.56,0.9,0.94,is_visible)
 
 
 //layout with 2 lines
 #define use_layout_2_lines_top(is_visible)    \
 default_area(is_visible)                  \
-custom_area("top",0.1,0.27,0.9,0.75,is_visible)   \
-custom_area("bottom",0.1,0.76,0.9,0.9,is_visible)
+custom_area("top",0.1,0.24,0.9,0.75,is_visible)   \
+custom_area("bottom",0.1,0.76,0.9,0.94,is_visible)
 
 
 //layout with 2 lines
 #define use_layout_2_lines_bottom(is_visible)    \
 default_area(is_visible)                  \
-custom_area("top",0.1,0.27,0.9,0.41,is_visible)   \
-custom_area("bottom",0.1,0.42,0.9,0.9,is_visible)
+custom_area("top",0.1,0.24,0.9,0.41,is_visible)   \
+custom_area("bottom",0.1,0.42,0.9,0.94,is_visible)
 
 
