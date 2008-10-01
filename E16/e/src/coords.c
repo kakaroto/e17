@@ -126,7 +126,8 @@ CoordsShow(EWin * ewin)
 	EobjMap(eo, 0);
      }
 
-   ITApply(eo->win, ic, NULL, STATE_NORMAL, 1, 0, ST_SOLID, tc, NULL, s, 1);
+   ITApply(EobjGetWin(eo), ic, NULL, STATE_NORMAL, 1, 0, ST_SOLID, tc, NULL, s,
+	   1);
 
    if (md)			/* Assuming that shape change only happens when size changes too */
       EobjShapeUpdate(eo, 0);

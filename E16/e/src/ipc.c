@@ -1167,8 +1167,8 @@ IPC_ObjInfo(const char *params __UNUSED__)
 	eo = lst[i];
 	IpcPrintf
 	   (" %2d %#9lx %2d %d %d %2d/%2d  %3d %d  %d %3d %5d,%5d %4dx%4d %d %d %s\n",
-	    i, EobjGetXwin(eo), WinGetDepth(eo->win), eo->type, eo->shown,
-	    eo->shaped, EShapeCheck(eo->win), eo->desk->num,
+	    i, EobjGetXwin(eo), WinGetDepth(EobjGetWin(eo)), eo->type,
+	    eo->shown, eo->shaped, EShapeCheck(EobjGetWin(eo)), eo->desk->num,
 	    eo->sticky, eo->floating, eo->ilayer,
 	    EobjGetX(eo), EobjGetY(eo), EobjGetW(eo), EobjGetH(eo),
 #if USE_COMPOSITE

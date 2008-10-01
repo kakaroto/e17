@@ -151,12 +151,12 @@ ProgressbarSet(Progressbar * p, int progress)
    Esnprintf(s, sizeof(s), "%i%%", p->value);
 
    EobjResize(p->p_win, w, p->h);
-   ImageclassApply(p->ic, p->p_win->win, 1, 0, STATE_NORMAL, ST_SOLID);
+   ImageclassApply(p->ic, EobjGetWin(p->p_win), 1, 0, STATE_NORMAL, ST_SOLID);
    EobjShapeUpdate(p->p_win, 0);
 
    pad = ImageclassGetPadding(p->ic);
-   EClearWindow(p->n_win->win);
-   TextDraw(p->tnc, p->n_win->win, None, 0, 0, STATE_CLICKED, s,
+   EClearWindow(EobjGetWin(p->n_win));
+   TextDraw(p->tnc, EobjGetWin(p->n_win), None, 0, 0, STATE_CLICKED, s,
 	    pad->left, pad->top, p->h * 5 - (pad->left + pad->right),
 	    p->h - (pad->top + pad->bottom), p->h - (pad->top + pad->bottom),
 	    TextclassGetJustification(p->tnc));
@@ -171,17 +171,18 @@ ProgressbarShow(Progressbar * p)
 {
    EImageBorder       *pad;
 
-   ImageclassApply(p->ic, p->win->win, 0, 0, STATE_NORMAL, ST_SOLID);
-   ImageclassApply(p->ic, p->n_win->win, 0, 0, STATE_CLICKED, ST_SOLID);
-   ImageclassApply(p->ic, p->p_win->win, 1, 0, STATE_NORMAL, ST_SOLID);
+   ImageclassApply(p->ic, EobjGetWin(p->win), 0, 0, STATE_NORMAL, ST_SOLID);
+   ImageclassApply(p->ic, EobjGetWin(p->n_win), 0, 0, STATE_CLICKED, ST_SOLID);
+   ImageclassApply(p->ic, EobjGetWin(p->p_win), 1, 0, STATE_NORMAL, ST_SOLID);
 
    EobjMap(p->win, 0);
    EobjMap(p->n_win, 0);
    EobjMap(p->p_win, 0);
 
    pad = ImageclassGetPadding(p->ic);
-   TextDraw(p->tc, p->win->win, None, 0, 0, STATE_NORMAL, EobjGetName(p->win),
-	    pad->left, pad->top, p->w - (p->h * 5) - (pad->left + pad->right),
+   TextDraw(p->tc, EobjGetWin(p->win), None, 0, 0, STATE_NORMAL,
+	    EobjGetName(p->win), pad->left, pad->top,
+	    p->w - (p->h * 5) - (pad->left + pad->right),
 	    p->h - (pad->top + pad->bottom), p->h - (pad->top + pad->bottom),
 	    TextclassGetJustification(p->tnc));
 

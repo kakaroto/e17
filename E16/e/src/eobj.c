@@ -203,7 +203,7 @@ EobjInit(EObj * eo, int type, Win win, int x, int y, int w, int h,
       eo->icccm.wm_name = Estrdup("-?-");
 
    if (type != EOBJ_TYPE_EWIN && type != EOBJ_TYPE_EXT)
-      HintsSetWindowName(eo->win, eo->icccm.wm_name);
+      HintsSetWindowName(EobjGetWin(eo), eo->icccm.wm_name);
 
 #if USE_COMPOSITE
    switch (type)
@@ -240,9 +240,9 @@ EobjFini(EObj * eo)
 #endif
 
    if (eo->external)
-      EUnregisterWindow(eo->win);
+      EUnregisterWindow(EobjGetWin(eo));
    else
-      EDestroyWindow(eo->win);
+      EDestroyWindow(EobjGetWin(eo));
 
    Efree(eo->icccm.wm_name);
    Efree(eo->icccm.wm_res_name);
@@ -269,8 +269,8 @@ EobjWindowCreate(int type, int x, int y, int w, int h, int su, const char *name)
 
    eo->floating = 1;
    EobjSetLayer(eo, 20);
-   EobjInit(eo, type, eo->win, x, y, w, h, su, name);
-   if (eo->win == None)
+   EobjInit(eo, type, EobjGetWin(eo), x, y, w, h, su, name);
+   if (eo->win == NULL)
      {
 	Efree(eo);
 	eo = NULL;
@@ -365,7 +365,7 @@ EobjMap(EObj * eo, int raise)
    if (eo->shaped < 0)
       EobjShapeUpdate(eo, 0);
 
-   EMapWindow(eo->win);
+   EMapWindow(EobjGetWin(eo));
 #if USE_COMPOSITE
    ECompMgrWinMap(eo);
 #endif
@@ -381,7 +381,7 @@ EobjUnmap(EObj * eo)
    if (eo->cmhook)
       ECompMgrWinUnmap(eo);
 #endif
-   EUnmapWindow(eo->win);
+   EUnmapWindow(EobjGetWin(eo));
    eo->shown = 0;
 }
 
@@ -400,7 +400,7 @@ EobjMoveResize(EObj * eo, int x, int y, int w, int h)
    else
 #endif
      {
-	EMoveResizeWindow(eo->win, x, y, w, h);
+	EMoveResizeWindow(EobjGetWin(eo), x, y, w, h);
      }
 #if USE_COMPOSITE
    if (eo->cmhook)
@@ -438,7 +438,7 @@ EobjReparent(EObj * eo, EObj * dst, int x, int y)
 
    move = x != EobjGetX(eo) || y != EobjGetY(eo);
 
-   EReparentWindow(eo->win, dst->win, x, y);
+   EReparentWindow(EobjGetWin(eo), EobjGetWin(dst), x, y);
    if (dst->type == EOBJ_TYPE_DESK)
      {
 	Desk               *dsk = (Desk *) dst;
@@ -520,9 +520,9 @@ EobjShapeUpdate(EObj * eo, int propagate)
 #endif
 
    if (propagate)
-      eo->shaped = EShapePropagate(eo->win) != 0;
+      eo->shaped = EShapePropagate(EobjGetWin(eo)) != 0;
    else
-      eo->shaped = EShapeCheck(eo->win) != 0;
+      eo->shaped = EShapeCheck(EobjGetWin(eo)) != 0;
 
 #if USE_COMPOSITE
    if (was_shaped <= 0 && eo->shaped <= 0)

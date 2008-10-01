@@ -552,15 +552,15 @@ ECompMgrMoveResizeFix(EObj * eo, int x, int y, int w, int h)
 
    if (!cw || !Conf_compmgr.resize_fix_enable)
      {
-	EMoveResizeWindow(eo->win, x, y, w, h);
+	EMoveResizeWindow(EobjGetWin(eo), x, y, w, h);
 	return;
      }
 
    wo = ho = 0;
-   EGetGeometry(eo->win, NULL, NULL, NULL, &wo, &ho, NULL, NULL);
+   EGetGeometry(EobjGetWin(eo), NULL, NULL, NULL, &wo, &ho, NULL, NULL);
    if (wo <= 0 || ho <= 0 || (wo == w && ho == h))
      {
-	EMoveResizeWindow(eo->win, x, y, w, h);
+	EMoveResizeWindow(EobjGetWin(eo), x, y, w, h);
 	return;
      }
 
@@ -570,7 +570,7 @@ ECompMgrMoveResizeFix(EObj * eo, int x, int y, int w, int h)
 		    wo, ho);
 
    /* Resize (+move) */
-   EMoveResizeWindow(eo->win, x, y, w, h);
+   EMoveResizeWindow(EobjGetWin(eo), x, y, w, h);
 
    /* Paste old contents back in */
    if (w < wo)
@@ -1058,7 +1058,7 @@ ECompMgrWinSetExtents(EObj * eo)
 
 #if ENABLE_SHADOWS
    cw->has_shadow = (Mode_compmgr.shadow_mode != ECM_SHADOWS_OFF) &&
-      eo->shadow && (EShapeCheck(eo->win) >= 0);
+      eo->shadow && (EShapeCheck(EobjGetWin(eo)) >= 0);
    if (!cw->has_shadow)
       goto skip_shadow;
 
@@ -1186,7 +1186,7 @@ ECompMgrWinSetShape(EObj * eo)
 }
 
 static              Pixmap
-EWindowGetNamePixmap(Win win)
+EWindowGetNamePixmap(const struct _xwin *win)
 {
    XWindowAttributes   xwa;
 
@@ -1285,7 +1285,7 @@ ECompMgrWinSetOpacity(EObj * eo, unsigned int opacity)
 
    if (eo->noredir)
       mode = WINDOW_UNREDIR;
-   else if (eo->win->argb)
+   else if (EobjGetWin(eo)->argb)
       mode = WINDOW_ARGB;
    else if (cw->opacity != OPAQUE)
       mode = WINDOW_TRANS;
@@ -1516,7 +1516,7 @@ ECompMgrWinSetPicts(EObj * eo)
 	if (draw == None)
 	   return;
 
-	pictfmt = XRenderFindVisualFormat(disp, WinGetVisual(eo->win));
+	pictfmt = XRenderFindVisualFormat(disp, WinGetVisual(EobjGetWin(eo)));
 	pa.subwindow_mode = IncludeInferiors;
 	cw->picture = XRenderCreatePicture(disp, draw,
 					   pictfmt, CPSubwindowMode, &pa);
@@ -1542,7 +1542,7 @@ ECompMgrWinNew(EObj * eo)
    if (!Mode_compmgr.active)	/* FIXME - Here? */
       return;
 
-   if (eo->inputonly || eo->win == VROOT)
+   if (eo->inputonly || EobjGetWin(eo) == VROOT)
      {
 	eo->noredir = 1;
 	return;
@@ -1593,7 +1593,7 @@ ECompMgrWinNew(EObj * eo)
 
    if (eo->type == EOBJ_TYPE_DESK || eo->type == EOBJ_TYPE_ROOT_BG)
      {
-	ESelectInputChange(eo->win, VisibilityChangeMask, 0);
+	ESelectInputChange(EobjGetWin(eo), VisibilityChangeMask, 0);
      }
 
    if (eo->type != EOBJ_TYPE_EWIN)
@@ -1602,7 +1602,7 @@ ECompMgrWinNew(EObj * eo)
    cw->opacity = 0xdeadbeef;
    ECompMgrWinSetOpacity(eo, eo->opacity);
 
-   EventCallbackRegister(eo->win, 0, ECompMgrHandleWindowEvent, eo);
+   EventCallbackRegister(EobjGetWin(eo), 0, ECompMgrHandleWindowEvent, eo);
 }
 
 void
@@ -1710,7 +1710,7 @@ ECompMgrWinConfigure(EObj * eo, XEvent * ev)
    change_wh = EobjGetW(eo) != w || EobjGetH(eo) != h;
    change_bw = EobjGetBW(eo) != bw;
 
-   EWindowSetGeometry(eo->win, x, y, w, h, bw);
+   EWindowSetGeometry(EobjGetWin(eo), x, y, w, h, bw);
 
    ECompMgrWinMoveResize(eo, change_xy, change_wh, change_bw);
 }
@@ -1801,7 +1801,7 @@ ECompMgrWinDel(EObj * eo)
    if (eo->fading)
       ECompMgrWinFadeEnd(eo, 1);
 
-   EventCallbackUnregister(eo->win, 0, ECompMgrHandleWindowEvent, eo);
+   EventCallbackUnregister(EobjGetWin(eo), 0, ECompMgrHandleWindowEvent, eo);
 
    if (!eo->gone)
      {

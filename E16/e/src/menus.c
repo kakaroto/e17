@@ -1033,9 +1033,9 @@ MenuShowMasker(Menu * m __UNUSED__)
 
 	EobjReparent(eo, EoObj(DesksGetCurrent()), 0, 0);
 	EobjSetLayer(eo, 11);
-	ESelectInput(eo->win, ButtonPressMask | ButtonReleaseMask |
+	ESelectInput(EobjGetWin(eo), ButtonPressMask | ButtonReleaseMask |
 		     EnterWindowMask | LeaveWindowMask);
-	EventCallbackRegister(eo->win, 0, MenuMaskerHandleEvents, NULL);
+	EventCallbackRegister(EobjGetWin(eo), 0, MenuMaskerHandleEvents, NULL);
 
 	Mode_menus.cover_win = eo;
      }
@@ -1051,7 +1051,7 @@ MenuHideMasker(void)
    if (!eo)
       return;
 
-   EventCallbackUnregister(eo->win, 0, MenuMaskerHandleEvents, NULL);
+   EventCallbackUnregister(EobjGetWin(eo), 0, MenuMaskerHandleEvents, NULL);
    EobjWindowDestroy(eo);
    Mode_menus.cover_win = NULL;
 }

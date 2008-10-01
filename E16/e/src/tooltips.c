@@ -83,7 +83,7 @@ TooltipRealize(ToolTip * tt)
 	EobjChangeOpacity(eo, OpacityFromPercent(Conf.opacity.tooltips));
 	tt->win[i] = eo;
      }
-   tt->iwin = ECreateWindow(tt->TTWIN->win, 0, 0, 1, 1, 0);
+   tt->iwin = ECreateWindow(EobjGetWin(tt->TTWIN), 0, 0, 1, 1, 0);
 }
 
 static ToolTip     *
@@ -248,7 +248,8 @@ TooltipIclassPaste(ToolTip * tt, const char *ic_name, int x, int y, int *px)
       return;
 
    EImageGetSize(im, &w, &h);
-   EImageRenderOnDrawable(im, tt->TTWIN->win, None, EIMAGE_BLEND, x, y, w, h);
+   EImageRenderOnDrawable(im, EobjGetWin(tt->TTWIN), None, EIMAGE_BLEND, x, y,
+			  w, h);
 
    *px = x + w;
 }
@@ -569,7 +570,8 @@ TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
 	eo = tt->win[i];
 	if (!eo)
 	   continue;
-	ImageclassApply(tt->iclass[i], eo->win, 0, 0, STATE_NORMAL, ST_TOOLTIP);
+	ImageclassApply(tt->iclass[i], EobjGetWin(eo), 0, 0, STATE_NORMAL,
+			ST_TOOLTIP);
 	EobjShapeUpdate(eo, 0);
 	EobjMap(eo, 0);
      }
@@ -577,8 +579,8 @@ TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
    xx = pad->left + iw;
 
    /* draw the ordinary tooltip text */
-   TextDraw(tt->tclass, tt->TTWIN->win, None, 0, 0, STATE_NORMAL, text, xx,
-	    pad->top, headline_w, headline_h, 17, 512);
+   TextDraw(tt->tclass, EobjGetWin(tt->TTWIN), None, 0, 0, STATE_NORMAL, text,
+	    xx, pad->top, headline_w, headline_h, 17, 512);
 
    /* draw the icons and labels, if any */
    if (ac)
@@ -602,9 +604,9 @@ TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
 
 	     if (ActionGetEvent(aa) == EVENT_DOUBLE_DOWN)
 	       {
-		  TextDraw(tt->tclass, tt->TTWIN->win, None, 0, 0, STATE_NORMAL,
-			   "2x", xx + iw - double_w, y, double_w, heights[i],
-			   17, 0);
+		  TextDraw(tt->tclass, EobjGetWin(tt->TTWIN), None, 0, 0,
+			   STATE_NORMAL, "2x", xx + iw - double_w, y, double_w,
+			   heights[i], 17, 0);
 	       }
 
 	     if (ActionGetAnybutton(aa))
@@ -654,8 +656,8 @@ TooltipShow(ToolTip * tt, const char *text, ActionClass * ac, int x, int y)
 		     TooltipIclassPaste(tt, "TOOLTIP_KEY_MOD5", x, y, &x);
 	       }
 
-	     TextDraw(tt->tclass, tt->TTWIN->win, None, 0, 0, STATE_NORMAL, tts,
-		      pad->left + icons_width + iw, y,
+	     TextDraw(tt->tclass, EobjGetWin(tt->TTWIN), None, 0, 0,
+		      STATE_NORMAL, tts, pad->left + icons_width + iw, y,
 		      labels_width, heights[i], 17, 0);
 	     y += heights[i];
 

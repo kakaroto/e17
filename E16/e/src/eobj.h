@@ -73,12 +73,12 @@ struct _eobj {
 #define EOBJ_TYPE_GLX       8
 
 #define EobjGetWin(eo)          ((eo)->win)
-#define EobjGetXwin(eo)         WinGetXwin((eo)->win)
-#define EobjGetX(eo)            WinGetX((eo)->win)
-#define EobjGetY(eo)            WinGetY((eo)->win)
-#define EobjGetW(eo)            WinGetW((eo)->win)
-#define EobjGetH(eo)            WinGetH((eo)->win)
-#define EobjGetBW(eo)           WinGetBorderWidth((eo)->win)
+#define EobjGetXwin(eo)         WinGetXwin(EobjGetWin(eo))
+#define EobjGetX(eo)            WinGetX(EobjGetWin(eo))
+#define EobjGetY(eo)            WinGetY(EobjGetWin(eo))
+#define EobjGetW(eo)            WinGetW(EobjGetWin(eo))
+#define EobjGetH(eo)            WinGetH(EobjGetWin(eo))
+#define EobjGetBW(eo)           WinGetBorderWidth(EobjGetWin(eo))
 #define EobjGetType(eo)         ((eo)->type)
 #define EobjGetDesk(eo)         ((eo)->desk)
 #define EobjGetName(eo)         ((eo)->icccm.wm_name)

@@ -238,14 +238,14 @@ EdgeWindowsShow(void)
 	w4 = EobjWindowCreate(EOBJ_TYPE_EVENT,
 			      0, WinGetH(VROOT) - 1, WinGetW(VROOT), 1,
 			      0, "Edge-B");
-	ESelectInput(w1->win, EnterWindowMask | LeaveWindowMask);
-	ESelectInput(w2->win, EnterWindowMask | LeaveWindowMask);
-	ESelectInput(w3->win, EnterWindowMask | LeaveWindowMask);
-	ESelectInput(w4->win, EnterWindowMask | LeaveWindowMask);
-	EventCallbackRegister(w1->win, 0, EdgeHandleEvents, (void *)0);
-	EventCallbackRegister(w2->win, 0, EdgeHandleEvents, (void *)1);
-	EventCallbackRegister(w3->win, 0, EdgeHandleEvents, (void *)2);
-	EventCallbackRegister(w4->win, 0, EdgeHandleEvents, (void *)3);
+	ESelectInput(EobjGetWin(w1), EnterWindowMask | LeaveWindowMask);
+	ESelectInput(EobjGetWin(w2), EnterWindowMask | LeaveWindowMask);
+	ESelectInput(EobjGetWin(w3), EnterWindowMask | LeaveWindowMask);
+	ESelectInput(EobjGetWin(w4), EnterWindowMask | LeaveWindowMask);
+	EventCallbackRegister(EobjGetWin(w1), 0, EdgeHandleEvents, (void *)0);
+	EventCallbackRegister(EobjGetWin(w2), 0, EdgeHandleEvents, (void *)1);
+	EventCallbackRegister(EobjGetWin(w3), 0, EdgeHandleEvents, (void *)2);
+	EventCallbackRegister(EobjGetWin(w4), 0, EdgeHandleEvents, (void *)3);
      }
    DeskCurrentGetArea(&cx, &cy);
    DesksGetAreaSize(&ax, &ay);
