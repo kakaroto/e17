@@ -260,3 +260,11 @@ class Textblock(c_etk.Textblock):
 class TextView(c_etk.TextView):
     __metaclass__ = EtkMeta
     _etk_type = "Etk_Text_View"
+
+class HPaned(c_etk.HPaned):
+    __metaclass__ = EtkMeta
+    _etk_type = "Etk_HPaned"
+
+class VPaned(c_etk.VPaned):
+    __metaclass__ = EtkMeta
+    _etk_type = "Etk_VPaned"
