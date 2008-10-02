@@ -1,5 +1,11 @@
 #include <Elementary.h>
 
+// press ok to save time and set up alarm
+static void
+on_button_activate(void *data, Elm_Button *bt, Elm_Cb_Type type, void *info)
+{
+}
+
 
 // generic callback - delete any window (close button/remove) and it just exits
 static void
@@ -14,13 +20,8 @@ create_main_win(void)
 {
    Elm_Win *win;
    Elm_Bg *bg;
-   Elm_Frame *frame;
-   Elm_Box *box, *subbox;
-   Elm_Toggle *toggle;
-   Elm_Clock *cloc;
-   Elm_Button *button;
-   Elm_Pad *pad;
-
+   Elm_Contactlist *contactlist;
+   
    win = elm_win_new();
    win->name_set(win, "main");
    win->title_set(win, "Contacts");
@@ -29,27 +30,15 @@ create_main_win(void)
 
    bg = elm_bg_new(win);
    bg->show(bg);
-   
-   box = elm_box_new(win);
-   box->expand_x = 1;
-   box->expand_y = 1;
-   elm_widget_sizing_update(box);
-   box->show(box);
-   
-   frame = elm_frame_new(win);
-   frame->text_set(frame, "Contacts");
-   frame->expand_y = 0;
-   box->pack_end(box, frame);
-   elm_widget_sizing_update(frame);
-   frame->show(frame);
-   
-   subbox = elm_box_new(win);
-   subbox->expand_x = 0;
-   subbox->expand_y = 0;
-   frame->child_add(frame, subbox);
-   elm_widget_sizing_update(subbox);
-   subbox->show(subbox);
 
+   contactlist = elm_contactlist_new(win);
+   
+   // settings in clist - like editable, etc. etc.
+   
+   contactlist->show(contactlist);
+
+   win->size_req(win, NULL, 320, 400);
+   
    win->show(win);
 }
 
