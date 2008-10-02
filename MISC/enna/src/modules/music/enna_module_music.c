@@ -128,6 +128,7 @@ static void _class_event(void *event_info)
                     break;
                 case ENNA_KEY_RIGHT:
                 case ENNA_KEY_OK:
+	        case ENNA_KEY_SPACE:
                     _activate();
                     break;
                 default:
@@ -146,6 +147,7 @@ static void _class_event(void *event_info)
             switch (key)
             {
                 case ENNA_KEY_OK:
+	        case ENNA_KEY_SPACE:
                     enna_mediaplayer_play();
                     break;
                 case ENNA_KEY_RIGHT:
@@ -265,7 +267,7 @@ static void _list_transition_core(Evas_List *files, unsigned char direction)
     else if (!direction)
     {
         /* No files returned : create no media item */
-        
+
         Evas_Object *icon;
         Evas_Object *item;
         mod->is_root = 0;

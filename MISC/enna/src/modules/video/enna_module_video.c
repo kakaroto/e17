@@ -133,6 +133,7 @@ static void _class_event(void *event_info)
                     break;
                 case ENNA_KEY_RIGHT:
                 case ENNA_KEY_OK:
+	        case ENNA_KEY_SPACE:
                     _activate();
                     break;
                 default:
@@ -158,6 +159,7 @@ static void _class_event(void *event_info)
                     _video_info_prev();
                     break;
                 case ENNA_KEY_OK:
+                case ENNA_KEY_SPACE:
                     _create_videoplayer_gui();
                     break;
                 default:
@@ -498,24 +500,24 @@ _switcher_transition_done_cb(void *data, Evas_Object *obj, void *event_info)
 {
     ENNA_OBJECT_DEL(mod->o_mediaplayer_old);
     mod->o_mediaplayer_old = NULL;
-    
+
 }
 
 static void _video_info_prev()
 {
     int n;
     n = enna_mediaplayer_selected_get();
-    
+
     if (n > 0)
     {
         Enna_Metadata *m;
         Evas_Object *o;
         n--;
         enna_mediaplayer_select_nth(n);
-        
+
         ENNA_OBJECT_DEL(mod->o_mediaplayer_old);
         mod->o_mediaplayer_old = NULL;
-        
+
         o = enna_smart_player_add(mod->em->evas);
         evas_object_show(o);
          m = enna_mediaplayer_metadata_get();
@@ -527,24 +529,24 @@ static void _video_info_prev()
         mod->o_mediaplayer = o;
         enna_switcher_objects_switch(mod->o_switcher, o);
     }
-    
-    
+
+
 }
 
 static void _video_info_next()
 {
     int n;
     n = enna_mediaplayer_selected_get();
-    
+
     if (n < enna_mediaplayer_playlist_count - 2)
     {
         Enna_Metadata *m;
         Evas_Object *o;
         n++;
-        
+
         ENNA_OBJECT_DEL(mod->o_mediaplayer_old);
         mod->o_mediaplayer_old = NULL;
-        
+
         enna_mediaplayer_select_nth(n);
         o = enna_smart_player_add(mod->em->evas);
         evas_object_show(o);
@@ -556,7 +558,7 @@ static void _video_info_next()
         mod->o_mediaplayer_old = mod->o_mediaplayer;
         mod->o_mediaplayer = o;
         enna_switcher_objects_switch(mod->o_switcher, o);
-    } 
+    }
 }
 
 static void _create_video_info_gui()
@@ -593,7 +595,7 @@ static void _create_video_info_gui()
 
     edje_object_signal_emit(mod->o_edje, "mediaplayer,show", "enna");
     edje_object_signal_emit(mod->o_edje, "list,hide", "enna");
- 
+
 
 }
 

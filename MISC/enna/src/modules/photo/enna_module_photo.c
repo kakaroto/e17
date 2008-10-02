@@ -410,6 +410,7 @@ static void _class_event(void *event_info)
                     break;
                 case ENNA_KEY_RIGHT:
                 case ENNA_KEY_OK:
+	        case ENNA_KEY_SPACE:
                     _activate();
                     break;
                 default:
@@ -431,6 +432,7 @@ static void _class_event(void *event_info)
                     enna_slideshow_prev(mod->o_slideshow);
                     break;
                 case ENNA_KEY_OK:
+	            case ENNA_KEY_SPACE:
                     enna_slideshow_play(mod->o_slideshow);
 
                     break;
