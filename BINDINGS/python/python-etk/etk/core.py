@@ -190,3 +190,8 @@ class CheckButton(c_etk.CheckButton):
 class Spinner(c_etk.Spinner):
     __metaclass__ = EtkMeta
     _etk_type = "Etk_Spinner"
+
+
+class Dialog(c_etk.Dialog, c_etk.DialogEnums):
+    __metaclass__ = EtkMeta
+    _etk_type = "Etk_Dialog"
