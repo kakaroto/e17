@@ -53,6 +53,7 @@ struct _Enna_Module_Music
     Ecore_Timer *timer_show_mediaplayer;
     char *prev_selected;
     Ecore_Event_Handler *eos_event_handler;
+    unsigned char is_root: 1;
 };
 
 static Enna_Module_Music *mod;
@@ -117,7 +118,13 @@ static void _class_event(void *event_info)
             {
                 case ENNA_KEY_LEFT:
                 case ENNA_KEY_CANCEL:
-                    _browse_down();
+                    if (!mod->is_root)
+                        _browse_down();
+                    else
+                    {
+                        enna_content_hide();
+                        enna_mainmenu_show(enna->o_mainmenu);
+                     }
                     break;
                 case ENNA_KEY_RIGHT:
                 case ENNA_KEY_OK:
@@ -227,6 +234,7 @@ static void _list_transition_core(Evas_List *files, unsigned char direction)
     if (evas_list_count(files))
     {
         int i = 0;
+        mod->is_root = 0;
         /* Create list of files */
         for (l = files, i = 0; l; l = l->next, i++)
         {
@@ -257,9 +265,10 @@ static void _list_transition_core(Evas_List *files, unsigned char direction)
     else if (!direction)
     {
         /* No files returned : create no media item */
+        
         Evas_Object *icon;
         Evas_Object *item;
-
+        mod->is_root = 0;
         icon = edje_object_add(mod->em->evas);
         edje_object_file_set(icon, enna_config_theme_get(), "icon_nofile");
         item = enna_listitem_add(mod->em->evas);
@@ -270,7 +279,7 @@ static void _list_transition_core(Evas_List *files, unsigned char direction)
     {
         /* Browse down and no file detected : Root */
         Evas_List *l, *categories;
-
+        mod->is_root = 1;
         categories = enna_vfs_get(ENNA_CAPS_MUSIC);
         enna_list_icon_size_set(o_list, 200, 200);
         for (l = categories; l; l = l->next)
@@ -292,7 +301,7 @@ static void _list_transition_core(Evas_List *files, unsigned char direction)
             Enna_Metadata *metadata;
             Evas_Object *cover = NULL;
             const char *cover_file;
-
+            mod->is_root = 0;
             metadata = enna_mediaplayer_metadata_get();
             item = enna_listitem_add(mod->em->evas);
 
@@ -541,6 +550,8 @@ static void _create_gui()
     Evas_Object *icon;
 
     mod->state = LIST_VIEW;
+    /* First creation : show root */
+    mod->is_root = 1;
     mod->timer_show_mediaplayer = NULL;
     o = edje_object_add(mod->em->evas);
     edje_object_file_set(o, enna_config_theme_get(), "module/music");

@@ -55,7 +55,7 @@ static char * amazon_cover_get(char *search_type, char *keywords,
     AMAZON_HOSTNAME, AMAZON_LICENSE_KEY, escaped_keywords, search_type);
 
 #ifdef DEBUG
-    enna_log(ENNA_MSG_INFO, ENNA_MODULE_NAME, "Search Request: %s\n", url);
+    enna_log(ENNA_MSG_INFO, ENNA_MODULE_NAME, "Search Request: %s", url);
 #endif
 
     /* 3. Perform request */
@@ -64,7 +64,7 @@ static char * amazon_cover_get(char *search_type, char *keywords,
         return NULL;
 
 #ifdef DEBUG
-    enna_log(ENNA_MSG_INFO, ENNA_MODULE_NAME, "Search Reply: %s\n", data.buffer);
+    enna_log(ENNA_MSG_INFO, ENNA_MODULE_NAME, "Search Reply: %s", data.buffer);
 #endif
 
     /* 4. Parse the answer to get ASIN value */
@@ -80,7 +80,7 @@ static char * amazon_cover_get(char *search_type, char *keywords,
     if (!asin)
     {
         enna_log(ENNA_MSG_WARNING, ENNA_MODULE_NAME,
-                "Unable to find the item \"%s\"\n", escaped_keywords);
+                "Unable to find the item \"%s\"", escaped_keywords);
         return NULL;
     }
 
@@ -95,7 +95,7 @@ static char * amazon_cover_get(char *search_type, char *keywords,
     xmlFree(asin);
 
 #ifdef DEBUG
-    enna_log(ENNA_MSG_INFO, ENNA_MODULE_NAME, "Cover Search Request: %s\n", url);
+    enna_log(ENNA_MSG_INFO, ENNA_MODULE_NAME, "Cover Search Request: %s", url);
 #endif
 
     /* 6. Perform request */
@@ -104,7 +104,7 @@ static char * amazon_cover_get(char *search_type, char *keywords,
         return NULL;
 
 #ifdef DEBUG
-    enna_log(ENNA_MSG_INFO, ENNA_MODULE_NAME, "Cover Search Reply: %s\n",
+    enna_log(ENNA_MSG_INFO, ENNA_MODULE_NAME, "Cover Search Reply: %s",
             data.buffer);
 #endif
 
@@ -131,7 +131,7 @@ static char * amazon_cover_get(char *search_type, char *keywords,
     if (!cover_url)
     {
         enna_log(ENNA_MSG_WARNING, ENNA_MODULE_NAME,
-                "Unable to find the cover for %s\n", escaped_keywords);
+                "Unable to find the cover for %s", escaped_keywords);
         xmlFreeDoc(doc);
         return NULL;
     }
@@ -145,14 +145,14 @@ static char * amazon_cover_get(char *search_type, char *keywords,
             enna_util_user_home_get(), md5);
     free(md5);
 
-    enna_log(ENNA_MSG_EVENT, ENNA_MODULE_NAME, "Saving %s to %s\n", cover_url,
+    enna_log(ENNA_MSG_EVENT, ENNA_MODULE_NAME, "Saving %s to %s", cover_url,
             cover);
 
     data = url_get_data(mod->curl, (char *) cover_url);
     if (data.status != CURLE_OK)
     {
         enna_log(ENNA_MSG_WARNING, ENNA_MODULE_NAME,
-                "Unable to download requested cover file\n");
+                "Unable to download requested cover file");
         return NULL;
     }
 
@@ -160,7 +160,7 @@ static char * amazon_cover_get(char *search_type, char *keywords,
     if (fd < 0)
     {
         enna_log(ENNA_MSG_WARNING, ENNA_MODULE_NAME,
-                "Unable to open stream to save cover file\n");
+                "Unable to open stream to save cover file");
 
         free(data.buffer);
         return NULL;

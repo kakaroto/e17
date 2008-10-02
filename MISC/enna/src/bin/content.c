@@ -130,3 +130,42 @@ EAPI int enna_content_select(const char *name)
     return 0;
 }
 
+EAPI void enna_content_hide()
+{
+    Evas_List *l;
+    
+    for (l = _enna_contents; l; l = l->next)
+    {
+        Enna_Content_Element *e;
+        e = l->data;
+
+        if (!e)
+            continue;
+        if (e->selected)
+        {
+            enna_activity_hide(e->name);
+            return;   
+        }
+    }
+}
+
+EAPI void enna_content_show()
+{
+    Evas_List *l;
+    
+    for (l = _enna_contents; l; l = l->next)
+    {
+        Enna_Content_Element *e;
+        e = l->data;
+
+        if (!e)
+            continue;
+        if (e->selected)
+        {
+            enna_activity_show(e->name);
+            return;   
+        }
+    }
+}
+
+

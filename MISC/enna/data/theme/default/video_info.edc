@@ -1,18 +1,13 @@
 images {
-   image: "cd_case_reflect.png" COMP;
-   image: "cd_case.png" COMP;
-   image: "progress_bar.png" COMP;
-   image: "progress_bar_content.png" COMP;
-   image: "progress_bar_drag.png" COMP;
-   image: "text_border.png" COMP;
    image: "shadow.png" COMP;
+   image: "video_info_panel.png" COMP;
 }
-
 
 group {
    name: "video_info";
-   min: 800 600;
+   //min: 800 480;
    parts {
+
       part {
          name: "enna.clip.player";
          type: RECT;
@@ -22,181 +17,236 @@ group {
             visible: 1;
          }
       }
+
+/*****************************************************************************/
+/*			Movie Snapshot                                       */
+/*****************************************************************************/
+
       part {
-         name: "text_border";
-         mouse_events:  0;
-         description {
-            state: "default" 0.0;
-            rel1.relative: 0.01 0.1;
-            rel2.relative: 0.99 0.99;
-            image.normal: "text_border.png";
-            image.border: 10 10 10 10;
-         }
-      }
-      part {
-	 name:           "enna.text.title";
-         clip_to: "enna.clip.player";
-	 type:           TEXT;
-	 mouse_events:   0;
-	 description {
-	    state: "default" 0.0;
-	    rel1 {
-               relative: 0.01  0;
-	    }
-	    rel2 {
-	       relative: 0.99  0.1;
-	    }
-            color: 200 200 200 200;
-            color3: 128 128 128 200;
-
-	    text {
-               text:     "Title";
-               font:     "content_bd";
-               size:     25;
-               align: 0.5 0.5;
-               fit: 1 1;
-               min: 1 0;
-               //max: 1 1;;
-            }
-	 }
-      }
-      part
-      {
-         name: "shadow_info_bg";
-         type: IMAGE;
-         mouse_events:   0;
-         description
-         {
-            state: "default" 0.0;
-            rel1{
-               relative: 0 0;
-               to: "info_bg";
-            }
-            rel2
-            {
-               relative: 1 1;
-               to: "info_bg";
-               offset: 13 13;
-            }
-            image.normal: "shadow.png";
-            image.border: 14 14 14 14;
-         }
-      }
-      part
-      {
-         name: "info_bg";
-         type: RECT;
-         mouse_events:   0;
-         description
-         {
-            state: "defaqult" 0.0;
-            color: 0 0 0 255;
-            aspect: 1.33 1.33;
-            aspect_preference: BOTH;
-            rel1{
-               relative: 0.4 0;
-               to: "text_border";
-               offset: 20 20;
-            }
-            rel2
-            {
-               relative: 1 1;
-               to: "text_border";
-               offset: -20 -20;
-            }
-
-         }
-      }
-
-
-      /*****************************************************************************/
-      /*			Movie Cover                                          */
-      /*****************************************************************************/
-      part
-      {
-         name: "shadow_cover";
-         type: IMAGE;
-         mouse_events:   0;
-         description
-         {
-            state: "default" 0.0;
-            rel1{
-               relative: 0 0;
-               to: "cover_bg";
-            }
-            rel2
-            {
-               relative: 1 1;
-               to: "cover_bg";
-               offset: 13 13;
-            }
-            image.normal: "shadow.png";
-            image.border: 14 14 14 14;
-         }
-      }
-      part {
-         name: "cover_bg";
+         name: "enna.clip.snapshot";
          type: RECT;
          description {
             state: "default" 0.0;
-            color: 0 0 0 255;
+            color: 0 0 0 0;
+            visible: 0;
+            rel1 { relative: 0.0 0.0; };
+            rel2 { relative: 0.7 0.7; };
+         }
+         description {
+            state: "show" 0.0;
+            inherit: "default" 0.0;
+	    color: 255 255 255 255;
             visible: 1;
-            aspect: 0.69 0.69;
-            aspect_preference: BOTH;
-            rel1 {
-               to: "text_border";
-               relative: 0 0;
-               offset: 20 20;
-
-            }
-            rel2 {
-               to_x: "info_bg";
-               to_y: "text_border";
-               relative: 0 1;
-               offset: 0 -20;
-            }
          }
       }
+
+      part {
+         name: "enna.swallow.snapshot";
+	 clip_to: "enna.clip.snapshot";
+         type: SWALLOW;
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            rel1 { relative: 0 0; to: "enna.clip.snapshot"; }
+            rel2 { relative: 1 1; to: "enna.clip.snapshot"; }
+         }
+      }
+
+/*****************************************************************************/
+/*			Movie Cover                                          */
+/*****************************************************************************/
+
+
+
       part {
          name: "enna.clip.cover";
-         clip_to: "enna.clip.player";
+         //clip_to: "enna.clip.player";
          type: RECT;
          description {
             state: "default" 0.0;
             color: 255 255 255 0;
             visible: 0;
-            rel1{
-               relative: 0 0;
-               to: "cover_bg";
-            }
-            rel2{
-               relative: 1 1;
-               to: "cover_bg";
-            }
+            rel1 { relative: 0.0 0.0; to: "enna.swallow.cover";}
+            rel2 { relative: 1.0 1.0; to: "enna.swallow.cover";offset: 13 13;}
          }
          description {
             state: "show" 0.0;
+            inherit: "default" 0.0;
             color : 255 255 255 255;
             visible: 1;
-            inherit: "default" 0.0;
+         }
+      }
+      
+      part {
+         name: "shadow_cover";
+         type: IMAGE;
+         clip_to: "enna.clip.cover";
+         mouse_events: 0;
+         description
+         {
+            state: "default" 0.0;
+            visible: 1;
+            color: 255 255 255 255;
+            rel1 { relative: 0.0 0.0; to: "enna.swallow.cover"; }
+            rel2 { relative: 1.0 1.0; to: "enna.swallow.cover"; offset: 13 13; }
+            image.normal: "shadow.png";
+            image.border: 14 14 14 14;
          }
       }
 
       part {
          name: "enna.swallow.cover";
+         clip_to: "enna.clip.cover";
          type: SWALLOW;
          mouse_events : 1;
-         //clip_to: "enna.clip.cover";
          description {
             state: "default" 0.0;
             color: 255 255 255 255;
-            rel1 {relative: 0 0;to: "enna.clip.cover";}
-            rel2 {relative: 1 1;to: "enna.clip.cover";}
+            aspect: 0.75 0.75;
+            aspect_preference: VERTICAL;
+            align: 0 0.5;
+            rel1 { relative: 0 0.5;offset: 20 0;}
+            rel2 { relative: 0 1.0;offset: 0 -50;}
+
+         }
+      }
+
+
+/*****************************************************************************/
+/*			Movie Title                                          */
+/*****************************************************************************/
+
+      part {
+	 name:           "enna.text.title";
+	 type:           TEXT;
+	 mouse_events:   0;
+	 description {
+	    state: "default" 0.0;
+	    rel1 { 
+	        relative: 1.0 0.7;
+	        to_x: "enna.swallow.cover";
+	        
+	    };
+	    rel2 { 
+	        relative: 0.0 1.0; 
+	        to_x: "info.clip.bg";
+	    };
+            color:  200 200 200 200;
+            color3: 128 128 128 200;
+
+	    text {
+               text:     "Title";
+               font:     "content_bd";
+               size:     45;
+               align: 0.5 0.5;
+
+            }
+	 }
+      }
+
+/*****************************************************************************/
+/*			Movie Infos                                          */
+/*****************************************************************************/
+
+      part {
+         name: "info.clip.bg";
+         type: RECT;
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            color: 0 0 0 0;
+            rel1 { relative: 0.7 0.0; }
+            rel2 { relative: 1.0 1.0; }
+         }
+      }
+      part {
+         name: "info.bg";
+         type: IMAGE;
+         mouse_events: 0;
+         description {
+            state: "default" 0.0;
+            rel1 { relative: 0.7 0.0; offset: -34 -38;}
+            rel2 { relative: 1.0 1.0; }
+            image
+            {
+                normal: "video_info_panel.png";
+                border: 50 0 417 36;
+            }
          }
       }
 
 
 
+ /*     part
+        {
+            name: "bg_gradient";
+            type: GRADIENT;
+            description
+            {
+                state: "default" 0.0;
+                rel1.to: "info.clip.bg";
+                rel1.relative: 0 0;
+                rel1.offset: 1 1;
+                rel2.to: "info.clip.bg";
+                rel2.relative: 1 1.0;
+                rel2.offset: -2 -2;
+                gradient {
+                    spectrum: "grey_gradient";
+                    rel1.relative: 0.5 0;
+                    rel1.offset: 0 0;
+                    rel2.relative: 0.5 1;
+                    rel2.offset: -1 0;
+                }
+            }
+        } 
+      part
+        {
+            name: "reflect";
+            type: GRADIENT;
+            description
+            {
+                state: "default" 0.0;
+                rel1.to: "info.clip.bg";
+                rel1.relative: 0 0;
+                rel1.offset: 1 1;
+                rel2.to: "info.clip.bg";
+                rel2.relative: 1 0.5;
+                rel2.offset: -2 -2;
+                gradient {
+                    spectrum: "Reflect";
+                    rel1.relative: 0.5 0;
+                    rel1.offset: 0 0;
+                    rel2.relative: 0.5 1;
+                    rel2.offset: -1 0;
+                }
+            }
+        } 
+*/
+/*****************************************************************************/
+/*			Movie Properties                                     */
+/*****************************************************************************/
+
+      part {
+	 name:           "enna.text.properties";
+         clip_to:        "enna.clip.player";
+	 type:           TEXT;
+	 mouse_events:   0;
+	 description {
+	    state: "default" 0.0;
+	    rel1 { relative: 0.0 0.20; to: "info.clip.bg"; }
+	    rel2 { relative: 1.0 0.25; to: "info.clip.bg"; }
+            color: 200 200 200 200;
+            color3: 128 128 128 200;
+            align: 0.5 0.5;
+	    text {
+               text:     "Video Properties";
+               font:     "content_bd";
+               size:     10;
+               fit: 1 1;
+               min: 1 0;
+            }
+	 }
+      }
 
       part {
 	 name:           "enna.text.size";
@@ -205,14 +255,8 @@ group {
 	 mouse_events:   0;
 	 description {
 	    state: "default" 0.0;
-	    rel1 {
-               relative: 0  0.25;
-	       to: "info_bg";
-	    }
-	    rel2 {
-	       relative: 1.0  0.30;
-	       to: "info_bg";
-	    }
+	    rel1 { relative: 0.0 0.25; to: "info.clip.bg"; }
+	    rel2 { relative: 1.0 0.30; to: "info.clip.bg"; }
             color: 200 200 200 128;
             color3: 128 128 128 128;
             align: 0.5 0.5;
@@ -222,10 +266,10 @@ group {
                size:     10;
                fit: 1 1;
                min: 1 0;
-               //max: 1 1;;
             }
 	 }
       }
+
       part {
 	 name:           "enna.text.length";
          clip_to:        "enna.clip.player";
@@ -233,14 +277,8 @@ group {
 	 mouse_events:   0;
 	 description {
 	    state: "default" 0.0;
-	    rel1 {
-               relative: 0  0.30;
-	       to: "info_bg";
-	    }
-	    rel2 {
-	       relative: 1.0  0.35;
-	       to: "info_bg";
-	    }
+	    rel1 { relative: 0.0 0.30; to: "info.clip.bg"; }
+	    rel2 { relative: 1.0 0.35; to: "info.clip.bg"; }
             color: 200 200 200 128;
             color3: 128 128 128 128;
             align: 0.5 0.5;
@@ -250,10 +288,10 @@ group {
                size:     10;
                fit: 1 1;
                min: 1 0;
-               //max: 1 1;;
             }
 	 }
       }
+
       part {
          name: "title_underline2";
          type: RECT;
@@ -261,21 +299,14 @@ group {
             state: "default" 0.0;
             color : 255 255 255 128;
             visible: 1;
-            rel1 {
-               relative: 0.1  0.40;
-	       to: "info_bg";
-	    }
-	    rel2 {
-	       relative: 0.9  0.40;
-	       to: "info_bg";
-	       offset: 0 0;
-	    }
+            rel1 { relative: 0.1 0.40; to: "info.clip.bg"; }
+	    rel2 { relative: 0.9 0.40; to: "info.clip.bg"; }
          }
       }
 
-      /*****************************************************************************/
-      /*			Video Stream Infos                                   */
-      /*****************************************************************************/
+/*****************************************************************************/
+/*			Video Stream Infos                                   */
+/*****************************************************************************/
 
       part {
 	 name:           "enna.text.video";
@@ -284,14 +315,8 @@ group {
 	 mouse_events:   0;
 	 description {
 	    state: "default" 0.0;
-	    rel1 {
-               relative: 0  0.45;
-	       to: "info_bg";
-	    }
-	    rel2 {
-	       relative: 0.5  0.50;
-	       to: "info_bg";
-	    }
+	    rel1 { relative: 0.0 0.45; to: "info.clip.bg"; }
+	    rel2 { relative: 1.0 0.50; to: "info.clip.bg"; }
             color: 200 200 200 200;
             color3: 128 128 128 200;
             align: 0.5 0.5;
@@ -301,7 +326,6 @@ group {
                size:     10;
                fit: 1 1;
                min: 1 0;
-               //max: 1 1;;
             }
 	 }
       }
@@ -313,14 +337,8 @@ group {
 	 mouse_events:   0;
 	 description {
 	    state: "default" 0.0;
-	    rel1 {
-               relative: 0  0.50;
-	       to: "info_bg";
-	    }
-	    rel2 {
-	       relative: 0.5  0.55;
-	       to: "info_bg";
-	    }
+	    rel1 { relative: 0.0 0.50; to: "info.clip.bg"; }
+	    rel2 { relative: 1.0 0.55; to: "info.clip.bg"; }
             color: 200 200 200 128;
             color3: 128 128 128 128;
 	    text {
@@ -329,7 +347,6 @@ group {
                size:     10;
                fit: 1 1;
                min: 1 0;
-               //max: 1 1;;
             }
 	 }
       }
@@ -341,14 +358,8 @@ group {
 	 mouse_events:   0;
 	 description {
 	    state: "default" 0.0;
-	    rel1 {
-               relative: 0  0.55;
-	       to: "info_bg";
-	    }
-	    rel2 {
-	       relative: 0.5  0.60;
-	       to: "info_bg";
-	    }
+	    rel1 { relative: 0.0 0.55; to: "info.clip.bg"; }
+	    rel2 { relative: 1.0 0.60; to: "info.clip.bg"; }
             color: 200 200 200 128;
             color3: 128 128 128 128;
 	    text {
@@ -357,7 +368,6 @@ group {
                size:     10;
                fit: 1 1;
                min: 1 0;
-               //max: 1 1;;
             }
 	 }
       }
@@ -369,14 +379,8 @@ group {
 	 mouse_events:   0;
 	 description {
 	    state: "default" 0.0;
-	    rel1 {
-               relative: 0  0.60;
-	       to: "info_bg";
-	    }
-	    rel2 {
-	       relative: 0.5  0.65;
-	       to: "info_bg";
-	    }
+	    rel1 { relative: 0.0 0.60; to: "info.clip.bg"; }
+	    rel2 { relative: 1.0 0.65; to: "info.clip.bg"; }
             color: 200 200 200 128;
             color3: 128 128 128 128;
 	    text {
@@ -385,14 +389,13 @@ group {
                size:     10;
                fit: 1 1;
                min: 1 0;
-               //max: 1 1;;
             }
 	 }
       }
 
-      /*****************************************************************************/
-      /*			Audio Stream Infos                                   */
-      /*****************************************************************************/
+/*****************************************************************************/
+/*			Audio Stream Infos                                   */
+/*****************************************************************************/
 
       part {
 	 name:           "enna.text.audio";
@@ -401,14 +404,8 @@ group {
 	 mouse_events:   0;
 	 description {
 	    state: "default" 0.0;
-	    rel1 {
-               relative: 0.5  0.45;
-	       to: "info_bg";
-	    }
-	    rel2 {
-	       relative: 1.0  0.50;
-	       to: "info_bg";
-	    }
+	    rel1 { relative: 0.0 0.70; to: "info.clip.bg"; }
+	    rel2 { relative: 1.0 0.75; to: "info.clip.bg"; }
             color: 200 200 200 200;
             color3: 128 128 128 200;
 	    align: 0.5 0.5;
@@ -418,11 +415,9 @@ group {
                size:     10;
                fit: 1 1;
                min: 1 0;
-               //max: 1 1;;
             }
 	 }
       }
-
 
       part {
 	 name:           "enna.text.audiocodec";
@@ -431,14 +426,8 @@ group {
 	 mouse_events:   0;
 	 description {
 	    state: "default" 0.0;
-	    rel1 {
-               relative: 0.5  0.50;
-	       to: "info_bg";
-	    }
-	    rel2 {
-	       relative: 1.0  0.55;
-	       to: "info_bg";
-	    }
+	    rel1 { relative: 0.0 0.75; to: "info.clip.bg"; }
+	    rel2 { relative: 1.0 0.80; to: "info.clip.bg"; }
             color: 200 200 200 128;
             color3: 128 128 128 128;
 	    text {
@@ -447,7 +436,6 @@ group {
                size:     10;
                fit: 1 1;
                min: 1 0;
-               //max: 1 1;;
             }
 	 }
       }
@@ -459,14 +447,8 @@ group {
 	 mouse_events:   0;
 	 description {
 	    state: "default" 0.0;
-	    rel1 {
-               relative: 0.5  0.55;
-	       to: "info_bg";
-	    }
-	    rel2 {
-	       relative: 1.0  0.60;
-	       to: "info_bg";
-	    }
+	    rel1 { relative: 0.0 0.80; to: "info.clip.bg"; }
+	    rel2 { relative: 1.0 0.85; to: "info.clip.bg"; }
             color: 200 200 200 128;
             color3: 128 128 128 128;
 	    text {
@@ -475,7 +457,6 @@ group {
                size:     10;
                fit: 1 1;
                min: 1 0;
-               //max: 1 1;;
             }
 	 }
       }
@@ -487,14 +468,8 @@ group {
 	 mouse_events:   0;
 	 description {
 	    state: "default" 0.0;
-	    rel1 {
-               relative: 0.5  0.60;
-	       to: "info_bg";
-	    }
-	    rel2 {
-	       relative: 1.0  0.65;
-	       to: "info_bg";
-	    }
+	    rel1 { relative: 0.0 0.85; to: "info.clip.bg"; }
+	    rel2 { relative: 1.0 0.90; to: "info.clip.bg"; }
             color: 200 200 200 128;
             color3: 128 128 128 128;
 	    text {
@@ -503,61 +478,30 @@ group {
                size:     10;
                fit: 1 1;
                min: 1 0;
-               //max: 1 1;;
             }
 	 }
       }
 
-      part
-      {
-         name: "reflect";
-         type: GRADIENT;
-         description
-         {
-            state: "default" 0.0;
-            rel1.to: "info_bg";
-            rel1.relative: 0 0;
-            rel1.offset: 1 1;
-            rel2.to: "info_bg";
-            rel2.relative: 1 0.5;
-            rel2.offset: -2 -2;
-            gradient {
-               spectrum: "Reflect";
-               rel1.relative: 0.5 0;
-               rel1.offset: 0 0;
-               rel2.relative: 0.5 1;
-               rel2.offset: -1 0;
-            }
-         }
-      }
-
-      /*   part
-      {
-         name: "reflect_cover";
-         type: GRADIENT;
-         description
-         {
-            state: "default" 0.0;
-            rel1.to: "cover_bg";
-            rel1.relative: 0 0;
-            rel1.offset: 1 1;
-            rel2.to: "cover_bg";
-            rel2.relative: 1 0.5;
-            rel2.offset: -2 -2;
-            gradient {
-               spectrum: "Reflect";
-               rel1.relative: 0.5 0;
-               rel1.offset: 0 0;
-               rel2.relative: 0.5 1;
-               rel2.offset: -1 0;
-            }
-         }
-      }
-      */
-
 
    }
+
    programs {
+      program {
+         name: "snapshot,show";
+         signal: "snapshot,show";
+         source:  "enna";
+         action:  STATE_SET "show" 0.0;
+         transition: SINUSOIDAL 1.0;
+         target: "enna.clip.snapshot";
+      }
+      program {
+         name: "snapshot,hide";
+         signal: "snapshot,hide";
+         source:  "enna";
+         action:  STATE_SET "default" 0.0;
+         transition: SINUSOIDAL 1.0;
+         target: "enna.clip.snapshot";
+      }
       program {
          name: "cover,show";
          signal: "cover,show";

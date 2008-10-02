@@ -33,6 +33,7 @@ typedef struct _Enna_Module_Photo
     Enna_Class_Vfs *vfs;
     Enna_Module *em;
     char *prev_selected;
+    unsigned char is_root: 1;
 } Enna_Module_Photo;
 
 static Enna_Module_Photo *mod;
@@ -100,6 +101,7 @@ static void _list_transition_core(Evas_List *files, unsigned char direction)
     if (evas_list_count(files))
     {
         int i = 0;
+        mod->is_root = 0;
         /* Create list of files */
         for (l = files, i = 0; l; l = l->next, i++)
         {
@@ -140,6 +142,7 @@ static void _list_transition_core(Evas_List *files, unsigned char direction)
     {
         /* Browse down and no file detected : Root */
         Evas_List *l, *categories;
+        mod->is_root = 1;
         enna_log(ENNA_MSG_INFO, ENNA_MODULE_NAME, "get CAPS Photo");
         categories = enna_vfs_get(ENNA_CAPS_PHOTO);
         enna_list_icon_size_set(o_list, 200, 200);
@@ -227,7 +230,7 @@ static void _create_slideshow_gui()
         evas_object_del(mod->o_slideshow);
 
     o = enna_slideshow_add(mod->em->evas);
-    edje_object_part_swallow(enna->o_edje, "enna.swallow.fullsceen", o);
+    edje_object_part_swallow(enna->o_edje, "enna.swallow.fullscreen", o);
     evas_object_show(o);
     mod->o_slideshow = o;
 
@@ -319,6 +322,7 @@ static void _create_gui(void)
     edje_object_file_set(o, enna_config_theme_get(), "module/photo");
     mod->o_edje = o;
     mod->prev_selected = NULL;
+	mod->is_root = 1;
     mod->state = LIST_VIEW;
     /* Create List */
     o = enna_list_add(mod->em->evas);
@@ -396,7 +400,13 @@ static void _class_event(void *event_info)
             {
                 case ENNA_KEY_LEFT:
                 case ENNA_KEY_CANCEL:
-                    _browse_down();
+            		if (!mod->is_root)
+                        _browse_down();
+                    else
+                    {
+                        enna_content_hide();
+                        enna_mainmenu_show(enna->o_mainmenu);
+                    }
                     break;
                 case ENNA_KEY_RIGHT:
                 case ENNA_KEY_OK:

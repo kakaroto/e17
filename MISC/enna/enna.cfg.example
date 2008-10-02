@@ -5,6 +5,12 @@ verbosity=info
 #0,1
 fullscreen=0
 
+#0,1
+use_covers=1
+
+#0,1
+use_snapshots=1
+
 #/home/user/theme.edj for specific file or just 'default' if theme is
 #located at /usr/share/enna/theme/default.edj
 theme=default
@@ -15,9 +21,9 @@ engine=x11
 #libplayer,emotion
 backend=libplayer
 
-music_ext=ogg,mp3,flac,wav,wma
-video_ext=avi,mkv,ogg,mpg,mpeg,wmv
-photo_ext=jpg,jpeg,png
+music_ext=3gp,aac,ape,apl,flac,m4a,mac,mka,mp2,mp3,mp4,mpc,ogg,ra,wav,wma
+video_ext=asf,avi,divx,dvr-ms,evo,flv,m1v,m2v,m4p,m4v,mkv,mov,mp4,mp4v,mpe,mpeg,mpg,ogm,qt,rm,rmvb,swf,ts,vdr,vob,vro,wmv,y4m
+photo_ext=jpg,jpeg,png,gif,tif,tiff,xpm
 
 [libplayer]
 # Values by default are 'mplayer' type, 'auto' video_out, 'auto' audio_out

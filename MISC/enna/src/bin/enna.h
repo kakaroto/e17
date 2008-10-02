@@ -96,6 +96,8 @@ struct _Enna
     Evas_Object *o_mainmenu; /**< Top menu. */
     Evas_Object *o_content; /** Edje Object to swallow content */
     enna_msg_level_t lvl; /**< Error message level */
+    int use_covers;
+    int use_snapshots;
 };
 
 extern Enna *enna;

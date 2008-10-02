@@ -226,22 +226,26 @@ static void _enna_image_smart_reconfigure(E_Smart_Data * sd)
             h = sd->h;
             w = ((double)iw * h) / (double)ih;
         }
+        x = sd->x + ((sd->w - w) / 2);
+        y = sd->y + ((sd->h - h) / 2);
+        evas_object_move(sd->obj, x, y);
+        evas_object_image_fill_set(sd->obj, 0, 0, w, h);
+        evas_object_resize(sd->obj, w, h);
     }
     else
     {
-        w = sd->w;
+        /*w = sd->w;
         h = ((double)ih * w) / (double)iw;
         if (h < sd->h)
         {
             h = sd->h;
             w = ((double)iw * h) / (double)ih;
-        }
+        }*/
+        evas_object_move(sd->obj, sd->x, sd->y);
+        evas_object_image_fill_set(sd->obj, 0, 0, sd->w, sd->h);
+        evas_object_resize(sd->obj, sd->w, sd->h);
     }
-    x = sd->x + ((sd->w - w) / 2);
-    y = sd->y + ((sd->h - h) / 2);
-    evas_object_move(sd->obj, x, y);
-    evas_object_image_fill_set(sd->obj, 0, 0, w, h);
-    evas_object_resize(sd->obj, w, h);
+
 
 }
 

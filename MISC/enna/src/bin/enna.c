@@ -72,6 +72,7 @@ static int _event_bg_key_down_cb(void *data, int type, void *event)
         {
             case ENNA_KEY_MENU:
             {
+                enna_content_show();
                 enna_mainmenu_hide(enna->o_mainmenu);
                 edje_object_signal_emit(enna->o_edje, "mainmenu,hide", "enna");
                 break;
@@ -102,6 +103,7 @@ static int _event_bg_key_down_cb(void *data, int type, void *event)
         {
             case ENNA_KEY_MENU:
             {
+                enna_content_hide();
                 enna_mainmenu_show(enna->o_mainmenu);
                 //edje_object_signal_emit(enna->o_edje, "mainmenu,show", "enna");
                 //edje_object_signal_emit(enna->o_edje, "module,hide", "enna");
@@ -226,6 +228,9 @@ static int _enna_init(int run_gl)
         return 0;
     }
 
+    enna->use_covers = enna_config->use_covers;
+    enna->use_snapshots = enna_config->use_snapshots;
+    
     ecore_evas_fullscreen_set(enna->ee, enna_config->fullscreen
             | run_fullscreen);
 

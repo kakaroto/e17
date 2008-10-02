@@ -212,10 +212,16 @@ static char * enna_cover_get(const char *artist, const char *album,
 EAPI char * enna_cover_album_get(const char *artist, const char *album,
         const char *filename)
 {
+    if (!enna->use_covers)
+        return NULL;
+    
     return enna_cover_get(artist, album, filename);
 }
 
 EAPI char * enna_cover_video_get(const char *filename)
 {
+    if (!enna->use_covers)
+        return NULL;
+
     return enna_cover_get(NULL, NULL, filename);
 }

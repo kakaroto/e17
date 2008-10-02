@@ -5,7 +5,6 @@ images {
 }
 group {
  name: "enna/background";
- min: 800 480;
    parts {
       part{
       name: "bg";

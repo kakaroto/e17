@@ -78,11 +78,16 @@ static double _class_length_get()
     return emotion_object_play_length_get(mod->o_emotion);
 }
 
+static void _class_snapshot(const char *uri, const char *file)
+{
+
+}
+
 static Enna_Metadata *_class_metadata_get(void)
 {
     Enna_Metadata *m;
     const char *track;
-    char *tmp;
+    const char *tmp;
 
     m = enna_metadata_new();
 
@@ -150,11 +155,26 @@ static void _eos_cb(void *data, Evas_Object * obj, void *event_info)
         mod->event_cb(mod->event_cb_data, ENNA_MP_EVENT_EOF);
 }
 
-static Enna_Class_MediaplayerBackend class =
-{ "emotion", 1,
-{ _class_init, _class_shutdown, _class_file_set, _class_play, _class_seek,
-        _class_stop, _class_pause, _class_position_get, _class_length_get,
-        _class_metadata_get, _class_event_cb_set, _class_video_obj_get } };
+static Enna_Class_MediaplayerBackend class = {
+  "emotion",
+  1,
+  {
+    _class_init,
+    _class_shutdown,
+    _class_file_set,
+    _class_play,
+    _class_seek,
+    _class_stop,
+    _class_pause,
+    _class_position_get,
+    _class_length_get,
+    _class_snapshot,
+    _class_metadata_get,
+    NULL,
+    _class_event_cb_set,
+    _class_video_obj_get
+  }
+};
 
 /*****************************************************************************/
 /*                          Public Module API                                */

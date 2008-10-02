@@ -29,6 +29,13 @@ group {
    name: "transitions/crossfade";
    parts {
       part {
+         name: "clip";
+         type: RECT;
+         description {
+            state: "default" 0.0;
+         }
+      }
+      part {
          name:          "slide.1";
          type:          SWALLOW;
          clip_to:       "bg1_clip";
@@ -49,6 +56,7 @@ group {
       part {
          name:          "bg1_clip";
          type:          RECT;
+         clip_to: "clip";
          mouse_events:  0;
          description {
             state: "default" 0.0;
@@ -65,6 +73,7 @@ group {
       part {
          name:          "bg2_clip";
          type:          RECT;
+         clip_to: "clip";
          mouse_events:  0;
          description {
             state: "default" 0.0;
@@ -119,6 +128,13 @@ group {
    name: "transitions/vswipe";
    parts {
       part {
+         name: "clip";
+         type: RECT;
+         description {
+            state: "default" 0.0;
+         }
+      }
+      part {
          name:          "slide.1";
          type:          SWALLOW;
          clip_to:       "bg1_clip";
@@ -139,6 +155,7 @@ group {
       part {
          name:          "bg1_clip";
          type:          RECT;
+         clip_to: "clip";
          mouse_events:  0;
          description {
             rel1 {
@@ -166,6 +183,7 @@ group {
       }
       part {
          name:          "bg2_clip";
+         clip_to: "clip";
          type:          RECT;
          mouse_events:  0;
          description {
@@ -195,6 +213,7 @@ group {
       part {
          name: "swipe_gap";
          mouse_events: 0;
+         clip_to: "clip";
          description {
             state: "default" 0.0;
             min: 0 32;
@@ -216,6 +235,7 @@ group {
       }
       part {
          name: "swipe_gap2";
+         clip_to: "clip";
          mouse_events: 0;
          description {
             state: "default" 0.0;
@@ -285,6 +305,13 @@ group {
    name: "transitions/hslide";
    parts {
       part {
+         name: "clip";
+         type: RECT;
+         description {
+            state: "default" 0.0;
+         }
+      }
+      part {
          name:          "slide.2";
          type:          SWALLOW;
          clip_to:       "bg2_clip";
@@ -308,6 +335,7 @@ group {
          name:          "bg2_clip";
          type:          RECT;
          mouse_events:  0;
+         clip_to: "clip";
          description {
             state: "default" 0.0;
             color: 0 0 0 0;
@@ -324,6 +352,7 @@ group {
          name:          "bg1_clip";
          type:          RECT;
          mouse_events:  0;
+         clip_to: "clip";
          description {
             state: "default" 0.0;
          }

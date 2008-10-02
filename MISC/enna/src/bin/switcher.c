@@ -1,8 +1,8 @@
 /*
- * SMARTNAME.c
+ * switcher.c
  * Copyright (C) Nicolas Aguirre 2006,2007,2008 <aguirre.nicolas@gmail.com>
  *
- * SMARTNAME.c is free software copyrighted by Nicolas Aguirre.
+ * switcher.c is free software copyrighted by Nicolas Aguirre.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions
@@ -16,7 +16,7 @@
  *    contributor may be used to endorse or promote products derived
  *    from this software without specific prior written permission.
  *
- * SMARTNAME.c IS PROVIDED BY Nicolas Aguirre ``AS IS'' AND ANY EXPRESS
+ * switcher.c IS PROVIDED BY Nicolas Aguirre ``AS IS'' AND ANY EXPRESS
  * OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
  * ARE DISCLAIMED.  IN NO EVENT SHALL Nicolas Aguirre OR ANY OTHER CONTRIBUTORS
@@ -34,7 +34,19 @@
 #include "enna.h"
 
 
-#define SMART_NAME "enna_SMARTNAME"
+#define SMART_NAME "enna_switcher"
+
+#define API_ENTRY \
+   Smart_Data *sd; \
+   sd = evas_object_smart_data_get(obj); \
+   if ((!obj) || (!sd) || \
+      (evas_object_type_get(obj) \
+      && strcmp(evas_object_type_get(obj), SMART_NAME)))
+
+#define INTERNAL_ENTRY \
+   Smart_Data *sd; \
+   sd = evas_object_smart_data_get(obj); \
+   if (!sd) return;
 
 typedef struct _Smart_Data Smart_Data;
 
@@ -42,17 +54,22 @@ struct _Smart_Data
 {
     Evas_Coord x, y, w, h;
     Evas_Object *obj;
+    Evas_Object *o_transition;
+    Evas_Object *old_slide;
+    Evas_Object *slide;
 };
 
 /* local subsystem functions */
+static void _edje_cb(void *data, Evas_Object *obj, const char *emission, const char *source);
+static void _default_transition(Smart_Data * sd);
 static void _smart_reconfigure(Smart_Data * sd);
 static void _smart_init(void);
 static void _smart_add(Evas_Object * obj);
 static void _smart_del(Evas_Object * obj);
 static void _smart_move(Evas_Object * obj, Evas_Coord x, Evas_Coord y);
 static void _smart_resize(Evas_Object * obj, Evas_Coord w, Evas_Coord h);
-static void _smart_show(Evas_Object * obj);
-static void _smart_hide(Evas_Object * obj);
+static void _smart_show(Evas_Object *obj);
+static void _smart_hide(Evas_Object *obj);
 static void _smart_color_set(Evas_Object * obj, int r, int g, int b, int a);
 static void _smart_clip_set(Evas_Object * obj, Evas_Object * clip);
 static void _smart_clip_unset(Evas_Object * obj);
@@ -62,13 +79,75 @@ static Evas_Smart *_smart = NULL;
 
 /* externally accessible functions */
 EAPI Evas_Object *
-enna_SMARTNAME_add(Evas * evas)
+enna_switcher_add(Evas * evas)
 {
     _smart_init();
     return evas_object_smart_add(evas, _smart);
 }
 
+
+EAPI void
+enna_switcher_transition_set(Evas_Object *obj, const char *transition)
+{
+    API_ENTRY return;
+    if (!transition) return;
+
+    sd->o_transition = edje_object_add(evas_object_evas_get(sd->obj));
+    edje_object_file_set(sd->o_transition, enna_config_theme_get(), transition);
+    edje_object_signal_callback_add(sd->o_transition, "*", "*", _edje_cb, sd);
+}
+
+EAPI void enna_switcher_objects_switch(Evas_Object *obj, Evas_Object * new_slide)
+{
+    API_ENTRY return;
+    if (!new_slide)
+        return;
+
+    if (!sd->o_transition)
+        _default_transition(sd);
+
+    edje_object_part_unswallow(sd->o_transition, sd->slide);
+    edje_object_part_unswallow(sd->o_transition, sd->old_slide);
+    sd->old_slide = sd->slide;
+    sd->slide = new_slide;
+    edje_object_signal_emit(sd->o_transition, "reset", "enna");
+    edje_object_part_swallow(sd->o_transition, "slide.1", sd->old_slide);
+    edje_object_part_swallow(sd->o_transition, "slide.2", sd->slide);
+    edje_object_signal_emit(sd->o_transition, "show,2", "enna");
+}
+
 /* local subsystem globals */
+
+static void _edje_cb(void *data, Evas_Object *obj, const char *emission,
+        const char *source)
+{
+
+    Smart_Data *sd = (Smart_Data*)data;
+    if (!strcmp(emission, "done"))
+    {
+        edje_object_part_unswallow(sd->o_transition, sd->old_slide);
+        evas_object_raise(sd->old_slide);
+        evas_object_hide(sd->old_slide);
+        sd->old_slide = NULL;
+        evas_object_smart_callback_call(sd->obj, "transition_done", NULL);
+    }
+}
+
+static void _default_transition(Smart_Data * sd)
+{
+    if (!sd) return;
+    if (sd->o_transition)
+    {
+        edje_object_signal_callback_del(sd->o_transition, "*", "*", _edje_cb);
+        evas_object_del(sd->o_transition);
+    }
+    sd->o_transition = edje_object_add(evas_object_evas_get(sd->obj));
+    edje_object_file_set(sd->o_transition, enna_config_theme_get(),  "transitions/crossfade");
+    edje_object_signal_callback_add(sd->o_transition, "*", "*", _edje_cb, sd);
+}
+
+
+
 static void _smart_reconfigure(Smart_Data * sd)
 {
     Evas_Coord x, y, w, h;
@@ -78,8 +157,8 @@ static void _smart_reconfigure(Smart_Data * sd)
     w = sd->w;
     h = sd->h;
 
-    evas_object_move(sd->obj, x, y);
-    evas_object_resize(sd->obj, w, h);
+    evas_object_move(sd->o_transition, x, y);
+    evas_object_resize(sd->o_transition, w, h);
 
 }
 
@@ -112,12 +191,9 @@ static void _smart_add(Evas_Object * obj)
     sd = calloc(1, sizeof(Smart_Data));
     if (!sd)
         return;
-    sd->obj = evas_object_image_add(evas_object_evas_get(obj));
-    sd->x = 0;
-    sd->y = 0;
-    sd->w = 0;
-    sd->h = 0;
-    evas_object_smart_member_add(sd->obj, obj);
+
+    sd->obj = obj;
+
     evas_object_smart_data_set(obj, sd);
 }
 
@@ -128,7 +204,7 @@ static void _smart_del(Evas_Object * obj)
     sd = evas_object_smart_data_get(obj);
     if (!sd)
         return;
-    evas_object_del(sd->obj);
+    ENNA_OBJECT_DEL(sd->o_transition);
     free(sd);
 }
 
@@ -160,24 +236,16 @@ static void _smart_resize(Evas_Object * obj, Evas_Coord w, Evas_Coord h)
     _smart_reconfigure(sd);
 }
 
-static void _smart_show(Evas_Object * obj)
+static void _smart_show(Evas_Object *obj)
 {
-    Smart_Data *sd;
-
-    sd = evas_object_smart_data_get(obj);
-    if (!sd)
-        return;
-    evas_object_show(sd->obj);
+    INTERNAL_ENTRY;
+    evas_object_show(sd->o_transition);
 }
 
-static void _smart_hide(Evas_Object * obj)
+static void _smart_hide(Evas_Object *obj)
 {
-    Smart_Data *sd;
-
-    sd = evas_object_smart_data_get(obj);
-    if (!sd)
-        return;
-    evas_object_hide(sd->obj);
+    INTERNAL_ENTRY;
+    evas_object_hide(sd->o_transition);
 }
 
 static void _smart_color_set(Evas_Object * obj, int r, int g, int b, int a)
@@ -187,7 +255,7 @@ static void _smart_color_set(Evas_Object * obj, int r, int g, int b, int a)
     sd = evas_object_smart_data_get(obj);
     if (!sd)
         return;
-    evas_object_color_set(sd->obj, r, g, b, a);
+    evas_object_color_set(sd->o_transition, r, g, b, a);
 }
 
 static void _smart_clip_set(Evas_Object * obj, Evas_Object * clip)
@@ -197,7 +265,7 @@ static void _smart_clip_set(Evas_Object * obj, Evas_Object * clip)
     sd = evas_object_smart_data_get(obj);
     if (!sd)
         return;
-    evas_object_clip_set(sd->obj, clip);
+    evas_object_clip_set(sd->o_transition, clip);
 }
 
 static void _smart_clip_unset(Evas_Object * obj)
@@ -207,5 +275,7 @@ static void _smart_clip_unset(Evas_Object * obj)
     sd = evas_object_smart_data_get(obj);
     if (!sd)
         return;
-    evas_object_clip_unset(sd->obj);
+        
+    evas_object_clip_unset(sd->o_transition);
 }
+

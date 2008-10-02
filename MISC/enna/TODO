@@ -25,17 +25,9 @@
  * Video module (based on music one)
       -> Add video support to emotion backend
       -> change libplayer video size when resizing enna main window.
-      -> insert libplayer/emotion preview video in video_info.
       -> Polish video_info UI
-      -> Display video file name in top instead of properties frame.
-      -> Add an amazon cover into video media player view
-         (left to properties frame)
-      -> Use a video snapshot of stream if no cover can be found.
       -> Add prev/next buttons (left/right arrows?) to browse between
          videos from current directory without coming back to selection menu.
-      -> Display video length in properties frame as hh:mm:ss
-         instead of just seconds.
-      -> Add a thumbnail of video in media player view when validated once.
 
  * Covers
       -> When amazon cover has been found, send a notification to
@@ -49,6 +41,7 @@
       -> Buttons
 
  * Bugs
+     -> libcurl and libxml2 are not checked in configure.in
      -> Remove item when location bar is clicked
      -> When using 'back' in audio/video player, ui comes back to menu but
         timer renders media player view again after a few seconds.
@@ -59,6 +52,7 @@
         (go in some subfolders -> hold Backspace key; will reproduce the bug)
      -> Duplicated folder's name in location bar when a subfolder is opened
         too fastly
+     -> Don't try to create video thumbnails for net streams
 
 [Priority 9]
 

@@ -150,6 +150,13 @@ static Evas_Bool _hash_foreach(const Evas_Hash *hash, const char *key,
                     = enna_config_theme_file_get(enna_config->theme);
             enna_config_value_store(&enna_config->fullscreen, "fullscreen",
                     ENNA_CONFIG_INT, pair);
+            enna_config->use_covers = 1;
+            enna_config_value_store(&enna_config->use_covers, "use_covers",
+                    ENNA_CONFIG_INT, pair);
+            enna_config->use_snapshots = 1;
+            enna_config_value_store(&enna_config->use_snapshots,
+                                    "use_snapshots",
+                                    ENNA_CONFIG_INT, pair);
             enna_config_value_store(&enna_config->engine, "engine",
                     ENNA_CONFIG_STRING, pair);
             enna_config_value_store(&enna_config->backend, "backend",
@@ -192,6 +199,8 @@ static Evas_Hash * _config_load_conf_file(char *filename)
                 "\n"
                 "verbosity=info\n\n"
                 "fullscreen=0\n\n"
+                "use_covers=1\n\n"
+                "use_snapshots=1\n\n"    
                 "theme=default\n\n"
                 "#x11,xrender,gl,x11_16\n"
                 "engine=x11\n\n"

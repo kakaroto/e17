@@ -249,7 +249,7 @@ static void _e_smart_add(Evas_Object * obj)
         return;
 
     sd->o_box = enna_box_add(evas_object_evas_get(obj));
-    enna_box_align_set(sd->o_box, 0, 0.5);
+    //enna_box_align_set(sd->o_box, 0, 0.5);
     enna_box_homogenous_set(sd->o_box, 0);
     enna_box_orientation_set(sd->o_box, 1);
     sd->x = 0;

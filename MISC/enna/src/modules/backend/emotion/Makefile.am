@@ -26,7 +26,7 @@ enna_module_emotion_la_LDFLAGS = -module -avoid-version
 enna_module_emotion_la_DEPENDENCIES = $(top_builddir)/config.h
 
 uninstall:
-	rm -rf $(DESTDIR)$(libdir)/enna/module/enna_module_$(MODULE).*
+	rm -rf $(DESTDIR)$(libdir)/enna/modules/enna_module_$(MODULE).*
 
 endif
 

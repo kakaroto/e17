@@ -24,6 +24,8 @@ list.c\
 content.c\
 pan.c\
 scrollframe.c\
+button.c\
+switcher.c\
 location.c\
 mediaplayer.c\
 event_key.c\
@@ -33,6 +35,7 @@ url_utils.c\
 md5.c\
 covers.c\
 logs.c\
+snapshots.c\
 slideshow.c
 
 enna_LDADD = @ENNA_LIBS@ @LIBXML2_LIBS@ @LIBCURL_LIBS@
@@ -55,6 +58,8 @@ list.h\
 content.h\
 pan.h\
 scrollframe.h\
+button.h\
+switcher.h\
 location.h\
 mediaplayer.h\
 event_key.h\
@@ -64,6 +69,7 @@ url_utils.h\
 md5.h\
 covers.h\
 logs.h\
+snapshots.h\
 slideshow.h
 
 

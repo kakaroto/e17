@@ -1,6 +1,7 @@
 /* Interface */
 
 #include "enna.h"
+#include "codecs.h"
 #include <player.h>
 
 #define ENNA_MODULE_NAME "libplayer"
@@ -164,29 +165,17 @@ static double _class_length_get()
             / 1000.0;
 }
 
-static char *take_snapshot(char *uri)
+static void _class_snapshot(const char *uri, const char *file)
 {
-    char dst[1024];
-    mrl_t *mrl;
     int sec;
-    char *md5;
 
-    if (!uri)
-        return NULL;
+    if (!uri || !file)
+        return;
 
     /* take snapshot at 15% of stream */
     sec = (int) (_class_length_get() * 15 / 100);
 
-    md5 = md5sum(uri);
-    memset(dst, '\0', sizeof (dst));
-    snprintf(dst, sizeof (dst), "%s/.enna/covers/%s.png",
-            enna_util_user_home_get(), md5);
-    free(md5);
-
-    mrl = player_mrl_get_current(mod->player);
-    mrl_video_snapshot(mod->player, mrl, sec, MRL_SNAPSHOT_JPG, dst);
-
-    return strdup(dst);
+    mrl_video_snapshot(mod->player, NULL, sec, MRL_SNAPSHOT_PNG, file);
 }
 
 static Enna_Metadata *_class_metadata_get(void)
@@ -194,6 +183,8 @@ static Enna_Metadata *_class_metadata_get(void)
     Enna_Metadata *meta;
     char *track_nb;
     int frameduration = 0;
+    char *codec_id;
+    
     meta = enna_metadata_new();
 
     meta->uri = strdup(mod->uri+7);
@@ -222,7 +213,10 @@ static Enna_Metadata *_class_metadata_get(void)
     else
         meta->music->track = 0;
 
-    meta->music->codec = mrl_get_audio_codec(mod->player, NULL);
+    codec_id = mrl_get_audio_codec(mod->player, NULL);
+    meta->music->codec = get_codec_name (codec_id);
+    free (codec_id);
+    
     meta->music->bitrate = mrl_get_property(mod->player, NULL,
             MRL_PROPERTY_AUDIO_BITRATE);
     meta->music->channels = mrl_get_property(mod->player, NULL,
@@ -230,7 +224,10 @@ static Enna_Metadata *_class_metadata_get(void)
     meta->music->samplerate = mrl_get_property(mod->player, NULL,
             MRL_PROPERTY_AUDIO_SAMPLERATE);
 
-    meta->video->codec = mrl_get_video_codec(mod->player, NULL);
+    codec_id = mrl_get_video_codec(mod->player, NULL);
+    meta->video->codec = get_codec_name (codec_id);
+    free (codec_id);
+    
     meta->video->width = mrl_get_property(mod->player, NULL,
             MRL_PROPERTY_VIDEO_WIDTH);
     meta->video->height = mrl_get_property(mod->player, NULL,
@@ -246,9 +243,17 @@ static Enna_Metadata *_class_metadata_get(void)
                 / frameduration;
     meta->video->bitrate = mrl_get_property(mod->player, NULL,
             MRL_PROPERTY_VIDEO_BITRATE);
-    meta->video->snapshot = take_snapshot(mod->uri);
 
     return meta;
+}
+
+static void _class_video_resize(int x, int y, int w, int h)
+{
+    int flags = PLAYER_X_WINDOW_X | PLAYER_X_WINDOW_Y |
+                PLAYER_X_WINDOW_W | PLAYER_X_WINDOW_H;
+
+    /* if w or h is 0, libplayer guess the best size automatically */
+    player_x_window_set_properties(mod->player, x, y, w, h, flags);
 }
 
 static void _class_event_cb_set(void (*event_cb)(void *data, enna_mediaplayer_event_t event), void *data)
@@ -272,11 +277,25 @@ static int _event_cb(player_event_t e, void *data)
     return 0;
 }
 
-static Enna_Class_MediaplayerBackend class =
-{ "libplayer", 1,
-{ _class_init, _class_shutdown, _class_file_set, _class_play, _class_seek,
-        _class_stop, _class_pause, _class_position_get, _class_length_get,
-        _class_metadata_get, _class_event_cb_set, NULL } };
+static Enna_Class_MediaplayerBackend class = {
+  "libplayer",
+  1,
+  { _class_init,
+    _class_shutdown,
+    _class_file_set,
+    _class_play,
+    _class_seek,
+    _class_stop,
+    _class_pause,
+    _class_position_get,
+    _class_length_get,
+    _class_snapshot,
+    _class_metadata_get,
+    _class_video_resize,
+    _class_event_cb_set,
+    NULL
+  }
+};
 
 /*****************************************************************************/
 /*                          Public Module API                                */

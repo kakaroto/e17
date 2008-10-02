@@ -69,15 +69,16 @@
           clip_to: "enna.clip.module";
           description {
              state: "default" 0.0;
-             color: 255 255 255 255;
-             rel1 {relative: 0.1 -0.9;to: "enna.clip.module";}
-             rel2 {relative: 0.9 -0.1;to: "enna.clip.module";}
+             visible: 1;
+             color: 255 255 255 0;
+             rel1 {relative: 0 -1;to: "enna.clip.module";}
+             rel2 {relative: 1 0;to: "enna.clip.module";}
           }
           description {
              state: "show" 0.0;
              color: 255 255 255 255;
-             rel1 {relative: 0.1 0.02;to: "enna.clip.module";}
-             rel2 {relative: 0.9 0.9;to: "enna.clip.module";}
+             rel1 {relative: 0 0 ;to: "enna.clip.module";}
+             rel2 {relative: 1 1 ;to: "enna.clip.module";}
           }
        }
     }
@@ -87,7 +88,7 @@
           signal: "module,show";
           source:  "enna";
           action:  STATE_SET "show" 0.0;
-          transition: SINUSOIDAL 0.5;
+          transition: SINUSOIDAL 0.7;
           target: "enna.clip.module";
        }
        program {
@@ -95,7 +96,7 @@
           signal: "module,hide";
           source:  "enna";
           action:  STATE_SET "default" 0.0;
-          transition: SINUSOIDAL 0.5;
+          transition: SINUSOIDAL 0.7;
           target: "enna.clip.module";
        }
        program {
@@ -103,7 +104,7 @@
           signal: "list,show";
           source:  "enna";
           action:  STATE_SET "show" 0.0;
-          transition: SINUSOIDAL 0.5;
+          transition: SINUSOIDAL 0.7;
           target: "enna.swallow.location";
           target: "enna.swallow.list";
        }
@@ -112,7 +113,7 @@
           signal: "list,hide";
           source:  "enna";
           action:  STATE_SET "default" 0.0;
-          transition: SINUSOIDAL 0.5;
+          transition: SINUSOIDAL 0.4;
           target: "enna.swallow.list";
           target: "enna.swallow.location";
        }
@@ -121,7 +122,7 @@
           signal: "mediaplayer,show";
           source:  "enna";
           action:  STATE_SET "show" 0.0;
-          transition: SINUSOIDAL 0.5;
+          transition: SINUSOIDAL 0.7;
           target: "enna.swallow.mediaplayer";
        }
        program {
@@ -129,7 +130,7 @@
           signal: "mediaplayer,hide";
           source:  "enna";
           action:  STATE_SET "default" 0.0;
-          transition: SINUSOIDAL 0.5;
+          transition: SINUSOIDAL 0.7;
           target: "enna.swallow.mediaplayer";
        }
     }

@@ -162,6 +162,14 @@ EAPI int enna_mediaplayer_select_nth(int n)
     return 0;
 }
 
+EAPI int enna_mediaplayer_selected_get(void)
+{
+    if (_mediaplayer)
+        return _mediaplayer->selected;
+    else
+        return -1;
+}
+
 EAPI int enna_mediaplayer_stop(void)
 {
     if (_mediaplayer->class)
@@ -261,6 +269,13 @@ EAPI int enna_mediaplayer_seek(double percent)
     return 0;
 }
 
+EAPI void
+enna_mediaplayer_video_resize(int x, int y, int w, int h)
+{
+    if (_mediaplayer->class && _mediaplayer->class->func.class_video_resize)
+        _mediaplayer->class->func.class_video_resize(x, y, w, h);
+}
+
 EAPI int enna_mediaplayer_playlist_load(const char *filename)
 {
     return 0;
@@ -283,6 +298,13 @@ EAPI void enna_mediaplayer_playlist_clear(void)
         _mediaplayer->play_state = STOPPED;
     }
 
+}
+
+EAPI void
+enna_mediaplayer_snapshot(const char *uri, const char *file)
+{
+    if (_mediaplayer->class && _mediaplayer->class->func.class_snapshot)
+        _mediaplayer->class->func.class_snapshot(uri, file);
 }
 
 EAPI Enna_Metadata *

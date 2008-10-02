@@ -14,6 +14,11 @@ spectra {
     color: 255 255 255 50 1;
     color: 255 255 255 10 1;
   }
+  spectrum {
+    name: "grey_gradient";
+    color: 109 109 109 70 1;
+    color: 85 85 85 80 1;
+  }
 }
 
 collections
@@ -27,13 +32,16 @@ collections
 #include "icons.edc"
 #include "list.edc"
 #include "scrollframe.edc"
+#include "button.edc"
 #include "location.edc"
 #include "mediaplayer.edc"
 #include "video_info.edc"
 #include "slideshow.edc"
+#include "picture.edc"
+
    group {
       name: "enna";
-      min: 800 480;
+      min: 1280 720;
       parts {
 
          part {
@@ -71,7 +79,7 @@ collections
             }
          }
         part {
-            name: "enna.swallow.fullsceen";
+            name: "enna.swallow.fullscreen";
             clip_to: "enna.clip.fullscreen";
             type: SWALLOW;
             description{

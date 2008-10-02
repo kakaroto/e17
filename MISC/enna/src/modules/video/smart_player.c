@@ -56,6 +56,8 @@ struct _E_Smart_Data
 {
     Evas_Coord x, y, w, h;
     Evas_Object *o_edje;
+    Evas_Object *o_snapshot;
+    Evas_Object *o_snapshot_old;
     Evas_Object *o_cover;
     Evas_Object *o_cover_old;
     Evas_Object *o_fs;
@@ -94,7 +96,7 @@ EAPI void enna_smart_player_show_video(Evas_Object *obj)
 
     o_video = enna_mediaplayer_video_obj_get();
     if (o_video)
-        edje_object_part_swallow(enna->o_edje, "enna.swallow.fullsceen",
+        edje_object_part_swallow(enna->o_edje, "enna.swallow.fullscreen",
                 o_video);
 
 }
@@ -114,10 +116,80 @@ EAPI void enna_smart_player_hide_video(Evas_Object *obj)
     }
 }
 
+EAPI void enna_smart_player_snapshot_set(Evas_Object *obj,
+                                         Enna_Metadata *metadata)
+{
+    char *snap_file = NULL;
+    
+    API_ENTRY;
+
+    snap_file = enna_snapshot_get(metadata->uri);
+    if (snap_file)
+    {
+        Evas_Coord ow,oh;
+        enna_log(ENNA_MSG_INFO, ENNA_MODULE_NAME, "snapshot filename : %s", snap_file);
+
+        /* FIXME : add edje cb at end of snapshot transition to switch properly snapshots*/
+        sd->o_snapshot_old = sd->o_snapshot;
+        sd->o_snapshot = enna_image_add(evas_object_evas_get(sd->o_edje));
+        evas_object_show(sd->o_snapshot);
+        
+        /* Stretch image to fit the parent container */
+        enna_image_fill_inside_set(sd->o_snapshot, 0);
+        
+        enna_image_file_set(sd->o_snapshot, snap_file);
+        /* Full definition for image loaded */
+        enna_image_size_get(sd->o_snapshot, &ow, &oh);
+        enna_image_load_size_set(sd->o_snapshot, ow, oh);
+ 
+        edje_object_part_swallow(sd->o_edje,
+                                 "enna.swallow.snapshot", sd->o_snapshot);
+        edje_object_signal_emit(sd->o_edje, "snapshot,show", "enna");
+        evas_object_del(sd->o_snapshot_old);
+    }
+    else
+    {
+        edje_object_signal_emit(sd->o_edje, "snapshot,hide", "enna");
+        evas_object_del(sd->o_cover);
+    }
+}
+
+EAPI void enna_smart_player_cover_set(Evas_Object *obj,
+                                      Enna_Metadata *metadata)
+{
+    char *cover_file = NULL;
+
+    API_ENTRY;
+    
+    cover_file = enna_cover_video_get(metadata->uri);
+    if (cover_file)
+    {
+        Evas_Coord ow,oh;
+        float aspect = 1.0;
+        enna_log(ENNA_MSG_INFO, ENNA_MODULE_NAME, "cover filename : %s",
+                cover_file);
+        /* FIXME : add edje cb at end of cover transition to switch properly covers*/
+        sd->o_cover_old = sd->o_cover;
+        
+        sd->o_cover = enna_image_add(evas_object_evas_get(sd->o_edje));
+        enna_image_file_set(sd->o_cover, cover_file);
+        enna_image_size_get(sd->o_cover, &ow, &oh);
+        enna_image_load_size_set(sd->o_cover, ow, oh);
+        enna_image_fill_inside_set(sd->o_cover, 0);
+        edje_object_part_swallow(sd->o_edje, "enna.swallow.cover", sd->o_cover);
+        edje_object_signal_emit(sd->o_edje, "cover,show", "enna");
+        evas_object_del(sd->o_cover_old);
+    }
+    else
+    {
+        edje_object_signal_emit(sd->o_edje, "cover,hide", "enna");
+        evas_object_del(sd->o_cover);
+    }
+}
+
 EAPI void enna_smart_player_metadata_set(Evas_Object *obj,
         Enna_Metadata *metadata)
 {
-    char *cover_file = NULL;
     char buf[4096];
     int h, mn, sec;
     float len;
@@ -154,7 +226,8 @@ EAPI void enna_smart_player_metadata_set(Evas_Object *obj,
             metadata->video->height);
     edje_object_part_text_set(sd->o_edje, "enna.text.videosize", buf);
 
-    snprintf(buf, sizeof(buf), "Framerate : %.2f", metadata->video->framerate);
+    snprintf(buf, sizeof(buf), "Framerate : %.2f fps",
+             metadata->video->framerate);
     edje_object_part_text_set(sd->o_edje, "enna.text.framerate", buf);
 
     snprintf(buf, sizeof(buf), "Codec : %s", metadata->music->codec);
@@ -167,46 +240,6 @@ EAPI void enna_smart_player_metadata_set(Evas_Object *obj,
     snprintf(buf, sizeof(buf), "Samplerate : %i Hz",
             metadata->music->samplerate);
     edje_object_part_text_set(sd->o_edje, "enna.text.samplerate", buf);
-    /*
-     printf(" Size : %.2f MB\n", metadata->size / 1024.0 / 1024.0);
-     printf(" Length: %.2f sec\n", metadata->length / 1000.0);
-     printf(" Video Codec: %s\n", metadata->video->codec);
-     printf(" Video Bitrate: %i kbps\n", metadata->video->bitrate / 1000);
-     printf(" Video Width: %i\n", metadata->video->width);
-     printf(" Video Height: %i\n", metadata->video->height);
-     printf(" Video Channels: %i\n", metadata->video->channels);
-     printf(" Video Streams: %i\n", metadata->video->streams);
-     printf(" Video Framerate: %.2f\n", metadata->video->framerate);
-     printf(" Audio Codec: %s\n", metadata->music->codec);
-     printf(" Audio Bitrate: %i kbps\n", metadata->music->bitrate / 1000);
-     printf(" Audio Channels: %i\n", metadata->music->channels);
-     printf(" Audio Sample Rate: %i Hz\n", metadata->music->samplerate);
-     */
-
-    cover_file = enna_cover_video_get(metadata->uri);
-    if (!cover_file && metadata->video)
-        cover_file = metadata->video->snapshot;
-    if (cover_file)
-    {
-        enna_log(ENNA_MSG_INFO, ENNA_MODULE_NAME, "cover filename : %s\n",
-                cover_file);
-        /* FIXME : add edje cb at end of cover transition to switch properly covers*/
-        sd->o_cover_old = sd->o_cover;
-        sd->o_cover = enna_image_add(evas_object_evas_get(sd->o_edje));
-        evas_object_show(sd->o_cover);
-        enna_image_load_size_set(sd->o_cover, 300, 300);
-        enna_image_file_set(sd->o_cover, cover_file);
-        edje_object_part_swallow(sd->o_edje, "enna.swallow.cover", sd->o_cover);
-        edje_object_signal_emit(sd->o_edje, "cover,show", "enna");
-        evas_object_del(sd->o_cover_old);
-    }
-    else
-    {
-        edje_object_signal_emit(sd->o_edje, "cover,hide", "enna");
-        evas_object_del(sd->o_cover);
-    }
-
-    enna_metadata_free(metadata);
 }
 
 /* local subsystem globals */
@@ -257,11 +290,14 @@ static void _e_smart_add(Evas_Object * obj)
 static void _e_smart_del(Evas_Object * obj)
 {
     E_Smart_Data *sd;
-
     sd = evas_object_smart_data_get(obj);
     if (!sd)
         return;
-    evas_object_del(sd->o_edje);
+    ENNA_OBJECT_DEL(sd->o_snapshot);
+    ENNA_OBJECT_DEL(sd->o_snapshot_old);
+    ENNA_OBJECT_DEL(sd->o_cover);
+    ENNA_OBJECT_DEL(sd->o_cover_old);
+    ENNA_OBJECT_DEL(sd->o_edje);
     free(sd);
 }
 
@@ -291,6 +327,7 @@ static void _e_smart_resize(Evas_Object * obj, Evas_Coord w, Evas_Coord h)
     sd->w = w;
     sd->h = h;
     _enna_mediaplayer_smart_reconfigure(sd);
+    enna_mediaplayer_video_resize(0, 0, 0, 0);
 }
 
 static void _e_smart_show(Evas_Object * obj)
