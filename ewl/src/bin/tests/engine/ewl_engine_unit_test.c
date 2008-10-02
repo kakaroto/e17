@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define WIN_NAME "buffer_engine_window"
+#define BUFFER_ENGINE_NAME "evas_buffer"
 
 static int test_engine_set_get(char *buf, int len);
 
@@ -62,18 +62,6 @@ static void *pointer_funcs[EWL_ENGINE_POINTER_MAX] =
         };
         */
 
-static Ewl_Widget *
-create_unit_test_window(void)
-{
-        Ewl_Widget *window;
-
-        window = ewl_window_new();
-        ewl_embed_engine_name_set(EWL_EMBED(window), "evas_buffer");
-        ewl_widget_show(window);
-
-        return window;
-}
-
 static int
 test_engine_set_get(char *buf, int len)
 {
@@ -83,10 +71,12 @@ test_engine_set_get(char *buf, int len)
 
         ecore_path_group_add(ewl_engines_path, PACKAGE_LIB_DIR "/ewl/tests");
 
-        window = create_unit_test_window();
+        window = ewl_window_new();
+        ewl_embed_engine_name_set(EWL_EMBED(window), BUFFER_ENGINE_NAME);
+        ewl_widget_show(window);
         engine_name = ewl_embed_engine_name_get(EWL_EMBED(window));
 
-        if (strcmp(engine_name, "evas_buffer"))
+        if (strcmp(engine_name, BUFFER_ENGINE_NAME))
                 LOG_FAILURE(buf, len, "engine name doesn't match");
         else
                 ret = 1;
