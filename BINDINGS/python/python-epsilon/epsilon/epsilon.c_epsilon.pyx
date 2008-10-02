@@ -38,7 +38,7 @@ cdef class Epsilon:
         """Epsilon constructor.
 
         @parm path: full path of image to process.
-        @parm thumb_size: one of EPSILON_THUMB_NORMAL or EPSILON_THUMB_LARGE
+        @parm thumb_size: one of EPSILON_THUMB_NORMAL, EPSILON_THUMB_LARGE
         @parm key: just used by edje to specify the part to process.
         @parm resolution: just used by edje to specify render size.
         """
@@ -131,7 +131,7 @@ cdef class Epsilon:
            EPSILON_THUMB_LARGE (256x256).
         """
         if value != EPSILON_THUMB_NORMAL and value != EPSILON_THUMB_LARGE:
-            raise ValueError("value must be either EPSILON_THUMB_NORMAL or "
+            raise ValueError("value must be either EPSILON_THUMB_NORMAL, "
                              "EPSILON_THUMB_LARGE")
         epsilon_thumb_size(self.obj, value)
 
@@ -149,6 +149,13 @@ cdef class Epsilon:
 
         def __get__(self):
             return self.thumb_size_get()
+
+    def thumb_custom_size_set(self, int w, int h, char *dir):
+        """Specify a custom thumbnail size.
+        """
+        if w <= 0 and h <= 0:
+            raise ValueError("either dimension value must be positive.")
+        epsilon_custom_thumb_size(self.obj, w, h, dir)
 
     def file_get(self):
         "@rtype: str"

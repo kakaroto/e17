@@ -57,6 +57,7 @@ cdef extern from "Epsilon.h":
     int epsilon_exists(_Epsilon *e)
     int epsilon_generate(_Epsilon *e)
     void epsilon_thumb_size(_Epsilon *e, int size)
+    void epsilon_custom_thumb_size(_Epsilon *e, int w, int h, char *dir)
 
     _Epsilon_Info *epsilon_info_get (_Epsilon *e)
 
