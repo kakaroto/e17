@@ -240,3 +240,7 @@ class MenuItemCheck(c_etk.MenuItemCheck):
 class MenuItemRadio(c_etk.MenuItemRadio):
     __metaclass__ = EtkMeta
     _etk_type = "Etk_Menu_Item_Radio"
+
+class EvasObject(c_etk.EvasObject):
+    __metaclass__ = EtkMeta
+    _etk_type = "Etk_Evas_Object"
