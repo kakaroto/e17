@@ -248,3 +248,15 @@ class EvasObject(c_etk.EvasObject):
 class String(c_etk.String):
     __metaclass__ = EtkMeta
     _etk_type = "Etk_String"
+
+class TextblockIter(c_etk.TextblockIter):
+    __metaclass__ = EtkMeta
+    _etk_type = "Etk_Textblock_Iter"
+
+class Textblock(c_etk.Textblock):
+    __metaclass__ = EtkMeta
+    _etk_type = "Etk_Textblock"
+
+class TextView(c_etk.TextView):
+    __metaclass__ = EtkMeta
+    _etk_type = "Etk_Text_View"
