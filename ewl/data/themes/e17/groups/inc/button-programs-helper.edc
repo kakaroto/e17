@@ -18,7 +18,7 @@ program
 
 program
 {
-	name: "diable";
+	name: "disable";
 	signal: "disabled";
 	source: "EWL";
 	action: STATE_SET "disabled" 0.0;
