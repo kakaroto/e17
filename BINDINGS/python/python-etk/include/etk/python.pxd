@@ -28,6 +28,7 @@ cdef extern from "Python.h":
 
     # stdlib.h
     void free(void *ptr)
+    void *malloc(size_t size)
 
     # pyport.h / limits.h
     ctypedef long long PY_LONG_LONG
