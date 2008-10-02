@@ -12,9 +12,11 @@
 
 #define BUFFER_ENGINE_NAME "evas_buffer"
 
+static int test_engine_buffer_new(char *buf, int len);
 static int test_engine_set_get(char *buf, int len);
 
 Ewl_Unit_Test engine_unit_tests[] = {
+                {"buffer engine create", test_engine_buffer_new, NULL, -1, 1},
                 {"engine set/get", test_engine_set_get, NULL, -1, 1},
                 {NULL, NULL, NULL, -1, 0}
         };
@@ -63,13 +65,50 @@ static void *pointer_funcs[EWL_ENGINE_POINTER_MAX] =
         */
 
 static int
+test_engine_buffer_new(char *buf, int len)
+{
+        int ret = 0;
+        Ewl_Widget *window;
+
+        window = ewl_window_new();
+        ewl_embed_engine_name_set(EWL_EMBED(window), BUFFER_ENGINE_NAME);
+        ewl_widget_show(window);
+
+        ewl_widget_realize(window);
+        if (!REALIZED(window))
+        {
+                LOG_FAILURE(buf, len, "buffer engine is not realized");
+                goto DONE;
+        }
+
+        ewl_widget_hide(window);
+        if (VISIBLE(window))
+        {
+                LOG_FAILURE(buf, len, "buffer engine is visible");
+                goto DONE;
+        }
+
+        ewl_widget_unrealize(window);
+        if (REALIZED(window))
+        {
+                LOG_FAILURE(buf, len, "buffer engine is realized");
+                goto DONE;
+        }
+
+        ret = 1;
+DONE:
+        ewl_widget_destroy(window);
+
+        return ret;
+}
+
+
+static int
 test_engine_set_get(char *buf, int len)
 {
         int ret = 0;
         const char *engine_name;
         Ewl_Widget *window;
-
-        ecore_path_group_add(ewl_engines_path, PACKAGE_LIB_DIR "/ewl/tests");
 
         window = ewl_window_new();
         ewl_embed_engine_name_set(EWL_EMBED(window), BUFFER_ENGINE_NAME);
