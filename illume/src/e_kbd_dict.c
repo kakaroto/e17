@@ -688,8 +688,8 @@ _e_kbd_dict_matches_lookup_iter(E_Kbd_Dict *kd, Evas_List *word,
 		       // it its < 1 time, it's assumed to be 1.
 		       if (usage < 1) usage = 1;
 		       // multiply usage by a factor of 100 for better detailed
-		       // sorting
-		       usage *= 100;
+		       // sorting. 10 == 1/10th factor
+		       usage = 100 + ((usage - 1) * 10);
 		       // and well just multiply and lets see. maybe this can
 		       // do with multiplication factors etc. but simple for
 		       // now.
