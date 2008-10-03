@@ -18,34 +18,73 @@
 
 #include "daemon.h"
 
+void setup_new_iface(E_DBus_Connection *conn,Exalt_Ethernet* eth)
+{
+    char* path = EXALTD_PATH_WIRED;
+    char* interface = EXALTD_INTERFACE_WIRED;
+    char bpath[PATH_MAX];
+    char binterface[PATH_MAX];
+    E_DBus_Object *obj;
+    E_DBus_Interface *iface;
+    if(exalt_eth_is_wireless(eth))
+    {
+        path = EXALTD_PATH_WIRELESS;
+        interface = EXALTD_INTERFACE_WIRELESS;
+    }
+
+    snprintf(bpath,PATH_MAX,"%s/%s",path,exalt_eth_get_name(eth));
+    obj = e_dbus_object_add(conn, bpath, NULL);
+
+    snprintf(binterface,PATH_MAX,"%s.%s",interface,exalt_eth_get_name(eth));
+    iface = e_dbus_interface_new(binterface);
+    e_dbus_interface_method_add(iface, "ip_get", NULL, "s", dbus_cb_eth_get_ip);
+    e_dbus_interface_method_add(iface, "ip_set", "s", NULL, dbus_cb_eth_get_ip);
+
+    e_dbus_interface_method_add(iface, "netmask_get", NULL, "s", dbus_cb_eth_get_ip);
+    e_dbus_interface_method_add(iface, "netmask_set", "s", NULL, dbus_cb_eth_get_ip);
+
+    e_dbus_interface_method_add(iface, "gateway_get", NULL, "s", dbus_cb_eth_get_ip);
+    e_dbus_interface_method_add(iface, "gateway_set", "s", NULL, dbus_cb_eth_get_ip);
+
+    e_dbus_interface_method_add(iface, "ip_get", NULL, "s", dbus_cb_eth_get_ip);
+    e_dbus_interface_method_add(iface, "ip_set", "s", NULL, dbus_cb_eth_get_ip);
+
+
+    e_dbus_interface_method_add(iface, "link_is", NULL, "b", dbus_cb_eth_get_ip);
+    e_dbus_interface_method_add(iface, "up_is", NULL, "b", dbus_cb_eth_get_ip);
+    e_dbus_interface_method_add(iface, "dhcp_is", NULL, "b", dbus_cb_eth_get_ip);
+
+    e_dbus_interface_method_add(iface, "command_get", NULL, "s", dbus_cb_eth_get_ip);
+    e_dbus_interface_method_add(iface, "command_set", "s", NULL, dbus_cb_eth_get_ip);
+
+    e_dbus_interface_method_add(iface, "up", NULL, NULL, dbus_cb_eth_get_ip);
+    e_dbus_interface_method_add(iface, "down", NULL, NULL, dbus_cb_eth_get_ip);
+
+
+
+    if(exalt_eth_is_wireless(eth))
+    {
+        e_dbus_interface_method_add(iface, "essid_get", NULL, "s", dbus_cb_eth_get_ip);
+        e_dbus_interface_method_add(iface, "wpasupplicant_driver_get", NULL, "s", dbus_cb_eth_get_ip);
+        e_dbus_interface_method_add(iface, "wpasupplicant_driver_set", "s", NULL, dbus_cb_eth_get_ip);
+
+    }
+    e_dbus_object_interface_attach(obj, iface);
+
+}
+
 int setup(E_DBus_Connection *conn)
 {
     E_DBus_Object *obj;
     E_DBus_Interface *iface;
     e_dbus_request_name(conn, EXALTD_SERVICE , 0, NULL, NULL);
 
-/*
-I m working on this part
-Watchwolf.
-*/
-    //{
+   /* {
         obj = e_dbus_object_add(conn, EXALTD_PATH, NULL);
         iface = e_dbus_interface_new(EXALTD_INTERFACE_READ);
 
-        e_dbus_interface_method_add(iface, "IFACE_GET_IP", NULL, NULL, dbus_cb_eth_get_ip);
-        e_dbus_interface_method_add(iface, "IFACE_GET_NETMASK", NULL, NULL, dbus_cb_eth_get_netmask);
-        e_dbus_interface_method_add(iface, "IFACE_GET_GATEWAY", NULL, NULL, dbus_cb_eth_get_gateway);
-        e_dbus_interface_method_add(iface, "IFACE_GET_ETH_LIST", NULL, NULL, dbus_cb_eth_get_eth_list);
-        e_dbus_interface_method_add(iface, "IFACE_IS_WIRELESS", NULL, NULL, dbus_cb_eth_is_wireless);
-        e_dbus_interface_method_add(iface, "IFACE_IS_LINK", NULL, NULL, dbus_cb_eth_is_link);
-        e_dbus_interface_method_add(iface, "IFACE_IS_UP", NULL, NULL, dbus_cb_eth_is_up);
-        e_dbus_interface_method_add(iface, "IFACE_IS_DHCP", NULL, NULL, dbus_cb_eth_is_dhcp);
-
-
-        e_dbus_interface_method_add(iface, "IFACE_GET_ESSID", NULL, NULL, dbus_cb_wireless_get_essid);
         e_dbus_interface_method_add(iface, "IFACE_SCAN_START", NULL, NULL, dbus_cb_wireless_scan_start);
         e_dbus_interface_method_add(iface, "IFACE_SCAN_WAIT", NULL, NULL, dbus_cb_wireless_scan_wait);
-        e_dbus_interface_method_add(iface, "IFACE_GET_WPASUPPLICANT_DRIVER", NULL, NULL, dbus_cb_wireless_get_wpasupplicant_driver);
 
 
         e_dbus_interface_method_add(iface, "NETWORK_GET_QUALITY", NULL, NULL, dbus_cb_wirelessnetwork_get_quality);
@@ -60,45 +99,45 @@ Watchwolf.
 
         e_dbus_interface_method_add(iface, "NETWORK_GET_DEFAULT_CONN", NULL, NULL, dbus_cb_wirelessnetwork_get_default_conn);
 
-        e_dbus_interface_method_add(iface, "DNS_GET_LIST", NULL, NULL, dbus_cb_dns_get_list);
-
         e_dbus_interface_method_add(iface, "BOOTPROCESS_IFACE_IS", NULL, NULL, dbus_cb_bootprocess_iface_is);
         e_dbus_interface_method_add(iface, "BOOTPROCESS_TIMEOUT_GET", NULL, NULL, dbus_cb_bootprocess_timeout_get);
 
-        e_dbus_interface_method_add(iface, "IFACE_CMD_GET", NULL, NULL, dbus_cb_eth_get_cmd);
 
 
         e_dbus_object_interface_attach(obj, iface);
 
         iface = e_dbus_interface_new(EXALTD_INTERFACE_WRITE);
-        e_dbus_interface_method_add(iface, "IFACE_UP", NULL, NULL, dbus_cb_eth_up);
-        e_dbus_interface_method_add(iface, "IFACE_DOWN", NULL, NULL, dbus_cb_eth_down);
-
-        e_dbus_interface_method_add(iface, "IFACE_SET_WPASUPPLICANT_DRIVER", NULL, NULL, dbus_cb_wireless_set_wpasupplicant_driver);
-
-        e_dbus_interface_method_add(iface, "DNS_ADD", NULL, NULL, dbus_cb_dns_add);
-        e_dbus_interface_method_add(iface, "DNS_REPLACE", NULL, NULL, dbus_cb_dns_replace);
-        e_dbus_interface_method_add(iface, "DNS_DELETE", NULL, NULL, dbus_cb_dns_delete);
-
         e_dbus_interface_method_add(iface, "IFACE_APPLY_CONN", NULL, NULL, dbus_cb_eth_apply_conn);
 
         e_dbus_interface_method_add(iface, "BOOTPROCESS_IFACE_ADD", NULL, NULL, dbus_cb_bootprocess_iface_add);
         e_dbus_interface_method_add(iface, "BOOTPROCESS_IFACE_REMOVE", NULL, NULL, dbus_cb_bootprocess_iface_remove);
         e_dbus_interface_method_add(iface, "BOOTPROCESS_TIMEOUT_SET", NULL, NULL, dbus_cb_bootprocess_timeout_set);
 
-
-
         e_dbus_object_interface_attach(obj, iface);
-    //}
+    }
+    */
 
-   /* obj = e_dbus_object_add(conn, "org/exalt/dns", NULL);
-
-    iface = e_dbus_interface_new("org.exalt.dns");
-    e_dbus_interface_method_add(iface, "list_get", NULL, NULL, dbus_cb_eth_get_ip);
-
+    obj = e_dbus_object_add(conn, EXALTD_PATH_DNS, NULL);
+    iface = e_dbus_interface_new(EXALTD_INTERFACE_DNS);
+    e_dbus_interface_method_add(iface, "get", NULL, "a(s)", dbus_cb_dns_get_list);
+    e_dbus_interface_method_add(iface, "add", "s", NULL, dbus_cb_dns_add);
+    e_dbus_interface_method_add(iface, "replace", "ss", NULL, dbus_cb_dns_replace);
+    e_dbus_interface_method_add(iface, "delete", "s", NULL, dbus_cb_dns_delete);
     e_dbus_object_interface_attach(obj, iface);
 
-*/
+    obj = e_dbus_object_add(conn, EXALTD_PATH_WIREDS, NULL);
+    iface = e_dbus_interface_new(EXALTD_INTERFACE_WIREDS);
+    e_dbus_interface_method_add(iface, "list", "", "a(s)", dbus_cb_dns_add /*dbus_cb_eth_wired_get_list()*/);
+    e_dbus_object_interface_attach(obj, iface);
+
+
+    obj = e_dbus_object_add(conn, EXALTD_PATH_WIRELESSS, NULL);
+    iface = e_dbus_interface_new(EXALTD_INTERFACE_WIRELESSS);
+    e_dbus_interface_method_add(iface, "list", "", "a(s)", dbus_cb_dns_add/*dbus_cb_eth_wireless_get_list()*/);
+    e_dbus_object_interface_attach(obj, iface);
+
+
+
     return 1;
 }
 
@@ -210,7 +249,6 @@ int main(int argc, char** argv)
     }
 
     ecore_main_loop_begin();
-
     e_dbus_shutdown();
     ecore_shutdown();
     return 1;
@@ -228,6 +266,8 @@ void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data)
 
     if(action == EXALT_ETH_CB_ACTION_NEW || action == EXALT_ETH_CB_ACTION_ADD)
     {
+        setup_new_iface(conn,eth);
+
         //first we load the driver if eth is a wireless connection
         if(exalt_eth_is_wireless(eth))
         {

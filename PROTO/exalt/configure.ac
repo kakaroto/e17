@@ -151,6 +151,7 @@ src/Makefile
 src/bin/Makefile
 src/lib/Makefile
 src/lib_dbus/Makefile
+src/bin_command/Makefile
 data/Makefile
 data/daemon/Makefile
 data/daemon/dbus/Makefile

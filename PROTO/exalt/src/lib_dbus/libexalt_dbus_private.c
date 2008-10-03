@@ -101,7 +101,8 @@ const char* exalt_dbus_response_string(DBusMessage *msg, int pos)
 
 Ecore_List* exalt_dbus_response_strings(DBusMessage *msg, int pos)
 {
-    DBusMessageIter args;
+    DBusMessageIter iter;
+    DBusMessageIter iter_array;
     Ecore_List* res;
     char* val;
     int i;
@@ -109,21 +110,26 @@ Ecore_List* exalt_dbus_response_strings(DBusMessage *msg, int pos)
     res = ecore_list_new();
     res ->free_func = ECORE_FREE_CB(exalt_dbus_string_free);
 
-    if(!dbus_message_iter_init(msg, &args))
+    if(!dbus_message_iter_init(msg, &iter))
     {
         print_error( __FILE__, __func__,__LINE__, "no argument");
         return res;
     }
 
     for(i=0;i<pos;i++)
-        dbus_message_iter_next(&args);
-
-    while (DBUS_TYPE_STRING == dbus_message_iter_get_arg_type(&args))
+        dbus_message_iter_next(&iter);
+    if (dbus_message_iter_get_arg_type (&iter) == DBUS_TYPE_ARRAY)
     {
-        dbus_message_iter_get_basic(&args, &val);
-        ecore_list_append(res,strdup(val));
-        dbus_message_iter_next(&args);
+        dbus_message_iter_recurse (&iter, &iter_array);
+
+        while (dbus_message_iter_get_arg_type (&iter_array) == DBUS_TYPE_STRING)
+        {
+            dbus_message_iter_get_basic(&iter_array, &val);
+            ecore_list_append(res,strdup(val));
+            dbus_message_iter_next(&iter_array);
+        }
     }
+
     return res;
 }
 
@@ -222,4 +228,21 @@ void exalt_dbus_string_free(void* data)
     EXALT_FREE(data);
 }
 
-
+/**
+ * @brief print an error
+ * @param file the file
+ * @param fct the function
+ * @param line the line number
+ * @param msg the message
+ * @param ... a list of params
+ */
+void print_error(const char* file,const char* fct, int line, const char* msg, ...)
+{
+    va_list ap;
+    va_start(ap,msg);
+    fprintf(stderr,"%s: %s (%d)\n",file,fct,line);
+    fprintf(stderr,"\t");
+    vfprintf(stderr,msg,ap);
+    fprintf(stderr,"\n\n");
+    va_end(ap);
+}

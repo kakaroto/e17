@@ -21,6 +21,14 @@
 #include "exalt_dbus_dns.h"
 #include "libexalt_dbus_private.h"
 
+void _exalt_dbus_dns_add_cb(void *data, DBusMessage *msg, DBusError *error);
+void _exalt_dbus_dns_del_cb(void *data, DBusMessage *msg, DBusError *error);
+void _exalt_dbus_dns_replace_cb(void *data, DBusMessage *msg, DBusError *error);
+void _exalt_dbus_dns_get_list_cb(void *data, DBusMessage *msg, DBusError *error);
+
+
+
+
 /**
  * @addtogroup DNS
  * @{
@@ -29,39 +37,24 @@
 /**
  * @brief get the DNS list
  * @param conn a connection
- * @return Returns the DNS list (char*)
+ * @return Returns 1 if success, else 0
  */
-Ecore_List* exalt_dbus_dns_get_list(const exalt_dbus_conn* conn)
+int exalt_dbus_dns_get_list(exalt_dbus_conn* conn)
 {
-    DBusPendingCall * ret;
     DBusMessage *msg;
-    Ecore_List* res;
 
     EXALT_ASSERT_RETURN(conn!=NULL);
 
-    msg = exalt_dbus_read_call_new("DNS_GET_LIST");
-    EXALT_ASSERT_ADV(dbus_connection_send_with_reply (conn->conn, msg, &ret, -1),
-            dbus_message_unref(msg); return 0,
-            "dbus_connection_send_with_reply (conn->conn, msg, &ret, -1)");
+    msg = exalt_dbus_dns_call_new("get");
+    EXALT_ASSERT_CUSTOM_RET(
+            e_dbus_message_send(conn->e_conn,msg,_exalt_dbus_dns_get_list_cb,30,conn),
+            dbus_message_unref(msg); return 0);
 
     dbus_message_unref(msg);
 
-    dbus_pending_call_block(ret);
-    msg = dbus_pending_call_steal_reply(ret);
-    EXALT_ASSERT_RETURN(msg);
-    dbus_pending_call_unref(ret);
-
-
-    EXALT_ASSERT_ADV(exalt_dbus_valid_is(msg),
-            return 0,
-            "exalt_dbus_valid_is(msg) failed, error=%d (%s)",
-            exalt_dbus_error_get_id(msg),
-            exalt_dbus_error_get_msg(msg));
-
-    res = exalt_dbus_response_strings(msg,1);
-    dbus_message_unref(msg);
-    return res;
+    return 1;
 }
+
 
 /**
  * @brief Add a new DNS
@@ -69,38 +62,23 @@ Ecore_List* exalt_dbus_dns_get_list(const exalt_dbus_conn* conn)
  * @param dns the new DNS ( a valid ip address)
  * @return Returns 1 if sucess, else 0
  */
-int exalt_dbus_dns_add(const exalt_dbus_conn* conn, const char* dns)
+int exalt_dbus_dns_add(exalt_dbus_conn* conn, const char* dns)
 {
-    DBusPendingCall * ret;
     DBusMessage *msg;
     DBusMessageIter args;
 
     EXALT_ASSERT_RETURN(conn!=NULL);
     EXALT_ASSERT_RETURN(dns!=NULL);
 
-    msg = exalt_dbus_write_call_new("DNS_ADD");
+    msg = exalt_dbus_dns_call_new("add");
     dbus_message_iter_init_append(msg, &args);
 
-    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &dns),
-            dbus_message_unref(msg); return 0,
-            "dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &dns");
+    EXALT_ASSERT_CUSTOM_RET(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &dns),
+            dbus_message_unref(msg); return 0);
 
-    EXALT_ASSERT_ADV(dbus_connection_send_with_reply (conn->conn, msg, &ret, -1),
-            dbus_message_unref(msg); return 0,
-            "dbus_connection_send_with_reply (conn->conn, msg, &ret, -1)");
+    EXALT_ASSERT_CUSTOM_RET(e_dbus_message_send(conn->e_conn,msg,_exalt_dbus_dns_add_cb,30,conn),
+            dbus_message_unref(msg); return 0);
 
-    dbus_pending_call_block(ret);
-    msg = dbus_pending_call_steal_reply(ret);
-    EXALT_ASSERT_RETURN(msg!=NULL);
-    dbus_pending_call_unref(ret);
-
-    EXALT_ASSERT_ADV(exalt_dbus_valid_is(msg),
-            return 0,
-            "exalt_dbus_valid_is(msg) failed, error=%d (%s)",
-            exalt_dbus_error_get_id(msg),
-            exalt_dbus_error_get_msg(msg));
-
-    dbus_message_unref(msg);
     return 1;
 }
 
@@ -110,39 +88,22 @@ int exalt_dbus_dns_add(const exalt_dbus_conn* conn, const char* dns)
  * @param dns a DNS ( a valid ip address)
  * @return Returns 1 if sucess, else 0
  */
-int exalt_dbus_dns_delete(const exalt_dbus_conn* conn, const char* dns)
+int exalt_dbus_dns_delete(exalt_dbus_conn* conn, const char* dns)
 {
-    DBusPendingCall * ret;
     DBusMessage *msg;
     DBusMessageIter args;
     EXALT_ASSERT_RETURN(conn!=NULL);
     EXALT_ASSERT_RETURN(dns!=NULL);
 
-    msg = exalt_dbus_write_call_new("DNS_DELETE");
+    msg = exalt_dbus_dns_call_new("delete");
     dbus_message_iter_init_append(msg, &args);
 
-    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &dns),
-            dbus_message_unref(msg); return 0,
-            "dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &dns");
+    EXALT_ASSERT_CUSTOM_RET(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &dns),
+            dbus_message_unref(msg); return 0);
 
-    EXALT_ASSERT_ADV(dbus_connection_send_with_reply (conn->conn, msg, &ret, -1),
-            dbus_message_unref(msg); return 0,
-            "dbus_connection_send_with_reply (conn->conn, msg, &ret, -1)");
+    EXALT_ASSERT_CUSTOM_RET(e_dbus_message_send(conn->e_conn,msg,_exalt_dbus_dns_del_cb,30,conn),
+            dbus_message_unref(msg); return 0);
 
-    dbus_message_unref(msg);
-
-    dbus_pending_call_block(ret);
-    msg = dbus_pending_call_steal_reply(ret);
-    EXALT_ASSERT_RETURN(msg!=NULL);
-    dbus_pending_call_unref(ret);
-
-    EXALT_ASSERT_ADV(exalt_dbus_valid_is(msg),
-            return 0,
-            "exalt_dbus_valid_is(msg) failed, error=%d (%s)",
-            exalt_dbus_error_get_id(msg),
-            exalt_dbus_error_get_msg(msg));
-
-    dbus_message_unref(msg);
     return 1;
 }
 
@@ -153,9 +114,8 @@ int exalt_dbus_dns_delete(const exalt_dbus_conn* conn, const char* dns)
  * @param new_dns the new DNS (a valid ip address)
  * @return Returns 1 if sucess, else 0
  */
-int exalt_dbus_dns_replace(const exalt_dbus_conn* conn, const char* old_dns, const char* new_dns)
+int exalt_dbus_dns_replace(exalt_dbus_conn* conn, const char* old_dns, const char* new_dns)
 {
-    DBusPendingCall * ret;
     DBusMessage *msg;
     DBusMessageIter args;
 
@@ -163,36 +123,103 @@ int exalt_dbus_dns_replace(const exalt_dbus_conn* conn, const char* old_dns, con
     EXALT_ASSERT_RETURN(old_dns!=NULL);
     EXALT_ASSERT_RETURN(new_dns!=NULL);
 
-    msg = exalt_dbus_write_call_new("DNS_REPLACE");
+    msg = exalt_dbus_dns_call_new("replace");
     dbus_message_iter_init_append(msg, &args);
-    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &old_dns),
-            dbus_message_unref(msg); return 0,
-            "dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &dns");
-    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &new_dns),
-            dbus_message_unref(msg); return 0,
-            "dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &dns");
 
-    EXALT_ASSERT_ADV(dbus_connection_send_with_reply (conn->conn, msg, &ret, -1),
-            dbus_message_unref(msg); return 0,
-            "dbus_connection_send_with_reply (conn->conn, msg, &ret, -1)");
+    EXALT_ASSERT_CUSTOM_RET(
+            dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &old_dns),
+            dbus_message_unref(msg); return 0);
 
-    dbus_message_unref(msg);
+    EXALT_ASSERT_CUSTOM_RET(
+            dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &new_dns),
+            dbus_message_unref(msg); return 0);
 
-    dbus_pending_call_block(ret);
-    msg = dbus_pending_call_steal_reply(ret);
-    EXALT_ASSERT_RETURN(msg!=NULL);
-    dbus_pending_call_unref(ret);
+    EXALT_ASSERT_CUSTOM_RET(
+            e_dbus_message_send(conn->e_conn,msg,_exalt_dbus_dns_replace_cb,30,conn),
+            dbus_message_unref(msg); return 0);
 
-    EXALT_ASSERT_ADV(exalt_dbus_valid_is(msg),
-            return 0,
-            "exalt_dbus_valid_is(msg) failed, error=%d (%s)",
-            exalt_dbus_error_get_id(msg),
-            exalt_dbus_error_get_msg(msg));
-
-    dbus_message_unref(msg);
     return 1;
 }
 
 
 
 /** @} */
+
+
+
+void _exalt_dbus_dns_add_cb(void *data, DBusMessage *msg, DBusError *error)
+{
+    exalt_dbus_conn* conn = (exalt_dbus_conn*)data;
+
+    EXALT_DBUS_ERROR_PRINT(error);
+
+    EXALT_ASSERT_ADV(exalt_dbus_valid_is(msg),
+            return ,
+            "exalt_dbus_valid_is(msg) failed, error=%d (%s)",
+                exalt_dbus_error_get_id(msg),
+                exalt_dbus_error_get_msg(msg));
+
+    Exalt_DBus_Response* response = calloc(1,sizeof(Exalt_DBus_Response));
+    response->type = EXALT_DBUS_RESPONSE_DNS_ADD;
+    if(conn->response_notify->cb)
+        conn-> response_notify -> cb(response,conn->response_notify->user_data);
+}
+
+void _exalt_dbus_dns_del_cb(void *data, DBusMessage *msg, DBusError *error)
+{
+    exalt_dbus_conn* conn = (exalt_dbus_conn*)data;
+
+    EXALT_DBUS_ERROR_PRINT(error);
+
+    EXALT_ASSERT_ADV(exalt_dbus_valid_is(msg),
+            return ,
+            "exalt_dbus_valid_is(msg) failed, error=%d (%s)",
+                exalt_dbus_error_get_id(msg),
+                exalt_dbus_error_get_msg(msg));
+
+    Exalt_DBus_Response* response = calloc(1,sizeof(Exalt_DBus_Response));
+    response->type = EXALT_DBUS_RESPONSE_DNS_DEL;
+    if(conn->response_notify->cb)
+        conn-> response_notify -> cb(response,conn->response_notify->user_data);
+}
+
+void _exalt_dbus_dns_replace_cb(void *data, DBusMessage *msg, DBusError *error)
+{
+    exalt_dbus_conn* conn = (exalt_dbus_conn*)data;
+
+    EXALT_DBUS_ERROR_PRINT(error);
+
+    EXALT_ASSERT_ADV(exalt_dbus_valid_is(msg),
+            return ,
+            "exalt_dbus_valid_is(msg) failed, error=%d (%s)",
+                exalt_dbus_error_get_id(msg),
+                exalt_dbus_error_get_msg(msg));
+
+    Exalt_DBus_Response* response = calloc(1,sizeof(Exalt_DBus_Response));
+    response->type = EXALT_DBUS_RESPONSE_DNS_REPLACE;
+    if(conn->response_notify->cb)
+        conn-> response_notify -> cb(response,conn->response_notify->user_data);
+}
+
+
+void _exalt_dbus_dns_get_list_cb(void *data, DBusMessage *msg, DBusError *error)
+{
+    exalt_dbus_conn* conn = (exalt_dbus_conn*)data;
+
+    EXALT_DBUS_ERROR_PRINT(error);
+
+    EXALT_ASSERT_ADV(exalt_dbus_valid_is(msg),
+            return ,
+            "exalt_dbus_valid_is(msg) failed, error=%d (%s)",
+                exalt_dbus_error_get_id(msg),
+                exalt_dbus_error_get_msg(msg));
+
+    Exalt_DBus_Response* response = calloc(1,sizeof(Exalt_DBus_Response));
+    response->type = EXALT_DBUS_RESPONSE_DNS_GET_LIST;
+    response->l = exalt_dbus_response_strings(msg,1);
+    if(conn->response_notify->cb)
+        conn-> response_notify -> cb(response,conn->response_notify->user_data);
+}
+
+
+

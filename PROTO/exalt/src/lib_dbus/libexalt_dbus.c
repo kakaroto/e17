@@ -45,14 +45,12 @@ exalt_dbus_conn* exalt_dbus_connect()
 {
     exalt_dbus_conn* conn;
     DBusError err;
-    conn = malloc(sizeof(exalt_dbus_conn));
+    conn = calloc(1,sizeof(exalt_dbus_conn));
     //initialise the errors
     dbus_error_init(&err);
     // connect to the bus
     conn->conn = dbus_bus_get(DBUS_BUS_SYSTEM, &err);
     conn->e_conn = e_dbus_connection_setup(conn->conn);
-    conn->notify=NULL;
-    conn->scan_notify=NULL;
     return conn;
 }
 
@@ -136,6 +134,30 @@ void exalt_dbus_scan_notify_set(exalt_dbus_conn* conn, exalt_scan_notify_cb *cb,
         conn -> scan_notify -> user_data = user_data;
     }
 }
+
+/**
+ * @brief set the callback function which will be call to return a response
+ * @param conn
+ * @param cb the callback function
+ * @param user_data the user data
+ */
+void exalt_dbus_response_notify_set(exalt_dbus_conn* conn, exalt_response_notify_cb *cb, void* user_data)
+{
+    EXALT_ASSERT_RETURN_VOID(conn!=NULL);
+
+    if(!conn->response_notify)
+    {
+        conn -> response_notify = calloc(1,sizeof(exalt_dbus_response_data));
+        conn -> response_notify -> cb = cb;
+        conn -> response_notify -> user_data = user_data;
+    }
+    else
+    {
+        conn -> response_notify -> cb = cb;
+        conn -> response_notify -> user_data = user_data;
+    }
+}
+
 
 /** @} */
 

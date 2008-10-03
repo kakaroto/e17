@@ -21,7 +21,8 @@
 DBusMessage * dbus_cb_dns_get_list(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
     DBusMessage *reply;
-    DBusMessageIter args;
+    DBusMessageIter iter;
+    DBusMessageIter	iter_array;
     char* dns;
     Ecore_List *dnss;
 
@@ -37,7 +38,12 @@ DBusMessage * dbus_cb_dns_get_list(E_DBus_Object *obj __UNUSED__, DBusMessage *m
 
     dbus_args_valid_append(reply);
 
-    dbus_message_iter_init_append(reply, &args);
+    dbus_message_iter_init_append(reply, &iter);
+
+    EXALT_ASSERT_CUSTOM_RET(
+                dbus_message_iter_open_container (&iter, DBUS_TYPE_ARRAY,
+                    DBUS_TYPE_STRING_AS_STRING, &iter_array),
+                ecore_list_destroy(dnss);return reply);
 
     ecore_list_first_goto(dnss);
     while( (dns=ecore_list_next(dnss)))
@@ -46,13 +52,18 @@ DBusMessage * dbus_cb_dns_get_list(E_DBus_Object *obj __UNUSED__, DBusMessage *m
                 dbus_args_error_append(reply,
                     EXALT_DBUS_DNS_ERROR_ID,
                     EXALT_DBUS_DNS_ERROR);
-                return reply,
+                ecore_list_destroy(dnss);return reply,
                 "dns!=NULL failed");
 
-        EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &dns),
+        EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&iter_array, DBUS_TYPE_STRING, &dns),
+                dbus_args_error_append(reply,
+                    EXALT_DBUS_DNS_ERROR_ID,
+                    EXALT_DBUS_DNS_ERROR);
                 ecore_list_destroy(dnss);return reply,
-                "dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &dns) failed");
+                "dbus_message_iter_append_basic(&iter_array, DBUS_TYPE_STRING, &dns) failed");
     }
+
+    dbus_message_iter_close_container (&iter, &iter_array);
 
     ecore_list_destroy(dnss);
     return reply;
@@ -61,12 +72,12 @@ DBusMessage * dbus_cb_dns_get_list(E_DBus_Object *obj __UNUSED__, DBusMessage *m
 DBusMessage * dbus_cb_dns_add(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
     DBusMessage *reply;
-    DBusMessageIter args;
+    DBusMessageIter iter;
     char* dns;
 
     reply = dbus_message_new_method_return(msg);
 
-    if(!dbus_message_iter_init(msg, &args))
+    if(!dbus_message_iter_init(msg, &iter))
     {
         dbus_args_error_append(reply,
                 EXALT_DBUS_NO_ARGUMENT_ID,
@@ -74,7 +85,7 @@ DBusMessage * dbus_cb_dns_add(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
         return reply;
     }
 
-    if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
+    if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&iter))
     {
         dbus_args_error_append(reply,
                 EXALT_DBUS_ARGUMENT_NOT_STRING_ID,
@@ -82,7 +93,7 @@ DBusMessage * dbus_cb_dns_add(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
         return reply;
     }
     else
-        dbus_message_iter_get_basic(&args, &dns);
+        dbus_message_iter_get_basic(&iter, &dns);
 
     exalt_dns_add(dns);
 
@@ -95,12 +106,12 @@ DBusMessage * dbus_cb_dns_add(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 DBusMessage * dbus_cb_dns_delete(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
     DBusMessage *reply;
-    DBusMessageIter args;
+    DBusMessageIter iter;
     char* dns;
 
     reply = dbus_message_new_method_return(msg);
 
-    if(!dbus_message_iter_init(msg, &args))
+    if(!dbus_message_iter_init(msg, &iter))
     {
         dbus_args_error_append(reply,
                 EXALT_DBUS_NO_ARGUMENT_ID,
@@ -108,7 +119,7 @@ DBusMessage * dbus_cb_dns_delete(E_DBus_Object *obj __UNUSED__, DBusMessage *msg
         return reply;
     }
 
-    if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
+    if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&iter))
     {
         dbus_args_error_append(reply,
                 EXALT_DBUS_ARGUMENT_NOT_STRING_ID,
@@ -116,7 +127,7 @@ DBusMessage * dbus_cb_dns_delete(E_DBus_Object *obj __UNUSED__, DBusMessage *msg
         return reply;
     }
     else
-        dbus_message_iter_get_basic(&args, &dns);
+        dbus_message_iter_get_basic(&iter, &dns);
 
     exalt_dns_delete(dns);
 
@@ -129,12 +140,12 @@ DBusMessage * dbus_cb_dns_delete(E_DBus_Object *obj __UNUSED__, DBusMessage *msg
 DBusMessage * dbus_cb_dns_replace(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
     DBusMessage *reply;
-    DBusMessageIter args;
+    DBusMessageIter iter;
     char* old_dns, *new_dns;
 
     reply = dbus_message_new_method_return(msg);
 
-    if(!dbus_message_iter_init(msg, &args))
+    if(!dbus_message_iter_init(msg, &iter))
     {
         dbus_args_error_append(reply,
                 EXALT_DBUS_NO_ARGUMENT_ID,
@@ -142,7 +153,7 @@ DBusMessage * dbus_cb_dns_replace(E_DBus_Object *obj __UNUSED__, DBusMessage *ms
         return reply;
     }
 
-    if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
+    if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&iter))
     {
         dbus_args_error_append(reply,
                 EXALT_DBUS_ARGUMENT_NOT_STRING_ID,
@@ -150,11 +161,11 @@ DBusMessage * dbus_cb_dns_replace(E_DBus_Object *obj __UNUSED__, DBusMessage *ms
         return reply;
     }
     else
-        dbus_message_iter_get_basic(&args, &old_dns);
+        dbus_message_iter_get_basic(&iter, &old_dns);
 
-    dbus_message_iter_next(&args);
+    dbus_message_iter_next(&iter);
 
-    if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
+    if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&iter))
     {
         dbus_args_error_append(reply,
                 EXALT_DBUS_ARGUMENT_NOT_STRING_ID,
@@ -162,7 +173,7 @@ DBusMessage * dbus_cb_dns_replace(E_DBus_Object *obj __UNUSED__, DBusMessage *ms
         return reply;
     }
     else
-        dbus_message_iter_get_basic(&args, &new_dns);
+        dbus_message_iter_get_basic(&iter, &new_dns);
 
     exalt_dns_replace(old_dns, new_dns);
 

@@ -399,227 +399,239 @@
 
 	being NULL. Please fix your program.
 libexalt_private.c: exalt_ioctl (95)
-	ioctl(SIOCGIWNAME): No such device (19)
+	ioctl(SIOCGIWNAME): Operation not supported (95)
+
+process 21383: arguments to dbus_message_new_signal() were incorrect, assertion "_dbus_check_is_valid_path (path)" failed in file dbus-message.c line 1161.
+This is normally a bug in some application using the D-Bus library.
+daemon.c: eth_cb (383)
+	msg!=NULL failed
+
+***** Developer Warning ***** :
+	This program is calling:
+
+	ecore_hash_get();
+
+	With the parameter:
+
+	hash
+
+	being NULL. Please fix your program.
+***** Developer Warning ***** :
+	This program is calling:
+
+	ecore_hash_get();
+
+	With the parameter:
+
+	hash
+
+	being NULL. Please fix your program.
+***** Developer Warning ***** :
+	This program is calling:
+
+	ecore_hash_get();
+
+	With the parameter:
+
+	hash
+
+	being NULL. Please fix your program.
+***** Developer Warning ***** :
+	This program is calling:
+
+	ecore_hash_get();
+
+	With the parameter:
+
+	hash
+
+	being NULL. Please fix your program.
+***** Developer Warning ***** :
+	This program is calling:
+
+	ecore_hash_get();
+
+	With the parameter:
+
+	hash
+
+	being NULL. Please fix your program.
+***** Developer Warning ***** :
+	This program is calling:
+
+	ecore_hash_get();
+
+	With the parameter:
+
+	hash
+
+	being NULL. Please fix your program.
+***** Developer Warning ***** :
+	This program is calling:
+
+	ecore_hash_get();
+
+	With the parameter:
+
+	hash
+
+	being NULL. Please fix your program.
+***** Developer Warning ***** :
+	This program is calling:
+
+	ecore_hash_get();
+
+	With the parameter:
+
+	hash
+
+	being NULL. Please fix your program.
+***** Developer Warning ***** :
+	This program is calling:
+
+	ecore_hash_get();
+
+	With the parameter:
+
+	hash
+
+	being NULL. Please fix your program.
+***** Developer Warning ***** :
+	This program is calling:
+
+	ecore_hash_get();
+
+	With the parameter:
+
+	hash
+
+	being NULL. Please fix your program.
+***** Developer Warning ***** :
+	This program is calling:
+
+	ecore_hash_get();
+
+	With the parameter:
+
+	hash
+
+	being NULL. Please fix your program.
+***** Developer Warning ***** :
+	This program is calling:
+
+	ecore_hash_get();
+
+	With the parameter:
+
+	hash
+
+	being NULL. Please fix your program.
+***** Developer Warning ***** :
+	This program is calling:
+
+	ecore_hash_get();
+
+	With the parameter:
+
+	hash
+
+	being NULL. Please fix your program.
+***** Developer Warning ***** :
+	This program is calling:
+
+	ecore_hash_get();
+
+	With the parameter:
+
+	hash
+
+	being NULL. Please fix your program.
+***** Developer Warning ***** :
+	This program is calling:
+
+	ecore_hash_get();
+
+	With the parameter:
+
+	hash
+
+	being NULL. Please fix your program.
+***** Developer Warning ***** :
+	This program is calling:
+
+	ecore_hash_get();
+
+	With the parameter:
+
+	hash
+
+	being NULL. Please fix your program.
+***** Developer Warning ***** :
+	This program is calling:
+
+	ecore_hash_get();
+
+	With the parameter:
+
+	hash
+
+	being NULL. Please fix your program.
+***** Developer Warning ***** :
+	This program is calling:
+
+	ecore_hash_get();
+
+	With the parameter:
+
+	hash
+
+	being NULL. Please fix your program.
+***** Developer Warning ***** :
+	This program is calling:
+
+	ecore_hash_get();
+
+	With the parameter:
+
+	hash
+
+	being NULL. Please fix your program.
+***** Developer Warning ***** :
+	This program is calling:
+
+	ecore_hash_get();
+
+	With the parameter:
+
+	hash
+
+	being NULL. Please fix your program.
+libexalt_private.c: exalt_ioctl (95)
+	ioctl(SIOCDELRT): No such process (3)
+
+process 21383: arguments to dbus_message_new_signal() were incorrect, assertion "_dbus_check_is_valid_path (path)" failed in file dbus-message.c line 1161.
+This is normally a bug in some application using the D-Bus library.
+daemon.c: eth_cb (383)
+	msg!=NULL failed
+
+process 21383: arguments to dbus_message_new_signal() were incorrect, assertion "_dbus_check_is_valid_path (path)" failed in file dbus-message.c line 1161.
+This is normally a bug in some application using the D-Bus library.
+daemon.c: eth_cb (383)
+	msg!=NULL failed
 
 libexalt_private.c: exalt_ioctl (95)
 	ioctl(SIOCGIFADDR): Cannot assign requested address (99)
 
+process 21383: arguments to dbus_message_new_signal() were incorrect, assertion "_dbus_check_is_valid_path (path)" failed in file dbus-message.c line 1161.
+This is normally a bug in some application using the D-Bus library.
+daemon.c: eth_cb (383)
+	msg!=NULL failed
+
 libexalt_private.c: exalt_ioctl (95)
 	ioctl(SIOCGIFNETMASK): Cannot assign requested address (99)
 
-libexalt_private.c: exalt_ioctl (95)
-	ioctl(SIOCDELRT): No such process (3)
-
-There is already a pid file /var/run/dhclient.pid with pid 11130
-killed old client process, removed PID file
-***** Developer Warning ***** :
-	This program is calling:
-
-	ecore_hash_get();
-
-	With the parameter:
-
-	hash
-
-	being NULL. Please fix your program.
-***** Developer Warning ***** :
-	This program is calling:
-
-	ecore_hash_get();
-
-	With the parameter:
-
-	hash
-
-	being NULL. Please fix your program.
-***** Developer Warning ***** :
-	This program is calling:
-
-	ecore_hash_get();
-
-	With the parameter:
-
-	hash
-
-	being NULL. Please fix your program.
-***** Developer Warning ***** :
-	This program is calling:
-
-	ecore_hash_get();
-
-	With the parameter:
-
-	hash
-
-	being NULL. Please fix your program.
-***** Developer Warning ***** :
-	This program is calling:
-
-	ecore_hash_get();
-
-	With the parameter:
-
-	hash
-
-	being NULL. Please fix your program.
-***** Developer Warning ***** :
-	This program is calling:
-
-	ecore_hash_get();
-
-	With the parameter:
-
-	hash
-
-	being NULL. Please fix your program.
-***** Developer Warning ***** :
-	This program is calling:
-
-	ecore_hash_get();
-
-	With the parameter:
-
-	hash
-
-	being NULL. Please fix your program.
-***** Developer Warning ***** :
-	This program is calling:
-
-	ecore_hash_get();
-
-	With the parameter:
-
-	hash
-
-	being NULL. Please fix your program.
-***** Developer Warning ***** :
-	This program is calling:
-
-	ecore_hash_get();
-
-	With the parameter:
-
-	hash
-
-	being NULL. Please fix your program.
-***** Developer Warning ***** :
-	This program is calling:
-
-	ecore_hash_get();
-
-	With the parameter:
-
-	hash
-
-	being NULL. Please fix your program.
-***** Developer Warning ***** :
-	This program is calling:
-
-	ecore_hash_get();
-
-	With the parameter:
-
-	hash
-
-	being NULL. Please fix your program.
-***** Developer Warning ***** :
-	This program is calling:
-
-	ecore_hash_get();
-
-	With the parameter:
-
-	hash
-
-	being NULL. Please fix your program.
-***** Developer Warning ***** :
-	This program is calling:
-
-	ecore_hash_get();
-
-	With the parameter:
-
-	hash
-
-	being NULL. Please fix your program.
-***** Developer Warning ***** :
-	This program is calling:
-
-	ecore_hash_get();
-
-	With the parameter:
-
-	hash
-
-	being NULL. Please fix your program.
-***** Developer Warning ***** :
-	This program is calling:
-
-	ecore_hash_get();
-
-	With the parameter:
-
-	hash
-
-	being NULL. Please fix your program.
-***** Developer Warning ***** :
-	This program is calling:
-
-	ecore_hash_get();
-
-	With the parameter:
-
-	hash
-
-	being NULL. Please fix your program.
-***** Developer Warning ***** :
-	This program is calling:
-
-	ecore_hash_get();
-
-	With the parameter:
-
-	hash
-
-	being NULL. Please fix your program.
-***** Developer Warning ***** :
-	This program is calling:
-
-	ecore_hash_get();
-
-	With the parameter:
-
-	hash
-
-	being NULL. Please fix your program.
-***** Developer Warning ***** :
-	This program is calling:
-
-	ecore_hash_get();
-
-	With the parameter:
-
-	hash
-
-	being NULL. Please fix your program.
-***** Developer Warning ***** :
-	This program is calling:
-
-	ecore_hash_get();
-
-	With the parameter:
-
-	hash
-
-	being NULL. Please fix your program.
-libexalt_private.c: exalt_ioctl (95)
-	ioctl(SIOCDELRT): No such process (3)
-
-SIOCADDRT: File exists
-chmod: cannot access `/etc/resolv.conf.dhclient-new': No such file or directory
-exalt_ethernet.c: _exalt_eth_apply_dhcp (1350)
-	f!=NULL failed
-
-exalt_ethernet.c: _exalt_eth_apply_dhcp (1350)
-	f!=NULL failed
+process 21383: arguments to dbus_message_new_signal() were incorrect, assertion "_dbus_check_is_valid_path (path)" failed in file dbus-message.c line 1161.
+This is normally a bug in some application using the D-Bus library.
+daemon.c: eth_cb (383)
+	msg!=NULL failed
 

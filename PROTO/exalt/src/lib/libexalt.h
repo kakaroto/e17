@@ -62,6 +62,17 @@
         }\
     }while(0)
 
+#define EXALT_ASSERT_CUSTOM_RET(test, instr) \
+    do \
+    { \
+        if(!(test))\
+        {\
+            print_error(__FILE__,__func__, __LINE__,"%s failed", #test );\
+            instr; \
+        }\
+    }while(0)
+
+
 
 
 

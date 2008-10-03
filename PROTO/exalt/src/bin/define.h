@@ -22,9 +22,27 @@
 #define __UNUSED__ __attribute__((unused))
 
 #define EXALTD_SERVICE "org.e.Exalt"
-#define EXALTD_INTERFACE_READ "org.e.Exalt.Read"
-#define EXALTD_INTERFACE_WRITE "org.e.Exalt.Write"
-#define EXALTD_PATH "/org/e/Exalt"
+
+#define EXALTD_PATH_DNS "/org/exalt/dns"
+#define EXALTD_INTERFACE_DNS "org.exalt.dns"
+
+#define EXALTD_PATH_WIRED "/org/exalt/interface/wired"
+#define EXALTD_INTERFACE_WIRED "org.exalt.interface.wired"
+
+#define EXALTD_PATH_WIRELESS "/org/exalt/interface/wireless"
+#define EXALTD_INTERFACE_WIRELESS "org.exalt.interface.wireless"
+
+
+
+#define EXALTD_PATH_WIREDS "/org/exalt/interfaces/wired"
+#define EXALTD_INTERFACE_WIREDS "org.exalt.interfaces.wired"
+
+#define EXALTD_PATH_WIRELESSS "/org/exalt/interfaces/wireless"
+#define EXALTD_INTERFACE_WIRELESSS "org.exalt.interfaces.wireless"
+
+#define EXALTD_PATH "test"
+#define EXALTD_INTERFACE_READ "test"
+#define EXALTD_INTERFACE_WRITE "test"
 
 #define EXALTD_PIDFILE "/var/run/exaltd.pid"
 #define EXALTD_LOGFILE "/var/log/exaltd.log"

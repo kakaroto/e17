@@ -36,7 +36,7 @@
 typedef struct _exalt_dbus_notify_data exalt_dbus_notify_data;
 typedef struct _exalt_dbus_notify_conn_applied_data exalt_dbus_notify_conn_applied_data;
 typedef struct _exalt_dbus_scan_notify_data exalt_dbus_scan_notify_data;
-
+typedef struct _exalt_dbus_response_data exalt_dbus_response_data;
 
 struct _exalt_dbus_conn
 {
@@ -44,6 +44,7 @@ struct _exalt_dbus_conn
     DBusConnection* conn;
     exalt_dbus_notify_data* notify;
     exalt_dbus_scan_notify_data* scan_notify;
+    exalt_dbus_response_data* response_notify;
 };
 
 struct _exalt_dbus_notify_data
@@ -58,6 +59,23 @@ struct _exalt_dbus_scan_notify_data
     void* user_data;
 };
 
+struct _exalt_dbus_response_data
+{
+    exalt_response_notify_cb* cb;
+    void* user_data;
+};
+
+
+
+struct _exalt_dbus_response
+{
+    Exalt_DBus_Response_Type type;
+    union
+    {
+        Ecore_List* l;
+        char* address;
+    };
+};
 
 
 const char* exalt_dbus_response_string(DBusMessage *msg, int pos);
@@ -70,6 +88,8 @@ int exalt_dbus_valid_is(DBusMessage *msg);
 int exalt_dbus_error_get_id(DBusMessage *msg);
 const char* exalt_dbus_error_get_msg(DBusMessage *msg);
 
+
+void print_error(const char* file,const char* fct, int line, const char* msg, ...);
 
 #endif   /* ----- #ifndef LIBEXALT_DBUS_PRIVATE_INC  ----- */
 

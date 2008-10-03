@@ -22,9 +22,8 @@
 
 #include <E_DBus.h>
 #include <Ecore_Data.h>
-#include <Ecore_Data.h>
 #include <string.h>
-#include <exalt/libexalt.h>
+#include <libexalt.h>
 
 
 /**
@@ -40,6 +39,7 @@
  */
 typedef struct _exalt_dbus_conn exalt_dbus_conn;
 
+
 /** type of the callback function used when an ip address change, a new interface is add ... */
 typedef void (exalt_notify_cb) (char* eth, Exalt_Enum_Action action, void* user_data);
 /** type of the callback function used to return the result of a network scan
@@ -47,12 +47,19 @@ typedef void (exalt_notify_cb) (char* eth, Exalt_Enum_Action action, void* user_
  */
 typedef void (exalt_scan_notify_cb) (char* eth, Ecore_List* networks, void* user_data);
 
+
 #include "define.h"
 #include "exalt_dbus_ethernet.h"
 #include "exalt_dbus_wireless.h"
 #include "exalt_dbus_wireless_network.h"
 #include "exalt_dbus_dns.h"
 #include "exalt_dbus_bootprocess.h"
+#include "exalt_dbus_response.h"
+
+/** type of the callback function used when we receive a response */
+typedef void (exalt_response_notify_cb) (Exalt_DBus_Response* response, void* user_data);
+
+
 
 void exalt_dbus_init();
 exalt_dbus_conn*  exalt_dbus_connect();
@@ -62,6 +69,8 @@ void exalt_dbus_shutdown();
 
 void exalt_dbus_notify_set(exalt_dbus_conn* conn, exalt_notify_cb* cb, void* user_data);
 void exalt_dbus_scan_notify_set(exalt_dbus_conn* conn, exalt_scan_notify_cb* cb, void* user_data);
+void exalt_dbus_response_notify_set(exalt_dbus_conn* conn, exalt_response_notify_cb* cb, void* user_data);
+
 
 /** @} */
 
