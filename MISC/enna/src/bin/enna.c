@@ -88,6 +88,7 @@ static int _event_bg_key_down_cb(void *data, int type, void *event)
                 break;
             }
             case ENNA_KEY_OK:
+            case ENNA_KEY_SPACE:
             {
                 enna_mainmenu_activate_nth(enna->o_mainmenu,
                         enna_mainmenu_selected_get(enna->o_mainmenu));
@@ -230,7 +231,7 @@ static int _enna_init(int run_gl)
 
     enna->use_covers = enna_config->use_covers;
     enna->use_snapshots = enna_config->use_snapshots;
-    
+
     ecore_evas_fullscreen_set(enna->ee, enna_config->fullscreen
             | run_fullscreen);
 
