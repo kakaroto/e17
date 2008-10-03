@@ -3,6 +3,8 @@
 #include "Entranced_Display.h"
 #include "auth.h"
 #include "util.h"
+#include <errno.h>
+#include <string.h>
 
 
 static unsigned char x_ready = 0;
@@ -179,7 +181,7 @@ _start_server_once(Entranced_Display * d)	/* seems
         }
 
         execvp(x_cmd_argv[0], x_cmd_argv);
-        syslog(LOG_WARNING, "Could not execute X server.");
+        syslog(LOG_CRIT, "X server failed: %s", strerror(errno));
         exit(1);
      default:
         start_time = ecore_time_get();
@@ -187,10 +189,26 @@ _start_server_once(Entranced_Display * d)	/* seems
         while (!x_ready)
         {
            double current_time;
+           int status;
 
-           usleep(100000);
+           sleep(10);
+           if (waitpid(xpid, &status, WNOHANG) == -1)
+           {
+              syslog(LOG_CRIT, "waitpid failed: %s", strerror(errno));
+              x_ready = 0;
+              break;
+           }
+
+           if (WIFEXITED(status))
+           {
+              syslog(LOG_CRIT, "X server exited unexpectedly: %d", WEXITSTATUS(status));
+              x_ready = 0;
+              xpid = -1;
+              break;
+           }
+
            current_time = ecore_time_get();
-           if ((current_time - start_time) > 5.0)
+           if ((current_time - start_time) > 60.0)
               break;
         }
 
@@ -198,6 +216,11 @@ _start_server_once(Entranced_Display * d)	/* seems
         {
            entranced_debug
               ("Entranced_Start_Server_Once: Attempt to start X server failed.\n");
+           if (xpid >= 0)
+           {
+              kill(xpid, SIGTERM);
+              xpid = -1;
+           }
            d->status = NOT_RUNNING;
         }
         else
