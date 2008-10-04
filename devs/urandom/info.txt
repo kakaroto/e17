@@ -1,11 +1,11 @@
 Login:    	urandom
 IRC Nick: 	saturn_vk
 Name:     	Viktor Kojouharov
-Location: 	Sofia, Bulgaria, Europe
+Location: 	Amsterdam, The Netherlands, EU
 E-Mail:   	-vkojouharov@gmail.com
 WWW:      	http://bloka.org
 Managing:	edje_viewer, winselector module, forecasts module, Misc e and etk
 Contributing:	etk, e
 Group:		Core, Libraries, Applications, Modules
 Platform:       Slackware Linux
-GeoData:        42.7124 23.2792
+GeoData:        52.375468 4.847127
