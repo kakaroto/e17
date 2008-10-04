@@ -16,7 +16,7 @@ struct _Gui
 {
    Etk_Widget *win;
    Etk_Widget *tree;
-   Etk_Widget *canvas;
+   Etk_Widget *mdi_area;
    Etk_Widget *output;
    Etk_Widget *signal_entry;
    Etk_Widget *source_entry;
