@@ -7,10 +7,108 @@
 #include <unistd.h>
 #include <sys/mman.h>
 
+
+#define MAXLATIN 0x100
+static unsigned char _e_kbd_normalise_base[MAXLATIN];
+static unsigned char _e_kbd_normalise_ready = 0;
+
+static void
+_e_kbd_normalise_init(void)
+{
+   int i;
+   const char *table[][2] =
+     {
+	  {"À", "a"},
+	  {"Á", "a"},
+	  {"Â", "a"},
+	  {"Ã", "a"},
+	  {"Ä", "a"},
+	  {"Å", "a"},
+	  {"Æ", "a"},
+	  {"Ç", "c"},
+	  {"È", "e"},
+	  {"É", "e"},
+	  {"Ê", "e"},
+	  {"Ë", "e"},
+	  {"Ì", "i"},
+	  {"Í", "i"},
+	  {"Î", "i"},
+	  {"Ï", "i"},
+	  {"Ð", "d"},
+	  {"Ñ", "n"},
+	  {"Ò", "o"},
+	  {"Ó", "o"},
+	  {"Ô", "o"},
+	  {"Õ", "o"},
+	  {"Ö", "o"},
+	  {"×", "x"},
+	  {"Ø", "o"},
+	  {"Ù", "u"},
+	  {"Ú", "u"},
+	  {"Û", "u"},
+	  {"Ü", "u"},
+	  {"Ý", "y"},
+	  {"Þ", "p"},
+	  {"ß", "s"},
+	  {"à", "a"},
+	  {"á", "a"},
+	  {"â", "a"},
+	  {"ã", "a"},
+	  {"ä", "a"},
+	  {"å", "a"},
+	  {"æ", "a"},
+	  {"ç", "c"},
+	  {"è", "e"},
+	  {"é", "e"},
+	  {"ê", "e"},
+	  {"ë", "e"},
+	  {"ì", "i"},
+	  {"í", "i"},
+	  {"î", "i"},
+	  {"ï", "i"},
+	  {"ð", "o"},
+	  {"ñ", "n"},
+	  {"ò", "o"},
+	  {"ó", "o"},
+	  {"ô", "o"},
+	  {"õ", "o"},
+	  {"ö", "o"},
+	  {"ø", "o"},
+	  {"ù", "u"},
+	  {"ú", "u"},
+	  {"û", "u"},
+	  {"ü", "u"},
+	  {"ý", "y"},
+	  {"þ", "p"},
+	  {"ÿ", "y"}
+     }; // 63 items
+   
+   if (_e_kbd_normalise_ready) return;
+   _e_kbd_normalise_ready = 1;
+   for (i = 0; i < 128; i++)
+     _e_kbd_normalise_base[i] = tolower(i);
+   for (;i < MAXLATIN; i++)
+     {
+	int glyph;
+	int j;
+	
+	for (j = 0; j < 63; j++)
+	  {
+	     evas_string_char_next_get(table[j][0], 0, &glyph);
+	     if (glyph == i)
+	       {
+		  _e_kbd_normalise_base[i] = *table[j][1];
+		  break;
+	       }
+	  }
+     }
+}
+
 static int
 _e_kbd_dict_letter_normalise(int glyph)
 {
    // FIXME: ö -> o, ä -> a, Ó -> o etc. - ie normalise to latin-1
+   if (glyph < MAXLATIN) return _e_kbd_normalise_base[glyph];
    return tolower(glyph) & 0x7f;
 }
 
@@ -201,7 +299,8 @@ e_kbd_dict_new(const char *file)
 {
    // alloc and load new dict - build quick-lookup table. words MUST be sorted
    E_Kbd_Dict *kd;
-   
+
+   _e_kbd_normalise_init();
    kd = E_NEW(E_Kbd_Dict, 1);
    if (!kd) return NULL;
    kd->file.file = evas_stringshare_add(file);
@@ -396,12 +495,11 @@ _e_kbd_dict_find_pointer(E_Kbd_Dict *kd, const char *p, int baselen, const char 
 	if (!pn) return NULL;
 	if ((pn - p) > len)
 	  {
-	     if (!_e_kbd_dict_normalized_strncmp(p, word, len)) return p;
+	     if (!_e_kbd_dict_normalized_strncmp(p, word, len))
+	       return p;
 	  }
 	if (_e_kbd_dict_normalized_strncmp(p, word, baselen))
-	  {
-	     return NULL;
-	  }
+	  return NULL;
 	p = pn;
 	if (p >= (kd->file.dict + kd->file.size)) break;
      }
@@ -415,6 +513,13 @@ _e_kbd_dict_find(E_Kbd_Dict *kd, const char *word)
    char *tword;
    int glyphs[2], p2, v1, v2, i;
 
+   /* work backwards in leads. i.e.:
+    * going
+    * goin
+    * goi
+    * go
+    * g
+    */
    tword = alloca(strlen(word) + 1);
    _e_kbd_dict_normalized_strcpy(tword, word);
    p = evas_hash_find(kd->matches.leads, tword);
@@ -426,8 +531,10 @@ _e_kbd_dict_find(E_Kbd_Dict *kd, const char *word)
 	if (p2 < 0) break;
 	tword[p2] = 0;
 	p = evas_hash_find(kd->matches.leads, tword);
-	if (p) return _e_kbd_dict_find_pointer(kd, p, p2, word);
+	if (p)
+	  return _e_kbd_dict_find_pointer(kd, p, p2, word);
      }
+   /* looking at leads going back letters didn't work */
    p = kd->file.dict;
    if ((p[0] == '\n') && (kd->file.size <= 1)) return NULL;
    glyphs[0] = glyphs[1] = 0;
@@ -442,7 +549,7 @@ _e_kbd_dict_find(E_Kbd_Dict *kd, const char *word)
      }
    else
      {
-	for (i = 0; i < 256; i++)
+	for (i = 0; i < 128; i++)
 	  {
 	     p = kd->lookup.tuples[v1][i];
 	     if (p) break;
