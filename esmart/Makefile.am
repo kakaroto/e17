@@ -25,13 +25,37 @@ EXTRA_DIST = README AUTHORS COPYING esmart.spec esmart.spec.in \
 	     esmart_trans_x11.pc.in
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = esmart_container.pc \
-		 esmart_draggies.pc \
-		 esmart_file_dialog.pc \
-		 esmart_resize.pc \
-		 esmart_textarea.pc \
-		 esmart_text_entry.pc \
-		 esmart_thumb.pc \
-		 esmart_trans_x11.pc
 
+pkgconfig_DATA = 
 
+if BUILD_ESMART_CONTAINER
+  pkgconfig_DATA += esmart_container.pc
+endif
+
+if BUILD_ESMART_DRAGGIES
+  pkgconfig_DATA += esmart_draggies.pc
+endif
+
+if BUILD_ESMART_RESIZE
+  pkgconfig_DATA += esmart_resize.pc
+endif
+  
+if BUILD_ESMART_FILE_DIALOG
+  pkgconfig_DATA += esmart_file_dialog.pc
+endif
+
+if BUILD_ESMART_TEXT_ENTRY
+  pkgconfig_DATA += esmart_text_entry.pc
+endif
+
+if BUILD_ESMART_TEXTAREA
+  pkgconfig_DATA += esmart_textarea.pc
+endif
+
+if BUILD_ESMART_THUMB
+  pkgconfig_DATA += esmart_thumb.pc
+endif
+
+if BUILD_ESMART_TRANS_X11
+  pkgconfig_DATA += esmart_trans_x11.pc
+endif
