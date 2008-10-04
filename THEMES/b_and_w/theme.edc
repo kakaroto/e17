@@ -18552,6 +18552,9 @@ ICON("enlightenment/website","icon_globe.png",64)
 ICON("enlightenment/background","icon_wallpaper.png",64)
 ICON("enlightenment/picture","icon_wallpaper.png",64)
 ICON("enlightenment/gradient","icon_gradient.png",64)
+ICON("widget/del","icon_del.png",64) 
+ICON("widget/new","icon_new.png",64)	
+ICON("widget/add","icon_add.png",64) 
 
 
 // FIXME: Dummy Icons
@@ -18568,10 +18571,7 @@ ICON("widget/up_arrow","icon_dummy.png",64)
 ICON("widget/down_arrow","icon_dummy.png",64)
 ICON("widget/up_dir","icon_dummy.png",64)
 ICON("widget/new_dialog","icon_dummy.png",64)
-ICON("widget/new","icon_dummy.png",64)	
-ICON("widget/add","icon_dummy.png",64) 
 ICON("widget/add_fav","icon_dummy.png",64) 
-ICON("widget/del","icon_dummy.png",64) 
 ICON("widget/config","icon_dummy.png",64)
 */
 
