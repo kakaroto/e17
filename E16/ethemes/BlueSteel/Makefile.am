@@ -24,4 +24,4 @@ uninstall-local:
 .PHONY: etheme $(THEME).etheme
 etheme: $(THEME).etheme
 $(THEME).etheme:
-	test ! -d data || (cd data; tar -czvf ../$(THEME).etheme --exclude CVS *)
+	test ! -d data || (cd data; tar -czvf ../$(THEME).etheme --exclude .svn *)
