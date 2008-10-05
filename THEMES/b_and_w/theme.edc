@@ -16880,6 +16880,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 part { name: "e.dragable.slider";
 	    type: RECT;
 	    mouse_events: 1;
+	    scale: 1;
 	    dragable {
 	       x: 0 0 0;
 	       y: -1 1 0;
@@ -17136,6 +17137,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 part { name: "e.dragable.slider";
 	    type: RECT;
 	    mouse_events: 1;
+	    scale: 1;
 	    dragable {
 	       x: 1 1 0;
 	       y: 0 0 0;
