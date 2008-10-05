@@ -1,0 +1,13 @@
+Login:		mcalamelli
+IRC Nick:	mcalamelli
+Cloak:          developer/mcalamelli
+Name:		Massimiliano Calamelli
+Location:	Savignano sul Rubicone, Italy
+E-Mail:		mcalamelli@gmail.com
+WWW:		http://mcalamelli.netsons.org
+Managing:	exchange (library)
+Contributing:	exchange (website), E in general
+Group:		Libraries
+Platform:	Ubuntu (Linux)
+GeoData:	44.1551 12.4223
+
