@@ -1,0 +1,12 @@
+Login:        illogict
+IRC Nick:     illogict
+Cloak:        developer/illogict
+Name:         Chidambar Zinnoury
+Location:     ?, ?
+E-Mail:       -illogict@online.fr
+WWW:          ?
+Contributing: e
+Group:        Applications
+Platform:     ?
+GeoData:      ? ?
+
