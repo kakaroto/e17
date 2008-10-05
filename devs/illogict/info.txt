@@ -2,11 +2,10 @@ Login:        illogict
 IRC Nick:     illogict
 Cloak:        developer/illogict
 Name:         Chidambar Zinnoury
-Location:     ?, ?
+Location:     Évry, France
 E-Mail:       -illogict@online.fr
-WWW:          ?
+WWW:          http://illogict.online.fr
 Contributing: e
 Group:        Applications
-Platform:     ?
-GeoData:      ? ?
-
+Platform:     Gentoo (Linux), EZX (Linux), Maemo (Linux)
+GeoData:      48.616225 2.437050
