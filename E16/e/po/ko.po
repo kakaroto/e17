@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.17.1\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-09-17 21:49+0200\n"
+"POT-Creation-Date: 2008-10-05 20:32+0200\n"
 "PO-Revision-Date: 2004-08-29 01:02:30+0900\n"
 "Last-Translator: Michael Kim <lavnrose@e.sarang.net>\n"
 "Language-Team: Korean <translation-team-ko@lists.sourceforge.net>\n"
@@ -51,7 +51,7 @@ msgstr ""
 "Kim Woelders - kim@woelders.dk\n"
 
 #: src/aclass.c:198 src/backgrounds.c:234 src/borders.c:636 src/buttons.c:181
-#: src/cursors.c:121 src/iclass.c:324 src/tclass.c:113 src/tooltips.c:135
+#: src/cursors.c:172 src/iclass.c:324 src/tclass.c:113 src/tooltips.c:135
 #, c-format
 msgid "%u references remain\n"
 msgstr "%u개의 참조가 남아있습니다\n"
@@ -1208,14 +1208,14 @@ msgstr "각각의 설명을 보시려면 \"help <명령>\"을 사용하십시오
 msgid "         <command>     : <description>\n"
 msgstr "      <명령> : <설명>\n"
 
-#: src/main.c:576
+#: src/main.c:582
 #, c-format
 msgid ""
 "%s must be a directory in which you have\n"
 "read, write, and execute permission.\n"
 msgstr ""
 
-#: src/main.c:686
+#: src/main.c:692
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1244,7 +1244,7 @@ msgstr ""
 "손으로 프로그램을 지웠든 지 아니면 인라이튼먼트 인스톨이\n"
 "잘못된 것입니다.\n"
 
-#: src/main.c:700
+#: src/main.c:706
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -2233,28 +2233,28 @@ msgstr ""
 " %s/themes/\n"
 "현재 동작 이상 진행 할 수 없습니다.\n"
 
-#: src/tooltips.c:864
+#: src/tooltips.c:866
 msgid "Display Tooltips"
 msgstr "툴팁 표시"
 
-#: src/tooltips.c:869
+#: src/tooltips.c:871
 msgid "Display Root Window Tips"
 msgstr "루트 창 팁 표시"
 
-#: src/tooltips.c:874
+#: src/tooltips.c:876
 msgid "Tooltip Delay:\n"
 msgstr "툴팁 지연:\n"
 
-#: src/tooltips.c:885
+#: src/tooltips.c:887
 #, fuzzy
 msgid "Tooltips"
 msgstr "도움말:"
 
-#: src/tooltips.c:886
+#: src/tooltips.c:888
 msgid "Tooltip Settings"
 msgstr "툴팁 설정"
 
-#: src/tooltips.c:889
+#: src/tooltips.c:891
 msgid ""
 "Enlightenment Tooltip\n"
 "Settings Dialog\n"

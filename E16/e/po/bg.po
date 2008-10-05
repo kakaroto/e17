@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.7\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-09-17 21:49+0200\n"
+"POT-Creation-Date: 2008-10-05 20:32+0200\n"
 "PO-Revision-Date: 2004-09-14 20:43-0300\n"
 "Last-Translator: Viktor Kojouharov\n"
 "Language-Team: Bulgarian\n"
@@ -49,7 +49,7 @@ msgstr ""
 "Kim Woelders - kim@woelders.dk\n"
 
 #: src/aclass.c:198 src/backgrounds.c:234 src/borders.c:636 src/buttons.c:181
-#: src/cursors.c:121 src/iclass.c:324 src/tclass.c:113 src/tooltips.c:135
+#: src/cursors.c:172 src/iclass.c:324 src/tclass.c:113 src/tooltips.c:135
 #, c-format
 msgid "%u references remain\n"
 msgstr "%u отпратки остават\n"
@@ -1206,14 +1206,14 @@ msgstr "\"help <команда>\": описание за дадена команда\n"
 msgid "         <command>     : <description>\n"
 msgstr "<команда> : <описание>\n"
 
-#: src/main.c:576
+#: src/main.c:582
 #, c-format
 msgid ""
 "%s must be a directory in which you have\n"
 "read, write, and execute permission.\n"
 msgstr ""
 
-#: src/main.c:686
+#: src/main.c:692
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1242,7 +1242,7 @@ msgstr ""
 "създадени пакети, някой ръчно е изтрил програмата или е имало\n"
 "грешка при инсталирането на Enlightenment.\n"
 
-#: src/main.c:700
+#: src/main.c:706
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -2216,28 +2216,28 @@ msgstr ""
 "%s/themes/\n"
 "Безсмислено е да се продължава.\n"
 
-#: src/tooltips.c:864
+#: src/tooltips.c:866
 msgid "Display Tooltips"
 msgstr "Показвай съвети"
 
-#: src/tooltips.c:869
+#: src/tooltips.c:871
 msgid "Display Root Window Tips"
 msgstr "Показвайте съвети на главният прозорец"
 
-#: src/tooltips.c:874
+#: src/tooltips.c:876
 msgid "Tooltip Delay:\n"
 msgstr "Забавяне на съветите:\n"
 
-#: src/tooltips.c:885
+#: src/tooltips.c:887
 #, fuzzy
 msgid "Tooltips"
 msgstr "Съвети:"
 
-#: src/tooltips.c:886
+#: src/tooltips.c:888
 msgid "Tooltip Settings"
 msgstr "Настройки за съветване"
 
-#: src/tooltips.c:889
+#: src/tooltips.c:891
 msgid ""
 "Enlightenment Tooltip\n"
 "Settings Dialog\n"

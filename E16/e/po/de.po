@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-09-17 21:49+0200\n"
+"POT-Creation-Date: 2008-10-05 20:32+0200\n"
 "PO-Revision-Date: 2000-03-29 21:12+0200\n"
 "Last-Translator: Matthias Warkus <mawa@iname.com>\n"
 "Language-Team: Enlightenment l10n <e-develop@enlightenment.org>\n"
@@ -36,7 +36,7 @@ msgid ""
 msgstr ""
 
 #: src/aclass.c:198 src/backgrounds.c:234 src/borders.c:636 src/buttons.c:181
-#: src/cursors.c:121 src/iclass.c:324 src/tclass.c:113 src/tooltips.c:135
+#: src/cursors.c:172 src/iclass.c:324 src/tclass.c:113 src/tooltips.c:135
 #, c-format
 msgid "%u references remain\n"
 msgstr "%u Referenzen verbleiben\n"
@@ -1410,7 +1410,7 @@ msgstr "\"help <befehl>\" gibt eine nähere Beschreibung\n"
 msgid "         <command>     : <description>\n"
 msgstr "<befehl> : <beschreibung>\n"
 
-#: src/main.c:576
+#: src/main.c:582
 #, c-format
 msgid ""
 "%s must be a directory in which you have\n"
@@ -1418,7 +1418,7 @@ msgid ""
 msgstr ""
 
 # src/misc.c:61
-#: src/main.c:686
+#: src/main.c:692
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1448,7 +1448,7 @@ msgstr ""
 "beim Installieren von Enlightenment.\n"
 
 # src/misc.c:77
-#: src/main.c:700
+#: src/main.c:706
 #, fuzzy, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -2574,33 +2574,33 @@ msgid ""
 msgstr ""
 
 # src/settings.c:1427
-#: src/tooltips.c:864
+#: src/tooltips.c:866
 msgid "Display Tooltips"
 msgstr "Minihilfen Anzeigen"
 
 # src/settings.c:1435
-#: src/tooltips.c:869
+#: src/tooltips.c:871
 msgid "Display Root Window Tips"
 msgstr "Minihilfen zum Hintergrundfenster anzeigen"
 
 # src/settings.c:1443
-#: src/tooltips.c:874
+#: src/tooltips.c:876
 msgid "Tooltip Delay:\n"
 msgstr "Minihilfen-Verzögerung:\n"
 
 # src/settings.c:1443
-#: src/tooltips.c:885
+#: src/tooltips.c:887
 #, fuzzy
 msgid "Tooltips"
 msgstr "Minihilfen-Verzögerung:\n"
 
 # src/settings.c:1403
-#: src/tooltips.c:886
+#: src/tooltips.c:888
 msgid "Tooltip Settings"
 msgstr "Minihilfen-Einstellungen"
 
 # src/main.c:89
-#: src/tooltips.c:889
+#: src/tooltips.c:891
 msgid ""
 "Enlightenment Tooltip\n"
 "Settings Dialog\n"

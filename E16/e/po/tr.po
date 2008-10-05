@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-09-17 21:49+0200\n"
+"POT-Creation-Date: 2008-10-05 20:32+0200\n"
 "PO-Revision-Date: 2000-07-30 22:39+0200\n"
 "Last-Translator: Fatih Demir <kabalak@gmx.net>\n"
 "Language-Team: Turkish <tr@li.org>\n"
@@ -34,7 +34,7 @@ msgid ""
 msgstr ""
 
 #: src/aclass.c:198 src/backgrounds.c:234 src/borders.c:636 src/buttons.c:181
-#: src/cursors.c:121 src/iclass.c:324 src/tclass.c:113 src/tooltips.c:135
+#: src/cursors.c:172 src/iclass.c:324 src/tclass.c:113 src/tooltips.c:135
 #, c-format
 msgid "%u references remain\n"
 msgstr "%u bað geriye kaldý\n"
@@ -1204,14 +1204,14 @@ msgstr "\"help <komuta>\" ile komutaya özgü bir yardým görebilirsin\n"
 msgid "         <command>     : <description>\n"
 msgstr "<komuta> : <anlatým>\n"
 
-#: src/main.c:576
+#: src/main.c:582
 #, c-format
 msgid ""
 "%s must be a directory in which you have\n"
 "read, write, and execute permission.\n"
 msgstr ""
 
-#: src/main.c:686
+#: src/main.c:692
 #, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -1240,7 +1240,7 @@ msgstr ""
 "( yada sen ) bu uygulamayý sildi yada Enlightenment tamamen ve doðruca \n"
 "yüklendmedi .\n"
 
-#: src/main.c:700
+#: src/main.c:706
 #, fuzzy, c-format
 msgid ""
 "!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
@@ -2231,28 +2231,28 @@ msgid ""
 "Proceeding from here is mostly pointless.\n"
 msgstr ""
 
-#: src/tooltips.c:864
+#: src/tooltips.c:866
 msgid "Display Tooltips"
 msgstr "Balon yardýmlarý göster"
 
-#: src/tooltips.c:869
+#: src/tooltips.c:871
 msgid "Display Root Window Tips"
 msgstr "Ana pencere yardýmlarýný göster"
 
-#: src/tooltips.c:874
+#: src/tooltips.c:876
 msgid "Tooltip Delay:\n"
 msgstr "Balon yardýmý gösterme zaman arasý :\n"
 
-#: src/tooltips.c:885
+#: src/tooltips.c:887
 #, fuzzy
 msgid "Tooltips"
 msgstr "Balon yardýmý gösterme zaman arasý :\n"
 
-#: src/tooltips.c:886
+#: src/tooltips.c:888
 msgid "Tooltip Settings"
 msgstr "Balon yardýmý ayarlarý"
 
-#: src/tooltips.c:889
+#: src/tooltips.c:891
 msgid ""
 "Enlightenment Tooltip\n"
 "Settings Dialog\n"
