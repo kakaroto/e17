@@ -1676,8 +1676,8 @@ DialogDrawItem(Dialog * d, DItem * di)
 	if (!di->text || !di->tclass)
 	   break;
 	if (!d->redraw)
-	   EXCopyAreaTiled(d->pmm_bg.pmap, None, WinGetPmap(d->win),
-			   di->x, di->y, di->w, di->h, di->x, di->y);
+	   EXCopyArea(d->pmm_bg.pmap, WinGetPmap(d->win),
+		      di->x, di->y, di->w, di->h, di->x, di->y);
 	TextDraw(di->tclass, d->win, WinGetPmap(d->win), 0, 0, state, di->text,
 		 x, di->y, w, 99999, 17, TextclassGetJustification(di->tclass));
 	break;
