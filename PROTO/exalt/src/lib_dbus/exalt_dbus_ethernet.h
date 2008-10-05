@@ -30,24 +30,25 @@
  * @{
  */
 
-char* exalt_dbus_eth_get_ip(const exalt_dbus_conn* conn,const char* eth);
-char* exalt_dbus_eth_get_netmask(const exalt_dbus_conn* conn, const char* eth);
-char* exalt_dbus_eth_get_gateway(const exalt_dbus_conn* conn, const char* eth);
-Ecore_List* exalt_dbus_eth_get_list(const exalt_dbus_conn* conn);
-int exalt_dbus_eth_is_wireless(const exalt_dbus_conn* conn, const char* eth);
-int exalt_dbus_eth_is_link(const exalt_dbus_conn* conn, const char* eth);
-int exalt_dbus_eth_is_up(const exalt_dbus_conn* conn, const char* eth);
-int exalt_dbus_eth_is_dhcp(const exalt_dbus_conn* conn, const char* eth);
+int exalt_dbus_eth_ip_get(exalt_dbus_conn* conn,const char* eth);
+char* exalt_dbus_eth_netmask_get(const exalt_dbus_conn* conn, const char* eth);
+char* exalt_dbus_eth_gateway_get(const exalt_dbus_conn* conn, const char* eth);
+Ecore_List* exalt_dbus_eth_list_get(const exalt_dbus_conn* conn);
+int exalt_dbus_eth_wireless_is(const exalt_dbus_conn* conn, const char* eth);
+int exalt_dbus_eth_link_is(const exalt_dbus_conn* conn, const char* eth);
+int exalt_dbus_eth_up_is(const exalt_dbus_conn* conn, const char* eth);
+int exalt_dbus_eth_dhcp_is(const exalt_dbus_conn* conn, const char* eth);
 
 
 int exalt_dbus_eth_up(const exalt_dbus_conn* conn, const char* eth);
 int exalt_dbus_eth_down(const exalt_dbus_conn* conn, const char* eth);
 
-int exalt_dbus_eth_apply_conn(exalt_dbus_conn* conn, const char* eth,Exalt_Connection*c);
+int exalt_dbus_eth_conn_apply(exalt_dbus_conn* conn, const char* eth,Exalt_Connection*c);
 
 
-char* exalt_dbus_eth_get_cmd(const exalt_dbus_conn* conn, const char* eth);
-int exalt_dbus_eth_set_cmd(const exalt_dbus_conn* conn, const char* eth, const char* cmd);
+char* exalt_dbus_eth_cmd_get(const exalt_dbus_conn* conn, const char* eth);
+int exalt_dbus_eth_cmd_set(const exalt_dbus_conn* conn, const char* eth, const char* cmd);
+
 
 #endif   /* ----- #ifndef EXALT_DBUS_ETHERNET_INC  ----- */
 

@@ -246,3 +246,24 @@ void print_error(const char* file,const char* fct, int line, const char* msg, ..
     fprintf(stderr,"\n\n");
     va_end(ap);
 }
+
+
+
+
+char* dbus_get_eth(DBusMessage* msg)
+{
+    Exalt_Ethernet* eth;
+    const char* path;
+    int i;
+
+    path = dbus_message_get_path(msg);
+    for(i=strlen(path)-1;i>0;i--)
+    {
+        if(path[i-1]=='/')
+        {
+            return path+i;
+        }
+    }
+
+    return NULL;
+}

@@ -69,12 +69,16 @@ struct _exalt_dbus_response_data
 
 struct _exalt_dbus_response
 {
+    int is_valid;
     Exalt_DBus_Response_Type type;
-    union
-    {
-        Ecore_List* l;
-        char* address;
-    };
+
+    int error_id;
+    char* error_msg;
+
+    Ecore_List* l;
+
+    char* iface;
+    char* address;
 };
 
 
@@ -90,6 +94,7 @@ const char* exalt_dbus_error_get_msg(DBusMessage *msg);
 
 
 void print_error(const char* file,const char* fct, int line, const char* msg, ...);
+char* dbus_get_eth(DBusMessage* msg);
 
 #endif   /* ----- #ifndef LIBEXALT_DBUS_PRIVATE_INC  ----- */
 

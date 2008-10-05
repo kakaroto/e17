@@ -57,7 +57,7 @@ DBusMessage * dbus_cb_eth_get_eth_list(E_DBus_Object *obj __UNUSED__, DBusMessag
     return reply;
 }
 
-DBusMessage * dbus_cb_eth_get_ip(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
+DBusMessage * dbus_cb_eth_ip_get(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
     DBusMessage *reply;
     DBusMessageIter args;
@@ -66,30 +66,29 @@ DBusMessage * dbus_cb_eth_get_ip(E_DBus_Object *obj __UNUSED__, DBusMessage *msg
 
     reply = dbus_message_new_method_return(msg);
 
+    dbus_message_set_path(reply,dbus_message_get_path(msg));
+
     eth= dbus_get_eth(msg);
-    EXALT_ASSERT_ADV(eth!=NULL,
+    EXALT_ASSERT_CUSTOM_RET(eth!=NULL,
             dbus_args_error_append(reply,
                 EXALT_DBUS_INTERFACE_ERROR_ID,
                 EXALT_DBUS_INTERFACE_ERROR);
-            return reply,
-            "eth!=NULL failed");
+            return reply);
 
     ip = exalt_eth_get_ip(eth);
 
-    EXALT_ASSERT_ADV(ip!=NULL,
+    EXALT_ASSERT_CUSTOM_RET(ip!=NULL,
             dbus_args_error_append(reply,
                 EXALT_DBUS_IP_ERROR_ID,
                 EXALT_DBUS_IP_ERROR);
-            return reply,
-            "ip!=NULL failed");
+            return reply);
 
     dbus_args_valid_append(reply);
 
     dbus_message_iter_init_append(reply, &args);
 
-    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &ip),
-            EXALT_FREE(ip);return reply,
-            "dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &ip) failed");
+    EXALT_ASSERT_CUSTOM_RET(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &ip),
+            EXALT_FREE(ip);return reply);
 
 
     EXALT_FREE(ip);
@@ -97,7 +96,7 @@ DBusMessage * dbus_cb_eth_get_ip(E_DBus_Object *obj __UNUSED__, DBusMessage *msg
 }
 
 
-DBusMessage * dbus_cb_eth_get_netmask(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
+DBusMessage * dbus_cb_eth_netmask_get(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
     DBusMessage *reply;
     DBusMessageIter args;
@@ -137,7 +136,7 @@ DBusMessage * dbus_cb_eth_get_netmask(E_DBus_Object *obj __UNUSED__, DBusMessage
 }
 
 
-DBusMessage * dbus_cb_eth_get_gateway(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
+DBusMessage * dbus_cb_eth_gateway_get(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
     DBusMessage *reply;
     DBusMessageIter args;
@@ -176,7 +175,7 @@ DBusMessage * dbus_cb_eth_get_gateway(E_DBus_Object *obj __UNUSED__, DBusMessage
     return reply;
 }
 
-DBusMessage * dbus_cb_eth_is_wireless(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
+DBusMessage * dbus_cb_eth_wireless_is(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
     DBusMessage *reply;
     DBusMessageIter args;
@@ -206,7 +205,7 @@ DBusMessage * dbus_cb_eth_is_wireless(E_DBus_Object *obj __UNUSED__, DBusMessage
     return reply;
 }
 
-DBusMessage * dbus_cb_eth_is_link(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
+DBusMessage * dbus_cb_eth_link_is(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
     DBusMessage *reply;
     DBusMessageIter args;
@@ -236,7 +235,7 @@ DBusMessage * dbus_cb_eth_is_link(E_DBus_Object *obj __UNUSED__, DBusMessage *ms
     return reply;
 }
 
-DBusMessage * dbus_cb_eth_is_dhcp(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
+DBusMessage * dbus_cb_eth_dhcp_is(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
     DBusMessage *reply;
     DBusMessageIter args;
@@ -266,7 +265,7 @@ DBusMessage * dbus_cb_eth_is_dhcp(E_DBus_Object *obj __UNUSED__, DBusMessage *ms
     return reply;
 }
 
-DBusMessage * dbus_cb_eth_is_up(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
+DBusMessage * dbus_cb_eth_up_is(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
     DBusMessage *reply;
     DBusMessageIter args;
@@ -344,7 +343,7 @@ DBusMessage * dbus_cb_eth_down(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
     return reply;
 }
 
-DBusMessage * dbus_cb_eth_apply_conn(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
+DBusMessage * dbus_cb_eth_conn_apply(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
     DBusMessage *reply;
     DBusMessageIter args;
@@ -547,7 +546,7 @@ DBusMessage * dbus_cb_eth_apply_conn(E_DBus_Object *obj __UNUSED__, DBusMessage 
     return reply;
 }
 
-DBusMessage * dbus_cb_eth_get_cmd(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
+DBusMessage * dbus_cb_eth_cmd_get(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
     DBusMessage *reply;
     DBusMessageIter args;

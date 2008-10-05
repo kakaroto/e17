@@ -153,14 +153,18 @@ void _exalt_dbus_dns_add_cb(void *data, DBusMessage *msg, DBusError *error)
 
     EXALT_DBUS_ERROR_PRINT(error);
 
-    EXALT_ASSERT_ADV(exalt_dbus_valid_is(msg),
-            return ,
-            "exalt_dbus_valid_is(msg) failed, error=%d (%s)",
-                exalt_dbus_error_get_id(msg),
-                exalt_dbus_error_get_msg(msg));
-
     Exalt_DBus_Response* response = calloc(1,sizeof(Exalt_DBus_Response));
     response->type = EXALT_DBUS_RESPONSE_DNS_ADD;
+
+    if(!exalt_dbus_valid_is(msg))
+    {
+        response->is_valid = 0;
+        response->error_id = exalt_dbus_error_get_id(msg);
+        response->error_msg = strdup(exalt_dbus_error_get_msg(msg));
+    }
+    else
+        response -> is_valid = 1;
+
     if(conn->response_notify->cb)
         conn-> response_notify -> cb(response,conn->response_notify->user_data);
 }
@@ -171,14 +175,18 @@ void _exalt_dbus_dns_del_cb(void *data, DBusMessage *msg, DBusError *error)
 
     EXALT_DBUS_ERROR_PRINT(error);
 
-    EXALT_ASSERT_ADV(exalt_dbus_valid_is(msg),
-            return ,
-            "exalt_dbus_valid_is(msg) failed, error=%d (%s)",
-                exalt_dbus_error_get_id(msg),
-                exalt_dbus_error_get_msg(msg));
-
     Exalt_DBus_Response* response = calloc(1,sizeof(Exalt_DBus_Response));
     response->type = EXALT_DBUS_RESPONSE_DNS_DEL;
+
+    if(!exalt_dbus_valid_is(msg))
+    {
+        response->is_valid = 0;
+        response->error_id = exalt_dbus_error_get_id(msg);
+        response->error_msg = strdup(exalt_dbus_error_get_msg(msg));
+    }
+    else
+        response -> is_valid = 1;
+
     if(conn->response_notify->cb)
         conn-> response_notify -> cb(response,conn->response_notify->user_data);
 }
@@ -189,14 +197,18 @@ void _exalt_dbus_dns_replace_cb(void *data, DBusMessage *msg, DBusError *error)
 
     EXALT_DBUS_ERROR_PRINT(error);
 
-    EXALT_ASSERT_ADV(exalt_dbus_valid_is(msg),
-            return ,
-            "exalt_dbus_valid_is(msg) failed, error=%d (%s)",
-                exalt_dbus_error_get_id(msg),
-                exalt_dbus_error_get_msg(msg));
-
     Exalt_DBus_Response* response = calloc(1,sizeof(Exalt_DBus_Response));
     response->type = EXALT_DBUS_RESPONSE_DNS_REPLACE;
+
+    if(!exalt_dbus_valid_is(msg))
+    {
+        response->is_valid = 0;
+        response->error_id = exalt_dbus_error_get_id(msg);
+        response->error_msg = strdup(exalt_dbus_error_get_msg(msg));
+    }
+    else
+        response -> is_valid = 1;
+
     if(conn->response_notify->cb)
         conn-> response_notify -> cb(response,conn->response_notify->user_data);
 }
@@ -208,15 +220,22 @@ void _exalt_dbus_dns_get_list_cb(void *data, DBusMessage *msg, DBusError *error)
 
     EXALT_DBUS_ERROR_PRINT(error);
 
-    EXALT_ASSERT_ADV(exalt_dbus_valid_is(msg),
-            return ,
-            "exalt_dbus_valid_is(msg) failed, error=%d (%s)",
-                exalt_dbus_error_get_id(msg),
-                exalt_dbus_error_get_msg(msg));
 
     Exalt_DBus_Response* response = calloc(1,sizeof(Exalt_DBus_Response));
-    response->type = EXALT_DBUS_RESPONSE_DNS_GET_LIST;
-    response->l = exalt_dbus_response_strings(msg,1);
+    response->type = EXALT_DBUS_RESPONSE_DNS_LIST_GET;
+
+    if(!exalt_dbus_valid_is(msg))
+    {
+        response->is_valid = 0;
+        response->error_id = exalt_dbus_error_get_id(msg);
+        response->error_msg = exalt_dbus_error_get_msg(msg);
+    }
+    else
+    {
+        response -> is_valid = 1;
+        response->l = exalt_dbus_response_strings(msg,1);
+    }
+
     if(conn->response_notify->cb)
         conn-> response_notify -> cb(response,conn->response_notify->user_data);
 }

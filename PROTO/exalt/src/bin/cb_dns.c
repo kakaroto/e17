@@ -18,7 +18,7 @@
 
 #include "cb_dns.h"
 
-DBusMessage * dbus_cb_dns_get_list(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
+DBusMessage * dbus_cb_dns_list_get(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
     DBusMessage *reply;
     DBusMessageIter iter;

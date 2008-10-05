@@ -27,11 +27,19 @@
  * @{
  */
 
+#ifndef PATH_MAX
+    #define PATH_MAX 1024
+#endif
 
 #define EXALT_DBUS_ERROR_PRINT(error) if(error && dbus_error_is_set(error)) { print_error(__FILE__,__func__,__LINE__,error->name);return; }
 
 #define EXALTD_PATH_DNS "/org/exalt/dns"
 #define EXALTD_INTERFACE_DNS "org.exalt.dns"
+
+#define EXALTD_PATH_IFACE "/org/exalt/interface"
+#define EXALTD_INTERFACE_IFACE "org.exalt.interface"
+
+
 
 /** The exalt-daemon service */
 #define EXALTD_SERVICE "org.e.Exalt"
@@ -45,6 +53,9 @@
 
 #define exalt_dbus_dns_call_new(member) dbus_message_new_method_call(EXALTD_SERVICE, \
         EXALTD_PATH_DNS, EXALTD_INTERFACE_DNS, member)
+
+#define exalt_dbus_iface_call_new(member,path,interface) dbus_message_new_method_call(EXALTD_SERVICE, \
+        path, interface, member)
 
 
 /** Create a method for the read interface */

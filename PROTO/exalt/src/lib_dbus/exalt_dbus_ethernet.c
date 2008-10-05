@@ -21,6 +21,9 @@
 #include "exalt_dbus_ethernet.h"
 #include "libexalt_dbus_private.h"
 
+void _exalt_dbus_eth_ip_get_cb(void *data, DBusMessage *msg, DBusError *error);
+
+
 /**
  * @addtogroup Ethernet_interface
  * @{
@@ -32,45 +35,25 @@
  * @param eth the interface name (eth0, ath32 ...)
  * @return Returns the ip address
  */
-char* exalt_dbus_eth_get_ip(const exalt_dbus_conn* conn, const char* eth)
+int exalt_dbus_eth_ip_get(exalt_dbus_conn* conn, const char* eth)
 {
-    DBusPendingCall * ret;
     DBusMessage *msg;
-    DBusMessageIter args;
-    char* res;
+    char path[PATH_MAX];
+    char interface[PATH_MAX];
 
     EXALT_ASSERT_RETURN(conn!=NULL);
     EXALT_ASSERT_RETURN(eth!=NULL);
 
-    msg = exalt_dbus_read_call_new("IFACE_GET_IP");
-    dbus_message_iter_init_append(msg, &args);
+    snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,eth);
+    snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,eth);
+    msg = exalt_dbus_iface_call_new("ip_get",path,interface);
 
-    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth),
-            dbus_message_unref(msg); return 0,
-            "dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth");
-
-    EXALT_ASSERT_ADV(dbus_connection_send_with_reply (conn->conn, msg, &ret, -1),
-            dbus_message_unref(msg); return 0,
-            "dbus_connection_send_with_reply (conn->conn, msg, &ret, -1)");
+    EXALT_ASSERT_CUSTOM_RET(e_dbus_message_send (conn->e_conn, msg, _exalt_dbus_eth_ip_get_cb,30,conn),
+            dbus_message_unref(msg); return 0);
 
     dbus_message_unref(msg);
 
-    dbus_pending_call_block(ret);
-    msg = dbus_pending_call_steal_reply(ret);
-
-    EXALT_ASSERT_RETURN(msg!=NULL);
-
-    dbus_pending_call_unref(ret);
-
-    EXALT_ASSERT_ADV(exalt_dbus_valid_is(msg),
-            return 0,
-            "exalt_dbus_valid_is(msg) failed, error=%d (%s)",
-            exalt_dbus_error_get_id(msg),
-            exalt_dbus_error_get_msg(msg));
-
-    EXALT_STRDUP(res , exalt_dbus_response_string(msg,1));
-    dbus_message_unref(msg);
-    return res;
+    return 1;
 }
 
 /**
@@ -650,3 +633,32 @@ char* exalt_dbus_eth_get_cmd(const exalt_dbus_conn* conn, const char* eth)
 }
 
 /** @} */
+
+
+
+
+
+void _exalt_dbus_eth_ip_get_cb(void *data, DBusMessage *msg, DBusError *error)
+{
+    exalt_dbus_conn* conn = (exalt_dbus_conn*)data;
+
+    EXALT_DBUS_ERROR_PRINT(error);
+
+    Exalt_DBus_Response* response = calloc(1,sizeof(Exalt_DBus_Response));
+    response->type = EXALT_DBUS_RESPONSE_IFACE_IP_GET;
+    response-> iface = strdup(dbus_get_eth(msg));
+
+    if(!exalt_dbus_valid_is(msg))
+    {
+        response->is_valid = 0;
+        response->error_id = exalt_dbus_error_get_id(msg);
+        response->error_msg = exalt_dbus_error_get_msg(msg);
+    }
+    else
+    {
+        response -> is_valid = 1;
+        response-> address = strdup(exalt_dbus_response_string(msg,1));
+    }
+    if(conn->response_notify->cb)
+        conn-> response_notify -> cb(response,conn->response_notify->user_data);
+}

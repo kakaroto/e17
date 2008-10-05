@@ -26,13 +26,8 @@
 #define EXALTD_PATH_DNS "/org/exalt/dns"
 #define EXALTD_INTERFACE_DNS "org.exalt.dns"
 
-#define EXALTD_PATH_WIRED "/org/exalt/interface/wired"
-#define EXALTD_INTERFACE_WIRED "org.exalt.interface.wired"
-
-#define EXALTD_PATH_WIRELESS "/org/exalt/interface/wireless"
-#define EXALTD_INTERFACE_WIRELESS "org.exalt.interface.wireless"
-
-
+#define EXALTD_PATH_IFACE "/org/exalt/interface"
+#define EXALTD_INTERFACE_IFACE "org.exalt.interface"
 
 #define EXALTD_PATH_WIREDS "/org/exalt/interfaces/wired"
 #define EXALTD_INTERFACE_WIREDS "org.exalt.interfaces.wired"

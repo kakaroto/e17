@@ -16,6 +16,16 @@
  * =====================================================================================
  */
 
+
+#define print_response_error() \
+    if(!exalt_dbus_response_valid_is(response)) \
+    { \
+        printf("Response error: (%d), %s\n", \
+            exalt_dbus_response_error_id_get(response), \
+            exalt_dbus_response_error_msg_get(response)); \
+        break;\
+    }
+
 #include "command.h"
 
 exalt_dbus_conn* conn;
@@ -24,9 +34,10 @@ void response(Exalt_DBus_Response* response, void* data)
 {
     switch(exalt_dbus_response_type_get(response))
     {
-        case EXALT_DBUS_RESPONSE_DNS_GET_LIST:
+        case EXALT_DBUS_RESPONSE_DNS_LIST_GET:
+            printf("DNS list:\n");
+            print_response_error();
             {
-                printf("List des DNS:\n");
                 Ecore_List* l = exalt_dbus_response_list_get(response);
                 char* dns;
                 ecore_list_first_goto(l);
@@ -36,12 +47,20 @@ void response(Exalt_DBus_Response* response, void* data)
             break;
         case EXALT_DBUS_RESPONSE_DNS_ADD:
             printf("DNS added\n");
+            print_response_error();
             break;
         case EXALT_DBUS_RESPONSE_DNS_DEL:
             printf("DNS deleted\n");
+            print_response_error();
             break;
         case EXALT_DBUS_RESPONSE_DNS_REPLACE:
             printf("DNS replaced\n");
+            print_response_error();
+            break;
+        case EXALT_DBUS_RESPONSE_IFACE_IP_GET:
+            printf("%s IP address:\n",exalt_dbus_response_iface_get(response));
+            print_response_error();
+            printf("%s\n",exalt_dbus_response_address_get(response));
             break;
     }
 
@@ -108,6 +127,22 @@ void dns(int argc, char** argv)
     }
 }
 
+void ethernet(int argc, char** argv)
+{
+    char* iface;
+
+    if(argc < 3)
+    {
+        fprintf(stderr, "We need an interface name (eth0, ipw1 ...)\n");
+        exit(EXIT_FAILURE);
+    }
+    iface = argv[2];
+    if(strcmp(argv[1],"ip_get")==0)
+    {
+        exalt_dbus_eth_ip_get(conn,iface);
+    }
+}
+
 int main(int argc, char** argv)
 {
     exalt_dbus_init();
@@ -121,6 +156,8 @@ int main(int argc, char** argv)
             || strcmp(argv[1],"dns_get")==0
             ))
         dns(argc,argv);
+    else if(argc>1 && strcmp(argv[1],"ip_get")==0)
+        ethernet(argc ,argv);
     else
         help();
 
@@ -139,7 +176,9 @@ void help()
             "dns_get \t\t\t: print the dns list\n"
             "dns_add ip_address \t\t: add the ip_address as dns\n"
             "dns_del ip_addresse \t\t: remove the dns\n"
-            "dns_replace ip1 ip2 \t\t: replace the dns ip1 by ip2\n");
+            "dns_replace ip1 ip2 \t\t: replace the dns ip1 by ip2\n"
+            "\n"
+            "ip_get eth0\t\t\t: get the ip address of the interface eth0\n");
     exit(EXIT_FAILURE);
 }
 
