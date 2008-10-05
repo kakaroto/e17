@@ -2,6 +2,8 @@ unset MAKEFLAGS CC CFLAGS PKG_CONFIG_PATH LD_LIBRARY_PATH LANG LANGUAGE
 unset LC_ALL LC_MESSAGES QUIET
 unalias make
 sudo ./scripts/mmap-0-fix.sh
+# make oe not wipe OMDIR - this may not be the best solution
+export BB_PRESERVE_ENV=true
 export OMDIR=`readlink -f $PWD`
 export BBPATH="${OMDIR}/build:${OMDIR}/org.openembedded.dev"
 export PYTHONPATH="${OMDIR}/bitbake/libbitbake"
