@@ -37,6 +37,7 @@ typedef struct _exalt_dbus_notify_data exalt_dbus_notify_data;
 typedef struct _exalt_dbus_notify_conn_applied_data exalt_dbus_notify_conn_applied_data;
 typedef struct _exalt_dbus_scan_notify_data exalt_dbus_scan_notify_data;
 typedef struct _exalt_dbus_response_data exalt_dbus_response_data;
+typedef struct _exalt_dbus_msg_id Exalt_DBus_Msg_Id;
 
 struct _exalt_dbus_conn
 {
@@ -45,6 +46,8 @@ struct _exalt_dbus_conn
     exalt_dbus_notify_data* notify;
     exalt_dbus_scan_notify_data* scan_notify;
     exalt_dbus_response_data* response_notify;
+    //define the next message id
+    int msg_id;
 };
 
 struct _exalt_dbus_notify_data
@@ -66,11 +69,18 @@ struct _exalt_dbus_response_data
 };
 
 
+struct _exalt_dbus_msg_id
+{
+    int id;
+    exalt_dbus_conn* conn;
+};
+
 
 struct _exalt_dbus_response
 {
-    int is_valid;
+    int is_error;
     Exalt_DBus_Response_Type type;
+    int msg_id;
 
     int error_id;
     char* error_msg;
@@ -81,6 +91,8 @@ struct _exalt_dbus_response
     char* address;
 };
 
+
+int exalt_dbus_msg_id_next(exalt_dbus_conn* conn);
 
 const char* exalt_dbus_response_string(DBusMessage *msg, int pos);
 Ecore_List* exalt_dbus_response_strings(DBusMessage *msg, int pos);

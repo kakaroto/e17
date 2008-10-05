@@ -34,8 +34,8 @@ enum _exalt_dbus_response_type
     EXALT_DBUS_RESPONSE_IFACE_IP_GET
 };
 
-int exalt_dbus_response_valid_is(Exalt_DBus_Response *response);
-
+int exalt_dbus_response_msg_id_get(Exalt_DBus_Response *response);
+int exalt_dbus_response_error_is(Exalt_DBus_Response *response);
 Exalt_DBus_Response_Type exalt_dbus_response_type_get(Exalt_DBus_Response* response);
 
 int exalt_dbus_response_error_id_get(Exalt_DBus_Response* response);

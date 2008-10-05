@@ -51,6 +51,7 @@ exalt_dbus_conn* exalt_dbus_connect()
     // connect to the bus
     conn->conn = dbus_bus_get(DBUS_BUS_SYSTEM, &err);
     conn->e_conn = e_dbus_connection_setup(conn->conn);
+    conn->msg_id = 1;
     return conn;
 }
 

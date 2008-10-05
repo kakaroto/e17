@@ -19,14 +19,19 @@
 #include "exalt_dbus_response.h"
 #include "libexalt_dbus_private.h"
 
-int exalt_dbus_response_valid_is(Exalt_DBus_Response *response)
+int exalt_dbus_response_msg_id_get(Exalt_DBus_Response *response)
 {
-    return response->is_valid;
+    return response->msg_id;
+}
+
+int exalt_dbus_response_error_is(Exalt_DBus_Response *response)
+{
+    return response->is_error;
 }
 
 int exalt_dbus_response_error_id_get(Exalt_DBus_Response* response)
 {
-    if(response->is_valid)
+    if(response->is_error)
     {
         print_error(__FILE__,__func__,__LINE__,"This response is not an error\n");
         return -1;
@@ -36,7 +41,7 @@ int exalt_dbus_response_error_id_get(Exalt_DBus_Response* response)
 
 char* exalt_dbus_response_error_msg_get(Exalt_DBus_Response* response)
 {
-    if(response->is_valid)
+    if(response->is_error)
     {
         print_error(__FILE__,__func__,__LINE__,"This response is not an error\n");
         return NULL;

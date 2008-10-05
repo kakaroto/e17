@@ -18,7 +18,7 @@
 
 
 #define print_response_error() \
-    if(!exalt_dbus_response_valid_is(response)) \
+    if(!exalt_dbus_response_error_is(response)) \
     { \
         printf("Response error: (%d), %s\n", \
             exalt_dbus_response_error_id_get(response), \
@@ -32,6 +32,7 @@ exalt_dbus_conn* conn;
 
 void response(Exalt_DBus_Response* response, void* data)
 {
+    printf("Question id: %d\n",exalt_dbus_response_msg_id_get(response));
     switch(exalt_dbus_response_type_get(response))
     {
         case EXALT_DBUS_RESPONSE_DNS_LIST_GET:

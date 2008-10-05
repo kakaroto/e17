@@ -18,6 +18,12 @@
 
 #include "libexalt_dbus_private.h"
 
+int exalt_dbus_msg_id_next(exalt_dbus_conn* conn)
+{
+    int id = conn->msg_id;
+    conn->msg_id = ((conn->msg_id + 1) % 100 ) +1;
+    return id;
+}
 
 void _exalt_dbus_notify(void *data, DBusMessage *msg)
 {

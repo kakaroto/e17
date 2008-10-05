@@ -40,6 +40,7 @@ int exalt_dbus_eth_ip_get(exalt_dbus_conn* conn, const char* eth)
     DBusMessage *msg;
     char path[PATH_MAX];
     char interface[PATH_MAX];
+    Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
     EXALT_ASSERT_RETURN(conn!=NULL);
     EXALT_ASSERT_RETURN(eth!=NULL);
@@ -48,12 +49,15 @@ int exalt_dbus_eth_ip_get(exalt_dbus_conn* conn, const char* eth)
     snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,eth);
     msg = exalt_dbus_iface_call_new("ip_get",path,interface);
 
-    EXALT_ASSERT_CUSTOM_RET(e_dbus_message_send (conn->e_conn, msg, _exalt_dbus_eth_ip_get_cb,30,conn),
+
+    msg_id->id = exalt_dbus_msg_id_next(conn);
+    msg_id->conn = conn;
+    EXALT_ASSERT_CUSTOM_RET(e_dbus_message_send (conn->e_conn, msg, _exalt_dbus_eth_ip_get_cb,30,msg_id),
             dbus_message_unref(msg); return 0);
 
     dbus_message_unref(msg);
 
-    return 1;
+    return msg_id->id;
 }
 
 /**
@@ -640,25 +644,28 @@ char* exalt_dbus_eth_get_cmd(const exalt_dbus_conn* conn, const char* eth)
 
 void _exalt_dbus_eth_ip_get_cb(void *data, DBusMessage *msg, DBusError *error)
 {
-    exalt_dbus_conn* conn = (exalt_dbus_conn*)data;
+
+    Exalt_DBus_Msg_Id *id = data;
 
     EXALT_DBUS_ERROR_PRINT(error);
 
     Exalt_DBus_Response* response = calloc(1,sizeof(Exalt_DBus_Response));
     response->type = EXALT_DBUS_RESPONSE_IFACE_IP_GET;
     response-> iface = strdup(dbus_get_eth(msg));
+    response->msg_id = id->id;
 
     if(!exalt_dbus_valid_is(msg))
     {
-        response->is_valid = 0;
+        response->is_error = 0;
         response->error_id = exalt_dbus_error_get_id(msg);
         response->error_msg = exalt_dbus_error_get_msg(msg);
     }
     else
     {
-        response -> is_valid = 1;
+        response -> is_error = 1;
         response-> address = strdup(exalt_dbus_response_string(msg,1));
     }
-    if(conn->response_notify->cb)
-        conn-> response_notify -> cb(response,conn->response_notify->user_data);
+    if(id->conn->response_notify->cb)
+        id->conn-> response_notify -> cb(response,id->conn->response_notify->user_data);
+    EXALT_FREE(data);
 }
