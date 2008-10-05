@@ -38,6 +38,7 @@ export CFLAGS
 %install
 test "x$RPM_BUILD_ROOT" != "x/" && rm -rf $RPM_BUILD_ROOT
 %{__make} install DESTDIR=$RPM_BUILD_ROOT %{?mflags_install}
+rm -f $RPM_BUILD_ROOT/%{_libdir}/*.la
 
 %ifos linux
 %post -p /sbin/ldconfig
