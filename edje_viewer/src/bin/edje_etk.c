@@ -30,53 +30,10 @@ static void signal_cb(void *data, Evas_Object *o, const char *sig,
 static void message_cb(void *data, Evas_Object *obj, Edje_Message_Type type,
 	int id, void *msg);
 
-Evas_Object *o_bg;
-Evas_Object *o_shadow;
 Evas_List *visible_elements = NULL;
 
 Evas_List *visible_elements_get() {
   return visible_elements;
-}
-
-void bg_setup(Etk_Canvas *canvas)
-{
-   Evas_Object *o;
-   Evas *evas;
-   Evas_Coord x, y, w, h;
-
-   evas = etk_widget_toplevel_evas_get(ETK_WIDGET(canvas));
-   if (!evas) return;
-
-   etk_widget_geometry_get(ETK_WIDGET(canvas), &x, &y, &w, &h);
-
-   o = evas_object_image_add(evas);
-   evas_object_move(o, x, y);
-   evas_object_resize(o, w, h);
-   evas_object_layer_set(o, -999);
-   evas_object_color_set(o, 255, 255, 255, 255);
-   evas_object_image_file_set(o,
-	 DAT"data/images/bg.png", NULL);
-   evas_object_image_fill_set(o, 0, 0, 128, 128);
-   evas_object_pass_events_set(o, 1);
-   evas_object_show(o);
-
-   o_bg = o;
-   etk_canvas_object_add(canvas, o);
-
-   o = evas_object_image_add(evas);
-   evas_object_move(o, x, y);
-   evas_object_resize(o, w, h);
-   evas_object_layer_set(o, -999);
-   evas_object_color_set(o, 255, 255, 255, 255);
-   evas_object_image_file_set(o,
-	 DAT"data/images/shadow.png", NULL);
-   evas_object_image_smooth_scale_set(o, 0);
-   evas_object_image_fill_set(o, 0, 0, w, h);
-   evas_object_pass_events_set(o, 1);
-   evas_object_show(o);
-   
-   o_shadow = o;
-   etk_canvas_object_add(canvas, o);
 }
 
 Demo_Edje *edje_part_create(Etk_Tree *output, Etk_Mdi_Area *mdi_area, 
@@ -86,6 +43,7 @@ Demo_Edje *edje_part_create(Etk_Tree *output, Etk_Mdi_Area *mdi_area,
    Evas_Object *o;
    Demo_Edje *de;
    Evas *evas;
+   Evas_Coord w, h;
 
    de = calloc(1, sizeof(Demo_Edje));
    de->name = strdup(name);
@@ -104,10 +62,14 @@ Demo_Edje *edje_part_create(Etk_Tree *output, Etk_Mdi_Area *mdi_area,
    edje_object_part_drag_size_set(o, "dragable", 0.01, 0.5);
    edje_object_part_drag_step_set(o, "dragable", 0.1, 0.1);
    edje_object_part_drag_page_set(o, "dragable", 0.2, 0.2);
+   edje_object_size_min_calc(o, &w, &h);
 
    de->etk_evas = etk_evas_object_new_from_object(o);
    etk_bin_child_set(ETK_BIN(mdi_window), de->etk_evas);
-   etk_widget_size_request_set(mdi_window, 200, 130);
+   if (w && h)
+     evas_object_resize(o, w, h);
+   else
+     etk_widget_size_request_set(mdi_window, 200, 130);
 
    return de;
 }

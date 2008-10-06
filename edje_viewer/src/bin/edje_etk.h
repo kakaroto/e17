@@ -28,7 +28,6 @@ struct _Collection
 };
 
 Evas_List *visible_elements_get(void);
-void bg_setup(Etk_Canvas *canvas);
 Demo_Edje *edje_part_create(Etk_Tree *output, Etk_Mdi_Area *mdi_area,
 	const char *file, char *name);
 

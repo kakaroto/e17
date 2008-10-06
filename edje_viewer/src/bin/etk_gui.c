@@ -219,7 +219,6 @@ void main_window_show(const char *file)
 			      ETK_OBJECT(send_button),
 			      ETK_CALLBACK(_gui_emit_signal_cb), gui);
 
-/*   bg_setup(ETK_CANVAS(gui->canvas));*/
    etk_widget_show_all(gui->win);
 
    check = edje_viewer_config_open_last_get();
