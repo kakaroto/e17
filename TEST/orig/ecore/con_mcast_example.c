@@ -12,6 +12,10 @@ Ecore_Con_Server *svr;
 
 typedef int (*Handler_Func) (void *data, int type, void *event);
 
+/* 
+Please note that ev->client->data points to a sockaddr_in stucture.  If you overwrite that pointer 
+your program will have a memory leak
+*/
 int
 client_data (void *data,
 	     int ev_type,
@@ -38,7 +42,7 @@ int main (int argc, char *argv[]) {
   svr = ecore_con_server_add(ECORE_CON_REMOTE_MCAST, "239.255.2.1", 1199, NULL);
   if( NULL == svr )
     {
-      printf("Unable to add server\n");
+      printf("Unable to add server.  Bad port?  No route to the multicast network?\n");
       return 1;
     }
   else

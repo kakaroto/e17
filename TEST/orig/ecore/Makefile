@@ -1,7 +1,7 @@
 FLAGS = `pkg-config ecore ecore-evas ecore-job ecore-config ecore-x evas --cflags`
 LIBS  = `pkg-config ecore ecore-evas ecore-job ecore-config ecore-x evas --libs`
 
-BINS  = ecore_config ecore_evas_test ecore_test
+BINS  = ecore_config ecore_evas_test ecore_test con_client_udp_example con_mcast_example con_server_udp_example
 all: $(BINS)
 
 ecore_config_SRCS = ecore_config.c
@@ -39,6 +39,24 @@ ecore_dbus_receiver_test_OBJS = $(ecore_dbus_receiver_test_SRCS:.c=.o)
 ecore_dbus_receiver_test: $(ecore_dbus_receiver_test_OBJS)
 	$(RM) $@
 	$(CC) $(LIBS) $(LDFLAGS) $(ecore_dbus_receiver_test_OBJS) -o $@
+
+con_client_udp_example_SRCS = con_client_udp_example.c
+con_client_udp_example_OBJS = $(con_client_udp_example_SRCS:.c=.o)
+con_client_udp_example: $(con_client_udp_example_OBJS)
+	$(RM) $@
+	$(CC) $(LIBS) $(LDFLAGS) $(con_client_udp_example_OBJS) -o $@
+
+con_mcast_example_SRCS = con_mcast_example.c
+con_mcast_example_OBJS = $(con_mcast_example_SRCS:.c=.o)
+con_mcast_example: $(con_mcast_example_OBJS)
+	$(RM) $@
+	$(CC) $(LIBS) $(LDFLAGS) $(con_mcast_example_OBJS) -o $@
+
+con_server_udp_example_SRCS = con_server_udp_example.c
+con_server_udp_example_OBJS = $(con_server_udp_example_SRCS:.c=.o)
+con_server_udp_example: $(con_server_udp_example_OBJS)
+	$(RM) $@
+	$(CC) $(LIBS) $(LDFLAGS) $(con_server_udp_example_OBJS) -o $@
 
 ############################################################################
 #### boilerplate
