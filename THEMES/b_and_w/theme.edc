@@ -18561,6 +18561,7 @@ ICON("enlightenment/gradient","icon_gradient.png",64)
 ICON("widget/del","icon_del.png",64) 
 ICON("widget/new","icon_new.png",64)	
 ICON("widget/add","icon_add.png",64) 
+ICON("widget/add_fav","icon_add_fav.png",64) 
 
 
 // FIXME: Dummy Icons
@@ -18570,7 +18571,6 @@ ICON("enlightenment/engine","icon_dummy.png",64)
 ICON("enlightenment/add_application","icon_dummy.png",64)
 ICON("enlightenment/profiles","icon_dummy.png",64)
 ICON("enlightenment/scale","icon_dummy.png",64)
-
 
 /* USABLE WIDGETS
 ICON("widget/up_arrow","icon_dummy.png",64)
