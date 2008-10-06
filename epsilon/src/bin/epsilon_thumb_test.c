@@ -36,9 +36,12 @@ int main(int argc, char** argv)
 	char *file;
 	Ecore_List *files;
 	double start, end;
+	Epsilon_Thumb_Size thumb_size = EPSILON_THUMB_NORMAL;
+	Epsilon_Thumb_Format thumb_format = EPSILON_THUMB_FDO;
+	int i;
 
 	if (argc < 2) {
-		printf ("Usage: epsilon_thumb_test <directory path>\n");
+		printf ("Usage: epsilon_thumb_test [-large] [-jpg] <directory path>\n");
 		exit(0);
 	}
 
@@ -46,12 +49,16 @@ int main(int argc, char** argv)
 
 	thumb_done = ecore_event_handler_add(EPSILON_EVENT_DONE, thumb_complete_cb, NULL);
 
-	if (!ecore_file_is_dir(argv[1])) {
+	if (!ecore_file_is_dir(argv[argc - 1])) {
 		printf("Need a directory\n");
 		exit(-1);
 	}
 
-	files = ecore_file_ls(argv[1]);
+	for(i=1;i<argc;i++)
+		if (!strcmp(argv[i], "-large")) thumb_size = EPSILON_THUMB_LARGE;
+		else if (!strcmp(argv[i], "-jpg")) thumb_format = EPSILON_THUMB_LARGE;
+
+	files = ecore_file_ls(argv[argc - 1]);
 
 	start = ecore_time_get();
 
@@ -60,10 +67,10 @@ int main(int argc, char** argv)
 		char *realpath;
 		char fullpath[PATH_MAX];
 
-		snprintf(fullpath, PATH_MAX, "%s/%s", argv[1], file);
+		snprintf(fullpath, PATH_MAX, "%s/%s", argv[argc - 1], file);
 		realpath = ecore_file_realpath(fullpath);
 		if (ecore_file_exists(realpath) && !ecore_file_is_dir(realpath)) {
-			epsilon_request_add(realpath, EPSILON_THUMB_NORMAL, NULL);
+			epsilon_request_add_advanced(realpath, thumb_size, thumb_format, NULL);
 			incomplete_thumbs++;
 		}
 		free(realpath);

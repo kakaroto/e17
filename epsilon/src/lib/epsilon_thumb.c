@@ -306,12 +306,14 @@ epsilon_client_connect(void)
 /**
  * @param path Path to the original image that will be thumbnailed.
  * @param size Enum determining the scale of the thumbnail.
+ * @param size Enum determining the format of the thumbnail.
  * @param data Data associated with this thumbnail for client use.
  * @brief Request a thumbnail to be generated asynchronously for the specified
  * @a path.
  */
 Epsilon_Request *
-epsilon_request_add(const char *path, Epsilon_Thumb_Size size, void *data)
+epsilon_request_add_advanced(const char *path, Epsilon_Thumb_Size size,
+			     Epsilon_Thumb_Format format, void *data)
 {
 	Epsilon_Request *thumb;
 
@@ -333,6 +335,7 @@ epsilon_request_add(const char *path, Epsilon_Thumb_Size size, void *data)
 	}
 	thumb->size = size;
 	thumb->data = data;
+	thumb->format = format;
 	if (epsilon_request_resolve_thumb_file(thumb)) {
 		thumb->status = 1;
 		epsilon_event_inform_done(thumb);
@@ -342,6 +345,7 @@ epsilon_request_add(const char *path, Epsilon_Thumb_Size size, void *data)
 		msg = epsilon_message_new(epsilon_mid++, path, 0);
 		if (msg) {
 			msg->thumbsize = size;
+			msg->thumbformat = format;
 			if (debug) printf("!! requesting thumbnail for %s (request %d)!!, %d\n", path, msg->mid, sizeof(Epsilon_Message)+msg->bufsize);
 			if (ecore_ipc_server_send(epsilon_server, 1,1,1,1,1,msg,sizeof(Epsilon_Message)+msg->bufsize)) {
 				thumb->id = msg->mid;
@@ -355,6 +359,19 @@ epsilon_request_add(const char *path, Epsilon_Thumb_Size size, void *data)
 	}
 
 	return thumb;
+}
+
+/**
+ * @param path Path to the original image that will be thumbnailed.
+ * @param size Enum determining the scale of the thumbnail.
+ * @param data Data associated with this thumbnail for client use.
+ * @brief Request a thumbnail to be generated asynchronously for the specified
+ * @a path.
+ */
+Epsilon_Request *
+epsilon_request_add(const char *path, Epsilon_Thumb_Size size, void *data)
+{
+	return epsilon_request_add_advanced(path, size, EPSILON_THUMB_FDO, data);
 }
 
 /**

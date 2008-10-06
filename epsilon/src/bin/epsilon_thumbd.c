@@ -497,6 +497,7 @@ epsilond_worker_run(void *data)
 		path = ((char *)msg + sizeof(Epsilon_Message));
 		ep = epsilon_new(path);
 		epsilon_thumb_size(ep, msg->thumbsize);
+		epsilon_format_set(ep, msg->thumbformat);
 		if (debug) printf("Thumbnailing %d: %s\n", msg->mid, path);
 
 		/*

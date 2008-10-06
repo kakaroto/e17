@@ -43,6 +43,7 @@ struct _Epsilon
   int w, h;
   int tw, th;
   int tsize;
+  int format;
 };
 typedef struct _Epsilon Epsilon;
 
@@ -64,6 +65,14 @@ enum _Epsilon_Thumb_Size
 
 typedef enum _Epsilon_Thumb_Size Epsilon_Thumb_Size;
 
+enum _Epsilon_Thumb_Format
+{
+   EPSILON_THUMB_FDO,
+   EPSILON_THUMB_JPEG
+};
+
+typedef enum _Epsilon_Thumb_Format Epsilon_Thumb_Format;
+
 EAPI int epsilon_init (void);
 
 /* construct destruct */
@@ -74,6 +83,8 @@ EAPI Epsilon *epsilon_new (const char *file);
 EAPI void epsilon_key_set (Epsilon * e, const char *key);
 /* Set the resolution*/
 EAPI void epsilon_resolution_set (Epsilon * e, int w, int h);
+/* Set the thumbnail format */
+EAPI void epsilon_format_set (Epsilon * e, Epsilon_Thumb_Format f);
 
 /*
  * the source filename

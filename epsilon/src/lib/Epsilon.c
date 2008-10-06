@@ -67,6 +67,8 @@ static int _epsilon_png_write (const char *file, unsigned int * ptr,
 			       int tw, int th, int sw, int sh, char *imformat,
 			       int mtime, char *uri);
 #endif
+static int _epsilon_jpg_write (const char *file, unsigned int * ptr,
+			       Evas_Object *eo, int w, int h);
 
 Epsilon *
 epsilon_new (const char *file)
@@ -80,6 +82,7 @@ epsilon_new (const char *file)
 	  result->src = strdup (file);
 	  result->tw = THUMB_SIZE_LARGE;
 	  result->th = THUMB_SIZE_LARGE;
+	  result->format = EPSILON_THUMB_FDO;
 	}
       else
 	{
@@ -217,6 +220,13 @@ epsilon_resolution_set (Epsilon * e, int w, int h)
     }
 }
 
+void
+epsilon_format_set (Epsilon * e, Epsilon_Thumb_Format f)
+{
+  if (e && (f == EPSILON_THUMB_FDO || f == EPSILON_THUMB_JPEG))
+    e->format = f;
+}
+
 const char *
 epsilon_file_get (Epsilon * e)
 {
@@ -236,13 +246,12 @@ epsilon_thumb_file_get (Epsilon * e)
     return (NULL);
   if (e->thumb)
     return (e->thumb);
-#ifdef HAVE_EPEG_H
+
   if (_epsilon_exists_ext(e, "jpg", buf, sizeof(buf), &mtime))
     {
        e->thumb = strdup(buf);
        return (e->thumb);
     }
-#endif
 #ifdef HAVE_PNG_H
   if (_epsilon_exists_ext(e, "png", buf, sizeof(buf), &mtime))
     {
@@ -390,6 +399,9 @@ epsilon_info_get (Epsilon * e)
       fclose (fp);
 #endif
     }
+  else
+     return NULL;
+
   if ((p->eei = epsilon_exif_info_get (e)))
     {
       if (p->w == 0)
@@ -527,7 +539,6 @@ epsilon_exists (Epsilon * e)
   if (!e->hash)
     return (EPSILON_FAIL);
 
-#ifdef HAVE_EPEG_H
   if (!ok)
     {
        char path[PATH_MAX];
@@ -538,7 +549,6 @@ epsilon_exists (Epsilon * e)
 	  /* XXX compare with time from e->src exif tag? */
        }
     }
-#endif
 #ifdef HAVE_PNG_H
   if (!ok)
     {
@@ -681,16 +691,28 @@ epsilon_generate (Epsilon * e)
 	if (data)
 	  {
 	     snprintf(buf, sizeof(buf), "file://%s", e->src);
-	     _epsilon_file_name(e->tsize, e->hash, "png", buf2, sizeof(buf2));
-	     /* this is wrong - but hey! good enough? */
-	     if (ext) snprintf(buf3, sizeof(buf3), "image/%s", ext);
-	     else snprintf(buf3, sizeof(buf3), "image/png");
-	     if (_epsilon_png_write(buf2,
-				    data, ww, hh, iw, ih,
-				    buf3, mtime, buf))
+	     if (e->format == EPSILON_THUMB_FDO)
 	       {
-		  ret = EPSILON_FAIL;
-	       }
+	        _epsilon_file_name(e->tsize, e->hash, "png", buf2, sizeof(buf2));
+	        /* this is wrong - but hey! good enough? */
+	        if (ext) snprintf(buf3, sizeof(buf3), "image/%s", ext);
+	        else snprintf(buf3, sizeof(buf3), "image/png");
+	        if (_epsilon_png_write(buf2,
+				       data, ww, hh, iw, ih,
+				       buf3, mtime, buf))
+	          {
+		     ret = EPSILON_FAIL;
+	          }
+               }
+	     else
+	     {
+		  _epsilon_file_name(e->tsize, e->hash, "jpg", buf2, sizeof(buf2));
+	          if (_epsilon_jpg_write(buf2,
+					 data, im, ww, hh))
+		    {
+		       ret = EPSILON_FAIL;
+		    }
+	     }
 	  }
      }
    if (edje) evas_object_del(edje);
@@ -943,3 +965,32 @@ _epsilon_png_write (const char *file, unsigned int * ptr, int tw, int th, int sw
   return (ret);
 }
 #endif
+
+static int
+_epsilon_jpg_write (const char *file, unsigned int * ptr, Evas_Object *eo, int w, int h)
+{
+  char tmpfile[PATH_MAX] = "";
+
+  int l,ll;
+  char buf[21];
+  l=snprintf(tmpfile,sizeof(tmpfile),"%s",file);
+  ll=snprintf(buf,sizeof(buf),"epsilon-%06d.jpg",(int)getpid());
+  strncpy(&tmpfile[l-35], buf,ll+1);
+
+  evas_object_image_data_set(eo, NULL);
+  evas_object_image_size_set(eo, w, h);
+  evas_object_image_data_set(eo, ptr);
+
+  if (!evas_object_image_save(eo, tmpfile, NULL, NULL))
+    return 1;
+
+  if (!rename (tmpfile, file))
+    {
+       if (chmod (file, S_IWUSR | S_IRUSR))
+	 fprintf (stderr,
+		  "epsilon: could not set permissions on \"%s\"!?\n",
+		  file);
+    }
+
+  return 0;
+}

@@ -18,6 +18,7 @@ struct _Epsilon_Request
 {
 	unsigned int   id;       /**< Identifier for this thumbnail */
 	unsigned int   size;     /**< Thumbnail size to be generated */
+	unsigned int   format;   /**< Thumbnail format to be generated */
 	unsigned int   status;   /**< Status code of the thumbnail generation */
 	char          *path;     /**< Path to file requiring thumbnail */
 	char          *dest;     /**< Path to generated file, NULL on error */
@@ -30,6 +31,8 @@ EAPI extern int EPSILON_EVENT_DONE; /**< Ecore_Event type */
 EAPI int              epsilon_request_init(void);
 EAPI int              epsilon_request_shutdown(void);
 EAPI Epsilon_Request *epsilon_request_add(const char *path, Epsilon_Thumb_Size size, void *data);
+EAPI Epsilon_Request *epsilon_request_add_advanced(const char *path, Epsilon_Thumb_Size size,
+						   Epsilon_Thumb_Format format, void *data);
 EAPI void             epsilon_request_del(Epsilon_Request *thumb);
 
 #ifdef __cplusplus
