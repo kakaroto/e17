@@ -39,6 +39,7 @@
 #include "timers.h"
 #include "windowmatch.h"
 #include "xwin.h"
+#include <X11/Xutil.h>
 #include <X11/extensions/shape.h>
 
 #define EWIN_TOP_EVENT_MASK \

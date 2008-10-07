@@ -29,6 +29,7 @@
 #include "tooltips.h"
 #include "xwin.h"
 #include <sys/time.h>
+#include <X11/Xutil.h>
 #include <X11/extensions/shape.h>
 #if USE_XSYNC
 #include <X11/extensions/sync.h>

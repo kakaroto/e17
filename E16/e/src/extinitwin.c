@@ -25,6 +25,7 @@
 #include "e16-ecore_hints.h"
 #include "eimage.h"
 #include "xwin.h"
+#include <X11/Xutil.h>
 #include <X11/extensions/shape.h>
 
 static              Window
