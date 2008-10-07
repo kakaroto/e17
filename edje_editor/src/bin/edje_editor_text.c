@@ -36,7 +36,7 @@ text_frame_create(Evas *evas)
    vbox = etk_vbox_new(ETK_FALSE, 5);
 
    //table
-   table = etk_table_new(5, 4, ETK_TABLE_NOT_HOMOGENEOUS);
+   table = etk_table_new(5, 5, ETK_TABLE_NOT_HOMOGENEOUS);
    etk_box_append(ETK_BOX(vbox), table, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
    label = etk_label_new("Text");
@@ -76,27 +76,59 @@ text_frame_create(Evas *evas)
    etk_widget_size_request_set(UI_FontSizeSpinner, 45, 20);
    etk_table_attach_default(ETK_TABLE(table),UI_FontSizeSpinner, 4, 4, 1,1);
 
+   hbox = etk_hbox_new(ETK_FALSE, 0);
+   etk_table_attach_default(ETK_TABLE(table),hbox, 0, 5, 2,2);
+   
    //FontAlignHSpinner
    label = etk_label_new("Align");
-   etk_table_attach_default(ETK_TABLE(table),label,0,0, 2,2);
-
+   etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
    UI_FontAlignHSpinner = etk_spinner_new(0, 1, 0, 0.01, 0.1);
    etk_spinner_digits_set(ETK_SPINNER(UI_FontAlignHSpinner), 2);
    etk_widget_size_request_set(UI_FontAlignHSpinner, 45, 20);
-   etk_table_attach_default(ETK_TABLE(table),UI_FontAlignHSpinner, 1, 1, 2,2);
-
+   etk_box_append(ETK_BOX(hbox), UI_FontAlignHSpinner, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+   
    //FontAlignVSpinner
-   label = etk_label_new("V Align");
-   etk_table_attach_default(ETK_TABLE(table),label, 2, 2, 2,2);
-
+   label = etk_label_new("Valign");
+   etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
    UI_FontAlignVSpinner =  etk_spinner_new (0, 1, 0, 0.01, 0.1);
    etk_spinner_digits_set(ETK_SPINNER(UI_FontAlignVSpinner), 2);
    etk_widget_size_request_set(UI_FontAlignVSpinner, 45, 20);
-   etk_table_attach_default(ETK_TABLE(table),UI_FontAlignVSpinner, 3, 4, 2,2);
+   etk_box_append(ETK_BOX(hbox), UI_FontAlignVSpinner, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
+   //FontElipsis
+   label = etk_label_new("Elipsis");
+   etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+   UI_FontElipsisSpinner = etk_spinner_new (0, 1, 0, 0.1, 0.4);
+   etk_spinner_digits_set(ETK_SPINNER(UI_FontElipsisSpinner), 1);
+   etk_widget_size_request_set(UI_FontElipsisSpinner, 45, 20);
+   etk_box_append(ETK_BOX(hbox), UI_FontElipsisSpinner, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+
+   //Fit + min max
+   hbox = etk_hbox_new(ETK_FALSE, 10);
+   etk_table_attach_default(ETK_TABLE(table),hbox, 0, 5, 3,3);
+   
+   UI_FontFitXCheck = etk_check_button_new_with_label("Fit X");
+   etk_box_append(ETK_BOX(hbox), UI_FontFitXCheck, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+   
+   UI_FontFitYCheck = etk_check_button_new_with_label("Fit Y");
+   etk_box_append(ETK_BOX(hbox), UI_FontFitYCheck, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+   
+   //~ label = etk_check_button_new_with_label("Min X");
+   //~ etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+   
+   //~ label = etk_check_button_new_with_label("Min Y");
+   //~ etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+   
+   //~ label = etk_check_button_new_with_label("Max X");
+   //~ etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+   
+   //~ label = etk_check_button_new_with_label("Max Y");
+   //~ etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+   
+   
    //PartEffectComboBox
    label = etk_label_new("Effect");
-   etk_table_attach_default(ETK_TABLE(table),label, 0, 0, 3,3);
+   etk_table_attach_default(ETK_TABLE(table),label, 0, 0, 4,4);
 
    UI_EffectComboBox = etk_combobox_new();
    etk_combobox_column_add(ETK_COMBOBOX(UI_EffectComboBox), 
@@ -136,7 +168,7 @@ text_frame_create(Evas *evas)
       etk_image_new_from_edje(EdjeFile,"NONE.PNG"), "Glow");
    etk_combobox_item_data_set(ComboItem, (void*)EDJE_TEXT_EFFECT_GLOW);
 
-   etk_table_attach_default(ETK_TABLE(table),UI_EffectComboBox,1,4,3,3);
+   etk_table_attach_default(ETK_TABLE(table),UI_EffectComboBox,1,4,4,4);
 
    //hbox
    hbox = etk_hbox_new(ETK_FALSE, 10);
@@ -173,6 +205,13 @@ text_frame_create(Evas *evas)
    etk_signal_connect("value-changed", ETK_OBJECT(UI_FontAlignHSpinner),
                       ETK_CALLBACK(_text_FontAlignSpinner_value_changed_cb),
                       (void*)TEXT_ALIGNH_SPINNER);
+   etk_signal_connect("value-changed", ETK_OBJECT(UI_FontElipsisSpinner),
+                      ETK_CALLBACK(_text_FontElipsisSpinner_value_changed_cb),
+                      NULL);
+   etk_signal_connect("toggled", ETK_OBJECT(UI_FontFitXCheck),
+                      ETK_CALLBACK(_text_FitXCheck_toggled_cb), NULL);
+   etk_signal_connect("toggled", ETK_OBJECT(UI_FontFitYCheck),
+                      ETK_CALLBACK(_text_FitYCheck_toggled_cb), NULL);
 
    return vbox;
 }
@@ -233,6 +272,13 @@ text_frame_update(void)
                     ETK_CALLBACK(_text_FontAlignSpinner_value_changed_cb), NULL);
    etk_signal_block("value-changed", ETK_OBJECT(UI_FontAlignVSpinner),
                     ETK_CALLBACK(_text_FontAlignSpinner_value_changed_cb), NULL);
+   etk_signal_block("toggled", ETK_OBJECT(UI_FontFitXCheck),
+                    ETK_CALLBACK(_text_FitXCheck_toggled_cb), NULL);
+   etk_signal_block("toggled", ETK_OBJECT(UI_FontFitYCheck),
+                    ETK_CALLBACK(_text_FitYCheck_toggled_cb), NULL);
+   etk_signal_block("value-changed", ETK_OBJECT(UI_FontElipsisSpinner),
+                    ETK_CALLBACK(_text_FontElipsisSpinner_value_changed_cb),
+                    NULL);
 
    //Set Text Text in Cur.eps
    t = edje_edit_state_text_get(edje_o,Cur.part->string,Cur.state->string);
@@ -253,7 +299,13 @@ text_frame_update(void)
                         edje_edit_state_text_align_y_get(edje_o,
                                                          Cur.part->string,
                                                          Cur.state->string));
-
+   
+   //Set Elipsis
+   etk_range_value_set(ETK_RANGE(UI_FontElipsisSpinner),
+                        edje_edit_state_text_elipsis_get(edje_o,
+                                                         Cur.part->string,
+                                                         Cur.state->string));
+   
    //Set the font combobox
    font = edje_edit_state_font_get(edje_o, Cur.part->string, Cur.state->string);
    if (font)
@@ -286,7 +338,13 @@ text_frame_update(void)
 
    etk_combobox_active_item_set(ETK_COMBOBOX(UI_EffectComboBox),
       etk_combobox_nth_item_get(ETK_COMBOBOX(UI_EffectComboBox), eff_num));
-
+   
+   //Set Fit XY Checkbutton
+   etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(UI_FontFitXCheck),
+      edje_edit_state_text_fit_x_get(edje_o, Cur.part->string, Cur.state->string));
+   etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(UI_FontFitYCheck),
+      edje_edit_state_text_fit_y_get(edje_o, Cur.part->string, Cur.state->string));
+   
    //Set Text color Rects
    edje_edit_state_color_get(edje_o, Cur.part->string, Cur.state->string,&r,&g,&b,NULL);
    evas_object_color_set(TextColorObject, r, g, b, 255);
@@ -304,6 +362,13 @@ text_frame_update(void)
                       ETK_CALLBACK(_text_FontAlignSpinner_value_changed_cb), NULL);
    etk_signal_unblock("value-changed", ETK_OBJECT(UI_FontAlignVSpinner),
                       ETK_CALLBACK(_text_FontAlignSpinner_value_changed_cb), NULL);
+   etk_signal_unblock("toggled", ETK_OBJECT(UI_FontFitXCheck),
+                      ETK_CALLBACK(_text_FitXCheck_toggled_cb), NULL);
+   etk_signal_unblock("toggled", ETK_OBJECT(UI_FontFitYCheck),
+                      ETK_CALLBACK(_text_FitYCheck_toggled_cb), NULL);
+   etk_signal_unblock("value-changed", ETK_OBJECT(UI_FontElipsisSpinner),
+                      ETK_CALLBACK(_text_FontElipsisSpinner_value_changed_cb),
+                      NULL);
 }
 
 
@@ -382,5 +447,29 @@ _text_FontAlignSpinner_value_changed_cb(Etk_Range *range, double value, void *da
       edje_edit_state_align_y_set(edje_o, Cur.part->string, Cur.state->string,
                                   (double)etk_range_value_get(range));
 
+   return ETK_TRUE;
+}
+
+Etk_Bool
+_text_FontElipsisSpinner_value_changed_cb(Etk_Range *range, double value, void *data)
+{
+   //printf("Value Changed Signal on ElipsisSpinner EMITTED (value: %.2f)\n",etk_range_value_get(range));
+   edje_edit_state_text_elipsis_set(edje_o, Cur.part->string, Cur.state->string,
+                                    (double)etk_range_value_get(range));
+   return ETK_TRUE;
+}
+
+Etk_Bool
+_text_FitXCheck_toggled_cb(Etk_Toggle_Button *button, void *data)
+{
+   edje_edit_state_text_fit_x_set(edje_o, Cur.part->string, Cur.state->string,
+                                  etk_toggle_button_active_get(button));
+   return ETK_TRUE;
+}
+Etk_Bool
+_text_FitYCheck_toggled_cb(Etk_Toggle_Button *button, void *data)
+{
+   edje_edit_state_text_fit_y_set(edje_o, Cur.part->string, Cur.state->string,
+                                  etk_toggle_button_active_get(button));
    return ETK_TRUE;
 }

@@ -163,11 +163,8 @@ state_frame_create(void)
    etk_box_append(ETK_BOX(hbox), UI_StateAlignVSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    //UI_StateVisibleCheck
-   label = etk_label_new("Visible");
-   etk_widget_padding_set(label, 20, 0, 0, 0);
-   etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
-
-   UI_StateVisibleCheck = etk_check_button_new();
+   UI_StateVisibleCheck = etk_check_button_new_with_label("Visible");
+   etk_widget_padding_set(UI_StateVisibleCheck, 20, 0, 0, 0);
    etk_box_append(ETK_BOX(hbox), UI_StateVisibleCheck, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    //hbox

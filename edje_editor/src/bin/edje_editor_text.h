@@ -27,6 +27,9 @@ Etk_Widget *UI_EffectComboBox;
 Etk_Widget *UI_FontAddButton;
 Etk_Widget *UI_FontAlignVSpinner;
 Etk_Widget *UI_FontAlignHSpinner;
+Etk_Widget *UI_FontElipsisSpinner;
+Etk_Widget *UI_FontFitXCheck;
+Etk_Widget *UI_FontFitYCheck;
 
 Evas_Object *TextColorObject;
 Evas_Object *ShadowColorObject;
@@ -38,11 +41,14 @@ void        text_frame_update        (void);
 void        text_font_combo_populate (void);
 
 
-Etk_Bool _text_FontComboBox_item_activated_cb    (Etk_Combobox *combobox, Etk_Combobox_Item *item, void *data);
-Etk_Bool _text_EffectComboBox_changed_cb         (Etk_Combobox *combobox, void *data);
-Etk_Bool _text_FontSizeSpinner_value_changed_cb  (Etk_Range *range, double value, void *data);
-Etk_Bool _text_Entry_text_changed_cb             (Etk_Object *object, void *data);
-Etk_Bool _text_FontAlignSpinner_value_changed_cb (Etk_Range *range, double value, void *data);
+Etk_Bool _text_FontComboBox_item_activated_cb      (Etk_Combobox *combobox, Etk_Combobox_Item *item, void *data);
+Etk_Bool _text_EffectComboBox_changed_cb           (Etk_Combobox *combobox, void *data);
+Etk_Bool _text_FontSizeSpinner_value_changed_cb    (Etk_Range *range, double value, void *data);
+Etk_Bool _text_Entry_text_changed_cb               (Etk_Object *object, void *data);
+Etk_Bool _text_FontAlignSpinner_value_changed_cb   (Etk_Range *range, double value, void *data);
+Etk_Bool _text_FontElipsisSpinner_value_changed_cb (Etk_Range *range, double value, void *data);
+Etk_Bool _text_FitXCheck_toggled_cb                (Etk_Toggle_Button *button, void *data);
+Etk_Bool _text_FitYCheck_toggled_cb                (Etk_Toggle_Button *button, void *data);
 
 
 #endif
