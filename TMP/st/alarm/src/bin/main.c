@@ -7,8 +7,8 @@
 // config - simple text file in $HOME/.alarm-config. save and load
 typedef struct 
 {
-   int on;
-   int repeat;
+   Evas_Bool on; // FIXME: Evas_Bool
+   Evas_Bool repeat; // FIXME: Evas_Bool
    int hours;
    int minutes;
    /** dynamic as a result of setting the alarm job **/
@@ -63,7 +63,7 @@ save_alarm(void)
    f = fopen(buf, "w");
    if (!f) return;
    fprintf(f, "%i %i %i %i %i\n",
-	   alm.on, alm.repeat, alm.hours, alm.minutes, alm.job);
+	   (int)alm.on, (int)alm.repeat, alm.hours, alm.minutes, alm.job);
    fclose(f);
 }
 
@@ -73,7 +73,6 @@ clear_alarm(void)
    char buf[4096];
    
    if (alm.job == 0) return;
-   printf("@@@@@@@@@@ del %i\n", alm.job);
    snprintf(buf, sizeof(buf), "waker del %i", alm.job);
    system(buf);
    alm.job = 0;
@@ -92,35 +91,22 @@ set_alarm(void)
    f = fopen("/tmp/alarm-waker-out", "r");
    if (f)
      {
-	while (fgets(buf, sizeof(buf), f))
-	  {
-	     printf("@@@@@ %s\n", buf);
-	     alm.job = atoi(buf);
-	  }
+	while (fgets(buf, sizeof(buf), f)) alm.job = atoi(buf);
 	fclose(f);
 	unlink("/tmp/alarm-waker-out");
      }
-   printf("@@@@@@@@@@ set_alarm -> job = %i\n", alm.job);
-}
-
-// generic callback - delete any window (close button/remove) and it just exits
-static void
-on_win_del_req(void *data, Elm_Win *win, Elm_Cb_Type type, void *info)
-{
-   elm_exit();
 }
 
 // if user changed the time in the clock-settings (editable) then record
 static void
-on_clock_changed(void *data, Elm_Clock *cloc, Elm_Cb_Type type, void *info)
+on_clock_changed(void *data, Evas_Object *obj, void *event_info)
 {
-   alm.hours = cloc->hrs;
-   alm.minutes = cloc->min;
+   elm_clock_time_get(obj, &(alm.hours), &(alm.minutes), NULL);
 }
 
 // press ok to save time and set up alarm
 static void
-on_button_activate(void *data, Elm_Button *bt, Elm_Cb_Type type, void *info)
+on_button_activate(void *data, Evas_Object *obj, void *event_info)
 {
    clear_alarm();
    if (alm.on) set_alarm();
@@ -128,166 +114,121 @@ on_button_activate(void *data, Elm_Button *bt, Elm_Cb_Type type, void *info)
    elm_exit();
 }
 
+// generic callback - delete any window (close button/remove) and it just exits
+static void
+on_win_del_req(void *data, Evas_Object *obj, void *event_info)
+{
+   /* called when my_win_main is requested to be deleted */
+   elm_exit(); /* exit the program's main loop that runs in elm_run() */
+}
+
 // alarm main window - setup
 static void
 create_main_win(void)
 {
-   Elm_Win *win;
-   Elm_Bg *bg;
-   Elm_Frame *frame;
-   Elm_Box *box, *subbox;
-   Elm_Toggle *toggle;
-   Elm_Clock *cloc;
-   Elm_Button *button;
-   Elm_Pad *pad;
+   Evas_Object *win, *bg, *frame, *box, *subbox, *toggle, *cloc, *button;
+   
+   win = elm_win_add(NULL, "main", ELM_WIN_BASIC);
+   elm_win_title_set(win, "Set Alarm");
+   evas_object_smart_callback_add(win, "delete-request", on_win_del_req, NULL);
 
-   win = elm_win_new();
-   win->name_set(win, "main");
-   win->title_set(win, "Set Alarm");
-   win->autodel = 0;
-   win->cb_add(win, ELM_CB_DEL_REQ, on_win_del_req, NULL);
+   bg = elm_bg_add(win);
+   evas_object_size_hint_weight_set(bg, 1.0, 1.0); // expand h/v 1/1 (for win this also fills)
+   elm_win_resize_object_add(win, bg);
+   evas_object_show(bg);
+   
+   box = elm_box_add(win);
+   evas_object_size_hint_weight_set(box, 1.0, 1.0); // expand h/v 1/1 (for win this also fills)
+   elm_win_resize_object_add(win, box);
+   
+   frame = elm_frame_add(win);
+   evas_object_size_hint_weight_set(frame, 1.0, 0.0); // expand h/v 1/0
+   evas_object_size_hint_align_set(frame, -1.0, 0.0); // fill h/v 1/0
+   elm_frame_label_set(frame, "State");
+   
+   subbox = elm_box_add(win);
+   elm_frame_content_set(frame, subbox);
+   
+   toggle = elm_toggle_add(win);
+   elm_toggle_label_set(toggle, "Alarm");
+   elm_toggle_states_labels_set(toggle, "ON", "OFF");
+   elm_toggle_state_pointer_set(toggle, &(alm.on));   
+   evas_object_size_hint_weight_set(toggle, 1.0, 0.0); // expand h/v 1/0
+   evas_object_size_hint_align_set(toggle, -1.0, 0.0); // fill h/v 1/0
+   elm_box_pack_end(subbox, toggle);
+   evas_object_show(toggle);
 
-   bg = elm_bg_new(win);
-   bg->show(bg);
+   evas_object_show(subbox);
    
-   box = elm_box_new(win);
-   box->expand_x = 1;
-   box->expand_y = 1;
-   elm_widget_sizing_update(box);
-   box->show(box);
+   elm_box_pack_end(box, frame);
+   evas_object_show(frame);
    
-   frame = elm_frame_new(win);
-   frame->text_set(frame, "State");
-   frame->expand_y = 0;
-   box->pack_end(box, frame);
-   elm_widget_sizing_update(frame);
-   frame->show(frame);
+   frame = elm_frame_add(win);
+   evas_object_size_hint_weight_set(frame, 1.0, 0.0); // expand h/v 1/0
+   evas_object_size_hint_align_set(frame, -1.0, 0.0); // fill h/v 1/0
+   elm_frame_label_set(frame, "Current Time");
    
-   subbox = elm_box_new(win);
-   subbox->expand_x = 0;
-   subbox->expand_y = 0;
-   frame->child_add(frame, subbox);
-   elm_widget_sizing_update(subbox);
-   subbox->show(subbox);
+   subbox = elm_box_add(win);
+   elm_frame_content_set(frame, subbox);
 
-   toggle = elm_toggle_new(win);
-   toggle->text_set(toggle, "Alarm");
-   toggle->states_text_set(toggle, "ON", "OFF");
-   toggle->state_ptr = &(alm.on);
-   toggle->layout_update(toggle);
-   toggle->expand_y = 0;
-   toggle->fill_y = 0;
-   subbox->pack_end(subbox, toggle);
-   elm_widget_sizing_update(toggle);
-   toggle->show(toggle);
+   cloc = elm_clock_add(win);
+   elm_clock_show_am_pm_set(cloc, 1);
+   elm_clock_show_seconds_set(cloc, 1);
+   elm_box_pack_end(subbox, cloc);
+   evas_object_show(cloc);
+   
+   evas_object_show(subbox);
+   
+   elm_box_pack_end(box, frame);
+   evas_object_show(frame);
+   
+   frame = elm_frame_add(win);
+   evas_object_size_hint_weight_set(frame, 1.0, 0.0); // expand h/v 1/0
+   evas_object_size_hint_align_set(frame, -1.0, 0.0); // fill h/v 1/0
+   elm_frame_label_set(frame, "Alarm Time");
+   
+   subbox = elm_box_add(win);
+   elm_frame_content_set(frame, subbox);
 
-   frame = elm_frame_new(win);
-   frame->text_set(frame, "Current Time");
-   frame->expand_y = 0;
-   box->pack_end(box, frame);
-   elm_widget_sizing_update(frame);
-   frame->show(frame);
+   cloc = elm_clock_add(win);
+   elm_clock_show_am_pm_set(cloc, 1);
+   elm_clock_edit_set(cloc, 1);
+   elm_clock_time_set(cloc, alm.hours, alm.minutes, 0);
+   evas_object_smart_callback_add(cloc, "changed", on_clock_changed, NULL);
+   elm_box_pack_end(subbox, cloc);
+   evas_object_show(cloc);
    
-   subbox = elm_box_new(win);
-   subbox->expand_x = 0;
-   subbox->expand_y = 0;
-   frame->child_add(frame, subbox);
-   elm_widget_sizing_update(subbox);
-   subbox->show(subbox);
+   toggle = elm_toggle_add(win);
+   elm_toggle_label_set(toggle, "Repeat");
+   elm_toggle_states_labels_set(toggle, "ON", "OFF");
+   elm_toggle_state_pointer_set(toggle, &(alm.repeat));   
+   evas_object_size_hint_weight_set(toggle, 1.0, 0.0); // expand h/v 1/0
+   evas_object_size_hint_align_set(toggle, -1.0, 0.0); // fill h/v 1/0
+   elm_box_pack_end(subbox, toggle);
+   evas_object_show(toggle);
+   
+   evas_object_show(subbox);
+   
+   elm_box_pack_end(box, frame);
+   evas_object_show(frame);
 
-   cloc = elm_clock_new(win);
-   cloc->expand_x = 0;
-   cloc->fill_x = 0;
-   cloc->edit = 0;
-   cloc->seconds = 1;
-   cloc->time_update(cloc);
-   subbox->pack_end(subbox, cloc);
-   elm_widget_sizing_update(cloc);
-   cloc->show(cloc);
-
-   frame = elm_frame_new(win);
-   frame->text_set(frame, "Alarm Time");
-   frame->expand_y = 0;
-   box->pack_end(box, frame);
-   elm_widget_sizing_update(frame);
-   frame->show(frame);
+   button = elm_button_add(win);
+   elm_button_label_set(button, "OK");
+   evas_object_smart_callback_add(button, "clicked", on_button_activate, NULL);
+   evas_object_size_hint_weight_set(button, 1.0, 1.0); // expand h/v 1/0
+   evas_object_size_hint_align_set(button, -1.0, 1.0); // fill h/v 1/0, align h/v ?/1.0
+   elm_box_pack_end(box, button);
+   evas_object_show(button);
    
-   subbox = elm_box_new(win);
-   subbox->expand_x = 0;
-   subbox->expand_y = 0;
-   frame->child_add(frame, subbox);
-   elm_widget_sizing_update(subbox);
-   subbox->show(subbox);
-
-   cloc = elm_clock_new(win);
-   cloc->expand_x = 0;
-   cloc->fill_x = 0;
-   cloc->edit = 1;
-   cloc->seconds = 0;
-   cloc->hrs =  alm.hours;
-   cloc->min = alm.minutes;
-   cloc->sec =  0;
-   cloc->time_update(cloc);
-   cloc->cb_add(cloc, ELM_CB_CHANGED, on_clock_changed, NULL);
-   subbox->pack_end(subbox, cloc);
-   elm_widget_sizing_update(cloc);
-   cloc->show(cloc);
-   
-   frame = elm_frame_new(win);
-   frame->text_set(frame, "Options");
-   frame->expand_y = 0;
-   box->pack_end(box, frame);
-   elm_widget_sizing_update(frame);
-   frame->show(frame);
-   
-   subbox = elm_box_new(win);
-   subbox->expand_x = 0;
-   subbox->expand_y = 0;
-   frame->child_add(frame, subbox);
-   elm_widget_sizing_update(subbox);
-   subbox->show(subbox);
-
-   toggle = elm_toggle_new(win);
-   toggle->text_set(toggle, "Repeat");
-   toggle->states_text_set(toggle, "ON", "OFF");
-   toggle->state_ptr = &(alm.repeat);
-   toggle->layout_update(toggle);
-   toggle->expand_y = 0;
-   toggle->fill_y = 0;
-   subbox->pack_end(subbox, toggle);
-   elm_widget_sizing_update(toggle);
-   toggle->show(toggle);
-   
-   button = elm_button_new(win);
-   button->text_set(button, "OK");
-   button->cb_add(button, ELM_CB_ACTIVATED, on_button_activate, NULL);
-   elm_widget_sizing_update(button);
-   button->show(button);
-   
-   pad = elm_pad_new(win);
-   pad->fill_x = 1;
-   pad->fill_y = 0;
-   pad->expand_x = 1;
-   pad->expand_y = 1;
-   pad->align_x = 0.5;
-   pad->align_y = 1.0;
-   box->pack_end(box, pad);
-   box->layout_update(box);
-   pad->child_add(pad, button);
-   elm_widget_sizing_update(pad);
-   pad->show(pad);
-   
-   elm_widget_sizing_update(button);
-   elm_widget_sizing_update(box);
-   
-   win->show(win);
+   evas_object_show(box);
+   evas_object_show(win);
 }
 
 // for playing the sound - quick hack to just run aplay and loop/ this could 
 // definitely become a toolkit call at some point?
 static Ecore_Exe *audio_exe = NULL;
 static Ecore_Event_Handler *child_exit_handler = NULL;
-static Elm_Win *alarm_win = NULL;
+static Evas_Object *alarm_win = NULL;
 
 static void alarm_sound(void);
 static void alarm_sound_end(void);
@@ -323,9 +264,10 @@ alarm_sound_end(void)
 }
 
 static void
-on_set_button_activate(void *data, Elm_Button *bt, Elm_Cb_Type type, void *info)
+on_set_button_activate(void *data, Evas_Object *obj, void *event_info)
 {
-   if (alarm_win) alarm_win->del(alarm_win);
+   if (!alarm_win) return;
+   evas_object_del(alarm_win);
    alarm_win = NULL;
    alarm_sound_end();
    clear_alarm();
@@ -335,7 +277,7 @@ on_set_button_activate(void *data, Elm_Button *bt, Elm_Cb_Type type, void *info)
 }
 
 static void
-on_alarm_button_activate(void *data, Elm_Button *bt, Elm_Cb_Type type, void *info)
+on_alarm_button_activate(void *data, Evas_Object *obj, void *event_info)
 {
    alarm_sound_end();
    elm_exit();
@@ -344,130 +286,79 @@ on_alarm_button_activate(void *data, Elm_Button *bt, Elm_Cb_Type type, void *inf
 static void
 create_alarm_win(void)
 {
-   Elm_Win *win;
-   Elm_Bg *bg;
-   Elm_Frame *frame;
-   Elm_Box *box, *subbox;
-   Elm_Toggle *toggle;
-   Elm_Clock *cloc;
-   Elm_Button *button;
-   Elm_Pad *pad;
-   Elm_Label *label;
-   
-   win = elm_win_new();
-   win->name_set(win, "alarm");
-   win->title_set(win, "Alarm");
-   win->autodel = 0;
-   win->cb_add(win, ELM_CB_DEL_REQ, on_win_del_req, NULL);
-   
-   alarm_win = win;
+   Evas_Object *win, *bg, *frame, *box, *subbox, *toggle, *cloc, *button, *label;
 
-   bg = elm_bg_new(win);
-   bg->show(bg);
-   
-   box = elm_box_new(win);
-   box->expand_x = 1;
-   box->expand_y = 1;
-   elm_widget_sizing_update(box);
-   box->show(box);
-   
-   frame = elm_frame_new(win);
-   frame->text_set(frame, "Message");
-   frame->expand_y = 0;
-   box->pack_end(box, frame);
-   elm_widget_sizing_update(frame);
-   frame->show(frame);
-   
-   subbox = elm_box_new(win);
-   subbox->expand_x = 0;
-   subbox->expand_y = 0;
-   frame->child_add(frame, subbox);
-   elm_widget_sizing_update(subbox);
-   subbox->show(subbox);
+   win = elm_win_add(NULL, "main", ELM_WIN_BASIC);
+   elm_win_title_set(win, "Alarm");
+   evas_object_smart_callback_add(win, "delete-request", on_win_del_req, NULL);
 
-   label = elm_label_new(win);
-   label->text_set(label, 
-		   "<br>"
-		   "Alarm Message<br>"
-		   "<br>");
-   label->fill_x = 0;
-   label->expand_x = 0;
-   label->expand_y = 0;
-   label->fill_y = 0;
-   subbox->pack_end(subbox, label);
-   elm_widget_sizing_update(label);
-   label->show(label);
+   bg = elm_bg_add(win);
+   evas_object_size_hint_weight_set(bg, 1.0, 1.0); // expand h/v 1/1 (for win this also fills)
+   elm_win_resize_object_add(win, bg);
+   evas_object_show(bg);
+   
+   box = elm_box_add(win);
+   evas_object_size_hint_weight_set(box, 1.0, 1.0); // expand h/v 1/1 (for win this also fills)
+   elm_win_resize_object_add(win, box);
+   
+   frame = elm_frame_add(win);
+   evas_object_size_hint_weight_set(frame, 1.0, 0.0); // expand h/v 1/0
+   evas_object_size_hint_align_set(frame, -1.0, 0.0); // fill h/v 1/0
+   elm_frame_label_set(frame, "State");
+   
+   subbox = elm_box_add(win);
+   elm_frame_content_set(frame, subbox);
 
-   frame = elm_frame_new(win);
-   frame->text_set(frame, "Time");
-   frame->expand_y = 0;
-   box->pack_end(box, frame);
-   elm_widget_sizing_update(frame);
-   frame->show(frame);
-   
-   subbox = elm_box_new(win);
-   subbox->expand_x = 0;
-   subbox->expand_y = 0;
-   frame->child_add(frame, subbox);
-   elm_widget_sizing_update(subbox);
-   subbox->show(subbox);
+   label = elm_label_add(win);
+   elm_label_label_set(label,
+		       "<br>"
+		       "<b>Alarm Message</b><br>"
+		       "<br>");
+   elm_box_pack_end(subbox, label);
+   evas_object_show(label);
 
-   cloc = elm_clock_new(win);
-   cloc->expand_x = 0;
-   cloc->fill_x = 0;
-   cloc->seconds = 1;
-   cloc->time_update(cloc);
-   cloc->cb_add(cloc, ELM_CB_CHANGED, on_clock_changed, NULL);
-   subbox->pack_end(subbox, cloc);
-   elm_widget_sizing_update(cloc);
-   elm_widget_sizing_update(cloc);
-   cloc->show(cloc);
+   evas_object_show(subbox);
    
-   button = elm_button_new(win);
-   button->text_set(button, "Set new alarm");
-   button->cb_add(button, ELM_CB_ACTIVATED, on_set_button_activate, NULL);
-   elm_widget_sizing_update(button);
-   button->show(button);
+   elm_box_pack_end(box, frame);
+   evas_object_show(frame);
    
-   pad = elm_pad_new(win);
-   pad->fill_x = 1;
-   pad->fill_y = 0;
-   pad->expand_x = 1;
-   pad->expand_y = 0;
-   pad->align_x = 0.5;
-   pad->align_y = 0.0;
-   box->pack_end(box, pad);
-   box->layout_update(box);
-   pad->child_add(pad, button);
-   elm_widget_sizing_update(pad);
-   pad->show(pad);
+   frame = elm_frame_add(win);
+   evas_object_size_hint_weight_set(frame, 1.0, 0.0); // expand h/v 1/0
+   evas_object_size_hint_align_set(frame, -1.0, 0.0); // fill h/v 1/0
+   elm_frame_label_set(frame, "Current Time");
    
-   elm_widget_sizing_update(button);
-   elm_widget_sizing_update(box);
+   subbox = elm_box_add(win);
+   elm_frame_content_set(frame, subbox);
+
+   cloc = elm_clock_add(win);
+   elm_clock_show_am_pm_set(cloc, 1);
+   elm_clock_show_seconds_set(cloc, 1);
+   elm_box_pack_end(subbox, cloc);
+   evas_object_show(cloc);
    
-   button = elm_button_new(win);
-   button->text_set(button, "OK");
-   button->cb_add(button, ELM_CB_ACTIVATED, on_alarm_button_activate, NULL);
-   elm_widget_sizing_update(button);
-   button->show(button);
+   evas_object_show(subbox);
    
-   pad = elm_pad_new(win);
-   pad->fill_x = 1;
-   pad->fill_y = 0;
-   pad->expand_x = 1;
-   pad->expand_y = 1;
-   pad->align_x = 0.5;
-   pad->align_y = 1.0;
-   box->pack_end(box, pad);
-   box->layout_update(box);
-   pad->child_add(pad, button);
-   elm_widget_sizing_update(pad);
-   pad->show(pad);
+   elm_box_pack_end(box, frame);
+   evas_object_show(frame);
    
-   elm_widget_sizing_update(button);
-   elm_widget_sizing_update(box);
+   button = elm_button_add(win);
+   elm_button_label_set(button, "Set new alarm");
+   evas_object_smart_callback_add(button, "clicked", on_set_button_activate, NULL);
+   evas_object_size_hint_weight_set(button, 1.0, 1.0); // expand h/v 1/0
+   evas_object_size_hint_align_set(button, -1.0, 0.0); // fill h/v 1/0, align h/v ?/1.0
+   elm_box_pack_end(box, button);
+   evas_object_show(button);
    
-   win->show(win);
+   button = elm_button_add(win);
+   elm_button_label_set(button, "OK");
+   evas_object_smart_callback_add(button, "clicked", on_button_activate, NULL);
+   evas_object_size_hint_weight_set(button, 1.0, 1.0); // expand h/v 1/0
+   evas_object_size_hint_align_set(button, -1.0, 1.0); // fill h/v 1/0, align h/v ?/1.0
+   elm_box_pack_end(box, button);
+   evas_object_show(button);
+   
+   evas_object_show(box);
+   evas_object_show(win);
 }
 
 int
