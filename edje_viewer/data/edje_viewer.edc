@@ -1,0 +1,103 @@
+images {
+    image: "bg.png" COMP;
+    image: "shadow.png" COMP;
+}
+
+collections {
+    group {
+        name: "checkers";
+        parts {
+            part {
+                name: "checkered_bg";
+                mouse_events: 0;
+                repeat_events: 1;
+                description {
+                    state: "default" 0.0;
+                    image {
+                        normal: "bg.png";
+                    }
+                    fill {
+                        size {
+                            relative: 0 0;
+                            offset: 128 128;
+                        }
+                    }
+                }
+            }
+            part {
+                name: "shadow";
+                mouse_events: 0;
+                repeat_events: 1;
+                description {
+                    state: "default" 0.0;
+                    image {
+                        normal: "shadow.png";
+                    }
+                }
+            }
+            part {
+                name: "swallow";
+                type: SWALLOW;
+                description {
+                    state: "default" 0.0;
+                }
+            }
+        }
+    }
+    group {
+        name: "highlighter";
+        parts {
+            part {
+                name: "highlighter";
+                type: RECT;
+                mouse_events: 0;
+                repeat_events: 1;
+                description {
+                    state: "default" 0.0;
+                    color: 0 0 0 0;
+                }
+                description {
+                    state: "highlighted" 0.0;
+                    inherit: "default" 0.0;
+                    color: 108 123 178 128;
+                }
+            }
+        }
+        programs {
+            program {
+                name: "show";
+                signal: "edje_viewer,state,visible";
+                source: "edje_viewer";
+                after: "show1";
+            }
+            program {
+                name: "show1";
+                action: STATE_SET "highlighted" 0.0;
+                transition: SINUSOIDAL 1.2;
+                target: "highlighter";
+                after: "show2";
+            }
+            program {
+                name: "show2";
+                action: STATE_SET "highlighted" 0.0;
+                transition: LINEAR 0.2;
+                target: "highlighter";
+                after: "show3";
+            }
+            program {
+                name: "show3";
+                action: STATE_SET "default" 0.0;
+                transition: SINUSOIDAL 0.8;
+                target: "highlighter";
+                after: "show4";
+            }
+            program {
+                name: "show4";
+                action: STATE_SET "default" 0.0;
+                transition: LINEAR 1.5;
+                target: "highlighter";
+                after: "show1";
+            }
+        }
+    }
+}

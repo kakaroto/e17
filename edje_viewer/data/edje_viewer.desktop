@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Edje Viewer
+Comment=A simple viewer for Edje files
+Exec=edje_viewer %F
+Terminal=false
+Type=Application
+Icon=edje_viewer
+StartupWMClass=Edje_viewer
+Categories=ENLIGHTENMENT;Application;Development;
+Encoding=UTF-8

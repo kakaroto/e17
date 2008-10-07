@@ -1,12 +1,10 @@
-[todo] Need to put the mdi_area into a scrollview, so that the window doesn't resize when you move the mdi_windows to the edje
+[todo] Need to put the mdi_area into a scrollview, so that the window doesn't resize when you move the mdi_windows to the edje (bug in Etk_Scrolled_View)
 
-[bug] The mdi_window jumps on mouse-down
+[bug] The mdi_window jumps on mouse-down (bug in Etk_Canvas/Etk_Mdi_Area)
 
-[todo] change the mdi_area background to the checkers again
+[bug] The highlighter does not scale with the mdi_window (Etk_Mdi_Window missing a resize signal)
+
+[todo] Create an icon for the desktop file
 
 ================ Old bugs =====================
-[bug] the edje part grows when its hidden and shown again (evas_object_geometry_get doesn't seem to return the correct values);
-
-[bug] make the edje parts move/resize with the canvas
-
 [bug] we need the total number of rows in the tree, so that we can keep the output tree to a limited size

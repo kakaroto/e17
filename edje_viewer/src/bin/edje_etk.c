@@ -9,6 +9,7 @@
 #include <string.h>
 
 #include <Edje.h>
+#include <Edje_Edit.h>
 #include <Etk.h>
 
 #include "edje_etk.h"
@@ -64,12 +65,18 @@ Demo_Edje *edje_part_create(Etk_Tree *output, Etk_Mdi_Area *mdi_area,
    edje_object_part_drag_page_set(o, "dragable", 0.2, 0.2);
    edje_object_size_min_calc(o, &w, &h);
 
+   de->edje_object = o;
+
+   o = edje_object_add(evas);
+   edje_object_file_set(o, ThemeFile, "checkers");
+   edje_object_part_swallow(o, "swallow", de->edje_object);
+
    de->etk_evas = etk_evas_object_new_from_object(o);
    etk_bin_child_set(ETK_BIN(mdi_window), de->etk_evas);
    if (w && h)
      evas_object_resize(o, w, h);
    else
-     etk_widget_size_request_set(mdi_window, 200, 130);
+     etk_widget_size_request_set(mdi_window, 200, 200);
 
    return de;
 }
