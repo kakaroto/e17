@@ -30,55 +30,11 @@ fill_frame_create(void)
 
    vbox = etk_vbox_new(ETK_FALSE, 0);
 
-   
-   //hbox (size)
-   hbox = etk_hbox_new(ETK_FALSE, 0);
-   etk_box_append(ETK_BOX(vbox), hbox, ETK_BOX_START, ETK_BOX_NONE, 0);
-
-   label = etk_label_new("<b>Origin X </b>");
-   etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
-
-   //UI_FillSizeRelXSpinner
-   UI_FillSizeRelXSpinner = etk_spinner_new(-100.0, 100.0, 0.0, 0.01, 0.1);
-   etk_spinner_digits_set(ETK_SPINNER(UI_FillSizeRelXSpinner), 2);
-   etk_widget_size_request_set(UI_FillSizeRelXSpinner, 45, 20);
-   etk_box_append(ETK_BOX(hbox), UI_FillSizeRelXSpinner,
-                  ETK_BOX_START, ETK_BOX_NONE, 0);
-
-   label = etk_label_new("+");
-   etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
-
-   //UI_FillSizeOffsetXSpinner
-   UI_FillSizeOffsetXSpinner = etk_spinner_new(-2000, 2000, 0, 1, 10);
-   etk_widget_size_request_set(UI_FillSizeOffsetXSpinner, 45, 20);
-   etk_box_append(ETK_BOX(hbox), UI_FillSizeOffsetXSpinner,
-                  ETK_BOX_START, ETK_BOX_NONE, 0);
-
-   label = etk_label_new("<b>  Y </b>");
-   etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
-
-   //UI_FillSizeRelYSpinner
-   UI_FillSizeRelYSpinner = etk_spinner_new(-100.0, 100.0, 0.0, 0.01, 0.1);
-   etk_spinner_digits_set(ETK_SPINNER(UI_FillSizeRelYSpinner), 2);
-   etk_widget_size_request_set(UI_FillSizeRelYSpinner, 45, 20);
-   etk_box_append(ETK_BOX(hbox), UI_FillSizeRelYSpinner,
-                  ETK_BOX_START, ETK_BOX_NONE, 0);
-
-   label = etk_label_new("+");
-   etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
-
-   //UI_FillSizeOffsetYSpinner
-   UI_FillSizeOffsetYSpinner = etk_spinner_new(-2000, 2000, 0, 1, 10);
-   etk_widget_size_request_set(UI_FillSizeOffsetYSpinner, 45, 20);
-   etk_box_append(ETK_BOX(hbox), UI_FillSizeOffsetYSpinner,
-                  ETK_BOX_START, ETK_BOX_NONE, 0);
-
-
    //hbox (origin)
    hbox = etk_hbox_new(ETK_FALSE, 0);
    etk_box_append(ETK_BOX(vbox), hbox, ETK_BOX_START, ETK_BOX_NONE, 0);
 
-   label = etk_label_new("<b>Size    X  </b>");
+   label = etk_label_new("<b>Origin    X  </b>");
    etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
    //UI_FillRelXSpinner
@@ -116,6 +72,47 @@ fill_frame_create(void)
    etk_box_append(ETK_BOX(hbox), UI_FillOffsetYSpinner,
                   ETK_BOX_START, ETK_BOX_NONE, 0);
 
+   //hbox (size)
+   hbox = etk_hbox_new(ETK_FALSE, 0);
+   etk_box_append(ETK_BOX(vbox), hbox, ETK_BOX_START, ETK_BOX_NONE, 0);
+
+   label = etk_label_new("<b>Size X </b>");
+   etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+
+   //UI_FillSizeRelXSpinner
+   UI_FillSizeRelXSpinner = etk_spinner_new(-100.0, 100.0, 0.0, 0.01, 0.1);
+   etk_spinner_digits_set(ETK_SPINNER(UI_FillSizeRelXSpinner), 2);
+   etk_widget_size_request_set(UI_FillSizeRelXSpinner, 45, 20);
+   etk_box_append(ETK_BOX(hbox), UI_FillSizeRelXSpinner,
+                  ETK_BOX_START, ETK_BOX_NONE, 0);
+
+   label = etk_label_new("+");
+   etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
+
+   //UI_FillSizeOffsetXSpinner
+   UI_FillSizeOffsetXSpinner = etk_spinner_new(-2000, 2000, 0, 1, 10);
+   etk_widget_size_request_set(UI_FillSizeOffsetXSpinner, 45, 20);
+   etk_box_append(ETK_BOX(hbox), UI_FillSizeOffsetXSpinner,
+                  ETK_BOX_START, ETK_BOX_NONE, 0);
+
+   label = etk_label_new("<b>  Y </b>");
+   etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+
+   //UI_FillSizeRelYSpinner
+   UI_FillSizeRelYSpinner = etk_spinner_new(-100.0, 100.0, 0.0, 0.01, 0.1);
+   etk_spinner_digits_set(ETK_SPINNER(UI_FillSizeRelYSpinner), 2);
+   etk_widget_size_request_set(UI_FillSizeRelYSpinner, 45, 20);
+   etk_box_append(ETK_BOX(hbox), UI_FillSizeRelYSpinner,
+                  ETK_BOX_START, ETK_BOX_NONE, 0);
+
+   label = etk_label_new("+");
+   etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
+
+   //UI_FillSizeOffsetYSpinner
+   UI_FillSizeOffsetYSpinner = etk_spinner_new(-2000, 2000, 0, 1, 10);
+   etk_widget_size_request_set(UI_FillSizeOffsetYSpinner, 45, 20);
+   etk_box_append(ETK_BOX(hbox), UI_FillSizeOffsetYSpinner,
+                  ETK_BOX_START, ETK_BOX_NONE, 0);
    
    etk_signal_connect("value-changed", ETK_OBJECT(UI_FillRelXSpinner),
                       ETK_CALLBACK(_fill_spinners_value_changed_cb),
@@ -243,22 +240,22 @@ _fill_spinners_value_changed_cb(Etk_Range *range, double value, void *data)
    switch ((int)(long)data)
    {
       case REL1X_SPINNER:
-         edje_edit_state_fill_size_relative_x_set(edje_o, 
+         edje_edit_state_fill_origin_relative_x_set(edje_o, 
                                  Cur.part->string, Cur.state->string,
                                  etk_range_value_get(range));
          break;
       case REL1Y_SPINNER:
-         edje_edit_state_fill_size_relative_y_set(edje_o, 
+         edje_edit_state_fill_origin_relative_y_set(edje_o, 
                                  Cur.part->string, Cur.state->string,
                                  etk_range_value_get(range));
          break;
       case REL1XO_SPINNER:
-         edje_edit_state_fill_size_offset_x_set(edje_o, 
+         edje_edit_state_fill_origin_offset_x_set(edje_o, 
                                  Cur.part->string, Cur.state->string,
                                  etk_range_value_get(range));
          break;
       case REL1YO_SPINNER:
-         edje_edit_state_fill_size_offset_y_set(edje_o, 
+         edje_edit_state_fill_origin_offset_y_set(edje_o, 
                                  Cur.part->string, Cur.state->string,
                                  etk_range_value_get(range));
          break;
@@ -279,22 +276,22 @@ _fill_size_spinners_value_changed_cb(Etk_Range *range, double value, void *data)
    switch ((int)(long)data)
    {
       case REL1X_SPINNER:
-         edje_edit_state_fill_origin_relative_x_set(edje_o, 
+         edje_edit_state_fill_size_relative_x_set(edje_o, 
                                  Cur.part->string, Cur.state->string,
                                  etk_range_value_get(range));
          break;
       case REL1Y_SPINNER:
-         edje_edit_state_fill_origin_relative_y_set(edje_o, 
+         edje_edit_state_fill_size_relative_y_set(edje_o, 
                                  Cur.part->string, Cur.state->string,
                                  etk_range_value_get(range));
          break;
       case REL1XO_SPINNER:
-         edje_edit_state_fill_origin_offset_x_set(edje_o, 
+         edje_edit_state_fill_size_offset_x_set(edje_o, 
                                  Cur.part->string, Cur.state->string,
                                  etk_range_value_get(range));
          break;
       case REL1YO_SPINNER:
-         edje_edit_state_fill_origin_offset_y_set(edje_o, 
+         edje_edit_state_fill_size_offset_y_set(edje_o, 
                                  Cur.part->string, Cur.state->string,
                                  etk_range_value_get(range));
          break;
