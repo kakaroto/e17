@@ -18562,6 +18562,10 @@ ICON("widget/del","icon_del.png",64)
 ICON("widget/new","icon_new.png",64)	
 ICON("widget/add","icon_add.png",64) 
 ICON("widget/add_fav","icon_add_fav.png",64) 
+ICON("widget/up_arrow","icon_up_arrow.png",64)
+ICON("widget/down_arrow","icon_down_arrow.png",64)
+ICON("widget/up_dir","icon_up_arrow.png",64)
+ICON("widget/new_dialog","icon_right_arrow.png",64)
 
 
 // FIXME: Dummy Icons
@@ -18573,13 +18577,10 @@ ICON("enlightenment/profiles","icon_dummy.png",64)
 ICON("enlightenment/scale","icon_dummy.png",64)
 
 /* USABLE WIDGETS
-ICON("widget/up_arrow","icon_dummy.png",64)
-ICON("widget/down_arrow","icon_dummy.png",64)
-ICON("widget/up_dir","icon_dummy.png",64)
-ICON("widget/new_dialog","icon_dummy.png",64)
-ICON("widget/add_fav","icon_dummy.png",64) 
 ICON("widget/config","icon_dummy.png",64)
 */
+
+
 
 /////////////////////////////////////////////////////////////////////////////
    /*** MOD: WIZARD ***/
