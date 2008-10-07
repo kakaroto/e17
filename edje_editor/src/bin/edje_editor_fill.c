@@ -25,94 +25,79 @@
 Etk_Widget*
 fill_frame_create(void)
 {
-   Etk_Widget *vbox, *hbox;
    Etk_Widget *label;
+   Etk_Widget *table;
 
-   vbox = etk_vbox_new(ETK_FALSE, 0);
+   table = etk_table_new(8, 2, ETK_TABLE_NOT_HOMOGENEOUS);
 
-   //hbox (origin)
-   hbox = etk_hbox_new(ETK_FALSE, 0);
-   etk_box_append(ETK_BOX(vbox), hbox, ETK_BOX_START, ETK_BOX_NONE, 0);
-
-   label = etk_label_new("<b>Origin    X  </b>");
-   etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+   label = etk_label_new("<b>Origin X </b>");
+   etk_table_attach_default(ETK_TABLE(table), label, 0, 0, 0, 0);
 
    //UI_FillRelXSpinner
    UI_FillRelXSpinner = etk_spinner_new(-100.0, 100.0, 0.0, 0.01, 0.1);
    etk_spinner_digits_set(ETK_SPINNER(UI_FillRelXSpinner), 2);
    etk_widget_size_request_set(UI_FillRelXSpinner, 45, 20);
-   etk_box_append(ETK_BOX(hbox), UI_FillRelXSpinner,
-                  ETK_BOX_START, ETK_BOX_NONE, 0);
+   etk_table_attach_default(ETK_TABLE(table), UI_FillRelXSpinner, 1, 1, 0, 0);
 
    label = etk_label_new("+");
-   etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
+   etk_table_attach_default(ETK_TABLE(table), label, 2, 2, 0, 0);
 
    //UI_FillOffsetXSpinner
    UI_FillOffsetXSpinner = etk_spinner_new(-2000, 2000, 0, 1, 10);
    etk_widget_size_request_set(UI_FillOffsetXSpinner, 45, 20);
-   etk_box_append(ETK_BOX(hbox), UI_FillOffsetXSpinner,
-                  ETK_BOX_START, ETK_BOX_NONE, 0);
+   etk_table_attach_default(ETK_TABLE(table), UI_FillOffsetXSpinner, 3, 3, 0, 0);
 
-   label = etk_label_new("<b>  Y </b>");
-   etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+   label = etk_label_new("<b> Y </b>");
+   etk_table_attach_default(ETK_TABLE(table), label, 4, 4, 0, 0);
 
    //UI_FillRelYSpinner
    UI_FillRelYSpinner = etk_spinner_new(-100.0, 100.0, 0.0, 0.01, 0.1);
    etk_spinner_digits_set(ETK_SPINNER(UI_FillRelYSpinner), 2);
    etk_widget_size_request_set(UI_FillRelYSpinner, 45, 20);
-   etk_box_append(ETK_BOX(hbox), UI_FillRelYSpinner,
-                  ETK_BOX_START, ETK_BOX_NONE, 0);
+   etk_table_attach_default(ETK_TABLE(table), UI_FillRelYSpinner, 5, 5, 0, 0);
 
    label = etk_label_new("+");
-   etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
+   etk_table_attach_default(ETK_TABLE(table), label, 6, 6, 0, 0);
 
    //UI_FillOffsetYSpinner
    UI_FillOffsetYSpinner = etk_spinner_new(-2000, 2000, 0, 1, 10);
    etk_widget_size_request_set(UI_FillOffsetYSpinner, 45, 20);
-   etk_box_append(ETK_BOX(hbox), UI_FillOffsetYSpinner,
-                  ETK_BOX_START, ETK_BOX_NONE, 0);
+   etk_table_attach_default(ETK_TABLE(table), UI_FillOffsetYSpinner, 7, 7, 0, 0);
 
-   //hbox (size)
-   hbox = etk_hbox_new(ETK_FALSE, 0);
-   etk_box_append(ETK_BOX(vbox), hbox, ETK_BOX_START, ETK_BOX_NONE, 0);
 
-   label = etk_label_new("<b>Size X </b>");
-   etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+   label = etk_label_new("<b>Size     X </b>");
+   etk_table_attach_default(ETK_TABLE(table), label, 0, 0, 1, 1);
 
    //UI_FillSizeRelXSpinner
    UI_FillSizeRelXSpinner = etk_spinner_new(-100.0, 100.0, 0.0, 0.01, 0.1);
    etk_spinner_digits_set(ETK_SPINNER(UI_FillSizeRelXSpinner), 2);
    etk_widget_size_request_set(UI_FillSizeRelXSpinner, 45, 20);
-   etk_box_append(ETK_BOX(hbox), UI_FillSizeRelXSpinner,
-                  ETK_BOX_START, ETK_BOX_NONE, 0);
+   etk_table_attach_default(ETK_TABLE(table), UI_FillSizeRelXSpinner, 1, 1, 1, 1);
 
    label = etk_label_new("+");
-   etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
+  etk_table_attach_default(ETK_TABLE(table), label, 2, 2, 1, 1);
 
    //UI_FillSizeOffsetXSpinner
    UI_FillSizeOffsetXSpinner = etk_spinner_new(-2000, 2000, 0, 1, 10);
    etk_widget_size_request_set(UI_FillSizeOffsetXSpinner, 45, 20);
-   etk_box_append(ETK_BOX(hbox), UI_FillSizeOffsetXSpinner,
-                  ETK_BOX_START, ETK_BOX_NONE, 0);
+   etk_table_attach_default(ETK_TABLE(table), UI_FillSizeOffsetXSpinner, 3, 3, 1, 1);
 
-   label = etk_label_new("<b>  Y </b>");
-   etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+   label = etk_label_new("<b> Y </b>");
+   etk_table_attach_default(ETK_TABLE(table), label, 4, 4, 1, 1);
 
    //UI_FillSizeRelYSpinner
    UI_FillSizeRelYSpinner = etk_spinner_new(-100.0, 100.0, 0.0, 0.01, 0.1);
    etk_spinner_digits_set(ETK_SPINNER(UI_FillSizeRelYSpinner), 2);
    etk_widget_size_request_set(UI_FillSizeRelYSpinner, 45, 20);
-   etk_box_append(ETK_BOX(hbox), UI_FillSizeRelYSpinner,
-                  ETK_BOX_START, ETK_BOX_NONE, 0);
+   etk_table_attach_default(ETK_TABLE(table), UI_FillSizeRelYSpinner, 5, 5, 1, 1);
 
    label = etk_label_new("+");
-   etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
+   etk_table_attach_default(ETK_TABLE(table), label, 6, 6, 1, 1);
 
    //UI_FillSizeOffsetYSpinner
    UI_FillSizeOffsetYSpinner = etk_spinner_new(-2000, 2000, 0, 1, 10);
    etk_widget_size_request_set(UI_FillSizeOffsetYSpinner, 45, 20);
-   etk_box_append(ETK_BOX(hbox), UI_FillSizeOffsetYSpinner,
-                  ETK_BOX_START, ETK_BOX_NONE, 0);
+   etk_table_attach_default(ETK_TABLE(table), UI_FillSizeOffsetYSpinner, 7, 7, 1, 1);
    
    etk_signal_connect("value-changed", ETK_OBJECT(UI_FillRelXSpinner),
                       ETK_CALLBACK(_fill_spinners_value_changed_cb),
@@ -140,7 +125,7 @@ fill_frame_create(void)
                       ETK_CALLBACK(_fill_size_spinners_value_changed_cb),
                       (void *)REL1YO_SPINNER);
 
-   return vbox;
+   return table;
 }
 void
 fill_frame_update(void)

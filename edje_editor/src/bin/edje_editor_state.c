@@ -105,7 +105,7 @@ state_frame_create(void)
    hbox = etk_hbox_new(ETK_FALSE, 0);
    etk_box_append(ETK_BOX(vbox), hbox, ETK_BOX_START, ETK_BOX_NONE, 0);
 
-   label = etk_label_new("min");
+   label = etk_label_new("<b>Size</b> min");
    etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    //UI_StateMinWSpinner
@@ -145,7 +145,7 @@ state_frame_create(void)
    etk_box_append(ETK_BOX(vbox), hbox, ETK_BOX_START, ETK_BOX_NONE, 0);
    
    //UI_StateAlignHSpinner
-   label = etk_label_new("Align");
+   label = etk_label_new("<b>Align</b> H");
    etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    UI_StateAlignHSpinner = etk_spinner_new(0, 1, 0, 0.01, 0.1);
@@ -154,7 +154,7 @@ state_frame_create(void)
    etk_box_append(ETK_BOX(hbox), UI_StateAlignHSpinner, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    //UI_StateAlignVSpinner
-   label = etk_label_new("V Align");
+   label = etk_label_new("V");
    etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
 
    UI_StateAlignVSpinner = etk_spinner_new(0, 1, 0, 0.01, 0.1);

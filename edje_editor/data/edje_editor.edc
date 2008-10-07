@@ -125,6 +125,26 @@
       target: NAME"_frame"; \
    }
 
+#define STATIC_IMAGE(NAME, FILE, W, H, EVENTS) \
+   group { \
+      name: NAME; \
+      min: W H; \
+      max: W H; \
+      parts { \
+         part { \
+            name: "StaticImage"; \
+            type: IMAGE; \
+            mouse_events: EVENTS; \
+            description{ \
+               state: "default" 0.0; \
+               rel1 {relative: 0.0 0.0; offset: 0 0;} \
+               rel2 {relative: 0.0 0.0; offset: W H;} \
+               image {normal: FILE;} \
+            } \
+         } \
+      } \
+   }
+
 images {
    image: "backdrop.png" LOSSY 95;
    image: "bg1.png" LOSSY 95;
@@ -190,280 +210,32 @@ color_classes {
    }
 }
 
-
 collections {
-   group{
-      name: "IMAGE.PNG";
-      min: 15 16;
-      max: 15 16;
-      parts{
-         part{
-            name: "StaticImage";
-            type: IMAGE;
-            mouse_events: 0;
-            description{
-               state: "default" 0.0;
-               rel1 {relative: 0.0 0.0; offset: 0 0;}
-               rel2 {relative: 0.0 0.0; offset: 15 16;}
-               image {normal: "image.png";}
-            }
-         }
-      }
-   }
-   group{
-      name: "RECT.PNG";
-      min: 19 14;
-      max: 19 14;
-      parts{
-         part{
-            name: "StaticImage";
-            type: IMAGE;
-            mouse_events: 0;
-            description{
-               state: "default" 0.0;
-               rel1 {relative: 0.0 0.0; offset: 0 0;}
-               rel2 {relative: 0.0 0.0; offset: 19 14;}
-               image {normal: "rect.png";}
-            }
-         }
-      }
-   }
-   group{
-      name: "TEXT.PNG";
-      min: 20 15;
-      max: 20 15;
-      parts{
-         part{
-            name: "StaticImage";
-            type: IMAGE;
-            mouse_events: 0;
-            description{
-               state: "default" 0.0;
-               rel1 {relative: 0.0 0.0; offset: 0 0;}
-               rel2 {relative: 0.0 0.0; offset: 20 15;}
-               image {normal: "text.png";}
-            }
-         }
-      }
-   }
-   group{
-      name: "SWAL.PNG";
-      min: 19 14;
-      max: 19 14;
-      parts{
-         part{
-            name: "StaticImage";
-            type: IMAGE;
-            mouse_events: 0;
-            description{
-               state: "default" 0.0;
-               rel1 {relative: 0.0 0.0; offset: 0 0;}
-               rel2 {relative: 0.0 0.0; offset: 19 14;}
-               image {normal: "swallow.png";}
-            }
-         }
-      }
-   }
-   group{
-      name: "GROUP.PNG";
-      min: 19 14;
-      max: 19 14;
-      parts{
-         part{
-            name: "StaticImage";
-            type: IMAGE;
-            mouse_events: 0;
-            description{
-               state: "default" 0.0;
-               rel1 {relative: 0.0 0.0; offset: 0 0;}
-               rel2 {relative: 0.0 0.0; offset: 19 14;}
-               image {normal: "group.png";}
-            }
-         }
-      }
-   }
-   group{
-      name: "NONE.PNG";
-      min: 19 14;
-      max: 19 14;
-      parts{
-         part{
-            name: "StaticImage";
-            type: IMAGE;
-            mouse_events: 0;
-            description{
-               state: "default" 0.0;
-               rel1 {relative: 0.0 0.0; offset: 0 0;}
-               rel2 {relative: 0.0 0.0; offset: 19 14;}
-               image {normal: "none.png";}
-            }
-         }
-      }
-   }
-   group{
-      name: "DESC.PNG";
-      min: 15 15;
-      max: 15 15;
-      parts{
-         part{
-            name: "StaticImage";
-            type: IMAGE;
-            mouse_events: 1;
-            description{
-               state: "default" 0.0;
-               rel1 {relative: 0.0 0.0; offset: 0 0;}
-               rel2 {relative: 0.0 0.0; offset: 15 15;}
-               image {normal: "desc.png";}
-            }
-         }
-      }
-   }
-   group{
-      name: "PROG.PNG";
-      min: 15 15;
-      max: 15 15;
-      parts{
-         part{
-            name: "StaticImage";
-            type: IMAGE;
-            mouse_events: 0;
-            description{
-               state: "default" 0.0;
-               rel1 {relative: 0.0 0.0; offset: 0 0;}
-               rel2 {relative: 0.0 0.0; offset: 15 15;}
-               image {normal: "e17.png";}
-            }
-         }
-      }
-   }
-   group{
-      name: "SPECTRA.PNG";
-      min: 22 20;
-      max: 22 20;
-      parts{
-         part{
-            name: "StaticImage";
-            type: IMAGE;
-            mouse_events: 0;
-            description{
-               state: "default" 0.0;
-               rel1 {relative: 0.0 0.0; offset: 0 0;}
-               rel2 {relative: 0.0 0.0; offset: 22 20;}
-               image {normal: "spectra_icon.png";}
-            }
-         }
-      }
-   }
-   group{
-      name: "DATA.PNG";
-      min: 22 20;
-      max: 22 20;
-      parts{
-         part{
-            name: "StaticImage";
-            type: IMAGE;
-            mouse_events: 0;
-            description{
-               state: "default" 0.0;
-               rel1 {relative: 0.0 0.0; offset: 0 0;}
-               rel2 {relative: 0.0 0.0; offset: 22 20;}
-               image {normal: "data_icon.png";}
-            }
-         }
-      }
-   }
-   group{
-      name: "COLORS.PNG";
-      min: 22 20;
-      max: 22 20;
-      parts{
-         part{
-            name: "StaticImage";
-            type: IMAGE;
-            mouse_events: 0;
-            description{
-               state: "default" 0.0;
-               rel1 {relative: 0.0 0.0; offset: 0 0;}
-               rel2 {relative: 0.0 0.0; offset: 22 20;}
-               image {normal: "colors_icon.png";}
-            }
-         }
-      }
-   }
-   group{
-      name: "ARROW.PNG";
-      min: 13 13;
-      max: 13 13;
-      parts{
-         part{
-            name: "StaticImage";
-            type: IMAGE;
-            mouse_events: 1;
-            description{
-               state: "default" 0.0;
-               rel1 {relative: 0.0 0.0; offset: 0 0;}
-               rel2 {relative: 0.0 0.0; offset: 13 13;}
-               image {normal: "spectra_arrow.png";}
-           
-            }
-         }
-      }
-   }
-   group{
-      name: "COLOR.PNG";
-      min: 13 13;
-      max: 13 13;
-      parts{
-         part{
-            name: "StaticImage";
-            type: IMAGE;
-            mouse_events: 1;
-            description{
-               state: "default" 0.0;
-               rel1 {relative: 0.0 0.0; offset: 0 0;}
-               rel2 {relative: 0.0 0.0; offset: 13 13;}
-               image {normal: "spectra_color.png";}
-           
-            }
-         }
-      }
-   }
-   group{
-      name: "BG1_I.PNG";
-      min: 15 15;
-      max: 15 15;
-      parts{
-         part{
-            name: "StaticImage";
-            type: IMAGE;
-            mouse_events: 0;
-            description{
-               state: "default" 0.0;
-               rel1 {relative: 0.0 0.0; offset: 0 0;}
-               rel2 {relative: 0.0 0.0; offset: 15 15;}
-               image {normal: "bg1_i.png";}
-            }
-         }
-      }
-   }
-   group{
-      name: "BG2_I.PNG";
-      min: 15 15;
-      max: 15 15;
-      parts{
-         part{
-            name: "StaticImage";
-            type: IMAGE;
-            mouse_events: 0;
-            description{
-               state: "default" 0.0;
-               rel1 {relative: 0.0 0.0; offset: 0 0;}
-               rel2 {relative: 0.0 0.0; offset: 15 15;}
-               image {normal: "bg2_i.png";}
-            }
-         }
-      }
-   }
+   STATIC_IMAGE("IMAGE.PNG", "image.png", 15, 16, 0);
+   STATIC_IMAGE("RECT.PNG", "rect.png", 19, 14, 0);
+   STATIC_IMAGE("TEXT.PNG", "text.png", 20, 15, 0);
+   STATIC_IMAGE("SWAL.PNG", "swallow.png", 19, 14, 0);
+   STATIC_IMAGE("GROUP.PNG", "group.png", 19, 14, 0);
+   STATIC_IMAGE("NONE.PNG", "none.png", 19, 14, 0);
+   STATIC_IMAGE("DESC.PNG", "desc.png", 15, 15, 0);
+   STATIC_IMAGE("PROG.PNG", "e17.png", 15, 15, 0);
+   STATIC_IMAGE("SPECTRA.PNG", "spectra_icon.png", 22, 20, 0);
+   STATIC_IMAGE("DATA.PNG", "data_icon.png", 22, 20, 0);
+   STATIC_IMAGE("COLORS.PNG", "colors_icon.png", 22, 20, 0);
+   STATIC_IMAGE("ARROW.PNG", "spectra_arrow.png", 13, 13, 1);
+   STATIC_IMAGE("COLOR.PNG", "spectra_color.png", 13, 13, 1);
+   STATIC_IMAGE("BG1_I.PNG", "bg1_i.png", 15, 15, 0);
+   STATIC_IMAGE("BG2_I.PNG", "bg2_i.png", 15, 15, 0);
+   STATIC_IMAGE("FOPA100.PNG", "fopa100.png", 20, 20, 0);
+   STATIC_IMAGE("FOPA50.PNG", "fopa50.png", 20, 20, 0);
+   STATIC_IMAGE("FOPA25.PNG", "fopa25.png", 20, 20, 0);
+   STATIC_IMAGE("GIMP.PNG", "gimp.png", 20, 20, 0);
+   STATIC_IMAGE("GRAD_LINEAR.PNG", "grad_linear.png", 15, 15, 0);
+   STATIC_IMAGE("GRAD_RADIAL.PNG", "grad_radial.png", 15, 15, 0);
+   STATIC_IMAGE("GRAD_RECTANGULAR.PNG", "grad_rectangular.png", 15, 15, 0);
+   STATIC_IMAGE("GRAD_ANGULAR.PNG", "grad_angular.png", 15, 15, 0);
+   STATIC_IMAGE("GRAD_SINUSOIDAL.PNG", "grad_sinusoidal.png", 15, 15, 0);
+   
    group{
       name: "BG3_I.PNG";
       min: 15 15;
@@ -482,170 +254,6 @@ collections {
          }
       }
    }
-   group{
-      name: "FOPA100.PNG";
-      min: 20 20;
-      max: 20 20;
-      parts{
-         part{
-            name: "StaticImage";
-            type: IMAGE;
-            mouse_events: 0;
-            description{
-               state: "default" 0.0;
-               rel1 {relative: 0.0 0.0; offset: 0 0;}
-               rel2 {relative: 0.0 0.0; offset: 20 20;}
-               image {normal: "fopa100.png";}
-            }
-         }
-      }
-   }
-   group{
-      name: "FOPA50.PNG";
-      min: 20 20;
-      max: 20 20;
-      parts{
-         part{
-            name: "StaticImage";
-            type: IMAGE;
-            mouse_events: 0;
-            description{
-               state: "default" 0.0;
-               rel1 {relative: 0.0 0.0; offset: 0 0;}
-               rel2 {relative: 0.0 0.0; offset: 20 20;}
-               image {normal: "fopa50.png";}
-            }
-         }
-      }
-   }
-   group{
-      name: "FOPA25.PNG";
-      min: 20 20;
-      max: 20 20;
-      parts{
-         part{
-            name: "StaticImage";
-            type: IMAGE;
-            mouse_events: 0;
-            description{
-               state: "default" 0.0;
-               rel1 {relative: 0.0 0.0; offset: 0 0;}
-               rel2 {relative: 0.0 0.0; offset: 20 20;}
-               image {normal: "fopa25.png";}
-            }
-         }
-      }
-   }
-
-   group{
-      name: "GIMP.PNG";
-      min: 20 20;
-      max: 100 100;
-      parts{
-         part{
-            name: "StaticImage";
-            type: IMAGE;
-            mouse_events: 0;
-            description{
-               state: "default" 0.0;
-               rel1 {relative: 0.0 0.0; offset: 0 0;}
-               rel2 {relative: 0.0 0.0; offset: 20 20;}
-               image {normal: "gimp.png";}
-            }
-         }
-      }
-   }
-   group{
-      name: "GRAD_LINEAR.PNG";
-      min: 15 15;
-      max: 100 100;
-      parts{
-         part{
-            name: "StaticImage";
-            type: IMAGE;
-            mouse_events: 0;
-            description{
-               state: "default" 0.0;
-               rel1 {relative: 0.0 0.0; offset: 0 0;}
-               rel2 {relative: 1.0 1.0; offset: 0 0;}
-               image {normal: "grad_linear.png";}
-            }
-         }
-      }
-   }
-   group{
-      name: "GRAD_RADIAL.PNG";
-      min: 15 15;
-      max: 100 100;
-      parts{
-         part{
-            name: "StaticImage";
-            type: IMAGE;
-            mouse_events: 0;
-            description{
-               state: "default" 0.0;
-               rel1 {relative: 0.0 0.0; offset: 0 0;}
-               rel2 {relative: 1.0 1.0; offset: 0 0;}
-               image {normal: "grad_radial.png";}
-            }
-         }
-      }
-   }
-   group{
-      name: "GRAD_RECTANGULAR.PNG";
-      min: 15 15;
-      max: 100 100;
-      parts{
-         part{
-            name: "StaticImage";
-            type: IMAGE;
-            mouse_events: 0;
-            description{
-               state: "default" 0.0;
-               rel1 {relative: 0.0 0.0; offset: 0 0;}
-               rel2 {relative: 1.0 1.0; offset: 0 0;}
-               image {normal: "grad_rectangular.png";}
-            }
-         }
-      }
-   }
-   group{
-      name: "GRAD_ANGULAR.PNG";
-      min: 15 15;
-      max: 100 100;
-      parts{
-         part{
-            name: "StaticImage";
-            type: IMAGE;
-            mouse_events: 0;
-            description{
-               state: "default" 0.0;
-               rel1 {relative: 0.0 0.0; offset: 0 0;}
-               rel2 {relative: 1.0 1.0; offset: 0 0;}
-               image {normal: "grad_angular.png";}
-            }
-         }
-      }
-   }
-   group{
-      name: "GRAD_SINUSOIDAL.PNG";
-      min: 15 15;
-      max: 100 100;
-      parts{
-         part{
-            name: "StaticImage";
-            type: IMAGE;
-            mouse_events: 0;
-            description{
-               state: "default" 0.0;
-               rel1 {relative: 0.0 0.0; offset: 0 0;}
-               rel2 {relative: 1.0 1.0; offset: 0 0;}
-               image {normal: "grad_sinusoidal.png";}
-            }
-         }
-      }
-   }
-
    /************************************************************/
    /*  MainUI
    /************************************************************/
@@ -710,9 +318,9 @@ collections {
          //EXAMPLE: FRAME (name, w, h, img_name, place_after)
          FRAME("group", 230, 70, "lbl_group.png", 14, 50, "frames_starter")
          FRAME("part", 230, 120, "lbl_part.png", 14, 35,"group_frame")
-         FRAME("description", 260, 110, "lbl_desc.png", 14, 42, "part_frame")
+         FRAME("description", 260, 130, "lbl_desc.png", 14, 42, "part_frame")
          FRAME("rect", 120, 77, "lbl_rect.png", 14, 72, "description_frame")
-         FRAME("text", 250, 160, "lbl_text.png", 14, 36, "rect_frame")
+         FRAME("text", 250, 180, "lbl_text.png", 14, 36, "rect_frame")
          FRAME("image", 250, 230, "lbl_image.png", 14, 46, "text_frame")
          FRAME("gradient", 250, 135, "lbl_grad.png", 14, 67, "image_frame")
          FRAME("fill", 250, 45, "lbl_fill.png", 14, 30, "gradient_frame")

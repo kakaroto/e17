@@ -32,6 +32,7 @@ Etk_Widget *UI_BorderTopSpinner;
 Etk_Widget *UI_BorderLeftSpinner;
 Etk_Widget *UI_BorderBottomSpinner;
 Etk_Widget *UI_BorderRightSpinner;
+Etk_Widget *UI_BorderMiddleCheck;
 Etk_Widget *UI_ImageAddButton;
 
 /* image browser objects */
@@ -53,6 +54,7 @@ void        image_browser_update     (void);
 Etk_Bool _image_AlphaSlider_value_changed_cb     (Etk_Object *object, double value, void *data);
 Etk_Bool _image_TweenList_row_selected_cb        (Etk_Object *object, Etk_Tree_Row *row, void *data);
 Etk_Bool _image_border_spinners_value_changed_cb (Etk_Range *range, double value, void *data);
+Etk_Bool _image_BorderMiddleCheck_toggled_cb     (Etk_Toggle_Button *button, void *data);
 Etk_Bool _image_browser_iconbox_selected_cb      (Etk_Iconbox *iconbox, Etk_Iconbox_Icon *icon, void *data);
 
 

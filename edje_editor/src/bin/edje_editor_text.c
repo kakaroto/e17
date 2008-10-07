@@ -59,7 +59,7 @@ text_frame_create(Evas *evas)
    etk_combobox_column_add(ETK_COMBOBOX(UI_FontComboBox),
                            ETK_COMBOBOX_LABEL, 75, ETK_COMBOBOX_NONE, 0.0);
    etk_combobox_build(ETK_COMBOBOX(UI_FontComboBox));
-   etk_table_attach_default(ETK_TABLE(table),UI_FontComboBox, 1, 1, 1,1);
+   etk_table_attach_default(ETK_TABLE(table),UI_FontComboBox, 1, 1, 1, 1);
 
    //FontAddButton
    UI_FontAddButton = etk_button_new_from_stock(ETK_STOCK_DOCUMENT_OPEN);
@@ -78,7 +78,7 @@ text_frame_create(Evas *evas)
 
    hbox = etk_hbox_new(ETK_FALSE, 0);
    etk_table_attach_default(ETK_TABLE(table),hbox, 0, 5, 2,2);
-   
+
    //FontAlignHSpinner
    label = etk_label_new("Align");
    etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
@@ -86,7 +86,7 @@ text_frame_create(Evas *evas)
    etk_spinner_digits_set(ETK_SPINNER(UI_FontAlignHSpinner), 2);
    etk_widget_size_request_set(UI_FontAlignHSpinner, 45, 20);
    etk_box_append(ETK_BOX(hbox), UI_FontAlignHSpinner, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
-   
+
    //FontAlignVSpinner
    label = etk_label_new("Valign");
    etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
@@ -104,15 +104,15 @@ text_frame_create(Evas *evas)
    etk_box_append(ETK_BOX(hbox), UI_FontElipsisSpinner, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
    //Fit + min max
-   hbox = etk_hbox_new(ETK_FALSE, 10);
+   hbox = etk_hbox_new(ETK_FALSE, 0);
    etk_table_attach_default(ETK_TABLE(table),hbox, 0, 5, 3,3);
-   
+
    UI_FontFitXCheck = etk_check_button_new_with_label("Fit X");
    etk_box_append(ETK_BOX(hbox), UI_FontFitXCheck, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
-   
+
    UI_FontFitYCheck = etk_check_button_new_with_label("Fit Y");
    etk_box_append(ETK_BOX(hbox), UI_FontFitYCheck, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
-   
+
    //~ label = etk_check_button_new_with_label("Min X");
    //~ etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
    
@@ -124,11 +124,10 @@ text_frame_create(Evas *evas)
    
    //~ label = etk_check_button_new_with_label("Max Y");
    //~ etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
-   
-   
+
    //PartEffectComboBox
    label = etk_label_new("Effect");
-   etk_table_attach_default(ETK_TABLE(table),label, 0, 0, 4,4);
+   etk_table_attach_default(ETK_TABLE(table),label, 0, 0, 4, 4);
 
    UI_EffectComboBox = etk_combobox_new();
    etk_combobox_column_add(ETK_COMBOBOX(UI_EffectComboBox), 
@@ -168,10 +167,10 @@ text_frame_create(Evas *evas)
       etk_image_new_from_edje(EdjeFile,"NONE.PNG"), "Glow");
    etk_combobox_item_data_set(ComboItem, (void*)EDJE_TEXT_EFFECT_GLOW);
 
-   etk_table_attach_default(ETK_TABLE(table),UI_EffectComboBox,1,4,4,4);
+   etk_table_attach_default(ETK_TABLE(table), UI_EffectComboBox, 1, 4, 4, 4);
 
    //hbox
-   hbox = etk_hbox_new(ETK_FALSE, 10);
+   hbox = etk_hbox_new(ETK_FALSE, 0);
    etk_box_append(ETK_BOX(vbox), hbox, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
    //Color buttons
@@ -299,13 +298,13 @@ text_frame_update(void)
                         edje_edit_state_text_align_y_get(edje_o,
                                                          Cur.part->string,
                                                          Cur.state->string));
-   
+
    //Set Elipsis
    etk_range_value_set(ETK_RANGE(UI_FontElipsisSpinner),
                         edje_edit_state_text_elipsis_get(edje_o,
                                                          Cur.part->string,
                                                          Cur.state->string));
-   
+
    //Set the font combobox
    font = edje_edit_state_font_get(edje_o, Cur.part->string, Cur.state->string);
    if (font)

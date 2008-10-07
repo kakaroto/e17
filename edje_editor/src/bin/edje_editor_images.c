@@ -30,21 +30,21 @@ image_frame_create(void)
    Etk_Tree_Col *col1;
 
    //table
-   table = etk_table_new(5, 4, ETK_TABLE_NOT_HOMOGENEOUS);
+   table = etk_table_new(6, 5, ETK_TABLE_NOT_HOMOGENEOUS);
 
    //AddImageButton
    UI_ImageAddButton = etk_button_new_from_stock(ETK_STOCK_IMAGE_X_GENERIC);
    etk_object_properties_set(ETK_OBJECT(UI_ImageAddButton), "label", "Choose Image", NULL);
-   etk_table_attach_default(ETK_TABLE(table), UI_ImageAddButton, 0, 1, 0, 0);
+   etk_table_attach_default(ETK_TABLE(table), UI_ImageAddButton, 0, 2, 0, 0);
 
    //ImageName
    UI_ImageNameLabel = etk_label_new("none");
    etk_object_properties_set(ETK_OBJECT(UI_ImageNameLabel), "xalign", 0.5, NULL);
-   etk_table_attach_default(ETK_TABLE(table), UI_ImageNameLabel, 2, 4, 0, 0);
+   etk_table_attach_default(ETK_TABLE(table), UI_ImageNameLabel, 3, 5, 0, 0);
 
    //ImageTweenVBox
    UI_ImageTweenVBox = etk_vbox_new(ETK_TRUE, 0);
-   etk_table_attach_default(ETK_TABLE(table), UI_ImageTweenVBox, 0, 0, 1, 1);
+   etk_table_attach_default(ETK_TABLE(table), UI_ImageTweenVBox, 0, 1, 1, 1);
 
    //AddTweenButton
    UI_AddTweenButton = etk_button_new_from_stock(ETK_STOCK_LIST_ADD);
@@ -87,14 +87,15 @@ image_frame_create(void)
    etk_tree_col_model_add(col1, etk_tree_model_image_new());
    etk_tree_col_model_add(col1, etk_tree_model_text_new());
    etk_tree_build(ETK_TREE(UI_ImageTweenList));
-   etk_table_attach_default(ETK_TABLE(table),UI_ImageTweenList, 1, 4, 1, 1);
+   etk_table_attach_default(ETK_TABLE(table),UI_ImageTweenList, 2, 5, 1, 1);
 
    label = etk_label_new("Alpha");
    etk_table_attach_default(ETK_TABLE(table),label, 0, 0, 2, 2);
 
    //ImageAlphaSlider
    UI_ImageAlphaSlider = etk_hslider_new(0, 255, 15, 1,20);
-   etk_table_attach_default(ETK_TABLE(table),UI_ImageAlphaSlider, 1, 4, 2, 2);
+   etk_slider_label_set(ETK_SLIDER(UI_ImageAlphaSlider), "%.0f");
+   etk_table_attach_default(ETK_TABLE(table),UI_ImageAlphaSlider, 1, 5, 2, 2);
 
    label = etk_label_new("Left");
    etk_object_properties_set(ETK_OBJECT(label), "xalign",0.5,NULL);
@@ -135,6 +136,11 @@ image_frame_create(void)
    UI_BorderBottomSpinner = etk_spinner_new(0, 500, 0, 1, 10);
    etk_widget_size_request_set(UI_BorderBottomSpinner,45, 20);
    etk_table_attach_default(ETK_TABLE(table),UI_BorderBottomSpinner, 4, 4, 4, 4);
+   
+   //UI_BorderMiddleCheck
+   UI_BorderMiddleCheck = etk_check_button_new_with_label("Mid");
+   etk_table_attach_default(ETK_TABLE(table),UI_BorderMiddleCheck, 5, 5, 4, 4);
+   
 
    etk_signal_connect("row-selected", ETK_OBJECT(UI_ImageTweenList),
             ETK_CALLBACK(_image_TweenList_row_selected_cb), NULL);
@@ -154,6 +160,8 @@ image_frame_create(void)
    etk_signal_connect("value-changed", ETK_OBJECT(UI_BorderBottomSpinner),
                       ETK_CALLBACK(_image_border_spinners_value_changed_cb),
                       (void *)BORDER_BOTTOM);
+   etk_signal_connect("toggled", ETK_OBJECT(UI_BorderMiddleCheck),
+                      ETK_CALLBACK(_image_BorderMiddleCheck_toggled_cb), NULL);
 
    return table;
 }
@@ -181,6 +189,8 @@ image_frame_update(void)
                     ETK_CALLBACK(_image_AlphaSlider_value_changed_cb), NULL);
    etk_signal_block("icon-selected", ETK_OBJECT(UI_ImageBrowserIconbox),
                     ETK_CALLBACK(_image_browser_iconbox_selected_cb), NULL);
+   etk_signal_block("toggled", ETK_OBJECT(UI_BorderMiddleCheck),
+                    ETK_CALLBACK(_image_BorderMiddleCheck_toggled_cb), NULL);
 
    if (!etk_string_length_get(Cur.state)) return;
    if (!etk_string_length_get(Cur.part)) return;
@@ -216,6 +226,9 @@ image_frame_update(void)
    etk_range_value_set(ETK_RANGE(UI_BorderRightSpinner), r);
    etk_range_value_set(ETK_RANGE(UI_BorderTopSpinner), t);
    etk_range_value_set(ETK_RANGE(UI_BorderBottomSpinner), b);
+   etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(UI_BorderMiddleCheck),
+         edje_edit_state_image_border_fill_get(edje_o, Cur.part->string,
+                                                      Cur.state->string));
 
    //ReEnable Signal Propagation
    etk_signal_unblock("value-changed", ETK_OBJECT(UI_BorderLeftSpinner),
@@ -233,7 +246,9 @@ image_frame_update(void)
    etk_signal_unblock("value-changed", ETK_OBJECT(UI_ImageAlphaSlider),
                       _image_AlphaSlider_value_changed_cb, NULL);
    etk_signal_unblock("icon-selected", ETK_OBJECT(UI_ImageBrowserIconbox),
-                    ETK_CALLBACK(_image_browser_iconbox_selected_cb), NULL);
+                      ETK_CALLBACK(_image_browser_iconbox_selected_cb), NULL);
+   etk_signal_unblock("toggled", ETK_OBJECT(UI_BorderMiddleCheck),
+                      ETK_CALLBACK(_image_BorderMiddleCheck_toggled_cb), NULL);
 }
 
 void
@@ -470,6 +485,16 @@ _image_border_spinners_value_changed_cb(Etk_Range *range, double value, void *da
 
    return ETK_TRUE;
 }
+
+Etk_Bool
+_image_BorderMiddleCheck_toggled_cb(Etk_Toggle_Button *button, void *data)
+{
+   edje_edit_state_image_border_fill_set(edje_o, Cur.part->string, Cur.state->string,
+                                         etk_toggle_button_active_get(button));
+   canvas_redraw();
+   return ETK_TRUE;
+}
+
 /* Image Browser Callbacks */
 Etk_Bool
 _image_browser_iconbox_selected_cb(Etk_Iconbox *iconbox, Etk_Iconbox_Icon *icon, void *data)
