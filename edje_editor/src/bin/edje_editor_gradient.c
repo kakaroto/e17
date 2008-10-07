@@ -74,92 +74,100 @@ gradient_frame_create(void)
    label = etk_label_new("<b>Alpha</b>");
    etk_table_attach(ETK_TABLE(table), label, 0, 0, 2, 2,  ETK_TABLE_NONE, 0, 0);
    UI_GradientAlphaSlider = etk_hslider_new(0, 255, 15, 1,20);
+   etk_slider_label_set(ETK_SLIDER(UI_GradientAlphaSlider), "%.0f");
    etk_table_attach_default(ETK_TABLE(table), UI_GradientAlphaSlider, 1, 1, 2, 2);
-
-   //hbox (first handler)
-   hbox = etk_hbox_new(ETK_FALSE, 0);
-   etk_table_attach_default(ETK_TABLE(table), hbox, 0, 2, 3, 3);
    
-   label = etk_label_new("<b>Start  X </b>");
-   etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+   //GradientAngleSlider
+   label = etk_label_new("<b>Angle</b>");
+   etk_table_attach(ETK_TABLE(table), label, 0, 0, 3, 3,  ETK_TABLE_NONE, 0, 0);
+   UI_GradientAngleSlider = etk_hslider_new(0, 360, 15, 1,20);
+   etk_slider_label_set(ETK_SLIDER(UI_GradientAngleSlider), "%.0f");
+   etk_table_attach_default(ETK_TABLE(table), UI_GradientAngleSlider, 1, 1, 3, 3);
 
-   //UI_GradientRel1XSpinner
-   UI_GradientRel1XSpinner = etk_spinner_new(-100.0, 100.0, 0.0, 0.01, 0.1);
-   etk_spinner_digits_set(ETK_SPINNER(UI_GradientRel1XSpinner), 2);
-   etk_widget_size_request_set(UI_GradientRel1XSpinner, 45, 20);
-   etk_box_append(ETK_BOX(hbox), UI_GradientRel1XSpinner,
-                  ETK_BOX_START, ETK_BOX_NONE, 0);
+   //~ //hbox (first handler)
+   //~ hbox = etk_hbox_new(ETK_FALSE, 0);
+   //~ etk_table_attach_default(ETK_TABLE(table), hbox, 0, 2, 3, 3);
+   
+   //~ label = etk_label_new("<b>Start  X </b>");
+   //~ etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
-   label = etk_label_new("+");
-   etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
+   //~ //UI_GradientRel1XSpinner
+   //~ UI_GradientRel1XSpinner = etk_spinner_new(-100.0, 100.0, 0.0, 0.01, 0.1);
+   //~ etk_spinner_digits_set(ETK_SPINNER(UI_GradientRel1XSpinner), 2);
+   //~ etk_widget_size_request_set(UI_GradientRel1XSpinner, 45, 20);
+   //~ etk_box_append(ETK_BOX(hbox), UI_GradientRel1XSpinner,
+                  //~ ETK_BOX_START, ETK_BOX_NONE, 0);
 
-   //UI_GradientRel1XOffsetSpinner
-   UI_GradientRel1XOffsetSpinner = etk_spinner_new(-2000, 2000, 0, 1, 10);
-   etk_widget_size_request_set(UI_GradientRel1XOffsetSpinner, 45, 20);
-   etk_box_append(ETK_BOX(hbox), UI_GradientRel1XOffsetSpinner,
-                  ETK_BOX_START, ETK_BOX_NONE, 0);
+   //~ label = etk_label_new("+");
+   //~ etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
 
-   label = etk_label_new("<b>  Y </b>");
-   etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+   //~ //UI_GradientRel1XOffsetSpinner
+   //~ UI_GradientRel1XOffsetSpinner = etk_spinner_new(-2000, 2000, 0, 1, 10);
+   //~ etk_widget_size_request_set(UI_GradientRel1XOffsetSpinner, 45, 20);
+   //~ etk_box_append(ETK_BOX(hbox), UI_GradientRel1XOffsetSpinner,
+                  //~ ETK_BOX_START, ETK_BOX_NONE, 0);
 
-   //UI_GradientRel1YSpinner
-   UI_GradientRel1YSpinner = etk_spinner_new(-100.0, 100.0, 0.0, 0.01, 0.1);
-   etk_spinner_digits_set(ETK_SPINNER(UI_GradientRel1YSpinner), 2);
-   etk_widget_size_request_set(UI_GradientRel1YSpinner, 45, 20);
-   etk_box_append(ETK_BOX(hbox), UI_GradientRel1YSpinner,
-                  ETK_BOX_START, ETK_BOX_NONE, 0);
+   //~ label = etk_label_new("<b>  Y </b>");
+   //~ etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
-   label = etk_label_new("+");
-   etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
+   //~ //UI_GradientRel1YSpinner
+   //~ UI_GradientRel1YSpinner = etk_spinner_new(-100.0, 100.0, 0.0, 0.01, 0.1);
+   //~ etk_spinner_digits_set(ETK_SPINNER(UI_GradientRel1YSpinner), 2);
+   //~ etk_widget_size_request_set(UI_GradientRel1YSpinner, 45, 20);
+   //~ etk_box_append(ETK_BOX(hbox), UI_GradientRel1YSpinner,
+                  //~ ETK_BOX_START, ETK_BOX_NONE, 0);
 
-   //UI_GradientRel1YOffsetSpinner
-   UI_GradientRel1YOffsetSpinner = etk_spinner_new(-2000, 2000, 0, 1, 10);
-   etk_widget_size_request_set(UI_GradientRel1YOffsetSpinner, 45, 20);
-   etk_box_append(ETK_BOX(hbox), UI_GradientRel1YOffsetSpinner,
-                  ETK_BOX_START, ETK_BOX_NONE, 0);
+   //~ label = etk_label_new("+");
+   //~ etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
+
+   //~ //UI_GradientRel1YOffsetSpinner
+   //~ UI_GradientRel1YOffsetSpinner = etk_spinner_new(-2000, 2000, 0, 1, 10);
+   //~ etk_widget_size_request_set(UI_GradientRel1YOffsetSpinner, 45, 20);
+   //~ etk_box_append(ETK_BOX(hbox), UI_GradientRel1YOffsetSpinner,
+                  //~ ETK_BOX_START, ETK_BOX_NONE, 0);
 
 
    //hbox (second handler)
-   hbox = etk_hbox_new(ETK_FALSE, 0);
-   etk_table_attach_default(ETK_TABLE(table), hbox, 0, 2, 4, 4);
+   //~ hbox = etk_hbox_new(ETK_FALSE, 0);
+   //~ etk_table_attach_default(ETK_TABLE(table), hbox, 0, 2, 4, 4);
 
-   label = etk_label_new("<b>End     X </b>");
-   etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+   //~ label = etk_label_new("<b>End     X </b>");
+   //~ etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
-   //UI_GradientRel2XSpinner
-   UI_GradientRel2XSpinner = etk_spinner_new(-100.0, 100.0, 0.0, 0.01, 0.1);
-   etk_spinner_digits_set(ETK_SPINNER(UI_GradientRel2XSpinner), 2);
-   etk_widget_size_request_set(UI_GradientRel2XSpinner, 45, 20);
-   etk_box_append(ETK_BOX(hbox), UI_GradientRel2XSpinner,
-                  ETK_BOX_START, ETK_BOX_NONE, 0);
+   //~ //UI_GradientRel2XSpinner
+   //~ UI_GradientRel2XSpinner = etk_spinner_new(-100.0, 100.0, 0.0, 0.01, 0.1);
+   //~ etk_spinner_digits_set(ETK_SPINNER(UI_GradientRel2XSpinner), 2);
+   //~ etk_widget_size_request_set(UI_GradientRel2XSpinner, 45, 20);
+   //~ etk_box_append(ETK_BOX(hbox), UI_GradientRel2XSpinner,
+                  //~ ETK_BOX_START, ETK_BOX_NONE, 0);
 
-   label = etk_label_new("+");
-   etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
+   //~ label = etk_label_new("+");
+   //~ etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
 
-   //UI_GradientRel2XOffsetSpinner
-   UI_GradientRel2XOffsetSpinner = etk_spinner_new(-2000, 2000, 0, 1, 10);
-   etk_widget_size_request_set(UI_GradientRel2XOffsetSpinner, 45, 20);
-   etk_box_append(ETK_BOX(hbox), UI_GradientRel2XOffsetSpinner,
-                  ETK_BOX_START, ETK_BOX_NONE, 0);
+   //~ //UI_GradientRel2XOffsetSpinner
+   //~ UI_GradientRel2XOffsetSpinner = etk_spinner_new(-2000, 2000, 0, 1, 10);
+   //~ etk_widget_size_request_set(UI_GradientRel2XOffsetSpinner, 45, 20);
+   //~ etk_box_append(ETK_BOX(hbox), UI_GradientRel2XOffsetSpinner,
+                  //~ ETK_BOX_START, ETK_BOX_NONE, 0);
 
-   label = etk_label_new("<b>  Y </b>");
-   etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
+   //~ label = etk_label_new("<b>  Y </b>");
+   //~ etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_EXPAND_FILL, 0);
 
-   //UI_GradientRel2YSpinner
-   UI_GradientRel2YSpinner = etk_spinner_new(-100.0, 100.0, 0.0, 0.01, 0.1);
-   etk_spinner_digits_set(ETK_SPINNER(UI_GradientRel2YSpinner), 2);
-   etk_widget_size_request_set(UI_GradientRel2YSpinner, 45, 20);
-   etk_box_append(ETK_BOX(hbox), UI_GradientRel2YSpinner,
-                  ETK_BOX_START, ETK_BOX_NONE, 0);
+   //~ //UI_GradientRel2YSpinner
+   //~ UI_GradientRel2YSpinner = etk_spinner_new(-100.0, 100.0, 0.0, 0.01, 0.1);
+   //~ etk_spinner_digits_set(ETK_SPINNER(UI_GradientRel2YSpinner), 2);
+   //~ etk_widget_size_request_set(UI_GradientRel2YSpinner, 45, 20);
+   //~ etk_box_append(ETK_BOX(hbox), UI_GradientRel2YSpinner,
+                  //~ ETK_BOX_START, ETK_BOX_NONE, 0);
 
-   label = etk_label_new("+");
-   etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
+   //~ label = etk_label_new("+");
+   //~ etk_box_append(ETK_BOX(hbox), label, ETK_BOX_START, ETK_BOX_NONE, 0);
 
-   //UI_GradientRel2YOffsetSpinner
-   UI_GradientRel2YOffsetSpinner = etk_spinner_new(-2000, 2000, 0, 1, 10);
-   etk_widget_size_request_set(UI_GradientRel2YOffsetSpinner, 45, 20);
-   etk_box_append(ETK_BOX(hbox), UI_GradientRel2YOffsetSpinner,
-                  ETK_BOX_START, ETK_BOX_NONE, 0);
+   //~ //UI_GradientRel2YOffsetSpinner
+   //~ UI_GradientRel2YOffsetSpinner = etk_spinner_new(-2000, 2000, 0, 1, 10);
+   //~ etk_widget_size_request_set(UI_GradientRel2YOffsetSpinner, 45, 20);
+   //~ etk_box_append(ETK_BOX(hbox), UI_GradientRel2YOffsetSpinner,
+                  //~ ETK_BOX_START, ETK_BOX_NONE, 0);
 
    etk_signal_connect("item-activated", ETK_OBJECT(UI_GradientTypeComboBox),
                      ETK_CALLBACK(_gradient_type_combo_activated_cb), NULL);
@@ -168,32 +176,34 @@ gradient_frame_create(void)
    
    etk_signal_connect("value-changed", ETK_OBJECT(UI_GradientAlphaSlider),
             ETK_CALLBACK(_image_AlphaSlider_value_changed_cb), NULL);
+   etk_signal_connect("value-changed", ETK_OBJECT(UI_GradientAngleSlider),
+            ETK_CALLBACK(_gradient_AngleSlider_value_changed_cb), NULL);
 
-   etk_signal_connect("value-changed", ETK_OBJECT(UI_GradientRel1XSpinner),
-                      ETK_CALLBACK(_gradient_RelSpinners_value_changed_cb),
-                      (void *)REL1X_SPINNER);
-   etk_signal_connect("value-changed", ETK_OBJECT(UI_GradientRel1YSpinner),
-                      ETK_CALLBACK(_gradient_RelSpinners_value_changed_cb),
-                      (void *)REL1Y_SPINNER);
-   etk_signal_connect("value-changed", ETK_OBJECT(UI_GradientRel2XSpinner),
-                      ETK_CALLBACK(_gradient_RelSpinners_value_changed_cb),
-                      (void *)REL2X_SPINNER);
-   etk_signal_connect("value-changed", ETK_OBJECT(UI_GradientRel2YSpinner),
-                      ETK_CALLBACK(_gradient_RelSpinners_value_changed_cb),
-                      (void *)REL2Y_SPINNER);
+   //~ etk_signal_connect("value-changed", ETK_OBJECT(UI_GradientRel1XSpinner),
+                      //~ ETK_CALLBACK(_gradient_RelSpinners_value_changed_cb),
+                      //~ (void *)REL1X_SPINNER);
+   //~ etk_signal_connect("value-changed", ETK_OBJECT(UI_GradientRel1YSpinner),
+                      //~ ETK_CALLBACK(_gradient_RelSpinners_value_changed_cb),
+                      //~ (void *)REL1Y_SPINNER);
+   //~ etk_signal_connect("value-changed", ETK_OBJECT(UI_GradientRel2XSpinner),
+                      //~ ETK_CALLBACK(_gradient_RelSpinners_value_changed_cb),
+                      //~ (void *)REL2X_SPINNER);
+   //~ etk_signal_connect("value-changed", ETK_OBJECT(UI_GradientRel2YSpinner),
+                      //~ ETK_CALLBACK(_gradient_RelSpinners_value_changed_cb),
+                      //~ (void *)REL2Y_SPINNER);
 
-   etk_signal_connect("value-changed", ETK_OBJECT(UI_GradientRel1XOffsetSpinner),
-                      ETK_CALLBACK(_gradient_RelSpinners_value_changed_cb),
-                      (void *)REL1XO_SPINNER);
-   etk_signal_connect("value-changed", ETK_OBJECT(UI_GradientRel1YOffsetSpinner),
-                      ETK_CALLBACK(_gradient_RelSpinners_value_changed_cb),
-                      (void *)REL1YO_SPINNER);
-   etk_signal_connect("value-changed", ETK_OBJECT(UI_GradientRel2XOffsetSpinner),
-                      ETK_CALLBACK(_gradient_RelSpinners_value_changed_cb),
-                      (void *)REL2XO_SPINNER);
-   etk_signal_connect("value-changed", ETK_OBJECT(UI_GradientRel2YOffsetSpinner),
-                      ETK_CALLBACK(_gradient_RelSpinners_value_changed_cb),
-                      (void *)REL2YO_SPINNER);
+   //~ etk_signal_connect("value-changed", ETK_OBJECT(UI_GradientRel1XOffsetSpinner),
+                      //~ ETK_CALLBACK(_gradient_RelSpinners_value_changed_cb),
+                      //~ (void *)REL1XO_SPINNER);
+   //~ etk_signal_connect("value-changed", ETK_OBJECT(UI_GradientRel1YOffsetSpinner),
+                      //~ ETK_CALLBACK(_gradient_RelSpinners_value_changed_cb),
+                      //~ (void *)REL1YO_SPINNER);
+   //~ etk_signal_connect("value-changed", ETK_OBJECT(UI_GradientRel2XOffsetSpinner),
+                      //~ ETK_CALLBACK(_gradient_RelSpinners_value_changed_cb),
+                      //~ (void *)REL2XO_SPINNER);
+   //~ etk_signal_connect("value-changed", ETK_OBJECT(UI_GradientRel2YOffsetSpinner),
+                      //~ ETK_CALLBACK(_gradient_RelSpinners_value_changed_cb),
+                      //~ (void *)REL2YO_SPINNER);
 
    return table;
 }
@@ -215,6 +225,8 @@ gradient_frame_update(void)
 
    etk_signal_block("value-changed", ETK_OBJECT(UI_GradientAlphaSlider),
                     ETK_CALLBACK(_image_AlphaSlider_value_changed_cb), NULL);
+   etk_signal_block("value-changed", ETK_OBJECT(UI_GradientAngleSlider),
+                  ETK_CALLBACK(_gradient_AngleSlider_value_changed_cb), NULL);
 
    etk_signal_block("value-changed", ETK_OBJECT(UI_GradientRel1XSpinner),
                     ETK_CALLBACK(_gradient_RelSpinners_value_changed_cb),
@@ -285,6 +297,10 @@ gradient_frame_update(void)
    edje_edit_state_color_get(edje_o, Cur.part->string, Cur.state->string,
                              NULL, NULL, NULL, &alpha);
    etk_range_value_set(ETK_RANGE(UI_GradientAlphaSlider), alpha);
+   //Set Angle slider
+   etk_range_value_set(ETK_RANGE(UI_GradientAngleSlider),
+                       edje_edit_state_gradient_angle_get(edje_o,
+                           Cur.part->string, Cur.state->string));
    
    //Update Rels spinners
    etk_range_value_set(ETK_RANGE(UI_GradientRel1XSpinner),
@@ -320,6 +336,8 @@ gradient_frame_update(void)
 
    etk_signal_unblock("value-changed", ETK_OBJECT(UI_GradientAlphaSlider),
                     ETK_CALLBACK(_image_AlphaSlider_value_changed_cb), NULL);
+   etk_signal_unblock("value-changed", ETK_OBJECT(UI_GradientAngleSlider),
+                  ETK_CALLBACK(_gradient_AngleSlider_value_changed_cb), NULL);
 
    etk_signal_unblock("value-changed", ETK_OBJECT(UI_GradientRel1XSpinner),
                     ETK_CALLBACK(_gradient_RelSpinners_value_changed_cb),
@@ -456,5 +474,18 @@ _gradient_RelSpinners_value_changed_cb(Etk_Range *range, double value, void *dat
          break;
    }
    canvas_redraw();
+   return ETK_TRUE;
+}
+Etk_Bool
+_gradient_AngleSlider_value_changed_cb(Etk_Object *object, double va, void *data)
+{
+   printf("AngleSlieder value_changed signale EMIT: %.2f\n",va);
+
+   if (!etk_string_length_get(Cur.state)) return ETK_TRUE;
+   if (!etk_string_length_get(Cur.part)) return ETK_TRUE;
+   edje_edit_state_gradient_angle_set(edje_o, Cur.part->string, Cur.state->string, (int)va);
+
+   canvas_redraw();
+
    return ETK_TRUE;
 }
