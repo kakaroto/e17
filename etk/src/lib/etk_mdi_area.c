@@ -379,7 +379,10 @@ static Etk_Bool _etk_mdi_area_realized_cb(Etk_Object *object, void *data)
 
 static Etk_Bool _etk_mdi_area_child_moved_cb(Etk_Widget *child, int x, int y, void *data)
 {
-   etk_mdi_area_move(ETK_MDI_AREA(data), child, x, y);
+   int ax, ay;
+
+   etk_widget_geometry_get(ETK_WIDGET(data), &ax, &ay, NULL, NULL);
+   etk_mdi_area_move(ETK_MDI_AREA(data), child, x - ax, y - ay);
    return ETK_TRUE;
 }
 
