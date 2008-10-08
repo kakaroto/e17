@@ -169,6 +169,8 @@ void main_window_show(const char *file)
    gui->tree = etk_tree_new();
    /* FIXME: add a function to hide the expander of the tree in etk */
    etk_tree_mode_set(ETK_TREE(gui->tree), ETK_TREE_MODE_TREE);
+   etk_tree_expanders_visible_set(ETK_TREE(gui->tree), ETK_FALSE);
+   etk_tree_depth_indent_set(ETK_TREE(gui->tree), 24);
    etk_tree_headers_visible_set(ETK_TREE(gui->tree), ETK_TRUE);
    col = etk_tree_col_new(ETK_TREE(gui->tree), _("Part"), 80, 0.0);
    etk_tree_col_model_add(col, etk_tree_model_text_new());
@@ -735,8 +737,8 @@ static Etk_Bool _gui_tree_checkbox_toggled_cb(Etk_Object *obj,
 	o = co->de->edje_object;
 	if (checked)
 	  {
-	     if (co->de->part_row)
-	       etk_tree_row_fields_set(co->de->part_row, ETK_TRUE, col, ETK_FALSE, NULL);
+	     if (gui->part_row)
+	       etk_tree_row_fields_set(gui->part_row, ETK_TRUE, col, ETK_FALSE, NULL);
 	     evas_object_geometry_get(o, &ox, &oy, NULL, NULL);
 	     edje_object_part_geometry_get(o, name, &px, &py, &pw, &ph);
 
@@ -747,13 +749,13 @@ static Etk_Bool _gui_tree_checkbox_toggled_cb(Etk_Object *obj,
 	     evas_object_raise(Highlighter);
 	     evas_object_show(Highlighter);
 	     edje_object_signal_emit(Highlighter, "edje_viewer,state,visible", "edje_viewer");
-	     co->de->part_row = row;
+	     gui->part_row = co->de->part_row = row;
 	  }
 	else
 	  {
 	     edje_object_signal_emit(Highlighter, "edje_viewer,state,hidden", "edje_viewer");
 	     evas_object_hide(Highlighter);
-	     co->de->part_row = NULL;
+	     gui->part_row = co->de->part_row = NULL;
 	  }
      }
 

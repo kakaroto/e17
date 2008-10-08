@@ -27,6 +27,8 @@ struct _Gui
    Etk_Popup_Window *popup;
    Etk_Widget *search_entry;
 
+   Etk_Tree_Row *part_row;
+
    char *path;
 };
 
