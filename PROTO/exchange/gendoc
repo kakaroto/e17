@@ -1,0 +1,8 @@
+#!/bin/sh
+rm -rf ./doc/html ./doc/latex ./doc/man
+mkdir -p ./doc/html ./doc/latex ./doc/man 2>/dev/null
+doxygen
+rm -f exchange_docs.tar exchange_docs.tar.gz
+tar -cvf exchange_docs.tar doc/html doc/man doc/latex
+gzip -9f exchange_docs.tar
+exit 0

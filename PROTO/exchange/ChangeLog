@@ -1,0 +1,9 @@
+07/31/2008
+Four functions to get info from a local theme (name, author, version and license)
+Enable exchange_cli to use functions
+
+07/28/2008
+Big changes, now exchange  looks like a library.
+
+07/04/2008 11:35
+First commit on get-e.org git repo
