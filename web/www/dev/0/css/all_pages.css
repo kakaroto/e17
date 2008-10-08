@@ -41,8 +41,8 @@ html, body {
 
 .layout
 {
-    margin-left: 25px;
-    margin-right: 25px; /* Keep it in sync with WARNING 2 below */
+    margin-left: 4em;
+    margin-right: 4em; /* Keep it in sync with WARNING 2 below */
 }
 
 .clear
@@ -297,7 +297,7 @@ body
     {
         height: 35px;
         position: absolute;
-        right: 25px; /* The same as the .layout margin */
+        right: 4em; /* The same as the .layout margin */
         top: 68px;
     }
 
