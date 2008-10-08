@@ -167,7 +167,6 @@ void main_window_show(const char *file)
    etk_paned_child1_set(ETK_PANED(vpaned), paned, ETK_TRUE);
 
    gui->tree = etk_tree_new();
-   /* FIXME: add a function to hide the expander of the tree in etk */
    etk_tree_mode_set(ETK_TREE(gui->tree), ETK_TREE_MODE_TREE);
    etk_tree_expanders_visible_set(ETK_TREE(gui->tree), ETK_FALSE);
    etk_tree_depth_indent_set(ETK_TREE(gui->tree), 24);
