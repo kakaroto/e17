@@ -1,0 +1,301 @@
+/*
+    Layout CSS.
+    Based on the code from:
+        http://www.xs4all.nl/~peterned/examples/csslaout1.html
+*/
+
+*
+{
+    padding:0;
+    margin:0;
+}
+
+html,body
+{
+    height:100%; /* needed for container min-height */
+}
+
+#container
+{
+    position:relative; /* needed for footer positioning*/
+
+    height:auto !important; /* real browsers */
+    height:100%; /* IE6: treaded as min-height*/
+
+    min-height:100%; /* real browsers */
+}
+
+#footer
+{
+    position:absolute;
+    bottom:0; /* stick to bottom */
+}
+
+.layout
+{
+    margin-left: 25px;
+    margin-right: 25px;
+}
+
+/*
+    Style CSS.
+*/
+
+body
+{
+    font-family: sans-serif;
+    font-size: 0.8em;
+    background-color: black;
+}
+
+#container
+{
+    background-color: white;
+    background-image: url("img/content_background.png");
+    background-repeat: repeat-x;
+}
+
+#header
+{
+    background-image: url("img/header_background.png");
+    background-repeat: repeat-x;
+    background-position: top left;
+    height: 130px;
+    display: block;
+    margin-bottom: 30px;
+}
+
+    #header h1
+    {
+        width: 200px;
+        height: 130px;
+        background-image: url("img/logo.png");
+        background-repeat: no-repeat;
+        float: left;
+    }
+
+    #header h1 span
+    {
+        display: none;
+    }
+
+    #header h2 span
+    {
+        display: none;
+    }
+
+
+#headerMenuContainer
+{
+    display: block;
+    position: relative;
+    height: 130px;
+    margin-left: 200px;
+}
+
+    #headerMenuContainer .menu, #headerMenuContainer .menuCurrent
+    {
+        height: 130px;
+        padding-left: 1em;
+        padding-right: 1em;
+
+        display: block;
+        float: right;
+    }
+
+    #headerMenuContainer a
+    {
+        text-decoration: none;
+        color: black;
+        font-size: 0.8em;
+    }
+
+    #headerMenuContainer h3
+    {
+        position: relative;
+        top: 100px;
+        color: white;
+        line-height: 30px;
+        font-size: 1.2em;
+    }
+
+    #headerMenuContainer ul
+    {
+        list-style: none;
+    }
+
+    #headerMenuContainer .menu li
+    {
+        display: none;
+    }
+
+    #headerMenuContainer .menuCurrent
+    {
+        background-image: url("img/header_menu_background_current.png");
+        background-repeat: repeat-x;
+    }
+
+    #headerMenuContainer .menuCurrent li
+    {
+        display: block;
+    }
+
+    #headerMenuContainer .menuCurrent h3
+    {
+        color: black;
+        background-image: url("img/header_menu_background_current_arrow.png");
+        background-repeat: repeat-x;
+        background-position: bottom center;
+        background-repeat: no-repeat;
+    }
+
+    #headerMenuContainer .menu:hover
+    {
+        background-image: url("img/header_menu_background_hover.png");
+        background-repeat: repeat-x;
+    }
+
+    #headerMenuContainer .menu:hover li
+    {
+        display: block;
+    }
+
+    #headerMenuContainer .menu:hover h3
+    {
+        color: black;
+    }
+
+
+#content
+{
+    width: 100%;
+    padding-top: 35px;
+    padding-bottom: 2em;
+}
+
+    #welcomeButtons
+    {
+        width: 100%;
+    }
+
+    #welcomeButtons ul
+    {
+        list-style-type: none;
+        margin-top: 1em;
+    }
+
+    #welcomeButtons li
+    {
+        line-height: 2em;
+        font-size: 0.75em;
+    }
+
+    #welcomeButtons a
+    {
+        text-decoration: none;
+        color: black;
+    }
+
+    #welcomeButtons td
+    {
+        vertical-align: top;
+        text-align: center;
+    }
+
+    #welcomeButtons table
+    {
+        width: 100%;
+        border-collapse: collapse;
+        border-width: 0;
+        table-layout: fixed;
+    }
+
+    #welcomeButtons h3
+    {
+        background-repeat: no-repeat;
+        background-position: top center;
+        padding-top: 68px;
+    }
+
+    #welcomeButtonsUse h3
+    {
+        background-image: url("img/icons/applications-system.png");
+        color: #8d8d9f;
+    }
+
+    #welcomeButtonsLearn h3
+    {
+        background-image: url("img/icons/applications-education.png");
+        color: #577453;
+    }
+
+    #welcomeButtonsContribute h3
+    {
+        background-image: url("img/icons/applications-engineering.png");
+        color: #a99803;
+    }
+
+#footer
+{
+    height: 2em;
+    line-height: 1.9em;
+    font-size: 0.7em;
+    width: 100%;
+    background-color: #949494;
+    color: white;
+}
+
+    #notice
+    {
+        float: left;
+    }
+
+    #footerNavigation
+    {
+        float: right;
+    }
+
+    #footerNavigation li
+    {
+        display: inline;
+        border-right:
+    }
+
+    #footerNavigation a
+    {
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+#introductionHomeBackground
+{
+    background-image: url("img/inset.png");
+    background-repeat: repeat-x;
+    background-position: top left;
+    padding-top: 15px;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+    #introductionHomeBackground img
+    {
+        float: left;
+        margin-right: 30px;
+        width: 160px;
+        height: 100px;
+    }
+    #introductionHomeBackground h3 span
+    {
+        display: none
+    }
+
+    #introductionHomeBackground h3
+    {
+        width: 256px;
+        height: 30px;
+        display: block;
+        margin-left: 190px;
+        background-image: url("img/whatis_title.png");
+        background-repeat: no-repeat;
+        background-position: top left;
+    }

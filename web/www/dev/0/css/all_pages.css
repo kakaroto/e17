@@ -1,0 +1,353 @@
+/*
+    Author:
+        Andres Blanc <andresblanc@gmail.com>
+
+    Supported Browsers:
+        ie7, opera9, konqueror4 and firefox3
+
+    Notes:
+        - Please use a different file for ie6, ie5, etc. hacks.
+        - Try to label values from different blocks that need to be kept in sync
+          or any other special consideration with the word "WARNING" and a
+          unique number in a comment.
+*/
+
+*
+{
+    margin: 0;
+    padding: 0;
+}
+
+/*
+    Layout
+    One colum with a footer.
+*/
+html, body {
+    height: 100%;
+}
+
+#container {
+    min-height: 100%;
+}
+
+* html #container {
+    height: 100%;
+}
+
+#footer {
+    clear: both;
+    position: relative;
+}
+
+.layout
+{
+    margin-left: 25px;
+    margin-right: 25px; /* Keep it in sync with WARNING 2 below */
+}
+
+.clear
+{
+    clear: both;
+    width: 0px;
+    height: 0px;
+}
+
+/*
+    Generic style settings.
+    Inherited from the older enlightenment.org stylesheet.
+*/
+
+hr
+{
+    width                  : 200px;
+    height                 : 1px;
+    background-color       : #eeeeee;
+    border                 : 0px;
+}
+
+h1
+{
+    color                  : #000000;
+    font-size              : 1.5em;
+}
+
+h2
+{
+    color                  : #000000;
+    font-size              : 1.3em;
+}
+
+h3
+{
+    color                  : #000000;
+    font-size              : 1.1em;
+}
+
+p
+{
+   color                  : #444444;
+   font-size              : 0.9em;
+   margin-top: 2px;
+   margin-bottom: 10px;
+}
+
+p.tiny
+{
+   color                  : #888888;
+   font-size              : 0.7em;
+}
+
+a:link
+{
+   color                  : #445566;
+   text-decoration        : underline;
+}
+
+a:visited
+{
+   color                  : #667788;
+   text-decoration        : underline;
+}
+
+a:active
+{
+   color                  : #88cccc;
+   text-decoration        : none;
+}
+
+a:hover {
+   color                  : #112266;
+   text-decoration        : underline;
+}
+
+img {
+   vertical-align         : middle;
+   border                 : 0px;
+}
+
+img.thumb {
+   vertical-align         : middle;
+   border                 : 1px solid;
+}
+
+pre {
+   font-family            : "Bitstream Vera Mono", "Vera Mono", "Trebuchet MS Mono", "Trebuchet Mono", "Tahoma Mono", mono;
+   color                  : #000000;
+   font-size              : 0.9em;
+   border                 : 1px dotted #bbb;
+   text-align             : left;
+   vertical-align         : middle;
+   padding                : 5px;
+   overflow               : auto;
+}
+
+blockquote {
+   color                  : #000000;
+   font-size              : 0.9em;
+}
+
+
+/*
+    Style for the big layout elements
+*/
+
+body
+{
+    font-family: "Lucida Grande", "Trebuchet MS", Verdana, Sans-Serif;
+    font-size: 0.8em;
+    background-color: #f3f3f3;
+}
+
+#container
+{
+    background-color: #f3f3f3;
+}
+
+#header
+{
+    background-image: url("../img/header_background.png");
+    background-repeat: repeat-x;
+    background-position: top left;
+    background-color: #aeaeae;
+    height: 100px;
+    display: block;
+}
+
+    #header .layout
+    {
+        height: 65px;
+        background-image: url("../img/header_menu_background.png");
+        background-repeat: repeat-x;
+        background-position: top left;
+    }
+
+    #header h1
+    {
+        width: 58px;
+        height: 65px;
+        background-image: url("../img/logo.png");
+        background-repeat: no-repeat;
+        float: left;
+    }
+
+    #header h1 span
+    {
+        display: none;
+    }
+
+    #header h2 span
+    {
+        display: none;
+    }
+
+#content
+{
+    background-image: url("../img/content_background.png");
+    background-repeat: repeat-x;
+    background-position: top left;
+}
+
+
+#footer
+{
+    margin-top: 30px;
+    line-height: 5em;
+    font-size: 0.7em;
+    width: 100%;
+    background-color: #949494;
+    color: white;
+}
+
+    #footer .notice
+    {
+        float: left;
+    }
+
+    #footer .navigation
+    {
+        float: right;
+    }
+
+    #footer .navigation li
+    {
+        display: inline;
+    }
+
+    #footer .navigation a
+    {
+        color: white;
+        text-decoration: none;
+        font-weight: bold;
+    }
+
+/*
+    Style for the header's navigation system
+*/
+#header .menu-container
+{
+    height: 100px;
+}
+
+    /* Common settings */
+    #header .menu-container ul
+    {
+        list-style-type: none;
+        list-style-position: inside;
+    }
+
+    #header .menu-container ul li
+    {
+        display: block;
+        float: right;
+    }
+
+    #header .menu-container ul li a
+    {
+        padding-left: 1em;
+        padding-right: 1em;
+    }
+
+    /* Menu specific */
+    #header .menu
+    {
+        height: 65px;
+    }
+
+    #header .menu a
+    {
+        color: #d2d2d2;
+        text-decoration: none;
+        font-size: 1.1em;
+        line-height: 60px;
+        display: block;
+    }
+
+    #header .menu li
+    {
+        height: 65px;
+
+        background-image: url("../img/header_menu_separator.png");
+        background-repeat: no-repeat;
+        background-position: top left;
+    }
+
+    /* SubMenu specific */
+    /* WARNING 2 using absolute positioning to make the arrow cover the shadow */
+    #header .submenu
+    {
+        height: 35px;
+        position: absolute;
+        right: 25px; /* The same as the .layout margin */
+        top: 68px;
+    }
+
+    #header .submenu a
+    {
+        display: block;
+        color: #646464;
+        text-decoration: none;
+        font-size: 0.9em;
+        line-height: 35px;
+    }
+
+    /* Hide/Show elements and MouseOver effects */
+    #header .submenu ul
+    {
+        display: none;
+    }
+
+    #header .submenu ul.current
+    {
+        display: block;
+    }
+
+    #header .submenu li.current a
+    {
+        display: block;
+        font-weight: bold;
+        background-image: url("../img/header_submenu_arrow.png");
+        background-repeat: no-repeat;
+        background-position: bottom center;
+        line-height: 35px;
+    }
+
+    #header .menu a.current 
+    {
+        display: block;
+        background-image: url("../img/header_menu_arrow.png");
+        background-repeat: no-repeat;
+        background-position: bottom center;
+        line-height: 60px;
+    }
+
+    #header .submenu a:hover
+    {
+        color: #3f3f3f;
+    }
+
+    #header .menu li:hover
+    {
+        display: block;
+        background-image: url("../img/header_menu_background_hover.png");
+        background-repeat: repeat-x;
+    }

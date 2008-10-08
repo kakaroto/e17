@@ -1,0 +1,205 @@
+#content
+{
+    padding-top: 25px;
+
+}
+
+#colum-content
+{
+    width: 60%;
+    float: left;
+}
+
+#colum-news
+{
+    display: block;
+    margin-left: 60%;
+/*     background-color: white; */
+/*     padding: 1em; */
+}
+
+#introduction
+{
+    margin-right: 25px;
+    display: block;
+    clear: both;
+    background-color: black;
+    background-image: url("../img/home_page/banner_background.png");
+    background-repeat: repeat-x;
+    background-position: top right;
+}
+
+#introduction .level1
+{
+    background-image: url("../img/home_page/banner_corner_left.png");
+    background-repeat: no-repeat;
+    background-position: top left;
+}
+
+#introduction .level2
+{
+    background-image: url("../img/home_page/banner_corner_right.png");
+    background-repeat: no-repeat;
+    background-position: top right;
+    padding-right: 25px;
+    padding-left: 25px;
+    padding-bottom: 25px;
+    padding-top: 70px;
+}
+
+#introduction h3
+{
+    margin-left: 25px;
+/*    margin-bottom: 25px;*/
+    width: 391px;
+    height: 69px;
+    background-image: url("../img/home_page/what_is.png");
+    background-repeat: no-repeat;
+    background-position: top right;
+/*     font-size: 3em; */
+/*     color: white; */
+}
+
+#introduction h3 span
+{
+    display: none;
+}
+
+#introduction p
+{
+/*     margin-top: 1em; */
+/*     margin-left: 245px; */
+    color: white;
+}
+
+#introduction ul
+{
+    display: block;
+/*     margin-left: 245px; */
+    list-style-position: inside;
+    list-style-type: none;
+    margin-top: 25px;
+}
+
+#introduction li
+{
+    line-height: 25px;
+}
+
+#introduction li a
+{
+    text-decoration: none;
+    font-weight: bold;
+    color: black;
+    color: white;
+}
+
+#introduction .images
+{
+    float: left;
+    margin-left: 27px;
+    margin-top: 20px;
+}
+
+
+
+#welcome-buttons
+{
+    margin-top: 25px;
+}
+
+    #welcome-buttons ul
+    {
+        list-style-type: none;
+        margin-top: 1em;
+    }
+
+    #welcome-buttons li
+    {
+        line-height: 2em;
+        font-size: 0.75em;
+    }
+
+    #welcome-buttons a
+    {
+        text-decoration: none;
+        color: black;
+    }
+
+    #welcome-buttons td
+    {
+        vertical-align: top;
+        text-align: center;
+    }
+
+    #welcome-buttons table
+    {
+        width: 100%;
+        border-collapse: collapse;
+        border-width: 0;
+        table-layout: fixed;
+    }
+
+    #welcome-buttons h3
+    {
+        background-repeat: no-repeat;
+        background-position: top center;
+        padding-top: 68px;
+    }
+
+    #welcome-button-use h3
+    {
+        background-image: url("../img/icons/applications-system.png");
+        color: #8d8d9f;
+    }
+
+    #welcome-button-learn h3
+    {
+        background-image: url("../img/icons/applications-education.png");
+        color: #577453;
+    }
+
+    #welcome-button-contribute h3
+    {
+        background-image: url("../img/icons/applications-engineering.png");
+        color: #a99803;
+    }
+
+
+
+
+
+#colum-news h2
+{
+    margin-bottom: 25px;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    background-image: url("../img/separator_background.png");
+    background-repeat: repeat-x;
+    background-position: top right;
+    color: #646464;
+    display: none;
+}
+.news-blurb
+{
+    display: block;
+}
+
+    .news-blurb h4
+    {
+        font-weight: bold;
+        font-size: 1em;
+    }
+
+    .news-blurb .time-stamp
+    {
+        font-size: 0.7em;
+        margin-bottom: 10px;
+    }
+
+    .news-blurb .see-more
+    {
+        margin-top: 10px;
+        text-align: right;
+    }

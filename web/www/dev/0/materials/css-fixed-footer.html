@@ -1,0 +1,61 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html lang="en"><head>
+
+<title>CSS Fixed Footer</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<style type="text/css">
+* {
+	padding: 0;
+	margin: 0;
+}
+
+html, body {
+	height: 100%;
+}
+#container {
+    min-height: 100%;
+    margin-bottom: -40px;
+    padding-bottom: -40px;
+    background-color: red;
+    margin-right: 50px;
+    margin-left: 50px;
+}
+* html #container {
+	height: 100%;
+}
+
+#footer {
+    clear: both;
+    height: 40px;
+    position: relative;
+    background-color: blue;
+    width: 50%;
+}
+
+#clearfooter
+{
+    clear: both;
+    width: 0px;
+    height: 0px;
+}
+
+#colum-right
+{
+    display: block;
+    float:right;
+    width: 100%;
+}
+</style>
+</head><body>
+<div id="container">
+    
+
+
+
+
+    <div id="clearfooter"></div>
+	</div>
+<div id="footer">
+	<p>© Dave Woods</p>
+</div>
+</body></html>
