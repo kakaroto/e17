@@ -176,6 +176,7 @@ struct Etk_Tree
    int col_resize_orig_width;
    int col_resize_orig_mouse_x;
    int total_rows;
+   int depth_indent;
 
    Ecore_Job *purge_job;
    Etk_Tree_Mode mode;
@@ -185,6 +186,7 @@ struct Etk_Tree
    Etk_Bool multiple_select:1;
    Etk_Bool alternating_row_colors:1;
    Etk_Bool headers_visible:1;
+   Etk_Bool expanders_visible:1;
    Etk_Bool col_separators_visible:1;
    Etk_Bool frozen:1;
    Etk_Bool built:1;
@@ -201,6 +203,10 @@ void           etk_tree_multiple_select_set(Etk_Tree *tree, Etk_Bool multiple_se
 Etk_Bool       etk_tree_multiple_select_get(Etk_Tree *tree);
 void           etk_tree_headers_visible_set(Etk_Tree *tree, Etk_Bool headers_visible);
 Etk_Bool       etk_tree_headers_visible_get(Etk_Tree *tree);
+void           etk_tree_expanders_visible_set(Etk_Tree *tree, Etk_Bool expanders_visible);
+Etk_Bool       etk_tree_expanders_visible_get(Etk_Tree *tree);
+void           etk_tree_depth_indent_set(Etk_Tree *tree, Etk_Bool expanders_visible);
+Etk_Bool       etk_tree_depth_indent_get(Etk_Tree *tree);
 void           etk_tree_column_separators_visible_set(Etk_Tree *tree, Etk_Bool col_separators_visible);
 Etk_Bool       etk_tree_column_separators_visible_get(Etk_Tree *tree);
 void           etk_tree_alternating_row_colors_set(Etk_Tree *tree, Etk_Bool alternating_row_colors);

@@ -87,6 +87,8 @@ enum Etk_Tree_Property_Id
    ETK_TREE_MODE_PROPERTY,
    ETK_TREE_MULTIPLE_SELECT_PROPERTY,
    ETK_TREE_HEADERS_VISIBLE_PROPERTY,
+   ETK_TREE_EXPANDERS_VISIBLE_PROPERTY,
+   ETK_TREE_DEPTH_INDENT_PROPERTY,
    ETK_TREE_COLUMN_SEPARATORS_VISIBLE_PROPERTY,
    ETK_TREE_ALTERNATING_ROW_COLORS_PROPERTY,
    ETK_TREE_ROWS_HEIGHT_PROPERTY
@@ -225,6 +227,10 @@ Etk_Type *etk_tree_type_get(void)
             ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_TRUE));
       etk_type_property_add(tree_type, "headers-visible", ETK_TREE_HEADERS_VISIBLE_PROPERTY,
             ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_TRUE));
+      etk_type_property_add(tree_type, "expanders-visible", ETK_TREE_EXPANDERS_VISIBLE_PROPERTY,
+            ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_TRUE));
+      etk_type_property_add(tree_type, "depth-indent", ETK_TREE_DEPTH_INDENT_PROPERTY,
+            ETK_PROPERTY_INT, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_int(0));
       etk_type_property_add(tree_type, "column-separators-visible", ETK_TREE_COLUMN_SEPARATORS_VISIBLE_PROPERTY,
             ETK_PROPERTY_BOOL, ETK_PROPERTY_READABLE_WRITABLE, etk_property_value_bool(ETK_TRUE));
       etk_type_property_add(tree_type, "alternating-row-colors", ETK_TREE_ALTERNATING_ROW_COLORS_PROPERTY,
@@ -378,6 +384,61 @@ Etk_Bool etk_tree_headers_visible_get(Etk_Tree *tree)
    if (!tree)
       return ETK_FALSE;
    return tree->headers_visible;
+}
+
+/**
+ * @brief Sets whether the row expanders should be visible or not. Default indentation will also be disabled, if expanders are not visible. To add custom depth indentation, etk_tree_depth_indent_set can be used()
+ * @param tree a tree
+ * @param expanders_visible ETK_TRUE to show the row expanders, ETK_FALSE to hide them
+ * @see etk_tree_depth_indent_set()
+ */
+void etk_tree_expanders_visible_set(Etk_Tree *tree, Etk_Bool expanders_visible)
+{
+   if (!tree || (tree->expanders_visible == expanders_visible))
+      return;
+
+   tree->expanders_visible = expanders_visible;
+   etk_object_notify(ETK_OBJECT(tree), "expanders-visible");
+   etk_widget_redraw_queue(ETK_WIDGET(tree));
+}
+
+/**
+ * @brief Gets whether or not the row expanders are visible
+ * @param tree a tree
+ * @return Returns ETK_TRUE if the row expanders are visible, ETK_FALSE otherwise
+ */
+Etk_Bool etk_tree_expanders_visible_get(Etk_Tree *tree)
+{
+   if (!tree)
+      return ETK_FALSE;
+   return tree->expanders_visible;
+}
+
+/**
+ * @brief Adds additional indentation per depth. Does not affect indentation of first-level rows.
+ * @param tree a tree
+ * @param indent_level ETK_TRUE to show the row expanders, ETK_FALSE to hide them
+ */
+void etk_tree_depth_indent_set(Etk_Tree *tree, Etk_Bool depth_indent)
+{
+   if (!tree || (tree->depth_indent == depth_indent))
+      return;
+
+   tree->depth_indent = depth_indent;
+   etk_object_notify(ETK_OBJECT(tree), "depth-indent");
+   etk_widget_redraw_queue(ETK_WIDGET(tree));
+}
+
+/**
+ * @brief Gets the amount of additional indent, in pixels, of child rows
+ * @param tree a tree
+ * @return Returns the amount of indentation in pixels
+ */
+Etk_Bool etk_tree_depth_indent_get(Etk_Tree *tree)
+{
+   if (!tree)
+      return ETK_FALSE;
+   return tree->depth_indent;
 }
 
 /**
@@ -1946,6 +2007,8 @@ static void _etk_tree_constructor(Etk_Tree *tree)
    tree->sorted_col = NULL;
    tree->sorted_asc = ETK_TRUE;
    tree->headers_visible = ETK_TRUE;
+   tree->expanders_visible = ETK_TRUE;
+   tree->depth_indent = 0;
    tree->col_separators_visible = ETK_TRUE;
    tree->grid_clip = NULL;
 
@@ -2029,6 +2092,12 @@ static void _etk_tree_property_set(Etk_Object *object, int property_id, Etk_Prop
       case ETK_TREE_HEADERS_VISIBLE_PROPERTY:
          etk_tree_headers_visible_set(tree, etk_property_value_bool_get(value));
          break;
+      case ETK_TREE_EXPANDERS_VISIBLE_PROPERTY:
+         etk_tree_expanders_visible_set(tree, etk_property_value_bool_get(value));
+         break;
+      case ETK_TREE_DEPTH_INDENT_PROPERTY:
+         etk_tree_depth_indent_set(tree, etk_property_value_int_get(value));
+         break;
       case ETK_TREE_COLUMN_SEPARATORS_VISIBLE_PROPERTY:
          etk_tree_column_separators_visible_set(tree, etk_property_value_bool_get(value));
          break;
@@ -2064,6 +2133,12 @@ static void _etk_tree_property_get(Etk_Object *object, int property_id, Etk_Prop
          break;
       case ETK_TREE_HEADERS_VISIBLE_PROPERTY:
          etk_property_value_bool_set(value, tree->headers_visible);
+         break;
+      case ETK_TREE_EXPANDERS_VISIBLE_PROPERTY:
+         etk_property_value_bool_set(value, tree->expanders_visible);
+         break;
+      case ETK_TREE_DEPTH_INDENT_PROPERTY:
+         etk_property_value_int_set(value, tree->depth_indent);
          break;
       case ETK_TREE_ALTERNATING_ROW_COLORS_PROPERTY:
          etk_property_value_bool_set(value, tree->alternating_row_colors);
@@ -2754,7 +2829,7 @@ static void _etk_tree_row_objects_update(Etk_Tree *tree, Etk_Geometry grid_geome
    row_y = -(tree->scroll_y % tree->rows_height);
    for (row = tree->root.first_child, i = 0; i < row_id && row; i++)
       row = _etk_tree_row_next_to_render_get(row, &depth);
-   show_expanders = (tree->total_rows > tree->root.num_children && first_visible_col);
+   show_expanders = (tree->expanders_visible && tree->total_rows > tree->root.num_children && first_visible_col);
 
    for (l = tree->row_objects; l; l = l->next)
    {
@@ -2795,17 +2870,25 @@ static void _etk_tree_row_objects_update(Etk_Tree *tree, Etk_Geometry grid_geome
                cell_geometry.h = tree->rows_height - (2 * CELL_VMARGINS);
 
                /* Render the expander of the row */
-               if (col == first_visible_col && show_expanders)
+               if (col == first_visible_col)
                {
-                  edje_object_size_min_get(row_object->expander, &expander_w, &expander_h);
-                  if (row->num_children > 0)
+                  if (show_expanders)
                   {
-                     evas_object_move(row_object->expander,
-                           cell_geometry.x + (depth * expander_w), cell_geometry.y);
-                     evas_object_resize(row_object->expander, expander_w, expander_h);
+                     edje_object_size_min_get(row_object->expander, &expander_w, &expander_h);
+                     if (row->num_children > 0)
+                     {
+                        evas_object_move(row_object->expander,
+                              cell_geometry.x + (depth * expander_w), cell_geometry.y);
+                        evas_object_resize(row_object->expander, expander_w, expander_h);
+                     }
+                     cell_geometry.x += ((depth + 1) * expander_w) + CELL_HMARGINS;
+                     cell_geometry.w -= ((depth + 1) * expander_w) + CELL_HMARGINS;
                   }
-                  cell_geometry.x += ((depth + 1) * expander_w) + CELL_HMARGINS;
-                  cell_geometry.w -= ((depth + 1) * expander_w) + CELL_HMARGINS;
+                  if (tree->depth_indent)
+                  {
+                     cell_geometry.x += (depth * tree->depth_indent);
+                     cell_geometry.w -= (depth * tree->depth_indent);
+                  }
                }
 
                /* Render the sub-objects of the cell */
@@ -4060,6 +4143,16 @@ static void _etk_tree_reverse_rows(Etk_Tree_Row *first)
  * @prop_type Boolean
  * @prop_rw
  * @prop_val ETK_TRUE
+ * \par
+ * @prop_name "expanders-visible": Whether or not the row expanders are visible
+ * @prop_type Boolean
+ * @prop_rw
+ * @prop_val ETK_TRUE
+ * \par
+ * @prop_name "depth-indent": The additional indent of child rows
+ * @prop_type Integer
+ * @prop_rw
+ * @prop_val 0
  * \par
  * @prop_name "column-separators-visible": Whether or not the columns are separated by a visible vertical separator
  * @prop_type Boolean
