@@ -6,14 +6,14 @@
 
 #colum-content
 {
-    width: 60%;
+    width: 50%;
     float: left;
 }
 
 #colum-news
 {
     display: block;
-    margin-left: 60%;
+    margin-left: 50%;
 /*     background-color: white; */
 /*     padding: 1em; */
 }
@@ -44,15 +44,15 @@
     padding-right: 25px;
     padding-left: 25px;
     padding-bottom: 25px;
-    padding-top: 70px;
+    padding-top: 55px;
 }
 
 #introduction h3
 {
     margin-left: 25px;
-/*    margin-bottom: 25px;*/
-    width: 391px;
-    height: 69px;
+    margin-bottom: 15px;
+    width: 269px;
+    height: 42px;
     background-image: url("../img/home_page/what_is.png");
     background-repeat: no-repeat;
     background-position: top right;
