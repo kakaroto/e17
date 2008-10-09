@@ -28,6 +28,14 @@ Etk_Widget *UI_PartEventsRepeatCheck;
 Etk_Widget *UI_CliptoComboBox;
 Etk_Widget *UI_PartSourceComboBox;
 Etk_Widget *UI_PartSourceLabel;
+Etk_Widget *UI_PartDragXCheck;
+Etk_Widget *UI_PartStepXSpinner;
+Etk_Widget *UI_PartCountXSpinner;
+Etk_Widget *UI_PartDragYCheck;
+Etk_Widget *UI_PartStepYSpinner;
+Etk_Widget *UI_PartCountYSpinner;
+Etk_Widget *UI_PartConfineCombo;
+Etk_Widget *UI_PartEventCombo;
 
 
 Etk_Widget*  part_frame_create   (void);
@@ -41,7 +49,11 @@ Etk_Bool _part_CliptoComboBox_item_activated_cb (Etk_Combobox *combobox, Etk_Com
 Etk_Bool _part_SourceComboBox_item_activated_cb (Etk_Combobox *combobox, Etk_Combobox_Item *item, void *data);
 Etk_Bool _part_NameEntry_key_down_cb            (Etk_Object *object, Etk_Event_Key_Down *event, void *data);
 Etk_Bool _part_NameEntryImage_clicked_cb        (Etk_Object *object, void *data);
-
+Etk_Bool _part_DragXCheck_toggled_cb            (Etk_Object *object, void *data);
+Etk_Bool _part_DragYCheck_toggled_cb            (Etk_Object *object, void *data);
+Etk_Bool _part_drag_spinners_value_changed_cb   (Etk_Range *range, double value, void *data);
+Etk_Bool _part_ConfineCombo_item_activated_cb   (Etk_Combobox *combobox, Etk_Combobox_Item *item, void *data);
+Etk_Bool _part_EventCombo_item_activated_cb   (Etk_Combobox *combobox, Etk_Combobox_Item *item, void *data);
 
 
 #endif

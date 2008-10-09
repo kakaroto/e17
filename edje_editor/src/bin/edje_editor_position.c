@@ -343,16 +343,22 @@ position_comboboxes_populate(void)
                     (void *)REL2Y_SPINNER);
    etk_signal_block("item-activated", ETK_OBJECT(UI_CliptoComboBox),
                     ETK_CALLBACK(_part_CliptoComboBox_item_activated_cb), NULL);
-
+   etk_signal_block("item-activated", ETK_OBJECT(UI_PartConfineCombo),
+                    ETK_CALLBACK(_part_ConfineCombo_item_activated_cb), NULL);
+   etk_signal_block("item-activated", ETK_OBJECT(UI_PartEventCombo),
+                    ETK_CALLBACK(_part_EventCombo_item_activated_cb), NULL);
+   
    etk_combobox_clear(ETK_COMBOBOX(UI_Rel1ToXComboBox));
    etk_combobox_clear(ETK_COMBOBOX(UI_Rel1ToYComboBox));
    etk_combobox_clear(ETK_COMBOBOX(UI_Rel2ToXComboBox));
    etk_combobox_clear(ETK_COMBOBOX(UI_Rel2ToYComboBox));
    etk_combobox_clear(ETK_COMBOBOX(UI_CliptoComboBox));
+   etk_combobox_clear(ETK_COMBOBOX(UI_PartConfineCombo));
+   etk_combobox_clear(ETK_COMBOBOX(UI_PartEventCombo));
 
    if (etk_string_length_get(Cur.group))
    {
-      // Add first element 'Interface' to all the 4 combobox
+      // Add first element 'Interface' to all the comboboxs
       etk_combobox_item_append(ETK_COMBOBOX(UI_Rel1ToXComboBox),
                                etk_image_new_from_edje(EdjeFile,"NONE.PNG"),
                                "Interface");
@@ -368,8 +374,14 @@ position_comboboxes_populate(void)
       etk_combobox_item_append(ETK_COMBOBOX(UI_CliptoComboBox), 
                                etk_image_new_from_edje(EdjeFile,"NONE.PNG"),
                                "None");
-
-      // Add all the part to all the 4 combobox
+      etk_combobox_item_append(ETK_COMBOBOX(UI_PartConfineCombo), 
+                               etk_image_new_from_edje(EdjeFile,"NONE.PNG"),
+                               "None");
+      etk_combobox_item_append(ETK_COMBOBOX(UI_PartEventCombo), 
+                               etk_image_new_from_edje(EdjeFile,"NONE.PNG"),
+                               "None");
+      
+      // Add all the part to all the comboboxs
       Evas_List *parts;
 
       parts = l = edje_edit_parts_list_get(edje_o);
@@ -393,6 +405,12 @@ position_comboboxes_populate(void)
          etk_combobox_item_append(ETK_COMBOBOX(UI_CliptoComboBox),
                                   etk_image_new_from_edje(EdjeFile, image_name),
                                   (char *)l->data);
+         etk_combobox_item_append(ETK_COMBOBOX(UI_PartConfineCombo),
+                                  etk_image_new_from_edje(EdjeFile, image_name),
+                                  (char *)l->data);
+         etk_combobox_item_append(ETK_COMBOBOX(UI_PartEventCombo),
+                                  etk_image_new_from_edje(EdjeFile, image_name),
+                                  (char *)l->data);
          free(image_name);
          l = l->next;
       }
@@ -414,6 +432,10 @@ position_comboboxes_populate(void)
                       (void *)REL2Y_SPINNER);
    etk_signal_unblock("item-activated", ETK_OBJECT(UI_CliptoComboBox),
                       ETK_CALLBACK(_part_CliptoComboBox_item_activated_cb), NULL);
+   etk_signal_unblock("item-activated", ETK_OBJECT(UI_PartConfineCombo),
+                      ETK_CALLBACK(_part_ConfineCombo_item_activated_cb), NULL);
+   etk_signal_unblock("item-activated", ETK_OBJECT(UI_PartEventCombo),
+                      ETK_CALLBACK(_part_EventCombo_item_activated_cb), NULL);
 }
 
 

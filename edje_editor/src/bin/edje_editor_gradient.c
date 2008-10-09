@@ -28,7 +28,6 @@ gradient_frame_create(void)
 {
    Etk_Widget *table;
    Etk_Widget *label;
-   Etk_Widget *hbox;
    Etk_Combobox_Item *item;
 
    //table
