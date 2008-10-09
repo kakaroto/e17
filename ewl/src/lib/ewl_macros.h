@@ -120,11 +120,27 @@ do { \
 #endif
 
 /**
- * @def INTPTR_TO_INT(x)
- * Does a cast from a pointer to the type int, if debug is enabled at 
- * compile-time it will add a runtime check if any information get lost.
+ * @def INT_TO_INTPTR(x)
+ * Does a cast from the type int to an pointer 
  */
 #define INT_TO_INTPTR(x) ((void *)((long int)(x)))
+
+/**
+ * @def UINTPTR_TO_UINT(x)
+ * Does a cast from a pointer to the type unsigned int, if debug is enabled at 
+ * compile-time it will add a runtime check if any information get lost.
+ */
+#ifdef EWL_ENABLE_DEBUG
+# define UINTPTR_TO_UINT(x) ((unsigned int) ewl_cast_pointer_to_integer(x))
+#else
+# define UINTPTR_TO_UINT(x) ((unsigned int)((unsigned long int)(x)))
+#endif
+
+/**
+ * @def UINT_TO_UINTPTR(x)
+ * Does a cast from the type int to an pointer 
+ */
+#define UINT_TO_UINTPTR(x) ((void *)((unsigned long int)(x)))
 
 /**
  * @}
