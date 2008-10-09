@@ -3835,7 +3835,7 @@ ewl_text_cb_key_down(Ewl_Widget *w, void *ev, void *data __UNUSED__)
 }
 
 void
-ewl_text_cb_selection_clear(Ewl_Widget *w, void *ev__UNUSED__, 
+ewl_text_cb_selection_clear(Ewl_Widget *w, void *ev __UNUSED__, 
                                 void *data __UNUSED__)
 {
         Ewl_Text *t;

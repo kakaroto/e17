@@ -26,7 +26,8 @@ test_info(Ewl_Test *test)
         test->unit_tests = kinetic_tree_unit_tests;
 }
 
-static void destroy_test(Ewl_Widget *w, void *ev, void *data)
+static void destroy_test(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+                        void *data)
 {
         ecore_list_destroy(data);
 }

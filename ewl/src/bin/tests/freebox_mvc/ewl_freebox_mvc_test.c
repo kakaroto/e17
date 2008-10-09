@@ -141,13 +141,13 @@ ewl_freebox_mvc_test_widget_fetch(void *data, unsigned int row __UNUSED__,
 
 static void *
 ewl_freebox_mvc_test_data_fetch(void *data, unsigned int row, 
-                                            unsigned int column)
+                                            unsigned int column __UNUSED__)
 {
         Ecore_List *d;
 
         d = data;
 
-        if (row >= ecore_list_count(d))
+        if ((int) row >= ecore_list_count(d))
         {
                 printf("Asking for too many items\n");
                 return NULL;
@@ -167,7 +167,8 @@ ewl_freebox_mvc_test_data_count_get(void *data)
 }
 
 static void 
-ewl_freebox_mvc_test_cb_add(Ewl_Widget *w, void *ev, void *data)
+ewl_freebox_mvc_test_cb_add(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+				void *data)
 {
         Ecore_List *d;
 
@@ -180,7 +181,8 @@ ewl_freebox_mvc_test_cb_add(Ewl_Widget *w, void *ev, void *data)
 }
 
 static void
-ewl_freebox_mvc_test_cb_clear(Ewl_Widget *w, void *ev, void *data)
+ewl_freebox_mvc_test_cb_clear(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, 
+				void *data)
 {
         Ecore_List *d;
 

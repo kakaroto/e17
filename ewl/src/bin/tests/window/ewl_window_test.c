@@ -41,7 +41,7 @@ create_test(Ewl_Container *box)
 }
 
 static void
-run_window(Ewl_Widget *w, void *ev, void *data)
+run_window(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, void *data __UNUSED__)
 {
         Ewl_Widget *win, *b, *o;
 
@@ -62,13 +62,13 @@ run_window(Ewl_Widget *w, void *ev, void *data)
 }
 
 static void
-del_window_cb(Ewl_Widget *w, void *ev, void *data)
+del_window_cb(Ewl_Widget *w, void *ev __UNUSED__, void *data __UNUSED__)
 {
         ewl_widget_destroy(w);
 }
 
 static void
-flip_border_cb(Ewl_Widget *w, void *ev, void *data)
+flip_border_cb(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, void *data)
 {
         ewl_window_borderless_set(EWL_WINDOW(data),
                 !ewl_window_borderless_get(EWL_WINDOW(data)));

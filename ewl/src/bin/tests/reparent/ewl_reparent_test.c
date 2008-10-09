@@ -42,7 +42,7 @@ create_test(Ewl_Container *box)
 }
 
 static void
-run_window(Ewl_Widget *w, void *ev, void *data)
+run_window(Ewl_Widget *w __UNUSED__, void *ev __UNUSED__, void *data __UNUSED__)
 {
         Ewl_Widget *win1, *win2, *box;
 
@@ -109,7 +109,7 @@ fill_window(Ewl_Dialog *d, Ewl_Dialog *d2, Ewl_Widget *box)
 }
 
 static void
-reparent_cb(Ewl_Widget *w, void *ev, void *data)
+reparent_cb(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 {
         Ewl_Embed *emb;
         Ewl_Widget *o;
@@ -137,7 +137,7 @@ reparent_cb(Ewl_Widget *w, void *ev, void *data)
 }
 
 static void
-del_window_cb(Ewl_Widget *w, void *ev, void *data)
+del_window_cb(Ewl_Widget *w, void *ev __UNUSED__, void *data)
 {
         ewl_widget_destroy(w);
         ewl_widget_destroy(EWL_WIDGET(data));
