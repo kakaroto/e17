@@ -47,19 +47,19 @@ typedef struct Ewl_Filepicker Ewl_Filepicker;
  */
 struct Ewl_Filepicker
 {
-        Ewl_Box box;                        /**< Inherit from Ewl_Box */
+        Ewl_Box box;                    /**< Inherit from Ewl_Box */
 
-        Ewl_Widget *file_list;                /**< The file list widet */
+        Ewl_Widget *file_list;          /**< The file list widet */
 
-        Ewl_Widget *type_combo;                /**< File type combo */
-        Ewl_Widget *file_entry;                /**< Filename entry box */
-        Ewl_Widget *favorites_box;        /**< Favoirte directory box */
-        Ewl_Widget *path_combo;                /**< Path combo box */
-        Ewl_Widget *dir_button;                /**< Button to create a directory */
-        Ewl_Widget *ret_button;                /**< The save/open button */
+        Ewl_Widget *type_combo;         /**< File type combo */
+        Ewl_Widget *file_entry;         /**< Filename entry box */
+        Ewl_Widget *favorites_box;      /**< Favoirte directory box */
+        Ewl_Widget *path_combo;         /**< Path combo box */
+        Ewl_Widget *dir_button;         /**< Button to create a directory */
+        Ewl_Widget *ret_button;         /**< The save/open button */
 
-        Ecore_List *path;                /**< The path components */
-        Ecore_List *filters;                /**< The type filters */
+        Ecore_List *path;               /**< The path components */
+        Ecore_List *filters;            /**< The type filters */
 
         struct
         {
@@ -68,7 +68,7 @@ struct Ewl_Filepicker
                 Ewl_Widget *combo;
         } mvc_filters, mvc_path;
 
-        unsigned char show_favorites:1;        /**< Show the favorite box */
+        unsigned char show_favorites:1; /**< Show the favorite box */
         unsigned char saveas_dialog:1;  /**< Open or save dialog */
         unsigned char ret_dir:1;        /**< Allow directories to be returned */
 
