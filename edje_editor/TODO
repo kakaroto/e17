@@ -3,10 +3,7 @@ TODO edje_editor (not a complete list...only the first in my mind)
 
 EDJE:
 * Font and image can't be removed
-* Save back the updated edc source to the edje file
 * Embryo scripting (waiting for lua)
-* Use a value in the edje data field to store the editor version
-  If no version information found alert the user
 * Edje draggies
 
 EDITOR:

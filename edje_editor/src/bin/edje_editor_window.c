@@ -353,6 +353,8 @@ _window_all_button_click_cb(Etk_Button *button, void *data)
    const char *tween;
    Etk_Tree_Row *row, *next, *prev;
    Evas_List *icons, *l;
+   const char *compiler;
+   Etk_Widget *dialog;
 
    switch ((int)(long)data)
       {
@@ -369,11 +371,29 @@ _window_all_button_click_cb(Etk_Button *button, void *data)
          break;
       }
 
-      edje_edit_save(edje_o);
-      if (!ecore_file_cp(Cur.edj_temp_name->string, Cur.edj_file_name->string))
+      compiler = edje_edit_compiler_get(edje_o);
+      if (strcmp(compiler, "edje_edit"))
       {
-         dialog_alert_show("<b>ERROR:<\b><br>Can't write file");
+         dialog = etk_message_dialog_new(ETK_MESSAGE_DIALOG_WARNING,
+                                         ETK_MESSAGE_DIALOG_OK_CANCEL,
+                     "<b>Warning</b><br>"
+                     "This file has been compiled from EDC sources.<br>"
+                     "Saving the file means that the original source file will<br>"
+                     "be replaced by a new generated EDC.<br><br>"
+                     "This will cause the lost of the following features:<br>"
+                     " - All the MACRO (#define) will be lost.<br>"
+                     " - All the comments in the original sources will be lost.<br>"
+                     " - All the sources file will be merged in a single EDC.<br><br>"
+                     "Are you sure you want to save the file?"
+                     );
+         etk_signal_connect("response", ETK_OBJECT(dialog),
+                            ETK_CALLBACK(_window_confirm_save), NULL);
+         etk_widget_show_all(dialog);
+         break;
       }
+      edje_edit_string_free(compiler);
+
+      _window_confirm_save(NULL, ETK_RESPONSE_OK, NULL);
       break;
    case TOOLBAR_SAVE_EDC:
       dialog_alert_show("Not yet reimplemented ;)");
@@ -565,6 +585,8 @@ _window_all_button_click_cb(Etk_Button *button, void *data)
       //edje_edit_group_add(edje_o, "dai cazzo");
       //on_AddMenu_item_activated(NULL, NEW_RECT);
       edje_edit_print_internal_status(edje_o);
+      //edje_scale_set (1.5);
+      //printf("SCALE: %f\n", edje_scale_get());
       break;
    case IMAGE_TWEEN_UP:
       dialog_alert_show("Up not yet implemented.");
@@ -678,3 +700,16 @@ _window_color_canvas_click(void *data, Evas *e, Evas_Object *obj, void *event_in
                       ETK_CALLBACK(_dialog_colorpicker_change_cb), NULL);
 }
 
+
+void
+_window_confirm_save(Etk_Dialog *dialog, int response_id, void *data)
+{
+   if (response_id == ETK_RESPONSE_OK)
+   {
+      edje_edit_save(edje_o);
+      if (!ecore_file_cp(Cur.edj_temp_name->string, Cur.edj_file_name->string))
+         dialog_alert_show("<b>ERROR:<\b><br>Can't write file");
+   }
+
+   if (dialog) etk_object_destroy(ETK_OBJECT(dialog));
+}

@@ -55,5 +55,7 @@ Etk_Bool _window_all_button_click_cb (Etk_Button *button, void *data);
 void     _window_logo_key_press      (void *data, Evas *e, Evas_Object *obj, void *event_info);
 void     _window_color_canvas_click  (void *data, Evas *e, Evas_Object *obj, void *event_info);
 
+void     _window_confirm_save        (Etk_Dialog *dialog, int response_id, void *data);
+
 
 #endif
