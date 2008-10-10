@@ -56,7 +56,7 @@ int                 filedev(const char *s);
 int                 isabspath(const char *s);
 const char         *fileext(const char *s);
 char               *fileof(const char *s);
-char               *fullfileof(const char *s);
+const char         *fullfileof(const char *s);
 
 char               *path_test(const char *file, unsigned int test);
 int                 path_canexec(const char *file);

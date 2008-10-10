@@ -425,7 +425,7 @@ ThemePathFind(void)
      }
 
    Efree(Conf.theme.name);
-   Conf.theme.name = (theme) ? fullfileof(theme) : NULL;
+   Conf.theme.name = Estrdup(fullfileof(theme));
 
    Efree(Mode.theme.path);
    Mode.theme.path = (theme) ? theme : Estrdup("-");

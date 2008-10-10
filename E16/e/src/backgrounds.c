@@ -1517,15 +1517,13 @@ BG_GetValues(void)
 static void
 BG_DialogSetFileName(DItem * di)
 {
-   char               *stmp = NULL;
+   const char         *stmp;
    char                s[1024];
 
-   if (BackgroundGetBgFile(tmp_bg))
-      stmp = fullfileof(BackgroundGetBgFile(tmp_bg));
+   stmp = fullfileof(BackgroundGetBgFile(tmp_bg));
    Esnprintf(s, sizeof(s),
 	     _("Background definition information:\nName: %s\nFile: %s\n"),
 	     BackgroundGetName(tmp_bg), (stmp) ? stmp : _("-NONE-"));
-   Efree(stmp);
    DialogItemSetText(di, s);
 }
 

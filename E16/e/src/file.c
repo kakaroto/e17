@@ -267,13 +267,15 @@ fileof(const char *path)
    return Estrndup(s1, s2 - s1);
 }
 
-char               *
+const char         *
 fullfileof(const char *path)
 {
    const char         *s;
 
+   if (!path)
+      return NULL;
    s = strrchr(path, '/');
-   return Estrdup((s) ? s + 1 : path);
+   return (s) ? s + 1 : path;
 }
 
 char               *

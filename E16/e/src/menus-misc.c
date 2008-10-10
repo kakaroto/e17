@@ -538,7 +538,8 @@ MenuLoadFromThemes(Menu * m)
 {
    char              **lst;
    int                 i, num;
-   char                ss[4096], *s;
+   char                ss[4096];
+   const char         *s;
    MenuItem           *mi;
 
    if (MenuGetTimestamp(m))
@@ -551,7 +552,6 @@ MenuLoadFromThemes(Menu * m)
 	s = fullfileof(lst[i]);
 	Esnprintf(ss, sizeof(ss), "theme use %s", s);
 	mi = MenuItemCreate(s, NULL, ss, NULL);
-	Efree(s);
 	MenuAddItem(m, mi);
      }
    if (lst)
