@@ -14234,7 +14234,7 @@ collections { /* begin the collection of edje groups that are in this file */
 		  font: "Sans";
 		  size: 10;
 		  min: 1 1;
-		  align: 0.0 0.5;
+		  align: 0.5 0.5;
 		  text_class: "check_button";
 	       }
 	    }
@@ -14541,7 +14541,7 @@ collections { /* begin the collection of edje groups that are in this file */
 		  font: "Sans";
 		  size: 10;
 		  min: 1 1;
-		  align: 0.0 0.5;
+		  align: 0.5 0.5;
 		  text_class: "radio_button";
 	       }
 	    }
