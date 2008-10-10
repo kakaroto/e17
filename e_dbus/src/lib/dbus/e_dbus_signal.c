@@ -210,6 +210,11 @@ e_dbus_signal_handler_del(E_DBus_Connection *conn, E_DBus_Signal_Handler *sh)
 
   if (!ecore_list_goto(signal_handlers, sh)) return;
   ecore_list_remove(signal_handlers);
+  free(sh->sender);
+  free(sh->path);
+  free(sh->interface);
+  free(sh->member);
+  free(sh);
 }
 
 static int
