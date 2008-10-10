@@ -1,0 +1,2860 @@
+# This is the Norwegian (bokmål dialect) locale definition for Enlightenment.
+# Copyright (C) 1999-2000 Free Software Foundation, Inc.
+# Terje Røsten <terjeros@phys.ntnu.no>, 1999-2000.
+# Kjartan Maraas <kmaraas@gnome.org, 2008.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: enlightenment 0.16.6\n"
+"Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
+"POT-Creation-Date: 2008-10-09 10:33+0200\n"
+"PO-Revision-Date: 2008-10-09 10:43+0200\n"
+"Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
+"Language-Team: Norwegian <no@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../src/about.c:33
+#, c-format
+msgid "About Enlightenment %s"
+msgstr "Om Enlightenment %s"
+
+#: ../src/about.c:43
+#, c-format
+msgid ""
+"Welcome to the %s version\n"
+"of the Enlightenment window manager.\n"
+"If you find a bug, please do not\n"
+"hesitate to send in a bug report.\n"
+"We hope you enjoy the software.\n"
+"\n"
+"The Rasterman - raster@rasterman.com\n"
+"Mandrake - mandrake@mandrake.net\n"
+"Kim Woelders - kim@woelders.dk\n"
+msgstr ""
+
+#: ../src/aclass.c:198 ../src/backgrounds.c:234 ../src/borders.c:636
+#: ../src/buttons.c:181 ../src/cursors.c:172 ../src/iclass.c:324
+#: ../src/tclass.c:113 ../src/tooltips.c:135
+#, c-format
+msgid "%u references remain\n"
+msgstr "%u referanser er igjen\n"
+
+#: ../src/actions.c:110
+#, c-format
+msgid ""
+"There was an error running the program:\n"
+"%s\n"
+"This program could not be executed.\n"
+"This is because the file does not exist.\n"
+msgstr ""
+"Det var en feil ved kjøring av programmet:\n"
+"%s\n"
+"Dette programmet kunne ikke bli kjørt.\n"
+"Årsaken er at filen ikke eksisterer.\n"
+
+#: ../src/actions.c:118
+#, c-format
+msgid ""
+"There was an error running the program:\n"
+"%s\n"
+"This program could not be executed.\n"
+"This is most probably because this program is not in the\n"
+"path for your shell which is %s. I suggest you read the manual\n"
+"page for that shell and read up how to change or add to your\n"
+"execution path.\n"
+msgstr ""
+"Det var en feil ved kjøring av programmet:\n"
+"%s\n"
+"Dette programmet kunne ikke bli kjørt.\n"
+"Årsaken til dette er antakeligvis at programmet ikke er i\n"
+"stien til kjærbare programmer i skallet %s. Jeg foreslår\n"
+"at du leser om skallet ditt og ser etter hvordan man\n"
+"endrer denne stien.\n"
+
+#: ../src/actions.c:138
+#, c-format
+msgid ""
+"There was an error running the program:\n"
+"%s\n"
+"This program could not be executed.\n"
+"I am unsure as to why you could not do this. The file exists,\n"
+"is a file, and you are allowed to execute it. I suggest you look\n"
+"into this.\n"
+msgstr ""
+"Det var en feil ved kjøring av programmet:\n"
+"%s\n"
+"Dette programmet kunne ikke bli kjørt.\n"
+"Jeg er usikker på hvorfor du ikke kunne gjøre dette. Filen eksister,\n"
+"er en fil og du har tillatelse til å kjøre det. Jeg foreslår du ser\n"
+"nærmere på dette sjøl.\n"
+
+#: ../src/actions.c:149
+#, c-format
+msgid ""
+"There was an error running the program:\n"
+"%s\n"
+"This program could not be executed.\n"
+"This is because the file exists, is a file, but you are unable\n"
+"to execute it because you do not have execute access to this file.\n"
+msgstr ""
+"Det var en feil ved kjøring av programmet:\n"
+"%s\n"
+"Dette programmet kunne ikke bli kjørt.\n"
+"Filen eksister og er en fil, men\n"
+"du har tillatelse til å kjøre det.\n"
+
+#: ../src/actions.c:164
+#, c-format
+msgid ""
+"There was an error running the program:\n"
+"%s\n"
+"This program could not be executed.\n"
+"This is because the file is in fact a directory.\n"
+msgstr ""
+"Det var en feil ved kjøring av programmet:\n"
+"%s\n"
+"Dette programmet kunne ikke bli kjørt.\n"
+"Årsaken er at fila faktisk er en katalog.\n"
+
+#: ../src/actions.c:172
+#, c-format
+msgid ""
+"There was an error running the program:\n"
+"%s\n"
+"This program could not be executed.\n"
+"This is because the file is not a regular file.\n"
+msgstr ""
+"Det var en feil ved kjøring av programmet:\n"
+"%s\n"
+"Dette programmet kunne ikke bli kjørt.\n"
+"Årsaken er at fila ikke er en normal fil.\n"
+
+#: ../src/actions.c:197
+#, c-format
+msgid ""
+"There was an error running the program:\n"
+"%s\n"
+msgstr ""
+
+#: ../src/alert.c:210
+msgid "Enlightenment Error"
+msgstr "Feil ved Enlightenment"
+
+#: ../src/alert.c:569
+msgid "Enlightenment Message Dialog"
+msgstr "Enlightment dialog"
+
+#: ../src/alert.c:569
+msgid "Ignore this"
+msgstr "Overse dette"
+
+#: ../src/alert.c:570
+msgid "Restart Enlightenment"
+msgstr "Start Enlightenment på nytt"
+
+#: ../src/alert.c:570 ../src/setup.c:168
+msgid "Quit Enlightenment"
+msgstr "Avslutt Enlightenment"
+
+#: ../src/backgrounds.c:1526
+#, c-format
+msgid ""
+"Background definition information:\n"
+"Name: %s\n"
+"File: %s\n"
+msgstr ""
+"Informasjon om bakgrunnsdefinisjonen:\n"
+"Navn : %s\n"
+"Fil  : %s\n"
+
+#: ../src/backgrounds.c:1527
+msgid "-NONE-"
+msgstr "-INGEN-"
+
+#: ../src/backgrounds.c:1706 ../src/backgrounds.c:1708
+msgid ""
+"No\n"
+"Background"
+msgstr ""
+"Ingen\n"
+"Bakgrunn"
+
+#: ../src/backgrounds.c:1802 ../src/backgrounds.c:2231
+#, c-format
+msgid "Unused backgrounds freed after %2i:%02i:%02i"
+msgstr "Ubrukte bakgrunner er fjernet etter %2i:%02i:%02i"
+
+#: ../src/backgrounds.c:2017
+msgid "Use background image"
+msgstr "Bruk bakgrunnsbilde"
+
+#: ../src/backgrounds.c:2021
+msgid "Keep aspect on scale"
+msgstr "Bevar bildeskala"
+
+#: ../src/backgrounds.c:2025
+msgid "Tile image across background"
+msgstr "Flislegg bilde over hele bakgrunnen"
+
+#: ../src/backgrounds.c:2034
+msgid "Move to Front\n"
+msgstr "Flytt fremst\n"
+
+#: ../src/backgrounds.c:2039
+msgid "Duplicate\n"
+msgstr "Dupliser\n"
+
+#: ../src/backgrounds.c:2043
+msgid "Unlist\n"
+msgstr "Fjern fra lista\n"
+
+#: ../src/backgrounds.c:2048
+msgid "Delete File\n"
+msgstr "Slett fil\n"
+
+#: ../src/backgrounds.c:2059
+msgid ""
+"Background\n"
+"Image\n"
+"Scaling\n"
+"and\n"
+"Alignment\n"
+msgstr ""
+"Bakgrunns-\n"
+"bilde:\n"
+"Skalering\n"
+"&\n"
+"justering\n"
+
+#: ../src/backgrounds.c:2116
+msgid "BG Colour\n"
+msgstr "Bakgrunnsfarge\n"
+
+#: ../src/backgrounds.c:2121
+msgid "Red:\n"
+msgstr "Rød:\n"
+
+#: ../src/backgrounds.c:2132
+msgid "Green:\n"
+msgstr "Grønn:\n"
+
+#: ../src/backgrounds.c:2143
+msgid "Blue:\n"
+msgstr "Blå:\n"
+
+#: ../src/backgrounds.c:2176
+msgid "Pre-scan BG's"
+msgstr "Se etter bakgrunner på forhånd"
+
+#: ../src/backgrounds.c:2184
+msgid "Sort by File"
+msgstr "Sorter etter filnavn"
+
+#: ../src/backgrounds.c:2189
+msgid "Sort by Attr."
+msgstr "Sorter etter etternavn til fila"
+
+#: ../src/backgrounds.c:2195
+msgid "Sort by Image"
+msgstr "Sorter etter bilde"
+
+#: ../src/backgrounds.c:2215
+msgid "Use dithering in Hi-Colour"
+msgstr "Bruk dithering ved Hi-Colour"
+
+#: ../src/backgrounds.c:2219
+msgid "Background overrides theme"
+msgstr "Bakgrunn overkjører temaet"
+
+#: ../src/backgrounds.c:2224
+msgid "Enable background transparency compatibility mode"
+msgstr ""
+
+#: ../src/backgrounds.c:2248 ../src/mod-trans.c:199
+msgid "Background"
+msgstr "Bakgrunn"
+
+#: ../src/backgrounds.c:2249
+msgid "Desktop Background Settings"
+msgstr "Innstillinger for skrivebordsbakgrunn"
+
+#: ../src/backgrounds.c:2252
+msgid ""
+"Enlightenment Desktop\n"
+"Background Settings Dialog\n"
+msgstr ""
+"Dialog for innstilling av\n"
+"bakgrunn i Enlightenment\n"
+
+#: ../src/comms.c:240
+msgid "E IPC Error"
+msgstr "Feil ved E IPC"
+
+#: ../src/comms.c:241
+#, c-format
+msgid ""
+"Received Unknown Client Message.\n"
+"Client Name:    %s\n"
+"Client Version: %s\n"
+"Message Contents:\n"
+"\n"
+"%s\n"
+msgstr ""
+"Mottok ukjent klientbeskjed.\n"
+"Klientnavn        : %s\n"
+"Klientversion     : %s\n"
+"Innhold i beskjed :\n"
+"\n"
+"%s\n"
+
+#: ../src/config.c:195 ../src/config.c:291
+#, c-format
+msgid "CONFIG: ignoring extra data in \"%s\"\n"
+msgstr "CONFIG: overser ekstra informasjon i \"%s\"\n"
+
+#: ../src/config.c:203 ../src/config.c:298
+#, c-format
+msgid "CONFIG: missing required data in \"%s\"\n"
+msgstr "CONFIG: nødvendig informasjon mangler i  \"%s\"\n"
+
+#: ../src/config.c:213
+#, fuzzy, c-format
+msgid ""
+"Warning: unable to determine what to do with\n"
+"the following text in the middle of current %s definition:\n"
+"%s\n"
+"Will ignore and continue...\n"
+msgstr ""
+"Advarsel: klarer ikke bestemme hva som skal gjøres med\n"
+"følgende tekst i midten av gjeldende Ekstra-definisjon:\n"
+"%s\n"
+"Vil dermed overse dette og fortsette...\n"
+
+#: ../src/config.c:221
+#, fuzzy, c-format
+msgid ""
+"Warning:  Configuration error in %s block.\n"
+"Outcome is likely not good.\n"
+msgstr ""
+"Advarsel: Konfigurasjon ser ut til å bli stoppet opp før vi\n"
+"var ferdig med å ta inn en meny blokk.\n"
+"Utfallet av dette er sannsynligvis ikke særlig bra.\n"
+
+#: ../src/config.c:307
+msgid "Theme versioning ERROR"
+msgstr "Feil ved versjonen til temaet"
+
+#: ../src/config.c:308
+msgid "Restart with Defaults"
+msgstr "Start på nytt med standardverdier"
+
+#: ../src/config.c:309
+msgid "Abort and Exit"
+msgstr "Avbryt og avslutt"
+
+#: ../src/config.c:310
+#, fuzzy, c-format
+msgid ""
+"ERROR:\n"
+"\n"
+"The configuration for the theme you are running is\n"
+"incompatible. It's config revision is %i.\n"
+"It needs to be marked as being revision <= %i\n"
+"\n"
+"Please contact the theme author or maintainer and\n"
+"inform them that in order for their theme to function\n"
+"with this version of Enlightenment, they have to\n"
+"update it to the current settings, and then match\n"
+"the revision number.\n"
+"\n"
+"If the theme revision is higher than Enlightenment's\n"
+"it may be that you haven't upgraded Enlightenment for\n"
+"a while and this theme takes advantages of new\n"
+"features in Enlightenment in new versions.\n"
+msgstr ""
+"Konfigurasjonen for det temaet du bruker er inkompatibel.\n"
+"Versjonen til temaet er %i. Men temaet må være markert\n"
+"versjon %i.\n"
+"\n"
+"Kontakt forfatteren til temaet og fortell at\n"
+"dersom temaet fungere i gjeldende versjon av Enlightenment\n"
+"må hun/han oppdatere og endre versjonsnummer.\n"
+"\n"
+"Dersom temaet har høyere versjon enn versjonen til Enlightenment\n"
+"kan det være at du ikke har oppgradert Enlightenment på en\n"
+"stund og dette temaet bruker ting som ikke var tilgjengelig i\n"
+"en tidligere versjon av Enlightenment.\n"
+
+#: ../src/config.c:596
+msgid "Enlightenment Starting..."
+msgstr "Enlightenment starter opp..."
+
+#: ../src/container.c:1207
+msgid "Settings..."
+msgstr "Innstillinger..."
+
+#: ../src/container.c:1211 ../src/dialog.c:858 ../src/pager.c:1013
+#: ../config/strings.c:30 ../config/strings.c:132
+msgid "Close"
+msgstr "Avbryt"
+
+#: ../src/container.c:1216 ../config/strings.c:83
+msgid "Create New Iconbox"
+msgstr "Lag en ny ikonboks"
+
+#: ../src/container.c:1512 ../src/container.c:1585
+#, c-format
+msgid "Icon size: %2d"
+msgstr "Ikonstørrelse: %2d"
+
+#: ../src/container.c:1549
+msgid "Transparent background"
+msgstr "Gjennomsiktig bakgrunn"
+
+#: ../src/container.c:1553
+msgid "Hide inner border"
+msgstr "Skjul indre kant"
+
+#: ../src/container.c:1557
+msgid "Draw base image behind Icons"
+msgstr "Bruk bakgrunnsbilde under ikonene"
+
+#: ../src/container.c:1561
+msgid "Hide scrollbar when not needed"
+msgstr "Skjul scrollbar når den ikke trengs"
+
+#: ../src/container.c:1565
+msgid "Automatically resize to fit Icons"
+msgstr "Tilpass størrelse automatisk til ikonene"
+
+#: ../src/container.c:1572
+msgid "Alignment of anchoring when automatically resizing:"
+msgstr "Justering av anker ved automatisk tilpasning av størrelse:"
+
+#: ../src/container.c:1603
+msgid "Orientation:"
+msgstr "Orientering"
+
+#: ../src/container.c:1608
+msgid "Scrollbar side:"
+msgstr "Scrollbar-side:"
+
+#: ../src/container.c:1613
+msgid "Scrollbar arrows:"
+msgstr "Scrollbar-piler:"
+
+#: ../src/container.c:1616
+msgid "Horizontal"
+msgstr "Horisontalt"
+
+#: ../src/container.c:1621
+msgid "Left / Top"
+msgstr "Venstre / Topp"
+
+#: ../src/container.c:1626
+msgid "Start"
+msgstr "Start"
+
+#: ../src/container.c:1631
+msgid "Vertical"
+msgstr "Vertikalt"
+
+#: ../src/container.c:1637
+msgid "Right / Bottom"
+msgstr "Høyre / Bunn"
+
+#: ../src/container.c:1643
+msgid "Both ends"
+msgstr "Begge sider"
+
+#: ../src/container.c:1651
+msgid "End"
+msgstr "På siden"
+
+#: ../src/container.c:1659 ../src/focus.c:831
+msgid "None"
+msgstr "Ingen"
+
+#: ../src/container.c:1669
+msgid "Show icon names"
+msgstr "Vis ikontitler"
+
+#: ../src/container.c:1673
+msgid "Animate when iconifying to this Iconbox"
+msgstr "Bruk animeringseffekt når vinduer legges i ikonboksen."
+
+#: ../src/container.c:1683
+msgid "Icon image display policy (if one operation fails, try the next):"
+msgstr "Ikonbilde regler (dersom den første feiler, prøv neste etc):"
+
+#: ../src/container.c:1688
+msgid "Snapshot Windows, Use application icon, Use Enlightenment Icon"
+msgstr "Miniatyr av vindu, programmets ikon, Enlightenments ikon"
+
+#: ../src/container.c:1695
+msgid "Use application icon, Use Enlightenment Icon, Snapshot Window"
+msgstr "Programmets ikon, Enlightenments ikon, miniatyr av vindu"
+
+#: ../src/container.c:1700
+msgid "Use Enlightenment Icon, Snapshot Window"
+msgstr "Enlightenments ikon, miniatyr av vindu"
+
+#: ../src/container.c:1713
+msgid ""
+"Enlightenment Iconbox\n"
+"Settings Dialog\n"
+msgstr ""
+"Dialog for innstilling av egenskapene\n"
+"til ikonboksen i Enlightenment\n"
+
+#: ../src/desktops.c:124
+msgid ""
+"Hold down the mouse button and drag\n"
+"the mouse to be able to drag the desktop\n"
+"back and forth.\n"
+"Click right mouse button for a list of all\n"
+"Desktops and their applications.\n"
+"Click middle mouse button for a list of all\n"
+"applications currently running.\n"
+msgstr ""
+"Hold nede musknappen og dra musa samtidig for å\n"
+"dra skrivebordet fram og tilbake.\n"
+"Klikk høyre musknapp for en list over alle\n"
+"skrivebord og dets programmer.\n"
+"Klikk midtre musknapp for en list over alle\n"
+"programmer som kjører nå.\n"
+
+#: ../src/desktops.c:135
+msgid ""
+"This is the Root desktop.\n"
+"You cannot drag the root desktop around.\n"
+"Click right mouse button for a list of all\n"
+"Desktops and their applications.\n"
+"Click middle mouse button for a list of all\n"
+"applications currently running.\n"
+msgstr ""
+"Dette er det nederste skrivebordet.\n"
+"Du kan ikke dra det nederste skrivebordet rundt omkring.\n"
+"Klikk høyre musknapp for en list over alle\n"
+"skrivebord og dets programmer.\n"
+"Klikk midtre musknapp for en list over alle\n"
+"programmer som kjører nå.\n"
+
+#: ../src/desktops.c:154
+msgid ""
+"Click here to raise this desktop\n"
+"to the top.\n"
+msgstr ""
+"Trykk her for heve dette skrivebordet\n"
+"til toppen.\n"
+
+#: ../src/desktops.c:167
+msgid ""
+"Click here to lower this desktop\n"
+"to the bottom.\n"
+msgstr ""
+"Trykk her for senke dette skrivebordet\n"
+"til bunnen.\n"
+
+#: ../src/desktops.c:2260 ../src/desktops.c:2299
+#, c-format
+msgid "%i Desktops"
+msgstr "%i Skrivebord"
+
+#: ../src/desktops.c:2262 ../src/desktops.c:2301
+#, c-format
+msgid "%i Desktop"
+msgstr "%i skrivebord"
+
+#: ../src/desktops.c:2294
+msgid "Number of virtual desktops:\n"
+msgstr "Antall virtuelle skrivebord\n"
+
+#: ../src/desktops.c:2323
+msgid "Slide desktops around when changing"
+msgstr "La skrivebord gli inn når de endres"
+
+#: ../src/desktops.c:2329
+msgid "Desktop Slide speed:\n"
+msgstr "Hastighet ved skrivebordssgliding:\n"
+
+#: ../src/desktops.c:2343
+#, fuzzy
+msgid "Wrap desktops around"
+msgstr "La virtuelle skrivebord være sykliske"
+
+#: ../src/desktops.c:2351
+msgid "Display desktop dragbar"
+msgstr "Bruk linje til å dra med"
+
+#: ../src/desktops.c:2357
+msgid "Drag bar position:"
+msgstr "Dralinje posisjon"
+
+#: ../src/desktops.c:2361
+msgid "Top"
+msgstr "Topp"
+
+#: ../src/desktops.c:2367
+msgid "Bottom"
+msgstr "Bunn"
+
+#: ../src/desktops.c:2373 ../src/pager.c:1923 ../src/pager.c:1948
+#: ../src/pager.c:1973
+msgid "Left"
+msgstr "Venstre"
+
+#: ../src/desktops.c:2379 ../src/pager.c:1935 ../src/pager.c:1960
+#: ../src/pager.c:1985
+msgid "Right"
+msgstr "Høyre"
+
+#: ../src/desktops.c:2387 ../src/menus-misc.c:697
+msgid "Desks"
+msgstr "Skrivebord"
+
+#: ../src/desktops.c:2388
+msgid "Multiple Desktop Settings"
+msgstr "Antall skrivebord"
+
+#: ../src/desktops.c:2391
+msgid ""
+"Enlightenment Multiple Desktop\n"
+"Settings Dialog\n"
+msgstr ""
+"Dialog for innstilling av\n"
+"virtuelle skrivebord i Enlightenment\n"
+
+#: ../src/desktops.c:2461 ../src/desktops.c:2496
+#, c-format
+msgid ""
+"%i x %i\n"
+"Screens in size"
+msgstr ""
+"%i x %i\n"
+"skjermer"
+
+#: ../src/desktops.c:2464 ../src/desktops.c:2499
+msgid ""
+"1\n"
+"Screen in size"
+msgstr ""
+"1\n"
+"skjermer (i størrelse)"
+
+#: ../src/desktops.c:2492
+msgid "Virtual Desktop size:\n"
+msgstr "Størrelse til virtuelt skrivebord:\n"
+
+#: ../src/desktops.c:2533
+msgid "Wrap virtual desktops around"
+msgstr "La virtuelle skrivebord være sykliske"
+
+#: ../src/desktops.c:2540
+msgid "Edge Flip Mode:"
+msgstr ""
+
+#: ../src/desktops.c:2543
+msgid "Off"
+msgstr ""
+
+#: ../src/desktops.c:2548
+msgid "On"
+msgstr ""
+
+#: ../src/desktops.c:2553
+msgid "Only when moving window"
+msgstr ""
+
+#: ../src/desktops.c:2559
+msgid "Resistance at edge of screen:\n"
+msgstr "Motstand ved kanten av skjermen:\n"
+
+#: ../src/desktops.c:2571
+msgid "Areas"
+msgstr ""
+
+#: ../src/desktops.c:2572
+msgid "Virtual Desktop Settings"
+msgstr "Innstillinger for virtuelle skrivebord"
+
+#: ../src/desktops.c:2575
+msgid ""
+"Enlightenment Virtual Desktop\n"
+"Settings Dialog\n"
+msgstr ""
+"Dialog for innstilling\n"
+"av virtuelle skrivebord i Enlightenment\n"
+
+#: ../src/dialog.c:846 ../src/dialog.c:2035 ../src/dialog.c:2066
+#: ../src/events.c:87 ../src/setup.c:157 ../src/sound.c:203
+msgid "OK"
+msgstr "Ok"
+
+#: ../src/dialog.c:851
+msgid "Apply"
+msgstr "Bruk"
+
+#: ../src/dialog.c:2066
+msgid "Attention !!!"
+msgstr "Merk!"
+
+#: ../src/ecompmgr.c:2626
+msgid ""
+"Cannot enable Composite Manager.\n"
+"Use xdpyinfo to check that\n"
+"Composite, Damage, Fixes, and Render\n"
+"extensions are loaded."
+msgstr ""
+
+#: ../src/events.c:87
+msgid "X server setup error"
+msgstr "Feil ved oppstart av X serveren."
+
+#: ../src/events.c:88
+msgid ""
+"FATAL ERROR:\n"
+"\n"
+"This Xserver does not support the Shape extension.\n"
+"This is required for Enlightenment to run.\n"
+"\n"
+"Your Xserver probably is too old or mis-configured.\n"
+"\n"
+"Exiting.\n"
+msgstr ""
+"Fatal feil:\n"
+"\n"
+"Denne X Serveren støtter ikke ekstensjonen Shape.\n"
+"Enlightenment krever at dette for å kjøre.\n"
+"\n"
+"Din X Server er antakelig for gammel eller er feil konfiguert.\n"
+"\n"
+"Avslutter.\n"
+
+#: ../src/focus.c:703
+msgid "Focus follows pointer"
+msgstr "Fokus følger mus"
+
+#: ../src/focus.c:709
+msgid "Focus follows pointer sloppily"
+msgstr "Fokus følger mus løst"
+
+#: ../src/focus.c:715
+msgid "Focus follows mouse clicks"
+msgstr "Fokus følger musklikk"
+
+#: ../src/focus.c:725
+msgid "Clicking in a window always raises it"
+msgstr "Musklikk i et vindu vil alltid heve det"
+
+#: ../src/focus.c:733
+msgid "All new windows first get the focus"
+msgstr "Alle nye vinduer får fokus"
+
+#: ../src/focus.c:738
+msgid "Only new dialog windows get the focus"
+msgstr "Bare nye dialogvinduer får fokus"
+
+#: ../src/focus.c:745
+msgid "Only new dialogs whose owner is focused get the focus"
+msgstr "Bare nye dialoger som tilhører fokusert vindu får fokus"
+
+#: ../src/focus.c:750
+#, fuzzy
+msgid "Raise windows while switching focus"
+msgstr "La vinduer få fokus ved skifte"
+
+#: ../src/focus.c:756
+#, fuzzy
+msgid "Send mouse pointer to window while switching focus"
+msgstr "Send muspeker til vindu ved fokusskifte"
+
+#: ../src/focus.c:762
+#, fuzzy
+msgid "Always send mouse pointer to window on focus switch"
+msgstr "Send muspeker til vindu ved fokusskifte"
+
+#: ../src/focus.c:770
+msgid "Display and use focus list"
+msgstr "Vis og bruk fokusliste"
+
+#: ../src/focus.c:775
+msgid "Include sticky windows in focus list"
+msgstr "Inkluder stødige vinduer i fokuslista"
+
+#: ../src/focus.c:780
+msgid "Include shaded windows in focus list"
+msgstr "Inkluder skyggelagte vinduer i fokuslista"
+
+#: ../src/focus.c:785
+msgid "Include iconified windows in focus list"
+msgstr "Inkluder vinduer i ikonboksen i fokuslista"
+
+#: ../src/focus.c:790
+#, fuzzy
+msgid "Include windows on other desks in focus list"
+msgstr "Inkluder skyggelagte vinduer i fokuslista"
+
+#: ../src/focus.c:795
+msgid "Focus windows while switching"
+msgstr "La vinduer få fokus ved skifte"
+
+#: ../src/focus.c:800
+msgid "Raise windows after focus switch"
+msgstr "Hev vinduer etter fokusskifte"
+
+#: ../src/focus.c:805
+msgid "Send mouse pointer to window after focus switch"
+msgstr "Send mus til vindu etter fokusskifte"
+
+#: ../src/focus.c:815
+#, fuzzy
+msgid "Focuslist image display policy (if one operation fails, try the next):"
+msgstr "Ikonbilde regler (dersom den første feiler, prøv neste etc):"
+
+#: ../src/focus.c:819
+msgid "First E Icon, then App Icon"
+msgstr ""
+
+#: ../src/focus.c:825
+msgid "First App Icon, then E Icon"
+msgstr ""
+
+#: ../src/focus.c:839
+msgid "Focus"
+msgstr "Fokus"
+
+#: ../src/focus.c:840
+msgid "Focus Settings"
+msgstr "Innstillinger for fokus"
+
+#: ../src/focus.c:843
+msgid ""
+"Enlightenment Focus\n"
+"Settings Dialog\n"
+msgstr ""
+"Dialog for innstilling \n"
+"av fokus i Enlightenment\n"
+
+#: ../src/fx.c:933
+msgid "Effects"
+msgstr "Effekter"
+
+#: ../src/fx.c:936
+msgid "Enable Effect: Raindrops"
+msgstr "Slå på effekt: Regndråper"
+
+#: ../src/fx.c:940
+msgid "Ripples"
+msgstr "Krusninger"
+
+#: ../src/fx.c:944
+msgid "Waves"
+msgstr "Bølger"
+
+#: ../src/fx.c:950
+msgid "FX"
+msgstr "FX"
+
+#: ../src/fx.c:951
+msgid "Special FX Settings"
+msgstr "Spesiell effekter"
+
+#: ../src/fx.c:954
+msgid ""
+"Enlightenment Special Effects\n"
+"Settings Dialog\n"
+msgstr ""
+"Dialog for innstilling av\n"
+"spesielle effekter i Enlightenment\n"
+
+#: ../src/groups.c:688
+msgid "Window Group Selection"
+msgstr "Velg vindusgruppe"
+
+#: ../src/groups.c:691
+msgid ""
+"Enlightenment Window Group\n"
+"Selection Dialog\n"
+msgstr ""
+"Vindusgrupper for Enlightenment\n"
+"Dialog for utvelgelse\n"
+
+#: ../src/groups.c:714 ../src/groups.c:723 ../src/groups.c:731
+#: ../src/groups.c:917
+msgid "Window Group Error"
+msgstr "Feil ved vindusgruppe"
+
+#: ../src/groups.c:716
+msgid ""
+"\n"
+"  This window currently does not belong to any groups.  \n"
+"  You can only destroy groups or remove windows from groups  \n"
+"  through a window that actually belongs to at least one group.\n"
+"\n"
+msgstr ""
+"\n"
+"  Dette vinduet tilhører ingen grupper.\n"
+"  Du kan bare ødelegge grupper eller fjerne vinduer fra grupper\n"
+"  via ett vindu som tilhører (minst) en gruppe.\n"
+"\n"
+
+#: ../src/groups.c:724
+msgid ""
+"\n"
+"  Currently, no groups exist or this window  \n"
+"  already belongs to all existing groups.  \n"
+"  You have to start other groups first.  \n"
+"\n"
+msgstr ""
+"\n"
+"   For øyeblikket eksisterer ingen grupper eller så\n"
+"   tilhører dette vinduet alle gruppene allerede.\n"
+"   Du må starte en gruppe til først.\n"
+"\n"
+
+#: ../src/groups.c:733
+msgid ""
+"\n"
+"  Currently, no groups exist. You have to start a group first.\n"
+"\n"
+msgstr ""
+"\n"
+"  For øyeblikket eksister ingen grupper. Du må starte en gruppe først.\n"
+"\n"
+
+#: ../src/groups.c:823
+msgid "   Pick the group to configure:   "
+msgstr "  Velg gruppa som skal konfigures: "
+
+#: ../src/groups.c:854
+msgid ""
+"  The following actions are  \n"
+"  applied to all group members:  "
+msgstr ""
+"  Følgende handlinger vi vil bli   utført på alle medlemmene i grupppa: "
+
+#: ../src/groups.c:859 ../src/groups.c:961
+msgid "Changing Border Style"
+msgstr "Endring av rammestil"
+
+#: ../src/groups.c:864 ../src/groups.c:966
+msgid "Iconifying"
+msgstr "Ikonifisering"
+
+#: ../src/groups.c:869 ../src/groups.c:971
+msgid "Killing"
+msgstr "Avslutning"
+
+#: ../src/groups.c:874 ../src/groups.c:976
+msgid "Moving"
+msgstr "Flytting"
+
+#: ../src/groups.c:879 ../src/groups.c:981
+msgid "Raising/Lowering"
+msgstr "Senking/Heving"
+
+#: ../src/groups.c:884 ../src/groups.c:986
+msgid "Sticking"
+msgstr "Stødighet"
+
+#: ../src/groups.c:889 ../src/groups.c:991
+msgid "Shading"
+msgstr "Skyggelegging"
+
+#: ../src/groups.c:894 ../src/groups.c:996
+msgid "Mirror Shade/Iconify/Stick"
+msgstr "Speiling Skyggelegging/Ikonifiser/Stødig"
+
+#: ../src/groups.c:901
+msgid "Window Group Settings"
+msgstr "Vindusgrupper"
+
+#: ../src/groups.c:904
+msgid ""
+"Enlightenment Window Group\n"
+"Settings Dialog\n"
+msgstr ""
+"Dialog for innstilling av\n"
+"vindusgrupper i Enlightenment\n"
+
+#: ../src/groups.c:919
+msgid ""
+"\n"
+"  This window currently does not belong to any groups.  \n"
+"\n"
+msgstr ""
+"\n"
+"  Dette vinduet tilhører ingen grupper for øyeblikket.  \n"
+"\n"
+
+#: ../src/groups.c:954
+msgid " Per-group settings: "
+msgstr "Innstillinger for enkelt grupper"
+
+#: ../src/groups.c:1005
+msgid " Global settings: "
+msgstr " Globale innstillinger: "
+
+#: ../src/groups.c:1009
+msgid "Swap Window Locations"
+msgstr "La vinduer bytte plass"
+
+#. winops_groups.menu
+#: ../src/groups.c:1015 ../src/menus-misc.c:757 ../config/strings.c:147
+msgid "Groups"
+msgstr "Grupper"
+
+#: ../src/groups.c:1016
+msgid "Default Group Control Settings"
+msgstr "Innstilling av standardverdier for vindusgrupper"
+
+#: ../src/groups.c:1019
+msgid ""
+"Enlightenment Default\n"
+"Group Control Settings Dialog\n"
+msgstr ""
+"Dialog for innstillinger av forhåndsvalgte\n"
+"verdier for vindusgrupper i Enlightenment\n"
+"\n"
+
+#: ../src/groups.c:1056
+#, fuzzy
+msgid "Pick the group the window will belong to:"
+msgstr " Velg den gruppa som vinduet skal tilhøre: \n"
+
+#: ../src/groups.c:1063
+#, fuzzy
+msgid "Select the group to remove the window from:"
+msgstr "  Velg gruppa som vinduet skal fjernes fra.  "
+
+#: ../src/groups.c:1069
+#, fuzzy
+msgid "Select the group to break:"
+msgstr " Velg gruppa som skal brytes opp "
+
+#: ../src/handlers.c:62
+#, c-format
+msgid ""
+"Enlightenment performed an Illegal Instruction.\n"
+"\n"
+"This most likely is due to you having installed an run a\n"
+"binary of Enlightenment that was compiled for a make or model\n"
+"of CPU not 100%% identical or compatible with yours. Please\n"
+"either obtain the correct package for your system, or\n"
+"re-compile Enlightenment and possibly any support libraries\n"
+"that you got in binary format to run Enlightenment.\n"
+msgstr ""
+"Enlightenment utførte en ulovlig instruksjon.\n"
+"\n"
+"Sannsynligvis skyldes dette at du installert en prekompilert\n"
+"versjon av Enlightenment eller bibliotekfiler som var \n"
+"kompilert for en annen maskinvare eller som ikke er 100%% kompatibel\n"
+"med din egen. Finn en pakke som er kompatibel med din maskinvare\n"
+"eller kompiler opp Enlightenment selv.\n"
+"Tilsvarende gjelder for alle støtte bibliotekene Enlightenment trenger.\n"
+
+#: ../src/handlers.c:72
+msgid ""
+"Enlightenment caused a Floating Point Exception.\n"
+"\n"
+"This means that Enlightenment or support library routines it calls\n"
+"have performed an illegal mathematical operation (most likely\n"
+"dividing a number by zero). This is most likely a bug. It is\n"
+"recommended to restart now. If you wish to help fix this please\n"
+"compile Enlightenment with debugging symbols in and run\n"
+"Enlightenment under gdb so you can backtrace for where it died and\n"
+"send in a useful bug report with backtrace information and variable\n"
+"dumps etc.\n"
+msgstr ""
+"Enlightenment har forårsaket en flyttalls-beregningsfeil.\n"
+"\n"
+"Dette betyr at Enlightenment eller en støtte-bibliotek-rutine\n"
+"som E kaller har gjort en ulovlig matematisk operasjon.\n"
+"(mest sannsynligvis dividert med med tallet 0). Dette \n"
+"antakeligvis en bug. Det anbefales at du starter på nytt.\n"
+"Dersom du vil være vennlig og være med rette denne feilen\n"
+"kan du kompilere Enlightenment med debuggings-symboler så du kan \n"
+"finne hvor programmet stoppet/døde og kan sende en verdifull\n"
+"bug-report med backtrace informasjon, variable verdier etc.\n"
+
+#: ../src/handlers.c:84
+msgid ""
+"Enlightenment caused Segment Violation (Segfault)\n"
+"\n"
+"This means that Enlightenment or support library routines it calls\n"
+"have accessed areas of your system's memory that they are not\n"
+"allowed access to. This is most likely a bug. It is recommended to\n"
+"restart now. If you wish to help fix this please compile\n"
+"Enlightenment with debugging symbols in and run Enlightenment\n"
+"under gdb so you can backtrace for where it died and send in a\n"
+"useful bug report with backtrace information and variable\n"
+"dumps etc.\n"
+msgstr ""
+"Enlightenment forårsaket en Segment overskridelse.\n"
+"(Segment Violation) (Segfault)\n"
+"Dette betyr at Enlightenment eller en støtte-bibliotek-rutine\n"
+"som E har kalt har vært borti områder i ditt systems hukommelse\n"
+"som det ikke har lov til. Dette er antakelig en bug.\n"
+"Du bør starte på nytt.\n"
+"Dersom du vil være vennlig og være med rette denne feilen\n"
+"kan du kompilere Enlightenment med debuggings-symboler\n"
+"og kjøre Enlightenment under gdb så du kan finne hvor\n"
+"programmet stoppet/døde og kan sende en verdifull\n"
+"bug-report med backtrace informasjon, variable verdier etc.\n"
+
+#: ../src/handlers.c:96
+msgid ""
+"Enlightenment caused Bus Error.\n"
+"\n"
+"It is suggested you check your hardware and OS installation.\n"
+"It is highly unusual to cause Bus Errors on operational\n"
+"hardware.\n"
+msgstr ""
+"Enlightenment har forårsaket en bussfeil (Bus Error).\n"
+"\n"
+"Det foreslås at du sjekker din maskinvare og OS installsjon.\n"
+"Det er uhyre uvanlig med med bussfeil på feilfri maskinevare.\n"
+
+#: ../src/hints.c:600
+#, fuzzy
+msgid "Selection Error!"
+msgstr "Tekstklasse feil!"
+
+#: ../src/hints.c:600
+#, c-format
+msgid "Could not acquire selection: %s"
+msgstr ""
+
+#: ../src/iconify.c:469
+msgid "Iconbox Options"
+msgstr "Meny for ikonboksen"
+
+#: ../src/iconify.c:470
+msgid "Iconbox Settings"
+msgstr "Ikonboks"
+
+#: ../src/ipc.c:193 ../src/ipc.c:1426 ../src/ipc.c:1433
+msgid "Message"
+msgstr "Beskjed"
+
+#: ../src/ipc.c:1426 ../src/ipc.c:1433
+#, c-format
+msgid "e16 was built without %s support"
+msgstr ""
+
+#: ../src/ipc.c:1427
+msgid "composite"
+msgstr ""
+
+#: ../src/ipc.c:1434
+msgid "sound"
+msgstr "lyd"
+
+#: ../src/ipc.c:1768
+msgid "Enlightenment IPC Commands Help\n"
+msgstr "Enlightenment IPC Kommando Hjelp\n"
+
+#: ../src/ipc.c:1772
+#, fuzzy
+msgid ""
+"Use \"help all\" for descriptions of each command\n"
+"Use \"help <command>\" for an individual description\n"
+"\n"
+msgstr ""
+"bruk \"help all\" for beskrivelse av ha alle kommandoene\n"
+"bruk \"help <kommando>\" for beskrivelse av hver enkelt kommando\n"
+
+#: ../src/ipc.c:1774 ../src/ipc.c:1794 ../src/ipc.c:1806
+#, fuzzy
+msgid "Commands currently available:\n"
+msgstr ""
+"\n"
+"kommandoer som er tilgjengelig for øyeblikket:\n"
+
+#: ../src/ipc.c:1792
+msgid "Use \"help full\" for full descriptions of each command\n"
+msgstr ""
+
+#: ../src/ipc.c:1793
+#, fuzzy
+msgid "Use \"help <command>\" for an individual description\n"
+msgstr "bruk \"help <kommando>\" for individuell beskrivelse\n"
+
+#: ../src/ipc.c:1795 ../src/ipc.c:1807
+#, fuzzy
+msgid "         <command>     : <description>\n"
+msgstr "<kommando> : <beskrivelse>\n"
+
+#: ../src/main.c:582
+#, c-format
+msgid ""
+"%s must be a directory in which you have\n"
+"read, write, and execute permission.\n"
+msgstr ""
+
+#: ../src/main.c:692
+#, c-format
+msgid ""
+"!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
+"\n"
+"Enlightenment's utility executable cannot be found at:\n"
+"\n"
+"%s\n"
+"This is a fatal error and Enlightenment will cease to run.\n"
+"Please rectify this situation and ensure it is installed\n"
+"correctly.\n"
+"\n"
+"The reason this could be missing is due to badly created\n"
+"packages, someone manually deleting that program or perhaps\n"
+"an error in installing Enlightenment.\n"
+msgstr ""
+"!! Feil ! Feil Feil! !!\n"
+"\n"
+"En kjørbar fil som tilhører Enlightenment ble ikke funnet i:\n"
+"\n"
+"%s\n"
+"Dette er en fatal feil og Enlightenment vil nekte og kjøre.\n"
+"Vær vennlig og ordne opp i dette og forsikre deg om at\n"
+"alt er installert korrekt.\n"
+"\n"
+"Årsaken til mangelen kan være feil ved en pakke, noen \n"
+"har fjernet fila eller en feil ved installering av Enlightenment.\n"
+
+#: ../src/main.c:706
+#, fuzzy, c-format
+msgid ""
+"!!!!!!!! ERROR ERROR ERROR ERROR !!!!!!!!\n"
+"\n"
+"Enlightenment's utility executable is not able to be executed:\n"
+"\n"
+"%s\n"
+"This is a fatal error and Enlightenment will cease to run.\n"
+"Please rectify this situation and ensure it is installed\n"
+"correctly.\n"
+msgstr ""
+"!! Feil! Feil! Feil! !!\n"
+"\n"
+"Enlightenments dox (hjelpeprogram) ble ikke funnet i:\n"
+"\n"
+"%s\n"
+"Dette er en fatal feil og Enlightenment vil nekte og starte opp.\n"
+"Vær vennlig og sjekk at dox er til stede og på rett plass.\n"
+
+#: ../src/magwin.c:462
+msgid "Magnifier"
+msgstr ""
+
+#: ../src/menus-misc.c:569 ../config/strings.c:91
+msgid "Themes"
+msgstr "Tema"
+
+#: ../src/menus-misc.c:595
+msgid "Border"
+msgstr "Kant"
+
+#: ../src/menus-misc.c:657
+msgid "Window List"
+msgstr "Vinduliste"
+
+#: ../src/menus-misc.c:679
+msgid "Go to this Desktop"
+msgstr "Gå til dette skrivebordet"
+
+#: ../src/menus-misc.c:683 ../src/menus-misc.c:779
+#, c-format
+msgid "Desktop %i"
+msgstr "Skriverbord nr. %i"
+
+#: ../src/menus-misc.c:726
+msgid "Show/Hide this group"
+msgstr "Vis/Skjul denne gruppa"
+
+#: ../src/menus-misc.c:731
+msgid "Iconify this group"
+msgstr "Ikonifiser denne gruppa"
+
+#: ../src/menus-misc.c:742
+#, c-format
+msgid "Group %i"
+msgstr "Gruppe %i"
+
+#: ../src/menus.c:2061
+msgid "Animated display of menus"
+msgstr "La menyer være animerte"
+
+#: ../src/menus.c:2066
+msgid "Always pop up menus on screen"
+msgstr "La menyer alltid opptre innenfor skjermen"
+
+#: ../src/menus.c:2071
+msgid "Warp pointer after moving menus"
+msgstr "Send muspeker tilbake etter flytting av meny"
+
+#: ../src/menus.c:2077
+msgid "Menus"
+msgstr "Menyer"
+
+#: ../src/menus.c:2078
+msgid "Menu Settings"
+msgstr "Innstillinger for menyer"
+
+#: ../src/menus.c:2081
+#, fuzzy
+msgid ""
+"Enlightenment Menu\n"
+"Settings Dialog\n"
+msgstr ""
+"Dialog for innstilling \n"
+"av fokus i Enlightenment\n"
+
+#: ../src/mod-trans.c:109 ../src/mod-trans.c:259
+#, c-format
+msgid "Theme transparency: %2d"
+msgstr ""
+
+#: ../src/mod-trans.c:138
+msgid "Changes Might Require Restart:"
+msgstr ""
+
+#: ../src/mod-trans.c:147
+msgid "Borders:"
+msgstr "Kanter:"
+
+#: ../src/mod-trans.c:151
+msgid "Menus:"
+msgstr "Menyer:"
+
+#: ../src/mod-trans.c:155
+msgid "Hilights:"
+msgstr ""
+
+#: ../src/mod-trans.c:159
+msgid "E Widgets:"
+msgstr ""
+
+#: ../src/mod-trans.c:163
+msgid "E Dialogs:"
+msgstr ""
+
+#: ../src/mod-trans.c:167
+msgid "Tooltips:"
+msgstr "Verktøytips:"
+
+#: ../src/mod-trans.c:171 ../src/settings.c:78 ../src/settings.c:83
+#: ../src/settings.c:345
+msgid "Opaque"
+msgstr "Med ramme"
+
+#: ../src/mod-trans.c:230
+msgid "Glass"
+msgstr "Glass"
+
+#: ../src/mod-trans.c:275
+msgid "Transparency"
+msgstr "Gjennomsiktighet"
+
+#: ../src/mod-trans.c:276
+#, fuzzy
+msgid "Selective Transparency Settings"
+msgstr ""
+"Dialog for innstilling av\n"
+"Enlightenments verktøytips\n"
+
+#: ../src/mod-trans.c:279
+#, fuzzy
+msgid ""
+"Enlightenment Selective Transparency\n"
+"Settings Dialog\n"
+msgstr ""
+"Dialog for innstilling av\n"
+"Enlightenments verktøytips\n"
+
+#. winops.menu
+#: ../src/pager.c:1006 ../config/strings.c:49 ../config/strings.c:131
+msgid "Window Options"
+msgstr "Valg for vinduer"
+
+#: ../src/pager.c:1009 ../config/strings.c:51 ../config/strings.c:134
+msgid "Iconify"
+msgstr "Ikonifiser"
+
+#: ../src/pager.c:1017 ../config/strings.c:133
+msgid "Annihilate"
+msgstr "Fjern"
+
+#: ../src/pager.c:1021
+msgid "Stick / Unstick"
+msgstr "Stødig / ustødig"
+
+#: ../src/pager.c:1030
+msgid "Desktop Options"
+msgstr "Valg for skrivebordet"
+
+#: ../src/pager.c:1032
+msgid "Pager Settings..."
+msgstr "Innstillinger for skrivebordsoversikt"
+
+#: ../src/pager.c:1037
+msgid "Snapshotting Off"
+msgstr "Ikke ta bilder av skjerm"
+
+#: ../src/pager.c:1041
+msgid "High Quality Off"
+msgstr "Høy kvalitet av"
+
+#: ../src/pager.c:1043
+msgid "High Quality On"
+msgstr "Høy kvalitet på"
+
+#: ../src/pager.c:1048
+msgid "Snapshotting On"
+msgstr "Ta bilder av skjerm"
+
+#: ../src/pager.c:1052
+msgid "Zoom Off"
+msgstr ""
+
+#: ../src/pager.c:1054
+msgid "Zoom On"
+msgstr ""
+
+#: ../src/pager.c:1812 ../src/pager.c:1903
+msgid "Pager scanning speed:"
+msgstr "Oppfriskningshastighet for skrivebordsoversikt:"
+
+#: ../src/pager.c:1813 ../src/pager.c:1904
+msgid "lines per second"
+msgstr "linjer pr. sekund"
+
+#: ../src/pager.c:1842
+msgid "Enable pager display"
+msgstr "Bruk skrivebordsoversikt"
+
+#: ../src/pager.c:1852
+msgid "Pager Mode:"
+msgstr ""
+
+#: ../src/pager.c:1856
+msgid "Simple"
+msgstr "Enkel"
+
+#: ../src/pager.c:1862
+msgid "Make miniature snapshots of the screen"
+msgstr "Lag miniatyrbilder av skjermen"
+
+#: ../src/pager.c:1869
+msgid "Live Update"
+msgstr ""
+
+#: ../src/pager.c:1880
+msgid "Smooth high quality snapshots in snapshot mode"
+msgstr "Lag miniatyrbilder av skjerm med høy kvalitet"
+
+#: ../src/pager.c:1885
+msgid "Zoom in on pager windows when mouse is over them"
+msgstr "Zoom inn vinduer på skrivebordsoversikt når musa er over dem"
+
+#: ../src/pager.c:1891
+msgid "Pop up window title when mouse is over the window"
+msgstr "Framhev vindustittel når musa er over vinudet"
+
+#: ../src/pager.c:1896
+msgid "Continuously scan screen to update pager"
+msgstr "Oppdater skrivebordsoversikt kontinurlig "
+
+#: ../src/pager.c:1919
+msgid "Mouse button to select and drag windows:"
+msgstr "Musknapp som velger og drar vinduer:"
+
+#: ../src/pager.c:1929 ../src/pager.c:1954 ../src/pager.c:1979
+msgid "Middle"
+msgstr "Midtre"
+
+#: ../src/pager.c:1944
+msgid "Mouse button to select desktops:"
+msgstr "Musknapp som velger skrivebord:"
+
+#: ../src/pager.c:1969
+msgid "Mouse button to display pager menu:"
+msgstr "Musknapp som bringer opp menyen til skrivebordsoversikten:"
+
+#: ../src/pager.c:1993
+#, fuzzy
+msgid "Pagers"
+msgstr "Skrivebordsoversikt"
+
+#: ../src/pager.c:1994
+msgid "Pager Settings"
+msgstr "Skrivebordsoversikt"
+
+#: ../src/pager.c:1997
+msgid ""
+"Enlightenment Desktop & Area\n"
+"Pager Settings Dialog\n"
+msgstr ""
+"Dialog for innstilling av \n"
+"skrivebordsoversikt i Enlightenment \n"
+
+#. Less of the hope.... E survives
+#: ../src/session.c:343
+msgid ""
+"ERROR!\n"
+"\n"
+"Lost the Session Manager that was there?\n"
+"Here here session manager... come here... want a bone?\n"
+"Oh come now! Stop sulking! Bugger. Oh well. Will continue without\n"
+"a session manager.\n"
+"\n"
+"I'll survive somehow.\n"
+"\n"
+"\n"
+"... I hope.\n"
+msgstr ""
+"Mistet sesjonebehandler som var... der?\n"
+"Hit hit sesjonbehandler... kom hit... vil du ha ett ben?\n"
+"Å kom nå! Slutt og skulke! Vel vel, Får fortsette uten\n"
+"sesjonbehandler.\n"
+"\n"
+"\n"
+"... håper jeg.\n"
+
+#: ../src/session.c:642
+msgid "Are you sure?"
+msgstr "Er du sikker du vil gjøre dette?"
+
+#: ../src/session.c:644
+msgid ""
+"\n"
+"\n"
+"    Are you sure you wish to log out ?    \n"
+"\n"
+"\n"
+msgstr ""
+"\n"
+"\n"
+"    Er du sikker på at du logge ut ?    \n"
+"\n"
+"\n"
+
+#: ../src/session.c:654
+msgid "  Yes, Shut Down  "
+msgstr "  Ja, avslutt  "
+
+#: ../src/session.c:656
+msgid "  Yes, Reboot  "
+msgstr "  Ja,  start på nytt  "
+
+#: ../src/session.c:659
+msgid "  Yes, Log Out  "
+msgstr "  Ja, avslutt  "
+
+#: ../src/session.c:661
+msgid "  No  "
+msgstr "  Nei  "
+
+#: ../src/session.c:792
+msgid "Enable Session Script"
+msgstr ""
+
+#: ../src/session.c:797
+#, fuzzy
+msgid "Enable Logout Dialog"
+msgstr "Bruk dialogoverskrifter"
+
+#: ../src/session.c:802
+msgid "Enable Reboot/Halt on Logout"
+msgstr ""
+
+#: ../src/session.c:808
+msgid "Session"
+msgstr "Sesjon"
+
+#: ../src/session.c:809
+msgid "Session Settings"
+msgstr "Innstillinger for sesjon"
+
+#: ../src/session.c:812
+#, fuzzy
+msgid ""
+"Enlightenment Session\n"
+"Settings Dialog\n"
+msgstr ""
+"Dialog for innstilling \n"
+"av fokus i Enlightenment\n"
+
+#: ../src/settings.c:70
+msgid "Move Methods:"
+msgstr "Flytte metoder"
+
+#: ../src/settings.c:75
+msgid "Resize Methods:"
+msgstr "Størrelse metoder"
+
+#: ../src/settings.c:88 ../src/settings.c:93 ../src/settings.c:350
+msgid "Technical"
+msgstr "Teknisk"
+
+#: ../src/settings.c:98 ../src/settings.c:103 ../src/settings.c:355
+msgid "Box"
+msgstr "Boks"
+
+#: ../src/settings.c:108 ../src/settings.c:113 ../src/settings.c:360
+msgid "Shaded"
+msgstr "Skyggelagt"
+
+#: ../src/settings.c:118 ../src/settings.c:123 ../src/settings.c:365
+msgid "Semi-Solid"
+msgstr "Hel"
+
+#: ../src/settings.c:129
+msgid "Translucent"
+msgstr "Gjennomsiktig"
+
+#: ../src/settings.c:138
+msgid "Avoid server grab"
+msgstr ""
+
+#: ../src/settings.c:148
+msgid "Move/Resize Geometry Info Postion:"
+msgstr "Info ved flytting og endring av geometri:"
+
+#: ../src/settings.c:152
+msgid "Window Center (O/T/B Methods)"
+msgstr "I midten av vinduet"
+
+#: ../src/settings.c:158
+msgid "Always Screen corner"
+msgstr "Alltid i hjørne av skjermen"
+
+#: ../src/settings.c:164
+msgid "Don't show"
+msgstr "Ikke vis"
+
+#: ../src/settings.c:176
+msgid "Default Resize Policy:"
+msgstr ""
+
+#: ../src/settings.c:180
+msgid "Conservative"
+msgstr "Konservativ"
+
+#: ../src/settings.c:186
+msgid "Available"
+msgstr "Tilgjengelig"
+
+#: ../src/settings.c:192
+msgid "Absolute"
+msgstr "Absolutt"
+
+#: ../src/settings.c:202
+#, fuzzy
+msgid "Update window while moving"
+msgstr "La vinduer få fokus ved skifte"
+
+#: ../src/settings.c:207
+msgid "Synchronize move/resize with application"
+msgstr ""
+
+#: ../src/settings.c:213
+msgid "Move/Resize"
+msgstr "Flytt/Endre størrelse"
+
+#: ../src/settings.c:214
+msgid "Move & Resize Settings"
+msgstr "Flytting & størrelse"
+
+#: ../src/settings.c:217
+msgid ""
+"Enlightenment Move & Resize\n"
+"Method Settings Dialog\n"
+msgstr ""
+"Dialog for innstilling av\n"
+"flytting & størrelse i Enlightenment\n"
+
+#: ../src/settings.c:304
+msgid "Dialog windows appear together with their owner"
+msgstr "Dialogvinduer opptrer sammen med sitt opphav"
+
+#: ../src/settings.c:309
+msgid "Switch to desktop where dialog appears"
+msgstr "Skift til det skrivebordet hvor dialogen opptrer "
+
+#: ../src/settings.c:317
+msgid "Place windows manually"
+msgstr "Plasser vinduer manuelt"
+
+#: ../src/settings.c:322
+msgid "Place windows under mouse"
+msgstr "Plasser vinduer under muspeker"
+
+#: ../src/settings.c:327
+#, fuzzy
+msgid "Center windows when desk is full"
+msgstr "Inkluder skyggelagte vinduer i fokuslista"
+
+#: ../src/settings.c:332
+msgid "Slide windows in when they appear"
+msgstr "La vinduer gli inn når de kommer"
+
+#: ../src/settings.c:337
+msgid "Slide windows around when cleaning up"
+msgstr "La vinduer gli omkring ved rydding"
+
+#: ../src/settings.c:342
+msgid "Slide Method:"
+msgstr "Glidmetoder:"
+
+#: ../src/settings.c:375
+#, fuzzy
+msgid "Appear Slide speed:"
+msgstr "Hastighet ved gliding av nye vinduer: (treg)\n"
+
+#: ../src/settings.c:386
+#, fuzzy
+msgid "Cleanup Slide speed:"
+msgstr "Hastighet ved oppryddningsgliding: (treg)\n"
+
+#: ../src/settings.c:399
+msgid "Animate shading and unshading of windows"
+msgstr "Animasjon ved skyggelegging av vinduer"
+
+#: ../src/settings.c:405
+#, fuzzy
+msgid "Window Shading speed:"
+msgstr "Hastighet ved skyggeleggingsgliding: (treg)\n"
+
+#: ../src/settings.c:418
+#, fuzzy
+msgid "Ignore struts"
+msgstr "Overse dette"
+
+#: ../src/settings.c:423
+msgid "Raise fullscreen windows"
+msgstr ""
+
+#: ../src/settings.c:431
+#, fuzzy
+msgid "Place windows on another head when full"
+msgstr "Plasser vinduer manuelt"
+
+#: ../src/settings.c:439
+msgid "Placement"
+msgstr "Plassering"
+
+#: ../src/settings.c:440
+msgid "Window Placement Settings"
+msgstr "Plassering av vinduer"
+
+#: ../src/settings.c:443
+msgid ""
+"Enlightenment Window Placement\n"
+"Settings Dialog\n"
+msgstr ""
+"Dialog for innstilling\n"
+"av vindusplassering i Enlightenment\n"
+
+#: ../src/settings.c:474
+msgid "Raise Windows Automatically"
+msgstr "Hev vinduer automatisk"
+
+#: ../src/settings.c:480
+msgid "Autoraise delay:"
+msgstr "Forsinkelse ved automatisk heving:"
+
+#: ../src/settings.c:491
+#, fuzzy
+msgid "Autoraise"
+msgstr "Forsinkelse ved automatisk heving:"
+
+#: ../src/settings.c:492
+msgid "Autoraise Settings"
+msgstr "Automatisk heving"
+
+#: ../src/settings.c:495
+msgid ""
+"Enlightenment Automatic Raising\n"
+"of Windows Settings Dialog\n"
+msgstr ""
+"Innstillinger for automatisk\n"
+"heving av vinduer i Enlightenment\n"
+
+#: ../src/settings.c:532
+msgid "Enable Dialog Headers"
+msgstr "Bruk dialogoverskrifter"
+
+#: ../src/settings.c:538
+#, fuzzy
+msgid "Enable Button Images"
+msgstr "Skru på støtte for lyd"
+
+#: ../src/settings.c:547
+msgid "Enable sliding startup windows"
+msgstr ""
+
+#: ../src/settings.c:555
+msgid "Use saveunders to reduce window exposures"
+msgstr "Bruk underlagret for å redusere vindusutbredelse"
+
+#. winops_misc.menu
+#: ../src/settings.c:561 ../config/strings.c:145 ../config/strings.c:161
+msgid "Miscellaneous"
+msgstr "Forskjellig"
+
+#: ../src/settings.c:562
+msgid "Miscellaneous Settings"
+msgstr "Forskjellige innstillinger"
+
+#: ../src/settings.c:565
+msgid ""
+"Enlightenment Miscellaneous\n"
+"Settings Dialog\n"
+msgstr ""
+"Dialog for ulike innstillinger\n"
+"i Enlightenment\n"
+
+#: ../src/settings.c:606
+#, fuzzy
+msgid "Enable Composite"
+msgstr "Skru på støtte for lyd"
+
+#: ../src/settings.c:614
+#, fuzzy
+msgid "Enable Fading"
+msgstr "Bruk kantflipping"
+
+#: ../src/settings.c:620
+msgid "Fading Speed:"
+msgstr ""
+
+#: ../src/settings.c:633
+msgid "Shadows Off"
+msgstr ""
+
+#: ../src/settings.c:639
+msgid "Shadows Sharp"
+msgstr ""
+
+#: ../src/settings.c:645
+msgid "Shadows Sharp2"
+msgstr ""
+
+#: ../src/settings.c:651
+msgid "Shadows Blurred"
+msgstr ""
+
+#: ../src/settings.c:662
+msgid "Default focused window opacity:"
+msgstr ""
+
+#: ../src/settings.c:673
+msgid "Default unfocused window opacity:"
+msgstr ""
+
+#: ../src/settings.c:684
+msgid "Default pop-up window opacity:"
+msgstr ""
+
+#: ../src/settings.c:695
+#, fuzzy
+msgid "Composite"
+msgstr "Skru på støtte for lyd"
+
+#: ../src/settings.c:696
+#, fuzzy
+msgid "Composite Settings"
+msgstr "Verktøytips"
+
+#: ../src/settings.c:699
+#, fuzzy
+msgid ""
+"Enlightenment Composite\n"
+"Settings Dialog\n"
+msgstr ""
+"Dialog for innstilling av\n"
+"Enlightenments verktøytips\n"
+
+#: ../src/settings.c:790
+msgid "Enlightenment Settings"
+msgstr "Innstillinger for Enlightenment"
+
+#: ../src/setup.c:58
+msgid ""
+"Enlightenment cannot connect to the display nominated by\n"
+"your shell's DISPLAY environment variable. You may set this\n"
+"variable to indicate which display name Enlightenment is to\n"
+"connect to. It may be that you do not have an Xserver already\n"
+"running to serve that Display connection, or that you do not\n"
+"have permission to connect to that display. Please make sure\n"
+"all is correct before trying again. Run an Xserver by running\n"
+"xdm or startx first, or contact your local system\n"
+"administrator, or Xserver vendor, or read the X, xdm and\n"
+"startx manual pages before proceeding.\n"
+msgstr ""
+"Enlightenment kunne ikke opprette en forbindesle til det displayet\n"
+"som din skallvariable DISPLAY har som verdi. Du kan sette\n"
+"denne variablen for å indikere hvilket display Enlightenment skal\n"
+"bruke. Det kan være at du ikke kjører en X Server som\n"
+"håndterer en forbindelsen til dette displayet eller at du\n"
+"ikke har anledning til det.\n"
+"Vær sikker på at alt er korrekt før du prøver igjen.\n"
+"Kjør en X Server ved å starte xdm eller ved kommandoen startx, eventuelt\n"
+"kontakt din lokale adminstrator eller X Server leverandør, eller\n"
+"lese X, xdm og startx manual sidene før du fortsetter.\n"
+
+#: ../src/setup.c:156
+msgid "Another Window Manager is already running"
+msgstr "En annen vindussjef kjører allerede"
+
+#: ../src/setup.c:158
+msgid ""
+"Another Window Manager is already running.\n"
+"\n"
+"You will have to quit your current Window Manager first before\n"
+"you can successfully run Enlightenment.\n"
+msgstr ""
+
+#: ../src/setup.c:167
+msgid "X server version error"
+msgstr "Feil ved versjonen til X serveren"
+
+#: ../src/setup.c:167
+msgid "Ignore this error"
+msgstr "Overse denne feilen"
+
+#: ../src/setup.c:169
+#, c-format
+msgid ""
+"WARNING:\n"
+"This is not an X11 Xserver. It in fact talks the X%i protocol.\n"
+"This may mean Enlightenment will either not function, or\n"
+"function incorrectly. If it is later than X11, then your\n"
+"server is one the author of Enlightenment neither have\n"
+"access to, nor have heard of.\n"
+msgstr ""
+"Advarsel:\n"
+"Dette er ikke en X11 X Server. Den snakker faktisk X%i protokollen.\n"
+"Enlightnement vil dermed ikke fungere.\n"
+"Forfatteren av Enlightenment kjenner ikke til X Servere\n"
+"med versjone høyere enn X 11.\n"
+
+#: ../src/snaps.c:730
+msgid "Title:"
+msgstr "Tittel"
+
+#: ../src/snaps.c:742
+msgid "Name:"
+msgstr "Navn"
+
+#: ../src/snaps.c:755
+msgid "Class:"
+msgstr "Klasse"
+
+#: ../src/snaps.c:768
+msgid "Role:"
+msgstr "Rolle:"
+
+#: ../src/snaps.c:781
+msgid "Command:"
+msgstr "Kommando"
+
+#: ../src/snaps.c:821
+msgid "Track Changes"
+msgstr "Spor endringer"
+
+#: ../src/snaps.c:826
+msgid "Location"
+msgstr "Plassering"
+
+#: ../src/snaps.c:831
+msgid "Border style"
+msgstr "Rammestil"
+
+#. winops_size.menu
+#: ../src/snaps.c:836 ../config/strings.c:181
+msgid "Size"
+msgstr "Størrelse"
+
+#: ../src/snaps.c:841 ../config/strings.c:89
+msgid "Desktop"
+msgstr "Skrivebord"
+
+#: ../src/snaps.c:846
+msgid "Shaded state"
+msgstr "Skyggetilstand"
+
+#: ../src/snaps.c:851
+msgid "Sticky state"
+msgstr "Stødighet"
+
+#: ../src/snaps.c:856
+msgid "Stacking layer"
+msgstr "Nivå"
+
+#: ../src/snaps.c:861
+msgid "Window List Skip"
+msgstr "Overse i vinduslista"
+
+#. winops_opacity.menu
+#: ../src/snaps.c:867 ../config/strings.c:144 ../config/strings.c:170
+msgid "Opacity"
+msgstr ""
+
+#: ../src/snaps.c:872
+msgid "Shadowing"
+msgstr "Skyggelegging"
+
+#: ../src/snaps.c:878
+msgid "Flags"
+msgstr "Flagg"
+
+#: ../src/snaps.c:897
+msgid "Restart application on login"
+msgstr "Start programmet ved innlogging"
+
+#: ../src/snaps.c:916
+msgid "Remember this window's group(s)"
+msgstr "Husk dette vindus gruppe(r)"
+
+#: ../src/snaps.c:924
+msgid "Remembered Application Attributes"
+msgstr "Lagrede egenskaper for dette programmet"
+
+#: ../src/snaps.c:927
+msgid ""
+"Select the attributes of this\n"
+"window you wish to Remember\n"
+"from now on\n"
+msgstr ""
+"Velg de egenskapene som dette\n"
+"vinduet skal huske\n"
+"fra nå av\n"
+
+#: ../src/snaps.c:1017
+msgid "Delete"
+msgstr "Slett"
+
+#: ../src/snaps.c:1045
+msgid "Remembered Settings..."
+msgstr "Innstillinger for hukommelse"
+
+#: ../src/snaps.c:1052
+msgid "Unused"
+msgstr "Ubrukt"
+
+#: ../src/snaps.c:1065
+msgid "There are no active windows with remembered attributes."
+msgstr "Det er ingen aktive vinduer som trenger hukommelse."
+
+#: ../src/snaps.c:1071
+msgid "Remember"
+msgstr "Husk"
+
+#: ../src/snaps.c:1072
+msgid "Remembered Windows Settings"
+msgstr "Innstillinger for hukommelse"
+
+#: ../src/snaps.c:1075
+msgid ""
+"Enlightenment Remembered\n"
+"Windows Settings Dialog\n"
+msgstr ""
+"Dialog for innstilling av\n"
+"hukommelse i Enlightenment\n"
+
+#: ../src/snaps.c:1168
+msgid "Error saving snaps file\n"
+msgstr "Feil ved lagringa av miniatyr fil\n"
+
+#: ../src/sound.c:124
+msgid "Error finding sound file"
+msgstr "Feil: kunne ikke finne lydfil"
+
+#: ../src/sound.c:125
+#, c-format
+msgid ""
+"Warning!  Enlightenment was unable to load the\n"
+"following sound file:\n"
+"%s\n"
+"Enlightenment will continue to operate, but you\n"
+"may wish to check your configuration settings.\n"
+msgstr ""
+"Advarsel! Enlightenment kunne ikke ta inn\n"
+"følgende lydfil:\n"
+"%s\n"
+"Enlightenment vil fortsette, men du bør\n"
+"sjekke din konfigurasjon.\n"
+
+#: ../src/sound.c:203
+msgid "Error initialising sound"
+msgstr "Feil ved initering av støtte for lyd."
+
+#: ../src/sound.c:204
+msgid ""
+"Audio was enabled for Enlightenment but there was an error\n"
+"communicating with the audio server (Esound). Audio will\n"
+"now be disabled.\n"
+msgstr ""
+"Bruk av lyd er støttet i Enlightenment, men det var en feil\n"
+"kommunikasjonen med lydserveren (Esound). Lyd vil ikke\n"
+"støttet.\n"
+
+#: ../src/sound.c:316
+msgid "Enable sounds"
+msgstr "Skru på støtte for lyd"
+
+#: ../src/sound.c:322
+msgid "Sound"
+msgstr ""
+
+#: ../src/sound.c:323
+msgid "Audio Settings"
+msgstr "Lyd"
+
+#: ../src/sound.c:326
+msgid ""
+"Enlightenment Audio\n"
+"Settings Dialog\n"
+msgstr ""
+"Dialog for innstilling av\n"
+"Enlightenments bruk av lyd\n"
+
+#: ../src/systray.c:331 ../src/systray.c:434 ../src/systray.c:442
+#, fuzzy
+msgid "Systray Error!"
+msgstr "Epeker feil!"
+
+#: ../src/systray.c:331
+msgid "Systray went elsewhere?!?"
+msgstr ""
+
+#: ../src/systray.c:434
+msgid "Only one systray is allowed"
+msgstr ""
+
+#: ../src/systray.c:442
+msgid "Could not activate systray"
+msgstr ""
+
+#: ../src/systray.c:452
+#, fuzzy
+msgid "Systray Options"
+msgstr "Valg for skrivebordet"
+
+#: ../src/systray.c:453
+#, fuzzy
+msgid "Systray Settings"
+msgstr "Automatisk heving"
+
+#: ../src/theme.c:67
+#, c-format
+msgid "Theme %s does not contain a %s file\n"
+msgstr "Tema %s inneholder ikke en %s fil\n"
+
+#: ../src/theme.c:346
+msgid "Unknown\n"
+msgstr "Ukjent\n"
+
+#: ../src/theme.c:392
+msgid "Bad Theme"
+msgstr "Det er en feil ved temaet"
+
+#: ../src/theme.c:393
+#, c-format
+msgid ""
+"The theme:\n"
+"%s\n"
+"Is a badly formed theme package and is thus not being used.\n"
+"Enlightenment has fallen back to using the DEFAULT theme.\n"
+"\n"
+"The reason this theme is bad is:\n"
+"%s"
+msgstr ""
+"Temaet:\n"
+"%s\n"
+"er har en feil og vil ikke bli brukt.\n"
+"Enlightenment vi derfor bruke standardtemaet.\n"
+"\n"
+"Årsaken til feilen ved temaet var:\n"
+"%s"
+
+#: ../src/theme.c:419
+#, c-format
+msgid ""
+"No themes were found in the default theme directory:\n"
+" %s/themes/\n"
+"or in the user theme directory:\n"
+" %s/themes/\n"
+"Proceeding from here is mostly pointless.\n"
+msgstr ""
+
+#: ../src/tooltips.c:866
+msgid "Display Tooltips"
+msgstr "Bruk verktøytips"
+
+#: ../src/tooltips.c:871
+msgid "Display Root Window Tips"
+msgstr "Bruk skrivebordstips"
+
+#: ../src/tooltips.c:876
+msgid "Tooltip Delay:\n"
+msgstr "Forsinkelse ved verktøytips:\n"
+
+#: ../src/tooltips.c:887
+msgid "Tooltips"
+msgstr "Verktøytips:"
+
+#: ../src/tooltips.c:888
+msgid "Tooltip Settings"
+msgstr "Verktøytips"
+
+#: ../src/tooltips.c:891
+msgid ""
+"Enlightenment Tooltip\n"
+"Settings Dialog\n"
+msgstr ""
+"Dialog for innstilling av\n"
+"Enlightenments verktøytips\n"
+
+#. actionclasses.cfg
+#: ../config/strings.c:5
+msgid ""
+"Click and drag to move desktop\n"
+"(on any desktop but desktop 0)"
+msgstr ""
+
+#: ../config/strings.c:6 ../config/strings.c:8
+msgid "Switch Desktops"
+msgstr "Bytt skrivebord"
+
+#: ../config/strings.c:7
+msgid "Go to the next desktop."
+msgstr "Gå til neste skrivebord."
+
+#: ../config/strings.c:9
+msgid "Go to the previous desktop."
+msgstr "Gå til forrige skrivebord."
+
+#: ../config/strings.c:10
+msgid "Move"
+msgstr "Flytt"
+
+#: ../config/strings.c:11 ../config/strings.c:23 ../config/strings.c:26
+#: ../config/strings.c:29
+msgid "Move this window."
+msgstr "Flytt dette vinduet."
+
+#: ../config/strings.c:12 ../config/strings.c:14 ../config/strings.c:48
+msgid "Shade/Unshade this window."
+msgstr ""
+
+#: ../config/strings.c:13 ../config/strings.c:50 ../config/strings.c:53
+#, fuzzy
+msgid "Show the Window Options menu."
+msgstr "Valg for vinduer"
+
+#: ../config/strings.c:15
+#, fuzzy
+msgid "Show/Hide group borders."
+msgstr "Vis/Skjul denne gruppa"
+
+#: ../config/strings.c:16
+msgid "Start a group."
+msgstr "Start en gruppe"
+
+#: ../config/strings.c:17
+msgid "Add to current group."
+msgstr ""
+
+#: ../config/strings.c:18
+#, fuzzy
+msgid "Break this window's group."
+msgstr "Husk dette vindus gruppe(r)"
+
+#: ../config/strings.c:19
+#, fuzzy
+msgid "Shade."
+msgstr "Skyggelagt"
+
+#: ../config/strings.c:20
+msgid "Unshade."
+msgstr ""
+
+#: ../config/strings.c:21
+msgid "Resize"
+msgstr "Endre størrelse"
+
+#: ../config/strings.c:22
+#, fuzzy
+msgid "Resize this window."
+msgstr "Husk dette vindus gruppe(r)"
+
+#: ../config/strings.c:24
+#, fuzzy
+msgid "Resize Horizontally"
+msgstr "Horisontalt"
+
+#: ../config/strings.c:25
+msgid "Resize this window horizontally."
+msgstr ""
+
+#: ../config/strings.c:27
+#, fuzzy
+msgid "Resize Vertically"
+msgstr "Vertikalt"
+
+#: ../config/strings.c:28
+msgid "Resize this window vertically."
+msgstr ""
+
+#: ../config/strings.c:31
+msgid "Close this window."
+msgstr "Lukk dette vinduet."
+
+#: ../config/strings.c:32
+msgid "Forcibly destroy this window."
+msgstr ""
+
+#: ../config/strings.c:33
+msgid "Maximize Height"
+msgstr ""
+
+#: ../config/strings.c:34 ../config/strings.c:40
+msgid "Toggle between maximum screen height and normal height."
+msgstr ""
+
+#: ../config/strings.c:35
+msgid "Maximize Width"
+msgstr ""
+
+#: ../config/strings.c:36 ../config/strings.c:39
+msgid "Toggle between maximum screen width and normal width."
+msgstr ""
+
+#: ../config/strings.c:37
+msgid "Maximize"
+msgstr "Maksimer"
+
+#: ../config/strings.c:38
+msgid "Toggle between maximum screen size and normal size."
+msgstr ""
+
+#: ../config/strings.c:41 ../config/strings.c:43
+msgid "Send To Another Desktop"
+msgstr "Send til et annet skrivebord"
+
+#: ../config/strings.c:42
+msgid "Send this Window to the next desktop."
+msgstr ""
+
+#: ../config/strings.c:44
+msgid "Send this Window to the previous desktop."
+msgstr ""
+
+#: ../config/strings.c:45
+#, fuzzy
+msgid "Snapshot"
+msgstr "Ta bilder av skjerm"
+
+#: ../config/strings.c:46
+msgid "This button does nothing interesting."
+msgstr ""
+
+#: ../config/strings.c:47 ../config/strings.c:137
+#, fuzzy
+msgid "Shade/Unshade"
+msgstr "Skyggetilstand"
+
+#: ../config/strings.c:52
+msgid "Iconify (Minimize) this window."
+msgstr ""
+
+#: ../config/strings.c:54
+msgid "More Buttons"
+msgstr "Flere knapper"
+
+#: ../config/strings.c:55
+msgid "Show more buttons."
+msgstr "Vis flere knapper."
+
+#: ../config/strings.c:56 ../config/strings.c:135
+msgid "Raise"
+msgstr "Hev"
+
+#: ../config/strings.c:57
+#, fuzzy
+msgid "Raise this window to the top."
+msgstr ""
+"Trykk her for heve dette skrivebordet\n"
+"til toppen.\n"
+
+#: ../config/strings.c:58 ../config/strings.c:136
+msgid "Lower"
+msgstr "Senk"
+
+#: ../config/strings.c:59
+msgid "Lower this window."
+msgstr "Senk dette vinduet."
+
+#: ../config/strings.c:60 ../config/strings.c:138
+#, fuzzy
+msgid "Stick/Unstick"
+msgstr "Stødig / ustødig"
+
+#: ../config/strings.c:61
+msgid "Toggle the Omnipresent (visible on all Desktops) state of this window."
+msgstr ""
+
+#. bindings.cfg
+#: ../config/strings.c:63
+msgid ""
+"Clicking your mouse on the desktop will perform\n"
+"the following actions"
+msgstr ""
+
+#: ../config/strings.c:64
+msgid "Display User Menus"
+msgstr ""
+
+#: ../config/strings.c:65 ../config/strings.c:67
+#, fuzzy
+msgid "Display Enlightenment Menu"
+msgstr "Avslutt Enlightenment"
+
+#: ../config/strings.c:66 ../config/strings.c:71
+#, fuzzy
+msgid "Display Settings Menu"
+msgstr "Innstillinger for KDE"
+
+#: ../config/strings.c:68
+msgid "Display Task List Menu"
+msgstr ""
+
+#: ../config/strings.c:69
+#, fuzzy
+msgid "Display Desktop Menu"
+msgstr "Bruk linje til å dra med"
+
+#: ../config/strings.c:70
+msgid "Display Group Menu"
+msgstr ""
+
+#: ../config/strings.c:72
+#, fuzzy
+msgid "Go Back a Desktop"
+msgstr "Skift fokus til dette skrivebordet"
+
+#: ../config/strings.c:73
+#, fuzzy
+msgid "Go Forward a Desktop"
+msgstr "Skift fokus til dette skrivebordet"
+
+#. matches.cfg
+#. menus.cfg
+#: ../config/strings.c:76 ../config/strings.c:79
+msgid "Backgrounds"
+msgstr "Bakgrunner"
+
+#. desktop.menu
+#: ../config/strings.c:78
+#, fuzzy
+msgid "Desktop Operations"
+msgstr "Valg for skrivebordet"
+
+#: ../config/strings.c:80
+#, fuzzy
+msgid "Cleanup Desktop"
+msgstr "%i skrivebord"
+
+#: ../config/strings.c:81
+#, fuzzy
+msgid "Goto Next Desktop"
+msgstr "Skift fokus til dette skrivebordet"
+
+#: ../config/strings.c:82
+#, fuzzy
+msgid "Goto Previous Desktop"
+msgstr "Skift fokus til dette skrivebordet"
+
+#: ../config/strings.c:84
+msgid "Create Systray"
+msgstr ""
+
+#: ../config/strings.c:85
+msgid "Show Magnifier"
+msgstr ""
+
+#. enlightenment.menu
+#: ../config/strings.c:87
+msgid "Enlightenment"
+msgstr "Enlightenment"
+
+#: ../config/strings.c:88 ../config/strings.c:195
+msgid "User Menus"
+msgstr "Brukermenyer"
+
+#. settings.menu
+#: ../config/strings.c:90 ../config/strings.c:110
+msgid "Settings"
+msgstr "Innstillinger"
+
+#. maintenance.menu
+#: ../config/strings.c:92 ../config/strings.c:99
+msgid "Maintenance"
+msgstr "Vedlikehold"
+
+#: ../config/strings.c:93
+msgid "Help"
+msgstr "Hjelp"
+
+#: ../config/strings.c:94
+msgid "About Enlightenment"
+msgstr "Om Enlightenment"
+
+#: ../config/strings.c:95
+msgid "About this theme"
+msgstr "Om dette temaet"
+
+#: ../config/strings.c:96 ../config/strings.c:199
+msgid "Restart"
+msgstr "Start på nytt"
+
+#: ../config/strings.c:97 ../config/strings.c:200
+msgid "Log Out"
+msgstr "Logg ut"
+
+#: ../config/strings.c:100
+msgid "Purge config file cache"
+msgstr ""
+
+#: ../config/strings.c:101
+#, fuzzy
+msgid "Purge pager background cache"
+msgstr "Bruk bakgrunnsbilde"
+
+#: ../config/strings.c:102
+msgid "Purge background selector cache"
+msgstr ""
+
+#: ../config/strings.c:103
+msgid "Purge all caches"
+msgstr ""
+
+#: ../config/strings.c:104
+msgid "Query config file cache usage"
+msgstr ""
+
+#: ../config/strings.c:105
+msgid "Query pager background cache usage"
+msgstr ""
+
+#: ../config/strings.c:106
+msgid "Query background selector cache usage"
+msgstr ""
+
+#: ../config/strings.c:107
+msgid "Query all cache usage"
+msgstr ""
+
+#: ../config/strings.c:108
+msgid "Regenerate Menus"
+msgstr ""
+
+#: ../config/strings.c:111
+msgid "Enlightenment Settings ..."
+msgstr "Innstillinger for Enlightenment..."
+
+#: ../config/strings.c:112
+msgid "Focus Settings ..."
+msgstr "Innstillinger for fokus..."
+
+#: ../config/strings.c:113
+msgid "Move & Resize Settings ..."
+msgstr "Innstillinger for flytting & størrelse..."
+
+#: ../config/strings.c:114
+msgid "Window Placement Settings ..."
+msgstr "Innstillinger for plassering av vinduer..."
+
+#: ../config/strings.c:115
+#, fuzzy
+msgid "Multiple Desktop Settings ..."
+msgstr "Antall skrivebord"
+
+#: ../config/strings.c:116
+#, fuzzy
+msgid "Virtual Desktop Settings ..."
+msgstr "Innstillinger for virtuelle skrivebord"
+
+#: ../config/strings.c:117
+#, fuzzy
+msgid "Pager Settings ..."
+msgstr "Innstillinger for skrivebordsoversikt"
+
+#: ../config/strings.c:118
+#, fuzzy
+msgid "Menu Settings ..."
+msgstr "Forskjellige innstillinger"
+
+#: ../config/strings.c:119
+#, fuzzy
+msgid "Autoraise Settings ..."
+msgstr "Automatisk heving"
+
+#: ../config/strings.c:120
+#, fuzzy
+msgid "Tooltip Settings ..."
+msgstr "Verktøytips"
+
+#: ../config/strings.c:121
+msgid "Audio Settings ..."
+msgstr "Innstillinger for lyd..."
+
+#: ../config/strings.c:122
+#, fuzzy
+msgid "Group Settings ..."
+msgstr "Innstillinger for skrivebordsoversikt"
+
+#: ../config/strings.c:123
+#, fuzzy
+msgid "Remember Settings ..."
+msgstr "Innstillinger for hukommelse"
+
+#: ../config/strings.c:124
+#, fuzzy
+msgid "Special FX Settings ..."
+msgstr "Spesiell effekter"
+
+#: ../config/strings.c:125
+#, fuzzy
+msgid "Desktop Background Settings ..."
+msgstr "Innstillinger for skrivebordsbakgrunn"
+
+#: ../config/strings.c:126
+#, fuzzy
+msgid "Theme Transparency Settings ..."
+msgstr ""
+"Dialog for innstilling av\n"
+"Enlightenments verktøytips\n"
+
+#: ../config/strings.c:127
+#, fuzzy
+msgid "Composite Settings ..."
+msgstr "Verktøytips"
+
+#: ../config/strings.c:128
+#, fuzzy
+msgid "Session Settings ..."
+msgstr "Lyd"
+
+#: ../config/strings.c:129
+#, fuzzy
+msgid "Miscellaneous Settings ..."
+msgstr "Forskjellige innstillinger"
+
+#: ../config/strings.c:139
+#, fuzzy
+msgid "Remember..."
+msgstr "Innstillinger for hukommelse"
+
+#: ../config/strings.c:140
+#, fuzzy
+msgid "Window Size"
+msgstr "Overse i vinduslista"
+
+#: ../config/strings.c:141
+#, fuzzy
+msgid "Set Stacking"
+msgstr "Innstillinger for fokus"
+
+#: ../config/strings.c:142
+#, fuzzy
+msgid "Set Border Style"
+msgstr "Rammestil"
+
+#: ../config/strings.c:143
+#, fuzzy
+msgid "Window Groups"
+msgstr "Feil ved vindusgruppe"
+
+#: ../config/strings.c:148
+#, fuzzy
+msgid "Configure this window's group(s)"
+msgstr "Husk dette vindus gruppe(r)"
+
+#: ../config/strings.c:149
+msgid "Start a new group"
+msgstr "Start en ny gruppe"
+
+#: ../config/strings.c:150
+msgid "Add this window to the current group"
+msgstr ""
+
+#: ../config/strings.c:151
+#, fuzzy
+msgid "Select group to add this window to"
+msgstr "  Velg gruppa som vinduet skal fjernes fra.  "
+
+#: ../config/strings.c:152
+#, fuzzy
+msgid "Remove this window from a group"
+msgstr "Husk dette vindus gruppe(r)"
+
+#: ../config/strings.c:153
+#, fuzzy
+msgid "Destroy a group this window belongs to"
+msgstr " Velg den gruppa som vinduet skal tilhøre: \n"
+
+#. winops_layer.menu
+#: ../config/strings.c:155
+#, fuzzy
+msgid "Stacking"
+msgstr "Stødighet"
+
+#: ../config/strings.c:156
+msgid "Below"
+msgstr "Under"
+
+#: ../config/strings.c:157
+msgid "Normal"
+msgstr "Normal"
+
+#: ../config/strings.c:158
+msgid "Above"
+msgstr "Over"
+
+#: ../config/strings.c:159
+msgid "On Top"
+msgstr "Øverst"
+
+#: ../config/strings.c:162
+msgid "Toggle Skip Window Lists"
+msgstr ""
+
+#: ../config/strings.c:163
+msgid "Toggle Fixed Position"
+msgstr ""
+
+#: ../config/strings.c:164
+msgid "Toggle Fixed Size"
+msgstr ""
+
+#: ../config/strings.c:165
+#, fuzzy
+msgid "Toggle Never Focus"
+msgstr "Aldri fokus"
+
+#: ../config/strings.c:166
+msgid "Toggle Click to Focus"
+msgstr ""
+
+#: ../config/strings.c:167
+#, fuzzy
+msgid "Toggle Never Use Area"
+msgstr "Aldri fokus"
+
+#: ../config/strings.c:168
+#, fuzzy
+msgid "Toggle Button Grabs"
+msgstr "Bunn"
+
+#: ../config/strings.c:171
+msgid "20%"
+msgstr "20%"
+
+#: ../config/strings.c:172
+msgid "40%"
+msgstr "40%"
+
+#: ../config/strings.c:173
+msgid "60%"
+msgstr "60%"
+
+#: ../config/strings.c:174
+msgid "80%"
+msgstr "80%"
+
+#: ../config/strings.c:175
+msgid "100%"
+msgstr "100%"
+
+#: ../config/strings.c:176
+msgid "Focused opacity 100%"
+msgstr ""
+
+#: ../config/strings.c:177
+#, fuzzy
+msgid "Focused opacity follows unfocused"
+msgstr "Fokus følger musklikk"
+
+#: ../config/strings.c:178
+#, fuzzy
+msgid "Toggle Fading"
+msgstr "Bruk kantflipping"
+
+#: ../config/strings.c:179
+msgid "Toggle Shadows"
+msgstr ""
+
+#: ../config/strings.c:182
+msgid "Max Size Toggle"
+msgstr ""
+
+#: ../config/strings.c:183
+msgid "Available Max Size Toggle"
+msgstr ""
+
+#: ../config/strings.c:184
+msgid "Absolute Max Size Toggle"
+msgstr ""
+
+#: ../config/strings.c:185
+msgid "Span Xinerama Screens"
+msgstr ""
+
+#: ../config/strings.c:186
+msgid "Max Height Toggle"
+msgstr ""
+
+#: ../config/strings.c:187
+msgid "Available Max Height Toggle"
+msgstr ""
+
+#: ../config/strings.c:188
+msgid "Absolute Max Height Toggle"
+msgstr ""
+
+#: ../config/strings.c:189
+msgid "Max Width Toggle"
+msgstr ""
+
+#: ../config/strings.c:190
+msgid "Available Max Width Toggle"
+msgstr ""
+
+#: ../config/strings.c:191
+msgid "Absolute Max Width Toggle"
+msgstr ""
+
+#: ../config/strings.c:192
+msgid "Fullscreen/Normal"
+msgstr ""
+
+#: ../config/strings.c:193
+msgid "Zoom/Unzoom"
+msgstr ""
+
+#: ../config/strings.c:196
+#, fuzzy
+msgid "User Application List"
+msgstr "Lagrede egenskaper for dette programmet"
+
+#: ../config/strings.c:197
+msgid "Other"
+msgstr "Annet"
+
+#: ../config/strings.c:198
+msgid "Epplets"
+msgstr ""
