@@ -1,8 +1,4 @@
 // TODO: Items that need some revision
-// gadman popup (done)
-// gadman frame (done - review)
-// gadman full_bg (done - review)
-// gadman control (done - review)
 // battery popup (done - review - see 'code' for notes)
 // desklock (done - review - see 'code' for notes)
 // fileman (list mode)
@@ -13,7 +9,7 @@
 // tlist (needs code to be the same as ilist with raising)
 // fileman (icon mode etc.)
 // slidesel (i know. no examples of this around).
-// toolbar
+// toolbar (Before release, make a theme for efm_nav too.)
 // wizard (just placeholder and basics - wizard code not complete)
 // about
 // theme_about
@@ -18566,19 +18562,15 @@ ICON("widget/up_arrow","icon_up_arrow.png",64)
 ICON("widget/down_arrow","icon_down_arrow.png",64)
 ICON("widget/up_dir","icon_up_arrow.png",64)
 ICON("widget/new_dialog","icon_right_arrow.png",64)
+ICON("widget/config","icon_config.png",64)
 
 
 // FIXME: Dummy Icons
-// Do we dare try to put an icon in for all the popup menu items too?
 
 ICON("enlightenment/engine","icon_dummy.png",64)
 ICON("enlightenment/add_application","icon_dummy.png",64)
 ICON("enlightenment/profiles","icon_dummy.png",64)
 ICON("enlightenment/scale","icon_dummy.png",64)
-
-/* USABLE WIDGETS
-ICON("widget/config","icon_dummy.png",64)
-*/
 
 
 
