@@ -540,6 +540,67 @@ GetLinkColors(int page_num, int *r, int *g, int *b)
      }
 }
 
+static void
+CalcOffset(Page * pg, int col_w, int x, int y, int th, int *pxspace, int *poff)
+{
+   int                 xspace, off;
+   int                 sx, sy, ssx, ssy;
+   Img_               *img;
+   int                 j;
+
+   xspace = col_w;
+   off = 0;
+   sx = x + off;
+   sy = y;
+   ssx = sx + col_w - 1;
+   ssy = sy + th - 1;
+   for (j = 0; j < pg->count; j++)
+     {
+	if (pg->obj[j].type != IMG)
+	   continue;
+
+	img = (Img_ *) pg->obj[j].object;
+	if ((img->w > 0) && (img->h > 0))
+	  {
+	     int                 ix, iy, iix, iiy;
+
+	     ix = img->x;
+	     iy = img->y;
+	     iix = img->x + img->w - 1;
+	     iiy = img->y + img->h - 1;
+
+	     if ((iy <= ssy) && (iiy >= sy))
+	       {
+		  if ((ix >= sx) && (ix <= ssx))
+		    {
+		       if ((iix >= sx) && (iix <= ssx))
+			 {
+			    if (((ix + iix) / 2) > ((sx + ssx) / 2))
+			       ssx = ix - 1;
+			    else
+			       sx = iix + 1;
+			 }
+		       else
+			 {
+			    ssx = ix - 1;
+			 }
+		    }
+		  else if ((iix >= sx) && (iix <= ssx))
+		    {
+		       sx = iix + 1;
+		    }
+	       }
+	  }
+     }
+   off = sx - x;
+   xspace = (ssx - sx) + 1;
+   if (xspace < 0)
+      xspace = 0;
+
+   *pxspace = xspace;
+   *poff = off;
+}
+
 Link               *
 RenderPage(Window win, int page_num, int w, int h)
 {
@@ -662,7 +723,6 @@ RenderPage(Window win, int page_num, int w, int h)
 		  char               *txt_disp;
 		  int                 tw, th, xspace;
 		  int                 off, j;
-		  int                 sx, sy, ssx, ssy;
 		  char                link_txt[1024];
 		  char                link_link[1024];
 		  int                 spaceflag, oldwc = 0, linkwc;
@@ -764,55 +824,9 @@ RenderPage(Window win, int page_num, int w, int h)
 		    }
 
 		  strcat(s, wd);
-		  xspace = col_w;
-		  off = 0;
-		  sx = x + off;
-		  sy = y;
-		  ssx = sx + col_w - 1;
-		  ssy = sy + ts.height - 1;
-		  for (j = 0; j < pg->count; j++)
-		    {
-		       if (pg->obj[j].type == IMG)
-			 {
-			    img = (Img_ *) pg->obj[j].object;
-			    if ((img->w > 0) && (img->h > 0))
-			      {
-				 int                 ix, iy, iix, iiy;
 
-				 ix = img->x;
-				 iy = img->y;
-				 iix = img->x + img->w - 1;
-				 iiy = img->y + img->h - 1;
+		  CalcOffset(pg, col_w, x, y, ts.height, &xspace, &off);
 
-				 if ((iy <= ssy) && (iiy >= sy))
-				   {
-				      if ((ix >= sx) && (ix <= ssx))
-					{
-					   if ((iix >= sx) && (iix <= ssx))
-					     {
-						if (((ix + iix) / 2) >
-						    ((sx + ssx) / 2))
-						   ssx = ix - 1;
-						else
-						   sx = iix + 1;
-					     }
-					   else
-					     {
-						ssx = ix - 1;
-					     }
-					}
-				      else if ((iix >= sx) && (iix <= ssx))
-					{
-					   sx = iix + 1;
-					}
-				   }
-			      }
-			 }
-		    }
-		  off = sx - x;
-		  xspace = (ssx - sx) + 1;
-		  if (xspace < 0)
-		     xspace = 0;
 		  TextSize(&ts, s, &tw, &th, 17);
 		  txt_disp = ss;
 		  if (eot == 1)
@@ -869,73 +883,8 @@ RenderPage(Window win, int page_num, int w, int h)
 					   y = pg->padding;
 					   x += col_w + pg->padding;
 					}
-				      xspace = col_w;
-				      off = 0;
-				      sx = x + off;
-				      sy = y;
-				      ssx = sx + col_w - 1;
-				      ssy = sy + ts.height - 1;
-				      for (j = 0; j < pg->count; j++)
-					{
-					   if (pg->obj[j].type == IMG)
-					     {
-						img =
-						   (Img_ *) pg->obj[j].object;
-						if ((img->w > 0)
-						    && (img->h > 0))
-						  {
-						     int                 ix,
-							iy, iix, iiy;
-
-						     ix = img->x;
-						     iy = img->y;
-						     iix = img->x + img->w - 1;
-						     iiy = img->y + img->h - 1;
-
-						     if ((iy <= ssy)
-							 && (iiy >= sy))
-						       {
-							  if ((ix >= sx)
-							      && (ix <= ssx))
-							    {
-							       if ((iix >= sx)
-								   && (iix <=
-								       ssx))
-								 {
-								    if (((ix +
-									  iix) /
-									 2) >
-									((sx +
-									  ssx) /
-									 2))
-								       ssx =
-									  ix -
-									  1;
-								    else
-								       sx =
-									  iix +
-									  1;
-								 }
-							       else
-								 {
-								    ssx =
-								       ix - 1;
-								 }
-							    }
-							  else if ((iix >= sx)
-								   && (iix <=
-								       ssx))
-							    {
-							       sx = iix + 1;
-							    }
-						       }
-						  }
-					     }
-					}
-				      off = sx - x;
-				      xspace = (ssx - sx) + 1;
-				      if (xspace < 0)
-					 xspace = 0;
+				      CalcOffset(pg, col_w, x, y, ts.height,
+						 &xspace, &off);
 				   }
 			      }
 			 }
