@@ -665,7 +665,7 @@ RenderPage(Window win, int page_num, int w, int h)
 		  int                 sx, sy, ssx, ssy;
 		  char                link_txt[1024];
 		  char                link_link[1024];
-		  int                 spaceflag, oldwc = 0;
+		  int                 spaceflag, oldwc = 0, linkwc;
 
 		  wd[0] = 0;
 #ifdef USE_WORD_MB
@@ -686,6 +686,7 @@ RenderPage(Window win, int page_num, int w, int h)
 		  if ((eot != 1) && spaceflag)
 		     strcat(s, " ");
 
+		  linkwc = -1;
 		  if (wd[0] == '_')
 		    {
 		       link_txt[0] = '\0';
@@ -755,6 +756,7 @@ RenderPage(Window win, int page_num, int w, int h)
 				 if (j < k)
 				    strcat(wd, link_link + j + 1);
 				 islink = 2;
+				 linkwc = wc;
 			      }
 			    else
 			       continue;
@@ -944,7 +946,7 @@ RenderPage(Window win, int page_num, int w, int h)
 			    wastext = 1;
 			    TextDraw(&ts, win, txt_disp, x + off, y,
 				     xspace, 99999, 17, justification);
-			    if (islink > 1 && !strcmp(wd, link_txt))
+			    if (islink > 1 && linkwc > wc)
 			      {
 				 islink = 0;
 				 link_link[0] = '\0';
