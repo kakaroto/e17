@@ -20,8 +20,6 @@ fi
 
 AM_MAINTAINER_MODE
 
-ALL_LINGUAS="bg bs da de en_US es fr hu ko nl no ru sv pt pl pt_BR tr ja"
-
 AC_PROG_CC
 AM_PROG_CC_C_O
 
