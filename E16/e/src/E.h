@@ -517,6 +517,7 @@ void                StartupWindowsCreate(void);
 void                StartupWindowsOpen(void);
 
 /* theme.c */
+char               *ThemePathName(const char *path);
 void                ThemePathFind(void);
 char              **ThemesList(int *num);
 

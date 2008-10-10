@@ -85,6 +85,31 @@ ThemeCheckPath(const char *path)
    return NULL;			/* Not OK */
 }
 
+char               *
+ThemePathName(const char *path)
+{
+   const char         *p;
+   char               *s;
+
+   if (!path)
+      return NULL;
+   p = strrchr(path, '/');
+   if (!p)
+      return Estrdup(path);	/* Name only */
+   if (strcmp(p + 1, "e16"))
+      return Estrdup(p + 1);	/* Regular path */
+
+   /* <path>/<themename>/e16 */
+   s = strdup(path);
+   s[p - path] = '\0';
+   p = strrchr(s, '/');
+   if (!p)
+      return Estrdup(path);	/* Should not happen */
+   p++;
+   memmove(s, p, strlen(p) + 1);
+   return s;
+}
+
 static char        *
 append_merge_dir(char *dir, char ***list, int *count)
 {
@@ -135,8 +160,12 @@ append_merge_dir(char *dir, char ***list, int *count)
 	  {
 	     if (isdir(ss))
 	       {
-		  if (SanitiseThemeDir(ss))
-		     continue;
+		  if (!SanitiseThemeDir(ss))
+		     goto got_one;
+		  Esnprintf(ss, sizeof(ss), "%s/%s/e16", dir, str[i]);
+		  if (!SanitiseThemeDir(ss))
+		     goto got_one;
+		  continue;
 	       }
 	     else if (isfile(ss))
 	       {
@@ -148,6 +177,7 @@ append_merge_dir(char *dir, char ***list, int *count)
 		  continue;
 	       }
 
+	   got_one:
 	     (*count)++;
 	     *list = EREALLOC(char *, *list, *count);
 
@@ -371,6 +401,10 @@ ThemeFind(const char *theme)
 	ret = ThemeExtract(tdir);
 	if (ret)
 	   return ret;
+	Esnprintf(tdir, sizeof(tdir), "%s/%s/e16", p, theme);
+	ret = ThemeExtract(tdir);
+	if (ret)
+	   return ret;
      }
 
    if (strcmp(theme, "-"))
@@ -425,7 +459,7 @@ ThemePathFind(void)
      }
 
    Efree(Conf.theme.name);
-   Conf.theme.name = Estrdup(fullfileof(theme));
+   Conf.theme.name = ThemePathName(theme);
 
    Efree(Mode.theme.path);
    Mode.theme.path = (theme) ? theme : Estrdup("-");
