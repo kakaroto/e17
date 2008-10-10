@@ -3,10 +3,11 @@ EDJE_FLAGS = # -v
 
 THEMES = b_and_w.edj illume.edj
 INITS = init.edj illume_init.edj
+EXQUISITE = exquisite.edj
 
 .PHONY: all install clean
 
-all: $(THEMES) $(INITS)
+all: $(THEMES) $(INITS) $(EXQUISITE)
 
 b_and_w.edj: theme.edc *.png *.ttf
 	$(EDJE_CC) $(EDJE_FLAGS) $< $@
@@ -27,6 +28,12 @@ install: all
 		rm -f ~/.e/e/init/$$f; \
 		cp $$f ~/.e/e/init/$$f; \
 	done
+	for f in $(EXQUISITE); do \
+		rm -f ~/.exquisite/$$f; \
+		mkdir -p ~/.exquisite; \
+		cp $$f ~/.exquisite/$$f; \
+	done
+
 
 clean:
-	rm -f $(THEMES) $(INITS)
+	rm -f $(THEMES) $(INITS) $(EXQUISITE)
