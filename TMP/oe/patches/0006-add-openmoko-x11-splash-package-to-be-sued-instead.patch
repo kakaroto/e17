@@ -1,4 +1,4 @@
-From 6bd37cad22dea8c8b3c86caa8fc0641ea452aa7a Mon Sep 17 00:00:00 2001
+From da34af05165f02addf5b173aa481f6ce8302e1fd Mon Sep 17 00:00:00 2001
 From: Carsten Haitzler <raster@openmoko.org>
 Date: Mon, 29 Sep 2008 22:14:48 +1000
 Subject: [PATCH] add openmoko x11 splash package - to be sued instead of integrating into the

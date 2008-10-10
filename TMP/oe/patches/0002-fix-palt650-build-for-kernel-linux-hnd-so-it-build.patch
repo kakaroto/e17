@@ -1,4 +1,4 @@
-From 9e357e1d3249a5efe83e1854c2be3d1acd4198f0 Mon Sep 17 00:00:00 2001
+From 8132d9a20580cb2b0c2ee1cad99870039f8164f6 Mon Sep 17 00:00:00 2001
 From: Carsten Haitzler <raster@openmoko.org>
 Date: Fri, 26 Sep 2008 10:46:44 +1000
 Subject: [PATCH] fix palt650 build for kernel (linux-hnd) so it builds.

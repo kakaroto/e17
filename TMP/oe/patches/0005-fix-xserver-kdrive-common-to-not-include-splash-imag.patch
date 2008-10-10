@@ -1,4 +1,4 @@
-From dbfb03f2ae755c1c9f8a47992a137e81c4c06144 Mon Sep 17 00:00:00 2001
+From 6dedfbbf8b21842d3f914eab3bc7687784e9b2f0 Mon Sep 17 00:00:00 2001
 From: Carsten Haitzler <raster@openmoko.org>
 Date: Mon, 29 Sep 2008 19:21:29 +1000
 Subject: [PATCH] fix xserver-kdrive-common to not include splash images - but to use them *IF*

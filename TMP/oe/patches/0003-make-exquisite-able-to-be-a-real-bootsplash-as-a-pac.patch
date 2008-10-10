@@ -1,4 +1,4 @@
-From 49a1c0033448af394d5b126fe1a9a2f6c133447e Mon Sep 17 00:00:00 2001
+From 305dce03398dc04fa0aa2dabe876ce0bf9af0bac Mon Sep 17 00:00:00 2001
 From: Carsten Haitzler <raster@openmoko.org>
 Date: Mon, 29 Sep 2008 15:37:54 +1000
 Subject: [PATCH] make exquisite able to be a real bootsplash as a package.

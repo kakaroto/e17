@@ -1,0 +1,26 @@
+From b4286b02254e893afb2c99c38dcde4b59d5b0bff Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler <raster@openmoko.org>
+Date: Thu, 25 Sep 2008 23:56:35 +1000
+Subject: [PATCH] fix expedite build.
+
+---
+ packages/e17/expedite_svn.bb |    3 +++
+ 1 files changed, 3 insertions(+), 0 deletions(-)
+
+diff --git a/packages/e17/expedite_svn.bb b/packages/e17/expedite_svn.bb
+index 1337487..62f3f25 100644
+--- a/packages/e17/expedite_svn.bb
++++ b/packages/e17/expedite_svn.bb
+@@ -7,6 +7,9 @@ PR = "r0"
+ 
+ inherit e
+ 
++SRC_URI = "svn://svn.enlightenment.org/svn/e/trunk;module=expedite;proto=http"
++S = "${WORKDIR}/expedite"
++	
+ EXTRA_OECONF = "\
+   --x-includes=${STAGING_INCDIR}/X11 \
+   --x-libraries=${STAGING_LIBDIR} \
+-- 
+1.5.4.3
+
