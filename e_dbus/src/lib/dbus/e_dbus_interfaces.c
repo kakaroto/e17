@@ -6,6 +6,33 @@
  * objects on the bus should implement.
  */
 
+static inline DBusPendingCall *
+_dbus_peer_call(E_DBus_Connection *conn, const char *method_name, const char *destination, const char *path, E_DBus_Method_Return_Cb cb_return, const void *data)
+{
+  DBusMessage *msg;
+  DBusPendingCall *ret;
+
+  msg = dbus_message_new_method_call
+    (destination, path, "org.freedesktop.DBus.Peer", method_name);
+  if (!msg)
+    {
+       fprintf(stderr,
+	       "ERROR: failed to create message for method call: %s() at "
+	       "\"%s\" at \"%s\"\n",
+	       method_name, destination, path);
+       return NULL;
+    }
+
+  ret = e_dbus_message_send(conn, msg, cb_return, -1, (void *)data);
+  dbus_message_unref(msg);
+
+  if (!ret)
+    fprintf(stderr, "ERROR: could not %s() \"%s\" at \"%s\".\n",
+	    method_name, destination, path);
+
+  return ret;
+}
+
 /**
  * Ping the dbus peer
  *
@@ -15,13 +42,10 @@
  * @param cb_return a callback for a successful return
  * @param data data to pass to the callbacks
  */
-EAPI void
-e_dbus_peer_ping(E_DBus_Connection*conn, const char *destination, const char *path, E_DBus_Method_Return_Cb cb_return, void *data)
+EAPI DBusPendingCall *
+e_dbus_peer_ping(E_DBus_Connection *conn, const char *destination, const char *path, E_DBus_Method_Return_Cb cb_return, const void *data)
 {
-  DBusMessage *msg;
-
-  msg = dbus_message_new_method_call(destination, path, "org.freedesktop.DBus.Peer", "Ping");
-  e_dbus_message_send(conn, msg, cb_return, -1, data);
+   return _dbus_peer_call(conn, "Ping", destination, path, cb_return, data);
 }
 
 /**
@@ -33,13 +57,37 @@ e_dbus_peer_ping(E_DBus_Connection*conn, const char *destination, const char *pa
  * @param cb_return a callback for a successful return
  * @param data data to pass to the callbacks
  */
-EAPI void
-e_dbus_peer_get_machine_id(E_DBus_Connection*conn, const char *destination, const char *path, E_DBus_Method_Return_Cb cb_return, void *data)
+EAPI DBusPendingCall *
+e_dbus_peer_get_machine_id(E_DBus_Connection*conn, const char *destination, const char *path, E_DBus_Method_Return_Cb cb_return, const void *data)
+{
+   return _dbus_peer_call(conn, "GetMachineId", destination, path, cb_return, data);
+}
+
+static inline DBusMessage *
+_dbus_message_property_method_call(E_DBus_Connection *conn, const char *method_name, const char *destination, const char *path, const char *interface, const char *property)
 {
   DBusMessage *msg;
 
-  msg = dbus_message_new_method_call(destination, path, "org.freedesktop.DBus.Peer", "GetMachineId");
-  e_dbus_message_send(conn, msg, cb_return, -1, data);
+  if (!conn)
+    {
+       fprintf(stderr, "ERROR: no connection for call of %s\n", method_name);
+       return NULL;
+    }
+
+  msg = dbus_message_new_method_call
+    (destination, path, "org.freedesktop.DBus.Properties", method_name);
+  if (!msg)
+    {
+       fprintf(stderr,
+	       "ERROR: failed to create message for method call: %s() at "
+	       "\"%s\" at \"%s\"\n",
+	       method_name, destination, path);
+       return NULL;
+    }
+
+  dbus_message_append_args(msg, DBUS_TYPE_STRING, &interface,
+			   DBUS_TYPE_STRING, &property, DBUS_TYPE_INVALID);
+  return msg;
 }
 
 /**
@@ -53,14 +101,24 @@ e_dbus_peer_get_machine_id(E_DBus_Connection*conn, const char *destination, cons
  * @param cb_return a callback for a successful return
  * @param data data to pass to the callbacks
  */
-EAPI void
-e_dbus_properties_get(E_DBus_Connection*conn, const char *destination, const char *path, const char *interface, const char *property, E_DBus_Method_Return_Cb cb_return, void *data)
+EAPI DBusPendingCall *
+e_dbus_properties_get(E_DBus_Connection*conn, const char *destination, const char *path, const char *interface, const char *property, E_DBus_Method_Return_Cb cb_return, const void *data)
 {
   DBusMessage *msg;
+  DBusPendingCall *ret;
 
-  msg = dbus_message_new_method_call(destination, path, "org.freedesktop.DBus.Properties", "Get");
-  dbus_message_append_args(msg, DBUS_TYPE_STRING, &interface, DBUS_TYPE_STRING, &property, DBUS_TYPE_INVALID);
-  e_dbus_message_send(conn, msg, cb_return, -1, data);
+  msg = _dbus_message_property_method_call
+    (conn, "Get", destination, path, interface, property);
+  if (!msg)
+    return NULL;
+  ret = e_dbus_message_send(conn, msg, cb_return, -1, (void *)data);
+  dbus_message_unref(msg);
+
+  if (!ret)
+    fprintf(stderr, "ERROR: failed to call Get() at \"%s\" at \"%s\"\n",
+	    destination, path);
+
+  return ret;
 }
 
 /**
@@ -76,32 +134,42 @@ e_dbus_properties_get(E_DBus_Connection*conn, const char *destination, const cha
  * @param cb_return a callback for a successful return
  * @param data data to pass to the callbacks
  */
-EAPI void
-e_dbus_properties_set(E_DBus_Connection*conn, const char *destination, const char *path, const char *interface, const char *property, int value_type, void *value, E_DBus_Method_Return_Cb cb_return, void *data)
+EAPI DBusPendingCall *
+e_dbus_properties_set(E_DBus_Connection*conn, const char *destination, const char *path, const char *interface, const char *property, int value_type, const void *value, E_DBus_Method_Return_Cb cb_return, const void *data)
 {
   DBusMessage *msg;
   DBusMessageIter iter, sub;
   DBusError err;
+  DBusPendingCall *ret;
 
-  if (!dbus_type_is_basic(value_type)) 
+  if (!dbus_type_is_basic(value_type))
   {
     if (cb_return)
     {
       dbus_error_init(&err);
       dbus_set_error(&err, "org.enlightenment.DBus.InvalidType", "Only basic types may be set using e_dbus_properties_set()");
-      cb_return(data, NULL, &err);
+      cb_return((void *)data, NULL, &err);
 
     }
-    return;
+    return NULL;
   }
 
-  msg = dbus_message_new_method_call(destination, path, "org.freedesktop.DBus.Properties", "Set");
-  dbus_message_append_args(msg, DBUS_TYPE_STRING, &interface, DBUS_TYPE_STRING, &property, DBUS_TYPE_INVALID);
+  msg = _dbus_message_property_method_call
+    (conn, "Set", destination, path, interface, property);
+  if (!msg)
+    return NULL;
 
   dbus_message_iter_init_append(msg, &iter);
   dbus_message_iter_open_container(&iter, DBUS_TYPE_VARIANT, dbus_message_type_to_string(value_type), &sub);
   dbus_message_iter_append_basic(&sub, value_type, &value);
   dbus_message_iter_close_container(&iter, &sub);
 
-  e_dbus_message_send(conn, msg, cb_return, -1, data);
+  ret = e_dbus_message_send(conn, msg, cb_return, -1, (void *)data);
+  dbus_message_unref(msg);
+
+  if (!ret)
+    fprintf(stderr, "ERROR: failed to call Set() at \"%s\" at \"%s\"\n",
+	    destination, path);
+
+  return ret;
 }

@@ -5,8 +5,6 @@
 typedef struct E_DBus_Pending_Call_Data E_DBus_Pending_Call_Data;
 struct E_DBus_Pending_Call_Data
 {
-  int                     serial;
-
   E_DBus_Method_Return_Cb cb_return;
   void                   *data;
 };
@@ -70,15 +68,16 @@ e_dbus_message_send(E_DBus_Connection *conn, DBusMessage *msg, E_DBus_Method_Ret
   if (!dbus_connection_send_with_reply(conn->conn, msg, &pending, timeout))
     return NULL;
 
-  if (cb_return)
+  if (cb_return && pending)
   {
     E_DBus_Pending_Call_Data *pdata;
 
-    pdata = calloc(1, sizeof(E_DBus_Pending_Call_Data));
+    pdata = malloc(sizeof(E_DBus_Pending_Call_Data));
     pdata->cb_return = cb_return;
     pdata->data = data;
 
-    dbus_pending_call_set_notify(pending, cb_pending, pdata, free);
+    if (!dbus_pending_call_set_notify(pending, cb_pending, pdata, free))
+      free(pdata);
   }
 
   return pending;

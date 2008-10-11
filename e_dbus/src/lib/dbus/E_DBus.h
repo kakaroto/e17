@@ -104,48 +104,48 @@ extern "C" {
 
 /* standard dbus method calls */
 
-   EAPI void e_dbus_request_name(E_DBus_Connection *conn, const char *name, 
-                                 unsigned int flags,
-                                 E_DBus_Method_Return_Cb cb_return,
-                                 void *data);
-   EAPI void e_dbus_release_name(E_DBus_Connection *conn, const char *name,
-                                 E_DBus_Method_Return_Cb cb_return,
-                                 void *data);
+   EAPI DBusPendingCall *e_dbus_request_name(E_DBus_Connection *conn, const char *name,
+					     unsigned int flags,
+					     E_DBus_Method_Return_Cb cb_return,
+					     const void *data);
+   EAPI DBusPendingCall *e_dbus_release_name(E_DBus_Connection *conn, const char *name,
+					     E_DBus_Method_Return_Cb cb_return,
+					     const void *data);
 
-   EAPI void e_dbus_get_name_owner(E_DBus_Connection *conn, const char *name,
-                                   E_DBus_Method_Return_Cb cb_return,
-                                   void *data);
-   EAPI void e_dbus_list_names(E_DBus_Connection *conn,
-                               E_DBus_Method_Return_Cb cb_return,
-                               void *data);
-   EAPI void e_dbus_list_activatable_names(E_DBus_Connection *conn,
-                                           E_DBus_Method_Return_Cb cb_return,
-                                           void *data);
-   EAPI void e_dbus_name_has_owner(E_DBus_Connection *conn, const char *name,
-                                   E_DBus_Method_Return_Cb cb_return,
-                                   void *data);
-   EAPI void e_dbus_start_service_by_name(E_DBus_Connection *conn, const char *name,
-                                          E_DBus_Method_Return_Cb cb_return,
-                                          void *data);
+   EAPI DBusPendingCall *e_dbus_get_name_owner(E_DBus_Connection *conn, const char *name,
+					       E_DBus_Method_Return_Cb cb_return,
+					       const void *data);
+   EAPI DBusPendingCall *e_dbus_list_names(E_DBus_Connection *conn,
+					   E_DBus_Method_Return_Cb cb_return,
+					   const void *data);
+   EAPI DBusPendingCall *e_dbus_list_activatable_names(E_DBus_Connection *conn,
+						       E_DBus_Method_Return_Cb cb_return,
+						       const void *data);
+   EAPI DBusPendingCall *e_dbus_name_has_owner(E_DBus_Connection *conn, const char *name,
+					       E_DBus_Method_Return_Cb cb_return,
+					       const void *data);
+   EAPI DBusPendingCall *e_dbus_start_service_by_name(E_DBus_Connection *conn, const char *name,
+						      E_DBus_Method_Return_Cb cb_return,
+						      const void *data);
 
 /* standard methods calls on objects */
-   EAPI void e_dbus_peer_ping(E_DBus_Connection *conn, const char *destination,
-                              const char *path, E_DBus_Method_Return_Cb cb_return,
-                              void *data);
-   EAPI void e_dbus_peer_get_machine_id(E_DBus_Connection *conn,
-                                        const char *destination, const char *path,
-                                        E_DBus_Method_Return_Cb cb_return,
-                                        void *data);
-   EAPI void e_dbus_properties_get(E_DBus_Connection *conn, const char *destination,
-                                   const char *path, const char *interface,
-                                   const char *property,
-                                   E_DBus_Method_Return_Cb cb_return,
-                                   void *data);
-   EAPI void e_dbus_properties_set(E_DBus_Connection *conn, const char *destination,
-                                   const char *path, const char *interface,
-                                   const char *property, int value_type,
-                                   void *value, E_DBus_Method_Return_Cb cb_return,
-                                   void *data);
+   EAPI DBusPendingCall *e_dbus_peer_ping(E_DBus_Connection *conn, const char *destination,
+					  const char *path, E_DBus_Method_Return_Cb cb_return,
+					  const void *data);
+   EAPI DBusPendingCall *e_dbus_peer_get_machine_id(E_DBus_Connection *conn,
+						    const char *destination, const char *path,
+						    E_DBus_Method_Return_Cb cb_return,
+						    const void *data);
+   EAPI DBusPendingCall *e_dbus_properties_get(E_DBus_Connection *conn, const char *destination,
+					       const char *path, const char *interface,
+					       const char *property,
+					       E_DBus_Method_Return_Cb cb_return,
+					       const void *data);
+   EAPI DBusPendingCall *e_dbus_properties_set(E_DBus_Connection *conn, const char *destination,
+					       const char *path, const char *interface,
+					       const char *property, int value_type,
+					       const void *value, E_DBus_Method_Return_Cb cb_return,
+					       const void *data);
 
 
    EAPI E_DBus_Callback *e_dbus_callback_new(E_DBus_Callback_Func cb_func, E_DBus_Unmarshal_Func unmarshal_func, E_DBus_Free_Func free_func, void *user_data);
