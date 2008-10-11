@@ -16740,8 +16740,6 @@ collections { /* begin the collection of edje groups that are in this file */
       }
    }
 
-// FIXME: Virtual Desktops. Horizontal Slider weird when >10
-
    group { name: "e/widgets/slider_vertical";
       images {
 	 image: "slider.png" COMP;
@@ -18507,9 +18505,9 @@ collections { /* begin the collection of edje groups that are in this file */
 /////////////////////////////////////////////////////////////////////////////
    /*** ICONS ***/
 
-/*  FIXME: Create images then enable this section. Document 'define'.
+/* 
 
- Todo: Icons (redo)
+TODO: Icons (redo)
  Border buttons. Revise and resuse most. Mini-button has to go.
  System buttons (restart,logout,hibernate, etc etc)
  Window icons (pager, window remembers, etc etc)
@@ -18524,10 +18522,7 @@ collections { /* begin the collection of edje groups that are in this file */
  Menu Icons
  Applications (different gear)
 
-Idea: Use define to create icons. Only draw back I can see so far
-   is the gradient icons. But its easy enough to make a couple of those.
-   Also included in this section will be window icons and efm icons. Theyll
-   be here soon.
+TODO: Document how #define works.
 
 */
 
@@ -18548,12 +18543,13 @@ group { name: "e/icons/"NAME ; 	        		\
 }
 
 
-ICON("enlightenment/check","icon_check.png",64)
-ICON("enlightenment/swap","icon_swap.png",64)
 ICON("enlightenment/website","icon_globe.png",64)
 ICON("enlightenment/background","icon_wallpaper.png",64)
 ICON("enlightenment/picture","icon_wallpaper.png",64)
 ICON("enlightenment/gradient","icon_gradient.png",64)
+
+ICON("enlightenment/check","icon_check.png",64)
+ICON("enlightenment/swap","icon_swap.png",64)
 ICON("widget/del","icon_del.png",64) 
 ICON("widget/new","icon_new.png",64)	
 ICON("widget/add","icon_add.png",64) 
@@ -18565,14 +18561,161 @@ ICON("widget/new_dialog","icon_right_arrow.png",64)
 ICON("widget/config","icon_config.png",64)
 
 
-// FIXME: Dummy Icons
+/*  ///Bit of ground work for icons.
+
+// **Bad Joke**
+// Knock Knock,
+// Whos there?
+// *long pause*
+// Java.
+
+/// No icons made yet ///
 
 ICON("enlightenment/engine","icon_dummy.png",64)
 ICON("enlightenment/add_application","icon_dummy.png",64)
 ICON("enlightenment/profiles","icon_dummy.png",64)
 ICON("enlightenment/scale","icon_dummy.png",64)
 
+/// Old Icons from Bling ///
 
+ICON("enlightenment/e","icon_dummy.png",64)
+ICON("enlightenment/reset","icon_dummy.png",64)
+ICON("enlightenment/exit","icon_dummy.png",64)
+ICON("enlightenment/logout","icon_dummy.png",64)
+ICON("enlightenment/halt","icon_dummy.png",64)
+ICON("enlightenment/reboot","icon_dummy.png",64)
+ICON("enlightenment/suspend","icon_dummy.png",64)
+ICON("enlightenment/hibernate","icon_dummy.png",64)
+ICON("enlightenment/colors","icon_dummy.png",64)
+ICON("enlightenment/themes","icon_dummy.png",64)
+ICON("enlightenment/screen_setup","icon_dummy.png",64)
+ICON("enlightenment/windows","icon_dummy.png",64)
+ICON("enlightenment/lost_windows","icon_dummy.png",64)
+ICON("enlightenment/focus","icon_dummy.png",64)
+ICON("enlightenment/modules","icon_dummy.png",64)
+ICON("enlightenment/favorites","icon_dummy.png",64)
+ICON("enlightenment/desktops","icon_dummy.png",64)
+ICON("enlightenment/configuration","icon_dummy.png",64)
+ICON("enlightenment/intl","icon_dummy.png",64)
+ICON("enlightenment/system","icon_dummy.png",64)
+ICON("enlightenment/run","icon_dummy.png",64)
+ICON("enlightenment/directories","icon_dummy.png",64)
+ICON("enlightenment/fileman","icon_dummy.png",64)
+ICON("enlightenment/unknown","icon_dummy.png",64)
+ICON("enlightenment/mouse","icon_dummy.png",64)
+ICON("enlightenment/mouse_left","icon_dummy.png",64)
+ICON("enlightenment/mouse_right","icon_dummy.png",64)
+ICON("enlightenment/mouse_middle","icon_dummy.png",64)
+ICON("enlightenment/mouse_extra","icon_dummy.png",64)
+ICON("enlightenment/mouse_wheel","icon_dummy.png",64)
+ICON("enlightenment/mouse_clean","icon_dummy.png",64)
+ICON("enlightenment/keys","icon_dummy.png",64)
+ICON("enlightenment/desklock","icon_dummy.png",64)
+ICON("enlightenment/desklock_menu","icon_dummy.png",64)
+ICON("enlightenment/regenerate_menus","icon_dummy.png",64)
+ICON("enlightenment/screen_resolution","icon_dummy.png",64)
+ICON("enlightenment/shelf","icon_dummy.png",64)
+ICON("enlightenment/fonts","icon_dummy.png",64)
+ICON("enlightenment/icon_theme","icon_dummy.png",64)
+ICON("enlightenment/applications","icon_dummy.png",64)
+ICON("enlightenment/transitions","icon_dummy.png",64)
+ICON("enlightenment/performance","icon_dummy.png",64)
+ICON("enlightenment/startup","icon_dummy.png",64)
+ICON("enlightenment/winlist","icon_dummy.png",64)
+ICON("enlightenment/window_manipulation","icon_dummy.png",64)
+ICON("enlightenment/menus","icon_dummy.png",64)
+ICON("enlightenment/screen_normal","icon_dummy.png",64)
+ICON("enlightenment/screen_around","icon_dummy.png",64)
+ICON("enlightenment/screen_left","icon_dummy.png",64)
+ICON("enlightenment/screen_right","icon_dummy.png",64)
+ICON("enlightenment/screen_vflip","icon_dummy.png",64)
+ICON("enlightenment/screen_hflip","icon_dummy.png",64)
+ICON("enlightenment/shelf_position_bottom","icon_dummy.png",64)
+ICON("enlightenment/shelf_position_bottom_left","icon_dummy.png",64)
+ICON("enlightenment/shelf_position_bottom_right","icon_dummy.png",64)
+ICON("enlightenment/shelf_position_top","icon_dummy.png",64)
+ICON("enlightenment/shelf_position_top_left","icon_dummy.png",64)
+ICON("enlightenment/shelf_position_top_right","icon_dummy.png",64)
+ICON("enlightenment/shelf_position_left","icon_dummy.png",64)
+ICON("enlightenment/shelf_position_left_top","icon_dummy.png",64)
+ICON("enlightenment/shelf_position_left_bottom","icon_dummy.png",64)
+ICON("enlightenment/shelf_position_right","icon_dummy.png",64)
+ICON("enlightenment/shelf_position_right_top","icon_dummy.png",64)
+ICON("enlightenment/shelf_position_right_bottom","icon_dummy.png",64)
+ICON("enlightenment/shelf_bottom_desk","icon_dummy.png",64)
+ICON("enlightenment/shelf_custom","icon_dummy.png",64)
+ICON("enlightenment/shelf_dock","icon_dummy.png",64)
+ICON("enlightenment/shelf_menu_bar","icon_dummy.png",64)
+ICON("enlightenment/shelf_panel","icon_dummy.png",64)
+ICON("enlightenment/shelf_top_desk","icon_dummy.png",64)
+ICON("enlightenment/wallpaper_stretch","icon_dummy.png",64)
+ICON("enlightenment/wallpaper_tile","icon_dummy.png",64)
+ICON("enlightenment/wallpaper_center","icon_dummy.png",64)
+ICON("enlightenment/wallpaper_scale_aspect_in","icon_dummy.png",64)
+ICON("enlightenment/wallpaper_scale_aspect_out","icon_dummy.png",64)
+ICON("enlightenment/gradient_h","icon_dummy.png",64)
+ICON("enlightenment/gradient_v","icon_dummy.png",64)
+ICON("enlightenment/gradient_du","icon_dummy.png",64)
+ICON("enlightenment/gradient_dd","icon_dummy.png",64)
+ICON("enlightenment/gradient_rad","icon_dummy.png",64)
+ICON("enlightenment/advanced","icon_dummy.png",64)
+ICON("enlightenment/behavior","icon_dummy.png",64)
+ICON("enlightenment/appearance","icon_dummy.png",64)
+ICON("enlightenment/extensions","icon_dummy.png",64)
+ICON("enlightenment/file_icons","icon_dummy.png",64)
+ICON("enlightenment/menu_settings","icon_dummy.png",64)
+ICON("enlightenment/ibar_applications","icon_dummy.png",64)
+ICON("enlightenment/restart_applications","icon_dummy.png",64)
+ICON("enlightenment/startup_applications","icon_dummy.png",64)
+ICON("enlightenment/power_management","icon_dummy.png",64)
+ICON("enlightenment/screensaver","icon_dummy.png",64)
+ICON("enlightenment/window_remembers","icon_dummy.png",64)
+ICON("enlightenment/pager","icon_dummy.png",64)
+ICON("enlightenment/mixer","icon_dummy.png",64)
+
+
+#define BORDERICON(NAME, FILE)				\
+group { name: "e/widgets/border/default/"NAME ;   	\
+   parts { 						\
+      part { name: "icon";			        \
+         mouse_events:  0;				\
+         description { state: "default" 0.0;		\
+            aspect: 1.0 1.0;				\
+            aspect_preference: BOTH;			\
+	    image.image: FILE COMP;			\
+            image.normal: FILE ;			\
+         }						\
+      }							\
+   }							\
+}
+
+BORDERICON("close","icon_dummy.png")
+BORDERICON("maximize","icon_dummy.png")
+BORDERICON("minimize","icon_dummy.png")
+BORDERICON("shade","icon_dummy.png")
+BORDERICON("stick","icon_dummy.png")
+BORDERICON("kill","icon_dummy.png")
+BORDERICON("locks","icon_dummy.png")
+BORDERICON("locks_user","icon_dummy.png")
+BORDERICON("locks_application","icon_dummy.png")
+BORDERICON("borderless","icon_dummy.png")
+BORDERICON("fullscreen","icon_dummy.png")
+BORDERICON("remember","icon_dummy.png")
+BORDERICON("skip_winlist","icon_dummy.png")
+BORDERICON("skip","icon_dummy.png")
+BORDERICON("skip_pager","icon_dummy.png")
+BORDERICON("sendto","icon_dummy.png")
+BORDERICON("stacking","icon_dummy.png")
+BORDERICON("stack_on_top","icon_dummy.png")
+BORDERICON("stack_normal","icon_dummy.png")
+BORDERICON("stack_below","icon_dummy.png")
+BORDERICON("properties","icon_dummy.png")
+
+
+// Insert EFM Mime types/EFM button icons here //
+
+
+*/
 
 /////////////////////////////////////////////////////////////////////////////
    /*** MOD: WIZARD ***/
