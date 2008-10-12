@@ -14,7 +14,7 @@
    id="svg2383"
    sodipodi:version="0.32"
    inkscape:version="0.46"
-   inkscape:export-filename="icon_config.png"
+   inkscape:export-filename="icon_resize.png"
    inkscape:export-xdpi="90"
    inkscape:export-ydpi="90"
    sodipodi:docname="icons.svg.gz"
@@ -767,6 +767,38 @@
        y1="52.5"
        x2="38.793865"
        y2="18.143858" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4504"
+       id="linearGradient3808"
+       x1="32.984375"
+       y1="54.125"
+       x2="32.984375"
+       y2="17.46875"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.1434978,0,0,1.1434978,-5.7175589,-5.9855661)" />
+    <filter
+       inkscape:collect="always"
+       id="filter3886"
+       x="-0.11986577"
+       width="1.2397315"
+       y="-0.12013453"
+       height="1.2402691">
+      <feGaussianBlur
+         inkscape:collect="always"
+         stdDeviation="2.0929688"
+         id="feGaussianBlur3888" />
+    </filter>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient4504"
+       id="linearGradient3895"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1.1434978,0,0,1.1434978,-5.7175589,-5.9855661)"
+       x1="32.984375"
+       y1="54.125"
+       x2="32.984375"
+       y2="17.46875" />
   </defs>
   <sodipodi:namedview
      id="base"
@@ -775,9 +807,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1"
-     inkscape:cx="30.946362"
-     inkscape:cy="-31.314468"
+     inkscape:zoom="2"
+     inkscape:cx="38.705079"
+     inkscape:cy="71.002872"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:document-units="px"
@@ -787,8 +819,8 @@
      inkscape:snap-global="true"
      inkscape:window-width="1356"
      inkscape:window-height="1023"
-     inkscape:window-x="13"
-     inkscape:window-y="74">
+     inkscape:window-x="0"
+     inkscape:window-y="0">
     <inkscape:grid
        type="xygrid"
        id="grid3167" />
@@ -1082,8 +1114,7 @@
          d="M 48.545456,25 A 9.363636,9.363636 0 1 1 29.818184,25 A 9.363636,9.363636 0 1 1 48.545456,25 z" />
     </g>
     <g
-       id="g5699"
-       transform="translate(-0.7071014,-0.7071049)">
+       id="g5699">
       <path
          transform="matrix(0.9153889,0,0,1,0.6952982,0.1412182)"
          d="M 64.282433,31.858782 A 30.084179,27.512882 0 1 1 4.1140747,31.858782 A 30.084179,27.512882 0 1 1 64.282433,31.858782 z"
@@ -1421,6 +1452,23 @@
            id="path6662"
            sodipodi:nodetypes="csssssssssssssssssssssssscccssssc" />
       </g>
+    </g>
+    <g
+       id="g3890"
+       transform="translate(174,-42.5)">
+      <path
+         transform="matrix(1.1434978,0,0,1.1434978,-5.7175602,-4.9855675)"
+         style="opacity:0.69026549;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:3.31073856px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;filter:url(#filter3886)"
+         d="M 12.03125,12.3125 L 12.03125,19.46875 L 12.0625,31.625 L 18.21875,25.65625 L 40.65625,48.03125 L 34.53125,54.125 L 47.5,54.125 L 53.9375,54.125 L 53.9375,46.96875 L 53.90625,34.8125 L 47.78125,40.8125 L 25.34375,18.40625 L 31.4375,12.3125 L 18.46875,12.3125 L 12.03125,12.3125 z"
+         id="path3742" />
+      <path
+         id="path2666"
+         d="M 8.0401485,8.09375 L 8.0401485,16.276906 L 8.0758825,30.17755 L 15.115541,23.352298 L 40.772771,48.938061 L 33.768849,55.90625 L 48.598585,55.90625 L 55.959851,55.90625 L 55.959851,47.723094 L 55.924118,33.82245 L 48.920194,40.683436 L 23.262963,15.061939 L 30.231152,8.09375 L 15.401416,8.09375 L 8.0401485,8.09375 z"
+         style="fill:#ffffff;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:3.31073856px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1" />
+      <path
+         style="opacity:0.35840705;fill:url(#linearGradient3895);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:3.31073856px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         d="M 8.0401485,8.09375 L 8.0401485,16.276906 L 8.0758825,30.17755 L 15.115541,23.352298 L 40.772771,48.938061 L 33.768849,55.90625 L 48.598585,55.90625 L 55.959851,55.90625 L 55.959851,47.723094 L 55.924118,33.82245 L 48.920194,40.683436 L 23.262963,15.061939 L 30.231152,8.09375 L 15.401416,8.09375 L 8.0401485,8.09375 z"
+         id="path3800" />
     </g>
   </g>
 </svg>

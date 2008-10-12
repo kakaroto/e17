@@ -18639,7 +18639,7 @@ ICON("enlightenment/picture","icon_wallpaper.png",64)
 ICON("enlightenment/gradient","icon_gradient.png",64)
 
 ICON("enlightenment/check","icon_check.png",64)
-ICON("enlightenment/swap","icon_swap.png",64)
+ICON("widget/swap","icon_swap.png",64)
 ICON("widget/del","icon_del.png",64) 
 ICON("widget/new","icon_new.png",64)	
 ICON("widget/add","icon_add.png",64) 
@@ -18649,15 +18649,8 @@ ICON("widget/down_arrow","icon_down_arrow.png",64)
 ICON("widget/up_dir","icon_up_arrow.png",64)
 ICON("widget/new_dialog","icon_right_arrow.png",64)
 ICON("widget/config","icon_config.png",64)
+ICON("widget/resize","icon_resize.png",64)
 
-
-/*  ///Bit of ground work for icons.
-
-// **Bad Joke**
-// Knock Knock,
-// Whos there?
-// *long pause*
-// Java.
 
 /// No icons made yet ///
 
@@ -18665,6 +18658,12 @@ ICON("enlightenment/engine","icon_dummy.png",64)
 ICON("enlightenment/add_application","icon_dummy.png",64)
 ICON("enlightenment/profiles","icon_dummy.png",64)
 ICON("enlightenment/scale","icon_dummy.png",64)
+ICON("enlightenment/autoscroll","icon_dummy.png",64)
+ICON("enlightenment/showhide","icon_dummy.png",64)
+ICON("enlightenment/toolbar","icon_dummy.png",64)
+
+
+/* (Uncomment to test.)
 
 /// Old Icons from Bling ///
 
@@ -18762,7 +18761,12 @@ ICON("enlightenment/screensaver","icon_dummy.png",64)
 ICON("enlightenment/window_remembers","icon_dummy.png",64)
 ICON("enlightenment/pager","icon_dummy.png",64)
 ICON("enlightenment/mixer","icon_dummy.png",64)
+ICON("enlightenment/autoscroll","icon_dummy.png",64)
+ICON("enlightenment/showhide","icon_dummy.png",64)
+ICON("enlightenment/toolbar","icon_dummy.png",64)
 
+
+// Window Border menu icons //
 
 #define BORDERICON(NAME, FILE)				\
 group { name: "e/widgets/border/default/"NAME ;   	\
@@ -18794,18 +18798,140 @@ BORDERICON("remember","icon_dummy.png")
 BORDERICON("skip_winlist","icon_dummy.png")
 BORDERICON("skip","icon_dummy.png")
 BORDERICON("skip_pager","icon_dummy.png")
+BORDERICON("skip_taskbar","icon_dummy.png")
 BORDERICON("sendto","icon_dummy.png")
 BORDERICON("stacking","icon_dummy.png")
 BORDERICON("stack_on_top","icon_dummy.png")
 BORDERICON("stack_normal","icon_dummy.png")
 BORDERICON("stack_below","icon_dummy.png")
 BORDERICON("properties","icon_dummy.png")
+BORDERICON("basic","icon_dummy.png")
 
 
-// Insert EFM Mime types/EFM button icons here //
+// EFM menu button icons //
 
+#define EFMBUTTON(NAME, FILE)				\
+group { name: "e/fileman/default/button/"NAME;   	\
+   parts { 						\
+      part { name: "icon";			        \
+         mouse_events:  0;				\
+         description { state: "default" 0.0;		\
+            aspect: 1.0 1.0;				\
+            aspect_preference: BOTH;			\
+	    image.image: FILE COMP;			\
+            image.normal: FILE ;			\
+         }						\
+      }							\
+   }							\
+}
+
+EFMBUTTON("open","icon_dummy.png")
+EFMBUTTON("copy","icon_dummy.png")
+EFMBUTTON("cut","icon_dummy.png")
+EFMBUTTON("paste","icon_dummy.png")
+EFMBUTTON("delete","icon_dummy.png")
+EFMBUTTON("properties","icon_dummy.png")
+EFMBUTTON("rename","icon_dummy.png")
+EFMBUTTON("properties","icon_dummy.png")
+EFMBUTTON("arrange_name","icon_dummy.png")
+EFMBUTTON("arrange","icon_dummy.png")
+EFMBUTTON("arrange_time","icon_dummy.png")
+EFMBUTTON("new","icon_dummy.png")
+EFMBUTTON("new_dir","icon_dummy.png")
+EFMBUTTON("refresh","icon_dummy.png")
+EFMBUTTON("view_details","icon_dummy.png")
+EFMBUTTON("properties","icon_dummy.png")
+EFMBUTTON("view_name","icon_dummy.png")
+EFMBUTTON("view","icon_dummy.png")
+EFMBUTTON("select","icon_dummy.png")
+EFMBUTTON("sort","icon_dummy.png")
+EFMBUTTON("ordering","icon_dummy.png")
+EFMBUTTON("hidden_files","icon_dummy.png")
+
+
+// EFM icons //
+
+#define EFMICON(NAME, FILE, SIZE)			\
+group { name: "e/icons/fileman/"NAME;   		\
+   max:  SIZE SIZE;				        \
+   parts { 						\
+      part { name: "icon";			        \
+         mouse_events:  0;				\
+         description { state: "default" 0.0;		\
+            aspect: 1.0 1.0;				\
+            aspect_preference: BOTH;			\
+	    image.image: FILE COMP;			\
+            image.normal: FILE ;			\
+         }						\
+      }							\
+   }							\
+}
+
+EFMICON("folder","icon_dummy.png", 128)
+EFMICON("file","icon_dummy.png", 128)
+EFMICON("home","icon_dummy.png", 128)
+EFMICON("desktop","icon_dummy.png", 128)
+EFMICON("hdd","icon_dummy.png", 128)
+EFMICON("hd","icon_dummy.png", 128)
+
+
+// EFM Mime type icons //
+
+#define MIMEICON(NAME, FILE, SIZE)			\
+group { name: "e/icons/fileman/mime/"NAME;   		\
+   max:  SIZE SIZE;				        \
+   parts { 						\
+      part { name: "icon";			        \
+         mouse_events:  0;				\
+         description { state: "default" 0.0;		\
+            aspect: 1.0 1.0;				\
+            aspect_preference: BOTH;			\
+	    image.image: FILE COMP;			\
+            image.normal: FILE ;			\
+         }						\
+      }							\
+   }							\
+}
+
+MIMEICON("application/pdf","icon_dummy.png", 128);
+MIMEICON("text/x-csrc","icon_dummy.png", 128);
+MIMEICON("text/x-chdr","icon_dummy.png", 128);
+MIMEICON("application/x-object","icon_dummy.png", 128);
+MIMEICON("application/x-shellscript","icon_dummy.png", 128);
+MIMEICON("image/png","icon_dummy.png", 128);
+MIMEICON("image/jpeg","icon_dummy.png", 128);
+MIMEICON("video/x-msvideo","icon_dummy.png", 128);
+MIMEICON("audio/mpeg","icon_dummy.png", 128);
+MIMEICON("application/x-xcf","icon_dummy.png", 128);
+MIMEICON("text/x-c++src","icon_dummy.png", 128);
+MIMEICON("text/x-csharp","icon_dummy.png", 128);
+MIMEICON("text/x-patch","icon_dummy.png", 128);
+MIMEICON("application/msword","icon_dummy.png", 128);
+MIMEICON("application/ogg","icon_dummy.png", 128);
+MIMEICON("text/plain","icon_dummy.png", 128);
+MIMEICON("application/x-bzip","icon_dummy.png", 128);
+MIMEICON("application/x-deb","icon_dummy.png", 128);
+MIMEICON("application/x-font-ttf","icon_dummy.png", 128);
+MIMEICON("application/x-font-pcf","icon_dummy.png", 128);
+MIMEICON("application/x-font-bdf","icon_dummy.png", 128);
+MIMEICON("text/css","icon_dummy.png", 128);
+MIMEICON("text/html","icon_dummy.png", 128);
+MIMEICON("text/html","icon_dummy.png", 128);
+MIMEICON("application/zip","icon_dummy.png", 128);
+MIMEICON("application/x-gzip","icon_dummy.png", 128);
+MIMEICON("application/x-bzip-compressed-tar","icon_dummy.png", 128);
+MIMEICON("application/x-bzip2-compressed-tar","icon_dummy.png", 128);
+MIMEICON("application/x-compressed-tar","icon_dummy.png", 128);
+MIMEICON("application/x-tar","icon_dummy.png", 128);
+MIMEICON("application/x-rar","icon_dummy.png", 128);
+MIMEICON("video/mpeg","icon_dummy.png", 128);
+
+
+// Special icons. Various animated icons. //
+// Put icons that respond to states here. Eg. E logo, fileman/hd, etc.
 
 */
+
 
 /////////////////////////////////////////////////////////////////////////////
    /*** MOD: WIZARD ***/
