@@ -1,10 +1,12 @@
 DESCRIPTION = "X11 Splash screen (for the Illume image)"
 LICENSE = "GPL"
 SECTION = "x11"
-PR = "r2"
+PR = "r3"
 
 SRC_URI = "\
   file://xsplash-vga.ppm \
+  file://xsplash-qvga.ppm \
+  file://xsplash-qvga-square.ppm \
 "
 
 S = "${WORKDIR}"
