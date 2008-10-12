@@ -58,11 +58,53 @@ void response(Exalt_DBus_Response* response, void* data)
             printf("DNS replaced\n");
             print_response_error();
             break;
+        case EXALT_DBUS_RESPONSE_IFACE_WIRED_LIST:
+            printf("Wired network interface list:\n");
+            print_response_error();
+            {
+                Ecore_List* l = exalt_dbus_response_list_get(response);
+                char* iface;
+                ecore_list_first_goto(l);
+                while( (iface=ecore_list_next(l)) )
+                    printf("%s\n",iface);
+            }
+            break;
         case EXALT_DBUS_RESPONSE_IFACE_IP_GET:
             printf("%s IP address:\n",exalt_dbus_response_iface_get(response));
             print_response_error();
             printf("%s\n",exalt_dbus_response_address_get(response));
             break;
+        case EXALT_DBUS_RESPONSE_IFACE_NETMASK_GET:
+            printf("%s Netmask address:\n",exalt_dbus_response_iface_get(response));
+            print_response_error();
+            printf("%s\n",exalt_dbus_response_address_get(response));
+            break;
+        case EXALT_DBUS_RESPONSE_IFACE_GATEWAY_GET:
+            printf("%s Gateway address:\n",exalt_dbus_response_iface_get(response));
+            print_response_error();
+            printf("%s\n",exalt_dbus_response_address_get(response));
+            break;
+        case EXALT_DBUS_RESPONSE_IFACE_WIRELESS_IS:
+            printf("%s is a wireless interface:\n",exalt_dbus_response_iface_get(response));
+            print_response_error();
+            printf("%s\n",(exalt_dbus_response_is_get(response)>0?"yes":"no"));
+            break;
+        case EXALT_DBUS_RESPONSE_IFACE_LINK_IS:
+            printf("%s is link:\n",exalt_dbus_response_iface_get(response));
+            print_response_error();
+            printf("%s\n",(exalt_dbus_response_is_get(response)>0?"yes":"no"));
+            break;
+        case EXALT_DBUS_RESPONSE_IFACE_DHCP_IS:
+            printf("%s use a DHCP:\n",exalt_dbus_response_iface_get(response));
+            print_response_error();
+            printf("%s\n",(exalt_dbus_response_is_get(response)>0?"yes":"no"));
+            break;
+        case EXALT_DBUS_RESPONSE_IFACE_UP_IS:
+            printf("%s is up:\n",exalt_dbus_response_iface_get(response));
+            print_response_error();
+            printf("%s\n",(exalt_dbus_response_is_get(response)>0?"yes":"no"));
+            break;
+
     }
 
     ecore_main_loop_quit();
@@ -128,6 +170,14 @@ void dns(int argc, char** argv)
     }
 }
 
+void ethernet_list(int argc, char** argv)
+{
+    if(strcmp(argv[1],"list_get")==0)
+    {
+        exalt_dbus_eth_list_get(conn);
+    }
+}
+
 void ethernet(int argc, char** argv)
 {
     char* iface;
@@ -139,9 +189,20 @@ void ethernet(int argc, char** argv)
     }
     iface = argv[2];
     if(strcmp(argv[1],"ip_get")==0)
-    {
         exalt_dbus_eth_ip_get(conn,iface);
-    }
+    else if(strcmp(argv[1],"netmask_get")==0)
+        exalt_dbus_eth_netmask_get(conn,iface);
+    else if(strcmp(argv[1],"gateway_get")==0)
+        exalt_dbus_eth_gateway_get(conn,iface);
+    else if(strcmp(argv[1],"wireless_is")==0)
+        exalt_dbus_eth_wireless_is(conn,iface);
+    else if(strcmp(argv[1],"link_is")==0)
+        exalt_dbus_eth_link_is(conn,iface);
+    else if(strcmp(argv[1],"up_is")==0)
+        exalt_dbus_eth_up_is(conn,iface);
+    else if(strcmp(argv[1],"dhcp_is")==0)
+        exalt_dbus_eth_dhcp_is(conn,iface);
+
 }
 
 int main(int argc, char** argv)
@@ -157,7 +218,17 @@ int main(int argc, char** argv)
             || strcmp(argv[1],"dns_get")==0
             ))
         dns(argc,argv);
-    else if(argc>1 && strcmp(argv[1],"ip_get")==0)
+    else if(argc>1 && ( strcmp(argv[1],"list_get")==0
+                ))
+        ethernet_list(argc,argv);
+    else if(argc>1 && (strcmp(argv[1],"ip_get")==0
+                || strcmp(argv[1],"netmask_get")==0
+                || strcmp(argv[1],"gateway_get")==0
+                || strcmp(argv[1],"wireless_is")==0
+                || strcmp(argv[1],"up_is")==0
+                || strcmp(argv[1],"link_is")==0
+                || strcmp(argv[1],"dhcp_is")==0
+            ))
         ethernet(argc ,argv);
     else
         help();
@@ -179,7 +250,17 @@ void help()
             "dns_del ip_addresse \t\t: remove the dns\n"
             "dns_replace ip1 ip2 \t\t: replace the dns ip1 by ip2\n"
             "\n"
-            "ip_get eth0\t\t\t: get the ip address of the interface eth0\n");
+            "list_get\t\t\t: print the list of interfaces (only wired interface currently)\n"
+            "\n"
+            "ip_get eth0\t\t\t: get the ip address of the interface eth0\n"
+            "netmask_get eth0\t\t: get the netmask address of the interface eth0\n"
+            "gateway_get eth0\t\t: get the gateway address of the interface eth0\n"
+            "wireless_is eth0\t\t: print yes if eth0 is a wireless interface, else print no\n"
+            "link_is eth0\t\t\t: print yes if eth0 is link, else print no\n"
+            "up_is eth0\t\t\t: print yes if eth0 is up, else print no\n"
+            "dhcp_is eth0\t\t\t: print yes if eth0 use a DHCP mode, else print no\n"
+            );
+
     exit(EXIT_FAILURE);
 }
 

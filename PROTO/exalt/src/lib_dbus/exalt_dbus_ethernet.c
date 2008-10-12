@@ -22,6 +22,13 @@
 #include "libexalt_dbus_private.h"
 
 void _exalt_dbus_eth_ip_get_cb(void *data, DBusMessage *msg, DBusError *error);
+void _exalt_dbus_eth_gateway_get_cb(void *data, DBusMessage *msg, DBusError *error);
+void _exalt_dbus_eth_netmask_get_cb(void *data, DBusMessage *msg, DBusError *error);
+void _exalt_dbus_eth_list_get_cb(void *data, DBusMessage *msg, DBusError *error);
+void _exalt_dbus_eth_wireless_is_cb(void *data, DBusMessage *msg, DBusError *error);
+void _exalt_dbus_eth_up_is_cb(void *data, DBusMessage *msg, DBusError *error);
+void _exalt_dbus_eth_link_is_cb(void *data, DBusMessage *msg, DBusError *error);
+void _exalt_dbus_eth_dhcp_is_cb(void *data, DBusMessage *msg, DBusError *error);
 
 
 /**
@@ -60,98 +67,67 @@ int exalt_dbus_eth_ip_get(exalt_dbus_conn* conn, const char* eth)
     return msg_id->id;
 }
 
+
 /**
- * @brief Get the netmask of the interface eth
+ * @brief Get the netmask address of the interface eth
  * @param conn a connection
  * @param eth the interface name (eth0, ath32 ...)
- * @return Returns the netmask
+ * @return Returns the netmask address
  */
-char* exalt_dbus_eth_get_netmask(const exalt_dbus_conn* conn, const char* eth)
+int exalt_dbus_eth_netmask_get(exalt_dbus_conn* conn, const char* eth)
 {
-    DBusPendingCall * ret;
     DBusMessage *msg;
-    DBusMessageIter args;
-    char* res;
+    char path[PATH_MAX];
+    char interface[PATH_MAX];
+    Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
     EXALT_ASSERT_RETURN(conn!=NULL);
     EXALT_ASSERT_RETURN(eth!=NULL);
 
-    msg = exalt_dbus_read_call_new("IFACE_GET_NETMASK");
-    dbus_message_iter_init_append(msg, &args);
+    snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,eth);
+    snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,eth);
+    msg = exalt_dbus_iface_call_new("netmask_get",path,interface);
 
-    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth),
-            dbus_message_unref(msg); return 0,
-            "dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth");
 
-    EXALT_ASSERT_ADV(dbus_connection_send_with_reply (conn->conn, msg, &ret, -1),
-            dbus_message_unref(msg); return 0,
-            "dbus_connection_send_with_reply (conn->conn, msg, &ret, -1)");
+    msg_id->id = exalt_dbus_msg_id_next(conn);
+    msg_id->conn = conn;
+    EXALT_ASSERT_CUSTOM_RET(e_dbus_message_send (conn->e_conn, msg, _exalt_dbus_eth_netmask_get_cb,30,msg_id),
+            dbus_message_unref(msg); return 0);
 
     dbus_message_unref(msg);
 
-    dbus_pending_call_block(ret);
-    msg = dbus_pending_call_steal_reply(ret);
-
-    EXALT_ASSERT_RETURN(msg!=NULL);
-
-    dbus_pending_call_unref(ret);
-
-    EXALT_ASSERT_ADV(exalt_dbus_valid_is(msg),
-            return 0,
-            "exalt_dbus_valid_is(msg) failed, error=%d (%s)",
-            exalt_dbus_error_get_id(msg),
-            exalt_dbus_error_get_msg(msg));
-
-    EXALT_STRDUP(res , exalt_dbus_response_string(msg,1));
-    dbus_message_unref(msg);
-    return res;
+    return msg_id->id;
 }
 
 /**
- * @brief Get the default gateway of the interface eth
+ * @brief Get the gateway address of the interface eth
  * @param conn a connection
  * @param eth the interface name (eth0, ath32 ...)
- * @return Returns the default gateway
+ * @return Returns the gateway address
  */
-char* exalt_dbus_eth_get_gateway(const exalt_dbus_conn* conn, const char* eth)
+int exalt_dbus_eth_gateway_get(exalt_dbus_conn* conn, const char* eth)
 {
-    DBusPendingCall * ret;
     DBusMessage *msg;
-    DBusMessageIter args;
-    char* res;
+    char path[PATH_MAX];
+    char interface[PATH_MAX];
+    Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
     EXALT_ASSERT_RETURN(conn!=NULL);
     EXALT_ASSERT_RETURN(eth!=NULL);
 
-    msg = exalt_dbus_read_call_new("IFACE_GET_GATEWAY");
-    dbus_message_iter_init_append(msg, &args);
+    snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,eth);
+    snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,eth);
+    msg = exalt_dbus_iface_call_new("gateway_get",path,interface);
 
-    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth),
-            dbus_message_unref(msg); return 0,
-            "dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth");
 
-    EXALT_ASSERT_ADV(dbus_connection_send_with_reply (conn->conn, msg, &ret, -1),
-            dbus_message_unref(msg); return 0,
-            "dbus_connection_send_with_reply (conn->conn, msg, &ret, -1)");
+    msg_id->id = exalt_dbus_msg_id_next(conn);
+    msg_id->conn = conn;
+    EXALT_ASSERT_CUSTOM_RET(e_dbus_message_send (conn->e_conn, msg, _exalt_dbus_eth_gateway_get_cb,30,msg_id),
+            dbus_message_unref(msg); return 0);
 
     dbus_message_unref(msg);
 
-    dbus_pending_call_block(ret);
-    msg = dbus_pending_call_steal_reply(ret);
-
-    EXALT_ASSERT_RETURN(msg!=NULL);
-
-    dbus_pending_call_unref(ret);
-
-    EXALT_ASSERT_ADV(exalt_dbus_valid_is(msg),
-            return 0,
-            "exalt_dbus_valid_is(msg) failed, error=%d (%s)",
-            exalt_dbus_error_get_id(msg),
-            exalt_dbus_error_get_msg(msg));
-
-    EXALT_STRDUP(res , exalt_dbus_response_string(msg,1));
-    dbus_message_unref(msg);
-    return res;
+    return msg_id->id;
 }
 
 /**
@@ -159,36 +135,24 @@ char* exalt_dbus_eth_get_gateway(const exalt_dbus_conn* conn, const char* eth)
  * @param conn a connection
  * @return Returns the list of interface name (char *)
  */
-Ecore_List* exalt_dbus_eth_get_list(const exalt_dbus_conn* conn)
+int exalt_dbus_eth_list_get(exalt_dbus_conn* conn)
 {
-    DBusPendingCall * ret;
     DBusMessage *msg;
-    Ecore_List* res;
+    Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
     EXALT_ASSERT_RETURN(conn!=NULL);
 
-    msg = exalt_dbus_read_call_new("IFACE_GET_ETH_LIST");
-    EXALT_ASSERT_ADV(dbus_connection_send_with_reply (conn->conn, msg, &ret, -1),
-            dbus_message_unref(msg); return 0,
-            "dbus_connection_send_with_reply (conn->conn, msg, &ret, -1)");
+    msg_id->id = exalt_dbus_msg_id_next(conn);
+    msg_id->conn = conn;
+
+    msg = exalt_dbus_ifaces_wired_call_new("list");
+
+    EXALT_ASSERT_CUSTOM_RET(e_dbus_message_send (conn->e_conn, msg, _exalt_dbus_eth_list_get_cb,30,msg_id),
+            dbus_message_unref(msg); return 0);
 
     dbus_message_unref(msg);
 
-    dbus_pending_call_block(ret);
-    msg = dbus_pending_call_steal_reply(ret);
-    EXALT_ASSERT_RETURN(msg!=NULL);
-    dbus_pending_call_unref(ret);
-
-    EXALT_ASSERT_ADV(exalt_dbus_valid_is(msg),
-            return 0,
-            "exalt_dbus_valid_is(msg) failed, error=%d (%s)",
-            exalt_dbus_error_get_id(msg),
-            exalt_dbus_error_get_msg(msg));
-
-
-    res = exalt_dbus_response_strings(msg,1);
-    dbus_message_unref(msg);
-    return res;
+    return msg_id->id;
 }
 
 /**
@@ -197,43 +161,30 @@ Ecore_List* exalt_dbus_eth_get_list(const exalt_dbus_conn* conn)
  * @param eth the interface name
  * @return Returns 1 if yes, else 0
  */
-int exalt_dbus_eth_is_wireless(const exalt_dbus_conn* conn, const char* eth)
+int exalt_dbus_eth_wireless_is(exalt_dbus_conn* conn, const char* eth)
 {
-    DBusPendingCall * ret;
     DBusMessage *msg;
-    DBusMessageIter args;
-    int res;
+    char path[PATH_MAX];
+    char interface[PATH_MAX];
+    Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
     EXALT_ASSERT_RETURN(conn!=NULL);
     EXALT_ASSERT_RETURN(eth!=NULL);
 
-    msg = exalt_dbus_read_call_new("IFACE_IS_WIRELESS");
-    dbus_message_iter_init_append(msg, &args);
+    snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,eth);
+    snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,eth);
+    msg = exalt_dbus_iface_call_new("wireless_is",path,interface);
 
-    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth),
-            dbus_message_unref(msg); return 0,
-            "dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth");
 
-    EXALT_ASSERT_ADV(dbus_connection_send_with_reply (conn->conn, msg, &ret, -1),
-            dbus_message_unref(msg); return 0,
-            "dbus_connection_send_with_reply (conn->conn, msg, &ret, -1)");
+    msg_id->id = exalt_dbus_msg_id_next(conn);
+    msg_id->conn = conn;
+    EXALT_ASSERT_CUSTOM_RET(
+            e_dbus_message_send (conn->e_conn, msg, _exalt_dbus_eth_wireless_is_cb,30,msg_id),
+            dbus_message_unref(msg); return 0);
 
     dbus_message_unref(msg);
 
-    dbus_pending_call_block(ret);
-    msg = dbus_pending_call_steal_reply(ret);
-    EXALT_ASSERT_RETURN(msg!=NULL);
-    dbus_pending_call_unref(ret);
-
-    EXALT_ASSERT_ADV(exalt_dbus_valid_is(msg),
-            return 0,
-            "exalt_dbus_valid_is(msg) failed, error=%d (%s)",
-            exalt_dbus_error_get_id(msg),
-            exalt_dbus_error_get_msg(msg));
-
-    res = exalt_dbus_response_boolean(msg,1);
-    dbus_message_unref(msg);
-    return res;
+    return msg_id->id;
 }
 
 
@@ -243,43 +194,30 @@ int exalt_dbus_eth_is_wireless(const exalt_dbus_conn* conn, const char* eth)
  * @param eth the interface name
  * @return Returns 1 if yes, else 0 the interface is down
  */
-int exalt_dbus_eth_is_up(const exalt_dbus_conn* conn, const char* eth)
+int exalt_dbus_eth_up_is(exalt_dbus_conn* conn, const char* eth)
 {
-    DBusPendingCall * ret;
     DBusMessage *msg;
-    DBusMessageIter args;
-    int res;
+    char path[PATH_MAX];
+    char interface[PATH_MAX];
+    Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
     EXALT_ASSERT_RETURN(conn!=NULL);
     EXALT_ASSERT_RETURN(eth!=NULL);
 
-    msg = exalt_dbus_read_call_new("IFACE_IS_UP");
-    dbus_message_iter_init_append(msg, &args);
+    snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,eth);
+    snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,eth);
+    msg = exalt_dbus_iface_call_new("up_is",path,interface);
 
-    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth),
-            dbus_message_unref(msg); return 0,
-            "dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth");
 
-    EXALT_ASSERT_ADV(dbus_connection_send_with_reply (conn->conn, msg, &ret, -1),
-            dbus_message_unref(msg); return 0,
-            "dbus_connection_send_with_reply (conn->conn, msg, &ret, -1)");
+    msg_id->id = exalt_dbus_msg_id_next(conn);
+    msg_id->conn = conn;
+    EXALT_ASSERT_CUSTOM_RET(
+            e_dbus_message_send (conn->e_conn, msg, _exalt_dbus_eth_up_is_cb,30,msg_id),
+            dbus_message_unref(msg); return 0);
 
     dbus_message_unref(msg);
 
-    dbus_pending_call_block(ret);
-    msg = dbus_pending_call_steal_reply(ret);
-    EXALT_ASSERT_RETURN(msg!=NULL);
-    dbus_pending_call_unref(ret);
-
-    EXALT_ASSERT_ADV(exalt_dbus_valid_is(msg),
-            return 0,
-            "exalt_dbus_valid_is(msg) failed, error=%d (%s)",
-            exalt_dbus_error_get_id(msg),
-            exalt_dbus_error_get_msg(msg));
-
-    res = exalt_dbus_response_boolean(msg,1);
-    dbus_message_unref(msg);
-    return res;
+    return msg_id->id;
 }
 
 /**
@@ -288,43 +226,30 @@ int exalt_dbus_eth_is_up(const exalt_dbus_conn* conn, const char* eth)
  * @param eth the interface name
  * @return Returns 1 if yes, else 0 the interface use the static mode
  */
-int exalt_dbus_eth_is_dhcp(const exalt_dbus_conn* conn, const char* eth)
+int exalt_dbus_eth_dhcp_is(exalt_dbus_conn* conn, const char* eth)
 {
-    DBusPendingCall * ret;
     DBusMessage *msg;
-    DBusMessageIter args;
-    int res;
+    char path[PATH_MAX];
+    char interface[PATH_MAX];
+    Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
     EXALT_ASSERT_RETURN(conn!=NULL);
     EXALT_ASSERT_RETURN(eth!=NULL);
 
-    msg = exalt_dbus_read_call_new("IFACE_IS_DHCP");
-    dbus_message_iter_init_append(msg, &args);
+    snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,eth);
+    snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,eth);
+    msg = exalt_dbus_iface_call_new("dhcp_is",path,interface);
 
-    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth),
-            dbus_message_unref(msg); return 0,
-            "dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth");
 
-    EXALT_ASSERT_ADV(dbus_connection_send_with_reply (conn->conn, msg, &ret, -1),
-            dbus_message_unref(msg); return 0,
-            "dbus_connection_send_with_reply (conn->conn, msg, &ret, -1)");
+    msg_id->id = exalt_dbus_msg_id_next(conn);
+    msg_id->conn = conn;
+    EXALT_ASSERT_CUSTOM_RET(
+            e_dbus_message_send (conn->e_conn, msg, _exalt_dbus_eth_dhcp_is_cb,30,msg_id),
+            dbus_message_unref(msg); return 0);
 
     dbus_message_unref(msg);
 
-    dbus_pending_call_block(ret);
-    msg = dbus_pending_call_steal_reply(ret);
-    EXALT_ASSERT_RETURN(msg!=NULL);
-    dbus_pending_call_unref(ret);
-
-    EXALT_ASSERT_ADV(exalt_dbus_valid_is(msg),
-            return 0,
-            "exalt_dbus_valid_is(msg) failed, error=%d (%s)",
-            exalt_dbus_error_get_id(msg),
-            exalt_dbus_error_get_msg(msg));
-
-    res = exalt_dbus_response_boolean(msg,1);
-    dbus_message_unref(msg);
-    return res;
+    return msg_id->id;
 }
 
 /**
@@ -334,43 +259,30 @@ int exalt_dbus_eth_is_dhcp(const exalt_dbus_conn* conn, const char* eth)
  * @param eth the interface name
  * @return Returns 1 if the interface is link or if the interface is wireless, 0 if the interface is unlink
  */
-int exalt_dbus_eth_is_link(const exalt_dbus_conn* conn, const char* eth)
+int exalt_dbus_eth_link_is(exalt_dbus_conn* conn, const char* eth)
 {
-    DBusPendingCall * ret;
     DBusMessage *msg;
-    DBusMessageIter args;
-    int res;
+    char path[PATH_MAX];
+    char interface[PATH_MAX];
+    Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
     EXALT_ASSERT_RETURN(conn!=NULL);
     EXALT_ASSERT_RETURN(eth!=NULL);
 
-    msg = exalt_dbus_read_call_new("IFACE_IS_LINK");
-    dbus_message_iter_init_append(msg, &args);
+    snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,eth);
+    snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,eth);
+    msg = exalt_dbus_iface_call_new("link_is",path,interface);
 
-    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth),
-            dbus_message_unref(msg); return 0,
-            "dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth");
 
-    EXALT_ASSERT_ADV(dbus_connection_send_with_reply (conn->conn, msg, &ret, -1),
-            dbus_message_unref(msg); return 0,
-            "dbus_connection_send_with_reply (conn->conn, msg, &ret, -1)");
+    msg_id->id = exalt_dbus_msg_id_next(conn);
+    msg_id->conn = conn;
+    EXALT_ASSERT_CUSTOM_RET(
+            e_dbus_message_send (conn->e_conn, msg, _exalt_dbus_eth_link_is_cb,30,msg_id),
+            dbus_message_unref(msg); return 0);
 
     dbus_message_unref(msg);
 
-    dbus_pending_call_block(ret);
-    msg = dbus_pending_call_steal_reply(ret);
-    EXALT_ASSERT_RETURN(msg!=NULL);
-    dbus_pending_call_unref(ret);
-
-    EXALT_ASSERT_ADV(exalt_dbus_valid_is(msg),
-            return 0,
-            "exalt_dbus_valid_is(msg) failed, error=%d (%s)",
-            exalt_dbus_error_get_id(msg),
-            exalt_dbus_error_get_msg(msg));
-
-    res = exalt_dbus_response_boolean(msg,1);
-    dbus_message_unref(msg);
-    return res;
+    return msg_id->id;
 }
 
 
@@ -563,8 +475,8 @@ int exalt_dbus_eth_apply_conn(exalt_dbus_conn* conn, const char* eth, Exalt_Conn
     if(!cmd)
         cmd="";
     EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &cmd),
-                    dbus_message_unref(msg); return 0,
-                    "dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &cmd");
+            dbus_message_unref(msg); return 0,
+            "dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &cmd");
 
 
     EXALT_ASSERT_ADV(dbus_connection_send_with_reply (conn->conn, msg, &ret, -1),
@@ -644,7 +556,6 @@ char* exalt_dbus_eth_get_cmd(const exalt_dbus_conn* conn, const char* eth)
 
 void _exalt_dbus_eth_ip_get_cb(void *data, DBusMessage *msg, DBusError *error)
 {
-
     Exalt_DBus_Msg_Id *id = data;
 
     EXALT_DBUS_ERROR_PRINT(error);
@@ -664,6 +575,196 @@ void _exalt_dbus_eth_ip_get_cb(void *data, DBusMessage *msg, DBusError *error)
     {
         response -> is_error = 1;
         response-> address = strdup(exalt_dbus_response_string(msg,1));
+    }
+    if(id->conn->response_notify->cb)
+        id->conn-> response_notify -> cb(response,id->conn->response_notify->user_data);
+    EXALT_FREE(data);
+}
+
+
+void _exalt_dbus_eth_netmask_get_cb(void *data, DBusMessage *msg, DBusError *error)
+{
+    Exalt_DBus_Msg_Id *id = data;
+
+    EXALT_DBUS_ERROR_PRINT(error);
+
+    Exalt_DBus_Response* response = calloc(1,sizeof(Exalt_DBus_Response));
+    response->type = EXALT_DBUS_RESPONSE_IFACE_NETMASK_GET;
+    response-> iface = strdup(dbus_get_eth(msg));
+    response->msg_id = id->id;
+
+    if(!exalt_dbus_valid_is(msg))
+    {
+        response->is_error = 0;
+        response->error_id = exalt_dbus_error_get_id(msg);
+        response->error_msg = exalt_dbus_error_get_msg(msg);
+    }
+    else
+    {
+        response -> is_error = 1;
+        response-> address = strdup(exalt_dbus_response_string(msg,1));
+    }
+    if(id->conn->response_notify->cb)
+        id->conn-> response_notify -> cb(response,id->conn->response_notify->user_data);
+    EXALT_FREE(data);
+}
+
+
+void _exalt_dbus_eth_gateway_get_cb(void *data, DBusMessage *msg, DBusError *error)
+{
+    Exalt_DBus_Msg_Id *id = data;
+
+    EXALT_DBUS_ERROR_PRINT(error);
+
+    Exalt_DBus_Response* response = calloc(1,sizeof(Exalt_DBus_Response));
+    response->type = EXALT_DBUS_RESPONSE_IFACE_GATEWAY_GET;
+    response-> iface = strdup(dbus_get_eth(msg));
+    response->msg_id = id->id;
+
+    if(!exalt_dbus_valid_is(msg))
+    {
+        response->is_error = 0;
+        response->error_id = exalt_dbus_error_get_id(msg);
+        response->error_msg = exalt_dbus_error_get_msg(msg);
+    }
+    else
+    {
+        response -> is_error = 1;
+        response-> address = strdup(exalt_dbus_response_string(msg,1));
+    }
+    if(id->conn->response_notify->cb)
+        id->conn-> response_notify -> cb(response,id->conn->response_notify->user_data);
+    EXALT_FREE(data);
+}
+
+void _exalt_dbus_eth_list_get_cb(void *data, DBusMessage *msg, DBusError *error)
+{
+    Exalt_DBus_Msg_Id *id = data;
+
+    EXALT_DBUS_ERROR_PRINT(error);
+
+    Exalt_DBus_Response* response = calloc(1,sizeof(Exalt_DBus_Response));
+    response->type = EXALT_DBUS_RESPONSE_IFACE_WIRED_LIST;
+    response->msg_id = id->id;
+    if(!exalt_dbus_valid_is(msg))
+    {
+        response->is_error = 0;
+        response->error_id = exalt_dbus_error_get_id(msg);
+        response->error_msg = exalt_dbus_error_get_msg(msg);
+    }
+    else
+    {
+        response -> is_error = 1;
+        response->l = exalt_dbus_response_strings(msg,1);
+    }
+
+    if(id->conn->response_notify->cb)
+        id->conn-> response_notify -> cb(response,id->conn->response_notify->user_data);
+    EXALT_FREE(data);
+}
+
+void _exalt_dbus_eth_wireless_is_cb(void *data, DBusMessage *msg, DBusError *error)
+{
+    Exalt_DBus_Msg_Id *id = data;
+
+    EXALT_DBUS_ERROR_PRINT(error);
+
+    Exalt_DBus_Response* response = calloc(1,sizeof(Exalt_DBus_Response));
+    response->type = EXALT_DBUS_RESPONSE_IFACE_WIRELESS_IS;
+    response-> iface = strdup(dbus_get_eth(msg));
+    response->msg_id = id->id;
+
+    if(!exalt_dbus_valid_is(msg))
+    {
+        response->is_error = 0;
+        response->error_id = exalt_dbus_error_get_id(msg);
+        response->error_msg = exalt_dbus_error_get_msg(msg);
+    }
+    else
+    {
+        response -> is_error = 1;
+        response-> is = exalt_dbus_response_boolean(msg,1);
+    }
+    if(id->conn->response_notify->cb)
+        id->conn-> response_notify -> cb(response,id->conn->response_notify->user_data);
+    EXALT_FREE(data);
+}
+
+void _exalt_dbus_eth_link_is_cb(void *data, DBusMessage *msg, DBusError *error)
+{
+    Exalt_DBus_Msg_Id *id = data;
+
+    EXALT_DBUS_ERROR_PRINT(error);
+
+    Exalt_DBus_Response* response = calloc(1,sizeof(Exalt_DBus_Response));
+    response->type = EXALT_DBUS_RESPONSE_IFACE_LINK_IS;
+    response-> iface = strdup(dbus_get_eth(msg));
+    response->msg_id = id->id;
+
+    if(!exalt_dbus_valid_is(msg))
+    {
+        response->is_error = 0;
+        response->error_id = exalt_dbus_error_get_id(msg);
+        response->error_msg = exalt_dbus_error_get_msg(msg);
+    }
+    else
+    {
+        response -> is_error = 1;
+        response-> is = exalt_dbus_response_boolean(msg,1);
+    }
+    if(id->conn->response_notify->cb)
+        id->conn-> response_notify -> cb(response,id->conn->response_notify->user_data);
+    EXALT_FREE(data);
+}
+
+void _exalt_dbus_eth_dhcp_is_cb(void *data, DBusMessage *msg, DBusError *error)
+{
+    Exalt_DBus_Msg_Id *id = data;
+
+    EXALT_DBUS_ERROR_PRINT(error);
+
+    Exalt_DBus_Response* response = calloc(1,sizeof(Exalt_DBus_Response));
+    response->type = EXALT_DBUS_RESPONSE_IFACE_DHCP_IS;
+    response-> iface = strdup(dbus_get_eth(msg));
+    response->msg_id = id->id;
+
+    if(!exalt_dbus_valid_is(msg))
+    {
+        response->is_error = 0;
+        response->error_id = exalt_dbus_error_get_id(msg);
+        response->error_msg = exalt_dbus_error_get_msg(msg);
+    }
+    else
+    {
+        response -> is_error = 1;
+        response-> is = exalt_dbus_response_boolean(msg,1);
+    }
+    if(id->conn->response_notify->cb)
+        id->conn-> response_notify -> cb(response,id->conn->response_notify->user_data);
+    EXALT_FREE(data);
+}
+
+void _exalt_dbus_eth_up_is_cb(void *data, DBusMessage *msg, DBusError *error)
+{
+    Exalt_DBus_Msg_Id *id = data;
+
+    EXALT_DBUS_ERROR_PRINT(error);
+
+    Exalt_DBus_Response* response = calloc(1,sizeof(Exalt_DBus_Response));
+    response->type = EXALT_DBUS_RESPONSE_IFACE_UP_IS;
+    response-> iface = strdup(dbus_get_eth(msg));
+    response->msg_id = id->id;
+
+    if(!exalt_dbus_valid_is(msg))
+    {
+        response->is_error = 0;
+        response->error_id = exalt_dbus_error_get_id(msg);
+        response->error_msg = exalt_dbus_error_get_msg(msg);
+    }
+    else
+    {
+        response -> is_error = 1;
+        response-> is = exalt_dbus_response_boolean(msg,1);
     }
     if(id->conn->response_notify->cb)
         id->conn-> response_notify -> cb(response,id->conn->response_notify->user_data);

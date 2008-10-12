@@ -31,7 +31,14 @@ enum _exalt_dbus_response_type
     EXALT_DBUS_RESPONSE_DNS_DEL,
     EXALT_DBUS_RESPONSE_DNS_REPLACE,
     EXALT_DBUS_RESPONSE_DNS_LIST_GET,
-    EXALT_DBUS_RESPONSE_IFACE_IP_GET
+    EXALT_DBUS_RESPONSE_IFACE_IP_GET,
+    EXALT_DBUS_RESPONSE_IFACE_NETMASK_GET,
+    EXALT_DBUS_RESPONSE_IFACE_GATEWAY_GET,
+    EXALT_DBUS_RESPONSE_IFACE_WIRED_LIST,
+    EXALT_DBUS_RESPONSE_IFACE_WIRELESS_IS,
+    EXALT_DBUS_RESPONSE_IFACE_LINK_IS,
+    EXALT_DBUS_RESPONSE_IFACE_UP_IS,
+    EXALT_DBUS_RESPONSE_IFACE_DHCP_IS
 };
 
 int exalt_dbus_response_msg_id_get(Exalt_DBus_Response *response);
@@ -44,6 +51,7 @@ char* exalt_dbus_response_error_msg_get(Exalt_DBus_Response* response);
 Ecore_List* exalt_dbus_response_list_get(Exalt_DBus_Response* response);
 char* exalt_dbus_response_address_get(Exalt_DBus_Response* response);
 char* exalt_dbus_response_iface_get(Exalt_DBus_Response* response);
+int exalt_dbus_response_is_get(Exalt_DBus_Response* response);
 
 
 #endif   /* ----- #ifndef EXALT_DBUS_RESPONSE_INC  ----- */

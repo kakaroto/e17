@@ -39,6 +39,9 @@
 #define EXALTD_PATH_IFACE "/org/exalt/interface"
 #define EXALTD_INTERFACE_IFACE "org.exalt.interface"
 
+#define EXALTD_PATH_IFACES_WIRED "/org/exalt/interfaces/wired"
+#define EXALTD_INTERFACE_IFACES_WIRED "org.exalt.interfaces.wired"
+
 
 
 /** The exalt-daemon service */
@@ -56,6 +59,9 @@
 
 #define exalt_dbus_iface_call_new(member,path,interface) dbus_message_new_method_call(EXALTD_SERVICE, \
         path, interface, member)
+
+#define exalt_dbus_ifaces_wired_call_new(member) dbus_message_new_method_call(EXALTD_SERVICE, \
+        EXALTD_PATH_IFACES_WIRED, EXALTD_INTERFACE_IFACES_WIRED, member)
 
 
 /** Create a method for the read interface */

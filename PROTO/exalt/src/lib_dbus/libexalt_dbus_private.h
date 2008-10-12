@@ -89,6 +89,7 @@ struct _exalt_dbus_response
 
     char* iface;
     char* address;
+    int is;
 };
 
 

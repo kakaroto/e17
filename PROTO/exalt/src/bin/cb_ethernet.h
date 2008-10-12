@@ -25,7 +25,7 @@
 DBusMessage * dbus_cb_eth_ip_get(E_DBus_Object *obj, DBusMessage *msg);
 DBusMessage * dbus_cb_eth_netmask_get(E_DBus_Object *obj, DBusMessage *msg);
 DBusMessage * dbus_cb_eth_gateway_get(E_DBus_Object *obj, DBusMessage *msg);
-DBusMessage * dbus_cb_eth_get_eth_list(E_DBus_Object *obj, DBusMessage *msg);
+DBusMessage * dbus_cb_eth_list_get(E_DBus_Object *obj, DBusMessage *msg);
 DBusMessage * dbus_cb_eth_wireless_is(E_DBus_Object *obj, DBusMessage *msg);
 DBusMessage * dbus_cb_eth_link_is(E_DBus_Object *obj, DBusMessage *msg);
 DBusMessage * dbus_cb_eth_up_is(E_DBus_Object *obj, DBusMessage *msg);

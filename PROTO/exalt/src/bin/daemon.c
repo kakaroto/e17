@@ -36,9 +36,10 @@ void setup_new_iface(E_DBus_Connection *conn,Exalt_Ethernet* eth)
 
     e_dbus_interface_method_add(iface, "gateway_get", NULL, "s", dbus_cb_eth_gateway_get);
 
-    e_dbus_interface_method_add(iface, "link_is", NULL, "b", dbus_cb_eth_ip_get);
-    e_dbus_interface_method_add(iface, "up_is", NULL, "b", dbus_cb_eth_ip_get);
-    e_dbus_interface_method_add(iface, "dhcp_is", NULL, "b", dbus_cb_eth_ip_get);
+    e_dbus_interface_method_add(iface, "link_is", NULL, "b", dbus_cb_eth_link_is);
+    e_dbus_interface_method_add(iface, "up_is", NULL, "b", dbus_cb_eth_up_is);
+    e_dbus_interface_method_add(iface, "dhcp_is", NULL, "b", dbus_cb_eth_dhcp_is);
+    e_dbus_interface_method_add(iface, "wireless_is", NULL, "b", dbus_cb_eth_wireless_is);
 
     e_dbus_interface_method_add(iface, "command_get", NULL, "s", dbus_cb_eth_ip_get);
 
@@ -110,7 +111,7 @@ int setup(E_DBus_Connection *conn)
 
     obj = e_dbus_object_add(conn, EXALTD_PATH_WIREDS, NULL);
     iface = e_dbus_interface_new(EXALTD_INTERFACE_WIREDS);
-    e_dbus_interface_method_add(iface, "list", "", "a(s)", dbus_cb_dns_add /*dbus_cb_eth_wired_get_list()*/);
+    e_dbus_interface_method_add(iface, "list", "", "a(s)", dbus_cb_eth_list_get);
     e_dbus_object_interface_attach(obj, iface);
 
 

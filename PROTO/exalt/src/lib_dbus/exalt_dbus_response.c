@@ -59,6 +59,7 @@ Ecore_List* exalt_dbus_response_list_get(Exalt_DBus_Response* response)
     switch(response->type)
     {
         case EXALT_DBUS_RESPONSE_DNS_LIST_GET:
+        case EXALT_DBUS_RESPONSE_IFACE_WIRED_LIST:
             return response->l;
         default:
             print_error(__FILE__,__func__,__LINE__,"This type of response doesn't has a list\n");
@@ -71,6 +72,8 @@ char* exalt_dbus_response_address_get(Exalt_DBus_Response* response)
     switch(response->type)
     {
         case EXALT_DBUS_RESPONSE_IFACE_IP_GET:
+        case EXALT_DBUS_RESPONSE_IFACE_NETMASK_GET:
+        case EXALT_DBUS_RESPONSE_IFACE_GATEWAY_GET:
             return response->address;
         default:
             print_error(__FILE__,__func__,__LINE__,"This type of response doesn't has an address\n");
@@ -84,9 +87,30 @@ char* exalt_dbus_response_iface_get(Exalt_DBus_Response* response)
     switch(response->type)
     {
         case EXALT_DBUS_RESPONSE_IFACE_IP_GET:
+        case EXALT_DBUS_RESPONSE_IFACE_NETMASK_GET:
+        case EXALT_DBUS_RESPONSE_IFACE_GATEWAY_GET:
+        case EXALT_DBUS_RESPONSE_IFACE_WIRELESS_IS:
+        case EXALT_DBUS_RESPONSE_IFACE_LINK_IS:
+        case EXALT_DBUS_RESPONSE_IFACE_DHCP_IS:
+        case EXALT_DBUS_RESPONSE_IFACE_UP_IS:
             return response->iface;
         default:
             print_error(__FILE__,__func__,__LINE__,"This type of response doesn't has an interface\n");
+            return NULL;
+    }
+}
+
+int exalt_dbus_response_is_get(Exalt_DBus_Response* response)
+{
+    switch(response->type)
+    {
+        case EXALT_DBUS_RESPONSE_IFACE_WIRELESS_IS:
+        case EXALT_DBUS_RESPONSE_IFACE_LINK_IS:
+        case EXALT_DBUS_RESPONSE_IFACE_DHCP_IS:
+        case EXALT_DBUS_RESPONSE_IFACE_UP_IS:
+            return response->is;
+        default:
+            print_error(__FILE__,__func__,__LINE__,"This type of response doesn't has an boolean\n");
             return NULL;
     }
 }

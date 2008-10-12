@@ -48,19 +48,17 @@ DBusMessage * dbus_cb_dns_list_get(E_DBus_Object *obj __UNUSED__, DBusMessage *m
     ecore_list_first_goto(dnss);
     while( (dns=ecore_list_next(dnss)))
     {
-        EXALT_ASSERT_ADV(dns!=NULL,
+        EXALT_ASSERT_CUSTOM_RET(dns!=NULL,
                 dbus_args_error_append(reply,
                     EXALT_DBUS_DNS_ERROR_ID,
                     EXALT_DBUS_DNS_ERROR);
-                ecore_list_destroy(dnss);return reply,
-                "dns!=NULL failed");
+                ecore_list_destroy(dnss);return reply);
 
-        EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&iter_array, DBUS_TYPE_STRING, &dns),
+        EXALT_ASSERT_CUSTOM_RET(dbus_message_iter_append_basic(&iter_array, DBUS_TYPE_STRING, &dns),
                 dbus_args_error_append(reply,
                     EXALT_DBUS_DNS_ERROR_ID,
                     EXALT_DBUS_DNS_ERROR);
-                ecore_list_destroy(dnss);return reply,
-                "dbus_message_iter_append_basic(&iter_array, DBUS_TYPE_STRING, &dns) failed");
+                ecore_list_destroy(dnss);return reply);
     }
 
     dbus_message_iter_close_container (&iter, &iter_array);
