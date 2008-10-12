@@ -55,8 +55,10 @@ struct Ewl_Filedialog
         Ewl_Widget *menu;        /**< The menu */
 };
 
-Ewl_Widget              *ewl_filedialog_multiselect_new(void);
 Ewl_Widget              *ewl_filedialog_new(void);
+Ewl_Widget              *ewl_filedialog_multiselect_new(void);
+Ewl_Widget              *ewl_filedialog_save_as_new(void);
+
 int                      ewl_filedialog_init(Ewl_Filedialog *fd);
 
 void                     ewl_filedialog_list_view_set(Ewl_Filedialog *fd,
@@ -97,7 +99,6 @@ unsigned int             ewl_filedialog_save_as_get(Ewl_Filedialog *fd);
 void                     ewl_filedialog_return_directories_set(Ewl_Filedialog *fd,
                                                 unsigned int t);
 unsigned int             ewl_filedialog_return_directories_get(Ewl_Filedialog *fd);
-Ewl_Widget              *ewl_filedialog_save_as_new(void);
 
 /*
  * Internally used callbacks, override at your own risk.
