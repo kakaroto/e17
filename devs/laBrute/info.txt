@@ -2,11 +2,11 @@ Login:        laBrute
 IRC Nick:     laBrute
 Cloak:
 Name:         Karel Malbroukou
-Location:     ?, ?
-E-Mail:       -wax.kenryu@gmail.com
-WWW:          ?
+Location:     Saint-Paul, Reunion
+E-Mail:       wax.kenryu@gmail.com
+WWW:          -
 Contributing: python-etk
 Group:        Libraries
-Platform:     ?
-GeoData:      ? ?
+Platform:     Ubuntu (Linux), Gentoo
+GeoData:      -21.007222 55.277222
 
