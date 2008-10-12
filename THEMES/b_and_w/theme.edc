@@ -18764,7 +18764,7 @@ ICON("enlightenment/mixer","icon_dummy.png",64)
 ICON("enlightenment/autoscroll","icon_dummy.png",64)
 ICON("enlightenment/showhide","icon_dummy.png",64)
 ICON("enlightenment/toolbar","icon_dummy.png",64)
-
+*/
 
 // Window Border menu icons //
 
@@ -18783,12 +18783,16 @@ group { name: "e/widgets/border/default/"NAME ;   	\
    }							\
 }
 
-BORDERICON("close","icon_dummy.png")
+
+BORDERICON("basic","icon_border_more.png")
+BORDERICON("close","icon_border_close.png")
+BORDERICON("kill","icon_border_kill.png")
+
+/*
 BORDERICON("maximize","icon_dummy.png")
 BORDERICON("minimize","icon_dummy.png")
 BORDERICON("shade","icon_dummy.png")
 BORDERICON("stick","icon_dummy.png")
-BORDERICON("kill","icon_dummy.png")
 BORDERICON("locks","icon_dummy.png")
 BORDERICON("locks_user","icon_dummy.png")
 BORDERICON("locks_application","icon_dummy.png")
@@ -18805,7 +18809,6 @@ BORDERICON("stack_on_top","icon_dummy.png")
 BORDERICON("stack_normal","icon_dummy.png")
 BORDERICON("stack_below","icon_dummy.png")
 BORDERICON("properties","icon_dummy.png")
-BORDERICON("basic","icon_dummy.png")
 
 
 // EFM menu button icons //
