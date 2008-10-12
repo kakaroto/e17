@@ -8,6 +8,7 @@
 #include <string.h>
 #include <stdlib.h>
 
+static int test_constructor(char *buf, int len);
 static int test_title_set_get(char *buf, int len);
 static int test_name_set_get(char *buf, int len);
 static int test_class_set_get(char *buf, int len);
@@ -28,6 +29,7 @@ static int test_override_set_get(char *buf, int len);
  */
 
 Ewl_Unit_Test window_unit_tests[] = {
+                {"constructor", test_constructor, NULL, -1, 0},
                 {"title set/get", test_title_set_get, NULL, -1, 0},
                 {"name set/get", test_name_set_get, NULL, -1, 0},
                 {"class set/get", test_class_set_get, NULL, -1, 0},
@@ -44,6 +46,114 @@ Ewl_Unit_Test window_unit_tests[] = {
                 {NULL, NULL, NULL, -1, 0}
         };
  
+/*
+ * Test the default values of a newly created window
+ */
+static int
+test_constructor(char *buf, int len)
+{
+        Ewl_Widget *win;
+        const char *name;
+        int ret = 0;
+
+        win = ewl_window_new();
+
+        if (!EWL_WINDOW_IS(win))
+        {
+                LOG_FAILURE(buf, len, "window is not of the type WINDOW");
+                goto DONE;
+        }
+
+        name = ewl_window_title_get(EWL_WINDOW(win));
+        if (name)
+        {
+                LOG_FAILURE(buf, len, "default title is '%s'", name);
+                goto DONE;
+        }
+        name = ewl_window_name_get(EWL_WINDOW(win));
+        if (name)
+        {
+                LOG_FAILURE(buf, len, "default name is '%s'", name);
+                goto DONE;
+        }
+        name = ewl_window_class_get(EWL_WINDOW(win));
+        if (name)
+        {
+                LOG_FAILURE(buf, len, "default class is '%s'", name);
+                goto DONE;
+        }
+        if (ewl_window_borderless_get(EWL_WINDOW(win)))
+        {
+                LOG_FAILURE(buf, len, "window is borderless");
+                goto DONE;
+        }
+        if (ewl_window_dialog_get(EWL_WINDOW(win)))
+        {
+                LOG_FAILURE(buf, len, "window is a dialog");
+                goto DONE;
+        }
+        if (ewl_window_fullscreen_get(EWL_WINDOW(win)))
+        {
+                LOG_FAILURE(buf, len, "window is fullscreen");
+                goto DONE;
+        }
+        if (ewl_window_skip_taskbar_get(EWL_WINDOW(win)))
+        {
+                LOG_FAILURE(buf, len, "window has the \'skip taskbar\' flag");
+                goto DONE;
+        }
+        if (ewl_window_skip_pager_get(EWL_WINDOW(win)))
+        {
+                LOG_FAILURE(buf, len, "window has the \'skip pager\' flag");
+                goto DONE;
+        }
+        if (ewl_window_urgent_get(EWL_WINDOW(win)))
+        {
+                LOG_FAILURE(buf, len, "window has the \'urgent\' flag");
+                goto DONE;
+        }
+        if (ewl_window_leader_foreign_get(EWL_WINDOW(win)))
+        {
+                LOG_FAILURE(buf, len, "window has a foreign leader set");
+                goto DONE;
+        }
+        if (ewl_window_leader_get(EWL_WINDOW(win)))
+        {
+                LOG_FAILURE(buf, len, "window has a leader set");
+                goto DONE;
+        }
+        if (ewl_window_modal_get(EWL_WINDOW(win)))
+        {
+                LOG_FAILURE(buf, len, "window is modal");
+                goto DONE;
+        }
+        if (ewl_window_keyboard_grab_get(EWL_WINDOW(win)))
+        {
+                LOG_FAILURE(buf, len, "window grabs keyboard");
+                goto DONE;
+        }
+        if (ewl_window_pointer_grab_get(EWL_WINDOW(win)))
+        {
+                LOG_FAILURE(buf, len, "window grabs pointer");
+                goto DONE;
+        }
+        if (ewl_window_override_get(EWL_WINDOW(win)))
+        {
+                LOG_FAILURE(buf, len, "window is an override redirect window");
+                goto DONE;
+        }
+        if (!ewl_embed_render_get(EWL_EMBED(win)))
+        {
+                LOG_FAILURE(buf, len, "window doesn't render itself");
+                goto DONE;
+        }
+        ret = 1;
+DONE:
+        ewl_widget_destroy(win);
+
+        return ret;
+}
+
 /*
  * Set a string to a new window title and retrieve it again
  */

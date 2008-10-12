@@ -7,6 +7,7 @@
 #include <string.h>
 #include <stdlib.h>
 
+static int test_constructor(char *buf, int len);
 static int test_widget_is(char *buf, int len);
 static int test_name_set_get(char *buf, int len);
 static int test_name_nul_set_get(char *buf, int len);
@@ -49,6 +50,7 @@ static int test_focusable_test_set_get(char *buf, int len);
 static int test_focus_test_send_get(char *buf, int len);
 
 Ewl_Unit_Test widget_unit_tests[] = {
+                {"constructor", test_constructor, NULL, -1, 0},
                 {"EWL_WIDGET_IS", test_widget_is, NULL, -1, 0},
                 {"name set/get", test_name_set_get, NULL, -1, 0},
                 {"NULL name set/get", test_name_nul_set_get, NULL, -1, 0},
@@ -90,6 +92,63 @@ Ewl_Unit_Test widget_unit_tests[] = {
         };
 
 /*
+ * Basic constructor test
+ */
+static int
+test_constructor(char *buf, int len)
+{
+        Ewl_Widget *w;
+        int ret = 0;
+
+        w = ewl_widget_new();
+
+        if (ewl_widget_name_get(w))
+                LOG_FAILURE(buf, len, "widget has a name");
+        else if (ewl_widget_appearance_get(w))
+                LOG_FAILURE(buf, len, "widget has appearance");
+        else if (ewl_widget_parent_get(w))
+                LOG_FAILURE(buf, len, "widget has a parent");
+        else if (ewl_widget_layer_priority_get(w))
+                LOG_FAILURE(buf, len, "widget has a layer priority != 0");
+        else if (ewl_widget_internal_is(w))
+                LOG_FAILURE(buf, len, "widget is internal");
+        else if (ewl_widget_unmanaged_is(w))
+                LOG_FAILURE(buf, len, "widget is unmanaged");
+        else if (!ewl_widget_clipped_is(w))
+                LOG_FAILURE(buf, len, "widget is not clipped");
+        else if (!ewl_widget_focusable_get(w))
+                LOG_FAILURE(buf, len, "widget is not focusable");
+        else if (ewl_widget_ignore_focus_change_get(w))
+                LOG_FAILURE(buf, len, "widget ignores focus changes");
+        else if (RECURSIVE(w))
+                LOG_FAILURE(buf, len, "widget is recursive");
+        else if (REALIZED(w))
+                LOG_FAILURE(buf, len, "widget is realized");
+        else if (VISIBLE(w))
+                LOG_FAILURE(buf, len, "widget is visible");
+        else if (REVEALED(w))
+                LOG_FAILURE(buf, len, "widget is revealed");
+        else if (!HIDDEN(w))
+                LOG_FAILURE(buf, len, "widget is not hidden");
+        else if (DESTROYED(w))
+                LOG_FAILURE(buf, len, "widget is destroyed");
+        else if (DISABLED(w))
+                LOG_FAILURE(buf, len, "widget is disabled");
+        else if (CONFIGURED(w))
+                LOG_FAILURE(buf, len, "widget is in scheduled for configure");
+        else if (UNMANAGED(w))
+                LOG_FAILURE(buf, len, "widget is unmanaged");
+        else if (TOPLAYERED(w))
+                LOG_FAILURE(buf, len, "widget is toplayered");
+        else
+                ret = 1;
+
+        ewl_widget_destroy(w);
+
+        return ret;
+}
+
+/*
  * Verify that appearance get returns the same value set.
  */
 static int
@@ -98,8 +157,7 @@ test_appearance_set_get(char *buf, int len)
         Ewl_Widget *w;
         int ret = 0;
 
-        w = calloc(1, sizeof(Ewl_Widget));
-        ewl_widget_init(w);
+        w = ewl_widget_new();
 
         ewl_widget_appearance_set(w, "my_appearance");
         if (strcmp("my_appearance", ewl_widget_appearance_get(w)))
@@ -122,8 +180,7 @@ test_appearance_path_set_get(char *buf, int len)
 
         box = ewl_vbox_new();
 
-        w = calloc(1, sizeof(Ewl_Widget));
-        ewl_widget_init(w);
+        w = ewl_widget_new();
 
         ewl_container_child_append(EWL_CONTAINER(box), w);
 
@@ -148,8 +205,7 @@ test_inheritance_set_get(char *buf, int len)
         const char *my_class = "myclass";
         const char *unknown_class = "unknownclass";
 
-        w = calloc(1, sizeof(Ewl_Widget));
-        ewl_widget_init(w);
+        w = ewl_widget_new();
 
         ewl_widget_inherit(w, my_class);
         if (!ewl_widget_type_is(w, my_class))
@@ -175,8 +231,7 @@ test_internal_set_get(char *buf, int len)
         Ewl_Widget *w;
         int ret = 0;
 
-        w = calloc(1, sizeof(Ewl_Widget));
-        ewl_widget_init(w);
+        w = ewl_widget_new();
 
         if (!ewl_widget_internal_is(w)) {
                 ewl_widget_internal_set(w, TRUE);
@@ -206,8 +261,7 @@ test_unmanaged_set_get(char *buf, int len)
         Ewl_Widget *w;
         int ret = 0;
 
-        w = calloc(1, sizeof(Ewl_Widget));
-        ewl_widget_init(w);
+        w = ewl_widget_new();
 
         if (!ewl_widget_unmanaged_is(w)) {
                 ewl_widget_unmanaged_set(w, TRUE);
@@ -237,8 +291,7 @@ test_toplayered_set_get(char *buf, int len)
         Ewl_Widget *w;
         int ret = 0;
 
-        w = calloc(1, sizeof(Ewl_Widget));
-        ewl_widget_init(w);
+        w = ewl_widget_new();
 
         if (!ewl_widget_layer_top_get(w)) {
                 ewl_widget_layer_top_set(w, TRUE);
@@ -303,8 +356,7 @@ test_clipped_set_get(char *buf, int len)
         Ewl_Widget *w;
         int ret = 0;
 
-        w = calloc(1, sizeof(Ewl_Widget));
-        ewl_widget_init(w);
+        w = ewl_widget_new();
 
         if (ewl_widget_clipped_is(w)) {
                 ewl_widget_clipped_set(w, FALSE);
@@ -335,8 +387,7 @@ test_data_set_get(char *buf, int len)
         int ret = 0;
         char *key, *value, *found;
 
-        w = calloc(1, sizeof(Ewl_Widget));
-        ewl_widget_init(w);
+        w = ewl_widget_new();
 
         key = strdup("Data key");
         value = strdup("Data value");
@@ -364,8 +415,7 @@ test_data_set_remove(char *buf, int len)
         int ret = 0;
         char *key, *value, *found;
 
-        w = calloc(1, sizeof(Ewl_Widget));
-        ewl_widget_init(w);
+        w = ewl_widget_new();
 
         key = strdup("Data key");
         value = strdup("Data value");
