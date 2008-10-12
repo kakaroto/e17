@@ -1,0 +1,56 @@
+From 624d30483cc731fc0d929d12bbfcf44f4834e488 Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler <raster@openmoko.org>
+Date: Sun, 12 Oct 2008 17:37:24 +1100
+Subject: [PATCH] fix netbase to have a palmt650 interfaces config that brings up usbnet by
+ default.
+
+---
+ packages/netbase/netbase/palmt650/interfaces |   22 ++++++++++++++++++++++
+ packages/netbase/netbase_4.21.bb             |    2 +-
+ 2 files changed, 23 insertions(+), 1 deletions(-)
+ create mode 100644 packages/netbase/netbase/palmt650/interfaces
+
+diff --git a/packages/netbase/netbase/palmt650/interfaces b/packages/netbase/netbase/palmt650/interfaces
+new file mode 100644
+index 0000000..fef124d
+--- /dev/null
++++ b/packages/netbase/netbase/palmt650/interfaces
+@@ -0,0 +1,22 @@
++# /etc/network/interfaces -- configuration file for ifup(8), ifdown(8)
++ 
++# The loopback interface
++auto lo
++iface lo inet loopback
++
++# Wireless interfaces
++
++# Wired or wireless interfaces
++
++# Ethernet/RNDIS gadget (g_ether)
++# ... or on host side, usbnet and random hwaddr
++auto usb0
++iface usb0 inet static
++	address 192.168.0.202
++	netmask 255.255.255.0
++	network 192.168.0.0
++	gateway 192.168.0.200
++
++# Bluetooth networking
++iface bnep0 inet dhcp
++
+diff --git a/packages/netbase/netbase_4.21.bb b/packages/netbase/netbase_4.21.bb
+index 2fc352f..a0baa81 100644
+--- a/packages/netbase/netbase_4.21.bb
++++ b/packages/netbase/netbase_4.21.bb
+@@ -2,7 +2,7 @@ DESCRIPTION = "This package provides the necessary \
+ infrastructure for basic TCP/IP based networking."
+ SECTION = "base"
+ LICENSE = "GPL"
+-PR = "r28"
++PR = "r29"
+ 
+ inherit update-rc.d
+ 
+-- 
+1.5.4.3
+

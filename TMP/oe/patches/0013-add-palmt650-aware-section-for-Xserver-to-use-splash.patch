@@ -1,0 +1,43 @@
+From 55887f2dcb565a03c149d35e091f42c88a6d4aa0 Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler <raster@openmoko.org>
+Date: Sun, 12 Oct 2008 17:45:38 +1100
+Subject: [PATCH] add palmt650 aware section for Xserver to use splash (if in a package at
+ the right size) and correct dpi.
+
+---
+ .../xserver-kdrive-common/openmoko/Xserver         |    5 +++++
+ .../xserver-kdrive-common_0.1.bb                   |    2 +-
+ 2 files changed, 6 insertions(+), 1 deletions(-)
+
+diff --git a/packages/xserver-kdrive-common/xserver-kdrive-common/openmoko/Xserver b/packages/xserver-kdrive-common/xserver-kdrive-common/openmoko/Xserver
+index 0965d6e..07d1192 100644
+--- a/packages/xserver-kdrive-common/xserver-kdrive-common/openmoko/Xserver
++++ b/packages/xserver-kdrive-common/xserver-kdrive-common/openmoko/Xserver
+@@ -98,6 +98,11 @@ case `module_id` in
+ 		  PPM="-root-ppm /usr/share/pixmaps/xsplash-vga.ppm"
+ 		fi
+                 ARGS="$ARGS -dpi 285 -screen 480x640 -hide-cursor $PPM vt1" ;;
++        "Palm Treo 650")
++	        if [ -f "/usr/share/pixmaps/xsplash-qvga-square.ppm" ]; then
++		  PPM="-root-ppm /usr/share/pixmaps/xsplash-qvga-square.ppm"
++		fi
++                ARGS="$ARGS -dpi 181 -screen 320x320 -hide-cursor $PPM" ;;
+         "Motorola Ezx Platform")
+ 	        if [ -f "/usr/share/pixmaps/xsplash-qvga.ppm" ]; then
+ 		  PPM="-root-ppm /usr/share/pixmaps/xsplash-qvga.ppm"
+diff --git a/packages/xserver-kdrive-common/xserver-kdrive-common_0.1.bb b/packages/xserver-kdrive-common/xserver-kdrive-common_0.1.bb
+index a1826e5..a49d4fa 100644
+--- a/packages/xserver-kdrive-common/xserver-kdrive-common_0.1.bb
++++ b/packages/xserver-kdrive-common/xserver-kdrive-common_0.1.bb
+@@ -2,7 +2,7 @@ DESCRIPTION = "Common X11 scripts"
+ LICENSE = "GPL"
+ SECTION = "x11"
+ RDEPENDS_${PN} = "xmodmap libxrandr xdpyinfo xtscal xinit"
+-PR = "r31"
++PR = "r34"
+ 
+ SRC_URI = "\
+   file://Xdefaults \
+-- 
+1.5.4.3
+
