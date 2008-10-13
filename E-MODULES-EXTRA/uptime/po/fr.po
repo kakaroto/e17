@@ -3,8 +3,8 @@ msgstr ""
 "Project-Id-Version: uptime\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2007-11-14 22:41+0100\n"
-"PO-Revision-Date: 2007-06-04 17:48+0100\n"
-"Last-Translator: Antoine Giniès <aginies.cooker@gmail.com>\n"
+"PO-Revision-Date: 2008-10-12 19:40+0400\n"
+"Last-Translator: batden <batden@orange.fr>\n"
 "Language-Team: none <aginies.cooker@gmail.com>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -19,20 +19,21 @@ msgstr "Configuration de l'uptime"
 
 #: e_mod_config.c:105
 msgid "Uptime Settings"
-msgstr "Paramètres de l'uptime"
+msgstr "Paramètres  de l'uptime"
 
 #: e_mod_config.c:107
 msgid "Update Interval:"
-msgstr "Intervalle de mise à jour:"
+msgstr "Intervalle d'actualisation:"
 
-#: e_mod_config.c:110 e_mod_config.c:117
+#: e_mod_config.c:110
+#: e_mod_config.c:117
 #, c-format
 msgid "%1.0f seconds"
-msgstr ""
+msgstr "%1.0f secondes"
 
 #: e_mod_config.c:114
 msgid "Check Interval:"
-msgstr "Intervalle pour vérifier:"
+msgstr "Délai de vérification:"
 
 #: e_mod_main.c:162
 msgid "Uptime"
@@ -45,12 +46,12 @@ msgstr "Configuration"
 #: e_mod_main.c:568
 #, c-format
 msgid "up: %d days, %d:%02d:%02ld"
-msgstr "%d jours, %d:%02d:%02ld"
+msgstr "up: %d jours, %d:%02d:%02ld"
 
 #: e_mod_main.c:575
 #, c-format
 msgid "la: %.2f %.2f %.2f"
-msgstr "%.2f %.2f %.2f"
+msgstr "la: %.2f %.2f %.2f"
 
 #: e_mod_main.c:580
 #, c-format
@@ -59,6 +60,6 @@ msgstr "utilisateurs: %d"
 
 #~ msgid "Enlightenment Uptime Monitor Module"
 #~ msgstr "Module d'affichage d'uptime"
-
 #~ msgid "This module is used to monitor uptime."
 #~ msgstr "Ce module sert à afficher l'uptime."
+
