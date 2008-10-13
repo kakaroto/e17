@@ -2,14 +2,13 @@
 # This file is put in the public domain.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: Etk 0.1\n"
 "Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
 "POT-Creation-Date: 2005-10-16 01:45+0200\n"
-"PO-Revision-Date: 2005-10-16 12:42+0200\n"
-"Last-Translator: VincentTorri <vtorri at univ-evry dot fr>\n"
+"PO-Revision-Date: 2008-10-12 19:48+0400\n"
+"Last-Translator: batden <batden@orange.fr>\n"
 "Language-Team: fr <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -17,11 +16,11 @@ msgstr ""
 
 #: src/bin/etk_button_test.c:28
 msgid "Etk Button test"
-msgstr "Test Bouton Etk"
+msgstr "Test bouton ETK"
 
 #: src/bin/etk_button_test.c:35
 msgid "Normal button"
-msgstr "Bouton Normal"
+msgstr "Bouton normal"
 
 #: src/bin/etk_button_test.c:39
 msgid "Button with an image"
@@ -29,7 +28,7 @@ msgstr "Bouton avec une image"
 
 #: src/bin/etk_button_test.c:46
 msgid "Check button"
-msgstr "Bouton a cocher"
+msgstr "Bouton à cocher"
 
 #: src/bin/etk_button_test.c:52
 msgid "Radio button"
@@ -37,11 +36,11 @@ msgstr "Bouton radio"
 
 #: src/bin/etk_button_test.c:58
 msgid "Toggle button"
-msgstr "Bouton poussoir"
+msgstr "Bouton-poussoir"
 
 #: src/bin/etk_canvas_test.c:29
 msgid "Etk Canvas Test"
-msgstr "Test Canevas Etk"
+msgstr "Test canevas Etk"
 
 #: src/bin/etk_canvas_test.c:40
 msgid "Add object"
@@ -53,11 +52,11 @@ msgstr "Selectionneur de couleur Etk"
 
 #: src/bin/etk_entry_test.c:31
 msgid "Etk Entry test"
-msgstr "Test de saisie de texte Etk"
+msgstr "Test saisie de texte Etk"
 
 #: src/bin/etk_entry_test.c:41
 msgid "Print the text!!!"
-msgstr "Afficher le texte"
+msgstr "Imprimer le texte !!"
 
 #: src/bin/etk_image_test.c:25
 msgid "Etk Image Test"
@@ -73,15 +72,15 @@ msgstr "Ne pas conserver l'aspect"
 
 #: src/bin/etk_scale_test.c:22
 msgid "Etk Scale test"
-msgstr "Test Scale Etk"
+msgstr "Test d'échelle Etk"
 
 #: src/bin/etk_table_test.c:25
 msgid "Etk Table Test"
-msgstr "Test Table Etk"
+msgstr "Test table Etk"
 
 #: src/bin/etk_table_test.c:30
 msgid "Set Icon"
-msgstr "Selectionner une icone"
+msgstr "Sélectionner un icone"
 
 #: src/bin/etk_table_test.c:36
 msgid "App name"
@@ -89,7 +88,7 @@ msgstr "Nom de l'application"
 
 #: src/bin/etk_table_test.c:39
 msgid "Generic Info"
-msgstr "Info generique"
+msgstr "Info générique"
 
 #: src/bin/etk_table_test.c:42
 msgid "Comments"
@@ -97,19 +96,19 @@ msgstr "Commentaires"
 
 #: src/bin/etk_table_test.c:45
 msgid "Executable"
-msgstr "Executable"
+msgstr "Exécutable"
 
 #: src/bin/etk_table_test.c:48
 msgid "Window name"
-msgstr "Nom de la fenetre"
+msgstr "Nom de la fenêtre"
 
 #: src/bin/etk_table_test.c:51
 msgid "Window class"
-msgstr "Classe de la fenetre"
+msgstr "Classe de la fenêtre"
 
 #: src/bin/etk_table_test.c:54
 msgid "Startup notify"
-msgstr "Notification de demarrage"
+msgstr "Notification de démarrage"
 
 #: src/bin/etk_table_test.c:57
 msgid "Wait exit"
@@ -121,15 +120,15 @@ msgstr "Annuler"
 
 #: src/bin/etk_table_test.c:65
 msgid "Save"
-msgstr "Sauver"
+msgstr "Enregistrer"
 
 #: src/bin/etk_test.c:55
 msgid "Etk Test Application"
-msgstr "Test Application Etk"
+msgstr "Test application Etk"
 
 #: src/bin/etk_tree_test.c:27
 msgid "Etk Tree Test"
-msgstr "Test Arbre Etk"
+msgstr "Test arborescence Etk"
 
 #: src/bin/etk_tree_test.c:33
 msgid "<h1>Tree:</h1>"
@@ -139,62 +138,69 @@ msgstr "<h1>Arbre:</h1>"
 msgid "<h1>List:</h1>"
 msgstr "<h1>Liste:</h1>"
 
-#: src/bin/etk_tree_test.c:46 src/bin/etk_tree_test.c:81
+#: src/bin/etk_tree_test.c:46
+#: src/bin/etk_tree_test.c:81
 msgid "Column 1"
 msgstr "Colonne 1"
 
-#: src/bin/etk_tree_test.c:47 src/bin/etk_tree_test.c:82
+#: src/bin/etk_tree_test.c:47
+#: src/bin/etk_tree_test.c:82
 msgid "Column 2"
 msgstr "Colonne 2"
 
-#: src/bin/etk_tree_test.c:48 src/bin/etk_tree_test.c:83
+#: src/bin/etk_tree_test.c:48
+#: src/bin/etk_tree_test.c:83
 msgid "Column 3"
 msgstr "Colonne 3"
 
-#: src/bin/etk_tree_test.c:60 src/bin/etk_tree_test.c:89
+#: src/bin/etk_tree_test.c:60
+#: src/bin/etk_tree_test.c:89
 msgid "Row1"
-msgstr "Ligne 1"
+msgstr "Rangée1"
 
-#: src/bin/etk_tree_test.c:61 src/bin/etk_tree_test.c:90
+#: src/bin/etk_tree_test.c:61
+#: src/bin/etk_tree_test.c:90
 msgid "Row2"
-msgstr "Ligne 2"
+msgstr "Rangée2"
 
-#: src/bin/etk_tree_test.c:62 src/bin/etk_tree_test.c:91
+#: src/bin/etk_tree_test.c:62
+#: src/bin/etk_tree_test.c:91
 msgid "Row3"
-msgstr "Ligne 3"
+msgstr "Rangée3"
 
 #: src/bin/etk_tree_test.c:92
 msgid "Row4"
-msgstr "Ligne 4"
+msgstr "Rangée4"
 
 #: src/bin/etk_tree_test.c:93
 msgid "Row5"
-msgstr "Ligne 5"
+msgstr "Rangée5"
 
 #: src/bin/etk_tree_test.c:94
 msgid "Row6"
-msgstr "Ligne 6"
+msgstr "Rangée6"
 
 #: src/bin/etk_tree_test.c:95
 msgid "Row7"
-msgstr "Ligne 7"
+msgstr "Rangée7"
 
 #: src/bin/etk_tree_test.c:96
 msgid "Row8"
-msgstr "Ligne 8"
+msgstr "Rangée8"
 
 #: src/bin/etk_tree_test.c:97
 msgid "Row9"
-msgstr "Ligne 9"
+msgstr "Rangée9"
 
 #: src/bin/etk_tree_test.c:98
 msgid "Row10"
-msgstr "Ligne 10"
+msgstr "Rangée10"
 
 #: src/bin/etk_tree_test.c:99
 msgid "Row11"
-msgstr "Ligne 11"
+msgstr "Rangée11"
 
 #: src/bin/etk_tree_test.c:100
 msgid "Row12"
-msgstr "Ligne 12"
+msgstr "Rangée12"
+
