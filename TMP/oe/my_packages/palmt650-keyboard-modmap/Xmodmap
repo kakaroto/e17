@@ -26,17 +26,20 @@ keycode 71 = End
 !!!!! top 2 buttons left/right and up from arrow key nav
 !! below - added hacked symbols: percent asciicircum
 keycode 69 = Home percent asciicircum
-! keycode menu = has no keycode!
+!! below - added hacked symbols: percent asciicircum
+keycode 9 = Menu Delete Insert
 
 !!!!! arrowkeys
 keycode 111 = Up
 keycode 116 = Down
 keycode 113 = Left
 keycode 114 = Right
-keycode 36 = Return
+keycode 104 = KP_Enter
 
-!!!!! answer, calendar, mail, hangup/ower
-! keycode answer = has no keycode!
+!!!!! answer, calendar, mail, hangup/power
+!!!! CHECKME
+!! below - added hacked symbols: Escape Print
+keycode 64 = F1 Escape Print
 !! below - added hacked symbols: equal semicolon
 keycode 67 = F2 equal semicolon
 !! below - added hacked symbols: bracketleft braceleft
@@ -101,7 +104,15 @@ keycode 105 = Control_R
 ! ; hacked
 ! < hacked
 ! > hacked
-! \
+! \ hacked
 ! | hacked
 ! ` hacked
-! ~
+! ~ hacked
+! Escape hacked
+! Delete hacked
+! Insert hacked
+! Print hacked
+! Pause
+! Caps_Lock
+! Num_Lock
+! Sroll_Lock
