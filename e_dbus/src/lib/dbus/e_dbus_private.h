@@ -15,6 +15,8 @@ struct E_DBus_Connection
 
   Ecore_List *fd_handlers;
   Ecore_List *timeouts;
+  Ecore_List *signal_handlers;
+  Ecore_Event_Handler *signal_dispatcher;
 
   Ecore_Idler *idler;
 
@@ -29,8 +31,6 @@ struct E_DBus_Callback
   void *user_data;
 };
 
-int  e_dbus_signal_init(void);
-void e_dbus_signal_shutdown(void);
 int  e_dbus_object_init(void);
 void e_dbus_object_shutdown(void);
 

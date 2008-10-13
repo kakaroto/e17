@@ -185,6 +185,11 @@ e_dbus_connection_free(void *data)
   if (cd->shared_type != -1)
     shared_connections[cd->shared_type] = NULL;
 
+  if (cd->signal_dispatcher)
+    ecore_event_handler_del(cd->signal_dispatcher);
+  if (cd->signal_handlers)
+    ecore_list_destroy(cd->signal_handlers);
+
   if (cd->conn_name) free(cd->conn_name);
 
   if (cd->idler) ecore_idler_del(cd->idler);
@@ -579,7 +584,6 @@ e_dbus_init(void)
   if (++init != 1) return init;
 
   E_DBUS_EVENT_SIGNAL = ecore_event_type_new();
-  e_dbus_signal_init();
   e_dbus_object_init();
   return init;
 }
@@ -592,6 +596,5 @@ e_dbus_shutdown(void)
 {
   if (--init) return init;
   e_dbus_object_shutdown();
-  e_dbus_signal_shutdown();
   return init;
 }
