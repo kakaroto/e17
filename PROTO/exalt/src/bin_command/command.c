@@ -69,6 +69,17 @@ void response(Exalt_DBus_Response* response, void* data)
                     printf("%s\n",iface);
             }
             break;
+        case EXALT_DBUS_RESPONSE_IFACE_WIRELESS_LIST:
+            printf("Wireless network interface list:\n");
+            print_response_error();
+            {
+                Ecore_List* l = exalt_dbus_response_list_get(response);
+                char* iface;
+                ecore_list_first_goto(l);
+                while( (iface=ecore_list_next(l)) )
+                    printf("%s\n",iface);
+            }
+            break;
         case EXALT_DBUS_RESPONSE_IFACE_IP_GET:
             printf("%s IP address:\n",exalt_dbus_response_iface_get(response));
             print_response_error();
@@ -104,10 +115,27 @@ void response(Exalt_DBus_Response* response, void* data)
             print_response_error();
             printf("%s\n",(exalt_dbus_response_is_get(response)>0?"yes":"no"));
             break;
+        case EXALT_DBUS_RESPONSE_IFACE_CMD_GET:
+            printf("%s command:\n",exalt_dbus_response_iface_get(response));
+            print_response_error();
+            printf("%s\n",exalt_dbus_response_command_get(response));
+            break;
+        case EXALT_DBUS_RESPONSE_IFACE_CMD_SET:
+            printf("%s command:\n",exalt_dbus_response_iface_get(response));
+            print_response_error();
+            printf("The new command is supposed to be set\n");
+            break;
+        case EXALT_DBUS_RESPONSE_IFACE_UP:
+            print_response_error();
+            printf("The interface %s is supposed to be up\n",exalt_dbus_response_iface_get(response));
+            break;
+        case EXALT_DBUS_RESPONSE_IFACE_DOWN:
+            print_response_error();
+            printf("The interface %s is supposed to be down\n",exalt_dbus_response_iface_get(response));
+            break;
 
     }
 
-    ecore_main_loop_quit();
 }
 
 void dns(int argc, char** argv)
@@ -175,6 +203,7 @@ void ethernet_list(int argc, char** argv)
     if(strcmp(argv[1],"list_get")==0)
     {
         exalt_dbus_eth_list_get(conn);
+        exalt_dbus_wireless_list_get(conn);
     }
 }
 
@@ -202,7 +231,21 @@ void ethernet(int argc, char** argv)
         exalt_dbus_eth_up_is(conn,iface);
     else if(strcmp(argv[1],"dhcp_is")==0)
         exalt_dbus_eth_dhcp_is(conn,iface);
-
+    else if(strcmp(argv[1],"cmd_get")==0)
+        exalt_dbus_eth_command_get(conn,iface);
+    else if(strcmp(argv[1],"cmd_set")==0)
+    {
+        if(argc<4)
+        {
+            fprintf(stderr,"We need a command. \n");
+            exit (EXIT_FAILURE);
+        }
+        exalt_dbus_eth_command_set(conn,iface,argv[3]);
+    }
+    else if(strcmp(argv[1],"up")==0)
+        exalt_dbus_eth_up(conn,iface);
+    else if(strcmp(argv[1],"down")==0)
+        exalt_dbus_eth_down(conn,iface);
 }
 
 int main(int argc, char** argv)
@@ -228,6 +271,10 @@ int main(int argc, char** argv)
                 || strcmp(argv[1],"up_is")==0
                 || strcmp(argv[1],"link_is")==0
                 || strcmp(argv[1],"dhcp_is")==0
+                || strcmp(argv[1],"cmd_get")==0
+                || strcmp(argv[1],"cmd_set")==0
+                || strcmp(argv[1],"down")==0
+                || strcmp(argv[1],"up")==0
             ))
         ethernet(argc ,argv);
     else
@@ -250,7 +297,7 @@ void help()
             "dns_del ip_addresse \t\t: remove the dns\n"
             "dns_replace ip1 ip2 \t\t: replace the dns ip1 by ip2\n"
             "\n"
-            "list_get\t\t\t: print the list of interfaces (only wired interface currently)\n"
+            "list_get\t\t\t: print the list of interfaces (wired and wireless interface)\n"
             "\n"
             "ip_get eth0\t\t\t: get the ip address of the interface eth0\n"
             "netmask_get eth0\t\t: get the netmask address of the interface eth0\n"
@@ -259,6 +306,10 @@ void help()
             "link_is eth0\t\t\t: print yes if eth0 is link, else print no\n"
             "up_is eth0\t\t\t: print yes if eth0 is up, else print no\n"
             "dhcp_is eth0\t\t\t: print yes if eth0 use a DHCP mode, else print no\n"
+            "up eth0\t\t\t\t: up eth0\n"
+            "down eth0\t\t\t: down eth0\n"
+            "cmd_set eth0\t\t\t: set the command run when eth0 get an IP address\n"
+            "cmd_get eth0\t\t\t: print the command run when eth0 get an IP address\n"
             );
 
     exit(EXIT_FAILURE);

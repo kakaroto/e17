@@ -42,6 +42,9 @@
 #define EXALTD_PATH_IFACES_WIRED "/org/exalt/interfaces/wired"
 #define EXALTD_INTERFACE_IFACES_WIRED "org.exalt.interfaces.wired"
 
+#define EXALTD_PATH_IFACES_WIRELESS "/org/exalt/interfaces/wireless"
+#define EXALTD_INTERFACE_IFACES_WIRELESS "org.exalt.interfaces.wireless"
+
 
 
 /** The exalt-daemon service */
@@ -62,6 +65,9 @@
 
 #define exalt_dbus_ifaces_wired_call_new(member) dbus_message_new_method_call(EXALTD_SERVICE, \
         EXALTD_PATH_IFACES_WIRED, EXALTD_INTERFACE_IFACES_WIRED, member)
+
+#define exalt_dbus_ifaces_wireless_call_new(member) dbus_message_new_method_call(EXALTD_SERVICE, \
+        EXALTD_PATH_IFACES_WIRELESS, EXALTD_INTERFACE_IFACES_WIRELESS, member)
 
 
 /** Create a method for the read interface */

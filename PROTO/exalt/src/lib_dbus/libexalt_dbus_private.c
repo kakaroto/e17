@@ -21,7 +21,8 @@
 int exalt_dbus_msg_id_next(exalt_dbus_conn* conn)
 {
     int id = conn->msg_id;
-    conn->msg_id = ((conn->msg_id + 1) % 100 ) +1;
+    conn->msg_id =  ((conn->msg_id + 1) % 100 ) ;
+    conn->msg_id = (conn->msg_id==0?1:conn->msg_id);
     return id;
 }
 

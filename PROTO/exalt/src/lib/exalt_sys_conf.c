@@ -164,7 +164,6 @@ Exalt_Enum_State exalt_eth_state_load(const char* file, const char* udi)
 {
     Exalt_Eth_Save *s = _exalt_eet_eth_load(file, udi);
     EXALT_ASSERT_RETURN(s!=NULL);
-
     Exalt_Enum_State st = s->state;
     EXALT_FREE(s->driver);
     exalt_conn_free(s->connection);

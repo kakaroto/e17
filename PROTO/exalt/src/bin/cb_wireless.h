@@ -21,6 +21,8 @@
 
 #include "daemon.h"
 
+DBusMessage * dbus_cb_wireless_list_get(E_DBus_Object *obj, DBusMessage *msg);
+
 DBusMessage * dbus_cb_wireless_scan_wait(E_DBus_Object *obj, DBusMessage *msg);
 DBusMessage * dbus_cb_wireless_get_essid(E_DBus_Object *obj, DBusMessage *msg);
 DBusMessage * dbus_cb_wireless_get_wpasupplicant_driver(E_DBus_Object *obj __UNUSED__, DBusMessage *msg);

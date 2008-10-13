@@ -21,10 +21,40 @@
 #include "exalt_dbus_wireless.h"
 #include "libexalt_dbus_private.h"
 
+
+void _exalt_dbus_wireless_list_get_cb(void *data, DBusMessage *msg, DBusError *error);
+
+
 /**
  * @addtogroup Wireless_interface
  * @{
  */
+
+
+/**
+ * @brief Get the list of wireless interface
+ * @param conn a connection
+ * @return Returns the list of interface name (char *)
+ */
+int exalt_dbus_wireless_list_get(exalt_dbus_conn* conn)
+{
+    DBusMessage *msg;
+    Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
+
+    EXALT_ASSERT_RETURN(conn!=NULL);
+
+    msg_id->id = exalt_dbus_msg_id_next(conn);
+    msg_id->conn = conn;
+
+    msg = exalt_dbus_ifaces_wireless_call_new("list");
+
+    EXALT_ASSERT_CUSTOM_RET(e_dbus_message_send (conn->e_conn, msg, _exalt_dbus_wireless_list_get_cb,30,msg_id),
+            dbus_message_unref(msg); return 0);
+
+    dbus_message_unref(msg);
+
+    return msg_id->id;
+}
 
 /**
  * @brief Scan wireless networks and return the list of network
@@ -255,4 +285,34 @@ int exalt_dbus_wireless_set_wpasupplicant_driver(const exalt_dbus_conn* conn, co
 }
 
 /** @} */
+
+
+
+
+
+void _exalt_dbus_wireless_list_get_cb(void *data, DBusMessage *msg, DBusError *error)
+{
+    Exalt_DBus_Msg_Id *id = data;
+
+    EXALT_DBUS_ERROR_PRINT(error);
+
+    Exalt_DBus_Response* response = calloc(1,sizeof(Exalt_DBus_Response));
+    response->type = EXALT_DBUS_RESPONSE_IFACE_WIRELESS_LIST;
+    response->msg_id = id->id;
+    if(!exalt_dbus_valid_is(msg))
+    {
+        response->is_error = 0;
+        response->error_id = exalt_dbus_error_get_id(msg);
+        response->error_msg = strdup(exalt_dbus_error_get_msg(msg));
+    }
+    else
+    {
+        response -> is_error = 1;
+        response->l = exalt_dbus_response_strings(msg,1);
+    }
+
+    if(id->conn->response_notify->cb)
+        id->conn-> response_notify -> cb(response,id->conn->response_notify->user_data);
+    EXALT_FREE(data);
+}
 

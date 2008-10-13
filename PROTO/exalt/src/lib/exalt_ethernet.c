@@ -459,7 +459,7 @@ short exalt_eth_set_connection(Exalt_Ethernet* eth, Exalt_Connection* c)
     EXALT_ASSERT_RETURN(eth!=NULL);
     EXALT_ASSERT_RETURN(c!=NULL);
 
-    if(eth->connection)
+    if(eth->connection && eth->connection != c)
         exalt_conn_free(eth->connection);
     eth->connection = c;
     return 1;
@@ -1313,7 +1313,6 @@ int _exalt_apply_timer(void *data)
 
     return 0;
 }
-
 
 /**
  * @brief apply static address for the interface "eth"

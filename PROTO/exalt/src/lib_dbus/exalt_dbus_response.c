@@ -60,6 +60,7 @@ Ecore_List* exalt_dbus_response_list_get(Exalt_DBus_Response* response)
     {
         case EXALT_DBUS_RESPONSE_DNS_LIST_GET:
         case EXALT_DBUS_RESPONSE_IFACE_WIRED_LIST:
+        case EXALT_DBUS_RESPONSE_IFACE_WIRELESS_LIST:
             return response->l;
         default:
             print_error(__FILE__,__func__,__LINE__,"This type of response doesn't has a list\n");
@@ -81,6 +82,17 @@ char* exalt_dbus_response_address_get(Exalt_DBus_Response* response)
     }
 }
 
+char* exalt_dbus_response_command_get(Exalt_DBus_Response* response)
+{
+    switch(response->type)
+    {
+        case EXALT_DBUS_RESPONSE_IFACE_CMD_GET:
+            return response->command;
+        default:
+            print_error(__FILE__,__func__,__LINE__,"This type of response doesn't has a command\n");
+            return NULL;
+    }
+}
 
 char* exalt_dbus_response_iface_get(Exalt_DBus_Response* response)
 {
@@ -93,6 +105,10 @@ char* exalt_dbus_response_iface_get(Exalt_DBus_Response* response)
         case EXALT_DBUS_RESPONSE_IFACE_LINK_IS:
         case EXALT_DBUS_RESPONSE_IFACE_DHCP_IS:
         case EXALT_DBUS_RESPONSE_IFACE_UP_IS:
+        case EXALT_DBUS_RESPONSE_IFACE_UP:
+        case EXALT_DBUS_RESPONSE_IFACE_DOWN:
+        case EXALT_DBUS_RESPONSE_IFACE_CMD_GET:
+        case EXALT_DBUS_RESPONSE_IFACE_CMD_SET:
             return response->iface;
         default:
             print_error(__FILE__,__func__,__LINE__,"This type of response doesn't has an interface\n");

@@ -29,6 +29,8 @@
  * @{
  */
 
+int exalt_dbus_wireless_list_get(exalt_dbus_conn* conn);
+
 Ecore_List* exalt_dbus_wireless_scan_wait(const exalt_dbus_conn* conn, const char* eth);
 char* exalt_dbus_wireless_get_essid(const exalt_dbus_conn* conn, const char* eth);
 char* exalt_dbus_wireless_get_wpasupplicant_driver(const exalt_dbus_conn* conn, const char* eth);

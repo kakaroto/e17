@@ -18,6 +18,11 @@
 
 #include "cb_wireless.h"
 
+DBusMessage * dbus_cb_wireless_list_get(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
+{
+    return dbus_cb_eth_wireless_list_get(obj,msg,1);
+}
+
 DBusMessage * dbus_cb_wireless_scan_wait(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
     DBusMessage *reply;
