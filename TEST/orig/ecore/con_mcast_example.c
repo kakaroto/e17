@@ -34,12 +34,16 @@ int event_hup(void *data, int ev_type, void *ev)
 }
 
 int main (int argc, char *argv[]) {
+  if (argc != 3)
+    {
+      fprintf(stderr, "Usage: con_mcast_example host port\n");
+    }
   ecore_con_init();
 
   ecore_event_handler_add(ECORE_EVENT_SIGNAL_HUP, 
                           event_hup, NULL);
 
-  svr = ecore_con_server_add(ECORE_CON_REMOTE_MCAST, "239.255.2.1", 1199, NULL);
+  svr = ecore_con_server_add(ECORE_CON_REMOTE_MCAST, argv[1], atoi(argv[2]), NULL);
   if( NULL == svr )
     {
       printf("Unable to add server.  Bad port?  No route to the multicast network?\n");
