@@ -5,10 +5,12 @@ EDBUS_CPPFLAGS = \
 -I$(top_srcdir)/src/lib/hal \
 -I$(top_srcdir)/src/lib/nm \
 -I$(top_srcdir)/src/lib/notification \
-@EDBUS_CFLAGS@ 
+@EDBUS_CFLAGS@ \
+@EINA_CFLAGS@
 
 LIBS = \
-@EDBUS_LIBS@
+@EDBUS_LIBS@ \
+@EINA_LIBS@
 
 EDBUS_PROG = e_dbus_test e_dbus_test_client
 if BUILD_EHAL

@@ -2,7 +2,7 @@ MAINTAINERCLEANFILES = Makefile.in
 
 AM_CPPFLAGS = \
 -I $(top_srcdir)/src/lib/dbus \
-@EDBUS_CFLAGS@
+@EDBUS_CFLAGS@ @EINA_CFLAGS@
 
 if BUILD_ENM
 
@@ -20,7 +20,8 @@ e_nm_util.c
 
 libenm_la_LIBADD = \
 @EDBUS_LIBS@ \
-$(top_builddir)/src/lib/dbus/libedbus.la
+$(top_builddir)/src/lib/dbus/libedbus.la \
+@EINA_LIBS@
 libenm_la_LDFLAGS      = -version-info @version_info@
 
 

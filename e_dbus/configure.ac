@@ -43,6 +43,8 @@ AC_ARG_ENABLE(enotify,
 				  [enable_enotify="yes"])
 
 
+PKG_CHECK_MODULES([EINA], [eina-0])
+
 PKG_CHECK_MODULES([EDBUS], [
   dbus-1 >= 0.62
   ecore >= 0.9.9
