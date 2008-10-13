@@ -1,6 +1,6 @@
 DESCRIPTION = "A X keyboard modifier mapping for the Treo650"
 LICENSE = "GPL"
-PV = "0.0.2"
+PV = "0.0.3"
 PR = "r0.01"
 
 SRC_URI = "\

@@ -39,7 +39,7 @@ keycode 104 = KP_Enter
 !!!!! answer, calendar, mail, hangup/power
 !!!! CHECKME
 !! below - added hacked symbols: Escape Print
-keycode 64 = F1 Escape Print
+keycode 72 = F1 Escape Print
 !! below - added hacked symbols: equal semicolon
 keycode 67 = F2 equal semicolon
 !! below - added hacked symbols: bracketleft braceleft
