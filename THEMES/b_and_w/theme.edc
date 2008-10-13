@@ -3,6 +3,7 @@
 // desklock (done - review - see 'code' for notes)
 // fileman (list mode)
 // ibar - ibox (done - Merged with alias... see FIXME for bugs.)
+// pointer (review - hotspot position ok? check it out in edje_editor and resize it. there are some complaints)
 //
 // TODO: Working order
 // icons
@@ -18787,10 +18788,16 @@ group { name: "e/widgets/border/default/"NAME ;   	\
 BORDERICON("basic","icon_border_more.png")
 BORDERICON("close","icon_border_close.png")
 BORDERICON("kill","icon_border_kill.png")
+BORDERICON("stacking","icon_border_stack_norm.png")
+BORDERICON("stack_on_top","icon_border_stack_top.png")
+BORDERICON("stack_normal","icon_border_stack_norm.png")
+BORDERICON("stack_below","icon_border_stack_bot.png")
+BORDERICON("maximize","icon_border_maximize.png")
+BORDERICON("minimize","icon_border_minimize.png")
+BORDERICON("stick","icon_border_pin.png")
+BORDERICON("sendto","icon_border_sendto.png")
 
 /*
-BORDERICON("maximize","icon_dummy.png")
-BORDERICON("minimize","icon_dummy.png")
 BORDERICON("shade","icon_dummy.png")
 BORDERICON("stick","icon_dummy.png")
 BORDERICON("locks","icon_dummy.png")
@@ -18803,11 +18810,6 @@ BORDERICON("skip_winlist","icon_dummy.png")
 BORDERICON("skip","icon_dummy.png")
 BORDERICON("skip_pager","icon_dummy.png")
 BORDERICON("skip_taskbar","icon_dummy.png")
-BORDERICON("sendto","icon_dummy.png")
-BORDERICON("stacking","icon_dummy.png")
-BORDERICON("stack_on_top","icon_dummy.png")
-BORDERICON("stack_normal","icon_dummy.png")
-BORDERICON("stack_below","icon_dummy.png")
 BORDERICON("properties","icon_dummy.png")
 
 
