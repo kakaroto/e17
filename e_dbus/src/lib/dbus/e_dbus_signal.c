@@ -21,7 +21,7 @@ struct E_DBus_Signal_Handler
   unsigned char delete_me : 1;
 };
 
-static int cb_signal_event(void *data, int type, void *event);
+static void cb_signal_dispatcher(E_DBus_Connection *conn, DBusMessage *msg);
 
 /**
  * Free a signal handler
@@ -188,8 +188,7 @@ e_dbus_signal_handler_add(E_DBus_Connection *conn, const char *sender, const cha
        conn->signal_handlers = ecore_list_new();
        ecore_list_free_cb_set
 	 (conn->signal_handlers, ECORE_FREE_CB(e_dbus_signal_handler_free));
-       conn->signal_dispatcher = ecore_event_handler_add
-	 (E_DBUS_EVENT_SIGNAL, cb_signal_event, conn);
+       conn->signal_dispatcher = cb_signal_dispatcher;
     }
 
   /* if we have a sender, and it is not a unique name, we need to know the unique name to match since signals will have the name owner as ther sender. */
@@ -256,11 +255,9 @@ e_dbus_signal_handler_del(E_DBus_Connection *conn, E_DBus_Signal_Handler *sh)
   e_dbus_signal_handler_free(sh);
 }
 
-static int
-cb_signal_event(void *data, int type, void *event)
+static void
+cb_signal_dispatcher(E_DBus_Connection *conn, DBusMessage *msg)
 {
-  E_DBus_Connection *conn = data;
-  DBusMessage *msg = event;
   E_DBus_Signal_Handler *sh;
 
   ecore_list_first_goto(conn->signal_handlers);
@@ -275,8 +272,6 @@ cb_signal_event(void *data, int type, void *event)
 
     sh->cb_signal(sh->data, msg);
   }
-
-  return 1;
 }
 
 void

@@ -16,7 +16,7 @@ struct E_DBus_Connection
   Ecore_List *fd_handlers;
   Ecore_List *timeouts;
   Ecore_List *signal_handlers;
-  Ecore_Event_Handler *signal_dispatcher;
+  void (*signal_dispatcher)(E_DBus_Connection *conn, DBusMessage *msg);
 
   Ecore_Idler *idler;
 
