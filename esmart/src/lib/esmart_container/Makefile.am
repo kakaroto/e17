@@ -6,7 +6,7 @@ SUBDIRS = . layout
 AM_CPPFLAGS = \
 -I$(top_srcdir)/src/lib/esmart_container \
 -DCONTAINER_PLUGIN_DIR=\"$(libdir)/$(PACKAGE)/layout\" \
-@CONTAINER_CFLAGS@
+@CONTAINER_CFLAGS@ @EINA_CFLAGS@
 
 pkgdir = @libdir@
 pkg_LTLIBRARIES = libesmart_container.la
@@ -24,4 +24,4 @@ esmart_container_smart.c \
 esmart_container_util.c
 
 libesmart_container_la_LDFLAGS = -no-undefined -version-info @version_info@
-libesmart_container_la_LIBADD = @CONTAINER_LIBS@ -lltdl -lm
+libesmart_container_la_LIBADD = @EINA_LIBS@ @CONTAINER_LIBS@ -lltdl -lm

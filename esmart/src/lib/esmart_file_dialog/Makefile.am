@@ -3,7 +3,7 @@ MAINTAINERCLEANFILES = Makefile.in
 
 AM_CPPFLAGS = \
 -I$(top_srcdir)/src/lib/esmart_dialog \
-@FILE_DIALOG_CFLAGS@
+@FILE_DIALOG_CFLAGS@ @EINA_CFLAGS@
 
 pkgdir = @libdir@
 pkg_LTLIBRARIES = libesmart_file_dialog.la
@@ -23,4 +23,4 @@ libesmart_file_dialog_la_LDFLAGS = -version-info @version_info@
 libesmart_file_dialog_la_LIBADD = \
 $(top_builddir)/src/lib/esmart_container/libesmart_container.la \
 $(top_builddir)/src/lib/esmart_text_entry/libesmart_text_entry.la \
-@FILE_DIALOG_LIBS@
+@FILE_DIALOG_LIBS@ @EINA_LIBS@

@@ -40,6 +40,8 @@ PKG_CHECK_MODULES(CONTAINER, [evas >= 0.9.9 ecore >= 0.9.9 ecore-evas >= 0.9.9])
 
 AC_CHECK_HEADER(ltdl.h, have_esmart_container=yes, have_esmart_container=no)
 
+PKG_CHECK_MODULES([EINA], [eina-0])
+
 PKG_CHECK_MODULES(DRAGGIES, [
     evas >= 0.9.9
     ecore-x >= 0.9.9
