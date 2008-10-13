@@ -55,15 +55,12 @@ collections {
    
 /////////////////////////////////////////////////////////////////////////////
    /*** ILLUME: SLIPSHELF ***/
-/* define what images we need */
-
 
    group { name: "e/modules/slipshelf/base/default";
       images {
          image: "base_bg.png" COMP;
 	 image: "big_arrow_down.png" COMP;
 	 image: "big_arrow_up.png" COMP;
-	 image: "big_cross.png" COMP;
       }
 //      data.item: "shaped" "1";
       parts {
@@ -163,34 +160,33 @@ collections {
 	       }
 	    }
 	 }
-/*	 
 	 part { name: "e.text.label";
 	    type: TEXT;
 	    mouse_events: 0;
+	    scale: 1;
 	    description { state: "default" 0.0;
-	       align: 0.0 1.0;
+	       align: 0.0 0.5;
 	       rel1 {
-		  to_x: "inout";
+		  to_x: "kbd";
 		  to_y: "e.swallow.content";
 		  relative: 1.0 0.0;
-		  offset: 16 0;
+		  offset: 0 0;
 	       }
 	       rel2 {
-		  to_x: "e.swallow.content";
+		  to_x: "inout";
+		  to_y: "e.swallow.content";
 		  relative: 0.0 1.0;
-		  offset: -2 -1;
+		  offset: -1 -1;
 	       }
-	       color: 176 176 176 255;
+	       color: 0 0 0 255;
 	       text {
-		  font: "Liberation-Bold";
-		  size: 20;
+                  font: "Sans:style=Bold";
+		  size: 10;
 		  min: 0 1;
 		  align: 0.0 0.5;
-		  text_class: "slipshelf_title";
 	       }
 	    }
 	 }
- */
  	 part { name: "inout";
 	    mouse_events: 0;
 	    scale: 1;
@@ -278,7 +274,7 @@ collections {
 		  relative: 0.0 1.0;
 		  offset: 1 -1;
 	       }
-	       color: 176 176 176 255;
+	       color: 0 0 0 255;
 	       text {
                   font: "Sans:style=Bold";
 		  text: "qwerty";
@@ -295,62 +291,6 @@ collections {
 	       align: 0.5 0.5;
                rel1.to: "s2";
 	       rel2.to: "s2";
-	    }
-	 }
- 	 part { name: "del_bg";
-	    type: RECT;
-	    mouse_events: 1;
-	    description { state: "default" 0.0;
-	       color: 0 0 0 0;
-	       visible: 0;
-               rel1 {
-		  to_y: "e.swallow.content";
-		  offset: 0 0;
-	       }
-	       rel2 {
-		  to_x: "del_icon";
-		  to_y: "e.swallow.content";
-		  relative: 2.0 1.0;
-		  offset: -1 -1;
-	       }
-	    }
-	    description { state: "visible" 0.0;
-	       inherit: "default" 0.0;
-	       visible: 1;
-	    }
-	 }
-	 part { name: "del_icon";
-	    mouse_events: 0;
-	    scale: 1;
-	    description { state: "default" 0.0;
-	       min: 22 22;
-	       max: 22 22;
-	       fixed: 1 1;
-	       align: 1.0 0.5;
-	       color: 255 255 255 0;
-	       visible: 0;
-               rel1 {
-		  to_y: "e.swallow.content";
-		  offset: 8 0;
-	       }
-	       rel2 {
-                  to_y: "e.swallow.content";
-		  relative: 0.0 1.0;
-		  offset: 8 -1;
-	       }
-	       image.normal: "big_cross.png";
-	    }
-	    description { state: "visible" 0.0;
-	       inherit: "default" 0.0;
-	       visible: 1;
-	       align: 0.0 0.5;
-	       color: 255 255 255 255;
-	    }
-	    description { state: "pressed" 0.0;
-	       inherit: "default" 0.0;
-	       visible: 1;
-	       align: 0.0 0.5;
-	       color: 255 255 255 255;
 	    }
 	 }
       }
@@ -393,26 +333,403 @@ collections {
 	    transition: LINEAR 0.25;
 	    target: "inout";
 	 }
-	 program { name: "b3";
+      }
+   }
+   
+   group { name: "e/modules/slipshelf/controls/default";
+      images {
+         image: "bt_base1.png" COMP;
+	 image: "bt_base2.png" COMP;
+	 image: "bt_hilight.png" COMP;
+	 image: "bt_shine.png" COMP;
+	 image: "illume-apps.png" COMP;
+	 image: "illume-home.png" COMP;
+	 image: "illume-close.png" COMP;
+      }
+      parts {
+ 	 part { name: "base";
+	    type: RECT;
+	    scale: 1;
+	    description { state: "default" 0.0;
+	       visible: 0;
+	       aspect: 3.0 3.0;
+	       aspect_preference: VERTICAL;
+	       min: 50 50;
+	       rel1.offset: 16 16;
+	       rel2.offset: -17 -17;
+	    }
+	 }
+	 part { name: "apps_image";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       rel1.to: "apps";
+	       rel1.offset: -8 -8;
+	       rel2.to: "apps";
+	       rel2.offset: 7 7;
+	       image {
+		  normal: "bt_base2.png";
+		  border: 7 7 7 7;
+	       }
+	    }
+	    description { state: "clicked" 0.0;
+	       inherit: "default" 0.0;
+	       image.normal: "bt_base1.png";
+	    }
+	    description { state: "disabled" 0.0;
+	       inherit:  "default" 0.0;
+	       image {
+		  normal: "bt_dis_base.png";
+		  border: 4 4 4 4;
+	       }
+	    }
+	 }
+	 part { name: "apps_icon";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       rel1.to: "apps_image";
+               rel1.offset: 8 8;
+	       rel2.to: "apps_image";
+               rel2.offset: -9 -9;
+               aspect: 1.0 1.0;
+	       aspect_preference: BOTH;
+	       max: 96 96;
+	       image.normal: "illume-apps.png";
+	    }
+	 }
+         part { name: "apps_over1";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       rel1.to: "apps_image";
+	       rel2.to: "apps_image";
+	       rel2.relative: 1.0 0.5;
+	       image {
+		  normal: "bt_hilight.png";
+		  border: 7 7 7 0;
+	       }
+	    }
+	    description { state: "disabled" 0.0;
+	       inherit:  "default" 0.0;
+	       image {
+		  normal: "bt_dis_hilight.png";
+		  border: 4 4 4 0;
+	       }
+	    }
+	 }
+	 part { name: "apps_over2";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       rel1.to: "apps_image";
+	       rel2.to: "apps_image";
+	       image {
+		  normal: "bt_shine.png";
+		  border: 7 7 7 7;
+	       }
+	    }
+	    description { state: "disabled" 0.0;
+	       inherit:  "default" 0.0;
+	       visible: 0;
+	    }
+	 }
+	 part { name: "apps";
+	    type: RECT;
+	    description { state: "default" 0.0;
+	       aspect: 1.0 1.0;
+	       aspect_preference: VERTICAL;
+	       align: 0.0 0.5;
+	       rel1.offset: 16 16;
+	       rel2.offset: -17 -17;
+	       color: 0 0 0 0;
+	    }
+	    description { state: "disabled" 0.0;
+	       inherit:  "default" 0.0;
+	       visible: 0;
+	    }
+	 }
+	 
+	 part { name: "home_image";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       rel1.to: "home";
+	       rel1.offset: -8 -8;
+	       rel2.to: "home";
+	       rel2.offset: 7 7;
+	       image {
+		  normal: "bt_base2.png";
+		  border: 7 7 7 7;
+	       }
+	    }
+	    description { state: "clicked" 0.0;
+	       inherit: "default" 0.0;
+	       image.normal: "bt_base1.png";
+	    }
+	    description { state: "disabled" 0.0;
+	       inherit:  "default" 0.0;
+	       image {
+		  normal: "bt_dis_base.png";
+		  border: 4 4 4 4;
+	       }
+	    }
+	 }
+	 part { name: "home_icon";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       rel1.to: "home_image";
+               rel1.offset: 8 8;
+	       rel2.to: "home_image";
+               rel2.offset: -9 -9;
+               aspect: 1.0 1.0;
+	       aspect_preference: BOTH;
+	       max: 96 96;
+	       image.normal: "illume-home.png";
+	    }
+	 }
+         part { name: "home_over1";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       rel1.to: "home_image";
+	       rel2.to: "home_image";
+	       rel2.relative: 1.0 0.5;
+	       image {
+		  normal: "bt_hilight.png";
+		  border: 7 7 7 0;
+	       }
+	    }
+	    description { state: "disabled" 0.0;
+	       inherit:  "default" 0.0;
+	       image {
+		  normal: "bt_dis_hilight.png";
+		  border: 4 4 4 0;
+	       }
+	    }
+	 }
+	 part { name: "home_over2";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       rel1.to: "home_image";
+	       rel2.to: "home_image";
+	       image {
+		  normal: "bt_shine.png";
+		  border: 7 7 7 7;
+	       }
+	    }
+	    description { state: "disabled" 0.0;
+	       inherit:  "default" 0.0;
+	       visible: 0;
+	    }
+	 }
+ 	 part { name: "home";
+	    type: RECT;
+	    description { state: "default" 0.0;
+	       aspect: 1.0 1.0;
+	       aspect_preference: VERTICAL;
+	       align: 0.5 0.5;
+	       rel1.offset: 16 16;
+	       rel2.offset: -17 -17;
+	       color: 0 0 0 0;
+	    }
+	    description { state: "disabled" 0.0;
+	       inherit:  "default" 0.0;
+	       visible: 0;
+	    }
+	 }
+	 
+	 part { name: "close_image";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       rel1.to: "close";
+	       rel1.offset: -8 -8;
+	       rel2.to: "close";
+	       rel2.offset: 7 7;
+	       image {
+		  normal: "bt_base2.png";
+		  border: 7 7 7 7;
+	       }
+	    }
+	    description { state: "clicked" 0.0;
+	       inherit: "default" 0.0;
+	       image.normal: "bt_base1.png";
+	    }
+	    description { state: "disabled" 0.0;
+	       inherit:  "default" 0.0;
+	       image {
+		  normal: "bt_dis_base.png";
+		  border: 4 4 4 4;
+	       }
+	    }
+	 }
+	 part { name: "close_icon";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       rel1.to: "close_image";
+               rel1.offset: 8 8;
+	       rel2.to: "close_image";
+               rel2.offset: -9 -9;
+               aspect: 1.0 1.0;
+	       aspect_preference: BOTH;
+	       max: 96 96;
+	       image.normal: "illume-close.png";
+	    }
+	 }
+         part { name: "close_over1";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       rel1.to: "close_image";
+	       rel2.to: "close_image";
+	       rel2.relative: 1.0 0.5;
+	       image {
+		  normal: "bt_hilight.png";
+		  border: 7 7 7 0;
+	       }
+	    }
+	    description { state: "disabled" 0.0;
+	       inherit:  "default" 0.0;
+	       image {
+		  normal: "bt_dis_hilight.png";
+		  border: 4 4 4 0;
+	       }
+	    }
+	 }
+	 part { name: "close_over2";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       rel1.to: "close_image";
+	       rel2.to: "close_image";
+	       image {
+		  normal: "bt_shine.png";
+		  border: 7 7 7 7;
+	       }
+	    }
+	    description { state: "disabled" 0.0;
+	       inherit:  "default" 0.0;
+	       visible: 0;
+	    }
+	 }
+ 	 part { name: "close";
+	    type: RECT;
+	    description { state: "default" 0.0;
+	       aspect: 1.0 1.0;
+	       aspect_preference: VERTICAL;
+	       align: 1.0 0.5;
+	       rel1.offset: 16 16;
+	       rel2.offset: -17 -17;
+	       color: 0 0 0 0;
+	    }
+	    description { state: "disabled" 0.0;
+	       inherit:  "default" 0.0;
+	       visible: 0;
+	    }
+	 }
+      }
+      programs {
+	 program { name: "appsdown";
+	    signal: "mouse,down,1";
+	    source: "apps";
+	    action: STATE_SET "clicked" 0.0;
+	    target: "apps_image";
+	 }
+	 program { name: "appsup";
 	    signal: "mouse,up,1";
-	    source: "del_bg";
-	    action: SIGNAL_EMIT "e,action,do,applist,del" "";
+	    source: "apps";
+	    action: STATE_SET "default" 0.0;
+	    target: "apps_image";
+	    after: "apps";
 	 }
-	 program { name: "out-del1";
-	    signal: "e,state,out,begin";
-	    source: "e";
-	    action: STATE_SET "visible" 0.0;
-	    transition: LINEAR 0.5;
-	    target: "del_bg";
-	    target: "del_icon";
+	 program { name: "apps";
+	    action: SIGNAL_EMIT "e,action,do,apps" "";
 	 }
-	 program { name: "out-del2";
-	    signal: "e,state,in,begin";
+	 program { name: "appsenabled";
+	    signal: "e,state,action,apps,enabled";
 	    source: "e";
 	    action: STATE_SET "default" 0.0;
-	    transition: LINEAR 0.5;
-	    target: "del_bg";
-	    target: "del_icon";
+	    target: "apps_image";
+	    target: "apps_icon";
+	    target: "apps_over1";
+	    target: "apps_over2";
+	    target: "apps";
+	 }
+	 program { name: "appsdisabled";
+	    signal: "e,state,action,apps,disabled";
+	    source: "e";
+	    action: STATE_SET "disabled" 0.0;
+	    target: "apps_image";
+	    target: "apps_icon";
+	    target: "apps_over1";
+	    target: "apps_over2";
+	    target: "apps";
+	 }
+	 
+	 program { name: "homedown";
+	    signal: "mouse,down,1";
+	    source: "home";
+	    action: STATE_SET "clicked" 0.0;
+	    target: "home_image";
+	 }
+	 program { name: "homeup";
+	    signal: "mouse,up,1";
+	    source: "home";
+	    action: STATE_SET "default" 0.0;
+	    target: "home_image";
+	    after: "home";
+	 }
+	 program { name: "home";
+	    action: SIGNAL_EMIT "e,action,do,home" "";
+	 }
+	 program { name: "homeenabled";
+	    signal: "e,state,action,home,enabled";
+	    source: "e";
+	    action: STATE_SET "default" 0.0;
+	    target: "home_image";
+	    target: "home_icon";
+	    target: "home_over1";
+	    target: "home_over2";
+	    target: "home";
+	 }
+	 program { name: "homedisabled";
+	    signal: "e,state,action,home,disabled";
+	    source: "e";
+	    action: STATE_SET "disabled" 0.0;
+	    target: "home_image";
+	    target: "home_icon";
+	    target: "home_over1";
+	    target: "home_over2";
+	    target: "home";
+	 }
+	 
+	 program { name: "closedown";
+	    signal: "mouse,down,1";
+	    source: "close";
+	    action: STATE_SET "clicked" 0.0;
+	    target: "close_image";
+	 }
+	 program { name: "closeup";
+	    signal: "mouse,up,1";
+	    source: "close";
+	    action: STATE_SET "default" 0.0;
+	    target: "close_image";
+	    after: "close";
+	 }
+	 program { name: "close";
+	    action: SIGNAL_EMIT "e,action,do,close" "";
+	 }
+	 program { name: "closeenabled";
+	    signal: "e,state,action,close,enabled";
+	    source: "e";
+	    action: STATE_SET "default" 0.0;
+	    target: "close_image";
+	    target: "close_icon";
+	    target: "close_over1";
+	    target: "close_over2";
+	    target: "close";
+	 }
+	 program { name: "closedisabled";
+	    signal: "e,state,action,close,disabled";
+	    source: "e";
+	    action: STATE_SET "disabled" 0.0;
+	    target: "close_image";
+	    target: "close_icon";
+	    target: "close_over1";
+	    target: "close_over2";
+	    target: "close";
 	 }
       }
    }
@@ -472,6 +789,34 @@ collections {
  */
    }
 
+/////////////////////////////////////////////////////////////////////////////
+   /*** ILLUME: SLIPWIN ***/
+
+   group { name: "e/modules/slipwin/base/default";
+      images {
+         image: "base_bg.png" COMP;
+      }
+//      data.item: "shaped" "1";
+      parts {
+         part {	  name: "base";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       image.normal: "base_bg.png";
+	       image.border: 2 2 2 2;
+	       fill.smooth: 0;
+	    }
+	 }
+	 part { name: "e.swallow.content";
+	    type: SWALLOW;
+	    description { state: "default" 0.0;
+//	       fixed: 1 1;
+	       rel1.offset: 4 4;
+	       rel2.offset: -5 -5;
+	    }
+	 }
+      }
+   }
+   
 /////////////////////////////////////////////////////////////////////////////
    /*** ILLUME: BUSYWIN ***/
 /*
