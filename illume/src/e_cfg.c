@@ -46,6 +46,7 @@ e_cfg_init(E_Module *m)
    
    E_CONFIG_VAL(conf_edd, Illume_Cfg, slipshelf.main_gadget_size, INT);
    E_CONFIG_VAL(conf_edd, Illume_Cfg, slipshelf.extra_gagdet_size, INT);
+   E_CONFIG_VAL(conf_edd, Illume_Cfg, slipshelf.style, INT);
    
    E_CONFIG_VAL(conf_edd, Illume_Cfg, sliding.slipshelf.duration, INT);
    E_CONFIG_VAL(conf_edd, Illume_Cfg, sliding.kbd.duration, INT);
@@ -99,6 +100,10 @@ e_cfg_init(E_Module *m)
 	if ((illume_cfg->config_version & 0xffff) < 2) // new in minor ver 2
 	  {
 	     illume_cfg->kbd.dict = evas_stringshare_add("English_(US).dic");
+	  }
+	if ((illume_cfg->config_version & 0xffff) < 3) // new in minor ver 3
+	  {
+	     illume_cfg->slipshelf.style = 1;
 	  }
 	illume_cfg->config_version = (ILLUME_CONFIG_MAJ << 16) | ILLUME_CONFIG_MIN;
      }

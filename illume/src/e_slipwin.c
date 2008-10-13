@@ -158,7 +158,8 @@ e_slipwin_show(E_Slipwin *esw)
    e_scrollframe_child_set(esw->scrollframe_obj, o);
    
    e_scrollframe_child_viewport_size_get(esw->scrollframe_obj, &vw, &vh);
-   evas_object_geometry_get(esw->scrollframe_obj, NULL, NULL, &w, &h);
+   edje_object_part_geometry_get(esw->scrollframe_obj, "e.swallow.content", NULL, NULL, &vw, &vh);
+//   evas_object_geometry_get(esw->scrollframe_obj, NULL, NULL, &w, &h);
    if (mw > vw) mw = mw + (w - vw);
    else if (mw < vw) evas_object_resize(o, vw, mh);
    
@@ -168,6 +169,7 @@ e_slipwin_show(E_Slipwin *esw)
    esw->ilist_obj = o;
    
    edje_extern_object_min_size_set(esw->scrollframe_obj, mw, mh);
+   printf("min size %ix%i\n", mw, mh);
    edje_object_part_swallow(esw->base_obj, "e.swallow.content", esw->scrollframe_obj);
    edje_object_size_min_calc(esw->base_obj, &mw, &mh);
    
@@ -179,6 +181,8 @@ e_slipwin_show(E_Slipwin *esw)
    e_popup_resize(esw->popup, mw, mh);
 
    evas_object_resize(esw->base_obj, esw->popup->w, esw->popup->h);
+   
+   printf("sw: %ix%i\n", esw->popup->w, esw->popup->h);
    
    _e_slipwin_slide(esw, 1, 1.0);
 }

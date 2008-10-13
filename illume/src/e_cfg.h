@@ -1,7 +1,7 @@
 #ifndef E_CFG_H
 #define E_CFG_H
 
-#define ILLUME_CONFIG_MIN 2
+#define ILLUME_CONFIG_MIN 3
 #define ILLUME_CONFIG_MAJ 0
 
 typedef struct _Illume_Cfg Illume_Cfg;
@@ -29,6 +29,7 @@ struct _Illume_Cfg
    struct {
       int main_gadget_size;
       int extra_gagdet_size;
+      int style;
    } slipshelf;
    
    struct {

@@ -89,7 +89,7 @@ e_slipshelf_new(E_Zone *zone, const char *themedir)
    ess->base_obj = _theme_obj_new(ess->popup->evas,
 				  ess->themedir,
 				  "e/modules/slipshelf/base/default");
-   if (0)
+   if (illume_cfg->slipshelf.style == 1)
      {
 	ess->control_obj = _theme_obj_new(ess->popup->evas,
 					  ess->themedir,
@@ -174,8 +174,9 @@ e_slipshelf_new(E_Zone *zone, const char *themedir)
    evas_object_resize(ess->base_obj, ess->popup->w, ess->popup->h);
    e_popup_edje_bg_object_set(ess->popup, ess->base_obj);
 
-   if (0)
+   if (illume_cfg->slipshelf.style == 1)
      {
+	// slipwin does this
      }
    else
      {
@@ -189,26 +190,6 @@ e_slipshelf_new(E_Zone *zone, const char *themedir)
 				  _e_slipshelf_cb_item_sel,
 				  ess, NULL);
 	evas_object_show(o);
-/*	
-	o = e_scrollframe_add(ess->popup->evas);
-	edje_object_part_swallow(ess->control_obj, "e.swallow.content", o);
-	evas_object_show(o);
-	ess->scrollframe_obj = o;
-	
-	o = e_ilist_add(ess->popup->evas);
-	e_ilist_selector_set(o, 1);
-	
-	e_ilist_min_size_get(o, &mw, &mh);
-	evas_object_resize(o, mw, mh);
-	
-	e_scrollframe_child_set(ess->scrollframe_obj, o);
-	e_scrollframe_child_viewport_size_get(ess->scrollframe_obj, &vw, &vh);
-	evas_object_geometry_get(ess->scrollframe_obj, NULL, NULL, &w, &h);
-	if (mw > vw) mw = mw + (w - vw);
-	else if (mw < vw) evas_object_resize(o, vw, mh);
-        evas_object_show(o);
-	ess->ilist_obj = o;
- */
      }
    
    evas_object_show(ess->base_obj);
