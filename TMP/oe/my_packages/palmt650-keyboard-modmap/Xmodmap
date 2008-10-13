@@ -1,0 +1,94 @@
+!!!!! get modifiers right
+remove Control = Mode_switch
+remove Control = Shift_R
+remove Shift = Menu
+! Alt key -> Alt_R
+keycode 108 = Alt_R
+! Shift(R) key -> Shift_R
+keycode 105 = Shift_R
+add Shift = Shift_R
+! blue key -> Mode_switch
+keycode 37 = Mode_switch
+add mod5 = Mode_switch
+
+!!!!! top mute/unmute
+! keycode mute = has no keycode
+
+!!!!! side buttons
+keycode 123 = Prior
+keycode 122 = Next
+keycode 71 = End
+
+!!!!! top 2 buttons left/right and up from arrow key nav
+keycode 69 = Home
+! keycode menu = has no keycode!
+
+!!!!! arrowkeys
+keycode 111 = Up
+keycode 116 = Down
+keycode 113 = Left
+keycode 114 = Right
+keycode 36 = Return
+
+!!!!! answer, calendar, mail, hangup/ower
+! keycode answer = has no keycode!
+keycode 67 = F2
+keycode 68 = F3
+keycode 70 = F4
+
+!!!!! 1st row
+keycode 24 = q Q slash
+keycode 25 = w W plus
+keycode 26 = e E 1
+keycode 27 = r R 2
+keycode 28 = t T 3
+keycode 29 = y Y parenleft
+keycode 30 = u U parenright
+keycode 31 = i I at
+keycode 32 = o O quotedbl
+keycode 33 = p P 
+!!!!! 2nd row
+keycode 38 = a A ampersand
+keycode 39 = s S minus
+keycode 40 = d D 4
+keycode 41 = f F 5
+keycode 42 = g G 6
+keycode 43 = h H dollar
+keycode 44 = j J exclam
+keycode 45 = k K colon
+keycode 46 = l L apostraphe
+keycode 22 = BackSpace
+!!!!! 3rd row
+keycode 37 = Mode_switch
+keycode 52 = z S asterisk
+keycode 53 = x D 7
+keycode 54 = c F 8
+keycode 55 = v G 9
+keycode 56 = b H numbersign
+keycode 57 = n J question
+keycode 58 = m K comma
+keycode 60 = period
+keycode 36 = Return
+!!!!! bottom row
+keycode 50 = Shift_L
+keycode 19 = 0
+keycode 65 = space
+keycode 108 = Alt_R
+keycode 105 = Shift_R
+
+!!!!! missing standard key symbols:
+! %
+! ^
+! _
+! =
+! [
+! ]
+! {
+! }
+! ;
+! <
+! >
+! \
+! |
+! `
+! ~
