@@ -8,56 +8,58 @@ msgstr ""
 "Project-Id-Version: Ephoto 0.0.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2006-11-20 22:18+0100\n"
-"PO-Revision-Date: 2006-11-20 22:18+0100\n"
-"Last-Translator: DUNNEWIND Maxence <maxenced@ubuntu.com>\n"
+"PO-Revision-Date: 2008-10-12 12:16+0400\n"
+"Last-Translator: batden <batden@orange.fr>\n"
 "Language-Team: French <FR_fr>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/ephoto.c:52 src/ephoto_viewer.c:253
+#: src/ephoto.c:52
+#: src/ephoto_viewer.c:253
 msgid "Menu|File"
-msgstr "Fichier"
+msgstr "Men|Fichier"
 
-#: src/ephoto.c:60 src/ephoto_viewer.c:271
+#: src/ephoto.c:60
+#: src/ephoto_viewer.c:271
 msgid "Menu|File|Exit"
-msgstr "Quitter"
+msgstr "Menu|Fichier|Quitter"
 
 #: src/ephoto.c:68
 msgid "Menu|Albums"
-msgstr "Albums"
+msgstr "Menu|Albums"
 
 #: src/ephoto.c:76
 msgid "Menu|Albums|Add Album"
-msgstr "Ajouter un album"
+msgstr "Menu|Albums|Ajouter un album"
 
 #: src/ephoto.c:86
 msgid "Menu|Albums|Remove Album"
-msgstr "Supprimer un album"
+msgstr "Menu|Albums|Supprimer un album"
 
 #: src/ephoto.c:93
 msgid "Menu|Viewer"
-msgstr "Visionneur"
+msgstr "Menu|Visionner"
 
 #: src/ephoto.c:101
 msgid "Menu|Viewer|Image Viewer"
-msgstr "Visionner les images"
+msgstr "Menu|Visionner|Visionneuse"
 
 #: src/ephoto.c:109
 msgid "Menu|Slideshow"
-msgstr "Défilement"
+msgstr "Men|Diaporama"
 
 #: src/ephoto.c:118
 msgid "Menu|Slideshow|Configure Slideshow"
-msgstr "Configurer le défilement"
+msgstr "Menu|Diaporama|Configurer le diaporama"
 
 #: src/ephoto.c:129
 msgid "Menu|Slideshow|Start Slideshow"
-msgstr "Démarrer le défilement"
+msgstr "Menu|Diaporama|Démarrer le diaporama"
 
 #: src/ephoto.c:170
 msgid "  Location:"
-msgstr "  Dossier:"
+msgstr "  Emplacement:"
 
 #: src/ephoto.c:216
 msgid "Albums"
@@ -69,27 +71,29 @@ msgstr "Ajouter un album"
 
 #: src/ephoto_callbacks.c:231
 msgid "Enter the new album name:"
-msgstr "Entrer me nom du nouvel album:"
+msgstr "Entrer le nom du nouvel album:"
 
 #: src/ephoto_callbacks.c:243
 msgid "Enter the new album description:"
 msgstr "Entrer la description du nouvel album:"
 
-#: src/ephoto_callbacks.c:263 src/ephoto_slideshow.c:493
+#: src/ephoto_callbacks.c:263
+#: src/ephoto_slideshow.c:493
 msgid "save"
-msgstr "Enregistrer"
+msgstr "enregistrer"
 
-#: src/ephoto_callbacks.c:272 src/ephoto_slideshow.c:503
+#: src/ephoto_callbacks.c:272
+#: src/ephoto_slideshow.c:503
 msgid "cancel"
 msgstr "annuler"
 
 #: src/ephoto_slideshow.c:115
 msgid "Ephoto Slideshow"
-msgstr "Défilement Ephoto"
+msgstr "Diaporama Ephoto"
 
 #: src/ephoto_slideshow.c:329
 msgid "Slideshow Configuration"
-msgstr "Configuration du défilement"
+msgstr "Configuration du diaporama"
 
 #: src/ephoto_slideshow.c:348
 msgid "Window Size"
@@ -113,11 +117,11 @@ msgstr "Hauteur"
 
 #: src/ephoto_slideshow.c:412
 msgid "Order"
-msgstr "Organisation"
+msgstr "Ordre"
 
 #: src/ephoto_slideshow.c:419
 msgid "Loop Slideshow"
-msgstr "Défiler en boucle"
+msgstr "Diaporama en boucle"
 
 #: src/ephoto_slideshow.c:426
 msgid "Random Order"
@@ -129,11 +133,11 @@ msgstr "Taille de l'image"
 
 #: src/ephoto_slideshow.c:446
 msgid "Zoom Images to Fill Window"
-msgstr "Retailler les images à la taille de la fenêtre"
+msgstr "Redimensionner les images à la taille de la fenêtre"
 
 #: src/ephoto_slideshow.c:453
 msgid "Keep Aspect"
-msgstr "Conserver les proportions"
+msgstr "Conserver l'aspect"
 
 #: src/ephoto_slideshow.c:460
 msgid "Transitions"
@@ -145,27 +149,27 @@ msgstr "Afficher le nom du fichier lors du changement"
 
 #: src/ephoto_viewer.c:235
 msgid "Ephoto Image Viewer"
-msgstr "Visualiseur d'image Ephoto"
+msgstr "Visionneuse Ephoto"
 
 #: src/ephoto_viewer.c:261
 msgid "Menu|File|Save Image"
-msgstr "Sauvegarder l'image"
+msgstr "Menu|Fichier|Enregistrer l'image"
 
 #: src/ephoto_viewer.c:279
 msgid "Menu|Actions"
-msgstr "Actions"
+msgstr "Menu|Actions"
 
 #: src/ephoto_viewer.c:287
 msgid "Menu|Actions|Zoom In"
-msgstr "Zoomer"
+msgstr "Menu|Actions|Zoomer"
 
 #: src/ephoto_viewer.c:297
 msgid "Menu|Actions|Zoom Out"
-msgstr "Dézoomer"
+msgstr "Menu|Actions|Dézoomer"
 
 #: src/ephoto_viewer.c:307
 msgid "Menu|Actions|Zoom To Fit"
-msgstr "Remplir la fenêtre"
+msgstr "Menu|Actions|Remplir la fenêtre"
 
 #: src/ephoto_viewer.c:317
 msgid "Menu|Actions|Zoom 1:1"
@@ -173,19 +177,19 @@ msgstr "Taille normale"
 
 #: src/ephoto_viewer.c:328
 msgid "Menu|Actions|Flip Horizontally"
-msgstr "Renverser horizontalement"
+msgstr "Menu|Actions|Renverser horizontalement"
 
 #: src/ephoto_viewer.c:338
 msgid "Menu|Actions|Flip Vertically"
-msgstr "Renverser verticalement"
+msgstr "Menu|Actions|Renverser verticalement"
 
 #: src/ephoto_viewer.c:348
 msgid "Menu|Actions|Rotate Left"
-msgstr "Pivoter vers la gauche"
+msgstr "Menu|Actions|Pivoter sur la gauche"
 
 #: src/ephoto_viewer.c:358
 msgid "Menu|Actions|Rotate Right"
-msgstr "Pivoter vers la droite"
+msgstr "Menu|Actions|Pivoter sur la droite"
 
 #: src/ephoto_viewer.c:400
 msgid "In"
@@ -202,3 +206,4 @@ msgstr "Gauche"
 #: src/ephoto_viewer.c:450
 msgid "Right"
 msgstr "Droite"
+
