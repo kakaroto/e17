@@ -1,0 +1,27 @@
+From 5651a60740a634f155dd24f4f601df8ad46fd8de Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler <raster@openmoko.org>
+Date: Mon, 13 Oct 2008 13:31:31 +1100
+Subject: [PATCH] add depends for palmt650 modmap for palm keypad.
+
+---
+ conf/machine/palmt650.conf |    5 ++++-
+ 1 files changed, 4 insertions(+), 1 deletions(-)
+
+diff --git a/conf/machine/palmt650.conf b/conf/machine/palmt650.conf
+index 272c0dc..f81ade3 100644
+--- a/conf/machine/palmt650.conf
++++ b/conf/machine/palmt650.conf
+@@ -12,6 +12,9 @@ GUI_MACHINE_CLASS = "bigscreen"
+ 
+ MACHINE_EXTRA_RRECOMMENDS += "kernel-module-snd-pxa2xx-ac97 \
+                            kernel-module-pxa27x-keyboard \
+-                           kernel-module-wm97xx-ts"
++                           kernel-module-wm97xx-ts \
++			   "
++
++MACHINE_EXTRA_RDEPENDS += "palmt650-keyboard-modmap"
+ 
+ module_autoload_g_ether = "g_ether"
+-- 
+1.5.4.3
+
