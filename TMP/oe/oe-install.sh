@@ -2,7 +2,7 @@
 
 if test -d bitbake; then
   cd bitbake
-  svn update
+  svn update || true
   cd ..
 else
   svn co svn://svn.berlios.de/bitbake/branches/bitbake-1.8/ bitbake
@@ -12,8 +12,8 @@ if test ! -d build/conf; then
 fi
 if test -d org.openembedded.dev; then
   cd org.openembedded.dev
-  git-fetch
-  git-rebase origin
+  git-fetch || true
+  git-rebase origin || true
   cd ..
 else
   git clone git://git.openembedded.net/org.openembedded.dev.git
