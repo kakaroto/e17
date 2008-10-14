@@ -10,7 +10,7 @@ fi
 if test ! -d build/conf; then
   mkdir -p build/conf
 fi
-if test -d build/conf; then
+if test -d org.openembedded.dev; then
   cd org.openembedded.dev
   git-fetch
   git-rebase origin
