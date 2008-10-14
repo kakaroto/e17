@@ -25,4 +25,4 @@ clean-local:
 	 rm -rf e-module-skel.edj module.desktop *~
 uninstall:
 	 rm -rf $(DESTDIR)$(datadir)
-	 
+
