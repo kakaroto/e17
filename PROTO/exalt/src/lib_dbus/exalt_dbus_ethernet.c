@@ -92,7 +92,6 @@ int exalt_dbus_eth_netmask_get(exalt_dbus_conn* conn, const char* eth)
     snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,eth);
     msg = exalt_dbus_iface_call_new("netmask_get",path,interface);
 
-
     msg_id->id = exalt_dbus_msg_id_next(conn);
     msg_id->conn = conn;
     EXALT_ASSERT_CUSTOM_RET(e_dbus_message_send (conn->e_conn, msg, _exalt_dbus_eth_netmask_get_cb,30,msg_id),
@@ -792,7 +791,7 @@ void _exalt_dbus_eth_cmd_get_cb(void *data, DBusMessage *msg, DBusError *error)
     else
     {
         response -> is_error = 1;
-        response-> command = strdup(exalt_dbus_response_string(msg,1));
+        response-> string = strdup(exalt_dbus_response_string(msg,1));
     }
     if(id->conn->response_notify->cb)
         id->conn-> response_notify -> cb(response,id->conn->response_notify->user_data);

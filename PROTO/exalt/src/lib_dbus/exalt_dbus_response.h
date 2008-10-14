@@ -43,7 +43,10 @@ enum _exalt_dbus_response_type
     EXALT_DBUS_RESPONSE_IFACE_CMD_GET,
     EXALT_DBUS_RESPONSE_IFACE_UP,
     EXALT_DBUS_RESPONSE_IFACE_DOWN,
-    EXALT_DBUS_RESPONSE_IFACE_CMD_SET
+    EXALT_DBUS_RESPONSE_IFACE_CMD_SET,
+    EXALT_DBUS_RESPONSE_WIRELESS_ESSID_GET,
+    EXALT_DBUS_RESPONSE_WIRELESS_WPASUPPLICANT_DRIVER_GET,
+    EXALT_DBUS_RESPONSE_WIRELESS_WPASUPPLICANT_DRIVER_SET
 };
 
 int exalt_dbus_response_msg_id_get(Exalt_DBus_Response *response);
@@ -55,7 +58,7 @@ char* exalt_dbus_response_error_msg_get(Exalt_DBus_Response* response);
 
 Ecore_List* exalt_dbus_response_list_get(Exalt_DBus_Response* response);
 char* exalt_dbus_response_address_get(Exalt_DBus_Response* response);
-char* exalt_dbus_response_command_get(Exalt_DBus_Response* response);
+char* exalt_dbus_response_string_get(Exalt_DBus_Response* response);
 char* exalt_dbus_response_iface_get(Exalt_DBus_Response* response);
 int exalt_dbus_response_is_get(Exalt_DBus_Response* response);
 

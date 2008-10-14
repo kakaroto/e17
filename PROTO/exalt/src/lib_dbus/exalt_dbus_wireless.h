@@ -25,18 +25,18 @@
 
 /**
  * @defgroup Wireless_interface
- * @brief Functions about a wireless interface.
+ * @brief Functions specific to a wireless interface.
  * @{
  */
 
 int exalt_dbus_wireless_list_get(exalt_dbus_conn* conn);
 
-Ecore_List* exalt_dbus_wireless_scan_wait(const exalt_dbus_conn* conn, const char* eth);
-char* exalt_dbus_wireless_get_essid(const exalt_dbus_conn* conn, const char* eth);
-char* exalt_dbus_wireless_get_wpasupplicant_driver(const exalt_dbus_conn* conn, const char* eth);
-int exalt_dbus_wireless_set_wpasupplicant_driver(const exalt_dbus_conn* conn, const char* eth, const char* driver);
+int exalt_dbus_wireless_essid_get(const exalt_dbus_conn* conn, const char* eth);
+int exalt_dbus_wireless_wpasupplicant_driver_get(const exalt_dbus_conn* conn, const char* eth);
+int exalt_dbus_wireless_wpasupplicant_driver_set(const exalt_dbus_conn* conn, const char* eth, const char* driver);
 
 int exalt_dbus_wireless_scan_start(const exalt_dbus_conn* conn, const char* eth);
+Ecore_List* exalt_dbus_wireless_scan_wait(const exalt_dbus_conn* conn, const char* eth);
 
 #endif   /* ----- #ifndef EXALT_DBUS_WIRELESS_INC  ----- */
 

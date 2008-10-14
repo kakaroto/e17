@@ -23,7 +23,9 @@
 
 
 void _exalt_dbus_wireless_list_get_cb(void *data, DBusMessage *msg, DBusError *error);
-
+void _exalt_dbus_wireless_essid_get_cb(void *data, DBusMessage *msg, DBusError *error);
+void _exalt_dbus_wireless_wpasupplicant_driver_get_cb(void *data, DBusMessage *msg, DBusError *error);
+void _exalt_dbus_wireless_wpasupplicant_driver_set_cb(void *data, DBusMessage *msg, DBusError *error);
 
 /**
  * @addtogroup Wireless_interface
@@ -150,43 +152,28 @@ int exalt_dbus_wireless_scan_start(const exalt_dbus_conn* conn, const char* eth)
  * @param eth a wireless interface name
  * @return Returns the essid
  */
-char* exalt_dbus_wireless_get_essid(const exalt_dbus_conn* conn, const char* eth)
+int exalt_dbus_wireless_essid_get(const exalt_dbus_conn* conn, const char* eth)
 {
-    DBusPendingCall * ret;
     DBusMessage *msg;
-    DBusMessageIter args;
-    char* res;
+    char path[PATH_MAX];
+    char interface[PATH_MAX];
+    Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
     EXALT_ASSERT_RETURN(conn!=NULL);
     EXALT_ASSERT_RETURN(eth!=NULL);
 
+    snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,eth);
+    snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,eth);
+    msg = exalt_dbus_iface_call_new("essid_get",path,interface);
 
-    msg = exalt_dbus_read_call_new("IFACE_GET_ESSID");
-    dbus_message_iter_init_append(msg, &args);
-    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth),
-            dbus_message_unref(msg); return 0,
-            "dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth");
-    EXALT_ASSERT_ADV(dbus_connection_send_with_reply (conn->conn, msg, &ret, -1),
-            dbus_message_unref(msg); return 0,
-            "dbus_connection_send_with_reply (conn->conn, msg, &ret, -1)");
+    msg_id->id = exalt_dbus_msg_id_next(conn);
+    msg_id->conn = conn;
+    EXALT_ASSERT_CUSTOM_RET(e_dbus_message_send (conn->e_conn, msg, _exalt_dbus_wireless_essid_get_cb,30,msg_id),
+            dbus_message_unref(msg); return 0);
 
     dbus_message_unref(msg);
 
-    dbus_pending_call_block(ret);
-    msg = dbus_pending_call_steal_reply(ret);
-    EXALT_ASSERT_RETURN(msg);
-    dbus_pending_call_unref(ret);
-
-    EXALT_ASSERT_ADV(exalt_dbus_valid_is(msg),
-            return 0,
-            "exalt_dbus_valid_is(msg) failed, error=%d (%s)",
-            exalt_dbus_error_get_id(msg),
-            exalt_dbus_error_get_msg(msg));
-
-
-    EXALT_STRDUP(res , exalt_dbus_response_string(msg,1));
-    dbus_message_unref(msg);
-    return res;
+    return msg_id->id;
 }
 
 /**
@@ -195,46 +182,30 @@ char* exalt_dbus_wireless_get_essid(const exalt_dbus_conn* conn, const char* eth
  * @param eth a wireless interface name
  * @return Returns a wpa_supplicant driver (wext, hostap ...)
  */
-char* exalt_dbus_wireless_get_wpasupplicant_driver(const exalt_dbus_conn* conn, const char* eth)
+int exalt_dbus_wireless_wpasupplicant_driver_get(const exalt_dbus_conn* conn, const char* eth)
 {
-    DBusPendingCall * ret;
     DBusMessage *msg;
-    DBusMessageIter args;
-    char* res;
-    const char* str;
+    char path[PATH_MAX];
+    char interface[PATH_MAX];
+    Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
     EXALT_ASSERT_RETURN(conn!=NULL);
     EXALT_ASSERT_RETURN(eth!=NULL);
 
+    snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,eth);
+    snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,eth);
+    msg = exalt_dbus_iface_call_new("wpasupplicant_driver_get",path,interface);
 
-    msg = exalt_dbus_read_call_new("IFACE_GET_WPASUPPLICANT_DRIVER");
-    dbus_message_iter_init_append(msg, &args);
-    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth),
-            dbus_message_unref(msg); return 0,
-            "dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth");
-    EXALT_ASSERT_ADV(dbus_connection_send_with_reply (conn->conn, msg, &ret, -1),
-            dbus_message_unref(msg); return 0,
-            "dbus_connection_send_with_reply (conn->conn, msg, &ret, -1)");
+    msg_id->id = exalt_dbus_msg_id_next(conn);
+    msg_id->conn = conn;
+    EXALT_ASSERT_CUSTOM_RET(e_dbus_message_send (conn->e_conn, msg, _exalt_dbus_wireless_wpasupplicant_driver_get_cb,30,msg_id),
+            dbus_message_unref(msg); return 0);
 
     dbus_message_unref(msg);
 
-    dbus_pending_call_block(ret);
-    msg = dbus_pending_call_steal_reply(ret);
-    EXALT_ASSERT_RETURN(msg);
-    dbus_pending_call_unref(ret);
-
-    EXALT_ASSERT_ADV(exalt_dbus_valid_is(msg),
-            return 0,
-            "exalt_dbus_valid_is(msg) failed, error=%d (%s)",
-            exalt_dbus_error_get_id(msg),
-            exalt_dbus_error_get_msg(msg));
-
-
-    str = exalt_dbus_response_string(msg,1);
-    EXALT_STRDUP(res,str);
-    dbus_message_unref(msg);
-    return res;
+    return msg_id->id;
 }
+
 
 /**
  * @brief Set the wpa_supplicant driver used by the interface
@@ -243,45 +214,34 @@ char* exalt_dbus_wireless_get_wpasupplicant_driver(const exalt_dbus_conn* conn, 
  * @param driver a driver (wext, hostap ...)
  * @return Returns 1 if success, else 0
  */
-int exalt_dbus_wireless_set_wpasupplicant_driver(const exalt_dbus_conn* conn, const char* eth, const char* driver)
+int exalt_dbus_wireless_wpasupplicant_driver_set(const exalt_dbus_conn* conn, const char* eth, const char* driver)
 {
-    DBusPendingCall * ret;
     DBusMessage *msg;
-    DBusMessageIter args;
+    DBusMessageIter iter;
+    char path[PATH_MAX];
+    char interface[PATH_MAX];
+    Exalt_DBus_Msg_Id *msg_id= malloc(sizeof(Exalt_DBus_Msg_Id));
 
     EXALT_ASSERT_RETURN(conn!=NULL);
     EXALT_ASSERT_RETURN(eth!=NULL);
+    EXALT_ASSERT_RETURN(driver!=NULL);
 
+    snprintf(path,PATH_MAX,"%s/%s",EXALTD_PATH_IFACE,eth);
+    snprintf(interface,PATH_MAX,"%s.%s",EXALTD_INTERFACE_IFACE,eth);
+    msg = exalt_dbus_iface_call_new("wpasupplicant_driver_set",path,interface);
 
-    msg = exalt_dbus_write_call_new("IFACE_SET_WPASUPPLICANT_DRIVER");
-    dbus_message_iter_init_append(msg, &args);
-    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth),
-            dbus_message_unref(msg); return 0,
-            "dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &eth");
-    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &driver),
-            dbus_message_unref(msg); return 0,
-            "dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &driver");
+    dbus_message_iter_init_append(msg,&iter);
+    EXALT_ASSERT_CUSTOM_RET(dbus_message_iter_append_basic(&iter, DBUS_TYPE_STRING, &driver),
+            dbus_message_unref(msg);return 0);
 
-    EXALT_ASSERT_ADV(dbus_connection_send_with_reply (conn->conn, msg, &ret, -1),
-            dbus_message_unref(msg); return 0,
-            "dbus_connection_send_with_reply (conn->conn, msg, &ret, -1)");
-
-    dbus_message_unref(msg);
-
-    dbus_pending_call_block(ret);
-    msg = dbus_pending_call_steal_reply(ret);
-    EXALT_ASSERT_RETURN(msg);
-    dbus_pending_call_unref(ret);
-
-    EXALT_ASSERT_ADV(exalt_dbus_valid_is(msg),
-            return 0,
-            "exalt_dbus_valid_is(msg) failed, error=%d (%s)",
-            exalt_dbus_error_get_id(msg),
-            exalt_dbus_error_get_msg(msg));
-
+    msg_id->id = exalt_dbus_msg_id_next(conn);
+    msg_id->conn = conn;
+    EXALT_ASSERT_CUSTOM_RET(e_dbus_message_send (conn->e_conn, msg, _exalt_dbus_wireless_wpasupplicant_driver_set_cb,30,msg_id),
+            dbus_message_unref(msg); return 0);
 
     dbus_message_unref(msg);
-    return 1;
+
+    return msg_id->id;
 }
 
 /** @} */
@@ -311,6 +271,87 @@ void _exalt_dbus_wireless_list_get_cb(void *data, DBusMessage *msg, DBusError *e
         response->l = exalt_dbus_response_strings(msg,1);
     }
 
+    if(id->conn->response_notify->cb)
+        id->conn-> response_notify -> cb(response,id->conn->response_notify->user_data);
+    EXALT_FREE(data);
+}
+
+
+void _exalt_dbus_wireless_essid_get_cb(void *data, DBusMessage *msg, DBusError *error)
+{
+    Exalt_DBus_Msg_Id *id = data;
+
+    EXALT_DBUS_ERROR_PRINT(error);
+
+    Exalt_DBus_Response* response = calloc(1,sizeof(Exalt_DBus_Response));
+    response->type = EXALT_DBUS_RESPONSE_WIRELESS_ESSID_GET;
+    response-> iface = strdup(dbus_get_eth(msg));
+    response->msg_id = id->id;
+
+    if(!exalt_dbus_valid_is(msg))
+    {
+        response->is_error = 0;
+        response->error_id = exalt_dbus_error_get_id(msg);
+        response->error_msg = strdup(exalt_dbus_error_get_msg(msg));
+    }
+    else
+    {
+        response -> is_error = 1;
+        response-> string = strdup(exalt_dbus_response_string(msg,1));
+    }
+    if(id->conn->response_notify->cb)
+        id->conn-> response_notify -> cb(response,id->conn->response_notify->user_data);
+    EXALT_FREE(data);
+}
+
+void _exalt_dbus_wireless_wpasupplicant_driver_get_cb(void *data, DBusMessage *msg, DBusError *error)
+{
+    Exalt_DBus_Msg_Id *id = data;
+
+    EXALT_DBUS_ERROR_PRINT(error);
+
+    Exalt_DBus_Response* response = calloc(1,sizeof(Exalt_DBus_Response));
+    response->type = EXALT_DBUS_RESPONSE_WIRELESS_WPASUPPLICANT_DRIVER_GET;
+    response-> iface = strdup(dbus_get_eth(msg));
+    response->msg_id = id->id;
+
+    if(!exalt_dbus_valid_is(msg))
+    {
+        response->is_error = 0;
+        response->error_id = exalt_dbus_error_get_id(msg);
+        response->error_msg = strdup(exalt_dbus_error_get_msg(msg));
+    }
+    else
+    {
+        response -> is_error = 1;
+        response-> string = strdup(exalt_dbus_response_string(msg,1));
+    }
+    if(id->conn->response_notify->cb)
+        id->conn-> response_notify -> cb(response,id->conn->response_notify->user_data);
+    EXALT_FREE(data);
+}
+
+void _exalt_dbus_wireless_wpasupplicant_driver_set_cb(void *data, DBusMessage *msg, DBusError *error)
+{
+    Exalt_DBus_Msg_Id *id = data;
+
+    EXALT_DBUS_ERROR_PRINT(error);
+
+    Exalt_DBus_Response* response = calloc(1,sizeof(Exalt_DBus_Response));
+    response->type = EXALT_DBUS_RESPONSE_WIRELESS_WPASUPPLICANT_DRIVER_SET;
+    response-> iface = strdup(dbus_get_eth(msg));
+    response->msg_id = id->id;
+
+    if(!exalt_dbus_valid_is(msg))
+    {
+        response->is_error = 0;
+        response->error_id = exalt_dbus_error_get_id(msg);
+        response->error_msg = strdup(exalt_dbus_error_get_msg(msg));
+    }
+    else
+    {
+        response -> is_error = 1;
+    }
     if(id->conn->response_notify->cb)
         id->conn-> response_notify -> cb(response,id->conn->response_notify->user_data);
     EXALT_FREE(data);

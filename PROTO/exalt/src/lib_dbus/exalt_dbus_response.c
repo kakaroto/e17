@@ -82,14 +82,16 @@ char* exalt_dbus_response_address_get(Exalt_DBus_Response* response)
     }
 }
 
-char* exalt_dbus_response_command_get(Exalt_DBus_Response* response)
+char* exalt_dbus_response_string_get(Exalt_DBus_Response* response)
 {
     switch(response->type)
     {
         case EXALT_DBUS_RESPONSE_IFACE_CMD_GET:
-            return response->command;
+        case EXALT_DBUS_RESPONSE_WIRELESS_ESSID_GET:
+        case EXALT_DBUS_RESPONSE_WIRELESS_WPASUPPLICANT_DRIVER_GET:
+            return response->string;
         default:
-            print_error(__FILE__,__func__,__LINE__,"This type of response doesn't has a command\n");
+            print_error(__FILE__,__func__,__LINE__,"This type of response doesn't has a simple string\n");
             return NULL;
     }
 }

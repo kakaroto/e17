@@ -118,7 +118,7 @@ void response(Exalt_DBus_Response* response, void* data)
         case EXALT_DBUS_RESPONSE_IFACE_CMD_GET:
             printf("%s command:\n",exalt_dbus_response_iface_get(response));
             print_response_error();
-            printf("%s\n",exalt_dbus_response_command_get(response));
+            printf("%s\n",exalt_dbus_response_string_get(response));
             break;
         case EXALT_DBUS_RESPONSE_IFACE_CMD_SET:
             printf("%s command:\n",exalt_dbus_response_iface_get(response));
@@ -133,9 +133,21 @@ void response(Exalt_DBus_Response* response, void* data)
             print_response_error();
             printf("The interface %s is supposed to be down\n",exalt_dbus_response_iface_get(response));
             break;
-
+        case EXALT_DBUS_RESPONSE_WIRELESS_ESSID_GET:
+            printf("%s essid:\n",exalt_dbus_response_iface_get(response));
+            print_response_error();
+            printf("%s\n",exalt_dbus_response_string_get(response));
+            break;
+        case EXALT_DBUS_RESPONSE_WIRELESS_WPASUPPLICANT_DRIVER_GET:
+            printf("%s wpa_supplicant driver:\n",exalt_dbus_response_iface_get(response));
+            print_response_error();
+            printf("%s\n",exalt_dbus_response_string_get(response));
+            break;
+        case EXALT_DBUS_RESPONSE_WIRELESS_WPASUPPLICANT_DRIVER_SET:
+            print_response_error();
+            printf("The new command is supposed to be set to the interface %s\n",exalt_dbus_response_iface_get(response));
+            break;
     }
-
 }
 
 void dns(int argc, char** argv)
@@ -248,6 +260,31 @@ void ethernet(int argc, char** argv)
         exalt_dbus_eth_down(conn,iface);
 }
 
+void wireless(int argc, char** argv)
+{
+    char* iface;
+
+    if(argc < 3)
+    {
+        fprintf(stderr, "We need an interface name (eth0, ipw1 ...)\n");
+        exit(EXIT_FAILURE);
+    }
+    iface = argv[2];
+    if(strcmp(argv[1],"essid_get")==0)
+        exalt_dbus_wireless_essid_get(conn,iface);
+    else if(strcmp(argv[1],"wpasupplicant_driver_get")==0)
+        exalt_dbus_wireless_wpasupplicant_driver_get(conn,iface);
+    else if(strcmp(argv[1],"wpasupplicant_driver_set")==0)
+    {
+        if(argc<4)
+        {
+            fprintf(stderr,"We need a driver. \n");
+            exit (EXIT_FAILURE);
+        }
+        exalt_dbus_wireless_wpasupplicant_driver_set(conn,iface,argv[3]);
+    }
+}
+
 int main(int argc, char** argv)
 {
     exalt_dbus_init();
@@ -277,6 +314,11 @@ int main(int argc, char** argv)
                 || strcmp(argv[1],"up")==0
             ))
         ethernet(argc ,argv);
+    else if(argc>1 && (strcmp(argv[1],"essid_get")==0
+                || strcmp(argv[1],"wpasupplicant_driver_get")==0
+                || strcmp(argv[1],"wpasupplicant_driver_set")==0
+                ))
+        wireless(argc,argv);
     else
         help();
 

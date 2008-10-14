@@ -23,6 +23,166 @@ DBusMessage * dbus_cb_wireless_list_get(E_DBus_Object *obj __UNUSED__, DBusMessa
     return dbus_cb_eth_wireless_list_get(obj,msg,1);
 }
 
+DBusMessage * dbus_cb_wireless_essid_get(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
+{
+    DBusMessage *reply;
+    DBusMessageIter args;
+    Exalt_Ethernet* eth;
+    char* essid;
+
+    reply = dbus_message_new_method_return(msg);
+    dbus_message_set_path(reply,dbus_message_get_path(msg));
+
+    eth= dbus_get_eth(msg);
+    EXALT_ASSERT_CUSTOM_RET(eth!=NULL,
+            dbus_args_error_append(reply,
+                EXALT_DBUS_INTERFACE_ERROR_ID,
+                EXALT_DBUS_INTERFACE_ERROR);
+            return reply);
+
+    EXALT_ASSERT_CUSTOM_RET(exalt_eth_is_wireless(eth),
+            dbus_args_error_append(reply,
+                EXALT_DBUS_INTERFACE_NOT_WIRELESS_ERROR_ID,
+                EXALT_DBUS_INTERFACE_NOT_WIRELESS_ERROR);
+            return reply);
+
+    essid = exalt_wireless_get_essid(exalt_eth_get_wireless(eth));
+    EXALT_ASSERT_CUSTOM_RET(essid!=NULL,
+            dbus_args_error_append(reply,
+                EXALT_DBUS_ESSID_ERROR_ID,
+                EXALT_DBUS_ESSID_ERROR);
+            return reply);
+
+    dbus_args_valid_append(reply);
+    dbus_message_iter_init_append(reply, &args);
+    EXALT_ASSERT_CUSTOM_RET(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid),
+            EXALT_FREE(essid);return reply);
+
+    EXALT_FREE(essid);
+    return reply;
+}
+
+DBusMessage * dbus_cb_wireless_wpasupplicant_driver_get(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
+{
+    DBusMessage *reply;
+    DBusMessageIter args;
+    Exalt_Ethernet* eth;
+    char* essid;
+
+    reply = dbus_message_new_method_return(msg);
+    dbus_message_set_path(reply,dbus_message_get_path(msg));
+
+    eth= dbus_get_eth(msg);
+    EXALT_ASSERT_CUSTOM_RET(eth!=NULL,
+            dbus_args_error_append(reply,
+                EXALT_DBUS_INTERFACE_ERROR_ID,
+                EXALT_DBUS_INTERFACE_ERROR);
+            return reply);
+
+    EXALT_ASSERT_CUSTOM_RET(exalt_eth_is_wireless(eth),
+            dbus_args_error_append(reply,
+                EXALT_DBUS_INTERFACE_NOT_WIRELESS_ERROR_ID,
+                EXALT_DBUS_INTERFACE_NOT_WIRELESS_ERROR);
+            return reply);
+
+    essid = exalt_wireless_get_wpasupplicant_driver(exalt_eth_get_wireless(eth));
+    EXALT_ASSERT_CUSTOM_RET(essid!=NULL,
+            dbus_args_error_append(reply,
+                EXALT_DBUS_ESSID_ERROR_ID,
+                EXALT_DBUS_ESSID_ERROR);
+            return reply);
+
+    dbus_args_valid_append(reply);
+    dbus_message_iter_init_append(reply, &args);
+    EXALT_ASSERT_CUSTOM_RET(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid),
+            EXALT_FREE(essid);return reply);
+
+    EXALT_FREE(essid);
+    return reply;
+}
+
+DBusMessage * dbus_cb_wireless_wpasupplicant_driver_set(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
+{
+    DBusMessage *reply;
+    DBusMessageIter args;
+    Exalt_Ethernet* eth;
+    const char* driver;
+
+    reply = dbus_message_new_method_return(msg);
+    dbus_message_set_path(reply,dbus_message_get_path(msg));
+    eth= dbus_get_eth(msg);
+    EXALT_ASSERT_CUSTOM_RET(eth!=NULL,
+            dbus_args_error_append(reply,
+                EXALT_DBUS_INTERFACE_ERROR_ID,
+                EXALT_DBUS_INTERFACE_ERROR);
+            return reply);
+
+    EXALT_ASSERT_CUSTOM_RET(exalt_eth_is_wireless(eth),
+            dbus_args_error_append(reply,
+                EXALT_DBUS_INTERFACE_NOT_WIRELESS_ERROR_ID,
+                EXALT_DBUS_INTERFACE_NOT_WIRELESS_ERROR);
+            return reply);
+
+
+    //retrieve the driver
+    dbus_message_iter_init(msg, &args);
+
+    if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
+    {
+        dbus_args_error_append(reply,
+                EXALT_DBUS_ARGUMENT_NOT_STRING_ID,
+                EXALT_DBUS_ARGUMENT_NOT_STRING);
+        return reply;
+    }
+    else
+        dbus_message_iter_get_basic(&args, &driver);
+
+    EXALT_ASSERT_CUSTOM_RET(driver!=NULL,
+            dbus_args_error_append(reply,
+                EXALT_DBUS_ARGUMENT_NOT_STRING_ID,
+                EXALT_DBUS_ARGUMENT_NOT_STRING);
+            return reply;
+            );
+
+    exalt_wireless_set_wpasupplicant_driver(exalt_eth_get_wireless(eth),driver);
+    exalt_eth_save(CONF_FILE, eth);
+
+    dbus_args_valid_append(reply);
+    return reply;
+}
+
+
+
+DBusMessage * dbus_cb_wireless_scan_start(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
+{
+    DBusMessage *reply;
+    Exalt_Ethernet* eth;
+    reply = dbus_message_new_method_return(msg);
+
+
+    //search the interface
+    eth = dbus_get_eth(msg);
+    EXALT_ASSERT_ADV(eth!=NULL,
+            dbus_args_error_append(reply,
+                EXALT_DBUS_INTERFACE_ERROR_ID,
+                EXALT_DBUS_INTERFACE_ERROR);
+            return reply,
+            "eth!=NULL failed");
+
+    EXALT_ASSERT_ADV(exalt_eth_is_wireless(eth),
+            dbus_args_error_append(reply,
+                EXALT_DBUS_INTERFACE_NOT_WIRELESS_ERROR_ID,
+                EXALT_DBUS_INTERFACE_NOT_WIRELESS_ERROR);
+            return reply,
+            "exalt_eth_is_wireless(eth) failed");
+
+
+    exalt_wireless_scan_start(eth);
+    dbus_args_valid_append(reply);
+
+    return reply;
+}
+
 DBusMessage * dbus_cb_wireless_scan_wait(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
 {
     DBusMessage *reply;
@@ -75,175 +235,6 @@ DBusMessage * dbus_cb_wireless_scan_wait(E_DBus_Object *obj __UNUSED__, DBusMess
                 "dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid) failed");
         EXALT_FREE(essid);
     }
-    return reply;
-}
-
-DBusMessage * dbus_cb_wireless_get_essid(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
-{
-    DBusMessage *reply;
-    DBusMessageIter args;
-    Exalt_Ethernet* eth;
-    char* essid;
-
-    reply = dbus_message_new_method_return(msg);
-
-    eth= dbus_get_eth(msg);
-    EXALT_ASSERT_ADV(eth!=NULL,
-            dbus_args_error_append(reply,
-                EXALT_DBUS_INTERFACE_ERROR_ID,
-                EXALT_DBUS_INTERFACE_ERROR);
-            return reply,
-            "eth!=NULL failed");
-
-    EXALT_ASSERT_ADV(exalt_eth_is_wireless(eth),
-            dbus_args_error_append(reply,
-                EXALT_DBUS_INTERFACE_NOT_WIRELESS_ERROR_ID,
-                EXALT_DBUS_INTERFACE_NOT_WIRELESS_ERROR);
-            return reply,
-            "exalt_eth_is_wireless(eth) failed");
-
-
-    essid = exalt_wireless_get_essid(exalt_eth_get_wireless(eth));
-    EXALT_ASSERT_ADV(essid!=NULL,
-            dbus_args_error_append(reply,
-                EXALT_DBUS_ESSID_ERROR_ID,
-                EXALT_DBUS_ESSID_ERROR);
-            return reply,
-            "essid!=NULL failed");
-
-    dbus_args_valid_append(reply);
-    dbus_message_iter_init_append(reply, &args);
-    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid),
-            EXALT_FREE(essid);return reply,
-            "dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &essid) failed");
-
-    EXALT_FREE(essid);
-    return reply;
-}
-
-DBusMessage * dbus_cb_wireless_get_wpasupplicant_driver(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
-{
-    DBusMessage *reply;
-    DBusMessageIter args;
-    Exalt_Ethernet* eth;
-    const char* driver;
-
-    reply = dbus_message_new_method_return(msg);
-
-    eth= dbus_get_eth(msg);
-    EXALT_ASSERT_ADV(eth!=NULL,
-            dbus_args_error_append(reply,
-                EXALT_DBUS_INTERFACE_ERROR_ID,
-                EXALT_DBUS_INTERFACE_ERROR);
-            return reply,
-            "eth!=NULL failed");
-
-    EXALT_ASSERT_ADV(exalt_eth_is_wireless(eth),
-            dbus_args_error_append(reply,
-                EXALT_DBUS_INTERFACE_NOT_WIRELESS_ERROR_ID,
-                EXALT_DBUS_INTERFACE_NOT_WIRELESS_ERROR);
-            return reply,
-            "exalt_eth_is_wireless(eth) failed");
-
-
-    driver = exalt_wireless_get_wpasupplicant_driver(exalt_eth_get_wireless(eth));
-    EXALT_ASSERT_ADV(driver!=NULL,
-            dbus_args_error_append(reply,
-                EXALT_DBUS_DRIVER_ERROR_ID,
-                EXALT_DBUS_DRIVER_ERROR);
-            return reply,
-            "driver!=NULL failed");
-
-
-    dbus_args_valid_append(reply);
-    dbus_message_iter_init_append(reply, &args);
-    EXALT_ASSERT_ADV(dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &driver),
-            return reply,
-            "dbus_message_iter_append_basic(&args, DBUS_TYPE_STRING, &driver) failed");
-
-    return reply;
-}
-
-DBusMessage * dbus_cb_wireless_set_wpasupplicant_driver(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
-{
-    DBusMessage *reply;
-    DBusMessageIter args;
-    Exalt_Ethernet* eth;
-    const char* driver;
-
-    reply = dbus_message_new_method_return(msg);
-
-    eth= dbus_get_eth(msg);
-    EXALT_ASSERT_ADV(eth!=NULL,
-            dbus_args_error_append(reply,
-                EXALT_DBUS_INTERFACE_ERROR_ID,
-                EXALT_DBUS_INTERFACE_ERROR);
-            return reply,
-            "eth!=NULL failed");
-
-    EXALT_ASSERT_ADV(exalt_eth_is_wireless(eth),
-            dbus_args_error_append(reply,
-                EXALT_DBUS_INTERFACE_NOT_WIRELESS_ERROR_ID,
-                EXALT_DBUS_INTERFACE_NOT_WIRELESS_ERROR);
-            return reply,
-            "exalt_eth_is_wireless(eth) failed");
-
-
-    //retrieve the driver
-    if(!dbus_message_iter_init(msg, &args))
-    {
-        dbus_args_error_append(reply,
-                EXALT_DBUS_NO_ARGUMENT_ID,
-                EXALT_DBUS_NO_ARGUMENT);
-        return reply;
-    }
-
-    dbus_message_iter_next(&args);
-    if (DBUS_TYPE_STRING != dbus_message_iter_get_arg_type(&args))
-    {
-        dbus_args_error_append(reply,
-                EXALT_DBUS_ARGUMENT_NOT_STRING_ID,
-                EXALT_DBUS_ARGUMENT_NOT_STRING);
-        return reply;
-    }
-    else
-        dbus_message_iter_get_basic(&args, &driver);
-
-    exalt_wireless_set_wpasupplicant_driver(exalt_eth_get_wireless(eth),driver);
-
-    dbus_args_valid_append(reply);
-    return reply;
-}
-
-
-
-DBusMessage * dbus_cb_wireless_scan_start(E_DBus_Object *obj __UNUSED__, DBusMessage *msg)
-{
-    DBusMessage *reply;
-    Exalt_Ethernet* eth;
-    reply = dbus_message_new_method_return(msg);
-
-
-    //search the interface
-    eth = dbus_get_eth(msg);
-    EXALT_ASSERT_ADV(eth!=NULL,
-            dbus_args_error_append(reply,
-                EXALT_DBUS_INTERFACE_ERROR_ID,
-                EXALT_DBUS_INTERFACE_ERROR);
-            return reply,
-            "eth!=NULL failed");
-
-    EXALT_ASSERT_ADV(exalt_eth_is_wireless(eth),
-            dbus_args_error_append(reply,
-                EXALT_DBUS_INTERFACE_NOT_WIRELESS_ERROR_ID,
-                EXALT_DBUS_INTERFACE_NOT_WIRELESS_ERROR);
-            return reply,
-            "exalt_eth_is_wireless(eth) failed");
-
-
-    exalt_wireless_scan_start(eth);
-    dbus_args_valid_append(reply);
-
     return reply;
 }
 
