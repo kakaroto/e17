@@ -111,6 +111,9 @@ char* exalt_dbus_response_iface_get(Exalt_DBus_Response* response)
         case EXALT_DBUS_RESPONSE_IFACE_DOWN:
         case EXALT_DBUS_RESPONSE_IFACE_CMD_GET:
         case EXALT_DBUS_RESPONSE_IFACE_CMD_SET:
+        case EXALT_DBUS_RESPONSE_WIRELESS_ESSID_GET:
+        case EXALT_DBUS_RESPONSE_WIRELESS_WPASUPPLICANT_DRIVER_GET:
+        case EXALT_DBUS_RESPONSE_WIRELESS_WPASUPPLICANT_DRIVER_SET:
             return response->iface;
         default:
             print_error(__FILE__,__func__,__LINE__,"This type of response doesn't has an interface\n");

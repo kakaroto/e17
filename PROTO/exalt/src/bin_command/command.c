@@ -145,7 +145,7 @@ void response(Exalt_DBus_Response* response, void* data)
             break;
         case EXALT_DBUS_RESPONSE_WIRELESS_WPASUPPLICANT_DRIVER_SET:
             print_response_error();
-            printf("The new command is supposed to be set to the interface %s\n",exalt_dbus_response_iface_get(response));
+            printf("The new driver is supposed to be set to the interface %s\n",exalt_dbus_response_iface_get(response));
             break;
     }
 }
@@ -352,6 +352,10 @@ void help()
             "down eth0\t\t\t: down eth0\n"
             "cmd_set eth0\t\t\t: set the command run when eth0 get an IP address\n"
             "cmd_get eth0\t\t\t: print the command run when eth0 get an IP address\n"
+            "\n"
+            "essid_get eth0\t\t\t: print the essid of eth0\n"
+            "wpasupplicant_driver_get eth0\t: print the wpa_supplicant driver of eth0\n"
+            "wpasupplicant_driver_set eth0 wext: set the wpa_supplicant driver of eth0 with wext\n"
             );
 
     exit(EXIT_FAILURE);

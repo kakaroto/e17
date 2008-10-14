@@ -50,9 +50,9 @@ void setup_new_iface(E_DBus_Connection *conn,Exalt_Ethernet* eth)
 
     if(exalt_eth_is_wireless(eth))
     {
-        e_dbus_interface_method_add(iface, "essid_get", NULL, "s", dbus_cb_eth_ip_get);
-        e_dbus_interface_method_add(iface, "wpasupplicant_driver_get", NULL, "s", dbus_cb_eth_ip_get);
-        e_dbus_interface_method_add(iface, "wpasupplicant_driver_set", "s", NULL, dbus_cb_eth_ip_get);
+        e_dbus_interface_method_add(iface, "essid_get", NULL, "s", dbus_cb_wireless_essid_get);
+        e_dbus_interface_method_add(iface, "wpasupplicant_driver_get", NULL, "s", dbus_cb_wireless_wpasupplicant_driver_get);
+        e_dbus_interface_method_add(iface, "wpasupplicant_driver_set", "s", NULL, dbus_cb_wireless_wpasupplicant_driver_set);
     }
     e_dbus_object_interface_attach(obj, iface);
 }
