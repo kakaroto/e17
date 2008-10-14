@@ -2,7 +2,7 @@ MAINTAINERCLEANFILES = Makefile.in
 
 AM_CPPFLAGS = \
 -I$(top_srcdir)/src/lib/esmart_cairo \
-@CAIRO_CFLAGS@ @EINA_CFLAGS@
+@CAIRO_CFLAGS@
 
 pkgdir = @libdir@
 pkg_LTLIBRARIES = libesmart_cairo.la
@@ -15,4 +15,4 @@ esmart_cairo.c \
 Esmart_Cairo.h
 
 libesmart_cairo_la_LDFLAGS = -version-info @version_info@
-libesmart_cairo_la_LIBADD = @CAIRO_LIBS@ @EINA_LIBS@
+libesmart_cairo_la_LIBADD = @CAIRO_LIBS@

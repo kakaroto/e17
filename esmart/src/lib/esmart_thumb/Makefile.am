@@ -3,7 +3,7 @@ MAINTAINERCLEANFILES = Makefile.in
 
 INCLUDES = \
 -I$(top_srcdir)/src/lib/esmart_thumb \
-@THUMB_CFLAGS@ @EINA_CFLAGS@
+@THUMB_CFLAGS@
 
 pkgdir = @libdir@
 pkg_LTLIBRARIES = libesmart_thumb.la
@@ -16,4 +16,4 @@ esmart_thumb.c \
 Esmart_Thumb.h
 
 libesmart_thumb_la_LDFLAGS = -version-info @version_info@
-libesmart_thumb_la_LIBADD = @THUMB_LIBS@ @EINA_LIBS@
+libesmart_thumb_la_LIBADD = @THUMB_LIBS@

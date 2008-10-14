@@ -11,7 +11,6 @@ AM_CPPFLAGS = \
 -I$(top_srcdir)/src/lib/esmart_file_dialog \
 -I$(top_srcdir)/src/lib/esmart_cairo \
 -DPACKAGE_DATA_DIR=\"$(datadir)/$(PACKAGE)\" \
-@EINA_CFLAGS@ \
 @CONTAINER_CFLAGS@ \
 @THUMB_CFLAGS@
 
@@ -26,7 +25,6 @@ $(top_builddir)/src/lib/esmart_draggies/libesmart_draggies.la \
 $(top_builddir)/src/lib/esmart_thumb/libesmart_thumb.la \
 $(top_builddir)/src/lib/esmart_trans_x11/libesmart_trans_x11.la \
 @CONTAINER_LIBS@ \
-@EINA_LIBS@ \
 @THUMB_LIBS@
 
 esmart_text_entry_test_SOURCES = esmart_text_entry_test.c
@@ -34,12 +32,12 @@ esmart_text_entry_test_SOURCES = esmart_text_entry_test.c
 esmart_text_entry_test_LDADD = \
 $(top_builddir)/src/lib/esmart_text_entry/libesmart_text_entry.la \
 $(top_builddir)/src/lib/esmart_container/libesmart_container.la \
-@TEXT_ENTRY_LIBS@ @EINA_LIBS@
+@TEXT_ENTRY_LIBS@
 
 if BUILD_ESMART_CAIRO
 bin_PROGRAMS += esmart_cairo_test
 esmart_cairo_test_SOURCES = esmart_cairo_test.c
-esmart_cairo_test_LDADD = @CAIRO_TEST_LIBS@ @EINA_LIBS@ \
+esmart_cairo_test_LDADD = @CAIRO_TEST_LIBS@ \
 	$(top_builddir)/src/lib/esmart_cairo/libesmart_cairo.la
-esmart_cairo_test_CPPFLAGS = $(AM_CPPFLAGS) @CAIRO_TEST_CFLAGS@ @EINA_CFLAGS@
+esmart_cairo_test_CPPFLAGS = $(AM_CPPFLAGS) @CAIRO_TEST_CFLAGS@
 endif

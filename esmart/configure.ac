@@ -36,16 +36,15 @@ esac
 
 # evas is required by all of the modules anyway :)
 requirements="evas"
-PKG_CHECK_MODULES(CONTAINER, [evas >= 0.9.9 ecore >= 0.9.9 ecore-evas >= 0.9.9])
+PKG_CHECK_MODULES(CONTAINER, [evas >= 0.9.9 ecore >= 0.9.9 ecore-evas >= 0.9.9 eina-0])
 
 AC_CHECK_HEADER(ltdl.h, have_esmart_container=yes, have_esmart_container=no)
-
-PKG_CHECK_MODULES([EINA], [eina-0])
 
 PKG_CHECK_MODULES(DRAGGIES, [
     evas >= 0.9.9
     ecore-x >= 0.9.9
     ecore-evas >= 0.9.9
+    eina-0
   ], [
     have_esmart_draggies=yes
     requirements="$requirements ecore-evas"
@@ -58,6 +57,7 @@ PKG_CHECK_MODULES(RESIZE, [
     evas >= 0.9.9
     ecore-x >= 0.9.9
     ecore-evas >= 0.9.9
+    eina-0
   ], [
     have_esmart_resize=yes
     requirements="$requirements ecore-evas"
@@ -70,6 +70,7 @@ PKG_CHECK_MODULES(TRANSX11, [
     evas >= 0.9.9
     ecore-x >= 0.9.9
     imlib2 >= 1.0.0
+    eina-0
   ], [
     have_esmart_trans_x11=yes
     requirements="$requirements ecore-x imlib2"
@@ -82,6 +83,7 @@ PKG_CHECK_MODULES(THUMB, [
     evas >= 0.9.9
     imlib2 >= 1.0.0
     epsilon >= 0.3.0
+    eina-0
   ], [
     have_esmart_thumb=yes
     requirements="$requirements imlib2 epsilon"
@@ -95,6 +97,7 @@ PKG_CHECK_MODULES(TEXT_ENTRY, [
     ecore >= 0.9.9
     ecore-evas >= 0.9.9
     edje >= 0.9.9
+    eina-0
   ], [
     have_esmart_text_entry=yes
     requirements="$requirements edje"
@@ -106,6 +109,7 @@ PKG_CHECK_MODULES(TEXT_ENTRY, [
 PKG_CHECK_MODULES(FILE_DIALOG, [
     evas >= 0.9.9
     edje >= 0.5.0
+    eina-0
   ], [
     have_esmart_file_dialog=yes
     requirements="$requirements edje"
@@ -117,6 +121,7 @@ PKG_CHECK_MODULES(FILE_DIALOG, [
 PKG_CHECK_MODULES(CAIRO, [
     cairo >= 1.6.4
     evas >= 0.9.9
+    eina-0
   ], [
     PKG_CHECK_MODULES(CAIRO_TEST, [
         cairo >= 1.6.4
