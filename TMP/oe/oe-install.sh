@@ -1,20 +1,42 @@
-#!/bin/sh
+#!/bin/sh -e
 
-mkdir -p build/conf
-svn co svn://svn.berlios.de/bitbake/branches/bitbake-1.8/ bitbake
-git clone git://git.openembedded.net/org.openembedded.dev.git
-tar zcf org.openembedded.dev.orig.tar.gz org.openembedded.dev
-cd org.openembedded.dev
-git-checkout -b $USER
-cd ..
-ln -sf ../../local.conf                                           build/conf/local.conf
-ln -sf org.openembedded.dev/packages                              packages
-ln -sf org.openembedded.dev/conf/distro/include/sane-srcrevs.inc  sane-srcrevs.inc
-ln -sf org.openembedded.dev/conf/distro/include/sane-srcdates.inc sane-srcdates.inc
-
-ln -sf ../../my_packages                                          org.openembedded.dev/packages/my_packages
-
-./oe-patches.sh
+if test -d bitbake; then
+  cd bitbake
+  svn update
+  cd ..
+else
+  svn co svn://svn.berlios.de/bitbake/branches/bitbake-1.8/ bitbake
+fi
+if test ! -d build/conf; then
+  mkdir -p build/conf
+fi
+if test -d build/conf; then
+  cd org.openembedded.dev
+  git-fetch
+  git-rebase origin
+  cd ..
+else
+  git clone git://git.openembedded.net/org.openembedded.dev.git
+  cd org.openembedded.dev
+  git-checkout -b $USER
+  cd ..
+fi
+if test ! -e build/conf/local.conf; then
+  ln -sf ../../local.conf                                           build/conf/local.conf
+fi
+if test ! -e packages; then
+  ln -sf org.openembedded.dev/packages                              packages
+fi
+if test ! -e sane-srcrevs.inc; then
+  ln -sf org.openembedded.dev/conf/distro/include/sane-srcrevs.inc  sane-srcrevs.inc
+fi
+if test ! -e sane-srcdates.inc; then
+  ln -sf org.openembedded.dev/conf/distro/include/sane-srcdates.inc sane-srcdates.inc
+fi
+if test ! -e org.openembedded.dev/packages/my_packages; then
+  ln -sf ../../my_packages                                          org.openembedded.dev/packages/my_packages
+fi
+./oe-patches.sh || true
 
 echo "========="
 echo "Please edit local.conf to specify your build paramaters and target"
@@ -42,3 +64,5 @@ echo "Output image swill go into tmp.*/deploy/glibc/images/"
 echo "Output packages files will go into tmp.*/deploy/glibc/ipk/"
 echo "Input packages .bb files from OE will be in packages/"
 echo "Any of your own packages put in my_packages"
+
+exit 0
