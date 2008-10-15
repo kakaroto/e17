@@ -379,6 +379,7 @@ typedef struct {
       char                ext_pmap_valid;
    } root;
    struct {
+      char               *paths;
       char               *path;
    } theme;
    struct {
