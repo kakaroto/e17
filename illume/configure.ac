@@ -60,18 +60,6 @@ AC_SUBST(eet_eet)
 #
 # Check Enlightenment
 #
-#AC_ARG_WITH(enlightenment-config,
-#[  --with-enlightenment-config=E_CONFIG    use enlightenment-config specified ],
-#[
-#  E_CONFIG=$withval;
-#  echo "using "$E_CONFIG" for enlightenment-config";
-#],[
-#  PROG="enlightenment-config";
-#  AC_PATH_PROG(E_CONFIG, $PROG, "", $PATH)
-#])
-#e_cflags=`$E_CONFIG --cflags`
-#e_libs=`$E_CONFIG --libs`
-#e_modules=`$E_CONFIG --module-dir`
 
 PKG_CHECK_MODULES(E, [
   evas
@@ -91,7 +79,7 @@ PKG_CHECK_MODULES(E, [
 ])
 PKG_CHECK_MODULES(e, [enlightenment >= 0.16.999.042])
 e_cflags="$e_CFLAGS $E_CFLAGS"
-e_modules="$e_LIBS"
+e_modules="$(pkg-config --variable=modules enlightenment)"
 e_libs="$E_LIBS"
 
 PKG_CHECK_MODULES(ECORE, ecore)
