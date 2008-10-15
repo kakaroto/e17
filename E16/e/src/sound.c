@@ -113,7 +113,7 @@ SclassApply(SoundClass * sclass)
      {
 	char               *file;
 
-	file = FindFile(sclass->file, Mode.theme.path, 0);
+	file = FindFile(sclass->file, Mode.theme.path);
 	if (file)
 	  {
 	     sclass->sample = ops->SampleLoad(file);

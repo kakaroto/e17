@@ -400,55 +400,31 @@ ConfigFileRead(FILE * fs)
 }
 
 static char        *
-FindFileLocalized(const char *name, const char *path, int localized)
+FindFilePath(const char *name, const char *path)
 {
    char                s[FILEPATH_LEN_MAX];
-   const char         *lang;
-   char               *p[4];
-   int                 i, len;
+   int                 len;
 
    if (path)
-      len = Esnprintf(s, sizeof(s), "%s/%s", path, name);
+     {
+	len = Esnprintf(s, sizeof(s), "%s/%s", path, name);
+	name = s;
+     }
    else
-      len = Esnprintf(s, sizeof(s), "%s", name);
+     {
+	len = strlen(name);
+     }
    if (len <= 0)
       return NULL;
 
-   lang = Mode.locale.lang;
-   if (!localized || !lang)
-     {
-	if (canread(s))
-	   return Estrdup(s);
-	else
-	   return NULL;
-     }
-
-   if (len + 1 + strlen(lang) >= sizeof(s))
+   if (canread(name))
+      return Estrdup(name);
+   else
       return NULL;
-
-   s[len] = '.';
-   strcpy(s + len + 1, lang);
-
-   p[0] = s + len + 1 + strlen(lang);	/* .da_DK.UTF-8 */
-   p[1] = strchr(s + len + 1, '.');	/* .da_DK       */
-   p[2] = strchr(s + len + 1, '_');	/* .da          */
-   p[3] = s + len;
-
-   for (i = 0; i < 4; i++)
-     {
-	if (p[i] == NULL)
-	   continue;
-
-	*p[i] = '\0';
-	if (canread(s))
-	   return Estrdup(s);
-     }
-
-   return NULL;
 }
 
 char               *
-FindFile(const char *file, const char *themepath, int localized)
+FindFile(const char *file, const char *themepath)
 {
    char                s[FILEPATH_LEN_MAX];
    char               *p;
@@ -456,27 +432,27 @@ FindFile(const char *file, const char *themepath, int localized)
    /* if absolute path - and file exists - return it */
    if (isabspath(file))
      {
-	p = FindFileLocalized(file, NULL, localized);
+	p = FindFilePath(file, NULL);
 	if (p)
 	   return p;
      }
 
    /* look in ~/.e16 first */
-   p = FindFileLocalized(file, EDirUser(), localized);
+   p = FindFilePath(file, EDirUser());
    if (p)
       return p;
 
    if (themepath)
      {
 	/* look in theme dir */
-	p = FindFileLocalized(file, themepath, localized);
+	p = FindFilePath(file, themepath);
 	if (p)
 	   return p;
      }
 
    /* look in system config dir */
    Esnprintf(s, sizeof(s), "%s/config", EDirRoot());
-   p = FindFileLocalized(file, s, localized);
+   p = FindFilePath(file, s);
    if (p)
       return p;
 
@@ -485,9 +461,9 @@ FindFile(const char *file, const char *themepath, int localized)
 }
 
 char               *
-ThemeFileFind(const char *file, int localized)
+ThemeFileFind(const char *file)
 {
-   return FindFile(file, Mode.theme.path, localized);
+   return FindFile(file, Mode.theme.path);
 }
 
 char               *
@@ -497,7 +473,7 @@ ConfigFileFind(const char *name, const char *themepath, int pp)
    char               *fullname, *file, *ppfile;
    int                 i, err;
 
-   fullname = FindFile(name, themepath, Conf.theme.localise);
+   fullname = FindFile(name, themepath);
    if (!fullname)
       return NULL;
 

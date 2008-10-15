@@ -259,7 +259,6 @@ typedef struct {
       char                animate;
    } startup;
    struct {
-      char                localise;
       char                use_alt_font_cfg;
       char               *name;
       char               *extra_path;
@@ -441,9 +440,8 @@ char               *GetLine(char *s, int size, FILE * f);
 int                 ConfigParseline1(char *str, char *s2, char **p2, char **p3);
 void                ConfigParseError(const char *where, const char *line);
 void                ConfigAlertLoad(const char *txt);
-char               *FindFile(const char *file, const char *themepath,
-			     int localized);
-char               *ThemeFileFind(const char *file, int localized);
+char               *FindFile(const char *file, const char *themepath);
+char               *ThemeFileFind(const char *file);
 char               *ConfigFileFind(const char *name, const char *themepath,
 				   int pp);
 int                 ConfigFileLoad(const char *name, const char *themepath,

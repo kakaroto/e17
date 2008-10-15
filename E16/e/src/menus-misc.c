@@ -397,15 +397,15 @@ MenuCreateFromFlatFile(const char *name, Menu * parent, MenuStyle * ms,
 
    if (isabspath(file))
      {
-	ff = FindFile(file, NULL, 0);
+	ff = FindFile(file, NULL);
      }
    else
      {
 	/* Check menus subdir first */
 	Esnprintf(buf, sizeof(buf), "menus/%s", file);
-	ff = FindFile(buf, NULL, 0);
+	ff = FindFile(buf, NULL);
 	if (!ff)
-	   ff = FindFile(file, NULL, 0);
+	   ff = FindFile(file, NULL);
      }
    if (!ff)
       goto done;

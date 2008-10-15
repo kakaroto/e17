@@ -93,7 +93,7 @@ BackgroundGetUniqueString(const Background * bg)
      {
 	char               *f;
 
-	f = ThemeFileFind(bg->bg.file, 0);
+	f = ThemeFileFind(bg->bg.file);
 	if (f)
 	  {
 	     f1 = fileinode(f);
@@ -106,7 +106,7 @@ BackgroundGetUniqueString(const Background * bg)
      {
 	char               *f;
 
-	f = ThemeFileFind(bg->top.file, 0);
+	f = ThemeFileFind(bg->top.file);
 	if (f)
 	  {
 	     f4 = fileinode(f);
@@ -259,7 +259,7 @@ BackgroundDelete(Background * bg)
    /* And delete the actual image files */
    if (bg->bg.file)
      {
-	f = ThemeFileFind(bg->bg.file, 0);
+	f = ThemeFileFind(bg->bg.file);
 	if (f)
 	  {
 	     E_rm(f);
@@ -268,7 +268,7 @@ BackgroundDelete(Background * bg)
      }
    if (bg->top.file)
      {
-	f = ThemeFileFind(bg->top.file, 0);
+	f = ThemeFileFind(bg->top.file);
 	if (f)
 	  {
 	     E_rm(f);
@@ -548,7 +548,7 @@ BackgroundRealize(Background * bg, Win win, Drawable draw, unsigned int rw,
    if (bg->bg.file && !bg->bg.im)
      {
 	if (!bg->bg.real_file)
-	   bg->bg.real_file = ThemeFileFind(bg->bg.file, 0);
+	   bg->bg.real_file = ThemeFileFind(bg->bg.file);
 	if (bg->bg.real_file)
 	   bg->bg.im = EImageLoad(bg->bg.real_file);
      }
@@ -556,7 +556,7 @@ BackgroundRealize(Background * bg, Win win, Drawable draw, unsigned int rw,
    if (bg->top.file && !bg->top.im)
      {
 	if (!bg->top.real_file)
-	   bg->top.real_file = ThemeFileFind(bg->top.file, 0);
+	   bg->top.real_file = ThemeFileFind(bg->top.file);
 	if (bg->top.real_file)
 	   bg->top.im = EImageLoad(bg->top.real_file);
      }
@@ -1084,7 +1084,7 @@ BackgroundsConfigLoad(FILE * fs)
 		       /* check first if we can actually find the files */
 		       if (bg1)
 			 {
-			    tmp = ThemeFileFind(bg1, 0);
+			    tmp = ThemeFileFind(bg1);
 			    if (!tmp)
 			       ok = 0;
 			    else
@@ -1092,7 +1092,7 @@ BackgroundsConfigLoad(FILE * fs)
 			 }
 		       if (bg2)
 			 {
-			    tmp = ThemeFileFind(bg2, 0);
+			    tmp = ThemeFileFind(bg2);
 			    if (!tmp)
 			       ok = 0;
 			    else
@@ -1248,10 +1248,10 @@ BackgroundsConfigSave(void)
 	fprintf(fs, "560 %d %d %d\n", r, g, b);
 
 	if ((bg->bg.file) && (!bg->bg.real_file))
-	   bg->bg.real_file = ThemeFileFind(bg->bg.file, 0);
+	   bg->bg.real_file = ThemeFileFind(bg->bg.file);
 
 	if ((bg->top.file) && (!bg->top.real_file))
-	   bg->top.real_file = ThemeFileFind(bg->top.file, 0);
+	   bg->top.real_file = ThemeFileFind(bg->top.file);
 
 	if ((bg->bg.file) && (bg->bg.real_file))
 	  {
