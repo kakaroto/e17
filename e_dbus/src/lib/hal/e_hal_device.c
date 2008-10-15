@@ -89,7 +89,7 @@ unmarshal_device_get_all_properties(DBusMessage *msg, DBusError *err)
   }
 
   ret->properties = ecore_hash_new(ecore_str_hash, ecore_str_compare);
-  ecore_hash_free_key_cb_set(ret->properties, ECORE_FREE_CB(ecore_string_release));
+  ecore_hash_free_key_cb_set(ret->properties, ECORE_FREE_CB(eina_stringshare_del));
   ecore_hash_free_value_cb_set(ret->properties, ECORE_FREE_CB(e_hal_property_free));
 
 
@@ -145,7 +145,7 @@ unmarshal_device_get_all_properties(DBusMessage *msg, DBusError *err)
         printf("Error: unexpected property type (%s): %c\n", name, dbus_message_iter_get_arg_type(&v_iter));
         break;
     }
-    ecore_hash_set(ret->properties, (void *)ecore_string_instance(name), prop);
+    ecore_hash_set(ret->properties, (void *)eina_stringshare_add(name), prop);
 
     dbus_message_iter_next(&a_iter);
   }

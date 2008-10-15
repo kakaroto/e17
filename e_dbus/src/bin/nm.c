@@ -265,7 +265,7 @@ main(int argc, char **argv)
 {
     NM_Manager *app;
     ecore_init();
-    ecore_string_init();
+    eina_stringshare_init();
     e_dbus_init();
    
     app = calloc(1, sizeof(NM_Manager));
@@ -284,7 +284,7 @@ main(int argc, char **argv)
     e_nm_free(app->ctx);
     free(app);
     e_dbus_shutdown();
-    ecore_string_shutdown();
+    eina_stringshare_shutdown();
     ecore_shutdown();
     return 0;
 }

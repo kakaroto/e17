@@ -776,7 +776,7 @@ main(int argc, char **argv)
 #endif
 
   ecore_init();
-  ecore_string_init();
+  eina_stringshare_init();
   e_dbus_init();
 
 #if EWL_GUI
@@ -824,7 +824,7 @@ main(int argc, char **argv)
   ecore_list_destroy(volumes);
   e_dbus_connection_close(conn);
   e_dbus_shutdown();
-  ecore_string_shutdown();
+  eina_stringshare_shutdown();
   ecore_shutdown();
   return 1;
 }

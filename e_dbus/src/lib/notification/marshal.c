@@ -102,14 +102,14 @@ e_notify_unmarshal_string_array_as_list(DBusMessageIter *iter, DBusError *err)
   if (!ret) return NULL;
 
   strings = ecore_list_new();
-  ecore_list_free_cb_set(strings, ECORE_FREE_CB(free)); //XXX use ecore_string_release?
+  ecore_list_free_cb_set(strings, ECORE_FREE_CB(free)); //XXX use eina_stringshare_release?
 
   dbus_message_iter_recurse(iter, &arr);
   while(dbus_message_iter_has_next(&arr))
   {
     const char *str;
     dbus_message_iter_get_basic(&arr, &str);
-    ecore_list_append(strings, strdup(str)); //XXX use ecore_string_instance?
+    ecore_list_append(strings, strdup(str)); //XXX use eina_stringshare_instance?
     dbus_message_iter_next(&arr);
   }
   return strings;
