@@ -53,7 +53,6 @@ static pa_mainloop_api *mainloop_api = NULL;
 static pa_context  *pa_ctx = NULL;
 
 static pa_stream   *sample_stream = NULL;
-static pa_sample_spec sample_spec;
 static size_t       sample_length = 0;
 static int          pa_block = 0;
 
@@ -83,50 +82,51 @@ dispatch(int block)
 }
 
 static void
-context_op_callback(pa_context * c __UNUSED__, int success __UNUSED__,
+context_op_callback(pa_context * pac __UNUSED__, int success __UNUSED__,
 		    void *userdata __UNUSED__)
 {
    D2printf("%s: succ=%d %s\n", __func__, success,
-	    (success) ? "" : pa_strerror(pa_context_errno(c)));
+	    (success) ? "" : pa_strerror(pa_context_errno(pac)));
    pa_block = 0;
 }
 
 static void
-context_drain_complete(pa_context * c __UNUSED__, void *userdata __UNUSED__)
+context_drain_complete(pa_context * pac __UNUSED__, void *userdata __UNUSED__)
 {
    D2printf("%s\n", __func__);
 }
 
 static void
-context_drain(pa_context * c)
+context_drain(pa_context * pac)
 {
    pa_operation       *op;
 
    D2printf("%s\n", __func__);
-   op = pa_context_drain(c, context_drain_complete, NULL);
+   op = pa_context_drain(pac, context_drain_complete, NULL);
    if (op)
       pa_operation_unref(op);
    pa_block = 0;
 }
 
 static void
-stream_state_callback(pa_stream * s, void *userdata __UNUSED__)
+stream_state_callback(pa_stream * pas, void *userdata __UNUSED__)
 {
-   D2printf("%s: state=%d\n", __func__, pa_stream_get_state(s));
-   switch (pa_stream_get_state(s))
+   D2printf("%s: state=%d\n", __func__, pa_stream_get_state(pas));
+   switch (pa_stream_get_state(pas))
      {
      case PA_STREAM_CREATING:	/* 1 */
      case PA_STREAM_READY:	/* 2 */
 	break;
 
      case PA_STREAM_TERMINATED:	/* 4 */
-	context_drain(pa_stream_get_context(s));
+	context_drain(pa_stream_get_context(pas));
 	break;
 
      case PA_STREAM_FAILED:	/* 3 */
      default:
 	Eprintf("PA failure: %s\n",
-		pa_strerror(pa_context_errno(pa_stream_get_context(s))));
+		pa_strerror(pa_context_errno(pa_stream_get_context(pas))));
+	pa_block = 0;
 	break;
      }
 }
@@ -153,10 +153,10 @@ stream_write_callback(pa_stream * pas, size_t length, void *userdata)
 }
 
 static void
-context_state_callback(pa_context * c, void *userdata __UNUSED__)
+context_state_callback(pa_context * pac, void *userdata __UNUSED__)
 {
-   D2printf("%s: state=%d\n", __func__, pa_context_get_state(c));
-   switch (pa_context_get_state(c))
+   D2printf("%s: state=%d\n", __func__, pa_context_get_state(pac));
+   switch (pa_context_get_state(pac))
      {
      case PA_CONTEXT_CONNECTING:	/* 1 */
      case PA_CONTEXT_AUTHORIZING:	/* 2 */
@@ -172,7 +172,7 @@ context_state_callback(pa_context * c, void *userdata __UNUSED__)
 
      case PA_CONTEXT_FAILED:	/* 5 */
      default:
-	Eprintf("PA failure: %s\n", pa_strerror(pa_context_errno(c)));
+	Eprintf("PA failure: %s\n", pa_strerror(pa_context_errno(pac)));
 	pa_mainloop_quit(pa_mloop, 1);
 	break;
      }
@@ -206,7 +206,9 @@ static Sample      *
 _sound_pa_Load(const char *file)
 {
    Sample             *s;
+   pa_sample_spec      sample_spec;
    int                 err;
+   char               *p;
 
    if (!pa_ctx)
       return NULL;
@@ -222,6 +224,11 @@ _sound_pa_Load(const char *file)
 	return NULL;
      }
    s->name = Estrdup(file);
+   if (!s->name)
+      goto bail_out;
+   for (p = s->name; *p != '\0'; p++)
+      if (*p == '/')
+	 *p = '_';
 
    switch (s->ssd.bit_per_sample)
      {
@@ -236,7 +243,7 @@ _sound_pa_Load(const char *file)
    sample_spec.channels = s->ssd.channels;
    sample_length = s->ssd.size;
 
-   sample_stream = pa_stream_new(pa_ctx, file, &sample_spec, NULL);
+   sample_stream = pa_stream_new(pa_ctx, s->name, &sample_spec, NULL);
    if (!sample_stream)
       goto bail_out;
    pa_stream_set_state_callback(sample_stream, stream_state_callback, NULL);
