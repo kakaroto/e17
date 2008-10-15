@@ -44,19 +44,19 @@ typedef struct Ewl_Icon Ewl_Icon;
  */
 struct Ewl_Icon
 {
-        Ewl_Stock stock;        /**< Inherit from Ewl_Box */
-        Ewl_Widget *label;        /**< The icons label */
-        Ewl_Widget *image;        /**< The icons image */
-        Ewl_Widget *alt;        /**< The icons alt text */
-        Ewl_Widget *extended;        /**< The icons extended information */
+        Ewl_Stock stock;                /**< Inherit from Ewl_Box */
+        Ewl_Widget *label;              /**< The icons label */
+        Ewl_Widget *image;              /**< The icons image */
+        Ewl_Widget *alt;                /**< The icons alt text */
+        Ewl_Widget *extended;           /**< The icons extended information */
 
-        char *label_text;        /**< The label text */
+        char *label_text;               /**< The label text */
 
-        unsigned int constrain;                /**< The image constrain value */
+        unsigned int constrain;         /**< The image constrain value */
 
-        Ewl_Icon_Type type;                /**< The icons type */
-        Ewl_Icon_Part hidden;                /**< The hidden part */
-        unsigned char editable:1;        /**< Is the icon editable? */
+        Ewl_Icon_Type type;             /**< The icons type */
+        Ewl_Icon_Part hidden;           /**< The hidden part */
+        unsigned char editable:1;       /**< Is the icon editable? */
         unsigned char compress_label:1; /**< Should the label be compressed? */
         unsigned char complex_label:1;  /**< Should the label be a Ewl_Text? */
         unsigned char thumbnailing:1;   /**< Should the image be thumbnailed?*/
