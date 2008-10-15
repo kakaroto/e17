@@ -12,7 +12,7 @@ theme_DATA = $(EDJ)
 all: $(EDJ)
 
 .edc.edj:
-	edje_cc -v -id $(top_srcdir)/themes/$(THEME) -fd $(top_srcdir)/themes/$(THEME) $< $@
+	$(EDJE_CC) -v -id $(top_srcdir)/themes/$(THEME) -fd $(top_srcdir)/themes/$(THEME) $< $@
 
 EXTRA_DIST = $(EDC) \
 	     $(wildcard *.png)

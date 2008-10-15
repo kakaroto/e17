@@ -4,7 +4,7 @@ MAINTAINERCLEANFILES = Makefile.in
 INCLUDES              = -I. \
 			-I$(top_srcdir) \
                         -I$(includedir) \
-			@e_cflags@
+			@E_CFLAGS@
 
 pkgdir                 = $(datadir)/$(MODULE_ARCH)
 pkg_LTLIBRARIES        = module.la
@@ -44,6 +44,6 @@ module_la_SOURCES      = e_mod_main.c \
                          news_viewer.h \
                          News.h \
                          News_includes.h
-module_la_LIBADD       = @e_libs@
+module_la_LIBADD       = @E_LIBS@
 module_la_LDFLAGS      = -module -avoid-version -s
 module_la_DEPENDENCIES = $(top_builddir)/config.h

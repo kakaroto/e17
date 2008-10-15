@@ -8,8 +8,8 @@ for d in * ; do
 	(cd $d && ./autogen.sh "$@") || exit 1
 done
 
-cp -p configure.in configure
+cp -p configure.ac configure
 cp -p Makefile.in Makefile
 chmod a+rx configure
 
-sed s/@VERSION@/"$(enlightenment-config --version)"/g debian/changelog.in > debian/changelog
+sed s/@VERSION@/"$(pkg-config --version enlightenment)"/g debian/changelog.in > debian/changelog

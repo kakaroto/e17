@@ -13,7 +13,7 @@ filesdir = $(datadir)
 files_DATA = module.desktop \
 	     e-module-net.edj \
 	     net.edj
-	     
+
 EXTRA_DIST = $(files_DATA) \
 	     net.edc \
 	     fonts/Vera.ttf \
@@ -23,10 +23,10 @@ EXTRA_DIST = $(files_DATA) \
 	     images/device.png \
 	     images/rx.png \
 	     images/tx.png \
-	     images/idle.png	     
+	     images/idle.png
 
 %.edj: %.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $< $@
-	
+
 clean-local:
 	rm -rf net.edj *~

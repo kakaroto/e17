@@ -45,7 +45,7 @@ EXTRA_DIST= e_modules-mem.spec \
 INCLUDES = -I. \
 	 -I$(top_srcdir) \
 	 -I$(includedir) \
-	 @e_cflags@
+	 @E_CFLAGS@
 
 pkgdir                 = $(datadir)/$(MODULE_ARCH)
 pkg_LTLIBRARIES        = module.la
@@ -65,8 +65,8 @@ endif
 EXTRA_module_la_SOURCES	=	machdep_linux.c \
 				machdep_freebsd.c
 
-		       
-module_la_LIBADD       = @e_libs@ @machdep_libs@
+
+module_la_LIBADD       = @E_LIBS@ @machdep_libs@
 module_la_LDFLAGS      = -module -avoid-version
 module_la_DEPENDENCIES = $(top_builddir)/config.h $(top_builddir)/mem.edj
 

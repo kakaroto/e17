@@ -24,4 +24,4 @@ clean-local:
 	rm -rf e-module-iiirk.edj module.desktop *~
 uninstall:
 	rm -rf $(DESTDIR)$(datadir)
-	 
+

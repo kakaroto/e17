@@ -29,23 +29,24 @@ MODULE_ARCH="$host_os-$host_cpu"
 AC_SUBST(MODULE_ARCH)
 AC_DEFINE_UNQUOTED(MODULE_ARCH, "$MODULE_ARCH", "Module architecture")
 
-AC_PATH_PROG(EDJE_CC, "edje_cc", "", $PATH)
+# Find edje_cc
+PKG_CHECK_MODULES(EDJE, [edje >= 0.5.0])
+AC_ARG_WITH(edje-cc,
+  AC_HELP_STRING([--with-edje-cc=PATH], [specify a specific path to edje_cc]),
+  [
+    v=$withval;
+    EDJE_CC=$v
+  ],[
+    EDJE_CC=$(pkg-config --variable=prefix edje)/bin/edje_cc
+  ]
+)
+AC_SUBST(EDJE_CC)
+AC_MSG_CHECKING([Which edje_cc to use])
+AC_MSG_RESULT(${EDJE_CC})
 
-AC_PATH_PROG(E_CONFIG, "enlightenment-config", "", $PATH)
-e_cflags=`$E_CONFIG --cflags`
-e_libs=`$E_CONFIG --libs`
-e_modules=`$E_CONFIG --module-dir`
-AC_SUBST(e_cflags)
-AC_SUBST(e_libs)
-AC_SUBST(top_builddir)
+PKG_CHECK_MODULES(E, [enlightenment])
 
-dnl prefix
-if test "x${prefix}" = "xNONE"
-then
-  prefix=`$E_CONFIG --libs | cut -c 3- | cut -f 1 | sed -e 's/\/lib$//'`
-fi
-
-datadir="${e_modules}/${PACKAGE}"    
+datadir=$(pkg-config --variable=modules enlightenment)/${PACKAGE}
 AC_ARG_ENABLE(homedir-install,
   AS_HELP_STRING([--enable-homedir-install], [Install module in homedir]),
   [ datadir="${HOME}/.e/e/modules/${PACKAGE}" ]

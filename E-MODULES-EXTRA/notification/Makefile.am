@@ -28,4 +28,4 @@ clean-local:
 	 rm -rf e-module-notification.edj module.desktop *~
 uninstall:
 	 rm -rf $(DESTDIR)$(datadir)
-	 
+

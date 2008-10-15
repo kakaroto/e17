@@ -6,8 +6,8 @@ MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess config.h.in \
 INCLUDES = -I. \
          -I$(top_srcdir) \
 	 -I$(includedir) \
-	 @e_cflags@ @x_cflags@
-			   
+	 @E_CFLAGS@ @x_cflags@
+
 pkgdir = $(datadir)/$(MODULE_ARCH)
 pkg_LTLIBRARIES = module.la
 module_la_SOURCES = compmgr.c \
@@ -16,12 +16,12 @@ module_la_SOURCES = compmgr.c \
 		    e_mod_main.h \
 		    e_mod_config.c \
 		    e_mod_config.h
-			 
-module_la_LIBADD = @e_libs@ @x_libs@
+
+module_la_LIBADD = @E_LIBS@ @x_libs@
 module_la_LDFLAGS = -module -avoid-version
 module_la_DEPENDENCIES = $(top_builddir)/config.h
 
-EDJE_CC = @edje_cc@
+EDJE_CC = @EDJE_CC@
 EDJE_FLAGS = -v \
 -id $(top_srcdir)/images \
 -fd $(top_srcdir)/fonts
@@ -35,10 +35,10 @@ EXTRA_DIST = $(files_DATA) \
 
 %.edj: %.edc
 	$(EDJE_CC) $(EDJE_FLAGS) $< $@
-	
+
 clean-local:
 	rm -rf *~
 
 uninstall-hook:
 	rm -rf $(datadir)
-	
+
