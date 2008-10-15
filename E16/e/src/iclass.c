@@ -1060,7 +1060,7 @@ ITApply(Win win, ImageClass * ic, ImageState * is,
 		  if (pmm.type != 0)
 		    {
 		       pmap = EGetWindowBackgroundPixmap(win);
-		       EXCopyArea(pmm.pmap, pmap, 0, 0, w, h, 0, 0);
+		       EXCopyAreaTiled(pmm.pmap, None, pmap, 0, 0, w, h, 0, 0);
 		    }
 
 		  TextstateTextDraw(ts, win, pmap, text, 0, 0, w, h,
