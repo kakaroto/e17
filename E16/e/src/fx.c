@@ -982,10 +982,6 @@ FxIpc(const char *params)
 	else
 	   IpcPrintf("Error: unknown mode specified");
      }
-   else if (!strncmp(word1, "cfg", 2))
-     {
-	DialogShowSimple(&DlgFx, NULL);
-     }
 }
 
 static const IpcItem FxIpcArray[] = {
@@ -993,7 +989,6 @@ static const IpcItem FxIpcArray[] = {
     FxIpc,
     "fx", "fx",
     "Toggle various effects on/off",
-    "  fx cfg               Configure effects\n"
     "  fx <effect> <mode>   Set the mode of a particular effect\n"
     "  fx <effect> ?\"      Get the current mode\n"
     "the following effects are available\n"

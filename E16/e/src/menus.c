@@ -2104,10 +2104,6 @@ MenusIpc(const char *params)
      {
 	IpcPrintf("Menus - active=%d\n", MenusActive());
      }
-   else if (!strncmp(cmd, "cfg", 2))
-     {
-	DialogShowSimple(&DlgMenus, NULL);
-     }
    else if (!strncmp(cmd, "list", 2))
      {
 #define SS(s) ((s) ? (s) : "-")

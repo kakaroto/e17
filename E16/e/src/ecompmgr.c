@@ -2883,10 +2883,6 @@ CompMgrIpc(const char *params)
      {
 	IpcPrintf("CompMgr - on=%d\n", Mode_compmgr.active);
      }
-   else if (!strcmp(cmd, "cfg"))
-     {
-	SettingsComposite();
-     }
    else if (!strcmp(cmd, "start"))
      {
 	ECompMgrStart();
@@ -2920,7 +2916,6 @@ static const IpcItem CompMgrIpcArray[] = {
     "compmgr", "cm",
     "Composite manager functions",
     "  cm ?                     Show info\n"
-    "  cm cfg                   Configure\n"
     "  cm start                 Start composite manager\n"
     "  cm stop                  Stop composite manager\n"}
    ,

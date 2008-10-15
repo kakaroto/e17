@@ -33,6 +33,7 @@
 #include "hints.h"		/* FIXME - Should not be here */
 #include "screen.h"
 #include "session.h"
+#include "settings.h"
 #include "snaps.h"
 #include "timers.h"
 #include "xwin.h"
@@ -916,6 +917,15 @@ IPC_ForceSave(const char *params __UNUSED__)
 }
 
 static void
+IPC_Exec(const char *params)
+{
+   if (params)
+      execApplication(params, EXEC_SET_LANG | EXEC_SET_STARTUP_ID);
+   else
+      IpcPrintf("exec what?\n");
+}
+
+static void
 IPC_Restart(const char *params __UNUSED__)
 {
    SessionExit(EEXIT_RESTART, NULL);
@@ -1485,6 +1495,13 @@ static const IpcItem IPCArray[] = {
     NULL},
    {
     IPC_About, "about", NULL, "Show E info", NULL},
+   {
+    IPC_Cfg, "configure", "cfg", "Configuration", NULL},
+   {
+    IPC_Exec,
+    "exec", NULL,
+    "Execute program",
+    "  exec <command>       Execute command\n"},
    {
     IPC_Restart,
     "restart", NULL,

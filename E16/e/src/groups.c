@@ -1045,10 +1045,6 @@ GroupsConfigure(const char *params)
 	if (ewin)
 	   SettingsGroups(ewin);
      }
-   else if (!s[0] || !strcmp(s, "group_defaults"))
-     {
-	DialogShowSimple(&DlgGroupDefaults, NULL);
-     }
    else if (!strcmp(s, "add"))
      {
 	ewin = GetFocusEwin();

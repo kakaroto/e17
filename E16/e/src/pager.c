@@ -1029,7 +1029,7 @@ PagerMenuShow(Pager * p, int x, int y)
       MenuDestroy(p_menu);
    p_menu = MenuCreate("__DESK_MENU", _("Desktop Options"), NULL, NULL);
 
-   mi = MenuItemCreate(_("Pager Settings..."), NULL, "pg cfg", NULL);
+   mi = MenuItemCreate(_("Pager Settings..."), NULL, "cfg pagers", NULL);
    MenuAddItem(p_menu, mi);
 
    if (PagersGetMode() != PAGER_MODE_SIMPLE)
@@ -2083,11 +2083,7 @@ IPC_Pager(const char *params)
    sscanf(p, "%100s %n", prm1, &len);
    p += len;
 
-   if (!strncmp(prm1, "cfg", 3))
-     {
-	DialogShowSimple(&DlgPagers, NULL);
-     }
-   else if (!strcmp(prm1, "on"))
+   if (!strcmp(prm1, "on"))
      {
 	PagersShow(1);
      }
@@ -2152,7 +2148,6 @@ static const IpcItem PagersIpcArray[] = {
     "use \"pager <on/off>\" to set the current mode\nuse \"pager ?\" "
     "to get the current mode\n"
     "  pager <#> <on/off/?>   Toggle or test any desktop's pager\n"
-    "  pager cfg              Configure pagers\n"
     "  pager hiq <on/off>     Toggle high quality pager\n"
     "  pager scanrate <#>     Toggle number of line updates per second\n"
     "  pager mode <mode>      Set pager mode (simple/snapshot/live)\n"

@@ -700,12 +700,6 @@ const DialogDef     DlgComposite = {
    _DlgFillComposite,
    DLG_OAC, CB_ConfigureComposite,
 };
-
-void
-SettingsComposite(void)
-{
-   DialogShowSimple(&DlgComposite, NULL);
-}
 #endif
 
 /*
@@ -796,7 +790,22 @@ static const DialogDef DlgConfiguration = {
 };
 
 void
-SettingsConfiguration(void)
+IPC_Cfg(const char *params)
 {
-   DialogShowSimple(&DlgConfiguration, NULL);
+   unsigned int        i;
+   const char         *name;
+
+   if (!params || !params[0])
+     {
+	DialogShowSimple(&DlgConfiguration, NULL);
+	return;
+     }
+
+   for (i = 0; i < N_CFG_DLGS; i++)
+     {
+	name = dialogs[i]->label;
+	if (strcasecmp(params, name))
+	   continue;
+	DialogShowSimple(dialogs[i], NULL);
+     }
 }

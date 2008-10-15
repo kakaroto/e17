@@ -24,8 +24,7 @@
 #define _SETTINGS_H_
 
 /* settings.c */
-void                SettingsConfiguration(void);
-void                SettingsComposite(void);
+void                IPC_Cfg(const char *params);
 
 #ifdef _DIALOG_H_
 extern const DialogDef DlgAreas;

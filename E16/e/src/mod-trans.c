@@ -292,24 +292,6 @@ TransparencySighan(int sig, void *prm __UNUSED__)
      }
 }
 
-static void
-TransparencyIpc(const char *params)
-{
-   if (params && !strncmp(params, "cfg", 3))
-     {
-	DialogShowSimple(&DlgThemeTrans, NULL);
-     }
-}
-
-static const IpcItem TransIpcArray[] = {
-   {
-    TransparencyIpc,
-    "trans", "tr",
-    "Transparency functions",
-    "  trans cfg            Configure transparency\n"}
-};
-#define N_IPC_FUNCS (sizeof(TransIpcArray)/sizeof(IpcItem))
-
 static const CfgItem TransCfgItems[] = {
    CFG_ITEM_INT(Conf.trans, alpha, 0),
    CFG_ITEM_INT(Conf.trans, menu, ICLASS_ATTR_BG),
@@ -332,7 +314,7 @@ extern const EModule ModTransparency;
 const EModule       ModTransparency = {
    "transparency", "tr",
    TransparencySighan,
-   {N_IPC_FUNCS, TransIpcArray},
+   {0, NULL},
    {N_CFG_ITEMS, TransCfgItems}
 };
 

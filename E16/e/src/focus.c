@@ -912,10 +912,6 @@ FocusIpc(const char *params)
 	else
 	   IpcPrintf("Focused: none\n");
      }
-   else if (!strcmp(cmd, "cfg"))
-     {
-	DialogShowSimple(&DlgFocus, NULL);
-     }
    else if (!strncmp(cmd, "mode", 2))
      {
 	int                 mode = Conf.focus.mode;

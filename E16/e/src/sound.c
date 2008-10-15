@@ -349,11 +349,7 @@ SoundIpc(const char *params)
 	p += len;
      }
 
-   if (!strncmp(cmd, "cfg", 3))
-     {
-	DialogShowSimple(&DlgSound, NULL);
-     }
-   else if (!strncmp(cmd, "del", 3))
+   if (!strncmp(cmd, "del", 3))
      {
 	SoundFree(prm);
      }

@@ -893,24 +893,6 @@ const DialogDef     DlgTooltips = {
    DLG_OAC, CB_ConfigureTooltips,
 };
 
-static void
-TooltipsIpc(const char *params)
-{
-   if (params && !strncmp(params, "cfg", 3))
-     {
-	DialogShowSimple(&DlgTooltips, NULL);
-     }
-}
-
-static const IpcItem TooltipsIpcArray[] = {
-   {
-    TooltipsIpc,
-    "tooltips", "tt",
-    "Tooltip functions",
-    "  tooltips cfg          Configure tooltips\n"}
-};
-#define N_IPC_FUNCS (sizeof(TooltipsIpcArray)/sizeof(IpcItem))
-
 static const CfgItem TooltipsCfgItems[] = {
    CFG_ITEM_BOOL(Conf_tooltips, enable, 1),
    CFG_ITEM_BOOL(Conf_tooltips, showroottooltip, 1),
@@ -925,6 +907,6 @@ extern const EModule ModTooltips;
 const EModule       ModTooltips = {
    "tooltips", "tt",
    TooltipsSighan,
-   {N_IPC_FUNCS, TooltipsIpcArray},
+   {0, NULL},
    {N_CFG_ITEMS, TooltipsCfgItems}
 };

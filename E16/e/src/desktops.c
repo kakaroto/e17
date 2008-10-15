@@ -2639,10 +2639,6 @@ DesksIpcDesk(const char *params)
      {
 	IpcPrintf("Current Desktop: %d/%d\n", desk, Conf.desks.num);
      }
-   else if (!strncmp(cmd, "cfg", 3))
-     {
-	DialogShowSimple(&DlgDesks, NULL);
-     }
    else if (!strncmp(cmd, "set", 3))
      {
 	sscanf(prm, "%i", &desk);
@@ -2737,10 +2733,6 @@ DesksIpcArea(const char *params)
      {
 	IpcPrintf("Current Area: %d %d\n", ax, ay);
      }
-   else if (!strncmp(cmd, "cfg", 3))
-     {
-	DialogShowSimple(&DlgAreas, NULL);
-     }
    else if (!strncmp(cmd, "set", 3))
      {
 	sscanf(params, "%*s %i %i", &ax, &ay);
@@ -2776,7 +2768,6 @@ static const IpcItem DesksIpcArray[] = {
     "desk", NULL,
     "Desktop functions",
     "  desk ?               Desktop info\n"
-    "  desk cfg             Configure desktops\n"
     "  desk drag            Start deskdrag\n"
     "  desk set <nd>        Set number of desktops\n"
     "  desk goto <d>        Goto specified desktop\n"
@@ -2796,7 +2787,6 @@ static const IpcItem DesksIpcArray[] = {
     "area", NULL,
     "Area functions",
     "  area ?               Area info\n"
-    "  area cfg             Configure areas\n"
     "  area set <nx> <ny>   Set area size\n"
     "  area goto <ax> <ay>  Goto specified area\n"
     "  area move <dx> <dy>  Move relative to current area\n"

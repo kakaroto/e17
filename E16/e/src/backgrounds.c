@@ -2441,10 +2441,6 @@ BackgroundsIpc(const char *params)
 	BackgroundApplyWin(bg, win);
 	EDestroyWin(win);
      }
-   else if (!strncmp(cmd, "cfg", 2))
-     {
-	DialogShowSimple(&DlgBackground, DeskBackgroundGet(DesksGetCurrent()));
-     }
    else if (!strncmp(cmd, "del", 2))
      {
 	BackgroundDestroyByName(prm);
@@ -2554,7 +2550,6 @@ static const IpcItem BackgroundsIpcArray[] = {
     "Background commands",
     "  background                       Show current background\n"
     "  background apply <name> <win>    Apply background to window\n"
-    "  background cfg                   Configure backgrounds\n"
     "  background del <name>            Delete background\n"
     "  background list                  Show all background\n"
     "  background load <name> <file>    Load new wallpaper from file\n"

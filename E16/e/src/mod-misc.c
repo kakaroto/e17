@@ -210,75 +210,11 @@ static const CfgItem MiscCfgItems[] = {
 };
 #define N_CFG_ITEMS ((int)(sizeof(MiscCfgItems)/sizeof(CfgItem)))
 
-static void
-MiscIpcExec(const char *params)
-{
-   if (params)
-      execApplication(params, EXEC_SET_LANG | EXEC_SET_STARTUP_ID);
-   else
-      IpcPrintf("exec what?\n");
-}
-
-static void
-MiscIpcConfig(const char *params)
-{
-   const char         *p;
-   char                cmd[128], prm[128];
-   int                 len;
-
-   cmd[0] = prm[0] = '\0';
-   p = params;
-   if (p)
-     {
-	len = 0;
-	sscanf(p, "%100s %100s %n", cmd, prm, &len);
-	p += len;
-     }
-
-   if (!p || cmd[0] == '?')
-     {
-	/* Show info */
-     }
-   else if (!strncmp(cmd, "cfg", 3))
-     {
-	if (!strncmp(prm, "autoraise", 2))
-	   DialogShowSimple(&DlgAutoraise, NULL);
-	else if (!strncmp(prm, "misc", 2))
-	   DialogShowSimple(&DlgMisc, NULL);
-	else if (!strncmp(prm, "moveresize", 2))
-	   DialogShowSimple(&DlgMoveResize, NULL);
-	else if (!strncmp(prm, "placement", 2))
-	   DialogShowSimple(&DlgPlacement, NULL);
-	else if (!strncmp(prm, "remember", 2))
-	   DialogShowSimple(&DlgRemember, NULL);
-	else if (!strncmp(prm, "session", 2))
-	   DialogShowSimple(&DlgSession, NULL);
-	else if (prm[0] == '\0')
-	   SettingsConfiguration();
-     }
-}
-
-static const IpcItem MiscIpcArray[] = {
-   {
-    MiscIpcExec,
-    "exec", NULL,
-    "Execute program",
-    "  exec <command>           Execute command\n"}
-   ,
-   {
-    MiscIpcConfig,
-    "misc", NULL,
-    "Miscellaneous functions",
-    "  misc cfg <thing>         Configure thing (autoraise/misc/moveresize/placement/remember/session)\n"}
-};
-#define N_IPC_FUNCS (sizeof(MiscIpcArray)/sizeof(IpcItem))
-
 /* Stuff not elsewhere */
 const EModule       ModMisc = {
    "misc", NULL,
    NULL,
-   {N_IPC_FUNCS, MiscIpcArray}
-   ,
+   {0, NULL},
    {N_CFG_ITEMS, MiscCfgItems}
 };
 
