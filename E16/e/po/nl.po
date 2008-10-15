@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-10-05 20:32+0200\n"
+"POT-Creation-Date: 2008-10-15 17:49+0200\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Dènis Riedijk <ried@si.tn.tudelft.nl>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -152,7 +152,7 @@ msgstr "Herstart Enlightenment"
 msgid "Quit Enlightenment"
 msgstr "Stop Enlightenment"
 
-#: src/backgrounds.c:1526
+#: src/backgrounds.c:1525
 #, c-format
 msgid ""
 "Background definition information:\n"
@@ -163,11 +163,11 @@ msgstr ""
 "Naam    : %s\n"
 "Bestand : %s\n"
 
-#: src/backgrounds.c:1527
+#: src/backgrounds.c:1526
 msgid "-NONE-"
 msgstr "-GEEN-"
 
-#: src/backgrounds.c:1706 src/backgrounds.c:1708
+#: src/backgrounds.c:1704 src/backgrounds.c:1706
 msgid ""
 "No\n"
 "Background"
@@ -175,40 +175,40 @@ msgstr ""
 "Nee\n"
 "Achtergrond"
 
-#: src/backgrounds.c:1802 src/backgrounds.c:2231
+#: src/backgrounds.c:1800 src/backgrounds.c:2229
 #, c-format
 msgid "Unused backgrounds freed after %2i:%02i:%02i"
 msgstr "Ongebruikte achtergronden verwijderd na %2i:%02i:%02i"
 
-#: src/backgrounds.c:2017
+#: src/backgrounds.c:2015
 msgid "Use background image"
 msgstr "Gebruik achtergrond plaatje"
 
-#: src/backgrounds.c:2021
+#: src/backgrounds.c:2019
 msgid "Keep aspect on scale"
 msgstr "Bewaar verhoudingen bij schalen"
 
-#: src/backgrounds.c:2025
+#: src/backgrounds.c:2023
 msgid "Tile image across background"
 msgstr "Plaats plaatjes naast elkaar op achtergrond"
 
-#: src/backgrounds.c:2034
+#: src/backgrounds.c:2032
 msgid "Move to Front\n"
 msgstr "Verplaats naar voren\n"
 
-#: src/backgrounds.c:2039
+#: src/backgrounds.c:2037
 msgid "Duplicate\n"
 msgstr "Dupliceer\n"
 
-#: src/backgrounds.c:2043
+#: src/backgrounds.c:2041
 msgid "Unlist\n"
 msgstr "Haal uit de lijst\n"
 
-#: src/backgrounds.c:2048
+#: src/backgrounds.c:2046
 msgid "Delete File\n"
 msgstr "Verwijder bestand\n"
 
-#: src/backgrounds.c:2059
+#: src/backgrounds.c:2057
 msgid ""
 "Background\n"
 "Image\n"
@@ -222,62 +222,62 @@ msgstr ""
 "en\n"
 "Plaatsing\n"
 
-#: src/backgrounds.c:2116
+#: src/backgrounds.c:2114
 msgid "BG Colour\n"
 msgstr "Achtergrond kleur\n"
 
-#: src/backgrounds.c:2121
+#: src/backgrounds.c:2119
 msgid "Red:\n"
 msgstr "Rood:\n"
 
-#: src/backgrounds.c:2132
+#: src/backgrounds.c:2130
 msgid "Green:\n"
 msgstr "Groen:\n"
 
-#: src/backgrounds.c:2143
+#: src/backgrounds.c:2141
 msgid "Blue:\n"
 msgstr "Blauw:\n"
 
-#: src/backgrounds.c:2176
+#: src/backgrounds.c:2174
 msgid "Pre-scan BG's"
 msgstr "Prescan Achtergronden"
 
-#: src/backgrounds.c:2184
+#: src/backgrounds.c:2182
 msgid "Sort by File"
 msgstr "Sorteer op bestand"
 
-#: src/backgrounds.c:2189
+#: src/backgrounds.c:2187
 msgid "Sort by Attr."
 msgstr "Sorteer op attribuut"
 
-#: src/backgrounds.c:2195
+#: src/backgrounds.c:2193
 msgid "Sort by Image"
 msgstr "Sorteer op plaatje"
 
-#: src/backgrounds.c:2215
+#: src/backgrounds.c:2213
 msgid "Use dithering in Hi-Colour"
 msgstr "Gebruik dithering in Hi-Color"
 
-#: src/backgrounds.c:2219
+#: src/backgrounds.c:2217
 msgid "Background overrides theme"
 msgstr "Achtergrond overruled thema"
 
-#: src/backgrounds.c:2224
+#: src/backgrounds.c:2222
 msgid "Enable background transparency compatibility mode"
 msgstr ""
 
-#: src/backgrounds.c:2248 src/mod-trans.c:199
+#: src/backgrounds.c:2246 src/mod-trans.c:199
 #, fuzzy
 msgid "Background"
 msgstr ""
 "Nee\n"
 "Achtergrond"
 
-#: src/backgrounds.c:2249
+#: src/backgrounds.c:2247
 msgid "Desktop Background Settings"
 msgstr "Desktop Achtergrond Instellingen"
 
-#: src/backgrounds.c:2252
+#: src/backgrounds.c:2250
 msgid ""
 "Enlightenment Desktop\n"
 "Background Settings Dialog\n"
@@ -364,7 +364,7 @@ msgid ""
 "features in Enlightenment in new versions.\n"
 msgstr ""
 
-#: src/config.c:596
+#: src/config.c:572
 msgid "Enlightenment Starting..."
 msgstr "Enlightenment start op"
 
@@ -662,8 +662,8 @@ msgid ""
 "Settings Dialog\n"
 msgstr ""
 
-#: src/dialog.c:846 src/dialog.c:2035 src/dialog.c:2066 src/events.c:86
-#: src/setup.c:157 src/sound.c:203
+#: src/dialog.c:846 src/dialog.c:2035 src/dialog.c:2066 src/events.c:87
+#: src/setup.c:157 src/sound.c:209
 msgid "OK"
 msgstr "OK"
 
@@ -683,11 +683,11 @@ msgid ""
 "extensions are loaded."
 msgstr ""
 
-#: src/events.c:86
+#: src/events.c:87
 msgid "X server setup error"
 msgstr ""
 
-#: src/events.c:87
+#: src/events.c:88
 msgid ""
 "FATAL ERROR:\n"
 "\n"
@@ -980,17 +980,17 @@ msgid ""
 "Group Control Settings Dialog\n"
 msgstr ""
 
-#: src/groups.c:1056
+#: src/groups.c:1052
 #, fuzzy
 msgid "Pick the group the window will belong to:"
 msgstr "Kies de groep waar het venster bij moet behoren : \n"
 
-#: src/groups.c:1063
+#: src/groups.c:1059
 #, fuzzy
 msgid "Select the group to remove the window from:"
 msgstr "  Kies de groep waar het venster van verwijderd moet worden"
 
-#: src/groups.c:1069
+#: src/groups.c:1065
 #, fuzzy
 msgid "Select the group to break:"
 msgstr " Kies de groep om te breken"
@@ -1063,52 +1063,52 @@ msgstr "Icoonbox Opties"
 msgid "Iconbox Settings"
 msgstr "Icoonbox instellingen"
 
-#: src/ipc.c:193 src/ipc.c:1426 src/ipc.c:1433
+#: src/ipc.c:194 src/ipc.c:1436 src/ipc.c:1443
 msgid "Message"
 msgstr ""
 
-#: src/ipc.c:1426 src/ipc.c:1433
+#: src/ipc.c:1436 src/ipc.c:1443
 #, c-format
 msgid "e16 was built without %s support"
 msgstr ""
 
-#: src/ipc.c:1427
+#: src/ipc.c:1437
 #, fuzzy
 msgid "composite"
 msgstr "Zet geluiden aan"
 
-#: src/ipc.c:1434
+#: src/ipc.c:1444
 msgid "sound"
 msgstr ""
 
-#: src/ipc.c:1768
+#: src/ipc.c:1785
 #, fuzzy
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Enlightenment Inter Process Commandos Hulp"
 
-#: src/ipc.c:1772
+#: src/ipc.c:1789
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
 "Use \"help <command>\" for an individual description\n"
 "\n"
 msgstr ""
 
-#: src/ipc.c:1774 src/ipc.c:1794 src/ipc.c:1806
+#: src/ipc.c:1791 src/ipc.c:1811 src/ipc.c:1823
 #, fuzzy
 msgid "Commands currently available:\n"
 msgstr ""
 "\n"
 "commandos die nu beschikbaar zijn:\n"
 
-#: src/ipc.c:1792
+#: src/ipc.c:1809
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 
-#: src/ipc.c:1793
+#: src/ipc.c:1810
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr ""
 
-#: src/ipc.c:1795 src/ipc.c:1807
+#: src/ipc.c:1812 src/ipc.c:1824
 msgid "         <command>     : <description>\n"
 msgstr ""
 
@@ -1765,7 +1765,7 @@ msgid ""
 "Settings Dialog\n"
 msgstr "Enlightenment Bericht Dialoog"
 
-#: src/settings.c:790
+#: src/settings.c:784
 #, fuzzy
 msgid "Enlightenment Settings"
 msgstr "Enlightenment start op"
@@ -1940,11 +1940,11 @@ msgstr ""
 msgid "Error saving snaps file\n"
 msgstr ""
 
-#: src/sound.c:124
+#: src/sound.c:130
 msgid "Error finding sound file"
 msgstr ""
 
-#: src/sound.c:125
+#: src/sound.c:131
 #, c-format
 msgid ""
 "Warning!  Enlightenment was unable to load the\n"
@@ -1954,30 +1954,30 @@ msgid ""
 "may wish to check your configuration settings.\n"
 msgstr ""
 
-#: src/sound.c:203
+#: src/sound.c:209
 msgid "Error initialising sound"
 msgstr ""
 
-#: src/sound.c:204
+#: src/sound.c:210
 msgid ""
 "Audio was enabled for Enlightenment but there was an error\n"
 "communicating with the audio server (Esound). Audio will\n"
 "now be disabled.\n"
 msgstr ""
 
-#: src/sound.c:316
+#: src/sound.c:329
 msgid "Enable sounds"
 msgstr "Zet geluiden aan"
 
-#: src/sound.c:322
+#: src/sound.c:335
 msgid "Sound"
 msgstr ""
 
-#: src/sound.c:323
+#: src/sound.c:336
 msgid "Audio Settings"
 msgstr "Audio Instellingen"
 
-#: src/sound.c:326
+#: src/sound.c:339
 msgid ""
 "Enlightenment Audio\n"
 "Settings Dialog\n"
@@ -2010,38 +2010,11 @@ msgstr "Desktop opties"
 msgid "Systray Settings"
 msgstr "Automatisch Omhoogbrengen Instelling"
 
-#: src/theme.c:67
-#, fuzzy, c-format
-msgid "Theme %s does not contain a %s file\n"
-msgstr "Thema bevat geen sound.cfg bestand\n"
-
-#: src/theme.c:346
-msgid "Unknown\n"
-msgstr ""
-
-#: src/theme.c:392
-msgid "Bad Theme"
-msgstr ""
-
-#: src/theme.c:393
+#: src/theme.c:353
 #, c-format
 msgid ""
-"The theme:\n"
-"%s\n"
-"Is a badly formed theme package and is thus not being used.\n"
-"Enlightenment has fallen back to using the DEFAULT theme.\n"
-"\n"
-"The reason this theme is bad is:\n"
-"%s"
-msgstr ""
-
-#: src/theme.c:419
-#, c-format
-msgid ""
-"No themes were found in the default theme directory:\n"
-" %s/themes/\n"
-"or in the user theme directory:\n"
-" %s/themes/\n"
+"No themes were found in the default directories:\n"
+" %s\n"
 "Proceeding from here is mostly pointless.\n"
 msgstr ""
 
@@ -2720,6 +2693,10 @@ msgstr ""
 #: config/strings.c:198
 msgid "Epplets"
 msgstr ""
+
+#, fuzzy
+#~ msgid "Theme %s does not contain a %s file\n"
+#~ msgstr "Thema bevat geen sound.cfg bestand\n"
 
 #~ msgid ""
 #~ "Enlightenment Version : %s\n"

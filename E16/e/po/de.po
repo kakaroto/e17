@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-10-05 20:32+0200\n"
+"POT-Creation-Date: 2008-10-15 17:49+0200\n"
 "PO-Revision-Date: 2000-03-29 21:12+0200\n"
 "Last-Translator: Matthias Warkus <mawa@iname.com>\n"
 "Language-Team: Enlightenment l10n <e-develop@enlightenment.org>\n"
@@ -177,7 +177,7 @@ msgstr "Enlightenment verlassen"
 
 # src/settings.c:2273 src/settings.c:2395 src/settings.c:2651
 # src/settings.c:2774 src/settings.c:3393
-#: src/backgrounds.c:1526
+#: src/backgrounds.c:1525
 #, c-format
 msgid ""
 "Background definition information:\n"
@@ -190,12 +190,12 @@ msgstr ""
 
 # src/settings.c:2270 src/settings.c:2392 src/settings.c:2648
 # src/settings.c:2771 src/settings.c:3390
-#: src/backgrounds.c:1527
+#: src/backgrounds.c:1526
 msgid "-NONE-"
 msgstr "-/-"
 
 # src/settings.c:2526 src/settings.c:2528
-#: src/backgrounds.c:1706 src/backgrounds.c:1708
+#: src/backgrounds.c:1704 src/backgrounds.c:1706
 msgid ""
 "No\n"
 "Background"
@@ -204,48 +204,48 @@ msgstr ""
 "Hintergrund"
 
 # src/settings.c:2713 src/settings.c:3281
-#: src/backgrounds.c:1802 src/backgrounds.c:2231
+#: src/backgrounds.c:1800 src/backgrounds.c:2229
 #, c-format
 msgid "Unused backgrounds freed after %2i:%02i:%02i"
 msgstr "Unbenutze Hintergründe freigeben nach %2i:%02i:%02i"
 
 # src/settings.c:3123
-#: src/backgrounds.c:2017
+#: src/backgrounds.c:2015
 msgid "Use background image"
 msgstr "Hintergrundbild verwenden"
 
 # src/settings.c:3145
-#: src/backgrounds.c:2021
+#: src/backgrounds.c:2019
 msgid "Keep aspect on scale"
 msgstr "Proportionen beim Skalieren beibehalten"
 
 # src/settings.c:3167
-#: src/backgrounds.c:2025
+#: src/backgrounds.c:2023
 msgid "Tile image across background"
 msgstr "Hintergrund damit kacheln"
 
 # src/settings.c:3081
-#: src/backgrounds.c:2034
+#: src/backgrounds.c:2032
 msgid "Move to Front\n"
 msgstr "An Anfang stellen\n"
 
 # src/settings.c:3088
-#: src/backgrounds.c:2039
+#: src/backgrounds.c:2037
 msgid "Duplicate\n"
 msgstr "Duplizieren\n"
 
 # src/settings.c:3094
-#: src/backgrounds.c:2043
+#: src/backgrounds.c:2041
 msgid "Unlist\n"
 msgstr "Aus Liste entfernen\n"
 
 # src/settings.c:3100
-#: src/backgrounds.c:2048
+#: src/backgrounds.c:2046
 msgid "Delete File\n"
 msgstr "Datei löschen\n"
 
 # src/settings.c:3183
-#: src/backgrounds.c:2059
+#: src/backgrounds.c:2057
 msgid ""
 "Background\n"
 "Image\n"
@@ -259,61 +259,61 @@ msgstr ""
 "-ausrichtung\n"
 
 # src/settings.c:3070
-#: src/backgrounds.c:2116
+#: src/backgrounds.c:2114
 msgid "BG Colour\n"
 msgstr "Hintergrundfarbe\n"
 
 # src/settings.c:3109
-#: src/backgrounds.c:2121
+#: src/backgrounds.c:2119
 msgid "Red:\n"
 msgstr "Rot:\n"
 
 # src/settings.c:3131
-#: src/backgrounds.c:2132
+#: src/backgrounds.c:2130
 msgid "Green:\n"
 msgstr "Grün:\n"
 
 # src/settings.c:3153
-#: src/backgrounds.c:2143
+#: src/backgrounds.c:2141
 msgid "Blue:\n"
 msgstr "Blau:\n"
 
 # src/settings.c:3328
-#: src/backgrounds.c:2176
+#: src/backgrounds.c:2174
 msgid "Pre-scan BG's"
 msgstr "Hintergründe überfliegen"
 
 # src/settings.c:3338
-#: src/backgrounds.c:2184
+#: src/backgrounds.c:2182
 msgid "Sort by File"
 msgstr "Nach Datei sortieren"
 
 # src/settings.c:3344
-#: src/backgrounds.c:2189
+#: src/backgrounds.c:2187
 msgid "Sort by Attr."
 msgstr "Nach Attr. sortieren"
 
 # src/settings.c:3350
-#: src/backgrounds.c:2195
+#: src/backgrounds.c:2193
 msgid "Sort by Image"
 msgstr "Nach Bild sortieren"
 
 # src/settings.c:3264
-#: src/backgrounds.c:2215
+#: src/backgrounds.c:2213
 msgid "Use dithering in Hi-Colour"
 msgstr "In Hi-Colour rastern"
 
 # src/settings.c:3271
-#: src/backgrounds.c:2219
+#: src/backgrounds.c:2217
 msgid "Background overrides theme"
 msgstr "Hintergrund hat Vorrang vor Thema"
 
-#: src/backgrounds.c:2224
+#: src/backgrounds.c:2222
 msgid "Enable background transparency compatibility mode"
 msgstr ""
 
 # src/settings.c:2526 src/settings.c:2528
-#: src/backgrounds.c:2248 src/mod-trans.c:199
+#: src/backgrounds.c:2246 src/mod-trans.c:199
 #, fuzzy
 msgid "Background"
 msgstr ""
@@ -321,12 +321,12 @@ msgstr ""
 "Hintergrund"
 
 # src/settings.c:3044
-#: src/backgrounds.c:2249
+#: src/backgrounds.c:2247
 msgid "Desktop Background Settings"
 msgstr "Hintergrundeinstellungen"
 
 # src/settings.c:3044
-#: src/backgrounds.c:2252
+#: src/backgrounds.c:2250
 msgid ""
 "Enlightenment Desktop\n"
 "Background Settings Dialog\n"
@@ -457,7 +457,7 @@ msgstr ""
 "in neueren Versionen finden.\n"
 
 # src/config.c:3743
-#: src/config.c:596
+#: src/config.c:572
 msgid "Enlightenment Starting..."
 msgstr "Enlightenment startet..."
 
@@ -827,8 +827,8 @@ msgstr ""
 # src/settings.c:1460 src/settings.c:1522 src/settings.c:1610
 # src/settings.c:2012 src/settings.c:3405 src/settings.c:3750
 # src/settings.c:4048 src/settings.c:4186 src/snaps.c:547 src/sound.c:262
-#: src/dialog.c:846 src/dialog.c:2035 src/dialog.c:2066 src/events.c:86
-#: src/setup.c:157 src/sound.c:203
+#: src/dialog.c:846 src/dialog.c:2035 src/dialog.c:2066 src/events.c:87
+#: src/setup.c:157 src/sound.c:209
 msgid "OK"
 msgstr "OK"
 
@@ -855,12 +855,12 @@ msgid ""
 msgstr ""
 
 # src/setup.c:294 src/setup.c:340
-#: src/events.c:86
+#: src/events.c:87
 msgid "X server setup error"
 msgstr "Einstellungsfehler im X-Server"
 
 # src/setup.c:296
-#: src/events.c:87
+#: src/events.c:88
 msgid ""
 "FATAL ERROR:\n"
 "\n"
@@ -1220,19 +1220,19 @@ msgstr ""
 "Gruppenseinstellungs-Dialog\n"
 
 # src/actions.c:3474
-#: src/groups.c:1056
+#: src/groups.c:1052
 #, fuzzy
 msgid "Pick the group the window will belong to:"
 msgstr "  Wählen Sie die Gruppe aus, zu der das Fenster gehören wird:  \n"
 
 # src/actions.c:3858
-#: src/groups.c:1063
+#: src/groups.c:1059
 #, fuzzy
 msgid "Select the group to remove the window from:"
 msgstr "   Wählen Sie die Gruppe, aus der Sie das Fenster entfernen wollen.  "
 
 # src/actions.c:3883
-#: src/groups.c:1069
+#: src/groups.c:1065
 #, fuzzy
 msgid "Select the group to break:"
 msgstr "  Wählen Sie die aufzulösende Gruppe  "
@@ -1349,33 +1349,33 @@ msgstr "Iconbox-Optionen"
 msgid "Iconbox Settings"
 msgstr "Iconbox-Einstellungen"
 
-#: src/ipc.c:193 src/ipc.c:1426 src/ipc.c:1433
+#: src/ipc.c:194 src/ipc.c:1436 src/ipc.c:1443
 msgid "Message"
 msgstr "Mitteilung"
 
-#: src/ipc.c:1426 src/ipc.c:1433
+#: src/ipc.c:1436 src/ipc.c:1443
 #, c-format
 msgid "e16 was built without %s support"
 msgstr ""
 
 # src/settings.c:1591
-#: src/ipc.c:1427
+#: src/ipc.c:1437
 #, fuzzy
 msgid "composite"
 msgstr "Klänge verwenden"
 
-#: src/ipc.c:1434
+#: src/ipc.c:1444
 msgid "sound"
 msgstr ""
 
 # src/ipc.c:4737
-#: src/ipc.c:1768
+#: src/ipc.c:1785
 #, fuzzy
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Hilfe zu Enlightenment-IPC-Befehlen"
 
 # src/ipc.c:4743
-#: src/ipc.c:1772
+#: src/ipc.c:1789
 #, fuzzy
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
@@ -1387,25 +1387,25 @@ msgstr ""
 "\n"
 
 # src/ipc.c:4741 src/ipc.c:4780
-#: src/ipc.c:1774 src/ipc.c:1794 src/ipc.c:1806
+#: src/ipc.c:1791 src/ipc.c:1811 src/ipc.c:1823
 #, fuzzy
 msgid "Commands currently available:\n"
 msgstr ""
 "\n"
 "Momentan verfügbare Befehle:\n"
 
-#: src/ipc.c:1792
+#: src/ipc.c:1809
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 
 # src/ipc.c:4781
-#: src/ipc.c:1793
+#: src/ipc.c:1810
 #, fuzzy
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "\"help <befehl>\" gibt eine nähere Beschreibung\n"
 
 # src/ipc.c:4783
-#: src/ipc.c:1795 src/ipc.c:1807
+#: src/ipc.c:1812 src/ipc.c:1824
 #, fuzzy
 msgid "         <command>     : <description>\n"
 msgstr "<befehl> : <beschreibung>\n"
@@ -2217,7 +2217,7 @@ msgstr ""
 "Einstellungsdialog\n"
 
 # src/config.c:3743
-#: src/settings.c:790
+#: src/settings.c:784
 #, fuzzy
 msgid "Enlightenment Settings"
 msgstr "Enlightenment startet..."
@@ -2439,12 +2439,12 @@ msgid "Error saving snaps file\n"
 msgstr "Fehler beim Speichern der snaps-Datei\n"
 
 # src/sound.c:53
-#: src/sound.c:124
+#: src/sound.c:130
 msgid "Error finding sound file"
 msgstr "Fehler beim Suchen nach Sound-Datei"
 
 # src/sound.c:55
-#: src/sound.c:125
+#: src/sound.c:131
 #, c-format
 msgid ""
 "Warning!  Enlightenment was unable to load the\n"
@@ -2460,12 +2460,12 @@ msgstr ""
 "vielleicht Ihre Konfiguration überprüfen.\n"
 
 # src/sound.c:262
-#: src/sound.c:203
+#: src/sound.c:209
 msgid "Error initialising sound"
 msgstr "Fehler beim Initialisieren des Sounds"
 
 # src/sound.c:264
-#: src/sound.c:204
+#: src/sound.c:210
 msgid ""
 "Audio was enabled for Enlightenment but there was an error\n"
 "communicating with the audio server (Esound). Audio will\n"
@@ -2476,21 +2476,21 @@ msgstr ""
 "darum wieder ausgeschaltet.\n"
 
 # src/settings.c:1591
-#: src/sound.c:316
+#: src/sound.c:329
 msgid "Enable sounds"
 msgstr "Klänge verwenden"
 
-#: src/sound.c:322
+#: src/sound.c:335
 msgid "Sound"
 msgstr ""
 
 # src/settings.c:1566
-#: src/sound.c:323
+#: src/sound.c:336
 msgid "Audio Settings"
 msgstr "Audio-Einstellungen"
 
 # src/main.c:89
-#: src/sound.c:326
+#: src/sound.c:339
 msgid ""
 "Enlightenment Audio\n"
 "Settings Dialog\n"
@@ -2526,50 +2526,11 @@ msgstr "Desktopoptionen"
 msgid "Systray Settings"
 msgstr "Einstellungen zum automatischen Anheben"
 
-# src/misc.c:496
-#: src/theme.c:67
-#, fuzzy, c-format
-msgid "Theme %s does not contain a %s file\n"
-msgstr "Thema enthält keine Datei sound.cfg\n"
-
-# src/theme.c:293
-#: src/theme.c:346
-msgid "Unknown\n"
-msgstr "Unbekannt\n"
-
-# src/theme.c:354
-#: src/theme.c:392
-msgid "Bad Theme"
-msgstr "Unbrauchbares Thema"
-
-# src/theme.c:348
-#: src/theme.c:393
+#: src/theme.c:353
 #, c-format
 msgid ""
-"The theme:\n"
-"%s\n"
-"Is a badly formed theme package and is thus not being used.\n"
-"Enlightenment has fallen back to using the DEFAULT theme.\n"
-"\n"
-"The reason this theme is bad is:\n"
-"%s"
-msgstr ""
-"Das Thema:\n"
-"%s\n"
-"ist ein falsch aufgebautes Themenpaket und wird daher nicht\n"
-"benutzt. Enlightenment ist darum wieder zum DEFAULT-Thema\n"
-"zurückgekehrt.\n"
-"\n"
-"Das Thema ist aus folgendem Grund nicht brauchbar:\n"
-"%s"
-
-#: src/theme.c:419
-#, c-format
-msgid ""
-"No themes were found in the default theme directory:\n"
-" %s/themes/\n"
-"or in the user theme directory:\n"
-" %s/themes/\n"
+"No themes were found in the default directories:\n"
+" %s\n"
 "Proceeding from here is mostly pointless.\n"
 msgstr ""
 
@@ -3334,6 +3295,38 @@ msgstr ""
 #: config/strings.c:198
 msgid "Epplets"
 msgstr ""
+
+# src/misc.c:496
+#, fuzzy
+#~ msgid "Theme %s does not contain a %s file\n"
+#~ msgstr "Thema enthält keine Datei sound.cfg\n"
+
+# src/theme.c:293
+#~ msgid "Unknown\n"
+#~ msgstr "Unbekannt\n"
+
+# src/theme.c:354
+#~ msgid "Bad Theme"
+#~ msgstr "Unbrauchbares Thema"
+
+# src/theme.c:348
+#~ msgid ""
+#~ "The theme:\n"
+#~ "%s\n"
+#~ "Is a badly formed theme package and is thus not being used.\n"
+#~ "Enlightenment has fallen back to using the DEFAULT theme.\n"
+#~ "\n"
+#~ "The reason this theme is bad is:\n"
+#~ "%s"
+#~ msgstr ""
+#~ "Das Thema:\n"
+#~ "%s\n"
+#~ "ist ein falsch aufgebautes Themenpaket und wird daher nicht\n"
+#~ "benutzt. Enlightenment ist darum wieder zum DEFAULT-Thema\n"
+#~ "zurückgekehrt.\n"
+#~ "\n"
+#~ "Das Thema ist aus folgendem Grund nicht brauchbar:\n"
+#~ "%s"
 
 # src/ipc.c:4890
 #~ msgid ""

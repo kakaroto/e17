@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-10-05 20:32+0200\n"
+"POT-Creation-Date: 2008-10-15 17:49+0200\n"
 "PO-Revision-Date: 2000-03-07 16:35+0100\n"
 "Last-Translator: Daniel Vieira Pereira <gunsmithcat@ip.pt>\n"
 "Language-Team: Portuguese <pt@li.org>\n"
@@ -157,7 +157,7 @@ msgstr "Reiniciar o Enlightenment"
 msgid "Quit Enlightenment"
 msgstr "Sair do Enlightenment"
 
-#: src/backgrounds.c:1526
+#: src/backgrounds.c:1525
 #, c-format
 msgid ""
 "Background definition information:\n"
@@ -168,11 +168,11 @@ msgstr ""
 "Nome: %s\n"
 "Ficheiro: %s\n"
 
-#: src/backgrounds.c:1527
+#: src/backgrounds.c:1526
 msgid "-NONE-"
 msgstr "-NENHUM-"
 
-#: src/backgrounds.c:1706 src/backgrounds.c:1708
+#: src/backgrounds.c:1704 src/backgrounds.c:1706
 msgid ""
 "No\n"
 "Background"
@@ -180,40 +180,40 @@ msgstr ""
 "Sem\n"
 "Imagem de fundo"
 
-#: src/backgrounds.c:1802 src/backgrounds.c:2231
+#: src/backgrounds.c:1800 src/backgrounds.c:2229
 #, c-format
 msgid "Unused backgrounds freed after %2i:%02i:%02i"
 msgstr "Imagens de fundo não usadas serão libertadas após %2i:%02i:%02i"
 
-#: src/backgrounds.c:2017
+#: src/backgrounds.c:2015
 msgid "Use background image"
 msgstr "Usar imagem de fundo"
 
-#: src/backgrounds.c:2021
+#: src/backgrounds.c:2019
 msgid "Keep aspect on scale"
 msgstr "Manter aspecto à escala"
 
-#: src/backgrounds.c:2025
+#: src/backgrounds.c:2023
 msgid "Tile image across background"
 msgstr "Duplicar imagem pelo ecrã de fundo"
 
-#: src/backgrounds.c:2034
+#: src/backgrounds.c:2032
 msgid "Move to Front\n"
 msgstr "Mover para a Frente\n"
 
-#: src/backgrounds.c:2039
+#: src/backgrounds.c:2037
 msgid "Duplicate\n"
 msgstr "Duplicar\n"
 
-#: src/backgrounds.c:2043
+#: src/backgrounds.c:2041
 msgid "Unlist\n"
 msgstr "Tirar da lista\n"
 
-#: src/backgrounds.c:2048
+#: src/backgrounds.c:2046
 msgid "Delete File\n"
 msgstr "Apagar Ficheiro\n"
 
-#: src/backgrounds.c:2059
+#: src/backgrounds.c:2057
 msgid ""
 "Background\n"
 "Image\n"
@@ -227,62 +227,62 @@ msgstr ""
 "e\n"
 "Alinhamento\n"
 
-#: src/backgrounds.c:2116
+#: src/backgrounds.c:2114
 msgid "BG Colour\n"
 msgstr "Côr da imagem de fundo\n"
 
-#: src/backgrounds.c:2121
+#: src/backgrounds.c:2119
 msgid "Red:\n"
 msgstr "Vermelho:\n"
 
-#: src/backgrounds.c:2132
+#: src/backgrounds.c:2130
 msgid "Green:\n"
 msgstr "Verde:\n"
 
-#: src/backgrounds.c:2143
+#: src/backgrounds.c:2141
 msgid "Blue:\n"
 msgstr "Azul:\n"
 
-#: src/backgrounds.c:2176
+#: src/backgrounds.c:2174
 msgid "Pre-scan BG's"
 msgstr "Carregar antecipadamente Imagens de Fundo"
 
-#: src/backgrounds.c:2184
+#: src/backgrounds.c:2182
 msgid "Sort by File"
 msgstr "Arranjar por Ficheiro"
 
-#: src/backgrounds.c:2189
+#: src/backgrounds.c:2187
 msgid "Sort by Attr."
 msgstr "Arranjar por Atributo"
 
-#: src/backgrounds.c:2195
+#: src/backgrounds.c:2193
 msgid "Sort by Image"
 msgstr "Arranjar por Imagem"
 
-#: src/backgrounds.c:2215
+#: src/backgrounds.c:2213
 msgid "Use dithering in Hi-Colour"
 msgstr "Usar dithering em Hi-Colour"
 
-#: src/backgrounds.c:2219
+#: src/backgrounds.c:2217
 msgid "Background overrides theme"
 msgstr "Imagem de fundo sobrepôe-se à do tema"
 
-#: src/backgrounds.c:2224
+#: src/backgrounds.c:2222
 msgid "Enable background transparency compatibility mode"
 msgstr ""
 
-#: src/backgrounds.c:2248 src/mod-trans.c:199
+#: src/backgrounds.c:2246 src/mod-trans.c:199
 #, fuzzy
 msgid "Background"
 msgstr ""
 "Sem\n"
 "Imagem de fundo"
 
-#: src/backgrounds.c:2249
+#: src/backgrounds.c:2247
 msgid "Desktop Background Settings"
 msgstr "Opções de Imagem de Fundo do Desktop"
 
-#: src/backgrounds.c:2252
+#: src/backgrounds.c:2250
 msgid ""
 "Enlightenment Desktop\n"
 "Background Settings Dialog\n"
@@ -390,7 +390,7 @@ msgstr ""
 "e este tema tire partido de novas funções de um Enlightenment\n"
 "mais recente.\n"
 
-#: src/config.c:596
+#: src/config.c:572
 msgid "Enlightenment Starting..."
 msgstr "Inicializando o Enlightenment ..."
 
@@ -690,8 +690,8 @@ msgid ""
 "Settings Dialog\n"
 msgstr ""
 
-#: src/dialog.c:846 src/dialog.c:2035 src/dialog.c:2066 src/events.c:86
-#: src/setup.c:157 src/sound.c:203
+#: src/dialog.c:846 src/dialog.c:2035 src/dialog.c:2066 src/events.c:87
+#: src/setup.c:157 src/sound.c:209
 msgid "OK"
 msgstr "OK"
 
@@ -711,11 +711,11 @@ msgid ""
 "extensions are loaded."
 msgstr ""
 
-#: src/events.c:86
+#: src/events.c:87
 msgid "X server setup error"
 msgstr "Erro no setup do servidor de X"
 
-#: src/events.c:87
+#: src/events.c:88
 msgid ""
 "FATAL ERROR:\n"
 "\n"
@@ -1016,17 +1016,17 @@ msgid ""
 "Group Control Settings Dialog\n"
 msgstr ""
 
-#: src/groups.c:1056
+#: src/groups.c:1052
 #, fuzzy
 msgid "Pick the group the window will belong to:"
 msgstr " Escolha o grupo ao qual a janela irá pertencer: \n"
 
-#: src/groups.c:1063
+#: src/groups.c:1059
 #, fuzzy
 msgid "Select the group to remove the window from:"
 msgstr "   Escolha o grupo ao qual quer remover a janela.  "
 
-#: src/groups.c:1069
+#: src/groups.c:1065
 #, fuzzy
 msgid "Select the group to break:"
 msgstr "  Escolha o grupo que quer remover  "
@@ -1131,30 +1131,30 @@ msgstr "Opções da Caixa de Icones"
 msgid "Iconbox Settings"
 msgstr "Opções da Caixa de Ícones"
 
-#: src/ipc.c:193 src/ipc.c:1426 src/ipc.c:1433
+#: src/ipc.c:194 src/ipc.c:1436 src/ipc.c:1443
 msgid "Message"
 msgstr ""
 
-#: src/ipc.c:1426 src/ipc.c:1433
+#: src/ipc.c:1436 src/ipc.c:1443
 #, c-format
 msgid "e16 was built without %s support"
 msgstr ""
 
-#: src/ipc.c:1427
+#: src/ipc.c:1437
 #, fuzzy
 msgid "composite"
 msgstr "Ligar sons"
 
-#: src/ipc.c:1434
+#: src/ipc.c:1444
 msgid "sound"
 msgstr ""
 
-#: src/ipc.c:1768
+#: src/ipc.c:1785
 #, fuzzy
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Ajuda de comandos do IPC do Enlightenment"
 
-#: src/ipc.c:1772
+#: src/ipc.c:1789
 #, fuzzy
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
@@ -1165,23 +1165,23 @@ msgstr ""
 "use \"help <comando>\" para uma descrição individual\n"
 "\n"
 
-#: src/ipc.c:1774 src/ipc.c:1794 src/ipc.c:1806
+#: src/ipc.c:1791 src/ipc.c:1811 src/ipc.c:1823
 #, fuzzy
 msgid "Commands currently available:\n"
 msgstr ""
 "\n"
 "comandos actualmente disponíveis:\n"
 
-#: src/ipc.c:1792
+#: src/ipc.c:1809
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 
-#: src/ipc.c:1793
+#: src/ipc.c:1810
 #, fuzzy
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "use \"help <comando>\" para uma descrição individual\n"
 
-#: src/ipc.c:1795 src/ipc.c:1807
+#: src/ipc.c:1812 src/ipc.c:1824
 #, fuzzy
 msgid "         <command>     : <description>\n"
 msgstr "<comando> : <descrição>\n"
@@ -1871,7 +1871,7 @@ msgid ""
 "Settings Dialog\n"
 msgstr "Caixa de Diálogo do Enlightement"
 
-#: src/settings.c:790
+#: src/settings.c:784
 #, fuzzy
 msgid "Enlightenment Settings"
 msgstr "Inicializando o Enlightenment ..."
@@ -2062,11 +2062,11 @@ msgstr ""
 msgid "Error saving snaps file\n"
 msgstr "Erro ao salvar o ficheiro de miniaturas\n"
 
-#: src/sound.c:124
+#: src/sound.c:130
 msgid "Error finding sound file"
 msgstr "Erro ao procurar ficheiro de som"
 
-#: src/sound.c:125
+#: src/sound.c:131
 #, c-format
 msgid ""
 "Warning!  Enlightenment was unable to load the\n"
@@ -2081,11 +2081,11 @@ msgstr ""
 "O Enlightenment continuará a funcionar, mas\n"
 "aconselhamos que verifique a sua configuração.\n"
 
-#: src/sound.c:203
+#: src/sound.c:209
 msgid "Error initialising sound"
 msgstr "Erro ao inicializar o som"
 
-#: src/sound.c:204
+#: src/sound.c:210
 msgid ""
 "Audio was enabled for Enlightenment but there was an error\n"
 "communicating with the audio server (Esound). Audio will\n"
@@ -2095,19 +2095,19 @@ msgstr ""
 "ao comunicar com o servidor de som (Esound). O Som será\n"
 "desligado agora.\n"
 
-#: src/sound.c:316
+#: src/sound.c:329
 msgid "Enable sounds"
 msgstr "Ligar sons"
 
-#: src/sound.c:322
+#: src/sound.c:335
 msgid "Sound"
 msgstr ""
 
-#: src/sound.c:323
+#: src/sound.c:336
 msgid "Audio Settings"
 msgstr "Opções do Som"
 
-#: src/sound.c:326
+#: src/sound.c:339
 msgid ""
 "Enlightenment Audio\n"
 "Settings Dialog\n"
@@ -2140,45 +2140,11 @@ msgstr "Opções do Desktop"
 msgid "Systray Settings"
 msgstr "Opção de Autoelevação"
 
-#: src/theme.c:67
-#, fuzzy, c-format
-msgid "Theme %s does not contain a %s file\n"
-msgstr "O Tema não contêm o ficheiro sound.cfg\n"
-
-#: src/theme.c:346
-msgid "Unknown\n"
-msgstr "Desconhecido\n"
-
-#: src/theme.c:392
-msgid "Bad Theme"
-msgstr "Tema Errado"
-
-#: src/theme.c:393
+#: src/theme.c:353
 #, c-format
 msgid ""
-"The theme:\n"
-"%s\n"
-"Is a badly formed theme package and is thus not being used.\n"
-"Enlightenment has fallen back to using the DEFAULT theme.\n"
-"\n"
-"The reason this theme is bad is:\n"
-"%s"
-msgstr ""
-"O tema:\n"
-"%s\n"
-"É um tema defeituoso e por isso não está a ser utilizado.\n"
-"O Enlightenment está agora a usar o tema que trás por defeito.\n"
-"\n"
-"A razão pela qual o tema é considerado defeituoso é:\n"
-"%s"
-
-#: src/theme.c:419
-#, c-format
-msgid ""
-"No themes were found in the default theme directory:\n"
-" %s/themes/\n"
-"or in the user theme directory:\n"
-" %s/themes/\n"
+"No themes were found in the default directories:\n"
+" %s\n"
 "Proceeding from here is mostly pointless.\n"
 msgstr ""
 
@@ -2859,6 +2825,33 @@ msgstr ""
 #: config/strings.c:198
 msgid "Epplets"
 msgstr ""
+
+#, fuzzy
+#~ msgid "Theme %s does not contain a %s file\n"
+#~ msgstr "O Tema não contêm o ficheiro sound.cfg\n"
+
+#~ msgid "Unknown\n"
+#~ msgstr "Desconhecido\n"
+
+#~ msgid "Bad Theme"
+#~ msgstr "Tema Errado"
+
+#~ msgid ""
+#~ "The theme:\n"
+#~ "%s\n"
+#~ "Is a badly formed theme package and is thus not being used.\n"
+#~ "Enlightenment has fallen back to using the DEFAULT theme.\n"
+#~ "\n"
+#~ "The reason this theme is bad is:\n"
+#~ "%s"
+#~ msgstr ""
+#~ "O tema:\n"
+#~ "%s\n"
+#~ "É um tema defeituoso e por isso não está a ser utilizado.\n"
+#~ "O Enlightenment está agora a usar o tema que trás por defeito.\n"
+#~ "\n"
+#~ "A razão pela qual o tema é considerado defeituoso é:\n"
+#~ "%s"
 
 #~ msgid ""
 #~ "Enlightenment Version : %s\n"

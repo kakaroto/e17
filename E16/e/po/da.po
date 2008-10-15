@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-10-05 20:32+0200\n"
+"POT-Creation-Date: 2008-10-15 17:49+0200\n"
 "PO-Revision-Date: 2008-02-10 19:59+0100\n"
 "Last-Translator: Kim Woelders <kim@woelders.dk>\n"
 "Language-Team: Dansk/Danish <sslug-locale@sslug.dk>\n"
@@ -167,7 +167,7 @@ msgstr "Genstart Enlightenment"
 msgid "Quit Enlightenment"
 msgstr "Afslut Enlightenment"
 
-#: src/backgrounds.c:1526
+#: src/backgrounds.c:1525
 #, c-format
 msgid ""
 "Background definition information:\n"
@@ -178,11 +178,11 @@ msgstr ""
 "Navn: %s\n"
 "Fil : %s\n"
 
-#: src/backgrounds.c:1527
+#: src/backgrounds.c:1526
 msgid "-NONE-"
 msgstr "-INGEN-"
 
-#: src/backgrounds.c:1706 src/backgrounds.c:1708
+#: src/backgrounds.c:1704 src/backgrounds.c:1706
 msgid ""
 "No\n"
 "Background"
@@ -190,40 +190,40 @@ msgstr ""
 "Ingen\n"
 "baggrund"
 
-#: src/backgrounds.c:1802 src/backgrounds.c:2231
+#: src/backgrounds.c:1800 src/backgrounds.c:2229
 #, c-format
 msgid "Unused backgrounds freed after %2i:%02i:%02i"
 msgstr "Ubrugte baggrunde frigjorte efter %2i:%02i:%02i"
 
-#: src/backgrounds.c:2017
+#: src/backgrounds.c:2015
 msgid "Use background image"
 msgstr "Brug baggrundsbillede"
 
-#: src/backgrounds.c:2021
+#: src/backgrounds.c:2019
 msgid "Keep aspect on scale"
 msgstr "Bevar dimensioner ved skalering"
 
-#: src/backgrounds.c:2025
+#: src/backgrounds.c:2023
 msgid "Tile image across background"
 msgstr "'Tile' billede på baggrund"
 
-#: src/backgrounds.c:2034
+#: src/backgrounds.c:2032
 msgid "Move to Front\n"
 msgstr "Flyt til front\n"
 
-#: src/backgrounds.c:2039
+#: src/backgrounds.c:2037
 msgid "Duplicate\n"
 msgstr "Duplikér\n"
 
-#: src/backgrounds.c:2043
+#: src/backgrounds.c:2041
 msgid "Unlist\n"
 msgstr "Aflist\n"
 
-#: src/backgrounds.c:2048
+#: src/backgrounds.c:2046
 msgid "Delete File\n"
 msgstr "Slet fil\n"
 
-#: src/backgrounds.c:2059
+#: src/backgrounds.c:2057
 msgid ""
 "Background\n"
 "Image\n"
@@ -237,59 +237,59 @@ msgstr ""
 "og\n"
 "Justering\n"
 
-#: src/backgrounds.c:2116
+#: src/backgrounds.c:2114
 msgid "BG Colour\n"
 msgstr "Bagg-farve\n"
 
-#: src/backgrounds.c:2121
+#: src/backgrounds.c:2119
 msgid "Red:\n"
 msgstr "Rød:\n"
 
-#: src/backgrounds.c:2132
+#: src/backgrounds.c:2130
 msgid "Green:\n"
 msgstr "Grøn:\n"
 
-#: src/backgrounds.c:2143
+#: src/backgrounds.c:2141
 msgid "Blue:\n"
 msgstr "Blå:\n"
 
-#: src/backgrounds.c:2176
+#: src/backgrounds.c:2174
 msgid "Pre-scan BG's"
 msgstr "Forskan baggrunde"
 
-#: src/backgrounds.c:2184
+#: src/backgrounds.c:2182
 msgid "Sort by File"
 msgstr "Sortér efter fil"
 
-#: src/backgrounds.c:2189
+#: src/backgrounds.c:2187
 msgid "Sort by Attr."
 msgstr "Sortér efter egensk."
 
-#: src/backgrounds.c:2195
+#: src/backgrounds.c:2193
 msgid "Sort by Image"
 msgstr "Sortér efter billede"
 
-#: src/backgrounds.c:2215
+#: src/backgrounds.c:2213
 msgid "Use dithering in Hi-Colour"
 msgstr "Brug dithering i Hi-Colour"
 
-#: src/backgrounds.c:2219
+#: src/backgrounds.c:2217
 msgid "Background overrides theme"
 msgstr "Baggrund tilsidesætter tema"
 
-#: src/backgrounds.c:2224
+#: src/backgrounds.c:2222
 msgid "Enable background transparency compatibility mode"
 msgstr "Aktivér baggrundskompatibilitetsmode"
 
-#: src/backgrounds.c:2248 src/mod-trans.c:199
+#: src/backgrounds.c:2246 src/mod-trans.c:199
 msgid "Background"
 msgstr "Baggrund"
 
-#: src/backgrounds.c:2249
+#: src/backgrounds.c:2247
 msgid "Desktop Background Settings"
 msgstr "Skrivebordsbaggrundsindstillinger"
 
-#: src/backgrounds.c:2252
+#: src/backgrounds.c:2250
 msgid ""
 "Enlightenment Desktop\n"
 "Background Settings Dialog\n"
@@ -381,7 +381,7 @@ msgstr ""
 "Konfigurationen for temaet du har valgt er invalid.\n"
 "Dets revision er %i, men skal være <= %i.\n"
 
-#: src/config.c:596
+#: src/config.c:572
 msgid "Enlightenment Starting..."
 msgstr "Enlightenment starter..."
 
@@ -675,8 +675,8 @@ msgstr ""
 "Indstillinger for\n"
 "virtuelle skriveborde\n"
 
-#: src/dialog.c:846 src/dialog.c:2035 src/dialog.c:2066 src/events.c:86
-#: src/setup.c:157 src/sound.c:203
+#: src/dialog.c:846 src/dialog.c:2035 src/dialog.c:2066 src/events.c:87
+#: src/setup.c:157 src/sound.c:209
 msgid "OK"
 msgstr "Ok"
 
@@ -700,11 +700,11 @@ msgstr ""
 "Composite, Damage, Fixes, og Render\n"
 "extensions er til rådighed."
 
-#: src/events.c:86
+#: src/events.c:87
 msgid "X server setup error"
 msgstr "X-server opsætningsfejl"
 
-#: src/events.c:87
+#: src/events.c:88
 msgid ""
 "FATAL ERROR:\n"
 "\n"
@@ -996,15 +996,15 @@ msgstr ""
 "Indstillinger for\n"
 "standardgrupper\n"
 
-#: src/groups.c:1056
+#: src/groups.c:1052
 msgid "Pick the group the window will belong to:"
 msgstr "Vælg gruppen som vinduet skal tilhøre:"
 
-#: src/groups.c:1063
+#: src/groups.c:1059
 msgid "Select the group to remove the window from:"
 msgstr "Vælg gruppen som vinduet skal fjernes fra:"
 
-#: src/groups.c:1069
+#: src/groups.c:1065
 msgid "Select the group to break:"
 msgstr "Vælg gruppen som skal brydes:"
 
@@ -1075,28 +1075,28 @@ msgstr "Ikonboks..."
 msgid "Iconbox Settings"
 msgstr "Ikonboksindstillinger"
 
-#: src/ipc.c:193 src/ipc.c:1426 src/ipc.c:1433
+#: src/ipc.c:194 src/ipc.c:1436 src/ipc.c:1443
 msgid "Message"
 msgstr "Meddelelse"
 
-#: src/ipc.c:1426 src/ipc.c:1433
+#: src/ipc.c:1436 src/ipc.c:1443
 #, c-format
 msgid "e16 was built without %s support"
 msgstr "e16 er bygget uden understøttelse for %s"
 
-#: src/ipc.c:1427
+#: src/ipc.c:1437
 msgid "composite"
 msgstr "composite"
 
-#: src/ipc.c:1434
+#: src/ipc.c:1444
 msgid "sound"
 msgstr "lyd"
 
-#: src/ipc.c:1768
+#: src/ipc.c:1785
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Enlightenment IPC kommandohjælp\n"
 
-#: src/ipc.c:1772
+#: src/ipc.c:1789
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
 "Use \"help <command>\" for an individual description\n"
@@ -1106,19 +1106,19 @@ msgstr ""
 "Brug \"help <kommando>\" for en individuel beskrivelse\n"
 "\n"
 
-#: src/ipc.c:1774 src/ipc.c:1794 src/ipc.c:1806
+#: src/ipc.c:1791 src/ipc.c:1811 src/ipc.c:1823
 msgid "Commands currently available:\n"
 msgstr "Kommandoer tilgængelige lige nu:\n"
 
-#: src/ipc.c:1792
+#: src/ipc.c:1809
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr "Brug \"help full\" for den fulde beskrivelse af alle kommandoer\n"
 
-#: src/ipc.c:1793
+#: src/ipc.c:1810
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "Brug \"help <kommando>\" for individuel beskrivelse\n"
 
-#: src/ipc.c:1795 src/ipc.c:1807
+#: src/ipc.c:1812 src/ipc.c:1824
 msgid "         <command>     : <description>\n"
 msgstr "         <kommando> : <beskrivelse>\n"
 
@@ -1761,7 +1761,7 @@ msgstr ""
 "Indstillinger for\n"
 "composite\n"
 
-#: src/settings.c:790
+#: src/settings.c:784
 msgid "Enlightenment Settings"
 msgstr "Enlightenment indstillinger"
 
@@ -1938,11 +1938,11 @@ msgstr ""
 msgid "Error saving snaps file\n"
 msgstr "Fejl ved gemning af skærmdumpsfil\n"
 
-#: src/sound.c:124
+#: src/sound.c:130
 msgid "Error finding sound file"
 msgstr "Kunne ikke finde lydfil"
 
-#: src/sound.c:125
+#: src/sound.c:131
 #, c-format
 msgid ""
 "Warning!  Enlightenment was unable to load the\n"
@@ -1954,11 +1954,11 @@ msgstr ""
 "Advarsel! e16 kunne ikke læse denne lydfil:\n"
 "%s\n"
 
-#: src/sound.c:203
+#: src/sound.c:209
 msgid "Error initialising sound"
 msgstr "Fejl under opstart af lyd"
 
-#: src/sound.c:204
+#: src/sound.c:210
 msgid ""
 "Audio was enabled for Enlightenment but there was an error\n"
 "communicating with the audio server (Esound). Audio will\n"
@@ -1967,19 +1967,19 @@ msgstr ""
 "Der var et problem med at kommunikere med audioserveren (esound).\n"
 "Lyd vil nu blive deaktiveret.\n"
 
-#: src/sound.c:316
+#: src/sound.c:329
 msgid "Enable sounds"
 msgstr "Brug lyde"
 
-#: src/sound.c:322
+#: src/sound.c:335
 msgid "Sound"
 msgstr "Lyd"
 
-#: src/sound.c:323
+#: src/sound.c:336
 msgid "Audio Settings"
 msgstr "Lydindstillinger"
 
-#: src/sound.c:326
+#: src/sound.c:339
 msgid ""
 "Enlightenment Audio\n"
 "Settings Dialog\n"
@@ -2009,38 +2009,11 @@ msgstr "Systray..."
 msgid "Systray Settings"
 msgstr "Systray indstillinger"
 
-#: src/theme.c:67
-#, c-format
-msgid "Theme %s does not contain a %s file\n"
-msgstr "Tema %s indeholder ikke en %s fil\n"
-
-#: src/theme.c:346
-msgid "Unknown\n"
-msgstr "Ukendt\n"
-
-#: src/theme.c:392
-msgid "Bad Theme"
-msgstr "Dårligt tema"
-
-#: src/theme.c:393
+#: src/theme.c:353
 #, c-format
 msgid ""
-"The theme:\n"
-"%s\n"
-"Is a badly formed theme package and is thus not being used.\n"
-"Enlightenment has fallen back to using the DEFAULT theme.\n"
-"\n"
-"The reason this theme is bad is:\n"
-"%s"
-msgstr ""
-
-#: src/theme.c:419
-#, c-format
-msgid ""
-"No themes were found in the default theme directory:\n"
-" %s/themes/\n"
-"or in the user theme directory:\n"
-" %s/themes/\n"
+"No themes were found in the default directories:\n"
+" %s\n"
 "Proceeding from here is mostly pointless.\n"
 msgstr ""
 
@@ -2650,6 +2623,15 @@ msgstr "Andet"
 #: config/strings.c:198
 msgid "Epplets"
 msgstr "Epplets"
+
+#~ msgid "Theme %s does not contain a %s file\n"
+#~ msgstr "Tema %s indeholder ikke en %s fil\n"
+
+#~ msgid "Unknown\n"
+#~ msgstr "Ukendt\n"
+
+#~ msgid "Bad Theme"
+#~ msgstr "Dårligt tema"
 
 #~ msgid ""
 #~ "Enlightenment Version : %s\n"

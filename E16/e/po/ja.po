@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-10-05 20:32+0200\n"
+"POT-Creation-Date: 2008-10-15 17:49+0200\n"
 "PO-Revision-Date: 2008-03-19 20:00+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -163,7 +163,7 @@ msgstr "Enlightenment 再起動"
 msgid "Quit Enlightenment"
 msgstr "Enlightenment 終了"
 
-#: src/backgrounds.c:1526
+#: src/backgrounds.c:1525
 #, c-format
 msgid ""
 "Background definition information:\n"
@@ -174,11 +174,11 @@ msgstr ""
 "名前: %s\n"
 "ファイル: %s\n"
 
-#: src/backgrounds.c:1527
+#: src/backgrounds.c:1526
 msgid "-NONE-"
 msgstr "なし"
 
-#: src/backgrounds.c:1706 src/backgrounds.c:1708
+#: src/backgrounds.c:1704 src/backgrounds.c:1706
 msgid ""
 "No\n"
 "Background"
@@ -186,40 +186,40 @@ msgstr ""
 "背景\n"
 "なし"
 
-#: src/backgrounds.c:1802 src/backgrounds.c:2231
+#: src/backgrounds.c:1800 src/backgrounds.c:2229
 #, c-format
 msgid "Unused backgrounds freed after %2i:%02i:%02i"
 msgstr "%2i:%02i:%02i 後に使用されていない背景を解放する"
 
-#: src/backgrounds.c:2017
+#: src/backgrounds.c:2015
 msgid "Use background image"
 msgstr "背景に画像を使用する"
 
-#: src/backgrounds.c:2021
+#: src/backgrounds.c:2019
 msgid "Keep aspect on scale"
 msgstr "縦横のサイズ比を保つ"
 
-#: src/backgrounds.c:2025
+#: src/backgrounds.c:2023
 msgid "Tile image across background"
 msgstr "背景画像をタイル状に配置"
 
-#: src/backgrounds.c:2034
+#: src/backgrounds.c:2032
 msgid "Move to Front\n"
 msgstr "先頭へ移動\n"
 
-#: src/backgrounds.c:2039
+#: src/backgrounds.c:2037
 msgid "Duplicate\n"
 msgstr "コピー\n"
 
-#: src/backgrounds.c:2043
+#: src/backgrounds.c:2041
 msgid "Unlist\n"
 msgstr "背景リストから消去\n"
 
-#: src/backgrounds.c:2048
+#: src/backgrounds.c:2046
 msgid "Delete File\n"
 msgstr "背景ファイルを削除\n"
 
-#: src/backgrounds.c:2059
+#: src/backgrounds.c:2057
 msgid ""
 "Background\n"
 "Image\n"
@@ -233,62 +233,62 @@ msgstr ""
 "\n"
 "方向\n"
 
-#: src/backgrounds.c:2116
+#: src/backgrounds.c:2114
 msgid "BG Colour\n"
 msgstr "背景の色\n"
 
-#: src/backgrounds.c:2121
+#: src/backgrounds.c:2119
 msgid "Red:\n"
 msgstr "赤:\n"
 
-#: src/backgrounds.c:2132
+#: src/backgrounds.c:2130
 msgid "Green:\n"
 msgstr "緑:\n"
 
-#: src/backgrounds.c:2143
+#: src/backgrounds.c:2141
 msgid "Blue:\n"
 msgstr "青:\n"
 
-#: src/backgrounds.c:2176
+#: src/backgrounds.c:2174
 msgid "Pre-scan BG's"
 msgstr "背景をスキャン"
 
-#: src/backgrounds.c:2184
+#: src/backgrounds.c:2182
 msgid "Sort by File"
 msgstr "ファイル名でソート"
 
-#: src/backgrounds.c:2189
+#: src/backgrounds.c:2187
 msgid "Sort by Attr."
 msgstr "属性でソート"
 
-#: src/backgrounds.c:2195
+#: src/backgrounds.c:2193
 msgid "Sort by Image"
 msgstr "画像名でソート"
 
-#: src/backgrounds.c:2215
+#: src/backgrounds.c:2213
 msgid "Use dithering in Hi-Colour"
 msgstr "ハイカラー時にディザリングする"
 
-#: src/backgrounds.c:2219
+#: src/backgrounds.c:2217
 msgid "Background overrides theme"
 msgstr "背景はテーマを上書きする"
 
-#: src/backgrounds.c:2224
+#: src/backgrounds.c:2222
 msgid "Enable background transparency compatibility mode"
 msgstr ""
 "一般の背景透過手法に合わせてE16の背景透過機能を補正する (速度低下の可能性あ"
 "り)"
 
 #
-#: src/backgrounds.c:2248 src/mod-trans.c:199
+#: src/backgrounds.c:2246 src/mod-trans.c:199
 msgid "Background"
 msgstr "背景"
 
-#: src/backgrounds.c:2249
+#: src/backgrounds.c:2247
 msgid "Desktop Background Settings"
 msgstr "デスクトップ背景の設定"
 
-#: src/backgrounds.c:2252
+#: src/backgrounds.c:2250
 msgid ""
 "Enlightenment Desktop\n"
 "Background Settings Dialog\n"
@@ -394,7 +394,7 @@ msgstr ""
 "このテーマで利用している機能が新しい Enlightenment の機能なのに、\n"
 "Enlightenment がしばらく更新されていないためかもしれません。\n"
 
-#: src/config.c:596
+#: src/config.c:572
 msgid "Enlightenment Starting..."
 msgstr "Enlightenment 起動中..."
 
@@ -700,8 +700,8 @@ msgstr ""
 "Enlightenment 仮想デスクトップ\n"
 "設定ダイアログ\n"
 
-#: src/dialog.c:846 src/dialog.c:2035 src/dialog.c:2066 src/events.c:86
-#: src/setup.c:157 src/sound.c:203
+#: src/dialog.c:846 src/dialog.c:2035 src/dialog.c:2066 src/events.c:87
+#: src/setup.c:157 src/sound.c:209
 msgid "OK"
 msgstr "了解"
 
@@ -724,11 +724,11 @@ msgstr ""
 "Composite, Damage, Fixes, Render の各拡張機能が\n"
 "ロードされていることを xdpyinfo を使って確認してください."
 
-#: src/events.c:86
+#: src/events.c:87
 msgid "X server setup error"
 msgstr "X サーバーの設定エラー"
 
-#: src/events.c:87
+#: src/events.c:88
 msgid ""
 "FATAL ERROR:\n"
 "\n"
@@ -1035,15 +1035,15 @@ msgstr ""
 "Enlightenment グループ管理の\n"
 "デフォルト設定ダイアログ\n"
 
-#: src/groups.c:1056
+#: src/groups.c:1052
 msgid "Pick the group the window will belong to:"
 msgstr "このウィンドウが参加するグループを選択してください:"
 
-#: src/groups.c:1063
+#: src/groups.c:1059
 msgid "Select the group to remove the window from:"
 msgstr "削除するウィンドウが属しているグループを選択してください。"
 
-#: src/groups.c:1069
+#: src/groups.c:1065
 msgid "Select the group to break:"
 msgstr "破棄するグループを選択してください。 "
 
@@ -1147,30 +1147,30 @@ msgstr "アイコンボックスオプション"
 msgid "Iconbox Settings"
 msgstr "アイコンボックスの設定"
 
-#: src/ipc.c:193 src/ipc.c:1426 src/ipc.c:1433
+#: src/ipc.c:194 src/ipc.c:1436 src/ipc.c:1443
 msgid "Message"
 msgstr "メッセージ"
 
-#: src/ipc.c:1426 src/ipc.c:1433
+#: src/ipc.c:1436 src/ipc.c:1443
 #, c-format
 msgid "e16 was built without %s support"
 msgstr "このe16は %s に対応していません"
 
-#: src/ipc.c:1427
+#: src/ipc.c:1437
 msgid "composite"
 msgstr "コンポジット"
 
-#: src/ipc.c:1434
+#: src/ipc.c:1444
 msgid "sound"
 msgstr "サウンド"
 
 #
-#: src/ipc.c:1768
+#: src/ipc.c:1785
 msgid "Enlightenment IPC Commands Help\n"
 msgstr "Enlightenment IPC コマンド ヘルプ\n"
 
 #
-#: src/ipc.c:1772
+#: src/ipc.c:1789
 msgid ""
 "Use \"help all\" for descriptions of each command\n"
 "Use \"help <command>\" for an individual description\n"
@@ -1181,22 +1181,22 @@ msgstr ""
 "\n"
 
 #
-#: src/ipc.c:1774 src/ipc.c:1794 src/ipc.c:1806
+#: src/ipc.c:1791 src/ipc.c:1811 src/ipc.c:1823
 msgid "Commands currently available:\n"
 msgstr "現在利用可能なコマンド:\n"
 
-#: src/ipc.c:1792
+#: src/ipc.c:1809
 msgid "Use \"help full\" for full descriptions of each command\n"
 msgstr ""
 "\"help full\" ですべてのコマンドについて各々詳しい説明が表示されます。\n"
 
 #
-#: src/ipc.c:1793
+#: src/ipc.c:1810
 msgid "Use \"help <command>\" for an individual description\n"
 msgstr "\"help <コマンド>\" で指定されたコマンドの説明が表示されます。\n"
 
 #
-#: src/ipc.c:1795 src/ipc.c:1807
+#: src/ipc.c:1812 src/ipc.c:1824
 msgid "         <command>     : <description>\n"
 msgstr "<コマンド> : <説明>\n"
 
@@ -1895,7 +1895,7 @@ msgstr ""
 "Enlightenment コンポジットの\n"
 "設定ダイアログ\n"
 
-#: src/settings.c:790
+#: src/settings.c:784
 msgid "Enlightenment Settings"
 msgstr "Enlightenment の設定"
 
@@ -2094,11 +2094,11 @@ msgstr ""
 msgid "Error saving snaps file\n"
 msgstr "スナップファイルの保存時にエラーが起きました。\n"
 
-#: src/sound.c:124
+#: src/sound.c:130
 msgid "Error finding sound file"
 msgstr "サウンドファイルがみつかりません。"
 
-#: src/sound.c:125
+#: src/sound.c:131
 #, c-format
 msgid ""
 "Warning!  Enlightenment was unable to load the\n"
@@ -2112,11 +2112,11 @@ msgstr ""
 "%s\n"
 "処理は継続されますが、設定を確認した方がいいと思います。\n"
 
-#: src/sound.c:203
+#: src/sound.c:209
 msgid "Error initialising sound"
 msgstr "サウンドの初期化中にエラーが起きました。"
 
-#: src/sound.c:204
+#: src/sound.c:210
 msgid ""
 "Audio was enabled for Enlightenment but there was an error\n"
 "communicating with the audio server (Esound). Audio will\n"
@@ -2126,19 +2126,19 @@ msgstr ""
 "サーバー(Esound)との通信中にエラーが起きました。オーディオを無効\n"
 "にします。\n"
 
-#: src/sound.c:316
+#: src/sound.c:329
 msgid "Enable sounds"
 msgstr "音響機能を有効にする"
 
-#: src/sound.c:322
+#: src/sound.c:335
 msgid "Sound"
 msgstr "サウンド"
 
-#: src/sound.c:323
+#: src/sound.c:336
 msgid "Audio Settings"
 msgstr "オーディオ設定"
 
-#: src/sound.c:326
+#: src/sound.c:339
 msgid ""
 "Enlightenment Audio\n"
 "Settings Dialog\n"
@@ -2173,44 +2173,11 @@ msgstr "システムトレイオプション"
 msgid "Systray Settings"
 msgstr "システムトレイの設定"
 
-#: src/theme.c:67
-#, c-format
-msgid "Theme %s does not contain a %s file\n"
-msgstr "テーマ %s にファイル %s が入っていません\n"
-
-#: src/theme.c:346
-msgid "Unknown\n"
-msgstr "不明\n"
-
-#: src/theme.c:392
-msgid "Bad Theme"
-msgstr "だめなテーマです"
-
-#: src/theme.c:393
-#, c-format
+#: src/theme.c:353
+#, fuzzy, c-format
 msgid ""
-"The theme:\n"
-"%s\n"
-"Is a badly formed theme package and is thus not being used.\n"
-"Enlightenment has fallen back to using the DEFAULT theme.\n"
-"\n"
-"The reason this theme is bad is:\n"
-"%s"
-msgstr ""
-"以下のテーマ\n"
-"%s\n"
-"はパッケージの仕方がまずいので使われません。\n"
-"デフォルトのテーマを使うことにします。\n"
-"このテーマがおかしい理由は以下のとおりです。\n"
-"%s"
-
-#: src/theme.c:419
-#, c-format
-msgid ""
-"No themes were found in the default theme directory:\n"
-" %s/themes/\n"
-"or in the user theme directory:\n"
-" %s/themes/\n"
+"No themes were found in the default directories:\n"
+" %s\n"
 "Proceeding from here is mostly pointless.\n"
 msgstr ""
 "デフォルトのテーマディレクトリ:\n"
@@ -2886,6 +2853,31 @@ msgstr "その他"
 #: config/strings.c:198
 msgid "Epplets"
 msgstr ""
+
+#~ msgid "Theme %s does not contain a %s file\n"
+#~ msgstr "テーマ %s にファイル %s が入っていません\n"
+
+#~ msgid "Unknown\n"
+#~ msgstr "不明\n"
+
+#~ msgid "Bad Theme"
+#~ msgstr "だめなテーマです"
+
+#~ msgid ""
+#~ "The theme:\n"
+#~ "%s\n"
+#~ "Is a badly formed theme package and is thus not being used.\n"
+#~ "Enlightenment has fallen back to using the DEFAULT theme.\n"
+#~ "\n"
+#~ "The reason this theme is bad is:\n"
+#~ "%s"
+#~ msgstr ""
+#~ "以下のテーマ\n"
+#~ "%s\n"
+#~ "はパッケージの仕方がまずいので使われません。\n"
+#~ "デフォルトのテーマを使うことにします。\n"
+#~ "このテーマがおかしい理由は以下のとおりです。\n"
+#~ "%s"
 
 #~ msgid ""
 #~ "Enlightenment Version : %s\n"
