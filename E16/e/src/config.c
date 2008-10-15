@@ -223,14 +223,14 @@ ConfigAlertLoad(const char *txt)
 }
 
 static int
-ConfigFilePreparse(const char *path, const char *dest)
+ConfigFilePreparse(const char *src, const char *dst, const char *themepath)
 {
    char                execline[FILEPATH_LEN_MAX];
    const char         *epp_path = ENLIGHTENMENT_BIN "/epp";
    char               *def_home, *def_user, *def_shell;
 
    if (EDebug(EDBUG_TYPE_CONFIG))
-      Eprintf("ConfigFilePreparse %s -> %s\n", path, dest);
+      Eprintf("ConfigFilePreparse %s -> %s\n", src, dst);
 
    def_home = homedir(getuid());
    def_user = username(getuid());
@@ -246,18 +246,18 @@ ConfigFilePreparse(const char *path, const char *dest)
 	     "-D SCREEN_DEPTH_%i=1 " "-D USER_NAME=%s " "-D HOME_DIR=%s "
 	     "-D USER_SHELL=%s " "-D ENLIGHTENMENT_VERSION_015=1 "
 	     "%s %s",
-	     epp_path, EDirRoot(), Mode.theme.path, EDirRoot(),
+	     epp_path, EDirRoot(), themepath, EDirRoot(),
 	     E_PKG_VERSION, EDirRoot(), EDirBin(),
-	     Mode.theme.path, EDirUser(), EDirUserCache(),
+	     themepath, EDirUser(), EDirUserCache(),
 	     WinGetW(VROOT), WinGetH(VROOT), WinGetW(VROOT), WinGetH(VROOT),
-	     WinGetDepth(VROOT), def_user, def_home, def_shell, path, dest);
+	     WinGetDepth(VROOT), def_user, def_home, def_shell, src, dst);
    system(execline);
 
    Efree(def_user);
    Efree(def_shell);
    Efree(def_home);
 
-   return exists(dest) ? 0 : 1;
+   return exists(dst) ? 0 : 1;
 }
 
 /* Split the process of finding the file from the process of loading it */
@@ -493,7 +493,7 @@ ConfigFileFind(const char *name, const char *themepath, int pp)
       goto done;
 
    /* No preparesd file or source is newer. Do preparsing. */
-   err = ConfigFilePreparse(fullname, ppfile);
+   err = ConfigFilePreparse(fullname, ppfile, themepath);
    if (err)
      {
 	Efree(ppfile);

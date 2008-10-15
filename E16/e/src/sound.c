@@ -42,6 +42,12 @@ static struct {
    char               *theme;
 } Conf_sound;
 
+static struct {
+   char               *theme_path;
+} Mode_sound;
+
+#define SOUND_THEME_PATH ((Mode_sound.theme_path) ? Mode_sound.theme_path : Mode.theme.path)
+
 static Ecore_List  *sound_list = NULL;
 
 #if USE_MODULES
@@ -113,7 +119,7 @@ SclassApply(SoundClass * sclass)
      {
 	char               *file;
 
-	file = FindFile(sclass->file, Mode.theme.path);
+	file = FindFile(sclass->file, SOUND_THEME_PATH);
 	if (file)
 	  {
 	     sclass->sample = ops->SampleLoad(file);
@@ -205,6 +211,12 @@ SoundInit(void)
 		 "communicating with the audio server (Esound). Audio will\n"
 		 "now be disabled.\n"));
      }
+
+   Efree(Mode_sound.theme_path);
+   if (Conf_sound.theme)
+      Mode_sound.theme_path = ThemeFind(Conf_sound.theme);
+   else
+      Mode_sound.theme_path = NULL;
 }
 
 static void
@@ -264,10 +276,11 @@ SoundSighan(int sig, void *prm __UNUSED__)
    switch (sig)
      {
      case ESIGNAL_INIT:
+	memset(&Mode_sound, 0, sizeof(Mode_sound));
 	SoundInit();
 	break;
      case ESIGNAL_CONFIGURE:
-	ConfigFileLoad("sound.cfg", Mode.theme.path, SoundConfigLoad, 1);
+	ConfigFileLoad("sound.cfg", SOUND_THEME_PATH, SoundConfigLoad, 1);
 	break;
      case ESIGNAL_START:
 	if (!Conf_sound.enable)

@@ -260,7 +260,7 @@ ThemeExtract(const char *path)
    return NULL;
 }
 
-static char        *
+char               *
 ThemeFind(const char *theme)
 {
    static const char  *const default_themes[] = {
