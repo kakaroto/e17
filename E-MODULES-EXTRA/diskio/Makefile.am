@@ -25,4 +25,4 @@ clean-local:
 	 rm -rf e-module-diskio.edj module.desktop *~
 uninstall:
 	 rm -rf $(DESTDIR)$(datadir)
-	 
+
