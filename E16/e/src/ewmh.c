@@ -973,17 +973,29 @@ EWMH_ProcessClientClientMessage(EWin * ewin, XClientMessageEvent * ev)
 	  {
 	     action = do_set(EoGetLayer(ewin) >= 6, action);
 	     if (action)
-		EwinOpSetLayer(ewin, source, 6);
+	       {
+		  if (EoGetLayer(ewin) < 6)
+		     EwinOpSetLayer(ewin, source, 6);
+	       }
 	     else
-		EwinOpSetLayer(ewin, source, 4);
+	       {
+		  if (EoGetLayer(ewin) >= 6)
+		     EwinOpSetLayer(ewin, source, 4);
+	       }
 	  }
 	else if (atom == ECORE_X_ATOM_NET_WM_STATE_BELOW)
 	  {
 	     action = do_set(EoGetLayer(ewin) <= 2, action);
 	     if (action)
-		EwinOpSetLayer(ewin, source, 2);
+	       {
+		  if (EoGetLayer(ewin) > 2)
+		     EwinOpSetLayer(ewin, source, 2);
+	       }
 	     else
-		EwinOpSetLayer(ewin, source, 4);
+	       {
+		  if (EoGetLayer(ewin) <= 2)
+		     EwinOpSetLayer(ewin, source, 4);
+	       }
 	  }
 	else if (atom == ECORE_X_ATOM_NET_WM_STATE_DEMANDS_ATTENTION)
 	  {
