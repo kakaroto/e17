@@ -628,6 +628,9 @@ ewl_icon_alt_text_get(Ewl_Icon *icon)
         DCHECK_PARAM_PTR_RET(icon, NULL);
         DCHECK_TYPE_RET(icon, EWL_ICON_TYPE, NULL);
 
+        if (!icon->alt)
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
+
         DRETURN_PTR(ewl_label_text_get(EWL_LABEL(icon->alt)), DLEVEL_STABLE);
 }
 
