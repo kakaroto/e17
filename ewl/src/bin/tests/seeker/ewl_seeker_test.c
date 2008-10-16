@@ -8,6 +8,8 @@
 static int create_test(Ewl_Container *win);
 static void cb_print_value(Ewl_Widget *w, void *ev, void *data);
 
+extern Ewl_Unit_Test seeker_unit_tests[];
+
 void
 test_info(Ewl_Test *test)
 {
@@ -16,6 +18,7 @@ test_info(Ewl_Test *test)
         test->filename = __FILE__;
         test->func = create_test;
         test->type = EWL_TEST_TYPE_SIMPLE;
+        test->unit_tests = seeker_unit_tests;
 }
 
 static int

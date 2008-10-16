@@ -7,18 +7,56 @@
 #include <string.h>
 #include <stdlib.h>
 
+static int test_constructor(char *buf, int len);
 static int test_text_set_get(char *buf, int len);
 static int test_text_set_get_null(char *buf, int len);
 static int test_valid_utf8_text_set_get(char *buf, int len);
 static int test_invalid_utf8_text_set_get(char *buf, int len);
 
 Ewl_Unit_Test text_unit_tests[] = {
+                {"constructor", test_constructor, NULL, -1, 0},
                 {"text set/get", test_text_set_get, NULL, -1, 0},
                 {"valid UTF-8 text set/get", test_valid_utf8_text_set_get, NULL, -1, 0},
                 {"invalid UTF-8 text set/get", test_invalid_utf8_text_set_get, NULL, -1, 0},
                 {"null text set/get", test_text_set_get_null, NULL, -1, 0},
                 {NULL, NULL, NULL, -1, 0}
         };
+
+static int
+test_constructor(char *buf, int len)
+{
+        Ewl_Widget *t;
+        int ret = 0;
+
+        t = ewl_text_new();
+        
+        if (!EWL_TEXT_IS(t))
+                LOG_FAILURE(buf, len, "returned widget is not of the type"
+                                EWL_TEXT_TYPE);
+        else if (ewl_text_length_get(EWL_TEXT(t)) != 0)
+                LOG_FAILURE(buf, len, "text length is not 0");
+        else if (ewl_text_length_maximum_get(EWL_TEXT(t)) != 0)
+                LOG_FAILURE(buf, len, "text length maximum is not 0");
+        else if (ewl_text_minimum_size_string_get(EWL_TEXT(t)))
+                LOG_FAILURE(buf, len, "minimum size string is not NULL");
+        else if (ewl_text_maximum_size_string_get(EWL_TEXT(t)))
+                LOG_FAILURE(buf, len, "maximum size string is not NULL");
+        else if (ewl_text_text_get(EWL_TEXT(t)))
+                LOG_FAILURE(buf, len, "returned text is unequal to NULL");
+        else if (ewl_text_selection_text_get(EWL_TEXT(t)))
+                LOG_FAILURE(buf, len, "returned selection is unequal to NULL");
+        else if (ewl_text_has_selection(EWL_TEXT(t)))
+                LOG_FAILURE(buf, len, "text has selection");
+        else if (ewl_text_cursor_position_get(EWL_TEXT(t)) != 0)
+                LOG_FAILURE(buf, len, "cursor position is not 0");
+        else
+                ret = 1;
+
+        ewl_widget_destroy(t);
+
+        return ret;
+}
+
 
 static int
 test_text_set_get(char *buf, int len)

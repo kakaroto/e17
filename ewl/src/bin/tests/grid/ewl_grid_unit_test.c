@@ -8,6 +8,7 @@
 
 #include <stdio.h>
 
+static int test_constructor(char *buf, int len);
 static int test_dimensions_set_get(char *buf, int len);
 static int test_column_fixed_set_get(char *buf, int len);
 static int test_row_fixed_set_get(char *buf, int len);
@@ -24,6 +25,7 @@ static int test_dimensions_auto_resize(char *buf, int len);
 static int test_orientation_set_get(char *buf, int len);
 
 Ewl_Unit_Test grid_unit_tests[] = {
+                {"constructor", test_constructor, NULL, -1, 0},
                 {"set and get dimensions", test_dimensions_set_get, NULL, -1, 0},
                 {"set and get fixed column size", test_column_fixed_set_get, NULL, -1, 0},
                 {"set and get fixed row size", test_row_fixed_set_get, NULL, -1, 0},
@@ -40,6 +42,49 @@ Ewl_Unit_Test grid_unit_tests[] = {
                 {"set and get the orientation", test_orientation_set_get, NULL, -1, 0},
                 {NULL, NULL, NULL, -1, 0}
         };
+
+static int 
+test_constructor(char *buf, int len)
+{
+        Ewl_Widget *grid;
+        int ret = 0;
+        int col, row;
+
+        grid = ewl_grid_new();
+        ewl_grid_dimensions_get(EWL_GRID(grid), &col, &row);
+
+        if (col != 2 && row != 2)
+                LOG_FAILURE(buf, len, "dimensions are not 2x2");
+        else if (ewl_grid_column_fixed_w_get(EWL_GRID(grid), 0))
+                LOG_FAILURE(buf, len, "fixed width set for column 0");
+        else if (ewl_grid_column_fixed_w_get(EWL_GRID(grid), 1))
+                LOG_FAILURE(buf, len, "fixed width set for column 1");
+        else if (ewl_grid_column_relative_w_get(EWL_GRID(grid), 0) != 0.0)
+                LOG_FAILURE(buf, len, "relative width set for column 0");
+        else if (ewl_grid_column_relative_w_get(EWL_GRID(grid), 1) != 0.0)
+                LOG_FAILURE(buf, len, "relative width set for column 1");
+        else if (ewl_grid_row_fixed_h_get(EWL_GRID(grid), 0))
+                LOG_FAILURE(buf, len, "fixed heigth set for row 0");
+        else if (ewl_grid_row_fixed_h_get(EWL_GRID(grid), 1))
+                LOG_FAILURE(buf, len, "fixed heigth set for row 1");
+        else if (ewl_grid_row_relative_h_get(EWL_GRID(grid), 0) != 0.0)
+                LOG_FAILURE(buf, len, "relative heigth set for row 0");
+        else if (ewl_grid_row_relative_h_get(EWL_GRID(grid), 1) != 0.0)
+                LOG_FAILURE(buf, len, "relative height set for row 1");
+        else if (ewl_grid_orientation_get(EWL_GRID(grid)) 
+                        != EWL_ORIENTATION_HORIZONTAL)
+                LOG_FAILURE(buf, len, "orientation is not horizontal");
+        else if (ewl_grid_hhomogeneous_get(EWL_GRID(grid)))
+                LOG_FAILURE(buf, len, "grid is vertical homogeneous");
+        else if (ewl_grid_vhomogeneous_get(EWL_GRID(grid)))
+                LOG_FAILURE(buf, len, "grid is horizontal homogeneous");
+        else
+                ret = 1;
+        
+        ewl_widget_destroy(grid);
+
+        return ret;
+}
 
 static int 
 test_dimensions_set_get(char *buf, int len)

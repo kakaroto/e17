@@ -12,6 +12,7 @@ static int create_test(Ewl_Container *box);
 static void cb_value_show(Ewl_Widget * w, void *ev, void *data);
 
 static Ewl_Widget *spinner[4];
+extern Ewl_Unit_Test spinner_unit_tests[];
 
 void
 test_info(Ewl_Test *test)
@@ -23,6 +24,7 @@ test_info(Ewl_Test *test)
         test->filename = __FILE__;
         test->func = create_test;
         test->type = EWL_TEST_TYPE_SIMPLE;
+        test->unit_tests = spinner_unit_tests;
 }
 
 static int

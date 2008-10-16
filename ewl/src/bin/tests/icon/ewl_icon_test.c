@@ -9,6 +9,8 @@
 
 static int create_test(Ewl_Container *box);
 
+extern Ewl_Unit_Test icon_unit_tests[];
+
 void
 test_info(Ewl_Test *test)
 {
@@ -17,6 +19,7 @@ test_info(Ewl_Test *test)
         test->filename = __FILE__;
         test->func = create_test;
         test->type = EWL_TEST_TYPE_ADVANCED;
+        test->unit_tests = icon_unit_tests;
 }
 
 static int
