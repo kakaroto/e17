@@ -62,7 +62,6 @@ int setup(E_DBus_Connection *conn)
     E_DBus_Object *obj;
     E_DBus_Interface *iface;
     e_dbus_request_name(conn, EXALTD_SERVICE , 0, NULL, NULL);
-
    /* {
         obj = e_dbus_object_add(conn, EXALTD_PATH, NULL);
         iface = e_dbus_interface_new(EXALTD_INTERFACE_READ);
@@ -369,7 +368,7 @@ void eth_cb(Exalt_Ethernet* eth, Exalt_Enum_Action action, void* data)
     }
 
     //send a broadcast
-    msg = dbus_message_new_signal(EXALTD_PATH,EXALTD_INTERFACE_READ, "NOTIFY");
+    msg = dbus_message_new_signal(EXALTD_PATH_NOTIFY,EXALTD_INTERFACE_NOTIFY, "notify");
     EXALT_ASSERT_RETURN_VOID(msg!=NULL);
 
     name = exalt_eth_get_name(eth);

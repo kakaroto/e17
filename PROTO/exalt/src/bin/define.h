@@ -35,6 +35,12 @@
 #define EXALTD_PATH_WIRELESSS "/org/exalt/interfaces/wireless"
 #define EXALTD_INTERFACE_WIRELESSS "org.exalt.interfaces.wireless"
 
+#define EXALTD_PATH_NOTIFY "/org/exalt/notify"
+#define EXALTD_INTERFACE_NOTIFY "org.exalt.notify"
+
+
+
+
 #define EXALTD_PATH "test"
 #define EXALTD_INTERFACE_READ "test"
 #define EXALTD_INTERFACE_WRITE "test"

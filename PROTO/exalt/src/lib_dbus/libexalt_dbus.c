@@ -95,8 +95,8 @@ void exalt_dbus_notify_set(exalt_dbus_conn* conn, exalt_notify_cb *cb, void* use
         conn -> notify -> cb = cb;
         conn -> notify -> user_data = user_data;
 
-        e_dbus_signal_handler_add(conn->e_conn, EXALTD_SERVICE, EXALTD_PATH,
-                EXALTD_INTERFACE_READ, "NOTIFY",
+        e_dbus_signal_handler_add(conn->e_conn, EXALTD_SERVICE, EXALTD_PATH_NOTIFY,
+                EXALTD_INTERFACE_NOTIFY, "notify",
                 _exalt_dbus_notify, conn);
     }
     else
