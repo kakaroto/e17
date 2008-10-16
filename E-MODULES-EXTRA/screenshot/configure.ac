@@ -5,7 +5,7 @@ rm -f config.cache
 
 AC_INIT(screenshot, 0.3.0, devilhorns@devilhorns.us)
 AC_PREREQ(2.52)
-AC_CONFIG_SRCDIR(configure.in)
+AC_CONFIG_SRCDIR(configure.ac)
 AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
 AC_ISC_POSIX

@@ -5,7 +5,7 @@ rm -f config.cache
 
 AC_INIT(news, 0.1.0, ooookiwi@gmail.com)
 AC_PREREQ(2.59)
-AC_CONFIG_SRCDIR(configure.in)
+AC_CONFIG_SRCDIR(configure.ac)
 AC_CANONICAL_BUILD
 AC_CANONICAL_HOST
 AC_ISC_POSIX
