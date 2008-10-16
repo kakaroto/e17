@@ -52,7 +52,7 @@ PKG_CHECK_MODULES([EVAS], [evas >= 0.9.9], [have_evas="yes"])
 AM_CONDITIONAL(EWL_ENABLE_EVAS, test "x$have_evas" = "xyes")
 
 PKG_CHECK_MODULES([EFREET], [efreet >= 0.0.3 efreet-mime])
-PKG_CHECK_MODULES([ECORE], [ecore-txt ecore-file])
+PKG_CHECK_MODULES([ECORE], [ecore ecore-txt ecore-file])
 PKG_CHECK_MODULES([ECORE_EVAS], [ecore-evas])
 PKG_CHECK_MODULES([EDJE], [edje >= 0.5.0])
 
