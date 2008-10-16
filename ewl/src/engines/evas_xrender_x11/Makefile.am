@@ -6,6 +6,7 @@ AM_CPPFLAGS = \
 -I$(top_srcdir)/src/engines/evas_xrender_x11 \
 -I$(top_builddir)/src/engines/evas_xrender_x11 \
 @EVAS_CFLAGS@ \
+@ECORE_CFLAGS@ \
 @ECORE_X_CFLAGS@
 
 pkgdir = $(libdir)/ewl/engines
