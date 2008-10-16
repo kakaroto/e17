@@ -236,6 +236,11 @@ ConfigFilePreparse(const char *src, const char *dst, const char *themepath)
    def_user = username(getuid());
    def_shell = usershell(getuid());
 
+   /* When themepath is NULL it shouldn't be used, but this is consistent
+    * with old behavior */
+   if (!themepath)
+      themepath = Mode.theme.path;
+
    Esnprintf(execline, sizeof(execline), "%s " "-P " "-nostdinc " "-undef "
 	     "-include %s/config/definitions " "-I%s " "-I%s/config "
 	     "-D ENLIGHTENMENT_VERSION=%s " "-D ENLIGHTENMENT_ROOT=%s "
