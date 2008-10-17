@@ -16,7 +16,7 @@ if test -d org.openembedded.dev; then
   git-rebase origin || true
   cd ..
 else
-  git clone git://git.openembedded.net/org.openembedded.dev.git
+  git clone git://git.openembedded.net/openembedded org.openembedded.dev
   cd org.openembedded.dev
   git-checkout -b $USER
   cd ..
