@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 
 rm -f config.cache
 
-AC_INIT(exchange, 0.0.0.001, enlightenment-devel@lists.sourceforge.net)
+AC_INIT(exchange, 0.0.0.001, mcalamelli@gmail.com)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR(configure.ac)
 AC_CANONICAL_BUILD
@@ -43,12 +43,13 @@ AC_ARG_ENABLE(ewl,
 				  [enable_ewl="yes"])
 
 PKG_CHECK_MODULES(EXCHANGE, [
+  eina-0
   ecore
   edje
   libxml-2.0
 ])
 
-requirements="ecore edje libxml-2.0"
+requirements="eina-0 ecore edje libxml-2.0"
 AC_SUBST(requirements)
 
 if test "x${enable_etk}" = "xyes"
