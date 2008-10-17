@@ -298,9 +298,12 @@ ewl_entry_cb_configure(Ewl_Widget *w, void *ev __UNUSED__,
                 oy = 0;
 
         ewl_text_offsets_set(EWL_TEXT(e), -ox, -oy);
-
-        ewl_object_geometry_request(EWL_OBJECT(e->cursor), cx, cy, cw, ch);
-
+        
+        /* We want the cursor to stay relative to the beginning of the
+         * entry, not the text base
+         */
+        ewl_object_geometry_request(EWL_OBJECT(e->cursor), cx - ox, cy - oy,
+                                                                cw, ch);
         DLEAVE_FUNCTION(DLEVEL_STABLE);
 }
 
