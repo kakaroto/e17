@@ -29,14 +29,14 @@ e_dbus_test_SOURCES = \
 test.c
 
 e_dbus_test_CPPFLAGS = $(EDBUS_CPPFLAGS)
-e_dbus_test_LDADD = $(top_builddir)/src/lib/dbus/libedbus.la $(LIBS)
+e_dbus_test_LDADD = $(top_builddir)/src/lib/dbus/libedbus.la
 e_dbus_test_DEPENDENCIES = $(top_builddir)/src/lib/dbus/libedbus.la
 
 e_dbus_test_client_SOURCES = \
 test_client.c
 
 e_dbus_test_client_CPPFLAGS = $(EDBUS_CPPFLAGS)
-e_dbus_test_client_LDADD = $(top_builddir)/src/lib/dbus/libedbus.la $(LIBS)
+e_dbus_test_client_LDADD = $(top_builddir)/src/lib/dbus/libedbus.la
 e_dbus_test_client_DEPENDENCIES = $(top_builddir)/src/lib/dbus/libedbus.la
 
 
@@ -49,7 +49,7 @@ $(EDBUS_CPPFLAGS) \
 @HAL_TEST_GUI_CFLAGS@
 
 e_dbus_hal_LIBS = \
-$(LIBS) \
+$(top_builddir)/src/lib/dbus/libedbus.la \
 @HAL_TEST_GUI_LIBS@
 
 e_dbus_hal_SOURCES = \
@@ -68,7 +68,7 @@ e_dbus_nm_SOURCES = \
 	$(NMSOURCES)
 
 e_dbus_nm_CPPFLAGS = $(EDBUS_CPPFLAGS)
-e_dbus_nm_LDADD = $(top_builddir)/src/lib/dbus/libedbus.la $(top_builddir)/src/lib/nm/libenm.la $(LIBS) 
+e_dbus_nm_LDADD = $(top_builddir)/src/lib/dbus/libedbus.la $(top_builddir)/src/lib/nm/libenm.la
 e_dbus_nm_DEPENDENCIES = $(top_builddir)/src/lib/dbus/libedbus.la $(top_builddir)/src/lib/nm/libenm.la
 endif
 
@@ -78,20 +78,20 @@ e_dbus_notify_SOURCES = \
 	notify.c
 
 e_dbus_notify_CPPFLAGS = $(EDBUS_CPPFLAGS)
-e_dbus_notify_LDADD = $(top_builddir)/src/lib/dbus/libedbus.la $(top_builddir)/src/lib/notification/libenotify.la $(LIBS) 
+e_dbus_notify_LDADD = $(top_builddir)/src/lib/dbus/libedbus.la $(top_builddir)/src/lib/notification/libenotify.la
 e_dbus_notify_DEPENDENCIES = $(top_builddir)/src/lib/dbus/libedbus.la $(top_builddir)/src/lib/notification/libenotify.la
 
 e_dbus_notification_daemon_SOURCES = \
 	notification_daemon.c
 
 e_dbus_notification_daemon_CPPFLAGS = $(EDBUS_CPPFLAGS)
-e_dbus_notification_daemon_LDADD = $(top_builddir)/src/lib/dbus/libedbus.la $(top_builddir)/src/lib/notification/libenotify.la $(LIBS) 
+e_dbus_notification_daemon_LDADD = $(top_builddir)/src/lib/dbus/libedbus.la $(top_builddir)/src/lib/notification/libenotify.la
 e_dbus_notification_daemon_DEPENDENCIES = $(top_builddir)/src/lib/dbus/libedbus.la $(top_builddir)/src/lib/notification/libenotify.la
 
 e_notify_send_SOURCES = \
  notify-send.c
 
 e_notify_send_CPPFLAGS = $(EDBUS_CPPFLAGS)
-e_notify_send_LDADD = $(top_builddir)/src/lib/notification/libenotify.la $(LIBS) 
+e_notify_send_LDADD = $(top_builddir)/src/lib/notification/libenotify.la
 e_notify_send_DEPENDENCIES = $(top_builddir)/src/lib/notification/libenotify.la
 endif 
