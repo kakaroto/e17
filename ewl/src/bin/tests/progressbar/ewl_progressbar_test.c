@@ -17,6 +17,8 @@ static int cb_increment_progress(void *data);
 static Ecore_Timer *progress_timer[3];
 static Ewl_Widget *progressbar[4];
 
+extern Ewl_Unit_Test progressbar_unit_tests[];
+
 void
 test_info(Ewl_Test *test)
 {
@@ -25,6 +27,7 @@ test_info(Ewl_Test *test)
         test->filename = __FILE__;
         test->func = create_test;
         test->type = EWL_TEST_TYPE_SIMPLE;
+        test->unit_tests = progressbar_unit_tests;
 }
 
 static int

@@ -17,11 +17,11 @@ pkgdir = $(libdir)/ewl/tests
 
 pkg_LTLIBRARIES = ewl_progressbar_test.la
 
-ewl_progressbar_test_la_SOURCES = ewl_progressbar_test.c
+ewl_progressbar_test_la_SOURCES = ewl_progressbar_test.c ewl_progressbar_unit_test.c
 ewl_progressbar_test_la_LIBADD = $(top_builddir)/src/lib/libewl.la @ECORE_LIBS@
 ewl_progressbar_test_la_LDFLAGS = -module @lt_no_undefined@ -avoid-version
 
-FILES = $(ewl_progressbar_test_la_SOURCES)
+FILES = ewl_progressbar_test.c
 
 exampledir = $(pkgdatadir)/examples/
 example_DATA = $(FILES)

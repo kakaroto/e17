@@ -10,6 +10,7 @@
 static int create_test(Ewl_Container *box);
 static void ewl_histogram_test_cb_configure(Ewl_Widget *w, void *event, void *data);
 
+extern Ewl_Unit_Test histogram_unit_tests[];
 void
 test_info(Ewl_Test *test)
 {
@@ -18,6 +19,7 @@ test_info(Ewl_Test *test)
         test->filename = __FILE__;
         test->func = create_test;
         test->type = EWL_TEST_TYPE_SIMPLE;
+        test->unit_tests = histogram_unit_tests;
 }
 
 static int
