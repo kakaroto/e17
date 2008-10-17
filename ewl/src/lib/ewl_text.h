@@ -148,6 +148,7 @@ void             ewl_text_text_insert(Ewl_Text *t, const char *text,
 void             ewl_text_text_delete(Ewl_Text *t, unsigned int length);
 
 void             ewl_text_obscure_set(Ewl_Text *t, const char *utf8_character);
+const char      *ewl_text_obscure_get(Ewl_Text *t);
 
 void             ewl_text_selectable_set(Ewl_Text *t, unsigned int selectable);
 unsigned int     ewl_text_selectable_get(Ewl_Text *t);
