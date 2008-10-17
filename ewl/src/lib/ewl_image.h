@@ -48,27 +48,27 @@ typedef struct Ewl_Image Ewl_Image;
  */
 struct Ewl_Image
 {
-        Ewl_Widget widget;        /**< Inherit from Ewl_Widget */
-        Ewl_Image_Type type;        /**< The type of the image */
-        void *image;        /**< The evas object for the image */
-        char *path;                /**< The path to the image */
-        char *key;                /**< The key for the image */
-        char proportional;        /**< Is the image displayed proportional */
+        Ewl_Widget widget;      /**< Inherit from Ewl_Widget */
+        Ewl_Image_Type type;    /**< The type of the image */
+        void *image;            /**< The evas object for the image */
+        char *path;             /**< The path to the image */
+        char *key;              /**< The key for the image */
+        char proportional;      /**< Is the image displayed proportional */
         int ow,                 /**< Original image width */
-            oh;                        /**< Original image height */
-        double sw,                 /**< Scale width */
-               sh;                /**< Scale height */
-        int cs;                        /**< Constrain size */
+            oh;                 /**< Original image height */
+        double sw,              /**< Scale width */
+               sh;              /**< Scale height */
+        int cs;                 /**< Constrain size */
         int aw,                 /**< Scale width */
-           ah;                /**< Scale height */
+            ah;                 /**< Scale height */
 
         struct {
                 int set;        /**< Tiling set? */
-                int x,                 /**< Tile x start */
-                    y,                 /**< Tile y start */
-                    w,                 /**< Tile width */
-                    h;                /**< Tile height */
-        } tile;                        /**< Image tiling information */
+                int x,          /**< Tile x start */
+                    y,          /**< Tile y start */
+                    w,          /**< Tile width */
+                    h;          /**< Tile height */
+        } tile;                 /**< Image tiling information */
 };
 
 /**
@@ -106,7 +106,7 @@ Ewl_View                *ewl_image_view_get(void);
 void                     ewl_image_file_set(Ewl_Image *i, const char *im,
                                         const char *key);
 void                     ewl_image_file_path_set(Ewl_Image *i, const char *im);
-const char               *ewl_image_file_path_get(Ewl_Image *i);
+const char              *ewl_image_file_path_get(Ewl_Image *i);
 
 void                     ewl_image_file_key_set(Ewl_Image *i, const char *key);
 const char              *ewl_image_file_key_get(Ewl_Image *i);
