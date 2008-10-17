@@ -22,12 +22,31 @@
 #include <Exchange.h>
 #include <getopt.h>
 
+#define Q_PRINTF(outf, v1, v2, outq) {\
+            if (quiet) \
+               printf(outq, v2); \
+            else \
+               printf(outf, v1, v2);}
+
+#define Q_PRINTF1(outf, v1, outq) {\
+            if (quiet) \
+               printf(outq, v1); \
+            else \
+               printf(outf, v1);}
+
+#define Q_PRINTF2(outf, v1, v2, outq) {\
+            if (quiet) \
+               printf(outq, v1, v2); \
+            else \
+               printf(outf, v1, v2);}
+
 static void help(void);
 
 int
 main(int argc, char **argv)
 {
    int c;
+   int quiet = 0;
    char *target, *object, *request;
 
    char *local_theme_req[] = { "name",
@@ -58,16 +77,16 @@ main(int argc, char **argv)
 
    char *remote_login_req[] = { "api_key",
                                  "all_data" };
-                                 
+
    char *theme_group_req[] = { "list" };
-   
+
    char *application_list_req[] = { "list_by_user_id",
                                      "list_by_user_name" };
 
    char *module_list_req[] = { "list_by_user_id",
                                 "list_by_user_name",
                                 "list_by_application_id" };
-                                     
+
    exchange_init();
    target = object = request = NULL;
 
@@ -80,18 +99,22 @@ main(int argc, char **argv)
 
 	static struct option opts[] = {
       {"help", no_argument, 0, 'h'},
+      {"quiet", no_argument, 0, 'q'},
       {"target", required_argument, 0, 't'},
       {"object", required_argument, 0, 'o'},
       {"request", required_argument, 0, 'r'},
       {0, 0, 0, 0}
 	};
 
-   while((c = getopt_long_only(argc, argv, "ho:r:t:", opts, NULL)) != -1)
+   while((c = getopt_long_only(argc, argv, "hqo:r:t:", opts, NULL)) != -1)
    {
       switch(c)
       {
          case 'h':
             help();
+            break;
+         case 'q':
+            quiet = 1;
             break;
          case 'o':
             object = strdup(optarg);
@@ -115,7 +138,7 @@ main(int argc, char **argv)
       printf("Invalid object argument.\n");
    else
    {
-      if ((argc < 8)&&(strcmp(object, "theme_group")))
+      if ((argc < (8 + quiet))&&(strcmp(object, "theme_group")))
          printf("Missing <resource>.\n");
       else
       {
@@ -133,26 +156,26 @@ main(int argc, char **argv)
 
                   if (!strcmp(request, "name"))
                   {
-                     out = exchange_local_theme_name_get(argv[7]);
-                     printf("Theme: %s, name: %s\n", argv[7], out);
+                     out = exchange_local_theme_name_get(argv[argc - 1]);
+                     Q_PRINTF("Theme: %s, name: %s\n", argv[argc - 1], out, "%s\n");
                      free(out);
                   }
                   if (!strcmp(request, "author"))
                   {
-                     out = exchange_local_theme_author_get(argv[7]);
-                     printf("Theme: %s, author: %s\n", argv[7], out);
+                     out = exchange_local_theme_author_get(argv[argc - 1]);
+                     Q_PRINTF("Theme: %s, author: %s\n", argv[argc - 1], out, "%s\n");
                      free(out);
                   }
                   if (!strcmp(request, "version"))
                   {
-                     out = exchange_local_theme_version_get(argv[7]);
-                     printf("Theme: %s, version: %s\n", argv[7], out);
+                     out = exchange_local_theme_version_get(argv[argc - 1]);
+                     Q_PRINTF("Theme: %s, version: %s\n", argv[argc - 1], out, "%s\n");
                      free(out);
                   }
                   if (!strcmp(request, "license"))
                   {
-                     out = exchange_local_theme_license_get(argv[7]);
-                     printf("Theme: %s, license: %s\n", argv[7], out);
+                     out = exchange_local_theme_license_get(argv[argc - 1]);
+                     Q_PRINTF("Theme: %s, license: %s\n", argv[argc - 1], out, "%s\n");
                      free(out);
                   }
                   if (!strcmp(request, "updates"))
@@ -160,20 +183,20 @@ main(int argc, char **argv)
                      char text[40];
                      int update;
 
-                     update = exchange_local_theme_check_update(argv[7]);
+                     update = exchange_local_theme_check_update(argv[argc - 1]);
                      switch (update)
                      {
                         case -1:
                            snprintf(text, sizeof(text), "%s", "Selected theme don't have version entry");
                            break;
                         case 0:
-                           snprintf(text, sizeof(text), "%s", "none");
+                           snprintf(text, sizeof(text), "%s", "NO");
                            break;
                         case 1:
-                           snprintf(text, sizeof(text), "%s", "YES!");
+                           snprintf(text, sizeof(text), "%s", "YES");
                            break;
                      }
-                     printf("Theme: %s, update available: %s\n", argv[7], text);
+                     Q_PRINTF("Theme: %s, update available: %s\n", argv[argc - 1], text, "%s\n");
                   }
                }
             }
@@ -191,165 +214,171 @@ main(int argc, char **argv)
                   found = 1;
 
                   if (!strcmp(request, "id"))
-                     printf("Theme: %s, id: %d\n", argv[7], exchange_remote_theme_id_get(argv[7]));
+                     Q_PRINTF("Theme: %s, id: %d\n", argv[argc - 1], exchange_remote_theme_id_get(argv[argc - 1]), "%d\n");
                   if (!strcmp(request, "author"))
-                     printf("Theme: %s, author: %s\n", argv[7], exchange_remote_theme_author_get(argv[7]));
+                     Q_PRINTF("Theme: %s, author: %s\n", argv[argc - 1], exchange_remote_theme_author_get(argv[argc - 1]), "%s\n");
                   if (!strcmp(request, "license"))
-                     printf("Theme: %s, license: %s\n", argv[7], exchange_remote_theme_license_get(argv[7]));
+                     Q_PRINTF("Theme: %s, license: %s\n", argv[argc - 1], exchange_remote_theme_license_get(argv[argc - 1]), "%s\n");
                   if (!strcmp(request, "version"))
-                     printf("Theme: %s, version: %s\n", argv[7], exchange_remote_theme_version_get(argv[7]));
+                     Q_PRINTF("Theme: %s, version: %s\n", argv[argc - 1], exchange_remote_theme_version_get(argv[argc - 1]), "%s\n");
                   if (!strcmp(request, "description"))
-                     printf("Theme: %s, description: %s\n", argv[7], exchange_remote_theme_description_get(argv[7]));
+                     Q_PRINTF("Theme: %s, description: %s\n", argv[argc - 1], exchange_remote_theme_description_get(argv[argc - 1]), "%s\n");
                   if (!strcmp(request, "url"))
-                     printf("Theme: %s, url: %s\n", argv[7], exchange_remote_theme_url_get(argv[7]));
+                     Q_PRINTF("Theme: %s, url: %s\n", argv[argc - 1], exchange_remote_theme_url_get(argv[argc - 1]), "%s\n");
                   if (!strcmp(request, "thumbnail_url"))
-                     printf("Theme: %s, thumbnail: %s\n", argv[7], exchange_remote_theme_thumbnail_url_get(argv[7]));
+                     Q_PRINTF("Theme: %s, thumbnail: %s\n", argv[argc - 1], exchange_remote_theme_thumbnail_url_get(argv[argc - 1]), "%s\n");
                   if (!strcmp(request, "screenshot_url"))
-                     printf("Theme: %s, screenshot: %s\n", argv[7], exchange_remote_theme_screenshot_url_get(argv[7]));
+                     Q_PRINTF("Theme: %s, screenshot: %s\n", argv[argc - 1], exchange_remote_theme_screenshot_url_get(argv[argc - 1]), "%s\n");
                   if (!strcmp(request, "rating"))
-                     printf("Theme: %s, rating: %f\n", argv[7], exchange_remote_theme_rating_get(argv[7]));
+                     Q_PRINTF("Theme: %s, rating: %f\n", argv[argc - 1], exchange_remote_theme_rating_get(argv[argc - 1]), "%f\n");
                   if (!strcmp(request, "user_id"))
-                     printf("Theme: %s, user id: %d\n", argv[7], exchange_remote_theme_user_id_get(argv[7]));
+                     Q_PRINTF("Theme: %s, user id: %d\n", argv[argc - 1], exchange_remote_theme_user_id_get(argv[argc - 1]), "%d\n");
                   if (!strcmp(request, "created_at"))
-                     printf("Theme: %s, created at: %s\n", argv[7], exchange_remote_theme_created_get(argv[7]));
+                     Q_PRINTF("Theme: %s, created at: %s\n", argv[argc - 1], exchange_remote_theme_created_get(argv[argc - 1]), "%s\n");
                   if (!strcmp(request, "updated_at"))
-                     printf("Theme: %s, updated at: %s\n", argv[7], exchange_remote_theme_updated_get(argv[7]));
+                     Q_PRINTF("Theme: %s, updated at: %s\n", argv[argc - 1], exchange_remote_theme_updated_get(argv[argc - 1]), "%s\n");
                   if (!strcmp(request, "all_data"))
                   {
                         Theme_Data *tdata;
-                        tdata = (Theme_Data *)exchange_remote_theme_all_data_get(argv[7]);
-                        printf("Theme: %s\n", argv[7]);
-                        printf("ID: %d\n", tdata->id);
-                        printf("Name: %s\n", tdata->name);
-                        printf("Author: %s\n", tdata->author);
-                        printf("License: %s\n", tdata->license);
-                        printf("Version: %s\n", tdata->version);
-                        printf("Description: %s\n", tdata->description);
-                        printf("Url: %s\n", tdata->url);
-                        printf("Thumbnail: %s\n", tdata->thumbnail);
-                        printf("Screenshot: %s\n", tdata->screenshot);
-                        printf("Rating: %f\n", tdata->rating);
-                        printf("User ID: %d\n", tdata->user_id);
-                        printf("Created at: %s\n", tdata->created_at);
-                        printf("Updated at: %s\n", tdata->updated_at);
+                        tdata = (Theme_Data *)exchange_remote_theme_all_data_get(argv[argc - 1]);
+                        Q_PRINTF1("Theme: %s\n", argv[argc - 1], "%s\n");
+                        Q_PRINTF1("ID: %d\n", tdata->id, "%d\n");
+                        Q_PRINTF1("Name: %s\n", tdata->name, "%s\n");
+                        Q_PRINTF1("Author: %s\n", tdata->author, "%s\n");
+                        Q_PRINTF1("License: %s\n", tdata->license, "%s\n");
+                        Q_PRINTF1("Version: %s\n", tdata->version, "%s\n");
+                        Q_PRINTF1("Description: %s\n", tdata->description, "%s\n");
+                        Q_PRINTF1("Url: %s\n", tdata->url, "%s\n");
+                        Q_PRINTF1("Thumbnail: %s\n", tdata->thumbnail, "%s\n");
+                        Q_PRINTF1("Screenshot: %s\n", tdata->screenshot, "%s\n");
+                        Q_PRINTF1("Rating: %f\n", tdata->rating, "%f\n");
+                        Q_PRINTF1("User ID: %d\n", tdata->user_id, "%d\n");
+                        Q_PRINTF1("Created at: %s\n", tdata->created_at, "%s\n");
+                        Q_PRINTF1("Updated at: %s\n", tdata->updated_at, "%s\n");
                   }
                   if (!strcmp(request, "list_by_user_id"))
                   {
                      Evas_List *l, *l1;
-                     l = exchange_theme_list_filter_by_user_id(atoi(argv[7]), 0, 0);
+                     l = exchange_theme_list_filter_by_user_id(atoi(argv[argc - 1]), 0, 0);
 
-                     printf("Themes from user ID #%d (%d):\n", atoi(argv[7]), evas_list_count(l));
+                     if (!quiet)
+                        printf("Themes from user ID #%d (%d):\n", atoi(argv[argc - 1]), evas_list_count(l));
                      for (l1 = l; l1; l1 = evas_list_next(l1))
                      {
                         if (l1->data)
                         {
                            Theme_List_Data *tld;
                            tld = (Theme_List_Data *)l1->data;
-                           printf("Name: %s\n", (char *)tld->name);
-                           printf("Description: %s\n", (char *)tld->description);
-                           printf("Version: %s\n", (char *)tld->version);
-                           printf("URL: %s\n", (char *)tld->url);
-                           printf("Screenshot: %s\n", (char *)tld->screenshot);
+                           Q_PRINTF1("Name: %s\n", (char *)tld->name, "%s\n");
+                           Q_PRINTF1("Description: %s\n", (char *)tld->description, "%s\n");
+                           Q_PRINTF1("Version: %s\n", (char *)tld->version, "%s\n");
+                           Q_PRINTF1("URL: %s\n", (char *)tld->url, "%s\n");
+                           Q_PRINTF1("Screenshot: %s\n", (char *)tld->screenshot, "%s\n");
                         }
                      }
                   }
                   if (!strcmp(request, "list_by_user_name"))
                   {
                      Evas_List *l, *l1;
-                     l = exchange_theme_list_filter_by_user_name(argv[7], 0, 0);
+                     l = exchange_theme_list_filter_by_user_name(argv[argc - 1], 0, 0);
 
-                     printf("Themes from user name \"%s\" (%d):\n", argv[7], evas_list_count(l));
+                     if (!quiet)
+                        printf("Themes from user name \"%s\" (%d):\n", argv[argc - 1], evas_list_count(l));
                      for (l1 = l; l1; l1 = evas_list_next(l1))
                      {
                         if (l1->data)
                         {
                            Theme_List_Data *tld;
                            tld = (Theme_List_Data *)l1->data;
-                           printf("Name: %s\n", (char *)tld->name);
-                           printf("Description: %s\n", (char *)tld->description);
-                           printf("Version: %s\n", (char *)tld->version);
-                           printf("URL: %s\n", (char *)tld->url);
-                           printf("Screenshot: %s\n", (char *)tld->screenshot);
+                           Q_PRINTF1("Name: %s\n", (char *)tld->name, "%s\n");
+                           Q_PRINTF1("Description: %s\n", (char *)tld->description, "%s\n");
+                           Q_PRINTF1("Version: %s\n", (char *)tld->version, "%s\n");
+                           Q_PRINTF1("URL: %s\n", (char *)tld->url, "%s\n");
+                           Q_PRINTF1("Screenshot: %s\n", (char *)tld->screenshot, "%s\n");
                         }
                      }
                   }
                   if (!strcmp(request, "list_by_theme_group_title"))
                   {
                      Evas_List *l, *l1;
-                     l = exchange_theme_list_filter_by_group_title(argv[7], 0, 0);
+                     l = exchange_theme_list_filter_by_group_title(argv[argc - 1], 0, 0);
 
-                     printf("Themes that provides \"%s\" as theme_group title (%d):\n", argv[7], evas_list_count(l));
+                     if (!quiet)
+                        printf("Themes that provides \"%s\" as theme_group title (%d):\n", argv[argc - 1], evas_list_count(l));
                      for (l1 = l; l1; l1 = evas_list_next(l1))
                      {
                         if (l1->data)
                         {
                            Theme_List_Data *tld;
                            tld = (Theme_List_Data *)l1->data;
-                           printf("Name: %s\n", (char *)tld->name);
-                           printf("Description: %s\n", (char *)tld->description);
-                           printf("Version: %s\n", (char *)tld->version);
-                           printf("URL: %s\n", (char *)tld->url);
-                           printf("Screenshot: %s\n", (char *)tld->screenshot);
+                           Q_PRINTF1("Name: %s\n", (char *)tld->name, "%s\n");
+                           Q_PRINTF1("Description: %s\n", (char *)tld->description, "%s\n");
+                           Q_PRINTF1("Version: %s\n", (char *)tld->version, "%s\n");
+                           Q_PRINTF1("URL: %s\n", (char *)tld->url, "%s\n");
+                           Q_PRINTF1("Screenshot: %s\n", (char *)tld->screenshot, "%s\n");
                         }
                      }
                   }
                   if (!strcmp(request, "list_by_theme_group_name"))
                   {
                      Evas_List *l, *l1;
-                     l = exchange_theme_list_filter_by_group_name(argv[7], 0, 0);
+                     l = exchange_theme_list_filter_by_group_name(argv[argc - 1], 0, 0);
 
-                     printf("Themes that provides \"%s\" as theme_group name (%d):\n", argv[7], evas_list_count(l));
+                     if (!quiet)
+                        printf("Themes that provides \"%s\" as theme_group name (%d):\n", argv[argc - 1], evas_list_count(l));
                      for (l1 = l; l1; l1 = evas_list_next(l1))
                      {
                         if (l1->data)
                         {
                            Theme_List_Data *tld;
                            tld = (Theme_List_Data *)l1->data;
-                           printf("Name: %s\n", (char *)tld->name);
-                           printf("Description: %s\n", (char *)tld->description);
-                           printf("Version: %s\n", (char *)tld->version);
-                           printf("URL: %s\n", (char *)tld->url);
-                           printf("Screenshot: %s\n", (char *)tld->screenshot);
+                           Q_PRINTF1("Name: %s\n", (char *)tld->name, "%s\n");
+                           Q_PRINTF1("Description: %s\n", (char *)tld->description, "%s\n");
+                           Q_PRINTF1("Version: %s\n", (char *)tld->version, "%s\n");
+                           Q_PRINTF1("URL: %s\n", (char *)tld->url, "%s\n");
+                           Q_PRINTF1("Screenshot: %s\n", (char *)tld->screenshot, "%s\n");
                         }
                      }
                   }
                   if (!strcmp(request, "list_by_application_id"))
                   {
                      Evas_List *l, *l1;
-                     l = exchange_theme_list_filter_by_application_id(atoi(argv[7]), 0, 0);
+                     l = exchange_theme_list_filter_by_application_id(atoi(argv[argc - 1]), 0, 0);
 
-                     printf("Themes that matches the provided application id #%d (%d):\n", atoi(argv[7]), evas_list_count(l));
+                     if (!quiet)
+                        printf("Themes that matches the provided application id #%d (%d):\n", atoi(argv[argc - 1]), evas_list_count(l));
                      for (l1 = l; l1; l1 = evas_list_next(l1))
                      {
                         if (l1->data)
                         {
                            Theme_List_Data *tld;
                            tld = (Theme_List_Data *)l1->data;
-                           printf("Name: %s\n", (char *)tld->name);
-                           printf("Description: %s\n", (char *)tld->description);
-                           printf("Version: %s\n", (char *)tld->version);
-                           printf("URL: %s\n", (char *)tld->url);
-                           printf("Screenshot: %s\n", (char *)tld->screenshot);
+                           Q_PRINTF1("Name: %s\n", (char *)tld->name, "%s\n");
+                           Q_PRINTF1("Description: %s\n", (char *)tld->description, "%s\n");
+                           Q_PRINTF1("Version: %s\n", (char *)tld->version, "%s\n");
+                           Q_PRINTF1("URL: %s\n", (char *)tld->url, "%s\n");
+                           Q_PRINTF1("Screenshot: %s\n", (char *)tld->screenshot, "%s\n");
                         }
                      }
                   }
                   if (!strcmp(request, "list_by_module_id"))
                   {
                      Evas_List *l, *l1;
-                     l = exchange_theme_list_filter_by_module_id(atoi(argv[7]), 0, 0);
+                     l = exchange_theme_list_filter_by_module_id(atoi(argv[argc - 1]), 0, 0);
 
-                     printf("Themes that matches the provided module id #%d (%d):\n", atoi(argv[7]), evas_list_count(l));
+                     if (!quiet)
+                        printf("Themes that matches the provided module id #%d (%d):\n", atoi(argv[argc - 1]), evas_list_count(l));
                      for (l1 = l; l1; l1 = evas_list_next(l1))
                      {
                         if (l1->data)
                         {
                            Theme_List_Data *tld;
                            tld = (Theme_List_Data *)l1->data;
-                           printf("Name: %s\n", (char *)tld->name);
-                           printf("Description: %s\n", (char *)tld->description);
-                           printf("Version: %s\n", (char *)tld->version);
-                           printf("URL: %s\n", (char *)tld->url);
-                           printf("Screenshot: %s\n", (char *)tld->screenshot);
+                           Q_PRINTF1("Name: %s\n", (char *)tld->name, "%s\n");
+                           Q_PRINTF1("Description: %s\n", (char *)tld->description, "%s\n");
+                           Q_PRINTF1("Version: %s\n", (char *)tld->version, "%s\n");
+                           Q_PRINTF1("URL: %s\n", (char *)tld->url, "%s\n");
+                           Q_PRINTF1("Screenshot: %s\n", (char *)tld->screenshot, "%s\n");
                         }
                      }
                   }
@@ -369,18 +398,18 @@ main(int argc, char **argv)
                   found = 1;
 
                   if (!strcmp(request, "api_key"))
-                     printf("User: %s, API key: %s\n", argv[7], exchange_login_api_key_get(argv[7], argv[8]));
+                     Q_PRINTF("User: %s, API key: %s\n", argv[argc - 2], exchange_login_api_key_get(argv[argc - 2], argv[argc - 1]), "%s\n");
                   if (!strcmp(request, "all_data"))
                      {
                         Login_Data *ldata;
-                        ldata = (Login_Data *)exchange_login(argv[7], argv[8]);
-                        printf("ID: %d\n", ldata->id);
-                        printf("Name: %s\n", ldata->name);
-                        printf("Email: %s\n", ldata->email);
-                        printf("Role: %s\n", ldata->role);
-                        printf("API key: %s\n", ldata->api_key);
-                        printf("Created at: %s\n", ldata->created_at);
-                        printf("Updated at: %s\n", ldata->updated_at);
+                        ldata = (Login_Data *)exchange_login(argv[argc - 2], argv[argc - 1]);
+                        Q_PRINTF1("ID: %d\n", ldata->id, "%d\n");
+                        Q_PRINTF1("Name: %s\n", ldata->name, "%s\n");
+                        Q_PRINTF1("Email: %s\n", ldata->email, "%s\n");
+                        Q_PRINTF1("Role: %s\n", ldata->role, "%s\n");
+                        Q_PRINTF1("API key: %s\n", ldata->api_key, "%s\n");
+                        Q_PRINTF1("Created at: %s\n", ldata->created_at, "%s\n");
+                        Q_PRINTF1("Updated at: %s\n", ldata->updated_at, "%s\n");
                      }
                }
             }
@@ -402,14 +431,15 @@ main(int argc, char **argv)
                      Evas_List *l, *l1;
                      l = exchange_theme_group_list_available();
 
-                     printf("Available theme_groups (%d):\n", evas_list_count(l));
+                     if (!quiet)
+                        printf("Available theme_groups (%d):\n", evas_list_count(l));
                      for (l1 = l; l1; l1 = evas_list_next(l1))
                      {
                         if (l1->data)
                         {
                            Theme_Group_Data *tgd;
                            tgd = (Theme_Group_Data *)l1->data;
-                           printf("[Name] %s, [Title] %s\n", (char *)tgd->name, (char *)tgd->title);
+                           Q_PRINTF2("[Name] %s, [Title] %s\n", (char *)tgd->name, (char *)tgd->title, "%s,%s\n");
                         }
                      }
                   }
@@ -431,49 +461,50 @@ main(int argc, char **argv)
                   if (!strcmp(request, "list_by_user_id"))
                   {
                      Evas_List *l, *l1;
-                     l = exchange_application_list_filter_by_user_id(atoi(argv[7]), 0, 0);
+                     l = exchange_application_list_filter_by_user_id(atoi(argv[argc - 1]), 0, 0);
 
-                     printf("Applications from user ID #%d (%d):\n", atoi(argv[7]), evas_list_count(l));
+                     if (!quiet)
+                        printf("Applications from user ID #%d (%d):\n", atoi(argv[argc - 1]), evas_list_count(l));
                      for (l1 = l; l1; l1 = evas_list_next(l1))
                      {
                         if (l1->data)
                         {
                            Application_List_Data *ald;
                            ald = (Application_List_Data *)l1->data;
-                           printf("ID: %d\n", ald->id);
-                           printf("Name: %s\n", (char *)ald->name);
-                           printf("Description: %s\n", (char *)ald->description);
-                           printf("URL: %s\n", (char *)ald->url);
-                           printf("Screenshot: %s\n", (char *)ald->screenshot);
-                           printf("User ID: %d\n", ald->user_id);
+                           Q_PRINTF1("ID: %d\n", ald->id, "%d\n");
+                           Q_PRINTF1("Name: %s\n", (char *)ald->name, "%s\n");
+                           Q_PRINTF1("Description: %s\n", (char *)ald->description, "%s\n");
+                           Q_PRINTF1("URL: %s\n", (char *)ald->url, "%s\n");
+                           Q_PRINTF1("Screenshot: %s\n", (char *)ald->screenshot, "%s\n");
+                           Q_PRINTF1("User ID: %d\n", ald->user_id, "%d\n");
                         }
                      }
                   }
                   if (!strcmp(request, "list_by_user_name"))
                   {
                      Evas_List *l, *l1;
-                     l = exchange_application_list_filter_by_user_name(argv[7], 0, 0);
+                     l = exchange_application_list_filter_by_user_name(argv[argc - 1], 0, 0);
 
-                     printf("Applications from user name \"%s\" (%d):\n", argv[7], evas_list_count(l));
+                     if (!quiet)
+                        printf("Applications from user name \"%s\" (%d):\n", argv[argc - 1], evas_list_count(l));
                      for (l1 = l; l1; l1 = evas_list_next(l1))
                      {
                         if (l1->data)
                         {
                            Application_List_Data *ald;
                            ald = (Application_List_Data *)l1->data;
-                           printf("ID: %d\n", ald->id);
-                           printf("Name: %s\n", (char *)ald->name);
-                           printf("Description: %s\n", (char *)ald->description);
-                           printf("URL: %s\n", (char *)ald->url);
-                           printf("Screenshot: %s\n", (char *)ald->screenshot);
-                           printf("User ID: %d\n", ald->user_id);
+                           Q_PRINTF1("ID: %d\n", ald->id, "%d\n");
+                           Q_PRINTF1("Name: %s\n", (char *)ald->name, "%s\n");
+                           Q_PRINTF1("Description: %s\n", (char *)ald->description, "%s\n");
+                           Q_PRINTF1("URL: %s\n", (char *)ald->url, "%s\n");
+                           Q_PRINTF1("Screenshot: %s\n", (char *)ald->screenshot, "%s\n");
+                           Q_PRINTF1("User ID: %d\n", ald->user_id, "%d\n");
                         }
                      }
                   }
                }
             }
          }
-         //**//
          else if ((!strcmp(target, "remote"))&&(!strcmp(object, "module")))
          {
             int i = 0;
@@ -487,73 +518,75 @@ main(int argc, char **argv)
                   if (!strcmp(request, "list_by_user_id"))
                   {
                      Evas_List *l, *l1;
-                     l = exchange_module_list_filter_by_user_id(atoi(argv[7]), 0, 0);
+                     l = exchange_module_list_filter_by_user_id(atoi(argv[argc - 1]), 0, 0);
 
-                     printf("Modules from user ID #%d (%d):\n", atoi(argv[7]), evas_list_count(l));
+                     if (!quiet)
+                        printf("Modules from user ID #%d (%d):\n", atoi(argv[argc - 1]), evas_list_count(l));
                      for (l1 = l; l1; l1 = evas_list_next(l1))
                      {
                         if (l1->data)
                         {
                            Module_List_Data *mld;
                            mld = (Module_List_Data *)l1->data;
-                           printf("ID: %d\n", mld->id);
-                           printf("Name: %s\n", (char *)mld->name);
-                           printf("Description: %s\n", (char *)mld->description);
-                           printf("URL: %s\n", (char *)mld->url);
-                           printf("Screenshot: %s\n", (char *)mld->screenshot);
-                           printf("User ID: %d\n", mld->user_id);
-                           printf("Application ID: %d\n", mld->application_id);
+                           Q_PRINTF1("ID: %d\n", mld->id, "%d\n");
+                           Q_PRINTF1("Name: %s\n", (char *)mld->name, "%s\n");
+                           Q_PRINTF1("Description: %s\n", (char *)mld->description, "%s\n");
+                           Q_PRINTF1("URL: %s\n", (char *)mld->url, "%s\n");
+                           Q_PRINTF1("Screenshot: %s\n", (char *)mld->screenshot, "%s\n");
+                           Q_PRINTF1("User ID: %d\n", mld->user_id, "%d\n");
+                           Q_PRINTF1("Application ID: %d\n", mld->application_id, "%d\n");
                         }
                      }
                   }
                   if (!strcmp(request, "list_by_user_name"))
                   {
                      Evas_List *l, *l1;
-                     l = exchange_module_list_filter_by_user_name(argv[7], 0, 0);
+                     l = exchange_module_list_filter_by_user_name(argv[argc - 1], 0, 0);
 
-                     printf("Modules from user name \"%s\" (%d):\n", argv[7], evas_list_count(l));
+                     if (!quiet)
+                        printf("Modules from user name \"%s\" (%d):\n", argv[argc - 1], evas_list_count(l));
                      for (l1 = l; l1; l1 = evas_list_next(l1))
                      {
                         if (l1->data)
                         {
                            Module_List_Data *mld;
                            mld = (Module_List_Data *)l1->data;
-                           printf("ID: %d\n", mld->id);
-                           printf("Name: %s\n", (char *)mld->name);
-                           printf("Description: %s\n", (char *)mld->description);
-                           printf("URL: %s\n", (char *)mld->url);
-                           printf("Screenshot: %s\n", (char *)mld->screenshot);
-                           printf("User ID: %d\n", mld->user_id);
-                           printf("Application ID: %d\n", mld->application_id);
+                           Q_PRINTF1("ID: %d\n", mld->id, "%d\n");
+                           Q_PRINTF1("Name: %s\n", (char *)mld->name, "%s\n");
+                           Q_PRINTF1("Description: %s\n", (char *)mld->description, "%s\n");
+                           Q_PRINTF1("URL: %s\n", (char *)mld->url, "%s\n");
+                           Q_PRINTF1("Screenshot: %s\n", (char *)mld->screenshot, "%s\n");
+                           Q_PRINTF1("User ID: %d\n", mld->user_id, "%d\n");
+                           Q_PRINTF1("Application ID: %d\n", mld->application_id, "%d\n");
                         }
                      }
                   }
                   if (!strcmp(request, "list_by_application_id"))
                   {
                      Evas_List *l, *l1;
-                     l = exchange_module_list_filter_by_application_id(atoi(argv[7]), 0, 0);
+                     l = exchange_module_list_filter_by_application_id(atoi(argv[argc - 1]), 0, 0);
 
-                     printf("Modules for application ID #%d (%d):\n", atoi(argv[7]), evas_list_count(l));
+                     if (!quiet)
+                        printf("Modules for application ID #%d (%d):\n", atoi(argv[argc - 1]), evas_list_count(l));
                      for (l1 = l; l1; l1 = evas_list_next(l1))
                      {
                         if (l1->data)
                         {
                            Module_List_Data *mld;
                            mld = (Module_List_Data *)l1->data;
-                           printf("ID: %d\n", mld->id);
-                           printf("Name: %s\n", (char *)mld->name);
-                           printf("Description: %s\n", (char *)mld->description);
-                           printf("URL: %s\n", (char *)mld->url);
-                           printf("Screenshot: %s\n", (char *)mld->screenshot);
-                           printf("User ID: %d\n", mld->user_id);
-                           printf("Application ID: %d\n", mld->application_id);
+                           Q_PRINTF1("ID: %d\n", mld->id, "%d\n");
+                           Q_PRINTF1("Name: %s\n", (char *)mld->name, "%s\n");
+                           Q_PRINTF1("Description: %s\n", (char *)mld->description, "%s\n");
+                           Q_PRINTF1("URL: %s\n", (char *)mld->url, "%s\n");
+                           Q_PRINTF1("Screenshot: %s\n", (char *)mld->screenshot, "%s\n");
+                           Q_PRINTF1("User ID: %d\n", mld->user_id, "%d\n");
+                           Q_PRINTF1("Application ID: %d\n", mld->application_id, "%d\n");
                         }
                      }
                   }
                }
             }
          }
-         //**//
       }
    }
 
@@ -573,6 +606,8 @@ help(void)
 {
    printf("Usage: exchange_cli [options] <resource>\n\n"
           "Options:\n"
+          "-h --help\t\t\t\t\t Show this help\n"
+          "-q --quiet\t\t\t\t\t Quiet mode, print out only data (useful for scripting)\n"
           "-t --target=local|remote\t\t\t The target of the object\n"
           "-o --object=theme|login|theme_group|application\t The type of object\n"
           "-r --request\t\t\t\t\t The requested data (see below)\n"
