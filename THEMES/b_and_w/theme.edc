@@ -7,7 +7,6 @@
 //
 // TODO: Working order
 // icons
-// fileman (icon mode etc.)
 // toolbar (Before release, make a theme for efm_nav too.)
 // wizard (just placeholder and basics - wizard code not complete)
 // about
@@ -10797,11 +10796,41 @@ collections { /* begin the collection of edje groups that are in this file */
       }
    }
 
-// FIXME: do: e/fileman/default/list/drop_between
-// FIXME: do: e/fileman/default/list/drop_in
-
-// FIXME: do: e/fileman/desktop/list/drop_between
-// FIXME: do: e/fileman/desktop/list/drop_in
+   group { name: "e/fileman/default/list/drop_in";
+      alias: "e/fileman/default/list/drop_between";
+      alias: "e/fileman/desktop/list/drop_in";
+      alias: "e/fileman/desktop/list/drop_between";
+      images {
+	 image: "gadman_frame.png" COMP;
+	 image: "gadman_border.png" COMP;
+      }
+      parts {
+	 part { name: "overlay";
+	    mouse_events:  1;
+	    description { state: "default" 0.0;
+	       rel1 { to: "border"; offset: 4 4; }
+	       rel2 { to: "border"; offset: -5 -5; }
+	       image.normal: "gadman_frame.png";
+	       fill.size.relative: 0 0;
+	       fill.size.offset: 24 24;
+	    }
+	 }
+	 part { name: "border";
+	    mouse_events:  1;
+	    repeat_events:  1;
+	    description { state: "default" 0.0;
+	       rel1.offset: -5 -5;
+	       rel2.offset: 4 4;
+	       image {
+		  normal: "gadman_border.png";
+		  border: 10 10 10 10;
+		  middle: 0;
+	       }
+	       fill.smooth: 0;
+	    }
+	 }
+      }
+   }
 
    group { name: "e/fileman/default/rubberband";
       images {
