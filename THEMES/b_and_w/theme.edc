@@ -8,7 +8,6 @@
 // TODO: Working order
 // icons
 // toolbar (Before release, make a theme for efm_nav too.)
-// wizard (just placeholder and basics - wizard code not complete)
 // about
 // theme_about
 //
@@ -19780,6 +19779,77 @@ collections { /* begin the collection of edje groups that are in this file */
 	    target: "bottom_arrow2";
 	 }
       }
+   }
+
+/////////////////////////////////////////////////////////////////////////////
+   /*** WIZARD ***/
+   group { name: "e/wizard/extra";
+      images {
+	 image: "vgrad_dark.png" COMP;
+	 image: "grill_dark_tiny_pattern.png" COMP;
+      }
+      parts {
+	 part { name: "background_image";
+	    description { state: "default" 0.0;
+	       image.normal: "vgrad_dark.png";
+	       fill {
+		  smooth: 0;
+		  size {
+		     relative: 0 1.0;
+		     offset: 36 0;
+		  }
+	       }
+	    }
+	 }
+	 part { name: "grill";
+	    description { state: "default" 0.0;
+	       image.normal: "grill_dark_tiny_pattern.png";
+	       fill {
+		  size {
+		     relative: 0 0;
+		     offset: 144 144;
+		  }
+	       }
+	    }
+	 }
+      }
+   }
+
+   group { name: "e/wizard/main";
+      images {
+	 image: "vgrad_dark.png" COMP;
+	 image: "grill_dark_tiny_pattern.png" COMP;
+      }
+      parts {
+	 part { name: "background_image";
+	    description { state: "default" 0.0;
+	       image.normal: "vgrad_dark.png";
+	       fill {
+		  smooth: 0;
+		  size {
+		     relative: 0 1.0;
+		     offset: 36 0;
+		  }
+	       }
+	    }
+	 }
+	 part { name: "grill";
+	    description { state: "default" 0.0;
+	       image.normal: "grill_dark_tiny_pattern.png";
+	       fill {
+		  size {
+		     relative: 0 0;
+		     offset: 144 144;
+		  }
+	       }
+	    }
+	 }
+      }
+      // FIXME: add e.button.next.label, e.button.back.label, 
+      // e.text.title, e.swallow.content
+      // FIXME: add programs that:
+      //          action: SIGNAL_EMIT "e,action,back" "";
+      //          action: SIGNAL_EMIT "e,action,next" "";
    }
 
 /////////////////////////////////////////////////////////////////////////////
