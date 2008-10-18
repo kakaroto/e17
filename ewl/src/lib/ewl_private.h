@@ -34,6 +34,7 @@ void *alloca (size_t);
 #define PATH_MAX 4096
 #endif
 
+#undef __UNUSED__
 #if HAVE___ATTRIBUTE__
 #define __UNUSED__ __attribute__((unused))
 #else
