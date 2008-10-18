@@ -1,0 +1,28 @@
+From d43b98d9db0368fb0f969931e91b4dd79cc0dbb6 Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler <raster@openmoko.org>
+Date: Sat, 18 Oct 2008 14:14:49 +1100
+Subject: [PATCH] boot faster - move avahi to level 51 for init - later.
+
+---
+ packages/avahi/avahi.inc |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/packages/avahi/avahi.inc b/packages/avahi/avahi.inc
+index 9a06855..4d0bae9 100644
+--- a/packages/avahi/avahi.inc
++++ b/packages/avahi/avahi.inc
+@@ -62,9 +62,9 @@ CONFFILES_avahi-daemon = "${sysconfdir}/avahi/avahi-daemon.conf"
+ 
+ INITSCRIPT_PACKAGES = "avahi-daemon avahi-dnsconfd"
+ INITSCRIPT_NAME_avahi-daemon = "avahi-daemon"
+-INITSCRIPT_PARAMS_avahi-daemon = "defaults 21 19"
++INITSCRIPT_PARAMS_avahi-daemon = "defaults 51 49"
+ INITSCRIPT_NAME_avahi-dnsconfd = "avahi-dnsconfd"
+-INITSCRIPT_PARAMS_avahi-dnsconfd = "defaults 22 19"
++INITSCRIPT_PARAMS_avahi-dnsconfd = "defaults 52 59"
+ 
+ # At the time the postinst runs, dbus might not be setup so only restart if running
+ 
+-- 
+1.5.4.3
+

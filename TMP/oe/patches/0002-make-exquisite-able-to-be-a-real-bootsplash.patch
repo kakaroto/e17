@@ -1,16 +1,16 @@
-From 305dce03398dc04fa0aa2dabe876ce0bf9af0bac Mon Sep 17 00:00:00 2001
+From 570fc733f56f3c20df04ab9068b9d20901f63e43 Mon Sep 17 00:00:00 2001
 From: Carsten Haitzler <raster@openmoko.org>
-Date: Mon, 29 Sep 2008 15:37:54 +1000
-Subject: [PATCH] make exquisite able to be a real bootsplash as a package.
+Date: Sat, 18 Oct 2008 13:32:37 +1100
+Subject: [PATCH] make exquisite able to be a real bootsplash
 
 ---
  packages/e17/exquisite/exquisite-init |   40 +++++++++++++++++++++++++++++++++
  packages/e17/exquisite_svn.bb         |   26 ++++++++++++++++++++-
  2 files changed, 65 insertions(+), 1 deletions(-)
- create mode 100755 packages/e17/exquisite/exquisite-init
+ create mode 100644 packages/e17/exquisite/exquisite-init
 
 diff --git a/packages/e17/exquisite/exquisite-init b/packages/e17/exquisite/exquisite-init
-new file mode 100755
+new file mode 100644
 index 0000000..60ee13f
 --- /dev/null
 +++ b/packages/e17/exquisite/exquisite-init
@@ -56,15 +56,15 @@ index 0000000..60ee13f
 +# kill off exquisite in 180 seconds if its not gone yet
 +(sleep 180; exquisite-write "QUIT")&
 diff --git a/packages/e17/exquisite_svn.bb b/packages/e17/exquisite_svn.bb
-index 4777226..f1c8908 100644
+index 6cc09c7..775b280 100644
 --- a/packages/e17/exquisite_svn.bb
 +++ b/packages/e17/exquisite_svn.bb
 @@ -2,8 +2,32 @@ DESCRIPTION = "A psplash replacement for display"
  LICENSE = "MIT BSD"
  DEPENDS = "eet evas ecore embryo edje"
  PV = "0.0.1+svnr${SRCREV}"
--PR = "r1"
-+PR = "r2"
+-FILE_PR = "r1"
++FILE_PR = "r2"
 +RDEPENDS = "initscripts"
 +RRECOMMENDS_${PN} = "exquisite-themes"
 +

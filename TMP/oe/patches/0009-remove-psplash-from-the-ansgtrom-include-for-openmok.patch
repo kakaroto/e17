@@ -1,6 +1,6 @@
-From 1c9a68d589f9bd64e10deeacbbdeb415430456a7 Mon Sep 17 00:00:00 2001
+From f038751da06a98ee2cc973d66fc469d9b0f45834 Mon Sep 17 00:00:00 2001
 From: Carsten Haitzler <raster@openmoko.org>
-Date: Sun, 12 Oct 2008 17:43:18 +1100
+Date: Sat, 18 Oct 2008 13:51:06 +1100
 Subject: [PATCH] remove psplash from the ansgtrom include for openmoko as such openmoko
  adds exquisite itself to replace, and on hardware other than the gta01/02 that
  advertises like palmt650 that says "i have a screen" you end up with psplash

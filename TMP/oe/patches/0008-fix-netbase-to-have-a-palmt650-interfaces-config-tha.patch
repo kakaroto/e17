@@ -1,6 +1,6 @@
-From 624d30483cc731fc0d929d12bbfcf44f4834e488 Mon Sep 17 00:00:00 2001
+From 7d8592a8a213357f083b5830119c0e4e9c00cdca Mon Sep 17 00:00:00 2001
 From: Carsten Haitzler <raster@openmoko.org>
-Date: Sun, 12 Oct 2008 17:37:24 +1100
+Date: Sat, 18 Oct 2008 13:50:10 +1100
 Subject: [PATCH] fix netbase to have a palmt650 interfaces config that brings up usbnet by
  default.
 
@@ -39,15 +39,15 @@ index 0000000..fef124d
 +iface bnep0 inet dhcp
 +
 diff --git a/packages/netbase/netbase_4.21.bb b/packages/netbase/netbase_4.21.bb
-index 2fc352f..a0baa81 100644
+index e35b924..bd56845 100644
 --- a/packages/netbase/netbase_4.21.bb
 +++ b/packages/netbase/netbase_4.21.bb
 @@ -2,7 +2,7 @@ DESCRIPTION = "This package provides the necessary \
  infrastructure for basic TCP/IP based networking."
  SECTION = "base"
  LICENSE = "GPL"
--PR = "r28"
-+PR = "r29"
+-FILE_PR = "r28"
++FILE_PR = "r29"
  
  inherit update-rc.d
  

@@ -1,0 +1,25 @@
+From a660aaae6621a7e520d52cb4415ea9586e938f82 Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler <raster@openmoko.org>
+Date: Sat, 18 Oct 2008 14:17:16 +1100
+Subject: [PATCH] boot faster - move dropbear to S60 so its up after x11
+
+---
+ packages/dropbear/dropbear.inc |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/packages/dropbear/dropbear.inc b/packages/dropbear/dropbear.inc
+index 31edd26..a852df3 100644
+--- a/packages/dropbear/dropbear.inc
++++ b/packages/dropbear/dropbear.inc
+@@ -18,7 +18,7 @@ SRC_URI = "\
+ inherit autotools update-rc.d
+ 
+ INITSCRIPT_NAME = "dropbear"
+-INITSCRIPT_PARAMS = "defaults 10"
++INITSCRIPT_PARAMS = "defaults 60"
+ 
+ CFLAGS =+ "-I."
+ LD = "${CC}"
+-- 
+1.5.4.3
+

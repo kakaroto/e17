@@ -59,14 +59,14 @@ TOOLS_INSTALL = "\
 #  bash \
   dosfstools \
 #  iptables \
-#  lsof \
-#  mickeydbus \
-#  mickeyterm \
-#  mtd-utils \
-#  nano \
-#  powertop \
-#  s3c24xx-gpio \
-#  sysstat \
+  lsof \
+  mickeydbus \
+  mickeyterm \
+  mtd-utils \
+  nano \
+  powertop \
+  s3c24xx-gpio \
+  sysstat \
 #  tcpdump \
 "
 
@@ -76,17 +76,17 @@ AUDIO_INSTALL = "\
   alsa-state \
   alsa-utils-aplay \
   alsa-utils-amixer \
-#  gst-meta-audio \
-#  gst-plugin-mad \
-#  gst-plugin-modplug \
-#  gst-plugin-sid \
-#  fso-sounds \
+  gst-meta-audio \
+  gst-plugin-mad \
+  gst-plugin-modplug \
+  gst-plugin-sid \
+  fso-sounds \
 "
 
 GTK_INSTALL = "\
 #  openmoko-calculator2 \
   openmoko-terminal2 \
-  gpe-scap \
+#  gpe-scap \
 #  tangogps \
 "
 
@@ -105,16 +105,16 @@ AUDIO_INSTALL_append_om-gta02 = "\
 
 # python
 PYTHON_INSTALL = "\
-#  task-python-efl \
-#  python-codecs \
-#  python-gst \
+  task-python-efl \
+  python-codecs \
+  python-gst \
 "
 
 # zhone
 ZHONE_INSTALL = "\
-#  gsm0710muxd \
-#  frameworkd \
-#  fso-gpsd \
+  gsm0710muxd \
+  frameworkd \
+  fso-gpsd \
 #  zhone \
 "
 
@@ -122,7 +122,7 @@ ZHONE_INSTALL = "\
 APPS_INSTALL = "\
 #  tichy \
 #  gpe-gallery \
-#  gpe-sketchbook \
+  gpe-sketchbook \
 #  gpe-filemanager \
 #  vagalume \
 #  starling \

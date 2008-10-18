@@ -1,6 +1,6 @@
-From 5651a60740a634f155dd24f4f601df8ad46fd8de Mon Sep 17 00:00:00 2001
+From a210b920dbd1cea7eb632537ff396fdecff7cbdd Mon Sep 17 00:00:00 2001
 From: Carsten Haitzler <raster@openmoko.org>
-Date: Mon, 13 Oct 2008 13:31:31 +1100
+Date: Sat, 18 Oct 2008 13:53:21 +1100
 Subject: [PATCH] add depends for palmt650 modmap for palm keypad.
 
 ---

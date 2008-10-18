@@ -1,22 +1,17 @@
-From b4045c49f8a97561d06306f2e5a52f239f8f992f Mon Sep 17 00:00:00 2001
+From 419902a60f96192ef548d4fc3f2d424fd139adc6 Mon Sep 17 00:00:00 2001
 From: Carsten Haitzler <raster@openmoko.org>
-Date: Fri, 10 Oct 2008 00:38:23 +1100
+Date: Sat, 18 Oct 2008 13:45:58 +1100
 Subject: [PATCH] disable program cache - really not a good idea i think.
 
 ---
- packages/efl1/edje_svn.bb |    7 ++++---
- 1 files changed, 4 insertions(+), 3 deletions(-)
+ packages/efl1/edje_svn.bb |    5 +++--
+ 1 files changed, 3 insertions(+), 2 deletions(-)
 
 diff --git a/packages/efl1/edje_svn.bb b/packages/efl1/edje_svn.bb
-index 664e965..e429cf7 100644
+index 00b913f..9f86e95 100644
 --- a/packages/efl1/edje_svn.bb
 +++ b/packages/efl1/edje_svn.bb
-@@ -2,12 +2,13 @@ DESCRIPTION = "Edje is the Enlightenment graphical design & layout library"
- DEPENDS = "eet evas ecore embryo edje-native"
- LICENSE = "MIT BSD"
- PV = "0.5.0.043+svnr${SRCREV}"
--PR = "r4"
-+PR = "r6"
+@@ -6,8 +6,9 @@ FILE_PR = "r5"
  
  inherit efl
  
@@ -27,7 +22,7 @@ index 664e965..e429cf7 100644
 +#EXTRA_OECONF = "--enable-edje-program-cache"
  
  PACKAGES =+ "${PN}-utils"
- DEBIAN_NOAUTONAME_${PN}-utils = "1"
+ RDEPENDS_${PN}-utils = "cpp cpp-symlinks embryo-tests"
 -- 
 1.5.4.3
 

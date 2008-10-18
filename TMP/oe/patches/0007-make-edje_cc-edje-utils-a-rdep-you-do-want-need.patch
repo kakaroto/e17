@@ -1,23 +1,23 @@
-From 570bbbba14f7aabf72bd05d3e346e8e4344efe39 Mon Sep 17 00:00:00 2001
+From 4ebbbd32ec820a1937679a39e01284c31a27c296 Mon Sep 17 00:00:00 2001
 From: Carsten Haitzler <raster@openmoko.org>
-Date: Fri, 10 Oct 2008 00:39:05 +1100
-Subject: [PATCH] make edje_cc (edje-utils) a rdep - you do want/need it (wallpaper dialog
- needs it for starters)
+Date: Sat, 18 Oct 2008 13:46:42 +1100
+Subject: [PATCH] make edje_cc (edje-utils) a rdep - you do want/need it (wallpaper dialog needs
+ it for starters)
 
 ---
  packages/e17/e-wm_svn.bb |    4 ++--
  1 files changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/packages/e17/e-wm_svn.bb b/packages/e17/e-wm_svn.bb
-index e16cad0..0019712 100644
+index 163e32f..4309500 100644
 --- a/packages/e17/e-wm_svn.bb
 +++ b/packages/e17/e-wm_svn.bb
 @@ -2,11 +2,11 @@ DESCRIPTION = "The Enlightenment Window Mananger Version 17"
  DEPENDS = "eet evas ecore edje efreet edbus"
  LICENSE = "MIT BSD"
  PV = "0.16.999.043+svnr${SRCREV}"
--PR = "r14"
-+PR = "r15"
+-FILE_PR = "r14"
++FILE_PR = "r15"
  
  inherit e update-alternatives
  

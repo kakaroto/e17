@@ -49,8 +49,6 @@ echo "  bitbake illume-image"
 echo
 echo "To update git:"
 echo "  git-fetch; git-rebase origin"
-# org.openembedded.dev
-#echo "  git-fetch; git-rebase origin/master"
 echo
 echo "To commit any changes you have made to local git:"
 echo "  git-commit -a"

@@ -1,18 +1,17 @@
-From 8d15e5bfa1d13e168d90e2dce8ab645c5a0c7b30 Mon Sep 17 00:00:00 2001
+From 1488fc60174a6c4db0726e766b7dbbc372303fcf Mon Sep 17 00:00:00 2001
 From: Carsten Haitzler <raster@openmoko.org>
-Date: Mon, 29 Sep 2008 15:38:29 +1000
+Date: Sat, 18 Oct 2008 13:34:36 +1100
 Subject: [PATCH] sysvinit scripts that under openmoko distro use exquisite - as per openmoko
- modifications.
 
 ---
  packages/sysvinit/sysvinit/openmoko/rc          |  181 +++++++++++++++++++++++
  packages/sysvinit/sysvinit/openmoko/rcS-default |   25 +++
  2 files changed, 206 insertions(+), 0 deletions(-)
- create mode 100755 packages/sysvinit/sysvinit/openmoko/rc
- create mode 100755 packages/sysvinit/sysvinit/openmoko/rcS-default
+ create mode 100644 packages/sysvinit/sysvinit/openmoko/rc
+ create mode 100644 packages/sysvinit/sysvinit/openmoko/rcS-default
 
 diff --git a/packages/sysvinit/sysvinit/openmoko/rc b/packages/sysvinit/sysvinit/openmoko/rc
-new file mode 100755
+new file mode 100644
 index 0000000..11bc831
 --- /dev/null
 +++ b/packages/sysvinit/sysvinit/openmoko/rc
@@ -199,7 +198,7 @@ index 0000000..11bc831
 +    fi
 +fi
 diff --git a/packages/sysvinit/sysvinit/openmoko/rcS-default b/packages/sysvinit/sysvinit/openmoko/rcS-default
-new file mode 100755
+new file mode 100644
 index 0000000..5bb57ef
 --- /dev/null
 +++ b/packages/sysvinit/sysvinit/openmoko/rcS-default

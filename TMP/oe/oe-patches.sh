@@ -6,7 +6,8 @@ for I in `/bin/ls ../patches | sort`; do
     echo "SKIP: $I"
   else
     echo "PATCH: $I"
-    patch -p1 -t < "../patches/$I" || true
+    git-apply "../patches/$I" || true
+#    patch -p1 -t < "../patches/$I" || true
     touch "../patches-applied/$I"
   fi
 done
