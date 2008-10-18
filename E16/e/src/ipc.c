@@ -1830,7 +1830,7 @@ IPC_Help(const char *params)
 	     nick = (ipc->nick) ? ipc->nick : "";
 	     IpcPrintf("%18s %4s: %s\n", ipc->name, nick, ipc->help_text);
 	     if (ipc->extended_help_text)
-		IpcPrintf(ipc->extended_help_text);
+		IpcPrintf("%s", ipc->extended_help_text);
 	  }
      }
    else
@@ -1847,7 +1847,7 @@ IPC_Help(const char *params)
 	     IpcPrintf("%18s %4s: %s\n", ipc->name, nick, ipc->help_text);
 	     IpcPrintf("----------------------------------------\n");
 	     if (ipc->extended_help_text)
-		IpcPrintf(ipc->extended_help_text);
+		IpcPrintf("%s", ipc->extended_help_text);
 	  }
      }
 }

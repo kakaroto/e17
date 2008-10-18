@@ -45,8 +45,10 @@
 
 #if HAVE___ATTRIBUTE__
 #define __PRINTF_N__(no)  __attribute__((__format__(__printf__, (no), (no)+1)))
+#define __NORETURN__      __attribute__((noreturn))
 #else
 #define __PRINTF_N__(no)
+#define __NORETURN__
 #endif
 #define __PRINTF__   __PRINTF_N__(1)
 #define __PRINTF_2__ __PRINTF_N__(2)

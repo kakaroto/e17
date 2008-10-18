@@ -481,7 +481,7 @@ void                SignalsSetup(void);
 void                SignalsRestore(void);
 
 /* main.c */
-void                EExit(int exitcode);
+__NORETURN__ void   EExit(int exitcode);
 const char         *EDirRoot(void);
 const char         *EDirBin(void);
 const char         *EDirUser(void);

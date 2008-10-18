@@ -1718,7 +1718,7 @@ EDisplayOpen(const char *dstr, int scr)
    if (scr >= 0)
      {
 	/* Override screen */
-	Esnprintf(dbuf, sizeof(dbuf) - 10, dstr);
+	Esnprintf(dbuf, sizeof(dbuf) - 10, "%s", dstr);
 	s = strchr(dbuf, ':');
 	if (s)
 	  {

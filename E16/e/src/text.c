@@ -365,9 +365,9 @@ TextstateTextFitMB(TextState * ts, char **ptext, int *pw, int textwidth_limit)
 
    while (*pw > textwidth_limit)
      {
-	nuke_count++;
 	int                 len_mb;
 
+	nuke_count++;
 	if (nuke_count >= wc_len - 1)
 	  {
 	     int                 mlen;

@@ -199,7 +199,7 @@ ShowAlert(const char *title,
    dd = XOpenDisplay(NULL);
    if (!dd)
      {
-	fprintf(stderr, text);
+	fprintf(stderr, "%s", text);
 	fflush(stderr);
 	return;
      }

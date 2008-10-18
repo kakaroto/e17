@@ -492,7 +492,7 @@ SessionSave(int shutdown)
  * and then restore it on restart. We grab X input via the ext_init_win
  * so the our clients remain frozen while we are down.
  */
-static void
+__NORETURN__ static void
 doSMExit(int mode, const char *params)
 {
    int                 l;

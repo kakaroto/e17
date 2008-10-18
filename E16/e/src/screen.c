@@ -60,12 +60,14 @@ ScreenAdd(int type, int head, int x, int y, unsigned int w, unsigned int h)
 void
 ScreenInit(void)
 {
-   n_screens = 0;		/* Causes reconfiguration */
-
 #ifdef HAVE_XINERAMA
    XineramaScreenInfo *screens;
    int                 i, num_screens;
+#endif
 
+   n_screens = 0;		/* Causes reconfiguration */
+
+#ifdef HAVE_XINERAMA
    if (Mode.wm.window)
       return;
 
