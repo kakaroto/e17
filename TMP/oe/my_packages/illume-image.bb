@@ -122,7 +122,7 @@ ZHONE_INSTALL = "\
 APPS_INSTALL = "\
 #  tichy \
 #  gpe-gallery \
-  gpe-sketchbook \
+#  gpe-sketchbook \
 #  gpe-filemanager \
 #  vagalume \
 #  starling \
