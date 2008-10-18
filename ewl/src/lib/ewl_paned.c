@@ -823,10 +823,8 @@ ewl_paned_pane_info_layout(Ewl_Paned *p, Ewl_Paned_Pane_Info *panes,
                         if (p->last_pane)
                         {
                                 /* find the index to start with */
-                                while ((panes[i].pane) && 
-                                                (panes[i].pane 
-                                                != p->last_pane))
-                                        i++;
+                                while (i < pane_num 
+                                        &&  panes[i].pane != p->last_pane) i++;
                                 /* on the next run we don't want to start 
                                  * with this widget */
                                 p->last_pane = NULL;
@@ -841,7 +839,10 @@ ewl_paned_pane_info_layout(Ewl_Paned *p, Ewl_Paned_Pane_Info *panes,
                         int min;
 
                         if (panes[i].fixed)
+                        {
+                                cur_res--;
                                 continue;
+                        }
 
                         min = layout->minimum_size(EWL_OBJECT(panes[i].pane));
 
