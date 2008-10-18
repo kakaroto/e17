@@ -1039,29 +1039,26 @@ GroupsConfigure(const char *params)
    sscanf(p, "%100s %n", s, &l);
    p += l;
 
+   ewin = GetContextEwin();
+
    if (!strcmp(s, "group"))
      {
-	ewin = GetFocusEwin();
-	if (ewin)
-	   SettingsGroups(ewin);
+	SettingsGroups(ewin);
      }
    else if (!strcmp(s, "add"))
      {
-	ewin = GetFocusEwin();
 	ChooseGroupDialog(ewin,
 			  _("Pick the group the window will belong to:"),
 			  GROUP_SELECT_ALL_EXCEPT_EWIN, GROUP_OP_ADD);
      }
    else if (!strcmp(s, "del"))
      {
-	ewin = GetFocusEwin();
 	ChooseGroupDialog(ewin,
 			  _("Select the group to remove the window from:"),
 			  GROUP_SELECT_EWIN_ONLY, GROUP_OP_DEL);
      }
    else if (!strcmp(s, "break"))
      {
-	ewin = GetFocusEwin();
 	ChooseGroupDialog(ewin, _("Select the group to break:"),
 			  GROUP_SELECT_EWIN_ONLY, GROUP_OP_BREAK);
      }
