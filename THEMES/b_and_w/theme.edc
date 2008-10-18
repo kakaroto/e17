@@ -11069,7 +11069,6 @@ collections { /* begin the collection of edje groups that are in this file */
 	    action: STATE_SET "default" 0.0;
 	    transition: SINUSOIDAL 1.0;
 	    target: "typebuf_clip";
-	    after: "stop2";
 	 }
       }
    }
