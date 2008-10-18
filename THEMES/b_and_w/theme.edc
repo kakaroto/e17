@@ -11103,6 +11103,7 @@ collections { /* begin the collection of edje groups that are in this file */
 		  size: 10;
 		  min: 1 1;
 		  align: 0.5 0.5;
+		  text_class: "fileman_icon";
 	       }
 	    }
 	    description { state: "selected" 0.0;
@@ -11315,6 +11316,7 @@ collections { /* begin the collection of edje groups that are in this file */
 		  size: 10;
 		  min: 1 1;
 		  align: 0.5 0.5;
+		  text_class: "fileman_icon";
 	       }
 	    }
 	    description { state: "selected" 0.0;
@@ -11514,6 +11516,7 @@ collections { /* begin the collection of edje groups that are in this file */
 		  size: 10;
 		  min: 0 1;
 		  align: 0.5 0.5;
+		  text_class: "fileman_icon";
 	       }
 	    }
 	    description { state: "selected" 0.0;
@@ -11726,6 +11729,7 @@ collections { /* begin the collection of edje groups that are in this file */
 		  size: 10;
 		  min: 0 1;
 		  align: 0.5 0.5;
+		  text_class: "fileman_icon";
 	       }
 	    }
 	    description { state: "selected" 0.0;
@@ -12113,6 +12117,7 @@ collections { /* begin the collection of edje groups that are in this file */
 		  size: 10;
 		  min: 1 1;
 		  align: 0.5 0.5;
+		  text_class: "desktop_icon";
 	       }
 	    }
 	    description { state: "selected" 0.0;
@@ -12499,6 +12504,7 @@ collections { /* begin the collection of edje groups that are in this file */
 		  size: 10;
 		  min: 0 1;
 		  align: 0.5 0.5;
+		  text_class: "desktop_icon";
 	       }
 	    }
 	    description { state: "selected" 0.0;
