@@ -1368,6 +1368,7 @@ SnapshotsLoad(void)
 	       }
 	     else if (!strcmp(buf, "GROUP"))
 	       {
+		  sn->use_flags |= SNAP_USE_GROUPS;
 		  sn->num_groups++;
 		  sn->groups = EREALLOC(int, sn->groups, sn->num_groups);
 
