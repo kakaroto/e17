@@ -8,7 +8,6 @@
 // TODO: Working order
 // icons
 // fileman (icon mode etc.)
-// slidesel (i know. no examples of this around).
 // toolbar (Before release, make a theme for efm_nav too.)
 // wizard (just placeholder and basics - wizard code not complete)
 // about
@@ -5257,6 +5256,109 @@ collections { /* begin the collection of edje groups that are in this file */
       }
    }
 
+/////////////////////////////////////////////////////////////////////////////
+   /*** SLIDESEL */
+   /* this is a horizontal slide selector in e where you drag it horizontally
+    * and different icons appear with text near it indicating what is
+    * selected. not actually used anywhere, currently, but in e nevertheless */
+   group { name: "e/widgets/slidesel";
+      images {
+	 image: "bt_dis_base.png" COMP;
+	 image: "bt_dis_hilight.png" COMP;
+	 image: "bt_dis_shine.png" COMP;
+      }
+      parts {
+	 part { name: "base";
+	    mouse_events: 1;
+	    description { state: "default" 0.0;
+	       rel1 {
+		  to_y: "e.text.label";
+		  relative: 0.0 1.0;
+		  offset: 2 2;
+	       }
+	       rel2.offset: -3 -3;
+	       image {
+		  normal: "bt_dis_base.png";
+		  border: 4 4 4 4;
+	       }
+	    }
+	 }
+	 part { name: "clipper";
+	    type: RECT;
+	    mouse_events: 0;
+	    description {
+	       state: "default" 0.0;
+	       rel1 {
+		  to: "base";
+		  offset: 2 2;
+	       }
+	       rel2 {
+		  to: "base";
+		  offset: -3 -3;
+	       }
+	    }
+	 }
+	 part { name: "e.swallow.content";
+	    clip_to: "clipper";
+	    type: SWALLOW;
+	    description {
+	       state: "default" 0.0;
+	       rel1.to: "clipper";
+	       rel2.to: "clipper";
+	    }
+	 }
+	 part { name: "over2";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       rel1.to: "base";
+	       rel2.to: "base";
+	       image {
+		  normal: "bt_dis_shine.png";
+		  border: 4 4 4 4;
+	       }
+	    }
+	 }
+	 part { name: "over1";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       rel1.to: "base";
+	       rel2.to: "base";
+	       rel2.relative: 1.0 0.5;
+	       image {
+		  normal: "bt_dis_hilight.png";
+		  border: 4 4 4 0;
+	       }
+	    }
+	 }
+	 part { name: "e.text.label";
+	    type: TEXT;
+	    effect: SOFT_SHADOW;
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       align: 0.5 0.0;
+	       rel1 {
+		  relative: 0.0 0.0;
+		  offset: 2 2;
+	       }
+	       rel2 {
+		  relative: 1.0 0.0;
+		  offset: -3 2;
+	       }
+	       align: 0.0 0.0;
+	       color: 255 255 255 255;
+	       color3: 0 0 0 32;
+	       text {
+		  font: "Sans:style=Bold,Edje-Vera-Bold";
+		  size: 10;
+		  min: 0 1;
+		  align: 0.5 0.0;
+		  text_class: "slidesel_label";
+	       }
+	    }
+	 }
+      }
+   }
+   
 /////////////////////////////////////////////////////////////////////////////
    /*** MENUS ***/
    /* this is the background for all menus. it also may optionally display a
@@ -10700,12 +10802,43 @@ collections { /* begin the collection of edje groups that are in this file */
 // FIXME: do: e/fileman/default/list/drop_in
 // FIXME: do: e/fileman/default/icon/fixed
 // FIXME: do: e/fileman/default/icon/variable
-// FIXME: do: e/fileman/desktop/icon/variable
-// FIXME: do: e/fileman/desktop/icon/fixed
+
 // FIXME: do: e/fileman/desktop/overlay
 // FIXME: do: e/fileman/desktop/list/drop_between
 // FIXME: do: e/fileman/desktop/list/drop_in
-// FIXME: do: e/fileman/default/rubberband
+
+   group { name: "e/fileman/default/rubberband";
+      images {
+	 image: "gadman_frame.png" COMP;
+	 image: "gadman_border.png" COMP;
+      }
+      parts {
+	 part { name: "overlay";
+	    mouse_events:  1;
+	    description { state: "default" 0.0;
+	       rel1 { to: "border"; offset: 4 4; }
+	       rel2 { to: "border"; offset: -5 -5; }
+	       image.normal: "gadman_frame.png";
+	       fill.size.relative: 0 0;
+	       fill.size.offset: 24 24;
+	    }
+	 }
+	 part { name: "border";
+	    mouse_events:  1;
+	    repeat_events:  1;
+	    description { state: "default" 0.0;
+	       rel1.offset: -5 -5;
+	       rel2.offset: 4 4;
+	       image {
+		  normal: "gadman_border.png";
+		  border: 10 10 10 10;
+		  middle: 0;
+	       }
+	       fill.smooth: 0;
+	    }
+	 }
+      }
+   }
 
    group { name: "e/fileman/desktop/icon/variable";
       images {
