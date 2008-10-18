@@ -453,8 +453,6 @@ int                 ThemeConfigLoad(void);
 /* dialog.c */
 void __PRINTF_2__   DialogOK(const char *title, const char *fmt, ...);
 void                DialogOKstr(const char *title, const char *txt);
-void __PRINTF__     DialogAlert(const char *fmt, ...);
-void __PRINTF__     DialogAlertOK(const char *fmt, ...);
 
 /* econfig.c */
 void                ConfigurationLoad(void);

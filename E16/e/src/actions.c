@@ -106,25 +106,22 @@ execApplication(const char *params, int flags)
 	  {
 	     /* absolute path */
 	     if (isabspath(exe))
-		DialogAlertOK(_
-			      ("There was an error running the program:\n"
-			       "%s\n"
-			       "This program could not be executed.\n"
-			       "This is because the file does not exist.\n"),
-			      exe);
+		AlertOK(_("There was an error running the program:\n"
+			  "%s\n"
+			  "This program could not be executed.\n"
+			  "This is because the file does not exist.\n"), exe);
 	     /* relative path */
 	     else
-		DialogAlertOK(_
-			      ("There was an error running the program:\n"
-			       "%s\n"
-			       "This program could not be executed.\n"
-			       "This is most probably because this "
-			       "program is not in the\n"
-			       "path for your shell which is %s. "
-			       "I suggest you read the manual\n"
-			       "page for that shell and read up how to "
-			       "change or add to your\n"
-			       "execution path.\n"), exe, sh);
+		AlertOK(_("There was an error running the program:\n"
+			  "%s\n"
+			  "This program could not be executed.\n"
+			  "This is most probably because this "
+			  "program is not in the\n"
+			  "path for your shell which is %s. "
+			  "I suggest you read the manual\n"
+			  "page for that shell and read up how to "
+			  "change or add to your\n"
+			  "execution path.\n"), exe, sh);
 	  }
 	else
 	   /* it is a node on the filing sys */
@@ -134,46 +131,41 @@ execApplication(const char *params, int flags)
 	       {
 		  /* can execute it */
 		  if (canexec(path))
-		     DialogAlertOK(_
-				   ("There was an error running the program:\n"
-				    "%s\n"
-				    "This program could not be executed.\n"
-				    "I am unsure as to why you could not "
-				    "do this. The file exists,\n"
-				    "is a file, and you are allowed to "
-				    "execute it. I suggest you look\n"
-				    "into this.\n"), path);
+		     AlertOK(_("There was an error running the program:\n"
+			       "%s\n"
+			       "This program could not be executed.\n"
+			       "I am unsure as to why you could not "
+			       "do this. The file exists,\n"
+			       "is a file, and you are allowed to "
+			       "execute it. I suggest you look\n"
+			       "into this.\n"), path);
 		  /* not executable file */
 		  else
-		     DialogAlertOK(_
-				   ("There was an error running the program:\n"
-				    "%s\n"
-				    "This program could not be executed.\n"
-				    "This is because the file exists, is a "
-				    "file, but you are unable\n"
-				    "to execute it because you do not "
-				    "have execute "
-				    "access to this file.\n"), path);
+		     AlertOK(_("There was an error running the program:\n"
+			       "%s\n"
+			       "This program could not be executed.\n"
+			       "This is because the file exists, is a "
+			       "file, but you are unable\n"
+			       "to execute it because you do not "
+			       "have execute " "access to this file.\n"), path);
 	       }
 	     /* it's not a file */
 	     else
 	       {
 		  /* its a dir */
 		  if (isdir(path))
-		     DialogAlertOK(_
-				   ("There was an error running the program:\n"
-				    "%s\n"
-				    "This program could not be executed.\n"
-				    "This is because the file is in fact "
-				    "a directory.\n"), path);
+		     AlertOK(_("There was an error running the program:\n"
+			       "%s\n"
+			       "This program could not be executed.\n"
+			       "This is because the file is in fact "
+			       "a directory.\n"), path);
 		  /* its not a file or a dir */
 		  else
-		     DialogAlertOK(_
-				   ("There was an error running the program:\n"
-				    "%s\n"
-				    "This program could not be executed.\n"
-				    "This is because the file is not a "
-				    "regular file.\n"), path);
+		     AlertOK(_("There was an error running the program:\n"
+			       "%s\n"
+			       "This program could not be executed.\n"
+			       "This is because the file is not a "
+			       "regular file.\n"), path);
 	       }
 	     Efree(path);
 	  }
@@ -194,7 +186,7 @@ Espawn(int argc __UNUSED__, char **argv)
 
    execvp(argv[0], argv);
 
-   DialogAlertOK(_("There was an error running the program:\n%s\n"), argv[0]);
+   AlertOK(_("There was an error running the program:\n%s\n"), argv[0]);
    exit(100);
 }
 

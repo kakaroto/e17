@@ -2042,30 +2042,6 @@ DialogOKstr(const char *title, const char *txt)
    DialogShow(d);
 }
 
-void
-DialogAlert(const char *fmt, ...)
-{
-   char                text[10240];
-   va_list             args;
-
-   va_start(args, fmt);
-   Evsnprintf(text, 10240, fmt, args);
-   va_end(args);
-   Alert(text);
-}
-
-void
-DialogAlertOK(const char *fmt, ...)
-{
-   char                text[10240];
-   va_list             args;
-
-   va_start(args, fmt);
-   Evsnprintf(text, 10240, fmt, args);
-   va_end(args);
-   AlertX(_("Attention !!!"), _("OK"), NULL, NULL, text);
-}
-
 /*
  * Dialog event handlers
  */

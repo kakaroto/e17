@@ -569,3 +569,16 @@ Alert(const char *fmt, ...)
    ShowAlert(_("Enlightenment Message Dialog"), _("Ignore this"),
 	     _("Restart Enlightenment"), _("Quit Enlightenment"), text);
 }
+
+void
+AlertOK(const char *fmt, ...)
+{
+   char                text[10240];
+   va_list             args;
+
+   va_start(args, fmt);
+   Evsnprintf(text, 10240, fmt, args);
+   va_end(args);
+
+   ShowAlert(_("Attention !!!"), _("OK"), NULL, NULL, text);
+}

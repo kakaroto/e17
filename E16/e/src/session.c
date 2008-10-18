@@ -340,12 +340,12 @@ ice_msgs_process(void)
    if (status == IceProcessMessagesIOError)
      {
 	/* Less of the hope.... E survives */
-	DialogAlert(_("ERROR!\n" "\n"
-		      "Lost the Session Manager that was there?\n"
-		      "Here here session manager... come here... want a bone?\n"
-		      "Oh come now! Stop sulking! Bugger. Oh well. "
-		      "Will continue without\n" "a session manager.\n" "\n"
-		      "I'll survive somehow.\n" "\n" "\n" "... I hope.\n"));
+	Alert(_("ERROR!\n" "\n"
+		"Lost the Session Manager that was there?\n"
+		"Here here session manager... come here... want a bone?\n"
+		"Oh come now! Stop sulking! Bugger. Oh well. "
+		"Will continue without\n" "a session manager.\n" "\n"
+		"I'll survive somehow.\n" "\n" "\n" "... I hope.\n"));
 	ice_exit();
      }
 }

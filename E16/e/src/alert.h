@@ -28,6 +28,7 @@
 
 /* alert.c */
 void __PRINTF__     Alert(const char *fmt, ...);
+void __PRINTF__     AlertOK(const char *fmt, ...);
 void __PRINTF_5__   AlertX(const char *title, const char *ignore,
 			   const char *restart, const char *quit,
 			   const char *fmt, ...);
