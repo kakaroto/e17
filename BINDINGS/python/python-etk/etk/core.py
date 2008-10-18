@@ -268,3 +268,8 @@ class HPaned(c_etk.HPaned):
 class VPaned(c_etk.VPaned):
     __metaclass__ = EtkMeta
     _etk_type = "Etk_VPaned"
+
+
+class MessageDialog(c_etk.MessageDialog, c_etk.MessageDialogEnums):
+    __metaclass__ = EtkMeta
+    _etk_type = "Etk_Message_Dialog"
