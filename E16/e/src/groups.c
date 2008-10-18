@@ -196,7 +196,14 @@ GroupsGetList(int *pnum)
    return (Group **) ecore_list_items_get(group_list, pnum);
 }
 
-Group             **
+Group              *const *
+EwinGetGroups(const EWin * ewin, int *num)
+{
+   *num = ewin->num_groups;
+   return ewin->groups;
+}
+
+static Group      **
 ListWinGroups(const EWin * ewin, char group_select, int *num)
 {
    Group             **groups = NULL;
@@ -361,7 +368,7 @@ RemoveEwinFromGroup(EWin * ewin, Group * g)
 		ewin->groups =
 		   EREALLOC(Group *, ewin->groups, ewin->num_groups);
 
-	     SaveGroups();
+	     GroupsSave();
 	     return;
 	  }
      }
@@ -487,7 +494,7 @@ ShowHideWinGroups(EWin * ewin, int group_index, char onoff)
      }
    if (group_index < 0)
       Efree(gwins);
-   SaveGroups();
+   GroupsSave();
 }
 #else
 
@@ -496,7 +503,7 @@ ShowHideWinGroups(EWin * ewin, int group_index, char onoff)
 #endif /* USE_GROUP_SHOWHIDE */
 
 void
-SaveGroups(void)
+GroupsSave(void)
 {
    Group              *g;
    FILE               *f;
@@ -538,7 +545,7 @@ SaveGroups(void)
    fclose(f);
 }
 
-static void
+void
 GroupsLoad(void)
 {
    FILE               *f;
@@ -647,7 +654,7 @@ ChooseGroup(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 	Efree(tmp_groups);
 	tmp_groups = NULL;
 
-	SaveGroups();
+	GroupsSave();
      }
 }
 
@@ -1081,17 +1088,6 @@ GroupsConfigure(const char *params)
 }
 
 static void
-GroupsSighan(int sig, void *prm __UNUSED__)
-{
-   switch (sig)
-     {
-     case ESIGNAL_INIT:
-	GroupsLoad();
-	break;
-     }
-}
-
-static void
 GroupShow(Group * g)
 {
    int                 j;
@@ -1197,7 +1193,7 @@ IPC_GroupOps(const char *params)
 	IpcPrintf("Error: no such operation: %s", operation);
 	return;
      }
-   SaveGroups();
+   GroupsSave();
 }
 
 static void
@@ -1408,7 +1404,7 @@ static const CfgItem GroupsCfgItems[] = {
 extern const EModule ModGroups;
 const EModule       ModGroups = {
    "groups", "grp",
-   GroupsSighan,
+   NULL,
    {N_IPC_FUNCS, GroupsIpcArray},
    {N_CFG_ITEMS, GroupsCfgItems}
 };

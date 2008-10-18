@@ -389,7 +389,7 @@ static void
 _SnapUpdateEwinGroups(Snapshot * sn, const EWin * ewin, char onoff)
 {
    EWin              **gwins = NULL;
-   Group             **groups;
+   Group              *const *groups;
    int                 i, j, num, num_groups;
 
    if (!ewin)
@@ -409,8 +409,7 @@ _SnapUpdateEwinGroups(Snapshot * sn, const EWin * ewin, char onoff)
      {
 	if (onoff)
 	  {
-	     groups =
-		ListWinGroups(gwins[i], GROUP_SELECT_EWIN_ONLY, &num_groups);
+	     groups = EwinGetGroups(gwins[i], &num_groups);
 	     if (groups)
 	       {
 		  sn = gwins[i]->snap;
@@ -418,15 +417,13 @@ _SnapUpdateEwinGroups(Snapshot * sn, const EWin * ewin, char onoff)
 		     sn = _SnapEwinGet(gwins[i], SNAP_MATCH_DEFAULT);
 		  if (sn)
 		    {
+		       sn->num_groups = num_groups;
 		       Efree(sn->groups);
 		       sn->groups = EMALLOC(int, num_groups);
-
-		       sn->num_groups = num_groups;
 
 		       for (j = 0; j < num_groups; j++)
 			  sn->groups[j] = groups[j]->index;
 		    }
-		  Efree(groups);
 	       }
 	  }
 	else
@@ -1167,7 +1164,7 @@ SnapshotsSaveReal(void *data __UNUSED__)
    if (!isfile(buf))
       Alert(_("Error saving snaps file\n"));
 
-   SaveGroups();
+   GroupsSave();
 
  done:
    TIMER_DEL(ss_timer);
@@ -1198,6 +1195,8 @@ SnapshotsLoad(void)
    char                buf[4096], *s;
    FILE               *f;
    int                 res_w, res_h, a, b, c, d;
+
+   GroupsLoad();
 
    Esnprintf(buf, sizeof(buf), "%s.snapshots", EGetSavePrefix());
    f = fopen(buf, "r");

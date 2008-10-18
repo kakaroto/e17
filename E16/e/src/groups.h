@@ -63,13 +63,13 @@ EWin              **ListWinGroupMembersForEwin(const EWin * ewin, int action,
 					       char nogroup, int *num);
 
 /* groups.c */
+Group              *const *EwinGetGroups(const EWin * ewin, int *num);
 Group              *EwinsInGroup(const EWin * ewin1, const EWin * ewin2);
 void                GroupsEwinAdd(EWin * ewin, int gid);
 void                GroupsEwinRemove(EWin * ewin);
-void                SaveGroups(void);
+void                GroupsLoad(void);
+void                GroupsSave(void);
 Group             **GroupsGetList(int *pnum);
-Group             **ListWinGroups(const EWin * ewin, char group_select,
-				  int *num);
 int                 GroupsGetSwapmove(void);
 
 #endif /* _GROUPS_H_ */
