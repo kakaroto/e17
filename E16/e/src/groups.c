@@ -65,7 +65,7 @@ GroupCreate(int gid)
    Group              *g;
    double              t;
 
-   g = EMALLOC(Group, 1);
+   g = ECALLOC(Group, 1);
    if (!g)
       return NULL;
 
@@ -93,8 +93,6 @@ GroupCreate(int gid)
    g->cfg.stick = Conf_groups.dflt.stick;
    g->cfg.shade = Conf_groups.dflt.shade;
    g->cfg.mirror = Conf_groups.dflt.mirror;
-   g->num_members = 0;
-   g->members = NULL;
 
    return g;
 }
@@ -125,6 +123,18 @@ GroupFind(int gid)
 {
    return (Group *) ecore_list_find(group_list, GroupMatchId,
 				    (void *)(long)gid);
+}
+
+void
+GroupRemember(int gid)
+{
+   Group              *g;
+
+   g = GroupFind(gid);
+   if (!g)
+      return;
+
+   g->save = 1;
 }
 
 static Group       *
@@ -349,6 +359,11 @@ RemoveEwinFromGroup(EWin * ewin, Group * g)
 	     g->num_members--;
 	     if (g->num_members > 0)
 		g->members = EREALLOC(EWin *, g->members, g->num_members);
+	     else if (g->save)
+	       {
+		  Efree(g->members);
+		  g->members = NULL;
+	       }
 	     else
 	       {
 		  GroupDestroy(g);
@@ -519,17 +534,8 @@ GroupsSave(void)
 
    ECORE_LIST_FOR_EACH(group_list, g)
    {
-      if (!g->members)
+      if (!g->save)
 	 continue;
-
-      /* Only if the group should be remembered, write info */
-      if (!g->members[0]->snap)
-	 continue;
-
-#if 0
-      if (!g->members[0]->snap->num)
-	 continue;
-#endif
 
       fprintf(f, "NEW: %i\n", g->index);
       fprintf(f, "ICONIFY: %i\n", g->cfg.iconify);

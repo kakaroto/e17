@@ -410,20 +410,23 @@ _SnapUpdateEwinGroups(Snapshot * sn, const EWin * ewin, char onoff)
 	if (onoff)
 	  {
 	     groups = EwinGetGroups(gwins[i], &num_groups);
-	     if (groups)
-	       {
-		  sn = gwins[i]->snap;
-		  if (!sn)
-		     sn = _SnapEwinGet(gwins[i], SNAP_MATCH_DEFAULT);
-		  if (sn)
-		    {
-		       sn->num_groups = num_groups;
-		       Efree(sn->groups);
-		       sn->groups = EMALLOC(int, num_groups);
+	     if (!groups)
+		continue;
 
-		       for (j = 0; j < num_groups; j++)
-			  sn->groups[j] = groups[j]->index;
-		    }
+	     sn = gwins[i]->snap;
+	     if (!sn)
+		sn = _SnapEwinGet(gwins[i], SNAP_MATCH_DEFAULT);
+	     if (!sn)
+		continue;
+
+	     sn->num_groups = num_groups;
+	     Efree(sn->groups);
+	     sn->groups = EMALLOC(int, num_groups);
+
+	     for (j = 0; j < num_groups; j++)
+	       {
+		  sn->groups[j] = groups[j]->index;
+		  groups[j]->save = 1;
 	       }
 	  }
 	else
@@ -1372,6 +1375,7 @@ SnapshotsLoad(void)
 		  sn->groups = EREALLOC(int, sn->groups, sn->num_groups);
 
 		  sn->groups[sn->num_groups - 1] = atoi(s);
+		  GroupRemember(sn->groups[sn->num_groups - 1]);
 	       }
 #if USE_COMPOSITE
 	     else if (!strcmp(buf, "OPACITY"))

@@ -56,6 +56,7 @@ struct _group {
    EWin              **members;
    int                 num_members;
    GroupConfig         cfg;
+   char                save;	/* Used in snapshot - must save */
 };
 
 /* finders.c */
@@ -71,5 +72,6 @@ void                GroupsLoad(void);
 void                GroupsSave(void);
 Group             **GroupsGetList(int *pnum);
 int                 GroupsGetSwapmove(void);
+void                GroupRemember(int gid);
 
 #endif /* _GROUPS_H_ */
