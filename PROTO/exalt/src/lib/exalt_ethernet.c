@@ -1439,7 +1439,6 @@ void _exalt_cb_net_properties(void *data, void *reply_data, DBusError *error)
     char* str;
 
     EXALT_ASSERT_RETURN_VOID(!dbus_error_is_set(error));
-
     str = e_hal_property_string_get(ret,"net.interface", &err);
     eth = exalt_eth_new(str);
     EXALT_FREE(str);
