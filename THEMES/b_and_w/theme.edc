@@ -14,11 +14,9 @@
 // TODO Code: - allow sys (shutdown, reboot etc.) to indicated borderless
 //            - make battery module text translatable and set by E, not in the theme.
 //            - desklock login_box doesnt centre correctly. looks like a code problem.
-//            - Theme Preview selector. Doesnt reszie well. See wallpaper for correct behaviour.
 //	      - ilist e.swallow.icon should use e_ilist_icon_size_set to make a dummy box
 //		to compensate when there is no icon there.
 //	      - Fix ibox urgent / icon_overlay problem
-//	      - Mixer config/app (click Mixer) window icon needs to be fixed.
 //
 
 /*
@@ -18658,8 +18656,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       image.normal: "logo_white_128.png";
 	    }
 	 }
-	 part {
-	    name: "e.text.title";
+	 part { name: "e.text.title";
 	    type: TEXT;
 	    effect: SOFT_SHADOW;
 	    scale: 1;
@@ -18687,8 +18684,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	       }
 	    }
 	 }
-	 part {
-	    name: "pulse_clip";
+	 part { name: "pulse_clip";
 	    type: RECT;
 	    mouse_events: 0;
 	    description { state: "default" 0.0;
