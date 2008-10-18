@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2000-2007 Carsten Haitzler, Geoff Harrison and various contributors
- * Copyright (C) 2004-2007 Kim Woelders
+ * Copyright (C) 2004-2008 Kim Woelders
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -63,11 +63,8 @@ EWin              **ListWinGroupMembersForEwin(const EWin * ewin, int action,
 					       char nogroup, int *num);
 
 /* groups.c */
-Group              *BuildWindowGroup(EWin ** ewins, int num);
 Group              *EwinsInGroup(const EWin * ewin1, const EWin * ewin2);
-void                AddEwinToGroup(EWin * ewin, Group * g);
-Group              *GroupFind(int gid);
-void                GroupSetId(Group * group, int gid);
+void                GroupsEwinAdd(EWin * ewin, int gid);
 void                GroupsEwinRemove(EWin * ewin);
 void                SaveGroups(void);
 Group             **GroupsGetList(int *pnum);

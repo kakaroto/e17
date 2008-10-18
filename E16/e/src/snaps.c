@@ -1473,22 +1473,8 @@ SnapshotEwinApply(EWin * ewin)
    if (use_flags & SNAP_USE_BORDER)
       EwinSetBorderByName(ewin, sn->border_name);
 
-   if (sn->groups)
-     {
-	for (i = 0; i < sn->num_groups; i++)
-	  {
-	     Group              *group;
-
-	     group = GroupFind(sn->groups[i]);
-	     if (!group)
-	       {
-		  group = BuildWindowGroup(&ewin, 1);
-		  GroupSetId(group, sn->groups[i]);
-	       }
-	     else
-		AddEwinToGroup(ewin, group);
-	  }
-     }
+   for (i = 0; i < sn->num_groups; i++)
+      GroupsEwinAdd(ewin, sn->groups[i]);
 
 #if USE_COMPOSITE
    if (use_flags & SNAP_USE_OPACITY)

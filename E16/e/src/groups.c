@@ -50,6 +50,7 @@ static struct {
    Group              *current;
 } Mode_groups;
 
+static void         AddEwinToGroup(EWin * ewin, Group * g);
 static void         RemoveEwinFromGroup(EWin * ewin, Group * g);
 
 int
@@ -59,7 +60,7 @@ GroupsGetSwapmove(void)
 }
 
 static Group       *
-GroupCreate(void)
+GroupCreate(int gid)
 {
    Group              *g;
    double              t;
@@ -72,10 +73,18 @@ GroupCreate(void)
       group_list = ecore_list_new();
    ecore_list_append(group_list, g);
 
-   t = GetTime();
-   g->index = (int)((GetTime() - (floor(t / 1000) * 1000)) * 10000);
-   /* g->index = (int)(GetTime() * 100); */
-
+   if (gid == -1)
+     {
+	/* Create new group id */
+	t = GetTime();
+	g->index = (int)((GetTime() - (floor(t / 1000) * 1000)) * 10000);
+	/* g->index = (int)(GetTime() * 100); */
+     }
+   else
+     {
+	/* Use given group id */
+	g->index = gid;
+     }
    g->cfg.iconify = Conf_groups.dflt.iconify;
    g->cfg.kill = Conf_groups.dflt.kill;
    g->cfg.move = Conf_groups.dflt.move;
@@ -111,7 +120,7 @@ GroupMatchId(const void *data, const void *match)
    return ((const Group *)data)->index != (int)(long)match;
 }
 
-Group              *
+static Group       *
 GroupFind(int gid)
 {
    return (Group *) ecore_list_find(group_list, GroupMatchId,
@@ -132,12 +141,6 @@ GroupFind2(const char *groupid)
       return NULL;
 
    return GroupFind(gid);
-}
-
-void
-GroupSetId(Group * group, int gid)
-{
-   group->index = gid;
 }
 
 static void
@@ -175,18 +178,16 @@ BreakWindowGroup(EWin * ewin, Group * g)
      }
 }
 
-Group              *
-BuildWindowGroup(EWin ** ewins, int num)
+static void
+BuildWindowGroup(EWin ** ewins, int num, int gid)
 {
    int                 i;
    Group              *group;
 
-   Mode_groups.current = group = GroupCreate();
+   Mode_groups.current = group = GroupCreate(gid);
 
    for (i = 0; i < num; i++)
       AddEwinToGroup(ewins[i], group);
-
-   return group;
 }
 
 Group             **
@@ -247,7 +248,7 @@ ListWinGroups(const EWin * ewin, char group_select, int *num)
    return groups;
 }
 
-void
+static void
 AddEwinToGroup(EWin * ewin, Group * g)
 {
    int                 i;
@@ -264,6 +265,23 @@ AddEwinToGroup(EWin * ewin, Group * g)
 	g->members = EREALLOC(EWin *, g->members, g->num_members);
 	g->members[g->num_members - 1] = ewin;
 	SnapshotEwinUpdate(ewin, SNAP_USE_GROUPS);
+     }
+}
+
+void
+GroupsEwinAdd(EWin * ewin, int gid)
+{
+   Group              *group;
+
+   group = GroupFind(gid);
+   if (!group)
+     {
+	/* This should not happen, but may if group/snap configs are corrupted */
+	BuildWindowGroup(&ewin, 1, gid);
+     }
+   else
+     {
+	AddEwinToGroup(ewin, group);
      }
 }
 
@@ -544,9 +562,7 @@ GroupsLoad(void)
 
 	if (!strcmp(ss, "NEW:"))
 	  {
-	     g = GroupCreate();
-	     if (g)
-		g->index = ii;
+	     g = GroupCreate(ii);
 	     continue;
 	  }
 	if (!g)
@@ -1150,7 +1166,7 @@ IPC_GroupOps(const char *params)
 
    if (!strcmp(operation, "start"))
      {
-	BuildWindowGroup(&ewin, 1);
+	BuildWindowGroup(&ewin, 1, -1);
 	IpcPrintf("start %8x", win);
      }
    else if (!strcmp(operation, "add"))
