@@ -322,7 +322,6 @@ EwinConfigure(EWin * ewin)
    if (!EwinIsInternal(ewin) && Mode.wm.startup)
       EHintsGetInfo(ewin);	/* E restart hints */
    EwinHintsInferProps(ewin);
-   SnapshotsEwinMatch(ewin);	/* Find a saved settings match */
    SnapshotEwinApply(ewin);	/* Apply saved settings */
 
    if (ewin->save_fs.layer < 0)

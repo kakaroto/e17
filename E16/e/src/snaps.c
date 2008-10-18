@@ -74,7 +74,7 @@ static Ecore_List  *ss_list = NULL;
 static Timer       *ss_timer = NULL;
 
 static Snapshot    *
-SnapshotCreate(const char *name)
+_SnapCreate(const char *name)
 {
    Snapshot           *sn;
 
@@ -92,7 +92,7 @@ SnapshotCreate(const char *name)
 }
 
 static void
-SnapshotDestroy(Snapshot * sn)
+_SnapDestroy(Snapshot * sn)
 {
    /* Just making sure */
    sn = (Snapshot *) ecore_list_node_remove(ss_list, sn);
@@ -120,7 +120,7 @@ SnapshotDestroy(Snapshot * sn)
  * Is this even ICCCM compliant?
  */
 static char        *
-SnapGetRole(const char *role, char *buf, int len)
+_ParseRole(const char *role, char *buf, int len)
 {
    int                 l1, l2;
 
@@ -148,7 +148,7 @@ SnapGetRole(const char *role, char *buf, int len)
 #define SEQ(s1, s2) ((s1) && (s2) && !strcmp(s1, s2))
 
 static int
-SnapshotEwinMatch(const Snapshot * sn, const EWin * ewin)
+_SnapEwinMatch(const Snapshot * sn, const EWin * ewin)
 {
    char                buf[256], *s;
 
@@ -176,7 +176,7 @@ SnapshotEwinMatch(const Snapshot * sn, const EWin * ewin)
 
    if (sn->match_flags & SNAP_MATCH_ROLE)
      {
-	s = SnapGetRole(ewin->icccm.wm_role, buf, sizeof(buf));
+	s = _ParseRole(ewin->icccm.wm_role, buf, sizeof(buf));
 	if (!SEQ(sn->win_role, s))
 	   return 0;
      }
@@ -186,28 +186,28 @@ SnapshotEwinMatch(const Snapshot * sn, const EWin * ewin)
 }
 
 static int
-SnapshotEwinFindMatchCmd(const void *data, const void *match)
+_SnapEwinFindMatchCmd(const void *data, const void *match)
 {
    const Snapshot     *sn = (Snapshot *) data;
    const EWin         *ewin = (EWin *) match;
 
    return sn->used ||
       !(sn->startup_id && SEQ(sn->cmd, ewin->icccm.wm_command) &&
-	SnapshotEwinMatch(sn, ewin));
+	_SnapEwinMatch(sn, ewin));
 }
 
 static int
-SnapshotEwinFindMatch(const void *data, const void *match)
+_SnapEwinFindMatch(const void *data, const void *match)
 {
    const Snapshot     *sn = (Snapshot *) data;
    const EWin         *ewin = (EWin *) match;
 
-   return sn->used || !SnapshotEwinMatch(sn, ewin);
+   return sn->used || !_SnapEwinMatch(sn, ewin);
 }
 
 /* find a snapshot state that applies to this ewin */
 static Snapshot    *
-SnapshotEwinFind(EWin * ewin)
+_SnapEwinFind(EWin * ewin)
 {
    Snapshot           *sn;
 
@@ -218,10 +218,10 @@ SnapshotEwinFind(EWin * ewin)
       return NULL;
 
    /* If exec'ed by snap try matching command exactly */
-   sn = (Snapshot *) ecore_list_find(ss_list, SnapshotEwinFindMatchCmd, ewin);
+   sn = (Snapshot *) ecore_list_find(ss_list, _SnapEwinFindMatchCmd, ewin);
 
    if (!sn)
-      sn = (Snapshot *) ecore_list_find(ss_list, SnapshotEwinFindMatch, ewin);
+      sn = (Snapshot *) ecore_list_find(ss_list, _SnapEwinFindMatch, ewin);
 
    if (sn && !(sn->match_flags & SNAP_MATCH_MULTIPLE))
      {
@@ -237,12 +237,12 @@ SnapshotEwinFind(EWin * ewin)
 /* find a snapshot state that applies to this ewin Or if that doesnt exist */
 /* create a new one */
 static Snapshot    *
-SnapshotEwinGet(EWin * ewin, unsigned int match_flags)
+_SnapEwinGet(EWin * ewin, unsigned int match_flags)
 {
    Snapshot           *sn;
    char                buf[1024], *s;
 
-   sn = SnapshotEwinFind(ewin);
+   sn = _SnapEwinFind(ewin);
    if (sn)
       return sn;
 
@@ -261,7 +261,7 @@ SnapshotEwinGet(EWin * ewin, unsigned int match_flags)
 	match_flags = SNAP_MATCH_TITLE;
      }
 
-   sn = SnapshotCreate(NULL);
+   sn = _SnapCreate(NULL);
    if (!sn)
       return NULL;
 
@@ -274,7 +274,7 @@ SnapshotEwinGet(EWin * ewin, unsigned int match_flags)
       sn->win_class = Estrdup(EwinGetIcccmClass(ewin));
    if (match_flags & SNAP_MATCH_ROLE)
      {
-	s = SnapGetRole(ewin->icccm.wm_role, buf, sizeof(buf));
+	s = _ParseRole(ewin->icccm.wm_role, buf, sizeof(buf));
 	sn->win_role = Estrdup(s);
      }
 
@@ -302,7 +302,7 @@ SnapshotEwinGet(EWin * ewin, unsigned int match_flags)
 /* record info about this Ewin's attributes */
 
 static void
-SnapEwinBorder(Snapshot * sn, const EWin * ewin)
+_SnapUpdateEwinBorder(Snapshot * sn, const EWin * ewin)
 {
    Efree(sn->border_name);
    sn->border_name = NULL;
@@ -313,20 +313,20 @@ SnapEwinBorder(Snapshot * sn, const EWin * ewin)
 }
 
 static void
-SnapEwinDesktop(Snapshot * sn, const EWin * ewin)
+_SnapUpdateEwinDesktop(Snapshot * sn, const EWin * ewin)
 {
    sn->desktop = EoGetDeskNum(ewin);
 }
 
 static void
-SnapEwinSize(Snapshot * sn, const EWin * ewin)
+_SnapUpdateEwinSize(Snapshot * sn, const EWin * ewin)
 {
    sn->w = ewin->client.w;
    sn->h = ewin->client.h;
 }
 
 static void
-SnapEwinLocation(Snapshot * sn, const EWin * ewin)
+_SnapUpdateEwinLocation(Snapshot * sn, const EWin * ewin)
 {
    int                 ax, ay;
 
@@ -343,25 +343,25 @@ SnapEwinLocation(Snapshot * sn, const EWin * ewin)
 }
 
 static void
-SnapEwinLayer(Snapshot * sn, const EWin * ewin)
+_SnapUpdateEwinLayer(Snapshot * sn, const EWin * ewin)
 {
    sn->layer = EoGetLayer(ewin);
 }
 
 static void
-SnapEwinSticky(Snapshot * sn, const EWin * ewin)
+_SnapUpdateEwinSticky(Snapshot * sn, const EWin * ewin)
 {
    sn->sticky = EoIsSticky(ewin);
 }
 
 static void
-SnapEwinShade(Snapshot * sn, const EWin * ewin)
+_SnapUpdateEwinShade(Snapshot * sn, const EWin * ewin)
 {
    sn->shaded = ewin->state.shaded;
 }
 
 static void
-SnapEwinSkipLists(Snapshot * sn, const EWin * ewin)
+_SnapUpdateEwinSkipLists(Snapshot * sn, const EWin * ewin)
 {
    sn->skiptask = ewin->props.skip_ext_task;
    sn->skipwinlist = ewin->props.skip_winlist;
@@ -369,13 +369,13 @@ SnapEwinSkipLists(Snapshot * sn, const EWin * ewin)
 }
 
 static void
-SnapEwinFlags(Snapshot * sn, const EWin * ewin)
+_SnapUpdateEwinFlags(Snapshot * sn, const EWin * ewin)
 {
    EwinFlagsEncode(ewin, sn->flags);
 }
 
 static void
-SnapEwinCmd(Snapshot * sn, const EWin * ewin)
+_SnapUpdateEwinCmd(Snapshot * sn, const EWin * ewin)
 {
    if (ewin->icccm.wm_machine &&
        strcmp(ewin->icccm.wm_machine, Mode.wm.machine_name))
@@ -386,7 +386,7 @@ SnapEwinCmd(Snapshot * sn, const EWin * ewin)
 }
 
 static void
-SnapEwinGroups(Snapshot * sn, const EWin * ewin, char onoff)
+_SnapUpdateEwinGroups(Snapshot * sn, const EWin * ewin, char onoff)
 {
    EWin              **gwins = NULL;
    Group             **groups;
@@ -415,7 +415,7 @@ SnapEwinGroups(Snapshot * sn, const EWin * ewin, char onoff)
 	       {
 		  sn = gwins[i]->snap;
 		  if (!sn)
-		     sn = SnapshotEwinGet(gwins[i], SNAP_MATCH_DEFAULT);
+		     sn = _SnapEwinGet(gwins[i], SNAP_MATCH_DEFAULT);
 		  if (sn)
 		    {
 		       Efree(sn->groups);
@@ -449,14 +449,14 @@ SnapEwinGroups(Snapshot * sn, const EWin * ewin, char onoff)
 #if USE_COMPOSITE
 
 static void
-SnapEwinOpacity(Snapshot * sn, const EWin * ewin)
+_SnapUpdateEwinOpacity(Snapshot * sn, const EWin * ewin)
 {
    sn->opacity = OpacityToPercent(ewin->ewmh.opacity);
    sn->focused_opacity = OpacityToPercent(ewin->props.focused_opacity);
 }
 
 static void
-SnapEwinShadow(Snapshot * sn, const EWin * ewin)
+_SnapUpdateEwinShadow(Snapshot * sn, const EWin * ewin)
 {
    sn->shadow = EoGetShadow(ewin);
 }
@@ -464,44 +464,44 @@ SnapEwinShadow(Snapshot * sn, const EWin * ewin)
 #endif
 
 static void
-SnapEwinUpdate(Snapshot * sn, const EWin * ewin, unsigned int flags)
+_SnapUpdateEwin(Snapshot * sn, const EWin * ewin, unsigned int flags)
 {
    /* FIXME - We should check if anything is actually changed */
 
    if (flags & SNAP_USE_BORDER)
-      SnapEwinBorder(sn, ewin);
+      _SnapUpdateEwinBorder(sn, ewin);
    if (flags & SNAP_USE_COMMAND)
-      SnapEwinCmd(sn, ewin);
+      _SnapUpdateEwinCmd(sn, ewin);
    if (flags & SNAP_USE_DESK)
-      SnapEwinDesktop(sn, ewin);
+      _SnapUpdateEwinDesktop(sn, ewin);
    if (flags & SNAP_USE_POS)
-      SnapEwinLocation(sn, ewin);
+      _SnapUpdateEwinLocation(sn, ewin);
    if (flags & SNAP_USE_SIZE)
-      SnapEwinSize(sn, ewin);
+      _SnapUpdateEwinSize(sn, ewin);
    if (flags & SNAP_USE_LAYER)
-      SnapEwinLayer(sn, ewin);
+      _SnapUpdateEwinLayer(sn, ewin);
    if (flags & SNAP_USE_STICKY)
-      SnapEwinSticky(sn, ewin);
+      _SnapUpdateEwinSticky(sn, ewin);
    if (flags & SNAP_USE_SHADED)
-      SnapEwinShade(sn, ewin);
+      _SnapUpdateEwinShade(sn, ewin);
    if (flags & SNAP_USE_SKIP_LISTS)
-      SnapEwinSkipLists(sn, ewin);
+      _SnapUpdateEwinSkipLists(sn, ewin);
    if (flags & SNAP_USE_FLAGS)
-      SnapEwinFlags(sn, ewin);
+      _SnapUpdateEwinFlags(sn, ewin);
 #if USE_COMPOSITE
    if (flags & SNAP_USE_OPACITY)
-      SnapEwinOpacity(sn, ewin);
+      _SnapUpdateEwinOpacity(sn, ewin);
    if (flags & SNAP_USE_SHADOW)
-      SnapEwinShadow(sn, ewin);
+      _SnapUpdateEwinShadow(sn, ewin);
 #endif
    if (flags & SNAP_USE_GROUPS)
-      SnapEwinGroups(sn, ewin, ewin->num_groups);
+      _SnapUpdateEwinGroups(sn, ewin, ewin->num_groups);
 
-   SaveSnapInfo();
+   SnapshotsSave();
 }
 
 static void
-SnapshotEwinSet(EWin * ewin, unsigned int match_flags, unsigned int use_flags)
+_EwinSnapSet(EWin * ewin, unsigned int match_flags, unsigned int use_flags)
 {
    Snapshot           *sn;
 
@@ -509,7 +509,7 @@ SnapshotEwinSet(EWin * ewin, unsigned int match_flags, unsigned int use_flags)
    if (!match_flags || !(use_flags & SNAP_USE_ALL))
       return;
 
-   sn = SnapshotEwinGet(ewin, match_flags);
+   sn = _SnapEwinGet(ewin, match_flags);
    if (!sn)
       return;
 
@@ -518,7 +518,7 @@ SnapshotEwinSet(EWin * ewin, unsigned int match_flags, unsigned int use_flags)
 
    sn->use_flags = use_flags & SNAP_USE_ALL;
 
-   SnapEwinUpdate(sn, ewin, use_flags);
+   _SnapUpdateEwin(sn, ewin, use_flags);
 }
 
 void
@@ -535,15 +535,15 @@ SnapshotEwinUpdate(const EWin * ewin, unsigned int flags)
 #endif
 
    if (flags & sn->use_flags)
-      SnapEwinUpdate(sn, ewin, flags);
+      _SnapUpdateEwin(sn, ewin, flags);
 }
 
 /* unsnapshot any saved info about this ewin */
 static void
-SnapshotEwinRemove(EWin * ewin)
+_EwinSnapRemove(EWin * ewin)
 {
    if (ewin->snap)
-      SnapshotDestroy(ewin->snap);
+      _SnapDestroy(ewin->snap);
    ewin->snap = NULL;
 }
 
@@ -594,7 +594,7 @@ CB_ApplySnap(Dialog * d, int val, void *data __UNUSED__)
    if (!ewin)
       goto done;
 
-   SnapshotEwinRemove(ewin);
+   _EwinSnapRemove(ewin);
 
    match_flags = 0;
    if (sd->match.title)
@@ -644,7 +644,7 @@ CB_ApplySnap(Dialog * d, int val, void *data __UNUSED__)
    if (!use_flags)
       goto done;
 
-   SnapshotEwinSet(ewin, match_flags, use_flags);
+   _EwinSnapSet(ewin, match_flags, use_flags);
 
  done:
    if (sd && val == 2)
@@ -653,7 +653,7 @@ CB_ApplySnap(Dialog * d, int val, void *data __UNUSED__)
 	DialogSetData(d, NULL);
      }
 
-   SaveSnapInfo();
+   SnapshotsSave();
 }
 
 static void
@@ -931,7 +931,7 @@ static const DialogDef DlgSnap = {
 };
 
 static void
-SnapshotEwinDialog(const EWin * ewin)
+_EwinSnapDialog(const EWin * ewin)
 {
    char                s[1024];
 
@@ -963,10 +963,10 @@ CB_ApplyRemember(Dialog * d __UNUSED__, int val, void *data __UNUSED__)
 	     if (!rd_ewin_list[i].remove)
 		continue;
 
-	     SnapshotDestroy(rd_ewin_list[i].snap);
+	     _SnapDestroy(rd_ewin_list[i].snap);
 	  }
 	/* save snapshot info to disk */
-	SaveSnapInfo();
+	SnapshotsSave();
      }
 
    if (((val == 0) || (val == 2)) && rd_ewin_list)
@@ -991,7 +991,7 @@ CB_RememberWindowSettings(Dialog * d __UNUSED__, int val __UNUSED__, void *data)
 
    if (!sn || !sn->used)
       return;
-   SnapshotEwinDialog(sn->used);
+   _EwinSnapDialog(sn->used);
 }
 
 static void
@@ -1079,15 +1079,15 @@ const DialogDef     DlgRemember = {
 
 /* ... combine writes, only save after a timeout */
 void
-SaveSnapInfo(void)
+SnapshotsSave(void)
 {
    TIMER_DEL(ss_timer);
-   TIMER_ADD(ss_timer, 5.0, Real_SaveSnapInfo, NULL);
+   TIMER_ADD(ss_timer, 5.0, SnapshotsSaveReal, NULL);
 }
 
 /* save out all snapped info to disk */
 int
-Real_SaveSnapInfo(void *data __UNUSED__)
+SnapshotsSaveReal(void *data __UNUSED__)
 {
    Snapshot           *sn;
    int                 j;
@@ -1162,7 +1162,7 @@ Real_SaveSnapInfo(void *data __UNUSED__)
    Esnprintf(buf, sizeof(buf), "%s.snapshots", EGetSavePrefix());
 
    if (EDebug(EDBUG_TYPE_SNAPS))
-      Eprintf("Real_SaveSnapInfo: %s\n", buf);
+      Eprintf("SnapshotsSaveReal: %s\n", buf);
    E_mv(s, buf);
    if (!isfile(buf))
       Alert(_("Error saving snaps file\n"));
@@ -1175,7 +1175,7 @@ Real_SaveSnapInfo(void *data __UNUSED__)
 }
 
 void
-SpawnSnappedCmds(void)
+SnapshotsSpawn(void)
 {
    Snapshot           *sn;
 
@@ -1192,7 +1192,7 @@ SpawnSnappedCmds(void)
 
 /* load all snapped info */
 void
-LoadSnapInfo(void)
+SnapshotsLoad(void)
 {
    Snapshot           *sn = NULL;
    char                buf[4096], *s;
@@ -1219,7 +1219,7 @@ LoadSnapInfo(void)
 	  {
 	     res_w = WinGetW(VROOT);
 	     res_h = WinGetH(VROOT);
-	     sn = SnapshotCreate(s);
+	     sn = _SnapCreate(s);
 	  }
 	else if (sn)
 	  {
@@ -1396,12 +1396,6 @@ LoadSnapInfo(void)
    fclose(f);
 }
 
-void
-SnapshotsEwinMatch(EWin * ewin)
-{
-   SnapshotEwinFind(ewin);
-}
-
 /* make a client window conform to snapshot info */
 void
 SnapshotEwinApply(EWin * ewin)
@@ -1410,11 +1404,13 @@ SnapshotEwinApply(EWin * ewin)
    int                 i, ax, ay;
    unsigned int        use_flags;
 
+   _SnapEwinFind(ewin);		/* Find a saved settings match */
+
    sn = ewin->snap;
    if (!sn)
      {
 	if (ewin->props.autosave)
-	   SnapshotEwinSet(ewin, SNAP_MATCH_DEFAULT, SNAP_USE_ALL | SNAP_AUTO);
+	   _EwinSnapSet(ewin, SNAP_MATCH_DEFAULT, SNAP_USE_ALL | SNAP_AUTO);
 	return;
      }
 
@@ -1556,11 +1552,11 @@ SnapshotEwinParse(EWin * ewin, const char *params)
 	  }
 	else if (!strcmp(param, "dialog"))
 	  {
-	     SnapshotEwinDialog(ewin);
+	     _EwinSnapDialog(ewin);
 	     break;
 	  }
 	else if (!strcmp(param, "none"))
-	   SnapshotEwinRemove(ewin);
+	   _EwinSnapRemove(ewin);
 	else if (!strcmp(param, "auto"))
 	   use_flags |= SNAP_AUTO;
 	else if (!strcmp(param, "border"))
@@ -1595,16 +1591,16 @@ SnapshotEwinParse(EWin * ewin, const char *params)
 	use_flags |= ewin->snap->use_flags;
      }
 
-   SnapshotEwinSet(ewin, match_flags, use_flags);
+   _EwinSnapSet(ewin, match_flags, use_flags);
 
-   SaveSnapInfo();
+   SnapshotsSave();
 }
 
 /*
  * IPC functions
  * A bit ugly...
  */
-const char          SnapIpcText[] =
+const char          SnapshotsIpcText[] =
    "usage:\n" "  list_remember [full]\n"
    "  Retrieve a list of remembered windows.  with full, the list\n"
    "  includes the window's remembered attributes\n";
@@ -1680,7 +1676,7 @@ _SnapShow(void *data, void *prm)
 }
 
 void
-SnapIpcFunc(const char *params)
+SnapshotsIpcFunc(const char *params)
 {
    const char         *p;
    char                cmd[128], prm[4096];

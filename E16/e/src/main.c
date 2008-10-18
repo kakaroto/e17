@@ -249,7 +249,7 @@ main(int argc, char **argv)
    HintsInit();
    CommsInit();
    SessionInit();
-   LoadSnapInfo();
+   SnapshotsLoad();
 
 #if USE_DBUS
    DbusInit();
@@ -291,7 +291,7 @@ main(int argc, char **argv)
    EwinsManage();
 
    RunInitPrograms();
-   SpawnSnappedCmds();
+   SnapshotsSpawn();
 
    if (!Mode.wm.restart)
       StartupWindowsOpen();

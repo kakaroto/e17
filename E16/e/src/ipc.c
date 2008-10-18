@@ -1587,10 +1587,10 @@ static const IpcItem IPCArray[] = {
     "  screen size         Show current screen size\n"
     "  screen split nx ny  Simulate xinerama by subdividing screen\n"},
    {
-    SnapIpcFunc,
+    SnapshotsIpcFunc,
     "list_remember", "rl",
     "Retrieve a list of remembered windows and their attributes",
-    SnapIpcText},
+    SnapshotsIpcText},
    {
     IPC_Debug,
     "debug", NULL,
