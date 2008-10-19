@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.17.1\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-10-15 17:49+0200\n"
+"POT-Creation-Date: 2008-10-19 01:02+0200\n"
 "PO-Revision-Date: 2004-08-29 01:02:30+0900\n"
 "Last-Translator: Michael Kim <lavnrose@e.sarang.net>\n"
 "Language-Team: Korean <translation-team-ko@lists.sourceforge.net>\n"
@@ -56,7 +56,7 @@ msgstr ""
 msgid "%u references remain\n"
 msgstr "%u개의 참조가 남아있습니다\n"
 
-#: src/actions.c:110
+#: src/actions.c:109
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -69,7 +69,7 @@ msgstr ""
 "이 프로그램은 실행될 수 없습니다.\n"
 "이 프로그램이 존재하지 않기 때문입니다.\n"
 
-#: src/actions.c:118
+#: src/actions.c:115
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -88,7 +88,7 @@ msgstr ""
 "를 설정하는 방법을 배우신 후 경로를 제대로 설정하시기\n"
 "바랍니다.\n"
 
-#: src/actions.c:138
+#: src/actions.c:134
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -105,7 +105,7 @@ msgstr ""
 "당신이 실행할 수 있도록 되어 있습니다. 이 파일의 내용을\n"
 "한 번 확인해 보시기 바랍니다.\n"
 
-#: src/actions.c:149
+#: src/actions.c:144
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -120,7 +120,7 @@ msgstr ""
 "이 파일이 존재하지만 당신은 이 파일을 실행할 수 있는 권한을\n"
 "가지고 있지 않습니다.\n"
 
-#: src/actions.c:164
+#: src/actions.c:157
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -133,7 +133,7 @@ msgstr ""
 "이 프로그램은 실행될 수 없습니다.\n"
 "이것은 파일이 아니고 디렉토리입니다.\n"
 
-#: src/actions.c:172
+#: src/actions.c:164
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -146,7 +146,7 @@ msgstr ""
 "이 프로그램은 실행될 수 없습니다.\n"
 "이것은 일반적인 파일이 아니기 때문입니다.\n"
 
-#: src/actions.c:197
+#: src/actions.c:189
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -172,6 +172,15 @@ msgstr "인라이튼먼트 재시작"
 #: src/alert.c:570 src/setup.c:168
 msgid "Quit Enlightenment"
 msgstr "인라이튼먼트 종료"
+
+#: src/alert.c:583
+msgid "Attention !!!"
+msgstr "주목 !!!"
+
+#: src/alert.c:583 src/dialog.c:846 src/dialog.c:2035 src/events.c:87
+#: src/setup.c:157 src/sound.c:209
+msgid "OK"
+msgstr "확인"
 
 #: src/backgrounds.c:1525
 #, c-format
@@ -324,12 +333,12 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: src/config.c:195 src/config.c:291
+#: src/config.c:195 src/config.c:296
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
 msgstr "CONFIG: \"%s\"에 있는 더 많은 데이타는 무시합니다\n"
 
-#: src/config.c:203 src/config.c:298
+#: src/config.c:203 src/config.c:303
 #, c-format
 msgid "CONFIG: missing required data in \"%s\"\n"
 msgstr "CONFIG: \"%s\"에 요구되는 데이타가 없습니다\n"
@@ -356,19 +365,19 @@ msgstr ""
 "경고: 설정이 메뉴 블럭을 읽기도 전에 끝난 것 같습니다\n"
 "표시가 나쁘게 될 지도 모르겠습니다.\n"
 
-#: src/config.c:307
+#: src/config.c:312
 msgid "Theme versioning ERROR"
 msgstr "테마 버전 오류"
 
-#: src/config.c:308
+#: src/config.c:313
 msgid "Restart with Defaults"
 msgstr "기본 테마로 재시작"
 
-#: src/config.c:309
+#: src/config.c:314
 msgid "Abort and Exit"
 msgstr "중단하고 종료"
 
-#: src/config.c:310
+#: src/config.c:315
 #, fuzzy, c-format
 msgid ""
 "ERROR:\n"
@@ -404,7 +413,7 @@ msgstr ""
 "새로운 인라이튼먼트의 기능을 사용하므로 새 인라이튼먼트를\n"
 "사용하십시오\n"
 
-#: src/config.c:572
+#: src/config.c:577
 msgid "Enlightenment Starting..."
 msgstr "인라이튼먼트 시작중..."
 
@@ -707,18 +716,9 @@ msgstr ""
 "인라이튼먼트 가상 데스크탑\n"
 "설정 대화상자\n"
 
-#: src/dialog.c:846 src/dialog.c:2035 src/dialog.c:2066 src/events.c:87
-#: src/setup.c:157 src/sound.c:209
-msgid "OK"
-msgstr "확인"
-
 #: src/dialog.c:851
 msgid "Apply"
 msgstr "적용"
-
-#: src/dialog.c:2066
-msgid "Attention !!!"
-msgstr "주목 !!!"
 
 #: src/ecompmgr.c:2626
 msgid ""
@@ -890,11 +890,11 @@ msgstr ""
 "인라이튼먼트 특수 효과\n"
 "설정 대화상자\n"
 
-#: src/groups.c:688
+#: src/groups.c:717
 msgid "Window Group Selection"
 msgstr "창 그룹 선택"
 
-#: src/groups.c:691
+#: src/groups.c:720
 msgid ""
 "Enlightenment Window Group\n"
 "Selection Dialog\n"
@@ -902,11 +902,11 @@ msgstr ""
 "인라이튼먼트 창 그룹\n"
 "선택 대화상자\n"
 
-#: src/groups.c:714 src/groups.c:723 src/groups.c:731 src/groups.c:917
+#: src/groups.c:743 src/groups.c:752 src/groups.c:760 src/groups.c:946
 msgid "Window Group Error"
 msgstr "창 그룹 오류"
 
-#: src/groups.c:716
+#: src/groups.c:745
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -920,7 +920,7 @@ msgstr ""
 "  창을 삭제하거나 그룹을 제거할 수 있습니다.\n"
 "\n"
 
-#: src/groups.c:724
+#: src/groups.c:753
 msgid ""
 "\n"
 "  Currently, no groups exist or this window  \n"
@@ -934,7 +934,7 @@ msgstr ""
 "  먼저 다른 그룹을 시작하셔야 합니다.  \n"
 "\n"
 
-#: src/groups.c:733
+#: src/groups.c:762
 msgid ""
 "\n"
 "  Currently, no groups exist. You have to start a group first.\n"
@@ -944,11 +944,11 @@ msgstr ""
 "  현재 어떤 그룹도 없습니다. 먼저 그룹을 시작하셔야 합니다.\n"
 "\n"
 
-#: src/groups.c:823
+#: src/groups.c:852
 msgid "   Pick the group to configure:   "
 msgstr "   설정할 그룹 선택:   "
 
-#: src/groups.c:854
+#: src/groups.c:883
 msgid ""
 "  The following actions are  \n"
 "  applied to all group members:  "
@@ -956,43 +956,43 @@ msgstr ""
 "  다음 동작은 모든 그룹  \n"
 "  멤버에게 적용됩니다:  "
 
-#: src/groups.c:859 src/groups.c:961
+#: src/groups.c:888 src/groups.c:990
 msgid "Changing Border Style"
 msgstr "가장자리 형식 바꿈"
 
-#: src/groups.c:864 src/groups.c:966
+#: src/groups.c:893 src/groups.c:995
 msgid "Iconifying"
 msgstr "아이콘화"
 
-#: src/groups.c:869 src/groups.c:971
+#: src/groups.c:898 src/groups.c:1000
 msgid "Killing"
 msgstr "죽이기"
 
-#: src/groups.c:874 src/groups.c:976
+#: src/groups.c:903 src/groups.c:1005
 msgid "Moving"
 msgstr "이동"
 
-#: src/groups.c:879 src/groups.c:981
+#: src/groups.c:908 src/groups.c:1010
 msgid "Raising/Lowering"
 msgstr "올리기/내리기"
 
-#: src/groups.c:884 src/groups.c:986
+#: src/groups.c:913 src/groups.c:1015
 msgid "Sticking"
 msgstr "고착"
 
-#: src/groups.c:889 src/groups.c:991
+#: src/groups.c:918 src/groups.c:1020
 msgid "Shading"
 msgstr "접기"
 
-#: src/groups.c:894 src/groups.c:996
+#: src/groups.c:923 src/groups.c:1025
 msgid "Mirror Shade/Iconify/Stick"
 msgstr "접기/아이콘화/고착 거울"
 
-#: src/groups.c:901
+#: src/groups.c:930
 msgid "Window Group Settings"
 msgstr "창 그룹 설정"
 
-#: src/groups.c:904
+#: src/groups.c:933
 msgid ""
 "Enlightenment Window Group\n"
 "Settings Dialog\n"
@@ -1000,7 +1000,7 @@ msgstr ""
 "인라이튼먼트 창 그룹\n"
 "설정 대화상자\n"
 
-#: src/groups.c:919
+#: src/groups.c:948
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -1010,28 +1010,28 @@ msgstr ""
 "  이 창은 현재 어떤 그룹에도 속해있지 않습니다.  \n"
 "\n"
 
-#: src/groups.c:954
+#: src/groups.c:983
 msgid " Per-group settings: "
 msgstr "그룹 설정: "
 
-#: src/groups.c:1005
+#: src/groups.c:1034
 msgid " Global settings: "
 msgstr " 공통 설정: "
 
-#: src/groups.c:1009
+#: src/groups.c:1038
 msgid "Swap Window Locations"
 msgstr "창 위치 바꿈"
 
-#: src/groups.c:1015 src/menus-misc.c:757 config/strings.c:147
+#: src/groups.c:1044 src/menus-misc.c:757 config/strings.c:147
 #, fuzzy
 msgid "Groups"
 msgstr "그룹 %i"
 
-#: src/groups.c:1016
+#: src/groups.c:1045
 msgid "Default Group Control Settings"
 msgstr "기본 그룹 조정 설정"
 
-#: src/groups.c:1019
+#: src/groups.c:1048
 msgid ""
 "Enlightenment Default\n"
 "Group Control Settings Dialog\n"
@@ -1039,22 +1039,22 @@ msgstr ""
 "인라이튼먼트 기본 그룹\n"
 "조정 설정 대화상자\n"
 
-#: src/groups.c:1052
+#: src/groups.c:1080
 #, fuzzy
 msgid "Pick the group the window will belong to:"
 msgstr "  창이 속할 그룹 선택:  \n"
 
-#: src/groups.c:1059
+#: src/groups.c:1086
 #, fuzzy
 msgid "Select the group to remove the window from:"
 msgstr "   창을 삭제할 그룹을 선택하십시오.   "
 
-#: src/groups.c:1065
+#: src/groups.c:1091
 #, fuzzy
 msgid "Select the group to break:"
 msgstr "  없앨 그룹을 선택하십시오  "
 
-#: src/handlers.c:62
+#: src/handlers.c:61
 #, c-format
 msgid ""
 "Enlightenment performed an Illegal Instruction.\n"
@@ -1075,7 +1075,7 @@ msgstr ""
 "인라이튼먼트와 인라이튼먼트를 실행하는 데\n"
 "필요한 라이브러리를 다시 컴파일하시기 바랍니다.\n"
 
-#: src/handlers.c:72
+#: src/handlers.c:71
 msgid ""
 "Enlightenment caused a Floating Point Exception.\n"
 "\n"
@@ -1098,7 +1098,7 @@ msgstr ""
 "튼먼트를 다시 실행하신 후 어디에서 죽는 지를 백트레이스\n"
 "하셔서 백트레이스와 변수들의 값에 대한 정보를 보내주십시오.\n"
 
-#: src/handlers.c:84
+#: src/handlers.c:83
 msgid ""
 "Enlightenment caused Segment Violation (Segfault)\n"
 "\n"
@@ -1121,7 +1121,7 @@ msgstr ""
 "튼먼트를 다시 실행하신 후 어디에서 죽는 지를 백트레이스\n"
 "하셔서 백트레이스와 변수들의 값에 대한 정보를 보내주십시오.\n"
 
-#: src/handlers.c:96
+#: src/handlers.c:95
 msgid ""
 "Enlightenment caused Bus Error.\n"
 "\n"

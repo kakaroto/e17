@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-10-15 17:49+0200\n"
+"POT-Creation-Date: 2008-10-19 01:02+0200\n"
 "PO-Revision-Date: 2000-01-04 23:15+0100\n"
 "Last-Translator: Dènis Riedijk <ried@si.tn.tudelft.nl>\n"
 "Language-Team: Dutch <nl@li.org>\n"
@@ -39,7 +39,7 @@ msgstr ""
 msgid "%u references remain\n"
 msgstr ""
 
-#: src/actions.c:110
+#: src/actions.c:109
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -52,7 +52,7 @@ msgstr ""
 "Dit programma kon niet uitgevoerd worden.\n"
 "Dit omdat het bestand niet bestaat.\n"
 
-#: src/actions.c:118
+#: src/actions.c:115
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -71,7 +71,7 @@ msgstr ""
 "U de documentatie voor uw sheel bekijkt hoe U het pad voor\n"
 "uivoerbare programma's moet aanpassen.\n"
 
-#: src/actions.c:138
+#: src/actions.c:134
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -88,7 +88,7 @@ msgstr ""
 "en U bent gerechtigd om het uit te voeren. Ik suggereer dat\n"
 "U hier naar kijkt.\n"
 
-#: src/actions.c:149
+#: src/actions.c:144
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -103,7 +103,7 @@ msgstr ""
 "De reden hiervoor is dat het bestand bestaat, maar U kan het\n"
 "niet uitvoeren omdat U geen uitvoer rechten voor het bestand heeft.\n"
 
-#: src/actions.c:164
+#: src/actions.c:157
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -116,7 +116,7 @@ msgstr ""
 "Dit programma kon niet uitgevoerd worden.\n"
 "De reden hiervoor is dat het bestand in werkelijkheid een directory is.\n"
 
-#: src/actions.c:172
+#: src/actions.c:164
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -125,7 +125,7 @@ msgid ""
 "This is because the file is not a regular file.\n"
 msgstr ""
 
-#: src/actions.c:197
+#: src/actions.c:189
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -151,6 +151,15 @@ msgstr "Herstart Enlightenment"
 #: src/alert.c:570 src/setup.c:168
 msgid "Quit Enlightenment"
 msgstr "Stop Enlightenment"
+
+#: src/alert.c:583
+msgid "Attention !!!"
+msgstr "Attentie !!!!"
+
+#: src/alert.c:583 src/dialog.c:846 src/dialog.c:2035 src/events.c:87
+#: src/setup.c:157 src/sound.c:209
+msgid "OK"
+msgstr "OK"
 
 #: src/backgrounds.c:1525
 #, c-format
@@ -298,12 +307,12 @@ msgid ""
 "%s\n"
 msgstr ""
 
-#: src/config.c:195 src/config.c:291
+#: src/config.c:195 src/config.c:296
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
 msgstr "CONFIGURATIE: negeer extra gegevens in \"%s\"\n"
 
-#: src/config.c:203 src/config.c:298
+#: src/config.c:203 src/config.c:303
 #, c-format
 msgid "CONFIG: missing required data in \"%s\"\n"
 msgstr "CONFIGURATIE: benodigde gegevens ontbreken in \"%s\"\n"
@@ -331,19 +340,19 @@ msgstr ""
 "klaar zijn met het laden van het huidige menu. Resultaat zal\n"
 "waarschijnlijk niet ok zijn.\n"
 
-#: src/config.c:307
+#: src/config.c:312
 msgid "Theme versioning ERROR"
 msgstr "Thema versie fout"
 
-#: src/config.c:308
+#: src/config.c:313
 msgid "Restart with Defaults"
 msgstr "Herstarten met standaard instellingen"
 
-#: src/config.c:309
+#: src/config.c:314
 msgid "Abort and Exit"
 msgstr "Afbreken en afsluiten"
 
-#: src/config.c:310
+#: src/config.c:315
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -364,7 +373,7 @@ msgid ""
 "features in Enlightenment in new versions.\n"
 msgstr ""
 
-#: src/config.c:572
+#: src/config.c:577
 msgid "Enlightenment Starting..."
 msgstr "Enlightenment start op"
 
@@ -662,18 +671,9 @@ msgid ""
 "Settings Dialog\n"
 msgstr ""
 
-#: src/dialog.c:846 src/dialog.c:2035 src/dialog.c:2066 src/events.c:87
-#: src/setup.c:157 src/sound.c:209
-msgid "OK"
-msgstr "OK"
-
 #: src/dialog.c:851
 msgid "Apply"
 msgstr "Pas toe"
-
-#: src/dialog.c:2066
-msgid "Attention !!!"
-msgstr "Attentie !!!!"
 
 #: src/ecompmgr.c:2626
 msgid ""
@@ -835,21 +835,21 @@ msgid ""
 "Settings Dialog\n"
 msgstr ""
 
-#: src/groups.c:688
+#: src/groups.c:717
 msgid "Window Group Selection"
 msgstr "Venster Groep Selectie"
 
-#: src/groups.c:691
+#: src/groups.c:720
 msgid ""
 "Enlightenment Window Group\n"
 "Selection Dialog\n"
 msgstr ""
 
-#: src/groups.c:714 src/groups.c:723 src/groups.c:731 src/groups.c:917
+#: src/groups.c:743 src/groups.c:752 src/groups.c:760 src/groups.c:946
 msgid "Window Group Error"
 msgstr "Venster groep fout"
 
-#: src/groups.c:716
+#: src/groups.c:745
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -863,7 +863,7 @@ msgstr ""
 " verwijderen via vensters die daadwerkelijk bij minstens een groep behoren\n"
 "\n"
 
-#: src/groups.c:724
+#: src/groups.c:753
 msgid ""
 "\n"
 "  Currently, no groups exist or this window  \n"
@@ -877,7 +877,7 @@ msgstr ""
 " Je zult eerst andere groepen moeten starten\n"
 "\n"
 
-#: src/groups.c:733
+#: src/groups.c:762
 msgid ""
 "\n"
 "  Currently, no groups exist. You have to start a group first.\n"
@@ -887,11 +887,11 @@ msgstr ""
 " Momenteel bestaan er geen groepen, Je zult eerst een groep moeten starten.\n"
 "\n"
 
-#: src/groups.c:823
+#: src/groups.c:852
 msgid "   Pick the group to configure:   "
 msgstr "  Kies de groep om in te stellen:  "
 
-#: src/groups.c:854
+#: src/groups.c:883
 msgid ""
 "  The following actions are  \n"
 "  applied to all group members:  "
@@ -899,49 +899,49 @@ msgstr ""
 " De volgende acties worden\n"
 " toegepast op alle groepsleden"
 
-#: src/groups.c:859 src/groups.c:961
+#: src/groups.c:888 src/groups.c:990
 msgid "Changing Border Style"
 msgstr "Verander van rand stijl"
 
-#: src/groups.c:864 src/groups.c:966
+#: src/groups.c:893 src/groups.c:995
 msgid "Iconifying"
 msgstr "Minimaliseren"
 
-#: src/groups.c:869 src/groups.c:971
+#: src/groups.c:898 src/groups.c:1000
 msgid "Killing"
 msgstr "Afsluiten"
 
-#: src/groups.c:874 src/groups.c:976
+#: src/groups.c:903 src/groups.c:1005
 msgid "Moving"
 msgstr "Verplaatsen"
 
-#: src/groups.c:879 src/groups.c:981
+#: src/groups.c:908 src/groups.c:1010
 msgid "Raising/Lowering"
 msgstr "Omhoog/Omlaag brengen"
 
-#: src/groups.c:884 src/groups.c:986
+#: src/groups.c:913 src/groups.c:1015
 msgid "Sticking"
 msgstr "Sticken"
 
-#: src/groups.c:889 src/groups.c:991
+#: src/groups.c:918 src/groups.c:1020
 msgid "Shading"
 msgstr "Shaden"
 
-#: src/groups.c:894 src/groups.c:996
+#: src/groups.c:923 src/groups.c:1025
 msgid "Mirror Shade/Iconify/Stick"
 msgstr ""
 
-#: src/groups.c:901
+#: src/groups.c:930
 msgid "Window Group Settings"
 msgstr "Venster Groep Instellingen"
 
-#: src/groups.c:904
+#: src/groups.c:933
 msgid ""
 "Enlightenment Window Group\n"
 "Settings Dialog\n"
 msgstr ""
 
-#: src/groups.c:919
+#: src/groups.c:948
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -951,51 +951,51 @@ msgstr ""
 " Dit venster behoort momenteel niet bij een groep.  \n"
 "\n"
 
-#: src/groups.c:954
+#: src/groups.c:983
 #, fuzzy
 msgid " Per-group settings: "
 msgstr "Pager instellingen"
 
-#: src/groups.c:1005
+#: src/groups.c:1034
 msgid " Global settings: "
 msgstr ""
 
-#: src/groups.c:1009
+#: src/groups.c:1038
 #, fuzzy
 msgid "Swap Window Locations"
 msgstr "Venster Opties"
 
-#: src/groups.c:1015 src/menus-misc.c:757 config/strings.c:147
+#: src/groups.c:1044 src/menus-misc.c:757 config/strings.c:147
 #, fuzzy
 msgid "Groups"
 msgstr "Groep %i"
 
-#: src/groups.c:1016
+#: src/groups.c:1045
 msgid "Default Group Control Settings"
 msgstr "Standaard Groep Controle Instellingen"
 
-#: src/groups.c:1019
+#: src/groups.c:1048
 msgid ""
 "Enlightenment Default\n"
 "Group Control Settings Dialog\n"
 msgstr ""
 
-#: src/groups.c:1052
+#: src/groups.c:1080
 #, fuzzy
 msgid "Pick the group the window will belong to:"
 msgstr "Kies de groep waar het venster bij moet behoren : \n"
 
-#: src/groups.c:1059
+#: src/groups.c:1086
 #, fuzzy
 msgid "Select the group to remove the window from:"
 msgstr "  Kies de groep waar het venster van verwijderd moet worden"
 
-#: src/groups.c:1065
+#: src/groups.c:1091
 #, fuzzy
 msgid "Select the group to break:"
 msgstr " Kies de groep om te breken"
 
-#: src/handlers.c:62
+#: src/handlers.c:61
 #, c-format
 msgid ""
 "Enlightenment performed an Illegal Instruction.\n"
@@ -1008,7 +1008,7 @@ msgid ""
 "that you got in binary format to run Enlightenment.\n"
 msgstr ""
 
-#: src/handlers.c:72
+#: src/handlers.c:71
 msgid ""
 "Enlightenment caused a Floating Point Exception.\n"
 "\n"
@@ -1022,7 +1022,7 @@ msgid ""
 "dumps etc.\n"
 msgstr ""
 
-#: src/handlers.c:84
+#: src/handlers.c:83
 msgid ""
 "Enlightenment caused Segment Violation (Segfault)\n"
 "\n"
@@ -1036,7 +1036,7 @@ msgid ""
 "dumps etc.\n"
 msgstr ""
 
-#: src/handlers.c:96
+#: src/handlers.c:95
 msgid ""
 "Enlightenment caused Bus Error.\n"
 "\n"

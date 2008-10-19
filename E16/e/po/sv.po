@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-10-15 17:49+0200\n"
+"POT-Creation-Date: 2008-10-19 01:02+0200\n"
 "PO-Revision-Date: 2000-04-10 17:30+0200\n"
 "Last-Translator: Bernt Holmberg <bernt@grub01.physto.se>\n"
 "Language-Team: Swedish <sv@li.org>\n"
@@ -39,7 +39,7 @@ msgstr ""
 msgid "%u references remain\n"
 msgstr "%u referenser återstår\n"
 
-#: src/actions.c:110
+#: src/actions.c:109
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -52,7 +52,7 @@ msgstr ""
 "Programmet kunde inte exekveras.\n"
 "Orsaken är att filen inte existerar\n"
 
-#: src/actions.c:118
+#: src/actions.c:115
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -71,7 +71,7 @@ msgstr ""
 "för skalet, och kollar upp hur man lägger till eller ändrar\n"
 "sin sökväg.\n"
 
-#: src/actions.c:138
+#: src/actions.c:134
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -88,7 +88,7 @@ msgstr ""
 "det är en fil, och du har rättigheter att\n"
 "köra den. Jag föreslår att du undersöker saken.\n"
 
-#: src/actions.c:149
+#: src/actions.c:144
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -103,7 +103,7 @@ msgstr ""
 "Filen existerar och det är en fil, men du har inte\n"
 "rättigheter som räcker för att köra den.\n"
 
-#: src/actions.c:164
+#: src/actions.c:157
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -116,7 +116,7 @@ msgstr ""
 "Programmet kunde inte exekveras.\n"
 "Detta beror på att filen i verkligheten är en katalog.\n"
 
-#: src/actions.c:172
+#: src/actions.c:164
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -129,7 +129,7 @@ msgstr ""
 "Programmet kunde inte exekveras.\n"
 "Orsaken är att filen inte är en vanlig fil.\n"
 
-#: src/actions.c:197
+#: src/actions.c:189
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -155,6 +155,15 @@ msgstr "Starta om Enlightenment"
 #: src/alert.c:570 src/setup.c:168
 msgid "Quit Enlightenment"
 msgstr "Avsluta Enlightenment"
+
+#: src/alert.c:583
+msgid "Attention !!!"
+msgstr "Uppmärksamhet!!!"
+
+#: src/alert.c:583 src/dialog.c:846 src/dialog.c:2035 src/events.c:87
+#: src/setup.c:157 src/sound.c:209
+msgid "OK"
+msgstr "Ok"
 
 #: src/backgrounds.c:1525
 #, c-format
@@ -309,12 +318,12 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: src/config.c:195 src/config.c:291
+#: src/config.c:195 src/config.c:296
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
 msgstr "KONFIG: ignorerar extra data i \"%s\"\n"
 
-#: src/config.c:203 src/config.c:298
+#: src/config.c:203 src/config.c:303
 #, c-format
 msgid "CONFIG: missing required data in \"%s\"\n"
 msgstr "KONFIG: det saknas data i \"%s\"\n"
@@ -341,19 +350,19 @@ msgstr ""
 "Varning: Konfigureringen verkar ha avbrutits innan menydelen\n"
 "hade laddats färdigt. Resultatet blir troligen felaktigt.\n"
 
-#: src/config.c:307
+#: src/config.c:312
 msgid "Theme versioning ERROR"
 msgstr "Fel version av temat"
 
-#: src/config.c:308
+#: src/config.c:313
 msgid "Restart with Defaults"
 msgstr "Starta om med grundinställningar"
 
-#: src/config.c:309
+#: src/config.c:314
 msgid "Abort and Exit"
 msgstr "Avbryt och avsluta"
 
-#: src/config.c:310
+#: src/config.c:315
 #, fuzzy, c-format
 msgid ""
 "ERROR:\n"
@@ -389,7 +398,7 @@ msgstr ""
 "detta tema utnyttjar finesser som bara finns i senare\n"
 "versioner av Enlightenment.\n"
 
-#: src/config.c:572
+#: src/config.c:577
 msgid "Enlightenment Starting..."
 msgstr "Enlightenment Startar..."
 
@@ -692,18 +701,9 @@ msgstr ""
 "Dialog för Enlightenments\n"
 "virtuella skrivbordsinställningar\n"
 
-#: src/dialog.c:846 src/dialog.c:2035 src/dialog.c:2066 src/events.c:87
-#: src/setup.c:157 src/sound.c:209
-msgid "OK"
-msgstr "Ok"
-
 #: src/dialog.c:851
 msgid "Apply"
 msgstr "Använd"
-
-#: src/dialog.c:2066
-msgid "Attention !!!"
-msgstr "Uppmärksamhet!!!"
 
 #: src/ecompmgr.c:2626
 msgid ""
@@ -875,11 +875,11 @@ msgstr ""
 "Dialog för Enlightenments\n"
 "specialeffektsinställningar\n"
 
-#: src/groups.c:688
+#: src/groups.c:717
 msgid "Window Group Selection"
 msgstr "Fönstergruppsval"
 
-#: src/groups.c:691
+#: src/groups.c:720
 msgid ""
 "Enlightenment Window Group\n"
 "Selection Dialog\n"
@@ -887,11 +887,11 @@ msgstr ""
 "Dialog för Enlightenments\n"
 "fönstergruppsinställningar\n"
 
-#: src/groups.c:714 src/groups.c:723 src/groups.c:731 src/groups.c:917
+#: src/groups.c:743 src/groups.c:752 src/groups.c:760 src/groups.c:946
 msgid "Window Group Error"
 msgstr "Fönstergruppsfel"
 
-#: src/groups.c:716
+#: src/groups.c:745
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -905,7 +905,7 @@ msgstr ""
 "  grupper med ett fönster som tillhör minst en grupp .\n"
 "\n"
 
-#: src/groups.c:724
+#: src/groups.c:753
 msgid ""
 "\n"
 "  Currently, no groups exist or this window  \n"
@@ -919,7 +919,7 @@ msgstr ""
 "  Du måste skapa andra grupper först..  \n"
 "\n"
 
-#: src/groups.c:733
+#: src/groups.c:762
 msgid ""
 "\n"
 "  Currently, no groups exist. You have to start a group first.\n"
@@ -929,11 +929,11 @@ msgstr ""
 "  Just nu finns inga grupper. Du måste skapa en grupp först..\n"
 "\n"
 
-#: src/groups.c:823
+#: src/groups.c:852
 msgid "   Pick the group to configure:   "
 msgstr "   Välj grupp att konfigurera:   "
 
-#: src/groups.c:854
+#: src/groups.c:883
 msgid ""
 "  The following actions are  \n"
 "  applied to all group members:  "
@@ -941,43 +941,43 @@ msgstr ""
 "  Följande egenskaper appliceras  \n"
 "  på alla gruppmedlemmar:  "
 
-#: src/groups.c:859 src/groups.c:961
+#: src/groups.c:888 src/groups.c:990
 msgid "Changing Border Style"
 msgstr "Ändra ramstil"
 
-#: src/groups.c:864 src/groups.c:966
+#: src/groups.c:893 src/groups.c:995
 msgid "Iconifying"
 msgstr "Ikonifiera"
 
-#: src/groups.c:869 src/groups.c:971
+#: src/groups.c:898 src/groups.c:1000
 msgid "Killing"
 msgstr "Döda"
 
-#: src/groups.c:874 src/groups.c:976
+#: src/groups.c:903 src/groups.c:1005
 msgid "Moving"
 msgstr "Flytta"
 
-#: src/groups.c:879 src/groups.c:981
+#: src/groups.c:908 src/groups.c:1010
 msgid "Raising/Lowering"
 msgstr "Lägga överst/underst"
 
-#: src/groups.c:884 src/groups.c:986
+#: src/groups.c:913 src/groups.c:1015
 msgid "Sticking"
 msgstr "Klibba"
 
-#: src/groups.c:889 src/groups.c:991
+#: src/groups.c:918 src/groups.c:1020
 msgid "Shading"
 msgstr "Skymma"
 
-#: src/groups.c:894 src/groups.c:996
+#: src/groups.c:923 src/groups.c:1025
 msgid "Mirror Shade/Iconify/Stick"
 msgstr "Spegla skymma/ikonifiera/klibba"
 
-#: src/groups.c:901
+#: src/groups.c:930
 msgid "Window Group Settings"
 msgstr "Fönstergruppsinställningar"
 
-#: src/groups.c:904
+#: src/groups.c:933
 msgid ""
 "Enlightenment Window Group\n"
 "Settings Dialog\n"
@@ -985,7 +985,7 @@ msgstr ""
 "Dialog för Enlightenments\n"
 "fönstergruppsinställningar\n"
 
-#: src/groups.c:919
+#: src/groups.c:948
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -995,30 +995,30 @@ msgstr ""
 "  Detta fönster hör just nu inte till några grupper  \n"
 "\n"
 
-#: src/groups.c:954
+#: src/groups.c:983
 #, fuzzy
 msgid " Per-group settings: "
 msgstr "Sidväxlarinställningar"
 
-#: src/groups.c:1005
+#: src/groups.c:1034
 msgid " Global settings: "
 msgstr ""
 
-#: src/groups.c:1009
+#: src/groups.c:1038
 #, fuzzy
 msgid "Swap Window Locations"
 msgstr "Fönsterval"
 
-#: src/groups.c:1015 src/menus-misc.c:757 config/strings.c:147
+#: src/groups.c:1044 src/menus-misc.c:757 config/strings.c:147
 #, fuzzy
 msgid "Groups"
 msgstr "Grupp %i"
 
-#: src/groups.c:1016
+#: src/groups.c:1045
 msgid "Default Group Control Settings"
 msgstr "Förvalda gruppkontrollsinställningar"
 
-#: src/groups.c:1019
+#: src/groups.c:1048
 msgid ""
 "Enlightenment Default\n"
 "Group Control Settings Dialog\n"
@@ -1026,22 +1026,22 @@ msgstr ""
 "Dialog för Enlightenments\n"
 "förvalda gruppkontrollsinställningar\n"
 
-#: src/groups.c:1052
+#: src/groups.c:1080
 #, fuzzy
 msgid "Pick the group the window will belong to:"
 msgstr "  Välj den grupp som fönstret skall tillhöra:  \n"
 
-#: src/groups.c:1059
+#: src/groups.c:1086
 #, fuzzy
 msgid "Select the group to remove the window from:"
 msgstr "  Välj den grupp som fönstret skall tas bort ifrån.  "
 
-#: src/groups.c:1065
+#: src/groups.c:1091
 #, fuzzy
 msgid "Select the group to break:"
 msgstr "  Välj den grupp som skall brytas upp  "
 
-#: src/handlers.c:62
+#: src/handlers.c:61
 #, c-format
 msgid ""
 "Enlightenment performed an Illegal Instruction.\n"
@@ -1061,7 +1061,7 @@ msgstr ""
 "för ditt system, eller kompilera om Enlightenment och\n"
 "eventuella bibliotek som Enlightenment är beroende av.\n"
 
-#: src/handlers.c:72
+#: src/handlers.c:71
 msgid ""
 "Enlightenment caused a Floating Point Exception.\n"
 "\n"
@@ -1086,7 +1086,7 @@ msgstr ""
 "buggrapport som möjligt med info om bakåtspårnings data och variabel\n"
 "dumpar etc.\n"
 
-#: src/handlers.c:84
+#: src/handlers.c:83
 msgid ""
 "Enlightenment caused Segment Violation (Segfault)\n"
 "\n"
@@ -1111,7 +1111,7 @@ msgstr ""
 "buggrapport som möjligt med info om bakåtspårnings data och variabel\n"
 "dumpar etc.\n"
 
-#: src/handlers.c:96
+#: src/handlers.c:95
 msgid ""
 "Enlightenment caused Bus Error.\n"
 "\n"

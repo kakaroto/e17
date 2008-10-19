@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-10-15 17:49+0200\n"
+"POT-Creation-Date: 2008-10-19 01:02+0200\n"
 "PO-Revision-Date: 2000-03-29 21:12+0200\n"
 "Last-Translator: Matthias Warkus <mawa@iname.com>\n"
 "Language-Team: Enlightenment l10n <e-develop@enlightenment.org>\n"
@@ -42,7 +42,7 @@ msgid "%u references remain\n"
 msgstr "%u Referenzen verbleiben\n"
 
 # src/actions.c:664
-#: src/actions.c:110
+#: src/actions.c:109
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -56,7 +56,7 @@ msgstr ""
 "Dies liegt daran, dass die Datei nicht existiert.\n"
 
 # src/actions.c:672
-#: src/actions.c:118
+#: src/actions.c:115
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -77,7 +77,7 @@ msgstr ""
 "müssen.\n"
 
 # src/actions.c:692
-#: src/actions.c:138
+#: src/actions.c:134
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -95,7 +95,7 @@ msgstr ""
 "Sie ausführen. Sie sollten sich die Angelegenheit näher ansehen.\n"
 
 # src/actions.c:703
-#: src/actions.c:149
+#: src/actions.c:144
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -112,7 +112,7 @@ msgstr ""
 "für diese Datei haben.\n"
 
 # src/actions.c:719
-#: src/actions.c:164
+#: src/actions.c:157
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -126,7 +126,7 @@ msgstr ""
 "Dies liegt daran, dass die Datei in Wirklichkeit ein Verzeichnis ist.\n"
 
 # src/actions.c:727
-#: src/actions.c:172
+#: src/actions.c:164
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -139,7 +139,7 @@ msgstr ""
 "auf. Es konnte nicht ausgeführt werden, da die Datei keine normale\n"
 "Datei ist.\n"
 
-#: src/actions.c:197
+#: src/actions.c:189
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -174,6 +174,22 @@ msgstr "Enlightenment neu starten"
 #: src/alert.c:570 src/setup.c:168
 msgid "Quit Enlightenment"
 msgstr "Enlightenment verlassen"
+
+# src/dialog.c:304
+#: src/alert.c:583
+msgid "Attention !!!"
+msgstr "Achtung!"
+
+# src/actions.c:3320 src/dialog.c:304 src/groups.c:694 src/settings.c:309
+# src/settings.c:575 src/settings.c:740 src/settings.c:917
+# src/settings.c:1151 src/settings.c:1254 src/settings.c:1355
+# src/settings.c:1460 src/settings.c:1522 src/settings.c:1610
+# src/settings.c:2012 src/settings.c:3405 src/settings.c:3750
+# src/settings.c:4048 src/settings.c:4186 src/snaps.c:547 src/sound.c:262
+#: src/alert.c:583 src/dialog.c:846 src/dialog.c:2035 src/events.c:87
+#: src/setup.c:157 src/sound.c:209
+msgid "OK"
+msgstr "OK"
 
 # src/settings.c:2273 src/settings.c:2395 src/settings.c:2651
 # src/settings.c:2774 src/settings.c:3393
@@ -362,7 +378,7 @@ msgstr ""
 # src/config.c:1649 src/config.c:1896 src/config.c:1965 src/config.c:2060
 # src/config.c:2316 src/config.c:2532 src/config.c:2795 src/config.c:2887
 # src/config.c:2964 src/config.c:3065 src/config.c:3387
-#: src/config.c:195 src/config.c:291
+#: src/config.c:195 src/config.c:296
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
 msgstr "KONFIG: ignoriere überflüssige Daten in \"%s\"\n"
@@ -372,7 +388,7 @@ msgstr "KONFIG: ignoriere überflüssige Daten in \"%s\"\n"
 # src/config.c:1657 src/config.c:1902 src/config.c:1971 src/config.c:2068
 # src/config.c:2322 src/config.c:2540 src/config.c:2801 src/config.c:3071
 # src/config.c:3395
-#: src/config.c:203 src/config.c:298
+#: src/config.c:203 src/config.c:303
 #, c-format
 msgid "CONFIG: missing required data in \"%s\"\n"
 msgstr "KONFIG: vermisse benötigte Daten in \"%s\"\n"
@@ -403,22 +419,22 @@ msgstr ""
 "nicht gut ausgehen.\n"
 
 # src/config.c:3404
-#: src/config.c:307
+#: src/config.c:312
 msgid "Theme versioning ERROR"
 msgstr "FEHLER in der Themen-Versionsnummerierung"
 
 # src/config.c:3405 src/config.c:3439
-#: src/config.c:308
+#: src/config.c:313
 msgid "Restart with Defaults"
 msgstr "Mit Voreinstellung neu starten"
 
 # src/config.c:3406 src/config.c:3440
-#: src/config.c:309
+#: src/config.c:314
 msgid "Abort and Exit"
 msgstr "Abbrechen und verlassen"
 
 # src/config.c:3407
-#: src/config.c:310
+#: src/config.c:315
 #, fuzzy, c-format
 msgid ""
 "ERROR:\n"
@@ -457,7 +473,7 @@ msgstr ""
 "in neueren Versionen finden.\n"
 
 # src/config.c:3743
-#: src/config.c:572
+#: src/config.c:577
 msgid "Enlightenment Starting..."
 msgstr "Enlightenment startet..."
 
@@ -821,17 +837,6 @@ msgstr ""
 "Enlightenment Einstellungsdialog\n"
 "für virtuelle Desktops\n"
 
-# src/actions.c:3320 src/dialog.c:304 src/groups.c:694 src/settings.c:309
-# src/settings.c:575 src/settings.c:740 src/settings.c:917
-# src/settings.c:1151 src/settings.c:1254 src/settings.c:1355
-# src/settings.c:1460 src/settings.c:1522 src/settings.c:1610
-# src/settings.c:2012 src/settings.c:3405 src/settings.c:3750
-# src/settings.c:4048 src/settings.c:4186 src/snaps.c:547 src/sound.c:262
-#: src/dialog.c:846 src/dialog.c:2035 src/dialog.c:2066 src/events.c:87
-#: src/setup.c:157 src/sound.c:209
-msgid "OK"
-msgstr "OK"
-
 # src/settings.c:310 src/settings.c:576 src/settings.c:741 src/settings.c:918
 # src/settings.c:1152 src/settings.c:1255 src/settings.c:1356
 # src/settings.c:1461 src/settings.c:1523 src/settings.c:1611
@@ -840,11 +845,6 @@ msgstr "OK"
 #: src/dialog.c:851
 msgid "Apply"
 msgstr "Übernehmen"
-
-# src/dialog.c:304
-#: src/dialog.c:2066
-msgid "Attention !!!"
-msgstr "Achtung!"
 
 #: src/ecompmgr.c:2626
 msgid ""
@@ -1045,12 +1045,12 @@ msgstr ""
 "Einstellungsdialog\n"
 
 # src/groups.c:637
-#: src/groups.c:688
+#: src/groups.c:717
 msgid "Window Group Selection"
 msgstr "Fenstergruppen-Auswahl"
 
 # src/main.c:89
-#: src/groups.c:691
+#: src/groups.c:720
 msgid ""
 "Enlightenment Window Group\n"
 "Selection Dialog\n"
@@ -1059,12 +1059,12 @@ msgstr ""
 "Auswahldialog\n"
 
 # src/groups.c:603 src/groups.c:612 src/groups.c:620 src/settings.c:3872
-#: src/groups.c:714 src/groups.c:723 src/groups.c:731 src/groups.c:917
+#: src/groups.c:743 src/groups.c:752 src/groups.c:760 src/groups.c:946
 msgid "Window Group Error"
 msgstr "Fenstergruppen-Fehler"
 
 # src/groups.c:605
-#: src/groups.c:716
+#: src/groups.c:745
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -1080,7 +1080,7 @@ msgstr ""
 "\n"
 
 # src/groups.c:613
-#: src/groups.c:724
+#: src/groups.c:753
 msgid ""
 "\n"
 "  Currently, no groups exist or this window  \n"
@@ -1096,7 +1096,7 @@ msgstr ""
 "\n"
 
 # src/groups.c:622
-#: src/groups.c:733
+#: src/groups.c:762
 msgid ""
 "\n"
 "  Currently, no groups exist. You have to start a group first.\n"
@@ -1107,12 +1107,12 @@ msgstr ""
 "\n"
 
 # src/settings.c:3923
-#: src/groups.c:823
+#: src/groups.c:852
 msgid "   Pick the group to configure:   "
 msgstr "   Zu konfigurierende Gruppe:   "
 
 # src/settings.c:3959
-#: src/groups.c:854
+#: src/groups.c:883
 msgid ""
 "  The following actions are  \n"
 "  applied to all group members:  "
@@ -1121,52 +1121,52 @@ msgstr ""
 " alle Gruppenmitglieder:"
 
 # src/settings.c:3968 src/settings.c:4120
-#: src/groups.c:859 src/groups.c:961
+#: src/groups.c:888 src/groups.c:990
 msgid "Changing Border Style"
 msgstr "Änderung des Rahmenstils"
 
 # src/settings.c:3978 src/settings.c:4128
-#: src/groups.c:864 src/groups.c:966
+#: src/groups.c:893 src/groups.c:995
 msgid "Iconifying"
 msgstr "Minimierung"
 
 # src/settings.c:3988 src/settings.c:4136
-#: src/groups.c:869 src/groups.c:971
+#: src/groups.c:898 src/groups.c:1000
 msgid "Killing"
 msgstr "Mord"
 
 # src/settings.c:3998 src/settings.c:4144
-#: src/groups.c:874 src/groups.c:976
+#: src/groups.c:903 src/groups.c:1005
 msgid "Moving"
 msgstr "Verschieben"
 
 # src/settings.c:4008 src/settings.c:4152
-#: src/groups.c:879 src/groups.c:981
+#: src/groups.c:908 src/groups.c:1010
 msgid "Raising/Lowering"
 msgstr "Anheben/Absenken"
 
 # src/settings.c:4018 src/settings.c:4160
-#: src/groups.c:884 src/groups.c:986
+#: src/groups.c:913 src/groups.c:1015
 msgid "Sticking"
 msgstr "Ankleben"
 
 # src/settings.c:4028 src/settings.c:4168
-#: src/groups.c:889 src/groups.c:991
+#: src/groups.c:918 src/groups.c:1020
 msgid "Shading"
 msgstr "Aufrollen"
 
 # src/settings.c:4038 src/settings.c:4176
-#: src/groups.c:894 src/groups.c:996
+#: src/groups.c:923 src/groups.c:1025
 msgid "Mirror Shade/Iconify/Stick"
 msgstr "Aufrollen/Minimieren/Kleben"
 
 # src/settings.c:3897
-#: src/groups.c:901
+#: src/groups.c:930
 msgid "Window Group Settings"
 msgstr "Einstellungen zur Fenstergruppe"
 
 # src/main.c:89
-#: src/groups.c:904
+#: src/groups.c:933
 msgid ""
 "Enlightenment Window Group\n"
 "Settings Dialog\n"
@@ -1175,7 +1175,7 @@ msgstr ""
 "Einstellungsdialog\n"
 
 # src/settings.c:3874
-#: src/groups.c:919
+#: src/groups.c:948
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -1186,32 +1186,32 @@ msgstr ""
 "\n"
 
 # src/settings.c:126
-#: src/groups.c:954
+#: src/groups.c:983
 msgid " Per-group settings: "
 msgstr " Gruppenspezifische Einstellungen: "
 
-#: src/groups.c:1005
+#: src/groups.c:1034
 msgid " Global settings: "
 msgstr " Globale Einstellungen: "
 
 # src/pager.c:1268
-#: src/groups.c:1009
+#: src/groups.c:1038
 msgid "Swap Window Locations"
 msgstr "Fensterpositionen vertauschen"
 
 # src/menus.c:2044
-#: src/groups.c:1015 src/menus-misc.c:757 config/strings.c:147
+#: src/groups.c:1044 src/menus-misc.c:757 config/strings.c:147
 #, fuzzy
 msgid "Groups"
 msgstr "Gruppe %i"
 
 # src/settings.c:4094
-#: src/groups.c:1016
+#: src/groups.c:1045
 msgid "Default Group Control Settings"
 msgstr "Voreinstellungen zur Gruppenkontrolle"
 
 # src/settings.c:4094
-#: src/groups.c:1019
+#: src/groups.c:1048
 msgid ""
 "Enlightenment Default\n"
 "Group Control Settings Dialog\n"
@@ -1220,25 +1220,25 @@ msgstr ""
 "Gruppenseinstellungs-Dialog\n"
 
 # src/actions.c:3474
-#: src/groups.c:1052
+#: src/groups.c:1080
 #, fuzzy
 msgid "Pick the group the window will belong to:"
 msgstr "  Wählen Sie die Gruppe aus, zu der das Fenster gehören wird:  \n"
 
 # src/actions.c:3858
-#: src/groups.c:1059
+#: src/groups.c:1086
 #, fuzzy
 msgid "Select the group to remove the window from:"
 msgstr "   Wählen Sie die Gruppe, aus der Sie das Fenster entfernen wollen.  "
 
 # src/actions.c:3883
-#: src/groups.c:1065
+#: src/groups.c:1091
 #, fuzzy
 msgid "Select the group to break:"
 msgstr "  Wählen Sie die aufzulösende Gruppe  "
 
 # src/handlers.c:59
-#: src/handlers.c:62
+#: src/handlers.c:61
 #, c-format
 msgid ""
 "Enlightenment performed an Illegal Instruction.\n"
@@ -1261,7 +1261,7 @@ msgstr ""
 "die Sie im Binärformat erhalten haben.\n"
 
 # src/handlers.c:87
-#: src/handlers.c:72
+#: src/handlers.c:71
 msgid ""
 "Enlightenment caused a Floating Point Exception.\n"
 "\n"
@@ -1288,7 +1288,7 @@ msgstr ""
 "ein, der die Backtrace-Information, Variableninhalte etc. enthält.\n"
 
 # src/handlers.c:112
-#: src/handlers.c:84
+#: src/handlers.c:83
 msgid ""
 "Enlightenment caused Segment Violation (Segfault)\n"
 "\n"
@@ -1315,7 +1315,7 @@ msgstr ""
 "Information, Variableninhalte etc. enthält.\n"
 
 # src/handlers.c:198
-#: src/handlers.c:96
+#: src/handlers.c:95
 msgid ""
 "Enlightenment caused Bus Error.\n"
 "\n"

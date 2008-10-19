@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-10-15 17:49+0200\n"
+"POT-Creation-Date: 2008-10-19 01:02+0200\n"
 "PO-Revision-Date: 2000-01-14 20:43-0300\n"
 "Last-Translator: Vladimir STEPANOV <stepanov@bird.iki.rssi.ru>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -39,7 +39,7 @@ msgstr ""
 msgid "%u references remain\n"
 msgstr ""
 
-#: src/actions.c:110
+#: src/actions.c:109
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -52,7 +52,7 @@ msgstr ""
 "Программа не может быть выполнена,\n"
 "так как необходимый файл отсутствует.\n"
 
-#: src/actions.c:118
+#: src/actions.c:115
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -72,7 +72,7 @@ msgstr ""
 "Вам рекомендуется прочесть описание Вашего shell,\n"
 "в особенности ту часть, где описывается изменение переменной path.\n"
 
-#: src/actions.c:138
+#: src/actions.c:134
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -89,7 +89,7 @@ msgstr ""
 "и у Вас есть право на его выполнение. Вам придется\n"
 "проверить все самостоятельно....\n"
 
-#: src/actions.c:149
+#: src/actions.c:144
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -105,7 +105,7 @@ msgstr ""
 "но Вы не можете его выполнить, так как\n"
 "не имеете права выполнять этот файл.\n"
 
-#: src/actions.c:164
+#: src/actions.c:157
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -118,7 +118,7 @@ msgstr ""
 "Программа не может быть выполнена,\n"
 "так как файл в действительности является директорией.\n"
 
-#: src/actions.c:172
+#: src/actions.c:164
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -131,7 +131,7 @@ msgstr ""
 "Программа не может быть выполнена,\n"
 "так как файл не является обычным файлом.\n"
 
-#: src/actions.c:197
+#: src/actions.c:189
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -157,6 +157,15 @@ msgstr "Перезапустить Enlightenment"
 #: src/alert.c:570 src/setup.c:168
 msgid "Quit Enlightenment"
 msgstr "Выйти из Enlightenment"
+
+#: src/alert.c:583
+msgid "Attention !!!"
+msgstr "Внимание !!!"
+
+#: src/alert.c:583 src/dialog.c:846 src/dialog.c:2035 src/events.c:87
+#: src/setup.c:157 src/sound.c:209
+msgid "OK"
+msgstr ""
 
 #: src/backgrounds.c:1525
 #, c-format
@@ -310,12 +319,12 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: src/config.c:195 src/config.c:291
+#: src/config.c:195 src/config.c:296
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
 msgstr "CONFIG: игнорирую лишние данные в \"%s\"\n"
 
-#: src/config.c:203 src/config.c:298
+#: src/config.c:203 src/config.c:303
 #, c-format
 msgid "CONFIG: missing required data in \"%s\"\n"
 msgstr "CONFIG: в \"%s\" отсутствуют требуемые данные\n"
@@ -342,19 +351,19 @@ msgstr ""
 "Предупреждение:  Похоже, кофигурирование завершилось до\n"
 "окончания загрузки блока Menu.  Результат сомнителен...\n"
 
-#: src/config.c:307
+#: src/config.c:312
 msgid "Theme versioning ERROR"
 msgstr "ОШИБКА версии темы"
 
-#: src/config.c:308
+#: src/config.c:313
 msgid "Restart with Defaults"
 msgstr "Перезапуск \"по умолчанию\""
 
-#: src/config.c:309
+#: src/config.c:314
 msgid "Abort and Exit"
 msgstr "Выход"
 
-#: src/config.c:310
+#: src/config.c:315
 #, fuzzy, c-format
 msgid ""
 "ERROR:\n"
@@ -391,7 +400,7 @@ msgstr ""
 "window manager, и эта тема уже использует преимущества новых\n"
 "возможностей Enlightenment.\n"
 
-#: src/config.c:572
+#: src/config.c:577
 msgid "Enlightenment Starting..."
 msgstr "Запуск Enlightenment..."
 
@@ -693,18 +702,9 @@ msgid ""
 "Settings Dialog\n"
 msgstr ""
 
-#: src/dialog.c:846 src/dialog.c:2035 src/dialog.c:2066 src/events.c:87
-#: src/setup.c:157 src/sound.c:209
-msgid "OK"
-msgstr ""
-
 #: src/dialog.c:851
 msgid "Apply"
 msgstr "Применить"
-
-#: src/dialog.c:2066
-msgid "Attention !!!"
-msgstr "Внимание !!!"
 
 #: src/ecompmgr.c:2626
 msgid ""
@@ -874,21 +874,21 @@ msgid ""
 "Settings Dialog\n"
 msgstr ""
 
-#: src/groups.c:688
+#: src/groups.c:717
 msgid "Window Group Selection"
 msgstr "Выбор Группы Окон"
 
-#: src/groups.c:691
+#: src/groups.c:720
 msgid ""
 "Enlightenment Window Group\n"
 "Selection Dialog\n"
 msgstr ""
 
-#: src/groups.c:714 src/groups.c:723 src/groups.c:731 src/groups.c:917
+#: src/groups.c:743 src/groups.c:752 src/groups.c:760 src/groups.c:946
 msgid "Window Group Error"
 msgstr "Ошибка Группы Окон"
 
-#: src/groups.c:716
+#: src/groups.c:745
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -902,7 +902,7 @@ msgstr ""
 "  только из окна, которое входит по крайней мере в одну группу.\n"
 "\n"
 
-#: src/groups.c:724
+#: src/groups.c:753
 msgid ""
 "\n"
 "  Currently, no groups exist or this window  \n"
@@ -916,7 +916,7 @@ msgstr ""
 "  Вым надо сперва начать другие группы.  \n"
 "\n"
 
-#: src/groups.c:733
+#: src/groups.c:762
 msgid ""
 "\n"
 "  Currently, no groups exist. You have to start a group first.\n"
@@ -927,59 +927,59 @@ msgstr ""
 "  Вым надо сперва начать группу.  \n"
 "\n"
 
-#: src/groups.c:823
+#: src/groups.c:852
 msgid "   Pick the group to configure:   "
 msgstr "  Выберите группу для настройки:  "
 
-#: src/groups.c:854
+#: src/groups.c:883
 msgid ""
 "  The following actions are  \n"
 "  applied to all group members:  "
 msgstr ""
 
-#: src/groups.c:859 src/groups.c:961
+#: src/groups.c:888 src/groups.c:990
 msgid "Changing Border Style"
 msgstr ""
 
-#: src/groups.c:864 src/groups.c:966
+#: src/groups.c:893 src/groups.c:995
 msgid "Iconifying"
 msgstr ""
 
-#: src/groups.c:869 src/groups.c:971
+#: src/groups.c:898 src/groups.c:1000
 msgid "Killing"
 msgstr ""
 
-#: src/groups.c:874 src/groups.c:976
+#: src/groups.c:903 src/groups.c:1005
 msgid "Moving"
 msgstr ""
 
-#: src/groups.c:879 src/groups.c:981
+#: src/groups.c:908 src/groups.c:1010
 msgid "Raising/Lowering"
 msgstr ""
 
-#: src/groups.c:884 src/groups.c:986
+#: src/groups.c:913 src/groups.c:1015
 msgid "Sticking"
 msgstr ""
 
-#: src/groups.c:889 src/groups.c:991
+#: src/groups.c:918 src/groups.c:1020
 msgid "Shading"
 msgstr ""
 
-#: src/groups.c:894 src/groups.c:996
+#: src/groups.c:923 src/groups.c:1025
 msgid "Mirror Shade/Iconify/Stick"
 msgstr ""
 
-#: src/groups.c:901
+#: src/groups.c:930
 msgid "Window Group Settings"
 msgstr "Установки группы окон"
 
-#: src/groups.c:904
+#: src/groups.c:933
 msgid ""
 "Enlightenment Window Group\n"
 "Settings Dialog\n"
 msgstr ""
 
-#: src/groups.c:919
+#: src/groups.c:948
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -989,51 +989,51 @@ msgstr ""
 "  В настоящий момент это окно не входит ни в одну группу.  \n"
 "\n"
 
-#: src/groups.c:954
+#: src/groups.c:983
 #, fuzzy
 msgid " Per-group settings: "
 msgstr "Настройки Pager-а"
 
-#: src/groups.c:1005
+#: src/groups.c:1034
 msgid " Global settings: "
 msgstr ""
 
-#: src/groups.c:1009
+#: src/groups.c:1038
 #, fuzzy
 msgid "Swap Window Locations"
 msgstr "Окно"
 
-#: src/groups.c:1015 src/menus-misc.c:757 config/strings.c:147
+#: src/groups.c:1044 src/menus-misc.c:757 config/strings.c:147
 #, fuzzy
 msgid "Groups"
 msgstr "Группа %i"
 
-#: src/groups.c:1016
+#: src/groups.c:1045
 msgid "Default Group Control Settings"
 msgstr "Установки группы по умолчанию"
 
-#: src/groups.c:1019
+#: src/groups.c:1048
 msgid ""
 "Enlightenment Default\n"
 "Group Control Settings Dialog\n"
 msgstr ""
 
-#: src/groups.c:1052
+#: src/groups.c:1080
 #, fuzzy
 msgid "Pick the group the window will belong to:"
 msgstr "  Выберите группу, к которой будет принадлежать окно:  \n"
 
-#: src/groups.c:1059
+#: src/groups.c:1086
 #, fuzzy
 msgid "Select the group to remove the window from:"
 msgstr "   Выберите группу, из которой нужно убрать это окно.  "
 
-#: src/groups.c:1065
+#: src/groups.c:1091
 #, fuzzy
 msgid "Select the group to break:"
 msgstr "  Выберите группу, которую хотите разорвать  "
 
-#: src/handlers.c:62
+#: src/handlers.c:61
 #, c-format
 msgid ""
 "Enlightenment performed an Illegal Instruction.\n"
@@ -1054,7 +1054,7 @@ msgstr ""
 "перекомпилируйте Enlightenment (а также, возможно, необходимые\n"
 "библиотеки) самостоятельно.\n"
 
-#: src/handlers.c:72
+#: src/handlers.c:71
 msgid ""
 "Enlightenment caused a Floating Point Exception.\n"
 "\n"
@@ -1079,7 +1079,7 @@ msgstr ""
 "до момента возникновения ошибки. Пошлите нам багрепорт\n"
 "с полученной в отладчике информацией, дампами переменных и т.д.\n"
 
-#: src/handlers.c:84
+#: src/handlers.c:83
 msgid ""
 "Enlightenment caused Segment Violation (Segfault)\n"
 "\n"
@@ -1104,7 +1104,7 @@ msgstr ""
 "до момента возникновения ошибки. Пошлите нам багрепорт\n"
 "с полученной в отладчике информацией, дампами переменных и т.д.\n"
 
-#: src/handlers.c:96
+#: src/handlers.c:95
 msgid ""
 "Enlightenment caused Bus Error.\n"
 "\n"
