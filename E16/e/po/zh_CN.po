@@ -1,4 +1,4 @@
-# This is the American English locale definition for Enlightenment.
+# This is the Simplified Chinese translation for Enlightenment.
 # Copyright (C) 1999-2000 Free Software Foundation, Inc.
 # 
 # Aron Xu <aronmalache@163.com>, 2008.
