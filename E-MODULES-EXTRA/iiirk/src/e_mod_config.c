@@ -14,7 +14,7 @@ struct _E_Config_Dialog_Data
    int   icon_label;
    struct
      {
-	Evas_Object *tlist;
+	Evas_Object *ilist;
 	Evas_Object *o_desk_show_all;
 	Evas_Object *o_desk_show_active;
 	E_Confirm_Dialog *dialog_delete;
@@ -32,7 +32,7 @@ static void _cb_config(void *data, void *data2);
 static void _cb_entry_ok(char *text, void *data);
 static void _cb_confirm_dialog_yes(void *data);
 static void _cb_confirm_dialog_destroy(void *data);
-static void _load_tlist(E_Config_Dialog_Data *cfdata);
+static void _load_ilist(E_Config_Dialog_Data *cfdata);
 static void _cb_zone_policy_change(void *data, Evas_Object *obj);
 
 void 
@@ -108,9 +108,9 @@ _basic_create_widgets(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cf
    o = e_widget_list_add(evas, 0, 0);
 
    of = e_widget_frametable_add(evas, D_("Selected Iiirk Source"), 0);
-   ol = e_widget_tlist_add(evas, &(cfdata->dir));
-   cfdata->gui.tlist = ol;
-   _load_tlist(cfdata);
+   ol = e_widget_ilist_add(evas, 16, 16, &(cfdata->dir));
+   cfdata->gui.ilist = ol;
+   _load_ilist(cfdata);
    e_widget_min_size_set(ol, 140, 30);
    e_widget_frametable_object_append(of, ol, 0, 0, 1, 2, 1, 1, 1, 0);
    
@@ -269,7 +269,7 @@ static void
 _cb_entry_ok(char *text, void *data) 
 {
    iiirk_create_default_profile(text);
-   _load_tlist(data);
+   _load_ilist(data);
 }
 
 static void
@@ -283,7 +283,7 @@ _cb_confirm_dialog_yes(void *data)
    if (ecore_file_is_dir(buf))
      ecore_file_recursive_rm(buf);
    
-   _load_tlist(cfdata);
+   _load_ilist(cfdata);
 }
 
 static void
@@ -296,14 +296,14 @@ _cb_confirm_dialog_destroy(void *data)
 }
 
 static void 
-_load_tlist(E_Config_Dialog_Data *cfdata) 
+_load_ilist(E_Config_Dialog_Data *cfdata) 
 {
    Ecore_List *dirs;
    const char *home;
    char buf[4096], *file;
    int selnum = -1;
 
-   e_widget_tlist_clear(cfdata->gui.tlist);
+   e_widget_ilist_clear(cfdata->gui.ilist);
    
    home = e_user_homedir_get();
    snprintf(buf, sizeof(buf), "%s/.e/e/applications/iiirk", home);
@@ -320,7 +320,7 @@ _load_tlist(E_Config_Dialog_Data *cfdata)
 	     snprintf(buf, sizeof(buf), "%s/.e/e/applications/iiirk/%s", home, file);
 	     if (ecore_file_is_dir(buf))
 	       {
-		  e_widget_tlist_append(cfdata->gui.tlist, file, NULL, NULL, file);
+		  e_widget_ilist_append(cfdata->gui.ilist, NULL, file, NULL, NULL, file);
 		  if ((cfdata->dir) && (!strcmp(cfdata->dir, file)))
 		    selnum = i;
 		  i++;
@@ -328,9 +328,9 @@ _load_tlist(E_Config_Dialog_Data *cfdata)
 	  }
 	ecore_list_destroy(dirs);
      }
-   e_widget_tlist_go(cfdata->gui.tlist);
+   e_widget_ilist_go(cfdata->gui.ilist);
    if (selnum >= 0)
-     e_widget_tlist_selected_set(cfdata->gui.tlist, selnum);   
+     e_widget_ilist_selected_set(cfdata->gui.ilist, selnum);   
 }
 
 static void
