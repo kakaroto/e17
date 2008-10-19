@@ -14873,7 +14873,11 @@ collections { /* begin the collection of edje groups that are in this file */
 	       align: 0.5 0.5;
 	       min: 320 200;
 	       rel1.offset: 24 5;
-	       rel2.offset: -25 -35;
+	       rel2 {
+		  relative: 1.0 0.0;
+		  offset: -25 -9;
+		  to_y: "e.swallow.button";
+	       }
 	    }
 	 }
 	 part {
@@ -14882,13 +14886,11 @@ collections { /* begin the collection of edje groups that are in this file */
 	    description { state: "default" 0.0;
 	       align: 0.5 1.0;
 	       fixed: 1 1;
-	       rel1 {
-		  to_y: "e.swallow.content";
-		  relative: 0.5 1.0;
-		  offset:   0   2;
-	       }
+	       aspect: 1.0 1.0;
+	       aspect_preference: HORIZONTAL;
+	       rel1.relative: 0.5 0.0;
 	       rel2.relative: 0.5 1.0;
-	       rel2.offset:   0  -2;
+	       rel2.offset:   0  -5;
 	    }
 	 }
       }
