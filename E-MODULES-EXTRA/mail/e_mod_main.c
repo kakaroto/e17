@@ -303,7 +303,7 @@ _mail_cb_mouse_in (void *data, Evas * e, Evas_Object * obj, void *event_info)
   inst->popup = e_gadcon_popup_new (inst->gcc, _mail_popup_resize);
   snprintf (path, sizeof (path), "%s/mail.edj",
 	    e_module_dir_get (mail_config->module));
-  list = e_tlist_add (inst->popup->win->evas);
+  list = e_ilist_add (inst->popup->win->evas);
   for (l = inst->ci->boxes; l; l = l->next)
     {
        Config_Box *cb;
@@ -313,9 +313,9 @@ _mail_cb_mouse_in (void *data, Evas * e, Evas_Object * obj, void *event_info)
        if ((!inst->ci->show_popup_empty) && (!cb->num_new)) continue;
        snprintf (buf, sizeof (buf), "%s: %d/%d", cb->name, cb->num_new,
 	         cb->num_total);
-       e_tlist_append (list, buf, NULL, NULL, NULL, NULL);
+       e_ilist_append (list, NULL, buf, 0, NULL, NULL, NULL, NULL);
     }
-  if (e_tlist_count (list))
+  if (e_ilist_count (list))
     {
        e_gadcon_popup_content_set (inst->popup, list);
        e_gadcon_popup_show (inst->popup);
@@ -840,7 +840,7 @@ _mail_popup_resize (Evas_Object *obj, int *w, int *h)
 {
    Evas_Coord mw, mh;
 
-   e_tlist_min_size_get (obj, &mw, &mh);
+   e_ilist_min_size_get (obj, &mw, &mh);
    *w = mw;
    *h = mh;
 }
