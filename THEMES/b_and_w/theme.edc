@@ -2,12 +2,12 @@
 // battery popup (done - review - see 'code' for notes)
 // desklock (done - review - see 'code' for notes)
 // fileman (list mode)
+// toolbar (efm_nav theme ready to go once this goes in)
 // ibar - ibox (done - Merged with alias... see FIXME for bugs.)
 // pointer (review - hotspot position ok? check it out in edje_editor and resize it. there are some complaints)
 //
 // TODO: Working order
 // icons
-// toolbar (Before release, make a theme for efm_nav too.)
 // about
 //
 // TODO Code: - allow sys (shutdown, reboot etc.) to indicated borderless
@@ -15,7 +15,9 @@
 //            - desklock login_box doesnt centre correctly. looks like a code problem.
 //	      - ilist e.swallow.icon should use e_ilist_icon_size_set to make a dummy box
 //		to compensate when there is no icon there.
-//	      - Fix ibox urgent / icon_overlay problem
+//	      - Fix ibox urgent / icon_overlay problem. 
+//	      - Make ibox/ibar use data.item: "selectraise" "on"; so it can do zooms correctly
+//	
 //
 
 /*
@@ -15003,7 +15005,54 @@ collections { /* begin the collection of edje groups that are in this file */
 
 /////////////////////////////////////////////////////////////////////////////
    /*** TOOLBAR ***/
-// FIXME: DO
+
+group { name: "e/toolbar/default/base";
+   images {
+      image: "toolbar_top.png" COMP;
+      image: "toolbar_bottom.png" COMP;
+   }
+   parts {
+      part { name: "base";
+	 mouse_events: 0;
+	 description { state: "default" 0.0;
+	    max: 99999 48;
+	    image.normal: "toolbar_top.png";
+	    image.border: 4 4 4 4;
+	    fill.smooth: 0;
+	 }
+	 description { state: "bottom" 0.0;
+	    inherit: "default" 0.0;
+	    image.normal: "toolbar_bottom.png";
+	 }
+      }
+      part { name: "e.swallow.content";
+	 type: SWALLOW;
+	 description { state: "default" 0.0;
+	    rel1.offset: 2 2;
+	    rel2.offset: -3 -3;
+	 }
+	 description { state: "bottom" 0.0;
+	    inherit: "default" 0.0;
+	 }
+      }
+   }
+   programs {
+      program { name: "orient1";
+	 signal: "e,state,orientation,top";
+	 source: "e";
+	 action: STATE_SET "default" 0.0;
+	 target: "base";
+	 target: "e.swallow.content";
+      }
+      program { name: "orient2";
+	 signal: "e,state,orientation,bottom";
+	 source: "e";
+	 action: STATE_SET "bottom" 0.0;
+	 target: "base";
+	 target: "e.swallow.content";
+      }
+   }
+}
 
 /////////////////////////////////////////////////////////////////////////////
    /*** TRANSITIONS ***/
