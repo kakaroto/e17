@@ -19889,7 +19889,7 @@ collections { /* begin the collection of edje groups that are in this file */
 	 part { name: "logo";
 	    description { state: "default" 0.0;
 	       image.normal: "bnw.png";
-	       align: 0.5 0.1;
+	       align: 0.5 0.05;
 	       min: 230 110;
 	       max: 460 220;
 	       aspect: 2.090909091 2.090909091;
@@ -19904,11 +19904,11 @@ collections { /* begin the collection of edje groups that are in this file */
 	       rel1 {
 		  to_y: "logo";
 		  relative: 0.0 1.0;
-		  offset: 8 8;
+		  offset: 8 0;
 	       }
 	       rel2 {
 		  to_y: "button_image";
-		  offset: -9 -9;
+		  offset: -9 -19;
 		  relative: 1.0 0.0;
 	       }
 	       text {
@@ -19916,7 +19916,8 @@ collections { /* begin the collection of edje groups that are in this file */
 		  min: 1 1;
 		  text:
 		    "Smooth as silk<br>"
-		    "The default theme for Enlightenment<br>"
+		    "The default theme for<br>"
+		    "Enlightenment<br>"
 		    ;
 	       }
 	    }
@@ -19927,9 +19928,9 @@ collections { /* begin the collection of edje groups that are in this file */
 	    description { state: "default" 0.0;
 	       fixed: 1 1;
 	       align: 0.5 1.0;
-	       rel1.relative: 0.5 0.9;
+	       rel1.relative: 0.5 0.95;
 	       rel1.offset: 0 -1;
-	       rel2.relative: 0.5 0.9;
+	       rel2.relative: 0.5 0.95;
 	       rel2.offset: 0 -1;
 	       min: 64 32;
 	       max: 64 32;
