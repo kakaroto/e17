@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: enlightenment 0.16.6\n"
 "Report-Msgid-Bugs-To: enlightenment-intl@lists.sourceforge.net\n"
-"POT-Creation-Date: 2008-10-15 17:49+0200\n"
-"PO-Revision-Date: 2008-03-19 20:00+0900\n"
+"POT-Creation-Date: 2008-10-19 13:36+0900\n"
+"PO-Revision-Date: 2008-10-19 13:47+0900\n"
 "Last-Translator: Yasufumi Haga <yasufumi.haga@nifty.com>\n"
 "Language-Team: Japanese <ja@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -44,7 +44,7 @@ msgstr ""
 msgid "%u references remain\n"
 msgstr "%u 参照残っています。\n"
 
-#: src/actions.c:110
+#: src/actions.c:109
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -57,7 +57,7 @@ msgstr ""
 "このプログラムは実行できませんでした。\n"
 "このファイルが存在しません。\n"
 
-#: src/actions.c:118
+#: src/actions.c:115
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -75,7 +75,7 @@ msgstr ""
 "シェルのマニュアルページを読んで、シェルの実行パスの変更方法\n"
 "や追加方法を理解した方がいいと思います。\n"
 
-#: src/actions.c:138
+#: src/actions.c:134
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -92,7 +92,7 @@ msgstr ""
 "それにこのファイルを実行する権限もあります。この件は調べた方がいいと\n"
 "思います。\n"
 
-#: src/actions.c:149
+#: src/actions.c:144
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -108,7 +108,7 @@ msgstr ""
 "る\n"
 "実行権限がないので実行できません。\n"
 
-#: src/actions.c:164
+#: src/actions.c:157
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -121,7 +121,7 @@ msgstr ""
 "このプログラムは実行できませんでした。\n"
 "ファイルではなくディレクトリが指定されています。\n"
 
-#: src/actions.c:172
+#: src/actions.c:164
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -134,7 +134,7 @@ msgstr ""
 "このプログラムは実行できませんでした。\n"
 "このファイルは通常のファイルではありません。\n"
 
-#: src/actions.c:197
+#: src/actions.c:189
 #, c-format
 msgid ""
 "There was an error running the program:\n"
@@ -162,6 +162,15 @@ msgstr "Enlightenment 再起動"
 #: src/alert.c:570 src/setup.c:168
 msgid "Quit Enlightenment"
 msgstr "Enlightenment 終了"
+
+#: src/alert.c:583
+msgid "Attention !!!"
+msgstr "注意 !!!"
+
+#: src/alert.c:583 src/dialog.c:846 src/dialog.c:2035 src/events.c:87
+#: src/setup.c:157 src/sound.c:209
+msgid "OK"
+msgstr "了解"
 
 #: src/backgrounds.c:1525
 #, c-format
@@ -317,12 +326,12 @@ msgstr ""
 "\n"
 "%s\n"
 
-#: src/config.c:195 src/config.c:291
+#: src/config.c:195 src/config.c:296
 #, c-format
 msgid "CONFIG: ignoring extra data in \"%s\"\n"
 msgstr "CONFIG: \"%s\" にある余分なデータは無視します。\n"
 
-#: src/config.c:203 src/config.c:298
+#: src/config.c:203 src/config.c:303
 #, c-format
 msgid "CONFIG: missing required data in \"%s\"\n"
 msgstr "CONFIG: \"%s\" に必要なデータが含まれていません。\n"
@@ -348,19 +357,19 @@ msgstr ""
 "警告。%s ブロックに設定エラーがあります。\n"
 "出力はおそらくおかしくなっていると思います。\n"
 
-#: src/config.c:307
+#: src/config.c:312
 msgid "Theme versioning ERROR"
 msgstr "テーマのバージョンエラー"
 
-#: src/config.c:308
+#: src/config.c:313
 msgid "Restart with Defaults"
 msgstr "デフォルトの設定で再起動"
 
-#: src/config.c:309
+#: src/config.c:314
 msgid "Abort and Exit"
 msgstr "無視して終了"
 
-#: src/config.c:310
+#: src/config.c:315
 #, c-format
 msgid ""
 "ERROR:\n"
@@ -394,7 +403,7 @@ msgstr ""
 "このテーマで利用している機能が新しい Enlightenment の機能なのに、\n"
 "Enlightenment がしばらく更新されていないためかもしれません。\n"
 
-#: src/config.c:572
+#: src/config.c:577
 msgid "Enlightenment Starting..."
 msgstr "Enlightenment 起動中..."
 
@@ -700,18 +709,9 @@ msgstr ""
 "Enlightenment 仮想デスクトップ\n"
 "設定ダイアログ\n"
 
-#: src/dialog.c:846 src/dialog.c:2035 src/dialog.c:2066 src/events.c:87
-#: src/setup.c:157 src/sound.c:209
-msgid "OK"
-msgstr "了解"
-
 #: src/dialog.c:851
 msgid "Apply"
 msgstr "適用"
-
-#: src/dialog.c:2066
-msgid "Attention !!!"
-msgstr "注意 !!!"
 
 #: src/ecompmgr.c:2626
 msgid ""
@@ -887,11 +887,11 @@ msgstr ""
 "Enlightenment 特殊効果\n"
 "設定ダイアログ\n"
 
-#: src/groups.c:688
+#: src/groups.c:717
 msgid "Window Group Selection"
 msgstr "ウィンドウグループを選ぶ"
 
-#: src/groups.c:691
+#: src/groups.c:720
 msgid ""
 "Enlightenment Window Group\n"
 "Selection Dialog\n"
@@ -899,11 +899,11 @@ msgstr ""
 "Enlightenment ウィンドウグループ\n"
 "選択ダイアログ\n"
 
-#: src/groups.c:714 src/groups.c:723 src/groups.c:731 src/groups.c:917
+#: src/groups.c:743 src/groups.c:752 src/groups.c:760 src/groups.c:946
 msgid "Window Group Error"
 msgstr "ウィンドウグループエラー"
 
-#: src/groups.c:716
+#: src/groups.c:745
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -917,7 +917,7 @@ msgstr ""
 "  ているウィンドウを使って、グループからウィンドウを削除することだけです。\n"
 "\n"
 
-#: src/groups.c:724
+#: src/groups.c:753
 msgid ""
 "\n"
 "  Currently, no groups exist or this window  \n"
@@ -931,7 +931,7 @@ msgstr ""
 "  まず他のグループを作成してください。\n"
 "\n"
 
-#: src/groups.c:733
+#: src/groups.c:762
 msgid ""
 "\n"
 "  Currently, no groups exist. You have to start a group first.\n"
@@ -940,11 +940,11 @@ msgstr ""
 "\n"
 "  現在、グループはありません。まずグループを作成してください。\n"
 
-#: src/groups.c:823
+#: src/groups.c:852
 msgid "   Pick the group to configure:   "
 msgstr "  設定するグループを選択してください:   "
 
-#: src/groups.c:854
+#: src/groups.c:883
 msgid ""
 "  The following actions are  \n"
 "  applied to all group members:  "
@@ -952,43 +952,43 @@ msgstr ""
 "  グループ内の全ウィンドウに \n"
 "  反映される操作:  "
 
-#: src/groups.c:859 src/groups.c:961
+#: src/groups.c:888 src/groups.c:990
 msgid "Changing Border Style"
 msgstr "ボーダースタイルの変更"
 
-#: src/groups.c:864 src/groups.c:966
+#: src/groups.c:893 src/groups.c:995
 msgid "Iconifying"
 msgstr "アイコン化"
 
-#: src/groups.c:869 src/groups.c:971
+#: src/groups.c:898 src/groups.c:1000
 msgid "Killing"
 msgstr "強制終了"
 
-#: src/groups.c:874 src/groups.c:976
+#: src/groups.c:903 src/groups.c:1005
 msgid "Moving"
 msgstr "移動"
 
-#: src/groups.c:879 src/groups.c:981
+#: src/groups.c:908 src/groups.c:1010
 msgid "Raising/Lowering"
 msgstr "上に出す/下に移す"
 
-#: src/groups.c:884 src/groups.c:986
+#: src/groups.c:913 src/groups.c:1015
 msgid "Sticking"
 msgstr "常時表示"
 
-#: src/groups.c:889 src/groups.c:991
+#: src/groups.c:918 src/groups.c:1020
 msgid "Shading"
 msgstr "シェード"
 
-#: src/groups.c:894 src/groups.c:996
+#: src/groups.c:923 src/groups.c:1025
 msgid "Mirror Shade/Iconify/Stick"
 msgstr "一緒にシェード/アイコン化/常時表示化する"
 
-#: src/groups.c:901
+#: src/groups.c:930
 msgid "Window Group Settings"
 msgstr "ウィンドウグループの設定"
 
-#: src/groups.c:904
+#: src/groups.c:933
 msgid ""
 "Enlightenment Window Group\n"
 "Settings Dialog\n"
@@ -996,7 +996,7 @@ msgstr ""
 "Enlightenment ウィンドウグループ\n"
 "設定ダイアログ\n"
 
-#: src/groups.c:919
+#: src/groups.c:948
 msgid ""
 "\n"
 "  This window currently does not belong to any groups.  \n"
@@ -1006,28 +1006,28 @@ msgstr ""
 "  このウィンドウは現在どのグループにも属していません。\n"
 "\n"
 
-#: src/groups.c:954
+#: src/groups.c:983
 msgid " Per-group settings: "
 msgstr " グループごとの設定: "
 
-#: src/groups.c:1005
+#: src/groups.c:1034
 msgid " Global settings: "
 msgstr " 全般の設定:  "
 
-#: src/groups.c:1009
+#: src/groups.c:1038
 msgid "Swap Window Locations"
 msgstr "ウィンドウ位置を交換する"
 
 #
-#: src/groups.c:1015 src/menus-misc.c:757 config/strings.c:147
+#: src/groups.c:1044 src/menus-misc.c:757 config/strings.c:147
 msgid "Groups"
 msgstr "グループ"
 
-#: src/groups.c:1016
+#: src/groups.c:1045
 msgid "Default Group Control Settings"
 msgstr "グループ管理のデフォルト設定"
 
-#: src/groups.c:1019
+#: src/groups.c:1048
 msgid ""
 "Enlightenment Default\n"
 "Group Control Settings Dialog\n"
@@ -1035,19 +1035,19 @@ msgstr ""
 "Enlightenment グループ管理の\n"
 "デフォルト設定ダイアログ\n"
 
-#: src/groups.c:1052
+#: src/groups.c:1080
 msgid "Pick the group the window will belong to:"
 msgstr "このウィンドウが参加するグループを選択してください:"
 
-#: src/groups.c:1059
+#: src/groups.c:1086
 msgid "Select the group to remove the window from:"
 msgstr "削除するウィンドウが属しているグループを選択してください。"
 
-#: src/groups.c:1065
+#: src/groups.c:1091
 msgid "Select the group to break:"
 msgstr "破棄するグループを選択してください。 "
 
-#: src/handlers.c:62
+#: src/handlers.c:61
 #, c-format
 msgid ""
 "Enlightenment performed an Illegal Instruction.\n"
@@ -1068,7 +1068,7 @@ msgstr ""
 "ためにバイナリフォーマットで入手したサポートライブラリも再コンパイルが必要\n"
 "になる場合があります。\n"
 
-#: src/handlers.c:72
+#: src/handlers.c:71
 msgid ""
 "Enlightenment caused a Floating Point Exception.\n"
 "\n"
@@ -1092,7 +1092,7 @@ msgstr ""
 "それから、バックトレース情報や変数ダンプなどを添付した詳細なバグ報告\n"
 "にして送付して下さい。\n"
 
-#: src/handlers.c:84
+#: src/handlers.c:83
 msgid ""
 "Enlightenment caused Segment Violation (Segfault)\n"
 "\n"
@@ -1116,7 +1116,7 @@ msgstr ""
 "ます。それから、バックトレース情報や変数ダンプなどを添付した詳細な\n"
 "バグ報告にして送付して下さい。\n"
 
-#: src/handlers.c:96
+#: src/handlers.c:95
 msgid ""
 "Enlightenment caused Bus Error.\n"
 "\n"
@@ -2174,17 +2174,15 @@ msgid "Systray Settings"
 msgstr "システムトレイの設定"
 
 #: src/theme.c:353
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "No themes were found in the default directories:\n"
 " %s\n"
 "Proceeding from here is mostly pointless.\n"
 msgstr ""
-"デフォルトのテーマディレクトリ:\n"
-" %s/themes/\n"
-"にも、ユーザーのテーマディレクトリ:\n"
-" %s/themes/\n"
-"にもテーマが見つかりません。このまま進めてもほとんど無意味です。\n"
+"デフォルトのディレクトリ\n"
+"%s\n"
+"にテーマがありません。このまま進めてもほとんど無意味です。\n"
 
 #: src/tooltips.c:866
 msgid "Display Tooltips"
