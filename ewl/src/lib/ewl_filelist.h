@@ -179,7 +179,7 @@ Ewl_Filelist_Filter     *ewl_filelist_filter_get(Ewl_Filelist *fl);
 
 void                     ewl_filelist_view_set(Ewl_Filelist *fl,
                                                 Ewl_Filelist_View view);
-Ewl_Filelist_View       *ewl_filelist_view_get(Ewl_Filelist *fl);
+Ewl_Filelist_View        ewl_filelist_view_get(Ewl_Filelist *fl);
 
 
 void                     ewl_filelist_multiselect_set(Ewl_Filelist *fl,

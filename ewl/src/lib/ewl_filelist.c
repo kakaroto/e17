@@ -241,13 +241,13 @@ ewl_filelist_view_set(Ewl_Filelist *fl, Ewl_Filelist_View view)
  * @returns Returns the Ewl_Filelist_View used
  * @brief Gets the filelist view
  */
-Ewl_Filelist_View *
+Ewl_Filelist_View
 ewl_filelist_view_get(Ewl_Filelist *fl)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR_RET(fl, NULL);
 
-        DRETURN_PTR(fl->view_flag, DLEVEL_STABLE);
+        DRETURN_INT(fl->view_flag, DLEVEL_STABLE);
 }
 
 /**
