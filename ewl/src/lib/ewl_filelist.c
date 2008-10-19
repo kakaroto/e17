@@ -245,7 +245,7 @@ Ewl_Filelist_View
 ewl_filelist_view_get(Ewl_Filelist *fl)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR_RET(fl, NULL);
+        DCHECK_PARAM_PTR_RET(fl, EWL_FILELIST_VIEW_ICON);
 
         DRETURN_INT(fl->view_flag, DLEVEL_STABLE);
 }
