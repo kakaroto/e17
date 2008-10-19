@@ -7554,7 +7554,6 @@ collections { /* begin the collection of edje groups that are in this file */
    }
 
    group { name: "e/modules/battery/popup";
-      max:  420 96;
       min:  240 64;
       parts {
 	 part { name: "battery";
@@ -7564,36 +7563,39 @@ collections { /* begin the collection of edje groups that are in this file */
 	    description { state: "default" 0.0;
 	       min: 1 1;
 	       max: 120 120;
+	       aspect: 1.0 1.0;
+	       aspect_preference: VERTICAL;
+	       align: 0.0 0.5;
 	       rel1.relative: 0.0 0.0;
-	       rel2.relative: 0.25 1.0;
+	       rel2.relative: 1.0 1.0;
 	       color: 255 255 255 255;
 	    }
 	 }
-	 part { name: "text";
+	 part { name: "e.text.title";
 	    type: TEXT;
 	    mouse_events: 0;
 	    scale: 1;
 	    description { state: "default" 0.0;
 	       rel1 {
-		  relative: 1.0 0.5;
-		  to_x:battery;
-		  offset: 0 -12;
+		  relative: 1.0 0.0;
+		  to_x: battery;
+		  offset: 0 0;
 	       }
 	       rel2 {
 		  relative: 1.0 0.5;
-		  offset: 0 -12;
+		  offset: -1 -1;
 	       }
 	       color: 0 0 0 255;
 	       text { text: "Your battery is low!";
 		  font: "Sans:style=Bold";
 		  size: 10;
 		  min: 1 1;
-		  align: 0.5 1.0;
+		  align: 0.5 0.5;
 		  text_class: "module_large";
 	       }
 	    }
 	 }
-	 part { name: "text2";
+	 part { name: "e.text.label";
 	    type: TEXT;
 	    mouse_events: 0;
 	    scale: 1;
@@ -7601,19 +7603,19 @@ collections { /* begin the collection of edje groups that are in this file */
 	       rel1 {
 		  relative: 1.0 0.5;
 		  to_x: battery;
-		  offset: 5 12;
+		  offset: 0 0;
 	       }
 	       rel2 {
-		  relative: 1.0 0.5;
-		  offset: 0 12;
+		  relative: 1.0 1.0;
+		  offset: -1 -1;
 	       }
 	       color: 0 0 0 255;
 	       text { text: "AC power is recommended.";
-		  font: "Sans:style=Bold";
+		  font: "Sans";
 		  size: 10;
 		  min: 1 1;
-		  align: 0.5 1.0;
-		  text_class: "module_large";
+		  align: 0.5 0.5;
+		  text_class: "module_normal";
 	       }
 	    }
 	 }
