@@ -9,7 +9,6 @@
 // icons
 // toolbar (Before release, make a theme for efm_nav too.)
 // about
-// theme_about
 //
 // TODO Code: - allow sys (shutdown, reboot etc.) to indicated borderless
 //            - make battery module text translatable and set by E, not in the theme.
@@ -14643,10 +14642,6 @@ collections { /* begin the collection of edje groups that are in this file */
 // FIXME: DO
 
 /////////////////////////////////////////////////////////////////////////////
-   /*** ABOUT THEME ***/
-// FIXME: DO
-
-/////////////////////////////////////////////////////////////////////////////
    /*** DIALOG ***/
    group { name: "e/widgets/dialog/main";
       images {
@@ -19783,7 +19778,7 @@ collections { /* begin the collection of edje groups that are in this file */
    }
 
 /////////////////////////////////////////////////////////////////////////////
-   /*** WIZARD ***/
+   /*** MOD: WIZARD ***/
    group { name: "e/wizard/extra";
       images {
 	 image: "vgrad_dark.png" COMP;
@@ -19851,6 +19846,178 @@ collections { /* begin the collection of edje groups that are in this file */
       // FIXME: add programs that:
       //          action: SIGNAL_EMIT "e,action,back" "";
       //          action: SIGNAL_EMIT "e,action,next" "";
+   }
+
+/////////////////////////////////////////////////////////////////////////////
+   /*** THEME ABOUT ***/
+   group { name: "e/theme/about";
+      images {
+	 image: "silk.png" COMP;
+	 image: "topsh.png" COMP;
+	 image: "bnw.png" COMP;
+	 image: "bt_base1.png" COMP;
+	 image: "bt_base2.png" COMP;
+	 image: "bt_hilight.png" COMP;
+	 image: "bt_shine.png" COMP;
+      }
+      styles {
+	 style { name: "theme_about_style";
+	    base: "font=Sans:style=Bold font_size=10 align=center valign=center color=#e0e0e0ff style=soft_shadow shadow_color=#0000001f wrap=word";
+	    tag:  "br" "\n";
+	 }
+      }
+      min: 240 240;
+      max: 480 480;
+      parts {
+	 part { name: "background_image";
+            description { state: "default" 0.0;
+	       image.normal: "silk.png";
+	       aspect: 1.0 1.0;
+	       aspect_preference: NONE;
+	    }
+	 }
+	 part { name: "shadow";
+	    scale: 1;
+            description { state: "default" 0.0;
+	       image.normal: "topsh.png";
+	       align: 0.0 0.0;
+	       min: 1 16;
+	       max: 99999 16;
+	       fill.smooth: 0;
+	    }
+	 }
+	 part { name: "logo";
+	    description { state: "default" 0.0;
+	       image.normal: "bnw.png";
+	       align: 0.5 0.1;
+	       min: 230 110;
+	       max: 460 220;
+	       aspect: 2.090909091 2.090909091;
+	       aspect_preference: HORIZONTAL;
+	    }
+	 }
+	 part { name: "about";
+	    type: TEXTBLOCK;
+	    mouse_events:  0;
+	    scale: 1;
+	    description { state: "default" 0.0;
+	       rel1 {
+		  to_y: "logo";
+		  relative: 0.0 1.0;
+		  offset: 8 8;
+	       }
+	       rel2 {
+		  to_y: "button_image";
+		  offset: -9 -9;
+		  relative: 1.0 0.0;
+	       }
+	       text {
+		  style: "theme_about_style";
+		  min: 1 1;
+		  text:
+		    "Smooth as silk<br>"
+		    "The default theme for Enlightenment<br>"
+		    ;
+	       }
+	    }
+	 }
+	 part { name: "button_image";
+	    mouse_events: 1;
+	    scale: 1;
+	    description { state: "default" 0.0;
+	       fixed: 1 1;
+	       align: 0.5 1.0;
+	       rel1.relative: 0.5 0.9;
+	       rel1.offset: 0 -1;
+	       rel2.relative: 0.5 0.9;
+	       rel2.offset: 0 -1;
+	       min: 64 32;
+	       max: 64 32;
+	       image {
+		  normal: "bt_base2.png";
+		  border: 7 7 7 7;
+	       }
+	    }
+	    description { state: "clicked" 0.0;
+	       inherit: "default" 0.0;
+	       image.normal: "bt_base1.png";
+	    }
+	 }
+	 part { name: "e.text.label";
+	    type: TEXT;
+	    effect: SOFT_SHADOW;
+	    mouse_events: 0;
+	    scale: 1;
+	    description { state: "default" 0.0;
+	       rel1 {
+		  to: "button_image";
+		  relative: 0.0  0.0;
+		  offset:   3    3;
+	       }
+	       rel2 {
+		  relative: 1.0  1.0;
+		  offset:   -4   -4;
+		  to:     "button_image";
+	       }
+	       color: 224 224 224 255;
+	       color3: 0 0 0 64;
+	       color_class: "button_text";
+	       text {
+		  text:     "Close";
+		  font:     "Sans";
+		  size:     10;
+		  min:      1 1;
+		  align:    0.5 0.5;
+		  text_class: "button";
+	       }
+	    }
+	 }
+	 part { name: "over1";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       rel1.to: "button_image";
+	       rel2.to: "button_image";
+	       rel2.relative: 1.0 0.5;
+	       image {
+		  normal: "bt_hilight.png";
+		  border: 7 7 7 0;
+	       }
+	    }
+	 }
+	 part { name: "over2";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       rel1.to: "button_image";
+	       rel2.to: "button_image";
+	       image {
+		  normal: "bt_shine.png";
+		  border: 7 7 7 7;
+	       }
+	    }
+	 }
+      }
+      programs {
+	 program {
+	    name:   "button_click";
+	    signal: "mouse,down,1";
+	    source: "button_image";
+	    action: STATE_SET "clicked" 0.0;
+	    target: "button_image";
+	 }
+	 program {
+	    name:   "button_unclick";
+	    signal: "mouse,up,1";
+	    source: "button_image";
+	    action: STATE_SET "default" 0.0;
+	    target: "button_image";
+	 }
+	 program {
+	    name:   "button_unclick2";
+	    signal: "mouse,clicked,1";
+	    source: "button_image";
+	    action: SIGNAL_EMIT "e,action,close" "";
+	 }
+      }
    }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -20195,9 +20362,4 @@ MIMEICON("video/mpeg","icon_dummy.png", 128);
 // Put icons that respond to states here. Eg. E logo, fileman/hd, etc.
 
 */
-
-
-/////////////////////////////////////////////////////////////////////////////
-   /*** MOD: WIZARD ***/
-// FIXME: DO
 }
