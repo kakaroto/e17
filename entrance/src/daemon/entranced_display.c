@@ -190,16 +190,18 @@ _start_server_once(Entranced_Display * d)	/* seems
         {
            double current_time;
            int status;
+           pid_t rpid;
 
            sleep(10);
-           if (waitpid(xpid, &status, WNOHANG) == -1)
+           rpid = waitpid(xpid, &status, WNOHANG);
+           if (rpid == -1)
            {
               syslog(LOG_CRIT, "waitpid failed: %s", strerror(errno));
               x_ready = 0;
               break;
            }
 
-           if (WIFEXITED(status))
+           if ((rpid == xpid) && WIFEXITED(status))
            {
               syslog(LOG_CRIT, "X server exited unexpectedly: %d", WEXITSTATUS(status));
               x_ready = 0;
