@@ -935,10 +935,7 @@ _forecasts_display_set(Instance * inst, int ok)
 	     snprintf(name, sizeof(name), "e.swallow.day%d.icon", i);
 	     swallow = edje_object_part_swallow_get(inst->forecasts->forecasts_obj, name);
 	     if (swallow)
-	       {
-		  edje_object_part_unswallow(inst->forecasts->forecasts_obj, swallow);
-		  evas_object_del(swallow);
-	       }
+	       evas_object_del(swallow);
 	     edje_object_part_swallow(inst->forecasts->forecasts_obj, name,
 		   _forecasts_popup_icon_create(inst->gcc->gadcon->evas, inst->forecast[i].code));
 	  }
