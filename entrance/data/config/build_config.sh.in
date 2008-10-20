@@ -107,5 +107,5 @@ ecore_config -c $DB -k /entrance/autologin/mode -i 0
 ecore_config -c $DB -k /entrance/presel/mode -i 1
 
 # for Entranced
-ecore_config -c $DB -k /entranced/xserver -s "@xbin@/X -quiet -nolisten tcp@ENTRANCE_VT_ARG@"
+ecore_config -c $DB -k /entranced/xserver -s "@xbin@/X -quiet -br -nolisten tcp@ENTRANCE_VT_ARG@"
 ecore_config -c $DB -k /entranced/attempts -i 5
