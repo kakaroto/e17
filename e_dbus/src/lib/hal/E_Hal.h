@@ -127,6 +127,7 @@ extern "C" {
 /* (un)mount */
    EAPI int e_hal_device_volume_mount(E_DBus_Connection *conn, const char *udi, const char *mount_point, const char *fstype, Ecore_List *options, E_DBus_Callback_Func cb_func, void *data);
    EAPI int e_hal_device_volume_unmount(E_DBus_Connection *conn, const char *udi, Ecore_List *options, E_DBus_Callback_Func cb_func, void *data);
+   EAPI int e_hal_device_volume_eject(E_DBus_Connection *conn, const char *udi, Ecore_List *options, E_DBus_Callback_Func cb_func, void *data);
 
 #ifdef __cplusplus
 }
