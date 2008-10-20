@@ -916,6 +916,8 @@ _forecasts_display_set(Instance * inst, int ok)
 
 	for (i = 0; i < FORECASTS; i++)
 	  {
+	     Evas_Object *swallow;
+
 	     snprintf(name, sizeof(name), "e.text.day%d.date", i);
 	     edje_object_part_text_set(inst->forecasts->forecasts_obj, name, inst->forecast[i].date);
 
@@ -931,6 +933,12 @@ _forecasts_display_set(Instance * inst, int ok)
 	     edje_object_part_text_set(inst->forecasts->forecasts_obj, name, buf);
 
 	     snprintf(name, sizeof(name), "e.swallow.day%d.icon", i);
+	     swallow = edje_object_part_swallow_get(inst->forecasts->forecasts_obj, name);
+	     if (swallow)
+	       {
+		  edje_object_part_unswallow(inst->forecasts->forecasts_obj, swallow);
+		  evas_object_del(swallow);
+	       }
 	     edje_object_part_swallow(inst->forecasts->forecasts_obj, name,
 		   _forecasts_popup_icon_create(inst->gcc->gadcon->evas, inst->forecast[i].code));
 	  }
