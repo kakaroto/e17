@@ -377,16 +377,22 @@ _event_cb_exited(void *data, int type, void *event)
          ecore_main_loop_quit();
       }
 
+      syslog(LOG_INFO, "session exit: code=%d, signal=%d", e->exit_code, e->exit_signal);
       /* Session exited or crashed */
       if (e->exited)
       {
-         syslog(LOG_INFO, "The session has ended normally.");
          if (e->exit_code == EXITCODE)
          {
+	    syslog(LOG_INFO, "The session has ended with %d (EXITCODE), exit.",
+		   EXITCODE);
             ecore_main_loop_quit();
             return 0;
          }
-
+	 else if (e->exit_code == 0)
+	   syslog(LOG_INFO, "The session has ended normally.");
+	 else
+	   syslog(LOG_INFO, "The session has ended with error: %d.",
+		  e->exit_code);
       }
       else if (e->signalled)
          syslog(LOG_INFO, "The session was terminated with signal %d.",
