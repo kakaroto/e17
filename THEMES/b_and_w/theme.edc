@@ -1,16 +1,13 @@
 // TODO: Items that need some revision
 // battery popup (done - review - see 'code' for notes)
-// desklock (done - review - see 'code' for notes)
 // toolbar (efm_nav theme ready to go once this goes in)
 // ibar - ibox (done - Merged with alias... see FIXME for bugs.)
-// sys - (done byut a little too white for everything - maybe grey bg and borderless?)
 //
 // TODO: Working order
 // icons
 //
-// TODO Code: - allow sys (shutdown, reboot etc.) to indicated borderless
+// TODO Code:
 //            - make battery module text translatable and set by E, not in the theme.
-//            - desklock login_box doesnt centre correctly. looks like a code problem.
 //	      - ilist e.swallow.icon should use e_ilist_icon_size_set to make a dummy box
 //		to compensate when there is no icon there.
 //	      - Fix ibox urgent / icon_overlay problem. 
@@ -14626,9 +14623,12 @@ collections { /* begin the collection of edje groups that are in this file */
       alias: "e/sys/reboot";
       alias: "e/sys/suspend";
       alias: "e/sys/hibernate";
+      data.item: "borderless" "1";
+//      data.item: "shaped" "1";
       images {
-	 image: "base_bg.png" COMP;
-	 image: "logo_white.png" COMP;
+	 image: "vgrad_dark.png" COMP;
+         image: "shelf_alt_over.png" COMP;
+	 image: "logo_white_128.png" COMP;
 	 image: "busy-1.png" COMP;
 	 image: "busy-2.png" COMP;
 	 image: "busy-3.png" COMP;
@@ -14652,11 +14652,22 @@ collections { /* begin the collection of edje groups that are in this file */
 	    mouse_events:  0;
 	    description { state:    "default" 0.0;
       	       min: 250 250;
-               max: 250 250;
-	       image {
-		  normal: "base_bg.png";
-		  border: 2 2 2 2;
+	       image.normal: "vgrad_dark.png";
+	       fill {
+		  size {
+		     relative: 0 1.0;
+		     offset: 36 0;
+		  }
 	       }
+	    }
+	 }
+         part { name: "over";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       image.normal: "shelf_alt_over.png";
+	       image.border: 5 5 5 5;
+	       image.middle: 0;
+	       fill.smooth: 0;
 	    }
 	 }
 	 part { name: "busy";
@@ -14692,10 +14703,10 @@ collections { /* begin the collection of edje groups that are in this file */
 	 part { name: "logo";
 	    mouse_events: 0;
 	    description { state: "default" 0.0;
-	       min: 89 130;
-	       max: 89 130;
+	       min: 128 128;
+	       max: 128 128;
 	       align: 0.5 0.0;
-	       image.normal: "logo_white.png";
+	       image.normal: "logo_white_128.png";
 	    }
 	    description { state: "done" 0.0;
 	       inherit: "default" 0.0;
@@ -15148,8 +15159,10 @@ group { name: "e/toolbar/default/base";
    /*** TRANSITIONS ***/
 
    images {
-      image: "transition1.png" COMP;
-      image: "transition2.png" COMP;
+      image: "vgrad_dark.png" COMP;
+      image: "vgrad_light.png" COMP;
+      image: "logo_black_128.png" COMP;
+      image: "logo_white_128.png" COMP;
    }
 
    group { name: "e/transpreview/0";
@@ -15157,9 +15170,21 @@ group { name: "e/toolbar/default/base";
 	 part { name: "bg";
 	    mouse_events: 0;
 	    description { state: "default" 0.0;
-	       aspect: 1.33333 1.33333;
-	       aspect_preference: NONE;
-	       image.normal: "transition1.png";
+	       image.normal: "vgrad_dark.png";
+	       fill {
+                  size {
+		     relative: 0 1.0;
+		     offset: 36 0;
+		  }
+	       }
+	    }
+	 }
+	 part { name: "logo";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       image.normal: "logo_white_128.png";
+	       min: 32 32;
+	       max: 128 128;
 	    }
 	 }
       }
@@ -15170,9 +15195,21 @@ group { name: "e/toolbar/default/base";
 	 part { name: "bg";
 	    mouse_events: 0;
 	    description { state: "default" 0.0;
-	       aspect: 1.33333 1.33333;
-	       aspect_preference: NONE;
-	       image.normal: "transition2.png";
+	       image.normal: "vgrad_light.png";
+	       fill {
+                  size {
+		     relative: 0 1.0;
+		     offset: 36 0;
+		  }
+	       }
+	    }
+	 }
+	 part { name: "logo";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       image.normal: "logo_black_128.png";
+	       min: 32 32;
+	       max: 128 128;
 	    }
 	 }
       }
@@ -18775,6 +18812,11 @@ group { name: "e/toolbar/default/base";
 	       }
 	    }
 	 }
+	 part { name: "e.swallow.login_box";
+	    type: SWALLOW;
+	    description { state: "default" 0.0;
+	    }
+	 }
       }
    }
 
@@ -20005,6 +20047,8 @@ group { name: "e/toolbar/default/base";
 	 image: "bt_hilight.png" COMP;
 	 image: "bt_shine.png" COMP;
       }
+//      data.item: "borderless" "1";
+//      data.item: "shaped" "1";
       styles {
 	 style { name: "about_style";
 	    base: "font=Sans:style=Bold font_size=10 align=center valign=center color=#e0e0e0ff style=soft_shadow shadow_color=#00000020 wrap=word";
@@ -20409,7 +20453,7 @@ group { name: "e/toolbar/default/base";
    /*** THEME ABOUT ***/
    group { name: "e/theme/about";
       images {
-	 image: "silk.png" COMP;
+	 image: "silk.png" LOSSY 90;
 	 image: "topsh.png" COMP;
 	 image: "bnw.png" COMP;
 	 image: "bt_base1.png" COMP;
@@ -20423,6 +20467,8 @@ group { name: "e/toolbar/default/base";
 	    tag:  "br" "\n";
 	 }
       }
+//      data.item: "borderless" "1";
+//      data.item: "shaped" "1";
       min: 240 240;
       max: 640 640;
       parts {
@@ -20624,6 +20670,9 @@ ICON("enlightenment/background","icon_wallpaper.png",64)
 ICON("enlightenment/picture","icon_wallpaper.png",64)
 ICON("enlightenment/gradient","icon_gradient.png",64)
 
+ICON("enlightenment/e","logo_white_128.png",64)
+ICON("enlightenment/about","logo_black_128.png",64)
+
 ICON("enlightenment/check","icon_check.png",64)
 ICON("widget/swap","icon_swap.png",64)
 ICON("widget/del","icon_del.png",64) 
@@ -20637,7 +20686,6 @@ ICON("widget/new_dialog","icon_right_arrow.png",64)
 ICON("widget/config","icon_config.png",64)
 ICON("widget/resize","icon_resize.png",64)
 
-
 /// No icons made yet ///
 
 ICON("enlightenment/engine","icon_dummy.png",64)
@@ -20648,12 +20696,10 @@ ICON("enlightenment/autoscroll","icon_dummy.png",64)
 ICON("enlightenment/showhide","icon_dummy.png",64)
 ICON("enlightenment/toolbar","icon_dummy.png",64)
 
-
 /* (Uncomment to test.)
 
 /// Old Icons from Bling ///
 
-ICON("enlightenment/e","icon_dummy.png",64)
 ICON("enlightenment/reset","icon_dummy.png",64)
 ICON("enlightenment/exit","icon_dummy.png",64)
 ICON("enlightenment/logout","icon_dummy.png",64)
