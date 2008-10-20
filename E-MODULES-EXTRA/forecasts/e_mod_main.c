@@ -75,13 +75,12 @@ struct _Instance
 	} astronomy;
    } details;
 
-   struct
-     {
+   struct {
 	char day[4];
 	char date[12];
 	int low, high, code;
 	char desc[256];
-     } forecast[FORECASTS];
+   } forecast[FORECASTS];
 
    char *buffer, *location;
    const char *area;
@@ -147,7 +146,7 @@ _gc_init(E_Gadcon * gc, const char *name, const char *id, const char *style)
    inst = E_NEW(Instance, 1);
 
    inst->ci = _forecasts_config_item_get(id);
-   inst->area = evas_stringshare_add(inst->ci->code);
+   inst->area = eina_stringshare_add(inst->ci->code);
 
    w = _forecasts_new(gc->evas);
    w->inst = inst;
@@ -187,7 +186,7 @@ _gc_init(E_Gadcon * gc, const char *name, const char *id, const char *style)
    evas_object_event_callback_add(w->forecasts_obj, EVAS_CALLBACK_MOUSE_DOWN,
 	 _forecasts_cb_mouse_down, inst);
    forecasts_config->instances =
-      evas_list_append(forecasts_config->instances, inst);
+      eina_list_append(forecasts_config->instances, inst);
 
    _forecasts_cb_check(inst);
    inst->check_timer =
@@ -216,11 +215,11 @@ _gc_shutdown(E_Gadcon_Client * gcc)
    if (inst->server)
      ecore_con_server_del(inst->server);
    if (inst->area)
-     evas_stringshare_del(inst->area);
+     eina_stringshare_del(inst->area);
 
    inst->server = NULL;
    forecasts_config->instances =
-      evas_list_remove(forecasts_config->instances, inst);
+      eina_list_remove(forecasts_config->instances, inst);
 
    evas_object_event_callback_del(w->forecasts_obj, EVAS_CALLBACK_MOUSE_DOWN,
 	 _forecasts_cb_mouse_down);
@@ -235,8 +234,20 @@ _gc_orient(E_Gadcon_Client * gcc)
    Instance *inst;
 
    inst = gcc->data;
-   e_gadcon_client_aspect_set(gcc, 16, 16);
-   e_gadcon_client_min_size_set(gcc, 16, 16);
+
+   switch (gcc->gadcon->orient)
+     {
+      case E_GADCON_ORIENT_FLOAT:
+	 edje_object_signal_emit(inst->forecasts_obj, "e,state,orientation,float", "e");
+	 e_gadcon_client_aspect_set(gcc, 64, 32);
+	 e_gadcon_client_min_size_set(gcc, 64, 32);
+	 break;
+      default:
+	 edje_object_signal_emit(inst->forecasts_obj, "e,state,orientation,default", "e");
+	 e_gadcon_client_aspect_set(gcc, 16, 16);
+	 e_gadcon_client_min_size_set(gcc, 16, 16);
+	 break;
+     }
 }
 
 static char *
@@ -327,7 +338,7 @@ _forecasts_menu_cb_configure(void *data, E_Menu * m, E_Menu_Item * mi)
 static Config_Item *
 _forecasts_config_item_get(const char *id)
 {
-   Evas_List *l;
+   Eina_List *l;
    Config_Item *ci;
    char buf[128];
 
@@ -339,7 +350,7 @@ _forecasts_config_item_get(const char *id)
 	if (forecasts_config->items)
 	  {
 	     const char *p;
-	     ci = evas_list_last(forecasts_config->items)->data;
+	     ci = eina_list_last(forecasts_config->items)->data;
 	     p = strrchr(ci->id, '.');
 	     if (p) num = atoi(p + 1) + 1;
 	  }
@@ -359,15 +370,15 @@ _forecasts_config_item_get(const char *id)
      }
 
    ci = E_NEW(Config_Item, 1);
-   ci->id = evas_stringshare_add(id);
+   ci->id = eina_stringshare_add(id);
    ci->poll_time = 60.0;
    ci->degrees = DEGREES_C;
-   ci->host = evas_stringshare_add("xml.weather.yahoo.com");
-   ci->code = evas_stringshare_add("BUXX0005");
+   ci->host = eina_stringshare_add("xml.weather.yahoo.com");
+   ci->code = eina_stringshare_add("BUXX0005");
    ci->show_text = 1;
    ci->popup_on_hover = 1;
    
-   forecasts_config->items = evas_list_append(forecasts_config->items, ci);
+   forecasts_config->items = eina_list_append(forecasts_config->items, ci);
    return ci;
 }
 
@@ -416,13 +427,13 @@ e_modapi_init(E_Module * m)
 	ci = E_NEW(Config_Item, 1);
 	ci->poll_time = 60.0;
 	ci->degrees = DEGREES_C;
-	ci->host = evas_stringshare_add("xml.weather.yahoo.com");
-	ci->code = evas_stringshare_add("BUXX0005");
-	ci->id = evas_stringshare_add("0");
+	ci->host = eina_stringshare_add("xml.weather.yahoo.com");
+	ci->code = eina_stringshare_add("BUXX0005");
+	ci->id = eina_stringshare_add("0");
 	ci->show_text = 1;
 	ci->popup_on_hover = 1;
 
-	forecasts_config->items = evas_list_append(forecasts_config->items, ci);
+	forecasts_config->items = eina_list_append(forecasts_config->items, ci);
      }
    _forecasts_get_proxy();
 
@@ -452,13 +463,13 @@ e_modapi_shutdown(E_Module * m)
 
 	ci = forecasts_config->items->data;
 	if (ci->id)
-	  evas_stringshare_del(ci->id);
+	  eina_stringshare_del(ci->id);
 	if (ci->host)
-	  evas_stringshare_del(ci->host);
+	  eina_stringshare_del(ci->host);
 	if (ci->code)
-	  evas_stringshare_del(ci->code);
+	  eina_stringshare_del(ci->code);
 	forecasts_config->items =
-	   evas_list_remove_list(forecasts_config->items, forecasts_config->items);
+	   eina_list_remove_list(forecasts_config->items, forecasts_config->items);
 	free(ci);
 	ci = NULL;
      }
@@ -537,8 +548,8 @@ _forecasts_get_proxy(void)
      }
    if ((host) && (port))
      {
-	if (proxy.host) evas_stringshare_del(proxy.host);
-	proxy.host = evas_stringshare_add(host);
+	if (proxy.host) eina_stringshare_del(proxy.host);
+	proxy.host = eina_stringshare_add(host);
 	proxy.port = port;
      }
    free(env);
@@ -896,6 +907,34 @@ _forecasts_display_set(Instance * inst, int ok)
    edje_object_part_text_set(inst->forecasts->forecasts_obj, "e.text.temp", buf);
    edje_object_part_text_set(inst->forecasts->forecasts_obj, "e.text.description",
 	 inst->condition.desc);
+   edje_object_part_text_set(inst->forecasts->forecasts_obj, "e.text.location", inst->location);
+
+   if (inst->gcc->gadcon->orient == E_GADCON_ORIENT_FLOAT)
+     {
+	char buf[4096], name[60];
+	int i;
+
+	for (i = 0; i < FORECASTS; i++)
+	  {
+	     snprintf(name, sizeof(name), "e.text.day%d.date", i);
+	     edje_object_part_text_set(inst->forecasts->forecasts_obj, name, inst->forecast[i].date);
+
+	     snprintf(name, sizeof(name), "e.text.day%d.desc", i);
+	     edje_object_part_text_set(inst->forecasts->forecasts_obj, name, inst->forecast[i].desc);
+
+	     snprintf(name, sizeof(name), "e.text.day%d.high", i);
+	     snprintf(buf, sizeof(buf), "%d°%c", inst->forecast[i].high, inst->units.temp);
+	     edje_object_part_text_set(inst->forecasts->forecasts_obj, name, buf);
+
+	     snprintf(name, sizeof(name), "e.text.day%d.low", i);
+	     snprintf(buf, sizeof(buf), "%d°%c", inst->forecast[i].low, inst->units.temp);
+	     edje_object_part_text_set(inst->forecasts->forecasts_obj, name, buf);
+
+	     snprintf(name, sizeof(name), "e.swallow.day%d.icon", i);
+	     edje_object_part_swallow(inst->forecasts->forecasts_obj, name,
+		   _forecasts_popup_icon_create(inst->gcc->gadcon->evas, inst->forecast[i].code));
+	  }
+     }
 
    if (inst->popup) _forecasts_popup_destroy(inst);
    inst->popup = NULL;
@@ -904,7 +943,7 @@ _forecasts_display_set(Instance * inst, int ok)
 void
 _forecasts_config_updated(Config_Item *ci)
 {
-   Evas_List *l;
+   Eina_List *l;
    char buf[4096];
 
    if (!forecasts_config)
@@ -920,8 +959,8 @@ _forecasts_config_updated(Config_Item *ci)
 	if (inst->area && strcmp(inst->area, inst->ci->code))
 	  area_changed = 1;
 
-	if (inst->area) evas_stringshare_del(inst->area);
-	inst->area = evas_stringshare_add(inst->ci->code);
+	if (inst->area) eina_stringshare_del(inst->area);
+	inst->area = eina_stringshare_add(inst->ci->code);
 	_forecasts_converter(inst);
 
         if (inst->popup) _forecasts_popup_destroy(inst);
@@ -1030,7 +1069,8 @@ _forecasts_popup_content_create(Instance *inst)
    e_widget_list_object_append(o, of, 1, 1, 0.5);
    ol = e_widget_list_add(evas, 1, 1);
 
-   for (i = 0; i < FORECASTS; i++) {
+   for (i = 0; i < FORECASTS; i++)
+     {
 	int row = 0;
 
 	snprintf(buf, sizeof(buf), "%s", inst->forecast[i].date);
@@ -1057,7 +1097,7 @@ _forecasts_popup_content_create(Instance *inst)
 	ob = e_widget_label_add(evas, buf);
 	e_widget_frametable_object_append(of, ob, 1, row, 1, 1, 1, 0, 1, 0);
 	e_widget_list_object_append(ol, of, 1, 1, 0.5);
-   }
+     }
 
    e_widget_list_object_append(o, ol, 1, 1, 0.5);
    e_gadcon_popup_content_set(inst->popup, o);
