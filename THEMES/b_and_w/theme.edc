@@ -11170,9 +11170,9 @@ collections { /* begin the collection of edje groups that are in this file */
 
 	 image: "e17_mini_button_shadow2.png" COMP;
 	 image: "e17_fileman_thumb_bg.png" COMP;
-	 image: "e17_fileman_copy.png" COMP;
-	 image: "e17_fileman_ask.png" COMP;
-	 image: "e17_fileman_move.png" COMP;
+	 image: "icon_efm_dnd_copy.png" COMP;
+	 image: "icon_efm_dnd_ask.png" COMP;
+	 image: "icon_efm_dnd_move.png" COMP;
       }
       parts {
 	 part { name: "label2";
@@ -11473,15 +11473,15 @@ collections { /* begin the collection of edje groups that are in this file */
 	    }
 	    description { state: "copy" 0.0;
 	       inherit: "visible" 0.0;
-	       image.normal:  "e17_fileman_copy.png";
+	       image.normal:  "icon_efm_dnd_copy.png";
 	    }
 	    description { state: "ask" 0.0;
 	       inherit: "visible" 0.0;
-	       image.normal:  "e17_fileman_ask.png";
+	       image.normal:  "icon_efm_dnd_ask.png";
 	    }
 	    description { state: "move" 0.0;
 	       inherit: "visible" 0.0;
-	       image.normal:  "e17_fileman_move.png";
+	       image.normal:  "icon_efm_dnd_move.png";
 	    }
 	 }
       }
@@ -11583,9 +11583,9 @@ collections { /* begin the collection of edje groups that are in this file */
 
 	 image: "e17_mini_button_shadow2.png" COMP;
 	 image: "e17_fileman_thumb_bg.png" COMP;
-	 image: "e17_fileman_copy.png" COMP;
-	 image: "e17_fileman_ask.png" COMP;
-	 image: "e17_fileman_move.png" COMP;
+	 image: "icon_efm_dnd_copy.png" COMP;
+	 image: "icon_efm_dnd_ask.png" COMP;
+	 image: "icon_efm_dnd_move.png" COMP;
       }
       parts {
 	 part { name: "label2";
@@ -11886,15 +11886,15 @@ collections { /* begin the collection of edje groups that are in this file */
 	    }
 	    description { state: "copy" 0.0;
 	       inherit: "visible" 0.0;
-	       image.normal:  "e17_fileman_copy.png";
+	       image.normal:  "icon_efm_dnd_copy.png";
 	    }
 	    description { state: "ask" 0.0;
 	       inherit: "visible" 0.0;
-	       image.normal:  "e17_fileman_ask.png";
+	       image.normal:  "icon_efm_dnd_ask.png";
 	    }
 	    description { state: "move" 0.0;
 	       inherit: "visible" 0.0;
-	       image.normal:  "e17_fileman_move.png";
+	       image.normal:  "icon_efm_dnd_move.png";
 	    }
 	 }
       }
@@ -11996,9 +11996,9 @@ collections { /* begin the collection of edje groups that are in this file */
 
 	 image: "e17_mini_button_shadow2.png" COMP;
 	 image: "e17_fileman_thumb_bg.png" COMP;
-	 image: "e17_fileman_copy.png" COMP;
-	 image: "e17_fileman_ask.png" COMP;
-	 image: "e17_fileman_move.png" COMP;
+	 image: "icon_efm_dnd_copy.png" COMP;
+	 image: "icon_efm_dnd_ask.png" COMP;
+	 image: "icon_efm_dnd_move.png" COMP;
       }
       parts {
 	 part { name: "bg";
@@ -12275,15 +12275,15 @@ collections { /* begin the collection of edje groups that are in this file */
 	    }
 	    description { state: "copy" 0.0;
 	       inherit: "visible" 0.0;
-	       image.normal:  "e17_fileman_copy.png";
+	       image.normal:  "icon_efm_dnd_copy.png";
 	    }
 	    description { state: "ask" 0.0;
 	       inherit: "visible" 0.0;
-	       image.normal:  "e17_fileman_ask.png";
+	       image.normal:  "icon_efm_dnd_ask.png";
 	    }
 	    description { state: "move" 0.0;
 	       inherit: "visible" 0.0;
-	       image.normal:  "e17_fileman_move.png";
+	       image.normal:  "icon_efm_dnd_move.png";
 	    }
 	 }
       }
@@ -12383,9 +12383,9 @@ collections { /* begin the collection of edje groups that are in this file */
 
 	 image: "e17_mini_button_shadow2.png" COMP;
 	 image: "e17_fileman_thumb_bg.png" COMP;
-	 image: "e17_fileman_copy.png" COMP;
-	 image: "e17_fileman_ask.png" COMP;
-	 image: "e17_fileman_move.png" COMP;
+	 image: "icon_efm_dnd_copy.png" COMP;
+	 image: "icon_efm_dnd_ask.png" COMP;
+	 image: "icon_efm_dnd_move.png" COMP;
       }
       parts {
 	 part { name: "bg";
@@ -12662,15 +12662,15 @@ collections { /* begin the collection of edje groups that are in this file */
 	    }
 	    description { state: "copy" 0.0;
 	       inherit: "visible" 0.0;
-	       image.normal:  "e17_fileman_copy.png";
+	       image.normal:  "icon_efm_dnd_copy.png";
 	    }
 	    description { state: "ask" 0.0;
 	       inherit: "visible" 0.0;
-	       image.normal:  "e17_fileman_ask.png";
+	       image.normal:  "icon_efm_dnd_ask.png";
 	    }
 	    description { state: "move" 0.0;
 	       inherit: "visible" 0.0;
-	       image.normal:  "e17_fileman_move.png";
+	       image.normal:  "icon_efm_dnd_move.png";
 	    }
 	 }
       }
@@ -12774,9 +12774,9 @@ collections { /* begin the collection of edje groups that are in this file */
 
 	 image: "e17_mini_button_shadow2.png" COMP;
 	 image: "e17_fileman_thumb_bg.png" COMP;
-	 image: "e17_fileman_copy.png" COMP;
-	 image: "e17_fileman_ask.png" COMP;
-	 image: "e17_fileman_move.png" COMP;
+	 image: "icon_efm_dnd_copy.png" COMP;
+	 image: "icon_efm_dnd_ask.png" COMP;
+	 image: "icon_efm_dnd_move.png" COMP;
       }
       parts {
 	 part {
@@ -13110,21 +13110,21 @@ collections { /* begin the collection of edje groups that are in this file */
 	       state:      "copy" 0.0;
 	       inherit:    "visible" 0.0;
 	       image {
-		  normal:  "e17_fileman_copy.png";
+		  normal:  "icon_efm_dnd_copy.png";
 	       }
 	    }
 	    description {
 	       state:      "ask" 0.0;
 	       inherit:    "visible" 0.0;
 	       image {
-		  normal:  "e17_fileman_ask.png";
+		  normal:  "icon_efm_dnd_ask.png";
 	       }
 	    }
 	    description {
 	       state:      "move" 0.0;
 	       inherit:    "visible" 0.0;
 	       image {
-		  normal:  "e17_fileman_move.png";
+		  normal:  "icon_efm_dnd_move.png";
 	       }
 	    }
 	 }
@@ -13237,9 +13237,9 @@ collections { /* begin the collection of edje groups that are in this file */
 
 	 image: "e17_mini_button_shadow2.png" COMP;
 	 image: "e17_fileman_thumb_bg.png" COMP;
-	 image: "e17_fileman_copy.png" COMP;
-	 image: "e17_fileman_ask.png" COMP;
-	 image: "e17_fileman_move.png" COMP;
+	 image: "icon_efm_dnd_copy.png" COMP;
+	 image: "icon_efm_dnd_ask.png" COMP;
+	 image: "icon_efm_dnd_move.png" COMP;
       }
       parts {
 	 part {
@@ -13573,21 +13573,21 @@ collections { /* begin the collection of edje groups that are in this file */
 	       state:      "copy" 0.0;
 	       inherit:    "visible" 0.0;
 	       image {
-		  normal:  "e17_fileman_copy.png";
+		  normal:  "icon_efm_dnd_copy.png";
 	       }
 	    }
 	    description {
 	       state:      "ask" 0.0;
 	       inherit:    "visible" 0.0;
 	       image {
-		  normal:  "e17_fileman_ask.png";
+		  normal:  "icon_efm_dnd_ask.png";
 	       }
 	    }
 	    description {
 	       state:      "move" 0.0;
 	       inherit:    "visible" 0.0;
 	       image {
-		  normal:  "e17_fileman_move.png";
+		  normal:  "icon_efm_dnd_move.png";
 	       }
 	    }
 	 }
@@ -13700,9 +13700,9 @@ collections { /* begin the collection of edje groups that are in this file */
 
 	 image: "e17_mini_button_shadow2.png" COMP;
 	 image: "e17_fileman_thumb_bg.png" COMP;
-	 image: "e17_fileman_copy.png" COMP;
-	 image: "e17_fileman_ask.png" COMP;
-	 image: "e17_fileman_move.png" COMP;
+	 image: "icon_efm_dnd_copy.png" COMP;
+	 image: "icon_efm_dnd_ask.png" COMP;
+	 image: "icon_efm_dnd_move.png" COMP;
       }
       parts {
 	 part {
@@ -14036,21 +14036,21 @@ collections { /* begin the collection of edje groups that are in this file */
 	       state:      "copy" 0.0;
 	       inherit:    "visible" 0.0;
 	       image {
-		  normal:  "e17_fileman_copy.png";
+		  normal:  "icon_efm_dnd_copy.png";
 	       }
 	    }
 	    description {
 	       state:      "ask" 0.0;
 	       inherit:    "visible" 0.0;
 	       image {
-		  normal:  "e17_fileman_ask.png";
+		  normal:  "icon_efm_dnd_ask.png";
 	       }
 	    }
 	    description {
 	       state:      "move" 0.0;
 	       inherit:    "visible" 0.0;
 	       image {
-		  normal:  "e17_fileman_move.png";
+		  normal:  "icon_efm_dnd_move.png";
 	       }
 	    }
 	 }
@@ -14163,9 +14163,9 @@ collections { /* begin the collection of edje groups that are in this file */
 
 	 image: "e17_mini_button_shadow2.png" COMP;
 	 image: "e17_fileman_thumb_bg.png" COMP;
-	 image: "e17_fileman_copy.png" COMP;
-	 image: "e17_fileman_ask.png" COMP;
-	 image: "e17_fileman_move.png" COMP;
+	 image: "icon_efm_dnd_copy.png" COMP;
+	 image: "icon_efm_dnd_ask.png" COMP;
+	 image: "icon_efm_dnd_move.png" COMP;
       }
       parts {
 	 part {
@@ -14499,21 +14499,21 @@ collections { /* begin the collection of edje groups that are in this file */
 	       state:      "copy" 0.0;
 	       inherit:    "visible" 0.0;
 	       image {
-		  normal:  "e17_fileman_copy.png";
+		  normal:  "icon_efm_dnd_copy.png";
 	       }
 	    }
 	    description {
 	       state:      "ask" 0.0;
 	       inherit:    "visible" 0.0;
 	       image {
-		  normal:  "e17_fileman_ask.png";
+		  normal:  "icon_efm_dnd_ask.png";
 	       }
 	    }
 	    description {
 	       state:      "move" 0.0;
 	       inherit:    "visible" 0.0;
 	       image {
-		  normal:  "e17_fileman_move.png";
+		  normal:  "icon_efm_dnd_move.png";
 	       }
 	    }
 	 }
@@ -20647,20 +20647,20 @@ TODO: Document how #define works.
 
 */
 
-#define ICON(NAME, FILE, SIZE)				\
-group { name: "e/icons/"NAME ; 	        		\
-   max:  SIZE SIZE;				        \
-   parts { 						\
-      part { name: "icon";			        \
-         mouse_events:  0;				\
-         description { state: "default" 0.0;		\
-            aspect: 1.0 1.0;				\
-            aspect_preference: BOTH;			\
-	    image.image: FILE COMP;			\
-            image.normal: FILE ;			\
-         }						\
-      }							\
-   }							\
+#define ICON(NAME, FILE, SIZE)                          \
+group { name: "e/icons/"NAME ;                          \
+   max: SIZE SIZE;                                      \
+   parts {                                              \
+      part { name: "icon";                              \
+	 mouse_events:  0;                              \
+	 description { state: "default" 0.0;            \
+	    aspect: 1.0 1.0;                            \
+	    aspect_preference: BOTH;                    \
+	    image.image: FILE COMP;                     \
+	    image.normal: FILE ;                        \
+	 }                                              \
+      }                                                 \
+   }                                                    \
 }
 
 
@@ -20668,16 +20668,15 @@ ICON("enlightenment/website","icon_globe.png",64)
 ICON("enlightenment/background","icon_wallpaper.png",64)
 ICON("enlightenment/picture","icon_wallpaper.png",64)
 ICON("enlightenment/gradient","icon_gradient.png",64)
-
 ICON("enlightenment/e","logo_white_128.png",64)
 ICON("enlightenment/about","logo_black_128.png",64)
 
 ICON("enlightenment/check","icon_check.png",64)
 ICON("widget/swap","icon_swap.png",64)
-ICON("widget/del","icon_del.png",64) 
-ICON("widget/new","icon_new.png",64)	
-ICON("widget/add","icon_add.png",64) 
-ICON("widget/add_fav","icon_add_fav.png",64) 
+ICON("widget/del","icon_del.png",64)
+ICON("widget/new","icon_new.png",64)
+ICON("widget/add","icon_add.png",64)
+ICON("widget/add_fav","icon_add_fav.png",64)
 ICON("widget/up_arrow","icon_up_arrow.png",64)
 ICON("widget/down_arrow","icon_down_arrow.png",64)
 ICON("widget/up_dir","icon_up_arrow.png",64)
@@ -20695,125 +20694,108 @@ ICON("enlightenment/autoscroll","icon_dummy.png",64)
 ICON("enlightenment/showhide","icon_dummy.png",64)
 ICON("enlightenment/toolbar","icon_dummy.png",64)
 
-/* (Uncomment to test.)
-
 /// Old Icons from Bling ///
 
-ICON("enlightenment/reset","icon_dummy.png",64)
-ICON("enlightenment/exit","icon_dummy.png",64)
-ICON("enlightenment/logout","icon_dummy.png",64)
-ICON("enlightenment/halt","icon_dummy.png",64)
-ICON("enlightenment/reboot","icon_dummy.png",64)
-ICON("enlightenment/suspend","icon_dummy.png",64)
-ICON("enlightenment/hibernate","icon_dummy.png",64)
-ICON("enlightenment/colors","icon_dummy.png",64)
-ICON("enlightenment/themes","icon_dummy.png",64)
-ICON("enlightenment/screen_setup","icon_dummy.png",64)
-ICON("enlightenment/windows","icon_dummy.png",64)
-ICON("enlightenment/lost_windows","icon_dummy.png",64)
-ICON("enlightenment/focus","icon_dummy.png",64)
-ICON("enlightenment/modules","icon_dummy.png",64)
-ICON("enlightenment/favorites","icon_dummy.png",64)
-ICON("enlightenment/desktops","icon_dummy.png",64)
-ICON("enlightenment/configuration","icon_dummy.png",64)
-ICON("enlightenment/intl","icon_dummy.png",64)
-ICON("enlightenment/system","icon_dummy.png",64)
-ICON("enlightenment/run","icon_dummy.png",64)
-ICON("enlightenment/directories","icon_dummy.png",64)
-ICON("enlightenment/fileman","icon_dummy.png",64)
+ICON("enlightenment/reset","icon_reset.png",64)
+ICON("enlightenment/exit","icon_exit.png",64)
+ICON("enlightenment/logout","icon_logout.png",64)
+ICON("enlightenment/halt","icon_halt.png",64)
+ICON("enlightenment/reboot","icon_reboot.png",64)
+ICON("enlightenment/suspend","icon_suspend.png",64)
+ICON("enlightenment/hibernate","icon_hibernate.png",64)
+ICON("enlightenment/colors","icon_colors.png",64)
+ICON("enlightenment/themes","icon_theme.png",64)
+ICON("enlightenment/screen_setup","icon_screen_setup.png",64)
+ICON("enlightenment/windows","icon_windows.png",64)
+ICON("enlightenment/lost_windows","icon_lost_windows.png",64)
+ICON("enlightenment/window_remembers","icon_window_remembers.png",64)
+ICON("enlightenment/focus","icon_window_focus.png",64)
+ICON("enlightenment/modules","icon_modules.png",64)
+ICON("enlightenment/favorites","icon_favorites.png",64)
+ICON("enlightenment/desktops","icon_desktops.png",64)
+ICON("enlightenment/configuration","icon_configuration.png",64)
+ICON("enlightenment/intl","icon_intl.png",64)
+ICON("enlightenment/system","icon_system.png",64)
+ICON("enlightenment/run","icon_run.png",64)
+ICON("enlightenment/directories","icon_directories.png",64)
+ICON("enlightenment/fileman","icon_efm_folder.png",64)
 ICON("enlightenment/unknown","icon_dummy.png",64)
-ICON("enlightenment/mouse","icon_dummy.png",64)
-ICON("enlightenment/mouse_left","icon_dummy.png",64)
-ICON("enlightenment/mouse_right","icon_dummy.png",64)
-ICON("enlightenment/mouse_middle","icon_dummy.png",64)
-ICON("enlightenment/mouse_extra","icon_dummy.png",64)
-ICON("enlightenment/mouse_wheel","icon_dummy.png",64)
-ICON("enlightenment/mouse_clean","icon_dummy.png",64)
-ICON("enlightenment/keys","icon_dummy.png",64)
-ICON("enlightenment/desklock","icon_dummy.png",64)
-ICON("enlightenment/desklock_menu","icon_dummy.png",64)
-ICON("enlightenment/regenerate_menus","icon_dummy.png",64)
-ICON("enlightenment/screen_resolution","icon_dummy.png",64)
-ICON("enlightenment/shelf","icon_dummy.png",64)
-ICON("enlightenment/fonts","icon_dummy.png",64)
-ICON("enlightenment/icon_theme","icon_dummy.png",64)
-ICON("enlightenment/applications","icon_dummy.png",64)
-ICON("enlightenment/transitions","icon_dummy.png",64)
-ICON("enlightenment/performance","icon_dummy.png",64)
-ICON("enlightenment/startup","icon_dummy.png",64)
-ICON("enlightenment/winlist","icon_dummy.png",64)
-ICON("enlightenment/window_manipulation","icon_dummy.png",64)
-ICON("enlightenment/menus","icon_dummy.png",64)
-ICON("enlightenment/screen_normal","icon_dummy.png",64)
-ICON("enlightenment/screen_around","icon_dummy.png",64)
-ICON("enlightenment/screen_left","icon_dummy.png",64)
-ICON("enlightenment/screen_right","icon_dummy.png",64)
-ICON("enlightenment/screen_vflip","icon_dummy.png",64)
-ICON("enlightenment/screen_hflip","icon_dummy.png",64)
-ICON("enlightenment/shelf_position_bottom","icon_dummy.png",64)
-ICON("enlightenment/shelf_position_bottom_left","icon_dummy.png",64)
-ICON("enlightenment/shelf_position_bottom_right","icon_dummy.png",64)
-ICON("enlightenment/shelf_position_top","icon_dummy.png",64)
-ICON("enlightenment/shelf_position_top_left","icon_dummy.png",64)
-ICON("enlightenment/shelf_position_top_right","icon_dummy.png",64)
-ICON("enlightenment/shelf_position_left","icon_dummy.png",64)
-ICON("enlightenment/shelf_position_left_top","icon_dummy.png",64)
-ICON("enlightenment/shelf_position_left_bottom","icon_dummy.png",64)
-ICON("enlightenment/shelf_position_right","icon_dummy.png",64)
-ICON("enlightenment/shelf_position_right_top","icon_dummy.png",64)
-ICON("enlightenment/shelf_position_right_bottom","icon_dummy.png",64)
-ICON("enlightenment/shelf_bottom_desk","icon_dummy.png",64)
-ICON("enlightenment/shelf_custom","icon_dummy.png",64)
-ICON("enlightenment/shelf_dock","icon_dummy.png",64)
-ICON("enlightenment/shelf_menu_bar","icon_dummy.png",64)
-ICON("enlightenment/shelf_panel","icon_dummy.png",64)
-ICON("enlightenment/shelf_top_desk","icon_dummy.png",64)
-ICON("enlightenment/wallpaper_stretch","icon_dummy.png",64)
-ICON("enlightenment/wallpaper_tile","icon_dummy.png",64)
-ICON("enlightenment/wallpaper_center","icon_dummy.png",64)
-ICON("enlightenment/wallpaper_scale_aspect_in","icon_dummy.png",64)
-ICON("enlightenment/wallpaper_scale_aspect_out","icon_dummy.png",64)
-ICON("enlightenment/gradient_h","icon_dummy.png",64)
-ICON("enlightenment/gradient_v","icon_dummy.png",64)
-ICON("enlightenment/gradient_du","icon_dummy.png",64)
-ICON("enlightenment/gradient_dd","icon_dummy.png",64)
-ICON("enlightenment/gradient_rad","icon_dummy.png",64)
-ICON("enlightenment/advanced","icon_dummy.png",64)
-ICON("enlightenment/behavior","icon_dummy.png",64)
-ICON("enlightenment/appearance","icon_dummy.png",64)
-ICON("enlightenment/extensions","icon_dummy.png",64)
-ICON("enlightenment/file_icons","icon_dummy.png",64)
-ICON("enlightenment/menu_settings","icon_dummy.png",64)
-ICON("enlightenment/ibar_applications","icon_dummy.png",64)
-ICON("enlightenment/restart_applications","icon_dummy.png",64)
-ICON("enlightenment/startup_applications","icon_dummy.png",64)
-ICON("enlightenment/power_management","icon_dummy.png",64)
-ICON("enlightenment/screensaver","icon_dummy.png",64)
-ICON("enlightenment/window_remembers","icon_dummy.png",64)
-ICON("enlightenment/pager","icon_dummy.png",64)
-ICON("enlightenment/mixer","icon_dummy.png",64)
-ICON("enlightenment/autoscroll","icon_dummy.png",64)
-ICON("enlightenment/showhide","icon_dummy.png",64)
-ICON("enlightenment/toolbar","icon_dummy.png",64)
-*/
+ICON("enlightenment/mouse","icon_mouse.png",64)
+ICON("enlightenment/mouse_left","icon_mouse_left.png",64)
+ICON("enlightenment/mouse_right","icon_mouse_right.png",64)
+ICON("enlightenment/mouse_middle","icon_mouse_middle.png",64)
+ICON("enlightenment/mouse_extra","icon_mouse_extra.png",64)
+ICON("enlightenment/mouse_wheel","icon_mouse_wheel.png",64)
+ICON("enlightenment/mouse_clean","icon_mouse_clean.png",64)
+ICON("enlightenment/keys","icon_keys.png",64)
+ICON("enlightenment/desklock","icon_desklock.png",64)
+ICON("enlightenment/desklock_menu","icon_desklock_menu.png",64)
+ICON("enlightenment/regenerate_menus","icon_regenerate_menus.png",64)
+ICON("enlightenment/screen_resolution","icon_screen_resolution.png",64)
+ICON("enlightenment/shelf","icon_shelf.png",64)
+ICON("enlightenment/fonts","icon_fonts.png",64)
+ICON("enlightenment/icon_theme","icon_icon_theme.png",64)
+ICON("enlightenment/applications","icon_applications.png",64)
+ICON("enlightenment/transitions","icon_transitions.png",64)
+ICON("enlightenment/performance","icon_performance.png",64)
+ICON("enlightenment/startup","icon_startup.png",64)
+ICON("enlightenment/winlist","icon_winlist.png",64)
+ICON("enlightenment/window_manipulation","icon_window_manipulation.png",64)
+ICON("enlightenment/menus","icon_menus.png",64)
+ICON("enlightenment/menu_settings","icon_menu_settings.png",64)
+ICON("enlightenment/advanced","icon_advanced.png",64)
+ICON("enlightenment/behavior","icon_behavior.png",64)
+ICON("enlightenment/appearance","icon_appearance.png",64)
+ICON("enlightenment/extensions","icon_extensions.png",64)
+ICON("enlightenment/file_icons","icon_file_icons.png",64)
+ICON("enlightenment/ibar_applications","icon_ibar_applications.png",64)
+ICON("enlightenment/restart_applications","icon_restart_applications.png",64)
+ICON("enlightenment/startup_applications","icon_startup_applications.png",64)
+ICON("enlightenment/power_management","icon_power_management.png",64)
+ICON("enlightenment/screensaver","icon_screensaver.png",64)
+ICON("enlightenment/pager","icon_pager.png",64)
+ICON("enlightenment/mixer","icon_mixer.png",64)
+ICON("enlightenment/screen_normal","icon_screen_normal.png",64)
+ICON("enlightenment/screen_around","icon_screen_around.png",64)
+ICON("enlightenment/screen_left","icon_screen_left.png",64)
+ICON("enlightenment/screen_right","icon_screen_right.png",64)
+ICON("enlightenment/screen_vflip","icon_screen_vflip.png",64)
+ICON("enlightenment/screen_hflip","icon_screen_hflip.png",64)
+ICON("enlightenment/shelf_position_bottom","icon_shelf_bottom.png",64)
+ICON("enlightenment/shelf_position_bottom_left","icon_shelf_bottom_left.png",64)
+ICON("enlightenment/shelf_position_bottom_right","icon_shelf_bottom_right.png",64)
+ICON("enlightenment/shelf_position_top","icon_shelf_top.png",64)
+ICON("enlightenment/shelf_position_top_left","icon_shelf_top_left.png",64)
+ICON("enlightenment/shelf_position_top_right","icon_shelf_top_right.png",64)
+ICON("enlightenment/shelf_position_left","icon_shelf_left.png",64)
+ICON("enlightenment/shelf_position_left_top","icon_shelf_left_top.png",64)
+ICON("enlightenment/shelf_position_left_bottom","icon_shelf_left_bottom.png",64)
+ICON("enlightenment/shelf_position_right","icon_shelf_right.png",64)
+ICON("enlightenment/shelf_position_right_top","icon_shelf_right_top.png",64)
+ICON("enlightenment/shelf_position_right_bottom","icon_shelf_right_bottom.png",64)
+ICON("enlightenment/shelf_bottom_desk","icon_shelf_bottom_desk.png",64)
+ICON("enlightenment/shelf_custom","icon_shelf_custom.png",64)
+ICON("enlightenment/shelf_dock","icon_shelf_dock.png",64)
+ICON("enlightenment/shelf_menu_bar","icon_shelf_menu_bar.png",64)
+ICON("enlightenment/shelf_panel","icon_shelf_panel.png",64)
+ICON("enlightenment/shelf_top_desk","icon_shelf_top_desk.png",64)
 
 // Window Border menu icons //
 
-#define BORDERICON(NAME, FILE)				\
-group { name: "e/widgets/border/default/"NAME ;   	\
-   parts { 						\
-      part { name: "icon";			        \
-         mouse_events:  0;				\
-         description { state: "default" 0.0;		\
-            aspect: 1.0 1.0;				\
-            aspect_preference: BOTH;			\
-	    image.image: FILE COMP;			\
-            image.normal: FILE ;			\
-         }						\
-      }							\
-   }							\
+#define BORDERICON(NAME, FILE)                          \
+group { name: "e/widgets/border/default/"NAME ;         \
+   parts {                                              \
+      part { name: "icon";                              \
+	 mouse_events:  0;                              \
+	 description { state: "default" 0.0;            \
+	    aspect: 1.0 1.0;                            \
+	    aspect_preference: BOTH;                    \
+	    image.image: FILE COMP;                     \
+	    image.normal: FILE ;                        \
+	 }                                              \
+      }                                                 \
+   }                                                    \
 }
-
 
 BORDERICON("basic","icon_border_more.png")
 BORDERICON("close","icon_border_close.png")
@@ -20839,130 +20821,183 @@ BORDERICON("locks_user","icon_border_lock.png")
 BORDERICON("locks_application","icon_border_lock.png")
 BORDERICON("properties","icon_border_properties.png")
 
-/*
-
-
 // EFM menu button icons //
 
-#define EFMBUTTON(NAME, FILE)				\
-group { name: "e/fileman/default/button/"NAME;   	\
-   parts { 						\
-      part { name: "icon";			        \
-         mouse_events:  0;				\
-         description { state: "default" 0.0;		\
-            aspect: 1.0 1.0;				\
-            aspect_preference: BOTH;			\
-	    image.image: FILE COMP;			\
-            image.normal: FILE ;			\
-         }						\
-      }							\
-   }							\
+#define EFMBUTTON(NAME, FILE)                           \
+group { name: "e/fileman/default/button/"NAME;          \
+   parts {                                              \
+      part { name: "icon";                              \
+	 mouse_events:  0;                              \
+	 description { state: "default" 0.0;            \
+	    aspect: 1.0 1.0;                            \
+	    aspect_preference: BOTH;                    \
+	    image.image: FILE COMP;                     \
+	    image.normal: FILE ;                        \
+	 }                                              \
+      }                                                 \
+   }                                                    \
 }
 
-EFMBUTTON("open","icon_dummy.png")
-EFMBUTTON("copy","icon_dummy.png")
-EFMBUTTON("cut","icon_dummy.png")
-EFMBUTTON("paste","icon_dummy.png")
-EFMBUTTON("delete","icon_dummy.png")
-EFMBUTTON("properties","icon_dummy.png")
-EFMBUTTON("rename","icon_dummy.png")
-EFMBUTTON("properties","icon_dummy.png")
-EFMBUTTON("arrange_name","icon_dummy.png")
-EFMBUTTON("arrange","icon_dummy.png")
-EFMBUTTON("arrange_time","icon_dummy.png")
-EFMBUTTON("new","icon_dummy.png")
-EFMBUTTON("new_dir","icon_dummy.png")
-EFMBUTTON("refresh","icon_dummy.png")
-EFMBUTTON("view_details","icon_dummy.png")
-EFMBUTTON("properties","icon_dummy.png")
-EFMBUTTON("view_name","icon_dummy.png")
-EFMBUTTON("view","icon_dummy.png")
-EFMBUTTON("select","icon_dummy.png")
-EFMBUTTON("sort","icon_dummy.png")
-EFMBUTTON("ordering","icon_dummy.png")
-EFMBUTTON("hidden_files","icon_dummy.png")
-
+EFMBUTTON("open","icon_efm_open.png")
+EFMBUTTON("copy","icon_efm_copy.png")
+EFMBUTTON("cut","icon_efm_cut.png")
+EFMBUTTON("paste","icon_efm_paste.png")
+EFMBUTTON("delete","icon_efm_delete.png")
+EFMBUTTON("properties","icon_efm_properties.png")
+EFMBUTTON("rename","icon_efm_rename.png")
+EFMBUTTON("arrange_name","icon_efm_arrange_name.png")
+EFMBUTTON("arrange","icon_efm_arrange.png")
+EFMBUTTON("arrange_time","icon_efm_arrange_time.png")
+EFMBUTTON("new","icon_efm_new.png")
+EFMBUTTON("new_dir","icon_efm_new_dir.png")
+EFMBUTTON("refresh","icon_efm_refresh.png")
+EFMBUTTON("view_details","icon_efm_view_details.png")
+EFMBUTTON("view_name","icon_efm_view_name.png")
+EFMBUTTON("view","icon_efm_view.png")
+EFMBUTTON("select","icon_efm_select.png")
+EFMBUTTON("sort","icon_efm_sort.png")
+EFMBUTTON("ordering","icon_efm_sort.png")
+EFMBUTTON("hidden_files","icon_efm_view.png")
 
 // EFM icons //
 
-#define EFMICON(NAME, FILE, SIZE)			\
-group { name: "e/icons/fileman/"NAME;   		\
-   max:  SIZE SIZE;				        \
-   parts { 						\
-      part { name: "icon";			        \
-         mouse_events:  0;				\
-         description { state: "default" 0.0;		\
-            aspect: 1.0 1.0;				\
-            aspect_preference: BOTH;			\
-	    image.image: FILE COMP;			\
-            image.normal: FILE ;			\
-         }						\
-      }							\
-   }							\
+#define EFMICON(NAME, FILE, SIZE)                       \
+group { name: "e/icons/fileman/"NAME;                   \
+   max:  SIZE SIZE;                                     \
+   parts {                                              \
+      part { name: "icon";                              \
+	 mouse_events:  0;                              \
+	 description { state: "default" 0.0;            \
+	    aspect: 1.0 1.0;                            \
+	    aspect_preference: BOTH;                    \
+	    image.image: FILE COMP;                     \
+	    image.normal: FILE ;                        \
+	 }                                              \
+      }                                                 \
+   }                                                    \
 }
 
-EFMICON("folder","icon_dummy.png", 128)
-EFMICON("file","icon_dummy.png", 128)
-EFMICON("home","icon_dummy.png", 128)
-EFMICON("desktop","icon_dummy.png", 128)
-EFMICON("hdd","icon_dummy.png", 128)
-EFMICON("hd","icon_dummy.png", 128)
+EFMICON("folder","icon_efm_folder.png", 128)
+EFMICON("file","icon_efm_file.png", 128)
+EFMICON("home","icon_efm_home.png", 128)
+EFMICON("desktop","icon_efm_desktop.png", 128)
+EFMICON("hdd","icon_efm_hdd.png", 128)
+EFMICON("hd","icon_efm_hdd.png", 128)
 
+
+/*
 
 // EFM Mime type icons //
 
-#define MIMEICON(NAME, FILE, SIZE)			\
-group { name: "e/icons/fileman/mime/"NAME;   		\
-   max:  SIZE SIZE;				        \
-   parts { 						\
-      part { name: "icon";			        \
-         mouse_events:  0;				\
-         description { state: "default" 0.0;		\
-            aspect: 1.0 1.0;				\
-            aspect_preference: BOTH;			\
-	    image.image: FILE COMP;			\
-            image.normal: FILE ;			\
-         }						\
-      }							\
-   }							\
+#define MIMEICON(NAME, FILE, SIZE)                      \
+group { name: "e/icons/fileman/mime/"NAME;              \
+   max:  SIZE SIZE;                                     \
+   parts {                                              \
+      part { name: "icon";                              \
+	 mouse_events:  0;                              \
+	 description { state: "default" 0.0;            \
+	    aspect: 1.0 1.0;                            \
+	    aspect_preference: BOTH;                    \
+	    image.image: FILE COMP;                     \
+	    image.normal: FILE ;                        \
+	 }                                              \
+      }                                                 \
+   }                                                    \
 }
 
-MIMEICON("application/pdf","icon_dummy.png", 128);
-MIMEICON("text/x-csrc","icon_dummy.png", 128);
-MIMEICON("text/x-chdr","icon_dummy.png", 128);
-MIMEICON("application/x-object","icon_dummy.png", 128);
-MIMEICON("application/x-shellscript","icon_dummy.png", 128);
-MIMEICON("image/png","icon_dummy.png", 128);
-MIMEICON("image/jpeg","icon_dummy.png", 128);
-MIMEICON("video/x-msvideo","icon_dummy.png", 128);
-MIMEICON("audio/mpeg","icon_dummy.png", 128);
-MIMEICON("application/x-xcf","icon_dummy.png", 128);
-MIMEICON("text/x-c++src","icon_dummy.png", 128);
-MIMEICON("text/x-csharp","icon_dummy.png", 128);
-MIMEICON("text/x-patch","icon_dummy.png", 128);
-MIMEICON("application/msword","icon_dummy.png", 128);
-MIMEICON("application/ogg","icon_dummy.png", 128);
-MIMEICON("text/plain","icon_dummy.png", 128);
-MIMEICON("application/x-bzip","icon_dummy.png", 128);
-MIMEICON("application/x-deb","icon_dummy.png", 128);
-MIMEICON("application/x-font-ttf","icon_dummy.png", 128);
-MIMEICON("application/x-font-pcf","icon_dummy.png", 128);
-MIMEICON("application/x-font-bdf","icon_dummy.png", 128);
-MIMEICON("text/css","icon_dummy.png", 128);
-MIMEICON("text/html","icon_dummy.png", 128);
-MIMEICON("text/html","icon_dummy.png", 128);
-MIMEICON("application/zip","icon_dummy.png", 128);
-MIMEICON("application/x-gzip","icon_dummy.png", 128);
-MIMEICON("application/x-bzip-compressed-tar","icon_dummy.png", 128);
-MIMEICON("application/x-bzip2-compressed-tar","icon_dummy.png", 128);
-MIMEICON("application/x-compressed-tar","icon_dummy.png", 128);
-MIMEICON("application/x-tar","icon_dummy.png", 128);
-MIMEICON("application/x-rar","icon_dummy.png", 128);
-MIMEICON("video/mpeg","icon_dummy.png", 128);
+MIMEICON("application/pdf","icon_mime_application_pdf.png", 128);
+MIMEICON("text/x-csrc","icon_mime_text_x-csrc.png", 128);
+MIMEICON("text/x-chdr","icon_mime_text_x-chdr.png", 128);
+MIMEICON("application/x-object","icon_mime_application_x-object.png", 128);
+MIMEICON("application/x-shellscript","icon_mime_application_x-shellscript.png",
+128);
+MIMEICON("audio/mpeg","icon_mime_audio_mpeg.png", 128);
+MIMEICON("application/x-xcf","icon_mime_application_x-xcf.png", 128);
+MIMEICON("text/x-c++src","icon_mime_text_x-cppsrc.png", 128);
+MIMEICON("text/x-csharp","icon_mime_text_x-csharp.png", 128);
+MIMEICON("text/x-patch","icon_mime_text_x-patch.png", 128);
+MIMEICON("application/msword","icon_mime_application_msword.png", 128);
+MIMEICON("application/ogg","icon_mime_application_ogg.png", 128);
+MIMEICON("text/plain","icon_mime_text_plain.png", 128);
+MIMEICON("application/x-bzip","icon_mime_application_x-bzip.png", 128);
+MIMEICON("application/x-deb","icon_mime_application_x-deb.png", 128);
+MIMEICON("application/x-font-ttf","icon_mime_application_x-font-ttf.png", 128);
+MIMEICON("application/x-font-pcf","icon_mime_application_x-font-pcf.png", 128);
+MIMEICON("application/x-font-bdf","icon_mime_application_x-font-bdf.png", 128);
+MIMEICON("text/css","icon_mime_text_css.png", 128);
+MIMEICON("text/html","icon_mime_text_html.png", 128);
+MIMEICON("application/zip","icon_mime_application_zip.png", 128);
+MIMEICON("application/x-gzip","icon_mime_application_x-gzip.png", 128);
+MIMEICON("application/x-bzip-compressed-tar","icon_mime_application_x-bzip-compressed-tar.png",
+128);
+MIMEICON("application/x-bzip2-compressed-tar","icon_mime_application_x-bzip2-compressed-tar.png",
+128);
+MIMEICON("application/x-compressed-tar","icon_mime_application_x-compressed-tar.png",
+128);
+MIMEICON("application/x-tar","icon_mime_application_x-tar.png", 128);
+MIMEICON("application/x-rar","icon_mime_application_x-rar.png", 128);
+MIMEBASE("video/mpeg","icon_mime_video-x-generic.png", 128);
+MIMEBASE("video/x-msvideo","icon_mime_video-x-generic.png", 128);
+MIMEBASE("image/png","icon_mime_image-x-generic.png", 128);
+MIMEBASE("video/jpeg","icon_mime_image-x-generic.png", 128);
+
+/*
+
+// Dynamic MIME Icons //
+
+#define MIMEBASE(MIME, FILE, NAME, SIZE)                \
+group { name: "e/icons/fileman/mime/"MIME;              \
+   max:  SIZE SIZE;                                     \
+   parts {                                              \
+      part { name: "base";                              \
+	 mouse_events:  0;                              \
+	 description { state: "default" 0.0;            \
+	    aspect: 1.0 1.0;                            \
+	    aspect_preference: BOTH;                    \
+	    image.image: FILE COMP;                     \
+	    image.normal: FILE ;                        \
+	 }                                              \
+      }                                                 \
+      part { name: "name";                              \
+	 type: TEXT;					\
+	 effect: SOFT_SHADOW;				\
+	 mouse_events:  0;                              \
+	 description { state: "default" 0.0;            \
+	    align: 1.0 1.0;                             \
+	    color: 224 224 224 255;			\
+	    color3: 0 0 0 64;				\
+	    text {					\
+	       text:     NAME;				\
+	       font:     "Sans";			\
+	       size:     12;				\
+	       min:      1 1;				\
+	       align:    1.0 1.0;			\
+	    }						\
+	 }                                              \
+      }                                                 \
+   }                                                    \
+}
+
+MIMEBASE("video/mpeg","icon_mime_video-x-generic.png", "Mpeg", 128);
+MIMEBASE("video/x-msvideo","icon_mime_video-x-generic.png", "AVI", 128);
+MIMEBASE("image/png","icon_mime_image-x-generic.png", "PNG", 128);
+MIMEBASE("video/jpeg","icon_mime_image-x-generic.png", "Jpeg", 128);
 
 
-// Special icons. Various animated icons. //
-// Put icons that respond to states here. Eg. E logo, fileman/hd, etc.
+// Custom icons with actions or specific behaviours 
+
+// FIXME: Make these work. (make code specifically for each)
+ICON("enlightenment/wallpaper_stretch","icon_wallpaper_stretch.png",64)
+ICON("enlightenment/wallpaper_tile","icon_wallpaper_tile.png",64)
+ICON("enlightenment/wallpaper_center","icon_wallpaper_center.png",64)
+ICON("enlightenment/wallpaper_scale_aspect_in","icon_wallpaper_scale_aspect_in.png",64)
+ICON("enlightenment/wallpaper_scale_aspect_out","icon_wallpaper_scale_aspect_out.png",64)
+ICON("enlightenment/gradient_h","icon_gradient_h.png",64)
+ICON("enlightenment/gradient_v","icon_gradient_v.png",64)
+ICON("enlightenment/gradient_du","icon_gradient_du.png",64)
+ICON("enlightenment/gradient_dd","icon_gradient_dd.png",64)
+ICON("enlightenment/gradient_rad","icon_gradient_rad.png",64)
 
 */
+
 }
