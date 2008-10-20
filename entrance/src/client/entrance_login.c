@@ -117,16 +117,28 @@ main(int argc, char **argv)
 #endif
       if (WIFEXITED(status) && WEXITSTATUS(status))
       {
+#ifdef HAVE_PAM
 	 syslog(LOG_CRIT,
 		"child (pid=%i, user=%s, display=%s)  exited with error: %d",
 		pid, user, display, WEXITSTATUS(status));
+#else
+	 syslog(LOG_CRIT,
+		"child (pid=%i)  exited with error: %d",
+		pid, WEXITSTATUS(status));
+#endif
 	 closelog();
 	 exit(status);
       } else if (WIFSIGNALED(status))
       {
+#ifdef HAVE_PAM
 	 syslog(LOG_CRIT,
 		"child (pid=%i, user=%s, display=%s)  exited with signal: %d",
 		pid, user, display, WTERMSIG(status));
+#else
+	 syslog(LOG_CRIT,
+		"child (pid=%i)  exited with signal: %d",
+		pid, WTERMSIG(status));
+#endif
 	 closelog();
 	 kill(getpid(), WTERMSIG(status));
       } else
