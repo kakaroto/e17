@@ -7,8 +7,6 @@
 #include "e_dbus_private.h"
 #include "dbus/dbus.h"
 
-#include </usr/include/valgrind/memcheck.h>
-
 static int init = 0;
 
 struct E_DBus_Signal_Handler
