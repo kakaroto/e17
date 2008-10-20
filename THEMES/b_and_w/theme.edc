@@ -7,7 +7,6 @@
 // icons
 //
 // TODO Code:
-//            - make battery module text translatable and set by E, not in the theme.
 //	      - ilist e.swallow.icon should use e_ilist_icon_size_set to make a dummy box
 //		to compensate when there is no icon there.
 //	      - Fix ibox urgent / icon_overlay problem. 
