@@ -84,7 +84,7 @@ do { \
                 fprintf(stderr, "<-- %f - %s:%i\tReturning %p in %s();\n", \
                         ecore_time_get(), __FILE__, __LINE__, (void *) (ptr), __func__); \
           } \
-        return (void *)(ptr); \
+        return ptr; \
 } while (0)
 
 #define DRETURN_FLOAT(num, lvl) \
@@ -203,7 +203,7 @@ do { \
 #define DENTER_FUNCTION(lvl) {}
 #define DLEAVE_FUNCTION(lvl) {}
 #define DRETURN(lvl) return
-#define DRETURN_PTR(ptr, lvl) return (void *)(ptr)
+#define DRETURN_PTR(ptr, lvl) return (ptr)
 #define DRETURN_FLOAT(num, lvl) return num
 #define DRETURN_INT(num, lvl) return num
 #define DWARNING(fmt, args...) {}

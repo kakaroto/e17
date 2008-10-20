@@ -692,7 +692,7 @@ ewl_image_thumbnail_new(void)
                 thumb = NULL;
         }
 
-        DRETURN_PTR(thumb, DLEVEL_STABLE);
+        DRETURN_PTR(EWL_WIDGET(thumb), DLEVEL_STABLE);
 }
 
 /**

@@ -1069,7 +1069,7 @@ ewl_text_selection_get(Ewl_Text *t)
 
         sel = EWL_TEXT_TRIGGER(t->selection);
         if (sel && ewl_text_trigger_length_get(sel) > 0)
-                DRETURN_PTR(sel, DLEVEL_STABLE);
+                DRETURN_PTR(EWL_WIDGET(sel), DLEVEL_STABLE);
 
         DRETURN_PTR(NULL, DLEVEL_STABLE);
 }
@@ -3087,7 +3087,7 @@ ewl_text_text_next_char(const char *text, unsigned int *idx)
         len = EWL_TEXT_CHAR_BYTE_LEN(text);
         if (idx) *idx = len;
 
-        DRETURN_PTR(text + len, DLEVEL_STABLE);
+        DRETURN_PTR((char *)(text + len), DLEVEL_STABLE);
 }
 
 static void

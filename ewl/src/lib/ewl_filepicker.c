@@ -438,14 +438,14 @@ ewl_filepicker_list_view_set(Ewl_Filepicker *fp, Ewl_Filelist_View view)
  * @return Returns the current view set on the filepicker
  * @brief Retrieves the current view used for the file list
  */
-Ewl_Filelist_View *
+Ewl_Filelist_View
 ewl_filepicker_list_view_get(Ewl_Filepicker *fp)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR_RET(fp, NULL);
-        DCHECK_TYPE_RET(fp, EWL_FILEPICKER_TYPE, NULL);
+        DCHECK_PARAM_PTR_RET(fp, EWL_FILELIST_VIEW_ICON);
+        DCHECK_TYPE_RET(fp, EWL_FILEPICKER_TYPE, EWL_FILELIST_VIEW_ICON);
 
-        DRETURN_PTR(ewl_filelist_view_get(EWL_FILELIST(fp->file_list)),
+        DRETURN_INT(ewl_filelist_view_get(EWL_FILELIST(fp->file_list)),
                                                         DLEVEL_STABLE);
 }
 

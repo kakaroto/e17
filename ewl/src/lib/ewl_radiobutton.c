@@ -140,7 +140,7 @@ ewl_radiobutton_chain_set(Ewl_Radiobutton *rb, Ewl_Radiobutton *crb)
 Ewl_Radiobutton *
 ewl_radiobutton_chain_selected_get(Ewl_Radiobutton *rb)
 {
-        Ewl_Checkbutton *c;
+        Ewl_Radiobutton *c;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR_RET(rb, NULL);
@@ -159,7 +159,7 @@ ewl_radiobutton_chain_selected_get(Ewl_Radiobutton *rb)
 
         ecore_list_first_goto(rb->chain);
         while ((c = ecore_list_next(rb->chain))) {
-                if (ewl_checkbutton_is_checked(c))
+                if (ewl_checkbutton_is_checked(EWL_CHECKBUTTON(c)))
                         DRETURN_PTR(c, DLEVEL_STABLE);
         }
 

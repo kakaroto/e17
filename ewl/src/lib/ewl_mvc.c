@@ -1551,7 +1551,7 @@ ewl_mvc_selection_index_new(const Ewl_Model *model, void *data, unsigned int row
         sel->row = row;
         sel->column = column;
 
-        DRETURN_PTR(sel, DLEVEL_STABLE);
+        DRETURN_PTR(EWL_SELECTION(sel), DLEVEL_STABLE);
 }
 
 /**
@@ -1582,6 +1582,6 @@ ewl_mvc_selection_range_new(const Ewl_Model *model, void *data, unsigned int sro
         sel->end.row = erow;
         sel->end.column = ecolumn;
 
-        DRETURN_PTR(sel, DLEVEL_STABLE);
+        DRETURN_PTR(EWL_SELECTION(sel), DLEVEL_STABLE);
 }
 

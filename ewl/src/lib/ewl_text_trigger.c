@@ -78,7 +78,7 @@ ewl_text_trigger_new(Ewl_Text_Trigger_Type type)
                 DRETURN_PTR(NULL, DLEVEL_STABLE);
         }
 
-        DRETURN_PTR(trigger, DLEVEL_STABLE);
+        DRETURN_PTR(EWL_WIDGET(trigger), DLEVEL_STABLE);
 }
 
 /**
@@ -435,7 +435,7 @@ ewl_text_trigger_area_new(void)
                 DRETURN_PTR(NULL, DLEVEL_STABLE);
         }
 
-        DRETURN_PTR(area, DLEVEL_STABLE);
+        DRETURN_PTR(EWL_WIDGET(area), DLEVEL_STABLE);
 }
 
 /**

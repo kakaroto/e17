@@ -145,7 +145,7 @@ unsigned int             ewl_tree_headers_visible_get(Ewl_Tree *tree);
 
 void                     ewl_tree_content_view_set(Ewl_Tree *tree,
                                         const Ewl_View *view);
-Ewl_View                *ewl_tree_content_view_get(Ewl_Tree *tree);
+const Ewl_View          *ewl_tree_content_view_get(Ewl_Tree *tree);
 
 Ewl_Tree_Selection_Type  ewl_tree_selection_type_get(Ewl_Tree *tree);
 void                     ewl_tree_selection_type_set(Ewl_Tree *tree,

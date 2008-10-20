@@ -85,7 +85,7 @@ ewl_paned_new(void)
                 ewl_widget_destroy(EWL_WIDGET(pane));
                 pane = NULL;
         }
-        DRETURN_PTR(pane, DLEVEL_STABLE);
+        DRETURN_PTR(EWL_WIDGET(pane), DLEVEL_STABLE);
 }
 
 /**

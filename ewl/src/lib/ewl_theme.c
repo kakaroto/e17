@@ -224,6 +224,7 @@ char *
 ewl_theme_image_get(Ewl_Widget *w, char *k)
 {
         const char *data;
+        char *ret;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR_RET(w, NULL);
@@ -252,12 +253,12 @@ ewl_theme_image_get(Ewl_Widget *w, char *k)
                 char path[PATH_MAX];
 
                 snprintf(path, PATH_MAX, "%s/%s", ewl_theme_path, data);
-                data = strdup(path);
+                ret = strdup(path);
         }
         else
-                data = strdup(data);
+                ret = strdup(data);
 
-        DRETURN_PTR(data, DLEVEL_STABLE);
+        DRETURN_PTR(ret, DLEVEL_STABLE);
 }
 
 static void

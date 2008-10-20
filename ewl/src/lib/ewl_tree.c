@@ -407,7 +407,7 @@ ewl_tree_content_view_set(Ewl_Tree *tree, const Ewl_View *view)
  * @return Returns the view used to generate the content area
  * @brief Retrives the view used to generate the tree content area
  */
-Ewl_View *
+const Ewl_View *
 ewl_tree_content_view_get(Ewl_Tree *tree)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);

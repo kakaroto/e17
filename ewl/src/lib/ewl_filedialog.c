@@ -180,14 +180,14 @@ ewl_filedialog_list_view_set(Ewl_Filedialog *fd, Ewl_Filelist_View view)
  * @return Returns the Ewl_View set on this file dialog
  * @brief Retrieve the file list view used in this file dialog
  */
-Ewl_Filelist_View *
+Ewl_Filelist_View
 ewl_filedialog_list_view_get(Ewl_Filedialog *fd)
 {
         DENTER_FUNCTION(DLEVEL_STABLE);
-        DCHECK_PARAM_PTR_RET(fd, NULL);
-        DCHECK_TYPE_RET(fd, EWL_FILEDIALOG_TYPE, NULL);
+        DCHECK_PARAM_PTR_RET(fd, EWL_FILELIST_VIEW_ICON);
+        DCHECK_TYPE_RET(fd, EWL_FILEDIALOG_TYPE, EWL_FILELIST_VIEW_ICON);
 
-        DRETURN_PTR(ewl_filepicker_list_view_get(EWL_FILEPICKER(fd->fp)),
+        DRETURN_INT(ewl_filepicker_list_view_get(EWL_FILEPICKER(fd->fp)),
                                                         DLEVEL_STABLE);
 }
 

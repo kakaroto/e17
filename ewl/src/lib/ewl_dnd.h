@@ -32,7 +32,7 @@ char           **ewl_dnd_provided_types_get(Ewl_Widget *w);
 
 void             ewl_dnd_accepted_types_set(Ewl_Widget *w, const char **types);
 int              ewl_dnd_accepted_types_contains(Ewl_Widget *w, char *type);
-const char     **ewl_dnd_accepted_types_get(Ewl_Widget *w);
+char           **ewl_dnd_accepted_types_get(Ewl_Widget *w);
 
 void             ewl_dnd_disable(void);
 void             ewl_dnd_enable(void);

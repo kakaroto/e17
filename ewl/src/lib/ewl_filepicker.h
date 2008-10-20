@@ -107,7 +107,7 @@ unsigned int             ewl_filepicker_show_favorites_get(Ewl_Filepicker *fp);
 
 void                     ewl_filepicker_list_view_set(Ewl_Filepicker *fp,
                                                 Ewl_Filelist_View view);
-Ewl_Filelist_View       *ewl_filepicker_list_view_get(Ewl_Filepicker *fp);
+Ewl_Filelist_View        ewl_filepicker_list_view_get(Ewl_Filepicker *fp);
 
 Ewl_Filelist_Filter     *ewl_filepicker_filter_add(Ewl_Filepicker *fp,
                                                 const char *name,

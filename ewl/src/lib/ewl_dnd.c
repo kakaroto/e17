@@ -238,7 +238,7 @@ ewl_dnd_accepted_types_contains(Ewl_Widget *w, char *type)
  * @return Returns a NULL terminated array of mimetypes widget accepts for DND
  * @brief: Gets the mimetypes the designated widget can accept for DND
  */
-const char **
+char **
 ewl_dnd_accepted_types_get(Ewl_Widget *w)
 {
         const char *types;
@@ -472,7 +472,7 @@ ewl_dnd_types_decode(const char *types)
         DENTER_FUNCTION(DLEVEL_STABLE);
 
         if (!types)
-                DRETURN_PTR(types, DLEVEL_STABLE);
+                DRETURN_PTR(NULL, DLEVEL_STABLE);
 
         /*
          * Short lists so iterate over multiple times rather than incur

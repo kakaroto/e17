@@ -63,7 +63,7 @@ int                      ewl_filedialog_init(Ewl_Filedialog *fd);
 
 void                     ewl_filedialog_list_view_set(Ewl_Filedialog *fd,
                                                 Ewl_Filelist_View view);
-Ewl_Filelist_View       *ewl_filedialog_list_view_get(Ewl_Filedialog *fd);
+Ewl_Filelist_View        ewl_filedialog_list_view_get(Ewl_Filedialog *fd);
 
 void                     ewl_filedialog_directory_set(Ewl_Filedialog *fd,
                                                 const char *dir);
