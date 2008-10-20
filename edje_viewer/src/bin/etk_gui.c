@@ -59,6 +59,7 @@ static void _gui_row_data_collection_free(void *data);
 
 /* Global variables */
 static Evas_Object *Highlighter;
+static Eina_List *visible_elements = NULL;
 
 void main_window_show(const char *file)
 {
@@ -360,13 +361,17 @@ static Etk_Bool _gui_tree_search(Gui *gui, Tree_Search direction)
 
 static void _open_edje_file(Gui *gui)
 {
+   Eina_List *l;
+
+   visible_elements = eina_list_free(visible_elements);
+
    _list_entries(gui->path, ETK_TREE(gui->tree));
    etk_window_title_set(ETK_WINDOW(gui->win), gui->path);
 }
 
 static void _list_entries(const char *file, Etk_Tree *tree)
 {
-   Evas_List *entries = NULL, *collections = NULL;
+   Eina_List *entries = NULL, *collections = NULL;
    Etk_Tree_Col *col1;
    Etk_Tree_Row *row;
    Etk_Bool sort_parts;
@@ -376,7 +381,7 @@ static void _list_entries(const char *file, Etk_Tree *tree)
 
    if (entries)
      {
-	Evas_List *l;
+	Eina_List *l;
 
 	etk_tree_clear(tree);
 
@@ -387,7 +392,7 @@ static void _list_entries(const char *file, Etk_Tree *tree)
 
 	     name = l->data;
 	     co = calloc(1, sizeof(Collection));
-	     collections = evas_list_append(collections, co);
+	     collections = eina_list_append(collections, co);
 	     co->file = strdup(file);
 	     co->part = strdup(name);
 	     co->de = NULL;
@@ -638,6 +643,7 @@ static Etk_Bool _gui_fm_cancel_clicked_cb(Etk_Button *btn __UNUSED__, Gui *gui)
 
 static Etk_Bool _gui_mdi_window_delete_event_cb(Etk_Mdi_Window *mdi __UNUSED__, Demo_Edje *de)
 {
+   if (!de) return ETK_FALSE;
    etk_tree_row_fields_set(de->tree_row, ETK_TRUE, de->tree_col, ETK_FALSE, NULL);
    return ETK_FALSE;
 }
@@ -682,7 +688,7 @@ static Etk_Bool _gui_tree_checkbox_toggled_cb(Etk_Object *obj,
 
 	if (!co->de)
 	  {
-	     Evas_List *l = NULL, *parts = NULL;
+	     Eina_List *l = NULL, *parts = NULL;
 
 	     col1 = etk_tree_nth_col_get(row->tree, 0);
 	     co->de = edje_part_create(ETK_TREE(gui->output), 
@@ -691,7 +697,7 @@ static Etk_Bool _gui_tree_checkbox_toggled_cb(Etk_Object *obj,
 	     co->de->tree_row = row;
 	     co->de->data     = data;
 
-	     parts = (Evas_List *) edje_edit_parts_list_get(co->de->edje_object);
+	     parts = (Eina_List *) edje_edit_parts_list_get(co->de->edje_object);
 	     for (l = parts; l; l = l->next)
 	       {
 		  Etk_Tree_Row *child;
@@ -707,11 +713,13 @@ static Etk_Bool _gui_tree_checkbox_toggled_cb(Etk_Object *obj,
 	mdi_win = co->de->mdi_window;
 	if (checked)
 	  {
+	     visible_elements = eina_list_append(visible_elements, co);
 	     etk_widget_show_all(mdi_win);
 	     etk_tree_row_unfold(row);
 	  }
 	else
 	  {
+	     visible_elements = eina_list_remove(visible_elements, co);
 	     if (co->de->part_row)
 	       etk_tree_row_fields_set(co->de->part_row, ETK_TRUE, col, ETK_FALSE, NULL);
 	     etk_widget_hide(mdi_win);
@@ -764,7 +772,7 @@ static Etk_Bool _gui_tree_checkbox_toggled_cb(Etk_Object *obj,
 static Etk_Bool _gui_emit_signal_cb(Etk_Object *obj __UNUSED__, void *data)
 {
   Gui * gui;
-  Evas_List *l;
+  Eina_List *l;
   const char *sig, *src;
 
   gui = data;
@@ -774,13 +782,14 @@ static Etk_Bool _gui_emit_signal_cb(Etk_Object *obj __UNUSED__, void *data)
   src = etk_entry_text_get(ETK_ENTRY(gui->source_entry));
   if (!sig) sig = "";
   if (!src) src = "";
-  for(l = visible_elements_get(); l; l = l->next) {
-    Demo_Edje *de;
+  for (l = visible_elements; l; l = l->next)
+    {
+       Collection *co;
 
-    de = l->data;
-    if (!de) continue;
-    edje_object_signal_emit(de->edje_object, sig, src);
-  }
+       co = l->data;
+       if (!co) continue;
+       edje_object_signal_emit(co->de->edje_object, sig, src);
+    }
 
    return ETK_TRUE;
 }
@@ -833,6 +842,10 @@ static void _gui_row_data_collection_free(void *data)
    Collection *co;
 
    co = data;
-   /* Do I need to free the members as well? */
-   free(co);
+   if (co->de)
+     etk_mdi_window_delete_request(co->de->mdi_window);
+   FREE(co->part);
+   FREE(co->file);
+   FREE(co->de);
+   FREE(co);
 }

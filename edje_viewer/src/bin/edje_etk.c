@@ -31,12 +31,6 @@ static void signal_cb(void *data, Evas_Object *o, const char *sig,
 static void message_cb(void *data, Evas_Object *obj, Edje_Message_Type type,
 	int id, void *msg);
 
-Evas_List *visible_elements = NULL;
-
-Evas_List *visible_elements_get() {
-  return visible_elements;
-}
-
 Demo_Edje *edje_part_create(Etk_Tree *output, Etk_Mdi_Area *mdi_area, 
       const char *file, char *name)
 {
