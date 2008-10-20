@@ -2623,19 +2623,3 @@ msgstr "Andet"
 #: config/strings.c:198
 msgid "Epplets"
 msgstr "Epplets"
-
-#~ msgid "Theme %s does not contain a %s file\n"
-#~ msgstr "Tema %s indeholder ikke en %s fil\n"
-
-#~ msgid "Unknown\n"
-#~ msgstr "Ukendt\n"
-
-#~ msgid "Bad Theme"
-#~ msgstr "Dårligt tema"
-
-#~ msgid ""
-#~ "Enlightenment Version : %s\n"
-#~ "code is current to    : %s\n"
-#~ msgstr ""
-#~ "Enlightenment version : %s\n"
-#~ "kode er fra dato      : %s\n"
