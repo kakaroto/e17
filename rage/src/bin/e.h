@@ -33,6 +33,7 @@
 #include <alloca.h>
 #endif
 
+#include <Eina.h>
 #include <Evas.h>
 #include <Ecore.h>
 #include <Ecore_X.h>
@@ -45,12 +46,6 @@
 #include <Eet.h>
 #include <Edje.h>
 #include <Emotion.h>
-
-#if HAVE___ATTRIBUTE__
-#define __UNUSED__ __attribute__((unused))
-#else
-#define __UNUSED__
-#endif
 
 #ifdef EAPI
 #undef EAPI
