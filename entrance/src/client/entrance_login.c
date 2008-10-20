@@ -40,7 +40,7 @@ child(int sig, siginfo_t * si, void *foo)
 int
 main(int argc, char **argv)
 {
-   pid_t pid = -1;
+   pid_t pid = -1, rpid;
    int status;
    struct sigaction action;
 
@@ -95,7 +95,17 @@ main(int argc, char **argv)
    sigemptyset(&action.sa_mask);
    sigaction(SIGCHLD, &action, NULL);
    syslog(LOG_CRIT, "Wait for pid %i", pid);
-   if (waitpid(pid, &status, 0) == pid)
+   while ((rpid = waitpid(pid, &status, 0)) != pid)
+   {
+      if (rpid == -1)
+      {
+	 syslog(LOG_CRIT, "waitpid(%d) failed: %s", pid, strerror(errno));
+	 if ((errno == ECHILD) || (errno == EINVAL))
+	   break;
+      } else
+	syslog(LOG_INFO, "waitpid(%d) returned: %d, retry...", pid, rpid);
+   }
+   if (rpid == pid)
    {
 #ifdef HAVE_PAM
       if (e)
@@ -105,10 +115,28 @@ main(int argc, char **argv)
          entrance_auth_free(e);
       }
 #endif
-      syslog(LOG_CRIT, "Wait done - child exited normally");
-      closelog();
-      exit(0);
+      if (WIFEXITED(status) && WEXITSTATUS(status))
+      {
+	 syslog(LOG_CRIT,
+		"child (pid=%i, user=%s, display=%s)  exited with error: %d",
+		pid, user, display, WEXITSTATUS(status));
+	 closelog();
+	 exit(status);
+      } else if (WIFSIGNALED(status))
+      {
+	 syslog(LOG_CRIT,
+		"child (pid=%i, user=%s, display=%s)  exited with signal: %d",
+		pid, user, display, WTERMSIG(status));
+	 closelog();
+	 kill(getpid(), WTERMSIG(status));
+      } else
+      {
+	 syslog(LOG_CRIT, "Wait done - child exited normally");
+	 closelog();
+	 exit(0);
+      }
    }
    syslog(LOG_CRIT, "Wait error: %s", strerror(errno));
+   closelog();
    return -1;
 }
