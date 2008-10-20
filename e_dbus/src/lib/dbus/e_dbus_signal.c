@@ -11,8 +11,6 @@ static int init = 0;
 
 struct E_DBus_Signal_Handler
 {
-  int len;
-  int magic;
   char *sender;
   char *path;
   char *interface;
@@ -73,10 +71,12 @@ cb_name_owner(void *data, DBusMessage *msg, DBusError *err)
  error:
   if (err)
     DEBUG(1, "ERROR: %s %s\n", err->name, err->message);
-
+/* FIXME: this is bad. the handler gets silently freed and the caller has no
+ * idea that it was freed - or if, or when.
   if (ecore_list_goto(conn->signal_handlers, sh))
     ecore_list_remove(conn->signal_handlers);
   e_dbus_signal_handler_free(sh);
+ */
   dbus_error_free(err);
 }
 
@@ -175,8 +175,6 @@ e_dbus_signal_handler_add(E_DBus_Connection *conn, const char *sender, const cha
   SET_STRING(interface);
   SET_STRING(member);
 #undef SET_STRING
-  sh->len = len;
-  sh->magic = 0x12345678;
 
   sh->sender = strdup(sender);
 
@@ -228,12 +226,6 @@ e_dbus_signal_handler_del(E_DBus_Connection *conn, E_DBus_Signal_Handler *sh)
   char match[DBUS_MAXIMUM_MATCH_RULE_LENGTH];
   int len, sender_len, path_len, interface_len, member_len;
 
-  if (sh->magic != 0x12345678)
-    {
-      printf("HELP! E_DBUS magic check fail for E_DBus_Signal_Handler %p.\n"
-	     "Expected %x, got %x\n", sh, 0x12345678, sh->magic);
-      return;
-    }
   sh->delete_me = 1;
   if (e_dbus_idler_active)
   {
