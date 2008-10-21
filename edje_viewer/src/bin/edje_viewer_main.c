@@ -4,23 +4,29 @@
 
 #include <Etk.h>
 
-#include "conf.h"
-#include "etk_gui.h"
+#include "edje_viewer_main.h"
 
 int main(int argc, char **argv)
 {
+   Gui *gui;
    if (!etk_init(argc, argv))
      {
 	fprintf(stderr, "Could not init etk. Exiting...\n");
 	return 0;
      };
 
-   edje_viewer_config_init();
+   if (!edje_viewer_config_init())
+     {
+	fprintf(stderr, "Could not init edje_viewer config. Exiting...\n");
+	return 0;
+     }
 
-   if (argc == 2) main_window_show(argv[1]);
-   else main_window_show(NULL);
+   if (argc == 2) gui = main_window_show(argv[1]);
+   else gui = main_window_show(NULL);
 
    etk_main();
+   if (gui)
+     edje_viewer_config_save(gui);
    edje_viewer_config_shutdown();
    etk_shutdown();
 

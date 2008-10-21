@@ -9,14 +9,16 @@ AM_CPPFLAGS = \
 bin_PROGRAMS = edje_viewer
 
 edje_viewer_SOURCES = \
-conf.c \
-edje_etk.c \
-etk_gui.c \
-main.c
+edje_viewer_conf.c \
+edje_viewer_edje.c \
+edje_viewer_gui.c \
+edje_viewer_main.c
 
 edje_viewer_LDADD = @EDJE_VIEWER_LIBS@
 
 EXTRA_DIST = \
-conf.h \
-edje_etk.h \
-etk_gui.h
+edje_viewer_conf.h \
+edje_viewer_edje.h \
+edje_viewer_gui.h \
+edje_viewer_main.h
+
