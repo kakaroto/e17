@@ -73,7 +73,8 @@ main(int argc, char **argv)
                                  "list_by_theme_group_title",
                                  "list_by_theme_group_name",
                                  "list_by_application_id",
-                                 "list_by_module_id" };
+                                 "list_by_module_id",
+                                 "list_all" };
 
    char *remote_login_req[] = { "api_key",
                                  "all_data" };
@@ -138,7 +139,7 @@ main(int argc, char **argv)
       printf("Invalid object argument.\n");
    else
    {
-      if ((argc < (8 + quiet))&&(strcmp(object, "theme_group")))
+      if ((argc < (8 + quiet))&&(strcmp(object, "theme_group"))&&(strcmp(request, "list_all")))
          printf("Missing <resource>.\n");
       else
       {
@@ -379,6 +380,23 @@ main(int argc, char **argv)
                            Q_PRINTF1("Version: %s\n", (char *)tld->version, "%s\n");
                            Q_PRINTF1("URL: %s\n", (char *)tld->url, "%s\n");
                            Q_PRINTF1("Screenshot: %s\n", (char *)tld->screenshot, "%s\n");
+                        }
+                     }
+                  }
+                  if (!strcmp(request, "list_all"))
+                  {
+                     Evas_List *l, *l1;
+                     l = exchange_theme_list_all(0, 0);
+                     
+                     if (!quiet)
+                        printf("All themes available\n");
+                     for (l1 = l; l1; l1 = evas_list_next(l1))
+                     {
+                        if (l1->data)
+                        {
+                           Theme_List_Data *tld;
+                           tld = (Theme_List_Data *)l1->data;
+                           Q_PRINTF1("Name: %s\n", (char *)tld->name, "%s\n");
                         }
                      }
                   }

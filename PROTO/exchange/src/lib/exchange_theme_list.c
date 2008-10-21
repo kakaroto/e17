@@ -178,6 +178,14 @@ exchange_theme_list_filter_by_module_id(int module_id, int limit, int offset)
    return NULL;
 }
 
+EAPI Evas_List *
+exchange_theme_list_all(int limit, int offset)
+{
+   if (_theme_list_connect(NULL, limit, offset) == 0)
+      return tl;
+   return NULL;
+}
+
 /**
  * @}
  */
@@ -218,8 +226,9 @@ _theme_list_connect(const char *filter, int limit, int offset)
    Theme_List_Parser state = { 0 };
    
    if (!filter)
-      return -1;
-   snprintf(url, sizeof(url), "http://exchange.enlightenment.org/api/list?object=theme%s", filter);
+      snprintf(url, sizeof(url), "http://exchange.enlightenment.org/api/list?object=theme");
+   else
+      snprintf(url, sizeof(url), "http://exchange.enlightenment.org/api/list?object=theme%s", filter);
    if (limit > 0)
    {
       snprintf(lim, sizeof(lim), "&limit=%d", limit);

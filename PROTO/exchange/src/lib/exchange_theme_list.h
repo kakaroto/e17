@@ -71,6 +71,7 @@ EAPI Evas_List *exchange_theme_list_filter_by_group_title(const char *group_titl
 EAPI Evas_List *exchange_theme_list_filter_by_group_name(const char *group_name, int limit, int offset);
 EAPI Evas_List *exchange_theme_list_filter_by_application_id(int application_id, int limit, int offset);
 EAPI Evas_List *exchange_theme_list_filter_by_module_id(int module_id, int limit, int offset);
+EAPI Evas_List *exchange_theme_list_all(int limit, int offset);
 
 /**
  * @cond LOCAL
