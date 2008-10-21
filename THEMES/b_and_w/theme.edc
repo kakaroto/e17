@@ -1,9 +1,6 @@
 // TODO: Items that need some revision
 // ibar - ibox (done - Merged with alias... see FIXME for bugs.)
 //
-// TODO: Working order
-// icons
-//
 // TODO Code:
 //	      - ilist e.swallow.icon should use e_ilist_icon_size_set to make a dummy box
 //		to compensate when there is no icon there.
