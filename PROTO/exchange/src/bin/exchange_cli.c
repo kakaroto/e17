@@ -87,7 +87,8 @@ main(int argc, char **argv)
 
    char *module_list_req[] = { "list_by_user_id",
                                 "list_by_user_name",
-                                "list_by_application_id" };
+                                "list_by_application_id",
+                                "list_all" };
 
    exchange_init();
    target = object = request = NULL;
@@ -617,6 +618,23 @@ main(int argc, char **argv)
                            Q_PRINTF1("Screenshot: %s\n", (char *)mld->screenshot, "%s\n");
                            Q_PRINTF1("User ID: %d\n", mld->user_id, "%d\n");
                            Q_PRINTF1("Application ID: %d\n", mld->application_id, "%d\n");
+                        }
+                     }
+                  }
+                  if (!strcmp(request, "list_all"))
+                  {
+                     Evas_List *l, *l1;
+                     l = exchange_module_list_all(0, 0);
+
+                     if (!quiet)
+                        printf("All modules available\n");
+                     for (l1 = l; l1; l1 = evas_list_next(l1))
+                     {
+                        if (l1->data)
+                        {
+                           Module_List_Data *mld;
+                           mld = (Module_List_Data *)l1->data;
+                           Q_PRINTF("ID: %d, Name: %s\n", mld->id, (char *)mld->name, "%s\n");
                         }
                      }
                   }
