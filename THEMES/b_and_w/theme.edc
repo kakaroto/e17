@@ -20882,7 +20882,7 @@ EFMICON("desktop","icon_efm_desktop.png", 128)
 EFMICON("hdd","icon_efm_hdd.png", 128)
 EFMICON("hd","icon_efm_hdd.png", 128)
 
-/*
+
 // EFM Mime type icons //
 
 #define MIMEICON(NAME, FILE, SIZE)                      \
@@ -20901,36 +20901,32 @@ group { name: "e/icons/fileman/mime/"NAME;              \
    }                                                    \
 }
 
-MIMEICON("application/pdf","icon_mime_application_pdf.png", 128);
-MIMEICON("text/x-csrc","icon_mime_text_x-csrc.png", 128);
-MIMEICON("text/x-chdr","icon_mime_text_x-chdr.png", 128);
-MIMEICON("application/x-object","icon_mime_application_x-object.png", 128);
-MIMEICON("application/x-shellscript","icon_mime_application_x-shellscript.png",
-128);
-MIMEICON("application/x-xcf","icon_mime_application_x-xcf.png", 128);
-MIMEICON("text/x-c++src","icon_mime_text_x-cppsrc.png", 128);
-MIMEICON("text/x-csharp","icon_mime_text_x-csharp.png", 128);
-MIMEICON("text/x-patch","icon_mime_text_x-patch.png", 128);
-MIMEICON("application/msword","icon_mime_application_msword.png", 128);
-MIMEICON("text/plain","icon_mime_text_plain.png", 128);
-MIMEICON("application/x-bzip","icon_mime_application_x-bzip.png", 128);
-MIMEICON("application/x-deb","icon_mime_application_x-deb.png", 128);
-MIMEICON("application/x-font-ttf","icon_mime_application_x-font-ttf.png", 128);
-MIMEICON("application/x-font-pcf","icon_mime_application_x-font-pcf.png", 128);
-MIMEICON("application/x-font-bdf","icon_mime_application_x-font-bdf.png", 128);
-MIMEICON("text/css","icon_mime_text_css.png", 128);
-MIMEICON("text/html","icon_mime_text_html.png", 128);
-MIMEICON("application/zip","icon_mime_application_zip.png", 128);
-MIMEICON("application/x-gzip","icon_mime_application_x-gzip.png", 128);
-MIMEICON("application/x-bzip-compressed-tar","icon_mime_application_x-bzip-compressed-tar.png",
-128);
-MIMEICON("application/x-bzip2-compressed-tar","icon_mime_application_x-bzip2-compressed-tar.png",
-128);
-MIMEICON("application/x-compressed-tar","icon_mime_application_x-compressed-tar.png",
-128);
-MIMEICON("application/x-tar","icon_mime_application_x-tar.png", 128);
-MIMEICON("application/x-rar","icon_mime_application_x-rar.png", 128);
-*/
+MIMEICON("application/pdf","icon_mime_pdf.png", 128);
+MIMEICON("text/x-csrc","icon_mime_c.png", 128);
+MIMEICON("text/x-chdr","icon_mime_h.png", 128);
+MIMEICON("application/x-object","icon_mime_o.png", 128);
+MIMEICON("application/x-shellscript","icon_mime_sh.png", 128);
+MIMEICON("application/x-xcf","icon_mime_xcf.png", 128);
+MIMEICON("text/x-c++src","icon_mime_c.png", 128);
+MIMEICON("text/x-csharp","icon_mime_c.png", 128);
+MIMEICON("text/x-patch","icon_mime_patch.png", 128);
+MIMEICON("application/msword","icon_mime_doc.png", 128);
+MIMEICON("text/plain","icon_mime_plain.png", 128);
+MIMEICON("application/x-deb","icon_mime_deb.png", 128);
+MIMEICON("application/x-font-ttf","icon_mime_ttf.png", 128);
+MIMEICON("application/x-font-pcf","icon_mime_pcf.png", 128);
+MIMEICON("application/x-font-bdf","icon_mime_bdf.png", 128);
+MIMEICON("text/css","icon_mime_css.png", 128);
+MIMEICON("text/html","icon_mime_html.png", 128);
+MIMEICON("application/x-bzip","icon_mime_package.png", 128);
+MIMEICON("application/zip","icon_mime_package.png", 128);
+MIMEICON("application/x-gzip","icon_mime_package.png", 128);
+MIMEICON("application/x-bzip-compressed-tar","icon_mime_package.png", 128);
+MIMEICON("application/x-bzip2-compressed-tar","icon_mime_package.png",128);
+MIMEICON("application/x-compressed-tar","icon_mime_package.png",128);
+MIMEICON("application/x-tar","icon_mime_package.png", 128);
+MIMEICON("application/x-rar","icon_mime_package.png", 128);
+
 
 // Dynamic MIME Icons //
 
@@ -20967,7 +20963,7 @@ group { name: "e/icons/fileman/mime/"MIME;              \
    }                                                    \
 }
 
-MIMEBASE("video/mpeg","icon_mime_video_generic.png", ".MPEG", 128);
+MIMEBASE("video/mpeg","icon_mime_video_generic.png", ".MPG", 128);
 MIMEBASE("application/ogg","icon_mime_video_generic.png", ".OGG", 128);
 MIMEBASE("video/x-theora+ogg","icon_mime_video_generic.png", ".OGG", 128);
 MIMEBASE("video/x-msvideo","icon_mime_video_generic.png", ".AVI", 128);
