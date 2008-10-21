@@ -82,7 +82,8 @@ main(int argc, char **argv)
    char *theme_group_req[] = { "list" };
 
    char *application_list_req[] = { "list_by_user_id",
-                                     "list_by_user_name" };
+                                     "list_by_user_name", 
+                                     "list_all" };
 
    char *module_list_req[] = { "list_by_user_id",
                                 "list_by_user_name",
@@ -520,6 +521,23 @@ main(int argc, char **argv)
                         }
                      }
                   }
+                  if (!strcmp(request, "list_all"))
+                  {
+                     Evas_List *l, *l1;
+                     l = exchange_application_list_all(0, 0);
+
+                     if (!quiet)
+                        printf("All applications available\n");
+                     for (l1 = l; l1; l1 = evas_list_next(l1))
+                     {
+                        if (l1->data)
+                        {
+                           Application_List_Data *ald;
+                           ald = (Application_List_Data *)l1->data;
+                           Q_PRINTF("ID: %d, Name: %s\n", ald->id, (char *)ald->name, "%s\n");
+                        }
+                     }
+                  }
                }
             }
          }
@@ -654,7 +672,8 @@ help(void)
           "list_by_theme_group_title:\t A list of themes that matches the supplied theme_group title\n"
           "list_by_theme_group_name:\t A list of themes that matches the supplied theme_group name\n"
           "list_by_application_id:\t\t A list of themes that matches the supplied application id\n"
-          "list_by_module_id:\t\t A list of themes that matches the supplied module id\n\n"
+          "list_by_module_id:\t\t A list of themes that matches the supplied module id\n"
+          "list_all:\t\t\t A list of alla vailable themes\n\n"
           "Requests for login object and remote target:\n"
           "api_key:\t The API key for the user\n"
           "all_data:\t A Login_Data pointer that contains all available data\n\n"
@@ -662,7 +681,8 @@ help(void)
           "list:\t A list of available theme_groups\n\n"
           "Requests for application object and remote target:\n"
           "list_by_user_id:\t A list of applications that matches the supplied user ID\n"
-          "list_by_user_name:\t A list of applications that matches the supplied user name\n\n"
+          "list_by_user_name:\t A list of applications that matches the supplied user name\n"
+          "list_all:\t\t A list of all available applications\n\n"
           "Requests for module object and remote target:\n"
           "list_by_user_id:\t A list of modules that matches the supplied user ID\n"
           "list_by_user_name:\t A list of modules that matches the supplied user name\n"

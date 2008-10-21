@@ -99,6 +99,20 @@ exchange_application_list_filter_by_user_name(const char *user_name, int limit, 
 }
 
 /**
+ * @param limit The max number of list entries
+ * @param offset The starting number of list entries
+ * @return The Evas_List * for available applications, NULL otherwise
+ * @brief Get the Evas_List for all available applications. 
+ */
+EAPI Evas_List *
+exchange_application_list_all(int limit, int offset)
+{
+   if (_application_list_connect(NULL, limit, offset) == 0)
+      return al;
+   return NULL;
+}
+
+/**
  * @}
  */
 
@@ -136,8 +150,9 @@ _application_list_connect(const char *filter, int limit, int offset)
    Application_List_Parser state = { 0 };
 
    if (!filter)
-      return -1;
-   snprintf(url, sizeof(url), "http://exchange.enlightenment.org/api/list?object=application%s", filter);
+      snprintf(url, sizeof(url), "http://exchange.enlightenment.org/api/list?object=application");
+   else
+      snprintf(url, sizeof(url), "http://exchange.enlightenment.org/api/list?object=application%s", filter);
    if (limit > 0)
    {
       snprintf(lim, sizeof(lim), "&limit=%d", limit);
