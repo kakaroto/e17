@@ -20902,22 +20902,7 @@ group { name: "e/icons/fileman/mime/"NAME;              \
 }
 
 MIMEICON("application/pdf","icon_mime_pdf.png", 128);
-MIMEICON("text/x-csrc","icon_mime_c.png", 128);
-MIMEICON("text/x-chdr","icon_mime_h.png", 128);
-MIMEICON("application/x-object","icon_mime_o.png", 128);
-MIMEICON("application/x-shellscript","icon_mime_sh.png", 128);
-MIMEICON("application/x-xcf","icon_mime_xcf.png", 128);
-MIMEICON("text/x-c++src","icon_mime_c.png", 128);
-MIMEICON("text/x-csharp","icon_mime_c.png", 128);
-MIMEICON("text/x-patch","icon_mime_patch.png", 128);
-MIMEICON("application/msword","icon_mime_doc.png", 128);
-MIMEICON("text/plain","icon_mime_plain.png", 128);
 MIMEICON("application/x-deb","icon_mime_deb.png", 128);
-MIMEICON("application/x-font-ttf","icon_mime_ttf.png", 128);
-MIMEICON("application/x-font-pcf","icon_mime_pcf.png", 128);
-MIMEICON("application/x-font-bdf","icon_mime_bdf.png", 128);
-MIMEICON("text/css","icon_mime_css.png", 128);
-MIMEICON("text/html","icon_mime_html.png", 128);
 MIMEICON("application/x-bzip","icon_mime_package.png", 128);
 MIMEICON("application/zip","icon_mime_package.png", 128);
 MIMEICON("application/x-gzip","icon_mime_package.png", 128);
@@ -20954,7 +20939,7 @@ group { name: "e/icons/fileman/mime/"MIME;              \
 	       text:     NAME;				\
 	       font:     "Sans:style=Bold";		\
 	       size:     4;				\
-	       fit:	 0 1;				\
+	       fit:	 1 1;				\
 	       min:      1 1;				\
 	       align:    0.5 0.0;			\
 	    }						\
@@ -20963,15 +20948,39 @@ group { name: "e/icons/fileman/mime/"MIME;              \
    }                                                    \
 }
 
-MIMEBASE("video/mpeg","icon_mime_video_generic.png", ".MPG", 128);
+MIMEBASE("video/mpeg","icon_mime_video_generic.png", ".MPEG", 128);
 MIMEBASE("application/ogg","icon_mime_video_generic.png", ".OGG", 128);
 MIMEBASE("video/x-theora+ogg","icon_mime_video_generic.png", ".OGG", 128);
 MIMEBASE("video/x-msvideo","icon_mime_video_generic.png", ".AVI", 128);
+
 MIMEBASE("image/png","icon_mime_image_generic.png", ".PNG", 128);
 MIMEBASE("image/jpeg","icon_mime_image_generic.png", ".JPG", 128);
+MIMEBASE("image/gif","icon_mime_image_generic.png", ".GIF", 128);
+MIMEBASE("image/bmp","icon_mime_image_generic.png", ".BMP", 128);
+MIMEBASE("application/x-xcf","icon_mime_image_generic.png", ".XCF", 128);
+
 MIMEBASE("audio/mpeg","icon_mime_audio_generic.png", ".MP3", 128);
 MIMEBASE("audio/x-wav","icon_mime_audio_generic.png", ".WAV", 128);
+MIMEBASE("audio/x-flac","icon_mime_audio_generic.png", ".FLAC", 128);
+MIMEBASE("audio/x-musepack","icon_mime_audio_generic.png", ".MPC", 128);
 
+MIMEBASE("text/css","icon_mime_text_generic.png", ".CSS", 128);
+MIMEBASE("text/html","icon_mime_text_generic.png", ".HTML", 128);
+MIMEBASE("text/x-csrc","icon_mime_text_generic.png", ".C", 128);
+MIMEBASE("text/x-chdr","icon_mime_text_generic.png", ".H", 128);
+MIMEBASE("text/x-c++src","icon_mime_text_generic.png", ".C++", 128);
+MIMEBASE("text/x-csharp","icon_mime_text_generic.png", ".C#", 128);
+MIMEBASE("text/x-patch","icon_mime_text_generic.png", ".PATCH", 128);
+MIMEBASE("text/plain","icon_mime_text_generic.png", ".TXT", 128);
+MIMEBASE("application/x-msword","icon_mime_text_generic.png", ".DOC", 128);
+MIMEBASE("application/x-abiword","icon_mime_text_generic.png", ".ABW", 128);
+
+MIMEBASE("application/x-object","icon_mime_executable_generic.png", "", 128);
+MIMEBASE("application/x-shellscript","icon_mime_executable_generic.png", "", 128);
+
+MIMEBASE("application/x-font-ttf","icon_mime_font_generic.png", ".TTF", 128);
+MIMEBASE("application/x-font-pcf","icon_mime_font_generic.png", ".PCF", 128);
+MIMEBASE("application/x-font-bdf","icon_mime_font_generic.png", ".BDF", 128);
 
 /*
 
