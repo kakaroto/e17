@@ -1,14 +1,15 @@
 Source: extrackt
 Section: x11
 Priority: optional
-Maintainer: E17 Debian Team <debian@edevelop.org>
-Build-Depends: debhelper (>= 4.0.0), libetk0-dev, libecore0-dev, libevas0-dev, libeet0-dev, libenhance0-dev
-Standards-Version: 3.6.2
+Maintainer: Falko Schmidt <falko@alphagemini.org>
+Build-Depends: debhelper (>= 6), libetk-dev, libenhance-dev
+Standards-Version: 3.7.3
+Homepage: http://www.enlightenment.org
 
 Package: extrackt
 Architecture: any
-Depends: ${shlibs:Depends}, libetk0, libecore0, libevas0, libeet0, libenhance0
-Description: an audio CD ripper and encoder based on the EFL
+Depends: ${shlibs:Depends}
+Description: An audio CD ripper and encoder based on the EFL
  Extrackt is essentially an audio CD ripper and encoder. It
  allows you to choose your ripper and encoder based on
  templates which give Extrackt the ability to use multiple

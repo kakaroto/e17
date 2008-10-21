@@ -2,5 +2,5 @@ extrackt (@VERSION@-1) unstable; urgency=low
 
   * a CVS snapshot release.
 
- -- E17 Debian Team <debian@edevelop.org>  Tue, 7 Mar 2006 13:30:15 +0000
+ -- Falko Schmidt <falko@alphagemini.org>  Tue, 21 Oct 2008 13:51:44 +0000
 
