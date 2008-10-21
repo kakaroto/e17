@@ -178,6 +178,12 @@ exchange_theme_list_filter_by_module_id(int module_id, int limit, int offset)
    return NULL;
 }
 
+/**
+ * @param limit The max number of list entries
+ * @param offset The starting number of list entries
+ * @return The Evas_List * for available themes, NULL otherwise
+ * @brief Get the Evas_List for all available themes. 
+ */
 EAPI Evas_List *
 exchange_theme_list_all(int limit, int offset)
 {
