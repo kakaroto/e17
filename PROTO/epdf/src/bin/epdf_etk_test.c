@@ -15,7 +15,7 @@ int
 main (int argc, char *argv[])
 {
   Etk_Widget    *window;
-  Etk_Widget    *table;
+  Etk_Widget    *hpaned, *vpaned;
   Etk_Widget    *tree;
   Etk_Widget    *list;
   Etk_Widget    *pdf;
@@ -48,9 +48,13 @@ main (int argc, char *argv[])
   etk_signal_connect ("delete-event", ETK_OBJECT (window),
                       ETK_CALLBACK(_quit_cb), NULL);
 
-  table = etk_table_new (2, 2, ETK_FALSE);
-  etk_container_add (ETK_CONTAINER (window), table);
-  etk_widget_show (table);
+  hpaned = etk_hpaned_new();
+  etk_container_add (ETK_CONTAINER (window), hpaned);
+  etk_widget_show (hpaned);
+
+  vpaned = etk_vpaned_new();
+  etk_paned_child1_set (ETK_PANED (hpaned), vpaned, 0);
+  etk_widget_show (vpaned);
 
   index = etk_pdf_pdf_index_get (ETK_PDF (pdf));
   if (index) {
@@ -75,7 +79,7 @@ main (int argc, char *argv[])
                         ETK_CALLBACK(_change_page_cb), pdf);
 
     /* we attach and show */
-    etk_table_attach_default (ETK_TABLE (table), tree, 0, 0, 0, 0);
+    etk_paned_child1_set (ETK_PANED (vpaned), tree, 0);
     etk_widget_show (tree);
   }
 
@@ -106,16 +110,11 @@ main (int argc, char *argv[])
                       ETK_CALLBACK(_change_page_cb), pdf);
 
   /* we attach and show */
-  if  (index)
-    etk_table_attach_default (ETK_TABLE (table), list, 0, 0, 1, 1);
-  else
-    etk_table_attach_default (ETK_TABLE (table), list, 0, 0, 0, 1);
+  etk_paned_child2_set (ETK_PANED (vpaned), list, 0);
   etk_widget_show (list);
 
   etk_pdf_scale_set (ETK_PDF (pdf), 0.5, 0.5);
-  etk_table_attach (ETK_TABLE (table), pdf,
-                    1, 1, 0, 1,
-                    0, 0, ETK_TABLE_NONE);
+  etk_paned_child2_set (ETK_PANED (hpaned), pdf, 1);
   etk_widget_show (pdf);
 
   etk_widget_show (window);
