@@ -239,8 +239,8 @@ _gc_orient(E_Gadcon_Client * gcc)
      {
       case E_GADCON_ORIENT_FLOAT:
 	 edje_object_signal_emit(inst->forecasts_obj, "e,state,orientation,float", "e");
-	 e_gadcon_client_aspect_set(gcc, 64, 32);
-	 e_gadcon_client_min_size_set(gcc, 64, 32);
+	 e_gadcon_client_aspect_set(gcc, 240, 120);
+	 e_gadcon_client_min_size_set(gcc, 240, 120);
 	 break;
       default:
 	 edje_object_signal_emit(inst->forecasts_obj, "e,state,orientation,default", "e");
@@ -921,7 +921,7 @@ _forecasts_display_set(Instance * inst, int ok)
 	     snprintf(name, sizeof(name), "e.text.day%d.date", i);
 	     edje_object_part_text_set(inst->forecasts->forecasts_obj, name, inst->forecast[i].date);
 
-	     snprintf(name, sizeof(name), "e.text.day%d.desc", i);
+	     snprintf(name, sizeof(name), "e.text.day%d.description", i);
 	     edje_object_part_text_set(inst->forecasts->forecasts_obj, name, inst->forecast[i].desc);
 
 	     snprintf(name, sizeof(name), "e.text.day%d.high", i);
