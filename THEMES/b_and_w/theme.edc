@@ -40,6 +40,16 @@
  * replacement you will need to methodically go through all of this file
  * and make sure you have replaced/provided everything here.
  */
+ 
+/* Specturm used in all the gradient icons 
+ * This needs to be defined outside of the collections
+ */
+spectra {
+   spectrum { name: "black_to_trans";
+      color: 0 0 0 255 1;
+      color: 0 0 0 0 1;
+   }
+}
 
 /*
  * this section defined all the theme elements (a collection of groupings of
@@ -20627,7 +20637,7 @@ group { name: "e/toolbar/default/base";
 /* 
 
 TODO: Icons (redo)
- Border buttons. Revise and resuse most. Mini-button has to go.
+ EFM buttons. (Use same icon style as border icons).
  System buttons (restart,logout,hibernate, etc etc)
  Window icons (pager, window remembers, etc etc)
  Wallpaper
@@ -20982,22 +20992,307 @@ MIMEBASE("application/x-font-ttf","icon_mime_font_generic.png", ".TTF", 128);
 MIMEBASE("application/x-font-pcf","icon_mime_font_generic.png", ".PCF", 128);
 MIMEBASE("application/x-font-bdf","icon_mime_font_generic.png", ".BDF", 128);
 
-/*
 
 // Custom icons with actions or specific behaviours 
 
-// FIXME: Make these work. (make code specifically for each)
-ICON("enlightenment/wallpaper_stretch","icon_wallpaper_stretch.png",64)
-ICON("enlightenment/wallpaper_tile","icon_wallpaper_tile.png",64)
-ICON("enlightenment/wallpaper_center","icon_wallpaper_center.png",64)
-ICON("enlightenment/wallpaper_scale_aspect_in","icon_wallpaper_scale_aspect_in.png",64)
-ICON("enlightenment/wallpaper_scale_aspect_out","icon_wallpaper_scale_aspect_out.png",64)
-ICON("enlightenment/gradient_h","icon_gradient_h.png",64)
-ICON("enlightenment/gradient_v","icon_gradient_v.png",64)
-ICON("enlightenment/gradient_du","icon_gradient_du.png",64)
-ICON("enlightenment/gradient_dd","icon_gradient_dd.png",64)
-ICON("enlightenment/gradient_rad","icon_gradient_rad.png",64)
+   images { 
+      image: "icon_wallpaper_center_flat.png" COMP;
+      image: "icon_wallpaper_center.png" COMP;
+      image: "icon_wallpaper_screen.png" COMP;
+      image: "icon_wallpaper_grad_screen.png" COMP;
+   }
+   group { name: "e/icons/enlightenment/wallpaper_stretch";
+      max:  24 24;
+      parts {
+	 part { name: "bg";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       rel1.to: "screen";
+	       rel2.to: "screen";
+	       image {
+		  normal: "icon_wallpaper_center_flat.png";
+		  border: 5 5 5 5;
+	       }
+	    }
+	 }
+	 part { name: "screen";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       aspect: 1.0 1.0;
+	       aspect_preference: BOTH;
+	       image {
+		  normal: "icon_wallpaper_screen.png";
+		  border: 2 2 2 2;
+	       }
+	    }
+	 }
+      }
+   }
+   group { name: "e/icons/enlightenment/wallpaper_tile";
+      max:  24 24;
+      parts {
+	 part { name: "bg";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       rel1.to: "screen";
+	       rel2.to: "screen";
+	       image {
+		  normal: "icon_wallpaper_center_flat.png";
+		  border: 5 5 5 5;
+	       }
+	       fill {
+		  size {
+		     relative: 0.33 0.33;
+		  }
+	       }
+	    }
+	 }
+	 part { name: "screen";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       aspect: 1.0 1.0;
+	       aspect_preference: BOTH;
+	       image {
+		  normal: "icon_wallpaper_screen.png";
+		  border: 2 2 2 2;
+	       }
+	    }
+	 }
+      }
+   }
+   group { name: "e/icons/enlightenment/wallpaper_center";
+      max:  24 24;
+      parts {
+	 part { name: "bg";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       rel1.to: "screen";
+	       rel2.to: "screen";
+	       rel1.relative: 0.125 0.125;
+	       rel2.relative: 0.875 0.875;
+	       image {
+		  normal: "icon_wallpaper_center.png";
+		  border: 5 5 5 5;
+	       }
+	    }
+	 }
+	 part { name: "screen";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       aspect: 1.0 1.0;
+	       aspect_preference: BOTH;
+	       image {
+		  normal: "icon_wallpaper_screen.png";
+		  border: 2 2 2 2;
+	       }
+	    }
+	 }
+      }
+   }
+   group { name: "e/icons/enlightenment/wallpaper_scale_aspect_in";
+      max:  24 24;
+      parts {
+	 part { name: "bg";
+	    mouse_events:  0;
+	    description { state: "default" 0.0;
+	       aspect: 1.5 1.5;
+	       aspect_preference: BOTH;
+	       rel1.to: "screen";
+	       rel2.to: "screen";
+	       image {
+		  normal: "icon_wallpaper_center.png";
+		  border: 5 5 5 5;
+	       }
+	    }
+	 }
+	 part { name: "screen";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       aspect: 1.0 1.0;
+	       aspect_preference: BOTH;
+	       image {
+		  normal: "icon_wallpaper_screen.png";
+		  border: 2 2 2 2;
+	       }
+	    }
+	 }
+      }
+   }
+   group { name: "e/icons/enlightenment/wallpaper_scale_aspect_out";
+      max:  24 24;
+      parts {
+	 part { name: "bg";
+	    mouse_events:  0;
+	    description { state: "default" 0.0;
+	       aspect: 1.5 1.5;
+	       aspect_preference: NONE;
+	       image {
+		  normal: "icon_wallpaper_center.png";
+		  border: 5 5 5 5;
+	       }
+	    }
+	 }
+	 part { name: "screen";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       aspect: 1.0 1.0;
+	       aspect_preference: BOTH;
+	       image {
+		  normal: "icon_wallpaper_screen.png";
+		  border: 2 2 2 2;
+	       }
+	    }
+	 }
+      }
+   }
 
-*/
-
+   group { name: "e/icons/enlightenment/gradient_h";
+      max: 24 24;
+      parts {
+	 part { name: "bg";
+	    type: GRADIENT;
+	    mouse_events:  0;
+	    description { state: "default" 0.0;
+	       rel1.to: "screen";
+	       rel2.to: "screen";
+	       gradient {
+		  spectrum: "black_to_trans";
+		  rel1.relative: 0 0.5;
+		  rel1.offset: 0 0;
+		  rel2.relative: 1 0.5;
+		  rel2.offset: -1 0;
+	       }
+	    }
+	 }
+	 part { name: "screen";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       aspect: 1.0 1.0;
+	       aspect_preference: BOTH;
+	       image {
+		  normal: "icon_wallpaper_grad_screen.png";
+		  border: 2 2 2 2;
+	       }
+	    }
+	 }
+      }
+   }
+   group { name: "e/icons/enlightenment/gradient_v";
+      max: 24 24;
+      parts {
+	 part { name: "bg";
+	    type: GRADIENT;
+	    mouse_events:  0;
+	    description { state: "default" 0.0;
+	       rel1.to: "screen";
+	       rel2.to: "screen";
+	       gradient.spectrum: "black_to_trans";
+	    }
+	 }
+	 part { name: "screen";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       aspect: 1.0 1.0;
+	       aspect_preference: BOTH;
+	       image {
+		  normal: "icon_wallpaper_grad_screen.png";
+		  border: 2 2 2 2;
+	       }
+	    }
+	 }
+      }
+   }
+   group { name: "e/icons/enlightenment/gradient_du";
+      max: 24 24;
+      parts {
+	 part { name: "bg";
+	    type: GRADIENT;
+	    mouse_events:  0;
+	    description { state: "default" 0.0;
+	       rel1.to: "screen";
+	       rel2.to: "screen";
+	       gradient {
+		  spectrum: "black_to_trans";
+		  rel1.relative: 0 1;
+		  rel1.offset: 0 -1;
+		  rel2.relative: 1 0;
+		  rel2.offset: -1 0;
+	       }
+	    }
+	 }
+	 part { name: "screen";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       aspect: 1.0 1.0;
+	       aspect_preference: BOTH;
+	       image {
+		  normal: "icon_wallpaper_grad_screen.png";
+		  border: 2 2 2 2;
+	       }
+	    }
+	 }
+      }
+   }
+   group { name: "e/icons/enlightenment/gradient_dd";
+      max:  24 24;
+      parts {
+	 part { name: "bg";
+	    type: GRADIENT;
+	    mouse_events:  0;
+	    description { state: "default" 0.0;
+	       rel1.to: "screen";
+	       rel2.to: "screen";
+	       gradient {
+		  spectrum: "black_to_trans";
+		  rel1.relative: 0 0;
+		  rel1.offset: 0 0;
+		  rel2.relative: 1 1;
+		  rel2.offset: -1 -1;
+	       }
+	    }
+	 }
+	 part { name: "screen";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       aspect: 1.0 1.0;
+	       aspect_preference: BOTH;
+	       image {
+		  normal: "icon_wallpaper_grad_screen.png";
+		  border: 2 2 2 2;
+	       }
+	    }
+	 }
+      }
+   }
+   group { name: "e/icons/enlightenment/gradient_rad";
+      max: 24 24;
+      parts {
+	 part { name: "bg";
+	    type: GRADIENT;
+	    mouse_events:  0;
+	    description { state: "default" 0.0;
+	       rel1.to: "screen";
+	       rel2.to: "screen";
+	       gradient {
+		 spectrum: "black_to_trans";
+		 type: "radial";
+	       }
+	       fill {
+		 origin.relative: 0.5 0.5;
+	       }
+	    }
+	 }
+	 part { name: "screen";
+	    mouse_events: 0;
+	    description { state: "default" 0.0;
+	       aspect: 1.0 1.0;
+	       aspect_preference: BOTH;
+	       image {
+		  normal: "icon_wallpaper_grad_screen.png";
+		  border: 2 2 2 2;
+	       }
+	    }
+	 }
+      }
+   }
 }
