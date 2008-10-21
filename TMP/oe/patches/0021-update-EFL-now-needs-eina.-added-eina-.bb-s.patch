@@ -1,0 +1,124 @@
+From dc094fcdc5218340b57e9f0c998f73c82243a67b Mon Sep 17 00:00:00 2001
+From: Carsten Haitzler <raster@openmoko.org>
+Date: Tue, 21 Oct 2008 20:26:32 +1100
+Subject: [PATCH] update EFL - now needs eina. added eina .bb's
+
+---
+ conf/distro/include/sane-srcrevs.inc |    4 +++-
+ packages/efl1/eet-native_svn.bb      |    2 +-
+ packages/efl1/eet_svn.bb             |    2 +-
+ packages/efl1/eina-native_svn.bb     |    6 ++++++
+ packages/efl1/eina_svn.bb            |   12 ++++++++++++
+ packages/python/python-ecore_svn.bb  |    2 +-
+ packages/python/python-edje_svn.bb   |    2 +-
+ packages/python/python-evas_svn.bb   |    2 +-
+ 8 files changed, 26 insertions(+), 6 deletions(-)
+ create mode 100644 packages/efl1/eina-native_svn.bb
+ create mode 100644 packages/efl1/eina_svn.bb
+
+diff --git a/conf/distro/include/sane-srcrevs.inc b/conf/distro/include/sane-srcrevs.inc
+index f19c7ee..d566c8e 100644
+--- a/conf/distro/include/sane-srcrevs.inc
++++ b/conf/distro/include/sane-srcrevs.inc
+@@ -196,9 +196,11 @@ SRCREV_pn-zhone ?= "28e01227063ab76b9144e7a443319add6b195864"
+ # Enlightenment Foundation Libraries
+ # Caution: This is not alphabetically, but (roughly) dependency-sorted.
+ # Please leave it like that.
+-EFL_SRCREV ?= "36619"
++EFL_SRCREV ?= "36882"
+ SRCREV_pn-edb-native ?= "${EFL_SRCREV}"
+ SRCREV_pn-edb ?= "${EFL_SRCREV}"
++SRCREV_pn-eina-native ?= "${EFL_SRCREV}"
++SRCREV_pn-eina ?= "${EFL_SRCREV}"
+ SRCREV_pn-eet-native ?= "${EFL_SRCREV}"
+ SRCREV_pn-eet ?= "${EFL_SRCREV}"
+ SRCREV_pn-evas-native ?= "${EFL_SRCREV}"
+diff --git a/packages/efl1/eet-native_svn.bb b/packages/efl1/eet-native_svn.bb
+index 0b0b5a4..454bc53 100644
+--- a/packages/efl1/eet-native_svn.bb
++++ b/packages/efl1/eet-native_svn.bb
+@@ -1,6 +1,6 @@
+ require eet_svn.bb
+ inherit native
+-DEPENDS = "zlib-native jpeg-native"
++DEPENDS = "zlib-native jpeg-native eina-native"
+ # we no longer inherit pkgconfig, so we need to state this explicitly
+ # (see explanation in efl.bbclass and autotools.bbclass)
+ DEPENDS += "pkgconfig-native"
+diff --git a/packages/efl1/eet_svn.bb b/packages/efl1/eet_svn.bb
+index 6ffcd98..1e82ed0 100644
+--- a/packages/efl1/eet_svn.bb
++++ b/packages/efl1/eet_svn.bb
+@@ -1,5 +1,5 @@
+ DESCRIPTION = "EET is the Enlightenment data storage library"
+-DEPENDS = "zlib jpeg openssl"
++DEPENDS = "zlib jpeg openssl eina"
+ LICENSE = "MIT BSD"
+ PV = "1.0.1+svnr${SRCREV}"
+ FILE_PR = "r3"
+diff --git a/packages/efl1/eina-native_svn.bb b/packages/efl1/eina-native_svn.bb
+new file mode 100644
+index 0000000..8cc34bb
+--- /dev/null
++++ b/packages/efl1/eina-native_svn.bb
+@@ -0,0 +1,6 @@
++require eina_svn.bb
++inherit native
++DEPENDS = ""
++# we no longer inherit pkgconfig, so we need to state this explicitly
++# (see explanation in efl.bbclass and autotools.bbclass)
++DEPENDS += "pkgconfig-native"
+diff --git a/packages/efl1/eina_svn.bb b/packages/efl1/eina_svn.bb
+new file mode 100644
+index 0000000..692a390
+--- /dev/null
++++ b/packages/efl1/eina_svn.bb
+@@ -0,0 +1,12 @@
++DESCRIPTION = "EET is the Enlightenment data storage library"
++DEPENDS = ""
++LICENSE = "LGPL"
++PV = "0.0.1+svnr${SRCREV}"
++FILE_PR = "r1"
++
++inherit efl
++
++EXTRA_OECONF = "\
++"
++
++FILES_${PN} += "${libdir}/eina"
+diff --git a/packages/python/python-ecore_svn.bb b/packages/python/python-ecore_svn.bb
+index 11aca1b..f02a1b7 100644
+--- a/packages/python/python-ecore_svn.bb
++++ b/packages/python/python-ecore_svn.bb
+@@ -1,5 +1,5 @@
+ require python-efl.inc
+-DEPENDS += "python-evas ecore"
++DEPENDS += "python-evas ecore eina"
+ RDEPENDS += "python-evas"
+ PV = "0.3.0+svnr${SRCREV}"
+ FILE_PR = "r0"
+diff --git a/packages/python/python-edje_svn.bb b/packages/python/python-edje_svn.bb
+index 4f4fce4..00aafc0 100644
+--- a/packages/python/python-edje_svn.bb
++++ b/packages/python/python-edje_svn.bb
+@@ -1,5 +1,5 @@
+ require python-efl.inc
+-DEPENDS += "edje python-evas"
++DEPENDS += "edje python-evas eina"
+ RDEPENDS += "python-evas"
+ PV = "0.3.0+svnr${SRCREV}"
+ FILE_PR = "r0"
+diff --git a/packages/python/python-evas_svn.bb b/packages/python/python-evas_svn.bb
+index 3b561b0..c494148 100644
+--- a/packages/python/python-evas_svn.bb
++++ b/packages/python/python-evas_svn.bb
+@@ -1,5 +1,5 @@
+ require python-efl.inc
+-DEPENDS += "evas"
++DEPENDS += "evas eina"
+ PV = "0.3.0+svnr${SRCREV}"
+ FILE_PR = "r0"
+ 
+-- 
+1.5.4.3
+
