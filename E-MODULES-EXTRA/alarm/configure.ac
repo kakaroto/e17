@@ -44,7 +44,7 @@ AC_MSG_RESULT(${EDJE_CC})
 
 PKG_CHECK_MODULES(E, [enlightenment])
 
-datadir=$(pkg-config --variable=module enlightenment)/${PACKAGE}
+datadir=$(pkg-config --variable=modules enlightenment)/${PACKAGE}
 
 AC_ARG_ENABLE(homedir-install,
   AS_HELP_STRING([--enable-homedir-install], [Install module in homedir]),
