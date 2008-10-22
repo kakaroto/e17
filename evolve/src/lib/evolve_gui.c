@@ -171,7 +171,7 @@ void evolve_gui_general_table_populate(Evolve_Widget *widget)
    Etk_Widget *label;
    Etk_Widget *entry;
    Etk_Type *type;
-   Evas_List *l, *list = NULL;
+   Eina_List *l, *list = NULL;
    char *str;
    int i = 2;
    
@@ -181,7 +181,7 @@ void evolve_gui_general_table_populate(Evolve_Widget *widget)
    etk_type_property_list(type, &list);
    
    etk_table_resize(ETK_TABLE(_evolve_gui_gen_table), 0, 0);
-   etk_table_resize(ETK_TABLE(_evolve_gui_gen_table), 2, evas_list_count(list) + 2);
+   etk_table_resize(ETK_TABLE(_evolve_gui_gen_table), 2, eina_list_count(list) + 2);
    
    label = etk_label_new("Class:");
    entry = etk_entry_new();
@@ -351,7 +351,7 @@ void evolve_gui_mouse_down_select_cb(Etk_Object *object, Etk_Event_Mouse_Down *e
 
 void evolve_gui_mouse_down_new_cb(Etk_Object *object, Etk_Event_Mouse_Down *event, void *data)
 {
-   Evas_List *l;
+   Eina_List *l;
    Evolve_Widget *parent;
    Evolve_Widget *child;
    int num = 0;
@@ -383,7 +383,7 @@ void evolve_gui_mouse_down_new_cb(Etk_Object *object, Etk_Event_Mouse_Down *even
    etk_signal_connect("mouse-down", ETK_OBJECT(child->widget),
 		      ETK_CALLBACK(evolve_gui_mouse_down_select_cb), child);
    
-   evolve->widgets = evas_list_append(evolve->widgets, child);
+   evolve->widgets = eina_list_append(evolve->widgets, child);
    evolve_widget_reparent(child, parent);
    etk_widget_show_all(parent->widget);
    _evolve_queue_func_new = NULL;

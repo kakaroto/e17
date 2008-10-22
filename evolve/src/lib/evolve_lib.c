@@ -28,10 +28,10 @@
 
 #define NEWD(str, typ) \
      eet_data_descriptor_new(str, sizeof(typ), \
-				(void *(*) (void *))evas_list_next, \
-				(void *(*) (void *, void *))evas_list_append, \
-				(void *(*) (void *))evas_list_data, \
-				(void *(*) (void *))evas_list_free, \
+				(void *(*) (void *))eina_list_next, \
+				(void *(*) (void *, void *))eina_list_append, \
+				(void *(*) (void *))eina_list_data_get, \
+				(void *(*) (void *))eina_list_free, \
 				(void  (*) (void *, int (*) (void *, const char *, void *, void *), void *))evas_hash_foreach, \
 				(void *(*) (void *, const char *, void *))evas_hash_add, \
 				(void  (*) (void *))evas_hash_free)
@@ -76,13 +76,13 @@
 #define EVOLVE_WIDGETS_NEWL(str, it, type) \
      EET_DATA_DESCRIPTOR_ADD_LIST(_evolve_widgets_edd, Evolve, str, it, type)
 
-Evas_List *_evolve_defines = NULL;
+Eina_List *_evolve_defines = NULL;
 extern Etk_String *_evolve_edje_code;
 extern FILE *yyin;
 int yyparse(void);
-Evas_List *_evolve_widgets_show_all = NULL;
+Eina_List *_evolve_widgets_show_all = NULL;
 Evolve *_evolve_ev = NULL;
-Evas_List *widgets = NULL;
+Eina_List *widgets = NULL;
 char *evolve_filename = NULL;
 
 static Eet_Data_Descriptor *_evolve_widget_prop_edd = NULL;
@@ -166,19 +166,17 @@ int evolve_shutdown()
 /* print out an evolve struct, useful for debugging */
 void evolve_print(Evolve *evolve)
 {
-   Evas_List *l;
-   
+   Eina_List *l;
+   Evolve_Widget *widget;
+
    if (!evolve || !evolve->widgets)
      return;
    
-   printf("Found %d widgets:\n", evas_list_count(evolve->widgets));
+   printf("Found %d widgets:\n", eina_list_count(evolve->widgets));
    
-   for(l = evolve->widgets; l; l = l->next)
+   EINA_LIST_FOREACH(evole->widgets, l, widget)
      {
-	Evolve_Widget *widget;
-	
-	widget = l->data;
-	printf("widget:\n"
+        printf("widget:\n"
 	       "type: %s\n"
 	       "name: %s\n"
 	       "parent: %s\n",
@@ -198,17 +196,13 @@ void evolve_print(Evolve *evolve)
 	
 	if (widget->signals)
 	  {
-	     Evas_List *l;
-	     
+	     Eina_List *l;
+	     Evolve_Widget_Signal *sig;
+
 	     printf("signals:\n");
-	     
-	     for (l = widget->signals; l; l = l->next)
-	       {
-		  Evolve_Widget_Signal *sig;
-		  
-		  sig = l->data;
-		  printf("%s: %s\n", sig->name, sig->callback);
-	       }
+
+	     EINA_LIST_FOREACH(widget->signals, l, sig)
+	       printf("%s: %s\n", sig->name, sig->callback);
 	  }
 	
 	printf("\n");
@@ -218,7 +212,8 @@ void evolve_print(Evolve *evolve)
 /* render an evolve struct and display it */
 void evolve_render(Evolve *evolve)
 {
-   Evas_List *l;  
+   Eina_List *l;  
+   Evolve_Widget *widget;
    
    if (!evolve || !evolve->widgets)
      return;
@@ -226,11 +221,8 @@ void evolve_render(Evolve *evolve)
    _evolve_ev = evolve;
          
    /* render widgets and pack them into their parents */
-   for (l = evolve->widgets; l; l = l->next)
+   EINA_LIST_FOREACH(evolve->widgets, l, widget)
      {
-	Evolve_Widget *widget;
-	
-	widget = l->data;
 	evolve->parents = evas_hash_add(evolve->parents, widget->name, widget);
 	evolve_widget_render(widget);
 	evolve_widget_properties_apply(widget);
@@ -239,23 +231,15 @@ void evolve_render(Evolve *evolve)
      }
    
    /* connect signals and do post render operations */
-   for (l = evolve->widgets; l; l = l->next)
+   EINA_LIST_FOREACH(evolve->widgets, l, widget)
      {
-	Evolve_Widget *widget;
-	
-	widget = l->data;
 	evolve_widget_signals_connect(widget, evolve);
 	evolve_widget_post_render(widget);
      }
    
    /* show top level widgets that want to be shown */
-   for (l = _evolve_widgets_show_all; l; l = l->next)
-     {
-	Evolve_Widget *widget;
-	
-	widget = l->data;
-	etk_widget_show_all(widget->widget);
-     }
+   EINA_LIST_FOREACH(_evolve_widget_show_all, l, widget)
+     etk_widget_show_all(widget->widget);
    
    _evolve_ev = NULL;
 }
@@ -263,7 +247,7 @@ void evolve_render(Evolve *evolve)
 /* return the evolve code for an evolve struc */
 char *evolve_code_get(Evolve *evolve)
 {
-   Evas_List *l;
+   Eina_List *l;
    Etk_String *code;
    char *ret;
    
@@ -293,7 +277,7 @@ int evolve_eet_save(Evolve *evolve, char *file)
 {
    Eet_File  *ef;
    Evas *evas = NULL;
-   Evas_List *l;
+   Eina_List *l;
    int ret;
 
    if (!evolve || !evolve->widgets)
@@ -466,7 +450,7 @@ Evolve *evolve_etk_load(char *file)
 	  def = strdup("");
 	else
 	  {
-	     Evas_List *l;
+	     Eina_List *l;
 	     int len;
 
 	     len = 0;
@@ -516,7 +500,7 @@ Evolve *evolve_etk_load(char *file)
 /* find and return the etk  widget given an evolve widget name */
 Etk_Widget *evolve_etk_widget_find(Evolve *evolve, char *name)
 {
-   Evas_List *l;
+   Eina_List *l;
    
    if (!evolve || !evolve->widgets)
      return NULL;
@@ -535,7 +519,7 @@ Etk_Widget *evolve_etk_widget_find(Evolve *evolve, char *name)
 }
 
 /* set the list of defines for use with evolve */
-void evolve_defines_set(Evas_List *defines)
+void evolve_defines_set(Eina_List *defines)
 {
    _evolve_defines = defines;
 }

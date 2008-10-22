@@ -524,7 +524,7 @@ Evolve_Widget *evolve_gui_toolbar_new()
 
 Evolve_Widget *evolve_gui_window_new()
 {
-   Evas_List *l;
+   Eina_List *l;
    Evolve_Widget *widget;
    Etk_Widget *button;
    int num = 0;
@@ -553,7 +553,7 @@ Evolve_Widget *evolve_gui_window_new()
    snprintf(name, sizeof(name), "%s%d", widget->type, num);
    widget->name = strdup(name);
    widget->parent = NULL;
-   evolve->widgets = evas_list_append(evolve->widgets, widget);
+   evolve->widgets = eina_list_append(evolve->widgets, widget);
    etk_signal_connect("mouse-down", ETK_OBJECT(widget->widget),
 		      ETK_CALLBACK(evolve_gui_mouse_down_select_cb), widget);
    evolve_widget_property_set(widget, "title", widget->name, EVOLVE_PROPERTY_STRING);

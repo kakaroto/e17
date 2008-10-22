@@ -76,7 +76,7 @@ int   evolve_widget_packing_property_to_int_convert(char *widget_type, char *pro
 
 char *evolve_widget_code_get(Evolve_Widget *widget);
   
-Evas_List *evolve_widget_list_sort(Evas_List *widgets);
+Eina_List *evolve_widget_list_sort(Eina_List *widgets);
 
 void evolve_widget_property_set(Evolve_Widget *widget, char *name, char *value, int type);
 Evolve_Property *evolve_widget_property_get(Evolve_Widget *widget, char *prop_name);

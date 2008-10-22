@@ -42,6 +42,6 @@ void        evolve_signal_connect(Evolve *evolve, char *emission, void (*callbac
 
 char       *evolve_code_get(Evolve *evolve);
 
-void        evolve_defines_set(Evas_List *defines);
+void        evolve_defines_set(Eina_List *defines);
 
 #endif

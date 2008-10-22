@@ -40,8 +40,8 @@ Evolve_Signal *evolve_signal_new(char *name, char *emission, Evolve *evolve)
 void evolve_signal_emit_cb(void *data, Etk_Object *obj)
 {
    Evolve_Signal *esig;
-   Evas_List *cbs;
-   Evas_List *l;
+   Eina_List *cbs;
+   Eina_List *l;
    
    esig = data;
    
@@ -61,7 +61,7 @@ void evolve_signal_emit_cb(void *data, Etk_Object *obj)
 /* connect a callback to a custom evolve signal */
 void evolve_signal_connect(Evolve *evolve, char *emission, void (*callback)(char *emission, void *data), void *data)
 {
-   Evas_List *l = NULL;
+   Eina_List *l = NULL;
    Evolve_Signal_Callback *sig_cb;
    
    if (!evolve || !emission || !callback)
@@ -72,10 +72,10 @@ void evolve_signal_connect(Evolve *evolve, char *emission, void (*callback)(char
    sig_cb->data = data;   
    
    if ((l = evas_hash_find(evolve->callbacks, emission)))
-     l = evas_list_append(l, sig_cb);     
+     l = eina_list_append(l, sig_cb);     
    else
      {
-	l = evas_list_append(l, sig_cb);
+	l = eina_list_append(l, sig_cb);
 	evolve->callbacks = evas_hash_add(evolve->callbacks, emission, l);
      }
 }

@@ -43,8 +43,8 @@
    type->etk_type = e_type; \
    _evolve_widget_types = evas_hash_add(_evolve_widget_types, #ev_str, type)
 
-extern Evas_List *widgets;
-extern Evas_List *_evolve_widgets_show_all;
+extern Eina_List *widgets;
+extern Eina_List *_evolve_widgets_show_all;
 extern Evolve *_evolve_ev;
 
 static Evas_Hash *_evolve_widget_packing_infos = NULL;
@@ -196,17 +196,13 @@ Evolve_Widget *evolve_widget_new(char *type)
 Evolve_Widget *evolve_widget_find(char *name)
 {
    Evolve_Widget *widget;
-   Evas_List *l;
-   
-   for(l = widgets; l; l = l->next)
-     {	
-	widget = l->data;
-	
-	if (!strcmp(name, widget->name))
-	  return widget;
-     }
-   
-   return NULL;   
+   Eina_List *l;
+
+   EINA_LIST_FOREACH(widgets, l, widget)
+     if (!strcmp(name, widget->name))
+       return widget;
+
+   return NULL;
 }
 
 /* find and return a widget's constructor using its type */
@@ -245,7 +241,7 @@ int evolve_widget_internal_property_apply(Evolve_Widget *widget, Evolve_Property
    if (!strcmp(prop->name, "show_all"))
      {
 	if (evolve_property_value_int_get(prop->default_value) == 1)
-	  _evolve_widgets_show_all = evas_list_append(_evolve_widgets_show_all, widget);
+	  _evolve_widgets_show_all = eina_list_append(_evolve_widgets_show_all, widget);
 	return 1;
      }
    else if ((!strcmp(prop->name, "file") && !strcmp(widget->type, "image") &&
@@ -423,7 +419,7 @@ void evolve_widget_render(Evolve_Widget *widget)
 /* render a widget's children */
 void evolve_widget_children_render(Evolve *evolve, Evolve_Widget *widget)
 {
-   Evas_List *l;
+   Eina_List *l;
    
    if (!evolve || !evolve->widgets || !widget || !widget->widget)
      return;
@@ -446,16 +442,13 @@ void evolve_widget_children_render(Evolve *evolve, Evolve_Widget *widget)
 /* connect all signals to a given widget */
 void evolve_widget_signals_connect(Evolve_Widget *widget, Evolve *evolve)
 {
-   Evas_List *l;
+   Eina_List *l;
    void (*callback)(void);
    void *data = NULL;
-   
-   for(l = widget->signals; l; l = l->next)
+   Evolve_Widget_Signal *sig;
+
+   EINA_LIST_FOREACH(widget->signals, l, sig)
      {
-	Evolve_Widget_Signal *sig;
-	
-	sig = l->data;
-	
 	if (!sig->name || (!sig->callback && !sig->emit))
 	  {
 	     fprintf(stderr, "Signal does not have a name or callback, ignored.\n");
@@ -768,7 +761,7 @@ char *evolve_widget_code_get(Evolve_Widget *widget)
    
    if (widget->signals)
      {
-	Evas_List *l;
+	Eina_List *l;
 	
 	for (l = widget->signals; l; l = l->next)
 	  {
@@ -826,10 +819,10 @@ char *evolve_widget_code_get(Evolve_Widget *widget)
 }
 
 /* sort the list of widgets in a tree like fashion where every parent is followed by its children, toplevels first */
-Evas_List *evolve_widget_list_sort(Evas_List *widgets)
+Eina_List *evolve_widget_list_sort(Eina_List *widgets)
 {
-   Evas_List *l;
-   Evas_List *sorted = NULL;
+   Eina_List *l;
+   Eina_List *sorted = NULL;
    Evolve_Widget *widget;
   
    if (!widgets || !widgets->data)
@@ -841,8 +834,8 @@ Evas_List *evolve_widget_list_sort(Evas_List *widgets)
      {		
 	if (!widget->parent)
 	  {
-	     sorted = evas_list_prepend(sorted, widget);
-	     widgets = evas_list_remove(widgets, widget);
+	     sorted = eina_list_prepend(sorted, widget);
+	     widgets = eina_list_remove(widgets, widget);
 	     if (!widgets)
 	       widget = NULL;
 	     else
@@ -857,8 +850,8 @@ Evas_List *evolve_widget_list_sort(Evas_List *widgets)
 	     parent = l->data;
 	     if (!strcmp(widget->parent, parent->name))
 	       {
-		  sorted = evas_list_append_relative(sorted, widget, parent);
-		  widgets = evas_list_remove(widgets, widget);
+		  sorted = eina_list_append_relative(sorted, widget, parent);
+		  widgets = eina_list_remove(widgets, widget);
 		  if (!widgets)
 		    {
 		       widget = NULL;
@@ -880,13 +873,13 @@ leave_for:
 	     continue;
 	  }
 	
-	if (evas_list_next(evas_list_find_list(widgets, widget)))
-	  widget = evas_list_data(evas_list_next(evas_list_find_list(widgets, widget)));
+	if (eina_list_next(eina_list_data_find_list(widgets, widget)))
+	  widget = eina_list_data_get(eina_list_next(eina_list_data_find_list(widgets, widget)));
 	else
-	  widget = evas_list_data(widgets);
+	  widget = eina_list_data_get(widgets);
      }
    
-   evas_list_free(widgets);
+   eina_list_free(widgets);
    return sorted;
 }
 

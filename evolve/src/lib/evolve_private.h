@@ -45,7 +45,7 @@ typedef Etk_Widget *(*Evolve_Ctor)(void);
 struct _Evolve
 {
    /* fields to save */
-   Evas_List *widgets;
+   Eina_List *widgets;
    
    /* fields we dont want to save */
    char *eet_filename;
@@ -75,7 +75,7 @@ struct _Evolve_Widget
    char *parent;
    Evas_Hash *props;
    Evas_Hash *packing_props;   
-   Evas_List *signals;
+   Eina_List *signals;
    
    /* fields we dont want to save */
    Etk_Widget *widget;

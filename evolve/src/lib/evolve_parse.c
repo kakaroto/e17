@@ -22,9 +22,9 @@
 
 #define LAST_WIDGET \
    Evolve_Widget *last_widget; \
-   last_widget = evas_list_data(evas_list_last(widgets))
+   last_widget = eina_list_data_get(eina_list_last(widgets))
 
-extern Evas_List *widgets;
+extern Eina_List *widgets;
 extern char *evolve_filename;
 extern int evolve_lnum;
 extern int evolve_col;
@@ -50,7 +50,7 @@ void evolve_parse_widget(char *type)
    widget = evolve_widget_new(type);
    if (!widget) 
      return;
-   widgets = evas_list_append(widgets, widget);   
+   widgets = eina_list_append(widgets, widget);   
 }
 
 /* parse a widget's parent, bail out of it cant be found */
@@ -138,17 +138,17 @@ void evolve_parse_signal()
      return;
       
    sig = calloc(1, sizeof(Evolve_Widget_Signal));
-   last_widget->signals = evas_list_append(last_widget->signals, sig);
+   last_widget->signals = eina_list_append(last_widget->signals, sig);
 }
 
 /* parse a signal's property */
 void evolve_parse_signal_property(char *prop, char *value)
 {   
    Evolve_Widget_Signal *sig;
-   Evas_List *l;
+   Eina_List *l;
    LAST_WIDGET;
    
-   if (!last_widget || !last_widget->signals || !(l = evas_list_last(last_widget->signals)))
+   if (!last_widget || !last_widget->signals || !(l = eina_list_last(last_widget->signals)))
      return;
 
    sig = l->data;
@@ -201,10 +201,10 @@ void evolve_parse_signal_property(char *prop, char *value)
 void evolve_parse_signal_data_property(char *prop, char *value)
 {
    Evolve_Widget_Signal *sig;
-   Evas_List *l;
+   Eina_List *l;
    LAST_WIDGET;
    
-   if (!last_widget || !last_widget->signals || !(l = evas_list_last(last_widget->signals)))
+   if (!last_widget || !last_widget->signals || !(l = eina_list_last(last_widget->signals)))
      return;
 
    sig = l->data;
