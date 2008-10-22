@@ -32,7 +32,7 @@ struct _Collection
    char        *part;
    Evas_Object *text;
    Evas_Object *bg;
-   Evas_List   *entries;
+   Eina_List   *entries;
 };
 
 static int  main_start(int argc, char **argv);
@@ -53,7 +53,7 @@ void        test_list(char *file);
 void        test_resize(Demo_Edje *de);
 void        test_setup(char *file, char *name);
 
-static Evas_List   *edjes = NULL;
+static Eina_List   *edjes = NULL;
 static Evas_Object *o_bg = NULL;
 static Evas_Object *o_shadow = NULL;
 
@@ -234,7 +234,7 @@ bg_key_down(void *data, Evas * e, Evas_Object * obj, void *event_info)
    if (!strcmp(ev->keyname, "q")) ecore_main_loop_quit ();
 
      {
-	Evas_List *l;
+	Eina_List *l;
 	
 	for (l = edjes; l; l = l->next)
 	  {
@@ -546,7 +546,7 @@ cb (void *data, Evas_Object *o, const char *sig, const char *src)
 void
 test_list_move(Collection *co_head)
 {
-   Evas_List *l;
+   Eina_List *l;
    Evas_Coord x, y;
    
    evas_object_geometry_get(co_head->bg, &x, &y, NULL, NULL);
@@ -570,10 +570,10 @@ test_list_move(Collection *co_head)
 void
 test_list(char *file)
 {
-   Evas_List *entries;
+   Eina_List *entries;
    Evas_Coord maxw = 128;
    Collection *co_head;
-   Evas_List *collections = NULL;
+   Eina_List *collections = NULL;
    char buf[4096];
 
    entries = edje_file_collection_list(file);
@@ -586,7 +586,7 @@ test_list(char *file)
 	char buf[1024];
 	
 	co = calloc(1, sizeof(Collection));
-	collections = evas_list_append(collections, co);
+	collections = eina_list_append(collections, co);
 	co->file = strdup(file);
 	co->part = NULL;
 	co->header = 1;
@@ -615,7 +615,7 @@ test_list(char *file)
      }
    if (entries)
      {
-	Evas_List *l;
+	Eina_List *l;
 	
 	for (l = entries; l; l = l->next)
 	  {
@@ -626,7 +626,7 @@ test_list(char *file)
 	     
 	     name = l->data;
 	     co = calloc(1, sizeof(Collection));
-	     collections = evas_list_append(collections, co);
+	     collections = eina_list_append(collections, co);
 	     co->file = strdup(file);
 	     co->part = strdup(name);
 	     
@@ -726,7 +726,7 @@ test_setup(char *file, char *name)
      }
    
    de = calloc(1, sizeof(Demo_Edje));
-   edjes = evas_list_append(edjes, de);
+   edjes = eina_list_append(edjes, de);
 
    o = evas_object_image_add(evas);
    snprintf(buf, sizeof(buf), "data/test/images/border.png");

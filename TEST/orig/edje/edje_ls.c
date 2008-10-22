@@ -5,7 +5,7 @@
 
 char      *file_out = NULL;
 char      *progname = NULL;
-Evas_List *collections = NULL;
+Eina_List *collections = NULL;
 
 static void
 main_help(void)
@@ -19,12 +19,12 @@ main_help(void)
 void
 test_list(char *file)
 {
-   Evas_List *entries;
+   Eina_List *entries;
 
    entries = edje_file_collection_list(file);
    if (entries)
      {
-	Evas_List *l;
+	Eina_List *l;
 
 	for (l = entries; l; l = l->next)
 	  {
@@ -33,7 +33,7 @@ test_list(char *file)
 
 	     name = l->data;
 	     snprintf(buf, 1024, "%s: %s", file, name);
-	     collections = evas_list_append(collections, strdup(buf));
+	     collections = eina_list_append(collections, strdup(buf));
 	  }
 	edje_file_collection_list_free(entries);
      }
@@ -95,7 +95,7 @@ int main(int argc, char **argv)
 	char *name;
 
 	name = collections->data;
-	collections = evas_list_remove(collections, name);
+	collections = eina_list_remove(collections, name);
 	fprintf(output, "%s\n", name);
 	free(name);
      }

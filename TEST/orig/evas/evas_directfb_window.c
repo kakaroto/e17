@@ -379,14 +379,14 @@ int main( int argc, char *argv[] )
           }
 	  loop();
 	  {
-	     Evas_List *updates;
+	     Eina_List *updates;
 
 	     updates = evas_render_updates(evas);
 	     /* efficient update.. only flip the rectangle regions that changed! */
 	     if (updates)
 	       {
 		  DFBRegion region;
-		  Evas_List *l;
+		  Eina_List *l;
 
 		  for (l = updates; l; l = l->next)
 		    {

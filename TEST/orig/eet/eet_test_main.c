@@ -34,7 +34,7 @@ typedef struct _blah
    double floating_lots;
    char *string;
    Blah2 *blah2;
-   Evas_List *blah3;
+   Eina_List *blah3;
    Evas_Hash *blah4;
 }
 Blah;
@@ -59,19 +59,19 @@ encdectest(void)
    Blah *blah_in;
 
    edd4 = eet_data_descriptor_new("blah4", sizeof(Blah3),
-				  evas_list_next,
-				  evas_list_append,
-				  evas_list_data,
-				  evas_list_free,
+				  eina_list_next,
+				  eina_list_append,
+				  eina_list_data_get,
+				  eina_list_free,
 				  evas_hash_foreach,
 				  evas_hash_add,
 				  evas_hash_free);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd4, Blah4, "string5", string5, EET_T_STRING);
    edd3 = eet_data_descriptor_new("blah3", sizeof(Blah3),
-				  evas_list_next,
-				  evas_list_append,
-				  evas_list_data,
-				  evas_list_free,
+				  eina_list_next,
+				  eina_list_append,
+				  eina_list_data_get,
+				  eina_list_free,
 				  evas_hash_foreach,
 				  evas_hash_add,
 				  evas_hash_free);
@@ -79,20 +79,20 @@ encdectest(void)
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd3, Blah3, "string4", string4, EET_T_STRING);
 
    edd2 = eet_data_descriptor_new("blah2", sizeof(Blah2),
-				  evas_list_next,
-				  evas_list_append,
-				  evas_list_data,
-				  evas_list_free,
+				  eina_list_next,
+				  eina_list_append,
+				  eina_list_data_get,
+				  eina_list_free,
 				  evas_hash_foreach,
 				  evas_hash_add,
 				  evas_hash_free);
    EET_DATA_DESCRIPTOR_ADD_BASIC(edd2, Blah2, "string2", string, EET_T_STRING);
 
    edd = eet_data_descriptor_new("blah", sizeof(Blah),
-				  evas_list_next,
-				  evas_list_append,
-				  evas_list_data,
-				  evas_list_free,
+				  eina_list_next,
+				  eina_list_append,
+				  eina_list_data_get,
+				  eina_list_free,
 				  evas_hash_foreach,
 				  evas_hash_add,
 				  evas_hash_free);
@@ -123,13 +123,13 @@ encdectest(void)
    blah.floating_lots=0.777777777777777;
    blah.string="bite me like a turnip";
    blah.blah2 = &blah2;
-   blah.blah3 = evas_list_append(NULL, &blah3);
-   blah.blah3 = evas_list_append(blah.blah3, &blah3);
-   blah.blah3 = evas_list_append(blah.blah3, &blah3);
-   blah.blah3 = evas_list_append(blah.blah3, &blah3);
-   blah.blah3 = evas_list_append(blah.blah3, &blah3);
-   blah.blah3 = evas_list_append(blah.blah3, &blah3);
-   blah.blah3 = evas_list_append(blah.blah3, &blah3);
+   blah.blah3 = eina_list_append(NULL, &blah3);
+   blah.blah3 = eina_list_append(blah.blah3, &blah3);
+   blah.blah3 = eina_list_append(blah.blah3, &blah3);
+   blah.blah3 = eina_list_append(blah.blah3, &blah3);
+   blah.blah3 = eina_list_append(blah.blah3, &blah3);
+   blah.blah3 = eina_list_append(blah.blah3, &blah3);
+   blah.blah3 = eina_list_append(blah.blah3, &blah3);
    blah.blah4 = evas_hash_add(blah.blah4, "key1", &blah4);
    blah.blah4 = evas_hash_add(blah.blah4, "key2", &blah4);
    blah.blah4 = evas_hash_add(blah.blah4, "key3", &blah4);
@@ -168,7 +168,7 @@ encdectest(void)
    printf("%p\n", blah_in->blah2);
    printf("  %s\n", blah_in->blah2->string);
      {
-	Evas_List *l;
+	Eina_List *l;
 
 	for (l = blah_in->blah3; l; l = l->next)
 	  {
