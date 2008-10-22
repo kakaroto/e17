@@ -72,7 +72,7 @@ _e_flaunch_app_add(E_Flaunch *fl, const char *deskfile)
    if (desktop) label = desktop->name;
    fla = _e_fluanch_button_add(fl, label, 1, _e_fluanch_cb_app_button, NULL);
    if (deskfile) fla->desktop = evas_stringshare_add(deskfile);
-   fl->apps = evas_list_append(fl->apps, fla);
+   fl->apps = eina_list_append(fl->apps, fla);
    e_box_pack_end(fl->app_box_obj, fla->obj);
    e_box_pack_options_set(fla->obj, 1, 1, 1, 1, 0.5, 0.5, 0, 0, 9999, 9999);
    evas_object_show(fla->obj);
@@ -85,7 +85,7 @@ _e_flaunch_apps_clear(E_Flaunch *fl)
    while (fl->apps)
      {
 	_e_flaunch_button_del(fl->apps->data);
-	fl->apps = evas_list_remove_list(fl->apps, fl->apps);
+	fl->apps = eina_list_remove_list(fl->apps, fl->apps);
      }
 }
 
@@ -158,7 +158,7 @@ _e_flaunch_free(E_Flaunch *fl)
    while (fl->handlers)
      {
 	ecore_event_handler_del(fl->handlers->data);
-	fl->handlers = evas_list_remove_list(fl->handlers, fl->handlers);
+	fl->handlers = eina_list_remove_list(fl->handlers, fl->handlers);
      }
    free(fl);
 }
@@ -267,13 +267,13 @@ e_flaunch_new(E_Zone *zone, const char *themedir)
    evas_object_layer_set(fl->box_obj, 10);
    evas_object_show(fl->box_obj);
 
-   fl->handlers = evas_list_append
+   fl->handlers = eina_list_append
      (fl->handlers, ecore_event_handler_add
       (E_EVENT_ZONE_MOVE_RESIZE, _e_flaunch_cb_zone_move_resize, fl));
-   fl->handlers = evas_list_append
+   fl->handlers = eina_list_append
      (fl->handlers, ecore_event_handler_add
       (EFREET_EVENT_DESKTOP_LIST_CHANGE, _e_flaunch_cb_desktop_list_change, fl));
-   fl->handlers = evas_list_append
+   fl->handlers = eina_list_append
      (fl->handlers, ecore_event_handler_add
       (EFREET_EVENT_DESKTOP_CHANGE, _e_flaunch_cb_desktop_change, fl));
    

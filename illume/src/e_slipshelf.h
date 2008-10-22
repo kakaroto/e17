@@ -29,7 +29,7 @@ struct _E_Slipshelf
    Evas_Object         *vis_obj;
    Evas_Object         *swallow1_obj;
    Evas_Object         *swallow2_obj;
-   Evas_List           *handlers;
+   Eina_List           *handlers;
    E_Border            *focused_border;
    E_Gadcon            *gadcon;
    E_Gadcon            *gadcon_extra;

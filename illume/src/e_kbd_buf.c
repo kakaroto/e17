@@ -35,7 +35,7 @@ _e_kbd_buf_layout_unref(E_Kbd_Buf_Layout *kbl)
 	if (ky->key_shift) evas_stringshare_del(ky->key_shift);
 	if (ky->key_capslock) evas_stringshare_del(ky->key_capslock);
 	free(ky);
-	kbl->keys = evas_list_remove_list(kbl->keys, kbl->keys);
+	kbl->keys = eina_list_remove_list(kbl->keys, kbl->keys);
      }
    free(kbl);
 }
@@ -47,7 +47,7 @@ _e_kbd_buf_string_matches_clear(E_Kbd_Buf *kb)
      {
 	if (kb->string_matches->data)
 	  evas_stringshare_del(kb->string_matches->data);
-	kb->string_matches = evas_list_remove_list(kb->string_matches, kb->string_matches);
+	kb->string_matches = eina_list_remove_list(kb->string_matches, kb->string_matches);
      }
 }
 
@@ -61,7 +61,7 @@ _e_kbd_buf_actual_string_clear(E_Kbd_Buf *kb)
 static E_Kbd_Buf_Key *
 _e_kbd_buf_at_coord_get(E_Kbd_Buf *kb, E_Kbd_Buf_Layout *kbl, int x, int y)
 {
-   Evas_List *l;
+   Eina_List *l;
    
    for (l = kbl->keys; l; l = l->next)
      {
@@ -81,7 +81,7 @@ _e_kbd_buf_at_coord_get(E_Kbd_Buf *kb, E_Kbd_Buf_Layout *kbl, int x, int y)
 static E_Kbd_Buf_Key *
 _e_kbd_buf_closest_get(E_Kbd_Buf *kb, E_Kbd_Buf_Layout *kbl, int x, int y)
 {
-   Evas_List *l;
+   Eina_List *l;
    E_Kbd_Buf_Key *ky_closest = NULL;
    int dist_closest = 0x7fffffff;
    
@@ -148,7 +148,7 @@ _e_kbd_buf_keystroke_string_get(E_Kbd_Buf *kb, E_Kbd_Buf_Keystroke *ks)
 static void
 _e_kbd_buf_actual_string_update(E_Kbd_Buf *kb)
 {
-   Evas_List *l;
+   Eina_List *l;
    char *actual = NULL;
    int actual_len = 0;
    int actual_size = 0;
@@ -180,9 +180,9 @@ _e_kbd_buf_actual_string_update(E_Kbd_Buf *kb)
 }
 
 static const char *
-_e_kbd_buf_matches_find(Evas_List *matches, const char *s)
+_e_kbd_buf_matches_find(Eina_List *matches, const char *s)
 {
-   Evas_List *l;
+   Eina_List *l;
    
    for (l = matches; l; l = l->next)
      {
@@ -194,7 +194,7 @@ _e_kbd_buf_matches_find(Evas_List *matches, const char *s)
 static void
 _e_kbd_buf_matches_update(E_Kbd_Buf *kb)
 {
-   Evas_List *matches = NULL;
+   Eina_List *matches = NULL;
    const char *word;
    int pri, i;
    E_Kbd_Dict *dicts[3];
@@ -213,7 +213,7 @@ _e_kbd_buf_matches_update(E_Kbd_Buf *kb)
 	     word = e_kbd_dict_matches_match_get(dicts[i], &pri);
 	     if (!word) break;
 	     if (!_e_kbd_buf_matches_find(kb->string_matches, word))
-	       kb->string_matches = evas_list_append(kb->string_matches,
+	       kb->string_matches = eina_list_append(kb->string_matches,
 						     evas_stringshare_add(word));
 	     e_kbd_dict_matches_next(dicts[i]);
 	  }
@@ -344,7 +344,7 @@ e_kbd_buf_clear(E_Kbd_Buf *kb)
 	if (ks->key) evas_stringshare_del(ks->key);
 	_e_kbd_buf_layout_unref(ks->layout);
 	free(ks);
-	kb->keystrokes = evas_list_remove_list(kb->keystrokes, kb->keystrokes);
+	kb->keystrokes = eina_list_remove_list(kb->keystrokes, kb->keystrokes);
      }
    _e_kbd_buf_string_matches_clear(kb);
    if (kb->dict.sys) e_kbd_dict_word_letter_clear(kb->dict.sys);
@@ -397,7 +397,7 @@ e_kbd_buf_layout_key_add(E_Kbd_Buf *kb, const char *key,  const char *key_shift,
    ky->y = y;
    ky->w = w;
    ky->h = h;
-   kb->layout->keys = evas_list_append(kb->layout->keys, ky);
+   kb->layout->keys = eina_list_append(kb->layout->keys, ky);
 }
 
 static void
@@ -430,7 +430,7 @@ e_kbd_buf_pressed_key_add(E_Kbd_Buf *kb, const char *key, int shift, int capsloc
    if (capslock) ks->capslock = 1;
    ks->layout = kb->layout;
    _e_kbd_buf_layout_ref(ks->layout);
-   kb->keystrokes = evas_list_append(kb->keystrokes, ks);
+   kb->keystrokes = eina_list_append(kb->keystrokes, ks);
    
    if (kb->dict.sys) e_kbd_dict_word_letter_advance(kb->dict.sys);
    if (kb->dict.personal) e_kbd_dict_word_letter_advance(kb->dict.personal);
@@ -444,7 +444,7 @@ e_kbd_buf_pressed_key_add(E_Kbd_Buf *kb, const char *key, int shift, int capsloc
 static void
 _e_kbd_buf_keystroke_point_add(E_Kbd_Buf *kb, E_Kbd_Buf_Keystroke *ks)
 {
-   Evas_List *l;
+   Eina_List *l;
    
    for (l = ks->layout->keys; l; l = l->next)
      {
@@ -487,7 +487,7 @@ e_kbd_buf_pressed_point_add(E_Kbd_Buf *kb, int x, int y, int shift, int capslock
    if (capslock) ks->capslock = 1;
    ks->layout = kb->layout;
    _e_kbd_buf_layout_ref(ks->layout);
-   kb->keystrokes = evas_list_append(kb->keystrokes, ks);
+   kb->keystrokes = eina_list_append(kb->keystrokes, ks);
    
    if (kb->dict.sys) e_kbd_dict_word_letter_advance(kb->dict.sys);
    if (kb->dict.personal) e_kbd_dict_word_letter_advance(kb->dict.personal);
@@ -505,7 +505,7 @@ e_kbd_buf_actual_string_get(E_Kbd_Buf *kb)
    return kb->actual_string;
 }
 
-EAPI const Evas_List *
+EAPI const Eina_List *
 e_kbd_buf_string_matches_get(E_Kbd_Buf *kb)
 {
    return kb->string_matches;
@@ -514,9 +514,9 @@ e_kbd_buf_string_matches_get(E_Kbd_Buf *kb)
 EAPI void
 e_kbd_buf_backspace(E_Kbd_Buf *kb)
 {
-   Evas_List *l;
+   Eina_List *l;
    
-   l = evas_list_last(kb->keystrokes);
+   l = eina_list_last(kb->keystrokes);
    if (l)
      {
 	E_Kbd_Buf_Keystroke *ks;
@@ -525,7 +525,7 @@ e_kbd_buf_backspace(E_Kbd_Buf *kb)
 	if (ks->key) evas_stringshare_del(ks->key);
 	_e_kbd_buf_layout_unref(ks->layout);
 	free(ks);
-	kb->keystrokes = evas_list_remove_list(kb->keystrokes, l);
+	kb->keystrokes = eina_list_remove_list(kb->keystrokes, l);
 	if (kb->dict.sys) e_kbd_dict_word_letter_delete(kb->dict.sys);
 	if (kb->dict.personal) e_kbd_dict_word_letter_delete(kb->dict.personal);
 	if (kb->dict.data) e_kbd_dict_word_letter_delete(kb->dict.data);

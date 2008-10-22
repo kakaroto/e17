@@ -41,8 +41,8 @@ static int _cb_event_zone_move_resize(void *data, int type, void *event);
 static E_Border_Hook *hook1 = NULL;
 static E_Border_Hook *hook2 = NULL;
 static E_Border_Hook *hook3 = NULL;
-static Evas_List *handlers = NULL;
-static Evas_List *effects = NULL;
+static Eina_List *handlers = NULL;
+static Eina_List *effects = NULL;
 
 /* mainwin is the main big window currently focused/visible */
 static E_Border *mainwin = NULL;
@@ -60,25 +60,25 @@ _e_mod_layout_init(E_Module *m)
 			     _e_mod_layout_cb_hook_post_border_assign, NULL);
    hook3 = e_border_hook_add(E_BORDER_HOOK_EVAL_END,
 			     _e_mod_layout_cb_hook_end, NULL);
-   handlers = evas_list_append
+   handlers = eina_list_append
      (handlers, ecore_event_handler_add
          (E_EVENT_BORDER_ADD, _cb_event_border_add, NULL));
-   handlers = evas_list_append
+   handlers = eina_list_append
      (handlers, ecore_event_handler_add
          (E_EVENT_BORDER_REMOVE, _cb_event_border_remove, NULL));
-   handlers = evas_list_append
+   handlers = eina_list_append
      (handlers, ecore_event_handler_add
          (E_EVENT_BORDER_FOCUS_IN, _cb_event_border_focus_in, NULL));
-   handlers = evas_list_append
+   handlers = eina_list_append
      (handlers, ecore_event_handler_add
          (E_EVENT_BORDER_FOCUS_OUT, _cb_event_border_focus_out, NULL));
-   handlers = evas_list_append
+   handlers = eina_list_append
      (handlers, ecore_event_handler_add
          (E_EVENT_BORDER_SHOW, _cb_event_border_show, NULL));
-   handlers = evas_list_append
+   handlers = eina_list_append
      (handlers, ecore_event_handler_add
          (E_EVENT_BORDER_HIDE, _cb_event_border_hide, NULL));
-   handlers = evas_list_append
+   handlers = eina_list_append
      (handlers, ecore_event_handler_add
          (E_EVENT_ZONE_MOVE_RESIZE, _cb_event_zone_move_resize, NULL));
    
@@ -186,7 +186,7 @@ _e_mod_layout_border_show(E_Border *bd)
 void
 _e_mod_layout_apply_all(void)
 {
-   Evas_List *l, *borders;
+   Eina_List *l, *borders;
 
    borders = e_border_client_list();
    for (l = borders; l; l = l->next)
@@ -247,7 +247,7 @@ _e_mod_layout_cb_effect_animator(void *data)
 //	     e_border_focus_set(ef->border, 1, 1);
 	  }
 	e_border_fx_offset(ef->border, 0, 0);
-	effects = evas_list_remove(effects, ef);
+	effects = eina_list_remove(effects, ef);
 	free(ef);
 	return 0;
      }
@@ -266,7 +266,7 @@ _e_mod_layout_effect_slide_out(E_Border *bd, double in, int post)
    ef->in = in;
    ef->direction = 0;
    ef->post = post;
-   effects = evas_list_append(effects, ef);
+   effects = eina_list_append(effects, ef);
    
    e_border_fx_offset(ef->border, 0, 0);
    if (in <= 0.0)
@@ -290,7 +290,7 @@ _e_mod_layout_effect_slide_in(E_Border *bd, double in, int post)
    ef->in = in;
    ef->direction = 1;
    ef->post = post;
-   effects = evas_list_append(effects, ef);
+   effects = eina_list_append(effects, ef);
 
    if (ef->border->iconic)
      e_border_uniconify(ef->border);
@@ -697,7 +697,7 @@ static int
 _cb_event_border_remove(void *data, int type, void *event)
 {
    E_Event_Border_Remove *ev;
-   Evas_List *l, *pl;
+   Eina_List *l, *pl;
    
    ev = event;
    if (ev->border->stolen) return 1;
@@ -728,7 +728,7 @@ _cb_event_border_remove(void *data, int type, void *event)
 	l = l->next;
 	if (ef->border == ev->border)
 	  {
-	     effects = evas_list_remove_list(effects, pl);
+	     effects = eina_list_remove_list(effects, pl);
 	     ecore_animator_del(ef->animator);
 	     free(ef);
 	  }

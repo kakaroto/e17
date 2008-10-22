@@ -15,9 +15,9 @@ struct _E_Slipwin
    Evas_Object         *base_obj;
    Evas_Object         *scrollframe_obj;
    Evas_Object         *ilist_obj;
-   Evas_List           *handlers;
+   Eina_List           *handlers;
    E_Border            *focused_border;
-   Evas_List           *borders;
+   Eina_List           *borders;
    struct {
       void (*func) (void *data, E_Slipwin *ess, E_Border *bd);
       const void *data;

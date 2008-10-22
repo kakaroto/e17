@@ -15,7 +15,7 @@ static void _e_busycover_cb_item_sel(void *data, void *data2);
 static Evas_Object *_theme_obj_new(Evas *e, const char *custom_dir, const char *group);
 
 /* state */
-static Evas_List *busycovers = NULL;
+static Eina_List *busycovers = NULL;
 
 static void
 _e_busycover_add_object(E_Busycover *esw)
@@ -57,9 +57,9 @@ e_busycover_new(E_Zone *zone, const char *themedir)
    esw->zone = zone;
    if (themedir) esw->themedir = evas_stringshare_add(themedir);
 
-   busycovers = evas_list_append(busycovers, esw);
+   busycovers = eina_list_append(busycovers, esw);
 
-   esw->handlers = evas_list_append
+   esw->handlers = eina_list_append
      (esw->handlers,
       ecore_event_handler_add(E_EVENT_ZONE_MOVE_RESIZE,
 			      _e_busycover_cb_zone_move_resize, esw));
@@ -79,7 +79,7 @@ e_busycover_push(E_Busycover *esw, const char *message, const char *icon)
    h->busycover = esw;
    if (message) h->message = evas_stringshare_add(message);
    if (icon) h->icon = evas_stringshare_add(icon);
-   esw->handles = evas_list_prepend(esw->handles, h);
+   esw->handles = eina_list_prepend(esw->handles, h);
    edje_object_part_text_set(esw->base_obj, "e.text.label", h->message);
    /* FIXME: handle icon... */
    evas_object_show(esw->base_obj);
@@ -91,8 +91,8 @@ e_busycover_pop(E_Busycover *esw, E_Busycover_Handle *handle)
 {
    E_OBJECT_CHECK(esw);
    E_OBJECT_TYPE_CHECK(esw, E_BUSYCOVER_TYPE);
-   if (!evas_list_find(esw->handles, handle)) return;
-   esw->handles = evas_list_remove(esw->handles, handle);
+   if (!eina_list_data_find(esw->handles, handle)) return;
+   esw->handles = eina_list_remove(esw->handles, handle);
    if (handle->message) evas_stringshare_del(handle->message);
    if (handle->icon) evas_stringshare_del(handle->icon);
    free(handle);
@@ -115,12 +115,12 @@ static void
 _e_busycover_free(E_Busycover *esw)
 {
    if (esw->base_obj) evas_object_del(esw->base_obj);
-   busycovers = evas_list_remove(busycovers, esw);
+   busycovers = eina_list_remove(busycovers, esw);
    while (esw->handlers)
      {
 	if (esw->handlers->data)
 	  ecore_event_handler_del(esw->handlers->data);
-	esw->handlers = evas_list_remove_list(esw->handlers, esw->handlers);
+	esw->handlers = eina_list_remove_list(esw->handlers, esw->handlers);
      }
    if (esw->themedir) evas_stringshare_del(esw->themedir);
    free(esw);

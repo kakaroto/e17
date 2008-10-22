@@ -49,7 +49,7 @@ _e_kbd_int_str_unquote(const char *str)
 static E_Kbd_Int_Key *
 _e_kbd_int_at_coord_get(E_Kbd_Int *ki, Evas_Coord x, Evas_Coord y)
 {
-   Evas_List *l;
+   Eina_List *l;
    Evas_Coord dist;
    E_Kbd_Int_Key *closest_ky = NULL;
 
@@ -84,7 +84,7 @@ _e_kbd_int_at_coord_get(E_Kbd_Int *ki, Evas_Coord x, Evas_Coord y)
 static E_Kbd_Int_Key_State *
 _e_kbd_int_key_state_get(E_Kbd_Int *ki, E_Kbd_Int_Key *ky)
 {
-   Evas_List *l;
+   Eina_List *l;
    
    for (l = ky->states; l; l = l->next)
      {
@@ -106,7 +106,7 @@ _e_kbd_int_key_state_get(E_Kbd_Int *ki, E_Kbd_Int_Key *ky)
 static void
 _e_kbd_int_layout_buf_update(E_Kbd_Int *ki)
 {
-   Evas_List *l, *l2;
+   Eina_List *l, *l2;
 
    e_kbd_buf_layout_clear(ki->kbuf);
    e_kbd_buf_layout_size_set(ki->kbuf, ki->layout.w, ki->layout.h);
@@ -153,7 +153,7 @@ _e_kbd_int_layout_buf_update(E_Kbd_Int *ki)
 static void
 _e_kbd_int_layout_state_update(E_Kbd_Int *ki)
 {
-   Evas_List *l;
+   Eina_List *l;
    
    for (l = ki->layout.keys; l; l = l->next)
      {
@@ -232,7 +232,7 @@ static void
 _e_kbd_int_buf_send(E_Kbd_Int *ki)
 {
    const char *str = NULL;
-   const Evas_List *matches;
+   const Eina_List *matches;
    
    matches = e_kbd_buf_string_matches_get(ki->kbuf);
    if (matches) str = matches->data;
@@ -272,7 +272,7 @@ _e_kbd_int_matches_add(E_Kbd_Int *ki, const char *str, int num)
    km->ki = ki;
    km->str = evas_stringshare_add(str);
    km->obj = o;
-   ki->matches = evas_list_append(ki->matches, km);
+   ki->matches = eina_list_append(ki->matches, km);
    edje_object_part_text_set(o, "e.text.label", str);
    edje_object_size_min_calc(o, &mw, &mh);
    if (mw < 32) mw = 32;
@@ -297,14 +297,14 @@ _e_kbd_int_matches_free(E_Kbd_Int *ki)
 	if (km->str) evas_stringshare_del(km->str);
 	evas_object_del(km->obj);
 	free(km);
-	ki->matches = evas_list_remove_list(ki->matches, ki->matches);
+	ki->matches = eina_list_remove_list(ki->matches, ki->matches);
      }
 }
 
 static void
 _e_kbd_int_matches_update(E_Kbd_Int *ki)
 {
-   const Evas_List *l, *matches;
+   const Eina_List *l, *matches;
    const char *actual;
    Evas_Coord mw, mh, vw, vh;
    
@@ -492,7 +492,7 @@ _e_kbd_int_stroke_handle(E_Kbd_Int *ki, int dir)
 static void
 _e_kbd_int_zoomkey_down(E_Kbd_Int *ki)
 {
-   const Evas_List *l;
+   const Eina_List *l;
    
    if (!ki->zoomkey.popup) return;
    e_object_del(E_OBJECT(ki->zoomkey.popup));
@@ -512,7 +512,7 @@ _e_kbd_int_zoomkey_down(E_Kbd_Int *ki)
 static void
 _e_kbd_int_zoomkey_up(E_Kbd_Int *ki)
 {
-   const Evas_List *l;
+   const Eina_List *l;
    Evas_Object *o, *o2;
    Evas_Coord w, h, mw, mh, vw, vh;
    int sx, sy, sw, sh;
@@ -849,7 +849,7 @@ _e_kbd_int_cb_mouse_up(void *data, Evas *evas, Evas_Object *obj, void *event_inf
 static E_Kbd_Int_Layout *
 _e_kbd_int_layouts_list_default_get(E_Kbd_Int *ki)
 {
-   Evas_List *l;
+   Eina_List *l;
    
    for (l = ki->layouts; l; l = l->next)
      {
@@ -865,7 +865,7 @@ _e_kbd_int_layouts_list_default_get(E_Kbd_Int *ki)
 static E_Kbd_Int_Layout *
 _e_kbd_int_layouts_type_get(E_Kbd_Int *ki, int type)
 {
-   Evas_List *l;
+   Eina_List *l;
    
    for (l = ki->layouts; l; l = l->next)
      {
@@ -899,12 +899,12 @@ _e_kbd_int_layout_free(E_Kbd_Int *ki)
 	     if (st->icon) evas_stringshare_del(st->icon);
 	     if (st->out) evas_stringshare_del(st->out);
 	     free(st);
-	     ky->states = evas_list_remove_list(ky->states, ky->states);
+	     ky->states = eina_list_remove_list(ky->states, ky->states);
 	  }
 	if (ky->obj) evas_object_del(ky->obj);
 	if (ky->icon_obj) evas_object_del(ky->icon_obj);
 	free(ky);
-	ki->layout.keys = evas_list_remove_list(ki->layout.keys, ki->layout.keys);
+	ki->layout.keys = eina_list_remove_list(ki->layout.keys, ki->layout.keys);
      }
    if (ki->event_obj) evas_object_del(ki->event_obj);
    ki->event_obj = NULL;
@@ -960,7 +960,7 @@ _e_kbd_int_layout_parse(E_Kbd_Int *ki, const char *layout)
 		  ky = NULL;
 		  continue;
 	       }
-	     ki->layout.keys = evas_list_append(ki->layout.keys, ky);
+	     ki->layout.keys = eina_list_append(ki->layout.keys, ky);
 	  }
 	if (!ky) continue;
 	if ((!strcmp(str, "normal")) ||
@@ -974,7 +974,7 @@ _e_kbd_int_layout_parse(E_Kbd_Int *ki, const char *layout)
 	     if (sscanf(buf, "%*s %4000s", label) != 1) continue;
 	     st = calloc(1, sizeof(E_Kbd_Int_Key_State));
 	     if (!st) continue;
-	     ky->states = evas_list_append(ky->states, st);
+	     ky->states = eina_list_append(ky->states, st);
 	     if (!strcmp(str, "normal")) st->state = NORMAL;
 	     if (!strcmp(str, "shift")) st->state = SHIFT;
 	     if (!strcmp(str, "capslock")) st->state = CAPSLOCK;
@@ -1001,7 +1001,7 @@ _e_kbd_int_layout_build(E_Kbd_Int *ki)
 {
    Evas_Object *o, *o2;
    Evas_Coord lw, lh;
-   Evas_List *l;
+   Eina_List *l;
    
    evas_event_freeze(ki->win->evas);
    e_layout_virtual_size_set(ki->layout_obj, ki->layout.w, ki->layout.h);
@@ -1085,7 +1085,7 @@ _e_kbd_int_layouts_free(E_Kbd_Int *ki)
 	evas_stringshare_del(kil->icon);
 	evas_stringshare_del(kil->name);
 	free(kil);
-	ki->layouts = evas_list_remove_list(ki->layouts, ki->layouts);
+	ki->layouts = eina_list_remove_list(ki->layouts, ki->layouts);
      }
 }
 
@@ -1095,7 +1095,7 @@ _e_kbd_int_layouts_list_update(E_Kbd_Int *ki)
    Ecore_List *files;
    char buf[PATH_MAX], *p, *file;
    const char *homedir, *fl;
-   Evas_List *kbs = NULL, *l, *layouts = NULL;
+   Eina_List *kbs = NULL, *l, *layouts = NULL;
    int ok;
    
    homedir = e_user_homedir_get();
@@ -1110,7 +1110,7 @@ _e_kbd_int_layouts_list_update(E_Kbd_Int *ki)
 	     if ((p) && (!strcmp(p, ".kbd")))
 	       {
 		  snprintf(buf, sizeof(buf), "%s/.e/e/keyboards/%s", homedir, file);
-		  kbs = evas_list_append(kbs, evas_stringshare_add(buf));
+		  kbs = eina_list_append(kbs, evas_stringshare_add(buf));
 	       }
 	     ecore_list_next(files);
 	  }
@@ -1139,7 +1139,7 @@ _e_kbd_int_layouts_list_update(E_Kbd_Int *ki)
 		  if (ok)
 		    {
 		       snprintf(buf, sizeof(buf), "%s/keyboards/%s", ki->syskbds, file);
-		       kbs = evas_list_append(kbs, evas_stringshare_add(buf));
+		       kbs = eina_list_append(kbs, evas_stringshare_add(buf));
 		    }
 	       }
 	     ecore_list_next(files);
@@ -1223,10 +1223,10 @@ _e_kbd_int_layouts_list_update(E_Kbd_Int *ki)
 		    }
 		  fclose(f);
 	       }
-	     layouts = evas_list_append(layouts, kil);
+	     layouts = eina_list_append(layouts, kil);
 	  }
      }
-   evas_list_free(kbs);
+   eina_list_free(kbs);
    _e_kbd_int_layouts_free(ki);
    ki->layouts = layouts;
 }
@@ -1262,7 +1262,7 @@ _e_kbd_int_layout_select(E_Kbd_Int *ki, E_Kbd_Int_Layout *kil)
 static void
 _e_kbd_int_layout_next(E_Kbd_Int *ki)
 {
-   Evas_List *l, *ln = NULL;
+   Eina_List *l, *ln = NULL;
    const char *nextlay = NULL;
    E_Kbd_Int_Layout *kil;
    
@@ -1353,7 +1353,7 @@ _e_kbd_int_dictlist_down(E_Kbd_Int *ki)
    while (ki->dictlist.matches)
      {
 	evas_stringshare_del(ki->dictlist.matches->data);
-	ki->dictlist.matches = evas_list_remove_list(ki->dictlist.matches, ki->dictlist.matches);
+	ki->dictlist.matches = eina_list_remove_list(ki->dictlist.matches, ki->dictlist.matches);
      }
 }
 
@@ -1391,7 +1391,7 @@ _e_kbd_int_dictlist_up(E_Kbd_Int *ki)
    Ecore_List *files;
    char buf[PATH_MAX], *p, *file, *pp;
    const char *homedir, *str;
-   Evas_List *l;
+   Eina_List *l;
    int used;
    
    if (ki->dictlist.popup) return;
@@ -1441,7 +1441,7 @@ _e_kbd_int_dictlist_up(E_Kbd_Int *ki)
 			    pp = strrchr(p, '.');
 			    *pp = 0;
 			    str = evas_stringshare_add(file);
-			    ki->dictlist.matches = evas_list_append(ki->dictlist.matches, str);
+			    ki->dictlist.matches = eina_list_append(ki->dictlist.matches, str);
 			    e_ilist_append(o, NULL, p, 0, _e_kbd_int_cb_dictlist_item_sel,
 					   NULL, ki, (char *)str);
 			    free(p);
@@ -1480,7 +1480,7 @@ _e_kbd_int_dictlist_up(E_Kbd_Int *ki)
 			    pp = strrchr(p, '.');
 			    *pp = 0;
 			    str = evas_stringshare_add(file);
-			    ki->dictlist.matches = evas_list_append(ki->dictlist.matches, str);
+			    ki->dictlist.matches = eina_list_append(ki->dictlist.matches, str);
 			    e_ilist_append(o, NULL, p, 0, _e_kbd_int_cb_dictlist_item_sel,
 					   NULL, ki, (char *)str);
 			    free(p);
@@ -1533,7 +1533,7 @@ _e_kbd_int_matchlist_down(E_Kbd_Int *ki)
    while (ki->matchlist.matches)
      {
 	evas_stringshare_del(ki->matchlist.matches->data);
-	ki->matchlist.matches = evas_list_remove_list(ki->matchlist.matches, ki->matchlist.matches);
+	ki->matchlist.matches = eina_list_remove_list(ki->matchlist.matches, ki->matchlist.matches);
      }
 }
 
@@ -1560,7 +1560,7 @@ _e_kbd_int_cb_matchlist_item_sel(void *data, void *data2)
 static void
 _e_kbd_int_matchlist_up(E_Kbd_Int *ki)
 {
-   const Evas_List *l;
+   const Eina_List *l;
    Evas_Object *o;
    Evas_Coord w, h, mw, mh, vw, vh;
    int sx, sy, sw, sh;
@@ -1594,14 +1594,14 @@ _e_kbd_int_matchlist_up(E_Kbd_Int *ki)
 	     if (str)
 	       {
 		  str = evas_stringshare_add(str);
-		  ki->matchlist.matches = evas_list_append(ki->matchlist.matches, str);
+		  ki->matchlist.matches = eina_list_append(ki->matchlist.matches, str);
 		  e_ilist_append(o, NULL, str, 0, _e_kbd_int_cb_matchlist_item_sel,
 				 NULL, ki, (char *)str);
 	       }
 	  }
 	str = l->data;
 	str = evas_stringshare_add(str);
-	ki->matchlist.matches = evas_list_append(ki->matchlist.matches, str);
+	ki->matchlist.matches = eina_list_append(ki->matchlist.matches, str);
 	e_ilist_append(o, NULL, str, 0, _e_kbd_int_cb_matchlist_item_sel,
 		       NULL, ki, (char *)str);
      }
@@ -1688,7 +1688,7 @@ _e_kbd_int_cb_layoutlist_item_sel(void *data, void *data2)
 static void
 _e_kbd_int_layoutlist_up(E_Kbd_Int *ki)
 {
-   Evas_List *l;
+   Eina_List *l;
    Evas_Object *o, *o2;
    Evas_Coord w, h, mw, mh, vw, vh;
    int sx, sy, sw, sh;

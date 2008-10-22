@@ -26,8 +26,8 @@ struct _E_Kbd_Int
    E_Win               *win;
    const char          *themedir, *syskbds, *sysdicts;
    Evas_Object         *base_obj, *layout_obj, *event_obj, *icon_obj, *box_obj;
-   Evas_List           *layouts;
-   Evas_List           *matches;
+   Eina_List           *layouts;
+   Eina_List           *matches;
    Ecore_Event_Handler *client_message_handler;
    struct {
       char             *directory;
@@ -35,7 +35,7 @@ struct _E_Kbd_Int
       int               w, h;
       int               fuzz;
       E_Kbd_Int_Type    type;
-      Evas_List        *keys;
+      Eina_List        *keys;
       E_Kbd_Int_Key    *pressed;
       int               state;
    } layout;
@@ -54,12 +54,12 @@ struct _E_Kbd_Int
    struct {
       E_Popup          *popup;
       Evas_Object      *base_obj, *scrollframe_obj, *ilist_obj;
-      Evas_List        *matches;
+      Eina_List        *matches;
    } matchlist;
    struct {
       E_Popup          *popup;
       Evas_Object      *base_obj, *scrollframe_obj, *ilist_obj;
-      Evas_List        *matches;
+      Eina_List        *matches;
    } dictlist;
    struct {
       E_Popup          *popup;
@@ -74,7 +74,7 @@ struct _E_Kbd_Int_Key
 {
    int x, y, w, h;
    
-   Evas_List *states;
+   Eina_List *states;
    Evas_Object *obj, *zoom_obj, *icon_obj, *zoom_icon_obj;
 
    unsigned char pressed : 1;

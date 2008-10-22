@@ -23,9 +23,9 @@ static Evas_Object *_theme_obj_new(Evas *e, const char *custom_dir, const char *
 
 static E_Module       *mod = NULL;
 
-static Evas_List      *locks = NULL;
+static Eina_List      *locks = NULL;
 static Ecore_X_Window  grab_win;
-static Evas_List      *handlers = NULL;
+static Eina_List      *handlers = NULL;
 
 /***********************************************************************/
 static void
@@ -42,7 +42,7 @@ _e_simplelock_cb_key_down(void *data, int type, void *event)
 {
    Ecore_X_Event_Key_Down *ev;
    E_Action *act;
-   Evas_List *l;
+   Eina_List *l;
    E_Config_Binding_Key *bind;
    E_Binding_Modifier mod;
       
@@ -87,7 +87,7 @@ static int
 _e_simplelock_cb_zone_move_resize(void *data, int type, void *event)
 {
    E_Event_Zone_Move_Resize *ev;
-   Evas_List *l;
+   Eina_List *l;
       
    ev = event;
    for (l = locks; l; l = l->next)
@@ -149,7 +149,7 @@ e_simplelock_shutdown(void)
 EAPI int
 e_simplelock_show(void)
 {
-   Evas_List	     *managers, *l, *l2, *l3;
+   Eina_List	     *managers, *l, *l2, *l3;
 
    if (locks) return;
    for (l = e_manager_list(); l; l = l->next)
@@ -200,7 +200,7 @@ e_simplelock_show(void)
 		  
 		  e_popup_show(esl->popup);
 		  
-		  locks = evas_list_append(locks, esl);
+		  locks = eina_list_append(locks, esl);
 	       }
 	  }
      }
@@ -209,13 +209,13 @@ e_simplelock_show(void)
 	e_simplelock_hide();
 	return 0;
      }
-   handlers = evas_list_append
+   handlers = eina_list_append
      (handlers, ecore_event_handler_add
       (ECORE_X_EVENT_KEY_DOWN, _e_simplelock_cb_key_down, NULL));
-   handlers = evas_list_append
+   handlers = eina_list_append
      (handlers, ecore_event_handler_add
       (ECORE_X_EVENT_KEY_UP, _e_simplelock_cb_key_up, NULL));
-   handlers = evas_list_append
+   handlers = eina_list_append
      (handlers, ecore_event_handler_add
       (E_EVENT_ZONE_MOVE_RESIZE, _e_simplelock_cb_zone_move_resize, NULL));
    return 1;
@@ -234,7 +234,7 @@ e_simplelock_hide(void)
 	e_object_del(E_OBJECT(esl->popup));
 	ecore_x_window_del(esl->win);
 	free(esl);
-	locks = evas_list_remove_list(locks, locks);
+	locks = eina_list_remove_list(locks, locks);
      }
    grab_win = 0;
 }

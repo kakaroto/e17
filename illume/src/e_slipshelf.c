@@ -37,7 +37,7 @@ static Evas_Object *_e_slipshelf_cb_gadcon_frame_request(void *data, E_Gadcon_Cl
 static Evas_Object *_theme_obj_new(Evas *e, const char *custom_dir, const char *group);
 
 /* state */
-static Evas_List *slipshelves = NULL;
+static Eina_List *slipshelves = NULL;
 
 /* called from the module core */
 EAPI int
@@ -214,25 +214,25 @@ e_slipshelf_new(E_Zone *zone, const char *themedir)
    
    e_popup_show(ess->popup);
 
-   slipshelves = evas_list_append(slipshelves, ess);
+   slipshelves = eina_list_append(slipshelves, ess);
 
-   ess->handlers = evas_list_append
+   ess->handlers = eina_list_append
      (ess->handlers,
       ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_UP,
 			      _e_slipshelf_cb_mouse_up, ess));
-   ess->handlers = evas_list_append
+   ess->handlers = eina_list_append
      (ess->handlers,
       ecore_event_handler_add(E_EVENT_BORDER_FOCUS_IN,
 			      _e_slipshelf_cb_border_focus_in, ess));
-   ess->handlers = evas_list_append
+   ess->handlers = eina_list_append
      (ess->handlers,
       ecore_event_handler_add(E_EVENT_BORDER_FOCUS_OUT,
 			      _e_slipshelf_cb_border_focus_out, ess));
-   ess->handlers = evas_list_append
+   ess->handlers = eina_list_append
      (ess->handlers,
       ecore_event_handler_add(E_EVENT_BORDER_PROPERTY,
 			      _e_slipshelf_cb_border_property, ess));
-   ess->handlers = evas_list_append
+   ess->handlers = eina_list_append
      (ess->handlers,
       ecore_event_handler_add(E_EVENT_ZONE_MOVE_RESIZE,
 			      _e_slipshelf_cb_zone_move_resize, ess));
@@ -372,7 +372,7 @@ e_slipshelf_action_callback_set(E_Slipshelf *ess, E_Slipshelf_Action action, voi
 EAPI void
 e_slipshelf_safe_app_region_get(E_Zone *zone, int *x, int *y, int *w, int *h)
 {
-   Evas_List *l;   
+   Eina_List *l;   
    int sx, sy, sw, sh;
    
    sx = zone->x;
@@ -454,14 +454,14 @@ static void
 _e_slipshelf_free(E_Slipshelf *ess)
 {
    if (ess->slide_down_timer) ecore_timer_del(ess->slide_down_timer);
-   slipshelves = evas_list_remove(slipshelves, ess);
+   slipshelves = eina_list_remove(slipshelves, ess);
    e_object_del(E_OBJECT(ess->gadcon));
    e_object_del(E_OBJECT(ess->gadcon_extra));
    while (ess->handlers)
      {
 	if (ess->handlers->data)
 	  ecore_event_handler_del(ess->handlers->data);
-	ess->handlers = evas_list_remove_list(ess->handlers, ess->handlers);
+	ess->handlers = eina_list_remove_list(ess->handlers, ess->handlers);
      }
    if (ess->animator) ecore_animator_del(ess->animator);
    if (ess->themedir) evas_stringshare_del(ess->themedir);
@@ -617,7 +617,7 @@ static void
 _e_slipshelf_applist_update(E_Slipshelf *ess)
 {
    Evas_Coord mw, mh, vx, vy, vw, vh, w, h, sfmw, sfmh, cmw, cmh, smw, smh;
-//   Evas_List *borders, *l;
+//   Eina_List *borders, *l;
    int i, selnum, x, y;
    int pw, ph;
    
@@ -647,7 +647,7 @@ _e_slipshelf_applist_update(E_Slipshelf *ess)
 	e_ilist_append(ess->ilist_obj, NULL, title, 0, 
 		       _e_slipshelf_cb_item_sel,
 		       NULL, ess, bd);
-	ess->borders = evas_list_append(ess->borders, bd);
+	ess->borders = eina_list_append(ess->borders, bd);
 	if (bd == e_border_focused_get()) selnum = i;
 	i++;
      }
@@ -743,7 +743,7 @@ _e_slipshelf_applist_clear(E_Slipshelf *ess)
    while (ess->borders)
      {
 	e_object_unref(E_OBJECT(ess->borders->data));
-	ess->borders = evas_list_remove_list(ess->borders, ess->borders);
+	ess->borders = eina_list_remove_list(ess->borders, ess->borders);
      }
    
    e_scrollframe_child_viewport_size_get(ess->scrollframe_obj, &vw, &vh);

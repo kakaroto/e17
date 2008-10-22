@@ -19,7 +19,7 @@ static void _e_slipwin_cb_item_sel(void *data, void *data2);
 static Evas_Object *_theme_obj_new(Evas *e, const char *custom_dir, const char *group);
 
 /* state */
-static Evas_List *slipwins = NULL;
+static Eina_List *slipwins = NULL;
 
 /* called from the module core */
 EAPI int
@@ -86,9 +86,9 @@ e_slipwin_new(E_Zone *zone, const char *themedir)
    
    e_popup_show(esw->popup);
 
-   slipwins = evas_list_append(slipwins, esw);
+   slipwins = eina_list_append(slipwins, esw);
 
-   esw->handlers = evas_list_append
+   esw->handlers = eina_list_append
      (esw->handlers,
       ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_UP,
 			      _e_slipwin_cb_mouse_up, esw));
@@ -103,7 +103,7 @@ e_slipwin_show(E_Slipwin *esw)
 {
    Evas_Object *o;
    Evas_Coord mw, mh, vw, vh, w, h;
-   Evas_List *borders, *l;
+   Eina_List *borders, *l;
    int i, selnum;
    
    E_OBJECT_CHECK(esw);
@@ -118,7 +118,7 @@ e_slipwin_show(E_Slipwin *esw)
    while (esw->borders)
      {
 	e_object_unref(E_OBJECT(esw->borders->data));
-	esw->borders = evas_list_remove_list(esw->borders, esw->borders);
+	esw->borders = eina_list_remove_list(esw->borders, esw->borders);
      }
    
    o = e_ilist_add(esw->popup->evas);
@@ -146,7 +146,7 @@ e_slipwin_show(E_Slipwin *esw)
 	else if (bd->client.icccm.title) title = bd->client.icccm.title;
 	e_ilist_append(o, NULL/*icon*/, title, 0, _e_slipwin_cb_item_sel,
 		       NULL, esw, bd);
-	esw->borders = evas_list_append(esw->borders, bd);
+	esw->borders = eina_list_append(esw->borders, bd);
 	if (bd == e_border_focused_get()) selnum = i;
 	i++;
      }
@@ -209,12 +209,12 @@ e_slipwin_border_select_callback_set(E_Slipwin *esw, void (*func) (void *data, E
 static void
 _e_slipwin_free(E_Slipwin *esw)
 {
-   slipwins = evas_list_remove(slipwins, esw);
+   slipwins = eina_list_remove(slipwins, esw);
    while (esw->handlers)
      {
 	if (esw->handlers->data)
 	  ecore_event_handler_del(esw->handlers->data);
-	esw->handlers = evas_list_remove_list(esw->handlers, esw->handlers);
+	esw->handlers = eina_list_remove_list(esw->handlers, esw->handlers);
      }
    if (esw->animator) ecore_animator_del(esw->animator);
    if (esw->themedir) evas_stringshare_del(esw->themedir);
@@ -256,7 +256,7 @@ _e_slipwin_cb_animate(void *data)
 	     while (esw->borders)
 	       {
 		  e_object_unref(E_OBJECT(esw->borders->data));
-		  esw->borders = evas_list_remove_list(esw->borders, esw->borders);
+		  esw->borders = eina_list_remove_list(esw->borders, esw->borders);
 	       }
 	  }
 	return 0;

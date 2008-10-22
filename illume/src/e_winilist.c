@@ -14,15 +14,15 @@ struct _Data
       void *data;
    } select;
    struct {
-      Evas_List *prepend;
-      Evas_List *append;
+      Eina_List *prepend;
+      Eina_List *append;
       unsigned char changed : 1;
    } special;
    struct {
       Evas_Coord w, h;
    } optimal_size;
-   Evas_List *borders;
-   Evas_List *labels;
+   Eina_List *borders;
+   Eina_List *labels;
 };
 
 struct _Special
@@ -50,19 +50,19 @@ static int _cb_border_property(void *data, int ev_type, void *ev);
 static int _cb_desk_show(void *data, int ev_type, void *event);
 
 /* state */
-static Evas_List *handlers = NULL;
-static Evas_List *winilists = NULL;
+static Eina_List *handlers = NULL;
+static Eina_List *winilists = NULL;
 
 /* called from the module core */
 EAPI int
 e_winilist_init(void)
 {
-   handlers = evas_list_append(handlers, ecore_event_handler_add(E_EVENT_BORDER_ADD, _cb_border_add, NULL));
-   handlers = evas_list_append(handlers, ecore_event_handler_add(E_EVENT_BORDER_REMOVE, _cb_border_remove, NULL));
-   handlers = evas_list_append(handlers, ecore_event_handler_add(E_EVENT_BORDER_SHOW, _cb_border_show, NULL));
-   handlers = evas_list_append(handlers, ecore_event_handler_add(E_EVENT_BORDER_HIDE, _cb_border_hide, NULL));
-   handlers = evas_list_append(handlers, ecore_event_handler_add(E_EVENT_BORDER_PROPERTY, _cb_border_property, NULL));
-   handlers = evas_list_append(handlers, ecore_event_handler_add(E_EVENT_DESK_SHOW, _cb_desk_show, NULL));
+   handlers = eina_list_append(handlers, ecore_event_handler_add(E_EVENT_BORDER_ADD, _cb_border_add, NULL));
+   handlers = eina_list_append(handlers, ecore_event_handler_add(E_EVENT_BORDER_REMOVE, _cb_border_remove, NULL));
+   handlers = eina_list_append(handlers, ecore_event_handler_add(E_EVENT_BORDER_SHOW, _cb_border_show, NULL));
+   handlers = eina_list_append(handlers, ecore_event_handler_add(E_EVENT_BORDER_HIDE, _cb_border_hide, NULL));
+   handlers = eina_list_append(handlers, ecore_event_handler_add(E_EVENT_BORDER_PROPERTY, _cb_border_property, NULL));
+   handlers = eina_list_append(handlers, ecore_event_handler_add(E_EVENT_DESK_SHOW, _cb_desk_show, NULL));
    return 1;
 }
 
@@ -72,7 +72,7 @@ e_winilist_shutdown(void)
    while (handlers)
      {
 	ecore_event_handler_del(handlers->data);
-	handlers = evas_list_remove_list(handlers, handlers);
+	handlers = eina_list_remove_list(handlers, handlers);
      }
    return 1;
 }
@@ -91,7 +91,7 @@ e_winilist_add(Evas *e)
    e_scrollframe_child_set(d->o_frame, d->o_ilist);
    evas_object_show(d->o_ilist);
    
-   winilists = evas_list_append(winilists, d);
+   winilists = eina_list_append(winilists, d);
    evas_object_event_callback_add(d->o_frame, EVAS_CALLBACK_DEL, _cb_object_del, NULL);
    evas_object_event_callback_add(d->o_frame, EVAS_CALLBACK_RESIZE, _cb_object_resize, NULL);
    
@@ -122,7 +122,7 @@ e_winilist_special_append(Evas_Object *obj, Evas_Object *icon, const char *label
 	Special *s;
 	
 	s = E_NEW(Special, 1);
-	d->special.prepend = evas_list_prepend(d->special.prepend, s);
+	d->special.prepend = eina_list_prepend(d->special.prepend, s);
 	s->icon = icon;
 	if (label) s->label = evas_stringshare_add(label);
 	s->func = func;
@@ -144,7 +144,7 @@ e_winilist_special_prepend(Evas_Object *obj, Evas_Object *icon, const char *labe
 	Special *s;
 	
 	s = E_NEW(Special, 1);
-	d->special.append = evas_list_append(d->special.append, s);
+	d->special.append = eina_list_append(d->special.append, s);
 	s->icon = icon;
 	if (label) s->label = evas_stringshare_add(label);
 	s->func = func;
@@ -203,17 +203,17 @@ _cb_object_del(void *data, Evas *e, Evas_Object *obj, void *event_info)
    d = evas_object_data_get(obj, "..[winilist]");
    if (!d) return;
    evas_object_del(d->o_ilist);
-   winilists = evas_list_remove(winilists, d);
+   winilists = eina_list_remove(winilists, d);
    
    while (d->borders)
      {
 	e_object_unref(E_OBJECT(d->borders->data));
-	d->borders = evas_list_remove_list(d->borders, d->borders);
+	d->borders = eina_list_remove_list(d->borders, d->borders);
      }
    while (d->labels)
      {
 	evas_stringshare_del(d->labels->data);
-	d->labels = evas_list_remove_list(d->labels, d->labels);
+	d->labels = eina_list_remove_list(d->labels, d->labels);
      }
    
    while (d->special.prepend)
@@ -232,7 +232,7 @@ _cb_object_del(void *data, Evas *e, Evas_Object *obj, void *event_info)
 	     s->label = NULL;
 	  }
 	free(s);
-	d->special.prepend = evas_list_remove_list(d->special.prepend, d->special.prepend);
+	d->special.prepend = eina_list_remove_list(d->special.prepend, d->special.prepend);
      }
    while (d->special.append)
      {
@@ -250,7 +250,7 @@ _cb_object_del(void *data, Evas *e, Evas_Object *obj, void *event_info)
 	     s->label = NULL;
 	  }
 	free(s);
-	d->special.append = evas_list_remove_list(d->special.append, d->special.append);
+	d->special.append = eina_list_remove_list(d->special.append, d->special.append);
      }
    
    free(d);
@@ -273,7 +273,7 @@ static void
 _refill(Data *d)
 {
    Evas_Coord w, h, lw, lh, vw, vh;
-   Evas_List *borders, *l, *l2, *l3;
+   Eina_List *borders, *l, *l2, *l3;
    
    borders = e_border_client_list();
    if (!d->special.changed)
@@ -282,7 +282,7 @@ _refill(Data *d)
 	
 	if ((borders) && (d->borders))
 	  {
-	     Evas_List *tmp = NULL;
+	     Eina_List *tmp = NULL;
 	     
 	     changed = 0;
 	     for (l = borders; l; l = l->next)
@@ -297,7 +297,7 @@ _refill(Data *d)
 		  if (bd->user_skip_winlist) continue;
 		  if ((!bd->sticky) && 
 		      (bd->desk != e_desk_current_get(bd->zone))) continue;
-		  tmp = evas_list_append(tmp, bd);
+		  tmp = eina_list_append(tmp, bd);
 	       }
 	     if (!(tmp && d->borders))
 	       {
@@ -305,8 +305,8 @@ _refill(Data *d)
 	       }
 	     else
 	       {
-		  if (evas_list_count(tmp) !=
-		      evas_list_count(d->borders))
+		  if (eina_list_count(tmp) !=
+		      eina_list_count(d->borders))
 		    {
 		       changed = 1;
 		    }
@@ -338,7 +338,7 @@ _refill(Data *d)
 			 }
 		    }
 	       }
-	     if (tmp) evas_list_free(tmp);
+	     if (tmp) eina_list_free(tmp);
 	  }
 	else
 	  changed = 1;
@@ -348,12 +348,12 @@ _refill(Data *d)
    while (d->borders)
      {
 	e_object_unref(E_OBJECT(d->borders->data));
-	d->borders = evas_list_remove_list(d->borders, d->borders);
+	d->borders = eina_list_remove_list(d->borders, d->borders);
      }
    while (d->labels)
      {
 	evas_stringshare_del(d->labels->data);
-	d->labels = evas_list_remove_list(d->labels, d->labels);
+	d->labels = eina_list_remove_list(d->labels, d->labels);
      }
    
    e_ilist_freeze(d->o_ilist);
@@ -384,8 +384,8 @@ _refill(Data *d)
 	if (bd->client.netwm.name) title = bd->client.netwm.name;
 	else if (bd->client.icccm.title) title = bd->client.icccm.title;
 	e_object_ref(E_OBJECT(bd));
-	d->borders = evas_list_append(d->borders, bd);
-	d->labels = evas_list_append(d->labels, evas_stringshare_add(title));
+	d->borders = eina_list_append(d->borders, bd);
+	d->labels = eina_list_append(d->labels, evas_stringshare_add(title));
 	e_ilist_append(d->o_ilist, NULL/*icon*/, title, 0,
 		       _cb_item_sel,
 		       NULL, d, bd);
@@ -418,7 +418,7 @@ _cb_border_add(void *data, int ev_type, void *event)
    
    ev = event;
      {
-	Evas_List *l;
+	Eina_List *l;
 	
 	for (l = winilists; l; l = l->next) _refill(l->data);
      }
@@ -432,7 +432,7 @@ _cb_border_remove(void *data, int ev_type, void *event)
    
    ev = event;
      {
-	Evas_List *l;
+	Eina_List *l;
 	
 	for (l = winilists; l; l = l->next) _refill(l->data);
      }
@@ -446,7 +446,7 @@ _cb_border_show(void *data, int ev_type, void *event)
    
    ev = event;
      {
-	Evas_List *l;
+	Eina_List *l;
 	
 	for (l = winilists; l; l = l->next) _refill(l->data);
      }
@@ -460,7 +460,7 @@ _cb_border_hide(void *data, int ev_type, void *event)
    
    ev = event;
      {
-	Evas_List *l;
+	Eina_List *l;
 	
 	for (l = winilists; l; l = l->next) _refill(l->data);
      }
@@ -475,7 +475,7 @@ _cb_border_property(void *data, int ev_type, void *event)
    ev = event;
    /* FIXME: should really be optimal on what properties warrant a refill */
      {
-	Evas_List *l;
+	Eina_List *l;
 	
 	for (l = winilists; l; l = l->next) _refill(l->data);
      }
@@ -490,7 +490,7 @@ _cb_desk_show(void *data, int ev_type, void *event)
    ev = event;
    /* FIXME: should really be optimal on what properties warrant a refill */
      {
-	Evas_List *l;
+	Eina_List *l;
 	
 	for (l = winilists; l; l = l->next) _refill(l->data);
      }

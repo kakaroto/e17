@@ -54,9 +54,9 @@ static Evas *evas = NULL;
 static Evas_Object *sf = NULL;
 static Evas_Object *bx = NULL;
 static Evas_Object *fm = NULL;
-static Evas_List *desks = NULL;
-static Evas_List *handlers = NULL;
-static Evas_List *sels = NULL;
+static Eina_List *desks = NULL;
+static Eina_List *handlers = NULL;
+static Eina_List *sels = NULL;
 static E_Slipwin *slipwin = NULL;
 static Ecore_Timer *defer = NULL;
 static E_Kbd *vkbd = NULL;
@@ -107,22 +107,22 @@ _e_mod_win_init(E_Module *m)
    flaunch = e_flaunch_new(zone, e_module_dir_get(m));
    e_flaunch_desktop_exec_callabck_set(flaunch, _desktop_run);
    
-   handlers = evas_list_append
+   handlers = eina_list_append
      (handlers, ecore_event_handler_add
       (E_EVENT_BORDER_ADD, _cb_event_border_add, NULL));
-   handlers = evas_list_append
+   handlers = eina_list_append
      (handlers, ecore_event_handler_add
       (E_EVENT_BORDER_REMOVE, _cb_event_border_remove, NULL));
-   handlers = evas_list_append
+   handlers = eina_list_append
      (handlers, ecore_event_handler_add
       (ECORE_EXE_EVENT_DEL, _cb_event_exe_del, NULL));
-   handlers = evas_list_append
+   handlers = eina_list_append
      (handlers, ecore_event_handler_add
       (EFREET_EVENT_DESKTOP_LIST_CHANGE, _cb_efreet_desktop_list_change, NULL));
-   handlers = evas_list_append
+   handlers = eina_list_append
      (handlers, ecore_event_handler_add
       (EFREET_EVENT_DESKTOP_CHANGE, _cb_efreet_desktop_change, NULL));
-   handlers = evas_list_append
+   handlers = eina_list_append
      (handlers, ecore_event_handler_add
       (E_EVENT_ZONE_MOVE_RESIZE, _cb_zone_move_resize, NULL));
    
@@ -324,7 +324,7 @@ struct _Instance
    void           *handle;
 };
 
-static Evas_List *instances = NULL;
+static Eina_List *instances = NULL;
 
 static void
 _cb_cfg_exec(const void *data, E_Container *con, const char *params, Efreet_Desktop *desktop)
@@ -335,7 +335,7 @@ _cb_cfg_exec(const void *data, E_Container *con, const char *params, Efreet_Desk
 static void
 _desktop_run(Efreet_Desktop *desktop)
 {
-   Evas_List *l, *borders;
+   Eina_List *l, *borders;
    E_Exec_Instance *eins;
    Instance *ins;
    char *exename, *p;
@@ -425,7 +425,7 @@ _desktop_run(Efreet_Desktop *desktop)
 //	ins->handle = e_busywin_push(busywin, buf, NULL);
 	ins->handle = e_busycover_push(busycover, buf, NULL);
      }
-   instances = evas_list_append(instances, ins);
+   instances = eina_list_append(instances, ins);
 }
 
 static void
@@ -443,7 +443,7 @@ _cb_event_border_add(void *data, int type, void *event)
    E_Event_Border_Add *ev;
    Efreet_Desktop *desktop;
    Instance *ins;
-   Evas_List *l;
+   Eina_List *l;
    
    ev = event;
    if (_have_borders())
@@ -480,7 +480,7 @@ _cb_event_border_remove(void *data, int type, void *event)
 {
    E_Event_Border_Remove *ev;
    Instance *ins;
-   Evas_List *l;
+   Eina_List *l;
    
    ev = event;
    if (!_have_borders())
@@ -508,7 +508,7 @@ _cb_event_exe_del(void *data, int type, void *event)
 {
    Ecore_Exe_Event_Del *ev;
    Instance *ins;
-   Evas_List *l;
+   Eina_List *l;
    
    ev = event;
    for (l = instances; l; l = l->next)
@@ -522,7 +522,7 @@ _cb_event_exe_del(void *data, int type, void *event)
 		  e_busycover_pop(busycover, ins->handle);
 		  ins->handle = NULL;
 	       }
-	     instances = evas_list_remove_list(instances, l);
+	     instances = eina_list_remove_list(instances, l);
 	     if (ins->timeout) ecore_timer_del(ins->timeout);
 	     free(ins);
 	     return 1;
@@ -545,7 +545,7 @@ _cb_run_timeout(void *data)
      }
    if (!ins->border)
      {
-	instances = evas_list_remove(instances, ins);
+	instances = eina_list_remove(instances, ins);
 	free(ins);
 	return 0;
      }
@@ -556,7 +556,7 @@ _cb_run_timeout(void *data)
 static int
 _have_borders(void)
 {
-   Evas_List *borders, *l;
+   Eina_List *borders, *l;
    int num = 0;
    
    borders = e_border_client_list();
@@ -578,7 +578,7 @@ _have_borders(void)
 static void
 _cb_slipshelf_home(const void *data, E_Slipshelf *ess, E_Slipshelf_Action action)
 {
-   Evas_List *l, *borders;
+   Eina_List *l, *borders;
    
    borders = e_border_client_list();
    for (l = borders; l; l = l->next)
@@ -663,7 +663,7 @@ _cb_slipshelf_del(const void *data, E_Slipshelf *ess, E_Border *bd)
 static void
 _cb_slipshelf_home2(const void *data, E_Slipshelf *ess, E_Border *bd)
 {
-   Evas_List *l, *borders;
+   Eina_List *l, *borders;
    
    borders = e_border_client_list();
    for (l = borders; l; l = l->next)
@@ -689,7 +689,7 @@ _apps_unpopulate(void)
    while (sels)
      {
 	evas_object_del(sels->data);
-	sels = evas_list_remove_list(sels, sels);
+	sels = eina_list_remove_list(sels, sels);
      }
    while (desks)
      {
@@ -697,7 +697,7 @@ _apps_unpopulate(void)
 	
 	desktop = desks->data;
 	efreet_desktop_free(desktop);
-	desks = evas_list_remove_list(desks, desks);
+	desks = eina_list_remove_list(desks, desks);
      }
    if (bx) evas_object_del(bx);
    bx = NULL;
@@ -865,7 +865,7 @@ _apps_populate(void)
 		       if (!label) label = strdup("???");
 		       
 		       snprintf(buf, sizeof(buf), "%s / %s", plabel, label);
-		       desks = evas_list_append(desks, desktop);
+		       desks = eina_list_append(desks, desktop);
 		       efreet_desktop_ref(desktop);
 		       if (illume_cfg->launcher.mode == 0)
 			 {
@@ -894,7 +894,7 @@ _apps_populate(void)
 					      sfw, illume_cfg->launcher.icon_size * e_scale, 
 					      sfw, illume_cfg->launcher.icon_size * e_scale);
 		       evas_object_show(o);
-		       sels = evas_list_append(sels, o);
+		       sels = eina_list_append(sels, o);
 		    }
 	       }
 	  }
@@ -934,7 +934,7 @@ _apps_populate(void)
 static void
 _cb_selected(void *data, Evas_Object *obj, void *event_info)
 {
-   Evas_List *selected, *l;
+   Eina_List *selected, *l;
    
    selected = e_fm2_selected_list_get(obj);
    if (!selected) return;
@@ -947,7 +947,7 @@ _cb_selected(void *data, Evas_Object *obj, void *event_info)
 	desktop = efreet_desktop_get(ici->real_link);
 	if (desktop) _desktop_run(desktop);
      }
-   evas_list_free(selected);
+   eina_list_free(selected);
 }
 
 static int

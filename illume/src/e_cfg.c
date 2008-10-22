@@ -799,10 +799,10 @@ struct _Gadit
 };
 
 E_Slipshelf *local_slipshelf = NULL;
-Evas_List *gadits = NULL;
+Eina_List *gadits = NULL;
 Ecore_Timer *_e_cfg_gadgets_change_timer = NULL;
 static int _e_cfg_gadgets_change_timeout(void *data) {
-   Evas_List *l, *l2, *l3;
+   Eina_List *l, *l2, *l3;
    int update;
    E_Gadcon *up_gc1;
    
@@ -867,7 +867,7 @@ _e_cfg_gadgets_free(E_Config_Dialog *cfd, E_Config_Dialog_Data *cfdata)
 	gi = gadits->data;
 	evas_stringshare_del(gi->name);
 	free(gi);
-	gadits = evas_list_remove_list(gadits, gadits);
+	gadits = eina_list_remove_list(gadits, gadits);
      }
    e_object_unref(E_OBJECT(local_slipshelf));
    local_slipshelf = NULL;
@@ -878,7 +878,7 @@ _e_cfg_gadgets_ui(E_Config_Dialog *cfd, Evas *e, E_Config_Dialog_Data *cfdata)
 {
    Evas_Object *list, *o, *frame;
    E_Radio_Group *rg;
-   Evas_List *l, *l2, *l3;
+   Eina_List *l, *l2, *l3;
 
    list = e_widget_list_add(e, 0, 0);
    
@@ -911,7 +911,7 @@ _e_cfg_gadgets_ui(E_Config_Dialog *cfd, Evas *e, E_Config_Dialog_Data *cfdata)
 	gi->name = evas_stringshare_add(cc->name);
 	gi->was_enabled = on;
 	gi->enabled = on;
-	gadits = evas_list_append(gadits, gi);
+	gadits = eina_list_append(gadits, gi);
 	o = e_widget_check_add(e, lbl, &(gi->enabled));
 	e_widget_framelist_object_append(frame, o);
 	evas_object_smart_callback_add(o, "changed", _e_cfg_gadgets_change, NULL);
@@ -947,7 +947,7 @@ _e_cfg_gadgets_ui(E_Config_Dialog *cfd, Evas *e, E_Config_Dialog_Data *cfdata)
 	gi->name = evas_stringshare_add(cc->name);
 	gi->was_enabled = on;
 	gi->enabled = on;
-	gadits = evas_list_append(gadits, gi);
+	gadits = eina_list_append(gadits, gi);
 	o = e_widget_check_add(e, lbl, &(gi->enabled));
 	e_widget_framelist_object_append(frame, o);
 	evas_object_smart_callback_add(o, "changed", _e_cfg_gadgets_change, NULL);
@@ -1049,7 +1049,7 @@ _e_cfg_keyboard_ui(E_Config_Dialog *cfd, Evas *e, E_Config_Dialog_Data *cfdata)
 {
    Evas_Object *list, *o, *frame;
    E_Radio_Group *rg;
-   Evas_List *l, *l2, *l3;
+   Eina_List *l, *l2, *l3;
 
    list = e_widget_list_add(e, 0, 0);
    
@@ -1749,7 +1749,7 @@ _dbcb_gadget_list_get(E_DBus_Object *obj, DBusMessage *msg)
 {
    DBusMessage *reply;
    DBusMessageIter iter, arr;
-   Evas_List *l;
+   Eina_List *l;
      
    reply = dbus_message_new_method_return(msg);
    dbus_message_iter_init_append(reply, &iter);
@@ -1771,7 +1771,7 @@ _dbcb_slipshelf_main_gadget_list_get(E_DBus_Object *obj, DBusMessage *msg)
 {
    DBusMessage *reply;
    DBusMessageIter iter, arr;
-   Evas_List *l;
+   Eina_List *l;
      
    reply = dbus_message_new_method_return(msg);
    dbus_message_iter_init_append(reply, &iter);
@@ -1825,7 +1825,7 @@ _dbcb_slipshelf_main_gadget_del(E_DBus_Object *obj, DBusMessage *msg)
    dbus_message_iter_get_basic(&iter, &(s));
    if (s)
      {
-	Evas_List *l;
+	Eina_List *l;
 	
 	for (l = slipshelf->gadcon->clients; l; l = l->next)
 	  {
@@ -1853,7 +1853,7 @@ _dbcb_slipshelf_extra_gadget_list_get(E_DBus_Object *obj, DBusMessage *msg)
 {
    DBusMessage *reply;
    DBusMessageIter iter, arr;
-   Evas_List *l;
+   Eina_List *l;
      
    reply = dbus_message_new_method_return(msg);
    dbus_message_iter_init_append(reply, &iter);
@@ -1907,7 +1907,7 @@ _dbcb_slipshelf_extra_gadget_del(E_DBus_Object *obj, DBusMessage *msg)
    dbus_message_iter_get_basic(&iter, &(s));
    if (s)
      {
-	Evas_List *l;
+	Eina_List *l;
 	
 	for (l = slipshelf->gadcon_extra->clients; l; l = l->next)
 	  {

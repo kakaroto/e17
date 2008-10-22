@@ -10,11 +10,11 @@
 
 static void _e_kbd_layout_send(E_Kbd *kbd);
 
-static Evas_List *handlers = NULL;
-static Evas_List *kbds = NULL;
+static Eina_List *handlers = NULL;
+static Eina_List *kbds = NULL;
 static Ecore_X_Atom atom_mb_im_invoker_command = 0;
 static Ecore_X_Atom atom_mtp_im_invoker_command = 0;
-static Evas_List *border_hooks = NULL;
+static Eina_List *border_hooks = NULL;
 static E_Border *focused_border = NULL;
 static Ecore_X_Atom focused_vkbd_state = 0;
 static E_Module *mod = NULL;
@@ -111,7 +111,7 @@ _e_kbd_cb_animate(void *data)
 static void
 _e_kbd_free(E_Kbd *kbd)
 {
-   kbds = evas_list_remove(kbds, kbd);
+   kbds = eina_list_remove(kbds, kbd);
    if (kbd->animator) ecore_animator_del(kbd->animator);
    if (kbd->delay_hide) ecore_timer_del(kbd->delay_hide);
 // FIXME: thought right - on shutdoiwn, this might point to freed data
@@ -122,7 +122,7 @@ _e_kbd_free(E_Kbd *kbd)
 	
 	bd = kbd->waiting_borders->data;
 	bd->stolen = 0;
-	kbd->waiting_borders = evas_list_remove_list(kbd->waiting_borders, kbd->waiting_borders);
+	kbd->waiting_borders = eina_list_remove_list(kbd->waiting_borders, kbd->waiting_borders);
      }
    free(kbd);
 }
@@ -193,7 +193,7 @@ _e_kbd_border_adopt(E_Kbd *kbd, E_Border *bd)
 static E_Kbd * 
 _e_kbd_by_border_get(E_Border *bd)
 {
-   Evas_List *l, *l2;
+   Eina_List *l, *l2;
    
    if (!bd->stolen) return NULL;
    for (l = kbds; l; l = l->next)
@@ -224,7 +224,7 @@ _e_kbd_cb_delayed_hide(void *data)
 static void
 _e_kbd_all_enable(void)
 {
-   Evas_List *l;
+   Eina_List *l;
    
    for (l = kbds; l; l = l->next)
      {
@@ -238,7 +238,7 @@ _e_kbd_all_enable(void)
 static void
 _e_kbd_all_disable(void)
 {
-   Evas_List *l;
+   Eina_List *l;
    
    for (l = kbds; l; l = l->next)
      {
@@ -252,7 +252,7 @@ _e_kbd_all_disable(void)
 static void
 _e_kbd_all_show(void)
 {
-   Evas_List *l;
+   Eina_List *l;
    
    for (l = kbds; l; l = l->next)
      {
@@ -266,7 +266,7 @@ _e_kbd_all_show(void)
 static void
 _e_kbd_all_layout_set(E_Kbd_Layout layout)
 {
-   Evas_List *l;
+   Eina_List *l;
    
    for (l = kbds; l; l = l->next)
      {
@@ -280,7 +280,7 @@ _e_kbd_all_layout_set(E_Kbd_Layout layout)
 static void
 _e_kbd_all_hide(void)
 {
-   Evas_List *l;
+   Eina_List *l;
    
    for (l = kbds; l; l = l->next)
      {
@@ -294,7 +294,7 @@ _e_kbd_all_hide(void)
 static void
 _e_kbd_all_toggle(void)
 {
-   Evas_List *l;
+   Eina_List *l;
    
    for (l = kbds; l; l = l->next)
      {
@@ -337,7 +337,7 @@ static int
 _e_kbd_cb_border_remove(void *data, int type, void *event)
 {
    E_Event_Border_Remove *ev;
-   Evas_List *l;
+   Eina_List *l;
    E_Kbd *kbd;
    
    ev = event;
@@ -358,7 +358,7 @@ _e_kbd_cb_border_remove(void *data, int type, void *event)
 	     E_Border *bd;
 	     
 	     bd = kbd->waiting_borders->data;
-	     kbd->waiting_borders = evas_list_remove_list(kbd->waiting_borders, kbd->waiting_borders);
+	     kbd->waiting_borders = eina_list_remove_list(kbd->waiting_borders, kbd->waiting_borders);
 	     _e_kbd_border_adopt(kbd, bd);
 	  }
 	if (kbd->visible)
@@ -371,7 +371,7 @@ _e_kbd_cb_border_remove(void *data, int type, void *event)
 	_e_kbd_apply_all_job_queue();
      }
    else
-     kbd->waiting_borders = evas_list_remove(kbd->waiting_borders, ev->border);
+     kbd->waiting_borders = eina_list_remove(kbd->waiting_borders, ev->border);
    return 1;
 }
 
@@ -489,7 +489,7 @@ _e_kbd_cb_border_hook_pre_post_fetch(void *data, E_Border *bd)
    if (_e_kbd_by_border_get(bd)) return;
    if (_e_kbd_border_is_keyboard(bd))
      {
-	Evas_List *l;
+	Eina_List *l;
 
 	for (l = kbds; l; l = l->next)
           {
@@ -518,7 +518,7 @@ _e_kbd_cb_border_hook_pre_post_fetch(void *data, E_Border *bd)
 	       }
 	     else
 	       {
-		  kbd->waiting_borders = evas_list_append(kbd->waiting_borders, bd);
+		  kbd->waiting_borders = eina_list_append(kbd->waiting_borders, bd);
 		  bd->stolen = 1;
 		  if (bd->remember)
 		    {
@@ -699,34 +699,34 @@ static E_DBus_Signal_Handler *_e_kbd_dbus_handler_dev_add = NULL;
 static E_DBus_Signal_Handler *_e_kbd_dbus_handler_dev_del = NULL;
 static E_DBus_Signal_Handler *_e_kbd_dbus_handler_dev_chg = NULL;
 
-static Evas_List *_e_kbd_dbus_keyboards = NULL;
+static Eina_List *_e_kbd_dbus_keyboards = NULL;
 static int _e_kbd_dbus_have_real_keyboard = 0;
-static Evas_List *_e_kbd_dbus_real_ignore = NULL;
+static Eina_List *_e_kbd_dbus_real_ignore = NULL;
 
 static void
 _e_kbd_dbus_keyboard_add(const char *udi)
 {
-   Evas_List *l;
+   Eina_List *l;
    
    for (l = _e_kbd_dbus_keyboards; l; l = l->next)
      {
 	if (!strcmp(l->data, udi)) return;
      }
-   _e_kbd_dbus_keyboards = evas_list_append
+   _e_kbd_dbus_keyboards = eina_list_append
      (_e_kbd_dbus_keyboards, evas_stringshare_add(udi));
 }
 
 static void
 _e_kbd_dbus_keyboard_del(const char *udi)
 {
-   Evas_List *l;
+   Eina_List *l;
    
    for (l = _e_kbd_dbus_keyboards; l; l = l->next)
      {
 	if (!strcmp(l->data, udi))
 	  {
 	     evas_stringshare_del(l->data);
-	     _e_kbd_dbus_keyboards = evas_list_remove_list(_e_kbd_dbus_keyboards, l);
+	     _e_kbd_dbus_keyboards = eina_list_remove_list(_e_kbd_dbus_keyboards, l);
 	     return;
 	  }
      }
@@ -736,9 +736,9 @@ static void
 _e_kbd_dbus_keyboard_eval(void)
 {
    int have_real = 0;
-   Evas_List *l, *ll;
+   Eina_List *l, *ll;
    
-   have_real = evas_list_count(_e_kbd_dbus_keyboards);
+   have_real = eina_list_count(_e_kbd_dbus_keyboards);
    for (l = _e_kbd_dbus_keyboards; l; l = l->next)
      {
 	for (ll = _e_kbd_dbus_real_ignore; ll; ll = ll->next)
@@ -869,7 +869,7 @@ _e_kbd_dbus_ignore_keyboards_file_load(const char *file)
 	p = buf;
 	while (isspace(*p)) p++;
 	if (*p)
-	  _e_kbd_dbus_real_ignore = evas_list_append
+	  _e_kbd_dbus_real_ignore = eina_list_append
 	  (_e_kbd_dbus_real_ignore, evas_stringshare_add(p));
      }
    fclose(f);
@@ -932,12 +932,12 @@ _e_kbd_dbus_real_kbd_shutdown(void)
    while (_e_kbd_dbus_real_ignore)
      {
 	evas_stringshare_del(_e_kbd_dbus_real_ignore->data);
-	_e_kbd_dbus_real_ignore = evas_list_remove_list(_e_kbd_dbus_real_ignore, _e_kbd_dbus_real_ignore);
+	_e_kbd_dbus_real_ignore = eina_list_remove_list(_e_kbd_dbus_real_ignore, _e_kbd_dbus_real_ignore);
      }
    while (_e_kbd_dbus_keyboards)
      {
 	evas_stringshare_del(_e_kbd_dbus_keyboards->data);
-	_e_kbd_dbus_keyboards = evas_list_remove_list(_e_kbd_dbus_keyboards, _e_kbd_dbus_keyboards);
+	_e_kbd_dbus_keyboards = eina_list_remove_list(_e_kbd_dbus_keyboards, _e_kbd_dbus_keyboards);
      }
    _e_kbd_dbus_have_real_keyboard = 0;
 }
@@ -951,46 +951,46 @@ e_kbd_init(E_Module *m)
    focused_vkbd_state = 0;
    atom_mb_im_invoker_command = ecore_x_atom_get("_MB_IM_INVOKER_COMMAND");
    atom_mtp_im_invoker_command = ecore_x_atom_get("_MTP_IM_INVOKER_COMMAND");
-   handlers = evas_list_append(handlers, 
+   handlers = eina_list_append(handlers, 
 			       ecore_event_handler_add
 			       (ECORE_X_EVENT_CLIENT_MESSAGE,
 				_e_kbd_cb_client_message, NULL));
-   handlers = evas_list_append(handlers, 
+   handlers = eina_list_append(handlers, 
 			       ecore_event_handler_add
 			       (E_EVENT_BORDER_ADD,
 				_e_kbd_cb_border_add, NULL));
-   handlers = evas_list_append(handlers, 
+   handlers = eina_list_append(handlers, 
 			       ecore_event_handler_add
 			       (E_EVENT_BORDER_REMOVE,
 				_e_kbd_cb_border_remove, NULL));
-   handlers = evas_list_append(handlers, 
+   handlers = eina_list_append(handlers, 
 			       ecore_event_handler_add
 			       (E_EVENT_BORDER_FOCUS_IN,
 				_e_kbd_cb_border_focus_in, NULL));
-   handlers = evas_list_append(handlers, 
+   handlers = eina_list_append(handlers, 
 			       ecore_event_handler_add
 			       (E_EVENT_BORDER_FOCUS_OUT,
 				_e_kbd_cb_border_focus_out, NULL));
-   handlers = evas_list_append(handlers, 
+   handlers = eina_list_append(handlers, 
 			       ecore_event_handler_add
 			       (E_EVENT_BORDER_PROPERTY,
 				_e_kbd_cb_border_property, NULL));
-   border_hooks = evas_list_append(border_hooks,
+   border_hooks = eina_list_append(border_hooks,
 				   e_border_hook_add
 				   (E_BORDER_HOOK_EVAL_PRE_POST_FETCH,
 				    _e_kbd_cb_border_hook_pre_post_fetch,
 				    NULL));
-   border_hooks = evas_list_append(border_hooks,
+   border_hooks = eina_list_append(border_hooks,
 				   e_border_hook_add
 				   (E_BORDER_HOOK_EVAL_POST_FETCH,
 				    _e_kbd_cb_border_hook_post_fetch,
 				    NULL));
-   border_hooks = evas_list_append(border_hooks,
+   border_hooks = eina_list_append(border_hooks,
 				   e_border_hook_add
 				   (E_BORDER_HOOK_EVAL_POST_BORDER_ASSIGN,
 				    _e_kbd_cb_border_hook_post_border_assign,
 				    NULL));
-   border_hooks = evas_list_append(border_hooks,
+   border_hooks = eina_list_append(border_hooks,
 				   e_border_hook_add
 				   (E_BORDER_HOOK_EVAL_END,
 				    _e_kbd_cb_border_hook_end,
@@ -1011,12 +1011,12 @@ e_kbd_shutdown(void)
    while (border_hooks)
      {
 	e_border_hook_del(border_hooks->data);
-	border_hooks = evas_list_remove_list(border_hooks, border_hooks);
+	border_hooks = eina_list_remove_list(border_hooks, border_hooks);
      }
    while (handlers)
      {
 	ecore_event_handler_del(handlers->data);
-	handlers = evas_list_remove_list(handlers, handlers);
+	handlers = eina_list_remove_list(handlers, handlers);
      }
    focused_border = NULL;
    focused_vkbd_state = 0;
@@ -1031,7 +1031,7 @@ e_kbd_new(E_Zone *zone, const char *themedir, const char *syskbds, const char *s
    
    kbd = E_OBJECT_ALLOC(E_Kbd, E_KBD_TYPE, _e_kbd_free);
    if (!kbd) return NULL;
-   kbds = evas_list_append(kbds, kbd);
+   kbds = eina_list_append(kbds, kbd);
    kbd->layout = ECORE_X_VIRTUAL_KEYBOARD_STATE_ON;
    return kbd;
 }
@@ -1109,7 +1109,7 @@ e_kbd_hide(E_Kbd *kbd)
 EAPI void
 e_kbd_safe_app_region_get(E_Zone *zone, int *x, int *y, int *w, int *h)
 {
-   Evas_List *l;
+   Eina_List *l;
 
    if (x) *x = zone->x;
    if (y) *y = zone->y;
@@ -1139,7 +1139,7 @@ e_kbd_safe_app_region_get(E_Zone *zone, int *x, int *y, int *w, int *h)
 EAPI void
 e_kbd_fullscreen_set(E_Zone *zone, int fullscreen)
 {
-   Evas_List *l;
+   Eina_List *l;
    
    for (l = kbds; l; l = l->next)
      {

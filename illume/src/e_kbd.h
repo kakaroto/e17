@@ -25,7 +25,7 @@ struct _E_Kbd
    E_Border            *border;
    Ecore_Timer         *delay_hide;
    Ecore_Animator      *animator;
-   Evas_List           *waiting_borders;
+   Eina_List           *waiting_borders;
    E_Kbd_Layout         layout;
    double               start, len;
 

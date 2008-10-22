@@ -13,10 +13,10 @@ struct _E_Busywin
    E_Zone              *zone;
    E_Popup             *popup;
    Evas_Object         *base_obj;
-   Evas_List           *handlers;
+   Eina_List           *handlers;
    const char          *themedir;
    Ecore_Animator      *animator;
-   Evas_List           *handles;
+   Eina_List           *handles;
    Ecore_X_Window       clickwin;
    int                  adjust_start;
    int                  adjust_target;

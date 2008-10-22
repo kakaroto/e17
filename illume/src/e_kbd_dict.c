@@ -333,7 +333,7 @@ e_kbd_dict_free(E_Kbd_Dict *kd)
 static E_Kbd_Dict_Word *
 _e_kbd_dict_changed_write_find(E_Kbd_Dict *kd, const char *word)
 {
-   Evas_List *l;
+   Eina_List *l;
    
    for (l = kd->changed.writes; l; l = l->next)
      {
@@ -360,8 +360,8 @@ e_kbd_dict_save(E_Kbd_Dict *kd)
      }
    ecore_file_unlink(kd->file.file);
    f = fopen(kd->file.file, "w");
-   kd->changed.writes = evas_list_sort(kd->changed.writes,
-				       evas_list_count(kd->changed.writes),
+   kd->changed.writes = eina_list_sort(kd->changed.writes,
+				       eina_list_count(kd->changed.writes),
 				       _e_kbd_dict_writes_cb_sort);
    if (f)
      {
@@ -396,7 +396,7 @@ e_kbd_dict_save(E_Kbd_Dict *kd)
 				 writeline = 1;
 				 evas_stringshare_del(kw->word);
 				 free(kw);
-				 kd->changed.writes  = evas_list_remove_list(kd->changed.writes, kd->changed.writes);
+				 kd->changed.writes  = eina_list_remove_list(kd->changed.writes, kd->changed.writes);
 				 writeline = 1;
 			      }
 			    else if (cmp == 0)
@@ -408,7 +408,7 @@ e_kbd_dict_save(E_Kbd_Dict *kd)
 				   writeline = 1;
 				 evas_stringshare_del(kw->word);
 				 free(kw);
-				 kd->changed.writes  = evas_list_remove_list(kd->changed.writes, kd->changed.writes);
+				 kd->changed.writes  = eina_list_remove_list(kd->changed.writes, kd->changed.writes);
 				 break;
 			      }
 			    else if (cmp > 0)
@@ -435,7 +435,7 @@ e_kbd_dict_save(E_Kbd_Dict *kd)
 	     fprintf(f, "%s %i\n", kw->word, kw->usage);
 	     evas_stringshare_del(kw->word);
 	     free(kw);
-	     kd->changed.writes  = evas_list_remove_list(kd->changed.writes, kd->changed.writes);
+	     kd->changed.writes  = eina_list_remove_list(kd->changed.writes, kd->changed.writes);
 	  }
 	fclose(f);
      }
@@ -468,8 +468,8 @@ _e_kbd_dict_changed_write_add(E_Kbd_Dict *kd, const char *word, int usage)
    kw = E_NEW(E_Kbd_Dict_Word, 1);
    kw->word = evas_stringshare_add(word);
    kw->usage = usage;
-   kd->changed.writes = evas_list_prepend(kd->changed.writes, kw);
-   if (evas_list_count(kd->changed.writes) > 64)
+   kd->changed.writes = eina_list_prepend(kd->changed.writes, kw);
+   if (eina_list_count(kd->changed.writes) > 64)
      {
 	e_kbd_dict_save(kd);
      }
@@ -643,7 +643,7 @@ e_kbd_dict_word_letter_clear(E_Kbd_Dict *kd)
 	kw = kd->matches.list->data;
 	evas_stringshare_del(kw->word);
 	free(kw);
-	kd->matches.list = evas_list_remove_list(kd->matches.list, kd->matches.list);
+	kd->matches.list = eina_list_remove_list(kd->matches.list, kd->matches.list);
     }
 }
 
@@ -652,17 +652,17 @@ e_kbd_dict_word_letter_add(E_Kbd_Dict *kd, const char *letter, int dist)
 {
    // add a letter with a distance (0 == closest) as an option for the current
    // letter position - advance starts a new letter position
-   Evas_List *l, *list;
+   Eina_List *l, *list;
    E_Kbd_Dict_Letter *kl;
    
-   l = evas_list_last(kd->word.letters);
+   l = eina_list_last(kd->word.letters);
    if (!l) return;
    list = l->data;
    kl = E_NEW(E_Kbd_Dict_Letter, 1);
    if (!kl) return;
    kl->letter = evas_stringshare_add(letter);
    kl->dist = dist;
-   list = evas_list_append(list, kl);
+   list = eina_list_append(list, kl);
    l->data = list;
 }
 
@@ -670,16 +670,16 @@ EAPI void
 e_kbd_dict_word_letter_advance(E_Kbd_Dict *kd)
 {
    // start a new letter in the word
-   kd->word.letters = evas_list_append(kd->word.letters, NULL);
+   kd->word.letters = eina_list_append(kd->word.letters, NULL);
 }
 
 EAPI void
 e_kbd_dict_word_letter_delete(E_Kbd_Dict *kd)
 {
    // delete the current letter completely
-   Evas_List *l, *list;
+   Eina_List *l, *list;
    
-   l = evas_list_last(kd->word.letters);
+   l = eina_list_last(kd->word.letters);
    if (!l) return;
    list = l->data;
    while (list)
@@ -689,16 +689,16 @@ e_kbd_dict_word_letter_delete(E_Kbd_Dict *kd)
 	kl = list->data;
 	evas_stringshare_del(kl->letter);
 	free(kl);
-	list = evas_list_remove_list(list, list);
+	list = eina_list_remove_list(list, list);
      }
-   kd->word.letters = evas_list_remove_list(kd->word.letters, l);
+   kd->word.letters = eina_list_remove_list(kd->word.letters, l);
 }
 
 static void
-_e_kbd_dict_matches_lookup_iter(E_Kbd_Dict *kd, Evas_List *word, 
-				Evas_List *more)
+_e_kbd_dict_matches_lookup_iter(E_Kbd_Dict *kd, Eina_List *word, 
+				Eina_List *more)
 {
-   Evas_List *l, *l2, *list;
+   Eina_List *l, *l2, *list;
    const char *p, *pn;
    char *base, *buf, *wd, *bufapp;
    E_Kbd_Dict_Letter *kl;
@@ -784,7 +784,7 @@ _e_kbd_dict_matches_lookup_iter(E_Kbd_Dict *kd, Evas_List *word,
 		       // FIXME: magic combination of distance metric and
 		       // frequency of useage. this is simple now, but could
 		       // be tweaked
-		       wc = evas_list_count(word);
+		       wc = eina_list_count(word);
 		       if (md < 1) md = 1;
 		       
 		       // basically a metric to see how far away teh keys that
@@ -801,7 +801,7 @@ _e_kbd_dict_matches_lookup_iter(E_Kbd_Dict *kd, Evas_List *word,
 		       // do with multiplication factors etc. but simple for
 		       // now.
 		       kw->usage = (usage * accuracy) / md;
-		       kd->matches.list = evas_list_append(kd->matches.list, kw);
+		       kd->matches.list = eina_list_append(kd->matches.list, kw);
 		    }
 		  free(wd);
 		  p = _e_kbd_dict_line_next(kd, p);
@@ -811,9 +811,9 @@ _e_kbd_dict_matches_lookup_iter(E_Kbd_Dict *kd, Evas_List *word,
 	  }
 	else
 	  {
-	     word = evas_list_append(word, kl);
+	     word = eina_list_append(word, kl);
 	     _e_kbd_dict_matches_lookup_iter(kd, word, more->next);
-	     word = evas_list_remove_list(word, evas_list_last(word));
+	     word = eina_list_remove_list(word, eina_list_last(word));
 	  }
      }
    level--;
@@ -830,12 +830,12 @@ e_kbd_dict_matches_lookup(E_Kbd_Dict *kd)
 	kw = kd->matches.list->data;
 	evas_stringshare_del(kw->word);
 	free(kw);
-	kd->matches.list = evas_list_remove_list(kd->matches.list, kd->matches.list);
+	kd->matches.list = eina_list_remove_list(kd->matches.list, kd->matches.list);
     }
    if (kd->word.letters)
      _e_kbd_dict_matches_lookup_iter(kd, NULL, kd->word.letters);
-   kd->matches.list = evas_list_sort(kd->matches.list,
-				     evas_list_count(kd->matches.list),
+   kd->matches.list = eina_list_sort(kd->matches.list,
+				     eina_list_count(kd->matches.list),
 				     _e_kbd_dict_matches_loolup_cb_sort);
 }
 

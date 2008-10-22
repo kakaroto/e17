@@ -12,9 +12,9 @@ struct _E_Busycover
    E_Object             e_obj_inherit;
    E_Zone              *zone;
    Evas_Object         *base_obj;
-   Evas_List           *handlers;
+   Eina_List           *handlers;
    const char          *themedir;
-   Evas_List           *handles;
+   Eina_List           *handles;
 };
 
 struct _E_Busycover_Handle

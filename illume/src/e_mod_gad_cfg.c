@@ -171,7 +171,7 @@ static void _cb_resize(E_Win *win);
 static void _cb_cfg_item(void *data);
 
 static E_Win *win = NULL;
-static Evas_List *cfgstr = NULL;
+static Eina_List *cfgstr = NULL;
 static Evas_Object *o_cfg;
 
 static void
@@ -179,7 +179,7 @@ _cfg(void)
 {
    E_Zone *zone;
    Evas_Object *o, *il;
-   Evas_List *l, *ll;
+   Eina_List *l, *ll;
    
    if (win)
      {
@@ -236,7 +236,7 @@ _cfg(void)
 			 oi = e_util_icon_add(eci->icon, e_win_evas_get(win));
 		       snprintf(buf, sizeof(buf), "%s/%s", ecat->cat, eci->item);
 		       s = evas_stringshare_add(buf);
-		       cfgstr = evas_list_append(cfgstr, s);
+		       cfgstr = eina_list_append(cfgstr, s);
 		       e_widget_ilist_append(il, oi, eci->label, _cb_cfg_item,
 					     s, NULL);
 		    }
@@ -266,7 +266,7 @@ _cb_signal_ok(void *data, Evas_Object *obj, const char *emission, const char *so
    while (cfgstr)
      {
 	evas_stringshare_del(cfgstr->data);
-	cfgstr = evas_list_remove_list(cfgstr, cfgstr);
+	cfgstr = eina_list_remove_list(cfgstr, cfgstr);
      }
 }
 
@@ -278,7 +278,7 @@ _cb_delete(E_Win *w)
    while (cfgstr)
      {
 	evas_stringshare_del(cfgstr->data);
-	cfgstr = evas_list_remove_list(cfgstr, cfgstr);
+	cfgstr = eina_list_remove_list(cfgstr, cfgstr);
      }
 }
 

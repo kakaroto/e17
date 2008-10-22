@@ -15,7 +15,7 @@ static void _e_busywin_cb_item_sel(void *data, void *data2);
 static Evas_Object *_theme_obj_new(Evas *e, const char *custom_dir, const char *group);
 
 /* state */
-static Evas_List *busywins = NULL;
+static Eina_List *busywins = NULL;
 
 /* called from the module core */
 EAPI int
@@ -72,13 +72,13 @@ e_busywin_new(E_Zone *zone, const char *themedir)
    
    e_popup_show(esw->popup);
 
-   busywins = evas_list_append(busywins, esw);
+   busywins = eina_list_append(busywins, esw);
 
-   esw->handlers = evas_list_append
+   esw->handlers = eina_list_append
      (esw->handlers,
       ecore_event_handler_add(ECORE_X_EVENT_MOUSE_BUTTON_UP,
 			      _e_busywin_cb_mouse_up, esw));
-   esw->handlers = evas_list_append
+   esw->handlers = eina_list_append
      (esw->handlers,
       ecore_event_handler_add(E_EVENT_ZONE_MOVE_RESIZE,
 			      _e_busywin_cb_zone_move_resize, esw));
@@ -97,7 +97,7 @@ e_busywin_push(E_Busywin *esw, const char *message, const char *icon)
    h->busywin = esw;
    if (message) h->message = evas_stringshare_add(message);
    if (icon) h->icon = evas_stringshare_add(icon);
-   esw->handles = evas_list_prepend(esw->handles, h);
+   esw->handles = eina_list_prepend(esw->handles, h);
    edje_object_part_text_set(esw->base_obj, "e.text.label", h->message);
    /* FIXME: handle icon... */
    _e_busywin_slide(esw, 1, (double)illume_cfg->sliding.busywin.duration / 1000.0);
@@ -109,8 +109,8 @@ e_busywin_pop(E_Busywin *esw, E_Busywin_Handle *handle)
 {
    E_OBJECT_CHECK(esw);
    E_OBJECT_TYPE_CHECK(esw, E_BUSYWIN_TYPE);
-   if (!evas_list_find(esw->handles, handle)) return;
-   esw->handles = evas_list_remove(esw->handles, handle);
+   if (!eina_list_data_find(esw->handles, handle)) return;
+   esw->handles = eina_list_remove(esw->handles, handle);
    if (handle->message) evas_stringshare_del(handle->message);
    if (handle->icon) evas_stringshare_del(handle->icon);
    free(handle);
@@ -131,12 +131,12 @@ e_busywin_pop(E_Busywin *esw, E_Busywin_Handle *handle)
 static void
 _e_busywin_free(E_Busywin *esw)
 {
-   busywins = evas_list_remove(busywins, esw);
+   busywins = eina_list_remove(busywins, esw);
    while (esw->handlers)
      {
 	if (esw->handlers->data)
 	  ecore_event_handler_del(esw->handlers->data);
-	esw->handlers = evas_list_remove_list(esw->handlers, esw->handlers);
+	esw->handlers = eina_list_remove_list(esw->handlers, esw->handlers);
      }
    if (esw->animator) ecore_animator_del(esw->animator);
    if (esw->themedir) evas_stringshare_del(esw->themedir);

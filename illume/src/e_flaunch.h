@@ -12,12 +12,12 @@ struct _E_Flaunch
    int                  height;
    const char          *themedir;
    Evas_Object         *box_obj, *app_box_obj;
-   Evas_List           *apps;
+   Eina_List           *apps;
    E_Flaunch_App       *start_button;
    E_Zone              *zone;
    void               (*desktop_run_func) (Efreet_Desktop *desktop);
    Ecore_Event_Handler *zone_resize_handler;
-   Evas_List           *handlers;
+   Eina_List           *handlers;
    Ecore_Timer         *repopulate_timer;
 };
 

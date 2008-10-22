@@ -30,16 +30,16 @@ struct _E_Kbd_Dict
    } lookup;
    struct {
       Ecore_Timer *flush_timer;
-      Evas_List *writes;
+      Eina_List *writes;
    } changed;
    struct {
-      Evas_List *letters;
+      Eina_List *letters;
    } word;
    struct {
       Evas_Hash *deadends;
       Evas_Hash *leads;
-      Evas_List *list;
-      Evas_List *list_ptr;
+      Eina_List *list;
+      Eina_List *list_ptr;
    } matches;
 };
 
