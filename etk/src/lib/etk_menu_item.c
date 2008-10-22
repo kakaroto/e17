@@ -553,7 +553,7 @@ Etk_Type *etk_menu_item_radio_type_get(void)
  * @return Returns the new menu-item widget
  * @note Unlike the other widgets, the menu-item will automatically shown at its creation
  */
-Etk_Widget *etk_menu_item_radio_new(Evas_List **group)
+Etk_Widget *etk_menu_item_radio_new(Eina_List **group)
 {
    return etk_widget_new(ETK_MENU_ITEM_RADIO_TYPE, "theme-group", "menu_item",
       "visible", ETK_TRUE, "group", group, NULL);
@@ -579,7 +579,7 @@ Etk_Widget *etk_menu_item_radio_new_from_widget(Etk_Menu_Item_Radio *radio_item)
  * @return Returns the new menu-item widget
  * @note Unlike the other widgets, the menu-item will automatically shown at its creation
  */
-Etk_Widget *etk_menu_item_radio_new_with_label(const char *label, Evas_List **group)
+Etk_Widget *etk_menu_item_radio_new_with_label(const char *label, Eina_List **group)
 {
    return etk_widget_new(ETK_MENU_ITEM_RADIO_TYPE, "theme-group", "menu_item",
       "visible", ETK_TRUE, "group", group, "label", label, NULL);
@@ -604,7 +604,7 @@ Etk_Widget *etk_menu_item_radio_new_with_label_from_widget(const char *label, Et
  * @param radio_item a radio menu-item
  * @param group the group to set
  */
-void etk_menu_item_radio_group_set(Etk_Menu_Item_Radio *radio_item, Evas_List **group)
+void etk_menu_item_radio_group_set(Etk_Menu_Item_Radio *radio_item, Eina_List **group)
 {
    Etk_Menu_Item_Check *check_item;
    Etk_Bool active;
@@ -614,7 +614,7 @@ void etk_menu_item_radio_group_set(Etk_Menu_Item_Radio *radio_item, Evas_List **
 
    if (radio_item->group)
    {
-      *radio_item->group = evas_list_remove(*radio_item->group, radio_item);
+      *radio_item->group = eina_list_remove(*radio_item->group, radio_item);
       if (!(*radio_item->group))
       {
          free(radio_item->group);
@@ -624,14 +624,14 @@ void etk_menu_item_radio_group_set(Etk_Menu_Item_Radio *radio_item, Evas_List **
 
    if (!group)
    {
-      group = malloc(sizeof(Evas_List *));
+      group = malloc(sizeof(Eina_List *));
       *group = NULL;
       active = ETK_TRUE;
    }
    else
       active = ETK_FALSE;
 
-   *group = evas_list_append(*group, radio_item);
+   *group = eina_list_append(*group, radio_item);
    radio_item->group = group;
    etk_object_notify(ETK_OBJECT(radio_item), "group");
 
@@ -644,7 +644,7 @@ void etk_menu_item_radio_group_set(Etk_Menu_Item_Radio *radio_item, Evas_List **
  * @param radio_item a radio menu-item
  * @return Returns the group of the radio menu-item
  */
-Evas_List **etk_menu_item_radio_group_get(Etk_Menu_Item_Radio *radio_item)
+Eina_List **etk_menu_item_radio_group_get(Etk_Menu_Item_Radio *radio_item)
 {
    if (!radio_item)
       return NULL;
@@ -731,7 +731,7 @@ static void _etk_menu_item_radio_destructor(Etk_Menu_Item_Radio *radio_item)
    if (!radio_item || !radio_item->group)
       return;
 
-   *radio_item->group = evas_list_remove(*radio_item->group, radio_item);
+   *radio_item->group = eina_list_remove(*radio_item->group, radio_item);
    if (!(*radio_item->group))
       free(radio_item->group);
    else if (ETK_MENU_ITEM_CHECK(radio_item)->active)
@@ -1004,7 +1004,7 @@ static void _etk_menu_item_radio_active_set(Etk_Menu_Item_Check *check_item, Etk
 {
    Etk_Menu_Item_Radio *radio_item;
    Etk_Menu_Item_Check *ci;
-   Evas_List *l;
+   Eina_List *l;
 
    if (!(radio_item = ETK_MENU_ITEM_RADIO(check_item)) || check_item->active == active)
       return;
@@ -1107,7 +1107,7 @@ static void _etk_menu_item_radio_active_set(Etk_Menu_Item_Check *check_item, Etk
  * @prop_val ETK_FALSE
  * \par
  * @prop_name "group" (only for Etk_Menu_Item_Radio): The group of menu items which the menu item belongs to
- * @prop_type Pointer (Evas_List *)
+ * @prop_type Pointer (Eina_List *)
  * @prop_rw
  * @prop_val NULL
  */

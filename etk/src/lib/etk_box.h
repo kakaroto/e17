@@ -92,7 +92,7 @@ struct Etk_Box_Cell
    Etk_Box_Cell *next;
 
    Etk_Widget *child;
-   Evas_List *focus_node;
+   Eina_List *focus_node;
    Etk_Box_Group group;
    Etk_Box_Fill_Policy fill_policy;
    int padding;

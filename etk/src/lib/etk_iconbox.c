@@ -61,7 +61,7 @@ typedef struct Etk_Iconbox_Grid
 
    Etk_Iconbox *iconbox;
 
-   Evas_List *icon_objects;
+   Eina_List *icon_objects;
    Evas_Object *clip;
 
    Evas_Object *selection_rect;
@@ -204,7 +204,7 @@ Etk_Iconbox_Model *etk_iconbox_model_new(Etk_Iconbox *iconbox)
    model->label_xalign = 0.5;
    model->label_yalign = 0.0;
 
-   iconbox->models = evas_list_append(iconbox->models, model);
+   iconbox->models = eina_list_append(iconbox->models, model);
    return model;
 }
 
@@ -221,9 +221,9 @@ void etk_iconbox_model_free(Etk_Iconbox_Model *model)
       return;
 
    iconbox = model->iconbox;
-   iconbox->models = evas_list_remove(iconbox->models, model);
+   iconbox->models = eina_list_remove(iconbox->models, model);
    if (iconbox->current_model == model)
-      iconbox->current_model = evas_list_data(iconbox->models);
+      iconbox->current_model = eina_list_data_get(iconbox->models);
 
    free(model);
 }
@@ -694,20 +694,20 @@ Etk_Iconbox_Icon *etk_iconbox_icon_get_by_data(Etk_Iconbox *iconbox, void *data)
 /**
  * @brief Get all the selected icons.
  * @param iconbox an iconbox
- * @return Return an Evas_List of Etk_Iconbox_Icon, or NULL if none is selected.
- * You must use evas_list_free() to free the list when you don't need anymore.
+ * @return Return an Eina_List of Etk_Iconbox_Icon, or NULL if none is selected.
+ * You must use eina_list_free() to free the list when you don't need anymore.
  */
-Evas_List *etk_iconbox_icon_get_selected(Etk_Iconbox *iconbox)
+Eina_List *etk_iconbox_icon_get_selected(Etk_Iconbox *iconbox)
 {
    Etk_Iconbox_Icon *icon;
-   Evas_List *l = NULL;
+   Eina_List *l = NULL;
 
    if (!iconbox)
       return NULL;
 
    for (icon = iconbox->first_icon; icon; icon = icon->next)
       if (icon->selected)
-         l = evas_list_append(l, icon);
+         l = eina_list_append(l, icon);
 
    return l;
 }
@@ -1136,7 +1136,7 @@ static void _etk_iconbox_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geo
    Etk_Iconbox_Grid *grid;
    Etk_Iconbox_Icon *icon;
    Etk_Iconbox_Icon_Object *icon_object;
-   Evas_List *l;
+   Eina_List *l;
    int num_cols, num_rows;
    int num_visible_icons;
    int num_icons_to_add;
@@ -1161,7 +1161,7 @@ static void _etk_iconbox_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geo
          num_rows++;
    }
    num_visible_icons = ETK_MIN(num_cols * num_rows, iconbox->num_icons);
-   num_icons_to_add = num_visible_icons - evas_list_count(grid->icon_objects);
+   num_icons_to_add = num_visible_icons - eina_list_count(grid->icon_objects);
    grid->num_cols = num_cols;
 
    /* Cache current icons */
@@ -1535,7 +1535,7 @@ static void _etk_iconbox_icon_object_add(Etk_Iconbox_Grid *grid)
    etk_widget_repeat_mouse_events_set(icon_object->label, ETK_TRUE);
    etk_label_alignment_set(ETK_LABEL(icon_object->label), 0.0, 0.0);
 
-   grid->icon_objects = evas_list_append(grid->icon_objects, icon_object);
+   grid->icon_objects = eina_list_append(grid->icon_objects, icon_object);
 }
 
 /* Deletes an icon object of the iconbox */
@@ -1543,7 +1543,7 @@ static void _etk_iconbox_icon_object_delete(Etk_Iconbox_Grid *grid)
 {
    Etk_Iconbox_Icon_Object *icon_object;
 
-   if (!grid || !(icon_object = evas_list_data(grid->icon_objects)))
+   if (!grid || !(icon_object = eina_list_data_get(grid->icon_objects)))
       return;
 
    /* Cache the image */
@@ -1562,7 +1562,7 @@ static void _etk_iconbox_icon_object_delete(Etk_Iconbox_Grid *grid)
    etk_object_destroy(ETK_OBJECT(icon_object->label));
    free(icon_object);
 
-   grid->icon_objects = evas_list_remove_list(grid->icon_objects, grid->icon_objects);
+   grid->icon_objects = eina_list_remove_list(grid->icon_objects, grid->icon_objects);
 }
 
 /* Draws the icon according to the icon model */

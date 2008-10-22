@@ -201,7 +201,7 @@ void etk_object_destroy(Etk_Object *object)
    {
       weak_pointer = object->weak_pointers->data;
       *weak_pointer =  NULL;
-      object->weak_pointers = evas_list_remove_list(object->weak_pointers, object->weak_pointers);
+      object->weak_pointers = eina_list_remove_list(object->weak_pointers, object->weak_pointers);
    }
 
    object->destroy_me = ETK_TRUE;
@@ -320,11 +320,11 @@ void etk_object_signal_callback_add(Etk_Object *object, int signal_code,
 {
    if (after)
       object->signal_callbacks[signal_code] =
-         evas_list_append(object->signal_callbacks[signal_code],
+         eina_list_append(object->signal_callbacks[signal_code],
                           signal_callback);
    else
       object->signal_callbacks[signal_code] =
-         evas_list_prepend(object->signal_callbacks[signal_code],
+         eina_list_prepend(object->signal_callbacks[signal_code],
                            signal_callback);
 }
 
@@ -346,13 +346,13 @@ void etk_object_signal_callback_remove(Etk_Object *object, int signal_code,
    if (!signal_callback)
       return;
 
-   Evas_List *lst = evas_list_find_list(object->signal_callbacks[signal_code],
+   Eina_List *lst = eina_list_data_find_list(object->signal_callbacks[signal_code],
                                         signal_callback);
    if (lst)
    {
       etk_signal_callback_del(lst->data);
       object->signal_callbacks[signal_code] =
-         evas_list_remove_list(object->signal_callbacks[signal_code], lst);
+         eina_list_remove_list(object->signal_callbacks[signal_code], lst);
    }
 }
 
@@ -370,7 +370,7 @@ void etk_object_signal_callback_remove(Etk_Object *object, int signal_code,
  *       by etk_signal_emit().
  */
 void etk_object_signal_callbacks_get(Etk_Object *object, int signal_code,
-                                     Evas_List **callbacks)
+                                     Eina_List **callbacks)
 {
    if (!callbacks)
       return;
@@ -391,10 +391,10 @@ void etk_object_weak_pointer_add(Etk_Object *object, void **pointer_location)
 {
    if (!object || !pointer_location || object->destroy_me)
       return;
-   if (evas_list_find(object->weak_pointers, pointer_location))
+   if (eina_list_data_find(object->weak_pointers, pointer_location))
       return;
 
-   object->weak_pointers = evas_list_append(object->weak_pointers, pointer_location);
+   object->weak_pointers = eina_list_append(object->weak_pointers, pointer_location);
 }
 
 /**
@@ -407,7 +407,7 @@ void etk_object_weak_pointer_remove(Etk_Object *object, void **pointer_location)
 {
    if (!object || !pointer_location)
       return;
-   object->weak_pointers = evas_list_remove(object->weak_pointers, pointer_location);
+   object->weak_pointers = eina_list_remove(object->weak_pointers, pointer_location);
 }
 
 /**
@@ -616,8 +616,8 @@ void etk_object_properties_get_valist(Etk_Object *object, const char *first_prop
  */
 void etk_object_notify(Etk_Object *object, const char *property_name)
 {
-   Evas_List *l;
-   Evas_List **callbacks;
+   Eina_List *l;
+   Eina_List **callbacks;
    Etk_Notification_Callback *callback;
 
    if (!object || !property_name)
@@ -653,7 +653,7 @@ void etk_object_notify(Etk_Object *object, const char *property_name)
  */
 void etk_object_notification_callback_add(Etk_Object *object, const char *property_name, void (*callback)(Etk_Object *object, const char *property_name, void *data), void *data)
 {
-   Evas_List **list;
+   Eina_List **list;
    Etk_Notification_Callback *new_callback;
 
    if (!object || !property_name || !callback)
@@ -661,7 +661,7 @@ void etk_object_notification_callback_add(Etk_Object *object, const char *proper
 
    if (!(list = evas_hash_find(object->notification_callbacks, property_name)))
    {
-      list = malloc(sizeof(Evas_List *));
+      list = malloc(sizeof(Eina_List *));
       *list = NULL;
       object->notification_callbacks = evas_hash_add(object->notification_callbacks, property_name, list);
    }
@@ -670,7 +670,7 @@ void etk_object_notification_callback_add(Etk_Object *object, const char *proper
    new_callback->callback = callback;
    new_callback->data = data;
    new_callback->delete_me = ETK_FALSE;
-   *list = evas_list_append(*list, new_callback);
+   *list = eina_list_append(*list, new_callback);
 }
 
 /**
@@ -681,8 +681,8 @@ void etk_object_notification_callback_add(Etk_Object *object, const char *proper
  */
 void etk_object_notification_callback_remove(Etk_Object *object, const char *property_name, void (*callback)(Etk_Object *object, const char *property_name, void *data))
 {
-   Evas_List *l, *next;
-   Evas_List **list;
+   Eina_List *l, *next;
+   Eina_List **list;
    Etk_Notification_Callback *remove_callback;
 
    if (!object || !property_name || !callback)
@@ -702,7 +702,7 @@ void etk_object_notification_callback_remove(Etk_Object *object, const char *pro
          if (object->notifying == 0)
          {
             free(remove_callback);
-            *list = evas_list_remove_list(*list, l);
+            *list = eina_list_remove_list(*list, l);
          }
          else
          {
@@ -819,8 +819,8 @@ static void _etk_object_free(Etk_Object *object)
 /* Removes the notification-callbacks marked as "deleted" from the list (called by etk_object_notify()) */
 static Evas_Bool _etk_object_notification_callbacks_clean_cb(const Evas_Hash *hash, const char *key, void *data, void *fdata)
 {
-   Evas_List *l, *next;
-   Evas_List **callbacks;
+   Eina_List *l, *next;
+   Eina_List **callbacks;
    Etk_Notification_Callback *callback;
 
    if (!(callbacks = data))
@@ -834,7 +834,7 @@ static Evas_Bool _etk_object_notification_callbacks_clean_cb(const Evas_Hash *ha
       if (callback->delete_me)
       {
          free(callback);
-         *callbacks = evas_list_remove_list(*callbacks, l);
+         *callbacks = eina_list_remove_list(*callbacks, l);
       }
    }
 
@@ -844,7 +844,7 @@ static Evas_Bool _etk_object_notification_callbacks_clean_cb(const Evas_Hash *ha
 /* Frees a list of notification callbacks (called by _etk_object_destructor()) */
 static Evas_Bool _etk_object_notification_callbacks_free_cb(const Evas_Hash *hash, const char *key, void *data, void *fdata)
 {
-   Evas_List **list;
+   Eina_List **list;
 
    if (!(list = data))
       return 1;
@@ -852,7 +852,7 @@ static Evas_Bool _etk_object_notification_callbacks_free_cb(const Evas_Hash *has
    while (*list)
    {
       free((*list)->data);
-      *list = evas_list_remove_list(*list, *list);
+      *list = eina_list_remove_list(*list, *list);
    }
    free(list);
 

@@ -165,7 +165,7 @@ void etk_type_delete(Etk_Type *type)
  */
 void etk_type_object_construct(Etk_Type *type, Etk_Object *object)
 {
-   Evas_List *properties = NULL;
+   Eina_List *properties = NULL;
    Etk_Property *property;
    int i;
 
@@ -174,7 +174,7 @@ void etk_type_object_construct(Etk_Type *type, Etk_Object *object)
 
    /* We first allocate space for signal callbacks lists */
    if (type->signals_count > 0)
-      object->signal_callbacks = (Evas_List **) calloc(type->signals_count, sizeof(Evas_List *));
+      object->signal_callbacks = (Eina_List **) calloc(type->signals_count, sizeof(Eina_List *));
 
    /* Then call the constructors */
    for (i = type->hierarchy_depth - 1; i >= 0; i--)
@@ -197,7 +197,7 @@ void etk_type_object_construct(Etk_Type *type, Etk_Object *object)
          property = properties->data;
          if (property->default_value && (property->flags & ETK_PROPERTY_CONSTRUCT))
             type->hierarchy[i]->property_set(object, property->id, property->default_value);
-         properties = evas_list_remove_list(properties, properties);
+         properties = eina_list_remove_list(properties, properties);
       }
    }
    if (type->property_set)
@@ -208,7 +208,7 @@ void etk_type_object_construct(Etk_Type *type, Etk_Object *object)
          property = properties->data;
          if (property->default_value && (property->flags & ETK_PROPERTY_CONSTRUCT))
             type->property_set(object, property->id, property->default_value);
-         properties = evas_list_remove_list(properties, properties);
+         properties = eina_list_remove_list(properties, properties);
       }
    }
 }
@@ -236,11 +236,11 @@ void etk_type_destructors_call(Etk_Type *type, Etk_Object *object)
    /* Free all the signal callbacks */
    for (i = 0; i < type->signals_count; i++)
    {
-      Evas_List *lst;
+      Eina_List *lst;
 
       for (lst = object->signal_callbacks[i]; lst; lst = lst->next)
          etk_signal_callback_del(lst->data);
-      evas_list_free(object->signal_callbacks[i]);
+      eina_list_free(object->signal_callbacks[i]);
    }
 
    if (object->signal_callbacks)
@@ -403,7 +403,7 @@ Etk_Bool etk_type_property_find(Etk_Type *type, const char *name, Etk_Type **pro
  * @param type the type that has the properties to list
  * @param properties the location of the list where the properties will be appended
  */
-void etk_type_property_list(Etk_Type *type, Evas_List **properties)
+void etk_type_property_list(Etk_Type *type, Eina_List **properties)
 {
    if (!type || !properties)
       return;
@@ -452,10 +452,10 @@ static Evas_Bool _etk_type_property_free_cb(const Evas_Hash *hash, const char *k
 /* Used by etk_type_property_list() */
 static Evas_Bool _etk_type_property_add_to_list(const Evas_Hash *hash, const char *key, void *data, void *fdata)
 {
-   Evas_List **properties;
+   Eina_List **properties;
 
    if (data && (properties = fdata))
-      *properties = evas_list_append(*properties, data);
+      *properties = eina_list_append(*properties, data);
    return 1;
 }
 

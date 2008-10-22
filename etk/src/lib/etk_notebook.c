@@ -57,7 +57,7 @@ static void _etk_notebook_frame_size_request(Etk_Widget *widget, Etk_Size *size)
 static void _etk_notebook_frame_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 static void _etk_notebook_child_add(Etk_Container *container, Etk_Widget *widget);
 static void _etk_notebook_child_remove(Etk_Container *container, Etk_Widget *widget);
-static Evas_List *_etk_notebook_children_get(Etk_Container *container);
+static Eina_List *_etk_notebook_children_get(Etk_Container *container);
 
 static Etk_Bool _etk_notebook_tab_toggled_cb(Etk_Object *object, void *data);
 static Etk_Bool _etk_notebook_tab_bar_focused_cb(Etk_Object *object, void *data);
@@ -66,7 +66,7 @@ static Etk_Bool _etk_notebook_tab_bar_key_down_cb(Etk_Object *object, Etk_Event_
 static Etk_Bool _etk_notebook_tab_bar_mouse_wheel_cb(Etk_Object *object, Etk_Event_Mouse_Wheel *event, void *data);
 
 static void _etk_notebook_tab_bar_create(Etk_Notebook *notebook);
-static Etk_Notebook_Page *_etk_notebook_page_create(Etk_Notebook *notebook, Evas_List *after, const char *tab_label, Etk_Widget *child);
+static Etk_Notebook_Page *_etk_notebook_page_create(Etk_Notebook *notebook, Eina_List *after, const char *tab_label, Etk_Widget *child);
 static void _etk_notebook_page_switch(Etk_Notebook *notebook, Etk_Notebook_Page *page);
 
 /**************************
@@ -146,15 +146,15 @@ int etk_notebook_page_prepend(Etk_Notebook *notebook, const char *tab_label, Etk
 int etk_notebook_page_append(Etk_Notebook *notebook, const char *tab_label, Etk_Widget *page_child)
 {
    Etk_Notebook_Page *new_page;
-   Evas_List *after;
+   Eina_List *after;
 
    if (!notebook)
       return -1;
 
-   after = evas_list_last(notebook->pages);
+   after = eina_list_last(notebook->pages);
    if (!(new_page = _etk_notebook_page_create(notebook, after, tab_label, page_child)))
       return -1;
-   return evas_list_count(notebook->pages) - 1;
+   return eina_list_count(notebook->pages) - 1;
 }
 
 /**
@@ -170,7 +170,7 @@ int etk_notebook_page_append(Etk_Notebook *notebook, const char *tab_label, Etk_
 int etk_notebook_page_insert(Etk_Notebook *notebook, const char *tab_label, Etk_Widget *page_child, int position)
 {
    Etk_Notebook_Page *new_page;
-   Evas_List *after;
+   Eina_List *after;
 
    if (!notebook)
       return -1;
@@ -181,7 +181,7 @@ int etk_notebook_page_insert(Etk_Notebook *notebook, const char *tab_label, Etk_
       return etk_notebook_page_append(notebook, tab_label, page_child);
    else
    {
-      after = evas_list_nth(notebook->pages, position - 1);
+      after = eina_list_nth(notebook->pages, position - 1);
       if (!(new_page = _etk_notebook_page_create(notebook, after, tab_label, page_child)))
          return -1;
       return position;
@@ -197,11 +197,11 @@ int etk_notebook_page_insert(Etk_Notebook *notebook, const char *tab_label, Etk_
  */
 Etk_Widget *etk_notebook_page_remove(Etk_Notebook *notebook, int page_num)
 {
-   Evas_List *l;
+   Eina_List *l;
    Etk_Notebook_Page *page, *new_current = NULL;
    Etk_Widget *child;
 
-   if (!notebook || !(l = evas_list_nth_list(notebook->pages, page_num)))
+   if (!notebook || !(l = eina_list_nth_list(notebook->pages, page_num)))
       return NULL;
 
    page = l->data;
@@ -220,7 +220,7 @@ Etk_Widget *etk_notebook_page_remove(Etk_Notebook *notebook, int page_num)
    else
       new_current = notebook->current_page;
 
-   notebook->pages = evas_list_remove_list(notebook->pages, l);
+   notebook->pages = eina_list_remove_list(notebook->pages, l);
    free(page);
 
    if (notebook->current_page != new_current)
@@ -248,7 +248,7 @@ int etk_notebook_num_pages_get(Etk_Notebook *notebook)
 {
    if (!notebook)
       return -1;
-   return evas_list_count(notebook->pages);
+   return eina_list_count(notebook->pages);
 }
 
 /**
@@ -260,7 +260,7 @@ void etk_notebook_current_page_set(Etk_Notebook *notebook, int page_num)
 {
    Etk_Notebook_Page *page;
 
-   if (!notebook || !(page = evas_list_nth(notebook->pages, page_num)))
+   if (!notebook || !(page = eina_list_nth(notebook->pages, page_num)))
       return;
    etk_toggle_button_active_set(ETK_TOGGLE_BUTTON(page->tab), ETK_TRUE);
 }
@@ -273,7 +273,7 @@ void etk_notebook_current_page_set(Etk_Notebook *notebook, int page_num)
 int etk_notebook_current_page_get(Etk_Notebook *notebook)
 {
    int i;
-   Evas_List *l;
+   Eina_List *l;
 
    if (!notebook || !notebook->current_page)
       return -1;
@@ -295,7 +295,7 @@ int etk_notebook_current_page_get(Etk_Notebook *notebook)
 int etk_notebook_page_index_get(Etk_Notebook *notebook, Etk_Widget *child)
 {
    Etk_Notebook_Page *page;
-   Evas_List *l;
+   Eina_List *l;
    int i;
 
    if (!notebook)
@@ -363,7 +363,7 @@ void etk_notebook_page_tab_label_set(Etk_Notebook *notebook, int page_num, const
 {
    Etk_Notebook_Page *page;
 
-   if (!notebook || !(page = evas_list_nth(notebook->pages, page_num)))
+   if (!notebook || !(page = eina_list_nth(notebook->pages, page_num)))
       return;
    etk_button_label_set(ETK_BUTTON(page->tab), tab_label);
 }
@@ -378,7 +378,7 @@ const char *etk_notebook_page_tab_label_get(Etk_Notebook *notebook, int page_num
 {
    Etk_Notebook_Page *page;
 
-   if (!notebook || !(page = evas_list_nth(notebook->pages, page_num)))
+   if (!notebook || !(page = eina_list_nth(notebook->pages, page_num)))
      return NULL;
    return etk_button_label_get(ETK_BUTTON(page->tab));
 }
@@ -394,7 +394,7 @@ void etk_notebook_page_tab_widget_set(Etk_Notebook *notebook, int page_num, Etk_
 {
    Etk_Notebook_Page *page;
 
-   if (!notebook || !(page = evas_list_nth(notebook->pages, page_num)))
+   if (!notebook || !(page = eina_list_nth(notebook->pages, page_num)))
       return;
    etk_bin_child_set(ETK_BIN(page->tab), tab_widget);
 }
@@ -409,7 +409,7 @@ Etk_Widget *etk_notebook_page_tab_widget_get(Etk_Notebook *notebook, int page_nu
 {
    Etk_Notebook_Page *page;
 
-   if (!notebook || !(page = evas_list_nth(notebook->pages, page_num)))
+   if (!notebook || !(page = eina_list_nth(notebook->pages, page_num)))
       return NULL;
    return etk_bin_child_get(ETK_BIN(page->tab));
 }
@@ -424,7 +424,7 @@ void etk_notebook_page_child_set(Etk_Notebook *notebook, int page_num, Etk_Widge
 {
    Etk_Notebook_Page *page;
 
-   if (!notebook || !(page = evas_list_nth(notebook->pages, page_num)))
+   if (!notebook || !(page = eina_list_nth(notebook->pages, page_num)))
       return;
 
    if (page->child)
@@ -455,7 +455,7 @@ Etk_Widget *etk_notebook_page_child_get(Etk_Notebook *notebook, int page_num)
 {
    Etk_Notebook_Page *page;
 
-   if (!notebook || !(page = evas_list_nth(notebook->pages, page_num)))
+   if (!notebook || !(page = eina_list_nth(notebook->pages, page_num)))
       return NULL;
    return page->child;
 }
@@ -467,7 +467,7 @@ Etk_Widget *etk_notebook_page_child_get(Etk_Notebook *notebook, int page_num)
  */
 void etk_notebook_tabs_visible_set(Etk_Notebook *notebook, Etk_Bool tabs_visible)
 {
-   Evas_List *l;
+   Eina_List *l;
    Etk_Notebook_Page *page;
 
    if (!notebook || notebook->tab_bar_visible == tabs_visible)
@@ -557,7 +557,7 @@ static void _etk_notebook_constructor(Etk_Notebook *notebook)
 /* Destroys the notebook */
 static void _etk_notebook_destructor(Etk_Notebook *notebook)
 {
-   Evas_List *l;
+   Eina_List *l;
    Etk_Notebook_Page *page;
 
    if (!notebook)
@@ -671,7 +671,7 @@ static void _etk_notebook_tab_bar_size_request(Etk_Widget *widget, Etk_Size *siz
 {
    Etk_Notebook *notebook;
    Etk_Notebook_Page *p;
-   Evas_List *l;
+   Eina_List *l;
    Etk_Size tab_size;
 
    if (!widget || !size)
@@ -693,7 +693,7 @@ static void _etk_notebook_tab_bar_size_request(Etk_Widget *widget, Etk_Size *siz
    }
 
    if (notebook->tab_bar_homogeneous)
-      size->w *= evas_list_count(notebook->pages);
+      size->w *= eina_list_count(notebook->pages);
 }
 
 /* Resizes the notebook's tab-bar to the allocated size */
@@ -707,7 +707,7 @@ static void _etk_notebook_tab_bar_size_allocate(Etk_Widget *widget, Etk_Geometry
    int extra = 0;
    float ratio = 0;
    Etk_Notebook_Page *p;
-   Evas_List *l;
+   Eina_List *l;
 
    if (!widget || !(notebook = ETK_NOTEBOOK(etk_object_data_get(ETK_OBJECT(widget), "_Etk_Notebook::Notebook"))))
       return;
@@ -716,7 +716,7 @@ static void _etk_notebook_tab_bar_size_allocate(Etk_Widget *widget, Etk_Geometry
    {
       int count;
 
-      count = evas_list_count(notebook->pages);
+      count = eina_list_count(notebook->pages);
       tab_w = geometry.w / count;
       extra = geometry.w % count;
    }
@@ -802,11 +802,11 @@ static void _etk_notebook_child_remove(Etk_Container *container, Etk_Widget *wid
 }
 
 /* Gets the children of the notebook */
-static Evas_List *_etk_notebook_children_get(Etk_Container *container)
+static Eina_List *_etk_notebook_children_get(Etk_Container *container)
 {
    Etk_Notebook *notebook;
    Etk_Notebook_Page *page;
-   Evas_List *children, *l;
+   Eina_List *children, *l;
 
    if (!(notebook = ETK_NOTEBOOK(container)))
       return NULL;
@@ -815,7 +815,7 @@ static Evas_List *_etk_notebook_children_get(Etk_Container *container)
    for (l = notebook->pages; l; l = l->next)
    {
       page = l->data;
-      children = evas_list_append(children, page->child);
+      children = eina_list_append(children, page->child);
    }
    return children;
 }
@@ -946,7 +946,7 @@ static void _etk_notebook_tab_bar_create(Etk_Notebook *notebook)
 }
 
 /* Creates a new page for the notebook */
-static Etk_Notebook_Page *_etk_notebook_page_create(Etk_Notebook *notebook, Evas_List *after, const char *tab_label, Etk_Widget *child)
+static Etk_Notebook_Page *_etk_notebook_page_create(Etk_Notebook *notebook, Eina_List *after, const char *tab_label, Etk_Widget *child)
 {
    Etk_Notebook_Page *new_page, *p;
 
@@ -956,9 +956,9 @@ static Etk_Notebook_Page *_etk_notebook_page_create(Etk_Notebook *notebook, Evas
    new_page = malloc(sizeof(Etk_Notebook_Page));
    p = notebook->pages ? notebook->pages->data : NULL;
    if (after)
-      notebook->pages = evas_list_append_relative_list(notebook->pages, new_page, after);
+      notebook->pages = eina_list_append_relative_list(notebook->pages, new_page, after);
    else
-      notebook->pages = evas_list_prepend(notebook->pages, new_page);
+      notebook->pages = eina_list_prepend(notebook->pages, new_page);
 
    new_page->tab = etk_widget_new(ETK_RADIO_BUTTON_TYPE,
       "theme-group", "tab", "theme-parent", notebook, "label", tab_label, "repeat-mouse-events", ETK_TRUE,
@@ -996,7 +996,7 @@ static Etk_Notebook_Page *_etk_notebook_page_create(Etk_Notebook *notebook, Evas
 /* Changes the active page of the notebook */
 static void _etk_notebook_page_switch(Etk_Notebook *notebook, Etk_Notebook_Page *page)
 {
-   Evas_List *l;
+   Eina_List *l;
 
    if (!notebook || !page || notebook->current_page == page)
       return;
@@ -1008,13 +1008,13 @@ static void _etk_notebook_page_switch(Etk_Notebook *notebook, Etk_Notebook_Page 
          etk_widget_theme_signal_emit(notebook->current_page->tab, "etk,state,unfocused", ETK_FALSE);
    }
 
-   ETK_WIDGET(notebook)->focus_order = evas_list_free(ETK_WIDGET(notebook)->focus_order);
-   ETK_WIDGET(notebook)->focus_order = evas_list_append(ETK_WIDGET(notebook)->focus_order, notebook->tab_bar);
-   ETK_WIDGET(notebook)->focus_order = evas_list_append(ETK_WIDGET(notebook)->focus_order, page->frame);
+   ETK_WIDGET(notebook)->focus_order = eina_list_free(ETK_WIDGET(notebook)->focus_order);
+   ETK_WIDGET(notebook)->focus_order = eina_list_append(ETK_WIDGET(notebook)->focus_order, notebook->tab_bar);
+   ETK_WIDGET(notebook)->focus_order = eina_list_append(ETK_WIDGET(notebook)->focus_order, page->frame);
 
    /* Shows the page and updates the stacking of the tabs */
    etk_widget_show(page->frame);
-   for (l = evas_list_last(notebook->pages); l; l = l->prev)
+   for (l = eina_list_last(notebook->pages); l; l = l->prev)
       etk_widget_raise(((Etk_Notebook_Page *)(l->data))->tab);
    etk_widget_raise(page->tab);
 

@@ -1034,7 +1034,7 @@ static int _mouse_move_X_handler_cb(void *data, int ev_type, void *ev)
 /* TODO: Maybe replace this with a focus stack or something similar, later */
 Etk_Window *_window_focus_find_other(Etk_Window *current)
 {
-   Evas_List *toplevels;
+   Eina_List *toplevels;
    Etk_Window *other;
 
    /* We just return the first other window we find */
@@ -1054,7 +1054,7 @@ Etk_Window *_window_focus_find_other(Etk_Window *current)
 static Etk_Cache *_pointer_cache_build(void)
 {
    Etk_Cache *cache;
-   Evas_List *groups, *l;
+   Eina_List *groups, *l;
    Evas_Object *pointer;
    char *group;
    int w, h;

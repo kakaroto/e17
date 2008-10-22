@@ -50,7 +50,7 @@ static void _etk_mdi_area_size_request(Etk_Widget *widget, Etk_Size *size_requis
 static void _etk_mdi_area_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 static void _etk_mdi_area_child_add(Etk_Container *container, Etk_Widget *widget);
 static void _etk_mdi_area_child_remove(Etk_Container *container, Etk_Widget *widget);
-static Evas_List *_etk_mdi_area_children_get(Etk_Container *container);
+static Eina_List *_etk_mdi_area_children_get(Etk_Container *container);
 static Etk_Bool _etk_mdi_area_realized_cb(Etk_Object *object, void *data);
 static Etk_Bool _etk_mdi_area_child_moved_cb(Etk_Widget *child, int x, int y, void *data);
 static void _etk_mdi_area_child_maximized_cb(Etk_Object *object, const char *property_name, void *data);
@@ -108,8 +108,8 @@ void etk_mdi_area_put(Etk_Mdi_Area *mdi_area, Etk_Widget *widget, int x, int y)
    c->child = widget;
    c->pos.x = x;
    c->pos.y = y;
-   mdi_area->children = evas_list_append(mdi_area->children, c);
-   etk_object_data_set(ETK_OBJECT(widget), "_Etk_Mdi_Area::Node", evas_list_last(mdi_area->children));
+   mdi_area->children = eina_list_append(mdi_area->children, c);
+   etk_object_data_set(ETK_OBJECT(widget), "_Etk_Mdi_Area::Node", eina_list_last(mdi_area->children));
 
    if (mdi_area->clip)
    {
@@ -136,7 +136,7 @@ void etk_mdi_area_put(Etk_Mdi_Area *mdi_area, Etk_Widget *widget, int x, int y)
  */
 void etk_mdi_area_move(Etk_Mdi_Area *mdi_area, Etk_Widget *widget, int x, int y)
 {
-   Evas_List *l;
+   Eina_List *l;
    Etk_Mdi_Area_Child *c;
 
    if (!mdi_area || !widget)
@@ -165,7 +165,7 @@ void etk_mdi_area_move(Etk_Mdi_Area *mdi_area, Etk_Widget *widget, int x, int y)
  */
 void etk_mdi_area_child_position_get(Etk_Mdi_Area *mdi_area, Etk_Widget *widget, int *x, int *y)
 {
-   Evas_List *l;
+   Eina_List *l;
    Etk_Mdi_Area_Child *c;
 
    if (x) *x = 0;
@@ -216,7 +216,7 @@ static void _etk_mdi_area_destructor(Etk_Mdi_Area *mdi_area)
    while (mdi_area->children)
    {
       free(mdi_area->children->data);
-      mdi_area->children = evas_list_remove_list(mdi_area->children, mdi_area->children);
+      mdi_area->children = eina_list_remove_list(mdi_area->children, mdi_area->children);
    }
 }
 
@@ -226,7 +226,7 @@ static void _etk_mdi_area_size_request(Etk_Widget *widget, Etk_Size *size_requis
    Etk_Mdi_Area *mdi_area;
    Etk_Mdi_Area_Child *c;
    Etk_Size child_size;
-   Evas_List *l;
+   Eina_List *l;
 
    if (!(mdi_area = ETK_MDI_AREA(widget)) || !size_requisition)
       return;
@@ -253,7 +253,7 @@ static void _etk_mdi_area_size_allocate(Etk_Widget *widget, Etk_Geometry geometr
    Etk_Mdi_Area_Child *c;
    Etk_Size child_size;
    Etk_Geometry child_geometry;
-   Evas_List *l;
+   Eina_List *l;
 
    if (!(mdi_area = ETK_MDI_AREA(widget)))
       return;
@@ -298,7 +298,7 @@ static void _etk_mdi_area_child_add(Etk_Container *container, Etk_Widget *widget
 static void _etk_mdi_area_child_remove(Etk_Container *container, Etk_Widget *widget)
 {
    Etk_Mdi_Area *mdi_area;
-   Evas_List *l;
+   Eina_List *l;
 
    if (!(mdi_area = ETK_MDI_AREA(container)) || !widget)
       return;
@@ -307,7 +307,7 @@ static void _etk_mdi_area_child_remove(Etk_Container *container, Etk_Widget *wid
    {
       free(l->data);
       etk_object_data_set(ETK_OBJECT(widget), "_Etk_Mdi_Area::Node", NULL);
-      mdi_area->children = evas_list_remove_list(mdi_area->children, l);
+      mdi_area->children = eina_list_remove_list(mdi_area->children, l);
 
       if (mdi_area->clip)
       {
@@ -327,11 +327,11 @@ static void _etk_mdi_area_child_remove(Etk_Container *container, Etk_Widget *wid
 }
 
 /* Gets the list of the children */
-static Evas_List *_etk_mdi_area_children_get(Etk_Container *container)
+static Eina_List *_etk_mdi_area_children_get(Etk_Container *container)
 {
    Etk_Mdi_Area *mdi_area;
    Etk_Mdi_Area_Child *c;
-   Evas_List *children, *l;
+   Eina_List *children, *l;
 
    if (!(mdi_area = ETK_MDI_AREA(container)))
       return NULL;
@@ -340,7 +340,7 @@ static Evas_List *_etk_mdi_area_children_get(Etk_Container *container)
    for (l = mdi_area->children; l; l = l->next)
    {
       c = l->data;
-      children = evas_list_append(children, c->child);
+      children = eina_list_append(children, c->child);
    }
    return children;
 }
@@ -356,7 +356,7 @@ static Etk_Bool _etk_mdi_area_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Mdi_Area *mdi_area;
    Etk_Mdi_Area_Child *c;
-   Evas_List *l;
+   Eina_List *l;
    Evas *evas;
 
    if (!(mdi_area = ETK_MDI_AREA(object)) || !(evas = etk_widget_toplevel_evas_get(ETK_WIDGET(object))))

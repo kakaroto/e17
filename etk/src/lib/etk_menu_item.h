@@ -145,7 +145,7 @@ struct Etk_Menu_Item_Radio
    /* Inherit from Etk_Menu_Item_Check */
    Etk_Menu_Item_Check check_item;
 
-   Evas_List **group;
+   Eina_List **group;
    Etk_Bool can_uncheck:1;
 };
 
@@ -186,12 +186,12 @@ Etk_Bool    etk_menu_item_check_active_get(Etk_Menu_Item_Check *check_item);
 
 /* Etk_Menu_Item_Radio */
 Etk_Type   *etk_menu_item_radio_type_get(void);
-Etk_Widget *etk_menu_item_radio_new(Evas_List **group);
+Etk_Widget *etk_menu_item_radio_new(Eina_List **group);
 Etk_Widget *etk_menu_item_radio_new_from_widget(Etk_Menu_Item_Radio *radio_item);
-Etk_Widget *etk_menu_item_radio_new_with_label(const char *label, Evas_List **group);
+Etk_Widget *etk_menu_item_radio_new_with_label(const char *label, Eina_List **group);
 Etk_Widget *etk_menu_item_radio_new_with_label_from_widget(const char *label, Etk_Menu_Item_Radio *radio_item);
-void        etk_menu_item_radio_group_set(Etk_Menu_Item_Radio *radio_item, Evas_List **group);
-Evas_List **etk_menu_item_radio_group_get(Etk_Menu_Item_Radio *radio_item);
+void        etk_menu_item_radio_group_set(Etk_Menu_Item_Radio *radio_item, Eina_List **group);
+Eina_List **etk_menu_item_radio_group_get(Etk_Menu_Item_Radio *radio_item);
 
 /** @} */
 

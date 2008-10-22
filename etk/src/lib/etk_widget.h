@@ -91,22 +91,22 @@ struct Etk_Widget
 
    Etk_Toplevel *toplevel_parent;
    Etk_Widget *parent;
-   Evas_List *children;
-   Evas_List *focus_order;
+   Eina_List *children;
+   Eina_List *focus_order;
 
    char *theme_file;
    char *theme_group;
    char *theme_group_full;
    Etk_Widget *theme_parent;
-   Evas_List *theme_children;
+   Eina_List *theme_children;
    Evas_Object *theme_object;
 
    Evas_Object *smart_object;
    Evas_Object *event_object;
    Evas_Object *content_object;
    Evas_Object *clip;
-   Evas_List *member_objects;
-   Evas_List *swallowed_objects;
+   Eina_List *member_objects;
+   Eina_List *swallowed_objects;
 
    struct
    {
@@ -242,7 +242,7 @@ Evas_Object  *etk_widget_clip_get(Etk_Widget *widget);
 /* DND - Dead API, to reimplement */
 void         etk_widget_dnd_dest_set(Etk_Widget *widget, Etk_Bool on);
 Etk_Bool     etk_widget_dnd_dest_get(Etk_Widget *widget);
-Evas_List   *etk_widget_dnd_dest_widgets_get(void);
+Eina_List   *etk_widget_dnd_dest_widgets_get(void);
 void         etk_widget_dnd_source_set(Etk_Widget *widget, Etk_Bool on);
 Etk_Bool     etk_widget_dnd_source_get(Etk_Widget *widget);
 void         etk_widget_dnd_drag_widget_set(Etk_Widget *widget, Etk_Widget *drag_widget);

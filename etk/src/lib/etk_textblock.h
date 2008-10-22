@@ -220,9 +220,9 @@ struct Etk_Textblock
    Etk_Object object;
 
    Etk_Textblock_Node root;
-   Evas_List *iters;
+   Eina_List *iters;
 
-   Evas_List *evas_objects;
+   Eina_List *evas_objects;
 };
 
 /* Textblock's funcs */

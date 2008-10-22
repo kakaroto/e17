@@ -85,7 +85,7 @@ void etk_menu_shell_prepend(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *item)
    if (!menu_shell || !item)
       return;
 
-   menu_shell->items = evas_list_prepend(menu_shell->items, item);
+   menu_shell->items = eina_list_prepend(menu_shell->items, item);
    _etk_menu_shell_item_add(menu_shell, item);
 }
 
@@ -99,7 +99,7 @@ void etk_menu_shell_append(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *item)
    if (!menu_shell || !item)
       return;
 
-   menu_shell->items = evas_list_append(menu_shell->items, item);
+   menu_shell->items = eina_list_append(menu_shell->items, item);
    _etk_menu_shell_item_add(menu_shell, item);
 }
 
@@ -115,7 +115,7 @@ void etk_menu_shell_prepend_relative(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *
    if (!menu_shell || !item)
       return;
 
-   menu_shell->items = evas_list_prepend_relative(menu_shell->items, item, relative);
+   menu_shell->items = eina_list_prepend_relative(menu_shell->items, item, relative);
    _etk_menu_shell_item_add(menu_shell, item);
 }
 
@@ -131,7 +131,7 @@ void etk_menu_shell_append_relative(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *i
    if (!menu_shell || !item)
       return;
 
-   menu_shell->items = evas_list_append_relative(menu_shell->items, item, relative);
+   menu_shell->items = eina_list_append_relative(menu_shell->items, item, relative);
    _etk_menu_shell_item_add(menu_shell, item);
 }
 
@@ -149,15 +149,15 @@ void etk_menu_shell_insert(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *item, int 
       return;
 
    if (position <= 0)
-      menu_shell->items = evas_list_prepend(menu_shell->items, item);
-   else if (position >= evas_list_count(menu_shell->items))
-      menu_shell->items = evas_list_append(menu_shell->items, item);
+      menu_shell->items = eina_list_prepend(menu_shell->items, item);
+   else if (position >= eina_list_count(menu_shell->items))
+      menu_shell->items = eina_list_append(menu_shell->items, item);
    else
    {
       void *rel;
 
-      rel = evas_list_nth(menu_shell->items, position);
-      menu_shell->items = evas_list_prepend_relative(menu_shell->items, item, rel);
+      rel = eina_list_nth(menu_shell->items, position);
+      menu_shell->items = eina_list_prepend_relative(menu_shell->items, item, rel);
    }
    _etk_menu_shell_item_add(menu_shell, item);
 }
@@ -169,16 +169,16 @@ void etk_menu_shell_insert(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *item, int 
  */
 void etk_menu_shell_remove(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *item)
 {
-   Evas_List *l;
+   Eina_List *l;
 
    if (!menu_shell || !item)
       return;
 
-   if ((l = evas_list_find_list(menu_shell->items, item)))
+   if ((l = eina_list_data_find_list(menu_shell->items, item)))
    {
       etk_widget_parent_set(ETK_WIDGET(item), NULL);
       item->parent_shell = NULL;
-      menu_shell->items = evas_list_remove_list(menu_shell->items, l);
+      menu_shell->items = eina_list_remove_list(menu_shell->items, l);
       etk_widget_size_recalc_queue(ETK_WIDGET(menu_shell));
       etk_signal_emit(ETK_MENU_SHELL_ITEM_REMOVED_SIGNAL, ETK_OBJECT(menu_shell), item);
    }
@@ -188,18 +188,18 @@ void etk_menu_shell_remove(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *item)
  * @brief Gets the list of the items of the menu-shell
  * @param menu_shell a menu-shell
  * @return Returns the list of the items of the menu-shell.
- * The returned list will have to be freed with evas_list_free()
+ * The returned list will have to be freed with eina_list_free()
  */
-Evas_List *etk_menu_shell_items_get(Etk_Menu_Shell *menu_shell)
+Eina_List *etk_menu_shell_items_get(Etk_Menu_Shell *menu_shell)
 {
-   Evas_List *list, *l;
+   Eina_List *list, *l;
 
    if (!menu_shell)
       return NULL;
 
    list = NULL;
    for (l = menu_shell->items; l; l = l->next)
-      list = evas_list_append(list, l->data);
+      list = eina_list_append(list, l->data);
 
    return list;
 }
@@ -223,7 +223,7 @@ static void _etk_menu_shell_destructor(Etk_Menu_Shell *menu_shell)
 {
    if (!menu_shell)
       return;
-   evas_list_free(menu_shell->items);
+   eina_list_free(menu_shell->items);
 }
 
 /**************************

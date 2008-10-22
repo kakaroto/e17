@@ -198,13 +198,13 @@ char *etk_theme_widget_name_get(void)
 
 /**
  * @brief Gets the list of the available widget-themes. The list contains the names of the themes, not the paths
- * @return Returns an Evas_List of the available widget-themes
+ * @return Returns an Eina_List of the available widget-themes
  * @note The returned list should be free with etk_theme_available_themes_free()
  */
-Evas_List *etk_theme_widget_available_themes_get(void)
+Eina_List *etk_theme_widget_available_themes_get(void)
 {
    Ecore_List *files;
-   Evas_List *themes = NULL;
+   Eina_List *themes = NULL;
    char path[2][PATH_MAX];
    char *home;
    char *file;
@@ -223,7 +223,7 @@ Evas_List *etk_theme_widget_available_themes_get(void)
       {
          ecore_list_first_goto(files);
          while ((file = ecore_list_next(files)))
-            themes = evas_list_append(themes, ecore_file_strip_ext(file));
+            themes = eina_list_append(themes, ecore_file_strip_ext(file));
          ecore_list_destroy(files);
       }
    }
@@ -321,13 +321,13 @@ char *etk_theme_icon_name_get(void)
 
 /**
  * @brief Gets the list of the available icon-themes. The list contains the names of the themes, not the paths
- * @return Returns an Evas_List of the available icon-themes
+ * @return Returns an Eina_List of the available icon-themes
  * @note The returned list should be free with etk_theme_available_themes_free()
  */
-Evas_List *etk_theme_icon_available_themes_get(void)
+Eina_List *etk_theme_icon_available_themes_get(void)
 {
    Ecore_List *files;
-   Evas_List *themes = NULL;
+   Eina_List *themes = NULL;
    char path[2][PATH_MAX];
    char *home;
    char *file;
@@ -346,7 +346,7 @@ Evas_List *etk_theme_icon_available_themes_get(void)
       {
          ecore_list_first_goto(files);
          while ((file = ecore_list_next(files)))
-            themes = evas_list_append(themes, ecore_file_strip_ext(file));
+            themes = eina_list_append(themes, ecore_file_strip_ext(file));
          ecore_list_destroy(files);
       }
    }
@@ -371,12 +371,12 @@ char *etk_theme_icon_find(const char *theme_name)
  * etk_theme_icon_available_themes_get()
  * @param themes the list of themes to free
  */
-void etk_theme_available_themes_free(Evas_List *themes)
+void etk_theme_available_themes_free(Eina_List *themes)
 {
    while (themes)
    {
       free(themes->data);
-      themes = evas_list_remove_list(themes, themes);
+      themes = eina_list_remove_list(themes, themes);
    }
 }
 

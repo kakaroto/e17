@@ -117,7 +117,7 @@ void etk_container_remove(Etk_Widget *widget)
  */
 void etk_container_remove_all(Etk_Container *container)
 {
-   Evas_List *children, *l;
+   Eina_List *children, *l;
 
    if (!container)
       return;
@@ -125,7 +125,7 @@ void etk_container_remove_all(Etk_Container *container)
    children = etk_container_children_get(container);
    for (l = children; l; l = l->next)
       etk_container_remove(ETK_WIDGET(l->data));
-   evas_list_free(children);
+   eina_list_free(children);
 }
 
 /**
@@ -161,9 +161,9 @@ int etk_container_border_width_get(Etk_Container *container)
  * @brief Gets the list of the children of the container. It simply calls the "childrend_get()" method of the container
  * @param container a container
  * @return Returns the list of the container's children
- * @note The returned list will have to be freed with evas_list_free() when you no longer need it
+ * @note The returned list will have to be freed with eina_list_free() when you no longer need it
  */
-Evas_List *etk_container_children_get(Etk_Container *container)
+Eina_List *etk_container_children_get(Etk_Container *container)
 {
    if (!container || !container->children_get)
       return NULL;
@@ -178,15 +178,15 @@ Evas_List *etk_container_children_get(Etk_Container *container)
  */
 Etk_Bool etk_container_is_child(Etk_Container *container, Etk_Widget *widget)
 {
-   Evas_List *children;
+   Eina_List *children;
    Etk_Bool is_child;
 
    if (!container || !widget)
       return ETK_FALSE;
 
    children = etk_container_children_get(container);
-   is_child = (evas_list_find(children, widget) != NULL);
-   evas_list_free(children);
+   is_child = (eina_list_data_find(children, widget) != NULL);
+   eina_list_free(children);
 
    return is_child;
 }
@@ -198,7 +198,7 @@ Etk_Bool etk_container_is_child(Etk_Container *container, Etk_Widget *widget)
  */
 void etk_container_for_each(Etk_Container *container, void (*for_each_cb)(Etk_Widget *child))
 {
-   Evas_List *children, *l;
+   Eina_List *children, *l;
 
    if (!container || !for_each_cb)
       return;
@@ -206,7 +206,7 @@ void etk_container_for_each(Etk_Container *container, void (*for_each_cb)(Etk_Wi
    children = etk_container_children_get(container);
    for (l = children; l; l = l->next)
       for_each_cb(ETK_WIDGET(l->data));
-   evas_list_free(children);
+   eina_list_free(children);
 }
 
 /**
@@ -217,7 +217,7 @@ void etk_container_for_each(Etk_Container *container, void (*for_each_cb)(Etk_Wi
  */
 void etk_container_for_each_data(Etk_Container *container, void (*for_each_cb)(Etk_Widget *child, void *data), void *data)
 {
-   Evas_List *children, *l;
+   Eina_List *children, *l;
 
    if (!container || !for_each_cb)
       return;
@@ -225,7 +225,7 @@ void etk_container_for_each_data(Etk_Container *container, void (*for_each_cb)(E
    children = etk_container_children_get(container);
    for (l = children; l; l = l->next)
       for_each_cb(ETK_WIDGET(l->data), data);
-   evas_list_free(children);
+   eina_list_free(children);
 }
 
 /**

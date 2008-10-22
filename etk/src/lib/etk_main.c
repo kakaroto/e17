@@ -247,7 +247,7 @@ void etk_main_quit(void)
  */
 void etk_main_iterate(void)
 {
-   Evas_List *l;
+   Eina_List *l;
    Etk_Toplevel *toplevel;
 
    if (_etk_main_init_count <= 0)
@@ -283,7 +283,7 @@ static int _etk_main_idle_enterer_cb(void *data)
 /* Recursively requests the size of all the widgets */
 static void _etk_main_size_request_recursive(Etk_Widget *widget)
 {
-   Evas_List *l;
+   Eina_List *l;
    Etk_Size unused_size;
 
    if (!widget)
@@ -297,7 +297,7 @@ static void _etk_main_size_request_recursive(Etk_Widget *widget)
 /* Recursively allocates the size of all the widgets */
 static void _etk_main_size_allocate_recursive(Etk_Widget *widget, Etk_Bool is_top_level)
 {
-   Evas_List *l;
+   Eina_List *l;
    Etk_Geometry geometry;
 
    if (!widget)

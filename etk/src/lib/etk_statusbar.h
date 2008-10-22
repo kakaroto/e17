@@ -53,7 +53,7 @@ struct Etk_Statusbar
    /* Inherit from Etk_Widget */
    Etk_Widget widget;
 
-   Evas_List *msg_stack;
+   Eina_List *msg_stack;
    int next_message_id;
    int next_context_id;
    int window_width;

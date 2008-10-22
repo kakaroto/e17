@@ -53,7 +53,7 @@ static void _etk_toplevel_key_up_cb(void *data, Evas *e, Evas_Object *obj, void 
 static Etk_Widget *_etk_toplevel_prev_to_focus_get(Etk_Toplevel *toplevel, Etk_Widget *widget);
 static Etk_Widget *_etk_toplevel_next_to_focus_get(Etk_Toplevel *toplevel, Etk_Widget *widget);
 
-static Evas_List *_etk_toplevel_widgets = NULL;
+static Eina_List *_etk_toplevel_widgets = NULL;
 
 /**************************
  *
@@ -235,8 +235,8 @@ void etk_toplevel_pointer_push(Etk_Toplevel *toplevel, Etk_Pointer_Type pointer_
 
    new_pointer_type = malloc(sizeof(Etk_Pointer_Type));
    *new_pointer_type = pointer_type;
-   prev_pointer_type = evas_list_data(evas_list_last(toplevel->pointer_stack));
-   toplevel->pointer_stack = evas_list_append(toplevel->pointer_stack, new_pointer_type);
+   prev_pointer_type = eina_list_data_get(eina_list_last(toplevel->pointer_stack));
+   toplevel->pointer_stack = eina_list_append(toplevel->pointer_stack, new_pointer_type);
 
    if (toplevel->pointer_set && (!prev_pointer_type || (*prev_pointer_type != pointer_type)))
       toplevel->pointer_set(toplevel, pointer_type);
@@ -250,30 +250,30 @@ void etk_toplevel_pointer_push(Etk_Toplevel *toplevel, Etk_Pointer_Type pointer_
  */
 void etk_toplevel_pointer_pop(Etk_Toplevel *toplevel, Etk_Pointer_Type pointer_type)
 {
-   Evas_List *l;
+   Eina_List *l;
    Etk_Pointer_Type prev_pointer_type;
    Etk_Pointer_Type *prev_pointer_type_ptr;
    Etk_Pointer_Type *current_pointer_ptr;
    Etk_Pointer_Type *p;
 
-   if (!toplevel || !(prev_pointer_type_ptr = evas_list_data(evas_list_last(toplevel->pointer_stack))))
+   if (!toplevel || !(prev_pointer_type_ptr = eina_list_data_get(eina_list_last(toplevel->pointer_stack))))
       return;
 
    prev_pointer_type = *prev_pointer_type_ptr;
 
    if (pointer_type < 0)
    {
-      toplevel->pointer_stack = evas_list_remove_list(toplevel->pointer_stack, evas_list_last(toplevel->pointer_stack));
+      toplevel->pointer_stack = eina_list_remove_list(toplevel->pointer_stack, eina_list_last(toplevel->pointer_stack));
       free(prev_pointer_type_ptr);
    }
    else
    {
-      for (l = evas_list_last(toplevel->pointer_stack); l; l = l->prev)
+      for (l = eina_list_last(toplevel->pointer_stack); l; l = l->prev)
       {
          p = l->data;
          if (*p == pointer_type)
          {
-            toplevel->pointer_stack = evas_list_remove_list(toplevel->pointer_stack, l);
+            toplevel->pointer_stack = eina_list_remove_list(toplevel->pointer_stack, l);
             free(p);
             break;
          }
@@ -282,7 +282,7 @@ void etk_toplevel_pointer_pop(Etk_Toplevel *toplevel, Etk_Pointer_Type pointer_t
 
    if (toplevel->pointer_set)
    {
-      if ((current_pointer_ptr = evas_list_data(evas_list_last(toplevel->pointer_stack))))
+      if ((current_pointer_ptr = eina_list_data_get(eina_list_last(toplevel->pointer_stack))))
       {
          if (*current_pointer_ptr != prev_pointer_type)
             toplevel->pointer_set(toplevel, *current_pointer_ptr);
@@ -297,7 +297,7 @@ void etk_toplevel_pointer_pop(Etk_Toplevel *toplevel, Etk_Pointer_Type pointer_t
  * @return Returns a list of all the created toplevel widgets
  * @note This list should not be modified or freed
  */
-Evas_List *etk_toplevel_widgets_get(void)
+Eina_List *etk_toplevel_widgets_get(void)
 {
    return _etk_toplevel_widgets;
 }
@@ -325,21 +325,21 @@ static void _etk_toplevel_constructor(Etk_Toplevel *toplevel)
    ETK_WIDGET(toplevel)->toplevel_parent = toplevel;
    etk_signal_connect_by_code(ETK_WIDGET_REALIZED_SIGNAL, ETK_OBJECT(toplevel), ETK_CALLBACK(_etk_toplevel_realized_cb), NULL);
 
-   _etk_toplevel_widgets = evas_list_append(_etk_toplevel_widgets, toplevel);
+   _etk_toplevel_widgets = eina_list_append(_etk_toplevel_widgets, toplevel);
 }
 
 /* Destroys the toplevel widget */
 static void _etk_toplevel_destructor(Etk_Toplevel *toplevel)
 {
-   Evas_List *l;
+   Eina_List *l;
 
    if (!toplevel)
       return;
 
    for (l = toplevel->pointer_stack; l; l = l->next)
       free(l->data);
-   toplevel->pointer_stack = evas_list_free(toplevel->pointer_stack);
-   _etk_toplevel_widgets = evas_list_remove(_etk_toplevel_widgets, toplevel);
+   toplevel->pointer_stack = eina_list_free(toplevel->pointer_stack);
+   _etk_toplevel_widgets = eina_list_remove(_etk_toplevel_widgets, toplevel);
 }
 
 /* Sets the property whose id is "property_id" to the value "value" */
@@ -450,7 +450,7 @@ static void _etk_toplevel_key_up_cb(void *data, Evas *e, Evas_Object *obj, void 
 static Etk_Widget *_etk_toplevel_prev_to_focus_get(Etk_Toplevel *toplevel, Etk_Widget *widget)
 {
    Etk_Widget *prev;
-   Evas_List *focus_order, *l;
+   Eina_List *focus_order, *l;
 
    if (!toplevel)
       return NULL;
@@ -458,7 +458,7 @@ static Etk_Widget *_etk_toplevel_prev_to_focus_get(Etk_Toplevel *toplevel, Etk_W
    {
       widget = ETK_WIDGET(toplevel);
       while (!widget->focusable && (focus_order = ETK_TOPLEVEL_FOCUS_ORDER(widget)))
-         widget = ETK_WIDGET(evas_list_last(focus_order)->data);
+         widget = ETK_WIDGET(eina_list_last(focus_order)->data);
       if (widget->focusable)
          return widget;
    }
@@ -467,7 +467,7 @@ static Etk_Widget *_etk_toplevel_prev_to_focus_get(Etk_Toplevel *toplevel, Etk_W
    for ( ; widget->parent; widget = widget->parent)
    {
       focus_order = ETK_TOPLEVEL_FOCUS_ORDER(widget->parent);
-      if ((l = evas_list_find_list(focus_order, widget)))
+      if ((l = eina_list_data_find_list(focus_order, widget)))
       {
          if (l->prev)
          {
@@ -476,7 +476,7 @@ static Etk_Widget *_etk_toplevel_prev_to_focus_get(Etk_Toplevel *toplevel, Etk_W
             {
                if (!(focus_order = ETK_TOPLEVEL_FOCUS_ORDER(prev)))
                   break;
-               prev = ETK_WIDGET(evas_list_last(focus_order)->data);
+               prev = ETK_WIDGET(eina_list_last(focus_order)->data);
             }
             break;
          }
@@ -492,7 +492,7 @@ static Etk_Widget *_etk_toplevel_prev_to_focus_get(Etk_Toplevel *toplevel, Etk_W
 static Etk_Widget *_etk_toplevel_next_to_focus_get(Etk_Toplevel *toplevel, Etk_Widget *widget)
 {
    Etk_Widget *next;
-   Evas_List *focus_order, *l;
+   Eina_List *focus_order, *l;
 
    if (!toplevel)
       return NULL;
@@ -509,7 +509,7 @@ static Etk_Widget *_etk_toplevel_next_to_focus_get(Etk_Toplevel *toplevel, Etk_W
    for ( ; widget->parent; widget = widget->parent)
    {
       focus_order = ETK_TOPLEVEL_FOCUS_ORDER(widget->parent);
-      if ((l = evas_list_find_list(focus_order, widget)))
+      if ((l = eina_list_data_find_list(focus_order, widget)))
       {
          if (l->next)
          {

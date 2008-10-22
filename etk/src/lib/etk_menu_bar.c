@@ -106,7 +106,7 @@ static void _etk_menu_bar_constructor(Etk_Menu_Bar *menu_bar)
 /* Calculates the ideal size of the menu bar */
 static void _etk_menu_bar_size_request(Etk_Widget *widget, Etk_Size *size)
 {
-   Evas_List *l;
+   Eina_List *l;
    Etk_Menu_Shell *menu_shell;
 
    if (!(menu_shell = ETK_MENU_SHELL(widget)) || !size)
@@ -129,7 +129,7 @@ static void _etk_menu_bar_size_allocate(Etk_Widget *widget, Etk_Geometry geometr
 {
    Etk_Geometry child_geometry;
    Etk_Menu_Shell *menu_shell;
-   Evas_List *l;
+   Eina_List *l;
    int x_offset;
 
    if (!(menu_shell = ETK_MENU_SHELL(widget)))
@@ -196,7 +196,7 @@ static Etk_Bool _etk_menu_bar_item_selected_cb(Etk_Object *object, void *data)
    Etk_Toplevel *toplevel;
    Etk_Menu_Item *item;
    Etk_Menu_Bar *menu_bar;
-   Evas_List *l;
+   Eina_List *l;
 
    if (!(item = ETK_MENU_ITEM(object)) || !(menu_bar = ETK_MENU_BAR(item->parent_shell)))
       return ETK_TRUE;
@@ -266,7 +266,7 @@ static void _etk_menu_bar_mouse_move_cb(Etk_Event_Global event, void *data)
    Etk_Toplevel *toplevel;
    int tx, ty;
    Etk_Geometry item_geometry;
-   Evas_List *l;
+   Eina_List *l;
    Etk_Widget *item;
 
    if (!(menu_bar = ETK_MENU_BAR(data)) || !(toplevel = etk_widget_toplevel_parent_get(ETK_WIDGET(menu_bar))))

@@ -146,7 +146,7 @@ struct Etk_Iconbox
    Etk_Widget *scrolled_view;
    Etk_Widget *grid;
 
-   Evas_List *models;
+   Eina_List *models;
    Etk_Iconbox_Model *current_model;
    Etk_Emblem_Position emblem_position;
 
@@ -185,7 +185,7 @@ void               etk_iconbox_clear(Etk_Iconbox *iconbox);
 Etk_Iconbox_Icon  *etk_iconbox_icon_get_at_xy(Etk_Iconbox *iconbox, int x, int y, Etk_Bool over_cell, Etk_Bool over_icon, Etk_Bool over_label);
 Etk_Iconbox_Icon  *etk_iconbox_icon_get_by_label(Etk_Iconbox *iconbox, const char *label);
 Etk_Iconbox_Icon  *etk_iconbox_icon_get_by_data(Etk_Iconbox *iconbox, void *data);
-Evas_List         *etk_iconbox_icon_get_selected(Etk_Iconbox *iconbox);
+Eina_List         *etk_iconbox_icon_get_selected(Etk_Iconbox *iconbox);
 Etk_Iconbox_Icon  *etk_iconbox_icon_get_first_selected(Etk_Iconbox *iconbox);
 
 void               etk_iconbox_icon_file_set(Etk_Iconbox_Icon *icon, const char *filename, const char *edje_group);

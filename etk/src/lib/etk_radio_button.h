@@ -53,19 +53,19 @@ struct Etk_Radio_Button
    /* Inherit from Etk_Toggle_Button */
    Etk_Toggle_Button toggle_button;
 
-   Evas_List **group;
+   Eina_List **group;
    Etk_Bool can_uncheck:1;
 };
 
 
 Etk_Type    *etk_radio_button_type_get(void);
-Etk_Widget  *etk_radio_button_new(Evas_List **group);
+Etk_Widget  *etk_radio_button_new(Eina_List **group);
 Etk_Widget  *etk_radio_button_new_from_widget(Etk_Radio_Button *radio_button);
-Etk_Widget  *etk_radio_button_new_with_label(const char *label, Evas_List **group);
+Etk_Widget  *etk_radio_button_new_with_label(const char *label, Eina_List **group);
 Etk_Widget  *etk_radio_button_new_with_label_from_widget(const char *label, Etk_Radio_Button *radio_button);
 
-void        etk_radio_button_group_set(Etk_Radio_Button *radio_button, Evas_List **group);
-Evas_List **etk_radio_button_group_get(Etk_Radio_Button *radio_button);
+void        etk_radio_button_group_set(Etk_Radio_Button *radio_button, Eina_List **group);
+Eina_List **etk_radio_button_group_get(Etk_Radio_Button *radio_button);
 
 /** @} */
 

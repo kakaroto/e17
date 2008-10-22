@@ -44,7 +44,7 @@ static void _etk_event_modifiers_wrap(Evas_Modifier *evas_modifiers, Etk_Modifie
 static void _etk_event_locks_wrap(Evas_Lock *evas_locks, Etk_Locks *etk_locks);
 static void _etk_event_mouse_flags_wrap(Evas_Button_Flags evas_flags, Etk_Mouse_Flags *etk_flags);
 
-static Evas_List *_etk_event_callbacks[ETK_EVENT_NUM_EVENTS];
+static Eina_List *_etk_event_callbacks[ETK_EVENT_NUM_EVENTS];
 static char *_etk_event_empty = "";
 
 /**************************
@@ -79,7 +79,7 @@ void etk_event_shutdown(void)
       while (_etk_event_callbacks[i])
       {
          free(_etk_event_callbacks[i]->data);
-         _etk_event_callbacks[i] = evas_list_remove_list(_etk_event_callbacks[i], _etk_event_callbacks[i]);
+         _etk_event_callbacks[i] = eina_list_remove_list(_etk_event_callbacks[i], _etk_event_callbacks[i]);
       }
    }
 
@@ -287,7 +287,7 @@ void etk_event_global_callback_add(Etk_Event_Type event, void (*callback)(Etk_Ev
    cb = malloc(sizeof(Etk_Event_Callback));
    cb->callback = callback;
    cb->data = data;
-   _etk_event_callbacks[event] = evas_list_append(_etk_event_callbacks[event], cb);
+   _etk_event_callbacks[event] = eina_list_append(_etk_event_callbacks[event], cb);
 }
 
 /**
@@ -298,7 +298,7 @@ void etk_event_global_callback_add(Etk_Event_Type event, void (*callback)(Etk_Ev
 void etk_event_global_callback_del(Etk_Event_Type event, void (*callback)(Etk_Event_Global event, void *data))
 {
    Etk_Event_Callback *cb;
-   Evas_List *l;
+   Eina_List *l;
 
    if (!callback)
       return;
@@ -308,7 +308,7 @@ void etk_event_global_callback_del(Etk_Event_Type event, void (*callback)(Etk_Ev
       cb = l->data;
       if (cb->callback == callback)
       {
-         _etk_event_callbacks[event] = evas_list_remove_list(_etk_event_callbacks[event], l);
+         _etk_event_callbacks[event] = eina_list_remove_list(_etk_event_callbacks[event], l);
          free(cb);
          return;
       }
@@ -334,14 +334,14 @@ void etk_event_mouse_position_get(int *x, int *y)
 /* Called when an input event is emitted */
 static void _etk_event_callback_cb(Etk_Event_Type event, Etk_Event_Global event_info)
 {
-   Evas_List *callbacks, *l;
+   Eina_List *callbacks, *l;
    Etk_Event_Callback *callback;
 
    /* We make a copy of the callbacks list to avoid potential
     * problems if a callback removes itself from the list */
    callbacks = NULL;
    for (l = _etk_event_callbacks[event]; l; l = l->next)
-      callbacks = evas_list_append(callbacks, l->data);
+      callbacks = eina_list_append(callbacks, l->data);
 
    for (l = callbacks; l; l = l->next)
    {
@@ -349,7 +349,7 @@ static void _etk_event_callback_cb(Etk_Event_Type event, Etk_Event_Global event_
       callback->callback(event_info, callback->data);
    }
 
-   evas_list_free(callbacks);
+   eina_list_free(callbacks);
 }
 
 /**************************

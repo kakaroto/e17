@@ -166,8 +166,8 @@ struct Etk_Tree
 
    Etk_Tree_Row root;
    Etk_Tree_Row *last_selected_row;
-   Evas_List *purge_pool;
-   Evas_List *row_objects;
+   Eina_List *purge_pool;
+   Eina_List *row_objects;
 
    int num_cols;
    int rows_height;

@@ -151,7 +151,7 @@ int etk_statusbar_message_push(Etk_Statusbar *statusbar, const char *message, in
    new_msg->context_id = context_id;
    new_msg->message_id = statusbar->next_message_id++;
 
-   statusbar->msg_stack = evas_list_prepend(statusbar->msg_stack, new_msg);
+   statusbar->msg_stack = eina_list_prepend(statusbar->msg_stack, new_msg);
    _etk_statusbar_update(statusbar);
 
    etk_object_notify(ETK_OBJECT(statusbar), "current-message");
@@ -165,7 +165,7 @@ int etk_statusbar_message_push(Etk_Statusbar *statusbar, const char *message, in
  */
 void etk_statusbar_message_pop(Etk_Statusbar *statusbar, int context_id)
 {
-   Evas_List *l;
+   Eina_List *l;
    Etk_Statusbar_Msg *m;
 
    if (!statusbar)
@@ -178,7 +178,7 @@ void etk_statusbar_message_pop(Etk_Statusbar *statusbar, int context_id)
       {
          free(m->msg);
          free(m);
-         statusbar->msg_stack = evas_list_remove_list(statusbar->msg_stack, l);
+         statusbar->msg_stack = eina_list_remove_list(statusbar->msg_stack, l);
          _etk_statusbar_update(statusbar);
          break;
       }
@@ -195,7 +195,7 @@ void etk_statusbar_message_pop(Etk_Statusbar *statusbar, int context_id)
  */
 void etk_statusbar_message_remove(Etk_Statusbar *statusbar, int message_id)
 {
-   Evas_List *l;
+   Eina_List *l;
    Etk_Statusbar_Msg *m;
 
    if (!statusbar)
@@ -208,7 +208,7 @@ void etk_statusbar_message_remove(Etk_Statusbar *statusbar, int message_id)
       {
          free(m->msg);
          free(m);
-         statusbar->msg_stack = evas_list_remove_list(statusbar->msg_stack, l);
+         statusbar->msg_stack = eina_list_remove_list(statusbar->msg_stack, l);
          _etk_statusbar_update(statusbar);
          etk_object_notify(ETK_OBJECT(statusbar), "current-message");
          break;
@@ -306,7 +306,7 @@ static void _etk_statusbar_destructor(Etk_Statusbar *statusbar)
       msg = statusbar->msg_stack->data;
       free(msg->msg);
       free(msg);
-      statusbar->msg_stack = evas_list_remove_list(statusbar->msg_stack, statusbar->msg_stack);
+      statusbar->msg_stack = eina_list_remove_list(statusbar->msg_stack, statusbar->msg_stack);
    }
 }
 

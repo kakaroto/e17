@@ -49,8 +49,8 @@
 static void _etk_engine_inheritance_set(Etk_Engine *inherit_to, Etk_Engine *inherit_from);
 
 static Etk_Engine *_engine = NULL;
-static Evas_List *_loaded_engines = NULL;
-static Evas_List *_etk_engines = NULL;
+static Eina_List *_loaded_engines = NULL;
+static Eina_List *_etk_engines = NULL;
 
 /**************************
  *
@@ -84,7 +84,7 @@ Etk_Bool etk_engine_init(void)
       if (len > 3 && strncmp(&file[len - 3], ".so", 3) == 0)
       {
 	 file[len - 3] = '\0';
-	 _etk_engines = evas_list_append(_etk_engines, strdup(file));
+	 _etk_engines = eina_list_append(_etk_engines, strdup(file));
       }
    }
    ecore_list_destroy(files);
@@ -105,7 +105,7 @@ void etk_engine_shutdown(void)
       void *(*engine_close)(void);
 
       engine = _loaded_engines->data;
-      _loaded_engines = evas_list_remove(_loaded_engines, engine);
+      _loaded_engines = eina_list_remove(_loaded_engines, engine);
 
       if (engine->engine_shutdown)
          engine->engine_shutdown();
@@ -121,7 +121,7 @@ void etk_engine_shutdown(void)
    while (_etk_engines)
    {
       free(_etk_engines->data);
-      _etk_engines = evas_list_remove_list(_etk_engines, _etk_engines);
+      _etk_engines = eina_list_remove_list(_etk_engines, _etk_engines);
    }
 
    _engine = NULL;
@@ -132,7 +132,7 @@ void etk_engine_shutdown(void)
  * @return Returns the list of the available engines
  * @warning The returned list should not be modified or freed
  */
-Evas_List *etk_engine_list_get(void)
+Eina_List *etk_engine_list_get(void)
 {
    return _etk_engines;
 }
@@ -144,7 +144,7 @@ Evas_List *etk_engine_list_get(void)
  */
 Etk_Bool etk_engine_exists(const char *engine_name)
 {
-   Evas_List *l;
+   Eina_List *l;
 
    if (!engine_name)
       return ETK_FALSE;
@@ -223,7 +223,7 @@ Etk_Engine *etk_engine_load(const char *engine_name)
       return NULL;
    }
 
-   _loaded_engines = evas_list_prepend(_loaded_engines, engine);
+   _loaded_engines = eina_list_prepend(_loaded_engines, engine);
    engine->handle = handle;
    _engine = engine;
 

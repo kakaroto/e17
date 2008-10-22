@@ -82,7 +82,7 @@ struct Etk_Toplevel
 
    Etk_Widget *focused_widget;
 
-   Evas_List *pointer_stack;
+   Eina_List *pointer_stack;
    void (*pointer_set)(Etk_Toplevel *toplevel, Etk_Pointer_Type pointer_type);
 
    Etk_Bool need_update:1;
@@ -105,7 +105,7 @@ Etk_Widget *etk_toplevel_focused_widget_prev_get(Etk_Toplevel *toplevel);
 void        etk_toplevel_pointer_push(Etk_Toplevel *toplevel, Etk_Pointer_Type pointer_type);
 void        etk_toplevel_pointer_pop(Etk_Toplevel *toplevel, Etk_Pointer_Type pointer_type);
 
-Evas_List  *etk_toplevel_widgets_get(void);
+Eina_List  *etk_toplevel_widgets_get(void);
 
 
 /** @} */

@@ -70,7 +70,7 @@ struct Etk_Textblock_Object_SD
    Etk_Textblock_Iter *selection;
 
    Evas_Object *cursor_object;
-   Evas_List *selection_rects;
+   Eina_List *selection_rects;
    Evas_Object *clip;
    Evas_Object *bg;
 
@@ -159,7 +159,7 @@ static Etk_Textblock_Object_Line *_etk_textblock_object_line_get_from_node(Evas_
 static Evas_Textblock_Cursor *_etk_textblock_object_cursor_get_from_iter(Evas_Object *tbo, Etk_Textblock_Iter *iter);
 static int _etk_textblock_text_nodes_count(Etk_Textblock_Node *line, Etk_Textblock_Node *node);
 
-static Evas_List *_etk_textblock_object_range_geometry_get(Evas_Object *tbo, Etk_Textblock_Iter *start, Etk_Textblock_Iter *end);
+static Eina_List *_etk_textblock_object_range_geometry_get(Evas_Object *tbo, Etk_Textblock_Iter *start, Etk_Textblock_Iter *end);
 static void _etk_textblock_object_iter_move_to(Evas_Object *tbo, Etk_Textblock_Iter *iter, int x, int y);
 
 static void _etk_tb_object_mouse_down_cb(void *data, Evas *e, Evas_Object *obj, void *event_info);
@@ -318,7 +318,7 @@ Etk_String *etk_textblock_range_text_get(Etk_Textblock *tb, Etk_Textblock_Iter *
  */
 void etk_textblock_insert(Etk_Textblock *tb, Etk_Textblock_Iter *iter, const char *text, int length)
 {
-   Evas_List *l;
+   Eina_List *l;
    Etk_Textblock_Iter *it, *it2;
    int unicode_length, char_length;
    int pos, index;
@@ -574,7 +574,7 @@ void etk_textblock_insert_markup(Etk_Textblock *tb, Etk_Textblock_Iter *iter, co
  */
 void etk_textblock_clear(Etk_Textblock *tb)
 {
-   Evas_List *l;
+   Eina_List *l;
    Evas_Object *tbo;
    Etk_Textblock_Object_SD *tbo_sd;
    Etk_Textblock_Object_Line *line, *next;
@@ -672,7 +672,7 @@ void etk_textblock_delete_range(Etk_Textblock *tb, Etk_Textblock_Iter *iter1, Et
    Etk_Textblock_Node *start_line, *end_line, *line;
    Etk_Textblock_Node *start_paragraph, *end_paragraph, *paragraph;
    Etk_Textblock_Node *n, *new_node;
-   Evas_List *l;
+   Eina_List *l;
    Etk_Bool done;
 
    if (!tb || !iter1 || !iter2)
@@ -839,7 +839,7 @@ Etk_Textblock_Iter *etk_textblock_iter_new(Etk_Textblock *tb)
    iter->pos = 0;
    iter->index = 0;
 
-   tb->iters = evas_list_append(tb->iters, iter);
+   tb->iters = eina_list_append(tb->iters, iter);
    etk_textblock_iter_backward_start(iter);
 
    return iter;
@@ -855,7 +855,7 @@ void etk_textblock_iter_free(Etk_Textblock_Iter *iter)
       return;
 
    if (iter->tb)
-      iter->tb->iters = evas_list_remove(iter->tb->iters, iter);
+      iter->tb->iters = eina_list_remove(iter->tb->iters, iter);
    free(iter);
 }
 
@@ -1116,7 +1116,7 @@ Evas_Object *etk_textblock_object_add(Etk_Textblock *tb, Evas *evas)
    tbo_sd->cursor = etk_textblock_iter_new(tb);
    tbo_sd->selection = etk_textblock_iter_new(tb);
 
-   tb->evas_objects = evas_list_append(tb->evas_objects, obj);
+   tb->evas_objects = eina_list_append(tb->evas_objects, obj);
 
    return obj;
 }
@@ -1421,7 +1421,7 @@ void etk_textblock_char_size_get(Evas *evas, const char *font_face, int font_siz
  */
 void etk_textblock_printf(Etk_Textblock *tb)
 {
-   Evas_List *l;
+   Eina_List *l;
    Etk_Textblock_Object_SD *sd;
 
    if (!tb)
@@ -1738,7 +1738,7 @@ static void _etk_textblock_nodes_clean(Etk_Textblock *tb, Etk_Textblock_Node *no
 {
    Etk_Textblock_Node *n, *p;
    Etk_Textblock_Iter *it;
-   Evas_List *l;
+   Eina_List *l;
    Etk_Bool delete_node;
 
    if (!tb || !nodes)
@@ -1945,7 +1945,7 @@ static void _etk_textblock_tag_insert(Etk_Textblock *tb, Etk_Textblock_Iter *ite
             }
             else
             {
-               Evas_List *l;
+               Eina_List *l;
                Etk_Textblock_Iter *it;
 
                new_node = _etk_textblock_node_new(node, NULL, ETK_TEXTBLOCK_NODE_NORMAL, tag_type);
@@ -2127,7 +2127,7 @@ static Etk_Textblock_Node *_etk_textblock_paragraph_add(Etk_Textblock *tb, Etk_T
 static Etk_Textblock_Node *_etk_textblock_line_add(Etk_Textblock *tb, Etk_Textblock_Iter *iter)
 {
    Etk_Textblock_Node *prev_node, *new_line;
-   Evas_List *l;
+   Eina_List *l;
 
    if (!tb || !iter || !_etk_textblock_iter_is_valid(tb, iter))
       return NULL;
@@ -2153,7 +2153,7 @@ static Etk_Textblock_Node *_etk_textblock_line_add(Etk_Textblock *tb, Etk_Textbl
 static Etk_Textblock_Node *_etk_textblock_line_del(Etk_Textblock *tb, Etk_Textblock_Node *line_node)
 {
    Etk_Textblock_Node *next_line;
-   Evas_List *l;
+   Eina_List *l;
 
    if (!tb || !line_node || line_node->type != ETK_TEXTBLOCK_NODE_LINE)
       return NULL;
@@ -2317,7 +2317,7 @@ static void _etk_textblock_node_text_get(Etk_Textblock_Node *node, Etk_Bool mark
    /* Adds recursively the text of the children */
    if (node->children)
    {
-      Evas_List *node_hierarchy;
+      Eina_List *node_hierarchy;
       Etk_Textblock_Node *start_node, *end_node;
       Etk_Textblock_Node *n;
       int depth;
@@ -2336,12 +2336,12 @@ static void _etk_textblock_node_text_get(Etk_Textblock_Node *node, Etk_Bool mark
          found = ETK_FALSE;
          for (n = start_iter->node; n; n = n->parent)
          {
-            node_hierarchy = evas_list_prepend(node_hierarchy, n);
+            node_hierarchy = eina_list_prepend(node_hierarchy, n);
             if (node == n)
                found = ETK_TRUE;
          }
-         start_node = found ? evas_list_nth(node_hierarchy, depth) : NULL;
-         evas_list_free(node_hierarchy);
+         start_node = found ? eina_list_nth(node_hierarchy, depth) : NULL;
+         eina_list_free(node_hierarchy);
       }
 
       if (!end_iter)
@@ -2352,15 +2352,15 @@ static void _etk_textblock_node_text_get(Etk_Textblock_Node *node, Etk_Bool mark
          found = ETK_FALSE;
          for (n = end_iter->node; n; n = n->parent)
          {
-            node_hierarchy = evas_list_prepend(node_hierarchy, n);
+            node_hierarchy = eina_list_prepend(node_hierarchy, n);
             if (node == n)
             {
                end_of_line = ETK_FALSE;
                found = ETK_TRUE;
             }
          }
-         end_node = found ? evas_list_nth(node_hierarchy, depth) : NULL;
-         evas_list_free(node_hierarchy);
+         end_node = found ? eina_list_nth(node_hierarchy, depth) : NULL;
+         eina_list_free(node_hierarchy);
       }
 
       add_child = (start_node == NULL);
@@ -2459,7 +2459,7 @@ static Etk_Textblock_Node *_etk_textblock_node_split(Etk_Textblock *tb, Etk_Text
    int node_len;
    Etk_Textblock_Node *rnode;
    Etk_Textblock_Iter *it;
-   Evas_List *l;
+   Eina_List *l;
 
    if (!node)
       return NULL;
@@ -2537,7 +2537,7 @@ static Etk_Bool _etk_textblock_node_close(Etk_Textblock_Iter *iter, Etk_Textbloc
    {
       Etk_Textblock_Node *node_to_close, *right_node, *left_node;
       Etk_Textblock_Node *new_node, *parent, *n;
-      Evas_List *node_hierarchy;
+      Eina_List *node_hierarchy;
 
       node_to_close = NULL;
       node_hierarchy = NULL;
@@ -2549,12 +2549,12 @@ static Etk_Bool _etk_textblock_node_close(Etk_Textblock_Iter *iter, Etk_Textbloc
             node_to_close = n;
             break;
          }
-         node_hierarchy = evas_list_prepend(node_hierarchy, n);
+         node_hierarchy = eina_list_prepend(node_hierarchy, n);
       }
       if (!node_to_close)
       {
          ETK_WARNING("There is no node to close");
-         evas_list_free(node_hierarchy);
+         eina_list_free(node_hierarchy);
          return ETK_FALSE;
       }
 
@@ -2582,7 +2582,7 @@ static Etk_Bool _etk_textblock_node_close(Etk_Textblock_Iter *iter, Etk_Textbloc
          parent = new_node;
          left_node = NULL;
 
-         node_hierarchy = evas_list_remove_list(node_hierarchy, node_hierarchy);
+         node_hierarchy = eina_list_remove_list(node_hierarchy, node_hierarchy);
       }
 
       /* Finally, we split the original node, and we attach the right nodes to the new node hierarchy */
@@ -3024,7 +3024,7 @@ static Etk_Textblock_Node *_etk_textblock_next_line_get(Etk_Textblock_Node *line
 /* Queues an update of the textblock object that uses "iter" as its cursor or selection bound */
 static void _etk_textblock_iter_update(Etk_Textblock_Iter *iter)
 {
-   Evas_List *l;
+   Eina_List *l;
    Evas_Object *tbo;
    Etk_Textblock_Object_SD *tbo_sd;
 
@@ -3055,7 +3055,7 @@ static void _etk_textblock_iter_update(Etk_Textblock_Iter *iter)
 /* Queues an update of the node "node" in all the textblock objects (to call when the content of a node has changed) */
 static void _etk_textblock_node_update(Etk_Textblock *tb, Etk_Textblock_Node *node)
 {
-   Evas_List *l;
+   Eina_List *l;
    Evas_Object *tbo;
    Etk_Textblock_Object_Line *line;
 
@@ -3553,7 +3553,7 @@ static void _etk_textblock_object_cursor_update(Evas_Object *tbo)
 
    /* Update the selection */
    {
-      Evas_List *selection_geometry;
+      Eina_List *selection_geometry;
       Etk_Geometry *rect_geometry;
       Evas_Object *rect;
       int res;
@@ -3562,7 +3562,7 @@ static void _etk_textblock_object_cursor_update(Evas_Object *tbo)
       while (tbo_sd->selection_rects)
       {
          evas_object_del(tbo_sd->selection_rects->data);
-         tbo_sd->selection_rects = evas_list_remove_list(tbo_sd->selection_rects, tbo_sd->selection_rects);
+         tbo_sd->selection_rects = eina_list_remove_list(tbo_sd->selection_rects, tbo_sd->selection_rects);
       }
       res = etk_textblock_iter_compare(tbo_sd->cursor, tbo_sd->selection);
       if (res != 0)
@@ -3587,8 +3587,8 @@ static void _etk_textblock_object_cursor_update(Evas_Object *tbo)
                evas_object_show(rect);
 
             free(rect_geometry);
-            tbo_sd->selection_rects = evas_list_append(tbo_sd->selection_rects, rect);
-            selection_geometry = evas_list_remove_list(selection_geometry, selection_geometry);
+            tbo_sd->selection_rects = eina_list_append(tbo_sd->selection_rects, rect);
+            selection_geometry = eina_list_remove_list(selection_geometry, selection_geometry);
          }
       }
    }
@@ -3834,11 +3834,11 @@ static int _etk_textblock_text_nodes_count(Etk_Textblock_Node *line, Etk_Textblo
 /* Gets a list of Etk_Geometry's corresponding to the geometry of the text between @a start and @a end.
  * The items of the returned list should be freed, and the list should be destroyed manually.
  * Only the visible lines are stored in the list.  */
-static Evas_List *_etk_textblock_object_range_geometry_get(Evas_Object *tbo, Etk_Textblock_Iter *start, Etk_Textblock_Iter *end)
+static Eina_List *_etk_textblock_object_range_geometry_get(Evas_Object *tbo, Etk_Textblock_Iter *start, Etk_Textblock_Iter *end)
 {
    Etk_Textblock_Object_SD *tbo_sd;
    Etk_Textblock_Object_Line *line, *start_line, *end_line;
-   Evas_List *selection_geometry = NULL;
+   Eina_List *selection_geometry = NULL;
    Etk_Geometry *rect_geometry;
    Etk_Bool add_line;
    Evas *evas;
@@ -3869,7 +3869,7 @@ static Evas_List *_etk_textblock_object_range_geometry_get(Evas_Object *tbo, Etk
       /* We add the geometry of the line to the list */
       if (add_line)
       {
-         Evas_List *rects;
+         Eina_List *rects;
          Evas_Textblock_Rectangle *rect;
          const char *font_face;
          int font_size;
@@ -3883,7 +3883,7 @@ static Evas_List *_etk_textblock_object_range_geometry_get(Evas_Object *tbo, Etk
             /* TODO: correct font, and align */
             etk_textblock_char_size_get(evas, "Vera", 10, NULL, &rect_geometry->h);
 
-            selection_geometry = evas_list_append(selection_geometry, rect_geometry);
+            selection_geometry = eina_list_append(selection_geometry, rect_geometry);
          }
          else if (line->object)
          {
@@ -3934,10 +3934,10 @@ static Evas_List *_etk_textblock_object_range_geometry_get(Evas_Object *tbo, Etk
                rect_geometry->y = rect->y + line->geometry.y;
                rect_geometry->w = rect->w;
                rect_geometry->h = rect->h;
-               selection_geometry = evas_list_append(selection_geometry, rect_geometry);
+               selection_geometry = eina_list_append(selection_geometry, rect_geometry);
 
                free(rect);
-               rects = evas_list_remove_list(rects, rects);
+               rects = eina_list_remove_list(rects, rects);
             }
          }
       }
@@ -4139,7 +4139,7 @@ static void _etk_tb_object_smart_del(Evas_Object *obj)
    while (tbo_sd->selection_rects)
    {
       evas_object_del(tbo_sd->selection_rects->data);
-      tbo_sd->selection_rects = evas_list_remove_list(tbo_sd->selection_rects, tbo_sd->selection_rects);
+      tbo_sd->selection_rects = eina_list_remove_list(tbo_sd->selection_rects, tbo_sd->selection_rects);
    }
    for (line = tbo_sd->lines; line; line = next)
    {
@@ -4153,7 +4153,7 @@ static void _etk_tb_object_smart_del(Evas_Object *obj)
    evas_object_del(tbo_sd->bg);
    evas_textblock_style_free(tbo_sd->style);
 
-   tbo_sd->tb->evas_objects = evas_list_remove(tbo_sd->tb->evas_objects, obj);
+   tbo_sd->tb->evas_objects = eina_list_remove(tbo_sd->tb->evas_objects, obj);
    free(tbo_sd);
 
    _etk_tb_object_smart_use--;
@@ -4172,7 +4172,7 @@ static void _etk_tb_object_smart_move(Evas_Object *obj, Evas_Coord x, Evas_Coord
    int current_x, current_y;
    Etk_Textblock_Object_Line *line;
    Evas_Object *selection_rect;
-   Evas_List *l;
+   Eina_List *l;
 
    if (!obj || !(tbo_sd = evas_object_smart_data_get(obj)))
       return;
@@ -4226,7 +4226,7 @@ static void _etk_tb_object_smart_show(Evas_Object *obj)
 {
    Etk_Textblock_Object_SD *tbo_sd;
    Etk_Textblock_Object_Line *line;
-   Evas_List *l;
+   Eina_List *l;
 
    if (!obj || !(tbo_sd = evas_object_smart_data_get(obj)))
       return;
@@ -4264,7 +4264,7 @@ static void _etk_tb_object_smart_hide(Evas_Object *obj)
 {
    Etk_Textblock_Object_SD *tbo_sd;
    Etk_Textblock_Object_Line *line;
-   Evas_List *l;
+   Eina_List *l;
 
    if (!obj || !(tbo_sd = evas_object_smart_data_get(obj)))
       return;

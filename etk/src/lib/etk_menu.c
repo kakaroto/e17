@@ -265,7 +265,7 @@ static void _etk_menu_property_get(Etk_Object *object, int property_id, Etk_Prop
 /* Calculates the ideal size of the menu */
 static void _etk_menu_size_request(Etk_Widget *widget, Etk_Size *size)
 {
-   Evas_List *l;
+   Eina_List *l;
    Etk_Menu_Shell *menu_shell;
 
    if (!(menu_shell = ETK_MENU_SHELL(widget)) || !size)
@@ -288,7 +288,7 @@ static void _etk_menu_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
 {
    Etk_Geometry child_geometry;
    Etk_Menu_Shell *menu_shell;
-   Evas_List *l;
+   Eina_List *l;
    Etk_Menu_Item *item;
    int y_offset;
    Etk_Bool items_have_left_widget = ETK_FALSE;
@@ -363,7 +363,7 @@ static Etk_Bool _etk_menu_window_popped_up_cb(Etk_Object *object, void *data)
 /* Called when the menu window is popped down */
 static Etk_Bool _etk_menu_window_popped_down_cb(Etk_Object *object, void *data)
 {
-   Evas_List *l;
+   Eina_List *l;
    Etk_Menu *menu;
 
    if (!(menu = ETK_MENU(data)))
@@ -480,7 +480,7 @@ static Etk_Bool _etk_menu_item_selected_cb(Etk_Object *object, void *data)
 {
    Etk_Menu_Item *item;
    Etk_Menu *menu;
-   Evas_List *l;
+   Eina_List *l;
 
    if (!(item = ETK_MENU_ITEM(object)) || !(menu = ETK_MENU(item->parent_shell)))
       return ETK_TRUE;

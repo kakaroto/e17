@@ -77,7 +77,7 @@ struct Etk_Notebook
 
    Etk_Widget *tab_bar;
 
-   Evas_List *pages;
+   Eina_List *pages;
    Etk_Notebook_Page *current_page;
 
    Etk_Bool tab_bar_focused:1;

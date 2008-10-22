@@ -50,7 +50,7 @@ static void _etk_table_property_set(Etk_Object *object, int property_id, Etk_Pro
 static void _etk_table_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_table_child_add(Etk_Container *container, Etk_Widget *widget);
 static void _etk_table_child_remove(Etk_Container *container, Etk_Widget *widget);
-static Evas_List *_etk_table_children_get(Etk_Container *container);
+static Eina_List *_etk_table_children_get(Etk_Container *container);
 static void _etk_table_size_request(Etk_Widget *widget, Etk_Size *size_requisition);
 static void _etk_table_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 
@@ -125,7 +125,7 @@ void etk_table_cell_clear(Etk_Table *table, int col, int row)
          table->cells[CELL_INDEX(table, i, j)] = NULL;
    }
 
-   table->cells_list = evas_list_remove_list(table->cells_list, cell->node);
+   table->cells_list = eina_list_remove_list(table->cells_list, cell->node);
    free(cell);
 
    etk_object_data_set(ETK_OBJECT(child), "_Etk_Table::Cell", NULL);
@@ -141,7 +141,7 @@ void etk_table_cell_clear(Etk_Table *table, int col, int row)
  */
 void etk_table_resize(Etk_Table *table, int num_cols, int num_rows)
 {
-   Evas_List *l, *next;
+   Eina_List *l, *next;
    Etk_Table_Cell **new_cells;
    Etk_Table_Cell *cell;
    Etk_Table_Col_Row *new_cols, *new_rows;
@@ -250,8 +250,8 @@ void etk_table_attach(Etk_Table *table, Etk_Widget *child, int left_attach, int 
       }
    }
 
-   table->cells_list = evas_list_append(table->cells_list, cell);
-   cell->node = evas_list_last(table->cells_list);
+   table->cells_list = eina_list_append(table->cells_list, cell);
+   cell->node = eina_list_last(table->cells_list);
 
    etk_object_data_set(ETK_OBJECT(child), "_Etk_Table::Cell", cell);
    etk_widget_parent_set(child, ETK_WIDGET(table));
@@ -449,7 +449,7 @@ static void _etk_table_size_request(Etk_Widget *widget, Etk_Size *size_requisiti
    Etk_Table_Cell *cell;
    Etk_Size child_size;
    Etk_Bool hexpand = ETK_FALSE, vexpand = ETK_FALSE;
-   Evas_List *l;
+   Eina_List *l;
    int i;
 
    if (!(table = ETK_TABLE(widget)) || !size_requisition)
@@ -695,7 +695,7 @@ static void _etk_table_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
    Etk_Size allocated_inner_size;
    Etk_Geometry child_geometry;
    float offset, size;
-   Evas_List *l;
+   Eina_List *l;
    int i;
 
    if (!(table = ETK_TABLE(widget)) || !table->cells)
@@ -827,11 +827,11 @@ static void _etk_table_child_remove(Etk_Container *container, Etk_Widget *widget
 }
 
 /* Gets the list of the children */
-static Evas_List *_etk_table_children_get(Etk_Container *container)
+static Eina_List *_etk_table_children_get(Etk_Container *container)
 {
    Etk_Table *table;
    Etk_Table_Cell *cell;
-   Evas_List *children, *l;
+   Eina_List *children, *l;
 
    if (!(table = ETK_TABLE(container)))
       return NULL;
@@ -840,7 +840,7 @@ static Evas_List *_etk_table_children_get(Etk_Container *container)
    for (l = table->cells_list; l; l = l->next)
    {
       cell = l->data;
-      children = evas_list_append(children, cell->child);
+      children = eina_list_append(children, cell->child);
    }
    return children;
 }

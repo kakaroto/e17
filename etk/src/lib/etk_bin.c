@@ -44,7 +44,7 @@ static void _etk_bin_property_set(Etk_Object *object, int property_id, Etk_Prope
 static void _etk_bin_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_bin_child_add(Etk_Container *container, Etk_Widget *widget);
 static void _etk_bin_child_remove(Etk_Container *container, Etk_Widget *widget);
-static Evas_List *_etk_bin_children_get(Etk_Container *container);
+static Eina_List *_etk_bin_children_get(Etk_Container *container);
 static void _etk_bin_size_request(Etk_Widget *widget, Etk_Size *size);
 static void _etk_bin_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 
@@ -235,17 +235,17 @@ static void _etk_bin_child_remove(Etk_Container *container, Etk_Widget *widget)
 }
 
 /* Gets the children (the child actually) of the bin */
-static Evas_List *_etk_bin_children_get(Etk_Container *container)
+static Eina_List *_etk_bin_children_get(Etk_Container *container)
 {
    Etk_Bin *bin;
-   Evas_List *children;
+   Eina_List *children;
 
    if (!(bin = ETK_BIN(container)))
       return NULL;
 
    children = NULL;
    if (bin->child)
-      children = evas_list_append(children, bin->child);
+      children = eina_list_append(children, bin->child);
 
    return children;
 }

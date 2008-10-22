@@ -117,7 +117,7 @@ struct Etk_Engine
 Etk_Bool     etk_engine_init(void);
 void         etk_engine_shutdown(void);
 
-Evas_List   *etk_engine_list_get(void);
+Eina_List   *etk_engine_list_get(void);
 Etk_Bool     etk_engine_exists(const char *engine_name);
 Etk_Engine  *etk_engine_get(void);
 

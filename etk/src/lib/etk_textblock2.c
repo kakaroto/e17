@@ -264,7 +264,7 @@ void etk_textblock2_insert(Etk_Textblock2_Iter *iter, const char *text, int leng
    Etk_Textblock2_Node *node;
    Etk_Bool new_line;
    Etk_Bool done;
-   Evas_List *l;
+   Eina_List *l;
    int len, ulen;
    int decoded;
    int i, first;
@@ -1012,7 +1012,7 @@ Etk_Textblock2_Node *etk_textblock2_node_walk_next(Etk_Textblock2_Node *node)
  */
 void etk_textblock2_node_format_set(Etk_Textblock2_Node *node, const Etk_Textblock2_Format *format)
 {
-   Evas_List *l;
+   Eina_List *l;
    
    if (!node)
       return;
@@ -1605,7 +1605,7 @@ Evas_Object *etk_textblock2_object_add(Etk_Textblock2 *tb, Evas *evas)
          _etk_tb2_object_line_add(tbo, l);
    }
    
-   tb->tbos = evas_list_append(tb->tbos, tbo);
+   tb->tbos = eina_list_append(tb->tbos, tbo);
    _etk_tb2_object_update_queue(tbo);
 
    return tbo;
@@ -1762,7 +1762,7 @@ static Etk_Textblock2_Paragraph *_etk_tb2_paragraph_create(Etk_Textblock2 *tb, E
 static Etk_Textblock2_Line *_etk_tb2_line_create(Etk_Textblock2_Paragraph *paragraph, Etk_Textblock2_Line *prev, Etk_Bool create_node)
 {
    Etk_Textblock2_Line *line;
-   Evas_List *l;
+   Eina_List *l;
    
    if (!paragraph)
       return NULL;
@@ -1862,7 +1862,7 @@ static void _etk_tb2_paragraph_free(Etk_Textblock2_Paragraph *paragraph)
 /* Destroys the given line */
 static void _etk_tb2_line_free(Etk_Textblock2_Line *line)
 {
-   Evas_List *l;
+   Eina_List *l;
    
    if (!line)
       return;
@@ -1889,7 +1889,7 @@ static void _etk_tb2_line_free(Etk_Textblock2_Line *line)
 /* Destroys the given node */
 static void _etk_tb2_node_free(Etk_Textblock2_Node *node)
 {
-   Evas_List *l;
+   Eina_List *l;
    
    if (!node)
       return;
@@ -1979,7 +1979,7 @@ static Etk_Textblock2_Node *_etk_tb2_node_split(Etk_Textblock2_Node *node, Etk_T
 {
    Etk_Textblock2_Node *next_node;
    Etk_Textblock2_Iter *it;
-   Evas_List *l;
+   Eina_List *l;
    int pos, index;
    
    if (!node || !iter || !_etk_tb2_iter_is_valid(iter))
@@ -2877,14 +2877,14 @@ static void _etk_tb2_object_smart_del(Evas_Object *tbo)
    if (sd->update_timer)
       ecore_timer_del(sd->update_timer);
    
-   sd->tb->tbos = evas_list_remove(sd->tb->tbos, tbo);
+   sd->tb->tbos = eina_list_remove(sd->tb->tbos, tbo);
    free(sd);
 }
 
 /* Called when the textblock-object is moved */
 static void _etk_tb2_object_smart_move(Evas_Object *tbo, Evas_Coord x, Evas_Coord y)
 {
-   Evas_List *members, *l;
+   Eina_List *members, *l;
    Evas_Object *m;
    Evas_Coord ox, oy, mx, my;
    
@@ -2900,7 +2900,7 @@ static void _etk_tb2_object_smart_move(Evas_Object *tbo, Evas_Coord x, Evas_Coor
       evas_object_geometry_get(m, &mx, &my, NULL, NULL);
       evas_object_move(m, mx + (x - ox), my + (y - oy));
    }
-   evas_list_free(members);
+   eina_list_free(members);
 }
 
 /* Called when the textblock-object is resized */

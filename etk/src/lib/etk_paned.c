@@ -50,7 +50,7 @@ static void _etk_hpaned_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
 static void _etk_vpaned_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 static void _etk_paned_child_add(Etk_Container *container, Etk_Widget *widget);
 static void _etk_paned_child_remove(Etk_Container *container, Etk_Widget *widget);
-static Evas_List *_etk_paned_children_get(Etk_Container *container);
+static Eina_List *_etk_paned_children_get(Etk_Container *container);
 
 static Etk_Bool _etk_paned_separator_mouse_in_cb(Etk_Object *object, Etk_Event_Mouse_In *event, void *data);
 static Etk_Bool _etk_paned_separator_mouse_out_cb(Etk_Object *object, Etk_Event_Mouse_Out *event, void *data);
@@ -581,19 +581,19 @@ static void _etk_paned_child_remove(Etk_Container *container, Etk_Widget *widget
 }
 
 /* Returns the children of the paned */
-static Evas_List *_etk_paned_children_get(Etk_Container *container)
+static Eina_List *_etk_paned_children_get(Etk_Container *container)
 {
    Etk_Paned *paned;
-   Evas_List *children;
+   Eina_List *children;
 
    if (!(paned = ETK_PANED(container)))
       return NULL;
 
    children = NULL;
    if (paned->child1)
-      children = evas_list_append(children, paned->child1);
+      children = eina_list_append(children, paned->child1);
    if (paned->child2)
-      children = evas_list_append(children, paned->child2);
+      children = eina_list_append(children, paned->child2);
 
    return children;
 }

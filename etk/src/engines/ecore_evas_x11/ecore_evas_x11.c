@@ -81,7 +81,7 @@ static void _event_global_modifiers_locks_wrap(int xmodifiers, Etk_Modifiers *mo
 
 
 /* Private vars */
-static Evas_List *_popup_window_popped_windows = NULL;
+static Eina_List *_popup_window_popped_windows = NULL;
 static Ecore_X_Window _popup_window_input_window = 0;
 
 static void (*_event_callback)(Etk_Event_Type event, Etk_Event_Global event_info) = NULL;
@@ -494,13 +494,13 @@ static void _popup_window_popup(Etk_Popup_Window *popup_window)
       ecore_x_pointer_confine_grab(_popup_window_input_window);
       ecore_x_keyboard_grab(_popup_window_input_window);
    }
-   _popup_window_popped_windows = evas_list_append(_popup_window_popped_windows, popup_window);
+   _popup_window_popped_windows = eina_list_append(_popup_window_popped_windows, popup_window);
 }
 
 /* Called when the popup window is popped down */
 static void _popup_window_popdown(Etk_Popup_Window *popup_window)
 {
-   _popup_window_popped_windows = evas_list_remove(_popup_window_popped_windows, popup_window);
+   _popup_window_popped_windows = eina_list_remove(_popup_window_popped_windows, popup_window);
    
    if (!_popup_window_popped_windows)
    {

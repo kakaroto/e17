@@ -38,7 +38,7 @@
 
 static void _etk_signal_free(Etk_Signal *signal);
 
-static Evas_List *_etk_signal_signals_list = NULL;
+static Eina_List *_etk_signal_signals_list = NULL;
 
 /**************************
  *
@@ -52,12 +52,12 @@ static Evas_List *_etk_signal_signals_list = NULL;
  */
 void etk_signal_shutdown(void)
 {
-   Evas_List *lst;
+   Eina_List *lst;
 
    for (lst = _etk_signal_signals_list; lst; lst = lst->next)
       _etk_signal_free(lst->data);
 
-   evas_list_free(_etk_signal_signals_list);
+   eina_list_free(_etk_signal_signals_list);
 }
 
 /**
@@ -77,7 +77,7 @@ static Etk_Signal *etk_signal_new_raw(const char *signal_name, Etk_Type *type,
 
    type->signals_count++;
 
-   _etk_signal_signals_list = evas_list_append(_etk_signal_signals_list, new_signal);
+   _etk_signal_signals_list = eina_list_append(_etk_signal_signals_list, new_signal);
 
    return new_signal;
 }
@@ -357,7 +357,7 @@ void etk_signal_disconnect_multiple(Etk_Signal_Connect_Desc *desc,
 void etk_signal_disconnect_by_code(int signal_code, Etk_Object *object,
                                    Etk_Callback callback, void *data)
 {
-   Evas_List *c;
+   Eina_List *c;
    Etk_Signal_Callback *signal_callback;
 
    if (!object || !callback)
@@ -400,7 +400,7 @@ void etk_signal_disconnect_by_code(int signal_code, Etk_Object *object,
 void etk_signal_disconnect_scb_by_code(int signal_code, Etk_Object *object,
                                        const Etk_Signal_Callback *scb)
 {
-   Evas_List *c;
+   Eina_List *c;
    Etk_Signal_Callback *signal_callback;
 
    if (!object || !scb)
@@ -465,7 +465,7 @@ void etk_signal_disconnect_scb(const char *signal_name, Etk_Object *object,
  */
 void etk_signal_disconnect_all_by_code(int signal_code, Etk_Object *object)
 {
-   Evas_List *c;
+   Eina_List *c;
    Etk_Signal_Callback *signal_callback;
 
    if (!object)
@@ -520,7 +520,7 @@ void etk_signal_disconnect_all(const char *signal_name, Etk_Object *object)
 void etk_signal_block_by_code(int signal_code, Etk_Object *object,
                               Etk_Callback callback, void *data)
 {
-   Evas_List *c;
+   Eina_List *c;
    Etk_Signal_Callback *signal_callback;
 
    if (!object || !callback)
@@ -586,7 +586,7 @@ void etk_signal_block(const char *signal_name, Etk_Object *object,
 void etk_signal_block_scb_by_code(int signal_code, Etk_Object *object,
                                   const Etk_Signal_Callback *scb)
 {
-   Evas_List *c;
+   Eina_List *c;
    Etk_Signal_Callback *signal_callback;
 
    if (!object || !scb)
@@ -643,7 +643,7 @@ void etk_signal_block_scb(const char *signal_name, Etk_Object *object,
 void etk_signal_unblock_by_code(int signal_code, Etk_Object *object,
                                 Etk_Callback callback, void *data)
 {
-   Evas_List *c;
+   Eina_List *c;
    Etk_Signal_Callback *signal_callback;
 
    if (!object || !callback)
@@ -710,7 +710,7 @@ void etk_signal_unblock(const char *signal_name, Etk_Object *object,
 void etk_signal_unblock_scb_by_code(int signal_code, Etk_Object *object,
                                     const Etk_Signal_Callback *scb)
 {
-   Evas_List *c;
+   Eina_List *c;
    Etk_Signal_Callback *signal_callback;
 
    if (!object || !scb)
@@ -850,7 +850,7 @@ Etk_Bool etk_signal_emit_by_name(const char *signal_name, Etk_Object *object,
 Etk_Bool etk_signal_emit_valist(Etk_Signal *signal, Etk_Object *object,
                                 va_list args)
 {
-   Evas_List *callbacks;
+   Eina_List *callbacks;
    Etk_Signal_Callback *callback;
    Etk_Bool keep_emission = ETK_TRUE;
    va_list args2;
@@ -916,9 +916,9 @@ Etk_Marshaller etk_signal_marshaller_get(Etk_Signal *signal)
 
 /**
  * @brief Gets a list of all the current signals
- * @return Returns an Evas_List containing all the signals.
+ * @return Returns an Eina_List containing all the signals.
  */
-Evas_List * etk_signal_get_all()
+Eina_List * etk_signal_get_all()
 {
    return _etk_signal_signals_list;
 }

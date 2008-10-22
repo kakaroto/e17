@@ -164,7 +164,7 @@ int etk_cache_num_objects_get(Etk_Cache *cache)
 {
    if (!cache)
       return 0;
-   return evas_list_count(cache->cached_objects);
+   return eina_list_count(cache->cached_objects);
 }
 
 /**
@@ -181,7 +181,7 @@ int etk_cache_num_objects_get(Etk_Cache *cache)
 void etk_cache_add(Etk_Cache *cache, Evas_Object *object, const char *filename, const char *key)
 {
    Etk_Cache_Item *item;
-   Evas_List *l;
+   Eina_List *l;
 
    if (!cache || !object || cache->size <= 0 || !filename)
       return;
@@ -200,14 +200,14 @@ void etk_cache_add(Etk_Cache *cache, Evas_Object *object, const char *filename, 
          free(item->key);
          item->key = strdup(key);
       }
-      cache->cached_objects = evas_list_remove_list(cache->cached_objects, l);
-      cache->cached_objects = evas_list_append(cache->cached_objects, item);
-      evas_object_data_set(item->object, "_Etk_Cache::Node", evas_list_last(cache->cached_objects));
+      cache->cached_objects = eina_list_remove_list(cache->cached_objects, l);
+      cache->cached_objects = eina_list_append(cache->cached_objects, item);
+      evas_object_data_set(item->object, "_Etk_Cache::Node", eina_list_last(cache->cached_objects));
       return;
    }
 
    /* If no more space is available, we remove the oldest object of the cache */
-   if (evas_list_count(cache->cached_objects) >= cache->size)
+   if (eina_list_count(cache->cached_objects) >= cache->size)
    {
       item = cache->cached_objects->data;
       evas_object_event_callback_call(item->object, EVAS_CALLBACK_FREE, NULL);
@@ -224,8 +224,8 @@ void etk_cache_add(Etk_Cache *cache, Evas_Object *object, const char *filename, 
    evas_object_hide(object);
    evas_object_event_callback_add(object, EVAS_CALLBACK_FREE, _etk_cache_object_deleted_cb, cache);
 
-   cache->cached_objects = evas_list_append(cache->cached_objects, item);
-   evas_object_data_set(item->object, "_Etk_Cache::Node", evas_list_last(cache->cached_objects));
+   cache->cached_objects = eina_list_append(cache->cached_objects, item);
+   evas_object_data_set(item->object, "_Etk_Cache::Node", eina_list_last(cache->cached_objects));
 }
 
 /**
@@ -236,7 +236,7 @@ void etk_cache_add(Etk_Cache *cache, Evas_Object *object, const char *filename, 
 void etk_cache_remove(Etk_Cache *cache, Evas_Object *object)
 {
    Etk_Cache_Item *item;
-   Evas_List *l;
+   Eina_List *l;
 
    if (!cache || !object)
       return;
@@ -251,7 +251,7 @@ void etk_cache_remove(Etk_Cache *cache, Evas_Object *object)
       free(item->key);
       free(item);
 
-      cache->cached_objects = evas_list_remove_list(cache->cached_objects, l);
+      cache->cached_objects = eina_list_remove_list(cache->cached_objects, l);
    }
 }
 
@@ -267,7 +267,7 @@ void etk_cache_remove(Etk_Cache *cache, Evas_Object *object)
 Evas_Object *etk_cache_find(Etk_Cache *cache, const char *filename, const char *key)
 {
    Etk_Cache_Item *item;
-   Evas_List *l;
+   Eina_List *l;
    Evas_Object *object;
 
    if (!cache || !filename)
@@ -286,7 +286,7 @@ Evas_Object *etk_cache_find(Etk_Cache *cache, const char *filename, const char *
          free(item->key);
          free(item);
 
-         cache->cached_objects = evas_list_remove(cache->cached_objects, item);
+         cache->cached_objects = eina_list_remove(cache->cached_objects, item);
          return object;
       }
    }

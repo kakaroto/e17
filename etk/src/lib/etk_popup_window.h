@@ -66,7 +66,7 @@ struct Etk_Popup_Window
    Etk_Window window;
 
    Etk_Popup_Window *parent;
-   Evas_List *children;
+   Eina_List *children;
    Etk_Popup_Window *popped_child;
    Etk_Bool popped_up:1;
 };

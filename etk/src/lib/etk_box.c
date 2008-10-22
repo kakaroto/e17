@@ -46,7 +46,7 @@ static void _etk_box_property_set(Etk_Object *object, int property_id, Etk_Prope
 static void _etk_box_property_get(Etk_Object *object, int property_id, Etk_Property_Value *value);
 static void _etk_box_child_add(Etk_Container *container, Etk_Widget *widget);
 static void _etk_box_child_remove(Etk_Container *container, Etk_Widget *widget);
-static Evas_List *_etk_box_children_get(Etk_Container *container);
+static Eina_List *_etk_box_children_get(Etk_Container *container);
 
 static void _etk_hbox_constructor(Etk_HBox *hbox);
 static void _etk_hbox_size_request(Etk_Widget *widget, Etk_Size *size);
@@ -527,7 +527,7 @@ static void _etk_box_child_remove(Etk_Container *container, Etk_Widget *widget)
          box->last_cell[cell->group] = cell->prev;
       box->cells_count[cell->group]--;
 
-      ETK_WIDGET(box)->focus_order = evas_list_remove_list(ETK_WIDGET(box)->focus_order, cell->focus_node);
+      ETK_WIDGET(box)->focus_order = eina_list_remove_list(ETK_WIDGET(box)->focus_order, cell->focus_node);
       etk_object_data_set(ETK_OBJECT(widget), "_Etk_Box::Cell", NULL);
       free(cell);
 
@@ -537,10 +537,10 @@ static void _etk_box_child_remove(Etk_Container *container, Etk_Widget *widget)
 }
 
 /* Gets the list of the children of the box */
-static Evas_List *_etk_box_children_get(Etk_Container *container)
+static Eina_List *_etk_box_children_get(Etk_Container *container)
 {
    Etk_Box *box;
-   Evas_List *children;
+   Eina_List *children;
    Etk_Box_Cell *cell;
    int i;
 
@@ -551,7 +551,7 @@ static Evas_List *_etk_box_children_get(Etk_Container *container)
    for (i = 0; i < 2; i++)
    {
       for (cell = box->first_cell[i]; cell; cell = cell->next)
-         children = evas_list_append(children, cell->child);
+         children = eina_list_append(children, cell->child);
    }
 
    return children;
@@ -1045,8 +1045,8 @@ static void _etk_box_insert_after_cell(Etk_Box *box, Etk_Widget *child, Etk_Box_
          box->last_cell[group] = cell;
       after->next = cell;
 
-      box_widget->focus_order = evas_list_append_relative_list(box_widget->focus_order, child, after->focus_node);
-      cell->focus_node = evas_list_next(after->focus_node);
+      box_widget->focus_order = eina_list_append_relative_list(box_widget->focus_order, child, after->focus_node);
+      cell->focus_node = eina_list_next(after->focus_node);
    }
    else
    {
@@ -1059,14 +1059,14 @@ static void _etk_box_insert_after_cell(Etk_Box *box, Etk_Widget *child, Etk_Box_
 
       if (group == ETK_BOX_START || !box->last_cell[ETK_BOX_START])
       {
-         box_widget->focus_order = evas_list_prepend(box_widget->focus_order, child);
+         box_widget->focus_order = eina_list_prepend(box_widget->focus_order, child);
          cell->focus_node = box_widget->focus_order;
       }
       else
       {
-         box_widget->focus_order = evas_list_append_relative_list(box_widget->focus_order,
+         box_widget->focus_order = eina_list_append_relative_list(box_widget->focus_order,
                child, box->last_cell[ETK_BOX_START]->focus_node);
-         cell->focus_node = evas_list_next(box->last_cell[ETK_BOX_START]->focus_node);
+         cell->focus_node = eina_list_next(box->last_cell[ETK_BOX_START]->focus_node);
       }
    }
    box->cells_count[group]++;

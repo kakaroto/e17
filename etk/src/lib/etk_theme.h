@@ -72,17 +72,17 @@ Etk_Bool    etk_theme_widget_set_from_path(const char *theme_path);
 Etk_Bool    etk_theme_widget_set_from_name(const char *theme_name);
 const char *etk_theme_widget_path_get(void);
 char       *etk_theme_widget_name_get(void);
-Evas_List  *etk_theme_widget_available_themes_get(void);
+Eina_List  *etk_theme_widget_available_themes_get(void);
 char       *etk_theme_widget_find(const char *theme_name);
 
 Etk_Bool    etk_theme_icon_set_from_path(const char *theme_path);
 Etk_Bool    etk_theme_icon_set_from_name(const char *theme_name);
 const char *etk_theme_icon_path_get(void);
 char       *etk_theme_icon_name_get(void);
-Evas_List  *etk_theme_icon_available_themes_get(void);
+Eina_List  *etk_theme_icon_available_themes_get(void);
 char       *etk_theme_icon_find(const char *theme_name);
 
-void        etk_theme_available_themes_free(Evas_List *themes);
+void        etk_theme_available_themes_free(Eina_List *themes);
 
 Etk_Bool    etk_theme_group_exists(const char *file, const char *group, const char *parent_group);
 Etk_Bool    etk_theme_edje_object_set(Evas_Object *object, const char *file, const char *group, const char *parent_group);

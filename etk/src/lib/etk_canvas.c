@@ -47,7 +47,7 @@ static void _etk_canvas_size_request(Etk_Widget *widget, Etk_Size *size_requisit
 static void _etk_canvas_size_allocate(Etk_Widget *widget, Etk_Geometry geometry);
 static void _etk_canvas_child_add(Etk_Container *container, Etk_Widget *widget);
 static void _etk_canvas_child_remove(Etk_Container *container, Etk_Widget *widget);
-static Evas_List *_etk_canvas_children_get(Etk_Container *container);
+static Eina_List *_etk_canvas_children_get(Etk_Container *container);
 static Etk_Bool _etk_canvas_realized_cb(Etk_Object *object, void *data);
 
 /**************************
@@ -103,8 +103,8 @@ void etk_canvas_put(Etk_Canvas *canvas, Etk_Widget *widget, int x, int y)
    child->child = widget;
    child->pos.x = x;
    child->pos.y = y;
-   canvas->children = evas_list_append(canvas->children, child);
-   etk_object_data_set(ETK_OBJECT(widget), "_Etk_Canvas::Node", evas_list_last(canvas->children));
+   canvas->children = eina_list_append(canvas->children, child);
+   etk_object_data_set(ETK_OBJECT(widget), "_Etk_Canvas::Node", eina_list_last(canvas->children));
 
    if (canvas->clip)
    {
@@ -125,7 +125,7 @@ void etk_canvas_put(Etk_Canvas *canvas, Etk_Widget *widget, int x, int y)
  */
 void etk_canvas_move(Etk_Canvas *canvas, Etk_Widget *widget, int x, int y)
 {
-   Evas_List *l;
+   Eina_List *l;
    Etk_Canvas_Child *c;
 
    if (!canvas || !widget)
@@ -154,7 +154,7 @@ void etk_canvas_move(Etk_Canvas *canvas, Etk_Widget *widget, int x, int y)
  */
 void etk_canvas_child_position_get(Etk_Canvas *canvas, Etk_Widget *widget, int *x, int *y)
 {
-   Evas_List *l;
+   Eina_List *l;
    Etk_Canvas_Child *c;
 
    if (x)   *x = 0;
@@ -264,7 +264,7 @@ static void _etk_canvas_destructor(Etk_Canvas *canvas)
    while (canvas->children)
    {
       free(canvas->children->data);
-      canvas->children = evas_list_remove_list(canvas->children, canvas->children);
+      canvas->children = eina_list_remove_list(canvas->children, canvas->children);
    }
 }
 
@@ -274,7 +274,7 @@ static void _etk_canvas_size_request(Etk_Widget *widget, Etk_Size *size_requisit
    Etk_Canvas *canvas;
    Etk_Canvas_Child *c;
    Etk_Size child_size;
-   Evas_List *l;
+   Eina_List *l;
 
    if (!(canvas = ETK_CANVAS(widget)) || !size_requisition)
       return;
@@ -301,7 +301,7 @@ static void _etk_canvas_size_allocate(Etk_Widget *widget, Etk_Geometry geometry)
    Etk_Canvas_Child *c;
    Etk_Size child_size;
    Etk_Geometry child_geometry;
-   Evas_List *l;
+   Eina_List *l;
 
    if (!(canvas = ETK_CANVAS(widget)))
       return;
@@ -336,7 +336,7 @@ static void _etk_canvas_child_add(Etk_Container *container, Etk_Widget *widget)
 static void _etk_canvas_child_remove(Etk_Container *container, Etk_Widget *widget)
 {
    Etk_Canvas *canvas;
-   Evas_List *l;
+   Eina_List *l;
 
    if (!(canvas = ETK_CANVAS(container)) || !widget)
       return;
@@ -345,7 +345,7 @@ static void _etk_canvas_child_remove(Etk_Container *container, Etk_Widget *widge
    {
       free(l->data);
       etk_object_data_set(ETK_OBJECT(widget), "_Etk_Canvas::Node", NULL);
-      canvas->children = evas_list_remove_list(canvas->children, l);
+      canvas->children = eina_list_remove_list(canvas->children, l);
 
       if (canvas->clip)
       {
@@ -359,11 +359,11 @@ static void _etk_canvas_child_remove(Etk_Container *container, Etk_Widget *widge
 }
 
 /* Gets the list of the children */
-static Evas_List *_etk_canvas_children_get(Etk_Container *container)
+static Eina_List *_etk_canvas_children_get(Etk_Container *container)
 {
    Etk_Canvas *canvas;
    Etk_Canvas_Child *c;
-   Evas_List *children, *l;
+   Eina_List *children, *l;
 
    if (!(canvas = ETK_CANVAS(container)))
       return NULL;
@@ -372,7 +372,7 @@ static Evas_List *_etk_canvas_children_get(Etk_Container *container)
    for (l = canvas->children; l; l = l->next)
    {
       c = l->data;
-      children = evas_list_append(children, c->child);
+      children = eina_list_append(children, c->child);
    }
    return children;
 }
@@ -388,7 +388,7 @@ static Etk_Bool _etk_canvas_realized_cb(Etk_Object *object, void *data)
 {
    Etk_Canvas *canvas;
    Etk_Canvas_Child *c;
-   Evas_List *l;
+   Eina_List *l;
    Evas *evas;
 
    if (!(canvas = ETK_CANVAS(object)) || !(evas = etk_widget_toplevel_evas_get(ETK_WIDGET(object))))

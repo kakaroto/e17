@@ -134,8 +134,8 @@ static void _etk_prefs_row_clicked(Etk_Object *object, Etk_Tree_Row *row, Etk_Ev
 
 static Etk_Widget *_etk_prefs_theme_tab_create()
 {
-   Evas_List *themes;
-   Evas_List *l;   
+   Eina_List *themes;
+   Eina_List *l;   
    char *theme;
    
    Etk_Widget *preview;

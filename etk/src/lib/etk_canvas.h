@@ -52,7 +52,7 @@ struct Etk_Canvas
    /* Inherit from Etk_Container */
    Etk_Container container;
 
-   Evas_List *children;
+   Eina_List *children;
    Evas_Object *clip;
 };
 

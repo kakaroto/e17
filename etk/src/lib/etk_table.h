@@ -82,7 +82,7 @@ typedef struct Etk_Table_Cell
    int y_padding;
    Etk_Table_Fill_Policy fill_policy;
    Etk_Widget *child;
-   Evas_List *node;
+   Eina_List *node;
 } Etk_Table_Cell;
 
 /**
@@ -109,7 +109,7 @@ struct Etk_Table
    Etk_Container container;
 
    Etk_Table_Cell **cells;
-   Evas_List *cells_list;
+   Eina_List *cells_list;
    Etk_Table_Col_Row *cols;
    Etk_Table_Col_Row *rows;
 

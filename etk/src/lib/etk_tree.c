@@ -129,7 +129,7 @@ static void _etk_tree_columns_geometry_calc(Etk_Tree *tree, int grid_width, Etk_
 static void _etk_tree_columns_render(Etk_Tree *tree, Etk_Geometry grid_geometry, Etk_Tree_Col *last_visible_col);
 static void _etk_tree_row_objects_cache(Etk_Tree *tree);
 static void _etk_tree_row_objects_create_destroy(Etk_Tree *tree, Etk_Geometry grid_geometry);
-static void _etk_tree_row_objects_update(Etk_Tree *tree, Etk_Geometry grid_geometry, Etk_Tree_Col *first_visible_col, Evas_List **prev_visible_rows, Evas_List **new_visible_rows);
+static void _etk_tree_row_objects_update(Etk_Tree *tree, Etk_Geometry grid_geometry, Etk_Tree_Col *first_visible_col, Eina_List **prev_visible_rows, Eina_List **new_visible_rows);
 
 static Etk_Bool _etk_tree_focused_cb(Etk_Object *object, void *event, void *data);
 static Etk_Bool _etk_tree_unfocused_cb(Etk_Object *object, void *event, void *data);
@@ -2519,9 +2519,9 @@ static void _etk_tree_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geomet
    Etk_Tree *tree;
    Etk_Tree_Col *first_visible_col;
    Etk_Tree_Col *last_visible_col;
-   Evas_List *prev_visible_rows;
-   Evas_List *new_visible_rows;
-   Evas_List *l;
+   Eina_List *prev_visible_rows;
+   Eina_List *new_visible_rows;
+   Eina_List *l;
    Evas *evas;
 
    if (!(tree = TREE_GET(widget)) || !(evas = etk_widget_toplevel_evas_get(ETK_WIDGET(tree))))
@@ -2559,7 +2559,7 @@ static void _etk_tree_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geomet
 
       row_object = l->data;
       if (row_object->row)
-         prev_visible_rows = evas_list_append(prev_visible_rows, row_object->row);
+         prev_visible_rows = eina_list_append(prev_visible_rows, row_object->row);
    }
 
    /* Move, resize, and show/hide the column separators and clips */
@@ -2579,12 +2579,12 @@ static void _etk_tree_grid_size_allocate(Etk_Widget *widget, Etk_Geometry geomet
    while (prev_visible_rows)
    {
       etk_signal_emit(ETK_TREE_ROW_HIDDEN_SIGNAL, ETK_OBJECT(tree), prev_visible_rows->data);
-      prev_visible_rows = evas_list_remove_list(prev_visible_rows, prev_visible_rows);
+      prev_visible_rows = eina_list_remove_list(prev_visible_rows, prev_visible_rows);
    }
    while (new_visible_rows)
    {
       etk_signal_emit(ETK_TREE_ROW_SHOWN_SIGNAL, ETK_OBJECT(tree), new_visible_rows->data);
-      new_visible_rows = evas_list_remove_list(new_visible_rows, new_visible_rows);
+      new_visible_rows = eina_list_remove_list(new_visible_rows, new_visible_rows);
    }
 }
 
@@ -2728,7 +2728,7 @@ static void _etk_tree_columns_render(Etk_Tree *tree, Etk_Geometry grid_geometry,
 /* Cache the sub-objects of the visible rows of the tree. Used by etk_tree_grid_size_allocate() only */
 static void _etk_tree_row_objects_cache(Etk_Tree *tree)
 {
-   Evas_List *l;
+   Eina_List *l;
    Etk_Tree_Col *col;
    Etk_Tree_Model *model;
    void *cell_data;
@@ -2769,7 +2769,7 @@ static void _etk_tree_row_objects_create_destroy(Etk_Tree *tree, Etk_Geometry gr
    int i;
 
    num_visible_rows = (grid_geometry.h / tree->rows_height) + 2;
-   current_num_rows = evas_list_count(tree->row_objects);
+   current_num_rows = eina_list_count(tree->row_objects);
 
    if (current_num_rows < num_visible_rows)
    {
@@ -2779,31 +2779,31 @@ static void _etk_tree_row_objects_create_destroy(Etk_Tree *tree, Etk_Geometry gr
          Etk_Tree_Row_Object *row_object;
 
          if ((row_object = _etk_tree_row_object_create(tree)))
-            tree->row_objects = evas_list_append(tree->row_objects, row_object);
+            tree->row_objects = eina_list_append(tree->row_objects, row_object);
       }
    }
    else if (current_num_rows > num_visible_rows)
    {
-      Evas_List *last, *prev;
+      Eina_List *last, *prev;
 
       /* We destroy the row objects that are no longer needed */
-      last = evas_list_last(tree->row_objects);
+      last = eina_list_last(tree->row_objects);
       for (i = 0; i < (current_num_rows - num_visible_rows) && last; i++)
       {
          _etk_tree_row_object_destroy(tree, last->data);
          prev = last->prev;
-         tree->row_objects = evas_list_remove_list(tree->row_objects, last);
+         tree->row_objects = eina_list_remove_list(tree->row_objects, last);
          last = prev;
       }
    }
 }
 
 /* Update the position and the content of the row objects. Used by etk_tree_grid_size_allocate() only */
-static void _etk_tree_row_objects_update(Etk_Tree *tree, Etk_Geometry grid_geometry, Etk_Tree_Col *first_visible_col, Evas_List **prev_visible_rows, Evas_List **new_visible_rows)
+static void _etk_tree_row_objects_update(Etk_Tree *tree, Etk_Geometry grid_geometry, Etk_Tree_Col *first_visible_col, Eina_List **prev_visible_rows, Eina_List **new_visible_rows)
 {
    Evas *evas;
    Evas_Object *obj;
-   Evas_List *l, *l2;
+   Eina_List *l, *l2;
    Etk_Tree_Col *col;
    Etk_Tree_Row *row;
    Etk_Tree_Row_Object *row_object;
@@ -2842,10 +2842,10 @@ static void _etk_tree_row_objects_update(Etk_Tree *tree, Etk_Geometry grid_geome
          evas_object_resize(row_object->background, grid_geometry.w, tree->rows_height);
          evas_object_show(row_object->background);
 
-         if ((l2 = evas_list_find_list(*prev_visible_rows, row)))
-            *prev_visible_rows = evas_list_remove_list(*prev_visible_rows, l2);
+         if ((l2 = eina_list_data_find_list(*prev_visible_rows, row)))
+            *prev_visible_rows = eina_list_remove_list(*prev_visible_rows, l2);
          else
-            *new_visible_rows = evas_list_append(*new_visible_rows, row);
+            *new_visible_rows = eina_list_append(*new_visible_rows, row);
 
          /* Show the expander if needed */
          if (show_expanders && row->num_children > 0)
@@ -3192,7 +3192,7 @@ static Etk_Bool _etk_tree_grid_unrealized_cb(Etk_Object *object, void *data)
    while (tree->row_objects)
    {
       _etk_tree_row_object_destroy(tree, tree->row_objects->data);
-      tree->row_objects = evas_list_remove_list(tree->row_objects, tree->row_objects);
+      tree->row_objects = eina_list_remove_list(tree->row_objects, tree->row_objects);
    }
 
    return ETK_TRUE;
@@ -3432,7 +3432,7 @@ static void _etk_tree_purge_job(void *data)
 /* Deletes effectively all the rows marked as deleted */
 static void _etk_tree_purge(Etk_Tree *tree)
 {
-   Evas_List *l;
+   Eina_List *l;
    Etk_Tree_Row *row, *r, *next;
    Etk_Tree_Col *col;
    int i, j;
@@ -3504,7 +3504,7 @@ static void _etk_tree_purge(Etk_Tree *tree)
 
          free(r);
       }
-      tree->purge_pool = evas_list_remove_list(tree->purge_pool, tree->purge_pool);
+      tree->purge_pool = eina_list_remove_list(tree->purge_pool, tree->purge_pool);
    }
 }
 
@@ -3560,7 +3560,7 @@ static void _etk_tree_row_move_to_purge_pool(Etk_Tree_Row *row)
 
    if (tree->last_selected_row == row)
       tree->last_selected_row = NULL;
-   tree->purge_pool = evas_list_append(tree->purge_pool, row);
+   tree->purge_pool = eina_list_append(tree->purge_pool, row);
 
    if (!tree->purge_job)
       tree->purge_job = ecore_job_add(_etk_tree_purge_job, tree);
@@ -3796,7 +3796,7 @@ static void _etk_tree_expanders_clip(Etk_Tree *tree)
 {
    Etk_Tree_Row_Object *row_object;
    Etk_Tree_Col *col, *first_visible_col;
-   Evas_List *l;
+   Eina_List *l;
    int i;
 
    if (!tree || tree->mode != ETK_TREE_MODE_TREE || !tree->built)

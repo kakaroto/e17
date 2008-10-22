@@ -56,7 +56,7 @@ struct Etk_Menu_Shell
    /* Inherit from Etk_Widget */
    Etk_Widget widget;
 
-   Evas_List *items;
+   Eina_List *items;
 };
 
 
@@ -69,7 +69,7 @@ void       etk_menu_shell_append_relative(Etk_Menu_Shell *menu_shell, Etk_Menu_I
 void       etk_menu_shell_insert(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *item, int position);
 void       etk_menu_shell_remove(Etk_Menu_Shell *menu_shell, Etk_Menu_Item *item);
 
-Evas_List *etk_menu_shell_items_get(Etk_Menu_Shell *menu_shell);
+Eina_List *etk_menu_shell_items_get(Etk_Menu_Shell *menu_shell);
 
 /** @} */
 

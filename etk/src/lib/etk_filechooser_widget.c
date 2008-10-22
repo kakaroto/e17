@@ -298,18 +298,18 @@ const char *etk_filechooser_widget_selected_file_get(Etk_Filechooser_Widget *fil
  * @brief Retrives the current files selected
  * @return Returns filenames list
  */
-Evas_List *etk_filechooser_widget_selected_files_get(Etk_Filechooser_Widget *filechooser_widget)
+Eina_List *etk_filechooser_widget_selected_files_get(Etk_Filechooser_Widget *filechooser_widget)
 {
    char *filename;
    Etk_Tree_Row *row;
-   Evas_List *files = NULL;
+   Eina_List *files = NULL;
 
    for (row = etk_tree_first_row_get(ETK_TREE(filechooser_widget->files_tree)); row; row = etk_tree_row_next_get(row))
    {
       if (etk_tree_row_is_selected(row))
       {
          etk_tree_row_fields_get(row, filechooser_widget->files_name_col, NULL, NULL, &filename, NULL);
-         files = evas_list_append(files, filename);
+         files = eina_list_append(files, filename);
       }
    }
 

@@ -198,7 +198,7 @@ struct Etk_Textblock2
    Etk_Textblock2_Paragraph *last_paragraph;
    Etk_Textblock2_Iter *iters;
    Etk_Textblock2_Iter *last_iter;
-   Evas_List *tbos;
+   Eina_List *tbos;
 };
 
 

@@ -85,7 +85,7 @@ Etk_Signal   *etk_type_signal_get_by_name(Etk_Type *type, const char *signal_nam
 
 Etk_Property *etk_type_property_add(Etk_Type *type, const char *name, int property_id, Etk_Property_Type property_type, Etk_Property_Flags flags, Etk_Property_Value *default_value);
 Etk_Bool      etk_type_property_find(Etk_Type *type, const char *name, Etk_Type **property_owner, Etk_Property **property);
-void          etk_type_property_list(Etk_Type *type, Evas_List **properties);
+void          etk_type_property_list(Etk_Type *type, Eina_List **properties);
 
 /** @} */
 

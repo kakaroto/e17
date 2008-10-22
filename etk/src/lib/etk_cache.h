@@ -42,7 +42,7 @@ extern "C" {
 struct Etk_Cache
 {
    /* private: */
-   Evas_List *cached_objects;
+   Eina_List *cached_objects;
    int size;
 
    void (*free_cb)(Evas_Object *object, void *data);

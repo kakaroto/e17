@@ -73,7 +73,7 @@ Etk_Type *etk_radio_button_type_get(void)
  * @param group the group to which the radio-button will be added (NULL if the radio-button should create its own group)
  * @return Returns the new radio-button widget
  */
-Etk_Widget *etk_radio_button_new(Evas_List **group)
+Etk_Widget *etk_radio_button_new(Eina_List **group)
 {
    return etk_widget_new(ETK_RADIO_BUTTON_TYPE, "theme-group", "radio_button", "group", group,
       "focusable", ETK_TRUE, "xalign", 0.0, NULL);
@@ -96,7 +96,7 @@ Etk_Widget *etk_radio_button_new_from_widget(Etk_Radio_Button *radio_button)
  * @param group the group to which the radio-button will be added (NULL if the radio-button should create its own group)
  * @return Returns the new radio-button widget
  */
-Etk_Widget *etk_radio_button_new_with_label(const char *label, Evas_List **group)
+Etk_Widget *etk_radio_button_new_with_label(const char *label, Eina_List **group)
 {
    return etk_widget_new(ETK_RADIO_BUTTON_TYPE, "theme-group", "radio_button", "label", label,
       "focusable", ETK_TRUE, "group", group, "xalign", 0.0, NULL);
@@ -119,7 +119,7 @@ Etk_Widget *etk_radio_button_new_with_label_from_widget(const char *label, Etk_R
  * @param radio_button a radio-button
  * @param group the group to use
  */
-void etk_radio_button_group_set(Etk_Radio_Button *radio_button, Evas_List **group)
+void etk_radio_button_group_set(Etk_Radio_Button *radio_button, Eina_List **group)
 {
    Etk_Toggle_Button *toggle_button;
    Etk_Bool active;
@@ -129,7 +129,7 @@ void etk_radio_button_group_set(Etk_Radio_Button *radio_button, Evas_List **grou
 
    if (radio_button->group)
    {
-      *radio_button->group = evas_list_remove(*radio_button->group, radio_button);
+      *radio_button->group = eina_list_remove(*radio_button->group, radio_button);
       if (!(*radio_button->group))
       {
          free(radio_button->group);
@@ -139,14 +139,14 @@ void etk_radio_button_group_set(Etk_Radio_Button *radio_button, Evas_List **grou
 
    if (!group)
    {
-      group = malloc(sizeof(Evas_List *));
+      group = malloc(sizeof(Eina_List *));
       *group = NULL;
       active = ETK_TRUE;
    }
    else
       active = ETK_FALSE;
 
-   *group = evas_list_append(*group, radio_button);
+   *group = eina_list_append(*group, radio_button);
    radio_button->group = group;
    etk_object_notify(ETK_OBJECT(radio_button), "group");
 
@@ -159,7 +159,7 @@ void etk_radio_button_group_set(Etk_Radio_Button *radio_button, Evas_List **grou
  * @param radio_button a radio-button
  * @return Returns the group used by the radio-button
  */
-Evas_List **etk_radio_button_group_get(Etk_Radio_Button *radio_button)
+Eina_List **etk_radio_button_group_get(Etk_Radio_Button *radio_button)
 {
    if (!radio_button)
       return NULL;
@@ -189,7 +189,7 @@ static void _etk_radio_button_destructor(Etk_Radio_Button *radio_button)
    if (!radio_button || !radio_button->group)
       return;
 
-   *radio_button->group = evas_list_remove(*radio_button->group, radio_button);
+   *radio_button->group = eina_list_remove(*radio_button->group, radio_button);
    if (!(*radio_button->group))
       free(radio_button->group);
    else if (ETK_TOGGLE_BUTTON(radio_button)->active)
@@ -245,7 +245,7 @@ static void _etk_radio_button_active_set(Etk_Toggle_Button *toggle_button, Etk_B
 {
    Etk_Radio_Button *radio_button;
    Etk_Toggle_Button *tb;
-   Evas_List *l;
+   Eina_List *l;
 
    if (!(radio_button = ETK_RADIO_BUTTON(toggle_button)) || toggle_button->active == active)
       return;
@@ -312,7 +312,7 @@ static void _etk_radio_button_active_set(Etk_Toggle_Button *toggle_button, Etk_B
  *
  * \par Properties:
  * @prop_name "group": The group of the radio-button
- * @prop_type Pointer (Evas_List **)
+ * @prop_type Pointer (Eina_List **)
  * @prop_rw
  * @prop_val NULL
  */
