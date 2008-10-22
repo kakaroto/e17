@@ -1,7 +1,7 @@
 # get rid of that stupid cache mechanism
 rm -f config.cache
 
-AC_INIT(imlib2_loaders, 1.4.1.001, enlightenment-devel@lists.sourceforge.net)
+AC_INIT(imlib2_loaders, 1.4.2.001, enlightenment-devel@lists.sourceforge.net)
 AC_PREREQ(2.52)
 AC_CONFIG_SRCDIR(configure.ac)
 AC_CANONICAL_BUILD
