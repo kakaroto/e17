@@ -12,7 +12,9 @@ extrackt_init(void)
    /* TEMPORAL */
    Ex_Cddb_Hello *hello;
    /* EOTEMPORAL */
-     
+
+   eina_init();
+
    ex = E_NEW(1, Extrackt);
   
    if(!ex)
@@ -98,6 +100,8 @@ extrackt_shutdown(Extrackt *ex)
    ex_command_rip_abort(ex);
    ex_command_encode_abort(ex);
    free(ex);
+
+   eina_shutdown();
 }
 
 void

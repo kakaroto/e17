@@ -92,7 +92,7 @@ ex_protocol_parse(Extrackt *ex, char *msg, int length)
 	     ex->rip.curr_track.number = -1;
 	     ex->rip.curr_track.size = -1;
 	     ex->rip.curr_track.filename = NULL;
-	     ex->rip.tracks = evas_list_remove_list(ex->rip.tracks,ex->rip.tracks);
+	     ex->rip.tracks = eina_list_remove_list(ex->rip.tracks,ex->rip.tracks);
 	     if(ex->rip.tracks)
 	       ex_command_rip(ex);
 	  }
@@ -125,7 +125,7 @@ ex_protocol_parse(Extrackt *ex, char *msg, int length)
 	     ex->encode.curr_track.number = -1;
 	     ex->encode.curr_track.size = -1;
 	     ex->encode.curr_track.filename = NULL;
-	     ex->encode.tracks = evas_list_remove_list(ex->encode.tracks,ex->encode.tracks);
+	     ex->encode.tracks = eina_list_remove_list(ex->encode.tracks,ex->encode.tracks);
 	     if(ex->encode.tracks)
 	       ex_command_encode(ex);
 	  }

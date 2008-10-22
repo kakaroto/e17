@@ -113,7 +113,7 @@ struct _Extrackt
       pid_t	     pid;	  /* pid ripper */
       Ex_Status	     status;
       Ex_Config_Exe *ripper;
-      Evas_List	    *tracks;
+      Eina_List	    *tracks;
       int	     num_total;
       int	     num_done;
       time_t	     start;
@@ -130,7 +130,7 @@ struct _Extrackt
       pid_t	     pid;     /* pid encoder */
       Ex_Status      status;
       Ex_Config_Exe *encoder;
-      Evas_List     *tracks;   /* a list of filenames to encode */
+      Eina_List     *tracks;   /* a list of filenames to encode */
       int	     num_queue;
       int	     num_total;
       int	     num_done;
@@ -151,7 +151,7 @@ struct _Extrackt
       Ex_Config_Cd      *cd;      /* config struct for cdrom */
       Ex_Config_Cddb    *cddb;
       Ex_Config_Encode  *encode;
-      Evas_List         *rippers; /* config structs for rippers */
+      Eina_List         *rippers; /* config structs for rippers */
    } config;
 };
 

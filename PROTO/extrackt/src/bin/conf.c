@@ -8,10 +8,10 @@
 
 #define NEWD(str, typ) \
    eet_data_descriptor_new(str, sizeof(typ), \
-			      (void *(*) (void *))evas_list_next, \
-			      (void *(*) (void *, void *))evas_list_append, \
-			      (void *(*) (void *))evas_list_data, \
-			      (void *(*) (void *))evas_list_free, \
+			      (void *(*) (void *))eina_list_next, \
+			      (void *(*) (void *, void *))eina_list_append, \
+			      (void *(*) (void *))eina_list_data_get, \
+			      (void *(*) (void *))eina_list_free, \
 			      (void  (*) (void *, int (*) (void *, const char *, void *, void *), void *))evas_hash_foreach, \
 			      (void *(*) (void *, const char *, void *))evas_hash_add, \
 			      (void  (*) (void *))evas_hash_free)
@@ -231,7 +231,7 @@ ex_config_defaults_apply(Extrackt *ex)
 	ripper->file_format = E_STRDUP(default_path);
 	ripper->type = EX_CONFIG_EXE_RIPPER;
 	ripper->def = 1;
-	ex->config.rippers = evas_list_append(ex->config.rippers, ripper);
+	ex->config.rippers = eina_list_append(ex->config.rippers, ripper);
 	
 	ripper = E_NEW(1, Ex_Config_Exe);
 	ripper->name = E_STRDUP("cdda2wav");
@@ -240,7 +240,7 @@ ex_config_defaults_apply(Extrackt *ex)
 	ripper->file_format = E_STRDUP(default_path);
 	ripper->type = EX_CONFIG_EXE_RIPPER;
 	ripper->def = 0;
-	ex->config.rippers = evas_list_append(ex->config.rippers, ripper);
+	ex->config.rippers = eina_list_append(ex->config.rippers, ripper);
      }
    /* add default encode */
    ex->config.encode = E_NEW(1,Ex_Config_Encode);
@@ -264,7 +264,7 @@ ex_config_defaults_apply(Extrackt *ex)
 	encoder->file_format = E_STRDUP(default_path);
 	encoder->type = EX_CONFIG_EXE_ENCODER;
 	encoder->def = 0;
-	ex->config.encode->encoders = evas_list_append(ex->config.encode->encoders, encoder);
+	ex->config.encode->encoders = eina_list_append(ex->config.encode->encoders, encoder);
 	
 	strncpy(ext, "mp3", 4);
 	encoder = E_NEW(1, Ex_Config_Exe);
@@ -274,7 +274,7 @@ ex_config_defaults_apply(Extrackt *ex)
 	encoder->file_format = E_STRDUP(default_path);
 	encoder->type = EX_CONFIG_EXE_ENCODER;
 	encoder->def = 1;
-	ex->config.encode->encoders = evas_list_append(ex->config.encode->encoders, encoder);
+	ex->config.encode->encoders = eina_list_append(ex->config.encode->encoders, encoder);
      }
    
    return 1;
@@ -369,7 +369,7 @@ ex_config_read(Extrackt *ex)
 	     char *match;
 	     
 	     match = matches[i];
-	     ex->config.rippers = evas_list_append(ex->config.rippers,
+	     ex->config.rippers = eina_list_append(ex->config.rippers,
 				 eet_data_read(ef, _ex_config_exe_edd, match));
 	  }
      }
@@ -389,7 +389,7 @@ ex_config_write(Extrackt *ex)
    char       buf[PATH_MAX];
    char      *home;
    int        ret;
-   Evas_List *l;
+   Eina_List *l;
    
    home = getenv("HOME");
    if(!home)

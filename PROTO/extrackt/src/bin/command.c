@@ -334,7 +334,7 @@ ex_command_encode_append(Extrackt *ex, int tracknumber)
 	ex->encode.num_queue = 0;
 	run = 1;
      }
-   ex->encode.tracks = evas_list_append(ex->encode.tracks, tp);
+   ex->encode.tracks = eina_list_append(ex->encode.tracks, tp);
    ex->encode.num_queue++;
    if(run)
      {
@@ -426,7 +426,7 @@ ex_command_encode(Extrackt *ex)
 int	
 ex_command_encode_set(Extrackt *ex, char *name)
 {
-   Evas_List *l;
+   Eina_List *l;
    
    for(l = ex->config.encode->encoders; l; l=l->next)
      {
@@ -530,7 +530,7 @@ ex_command_rip_append(Extrackt *ex, int tracknumber)
    tp = E_NEW(1, int);
    *tp = tracknumber;
    printf("appending track number %d\n", tracknumber);
-   ex->rip.tracks = evas_list_append(ex->rip.tracks, tp);
+   ex->rip.tracks = eina_list_append(ex->rip.tracks, tp);
    ex->rip.num_total++;
    if(ex->encode.on)
      ex->encode.num_total++;
@@ -582,7 +582,7 @@ ex_command_rip_update(Extrackt *ex)
 int	
 ex_command_rip_set(Extrackt *ex, char *name)
 {
-   Evas_List *l;
+   Eina_List *l;
    
    for(l = ex->config.rippers; l; l=l->next)
      {
@@ -614,7 +614,7 @@ ex_command_rip_abort(Extrackt *ex)
    ex->rip.curr_track.filename = NULL;
    
    while(ex->rip.tracks)
-     ex->rip.tracks = evas_list_remove_list(ex->rip.tracks,ex->rip.tracks);
+     ex->rip.tracks = eina_list_remove_list(ex->rip.tracks,ex->rip.tracks);
 }
 
 void
@@ -634,7 +634,7 @@ ex_command_encode_abort(Extrackt *ex)
    ex->encode.curr_track.filename = NULL;
    
    while(ex->encode.tracks)
-     ex->encode.tracks = evas_list_remove_list(ex->encode.tracks,ex->encode.tracks);
+     ex->encode.tracks = eina_list_remove_list(ex->encode.tracks,ex->encode.tracks);
 }
 
 void

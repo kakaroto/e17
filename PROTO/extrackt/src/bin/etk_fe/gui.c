@@ -100,7 +100,7 @@ static void       _etk_fe_gui_show(E_Gui_Etk *gui);
 static void       _etk_fe_config_load(E_Gui_Etk *gui);
 static void       _etk_fe_config_save(E_Gui_Etk *gui);
 static void	  _etk_fe_gui_encoder_progress_bar_update(void);
-static Evas_List *_etk_fe_tree_selected_rows_get(Etk_Tree *tree);
+static Eina_List *_etk_fe_tree_selected_rows_get(Etk_Tree *tree);
 Etk_Bool  _etk_fe_gui_window_deleted_cb(void *data);
 
 /* will enter here when a read is available on the pipefd */
@@ -245,7 +245,7 @@ _etk_fe_gui_menu_item_new(E_Gui_Menu_Item_Type item_type, const char *label,
 void
 _etk_fe_gui_encoder_combo_changed_cb(Etk_Object *object, void *data)
 {
-   Evas_List *l;
+   Eina_List *l;
    Ex_Config_Encode *ece;   
    Ex_Config_Exe *ecx;
    E_Gui_Etk *gui;   
@@ -281,7 +281,7 @@ _etk_fe_gui_encoder_combo_changed_cb(Etk_Object *object, void *data)
 void
 _etk_fe_gui_ripper_combo_changed_cb(Etk_Object *object, void *data)
 {
-   Evas_List *l;
+   Eina_List *l;
    Ex_Config_Encode *ece;   
    Ex_Config_Exe *ecx;   
    E_Gui_Etk *gui;   
@@ -351,7 +351,7 @@ _etk_fe_gui_rip_cb(Etk_Object *obj, void *data)
 {
    E_Gui_Etk    *gui;
    Etk_Tree     *tree;
-   Evas_List    *selected;
+   Eina_List    *selected;
    Extrackt *ex;
    Etk_Tree_Row *row;   
 
@@ -434,7 +434,7 @@ _etk_fe_gui_rip_enc_cb(Etk_Object *obj, void *data)
 {
    E_Gui_Etk    *gui;
    Etk_Tree     *tree;
-   Evas_List    *selected;
+   Eina_List    *selected;
    Extrackt *ex;
    Etk_Tree_Row *row;   
 
@@ -654,7 +654,7 @@ _etk_fe_config_load(E_Gui_Etk *gui)
    /* encoder tab */
    /***************/
      {
-	Evas_List *l;
+	Eina_List *l;
 	Ex_Config_Encode *ece;
 	Ex_Config_Exe *ecx;
 
@@ -682,7 +682,7 @@ _etk_fe_config_load(E_Gui_Etk *gui)
    /* ripper tab */
    /***************/
      {
-	Evas_List *l;
+	Eina_List *l;
 	Ex_Config_Exe *ecx;
 	
 	for(l = gui->ex->config.rippers; l; l=l->next)
@@ -763,7 +763,7 @@ _etk_fe_config_save(E_Gui_Etk *gui)
    /*** Save config for Config->Rip - Ripper ***/
 #define EXE_SAVE_STR(cfg, str) SAVE_STR(cfg, etk_entry_text_get(ETK_ENTRY(gui->str)))
      {
-	Evas_List *l;
+	Eina_List *l;
 	Ex_Config_Exe *exe;	  
 	
 	for(l = gui->ex->config.rippers; l; l = l->next)
@@ -797,7 +797,7 @@ _etk_fe_config_save(E_Gui_Etk *gui)
    
    /*** Save config for Config->Encoder - Encoder ***/
      {
-	Evas_List *l;
+	Eina_List *l;
 	Ex_Config_Exe *exe;	  
 	
 	for(l = gui->ex->config.encode->encoders; l; l = l->next)
@@ -997,10 +997,10 @@ etk_fe_rip_percent_update(double percent)
    etk_progress_bar_text_set(ETK_PROGRESS_BAR(gui->rip_tot_pbar), text);      
 }
 
-Evas_List *
+Eina_List *
 _etk_fe_tree_selected_rows_get(Etk_Tree *tree)
 {
-  Evas_List *selected_rows = NULL;
+  Eina_List *selected_rows = NULL;
   Etk_Tree_Row *row;
 
   if (!tree)
@@ -1008,7 +1008,7 @@ _etk_fe_tree_selected_rows_get(Etk_Tree *tree)
 
   if (!etk_tree_multiple_select_get(tree))
     {
-      selected_rows = evas_list_append(selected_rows, etk_tree_selected_row_get(tree));
+      selected_rows = eina_list_append(selected_rows, etk_tree_selected_row_get(tree));
     }
   else
     {
@@ -1016,7 +1016,7 @@ _etk_fe_tree_selected_rows_get(Etk_Tree *tree)
         {
           if (etk_tree_row_is_selected(row))
             {
-              selected_rows = evas_list_append(selected_rows, row);
+              selected_rows = eina_list_append(selected_rows, row);
             }
         }
     }

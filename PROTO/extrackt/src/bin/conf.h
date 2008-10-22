@@ -41,7 +41,7 @@ enum _Ex_Config_Exe_Type
 struct _Ex_Config_Encode
 {
 
-   Evas_List *encoders;
+   Eina_List *encoders;
    int   wav_delete;
 };
 
