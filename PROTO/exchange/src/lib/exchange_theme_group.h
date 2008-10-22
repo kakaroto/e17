@@ -65,7 +65,7 @@ typedef struct _Theme_Group_Data { /**< Metadata for a Theme_Group */
    int known; /** Is it known? */
 } Theme_Group_Data;
 
-EAPI Evas_List *exchange_theme_group_list_available(void);
+EAPI Eina_List *exchange_theme_group_list_available(void);
 
 /**
  * @cond LOCAL

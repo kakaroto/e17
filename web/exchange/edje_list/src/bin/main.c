@@ -3,10 +3,10 @@
 int
 main(int argc, char **argv)
 {
-	Evas_List *l;
+	Eina_List *l;
 	char *string;
+
 	edje_init();
-	
 	string = edje_file_data_get(argv[argc - 1], "theme/name");
 	if (!string)
 		string = "";
@@ -23,10 +23,9 @@ main(int argc, char **argv)
 	if (!string)
 		string = "";
 	printf("Version: %s\n", string);
-	for(l = edje_file_collection_list(argv[argc - 1]); l; l = l->next)
-	{
-		printf("%s\n", l->data);
-	}
+
+	EINA_LIST_FOREACH(edje_file_collection_list(argv[argc -1]), l, string)
+	  printf("%s\n", string);
 	edje_shutdown();
 	return 0;
 }
