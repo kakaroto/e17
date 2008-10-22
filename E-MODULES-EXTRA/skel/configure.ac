@@ -23,8 +23,8 @@ define([AC_LIBTOOL_LANG_CXX_CONFIG], [:])dnl
 define([AC_LIBTOOL_LANG_F77_CONFIG], [:])dnl
 AC_PROG_LIBTOOL
 
-#AM_GNU_GETTEXT([external])
-#AM_GNU_GETTEXT_VERSION(0.14)
+AM_GNU_GETTEXT([external])
+AM_GNU_GETTEXT_VERSION(0.14)
 
 MODULE_ARCH="$host_os-$host_cpu"
 AC_SUBST(MODULE_ARCH)
@@ -32,18 +32,7 @@ AC_DEFINE_UNQUOTED(MODULE_ARCH, "$MODULE_ARCH", "Module architecture")
 
 # Find edje_cc
 PKG_CHECK_MODULES(EDJE, [edje >= 0.5.0])
-AC_ARG_WITH(edje-cc,
-  AC_HELP_STRING([--with-edje-cc=PATH], [specify a specific path to edje_cc]),
-  [
-    v=$withval;
-    EDJE_CC=$v
-  ],[
-    EDJE_CC=$(pkg-config --variable=prefix edje)/bin/edje_cc
-  ]
-)
-AC_SUBST(EDJE_CC)
-AC_MSG_CHECKING([Which edje_cc to use])
-AC_MSG_RESULT(${EDJE_CC})
+AC_PATH_PROG(EDJE_CC, "edje_cc", "", $PATH)
 
 PKG_CHECK_MODULES(E, [enlightenment])
 
@@ -57,6 +46,7 @@ AC_ARG_ENABLE(homedir-install,
 AC_OUTPUT([
 Makefile
 src/Makefile
+po/Makefile
 module.desktop
 ], [
 ])

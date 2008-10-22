@@ -36,7 +36,7 @@ e_int_config_skel_module(E_Container *con, const char *params __UNUSED__)
    snprintf(buf, sizeof(buf), "%s/e-module-skel.edj", skel_conf->module->dir);
 
    /* create new config dialog */
-   cfd = e_config_dialog_new(con, "Skeleton Module", "Skel", 
+   cfd = e_config_dialog_new(con, D_("Skeleton Module"), "Skel", 
                              "_e_module_skel_cfg_dlg", buf, 0, v, NULL);
 
    e_dialog_resizable_set(cfd->dia, 1);
@@ -76,9 +76,9 @@ _basic_create(E_Config_Dialog *cfd, Evas *evas, E_Config_Dialog_Data *cfdata)
 
    o = e_widget_list_add(evas, 0, 0);
 
-   of = e_widget_framelist_add(evas, "General", 0);
+   of = e_widget_framelist_add(evas, D_("General"), 0);
    e_widget_framelist_content_align_set(of, 0.0, 0.0);
-   ow = e_widget_check_add(evas, "Use Switch 1", 
+   ow = e_widget_check_add(evas, D_("Use Switch 1"), 
                            &(cfdata->switch1));
    e_widget_framelist_object_append(of, ow);
    e_widget_list_object_append(o, of, 1, 1, 0.5);

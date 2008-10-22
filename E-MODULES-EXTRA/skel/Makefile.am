@@ -1,8 +1,9 @@
+ACLOCAL_AMFLAGS = -I m4
 MAINTAINERCLEANFILES = Makefile.in aclocal.m4 config.guess config.h.in \
 		       config.sub configure depcomp install-sh ltmain.sh \
-		       missing module.desktop
+		       missing module.desktop config.rpath mkinstalldirs
 
-SUBDIRS = src
+SUBDIRS = src po
 
 EDJE_FLAGS = -v \
 	   -id $(top_srcdir)/images \
@@ -16,6 +17,7 @@ files_DATA = module.desktop \
 
 EXTRA_DIST = $(files_DATA) \
 	     images/module_icon.png \
+         e-module-skel.edc \
 	     fonts/VeraBd.ttf
 
 %.edj:  %.edc

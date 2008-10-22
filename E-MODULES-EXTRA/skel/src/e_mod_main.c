@@ -101,7 +101,7 @@ e_modapi_init(E_Module *m)
              /* config too old */
              _skel_conf_free();
 	     ecore_timer_add(1.0, _skel_conf_timer,
-			     "Skeleton Module Configuration data needed "
+			     D_("Skeleton Module Configuration data needed "
 			     "upgrading. Your old configuration<br> has been"
 			     " wiped and a new set of defaults initialized. "
 			     "This<br>will happen regularly during "
@@ -112,7 +112,7 @@ e_modapi_init(E_Module *m)
 			     "configuration simply lacks. This new set of "
 			     "defaults will fix<br>that by adding it in. "
 			     "You can re-configure things now to your<br>"
-			     "liking. Sorry for the inconvenience.<br>");
+			     "liking. Sorry for the inconvenience.<br>"));
           }
 
         /* Ardvarks */
@@ -121,7 +121,7 @@ e_modapi_init(E_Module *m)
              /* config too new...wtf ? */
              _skel_conf_free();
 	     ecore_timer_add(1.0, _skel_conf_timer, 
-			     "Your Skeleton Module configuration is NEWER "
+			     D_("Your Skeleton Module configuration is NEWER "
 			     "than the module version. This is "
 			     "very<br>strange. This should not happen unless"
 			     " you downgraded<br>the module or "
@@ -130,7 +130,7 @@ e_modapi_init(E_Module *m)
 			     "was running. This is bad and<br>as a "
 			     "precaution your configuration has been now "
 			     "restored to<br>defaults. Sorry for the "
-			     "inconvenience.<br>");
+			     "inconvenience.<br>"));
           }
      }
 
@@ -285,7 +285,7 @@ _gc_orient(E_Gadcon_Client *gcc)
 static char *
 _gc_label(void) 
 {
-   return "Skeleton";
+   return D_("Skeleton");
 }
 
 /* so E can keep a unique instance per-container */
@@ -383,7 +383,7 @@ _skel_conf_free(void)
 static int 
 _skel_conf_timer(void *data) 
 {
-   e_util_dialog_show("Skeleton Configuration Updated", data);
+   e_util_dialog_show( D_("Skeleton Configuration Updated"), data);
    return 0;
 }
 
@@ -440,7 +440,7 @@ _skel_cb_mouse_down(void *data, Evas *evas, Evas_Object *obj, void *event)
                                             inst);
 
         mi = e_menu_item_new(inst->menu);
-        e_menu_item_label_set(mi, "Configuration");
+        e_menu_item_label_set(mi, D_("Configuration"));
         e_util_menu_item_edje_icon_set(mi, "enlightenment/configuration");
         e_menu_item_callback_set(mi, _skel_cb_menu_configure, NULL);
 
