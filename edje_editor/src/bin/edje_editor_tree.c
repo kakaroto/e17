@@ -85,8 +85,8 @@ tree_create(void)
 void 
 tree_populate(void)
 {
-   Evas_List *parts, *pp;
-   Evas_List *progs;
+   Eina_List *parts, *pp;
+   Eina_List *progs;
 
    etk_tree_freeze(ETK_TREE(UI_PartsTree));
    etk_tree_clear(ETK_TREE(UI_PartsTree));
@@ -115,7 +115,8 @@ tree_populate(void)
 void
 tree_combobox_populate(void)
 {
-   Evas_List *groups, *l;
+   Eina_List *groups, *l;
+   char *data;
 
    //Stop signal propagation
    etk_signal_block("active-item-changed", ETK_OBJECT(UI_GroupsComboBox),
@@ -131,11 +132,11 @@ tree_combobox_populate(void)
 
    //Populate UI_GroupsComboBox & UI_PartSourceComboBox
    groups = edje_file_collection_list(Cur.edj_temp_name->string);
-   for(l = groups; l; l = l->next)
+   EINA_LIST_FOREACH(groups, l, data)
    {
       etk_combobox_entry_item_append(ETK_COMBOBOX_ENTRY(UI_GroupsComboBox),
-                                     (char*)l->data, NULL);
-      etk_combobox_item_append(ETK_COMBOBOX(UI_PartSourceComboBox), (char*)l->data);
+                                     data, NULL);
+      etk_combobox_item_append(ETK_COMBOBOX(UI_PartSourceComboBox), data);
    }
    edje_file_collection_list_free(groups);
 
@@ -207,7 +208,7 @@ tree_part_add(const char *part_name, Etk_Tree_Row *after)
    Parts_Hash = evas_hash_add(Parts_Hash, part_name, row);
 
    /* also add all state to the tree */
-   Evas_List *states, *sp;
+   Eina_List *states, *sp;
    states = sp = edje_edit_part_states_list_get(edje_o, part_name);
    while(sp)
    {

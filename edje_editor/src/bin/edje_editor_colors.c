@@ -152,8 +152,9 @@ colors_window_create(void)
 void
 colors_window_populate(void)
 {
-   Evas_List *l, *classes;
+   Eina_List *l, *classes;
    Etk_Tree_Col *col1;
+   char *data;
 
    col1 = etk_tree_nth_col_get(ETK_TREE(UI_ColorsList), 0);
 
@@ -161,10 +162,10 @@ colors_window_populate(void)
    etk_tree_clear(ETK_TREE(UI_ColorsList));
 
    classes = edje_edit_color_classes_list_get(edje_o);
-   for(l = classes; l; l = l->next)
-      etk_tree_row_append(ETK_TREE(UI_ColorsList), NULL,
-                          col1, l->data,
-                          NULL);
+   EINA_LIST_FOREACH(classes, l, data)
+     etk_tree_row_append(ETK_TREE(UI_ColorsList), NULL,
+			 col1, data,
+			 NULL);
 
    edje_edit_string_list_free(classes);
 

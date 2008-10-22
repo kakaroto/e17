@@ -271,7 +271,7 @@ void
 program_frame_update(void)
 {
    const char *s;
-   Evas_List *l;
+   Eina_List *l;
 
    if (!etk_string_length_get(Cur.prog)) return;
 
@@ -415,7 +415,7 @@ program_frame_update(void)
 void
 program_source_combo_populate(void)
 {
-   Evas_List *l;
+   Eina_List *l;
    char *image_name;
    printf("Populate Program Source ComboEntry\n");
 

@@ -341,8 +341,8 @@ _window_edit_obj_click(void *data, Evas *e, Evas_Object *obj, void *event_info)
    evas_pointer_output_xy_get(e, &x, &y);
 
    //o2 = evas_object_top_at_pointer_get(e);
-   //Evas_List *l =	evas_objects_at_xy_get (e, ev->canvas.x, ev->canvas.y, 1, 1);
-   //printf("CLIK %x [%d %d] num: %d\n", obj, ev->canvas.x, ev->canvas.y, evas_list_count(l));
+   //Eina_List *l =	evas_objects_at_xy_get (e, ev->canvas.x, ev->canvas.y, 1, 1);
+   //printf("CLIK %x [%d %d] num: %d\n", obj, ev->canvas.x, ev->canvas.y, eina_list_count(l));
 }
 
 Etk_Bool
@@ -352,7 +352,7 @@ _window_all_button_click_cb(Etk_Button *button, void *data)
    Etk_String *text;
    const char *tween;
    Etk_Tree_Row *row, *next, *prev;
-   Evas_List *icons, *l;
+   Eina_List *icons, *l;
    const char *compiler;
    Etk_Widget *dialog;
 
@@ -506,7 +506,7 @@ _window_all_button_click_cb(Etk_Button *button, void *data)
                                       Cur.state->string, tween);
       if (icons)
       {
-         evas_list_free(icons);
+         eina_list_free(icons);
          image_tweenlist_populate();
          row = etk_tree_last_row_get(ETK_TREE(UI_ImageTweenList));
          etk_tree_row_select(row);

@@ -254,7 +254,7 @@ image_frame_update(void)
 void
 image_tweenlist_populate(void)
 {
-   Evas_List *tweens, *l;
+   Eina_List *tweens, *l;
    Etk_Tree_Col *col;
 
    if (!etk_string_length_get(Cur.state)) return;
@@ -367,7 +367,7 @@ image_browser_create(void)
 void
 image_browser_populate(void)
 {
-   Evas_List *l, *images;
+   Eina_List *l, *images;
    char buf[4096];
 
    etk_iconbox_clear(ETK_ICONBOX(UI_ImageBrowserIconbox));

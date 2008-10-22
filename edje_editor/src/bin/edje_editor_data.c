@@ -142,8 +142,10 @@ data_window_create(void)
 void
 data_window_populate(void)
 {
-   Evas_List *l, *datas;
+   Eina_List *l, *datas;
    Etk_Tree_Col *col1, *col2;
+   // FIXME type of data ?
+   char *data;
 
    col1 = etk_tree_nth_col_get(ETK_TREE(UI_DataList), 0);
    col2 = etk_tree_nth_col_get(ETK_TREE(UI_DataList), 1);
@@ -152,13 +154,13 @@ data_window_populate(void)
    etk_tree_clear(ETK_TREE(UI_DataList));
 
    datas = edje_edit_data_list_get(edje_o);
-   for(l = datas; l; l = l->next)
+   EINA_LIST_FOREACH(datas, l , data)
    {
       const char *val;
 
-      val = edje_edit_data_value_get(edje_o, l->data);
+      val = edje_edit_data_value_get(edje_o, data);
       etk_tree_row_append(ETK_TREE(UI_DataList), NULL,
-                    col1, l->data,
+                    col1, data,
                     col2, val,
                     NULL);
       edje_edit_string_free(val);

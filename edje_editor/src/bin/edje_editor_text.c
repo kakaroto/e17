@@ -218,7 +218,7 @@ text_frame_create(Evas *evas)
 void 
 text_font_combo_populate(void)
 {
-   Evas_List *l;
+   Eina_List *l;
    Etk_Combobox_Item *ComboItem;
 
    //Stop signal propagation
@@ -229,7 +229,7 @@ text_font_combo_populate(void)
 
    etk_combobox_clear(ETK_COMBOBOX(UI_FontComboBox));
 
-   Evas_List *fonts;
+   Eina_List *fonts;
    fonts = l = edje_edit_fonts_list_get(edje_o);
    while (l)
    {

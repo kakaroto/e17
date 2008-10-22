@@ -155,7 +155,7 @@ spectra_widget_name_get(Etk_Widget *spectra)
 void
 spectra_widget_color_add(Etk_Widget *spectra, int r, int g, int b, int a, int d)
 {
-   Evas_List *images;
+   Eina_List *images;
    Etk_Widget *canvas;
    Etk_Widget *image;
    Etk_Widget *arrow;
@@ -190,7 +190,7 @@ spectra_widget_color_add(Etk_Widget *spectra, int r, int g, int b, int a, int d)
 
    //Update images_list
    images = etk_object_data_get(ETK_OBJECT(canvas), "images_list");
-   images = evas_list_append(images, image);
+   images = eina_list_append(images, image);
    etk_object_data_set(ETK_OBJECT(canvas), "images_list", images);
 
    //Set in colorpicker
@@ -206,7 +206,7 @@ spectra_widget_color_clear_all(Etk_Widget* spectra)
 {
    Evas_Object *gradient;
    Evas_Object *canvas;
-   Evas_List *images;
+   Eina_List *images;
 
    gradient = etk_object_data_get(ETK_OBJECT(spectra), "gradient_o");
    canvas = etk_object_data_get(ETK_OBJECT(spectra), "canvas_o");
@@ -223,7 +223,7 @@ spectra_widget_color_clear_all(Etk_Widget* spectra)
       etk_object_destroy(ETK_OBJECT(image));
       etk_object_destroy(ETK_OBJECT(arrow));
 
-      images = evas_list_remove_list(images, images);
+      images = eina_list_remove_list(images, images);
    }
    etk_object_data_set(ETK_OBJECT(canvas), "images_list", NULL);
 }
@@ -232,12 +232,12 @@ int
 spectra_widget_colors_num_get(Etk_Widget* spectra)
 {
    Etk_Widget *canvas;
-   Evas_List *images;
+   Eina_List *images;
 
    canvas = etk_object_data_get(ETK_OBJECT(spectra), "canvas_o");
    images = etk_object_data_get(ETK_OBJECT(canvas), "images_list");
 
-   return images ? evas_list_count(images) : -1 ;
+   return images ? eina_list_count(images) : -1 ;
 }
 
 void
@@ -245,13 +245,13 @@ spectra_widget_color_get(Etk_Widget *spectra, int color_num, int *r, int *g, int
 {
    Etk_Widget *canvas;
    Etk_Widget *image;
-   Evas_List *images;
+   Eina_List *images;
 
    canvas = etk_object_data_get(ETK_OBJECT(spectra), "canvas_o");
    images = etk_object_data_get(ETK_OBJECT(canvas), "images_list");
 
    if (!images) return;
-   image = evas_list_nth(images, color_num);
+   image = eina_list_nth(images, color_num);
    if (!image) return;
 
    *r = (int)(long)etk_object_data_get(ETK_OBJECT(image), "color_r");
@@ -267,7 +267,7 @@ _spectra_widget_gradient_draw(Etk_Widget *spectra)
 {
    Evas_Object *gradient;
    Etk_Widget *canvas;
-   Evas_List *images, *l;
+   Eina_List *images, *l;
    int canvas_w, canvas_h, dtot = 0, total = 0;
    double rapporto;
 
@@ -431,7 +431,7 @@ _spectra_widget_arrow_mouse_move_cb(Etk_Widget *widget, Etk_Event_Mouse_Move *ev
    etk_canvas_move(ETK_CANVAS(canvas), widget, x - arrow_w / 2, 0);
 
    //Recalc stops
-   Evas_List *images;
+   Eina_List *images;
    int total = 0;
    images = etk_object_data_get(ETK_OBJECT(canvas), "images_list");
 
@@ -488,7 +488,7 @@ _spectra_widget_add_button_click_cb(Etk_Button *button, void *data)
    Etk_Widget *spectra = data;
    Etk_Widget *canvas;
    Etk_Widget *image;
-   Evas_List *images;
+   Eina_List *images;
    int r, g, b, d;
 
    //printf("ADD STOP\n");
@@ -498,7 +498,7 @@ _spectra_widget_add_button_click_cb(Etk_Button *button, void *data)
 
    if (images)
    {
-      images = evas_list_last(images);
+      images = eina_list_last(images);
       image = images->data;
 
       r = (int)(long)etk_object_data_get(ETK_OBJECT(image), "color_r");
@@ -526,7 +526,7 @@ _spectra_widget_del_button_click_cb(Etk_Button *button, void *data)
    Etk_Widget *canvas;
    Etk_Widget *colorp;
    Etk_Widget *arrow;
-   Evas_List *images;
+   Eina_List *images;
 
    //printf("DEL STOP\n");
 
@@ -539,9 +539,9 @@ _spectra_widget_del_button_click_cb(Etk_Button *button, void *data)
    arrow = etk_object_data_get(ETK_OBJECT(image), "arrow_o"); 
    images = etk_object_data_get(ETK_OBJECT(canvas), "images_list");
 
-   if (evas_list_count(images) < 3) return ETK_TRUE; //keep at least 2 colors
+   if (eina_list_count(images) < 3) return ETK_TRUE; //keep at least 2 colors
 
-   images = evas_list_remove(images, image);
+   images = eina_list_remove(images, image);
    etk_object_data_set(ETK_OBJECT(canvas), "images_list", images);
 
    etk_object_destroy(ETK_OBJECT(image));
@@ -552,7 +552,7 @@ _spectra_widget_del_button_click_cb(Etk_Button *button, void *data)
   // etk_widget_disabled_set(colorp, ETK_TRUE);
 
    //Hide last arrow
-   images = evas_list_last(images);
+   images = eina_list_last(images);
    image = images->data;
    arrow = etk_object_data_get(ETK_OBJECT(image), "arrow_o");
    etk_widget_hide(arrow);

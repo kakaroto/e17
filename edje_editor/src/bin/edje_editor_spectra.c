@@ -100,7 +100,7 @@ spectra_window_create(void)
 void
 spectra_window_populate(void)
 {
-   Evas_List *spectrum, *l;
+   Eina_List *spectrum, *l;
    Etk_Tree_Col *col1, *col2;
    Etk_Tree_Row *row;
    char *name;

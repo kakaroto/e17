@@ -501,7 +501,7 @@ _toolbar_add_menu_item_activated_cb(Etk_Object *object, void *data)
          }
          row = tree_part_add(name, NULL);
 
-         Evas_List *images;
+         Eina_List *images;
          images = edje_edit_images_list_get(edje_o);
          if (images)
          {

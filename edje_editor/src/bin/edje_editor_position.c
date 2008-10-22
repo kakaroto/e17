@@ -324,7 +324,7 @@ position_frame_update(void)
 void
 position_comboboxes_populate(void)
 {
-   Evas_List *l;
+   Eina_List *l;
    char *image_name;
 
    printf("Populate 4 Rel Comboboxs\n");
@@ -382,7 +382,7 @@ position_comboboxes_populate(void)
                                "None");
       
       // Add all the part to all the comboboxs
-      Evas_List *parts;
+      Eina_List *parts;
 
       parts = l = edje_edit_parts_list_get(edje_o);
       while (l)

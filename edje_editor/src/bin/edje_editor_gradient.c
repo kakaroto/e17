@@ -368,7 +368,7 @@ gradient_frame_update(void)
 void
 gradient_spectra_combo_populate(void)
 {
-   Evas_List *spectrums, *l;
+   Eina_List *spectrums, *l;
    Etk_Widget *parent;
 
    //Block signal propagation
