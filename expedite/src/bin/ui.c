@@ -33,7 +33,7 @@ static Evas_Object *o_menu_icon_sel2 = NULL;
 static Evas_Object *o_menu_text_sel = NULL;
 static Evas_Object *o_menu_title = NULL;
 static Evas_Object *o_menu_title2 = NULL;
-static Evas_List   *menu = NULL;
+static Eina_List   *menu = NULL;
 static int          menu_sel = 0;
 static int          menu_active = 0;
 static double       menu_anim = 0.0;
@@ -55,7 +55,7 @@ _ui_exit(void)
 static void
 _ui_all(void)
 {
-   Evas_List *l;
+   Eina_List *l;
    double fps = 0.0;
    int t_count = 0;
 
@@ -89,7 +89,7 @@ _ui_all(void)
 static void
 _ui_select(void)
 {
-   Evas_List *l;
+   Eina_List *l;
    int i;
    void (*func) (void) = NULL;
 
@@ -135,7 +135,7 @@ _ui_key(void *data, Evas *e, Evas_Object *obj, void *event_info)
 	if (!strcmp(ev->keyname, "Left")) menu_sel++;
 	if (!strcmp(ev->keyname, "Right")) menu_sel--;
 	if (menu_sel < 0) menu_sel = 0;
-	else if (menu_sel >= evas_list_count(menu)) menu_sel = evas_list_count(menu) - 1;
+	else if (menu_sel >= eina_list_count(menu)) menu_sel = eina_list_count(menu) - 1;
 	menu_anim_sel = menu_sel;
 	if (!strcmp(ev->keyname, "Return")) _ui_select();
      }
@@ -201,7 +201,7 @@ _ui_mouse_move(void *data, Evas *e, Evas_Object *obj, void *event_info)
 	menu_sel = down_menu_sel + ((ev->cur.canvas.x - down_x) / 25);
 	/* scroll */
 	if (menu_sel < 0) menu_sel = 0;
-	else if (menu_sel >= evas_list_count(menu)) menu_sel = evas_list_count(menu) - 1;
+	else if (menu_sel >= eina_list_count(menu)) menu_sel = eina_list_count(menu) - 1;
 	menu_anim_sel = menu_sel;
      }
    else
@@ -222,7 +222,7 @@ _ui_menu_item_add(char *icon, char *text, void (*func) (void))
    mi->icon = strdup(icon);
    mi->text = strdup(text);
    mi->func = func;
-   menu = evas_list_append(menu, mi);
+   menu = eina_list_append(menu, mi);
    evas_object_raise(o_menu_icon_sel2);
 }
 
@@ -423,7 +423,7 @@ ui_loop(void)
    /* menu layout */
    if (menu_active)
      {
-	Evas_List *l;
+	Eina_List *l;
 	int i;
 	static double tr = 0.0;
 	double tt;
