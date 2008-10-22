@@ -25,7 +25,7 @@ struct _Engrave_Spectrum
 {
   char *name; /**< The spectrum alias */
   void * parent; /**< The spectrum parent */
-  Evas_List * colors; /**< The spectrum colors */
+  Eina_List * colors; /**< The spectrum colors */
 };
 
 /**

@@ -33,9 +33,9 @@ struct _Engrave_Group
     int h;          /**< The height */
   } min, max;
 
-  Evas_List *parts;     /**< The list of parts in this group */
-  Evas_List *programs;  /**< The list of programs in this group */
-  Evas_List *data;      /**< The list of data used in this group */
+  Eina_List *parts;     /**< The list of parts in this group */
+  Eina_List *programs;  /**< The list of programs in this group */
+  Eina_List *data;      /**< The list of data used in this group */
 
   char *script;         /**< The script attached to this group */
 

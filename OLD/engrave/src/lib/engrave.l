@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include "Engrave.h"
 #include "libengrave_la-engrave.h"
-    
+
     int yylex(void);
     int engrave_lnum = 1;
     int engrave_col = 0;
@@ -203,8 +203,8 @@ y					{ KEYWORD_RETURN(Y); }
 
 [oO][nN]			{ KEYWORD_RETURN(ON); }
 [oO][fF][fF]		{ KEYWORD_RETURN(OFF); }
-[tT][rR][uU][eE] 	{ KEYWORD_RETURN(TRUE); }
-[fF][aA][lL][sS][eE]	{ KEYWORD_RETURN(FALSE); }
+[tT][rR][uU][eE] 	{ KEYWORD_RETURN(ETRUE); }
+[fF][aA][lL][sS][eE]	{ KEYWORD_RETURN(EFALSE); }
 
 (\"[^\"]*\")*       {{ 
                         char *tmp = NULL;

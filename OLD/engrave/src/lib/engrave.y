@@ -53,7 +53,7 @@
 %left TIMES DIVIDE
 %left NEG     /* negation--unary minus */
 %token OPEN_PAREN CLOSE_PAREN DOT INHERIT
-%token ON OFF TRUE FALSE PERCENT
+%token ON OFF ETRUE EFALSE PERCENT
 
 %type <string> STRING 
 %type <val> FLOAT
@@ -538,8 +538,8 @@ effect_type: NONE { $$ = ENGRAVE_TEXT_EFFECT_NONE; }
 
 boolean: ON { $$ = 1; }
 	| OFF { $$ = 0; }
-	| TRUE { $$ = 1; }
-	| FALSE { $$ = 0; }
+	| ETRUE { $$ = 1; }
+	| EFALSE { $$ = 0; }
 	| exp {
 		int i = $1;
 		if ((i != 0) && (i != 1)) {

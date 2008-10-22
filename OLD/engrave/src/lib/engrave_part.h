@@ -54,7 +54,7 @@ struct _Engrave_Part
 
   } dragable;
 
-  Evas_List *states;    /**< The list of states assocated with the part */
+  Eina_List *states;    /**< The list of states assocated with the part */
   Engrave_Part_State *current_state; /**< The current state */
 
   struct

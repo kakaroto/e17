@@ -25,13 +25,13 @@ struct _Engrave_File
   char *font_dir;    /**< The font directory */
   char *im_dir;      /**< The image directory */
 
-  Evas_List *images; /**< The list of images in the file */
-  Evas_List *fonts;  /**< The list of fonts in the file  */
-  Evas_List *spectra;  /**< The list of spectra in the file  */
-  Evas_List *color_classes;  /**< The list of color_classes in the file  */
-  Evas_List *styles;  /**< The list of styles in the file  */
-  Evas_List *data;   /**< The list of data items in the file */
-  Evas_List *groups; /**< The list of groups in the file */
+  Eina_List *images; /**< The list of images in the file */
+  Eina_List *fonts;  /**< The list of fonts in the file  */
+  Eina_List *spectra;  /**< The list of spectra in the file  */
+  Eina_List *color_classes;  /**< The list of color_classes in the file  */
+  Eina_List *styles;  /**< The list of styles in the file  */
+  Eina_List *data;   /**< The list of data items in the file */
+  Eina_List *groups; /**< The list of groups in the file */
 };
 
 EAPI Engrave_File *engrave_file_new(void);

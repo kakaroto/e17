@@ -107,7 +107,7 @@ struct _Engrave_Part_State
   struct
   {
     Engrave_Image *normal;  /**< The image itself */
-    Evas_List *tween;       /**< List of tween images */
+    Eina_List *tween;       /**< List of tween images */
 
     int middle;		/**< The middle information */
     /**

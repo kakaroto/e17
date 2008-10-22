@@ -766,7 +766,7 @@ _engrave_output_style(Engrave_Style *style, void *data)
   engrave_out_data(out, "name", "\"%s\"", engrave_style_name_get(style));
   engrave_out_data(out, "base", "\"%s\"", engrave_style_base_get(style));
 
-  Evas_List * tags;
+  Eina_List * tags;
   
   for (tags = engrave_style_tag_get(style); tags; tags = tags->next) {
 	  Engrave_Tag * tag;

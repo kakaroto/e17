@@ -25,7 +25,7 @@ engrave_program_new(void)
 EAPI void
 engrave_program_free(Engrave_Program *ep)
 {
-  Evas_List *l;
+  Eina_List *l;
   if (!ep) return;
 
   IF_FREE(ep->name);
@@ -36,13 +36,13 @@ engrave_program_free(Engrave_Program *ep)
     char *d = l->data;
     IF_FREE(d);
   }
-  ep->targets = evas_list_free(ep->targets);
+  ep->targets = eina_list_free(ep->targets);
 
   for (l = ep->afters; l; l = l->next) {
     char *d = l->data;
     IF_FREE(d);
   }
-  ep->afters = evas_list_free(ep->afters);
+  ep->afters = eina_list_free(ep->afters);
 
   IF_FREE(ep->state);
   IF_FREE(ep->state2);
@@ -121,7 +121,7 @@ EAPI void
 engrave_program_target_add(Engrave_Program *ep, const char *target)
 {
   if (!ep || !target) return;
-  ep->targets = evas_list_append(ep->targets, strdup(target));
+  ep->targets = eina_list_append(ep->targets, strdup(target));
 }
 
 /**
@@ -135,7 +135,7 @@ EAPI void
 engrave_program_after_add(Engrave_Program *ep, const char *after)
 {
   if (!ep || !after) return;
-  ep->afters = evas_list_append(ep->afters, strdup(after));
+  ep->afters = eina_list_append(ep->afters, strdup(after));
 }
 
 /**
@@ -329,7 +329,7 @@ EAPI int
 engrave_program_targets_count(Engrave_Program *ep)
 {
   if (!ep) return 0;
-  return evas_list_count(ep->targets);
+  return eina_list_count(ep->targets);
 }
 
 /**
@@ -342,7 +342,7 @@ EAPI int
 engrave_program_afters_count(Engrave_Program *ep)
 {
   if (!ep) return 0;
-  return evas_list_count(ep->afters);
+  return eina_list_count(ep->afters);
 }
 
 /**
@@ -357,7 +357,7 @@ EAPI void
 engrave_program_target_foreach(Engrave_Program *ep,
                                 void (*func)(const char *, void *), void *data)
 {
-  Evas_List *l;
+  Eina_List *l;
 
   if (!engrave_program_targets_count(ep)) return;
   for (l = ep->targets; l; l = l->next) {
@@ -378,7 +378,7 @@ EAPI void
 engrave_program_after_foreach(Engrave_Program *ep,
                                void (*func)(const char *, void *), void *data)
 {
-  Evas_List *l;
+  Eina_List *l;
 
   if (!engrave_program_afters_count(ep)) return;
   for (l = ep->afters; l; l = l->next) {

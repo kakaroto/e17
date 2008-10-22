@@ -67,7 +67,7 @@ void engrave_style_tag_add(Engrave_Style *es, Engrave_Tag * tag)
 {
 
   if (!es || !tag) return;
-  es->tags = evas_list_append(es->tags, tag);
+  es->tags = eina_list_append(es->tags, tag);
 
 }
 
@@ -89,7 +89,7 @@ const char * engrave_style_base_get(Engrave_Style *es)
   return es ? es->base : NULL;
 }
 
-Evas_List * engrave_style_tag_get(Engrave_Style *es) 
+Eina_List * engrave_style_tag_get(Engrave_Style *es) 
 {
   return es ? es->tags : NULL;
 }

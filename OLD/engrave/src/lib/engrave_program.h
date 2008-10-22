@@ -25,8 +25,8 @@ struct _Engrave_Program
   char *name;           /**< The program name */
   char *signal;         /**< The signal to act on */
   char *source;         /**< The souce to act on */
-  Evas_List *targets;   /**< The list of targets */
-  Evas_List *afters;    /**< The list of afters */
+  Eina_List *targets;   /**< The list of targets */
+  Eina_List *afters;    /**< The list of afters */
 
   /**
    * Stores the in settings for the program 

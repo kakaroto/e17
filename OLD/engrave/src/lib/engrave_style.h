@@ -25,7 +25,7 @@ struct _Engrave_Style
 {
   char *name;               /**< The style name */
   char *base;               /**< The style base */
-  Evas_List * tags;		/**< The style tags */
+  Eina_List * tags;		/**< The style tags */
 
   void *parent;     /**< Pointer to parent */
 };
@@ -50,7 +50,7 @@ EAPI void engrave_style_parent_set(Engrave_Style *es, void *parent);
 
 EAPI const char * engrave_style_name_get(Engrave_Style *es);
 EAPI const char * engrave_style_base_get(Engrave_Style *es);
-EAPI Evas_List * engrave_style_tag_get(Engrave_Style *es);
+EAPI Eina_List * engrave_style_tag_get(Engrave_Style *es);
 
 EAPI void engrave_tag_free(Engrave_Tag *tag);
 

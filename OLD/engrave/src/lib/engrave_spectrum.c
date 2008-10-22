@@ -29,7 +29,7 @@ engrave_spectrum_new()
 EAPI void
 engrave_spectrum_free(Engrave_Spectrum *es)
 {
-  Evas_List *c;
+  Eina_List *c;
   if (!es) return;
 
   IF_FREE(es->name);
@@ -38,7 +38,7 @@ engrave_spectrum_free(Engrave_Spectrum *es)
 	Engrave_Spectrum_Color * esc = c->data;
 	engrave_spectrum_color_free(esc);
   }
-  evas_list_free(es->colors);
+  eina_list_free(es->colors);
   
   FREE(es);
 }
@@ -55,7 +55,7 @@ EAPI void
 engrave_spectrum_color_add(Engrave_Spectrum *es, Engrave_Spectrum_Color * col)
 {
   if (!es || !col) return; 
-  es->colors = evas_list_append( es->colors, col );
+  es->colors = eina_list_append( es->colors, col );
 }
 
 /**
@@ -69,7 +69,7 @@ EAPI void
 engrave_spectrum_color_del(Engrave_Spectrum *es, Engrave_Spectrum_Color * col)
 {
   if (!es || !col) return; 
-  es->colors = evas_list_remove( es->colors, col );
+  es->colors = eina_list_remove( es->colors, col );
 }
 
 /**
@@ -165,7 +165,7 @@ EAPI int
 engrave_spectrum_color_count(Engrave_Spectrum *es)
 {
   if (!es) return 0;
-  return evas_list_count(es->colors);
+  return eina_list_count(es->colors);
 }
 
 /**
@@ -179,6 +179,6 @@ EAPI Engrave_Spectrum_Color *
 engrave_spectrum_color_nth(Engrave_Spectrum *es, int n)
 {
   if (!es) return NULL;
-  return evas_list_nth(es->colors, n);
+  return eina_list_nth(es->colors, n);
 }
 

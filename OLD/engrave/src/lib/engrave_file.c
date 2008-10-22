@@ -25,7 +25,7 @@ engrave_file_new(void)
 EAPI void
 engrave_file_free(Engrave_File *ef)
 {
-  Evas_List *l;
+  Eina_List *l;
   if (!ef) return;
 
   IF_FREE(ef->im_dir);
@@ -35,37 +35,37 @@ engrave_file_free(Engrave_File *ef)
     Engrave_Image *ei = l->data;
     engrave_image_free(ei);
   }
-  ef->images = evas_list_free(ef->images);
+  ef->images = eina_list_free(ef->images);
 
   for (l = ef->fonts; l; l = l->next) {
     Engrave_Font *font = l->data;
     engrave_font_free(font);
   }
-  ef->fonts = evas_list_free(ef->fonts);
+  ef->fonts = eina_list_free(ef->fonts);
 
   for (l = ef->data; l; l = l->next) {
     Engrave_Data *ed = l->data;
     engrave_data_free(ed);
   }
-  ef->data = evas_list_free(ef->data);
+  ef->data = eina_list_free(ef->data);
 
   for (l = ef->groups; l; l = l->next) {
     Engrave_Group *eg = l->data;
     engrave_group_free(eg);
   }
-  ef->groups = evas_list_free(ef->groups);
+  ef->groups = eina_list_free(ef->groups);
 
   for (l = ef->spectra; l; l = l->next) {
     Engrave_Spectrum *es = l->data;
     engrave_spectrum_free(es);
   }
-  ef->spectra = evas_list_free(ef->spectra);
+  ef->spectra = eina_list_free(ef->spectra);
 
   for (l = ef->color_classes; l; l = l->next) {
     Engrave_Color_Class *ecc = l->data;
     engrave_color_class_free(ecc);
   }
-  ef->color_classes = evas_list_free(ef->color_classes);
+  ef->color_classes = eina_list_free(ef->color_classes);
 
   FREE(ef);
 }
@@ -135,7 +135,7 @@ EAPI void
 engrave_file_font_add(Engrave_File *e, Engrave_Font *ef)
 {
   if (!e || !ef) return;
-  e->fonts = evas_list_append(e->fonts, ef);
+  e->fonts = eina_list_append(e->fonts, ef);
   engrave_font_parent_set(ef, e);
 }
 
@@ -150,7 +150,7 @@ EAPI void
 engrave_file_spectrum_add(Engrave_File *e, Engrave_Spectrum *es)
 {
   if (!e || !es) return;
-  e->spectra = evas_list_append(e->spectra, es);
+  e->spectra = eina_list_append(e->spectra, es);
   engrave_spectrum_parent_set(es, e);
 }
 
@@ -165,7 +165,7 @@ EAPI void
 engrave_file_color_class_add(Engrave_File *e, Engrave_Color_Class *ecc)
 {
   if (!e || !ecc) return;
-  e->color_classes = evas_list_append(e->color_classes, ecc);
+  e->color_classes = eina_list_append(e->color_classes, ecc);
   engrave_color_class_parent_set(ecc, e);
 }
 
@@ -180,7 +180,7 @@ EAPI void
 engrave_file_style_add(Engrave_File *e, Engrave_Style *es)
 {
   if (!e || !es) return;
-  e->styles = evas_list_append(e->styles, es);
+  e->styles = eina_list_append(e->styles, es);
   engrave_style_parent_set(es, e);
 }
 
@@ -195,7 +195,7 @@ EAPI void
 engrave_file_image_add(Engrave_File *ef, Engrave_Image *ei)
 {
   if (!ef || !ei) return;
-  ef->images = evas_list_append(ef->images, ei);
+  ef->images = eina_list_append(ef->images, ei);
   engrave_image_parent_set(ei, ef);
 }
 
@@ -210,7 +210,7 @@ EAPI void
 engrave_file_data_add(Engrave_File *ef, Engrave_Data *ed)
 {
   if (!ef || !ed) return;
-  ef->data = evas_list_append(ef->data, ed);
+  ef->data = eina_list_append(ef->data, ed);
   engrave_data_parent_set(ed, ef);
 }
 
@@ -225,7 +225,7 @@ EAPI void
 engrave_file_group_add(Engrave_File *ef, Engrave_Group *eg)
 {
   if (!ef || !eg) return;
-  ef->groups = evas_list_append(ef->groups, eg);
+  ef->groups = eina_list_append(ef->groups, eg);
   engrave_group_parent_set(eg, ef);
 }
 
@@ -239,7 +239,7 @@ EAPI Engrave_Spectrum *
 engrave_file_spectrum_last_get(Engrave_File *ef)
 {
   if (!ef) return NULL;
-  return evas_list_data(evas_list_last(ef->spectra));
+  return eina_list_data_get(eina_list_last(ef->spectra));
 }
 
 /**
@@ -252,7 +252,7 @@ EAPI Engrave_Color_Class *
 engrave_file_color_class_last_get(Engrave_File *ef)
 {
   if (!ef) return NULL;
-  return evas_list_data(evas_list_last(ef->color_classes));
+  return eina_list_data_get(eina_list_last(ef->color_classes));
 }
 
 
@@ -267,7 +267,7 @@ EAPI Engrave_Style *
 engrave_file_style_last_get(Engrave_File *ef)
 {
   if (!ef) return NULL;
-  return evas_list_data(evas_list_last(ef->styles));
+  return eina_list_data_get(eina_list_last(ef->styles));
 }
 
 /**
@@ -281,7 +281,7 @@ EAPI Engrave_Group *
 engrave_file_group_last_get(Engrave_File *ef)
 {
   if (!ef) return NULL;
-  return evas_list_data(evas_list_last(ef->groups));
+  return eina_list_data_get(eina_list_last(ef->groups));
 }
 
 /**
@@ -295,7 +295,7 @@ engrave_file_group_last_get(Engrave_File *ef)
 EAPI Engrave_Group *
 engrave_file_group_by_name_find(Engrave_File *ef, const char *name)
 {
-  Evas_List *l;
+  Eina_List *l;
   for (l = ef->groups; l; l = l->next)
   {
     Engrave_Group *eg = l->data;
@@ -316,7 +316,7 @@ engrave_file_group_by_name_find(Engrave_File *ef, const char *name)
 EAPI Engrave_Image *
 engrave_file_image_by_name_find(Engrave_File *ef, const char *name)
 {
-  Evas_List *l;
+  Eina_List *l;
   for (l = ef->images; l; l = l->next)
   {
     Engrave_Image *im = l->data;
@@ -336,7 +336,7 @@ EAPI int
 engrave_file_images_count(Engrave_File *ef)
 {
   if (!ef) return 0;
-  return evas_list_count(ef->images);
+  return eina_list_count(ef->images);
 }
 
 /**
@@ -349,7 +349,7 @@ EAPI int
 engrave_file_data_count(Engrave_File *ef)
 {
   if (!ef) return 0;
-  return evas_list_count(ef->data);
+  return eina_list_count(ef->data);
 }
 
 /**
@@ -362,7 +362,7 @@ EAPI int
 engrave_file_groups_count(Engrave_File *ef)
 {
   if (!ef) return 0;
-  return evas_list_count(ef->groups);
+  return eina_list_count(ef->groups);
 }
 
 /**
@@ -375,7 +375,7 @@ EAPI int
 engrave_file_styles_count(Engrave_File *ef)
 {
   if (!ef) return 0;
-  return evas_list_count(ef->styles);
+  return eina_list_count(ef->styles);
 }
 
 /**
@@ -388,7 +388,7 @@ EAPI int
 engrave_file_fonts_count(Engrave_File *ef)
 {
   if (!ef) return 0;
-  return evas_list_count(ef->fonts);
+  return eina_list_count(ef->fonts);
 }
 
 /**
@@ -401,7 +401,7 @@ EAPI int
 engrave_file_spectra_count(Engrave_File *ef)
 {
   if (!ef) return 0;
-  return evas_list_count(ef->spectra);
+  return eina_list_count(ef->spectra);
 }
 
 /**
@@ -414,7 +414,7 @@ EAPI int
 engrave_file_color_classes_count(Engrave_File *ef)
 {
   if (!ef) return 0;
-  return evas_list_count(ef->color_classes);
+  return eina_list_count(ef->color_classes);
 }
 
 
@@ -431,7 +431,7 @@ engrave_file_image_foreach(Engrave_File *ef,
                       void (*func)(Engrave_Image *, void *data),
                       void *data)
 {
-  Evas_List *l;
+  Eina_List *l;
 
   if (!engrave_file_images_count(ef)) return;
   for (l = ef->images; l; l = l->next) {
@@ -453,7 +453,7 @@ engrave_file_data_foreach(Engrave_File *ef,
                         void (*func)(Engrave_Data *, void *data),
                         void *udata)
 {
-  Evas_List *l;
+  Eina_List *l;
 
   if (!engrave_file_data_count(ef)) return;
   for (l = ef->data; l; l = l->next) {
@@ -475,7 +475,7 @@ engrave_file_group_foreach(Engrave_File *ef,
                           void (*func)(Engrave_Group *, void *data),
                           void *data)
 {
-  Evas_List *l;
+  Eina_List *l;
 
   if (!engrave_file_groups_count(ef)) return;
   for (l = ef->groups; l; l = l->next) {
@@ -497,7 +497,7 @@ engrave_file_style_foreach(Engrave_File *ef,
                             void (*func)(Engrave_Style *, void *data), 
                             void *data)
 {
-  Evas_List *l;
+  Eina_List *l;
 
   if (!engrave_file_styles_count(ef)) return;
   for (l = ef->styles; l; l = l->next) {
@@ -519,7 +519,7 @@ engrave_file_font_foreach(Engrave_File *ef,
                             void (*func)(Engrave_Font *, void *data), 
                             void *data)
 {
-  Evas_List *l;
+  Eina_List *l;
 
   if (!engrave_file_fonts_count(ef)) return;
   for (l = ef->fonts; l; l = l->next) {
@@ -541,7 +541,7 @@ engrave_file_spectrum_foreach(Engrave_File *ef,
                             void (*func)(Engrave_Spectrum *, void *data), 
                             void *data)
 {
-  Evas_List *l;
+  Eina_List *l;
 
   if (!engrave_file_spectra_count(ef)) return;
 
@@ -564,7 +564,7 @@ engrave_file_color_class_foreach(Engrave_File *ef,
                             void (*func)(Engrave_Color_Class *, void *data), 
                             void *data)
 {
-  Evas_List *l;
+  Eina_List *l;
 
   if (!engrave_file_color_classes_count(ef)) return;
 
@@ -585,7 +585,7 @@ engrave_file_color_class_foreach(Engrave_File *ef,
 EAPI Engrave_Data *
 engrave_file_data_by_key_find(Engrave_File *ef, const char *key)
 {
-    Evas_List *l;
+    Eina_List *l;
 
     if (!ef || !key) return NULL;
     for (l = ef->data; l; l = l->next) {
@@ -609,7 +609,7 @@ engrave_file_data_by_key_find(Engrave_File *ef, const char *key)
 EAPI Engrave_Font *
 engrave_file_font_by_name_find(Engrave_File *ef, const char *name)
 {
-    Evas_List *l;
+    Eina_List *l;
 
     if (!ef || !name) return NULL;
     for (l = ef->fonts; l; l = l->next) {

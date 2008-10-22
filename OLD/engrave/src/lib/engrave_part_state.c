@@ -90,7 +90,7 @@ engrave_part_state_free(Engrave_Part_State *eps)
 
   /* don't free the image here cuz its freed in the _file code */
   eps->image.normal = NULL;
-  eps->image.tween = evas_list_free(eps->image.tween);
+  eps->image.tween = eina_list_free(eps->image.tween);
 
   IF_FREE(eps->gradient.spectrum);
   IF_FREE(eps->gradient.type);
@@ -426,7 +426,7 @@ engrave_part_state_image_tween_add(Engrave_Part_State *eps,
                                       Engrave_Image *im)
 {
   if (!eps || !im) return;
-  eps->image.tween = evas_list_append(eps->image.tween, im);
+  eps->image.tween = eina_list_append(eps->image.tween, im);
 }
 
 /**
@@ -863,7 +863,7 @@ engrave_part_state_text_align_set(Engrave_Part_State *eps, double x, double y)
 EAPI void
 engrave_part_state_copy(Engrave_Part_State *from, Engrave_Part_State *to)
 {
-  Evas_List *l;
+  Eina_List *l;
   char *to_name;
   double to_val;
 
@@ -916,7 +916,7 @@ engrave_part_state_copy(Engrave_Part_State *from, Engrave_Part_State *to)
     
     ei = engrave_image_dup((Engrave_Image *)l->data);
     if (ei)
-      to->image.tween = evas_list_append(to->image.tween, ei);
+      to->image.tween = eina_list_append(to->image.tween, ei);
     else
       fprintf(stderr, "Insufficient memory to dup image\n");
   }
@@ -1474,7 +1474,7 @@ EAPI int
 engrave_part_state_tweens_count(Engrave_Part_State *eps)
 {
   if (!eps) return 0;
-  return evas_list_count(eps->image.tween);
+  return eina_list_count(eps->image.tween);
 }
 
 /**
@@ -1489,7 +1489,7 @@ EAPI void
 engrave_part_state_tween_foreach(Engrave_Part_State *eps,
                 void (*func)(Engrave_Image *, void *), void *data)
 {
-  Evas_List *l;
+  Eina_List *l;
 
   for (l = eps->image.tween; l; l = l->next) {
     Engrave_Image *ei = l->data;

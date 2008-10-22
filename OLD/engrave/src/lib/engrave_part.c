@@ -32,7 +32,7 @@ engrave_part_new(Engrave_Part_Type type)
 EAPI void
 engrave_part_free(Engrave_Part *ep)
 {
-  Evas_List *l;
+  Eina_List *l;
   if (!ep) return;
 
   IF_FREE(ep->name);
@@ -43,7 +43,7 @@ engrave_part_free(Engrave_Part *ep)
     Engrave_Part_State *eps = l->data;
     engrave_part_state_free(eps);
   }
-  ep->states = evas_list_free(ep->states);
+  ep->states = eina_list_free(ep->states);
   FREE(ep);
 }
 
@@ -116,7 +116,7 @@ engrave_part_name_set(Engrave_Part *ep, const char *name)
   if (!ep) return;
 
   Engrave_Group * group;
-  Evas_List * list;
+  Eina_List * list;
 
   group = (Engrave_Group *) engrave_part_parent_get(ep);
 
@@ -126,7 +126,7 @@ engrave_part_name_set(Engrave_Part *ep, const char *name)
     for (list = group->programs; list; list = list->next)
     {
       Engrave_Program * ep2;
-      Evas_List * list2;
+      Eina_List * list2;
       ep2 = (Engrave_Program *) list->data;
     
       // if source matches, update
@@ -143,9 +143,9 @@ engrave_part_name_set(Engrave_Part *ep, const char *name)
         n = (char *) list2->data;
         if (n && !strcmp(n, ep->name))
         {
-          ep2->targets = evas_list_remove(ep2->targets, n);
+          ep2->targets = eina_list_remove(ep2->targets, n);
   	  IF_FREE(n);
-  	  ep2->targets = evas_list_append(ep2->targets, strdup(name));
+  	  ep2->targets = eina_list_append(ep2->targets, strdup(name));
         }
       }
     } 
@@ -154,7 +154,7 @@ engrave_part_name_set(Engrave_Part *ep, const char *name)
     for (list = group->parts; list; list = list->next)
     {
       Engrave_Part * ep2;
-      Evas_List * list2;
+      Eina_List * list2;
 
       ep2 = (Engrave_Part *) list->data;
       // for each state
@@ -496,7 +496,7 @@ EAPI Engrave_Part_State *
 engrave_part_state_last_get(Engrave_Part *ep)
 {
   if (!ep) return NULL;
-  return evas_list_data(evas_list_last(ep->states));
+  return eina_list_data_get(eina_list_last(ep->states));
 }
 
 /**
@@ -510,7 +510,7 @@ EAPI void
 engrave_part_state_add(Engrave_Part *ep, Engrave_Part_State *eps)
 {
   if (!ep || !eps) return;
-  ep->states = evas_list_append(ep->states, eps);
+  ep->states = eina_list_append(ep->states, eps);
   engrave_part_state_parent_set(eps, ep);
 
   /* set the current state if it isnt' set already */
@@ -539,7 +539,7 @@ engrave_part_state_remove(Engrave_Part *ep, Engrave_Part_State *eps)
 
    engrave_part_state_parent_set(eps, NULL);
 
-   ep->states = evas_list_remove(ep->states, eps);
+   ep->states = eina_list_remove(ep->states, eps);
 }
 
 /**
@@ -555,7 +555,7 @@ EAPI Engrave_Part_State *
 engrave_part_state_by_name_value_find(Engrave_Part *ep, 
                                     const char *name, double val)
 {
-  Evas_List *l;
+  Eina_List *l;
   if (!ep || !name) return NULL;
 
   for (l = ep->states; l; l = l->next) {
@@ -585,7 +585,7 @@ EAPI int
 engrave_part_states_count(Engrave_Part *ep)
 {
   if (!ep) return 0;
-  return evas_list_count(ep->states);
+  return eina_list_count(ep->states);
 }
 
 /**
@@ -600,7 +600,7 @@ void engrave_part_state_foreach(Engrave_Part *ep,
                 void (*func)(Engrave_Part_State *, Engrave_Part *, void *),
                 void *data)
 {
-  Evas_List *l;
+  Eina_List *l;
 
   if (!engrave_part_states_count(ep)) return;
   for (l = ep->states; l; l = l->next) {

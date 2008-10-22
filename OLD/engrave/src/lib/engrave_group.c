@@ -30,7 +30,7 @@ engrave_group_new(void)
 EAPI void
 engrave_group_free(Engrave_Group *eg) 
 {
-  Evas_List *l;
+  Eina_List *l;
   if (!eg) return;
 
   IF_FREE(eg->name);
@@ -39,19 +39,19 @@ engrave_group_free(Engrave_Group *eg)
     Engrave_Part *ep = l->data;
     engrave_part_free(ep);
   }
-  eg->parts = evas_list_free(eg->parts);
+  eg->parts = eina_list_free(eg->parts);
 
   for (l = eg->programs; l; l = l->next) {
     Engrave_Program *ep = l->data;
     engrave_program_free(ep);
   }
-  eg->programs = evas_list_free(eg->programs);
+  eg->programs = eina_list_free(eg->programs);
 
   for (l = eg->data; l; l = l->next) {
     Engrave_Data *ed = l->data;
     engrave_data_free(ed);
   }
-  eg->data = evas_list_free(eg->data);
+  eg->data = eina_list_free(eg->data);
 
   FREE(eg);
 }
@@ -67,7 +67,7 @@ EAPI void
 engrave_group_data_add(Engrave_Group *eg, Engrave_Data *ed)
 {
   if (!eg || !ed) return;
-  eg->data = evas_list_append(eg->data, ed);
+  eg->data = eina_list_append(eg->data, ed);
   engrave_data_parent_set(ed, eg);
 }
 
@@ -159,7 +159,7 @@ EAPI void
 engrave_group_part_add(Engrave_Group *eg, Engrave_Part *ep) 
 {
   if (!eg || !ep) return;
-  eg->parts = evas_list_append(eg->parts, ep);
+  eg->parts = eina_list_append(eg->parts, ep);
   engrave_part_parent_set(ep, eg);
 }
 
@@ -173,7 +173,7 @@ engrave_group_part_add(Engrave_Group *eg, Engrave_Part *ep)
 EAPI void
 engrave_group_program_add(Engrave_Group *eg, Engrave_Program *ep)
 {
-  eg->programs = evas_list_append(eg->programs, ep);
+  eg->programs = eina_list_append(eg->programs, ep);
   engrave_program_parent_set(ep, eg);
 }
 
@@ -188,7 +188,7 @@ EAPI Engrave_Part *
 engrave_group_part_last_get(Engrave_Group *eg)
 {
   if (!eg) return NULL;
-  return evas_list_data(evas_list_last(eg->parts));
+  return eina_list_data_get(eina_list_last(eg->parts));
 }
 
 /**
@@ -202,7 +202,7 @@ EAPI Engrave_Program *
 engrave_group_program_last_get(Engrave_Group *eg)
 {
   if (!eg) return NULL;
-  return evas_list_data(evas_list_last(eg->programs));
+  return eina_list_data_get(eina_list_last(eg->programs));
 }
 
 /**
@@ -215,7 +215,7 @@ EAPI int
 engrave_group_data_count(Engrave_Group *eg)
 {
   if (!eg) return 0;
-  return evas_list_count(eg->data);
+  return eina_list_count(eg->data);
 }
 
 /**
@@ -228,7 +228,7 @@ EAPI int
 engrave_group_parts_count(Engrave_Group *eg)
 {
   if (!eg) return 0;
-  return evas_list_count(eg->parts);
+  return eina_list_count(eg->parts);
 }
 
 /**
@@ -241,7 +241,7 @@ EAPI int
 engrave_group_programs_count(Engrave_Group *eg)
 {
   if (!eg) return 0;
-  return evas_list_count(eg->programs);
+  return eina_list_count(eg->programs);
 }
 
 /**
@@ -256,7 +256,7 @@ EAPI void
 engrave_group_data_foreach(Engrave_Group *eg, 
                             void (*func)(Engrave_Data *, void *), void *data)
 {
-  Evas_List *l;
+  Eina_List *l;
 
   if (!engrave_group_data_count(eg)) return;
   for (l = eg->data; l; l = l->next) {
@@ -360,7 +360,7 @@ EAPI void
 engrave_group_parts_foreach(Engrave_Group *eg, 
                              void (*func)(Engrave_Part *, void *), void *data)
 {
-  Evas_List *l;
+  Eina_List *l;
 
   if (!engrave_group_parts_count(eg)) return;
   for (l = eg->parts; l; l = l->next) {
@@ -381,7 +381,7 @@ EAPI void
 engrave_group_programs_foreach(Engrave_Group *eg, 
                         void (*func)(Engrave_Program *, void *), void *data)
 {
-  Evas_List *l;
+  Eina_List *l;
 
   if (!engrave_group_programs_count(eg)) return;
   for (l = eg->programs; l; l = l->next) {
@@ -401,7 +401,7 @@ engrave_group_programs_foreach(Engrave_Group *eg,
 EAPI Engrave_Data *
 engrave_group_data_by_key_find(Engrave_Group *eg, const char *key)
 {
-    Evas_List *l;
+    Eina_List *l;
 
     if (!eg || !key) return NULL;
     for (l = eg->data; l; l = l->next) {
@@ -425,7 +425,7 @@ engrave_group_data_by_key_find(Engrave_Group *eg, const char *key)
 EAPI Engrave_Part *
 engrave_group_part_by_name_find(Engrave_Group *eg, const char *part)
 {
-    Evas_List *l;
+    Eina_List *l;
 
     if (!eg || !part) return NULL;
     for (l = eg->parts; l; l = l->next) {
