@@ -10,7 +10,7 @@ struct _Exquisite_Text_Line {
 };
 
 static Evas_Object *o_bg = NULL;
-static Evas_List *messages = NULL;
+static Eina_List *messages = NULL;
 static char *txt = NULL;
 
 static void
@@ -19,7 +19,7 @@ theme_update_text(int signal)
    char buf[8192];
    char buf2[8192];
    char *p = buf, *s = buf2;
-   Evas_List *l = NULL;
+   Eina_List *l = NULL;
    int i;
    const char *msg, *status;
    Exquisite_Text_Line *t;
@@ -200,7 +200,7 @@ theme_text_add(const char *txt)
    t->status_text = NULL;
    t->status = -1;
 
-   messages = evas_list_append(messages, t);
+   messages = eina_list_append(messages, t);
    
    /*A 1 means that a text update signal will be sent*/
    theme_update_text(1);
@@ -213,7 +213,7 @@ theme_status_set(const char *txt, int type)
 
    if(!txt || (txt[0] == 0) || !messages) return;
 
-   t = (Exquisite_Text_Line *)(evas_list_last(messages)->data);
+   t = (Exquisite_Text_Line *)(eina_list_last(messages)->data);
    
    t->status = type;
    if(t->status_text) evas_stringshare_del(t->status_text);
@@ -228,7 +228,7 @@ theme_text_clear()
 {
   if (messages)
     {
-      Evas_List *l = NULL;
+      Eina_List *l = NULL;
       Exquisite_Text_Line *t = NULL;
    
       for(l = messages; l != NULL; l = l->next)
@@ -239,7 +239,7 @@ theme_text_clear()
           free(l->data);
         }
       
-      evas_list_free(messages);
+      eina_list_free(messages);
       messages = NULL;
     }  
   
