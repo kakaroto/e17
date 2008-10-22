@@ -527,9 +527,12 @@ data/Makefile
 data/fonts/Makefile
 data/images/Makefile
 doc/Makefile
+imlib2-config
 README
 imlib2.spec
 debian/changelog
+],[
+chmod +x imlib2-config
 ])
 
 #####################################################################
