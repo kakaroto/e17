@@ -21,7 +21,13 @@
 				(void  (*) (void *))eina_hash_free)
 
 #define CFG_OPTIONS_NEWB(str, it, type) EET_DATA_DESCRIPTOR_ADD_BASIC(_ev_config_edd, Edje_Viewer_Config, str, it, type)
-#define CFG_OPTIONS_NEWL(str, it, subtype) EET_DATA_DESCRIPTOR_ADD_LIST(_ev_config_edd, Edje_Viewer_Config, str, it, subtype)
+#define CFG_OPTIONS_NEWL(str, it, type) \
+{ \
+   Edje_Viewer_Config __ett; \
+   eet_data_descriptor_element_add(_ev_config_edd, str, type, EET_G_LIST, \
+				   (char *)(&(__ett.it)) - (char *)(&(__ett)), \
+				   0, /* 0,  */NULL, NULL); \
+}
 
 #define FREED(eed) \
 	 if (eed) \
@@ -102,7 +108,7 @@ int edje_viewer_config_init(void)
    CFG_OPTIONS_NEWB("config_version", config_version, EET_T_INT);
    CFG_OPTIONS_NEWB("open_last", open_last, EET_T_INT);
    CFG_OPTIONS_NEWB("sort_parts", sort_parts, EET_T_INT);
-   CFG_OPTIONS_NEWL("recent", recent, _ev_config_edd);
+   CFG_OPTIONS_NEWL("recent", recent, EET_T_STRING);
 
    return 1;
 }

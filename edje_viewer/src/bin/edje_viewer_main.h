@@ -10,8 +10,8 @@
 # include <config.h>
 #endif
 
-#include <Eet.h>
 #include <Eina.h>
+#include <Eet.h>
 #include <Ecore_File.h>
 
 #include <Edje.h>

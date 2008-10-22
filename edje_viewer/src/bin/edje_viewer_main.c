@@ -2,8 +2,6 @@
  * vim:ts=8:sw=3:sts=8:noexpandtab:cino=>5n-3f0^-2{2
  */
 
-#include <Etk.h>
-
 #include "edje_viewer_main.h"
 
 int main(int argc, char **argv)
@@ -25,6 +23,7 @@ int main(int argc, char **argv)
    else gui = main_window_show(NULL);
 
    etk_main();
+
    if (gui)
      edje_viewer_config_save(gui);
    edje_viewer_config_shutdown();
