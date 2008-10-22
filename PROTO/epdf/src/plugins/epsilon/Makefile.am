@@ -15,11 +15,11 @@ pkg_LTLIBRARIES = $(EPDF_EPSILON_PLUGIN)
 
 epdf_thumbnailer_la_SOURCES = $(EPDF_EPSILON_PLUGIN_SOURCES)
 
-epdf_thumbnailer_la_CPPFLAGS = -I$(top_builddir)/src/lib @EPSILON_CFLAGS@
+epdf_thumbnailer_la_CPPFLAGS = -I$(top_builddir)/src/lib @EPSILON_CFLAGS@ @ECORE_EVAS_CFLAGS@
 
 epdf_thumbnailer_la_LDFLAGS = @create_shared_lib@ -module -avoid-version
 
-epdf_thumbnailer_la_LIBADD = $(top_builddir)/src/lib/libepdf.la @EPSILON_LIBS@
+epdf_thumbnailer_la_LIBADD = $(top_builddir)/src/lib/libepdf.la @EPSILON_LIBS@ @ECORE_EVAS_LIBS@
 
 epdf_thumbnailer_la_DEPENDENCIES = $(top_builddir)/src/lib/libepdf.la
 

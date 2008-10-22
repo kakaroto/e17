@@ -137,10 +137,10 @@ fi
 AM_CONDITIONAL(BUILD_EPDF_ETK, test "x${have_etk}" = "xyes")
 
 PKG_CHECK_MODULES(EPSILON,
-   imlib2 >= 1.4 epsilon >= 0.3,
+   epsilon >= 0.3,
   [
    have_epsilon="yes"
-   requirements="$requirements epsilon imlib2"
+   requirements="$requirements epsilon"
    EPSILON_PLUGINS_DIR="`$PKG_CONFIG --variable=pluginsdir epsilon`"
    AC_SUBST(EPSILON_PLUGINS_DIR)
   ],
