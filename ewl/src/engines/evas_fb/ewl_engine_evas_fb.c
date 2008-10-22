@@ -40,7 +40,7 @@ ewl_engine_dependancies(void)
 }
 
 Ewl_Engine *
-ewl_engine_create(int *argc __UNUSED__, char ** argv __UNUSED__)
+ewl_engine_create(int *argc, char ** argv)
 {
         Ewl_Engine_Evas_Fb *engine;
 
@@ -50,7 +50,7 @@ ewl_engine_create(int *argc __UNUSED__, char ** argv __UNUSED__)
         if (!engine)
                 DRETURN_PTR(NULL, DLEVEL_STABLE);
 
-        if (!ee_init(EWL_ENGINE(engine)))
+        if (!ee_init(EWL_ENGINE(engine), argc, argv))
         {
                 FREE(engine);
                 DRETURN_PTR(NULL, DLEVEL_STABLE);
@@ -60,9 +60,10 @@ ewl_engine_create(int *argc __UNUSED__, char ** argv __UNUSED__)
 }
 
 static int
-ee_init(Ewl_Engine *engine)
+ee_init(Ewl_Engine *engine, int *argc, char ** argv)
 {
         Ewl_Engine_Info *info;
+        char *display = "0";
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR_RET(engine, TRUE);
@@ -70,8 +71,25 @@ ee_init(Ewl_Engine *engine)
         if (ee_key_down_handler)
                 DRETURN_INT(TRUE, DLEVEL_STABLE);
 
-        if (!ecore_fb_init(NULL))
-                DRETURN_INT(TRUE, DLEVEL_STABLE);
+        if (argc && argv)
+        {
+                int i;
+                for (i = 1; i < *argc; i++)
+                {
+                        if (!strcmp(argv[i], "-display"))
+                        {
+                                if (++i < *argc)
+                                        display = argv[i];
+                        }
+                }
+        }
+
+        if (!ecore_fb_init(display))
+        {
+                fprintf(stderr, "Unable to initialize Ecore FB.\n"
+                                "Is your DISPLAY variable set correctly?\n\n");
+                DRETURN_INT(FALSE, DLEVEL_STABLE);
+        }
 
         ee_key_down_handler = ecore_event_handler_add(
                                         ECORE_FB_EVENT_KEY_DOWN,
@@ -94,6 +112,7 @@ ee_init(Ewl_Engine *engine)
                         || !ee_mouse_move_handler)
         {
                 ee_shutdown(engine);
+                fprintf(stderr, "Unable to create Ecore FB event handlers.\n");
                 DRETURN_INT(FALSE, DLEVEL_STABLE);
         }
 
