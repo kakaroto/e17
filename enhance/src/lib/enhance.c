@@ -857,7 +857,7 @@ _e_signal_handle(Enhance *en, EXML_Node *node)
    void     *handle;
    void     *data = NULL;
    etk_callback_type func;   
-   Evas_List *signals;
+   Eina_List *signals;
    char     **sig_hndl;
    
    name = ecore_hash_get(node->attributes, "name");
@@ -901,7 +901,7 @@ _e_signal_handle(Enhance *en, EXML_Node *node)
       sig_hndl[1] = handler;
 
       signals = evas_hash_find(en->signals, parent_id);
-      signals = evas_list_append(signals, sig_hndl);
+      signals = eina_list_append(signals, sig_hndl);
       en->signals = evas_hash_add(en->signals, parent_id, signals);  
    }
 }   
@@ -1227,14 +1227,14 @@ enhance_var_get(Enhance *en, const char *string)
 int
 enhance_signals_count(Enhance *en, const char *widget)
 {
-   Evas_List *signals;
+   Eina_List *signals;
    
    signals = evas_hash_find(en->signals, widget);
-   return evas_list_count(signals);
+   return eina_list_count(signals);
 }
 
 void
-_enhance_enum_copy(Evas_List *cur, char **signal, char **handler)
+_enhance_enum_copy(Eina_List *cur, char **signal, char **handler)
 {
    char **sig_hndl;
    
@@ -1246,7 +1246,7 @@ _enhance_enum_copy(Evas_List *cur, char **signal, char **handler)
 Enhance_Signals_Enumerator 
 enhance_signals_first(Enhance *en, const char* widget, char **signal, char **handler)
 {
-   Evas_List *signals;
+   Eina_List *signals;
    
    signals = evas_hash_find(en->signals, widget);
    if (signals != NULL) _enhance_enum_copy(signals, signal, handler);
@@ -1256,9 +1256,9 @@ enhance_signals_first(Enhance *en, const char* widget, char **signal, char **han
 Enhance_Signals_Enumerator 
 enhance_signals_next(Enhance *en, Enhance_Signals_Enumerator current, char **signal, char **handler)
 {
-   Evas_List *signals;
+   Eina_List *signals;
    
-   signals = evas_list_next((Evas_List*) current);
+   signals = eina_list_next((Eina_List*) current);
    if (signals != NULL) _enhance_enum_copy(signals, signal, handler);
    return (Enhance_Signals_Enumerator) signals;
 }
@@ -1278,10 +1278,10 @@ enhance_callback_data_get(Enhance *en, const char *cb_name)
 static Evas_Bool
 _e_wigets_enum_create(Evas_Hash *hash, const char *key, void *data, void *fdata)
 {
-   Evas_List **plist;
+   Eina_List **plist;
    
    plist = fdata;
-   *plist = evas_list_append(*plist, key);
+   *plist = eina_list_append(*plist, key);
    
    return 1;
 }
@@ -1289,39 +1289,39 @@ _e_wigets_enum_create(Evas_Hash *hash, const char *key, void *data, void *fdata)
 Enhance_Widgets_Enumerator
 enhance_widgets_start(Enhance *en) 
 {
-   Evas_List* list;
+   Eina_List* list;
 
    list = NULL;
    evas_hash_foreach(en->widgets, _e_wigets_enum_create, &list);
-   return evas_list_last(list);
+   return eina_list_last(list);
 }
 
 const char*
 enhance_widgets_next(Enhance *en, Enhance_Widgets_Enumerator* enumerator)
 {
-   Evas_List *list;
+   Eina_List *list;
    char* data;
 
    if (enumerator == NULL) return NULL;
    list = *enumerator;
    if (list == NULL) return NULL;
       
-   data = evas_list_data(list);
-   if (!evas_list_prev(list)) enhance_widgets_end(en, enumerator);
+   data = eina_list_data_get(list);
+   if (!eina_list_prev(list)) enhance_widgets_end(en, enumerator);
 
-   *enumerator = evas_list_prev(list);
+   *enumerator = eina_list_prev(list);
    return data;
 }
 
 void
 enhance_widgets_end(Enhance *en, Enhance_Widgets_Enumerator* enumerator)
 {
-   Evas_List *list;
+   Eina_List *list;
 
    if (enumerator == NULL) return;
 
    list = *enumerator;
-   evas_list_free(list);
+   eina_list_free(list);
    *enumerator = NULL;
 }
 
@@ -1356,16 +1356,16 @@ _e_widget_hash_free(Evas_Hash *hash, const char *key, void *data, void *fdata)
 static Evas_Bool
 _e_signal_hash_free(Evas_Hash *hash, const char *key, void *data, void *fdata)
 {  
-   Evas_List  *signals;
+   Eina_List  *signals;
    void       *item;
    
    signals = data;   
-   for(; signals; signals = evas_list_next(signals)) {
-      item = evas_list_data(signals);
+   for(; signals; signals = eina_list_next(signals)) {
+      item = eina_list_data_get(signals);
       E_FREE(item);   
    }
    signals = data;   
-   evas_list_free(signals);
+   eina_list_free(signals);
    
    return 1;
 }

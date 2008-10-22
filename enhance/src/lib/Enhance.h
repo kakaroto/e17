@@ -86,8 +86,8 @@ typedef enum Enhance_Signal_Handling
    ENHANCE_SIGNAL_NONE,            /**< Signals are completely ignored */
 } Enhance_Signal_Handling;
 
-typedef Evas_List* Enhance_Signals_Enumerator;
-typedef Evas_List* Enhance_Widgets_Enumerator;
+typedef Eina_List* Enhance_Signals_Enumerator;
+typedef Eina_List* Enhance_Widgets_Enumerator;
 
 typedef struct _Enhance Enhance;
 
