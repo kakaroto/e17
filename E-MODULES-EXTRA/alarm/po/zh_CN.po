@@ -1,0 +1,305 @@
+# Simplified Chinese translation for alarm in e17
+# Copyright 2008 GNU project.
+# Aron Xu <aronmalache@163.com>, 2008.
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: Alarm e17\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2007-11-14 22:14+0100\n"
+"PO-Revision-Date: 2008-10-22 21:10+0800\n"
+"Last-Translator: Aron Xu <aronmalache@163.com>\n"
+"Language-Team: Chinese/Simplified <i18n-translation@lists.linux.net.cn>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit"
+
+#: e_mod_config.c:55
+msgid "Alarm Configuration"
+msgstr ""
+
+#: e_mod_config.c:155
+#: e_mod_main.c:180
+msgid "Alarm"
+msgstr ""
+
+#: e_mod_config.c:157
+#: e_mod_config_alarm.c:190
+msgid "Active"
+msgstr ""
+
+#: e_mod_config.c:166
+msgid "Add"
+msgstr ""
+
+#: e_mod_config.c:168
+msgid "Delete"
+msgstr ""
+
+#: e_mod_config.c:170
+msgid "Configure"
+msgstr ""
+
+#: e_mod_config.c:172
+msgid "Duplicate"
+msgstr ""
+
+#: e_mod_config.c:226
+msgid "Alarm Options"
+msgstr ""
+
+#: e_mod_config.c:238
+msgid "Show next alarm"
+msgstr ""
+
+#: e_mod_config.c:244
+msgid "Alarms Defaults"
+msgstr ""
+
+#: e_mod_config.c:246
+#: e_mod_config_alarm.c:404
+msgid "Open popup"
+msgstr ""
+
+#: e_mod_config.c:249
+msgid "Run program"
+msgstr ""
+
+#: e_mod_config.c:256
+msgid "Auto-Remove alarms"
+msgstr ""
+
+#: e_mod_config_alarm.c:71
+msgid "Alarm Configuration : Setup an alarm"
+msgstr ""
+
+#: e_mod_config_alarm.c:188
+msgid "Informations"
+msgstr ""
+
+#: e_mod_config_alarm.c:192
+msgid "Name"
+msgstr ""
+
+#: e_mod_config_alarm.c:197
+msgid "Description"
+msgstr ""
+
+#: e_mod_config_alarm.c:207
+msgid "Schedule"
+msgstr ""
+
+#: e_mod_config_alarm.c:209
+#, c-format
+msgid "%1.0f hour"
+msgstr "%1.0f 小时"
+
+#: e_mod_config_alarm.c:212
+#, c-format
+msgid "%1.0f minute"
+msgstr "%1.0f 分钟"
+
+#: e_mod_config_alarm.c:218
+msgid "Days of the week"
+msgstr ""
+
+#: e_mod_config_alarm.c:222
+msgid "Monday"
+msgstr ""
+
+#: e_mod_config_alarm.c:224
+msgid "Tuesday"
+msgstr ""
+
+#: e_mod_config_alarm.c:226
+msgid "Wenesday"
+msgstr ""
+
+#: e_mod_config_alarm.c:228
+msgid "Thursday"
+msgstr ""
+
+#: e_mod_config_alarm.c:230
+msgid "Friday"
+msgstr ""
+
+#: e_mod_config_alarm.c:232
+msgid "Saturday"
+msgstr ""
+
+#: e_mod_config_alarm.c:234
+msgid "Sunday"
+msgstr ""
+
+#: e_mod_config_alarm.c:239
+msgid "One day"
+msgstr ""
+
+#: e_mod_config_alarm.c:243
+msgid "Date (YYYY/MM/DD)"
+msgstr ""
+
+#: e_mod_config_alarm.c:248
+msgid "Today"
+msgstr ""
+
+#: e_mod_config_alarm.c:250
+msgid "Tomorrow"
+msgstr ""
+
+#: e_mod_config_alarm.c:288
+msgid "<hilight>Error, The alarm was not added !</hilight><br><br>There is an error in the informations / schedule of your alarm"
+msgstr ""
+
+#: e_mod_config_alarm.c:293
+msgid "<hilight>Error, The alarm was not added !</hilight><br><br>You have to enter a name for the alarm"
+msgstr ""
+
+#: e_mod_config_alarm.c:298
+msgid "<hilight>Error, The alarm was not added !</hilight><br><br>You have to select at least one day in the week"
+msgstr ""
+
+#: e_mod_config_alarm.c:303
+msgid "<hilight>Error, The alarm was not added !</hilight><br><br>The date you entered for the alarm has incorrect syntax<br><br>You have to respect this format :<br>   YYYY/MM/DD<br>YYYY is the year on 4 numbers<br>MM is the month on 2 numbers<br>DD is the day on 2 numbers<br>"
+msgstr ""
+
+#: e_mod_config_alarm.c:313
+msgid "<hilight>Error, The alarm was not added !</hilight><br><br>The date you entered is before now"
+msgstr ""
+
+#: e_mod_config_alarm.c:317
+#: e_mod_main.c:419
+msgid "Alarm Module Error"
+msgstr ""
+
+#: e_mod_config_alarm.c:354
+#: e_mod_config_alarm.c:442
+msgid "Test this alarm"
+msgstr ""
+
+#: e_mod_config_alarm.c:382
+msgid "Ring Options"
+msgstr ""
+
+#: e_mod_config_alarm.c:384
+msgid "Remove alarm"
+msgstr ""
+
+#: e_mod_config_alarm.c:391
+#: e_mod_config_alarm.c:411
+msgid "No [default]"
+msgstr ""
+
+#: e_mod_config_alarm.c:393
+#: e_mod_config_alarm.c:413
+msgid "Yes"
+msgstr ""
+
+#: e_mod_config_alarm.c:398
+#: e_mod_config_alarm.c:418
+#: e_mod_config_alarm.c:429
+msgid "No"
+msgstr ""
+
+#: e_mod_config_alarm.c:400
+#: e_mod_config_alarm.c:420
+msgid "Yes [default]"
+msgstr ""
+
+#: e_mod_config_alarm.c:424
+msgid "Run a program"
+msgstr ""
+
+#: e_mod_config_alarm.c:431
+msgid "Run default one"
+msgstr ""
+
+#: e_mod_config_alarm.c:433
+msgid "Run this program"
+msgstr ""
+
+#: e_mod_config_alarm.c:478
+msgid "<hilight>Alarm test SUCCEED !</hilight><br><br>But DONT FORGET to ACTIVATE the alarms<br>via the 'Active' check button on the<br>main Alarm configuration panel."
+msgstr ""
+
+#: e_mod_config_alarm.c:484
+msgid "<hilight>Alarm test SUCCEED !</hilight>"
+msgstr ""
+
+#: e_mod_config_alarm.c:489
+msgid "<hilight>Alarm test FAILED !</hilight>"
+msgstr ""
+
+#: e_mod_config_alarm.c:491
+msgid "Alarm Module Test Report"
+msgstr ""
+
+#: e_mod_main.c:391
+#, c-format
+msgid "<hilight>Alarm : %s</hilight><br><br>%s"
+msgstr ""
+
+#: e_mod_main.c:394
+msgid "Alarm Module Popup"
+msgstr ""
+
+#: e_mod_main.c:417
+msgid "<hilight>Failed !</hilight><br><br>Alarm couln't launch the program you specified"
+msgstr ""
+
+#: e_mod_main.c:651
+#: e_mod_main.c:830
+#, c-format
+msgid "Snooze %s"
+msgstr ""
+
+#: e_mod_main.c:655
+#, c-format
+msgid "%1.0f hours"
+msgstr ""
+
+#: e_mod_main.c:658
+#, c-format
+msgid "%1.0f minutes"
+msgstr ""
+
+#: e_mod_main.c:665
+msgid "Ok"
+msgstr ""
+
+#: e_mod_main.c:666
+msgid "Close"
+msgstr ""
+
+#: e_mod_main.c:838
+#, c-format
+msgid "Snooze %.14s of %.2d:%.2d"
+msgstr ""
+
+#: e_mod_main.c:852
+msgid "Snooze (No alarm to delay)"
+msgstr ""
+
+#: e_mod_main.c:859
+msgid "Add an alarm"
+msgstr ""
+
+#: e_mod_main.c:866
+msgid "Configuration"
+msgstr ""
+
+#: e_mod_main.c:1047
+#, c-format
+msgid "<hilight>Alarm module : Configuration Upgraded</hilight><br><br>Your configuration of alarm module<br>has been upgraded<br>Your settings and alarms were removed<br>Sorry for the inconvenience<br><br>(%d -> %d)"
+msgstr ""
+
+#: e_mod_main.c:1053
+#: e_mod_main.c:1067
+msgid "Alarm Module version "
+msgstr ""
+
+#: e_mod_main.c:1061
+#, c-format
+msgid "<hilight>Alarm module : Configuration Downgraded</hilight><br><br>Your configuration of Alarm module<br>has been downgraded<br>Your settings and alarms were removed<br>Sorry for the inconvenience<br><br>(%d ->%d)"
+msgstr ""
+

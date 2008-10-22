@@ -1,0 +1,74 @@
+# Simplified Chinese translation of net in e17
+# Copyright 2008 GNU project.
+# Aron Xu <aronmalache@163.com>, 2008.batden <batden@orange.fr>, 2008.
+# 
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: Net e17\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2008-10-10 08:42+0400\n"
+"PO-Revision-Date: 2008-10-22 21:42+0800\n"
+"Last-Translator: Aron Xu <aronmalache@163.com>\n"
+"Language-Team: Chinese/Simplified <i18n-translation@lists.linux.net.cn>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit"
+
+#: src/e_mod_configure.c:44
+msgid "Net Module Configuration"
+msgstr ""
+
+#: src/e_mod_configure.c:114
+msgid "General Settings"
+msgstr ""
+
+#: src/e_mod_configure.c:115
+msgid "Show Text"
+msgstr ""
+
+#: src/e_mod_configure.c:117
+msgid "Show Popup On Mouse-Over"
+msgstr ""
+
+#: src/e_mod_configure.c:119
+msgid "Launch Application On Double-Click"
+msgstr ""
+
+#: src/e_mod_configure.c:125
+msgid "Activity Notification Level"
+msgstr ""
+
+#: src/e_mod_configure.c:127
+msgid "High (MB)"
+msgstr ""
+
+#: src/e_mod_configure.c:129
+msgid "Middle (KB)"
+msgstr ""
+
+#: src/e_mod_configure.c:131
+msgid "Low (B)"
+msgstr ""
+
+#: src/e_mod_configure.c:137
+msgid "Device Settings"
+msgstr ""
+
+#: src/e_mod_gadcon.c:91
+msgid "Net"
+msgstr "Net"
+
+#: src/e_mod_net.c:168
+msgid "Configuration"
+msgstr "配置"
+
+#: src/e_mod_net.c:203
+#, c-format
+msgid "Device - %s"
+msgstr ""
+
+#~ msgid "Network Monitor Module"
+#~ msgstr "Module de surveillance réseau"
+#~ msgid "Module to monitor network traffic"
+#~ msgstr "Module permettant la surveillance de l'activité réseau"

@@ -1,0 +1,56 @@
+# Penguins module (e17), French translation
+# This file is put in the public domain.
+# Aron Xu <aronmalache@163.com>, 2008.
+#  <aronmalache@163.com>, 2008.
+# 
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: Penguins module (e17)\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2008-04-08 23:43+0200\n"
+"PO-Revision-Date: 2008-10-22 21:53+0800\n"
+"Last-Translator: Aron Xu <aronmalache@163.com>\n"
+"Language-Team: Chinese/Simplified <i18n-translation@lists.linux.net.cn>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit"
+
+#: e_mod_config.c:42
+msgid "Population Settings"
+msgstr ""
+
+#: e_mod_config.c:92
+msgid "Number of penguins:"
+msgstr ""
+
+#: e_mod_config.c:94 e_mod_config.c:104
+#, c-format
+msgid "%1.0f"
+msgstr "%1.0f"
+
+#: e_mod_config.c:97
+msgid "Zoom factor:"
+msgstr ""
+
+#: e_mod_config.c:99
+#, c-format
+msgid "%1.1f X"
+msgstr "%1.1f X"
+
+#: e_mod_config.c:102
+msgid "Transparency:"
+msgstr ""
+
+#: e_mod_config.c:108
+msgid "Select population:"
+msgstr ""
+
+#: e_mod_main.c:60
+msgid "Appearance"
+msgstr ""
+
+#: e_mod_main.c:61
+msgid "Penguins"
+msgstr ""
+

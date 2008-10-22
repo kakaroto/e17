@@ -2,16 +2,17 @@
 # Copyright (C) 2008 Enlightenment development team
 # This file is distributed under the same license as the forecast package.
 # Dongsik Lee. <zecksmaster@gmail.com>, 2008.
+# Dongsik Lee. <zecksmaster@gmail.com>, 2008.
 # 
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: forecast HEAD\n"
+"Project-Id-Version: forecast e17\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2008-10-19 17:14+0100\n"
-"PO-Revision-Date: 2008-10-20 22:29+0800\n"
-"Last-Translator: Dongsik Lee. <zecksmaster@gmail.com>\n"
-"Language-Team: Korean <ko@li.org>\n"
+"PO-Revision-Date: 2008-10-22 21:27+0800\n"
+"Last-Translator: Aron Xu <aronmalache@163.com>\n"
+"Language-Team: Chinese/Simplified <i18n-translation@lists.linux.net.cn>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit"
@@ -117,3 +118,4 @@ msgstr "최고"
 #: e_mod_main.c:1035
 msgid "Low"
 msgstr "최저"
+

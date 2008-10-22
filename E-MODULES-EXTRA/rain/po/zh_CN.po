@@ -1,0 +1,51 @@
+# Rain module (e17), Simplified Chinese translation
+# This file is put in the public domain.
+# 
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Rain module (e17)\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-01-22 23:35+0200\n"
+"PO-Revision-Date: 2008-01-23 01:50+0200\n"
+"Last-Translator: "
+"Language-Team: "
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: e_mod_config.c:42
+msgid "Rain Module"
+msgstr ""
+
+#: e_mod_config.c:100
+msgid "General Settings"
+msgstr ""
+
+#: e_mod_config.c:101
+msgid "Show Clouds"
+msgstr ""
+
+#: e_mod_config.c:105
+msgid "Rain Density"
+msgstr ""
+
+#: e_mod_config.c:107
+msgid "Sprinkle"
+msgstr ""
+
+#: e_mod_config.c:109
+msgid "Drizzle"
+msgstr ""
+
+#: e_mod_config.c:111
+msgid "Downpour"
+msgstr ""
+
+#: e_mod_main.c:33
+msgid "Appearance"
+msgstr ""
+
+#: e_mod_main.c:35
+msgid "Rain"
+msgstr ""

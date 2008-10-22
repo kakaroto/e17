@@ -1,0 +1,79 @@
+# French translation for E17 tiling module.
+# This file is put in the public domain.
+# 
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: Tiling\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2008-06-13 11:53+0200\n"
+"PO-Revision-Date: 2008-10-22 22:14+0800\n"
+"Last-Translator:  <aronmalache@163.com>\n"
+"Language-Team:  <i18n-translation@lists.linux.net.cn>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit"
+
+#: e_mod_main.c:114 e_mod_main.c:119 e_mod_main.c:953
+msgid "Tiling"
+msgstr ""
+
+#: e_mod_main.c:952
+msgid "Windows"
+msgstr ""
+
+#: e_mod_config.c:69
+msgid "Tiling Configuration"
+msgstr ""
+
+#: e_mod_config.c:218
+msgid "General"
+msgstr ""
+
+#: e_mod_config.c:228
+msgid "Horizontal:"
+msgstr ""
+
+#: e_mod_config.c:229 e_mod_config.c:233
+#, c-format
+msgid "%1.0f px"
+msgstr ""
+
+#: e_mod_config.c:232
+msgid "Vertical:"
+msgstr ""
+
+#: e_mod_config.c:242
+msgid "Virtual Desktops"
+msgstr ""
+
+#: e_mod_config.c:280
+msgid "Grid mode settings"
+msgstr ""
+
+#: e_mod_config.c:284
+#, c-format
+msgid "%1.0f"
+msgstr "%1.0f"
+
+#: e_mod_config.c:289
+msgid "Bigmain settings"
+msgstr ""
+
+#: e_mod_config.c:290
+msgid "Big win takes percent of screen:"
+msgstr ""
+
+#: e_mod_config.c:291
+#, c-format
+msgid "%.2f"
+msgstr "%.2f"
+
+#: e_mod_config.c:297
+msgid "Tiling border"
+msgstr ""
+
+#: e_mod_config.c:311
+msgid "Floating border"
+msgstr ""
+

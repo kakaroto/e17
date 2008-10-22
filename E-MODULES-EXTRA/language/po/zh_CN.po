@@ -1,0 +1,98 @@
+# Simplified Chinese translation of language in e17
+# Copyright 2008 GNU project.
+# Aron Xu <aronmalache@163.com>, 2008.
+# 
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: Language e17\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2007-11-14 22:26+0100\n"
+"PO-Revision-Date: 2008-10-22 21:33+0800\n"
+"Last-Translator: Aron Xu <aronmalache@163.com>\n"
+"Language-Team: Chinese/Simplified <i18n-translation@lists.linux.net.cn>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit"
+
+#: src/module/e_mod_config.c:104
+msgid "Language Module Settings"
+msgstr ""
+
+#: src/module/e_mod_config.c:174
+#: src/module/e_mod_config.c:249
+msgid "Available Languages"
+msgstr ""
+
+#: src/module/e_mod_config.c:182
+#: src/module/e_mod_config.c:257
+msgid "Selected Languages"
+msgstr ""
+
+#: src/module/e_mod_config.c:198
+#: src/module/e_mod_config.c:273
+msgid "Up"
+msgstr ""
+
+#: src/module/e_mod_config.c:203
+#: src/module/e_mod_config.c:278
+msgid "Down"
+msgstr ""
+
+#: src/module/e_mod_config.c:211
+#: src/module/e_mod_config.c:304
+msgid "Language Switch Policy"
+msgstr ""
+
+#: src/module/e_mod_config.c:214
+#: src/module/e_mod_config.c:307
+msgid "Global"
+msgstr ""
+
+#: src/module/e_mod_config.c:217
+#: src/module/e_mod_config.c:310
+msgid "Window"
+msgstr ""
+
+#: src/module/e_mod_config.c:220
+#: src/module/e_mod_config.c:313
+msgid "Application"
+msgstr ""
+
+#: src/module/e_mod_config.c:287
+msgid "Keyboard Model"
+msgstr ""
+
+#: src/module/e_mod_config.c:295
+msgid "Layout Variant"
+msgstr ""
+
+#: src/module/e_mod_keybindings.c:6
+#: src/module/e_mod_main.c:113
+msgid "Language"
+msgstr ""
+
+#: src/module/e_mod_keybindings.c:7
+msgid "Switch To Next Language"
+msgstr ""
+
+#: src/module/e_mod_keybindings.c:8
+msgid "Switch To Previous Language"
+msgstr ""
+
+#: src/module/e_mod_main.c:399
+msgid "Configuration"
+msgstr ""
+
+#: src/module/e_mod_main.c:404
+msgid "Configure Key Bindings"
+msgstr ""
+
+#: src/module/e_mod_main.c:421
+msgid "Module Configuration"
+msgstr ""
+
+#~ msgid "Enlightenment Language Enhancment Module"
+#~ msgstr "Module amélioré de gestion des langes d'Enlightenment"
+#~ msgid "This module is used to switch between input languages."
+#~ msgstr "Ce module sert à changé la lange saisie du clavier"

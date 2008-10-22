@@ -1,0 +1,37 @@
+# Calendar module (e17), French translation
+# This file is put in the public domain.
+# 
+# 
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: Calendar module (e17)\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2008-01-22 18:08+0200\n"
+"PO-Revision-Date: 2008-10-22 21:02+0800\n"
+"Last-Translator:  <>\n"
+"Language-Team: French <gnomefr@traduc.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8bit"
+
+#: e_mod_main.c:432
+msgid "Sunday"
+msgstr ""
+
+#: e_mod_main.c:439
+msgid "Monday"
+msgstr ""
+
+#: e_mod_main.c:451
+msgid "First Day of Week"
+msgstr ""
+
+#: e_mod_main.c:547 e_mod_main.c:563
+msgid "Calendar"
+msgstr ""
+
+#: e_mod_main.c:547 e_mod_main.c:563
+msgid "Monthview Popup (Show/Hide)"
+msgstr ""
+

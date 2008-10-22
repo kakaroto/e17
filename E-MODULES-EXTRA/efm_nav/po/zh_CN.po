@@ -1,0 +1,21 @@
+# Efm_nav module (e17), Simplified Chinese translation
+# This file is put in the public domain.
+# 
+# Aron Xu <aronmalache@163.com>,  2008. <>, 2008.
+# 
+msgid ""
+msgstr ""
+"Project-Id-Version: Efm_nav module (e17)\n"
+"Report-Msgid-Bugs-To: enlightenment-devel@lists.sourceforge.net\n"
+"POT-Creation-Date: 2008-09-01 22:32-0500\n"
+"PO-Revision-Date: 2008-10-22 21:19+0800\n"
+"Last-Translator: Aron Xu <aronmalache@163.com>\n"
+"Language-Team: Chinese/Simplified <i18n-translation@lists.linux.net.cn>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit"
+
+#: src/e_mod_main.c:193
+msgid "EFM Navigation"
+msgstr "EFM 浏览"
+
