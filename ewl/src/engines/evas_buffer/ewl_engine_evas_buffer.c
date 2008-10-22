@@ -170,7 +170,7 @@ ee_canvas_render(Ewl_Embed *embed)
         DCHECK_PARAM_PTR(embed);
 
         if (embed->canvas) {
-                Evas_List *updates;
+                Eina_List *updates;
 
                 updates = evas_render_updates(embed->canvas);
                 if (updates) {

@@ -4050,7 +4050,7 @@ static void
 ewl_text_trigger_position(Ewl_Text *t, Ewl_Text_Trigger *trig)
 {
         Evas_Textblock_Cursor *cur1, *cur2;
-        Evas_List *rects;
+        Eina_List *rects;
         unsigned int byte_idx = 0, byte_len = 0;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
@@ -4082,7 +4082,7 @@ ewl_text_trigger_position(Ewl_Text *t, Ewl_Text_Trigger *trig)
                                                 tr->w, tr->h);
 
                 FREE(tr);
-                rects = evas_list_remove_list(rects, rects);
+                rects = eina_list_remove_list(rects, rects);
         }
         evas_textblock_cursor_free(cur1);
         evas_textblock_cursor_free(cur2);

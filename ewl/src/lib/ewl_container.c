@@ -1243,7 +1243,7 @@ ewl_container_child_hide_call(Ewl_Container *c, Ewl_Widget *w)
                 c->child_hide(c, w);
 
         if (c->clip_box) {
-                const Evas_List *clippees;
+                const Eina_List *clippees;
                 clippees = evas_object_clipees_get(c->clip_box);
                 if (!clippees)
                         evas_object_hide(c->clip_box);

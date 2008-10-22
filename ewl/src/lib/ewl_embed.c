@@ -1236,7 +1236,7 @@ ewl_embed_widget_find(Ewl_Widget *w)
 void
 ewl_embed_object_cache(Ewl_Embed *e, void *obj)
 {
-        const Evas_List *clippees;
+        const Eina_List *clippees;
 
         DENTER_FUNCTION(DLEVEL_STABLE);
         DCHECK_PARAM_PTR(e);
