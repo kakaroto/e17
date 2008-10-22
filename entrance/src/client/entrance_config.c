@@ -143,7 +143,7 @@ entrance_config_populate(Entrance_Config * e)
          if ((eu = entrance_user_new(user, icon, session)))
          {
             e->users.hash = evas_hash_add(e->users.hash, user, eu);
-            e->users.keys = evas_list_append(e->users.keys, eu->name);
+            e->users.keys = eina_list_append(e->users.keys, eu->name);
          }
          else
          {
@@ -181,7 +181,7 @@ entrance_config_populate(Entrance_Config * e)
 
       if ((exs = entrance_x_session_new(title, icon, session)))
       {
-         e->sessions.keys = evas_list_append(e->sessions.keys, title);
+         e->sessions.keys = eina_list_append(e->sessions.keys, title);
          e->sessions.hash = evas_hash_add(e->sessions.hash, exs->name, exs);
       }
    }
@@ -238,7 +238,7 @@ entrance_config_print(Entrance_Config * e)
    char buf[PATH_MAX];
    Entrance_User *eu;
    Entrance_X_Session *exs;
-   Evas_List *l = NULL;
+   Eina_List *l = NULL;
    char *strings[] = { "/entrance/theme",
       "/entrance/pointer", "/entrance/date_format", "/entrance/time_format",
       "/entrance/greeting/before", "/entrance/greeting/after",
@@ -308,7 +308,7 @@ entrance_config_store(Entrance_Config * e)
    char buf[PATH_MAX];
    Entrance_User *eu;
    Entrance_X_Session *exs;
-   Evas_List *l = NULL;
+   Eina_List *l = NULL;
    char *strings[] = { "/entrance/theme", "/entrance/background",
       "/entrance/pointer", "/entrance/date_format", "/entrance/time_format",
       "/entrance/greeting/before", "/entrance/greeting/after",
@@ -413,14 +413,14 @@ entrance_config_free(Entrance_Config * e)
          evas_hash_free(e->users.hash);
       }
       if (e->users.keys)
-         evas_list_free(e->users.keys);
+         eina_list_free(e->users.keys);
       if (e->sessions.hash)
       {
          evas_hash_foreach(e->sessions.hash, _cb_x_sessions_free, NULL);
          evas_hash_free(e->sessions.hash);
       }
       if (e->sessions.keys)
-         evas_list_free(e->sessions.keys);
+         eina_list_free(e->sessions.keys);
       free(e);
    }
 }
@@ -434,7 +434,7 @@ void
 entrance_config_user_list_save(Entrance_Config * e, const char *file)
 {
    int i = 0;
-   Evas_List *l = NULL;
+   Eina_List *l = NULL;
    Entrance_User *eu = NULL;
    char buf[PATH_MAX];
 
@@ -530,7 +530,7 @@ _cb_xsessions_foreach(void *list_data, void *data)
          found later. */
       if (evas_hash_find(e->sessions.hash, exs->name) == NULL)
       {
-         e->sessions.keys = evas_list_append(e->sessions.keys, exs->name);
+         e->sessions.keys = eina_list_append(e->sessions.keys, exs->name);
          e->sessions.hash = evas_hash_add(e->sessions.hash, exs->name, exs);
       }
       else

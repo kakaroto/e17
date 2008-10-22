@@ -93,7 +93,7 @@ entrance_session_ecore_evas_set(Entrance_Session * e, Ecore_Evas * ee)
    e->ee = ee;
    if ((evas = ecore_evas_get(ee)))
    {
-      Evas_List *l;
+      Eina_List *l;
 
       /* free the font list when we're done */
       for (l = e->config->fonts; l; l = l->next)
@@ -101,7 +101,7 @@ entrance_session_ecore_evas_set(Entrance_Session * e, Ecore_Evas * ee)
          evas_font_path_append(evas, (char *) l->data);
          free(l->data);
       }
-      e->config->fonts = evas_list_free(e->config->fonts);
+      e->config->fonts = eina_list_free(e->config->fonts);
    }
 }
 
@@ -656,7 +656,7 @@ void
 entrance_session_xsession_list_add(Entrance_Session * e)
 {
    Evas_Coord w, h;
-   Evas_List *l = NULL;
+   Eina_List *l = NULL;
    const char *key = NULL;
    Evas_Object *edje = NULL;
    Entrance_X_Session *exs = NULL;
@@ -731,7 +731,7 @@ entrance_session_user_list_add(Entrance_Session * e)
    Evas_Coord w, h;
    const char *file = NULL;
    Entrance_User *key = NULL;
-   Evas_List *l = NULL;
+   Eina_List *l = NULL;
    Evas_Object *container = NULL, *edje;
 
    if (!e || !e->edje)
@@ -779,7 +779,7 @@ entrance_session_user_list_add(Entrance_Session * e)
 Entrance_X_Session *
 entrance_session_x_session_default_get(Entrance_Session * e)
 {
-   Evas_List *l = NULL;
+   Eina_List *l = NULL;
    Entrance_X_Session *result = NULL;
 
    if (e && e->config)
@@ -832,7 +832,7 @@ static void
 _entrance_session_user_list_fix(Entrance_Session * e)
 {
    char buf[PATH_MAX];
-   Evas_List *l = NULL;
+   Eina_List *l = NULL;
    Entrance_User *eu = NULL;
 
    if (!e)
@@ -847,7 +847,7 @@ _entrance_session_user_list_fix(Entrance_Session * e)
             if ((eu = evas_hash_find(e->config->users.hash, e->auth->user)))
             {
                e->config->users.keys =
-                  evas_list_prepend(evas_list_remove
+                  eina_list_prepend(eina_list_remove
                                     (e->config->users.keys, eu->name),
                                     eu->name);
                entrance_config_user_list_save(e->config, e->db);
@@ -861,7 +861,7 @@ _entrance_session_user_list_fix(Entrance_Session * e)
          e->config->users.hash =
             evas_hash_add(e->config->users.hash, eu->name, eu);
          e->config->users.keys =
-            evas_list_prepend(e->config->users.keys, eu->name);
+            eina_list_prepend(e->config->users.keys, eu->name);
          entrance_config_user_list_save(e->config, e->db);
       }
    }

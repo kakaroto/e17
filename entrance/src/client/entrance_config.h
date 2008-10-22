@@ -91,7 +91,7 @@ struct _Entrance_Config
    /**
     * fonts - available font paths for fonts
     */
-   Evas_List *fonts;
+   Eina_List *fonts;
 
    /**
     * users - users known to the system
@@ -101,7 +101,7 @@ struct _Entrance_Config
       int remember;
       int remember_n;
       Evas_Hash *hash;
-      Evas_List *keys;
+      Eina_List *keys;
    } users;
 
    /**
@@ -110,7 +110,7 @@ struct _Entrance_Config
    struct
    {
       Evas_Hash *hash;
-      Evas_List *keys;
+      Eina_List *keys;
    } sessions;
 
    char *xsession;

@@ -254,7 +254,7 @@ interp_return_key(void *data, const char *str)
          }
          else if (!strcmp(old, "ecco,entry,focus,in,session,current,name"))
          {
-            Evas_List *l = NULL;
+            Eina_List *l = NULL;
 
             if (ecco.current_session)
             {
@@ -267,7 +267,7 @@ interp_return_key(void *data, const char *str)
                                    ecco.current_session->name,
                                    ecco.current_session);
                   if ((l =
-                       evas_list_find_list(ecco.config->sessions.keys,
+                       eina_list_data_find_list(ecco.config->sessions.keys,
                                            ecco.current_session->name)))
                   {
                      free(l->data);
@@ -302,7 +302,7 @@ interp_return_key(void *data, const char *str)
             if (ecco.current_user)
             {
 
-               Evas_List *l = NULL;
+               Eina_List *l = NULL;
 
                if (strcmp(new_str, ecco.current_user->name))
                {
@@ -313,7 +313,7 @@ interp_return_key(void *data, const char *str)
                                    ecco.current_user->name,
                                    ecco.current_user);
                   if ((l =
-                       evas_list_find_list(ecco.config->users.keys,
+                       eina_list_data_find_list(ecco.config->users.keys,
                                            ecco.current_user->name)))
                   {
                      fprintf(stderr, "AAAH %s\n", (char *) l->data);
@@ -529,7 +529,7 @@ _show_cb(void *data, Evas_Object * o, const char *emission,
 {
    int scroll;
    double dx, dy;
-   Evas_List *l = NULL;
+   Eina_List *l = NULL;
    char *str = NULL;
    Evas_Object *oo = NULL;
    Evas_Coord cx, cy, cw, ch;
@@ -851,7 +851,7 @@ _button_add_cb(void *data, Evas_Object * o, const char *emission,
             ecco.config->users.hash =
                evas_hash_add(ecco.config->users.hash, eu->name, eu);
             ecco.config->users.keys =
-               evas_list_append(ecco.config->users.keys, eu->name);
+               eina_list_append(ecco.config->users.keys, eu->name);
             user_selected_cb(eu, oo, "", "");
          }
       }
@@ -877,7 +877,7 @@ _button_del_cb(void *data, Evas_Object * o, const char *emission,
    Entrance_User *eu = NULL;
    Entrance_X_Session *exs = NULL;
    Evas_Hash *hash = NULL;
-   Evas_List *list = NULL;
+   Eina_List *list = NULL;
 
    if (!strcmp(emission, "ecco,button,delete,user"))
    {
@@ -888,7 +888,7 @@ _button_del_cb(void *data, Evas_Object * o, const char *emission,
       if ((eu = evas_hash_find(hash, ecco.current_user->name)))
       {
          ecco.config->users.hash = evas_hash_del(hash, eu->name, eu);
-         ecco.config->users.keys = evas_list_remove(list, eu->name);
+         ecco.config->users.keys = eina_list_remove(list, eu->name);
 
          entrance_user_free(eu);
          ecco.current_user = NULL;
@@ -909,7 +909,7 @@ _button_del_cb(void *data, Evas_Object * o, const char *emission,
          fprintf(stderr, "DELETEING !!!: %s\n", exs->name);
          fprintf(stderr, "DELETEING !!!: %s\n", exs->session);
          ecco.config->sessions.hash = evas_hash_del(hash, exs->name, exs);
-         ecco.config->sessions.keys = evas_list_remove(list, exs->name);
+         ecco.config->sessions.keys = eina_list_remove(list, exs->name);
 
          entrance_x_session_free(exs);
          ecco.current_session = NULL;
@@ -1544,7 +1544,7 @@ ecco_users_list_init(Evas_Object * container)
 {
    char *str = NULL;
    char buf[PATH_MAX];
-   Evas_List *l = NULL;
+   Eina_List *l = NULL;
    Evas_Object *o = NULL;
    Entrance_User *eu = NULL;
 
@@ -1573,7 +1573,7 @@ ecco_sessions_list_init(Evas_Object * container)
 {
    char *str = NULL;
    char buf[PATH_MAX];
-   Evas_List *l = NULL;
+   Eina_List *l = NULL;
    Evas_Object *o = NULL;
    Entrance_X_Session *exs = NULL;
 
