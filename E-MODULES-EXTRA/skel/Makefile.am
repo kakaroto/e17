@@ -17,7 +17,7 @@ files_DATA = module.desktop \
 
 EXTRA_DIST = $(files_DATA) \
 	     images/module_icon.png \
-         e-module-skel.edc \
+	     e-module-skel.edc \
 	     fonts/VeraBd.ttf
 
 %.edj:  %.edc
