@@ -48,8 +48,8 @@ esmart_container_sort(Evas_Object *container, int (*func)(Evas_Object *, Evas_Ob
    if (!func) return;
     
    _sort_func = func;
-   cont->elements = evas_list_sort(cont->elements,
-				   evas_list_count(cont->elements),
+   cont->elements = eina_list_sort(cont->elements,
+				   eina_list_count(cont->elements),
 				   _sort_cb);
    _sort_func = NULL;
    _container_elements_fix(cont);
@@ -297,7 +297,7 @@ EAPI double
 esmart_container_elements_length_get(Evas_Object *container)
 {
   Container *cont;
-  Evas_List *l;
+  Eina_List *l;
   double length = 0;
 
   cont = _container_fetch(container);
@@ -400,7 +400,7 @@ EAPI double
 esmart_container_elements_orig_length_get(Evas_Object *container)
 {
   Container *cont;
-  Evas_List *l;
+  Eina_List *l;
   double length = 0;
 
   cont = _container_fetch(container);
@@ -423,7 +423,7 @@ EAPI void
 esmart_container_clip_elements_set(Evas_Object *container, unsigned char val)
 {
    Container *cont;
-   Evas_List *l;
+   Eina_List *l;
 
    cont = _container_fetch(container);
    if (val)
@@ -524,7 +524,7 @@ _container_elements_changed(Container *cont)
 
   cont->changed = 1; /* this causes length to be recalced */
   evas_object_color_get(cont->clipper, &r, &g, &b, NULL);
-  if(evas_list_count(cont->elements) > 0)
+  if(eina_list_count(cont->elements) > 0)
       evas_object_color_set(cont->clipper, r, g, b, cont->clipper_orig_alpha);
   else
       evas_object_color_set(cont->clipper, r, g, b, 0);
@@ -545,27 +545,27 @@ _container_element_move(Container_Element *el)
 {
   Container *cont = el->container;
   Container_Element *el2;
-  Evas_List *l;
-  Evas_List *prev;
+  Eina_List *l;
+  Eina_List *prev;
   Evas_Coord x, y, w, h;
   Evas_Coord sx, sy, sw, sh, fx, fy, fw, fh;
 
   int not_found = 0;
 
-  prev = evas_list_prev(evas_list_find_list(cont->elements, el));
-  cont->elements = evas_list_remove(cont->elements, el);
+  prev = eina_list_prev(eina_list_data_find_list(cont->elements, el));
+  cont->elements = eina_list_remove(cont->elements, el);
 
   /* get start and finish icon geometry */
-  el2 = evas_list_data(cont->elements);
+  el2 = eina_list_data_get(cont->elements);
   evas_object_geometry_get(el2->obj, &sx, &sy, &sw, &sh);
-  el2 = evas_list_data(evas_list_last(cont->elements));
+  el2 = eina_list_data_get(eina_list_last(cont->elements));
   evas_object_geometry_get(el2->obj, &fx, &fy, &fw, &fh);
 
 #if 1 
-  for (l = cont->elements; l; l = evas_list_next(l))
+  for (l = cont->elements; l; l = eina_list_next(l))
   {
     not_found = 0;
-    el2 = evas_list_data(l);
+    el2 = eina_list_data_get(l);
 
     evas_object_geometry_get(el2->obj, &x, &y, &w, &h);
 
@@ -574,22 +574,22 @@ _container_element_move(Container_Element *el)
     {
       if (el->current.x < sx)
       {
-        cont->elements = evas_list_prepend(cont->elements, el);
+        cont->elements = eina_list_prepend(cont->elements, el);
         break;
       }
       else if (el->current.x >= x + w/2 && el->current.x <= x + w)
       {
-        cont->elements = evas_list_append_relative(cont->elements, el, el2);
+        cont->elements = eina_list_append_relative(cont->elements, el, el2);
         break;
       }
       else if (el->current.x >= x && el->current.x <= x + w/2)
       {
-        cont->elements = evas_list_prepend_relative(cont->elements, el, el2);
+        cont->elements = eina_list_prepend_relative(cont->elements, el, el2);
         break;
       }
       else if (el->current.x > fx + fw)
       {
-        cont->elements = evas_list_append(cont->elements, el);
+        cont->elements = eina_list_append(cont->elements, el);
         break;
       }
       else
@@ -601,22 +601,22 @@ _container_element_move(Container_Element *el)
     {
       if (el->current.y < sy)
       {
-        cont->elements = evas_list_prepend(cont->elements, el);
+        cont->elements = eina_list_prepend(cont->elements, el);
         break;
       }
       else if (el->current.y >= y + h/2 && el->current.y <= y + h)
       {
-        cont->elements = evas_list_append_relative(cont->elements, el, el2);
+        cont->elements = eina_list_append_relative(cont->elements, el, el2);
         break;
       }
       else if ((el->current.y >= y) && (el->current.y <= y + h/2))
       {
-        cont->elements = evas_list_prepend_relative(cont->elements, el, el2);
+        cont->elements = eina_list_prepend_relative(cont->elements, el, el2);
         break;
       }
       else if (el->current.y > fy + fh)
       {
-        cont->elements = evas_list_append(cont->elements, el);
+        cont->elements = eina_list_append(cont->elements, el);
         break;
       }
       else
@@ -627,9 +627,9 @@ _container_element_move(Container_Element *el)
   if (not_found)
   {
     if (prev)
-      evas_list_append_relative(cont->elements, el, prev->data);
+      eina_list_append_relative(cont->elements, el, prev->data);
     else
-      evas_list_prepend(cont->elements, el);
+      eina_list_prepend(cont->elements, el);
   }
   _container_elements_fix(cont);
 //  write_out_order(ib);

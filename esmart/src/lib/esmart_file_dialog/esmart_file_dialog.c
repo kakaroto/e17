@@ -43,7 +43,7 @@
     Evas_Coord x, y, w, h;
 
     /* the files the user wants to load/open/save(?)/ */
-    Evas_List *selections;
+    Eina_List *selections;
   };
 
 /*========================================================================*
@@ -271,11 +271,11 @@ esmart_file_dialog_callback_add (Evas_Object * efd,
       fddata->fdata = data;
     }
 }
-EAPI Evas_List *
+EAPI Eina_List *
 esmart_file_dialog_selections_get (Evas_Object * efd)
 {
   Esmart_File_Dialog *fddata;
-  Evas_List *result = NULL;
+  Eina_List *result = NULL;
 
   if ((fddata = evas_object_smart_data_get (efd)))
     {
@@ -469,7 +469,7 @@ _esmart_file_dialog_directory_cb (void *data, Evas_Object * o,
 		      free (fddata->path);
 		      fddata->path = strdup (path);
 		      fddata->selections =
-			evas_list_free (fddata->selections);
+			eina_list_free (fddata->selections);
 		      if (edje_object_part_exists
 			  (fddata->edje, fddata->directories_dragbar))
 			{
@@ -516,10 +516,10 @@ _esmart_file_dialog_directory_cb (void *data, Evas_Object * o,
 			  edje_object_part_text_set (fddata->edje, part, txt);
 			}
 		      fddata->selections =
-			evas_list_append (fddata->selections, txt);
+			eina_list_append (fddata->selections, txt);
 		      fddata->func (fddata->fdata, obj, ESMART_FILE_DIALOG_OK);
 		      fddata->selections =
-			evas_list_free (fddata->selections);
+			eina_list_free (fddata->selections);
 		    }
 		}
 	      else if ((!strcmp (emission, "e,fd,directory,selected")))
@@ -530,12 +530,12 @@ _esmart_file_dialog_directory_cb (void *data, Evas_Object * o,
 		      edje_object_part_text_set (fddata->edje, part, txt);
 		    }
 		  fddata->selections =
-		    evas_list_append (fddata->selections, txt);
+		    eina_list_append (fddata->selections, txt);
 		}
 	      else if (!strcmp ("e,fd,directory,unselected", emission))
 		{
 		  fddata->selections =
-		    evas_list_remove (fddata->selections, txt);
+		    eina_list_remove (fddata->selections, txt);
 		}
 	      fprintf (stderr, "%s\n", emission);
 	    }
@@ -564,18 +564,18 @@ _esmart_file_dialog_file_cb (void *data, Evas_Object * o,
 		{
 		  edje_object_part_text_set (fddata->edje, part, txt);
 		}
-	      fddata->selections = evas_list_append (fddata->selections, txt);
+	      fddata->selections = eina_list_append (fddata->selections, txt);
 	    }
 	  else if (!strcmp ("e,fd,file,unselected", emission))
 	    {
-	      fddata->selections = evas_list_remove (fddata->selections, txt);
+	      fddata->selections = eina_list_remove (fddata->selections, txt);
 	    }
 	  else if (!strcmp ("e,fd,file,load", emission))
 	    {
 	      fprintf (stderr, "Load Request: %s\n", txt);
-	      fddata->selections = evas_list_append (fddata->selections, txt);
+	      fddata->selections = eina_list_append (fddata->selections, txt);
 	      fddata->func (fddata->fdata, obj, ESMART_FILE_DIALOG_OK);
-	      fddata->selections = evas_list_free (fddata->selections);
+	      fddata->selections = eina_list_free (fddata->selections);
 	    }
 	}
 #if 0

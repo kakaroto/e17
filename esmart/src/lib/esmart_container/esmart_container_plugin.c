@@ -18,7 +18,7 @@
 
 static char *_find_plugin(const char *dir, const char *name)
 {
-  Evas_List *files, *l;
+  Eina_List *files, *l;
   char *ret = NULL, tmp[128];
 
   if (!(files = _dir_get_files(dir)))
@@ -40,7 +40,7 @@ static char *_find_plugin(const char *dir, const char *name)
   while (files)
   {
     free(files->data);
-    files = evas_list_remove(files, files->data);
+    files = eina_list_remove(files, files->data);
   }
   
   printf("ret: %s\n", ret);

@@ -57,8 +57,8 @@ is_dir(const char *dir)
 }
 
 
-Evas_List *_dir_get_files(const char *directory) {
-	Evas_List *list = NULL;
+Eina_List *_dir_get_files(const char *directory) {
+	Eina_List *list = NULL;
 	DIR *dir;
 	struct dirent *entry;
 
@@ -70,13 +70,13 @@ Evas_List *_dir_get_files(const char *directory) {
 			continue;
 
 		if (!is_dir(entry->d_name))
-			list = evas_list_prepend(list, strdup(entry->d_name));
+			list = eina_list_prepend(list, strdup(entry->d_name));
 	}
 
 	closedir(dir);
 
 	if (list)
-		list = evas_list_reverse(list);
+		list = eina_list_reverse(list);
 
 	return list;
 }

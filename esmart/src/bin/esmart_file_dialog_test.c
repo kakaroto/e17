@@ -30,7 +30,7 @@
 void
 file_dialog_cb (void *data, Evas_Object * efd, Esmart_File_Dialog_Op type)
 {
-  Evas_List *l = NULL;
+  Eina_List *l = NULL;
   Ecore_Evas *ee = (Ecore_Evas *) data;
 
   switch (type)

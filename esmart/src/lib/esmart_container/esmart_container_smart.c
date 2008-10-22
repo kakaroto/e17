@@ -180,7 +180,7 @@ static void
 _container_show(Evas_Object *obj)
 {
   Container *data;
-  Evas_List *l;
+  Eina_List *l;
   
   data = evas_object_smart_data_get(obj);
 
@@ -203,7 +203,7 @@ static void
 _container_hide(Evas_Object *obj)
 {
   Container *data;
-  Evas_List *l;
+  Eina_List *l;
   
   data = evas_object_smart_data_get(obj);
 

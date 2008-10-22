@@ -23,7 +23,7 @@ esmart_container_element_append(Evas_Object *container, Evas_Object *element)
   el = _container_element_new(cont, element);
   if (!el) return;
 
-  cont->elements = evas_list_append(cont->elements, el);
+  cont->elements = eina_list_append(cont->elements, el);
 
   _container_elements_changed(cont);
   _container_elements_fix(cont);
@@ -41,7 +41,7 @@ esmart_container_element_prepend(Evas_Object *container, Evas_Object *element)
   el = _container_element_new(cont, element);
   if (!el) return;
 
-  cont->elements = evas_list_prepend(cont->elements, el);
+  cont->elements = eina_list_prepend(cont->elements, el);
 
   _container_elements_changed(cont);
   _container_elements_fix(cont);
@@ -64,7 +64,7 @@ esmart_container_element_append_relative(Evas_Object *container,
   rel = evas_object_data_get(relative, "Container_Element");
   if (!rel) return;
 
-  cont->elements = evas_list_append_relative(cont->elements, el, rel);
+  cont->elements = eina_list_append_relative(cont->elements, el, rel);
 
   _container_elements_changed(cont);
   _container_elements_fix(cont);
@@ -87,7 +87,7 @@ esmart_container_element_prepend_relative(Evas_Object *container,
   rel = evas_object_data_get(relative, "Container_Element");
   if (!rel) return;
 
-  cont->elements = evas_list_prepend_relative(cont->elements, el, rel);
+  cont->elements = eina_list_prepend_relative(cont->elements, el, rel);
 
   _container_elements_changed(cont);
   _container_elements_fix(cont);
@@ -106,7 +106,7 @@ esmart_container_element_remove(Evas_Object *container, Evas_Object *element)
   old_length = esmart_container_elements_length_get(container);
 
   el = evas_object_data_get(element, "Container_Element");
-  cont->elements = evas_list_remove(cont->elements, el);
+  cont->elements = eina_list_remove(cont->elements, el);
 
   _container_element_del(el);
   _container_elements_changed(cont);
@@ -129,7 +129,7 @@ esmart_container_element_destroy(Evas_Object *container, Evas_Object *element)
   el = evas_object_data_get(element, "Container_Element");
   evas_object_del (el->obj);
   evas_object_del (el->grabber);
-  cont->elements = evas_list_remove(cont->elements, el);
+  cont->elements = eina_list_remove(cont->elements, el);
   free (el);
 
   _container_elements_changed(cont);
@@ -154,7 +154,7 @@ esmart_container_empty(Evas_Object *container)
     evas_object_del(el->obj);
     evas_object_del(el->grabber);
 	
-    cont->elements = evas_list_remove(cont->elements, el);
+    cont->elements = eina_list_remove(cont->elements, el);
     free(el);
   }
   cont->scroll.offset = 0;
@@ -162,10 +162,10 @@ esmart_container_empty(Evas_Object *container)
 }
 
 
-Evas_List *esmart_container_elements_get(Evas_Object *container)
+Eina_List *esmart_container_elements_get(Evas_Object *container)
 {
   Container *cont;
-  Evas_List *l, *ll = NULL;
+  Eina_List *l, *ll = NULL;
   
   cont = _container_fetch(container);
   if (!cont) return NULL;
@@ -174,7 +174,7 @@ Evas_List *esmart_container_elements_get(Evas_Object *container)
   {
     Container_Element *el = l->data;
 
-    ll = evas_list_append(ll, el->obj); 
+    ll = eina_list_append(ll, el->obj); 
   }
 
   return ll;

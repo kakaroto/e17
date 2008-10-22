@@ -78,7 +78,7 @@ _engage_grabber_init (Container * cont)
 static void
 _engage_layout (Container * cont)
 {
-  Evas_List *l;
+  Eina_List *l;
   double ax, ay, aw, ah;	// element area geom
   double ix, iy, iw, ih;	// new x, y, w, h
   double L;			// length of all objects at original size (for nonhomog)
@@ -116,7 +116,7 @@ _engage_layout (Container * cont)
     ix += cont->scroll.offset;
 
   L = esmart_container_elements_orig_length_get (cont->obj);
-  num = evas_list_count (cont->elements);
+  num = eina_list_count (cont->elements);
 
 
   evas_object_color_get (cont->clipper, &r, &g, &b, NULL);

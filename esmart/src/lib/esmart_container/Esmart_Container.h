@@ -118,7 +118,7 @@ EAPI void esmart_container_element_destroy(Evas_Object *container, Evas_Object *
 EAPI void esmart_container_empty (Evas_Object *container);
 EAPI void esmart_container_sort(Evas_Object *container, int (*func)(Evas_Object *, Evas_Object *));
 
-EAPI Evas_List *esmart_container_elements_get(Evas_Object *container);
+EAPI Eina_List *esmart_container_elements_get(Evas_Object *container);
 
 /* scrolling */
 EAPI void esmart_container_scroll_start(Evas_Object *container, double velocity);

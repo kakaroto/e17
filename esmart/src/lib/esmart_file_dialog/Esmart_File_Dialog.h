@@ -51,7 +51,7 @@ typedef enum {
 							   Esmart_File_Dialog_Op op),
 					     void *data);
   EAPI Evas_Object *esmart_file_dialog_edje_get (Evas_Object * efd);
-  EAPI Evas_List *esmart_file_dialog_selections_get (Evas_Object * efd);
+  EAPI Eina_List *esmart_file_dialog_selections_get (Evas_Object * efd);
   EAPI const char *esmart_file_dialog_current_directory_get (Evas_Object * efd);
 
 #ifdef __cplusplus

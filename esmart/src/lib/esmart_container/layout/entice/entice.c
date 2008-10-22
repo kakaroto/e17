@@ -19,8 +19,8 @@ static void
 _entice_layout (Container * cont)
 {
   Container_Element *el;
-  Evas_List *center_el = NULL;
-  Evas_List *l;
+  Eina_List *center_el = NULL;
+  Eina_List *l;
   double sc;
   double space;
   int d;
@@ -29,7 +29,7 @@ _entice_layout (Container * cont)
   double w, h;
   double ey = 0.0, ex = 0.0;
 
-  if (!(center_el = evas_list_nth_list (cont->elements, _entice_current)))
+  if (!(center_el = eina_list_nth_list (cont->elements, _entice_current)))
     return;
 
   if (cont->direction)
@@ -86,7 +86,7 @@ _entice_layout (Container * cont)
 	}
       i = im_no = _entice_current + 1;
       ey = center + 24;
-      list_length = evas_list_count (cont->elements);
+      list_length = eina_list_count (cont->elements);
       for (l = center_el->next; l && (i <= list_length); l = l->next, i++)
 	{
 
@@ -182,7 +182,7 @@ _entice_layout (Container * cont)
       h = cont->h - (cont->padding.t + cont->padding.b);
       w = h * el->orig_w / el->orig_h;
       ex = center + (w / 2);
-      list_length = evas_list_count (cont->elements);
+      list_length = eina_list_count (cont->elements);
       for (l = center_el->next; l && (i <= list_length); l = l->next, i++)
 	{
 
@@ -248,7 +248,7 @@ _entice_scroll_to (Container * cont, Container_Element * el)
   if (cont && el)
     {
       int i = 0;
-      Evas_List *l;
+      Eina_List *l;
       for (l = cont->elements; l; l = l->next, i++)
 	{
 	  if (el == l->data)
